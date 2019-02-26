@@ -13,11 +13,23 @@ QT += xml sql network websockets
 
 DEFINES += APPSLIB_LIBRARY
 
+PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+isEmpty( PYTHONQT_PREFIX ) {
+  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+  unix:PYTHONQT_PREFIX=/home/allen/Projects/PythonQt/pythonqt-code
+}
+
+include($$PYTHONQT_PREFIX/build/python.prf)
+
 win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
  ENABLE_SCRIPTING = "Y"
 }
-unix:exists(/home/allen/Projects/PythonQt-master/lib/libPythonQt_d.so) {
+
+unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
  ENABLE_SCRIPTING = "Y"
+ message(appslib: found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
+} else {
+ message(appslib: not found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
 }
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
@@ -437,7 +449,8 @@ SOURCES += appslib.cpp \
     editconnectionpreferencesdialog.cpp \
     editconnectionpreferences.cpp \
     firsttimestartupwizard.cpp \
-    firsttimestartupwizardaction.cpp
+    firsttimestartupwizardaction.cpp \
+    profileconfiguration.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -845,7 +858,8 @@ HEADERS += appslib.h\
     editconnectionpreferencesdialog.h \
     editconnectionpreferences.h \
     firsttimestartupwizard.h \
-    firsttimestartupwizardaction.h
+    firsttimestartupwizardaction.h \
+    profileconfiguration.h
 
 unix:!symbian {
     maemo5 {

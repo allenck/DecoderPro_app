@@ -64,6 +64,7 @@ public:
          */
         CheckDtdThenSchema
     };
+    Q_ENUM(Validate)
     /*public*/ Validate getValidate();
     /*public*/ void setValidate(Validate v);
     /**
@@ -108,7 +109,7 @@ static /*private*/ Validate defaultValidate;// = Validate.None;
 protected:
  /*protected*/ bool checkFile(QString name);
  /*protected*/ QFile* findFile(QString name) const;
- QT_DEPRECATED /*protected*/ QDomElement getRoot(bool validate, QDataStream* stream) /*throw (JDOMException)*/;
+ //QT_DEPRECATED /*protected*/ QDomElement getRoot(bool validate, QDataStream* stream) /*throw (JDOMException)*/;
  /*protected*/ QDomElement getRoot(QDataStream* stream) /*throw (JDOMException)*/;
  friend class LayoutEditor;
  friend class ConfigXmlManager;

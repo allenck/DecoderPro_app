@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'multisensoriconwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,9 +10,7 @@
 #define UI_MULTISENSORICONWIDGET_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -54,29 +52,29 @@ public:
     void setupUi(QWidget *MultiSensorIconWidget)
     {
         if (MultiSensorIconWidget->objectName().isEmpty())
-            MultiSensorIconWidget->setObjectName(QStringLiteral("MultiSensorIconWidget"));
+            MultiSensorIconWidget->setObjectName(QLatin1String("MultiSensorIconWidget"));
         MultiSensorIconWidget->resize(398, 312);
         verticalLayout_5 = new QVBoxLayout(MultiSensorIconWidget);
-        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
+        verticalLayout_5->setObjectName(QLatin1String("verticalLayout_5"));
         label = new QLabel(MultiSensorIconWidget);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QLatin1String("label"));
         label->setMinimumSize(QSize(2, 0));
         label->setWordWrap(true);
 
         verticalLayout_5->addWidget(label);
 
         gridLayout = new QGridLayout();
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QLatin1String("gridLayout"));
         gridLayout->setSizeConstraint(QLayout::SetNoConstraint);
 
         verticalLayout_5->addLayout(gridLayout);
 
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         verticalLayout = new QVBoxLayout();
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         label_2 = new QLabel(MultiSensorIconWidget);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -86,7 +84,7 @@ public:
         verticalLayout->addWidget(label_2);
 
         pbInconsistent = new DropPushButton(MultiSensorIconWidget);
-        pbInconsistent->setObjectName(QStringLiteral("pbInconsistent"));
+        pbInconsistent->setObjectName(QLatin1String("pbInconsistent"));
         QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -101,14 +99,14 @@ public:
         horizontalLayout->addLayout(verticalLayout);
 
         verticalLayout_2 = new QVBoxLayout();
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setObjectName(QLatin1String("verticalLayout_2"));
         label_3 = new QLabel(MultiSensorIconWidget);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QLatin1String("label_3"));
 
         verticalLayout_2->addWidget(label_3);
 
         pbUnknown = new DropPushButton(MultiSensorIconWidget);
-        pbUnknown->setObjectName(QStringLiteral("pbUnknown"));
+        pbUnknown->setObjectName(QLatin1String("pbUnknown"));
         sizePolicy1.setHeightForWidth(pbUnknown->sizePolicy().hasHeightForWidth());
         pbUnknown->setSizePolicy(sizePolicy1);
         pbUnknown->setMinimumSize(QSize(48, 48));
@@ -120,14 +118,14 @@ public:
         horizontalLayout->addLayout(verticalLayout_2);
 
         verticalLayout_3 = new QVBoxLayout();
-        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        verticalLayout_3->setObjectName(QLatin1String("verticalLayout_3"));
         label_4 = new QLabel(MultiSensorIconWidget);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setObjectName(QLatin1String("label_4"));
 
         verticalLayout_3->addWidget(label_4);
 
         pbInactive = new DropPushButton(MultiSensorIconWidget);
-        pbInactive->setObjectName(QStringLiteral("pbInactive"));
+        pbInactive->setObjectName(QLatin1String("pbInactive"));
         sizePolicy1.setHeightForWidth(pbInactive->sizePolicy().hasHeightForWidth());
         pbInactive->setSizePolicy(sizePolicy1);
         pbInactive->setMinimumSize(QSize(48, 48));
@@ -142,11 +140,11 @@ public:
         verticalLayout_5->addLayout(horizontalLayout);
 
         tableWidget_2 = new QWidget(MultiSensorIconWidget);
-        tableWidget_2->setObjectName(QStringLiteral("tableWidget_2"));
+        tableWidget_2->setObjectName(QLatin1String("tableWidget_2"));
         verticalLayout_6 = new QVBoxLayout(tableWidget_2);
-        verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
+        verticalLayout_6->setObjectName(QLatin1String("verticalLayout_6"));
         verticalLayout_4 = new QVBoxLayout();
-        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        verticalLayout_4->setObjectName(QLatin1String("verticalLayout_4"));
         tableWidget = new QTableWidget(tableWidget_2);
         if (tableWidget->columnCount() < 2)
             tableWidget->setColumnCount(2);
@@ -154,24 +152,24 @@ public:
         tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
         QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
         tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
-        tableWidget->setObjectName(QStringLiteral("tableWidget"));
+        tableWidget->setObjectName(QLatin1String("tableWidget"));
 
         verticalLayout_4->addWidget(tableWidget);
 
         horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        horizontalLayout_2->setObjectName(QLatin1String("horizontalLayout_2"));
         rbUpDown = new QRadioButton(tableWidget_2);
-        rbUpDown->setObjectName(QStringLiteral("rbUpDown"));
+        rbUpDown->setObjectName(QLatin1String("rbUpDown"));
 
         horizontalLayout_2->addWidget(rbUpDown);
 
         rbRightLeft = new QRadioButton(tableWidget_2);
-        rbRightLeft->setObjectName(QStringLiteral("rbRightLeft"));
+        rbRightLeft->setObjectName(QLatin1String("rbRightLeft"));
 
         horizontalLayout_2->addWidget(rbRightLeft);
 
         pbAddIcon = new QPushButton(tableWidget_2);
-        pbAddIcon->setObjectName(QStringLiteral("pbAddIcon"));
+        pbAddIcon->setObjectName(QLatin1String("pbAddIcon"));
 
         horizontalLayout_2->addWidget(pbAddIcon);
 
@@ -192,22 +190,22 @@ public:
 
     void retranslateUi(QWidget *MultiSensorIconWidget)
     {
-        MultiSensorIconWidget->setWindowTitle(QApplication::translate("MultiSensorIconWidget", "Form", Q_NULLPTR));
+        MultiSensorIconWidget->setWindowTitle(QApplication::translate("MultiSensorIconWidget", "Form", nullptr));
         label->setText(QApplication::translate("MultiSensorIconWidget", "To add a MultiSensor to the Panel,\n"
-"drag Sensors from table into the red boxes, then press Add to Panel.", Q_NULLPTR));
-        label_2->setText(QApplication::translate("MultiSensorIconWidget", "Inconsistent", Q_NULLPTR));
+"drag Sensors from table into the red boxes, then press Add to Panel.", nullptr));
+        label_2->setText(QApplication::translate("MultiSensorIconWidget", "Inconsistent", nullptr));
         pbInconsistent->setText(QString());
-        label_3->setText(QApplication::translate("MultiSensorIconWidget", "Unknown", Q_NULLPTR));
+        label_3->setText(QApplication::translate("MultiSensorIconWidget", "Unknown", nullptr));
         pbUnknown->setText(QString());
-        label_4->setText(QApplication::translate("MultiSensorIconWidget", "Inactive", Q_NULLPTR));
+        label_4->setText(QApplication::translate("MultiSensorIconWidget", "Inactive", nullptr));
         pbInactive->setText(QString());
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("MultiSensorIconWidget", "System Name", Q_NULLPTR));
+        ___qtablewidgetitem->setText(QApplication::translate("MultiSensorIconWidget", "System Name", nullptr));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("MultiSensorIconWidget", "User Name", Q_NULLPTR));
-        rbUpDown->setText(QApplication::translate("MultiSensorIconWidget", "Up - Down", Q_NULLPTR));
-        rbRightLeft->setText(QApplication::translate("MultiSensorIconWidget", "Right - Left", Q_NULLPTR));
-        pbAddIcon->setText(QApplication::translate("MultiSensorIconWidget", "Add Another Icon", Q_NULLPTR));
+        ___qtablewidgetitem1->setText(QApplication::translate("MultiSensorIconWidget", "User Name", nullptr));
+        rbUpDown->setText(QApplication::translate("MultiSensorIconWidget", "Up - Down", nullptr));
+        rbRightLeft->setText(QApplication::translate("MultiSensorIconWidget", "Right - Left", nullptr));
+        pbAddIcon->setText(QApplication::translate("MultiSensorIconWidget", "Add Another Icon", nullptr));
     } // retranslateUi
 
 };

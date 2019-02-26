@@ -12,20 +12,27 @@ TARGET = LayoutEditor
 TEMPLATE = lib
 
 DEFINES += LIBLAYOUTEDITOR_LIBRARY
+MOC_DIR = moc_obj
+OBJECTS_DIR += moc_obj
 
-unix:PREFIX = /home/allen/Projects/PythonQt-master
-win32:PREFIX = "C:/Program Files (x86)/local"
+PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+isEmpty( PYTHONQT_PREFIX ) {
+  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+  unix:PYTHONQT_PREFIX=/home/allen/Projects/PythonQt/pythonqt-code
+}
 
-win32:exists($$PREFIX/lib/PythonQt_d.dll){
+include($$PYTHONQT_PREFIX/build/python.prf)
+
+win32:exists($$PYTHONQT_PREFIX/lib/PythonQt_d.dll){
 ENABLE_SCRIPTING = "Y"
 }
-unix:exists($$PREFIX/lib/libPythonQt_d.so){
+unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
 ENABLE_SCRIPTING = "Y"
 }
 equals(ENABLE_SCRIPTING, "Y") {
  DEFINES += SCRIPTING_ENABLED
  message("LayoutEditor: Scripting is enabled")
- include($$PWD/generated_cpp/jmri/jmri.pri)
+ include($$PWD/generated_cpp/Jmri/Jmri.pri)
  SOURCES +=     jythonsiglet.cpp \
     jythonautomaton.cpp \
     jythonautomatonaction.cpp \
@@ -40,6 +47,7 @@ equals(ENABLE_SCRIPTING, "Y") {
     scripts/simplebindings.cpp \
     scripts/scriptengine.cpp \
     scripts/pythoninterpreter.cpp \
+    scripts/scriptoutput.cpp \
     scripts/scriptcontext.cpp
 
  HEADERS +=     jythonsiglet.h \
@@ -58,23 +66,25 @@ equals(ENABLE_SCRIPTING, "Y") {
     scripts/bindings.h \
     scripts/scriptengine.h \
     scripts/pythoninterpreter.h \
+    scripts/scriptoutput.h \
     scripts/scriptcontext.h
 
-    include(../python.prf)
+    //include(../python.prf)
 
-    win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib -lPythonQt
-    else:unix: LIBS += -L/$$PREFIX/lib/ -lPythonQt_d
+    win32:CONFIG(debug, debug|release): LIBS += -L$$PYTHONQT_PREFIX/lib -lPythonQt
+    else:unix: LIBS += -L/$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d
 
-    INCLUDEPATH += /usr/local/include/PythonQt
-    DEPENDPATH += /usr/local/include/PythonQt
+    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+    DEPENDPATH +=  $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+
 
 #    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Qt/5.4/gcc/plugins/designer/release/ -lpyqt5
 #    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Qt/5.4/gcc/plugins/designer/debug/ -lpyqt5
 #    else:unix: LIBS += -L$$(QTDIR)/plugins/designer/ -lpyqt5
 message("Qt path=" + $$(QTDIR))
 
-    INCLUDEPATH += $$PWD/../../../../../Qt/5.4/gcc/plugins/designer
-    DEPENDPATH += $$PWD/../../../../../Qt/5.4/gcc/plugins/designer
+#    INCLUDEPATH += $$PWD/../../../../../Qt/5.4/gcc/plugins/designer
+#    DEPENDPATH += $$PWD/../../../../../Qt/5.4/gcc/plugins/designer
 
 #    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_QtAll_d
 #    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/debug/ -lPythonQt_QtAll_d
@@ -83,8 +93,7 @@ message("Qt path=" + $$(QTDIR))
 #    INCLUDEPATH += $$PWD/../../../../PythonQt3.0/src
 #    DEPENDPATH += $$PWD/../../../../PythonQt3.0/src
 
-}
-else {
+} else {
  message("LayoutEditor: Scripting is disabled")
 }
 
@@ -462,7 +471,9 @@ SOURCES += \
     layouttrackexpectedstate.cpp \
     rpsitempanel.cpp \
     signalheadicondialog.cpp \
-    scripts/scriptoutput.cpp
+    test/testbase.cpp \
+    generated_cpp/test/test_init.cpp \
+    generated_cpp/test/test0.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -847,7 +858,8 @@ HEADERS += liblayouteditor_global.h \
     layouttrackexpectedstate.h \
     rpsitempanel.h \
     signalheadicondialog.h \
-    scripts/scriptoutput.h
+    test/testbase.h \
+    generated_cpp/test/test0.h
 
 FORMS    += \
     edittracksegmentdlg.ui \
@@ -887,8 +899,10 @@ win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
 else:unix:!macx: LIBS += -L$$PWD/../libPr3/ -lPr3
 
-INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal $$PWD/../Tables $$PWD/../libPr3/Throttle
-DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal $$PWD/../Tables $$PWD/../libPr3/Throttle
+INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal \
+ $$PWD/../Tables $$PWD/../libPr3/Throttle $$PWD/../libPr3/LocoIO $$PWD/../libPr3/loconet $$PWD/../libPr3/rfid
+DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal \
+$$PWD/../Tables $$PWD/../libPr3/Throttle $$PWD/../libPr3/LocoIO $$PWD/../libPr3/loconet $$PWD/../libPr3/rfid
 
 #DEFINES += BLOCKS_AND_SECTIONS
 
@@ -919,7 +933,8 @@ else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
 INCLUDEPATH += $$PWD/../appslib $$PWD/../appslib/operations
 DEPENDPATH += $$PWD/../appslib $$PWD/../appslib/operations
 
-DISTFILES +=
+DISTFILES += \
+    generated_cpp/test/test.pri
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
@@ -943,9 +958,18 @@ DEPENDPATH += $$PWD/../Tables/debug
 
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../QT/5.10.0/gcc_64/lib/release/ -lQtZeroConf
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../QT/5.10.0/gcc_64/lib/debug/ -lQtZeroConf
-else:unix: LIBS += -L$$PWD/../../../../../QT/5.10.0/gcc_64/lib/ -lQtZeroConf
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../QtZeroConf-master/release/ -lQtZeroConf
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../QtZeroConf-master/debug/ -lQtZeroConf
+else:unix: LIBS += -L$$PWD/../../../../QtZeroConf-master/ -lQtZeroConf
 
-INCLUDEPATH += $$PWD/../../../../../QT/5.10.0/gcc_64/include
-DEPENDPATH += $$PWD/../../../../../QT/5.10.0/gcc_64/include
+INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
+DEPENDPATH += $$PWD/../../../../QtZeroConf-master
+
+
+unix:exists($$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1) {
+message($$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1 found)
+} else {
+message(LayoutEditor: $$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1 not found)
+}
+
+

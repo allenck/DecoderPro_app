@@ -8,35 +8,20 @@
 #include <QList>
 #include <QVector>
 #include "logger.h"
-//#include "timebase.h"
 #include "powermanager.h"
 #include "sensormanager.h"
-//#include "configuremanager.h"
 #include "programmermanager.h"
-//#include "clockcontrol.h"
 #include "turnoutmanager.h"
-//#include "lightmanager.h"
 #include "reportermanager.h"
-//#include "signalheadmanager.h"
-//#ifdef BLOCKS_AND_SECTIONS
-#include "../LayoutEditor/sectionmanager.h"
+#include "sectionmanager.h"
 #include "blockmanager.h"
-//#endif
-//#ifdef LAYOUTS
-//#include "Layout/layoutblockmanager.h"
-//#endif
-//#include "transitmanager.h"
-//#include "catalogtreemanager.h"
 #include "audiomanager.h"
 #include "memorymanager.h"
-//#include "rostericonfactory.h"
 #include "conditionalmanager.h"
 #include "shutdownmanager.h"
 #include "logixmanager.h"
-//#include "consistmanager.h"
 #include "dccconsistmanager.h"
 #include "instanceinitializer.h"
-//#include "commandstation.h"
 #include "abstractproxymanager.h"
 #include "proxyreportermanager.h"
 #include "proxysensormanager.h"
@@ -46,6 +31,8 @@
 #include "defaultinstanceinitializer.h"
 #include "../libPr3/routemanager.h"
 #include "lightmanager.h"
+
+#include "audiomanager.h"
 /**
  * Provides methods for locating various interface implementations.
  * These form the base for locating JMRI objects, including the key managers.
@@ -183,9 +170,8 @@ static /*public*/ QObject* getOptionalDefault(QString type);
 /*public*/ static QString getDefaultsPropertyName(QString clazz);
 /*public*/ static QString getListPropertyName(/*Class<?>*/QString clazz);
 /*public*/ static InstanceManager* getDefault();
-/*public*/ QObject* getInstance(/*@Nonnull Class<T>*/QString type);
 
-
+static /*public*/ AudioManager* AudioManagerInstance();
 /**
  * Set an object of type T as the default for that type.
  *<p>
@@ -207,9 +193,6 @@ Q_DECL_DEPRECATED static PowerManager* powerManagerInstance();
 //Q_DECL_DEPRECATED static ConfigureManager* configureManagerInstance();
 //Q_DECL_DEPRECATED static void setConfigureManager(ConfigureManager* p);
 
-static SensorManager* sensorManagerInstance();
-static TurnoutManager* turnoutManagerInstance();
-static LightManager* lightManagerInstance();
 Q_DECL_DEPRECATED static ProgrammerManager* programmerManagerInstance();
 //static void setProgrammerManager(ProgrammerManager* p);
 static ThrottleManager* throttleManagerInstance();
@@ -267,12 +250,27 @@ static void removePropertyChangeListener(PropertyChangeListener* l);
 //template<class T>
 /*public*/  void clear(/*@Nonnull*/ /*Class<T>*/QString type);
 /*public*/ /*<T>*/ void remove(/*@Nonnull T*/QObject* item, /*@Nonnull Class<T>*/QString type);
+template<class T>
+static /*public*/ T* getNullableDefaultT(QString type)
+{
+ return (T*)getDefault()->getInstance(type);
+}
 
 
 signals:
   void propertyChange(PropertyChangeEvent*);
 
 public slots:
+  static SensorManager* sensorManagerInstance();
+  static TurnoutManager* turnoutManagerInstance();
+  static LightManager* lightManagerInstance();
+  /*public*/ QObject* getInstance(/*@Nonnull Class<T>*/QString type);
+  static ProxyTurnoutManager* proxyTurnoutManagerInstance();
+  static ProxySensorManager* proxySensorManagerInstance();
+  static ProxyLightManager* proxyLightManagerInstance();
+  static ProxyReporterManager* proxyReporterManagerInstance();
+
+
 
 private:
  QHash<QString,QObjectList*> managerLists;

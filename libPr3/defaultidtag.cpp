@@ -146,7 +146,7 @@ void DefaultIdTag::init()
    this->setComment(e.firstChildElement("comment").text()); //NOI18N
   if (!e.firstChildElement("whereLastSeen").isNull())
   { //NOI18N
-   this->setWhereLastSeen(((ProxyReporterManager*)InstanceManager::reporterManagerInstance())->provideReporter(                        e.firstChildElement("whereLastSeen").text())); //NOI18N
+   this->setWhereLastSeen(((ProxyReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter(                        e.firstChildElement("whereLastSeen").text())); //NOI18N
    this->_whenLastSeen = QDateTime();
   }
   if (!e.firstChildElement("whenLastSeen").isNull())

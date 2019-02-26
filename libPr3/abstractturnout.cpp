@@ -6,7 +6,8 @@
 #include "pushbuttonpacket.h"
 #include "signalspeedmap.h"
 #include "rosterentry.h"
-
+#include "loggerfactory.h"
+#include "signalspeedmap.h"
 
 AbstractTurnout::AbstractTurnout(QObject *parent) :
     Turnout(parent)
@@ -1017,16 +1018,18 @@ void AbstractTurnout::setKnownStateToCommanded()
     else if (s.contains("Block"))
         s= "Block";
     else {
-#if 0 // TODO:
-        try {
-            Float.parseFloat(s);
-        } catch (NumberFormatException nx) {
-            try{
-                jmri.implementation.SignalSpeedMap.getMap().getSpeed(s);
-            } catch (Exception ex){
-                throw new JmriException("Value of requested turnout straight speed is not valid");
-            }
-        }
+#if 1 // TODO:
+            //Float.parseFloat(s);
+      bool bok;
+      s.toFloat(&bok);
+if(!bok)
+{
+ try{
+    static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(s);
+      } catch (Exception ex){
+          throw  JmriException("Value of requested turnout straight speed is not valid");
+      }
+     }
 #endif
     }
     QString oldSpeed = _straightSpeed;
@@ -1034,5 +1037,4 @@ void AbstractTurnout::setKnownStateToCommanded()
     firePropertyChange("TurnoutStraightSpeedChange", oldSpeed, s);
 }
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger
-//.getLogger(AbstractTurnout.class.getName());
+/*static*/ Logger* AbstractTurnout::log = LoggerFactory::getLogger("AbstractTurnout");

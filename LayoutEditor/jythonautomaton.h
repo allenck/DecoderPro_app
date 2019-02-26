@@ -21,6 +21,8 @@ private:
      PythonQtObjectPtr interp;
      QString filename;
      Logger * log;
+     bool bHasError = false;
+    QString _stdErr;
 protected:
      /*protected*/ void init();
      /*protected*/ bool handle();

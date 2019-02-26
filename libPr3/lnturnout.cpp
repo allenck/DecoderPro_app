@@ -344,4 +344,5 @@ void LnTurnout::sendSetOffMessage(int state) {
      }
 
  }
+
 /*private*/ /*final*/ /*static*/ Logger* LnTurnout::log = LoggerFactory::getLogger("LnTurnout");

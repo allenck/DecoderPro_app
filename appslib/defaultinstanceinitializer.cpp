@@ -322,14 +322,14 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  if(type == "ConfigureManager")
  {
-  JmriConfigurationManager* cm = new JmriConfigurationManager();
+  ConfigXmlManager* cm = new ConfigXmlManager();
   InstanceManager::store(cm,type);
   return cm;
  }
 
  if(type == "JmriConfigurationManager")
  {
-  JmriConfigurationManager* cm = new JmriConfigurationManager();
+  ConfigXmlManager* cm = new ConfigXmlManager();
   InstanceManager::store(cm,type);
   return cm;
  }

@@ -204,7 +204,7 @@ class JAVAQTSHARED_EXPORT TurnoutOperatorException : public Exception
     TurnoutOperatorException(QString s ="");
     ~TurnoutOperatorException() throw() {}
 };
-class JAVAQTSHARED_EXPORT JmriConfigureXmlException : public Exception
+class JAVAQTSHARED_EXPORT JmriConfigureXmlException : public JmriException
 {
  public:
     JmriConfigureXmlException(QString s ="");

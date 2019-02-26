@@ -94,9 +94,9 @@ public:
         FLASHGREEN  = 0x20,
         LUNAR       = 0x40,
         FLASHLUNAR  = 0x80,
-        HELD 	     	= 0x0100
+        HELD 	    = 0x0100
       };
-
+      Q_ENUM(eState)
 
         /**
          * Appearance is a bound parameter.

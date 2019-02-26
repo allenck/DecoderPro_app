@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Scripting</title></head><body>
+<h1>Scripting</h1>
+
+Scripting support requires installation of PytonQt. I am using
+version 3.2 (PythonQt-master) which has wrappers for Qt version 5.6. <a href="https://sourceforge.net/projects/pythonqt/files/">https://sourceforge.net/projects/pythonqt/files/</a>.
+Here is a brief overview of using PythonQt: <a href="https://doc.qt.io/archives/qq/qq23-pythonqt.html">https://doc.qt.io/archives/qq/qq23-pythonqt.html</a><br>
+
+<br>
+
+<h2>Wrappers</h2>
+
+<br>
+
+C++ classes that will be available to be used by PythonQt must have
+Python wrapper functions generated using the PythonQt <span style="font-style: italic;">pythonqt_generator</span> application. Two
+files must be supplied to <span style="font-style: italic;">pythonqt_generator</span>:
+<br>
+
+<ol>
+
+  <li>A wrapper header file including #include statements for all the
+headers needed by classes which will be wrapped. This file is in the
+LayoutEditor folder and is called '<span style="font-style: italic;">wrappers.h</span>'.</li>
+  <li>An Xml file listing all the classes to be wrapped: This file is
+also in the LayoutEditor folder and is called '<span style="font-style: italic;">typesystem_jmri.xml</span>'</li>
+</ol>
+
+In addtion, in the LayoutEditor folder can be found the Unix script
+file '<span style="font-style: italic;">generate_mypackage.sh'</span>.
+Of course, if you are using Windows, a suitable BAT file must be
+created instead. <br>
+
+<br>
+
+The <span style="font-style: italic;">pythonqt_generator</span> app
+when run will create all the wrappers in the LayoutEditor/jmri folder.
+The wrapper functions are then compiled with LayoutEditor. This script
+also specifies the QT version (the lastest QT wrappers in PythonQt are
+for QT version 5.6 so use that QT version) and which version of
+PythonQt which will be used to generate the wrapper functions.&nbsp; The <span style="font-style: italic;">pythonqt_generator </span>app must be run whenever one of the following is true:<br>
+<ol>
+  <li>New functions or classes are added to those that PythonQt can use.</li>
+  <li>New methods are added or modified to existing classes. Note that
+all classes' methods that are to be be useable by PythonQt scripts must be
+declared as 'public:'! <br>
+  </li>
+</ol>
+
+<br>
+
+
+</body></html>

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'extraopcodewidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,10 +10,7 @@
 #define UI_EXTRAOPCODEWIDGET_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QRadioButton>
@@ -41,7 +38,7 @@ public:
     void setupUi(QWidget *ExtraOpcodeWidget)
     {
         if (ExtraOpcodeWidget->objectName().isEmpty())
-            ExtraOpcodeWidget->setObjectName(QStringLiteral("ExtraOpcodeWidget"));
+            ExtraOpcodeWidget->setObjectName(QLatin1String("ExtraOpcodeWidget"));
         ExtraOpcodeWidget->resize(32, 258);
         QFont font;
         font.setPointSize(7);
@@ -50,12 +47,12 @@ public:
         verticalLayout_2 = new QVBoxLayout(ExtraOpcodeWidget);
         verticalLayout_2->setSpacing(2);
         verticalLayout_2->setContentsMargins(0, 0, 0, 0);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setObjectName(QLatin1String("verticalLayout_2"));
         verticalLayout = new QVBoxLayout();
         verticalLayout->setSpacing(2);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         lblBigRedX = new QLabel(ExtraOpcodeWidget);
-        lblBigRedX->setObjectName(QStringLiteral("lblBigRedX"));
+        lblBigRedX->setObjectName(QLatin1String("lblBigRedX"));
         QPalette palette;
         QBrush brush(QColor(255, 0, 0, 255));
         brush.setStyle(Qt::SolidPattern);
@@ -76,33 +73,33 @@ public:
         verticalLayout->addWidget(lblBigRedX);
 
         rbOff = new QRadioButton(ExtraOpcodeWidget);
-        rbOff->setObjectName(QStringLiteral("rbOff"));
+        rbOff->setObjectName(QLatin1String("rbOff"));
         rbOff->setChecked(true);
 
         verticalLayout->addWidget(rbOff);
 
         rbDirect = new QRadioButton(ExtraOpcodeWidget);
-        rbDirect->setObjectName(QStringLiteral("rbDirect"));
+        rbDirect->setObjectName(QLatin1String("rbDirect"));
 
         verticalLayout->addWidget(rbDirect);
 
         rbIndirect = new QRadioButton(ExtraOpcodeWidget);
-        rbIndirect->setObjectName(QStringLiteral("rbIndirect"));
+        rbIndirect->setObjectName(QLatin1String("rbIndirect"));
 
         verticalLayout->addWidget(rbIndirect);
 
         rbContact1 = new QRadioButton(ExtraOpcodeWidget);
-        rbContact1->setObjectName(QStringLiteral("rbContact1"));
+        rbContact1->setObjectName(QLatin1String("rbContact1"));
 
         verticalLayout->addWidget(rbContact1);
 
         rbContact2 = new QRadioButton(ExtraOpcodeWidget);
-        rbContact2->setObjectName(QStringLiteral("rbContact2"));
+        rbContact2->setObjectName(QLatin1String("rbContact2"));
 
         verticalLayout->addWidget(rbContact2);
 
         edAddr = new QLineEdit(ExtraOpcodeWidget);
-        edAddr->setObjectName(QStringLiteral("edAddr"));
+        edAddr->setObjectName(QLatin1String("edAddr"));
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -114,7 +111,7 @@ public:
         verticalLayout->addWidget(edAddr);
 
         edCfg = new QLineEdit(ExtraOpcodeWidget);
-        edCfg->setObjectName(QStringLiteral("edCfg"));
+        edCfg->setObjectName(QLatin1String("edCfg"));
         sizePolicy.setHeightForWidth(edCfg->sizePolicy().hasHeightForWidth());
         edCfg->setSizePolicy(sizePolicy);
         edCfg->setMaximumSize(QSize(30, 16777215));
@@ -123,14 +120,14 @@ public:
         verticalLayout->addWidget(edCfg);
 
         edVal1 = new QLineEdit(ExtraOpcodeWidget);
-        edVal1->setObjectName(QStringLiteral("edVal1"));
+        edVal1->setObjectName(QLatin1String("edVal1"));
         edVal1->setMaximumSize(QSize(30, 16777215));
         edVal1->setMaxLength(5);
 
         verticalLayout->addWidget(edVal1);
 
         edVal2 = new QLineEdit(ExtraOpcodeWidget);
-        edVal2->setObjectName(QStringLiteral("edVal2"));
+        edVal2->setObjectName(QLatin1String("edVal2"));
         sizePolicy.setHeightForWidth(edVal2->sizePolicy().hasHeightForWidth());
         edVal2->setSizePolicy(sizePolicy);
         edVal2->setMaximumSize(QSize(30, 16777215));
@@ -149,8 +146,8 @@ public:
 
     void retranslateUi(QWidget *ExtraOpcodeWidget)
     {
-        ExtraOpcodeWidget->setWindowTitle(QApplication::translate("ExtraOpcodeWidget", "Form", Q_NULLPTR));
-        lblBigRedX->setText(QApplication::translate("ExtraOpcodeWidget", "X", Q_NULLPTR));
+        ExtraOpcodeWidget->setWindowTitle(QApplication::translate("ExtraOpcodeWidget", "Form", nullptr));
+        lblBigRedX->setText(QApplication::translate("ExtraOpcodeWidget", "X", nullptr));
         rbOff->setText(QString());
         rbDirect->setText(QString());
         rbIndirect->setText(QString());

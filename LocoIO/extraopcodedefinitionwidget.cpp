@@ -1,6 +1,8 @@
 #include "extraopcodedefinitionwidget.h"
 #include "ui_extraopcodedefinitionwidget.h"
 #include <QPainter>
+#include <QStyleOption>
+#include <QStyle>
 
 ExtraOpcodeDefinitionWidget::ExtraOpcodeDefinitionWidget(int extra, QWidget *parent) :
     QWidget(parent),

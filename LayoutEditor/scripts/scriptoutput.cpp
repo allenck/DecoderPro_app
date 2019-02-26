@@ -55,7 +55,7 @@ ScriptOutput::ScriptOutput(QObject *parent) : QObject(parent)
     return output;
 }
 
-static /*public*/ ScriptOutput* getDefault() {
+/*static*/ /*public*/ ScriptOutput* ScriptOutput::getDefault() {
     if (InstanceManager::getNullableDefault("ScriptOutput") == nullptr) {
         InstanceManager::store(new ScriptOutput(), "ScriptOutput");
     }

@@ -21,7 +21,7 @@ public:
      OCCUPIED = 0x02, // Sensor::Active,
      UNOCCUPIED = 0x04
     };
-
+    Q_ENUM(STATE)
     // Curvature attributes
     static /*const*/ int NONE;// = 0x00;
     static /*const*/ int GRADUAL;// = 0x01;
@@ -102,7 +102,7 @@ public:
     /*public*/ void addBlockDenyList(Block* blk);
     /*public*/ void removeBlockDenyList(QString blk);
     /*public*/ void removeBlockDenyList(Block* blk);
-    /*public*/ QStringList* getDeniedBlocks();
+    /*public*/ QList<QString> *getDeniedBlocks();
     /*public*/ bool isBlockDenied(QString deny);
     /*public*/ bool isBlockDenied(Block* deny);
     /*public*/ bool getPermissiveWorking();

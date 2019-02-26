@@ -3679,7 +3679,7 @@ QString LlnMon::displayMessage(LocoNetMessage l)
                 trackStatusByteToString(track_stat));
     }
 
-    /*private*/ QString LlnMon::interpretProgSlot(LocoNetMessage l, QString mode, int id1, int id2, int command) {
+    /*private*/ QString LlnMon::interpretProgSlot(LocoNetMessage l, QString /*mode*/, int /*id1*/, int /*id2*/, int command) {
         /**
          * ********************************************************************************************
          * Programmer track: * ================= * The programmer track is

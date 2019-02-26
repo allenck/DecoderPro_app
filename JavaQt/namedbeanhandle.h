@@ -19,8 +19,27 @@ public:
  /*public*/ T getBean() { return this->bean; }
  /*public*/ void setBean(T bean) { this->bean = bean; }
  /*public*/ void setName(QString name){this->name = name;}
- /*public*/ bool equals(QObject* obj);
- /*public*/ int hashCode();
+ /*public*/ bool equals(QObject* obj)
+ {
+ if(obj ==this)
+  return true;
+ if(obj ==NULL)
+  return false;
+
+//            if(!(getClass()==obj->getClass()))
+//                return false;
+     else{
+         NamedBeanHandle<T>* tmp = (NamedBeanHandle<T>*)obj;
+         if(tmp->getName() != (this->getName()))
+             return false;
+         if(tmp->getBean()!=this->getBean())
+             return false;
+     }
+ return true;
+
+}
+
+/*public*/ int hashCode();
 
 signals:
     

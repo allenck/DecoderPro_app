@@ -2,7 +2,7 @@
 #define ZEROCONFSERVICE_H
 
 #include <QObject>
-#include <QtZeroConf/qzeroconf.h>
+#include <qzeroconf.h>
 #include "quietshutdowntask.h"
 #include "serviceinfoimpl.h"
 #include "zeroconfeventlistener.h"
@@ -41,11 +41,11 @@ public:
 
 
 signals:
- /*public*/ virtual void serviceQueued(ZeroConfServiceEvent* se);
+ /*public*/  void serviceQueued(ZeroConfServiceEvent* se);
 
- /*public*/ virtual void servicePublished(ZeroConfServiceEvent* se);
+ /*public*/  void servicePublished(ZeroConfServiceEvent* se);
 
- /*public*/ virtual void serviceUnpublished(ZeroConfServiceEvent* se);
+ /*public*/  void serviceUnpublished(ZeroConfServiceEvent* se);
 
 
 public slots:

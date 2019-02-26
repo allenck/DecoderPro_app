@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'extraopcodedefinitionwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,11 +10,8 @@
 #define UI_EXTRAOPCODEDEFINITIONWIDGET_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -41,7 +38,7 @@ public:
     void setupUi(QWidget *ExtraOpcodeDefinitionWidget)
     {
         if (ExtraOpcodeDefinitionWidget->objectName().isEmpty())
-            ExtraOpcodeDefinitionWidget->setObjectName(QStringLiteral("ExtraOpcodeDefinitionWidget"));
+            ExtraOpcodeDefinitionWidget->setObjectName(QLatin1String("ExtraOpcodeDefinitionWidget"));
         ExtraOpcodeDefinitionWidget->resize(95, 119);
         QFont font;
         font.setPointSize(7);
@@ -50,15 +47,15 @@ public:
         verticalLayout_2 = new QVBoxLayout(ExtraOpcodeDefinitionWidget);
         verticalLayout_2->setSpacing(2);
         verticalLayout_2->setContentsMargins(0, 0, 0, 0);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setObjectName(QLatin1String("verticalLayout_2"));
         verticalLayout = new QVBoxLayout();
         verticalLayout->setSpacing(2);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(2);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         label = new QLabel(ExtraOpcodeDefinitionWidget);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QLatin1String("label"));
         QPalette palette;
         QBrush brush(QColor(0, 170, 0, 255));
         brush.setStyle(Qt::SolidPattern);
@@ -75,7 +72,7 @@ public:
         horizontalLayout->addWidget(label);
 
         lblHeading = new QLabel(ExtraOpcodeDefinitionWidget);
-        lblHeading->setObjectName(QStringLiteral("lblHeading"));
+        lblHeading->setObjectName(QLatin1String("lblHeading"));
         QFont font1;
         font1.setBold(true);
         font1.setWeight(75);
@@ -87,7 +84,7 @@ public:
         verticalLayout->addLayout(horizontalLayout);
 
         label_2 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
         QPalette palette1;
         palette1.setBrush(QPalette::Active, QPalette::WindowText, brush);
         palette1.setBrush(QPalette::Active, QPalette::Text, brush);
@@ -100,7 +97,7 @@ public:
         verticalLayout->addWidget(label_2);
 
         label_3 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QLatin1String("label_3"));
         QPalette palette2;
         palette2.setBrush(QPalette::Active, QPalette::WindowText, brush);
         palette2.setBrush(QPalette::Active, QPalette::Text, brush);
@@ -113,7 +110,7 @@ public:
         verticalLayout->addWidget(label_3);
 
         label_4 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setObjectName(QLatin1String("label_4"));
         QPalette palette3;
         QBrush brush2(QColor(0, 0, 255, 255));
         brush2.setStyle(Qt::SolidPattern);
@@ -128,7 +125,7 @@ public:
         verticalLayout->addWidget(label_4);
 
         label_5 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setObjectName(QLatin1String("label_5"));
         QPalette palette4;
         palette4.setBrush(QPalette::Active, QPalette::WindowText, brush2);
         palette4.setBrush(QPalette::Active, QPalette::Text, brush2);
@@ -141,7 +138,7 @@ public:
         verticalLayout->addWidget(label_5);
 
         label_6 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setObjectName(QLatin1String("label_6"));
         QPalette palette5;
         QBrush brush3(QColor(255, 0, 0, 255));
         brush3.setStyle(Qt::SolidPattern);
@@ -156,7 +153,7 @@ public:
         verticalLayout->addWidget(label_6);
 
         label_7 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setObjectName(QLatin1String("label_7"));
         QPalette palette6;
         QBrush brush4(QColor(255, 170, 0, 255));
         brush4.setStyle(Qt::SolidPattern);
@@ -171,7 +168,7 @@ public:
         verticalLayout->addWidget(label_7);
 
         label_8 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_8->setObjectName(QStringLiteral("label_8"));
+        label_8->setObjectName(QLatin1String("label_8"));
         QPalette palette7;
         palette7.setBrush(QPalette::Active, QPalette::WindowText, brush4);
         palette7.setBrush(QPalette::Active, QPalette::Text, brush4);
@@ -184,7 +181,7 @@ public:
         verticalLayout->addWidget(label_8);
 
         label_9 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_9->setObjectName(QStringLiteral("label_9"));
+        label_9->setObjectName(QLatin1String("label_9"));
         QPalette palette8;
         palette8.setBrush(QPalette::Active, QPalette::WindowText, brush4);
         palette8.setBrush(QPalette::Active, QPalette::Text, brush4);
@@ -207,17 +204,17 @@ public:
 
     void retranslateUi(QWidget *ExtraOpcodeDefinitionWidget)
     {
-        ExtraOpcodeDefinitionWidget->setWindowTitle(QApplication::translate("ExtraOpcodeDefinitionWidget", "Form", Q_NULLPTR));
-        label->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Off", Q_NULLPTR));
-        lblHeading->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Extra Opcode x", Q_NULLPTR));
-        label_2->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Direct Code", Q_NULLPTR));
-        label_3->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Indirect Code", Q_NULLPTR));
-        label_4->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 1", Q_NULLPTR));
-        label_5->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 2", Q_NULLPTR));
-        label_6->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Address", Q_NULLPTR));
-        label_7->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<OPC>", Q_NULLPTR));
-        label_8->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 1>", Q_NULLPTR));
-        label_9->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 2>", Q_NULLPTR));
+        ExtraOpcodeDefinitionWidget->setWindowTitle(QApplication::translate("ExtraOpcodeDefinitionWidget", "Form", nullptr));
+        label->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Off", nullptr));
+        lblHeading->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Extra Opcode x", nullptr));
+        label_2->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Direct Code", nullptr));
+        label_3->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Indirect Code", nullptr));
+        label_4->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 1", nullptr));
+        label_5->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 2", nullptr));
+        label_6->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Address", nullptr));
+        label_7->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<OPC>", nullptr));
+        label_8->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 1>", nullptr));
+        label_9->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 2>", nullptr));
     } // retranslateUi
 
 };

@@ -93,20 +93,12 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
    root = QDomElement();
   }
  }
- catch (Exception eb)
- {
-   Logger::error("Exception while loading warrant preferences: " + eb.getMessage());
-   root = QDomElement();
- }
- catch (InitializationException eb)
- {
-   Logger::error("InitializationException while loading warrant preferences: " + eb.getMessage());
-   root = QDomElement();
- }
- catch (IllegalArgumentException eb)
- {
-   Logger::error("IllegalArgumentException while loading warrant preferences: " + eb.getMessage());
-   root = QDomElement();
+ catch (FileNotFoundException ea) {
+     log->debug("Could not find Warrant preferences file.  Normal if preferences have not been saved before.");
+     root = QDomElement();
+ }catch (Exception eb) {
+     log->error("Exception while loading warrant preferences: " + eb.getMessage());
+     root = QDomElement();
  }
  if (!root.isNull())
  {

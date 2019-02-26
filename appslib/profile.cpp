@@ -170,34 +170,46 @@ void Profile::common(File *path, QString id,bool isReadable)
 
 /*protected*/ /*final*/ void Profile::save() throw (IOException)
 {
- Properties* p = new Properties();
-#if 1
-    File* f = new File(this->path, *_PROPERTIES);
-    QTextStream* os = NULL;
+    ProfileProperties* p = new ProfileProperties(this);
+    p->put(*_NAME, this->name, true);
+    p->put(*_ID, this->id, true);
+    this->saveXml();
+}
 
-    p->setProperty(*_NAME, this->name);
-    p->setProperty(*_ID, this->id);
-    if (!f->exists() && !f->createNewFile()) {
-        //throw new IOException("Unable to create file at " + f.getAbsolutePath()); // NOI18N
-     Logger::error("Unable to create file at " + f->getAbsolutePath());
+/*
+ * Remove when or after support for writing ProfileConfig.xml is removed.
+ */
+//@Deprecated
+/*protected*/ /*final*/ void Profile::saveXml() throw (IOException) {
+
+Properties* p = new Properties();
+
+   File* f = new File(this->path, *_PROPERTIES);
+   QTextStream* os = NULL;
+
+   p->setProperty(*_NAME, this->name);
+   p->setProperty(*_ID, this->id);
+   if (!f->exists() && !f->createNewFile()) {
+       //throw new IOException("Unable to create file at " + f.getAbsolutePath()); // NOI18N
+    Logger::error("Unable to create file at " + f->getAbsolutePath());
+   }
+   try
+   {
+    QFile* ff = new QFile(f->getAbsolutePath());
+    if(!ff->open(QIODevice::WriteOnly))
+    {
+     Logger::error("can not open file write only " + f->getAbsolutePath());
+     return;
     }
-    try {
-        QFile* ff = new QFile(f->getAbsolutePath());
-        if(!ff->open(QIODevice::WriteOnly))
-        {
-         Logger::error("can not open file write only " + f->getAbsolutePath());
-         return;
-        }
-        os = new QTextStream(ff);
-        p->storeToXML(os, "JMRI Profile"); // NOI18N
-        //os->close();
-    } catch (IOException ex) {
-        if (os != NULL) {
-            //os->close();
-        }
-        //throw ex;
+    os = new QTextStream(ff);
+    p->storeToXML(os, "JMRI Profile"); // NOI18N
+    //os->close();
+   } catch (IOException ex) {
+    if (os != NULL) {
+       //os->close();
     }
-#endif
+   //throw ex;
+   }
 }
 
 /**

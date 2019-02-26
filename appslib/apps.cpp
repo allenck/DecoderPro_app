@@ -28,7 +28,6 @@
 #include "appsbase.h"
 #include "profilemanagerdialog.h"
 #include "profile.h"
-#include "configxmlmanager.h"
 #include "defaultusermessagepreferencesxml.h"
 #include "../libPr3/loconet/Pr3/connectionconfigxml.h"
 #include "../libPr3/loconet/HexFile/hexfileconnectionconfigxml.h"
@@ -140,14 +139,10 @@ bool Apps::configDeferredLoadOK = false;
  new Metatypes();
 
  _frame = frame;
-//}
-//void Apps::init()  // call init after constructor is complete
-//{
-// JFrame* frame = _frame;
-//#if 1
+
  splash(false);
  splash(true, true);
-//#endif
+
  setButtonSpace();
 #ifdef SCRIPTING_ENABLED
     setJynstrumentSpace();
@@ -208,19 +203,19 @@ bool Apps::configDeferredLoadOK = false;
  {
   profileFile = new File(profileFilename);
  }
- ProfileManager::getDefault()->setConfigFile(profileFile);
+ ProfileManager::defaultManager()->setConfigFile(profileFile);
  // See if the profile to use has been specified on the command line as
  // a system property jmri.profile as a profile id.
  if (System::getProperties()->containsKey(/*ProfileManager::SYSTEM_PROPERTY)*/"org.jmri.profile"))
  {
-  ProfileManager::getDefault()->setActiveProfile(System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile"));
+  ProfileManager::defaultManager()->setActiveProfile(System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile"));
  }
  // @see jmri.profile.ProfileManager#migrateToProfiles JavaDoc for conditions handled here
- if (!ProfileManager::getDefault()->getConfigFile()->exists())
+ if (!ProfileManager::defaultManager()->getConfigFile()->exists())
  { // no profile config for this app
 //  try
 //  {
- if (ProfileManager::getDefault()->migrateToProfiles(configFilename))
+ if (ProfileManager::defaultManager()->migrateToProfiles(configFilename))
  { // migration or first use
    // notify user of change only if migration occured
    // TODO: a real migration message
@@ -255,7 +250,7 @@ bool Apps::configDeferredLoadOK = false;
   System::setProperty("org.jmri.Apps.configFilename", /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml");
   if(ProfileManager::getDefault()->getActiveProfile() != nullptr)
   {
-   log->info(tr("Starting with profile %1").arg(  ProfileManager::getDefault()->getActiveProfile()->getId()));
+   log->info(tr("Starting with profile %1").arg(  ProfileManager::defaultManager()->getActiveProfile()->getId()));
 //  }
 //  catch (IOException ex)
   }
@@ -270,7 +265,7 @@ bool Apps::configDeferredLoadOK = false;
 //   ConfigXmlManager* cm = new ConfigXmlManager();
 //   InstanceManager::setConfigureManager(cm);
 //  }
-  ConfigureManager* cm = (JmriConfigurationManager*)InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
+  ConfigureManager* cm = (ConfigureManager*)InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
 
   ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
   //InstanceManager::setConfigureManager(cm);
@@ -616,7 +611,7 @@ void Apps::initGui() // must be called after Constructor is complete!
  log->debug("start deferred load from config file " + file->getPath());
  try
  {
-  JmriConfigurationManager* cmOD = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+  ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
   if (cmOD != NULL) {
       result = cmOD->loadDeferred(file);
   } else {
@@ -1094,6 +1089,7 @@ void Apps::On_handleQuit()
  connect(ConnectionStatus::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,  SLOT(propertyChange(PropertyChangeEvent*)));
  //ArrayList<Object> connList = InstanceManager::configureManagerInstance().getInstanceList(ConnectionConfig.class);
  QObjectList connList = ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->getInstanceList("ConnectionConfig");
+
  int i = 0;
  if (!connList.isEmpty())
  {

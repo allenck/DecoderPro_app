@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dialogsignalgroupstablewidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,9 +10,7 @@
 #define UI_DIALOGSIGNALGROUPSTABLEWIDGET_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QHeaderView>
@@ -31,12 +29,12 @@ public:
     void setupUi(QDialog *DialogSignalGroupsTableWIdget)
     {
         if (DialogSignalGroupsTableWIdget->objectName().isEmpty())
-            DialogSignalGroupsTableWIdget->setObjectName(QStringLiteral("DialogSignalGroupsTableWIdget"));
+            DialogSignalGroupsTableWIdget->setObjectName(QLatin1String("DialogSignalGroupsTableWIdget"));
         DialogSignalGroupsTableWIdget->resize(400, 237);
         formLayout = new QFormLayout(DialogSignalGroupsTableWIdget);
-        formLayout->setObjectName(QStringLiteral("formLayout"));
+        formLayout->setObjectName(QLatin1String("formLayout"));
         btnAdd = new QPushButton(DialogSignalGroupsTableWIdget);
-        btnAdd->setObjectName(QStringLiteral("btnAdd"));
+        btnAdd->setObjectName(QLatin1String("btnAdd"));
 
         formLayout->setWidget(1, QFormLayout::LabelRole, btnAdd);
 
@@ -55,7 +53,7 @@ public:
         tableWidget->setHorizontalHeaderItem(4, __qtablewidgetitem4);
         QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
         tableWidget->setHorizontalHeaderItem(5, __qtablewidgetitem5);
-        tableWidget->setObjectName(QStringLiteral("tableWidget"));
+        tableWidget->setObjectName(QLatin1String("tableWidget"));
 
         formLayout->setWidget(0, QFormLayout::SpanningRole, tableWidget);
 
@@ -67,16 +65,16 @@ public:
 
     void retranslateUi(QDialog *DialogSignalGroupsTableWIdget)
     {
-        DialogSignalGroupsTableWIdget->setWindowTitle(QApplication::translate("DialogSignalGroupsTableWIdget", "Dialog", Q_NULLPTR));
-        btnAdd->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "PushButton", Q_NULLPTR));
+        DialogSignalGroupsTableWIdget->setWindowTitle(QApplication::translate("DialogSignalGroupsTableWIdget", "Dialog", nullptr));
+        btnAdd->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "PushButton", nullptr));
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "System Names", Q_NULLPTR));
+        ___qtablewidgetitem->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "System Names", nullptr));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "User Name", Q_NULLPTR));
+        ___qtablewidgetitem1->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "User Name", nullptr));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "Comment", Q_NULLPTR));
+        ___qtablewidgetitem2->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "Comment", nullptr));
         QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(4);
-        ___qtablewidgetitem3->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "Enabled", Q_NULLPTR));
+        ___qtablewidgetitem3->setText(QApplication::translate("DialogSignalGroupsTableWIdget", "Enabled", nullptr));
     } // retranslateUi
 
 };

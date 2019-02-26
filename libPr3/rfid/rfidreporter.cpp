@@ -109,7 +109,7 @@ void RfidReporter::init()
  // IdTag.getTagID() is a system-name-ized version of the loco address. I think.
  // Matcher.group(1) : loco address (I think)
     AbstractIdTag* cr = (AbstractIdTag*) VPtr<IdTag>::asPtr(this->getCurrentReport());
- ReporterManager* rm = InstanceManager::reporterManagerInstance();
+ ReporterManager* rm = static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"));
  //Pattern p = Pattern.compile(""+rm->getSystemPrefix()+rm->typeLetter()+"(\\d+)");
  //Matcher m = p.matcher(cr.getTagID());
  QRegExp regExp(rm->getSystemPrefix()+rm->typeLetter()+"(\\d+)");

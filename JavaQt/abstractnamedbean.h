@@ -90,7 +90,6 @@ private:
   AbstractNamedBean(QString sys, QString user, QObject* parent = 0);
   /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
 //  /*protected*/ void firePropertyChange(QString p, QObject* old, QObject* n);
- 
   friend class LayoutBlock;
   friend class CatalogTree;
   friend class AbstractCatalogTree;

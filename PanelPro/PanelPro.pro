@@ -12,8 +12,15 @@ TARGET = PanelPro
 TEMPLATE = app
 
 
-unix:PREFIX = /home/allen/Projects/PythonQt-master
-win32:PREFIX = "C:/Program Files (x86)/local"
+
+PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+isEmpty( PYTHONQT_PREFIX ) {
+  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+  unix:PYTHONQT_PREFIX=/home/allen/Projects/PythonQt/pythonqt-code
+}
+
+include($$PYTHONQT_PREFIX/build/python.prf)
+
 
 SOURCES += \
     main.cpp \
@@ -78,30 +85,31 @@ else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
 INCLUDEPATH += $$PWD/../LocoIO
 DEPENDPATH += $$PWD/../LocoIO
 
-win32:exists($$PREFIX/lib/PythonQt.dll){
+win32:exists($$PYTHONQT_PREFIX/lib/PythonQt.dll){
  ENABLE_SCRIPTING = "Y"
- message($$PREFIX/lib/PythonQt.dll + "exists")
+ message(PanelPro: $$PYTHONQT_PREFIX/lib/PythonQt.dll + "exists")
 } else:win32: {
- message($$PREFIX/lib/PythonQt.dll + "not found")
+ message(PanelPro: $$PYTHONQT_PREFIX/lib/PythonQt.dll + "not found")
 }
 
-unix:exists($$PREFIX/lib/libPythonQt_d.so){
+unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so){
  ENABLE_SCRIPTING = "Y"
+ message(PanelPro: $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "found OK")
 } else:unix: {
- message($$PREFIX/lib/libPythonQt.so_d + "not found")
+ message(PanelPro: $$PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "not found")
 }
 CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
 
-    win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
-    else:unix: LIBS += -L$$PREFIX/lib/ -lPythonQt_d -lPythonQt_QtAll_d
+    win32:CONFIG(debug, debug|release): LIBS += -L$$PYTHONQT_PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
+    else:unix: LIBS += -L$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d -lPythonQt_QtAll-Qt5-Python$${PYTHON_VERSION}_d
 
-    INCLUDEPATH += /usr/local/include/PythonQt
-    DEPENDPATH += /usr/local/include/PythonQt
+    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+    DEPENDPATH += $$PYTHONQT_PREFIXe/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
 #    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
 
- include(../python.prf)
+ #include(../python.prf)
  message(PanelPro: python scripts are enabled)
 
 }
@@ -118,8 +126,8 @@ TRANSLATIONS += \
 
 #win32: LIBS += -lpython27
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
 
-INCLUDEPATH += $$PWD/../../../../../Python27/include
-DEPENDPATH += $$PWD/../../../../../Python27/include
+#INCLUDEPATH += $$PWD/../../../../../Python27/include
+#DEPENDPATH += $$PWD/../../../../../Python27/include

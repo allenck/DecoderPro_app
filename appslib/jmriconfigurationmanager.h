@@ -12,7 +12,7 @@ class JmriConfigurationManager : public ConfigXmlManager
 {
  Q_OBJECT
 public:
- JmriConfigurationManager(QObject* parent = 0);
+ QT_DEPRECATED JmriConfigurationManager(QObject* parent = 0);
  ~JmriConfigurationManager() {}
  JmriConfigurationManager(const JmriConfigurationManager&) : ConfigXmlManager(){}
  /*public*/ void registerPref(QObject* o);
@@ -31,12 +31,12 @@ public:
  /*public*/ void storeUserPrefs(File* file);
  /*public*/ bool storeConfig(File* file);
  /*public*/ bool storeUser(File* file);
- /*public*/ bool load(File* file)  throw (JmriException);
- /*public*/ bool load( QUrl file)  throw (JmriException);
- /*public*/ bool load(File* file, bool registerDeferred)  throw (JmriException);
- /*public*/ bool load( QUrl file, bool registerDeferred)  throw (JmriException);
- /*public*/ bool loadDeferred(File* file)  throw (JmriException);
- /*public*/ bool loadDeferred( QUrl file)  throw (JmriException);
+ /*public*/ bool load(File* file)  throw (JmriConfigureXmlException);
+ /*public*/ bool load( QUrl file)  throw (JmriConfigureXmlException);
+ /*public*/ bool load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException);
+ /*public*/ bool load( QUrl file, bool registerDeferred)  throw (JmriConfigureXmlException);
+ /*public*/ bool loadDeferred(File* file)  throw (JmriConfigureXmlException);
+ /*public*/ bool loadDeferred( QUrl file)  throw (JmriConfigureXmlException);
  /*public*/ QUrl find(QString filename);
  /*public*/ bool makeBackup(File* file);
  /*public*/ QHash<PreferencesManager*, InitializationException*> getInitializationExceptions();

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'setxydlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,12 +10,9 @@
 #define UI_SETXYDLG_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
@@ -37,42 +34,42 @@ public:
     void setupUi(QDialog *Dialog)
     {
         if (Dialog->objectName().isEmpty())
-            Dialog->setObjectName(QStringLiteral("Dialog"));
+            Dialog->setObjectName(QLatin1String("Dialog"));
         Dialog->resize(182, 130);
         gridLayout = new QGridLayout(Dialog);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QLatin1String("gridLayout"));
         nameText = new QLabel(Dialog);
-        nameText->setObjectName(QStringLiteral("nameText"));
+        nameText->setObjectName(QLatin1String("nameText"));
 
         gridLayout->addWidget(nameText, 0, 0, 1, 2);
 
         textX = new QLabel(Dialog);
-        textX->setObjectName(QStringLiteral("textX"));
+        textX->setObjectName(QLatin1String("textX"));
 
         gridLayout->addWidget(textX, 1, 0, 1, 1);
 
         SpinX = new QSpinBox(Dialog);
-        SpinX->setObjectName(QStringLiteral("SpinX"));
+        SpinX->setObjectName(QLatin1String("SpinX"));
 
         gridLayout->addWidget(SpinX, 1, 1, 1, 1);
 
         textY = new QLabel(Dialog);
-        textY->setObjectName(QStringLiteral("textY"));
+        textY->setObjectName(QLatin1String("textY"));
 
         gridLayout->addWidget(textY, 2, 0, 1, 1);
 
         spinY = new QSpinBox(Dialog);
-        spinY->setObjectName(QStringLiteral("spinY"));
+        spinY->setObjectName(QLatin1String("spinY"));
 
         gridLayout->addWidget(spinY, 2, 1, 1, 1);
 
         cancelButton = new QPushButton(Dialog);
-        cancelButton->setObjectName(QStringLiteral("cancelButton"));
+        cancelButton->setObjectName(QLatin1String("cancelButton"));
 
         gridLayout->addWidget(cancelButton, 3, 0, 1, 1);
 
         okButton = new QPushButton(Dialog);
-        okButton->setObjectName(QStringLiteral("okButton"));
+        okButton->setObjectName(QLatin1String("okButton"));
 
         gridLayout->addWidget(okButton, 3, 1, 1, 1);
 
@@ -84,12 +81,12 @@ public:
 
     void retranslateUi(QDialog *Dialog)
     {
-        Dialog->setWindowTitle(QApplication::translate("Dialog", "Dialog", Q_NULLPTR));
-        nameText->setText(QApplication::translate("Dialog", "Name: XXXXXX", Q_NULLPTR));
-        textX->setText(QApplication::translate("Dialog", "x= xxxx", Q_NULLPTR));
-        textY->setText(QApplication::translate("Dialog", "y = xxxx", Q_NULLPTR));
-        cancelButton->setText(QApplication::translate("Dialog", "Cancel", Q_NULLPTR));
-        okButton->setText(QApplication::translate("Dialog", "Set", Q_NULLPTR));
+        Dialog->setWindowTitle(QApplication::translate("Dialog", "Dialog", nullptr));
+        nameText->setText(QApplication::translate("Dialog", "Name: XXXXXX", nullptr));
+        textX->setText(QApplication::translate("Dialog", "x= xxxx", nullptr));
+        textY->setText(QApplication::translate("Dialog", "y = xxxx", nullptr));
+        cancelButton->setText(QApplication::translate("Dialog", "Cancel", nullptr));
+        okButton->setText(QApplication::translate("Dialog", "Set", nullptr));
     } // retranslateUi
 
 };

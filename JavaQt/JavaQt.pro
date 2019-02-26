@@ -449,3 +449,4 @@ else:unix: LIBS += -L$$PWD/../../../../QtZeroConf-master/ -lQtZeroConf
 
 INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
 DEPENDPATH += $$PWD/../../../../QtZeroConf-master
+

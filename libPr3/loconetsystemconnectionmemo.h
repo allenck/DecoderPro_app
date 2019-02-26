@@ -84,8 +84,9 @@ private:
  LnTrafficController* lt;
  LnMessageManager* lnm;
  SlotManager* sm;
- Logger* log;
+ static Logger* log;
  LocoNetConsistManager* consistManager;
+ void common();
 
 protected:
  bool mTurnoutNoRetry;

@@ -7,6 +7,8 @@
 #include "transitmanager.h"
 #include "dispatcherframe.h"
 #include "loadxmlconfigaction.h"
+#include "joptionpane.h"
+#include "colorutil.h"
 
 LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   AbstractXmlAdapter(parent)
@@ -359,68 +361,67 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  {
   name = element.attribute("name");
  }
- if (PanelMenu::instance()->isPanelNameUsed(name))
+ if (static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
  {
-  JFrame* frame = new JFrame("Demo");
-  frame->setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
-  log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
-//        int n = JOptionPane.showConfirmDialog(frame,
-//                java.text.MessageFormat.format(rb.getString("DuplicatePanel"),
-//                        new Object[]{name}),
-//                rb.getString("DuplicatePanelTitle"),
-//                JOptionPane.YES_NO_OPTION);
-//        if (n == JOptionPane.NO_OPTION) {
-  int n = QMessageBox::warning(frame, tr("Duplicate Panel name"), tr("\"%1\" has already been opened.                                                                   Are you sure that you want to open another copy?").arg(name),QMessageBox::Yes | QMessageBox::No);
-  if(n == QMessageBox::No)
-  {
-   return false;
-  }
+     JFrame* frame = new JFrame("Demo");
+     frame->setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
+     log->warn(tr("File contains a panel with the same name (%1) as an existing panel").arg(name));
+     int n = JOptionPane::showConfirmDialog(frame,
+             tr("\"%1\" has already been opened.\nAre you sure that you want to open another copy?").arg(name),
+             tr("Duplicate Panel name"),
+             JOptionPane::YES_NO_OPTION);
+     if (n == JOptionPane::NO_OPTION) {
+         return false;
+     }
  }
- QString defaultColor = "black";
- QString defaultTextColor = "black";
- if (element.attribute("defaulttrackcolor") != nullptr)
- {
-  defaultColor = element.attribute("defaulttrackcolor");
- }
- if (element.attribute("defaulttextcolor") != nullptr)
- {
-  defaultTextColor = element.attribute("defaulttextcolor");
- }
- QString turnoutCircleColor = "track";  //default to using use default track color for circle color
- if (element.attribute("turnoutcirclecolor") != nullptr)
- {
-  turnoutCircleColor = element.attribute("turnoutcirclecolor");
- }
- int turnoutCircleSize = 2;
- if (element.attribute("turnoutcirclesize") != nullptr)
- {
-  try
-  {
-   turnoutCircleSize = element.attribute("turnoutcirclesize").toInt();
-  } catch (DataConversionException e1)
-  {
-   //leave at default if cannot convert
-   log->warn("unable to convert turnoutcirclesize");
-  }
- }
- bool turnoutDrawUnselectedLeg = true;
- if ((a = element.attribute("turnoutdrawunselectedleg")) != nullptr && a==("no")) {
-     turnoutDrawUnselectedLeg = false;
- }
- // create the objects
  LayoutEditor* panel = new LayoutEditor(name);
- panel->setFilename(LoadXmlConfigAction::currentFile);
  panel->setLayoutName(name);
+ static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->addEditorPanel(panel);
+
+ // create the objects
+ //LayoutEditor* panel = new LayoutEditor(name);
+ panel->setFilename(LoadXmlConfigAction::currentFile);
  panel->setMainlineTrackWidth(mainlinetrackwidth);
  panel->setSideTrackWidth(sidetrackwidth);
- panel->setDefaultTrackColor(defaultColor);
- panel->setDefaultTextColor(defaultTextColor);
- panel->setTurnoutCircleColor(turnoutCircleColor);
- panel->setTurnoutCircleSize(turnoutCircleSize);
- panel->setTurnoutDrawUnselectedLeg(turnoutDrawUnselectedLeg);
-// panel->setXScale(xScale);
-// panel->setYScale(yScale);
+ // panel->setXScale(xScale);
+ // panel->setYScale(yScale);
  panel->setScale(xScale, yScale);
+ QString defaultColor = ColorUtil::ColorDarkGray;
+ if ((a = element.attribute("defaulttrackcolor")) != "") {
+     defaultColor = a;
+ }
+ panel->setDefaultTrackColor(ColorUtil::stringToColor(defaultColor));
+
+ QString defaultTextColor = ColorUtil::ColorBlack;
+ if ((a = element.attribute("defaulttextcolor")) != "") {
+     defaultTextColor = a;
+ }
+ panel->setDefaultTextColor(ColorUtil::stringToColor(defaultTextColor));
+
+ QString turnoutCircleColor = "track";  //default to using use default track color for circle color
+ if ((a = element.attribute("turnoutcirclecolor")) != "") {
+     turnoutCircleColor = a;
+ }
+ panel->setTurnoutCircleColor(ColorUtil::stringToColor(turnoutCircleColor));
+
+ if ((a = element.attribute("turnoutcirclesize")) != "")
+ {
+     bool bok;
+         panel->setTurnoutCircleSize(a.toInt(&bok));
+     if(!bok) {
+         log->warn("unable to convert turnoutcirclesize");
+     }
+ }
+
+ try {
+     panel->setTurnoutDrawUnselectedLeg(element.attribute("turnoutdrawunselectedleg")=="true");
+ }
+ catch (DataConversionException e) {
+     log->warn("unable to convert turnoutdrawunselectedleg attribute");
+ }
+ catch (NullPointerException e) {  // considered normal if the attribute is not present
+ }
+
  // turnout size parameters
  double sz = 20.0;
  a = element.attribute("turnoutbx");

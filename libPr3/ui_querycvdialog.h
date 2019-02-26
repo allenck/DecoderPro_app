@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'querycvdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,14 +10,11 @@
 #define UI_QUERYCVDIALOG_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
@@ -42,29 +39,29 @@ public:
     void setupUi(QWidget *QueryCvDialog)
     {
         if (QueryCvDialog->objectName().isEmpty())
-            QueryCvDialog->setObjectName(QStringLiteral("QueryCvDialog"));
+            QueryCvDialog->setObjectName(QLatin1String("QueryCvDialog"));
         QueryCvDialog->resize(276, 143);
         formLayout = new QFormLayout(QueryCvDialog);
-        formLayout->setObjectName(QStringLiteral("formLayout"));
+        formLayout->setObjectName(QLatin1String("formLayout"));
         gridLayout = new QGridLayout();
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QLatin1String("gridLayout"));
         lblUnitAddr = new QLabel(QueryCvDialog);
-        lblUnitAddr->setObjectName(QStringLiteral("lblUnitAddr"));
+        lblUnitAddr->setObjectName(QLatin1String("lblUnitAddr"));
 
         gridLayout->addWidget(lblUnitAddr, 0, 0, 1, 1);
 
         edAddress = new QLineEdit(QueryCvDialog);
-        edAddress->setObjectName(QStringLiteral("edAddress"));
+        edAddress->setObjectName(QLatin1String("edAddress"));
 
         gridLayout->addWidget(edAddress, 0, 1, 1, 1);
 
         label_2 = new QLabel(QueryCvDialog);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
 
         gridLayout->addWidget(label_2, 1, 0, 1, 1);
 
         edCv = new QLineEdit(QueryCvDialog);
-        edCv->setObjectName(QStringLiteral("edCv"));
+        edCv->setObjectName(QLatin1String("edCv"));
 
         gridLayout->addWidget(edCv, 1, 1, 1, 1);
 
@@ -72,14 +69,14 @@ public:
         formLayout->setLayout(0, QFormLayout::LabelRole, gridLayout);
 
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         btnOK = new QPushButton(QueryCvDialog);
-        btnOK->setObjectName(QStringLiteral("btnOK"));
+        btnOK->setObjectName(QLatin1String("btnOK"));
 
         horizontalLayout->addWidget(btnOK);
 
         btnCancel = new QPushButton(QueryCvDialog);
-        btnCancel->setObjectName(QStringLiteral("btnCancel"));
+        btnCancel->setObjectName(QLatin1String("btnCancel"));
 
         horizontalLayout->addWidget(btnCancel);
 
@@ -87,7 +84,7 @@ public:
         formLayout->setLayout(2, QFormLayout::LabelRole, horizontalLayout);
 
         chkHex = new QCheckBox(QueryCvDialog);
-        chkHex->setObjectName(QStringLiteral("chkHex"));
+        chkHex->setObjectName(QLatin1String("chkHex"));
 
         formLayout->setWidget(1, QFormLayout::LabelRole, chkHex);
 
@@ -99,12 +96,12 @@ public:
 
     void retranslateUi(QWidget *QueryCvDialog)
     {
-        QueryCvDialog->setWindowTitle(QApplication::translate("QueryCvDialog", "Query Cv", Q_NULLPTR));
-        lblUnitAddr->setText(QApplication::translate("QueryCvDialog", "Address:", Q_NULLPTR));
-        label_2->setText(QApplication::translate("QueryCvDialog", "CV:", Q_NULLPTR));
-        btnOK->setText(QApplication::translate("QueryCvDialog", "OK", Q_NULLPTR));
-        btnCancel->setText(QApplication::translate("QueryCvDialog", "Cancel", Q_NULLPTR));
-        chkHex->setText(QApplication::translate("QueryCvDialog", "Display Hex", Q_NULLPTR));
+        QueryCvDialog->setWindowTitle(QApplication::translate("QueryCvDialog", "Query Cv", nullptr));
+        lblUnitAddr->setText(QApplication::translate("QueryCvDialog", "Address:", nullptr));
+        label_2->setText(QApplication::translate("QueryCvDialog", "CV:", nullptr));
+        btnOK->setText(QApplication::translate("QueryCvDialog", "OK", nullptr));
+        btnCancel->setText(QApplication::translate("QueryCvDialog", "Cancel", nullptr));
+        chkHex->setText(QApplication::translate("QueryCvDialog", "Display Hex", nullptr));
     } // retranslateUi
 
 };

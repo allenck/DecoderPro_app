@@ -50,7 +50,7 @@ class ListSelectionListener;
      */
      MULTIPLE_INTERVAL_SELECTION = QAbstractItemView::ContiguousSelection
     };
-
+    Q_ENUM(SELECTIONS)
     /**
      * Changes the selection to be between {@code index0} and {@code index1}
      * inclusive. {@code index0} doesn't have to be less than or equal to

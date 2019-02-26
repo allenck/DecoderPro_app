@@ -6,6 +6,7 @@
 #include "PythonQt.h"
 #include <QEventLoop>
 
+class QComboBox;
 class UserPreferencesManager;
 class PythonQtObjectPtr;
 class File;
@@ -35,6 +36,7 @@ private:
  QPushButton* stopButton;
  QLabel* status;
  QCheckBox* alwaysOnTopCheckBox;// = new JCheckBox();
+ QComboBox* languages;// = new JComboBox<>();
  JFileChooser* userFileChooser;
  /*private*/ void updateStatus(int linenumber, int columnnumber);
  Logger* log;

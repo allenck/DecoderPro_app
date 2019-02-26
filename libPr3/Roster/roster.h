@@ -20,7 +20,7 @@ public:
     /** record the single instance of Roster **/
     // should be private except that JUnit testing creates multiple Roster objects
     /*public*/ Roster(QString rosterFilename);
-    /*public*/ /*synchronized*/ Q_DECL_DEPRECATED static void resetInstance();
+//    /*public*/ /*synchronized*/ Q_DECL_DEPRECATED static void resetInstance();
     /**
      * Locate the single instance of Roster, loading it if need be.
      * @return The valid Roster object

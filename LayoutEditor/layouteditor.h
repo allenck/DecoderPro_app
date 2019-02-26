@@ -62,8 +62,8 @@ class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditor : public PanelEditor
     friend class LevelXing;
     friend class LayoutBlock;
 public:
- explicit LayoutEditor(QString name = "My Layout", bool bTest = true, QWidget *parent = 0);
-    LayoutEditor(LocoNetSystemConnectionMemo* memo, QString name = "My Layout", bool bTest = false, QWidget *parent=0);
+ explicit LayoutEditor(QString name = "My Layout", QWidget *parent = 0);
+//    LayoutEditor(LocoNetSystemConnectionMemo* memo, QString name = "My Layout", bool bTest = false, QWidget *parent=0);
  ~LayoutEditor();
     LayoutEditor(const LayoutEditor&) : PanelEditor() {}
     // connection types
@@ -273,7 +273,8 @@ public:
      */
     void addReporter(QString textReporter,int xx,int yy);
 //    /*public*/ PositionableLabel* setUpBackground(QString name);
-    void setDefaultTextColor(QString sColor);
+    QT_DEPRECATED void setDefaultTextColor(QString sColor);
+    void setDefaultTextColor(QColor sColor);
     /*public*/ void setDefaultBackgroundColor(QString color);
     /*public*/ QString getLayoutName();
     /*public*/ void setLayoutName(QString name);
@@ -334,7 +335,8 @@ public:
     /*public*/ bool getDirectTurnoutControl();
     /*public*/ void setMainlineTrackWidth(int w);
     /*public*/ void setSideTrackWidth(int w);
-    /*public*/ void setTurnoutCircleColor(QString color);
+    QT_DEPRECATED/*public*/ void setTurnoutCircleColor(QString color);
+    /*public*/ void setTurnoutCircleColor(QColor color);
     /*public*/ void setTurnoutCircleSize(int size);
     /*public*/ void setTurnoutDrawUnselectedLeg(bool state);
     /*public*/ QVector<AnalogClock2Display*>* clocks;// = new QVector<AnalogClock2Display>();  // fast clocks
@@ -365,9 +367,12 @@ public:
     /*public*/ void removeSignalHead(SignalHead* head);
     /*public*/ QGraphicsEllipseItem* turnoutCircleAt(QPointF inPoint);
     /*public*/ void addBackground();
-    /*public*/ void setDefaultTrackColor(QString color);
-    /*public*/ void setDefaultOccupiedTrackColor(QString color);
-    /*public*/ void setDefaultAlternativeTrackColor(QString color);
+    QT_DEPRECATED/*public*/ void setDefaultTrackColor(QString color);
+    /*public*/ void setDefaultTrackColor(QColor color);
+    QT_DEPRECATED/*public*/ void setDefaultOccupiedTrackColor(QString color);
+    /*public*/ void setDefaultOccupiedTrackColor(QColor color);
+    QT_DEPRECATED/*public*/ void setDefaultAlternativeTrackColor(QString color);
+    /*public*/ void setDefaultAlternativeTrackColor(QColor color);
     void setScale(double scaleX, double scaleY);
     /*public*/ QString getClassName();
     /*public*/ void setFilename(QString path);
@@ -515,8 +520,8 @@ private:
  float trackWidth;// = sideTrackWidth;
  bool _editable;
  bool turnoutCirclesWithoutEditMode;// = false;
- LocoNetSystemConnectionMemo * memo;// = new LocoNetSystemConnectionMemo();
- LnSensorManager* lnSensorManager;
+// LocoNetSystemConnectionMemo * memo;// = new LocoNetSystemConnectionMemo();
+// LnSensorManager* lnSensorManager;
  friend class SensorIcon;
  InternalSensorManager* internalSensorManager;
  /*private*/ QPointF midpoint (QPointF p1,QPointF p2) ;
@@ -602,7 +607,7 @@ private:
  bool _delete;
  //QFormLayout* formLayout;
  RosterEntrySelectorPanel* rosterBox;
- bool bTestMode;
+ //bool bTestMode;
  QString layoutFile;
  int _prevNumSel;
  /*private*/ SignalHeadIcon* checkSignalHeadIcons(QPointF loc);

@@ -19,6 +19,7 @@ public:
 
         INSTALLED, USER, ALL, NONE
     };
+ Q_ENUM(Location)
     static /*public*/ File* getFile(QString path); //throw (FileNotFoundException);
     static /*public*/ QString getExternalFilename(QString pName);
     static /*public*/ QString getPortableFilename(File* file);
@@ -116,7 +117,7 @@ public:
     /*public*/ static void appendTextToFile(File* file, QString text);// throw (IOException);
     /*public*/ static void backup(File* file);// //throws IOException
     /*public*/ static QString sanitizeFilename(QString name);
-    /*public*/ static QStringList* findProgramPath();
+    /*public*/ static QList<QString> *findProgramPath();
     /*public*/ static QString locateFile(QDir start, QString fileName);
 
 

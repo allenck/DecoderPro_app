@@ -1,10 +1,10 @@
 #ifndef JYTHONSIGLETACTION_H
 #define JYTHONSIGLETACTION_H
 
-#include <QAction>
+#include "abstractaction.h"
 #include "liblayouteditor_global.h"
 
-class LIBLAYOUTEDITORSHARED_EXPORT JythonSigletAction : public QAction
+class LIBLAYOUTEDITORSHARED_EXPORT JythonSigletAction : public AbstractAction
 {
  Q_OBJECT
 public:
@@ -14,7 +14,8 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed();
+
 private:
  QWidget* _who;
 

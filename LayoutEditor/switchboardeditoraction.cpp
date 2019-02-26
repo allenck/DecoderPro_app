@@ -30,12 +30,12 @@
 /*public*/ void SwitchboardEditorAction::actionPerformed(ActionEvent* /*e*/) {
     QString name = tr("Switchboard%1").arg("");
     for (int i = 2; i < 100; i++) {
-        if (PanelMenu::instance()->isPanelNameUsed(name)) {
+        if (static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name)) {
             name = tr("Switchboard%1").arg(" " + QString::number(i));
         }
     }
     SwitchboardEditor* frame = new SwitchboardEditor(name);
-    PanelMenu::instance()->addEditorPanel(frame);
+    static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->addEditorPanel(frame);
     frame->setLocation(570, 20); // position Editor
 
     frame->setWindowTitle(tr("Switchboard Editor"));

@@ -24,7 +24,7 @@ public:
  void setInfoEnabled(bool bState);
  void setTraceEnabled(bool bState);
 
- void sendError(QString s);
+ void sendError(QString /*s*/) {}
 
 signals:
 

@@ -78,6 +78,7 @@ public:
           */
          VALID_AS_PREFIX_ONLY
      };
+ Q_ENUM(NameValidity)
 //    public interface Manager {
 
 //        /**

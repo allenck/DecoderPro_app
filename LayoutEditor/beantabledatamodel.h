@@ -35,6 +35,7 @@ public:
   DELETECOL = 4,
   NUMCOLUMN = 5
  };
+ Q_ENUM(COLUMNS)
  //static /*public*/ /*final*/ int NUMCOLUMN;// = 5;
  /*abstract*/ /*public*/ virtual QString getValue(QString systemName) const;
  ~BeanTableDataModel();

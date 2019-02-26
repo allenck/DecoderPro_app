@@ -409,7 +409,7 @@ QString Block::getStateString()
  }
 }
 
-/*public*/ QStringList* Block::getDeniedBlocks()
+/*public*/ QList<QString>* Block::getDeniedBlocks()
 {
  QStringList* list = new QStringList(/*blockDenyList->size()*/);
  foreach(NamedBeanHandle<Block*>* bean, *blockDenyList)

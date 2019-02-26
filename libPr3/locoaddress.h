@@ -31,6 +31,7 @@ public:
                 OPENLCB,
                 LGB
     };
+    Q_ENUM(Protocol)
     //explicit LocoAddress(QObject *parent = 0);
     /**
      * Interface for generic Locomotive Address.

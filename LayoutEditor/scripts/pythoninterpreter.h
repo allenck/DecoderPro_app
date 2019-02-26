@@ -7,6 +7,7 @@
 public:
  /*public*/ void execfile(QTextStream* s);
  /*public*/ void exec(QString text);
+ /*public*/ PyObject eval(QString s);
 
 #if 0
      /*protected*/ PySystemState systemState;

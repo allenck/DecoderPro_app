@@ -9,7 +9,7 @@
 class BadUserNameException;
 class JAVAQTSHARED_EXPORT NamedBean : public  QObject
 {
- //Q_OBJECT
+ Q_OBJECT
 public:
     explicit NamedBean(QObject *parent = 0);
     NamedBean(QString name, QObject *parent = 0);
@@ -69,7 +69,7 @@ public:
      UNKNOWN = 1,
      INCONSISTENT= 0x08
     };
-
+    Q_ENUM(STATES)
         // user identification, _bound_ parameter so manager(s) can listen
         virtual QString getUserName();
         virtual void setUserName(QString s);

@@ -4,7 +4,7 @@
 #include <QObject>
 #include "jynstrument.h"
 #include "exceptions.h"
-
+#include "scriptexception.h"
 
 class Logger;
 class JynstrumentFactory : public QObject
@@ -25,8 +25,4 @@ private:
 
 };
 
-class ScriptException : public Exception
-{
- ScriptException(QString msg) : Exception(msg) {}
-};
 #endif // JYNSTRUMENTFACTORY_H

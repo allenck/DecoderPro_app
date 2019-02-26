@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 unix:{
-QTSERIALPORT_PROJECT_ROOT = /home/allen/Projects/qtserialport
+QTSERIALPORT_PROJECT_ROOT = ~/Projects/qtserialport
 }
 win32:{
 QTSERIALPORT_PROJECT_ROOT =C:/Users/Allen/Projects/qt-qtserialport-stable/qt-qtserialport
@@ -23,7 +23,7 @@ win32_msvc: {
 APPNAME = "LocoNetMonitor"
 APPVERSION = 0.1
 
-PREFIX = /home/allen/Projects/PythonQt-master
+PREFIX = /home/allen/pythonqt-code
 
 #QT       -= gui
 QT       += core xml  gui printsupport   sql network  multimedia #webkitwidgets
@@ -37,12 +37,12 @@ unix{
  exists($$PWD/../ftdilib/libftdilib.so) {
   isEmpty(FTDI): FTDI = 1
   DEFINES += HAVE_FTDI
-  message("ftdilib found!")
+  message("libPr3: ftdilib found!")
  }
- exists(/home/allen/Projects/QtWebApp-master/QtWebApp/libQtWebAppd.so) {
+ exists($$PWD/../QtWebApp/libQtWebAppd.so) {
  isEmpty(WEBAPP): WEBAPP = 1
   DEFINES += QTWEBAPP
-  message("libQtWebAppd found!")
+  message("libPr3: libQtWebAppd found!")
  }
 }
 win32{
@@ -53,7 +53,7 @@ win32{
  exists($$PWD/../ftdilib/debug/ftdilib.dll) {
   isEmpty(FTDI): FTDI = 1
   DEFINES += HAVE_FTDI
-  message("ftdilib.dll found!")
+  message("libPr3: ftdilib.dll found!")
  }
 }
 
@@ -69,7 +69,7 @@ DEFINES += LIBPR3_LIBRARY
 win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
  ENABLE_SCRIPTING = "Y"
 }
-unix:exists(/home/allen/Projects/PythonQt3.0/lib/libPythonQt_d.so) {
+unix:exists(~/Projects/PythonQt-master/lib/libPythonQt_d.so) {
  ENABLE_SCRIPTING = "Y"
 }
 #CONFIG += scripts
@@ -1807,7 +1807,7 @@ INCLUDEPATH += "C:/Program Files (x86)/local/include/quazip" "C:\Program Files (
 DEPENDPATH += "C:/Program Files (x86)/local/include/quazip"
 }
 
-INCLUDEPATH += "/home/allen/Qt/5.7/gcc_64/include/QtMultimedia"
+INCLUDEPATH += "~/Qt/5.7/gcc_64/include/QtMultimedia"
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
@@ -1828,7 +1828,7 @@ DEPENDPATH += $$PWD/../LocoIO
 
 
 
-#win32:INCLUDEPATH += C:/Users/Allen/Downloads/zlib127/zlib-1.2.7/
+#win32:INCLUDEPATH += C:/Users/Allen/Downloads/zlib127/zlib-1.3.4/
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
@@ -1863,11 +1863,11 @@ DISTFILES +=
 
 contains(WEBAPP, 1) {
 
-unix:!macx: LIBS += -L/home/allen/Projects/QtWebApp-master/QtWebApp/ -lQtWebAppd
+unix:!macx: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
 
-INCLUDEPATH += /home/allen/Projects/QtWebApp-master/QtWebApp /home/allen/Projects/QtWebApp-master/QtWebApp/httpserver/
-DEPENDPATH += /home/allen/Projects/QtWebApp-master/QtWebApp /home/allen/Projects/QtWebApp-master/QtWebApp/httpserver/
-message("link to libQtWebAppd")
+INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+message("libPr3: link to libQtWebAppd")
 }
 
 DEFINES += QZEROCONF_STATIC
@@ -1878,16 +1878,31 @@ unix|win32: LIBS += -L$$PWD/../../../../QtZeroConf-master/ -lQtZeroConf
 INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
 DEPENDPATH += $$PWD/../../../../QtZeroConf-master
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../QtWebApp-master/QtWebApp/ -lQtWebAppd
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../QtWebApp-master/QtWebApp/ -lQtWebAppdd
-else:unix: LIBS += -L$$PWD/../../../../QtWebApp-master/QtWebApp/ -lQtWebAppd
+unix:exists($$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1) {
+message($$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1 found)
+} else {
+message(LibPr3: $$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1 not found)
+}
 
-INCLUDEPATH += $$PWD/../../../../QtWebApp-master/QtWebApp
-DEPENDPATH += $$PWD/../../../../QtWebApp-master/QtWebApp
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppdd
-else:unix: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
 
-INCLUDEPATH += $$PWD/../QtWebApp
-DEPENDPATH += $$PWD/../QtWebApp
+
+
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../QtWebApp/release/ -lQtWebAppd
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../QtWebApp/debug/ -lQtWebAppd
+#else:unix: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
+
+#INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+#DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+
+unix|win32: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
+
+INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+
+exists($$PWD/../QtWebApp/libQtWebAppd.so.1) {
+message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 found)
+} else {
+message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 not found)
+}
+

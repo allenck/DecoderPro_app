@@ -10,7 +10,6 @@
 #include "properties.h"
 #include "system.h"
 #include "pythoninterpreter.h"
-#include "scriptexception.h"
 
 //JmriScriptEngineManager::JmriScriptEngineManager(QObject *parent) : QObject(parent)
 //{
@@ -53,6 +52,7 @@
  log = new Logger("JmriScriptEngineManager");
  manager = new ScriptEngineManager();
  names = QMap<QString, QString>();
+ names.insert("PythonQt", "jython");
  factories = QMap<QString, ScriptEngineFactory*>();
  engines = QMap<QString, ScriptEngine*>();
  jython = NULL;
@@ -173,20 +173,20 @@
     }
     return this.getEngine(name);
 }
-
+#endif
 /**
  * Given a short name, get the ScriptEngine registered by that name.
  *
  * @return a ScriptEngine or NULL
  */
-/*public*/ ScriptEngine getEngineByName(String shortName) {
-    String name = this.names.get(shortName);
+/*public*/ ScriptEngine* JmriScriptEngineManager::getEngineByName(QString shortName) {
+    QString name = this->names.value(shortName);
     if (name == NULL) {
-        log->error("Could not find script engine name for short name \"{}\"", shortName);
+        log->error(tr("Could not find script engine name for short name \"%1\"").arg( shortName));
     }
-    return this.getEngine(name);
+    return this->getEngine(name);
 }
-#endif
+
 /**
  * Get a ScriptEngine by it's name.
  *
@@ -253,13 +253,14 @@
 #else
  disconnect(PythonQt::self(),SIGNAL(pythonStdErr(QString)));
 
- PythonWrappers::defineClasses();
+ //PythonWrappers::defineClasses();
  //jmri.util.PythonInterp.runScript(jmri.util.FileUtil.getExternalFilename(file.toString()));
  if(firstTime)
   connect(PythonQt::self(), SIGNAL(pythonStdErr(QString)), this, SLOT(On_stdErr(QString)));
  firstTime = false;
  PythonQt::self()->getMainModule().evalFile(file->getPath());
  PythonQt::self()->clearError();
+
 #endif
 }
 #if 0
@@ -329,17 +330,17 @@
         this.getEngine(name);
     });
 }
-
+#endif
 /**
  * Get the default {@link javax.script.ScriptContext} for all
  * {@link javax.script.ScriptEngine}s.
  *
  * @return the default ScriptContext;
  */
-/*public*/ ScriptContext getDefaultContext() {
-    return this.context;
+/*public*/ ScriptContext* JmriScriptEngineManager::getDefaultContext() {
+    return this->context;
 }
-
+#if 0
 /**
  * Given a file extension, get the ScriptEngineFactory registered to handle
  * that extension.

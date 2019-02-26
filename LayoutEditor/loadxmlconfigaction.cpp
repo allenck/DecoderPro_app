@@ -101,6 +101,7 @@ void LoadXmlConfigAction::common()
 /*static*/ /*public*/ File* LoadXmlConfigAction::getFile(JFileChooser* fileChooser)
 {
  fileChooser->setDialogType(JFileChooser::OPEN_DIALOG);
+ fileChooser->setApproveButtonText(tr("Open Panel File ..."));
  return getFileCustom(fileChooser);
 }
 

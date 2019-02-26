@@ -115,14 +115,13 @@ void LnSensor::init(QString systemName, QString prefix)
      */
     void LnSensor::message(LocoNetMessage* l)
     {
-     int sw1 = l->getElement(1);
-     int sw2 = l->getElement(2);
      // parse message type
      switch (l->getOpCode())
      {
-
       case LnConstants::OPC_INPUT_REP: // 0xb2
       {               /* page 9 of Loconet PE */
+       int sw1 = l->getElement(1);
+       int sw2 = l->getElement(2);
        if (a->matchAddress(sw1, sw2))
        {
         // save the state
@@ -146,6 +145,8 @@ void LnSensor::init(QString systemName, QString prefix)
       // Added by ACK to set feedback sensors 10/03/2018
       case LnConstants::OPC_SW_REP:
       {
+         int sw1 = l->getElement(1);
+         int sw2 = l->getElement(2);
 
        int addr = (((sw2 & 0x0f) * 128) + (sw1 & 0x7f)) + 1;
        if(addr == thisAddr)
@@ -178,7 +179,7 @@ void LnSensor::init(QString systemName, QString prefix)
 
     void LnSensor::dispose() {
         tc->removeLocoNetListener(~0, (LocoNetListener*)this);
-        //super.dispose();
+        AbstractSensor::dispose();
     }
 
     /*private*/ /*final*/ /*static*/ Logger* LnSensor::log = LoggerFactory::getLogger("LnSensor");

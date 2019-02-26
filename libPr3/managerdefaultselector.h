@@ -19,10 +19,9 @@ public:
  /*public*/ /*final*/ QMap<QString, QString> defaults;// = new Hashtable<>();
  /*public*/ QString getDefault(QString managerClass);
  /*public*/ void setDefault(QString managerClass, QString userName);
- /*public*/ InitializationException* configure();
- /*public*/ void initialize(Profile* profile) throw (InitializationException);
- /*public*/ void savePreferences(Profile* profile);
-
+ /*public*/ void configure();
+// /*public*/ void initialize(Profile* profile) throw (InitializationException);
+// /*public*/ void savePreferences(Profile* profile);
  /*public*/ /*static*/ class Item1 {
  public:
 

@@ -54,6 +54,7 @@ public slots:
 //    /*public*/ void renamePanelMenu(/*ActionEvent e*/);
  void on_okButton_clicked();
  void on_cancelButton_clicked();
+ void onOK_rotate();
 
 private:
  QObject *parent;

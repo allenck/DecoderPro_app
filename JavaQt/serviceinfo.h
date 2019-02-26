@@ -3,9 +3,8 @@
 
 #include <QObject>
 #include <QVariant>
-#include <QtZeroConf/qzeroconf.h>
+#include <qzeroconf.h>
 #include "exceptions.h"
-
 class InetAddress;
 class Inet4Address;
 class Inet6Address;

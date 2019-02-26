@@ -45,13 +45,12 @@ public:
     /*public*/ bool storeUser(File* file) ;
     /*public*/ bool makeBackup(File* file) const;
     static /*public*/ QDomElement elementFromObject(QObject* o);
-    static /*public*/ QDomElement elementFromObject(QObject* object, bool shared);
-    /*public*/ bool load(File* fi) throw (JmriException) ;
-    /*public*/ bool load(QUrl url) throw (JmriException);
-    /*public*/ bool load(File* fi, bool registerDeferred) throw (JmriException) ;
-    /*public*/ bool load(QUrl url, bool registerDeferred) throw (JmriException) ;
-    /*public*/ bool loadDeferred(File* fi) throw (JmriException);
-    /*public*/ bool loadDeferred(QUrl url) throw (JmriException);
+    /*public*/ bool load(File* fi) throw (JmriConfigureXmlException) ;
+    /*public*/ bool load(QUrl url) throw (JmriConfigureXmlException);
+    /*public*/ bool load(File* fi, bool registerDeferred) throw (JmriConfigureXmlException) ;
+    /*public*/ bool load(QUrl url, bool registerDeferred) throw (JmriConfigureXmlException) ;
+    /*public*/ bool loadDeferred(File* fi) throw (JmriConfigureXmlException);
+    /*public*/ bool loadDeferred(QUrl url) throw (JmriConfigureXmlException);
     /*public*/ QUrl find(QString f);
     void locateFileFailed(QString f);
     static /*public*/ void creationErrorEncountered(

@@ -14,6 +14,7 @@ public:
   UNAME_COLUMN = 1,
   INCLUDE_COLUMN = 2
  };
+ Q_ENUM(COLUMNS)
  explicit BeanTableModel(QObject *parent = 0);
  /*public*/ virtual /*abstract*/ Manager* getManager() const;
 

@@ -1599,7 +1599,7 @@
 /**
  * Like getMixerInfo, but return List
  */
-/*private*/ static QList<AudioFileReader*>* getMixerInfoList(QList<AudioFileReader*>* providers) {
+/*private*/ /*static*/ QList<AudioFileReader*>* AudioSystem::getMixerInfoList(QList<AudioFileReader*>* providers) {
     QList<AudioFileReader*>* infos = new QList<AudioFileReader*>();
 #if 0
     QList<Mixer::Info*>* someInfos; // per-mixer
@@ -1624,7 +1624,7 @@
  * @return a List of instances of providers for the requested service.
  * If no providers are available, a vector of length 0 will be returned.
  */
-/*private*/ static QList<AudioFileReader*>* getProviders(QString providerClass) {
+/*private*/ /*static*/ QList<AudioFileReader*>* AudioSystem::getProviders(QString providerClass) {
     //return JDK13Services.getProviders(providerClass);
  return new QList<AudioFileReader*>();
 }

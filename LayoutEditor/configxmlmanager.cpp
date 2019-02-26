@@ -36,8 +36,8 @@ ConfigXmlManager::ConfigXmlManager(QObject *parent) :
     ConfigureManager(parent)
 {
  setObjectName("ConfigXmlManager");
-// if(log != nullptr)
-//  log->setDebugEnabled(true);
+ if(log != nullptr)
+  log->setDebugEnabled(true);
  plist =  QList<QObject*> ();
  //clist =  QHash<QObject*, int>();
  //clist = Collections.synchronizedMap(new QHash<QObject*, int>());
@@ -51,6 +51,8 @@ ConfigXmlManager::ConfigXmlManager(QObject *parent) :
  configXmlMap.insert("jmri.jmrix.loconet.hexfile.configurexml.ConnectionConfigXml", "HexFileConnectionConfigXml");
  configXmlMap.insert("jmri.jmrix.loconet.locobuffer.configurexml.ConnectionConfigXml", "LocobufferConnectionConfigXml");
  configXmlMap.insert("jmri.jmrix.loconet.pr3.configurexml.ConnectionConfigXml", "ConnectionConfigXml");
+ configXmlMap.insert("jmri.jmrix.loconet.loconetovertcp.configurexml.ConnectionConfigXml", "LnOverTcpConnectionConfig");
+
  //qRegisterMetaType<DefaultUserMessagePreferences>("DefaultUserMessagePreferences");
  prefsFile = new File("~/.jmri/defaultConfig.xml");
 
@@ -155,7 +157,7 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
     return temp.at(i);
   }
  }
- return NULL;
+ return nullptr;
 }
 
 /*public*/ QList<QObject*> ConfigXmlManager::getInstanceList(/*Class<?>*/QString c)
@@ -615,19 +617,6 @@ File userPrefsFile;*/
 
 /*static*/ /*public*/ QDomElement ConfigXmlManager::elementFromObject(QObject* o)
 {
- return ConfigXmlManager::elementFromObject(o, true);
-}
-
-/**
-*
-* @param object The object to get an XML representation of
-* @param shared true if the XML should be shared, false if the XML should
-*               be per-node
-* @return An XML element representing object
-*/
-/*static*/ /*public*/ QDomElement ConfigXmlManager::elementFromObject(QObject* o, bool shared) {
- //Logger log("ConfigXmlManager");
- //QString aName = adapterName(o);
  QString aName = QString(o->metaObject()->className()) + "Xml";
  if(QString(o->metaObject()->className()) == "Pr3ConnectionConfig")
   aName = "ConnectionConfigXml";
@@ -651,7 +640,7 @@ File userPrefsFile;*/
      log->error(tr("Cannot load configuration adapter for ")+o->metaObject()->className()+tr(" due to ")+ex3.getMessage());
  }
  if(adapter != NULL && qobject_cast<XmlAdapter*>(adapter) != nullptr )
-  return ((XmlAdapter*)adapter)->store(o, shared);
+  return ((XmlAdapter*)adapter)->store(o);
 
  QString className = o->metaObject()->className();
 
@@ -690,11 +679,11 @@ File userPrefsFile;*/
  * method.
  * @return true if no problems during the load
  */
-/*public*/ bool ConfigXmlManager::load(File* fi) throw (JmriException)
+/*public*/ bool ConfigXmlManager::load(File* fi) throw (JmriConfigureXmlException)
 {
     return load(fi, false);
 }
-/*public*/ bool ConfigXmlManager::load(QUrl url) throw (JmriException)
+/*public*/ bool ConfigXmlManager::load(QUrl url) throw (JmriConfigureXmlException)
 {
     return load(url, false);
 }
@@ -711,7 +700,7 @@ File userPrefsFile;*/
  * @since 2.11.2
  */
 //@Override
-/*public*/ bool ConfigXmlManager::load(File* fi, bool registerDeferred) throw (JmriException)
+/*public*/ bool ConfigXmlManager::load(File* fi, bool registerDeferred) throw (JmriConfigureXmlException)
 {
  return this->load(FileUtil::fileToURL(fi), registerDeferred);
 }
@@ -729,7 +718,7 @@ File userPrefsFile;*/
  */
 //@SuppressWarnings("unchecked")
 //@Override
-/*public*/ bool ConfigXmlManager::load(QUrl url, bool registerDeferred) throw (JmriException)
+/*public*/ bool ConfigXmlManager::load(QUrl url, bool registerDeferred) throw (JmriConfigureXmlException)
 {
  bool result = true;
  if(log->isDebugEnabled()) log->debug("opening "+url.path());
@@ -762,7 +751,7 @@ File userPrefsFile;*/
   {
    //Put things into an ordered list
    QDomElement item = items.at(i).toElement();
-   if (item.attribute("class") == nullptr)
+   if (item.attribute("class") == "")
    {
     // this is an element that we're not meant to read
     if (log->isDebugEnabled()) log->debug("skipping " + item.tagName());
@@ -772,7 +761,13 @@ File userPrefsFile;*/
    if (log->isDebugEnabled()) log->debug("attempt to get adapter "+adapterName + " for " + item.attribute("name"));
    XmlAdapter* adapter = nullptr;
 #if 1
-   adapter = (XmlAdapter*)Class::forName(adapterName)->newInstance();
+   //adapter = (XmlAdapter*)Class::forName(adapterName)->newInstance();
+   QString classname;
+   if(configXmlMap.contains(adapterName))
+    classname = configXmlMap.value(adapterName);
+   else
+    classname = adapterName.mid(adapterName.lastIndexOf(".")+1);
+   adapter = (XmlAdapter*)Class::forName(classname)->newInstance();
  //  if(adapterName == "jmri.managers.configurexml.DefaultUserMessagePreferencesXml")
  //   adapter = new DefaultUserMessagePreferencesXml();
  //  else
@@ -1001,12 +996,12 @@ File userPrefsFile;*/
 }
 
 //@Override
-/*public*/ bool ConfigXmlManager::loadDeferred(File* fi) throw (JmriException){
+/*public*/ bool ConfigXmlManager::loadDeferred(File* fi) throw (JmriConfigureXmlException){
     return this->loadDeferred(FileUtil::fileToURL(fi));
 }
 
 //@Override
-/*public*/ bool ConfigXmlManager::loadDeferred(QUrl url/*url*/) throw (JmriException)
+/*public*/ bool ConfigXmlManager::loadDeferred(QUrl url/*url*/) throw (JmriConfigureXmlException)
 {
  bool result = true;
  // Now process the load-later list

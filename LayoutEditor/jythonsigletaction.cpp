@@ -20,14 +20,15 @@
  */
 //private static final long serialVersionUID = -7767646852999362415L;
 
-/*public*/ JythonSigletAction::JythonSigletAction(QString s, QWidget* who) : QAction(s, (QObject*)who)
+/*public*/ JythonSigletAction::JythonSigletAction(QString s, QWidget* who) : AbstractAction(s, (QObject*)who)
 {
  //super(s);
  _who = who;
+ connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }
 
 
-/*public*/ void JythonSigletAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void JythonSigletAction::actionPerformed(/*ActionEvent* e*/) {
     // create a SampleAutomaton
 //    JFileChooser fci = jmri.jmrit.XmlFile.userFileChooser("Python script files", "py");
 //    fci.setDialogTitle("Find desired script file");

@@ -1127,6 +1127,7 @@ QWidget* JmriJFrame::getContentPane()
  if(centralWidget() == nullptr)
  {
   QWidget* centralWidget = new QWidget();
+  centralWidget->setObjectName("JmriJFrameCentralWidget");
   centralWidget->resize(300,300);
   //centralWidget()->setLayout(new QVBoxLayout);
   setCentralWidget(centralWidget);

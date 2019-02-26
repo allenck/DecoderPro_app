@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'inputdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,13 +10,10 @@
 #define UI_INPUTDIALOG_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
@@ -38,34 +35,34 @@ public:
     void setupUi(QDialog *InputDialog)
     {
         if (InputDialog->objectName().isEmpty())
-            InputDialog->setObjectName(QStringLiteral("InputDialog"));
+            InputDialog->setObjectName(QLatin1String("InputDialog"));
         InputDialog->resize(202, 126);
         verticalLayout = new QVBoxLayout(InputDialog);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         label = new QLabel(InputDialog);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QLatin1String("label"));
 
         verticalLayout->addWidget(label);
 
         lineEdit = new QLineEdit(InputDialog);
-        lineEdit->setObjectName(QStringLiteral("lineEdit"));
+        lineEdit->setObjectName(QLatin1String("lineEdit"));
 
         verticalLayout->addWidget(lineEdit);
 
         comboBox = new QComboBox(InputDialog);
-        comboBox->setObjectName(QStringLiteral("comboBox"));
+        comboBox->setObjectName(QLatin1String("comboBox"));
 
         verticalLayout->addWidget(comboBox);
 
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         okButton = new QPushButton(InputDialog);
-        okButton->setObjectName(QStringLiteral("okButton"));
+        okButton->setObjectName(QLatin1String("okButton"));
 
         horizontalLayout->addWidget(okButton);
 
         cancelButton = new QPushButton(InputDialog);
-        cancelButton->setObjectName(QStringLiteral("cancelButton"));
+        cancelButton->setObjectName(QLatin1String("cancelButton"));
 
         horizontalLayout->addWidget(cancelButton);
 
@@ -80,10 +77,10 @@ public:
 
     void retranslateUi(QDialog *InputDialog)
     {
-        InputDialog->setWindowTitle(QApplication::translate("InputDialog", "Dialog", Q_NULLPTR));
-        label->setText(QApplication::translate("InputDialog", "TextLabel", Q_NULLPTR));
-        okButton->setText(QApplication::translate("InputDialog", "OK", Q_NULLPTR));
-        cancelButton->setText(QApplication::translate("InputDialog", "Cancel", Q_NULLPTR));
+        InputDialog->setWindowTitle(QApplication::translate("InputDialog", "Dialog", nullptr));
+        label->setText(QApplication::translate("InputDialog", "TextLabel", nullptr));
+        okButton->setText(QApplication::translate("InputDialog", "OK", nullptr));
+        cancelButton->setText(QApplication::translate("InputDialog", "Cancel", nullptr));
     } // retranslateUi
 
 };

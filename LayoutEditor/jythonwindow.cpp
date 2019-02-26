@@ -56,6 +56,7 @@ void JythonWindow::common()
  alwaysScrollCheck = QString(this->metaObject()->className()) + ".alwaysScroll";
  alwaysOnTopCheckBox = new QCheckBox();
  //alwaysOnTopCheckBox->setChecked(true);
+ area = new JTextArea(12,50);
 
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 
@@ -79,6 +80,7 @@ void JythonWindow::common()
 //    java.util.ResourceBundle rb = java.util.ResourceBundle.getBundle("jmri.jmrit.jython.JythonBundle");
 
  f = new JmriJFrame(tr("Script Output"));
+ f->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
  QWidget* centralWidget = new QWidget;
  QVBoxLayout* centralWidgetLayout = new QVBoxLayout(centralWidget);
  f->setCentralWidget(centralWidget);
@@ -88,7 +90,7 @@ void JythonWindow::common()
 //                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 //                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
 //         ), BorderLayout.CENTER);
- area = new JTextArea(12,50);
+ //area = new JTextArea(12,50);
  area->setTabStopWidth(4);
  QScrollArea* js;
  centralWidgetLayout->addWidget(js = new QScrollArea);
@@ -157,6 +159,8 @@ void JythonWindow::common()
  // set a monospaced font
  int size = area->font().pointSize();
  area->setFont(QFont("Monospaced", size, QFont::Normal));
+ defaultTextBackground = area->textBackgroundColor();
+ defaultTextColor = area->textColor();
 
 #if 0 // TODO:
  // Add document listener to scroll to end when modified
@@ -182,6 +186,9 @@ void JythonWindow::common()
 #endif
  // Scroll to end of document
  doAutoScroll(area, true);
+ f->showNormal();
+ f->activateWindow();
+ f->raise();
 
  f->setVisible(true);
 }
@@ -197,8 +204,20 @@ void JythonWindow::on_autoScroll_toggled(bool b)
 
 void JythonWindow::on_alwaysOnTopCheckBox_toggled(bool b)
 {
- f->setAlwaysOnTop(b);
+ //f->setAlwaysOnTop(b);
+ QSize size = f->size();
+ QPoint pos = f->pos();
+ disconnect(alwaysOnTopCheckBox, SIGNAL(toggled(bool)), this, SLOT(on_alwaysOnTopCheckBox_toggled(bool)));
+ disconnect(clearButton, SIGNAL(clicked()), this, SLOT(on_clearButton_clicked()));
+ disconnect(autoScroll, SIGNAL(toggled(bool)), this, SLOT(on_autoScroll_toggled(bool)));
+ f->close();
+ f->deleteLater();
+
  pref->setSimplePreferenceState(alwaysOnTopCheck, b);
+
+ actionPerformed();
+ f->setLocation(pos);
+ f->resize(size);
 }
 
 /**
@@ -227,13 +246,36 @@ void JythonWindow::on_clearButton_clicked()
 }
 void JythonWindow::On_stdErr(QString err)
 {
- if(area == NULL)
+ if(f == NULL)
   actionPerformed();
- area->append(err);
+// setTextColors(QColor(Qt::white), QColor(Qt::red));
+// area->append(err);
+ _err += err;
+ int idx;
+ while ((idx = _err.indexOf('\n'))!=-1)
+ {
+//    consoleMessage(_stdErr.left(idx));
+//    std::cerr << _stdErr.left(idx).toLatin1().data() << std::endl;
+     setTextColors(QColor(Qt::white), QColor(Qt::red));
+  area->append( _err.left(idx) );
+   _err = _err.mid(idx+1);
+ }
 }
+
 void JythonWindow::On_stdOut(QString out)
 {
- area->append(out);
+// setTextColors(QColor(Qt::white), QColor(Qt::black));
+// area->append(out);
+    _err += out;
+    int idx;
+    while ((idx = _err.indexOf('\n'))!=-1)
+    {
+   //    consoleMessage(_stdErr.left(idx));
+   //    std::cerr << _stdErr.left(idx).toLatin1().data() << std::endl;
+     setTextColors(QColor(Qt::white), QColor(Qt::black));
+     area->append( _err.left(idx) );
+      _err = _err.mid(idx+1);
+    }
 }
 
 JythonWindow* JythonWindow::instance()
@@ -246,10 +288,26 @@ void JythonWindow::appendText(QString text)
 {
  area->append(text);
 }
+
 JWWindowListener::JWWindowListener(JythonWindow *parent)
 {
  this->parent = parent;
 }
+
+void JythonWindow::setDefaultTextcolor()
+{
+ area->setTextBackgroundColor(defaultTextBackground);
+ area->setTextColor(defaultTextColor);
+}
+
+void JythonWindow::setTextColors(QColor background, QColor textColor)
+{
+ if(area == nullptr)
+  actionPerformed();
+ area->setTextBackgroundColor(background);
+ area->setTextColor(textColor);
+}
+
 
 void JWWindowListener::windowClosing(QCloseEvent *)
 {
@@ -257,5 +315,6 @@ void JWWindowListener::windowClosing(QCloseEvent *)
  parent->pref->setWindowLocation(QString(parent->metaObject()->className()), parent->f->pos());
  //pref->setSaveWindowSize(QString(this->metaObject()->className()),true);
  parent->pref->setWindowSize(QString(parent->metaObject()->className()),parent->f->size());
- parent->f = NULL;
+ //parent->f = NULL;
+ parent->f->setHidden(true);
 }

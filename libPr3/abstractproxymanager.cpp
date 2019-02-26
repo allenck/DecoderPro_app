@@ -237,7 +237,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 //@Override
 /*public*/ NamedBean* AbstractProxyManager::getBeanBySystemName(QString systemName)
 {
- NamedBean* t = nullptr;
+ //NamedBean* t = nullptr;
  foreach (Manager* m, this->mgrs) {
      NamedBean* b = m->getBeanBySystemName(systemName);
      if (b != nullptr) {
@@ -535,7 +535,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  return arr;
 }
 
-void AbstractProxyManager::propertyChange(PropertyChangeEvent *e)
+void AbstractProxyManager::propertyChange(PropertyChangeEvent */*e*/)
 {
  //emit this->propertyChange(e);
 }

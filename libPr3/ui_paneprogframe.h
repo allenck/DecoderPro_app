@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'paneprogframe.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -12,9 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
@@ -43,22 +41,22 @@ public:
     void setupUi(QMainWindow *PaneProgFrame)
     {
         if (PaneProgFrame->objectName().isEmpty())
-            PaneProgFrame->setObjectName(QStringLiteral("PaneProgFrame"));
+            PaneProgFrame->setObjectName(QLatin1String("PaneProgFrame"));
         PaneProgFrame->resize(575, 295);
         QFont font;
-        font.setFamily(QStringLiteral("Ubuntu"));
+        font.setFamily(QLatin1String("Ubuntu"));
         font.setPointSize(8);
         PaneProgFrame->setFont(font);
         actionSave = new QAction(PaneProgFrame);
-        actionSave->setObjectName(QStringLiteral("actionSave"));
+        actionSave->setObjectName(QLatin1String("actionSave"));
         actionFactory_reset = new QAction(PaneProgFrame);
-        actionFactory_reset->setObjectName(QStringLiteral("actionFactory_reset"));
+        actionFactory_reset->setObjectName(QLatin1String("actionFactory_reset"));
         centralwidget = new QWidget(PaneProgFrame);
-        centralwidget->setObjectName(QStringLiteral("centralwidget"));
+        centralwidget->setObjectName(QLatin1String("centralwidget"));
         verticalLayout = new QVBoxLayout(centralwidget);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         tabWidget = new QTabWidget(centralwidget);
-        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tabWidget->setObjectName(QLatin1String("tabWidget"));
         QFont font1;
         font1.setPointSize(8);
         font1.setBold(false);
@@ -67,9 +65,9 @@ public:
         tabWidget->setFont(font1);
         tabWidget->setUsesScrollButtons(true);
         rosterEntryTab = new QWidget();
-        rosterEntryTab->setObjectName(QStringLiteral("rosterEntryTab"));
+        rosterEntryTab->setObjectName(QLatin1String("rosterEntryTab"));
         gridLayout = new QGridLayout(rosterEntryTab);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QLatin1String("gridLayout"));
         gridLayout->setVerticalSpacing(2);
         gridLayout->setContentsMargins(-1, 6, -1, 6);
         tabWidget->addTab(rosterEntryTab, QString());
@@ -78,15 +76,15 @@ public:
 
         PaneProgFrame->setCentralWidget(centralwidget);
         menubar = new QMenuBar(PaneProgFrame);
-        menubar->setObjectName(QStringLiteral("menubar"));
+        menubar->setObjectName(QLatin1String("menubar"));
         menubar->setGeometry(QRect(0, 0, 575, 20));
         menuFile = new QMenu(menubar);
-        menuFile->setObjectName(QStringLiteral("menuFile"));
+        menuFile->setObjectName(QLatin1String("menuFile"));
         menuReset = new QMenu(menubar);
-        menuReset->setObjectName(QStringLiteral("menuReset"));
+        menuReset->setObjectName(QLatin1String("menuReset"));
         PaneProgFrame->setMenuBar(menubar);
         statusbar = new QStatusBar(PaneProgFrame);
-        statusbar->setObjectName(QStringLiteral("statusbar"));
+        statusbar->setObjectName(QLatin1String("statusbar"));
         PaneProgFrame->setStatusBar(statusbar);
 
         menubar->addAction(menuFile->menuAction());
@@ -104,12 +102,12 @@ public:
 
     void retranslateUi(QMainWindow *PaneProgFrame)
     {
-        PaneProgFrame->setWindowTitle(QApplication::translate("PaneProgFrame", "MainWindow", Q_NULLPTR));
-        actionSave->setText(QApplication::translate("PaneProgFrame", "Save", Q_NULLPTR));
-        actionFactory_reset->setText(QApplication::translate("PaneProgFrame", "Factory reset", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(rosterEntryTab), QApplication::translate("PaneProgFrame", "Roster Entry", Q_NULLPTR));
-        menuFile->setTitle(QApplication::translate("PaneProgFrame", "File", Q_NULLPTR));
-        menuReset->setTitle(QApplication::translate("PaneProgFrame", "Reset", Q_NULLPTR));
+        PaneProgFrame->setWindowTitle(QApplication::translate("PaneProgFrame", "MainWindow", nullptr));
+        actionSave->setText(QApplication::translate("PaneProgFrame", "Save", nullptr));
+        actionFactory_reset->setText(QApplication::translate("PaneProgFrame", "Factory reset", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(rosterEntryTab), QApplication::translate("PaneProgFrame", "Roster Entry", nullptr));
+        menuFile->setTitle(QApplication::translate("PaneProgFrame", "File", nullptr));
+        menuReset->setTitle(QApplication::translate("PaneProgFrame", "Reset", nullptr));
     } // retranslateUi
 
 };

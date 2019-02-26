@@ -141,14 +141,15 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
      this->addInitializationException(profile, new InitializationException(english, localized, NULL));
     }
 #endif
-    catch (Exception* ex)
+    catch (Exception ex)
     {
      log-> error(tr("Unable to load %1 into %2").arg(shared.tagName()).arg(className)/*, ex*/);
 //              QString english = Bundle.getMessage(Locale.ENGLISH, "ErrorSingleConnection", userName, systemName); // NOI18N
 //              QString localized = Bundle.getMessage("ErrorSingleConnection", userName, systemName); // NOI18N
      QString english = tr("Unable to create connection \"%1\" (%2).").arg(userName).arg(systemName);
      QString localized = tr("Unable to create connection \"%1\" (%2).").arg(userName).arg(systemName);
-     this->addInitializationException(profile, new InitializationException(english, localized, ex));
+     Exception* ex1 = new Exception(ex);
+     this->addInitializationException(profile, new InitializationException(english, localized, ex1));
     }
    }
   }
@@ -204,7 +205,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  foreach(ConnectionConfig* o, *connections)
  {
   log-> debug(tr("Saving connection %1 (%2)...").arg(o->getConnectionName()).arg(shared));
-  QDomElement e = ConfigXmlManager::elementFromObject(o, shared);
+  QDomElement e = ConfigXmlManager::elementFromObject(o);
   if (!e.isNull()) {
       element.appendChild(e);
   }

@@ -280,7 +280,7 @@ void StartupActionsManager::loadPreferencesmanagers()
   log->debug(tr("model is %1 (%2)").arg(action->getName()).arg(action->toString()));
   if (action->getName() != NULL)
   {
-   QDomElement e = ConfigXmlManager::elementFromObject((QObject*)action, true);
+   QDomElement e = ConfigXmlManager::elementFromObject((QObject*)action);
    if (e != QDomElement())
    {
     element.appendChild(e);

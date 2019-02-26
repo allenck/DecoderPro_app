@@ -20,6 +20,7 @@ class LIBPR3SHARED_EXPORT PowerManager : public QObject
     ON     = 2,
     OFF    = 4
  };
+ Q_ENUM(STATES)
  static /*final*/ QString POWER;// = "Power"; // NOI18N
 
 

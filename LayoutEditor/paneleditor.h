@@ -144,6 +144,7 @@ protected:
  friend class PositionableLabel;
  friend class RemoveMenuAction;
  friend class LockItemListener;
+ friend class PanelEditorXml;
 };
 Q_DECLARE_METATYPE(PanelEditor)
 

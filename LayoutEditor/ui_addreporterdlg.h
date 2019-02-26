@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addreporterdlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,13 +10,10 @@
 #define UI_ADDREPORTERDLG_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
@@ -42,19 +39,19 @@ public:
     void setupUi(QDialog *AddReporterDlg)
     {
         if (AddReporterDlg->objectName().isEmpty())
-            AddReporterDlg->setObjectName(QStringLiteral("AddReporterDlg"));
+            AddReporterDlg->setObjectName(QLatin1String("AddReporterDlg"));
         AddReporterDlg->resize(281, 124);
         formLayout = new QFormLayout(AddReporterDlg);
-        formLayout->setObjectName(QStringLiteral("formLayout"));
+        formLayout->setObjectName(QLatin1String("formLayout"));
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         label = new QLabel(AddReporterDlg);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QLatin1String("label"));
 
         horizontalLayout->addWidget(label);
 
         edReporterName = new QLineEdit(AddReporterDlg);
-        edReporterName->setObjectName(QStringLiteral("edReporterName"));
+        edReporterName->setObjectName(QLatin1String("edReporterName"));
 
         horizontalLayout->addWidget(edReporterName);
 
@@ -62,14 +59,14 @@ public:
         formLayout->setLayout(0, QFormLayout::LabelRole, horizontalLayout);
 
         horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        horizontalLayout_2->setObjectName(QLatin1String("horizontalLayout_2"));
         label_2 = new QLabel(AddReporterDlg);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
 
         horizontalLayout_2->addWidget(label_2);
 
         edX = new QLineEdit(AddReporterDlg);
-        edX->setObjectName(QStringLiteral("edX"));
+        edX->setObjectName(QLatin1String("edX"));
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -82,12 +79,12 @@ public:
         horizontalLayout_2->addWidget(edX);
 
         label_3 = new QLabel(AddReporterDlg);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QLatin1String("label_3"));
 
         horizontalLayout_2->addWidget(label_3);
 
         edY = new QLineEdit(AddReporterDlg);
-        edY->setObjectName(QStringLiteral("edY"));
+        edY->setObjectName(QLatin1String("edY"));
         sizePolicy.setHeightForWidth(edY->sizePolicy().hasHeightForWidth());
         edY->setSizePolicy(sizePolicy);
         edY->setMaximumSize(QSize(70, 16777215));
@@ -100,14 +97,14 @@ public:
         formLayout->setLayout(1, QFormLayout::LabelRole, horizontalLayout_2);
 
         horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        horizontalLayout_3->setObjectName(QLatin1String("horizontalLayout_3"));
         okButton = new QPushButton(AddReporterDlg);
-        okButton->setObjectName(QStringLiteral("okButton"));
+        okButton->setObjectName(QLatin1String("okButton"));
 
         horizontalLayout_3->addWidget(okButton);
 
         cancelButton = new QPushButton(AddReporterDlg);
-        cancelButton->setObjectName(QStringLiteral("cancelButton"));
+        cancelButton->setObjectName(QLatin1String("cancelButton"));
 
         horizontalLayout_3->addWidget(cancelButton);
 
@@ -122,12 +119,12 @@ public:
 
     void retranslateUi(QDialog *AddReporterDlg)
     {
-        AddReporterDlg->setWindowTitle(QApplication::translate("AddReporterDlg", "Dialog", Q_NULLPTR));
-        label->setText(QApplication::translate("AddReporterDlg", "Reporter Name", Q_NULLPTR));
-        label_2->setText(QApplication::translate("AddReporterDlg", "Location:  x", Q_NULLPTR));
-        label_3->setText(QApplication::translate("AddReporterDlg", ", y", Q_NULLPTR));
-        okButton->setText(QApplication::translate("AddReporterDlg", "Add new label", Q_NULLPTR));
-        cancelButton->setText(QApplication::translate("AddReporterDlg", "Cancel", Q_NULLPTR));
+        AddReporterDlg->setWindowTitle(QApplication::translate("AddReporterDlg", "Dialog", nullptr));
+        label->setText(QApplication::translate("AddReporterDlg", "Reporter Name", nullptr));
+        label_2->setText(QApplication::translate("AddReporterDlg", "Location:  x", nullptr));
+        label_3->setText(QApplication::translate("AddReporterDlg", ", y", nullptr));
+        okButton->setText(QApplication::translate("AddReporterDlg", "Add new label", nullptr));
+        cancelButton->setText(QApplication::translate("AddReporterDlg", "Cancel", nullptr));
     } // retranslateUi
 
 };

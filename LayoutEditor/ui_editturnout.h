@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'editturnout.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,10 +10,7 @@
 #define UI_EDITTURNOUT_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 
@@ -27,7 +24,7 @@ public:
     void setupUi(QMainWindow *EditTurnout)
     {
         if (EditTurnout->objectName().isEmpty())
-            EditTurnout->setObjectName(QStringLiteral("EditTurnout"));
+            EditTurnout->setObjectName(QLatin1String("EditTurnout"));
         EditTurnout->resize(487, 355);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
         sizePolicy.setHorizontalStretch(0);
@@ -36,7 +33,7 @@ public:
         EditTurnout->setSizePolicy(sizePolicy);
         EditTurnout->setMinimumSize(QSize(400, 200));
         menuBar = new QMenuBar(EditTurnout);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
+        menuBar->setObjectName(QLatin1String("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 487, 25));
         EditTurnout->setMenuBar(menuBar);
 
@@ -47,7 +44,7 @@ public:
 
     void retranslateUi(QMainWindow *EditTurnout)
     {
-        EditTurnout->setWindowTitle(QApplication::translate("EditTurnout", "Edit Turnout", Q_NULLPTR));
+        EditTurnout->setWindowTitle(QApplication::translate("EditTurnout", "Edit Turnout", nullptr));
     } // retranslateUi
 
 };

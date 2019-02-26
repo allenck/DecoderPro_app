@@ -45,7 +45,7 @@ PanelEditor::PanelEditor(QWidget *parent) :
     ui(new Ui::PanelEditor)
 {
  ui->setupUi(this);
- init("NoName");
+ // init("NoName");  must be called by subclass
  setTitle();
 
 }
@@ -104,11 +104,11 @@ PanelEditor::~PanelEditor()
  //super(name, false, true);
  ui->setupUi(this);
 
- init(name);
+ // init("NoName");  must be called by subclass
  setTitle();
 }
 
-/*protected*/ void PanelEditor::init(QString /*name*/)
+/*protected*/ void PanelEditor::init(QString name)
 {
  log = new Logger("PanelEditor");
  setObjectName("PanelEditor");
@@ -140,7 +140,7 @@ PanelEditor::~PanelEditor()
  nextX = new JTextField(tr("Default X"),9);
  nextY = new JTextField(tr("Default Y"),9);
 
- JmriJFrame* frame = new JmriJFrame(tr("Panel Editor"));
+ JmriJFrame* frame = new JmriJFrame(name + " " + (tr("Editor")));
  QWidget* contentPane = frame->getContentPane();
  QVBoxLayout* contentPaneLayout = new QVBoxLayout(contentPane);
  QWidget* common = new QWidget();

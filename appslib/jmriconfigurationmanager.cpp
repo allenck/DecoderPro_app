@@ -199,25 +199,25 @@
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load(File* file)  throw (JmriException)
+/*public*/ bool JmriConfigurationManager::load(File* file)  throw (JmriConfigureXmlException)
 {
     return this->load(file, false);
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load( QUrl file)  throw (JmriException)
+/*public*/ bool JmriConfigurationManager::load( QUrl file)  throw (JmriConfigureXmlException)
 {
     return this->load(file, false);
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load(File* file, bool registerDeferred)  throw (JmriException)
+/*public*/ bool JmriConfigurationManager::load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 {
     return this->load(FileUtil::fileToURL(file), registerDeferred);
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load(QUrl file, bool registerDeferred)  throw (JmriException)
+/*public*/ bool JmriConfigurationManager::load(QUrl file, bool registerDeferred)  throw (JmriConfigureXmlException)
 {
  log->debug(tr("loading %1 ...").arg(file.path()));
  try {
@@ -250,8 +250,11 @@
       {
           errors->append(exception->getLocalizedMessage());
       } //);
-     } else if (this->initializationExceptions->value(provider) != NULL) {
-         errors->append(this->initializationExceptions->value(provider)->getLocalizedMessage());
+     } else if (this->initializationExceptions->value(provider) != NULL)
+     {
+         Exception *ex = this->initializationExceptions->value(provider);
+//         QString localizedMessage = ex->getLocalizedMessage();
+//         errors->append(localizedMessage);
      }
     } //);
     JList* list = NULL;
@@ -339,13 +342,13 @@
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::loadDeferred(File* file)  throw (JmriException)
+/*public*/ bool JmriConfigurationManager::loadDeferred(File* file)  throw (JmriConfigureXmlException)
 {
     return this->legacy->loadDeferred(file);
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::loadDeferred( QUrl file)  throw (JmriException)
+/*public*/ bool JmriConfigurationManager::loadDeferred( QUrl file)  throw (JmriConfigureXmlException)
 {
     return this->legacy->loadDeferred(file);
 }

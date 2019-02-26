@@ -5,6 +5,30 @@ ColorUtil::ColorUtil()
 {
 
 }
+/*
+ * Color lists for screen colors.
+ */
+/*public final static*/ QString ColorUtil::ColorTrack = "track";
+/*public final static*/ QString ColorUtil::ColorBlack = "black";
+/*public final static*/ QString ColorUtil::ColorDarkGray = "darkGray";
+/*public final static*/ QString ColorUtil::ColorGray = "gray";
+/*public final static*/ QString ColorUtil::ColorLightGray = "lightGray";
+/*public final static*/ QString ColorUtil::ColorWhite = "white";
+/*public final static*/ QString ColorUtil::ColorRed = "red";
+/*public final static*/ QString ColorUtil::ColorPink = "pink";
+/*public final static*/ QString ColorUtil::ColorOrange = "orange";
+/*public final static*/ QString ColorUtil::ColorYellow = "yellow";
+/*public final static*/ QString ColorUtil::ColorGreen = "green";
+/*public final static*/ QString ColorUtil::ColorBlue = "blue";
+/*public final static*/ QString ColorUtil::ColorMagenta = "magenta";
+/*public final static*/ QString ColorUtil::ColorCyan = "cyan";
+/*public final static*/ QString ColorUtil::ColorClear = "clear";
+/*public final static*/ QString ColorUtil::ColorBrown = "brown";
+
+/*public*/ /*final*/ /*static*/ QColor ColorUtil::clear = ColorUtil::setAlpha(QColor(Qt::black), 0);
+/*public*/ /*final*/ /*static*/ QColor ColorUtil::CLEAR = ColorUtil::clear;
+/*public*/ /*final*/ /*static*/ QColor ColorUtil::BROWN = QColor(102, 51, 0);
+
 /**
  * A collection of utilities related to colors.
  *

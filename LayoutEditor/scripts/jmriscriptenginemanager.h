@@ -4,8 +4,8 @@
 #include <QObject>
 #include <QMap>
 #include "liblayouteditor_global.h"
+#include "scriptexception.h"
 
-class ScriptException;
 class Logger;
 class File;
 class PythonInterpreter;
@@ -27,6 +27,8 @@ public:
  /*public*/ ScriptEngine* getEngine(QString engineName);
  /*public*/ void initializePython();
  /*public*/ QObject* eval(QString script, ScriptEngine* engine) throw (ScriptException);
+ /*public*/ ScriptEngine* getEngineByName(QString shortName);
+ /*public*/ ScriptContext* getDefaultContext();
 
 signals:
 

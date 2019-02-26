@@ -2,7 +2,7 @@
 #define REPORTCONTEXTACTION_H
 
 #include "abstractaction.h"
-#include <QtZeroConf/qzeroconf.h>
+#include <qzeroconf.h>
 
 class JTextArea;
 class JmriPanel;

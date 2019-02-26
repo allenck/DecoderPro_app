@@ -295,7 +295,7 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
  for(int i=0; i < v->size(); i++) originalList->replace(i,v->at(i));
 //  if(portBox.getActionListeners().length >0)
 //        portBox.removeActionListener(portBox.getActionListeners()[0]);
- disconnect(portBox);
+ disconnect(portBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(On_portBox_currentIndexChanged(QString)));
  portBox->clear();
  log->debug("getting fresh list of available Serial Ports");
 

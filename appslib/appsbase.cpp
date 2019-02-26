@@ -240,7 +240,7 @@ void AppsBase::init()
 
 /*protected*/ void AppsBase::installConfigurationManager()
 {
- ConfigureManager* cm = new JmriConfigurationManager();
+ ConfigureManager* cm = (ConfigureManager*)InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
  FileUtil::createDirectory(FileUtil::getUserFilesPath());
 // InstanceManager::setConfigureManager(cm);
 // QString cfgName;

@@ -44,6 +44,7 @@ public:
      */
     EXIT_ON_CLOSE = 3
  };
+ Q_ENUM(ACTIONS)
     //virtual /*public*/ void windowClosing(QCloseEvent* e);
 
     explicit JFrame(QWidget *parent = nullptr);
@@ -55,7 +56,7 @@ public:
     QPoint getLocation();
     void setLocation(int x, int y);
     virtual void dispose();
-    QWidget* getContentPane();
+    virtual QWidget* getContentPane(bool addLayout = true);
     void toFront();
     virtual /*public*/ void setTitle(QString _title);
     /*public*/ QString title();
@@ -73,10 +74,14 @@ public:
     void virtual languageChange() {}
 #endif
     void reSizeToFitOnScreen();
+    /*public*/ virtual void pack();
+    void setVisible(bool visible);
+
+
 signals:
     void propertyChange(PropertyChangeEvent*);
+
 public slots:
-    /*public*/ void pack();
     /*public*/ int getDefaultCloseOperation();
 
 private:

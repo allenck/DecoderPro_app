@@ -3,6 +3,7 @@
 #include "fileutil.h"
 #include "jythonautomaton.h"
 #include <QWidget>
+#include <QObject>
 
 //JythonAutomatonAction::JythonAutomatonAction(QObject *parent) :
 //  QAction(parent)

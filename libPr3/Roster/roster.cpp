@@ -303,7 +303,9 @@ Roster::Roster(QObject *parent) :
  * Return a specific entry by index
  */
 /*public*/ RosterEntry* Roster::getEntry(int i ) {
-    return _list->at(i);
+ if(i < 0 || i >= _list->size())
+  throw IndexOutOfBoundsException(tr("index %1 out of range").arg(i));
+ return _list->at(i);
 }
 
 
@@ -1002,6 +1004,12 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
 /*public*/ QString Roster::getRosterLocation()
 {
  return this->rosterLocation;
+}
+
+//@Override
+/*public*/ /*synchronized*/ void Roster::addPropertyChangeListener(PropertyChangeListener* l)
+{
+    pcs->addPropertyChangeListener(l);
 }
 
 /*public*/ /*synchronized*/ void Roster::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {

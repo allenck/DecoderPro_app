@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addresspanel.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,12 +10,9 @@
 #define UI_ADDRESSPANEL_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDockWidget>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -41,20 +38,20 @@ public:
     void setupUi(QDockWidget *AddressPanel)
     {
         if (AddressPanel->objectName().isEmpty())
-            AddressPanel->setObjectName(QStringLiteral("AddressPanel"));
+            AddressPanel->setObjectName(QLatin1String("AddressPanel"));
         AddressPanel->resize(291, 179);
         QFont font;
         font.setPointSize(8);
         AddressPanel->setFont(font);
         AddressPanel->setAllowedAreas(Qt::BottomDockWidgetArea|Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea);
         dockWidgetContents = new QWidget();
-        dockWidgetContents->setObjectName(QStringLiteral("dockWidgetContents"));
+        dockWidgetContents->setObjectName(QLatin1String("dockWidgetContents"));
         verticalLayout = new QVBoxLayout(dockWidgetContents);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
+        horizontalLayout_5->setObjectName(QLatin1String("horizontalLayout_5"));
         edAddress = new JTextField(dockWidgetContents);
-        edAddress->setObjectName(QStringLiteral("edAddress"));
+        edAddress->setObjectName(QLatin1String("edAddress"));
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -69,7 +66,7 @@ public:
         horizontalLayout_5->addWidget(edAddress);
 
         setButton = new QPushButton(dockWidgetContents);
-        setButton->setObjectName(QStringLiteral("setButton"));
+        setButton->setObjectName(QLatin1String("setButton"));
         sizePolicy.setHeightForWidth(setButton->sizePolicy().hasHeightForWidth());
         setButton->setSizePolicy(sizePolicy);
 
@@ -79,23 +76,23 @@ public:
         verticalLayout->addLayout(horizontalLayout_5);
 
         horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        horizontalLayout_4->setObjectName(QLatin1String("horizontalLayout_4"));
         dispatchButton = new QPushButton(dockWidgetContents);
-        dispatchButton->setObjectName(QStringLiteral("dispatchButton"));
+        dispatchButton->setObjectName(QLatin1String("dispatchButton"));
         sizePolicy.setHeightForWidth(dispatchButton->sizePolicy().hasHeightForWidth());
         dispatchButton->setSizePolicy(sizePolicy);
 
         horizontalLayout_4->addWidget(dispatchButton);
 
         releaseButton = new QPushButton(dockWidgetContents);
-        releaseButton->setObjectName(QStringLiteral("releaseButton"));
+        releaseButton->setObjectName(QLatin1String("releaseButton"));
         sizePolicy.setHeightForWidth(releaseButton->sizePolicy().hasHeightForWidth());
         releaseButton->setSizePolicy(sizePolicy);
 
         horizontalLayout_4->addWidget(releaseButton);
 
         progButton = new QPushButton(dockWidgetContents);
-        progButton->setObjectName(QStringLiteral("progButton"));
+        progButton->setObjectName(QLatin1String("progButton"));
         sizePolicy.setHeightForWidth(progButton->sizePolicy().hasHeightForWidth());
         progButton->setSizePolicy(sizePolicy);
 
@@ -105,7 +102,7 @@ public:
         verticalLayout->addLayout(horizontalLayout_4);
 
         rosterBox = new RosterEntrySelectorPanel(dockWidgetContents);
-        rosterBox->setObjectName(QStringLiteral("rosterBox"));
+        rosterBox->setObjectName(QLatin1String("rosterBox"));
 
         verticalLayout->addWidget(rosterBox);
 
@@ -118,12 +115,12 @@ public:
 
     void retranslateUi(QDockWidget *AddressPanel)
     {
-        AddressPanel->setWindowTitle(QApplication::translate("AddressPanel", "AddressPanel", Q_NULLPTR));
-        edAddress->setText(QApplication::translate("AddressPanel", "0000", Q_NULLPTR));
-        setButton->setText(QApplication::translate("AddressPanel", "Set", Q_NULLPTR));
-        dispatchButton->setText(QApplication::translate("AddressPanel", "Dispatch", Q_NULLPTR));
-        releaseButton->setText(QApplication::translate("AddressPanel", "Release", Q_NULLPTR));
-        progButton->setText(QApplication::translate("AddressPanel", "Program", Q_NULLPTR));
+        AddressPanel->setWindowTitle(QApplication::translate("AddressPanel", "AddressPanel", nullptr));
+        edAddress->setText(QApplication::translate("AddressPanel", "0000", nullptr));
+        setButton->setText(QApplication::translate("AddressPanel", "Set", nullptr));
+        dispatchButton->setText(QApplication::translate("AddressPanel", "Dispatch", nullptr));
+        releaseButton->setText(QApplication::translate("AddressPanel", "Release", nullptr));
+        progButton->setText(QApplication::translate("AddressPanel", "Program", nullptr));
     } // retranslateUi
 
 };

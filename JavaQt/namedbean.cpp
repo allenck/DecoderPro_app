@@ -7,13 +7,13 @@
 //const int NamedBean::UNKNOWN      = 0x01;
 //const int NamedBean::INCONSISTENT = 0x08;
 //#endif
-NamedBean::NamedBean(QObject *parent)
+NamedBean::NamedBean(QObject *parent) : QObject(parent)
 {
  _parent = parent;
  _state = UNKNOWN;
 }
 
-NamedBean::NamedBean(QString name, QObject *parent)
+NamedBean::NamedBean(QString name, QObject *parent) : QObject(parent)
 {
  _parent = parent;
  _name = name;

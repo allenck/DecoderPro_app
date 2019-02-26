@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'sensorentrywidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,12 +10,9 @@
 #define UI_SENSORENTRYWIDGET_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QFrame>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
@@ -40,23 +37,23 @@ public:
     void setupUi(QWidget *SensorEntryWidget)
     {
         if (SensorEntryWidget->objectName().isEmpty())
-            SensorEntryWidget->setObjectName(QStringLiteral("SensorEntryWidget"));
+            SensorEntryWidget->setObjectName(QLatin1String("SensorEntryWidget"));
         SensorEntryWidget->resize(197, 148);
         verticalLayout = new QVBoxLayout(SensorEntryWidget);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         frame = new QFrame(SensorEntryWidget);
-        frame->setObjectName(QStringLiteral("frame"));
+        frame->setObjectName(QLatin1String("frame"));
         frame->setFrameShape(QFrame::StyledPanel);
         frame->setFrameShadow(QFrame::Raised);
         formLayout = new QFormLayout(frame);
-        formLayout->setObjectName(QStringLiteral("formLayout"));
+        formLayout->setObjectName(QLatin1String("formLayout"));
         label = new QLabel(frame);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QLatin1String("label"));
 
         formLayout->setWidget(1, QFormLayout::LabelRole, label);
 
         edSensor = new SensorLineEdit(frame);
-        edSensor->setObjectName(QStringLiteral("edSensor"));
+        edSensor->setObjectName(QLatin1String("edSensor"));
         QFont font;
         font.setPointSize(9);
         edSensor->setFont(font);
@@ -64,12 +61,12 @@ public:
         formLayout->setWidget(2, QFormLayout::LabelRole, edSensor);
 
         btnDelete = new QPushButton(frame);
-        btnDelete->setObjectName(QStringLiteral("btnDelete"));
+        btnDelete->setObjectName(QLatin1String("btnDelete"));
 
         formLayout->setWidget(3, QFormLayout::LabelRole, btnDelete);
 
         iconButton = new DropPushButton(frame);
-        iconButton->setObjectName(QStringLiteral("iconButton"));
+        iconButton->setObjectName(QLatin1String("iconButton"));
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -81,7 +78,7 @@ public:
         formLayout->setWidget(2, QFormLayout::FieldRole, iconButton);
 
         labelPosition = new QLabel(frame);
-        labelPosition->setObjectName(QStringLiteral("labelPosition"));
+        labelPosition->setObjectName(QLatin1String("labelPosition"));
 
         formLayout->setWidget(1, QFormLayout::FieldRole, labelPosition);
 
@@ -96,12 +93,12 @@ public:
 
     void retranslateUi(QWidget *SensorEntryWidget)
     {
-        SensorEntryWidget->setWindowTitle(QApplication::translate("SensorEntryWidget", "Form", Q_NULLPTR));
-        label->setText(QApplication::translate("SensorEntryWidget", "Sensor", Q_NULLPTR));
-        edSensor->setText(QApplication::translate("SensorEntryWidget", "undefined", Q_NULLPTR));
-        btnDelete->setText(QApplication::translate("SensorEntryWidget", "Delete", Q_NULLPTR));
+        SensorEntryWidget->setWindowTitle(QApplication::translate("SensorEntryWidget", "Form", nullptr));
+        label->setText(QApplication::translate("SensorEntryWidget", "Sensor", nullptr));
+        edSensor->setText(QApplication::translate("SensorEntryWidget", "undefined", nullptr));
+        btnDelete->setText(QApplication::translate("SensorEntryWidget", "Delete", nullptr));
         iconButton->setText(QString());
-        labelPosition->setText(QApplication::translate("SensorEntryWidget", "Position x", Q_NULLPTR));
+        labelPosition->setText(QApplication::translate("SensorEntryWidget", "Position x", nullptr));
     } // retranslateUi
 
 };

@@ -36,25 +36,25 @@
 
 
     //@Override
-template<class T>
-/*public*/ bool NamedBeanHandle<T>::equals(QObject* obj)
-{
- if(obj ==this)
-  return true;
- if(obj ==NULL)
-  return false;
+//template<class T>
+///*public*/ bool NamedBeanHandle<T>::equals(QObject* obj)
+//{
+// if(obj ==this)
+//  return true;
+// if(obj ==NULL)
+//  return false;
 
-//            if(!(getClass()==obj->getClass()))
-//                return false;
-            else{
-                NamedBeanHandle<T> tmp = (NamedBeanHandle<T>)obj;
-                if(!tmp.getName().equals(this.getName()))
-                    return false;
-                if(tmp.getBean()!=this.getBean())
-                    return false;
-            }
-        return true;
-    }
+////            if(!(getClass()==obj->getClass()))
+////                return false;
+//            else{
+//                NamedBeanHandle<T> tmp = (NamedBeanHandle<T>)obj;
+//                if(!tmp.getName().equals(this.getName()))
+//                    return false;
+//                if(tmp.getBean()!=this.getBean())
+//                    return false;
+//            }
+//        return true;
+//    }
 
     //@Override
 template<class T>

@@ -12,7 +12,6 @@ class LIBLAYOUTEDITORSHARED_EXPORT PanelMenu : public QMenu
 {
     Q_OBJECT
 public:
-    explicit PanelMenu(QWidget *parent = nullptr);
     QT_DEPRECATED static /*public*/ PanelMenu* instance();
     /*public*/ int getNumberOfPanels();
     /*public*/ void deletePanel (Editor* panel);
@@ -29,6 +28,7 @@ signals:
     void newThrottleWindow();
 public slots:
     void on_panelSelected(QAction* act);
+    void menuSelected();
 private:
     // operational variables
     /*private*/ QMenu* panelsSubMenu;//	= NULL;
@@ -36,6 +36,10 @@ private:
     /*private*/ QList<Editor*>* panelsList;// = new QList<Editor*>();
     Logger* log;
     QActionGroup* actionGroup;
+protected:
+    explicit PanelMenu(QWidget *parent = nullptr);
+
+    friend class DefaultInstanceInitializer;
 };
 
 class PanelActionListener : public ActionListener
@@ -46,7 +50,7 @@ class PanelActionListener : public ActionListener
 public:
   PanelActionListener(Editor* panel, PanelMenu* pm);
 public slots:
-  void actionPerformed(ActionEvent* e = 0);
+  void actionPerformed();
 };
 
 #endif // PANELMENU_H

@@ -1,6 +1,7 @@
 #include "controlpaneleditoraction.h"
 #include "panelmenu.h"
 #include "controlpaneleditor.h"
+#include "instancemanager.h"
 
 //ControlPanelEditorAction::ControlPanelEditorAction(QObject *parent) :
 //  QAction(parent)
@@ -46,7 +47,7 @@ void ControlPanelEditorAction::common()
   }
  }
  ControlPanelEditor* frame = new ControlPanelEditor(name);
- PanelMenu::instance()->addEditorPanel(frame);
+ static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->addEditorPanel(frame);
  frame->setLocation(20, 20);
 
  frame->setTitle();

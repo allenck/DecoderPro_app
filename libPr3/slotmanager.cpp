@@ -740,7 +740,7 @@ bool SlotManager::getCanRead() { return mCanRead; }
  */
 //@Nonnull
 //@Override
-/*public*/ Programmer::WriteConfirmMode SlotManager::getWriteConfirmMode(QString addr) { return WriteConfirmMode::DecoderReply; }
+/*public*/ Programmer::WriteConfirmMode SlotManager::getWriteConfirmMode(QString /*addr*/) { return WriteConfirmMode::DecoderReply; }
 
 
 /**
@@ -1088,7 +1088,7 @@ void SlotManager::doEndOfProgramming()
   if (log->isDebugEnabled()) log->debug("timeout: turn power on");
   try
   {
-   InstanceManager::powerManagerInstance()->setPower(PowerManager::ON);
+   static_cast<PowerManager*>(InstanceManager::getDefault("PowerManager"))->setPower(PowerManager::ON);
   }
   catch (std::exception& e)
   {

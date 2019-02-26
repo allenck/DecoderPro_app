@@ -1,6 +1,8 @@
 #include "extraopcodewidget.h"
 #include "ui_extraopcodewidget.h"
 #include <QPainter>
+#include <QStyleOption>
+#include <QStyle>
 
 ExtraOpcodeWidget::ExtraOpcodeWidget(LocoIOData* data, int port, int extra, QWidget *parent) :
     QWidget(parent),

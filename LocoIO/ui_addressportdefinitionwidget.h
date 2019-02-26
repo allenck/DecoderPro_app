@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addressportdefinitionwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,10 +10,7 @@
 #define UI_ADDRESSPORTDEFINITIONWIDGET_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -35,7 +32,7 @@ public:
     void setupUi(QWidget *AddressPortDefinitionWidget)
     {
         if (AddressPortDefinitionWidget->objectName().isEmpty())
-            AddressPortDefinitionWidget->setObjectName(QStringLiteral("AddressPortDefinitionWidget"));
+            AddressPortDefinitionWidget->setObjectName(QLatin1String("AddressPortDefinitionWidget"));
         AddressPortDefinitionWidget->resize(145, 150);
         QFont font;
         font.setPointSize(7);
@@ -43,9 +40,9 @@ public:
         verticalLayout = new QVBoxLayout(AddressPortDefinitionWidget);
         verticalLayout->setSpacing(2);
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         label = new QLabel(AddressPortDefinitionWidget);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QLatin1String("label"));
         QPalette palette;
         QBrush brush(QColor(255, 0, 0, 255));
         brush.setStyle(Qt::SolidPattern);
@@ -62,7 +59,7 @@ public:
         verticalLayout->addWidget(label);
 
         label_2 = new QLabel(AddressPortDefinitionWidget);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
         QPalette palette1;
         QBrush brush2(QColor(255, 0, 127, 255));
         brush2.setStyle(Qt::SolidPattern);
@@ -77,7 +74,7 @@ public:
         verticalLayout->addWidget(label_2);
 
         label_3 = new QLabel(AddressPortDefinitionWidget);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QLatin1String("label_3"));
         QPalette palette2;
         palette2.setBrush(QPalette::Active, QPalette::WindowText, brush2);
         palette2.setBrush(QPalette::Active, QPalette::Text, brush2);
@@ -90,7 +87,7 @@ public:
         verticalLayout->addWidget(label_3);
 
         label_4 = new QLabel(AddressPortDefinitionWidget);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setObjectName(QLatin1String("label_4"));
         QPalette palette3;
         palette3.setBrush(QPalette::Active, QPalette::WindowText, brush2);
         palette3.setBrush(QPalette::Active, QPalette::Text, brush2);
@@ -103,7 +100,7 @@ public:
         verticalLayout->addWidget(label_4);
 
         label_5 = new QLabel(AddressPortDefinitionWidget);
-        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setObjectName(QLatin1String("label_5"));
         QPalette palette4;
         palette4.setBrush(QPalette::Active, QPalette::WindowText, brush);
         palette4.setBrush(QPalette::Active, QPalette::Text, brush);
@@ -116,7 +113,7 @@ public:
         verticalLayout->addWidget(label_5);
 
         label_6 = new QLabel(AddressPortDefinitionWidget);
-        label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setObjectName(QLatin1String("label_6"));
         QPalette palette5;
         palette5.setBrush(QPalette::Active, QPalette::WindowText, brush);
         palette5.setBrush(QPalette::Active, QPalette::Text, brush);
@@ -129,7 +126,7 @@ public:
         verticalLayout->addWidget(label_6);
 
         label_7 = new QLabel(AddressPortDefinitionWidget);
-        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setObjectName(QLatin1String("label_7"));
 
         verticalLayout->addWidget(label_7);
 
@@ -141,14 +138,14 @@ public:
 
     void retranslateUi(QWidget *AddressPortDefinitionWidget)
     {
-        AddressPortDefinitionWidget->setWindowTitle(QApplication::translate("AddressPortDefinitionWidget", "Form", Q_NULLPTR));
-        label->setText(QApplication::translate("AddressPortDefinitionWidget", "Address", Q_NULLPTR));
-        label_2->setText(QApplication::translate("AddressPortDefinitionWidget", "Configuration", Q_NULLPTR));
-        label_3->setText(QApplication::translate("AddressPortDefinitionWidget", "Value 1", Q_NULLPTR));
-        label_4->setText(QApplication::translate("AddressPortDefinitionWidget", "Value 2", Q_NULLPTR));
-        label_5->setText(QApplication::translate("AddressPortDefinitionWidget", "Read", Q_NULLPTR));
-        label_6->setText(QApplication::translate("AddressPortDefinitionWidget", "Write", Q_NULLPTR));
-        label_7->setText(QApplication::translate("AddressPortDefinitionWidget", "Edit Value 2", Q_NULLPTR));
+        AddressPortDefinitionWidget->setWindowTitle(QApplication::translate("AddressPortDefinitionWidget", "Form", nullptr));
+        label->setText(QApplication::translate("AddressPortDefinitionWidget", "Address", nullptr));
+        label_2->setText(QApplication::translate("AddressPortDefinitionWidget", "Configuration", nullptr));
+        label_3->setText(QApplication::translate("AddressPortDefinitionWidget", "Value 1", nullptr));
+        label_4->setText(QApplication::translate("AddressPortDefinitionWidget", "Value 2", nullptr));
+        label_5->setText(QApplication::translate("AddressPortDefinitionWidget", "Read", nullptr));
+        label_6->setText(QApplication::translate("AddressPortDefinitionWidget", "Write", nullptr));
+        label_7->setText(QApplication::translate("AddressPortDefinitionWidget", "Edit Value 2", nullptr));
     } // retranslateUi
 
 };

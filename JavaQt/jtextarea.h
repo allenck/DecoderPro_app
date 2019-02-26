@@ -33,6 +33,7 @@ public:
     /*public*/ void setWrapStyleWord(bool);
     /*public*/ bool getWrapStyleWord();
     /*public*/ void setOpaque(bool);
+    QString text;
 
 public slots:
 private:
@@ -45,7 +46,6 @@ private:
     /*private*/ bool wrap;
     /*private*/ bool word;
     Document* doc;
-    QString text;
     void common();
     QTextOption::WrapMode textOption;
 

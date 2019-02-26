@@ -266,10 +266,10 @@ entry.next();
   actionListBundle.insert("jmri.jmrix.loconet.loconetovertcp.LnTcpServerAction", "Start LocoNet Over Tcp Server");
 
   // add selected actions in the LocoNetMenu
-  actionListBundle.insert("LocoNetMenuStartupAction", "Monitor LocoNet");
-  actionListBundle.insert("LocoNetMenuStartupAction", "Monitor Slots");
-  actionListBundle.insert("LocoNetMenuStartupAction", "Clock Monitor");
-  actionListBundle.insert("LocoNetMenuStartupAction", "Monitor LocoNet Stats");
+  actionListBundle.insert("monitorLoconet.LocoNetMenuStartupAction", "Monitor LocoNet");
+  actionListBundle.insert("monitorSlots.LocoNetMenuStartupAction", "Monitor Slots");
+  actionListBundle.insert("clockMonitor.LocoNetMenuStartupAction", "Clock Monitor");
+  actionListBundle.insert("monitorLoconetStats.LocoNetMenuStartupAction", "Monitor LocoNet Stats");
 
   foreach(QString key, actionListBundle.keys())
   {

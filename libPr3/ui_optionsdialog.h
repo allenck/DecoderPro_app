@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'optionsdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,12 +10,9 @@
 #define UI_OPTIONSDIALOG_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 
@@ -32,19 +29,19 @@ public:
     void setupUi(QDialog *OptionsDialog)
     {
         if (OptionsDialog->objectName().isEmpty())
-            OptionsDialog->setObjectName(QStringLiteral("OptionsDialog"));
+            OptionsDialog->setObjectName(QLatin1String("OptionsDialog"));
         OptionsDialog->resize(301, 149);
         label = new QLabel(OptionsDialog);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QLatin1String("label"));
         label->setGeometry(QRect(20, 10, 331, 17));
         comboBox = new QComboBox(OptionsDialog);
-        comboBox->setObjectName(QStringLiteral("comboBox"));
+        comboBox->setObjectName(QLatin1String("comboBox"));
         comboBox->setGeometry(QRect(20, 40, 271, 27));
         btnOK = new QPushButton(OptionsDialog);
-        btnOK->setObjectName(QStringLiteral("btnOK"));
+        btnOK->setObjectName(QLatin1String("btnOK"));
         btnOK->setGeometry(QRect(20, 90, 99, 27));
         btnCancel = new QPushButton(OptionsDialog);
-        btnCancel->setObjectName(QStringLiteral("btnCancel"));
+        btnCancel->setObjectName(QLatin1String("btnCancel"));
         btnCancel->setGeometry(QRect(130, 90, 99, 27));
 
         retranslateUi(OptionsDialog);
@@ -54,10 +51,10 @@ public:
 
     void retranslateUi(QDialog *OptionsDialog)
     {
-        OptionsDialog->setWindowTitle(QApplication::translate("OptionsDialog", "Dialog", Q_NULLPTR));
-        label->setText(QApplication::translate("OptionsDialog", "TextLabel", Q_NULLPTR));
-        btnOK->setText(QApplication::translate("OptionsDialog", "OK", Q_NULLPTR));
-        btnCancel->setText(QApplication::translate("OptionsDialog", "Cancel", Q_NULLPTR));
+        OptionsDialog->setWindowTitle(QApplication::translate("OptionsDialog", "Dialog", nullptr));
+        label->setText(QApplication::translate("OptionsDialog", "TextLabel", nullptr));
+        btnOK->setText(QApplication::translate("OptionsDialog", "OK", nullptr));
+        btnCancel->setText(QApplication::translate("OptionsDialog", "Cancel", nullptr));
     } // retranslateUi
 
 };

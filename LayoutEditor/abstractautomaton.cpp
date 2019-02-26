@@ -140,12 +140,13 @@ AbstractAutomaton::~AbstractAutomaton()
   this->bRunInThread=bRunInThread;
   currentThread = new QThread();
   currentThread->setObjectName(name);
-  connect(currentThread, SIGNAL(started()), this, SLOT(process()));
   moveToThread(currentThread);
-  currentThread->start();
+  connect(currentThread, SIGNAL(started()), this, SLOT(process()));
   connect(this, SIGNAL(finished()), currentThread, SLOT(quit()));
   connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
   connect(currentThread, SIGNAL(finished()), currentThread, SLOT(deleteLater()));
+  currentThread->start();
+
  }
  else
  {

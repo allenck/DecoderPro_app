@@ -36,7 +36,7 @@ LoadStoreBaseAction::LoadStoreBaseAction(QObject *parent) :
  //super(s);
  // ensure that an XML config manager exists
  if (static_cast<ConfigureManager*>(InstanceManager::getOptionalDefault("ConfigureManager"))==NULL)
-       InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
+       InstanceManager::setDefault("ConfigureManager", new ConfigXmlManager());
 }
 
 
@@ -59,7 +59,7 @@ LoadStoreBaseAction::LoadStoreBaseAction(QObject *parent) :
 /*private*/ JFileChooser* LoadStoreBaseAction::getXmlFileChooser(QString path) {
 //    FileChooserFilter xmlFilter = new FileChooserFilter("XML files");
 //    xmlFilter.addExtension("xml"); // NOI18N
- QString xmlFilter = "Xml Files (*.xml)";
+ QString xmlFilter = "Xml Files (*.xml);;All files (*);";
 
  JFileChooser* chooser = new JFileChooser(path);
  chooser->setFileFilter(xmlFilter);

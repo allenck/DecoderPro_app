@@ -84,7 +84,7 @@ public:
      * By default, register this manager to store as configuration
      * information.  Override to change that.
      **/
-    QT_DEPRECATED /*public*/ QList<NamedBean*>* getNamedBeanList();
+    QT_DEPRECATED /*public*/ QList<NamedBean*> *getNamedBeanList();
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet();
 
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'rosterframe.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -12,7 +12,6 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
@@ -100,88 +99,88 @@ public:
     void setupUi(QMainWindow *RosterFrame)
     {
         if (RosterFrame->objectName().isEmpty())
-            RosterFrame->setObjectName(QStringLiteral("RosterFrame"));
+            RosterFrame->setObjectName(QLatin1String("RosterFrame"));
         RosterFrame->resize(800, 600);
         QFont font;
         font.setPointSize(8);
         RosterFrame->setFont(font);
         actionNew_Roster_Window = new QAction(RosterFrame);
-        actionNew_Roster_Window->setObjectName(QStringLiteral("actionNew_Roster_Window"));
+        actionNew_Roster_Window->setObjectName(QLatin1String("actionNew_Roster_Window"));
         actionClose_Window = new QAction(RosterFrame);
-        actionClose_Window->setObjectName(QStringLiteral("actionClose_Window"));
+        actionClose_Window->setObjectName(QLatin1String("actionClose_Window"));
         actionProgram = new QAction(RosterFrame);
-        actionProgram->setObjectName(QStringLiteral("actionProgram"));
+        actionProgram->setObjectName(QLatin1String("actionProgram"));
         actionLabels_and_Media = new QAction(RosterFrame);
-        actionLabels_and_Media->setObjectName(QStringLiteral("actionLabels_and_Media"));
+        actionLabels_and_Media->setObjectName(QLatin1String("actionLabels_and_Media"));
         actionNew_Throttle = new QAction(RosterFrame);
-        actionNew_Throttle->setObjectName(QStringLiteral("actionNew_Throttle"));
+        actionNew_Throttle->setObjectName(QLatin1String("actionNew_Throttle"));
         actionHide_Show_Summary_Panel = new QAction(RosterFrame);
-        actionHide_Show_Summary_Panel->setObjectName(QStringLiteral("actionHide_Show_Summary_Panel"));
+        actionHide_Show_Summary_Panel->setObjectName(QLatin1String("actionHide_Show_Summary_Panel"));
         actionHide_Show_Roster_Image = new QAction(RosterFrame);
-        actionHide_Show_Roster_Image->setObjectName(QStringLiteral("actionHide_Show_Roster_Image"));
+        actionHide_Show_Roster_Image->setObjectName(QLatin1String("actionHide_Show_Roster_Image"));
         actionProgramming_Track = new QAction(RosterFrame);
-        actionProgramming_Track->setObjectName(QStringLiteral("actionProgramming_Track"));
+        actionProgramming_Track->setObjectName(QLatin1String("actionProgramming_Track"));
         actionProgramming_Track->setCheckable(true);
         actionProgramming_On_Main = new QAction(RosterFrame);
-        actionProgramming_On_Main->setObjectName(QStringLiteral("actionProgramming_On_Main"));
+        actionProgramming_On_Main->setObjectName(QLatin1String("actionProgramming_On_Main"));
         actionProgramming_On_Main->setCheckable(true);
         actionEdit_Only = new QAction(RosterFrame);
-        actionEdit_Only->setObjectName(QStringLiteral("actionEdit_Only"));
+        actionEdit_Only->setObjectName(QLatin1String("actionEdit_Only"));
         actionEdit_Only->setCheckable(true);
         actionEdit_Only->setChecked(true);
         actionDuplicate_Loco = new QAction(RosterFrame);
-        actionDuplicate_Loco->setObjectName(QStringLiteral("actionDuplicate_Loco"));
+        actionDuplicate_Loco->setObjectName(QLatin1String("actionDuplicate_Loco"));
         actionDelete_Loco = new QAction(RosterFrame);
-        actionDelete_Loco->setObjectName(QStringLiteral("actionDelete_Loco"));
+        actionDelete_Loco->setObjectName(QLatin1String("actionDelete_Loco"));
         actionPreferences = new QAction(RosterFrame);
-        actionPreferences->setObjectName(QStringLiteral("actionPreferences"));
+        actionPreferences->setObjectName(QLatin1String("actionPreferences"));
         centralwidget = new QWidget(RosterFrame);
-        centralwidget->setObjectName(QStringLiteral("centralwidget"));
+        centralwidget->setObjectName(QLatin1String("centralwidget"));
         gridLayout_3 = new QGridLayout(centralwidget);
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        gridLayout_3->setObjectName(QLatin1String("gridLayout_3"));
         splitter = new QSplitter(centralwidget);
-        splitter->setObjectName(QStringLiteral("splitter"));
+        splitter->setObjectName(QLatin1String("splitter"));
         splitter->setOrientation(Qt::Vertical);
         splitter_2 = new QSplitter(splitter);
-        splitter_2->setObjectName(QStringLiteral("splitter_2"));
+        splitter_2->setObjectName(QLatin1String("splitter_2"));
         splitter_2->setOrientation(Qt::Horizontal);
         groupsPlaceholder = new QWidget(splitter_2);
-        groupsPlaceholder->setObjectName(QStringLiteral("groupsPlaceholder"));
+        groupsPlaceholder->setObjectName(QLatin1String("groupsPlaceholder"));
         QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(groupsPlaceholder->sizePolicy().hasHeightForWidth());
         groupsPlaceholder->setSizePolicy(sizePolicy);
         verticalLayout_2 = new QVBoxLayout(groupsPlaceholder);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setObjectName(QLatin1String("verticalLayout_2"));
         verticalLayout = new QVBoxLayout();
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
 
         verticalLayout_2->addLayout(verticalLayout);
 
         splitter_2->addWidget(groupsPlaceholder);
         rtable = new QTableView(splitter_2);
-        rtable->setObjectName(QStringLiteral("rtable"));
+        rtable->setObjectName(QLatin1String("rtable"));
         splitter_2->addWidget(rtable);
         splitter->addWidget(splitter_2);
         summaryPanel = new QWidget(splitter);
-        summaryPanel->setObjectName(QStringLiteral("summaryPanel"));
+        summaryPanel->setObjectName(QLatin1String("summaryPanel"));
         gridLayout_4 = new QGridLayout(summaryPanel);
-        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        gridLayout_4->setObjectName(QLatin1String("gridLayout_4"));
         verticalLayout_5 = new QVBoxLayout();
-        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
+        verticalLayout_5->setObjectName(QLatin1String("verticalLayout_5"));
         service = new QRadioButton(summaryPanel);
-        service->setObjectName(QStringLiteral("service"));
+        service->setObjectName(QLatin1String("service"));
 
         verticalLayout_5->addWidget(service);
 
         ops = new QRadioButton(summaryPanel);
-        ops->setObjectName(QStringLiteral("ops"));
+        ops->setObjectName(QLatin1String("ops"));
 
         verticalLayout_5->addWidget(ops);
 
         edit = new QRadioButton(summaryPanel);
-        edit->setObjectName(QStringLiteral("edit"));
+        edit->setObjectName(QLatin1String("edit"));
         edit->setChecked(true);
 
         verticalLayout_5->addWidget(edit);
@@ -190,19 +189,19 @@ public:
         gridLayout_4->addLayout(verticalLayout_5, 0, 2, 1, 1);
 
         gridLayout = new QGridLayout();
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QLatin1String("gridLayout"));
         btnThrottle = new QPushButton(summaryPanel);
-        btnThrottle->setObjectName(QStringLiteral("btnThrottle"));
+        btnThrottle->setObjectName(QLatin1String("btnThrottle"));
 
         gridLayout->addWidget(btnThrottle, 1, 1, 1, 1);
 
         btnLabelsMedia = new QPushButton(summaryPanel);
-        btnLabelsMedia->setObjectName(QStringLiteral("btnLabelsMedia"));
+        btnLabelsMedia->setObjectName(QLatin1String("btnLabelsMedia"));
 
         gridLayout->addWidget(btnLabelsMedia, 1, 0, 1, 1);
 
         btnProgram = new QPushButton(summaryPanel);
-        btnProgram->setObjectName(QStringLiteral("btnProgram"));
+        btnProgram->setObjectName(QLatin1String("btnProgram"));
 
         gridLayout->addWidget(btnProgram, 0, 0, 1, 2);
 
@@ -210,15 +209,15 @@ public:
         gridLayout_4->addLayout(gridLayout, 1, 2, 1, 1);
 
         locoImage = new QLabel(summaryPanel);
-        locoImage->setObjectName(QStringLiteral("locoImage"));
+        locoImage->setObjectName(QLatin1String("locoImage"));
 
         gridLayout_4->addWidget(locoImage, 0, 0, 3, 1);
 
         formLayout = new QFormLayout();
-        formLayout->setObjectName(QStringLiteral("formLayout"));
+        formLayout->setObjectName(QLatin1String("formLayout"));
         formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
         label_11 = new QLabel(summaryPanel);
-        label_11->setObjectName(QStringLiteral("label_11"));
+        label_11->setObjectName(QLatin1String("label_11"));
         label_11->setMinimumSize(QSize(109, 0));
         label_11->setMaximumSize(QSize(16777215, 16777215));
         label_11->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
@@ -226,115 +225,115 @@ public:
         formLayout->setWidget(0, QFormLayout::LabelRole, label_11);
 
         lblID = new QLabel(summaryPanel);
-        lblID->setObjectName(QStringLiteral("lblID"));
+        lblID->setObjectName(QLatin1String("lblID"));
 
         formLayout->setWidget(0, QFormLayout::FieldRole, lblID);
 
         label_12 = new QLabel(summaryPanel);
-        label_12->setObjectName(QStringLiteral("label_12"));
+        label_12->setObjectName(QLatin1String("label_12"));
         label_12->setMinimumSize(QSize(109, 0));
         label_12->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         formLayout->setWidget(1, QFormLayout::LabelRole, label_12);
 
         lblRoadName = new QLabel(summaryPanel);
-        lblRoadName->setObjectName(QStringLiteral("lblRoadName"));
+        lblRoadName->setObjectName(QLatin1String("lblRoadName"));
 
         formLayout->setWidget(1, QFormLayout::FieldRole, lblRoadName);
 
         label_13 = new QLabel(summaryPanel);
-        label_13->setObjectName(QStringLiteral("label_13"));
+        label_13->setObjectName(QLatin1String("label_13"));
         label_13->setMinimumSize(QSize(109, 0));
         label_13->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         formLayout->setWidget(2, QFormLayout::LabelRole, label_13);
 
         lblRoadNumber = new QLabel(summaryPanel);
-        lblRoadNumber->setObjectName(QStringLiteral("lblRoadNumber"));
+        lblRoadNumber->setObjectName(QLatin1String("lblRoadNumber"));
 
         formLayout->setWidget(2, QFormLayout::FieldRole, lblRoadNumber);
 
         label_14 = new QLabel(summaryPanel);
-        label_14->setObjectName(QStringLiteral("label_14"));
+        label_14->setObjectName(QLatin1String("label_14"));
         label_14->setMinimumSize(QSize(109, 0));
         label_14->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         formLayout->setWidget(3, QFormLayout::LabelRole, label_14);
 
         lblManufacturer = new QLabel(summaryPanel);
-        lblManufacturer->setObjectName(QStringLiteral("lblManufacturer"));
+        lblManufacturer->setObjectName(QLatin1String("lblManufacturer"));
 
         formLayout->setWidget(3, QFormLayout::FieldRole, lblManufacturer);
 
         label_15 = new QLabel(summaryPanel);
-        label_15->setObjectName(QStringLiteral("label_15"));
+        label_15->setObjectName(QLatin1String("label_15"));
         label_15->setMinimumSize(QSize(111, 0));
         label_15->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         formLayout->setWidget(4, QFormLayout::LabelRole, label_15);
 
         lblOwner = new QLabel(summaryPanel);
-        lblOwner->setObjectName(QStringLiteral("lblOwner"));
+        lblOwner->setObjectName(QLatin1String("lblOwner"));
 
         formLayout->setWidget(4, QFormLayout::FieldRole, lblOwner);
 
         label_16 = new QLabel(summaryPanel);
-        label_16->setObjectName(QStringLiteral("label_16"));
+        label_16->setObjectName(QLatin1String("label_16"));
         label_16->setMinimumSize(QSize(109, 0));
         label_16->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         formLayout->setWidget(5, QFormLayout::LabelRole, label_16);
 
         lblModel = new QLabel(summaryPanel);
-        lblModel->setObjectName(QStringLiteral("lblModel"));
+        lblModel->setObjectName(QLatin1String("lblModel"));
 
         formLayout->setWidget(5, QFormLayout::FieldRole, lblModel);
 
         label_17 = new QLabel(summaryPanel);
-        label_17->setObjectName(QStringLiteral("label_17"));
+        label_17->setObjectName(QLatin1String("label_17"));
         label_17->setMinimumSize(QSize(109, 0));
         label_17->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         formLayout->setWidget(6, QFormLayout::LabelRole, label_17);
 
         lblDCCAddress = new QLabel(summaryPanel);
-        lblDCCAddress->setObjectName(QStringLiteral("lblDCCAddress"));
+        lblDCCAddress->setObjectName(QLatin1String("lblDCCAddress"));
 
         formLayout->setWidget(6, QFormLayout::FieldRole, lblDCCAddress);
 
         label_18 = new QLabel(summaryPanel);
-        label_18->setObjectName(QStringLiteral("label_18"));
+        label_18->setObjectName(QLatin1String("label_18"));
         label_18->setMinimumSize(QSize(109, 0));
         label_18->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         formLayout->setWidget(7, QFormLayout::LabelRole, label_18);
 
         lblDecoderFamily = new QLabel(summaryPanel);
-        lblDecoderFamily->setObjectName(QStringLiteral("lblDecoderFamily"));
+        lblDecoderFamily->setObjectName(QLatin1String("lblDecoderFamily"));
 
         formLayout->setWidget(7, QFormLayout::FieldRole, lblDecoderFamily);
 
         label_19 = new QLabel(summaryPanel);
-        label_19->setObjectName(QStringLiteral("label_19"));
+        label_19->setObjectName(QLatin1String("label_19"));
         label_19->setMinimumSize(QSize(109, 0));
         label_19->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         formLayout->setWidget(8, QFormLayout::LabelRole, label_19);
 
         lblDecoderModel = new QLabel(summaryPanel);
-        lblDecoderModel->setObjectName(QStringLiteral("lblDecoderModel"));
+        lblDecoderModel->setObjectName(QLatin1String("lblDecoderModel"));
 
         formLayout->setWidget(8, QFormLayout::FieldRole, lblDecoderModel);
 
         label_20 = new QLabel(summaryPanel);
-        label_20->setObjectName(QStringLiteral("label_20"));
+        label_20->setObjectName(QLatin1String("label_20"));
         label_20->setMinimumSize(QSize(109, 0));
         label_20->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         formLayout->setWidget(9, QFormLayout::LabelRole, label_20);
 
         lblFileName = new QLabel(summaryPanel);
-        lblFileName->setObjectName(QStringLiteral("lblFileName"));
+        lblFileName->setObjectName(QLatin1String("lblFileName"));
 
         formLayout->setWidget(9, QFormLayout::FieldRole, lblFileName);
 
@@ -347,26 +346,26 @@ public:
 
         RosterFrame->setCentralWidget(centralwidget);
         menubar = new QMenuBar(RosterFrame);
-        menubar->setObjectName(QStringLiteral("menubar"));
+        menubar->setObjectName(QLatin1String("menubar"));
         menubar->setGeometry(QRect(0, 0, 800, 22));
         menuFile = new QMenu(menubar);
-        menuFile->setObjectName(QStringLiteral("menuFile"));
+        menuFile->setObjectName(QLatin1String("menuFile"));
         menuEdit = new QMenu(menubar);
-        menuEdit->setObjectName(QStringLiteral("menuEdit"));
+        menuEdit->setObjectName(QLatin1String("menuEdit"));
         menuSettings = new QMenu(menubar);
-        menuSettings->setObjectName(QStringLiteral("menuSettings"));
+        menuSettings->setObjectName(QLatin1String("menuSettings"));
         menuProgramming = new QMenu(menuSettings);
-        menuProgramming->setObjectName(QStringLiteral("menuProgramming"));
+        menuProgramming->setObjectName(QLatin1String("menuProgramming"));
         menuActions = new QMenu(menubar);
-        menuActions->setObjectName(QStringLiteral("menuActions"));
+        menuActions->setObjectName(QLatin1String("menuActions"));
         menuLocoNet = new QMenu(menubar);
-        menuLocoNet->setObjectName(QStringLiteral("menuLocoNet"));
+        menuLocoNet->setObjectName(QLatin1String("menuLocoNet"));
         RosterFrame->setMenuBar(menubar);
         statusBar = new QStatusBar(RosterFrame);
-        statusBar->setObjectName(QStringLiteral("statusBar"));
+        statusBar->setObjectName(QLatin1String("statusBar"));
         RosterFrame->setStatusBar(statusBar);
         toolBar = new QToolBar(RosterFrame);
-        toolBar->setObjectName(QStringLiteral("toolBar"));
+        toolBar->setObjectName(QLatin1String("toolBar"));
         RosterFrame->addToolBar(Qt::TopToolBarArea, toolBar);
 
         menubar->addAction(menuFile->menuAction());
@@ -400,54 +399,54 @@ public:
 
     void retranslateUi(QMainWindow *RosterFrame)
     {
-        RosterFrame->setWindowTitle(QApplication::translate("RosterFrame", "Roster: All Entries", Q_NULLPTR));
-        actionNew_Roster_Window->setText(QApplication::translate("RosterFrame", "New Roster Window", Q_NULLPTR));
-        actionClose_Window->setText(QApplication::translate("RosterFrame", "Close Window", Q_NULLPTR));
-        actionProgram->setText(QApplication::translate("RosterFrame", "Program", Q_NULLPTR));
-        actionLabels_and_Media->setText(QApplication::translate("RosterFrame", "Labels && Media", Q_NULLPTR));
-        actionNew_Throttle->setText(QApplication::translate("RosterFrame", "New Throttle", Q_NULLPTR));
-        actionHide_Show_Summary_Panel->setText(QApplication::translate("RosterFrame", "Hide/Show Summary Panel", Q_NULLPTR));
-        actionHide_Show_Roster_Image->setText(QApplication::translate("RosterFrame", "Hide/Show Roster Image", Q_NULLPTR));
-        actionProgramming_Track->setText(QApplication::translate("RosterFrame", "Programming Track", Q_NULLPTR));
-        actionProgramming_On_Main->setText(QApplication::translate("RosterFrame", "Programming On Main", Q_NULLPTR));
-        actionEdit_Only->setText(QApplication::translate("RosterFrame", "Edit Only", Q_NULLPTR));
-        actionDuplicate_Loco->setText(QApplication::translate("RosterFrame", "Duplicate Loco", Q_NULLPTR));
-        actionDelete_Loco->setText(QApplication::translate("RosterFrame", "Delete Loco", Q_NULLPTR));
-        actionPreferences->setText(QApplication::translate("RosterFrame", "Preferences", Q_NULLPTR));
-        service->setText(QApplication::translate("RosterFrame", "Programming Track", Q_NULLPTR));
-        ops->setText(QApplication::translate("RosterFrame", "Programming on Main", Q_NULLPTR));
-        edit->setText(QApplication::translate("RosterFrame", "Edit Only", Q_NULLPTR));
-        btnThrottle->setText(QApplication::translate("RosterFrame", "Throttle", Q_NULLPTR));
-        btnLabelsMedia->setText(QApplication::translate("RosterFrame", "Labels & Media", Q_NULLPTR));
-        btnProgram->setText(QApplication::translate("RosterFrame", "Program", Q_NULLPTR));
-        locoImage->setText(QApplication::translate("RosterFrame", "Roster Image", Q_NULLPTR));
-        label_11->setText(QApplication::translate("RosterFrame", "ID:", Q_NULLPTR));
-        lblID->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
-        label_12->setText(QApplication::translate("RosterFrame", "Road Name:", Q_NULLPTR));
-        lblRoadName->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
-        label_13->setText(QApplication::translate("RosterFrame", "Road Number:", Q_NULLPTR));
-        lblRoadNumber->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
-        label_14->setText(QApplication::translate("RosterFrame", "Manufacturer:", Q_NULLPTR));
-        lblManufacturer->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
-        label_15->setText(QApplication::translate("RosterFrame", "Owner:", Q_NULLPTR));
-        lblOwner->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
-        label_16->setText(QApplication::translate("RosterFrame", "Model:", Q_NULLPTR));
-        lblModel->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
-        label_17->setText(QApplication::translate("RosterFrame", "DCC Address:", Q_NULLPTR));
-        lblDCCAddress->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
-        label_18->setText(QApplication::translate("RosterFrame", "Decoder Family:", Q_NULLPTR));
-        lblDecoderFamily->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
-        label_19->setText(QApplication::translate("RosterFrame", "Decoder Model:", Q_NULLPTR));
-        lblDecoderModel->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
-        label_20->setText(QApplication::translate("RosterFrame", "File Name:", Q_NULLPTR));
-        lblFileName->setText(QApplication::translate("RosterFrame", "TextLabel", Q_NULLPTR));
-        menuFile->setTitle(QApplication::translate("RosterFrame", "File", Q_NULLPTR));
-        menuEdit->setTitle(QApplication::translate("RosterFrame", "Edit", Q_NULLPTR));
-        menuSettings->setTitle(QApplication::translate("RosterFrame", "Settings", Q_NULLPTR));
-        menuProgramming->setTitle(QApplication::translate("RosterFrame", "Programming", Q_NULLPTR));
-        menuActions->setTitle(QApplication::translate("RosterFrame", "Actions", Q_NULLPTR));
-        menuLocoNet->setTitle(QApplication::translate("RosterFrame", "LocoNet", Q_NULLPTR));
-        toolBar->setWindowTitle(QApplication::translate("RosterFrame", "toolBar", Q_NULLPTR));
+        RosterFrame->setWindowTitle(QApplication::translate("RosterFrame", "Roster: All Entries", nullptr));
+        actionNew_Roster_Window->setText(QApplication::translate("RosterFrame", "New Roster Window", nullptr));
+        actionClose_Window->setText(QApplication::translate("RosterFrame", "Close Window", nullptr));
+        actionProgram->setText(QApplication::translate("RosterFrame", "Program", nullptr));
+        actionLabels_and_Media->setText(QApplication::translate("RosterFrame", "Labels && Media", nullptr));
+        actionNew_Throttle->setText(QApplication::translate("RosterFrame", "New Throttle", nullptr));
+        actionHide_Show_Summary_Panel->setText(QApplication::translate("RosterFrame", "Hide/Show Summary Panel", nullptr));
+        actionHide_Show_Roster_Image->setText(QApplication::translate("RosterFrame", "Hide/Show Roster Image", nullptr));
+        actionProgramming_Track->setText(QApplication::translate("RosterFrame", "Programming Track", nullptr));
+        actionProgramming_On_Main->setText(QApplication::translate("RosterFrame", "Programming On Main", nullptr));
+        actionEdit_Only->setText(QApplication::translate("RosterFrame", "Edit Only", nullptr));
+        actionDuplicate_Loco->setText(QApplication::translate("RosterFrame", "Duplicate Loco", nullptr));
+        actionDelete_Loco->setText(QApplication::translate("RosterFrame", "Delete Loco", nullptr));
+        actionPreferences->setText(QApplication::translate("RosterFrame", "Preferences", nullptr));
+        service->setText(QApplication::translate("RosterFrame", "Programming Track", nullptr));
+        ops->setText(QApplication::translate("RosterFrame", "Programming on Main", nullptr));
+        edit->setText(QApplication::translate("RosterFrame", "Edit Only", nullptr));
+        btnThrottle->setText(QApplication::translate("RosterFrame", "Throttle", nullptr));
+        btnLabelsMedia->setText(QApplication::translate("RosterFrame", "Labels & Media", nullptr));
+        btnProgram->setText(QApplication::translate("RosterFrame", "Program", nullptr));
+        locoImage->setText(QApplication::translate("RosterFrame", "Roster Image", nullptr));
+        label_11->setText(QApplication::translate("RosterFrame", "ID:", nullptr));
+        lblID->setText(QApplication::translate("RosterFrame", "TextLabel", nullptr));
+        label_12->setText(QApplication::translate("RosterFrame", "Road Name:", nullptr));
+        lblRoadName->setText(QApplication::translate("RosterFrame", "TextLabel", nullptr));
+        label_13->setText(QApplication::translate("RosterFrame", "Road Number:", nullptr));
+        lblRoadNumber->setText(QApplication::translate("RosterFrame", "TextLabel", nullptr));
+        label_14->setText(QApplication::translate("RosterFrame", "Manufacturer:", nullptr));
+        lblManufacturer->setText(QApplication::translate("RosterFrame", "TextLabel", nullptr));
+        label_15->setText(QApplication::translate("RosterFrame", "Owner:", nullptr));
+        lblOwner->setText(QApplication::translate("RosterFrame", "TextLabel", nullptr));
+        label_16->setText(QApplication::translate("RosterFrame", "Model:", nullptr));
+        lblModel->setText(QApplication::translate("RosterFrame", "TextLabel", nullptr));
+        label_17->setText(QApplication::translate("RosterFrame", "DCC Address:", nullptr));
+        lblDCCAddress->setText(QApplication::translate("RosterFrame", "TextLabel", nullptr));
+        label_18->setText(QApplication::translate("RosterFrame", "Decoder Family:", nullptr));
+        lblDecoderFamily->setText(QApplication::translate("RosterFrame", "TextLabel", nullptr));
+        label_19->setText(QApplication::translate("RosterFrame", "Decoder Model:", nullptr));
+        lblDecoderModel->setText(QApplication::translate("RosterFrame", "TextLabel", nullptr));
+        label_20->setText(QApplication::translate("RosterFrame", "File Name:", nullptr));
+        lblFileName->setText(QApplication::translate("RosterFrame", "TextLabel", nullptr));
+        menuFile->setTitle(QApplication::translate("RosterFrame", "File", nullptr));
+        menuEdit->setTitle(QApplication::translate("RosterFrame", "Edit", nullptr));
+        menuSettings->setTitle(QApplication::translate("RosterFrame", "Settings", nullptr));
+        menuProgramming->setTitle(QApplication::translate("RosterFrame", "Programming", nullptr));
+        menuActions->setTitle(QApplication::translate("RosterFrame", "Actions", nullptr));
+        menuLocoNet->setTitle(QApplication::translate("RosterFrame", "LocoNet", nullptr));
+        toolBar->setWindowTitle(QApplication::translate("RosterFrame", "toolBar", nullptr));
     } // retranslateUi
 
 };

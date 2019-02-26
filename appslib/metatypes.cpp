@@ -206,7 +206,7 @@
 #include "signalheadsignalmastxml.h"
 #include "transitmanagerxml.h"
 #include "rosterentry.h"
-#include "jmriconfigurationmanager.h"
+//#include "jmriconfigurationmanager.h"
 #include "warrantmanager.h"
 #include "jmriuserpreferencesmanager.h"
 #include "jmrijtablepersistencemanager.h"
@@ -510,7 +510,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SignalHeadSignalMastXml>("SignalHeadSignalMastXml");
  qRegisterMetaType<TransitManagerXml>("TransitManagerXml");
  qRegisterMetaType<RosterEntry>("RosterEntry");
- qRegisterMetaType<JmriConfigurationManager>("JmriConfigurationManager");
+ //qRegisterMetaType<JmriConfigurationManager>("JmriConfigurationManager");
  qRegisterMetaType<WarrantManager>("WarrantManager");
  qRegisterMetaType<OBlockManager>("OBlockManager");
  qRegisterMetaType<JmriUserPreferencesManager>("JmriUserPreferencesManager");

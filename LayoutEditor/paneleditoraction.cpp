@@ -1,6 +1,7 @@
 #include "paneleditoraction.h"
 #include "panelmenu.h"
 #include "paneleditor.h"
+#include "instancemanager.h"
 
 //PanelEditorAction::PanelEditorAction(QObject *parent) :
 //  QAction(parent)
@@ -43,12 +44,12 @@ void PanelEditorAction::common()
  QString name = "Panel";
  for (int i = 2; i < 100; i++)
  {
-  if (PanelMenu::instance()->isPanelNameUsed(name)) {
+  if (static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name)) {
       name = "Panel " + i;
   }
  }
  PanelEditor* frame = new PanelEditor(name);
- PanelMenu::instance()->addEditorPanel(frame);
+ static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->addEditorPanel(frame);
  frame->setLocation(20, 20);
 
  frame->setTitle();

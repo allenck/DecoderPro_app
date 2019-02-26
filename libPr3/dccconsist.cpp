@@ -6,7 +6,7 @@
 #include "globalprogrammermanager.h"
 #include "addressedprogrammermanager.h"
 
-DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
+DccConsist::DccConsist(int address, QObject *parent) : Consist(parent)
 {
  consistAddress = new DccLocoAddress(address,false);
  consistDir = new QHash<DccLocoAddress*, bool>();
@@ -40,7 +40,7 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
 
 // Initialize a consist for a specific DccLocoAddress.
     // The Default consist type is an advanced consist
-/*public*/ DccConsist::DccConsist(DccLocoAddress* address, QObject* parent) //: Consist(parent)
+/*public*/ DccConsist::DccConsist(DccLocoAddress* address, QObject* parent) : Consist(parent)
 {
  consistAddress = address;
  consistDir = new QHash<DccLocoAddress*, bool>();
@@ -224,7 +224,7 @@ DccConsist::DccConsist(int address, QObject *parent) //: Consist(parent)
      */
 /*protected*/ void DccConsist::addToAdvancedConsist(DccLocoAddress* LocoAddress, bool directionNormal)
 {
- AddressedProgrammer* opsProg = ((AddressedProgrammerManager*)InstanceManager::programmerManagerInstance())->getAddressedProgrammer(LocoAddress->isLongAddress(), LocoAddress->getNumber());
+ AddressedProgrammer* opsProg = static_cast<AddressedProgrammerManager*>(InstanceManager::getDefault("ProgrammerManager"))->getAddressedProgrammer(LocoAddress->isLongAddress(), LocoAddress->getNumber());
  if(directionNormal)
  {
   try

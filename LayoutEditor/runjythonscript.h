@@ -25,7 +25,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(/*ActionEvent* e = 0*/);
  void On_stdErr(const QString& s);
 
 private:

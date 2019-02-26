@@ -12,8 +12,13 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = DecoderPro3
 TEMPLATE = app
 
-win32:PREFIX = "C:/Program Files (x86)/local"
-unix:PREFIX = /home/allen/Projects/PythonQt-master
+PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+isEmpty( PYTHONQT_PREFIX ) {
+  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+  unix:PYTHONQT_PREFIX=/home/allen/Projects/PythonQt/pythonqt-code
+}
+
+include($$PYTHONQT_PREFIX/build/python.prf)
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -28,6 +33,12 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
+unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
+ ENABLE_SCRIPTING = "Y"
+ message(DecoderPro3: $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "found OK")
+} else:unix: {
+ message(DecoderPro3: $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "not found")
+}
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
@@ -78,8 +89,11 @@ win32:exists($$PREFIX/lib/PythonQt.dll){
  ENABLE_SCRIPTING = "Y"
 }
 
-unix:exists($$PREFIX/lib/libPythonQt_d.so){
+unix:exists($$PREFIX/lib/libPythonQt-Qt5-Python2.7_d.so){
  ENABLE_SCRIPTING = "Y"
+ message(PanelPro: $$PREFIX/lib/libPythonQt-Qt5-Python2.7_d.so + "found OK")
+} else:unix: {
+ message(PanelPro: $$PREFIX/lib/libPythonQt-Qt5-Python2.7_d.so + "not found")
 }
 
 #CONFIG += scripts
@@ -87,11 +101,10 @@ equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
 
     win32:CONFIG(debug, debug|release): LIBS += -L$$PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
-    else:unix: LIBS += -L$$PREFIX/lib/ -lPythonQt_d -lPythonQt_QtAll_d
+    else:unix: LIBS += -L$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d -lPythonQt_QtAll-Qt5-Python$${PYTHON_VERSION}_d
 
-    PREFIX = /usr/local
-    INCLUDEPATH += $$PREFIX/include/PythonQt
-    DEPENDPATH += $$PREFIX/include/PythonQt
+    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+    DEPENDPATH +=  $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
 
  include(../python.prf)
  message(DecoderPro3: python scripts are enabled)

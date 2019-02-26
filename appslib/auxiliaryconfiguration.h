@@ -16,6 +16,7 @@
 {
  Q_OBJECT
  public:
+    AuxiliaryConfiguration(QObject* parent = nullptr) : QObject(parent) {}
     /**
      * Get a configuration fragment as an XML element.
      * <p>

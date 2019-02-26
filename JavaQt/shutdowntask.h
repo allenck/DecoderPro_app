@@ -13,7 +13,7 @@
  */
 /*public*/ /*interface*/ class ShutDownTask : public QObject
 {
-  //Q_OBJECT
+  Q_OBJECT
  public:
     /**
      * Take the necessary action.

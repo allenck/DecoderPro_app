@@ -184,7 +184,7 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Prefer
  foreach(QString clazz, *classes)
  {
   if (!this->getRequires()->contains(clazz))
-   throw new IllegalArgumentException("Class " + clazz + " not marked as required by " + this->metaObject()->className());
+   throw IllegalArgumentException("Class " + clazz + " not marked as required by " + this->metaObject()->className());
  }
 #endif
  foreach (/*Class<? extends PreferencesManager>*/QString clazz , classes->toList())

@@ -899,55 +899,56 @@ void Editor::closeEvent(QCloseEvent */*e*/)
 /*protected*/ Editor* Editor::changeView(QString className)
 {
  setCursor(Qt::WaitCursor);
-JFrame* frame = getTargetFrame();
-//QColor background = getBackgroundColor();
-//    try {
- Editor* ed = (Editor*)Class::forName(className); //.newInstance();
- if(ed == nullptr)
+ JFrame* frame = getTargetFrame();
+ //QColor background = getBackgroundColor();
+ try
  {
-  log->error(tr("Failed to load editor %1").arg(className));
-  return nullptr;
+  Editor* ed = (Editor*)Class::forName(className); //.newInstance();
+  if(ed == nullptr)
+  {
+   log->error(tr("Failed to load editor %1").arg(className));
+   return nullptr;
+  }
+
+  ed->setName(getName());
+  ed->init(getName());
+
+  ed->_contents = _contents;
+  for (int i = 0; i<_contents->size(); i++)
+  {
+   Positionable* p = _contents->at(i);
+   p->setEditor(ed);
+   ed->addToTarget(p);
+   if (_debug) log->debug("changeView: "+p->getNameString()+" addToTarget class= " +QString(p->metaObject()->className()));
+  }
+  ed->setAllEditable(isEditable());
+  ed->setAllPositionable(allPositionable());
+  //ed.setShowCoordinates(showCoordinates());
+  ed->setAllShowTooltip(showToolTip());
+  ed->setAllControlling(allControlling());
+  ed->setShowHidden(isVisible());
+  ed->setPanelMenu(frame->menuBar()->isVisible());
+ //        ed->setScroll(getScrollable());
+  ed->setTitle();
+  //ed->setBackgroundColor(getBackgroundColor());
+ //        ed->getTargetFrame()->setLocation(frame->getLocation());
+  ed->getTargetFrame()->resize(frame->size());
+  ed->resize(size());
+  //ed->adjustSize();
+  ed->setVisible(true);
+  static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->addEditorPanel(ed);
+  dispose(false);
+  setCursor(Qt::ArrowCursor);
+  return ed;
+ } catch (ClassNotFoundException cnfe) {
+     log->error("changeView exception "+cnfe.getMessage());
+ } catch (InstantiationException ie) {
+     log->error("changeView exception "+ie.getMessage());
+ } catch (IllegalAccessException iae) {
+     log->error("changeView exception "+iae.getMessage());
  }
 
- ed->setName(getName());
- ed->init(getName());
-
- ed->_contents = _contents;
- for (int i = 0; i<_contents->size(); i++)
- {
-  Positionable* p = _contents->at(i);
-  p->setEditor(ed);
-  ed->addToTarget(p);
-  if (_debug) log->debug("changeView: "+p->getNameString()+" addToTarget class= " +QString(p->metaObject()->className()));
- }
- ed->setAllEditable(isEditable());
- ed->setAllPositionable(allPositionable());
- //ed.setShowCoordinates(showCoordinates());
- ed->setAllShowTooltip(showToolTip());
- ed->setAllControlling(allControlling());
- ed->setShowHidden(isVisible());
- ed->setPanelMenu(frame->menuBar()->isVisible());
-//        ed->setScroll(getScrollable());
- ed->setTitle();
- //ed->setBackgroundColor(getBackgroundColor());
-//        ed->getTargetFrame()->setLocation(frame->getLocation());
- ed->getTargetFrame()->resize(frame->size());
- ed->resize(size());
- //ed->adjustSize();
- ed->setVisible(true);
- PanelMenu::instance()->addEditorPanel(ed);
- dispose(false);
- setCursor(Qt::ArrowCursor);
- return ed;
-//    } catch (ClassNotFoundException cnfe) {
-//        log->error("changeView exception "+cnfe.toQString());
-//    } catch (InstantiationException ie) {
-//        log->error("changeView exception "+ie.toQString());
-//    } catch (IllegalAccessException iae) {
-//        log->error("changeView exception "+iae.toQString());
-//    }
-
- //return NULL;
+ return nullptr;
 }
 
 

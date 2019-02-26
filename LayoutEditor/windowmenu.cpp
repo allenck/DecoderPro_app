@@ -109,6 +109,7 @@ void WindowMenu::onItem(QWidget* iFrame)
        });
  #endif
  JmriJFrame* jFrame = static_cast<JmriJFrame*>(iFrame);
+ jFrame->setWindowState((jFrame->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
  jFrame->setVisible(true);
 }
 

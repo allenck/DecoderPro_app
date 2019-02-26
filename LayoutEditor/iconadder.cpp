@@ -26,6 +26,7 @@
 #include "itempalette.h"
 #include "borderlayout.h"
 #include "file.h"
+#include <QHeaderView>
 
 //IconAdder::IconAdder(QString name, QWidget *parent) :
 //    QDialog(parent),

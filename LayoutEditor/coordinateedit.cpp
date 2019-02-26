@@ -1,5 +1,5 @@
 #include "coordinateedit.h"
-#include "inputangledlg.h"
+//#include "inputangledlg.h"
 #include "layouteditor.h"
 #include "positionablepopuputil.h"
 #include "jtextfield.h"
@@ -271,7 +271,7 @@ void RotateAction::on_rotateAction_triggered()
     f->init(tr("rotate"), pos, true);
     f->initRotate();
     f->setVisible(true);
-    //f.setLocationRelativeTo((Component)pos);
+    //f->setLocationRelativeTo((Component)pos);
     //initRotate();
 }
 
@@ -881,46 +881,54 @@ void CoordinateEdit::on_initFixedSizeOkBubbon_clicked()
 /*public*/ void CoordinateEdit::initRotate()
 {
  oldX = pl->getDegrees();
- //ps = qobject_cast<PositionableLabel*>(pos);
+ textX = new QLabel();
+ int deg = oldX;
+ textX->setText(tr("Angle: %1 degrees").arg(deg));
+ textX->setVisible(true);
 
-//    textX = new javax.swing.JLabel();
-//    int deg = oldX;
-//    textX.setText(java.text.MessageFormat.format(Bundle.getMessage("Angle"), deg));
-//    textX.setVisible(true);
+ //SpinnerNumberModel model = new SpinnerNumberModel(0, -360, 360, 1);
+ spinX = new QSpinBox();//JSpinner(model);
+ spinX->setMaximum(360);
+ spinX->setMinimum(-360);
+ spinX->setSingleStep(1);
+//        spinX.setValue(Integer.valueOf(((NamedIcon)pLabel.getIcon()).getDegrees()));
+ spinX->setValue(deg);
+ spinX->setToolTip(tr("Enter degrees to rotate"));
+ spinX->setMaximumSize(QSize(
+         spinX->maximumSize().width(), spinX->sizeHint().height()));
 
-//    SpinnerNumberModel model = new SpinnerNumberModel(0,-360,360,1);
-//    spinX = new javax.swing.JSpinner(model);
-////        spinX.setValue(Integer.valueOf(((NamedIcon)pLabel.getIcon()).getDegrees()));
-//    spinX.setValue(deg);
-//    spinX.setToolTipText(Bundle.getMessage("enterDegrees"));
-//    spinX.setMaximumSize(new Dimension(
-//            spinX.getMaximumSize().width, spinX.getPreferredSize().height));
+ getContentPane()->setLayout(gridLayout = new GridBagLayout());
 
-//    getContentPane().setLayout(new GridBagLayout());
+ addSpinItems(false);
 
-//    addSpinItems(false);
+// okButton.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         int k = ((Number) spinX.getValue()).intValue();
+//         pl.getEditor().setSelectionsRotation(k, pl);
+//         textX.setText(MessageFormat.format(Bundle.getMessage("Angle"), k));
+//         dispose();
+//     }
+// });
+// okButton.getRootPane().setDefaultButton(okButton);
+ connect(okButton, SIGNAL(clicked(bool)), this, SLOT(onOK_rotate()));
+// cancelButton.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         dispose();
+//     }
+// });
+ connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(on_cancelButton_clicked()));
+ pack();
+}
 
-//    okButton.addActionListener(new java.awt.event.ActionListener() {
-//        /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//            int k = ((Number)spinX.getValue()).intValue();
-//            pl.getEditor().setSelectionsRotation(k, pl);
-//            textX.setText(java.text.MessageFormat.format(Bundle.getMessage("Angle"), k));
-//            dispose();
-//        }
-//    });
-//    cancelButton.addActionListener(new java.awt.event.ActionListener() {
-//        /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//            dispose();
-//        }
-//    });
-    pack();
- InputAngleDlg* dlg = new InputAngleDlg(pl->getDegrees(),this);
- if(dlg->exec() == QDialog::Accepted)
- {
-  //(PositionableLabel*)pl->getEditor()->setSelectionsRotation(dlg->angle(), pl);
-  Editor* editor =   pl->getEditor();
-  editor->setSelectionsRotation(dlg->angle(), (Positionable*)pl);
- }
+void CoordinateEdit::onOK_rotate()
+{
+ int k = spinX->value();
+ pl->getEditor()->setSelectionsRotation(k, pl);
+ textX->setText(tr("Angle: %1 degrees").arg(k));
+ dispose();
+ close();
 }
 
 /*public*/ void CoordinateEdit::initScale()
@@ -1052,7 +1060,6 @@ void CoordinateEdit::on_editTextCancelButton_clicked()
  close();
 }
 
-#if 1
 /*public*/ void CoordinateEdit::initZoom() {
     oldD = pl->getScale();
 
@@ -1109,8 +1116,8 @@ void CoordinateEdit::on_cancelButton_clicked()
 {
  close();
 }
-#endif
-    /*public*/ void  CoordinateEdit::initSetName()
+
+/*public*/ void  CoordinateEdit::initSetName()
 {
  oldStr = pl->getEditor()->getName();
 
@@ -1184,7 +1191,7 @@ void CoordinateEdit::on_cancelSetName_clicked()
    gridLayout->addWidget(okButton, 2, 1, 1, 1);
   }
   //validate();
-  QMetaObject::connectSlotsByName(this);
+  //QMetaObject::connectSlotsByName(this);
 }
 
 

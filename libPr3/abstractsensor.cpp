@@ -107,7 +107,7 @@ bool AbstractSensor::useDefaultTimerSettings() { return _useDefaultTimerSettings
  */
 void AbstractSensor::sensorDebounce()
 {
-    /*final*/ int lastKnownState = _knownState;
+//    /*final*/ int lastKnownState = _knownState;
     // TODO:
 //        r = new Runnable() {
 //            void run() {

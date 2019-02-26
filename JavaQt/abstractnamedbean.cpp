@@ -1,6 +1,6 @@
 #include "abstractnamedbean.h"
 #include "loggerfactory.h"
-AbstractNamedBean::AbstractNamedBean(QObject *parent)
+AbstractNamedBean::AbstractNamedBean(QObject *parent) : NamedBean(parent)
 {
  common("", "", parent);
 }

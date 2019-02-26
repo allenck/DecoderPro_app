@@ -26,7 +26,7 @@ AutomatSummary* AutomatSummary::self = NULL;
 {
  self = NULL;
  automats = new QList<AbstractAutomaton*>();
-// prop = new PropertyChangeSupport(this);
+ prop = new PropertyChangeSupport(this);
 }
 /*static*/ /*public*/ AutomatSummary* AutomatSummary::instance() {
     if (self == NULL) self = new AutomatSummary();
@@ -49,7 +49,8 @@ AutomatSummary* AutomatSummary::self = NULL;
     }
 
     //notify length changed
-    notify("Insert", QVariant(), VPtr<AbstractAutomaton>::asQVariant(a));
+    //emit notify("Insert", QVariant(), VPtr<AbstractAutomaton>::asQVariant(a));
+ prop->firePropertyChange("Insert", QVariant(), VPtr<AbstractAutomaton>::asQVariant(a));
 
 }
 
@@ -67,7 +68,7 @@ AutomatSummary* AutomatSummary::self = NULL;
     }
 
     //notify length changed
-    notify("Remove", QVariant(), QVariant(index));
+    prop->firePropertyChange("Remove", QVariant(), QVariant(index));
 }
 
 /*public*/ int AutomatSummary::length() {
@@ -141,8 +142,8 @@ AutomatSummary* AutomatSummary::self = NULL;
   i = automats->indexOf(a);
  }
  //notify("Count", QVariant(), QVariant(i));
- emit notify("Count", QVariant(), QVariant(i));
- emit propertyChange(new PropertyChangeEvent((QObject*)this, "Count", QVariant(), QVariant(i)));
+ //emit notify("Count", QVariant(), QVariant(i));
+ prop->firePropertyChange(new PropertyChangeEvent((QObject*)this, "Count", QVariant(), QVariant(i)));
 }
 
 //void AutomatSummary::notify(QString property, QVariant arg1, QVariant arg2){

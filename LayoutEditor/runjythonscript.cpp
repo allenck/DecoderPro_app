@@ -3,7 +3,7 @@
 #include "file.h"
 #include "fileutil.h"
 #include "jfilechooser.h"
-#include "PythonQt.h"
+#include "/home/allen/pythonqt-code/src/PythonQt.h"
 //#include "PythonQt_QtAll.h"
 #include "jframe.h"
 #include "pythonwrappers.h"
@@ -96,7 +96,7 @@ void RunJythonScript::common()
  *
  * @param e
  */
-/*public*/ void RunJythonScript::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void RunJythonScript::actionPerformed(/*ActionEvent**/ /*e*/)
 {
  File* thisFile;
  if (configuredFile != NULL)
@@ -128,7 +128,7 @@ File* RunJythonScript:: selectFile()
   fci = new JFileChooser(FileUtil::getScriptsPath());
   //FileChooserFilter filt = new FileChooserFilter("Python script files");
   //filt.addExtension("py");
-  QString filt = "Python script files (*.py);; All files (*.*)";
+  QString filt = "Python script files (*.pyq);; All files (*.*)";
   fci->setFileFilter(filt);
   fci->setDialogTitle("Find desired script file");
  }
@@ -155,13 +155,23 @@ void RunJythonScript::invoke(File* file)
 {
  disconnect(PythonQt::self(),SIGNAL(pythonStdErr(QString)));
 
- PythonWrappers::defineClasses();
+ //PythonWrappers::defineClasses();
  //jmri.util.PythonInterp.runScript(jmri.util.FileUtil.getExternalFilename(file.toString()));
  if(firstTime)
   connect(PythonQt::self(), SIGNAL(pythonStdErr(QString)), this, SLOT(On_stdErr(QString)));
  firstTime = false;
- PythonQt::self()->getMainModule().evalFile(file->getPath());
+ PythonQtObjectPtr interp = PythonQt::self()->getMainModule();
+
+ QFileInfo info(":/resources/bindings.py");
+ log->debug(tr(":/resources/bindings.py %1").arg(info.exists()?"exists":"not found"));
+
+
+ interp.evalFile(":/resources/bindings.py");
+
+ interp.evalFile(file->getPath());
  PythonQt::self()->clearError();
+
+
 }
 
 // never invoked, because we overrode actionPerformed above

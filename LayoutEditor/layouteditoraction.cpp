@@ -43,7 +43,7 @@ void LayoutEditorAction::common()
  QString name = "My Layout";
  for (int i = 2; i < 100; i++)
  {
-  if (PanelMenu::instance()->isPanelNameUsed(name)) {
+  if (static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name)) {
       name = "My Layout " + i;
   }
  }
@@ -52,4 +52,5 @@ void LayoutEditorAction::common()
  panel->setVisible(true);
  panel->setAllEditable(true);
  panel->setCurrentPositionAndSize();
+ static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->addEditorPanel(panel);
 }

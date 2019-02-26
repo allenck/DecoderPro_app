@@ -12,7 +12,7 @@ class JAVAQTSHARED_EXPORT TableModel : public QAbstractTableModel
  Q_OBJECT
 
  public:
- TableModel(QObject* parent) : QAbstractTableModel(parent) {}
+ TableModel(QObject* parent = nullptr) : QAbstractTableModel(parent) {}
  /**
       * Returns the number of rows in the model. A
       * <code>JTable</code> uses this method to determine how many rows it

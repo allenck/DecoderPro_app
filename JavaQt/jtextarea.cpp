@@ -518,6 +518,9 @@ void JTextArea::setTabSize(int size) { setTabStopWidth(size);}
 //        }
  }
 #endif
+ if(str.endsWith('\n'))
+  QTextEdit::append(str.replace('\n', ' '));
+    else
  QTextEdit::append(str);
 }
 #if 0

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Resource object code
 **
-** Created by: The Resource Compiler for Qt version 5.7.1
+** Created by: The Resource Compiler for Qt version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -116,10 +116,13 @@ static const unsigned char qt_resource_name[] = {
 static const unsigned char qt_resource_struct[] = {
   // :
   0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x1,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
   // :/languages
   0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x2,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
   // :/languages/libPr3_de.qm
   0x0,0x0,0x0,0x18,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,
+0x0,0x0,0x1,0x4b,0xd1,0x2d,0xd2,0x0,
 
 };
 
@@ -151,7 +154,7 @@ int QT_RCC_MANGLE_NAMESPACE(qInitResources_libPr3)();
 int QT_RCC_MANGLE_NAMESPACE(qInitResources_libPr3)()
 {
     QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)
-        (0x01, qt_resource_struct, qt_resource_name, qt_resource_data);
+        (0x2, qt_resource_struct, qt_resource_name, qt_resource_data);
     return 1;
 }
 
@@ -159,7 +162,7 @@ int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_libPr3)();
 int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_libPr3)()
 {
     QT_RCC_PREPEND_NAMESPACE(qUnregisterResourceData)
-       (0x01, qt_resource_struct, qt_resource_name, qt_resource_data);
+       (0x2, qt_resource_struct, qt_resource_name, qt_resource_data);
     return 1;
 }
 

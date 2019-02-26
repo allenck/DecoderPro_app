@@ -50,5 +50,5 @@ ProfileProperties::ProfileProperties(File* path, QObject* parent) : AuxiliaryPro
 //@SuppressFBWarnings(value = "deprecation", justification = "Avoids errors passing partly constructed object.")
 //@SuppressWarnings("deprecation")
 /*public*/ void ProfileProperties::put(QString key, QString value, bool shared) {
-    JmriPreferencesProvider::getPreferences(path, NULL, shared)->node(Profile::PROFILE)->put(key, value);
+    JmriPreferencesProvider::getPreferences(path, nullptr, shared)->node(Profile::PROFILE)->put(key, value);
 }

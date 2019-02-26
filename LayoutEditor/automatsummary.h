@@ -29,15 +29,15 @@ public:
 //    /*public*/ void removePropertyChangeListener(PropertyChangeListener* p);
 
 signals:
-    void notify(QString property, QVariant arg1, QVariant arg2);
-    void propertyChange(PropertyChangeEvent*);
+    //void notify(QString property, QVariant arg1, QVariant arg2);
+    //void propertyChange(PropertyChangeEvent*);
 
 public slots:
 private:
     /*private*/ AutomatSummary(QObject *parent = 0) ;
     static /*volatile*/ /*private*/ AutomatSummary* self;// = NULL;
     /*private*/ QList<AbstractAutomaton*>* automats;// = new ArrayList<AbstractAutomaton>();
-//    PropertyChangeSupport* prop;// = new PropertyChangeSupport(this);
+    PropertyChangeSupport* prop;// = new PropertyChangeSupport(this);
     QMutex mutex;
 //    void notify(QString property, QVariant arg1, QVariant arg2);
 #if 0

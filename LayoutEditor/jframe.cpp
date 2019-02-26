@@ -39,6 +39,7 @@ JFrame::~JFrame()
  listeners = new QList<WindowListener*>();
  setVisible(false);
 }
+
 /*public*/ void JFrame::pack()
 {
  // work around for Linux, sometimes the stored window size is too small
@@ -50,6 +51,7 @@ JFrame::~JFrame()
  adjustSize();
  reSizeToFitOnScreen();
 }
+
 /**
  * Tries to get window to fit entirely on screen.  First choice is to
  * move the origin up and left as needed, then to make the
@@ -216,12 +218,18 @@ void JFrame::dispose()
  //deleteLater();
 }
 
-QWidget* JFrame:: getContentPane()
+QWidget* JFrame:: getContentPane(bool addLayout)
 {
  if(centralWidget() == nullptr)
  {
   QWidget* centralWidget = new QWidget();
-  centralWidget->setLayout(new QVBoxLayout);
+  centralWidget->setObjectName("JFrameCentralWidget");
+  if(addLayout)
+  {
+   QVBoxLayout* centralWidgetLayout;
+   centralWidget->setLayout(centralWidgetLayout = new QVBoxLayout);
+   centralWidgetLayout->setObjectName("centralWidgetLayout");
+  }
   setCentralWidget(centralWidget);
  }
  return centralWidget();
@@ -453,20 +461,31 @@ void JFrame::addWindowListener(WindowListener* l)
     listeners->removeOne(l);
 }
 
-void JFrame::setAlwaysOnTop(bool b)
+void JFrame::setAlwaysOnTop(bool checked)
 {
- Qt::WindowFlags flags = windowFlags();
-
- if(b)
- {
-  setWindowFlags(flags | (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-  show();
- }
- else
- {
-  setWindowFlags(flags ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-  show();
- }
+#ifdef Q_OS_WIN
+    // #include <windows.h>
+    if (checked)
+    {
+        SetWindowPos(this->winId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+    }
+    else
+    {
+        SetWindowPos(this->winId(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+    }
+#else
+    Qt::WindowFlags flags = this->windowFlags();
+    if (checked)
+    {
+        this->setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+        this->show();
+    }
+    else
+    {
+        this->setWindowFlags(flags ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+        this->show();
+    }
+#endif
 }
 
 void JFrame::hideEvent(QHideEvent *)
@@ -499,3 +518,8 @@ void JFrame::hideEvent(QHideEvent *)
  } //);
 }
 #endif
+
+void JFrame::setVisible(bool visible)
+{
+ QMainWindow::setVisible(visible);
+}

@@ -219,8 +219,8 @@ void WavFileReader::readWAV(QString wavFile)
  buf->close();
  audioOut->reset();
 #endif
-
- return new AudioFileFormat(new AudioFileFormat::Type("Wave", "wav"),new AudioFormat(sampleRate,bps,numChannels,0,0,false), 0);
+// TODO: fix encoding parameter
+ return new AudioFileFormat(new AudioFileFormat::Type("Wave", "wav"),new AudioFormat(nullptr,(float)sampleRate,bps,numChannels,0,(float)0.0,false), 0);
 }
 
 void WavFileReader::onStateChanged(QAudio::State s)

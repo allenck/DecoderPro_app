@@ -54,41 +54,42 @@
 #include "joptionpane.h"
 #include "mathutil.h"
 #include <QScrollBar>
+#include "jmricolorchooser.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
 
-LayoutEditor::LayoutEditor(QString name, bool bTest, QWidget *parent) :
+LayoutEditor::LayoutEditor(QString name, QWidget *parent) :
     PanelEditor(name, parent),
     ui(new Ui::LayoutEditor)
 {
- ui->setupUi(this);
- memo = nullptr;
- this->bTestMode = bTest;
- layoutName = name;
  init();
+ layoutName = name;
 }
 
-LayoutEditor::LayoutEditor(LocoNetSystemConnectionMemo* memo, QString name,  bool bTest, QWidget *parent) :
-    PanelEditor(name, parent),
-    ui(new Ui::LayoutEditor)
-{
- setObjectName("LayoutEditor");
- ui->setupUi(this);
- this->bTestMode = bTest;
- this->memo = memo;
- layoutName = name;
- init();
-}
+//LayoutEditor::LayoutEditor(LocoNetSystemConnectionMemo* memo, QString name,  bool bTest, QWidget *parent) :
+//    PanelEditor(name, parent),
+//    ui(new Ui::LayoutEditor)
+//{
+// setObjectName("LayoutEditor");
+// ui->setupUi(this);
+// this->bTestMode = bTest;
+// this->memo = memo;
+// layoutName = name;
+// init();
+//}
 
 LayoutEditor::~LayoutEditor()
 {
-    delete ui;
+ delete ui;
 }
+
 void LayoutEditor::init()
 {
+ ui->setupUi(this);
  setObjectName("LayoutEditor");
  JmriJFrame::initComponents();
+ PanelEditor::init(layoutName);
  savePanels = new StoreXmlUserAction(tr("Save Panels..."), this);
  ui->menuFile->insertAction(ui->actionSave_panels,savePanels);
  ui->menuFile->removeAction(ui->actionSave_panels); // remove the old one.
@@ -278,9 +279,9 @@ _contents = new QVector<Positionable*>();
  useDirectTurnoutControl = false; // Uses Left click for closing points, Right click for throwing.
  turnoutDrawUnselectedLeg = true;
 
- if(memo==nullptr)
-  memo = new LocoNetSystemConnectionMemo();
- lnSensorManager = memo->getSensorManager();
+// if(memo==nullptr)
+//  memo = new LocoNetSystemConnectionMemo();
+// lnSensorManager = memo->getSensorManager();
 
  turnoutDrawUnselectedLeg = true;
  _showCoordinates = true;
@@ -750,12 +751,12 @@ connect(ui->iconLabelButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()))
  _ignore = false;
  _urlMap = new QMap<QString, QString>();
  _newIcon = nullptr;
- _delete = nullptr;
+ _delete = false;
  finder = new LayoutEditorFindItems(this);
  ui->menuOptions->addMenu( setupTurnoutSubMenu());
 
 // register the resulting panel for later configuration
- JmriConfigurationManager* cm = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
 
  if (cm != nullptr) {
      cm->registerUser(this);
@@ -8223,6 +8224,14 @@ void LayoutEditor::setDefaultTextColor(QString color)
  setOptionMenuTextColor();
 }
 
+/**
+ * @param color value to set the default text color to.
+ */
+/*public*/ void LayoutEditor::setDefaultTextColor(/*@Nonnull*/ QColor color) {
+    defaultTextColor = color;
+    JmriColorChooser::addRecentColor(color);
+}
+
 /*public*/ void LayoutEditor::setDefaultBackgroundColor(QString color) {
         defaultBackgroundColor = ColorUtil::stringToColor(color);
         setOptionMenuBackgroundColor();
@@ -8878,10 +8887,26 @@ void LayoutEditor::closeEvent(QCloseEvent *)
     defaultTrackColor = ColorUtil::stringToColor(color);
     setOptionMenuTrackColor();
 }
+/**
+ * @param color value to set the default track color to.
+ */
+/*public*/ void LayoutEditor::setDefaultTrackColor(/*@Nonnull*/ QColor color) {
+    LayoutTrack::setDefaultTrackColor(color);
+    defaultTrackColor = color;
+    JmriColorChooser::addRecentColor(color);
+}
 
 /*public*/ void LayoutEditor::setDefaultOccupiedTrackColor(QString color) {
     defaultOccupiedTrackColor = ColorUtil::stringToColor(color);
     setOptionMenuTrackColor();
+}
+
+/**
+ * @param color value to set the default occupied track color to.
+ */
+/*public*/ void LayoutEditor::setDefaultOccupiedTrackColor(/*@Nonnull*/ QColor color) {
+    defaultOccupiedTrackColor = color;
+    JmriColorChooser::addRecentColor(color);
 }
 
 /*public*/ void LayoutEditor::setDefaultAlternativeTrackColor(QString color) {
@@ -8889,10 +8914,30 @@ void LayoutEditor::closeEvent(QCloseEvent *)
     setOptionMenuTrackColor();
 }
 
+/**
+ * @param color value to set the default alternate track color to.
+ */
+/*public*/ void LayoutEditor::setDefaultAlternativeTrackColor(/*@Nonnull*/ QColor color) {
+    defaultAlternativeTrackColor = color;
+    JmriColorChooser::addRecentColor(color);
+}
+
 /*public*/ void LayoutEditor::setTurnoutCircleColor(QString color)
 {
  turnoutCircleColor = ColorUtil::stringToColor(color);
  setOptionMenuTurnoutCircleColor();
+}
+
+/**
+ * @param color new color for turnout circle.
+ */
+/*public*/ void LayoutEditor::setTurnoutCircleColor(QColor color) {
+    if (!color.isValid()) {
+        turnoutCircleColor = ColorUtil::stringToColor(getDefaultTrackColor());
+    } else {
+        turnoutCircleColor = color;
+        JmriColorChooser::addRecentColor(color);
+    }
 }
 
 /*public*/ void LayoutEditor::setTurnoutCircleSize(int size) {

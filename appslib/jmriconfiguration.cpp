@@ -143,6 +143,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
  }
 
  //root.insertBefore(root.getOwnerDocument().importNode(fragment, true), ref);
+ root.insertBefore(fragment, ref);
  //root.insertAfter(root.ownerDocument().importNode(fragment,true), ref);
  try
  {

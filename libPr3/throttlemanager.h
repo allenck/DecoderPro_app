@@ -14,7 +14,7 @@ class ThrottleManager : public QObject
 public:
     explicit ThrottleManager(QObject *parent = 0);
     static /*public*/ ThrottleManager* instance();
-    /*public*/ void requestThrottleSetup(LocoAddress* address, bool control);
+//    /*public*/ void requestThrottleSetup(LocoAddress* address, bool control);
 //    /*public*/ bool addressTypeUnique();
 //    /*public*/ bool canBeShortAddress(int a);
 //    /*public*/ bool canBeLongAddress(int a);

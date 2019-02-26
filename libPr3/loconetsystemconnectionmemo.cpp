@@ -20,27 +20,14 @@
 #include "loconet/HexFile/debugthrottlemanager.h"
 #include "lnmessagemanager.h"
 #include "lncomponentfactory.h"
+#include "loggerfactory.h"
 
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject* parent)
  : SystemConnectionMemo("L","LocoNet", parent)
 {
  //super("L", "LocoNet");
- setObjectName("LocoNetSystemConnectionMemo");
+ common();
  this->lt = lt;
- log = new Logger();
- powerManager = NULL;
- turnoutManager = NULL;
- sensorManager = NULL;
- reporterManager = NULL;
- programmerManager = NULL;
- throttleManager = NULL;
- consistManager = NULL;
- lightManager = NULL;
- clockControl = NULL;
- mTurnoutNoRetry = false;
- mTurnoutExtraSpace = false;
- cf = NULL;
-
  this->sm = sm; // doesn't full register, but fine for this purpose.
  _register(); // registers general type
  InstanceManager::store(this, "LocoNetSystemConnectionMemo"); // also register as specific type
@@ -55,23 +42,7 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(QObject* parent)
  : SystemConnectionMemo("L","LocoNet", parent)
 {
- this->lt = NULL;
- setObjectName("LocoNetSystemConnectionMemo");
- log = new Logger();
- powerManager = NULL;
- turnoutManager = NULL;
- sensorManager = NULL;
- reporterManager = NULL;
- programmerManager = NULL;
- throttleManager = NULL;
- consistManager = NULL;
- lightManager = NULL;
- clockControl = NULL;
- mTurnoutNoRetry = false;
- mTurnoutExtraSpace = false;
- tm = NULL;
- lnm = NULL;
- cf = NULL;
+ common();
 
  //setSlotManager(sm);
  this->sm = NULL;
@@ -81,6 +52,26 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(QObject* parent)
  // create and register the LnComponentFactory
  InstanceManager::store(cf = new LnComponentFactory(this),
                                 "ComponentFactory");
+}
+
+void LocoNetSystemConnectionMemo::common()
+{
+    this->lt = NULL;
+    setObjectName("LocoNetSystemConnectionMemo");
+    powerManager = NULL;
+    turnoutManager = NULL;
+    sensorManager = NULL;
+    reporterManager = NULL;
+    programmerManager = NULL;
+    throttleManager = NULL;
+    consistManager = NULL;
+    lightManager = NULL;
+    clockControl = NULL;
+    mTurnoutNoRetry = false;
+    mTurnoutExtraSpace = false;
+    tm = NULL;
+    lnm = NULL;
+    cf = NULL;
 }
 
 LocoNetSystemConnectionMemo::~LocoNetSystemConnectionMemo()
@@ -392,5 +383,5 @@ void  LocoNetSystemConnectionMemo::dispose()
  SystemConnectionMemo::dispose();
 }
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LocoNetSystemConnectionMemo.class.getName());
+/*static*/ Logger* LocoNetSystemConnectionMemo::log = LoggerFactory::getLogger("LocoNetSystemConnectionMemo");
 

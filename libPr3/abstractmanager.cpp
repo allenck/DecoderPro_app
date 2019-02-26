@@ -58,7 +58,7 @@ AbstractManager::AbstractManager(QObject *parent)
       log->debug(tr("registering for config of type %1").arg(this->metaObject()->className()));
   }
 }
-/*public*/ QString AbstractManager::normalizeSystemName(/*@Nonnull*/ QString inputName) {return "";} //throws NamedBean.BadSystemNameException
+/*public*/ QString AbstractManager::normalizeSystemName(/*@Nonnull*/ QString /*inputName*/) {return "";} //throws NamedBean.BadSystemNameException
 
 ///*abstract*/ /*public*/ int AbstractManager::getXMLOrder() { return 0;}
 
@@ -271,7 +271,7 @@ QStringList AbstractManager::getSystemNameList()
     return out;
 }
 
-/*public*/ QList<NamedBean*>* AbstractManager::getNamedBeanList() {
+/*public*/ QList<NamedBean*> *AbstractManager::getNamedBeanList() {
         return new QList<NamedBean*>(_tsys->values());
 }
 

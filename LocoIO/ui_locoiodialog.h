@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'locoiodialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,9 +10,7 @@
 #define UI_LOCOIODIALOG_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QFormLayout>
@@ -79,16 +77,16 @@ public:
     void setupUi(QDialog *LocoIODialog)
     {
         if (LocoIODialog->objectName().isEmpty())
-            LocoIODialog->setObjectName(QStringLiteral("LocoIODialog"));
+            LocoIODialog->setObjectName(QLatin1String("LocoIODialog"));
         LocoIODialog->resize(886, 630);
         QFont font;
         font.setPointSize(7);
         LocoIODialog->setFont(font);
         LocoIODialog->setSizeGripEnabled(true);
         gridLayout = new QGridLayout(LocoIODialog);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QLatin1String("gridLayout"));
         btnChangeAddress = new QPushButton(LocoIODialog);
-        btnChangeAddress->setObjectName(QStringLiteral("btnChangeAddress"));
+        btnChangeAddress->setObjectName(QLatin1String("btnChangeAddress"));
         QFont font1;
         font1.setPointSize(8);
         font1.setBold(true);
@@ -100,29 +98,29 @@ public:
 
         verticalLayout_4 = new QVBoxLayout();
         verticalLayout_4->setSpacing(1);
-        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        verticalLayout_4->setObjectName(QLatin1String("verticalLayout_4"));
         chkInputStatus = new QCheckBox(LocoIODialog);
-        chkInputStatus->setObjectName(QStringLiteral("chkInputStatus"));
+        chkInputStatus->setObjectName(QLatin1String("chkInputStatus"));
 
         verticalLayout_4->addWidget(chkInputStatus);
 
         rbCheckAll = new QRadioButton(LocoIODialog);
-        rbCheckAll->setObjectName(QStringLiteral("rbCheckAll"));
+        rbCheckAll->setObjectName(QLatin1String("rbCheckAll"));
 
         verticalLayout_4->addWidget(rbCheckAll);
 
         rbCheckBlockAndPoints = new QRadioButton(LocoIODialog);
-        rbCheckBlockAndPoints->setObjectName(QStringLiteral("rbCheckBlockAndPoints"));
+        rbCheckBlockAndPoints->setObjectName(QLatin1String("rbCheckBlockAndPoints"));
 
         verticalLayout_4->addWidget(rbCheckBlockAndPoints);
 
         rbCheckBlock = new QRadioButton(LocoIODialog);
-        rbCheckBlock->setObjectName(QStringLiteral("rbCheckBlock"));
+        rbCheckBlock->setObjectName(QLatin1String("rbCheckBlock"));
 
         verticalLayout_4->addWidget(rbCheckBlock);
 
         lblJP1 = new QLabel(LocoIODialog);
-        lblJP1->setObjectName(QStringLiteral("lblJP1"));
+        lblJP1->setObjectName(QLatin1String("lblJP1"));
 
         verticalLayout_4->addWidget(lblJP1);
 
@@ -131,14 +129,14 @@ public:
 
         verticalLayout_3 = new QVBoxLayout();
         verticalLayout_3->setSpacing(2);
-        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        verticalLayout_3->setObjectName(QLatin1String("verticalLayout_3"));
         rbFixCodeForPBs = new QRadioButton(LocoIODialog);
-        rbFixCodeForPBs->setObjectName(QStringLiteral("rbFixCodeForPBs"));
+        rbFixCodeForPBs->setObjectName(QLatin1String("rbFixCodeForPBs"));
 
         verticalLayout_3->addWidget(rbFixCodeForPBs);
 
         rbAltCodeForPBs = new QRadioButton(LocoIODialog);
-        rbAltCodeForPBs->setObjectName(QStringLiteral("rbAltCodeForPBs"));
+        rbAltCodeForPBs->setObjectName(QLatin1String("rbAltCodeForPBs"));
 
         verticalLayout_3->addWidget(rbAltCodeForPBs);
 
@@ -146,15 +144,15 @@ public:
         gridLayout->addLayout(verticalLayout_3, 2, 5, 1, 1);
 
         horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        horizontalLayout_3->setObjectName(QLatin1String("horizontalLayout_3"));
         lblUnitAddr = new QLabel(LocoIODialog);
-        lblUnitAddr->setObjectName(QStringLiteral("lblUnitAddr"));
+        lblUnitAddr->setObjectName(QLatin1String("lblUnitAddr"));
         lblUnitAddr->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         horizontalLayout_3->addWidget(lblUnitAddr);
 
         edNewAddr = new QLineEdit(LocoIODialog);
-        edNewAddr->setObjectName(QStringLiteral("edNewAddr"));
+        edNewAddr->setObjectName(QLatin1String("edNewAddr"));
         edNewAddr->setMaximumSize(QSize(70, 16777215));
 
         horizontalLayout_3->addWidget(edNewAddr);
@@ -163,26 +161,26 @@ public:
         gridLayout->addLayout(horizontalLayout_3, 1, 2, 1, 2);
 
         btnSave = new QPushButton(LocoIODialog);
-        btnSave->setObjectName(QStringLiteral("btnSave"));
+        btnSave->setObjectName(QLatin1String("btnSave"));
 
         gridLayout->addWidget(btnSave, 2, 3, 1, 1);
 
         btnCapture = new QPushButton(LocoIODialog);
-        btnCapture->setObjectName(QStringLiteral("btnCapture"));
+        btnCapture->setObjectName(QLatin1String("btnCapture"));
 
         gridLayout->addWidget(btnCapture, 2, 2, 1, 1);
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setSpacing(2);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         chkHex = new QCheckBox(LocoIODialog);
-        chkHex->setObjectName(QStringLiteral("chkHex"));
+        chkHex->setObjectName(QLatin1String("chkHex"));
         chkHex->setChecked(true);
 
         verticalLayout->addWidget(chkHex);
 
         chkAllowEdit = new QCheckBox(LocoIODialog);
-        chkAllowEdit->setObjectName(QStringLiteral("chkAllowEdit"));
+        chkAllowEdit->setObjectName(QLatin1String("chkAllowEdit"));
 
         verticalLayout->addWidget(chkAllowEdit);
 
@@ -190,12 +188,12 @@ public:
         gridLayout->addLayout(verticalLayout, 2, 6, 1, 1);
 
         btnProbe = new QPushButton(LocoIODialog);
-        btnProbe->setObjectName(QStringLiteral("btnProbe"));
+        btnProbe->setObjectName(QLatin1String("btnProbe"));
 
         gridLayout->addWidget(btnProbe, 2, 0, 1, 1);
 
         btnWriteAll = new QPushButton(LocoIODialog);
-        btnWriteAll->setObjectName(QStringLiteral("btnWriteAll"));
+        btnWriteAll->setObjectName(QLatin1String("btnWriteAll"));
 
         gridLayout->addWidget(btnWriteAll, 3, 1, 1, 1);
 
@@ -204,7 +202,7 @@ public:
             tableWidget->setColumnCount(17);
         if (tableWidget->rowCount() < 5)
             tableWidget->setRowCount(5);
-        tableWidget->setObjectName(QStringLiteral("tableWidget"));
+        tableWidget->setObjectName(QLatin1String("tableWidget"));
         tableWidget->setBaseSize(QSize(800, 400));
         tableWidget->setRowCount(5);
         tableWidget->setColumnCount(17);
@@ -214,32 +212,32 @@ public:
         gridLayout->addWidget(tableWidget, 0, 0, 1, 7);
 
         lblStatus = new QLabel(LocoIODialog);
-        lblStatus->setObjectName(QStringLiteral("lblStatus"));
+        lblStatus->setObjectName(QLatin1String("lblStatus"));
         lblStatus->setFrameShape(QFrame::NoFrame);
 
         gridLayout->addWidget(lblStatus, 4, 0, 1, 1);
 
         btnHide = new QPushButton(LocoIODialog);
-        btnHide->setObjectName(QStringLiteral("btnHide"));
+        btnHide->setObjectName(QLatin1String("btnHide"));
 
         gridLayout->addWidget(btnHide, 3, 5, 1, 1);
 
         gbExtraOpCodes = new QGroupBox(LocoIODialog);
-        gbExtraOpCodes->setObjectName(QStringLiteral("gbExtraOpCodes"));
+        gbExtraOpCodes->setObjectName(QLatin1String("gbExtraOpCodes"));
         horizontalLayout_2 = new QHBoxLayout(gbExtraOpCodes);
         horizontalLayout_2->setSpacing(0);
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        horizontalLayout_2->setObjectName(QLatin1String("horizontalLayout_2"));
         horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(2);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         chkExtra1 = new QCheckBox(gbExtraOpCodes);
-        chkExtra1->setObjectName(QStringLiteral("chkExtra1"));
+        chkExtra1->setObjectName(QLatin1String("chkExtra1"));
 
         horizontalLayout->addWidget(chkExtra1);
 
         chkExtra2 = new QCheckBox(gbExtraOpCodes);
-        chkExtra2->setObjectName(QStringLiteral("chkExtra2"));
+        chkExtra2->setObjectName(QLatin1String("chkExtra2"));
 
         horizontalLayout->addWidget(chkExtra2);
 
@@ -250,26 +248,26 @@ public:
         gridLayout->addWidget(gbExtraOpCodes, 1, 4, 1, 1);
 
         btnSetDefaults = new QPushButton(LocoIODialog);
-        btnSetDefaults->setObjectName(QStringLiteral("btnSetDefaults"));
+        btnSetDefaults->setObjectName(QLatin1String("btnSetDefaults"));
 
         gridLayout->addWidget(btnSetDefaults, 3, 0, 1, 1);
 
         verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setSpacing(1);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setObjectName(QLatin1String("verticalLayout_2"));
         chkSpecialPorts = new QCheckBox(LocoIODialog);
-        chkSpecialPorts->setObjectName(QStringLiteral("chkSpecialPorts"));
+        chkSpecialPorts->setObjectName(QLatin1String("chkSpecialPorts"));
 
         verticalLayout_2->addWidget(chkSpecialPorts);
 
         chkModule = new QCheckBox(LocoIODialog);
-        chkModule->setObjectName(QStringLiteral("chkModule"));
+        chkModule->setObjectName(QLatin1String("chkModule"));
         chkModule->setEnabled(false);
 
         verticalLayout_2->addWidget(chkModule);
 
         chk4PosServo = new QCheckBox(LocoIODialog);
-        chk4PosServo->setObjectName(QStringLiteral("chk4PosServo"));
+        chk4PosServo->setObjectName(QLatin1String("chk4PosServo"));
 
         verticalLayout_2->addWidget(chk4PosServo);
 
@@ -277,36 +275,36 @@ public:
         gridLayout->addLayout(verticalLayout_2, 1, 5, 1, 1);
 
         btnRestore = new QPushButton(LocoIODialog);
-        btnRestore->setObjectName(QStringLiteral("btnRestore"));
+        btnRestore->setObjectName(QLatin1String("btnRestore"));
 
         gridLayout->addWidget(btnRestore, 3, 2, 1, 1);
 
         btnReadAll = new QPushButton(LocoIODialog);
-        btnReadAll->setObjectName(QStringLiteral("btnReadAll"));
+        btnReadAll->setObjectName(QLatin1String("btnReadAll"));
 
         gridLayout->addWidget(btnReadAll, 2, 1, 1, 1);
 
         formLayout = new QFormLayout();
-        formLayout->setObjectName(QStringLiteral("formLayout"));
+        formLayout->setObjectName(QLatin1String("formLayout"));
         formLayout->setHorizontalSpacing(2);
         formLayout->setVerticalSpacing(2);
         label_3 = new QLabel(LocoIODialog);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QLatin1String("label_3"));
 
         formLayout->setWidget(0, QFormLayout::LabelRole, label_3);
 
         lblFirmware = new QLabel(LocoIODialog);
-        lblFirmware->setObjectName(QStringLiteral("lblFirmware"));
+        lblFirmware->setObjectName(QLatin1String("lblFirmware"));
 
         formLayout->setWidget(0, QFormLayout::FieldRole, lblFirmware);
 
         label_4 = new QLabel(LocoIODialog);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setObjectName(QLatin1String("label_4"));
 
         formLayout->setWidget(1, QFormLayout::LabelRole, label_4);
 
         lblLocoBuffer = new QLabel(LocoIODialog);
-        lblLocoBuffer->setObjectName(QStringLiteral("lblLocoBuffer"));
+        lblLocoBuffer->setObjectName(QLatin1String("lblLocoBuffer"));
 
         formLayout->setWidget(1, QFormLayout::FieldRole, lblLocoBuffer);
 
@@ -315,9 +313,9 @@ public:
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setSpacing(2);
-        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        horizontalLayout_4->setObjectName(QLatin1String("horizontalLayout_4"));
         lblCurrentAddress = new QLabel(LocoIODialog);
-        lblCurrentAddress->setObjectName(QStringLiteral("lblCurrentAddress"));
+        lblCurrentAddress->setObjectName(QLatin1String("lblCurrentAddress"));
 
         horizontalLayout_4->addWidget(lblCurrentAddress);
 
@@ -332,59 +330,59 @@ public:
 
     void retranslateUi(QDialog *LocoIODialog)
     {
-        LocoIODialog->setWindowTitle(QApplication::translate("LocoIODialog", "Dialog", Q_NULLPTR));
+        LocoIODialog->setWindowTitle(QApplication::translate("LocoIODialog", "Dialog", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnChangeAddress->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p><span style=\" font-weight:400; font-style:normal;\">Change the address of a module. </span><span style=\" font-style:normal;\">Warning! If the old address is 00/00, this command will set the address of all LocoIO, LocoBooster and LocoServo modules currently connected to the Loconet!</span></p></body></html>", Q_NULLPTR));
+        btnChangeAddress->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p><span style=\" font-weight:400; font-style:normal;\">Change the address of a module. </span><span style=\" font-style:normal;\">Warning! If the old address is 00/00, this command will set the address of all LocoIO, LocoBooster and LocoServo modules currently connected to the Loconet!</span></p></body></html>", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnChangeAddress->setText(QApplication::translate("LocoIODialog", "Change Address", Q_NULLPTR));
-        chkInputStatus->setText(QApplication::translate("LocoIODialog", "inputStatus by Power ON and GPON", Q_NULLPTR));
-        rbCheckAll->setText(QApplication::translate("LocoIODialog", "Check All Inputs", Q_NULLPTR));
-        rbCheckBlockAndPoints->setText(QApplication::translate("LocoIODialog", "Check Block and Point Feedbacks", Q_NULLPTR));
-        rbCheckBlock->setText(QApplication::translate("LocoIODialog", "Check Block Feedbacks", Q_NULLPTR));
-        lblJP1->setText(QApplication::translate("LocoIODialog", "Set jumper JP1 for this module", Q_NULLPTR));
-        rbFixCodeForPBs->setText(QApplication::translate("LocoIODialog", "Fix code for PBs", Q_NULLPTR));
-        rbAltCodeForPBs->setText(QApplication::translate("LocoIODialog", "Alt code for PBs", Q_NULLPTR));
-        lblUnitAddr->setText(QApplication::translate("LocoIODialog", "New Unit Address:", Q_NULLPTR));
+        btnChangeAddress->setText(QApplication::translate("LocoIODialog", "Change Address", nullptr));
+        chkInputStatus->setText(QApplication::translate("LocoIODialog", "inputStatus by Power ON and GPON", nullptr));
+        rbCheckAll->setText(QApplication::translate("LocoIODialog", "Check All Inputs", nullptr));
+        rbCheckBlockAndPoints->setText(QApplication::translate("LocoIODialog", "Check Block and Point Feedbacks", nullptr));
+        rbCheckBlock->setText(QApplication::translate("LocoIODialog", "Check Block Feedbacks", nullptr));
+        lblJP1->setText(QApplication::translate("LocoIODialog", "Set jumper JP1 for this module", nullptr));
+        rbFixCodeForPBs->setText(QApplication::translate("LocoIODialog", "Fix code for PBs", nullptr));
+        rbAltCodeForPBs->setText(QApplication::translate("LocoIODialog", "Alt code for PBs", nullptr));
+        lblUnitAddr->setText(QApplication::translate("LocoIODialog", "New Unit Address:", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnSave->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Save all configuration settings for a module.</p></body></html>", Q_NULLPTR));
+        btnSave->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Save all configuration settings for a module.</p></body></html>", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnSave->setText(QApplication::translate("LocoIODialog", "Save Module", Q_NULLPTR));
-        btnCapture->setText(QApplication::translate("LocoIODialog", "Capture", Q_NULLPTR));
-        chkHex->setText(QApplication::translate("LocoIODialog", "Display values in hex", Q_NULLPTR));
+        btnSave->setText(QApplication::translate("LocoIODialog", "Save Module", nullptr));
+        btnCapture->setText(QApplication::translate("LocoIODialog", "Capture", nullptr));
+        chkHex->setText(QApplication::translate("LocoIODialog", "Display values in hex", nullptr));
 #ifndef QT_NO_TOOLTIP
-        chkAllowEdit->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Check to allow editing of configuration, Value 1 and Value 2 CVs.</p></body></html>", Q_NULLPTR));
+        chkAllowEdit->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Check to allow editing of configuration, Value 1 and Value 2 CVs.</p></body></html>", nullptr));
 #endif // QT_NO_TOOLTIP
-        chkAllowEdit->setText(QApplication::translate("LocoIODialog", "Allow edits", Q_NULLPTR));
+        chkAllowEdit->setText(QApplication::translate("LocoIODialog", "Allow edits", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnProbe->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Find the addresses of all LocoIo, LocoBooster and LocoServo modules currently connected to LocoNet.</p></body></html>", Q_NULLPTR));
+        btnProbe->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Find the addresses of all LocoIo, LocoBooster and LocoServo modules currently connected to LocoNet.</p></body></html>", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnProbe->setText(QApplication::translate("LocoIODialog", "Probe", Q_NULLPTR));
-        btnWriteAll->setText(QApplication::translate("LocoIODialog", "Write all", Q_NULLPTR));
-        lblStatus->setText(QApplication::translate("LocoIODialog", "status", Q_NULLPTR));
-        btnHide->setText(QApplication::translate("LocoIODialog", "Hide", Q_NULLPTR));
-        gbExtraOpCodes->setTitle(QApplication::translate("LocoIODialog", "Extra Op Codes", Q_NULLPTR));
-        chkExtra1->setText(QApplication::translate("LocoIODialog", "1", Q_NULLPTR));
-        chkExtra2->setText(QApplication::translate("LocoIODialog", "2", Q_NULLPTR));
+        btnProbe->setText(QApplication::translate("LocoIODialog", "Probe", nullptr));
+        btnWriteAll->setText(QApplication::translate("LocoIODialog", "Write all", nullptr));
+        lblStatus->setText(QApplication::translate("LocoIODialog", "status", nullptr));
+        btnHide->setText(QApplication::translate("LocoIODialog", "Hide", nullptr));
+        gbExtraOpCodes->setTitle(QApplication::translate("LocoIODialog", "Extra Op Codes", nullptr));
+        chkExtra1->setText(QApplication::translate("LocoIODialog", "1", nullptr));
+        chkExtra2->setText(QApplication::translate("LocoIODialog", "2", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnSetDefaults->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Set default values for all the CV's in the module. </p></body></html>", Q_NULLPTR));
+        btnSetDefaults->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Set default values for all the CV's in the module. </p></body></html>", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnSetDefaults->setText(QApplication::translate("LocoIODialog", "Set Defaults", Q_NULLPTR));
-        chkSpecialPorts->setText(QApplication::translate("LocoIODialog", "Special Ports", Q_NULLPTR));
-        chkModule->setText(QApplication::translate("LocoIODialog", "Servo", Q_NULLPTR));
-        chk4PosServo->setText(QApplication::translate("LocoIODialog", "4 Position Servo", Q_NULLPTR));
+        btnSetDefaults->setText(QApplication::translate("LocoIODialog", "Set Defaults", nullptr));
+        chkSpecialPorts->setText(QApplication::translate("LocoIODialog", "Special Ports", nullptr));
+        chkModule->setText(QApplication::translate("LocoIODialog", "Servo", nullptr));
+        chk4PosServo->setText(QApplication::translate("LocoIODialog", "4 Position Servo", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnRestore->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Restore a previously saved set of configuration settings for a module.</p></body></html>", Q_NULLPTR));
+        btnRestore->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Restore a previously saved set of configuration settings for a module.</p></body></html>", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnRestore->setText(QApplication::translate("LocoIODialog", "Restore module", Q_NULLPTR));
+        btnRestore->setText(QApplication::translate("LocoIODialog", "Restore module", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnReadAll->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Read all the configuration variables for the selected module address. </p></body></html>", Q_NULLPTR));
+        btnReadAll->setToolTip(QApplication::translate("LocoIODialog", "<html><head/><body><p>Read all the configuration variables for the selected module address. </p></body></html>", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnReadAll->setText(QApplication::translate("LocoIODialog", "Read All", Q_NULLPTR));
-        label_3->setText(QApplication::translate("LocoIODialog", "Firmware:", Q_NULLPTR));
-        lblFirmware->setText(QApplication::translate("LocoIODialog", "<unknown>", Q_NULLPTR));
-        label_4->setText(QApplication::translate("LocoIODialog", "<html><head/><body><p>LocoBuffer:</p></body></html>", Q_NULLPTR));
-        lblLocoBuffer->setText(QApplication::translate("LocoIODialog", "<unknown>", Q_NULLPTR));
-        lblCurrentAddress->setText(QApplication::translate("LocoIODialog", "Current address: 0x51/1", Q_NULLPTR));
+        btnReadAll->setText(QApplication::translate("LocoIODialog", "Read All", nullptr));
+        label_3->setText(QApplication::translate("LocoIODialog", "Firmware:", nullptr));
+        lblFirmware->setText(QApplication::translate("LocoIODialog", "<unknown>", nullptr));
+        label_4->setText(QApplication::translate("LocoIODialog", "<html><head/><body><p>LocoBuffer:</p></body></html>", nullptr));
+        lblLocoBuffer->setText(QApplication::translate("LocoIODialog", "<unknown>", nullptr));
+        lblCurrentAddress->setText(QApplication::translate("LocoIODialog", "Current address: 0x51/1", nullptr));
     } // retranslateUi
 
 };

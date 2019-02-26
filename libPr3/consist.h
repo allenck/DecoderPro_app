@@ -9,7 +9,7 @@ class Consist : public QObject
 {
     Q_OBJECT
 public:
-    //explicit Consist(QObject *parent = 0);
+    explicit Consist(QObject *parent = 0) : QObject(parent) {}
     /**
      * Interface for a Consist Object, describing one or more
      * cooperatively-operating locomotives.

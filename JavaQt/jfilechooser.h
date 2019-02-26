@@ -64,6 +64,7 @@ private:
  int selectionMode;
  QString selectedFilter;
  File* currentDirectory;
+ QString title;
 
  void common();
 

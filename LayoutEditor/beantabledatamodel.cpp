@@ -1143,6 +1143,31 @@ void BeanTableDataModel::On_moveBean_triggered()
  }
 }
 
+/*protected*/ void BeanTableDataModel::showTableHeaderPopup(QMouseEvent* e, JTable* table) {
+    QMenu* popupMenu = new QMenu();
+    QSignalMapper* mapper = new QSignalMapper(this);
+
+    XTableColumnModel* tcm = (XTableColumnModel*) table->getColumnModel();
+    for (int i = 0; i < tcm->getColumnCount(false); i++) {
+        TableColumn* tc = tcm->getColumnByModelIndex(i);
+        QString columnName = _table->getModel()->headerData(i, Qt::Horizontal).toString();
+        if (columnName != "" ) {
+            QAction* menuItem = new QAction(_table->getModel()->headerData(i, Qt::Horizontal).toString()/*, tcm.isColumnVisible(tc)*/);
+            menuItem->setCheckable(true);
+            menuItem->setChecked(tcm->isColumnVisible(tc));
+//            menuItem.addActionListener(new HeaderActionListener(tc, tcm));
+            popupMenu->addAction(menuItem);
+            mapper->setMapping(menuItem, tc);
+            connect(menuItem, SIGNAL(toggled(bool)), mapper, SLOT(map()));
+
+        }
+        connect(mapper, SIGNAL(mapped(QObject*)), this, SLOT(onColumnSelected(QObject*)));
+
+    }
+    //popupMenu.show(e.getComponent(), e.getX(), e.getY());
+    popupMenu->exec(QCursor::pos());
+}
+
 /*protected*/ void BeanTableDataModel::showTableHeaderPopup(const QPoint &){
     QMenu* popupMenu = new QMenu();
     QSignalMapper* mapper = new QSignalMapper(this);

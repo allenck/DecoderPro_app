@@ -161,7 +161,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  }
 
  ControlPanelEditor* panel = new ControlPanelEditor(name);
- PanelMenu::instance()->addEditorPanel(panel);
+ static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->addEditorPanel(panel);
  panel->getTargetFrame()->move(x,y);
  panel->getTargetFrame()->resize(width,height);
 

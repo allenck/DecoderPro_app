@@ -289,7 +289,7 @@
 
     // provide a JLayeredPane to place the switches on
     //Editor::setTargetPanel(contentPane, makeFrame(name));
-    JmriJFrame* frame = makeFrame(name);
+    JmriJFrame* frame = makeFrame(name + " " + tr("Editor"));
     scrollArea = new QScrollArea();
     frame->setCentralWidget(scrollArea);
     scrollArea->setWidget(switchboardLayeredPane);

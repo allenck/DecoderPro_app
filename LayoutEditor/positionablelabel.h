@@ -69,7 +69,7 @@ public:
 /*public*/ bool showTooltip();
 /*public*/ void setTooltip(QString tip);
 ///*public*/ ToolTip getTooltip();
-QString getToolTip();
+//QString getTooltip();
 /*public*/ QString getNameString();
 /*public*/ Positionable* deepClone();
 /*public*/ Positionable* finishClone(Positionable* p);

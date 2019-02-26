@@ -218,6 +218,7 @@ public:
     /*static*/ /*final*/ /*const int*/ VETOCLOSED = 8,  // turnout must be closed for route to fire
     /*static*/ /*final*/ /*const int*/ VETOTHROWN = 16  // turnout must be thrown for route to fire
     };
+    Q_ENUM(ACTIONS)
     /**
      * Method to delete all control Sensors from this Route.
      */

@@ -56,6 +56,7 @@ void LoadXmlUserAction::common()
  userFileChooser->setDialogType(JFileChooser::OPEN_DIALOG);
  userFileChooser->setApproveButtonText(tr("Open Panels..."));
  userFileChooser->setDialogTitle(tr("Open Panels..."));
+ userFileChooser->setFileFilter("Panel XML files (*.xml);;All files (*.*)");
 
  bool results = loadFile(userFileChooser);
  if (results)

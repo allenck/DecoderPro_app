@@ -174,10 +174,13 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
  *         occur
  */
 //@CheckForNull
-/*public*/ InitializationException* ManagerDefaultSelector::configure()
+/*public*/ void ManagerDefaultSelector::configure()
 {
  InitializationException* error =  NULL;
  QObjectList* connList = InstanceManager::getList("SystemConnectionMemo");
+ if (connList == nullptr) {
+     return; // nothing to do
+ }
  log->debug(tr("configure defaults into InstanceManager from %1 memos, %2 defaults").arg(connList->size()).arg(defaults.keys().size()));
  foreach (QString c, defaults.keys())
  {
@@ -185,28 +188,15 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
   QString connectionName = this->defaults.value(c);
   // have to find object of that type from proper connection
   bool found = false;
-  foreach (QObject* memo, *connList)
+  for (int x = 0; x < connList->size(); x++)
   {
+   SystemConnectionMemo* memo = static_cast<SystemConnectionMemo*>(connList->at(x));
    QString testName = ((SystemConnectionMemo*)memo)->getUserName();
-   if (testName == (connectionName))
+   if (testName == memo->getUserName())
    {
     found = true;
     // match, store
-    try
-    {
-     if(((SystemConnectionMemo*)memo)->provides(c))
-     {
-      log->debug(tr("   setting default for \"%1\" to \"%2\" in configure").arg(c).arg(((SystemConnectionMemo*)memo)->get(c)->metaObject()->className()));
-      InstanceManager::setDefault(c, ((SystemConnectionMemo*)memo)->get(c));
-     }
-    }
-    catch (NullPointerException ex)
-    {
-     QString englishMsg = QString("System connection %1 provides a  NULL manager for %2").arg(((SystemConnectionMemo*)memo)->getUserName()).arg( c); // NOI18N
-     QString localizedMsg = tr("System connection %1 provides a  NULL manager for %2").arg(((SystemConnectionMemo*)memo)->getUserName()).arg( c); // NOI18N
-     error = new InitializationException(englishMsg, localizedMsg,NULL);
-     log->warn(tr("SystemConnectionMemo for %1 (%2) provides a  NULL %3 instance").arg(((SystemConnectionMemo*)memo)->getUserName()).arg(((SystemConnectionMemo*)memo)->metaObject()->className()).arg(c));
-    }
+    InstanceManager::setDefault(c, memo->get(c));
     break;
    }
    else
@@ -238,10 +228,9 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
       }
   }
  }
- return error;
 }
 
-
+#if 0
 //@Override
 /*public*/ void ManagerDefaultSelector::initialize(Profile* profile) throw (InitializationException)
 {
@@ -294,7 +283,7 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
   log->error("Unable to save preferences for Default Selector.", ex);
  }
 }
-
+#endif
 ///*public*/ static class Item {
 
 //    /*public*/ String typeName;

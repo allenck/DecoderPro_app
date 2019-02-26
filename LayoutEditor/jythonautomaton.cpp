@@ -1,6 +1,8 @@
 #include "jythonautomaton.h"
 #include "instancemanager.h"
 #include "PythonQt.h"
+#include "pythonwrappers.h"
+#include <QApplication>
 
 //JythonAutomaton::JythonAutomaton(QObject *parent) :
 //  AbstractAutomaton(parent)
@@ -25,6 +27,7 @@
 {
     filename = file;
     log = new Logger("JythonAutomaton");
+    //PythonWrappers::defineClasses();
 }
 
 
@@ -41,7 +44,7 @@
  */
 /*protected*/ void JythonAutomaton::init() {
 
-//    try {
+    try {
 //        // PySystemState.initialize();
 //        Class<?> cs = Class.forName("org.python.core.PySystemState");
 //        java.lang.reflect.Method initialize
@@ -51,6 +54,7 @@
         // interp = new PythonInterpreter();
 //        interp = Class.forName("org.python.util.PythonInterpreter").newInstance();
  interp = PythonQt::self()->getMainModule();
+ connect(PythonQt::self(), SIGNAL(pythonStdErr(const QString&)), this, SLOT(On_stdErr(const QString&)));
 
         // load some general objects
         // interp.set("dcc", InstanceManager.commandStationInstance());
@@ -60,12 +64,15 @@
 //        set.invoke(interp, new Object[]{"dcc", InstanceManager.commandStationInstance()});
  interp.addObject("dcc", static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation")));
 //        set.invoke(interp, new Object[]{"self", this});
+ if(bHasError)
+     throw Exception("error setting CommandStation");
  interp.addObject("self", this);
 
 
  interp.evalFile(filename);
+ if(bHasError)
+     throw Exception(tr("error evaluating file %s").arg(filename));
 
- connect(PythonQt::self(), SIGNAL(pythonStdErr(const QString&)), this, SLOT(On_stdErr(const QString&)));
 #if 0
         // set up the method to exec python functions
         exec = interp.getClass().getMethod("exec", new Class[]{String.class});
@@ -76,15 +83,23 @@
         // execute the init routine in the jython class
         exec.invoke(interp, new Object[]{"init()"});
 #endif
-//    } catch (Exception e) {
-//        log.error("Exception creating jython system objects: " + e);
-//        e.printStackTrace();
-//    }
+    } catch (Exception e) {
+        log->error("Exception creating jython system objects: " + e.getMessage());
+        //e.printStackTrace();
+    }
 }
 
 void JythonAutomaton::On_stdErr(QString s)
 {
- log->error(s);
+ //log->error(s);
+ bHasError = true;
+ _stdErr += s;
+ int idx;
+ while ((idx = _stdErr.indexOf('\n'))!=-1)
+ {
+  log->error( _stdErr.left(idx) );
+   _stdErr = _stdErr.mid(idx+1);
+ }
 }
 
 /**
@@ -97,7 +112,7 @@ void JythonAutomaton::On_stdErr(QString s)
         log->error("No interpreter, so cannot handle automat");
         return false; // to terminate operation
     }
-//    try {
+    try {
         // execute the handle routine in the jython and check return value
 #if 0
         exec.invoke(interp, new Object[]{"retval = handle()"});
@@ -108,13 +123,31 @@ void JythonAutomaton::On_stdErr(QString s)
         if (retval.toString().equals("1")) {
             return true;
         }
+#else
+//        if(!r.isValid())
+//            log->warn(tr("error finding handle()"));
+        QVariant retval = interp.getVariable("retval");
+        if(!retval.isValid())
+        {
+            QVariant r = interp.evalScript("retval = handle()");
+            bool br = r.toBool();
+        }
+        if(bHasError)
+            throw Exception(tr("an error has occurred in the script"));
+//        log->debug(tr("r = %1").arg(r.toString()));
+//        QVariant retval = interp.call("retval");
+        if (retval.toBool()) {
+            return true;
+        }
+
 #endif
-        return false;
-//    } catch (Exception e) {
-//        log.error("Exception invoking jython command: " + e);
+        qApp->processEvents();
+        return true;
+    } catch (Exception e) {
+        log->error("Exception invoking jython command: " + e.getMessage());
 //        e.printStackTrace();
-//        return false;
-//    }
+        return false;
+    }
 }
 
 //java.lang.reflect.Method exec;

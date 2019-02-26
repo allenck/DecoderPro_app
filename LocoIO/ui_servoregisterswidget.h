@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'servoregisterswidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,11 +10,8 @@
 #define UI_SERVOREGISTERSWIDGET_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -29,14 +26,14 @@ public:
     void setupUi(QWidget *ServoRegistersWidget)
     {
         if (ServoRegistersWidget->objectName().isEmpty())
-            ServoRegistersWidget->setObjectName(QStringLiteral("ServoRegistersWidget"));
+            ServoRegistersWidget->setObjectName(QLatin1String("ServoRegistersWidget"));
         ServoRegistersWidget->resize(400, 36);
         verticalLayout = new QVBoxLayout(ServoRegistersWidget);
         verticalLayout->setSpacing(0);
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         HorizontalLayout_registersWidget = new QHBoxLayout();
-        HorizontalLayout_registersWidget->setObjectName(QStringLiteral("HorizontalLayout_registersWidget"));
+        HorizontalLayout_registersWidget->setObjectName(QLatin1String("HorizontalLayout_registersWidget"));
 
         verticalLayout->addLayout(HorizontalLayout_registersWidget);
 
@@ -48,7 +45,7 @@ public:
 
     void retranslateUi(QWidget *ServoRegistersWidget)
     {
-        ServoRegistersWidget->setWindowTitle(QApplication::translate("ServoRegistersWidget", "Form", Q_NULLPTR));
+        ServoRegistersWidget->setWindowTitle(QApplication::translate("ServoRegistersWidget", "Form", nullptr));
     } // retranslateUi
 
 };

@@ -8,7 +8,7 @@ class ProgrammingMode : public QObject
     Q_OBJECT
 public:
     //explicit ProgrammingMode(QObject *parent = 0);
-    /*public*/ ProgrammingMode(QString standardName, QString localName="standardName",QObject *parent = 0);
+    /*public*/ ProgrammingMode(QString standardName, QString localName="standardName",QObject *parent = nullptr);
     /*public*/ QString toString();
     /*public*/ QString getStandardName();
     /*public*/ bool equals(QObject* o);

@@ -808,7 +808,7 @@ QString ServiceInfoState::toString() {return "";}
                         QByteArray source = getTextBytes();
                         for(int j = 0; j < source.length()-i; j++)
                         {
-                         value.replace(i, source.at(j+off));
+//                         value.replace(i, source.at(j+off));
                         }
                         properties.insert(name, value);
                         off += len;

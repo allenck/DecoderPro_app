@@ -779,7 +779,7 @@ FileUtil::FileUtil(QObject *parent) :
   FileUtilSupport::getDefault()->backup(file);
 }
 
-/*public*/ /*static*/ QStringList* FileUtil::findProgramPath()
+/*public*/ /*static*/ QList<QString>* FileUtil::findProgramPath()
 {
  return FileUtilSupport::getDefault()->findProgramPath();
 }

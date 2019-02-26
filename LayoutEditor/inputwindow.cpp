@@ -15,10 +15,13 @@
 #include <QTextBlock>
 #include <QTextCursor>
 #include <QCursor>
-#include "jythonwindow.h"
+//#include "jythonwindow.h"
 #include "userpreferencesmanager.h"
 #include "instancemanager.h"
 #include <QThread>
+#include "scripts/scriptoutput.h"
+#include "scripts/jmriscriptenginemanager.h"
+#include <QComboBox>
 
 //InputWindow::InputWidow(QWidget *parent) :
 //  QWidget(parent)
@@ -54,6 +57,8 @@
  alwaysOnTop = QString(this->metaObject()->className()) + ".alwaysOnTop";
 
  alwaysOnTopCheckBox = new QCheckBox();
+ languages = new QComboBox();
+ languages->addItem("PythonQt");
  userFileChooser = new JFileChooser(FileUtil::getScriptsPath());
 // jmri.util.FileChooserFilter filt = new jmri.util.FileChooserFilter("Python script files");
 // filt.addExtension("py");
@@ -376,53 +381,60 @@ void InputWindow::buttonPressed()
  //PythonInterp.getPythonInterpreter();
  interp = PythonQt::self()->getMainModule();
 
- PythonWrappers::defineClasses();
+ //PythonWrappers::defineClasses();
 
- QString cmd = area->toPlainText() + "\n";
+// QString cmd = area->toPlainText() + "\n";
 
- // The command must end with exactly one \n
- while ((cmd.length() > 1) && cmd.at(cmd.length() - 2) == '\n')
+// // The command must end with exactly one \n
+// while ((cmd.length() > 1) && cmd.at(cmd.length() - 2) == '\n')
+// {
+//  cmd = cmd.mid(0, cmd.length() - 1);
+// }
+
+// // add the text to the output frame
+// QString echo = ">>> " + cmd;
+// // intermediate \n characters need to be prefixed
+// echo = echo.replace("\n", "\n... ");
+// echo = echo.mid(0, echo.length() - 4);
+// //PythonInterp.getOutputArea().append(echo);
+// JythonWindow::instance()->appendText(echo);
+
+// // and execute
+// //PythonInterp.execCommand(cmd);
+// //interp.evalScript(cmd);
+// stopButton->setEnabled(true);
+// loadButton->setEnabled(false);
+// button->setEnabled(false);
+// storeButton->setEnabled(false);
+
+// Worker* worker = new Worker(cmd, this);
+// thread = new QThread;
+// worker->moveToThread(thread);
+// connect(thread, SIGNAL(started()), worker, SLOT(process()));
+// connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
+// connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
+// connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+// connect(PythonQt::self(), SIGNAL(pythonStdErr(QString)), this, SLOT(on_pythonStdErr(QString)));
+// //connect(stopButton, SIGNAL(clicked()), worker, SLOT(stopRequested()));
+// connect(stopButton, SIGNAL(clicked()), worker, SLOT(stopRequested()));
+
+// thread->start();
+
+// while(thread->isRunning())
+// {
+//  loop.exec();
+// }
+// stopButton->setEnabled(false);
+// loadButton->setEnabled(true);
+// button->setEnabled(true);
+// storeButton->setEnabled(true);
+ ScriptOutput::writeScript(area->text);
+ try
  {
-  cmd = cmd.mid(0, cmd.length() - 1);
+  JmriScriptEngineManager::getDefault()->eval(area->text, JmriScriptEngineManager::getDefault()->getEngineByName((QString) languages->currentText()));
+ } catch (ScriptException ex) {
+     log->error("Error executing script", ex);
  }
-
- // add the text to the output frame
- QString echo = ">>> " + cmd;
- // intermediate \n characters need to be prefixed
- echo = echo.replace("\n", "\n... ");
- echo = echo.mid(0, echo.length() - 4);
- //PythonInterp.getOutputArea().append(echo);
- JythonWindow::instance()->appendText(echo);
-
- // and execute
- //PythonInterp.execCommand(cmd);
- //interp.evalScript(cmd);
- stopButton->setEnabled(true);
- loadButton->setEnabled(false);
- button->setEnabled(false);
- storeButton->setEnabled(false);
-
- Worker* worker = new Worker(cmd, this);
- thread = new QThread;
- worker->moveToThread(thread);
- connect(thread, SIGNAL(started()), worker, SLOT(process()));
- connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
- connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
- connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
- connect(PythonQt::self(), SIGNAL(pythonStdErr(QString)), this, SLOT(on_pythonStdErr(QString)));
- //connect(stopButton, SIGNAL(clicked()), worker, SLOT(stopRequested()));
- connect(stopButton, SIGNAL(clicked()), worker, SLOT(stopRequested()));
-
- thread->start();
-
- while(thread->isRunning())
- {
-  loop.exec();
- }
- stopButton->setEnabled(false);
- loadButton->setEnabled(true);
- button->setEnabled(true);
- storeButton->setEnabled(true);
 }
 
 Worker::Worker(QString script, InputWindow *parent)

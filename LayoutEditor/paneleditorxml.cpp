@@ -136,13 +136,14 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
     if (element.attribute("name")!="")
      name = element.attribute("name");
     // confirm that panel hasn't already been loaded
-    if(PanelMenu::instance()->isPanelNameUsed(name))
+    if(static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
     {
      log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
      result = false;
     }
     PanelEditor* panel = new PanelEditor(name);
     //panel.makeFrame(name);
+    panel->init(name);
     PanelMenu::instance()->addEditorPanel(panel);
     //panel->getTargetFrame()->setsetLocation(x,y);
 //    panel->setLocation(x,y);
@@ -150,6 +151,7 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
 //    panel->resize(width,height);
     panel->setGeometry(x,y,width, height);
     panel->setTitle();
+    static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->addEditorPanel(panel);
 
     // Load editor option flags. This has to be done before the content
     // items are loaded, to preserve the individual item settings

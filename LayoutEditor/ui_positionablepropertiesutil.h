@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'positionablepropertiesutil.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,9 +10,7 @@
 #define UI_POSITIONABLEPROPERTIESUTIL_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
@@ -21,7 +19,6 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
@@ -91,25 +88,25 @@ public:
     void setupUi(QDialog *PositionablePropertiesUtil)
     {
         if (PositionablePropertiesUtil->objectName().isEmpty())
-            PositionablePropertiesUtil->setObjectName(QStringLiteral("PositionablePropertiesUtil"));
+            PositionablePropertiesUtil->setObjectName(QLatin1String("PositionablePropertiesUtil"));
         PositionablePropertiesUtil->resize(484, 409);
         formLayout_2 = new QFormLayout(PositionablePropertiesUtil);
-        formLayout_2->setObjectName(QStringLiteral("formLayout_2"));
+        formLayout_2->setObjectName(QLatin1String("formLayout_2"));
         formLayout_2->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
         horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        horizontalLayout_4->setObjectName(QLatin1String("horizontalLayout_4"));
         cancel = new QPushButton(PositionablePropertiesUtil);
-        cancel->setObjectName(QStringLiteral("cancel"));
+        cancel->setObjectName(QLatin1String("cancel"));
 
         horizontalLayout_4->addWidget(cancel);
 
         applyButton = new QPushButton(PositionablePropertiesUtil);
-        applyButton->setObjectName(QStringLiteral("applyButton"));
+        applyButton->setObjectName(QLatin1String("applyButton"));
 
         horizontalLayout_4->addWidget(applyButton);
 
         okButton = new QPushButton(PositionablePropertiesUtil);
-        okButton->setObjectName(QStringLiteral("okButton"));
+        okButton->setObjectName(QLatin1String("okButton"));
 
         horizontalLayout_4->addWidget(okButton);
 
@@ -117,25 +114,28 @@ public:
         formLayout_2->setLayout(2, QFormLayout::SpanningRole, horizontalLayout_4);
 
         tabWidget = new QTabWidget(PositionablePropertiesUtil);
-        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tabWidget->setObjectName(QLatin1String("tabWidget"));
         tab = new QWidget();
-        tab->setObjectName(QStringLiteral("tab"));
+        tab->setObjectName(QLatin1String("tab"));
         gridLayout_2 = new QGridLayout(tab);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout_2->setObjectName(QLatin1String("gridLayout_2"));
         fontSizeField = new QComboBox(tab);
-        fontSizeField->setObjectName(QStringLiteral("fontSizeField"));
+        fontSizeField->setObjectName(QLatin1String("fontSizeField"));
 
         gridLayout_2->addWidget(fontSizeField, 1, 0, 1, 1);
 
         horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
+        horizontalLayout_5->setObjectName(QLatin1String("horizontalLayout_5"));
         label_9 = new QLabel(tab);
-        label_9->setObjectName(QStringLiteral("label_9"));
+        label_9->setObjectName(QLatin1String("label_9"));
 
         horizontalLayout_5->addWidget(label_9);
 
         _justificationCombo = new QComboBox(tab);
-        _justificationCombo->setObjectName(QStringLiteral("_justificationCombo"));
+        _justificationCombo->addItem(QString());
+        _justificationCombo->addItem(QString());
+        _justificationCombo->addItem(QString());
+        _justificationCombo->setObjectName(QLatin1String("_justificationCombo"));
 
         horizontalLayout_5->addWidget(_justificationCombo);
 
@@ -143,48 +143,48 @@ public:
         gridLayout_2->addLayout(horizontalLayout_5, 5, 1, 1, 1);
 
         bold = new QCheckBox(tab);
-        bold->setObjectName(QStringLiteral("bold"));
+        bold->setObjectName(QLatin1String("bold"));
 
         gridLayout_2->addWidget(bold, 3, 2, 1, 1);
 
         fontComboBox = new QFontComboBox(tab);
-        fontComboBox->setObjectName(QStringLiteral("fontComboBox"));
+        fontComboBox->setObjectName(QLatin1String("fontComboBox"));
 
         gridLayout_2->addWidget(fontComboBox, 0, 0, 1, 3);
 
         italic = new QCheckBox(tab);
-        italic->setObjectName(QStringLiteral("italic"));
+        italic->setObjectName(QLatin1String("italic"));
 
         gridLayout_2->addWidget(italic, 4, 2, 1, 1);
 
         label_10 = new QLabel(tab);
-        label_10->setObjectName(QStringLiteral("label_10"));
+        label_10->setObjectName(QLatin1String("label_10"));
 
         gridLayout_2->addWidget(label_10, 2, 1, 1, 1);
 
         groupBox_2 = new QGroupBox(tab);
-        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
+        groupBox_2->setObjectName(QLatin1String("groupBox_2"));
         horizontalLayout_7 = new QHBoxLayout(groupBox_2);
-        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
+        horizontalLayout_7->setObjectName(QLatin1String("horizontalLayout_7"));
         horizontalLayout_6 = new QHBoxLayout();
-        horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
+        horizontalLayout_6->setObjectName(QLatin1String("horizontalLayout_6"));
         lbFontColor = new QLabel(groupBox_2);
-        lbFontColor->setObjectName(QStringLiteral("lbFontColor"));
+        lbFontColor->setObjectName(QLatin1String("lbFontColor"));
 
         horizontalLayout_6->addWidget(lbFontColor);
 
         fontColor = new QComboBox(groupBox_2);
-        fontColor->setObjectName(QStringLiteral("fontColor"));
+        fontColor->setObjectName(QLatin1String("fontColor"));
 
         horizontalLayout_6->addWidget(fontColor);
 
         lbBackgroundColor = new QLabel(groupBox_2);
-        lbBackgroundColor->setObjectName(QStringLiteral("lbBackgroundColor"));
+        lbBackgroundColor->setObjectName(QLatin1String("lbBackgroundColor"));
 
         horizontalLayout_6->addWidget(lbBackgroundColor);
 
         backgroundColor = new QComboBox(groupBox_2);
-        backgroundColor->setObjectName(QStringLiteral("backgroundColor"));
+        backgroundColor->setObjectName(QLatin1String("backgroundColor"));
 
         horizontalLayout_6->addWidget(backgroundColor);
 
@@ -196,37 +196,37 @@ public:
 
         tabWidget->addTab(tab, QString());
         tab_2 = new QWidget();
-        tab_2->setObjectName(QStringLiteral("tab_2"));
+        tab_2->setObjectName(QLatin1String("tab_2"));
         layoutWidget = new QWidget(tab_2);
-        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setObjectName(QLatin1String("layoutWidget"));
         layoutWidget->setGeometry(QRect(10, 20, 227, 29));
         horizontalLayout_3 = new QHBoxLayout(layoutWidget);
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        horizontalLayout_3->setObjectName(QLatin1String("horizontalLayout_3"));
         horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
         label_4 = new QLabel(layoutWidget);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setObjectName(QLatin1String("label_4"));
 
         horizontalLayout_3->addWidget(label_4);
 
         textField = new QLineEdit(layoutWidget);
-        textField->setObjectName(QStringLiteral("textField"));
+        textField->setObjectName(QLatin1String("textField"));
 
         horizontalLayout_3->addWidget(textField);
 
         tabWidget->addTab(tab_2, QString());
         tab_3 = new QWidget();
-        tab_3->setObjectName(QStringLiteral("tab_3"));
+        tab_3->setObjectName(QLatin1String("tab_3"));
         formLayout = new QFormLayout(tab_3);
-        formLayout->setObjectName(QStringLiteral("formLayout"));
+        formLayout->setObjectName(QLatin1String("formLayout"));
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         label = new QLabel(tab_3);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QLatin1String("label"));
 
         horizontalLayout->addWidget(label);
 
         borderColorCombo = new QComboBox(tab_3);
-        borderColorCombo->setObjectName(QStringLiteral("borderColorCombo"));
+        borderColorCombo->setObjectName(QLatin1String("borderColorCombo"));
 
         horizontalLayout->addWidget(borderColorCombo);
 
@@ -234,26 +234,26 @@ public:
         formLayout->setLayout(0, QFormLayout::LabelRole, horizontalLayout);
 
         splitter = new QSplitter(tab_3);
-        splitter->setObjectName(QStringLiteral("splitter"));
+        splitter->setObjectName(QLatin1String("splitter"));
         splitter->setOrientation(Qt::Horizontal);
         label_2 = new QLabel(splitter);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
         splitter->addWidget(label_2);
         borderSize = new QSpinBox(splitter);
-        borderSize->setObjectName(QStringLiteral("borderSize"));
+        borderSize->setObjectName(QLatin1String("borderSize"));
         splitter->addWidget(borderSize);
 
         formLayout->setWidget(1, QFormLayout::LabelRole, splitter);
 
         horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        horizontalLayout_2->setObjectName(QLatin1String("horizontalLayout_2"));
         label_3 = new QLabel(tab_3);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QLatin1String("label_3"));
 
         horizontalLayout_2->addWidget(label_3);
 
         marginSize = new QSpinBox(tab_3);
-        marginSize->setObjectName(QStringLiteral("marginSize"));
+        marginSize->setObjectName(QLatin1String("marginSize"));
 
         horizontalLayout_2->addWidget(marginSize);
 
@@ -262,50 +262,50 @@ public:
 
         tabWidget->addTab(tab_3, QString());
         tab_4 = new QWidget();
-        tab_4->setObjectName(QStringLiteral("tab_4"));
+        tab_4->setObjectName(QLatin1String("tab_4"));
         gridLayout = new QGridLayout(tab_4);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QLatin1String("gridLayout"));
         height = new QSpinBox(tab_4);
-        height->setObjectName(QStringLiteral("height"));
+        height->setObjectName(QLatin1String("height"));
         height->setMinimum(0);
 
         gridLayout->addWidget(height, 3, 1, 1, 1);
 
         width = new QSpinBox(tab_4);
-        width->setObjectName(QStringLiteral("width"));
+        width->setObjectName(QLatin1String("width"));
         width->setMinimum(0);
 
         gridLayout->addWidget(width, 2, 1, 1, 1);
 
         label_7 = new QLabel(tab_4);
-        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setObjectName(QLatin1String("label_7"));
 
         gridLayout->addWidget(label_7, 2, 0, 1, 1);
 
         label_5 = new QLabel(tab_4);
-        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setObjectName(QLatin1String("label_5"));
 
         gridLayout->addWidget(label_5, 0, 0, 1, 1);
 
         xPosition = new QSpinBox(tab_4);
-        xPosition->setObjectName(QStringLiteral("xPosition"));
+        xPosition->setObjectName(QLatin1String("xPosition"));
         xPosition->setMaximum(1000);
 
         gridLayout->addWidget(xPosition, 0, 1, 1, 1);
 
         label_6 = new QLabel(tab_4);
-        label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setObjectName(QLatin1String("label_6"));
 
         gridLayout->addWidget(label_6, 1, 0, 1, 1);
 
         yPosition = new QSpinBox(tab_4);
-        yPosition->setObjectName(QStringLiteral("yPosition"));
+        yPosition->setObjectName(QLatin1String("yPosition"));
         yPosition->setMaximum(1000);
 
         gridLayout->addWidget(yPosition, 1, 1, 1, 1);
 
         label_8 = new QLabel(tab_4);
-        label_8->setObjectName(QStringLiteral("label_8"));
+        label_8->setObjectName(QLatin1String("label_8"));
 
         gridLayout->addWidget(label_8, 3, 0, 1, 1);
 
@@ -314,12 +314,12 @@ public:
         formLayout_2->setWidget(0, QFormLayout::SpanningRole, tabWidget);
 
         groupBox = new QGroupBox(PositionablePropertiesUtil);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
+        groupBox->setObjectName(QLatin1String("groupBox"));
         groupBox->setAlignment(Qt::AlignCenter);
         horizontalLayout_8 = new QHBoxLayout(groupBox);
-        horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
+        horizontalLayout_8->setObjectName(QLatin1String("horizontalLayout_8"));
         tmp = new QLabel(groupBox);
-        tmp->setObjectName(QStringLiteral("tmp"));
+        tmp->setObjectName(QLatin1String("tmp"));
         tmp->setAlignment(Qt::AlignCenter);
 
         horizontalLayout_8->addWidget(tmp);
@@ -338,37 +338,35 @@ public:
 
     void retranslateUi(QDialog *PositionablePropertiesUtil)
     {
-        PositionablePropertiesUtil->setWindowTitle(QApplication::translate("PositionablePropertiesUtil", "Dialog", Q_NULLPTR));
-        cancel->setText(QApplication::translate("PositionablePropertiesUtil", "Cancel", Q_NULLPTR));
-        applyButton->setText(QApplication::translate("PositionablePropertiesUtil", "Apply", Q_NULLPTR));
-        okButton->setText(QApplication::translate("PositionablePropertiesUtil", "OK", Q_NULLPTR));
-        label_9->setText(QApplication::translate("PositionablePropertiesUtil", "Justification", Q_NULLPTR));
-        _justificationCombo->clear();
-        _justificationCombo->insertItems(0, QStringList()
-         << QApplication::translate("PositionablePropertiesUtil", "Left", Q_NULLPTR)
-         << QApplication::translate("PositionablePropertiesUtil", "Right", Q_NULLPTR)
-         << QApplication::translate("PositionablePropertiesUtil", "Center", Q_NULLPTR)
-        );
-        bold->setText(QApplication::translate("PositionablePropertiesUtil", "Bold", Q_NULLPTR));
-        italic->setText(QApplication::translate("PositionablePropertiesUtil", "Italic", Q_NULLPTR));
+        PositionablePropertiesUtil->setWindowTitle(QApplication::translate("PositionablePropertiesUtil", "Dialog", nullptr));
+        cancel->setText(QApplication::translate("PositionablePropertiesUtil", "Cancel", nullptr));
+        applyButton->setText(QApplication::translate("PositionablePropertiesUtil", "Apply", nullptr));
+        okButton->setText(QApplication::translate("PositionablePropertiesUtil", "OK", nullptr));
+        label_9->setText(QApplication::translate("PositionablePropertiesUtil", "Justification", nullptr));
+        _justificationCombo->setItemText(0, QApplication::translate("PositionablePropertiesUtil", "Left", nullptr));
+        _justificationCombo->setItemText(1, QApplication::translate("PositionablePropertiesUtil", "Right", nullptr));
+        _justificationCombo->setItemText(2, QApplication::translate("PositionablePropertiesUtil", "Center", nullptr));
+
+        bold->setText(QApplication::translate("PositionablePropertiesUtil", "Bold", nullptr));
+        italic->setText(QApplication::translate("PositionablePropertiesUtil", "Italic", nullptr));
         label_10->setText(QString());
-        groupBox_2->setTitle(QApplication::translate("PositionablePropertiesUtil", "GroupBox", Q_NULLPTR));
-        lbFontColor->setText(QApplication::translate("PositionablePropertiesUtil", "Font Color", Q_NULLPTR));
-        lbBackgroundColor->setText(QApplication::translate("PositionablePropertiesUtil", "Background Color", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("PositionablePropertiesUtil", "Font", Q_NULLPTR));
-        label_4->setText(QApplication::translate("PositionablePropertiesUtil", "Text Value", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("PositionablePropertiesUtil", "Edit Text", Q_NULLPTR));
-        label->setText(QApplication::translate("PositionablePropertiesUtil", "Border Color", Q_NULLPTR));
-        label_2->setText(QApplication::translate("PositionablePropertiesUtil", "Border Size", Q_NULLPTR));
-        label_3->setText(QApplication::translate("PositionablePropertiesUtil", "Margin Size", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("PositionablePropertiesUtil", "Border", Q_NULLPTR));
-        label_7->setText(QApplication::translate("PositionablePropertiesUtil", "Width = ", Q_NULLPTR));
-        label_5->setText(QApplication::translate("PositionablePropertiesUtil", "x = ", Q_NULLPTR));
-        label_6->setText(QApplication::translate("PositionablePropertiesUtil", "y= ", Q_NULLPTR));
-        label_8->setText(QApplication::translate("PositionablePropertiesUtil", "Height = ", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("PositionablePropertiesUtil", "Size and Position", Q_NULLPTR));
-        groupBox->setTitle(QApplication::translate("PositionablePropertiesUtil", "Preview", Q_NULLPTR));
-        tmp->setText(QApplication::translate("PositionablePropertiesUtil", "TextLabel", Q_NULLPTR));
+        groupBox_2->setTitle(QApplication::translate("PositionablePropertiesUtil", "GroupBox", nullptr));
+        lbFontColor->setText(QApplication::translate("PositionablePropertiesUtil", "Font Color", nullptr));
+        lbBackgroundColor->setText(QApplication::translate("PositionablePropertiesUtil", "Background Color", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("PositionablePropertiesUtil", "Font", nullptr));
+        label_4->setText(QApplication::translate("PositionablePropertiesUtil", "Text Value", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("PositionablePropertiesUtil", "Edit Text", nullptr));
+        label->setText(QApplication::translate("PositionablePropertiesUtil", "Border Color", nullptr));
+        label_2->setText(QApplication::translate("PositionablePropertiesUtil", "Border Size", nullptr));
+        label_3->setText(QApplication::translate("PositionablePropertiesUtil", "Margin Size", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("PositionablePropertiesUtil", "Border", nullptr));
+        label_7->setText(QApplication::translate("PositionablePropertiesUtil", "Width = ", nullptr));
+        label_5->setText(QApplication::translate("PositionablePropertiesUtil", "x = ", nullptr));
+        label_6->setText(QApplication::translate("PositionablePropertiesUtil", "y= ", nullptr));
+        label_8->setText(QApplication::translate("PositionablePropertiesUtil", "Height = ", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("PositionablePropertiesUtil", "Size and Position", nullptr));
+        groupBox->setTitle(QApplication::translate("PositionablePropertiesUtil", "Preview", nullptr));
+        tmp->setText(QApplication::translate("PositionablePropertiesUtil", "TextLabel", nullptr));
     } // retranslateUi
 
 };

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'servowidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,13 +10,10 @@
 #define UI_SERVOWIDGET_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpinBox>
@@ -121,17 +118,17 @@ public:
     void setupUi(QWidget *ServoWidget)
     {
         if (ServoWidget->objectName().isEmpty())
-            ServoWidget->setObjectName(QStringLiteral("ServoWidget"));
+            ServoWidget->setObjectName(QLatin1String("ServoWidget"));
         ServoWidget->resize(523, 368);
         QFont font;
         font.setPointSize(7);
         ServoWidget->setFont(font);
         gridLayout_2 = new QGridLayout(ServoWidget);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout_2->setObjectName(QLatin1String("gridLayout_2"));
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         rbNotUsed1 = new QRadioButton(ServoWidget);
-        rbNotUsed1->setObjectName(QStringLiteral("rbNotUsed1"));
+        rbNotUsed1->setObjectName(QLatin1String("rbNotUsed1"));
         rbNotUsed1->setMaximumSize(QSize(35, 16777215));
         rbNotUsed1->setChecked(false);
         rbNotUsed1->setAutoExclusive(false);
@@ -139,7 +136,7 @@ public:
         horizontalLayout->addWidget(rbNotUsed1);
 
         rbNotUsed2 = new QRadioButton(ServoWidget);
-        rbNotUsed2->setObjectName(QStringLiteral("rbNotUsed2"));
+        rbNotUsed2->setObjectName(QLatin1String("rbNotUsed2"));
         rbNotUsed2->setMaximumSize(QSize(35, 16777215));
         rbNotUsed2->setChecked(true);
         rbNotUsed2->setAutoExclusive(false);
@@ -147,38 +144,38 @@ public:
         horizontalLayout->addWidget(rbNotUsed2);
 
         rbNotUsed3 = new QRadioButton(ServoWidget);
-        rbNotUsed3->setObjectName(QStringLiteral("rbNotUsed3"));
+        rbNotUsed3->setObjectName(QLatin1String("rbNotUsed3"));
         rbNotUsed3->setMaximumSize(QSize(35, 16777215));
         rbNotUsed3->setChecked(false);
 
         horizontalLayout->addWidget(rbNotUsed3);
 
         rbNotUsed4 = new QRadioButton(ServoWidget);
-        rbNotUsed4->setObjectName(QStringLiteral("rbNotUsed4"));
+        rbNotUsed4->setObjectName(QLatin1String("rbNotUsed4"));
         rbNotUsed4->setMaximumSize(QSize(35, 16777215));
 
         horizontalLayout->addWidget(rbNotUsed4);
 
         rbNotUsed5 = new QRadioButton(ServoWidget);
-        rbNotUsed5->setObjectName(QStringLiteral("rbNotUsed5"));
+        rbNotUsed5->setObjectName(QLatin1String("rbNotUsed5"));
         rbNotUsed5->setMaximumSize(QSize(35, 16777215));
 
         horizontalLayout->addWidget(rbNotUsed5);
 
         rbNotUsed6 = new QRadioButton(ServoWidget);
-        rbNotUsed6->setObjectName(QStringLiteral("rbNotUsed6"));
+        rbNotUsed6->setObjectName(QLatin1String("rbNotUsed6"));
         rbNotUsed6->setMaximumSize(QSize(35, 16777215));
 
         horizontalLayout->addWidget(rbNotUsed6);
 
         rbNotUsed7 = new QRadioButton(ServoWidget);
-        rbNotUsed7->setObjectName(QStringLiteral("rbNotUsed7"));
+        rbNotUsed7->setObjectName(QLatin1String("rbNotUsed7"));
         rbNotUsed7->setMaximumSize(QSize(35, 16777215));
 
         horizontalLayout->addWidget(rbNotUsed7);
 
         rbNotUsed8 = new QRadioButton(ServoWidget);
-        rbNotUsed8->setObjectName(QStringLiteral("rbNotUsed8"));
+        rbNotUsed8->setObjectName(QLatin1String("rbNotUsed8"));
         rbNotUsed8->setMaximumSize(QSize(35, 16777215));
 
         horizontalLayout->addWidget(rbNotUsed8);
@@ -187,25 +184,25 @@ public:
         gridLayout_2->addLayout(horizontalLayout, 0, 0, 1, 1);
 
         gbServo = new QGroupBox(ServoWidget);
-        gbServo->setObjectName(QStringLiteral("gbServo"));
+        gbServo->setObjectName(QLatin1String("gbServo"));
         gbServo->setFlat(true);
         gridLayout = new QGridLayout(gbServo);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QLatin1String("gridLayout"));
         label_2 = new QLabel(gbServo);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
         label_2->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(label_2, 0, 0, 1, 1);
 
         horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        horizontalLayout_3->setObjectName(QLatin1String("horizontalLayout_3"));
         btnTest1 = new QToolButton(gbServo);
-        btnTest1->setObjectName(QStringLiteral("btnTest1"));
+        btnTest1->setObjectName(QLatin1String("btnTest1"));
 
         horizontalLayout_3->addWidget(btnTest1);
 
         btnCenter1 = new QToolButton(gbServo);
-        btnCenter1->setObjectName(QStringLiteral("btnCenter1"));
+        btnCenter1->setObjectName(QLatin1String("btnCenter1"));
 
         horizontalLayout_3->addWidget(btnCenter1);
 
@@ -213,14 +210,14 @@ public:
         gridLayout->addLayout(horizontalLayout_3, 1, 0, 1, 1);
 
         horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        horizontalLayout_4->setObjectName(QLatin1String("horizontalLayout_4"));
         btnTest2 = new QToolButton(gbServo);
-        btnTest2->setObjectName(QStringLiteral("btnTest2"));
+        btnTest2->setObjectName(QLatin1String("btnTest2"));
 
         horizontalLayout_4->addWidget(btnTest2);
 
         btnCenter2 = new QToolButton(gbServo);
-        btnCenter2->setObjectName(QStringLiteral("btnCenter2"));
+        btnCenter2->setObjectName(QLatin1String("btnCenter2"));
 
         horizontalLayout_4->addWidget(btnCenter2);
 
@@ -228,14 +225,14 @@ public:
         gridLayout->addLayout(horizontalLayout_4, 1, 1, 1, 1);
 
         horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
+        horizontalLayout_5->setObjectName(QLatin1String("horizontalLayout_5"));
         btnTest3 = new QToolButton(gbServo);
-        btnTest3->setObjectName(QStringLiteral("btnTest3"));
+        btnTest3->setObjectName(QLatin1String("btnTest3"));
 
         horizontalLayout_5->addWidget(btnTest3);
 
         btnCenter3 = new QToolButton(gbServo);
-        btnCenter3->setObjectName(QStringLiteral("btnCenter3"));
+        btnCenter3->setObjectName(QLatin1String("btnCenter3"));
 
         horizontalLayout_5->addWidget(btnCenter3);
 
@@ -243,14 +240,14 @@ public:
         gridLayout->addLayout(horizontalLayout_5, 1, 2, 1, 1);
 
         horizontalLayout_6 = new QHBoxLayout();
-        horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
+        horizontalLayout_6->setObjectName(QLatin1String("horizontalLayout_6"));
         btnTest4 = new QToolButton(gbServo);
-        btnTest4->setObjectName(QStringLiteral("btnTest4"));
+        btnTest4->setObjectName(QLatin1String("btnTest4"));
 
         horizontalLayout_6->addWidget(btnTest4);
 
         btnCenter4 = new QToolButton(gbServo);
-        btnCenter4->setObjectName(QStringLiteral("btnCenter4"));
+        btnCenter4->setObjectName(QLatin1String("btnCenter4"));
 
         horizontalLayout_6->addWidget(btnCenter4);
 
@@ -258,14 +255,14 @@ public:
         gridLayout->addLayout(horizontalLayout_6, 1, 3, 1, 1);
 
         horizontalLayout_7 = new QHBoxLayout();
-        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
+        horizontalLayout_7->setObjectName(QLatin1String("horizontalLayout_7"));
         btnTest5 = new QToolButton(gbServo);
-        btnTest5->setObjectName(QStringLiteral("btnTest5"));
+        btnTest5->setObjectName(QLatin1String("btnTest5"));
 
         horizontalLayout_7->addWidget(btnTest5);
 
         btnCenter5 = new QToolButton(gbServo);
-        btnCenter5->setObjectName(QStringLiteral("btnCenter5"));
+        btnCenter5->setObjectName(QLatin1String("btnCenter5"));
 
         horizontalLayout_7->addWidget(btnCenter5);
 
@@ -273,14 +270,14 @@ public:
         gridLayout->addLayout(horizontalLayout_7, 1, 4, 1, 1);
 
         horizontalLayout_8 = new QHBoxLayout();
-        horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
+        horizontalLayout_8->setObjectName(QLatin1String("horizontalLayout_8"));
         btnTest6 = new QToolButton(gbServo);
-        btnTest6->setObjectName(QStringLiteral("btnTest6"));
+        btnTest6->setObjectName(QLatin1String("btnTest6"));
 
         horizontalLayout_8->addWidget(btnTest6);
 
         btnCenter6 = new QToolButton(gbServo);
-        btnCenter6->setObjectName(QStringLiteral("btnCenter6"));
+        btnCenter6->setObjectName(QLatin1String("btnCenter6"));
 
         horizontalLayout_8->addWidget(btnCenter6);
 
@@ -288,14 +285,14 @@ public:
         gridLayout->addLayout(horizontalLayout_8, 1, 5, 1, 1);
 
         horizontalLayout_9 = new QHBoxLayout();
-        horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
+        horizontalLayout_9->setObjectName(QLatin1String("horizontalLayout_9"));
         btnTest7 = new QToolButton(gbServo);
-        btnTest7->setObjectName(QStringLiteral("btnTest7"));
+        btnTest7->setObjectName(QLatin1String("btnTest7"));
 
         horizontalLayout_9->addWidget(btnTest7);
 
         btnCenter7 = new QToolButton(gbServo);
-        btnCenter7->setObjectName(QStringLiteral("btnCenter7"));
+        btnCenter7->setObjectName(QLatin1String("btnCenter7"));
 
         horizontalLayout_9->addWidget(btnCenter7);
 
@@ -303,14 +300,14 @@ public:
         gridLayout->addLayout(horizontalLayout_9, 1, 6, 1, 1);
 
         horizontalLayout_10 = new QHBoxLayout();
-        horizontalLayout_10->setObjectName(QStringLiteral("horizontalLayout_10"));
+        horizontalLayout_10->setObjectName(QLatin1String("horizontalLayout_10"));
         btnTest8 = new QToolButton(gbServo);
-        btnTest8->setObjectName(QStringLiteral("btnTest8"));
+        btnTest8->setObjectName(QLatin1String("btnTest8"));
 
         horizontalLayout_10->addWidget(btnTest8);
 
         btnCenter8 = new QToolButton(gbServo);
-        btnCenter8->setObjectName(QStringLiteral("btnCenter8"));
+        btnCenter8->setObjectName(QLatin1String("btnCenter8"));
 
         horizontalLayout_10->addWidget(btnCenter8);
 
@@ -318,64 +315,64 @@ public:
         gridLayout->addLayout(horizontalLayout_10, 1, 7, 1, 1);
 
         lblServo1 = new QLabel(gbServo);
-        lblServo1->setObjectName(QStringLiteral("lblServo1"));
+        lblServo1->setObjectName(QLatin1String("lblServo1"));
         lblServo1->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lblServo1, 2, 0, 1, 1);
 
         lbl11 = new QLabel(gbServo);
-        lbl11->setObjectName(QStringLiteral("lbl11"));
+        lbl11->setObjectName(QLatin1String("lbl11"));
         lbl11->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl11, 3, 0, 1, 1);
 
         lbl12 = new QLabel(gbServo);
-        lbl12->setObjectName(QStringLiteral("lbl12"));
+        lbl12->setObjectName(QLatin1String("lbl12"));
         lbl12->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl12, 3, 1, 1, 1);
 
         lbl13 = new QLabel(gbServo);
-        lbl13->setObjectName(QStringLiteral("lbl13"));
+        lbl13->setObjectName(QLatin1String("lbl13"));
         lbl13->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl13, 3, 2, 1, 1);
 
         lbl14 = new QLabel(gbServo);
-        lbl14->setObjectName(QStringLiteral("lbl14"));
+        lbl14->setObjectName(QLatin1String("lbl14"));
         lbl14->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl14, 3, 3, 1, 1);
 
         lbl15 = new QLabel(gbServo);
-        lbl15->setObjectName(QStringLiteral("lbl15"));
+        lbl15->setObjectName(QLatin1String("lbl15"));
         lbl15->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl15, 3, 4, 1, 1);
 
         lbl16 = new QLabel(gbServo);
-        lbl16->setObjectName(QStringLiteral("lbl16"));
+        lbl16->setObjectName(QLatin1String("lbl16"));
         lbl16->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl16, 3, 5, 1, 1);
 
         lbl17 = new QLabel(gbServo);
-        lbl17->setObjectName(QStringLiteral("lbl17"));
+        lbl17->setObjectName(QLatin1String("lbl17"));
         lbl17->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl17, 3, 6, 1, 1);
 
         lbl18 = new QLabel(gbServo);
-        lbl18->setObjectName(QStringLiteral("lbl18"));
+        lbl18->setObjectName(QLatin1String("lbl18"));
         lbl18->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl18, 3, 7, 1, 1);
 
         sbP11 = new QSpinBox(gbServo);
-        sbP11->setObjectName(QStringLiteral("sbP11"));
+        sbP11->setObjectName(QLatin1String("sbP11"));
         sbP11->setFont(font);
         sbP11->setAutoFillBackground(true);
-        sbP11->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP11->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP11->setMinimum(1);
         sbP11->setMaximum(127);
         sbP11->setValue(127);
@@ -383,9 +380,9 @@ public:
         gridLayout->addWidget(sbP11, 4, 0, 1, 1);
 
         sbP12 = new QSpinBox(gbServo);
-        sbP12->setObjectName(QStringLiteral("sbP12"));
+        sbP12->setObjectName(QLatin1String("sbP12"));
         sbP12->setFont(font);
-        sbP12->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP12->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP12->setMinimum(1);
         sbP12->setMaximum(127);
         sbP12->setValue(127);
@@ -393,9 +390,9 @@ public:
         gridLayout->addWidget(sbP12, 4, 1, 1, 1);
 
         sbP13 = new QSpinBox(gbServo);
-        sbP13->setObjectName(QStringLiteral("sbP13"));
+        sbP13->setObjectName(QLatin1String("sbP13"));
         sbP13->setFont(font);
-        sbP13->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP13->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP13->setMinimum(1);
         sbP13->setMaximum(127);
         sbP13->setValue(127);
@@ -403,9 +400,9 @@ public:
         gridLayout->addWidget(sbP13, 4, 2, 1, 1);
 
         sbP14 = new QSpinBox(gbServo);
-        sbP14->setObjectName(QStringLiteral("sbP14"));
+        sbP14->setObjectName(QLatin1String("sbP14"));
         sbP14->setFont(font);
-        sbP14->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP14->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP14->setMinimum(1);
         sbP14->setMaximum(127);
         sbP14->setValue(127);
@@ -413,9 +410,9 @@ public:
         gridLayout->addWidget(sbP14, 4, 3, 1, 1);
 
         sbP15 = new QSpinBox(gbServo);
-        sbP15->setObjectName(QStringLiteral("sbP15"));
+        sbP15->setObjectName(QLatin1String("sbP15"));
         sbP15->setFont(font);
-        sbP15->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP15->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP15->setMinimum(1);
         sbP15->setMaximum(127);
         sbP15->setValue(127);
@@ -423,9 +420,9 @@ public:
         gridLayout->addWidget(sbP15, 4, 4, 1, 1);
 
         sbP16 = new QSpinBox(gbServo);
-        sbP16->setObjectName(QStringLiteral("sbP16"));
+        sbP16->setObjectName(QLatin1String("sbP16"));
         sbP16->setFont(font);
-        sbP16->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP16->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP16->setMinimum(1);
         sbP16->setMaximum(127);
         sbP16->setValue(127);
@@ -433,9 +430,9 @@ public:
         gridLayout->addWidget(sbP16, 4, 5, 1, 1);
 
         sbP17 = new QSpinBox(gbServo);
-        sbP17->setObjectName(QStringLiteral("sbP17"));
+        sbP17->setObjectName(QLatin1String("sbP17"));
         sbP17->setFont(font);
-        sbP17->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP17->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP17->setMinimum(1);
         sbP17->setMaximum(127);
         sbP17->setValue(127);
@@ -443,9 +440,9 @@ public:
         gridLayout->addWidget(sbP17, 4, 6, 1, 1);
 
         sbP18 = new QSpinBox(gbServo);
-        sbP18->setObjectName(QStringLiteral("sbP18"));
+        sbP18->setObjectName(QLatin1String("sbP18"));
         sbP18->setFont(font);
-        sbP18->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP18->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP18->setMinimum(1);
         sbP18->setMaximum(127);
         sbP18->setValue(127);
@@ -453,63 +450,63 @@ public:
         gridLayout->addWidget(sbP18, 4, 7, 1, 1);
 
         lblServo2 = new QLabel(gbServo);
-        lblServo2->setObjectName(QStringLiteral("lblServo2"));
+        lblServo2->setObjectName(QLatin1String("lblServo2"));
         lblServo2->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lblServo2, 5, 0, 1, 1);
 
         lbl21 = new QLabel(gbServo);
-        lbl21->setObjectName(QStringLiteral("lbl21"));
+        lbl21->setObjectName(QLatin1String("lbl21"));
         lbl21->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl21, 6, 0, 1, 1);
 
         lbl22 = new QLabel(gbServo);
-        lbl22->setObjectName(QStringLiteral("lbl22"));
+        lbl22->setObjectName(QLatin1String("lbl22"));
         lbl22->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl22, 6, 1, 1, 1);
 
         lbl23 = new QLabel(gbServo);
-        lbl23->setObjectName(QStringLiteral("lbl23"));
+        lbl23->setObjectName(QLatin1String("lbl23"));
         lbl23->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl23, 6, 2, 1, 1);
 
         lbl24 = new QLabel(gbServo);
-        lbl24->setObjectName(QStringLiteral("lbl24"));
+        lbl24->setObjectName(QLatin1String("lbl24"));
         lbl24->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl24, 6, 3, 1, 1);
 
         lbl25 = new QLabel(gbServo);
-        lbl25->setObjectName(QStringLiteral("lbl25"));
+        lbl25->setObjectName(QLatin1String("lbl25"));
         lbl25->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl25, 6, 4, 1, 1);
 
         lbl26 = new QLabel(gbServo);
-        lbl26->setObjectName(QStringLiteral("lbl26"));
+        lbl26->setObjectName(QLatin1String("lbl26"));
         lbl26->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl26, 6, 5, 1, 1);
 
         lbl27 = new QLabel(gbServo);
-        lbl27->setObjectName(QStringLiteral("lbl27"));
+        lbl27->setObjectName(QLatin1String("lbl27"));
         lbl27->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl27, 6, 6, 1, 1);
 
         lbl28 = new QLabel(gbServo);
-        lbl28->setObjectName(QStringLiteral("lbl28"));
+        lbl28->setObjectName(QLatin1String("lbl28"));
         lbl28->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lbl28, 6, 7, 1, 1);
 
         sbP21 = new QSpinBox(gbServo);
-        sbP21->setObjectName(QStringLiteral("sbP21"));
+        sbP21->setObjectName(QLatin1String("sbP21"));
         sbP21->setFont(font);
-        sbP21->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP21->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP21->setMinimum(1);
         sbP21->setMaximum(127);
         sbP21->setValue(126);
@@ -517,9 +514,9 @@ public:
         gridLayout->addWidget(sbP21, 7, 0, 1, 1);
 
         sbP22 = new QSpinBox(gbServo);
-        sbP22->setObjectName(QStringLiteral("sbP22"));
+        sbP22->setObjectName(QLatin1String("sbP22"));
         sbP22->setFont(font);
-        sbP22->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP22->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP22->setMinimum(1);
         sbP22->setMaximum(127);
         sbP22->setValue(126);
@@ -527,9 +524,9 @@ public:
         gridLayout->addWidget(sbP22, 7, 1, 1, 1);
 
         sbP23 = new QSpinBox(gbServo);
-        sbP23->setObjectName(QStringLiteral("sbP23"));
+        sbP23->setObjectName(QLatin1String("sbP23"));
         sbP23->setFont(font);
-        sbP23->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP23->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP23->setMinimum(1);
         sbP23->setMaximum(128);
         sbP23->setValue(126);
@@ -537,9 +534,9 @@ public:
         gridLayout->addWidget(sbP23, 7, 2, 1, 1);
 
         sbP24 = new QSpinBox(gbServo);
-        sbP24->setObjectName(QStringLiteral("sbP24"));
+        sbP24->setObjectName(QLatin1String("sbP24"));
         sbP24->setFont(font);
-        sbP24->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP24->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP24->setMinimum(1);
         sbP24->setMaximum(128);
         sbP24->setValue(127);
@@ -547,9 +544,9 @@ public:
         gridLayout->addWidget(sbP24, 7, 3, 1, 1);
 
         sbP25 = new QSpinBox(gbServo);
-        sbP25->setObjectName(QStringLiteral("sbP25"));
+        sbP25->setObjectName(QLatin1String("sbP25"));
         sbP25->setFont(font);
-        sbP25->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP25->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP25->setMinimum(1);
         sbP25->setMaximum(127);
         sbP25->setValue(127);
@@ -557,9 +554,9 @@ public:
         gridLayout->addWidget(sbP25, 7, 4, 1, 1);
 
         sbP26 = new QSpinBox(gbServo);
-        sbP26->setObjectName(QStringLiteral("sbP26"));
+        sbP26->setObjectName(QLatin1String("sbP26"));
         sbP26->setFont(font);
-        sbP26->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP26->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP26->setMinimum(1);
         sbP26->setMaximum(127);
         sbP26->setValue(127);
@@ -567,9 +564,9 @@ public:
         gridLayout->addWidget(sbP26, 7, 5, 1, 1);
 
         sbP27 = new QSpinBox(gbServo);
-        sbP27->setObjectName(QStringLiteral("sbP27"));
+        sbP27->setObjectName(QLatin1String("sbP27"));
         sbP27->setFont(font);
-        sbP27->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP27->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP27->setMinimum(1);
         sbP27->setMaximum(127);
         sbP27->setValue(127);
@@ -577,9 +574,9 @@ public:
         gridLayout->addWidget(sbP27, 7, 6, 1, 1);
 
         sbP28 = new QSpinBox(gbServo);
-        sbP28->setObjectName(QStringLiteral("sbP28"));
+        sbP28->setObjectName(QLatin1String("sbP28"));
         sbP28->setFont(font);
-        sbP28->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbP28->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbP28->setMinimum(1);
         sbP28->setMaximum(127);
         sbP28->setValue(127);
@@ -587,15 +584,15 @@ public:
         gridLayout->addWidget(sbP28, 7, 7, 1, 1);
 
         lblServoSpeed = new QLabel(gbServo);
-        lblServoSpeed->setObjectName(QStringLiteral("lblServoSpeed"));
+        lblServoSpeed->setObjectName(QLatin1String("lblServoSpeed"));
         lblServoSpeed->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(lblServoSpeed, 8, 0, 1, 1);
 
         sbS1 = new QSpinBox(gbServo);
-        sbS1->setObjectName(QStringLiteral("sbS1"));
+        sbS1->setObjectName(QLatin1String("sbS1"));
         sbS1->setFont(font);
-        sbS1->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbS1->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbS1->setMinimum(0);
         sbS1->setMaximum(5);
         sbS1->setValue(5);
@@ -603,9 +600,9 @@ public:
         gridLayout->addWidget(sbS1, 9, 0, 1, 1);
 
         sbS2 = new QSpinBox(gbServo);
-        sbS2->setObjectName(QStringLiteral("sbS2"));
+        sbS2->setObjectName(QLatin1String("sbS2"));
         sbS2->setFont(font);
-        sbS2->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbS2->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbS2->setMinimum(0);
         sbS2->setMaximum(5);
         sbS2->setValue(5);
@@ -613,9 +610,9 @@ public:
         gridLayout->addWidget(sbS2, 9, 1, 1, 1);
 
         sbS3 = new QSpinBox(gbServo);
-        sbS3->setObjectName(QStringLiteral("sbS3"));
+        sbS3->setObjectName(QLatin1String("sbS3"));
         sbS3->setFont(font);
-        sbS3->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbS3->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbS3->setMinimum(0);
         sbS3->setMaximum(5);
         sbS3->setValue(5);
@@ -623,9 +620,9 @@ public:
         gridLayout->addWidget(sbS3, 9, 2, 1, 1);
 
         sbS4 = new QSpinBox(gbServo);
-        sbS4->setObjectName(QStringLiteral("sbS4"));
+        sbS4->setObjectName(QLatin1String("sbS4"));
         sbS4->setFont(font);
-        sbS4->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbS4->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbS4->setMinimum(0);
         sbS4->setMaximum(5);
         sbS4->setValue(5);
@@ -633,9 +630,9 @@ public:
         gridLayout->addWidget(sbS4, 9, 3, 1, 1);
 
         sbS5 = new QSpinBox(gbServo);
-        sbS5->setObjectName(QStringLiteral("sbS5"));
+        sbS5->setObjectName(QLatin1String("sbS5"));
         sbS5->setFont(font);
-        sbS5->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbS5->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbS5->setMinimum(0);
         sbS5->setMaximum(5);
         sbS5->setValue(5);
@@ -643,9 +640,9 @@ public:
         gridLayout->addWidget(sbS5, 9, 4, 1, 1);
 
         sbS6 = new QSpinBox(gbServo);
-        sbS6->setObjectName(QStringLiteral("sbS6"));
+        sbS6->setObjectName(QLatin1String("sbS6"));
         sbS6->setFont(font);
-        sbS6->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbS6->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbS6->setMinimum(0);
         sbS6->setMaximum(5);
         sbS6->setValue(5);
@@ -653,9 +650,9 @@ public:
         gridLayout->addWidget(sbS6, 9, 5, 1, 1);
 
         sbS7 = new QSpinBox(gbServo);
-        sbS7->setObjectName(QStringLiteral("sbS7"));
+        sbS7->setObjectName(QLatin1String("sbS7"));
         sbS7->setFont(font);
-        sbS7->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbS7->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbS7->setMinimum(0);
         sbS7->setMaximum(5);
         sbS7->setValue(5);
@@ -663,9 +660,9 @@ public:
         gridLayout->addWidget(sbS7, 9, 6, 1, 1);
 
         sbS8 = new QSpinBox(gbServo);
-        sbS8->setObjectName(QStringLiteral("sbS8"));
+        sbS8->setObjectName(QLatin1String("sbS8"));
         sbS8->setFont(font);
-        sbS8->setStyleSheet(QStringLiteral("QSpinBox { background-color : rgb(170, 170, 255);}"));
+        sbS8->setStyleSheet(QLatin1String("QSpinBox { background-color : rgb(170, 170, 255);}"));
         sbS8->setMinimum(0);
         sbS8->setMaximum(5);
         sbS8->setValue(5);
@@ -676,53 +673,53 @@ public:
         gridLayout_2->addWidget(gbServo, 1, 0, 1, 1);
 
         horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        horizontalLayout_2->setObjectName(QLatin1String("horizontalLayout_2"));
         rbS1 = new QRadioButton(ServoWidget);
-        rbS1->setObjectName(QStringLiteral("rbS1"));
+        rbS1->setObjectName(QLatin1String("rbS1"));
         rbS1->setMaximumSize(QSize(40, 16777215));
         rbS1->setAutoExclusive(false);
 
         horizontalLayout_2->addWidget(rbS1);
 
         rbS2 = new QRadioButton(ServoWidget);
-        rbS2->setObjectName(QStringLiteral("rbS2"));
+        rbS2->setObjectName(QLatin1String("rbS2"));
         rbS2->setMaximumSize(QSize(40, 16777215));
         rbS2->setAutoExclusive(false);
 
         horizontalLayout_2->addWidget(rbS2);
 
         rbS3 = new QRadioButton(ServoWidget);
-        rbS3->setObjectName(QStringLiteral("rbS3"));
+        rbS3->setObjectName(QLatin1String("rbS3"));
         rbS3->setMaximumSize(QSize(40, 16777215));
 
         horizontalLayout_2->addWidget(rbS3);
 
         rbS4 = new QRadioButton(ServoWidget);
-        rbS4->setObjectName(QStringLiteral("rbS4"));
+        rbS4->setObjectName(QLatin1String("rbS4"));
         rbS4->setMaximumSize(QSize(40, 16777215));
 
         horizontalLayout_2->addWidget(rbS4);
 
         rbS5 = new QRadioButton(ServoWidget);
-        rbS5->setObjectName(QStringLiteral("rbS5"));
+        rbS5->setObjectName(QLatin1String("rbS5"));
         rbS5->setMaximumSize(QSize(40, 16777215));
 
         horizontalLayout_2->addWidget(rbS5);
 
         rbS6 = new QRadioButton(ServoWidget);
-        rbS6->setObjectName(QStringLiteral("rbS6"));
+        rbS6->setObjectName(QLatin1String("rbS6"));
         rbS6->setMaximumSize(QSize(40, 16777215));
 
         horizontalLayout_2->addWidget(rbS6);
 
         rbS7 = new QRadioButton(ServoWidget);
-        rbS7->setObjectName(QStringLiteral("rbS7"));
+        rbS7->setObjectName(QLatin1String("rbS7"));
         rbS7->setMaximumSize(QSize(40, 16777215));
 
         horizontalLayout_2->addWidget(rbS7);
 
         rbS8 = new QRadioButton(ServoWidget);
-        rbS8->setObjectName(QStringLiteral("rbS8"));
+        rbS8->setObjectName(QLatin1String("rbS8"));
         rbS8->setMaximumSize(QSize(40, 16777215));
 
         horizontalLayout_2->addWidget(rbS8);
@@ -738,76 +735,76 @@ public:
 
     void retranslateUi(QWidget *ServoWidget)
     {
-        ServoWidget->setWindowTitle(QApplication::translate("ServoWidget", "Form", Q_NULLPTR));
-        rbNotUsed1->setText(QApplication::translate("ServoWidget", "1", Q_NULLPTR));
-        rbNotUsed2->setText(QApplication::translate("ServoWidget", "2", Q_NULLPTR));
-        rbNotUsed3->setText(QApplication::translate("ServoWidget", "3", Q_NULLPTR));
-        rbNotUsed4->setText(QApplication::translate("ServoWidget", "4", Q_NULLPTR));
-        rbNotUsed5->setText(QApplication::translate("ServoWidget", "5", Q_NULLPTR));
-        rbNotUsed6->setText(QApplication::translate("ServoWidget", "6", Q_NULLPTR));
-        rbNotUsed7->setText(QApplication::translate("ServoWidget", "7", Q_NULLPTR));
-        rbNotUsed8->setText(QApplication::translate("ServoWidget", "8", Q_NULLPTR));
-        gbServo->setTitle(QApplication::translate("ServoWidget", "Servo", Q_NULLPTR));
-        label_2->setText(QApplication::translate("ServoWidget", "Test", Q_NULLPTR));
-        btnTest1->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
+        ServoWidget->setWindowTitle(QApplication::translate("ServoWidget", "Form", nullptr));
+        rbNotUsed1->setText(QApplication::translate("ServoWidget", "1", nullptr));
+        rbNotUsed2->setText(QApplication::translate("ServoWidget", "2", nullptr));
+        rbNotUsed3->setText(QApplication::translate("ServoWidget", "3", nullptr));
+        rbNotUsed4->setText(QApplication::translate("ServoWidget", "4", nullptr));
+        rbNotUsed5->setText(QApplication::translate("ServoWidget", "5", nullptr));
+        rbNotUsed6->setText(QApplication::translate("ServoWidget", "6", nullptr));
+        rbNotUsed7->setText(QApplication::translate("ServoWidget", "7", nullptr));
+        rbNotUsed8->setText(QApplication::translate("ServoWidget", "8", nullptr));
+        gbServo->setTitle(QApplication::translate("ServoWidget", "Servo", nullptr));
+        label_2->setText(QApplication::translate("ServoWidget", "Test", nullptr));
+        btnTest1->setText(QApplication::translate("ServoWidget", "P", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnCenter1->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
+        btnCenter1->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnCenter1->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
-        btnTest2->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
+        btnCenter1->setText(QApplication::translate("ServoWidget", "C", nullptr));
+        btnTest2->setText(QApplication::translate("ServoWidget", "P", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnCenter2->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
+        btnCenter2->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnCenter2->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
-        btnTest3->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
+        btnCenter2->setText(QApplication::translate("ServoWidget", "C", nullptr));
+        btnTest3->setText(QApplication::translate("ServoWidget", "P", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnCenter3->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
+        btnCenter3->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnCenter3->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
-        btnTest4->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
+        btnCenter3->setText(QApplication::translate("ServoWidget", "C", nullptr));
+        btnTest4->setText(QApplication::translate("ServoWidget", "P", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnCenter4->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
+        btnCenter4->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnCenter4->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
-        btnTest5->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
+        btnCenter4->setText(QApplication::translate("ServoWidget", "C", nullptr));
+        btnTest5->setText(QApplication::translate("ServoWidget", "P", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnCenter5->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
+        btnCenter5->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnCenter5->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
-        btnTest6->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
+        btnCenter5->setText(QApplication::translate("ServoWidget", "C", nullptr));
+        btnTest6->setText(QApplication::translate("ServoWidget", "P", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnCenter6->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
+        btnCenter6->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnCenter6->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
-        btnTest7->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
+        btnCenter6->setText(QApplication::translate("ServoWidget", "C", nullptr));
+        btnTest7->setText(QApplication::translate("ServoWidget", "P", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnCenter7->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
+        btnCenter7->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnCenter7->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
-        btnTest8->setText(QApplication::translate("ServoWidget", "P", Q_NULLPTR));
+        btnCenter7->setText(QApplication::translate("ServoWidget", "C", nullptr));
+        btnTest8->setText(QApplication::translate("ServoWidget", "P", nullptr));
 #ifndef QT_NO_TOOLTIP
-        btnCenter8->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", Q_NULLPTR));
+        btnCenter8->setToolTip(QApplication::translate("ServoWidget", "Click to Center Servo", nullptr));
 #endif // QT_NO_TOOLTIP
-        btnCenter8->setText(QApplication::translate("ServoWidget", "C", Q_NULLPTR));
-        lblServo1->setText(QApplication::translate("ServoWidget", "Position 1", Q_NULLPTR));
-        lbl11->setText(QApplication::translate("ServoWidget", "Pos1", Q_NULLPTR));
-        lbl12->setText(QApplication::translate("ServoWidget", "Pos3", Q_NULLPTR));
-        lbl13->setText(QApplication::translate("ServoWidget", "Pos1", Q_NULLPTR));
-        lbl14->setText(QApplication::translate("ServoWidget", "Pos3", Q_NULLPTR));
-        lbl15->setText(QApplication::translate("ServoWidget", "Pos1", Q_NULLPTR));
-        lbl16->setText(QApplication::translate("ServoWidget", "Pos3", Q_NULLPTR));
-        lbl17->setText(QApplication::translate("ServoWidget", "Pos1", Q_NULLPTR));
-        lbl18->setText(QApplication::translate("ServoWidget", "Pos3", Q_NULLPTR));
-        lblServo2->setText(QApplication::translate("ServoWidget", "Position 2", Q_NULLPTR));
-        lbl21->setText(QApplication::translate("ServoWidget", "Pos2", Q_NULLPTR));
-        lbl22->setText(QApplication::translate("ServoWidget", "Pos4", Q_NULLPTR));
-        lbl23->setText(QApplication::translate("ServoWidget", "Pos2", Q_NULLPTR));
-        lbl24->setText(QApplication::translate("ServoWidget", "Pos4", Q_NULLPTR));
-        lbl25->setText(QApplication::translate("ServoWidget", "Pos2", Q_NULLPTR));
-        lbl26->setText(QApplication::translate("ServoWidget", "Pos4", Q_NULLPTR));
-        lbl27->setText(QApplication::translate("ServoWidget", "Pos2", Q_NULLPTR));
-        lbl28->setText(QApplication::translate("ServoWidget", "Pos4", Q_NULLPTR));
-        lblServoSpeed->setText(QApplication::translate("ServoWidget", "Speed", Q_NULLPTR));
+        btnCenter8->setText(QApplication::translate("ServoWidget", "C", nullptr));
+        lblServo1->setText(QApplication::translate("ServoWidget", "Position 1", nullptr));
+        lbl11->setText(QApplication::translate("ServoWidget", "Pos1", nullptr));
+        lbl12->setText(QApplication::translate("ServoWidget", "Pos3", nullptr));
+        lbl13->setText(QApplication::translate("ServoWidget", "Pos1", nullptr));
+        lbl14->setText(QApplication::translate("ServoWidget", "Pos3", nullptr));
+        lbl15->setText(QApplication::translate("ServoWidget", "Pos1", nullptr));
+        lbl16->setText(QApplication::translate("ServoWidget", "Pos3", nullptr));
+        lbl17->setText(QApplication::translate("ServoWidget", "Pos1", nullptr));
+        lbl18->setText(QApplication::translate("ServoWidget", "Pos3", nullptr));
+        lblServo2->setText(QApplication::translate("ServoWidget", "Position 2", nullptr));
+        lbl21->setText(QApplication::translate("ServoWidget", "Pos2", nullptr));
+        lbl22->setText(QApplication::translate("ServoWidget", "Pos4", nullptr));
+        lbl23->setText(QApplication::translate("ServoWidget", "Pos2", nullptr));
+        lbl24->setText(QApplication::translate("ServoWidget", "Pos4", nullptr));
+        lbl25->setText(QApplication::translate("ServoWidget", "Pos2", nullptr));
+        lbl26->setText(QApplication::translate("ServoWidget", "Pos4", nullptr));
+        lbl27->setText(QApplication::translate("ServoWidget", "Pos2", nullptr));
+        lbl28->setText(QApplication::translate("ServoWidget", "Pos4", nullptr));
+        lblServoSpeed->setText(QApplication::translate("ServoWidget", "Speed", nullptr));
         rbS1->setText(QString());
         rbS2->setText(QString());
         rbS3->setText(QString());

@@ -9,6 +9,7 @@ AbstractTurnoutManagerConfigXML::AbstractTurnoutManagerConfigXML(QObject *parent
     AbstractNamedBeanManagerConfigXML(parent)
 {
  log = new Logger("AbstractTurnoutManagerConfigXML");
+ log->setDebugEnabled(true);
 }
 AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
 {

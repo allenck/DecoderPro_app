@@ -12,11 +12,11 @@
 class TurnoutOperation;
 class LIBPR3SHARED_EXPORT Turnout : public AbstractNamedBean
 {
-   // Q_OBJECT
+ Q_OBJECT
 public:
  explicit Turnout(QObject *parent = 0) : AbstractNamedBean(parent) {}
- Turnout(QString sysName, QObject* parent) : AbstractNamedBean(sysName, parent) {}
- Turnout(QString sysName, QString userName, QObject* parent) : AbstractNamedBean(sysName, userName, parent) {}
+ Turnout(QString sysName, QObject* parent=0) : AbstractNamedBean(sysName, parent) {}
+ Turnout(QString sysName, QString userName, QObject* parent=0) : AbstractNamedBean(sysName, userName, parent) {}
 
     /**
      * Represent a Turnout on the layout.
@@ -96,6 +96,7 @@ public:
       THROWN = 0x04,
       INCONSISTENT = 0x08
      };
+     Q_ENUM(STATES)
 
         /**
          * Constant representing an "closed" state, either in readback
@@ -146,54 +147,67 @@ public:
          * The two states never differ.
          * This mode is always possible!
          */
-        const static int DIRECT; //     = 1;
+        //const static int DIRECT; //     = 1;
 
         /**
          * Constant representing "exact feedback method".  In this case,
          * the layout hardware can sense both positions of the turnout, which is
          * used to set the known state.
          */
-        const static int EXACT;//    = 2;
+        //const static int EXACT;//    = 2;
 
         /**
          * Constant representing "indirect feedback".  In this case,
          * the layout hardware can only sense one setting of the turnout. The known
          * state is inferred from that info.
          */
-        const static int INDIRECT;// = 4;  // only one side directly sensed
+        //const static int INDIRECT;// = 4;  // only one side directly sensed
 
         /**
          * Constant representing "feedback by monitoring sent commands".  In this case,
          * the known state tracks commands seen on the rails or bus.
          */
-        const static int MONITORING;//     = 8;
+        //const static int MONITORING;//     = 8;
 
         /**
          * Constant representing "feedback by monitoring one sensor".
          * The sensor sets the state CLOSED when INACTIVE
          * and THROWN when ACTIVE
          */
-        const static int ONESENSOR;//     = 16;
+        //const static int ONESENSOR;//     = 16;
 
         /**
          * Constant representing "feedback by monitoring two sensors".
          * The first sensor sets the state THROWN when ACTIVE;
          * the second sensor sets the state CLOSED when ACTIVE.
          */
-        const static int TWOSENSOR;//     =32;
+        //const static int TWOSENSOR;//     =32;
 
         /**
          * Constant representing "feedback for signals" .  This is DIRECT feedback,
          * with minimal delay (for use with systems that wait for responses
          * returned by from the command station).
          */
-        const static int _SIGNAL;//        = 64;
+        //const static int _SIGNAL;//        = 64;
         /**
          * Constant representing "automatic delayed feedback" . This is DIRECT feedback
          * with a fixed delay before the feedback (known state) takes effect.
          */
-        /*public*/ const static /*final*/ int DELAYED;// = 128;
+        // /*public*/ const static /*final*/ int DELAYED;// = 128;
 
+        enum FEEDBACK
+        {
+        DIRECT = 1,
+        ONESENSOR = 16,
+        TWOSENSOR = 32,
+        INDIRECT = 4,
+        MONITORING = 8,
+        EXACT    = 2,
+        _SIGNAL = 64,
+        DELAYED = 128
+
+        };
+        Q_ENUM(FEEDBACK)
         /**
          * Get a representation of the feedback type.  This is the OR of
          * possible values: DIRECT, EXACT, etc.
@@ -387,23 +401,30 @@ public:
         /**
          *  Constant representing turnout lockout cab commands
          */
-        const static int CABLOCKOUT = 1;
+        //const static int CABLOCKOUT = 1;
 
         /**
          *  Constant representing turnout lockout pushbuttons
          */
-        const static int PUSHBUTTONLOCKOUT = 2;
+        //const static int PUSHBUTTONLOCKOUT = 2;
 
         /**
          * Constant representing a unlocked turnout
          */
-        const static int UNLOCKED = 0;
+        //const static int UNLOCKED = 0;
 
         /**
          * Constant representing a locked turnout
          */
-        const static int LOCKED = 1;
-
+        //const static int LOCKED = 1;
+        enum LOCKS
+        {
+            CABLOCKOUT = 1,
+            PUSHBUTTONLOCKOUT = 2,
+            UNLOCKED = 0,
+            LOCKED = 1
+        };
+        Q_ENUM(LOCKS)
         /**
          * Get turnout locked
          * <P>

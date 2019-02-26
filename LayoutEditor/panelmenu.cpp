@@ -38,12 +38,14 @@
 /*public*/ PanelMenu::PanelMenu(QWidget *parent) : QMenu(parent)
 {
  log = new Logger("PanelMenu");
+ setObjectName("PanelMenu");
  panelsSubMenu	= nullptr;
  noPanelsItem  = new QAction(tr("(No Panels Available)"), this);
  //thisMenu = nullptr;
  panelsList = new QList<Editor*>();
  actionGroup = new QActionGroup(this);
  this->setTitle(tr("Panels"));
+ connect(this, SIGNAL(aboutToShow()), this, SLOT(menuSelected()));
 
  // new panel is a submenu
  //add(new jmri.jmrit.display.NewPanelAction());
@@ -144,6 +146,7 @@
  if (panelsList->size()==0) {
         panelsSubMenu->removeAction(noPanelsItem);
     }
+ if(!panelsList->contains(panel))
     panelsList->append(panel);
 //    ActionListener a = new ActionListener() {
 //            public void actionPerformed(ActionEvent e) {
@@ -211,7 +214,7 @@ PanelActionListener::PanelActionListener(Editor *panel, PanelMenu* pm)
  this->panel = panel;
  this->pm = pm;
 }
-/*public*/ void PanelActionListener::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void PanelActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 {
     //if (panel instanceof LayoutEditor) {
  if(qobject_cast<LayoutEditor*>(panel)!= nullptr)
@@ -227,11 +230,40 @@ PanelActionListener::PanelActionListener(Editor *panel, PanelMenu* pm)
 void PanelMenu::on_panelSelected(QAction* act)
 {
  Editor* panel = VPtr<Editor>::asPtr(act->data());
- if(!panel->isVisible() || panel->isMinimized())
+// if(!panel->isVisible() || panel->isMinimized())
+// {
+//  panel->showNormal();
+//  panel->toFront();
+// }
+ panel->setWindowState((panel->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+}
+
+void PanelMenu::menuSelected()
+{
+ panelsSubMenu->clear();
+ actionGroup= new QActionGroup(this);
+ for(int i =0; i < panelsList->count(); i++)
  {
-  panel->showNormal();
-  panel->toFront();
+  Editor* panel = panelsList->at(i);
+  QAction* act = new QAction(panel->windowTitle(), this);
+  act->setCheckable(true);
+  //act->setChecked(panel->isVisible() && !panel->isMinimized());
+  act->setData(VPtr<Editor>::asQVariant(panelsList->at(i)));
+  panelsSubMenu->addAction(act);
+  actionGroup->addAction(act);
+  if(qobject_cast<LayoutEditor*>(panel) != nullptr)
+  {
+   if (panel->isVisible()) act->setChecked(true);
+       else act->setChecked(false);
+  }
+  else
+  {
+   if (panel->getTargetFrame()->isVisible()) act->setChecked(true);
+    else act->setChecked(false);
+   act->setText(panel->getTargetFrame()->windowTitle());
+  }
  }
+ connect(actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(on_panelSelected(QAction*)));
 }
 
 /**

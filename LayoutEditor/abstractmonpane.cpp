@@ -344,13 +344,13 @@ void AbstractMonPane::OnAlwaysOnTopCheckBox(bool bChecked)
  Qt::WindowFlags flags = windowFlags();
  if (bChecked)
  {
-  this->setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-  this->show();
+  this->window()->setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+  this->window()->show();
  }
  else
  {
-  this->setWindowFlags(flags ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-  this->show();
+  this->window()->setWindowFlags(flags ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+  this->window()->show();
  }
  p->setSimplePreferenceState(alwaysOnTopCheck, alwaysOnTopCheckBox->isChecked());
 }

@@ -49,6 +49,7 @@ public:
   AUTO_RESIZE_ALL_COLUMNS = 4
 
  };
+ Q_ENUM(OPTIONS)
  /**
   * Printing modes, used in printing <code>JTable</code>s.
   *
@@ -72,6 +73,7 @@ public:
       */
      FIT_WIDTH
  };
+ Q_ENUM(PrintMode)
  /*public*/ JTable(TableModel* dm, QWidget *parent = 0);
  /*public*/ JTable(QAbstractItemModel* ,QWidget *parent = 0);
  /*public*/ JTable(TableModel* dm, TableColumnModel* cm, QWidget *parent = 0);

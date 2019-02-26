@@ -195,9 +195,6 @@ void JFileChooser::common()
 //        dialog.pack();
 //        dialog.setLocationRelativeTo(parent);
  dialog = new QFileDialog(parent);
- dialog->showNormal();
- dialog->activateWindow();
- dialog->raise();
  if(dialogType == OPEN_DIALOG)
  {
   //dialog->setFileMode(QFileDialog::ExistingFile);
@@ -229,7 +226,6 @@ void JFileChooser::common()
   break;
  }
 
- //dialog->setFilter("Xml files (*.xml)");
  dialog->setViewMode(QFileDialog::Detail);
  dialog->setDirectory(currentDirectoryPath);
  dialog->setNameFilter(fileFilter);
@@ -240,6 +236,15 @@ void JFileChooser::common()
  connect(dialog, SIGNAL(filterSelected(QString)), this, SLOT(on_filterSelected(QString)));
  if(approveButtonText != "")
   dialog->setLabelText(QFileDialog::Accept, this->approveButtonText);
+ if(!this->title.isEmpty())
+     dialog->setWindowTitle(this->title);
+ else
+     if(!approveButtonText.isEmpty())
+         dialog->setWindowTitle(this->approveButtonText);
+
+ dialog->showNormal();
+ dialog->activateWindow();
+ dialog->raise();
 
  return dialog;
 }
@@ -267,12 +272,18 @@ void JFileChooser::common()
 /*public*/ void JFileChooser::setDialogTitle(QString title)
 {
  if(dialog != nullptr)
+ {
   dialog->setLabelText(QFileDialog::FileName, title);
+  dialog->setWindowTitle(title);
+ }
+ this->title = title;
 }
 
 /*public*/void JFileChooser::setFileFilter(QString fileFilter)
 {
  this->fileFilter = fileFilter;
+ if(dialog)
+    dialog->setNameFilters(this->fileFilter.split(";"));
 }
 
 /*public*/void JFileChooser::setApproveButtonText(QString text)
@@ -331,10 +342,12 @@ void JFileChooser::common()
 {
  selectedFilter = filter;
 }
+
 QString JFileChooser::getAcceptAllFileFilter()
 {
  return "All files (*.*)";
 }
+
 QString JFileChooser::getFileFilter() { return selectedFilter;}
 
 /**

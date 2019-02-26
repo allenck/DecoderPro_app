@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'form.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,11 +10,8 @@
 #define UI_FORM_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QFrame>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QScrollArea>
@@ -43,7 +40,7 @@ public:
     void setupUi(QWidget *Form)
     {
         if (Form->objectName().isEmpty())
-            Form->setObjectName(QStringLiteral("Form"));
+            Form->setObjectName(QLatin1String("Form"));
         Form->resize(326, 176);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
@@ -51,9 +48,9 @@ public:
         sizePolicy.setHeightForWidth(Form->sizePolicy().hasHeightForWidth());
         Form->setSizePolicy(sizePolicy);
         verticalLayout_3 = new QVBoxLayout(Form);
-        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        verticalLayout_3->setObjectName(QLatin1String("verticalLayout_3"));
         lineEdit = new QLineEdit(Form);
-        lineEdit->setObjectName(QStringLiteral("lineEdit"));
+        lineEdit->setObjectName(QLatin1String("lineEdit"));
         QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Fixed);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -63,21 +60,21 @@ public:
         verticalLayout_3->addWidget(lineEdit);
 
         label = new QLabel(Form);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QLatin1String("label"));
 
         verticalLayout_3->addWidget(label);
 
         previewPanel = new QWidget(Form);
-        previewPanel->setObjectName(QStringLiteral("previewPanel"));
+        previewPanel->setObjectName(QLatin1String("previewPanel"));
         sizePolicy.setHeightForWidth(previewPanel->sizePolicy().hasHeightForWidth());
         previewPanel->setSizePolicy(sizePolicy);
         verticalLayout_2 = new QVBoxLayout(previewPanel);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setObjectName(QLatin1String("verticalLayout_2"));
         js = new QScrollArea(previewPanel);
-        js->setObjectName(QStringLiteral("js"));
+        js->setObjectName(QLatin1String("js"));
         js->setWidgetResizable(true);
         _preview = new QWidget();
-        _preview->setObjectName(QStringLiteral("_preview"));
+        _preview->setObjectName(QLatin1String("_preview"));
         _preview->setGeometry(QRect(0, 0, 272, 104));
         QSizePolicy sizePolicy2(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
         sizePolicy2.setHorizontalStretch(0);
@@ -85,26 +82,26 @@ public:
         sizePolicy2.setHeightForWidth(_preview->sizePolicy().hasHeightForWidth());
         _preview->setSizePolicy(sizePolicy2);
         verticalLayout_4 = new QVBoxLayout(_preview);
-        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        verticalLayout_4->setObjectName(QLatin1String("verticalLayout_4"));
         frame = new QFrame(_preview);
-        frame->setObjectName(QStringLiteral("frame"));
+        frame->setObjectName(QLatin1String("frame"));
         frame->setFrameShape(QFrame::StyledPanel);
         frame->setFrameShadow(QFrame::Raised);
         verticalLayout = new QVBoxLayout(frame);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         label_2 = new QLabel(frame);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
         label_2->setPixmap(QPixmap(QString::fromUtf8("../../../../../test.png")));
 
         verticalLayout->addWidget(label_2);
 
         label_3 = new QLabel(frame);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QLatin1String("label_3"));
 
         verticalLayout->addWidget(label_3);
 
         label_4 = new QLabel(frame);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setObjectName(QLatin1String("label_4"));
 
         verticalLayout->addWidget(label_4);
 
@@ -126,11 +123,11 @@ public:
 
     void retranslateUi(QWidget *Form)
     {
-        Form->setWindowTitle(QApplication::translate("Form", "Form", Q_NULLPTR));
-        label->setText(QApplication::translate("Form", "TextLabel", Q_NULLPTR));
+        Form->setWindowTitle(QApplication::translate("Form", "Form", nullptr));
+        label->setText(QApplication::translate("Form", "TextLabel", nullptr));
         label_2->setText(QString());
-        label_3->setText(QApplication::translate("Form", "TextLabel", Q_NULLPTR));
-        label_4->setText(QApplication::translate("Form", "TextLabel", Q_NULLPTR));
+        label_3->setText(QApplication::translate("Form", "TextLabel", nullptr));
+        label_4->setText(QApplication::translate("Form", "TextLabel", nullptr));
     } // retranslateUi
 
 };

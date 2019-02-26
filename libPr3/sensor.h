@@ -14,8 +14,8 @@ class LIBPR3SHARED_EXPORT Sensor : public AbstractNamedBean
  Q_ENUMS(STATES)
 public:
     explicit Sensor(QObject *parent = 0);
-    Sensor(QString sysName, QObject* parent);
-    Sensor(QString sysName, QString userName, QObject* parent);
+    Sensor(QString sysName, QObject* parent = 0);
+    Sensor(QString sysName, QString userName, QObject* parent=0);
     /**
      * General input device representation.  Often subclassed for specific
      * types of sensors.
@@ -47,6 +47,7 @@ public:
       UNKNOWN      =0x01,
       INCONSISTENT =0x08
     };
+    Q_ENUM(STATES)
 
         /**
          * Known state on layout is a bound parameter

@@ -18,6 +18,9 @@ public:
  /*public*/ JFrame* getFrame();
  static JythonWindow* instance();
  void appendText(QString);
+ void setDefaultTextcolor();
+ void setTextColors(QColor, QColor);
+
 signals:
 
 public slots:
@@ -30,17 +33,19 @@ public slots:
 
 private:
  void common();
- JTextArea* area;
+ JTextArea* area = nullptr;
  JFrame* f;
  QCheckBox* autoScroll;
  UserPreferencesManager* pref;
  QPushButton* clearButton;
-
+ QColor defaultTextBackground;
+ QColor defaultTextColor;
  QString alwaysOnTopCheck;// = this.getClass().getName() + ".alwaysOnTop";
  QString alwaysScrollCheck;// = this.getClass().getName() + ".alwaysScroll";
  /*private*/ void doAutoScroll(JTextArea* ta, bool scroll);
  static JythonWindow* _instance;
  void closeEvent(QCloseEvent *);
+ QString _err;
 
 private slots:
 

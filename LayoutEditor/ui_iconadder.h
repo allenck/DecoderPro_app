@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'iconadder.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,11 +10,8 @@
 #define UI_ICONADDER_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
-#include <QtWidgets/QHeaderView>
 
 QT_BEGIN_NAMESPACE
 
@@ -25,7 +22,7 @@ public:
     void setupUi(QDialog *IconAdder)
     {
         if (IconAdder->objectName().isEmpty())
-            IconAdder->setObjectName(QStringLiteral("IconAdder"));
+            IconAdder->setObjectName(QLatin1String("IconAdder"));
         IconAdder->resize(400, 300);
 
         retranslateUi(IconAdder);
@@ -35,7 +32,7 @@ public:
 
     void retranslateUi(QDialog *IconAdder)
     {
-        IconAdder->setWindowTitle(QApplication::translate("IconAdder", "Dialog", Q_NULLPTR));
+        IconAdder->setWindowTitle(QApplication::translate("IconAdder", "Dialog", nullptr));
     } // retranslateUi
 
 };
