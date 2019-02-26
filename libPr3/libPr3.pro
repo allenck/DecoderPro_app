@@ -25,6 +25,9 @@ APPVERSION = 0.1
 
 PREFIX = /home/allen/pythonqt-code
 
+MOC_DIR = moc_obj
+OBJECTS_DIR += moc_obj
+
 #QT       -= gui
 QT       += core xml  gui printsupport   sql network  multimedia #webkitwidgets
 

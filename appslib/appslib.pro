@@ -11,6 +11,10 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 QT += xml sql network websockets
 
+MOC_DIR = moc_obj
+OBJECTS_DIR += moc_obj
+
+
 DEFINES += APPSLIB_LIBRARY
 
 PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)

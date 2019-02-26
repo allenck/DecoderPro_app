@@ -14,6 +14,10 @@ TEMPLATE = lib
 
 DEFINES += JAVAQT_LIBRARY
 
+MOC_DIR = moc_obj
+OBJECTS_DIR += moc_obj
+
+
 SOURCES += javaqt.cpp \
     loggerfactory.cpp \
     loggerbase.cpp \

@@ -10,7 +10,9 @@ TARGET = Tables
 TEMPLATE = lib
 
 DEFINES += LIBTABLES_LIBRARY
-# BLOCKS_AND_SECTIONS
+
+MOC_DIR = moc_obj
+OBJECTS_DIR += moc_obj
 
 SOURCES +=  slotmonitor.cpp \
     beanselectcreatepanel.cpp \
