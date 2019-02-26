@@ -12,6 +12,7 @@ TEMPLATE = lib
 DEFINES += LIBTABLES_LIBRARY
 
 MOC_DIR = moc_obj
+
 OBJECTS_DIR += moc_obj
 
 SOURCES +=  slotmonitor.cpp \

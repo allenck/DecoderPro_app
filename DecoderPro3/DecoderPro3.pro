@@ -12,6 +12,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = DecoderPro3
 TEMPLATE = app
 
+MOC_DIR = moc_obj
+OBJECTS_DIR += moc_obj
+
+
 PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
 isEmpty( PYTHONQT_PREFIX ) {
   win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
