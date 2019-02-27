@@ -76,7 +76,7 @@ equals(ENABLE_SCRIPTING, "Y") {
     scripts/scriptoutput.h \
     scripts/scriptcontext.h
 
-    //include(../python.prf)
+    #include(../python.prf)
 
     win32:CONFIG(debug, debug|release): LIBS += -L$$PYTHONQT_PREFIX/lib -lPythonQt
     else:unix: LIBS += -L/$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d

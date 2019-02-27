@@ -341,7 +341,7 @@
  p = new QWidget();
  //p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
  QVBoxLayout* pLayout = new QVBoxLayout(p);
- pLayout->addWidget(makeTextBoxPanel(true, _searchStatus, "SearchRoute", NULL));
+// pLayout->addWidget(makeTextBoxPanel(true, _searchStatus, "SearchRoute", NULL));
  _searchStatus->setEnabled(false);
  //pLayout->add(Box.createVerticalGlue());
  panelLayout->addWidget(p);
@@ -415,7 +415,7 @@
   panel = new QWidget();
   QHBoxLayout* panelLayout = new QHBoxLayout(panel);
   QString status = getIdleMessage();
-  panelLayout->addWidget(makeTextBoxPanel(false, _statusBox, "Status", false));
+  //panelLayout->addWidget(makeTextBoxPanel(false, _statusBox, "Status", false));
   _statusBox->setMinimumSize( QSize(300, _statusBox->sizeHint().height()));
   _statusBox->setMaximumSize( QSize(900, _statusBox->sizeHint().height()));
   _statusBox->setText(status);
