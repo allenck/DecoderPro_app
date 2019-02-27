@@ -22,7 +22,7 @@ namespace Operations
 {
     // super(Bundle.getMessage("MenuItemLoadOptions"));
      _frame = frame;
-     tlef = false;
+     tlef = nullptr;
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 

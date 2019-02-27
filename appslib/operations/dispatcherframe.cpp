@@ -2658,7 +2658,7 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
         if (c == ALLOCATEBUTTON_COLUMN) {
             return (Qt::ItemIsEnabled);
         }
-        return (false);
+        return 0;
     }
 
     //@Override
