@@ -16,8 +16,10 @@ namespace Operations
   Q_OBJECT
  public:
   explicit EngineManager(QObject *parent = 0);
+  ~EngineManager() {}
+  EngineManager(const EngineManager&) : RollingStockManager() {}
   /*public*/ static /*final*/ QString CONSISTLISTLENGTH_CHANGED_PROPERTY;// = "ConsistListLength"; // NOI18N
-  /*public*/ static /*synchronized*/ EngineManager* instance() ;
+  QT_DEPRECATED /*public*/ static /*synchronized*/ EngineManager* instance() ;
   /*public*/ Engine* getById(QString id);
   /*public*/ Engine* getByRoadAndNumber(QString engineRoad, QString engineNumber) ;
   /*public*/ Engine* newEngine(QString engineRoad, QString engineNumber);
@@ -62,5 +64,7 @@ namespace Operations
   /*public*/ QHash<QString, Consist*> _consistHashTable;// = new Hashtable<String, Consist>();   	// stores Consists by number
 
  };
+
 }
+Q_DECLARE_METATYPE(Operations::EngineManager)
 #endif // ENGINEMANAGER_H

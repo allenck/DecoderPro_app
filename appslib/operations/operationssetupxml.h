@@ -18,7 +18,7 @@ namespace Operations
   explicit OperationsSetupXml(QObject *parent = 0);
   ~OperationsSetupXml() {}
   OperationsSetupXml(const OperationsSetupXml&) : OperationsXml() {}
-  /*public*/ static /*synchronized*/ OperationsSetupXml* instance();
+  QT_DEPRECATED /*public*/ static /*synchronized*/ OperationsSetupXml* instance();
   /*public*/ void writeFile(QString name);// throw (FileNotFoundException, IOException);
   /*public*/ void readFile(QString name);// throw (JDOMException, IOException);
   /*public*/ void setOperationsFileName(QString name) ;
@@ -33,6 +33,7 @@ namespace Operations
 //  /*private*/ static OperationsSetupXml* _instance;// = NULL;
   /*private*/ QString operationsFileName;// = "Operations.xml"; // NOI18N
   Logger * log;
+  static OperationsSetupXml* _instance;
  };
 
 }

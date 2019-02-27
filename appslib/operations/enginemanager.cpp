@@ -26,9 +26,9 @@ namespace Operations
 ///*public*/ class EngineManager extends RollingStockManager {
 
 
-    /*public*/ /*static*/ /*final*/ QString EngineManager::CONSISTLISTLENGTH_CHANGED_PROPERTY = "ConsistListLength"; // NOI18N
+/*public*/ /*static*/ /*final*/ QString EngineManager::CONSISTLISTLENGTH_CHANGED_PROPERTY = "ConsistListLength"; // NOI18N
 
-    /*public*/ EngineManager::EngineManager(QObject *parent) :
+/*public*/ EngineManager::EngineManager(QObject *parent) :
   RollingStockManager(parent)
 {
 _consistHashTable = QHash<QString, Consist*>();   	// stores Consists by number
@@ -379,7 +379,7 @@ setProperty("InstanceManagerAutoInitialize", "true");
  //@Override
  /*public*/ void EngineManager::initialize() {
   static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml")); // load setup
-  static_cast<EngineManagerXml*>(InstanceManager::getDefault("EngineManagerXml")); // load routes
+  //static_cast<EngineManagerXml*>(InstanceManager::getDefault("EngineManagerXml", InstanceManager::InitializationState::Done)); // load routes
  }
 
 }

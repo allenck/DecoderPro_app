@@ -1247,7 +1247,7 @@
      */
     /*public*/ /*static*/ BufferedImage* ImageIO::read(File* input) /*throws IOException*/ {
         if (input == nullptr) {
-            throw new IllegalArgumentException("input == null!");
+            throw IllegalArgumentException("input == null!");
         }
         if (!input->canRead()) {
          log->error(tr("Can't read input file! %1").arg(input->getPath()));

@@ -288,6 +288,8 @@
 #include "operationssetupxml.h"
 #include "sensortabledatamodel.h"
 #include "sensortableaction.h"
+#include "enginemanager.h"
+#include "enginemanagerxml.h"
 
 bool Metatypes::done = false;
 
@@ -590,6 +592,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<Operations::OperationsSetupXml>("OperationsSetupXml");
  qRegisterMetaType<SensorTableDataModel>("SensorTableDataModel");
  qRegisterMetaType<SensorTableAction>("SensorTableAction");
+ qRegisterMetaType<Operations::EngineManager>("EngineManager");
+ qRegisterMetaType<Operations::EngineManagerXml>("EngineManagerXml");
 
  Metatypes::done = true;
 }

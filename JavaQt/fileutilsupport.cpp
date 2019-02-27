@@ -477,7 +477,7 @@ public URL getURL(URI uri) {
  * @return JMRI program directory as a String.
  */
 /*public*/ QString FileUtilSupport::getProgramPath() {
-    if (programPath == NULL) {
+    if (programPath == "") {
 //        this->setProgramPath("."); // NOI18N
      QStringList* paths = findProgramPath();
      if(!paths->isEmpty())
@@ -855,40 +855,45 @@ public URL getURL(URI uri) {
  {
   QString fn = info.fileName();
   QString pn = info.filePath();
-  if(fn == "NetBeansProjects" || fn == "JMRI" || fn == "jmri" || fn == "xml")
-//   qDebug() << fn;
-  if(fn == "xml")
+
+  QStringList subDirs = QDir(info.filePath()).entryList(QDir::Dirs);
+
+  if( fn == "JMRI" || /*fn == "jmri" ||*/ fn == "xml")
   {
-   qDebug() << "scanDir found directory: " << info.path();
-   QStringList names = QDir(info.filePath()).entryList(filters,QDir::Files);
-   if(names.contains("catalog.xml") && names.contains("names.xml") && names.contains("decoderIndex.xml") && !(info.filePath().contains(".jmri")))
+//   qDebug() << fn;
+   if(fn == "xml" && dirNames.contains(QString("web")) && dirNames.contains(QString("resources")))
    {
-    paths->append(info.path());
-    names = QDir(info.absolutePath() + File::separator + "web").entryList(filters,QDir::AllDirs);
-    if(names.contains("xml") && names.contains("prefs") && names.contains("dist"))
-     continue;
-    if(!names.contains("xml"))
+    qDebug() << "scanDir found directory: " << info.path();
+    QStringList names = QDir(info.filePath()).entryList(filters,QDir::Files);
+    if(names.contains("catalog.xml") && names.contains("names.xml") && names.contains("decoderIndex.xml") && !(info.filePath().contains(".jmri")))
     {
-    // create link to xml dir so that web server can find files there
-    QFile linkDir(info.absolutePath() + File::separator + "xml" );
-     if(!linkDir.link(info.absolutePath() + File::separator + "web" + File::separator + "xml" ))
-      log->error(tr("error creating link to %1 error:%2").arg( linkDir.fileName()).arg(linkDir.error()));
-    }
-    if(!names.contains("prefs"))
-    {
+     paths->append(info.path());
+     names = QDir(info.absolutePath() + File::separator + "web").entryList(filters,QDir::AllDirs);
+     if(names.contains("xml") && names.contains("prefs") && names.contains("dist"))
+      continue;
+     if(!names.contains("xml"))
+     {
      // create link to xml dir so that web server can find files there
-     QFile linkDir(FileUtil::getPreferencesPath());
+     QFile linkDir(info.absolutePath() + File::separator + "xml" );
+      if(!linkDir.link(info.absolutePath() + File::separator + "web" + File::separator + "xml" ))
+       log->error(tr("error creating link to %1 error:%2").arg( linkDir.fileName()).arg(linkDir.error()));
+     }
+     if(!names.contains("prefs"))
+     {
+      // create link to xml dir so that web server can find files there
+      QFile linkDir(FileUtil::getPreferencesPath());
       if(!linkDir.link(info.absolutePath() + File::separator + "web" + File::separator + "prefs" ))
        log->error(tr("error creating link to %1 error:%2").arg( linkDir.fileName()).arg(linkDir.error()));
-    }
-    if(!names.contains("dist"))
-    {
+     }
+     if(!names.contains("dist"))
+     {
      // create link to xml dir so that web server can find files there
-     QFile linkDir(info.absolutePath() );
+      QFile linkDir(info.absolutePath() );
       if(!linkDir.link(info.absolutePath() + File::separator + "web" + File::separator + "dist" ))
        log->error(tr("error creating link to %1 error:%2").arg( linkDir.fileName()).arg(linkDir.error()));
+     }
+     continue; //not expecting any more since we've just found one!
     }
-    continue; //not expecting any more since we've just found one!
    }
   }
   if(depth > 3)
@@ -1253,6 +1258,9 @@ public URL getURL(URI uri) {
 //    if (log->isDebugEnabled()) { // avoid the Arrays.toString call unless debugging
 //        log->debug(tr("Attempting to find %1 in %2").arg(path).arg( Arrays.toString(searchPaths));
 //    }
+    QFileInfo info(path);
+    if(info.exists())
+        return info.absoluteFilePath();
     if (this->isPortableFilename(path)) {
         try {
             return this->findExternalFilename(path);
@@ -1261,10 +1269,15 @@ public URL getURL(URI uri) {
         }
     }
     QString resource = "";
-    for (QString searchPath : searchPaths) {
-        resource = this->findURI(searchPath + File::separator + path);
-        if (resource != "") {
-            return resource;
+    for (QString searchPath : searchPaths)
+    {
+        QFileInfo info(getProgramPath() + searchPath + File::separator + path);
+        if(info.exists())
+        {
+            resource = this->findURI( getProgramPath() + searchPath + File::separator + path);
+            if (resource != "") {
+                return resource;
+            }
         }
     }
     File* file;
@@ -1432,7 +1445,7 @@ public URL getURL(URI uri) {
     if (file != "") {
         try {
             //return file.toURL();
-         return file;
+         return QUrl(file);
         } catch (MalformedURLException ex) {
             log->error(ex.getLocalizedMessage(), ex);
         }

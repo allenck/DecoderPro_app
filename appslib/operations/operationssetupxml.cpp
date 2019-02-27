@@ -34,6 +34,7 @@ namespace Operations
   */
 // /*private*/ /*static*/ OperationsSetupXml* OperationsSetupXml::_instance = NULL;
 
+ //@Deprecated
  /*public*/ /*static*/ /*synchronized*/ OperationsSetupXml* OperationsSetupXml::instance()
  {
   return static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml"));

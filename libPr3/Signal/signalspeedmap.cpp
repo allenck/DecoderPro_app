@@ -206,7 +206,7 @@ void SignalSpeedMap::loadMap()
  }
  catch (JDOMException e)
  {
-        log->error(tr("error reading speed map elements due to: %1").arg(e.getMessage()));
+  log->error(tr("error reading speed map elements due to: %1").arg(e.getMessage()));
  }
 }
 

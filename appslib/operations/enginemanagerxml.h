@@ -9,7 +9,9 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  explicit EngineManagerXml(QObject *parent = 0);
+  Q_INVOKABLE explicit EngineManagerXml(QObject *parent = 0);
+  ~EngineManagerXml() {}
+  EngineManagerXml(const EngineManagerXml&) : OperationsXml() {}
   /*public*/ static /*synchronized*/ EngineManagerXml* instance();
   /*public*/ void writeFile(QString name); //throws java.io.FileNotFoundException, java.io.IOException
   /*public*/ void readFile(QString name); //throws org.jdom2.JDOMException, java.io.IOException
@@ -25,7 +27,7 @@ namespace Operations
 //  /*private*/ static EngineManagerXml* _instance;// = null;
   Logger* log;
   /*private*/ QString operationsFileName;// = "OperationsEngineRoster.xml"; // NOI18N
-
  };
 }
+Q_DECLARE_METATYPE(Operations::EngineManagerXml)
 #endif // ENGINEMANAGERXML_H

@@ -416,68 +416,9 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QUrl FileUtil::findURL(QString path, /*@NonNull*/ QStringList searchPaths)
 {
-#if 1
- Logger log;
- if (log.isDebugEnabled())
- {
-  log.debug("Attempting to find " + path /*+ " in " + Arrays.toString(searchPaths)*/);
- }
- QUrl resource;
- if (!searchPaths.isEmpty())
- {
-  foreach(QString searchPath,  searchPaths)
-  {
-   resource = FileUtil::findURL(searchPath + QDir::separator() + path);
-   if (!resource .isEmpty())
-   {
-    return resource;
-   }
-  }
- }
- try
- {
-  if(QFile(path).exists())
-   return QUrl(path);
-  // attempt to return path from preferences directory
-  QFile* file = new QFile(FileUtil::getUserFilesPath() + path);
-  if (file->exists())
-  {
-   //return file->toURI().toURL();
-   return QUrl(file->fileName());
-  }
-  // attempt to return path from current working directory
-  file = new QFile(path);
-  if (file->exists())
-  {
-   //return file.toURI().toURL();
-   return QUrl(file->fileName());
-
-  }
-  // attempt to return path from JMRI distribution directory
-  file = new QFile(FileUtil::getProgramPath() + path);
-  if (file->exists())
-  {
-   //return file.toURI().toURL();
-  return QUrl(file->fileName());
-
-  }
- }
- catch (MalformedURLException ex)
- {
-  log.warn("Unable to get URL for " + path + ex.getMessage());
-  return QUrl();
- }
-//    // return path if in jmri.jar or NULL
-//    resource = FileUtil.class.getClassLoader().getResource(path);
-//    if (resource == NULL && log.isDebugEnabled()) {
-//        log.debug("Unable to to get URL for " + path);
-//    }
-//    return resource;
- return QUrl();
-#else
  return FileUtilSupport::getDefault()->findURL(path, searchPaths);
-#endif
 }
+
 /**
  * Search for a file or JAR resource by name and return the
  * {@link java.net.URL} for that file. Search order is defined by

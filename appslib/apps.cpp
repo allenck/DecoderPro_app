@@ -92,6 +92,7 @@
 #include <QImageReader>
 #include "startupactionsmanager.h"
 #include "throttlewindow.h"
+#include "application.h"
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -137,6 +138,8 @@ bool Apps::configDeferredLoadOK = false;
  connection = QVector<ConnectionConfig*>(4,nullptr);
 
  new Metatypes();
+ QString path = FileUtil::getProgramPath();
+ QString curDir = QDir::currentPath();
 
  _frame = frame;
 
@@ -147,10 +150,10 @@ bool Apps::configDeferredLoadOK = false;
 #ifdef SCRIPTING_ENABLED
     setJynstrumentSpace();
 #endif
-#if 0
-    jmri.Application.setLogo(logo());
-    jmri.Application.setURL(line2());
 
+    Application::setLogo(logo());
+    Application::setURL(line2());
+#if 0
     // Enable proper snapping of JSliders
     SliderSnap.init();
 

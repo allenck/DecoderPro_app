@@ -173,8 +173,8 @@ XmlFile::XmlFile(QObject *parent) :
  {
   log->debug("reading xml from URL: " + url->toString());
  }
- QFile file(url->toString());
- return rootFromFile(&file);
+ QFile* file = new QFile(url->path());
+ return rootFromFile(file);
  //return getRoot(verify, url.openConnection().getInputStream());
  //return QDomElement();
 }

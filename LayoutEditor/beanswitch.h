@@ -146,13 +146,14 @@ protected slots:
  */
 /*public*/ class IconSwitch : public JPanel {
 Q_OBJECT
-    /*private*/ BufferedImage* image;
-    /*private*/ BufferedImage* image1;
-    /*private*/ BufferedImage* image2;
+    /*private*/ BufferedImage* image = nullptr;
+    /*private*/ BufferedImage* image1 = nullptr;
+    /*private*/ BufferedImage* image2 = nullptr;
     /*private*/ QString tag = "tag";
     /*private*/ int labelX = 16;
     /*private*/ int labelY = 53;
- BeanSwitch* bs;
+    BeanSwitch* bs = nullptr;
+
 public:
     /*public*/ IconSwitch(QString filepath1, QString filepath2, BeanSwitch* bs) ;
  void paintEvent(QPaintEvent *e);
