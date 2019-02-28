@@ -36,4 +36,4 @@ later be used. Current development has been with Qt 5.11.3
   16. Now, we can build the app PanelPro. Build the sub-project PanelPro.
   17. After PanelPro has compiled successfully, you can go click on the Qt Creator "Projects" icon in the left side panel and then select PanelPro executable which can then be run using the run button or the debug button.
 
-  For more information see [Compiling] (wiki/Compiling.wiki)
+  For more information see [Compiling](wiki/Compiling.wiki)
