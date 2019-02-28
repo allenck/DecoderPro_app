@@ -1,4 +1,4 @@
-#include "fileutilsupport.h"
+﻿#include "fileutilsupport.h"
 #include <QDir>
 #include "file.h"
 #include "system.h"
@@ -6,6 +6,12 @@
 #include "matcher.h"
 #include <QDebug>
 #include "loggerfactory.h"
+#include <QProcessEnvironment>
+#include "joptionpane.h"
+#include <QListWidget>
+#include <QLabel>
+#include <QBoxLayout>
+#include "vptr.h"
 
 /**
  * Support the {@link jmri.util.FileUtil } static API while providing
@@ -476,17 +482,63 @@ public URL getURL(URI uri) {
  *
  * @return JMRI program directory as a String.
  */
-/*public*/ QString FileUtilSupport::getProgramPath() {
-    if (programPath == "") {
-//        this->setProgramPath("."); // NOI18N
-     QStringList* paths = findProgramPath();
+/*public*/ QString FileUtilSupport::getProgramPath()
+{
+    if (programPath == "")
+    {
+    //        this->setProgramPath("."); // NOI18N
+     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+     if(env.contains("JMRIPROJECT"))
+     {
+      QString path = env.value("JMRIPROJECT");
+      QFileInfo info(path);
+      if(info.exists())
+      {
+       if(!path.endsWith(File::separatorChar))
+        path = path + File::separator;
+       return path;
+      }
+     }
+     paths = findProgramPath();
+//     if(paths->size() > 1)
+//      return SelectProgramPath(paths);
      if(!paths->isEmpty())
       this->programPath = (paths->at(0) + File::separator);
     }
     return programPath;
 }
 
-/**
+/*public*/ QString  FileUtilSupport::selectProgramPath(QStringList* stringList)
+{
+ QWidget* widget = new QWidget();
+ widget->setLayout(new QVBoxLayout());
+ QLabel* label = new QLabel(tr("Select which JMRI program path you wish to use"));
+ widget->layout()->addWidget(label);
+ QListWidget* list = new QListWidget();
+ foreach (QString str, *stringList) {
+  list->addItem(new QListWidgetItem(str));
+ }
+
+ widget->layout()->addWidget(list);
+ QVariantList buttons = QVariantList() << tr("Ok") << tr("Cancel");
+ while (true)
+ {
+  int retval = JOptionPane::showOptionDialog(nullptr, VPtr<QWidget>::asQVariant(widget),
+                                             "Select path", JOptionPane::QUESTION_MESSAGE, JOptionPane::OK_CANCEL_OPTION, QIcon(), buttons, QVariant());
+  if(retval == JOptionPane::CANCEL_OPTION)
+   return "";
+  QList<QListWidgetItem*> items = list->selectedItems();
+  if(items.count()>0)
+  {
+   setProgramPath(items.at(0)->text());
+   return items.at(0)->text();
+  }
+ }
+}
+
+/*public*/ QStringList* FileUtilSupport::getPaths() {return paths;}
+
+/*
  * Set the JMRI program directory.
  *
  * Convenience method that calls

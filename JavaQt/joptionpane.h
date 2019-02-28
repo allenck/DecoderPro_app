@@ -8,6 +8,7 @@
 #include "propertychangesupport.h"
 #include "exceptions.h"
 
+class Component;
 class JTextField;
 class PropertyChangeEvent;
 class OptionPaneUI;
@@ -35,6 +36,7 @@ public:
  /** Type used for <code>showConfirmDialog</code>. */
   OK_CANCEL_OPTION = 2
  };
+ Q_ENUM(OPTIONTYPES)
  //
  // Return values.
  //
@@ -53,7 +55,7 @@ public:
   * <code>CANCEL_OPTION</code> or <code>NO_OPTION</code>. */
   CLOSED_OPTION = -1
  };
-
+ Q_ENUM(RETURNVALUES)
  //
  // Message types. Used by the UI to determine what icon to display,
  // and possibly what behavior to give based on the type.
@@ -71,6 +73,7 @@ public:
  /** No icon is used. */
   PLAIN_MESSAGE = -1
  };
+ Q_ENUM(MESSAGETYPES)
   /** Bound property name for <code>icon</code>. */
   /*public*/ static /*final*/ QString      ICON_PROPERTY;// = "icon";
   /** Bound property name for <code>message</code>. */
@@ -124,6 +127,11 @@ public:
      QVariant message, QString title, int messageType);
  /*public*/ static void showMessageDialog(QWidget* parentComponent,
      QVariant message, QString title, int messageType, QIcon icon);
+ /*public*/ static int showInternalOptionDialog(Component* parentComponent,
+                                    QVariant message,
+                                    QString title, int optionType,
+                                    int messageType, QIcon icon,
+                                    QVariantList options, QVariant initialValue);
 
 
  /*public*/ void setMessage(QVariant newMessage);
@@ -198,6 +206,10 @@ private:
  JDialog* _dialog;
  QPushButton* btnYes;
  QPushButton* btnNo;
+
+private slots:
+ void rowChanged(int);
+
 protected:
  /*protected*/ int                   messageType;
 

@@ -15,6 +15,9 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include "vptr.h"
+#include "component.h"
+#include <QMainWindow>
+#include <QListWidget>
 
 //JOptionPane::JOptionPane(QWidget *parent) : QWidget(parent)
 //{
@@ -461,8 +464,8 @@
     //throws HeadlessException
 {
     JOptionPane*    pane = new JOptionPane(message, messageType,
-                                          OK_CANCEL_OPTION, icon,
-                                          QList<QVariant>(), QVariant());
+                                          OK_CANCEL_OPTION/*, icon,
+                                          QVariantList(), QVariant(), parentComponent*/);
 
     pane->setWantsInput(true);
     pane->setSelectionValues(selectionValues);
@@ -1156,7 +1159,7 @@ if(options.count() >0)
     return showInternalOptionDialog(parentComponent, message, title, optionType,
                                     messageType, icon, NULL, NULL);
 }
-
+#endif
 /**
  * Brings up an internal dialog panel with a specified icon, where
  * the initial choice is determined by the <code>initialValue</code>
@@ -1204,20 +1207,32 @@ if(options.count() >0)
  * @return an integer indicating the option chosen by the user,
  *          or <code>CLOSED_OPTION</code> if the user closed the Dialog
  */
-/*public*/ static int showInternalOptionDialog(Component parentComponent,
-                                   Object message,
+/*public*/ /*static*/ int JOptionPane::showInternalOptionDialog(Component* parentComponent,
+                                   QVariant message,
                                    QString title, int optionType,
-                                   int messageType, Icon icon,
-                                   Object[] options, Object initialValue) {
-    JOptionPane pane = new JOptionPane(message, messageType,
-            optionType, icon, options, initialValue);
-    pane.putClientProperty(PopupFactory_FORCE_HEAVYWEIGHT_POPUP,
-            Boolean.TRUE);
-    Component fo = KeyboardFocusManager.getCurrentKeyboardFocusManager().
-            getFocusOwner();
+                                   int messageType, QIcon icon,
+                                   QVariantList options, QVariant initialValue)
+{
+ QWidget* internalWidget = new QWidget();
+ QVBoxLayout* layout = new QVBoxLayout(internalWidget);
+ QLabel* label = new QLabel(message.toString());
+ layout->addWidget(label);
+ QListWidget* widget = new QListWidget();
+ layout->addWidget(widget);
+ foreach (QVariant option, options)
+ {
+   widget->addItem(new QListWidgetItem(option.toString()));
+ }
 
-    pane.setInitialValue(initialValue);
+    JOptionPane* pane = new JOptionPane(VPtr<QWidget>::asQVariant(internalWidget), messageType,
+            OK_CANCEL_OPTION, icon, options, initialValue);
+//    pane.putClientProperty(PopupFactory_FORCE_HEAVYWEIGHT_POPUP,
+//            Boolean.TRUE);
+//    Component fo = KeyboardFocusManager.getCurrentKeyboardFocusManager().
+//            getFocusOwner();
 
+    pane->setInitialValue(initialValue);
+#if 0
     JInternalFrame dialog =
         pane.createInternalFrame(parentComponent, title);
     pane.selectInitialValue();
@@ -1281,8 +1296,15 @@ if(options.count() >0)
         }
     }
     return CLOSED_OPTION;
+#else
+    JDialog* dialog = new JDialog(parentComponent, title, true);
+    QWidget* p =pane->layoutPane(dialog);
+    dialog->getContentPane()->setLayout(new QVBoxLayout());
+    dialog->layout()->addWidget(p);
+    dialog->show();
+#endif
 }
-
+#if 0
 /**
  * Shows an internal question-message dialog requesting input from
  * the user parented to <code>parentComponent</code>. The dialog
@@ -1640,7 +1662,7 @@ private static /*final*/ Object sharedFrameKey = JOptionPane.class;
  */
 /*public*/ JOptionPane::JOptionPane(QWidget *parent) : QWidget(parent)
 {
-    common("JOptionPane message");
+ common("JOptionPane message");
 }
 
 /**

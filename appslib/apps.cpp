@@ -93,6 +93,7 @@
 #include "startupactionsmanager.h"
 #include "throttlewindow.h"
 #include "application.h"
+#include "fileutilsupport.h"
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -142,6 +143,10 @@ bool Apps::configDeferredLoadOK = false;
  QString curDir = QDir::currentPath();
 
  _frame = frame;
+
+ if(FileUtilSupport::getDefault()->getPaths() != nullptr && FileUtilSupport::getDefault()->getPaths()->count() > 1)
+  FileUtilSupport::getDefault()->selectProgramPath(FileUtilSupport::getDefault()->getPaths());
+
 
  splash(false);
  splash(true, true);

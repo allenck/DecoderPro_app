@@ -32,8 +32,8 @@ public:
  /*public*/ void setProgramPath(File* path);
  /*public*/ QString getUserResourcePath();
  /*public*/ void logFilePaths();
-  /*public*/ QString getScriptsPath();
-  /*public*/ void setScriptsPath(QString path);
+ /*public*/ QString getScriptsPath();
+ /*public*/ void setScriptsPath(QString path);
 
  /*public*/ void backup(File* file); //throws IOException
  /*public*/ void rotate(/*@NonNULL*/ File* file, int max, QString extension);// //throws IOException
@@ -59,6 +59,8 @@ public:
  /*public*/ QUrl findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
  /*public*/ QString locateFile(QDir start, QString fileName);
  /*public*/ QString pathFromPortablePath(/*@Nonnull*/ QString path);
+ /*public*/ QString selectProgramPath(QStringList *stringList);
+ /*public*/ QStringList* getPaths();
 
 private:
  /*private*/ static /*final*/ QString homePath;// = System.getProperty("user.home") + File.separator; // NOI18N
@@ -81,8 +83,10 @@ private:
  // default instance
  /*volatile*/ /*private*/ static FileUtilSupport* defaultInstance;// = null;
  /*private*/ void scanDir(QDir start, QStringList *paths, int depth);
+ QStringList* paths = nullptr;
 
-
+private slots:
+ void rowChanged(int);
 };
 
 #endif // FILEUTILSUPPORT_H
