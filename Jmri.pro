@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += appslib AutoIncreaseBuildNr DecoderPro3 \
     ftdilib LayoutEditor libPr3 libPref \
-    LocoIO LocoNetMonitor PanelPro JavaQt \
+    LocoIO PanelPro JavaQt \
     Tables QtWebApp InstallTest
 LayoutEditor.depends += JavaQt AutoIncreaseBuildNr
 appslib.depends += JavaQt libPr3 libPref Tables LayoutEditor
@@ -11,4 +11,4 @@ libPref.depends += JavaQt
 LocoIO.depends += JavaQt
 PanelPro.depends += appslib LayoutEditor libPr3 libPref LocoIO Tables AutoIncreaseBuildNr
 DecoderPro3.depends += appslib LayoutEditor libPr3 libPref LocoIO Tables
-LocoNetMonitor.depends += appslib LayoutEditor libPr3 libPref LocoIO Tables
+
