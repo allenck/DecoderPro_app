@@ -85,20 +85,8 @@ equals(ENABLE_SCRIPTING, "Y") {
     DEPENDPATH +=  $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
 
 
-#    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Qt/5.4/gcc/plugins/designer/release/ -lpyqt5
-#    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Qt/5.4/gcc/plugins/designer/debug/ -lpyqt5
-#    else:unix: LIBS += -L$$(QTDIR)/plugins/designer/ -lpyqt5
 message("Qt path=" + $$(QTDIR))
 
-#    INCLUDEPATH += $$PWD/../../../../../Qt/5.4/gcc/plugins/designer
-#    DEPENDPATH += $$PWD/../../../../../Qt/5.4/gcc/plugins/designer
-
-#    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_QtAll_d
-#    else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/debug/ -lPythonQt_QtAll_d
-#    else:unix: LIBS += -L$$PWD/../../../../PythonQt3.0/lib/ -lPythonQt_QtAll_d
-
-#    INCLUDEPATH += $$PWD/../../../../PythonQt3.0/src
-#    DEPENDPATH += $$PWD/../../../../PythonQt3.0/src
 
 } else {
  message("LayoutEditor: Scripting is disabled")
@@ -314,7 +302,6 @@ SOURCES += \
     commonturnoutoperationconfig.cpp \
     rawturnoutoperationconfig.cpp \
     sensorturnoutoperationconfig.cpp \
-    #rfidsensormanagerxml.cpp \
     simpleclockframe.cpp \
     analogclockframe.cpp \
     icondialog.cpp \
@@ -900,7 +887,6 @@ unix:!symbian {
 
 RESOURCES += \
     LayoutEditor.qrc
-##include(../jmri_libs.prf)
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
@@ -911,7 +897,6 @@ INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal \
 DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal \
 $$PWD/../Tables $$PWD/../libPr3/Throttle $$PWD/../libPr3/LocoIO $$PWD/../libPr3/loconet $$PWD/../libPr3/rfid
 
-#DEFINES += BLOCKS_AND_SECTIONS
 
 TRANSLATIONS += \
     languages/libLayoutEditor_de.ts \
@@ -965,18 +950,18 @@ DEPENDPATH += $$PWD/../Tables/debug
 
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../QtZeroConf-master/release/ -lQtZeroConf
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../QtZeroConf-master/debug/ -lQtZeroConf
-else:unix: LIBS += -L$$PWD/../../../../QtZeroConf-master/ -lQtZeroConf
+win32:CONFIG(release, debug|release): LIBS += -L$$PROJ_DIR/QtZeroConf-master/release/ -lQtZeroConf
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PROJ_DIR/QtZeroConf-master/debug/ -lQtZeroConf
+else:unix: LIBS += -L$$PROJ_DIR/QtZeroConf-master/ -lQtZeroConf
 
-INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
-DEPENDPATH += $$PWD/../../../../QtZeroConf-master
+INCLUDEPATH += $$PROJ_DIR/QtZeroConf-master
+DEPENDPATH += $$PROJ_DIR/QtZeroConf-master
 
 
-unix:exists($$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1) {
-message($$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1 found)
+unix:exists($$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1) {
+message($$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1 found)
 } else {
-message(LayoutEditor: $$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1 not found)
+message(LayoutEditor: $$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1 not found)
 }
 
 
