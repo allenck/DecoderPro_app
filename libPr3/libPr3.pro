@@ -1889,27 +1889,17 @@ message("libPr3: link to libQtWebAppd")
 DEFINES += QZEROCONF_STATIC
 
 
-unix|win32: LIBS += -L$$PWD/../../../../QtZeroConf-master/ -lQtZeroConf
+unix|win32: LIBS += -L$$PROJ_DIR/QtZeroConf-master/ -lQtZeroConf
 
-INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
-DEPENDPATH += $$PWD/../../../../QtZeroConf-master
+INCLUDEPATH += $$PROJ_DIR/QtZeroConf-master
+DEPENDPATH += $$PROJ_DIR/QtZeroConf-master
 
-unix:exists($$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1) {
-message($$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1 found)
+unix:exists($$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1) {
+message($$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1 found)
 } else {
-message(LibPr3: $$PWD/../../../../QtZeroConf-master/libQtZeroConf.so.1 not found)
+message(LibPr3: $$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1 not found)
 }
 
-
-
-
-
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../QtWebApp/release/ -lQtWebAppd
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../QtWebApp/debug/ -lQtWebAppd
-#else:unix: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
-
-#INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
-#DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
 
 unix|win32: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
 

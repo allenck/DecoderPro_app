@@ -2,7 +2,7 @@
 #include "hardcopywriter.h"
 #include "train.h"
 #include "traineditframe.h"
-#include "control.h".
+#include "control.h"
 #include "route.h"
 #include "routelocation.h"
 #include <QLabel>

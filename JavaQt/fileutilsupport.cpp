@@ -487,6 +487,9 @@ public URL getURL(URI uri) {
     if (programPath == "")
     {
     //        this->setProgramPath("."); // NOI18N
+     QByteArray env = qgetenv("JMRIPROJECT");
+     log->debug(tr("env JMRIPROJECT = %1").arg(env.value("JMRIPROJECT")));
+
      QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
      if(env.contains("JMRIPROJECT"))
      {

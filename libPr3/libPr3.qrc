@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>languages/libPr3_de.qm</file>
+    </qresource>
+</RCC>
