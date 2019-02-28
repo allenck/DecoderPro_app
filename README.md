@@ -16,7 +16,7 @@ been using Qt 5.
 The addition of WebServer support requires that QT version 5.6 or
 later be used. Current development has been with Qt 5.11.3
 
-Suggested steps to compile the first time
+## Suggested steps to compile the first time
 
    1. Create an Environment variable "PROJ_DIR" that specifies the location of your projects directory where the various packages are kept. The Projects folder well then contain one or more flders/directoried with different projects.
    2. Make sure you have either an installed copy of the Java JMRI app or have downloaded the source from JMRI. It is needed to provide resources like icons and other resources. It is best to insure that you have an environment variable "JMRI_PROG" set to the location of the JMRI code.  (Jmri Code: Getting the Code)
@@ -36,3 +36,4 @@ Suggested steps to compile the first time
   16. Now, we can build the app PanelPro. Build the sub-project PanelPro.
   17. After PanelPro has compiled successfully, you can go click on the Qt Creator "Projects" icon in the left side panel and then select PanelPro executable which can then be run using the run button or the debug button.
 
+  For more information see [Compiling] (wiki/Compiling.wiki)
