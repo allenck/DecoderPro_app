@@ -887,8 +887,12 @@ win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
 else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
 
-INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web
-DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web
+INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
+    $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json \
+    $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal
+DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
+    $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json \
+    $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
@@ -934,13 +938,6 @@ else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
 
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
-else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
-
-INCLUDEPATH += $$PWD/../libPr3/Signal
-DEPENDPATH += $$PWD/../libPr3/Signal
 
 win32:CONFIG(debug, debug|release): LIBS += -L"C:/Program Files (x86)/local/lib" -lquazip
 else:unix: LIBS += -L/usr/local/lib/ -lquazip
