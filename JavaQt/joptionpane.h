@@ -208,7 +208,6 @@ private:
  QPushButton* btnNo;
 
 private slots:
- void rowChanged(int);
 
 protected:
  /*protected*/ int                   messageType;
