@@ -17,6 +17,12 @@ DEFINES += JAVAQT_LIBRARY
 MOC_DIR = moc_obj
 OBJECTS_DIR += moc_obj
 
+PROJ_DIR=$$(PROJ_DIR) # get project directory from env
+isEmpty( PROJ_DIR ) {
+  win32:PROJ_DIR=C:/Projects
+  unix:PROJ_DIR=/home/allen/Projects
+}
+
 
 SOURCES += javaqt.cpp \
     loggerfactory.cpp \
@@ -447,10 +453,10 @@ TRANSLATIONS += \
     languages/JavaQt_en.ts
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../QtZeroConf-master/release/ -lQtZeroConf
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../QtZeroConf-master/debug/ -lQtZeroConf
-else:unix: LIBS += -L$$PWD/../../../../QtZeroConf-master/ -lQtZeroConf
+win32:CONFIG(release, debug|release): LIBS += -L$$PROJ_DIR/QtZeroConf-master/release/ -lQtZeroConf
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PROJ_DIR/QtZeroConf-master/debug/ -lQtZeroConf
+else:unix: LIBS += -L$$PROJ_DIR/QtZeroConf-master/ -lQtZeroConf
 
-INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
-DEPENDPATH += $$PWD/../../../../QtZeroConf-master
+INCLUDEPATH += $$PROJ_DIR/QtZeroConf-master
+DEPENDPATH += $$PROJ_DIR/QtZeroConf-master
 
