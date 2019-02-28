@@ -34,6 +34,14 @@ HEADERS  += \
 
 FORMS    +=
 
+PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+isEmpty( PYTHONQT_PREFIX ) {
+  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+  unix:PYTHONQT_PREFIX=/home/allen/Projects/PythonQt/pythonqt-code
+}
+
+include($$PYTHONQT_PREFIX/build/python.prf)
+
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
 else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
@@ -88,3 +96,35 @@ else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
 
 INCLUDEPATH += $$PWD/../LocoIO
 DEPENDPATH += $$PWD/../LocoIO
+
+win32:exists($$PYTHONQT_PREFIX/lib/PythonQt.dll){
+ ENABLE_SCRIPTING = "Y"
+ message(InstallTest: $$PYTHONQT_PREFIX/lib/PythonQt.dll + "exists")
+} else:win32: {
+ message(InstallTest: $$PYTHONQT_PREFIX/lib/PythonQt.dll + "not found")
+}
+
+unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so){
+ ENABLE_SCRIPTING = "Y"
+ message(InstallTest: $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "found OK")
+} else:unix: {
+ message(InstallTest: $$PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "not found")
+}
+CONFIG += scripts
+equals(ENABLE_SCRIPTING, "Y") {
+    DEFINES += SCRIPTING_ENABLED
+
+    win32:CONFIG(debug, debug|release): LIBS += -L$$PYTHONQT_PREFIX/lib/ -lPythonQt -lPythonQt_QtAll
+    else:unix: LIBS += -L$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d -lPythonQt_QtAll-Qt5-Python$${PYTHON_VERSION}_d
+
+    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+    DEPENDPATH += $$PYTHONQT_PREFIXe/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+#    win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../PythonQt3.0/lib/release/ -lPythonQt_d
+
+ #include(../python.prf)
+ message(InstallTest: python scripts are enabled)
+
+}
+else {
+ message(InstallTest::Python scripts will be disabled)
+}
