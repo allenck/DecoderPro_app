@@ -1572,7 +1572,7 @@ if(options.count() >0)
         return (Frame)parentComponent;
     return JOptionPane.getFrameForComponent(parentComponent.getParent());
 }
-
+#endif
 /**
  * Returns the specified component's toplevel <code>Frame</code> or
  * <code>Dialog</code>.
@@ -1589,16 +1589,17 @@ if(options.count() >0)
  *   <code>true</code>
  * @see java.awt.GraphicsEnvironment#isHeadless
  */
-static Window getWindowForComponent(Component parentComponent)
-    throws HeadlessException {
-    if (parentComponent == NULL)
-        return getRootFrame();
-    if (parentComponent instanceof Frame || parentComponent instanceof Dialog)
-        return (Window)parentComponent;
-    return JOptionPane.getWindowForComponent(parentComponent.getParent());
+/*static*/ QWidget* getWindowForComponent(QWidget* parentComponent)
+    throw (HeadlessException) {
+//    if (parentComponent == NULL)
+//        return getRootFrame();
+//    if (parentComponent instanceof Frame || parentComponent instanceof Dialog)
+//        return (Window)parentComponent;
+//    return JOptionPane.getWindowForComponent(parentComponent.getParent());
+ return parentComponent->window();
 }
 
-
+#if 0
 /**
  * Returns the specified component's desktop pane.
  *

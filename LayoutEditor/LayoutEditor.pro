@@ -467,7 +467,8 @@ SOURCES += \
     signalheadicondialog.cpp \
     test/testbase.cpp \
     generated_cpp/test/test_init.cpp \
-    generated_cpp/test/test0.cpp
+    generated_cpp/test/test0.cpp \
+    colordialog.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -853,7 +854,9 @@ HEADERS += liblayouteditor_global.h \
     rpsitempanel.h \
     signalheadicondialog.h \
     test/testbase.h \
-    generated_cpp/test/test0.h
+    generated_cpp/test/test0.h \
+    calculator.h \
+    colordialog.h
 
 FORMS    += \
     edittracksegmentdlg.ui \

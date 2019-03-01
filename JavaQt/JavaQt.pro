@@ -204,7 +204,12 @@ SOURCES += javaqt.cpp \
     lineunavailableexception.cpp \
     urisyntaxexception.cpp \
     unsupportedaudiofileexception.cpp \
-    scriptexception.cpp
+    scriptexception.cpp \
+    jcomponent.cpp \
+    jcolorchooser.cpp \
+    colorchooserdialog.cpp \
+    abstractcolorchooserpanel.cpp \
+    jmricolorchooserpanel.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -441,7 +446,14 @@ HEADERS += javaqt.h\
     lineunavailableexception.h \
     urisyntaxexception.h \
     unsupportedaudiofileexception.h \
-    scriptexception.h
+    scriptexception.h \
+    jcomponent.h \
+    colorchooserdialog.h \
+    colorselectionmodel.h \
+    abstractcolorchooserpanel.h \
+    changelistener.h \
+    jcolorchooser.h \
+    jmricolorchooserpanel.h
 
 unix {
     target.path = /usr/lib

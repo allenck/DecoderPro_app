@@ -1,5 +1,6 @@
 #include "jmricolorchooser.h"
 #include <QColorDialog>
+#include "jcolorchooser.h"
 
 /**
  * Display the Java color chooser that includes a custom JMRI panel.
@@ -75,16 +76,17 @@
         color = chooser->getColor();
         return color;
     }
-#if 0
+#if 1
     /**
      * Add or replace the JMRI custom panel at the beginning of the chooser tabs
      * @param chooser The chooser object to be updated.
      * @return the updated chooser object
      */
-     static /*public*/ JColorChooser extendColorChooser(JColorChooser chooser) {
-        AbstractColorChooserPanel[] currPanels = chooser.getChooserPanels();
-        AbstractColorChooserPanel[] newPanels = new AbstractColorChooserPanel[COLOR_TAB_COUNT];
-        newPanels[0] = new jmri.util.swing.JmriColorChooserPanel();
+     /*static*/ /*public*/ JColorChooser* JmriColorChooser::extendColorChooser(JColorChooser* chooser) {
+        QVector<AbstractColorChooserPanel*> currPanels = chooser->getChooserPanels();
+        QVector<AbstractColorChooserPanel*> newPanels = QVector<AbstractColorChooserPanel*>(COLOR_TAB_COUNT);
+#if 0 // TODO:
+        newPanels.replace(0,JmriColorChooserPanel());
         int idx = 1;
         for (int i = 0; i < currPanels.length; i++) {
             if (!currPanels[i].getDisplayName().equals("JMRI")) {  // NOI18N
@@ -93,8 +95,9 @@
                 idx++;
             }
         }
-        chooser.setChooserPanels(newPanels);
+#endif
+        chooser->setChooserPanels(newPanels);
         return chooser;
     }
-}
+
 #endif

@@ -1,4 +1,4 @@
-# C++ port of the Java JMRI model railroad software.
+# C++ port of the Java JMRI model railroad software.(JmriQt)
 
 This repository contains a port of the Java JMRI Model Railroad Interface software to QT (C++).
 The majority of JMRI code has been ported except only Digitrax (LocoNet) and SProg hardware is supported.

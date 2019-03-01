@@ -5768,7 +5768,7 @@ double LayoutEditor::toRadians(double degrees)
    setShowAlignmentMenu(popup);
    positionableLabel->showPopUp(popup);
     //popup->exec(QCursor::pos());
-   setShowTooltipMenu(p, popup);
+   setShowToolTipMenu(p, popup);
 
    setRemoveMenu(p, popup);
    if (positionableLabel->doViemMenu())

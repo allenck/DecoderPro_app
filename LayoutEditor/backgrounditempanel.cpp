@@ -56,7 +56,8 @@
 void BackgroundItemPanel::backgroundButton_clicked()
 {
  hideCatalog();
- ColorDialog dlg(_editor, this);
+ // TODO: replace with ColorDialog
+ BGIPColorDialog dlg(_editor, this);
  dlg.exec();
 }
 
@@ -84,7 +85,7 @@ void BackgroundItemPanel::colorChanged(QColor)
 //        Editor        _editor;
 //        JPanel        _preview;
 
-ColorDialog::ColorDialog(Editor* editor, BackgroundItemPanel* parent) : JDialog(parent)
+BGIPColorDialog::BGIPColorDialog(Editor* editor, BackgroundItemPanel* parent) : JDialog(parent)
 {
     //super(_paletteFrame, ItemPalette.rbp.getString("ColorChooser"), true);
     _editor = editor;
@@ -133,7 +134,7 @@ ColorDialog::ColorDialog(Editor* editor, BackgroundItemPanel* parent) : JDialog(
     setVisible(true);
 }
 
-/*protected*/ QWidget* ColorDialog::makeDoneButtonPanel() {
+/*protected*/ QWidget* BGIPColorDialog::makeDoneButtonPanel() {
     QWidget* panel = new QWidget();
     panel->setLayout(new FlowLayout());
     QPushButton* doneButton = new QPushButton(tr("Done"));
@@ -148,7 +149,7 @@ ColorDialog::ColorDialog(Editor* editor, BackgroundItemPanel* parent) : JDialog(
 //                return this;
 //            }
 //    }.init(this));
-    CDActionListener* l = new CDActionListener();
+    BGIPCDActionListener* l = new BGIPCDActionListener();
     l->init(this);
     connect(doneButton, SIGNAL(clicked()), l, SLOT(actionPerformed()));
     panel->layout()->addWidget(doneButton);
@@ -170,7 +171,7 @@ ColorDialog::ColorDialog(Editor* editor, BackgroundItemPanel* parent) : JDialog(
     return panel;
 }
 
-/*public*/ void ColorDialog::stateChanged(ChangeEvent* e)
+/*public*/ void BGIPColorDialog::stateChanged(ChangeEvent* e)
 {
 //    _preview->setBackground(_chooser->currentColor());
     QColor c = _chooser->currentColor();
@@ -178,11 +179,11 @@ ColorDialog::ColorDialog(Editor* editor, BackgroundItemPanel* parent) : JDialog(
     _preview->setStyleSheet(QString("QWidget {background-color : rgb(%1,%2,%3); font-size : 7pt; }").arg(c.red()).arg(c.green()).arg(c.blue()));
 }
 
-/*public*/ void CDActionListener::actionPerformed(ActionEvent* a) {
+/*public*/ void BGIPCDActionListener::actionPerformed(ActionEvent* a) {
     dialog->_editor->setBackgroundColor(dialog->_chooser->currentColor());
     dialog->close();
 }
-CDActionListener* CDActionListener::init(ColorDialog* d) {
+BGIPCDActionListener* BGIPCDActionListener::init(BGIPColorDialog* d) {
     dialog = d;
     return this;
 }

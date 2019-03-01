@@ -3931,7 +3931,7 @@ bool  PythonQtWrapper_Editor::setShowCoordinatesMenu(Editor* theWrappedObject, P
 
 void PythonQtWrapper_Editor::setShowTooltipMenu(Editor* theWrappedObject, Positionable*  p, QMenu*  popup)
 {
-  ( theWrappedObject->setShowTooltipMenu(p, popup));
+  ( theWrappedObject->setShowToolTipMenu(p, popup));
 }
 
 void PythonQtWrapper_Editor::setTargetPanel(Editor* theWrappedObject, EditScene*  targetPanel, JmriJFrame*  frame)

@@ -1112,7 +1112,7 @@ void Editor::On_actionHidden_toggled(bool bState) // [slot]
 * Add a checkbox to display a tooltip for the Positionable item and
 * if showable, provide a dialog menu to edit it.
 */
-/*public*/ void Editor::setShowTooltipMenu(Positionable* p, QMenu* popup)
+/*public*/ void Editor::setShowToolTipMenu(Positionable* p, QMenu* popup)
 {
  if (p->getDisplayLevel() == BKG) {
      return;

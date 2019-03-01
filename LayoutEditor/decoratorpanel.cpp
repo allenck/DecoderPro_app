@@ -113,14 +113,12 @@ AJRadioButton::AJRadioButton(QString text, int w) : QRadioButton(text)
 }
 //};
 
-/*private*/ QWidget* DecoratorPanel::makeSpinPanel(QString caption, AJSpinner* spin) {
-    QWidget* panel = new QWidget();
+/*private*/ JPanel* DecoratorPanel::makeSpinPanel(QString caption, AJSpinner* spin, ChangeListener* listener) {
+    JPanel* panel = new JPanel();
     panel->setLayout(new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
     panel->layout()->addWidget(new QLabel((caption)));
     //spin->addChangeListener(this);
-    AJListener* ajl = new AJListener();
-    ajl->init(spin,this);
-    connect(spin, SIGNAL(valueChanged(int)), ajl, SLOT(actionPerformed()));
+    connect(spin, SIGNAL(valueChanged(int)), listener, SLOT(stateChanged(ChangeEvent*)));
     panel->layout()->addWidget(spin);
     return panel;
 }

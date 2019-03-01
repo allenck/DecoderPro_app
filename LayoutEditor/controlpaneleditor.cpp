@@ -1774,6 +1774,154 @@ void ControlPanelEditor::abortPasteItems() {
     popup->addAction(edit);
     connect(edit, SIGNAL(triggered()), dal, SLOT(actionPerformed()));
 }
+
+//@Override
+/*protected*/ void ControlPanelEditor::setSelectionsScale(double s, Positionable* p) {
+    if (_circuitBuilder->saveSelectionGroup(_selectionGroup)) {
+        p->setScale(s);
+    } else {
+        Editor::setSelectionsScale(s, p);
+    }
+}
+
+//@Override
+/*protected*/ void ControlPanelEditor::setSelectionsRotation(int k, Positionable* p) {
+    if (_circuitBuilder->saveSelectionGroup(_selectionGroup)) {
+        p->rotate(k);
+    } else {
+        Editor::setSelectionsRotation(k, p);
+    }
+}
+
+/**
+ * Create popup for a Positionable object Popup items common to all
+ * positionable objects are done before and after the items that pertain
+ * only to specific Positionable types.
+ */
+//@Override
+/*protected*/ void ControlPanelEditor::showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event) {
+    if (!((QWidget*) p)->isVisible()) {
+        return;     // component must be showing on the screen to determine its location
+    }
+    QMenu* popup = new QMenu();
+
+    PositionablePopupUtil* util = p->getPopupUtility();
+    if (p->isEditable()) {
+        // items common to all
+        if (p->doViemMenu()) {
+            popup->addAction(new QAction(p->getNameString(),this));
+            setPositionableMenu(p, popup);
+            if (p->isPositionable()) {
+                setShowCoordinatesMenu(p, popup);
+                setShowAlignmentMenu(p, popup);
+            }
+            setDisplayLevelMenu(p, popup);
+            setHiddenMenu(p, popup);
+            popup->addSeparator();
+            setCopyMenu(p, popup);
+        }
+
+        // items with defaults or using overrides
+        bool popupSet = false;
+//            popupSet |= p.setRotateOrthogonalMenu(popup);
+        popupSet |= p->setRotateMenu(popup);
+        popupSet |= p->setScaleMenu(popup);
+        if (popupSet) {
+            popup->addSeparator();
+            popupSet = false;
+        }
+        popupSet = p->setEditItemMenu(popup);
+        if (popupSet) {
+            popup->addSeparator();
+            popupSet = false;
+        }
+        if (qobject_cast<PositionableLabel*>(p)) {
+            PositionableLabel* pl = (PositionableLabel*) p;
+            if (!pl->isIcon()) {
+                setColorMenu(popup, pl, ColorDialog::BORDER);
+                setColorMenu(popup, pl, ColorDialog::MARGIN);
+                setColorMenu(popup, pl, ColorDialog::FONT);
+                setColorMenu(popup, pl, ColorDialog::TEXT);
+//                    popupSet |= p.setTextEditMenu(popup);
+                popupSet |= setTextAttributes(p, popup);
+            } else if (qobject_cast<SensorIcon*>(p)) {
+                popup->addAction(CoordinateEdit::getTextEditAction(p, "OverlayText", this));
+                if (pl->isText()) {
+                    setColorMenu(popup, (Positionable*) p, ColorDialog::BORDER);
+                    popupSet |= setTextAttributes(p, popup);
+//                        popupSet |= pl.setEditTextMenu(popup);
+                }
+            }
+        } else if (qobject_cast<PositionableJPanel*>(p)) {
+            setColorMenu(popup, (Positionable*) p, ColorDialog::BORDER);
+            setColorMenu(popup, (Positionable*) p, ColorDialog::MARGIN);
+            setColorMenu(popup, (Positionable*) p, ColorDialog::FONT);
+            popupSet |= setTextAttributes(p, popup);
+        }
+#if 0 // TODO:
+        if (qobject_cast<LinkingObject*>(p)) {
+            ((LinkingObject*) p)->setLinkMenu(popup);
+        }
+#endif
+        if (popupSet) {
+            popup->addSeparator();
+            popupSet = false;
+        }
+        p->setDisableControlMenu(popup);
+        if (util != nullptr) {
+            util->setAdditionalEditPopUpMenu(popup);
+        }
+        // for Positionables with unique settings
+        p->showPopUp(popup);
+
+        if (p->doViemMenu()) {
+            setShowToolTipMenu(p, popup);
+            setRemoveMenu(p, popup);
+        }
+    } else {
+        if (qobject_cast<LocoIcon*>(p)) {
+            setCopyMenu(p, popup);
+        }
+        p->showPopUp(popup);
+        if (util != nullptr) {
+            util->setAdditionalViewPopUpMenu(popup);
+        }
+    }
+//    popup->show(/*(Component)*/ p, p->getWidth() / 2 + (int) ((getPaintScale() - 1.0) * p->getX()),
+//            p->getHeight() / 2 + (int) ((getPaintScale() - 1.0) * p->getY()));
+
+    popup->exec(QCursor::pos());
+    _currentSelection = nullptr;
+}
+
+/*public*/ void ControlPanelEditor::setColorMenu(QMenu* popup, /*JComponent*/Positionable* pos, int type) {
+    QString title;
+    switch (type ) {
+        case ColorDialog::BORDER:
+            title = "SetBorderSizeColor";
+            break;
+        case ColorDialog::MARGIN:
+            title = "SetMarginSizeColor";
+            break;
+        case ColorDialog::FONT:
+            title = "SetFontSizeColor";
+            break;
+        case ColorDialog::TEXT:
+            title = "SetTextSizeColor";
+            break;
+        default:
+            title = "untitled";
+            return;
+    }
+    QAction* edit = new QAction(title, this);
+//    edit.addActionListener((ActionEvent event) -> {
+//        new ColorDialog(this, pos, type, null);
+//    });
+    CPEEditListener* listener = new CPEEditListener(type, pos, this);
+    connect(edit, SIGNAL(triggered(bool)), listener, SLOT(actionPerformed()));
+}
+
+
 DuplicateActionListener* DuplicateActionListener::init(Positionable* pos, ControlPanelEditor* edit)
 {
  comp = pos;
@@ -1785,103 +1933,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
  edit->copyItem(comp);
 }
 
-/**
-*  Create popup for a Positionable object
-* Popup items common to all positionable objects are done before
-* and after the items that pertain only to specific Positionable
-* types.
-*/
-/*protected*/ void ControlPanelEditor::showPopUp(Positionable* p, QGraphicsSceneMouseEvent* /*event*/)
-{
- if (!p->isVisible())
- {
-  return;     // component must be showing on the screen to determine its location
- }
- QMenu* popup = new QMenu();
 
- PositionablePopupUtil* util = p->getPopupUtility();
- if (((PositionableLabel*)p)->isEditable())
- {
-  // items common to all
-  if (((PositionableLabel*)p)->doViemMenu())
-  {
-   popup->addAction(new QAction(p->getNameString(),this));
-   setPositionableMenu(p, popup);
-   if (p->isPositionable())
-   {
-    setShowCoordinatesMenu(p, popup);
-    setShowAlignmentMenu(p, popup);
-   }
-   setDisplayLevelMenu(p, popup);
-   setHiddenMenu(p, popup);
-   popup->addSeparator();
-  }
-  setCopyMenu(p, popup);
-
-  // items with defaults or using overrides
-  bool popupSet = false;
-//            popupSet |= p.setRotateOrthogonalMenu(popup);
-  //if(qobject_cast<PositionableLabel*>(p)!= NULL)
-  {
-   popupSet |= p->setRotateMenu(popup);
-   popupSet |= p->setScaleMenu(popup);
-   if (popupSet)
-   {
-    popup->addSeparator();
-    popupSet = false;
-   }
-   popupSet = p->setEditItemMenu(popup);    // ItemPalette Editor
-  }
-  if (popupSet)
-  {
-   popup->addSeparator();
-   popupSet = false;
-  }
-  //if(qobject_cast<PositionableLabel*>(p)!= NULL)
-   popupSet = p->setTextEditMenu(popup);
-  //if (p instanceof PositionableLabel)
-  if(qobject_cast<PositionableLabel*>(p)!=nullptr)
-  {
-   PositionableLabel* pl = (PositionableLabel*)p;
-   if (!pl->isIcon())
-   {
-    popupSet |= setTextAttributes(p, popup);
-   }
-  }
-  else if (qobject_cast<PositionableJPanel*>(p) != nullptr)
-  {
-   popupSet |= setTextAttributes(p, popup);
-  }
-  if (popupSet)
-  {
-   popup->addSeparator();
-   popupSet = false;
-  }
-  p->setDisableControlMenu(popup);
-  if (util!=nullptr)
-  {
-   util->setAdditionalEditPopUpMenu(popup);
-  }
-   // for Positionables with unique settings
-  p->showPopUp(popup);
-  if(p->doViemMenu())
-  {
-   setShowTooltipMenu(p, popup);
-   setRemoveMenu(p, popup);
-  }
- }
- else
- {
-  p->showPopUp(popup);
-  if (util!=nullptr)
-  {
-   util->setAdditionalViewPopUpMenu(popup);
-  }
- }
-//    popup.show((Component)p, p.getWidth()/2+(int)((getPaintScale()-1.0)*p.getX()),
-//                p.getHeight()/2+(int)((getPaintScale()-1.0)*p.getY()));
- popup->exec(QCursor::pos());
-}
 
 /********************* Circuitbuilder ************************************/
 

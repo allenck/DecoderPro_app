@@ -31,7 +31,7 @@ protected:
 
 };
 
-class ColorDialog : public JDialog //implements ChangeListener
+class BGIPColorDialog : public JDialog //implements ChangeListener
 {
  Q_OBJECT
 
@@ -40,20 +40,20 @@ class ColorDialog : public JDialog //implements ChangeListener
     QWidget*        _preview;
     BackgroundItemPanel* parent;
 public:
-    ColorDialog(Editor* editor, BackgroundItemPanel* parent) ;
+    BGIPColorDialog(Editor* editor, BackgroundItemPanel* parent) ;
 public slots:
     /*public*/ void stateChanged(ChangeEvent* e = 0);
     protected:
     /*protected*/ QWidget* makeDoneButtonPanel();
-    friend class CDActionListener;
+    friend class BGIPCDActionListener;
 };
 
-class CDActionListener : public ActionListener
+class BGIPCDActionListener : public ActionListener
 {
     Q_OBJECT
-    ColorDialog* dialog;
+    BGIPColorDialog* dialog;
 public:
-    CDActionListener* init(ColorDialog* d) ;
+    BGIPCDActionListener* init(BGIPColorDialog* d) ;
 public slots:
     /*public*/ void actionPerformed(ActionEvent* e =0);
 };

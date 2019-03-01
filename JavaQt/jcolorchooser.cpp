@@ -1,5 +1,10 @@
 #include "jcolorchooser.h"
 #include "jdialog.h"
+#include "joptionpane.h"
+#include "colorchooserdialog.h"
+#include "colorselectionmodel.h"
+#include "jcomponent.h"
+#include "abstractcolorchooserpanel.h"
 
 /**
  * <code>JColorChooser</code> provides a pane of controls designed to allow
@@ -49,7 +54,6 @@
  */
 ///*public*/ class JColorChooser extends JComponent implements Accessible {
 
-/*private*/ /*static*/ /*final*/ QString uiClassID = "ColorChooserUI";
 
 
 /**
@@ -67,6 +71,7 @@
  */
 /*public*/ /*static*/ /*final*/ QString      JColorChooser::CHOOSER_PANELS_PROPERTY = "chooserPanels";
 
+/*private*/ /*static*/ /*final*/ QString JColorChooser::uiClassID = "ColorChooserUI";
 
 /**
  * Shows a modal color-chooser dialog and blocks until the
@@ -84,16 +89,16 @@
  * returns true.
  * @see java.awt.GraphicsEnvironment#isHeadless
  */
-/*public*/ /*static*/ QColor JColorChooser::showDialog(QWidget* component,
+/*public*/ /*static*/ QColor JColorChooser::showDialog(Component* component,
     QString title, QColor initialColor)/* throws HeadlessException*/ {
 
     /*final*/ JColorChooser* pane = new JColorChooser(initialColor != QColor()?
                                            initialColor : QColor(Qt::white));
 
     ColorTracker* ok = new ColorTracker(pane);
-    JDialog* dialog = createDialog(component, title, true, pane, ok, nullptr);
+    ColorChooserDialog* dialog = createDialog(component, title, true, pane, ok, nullptr);
 
-    dialog.addComponentListener(new ColorChooserDialog.DisposeOnClose());
+//    dialog->addComponentListener(new ColorChooserDialog::DisposeOnClose());
 
     dialog->show(); // blocks until user brings dialog down...
 
@@ -122,29 +127,31 @@
  * returns true.
  * @see java.awt.GraphicsEnvironment#isHeadless
  */
-/*public*/ static JDialog* JColorChooser::createDialog(QWidget c, QString title, bool modal,
+/*public*/ /*static*/ ColorChooserDialog* JColorChooser::createDialog(Component* c, QString title, bool modal,
     JColorChooser* chooserPane, ActionListener* okListener,
     ActionListener* cancelListener) /*throw HeadlessException*/ {
 
-    Window window = JOptionPane.getWindowForComponent(c);
-    ColorChooserDialog dialog;
-    if (window instanceof Frame) {
-        dialog = new ColorChooserDialog((Frame)window, title, modal, c, chooserPane,
-                                        okListener, cancelListener);
-    } else {
-        dialog = new ColorChooserDialog((Dialog)window, title, modal, c, chooserPane,
-                                        okListener, cancelListener);
-    }
-    dialog.getAccessibleContext().setAccessibleDescription(title);
+    QWidget* window = JOptionPane::getWindowForComponent(c);
+    ColorChooserDialog* dialog;
+//    if (window instanceof Frame) {
+//        dialog = new ColorChooserDialog((Frame)window, title, modal, c, chooserPane,
+//                                        okListener, cancelListener);
+//    } else {
+//        dialog = new ColorChooserDialog((Dialog)window, title, modal, c, chooserPane,
+//                                        okListener, cancelListener);
+//    }
+//    dialog.getAccessibleContext().setAccessibleDescription(title);
+    dialog = new ColorChooserDialog((QDialog*)window, title, modal, c, chooserPane,
+                                            okListener, cancelListener);
     return dialog;
 }
 
 /**
  * Creates a color chooser pane with an initial color of white.
  */
-/*public*/ JColorChooser::JColorChooser(QWidget* parent) {
+/*public*/ JColorChooser::JColorChooser(QWidget* parent) : QWidget(parent) {
     //this(Color.white);
- common(new ColorSelectionModel(QColor(Qt::white));
+ common(new ColorSelectionModel/*(QColor(Qt::white)*/);
 }
 
 /**
@@ -152,9 +159,9 @@
  *
  * @param initialColor the initial color set in the chooser
  */
-/*public*/ JColorChooser::JColorChooser(QColor initialColor, QWidget* parent) {
+/*public*/ JColorChooser::JColorChooser(QColor initialColor, QWidget* parent) : QWidget(parent){
     //this( new DefaultColorSelectionModel(initialColor) );
- common(new ColorSelectionModel(QinitialColor);
+ common(new ColorSelectionModel(/*initialColor*/));
 }
 
 /**
@@ -163,17 +170,17 @@
  *
  * @param model the <code>ColorSelectionModel</code> to be used
  */
-/*public*/ JColorChooser::JColorChooser(ColorSelectionModel* model) {
+/*public*/ JColorChooser::JColorChooser(ColorSelectionModel* model, QWidget* parent) : QWidget(parent)  {
  common(model);
 }
 
 void JColorChooser::common(ColorSelectionModel* model)
 {
- previewPanel = ColorChooserComponentFactory::getPreviewPanel();
+ previewPanel = nullptr; // ColorChooserComponentFactory::getPreviewPanel();
 
  chooserPanels = QVector<AbstractColorChooserPanel*>();
  selectionModel = model;
- updateUI();
+// updateUI();
  dragEnabled = false;
 
 }
@@ -183,9 +190,9 @@ void JColorChooser::common(ColorSelectionModel* model)
  * @return the <code>ColorChooserUI</code> object that renders
  *          this component
  */
-/*public*/ ColorChooserUI JColorChooser::getUI() {
-    return (ColorChooserUI)ui;
-}
+///*public*/ ColorChooserUI* JColorChooser::getUI() {
+//    return (ColorChooserUI)ui;
+//}
 
 /**
  * Sets the L&amp;F object that renders this component.
@@ -198,9 +205,9 @@ void JColorChooser::common(ColorSelectionModel* model)
  *      hidden: true
  * description: The UI object that implements the color chooser's LookAndFeel.
  */
-/*public*/ void JColorChooser::setUI(ColorChooserUI ui) {
-//    super.setUI(ui);
-}
+///*public*/ void JColorChooser::setUI(ColorChooserUI* ui) {
+////    super.setUI(ui);
+//}
 
 /**
  * Notification from the <code>UIManager</code> that the L&amp;F has changed.
@@ -209,9 +216,9 @@ void JColorChooser::common(ColorSelectionModel* model)
  *
  * @see JComponent#updateUI
  */
-/*public*/ void JColorChooser::updateUI() {
-    setUI((ColorChooserUI)UIManager.getUI(this));
-}
+///*public*/ void JColorChooser::updateUI() {
+//// ??   setUI((ColorChooserUI*)UIManager.getUI(this));
+//}
 
 /**
  * Returns the name of the L&amp;F class that renders this component.
@@ -220,9 +227,9 @@ void JColorChooser::common(ColorSelectionModel* model)
  * @see JComponent#getUIClassID
  * @see UIDefaults#getUI
  */
-/*public*/ QString JColorChooser::getUIClassID() {
-    return uiClassID;
-}
+///*public*/ QString JColorChooser::getUIClassID() {
+//    return uiClassID;
+//}
 
 /**
  * Gets the current color value from the color chooser.
@@ -351,9 +358,9 @@ void JColorChooser::common(ColorSelectionModel* model)
 /*public*/ void JColorChooser::setPreviewPanel(QWidget* preview) {
 
     if (previewPanel != preview) {
-        JComponent oldPreview = previewPanel;
+        QWidget* oldPreview = previewPanel;
         previewPanel = preview;
-        firePropertyChange(JColorChooser.PREVIEW_PANEL_PROPERTY, oldPreview, preview);
+//        firePropertyChange(JColorChooser::PREVIEW_PANEL_PROPERTY, oldPreview, preview);
     }
 }
 
@@ -373,9 +380,10 @@ void JColorChooser::common(ColorSelectionModel* model)
  */
 /*public*/ void JColorChooser::addChooserPanel( AbstractColorChooserPanel* panel ) {
     QVector<AbstractColorChooserPanel*> oldPanels = getChooserPanels();
-    QVector<AbstractColorChooserPanel*> newPanels = new AbstractColorChooserPanel[oldPanels.length+1];
-    System.arraycopy(oldPanels, 0, newPanels, 0, oldPanels.length);
-    newPanels[newPanels.length-1] = panel;
+    QVector<AbstractColorChooserPanel*> newPanels = QVector<AbstractColorChooserPanel*>(oldPanels.length()+1);
+    //System.arraycopy(oldPanels, 0, newPanels, 0, oldPanels.length);
+    qCopy(oldPanels.begin(), oldPanels.end(),newPanels.begin());
+    newPanels.replace(newPanels.length()-1, panel);
     setChooserPanels(newPanels);
 }
 
@@ -392,7 +400,7 @@ void JColorChooser::common(ColorSelectionModel* model)
 
     int containedAt = -1;
 
-    for (int i = 0; i < chooserPanels.length; i++) {
+    for (int i = 0; i < chooserPanels.length(); i++) {
         if (chooserPanels[i] == panel) {
             containedAt = i;
             break;
@@ -402,19 +410,24 @@ void JColorChooser::common(ColorSelectionModel* model)
         throw new IllegalArgumentException("chooser panel not in this chooser");
     }
 
-    QVector<AbstractColorChooserPanel*> newArray = new AbstractColorChooserPanel[chooserPanels.length-1];
+    QVector<AbstractColorChooserPanel*> newArray = QVector<AbstractColorChooserPanel*>(chooserPanels.length()-1);
 
-    if (containedAt == chooserPanels.length-1) {  // at end
-        System.arraycopy(chooserPanels, 0, newArray, 0, newArray.length);
+    if (containedAt == chooserPanels.length()-1) {  // at end
+        //System.arraycopy(chooserPanels, 0, newArray, 0, newArray.length);
+     qCopy(newArray.begin(), newArray.end(), chooserPanels.begin());
     }
     else if (containedAt == 0) {  // at start
-        System.arraycopy(chooserPanels, 1, newArray, 0, newArray.length);
+//        System.arraycopy(chooserPanels, 1, newArray, 0, newArray.length);
+     qCopy(newArray.begin()+1, newArray.end(), chooserPanels.begin());
     }
     else {  // in middle
-        System.arraycopy(chooserPanels, 0, newArray, 0, containedAt);
-        System.arraycopy(chooserPanels, containedAt+1,
-                         newArray, containedAt, (chooserPanels.length - containedAt - 1));
+        //System.arraycopy(chooserPanels, 0, newArray, 0, containedAt);
+     qCopy(newArray.begin(), newArray.end(), chooserPanels.begin());
+//        System.arraycopy(chooserPanels, containedAt+1,
+//                         newArray, containedAt, (chooserPanels.length - containedAt - 1));
+     qCopy(newArray.begin()+containedAt, newArray.end(), chooserPanels.begin()+(chooserPanels.length() - containedAt - 1));
     }
+
 
     setChooserPanels(newArray);
 
@@ -436,7 +449,7 @@ void JColorChooser::common(ColorSelectionModel* model)
 /*public*/ void JColorChooser::setChooserPanels( QVector<AbstractColorChooserPanel*> panels) {
     QVector<AbstractColorChooserPanel*> oldValue = chooserPanels;
     chooserPanels = panels;
-    firePropertyChange(CHOOSER_PANELS_PROPERTY, oldValue, panels);
+//    firePropertyChange(CHOOSER_PANELS_PROPERTY, oldValue, panels);
 }
 
 /**
@@ -471,10 +484,10 @@ void JColorChooser::common(ColorSelectionModel* model)
 /*public*/ void JColorChooser::setSelectionModel(ColorSelectionModel* newModel ) {
     ColorSelectionModel* oldModel = selectionModel;
     selectionModel = newModel;
-    firePropertyChange(JColorChooser::SELECTION_MODEL_PROPERTY, oldModel, newModel);
+//    firePropertyChange(JColorChooser::SELECTION_MODEL_PROPERTY, oldModel, newModel);
 }
 
-
+#if 0
 /**
  * See <code>readObject</code> and <code>writeObject</code> in
  * <code>JComponent</code> for more
@@ -706,7 +719,7 @@ static class DisposeOnClose extends ComponentAdapter implements Serializable{
 }
 
 }
-
+#endif
 //class ColorTracker implements ActionListener, Serializable {
 //    JColorChooser chooser;
 //    Color color;

@@ -2,6 +2,7 @@
 #define CONTROLPANELEDITOR_H
 #include "editor.h"
 #include "liblayouteditor_global.h"
+#include "colordialog.h"
 
 class ShapeDrawer;
 class PortalIcon;
@@ -43,6 +44,8 @@ public:
  /*public*/ void keyPressEvent(QKeyEvent* e);
  /*public*/ void keyReleaseEvent(QKeyEvent* e);
  /*public*/ void setNextLocation(Positionable* obj);
+ /*public*/ void setColorMenu(QMenu* popup, /*JComponent*/Positionable *pos, int type);
+
 
 signals:
     void selectionRect(QRectF, QGraphicsSceneMouseEvent*);
@@ -58,6 +61,7 @@ public slots:
     /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event);
     ///*public*/ void mouseDoubleClicked(QGraphicsSceneMouseEvent* event);
     /*public*/ void setAllEditable(bool edit);
+
 
 private:
  /*private*/ QMenu* _editorMenu;
@@ -141,7 +145,6 @@ protected:
  /*protected*/ void makeWarrantMenu(bool );
 /*protected*/ Positionable* getCurrentSelection(QGraphicsSceneMouseEvent* event);
 /*protected*/ Positionable* getCopySelection(QGraphicsSceneMouseEvent* event);
-/*protected*/ virtual void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event);
 /*protected*/ void makeCircuitMenu();
 /*protected*/ void makeCircuitMenu(bool edit);
 /*protected*/ void disableMenus();
@@ -153,6 +156,9 @@ protected:
 /*protected*/ void paintTargetPanel(QGraphicsScene* g);
 /*protected*/ void setSecondSelectionGroup(QList<Positionable*>* list);
 /*protected*/ void targetWindowClosingEvent(QCloseEvent* e);
+/*protected*/ void setSelectionsScale(double s, Positionable* p);
+/*protected*/ void setSelectionsRotation(int k, Positionable* p);
+/*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event);
 
 
 friend class CircuitBuilder;
@@ -183,4 +189,20 @@ public:
     DuplicateActionListener* init(Positionable* pos, ControlPanelEditor* edit);
 };
 
+class CPEEditListener : public ActionListener
+{
+  Q_OBJECT
+ ControlPanelEditor* edit;
+ int type;
+ Positionable* pos;
+public:
+ CPEEditListener(int type, Positionable* pos, ControlPanelEditor* edit)
+ {
+  this->type = type;
+  this->pos = pos;
+  this->edit = edit;
+ }
+public slots:
+ void actionPerformed() { new ColorDialog(edit, (JComponent*)pos, type, nullptr);}
+};
 #endif // CONTROLPANELEDITOR_H

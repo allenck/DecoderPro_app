@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QWidget>
 
+class JColorChooser;
 class JmriColorChooser : public QObject
 {
  Q_OBJECT
@@ -12,6 +13,7 @@ public:
  static /*public*/ void addRecentColor(QColor color);
  static /*public*/ QList<QColor> getRecentColors();
  static /*public*/ QColor showDialog(QWidget* comp, QString dialogTitle, QColor currentColor);
+ static /*public*/ JColorChooser* extendColorChooser(JColorChooser* chooser);
 
 signals:
 

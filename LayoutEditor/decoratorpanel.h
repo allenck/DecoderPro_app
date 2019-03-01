@@ -6,7 +6,11 @@
 #include <QSpinBox>
 #include <QRadioButton>
 #include "positionablelabel.h"
+#include "changeevent.h"
+#include "changelistener.h"
+#include "jpanel.h"
 
+class ChangeListener;
 class FontPanel;
 class ImagePanel;
 class BufferedImage;
@@ -118,7 +122,7 @@ private:
 
     Editor* _editor;
     /*private*/ QWidget* makeBoxPanel(QString caption, AJComboBox* box);
-    /*private*/ QWidget* makeSpinPanel(QString caption, AJSpinner* spin);
+    /*private*/ static JPanel *makeSpinPanel(QString caption, AJSpinner* spin, ChangeListener *listener);
     /*private*/ QWidget* makeTextPanel(QString caption, PositionableLabel* sample, int state);
     /*private*/ AJRadioButton* makeButton(AJRadioButton* button);
     /*private*/ void updateSamples();
@@ -140,13 +144,14 @@ private:
 protected:
     /*protected*/ QVector<BufferedImage*>* _backgrounds; // array of Image backgrounds
     /*protected*/ QComboBox* _bgColorBox;
-
-    friend class AJRBActionListener;
-    friend class TextFieldListener;
     /*protected*/ DisplayFrame* _paletteFrame;
     /*protected*/ QVector<BufferedImage*>* getBackgrounds();
     /*protected*/ void setBackgrounds(QVector<BufferedImage*>*  imgArray);
-friend class TextItemPanel;
+
+    friend class AJRBActionListener;
+    friend class TextFieldListener;
+    friend class TextItemPanel;
+    friend class ColorDialog;
 };
 /*static*/ class AJComboBox : public QComboBox
 {
@@ -163,6 +168,7 @@ public:
 public:
     AJSpinner(SpinnerModel* model, int which);
     friend class DecoratorPanel;
+    friend class ColorDialog;
 };
 /*static*/ class AJRadioButton : public QRadioButton {
     Q_OBJECT
@@ -183,14 +189,14 @@ public slots:
  /*public*/ void actionPerformed();
 
 };
-class ChangeEvent : public QObject
-{
- Q_OBJECT
- QObject* source;
-public:
- ChangeEvent(QObject* source) {this->source = source;}
- QObject* getSource() { return source;}
-};
+//class ChangeEvent : public QObject
+//{
+// Q_OBJECT
+// QObject* source;
+//public:
+// ChangeEvent(QObject* source) {this->source = source;}
+// QObject* getSource() { return source;}
+//};
 class ItemEvent : public QObject
 {
  Q_OBJECT

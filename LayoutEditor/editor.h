@@ -308,7 +308,7 @@ public:
 //                   ";class=jmri.jmrit.display.Positionable";
     /*public*/ QRectF getSelectRect();
     /*public*/ IconAdder* getIconEditor(QString name);
-    /*public*/ void setShowTooltipMenu(Positionable* p, QMenu* popup);
+    /*public*/ void setShowToolTipMenu(Positionable* p, QMenu* popup);
     /*synchronized*/ /*public*/ static QVector<Editor*> getEditors();
     //template<class T>
     /*synchronized*/ /*public*/ static /*<T extends Editor>*/ QList<Editor*> getEditors(/*@Nonnull*/ QString type);
@@ -453,7 +453,7 @@ private slots:
    * @param p     the item containing or requiring the context menu
    * @param event the event triggering the menu
    */
-  /*abstract*/ /*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* /*event*/) {}
+  /*abstract*/ /*protected*/ void showPopUp(Positionable* /*p*/, QGraphicsSceneMouseEvent* /*event*/) {}
 
   /*protected*/ LocoIcon* selectLoco(QString rosterEntryTitle);
   /*protected*/ LocoIcon* selectLoco(RosterEntry* entry);
@@ -473,13 +473,13 @@ private slots:
   /*protected*/ void addToTarget(Positionable* l);
   /*protected*/ int getItemX(Positionable* p, int deltaX) ;
   /*protected*/ int getItemY(Positionable* p, int deltaY);
-  /*protected*/ void setSelectionsRotation(int k, Positionable* p);
+  /*protected*/ virtual void setSelectionsRotation(int k, Positionable* p);
   /*protected*/ void addClock();
 //  /*protected*/ void addRpsReporter();
   /*protected*/ void removeSelections(Positionable* p);
-  /*protected*/ void setSelectionsScale(double s, Positionable* p);
+  /*protected*/ virtual void setSelectionsScale(double s, Positionable* p);
   virtual void repaint();
-  /*protected*/ void setAttributes(PositionablePopupUtil* newUtil, Positionable* p, bool isOpaque);
+  /*protected*/ void setAttributes(PositionablePopupUtil* newUtil, Positionable* p, bool isOpaque =true);
   /*protected*/ void setSelectionsDockingLocation(Positionable* p);
   /*protected*/ void dockSelections(Positionable* p);
   /*protected*/ QHash <QString, JFrameItem*>* _iconEditorFrame;// = new QHash <QString, JFrameItem*>();
@@ -623,6 +623,8 @@ protected slots:
   friend class NewPanelEditor;
   friend class ItemPanel;
   friend class BackgroundItemPanel;
+  friend class ColorDialog;
+
 public:
   class AddRightTOActionListener : public ActionListener
   {
