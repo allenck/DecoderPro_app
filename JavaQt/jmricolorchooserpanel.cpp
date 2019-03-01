@@ -6,6 +6,7 @@
 #include "jmricolorchooser.h"
 #include "bufferedimage.h"
 #include <QPushButton>
+#include <QtMath>
 
 JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorChooserPanel(parent)
 {
@@ -37,7 +38,7 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
          recentPanel->layout()->removeWidget(widget);
 
         QList<QColor> colors = JmriColorChooser::getRecentColors();
-        int cols = qMax(3, (int) std::ceil((double)colors.size() / 7));
+        int cols = qMax(3, (int) qCeil((double)colors.size() / 7));
         int idx = 0;
         for (QColor recent : colors) {
             c.gridx = idx % cols;
