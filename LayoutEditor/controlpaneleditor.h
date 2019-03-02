@@ -107,6 +107,8 @@ private:
  DataFlavor* _positionableDataFlavor;
  DataFlavor* _positionableListDataFlavor;
  DataFlavor* _namedIconDataFlavor;
+ /*private*/ qint64 _mouseDownTime = 0;
+ /*private*/ bool _manualSelection = false;
 
 private slots:
  /*private*/ void zoomRestore(); // SLOT

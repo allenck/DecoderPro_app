@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <typesystem package="Jmri">
- <load-typesystem name=":/trolltech/generator/typesystem_core.txt" generate="no" />
+ <load-typesystem name=":/trolltech/generator/typesystem_core.txt" generate="yes" />
  <load-typesystem name=":/trolltech/generator/typesystem_gui.txt" generate="no" />
  <load-typesystem name=":/trolltech/generator/typesystem_xml.txt" generate="no" />
  <load-typesystem name=":/trolltech/generator/typesystem_multimedia.txt" generate="no" />

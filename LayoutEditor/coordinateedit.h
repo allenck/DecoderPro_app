@@ -45,8 +45,10 @@ public:
     /*public*/ void  initSetName();
     /*public*/ static AbstractAction* getTooltipEditAction(/*final*/ Positionable* pos, QObject* parent);
     /*public*/ void initSetTip();
+ /*public*/ static AbstractAction* getLinkEditAction(/*final*/ Positionable* pos, /*final*/ QString title, QObject* parent);
  /*public*/ static AbstractAction* getZoomEditAction(/*final*/ Positionable* pos, QObject* parent);
  /*public*/ void initZoom();
+ /*public*/ void initLink();
 
 signals:
     
@@ -55,6 +57,9 @@ public slots:
  void on_okButton_clicked();
  void on_cancelButton_clicked();
  void onOK_rotate();
+ void onLinkEditAction();
+ void onLinkOK();
+ void onLinkCancel();
 
 private:
  QObject *parent;
@@ -248,4 +253,15 @@ public slots:
  void on_getZoomEditAction_triggered();
 };
 
+class LinkEditAction : public AbstractAction
+{
+ Q_OBJECT
+ QObject* parent;
+ Positionable* pos;
+ QString title;
+public:
+ LinkEditAction(Positionable* pos, QString title, QObject* parent);
+public slots:
+ void actionPerformed();
+};
 #endif // COORDINATEEDIT_H

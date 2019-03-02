@@ -62,6 +62,7 @@
 #include <qkeysequence.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -1131,6 +1132,8 @@ virtual void setAllEditable(bool  state);
 virtual void setNextLocation(Positionable*  obj);
 virtual void setRemoveMenu(Positionable*  p, QMenu*  popup);
 virtual void setScroll(int  state);
+virtual void setSelectionsRotation(int  k, Positionable*  p);
+virtual void setSelectionsScale(double  s, Positionable*  p);
 virtual void setTitle();
 virtual void setUseGlobalFlag(bool  set);
 virtual void setVisible(bool  visible);

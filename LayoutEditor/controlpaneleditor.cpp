@@ -71,6 +71,8 @@
 #include "listedtableaction.h"
 #include "oblocktableaction.h"
 #include <QGraphicsView>
+#include "linkingobject.h"
+#include "joptionpane.h"
 
 ControlPanelEditor::ControlPanelEditor(QWidget *parent) :
     Editor(parent)
@@ -1125,35 +1127,113 @@ void ControlPanelEditor::selectAllAction()
 
 /***************** Overriden methods of Editor *******************/
 
-/*protected*/ Positionable* ControlPanelEditor::getCurrentSelection(QGraphicsSceneMouseEvent* event) {
-    if (_pastePending) {
-        return getCopySelection(event);
+/*protected*/ Positionable* ControlPanelEditor::getCurrentSelection(QGraphicsSceneMouseEvent* event)
+{
+ bool bMetaDown =event->modifiers()&Qt::MetaModifier;
+ bool bControlDown = event->modifiers()&Qt::ControlModifier;
+ bool bAltDown = event->modifiers() & Qt::AltModifier;
+ bool bShiftDown = event->modifiers()& Qt::ShiftModifier;
+
+ if (_pastePending && !bPopupTrigger && !bMetaDown && !bAltDown) {
+     return getCopySelection(event);
+ }
+ QList <Positionable*>* selections = getSelectedItems(event);
+ if (_disableShapeSelection || _disablePortalSelection)
+ {
+  QList<Positionable*> list = QList<Positionable*>();
+  QListIterator<Positionable*> it(*selections);
+  while (it.hasNext())
+  {
+   Positionable* pos = it.next();
+   if (_disableShapeSelection && qobject_cast<PositionableShape*>(pos)) {
+       continue;
+   }
+   if (_disablePortalSelection && qobject_cast<PortalIcon*>(pos)) {
+       continue;
+   }
+   list.append(pos);
+  }
+  selections = &list;
+ }
+ Positionable* selection = nullptr;
+ if (selections->size() > 0)
+ {
+  if (bControlDown)
+  {
+   if (bShiftDown && selections->size() > 3)
+   {
+    if (_manualSelection) {
+        // selection made - don't change it
+        deselectSelectionGroup();
+        return _currentSelection;
     }
-    QList <Positionable*>* selections = getSelectedItems(event);
-    Positionable* selection = nullptr;
-    if (selections->size() > 0)
+    // show list
+    QVector<QString> selects = QVector<QString>(selections->size());
+    QListIterator<Positionable*> iter(*selections);
+    int i = 0;
+    while (iter.hasNext())
     {
-        //if (event.isShiftDown() && selections->size() > 1)
-        if((event->modifiers()& Qt::ShiftModifier)  && (selections->size() > 1))
-        {
-            selection = selections->at(1);
-        } else {
-            selection = selections->at(0);
-        }
-        //if (event.isControlDown())
-        if((event->modifiers()& Qt::ControlModifier))
-        {
-            // select bottom-most item over the background, otherwise take the background item
-            selection = selections->at(selections->size()-1);
-            if (((PositionableLabel*)selection)->getDisplayLevel()<=BKG && selections->size() > 1) {
-                selection = selections->at(selections->size()-2);
-            }
-        } else if (selection->getDisplayLevel()<=BKG)
-        {
-            selection = nullptr;
-        }
+     Positionable* pos = iter.next();
+     if (qobject_cast<NamedBean*>(pos)) {
+         selects.replace(i++, ((NamedBean*) pos)->getDisplayName());
+     } else {
+         selects.replace(i++,pos->getNameString());
+     }
     }
-    return selection;
+    QVariantList vl = QVariantList();
+    foreach(QString str, selects)
+     vl.append(str);
+    QVariant select = JOptionPane::showInputDialog(this, tr("Icons are stacked over each other.\nSelect the one you want."),
+            tr("Question"), JOptionPane::QUESTION_MESSAGE,
+            QIcon(), vl, QVariant());
+    if (select != QVariant())
+    {
+     QListIterator<Positionable*> iter(*selections);
+     while (iter.hasNext())
+     {
+      Positionable* pos = iter.next();
+      QString name;
+      if (qobject_cast<NamedBean*>(pos)) {
+          name = ((NamedBean*) pos)->getDisplayName();
+      } else {
+          name = pos->getNameString();
+      }
+      if (( select.toString()) == (name)) {
+          _manualSelection = true;
+          return pos;
+      }
+     }
+    } else {
+        selection = selections->at(selections->size() - 1);
+    }
+   } else {
+       // select bottom-most item over the background, otherwise take the background item
+       selection = selections->at(selections->size() - 1);
+       if (selection->getDisplayLevel() <= BKG && selections->size() > 1) {
+           selection = selections->at(selections->size() - 2);
+       }
+//              _manualSelection = false;
+   }
+  } else {
+      if (bShiftDown && selections->size() > 1) {
+          selection = selections->at(1);
+      } else {
+          selection = selections->at(0);
+      }
+      if (selection->getDisplayLevel() <= BKG) {
+          selection = nullptr;
+      }
+      _manualSelection = false;
+  }
+ } else {
+  if (bControlDown && (bPopupTrigger || bMetaDown || bAltDown)) {
+      new ColorDialog(this, (JComponent*)getTargetPanel()->views().at(0)->window(), ColorDialog::ONLY, nullptr);
+  }
+ }
+ if (!isEditable() && selection != nullptr && selection->isHidden()) {
+     selection = nullptr;
+ }
+ return selection;
 }
 
 /*protected*/ Positionable* ControlPanelEditor::getCopySelection(QGraphicsSceneMouseEvent* event) {
@@ -1237,6 +1317,7 @@ void ControlPanelEditor::selectAllAction()
 {
  bPopupTrigger = event->buttons()& Qt::RightButton;
 
+ _mouseDownTime = QDateTime::currentMSecsSinceEpoch();
  //setToolTip(NULL); // ends tooltip if displayed
  if (_debug)
   log->debug("mousePressed at ("+QString::number(event->scenePos().x())+","+QString::number(event->scenePos().y())+") _dragging="+(_dragging?"yes":"no"));
@@ -1305,6 +1386,7 @@ void ControlPanelEditor::selectAllAction()
  bool bAltDown = event->modifiers() & Qt::AltModifier;
  bool bShiftDown = event->modifiers()& Qt::ShiftModifier;
 
+ _mouseDownTime = 0;
  //setToolTip(nullptr); // ends tooltip if displayed
  if (_debug) log->debug("mouseReleased at ("+QString::number(event->scenePos().x())+","+QString::number(event->scenePos().y())+") dragging= "+(_dragging?"yes":"no")
                            +" pastePending= "+(_pastePending?"yes":"no")+" selectRect "+(_selectRect==QRectF()?"=":"!")+"= nullptr");
@@ -1321,7 +1403,7 @@ void ControlPanelEditor::selectAllAction()
  {
   if (selection!=nullptr)
   {
-   //_highlightcomponent = QRectF();
+   _highlightcomponent = QRectF();
    if(qobject_cast<MemoryInputIcon*>(selection) != nullptr ||qobject_cast<MemorySpinnerIcon*>(selection) != nullptr|| qobject_cast<MemoryComboIcon*>(selection)!= nullptr )
    {
     _highlightcomponent = selection->getBounds(QRectF());
@@ -1800,98 +1882,104 @@ void ControlPanelEditor::abortPasteItems() {
  */
 //@Override
 /*protected*/ void ControlPanelEditor::showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event) {
-    if (!((QWidget*) p)->isVisible()) {
-        return;     // component must be showing on the screen to determine its location
-    }
-    QMenu* popup = new QMenu();
+ if (!( p->_itemGroup->isVisible()))
+ {
+     return;     // component must be showing on the screen to determine its location
+ }
+ QMenu* popup = new QMenu();
 
-    PositionablePopupUtil* util = p->getPopupUtility();
-    if (p->isEditable()) {
-        // items common to all
-        if (p->doViemMenu()) {
-            popup->addAction(new QAction(p->getNameString(),this));
-            setPositionableMenu(p, popup);
-            if (p->isPositionable()) {
-                setShowCoordinatesMenu(p, popup);
-                setShowAlignmentMenu(p, popup);
-            }
-            setDisplayLevelMenu(p, popup);
-            setHiddenMenu(p, popup);
-            popup->addSeparator();
-            setCopyMenu(p, popup);
-        }
+ PositionablePopupUtil* util = p->getPopupUtility();
+ if (p->isEditable())
+ {
+  // items common to all
+  if (p->doViemMenu())
+  {
+   popup->addAction(new QAction(p->getNameString(),this));
+   setPositionableMenu(p, popup);
+   if (p->isPositionable()) {
+       setShowCoordinatesMenu(p, popup);
+       setShowAlignmentMenu(p, popup);
+   }
+   setDisplayLevelMenu(p, popup);
+   setHiddenMenu(p, popup);
+   popup->addSeparator();
+   setCopyMenu(p, popup);
+  }
 
-        // items with defaults or using overrides
-        bool popupSet = false;
+  // items with defaults or using overrides
+  bool popupSet = false;
 //            popupSet |= p.setRotateOrthogonalMenu(popup);
-        popupSet |= p->setRotateMenu(popup);
-        popupSet |= p->setScaleMenu(popup);
-        if (popupSet) {
-            popup->addSeparator();
-            popupSet = false;
-        }
-        popupSet = p->setEditItemMenu(popup);
-        if (popupSet) {
-            popup->addSeparator();
-            popupSet = false;
-        }
-        if (qobject_cast<PositionableLabel*>(p)) {
-            PositionableLabel* pl = (PositionableLabel*) p;
-            if (!pl->isIcon()) {
-                setColorMenu(popup, pl, ColorDialog::BORDER);
-                setColorMenu(popup, pl, ColorDialog::MARGIN);
-                setColorMenu(popup, pl, ColorDialog::FONT);
-                setColorMenu(popup, pl, ColorDialog::TEXT);
+  popupSet |= p->setRotateMenu(popup);
+  popupSet |= p->setScaleMenu(popup);
+  if (popupSet) {
+      popup->addSeparator();
+      popupSet = false;
+  }
+  popupSet = p->setEditItemMenu(popup);
+  if (popupSet) {
+      popup->addSeparator();
+      popupSet = false;
+  }
+  if (qobject_cast<PositionableLabel*>(p)) {
+      PositionableLabel* pl = (PositionableLabel*) p;
+      if (!pl->isIcon())
+      {
+       setColorMenu(popup, pl, ColorDialog::BORDER);
+       setColorMenu(popup, pl, ColorDialog::MARGIN);
+       setColorMenu(popup, pl, ColorDialog::FONT);
+       setColorMenu(popup, pl, ColorDialog::TEXT);
 //                    popupSet |= p.setTextEditMenu(popup);
-                popupSet |= setTextAttributes(p, popup);
-            } else if (qobject_cast<SensorIcon*>(p)) {
-                popup->addAction(CoordinateEdit::getTextEditAction(p, "OverlayText", this));
-                if (pl->isText()) {
-                    setColorMenu(popup, (Positionable*) p, ColorDialog::BORDER);
-                    popupSet |= setTextAttributes(p, popup);
+       popupSet |= setTextAttributes(p, popup);
+      }
+      else if (qobject_cast<SensorIcon*>(p))
+      {
+       popup->addAction(CoordinateEdit::getTextEditAction(p, "OverlayText", this));
+       if (pl->isText()) {
+           setColorMenu(popup, (Positionable*) p, ColorDialog::BORDER);
+           popupSet |= setTextAttributes(p, popup);
 //                        popupSet |= pl.setEditTextMenu(popup);
-                }
-            }
-        } else if (qobject_cast<PositionableJPanel*>(p)) {
-            setColorMenu(popup, (Positionable*) p, ColorDialog::BORDER);
-            setColorMenu(popup, (Positionable*) p, ColorDialog::MARGIN);
-            setColorMenu(popup, (Positionable*) p, ColorDialog::FONT);
-            popupSet |= setTextAttributes(p, popup);
-        }
-#if 0 // TODO:
-        if (qobject_cast<LinkingObject*>(p)) {
-            ((LinkingObject*) p)->setLinkMenu(popup);
-        }
-#endif
-        if (popupSet) {
-            popup->addSeparator();
-            popupSet = false;
-        }
-        p->setDisableControlMenu(popup);
-        if (util != nullptr) {
-            util->setAdditionalEditPopUpMenu(popup);
-        }
-        // for Positionables with unique settings
-        p->showPopUp(popup);
+       }
+      }
+  } else if (qobject_cast<PositionableJPanel*>(p)) {
+      setColorMenu(popup, (Positionable*) p, ColorDialog::BORDER);
+      setColorMenu(popup, (Positionable*) p, ColorDialog::MARGIN);
+      setColorMenu(popup, (Positionable*) p, ColorDialog::FONT);
+      popupSet |= setTextAttributes(p, popup);
+  }
 
-        if (p->doViemMenu()) {
-            setShowToolTipMenu(p, popup);
-            setRemoveMenu(p, popup);
-        }
-    } else {
-        if (qobject_cast<LocoIcon*>(p)) {
-            setCopyMenu(p, popup);
-        }
-        p->showPopUp(popup);
-        if (util != nullptr) {
-            util->setAdditionalViewPopUpMenu(popup);
-        }
-    }
+  if (qobject_cast<LinkingObject*>(p)) {
+      ((LinkingObject*) p)->setLinkMenu(popup);
+  }
+
+  if (popupSet) {
+      popup->addSeparator();
+      popupSet = false;
+  }
+  p->setDisableControlMenu(popup);
+  if (util != nullptr) {
+      util->setAdditionalEditPopUpMenu(popup);
+  }
+  // for Positionables with unique settings
+  p->showPopUp(popup);
+
+  if (p->doViemMenu()) {
+      setShowToolTipMenu(p, popup);
+      setRemoveMenu(p, popup);
+  }
+ } else {
+  if (qobject_cast<LocoIcon*>(p)) {
+      setCopyMenu(p, popup);
+  }
+  p->showPopUp(popup);
+  if (util != nullptr) {
+      util->setAdditionalViewPopUpMenu(popup);
+  }
+ }
 //    popup->show(/*(Component)*/ p, p->getWidth() / 2 + (int) ((getPaintScale() - 1.0) * p->getX()),
 //            p->getHeight() / 2 + (int) ((getPaintScale() - 1.0) * p->getY()));
 
-    popup->exec(QCursor::pos());
-    _currentSelection = nullptr;
+ popup->exec(QCursor::pos());
+ _currentSelection = nullptr;
 }
 
 /*public*/ void ControlPanelEditor::setColorMenu(QMenu* popup, /*JComponent*/Positionable* pos, int type) {
@@ -1919,8 +2007,8 @@ void ControlPanelEditor::abortPasteItems() {
 //    });
     CPEEditListener* listener = new CPEEditListener(type, pos, this);
     connect(edit, SIGNAL(triggered(bool)), listener, SLOT(actionPerformed()));
+    popup->addAction(edit);
 }
-
 
 DuplicateActionListener* DuplicateActionListener::init(Positionable* pos, ControlPanelEditor* edit)
 {

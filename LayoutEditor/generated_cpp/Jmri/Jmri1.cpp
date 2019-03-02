@@ -67,6 +67,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -3129,6 +3130,50 @@ if (_wrapper) {
 }
   Editor::setScroll(state0);
 }
+void PythonQtShell_Editor::setSelectionsRotation(int  k0, Positionable*  p1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSelectionsRotation");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int" , "Positionable*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&k0, (void*)&p1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Editor::setSelectionsRotation(k0, p1);
+}
+void PythonQtShell_Editor::setSelectionsScale(double  s0, Positionable*  p1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSelectionsScale");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "double" , "Positionable*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&s0, (void*)&p1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Editor::setSelectionsScale(s0, p1);
+}
 void PythonQtShell_Editor::setTitle()
 {
 if (_wrapper) {
@@ -3929,7 +3974,7 @@ bool  PythonQtWrapper_Editor::setShowCoordinatesMenu(Editor* theWrappedObject, P
   return ( theWrappedObject->setShowCoordinatesMenu(p, popup));
 }
 
-void PythonQtWrapper_Editor::setShowTooltipMenu(Editor* theWrappedObject, Positionable*  p, QMenu*  popup)
+void PythonQtWrapper_Editor::setShowToolTipMenu(Editor* theWrappedObject, Positionable*  p, QMenu*  popup)
 {
   ( theWrappedObject->setShowToolTipMenu(p, popup));
 }
@@ -3984,9 +4029,9 @@ bool  PythonQtWrapper_Editor::showHidden(Editor* theWrappedObject)
   return ( theWrappedObject->showHidden());
 }
 
-void PythonQtWrapper_Editor::showPopUp(Editor* theWrappedObject, Positionable*  p, QGraphicsSceneMouseEvent*  arg__2)
+void PythonQtWrapper_Editor::showPopUp(Editor* theWrappedObject, Positionable*  arg__1, QGraphicsSceneMouseEvent*  arg__2)
 {
-  ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_showPopUp(p, arg__2));
+  ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_showPopUp(arg__1, arg__2));
 }
 
 bool  PythonQtWrapper_Editor::showToolTip(Editor* theWrappedObject)
@@ -20345,6 +20390,50 @@ if (_wrapper) {
 }
   LayoutEditor::setScroll(state0);
 }
+void PythonQtShell_LayoutEditor::setSelectionsRotation(int  k0, Positionable*  p1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSelectionsRotation");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int" , "Positionable*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&k0, (void*)&p1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::setSelectionsRotation(k0, p1);
+}
+void PythonQtShell_LayoutEditor::setSelectionsScale(double  s0, Positionable*  p1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSelectionsScale");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "double" , "Positionable*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&s0, (void*)&p1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::setSelectionsScale(s0, p1);
+}
 void PythonQtShell_LayoutEditor::setTitle()
 {
 if (_wrapper) {
@@ -21344,16 +21433,6 @@ void PythonQtWrapper_LayoutEditor::setScale(LayoutEditor* theWrappedObject, doub
 void PythonQtWrapper_LayoutEditor::setSelectionsHidden(LayoutEditor* theWrappedObject, bool  enabled, Positionable*  p)
 {
   ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_setSelectionsHidden(enabled, p));
-}
-
-void PythonQtWrapper_LayoutEditor::setSelectionsRotation(LayoutEditor* theWrappedObject, int  k, Positionable*  p)
-{
-  ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_setSelectionsRotation(k, p));
-}
-
-void PythonQtWrapper_LayoutEditor::setSelectionsScale(LayoutEditor* theWrappedObject, double  s, Positionable*  p)
-{
-  ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_setSelectionsScale(s, p));
 }
 
 bool  PythonQtWrapper_LayoutEditor::setShowAlignmentMenu(LayoutEditor* theWrappedObject, QMenu*  popup)

@@ -80,6 +80,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -369,6 +370,8 @@ virtual void setAllEditable(bool  state);
 virtual void setNextLocation(Positionable*  arg__1);
 virtual void setRemoveMenu(Positionable*  p, QMenu*  popup);
 virtual void setScroll(int  state);
+virtual void setSelectionsRotation(int  k, Positionable*  p);
+virtual void setSelectionsScale(double  s, Positionable*  p);
 virtual void setTitle();
 virtual void setUseGlobalFlag(bool  set);
 virtual void setVisible(bool  visible);
@@ -447,8 +450,8 @@ inline void promoted_setTargetPanelSize(int  w, int  h) { this->setTargetPanelSi
 inline bool  promoted_setTextAttributes(Positionable*  p, QMenu*  popup) { return this->setTextAttributes(p, popup); }
 inline void promoted_setToolTip(QString  tt) { this->setToolTip(tt); }
 inline bool  promoted_showAlignPopup(Positionable*  p) { return this->showAlignPopup(p); }
+inline void promoted_showPopUp(Positionable*  arg__1, QGraphicsSceneMouseEvent*  arg__2) { this->showPopUp(arg__1, arg__2); }
 inline void promoted_showPopUp(Positionable*  arg__1, QMouseEvent*  arg__2) { this->showPopUp(arg__1, arg__2); }
-inline void promoted_showPopUp(Positionable*  p, QGraphicsSceneMouseEvent*  arg__2) { this->showPopUp(p, arg__2); }
 inline void promoted_targetWindowClosing(bool  save) { this->targetWindowClosing(save); }
 inline void promoted_targetWindowClosingEvent(QCloseEvent*  e) { this->targetWindowClosingEvent(e); }
 inline void py_q_dispose() { Editor::dispose(); }
@@ -463,6 +466,8 @@ inline void py_q_setAllEditable(bool  state) { Editor::setAllEditable(state); }
 inline void py_q_setNextLocation(Positionable*  arg__1) { Editor::setNextLocation(arg__1); }
 inline void py_q_setRemoveMenu(Positionable*  p, QMenu*  popup) { Editor::setRemoveMenu(p, popup); }
 inline void py_q_setScroll(int  state) { Editor::setScroll(state); }
+inline void py_q_setSelectionsRotation(int  k, Positionable*  p) { Editor::setSelectionsRotation(k, p); }
+inline void py_q_setSelectionsScale(double  s, Positionable*  p) { Editor::setSelectionsScale(s, p); }
 inline void py_q_setTitle() { Editor::setTitle(); }
 inline void py_q_setUseGlobalFlag(bool  set) { Editor::setUseGlobalFlag(set); }
 inline void py_q_showPopUp(Positionable*  arg__1, QMouseEvent*  arg__2) { Editor::showPopUp(arg__1, arg__2); }
@@ -566,11 +571,13 @@ void delete_Editor(Editor* obj) { delete obj; }
    void setSelectionsDockingLocation(Editor* theWrappedObject, Positionable*  p);
    void setSelectionsHidden(Editor* theWrappedObject, bool  enabled, Positionable*  p);
    void setSelectionsRotation(Editor* theWrappedObject, int  k, Positionable*  p);
+   void py_q_setSelectionsRotation(Editor* theWrappedObject, int  k, Positionable*  p){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_setSelectionsRotation(k, p));}
    void setSelectionsScale(Editor* theWrappedObject, double  s, Positionable*  p);
+   void py_q_setSelectionsScale(Editor* theWrappedObject, double  s, Positionable*  p){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_setSelectionsScale(s, p));}
    bool  setShowAlignmentMenu(Editor* theWrappedObject, Positionable*  p, QMenu*  popup);
    void setShowCoordinates(Editor* theWrappedObject, bool  state);
    bool  setShowCoordinatesMenu(Editor* theWrappedObject, Positionable*  p, QMenu*  popup);
-   void setShowTooltipMenu(Editor* theWrappedObject, Positionable*  p, QMenu*  popup);
+   void setShowToolTipMenu(Editor* theWrappedObject, Positionable*  p, QMenu*  popup);
    void setTargetPanel(Editor* theWrappedObject, EditScene*  targetPanel, JmriJFrame*  frame);
    void setTargetPanelSize(Editor* theWrappedObject, int  w, int  h);
    bool  setTextAttributes(Editor* theWrappedObject, Positionable*  p, QMenu*  popup);
@@ -583,8 +590,8 @@ void delete_Editor(Editor* obj) { delete obj; }
    bool  showAlignPopup(Editor* theWrappedObject, Positionable*  p);
    bool  showCoordinates(Editor* theWrappedObject);
    bool  showHidden(Editor* theWrappedObject);
+   void showPopUp(Editor* theWrappedObject, Positionable*  arg__1, QGraphicsSceneMouseEvent*  arg__2);
    void py_q_showPopUp(Editor* theWrappedObject, Positionable*  arg__1, QMouseEvent*  arg__2){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_showPopUp(arg__1, arg__2));}
-   void showPopUp(Editor* theWrappedObject, Positionable*  p, QGraphicsSceneMouseEvent*  arg__2);
    bool  showToolTip(Editor* theWrappedObject);
    void showToolTip(Editor* theWrappedObject, Positionable*  selection, QGraphicsSceneMouseEvent*  event);
    void targetWindowClosing(Editor* theWrappedObject, bool  save);
@@ -1853,6 +1860,8 @@ virtual void resizeEvent(QResizeEvent*  e);
 virtual void setAllEditable(bool  state);
 virtual void setRemoveMenu(Positionable*  p, QMenu*  popup);
 virtual void setScroll(int  state);
+virtual void setSelectionsRotation(int  k, Positionable*  p);
+virtual void setSelectionsScale(double  s, Positionable*  p);
 virtual void setTitle();
 virtual void setUseGlobalFlag(bool  set);
 virtual void setVisible(bool  visible);
@@ -1907,6 +1916,8 @@ inline void py_q_repaint() { LayoutEditor::repaint(); }
 inline void py_q_setAllEditable(bool  state) { LayoutEditor::setAllEditable(state); }
 inline void py_q_setRemoveMenu(Positionable*  p, QMenu*  popup) { LayoutEditor::setRemoveMenu(p, popup); }
 inline void py_q_setScroll(int  state) { LayoutEditor::setScroll(state); }
+inline void py_q_setSelectionsRotation(int  k, Positionable*  p) { LayoutEditor::setSelectionsRotation(k, p); }
+inline void py_q_setSelectionsScale(double  s, Positionable*  p) { LayoutEditor::setSelectionsScale(s, p); }
 inline void py_q_showPopUp(Positionable*  p, QGraphicsSceneMouseEvent*  event) { LayoutEditor::showPopUp(p, event); }
 inline void py_q_targetWindowClosingEvent(QCloseEvent*  e) { LayoutEditor::targetWindowClosingEvent(e); }
 };
@@ -2044,8 +2055,8 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void setScale(LayoutEditor* theWrappedObject, double  scaleX, double  scaleY);
    void py_q_setScroll(LayoutEditor* theWrappedObject, int  state){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_setScroll(state));}
    void setSelectionsHidden(LayoutEditor* theWrappedObject, bool  enabled, Positionable*  p);
-   void setSelectionsRotation(LayoutEditor* theWrappedObject, int  k, Positionable*  p);
-   void setSelectionsScale(LayoutEditor* theWrappedObject, double  s, Positionable*  p);
+   void py_q_setSelectionsRotation(LayoutEditor* theWrappedObject, int  k, Positionable*  p){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_setSelectionsRotation(k, p));}
+   void py_q_setSelectionsScale(LayoutEditor* theWrappedObject, double  s, Positionable*  p){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_setSelectionsScale(s, p));}
    bool  setShowAlignmentMenu(LayoutEditor* theWrappedObject, QMenu*  popup);
    void setShowHelpBar(LayoutEditor* theWrappedObject, bool  state);
    void setSideTrackWidth(LayoutEditor* theWrappedObject, int  w);

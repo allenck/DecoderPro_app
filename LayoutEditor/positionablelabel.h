@@ -193,6 +193,7 @@ DisplayFrame* _paletteFrame;
 QFont _font;
 int currRotation;
 bool needsRotate;
+friend class LinkingLabel;
 
 class AddIconActionListener : public ActionListener
 {

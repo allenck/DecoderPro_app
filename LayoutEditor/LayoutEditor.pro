@@ -468,7 +468,8 @@ SOURCES += \
     test/testbase.cpp \
     generated_cpp/test/test_init.cpp \
     generated_cpp/test/test0.cpp \
-    colordialog.cpp
+    colordialog.cpp \
+    linkinglabel.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -856,7 +857,8 @@ HEADERS += liblayouteditor_global.h \
     test/testbase.h \
     generated_cpp/test/test0.h \
     calculator.h \
-    colordialog.h
+    colordialog.h \
+    linkinglabel.h
 
 FORMS    += \
     edittracksegmentdlg.ui \

@@ -47,6 +47,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -31096,6 +31097,50 @@ if (_wrapper) {
 }
   ControlPanelEditor::setScroll(state0);
 }
+void PythonQtShell_ControlPanelEditor::setSelectionsRotation(int  k0, Positionable*  p1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSelectionsRotation");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int" , "Positionable*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&k0, (void*)&p1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::setSelectionsRotation(k0, p1);
+}
+void PythonQtShell_ControlPanelEditor::setSelectionsScale(double  s0, Positionable*  p1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSelectionsScale");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "double" , "Positionable*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&s0, (void*)&p1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::setSelectionsScale(s0, p1);
+}
 void PythonQtShell_ControlPanelEditor::setTitle()
 {
 if (_wrapper) {
@@ -31216,28 +31261,6 @@ if (_wrapper) {
   }
 }
   ControlPanelEditor::showEvent(event0);
-}
-void PythonQtShell_ControlPanelEditor::showPopUp(Positionable*  p0, QGraphicsSceneMouseEvent*  event1)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("showPopUp");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "Positionable*" , "QGraphicsSceneMouseEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      void* args[3] = {NULL, (void*)&p0, (void*)&event1};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  ControlPanelEditor::showPopUp(p0, event1);
 }
 QSize  PythonQtShell_ControlPanelEditor::sizeHint() const
 {
@@ -31611,6 +31634,11 @@ void PythonQtWrapper_ControlPanelEditor::resetEditor(ControlPanelEditor* theWrap
   ( theWrappedObject->resetEditor());
 }
 
+void PythonQtWrapper_ControlPanelEditor::setColorMenu(ControlPanelEditor* theWrappedObject, QMenu*  popup, Positionable*  pos, int  type)
+{
+  ( theWrappedObject->setColorMenu(popup, pos, type));
+}
+
 void PythonQtWrapper_ControlPanelEditor::setCopyMenu(ControlPanelEditor* theWrappedObject, Positionable*  p, QMenu*  popup)
 {
   ( theWrappedObject->setCopyMenu(p, popup));
@@ -31629,6 +31657,11 @@ void PythonQtWrapper_ControlPanelEditor::setSelectionGroup(ControlPanelEditor* t
 void PythonQtWrapper_ControlPanelEditor::setShapeSelect(ControlPanelEditor* theWrappedObject, bool  set)
 {
   ( theWrappedObject->setShapeSelect(set));
+}
+
+void PythonQtWrapper_ControlPanelEditor::showPopUp(ControlPanelEditor* theWrappedObject, Positionable*  p, QGraphicsSceneMouseEvent*  event)
+{
+  ( ((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->promoted_showPopUp(p, event));
 }
 
 

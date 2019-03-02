@@ -7,6 +7,7 @@
 #include "jtextfield.h"
 #include <QSpinBox>
 #include "gridbaglayout.h"
+#include "linkingobject.h"
 
 //Positionable* CoordinateEdit::pos = NULL;
 //QString CoordinateEdit::title = "";
@@ -344,7 +345,41 @@ void TextEditAction::on_getTextEditAction_triggered()
 // f.setLocationRelativeTo((Component)pos);
 }
 //////////////////////////////////////////////////////////////
-#if 1
+
+/*public*/ /*static*/ AbstractAction* CoordinateEdit::getLinkEditAction(/*final*/ Positionable* pos, /*final*/ QString title, QObject* parent) {
+       return new LinkEditAction(pos, (title) + "...", parent);
+//       {
+
+//           @Override
+//           public void actionPerformed(ActionEvent e) {
+//               CoordinateEdit f = new CoordinateEdit();
+//               f.addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
+//               f.init(Bundle.getMessage(title), pos, false);
+//               f.initLink();
+//               f.setVisible(true);
+//               f.setLocationRelativeTo((Component) pos);
+//           }
+//       };
+}
+LinkEditAction::LinkEditAction(Positionable *pos, QString title, QObject *parent)
+{
+ this->pos = pos;
+ this->title = title;
+ this->parent = parent;
+}
+
+void LinkEditAction::actionPerformed()
+{
+ CoordinateEdit* f = new CoordinateEdit();
+ f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
+ f->init((title), pos, false);
+ f->initLink();
+ f->setVisible(true);
+// f->setLocationRelativeTo((Component*) pos);
+
+}
+//////////////////////////////////////////////////////////////
+
 /*public*/ /*static*/ AbstractAction* CoordinateEdit::getZoomEditAction(/*final*/ Positionable* pos, QObject* parent) {
     return new GetZoomEditAction(pos, tr("Zoom"), parent);// {
 //            /*public*/ void actionPerformed(ActionEvent e) {
@@ -377,7 +412,7 @@ void GetZoomEditAction::on_getZoomEditAction_triggered()
 // f->setLocationRelativeTo(pos->getEditor()->getTargetPanel());
 }
 //////////////////////////////////////////////////////////////
-#endif
+
     /*public*/ /*static*/ QAction* CoordinateEdit::getNameEditAction(/*final*/ Positionable* pos) {
   GetNameEditAction* act = new GetNameEditAction(pos, tr("Rename Panel Menu"),this);
   connect(act, SIGNAL(triggered()), act, SLOT(renamePanelMenu()));
@@ -1058,6 +1093,76 @@ void CoordinateEdit::on_editTextCancelButton_clicked()
  pp->updateSize();
  //reject();
  close();
+}
+
+/*public*/ void CoordinateEdit::initLink()
+{
+    LinkingObject* pLabel = (LinkingObject*) pl;
+    oldStr = pLabel->getURL();
+    textX = new JLabel();
+    textX->setText(tr("Link:"));
+    textX->setVisible(true);
+
+    xTextField = new JTextField(15);
+    xTextField->setText(pLabel->getURL());
+    xTextField->setToolTip(tr("Enter Link"));
+
+    getContentPane()->setLayout(new GridBagLayout());
+    addTextItems();
+    oldX = 0;  // counter for warning
+
+//    okButton.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            LinkingObject pp = (LinkingObject) pl;
+//            String t = xTextField.getText();
+//            boolean hasText = (t != null && t.length() > 0);
+//            if (hasText || oldX > 0) {
+//                pp.setULRL(t);
+//                pp.updateSize();
+//                dispose();
+//            } else {
+//                xTextField.setText("Link disappears with null text!");
+//                oldX++;
+//            }
+//        }
+//    });
+    connect(okButton, SIGNAL(clicked(bool)), this, SLOT(onLinkOK()));
+// ??    okButton->getRootPane().setDefaultButton(okButton);
+//    cancelButton.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            LinkingObject pp = (LinkingObject) pl;
+//            pp.setULRL(oldStr);
+//            pp.updateSize();
+//            dispose();
+//        }
+//    });
+    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(onLinkCancel()));
+    pack();
+}
+
+void CoordinateEdit::onLinkOK()
+{
+ LinkingObject* pp = (LinkingObject*) pl;
+ QString t = xTextField->text();
+ bool hasText = (t != "" && t.length() > 0);
+ if (hasText || oldX > 0) {
+     pp->setULRL(t);
+     pp->updateSize();
+     dispose();
+ } else {
+     xTextField->setText("Link disappears with null text!");
+     oldX++;
+ }
+}
+
+void CoordinateEdit::onLinkCancel()
+{
+ LinkingObject* pp = (LinkingObject*) pl;
+ pp->setULRL(oldStr);
+ pp->updateSize();
+ dispose();
 }
 
 /*public*/ void CoordinateEdit::initZoom() {

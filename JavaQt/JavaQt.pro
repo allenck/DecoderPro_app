@@ -453,7 +453,8 @@ HEADERS += javaqt.h\
     abstractcolorchooserpanel.h \
     changelistener.h \
     jcolorchooser.h \
-    jmricolorchooserpanel.h
+    jmricolorchooserpanel.h \
+    linkingobject.h
 
 unix {
     target.path = /usr/lib
