@@ -25,7 +25,7 @@
     log = new Logger("ReporterIcon");
     setText("<no report>");
     reporter = NULL;
-    setPopupUtility(new ReporterPopupUtil((Positionable*)this, this));
+    setPopupUtility(new ReporterPopupUtil((Positionable*)this, (JComponent*)this));
 }
 /*public*/ ReporterIcon::~ReporterIcon() {}
 /*public*/ Positionable* ReporterIcon::deepClone() {

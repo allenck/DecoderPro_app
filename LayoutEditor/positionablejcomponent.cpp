@@ -4,7 +4,7 @@
 
 
 PositionableJComponent::PositionableJComponent(QWidget *parent) :
-    Positionable(parent)
+    JComponent(parent)
 {
 }
 /**
@@ -16,7 +16,7 @@ PositionableJComponent::PositionableJComponent(QWidget *parent) :
 ///*public*/ class PositionableJComponent extends JComponent implements Positionable {
 
 
-/*public*/ PositionableJComponent::PositionableJComponent(Editor* editor, QObject* parent) :  Positionable((QWidget*)parent)
+/*public*/ PositionableJComponent::PositionableJComponent(Editor* editor, QObject* parent) :  JComponent((QWidget*)parent)
 {
  _editor = NULL;
  debug = false;
@@ -80,9 +80,9 @@ PositionableJComponent::PositionableJComponent(QWidget *parent) :
 /*public*/ bool PositionableJComponent::isHidden() { return _hidden;  }
 /*public*/ void PositionableJComponent::showHidden() {
     if(!_hidden || _editor->isEditable()) {
-        setVisible(true);
+        ((Positionable*)this)->setVisible(true);
     } else {
-        setVisible(false);
+        ((Positionable*)this)->setVisible(false);
     }
 }
 

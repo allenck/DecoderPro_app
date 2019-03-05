@@ -28,12 +28,18 @@
  <enum-type name ="ListSelectionModel::SELECTIONS" />
  <enum-type name ="Turnout::LOCKS" />
  <enum-type name ="Turnout::FEEDBACK" />
+ <enum-type name ="LayoutTurnout::POINTS" />
+ <enum-type name ="LayoutTurnout::LINKTYPES" />
+ <enum-type name ="LayoutTurnout::TURNOUTTYPES" />
 
  <rejection class="TableModel"/>
  <rejection class="AbstractTableModel"/>
  <rejection function-name="getSystemNameAddedOrderList" />
  <rejection function-name="makeJTable" />
  <rejection class="LayoutEditor" function-name="findLayoutTurntableByName" />
+ <rejection class="JLabel" function-name="contains" />
+ <rejection class="JLabel" function-name="deepClone" />
+ <rejection class="JLabel" function-name="doMouseClicked" />
  <object-type name="NamedBean" />
  <object-type name="AbstractNamedBean" />
  <object-type name="Turnout" />
@@ -172,4 +178,7 @@
  <object-type name="MultiIconEditor" />
  <object-type name="EditScene" />
  <object-type name="JLabel" />
+ <object-type name="LayoutTurnout"/>
+ <object-type name="LayoutTtrack"/>
+
 </typesystem>

@@ -205,7 +205,7 @@ QDomElement IndicatorTurnoutIconXml::storeNamedBean(QString elemName, NamedBeanH
  //p->putItem(l);
  // load individual item's option settings after editor has set its global settings
  loadCommonAttributes(l, Editor::TURNOUTS, element);
- QPointF pt = l->getLocation();
+ QPointF pt = ((Positionable*)l)->getLocation();
 // if(pt.x() == 0 && pt.y()==0)
 // {
 

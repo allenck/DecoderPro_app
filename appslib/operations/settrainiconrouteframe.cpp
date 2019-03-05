@@ -178,10 +178,10 @@ namespace Operations
  /*public*/ void SetTrainIconRouteFrame::spinnerChangeEvent(QWidget* ae) {
  QSpinBox* source = (QSpinBox*)ae;
      if (source == spinTrainIconX && _tIon != NULL) {
-         _tIon->setLocation( (int)spinTrainIconX->value(), (int)_tIon->getLocation().y());
+         _tIon->setLocation( (int)spinTrainIconX->value(), (int)((Positionable*)_tIon)->getLocation().y()); // unsure whether this should be Positionable location or widget location?
      }
      if (source == spinTrainIconY && _tIon != NULL) {
-         _tIon->setLocation((int)_tIon->getLocation().x(),  spinTrainIconY->value());
+         _tIon->setLocation((int)((Positionable*)_tIon)->getLocation().x(),  spinTrainIconY->value());
      }
  }
 

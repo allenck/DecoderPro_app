@@ -29,6 +29,13 @@ public:
      * constructor method
      */
     /*public*/ LevelXing(QString id, QPointF c, LayoutEditor* myPanel);
+ enum POINTS
+ {
+  POINTA = 0x01,
+  POINTB = 0x10,
+  POINTC = 0x20,
+  POINTD = 0x30
+};
     /**
      * Accessor methods
     */
@@ -43,8 +50,8 @@ public:
     /*public*/ void setSignalCName(QString signalName) {signalCName = signalName;}
     /*public*/ QString getSignalDName() {return signalDName;}
     /*public*/ void setSignalDName(QString signalName) {signalDName = signalName;}
-
-    /*public*/ QString getSignalAMastName() {return signalAMastName;}
+    /*public*/ void removeBeanReference(NamedBean* nb);
+    /*public*/ QString getSignalAMastName();
     /*public*/ void setSignalAMastName(QString signalName) {signalAMastName = signalName;}
     /*public*/ QString getSignalBMastName() {return signalBMastName;}
     /*public*/ void setSignalBMastName(QString signalName) {signalBMastName = signalName;}
@@ -64,10 +71,10 @@ public:
     /*public*/ QObject* getConnectB() {return connectB;}
     /*public*/ QObject* getConnectC() {return connectC;}
     /*public*/ QObject* getConnectD() {return connectD;}
-    /*public*/ void setConnectA(QObject* o,int type);
-    /*public*/ void setConnectB(QObject* o,int type);
-    /*public*/ void setConnectC(QObject* o,int type);
-    /*public*/ void setConnectD(QObject* o,int type);
+    /*public*/ void setConnectA(LayoutTrack* o,int type);
+    /*public*/ void setConnectB(LayoutTrack *o, int type);
+    /*public*/ void setConnectC(LayoutTrack* o,int type);
+    /*public*/ void setConnectD(LayoutTrack *o, int type);
     /*public*/ LayoutBlock* getLayoutBlockAC();
     /*public*/ LayoutBlock* getLayoutBlockBD();
     /*public*/ QPointF getCoordsCenter();
@@ -126,6 +133,7 @@ public:
     /*public*/ void addEditPopUpMenu(QMenu* menu);
     /*public*/ void addViewPopUpMenu(QMenu* menu);
     /*public*/ SignalMast* getSignalAMast();
+    /*public*/ SignalHead* getSignalHead(int loc);
     /*public*/ void setSignalAMast(QString signalMast) ;
     /*public*/ SignalMast* getSignalBMast();
     /*public*/ void setSignalBMast(QString signalMast) ;
@@ -133,8 +141,8 @@ public:
     /*public*/ void setSignalCMast(QString signalMast);
     /*public*/ SignalMast* getSignalDMast();
     /*public*/ void setSignalDMast(QString signalMast);
-    /*public*/ QObject* getConnection(int location) throw (JmriException);
-    /*public*/ void setConnection(int location, QObject* o, int type) throw (JmriException);
+    /*public*/ LayoutTrack* getConnection(int location) throw (JmriException);
+    /*public*/ void setConnection(int location, LayoutTrack *o, int type) throw (JmriException);
     /*public*/ QRectF getBounds();
     /*public*/ Sensor* getSensorA();
     /*public*/ Sensor* getSensorB();
@@ -182,10 +190,10 @@ private:
     /*private*/ NamedBeanHandle<Sensor*>* sensorCNamed; //NULL; // sensor at C track junction
     /*private*/ NamedBeanHandle<Sensor*>* sensorDNamed; //NULL; // sensor at D track junction
 
-    /*private*/ QObject* connectA; //NULL;
-    /*private*/ QObject* connectB; //NULL;
-    /*private*/ QObject* connectC; //NULL;
-    /*private*/ QObject* connectD; //NULL;
+    /*private*/ LayoutTrack* connectA; //NULL;
+    /*private*/ LayoutTrack* connectB; //NULL;
+    /*private*/ LayoutTrack* connectC; //NULL;
+    /*private*/ LayoutTrack* connectD; //NULL;
     /*private*/ QPointF center; //new QPointF(50.0,50.0);
     /*private*/ QPointF dispA; //new QPointF(-20.0,0.0);
     /*private*/ QPointF dispB; //new QPointF(-14.0,14.0);

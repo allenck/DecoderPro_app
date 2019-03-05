@@ -13,7 +13,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT TrackSegment : public LayoutTrack
     Q_OBJECT
 public:
 //    explicit TrackSegment(QObject *parent = 0);
-    /*public*/ TrackSegment(QString id, QObject* c1, int t1, QObject* c2, int t2, bool dash, bool main, LayoutEditor* myPanel);
+    /*public*/ TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2, int t2, bool dash, bool main, LayoutEditor* myPanel);
     // alternate constructor for loading layout editor panels
     /*public*/ TrackSegment(QString id, QString c1Name, int t1, QString c2Name, int t2, bool dash, bool main, bool hide, LayoutEditor* myPanel);
     /*public*/ bool getArc() {return arc;}
@@ -24,8 +24,8 @@ public:
     /*public*/ QString getBlockName();
     /*public*/ int getType1() ;
     /*public*/ int getType2() ;
-    /*public*/ QObject* getConnect1();
-    /*public*/ QObject* getConnect2();
+    /*public*/ LayoutTrack* getConnect1();
+    /*public*/ LayoutTrack *getConnect2();
     /*public*/ bool getDashed();
     /*public*/ void setDashed(bool dash);
     /*public*/ bool getHidden();
@@ -49,8 +49,8 @@ public:
     ///*public*/ void setRadius(int x) {radius = x;}
 
     /*public*/ LayoutBlock* getLayoutBlock();
-    /*public*/ QString getConnect1Name() {return getConnectName(connect1,type1);}
-    /*public*/ QString getConnect2Name() {return getConnectName(connect2,type2);}
+    /*public*/ QString getConnect1Name();
+    /*public*/ QString getConnect2Name();
     /**
      * Set Up a Layout Block for a Track Segment
      */
@@ -135,17 +135,13 @@ private:
     // defined constants
 
     // operational instance variables (not saved between sessions)
-    /*private*/ LayoutBlock* block;// = NULL;
+    /*private*/ LayoutBlock* layoutBlock;// = NULL;
     /*private*/ TrackSegment* instance;// = NULL;
     /*private*/ LayoutEditor* layoutEditor;// = NULL;
 
     // persistent instances variables (saved between sessions)
     /*private*/ QString ident;// = "";
     /*private*/ QString blockName;// = "";
-    /*private*/ QObject* connect1;// = NULL;
-    /*private*/ int type1;// = 0;
-    /*private*/ QObject* connect2;// = NULL;
-    /*private*/ int type2;// = 0;
     /*private*/ bool dashed;// = false;
     /*private*/ bool mainline;// = false;
     /*private*/ bool hidden;// = false;
@@ -187,8 +183,12 @@ private:
 
 protected:
  /*protected*/ void updateBlockInfo();
- /*protected*/ void setNewConnect1(QObject* o, int type);
- /*protected*/ void setNewConnect2(QObject* o, int type);
+ /*protected*/ void setNewConnect1(LayoutTrack *o, int type);
+ /*protected*/ void setNewConnect2(LayoutTrack* o, int type);
+ /*protected*/ LayoutTrack* connect1 = nullptr;
+ /*protected*/ int type1 = 0;
+ /*protected*/ LayoutTrack* connect2 = nullptr;
+ /*protected*/ int type2 = 0;
 
  friend class LayoutEditor;
  friend class EditTrackSegmentDlg;

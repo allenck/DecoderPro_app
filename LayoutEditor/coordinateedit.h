@@ -57,7 +57,6 @@ public slots:
  void on_okButton_clicked();
  void on_cancelButton_clicked();
  void onOK_rotate();
- void onLinkEditAction();
  void onLinkOK();
  void onLinkCancel();
 

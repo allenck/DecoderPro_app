@@ -5,13 +5,20 @@
 #include "loggerfactory.h"
 #include  <QPointF>
 #include <QRectF>
+#include <QPointF>
 #include "propertychangesupport.h"
+#include "editscene.h"
 
+class QGraphcsScene;
+class LayoutBlock;
+class LayoutConnectivity;
+class LayoutEditor;
 class LayoutTrack : public QObject
 {
  Q_OBJECT
 public:
- /*explicit*/ LayoutTrack(QObject *parent = nullptr);
+ ///*explicit*/ LayoutTrack(QObject *parent = nullptr);
+ /*public*/ LayoutTrack(/*@Nonnull*/ QString ident, /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor, QObject* parent = nullptr);
  ~LayoutTrack() {}
  LayoutTrack(const LayoutTrack&) : QObject() {}
  enum CONNECTIONTYPES
@@ -43,26 +50,39 @@ public:
   SLIP_D = 24, // offset for slip connection points
   SLIP_LEFT = 25,
   SLIP_RIGHT = 26,
+  BEZIER_CONTROL_POINT_OFFSET_MIN = 30, // offset for TrackSegment Bezier control points (minimum)
+  BEZIER_CONTROL_POINT_OFFSET_MAX = 38, // offset for TrackSegment Bezier control points (maximum)
   TURNTABLE_RAY_OFFSET = 50 // offset for turntable connection points
  };
- /*public*/ QPointF center;// =  QPointF(50.0, 50.0);
+ /*public*/ QString getId();
+ /*public*/ QString getName() ;
+ /*public*/ QPointF getCoordsCenter();
+ /*public*/ void setCoordsCenter(/*@Nonnull*/ QPointF p);
+
  /*public*/ static void setDefaultTrackColor(QColor color);
  /*public*/ bool isHidden();
- /**
-  * @return the bounds of this track
-  */
- /*public*/ /*abstract*/virtual QRectF getBounds() {return QRectF();}
-
- /**
-  * Get the hidden state of the track element.
-  *
-  * @return true if hidden; false otherwise
-  * @deprecated since 4.7.2; use {@link #isHidden()} instead
-  */
  //@Deprecated // Java standard pattern for bool getters is "isHidden()"
  QT_DEPRECATED/*public*/ bool getHidden();
  /*public*/ void setHidden(bool hide);
  PropertyChangeSupport* propertyChangeSupport;
+ /*public*/ QString getTurnoutStateString(int turnoutState);
+ /*public*/ /*abstract*/virtual void setObjects(/*@Nonnull*/ LayoutEditor* le);
+ /*public*/ /*abstract*/ virtual void scaleCoords(float xFactor, float yFactor);
+ /*public*/ /*abstract*/ virtual void translateCoords(float xFactor, float yFactor);
+ /*public*/ /*abstract*/ virtual QPointF getCoordsForConnectionType(int connectionType);
+ /*public*/ /*abstract*/ virtual QRectF getBounds();
+ /*public*/ /*abstract*/ virtual LayoutTrack* getConnection(int connectionType) throw (JmriException);
+ /*public*/ /*abstract*/ virtual void setConnection(int connectionType, LayoutTrack o, int type) throw (JmriException);
+ /*public*/ virtual bool isDisconnected(int connectionType);
+ /*public*/ /*abstract*/ virtual QList<int> checkForFreeConnections();
+ /*public*/ /*abstract*/ virtual bool checkForUnAssignedBlocks();
+ /*public*/ /*abstract*/ virtual void checkForNonContiguousBlocks(
+         /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetMaps);
+ /*public*/ /*abstract*/ virtual void collectContiguousTracksNamesInBlockNamed(
+         /*@Nonnull*/ QString blockName,
+         /*@Nonnull*/ QSet<QString> trackNameSet);
+ /*public*/ /*abstract*/ virtual void setAllLayoutBlocks(LayoutBlock* /*layoutBlock*/);
+
 
 signals:
 
@@ -72,12 +92,34 @@ private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger("LayoutTrack");
 
 protected:
+ /*protected*/ LayoutEditor* layoutEditor = nullptr;
+ /*protected*/ QString ident = "";
+ /*protected*/ QPointF center;// = new Point2D.Double(50.0, 50.0);
  /*protected*/ bool hidden;// = false;
  /*protected*/ static /*final*/ double controlPointSize;// = 3.0;   // LayoutEditor.SIZE;
  /*protected*/ static /*final*/ double controlPointSize2;// = 2.0 * controlPointSize; // LayoutEditor.SIZE2;
  /*protected*/ static QColor defaultTrackColor;// = Color.black;
- /*protected*/ QPointF rotatePoint(QPointF p, double sineRot, double cosineRot);
-
+ /*protected*/ /*abstract*/ virtual void reCheckBlockBoundary();
+ /*protected*/ /*abstract*/ virtual QList<LayoutConnectivity*> getLayoutConnectivity();
+ /*protected*/ /*abstract*/ virtual QMenu* showPopup(/*@Nullable */QGraphicsSceneMouseEvent* mouseEvent);
+ /*protected*/ QMenu* showPopup(QPointF where);
+ /*protected*/ QMenu* showPopup();
+ /*protected*/ QPointF rotatePoint(/*@Nonnull*/ QPointF p, double sineRot, double cosineRot) ;
+ /*protected*/ /*abstract*/ virtual int findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles, bool requireUnconnected);
+ /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF p);
+ /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF p, bool useRectangles);
+ /*protected*/ static bool isConnectionHitType(int hitType);
+ /*protected*/ static bool isControlHitType(int hitType);
+ /*protected*/ static bool isPopupHitType(int hitType);
+ /*public*/ /*abstract*/ virtual bool isMainline();
+ /*protected*/ /*abstract*/ virtual void draw1(QGraphcsScene* g2, bool isMain, bool isBlock);
+ /*protected*/ /*abstract*/ virtual void draw2(QGraphicsScene *g2, bool isMain, float railDisplacement);
+ /*protected*/ void drawHidden(QGraphicsScene* g2);
+ /*protected*/ /*abstract*/ virtual void highlightUnconnected(QGraphicsScene* g2, int specificType);
+ /*protected*/ void highlightUnconnected(QGraphicsScene* g2);
+ /*protected*/ /*abstract*/ virtual void drawEditControls(QGraphicsScene* g2);
+ /*protected*/ /*abstract*/ virtual void drawTurnoutControls(QGraphicsScene* g2);
+ /*protected*/ void drawDecorations(QGraphicsScene* g2);
 };
 
 #endif // LAYOUTTRACK_H

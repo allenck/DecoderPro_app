@@ -33,7 +33,7 @@ PositionablePointXml::PositionablePointXml(QObject *parent) :
  // include attributes
  element.setAttribute("ident", p->getID());
  element.setAttribute("type",  p->getType());
- QPointF coords = p->getCoords();
+ QPointF coords = p->getCoordsCenter();
  element.setAttribute("x",  coords.x());
  element.setAttribute("y",  coords.y());
  if (p->getConnect1() != NULL)

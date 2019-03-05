@@ -120,6 +120,8 @@ public slots:
 //    /*public*/ void propertyChange(PropertyChangeEvent* e);
     //void propertyChange(QString propertyName, int old, int now);
     void propertyChange(PropertyChangeEvent* e);
+    void onColorMenu();
+    void onColorMenu1();
 
  void changeLayoutSensorType();
  /*public*/ void doMousePressed(QGraphicsSceneMouseEvent* e);
@@ -160,6 +162,9 @@ private:
  void updateItem();
  TableItemPanel* _itemPanel;
  bool bRightButton;
+ /*private*/ void setColor(QColor desiredColor, int state);
+ /*private*/ QColor getColor(int state);
+ int _state;
 
 private slots:
  void on_timeout();

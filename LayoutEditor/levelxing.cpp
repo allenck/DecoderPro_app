@@ -48,6 +48,7 @@
  * constructor method
  */
 /*public*/ LevelXing::LevelXing(QString id, QPointF c, LayoutEditor* myPanel)
+ : LayoutTrack(id, c, myPanel)
 {
  blockAC = NULL;
  blockBD = NULL;
@@ -124,6 +125,73 @@
  center = c;
 }
 
+/*public*/ void LevelXing::removeBeanReference(NamedBean* nb) {
+    if (nb == nullptr) {
+        return;
+    }
+    if (qobject_cast<SignalMast*>(nb)) {
+        if (nb->equals(getSignalAMast())) {
+            setSignalAMast("");
+            return;
+        }
+        if (nb->equals(getSignalBMast())) {
+            setSignalBMast("");
+            return;
+        }
+        if (nb->equals(getSignalCMast())) {
+            setSignalCMast("");
+            return;
+        }
+        if (nb->equals(getSignalDMast())) {
+            setSignalDMast("");
+            return;
+        }
+    }
+    if (qobject_cast<Sensor*>(nb)) {
+        if (nb->equals(getSensorA())) {
+            setSensorAName("");
+            return;
+        }
+        if (nb->equals(getSensorB())) {
+            setSensorBName("");
+            return;
+        }
+        if (nb->equals(getSensorC())) {
+            setSensorCName("");
+            return;
+        }
+        if (nb->equals(getSensorD())) {
+            setSensorDName("");
+            return;
+        }
+    }
+    if (qobject_cast<SignalHead*>(nb)) {
+        if (nb->equals(getSignalHead(POINTA))) {
+            setSignalAName("");
+            return;
+        }
+        if (nb->equals(getSignalHead(POINTB))) {
+            setSignalBName("");
+            return;
+        }
+        if (nb->equals(getSignalHead(POINTC))) {
+            setSignalCName("");
+            return;
+        }
+        if (nb->equals(getSignalHead(POINTD))) {
+            setSignalDName("");
+            return;
+        }
+    }
+}
+
+/*public*/ QString LevelXing::getSignalAMastName() {
+    if (signalAMastNamed != nullptr) {
+        return signalAMastNamed->getName();
+    }
+    return "";
+}
+
 /*public*/ SignalMast* LevelXing::getSignalAMast()
 {
  if (signalAMastNamed != NULL)
@@ -131,6 +199,31 @@
      return signalAMastNamed->getBean();
  }
  return NULL;
+}
+
+/*public*/ SignalHead* LevelXing::getSignalHead(int loc) {
+    NamedBeanHandle<SignalHead*>* namedBean = nullptr;
+    switch (loc) {
+        case POINTA:
+            namedBean = signalAHeadNamed;
+            break;
+        case POINTB:
+            namedBean = signalBHeadNamed;
+            break;
+        case POINTC:
+            namedBean = signalCHeadNamed;
+            break;
+        case POINTD:
+            namedBean = signalDHeadNamed;
+            break;
+        default:
+            log.warn(tr("Unhandled loc: %1").arg(loc));
+            break;
+    }
+    if (namedBean != nullptr) {
+        return namedBean->getBean();
+    }
+    return nullptr;
 }
 
 /*public*/ void LevelXing::setSignalAMast(QString signalMast) {
@@ -325,7 +418,7 @@
     }
 }
 
-/*public*/ QObject* LevelXing::getConnection(int location) throw (JmriException)
+/*public*/ LayoutTrack *LevelXing::getConnection(int location) throw (JmriException)
 {
     switch (location) {
         case LEVEL_XING_A:
@@ -341,7 +434,7 @@
     throw JmriException("Invalid Point");
 }
 
-/*public*/ void LevelXing::setConnection(int location, QObject* o, int type) throw (JmriException) {
+/*public*/ void LevelXing::setConnection(int location, LayoutTrack* o, int type) throw (JmriException) {
     if ((type != TRACK) && (type != NONE)) {
         log.error("unexpected type of connection to layoutturnout - " + QString::number(type));
         throw JmriException("unexpected type of connection to layoutturnout - " + QString::number(type));
@@ -365,25 +458,25 @@
     }
 }
 
-/*public*/ void LevelXing::setConnectA(QObject* o,int type) {
+/*public*/ void LevelXing::setConnectA(LayoutTrack* o,int type) {
     connectA = o;
     if ( (connectA!=NULL) && (type!=LayoutEditor::TRACK) ) {
         log.error("unexpected type of A connection to levelXing - "+type);
     }
 }
-/*public*/ void LevelXing::setConnectB(QObject* o,int type) {
+/*public*/ void LevelXing::setConnectB(LayoutTrack* o,int type) {
     connectB = o;
     if ( (connectB!=NULL) && (type!=LayoutEditor::TRACK) ) {
         log.error("unexpected type of B connection to levelXing - "+type);
     }
 }
-/*public*/ void LevelXing::setConnectC(QObject* o,int type) {
+/*public*/ void LevelXing::setConnectC(LayoutTrack *o, int type) {
     connectC = o;
     if ( (connectC!=NULL) && (type!=LayoutEditor::TRACK) ) {
         log.error("unexpected type of C connection to levelXing - "+type);
     }
 }
-/*public*/ void LevelXing::setConnectD(QObject* o,int type) {
+/*public*/ void LevelXing::setConnectD(LayoutTrack* o,int type) {
     connectD = o;
     if ( (connectD!=NULL) && (type!=LayoutEditor::TRACK) ) {
         log.error("unexpected type of D connection to levelXing - "+type);
@@ -466,87 +559,10 @@
     reCheckBlockBoundary();
 }
 
-/*public*/ void LevelXing::reCheckBlockBoundary(){
-    if(connectA==NULL && connectB==NULL && connectC==NULL && connectD==NULL){
-        //This is no longer a block boundary, therefore will remove signal masts and sensors if present
-//        if(getSignalAMastName()!=(""))
-//            removeSML(getSignalAMastName());
-//        if(getSignalBMastName()!=(""))
-//            removeSML(getSignalBMastName());
-//        if(getSignalCMastName()!=(""))
-//            removeSML(getSignalCMastName());
-//        if(getSignalDMastName()!=(""))
-//            removeSML(getSignalDMastName());
-//        setSignalAMastName("");
-//        setSignalBMastName("");
-//        setSignalCMastName("");
-//        setSignalDMastName("");
-//        setSensorAName("");
-//        setSensorBName("");
-//        setSensorCName("");
-//        setSensorDName("");
-        //May want to look at a method to remove the assigned mast from the panel and potentially any logics generated
-    }  else if(connectA==NULL || connectB==NULL || connectC==NULL || connectD==NULL){
-        //could still be in the process of rebuilding the point details
-        return;
-    }
-
-    TrackSegment* trkA;
-    TrackSegment* trkB;
-    TrackSegment* trkC;
-    TrackSegment* trkD;
-
-    //if(connectA instanceof TrackSegment*)
-    {
-        trkA = (TrackSegment*)connectA;
-        if(trkA->getLayoutBlock()==blockAC){
-            setSignalAMastName("");
-            setSensorAName("");
-//            if(getSignalAMastName()!=(""))
-//                removeSML(getSignalAMastName());
-        }
-    }
-//    if(connectC instanceof TrackSegment*)
-    {
-        trkC = (TrackSegment*)connectC;
-        if(trkC->getLayoutBlock()==blockAC){
-            setSignalCMastName("");
-            setSensorCName("");
-//            if(getSignalCMastName()!=(""))
-//                removeSML(getSignalCMastName());
-        }
-    }
-//    if(connectB instanceof TrackSegment)
-    {
-        trkB = (TrackSegment*)connectB;
-        if(trkB->getLayoutBlock()==blockBD){
-            setSignalBMastName("");
-            setSensorBName("");
-//            if(getSignalBMastName()!=(""))
-//                removeSML(getSignalBMastName());
-        }
-    }
-
-//    if(connectD instanceof TrackSegment)
-    {
-        trkD = (TrackSegment*)connectC;
-        if(trkD->getLayoutBlock()==blockBD){
-            setSignalDMastName("");
-            setSensorDName("");
-//            if(getSignalDMastName()!=(""))
-//                removeSML(getSignalDMastName());
-        }
-    }
+//@Override
+/*public*/ void LevelXing::reCheckBlockBoundary() {
+    // nothing to see here... move along...
 }
-
-//void LevelXing::removeSML(QString signalMast){
-//    if(signalMast==NULL || signalMast!=(""))
-//        return;
-//    SignalMast* mast = InstanceManager::signalMastManagerInstance().getSignalMast(signalMast);
-//    if(InstanceManager::layoutBlockManagerInstance().isAdvancedRoutingEnabled() && InstanceManager::signalMastLogicManagerInstance().isSignalMastUsed(mast)){
-//        SignallingGuiTools.removeSignalMastLogic(NULL, mast);
-//    }
-//}
 
 /**
  * Methods to test if mainline track or not

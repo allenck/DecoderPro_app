@@ -67,14 +67,14 @@ void EditTrackSegmentDlg::on_pbDone_clicked()
  if (trackSegment->getBlockName()!=text )
  {
   // block has changed, if old block exists, decrement use
-  if (trackSegment->block!=NULL)
+  if (trackSegment->layoutBlock!=NULL)
   {
-   trackSegment->block->decrementUse();
+   trackSegment->layoutBlock->decrementUse();
   }
   // get new block, or NULL if block has been removed
   trackSegment->blockName =text;
-  trackSegment->block = trackSegment->layoutEditor->provideLayoutBlock(trackSegment->blockName);
-  if (trackSegment->block == NULL)
+  trackSegment->layoutBlock = trackSegment->layoutEditor->provideLayoutBlock(trackSegment->blockName);
+  if (trackSegment->layoutBlock == NULL)
   {
    trackSegment->blockName = "";
   }
@@ -83,7 +83,7 @@ void EditTrackSegmentDlg::on_pbDone_clicked()
   trackSegment->updateBlockInfo();
  }
  // check if a block exists to edit
- if (trackSegment->block==NULL)
+ if (trackSegment->layoutBlock==NULL)
  {
 //     JOptionPane.showMessageDialog(editTrackSegmentFrame,
 //             rb.getQString("Error1"),

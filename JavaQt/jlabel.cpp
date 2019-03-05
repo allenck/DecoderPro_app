@@ -1,6 +1,6 @@
 #include "jlabel.h"
 #include "exceptions.h"
-#include "namedicon.h"
+#include "imageicon.h".h"
 #include <QGraphicsItemGroup>
 
 //JLabel::JLabel(QObject *parent) :
@@ -104,8 +104,8 @@ float JLabel::LEFT_ALIGNMENT = 0.0f;
  *           <code>LEADING</code> or
  *           <code>TRAILING</code>.
  */
-/*public*/ JLabel::JLabel(QString text, NamedIcon* icon, int horizontalAlignment, QWidget *parent)
- : Positionable(text, parent)
+/*public*/ JLabel::JLabel(QString text, ImageIcon* icon, int horizontalAlignment, QWidget *parent)
+ : QLabel(text, parent)
 {
  init();
 
@@ -131,7 +131,7 @@ float JLabel::LEFT_ALIGNMENT = 0.0f;
  *           <code>TRAILING</code>.
  */
 /*public*/ JLabel::JLabel(QString text, int horizontalAlignment, QWidget *parent)
- : Positionable(text, parent)
+ : QLabel(text, parent)
 {
  //this(text, NULL, horizontalAlignment);
  init();
@@ -148,7 +148,7 @@ float JLabel::LEFT_ALIGNMENT = 0.0f;
  * @param text  The text to be displayed by the label.
  */
 /*public*/ JLabel::JLabel(QString text, QWidget *parent)
- : Positionable(text, parent)
+ : QLabel(text, parent)
 {
     init();
     //this(text, NULL, LEADING);
@@ -188,8 +188,8 @@ float JLabel::LEFT_ALIGNMENT = 0.0f;
  *
  * @param image  The image to be displayed by the label.
  */
-/*public*/ JLabel::JLabel(NamedIcon* image, QWidget *parent)
- : Positionable(parent) {
+/*public*/ JLabel::JLabel(ImageIcon* image, QWidget *parent)
+ : QLabel(parent) {
     //this(NULL, image, CENTER);
     init();
     setText("");
@@ -207,7 +207,7 @@ float JLabel::LEFT_ALIGNMENT = 0.0f;
  * of the label's display area.
  */
 /*public*/ JLabel::JLabel(QWidget *parent)
- : Positionable(parent) {
+ : QLabel(parent) {
     init();
     //this("", NULL, LEADING);
     setText("");
@@ -354,7 +354,7 @@ _y = 0;
  * @return an Icon
  * @see #setIcon
  */
-/*public*/ NamedIcon* JLabel::getIcon() {
+/*public*/ ImageIcon *JLabel::getIcon() {
     return defaultIcon;
 }
 
@@ -375,12 +375,11 @@ _y = 0;
  *    attribute: visualUpdate true
  *  description: The icon this component will display.
  */
-/*public*/ void JLabel::setIcon(NamedIcon* icon) {
-    NamedIcon* oldValue = defaultIcon;
+/*public*/ void JLabel::setIcon(ImageIcon *icon) {
+    ImageIcon* oldValue = defaultIcon;
     defaultIcon = icon;
     if(icon != NULL)
-     QLabel::setPixmap(QPixmap::fromImage(/*icon->getImage()*/icon->getOriginalImage()));
-
+     QLabel::setPixmap(QPixmap::fromImage(icon->getImage()));
 
     /* If the default icon has really changed and we had
      * generated the disabled icon for this component
@@ -429,7 +428,7 @@ _y = 0;
  * @see ImageIcon
  */
 //@Transient
-/*public*/ NamedIcon* JLabel::getDisabledIcon() {
+/*public*/ ImageIcon *JLabel::getDisabledIcon() {
     if (!disabledIconSet && disabledIcon == NULL && defaultIcon != NULL) {
 //        disabledIcon = UIManager.getLookAndFeel().getDisabledIcon(this, defaultIcon);
 //        if (disabledIcon != NULL) {
@@ -454,8 +453,8 @@ _y = 0;
  *    attribute: visualUpdate true
  *  description: The icon to display if the label is disabled.
  */
-/*public*/ void JLabel::setDisabledIcon(NamedIcon* disabledIcon) {
-    NamedIcon* oldValue = this->disabledIcon;
+/*public*/ void JLabel::setDisabledIcon(ImageIcon *disabledIcon) {
+    ImageIcon* oldValue = this->disabledIcon;
     this->disabledIcon = disabledIcon;
     disabledIconSet = (disabledIcon != NULL);
 //    firePropertyChange("disabledIcon", oldValue, disabledIcon);
@@ -799,8 +798,8 @@ void JLabel::setSize(double w, double h)
  _w = w;
  _h = h;
 }
-int JLabel::getX() {return (int)_x;}
-int JLabel::getY() {return (int)_y;}
+//int JLabel::getX() {return (int)_x;}
+//int JLabel::getY() {return (int)_y;}
 
 #if 0 // TODO:
 

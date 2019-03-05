@@ -30,6 +30,8 @@
 #include "shutdownmanager.h"
 #include "audiomanager.h"
 #include "layoutblockmanager.h"
+#include "layouttrack.h"
+#include "layoutturnout.h"
 #include "warrantmanager.h"
 #include "lnsensor.h"
 #include "flowlayout.h"

@@ -51,11 +51,11 @@
         while (iter.hasNext()) {
             Positionable* pos = iter.next();
             //f (pos instanceof IndicatorTrack)
-            if(qobject_cast<IndicatorTrack*>(pos)!= NULL)
+            if(qobject_cast<IndicatorTrack*>((QObject*)pos)!= NULL)
             {
                 int x = pos->getX() + pos->getWidth() / 2;
                 int y = pos->getY() + pos->getHeight() / 2;
-                pi->setLocation(x, y);
+                ((Positionable*)pi)->setLocation(x, y);
                 parent->_editor->putItem(pi);
                 break;
             }

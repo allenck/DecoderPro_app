@@ -43,8 +43,8 @@
  _textBox->setVisible(true);
 
  _nCols = nCols;
- //_itemGroup = new MyGraphicsItemGroup();
- _itemGroup = NULL;
+ _itemGroup = new MyGraphicsItemGroup();
+ //_itemGroup = NULL;
  widget = new MyGraphicsProxyWidget();
  widget->setWidget(_textBox);
  widget->setFlag(QGraphicsItem::ItemIsFocusable,true) ;
@@ -59,7 +59,7 @@
  log = new Logger("MemoryInputIcon");
  namedMemory = NULL;
  //widget = NULL;
- _icon = true;
+ //_icon = true;
 
 
 //    QGridLayout* g;
@@ -86,7 +86,7 @@
 //    _textBox->addMouseMotionListener(this);
 //    _textBox->addMouseListener(this);
 
- setPopupUtility(new PositionablePopupUtil((Positionable*)this, _textBox));
+ setPopupUtility(new PositionablePopupUtil((Positionable*)this, (JComponent*)_textBox));
  int width = qMax(100, _textBox->width()+ 20);
  QSize size = QSize(width, qMax(80, _textBox->height()));
  setMaximumSize(size);
@@ -98,13 +98,12 @@ void MemoryInputIcon::textChanged(QString text)
 
 /*public*/ Positionable* MemoryInputIcon::deepClone() {
     MemoryInputIcon* pos = new MemoryInputIcon(_nCols, _editor);
-    return finishClone((Positionable*)pos);
+    return finishClone(pos);
 }
 
-/*public*/ Positionable* MemoryInputIcon::finishClone(Positionable* p) {
-    MemoryInputIcon* pos = (MemoryInputIcon*)p;
+/*public*/ Positionable* MemoryInputIcon::finishClone(MemoryInputIcon* pos) {
     pos->setMemory(namedMemory->getName());
-    return PositionableJPanel::finishClone((Positionable*)pos);
+    return PositionableJPanel::finishClone(pos);
 }
 /*public*/ QWidget* MemoryInputIcon::getTextComponent() {
     return _textBox;
@@ -113,6 +112,11 @@ void MemoryInputIcon::textChanged(QString text)
 /*public*/ void MemoryInputIcon::mouseExited(QGraphicsSceneMouseEvent* e) {
     updateMemory();
     PositionableJPanel::mouseExited(e);
+}
+
+/*public*/ void MemoryInputIcon::mousePressed(QGraphicsSceneMouseEvent* e) {
+    updateMemory();
+    PositionableJPanel::mousePressed(e);
 }
 
 /**

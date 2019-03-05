@@ -209,6 +209,7 @@
         QScrollBar* bar = _table->verticalScrollBar();
         bar->setValue(50);       // important to "prime" the setting for bar.getMaximum()
         int numRows = model->rowCount(QModelIndex());
+        Q_UNUSED(numRows);
         int key = 1000;
         QListIterator<int> iter( anomalies->keys());
         while (iter.hasNext()) {

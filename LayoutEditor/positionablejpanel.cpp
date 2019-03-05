@@ -19,22 +19,22 @@
 
 
 /*public*/ PositionableJPanel::PositionableJPanel(Editor* editor, QObject* parent)
- : PositionableLabel("", editor,(Positionable*)parent)
+ : JPanel((QWidget*)parent)
 {
  _editor = NULL;
  debug = false;
 
  _showTooltip =true;
  _editable = true;
- _positionable = true;
- _viewCoordinates = false;
- _controlling = true;
- _hidden = false;
+// _positionable = true;
+// _viewCoordinates = false;
+// _controlling = true;
+// _hidden = false;
  lock = NULL;
  showTooltipItem = NULL;
  log = new Logger("PositionableJPanel");
  active = true;
- _popupUtil = NULL;
+//_popupUtil = NULL;
 
  _editor = editor;
   debug = log->isDebugEnabled();
@@ -42,23 +42,22 @@
 
 /*public*/ Positionable* PositionableJPanel::deepClone() {
     PositionableJPanel* pos = new PositionableJPanel(_editor);
-    return finishClone((Positionable*)pos);
+    return finishClone(pos);
 }
 
-/*public*/ Positionable* PositionableJPanel::finishClone(Positionable* p) {
-    PositionableJPanel* pos = (PositionableJPanel*)p;
-    pos->setLocation(_x, _y);
+/*public*/ Positionable* PositionableJPanel::finishClone(PositionableJPanel* pos) {
+    pos->setLocation(getX(), getY());
     pos->_displayLevel = _displayLevel;
     pos->_controlling = _controlling;
     pos->_hidden = _hidden;
     pos->_positionable = _positionable;
-    pos->_showTooltip =_showTooltip;
-    pos->setTooltip(getTooltip());
+    pos->_showTooltip = _showTooltip;
+//    pos->setToolTip(getToolTip());
     pos->_editable = _editable;
     if (getPopupUtility()==NULL) {
         pos->setPopupUtility(NULL);
     } else {
-        pos->setPopupUtility(getPopupUtility()->clone((Positionable*)pos, pos->getTextComponent()));
+        pos->setPopupUtility(getPopupUtility()->clone((Positionable*)pos, (JComponent*)pos->getTextComponent()));
     }
     pos->updateSize();
     return (Positionable*)pos;
@@ -129,8 +128,8 @@
 /*public*/ bool PositionableJPanel::getSaveOpaque() {
     return isOpaque();
 }
-/*public*/ QObject* PositionableJPanel::getTextComponent() {
-    return this;
+/*public*/ JComponent* PositionableJPanel::getTextComponent() {
+    return (JComponent*)this;
 }
 
 /*public*/ QString PositionableJPanel::getNameString() {
@@ -278,12 +277,12 @@ void PositionableJPanel::cleanup() {}
 
 /***************************************************************/
 
-///*public*/ void PositionableJPanel::setPopupUtility(PositionablePopupUtil* tu) {
-//    _popupUtil = tu;
-//}
-///*public*/ PositionablePopupUtil* PositionableJPanel::getPopupUtility() {
-//    return _popupUtil;
-//}
+/*public*/ void PositionableJPanel::setPopupUtility(PositionablePopupUtil* tu) {
+    _popupUtil = tu;
+}
+/*public*/ PositionablePopupUtil* PositionableJPanel::getPopupUtility() {
+    return _popupUtil;
+}
 
 /**
  * Update the AWT and Swing size information due to change in internal
@@ -367,11 +366,14 @@ void PositionableJPanel::setSize(int w, int h)
 }
 void PositionableJPanel::setName(QString name){ this->name = name;}
 QString PositionableJPanel::getName() {return name;}
-//void PositionableJPanel::setLocation(int x, int y)
-//{
-// _x = x;
-// _y = y;
-//}
+void PositionableJPanel::setLocation(int x, int y)
+{
+ _x = x;
+ _y = y;
+}
+int PositionableJPanel::getX() {return _x;}
+int PositionableJPanel::getY() {return _y;}
+
 bool PositionableJPanel::isOpaque() {return _bOpaque;}
 /**
  * Stores the bounds of this component into "return value"
@@ -431,7 +433,7 @@ bool PositionableJPanel::updateScene() // TODO: this function not in Java
   _itemGroup->addToGroup(widget);
  }
  //item->setPos(getX(), getY());
- if(showTooltip()) item->setToolTip(getTooltip());
+// if(showTooltip()) item->setToolTip(getTooltip());
  //_itemGroup->addToGroup(item);
  item->setPos(getX(), getY());
  //if(showTooltip()) _itemGroup->setToolTip(getTooltip());

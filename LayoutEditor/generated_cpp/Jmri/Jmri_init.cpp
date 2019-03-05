@@ -56,6 +56,7 @@ PythonQt::priv()->registerClass(&JTextArea::staticMetaObject, "Jmri", PythonQtCr
 PythonQt::priv()->registerClass(&JmriJFrame::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_JmriJFrame>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_JmriJFrame>, module, 0);
 PythonQt::priv()->registerClass(&LayoutBlockManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LayoutBlockManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LayoutBlockManager>, module, 0);
 PythonQt::priv()->registerClass(&LayoutEditor::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LayoutEditor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LayoutEditor>, module, 0);
+PythonQt::priv()->registerClass(&LayoutTurnout::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LayoutTurnout>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LayoutTurnout>, module, 0);
 PythonQt::priv()->registerClass(&Light::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Light>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Light>, module, 0);
 PythonQt::priv()->registerClass(&LightManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LightManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LightManager>, module, 0);
 PythonQt::priv()->registerClass(&ListSelectionModel::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_ListSelectionModel>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_ListSelectionModel>, module, 0);
@@ -84,7 +85,7 @@ PythonQt::priv()->registerClass(&NetworkPortAdapter::staticMetaObject, "Jmri", P
 PythonQt::priv()->registerClass(&PanelEditor::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_PanelEditor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_PanelEditor>, module, 0);
 PythonQt::priv()->registerClass(&PanelMenu::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_PanelMenu>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_PanelMenu>, module, PythonQt::Type_NonZero);
 PythonQt::priv()->registerClass(&PortAdapter::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_PortAdapter>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_PortAdapter>, module, 0);
-PythonQt::priv()->registerClass(&Positionable::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Positionable>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Positionable>, module, 0);
+PythonQt::priv()->registerCPPClass("Positionable", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_Positionable>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Positionable>, module, 0);
 PythonQt::priv()->registerClass(&PositionableLabel::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_PositionableLabel>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_PositionableLabel>, module, 0);
 PythonQt::priv()->registerClass(&PowerManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_PowerManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_PowerManager>, module, 0);
 PythonQt::priv()->registerClass(&ProgListener::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_ProgListener>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_ProgListener>, module, 0);

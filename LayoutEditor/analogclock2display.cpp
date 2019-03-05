@@ -21,7 +21,7 @@
 ///*public*/ class AnalogClock2Display extends PositionableJComponent {
 
 /*public*/ AnalogClock2Display::AnalogClock2Display(Editor* editor, QObject *parent) :
-    PositionableIcon("Clock", editor, (Positionable*)parent) //PositionableJComponent(editor, parent)
+    PositionableJComponent(editor, parent)
 {
  //super(editor);
  log = new Logger("AnalogClock2Display");
@@ -42,7 +42,7 @@ AnalogClock2Display::~AnalogClock2Display()
  delete clockIcon;
  delete hourHand;
  delete minuteHand;
- delete _iconMap;
+ //delete _iconMap;
 }
 
 /*public*/ Positionable* AnalogClock2Display::deepClone()
@@ -55,8 +55,7 @@ AnalogClock2Display::~AnalogClock2Display()
 {
  AnalogClock2Display* pos = (AnalogClock2Display*)p;
  pos->setScale(getScale());
- //return PositionableJComponent::finishClone(pos);
- return PositionableLabel::finishClone((Positionable*)pos);
+ return PositionableJComponent::finishClone((Positionable*)pos);
 }
 
 void AnalogClock2Display::common()
@@ -100,11 +99,11 @@ void AnalogClock2Display::common()
  amPm = "AM";
  _itemGroup = NULL;
  g =NULL;
- _bVisible = true;
- _icon = true;
- _text = false;
- _namedIcon = clockIcon;
- _iconMap = new QMap <QString, NamedIcon*>();
+// _bVisible = true;
+// _icon = true;
+// _text = false;
+// _namedIcon = clockIcon;
+// _iconMap = new QMap <QString, NamedIcon*>();
 
     // request callback to update time
 //    clock->addMinuteChangeListener(new PropertyChangeListener()
@@ -187,7 +186,7 @@ void AnalogClock2Display::actActivated() // SLOT[]
     setSize(clockIcon->getIconHeight());
     scale *= getScale();
     //PositionableJComponent::setScale(scale);
-    PositionableLabel::setScale(scale);
+    PositionableJComponent::setScale(scale);
 }
 
 void AnalogClock2Display::addRateMenuEntry(QMenu* menu, /*final*/ int newrate)
@@ -394,7 +393,7 @@ int AnalogClock2Display::dotY(double radius, double angle) {
 /*public*/ void AnalogClock2Display::setSize(int x) {
     size = x;
     //PositionableJComponent::setSize(x, x);
-    PositionableLabel::setSize(x, x);
+    PositionableJComponent::setSize(x, x);
     scaleFace();
 }
 
@@ -453,6 +452,60 @@ void AnalogClock2Display::cleanup() {
     disconnect(t, SIGNAL(minuteTick()), this, SLOT(update()));
 
 }
+
+//@Override
+/*public*/ QString AnalogClock2Display::getURL() {
+    return _url;
+}
+
+//@Override
+/*public*/ void AnalogClock2Display::setULRL(QString u) {
+    _url = u;
+}
+
+//@Override
+/*public*/ bool AnalogClock2Display::setLinkMenu(QMenu* popup) {
+    if (_url == "" || _url.trimmed().length() == 0) {
+        return false;
+    }
+    popup->addAction(CoordinateEdit::getLinkEditAction(this, "EditLink",this));
+    return true;
+}
+//@Override
+/*public*/ void AnalogClock2Display::doMouseClicked(QGraphicsSceneMouseEvent* event) {
+    log->debug("click to " + _url);
+    if (_url == "" || _url.trimmed().length() == 0) {
+        return;
+    }
+    try {
+        if (_url.startsWith("frame:")) {
+            // locate JmriJFrame and push to front
+            QString frame = _url.mid(6);
+            JmriJFrame* jframe = JmriJFrame::getFrame(frame);
+//            java.awt.EventQueue.invokeLater(new Runnable() {
+//                @Override
+//                public void run() {
+                    jframe->toFront();
+                    jframe->repaint();
+//                }
+//            });
+        }
+#if 0        // TODO:
+        else {
+            jmri.util.ExternalLinkContentViewerUI.activateURL(new java.net.URL(_url));
+        }
+#endif
+    } catch (IOException t) {
+        log->error("Error handling link", t);
+    }
+#if 0
+    catch (URISyntaxException t) {
+        log.error("Error handling link", t);
+    }
+#endif
+    PositionableJComponent::doMouseClicked(event);
+}
+
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AnalogClock2Display.class.getName());
 //}
 void AnalogClock2Display::propertyChange(PropertyChangeEvent *)

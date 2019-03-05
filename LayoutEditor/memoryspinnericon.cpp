@@ -54,7 +54,7 @@
   _itemGroup = NULL;
   //  _itemGroup = new QGraphicsItemGroup();
   //  _itemGroup->addToGroup(widget);
-  _icon = true;
+  //_icon = true;
 
 //  QGridLayout* g;
 //  GridBagConstraints* c= new GridBagConstraints();
@@ -67,7 +67,7 @@
 //  JTextField textBox = ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField();
 //  textBox.addMouseMotionListener(this);
 //  textBox.addMouseListener(this);
-  setPopupUtility(new PositionablePopupUtil(this, spinner));
+  setPopupUtility(new PositionablePopupUtil(this, (JComponent*)spinner));
   int width = qMin(100, spinner->width()+ 20);
   QSize size = QSize(width, qMin(80, spinner->height()));
   setFixedSize(size);
@@ -75,13 +75,13 @@
 
 /*public*/ Positionable* MemorySpinnerIcon::deepClone() {
     MemorySpinnerIcon* pos = new MemorySpinnerIcon(_editor);
-    return finishClone((Positionable*)pos);
+    return finishClone(pos);
 }
 
-/*public*/ Positionable* MemorySpinnerIcon::finishClone(Positionable* p) {
+/*public*/ Positionable* MemorySpinnerIcon::finishClone(MemorySpinnerIcon* p) {
     MemorySpinnerIcon* pos = (MemorySpinnerIcon*)p;
     pos->setMemory(namedMemory->getName());
-    return PositionableJPanel::finishClone((Positionable*)pos);
+    return PositionableJPanel::finishClone(pos);
 }
 ///*public*/ JComponent MemorySpinnerIcon::getTextComponent() {
 //    return ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField();

@@ -392,7 +392,6 @@ SOURCES += \
     vsdcontrol.cpp \
     busydialog.cpp \
     vsdoptionsdialog.cpp \
-    jlabel.cpp \
     dragjlabel.cpp \
     dropjlabel.cpp \
     jmriabstractaction.cpp \
@@ -776,7 +775,6 @@ HEADERS += liblayouteditor_global.h \
     vsdcontrol.h \
     busydialog.h \
     vsdoptionsdialog.h \
-    jlabel.h \
     dragjlabel.h \
     dropjlabel.h \
     jmriabstractaction.h \

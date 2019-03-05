@@ -72,5 +72,5 @@ private:
     int lastAutoSectionRef;// = 0;
     Logger log;
 };
-
+Q_DECLARE_METATYPE(SectionManager)
 #endif // SECTIONMANAGER_H

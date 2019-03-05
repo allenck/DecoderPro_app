@@ -3,6 +3,8 @@
 
 #include "positionablelabel.h"
 #include "logger.h"
+#include "positionable.h"
+#include "jpanel.h"
 
 class QGraphicsItemGroup;
 class JFrameItem;
@@ -14,14 +16,15 @@ class QGraphicsSceneMouseEvent;
 class Positionable;
 class Editor;
 class QMenu;
-class PositionableJPanel : public PositionableLabel
+class PositionableJPanel : public JPanel, public Positionable
 {
-    Q_OBJECT
+ Q_OBJECT
+ Q_INTERFACES(Positionable)
 public:
     //explicit PositionableJPanel(QObject *parent = 0);
     /*public*/ PositionableJPanel(Editor* editor, QObject *parent = 0);
     /*public*/ Positionable* deepClone();
-    /*public*/ Positionable* finishClone(Positionable* p);
+    /*public*/ Positionable* finishClone(PositionableJPanel* pos);
 //    /*public*/ void setPositionable(bool enabled);
 //    /*public*/ bool isPositionable();
 //    /*public*/ void setEditable(bool enabled);
@@ -46,7 +49,7 @@ public:
     /*public*/ void rotate(int deg) ;
     /*public*/ int getDegrees();
     /*public*/ bool getSaveOpaque();
-    /*public*/ QObject* getTextComponent();
+    /*public*/ JComponent *getTextComponent();
     /*public*/ QString getNameString();
     /*public*/ Editor* getEditor();
     /*public*/ void setEditor(Editor* ed);
@@ -80,8 +83,8 @@ public:
     /*public*/ void mouseEntered(QGraphicsSceneMouseEvent* e);
     /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* e);
     /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* e);
-//    /*public*/ void setPopupUtility(PositionablePopupUtil* tu);
-//    /*public*/ PositionablePopupUtil* getPopupUtility();
+    /*public*/ void setPopupUtility(PositionablePopupUtil* tu);
+    /*public*/ PositionablePopupUtil* getPopupUtility();
     /*public*/ void updateSize();
     /*public*/ int maxWidth();
     /*public*/ int maxHeight();
@@ -90,11 +93,16 @@ public:
     void setName(QString name);
     bool isOpaque();
     QString getName();
-//    void setLocation(int x, int y);
+    void setLocation(int x, int y);
+    int getX();
+    int getY();
+
 //    /*public*/ QRect getBounds(QRect rv);
     //QGraphicsProxyWidget* widget;
     QRectF getBounds(QRectF);
     /*public*/ bool updateScene();
+    QObject* self() {return (QObject*)this;}
+
 signals:
 
 public slots:
@@ -106,26 +114,29 @@ private:
     Logger* log;
     void edit();
     bool active;// = true;
-   // PositionablePopupUtil* _popupUtil;
+    PositionablePopupUtil* _popupUtil = nullptr;
     QString name;
-//    int _x, _y;
+    int _x, _y;
     bool _bOpaque;
+    MyGraphicsProxyWidget* widget = nullptr;
+
 protected:
 
     /*protected*/ Editor* _editor;// = NULL;
     /*protected*/ bool debug;// = false;
 
     /*private*/ QString _tooltip;
-    /*protected*/ bool _showTooltip;// =true;
-    /*protected*/ bool _editable;// = true;
-//    /*protected*/ bool _positionable;// = true;
-//    /*protected*/ bool _viewCoordinates;// = false;
-//    /*protected*/ bool _controlling;// = true;
-//    /*protected*/ bool _hidden;// = false;
-//    /*protected*/ int _displayLevel;
+    /*protected*/ bool _showTooltip =true;
+    /*protected*/ bool _editable = true;
+    /*protected*/ bool _positionable = true;
+    /*protected*/ bool _viewCoordinates = false;
+    /*protected*/ bool _controlling = true;
+    /*protected*/ bool _hidden = false;
+    /*protected*/ int _displayLevel;
     /*protected*/ void makeIconEditorFrame(QObject* pos, QString name, bool table, IconAdder* editor);
     //QGraphicsItemGroup* _itemGroup;
-
+friend class MemoryComboIcon;
+friend class MemorySpinnerIcon;
 };
 
 #endif // POSITIONABLEJPANEL_H

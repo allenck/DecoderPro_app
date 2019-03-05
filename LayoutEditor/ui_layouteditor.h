@@ -151,7 +151,7 @@ public:
     QHBoxLayout *labelGroup1;
     QLabel *label_7;
     QCheckBox *textLabelButton;
-    QLineEdit *textLabelTextField;
+    QLineEdit *textLabel;
     QHBoxLayout *horizontalLayout_7;
     QCheckBox *memoryButton;
     JmriBeanComboBox *textMemoryComboBox;
@@ -619,10 +619,10 @@ public:
 
         labelGroup1->addWidget(textLabelButton);
 
-        textLabelTextField = new QLineEdit(centralWidget);
-        textLabelTextField->setObjectName(QLatin1String("textLabelTextField"));
+        textLabel = new QLineEdit(centralWidget);
+        textLabel->setObjectName(QLatin1String("textLabel"));
 
-        labelGroup1->addWidget(textLabelTextField);
+        labelGroup1->addWidget(textLabel);
 
 
         horizontalLayout_3->addLayout(labelGroup1);
@@ -750,7 +750,7 @@ public:
         LayoutEditor->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(LayoutEditor);
         menuBar->setObjectName(QLatin1String("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1245, 19));
+        menuBar->setGeometry(QRect(0, 0, 1245, 17));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QLatin1String("menuFile"));
         menuOptions = new QMenu(menuBar);

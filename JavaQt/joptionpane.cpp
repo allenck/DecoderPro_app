@@ -1589,7 +1589,7 @@ if(options.count() >0)
  *   <code>true</code>
  * @see java.awt.GraphicsEnvironment#isHeadless
  */
-/*static*/ QWidget* getWindowForComponent(QWidget* parentComponent)
+/*static*/ QWidget* JOptionPane::getWindowForComponent(QWidget* parentComponent)
     throw (HeadlessException) {
 //    if (parentComponent == NULL)
 //        return getRootFrame();

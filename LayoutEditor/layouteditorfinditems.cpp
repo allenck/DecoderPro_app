@@ -481,39 +481,81 @@
         }
         return NULL;
     }
-#if 0
-    /*public*/ Object findObjectByTypeAndName(int type, String name) {
+
+    /*public*/ LayoutTrack* LayoutEditorFindItems::findObjectByTypeAndName(int type, QString name) {
         if (name.length() <= 0) {
             return NULL;
         }
         switch (type) {
-            case LayoutEditor.NONE:
+            case LayoutEditor::NONE:
                 return NULL;
-            case LayoutEditor.POS_POINT:
+            case LayoutEditor::POS_POINT:
                 return findPositionablePointByName(name);
-            case LayoutEditor.TURNOUT_A:
-            case LayoutEditor.TURNOUT_B:
-            case LayoutEditor.TURNOUT_C:
-            case LayoutEditor.TURNOUT_D:
+            case LayoutEditor::TURNOUT_A:
+            case LayoutEditor::TURNOUT_B:
+            case LayoutEditor::TURNOUT_C:
+            case LayoutEditor::TURNOUT_D:
                 return findLayoutTurnoutByName(name);
-            case LayoutEditor.LEVEL_XING_A:
-            case LayoutEditor.LEVEL_XING_B:
-            case LayoutEditor.LEVEL_XING_C:
-            case LayoutEditor.LEVEL_XING_D:
+            case LayoutEditor::LEVEL_XING_A:
+            case LayoutEditor::LEVEL_XING_B:
+            case LayoutEditor::LEVEL_XING_C:
+            case LayoutEditor::LEVEL_XING_D:
                 return findLevelXingByName(name);
-            case LayoutEditor.SLIP_A:
-            case LayoutEditor.SLIP_B:
-            case LayoutEditor.SLIP_C:
-            case LayoutEditor.SLIP_D:
+            case LayoutEditor::SLIP_A:
+            case LayoutEditor::SLIP_B:
+            case LayoutEditor::SLIP_C:
+            case LayoutEditor::SLIP_D:
                 return findLayoutSlipByName(name);
-            case LayoutEditor.TRACK:
+            case LayoutEditor::TRACK:
                 return findTrackSegmentByName(name);
             default:
-                if (type >= LayoutEditor.TURNTABLE_RAY_OFFSET) {
+                if (type >= LayoutEditor::TURNTABLE_RAY_OFFSET) {
                     return findLayoutTurntableByName(name);
                 }
         }
-        log.error("did not find Object '" + name + "' of type " + type);
-        return NULL;
+        log->error("did not find Object '" + name + "' of type " + type);
+        return nullptr;
     }
-#endif
+
+/**
+ * find object by name
+ *
+ * @param name the name of the object that you are looking for
+ * @return object the named object
+ */
+// NOTE: This replacement routine for findObjectByTypeAndName (above)
+// uses the unique name prefixes to determine what type of item to find.
+// Currently this routine (like the one above that it replaces) is only
+// called by the setObjects routine in TrackSegment.java however in the
+// move toward encapsulation this routine should see a lot more usage;
+// specifically, instead of a TON of "if (type == XXX) { findXXXByName(...)...}"
+// code you would just call this method instead.
+/*public*/ LayoutTrack* LayoutEditorFindItems::findObjectByName(QString name) {
+    LayoutTrack* result = nullptr;   // assume failure (pessimist!)
+    QRegExp r1("F\\d+-A-\\d+");
+    QRegExp r2("F\\d+-S-\\d+");
+    if ((name != "") && !name.isEmpty()) {
+        if (name.startsWith("TO")) {
+            result = findLayoutTurnoutByName(name);
+        } else if (name.startsWith("A") || name.startsWith("EB") || name.startsWith("EC") || /*name.matches("F\\d+-A-\\d+"))*/ (r1.indexIn(name)>0))
+        {
+            result = findPositionablePointByName(name);
+        } else if (name.startsWith("X")) {
+            result = findLevelXingByName(name);
+        } else if (name.startsWith("SL")) {
+            result = findLayoutSlipByName(name);
+        } else if (name.startsWith("TUR")) {
+            result = findLayoutTurntableByName(name);
+        } else if (name.startsWith("T") || /*name.matches("F\\d+-S-\\d+")*/ r2.indexIn(name)>0) {  // (this prefix has to go after "TO" & "TUR" prefixes above)
+            result = findTrackSegmentByName(name);
+        } else if (name.endsWith("-EB")) {  //BUGFIX: a 3rd party JMRI exporter gets this one wrong.
+            result = findPositionablePointByName(name);
+        } else {
+            log->warn(tr("findObjectByName(%1): unknown type name prefix").arg(name));
+        }
+        if (result == nullptr) {
+            log->debug(tr("findObjectByName(%1) returned null").arg(name));
+        }
+    }
+    return result;
+}

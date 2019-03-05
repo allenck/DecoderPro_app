@@ -19,6 +19,7 @@
 #include "windowlistener.h"
 #include "exceptions.h"
 
+class SignalHead;
 class QGraphicsEllipseItem;
 class QCloseEvent;
 class JmriJFrame;
@@ -59,6 +60,7 @@ public:
     SINGLE_SLIP = 7, //used in LayoutSlip which extends this class
     DOUBLE_SLIP = 8 //used in LayoutSlip which extends this class
      };
+ Q_ENUM(TURNOUTTYPES)
     // defined constants - link types
  enum LINKTYPES
  {
@@ -69,6 +71,20 @@ public:
                                                     // turnout pair (furthest from the throat)
    THROAT_TO_THROAT = 3  // this turnout is one of two throat-to-throat
  };                                   // turnouts - no signals at throat
+ Q_ENUM(LINKTYPES)
+ enum POINTS
+ {
+  POINTA = 0x01,
+  POINTA2 = 0x03,
+  POINTA3 = 0x05,
+  POINTB = 0x10,
+  POINTB2 = 0x12,
+  POINTC = 0x20,
+  POINTC2 = 0x22,
+  POINTD = 0x30,
+  POINTD2 = 0x32
+ };
+ Q_ENUM(POINTS)
  // operational instance variables (not saved between sessions)
      /*public*/ static /*final*/ int UNKNOWN;// = Turnout.UNKNOWN;
      /*public*/ static /*final*/ int STATE_AC;// = 0x02;
@@ -116,10 +132,10 @@ public:
     /*protected*/ NamedBeanHandle<Sensor*>* sensorCNamed;// = NULL; // diverging
     /*protected*/ NamedBeanHandle<Sensor*>* sensorDNamed;// = NULL; // single or double crossover only
     /*public*/ int type;// = RH_TURNOUT;
-    /*public*/ QObject* connectA;// = NULL;		// throat of LH, RH, RH Xover, LH Xover, and WYE turnouts
-    /*public*/ QObject* connectB;// = NULL;		// straight leg of LH and RH turnouts
-    /*public*/ QObject* connectC;// = NULL;
-    /*public*/ QObject* connectD;// = NULL;		// double xover, RH Xover, LH Xover only
+    /*public*/ LayoutTrack* connectA;// = NULL;		// throat of LH, RH, RH Xover, LH Xover, and WYE turnouts
+    /*public*/ LayoutTrack* connectB;// = NULL;		// straight leg of LH and RH turnouts
+    /*public*/ LayoutTrack* connectC;// = NULL;
+    /*public*/ LayoutTrack* connectD;// = NULL;		// double xover, RH Xover, LH Xover only
     /*public*/ int continuingSense;// = Turnout::CLOSED;
     /*public*/ bool disabled;// = false;
     /*public*/ bool disableWhenOccupied;// = false;
@@ -131,7 +147,10 @@ public:
     /**
      * constructor method
      */
-    /*public*/ LayoutTurnout(QString id, int t, QPointF c, double rot, double xFactor, double yFactor, LayoutEditor* myPanel, int version = 1);
+    /*public*/ LayoutTurnout(/*@Nonnull*/ QString id, int t, /*@Nonnull*/ QPointF c, double rot,
+            double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor);
+    /*public*/ LayoutTurnout(/*@Nonnull*/ QString id, int t, /*@Nonnull*/ QPointF c, double rot,
+            double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int version);
     /**
      * Accessor methods
     */
@@ -146,6 +165,7 @@ public:
     /*public*/ QString getBlockCName();
     /*public*/ QString getBlockDName();
     /*public*/ QString getSignalA1Name();
+    /*public*/ SignalHead* getSignalHead(int loc);
     /*public*/ void setSignalA1Name(QString signalName);
     /*public*/ QString getSignalA2Name();
     /*public*/ void setSignalA2Name(QString signalName) ;
@@ -163,6 +183,7 @@ public:
     /*public*/ void setSignalD1Name(QString signalName);
     /*public*/ QString getSignalD2Name();
     /*public*/ void setSignalD2Name(QString signalName);
+    /*public*/ void removeBeanReference(NamedBean* nb);
 
     /*public*/ QString getSignalAMastName();
     /*public*/ SignalMast* getSignalAMast();
@@ -215,10 +236,10 @@ public:
     /*public*/ bool isDisabled();
 //    /*public*/ void setDisableWhenOccupied(bool state);
     /*public*/ bool isDisabledWhenOccupied();
-    /*public*/ void setConnectA(QObject* o,int type);
-    /*public*/ void setConnectB(QObject* o,int type);
-    /*public*/ void setConnectC(QObject* o,int type);
-    /*public*/ void setConnectD(QObject* o,int type);
+    /*public*/ void setConnectA(LayoutTrack *o, int type);
+    /*public*/ void setConnectB(LayoutTrack* o,int type);
+    /*public*/ void setConnectC(LayoutTrack *o, int type);
+    /*public*/ void setConnectD(LayoutTrack* o,int type);
     /*public*/ LayoutBlock* getLayoutBlock();
     /*public*/ LayoutBlock* getLayoutBlockB();
     /*public*/ LayoutBlock* getLayoutBlockC() ;
@@ -305,8 +326,8 @@ public:
  void drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2);
  /*public*/ int getVersion() ;
  /*public*/ void setVersion(int v);
- virtual /*public*/ QObject* getConnection(int location) throw (JmriException);
- virtual /*public*/ void setConnection(int location, QObject* o, int type) throw (JmriException);
+ virtual /*public*/ LayoutTrack* getConnection(int location) throw (JmriException);
+ virtual /*public*/ void setConnection(int location, LayoutTrack *o, int type) throw (JmriException);
  /*public*/ QRectF getBounds();
 
 signals:
@@ -322,6 +343,8 @@ public slots:
 
 private:
  int version;
+ void common(QString id, int t, QPointF c, double rot, double xFactor, double yFactor,
+             LayoutEditor* myPanel, int v);
     /*private*/ LayoutBlock* blockB;// = NULL;  // Xover - second block, if there is one
     /*private*/ LayoutBlock* blockC;// = NULL;  // Xover - third block, if there is one
     /*private*/ LayoutBlock* blockD;// = NULL;  // Xover - fourth block, if there is one
@@ -414,6 +437,8 @@ private slots:
  void on_blockDNameField_textEdited(QString);
 
 protected:
+ /*protected*/ LayoutTurnout(/*@Nonnull*/ QString id,
+         /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor);
     // operational instance variables (not saved between sessions)
     //private Turnout turnout = NULL;
     /*protected*/ NamedBeanHandle<Turnout*>* namedTurnout;// = NULL;
@@ -422,7 +447,6 @@ protected:
     /*protected*/ LayoutBlock* block;// = NULL;
     /*protected*/ LayoutTurnout* instance;// = NULL;
     /*protected*/ LayoutEditor* layoutEditor;// = NULL;
-    /*protected*/ LayoutTurnout() {}
     /*protected*/ void rotateCoords(double rot);
     /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e, bool editable);
 
@@ -442,11 +466,16 @@ protected:
                                                                LayoutBlock* nextLayoutBlock,
                                                                bool suppress);
 
+ /*protected*/ NamedBeanHandle<SignalHead*>* signalA1HeadNamed = nullptr; // signal 1 (continuing) (throat for RH, LH, WYE)
+ /*protected*/ NamedBeanHandle<SignalHead*>* signalA2HeadNamed = nullptr; // signal 2 (diverging) (throat for RH, LH, WYE)
+ /*protected*/ NamedBeanHandle<SignalHead*>* signalA3HeadNamed = nullptr; // signal 3 (second diverging) (3-way turnouts only)
+ /*protected*/ NamedBeanHandle<SignalHead*>* signalB1HeadNamed = nullptr; // continuing (RH, LH, WYE) signal 1 (double crossover)
+ /*protected*/ NamedBeanHandle<SignalHead*>* signalB2HeadNamed = nullptr; // LH_Xover and double crossover only
+ /*protected*/ NamedBeanHandle<SignalHead*>* signalC1HeadNamed = nullptr; // diverging (RH, LH, WYE) signal 1 (double crossover)
+ /*protected*/ NamedBeanHandle<SignalHead*>* signalC2HeadNamed = nullptr; // RH_Xover and double crossover only
+ /*protected*/ NamedBeanHandle<SignalHead*>* signalD1HeadNamed = nullptr; // single or double crossover only
+ /*protected*/ NamedBeanHandle<SignalHead*>* signalD2HeadNamed = nullptr; // LH_Xover and double crossover only
 
-/**
- * Edit a Layout Turnout
- */
-///*protected*/ void editLayoutTurnout();
 friend class LoadXml;
 friend class LayoutSlip;
 friend class SetSignalsActionListener;

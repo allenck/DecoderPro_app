@@ -5,6 +5,7 @@
 #include "positionablepopuputil.h"
 #include <QLabel>
 
+class JTabbedPane;
 class TextDetails
 {
  public:
@@ -50,10 +51,11 @@ class PositionablePropertiesUtil : public QDialog
     Q_OBJECT
 public:
     //explicit PositionablePropertiesUtil(QObject *parent = 0);
-    PositionablePropertiesUtil(PositionablePopupUtil* p, QWidget *parent = 0);
+    PositionablePropertiesUtil(Positionable *p, QWidget *parent = 0);
     void setCurrentValues();
     const QIcon* getColourIcon(QColor color);
     QColor colorStringToColor(QString sColor);
+    /*public*/ void display();
 
 signals:
     
@@ -82,6 +84,7 @@ private:
  /*private*/ void undoChanges();
  void closeEvent(QCloseEvent *);
  /*private*/ void getCurrentValues();
+ JTabbedPane* propertiesPanel;
 
 private slots:
  void preview();

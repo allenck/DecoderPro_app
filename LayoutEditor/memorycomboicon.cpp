@@ -55,7 +55,7 @@
  _itemGroup = NULL;
 //    _itemGroup = new QGraphicsItemGroup();
 //    _itemGroup->addToGroup(widget);
- _icon = true;
+// _icon = true;
 //    QGridLayout* g;
 //    setLayout(g = new QGridLayout());
 //    g->addWidget(_comboBox,0,0,1,1);
@@ -71,7 +71,7 @@
 //            component.addMouseMotionListener(this);
 //        }
 //    }
- setPopupUtility(new PositionablePopupUtil((Positionable*)this, _comboBox));
+ setPopupUtility(new PositionablePopupUtil((Positionable*)this, (JComponent*)_comboBox));
  int width = qMax(100, _comboBox->width()+ 20);
  QSize size = QSize(width, qMax(80, _comboBox->height()));
  setMaximumSize(size);
@@ -116,7 +116,7 @@ class ComboModel extends DefaultComboBoxModel {
 /*public*/ Positionable* MemoryComboIcon::finishClone(Positionable* p) {
     MemoryComboIcon* pos = (MemoryComboIcon*)p;
     pos->setMemory(namedMemory->getName());
-    return PositionableJPanel::finishClone((Positionable*)pos);
+    return PositionableJPanel::finishClone(pos);
 }
 
 /**

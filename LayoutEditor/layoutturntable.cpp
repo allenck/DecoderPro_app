@@ -59,7 +59,7 @@
  * constructor method
  */
 /*public*/  LayoutTurntable::LayoutTurntable(QString id, QPointF c, LayoutEditor* myPanel, QObject *parent) :
-   LayoutTrack(parent)
+   LayoutTrack(id, c, myPanel, parent)
 {
  log = new Logger("LayoutTurntable");
  dccControlledTurnTable  = false;

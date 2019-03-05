@@ -478,12 +478,12 @@ void EditCircuitFrame::closePickList() {
 //            }
 //            else
             //else if (pos instanceof IndicatorTrackIcon )
-            if(qobject_cast<IndicatorTrackIcon*>(pos) != NULL)
+            if(qobject_cast<IndicatorTrackIcon*>((QObject*)pos) != NULL)
             {
                 segments++;
             }
            // else if (pos instanceof TurnoutIcon)
-            else if(qobject_cast<TurnoutIcon*>(pos) != NULL)
+            else if(qobject_cast<TurnoutIcon*>((QObject*)pos) != NULL)
             {
                 turnouts++;
             } else {

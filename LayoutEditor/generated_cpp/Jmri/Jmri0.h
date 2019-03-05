@@ -64,7 +64,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -2836,6 +2835,7 @@ virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoExcept
 
 class PythonQtPublicPromoter_Block : public Block
 { public:
+inline bool  py_q_equals(QObject*  obj) { return Block::equals(obj); }
 inline int  py_q_getState() { return Block::getState(); }
 inline void py_q_goingActive() { Block::goingActive(); }
 inline void py_q_goingInactive() { Block::goingInactive(); }
@@ -2852,6 +2852,7 @@ Block* new_Block(QString  systemName, QString  userName = "", QObject*  parent =
 void delete_Block(Block* obj) { delete obj; } 
    void addBlockDenyList(Block* theWrappedObject, Block*  blk);
    void addBlockDenyList(Block* theWrappedObject, QString  pName);
+   bool  py_q_equals(Block* theWrappedObject, QObject*  obj){  return (((PythonQtPublicPromoter_Block*)theWrappedObject)->py_q_equals(obj));}
    QString  getBlockSpeed(Block* theWrappedObject);
    int  getCurvature(Block* theWrappedObject);
    QList<QString >*  getDeniedBlocks(Block* theWrappedObject);

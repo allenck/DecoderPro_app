@@ -8,14 +8,16 @@
 #include <QSignalMapper>
 #include "positionableicon.h"
 #include "liblayouteditor_global.h"
-
+#include "linkingobject.h"
+#include "positionablejcomponent.h"
 
 class PropertyChangeEvent;
 class Timebase;
 class NamedIcon;
-class LIBLAYOUTEDITORSHARED_EXPORT AnalogClock2Display : public PositionableIcon
+class LIBLAYOUTEDITORSHARED_EXPORT AnalogClock2Display : public PositionableJComponent, public LinkingObject
 {
-    Q_OBJECT
+ Q_OBJECT
+ Q_INTERFACES(LinkingObject)
 public:
     //explicit AnalogClock2Display(QWidget *parent = 0);
     /*public*/ AnalogClock2Display(Editor* editor, QObject *parent=0);
@@ -37,6 +39,10 @@ public:
     void cleanup();
     /*public*/ void dispose();
     /*public*/ bool updateScene();
+    /*public*/ QString getURL();
+    /*public*/ void setULRL(QString u);
+    /*public*/ bool setLinkMenu(QMenu* popup);
+    /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* event);
 
 signals:
 
@@ -95,6 +101,9 @@ private:
     // centreX, centreY are the coordinates of the centre of the clock
     int centreX;
     int centreY;
+
+    QString _url;
+
  Logger* log;
  void common();
 

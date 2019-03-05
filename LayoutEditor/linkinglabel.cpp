@@ -22,7 +22,7 @@ LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel(parent)
 {
     //super(s, editor);
     this->url = url;
-    setPopupUtility(new PositionablePopupUtil(this, this));
+    setPopupUtility(new PositionablePopupUtil(this, (JComponent*)this));
 }
 
 /*public*/ LinkingLabel::LinkingLabel(NamedIcon* s, /*@Nonnull*/ Editor* editor, /*@Nonnull*/ QString url, QWidget *parent)
@@ -30,7 +30,7 @@ LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel(parent)
 {
     //super(s, editor);
     this->url = url;
-    setPopupUtility(new PositionablePopupUtil(this, this));
+    setPopupUtility(new PositionablePopupUtil(this, (JComponent*)this));
 }
 
 //@Override
@@ -62,7 +62,7 @@ LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel(parent)
 
 //@Override
 /*public*/ bool LinkingLabel::setLinkMenu(QMenu* popup) {
-    popup->addAction(CoordinateEdit::getLinkEditAction(this, tr("Edit Link"), parent));
+    popup->addAction(CoordinateEdit::getLinkEditAction(this, tr("Edit Link"), (QObject*)parent));
     return true;
 }
 

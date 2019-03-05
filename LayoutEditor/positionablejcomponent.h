@@ -5,13 +5,15 @@
 #include "logger.h"
 #include "positionable.h"
 #include <QFont>
+#include "jcomponent.h"
 
 class MyGraphicsProxyWidget;
 class Editor;
 class Positionable;
-class PositionableJComponent : public Positionable
+class PositionableJComponent : public JComponent, public Positionable
 {
     Q_OBJECT
+ Q_INTERFACES(Positionable)
 public:
     explicit PositionableJComponent(QWidget *parent = 0);
     /*public*/ PositionableJComponent(Editor* editor,QObject *parent = 0);
@@ -100,6 +102,7 @@ public:
     void invalidate();
     void repaint();
     bool requestFocusInWindow();
+    QObject* self() {return (QObject*)this;}
 
 signals:
 

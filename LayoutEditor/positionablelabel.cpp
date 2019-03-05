@@ -36,11 +36,12 @@ PositionableLabel::PositionableLabel(QWidget *parent) :
 //    /*public*/ static final ResourceBundle rbean = ResourceBundle.getBundle("jmri.NamedBeanBundle");
 
 
-/*public*/ PositionableLabel::PositionableLabel(QString s, Editor* editor, Positionable* parent) : JLabel(s)
+/*public*/ PositionableLabel::PositionableLabel(QString s, Editor* editor, Positionable* parent) : JLabel(s, editor)
 {
  common(parent);
  //super(s);
  _editor = editor;
+
  //if(editor != NULL)
   //Q_ASSERT(qobject_cast<Editor*>(editor)!= NULL);
  _text = true;
@@ -50,13 +51,13 @@ PositionableLabel::PositionableLabel(QWidget *parent) :
  if (debug) log->debug("PositionableLabel ctor (text) "+s);
  setHorizontalAlignment(JLabel::CENTER);
  setVerticalAlignment(JLabel::CENTER);
- setPopupUtility(new PositionablePopupUtil((Positionable*)this, this));
+ setPopupUtility(new PositionablePopupUtil((Positionable*)this, (JComponent*)this));
  setToolTip("Positionable Label");
  setObjectName("positionableLabel");
 
 }
 /*public*/ PositionableLabel::PositionableLabel(NamedIcon* s, Editor* editor, Positionable *parent)
- : JLabel("",s,0)
+ : JLabel(s,editor)
 {
  //super(s);
  common(parent);
@@ -69,7 +70,7 @@ PositionableLabel::PositionableLabel(QWidget *parent) :
  debug = log->isDebugEnabled();
 //    if (debug) log->debug(tr("PositionableLabel ctor (icon) ")+s->name());
 
- setPopupUtility(new PositionablePopupUtil((Positionable*)this->parent, this));
+ setPopupUtility(new PositionablePopupUtil((Positionable*)this->parent, (JComponent*)this));
  setToolTip("Positionable Label");
 }
 
@@ -97,6 +98,7 @@ void PositionableLabel::common(Positionable* parent)
  _hidden = false;
  _bVisible = true;
  _displayLevel = 0;
+ JLabel::setVisible(false); // set_bVisible underlying widget not visiable
  active = true;
  _saveOpaque = false;
  _unRotatedText = "";
@@ -194,7 +196,7 @@ return _displayLevel; }
 /*public*/ void PositionableLabel::setTooltip(QString tip)
 {
  _tooltip = tip;
- setToolTip(tip);
+ //setToolTip(tip);
 }
 /*public*/ QString PositionableLabel::getTooltip()
 {
@@ -207,28 +209,28 @@ return _displayLevel; }
  else if (_text) return "Text Label";
  else return "Background";
 }
-#if 1 // TODO:
+
 /*public*/ Positionable* PositionableLabel::deepClone()
 {
  PositionableLabel* pos;
  if (_icon)
  {
   NamedIcon* icon = new NamedIcon((NamedIcon*)getIcon());
-            pos = new PositionableLabel(icon, _editor);
-        } else {
-            pos = new PositionableLabel(_unRotatedText, _editor);
-        }
-        return finishClone((Positionable*)pos);
+     pos = new PositionableLabel(icon, _editor);
+ } else {
+     pos = new PositionableLabel(_unRotatedText, _editor);
+ }
+ return finishClone(pos);
 }
-#endif
-    /**
-     * When text is rotated or in an icon mode, the return of getText() may be
-     * NULL or some other value
-     * @return original defining text set by user
-     */
-    /*public*/ QString PositionableLabel::getUnRotatedText() {
-        return _unRotatedText;
-    }
+
+/**
+ * When text is rotated or in an icon mode, the return of getText() may be
+ * NULL or some other value
+ * @return original defining text set by user
+ */
+/*public*/ QString PositionableLabel::getUnRotatedText() {
+    return _unRotatedText;
+}
 #if 1
 /*public*/ Positionable* PositionableLabel::finishClone(Positionable* p)
 {
@@ -238,7 +240,7 @@ return _displayLevel; }
  pos->_control = _control;
  pos->_rotateText = _rotateText;
  pos->_unRotatedText = _unRotatedText;
- pos->setLocation(getX(), getY());
+ ((Positionable*)pos)->setLocation(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
  pos->_displayLevel = _displayLevel;
  pos->_controlling = _controlling;
  pos->_hidden = _hidden;
@@ -261,9 +263,9 @@ return _displayLevel; }
  pos->updateSize();
  return (Positionable*) pos;
 }
-/*public*/ QObject* PositionableLabel::getTextComponent()
+/*public*/ JComponent* PositionableLabel::getTextComponent()
 {
- return this;
+ return (JComponent*)this;
 }
 
 /*protected*/ NamedIcon* PositionableLabel::cloneIcon(NamedIcon* icon, PositionableLabel* pos)
@@ -528,7 +530,8 @@ return _displayLevel; }
 /*public*/ void PositionableLabel::finishItemUpdate(DisplayFrame* paletteFrame, ItemPanel* itemPanel) {
     itemPanel->closeDialogs();
     paletteFrame->dispose();
-    invalidate();
+    //invalidate();
+    update();
 }
 
 /*public*/ bool PositionableLabel::setEditItemMenu(QMenu* popup)
@@ -1230,7 +1233,7 @@ bool PositionableLabel::updateScene() // TODO: this function not in Java
    rItem->setPen(QPen(QBrush(getPopupUtility()->getBorderColor()),getPopupUtility()->getBorderSize()));
   //rItem->setPos(getX(), getY());
   _itemGroup->addToGroup(itemText);
-  _itemGroup->setPos(getX(), getY());
+  _itemGroup->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
   if(_itemGroup->name() == "")
    _itemGroup->setName(getGroupName());
   if(getDegrees() != 0)
@@ -1314,10 +1317,10 @@ QColor PositionableLabel::getBackground()
 /*public*/ QRectF PositionableLabel::getBounds(QRectF r)
 {
  if(r.isNull())
-  return QRectF(getX(), getY(), getWidth(), getHeight());
+  return QRectF(((Positionable*)this)->getX(), ((Positionable*)this)->getY(), getWidth(), getHeight());
  else
  {
-  r.setCoords(getX(), getY(), getWidth(), getHeight());
+  r.setCoords(((Positionable*)this)->getX(), ((Positionable*)this)->getY(), getWidth(), getHeight());
   return  r;
  }
 }
@@ -1363,5 +1366,15 @@ QColor PositionableLabel::getBackground()
 #endif
     setBackgroundColor(bg);
 }
+void PositionableLabel::setLocation(int x, int y)
+{
+ this->_x = x;
+ this->_y = y;
+}
+
+int PositionableLabel::getX() {return _x;}
+
+int PositionableLabel::getY() {return _y;}
+
 
 /*private*/ /*final*/ /*static*/ Logger* PositionableLabel::log = LoggerFactory::getLogger("PositionableLabel");

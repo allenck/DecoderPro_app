@@ -312,7 +312,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="textLabelTextField"/>
+         <widget class="QLineEdit" name="textLabel"/>
         </item>
        </layout>
       </item>
@@ -454,7 +454,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>1245</width>
-     <height>19</height>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -109,7 +109,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    {
     try
     {
-     QDomElement e = ConfigXmlManager::elementFromObject(sub);
+     QDomElement e = ConfigXmlManager::elementFromObject((QObject*)sub);
      if (!e.isNull())
      {
       panel.appendChild(e);

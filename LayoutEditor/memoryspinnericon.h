@@ -15,7 +15,7 @@ public:
     //explicit MemorySpinnerIcon(QWidget *parent = 0);
     /*public*/ MemorySpinnerIcon(Editor* editor, QWidget *parent = 0);
     /*public*/ Positionable* deepClone();
-    /*public*/ Positionable* finishClone(Positionable* p);
+    /*public*/ Positionable* finishClone(MemorySpinnerIcon* p);
     ///*public*/ JComponent getTextComponent();
     /*public*/ QSize getSize();
      /*public*/ void setMemory(QString pName);

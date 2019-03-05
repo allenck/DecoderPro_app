@@ -392,7 +392,7 @@ NamedIcon* LightIcon::getIcon(QString sState)
   QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap,_itemGroup);
   //_itemGroup->addToGroup(item);
   //item->setPos(getX(),getY());
-  _itemGroup->setPos(getX(),getY());
+  _itemGroup->setPos(((Positionable*)this)->getX(),((Positionable*)this)->getY());
   if(showTooltip()) _itemGroup->setToolTip(getTooltip());
   if(pixmap.isNull())
    qDebug() << "No pixmap";

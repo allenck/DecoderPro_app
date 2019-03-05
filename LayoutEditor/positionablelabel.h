@@ -16,7 +16,9 @@
 #include "actionlistener.h"
 #include "picklistmodel.h"
 #include "windowlistener.h"
+#include "positionable.h"
 
+class JComponent;
 class ItemPanel;
 class PropertyChangeEvent;
 class JFrameItem;
@@ -31,9 +33,10 @@ class CoordinateEdit;
 class AddPanelIconDialog;
 class DisplayFrame;
 
-class LIBLAYOUTEDITORSHARED_EXPORT PositionableLabel : public JLabel
+class LIBLAYOUTEDITORSHARED_EXPORT PositionableLabel : public JLabel, public Positionable
 {
  Q_OBJECT
+ Q_INTERFACES(Positionable)
 public:
     explicit PositionableLabel(QWidget *parent = 0);
 /*public*/ PositionableLabel(QString s, Editor* editor, Positionable *parent=0);
@@ -73,7 +76,7 @@ public:
 /*public*/ QString getNameString();
 /*public*/ Positionable* deepClone();
 /*public*/ Positionable* finishClone(Positionable* p);
-/*public*/ QObject* getTextComponent();
+/*public*/ JComponent* getTextComponent();
 /**
  * When text is rotated or in an icon mode, the return of getText() may be
  * null or some other value
@@ -163,6 +166,10 @@ public:
  MyGraphicsProxyWidget* widget;
  /* public*/ void setStyleSheet();
  /*public*/ void finishItemUpdate(DisplayFrame* paletteFrame, ItemPanel* itemPanel);
+ void setLocation(int x, int y);
+ int getX();
+ int getY();
+ QObject* self() {return (QObject*)this;}
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -193,6 +200,9 @@ DisplayFrame* _paletteFrame;
 QFont _font;
 int currRotation;
 bool needsRotate;
+int _x;
+int _y;
+
 friend class LinkingLabel;
 
 class AddIconActionListener : public ActionListener

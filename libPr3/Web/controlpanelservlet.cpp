@@ -67,7 +67,7 @@ ControlPanelServlet::ControlPanelServlet()
     {
      try
      {
-      QDomElement e = ConfigXmlManager::elementFromObject(sub);
+      QDomElement e = ConfigXmlManager::elementFromObject((QObject*)sub);
       if (e != QDomElement())
       {
        if ("signalmasticon" == (e.tagName()))

@@ -116,6 +116,8 @@ public:
     /*public*/ float getLengthMm(); // return length in millimeters
     /*public*/ float getLengthCm();  // return length in centimeters
     /*public*/ float getLengthIn();  // return length in inches
+    /*public*/ bool equals(QObject* obj);
+
 //    /** Handle change in sensor state.
 //     * <P>
 //     * Defers real work to goingActive, goingInactive methods

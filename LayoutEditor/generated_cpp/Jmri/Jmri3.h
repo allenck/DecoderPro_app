@@ -16,13 +16,13 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
 #include <qstringlist.h>
 #include <qurl.h>
 #include <qvector.h>
+#include <rfidsensormanager.h>
 #include <roster.h>
 #include <rosterentry.h>
 #include <route.h>
@@ -46,6 +46,80 @@
 #include <vetoablechangesupport.h>
 #include <windowlistener.h>
 #include <xmlfile.h>
+
+
+
+class PythonQtShell_RfidSensorManager : public RfidSensorManager
+{
+public:
+    PythonQtShell_RfidSensorManager(QObject*  parent = 0):RfidSensorManager(parent),_wrapper(NULL) {}
+    PythonQtShell_RfidSensorManager(QString  prefix, QObject*  parent = 0):RfidSensorManager(prefix, parent),_wrapper(NULL) {}
+
+   ~PythonQtShell_RfidSensorManager();
+
+virtual void Register(NamedBean*  s);
+virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual bool  allowMultipleAdditions(QString  systemName);
+virtual void childEvent(QChildEvent*  event);
+virtual QString  createSystemName(QString  curAddress, QString  prefix) throw (JmriException);
+virtual void customEvent(QEvent*  event);
+virtual void deregister(NamedBean*  s);
+virtual void dispose();
+virtual bool  event(QEvent*  event);
+virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual NamedBean*  getBeanBySystemName(QString  systemName);
+virtual NamedBean*  getBeanByUserName(QString  userName);
+virtual QString  getBeanTypeHandled();
+virtual Sensor*  getBySystemName(QString  key);
+virtual Sensor*  getByUserName(QString  key);
+virtual long  getDefaultSensorDebounceGoingActive();
+virtual long  getDefaultSensorDebounceGoingInActive();
+virtual QString  getEntryToolTip();
+virtual NamedBean*  getNamedBean(QString  name);
+virtual QSet<NamedBean* >  getNamedBeanSet();
+virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
+virtual Sensor*  getSensor(QString  name);
+virtual QStringList  getSystemNameArray();
+virtual QStringList  getSystemNameList();
+virtual QString  getSystemPrefix();
+virtual int  getXMLOrder();
+virtual QString  makeSystemName(QString  s);
+virtual Sensor*  newSensor(QString  sysName, QString  userName);
+virtual QString  normalizeSystemName(QString  sysName);
+virtual Sensor*  provideSensor(QString  name);
+virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void setDefaultSensorDebounceGoingActive(long  timer);
+virtual void setDefaultSensorDebounceGoingInActive(long  timer);
+virtual void timerEvent(QTimerEvent*  event);
+virtual char  typeLetter();
+virtual void updateAll();
+virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual void vetoableChange(PropertyChangeEvent*  evt);
+
+  const QMetaObject* metaObject() const;
+  int qt_metacall(QMetaObject::Call call, int id, void** args);
+  PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtPublicPromoter_RfidSensorManager : public RfidSensorManager
+{ public:
+inline void py_q_dispose() { RfidSensorManager::dispose(); }
+inline QString  py_q_getSystemPrefix() { return RfidSensorManager::getSystemPrefix(); }
+};
+
+class PythonQtWrapper_RfidSensorManager : public QObject
+{ Q_OBJECT
+public:
+public slots:
+RfidSensorManager* new_RfidSensorManager(QObject*  parent = 0);
+RfidSensorManager* new_RfidSensorManager(QString  prefix, QObject*  parent = 0);
+void delete_RfidSensorManager(RfidSensorManager* obj) { delete obj; } 
+   void py_q_dispose(RfidSensorManager* theWrappedObject){  (((PythonQtPublicPromoter_RfidSensorManager*)theWrappedObject)->py_q_dispose());}
+   QString  py_q_getSystemPrefix(RfidSensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_RfidSensorManager*)theWrappedObject)->py_q_getSystemPrefix());}
+   void message(RfidSensorManager* theWrappedObject, QString  m);
+};
+
+
 
 
 

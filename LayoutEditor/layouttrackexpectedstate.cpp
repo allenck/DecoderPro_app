@@ -10,7 +10,8 @@
 // /*public*/ class LayoutTrackExpectedState<T extends LayoutTrack> extends Bean implements ExpectedState<T, Integer> {
 
 template<class T>
-    /*public*/ LayoutTrackExpectedState<T>::LayoutTrackExpectedState(T layoutTrack, int state, QObject *parent): LayoutTrack(parent) {
+    /*public*/ LayoutTrackExpectedState<T>::LayoutTrackExpectedState(T layoutTrack, int state, QObject *parent)
+       : LayoutTrack("", QPointF(), nullptr,parent) {
         this->layoutTrack = layoutTrack;
         this->setExpectedState(state);
     }

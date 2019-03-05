@@ -1379,7 +1379,7 @@ Maintenance::Maintenance(QObject *parent) :
      QList <Positionable*> contents = panelEditor->getContents();
      for (int k=0; k<contents.size(); k++) {
          Positionable* o = contents.at(k);
-         if (QString(o->metaObject()->className())==("SensorIcon"))
+         if (QString(((QObject*)o)->metaObject()->className())==("SensorIcon"))
          {
              name = ((SensorIcon*)o)->getSensor()->getSystemName();
              QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg( tr("Sensor"));
@@ -1387,14 +1387,14 @@ Maintenance::Maintenance(QObject *parent) :
                  found = true;
                  referenceCount++;
              }
-         } else if (QString(o->metaObject()->className())==("TurnoutIcon")) {
+         } else if (QString(((QObject*)o)->metaObject()->className())==("TurnoutIcon")) {
              name = ((TurnoutIcon*)o)->getTurnout()->getSystemName();
              QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("Turnout"));
              if (testName(name, found, names, line1, NULL, line, tempText)) {
                  found = true;
                  referenceCount++;
              }
-         } else if (QString(o->metaObject()->className())==("SignalHeadIcon")) {
+         } else if (QString(((QObject*)o)->metaObject()->className())==("SignalHeadIcon")) {
              name = ((SignalHeadIcon*)o)->getSignalHead()->getSystemName();
              QString line = tr("%1Referred to in a %2 icon\n").arg("\t").arg(tr("SignalHead"));
              if (testName(name, found, names, line1, NULL, line, tempText)) {
@@ -1403,7 +1403,7 @@ Maintenance::Maintenance(QObject *parent) :
              }
          }
  #if 1
-         else if (QString(o->metaObject()->className())==("MultiSensorIcon"))
+         else if (QString(((QObject*)o)->metaObject()->className())==("MultiSensorIcon"))
          {
              MultiSensorIcon* msi = (MultiSensorIcon*)o;
              for (int j=0; j<msi->getNumEntries(); j++)
@@ -1417,7 +1417,7 @@ Maintenance::Maintenance(QObject *parent) :
              }
          }
 
-         else if (QString(o->metaObject()->className())==("IndicatorTurnoutIcon"))
+         else if (QString(((QObject*)o)->metaObject()->className())==("IndicatorTurnoutIcon"))
          {
              IndicatorTurnoutIcon* ito = (IndicatorTurnoutIcon*)o;
              name = ito->getTurnout()->getSystemName();
@@ -1449,7 +1449,7 @@ Maintenance::Maintenance(QObject *parent) :
              }
          }
 
-         else if (QString(o->metaObject()->className())==("IndicatorTrackIcon"))
+         else if (QString(((QObject*)o)->metaObject()->className())==("IndicatorTrackIcon"))
          {
              IndicatorTrackIcon* track = (IndicatorTrackIcon*)o;
              Sensor* sensor = track->getOccSensor();

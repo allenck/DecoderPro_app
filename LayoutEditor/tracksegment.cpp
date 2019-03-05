@@ -4,6 +4,8 @@
 #include "abstractaction.h"
 #include "layoutblockroutetableaction.h"
 #include "layoutturntable.h"
+#include "layouteditorfinditems.h"
+
 //TrackSegment::TrackSegment(QObject *parent) :
 //    QObject(parent)
 //{
@@ -37,7 +39,8 @@
 
 
 /*public*/
-TrackSegment::TrackSegment(QString id, QObject* c1, int t1, QObject* c2, int t2, bool dash, bool main, LayoutEditor* myPanel)
+TrackSegment::TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2, int t2, bool dash, bool main, LayoutEditor* myPanel)
+ : LayoutTrack(id, QPointF(), myPanel)
 {
  init(id);
  layoutEditor = myPanel;
@@ -80,6 +83,7 @@ TrackSegment::TrackSegment(QString id, QObject* c1, int t1, QObject* c2, int t2,
 // alternate constructor for loading layout editor panels
 /*public*/
 TrackSegment::TrackSegment(QString id, QString c1Name, int t1, QString c2Name, int t2, bool dash, bool main, bool hide, LayoutEditor* myPanel)
+ : LayoutTrack(id, QPointF(), myPanel)
 {
  init(id);
  layoutEditor = myPanel;
@@ -98,7 +102,7 @@ void TrackSegment::init(QString id)
 // operational instance variables (not saved between sessions)
  setObjectName("TS_"+id);
 
- block = NULL;
+ layoutBlock = NULL;
  instance = NULL;
  layoutEditor = NULL;
  item = NULL;
@@ -146,21 +150,21 @@ void TrackSegment::init(QString id)
     return type2;
 }
 
-/*public*/ QObject* TrackSegment::getConnect1() {
+/*public*/ LayoutTrack *TrackSegment::getConnect1() {
     return connect1;
 }
 
-/*public*/ QObject* TrackSegment::getConnect2() {
+/*public*/ LayoutTrack* TrackSegment::getConnect2() {
     return connect2;
 }
 
-/*protected*/ void TrackSegment::setNewConnect1(QObject* o, int type) {
+/*protected*/ void TrackSegment::setNewConnect1(LayoutTrack* o, int type) {
     connect1 = o;
     type1 = type;
 
 }
 
-/*protected*/ void TrackSegment::setNewConnect2(QObject* o, int type) {
+/*protected*/ void TrackSegment::setNewConnect2(LayoutTrack *o, int type) {
     connect2 = o;
     type2 = type;
 }
@@ -234,14 +238,15 @@ TrackSegment::setAngle(double x)
 /*public*/ LayoutBlock*
 TrackSegment::getLayoutBlock()
 {
- if ( (block==NULL) && (blockName!=NULL) && (blockName!="") )
+ if ( (layoutBlock==NULL) && (blockName!=NULL) && (blockName!="") )
  {
-  block = layoutEditor->provideLayoutBlock(blockName);
+  layoutBlock = layoutEditor->provideLayoutBlock(blockName);
  }
- return block;
+ return layoutBlock;
 }
-//    /*public*/ QString getConnect1Name() {return getConnectName(connect1,type1);}
-//    /*public*/ QString getConnect2Name() {return getConnectName(connect2,type2);}
+
+/*public*/ QString TrackSegment::getConnect1Name() {return getConnectName(connect1,type1);}
+/*public*/ QString TrackSegment::getConnect2Name() {return getConnectName(connect2,type2);}
 
 /*private*/ QString
 TrackSegment::getConnectName(QObject* o,int type)
@@ -285,28 +290,35 @@ TrackSegment::getConnectName(QObject* o,int type)
  */
 /*public*/ void TrackSegment::setObjects(LayoutEditor* p)
 {
- if (tBlockName.length()>0)
- {
-  block = p->getLayoutBlock(tBlockName);
-  if (block!=NULL)
-  {
-   blockName = tBlockName;
-   block->incrementUse();
-  }
-  else
-  {
-   log.error("bad blockname '"+tBlockName+"' in tracksegment "+ident);
-  }
+ if (!tBlockName.isEmpty()) {
+     layoutBlock = p->getLayoutBlock(tBlockName);
+     if (layoutBlock != nullptr) {
+         blockName = tBlockName;
+         layoutBlock->incrementUse();
+     } else {
+         log.error("bad blockname '" + tBlockName + "' in tracksegment " + getName());
+     }
  }
- connect1 = p->findObjectByTypeAndName(type1,tConnect1Name);
- connect2 = p->findObjectByTypeAndName(type2,tConnect2Name);
+
+ //NOTE: testing "type-less" connects
+ // (read comments for findObjectByName in LayoutEditorFindItems.java)
+ connect1 = p->getFinder()->findObjectByName(tConnect1Name);
+ if (nullptr == connect1) { // findObjectByName failed... try findObjectByTypeAndName
+     log.warn("Unknown connect1 object prefix: '" + tConnect1Name + "' of type " + type1 + ".");
+     connect1 = p->getFinder()->findObjectByTypeAndName(type1, tConnect1Name);
+ }
+ connect2 = p->getFinder()->findObjectByName(tConnect2Name);
+ if (nullptr == connect2) { // findObjectByName failed; try findObjectByTypeAndName
+     log.warn("Unknown connect2 object prefix: '" + tConnect2Name + "' of type " + type2 + ".");
+     connect2 = p->getFinder()->findObjectByTypeAndName(type2, tConnect2Name);
+ }
 }
 
 /**
  * Set Up a Layout Block for a Track Segment
  */
 /*public*/ void TrackSegment::setLayoutBlock (LayoutBlock* b) {
-    block = b;
+    layoutBlock = b;
     if (b!=NULL) {
         blockName = b->getID();
     }
@@ -316,13 +328,13 @@ TrackSegment::getConnectName(QObject* o,int type)
 }
 /*protected*/ void TrackSegment::updateBlockInfo()
 {
- if (block!=NULL)
-  block->updatePaths();
+ if (layoutBlock!=NULL)
+  layoutBlock->updatePaths();
  LayoutBlock* b1 = getBlock(connect1,type1);
- if ((b1!=NULL)&&(b1!=block))
+ if ((b1!=NULL)&&(b1!=layoutBlock))
   b1->updatePaths();
  LayoutBlock* b2 = getBlock(connect2,type2);
- if ((b2!=NULL)&&(b2!=block)&&(b2!=b1))
+ if ((b2!=NULL)&&(b2!=layoutBlock)&&(b2!=b1))
   b2->updatePaths();
  //if(getConnect1() instanceof PositionablePoint)
  if(qobject_cast<PositionablePoint*>(getConnect1())!= NULL)

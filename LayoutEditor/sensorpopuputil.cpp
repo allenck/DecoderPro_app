@@ -1,7 +1,7 @@
 #include "sensorpopuputil.h"
 #include "sensoricon.h"
 
-SensorPopupUtil::SensorPopupUtil(Positionable *parent, QObject* textComp) :
+SensorPopupUtil::SensorPopupUtil(Positionable *parent, JComponent* textComp) :
     PositionablePopupUtil(parent, textComp)
 {
  this->parent = parent;
@@ -101,7 +101,7 @@ void SensorPopupUtil::on_colorMenuEntry_selected(ColorMenuAction *act)
    ((PositionableLabel*)parent)->setOpaque(false);
    //We need to force a redisplay when going to clear as the area
    //doesn't always go transparent on the first click.
-   QPointF p = ((PositionableLabel*)parent)->getLocation();
+   QPointF p = ((Positionable*)parent)->getLocation();
    int w = ((PositionableLabel*)parent)->getWidth();
    int h = ((PositionableLabel*)parent)->getHeight();
 //   QObject* parent = getParent();

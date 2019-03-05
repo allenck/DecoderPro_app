@@ -240,7 +240,7 @@
 /*private*/ void IndicatorTrackIcon::setStatus(OBlock* block, int state)
 {
  _status = _pathUtil->setStatus(block, state);
- _pathUtil->setLocoIcon(block->getValue().toString(), /*getLocation()*/QPoint(getLocation().x(), getLocation().y()), getSize(), _editor);
+ _pathUtil->setLocoIcon(block->getValue().toString(), /*getLocation()*/QPoint(((Positionable*)this)->getLocation().x(), ((Positionable*)this)->getLocation().y()), getSize(), _editor);
  if (_status==("DontUseTrack"))
  {
   setControlling(false);

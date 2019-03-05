@@ -11,7 +11,8 @@ QT += widgets
 TARGET = PanelPro
 TEMPLATE = app
 
-
+MOC_DIR = moc_obj
+OBJECTS_DIR += moc_obj
 
 PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
 isEmpty( PYTHONQT_PREFIX ) {

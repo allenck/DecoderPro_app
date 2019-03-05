@@ -304,7 +304,7 @@
    }
    if (icon!=NULL)
    {
-    icon->setRotation(rotation, (Positionable*)l);
+    icon->setRotation(rotation, (QObject*)l);
    }
   }
   else log->info("did not load file aspect "+aspect+" for SignalHead "+name);

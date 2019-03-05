@@ -203,7 +203,7 @@ void LayoutSlip::init()
 }
 
 //@Override
-/*public*/ QObject* LayoutSlip::getConnection(int location) throw (JmriException) {
+/*public*/ LayoutTrack *LayoutSlip::getConnection(int location) throw (JmriException) {
     switch (location) {
         case SLIP_A:
             return connectA;
@@ -219,7 +219,7 @@ void LayoutSlip::init()
 }
 
 //@Override
-/*public*/ void LayoutSlip::setConnection(int location, QObject* o, int type) throw (JmriException) {
+/*public*/ void LayoutSlip::setConnection(int location, LayoutTrack* o, int type) throw (JmriException) {
     if ((type != TRACK) && (type != NONE)) {
         log.error("unexpected type of connection to layoutturnout - " + QString::number(type));
         throw JmriException("unexpected type of connection to layoutturnout - " + QString::number(type));

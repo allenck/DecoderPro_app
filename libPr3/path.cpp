@@ -1,4 +1,5 @@
 #include "path.h"
+#include <QtMath>
 
 Path::Path(QObject *parent) :
     QObject(parent)
@@ -227,7 +228,141 @@ void Path::common()
     if (b.length()!=0) b.append(", ");
     b.append(t);
 }
+//@Override
+//@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "FE_FLOATING_POINT_EQUALITY", justification = "equals operator should actually check for equality")
+/*public*/ bool Path::equals(QObject* obj) {
+    if (obj == this) {
+        return true;
+    }
+    if (obj == nullptr) {
+        return false;
+    }
 
+    if (!(metaObject()->className() == obj->metaObject()->className())) {
+        return false;
+    } else {
+        Path* p = (Path*) obj;
+
+        if (!(p->_length) == (this->_length)) {
+            return false;
+        }
+
+        if (p->_toBlockDirection != this->_toBlockDirection) {
+            return false;
+        }
+        if (p->_fromBlockDirection != this->_fromBlockDirection) {
+            return false;
+        }
+
+        if (p->_block == nullptr && this->_block != nullptr) {
+            return false;
+        }
+        if (p->_block != nullptr && this->_block == nullptr) {
+            return false;
+        }
+        if (p->_block != nullptr && this->_block != nullptr && !p->_block->equals(this->_block)) {
+            return false;
+        }
+
+        if (p->_beans->size() != this->_beans->size()) {
+            return false;
+        }
+        for (int i = 0; i < p->_beans->size(); i++) {
+            if (!(p->_beans->at(i) == (this->_beans->at(i))))
+            {
+                return false;
+            }
+        }
+    }
+    //return this->hashCode() == obj.hashCode();
+    return true;
+}
+
+//@Override
+/*public*/ QString Path::toString() {
+    QString result;// = new StringBuilder();
+    QString separator = ""; // no separator on first item // NOI18N
+    for (BeanSetting* beanSetting : this->getSettings()) {
+        result.append(separator).append(tr("%1 with state {%2").arg(beanSetting->getBean()->getDisplayName()).arg(beanSetting->getBean()->describeState(beanSetting->getSetting()))); // NOI18N
+        separator = ", "; // NOI18N
+    }
+    return tr("Path: \"%1\" (%2): %3").arg(getBlock()->getDisplayName()).arg(decodeDirection(getToBlockDirection())).arg(result); // NOI18N
+}
+
+//// Can't include _toBlockDirection, _fromBlockDirection, or block information as they can change
+////@Override
+///*public*/ int hashCode() {
+//    int hash = 7;
+//    hash = 89 * hash + Objects.hashCode(this._beans);
+//    hash = 89 * hash + Objects.hashCode(this._block);
+//    hash = 89 * hash + this._toBlockDirection;
+//    hash = 89 * hash + this._fromBlockDirection;
+//    hash = 89 * hash + Float.floatToIntBits(this._length);
+//    return hash;
+//}
+
+
+/**
+ * compute octagonal direction of vector from p1 to p2
+ * <p>
+ * Note: the octagonal (8) directions are: North, North-East, East,
+ * South-East, South, South-West, West and North-West
+ *
+ * @param p1 the first point
+ * @param p2 the second point
+ * @return the octagonal direction from p1 to p2
+ */
+/*public*/ /*static*/ int Path::computeDirection(QPointF p1, QPointF p2) {
+
+    double angleDEG;// = MathUtil.computeAngleDEG(p2, p1);
+    qRadiansToDegrees(atan2(p1.y() - p2.y(), p1.x() - p2.x()));
+    //angleDEG = MathUtil.wrap360(angleDEG);  // don't want to deal with negative numbers here...
+     while (angleDEG < 0 )
+     {
+      angleDEG -= 360.0;
+     }
+
+    // convert the angleDEG into an octant index (ccw from south)
+    // note: because we use round here, the octants are offset by half (+/-22.5 deg)
+    // so SOUTH isn't from 0-45 deg; it's from -22.5 deg to +22.5 deg; etc. for other octants.
+    // (and this is what we want!)
+    int octant = (int) qRound(angleDEG / 45.0);
+
+    // use the octant index to lookup its direction
+    QVector<int> dirs = QVector<int>() << SOUTH << SOUTH_EAST << EAST << NORTH_EAST <<
+        NORTH << NORTH_WEST << WEST<< SOUTH_WEST << SOUTH;
+    return dirs.at(octant);
+}   // computeOctagonalDirection
+
+/**
+ * return the reverse octagonal direction
+ *
+ * @param inDir the direction
+ * @return the reverse direction or {@value #NONE} if inDir is not a
+ *         direction
+ */
+/*public*/ /*static*/ int Path::reverseDirection(int inDir) {
+    switch (inDir) {
+        case NORTH:
+            return SOUTH;
+        case NORTH_EAST:
+            return SOUTH_WEST;
+        case EAST:
+            return WEST;
+        case SOUTH_EAST:
+            return NORTH_WEST;
+        case SOUTH:
+            return NORTH;
+        case SOUTH_WEST:
+            return NORTH_EAST;
+        case WEST:
+            return EAST;
+        case NORTH_WEST:
+            return SOUTH_EAST;
+        default:
+            return NONE;
+    }
+}
 
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Path.class.getName());
 //}

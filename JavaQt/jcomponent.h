@@ -12,6 +12,7 @@ public:
  QColor getBackground();
  void setBackground(QColor);
  void setOpaque(bool);
+ QFont getFont();
 
 signals:
 

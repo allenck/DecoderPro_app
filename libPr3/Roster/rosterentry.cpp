@@ -9,7 +9,7 @@
 #include "imageicon.h"
 #include <QImage>
 #include "hardcopywriter.h"
-#include "../../LayoutEditor/jlabel.h"
+#include "jlabel.h"
 #include "rosterspeedprofile.h"
 #include "rostergroup.h"
 #include "variabletablemodel.h"

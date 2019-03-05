@@ -691,7 +691,7 @@ void SignalMastIcon::updateItem() {
  //item->setPos(getX(), getY());
  if(showTooltip()) item->setToolTip(getTooltip());
  //_itemGroup->addToGroup(item);
- _itemGroup->setPos(getX(), getY());
+ _itemGroup->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
  //if(showTooltip()) _itemGroup->setToolTip(getTooltip());
  //int degrees = getDegrees() + getIcon()->getRotation();
  currRotation = getIcon(aspect)->getRotation()*90;

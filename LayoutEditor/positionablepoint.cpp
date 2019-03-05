@@ -4,6 +4,9 @@
 #include "panelmenu.h"
 #include "signalheadmanager.h"
 #include "blockbosslogic.h"
+#include "signalhead.h"
+#include "signalmast.h"
+#include "signalmastmanager.h"
 
 //PositionablePoint::PositionablePoint(QObject *parent) :
 //    QObject(parent)
@@ -38,7 +41,8 @@
 
     // operational instance variables (not saved between sessions)
 
-/*public*/ PositionablePoint::PositionablePoint(QString id, int t, QPointF p, LayoutEditor* myPanel,QObject *parent) : QObject(parent)
+/*public*/ PositionablePoint::PositionablePoint(QString id, int t, QPointF c, LayoutEditor* layoutEditor,QObject *parent)
+ : LayoutTrack(id, c, layoutEditor,parent)
 {
  setObjectName(id);
  instance = NULL;
@@ -52,9 +56,9 @@
  type = 0;
  connect1 = NULL;
  connect2 = NULL;
- coords = QPointF(10.0,10.0);
- eastBoundSignalName = ""; // signal head for east (south) bound trains
- westBoundSignalName = ""; // signal head for west (north) bound trains
+ //coords = QPointF(10.0,10.0);
+ //eastBoundSignalName = ""; // signal head for east (south) bound trains
+ //westBoundSignalName = ""; // signal head for west (north) bound trains
  /* We use a namedbeanhandle for the the sensors, even though we only store the name here,
         this is so that we can keep up with moves and changes of userNames */
  eastBoundSensorNamed = NULL;
@@ -62,10 +66,10 @@
  eastBoundSignalMastNamed = NULL;
  westBoundSignalMastNamed = NULL;
 
- eastBoundSignalMastName = "";
- westBoundSignalMastName = "";
+ //eastBoundSignalMastName = "";
+ //westBoundSignalMastName = "";
  instance = this;
- layoutEditor = myPanel;
+ //layoutEditor = myPanel;
  if ( (t==ANCHOR) || (t==END_BUMPER) || (t == EDGE_CONNECTOR))
  {
   type = t;
@@ -75,17 +79,42 @@
   log.error("Illegal type of PositionablePoint - "+t);
   type = ANCHOR;
  }
- ident = id;
- coords = p;
+ //ident = id;
+ //coords = p;
  popup = NULL;
  active = true;
- tools = NULL;
+ //tools = NULL;
  // cursor location reference for this move (relative to object)
  xClick = 0;
  yClick = 0;
- item = NULL;
+// item = NULL;
  editLink = NULL;
 
+}
+
+// this should only be used for debugging...
+//@Override
+/*public*/ QString PositionablePoint::toString() {
+    QString result = "PositionalablePoint";
+    switch (type) {
+        case ANCHOR: {
+            result = "Anchor";
+            break;
+        }
+        case END_BUMPER: {
+            result = "End Bumper";
+            break;
+        }
+        case EDGE_CONNECTOR: {
+            result = "Edge Connector";
+            break;
+        }
+        default: {
+            result = "Unknown type (" + QString::number(type) + ")";
+            break;
+        }
+    }
+    return result + " '" + getName() + "'";
 }
 
 /**
@@ -166,10 +195,141 @@
 /*protected*/ LayoutEditor* PositionablePoint::getLayoutEditor() {
     return layoutEditor;
 }
-/*public*/ QString PositionablePoint::getEastBoundSignal() {return eastBoundSignalName;}
-/*public*/ void PositionablePoint::setEastBoundSignal(QString signalName) {eastBoundSignalName = signalName;}
-/*public*/ QString PositionablePoint::getWestBoundSignal() {return westBoundSignalName;}
-/*public*/ void PositionablePoint::setWestBoundSignal(QString signalName) {westBoundSignalName = signalName;}
+//@CheckReturnValue
+//@Nonnull
+/*public*/ QString PositionablePoint::getEastBoundSignal() {
+    SignalHead* h = getEastBoundSignalHead();
+    if (h != nullptr) {
+        return h->getDisplayName();
+    }
+    return "";
+}
+
+/*public*/ SignalHead* PositionablePoint::getEastBoundSignalHead() {
+    if (getType() == EDGE_CONNECTOR) {
+        int dir = getConnect1Dir();
+        if (dir == Path::EAST || dir == Path::SOUTH || dir == Path::SOUTH + Path::EAST) {
+            if (signalEastHeadNamed != nullptr) {
+                return signalEastHeadNamed->getBean();
+            }
+            return nullptr;
+        } else if (getLinkedPoint() != nullptr) {
+            // Do some checks to find where the connection is here.
+            int linkDir = getLinkedPoint()->getConnect1Dir();
+            if (linkDir == Path::SOUTH || linkDir == Path::EAST || linkDir == Path::SOUTH + Path::EAST) {
+                return getLinkedPoint()->getEastBoundSignalHead();
+            }
+        }
+    }
+
+    if (signalEastHeadNamed != nullptr) {
+        return signalEastHeadNamed->getBean();
+    }
+    return nullptr;
+}
+
+/*public*/ void PositionablePoint::setEastBoundSignal(QString signalName)
+{
+    if (getType() == EDGE_CONNECTOR) {
+        int dir = getConnect1Dir();
+        if (dir == Path::EAST || dir == Path::SOUTH || dir == Path::SOUTH_EAST) {
+            setEastBoundSignalName(signalName);
+        } else if (getLinkedPoint() != nullptr) {
+            int linkDir = getLinkedPoint()->getConnect1Dir();
+            if (linkDir == Path::SOUTH || linkDir == Path::EAST || linkDir == Path::SOUTH_EAST) {
+                getLinkedPoint()->setEastBoundSignal(signalName);
+            } else {
+                setEastBoundSignalName(signalName);
+            }
+        } else {
+            setEastBoundSignalName(signalName);
+        }
+    } else {
+        setEastBoundSignalName(signalName);
+    }
+}
+
+/*private*/ void PositionablePoint::setEastBoundSignalName(/*@CheckForNull*/ QString signalHead) {
+    if (signalHead == "" || signalHead.isEmpty()) {
+        signalEastHeadNamed = nullptr;
+        return;
+    }
+
+    SignalHead* head = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+    if (head != nullptr) {
+        signalEastHeadNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+    } else {
+        signalEastHeadNamed = nullptr;
+    }
+}
+
+//@CheckReturnValue
+//@Nonnull
+/*public*/ QString PositionablePoint::getWestBoundSignal() {
+    SignalHead* h = getWestBoundSignalHead();
+    if (h != nullptr) {
+        return h->getDisplayName();
+    }
+    return "";
+}
+
+/*public*/ SignalHead* PositionablePoint::getWestBoundSignalHead()
+{
+    if (getType() == EDGE_CONNECTOR) {
+        int dir = getConnect1Dir();
+        if (dir == Path::WEST || dir == Path::NORTH || dir == Path::NORTH + Path::WEST) {
+            if (signalWestHeadNamed != nullptr) {
+                return signalWestHeadNamed->getBean();
+            }
+            return nullptr;
+        } else if (getLinkedPoint() != nullptr) {
+            // Do some checks to find where the connection is here.
+            int linkDir = getLinkedPoint()->getConnect1Dir();
+            if (linkDir == Path::WEST || linkDir == Path::NORTH || linkDir == Path::NORTH + Path::WEST) {
+                return getLinkedPoint()->getWestBoundSignalHead();
+            }
+        }
+    }
+
+    if (signalWestHeadNamed != nullptr) {
+        return signalWestHeadNamed->getBean();
+    }
+    return nullptr;
+}
+
+/*public*/ void PositionablePoint::setWestBoundSignal(QString signalName) {
+    if (getType() == EDGE_CONNECTOR) {
+        int dir = getConnect1Dir();
+        if (dir == Path::WEST || dir == Path::NORTH || dir == Path::NORTH_WEST) {
+            setWestBoundSignalName(signalName);
+        } else if (getLinkedPoint() != nullptr) {
+            int linkDir = getLinkedPoint()->getConnect1Dir();
+            if (linkDir == Path::WEST || linkDir == Path::NORTH || linkDir == Path::NORTH_WEST) {
+                getLinkedPoint()->setWestBoundSignal(signalName);
+            } else {
+                setWestBoundSignalName(signalName);
+            }
+        } else {
+            setWestBoundSignalName(signalName);
+        }
+    } else {
+        setWestBoundSignalName(signalName);
+    }
+}
+
+/*private*/ void PositionablePoint::setWestBoundSignalName(/*@CheckForNull*/ QString signalHead) {
+    if (signalHead == "" || signalHead.isEmpty()) {
+        signalWestHeadNamed = nullptr;
+        return;
+    }
+
+    SignalHead* head = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+    if (head != nullptr) {
+        signalWestHeadNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+    } else {
+        signalWestHeadNamed = nullptr;
+    }
+}
 
 /*public*/ QString PositionablePoint::getEastBoundSensorName() {
     if (eastBoundSensorNamed != NULL) {
@@ -270,9 +430,35 @@
  return westBoundSignalMastNamed;
 }
 
-/*public*/ void PositionablePoint::setEastBoundSignalMast(QString signalMastName)
-{
-  eastBoundSignalMastName = signalMastName;
+/*public*/ void PositionablePoint::setEastBoundSignalMast(QString signalMast) {
+    SignalMast* mast = nullptr;
+    if (signalMast != "" && !signalMast.isEmpty()) {
+        mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
+        if (mast == nullptr) {
+            log.error("Unable to find Signal Mast " + signalMast);
+            return;
+        }
+    } else {
+        eastBoundSignalMastNamed = nullptr;
+        return;
+    }
+    if (getType() == EDGE_CONNECTOR) {
+        int dir = getConnect1Dir();
+        if (dir == Path::EAST || dir == Path::SOUTH || dir == Path::SOUTH_EAST) {
+            eastBoundSignalMastNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+        } else if (getLinkedPoint() != nullptr) {
+            int linkDir = getLinkedPoint()->getConnect1Dir();
+            if (linkDir == Path::SOUTH || linkDir == Path::EAST || linkDir == Path::SOUTH_EAST) {
+                getLinkedPoint()->setEastBoundSignalMast(signalMast);
+            } else {
+                eastBoundSignalMastNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+            }
+        } else {
+            eastBoundSignalMastNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+        }
+    } else {
+        eastBoundSignalMastNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+    }
 }
 
 /*public*/ QString PositionablePoint::getWestBoundSignalMastName() {
@@ -289,7 +475,36 @@
 return nullptr;
 
 }
-/*public*/ void PositionablePoint::setWestBoundSignalMast(QString signalMastName) {westBoundSignalMastName = signalMastName;}
+/*public*/ void PositionablePoint::setWestBoundSignalMast(QString signalMast) {
+        SignalMast* mast = nullptr;
+        if (signalMast != "" && !signalMast.isEmpty()) {
+            mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
+            if (mast == nullptr) {
+                log.error("Unable to find Signal Mast " + signalMast);
+                return;
+            }
+        } else {
+            westBoundSignalMastNamed = nullptr;
+            return;
+        }
+        if (getType() == EDGE_CONNECTOR) {
+            int dir = getConnect1Dir();
+            if (dir == Path::WEST || dir == Path::NORTH || dir == Path::NORTH_WEST) {
+                westBoundSignalMastNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+            } else if (getLinkedPoint() != nullptr) {
+                int linkDir = getLinkedPoint()->getConnect1Dir();
+                if (linkDir == Path::WEST || linkDir == Path::NORTH || linkDir == Path::NORTH_WEST) {
+                    getLinkedPoint()->setWestBoundSignalMast(signalMast);
+                } else {
+                    westBoundSignalMastNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+                }
+            } else {
+                westBoundSignalMastNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+            }
+        } else {
+            westBoundSignalMastNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+        }
+    }
 
 // initialization instance variables (used when loading a LayoutEditor)
 //	public String trackSegment1Name = "";
@@ -305,6 +520,31 @@ return nullptr;
     connect2 = p->findTrackSegmentByName(trackSegment2Name);
 }
 
+/*public*/ void PositionablePoint::removeBeanReference(NamedBean* nb) {
+        if (nb == nullptr) {
+            return;
+        }
+        if (qobject_cast<SignalMast*>(nb)) {
+            if (nb->equals((QObject*)getWestBoundSignalMast())) {
+                setWestBoundSignalMast(nullptr);
+            } else if (nb->equals((QObject*)getEastBoundSignalMast())) {
+                setEastBoundSignalMast(nullptr);
+            }
+        } else if (qobject_cast<Sensor*>(nb)) {
+            if (nb->equals(getWestBoundSensor())) {
+                setWestBoundSignalMast(nullptr);
+            } else if (nb->equals(getEastBoundSensor())) {
+                setEastBoundSignalMast(nullptr);
+            }
+        } else if (qobject_cast<SignalHead*>(nb)) {
+            if (nb->equals(getWestBoundSignalHead())) {
+                setWestBoundSignal(nullptr);
+            }
+            if (nb->equals(getEastBoundSignalHead())) {
+                setEastBoundSignal(nullptr);
+            }
+        }
+    }
 /**
  * Setup and remove connections to track
  */
@@ -348,6 +588,113 @@ return nullptr;
     else {
         log.error ("Attempt to remove non-existant track connection");
     }
+}
+
+/**
+ * return true if this connection type is disconnected
+ *
+ * @param connectionType - the connection type to test
+ * @return true if the connection for this connection type is free
+ */
+//@Override
+/*public*/ bool PositionablePoint::isDisconnected(int connectionType) {
+    bool result = false;
+    if (connectionType == POS_POINT) {
+        result = ((getConnect1() == nullptr) || (getConnect2() == nullptr));
+    } else {
+        log.error("Invalid connection type " + connectionType); //I18IN
+    }
+    return result;
+}
+
+//@Override
+/*public*/ bool PositionablePoint::isMainline() {
+    bool result = false; // assume failure (pessimist!)
+    if (getConnect1() != nullptr) {
+        result = getConnect1()->isMainline();
+    }
+    if (getType() == ANCHOR) {
+        if (getConnect2() != nullptr) {
+            result |= getConnect2()->isMainline();
+        }
+    }
+    return result;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void PositionablePoint::draw1(QGraphicsScene* g2, bool isMain, bool isBlock) {
+    //nothing to do here... move along...
+}   // draw1
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void PositionablePoint::draw2(QGraphicsScene g2, bool isMain, float railDisplacement) {
+    //nothing to do here... move along...
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void PositionablePoint::highlightUnconnected(QGraphicsScene* g2, int specificType) {
+    if ((specificType == NONE) || (specificType == POS_POINT)) {
+        if ((getConnect1() == nullptr)
+                || ((getType() == ANCHOR) && (getConnect2() == nullptr))) {
+ // TODO:           g2.fill(layoutEditor->trackControlCircleAt(getCoordsCenter()));
+        }
+    }
+}
+/*
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void PositionablePoint::drawEditControls(QGraphicsScene* g2) {
+ QColor color;
+ QGraphicsRectItem* rectItem;
+ TrackSegment* ts1 = getConnect1();
+ if (ts1 == nullptr)
+ {
+  //g2.setColor(Color.red);    QColor color;
+  color = QColor(Qt::red);
+ }
+ else
+ {
+  TrackSegment* ts2 = nullptr;
+  if (getType() == ANCHOR) {
+      ts2 = getConnect2();
+  }
+  else if (getType() == EDGE_CONNECTOR)
+  {
+   if (getLinkedPoint() != nullptr) {
+       ts2 = getLinkedPoint()->getConnect1();
+   }
+  }
+  if ((getType() != END_BUMPER) && (ts2 == nullptr)) {
+      //g2.setColor(Color.yellow);
+   color = QColor(Qt::yellow);
+  } else {
+      //g2.setColor(Color.green);
+   color = QColor(Qt::green);
+  }
+ }
+ //g2.draw(layoutEditor->trackEditControlRectAt(getCoordsCenter()));
+ QPointF pt = getCoordsCenter();
+ rectItem = new QGraphicsRectItem(QRect(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2),0);
+ rectItem->setPen( QPen( color, 1, Qt::SolidLine ) );
+}   // drawEditControls
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void PositionablePoint::drawTurnoutControls(QGraphicsScene* g2) {
+    // PositionablePoints don't have turnout controls...
+    // nothing to see here... move along...
 }
 
 /*public*/ void PositionablePoint::reCheckBlockBoundary(){
@@ -589,32 +936,21 @@ QString PositionablePoint::where(QGraphicsSceneMouseEvent* e) {
 }
 void PositionablePoint::On_setSignals()
 {
- if (tools == NULL)
- {
-     tools = new LayoutEditorTools(layoutEditor);
- }
  // bring up signals at level crossing tool dialog
- tools->setSignalsAtBlockBoundaryFromMenu(instance,
-     layoutEditor->signalIconEditor,layoutEditor->signalFrame);
-}
+ layoutEditor->getLETools()->setSignalsAtBlockBoundaryFromMenu(this,
+                                 layoutEditor->signalIconEditor, layoutEditor->signalFrame);}
 
 void PositionablePoint::On_setSensors()
 {
- if (tools == NULL) {
-     tools = new LayoutEditorTools(layoutEditor);
- }
  // bring up signals at block boundary tool dialog
- tools->setSensorsAtBlockBoundaryFromMenu(instance,
+ layoutEditor->getLETools()->setSensorsAtBlockBoundaryFromMenu(instance,
      layoutEditor->sensorIconEditor,layoutEditor->sensorFrame);
 
 }
 void PositionablePoint::On_setSignalMasts()
 {
- if (tools == NULL) {
-     tools = new LayoutEditorTools(layoutEditor);
- }
  // bring up signals at block boundary tool dialog
- tools->setSignalMastsAtBlockBoundaryFromMenu(instance);
+ layoutEditor->getLETools()->setSignalMastsAtBlockBoundaryFromMenu(instance);
 
 }
 
@@ -805,7 +1141,7 @@ void PositionablePoint::invalidate(QGraphicsScene* g2)
   item = NULL;
  }
 }
-
+#if 1
 void PositionablePoint::draw(QGraphicsScene* g2)
 {
     QColor color;
@@ -817,7 +1153,7 @@ void PositionablePoint::draw(QGraphicsScene* g2)
       //if (isEditable())
       {
        // in edit mode, draw locater rectangle
-       QPointF pt = getCoords();
+       QPointF pt = getCoordsCenter(); // getCoords()
        if ((getConnect1()==NULL) || (getConnect2()==NULL))
        {
         //g2.setColor(Color.red);
@@ -842,7 +1178,7 @@ void PositionablePoint::draw(QGraphicsScene* g2)
      //if (isEditable())
      {
       // in edit mode, draw locater rectangle
-      QPointF pt = getCoords();
+      QPointF pt = getCoordsCenter();
       if (getConnect1()==NULL)
        {
         //g2.setColor(Color.red);
@@ -864,51 +1200,19 @@ void PositionablePoint::draw(QGraphicsScene* g2)
     }
     g2->addItem(item);
 }
+#endif
 /*protected*/ int PositionablePoint::getConnect1Dir() {
- QPointF p1;
- if (getConnect1() == NULL) {
-     return Path::NONE;
- }
- if (getConnect1()->getConnect1() == this) {
-     p1 = layoutEditor->getCoords(getConnect1()->getConnect2(), getConnect1()->getType2());
- } else {
-     p1 = layoutEditor->getCoords(getConnect1()->getConnect1(), getConnect1()->getType1());
- }
+ int result = Path::NONE;
 
- double dh = getCoords().x() - p1.x();
- double dv = getCoords().y() - p1.y();
- int dir = Path::NORTH;
- double tanA;
- if (dv != 0.0) {
-     tanA = qAbs(dh) / qAbs(dv);
- } else {
-     tanA = 10.0;
+ TrackSegment* ts1 = getConnect1();
+ if (ts1 != nullptr) {
+     QPointF p1;
+     if (ts1->getConnect1() == this) {
+         p1 = LayoutEditor::getCoords(ts1->getConnect2(), ts1->getType2());
+     } else {
+         p1 = LayoutEditor::getCoords(ts1->getConnect1(), ts1->getType1());
+     }
+     result = Path::computeDirection(getCoordsCenter(), p1);
  }
- if (tanA < 0.38268) {
-     // track is mostly vertical
-     if (dv < 0.0) {
-         dir = Path::NORTH;
-     } else {
-         dir = Path::SOUTH;
-     }
- } else if (tanA > 2.4142) {
-     // track is mostly horizontal
-     if (dh > 0.0) {
-         dir = Path::EAST;
-     } else {
-         dir = Path::WEST;
-     }
- } else {
-     // track is between horizontal and vertical
-     if ((dv > 0.0) && (dh > 0.0)) {
-         dir = Path::SOUTH + Path::EAST;
-     } else if ((dv > 0.0) && (dh < 0.0)) {
-         dir = Path::SOUTH + Path::WEST;
-     } else if ((dv < 0.0) && (dh < 0.0)) {
-         dir = Path::NORTH + Path::WEST;
-     } else {
-         dir = Path::NORTH + Path::EAST;
-     }
- }
- return dir;
+ return result;
 }

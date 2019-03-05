@@ -1780,7 +1780,7 @@ else if (throatDivergingHead==nullptr)
  l->setIcon(tr("Held"), signalIconEditor->getIcon(7));
  l->setIcon(tr("Lunar"), signalIconEditor->getIcon(8));
  l->setIcon(tr("FlashingLunar"), signalIconEditor->getIcon(9));
- l->setLocation(xLoc,yLoc);
+ ((Positionable*)l)->setLocation(xLoc,yLoc);
  if (rotation>0)
  {
   QStringListIterator e( l->getIconStateNames());
@@ -2878,7 +2878,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
 /*private*/ void LayoutEditorTools::placeEastBound() {
     if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
-    QPointF p = boundary->getCoords();
+    QPointF p = boundary->getCoordsCenter();
     if (trackHorizontal) {
         setSignalHeadOnPanel(2,eastBoundField->text().trimmed(),
             (int)(p.x()-testIcon->getIconHeight()-8),
@@ -2893,7 +2893,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
 /*private*/ void LayoutEditorTools::placeWestBound() {
     if (testIcon == nullptr)
         testIcon = signalIconEditor->getIcon(0);
-    QPointF p = boundary->getCoords();
+    QPointF p = boundary->getCoordsCenter();
     if (trackHorizontal) {
         setSignalHeadOnPanel(0,westBoundField->text().trimmed(),
             (int)(p.x()+4),
@@ -9204,7 +9204,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
 
 /*public*/ void LayoutEditorTools::setIconOnPanel(PositionableIcon* l, int rotation,
                 QPoint p) {
-    l->setLocation((int)p.x(), (int)p.y());
+    ((Positionable*)l)->setLocation((int)p.x(), (int)p.y());
     if (rotation>0) {
         l->rotate(rotation);
     }
@@ -9219,7 +9219,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
 
 /*public*/ void LayoutEditorTools::setIconOnPanel(PositionableIcon* l, int rotation,
                 int xLoc, int yLoc) {
-    l->setLocation(xLoc,yLoc);
+    ((Positionable*)l)->setLocation(xLoc,yLoc);
     if (rotation>0) {
         l->rotate(rotation);
     }
@@ -9234,7 +9234,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
 
 /*private*/ void LayoutEditorTools::placeEastBoundIcon(PositionableIcon* icon, bool right, double fromPoint) {
 
-    QPointF p = boundary->getCoords();
+    QPointF p = boundary->getCoordsCenter();
 
     //Track segment is used to determine the alignment, therefore this is opposite to the block that we are protecting
     TrackSegment* t = boundary->getConnect2();
@@ -9260,7 +9260,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
 
 /*private*/ void LayoutEditorTools::placeWestBoundIcon(PositionableIcon* icon, bool right, double fromPoint) {
 
-    QPointF p = boundary->getCoords();
+    QPointF p = boundary->getCoordsCenter();
 
     //Track segment is used to determine the alignment, therefore this is opposite to the block that we are protecting
     TrackSegment* t = boundary->getConnect1();

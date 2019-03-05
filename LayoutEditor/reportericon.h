@@ -10,17 +10,17 @@ class AbstractReporter;
 {
  Q_OBJECT
   public:
-    ReporterPopupUtil(Positionable* parent, QObject* textComp) : PositionablePopupUtil(parent, textComp)
+    ReporterPopupUtil(Positionable* parent, JComponent* textComp) : PositionablePopupUtil(parent, textComp)
     {
         //super(parent, textComp);
     }
     /*public*/ void setTextJustificationMenu(QMenu* /*popup*/) {}
     /*public*/ void setFixedTextMenu(QMenu* /*popup*/) {}
-    /*public*/ void setTextMarginMenu(QMenu* popup)
+    /*public*/ void setTextMarginMenu(QMenu* /*popup*/)
     {
-        QMenu* colorMenu = new QMenu(tr("FontBackgroundColor"));
-        makeColorMenu(colorMenu, BACKGROUND_COLOR);
-        popup->addMenu(colorMenu);
+//        QMenu* colorMenu = new QMenu(tr("FontBackgroundColor"));
+//        makeColorMenu(colorMenu, BACKGROUND_COLOR);
+//        popup->addMenu(colorMenu);
     }
 };
 

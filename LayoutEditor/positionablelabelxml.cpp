@@ -28,21 +28,21 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
 {
  PositionableLabel* p = (PositionableLabel*)o;
 
- if (!((PositionableLabel*)p)->isActive()) return QDomElement();  // if flagged as inactive, don't store
+ if (!p->isActive()) return QDomElement();  // if flagged as inactive, don't store
 
  QDomElement element =doc.createElement("positionablelabel");
  storeCommonAttributes((Positionable*)p, element);
 
- if (((PositionableLabel*)p)->isText())
+ if (p->isText())
  {
-  if (((PositionableLabel*)p)->getUnRotatedText()!=NULL) element.setAttribute("text", ((PositionableLabel*)p)->getUnRotatedText());
+  if (p->getUnRotatedText()!=NULL) element.setAttribute("text", p->getUnRotatedText());
    storeTextInfo((Positionable*)p, element);
  }
 
- if (((PositionableLabel*)p)->isIcon() && ((PositionableLabel*)p)->getIcon()!=NULL)
+ if (p->isIcon() && p->getIcon()!=NULL)
  {
   element.setAttribute("icon", "yes");
-  element.appendChild(storeIcon("icon", (NamedIcon*)((PositionableLabel*)p)->getIcon()));
+  element.appendChild(storeIcon("icon", (NamedIcon*)p->getIcon()));
  }
 
  element.setAttribute("class", "jmri.jmrit.display.configurexml.PositionableLabelXml");
@@ -60,7 +60,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
 /*protected*/ void PositionableLabelXml::storeTextInfo(Positionable* p, QDomElement element)
 {
  //if (p.getText()!=NULL) element.setAttribute("text", p.getText());
- PositionablePopupUtil* util = ((PositionableLabel*)p)->getPopupUtility();
+ PositionablePopupUtil* util = p->getPopupUtility();
  element.setAttribute("size", util->getFontSize());
  element.setAttribute("style", util->getFontStyle());
  if (util->getForeground()!=QColor(Qt::black))
@@ -69,7 +69,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
   element.setAttribute("green", util->getForeground().green());
   element.setAttribute("blue", util->getForeground().blue());
  }
- if((((PositionableLabel*)p)->isOpaque() || ((PositionableLabel*)p)->getSaveOpaque())&& ((PositionableLabel*)p)->getPopupUtility()->getBackground() != QColor(Qt::transparent))
+ if((p->isOpaque() || p->getSaveOpaque())&& p->getPopupUtility()->getBackground() != QColor(Qt::transparent))
  {
   element.setAttribute("redBack", util->getBackground().red());
   element.setAttribute("greenBack", util->getBackground().green());
@@ -122,26 +122,26 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  */
 /*public*/ void PositionableLabelXml::storeCommonAttributes(Positionable* p, QDomElement element)
 {
- element.setAttribute("x", ((PositionableLabel*)p)->getX());
- element.setAttribute("y", ((PositionableLabel*)p)->getY());
- element.setAttribute("level", ((PositionableLabel*)p)->getDisplayLevel());
- element.setAttribute("forcecontroloff", (!((PositionableLabel*)p)->isControlling()?"true":"false"));
- element.setAttribute("hidden", ((PositionableLabel*)p)->isHidden()?"yes":"no");
- element.setAttribute("positionable", (((PositionableLabel*)p)->isPositionable()?"true":"false"));
- element.setAttribute("showtooltip", (((PositionableLabel*)p)->showTooltip()?"true":"false"));
- element.setAttribute("editable", (((PositionableLabel*)p)->isEditable()?"true":"false"));
+ element.setAttribute("x", p->getX());
+ element.setAttribute("y", p->getY());
+ element.setAttribute("level", p->getDisplayLevel());
+ element.setAttribute("forcecontroloff", (!p->isControlling()?"true":"false"));
+ element.setAttribute("hidden", p->isHidden()?"yes":"no");
+ element.setAttribute("positionable", (p->isPositionable()?"true":"false"));
+ element.setAttribute("showtooltip", ((PositionableLabel*)p)->showTooltip()?"true":"false");
+ element.setAttribute("editable", (p->isEditable()?"true":"false"));
 // ToolTip tip = p.getTooltip();
 // QString txt = tip.getText();
- QString txt = ((PositionableLabel*)p)->getTooltip();
+ QString txt = p->getTooltip();
  if (txt!=NULL)
  {
   QDomElement elem = doc.createElement("toolTip");
   elem.appendChild(doc.createTextNode(txt));
   element.appendChild(elem);
  }
- if (((PositionableLabel*)p)->getDegrees()!=0)
+ if (p->getDegrees()!=0)
  {
-  element.setAttribute("degrees", ((PositionableLabel*)p)->getDegrees());
+  element.setAttribute("degrees", p->getDegrees());
  }
 }
 
@@ -207,7 +207,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
   }
   // allow NULL icons for now
   l = new PositionableLabel(icon, editor);
-  ((PositionableLabel*)l)->setPopupUtility(NULL);        // no text
+  l->setPopupUtility(NULL);        // no text
 //  try
 //  {
    QString a = element.attribute("rotate");
@@ -226,7 +226,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
    NamedIcon* nIcon = loadIcon(l,"icon", element, "PositionableLabel ", editor);
    if (nIcon!=NULL)
    {
-    ((PositionableLabel*)l)->updateIcon(nIcon);
+    l->updateIcon(nIcon);
    }
    else
    {
@@ -243,7 +243,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
    }
    else
    {
-    ((PositionableLabel*)l)->updateIcon(icon);
+    l->updateIcon(icon);
    }
   }
 
@@ -288,7 +288,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
 /*protected*/ void PositionableLabelXml::loadTextInfo(Positionable* l, QDomElement element)
 {
  if (log->isDebugEnabled()) log->debug("loadTextInfo");
- PositionablePopupUtil* util = ((PositionableLabel*)l)->getPopupUtility();
+ PositionablePopupUtil* util = l->getPopupUtility();
  if (util==NULL)
  {
   log->warn("PositionablePopupUtil is NULL! "+element.tagName());
@@ -442,7 +442,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  if(a!="")
  {
   bool bOk;
-  ((PositionableLabel*)l)->rotate(a.toInt(&bOk));
+  l->rotate(a.toInt(&bOk));
   if(!bOk) /*throw new DataConversionException();*/
   {
    log->warn("invalid 'degrees' value (non integer)");
@@ -454,9 +454,9 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
 {
  QString a = element.attribute("forcecontroloff");
  if ( (a!="") && a==("true"))
-  ((PositionableLabel*)l)->setControlling(false);
+  l->setControlling(false);
  else
-  ((PositionableLabel*)l)->setControlling(true);
+  l->setControlling(true);
 
  // find coordinates
  int x = 0;
@@ -473,7 +473,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  {
   log->error("failed to convert positional attribute");
  }
- ((JLabel*)l)->setLocation(x,y);
+ l->setLocation(x,y);
 
  // find display level
  int level = defaultLevel;
@@ -485,44 +485,44 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
 // catch ( NullPointerException e)
 // {  // considered normal if the attribute not present
 // }
- ((PositionableLabel*)l)->setDisplayLevel(level);
+ l->setDisplayLevel(level);
 
  a = element.attribute("hidden");
  if ( (a!="") && a==("yes"))
  {
-  ((PositionableLabel*)l)->setHidden(true);
-  ((PositionableLabel*)l)->setVisible(false);
+  l->setHidden(true);
+  l->setVisible(false);
  }
  a = element.attribute("positionable");
  if ( (a!="") && a==("true"))
-  ((PositionableLabel*)l)->setPositionable(true);
+  l->setPositionable(true);
  else
-  ((PositionableLabel*)l)->setPositionable(false);
+  l->setPositionable(false);
 
  a = element.attribute("showtooltip");
  if ( (a!="") && a==("true"))
-  ((PositionableLabel*)l)->setShowTooltip(true);
+  l->setShowTooltip(true);
  else
-  ((PositionableLabel*)l)->setShowTooltip(false);
+  l->setShowTooltip(false);
 
  a = element.attribute("editable");
  if ( (a!="") && a==("true"))
-  ((PositionableLabel*)l)->setEditable(true);
+  l->setEditable(true);
  else
-  ((PositionableLabel*)l)->setEditable(false);
+  l->setEditable(false);
 
  QDomElement elem = element.firstChildElement("toolTip");
  if (!elem.isNull())
  {
-//  ToolTip tip = ((PositionableLabel*)l)->getTooltip();
+//  ToolTip tip = l->getTooltip();
 //  if (tip!=NULL)
 //  {
 //   tip.setText(elem.getText());
-  ((PositionableLabel*)l)->setToolTip(elem.text()); // (QWidget tooltip)
-  ((PositionableLabel*)l)->setTooltip(elem.text()); // (PositionableLabel)
+//  l->setToolTip(elem.text()); // (QWidget tooltip)
+  l->setTooltip(elem.text()); // (PositionableLabel)
 //  }
-  if(((PositionableLabel*)l)->_itemGroup != NULL)
-   ((PositionableLabel*)l)->_itemGroup->setToolTip(elem.text());
+  if(l->_itemGroup != NULL)
+   l->_itemGroup->setToolTip(elem.text());
  }
 }
 /*public*/ NamedIcon* PositionableLabelXml::loadIcon(PositionableLabel* l, QString attrName, QDomElement element, QString name, Editor* ed)

@@ -91,7 +91,7 @@
   try
   {
    //JLabel* label = new ClockDragJLabel(new DataFlavor(Editor::POSITIONABLE_FLAVOR),this);
-   JLabel* label = new AnalogClock2Display((Editor*)parent());
+   JLabel* label = new JLabel("to be implemented"); //new AnalogClock2Display((Editor*)parent());
    ((AnalogClock2Display*)label)->setOpaque(false);
    ((AnalogClock2Display*)label)->update();
    ((AnalogClock2Display*)label)->setLevel(Editor::CLOCK);

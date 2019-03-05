@@ -35,6 +35,7 @@
 #include <QComboBox>
 #include "flowlayout.h"
 #include "iconitempanel.h"
+#include <QMenu>
 
 //CatalogPanel::CatalogPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -1254,7 +1255,7 @@ void CatalogPanel::on_tree_clicked(QModelIndex index)
                 double scale;
                 if (icon->getIconWidth() < 1 || icon->getIconHeight() < 1) {
                     image->setText(tr("invisible Icon"));
-                    image->setForeground(QColor(Qt::lightGray));
+//   TODO:                 image->setForeground(QColor(Qt::lightGray));
                     scale = 0;
                 } else {
                     scale = icon->reduceTo(catalogPanel->ICON_WIDTH, catalogPanel->ICON_HEIGHT, catalogPanel->ICON_SCALE);

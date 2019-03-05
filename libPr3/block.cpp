@@ -532,6 +532,31 @@ QString Block::getStateString()
 /*public*/ float Block::getLengthCm() { return (_length/10.0f); }  // return length in centimeters
 /*public*/ float Block::getLengthIn() { return (_length/25.4f); }  // return length in inches
 
+/**
+ * Note: this has to make choices about identity values (always the same)
+ * and operation values (can change as the block works). Might be missing
+ * some identity values.
+ */
+//@Override
+/*public*/ bool Block::equals(QObject* obj) {
+    if (obj == this) {
+        return true;
+    }
+    if (obj == nullptr) {
+        return false;
+    }
+
+    if (!(metaObject()->className() == obj->metaObject()->className())) {
+        return false;
+    } else {
+        Block* b = (Block*) obj;
+
+        if (!(b->getSystemName() == (this->getSystemName()))) {
+            return false;
+        }
+    }
+    return true;
+}
 
 /** Handle change in sensor state.
  * <P>

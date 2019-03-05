@@ -14,7 +14,7 @@ class OBlock;
  */
 /*public*/ /*interface*/ class IndicatorTrack : public Positionable
 {
-  Q_OBJECT
+  //Q_OBJECT
  public:
     /*public*/ virtual void setOccSensor(QString pName) = 0;
     /*public*/ virtual void setOccSensorHandle(NamedBeanHandle<Sensor*> senHandle) = 0;
@@ -33,4 +33,5 @@ class OBlock;
     /*public*/ virtual void removePath(QString path) = 0;
     /*public*/ virtual void setStatus(int state) = 0;
 };
+Q_DECLARE_INTERFACE(IndicatorTrack, "IndicatorTrack")
 #endif // INDICATORTRACK_H

@@ -9,6 +9,7 @@
 #include <QMenu>
 #include "logger.h"
 #include "positionablelabel.h"
+#include "jcomponent.h"
 
 class PositionablePropertiesUtil;
 class PositionablePopupUtil : public QObject
@@ -16,8 +17,8 @@ class PositionablePopupUtil : public QObject
     Q_OBJECT
 public:
  //explicit PositionablePopupUtil(QObject *parent = 0);
-    /*public*/ PositionablePopupUtil(Positionable* parent, QObject* textComp);
-    /*public*/ PositionablePopupUtil* clone(Positionable* parent, QObject* textComp);
+    /*public*/ PositionablePopupUtil(Positionable* parent, JComponent *textComp);
+    /*public*/ PositionablePopupUtil* clone(Positionable* parent, JComponent* textComp);
     /*public*/ QString toString();
     static const /*public*/ int FONT_COLOR =             0x00;
     static const /*public*/ int BACKGROUND_COLOR =       0x01;
@@ -56,9 +57,9 @@ public:
     void setFontWeight(int weight);
     /*public*/ void setFontStyle(int addStyle, int dropStyle);
     /*public*/ int getFontStyle();
-    /*protected*/ void makeColorMenu(QMenu* colorMenu, int type);
-    /*protected*/ void addColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup, const QString name, QColor color, const int colorType);
-    /*protected*/ void setColorButton(QColor color, QColor buttonColor, QRadioButton* r);
+//    /*protected*/ void makeColorMenu(QMenu* colorMenu, int type);
+//    /*protected*/ void addColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup, const QString name, QColor color, const int colorType);
+//    /*protected*/ void setColorButton(QColor color, QColor buttonColor, QRadioButton* r);
     /*public*/ void copyItem(QMenu* popup);
     static /*public*/ const int LEFT   = 0x00;
     static /*public*/ const int RIGHT  = 0x02;
@@ -111,6 +112,9 @@ public slots:
  //void on_actionMarginEdit_triggered();
  //void on_actionGetFixedSizeEdit_triggered();
  void on_setTextOrientation_triggered(QAction* act);
+ void onSetBackgroundColor();
+ void onSetBorderColor();
+ void onSetTeaxtFontColor();
 
 private:
  /*private*/ bool debug;// = false;
@@ -134,15 +138,17 @@ private:
  /*private*/ bool _hasBackground;      // Should background be painted or clear
  /*private*/ bool _suppressRecentColor = false;
  Logger* log;
+
 private slots:
  void on_italicAction_triggered();
  void on_boldAction_triggered();
  void display();
 
 protected:
- /*protected*/ QObject* _textComponent;    // closest ancestor for JLabel and JTextField
+ /*protected*/ JComponent* _textComponent;    // closest ancestor for JLabel and JTextField
  /*protected*/ int _textType;                // JComponent does not have text, used for casting
  /*protected*/ Positionable* _parent;
+ /*protevted*/ PositionablePopupUtil* _self;
  /*protected*/ PositionablePropertiesUtil* _propertiesUtil;
  /*private*/ QColor defaultForeground;
  /*private*/ QColor defaultBackground;
@@ -153,6 +159,7 @@ protected:
  /*protected*/ QMenu* makeFontSizeMenu();
  void addFontMenuEntry(QMenu* menu, QActionGroup* fontButtonGroup, const int size);
  /*protected*/ QAction* newStyleMenuItem(QAction* a, int mask);
+
  friend class PositionablePropertiesUtil;
 };
 

@@ -69,7 +69,46 @@
 }
 
 /*public*/ int BeanSetting::getSetting() { return _setting; }
+/**
+ * {@inheritDoc}
+ * <p>
+ * This implementation always throws an UnsupportedOperationException since
+ * a BeanSetting is immutable.
+ *
+ * @throws UnsupportedOperationException if called
+ */
+//@Override
+/*public*/ void BeanSetting::setExpectedState(int state) {
+    throw new UnsupportedOperationException("The expected state of a BeanSetting is immutable");
+}
 
+// include bean and expected state in equals() and hashCode() because they can't
+// change after construction
+//@Override
+/*public*/ bool BeanSetting::equals(QObject* obj) {
+    if (obj == this) {
+        return true;
+    } else if (obj == nullptr) {
+        return false;
+    }
+    //else if (!Objects.equals(getClass(), obj.getClass())) {
+    else if(metaObject()->className() == obj->metaObject()->className())
+    {
+        return false;
+    }
+    else
+    {
+     BeanSetting* p = (BeanSetting*) obj;
+     if (p->getSetting() != this->getSetting())
+     {
+         return false;
+     }
+     if (!p->getBean()->equals( this->getBean())) {
+         return false;
+     }
+    }
+    return true;
+}
 
 //static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(BeanSetting.class.getName());
 //}

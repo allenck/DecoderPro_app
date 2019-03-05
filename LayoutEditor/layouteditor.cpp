@@ -55,6 +55,10 @@
 #include "mathutil.h"
 #include <QScrollBar>
 #include "jmricolorchooser.h"
+#include "namedbean.h"
+#include "signalmastlogicmanager.h"
+#include "signalmastlogic.h"
+#include "positionablepoint.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -231,7 +235,7 @@ _contents = new QVector<Positionable*>();
  multiSensors = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
  backgroundImage = new QVector<PositionableLabel*>();  // background images
  labelImage = new QList<PositionableLabel*>();         //positionable label images
- blockContentsLabelList = new QList<BlockContentsIcon*>(); //BlockContentsIcon Label List
+ blockContentsLabelList = new QVector<BlockContentsIcon*>(); //BlockContentsIcon Label List
  zoomMenu = new QMenu(tr("Zoom"));
  zoom025Item = new QAction("x 0.25");
  zoom025Item->setCheckable(true);
@@ -873,7 +877,7 @@ void LayoutEditor::onBlockProperties()
 void LayoutEditor::onMiscFields()
 {
      //enable/disable text label, memory & block contents text fields
-     ui->textLabelTextField->setEnabled(ui->textLabelButton->isChecked());
+     ui->textLabel->setEnabled(ui->textLabelButton->isChecked());
      ui->textMemoryComboBox->setEnabled(ui->memoryButton->isChecked());
 //     ui->blockContentsComboBox->setEnabled(ui->blockContentsButton->isChecked());
 
@@ -1312,7 +1316,7 @@ double LayoutEditor::getPaintScale()
      {
       selectedPointType = LAYOUT_POS_LABEL;
       //startDel.setLocation((((PositionableLabel*)selectedObject)->getX()-dLoc.getX()),                     (((PositionableLabel*)selectedObject)->getY()-dLoc.getY()));
-      startDel = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),(((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
+      startDel = QPointF((((Positionable*)selectedObject)->getX()-dLoc.x()),(((Positionable*)selectedObject)->getY()-dLoc.y()));
       //if (selectedObject instanceof MemoryIcon)
       if(qobject_cast<MemoryIcon*>(selectedObject)!= nullptr)
       {
@@ -1332,7 +1336,8 @@ double LayoutEditor::getPaintScale()
       {
        selectedPointType = LAYOUT_POS_LABEL;
        //startDel.setLocation((((PositionableLabel)selectedObject).getX()-dLoc.x()),                            (((PositionableLabel)selectedObject).getY()-dLoc.y()));
-       startDel = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),                            (((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
+       startDel = QPointF((((Positionable*)selectedObject)->getX()-dLoc.x()),
+                          (((Positionable*)selectedObject)->getY()-dLoc.y()));
       selectedNeedsConnect = false;
       }
      }
@@ -1493,8 +1498,8 @@ double LayoutEditor::getPaintScale()
   if (selectedObject!=nullptr)
   {
    selectedPointType = MARKER;
-   startDel= QPointF((((LocoIcon*)selectedObject)->getX()-dLoc.x()),
-                                            (((LocoIcon*)selectedObject)->getY()-dLoc.y()));
+   startDel= QPointF((((Positionable*)selectedObject)->getX()-dLoc.x()),
+                                            (((Positionable*)selectedObject)->getY()-dLoc.y()));
    //selectedNeedsConnect = false;
   }
  }
@@ -1509,13 +1514,13 @@ double LayoutEditor::getPaintScale()
   QList <Positionable*> selections = getSelectedItems(event);
   if (selections.size() > 0)
   {
-   if(qobject_cast<SignalHeadIcon*>(selections.at(0))!=  nullptr)
-    ((SignalHeadIcon*)selections.at(0))->doMousePressed(event);
-   else
-   if(qobject_cast<SensorIcon*>(selections.at(0))!=  nullptr)
-    ((SensorIcon*)selections.at(0))->doMousePressed(event);
-   else
-    ((PositionableLabel*)selections.at(0))->doMousePressed(event);
+//   if(static_cast<SignalHeadIcon*>(selections.at(0))!=  nullptr)
+//    ((SignalHeadIcon*)selections.at(0))->doMousePressed(event);
+//   else
+//   if(qobject_cast<SensorIcon*>((QObject*)selections.at(0))!=  nullptr)
+//    ((SensorIcon*)selections.at(0))->doMousePressed(event);
+//   else
+    selections.at(0)->doMousePressed(event);
   }
  }
  //thisPanel.setFocusable(true);
@@ -1655,7 +1660,7 @@ double LayoutEditor::getPaintScale()
  }
  beginObject = p;
  beginPointType = LayoutTrack::POS_POINT;
- QPointF loc = p->getCoords();
+ QPointF loc = p->getCoordsCenter();
 
  if (checkSelect(loc, true, p))
  {
@@ -2329,7 +2334,7 @@ double LayoutEditor::getPaintScale()
    // don't allow negative placement, object could become unreachable
    if (xint<0) xint = 0;
    if (yint<0) yint = 0;
-   pl->setLocation(xint, yint);
+   ((Positionable*)pl)->setLocation(xint, yint);
    isDragging = true;
    //repaint();
    pl->updateScene();
@@ -2362,7 +2367,7 @@ double LayoutEditor::getPaintScale()
       for (int i = 0; i<_positionableSelection->size(); i++)
       {
        Positionable* c = _positionableSelection->at(i);
-       if ((/*c instanceof MemoryIcon*/qobject_cast<MemoryIcon*>(c)!=nullptr) && (c->getPopupUtility()->getFixedWidth()==0))
+       if ((/*c instanceof MemoryIcon*/static_cast<MemoryIcon*>(c)!=nullptr) && (c->getPopupUtility()->getFixedWidth()==0))
        {
         MemoryIcon* pm = (MemoryIcon*) c;
         xNew = (pm->getOriginalX()+offsetx);
@@ -2399,13 +2404,13 @@ double LayoutEditor::getPaintScale()
       for(int i=0; i < _labelImage->size(); i++)
       {
        PositionableLabel* l = _labelImage->at(i);
-       QPointF upperLeft = l->getLocation();
+       QPointF upperLeft = ((Positionable*)l)->getLocation();
        xNew = (int)(upperLeft.x()+offsetx);
        yNew = (int)(upperLeft.y()+offsety);
 
        if (xNew<0) xNew=0;
        if (yNew<0) yNew=0;
-       l->setLocation(xNew,yNew);
+       ((Positionable*)l)->setLocation(xNew,yNew);
       }
     }
     if (_turnoutSelection!=nullptr)
@@ -2469,7 +2474,7 @@ double LayoutEditor::getPaintScale()
       for (int i = 0; i<_pointSelection->size();i++)
       {
        PositionablePoint* p = _pointSelection->at(i);
-       QPointF coord = p->getCoords();
+       QPointF coord = p->getCoordsCenter();
        xNew = (int) coord.x()+offsetx;
        yNew = (int) coord.y()+offsety;
        if (xNew<0) xNew=0;
@@ -2591,7 +2596,7 @@ double LayoutEditor::getPaintScale()
        // don't allow negative placement, object could become unreachable
        if (xint<0) xint = 0;
        if (yint<0) yint = 0;
-       l->setLocation(xint, yint);
+       ((Positionable*)l)->setLocation(xint, yint);
        isDragging = true;
 
 //       if(l->item != nullptr)
@@ -2641,7 +2646,7 @@ double LayoutEditor::getPaintScale()
        // don't allow negative placement, object could become unreachable
        if (xint<0) xint = 0;
        if (yint<0) yint = 0;
-       pl->setLocation(xint, yint);
+       ((Positionable*)pl)->setLocation(xint, yint);
        isDragging = true;
       }
       break;
@@ -2653,7 +2658,7 @@ double LayoutEditor::getPaintScale()
       break;
      }
      case MARKER:
-      if(qobject_cast<LocoIcon*>(selectedObject)!= nullptr)
+      if(static_cast<LocoIcon*>(selectedObject)!= nullptr)
       {
        LocoIcon* l = (LocoIcon*)selectedObject;
        int xint = (int)newPos.x();
@@ -2747,7 +2752,7 @@ double LayoutEditor::getPaintScale()
   }
   highlightRect = new QGraphicsItemGroup();
 
-  if(qobject_cast<PositionableLabel*>(selection) != nullptr)
+  if(static_cast<PositionableLabel*>(selection) != nullptr)
   {
    PositionableLabel* l = (PositionableLabel*)selection;
    QGraphicsRectItem* item = new QGraphicsRectItem(l->_itemGroup->boundingRect());
@@ -2759,7 +2764,7 @@ double LayoutEditor::getPaintScale()
    editScene->addItem(highlightRect);
   }
   else
-  if(qobject_cast<LayoutTurnout*>(selection) != nullptr)
+  if(static_cast<LayoutTurnout*>((QObject*)selection) != nullptr)
   {
    LayoutTurnout* t = (LayoutTurnout*)selection;
    QGraphicsRectItem* item = new QGraphicsRectItem(t->item->boundingRect());
@@ -3023,8 +3028,8 @@ void LayoutEditor::onCalculateBounds()
   if (duplicate) numTrackSegments ++;
  }
  // create object
- newTrack = new TrackSegment(name,beginObject,beginPointType,
-                 foundObject,foundPointType,ui->chkDashed->isChecked(), ui->chkMainline->isChecked(),this);
+ newTrack = new TrackSegment(name,(LayoutTrack*)beginObject,beginPointType,
+                 (LayoutTrack*)foundObject,foundPointType,ui->chkDashed->isChecked(), ui->chkMainline->isChecked(),this);
  if (newTrack!=nullptr)
  {
   trackList->append(newTrack);
@@ -3411,11 +3416,11 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    SensorIcon* si;
    LocoIcon* li;
    MemoryIcon* mi;
-   if((si = qobject_cast<SensorIcon*>(c))!=nullptr)
+   if((si = static_cast<SensorIcon*>(c))!=nullptr)
     item = new QGraphicsRectItem(QRectF(si->getX(), si->getY(), si->maxWidth(), si->maxHeight()));
-   else if((li = qobject_cast<LocoIcon*>(c))!=nullptr)
+   else if((li = static_cast<LocoIcon*>(c))!=nullptr)
     item = new QGraphicsRectItem(QRectF(li->getX(), li->getY(), li->maxWidth(), li->maxHeight()));
-   else if((mi = qobject_cast<MemoryIcon*>(c))!=nullptr)
+   else if((mi = static_cast<MemoryIcon*>(c))!=nullptr)
     item = new QGraphicsRectItem(QRectF(mi->getX(), mi->getY(), mi->maxWidth(), mi->maxHeight()));
 
    item->setPen(pen);
@@ -3524,13 +3529,13 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
   for (int i = 0; i<contents.size(); i++)
   {
    Positionable* c = contents.at(i);
-   PositionableLabel* pl = qobject_cast<PositionableLabel*>(c);
-   if(pl == nullptr)
+   //PositionableLabel* pl = qobject_cast<PositionableLabel*>((QObject*)c);
+   if(c == nullptr)
    {
     qDebug() << "Error casting to PositionableLabel";
     continue;
    }
-   upperLeft = pl->getLocation();
+   upperLeft = c->getLocation();
    if (selectRect.contains(upperLeft))
    {
     if (_positionableSelection==nullptr) _positionableSelection = new QVector<Positionable*>();
@@ -3738,40 +3743,40 @@ bool LayoutEditor::isDirty() {return bDirty;}
    }
    break;
   case TURNOUT_A:
-      ((LayoutTurnout*)toObject)->setConnectA(fromObject,fromPointType);
+      ((LayoutTurnout*)toObject)->setConnectA((LayoutTrack*)fromObject,fromPointType);
       break;
   case TURNOUT_B:
-      ((LayoutTurnout*)toObject)->setConnectB(fromObject,fromPointType);
+      ((LayoutTurnout*)toObject)->setConnectB((LayoutTrack*)fromObject,fromPointType);
       break;
   case TURNOUT_C:
-      ((LayoutTurnout*)toObject)->setConnectC(fromObject,fromPointType);
+      ((LayoutTurnout*)toObject)->setConnectC((LayoutTrack*)fromObject,fromPointType);
       break;
   case TURNOUT_D:
-      ((LayoutTurnout*)toObject)->setConnectD(fromObject,fromPointType);
+      ((LayoutTurnout*)toObject)->setConnectD((LayoutTrack*)fromObject,fromPointType);
       break;
   case LEVEL_XING_A:
-      ((LevelXing*)toObject)->setConnectA(fromObject,fromPointType);
+      ((LevelXing*)toObject)->setConnectA((LayoutTrack*)fromObject,fromPointType);
       break;
   case LEVEL_XING_B:
-      ((LevelXing*)toObject)->setConnectB(fromObject,fromPointType);
+      ((LevelXing*)toObject)->setConnectB((LayoutTrack*)fromObject,fromPointType);
       break;
   case LEVEL_XING_C:
-      ((LevelXing*)toObject)->setConnectC(fromObject,fromPointType);
+      ((LevelXing*)toObject)->setConnectC((LayoutTrack*)fromObject,fromPointType);
       break;
   case LEVEL_XING_D:
-      ((LevelXing*)toObject)->setConnectD(fromObject,fromPointType);
+      ((LevelXing*)toObject)->setConnectD((LayoutTrack*)fromObject,fromPointType);
       break;
   case SLIP_A:
-      ((LayoutSlip*)toObject)->setConnectA(fromObject,fromPointType);
+      ((LayoutSlip*)toObject)->setConnectA((LayoutTrack*)fromObject,fromPointType);
       break;
   case SLIP_B:
-      ((LayoutSlip*)toObject)->setConnectB(fromObject,fromPointType);
+      ((LayoutSlip*)toObject)->setConnectB((LayoutTrack*)fromObject,fromPointType);
       break;
   case SLIP_C:
-      ((LayoutSlip*)toObject)->setConnectC(fromObject,fromPointType);
+      ((LayoutSlip*)toObject)->setConnectC((LayoutTrack*)fromObject,fromPointType);
       break;
   case SLIP_D:
-      ((LayoutSlip*)toObject)->setConnectD(fromObject,fromPointType);
+      ((LayoutSlip*)toObject)->setConnectD((LayoutTrack*)fromObject,fromPointType);
       break;
   case TRACK:
       // should never happen, Track Segment links are set in ctor
@@ -3941,37 +3946,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
 }
 /*public*/ QObject* LayoutEditor::findObjectByTypeAndName(int type,QString name)
 {
-  if (name.length()<=0) return nullptr;
-  switch (type) {
-      case NONE:
-          return nullptr;
-      case POS_POINT:
-          return findPositionablePointByName(name);
-      case TURNOUT_A:
-      case TURNOUT_B:
-      case TURNOUT_C:
-      case TURNOUT_D:
-          return findLayoutTurnoutByName(name);
-      case LEVEL_XING_A:
-      case LEVEL_XING_B:
-      case LEVEL_XING_C:
-      case LEVEL_XING_D:
-          return findLevelXingByName(name);
-      case SLIP_A:
-      case SLIP_B:
-      case SLIP_C:
-      case SLIP_D:
-          return findLayoutSlipByName(name);
-      case TRACK:
-          return findTrackSegmentByName(name);
-      default:
-          if (type>=TURNTABLE_RAY_OFFSET)
-           return findLayoutTurntableByName(name);
-      break;
-  }
-  log->error("did not find Object '"+name+"' of type "+type);
-  return nullptr;
+ return finder->findObjectByTypeAndName(type, name);
 }
+
 /*public*/ LayoutBlock* LayoutEditor::getAffectedBlock(QObject* o, int type) {
   if (o==nullptr)
    return nullptr;
@@ -4918,7 +4895,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
    l->_itemGroup->setName("drawMemoryRects");
    //g2.draw(new Rectangle2D.Double (l.x(), l.y(), l.getSize().width, l.getSize().height));
    //g2->addRect(QRectF(l->getX(), l->getY(), l->getSize().width(), l->getSize().height()),QPen(color, 1));
-   QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(l->getX(), l->getY(), l->getSize().width(), l->getSize().height()));
+   QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(((Positionable*)l)->getX(), ((Positionable*)l)->getY(), l->getSize().width(), l->getSize().height()));
    item->setPen(QPen(color, 1));
    l->_itemGroup->addToGroup(item);
    if(l->_itemGroup && l->_itemGroup->scene())
@@ -5703,7 +5680,7 @@ double LayoutEditor::toRadians(double degrees)
 //      return;     // component must be showing on the screen to determine its location
 // }
  QMenu* popup = new QMenu();
- PositionableLabel* positionableLabel = qobject_cast<PositionableLabel*>(p);
+ PositionableLabel* positionableLabel = static_cast<PositionableLabel*>(p);
  Q_ASSERT(positionableLabel != nullptr);
 // SensorIcon* pSensor = qobject_cast<SensorIcon*>(p);
 // LocoIcon* locoIcon = qobject_cast<LocoIcon*>(p);
@@ -6245,8 +6222,8 @@ QGraphicsView* LayoutEditor::panel()
  for (int i=signalHeadImage->size()-1; i>=0; i--)
  {
   SignalHeadIcon* s = signalHeadImage->at(i);
-  double x = s->getX();
-  double y = s->getY();
+  double x = ((Positionable*)s)->getX();
+  double y = ((Positionable*)s)->getY();
   double w = s->maxWidth();
   double h = s->maxHeight();
   QRectF r =  QRectF(x ,y ,w ,h);
@@ -6272,8 +6249,8 @@ QGraphicsView* LayoutEditor::panel()
  // check signal head images, if any
  for (int i=signalMastImage->size()-1; i>=0; i--) {
      SignalMastIcon* s = signalMastImage->at(i);
-     double x = s->getX();
-     double y = s->getY();
+     double x = ((Positionable*)s)->getX();
+     double y = ((Positionable*)s)->getY();
      double w = s->maxWidth();
      double h = s->maxHeight();
      QRectF r = QRectF(x ,y ,w ,h);
@@ -6293,8 +6270,8 @@ QGraphicsView* LayoutEditor::panel()
  for (int i=_contents->size()-1; i>=0; i--)
  {
   PositionableLabel* s = (PositionableLabel*)_contents->at(i);
-  double x = s->getX();
-  double y = s->getY();
+  double x = ((Positionable*)s)->getX();
+  double y = ((Positionable*)s)->getY();
   double w = 10.0;
   double h = 5.0;
   if (s->isIcon() || s->isRotated())
@@ -6354,8 +6331,8 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
  for (int i=memoryLabelList->size()-1; i>=0; i--)
  {
   MemoryIcon* s = memoryLabelList->at(i);
-  double x = s->getX();
-  double y = s->getY();
+  double x = ((Positionable*)s)->getX();
+  double y = ((Positionable*)s)->getY();
   double w = 10.0;
   double h = 5.0;
   if (s->isIcon() || s->isRotated())
@@ -6450,7 +6427,7 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 
  }
  /*public*/ void LayoutEditor::putSignal(SignalHeadIcon* l) {
-     putItem((Positionable*)l);
+     putItem(l);
      l->updateSize();
      l->setDisplayLevel(SIGNALS);
  }
@@ -6538,147 +6515,75 @@ MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 */
 void LayoutEditor::addLabel()
 {
- PositionableLabel* l = addLabel(ui->textLabelTextField->text().trimmed());
+ PositionableLabel* l = Editor::addLabel(ui->textLabel->text().trimmed());
  setDirty(true);
  l->setForeground(defaultTextColor);
- l->setLocation(dLoc.x(),dLoc.y());
+ ((Positionable*)l)->setLocation(dLoc.x(),dLoc.y());
 }
 
-/*protected*/ PositionableLabel* LayoutEditor::addLabel(QString text)
-{
- PositionableLabel* l = new PositionableLabel(text, this);
- l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
- l->setDisplayLevel(LABELS);
- setNextLocation(l);
- putItem((Positionable*)l);
- return l;
-}
 /**
 * Set object location and size for icon and label object as it is created.
 * Size comes from the preferredSize; location comes
 * from the fields where the user can spec it.
 */
-/*protected*/ void LayoutEditor::setNextLocation(PositionableLabel* obj) {
+/*protected*/ void LayoutEditor::setNextLocation(Positionable* obj) {
   obj->setLocation(xLoc,yLoc);
 }
 /*public*/ void LayoutEditor::putItem(Positionable* l)
 {
-  Editor::putItem(l);
-  if (qobject_cast<SensorIcon*>(l)!= nullptr)
-  {
-   sensorImage->append((SensorIcon*)l);
-   sensorList->append((SensorIcon*)l);
-  }
-  else if (qobject_cast<LocoIcon*>(l)!= nullptr)
-  {
-   markerImage->append((LocoIcon*)l);
-  }
-  else if (qobject_cast<SignalHeadIcon*>(l)!=nullptr)
-  {
-      signalHeadImage->append((SignalHeadIcon*)l);
-      signalList->append((SignalHeadIcon*)l);
-  }
-  else if (qobject_cast<SignalMastIcon*>(l)!=nullptr)
-  {
-      signalMastImage->append((SignalMastIcon*)l);
-      signalMastList->append((SignalMastIcon*)l);
-  }
-  else
-   //if (l instanceof MemoryIcon*)
-  if(qobject_cast<MemoryIcon*>(l)!= nullptr)
-  {
-   memoryLabelList->append((MemoryIcon*)l);
-  }
-  else if (qobject_cast<AnalogClock2Display*>(l)!=nullptr)
-  {
-   clocks->append((AnalogClock2Display*)l);
-  }
-  else if (qobject_cast<MultiSensorIcon*>(l) != nullptr)
-  {
-   multiSensors->append((MultiSensorIcon*)l);
-  }
-  else
-  //if (l instanceof PositionableLabel*)
-  if(qobject_cast<PositionableLabel*>(l)!= nullptr)
-  {
-   if ( !(((PositionableLabel*)l)->isBackground()) )
-  {
-   _labelImage->append((PositionableLabel*)l);
-  }
-  else
-  {
-   backgroundImage->append((PositionableLabel*)l);
-  }
- }
-}
-
-///*public*/ void MyLayoutEditor::super_putItem(Positionable* l)
-//  {
-//   PositionableLabel* pl = qobject_cast<PositionableLabel*>(l);
-//  //l->invalidate();
-//  pl->setPositionable(true);
-//  //pl->setVisible(true);
-
-//  if (pl->getTooltip().isEmpty())
-//  {
-//   pl->setTooltip(_defaultToolTip);
-//   //pl->setTooltip();
-//  }
-//  addToTarget(l);
-////  if (!_contents->append((Positionable*)l))
-////  {
-////      log->error("Unable to add "+l->getNameString()+" to _contents");
-////  }
-//  _contents->append(l);
-//  /*if (_debug)*/ log->debug(tr("putItem ")+pl->getNameString()+" to _contents. level= "+QString("%1").arg(pl->getDisplayLevel()));
-//}
-
-#if 0
-/*protected*/ void MyLayoutEditor::addToTarget(Positionable* l)
-{
-//  JComponent c = (JComponent)l;
-//  c.invalidate();
-//  _targetPanel.remove(c);
-//  _targetPanel.add(c, Integer.valueOf(l.getDisplayLevel()));
-//  _targetPanel.moveToFront(c);
-//  c.repaint();
-//  _targetPanel.validate();
-
-// this is trial code to see if it works.
- PositionableLabel* pl = qobject_cast<PositionableLabel*> (l);
- if(pl != nullptr)
+ if(qobject_cast<PositionableLabel*>(l->self()))
  {
-  if(pl->item != nullptr)
+  ((JLabel*)l)->hide();
+ }
+ Editor::putItem(l);
+ if (static_cast<SensorIcon*>(l)!= nullptr)
+ {
+  sensorImage->append((SensorIcon*)l);
+  sensorList->append((SensorIcon*)l);
+ }
+ else if (static_cast<LocoIcon*>(l)!= nullptr)
+ {
+  markerImage->append((LocoIcon*)l);
+ }
+ else if (static_cast<SignalHeadIcon*>(l)!=nullptr)
+ {
+     signalHeadImage->append((SignalHeadIcon*)l);
+     signalList->append((SignalHeadIcon*)l);
+ }
+ else if (static_cast<SignalMastIcon*>(l)!=nullptr)
+ {
+     signalMastImage->append((SignalMastIcon*)l);
+     signalMastList->append((SignalMastIcon*)l);
+ }
+ else
+  //if (l instanceof MemoryIcon*)
+ if(static_cast<MemoryIcon*>(l)!= nullptr)
+ {
+  memoryLabelList->append((MemoryIcon*)l);
+ }
+ else if (static_cast<AnalogClock2Display*>(l)!=nullptr)
+ {
+  clocks->append((AnalogClock2Display*)l);
+ }
+ else if (static_cast<MultiSensorIcon*>(l) != nullptr)
+ {
+  multiSensors->append((MultiSensorIcon*)l);
+ }
+ else
+ //if (l instanceof PositionableLabel*)
+ if(qobject_cast<PositionableLabel*>(l->self())!= nullptr)
+ {
+  if ( !(((PositionableLabel*)l->self())->isBackground()) )
   {
-   Q_ASSERT(pl->item->scene()!=0);
-   editScene->removeItem(pl->item);
-   pl->item = nullptr;
-  }
-  if(pl->isIcon())
-  {
-   pl->item = new QGraphicsPixmapItem(QPixmap::fromImage(pl->getIcon()->getOriginalImage()));
-   editScene->addItem(pl->item);
-   pl->item->setPos(pl->getLocation());
-   pl->item->setToolTip(pl->getTooltip());
+   _labelImage->append((PositionableLabel*)l->self());
   }
   else
   {
-   pl->item = new QGraphicsTextItem(pl->getUnRotatedText());
-   editScene->addItem(pl->item);
-   pl->item->setPos(pl->getLocation());
-   pl->item->setToolTip(pl->getTooltip());
+   backgroundImage->append((PositionableLabel*)l->self());
   }
-  if(pl->getDegrees() != 0)
-   //pl->item->rotate(pl->getDegrees());
-   pl->item->setRotation(pl->item->rotation()+ pl->getDegrees());
-
  }
 }
-#endif
-///*public*/ bool MyLayoutEditor::removeFromContents(Positionable* l)
-//{
-// return remove(l);
-//}
+
 /**
 * Remove object from all Layout Editor temmporary lists of items not part of track schematic
 */
@@ -6724,7 +6629,15 @@ void LayoutEditor::addLabel()
     break;
    }
   }
-#if 1
+  for (int i = 0; i < blockContentsLabelList->size(); i++)
+  {
+      if (s == (QObject*)blockContentsLabelList->at(i)) {
+          blockContentsLabelList->remove(i);
+          found = true;
+          break;
+      }
+  }
+
   for (int i = 0; i<signalList->size();i++) {
       if (s == signalList->at(i)) {
           signalList->remove(i);
@@ -6739,13 +6652,15 @@ void LayoutEditor::addLabel()
           break;
       }
   }
-//  for (int i = 0; i<multiSensors.size();i++) {
-//      if (s == multiSensors.get(i)) {
-//          multiSensors.remove(i);
-//          found = true;
-//          break;
-//      }
-//  }
+
+  for (int i = 0; i<multiSensors->size();i++) {
+      if (s == multiSensors->at(i)) {
+          multiSensors->remove(i);
+          found = true;
+          break;
+      }
+  }
+
   for (int i = 0; i<clocks->size();i++) {
       if (s == clocks->at(i)) {
           clocks->remove(i);
@@ -6753,13 +6668,13 @@ void LayoutEditor::addLabel()
           break;
       }
   }
-  for (int i = 0; i<signalMastImage->size();i++) {
-      if (s == signalMastImage->at(i)) {
-          signalMastImage->remove(i);
-          found = true;
-          break;
-      }
-  }
+//  for (int i = 0; i<signalMastImage->size();i++) {
+//      if (s == signalMastImage->at(i)) {
+//          signalMastImage->remove(i);
+//          found = true;
+//          break;
+//      }
+//  }
   for (int i = 0; i<signalHeadImage->size();i++) {
       if (s == signalHeadImage->at(i)) {
           signalHeadImage->remove(i);
@@ -6767,7 +6682,7 @@ void LayoutEditor::addLabel()
           break;
       }
   }
-#endif
+
   for (int i = 0; i<_labelImage->size(); i++)
   {
    if (s == _labelImage->at(i))
@@ -6777,12 +6692,7 @@ void LayoutEditor::addLabel()
     break;
    }
   }
-  //this->removeFromContents((Positionable*)s);
-  int index = _contents->indexOf((Positionable*)s);
-  if(index >= 0)
-   _contents->remove(index);
-  else
-   log->error(tr("Unable to remove Positionable from contents"));
+  Editor::removeFromContents((Positionable*)s);
   if (found)
   {
    setDirty(true);
@@ -6792,6 +6702,124 @@ void LayoutEditor::addLabel()
   return found;
 }
 
+/*public*/ bool LayoutEditor::removeFromContents(Positionable* l)
+{
+    return remove(l->self());
+}
+/*private*/ QString LayoutEditor::findBeanUsage(NamedBean* sm)
+{
+    PositionablePoint* pe;
+    PositionablePoint* pw;
+    LayoutTurnout* lt;
+    LevelXing* lx;
+    LayoutSlip* ls;
+    bool found = false;
+    QString sb;// = new StringBuilder();
+    sb.append("This ");
+    if (qobject_cast<SignalMast*>(sm)) {
+        sb.append("Signal Mast");
+        sb.append(" is linked to the following items<br> do you want to remove those references");
+        if (InstanceManager::signalMastLogicManagerInstance()->isSignalMastUsed((SignalMast*) sm)) {
+            SignalMastLogic* sml = static_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic((SignalMast*) sm);
+            //jmri.SignalMastLogic sml = InstanceManager.signalMastLogicManagerInstance().getSignalMastLogic((SignalMast)sm);
+            if (sml != nullptr && sml->useLayoutEditor(sml->getDestinationList().at(0))) {
+                sb.append(" and any SignalMast Logic associated with it");
+            }
+        }
+    } else if (qobject_cast<Sensor*>(sm)) {
+        sb.append("Sensor");
+        sb.append(" is linked to the following items<br> do you want to remove those references");
+    } else if (qobject_cast<SignalHead*>(sm)) {
+        sb.append("SignalHead");
+        sb.append(" is linked to the following items<br> do you want to remove those references");
+    }
+
+    if ((pw = finder->findPositionablePointByWestBoundBean(sm)) != nullptr) {
+        sb.append("<br>Point of ");
+        TrackSegment* t = pw->getConnect1();
+        if (t != nullptr) {
+            sb.append(t->getBlockName() + " and ");
+        }
+        t = pw->getConnect2();
+        if (t != nullptr) {
+            sb.append(t->getBlockName());
+        }
+        found = true;
+    }
+    if ((pe = finder->findPositionablePointByEastBoundBean(sm)) != nullptr) {
+        sb.append("<br>Point of ");
+        TrackSegment* t = pe->getConnect1();
+        if (t != nullptr) {
+            sb.append(t->getBlockName() + " and ");
+        }
+        t = pe->getConnect2();
+        if (t != nullptr) {
+            sb.append(t->getBlockName());
+        }
+        found = true;
+    }
+    if ((lt = finder->findLayoutTurnoutByBean(sm)) != nullptr) {
+        sb.append("<br>Turnout " + lt->getTurnoutName());
+        found = true;
+    }
+    if ((lx = finder->findLevelXingByBean(sm)) != nullptr) {
+        sb.append("<br>Level Crossing " + lx->getID());
+        found = true;
+    }
+    if ((ls = finder->findLayoutSlipByBean(sm)) != nullptr) {
+        sb.append("<br>Slip " + ls->getTurnoutName());
+        found = true;
+    }
+    if (!found) {
+        return "";
+    }
+    return sb/*.toString()*/;
+}
+
+/*private*/ bool LayoutEditor::removeSignalMast(SignalMastIcon* si) {
+        SignalMast* sm = si->getSignalMast();
+        QString usage = findBeanUsage(sm);
+        if (usage != "") {
+            usage = "<html>" + usage + "</html>";
+            QVariantList buttons = QVariantList() << tr("Yes") << tr("No") << tr("Cancel");
+            int selectedValue = JOptionPane::showOptionDialog(this,
+                    usage, tr("Warning"),
+                    JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE, QIcon(),
+                    /*new Object[]{rb.getString("ButtonYes"), rb.getString("ButtonNo"), rb.getString("ButtonCancel")}, rb.getString("ButtonYes"))*/buttons);
+            if (selectedValue == 1) {
+                return (true); // return leaving the references in place but allow the icon to be deleted.
+            }
+            if (selectedValue == 2) {
+                return (false); // do not delete the item
+            }
+            removeBeanRefs(sm);
+        }
+        return true;
+    }
+
+    /*private*/ void LayoutEditor::removeBeanRefs(NamedBean* sm) {
+        PositionablePoint* pe;
+        PositionablePoint* pw;
+        LayoutTurnout* lt;
+        LevelXing* lx;
+        LayoutSlip* ls;
+
+        if ((pw = finder->findPositionablePointByWestBoundBean(sm)) != nullptr) {
+            pw->removeBeanReference(sm);
+        }
+        if ((pe = finder->findPositionablePointByEastBoundBean(sm)) != nullptr) {
+            pe->removeBeanReference(sm);
+        }
+        if ((lt = finder->findLayoutTurnoutByBean(sm)) != nullptr) {
+            lt->removeBeanReference(sm);
+        }
+        if ((lx = finder->findLevelXingByBean(sm)) != nullptr) {
+            lx->removeBeanReference(sm);
+        }
+        if ((ls = finder->findLayoutSlipByBean(sm)) != nullptr) {
+            ls->removeBeanReference(sm);
+        }
+    }
 void LayoutEditor::repaint()
 {
  paintTargetPanel(editScene);
@@ -6802,7 +6830,7 @@ void LayoutEditor::repaint()
  // check sensor images, if any
  for (int i=sensorImage->size()-1; i>=0; i--)
  {
-  SensorIcon* s = qobject_cast<SensorIcon*>(sensorImage->at(i));
+  SensorIcon* s =static_cast<SensorIcon*>(sensorImage->at(i));
   if(s == nullptr)
    continue;
   double x = s->getX();
@@ -6868,109 +6896,6 @@ void LayoutEditor::addSensor()
   l->updateSize();
   l->setDisplayLevel(SENSORS);
 }
-///**
-//* Display the X & Y coordinates of the Positionable item and provide a
-//* dialog memu item to edit them.
-//*/
-///*public*/ bool MyLayoutEditor::setShowCoordinatesMenu(Positionable* p, QMenu* popup)
-//{
-// if (showCoordinates())
-// {
-//  QMenu* edit = new QMenu(tr("Edit Location"));
-//  if ((/*p instanceof MemoryIcon*/qobject_cast<MemoryIcon*>(p)!= nullptr) && (((MemoryIcon*)p)->getPopupUtility()->getFixedWidth()==0))
-//  {
-//   MemoryIcon* pm = (MemoryIcon*) p;
-//   edit->addAction(new QAction("x= " + QString("%1").arg(pm->getOriginalX()),this));
-//   edit->addAction(new QAction("y= " + QString("%1").arg(pm->getOriginalY()),this));
-
-//   edit->addAction(((MemoryIconCoordinateEdit*) pm->cEdit)->getCoordinateEditAction(pm,this));
-//  }
-//  else
-//  {
-////   SensorIcon* ps;
-////   if((ps = qobject_cast<SensorIcon*>(p))!= nullptr)
-//   PositionableLabel* ps;
-//   if((ps = qobject_cast<PositionableLabel*>(p))!= nullptr)
-//   {
-//    edit->addMenu(new QMenu("x= " + QString("%1").arg(ps->getX())));
-//    edit->addMenu(new QMenu("y= " + QString("%1").arg(ps->getY())));
-//    CoordinateEdit* ce = new CoordinateEdit();
-//    edit->addAction(CoordinateEdit::getCoordinateEditAction(p,ce));
-//   }
-//  }
-//  popup->addMenu(edit);
-//  return true;
-// }
-// return false;
-//}
-/* Positionable has set a new level.  Editor must change it in the target panel.
-*/
-///*public*/ void MyLayoutEditor::displayLevelChange(Positionable* /*l*/){
-//  removeFromTarget(l);
-//  addToTarget(l);
-//}
-///*public*/ void MyLayoutEditor::setDisplayLevelMenu(Positionable* p, QMenu* popup)
-//{
-//  QMenu* edit = new QMenu(tr("Edit Level"));
-//  SensorIcon* ps = qobject_cast<SensorIcon*>(p);
-//  if(ps != nullptr)
-//   edit->addAction(new QAction(tr("level= ") + QString("%1").arg(ps->getDisplayLevel()),this));
-//  CoordinateEdit* coordinateEdit = new CoordinateEdit();
-//  edit->addAction(CoordinateEdit::getLevelEditAction(p, coordinateEdit));
-//  popup->addMenu(edit);
-//}
-
-///*public*/ void MyLayoutEditor::setPositionableMenu(Positionable* p, QMenu* popup)
-//{
-// saveP = p;
-////  JCheckBoxMenuItem lockItem = new JCheckBoxMenuItem(tr("LockPosition"));
-////  lockItem->setChecked(!p.isPositionable());
-// QAction* lockItem = new QAction(tr("Lock Position"),this);
-// lockItem->setCheckable(true);
-// PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
-// if(pl != nullptr)
-//  lockItem->setChecked(!pl->isPositionable());
-
-////  lockItem.addActionListener(new ActionListener(){
-////      Positionable comp;
-////      JCheckBoxMenuItem checkBox;
-////      /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-////          comp.setPositionable(!checkBox->isChecked());
-////          setSelectionsPositionable(!checkBox->isChecked(), comp);
-////      }
-////      ActionListener init(Positionable pos, JCheckBoxMenuItem cb) {
-////          comp = pos;
-////          checkBox = cb;
-////          return this;
-////      }
-////  }.init(p, lockItem));
-
-//  popup->addAction(lockItem);
-//  connect(lockItem, SIGNAL(toggled(bool)), this, SLOT(On_lockPosition_triggered(bool)));
-//}
-
-//void MyLayoutEditor::On_lockPosition_triggered(bool bChecked)
-//{
-//   PositionableLabel* pl = qobject_cast<PositionableLabel*>(saveP);
-//   if(pl != nullptr)
-//    pl->setPositionable(!bChecked);
-//  SensorIcon* ps = qobject_cast<SensorIcon*>(saveP);
-//   if(ps != nullptr)
-//    ps->setPositionable(!bChecked);
-//}
-
-///*public*/ void MyLayoutEditor::setShowCoordinates(bool state)
-//{
-//  _showCoordinates = state;
-//  for (int i = 0; i<_contents->size(); i++)
-//  {
-//   _contents->at(i)->setViewCoordinates(state);
-//  }
-//}
-///*public*/ bool MyLayoutEditor::showCoordinates()
-//{
-//  return _showCoordinates;
-//}
 /*private*/ PositionableLabel* LayoutEditor::checkBackgrounds(QPointF loc)
 {
  // check background images, if any
@@ -6993,13 +6918,13 @@ void LayoutEditor::addSensor()
 }
 /*protected*/ void LayoutEditor::setSelectionsScale(double s, Positionable* p)
 {
- PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
+ PositionableLabel* pl = qobject_cast<PositionableLabel*>(p->self());
  Q_ASSERT(pl != nullptr);
  if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++)
   {
-   ((PositionableLabel*)_selectionGroup->at(i))->setScale(s);
+   ((PositionableLabel*)_selectionGroup->at(i)->self())->setScale(s);
   }
  }
  else
@@ -7010,13 +6935,13 @@ void LayoutEditor::addSensor()
 
 /*protected*/ void LayoutEditor::setSelectionsRotation(int k, Positionable* p)
 {
-  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
+  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p->self());
   Q_ASSERT(pl != nullptr);
   if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
   {
    for (int i=0; i<_selectionGroup->size(); i++)
    {
-    ((PositionableLabel*)_selectionGroup->at(i))->rotate(k);
+    ((PositionableLabel*)_selectionGroup->at(i)->self())->rotate(k);
    }
   } else
   {
@@ -7049,7 +6974,7 @@ void LayoutEditor::On_removeMenuAction_triggered()
 {
  Positionable* comp = currComp;
  //comp->remove();
- SensorIcon* si = qobject_cast<SensorIcon*>(comp);
+ SensorIcon* si = qobject_cast<SensorIcon*>((QObject*)comp);
  if(si != nullptr)
  {
   Q_ASSERT(si->_itemGroup->scene()!=0);
@@ -7057,7 +6982,7 @@ void LayoutEditor::On_removeMenuAction_triggered()
   si->_itemGroup = nullptr;
   si->remove();
  }
- LocoIcon* li = qobject_cast<LocoIcon*>(comp);
+ LocoIcon* li = qobject_cast<LocoIcon*>((QObject*)comp);
  if(li != nullptr)
  {
   Q_ASSERT(li->_itemGroup->scene()!=0);
@@ -7065,7 +6990,7 @@ void LayoutEditor::On_removeMenuAction_triggered()
   li->_itemGroup = nullptr;
   li->remove();
  }
- MemoryIcon* mi = qobject_cast<MemoryIcon*>(comp);
+ MemoryIcon* mi = qobject_cast<MemoryIcon*>((QObject*)comp);
  if(mi != nullptr)
  {
   Q_ASSERT(mi->_itemGroup->scene()!=0);
@@ -7073,7 +6998,7 @@ void LayoutEditor::On_removeMenuAction_triggered()
   mi->_itemGroup = nullptr;
   mi->remove();
  }
- PositionableLabel* pl = qobject_cast<PositionableLabel*>(comp);
+ PositionableLabel* pl = qobject_cast<PositionableLabel*>(comp->self());
  if(pl != nullptr)
  {
   Q_ASSERT(pl->_itemGroup->scene()!=0);
@@ -7085,26 +7010,27 @@ void LayoutEditor::On_removeMenuAction_triggered()
 }
 /*protected*/ void LayoutEditor::removeSelections(Positionable* p)
 {
- PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
+ PositionableLabel* pl = qobject_cast<PositionableLabel*>(p->self());
  Q_ASSERT(pl != nullptr);
 
  if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
   for (int i=0; i<_selectionGroup->size(); i++)
   {
-   ((PositionableLabel*)_selectionGroup->at(i))->remove();
+   ((PositionableLabel*)_selectionGroup->at(i)->self())->remove();
   }
   _selectionGroup = new QList<Positionable*>();
  }
 }
+
 /*private*/ MultiSensorIcon* LayoutEditor::checkMultiSensors(QPointF loc)
 {
  // check multi sensor icons, if any
  for (int i=multiSensors->size()-1; i>=0; i--)
   {
    MultiSensorIcon* s = multiSensors->at(i);
-   double x = s->getLocation().x();
-   double y = s->getLocation().y();
+   double x = ((Positionable*)s)->getLocation().x();
+   double y = ((Positionable*)s)->getLocation().y();
    double w = s->maxWidth();
    double h = s->maxHeight();
    QRectF r = QRectF(x ,y ,w ,h);
@@ -7124,8 +7050,8 @@ return nullptr;
       LocoIcon* l = markerImage->at(i);
 //      double x = l->getX();
 //      double y = l->getY();
-      double x = l->getLocation().x();
-      double y = l->getLocation().y();
+      double x = ((Positionable*)l)->getLocation().x();
+      double y = ((Positionable*)l)->getLocation().y();
       double w = l->maxWidth();
       double h = l->maxHeight();
       QRectF r = QRectF(x ,y ,w ,h);
@@ -7306,7 +7232,7 @@ void LayoutEditor::addMemory()
 void LayoutEditor::addReporter(QString textReporter,int xx,int yy) {
   ReporterIcon* l = new ReporterIcon(this);
   l->setReporter(textReporter);
-  l->setLocation(xx,yy);
+  ((Positionable*)l)->setLocation(xx,yy);
   l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
   l->setDisplayLevel(LABELS);
   setDirty(true);
@@ -7360,7 +7286,7 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
   for (int i = 0; i<_contents->size(); i++)
   {
    Positionable* pos = _contents->at(i);
-   if(qobject_cast<PositionableLabel*>(pos)!= nullptr)
+   if(qobject_cast<PositionableLabel*>((QObject*)pos)!= nullptr)
     ((PositionableLabel*)pos)->setControlling(state);
   }
  }
@@ -7399,23 +7325,23 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
    for(int i=0; i<_positionableSelection->count(); i++)
    {
     Positionable* comp = _positionableSelection->at(i);
-    if(qobject_cast<SensorIcon*>(comp) != nullptr)
+    if(qobject_cast<SensorIcon*>((QObject*)comp) != nullptr)
     {
-     SensorIcon* si = qobject_cast<SensorIcon*>(comp);
+     SensorIcon* si = qobject_cast<SensorIcon*>((QObject*)comp);
      Q_ASSERT(si->_itemGroup->scene()!=0);
      editScene->removeItem(si->_itemGroup);
      remove(si);
     }
-    else if(qobject_cast<LocoIcon*>(comp) != nullptr)
+    else if(qobject_cast<LocoIcon*>((QObject*)comp) != nullptr)
     {
-     LocoIcon* li = qobject_cast<LocoIcon*>(comp);
+     LocoIcon* li = qobject_cast<LocoIcon*>((QObject*)comp);
      Q_ASSERT(li->_itemGroup->scene()!=0);
      editScene->removeItem(li->_itemGroup);
      remove(li);
     }
-    else if(qobject_cast<MemoryIcon*>(comp) != nullptr)
+    else if(qobject_cast<MemoryIcon*>((QObject*)comp) != nullptr)
     {
-     MemoryIcon*mi = qobject_cast<MemoryIcon*>(comp);
+     MemoryIcon*mi = qobject_cast<MemoryIcon*>((QObject*)comp);
      Q_ASSERT(mi->_itemGroup->scene()!=0);
      editScene->removeItem(mi->_itemGroup);
      remove(mi);
@@ -7713,11 +7639,9 @@ void LayoutEditor::on_actionShow_turnout_circles_toggled(bool bState)
 */
 /*public*/ void LayoutEditor::setHiddenMenu(Positionable* p, QMenu* popup)
 {
- PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
- Q_ASSERT(pl != nullptr);
-//  if (p.getDisplayLevel() == BKG || p instanceof PositionableShape) {
-//      return;
-//  }
+  if (p->getDisplayLevel() == BKG ) {
+      return;
+  }
 //  JCheckBoxMenuItem hideItem = new JCheckBoxMenuItem(tr("SetHidden"));
 //  hideItem->setChecked(p->isHidden());
 //  hideItem.addActionListener(new ActionListener(){
@@ -7736,7 +7660,7 @@ void LayoutEditor::on_actionShow_turnout_circles_toggled(bool bState)
 //  popup.add(hideItem);
   QAction* hiddenAction = new QAction(tr("Hide when not editing"),this);
   hiddenAction->setCheckable(true);
-  hiddenAction->setChecked(pl->isHidden());
+  hiddenAction->setChecked(p->isHidden());
   connect(hiddenAction, SIGNAL(toggled(bool)), this, SLOT(On_actionHidden_toggled(bool)));
   popup->addAction(hiddenAction);
   saveP = p;
@@ -7749,7 +7673,7 @@ void LayoutEditor::On_actionHidden_toggled(bool bState)
 }
 /*protected*/ void LayoutEditor::setSelectionsHidden(bool enabled, Positionable* p)
 {
- PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
+ PositionableLabel* pl = qobject_cast<PositionableLabel*>((QObject*)p);
  Q_ASSERT(pl != nullptr);
  if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {
@@ -8681,7 +8605,7 @@ void LayoutEditor::startMultiSensor() {
 // Invoked when window has new multi-sensor ready
 /*public*/ void LayoutEditor::addMultiSensor(MultiSensorIcon* l)
 {
- l->setLocation(multiLocX,multiLocY);
+ ((Positionable*)l)->setLocation(multiLocX,multiLocY);
  setDirty(true);
  putItem((Positionable*)l);
  //multiSensorFrame = nullptr;

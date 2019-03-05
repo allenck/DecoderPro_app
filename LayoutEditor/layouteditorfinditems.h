@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+class LayoutTrack;
 class LevelXing;
 class LayoutTurnout;
 class NamedBean;
@@ -45,6 +46,8 @@ public:
  /*public*/ LayoutTurnout* findLayoutTurnoutByTurnoutName(QString name);
  /*public*/ LevelXing* findLevelXingByName(QString name) ;
  /*public*/ LayoutSlip* findLayoutSlipByName(QString name);
+ QT_DEPRECATED /*public*/ LayoutTrack* findObjectByTypeAndName(int type, QString name);
+ /*public*/ LayoutTrack* findObjectByName(QString name);
 
 signals:
 

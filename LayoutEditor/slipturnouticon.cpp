@@ -811,7 +811,8 @@ void SlipTurnoutIcon::updateTurnout()
  _iconEditorFrame->dispose();
  _iconEditorFrame = nullptr;
  _iconEditor = nullptr;
- invalidate();
+ //invalidate();
+ updateScene();
 }
 
 /**

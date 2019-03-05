@@ -11,6 +11,7 @@
 #include "iconadder.h"
 #include <QStatusBar>
 #include "displayframe.h"
+#include "jmricolorchooser.h"
 
 //SensorIcon::SensorIcon(QObject *parent) :
 //    PositionableIcon(parent)
@@ -35,7 +36,7 @@
     // super ctor call to make sure this is an icon label
     setIcon("none", new NamedIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif",
                         ":/resources/icons/smallschematics/tracksegments/circuit-error.gif"));
-    setPopupUtility(new SensorPopupUtil((Positionable*)this, this));
+    setPopupUtility(new SensorPopupUtil((Positionable*)this, (JComponent*)this));
 
 }
 
@@ -49,7 +50,7 @@
     this->editor = editor;
     _control = true;
     debug = log->isDebugEnabled();
-    setPopupUtility(new SensorPopupUtil((Positionable*)this, this));
+    setPopupUtility(new SensorPopupUtil((Positionable*)this, (JComponent*)this));
     //_namedIcon = s;
     setIcon("none",s);
 }
@@ -62,10 +63,11 @@
     _control = true;
     debug = log->isDebugEnabled();
     displayState(sensorState());
-    setPopupUtility(new SensorPopupUtil((Positionable*)this, this));
+    setPopupUtility(new SensorPopupUtil((Positionable*)this, (JComponent*)this));
 }
 void SensorIcon::common()
 {
+ setObjectName("SensorIcon");
  log = new Logger("SensorIcon", this);
  debug = false;
  momentary = false;
@@ -85,6 +87,7 @@ void SensorIcon::common()
  _state2nameMap = new QHash <int, QString>();
  _name2stateMap = new QHash <QString, int>();
  makeIconMap();
+ JLabel::hide();
 }
 
 //@Override
@@ -937,19 +940,114 @@ void SensorIcon::updateSensor()
     unknownText = i;
     displayState(sensorState());
 }
-#if 1
+
 QMenu* SensorIcon::stateMenu(const QString name, int state)
 {
+ _state = state;
  QMenu* menu = new QMenu(name);
- QMenu* colorMenu = new QMenu(tr("FontColor"));
- getPopupUtility()->makeColorMenu(colorMenu, state);
- menu->addMenu(colorMenu);
- colorMenu = new QMenu(tr("FontBackgroundColor"));
- getPopupUtility()->makeColorMenu(colorMenu, state+1);
- menu->addMenu(colorMenu);
+ QAction* colorMenu = new QAction(tr("FontColor"),this);
+ connect(colorMenu, SIGNAL(triggered(QAction*)), this, SLOT(onColorMenu()));
+ menu->addAction(colorMenu);
+ colorMenu = new QAction(tr("FontBackgroundColor"));
+ connect(colorMenu, SIGNAL(triggered(QAction*)), this, SLOT(onColorMenu1()));
+ menu->addAction(colorMenu);
  return menu;
 }
-#endif
+void SensorIcon::onColorMenu()
+{
+ QColor desiredColor = JmriColorChooser::showDialog(this,
+                      tr("Font Color"),
+                      getColor(_state));
+ if (desiredColor.isValid() ) {
+      setColor(desiredColor,_state);
+ }
+}
+
+void SensorIcon::onColorMenu1()
+{
+ QColor desiredColor = JmriColorChooser::showDialog(this,
+                      tr("Font Background Color"),
+                      getColor(_state+1));
+ if (desiredColor.isValid() ) {
+      setColor(desiredColor,_state+1);
+ }
+}
+
+/*private*/ void SensorIcon::setColor(QColor desiredColor, int state){
+    SensorPopupUtil* util = (SensorPopupUtil*) getPopupUtility();
+    switch (state) {
+       case PositionablePopupUtil::FONT_COLOR:
+          util->setForeground(desiredColor);
+          break;
+       case PositionablePopupUtil::BACKGROUND_COLOR:
+          util->setBackgroundColor(desiredColor);
+          break;
+       case PositionablePopupUtil::BORDER_COLOR:
+          util->setBorderColor(desiredColor);
+          break;
+       case UNKNOWN_FONT_COLOR:
+          setTextUnknown(desiredColor);
+          break;
+       case UNKOWN_BACKGROUND_COLOR:
+          util->setHasBackground(desiredColor.isValid());
+          setBackgroundUnknown(desiredColor);
+          break;
+       case ACTIVE_FONT_COLOR:
+          setTextActive(desiredColor);
+          break;
+       case ACTIVE_BACKGROUND_COLOR:
+          util->setHasBackground(desiredColor.isValid());
+          setBackgroundActive(desiredColor);
+          break;
+       case INACTIVE_FONT_COLOR:
+          setTextInActive(desiredColor);
+          break;
+       case INACTIVE_BACKGROUND_COLOR:
+          util->setHasBackground(desiredColor.isValid());
+          setBackgroundInActive(desiredColor);
+          break;
+       case INCONSISTENT_FONT_COLOR:
+          setTextInconsistent(desiredColor);
+          break;
+       case INCONSISTENT_BACKGROUND_COLOR:
+          util->setHasBackground(desiredColor.isValid());
+          setBackgroundInconsistent(desiredColor);
+          break;
+       default:
+          break;
+   }
+}
+
+/*private*/ QColor SensorIcon::getColor(int state){
+    SensorPopupUtil* util = (SensorPopupUtil*) getPopupUtility();
+    switch (state) {
+       case PositionablePopupUtil::FONT_COLOR:
+          return util->getForeground();
+       case PositionablePopupUtil::BACKGROUND_COLOR:
+          return util->getBackground();
+       case PositionablePopupUtil::BORDER_COLOR:
+          return util->getBorderColor();
+       case UNKNOWN_FONT_COLOR:
+          return getTextUnknown();
+       case UNKOWN_BACKGROUND_COLOR:
+          return getBackgroundUnknown();
+       case ACTIVE_FONT_COLOR:
+          return getTextActive();
+       case ACTIVE_BACKGROUND_COLOR:
+          return getBackgroundActive();
+       case INACTIVE_FONT_COLOR:
+          return getTextInActive();
+       case INACTIVE_BACKGROUND_COLOR:
+          return getBackgroundInActive();
+       case INCONSISTENT_FONT_COLOR:
+          return getTextInconsistent();
+       case INCONSISTENT_BACKGROUND_COLOR:
+          return getBackgroundInconsistent();
+       default:
+          return QColor();
+   }
+}
+
 void SensorIcon::changeLayoutSensorType()
 {
 //        NamedBeanHandle <Sensor> handle = getNamedSensor();
@@ -1234,7 +1332,7 @@ void SensorIcon::on_setSensorTextAction()
  //item->setPos(getX(), getY());
  if(showTooltip()) item->setToolTip(getTooltip());
  //_itemGroup->addToGroup(item);
- _itemGroup->setPos(getX(), getY());
+ _itemGroup->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
  //if(showTooltip()) _itemGroup->setToolTip(getTooltip());
  //int degrees = getDegrees() + getIcon()->getRotation();
  currRotation = getIcon(iState)->getRotation()*90;

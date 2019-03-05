@@ -70,7 +70,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
    {
     try
     {
-     QDomElement e = ConfigXmlManager::elementFromObject(sub);
+     QDomElement e = ConfigXmlManager::elementFromObject((QObject*)sub);
      if (!e.isNull())
      {
       if ("signalmasticon" == (e.tagName()))

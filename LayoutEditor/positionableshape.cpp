@@ -58,7 +58,7 @@ void PositionableShape::init()
  _lineWidth = 1;
  _shape = NULL;
  _degrees = 0;
- setVisible(true);
+ ((Positionable*)this)->setVisible(true);
  _hitIndex = -1;	// dual use! also is index of polygon's vertices
  _controlSensor = NULL;
  _saveLevel = 5;			// default level set in popup
@@ -197,7 +197,7 @@ void PositionableShape::init()
     g2d.setStroke(stroke);
     g2d.draw(_shape);
     */
- if (!getEditor()->isEditable() && !isVisible())
+ if (!getEditor()->isEditable() && !((Positionable*)this)->isVisible())
  {
   return;
  }
@@ -465,26 +465,26 @@ void PositionableShape::OnCancel_clicked()
         if (evt->getPropertyName()==("KnownState")) {
             if (( evt->getNewValue()).toInt() == Sensor::ACTIVE) {
                 if (_doHide) {
-                    setVisible(true);
+                    ((Positionable*)this)->setVisible(true);
                 } else {
                     setDisplayLevel(_changeLevel);
-                    setVisible(true);
+                    ((Positionable*)this)->setVisible(true);
                 }
             } else if ((evt->getNewValue()).toInt() == Sensor::INACTIVE) {
                 if (_doHide) {
-                    setVisible(false);
+                    ((Positionable*)this)->setVisible(false);
                 } else {
                     setDisplayLevel(_saveLevel);
-                    setVisible(true);
+                    ((Positionable*)this)->setVisible(true);
                 }
             } else {
                 setDisplayLevel(_saveLevel);
-                setVisible(true);
+                ((Positionable*)this)->setVisible(true);
             }
         }
     } else {
         setDisplayLevel(_saveLevel);
-        setVisible(true);
+        ((Positionable*)this)->setVisible(true);
     }
 }
 
@@ -537,7 +537,7 @@ void PositionableShape::OnCancel_clicked()
         //getControlSensor().removePropertyChangeListener(this);
      disconnect(getControlSensor()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         setDisplayLevel(_saveLevel);
-        setVisible(true);
+        ((Positionable*)this)->setVisible(true);
     }
     _controlSensor = senHandle;
     if (_controlSensor != NULL) {

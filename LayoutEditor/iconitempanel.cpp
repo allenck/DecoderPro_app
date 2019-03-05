@@ -641,7 +641,7 @@ void IconDragJLabel::mouseDoubleClickEvent(QMouseEvent */*e*/)
                 double scale;
                 if (icon->getIconWidth() < 1 || icon->getIconHeight() < 1) {
                     image->setText(tr("invisible Icon"));
-                    image->setForeground(QColor(Qt::lightGray));
+// TODO:                    image->setForeground(QColor(Qt::lightGray));
                     scale = 0;
                 } else {
                     scale = icon->reduceTo(CatalogPanel::ICON_WIDTH, CatalogPanel::ICON_HEIGHT, CatalogPanel::ICON_SCALE);

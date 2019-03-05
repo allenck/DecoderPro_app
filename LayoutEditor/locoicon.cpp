@@ -40,7 +40,7 @@ const QString LocoIcon::YELLOW = "Yellow";
  setShowTooltip(false);
  //setEditable(false);
  _text = true;	//Markers are an icon with text
- setPopupUtility(new PositionablePopupUtil((Positionable*)this, this));
+ setPopupUtility(new PositionablePopupUtil((Positionable*)this, (JComponent*)this));
 // {       // need this class for Font Edit
 //        /*public*/ void setFixedTextMenu(JPopupMenu popup) {}
 //        /*public*/ void setTextMarginMenu(JPopupMenu popup) {}
@@ -411,7 +411,7 @@ DockMenuListener* DockMenuListener::init(Editor* e, LocoIcon* l)
   else
    item = new QGraphicsPixmapItem(pixmap, _itemGroup);
   setSize(pixmap.width(),pixmap.height());
-  item->setPos(getX(), getY());
+  item->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
   if(showTooltip()) item->setToolTip(getTooltip());
   //_itemGroup->addToGroup(item);
   //_itemGroup->setPos(getX(), getY());
@@ -441,7 +441,7 @@ DockMenuListener* DockMenuListener::init(Editor* e, LocoIcon* l)
   //item->setPos(getX(), getY());
   if(showTooltip()) item->setToolTip(getTooltip());
   _itemGroup->addToGroup(item);
-  _itemGroup->setPos(getX(), getY());
+  _itemGroup->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
   if(getDegrees() != 0)
   {
    QPointF center = item->boundingRect().center();

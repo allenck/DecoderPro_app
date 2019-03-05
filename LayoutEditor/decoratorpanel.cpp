@@ -128,10 +128,10 @@ AJRadioButton::AJRadioButton(QString text, int w) : QRadioButton(text)
  Positionable* item = pos->deepClone(); // need copy of PositionableJPanel in PopupUtility
  _util = item->getPopupUtility();
  item->remove();      // don't need copy any more. Removes ghost image of PositionableJPanels
- _isPositionableLabel = (qobject_cast<PositionableLabel*>(pos));
+ _isPositionableLabel = (qobject_cast<PositionableLabel*>((QObject*)pos));
  makeFontPanels();
 
- if (qobject_cast<SensorIcon*>(pos) && !((SensorIcon*)pos)->isIcon()) {
+ if (qobject_cast<SensorIcon*>((QObject*)pos) && !((SensorIcon*)pos)->isIcon()) {
      SensorIcon* si = (SensorIcon*) pos;
      if (!si->isIcon() && si->isText()) {
          PositionableLabel* sample = new PositionableLabel(si->getActiveText(), _editor);
@@ -161,9 +161,9 @@ AJRadioButton::AJRadioButton(QString text, int w) : QRadioButton(text)
      PositionablePopupUtil* util = sample->getPopupUtility();
      util->setHasBackground(_util->hasBackground());
      bool addtextField;
-     if (qobject_cast<PositionableLabel*>(pos)) {
+     if (qobject_cast<PositionableLabel*>((QObject*)pos)) {
          sample->setText(((PositionableLabel*)pos)->getUnRotatedText());
-         if (qobject_cast<MemoryIcon*>(pos)) {
+         if (qobject_cast<MemoryIcon*>((QObject*)pos)) {
              addtextField = false;
          } else {
              addtextField = true;
@@ -172,21 +172,21 @@ AJRadioButton::AJRadioButton(QString text, int w) : QRadioButton(text)
          // To display PositionableJPanel types as PositionableLabels, set fixed sizes.
          util->setFixedWidth(pos->getWidth() - 2*_util->getBorderSize());
          util->setFixedHeight(pos->getHeight() - 2*_util->getBorderSize());
-         if (qobject_cast<MemoryInputIcon*>(pos)) {
+         if (qobject_cast<MemoryInputIcon*>((QObject*)pos)) {
              JTextField* field = (JTextField*)((MemoryInputIcon*)pos)->getTextComponent();
              sample->setText(field->text());
              addtextField = false;
-         } else if (qobject_cast<MemoryComboIcon*>(pos)) {
+         } else if (qobject_cast<MemoryComboIcon*>((QObject*)pos)) {
              QComboBox* box = (QComboBox*)((MemoryComboIcon*)pos)->getTextComponent();
              sample->setText(box->currentText());
              addtextField = false;
-         } else if (qobject_cast<MemorySpinnerIcon*>(pos)) {
+         } else if (qobject_cast<MemorySpinnerIcon*>((QObject*)pos)) {
              JTextField* field = (JTextField*)((MemorySpinnerIcon*)pos)->getTextComponent();
              sample->setText(field->text());
              addtextField = false;
          } else {
              addtextField = true;
-             log->error(tr("Unknown Postionable Type %1").arg( pos->metaObject()->className()));
+             log->error(tr("Unknown Postionable Type %1").arg(((QObject*)pos)->metaObject()->className()));
          }
      }
      doPopupUtility("Text", sample, addtextField);
@@ -500,7 +500,8 @@ AJRBActionListener* AJRBActionListener::init(AJRadioButton* b, DecoratorPanel* s
   }
   sam->setStyleSheet();
   sam->updateSize();
-  sam->invalidate();
+  //sam->invalidate();
+  sam->updateScene();
  }
 }
 
@@ -683,7 +684,7 @@ void DecoratorPanel::on_bgColorBox()
 /*public*/ void DecoratorPanel::getText(Positionable* pos)
 {
  //if (pos instanceof SensorIcon && ((SensorIcon)pos).isText())
- if((qobject_cast<SensorIcon*>(pos)!=NULL) &&(((SensorIcon*)pos)->isText()) )
+ if((qobject_cast<SensorIcon*>((QObject*)pos)!=NULL) &&(((SensorIcon*)pos)->isText()) )
  {
     SensorIcon* icon = (SensorIcon*)pos;
     PositionableLabel* sample = _samples->value("Active");
@@ -712,7 +713,7 @@ void DecoratorPanel::on_bgColorBox()
     ((PositionableLabel*)pos)->setBackground(sample->getBackground());
     ((PositionableLabel*)pos)->setForeground(sample->getForeground());
     //if (pos instanceof PositionableLabel)
-    if(qobject_cast<PositionableLabel*>(pos)!= NULL)
+    if(qobject_cast<PositionableLabel*>((QObject*)pos)!= NULL)
     {
      ((PositionableLabel*)pos)->setText(_samples->value("Text")->getText());
     }
@@ -904,7 +905,7 @@ void DecoratorPanel::currentColorChanged(QColor)
  stateChanged(new ChangeEvent(_chooser));
 }
 /*public*/ void DecoratorPanel::setAttributes(Positionable* pos) {
-        if (qobject_cast<SensorIcon*>(pos)  && !((SensorIcon*)pos)->isIcon()) {
+        if (qobject_cast<SensorIcon*>((QObject*)pos)  && !((SensorIcon*)pos)->isIcon()) {
             SensorIcon* icon = (SensorIcon*) pos;
             PositionableLabel* sample = _samples->value("Active");
             if (sample->isOpaque()) {
@@ -944,8 +945,8 @@ void DecoratorPanel::currentColorChanged(QColor)
         } else {
             PositionableLabel* sample = _samples->value("Text");
             pos->setForeground(sample->getForeground());
-            if ( qobject_cast<PositionableLabel*>(pos) &&
-                !(qobject_cast<MemoryIcon*>(pos)== nullptr)) {
+            if ( qobject_cast<PositionableLabel*>((QObject*)pos) &&
+                !(qobject_cast<MemoryIcon*>((QObject*)pos)== nullptr)) {
                 ((PositionableLabel*) pos)->setText(sample->getText());
             }
             PositionablePopupUtil* util = pos->getPopupUtility();
@@ -966,7 +967,8 @@ void DecoratorPanel::currentColorChanged(QColor)
                 log->debug(tr("setAttributes text sample opaque= %1 hasBackground= {} background= %2").arg(sample->isOpaque()?"true":"false").arg(u->hasBackground()?"true":"false").arg( ColorUtil::colorToString(u->getBackground())));
             }
         }
-        pos->invalidate();
+        //pos->invalidate();
+        pos->updateScene();
 }
 
 /*public*/ void DecoratorPanel::setSuppressRecentColor(bool b) {

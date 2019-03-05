@@ -2,7 +2,7 @@
 #define MEMORYINPUTICON_H
 #include "positionablejpanel.h"
 #include "namedbeanhandle.h"
-#include "../libPr3/memory.h"
+#include "memory.h"
 #include "spinnernumbermodel.h"
 #include "iconadder.h"
 #include <QSpinBox>
@@ -20,7 +20,7 @@ public:
     //explicit MemoryInputIcon(QWidget *parent = 0);
     /*public*/ MemoryInputIcon(int nCols, Editor* editor, QWidget *parent = 0);
     /*public*/ Positionable* deepClone();
-    /*public*/ Positionable* finishClone(Positionable* p);
+    /*public*/ Positionable* finishClone(MemoryInputIcon *pos);
     /*public*/ QWidget* getTextComponent();
     /*public*/ void mouseExited(QGraphicsSceneMouseEvent* e);
      /*public*/ void setMemory(QString pName);
@@ -34,6 +34,8 @@ public:
     void editMemory();
     /*public*/ void displayState();
     void cleanup();
+    void mousePressed(QGraphicsSceneMouseEvent*);
+
 
 signals:
 
@@ -51,6 +53,8 @@ private:
     SpinnerNumberModel* _spinModel;// = new SpinnerNumberModel(3,1,100,1);
     Logger* log;
     MyIconAdder* _iconEditor;
+    MyGraphicsProxyWidget* widget;
+
 private slots:
     /*private*/ void updateMemory();
 

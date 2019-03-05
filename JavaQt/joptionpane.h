@@ -169,7 +169,7 @@ public:
  /*public*/ static int showConfirmDialog(QWidget* parentComponent,
      QVariant message, QString title, int optionType,
      int messageType, QIcon icon) throw (HeadlessException);
- static QWidget* getWindowForComponent(QWidget* parentComponent);
+ static QWidget* getWindowForComponent(QWidget* parentComponent) throw (HeadlessException);
 
 signals:
 

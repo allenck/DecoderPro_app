@@ -182,14 +182,14 @@ public:
     /*public*/ LayoutBlock* getLayoutBlock(QString blockID);
     LayoutBlockManager* layoutBlockManager;
     BlockManager* blockManger;
-    /*public*/ QObject* findObjectByTypeAndName(int type,QString name);
+    QT_DEPRECATED /*public*/ QObject* findObjectByTypeAndName(int type,QString name);
     /*public*/ LayoutBlock* getAffectedBlock(QObject* o, int type);
     /**
     * Returns an array list of track segments matching the block name.
     */
     /*public*/ QVector<TrackSegment*>* findTrackSegmentByBlock(QString name);
     /*public*/ QVector<MemoryIcon*>* memoryLabelList;// = new QVector<MemoryIcon*>(); // Memory Label List
-    /*public*/ /*transient*/ QList<BlockContentsIcon*>* blockContentsLabelList;// = new ArrayList<>(); //BlockContentsIcon Label List
+    /*public*/ /*transient*/ QVector<BlockContentsIcon*>* blockContentsLabelList;// = new ArrayList<>(); //BlockContentsIcon Label List
 
     void repaint();
     /**
@@ -229,7 +229,7 @@ public:
     void addLabel();
     void drawLabelImages(EditScene* g2);
 //    /*public*/ bool removeFromContents(Positionable* l);
-    /*public*/ void putItem(Positionable* l);
+    /*public*/ void putItem(Positionable *l);
 //    /*public*/ void super_putItem(Positionable* l);
     EditScene* getScene() {return editScene;}
     /*public*/ void putSensor(SensorIcon* l);
@@ -399,6 +399,7 @@ public:
     /*public*/ QList<LayoutTrack *> getLevelXings();
     /*public*/ QList<LayoutTrack *> getLayoutTracks();
     /*public*/ QList<LayoutTurnout *> getLayoutTurnoutsAndSlips();
+    /*public*/ bool removeFromContents(Positionable* l);
 
 
 
@@ -723,6 +724,10 @@ private:
  /*private*/ /*transient*/ int gridSize2nd = 10;
  /*private*/ double zoomIn();
  /*private*/ double zoomOut();
+ /*private*/ QString findBeanUsage(NamedBean* sm);
+ /*private*/ void removeBeanRefs(NamedBean* sm);
+ /*private*/ bool removeSignalMast(SignalMastIcon* si);
+
 
 private slots:
  void OnScenePos(QGraphicsSceneMouseEvent*);
@@ -848,13 +853,12 @@ protected:
  friend class PositionablePoint;
  friend class LoadXml;
 
- /*protected*/ PositionableLabel* addLabel(QString text);
  /**
  * Set object location and size for icon and label object as it is created.
  * Size comes from the preferredSize; location comes
  * from the fields where the user can spec it.
  */
- /*protected*/ void setNextLocation(PositionableLabel* obj);
+ /*protected*/ void setNextLocation(Positionable *obj);
 // /*protected*/ void setNextLocation(PositionableLabel* obj);
 
 // /*protected*/ void addToTarget(Positionable* l);

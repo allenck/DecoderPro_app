@@ -979,7 +979,7 @@ void CircuitBuilder::showDoneButton_clicked()
  {
   Positionable* p = iter.next();
   //if (p instanceof PortalIcon)
-  if(qobject_cast<PortalIcon*>(p) != NULL)
+  if(qobject_cast<PortalIcon*>((QObject*)p) != NULL)
   {
       p->setPositionable(set);
   }
@@ -1023,7 +1023,7 @@ void CircuitBuilder::showDoneButton_clicked()
   {
    Positionable* pos = oldIcons->value(i);
    //if (pos instanceof IndicatorTrack)
-   if(qobject_cast<IndicatorTrack*>(pos)!= NULL)
+   if(qobject_cast<IndicatorTrack*>((QObject*)pos)!= NULL)
    {
     ((IndicatorTrack*)pos)->setOccBlockHandle(NULL);
    }
@@ -1042,7 +1042,7 @@ void CircuitBuilder::showDoneButton_clicked()
   {
    Positionable* pos = selections->value(i);
    //if (pos instanceof IndicatorTrack)
-   if(qobject_cast<IndicatorTrack*>(pos)!= NULL)
+   if(qobject_cast<IndicatorTrack*>((QObject*)pos)!= NULL)
    {
                 ((IndicatorTrack*)pos)->setOccBlockHandle(handle);
             }
@@ -1109,7 +1109,7 @@ void CircuitBuilder::showDoneButton_clicked()
   Positionable* pos = it.next();
 //            if (log->isDebugEnabled()) log->debug("class: "+pos.getClass().getName());
   //if (pos instanceof IndicatorTrack)
-  if(qobject_cast<IndicatorTrack*>(pos) != NULL)
+  if(qobject_cast<IndicatorTrack*>((QObject*)pos) != NULL)
   {
    OBlock* block = ((IndicatorTrack*)pos)->getOccBlock();
 //            ((IndicatorTrack*)pos)->removePath(EditCircuitPaths::TEST_PATH);
@@ -1123,7 +1123,7 @@ void CircuitBuilder::showDoneButton_clicked()
    }
   }
   //else if (pos instanceof PortalIcon)
-  else if(qobject_cast<PortalIcon*>(pos)!= NULL)
+  else if(qobject_cast<PortalIcon*>((QObject*)pos)!= NULL)
   {
    PortalIcon* pIcon = (PortalIcon*) pos;
    QString name = pIcon->getName();
@@ -1181,7 +1181,7 @@ void CircuitBuilder::showDoneButton_clicked()
          for (int k=0; k<icons->size(); k++) {
              Positionable* pos = icons->at(k);
              //if (!(pos instanceof IndicatorTrack) && !(pos instanceof PortalIcon))
-             if(qobject_cast<IndicatorTrack*>(pos) == NULL && qobject_cast<PortalIcon*>(pos)== NULL)
+             if(qobject_cast<IndicatorTrack*>((QObject*)pos) == NULL && qobject_cast<PortalIcon*>((QObject*)pos)== NULL)
              {
                  if (!_convertBlock->contains(block)) {
                      _convertBlock->append(block);
@@ -1347,10 +1347,10 @@ public void setAllEditable(boolean state) {
         {
             Positionable* pos = list->at(i);
             //if (!(pos instanceof IndicatorTrack) && !(pos instanceof PortalIcon))
-            if(qobject_cast<IndicatorTrack*>(pos) != NULL && qobject_cast<PortalIcon*>(pos) != NULL)
+            if(qobject_cast<IndicatorTrack*>((QObject*)pos) != NULL && qobject_cast<PortalIcon*>((QObject*)pos) != NULL)
             {
                 if (log->isDebugEnabled()) {
-                    log->debug("icon needs Convertion " + QString(pos->metaObject()->className()));
+                    log->debug("icon needs Convertion " + QString(((QObject*)pos)->metaObject()->className()));
                 }
                 return false;
             }
@@ -1404,10 +1404,10 @@ public void setAllEditable(boolean state) {
         for (int i = 0; i < list->size(); i++) {
             Positionable* pos = list->at(i);
             //if (!(pos instanceof IndicatorTrack) && !(pos instanceof PortalIcon))
-            if(qobject_cast<IndicatorTrack*>(pos) == NULL && qobject_cast<PortalIcon*>(pos) == NULL)
+            if(qobject_cast<IndicatorTrack*>((QObject*)pos) == NULL && qobject_cast<PortalIcon*>((QObject*)pos) == NULL)
             {
                 if (log->isDebugEnabled()) {
-                    log->debug("convertIcons: #" + QString::number(i) + " pos= " + QString(pos->metaObject()->className()));
+                    log->debug("convertIcons: #" + QString::number(i) + " pos= " + QString(((QObject*)pos)->metaObject()->className()));
                 }
                 convertIcon(pos);
             }
@@ -1424,7 +1424,7 @@ public void setAllEditable(boolean state) {
  _editor->toFront();
 //    _editor.repaint();
     //if (pos instanceof TurnoutIcon)
- if(qobject_cast<TurnoutIcon*>(pos)!= NULL)
+ if(qobject_cast<TurnoutIcon*>((QObject*)pos)!= NULL)
  {
   _convertFrame = new ConvertFrame("IndicatorTO", (PositionableLabel*)pos, this);
   _trackTOPanel = new IndicatorTOItemPanel(_convertFrame->_paletteFrame, "IndicatorTO", NULL, NULL, _editor, (QWidget*)this);
@@ -1540,7 +1540,7 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
 /*private*/ void CircuitBuilder::finishConvert(Positionable* pos) {
     _circuitIcons->removeOne(_oldIcon);
     _oldIcon->remove();
-    pos->setLocation(_oldIcon->getLocation());
+    ((Positionable*)pos)->setLocation(((Positionable*)_oldIcon)->getLocation());
     _editor->putItem(pos);
     _circuitIcons->append(pos);
     pos->updateSize();
@@ -1568,7 +1568,7 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
  {
   Positionable* p = iter.next();
   //if (p instanceof PortalIcon)
-  if(qobject_cast<PortalIcon*>(p) != NULL)
+  if(qobject_cast<PortalIcon*>((QObject*)p) != NULL)
   {
    if (showPortal) {
        ((PortalIcon*) p)->setStatus(PortalIcon::VISIBLE);
@@ -1584,11 +1584,11 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
 }
 #if 1
 /*protected*/ bool CircuitBuilder::isTrack(Positionable* pos) {
-    if (qobject_cast<IndicatorTrack*>(pos)) {
+    if (qobject_cast<IndicatorTrack*>((QObject*)pos)) {
         return true;
-    } else if (qobject_cast<TurnoutIcon*>(pos)) {
+    } else if (qobject_cast<TurnoutIcon*>((QObject*)pos)) {
         return true;
-    } else if (qobject_cast<PositionableLabel*>(pos)) {
+    } else if (qobject_cast<PositionableLabel*>((QObject*)pos)) {
         PositionableLabel* pl = (PositionableLabel*)pos;
         if (pl->isIcon()) {
              NamedIcon* icon = (NamedIcon*)pl->getIcon();
@@ -1609,17 +1609,17 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
 #endif
 /*private*/ bool CircuitBuilder::isUnconvertedTrack(Positionable* pos) {
     //if (pos instanceof IndicatorTrack)
-    if(qobject_cast<IndicatorTrack*>(pos)!= NULL)
+    if(qobject_cast<IndicatorTrack*>((QObject*)pos)!= NULL)
     {
         return false;
     }
    // else  if (pos instanceof TurnoutIcon)
-    else if(qobject_cast<TurnoutIcon*>(pos)!= NULL)
+    else if(qobject_cast<TurnoutIcon*>((QObject*)pos)!= NULL)
     {
         return true;
     }
     //else if (pos instanceof PositionableLabel)
-    else if(qobject_cast<PositionableLabel*>(pos)!= NULL)
+    else if(qobject_cast<PositionableLabel*>((QObject*)pos)!= NULL)
     {
         PositionableLabel* pl = (PositionableLabel*)pos;
         if (pl->isIcon()) {
@@ -1645,7 +1645,7 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
 */
 /*private*/ bool CircuitBuilder::okPath(Positionable* pos, OBlock* block) {
     QList<Positionable*>* icons = _circuitMap->value(block);
-    if (qobject_cast<PortalIcon*>(pos)) {
+    if (qobject_cast<PortalIcon*>((QObject*)pos)) {
         Portal* portal = ((PortalIcon*)pos)->getPortal();
         if (portal!=NULL) {
             if (block==(portal->getFromBlock()) || block==(portal->getToBlock())) {
@@ -1675,7 +1675,7 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
 */
 /*private*/ bool CircuitBuilder::okToAdd(Positionable* pos, OBlock* editBlock)
 {
-    if (qobject_cast<IndicatorTrack*>(pos)) {
+    if (qobject_cast<IndicatorTrack*>((QObject*)pos)) {
         OBlock* block = ((IndicatorTrack*)pos)->getOccBlock();
         if (block!=NULL) {
             if (block!=(editBlock)) {
@@ -1733,7 +1733,7 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
     if (_editCircuitFrame!=NULL || _editPathsFrame!=NULL) {
         return true;
     } else if (_editPortalFrame!=NULL) {
-        if (qobject_cast<PortalIcon*>(selection)) {
+        if (qobject_cast<PortalIcon*>((QObject*)selection)) {
             _editPortalFrame->checkPortalIconForUpdate((PortalIcon*)selection, true);
         }
         return true;
@@ -1758,14 +1758,14 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
             } else if (_editPathsFrame != NULL) {
                 while (iter.hasNext()) {
                     Positionable* pos = iter.next();
-                    if (isTrack(pos) || qobject_cast<PortalIcon*>(pos)) {
+                    if (isTrack(pos) || qobject_cast<PortalIcon*>((QObject*)pos)) {
                         tracks->append(pos);
                     }
                 }
             } else {
                 while (iter.hasNext()) {
                     Positionable* pos = iter.next();
-                    if (qobject_cast<PortalIcon*>(pos)) {
+                    if (qobject_cast<PortalIcon*>((QObject*)pos)) {
                         tracks->append(pos);
                     }
                 }
@@ -1798,7 +1798,7 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
  }
  if (_editPortalFrame != NULL || _editDirectionFrame != NULL)
  {
-  if (qobject_cast<PortalIcon*>(selection))
+  if (qobject_cast<PortalIcon*>((QObject*)selection))
   {
    _editor->highlight(selection);
       return false;		// OK to drag portal icon
@@ -1841,7 +1841,7 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
     } else if (_editPathsFrame!=NULL)
     {
         //if (selection instanceof IndicatorTrack || selection instanceof PortalIcon)
-     if(qobject_cast<IndicatorTrack*>(selection) || qobject_cast<PortalIcon*>(selection))
+     if(qobject_cast<IndicatorTrack*>((QObject*)selection) || qobject_cast<PortalIcon*>((QObject*)selection))
         {
             OBlock* block = _editPathsFrame->getBlock();
             // A temporary path "TEST_PATH" is used to display the icons representing a path
@@ -1852,7 +1852,7 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
             if (!event->modifiers()&Qt::ShiftModifier) {
                 if (pathGroup->contains(selection)) {
                     pathGroup->removeOne(selection);
-                    if (qobject_cast<PortalIcon*>(selection)) {
+                    if (qobject_cast<PortalIcon*>((QObject*)selection)) {
                         ((PortalIcon*)selection)->setStatus(PortalIcon::VISIBLE);
                     } else {
                         ((IndicatorTrack*)selection)->setStatus(Sensor::INACTIVE);
@@ -1862,14 +1862,14 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
                 } else if (okPath(selection, block)) {
                     pathGroup->append(selection);
                     // okPath() sets PortalIcons to status PortalIcon.PATH
-                    if (qobject_cast<IndicatorTrack*>(selection)) {
+                    if (qobject_cast<IndicatorTrack*>((QObject*)selection)) {
                         ((IndicatorTrack*)selection)->addPath(EditCircuitPaths::TEST_PATH);
                     }
                 } else {
                     return;
                 }
             } else {
-                if (qobject_cast<PortalIcon*>(selection)) {
+                if (qobject_cast<PortalIcon*>((QObject*)selection)) {
                     ((PortalIcon*)selection)->setStatus(PortalIcon::VISIBLE);
                 }
             }
@@ -1880,8 +1880,8 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
          _editPathsFrame->toFront();
     } else if (_editPortalFrame!=NULL) {
         if (log->isDebugEnabled()) log->debug("selection= "+(selection==NULL?"NULL":
-                                                        QString(selection->metaObject()->className())));
-        if (qobject_cast<PortalIcon*>(selection) && _circuitIcons->contains(selection))
+                                                        QString(((QObject*)selection)->metaObject()->className())));
+        if (qobject_cast<PortalIcon*>((QObject*)selection) && _circuitIcons->contains(selection))
         {
             _editPortalFrame->checkPortalIconForUpdate((PortalIcon*)selection, false);
             //_editor.getSelectionGroup()->layout()->addWidget(selection);
@@ -1960,7 +1960,7 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
         return true;
     } else if (_editPortalFrame != NULL) {
         //if (dragging && selection instanceof PortalIcon && _circuitIcons.contains(selection)) {
-     if(dragging && qobject_cast<PortalIcon*>(selection) != NULL && _circuitIcons->contains(selection))
+     if(dragging && qobject_cast<PortalIcon*>((QObject*)selection) != NULL && _circuitIcons->contains(selection))
      {
             _editPortalFrame->checkPortalIconForUpdate((PortalIcon*) selection, true);
         }

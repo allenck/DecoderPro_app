@@ -329,7 +329,7 @@ void EditCircuitPaths::on_doneClicked()
  {
   Positionable* pos = list->at(i);
   //if (pos instanceof IndicatorTrack)
-  if(qobject_cast<IndicatorTrack*>(pos)!= NULL)
+  if(qobject_cast<IndicatorTrack*>((QObject*)pos)!= NULL)
   {
    QStringList* paths = ((IndicatorTrack*)pos)->getPaths();
    if (paths!=NULL)
@@ -377,7 +377,7 @@ void EditCircuitPaths::on_doneClicked()
  for (int i = 0; i < list->size(); i++)
  {
   Positionable* pos = list->at(i);
-  if (qobject_cast<IndicatorTrack*>(pos) != NULL)
+  if (qobject_cast<IndicatorTrack*>((QObject*)pos) != NULL)
   {
    QList<QString>* paths = ((IndicatorTrack*) pos)->getPaths();
    if (paths != NULL)
@@ -420,7 +420,7 @@ void EditCircuitPaths::on_doneClicked()
  {
   Positionable* pos = _pathGroup->at(i);
   //if (pos instanceof IndicatorTrack)
-  if(qobject_cast<IndicatorTrack*>(pos)!= NULL)
+  if(qobject_cast<IndicatorTrack*>((QObject*)pos)!= NULL)
   {
     ((IndicatorTrack*)pos)->addPath(TEST_PATH);
   }
@@ -587,7 +587,7 @@ void EditCircuitPaths::on_doneClicked()
  {
   Positionable* pos = it.next();
   //if (pos instanceof IndicatorTurnoutIcon)
-  if(qobject_cast<IndicatorTurnoutIcon*>(pos) != NULL)
+  if(qobject_cast<IndicatorTurnoutIcon*>((QObject*)pos) != NULL)
   {
    Turnout* t = ((IndicatorTurnoutIcon*) pos)->getTurnout();
    QString turnoutName = ((IndicatorTurnoutIcon*) pos)->getNamedTurnout()->getName();
@@ -606,7 +606,7 @@ void EditCircuitPaths::on_doneClicked()
    hasTrack = true;
   }
   //else if (pos instanceof PortalIcon)
-  else if(qobject_cast<PortalIcon*>(pos) != NULL)
+  else if(qobject_cast<PortalIcon*>((QObject*)pos) != NULL)
   {
       if (toPortal == NULL) {
           toPortal = ((PortalIcon*) pos)->getPortal();
@@ -616,7 +616,7 @@ void EditCircuitPaths::on_doneClicked()
       portalIconCount++;
   }
   //else if (pos instanceof IndicatorTrack)
-  else if(qobject_cast<IndicatorTrack*>(pos) != NULL)
+  else if(qobject_cast<IndicatorTrack*>((QObject*)pos) != NULL)
   {
       hasTrack = true;
   }
@@ -659,11 +659,11 @@ void EditCircuitPaths::on_doneClicked()
     while (iter.hasNext()) {
         Positionable* pos = iter.next();
         if (_pathGroup->contains(pos)) {
-         if (qobject_cast< IndicatorTrack*>(pos) != NULL) {
+         if (qobject_cast< IndicatorTrack*>((QObject*)pos) != NULL) {
                 ((IndicatorTrack*) pos)->addPath(name);
             }
         } else {
-            if (qobject_cast< IndicatorTrack*>(pos) != NULL) {
+            if (qobject_cast< IndicatorTrack*>((QObject*)pos) != NULL) {
                 ((IndicatorTrack*) pos)->removePath(name);
             } else {
                 PortalIcon* pi = (PortalIcon*) pos;
@@ -890,7 +890,7 @@ void EditCircuitPaths::on_doneClicked()
  for (int i=0; i<list->size(); i++)
  {
   //if (list.get(i) instanceof IndicatorTrack)
-  if(qobject_cast<IndicatorTrack*>(list->at(i))!= NULL)
+  if(qobject_cast<IndicatorTrack*>((QObject*)list->at(i))!= NULL)
   {
    IndicatorTrack* icon = (IndicatorTrack*)list->at(i);
    QStringList* paths = icon->getPaths();
@@ -949,7 +949,7 @@ void EditCircuitPaths::on_doneClicked()
  {
   Positionable* pos = _pathGroup->at(i);
   //if (pos instanceof PortalIcon)
-  if(qobject_cast<PortalIcon*>(pos) != NULL)
+  if(qobject_cast<PortalIcon*>((QObject*)pos) != NULL)
   {
    ((PortalIcon*)pos)->setStatus(PortalIcon::VISIBLE);
   }

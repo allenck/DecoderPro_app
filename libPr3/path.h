@@ -64,6 +64,22 @@ public:
      */
     /*public*/ const static /*final*/ int WEST  =0x00080;
     /**
+     * North-East
+     */
+    /*public*/ const static /*final*/ int NORTH_EAST = NORTH | EAST;
+    /**
+     * South-East
+     */
+    /*public*/ const static /*final*/ int SOUTH_EAST = SOUTH | EAST;
+    /**
+     * South-West
+     */
+    /*public*/ const static /*final*/ int SOUTH_WEST = SOUTH | WEST;
+    /**
+     * North-West
+     */
+     /*public*/ const static /*final*/ int NORTH_WEST = NORTH | WEST;
+    /**
      * Clockwise
      */
     /*public*/ const static /*final*/ int CW    =0x00100;
@@ -97,6 +113,11 @@ public:
     /*public*/ float getLengthMm() ;
     /*public*/ float getLengthCm();
     /*public*/ float getLengthIn() ;
+    /*public*/ bool equals(QObject* obj);
+    /*public*/ QString toString();
+    /*public*/ static int computeDirection(QPointF p1, QPointF p2);
+    /*public*/ static int reverseDirection(int inDir);
+
 signals:
     
 public slots:

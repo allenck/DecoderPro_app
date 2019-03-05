@@ -125,7 +125,7 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
  QString a = element.attribute("hidden");
  if ( (a!="") && a==("yes")){
      ps->setHidden(true);
-     ps->setVisible(false);
+     ((Positionable*)ps)->setVisible(false);
  }
  a = element.attribute("positionable");
  if ( (a!="") && a==("true"))

@@ -5,10 +5,10 @@
 #include <QIcon>
 #include <QMutex>
 #include <QLabel>
-#include "positionable.h"
+//#include "positionable.h"
 
-class NamedIcon;
-class JLabel : public Positionable
+class ImageIcon;
+class JLabel : public QLabel
 {
     Q_OBJECT
 public:
@@ -54,7 +54,7 @@ public:
  *           <code>LEADING</code> or
  *           <code>TRAILING</code>.
  */
-/*public*/ JLabel(QString text, NamedIcon* icon, int horizontalAlignment,QWidget *parent = 0);
+/*public*/ JLabel(QString text, ImageIcon *icon, int horizontalAlignment, QWidget *parent = 0);
     /**
      * Creates a <code>JLabel</code> instance with the specified
      * text and horizontal alignment.
@@ -102,7 +102,7 @@ public:
  * The label's contents, once set, will be displayed on the leading edge
  * of the label's display area.
  */
-/*public*/ JLabel(NamedIcon* image, QWidget *parent = 0);
+/*public*/ JLabel(ImageIcon* image, QWidget *parent = 0);
 /*public*/ JLabel(QWidget *parent = 0);
     /**
      * Creates a <code>JLabel</code> instance with the specified image.
@@ -126,7 +126,7 @@ public:
  * @return an Icon
  * @see #setIcon
  */
-/*public*/ NamedIcon* getIcon();
+/*public*/ ImageIcon* getIcon();
     /**
      * Defines the icon this component will display.  If
      * the value of icon is NULL, nothing is displayed.
@@ -144,7 +144,7 @@ public:
      *    attribute: visualUpdate true
      *  description: The icon this component will display.
      */
-    /*public*/ void setIcon(NamedIcon *icon) ;
+    /*public*/ void setIcon(ImageIcon *icon) ;
     /**
      * Returns the icon used by the label when it's disabled.
      * If no disabled icon has been set this will forward the call to
@@ -159,7 +159,7 @@ public:
      * @see ImageIcon
      */
     //@Transient
-    /*public*/ NamedIcon* getDisabledIcon() ;
+    /*public*/ ImageIcon* getDisabledIcon() ;
     /**
      * Set the icon to be displayed if this JLabel is "disabled"
      * (JLabel.setEnabled(false)).
@@ -174,7 +174,7 @@ public:
      *    attribute: visualUpdate true
      *  description: The icon to display if the label is disabled.
      */
-    /*public*/ void setDisabledIcon(NamedIcon* disabledIcon);
+    /*public*/ void setDisabledIcon(ImageIcon* disabledIcon);
     /**
      * Specify a keycode that indicates a mnemonic key.
      * This property is used when the label is part of a larger component.
@@ -269,8 +269,8 @@ public:
     QPointF getLocation();
 
     void setSize(double x, double y);
-    int getX();
-    int getY();
+//    int getX();
+//    int getY();
     /**
      * Returns the horizontal position of the label's text,
      * relative to its image.
@@ -328,8 +328,8 @@ private:
  /*private*/ int mnemonicIndex;// = -1;
 
  /*private*/ QString text;// = "";         // "" rather than null,  for BeanBox
-/*private*/ NamedIcon* defaultIcon;// = NULL;
-/*private*/ NamedIcon* disabledIcon;// = null;
+/*private*/ ImageIcon* defaultIcon;// = NULL;
+/*private*/ ImageIcon* disabledIcon;// = null;
 /*private*/ bool disabledIconSet;// = false;
 
 /*private*/ int verticalAlignment;// = CENTER;

@@ -1052,7 +1052,7 @@ protected void paintTargetPanel(Graphics g) {
         }
     }
     if (isEditable() && selection != nullptr && selection->getDisplayLevel() > BKG) {
-        _highlightcomponent = QRectF(selection->x(), selection->y(), selection->maxWidth(), selection->maxHeight());
+        _highlightcomponent = QRectF(selection->getX(), selection->getY(), selection->maxWidth(), selection->maxHeight());
         _targetPanel->repaint();
     } else {
         _highlightcomponent = QRectF();

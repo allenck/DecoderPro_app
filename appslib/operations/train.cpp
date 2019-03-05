@@ -3128,8 +3128,8 @@ if (roads.length() == 0) {
   */
  /*public*/ bool Train::setTrainIconCoordinates() {
      if (Setup::isTrainIconCordEnabled()) {
-         _trainIconRl->setTrainIconX(_trainIcon->getX());
-         _trainIconRl->setTrainIconY(_trainIcon->getY());
+         _trainIconRl->setTrainIconX(((Positionable*)_trainIcon)->getX());
+         _trainIconRl->setTrainIconY(((Positionable*)_trainIcon)->getY());
          return true;
      }
      return false;

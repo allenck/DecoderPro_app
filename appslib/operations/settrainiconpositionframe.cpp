@@ -276,29 +276,29 @@ namespace Operations
  /*public*/ void SetTrainIconPositionFrame::spinnerChangeEvent(QWidget* ae)
  {
   QSpinBox* source = (QSpinBox*)ae;
-     if (source == spinTrainIconEastX && _tIonEast != NULL) {
-         _tIonEast->setLocation((int) spinTrainIconEastX->value(),(int) _tIonEast->getLocation().y());
+     if (source == spinTrainIconEastX && _tIonEast != NULL) { // Note: are these locations Positionable or Widget?
+         ((Positionable*)_tIonEast)->setLocation((int) spinTrainIconEastX->value(),(int) ((Positionable*)_tIonEast)->getLocation().y());
      }
      if (source == spinTrainIconEastY && _tIonEast != NULL) {
-         _tIonEast->setLocation((int)_tIonEast->getLocation().x(), (int) spinTrainIconEastY->value());
+         ((Positionable*)_tIonEast)->setLocation((int)((Positionable*)_tIonEast)->getLocation().x(), (int) spinTrainIconEastY->value());
      }
      if (source == spinTrainIconWestX && _tIonWest != NULL) {
-         _tIonWest->setLocation((int) spinTrainIconWestX->value(),(int) _tIonWest->getLocation().y());
+         ((Positionable*)_tIonWest)->setLocation((int) spinTrainIconWestX->value(),(int) ((Positionable*)_tIonWest)->getLocation().y());
      }
      if (source == spinTrainIconWestY && _tIonWest != NULL) {
-         _tIonWest->setLocation((int)_tIonWest->getLocation().x(), (int) spinTrainIconWestY->value());
+         ((Positionable*)_tIonWest)->setLocation((int)((Positionable*)_tIonWest)->getLocation().x(), (int) spinTrainIconWestY->value());
      }
      if (source == spinTrainIconNorthX && _tIonNorth != NULL) {
-         _tIonNorth->setLocation((int) spinTrainIconNorthX->value(),(int) _tIonNorth->getLocation().y());
+         ((Positionable*)_tIonNorth)->setLocation((int) spinTrainIconNorthX->value(),(int) ((Positionable*)_tIonNorth)->getLocation().y());
      }
      if (source == spinTrainIconNorthY && _tIonNorth != NULL) {
-         _tIonNorth->setLocation((int)_tIonNorth->getLocation().x(), (int) spinTrainIconNorthY->value());
+         ((Positionable*)_tIonNorth)->setLocation((int)((Positionable*)_tIonNorth)->getLocation().x(), (int) spinTrainIconNorthY->value());
      }
      if (source == spinTrainIconSouthX && _tIonSouth != NULL) {
-         _tIonSouth->setLocation((int) spinTrainIconSouthX->value(), (int) _tIonSouth->getLocation().y());
+         ((Positionable*)_tIonSouth)->setLocation((int) spinTrainIconSouthX->value(), (int) ((Positionable*)_tIonSouth)->getLocation().y());
      }
      if (source == spinTrainIconSouthY && _tIonSouth != NULL) {
-         _tIonSouth->setLocation((int)_tIonSouth->getLocation().x(), (int) spinTrainIconSouthY->value());
+         ((Positionable*)_tIonSouth)->setLocation((int)((Positionable*)_tIonSouth)->getLocation().x(), (int) spinTrainIconSouthY->value());
      }
  }
 

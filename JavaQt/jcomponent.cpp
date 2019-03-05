@@ -1,4 +1,5 @@
 #include "jcomponent.h"
+#include <QFont>
 
 JComponent::JComponent(QWidget *parent) : QWidget(parent)
 {
@@ -19,4 +20,9 @@ void JComponent::setBackground(QColor c)
 void JComponent::setOpaque(bool)
 {
  setStyleSheet("background-color: rgba(0,0,0,0)");
+}
+
+QFont JComponent::getFont()
+{
+ return font();
 }

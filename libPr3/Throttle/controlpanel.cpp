@@ -13,7 +13,7 @@
 #include <QSlider>
 #include <QButtonGroup>
 #include "flowlayout.h"
-#include "../../LayoutEditor/jlabel.h"
+#include "jlabel.h"
 #include <QPushButton>
 #include "namedicon.h"
 #include "windowpreferences.h"

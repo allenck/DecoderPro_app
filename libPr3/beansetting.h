@@ -20,6 +20,8 @@ public:
     /*public*/ NamedBean* getBean();
     /*public*/ QString getBeanName();
     /*public*/ int getSetting();
+    /*public*/ void setExpectedState(int state);
+    /*public*/ bool equals(QObject* obj);
 
 signals:
     

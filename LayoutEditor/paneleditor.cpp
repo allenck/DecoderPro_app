@@ -709,7 +709,7 @@ protected void paintTargetPanel(Graphics g) {
 {
  PositionableLabel* p = NULL;
  //PositionableJComponent* pj = NULL;
- if(qobject_cast<PositionableLabel*>(pc)!= NULL)
+ if(qobject_cast<PositionableLabel*>((QObject*)pc)!= NULL)
  {
   p = (PositionableLabel*)pc;
   if (!p->isVisible())
@@ -738,34 +738,34 @@ protected void paintTargetPanel(Graphics g) {
   // items for all Positionables
   if (p->doViemMenu())
   {
-   if(qobject_cast<SensorIcon*>(pc)!= NULL)
+   if(qobject_cast<SensorIcon*>((QObject*)pc)!= NULL)
     popup->addAction(new QAction(((SensorIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<LightIcon*>(pc)!= NULL)
+   if(qobject_cast<LightIcon*>((QObject*)pc)!= NULL)
     popup->addAction(new QAction(((LightIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<TurnoutIcon*>(pc)!= NULL)
+   if(qobject_cast<TurnoutIcon*>((QObject*)pc)!= NULL)
     popup->addAction(new QAction(((TurnoutIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<ReporterIcon*>(pc)!= NULL)
+   if(qobject_cast<ReporterIcon*>((QObject*)pc)!= NULL)
     popup->addAction(new QAction(((ReporterIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<AnalogClock2Display*>(pc)!= NULL)
+   if(qobject_cast<AnalogClock2Display*>((QObject*)pc)!= NULL)
     popup->addAction(new QAction(((AnalogClock2Display*)p)->getNameString(),this));
    else
-   if(qobject_cast<SignalHeadIcon*>(pc)!= NULL)
+   if(qobject_cast<SignalHeadIcon*>((QObject*)pc)!= NULL)
     popup->addAction(new QAction(((SignalHeadIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<SignalMastIcon*>(pc)!= NULL)
+   if(qobject_cast<SignalMastIcon*>((QObject*)pc)!= NULL)
     popup->addAction(new QAction(((SignalMastIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<MultiSensorIcon*>(pc)!= NULL)
+   if(qobject_cast<MultiSensorIcon*>((QObject*)pc)!= NULL)
     popup->addAction(new QAction(((MultiSensorIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<SlipTurnoutIcon*>(pc)!= NULL)
+   if(qobject_cast<SlipTurnoutIcon*>((QObject*)pc)!= NULL)
     popup->addAction(new QAction(((SlipTurnoutIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<PositionableLabel*>(pc)!= NULL)
+   if(qobject_cast<PositionableLabel*>((QObject*)pc)!= NULL)
     popup->addAction(new QAction(((PositionableLabel*)p)->getNameString(),this));
 // TODO: add more types
    else
@@ -920,22 +920,22 @@ protected void paintTargetPanel(Graphics g) {
   else if (!bCtrl)
   {
    //_currentSelection->doMousePressed(event);
-   if(qobject_cast<AnalogClock2Display*>(_currentSelection)!=NULL)
-    ((AnalogClock2Display*)_currentSelection)->doMousePressed(event);
+   if(qobject_cast<AnalogClock2Display*>((QObject*)_currentSelection)!=NULL)
+    ((PositionableIcon*)_currentSelection)->doMousePressed(event);
    else
-   if(qobject_cast<SensorIcon*>(_currentSelection)!=NULL)
+   if(qobject_cast<SensorIcon*>((QObject*)_currentSelection)!=NULL)
     ((SensorIcon*)_currentSelection)->doMousePressed(event);
    else
-   if(qobject_cast<LightIcon*>(_currentSelection)!=NULL)
+   if(qobject_cast<LightIcon*>((QObject*)_currentSelection)!=NULL)
     ((LightIcon*)_currentSelection)->doMousePressed(event);
    else
-   if(qobject_cast<SignalHeadIcon*>(_currentSelection)!=NULL)
+   if(qobject_cast<SignalHeadIcon*>((QObject*)_currentSelection)!=NULL)
     ((SignalHeadIcon*)_currentSelection)->doMousePressed(event);
    else
-   if(qobject_cast<SignalMastIcon*>(_currentSelection)!=NULL)
+   if(qobject_cast<SignalMastIcon*>((QObject*)_currentSelection)!=NULL)
     ((SignalMastIcon*)_currentSelection)->doMousePressed(event);
    else
-   if(qobject_cast<MultiSensorIcon*>(_currentSelection)!=NULL)
+   if(qobject_cast<MultiSensorIcon*>((QObject*)_currentSelection)!=NULL)
     ((MultiSensorIcon*)_currentSelection)->doMousePressed(event);
    else
     ((PositionableLabel*)_currentSelection)->doMousePressed(event);if (_multiItemCopyGroup!=NULL && !_multiItemCopyGroup->contains(_currentSelection))
@@ -1072,10 +1072,10 @@ protected void paintTargetPanel(Graphics g) {
  {
   if (_currentSelection != NULL && !_dragging && !bCtrl)
   {
-   if(qobject_cast<SensorIcon*>(_currentSelection)!=NULL)
+   if(qobject_cast<SensorIcon*>((QObject*)_currentSelection)!=NULL)
     ((SensorIcon*)_currentSelection)->doMouseReleased(event);
    else
-   if(qobject_cast<PositionableJComponent*>(_currentSelection)!=NULL)
+   if(qobject_cast<PositionableJComponent*>((QObject*)_currentSelection)!=NULL)
     ((PositionableJComponent*)_currentSelection)->doMouseReleased(event);
    else
    ((PositionableLabel*)_currentSelection)->doMouseReleased(event);
@@ -1167,13 +1167,13 @@ protected void paintTargetPanel(Graphics g) {
   else
   {
    moveItem(_currentSelection, deltaX, deltaY);
-   if(qobject_cast<LightIcon*>(_currentSelection)!=NULL)
+   if(qobject_cast<LightIcon*>((QObject*)_currentSelection)!=NULL)
    {
-    _highlightcomponent =  QRectF(((LightIcon*)_currentSelection)->getX(),((LightIcon*) _currentSelection)->getY(),((LightIcon*)_currentSelection)->maxWidth(), ((LightIcon*)_currentSelection)->maxHeight());
+    _highlightcomponent =  QRectF(_currentSelection->getX(), _currentSelection->getY(),((LightIcon*)_currentSelection)->maxWidth(), ((LightIcon*)_currentSelection)->maxHeight());
 
    }
    else
-   if(qobject_cast<PositionableLabel*>(_currentSelection)!=NULL)
+   if(qobject_cast<PositionableLabel*>((QObject*)_currentSelection)!=NULL)
    {
     //_highlightcomponent =  QRect(((PositionableLabel*)_currentSelection)->getX(),((PositionableLabel*) _currentSelection)->getY(),((PositionableLabel*)_currentSelection)->maxWidth(), ((PositionableLabel*)_currentSelection)->maxHeight());
     _highlightcomponent = ((PositionableLabel*) _currentSelection)->getBounds();
@@ -1315,13 +1315,13 @@ protected void paintTargetPanel(Graphics g) {
  {
   if (_currentSelection != NULL && !_dragging && !bCtrl)
   {
-   if(qobject_cast<AnalogClock2Display*>(_currentSelection)!=NULL)
-    ((AnalogClock2Display*)_currentSelection)->doMouseClicked(event);
+   if(qobject_cast<AnalogClock2Display*>((QObject*)_currentSelection)!=NULL)
+    (_currentSelection)->doMouseClicked(event);
    else
-   if(qobject_cast<LightIcon*>(_currentSelection)!=NULL)
+   if(qobject_cast<LightIcon*>((QObject*)_currentSelection)!=NULL)
     ((LightIcon*)_currentSelection)->doMouseClicked(event);
    else
-   if(qobject_cast<SensorIcon*>(_currentSelection)!=NULL)
+   if(qobject_cast<SensorIcon*>((QObject*)_currentSelection)!=NULL)
     ((SensorIcon*)_currentSelection)->doMouseClicked(event);
    else
    ((PositionableLabel*)_currentSelection)->doMouseClicked(event);
@@ -1535,7 +1535,7 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
  if (addItemViaMouseClick)
  {
   addItemViaMouseClick = false;
-  ((PositionableLabel*)l)->setLocation(_lastX, _lastY);
+  ((Positionable*)l)->setLocation(_lastX, _lastY);
  }
 }
 
@@ -1599,11 +1599,11 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
             y = yOrig+yoffset;
             if (x<0) x=1;
             if (y<0) y=1;
-            className=ConfigXmlManager::adapterName(copied);
+            className=ConfigXmlManager::adapterName((QObject*)copied);
             copied->setLocation(x, y);
             try{
                 adapter = (XmlAdapter*)Class::forName(className)->newInstance();
-                QDomElement el = adapter->store(copied);
+                QDomElement el = adapter->store((QObject*)copied);
                 adapter->load(el, this);
             } catch (Exception ex) {
                 log->debug(ex.getMessage());
@@ -1858,7 +1858,7 @@ void PanelEditor::drawLabelImages(EditScene* g2)
 //   }
    QGraphicsTextItem*  item = new QGraphicsTextItem(l->getUnRotatedText());
    item->setFont(l->getFont());
-   item->setPos(l->getX(), l->getY());
+   item->setPos(((Positionable*)l)->getX(), ((Positionable*)l)->getY());
    l->_itemGroup->addToGroup(item);
    g2->addItem(l->_itemGroup);
    if(l->getDegrees() != 0)
@@ -1878,7 +1878,7 @@ void PanelEditor::drawLabelImages(EditScene* g2)
      pixmap = QPixmap::fromImage(((LightIcon*)l)->getIcon(iState)->getImage());
 //   QGraphicsPixmapItem* item = g2->addPixmap(pixmap);
      QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap,0);
-    item->setPos(l->getX(), l->getY());
+    item->setPos(((Positionable*)l)->getX(), ((Positionable*)l)->getY());
     if(pixmap.isNull())
         log->debug( "No pixmap "+ ((LightIcon*)l)->getIcon(iState)->getURL());
 
@@ -1908,7 +1908,7 @@ void PanelEditor::drawLabelImages(EditScene* g2)
     if(pixmap.isNull())
      log->debug(QString("null Sensor Icon pixmap: %1").arg(((SensorIcon*)l)->getIcon(iState)->getURL()));
     QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap);
-    item->setPos(l->getX(), l->getY());
+    item->setPos(((Positionable*)l)->getX(), ((Positionable*)l)->getY());
     l->_itemGroup->addToGroup(item);
     g2->addItem(l->_itemGroup);
    }
@@ -1927,14 +1927,14 @@ void PanelEditor::drawLabelImages(EditScene* g2)
      if(pixmap.isNull())
       log->debug(QString("LocoIcon null pixmap: %1").arg(((JLabel*)l)->getIcon()->getDescription()));
      QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap);
-     item->setPos(l->getX(), l->getY());
+     item->setPos(((Positionable*)l)->getX(), ((Positionable*)l)->getY());
      l->_itemGroup->addToGroup(item);
      //g2->addItem(l->item);
     }
     else
     {
      QGraphicsTextItem* item = new QGraphicsTextItem(l->getUnRotatedText());
-     item->setPos(l->getX(), l->getY());
+     item->setPos(((Positionable*)l)->getX(), ((Positionable*)l)->getY());
      l->_itemGroup->addToGroup(item);
     }
     g2->addItem(l->_itemGroup);
@@ -1957,7 +1957,7 @@ void PanelEditor::drawLabelImages(EditScene* g2)
      pixmap = QPixmap::fromImage(((PositionableLabel*)l)->getIcon()->getImage());
      //QGraphicsPixmapItem* item = g2->addPixmap(pixmap);
              QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap, 0);
-     item->setPos(l->getX(), l->getY());
+     item->setPos(((Positionable*)l)->getX(), ((Positionable*)l)->getY());
      if(pixmap.isNull())
       log->debug( "No pixmap "+ ((PositionableLabel*)l)->getIcon()->getURL());
      m->_itemGroup->addToGroup(item);
@@ -1968,7 +1968,7 @@ void PanelEditor::drawLabelImages(EditScene* g2)
      //m->item = g2->addText("????");
      QGraphicsTextItem* item = new QGraphicsTextItem("????");
      m->_itemGroup->addToGroup(item);
-     item->setPos(l->getX(), l->getY());
+     item->setPos(((Positionable*)l)->getX(), ((Positionable*)l)->getY());
     }
     g2->addItem(m->_itemGroup);
     if(m->getDegrees() != 0)
@@ -1982,7 +1982,7 @@ void PanelEditor::drawLabelImages(EditScene* g2)
     pixmap = QPixmap::fromImage(((PositionableIcon*)l)->getIcon(state)->getImage());
 //   QGraphicsPixmapItem* item = g2->addPixmap(pixmap);
     QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap,0);
-   item->setPos(l->getX(), l->getY());
+   item->setPos(((Positionable*)l)->getX(), ((Positionable*)l)->getY());
    if(pixmap.isNull())
     qDebug() << "No pixmap";
 //   else
@@ -2014,14 +2014,14 @@ void PanelEditor::on_addClock_triggered()
 {
  addItemViaMouseClick = true;
  AnalogClock2Display* l = new AnalogClock2Display(this);
- l->setOpaque(false);
+ ((PositionableIcon*)l)->setOpaque(false);
  l->update();
- l->setDisplayLevel(CLOCK);
+ ((PositionableIcon*)l)->setDisplayLevel(CLOCK);
 //    setNextLocation(l);
- l->setLocation(_lastX, _lastY);
- l->setVisible(true);
- l->setScale(1.0);
- putItem((Positionable*)l);
+ ((PositionableJComponent*)l)->setLocation(_lastX, _lastY);
+ ((PositionableIcon*)l)->setVisible(true);
+ ((PositionableIcon*)l)->setScale(1.0);
+ putItem((PositionableIcon*)l);
  l->paint(editScene);
 }
 //void PanelEditor::on_addLcdClock_triggered()
@@ -2162,7 +2162,7 @@ void PanelEditor::on_addTextLabel_triggered()
  if(addTextLabelDlg->exec() == QDialog::Accepted)
  {
   PositionableLabel* label = new PositionableLabel(addTextLabelDlg->value(),this);
-  label->setLocation(pt.x(), pt.y());
+  ((Positionable*)label)->setLocation(pt.x(), pt.y());
   putItem((Positionable*)label);
  }
  addTextLabelDlg=nullptr;

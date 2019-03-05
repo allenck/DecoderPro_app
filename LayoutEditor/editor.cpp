@@ -551,7 +551,7 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
 
  foreach (Positionable* p, *_selectionGroup)
  {
-     if (qobject_cast<PositionableShape*>(p)) {
+     if (qobject_cast<PositionableShape*>((QObject*)p)) {
          PositionableShape* s
                  = (PositionableShape*) p;
          s->removeHandles();
@@ -919,7 +919,7 @@ void Editor::closeEvent(QCloseEvent */*e*/)
    Positionable* p = _contents->at(i);
    p->setEditor(ed);
    ed->addToTarget(p);
-   if (_debug) log->debug("changeView: "+p->getNameString()+" addToTarget class= " +QString(p->metaObject()->className()));
+   if (_debug) log->debug("changeView: "+p->getNameString()+" addToTarget class= " +QString(((QObject*)p)->metaObject()->className()));
   }
   ed->setAllEditable(isEditable());
   ed->setAllPositionable(allPositionable());
@@ -963,13 +963,13 @@ void Editor::closeEvent(QCloseEvent */*e*/)
 {
  //JCheckBoxMenuItem lockItem = new JCheckBoxMenuItem(tr("LockPosition"));
  //lockItem.setSelected(!p.isPositionable());
- PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
- if(pl == nullptr) return;
+// PositionableLabel* pl = static_cast<PositionableLabel*>(p);
+// if(pl == nullptr) return;
  QAction* lockItemAction = new QAction(tr("Lock Position"), this);
  lockItemAction->setCheckable(true);
- lockItemAction->setChecked(!((PositionableLabel*)p)->isPositionable());
+ lockItemAction->setChecked(!p->isPositionable());
  connect(lockItemAction,SIGNAL(toggled(bool)), this, SLOT(On_lockItemAction_toggled(bool)));
- currItem = pl;
+ //currItem = pl;
 //    lockItem.addActionListener(new ActionListener(){
 //        Positionable comp;
 //        JCheckBoxMenuItem checkBox;
@@ -1000,7 +1000,8 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
 {
     //if (showCoordinates()) {
  QMenu* edit = new QMenu(tr("Edit Location"));
- if ((/*p instanceof MemoryIcon*/qobject_cast<MemoryIcon*>(p)!= nullptr) && (((MemoryIcon*)p)->getPopupUtility()->getFixedWidth()==0))
+ if ((/*p instanceof MemoryIcon*/static_cast<MemoryIcon*>(p)!= nullptr)
+     && (((MemoryIcon*)p)->getPopupUtility()->getFixedWidth()==0))
  {
   MemoryIcon* pm = (MemoryIcon*) p;
   edit->addAction(new QAction("x= " + QString("%1").arg(pm->getOriginalX()),this));
@@ -1058,7 +1059,7 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
 /*public*/ void Editor::setDisplayLevelMenu(Positionable* p, QMenu* popup)
 {
  QMenu* edit = new QMenu(tr("Edit Level"));
- PositionableLabel* ps = qobject_cast<PositionableLabel*>(p);
+ PositionableLabel* ps = static_cast<PositionableLabel*>(p);
  if(ps != nullptr)
   edit->addAction(new QAction(tr("level= ") + QString("%1").arg(ps->getDisplayLevel()),this));
  edit->addAction(CoordinateEdit::getLevelEditAction(p, this));
@@ -1070,9 +1071,9 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
 */
 /*public*/ void Editor::setHiddenMenu(Positionable* p, QMenu* popup)
 {
- if(qobject_cast<PositionableLabel*>(p)!= nullptr)
+ if(qobject_cast<PositionableLabel*>((QObject*)p)!= nullptr)
  {
-    PositionableLabel* pl = qobject_cast<PositionableLabel*>(p);
+    PositionableLabel* pl = qobject_cast<PositionableLabel*>((QObject*)p);
     Q_ASSERT(pl != nullptr);
    //  if (p.getDisplayLevel() == BKG || p instanceof PositionableShape) {
    //      return;
@@ -1322,7 +1323,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  {
   Positionable* il = _contents->at(i);
   //if (il instanceof LocoIcon)
-  if(qobject_cast<LocoIcon*>(il)!= nullptr)
+  if(qobject_cast<LocoIcon*>((QObject*)il)!= nullptr)
   {
    ((LocoIcon*)il)->remove();
   }
@@ -1342,7 +1343,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
     l->setShowTooltip(false);
     l->setSize(icon->getIconWidth(), icon->getIconHeight());
     l->setDisplayLevel(BKG);
-    l->setLocation(getNextBackgroundLeft(),0);
+    ((Positionable*)l)->setLocation(getNextBackgroundLeft(),0);
     putItem((Positionable*)l);
     return l;
 }
@@ -1353,7 +1354,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  PositionableLabel* l = addLabel(text.trimmed());
  setDirty(true);
  l->setForeground(defaultTextColor);
- l->setLocation(dLoc.x(),dLoc.y());
+ ((Positionable*)l)->setLocation(dLoc.x(),dLoc.y());
  return l;
 }
 
@@ -1368,12 +1369,12 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  {
   Positionable* p = _contents->at(i);
   //if (p instanceof PositionableLabel)
-  if(qobject_cast<PositionableLabel*>(p)!= nullptr)
+  if(qobject_cast<PositionableLabel*>((QObject*)p)!= nullptr)
   {
    PositionableLabel* l = (PositionableLabel*)p;
    if (l->isBackground())
    {
-    int test = l->getX() + l->maxWidth();
+    int test = ((Positionable*)l)->getX() + l->maxWidth();
     if (test>left) left = test;
    }
   }
@@ -1416,28 +1417,28 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 
 /*public*/ void Editor::putItem(Positionable* l)
 {
- PositionableLabel* pl = qobject_cast<PositionableLabel*>(l);
+ //PositionableLabel* pl = static_cast<PositionableLabel*>(l);
  //l->invalidate();
- if(pl != nullptr)
- {
-  pl->setPositionable(true);
+// if(pl != nullptr)
+// {
+  l->setPositionable(true);
   //pl->setVisible(true);
 
-  if (pl->getTooltip().isEmpty())
+  if (l->getTooltip().isEmpty())
   {
-   pl->setTooltip(_defaultToolTip);
+   l->setTooltip(_defaultToolTip);
    //pl->setTooltip();
   }
- }
+// }
  addToTarget(l);
  //  if (!_contents->append((Positionable*)l))
  //  {
  //      log->error("Unable to add "+l->getNameString()+" to _contents");
  //  }
  _contents->append(l);
- if(pl != nullptr)
+ if(l != nullptr)
  //if( log->isDebugEnabled())
-  log->debug(tr("putItem ")+pl->getNameString()+" to _contents. level= "+QString("%1").arg(pl->getDisplayLevel()));
+  log->debug(tr("putItem ")+l->getNameString()+" to _contents. level= "+QString("%1").arg(l->getDisplayLevel()));
 }
 
 /*protected*/ void Editor::addToTarget(Positionable* l)
@@ -1568,7 +1569,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
     log->error("updateScene failed!");
 
   if(!bAdded)
-      log->error("add failed " + QString(l->metaObject()->className()));
+      log->error("add failed " + QString(((QObject*)l)->metaObject()->className()));
 //  QRectF r = ((PositionableLabel*)l)->getBounds();
 //  editScene->invalidate(r,QGraphicsScene::ItemLayer);
 // }
@@ -2161,7 +2162,7 @@ void Editor::addTurnoutL() {
  }
  l->setDisplayLevel(TURNOUTS);
  //setNextLocation(l);
- l->setLocation(_lastX, _lastY);
+ ((Positionable*)l)->setLocation(_lastX, _lastY);
  l->setVisible(true);
  putItem(l);
  return l;
@@ -2212,7 +2213,7 @@ void Editor::addSlip()
     l->setTurnout(editor->getTurnout("east")->getName(), SlipTurnoutIcon::EAST);
     l->setDisplayLevel(TURNOUTS);
     //setNextLocation(l);
-    l->setLocation(_lastX, _lastY);
+    ((Positionable*)l)->setLocation(_lastX, _lastY);
     l->setVisible(true);
     putItem(l);
 }
@@ -2234,7 +2235,7 @@ void Editor::addSlip()
  }
  l->setDisplayLevel(SIGNALS);
  //setNextLocation(l);
- l->setLocation(_lastX, _lastY);
+ ((Positionable*)l)->setLocation(_lastX, _lastY);
  putItem(l);
  return l;
 }
@@ -2249,7 +2250,7 @@ void Editor::addSlip()
  l->setSignalMast(editor->getTableSelection()->getDisplayName());
  l->setDisplayLevel(SIGNALS);
  //   setNextLocation(l);
- l->setLocation(_lastX, _lastY);
+ ((Positionable*)l)->setLocation(_lastX, _lastY);
  putItem(l);
  return l;
 }
@@ -2273,7 +2274,7 @@ void Editor::addSlip()
  MemorySpinnerIcon* l = new MemorySpinnerIcon(this);
  IconAdder* memoryIconEditor = getIconEditor("Memory");
  l->setMemory(memoryIconEditor->getTableSelection()->getDisplayName());
- l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
+ l->setSize(l->sizeHint().width(), l->sizeHint().height());
  l->setDisplayLevel(MEMORIES);
  //setNextLocation(l);
  l->setLocation(_lastX, _lastY);
@@ -2286,7 +2287,7 @@ void Editor::addSlip()
  MemoryInputIcon* l = new MemoryInputIcon(_spinCols->getNumber().toInt(), this);
  IconAdder* memoryIconEditor = getIconEditor("Memory");
  l->setMemory(memoryIconEditor->getTableSelection()->getDisplayName());
- l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
+ l->setSize(l->sizeHint().width(), l->sizeHint().height());
  l->setDisplayLevel(MEMORIES);
  //setNextLocation(l);
  l->setLocation(_lastX, _lastY);
@@ -2318,7 +2319,7 @@ void Editor::addSlip()
  l->setLight((Light*)editor->getTableSelection());
  l->setDisplayLevel(LIGHTS);
  //setNextLocation(l);
- l->setLocation(_lastX, _lastY);
+ ((Positionable*)l)->setLocation(_lastX, _lastY);
  putItem(l);
  return l;
 }
@@ -2331,7 +2332,7 @@ void Editor::addSlip()
  l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
  l->setDisplayLevel(REPORTERS);
 //    setNextLocation(l);
- l->setLocation(_lastX, _lastY);
+ ((Positionable*)l)->setLocation(_lastX, _lastY);
  putItem(l);
  return l;
 }
@@ -2360,7 +2361,7 @@ void Editor::putBackground() {
     l->setPopupUtility(nullptr);        // no text
     l->setDisplayLevel(ICONS);
     //setNextLocation(l);
-    l->setLocation(_lastX, _lastY);
+    ((Positionable*)l)->setLocation(_lastX, _lastY);
     putItem(l);
     l->updateSize();
     return l;
@@ -2383,7 +2384,7 @@ void Editor::putBackground() {
  m->setUpDown(editor->getUpDown());
  m->setDisplayLevel(SENSORS);
  //setNextLocation(m);
- m->setLocation(_lastX, _lastY);
+ ((Positionable*)m)->setLocation(_lastX, _lastY);
  putItem(m);
  return m;
 }
@@ -2391,14 +2392,14 @@ void Editor::putBackground() {
 /*protected*/ void Editor::addClock()
 {
  AnalogClock2Display* l = new AnalogClock2Display(this);
- l->setOpaque(false);
+ ((PositionableIcon*)l)->setOpaque(false);
  l->update();
- l->setDisplayLevel(CLOCK);
- setNextLocation(l);
+ ((PositionableIcon*)l)->setDisplayLevel(CLOCK);
+ setNextLocation((PositionableIcon*)l);
  //l->setLocation(200,200);
- l->setVisible(true);
+ ((PositionableIcon*)l)->setVisible(true);
  l->setScale(1.0);
- putItem((Positionable*)l);
+ putItem((PositionableIcon*)l);
  l->paint(editScene);
 }
 #if 1
@@ -2709,7 +2710,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 /*protected*/ int Editor::getItemX(Positionable* p, int deltaX)
 {
  //if ((p instanceof MemoryIcon) && (p.getPopupUtility().getFixedWidth()==0)) {
- if(qobject_cast<MemoryIcon*>(p)!= nullptr /*&& ((MemoryIcon*)p)->getFixedWidth == 0)*/)
+ if(qobject_cast<MemoryIcon*>((QObject*)p)!= nullptr /*&& ((MemoryIcon*)p)->getFixedWidth == 0)*/)
  {
   MemoryIcon* pm = (MemoryIcon*) p;
   return pm->getOriginalX() + (int)qRound(deltaX/getPaintScale());
@@ -2719,13 +2720,13 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 //     return ((PositionableJComponent*)p)->getX() + (int)qRound(deltaX/getPaintScale());
  else
  {
-  return ((PositionableLabel*)p)->getX() + (int)qRound(deltaX/getPaintScale());
+  return ((Positionable*)p)->getX() + (int)qRound(deltaX/getPaintScale());
  }
 }
 /*protected*/ int Editor::getItemY(Positionable* p, int deltaY)
 {
  //if ((p instanceof MemoryIcon) && (p.getPopupUtility().getFixedWidth()==0)) {
- if(qobject_cast<MemoryIcon*>(p)!= nullptr /*&& ((MemoryIcon*)p)->getFixedWidth == 0)*/)
+ if(qobject_cast<MemoryIcon*>((QObject*)p)!= nullptr /*&& ((MemoryIcon*)p)->getFixedWidth == 0)*/)
  {
   MemoryIcon* pm = (MemoryIcon*) p;
   return pm->getOriginalY() + (int)qRound(deltaY/getPaintScale());
@@ -2735,7 +2736,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 //     return ((PositionableJComponent*)p)->getY() + (int)qRound(deltaY/getPaintScale());
 // else
  {
-  return ((PositionableLabel*)p)->getY() + (int)qRound(deltaY/getPaintScale());
+  return ((Positionable*)p)->getY() + (int)qRound(deltaY/getPaintScale());
  }
 }
 
@@ -2812,15 +2813,15 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
   // don't allow negative placement, icon can become unreachable
   if (xObj < 0) xObj = 0;
   if (yObj < 0) yObj = 0;
-  if(qobject_cast<Positionable*>(p) != nullptr)
+  if(qobject_cast<Positionable*>((QObject*)p) != nullptr)
    ((Positionable*)p)->setLocation(xObj, yObj);
   else p->setLocation((double)xObj, (double)yObj);
   // and show!
  }
  //addToTarget(p);
  p->updateScene();
- if(qobject_cast<AnalogClock2Display*>(p)!=nullptr)
-  ((AnalogClock2Display*)p)->update();
+ if(qobject_cast<AnalogClock2Display*>((QObject*)p)!=nullptr)
+  ((PositionableIcon*)p)->update();
 }
 
 /**
@@ -3000,7 +3001,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
   rect = p->getBounds(QRectF());
   if(rect.isEmpty()) continue;
   if(rect.x() == 0 && rect.y() == 0)
-   rect = QRectF(p->pos().x(), p->pos().y(), p->size().width(), p->size().height());
+   rect = QRectF(p->getLocation().x(), p->getLocation().y(), p->getWidth(), p->getHeight());
   level = p->getDisplayLevel();
   QRectF rect2D(rect.x()*_paintScale, rect.y()*_paintScale, rect.width()*_paintScale,                                                        rect.height()*_paintScale);
   if (rect2D.contains(x, y) && (level > BKG /*|| event->modifiers()&Qt::ControlModifier*/))
@@ -3030,7 +3031,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
    if (!added)
    {
     selections->append(p);
-    statusBar()->showMessage( tr("select %1 x=%2,y=%3, w=%4, h= %5").arg(p->metaObject()->className()).arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height()));
+    statusBar()->showMessage( tr("select %1 x=%2,y=%3, w=%4, h= %5").arg(((QObject*)p)->metaObject()->className()).arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height()));
    }
   }
  }
@@ -3251,7 +3252,7 @@ void TextAttrDialog::doneButton_clicked()
     ((PositionableLabel*)p)->setPopupUtility(newUtil->clone(p, ((PositionableLabel*)p)->getTextComponent()));
    ((PositionableLabel*)p)->setOpaque(isOpaque);
     //if (p instanceof PositionableLabel)
-    if(qobject_cast<PositionableLabel*>(p)!= nullptr)
+    if(qobject_cast<PositionableLabel*>((QObject*)p)!= nullptr)
     {
         PositionableLabel* pos = (PositionableLabel*)p;
         if (!pos->isText() || (pos->isText() && pos->isIcon())) {
@@ -3288,10 +3289,11 @@ void TextAttrDialog::doneButton_clicked()
             }
         }
     }
-    ((PositionableLabel*)p)->updateSize();
-    ((PositionableLabel*)p)->repaint();
+    ((Positionable*)p)->updateSize();
+    //((Positionable*)p)->repaint();
+    p->updateScene();
     //if (p instanceof PositionableIcon)
-    if(qobject_cast<PositionableIcon*>(p)!=nullptr)
+    if(qobject_cast<PositionableIcon*>((QObject*)p)!=nullptr)
     {
      NamedBean* bean = ((PositionableIcon*)p)->getNamedBean();
         if (bean!=nullptr) {
@@ -3305,7 +3307,7 @@ void TextAttrDialog::doneButton_clicked()
         for (int i=0; i<_selectionGroup->size(); i++) {
             Positionable* p = _selectionGroup->at(i);
             //if ( p instanceof PositionableLabel )
-            if(qobject_cast<PositionableLabel*>(p)!= nullptr)
+            if(qobject_cast<PositionableLabel*>((QObject*)p)!= nullptr)
             {
                 setAttributes(util, p, isOpaque);
             }
@@ -3347,9 +3349,9 @@ void TextAttrDialog::doneButton_clicked()
   for (int i=0; i<_selectionGroup->size(); i++)
   {
    Positionable* p = _selectionGroup->at(i);
-   if(qobject_cast<PositionableLabel*>(p) != nullptr)
+   if(qobject_cast<PositionableLabel*>((QObject*)p) != nullptr)
     ((PositionableLabel*)p)->remove();
-   if(qobject_cast<PositionableJComponent*>(p) != nullptr)
+   if(qobject_cast<PositionableJComponent*>((QObject*)p) != nullptr)
    {
     removeFromTarget(p);
     ((PositionableJComponent*)p)->remove();
@@ -3387,7 +3389,7 @@ void TextAttrDialog::doneButton_clicked()
  }
  else
  {
-  ((PositionableLabel*)p)->rotate(k);
+  ((Positionable*)p)->rotate(k);
   //addToTarget(p);
   p->updateScene();
  }
@@ -3401,17 +3403,17 @@ void TextAttrDialog::doneButton_clicked()
   {
    Positionable* pos = _selectionGroup->at(i);
    //if (pos instanceof LocoIcon)
-   if(qobject_cast<LocoIcon*>(pos) != nullptr)
+   if(qobject_cast<LocoIcon*>((QObject*)pos) != nullptr)
    {
-    ((LocoIcon*)pos)->setDockingLocation(((PositionableLabel*)pos)->getX(), ((PositionableLabel*)pos)->getY());
+    ((LocoIcon*)pos)->setDockingLocation(((Positionable*)pos)->getX(), ((Positionable*)pos)->getY());
    }
   }
  }
  else
  //if (p instanceof LocoIcon)
- if(qobject_cast<LocoIcon*>(p) != nullptr)
+ if(qobject_cast<LocoIcon*>((QObject*)p) != nullptr)
  {
-  ((LocoIcon*)p)->setDockingLocation(((PositionableLabel*)p)->getX(), ((PositionableLabel*)p)->getY());
+  ((LocoIcon*)p)->setDockingLocation(((Positionable*)p)->getX(), ((Positionable*)p)->getY());
  }
 }
 
@@ -3423,14 +3425,14 @@ void TextAttrDialog::doneButton_clicked()
   {
    Positionable* pos = _selectionGroup->at(i);
    //if (pos instanceof LocoIcon)
-   if(qobject_cast<LocoIcon*>(pos) != nullptr)
+   if(qobject_cast<LocoIcon*>((QObject*)pos) != nullptr)
    {
     ((LocoIcon*)pos)->dock();
    }
   }
  }
  //else if (p instanceof LocoIcon)
- else if(qobject_cast<LocoIcon*>(p) != nullptr)
+ else if(qobject_cast<LocoIcon*>((QObject*)p) != nullptr)
  {
   ((LocoIcon*)p)->dock();
  }
@@ -3664,7 +3666,7 @@ abstract /*protected*/ void copyItem(Positionable p);
 //        g2d.setStroke(new java.awt.BasicStroke(2.0f));
      foreach (Positionable* p, *_selectionGroup)
      {
-      if (qobject_cast<PositionableShape*>(p) ==nullptr)
+      if (qobject_cast<PositionableShape*>((QObject*)p) ==nullptr)
       {
 //       g.drawRect(_selectionGroup->get(i).getX(), _selectionGroup->get(i).getY(),
 //                           _selectionGroup->get(i).maxWidth(), _selectionGroup->get(i).maxHeight());

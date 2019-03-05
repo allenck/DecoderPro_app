@@ -589,11 +589,11 @@ void DisplayMemoryIcon::on_editMemoryValueAction_triggered()
   //setSize(maxWidth(), maxHeight());
   switch (_popupUtil->getJustification())
   {
-    case LEFT :     PositionableLabel::setLocation(getOriginalX(), getOriginalY());
+    case LEFT :     Positionable::setLocation(getOriginalX(), getOriginalY());
                     break;
-    case RIGHT :    PositionableLabel::setLocation(getOriginalX()-maxWidth(), getOriginalY());
+    case RIGHT :    Positionable::setLocation(getOriginalX()-maxWidth(), getOriginalY());
                     break;
-    case CENTRE :   PositionableLabel::setLocation(getOriginalX()-(maxWidth()/2), getOriginalY());
+    case CENTRE :   Positionable::setLocation(getOriginalX()-(maxWidth()/2), getOriginalY());
                     break;
   }
   setSize(maxWidth(), maxHeight());
@@ -638,7 +638,7 @@ void DisplayMemoryIcon::on_editMemoryValueAction_triggered()
  }
  else
  {
-  PositionableLabel::setLocation(x,y);
+  Positionable::setLocation(x,y);
  }
  JLabel::setLocation(x,y);
 }
@@ -677,12 +677,15 @@ void DisplayMemoryIcon::editMemory() {
 //    _iconEditorFrame->dispose();
  _iconEditorFrame = NULL;
  _iconEditor = NULL;
- invalidate();
+ //invalidate();
+ update();
 }
+
 DisplayMemoryIcon::AddIconActionListener::AddIconActionListener(DisplayMemoryIcon *parent)
 {
  this->parent = parent;
 }
+
 void DisplayMemoryIcon::AddIconActionListener::actionPerformed(ActionEvent */*e*/)
 {
  parent->editMemory();

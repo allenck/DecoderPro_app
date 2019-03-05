@@ -34,12 +34,12 @@ class QGraphicsItemGroup;
 class Editor;
 class PositionablePopupUtil;
 class NamedBean;
-class Positionable : public QLabel
+class Positionable //: public QLabel
 {
- Q_OBJECT
+ //Q_OBJECT
 public:
-    explicit Positionable(QWidget *parent = 0);
-    Positionable(QString text, QWidget *parent = 0);
+//    explicit Positionable(QWidget *parent = 0);
+//    Positionable(QString text, QWidget *parent = 0);
     /**
      * Defines display objects.
      * <P>
@@ -77,7 +77,9 @@ public:
         /*public*/ virtual void setShowTooltip(bool /*set*/) {}
         /*public*/ virtual bool showToolTip() {return false;}
 //        /*public*/ virtual void setTooltip(ToolTip tip);
-    /*public*/ virtual QString getTooltip() {return "";}
+        /*public*/ virtual void setTooltip(QString tip);
+
+        /*public*/ virtual QString getTooltip();
 
         /*public*/ virtual void setViewCoordinates(bool /*enabled*/) {}
         /*public*/ virtual bool getViewCoordinates() {return false;}
@@ -177,10 +179,10 @@ public:
         // The following are common for all JComponents
     /*public*/ virtual QRectF getBounds(QRectF /*r*/) {return QRectF();}
     /*public*/ virtual bool contains(int /*x*/, int /*y*/) {return false;}
-        /*public*/ virtual int getX() {return 0;}
-        /*public*/ virtual int getY() {return 0;}
+        /*public*/ virtual int getX() = 0;
+        /*public*/ virtual int getY() = 0;
     /*public*/ virtual QPointF getLocation() {return QPointF();}
-        /*public*/ virtual void setLocation(int /*x*/, int /*y*/){}
+        /*public*/ virtual void setLocation(int /*x*/, int /*y*/) = 0;
         /*public*/ virtual void setLocation(QPointF /*p*/) {}
         /*public*/ virtual void setSize(int /*width*/, int /*height*/) {}
         /*public*/ virtual void setVisible(bool b) {_bVisible = b;}
@@ -197,14 +199,15 @@ public:
     /*public*/ virtual QFont getFont() {return QFont();}
     /*public*/ virtual void setBorder(Border* /*border*/) {}
 //        /*public*/ virtual Dimension getPreferredSize();
-    /*public*/ virtual void invalidate() {repaint();}
+//    /*public*/ virtual void invalidate() {repaint();}
 //        /*public*/ virtual void repaint() {}
         /*public*/ virtual bool requestFocusInWindow() {return false;}
     QGraphicsItem* getItem();
     void setItem(QGraphicsTextItem* item);
-    MyGraphicsItemGroup* _itemGroup;
-    MyGraphicsItemGroup* _handleGroup;
+    MyGraphicsItemGroup* _itemGroup = nullptr;
+    MyGraphicsItemGroup* _handleGroup = nullptr;
     virtual QString getGroupName() { return "Positionable";}
+    virtual QObject* self() = 0;
 
 #if QT_VERSION >= 0x050000
     virtual void languageChange() {}
@@ -216,7 +219,7 @@ signals:
     
 public slots:
 private:
-    bool _bVisible;
+    bool _bVisible = true;
 };
-
+Q_DECLARE_INTERFACE(Positionable, "Positionable")
 #endif // POSITIONABLE_H

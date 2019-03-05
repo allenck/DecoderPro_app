@@ -26,66 +26,99 @@
 //}
 /**
  * A LayoutTurnout corresponds to a turnout on the layout. A LayoutTurnout is an
- *      extension of the standard Turnout object with drawing and connectivity
- *      information added.
+ * extension of the standard Turnout object with drawing and connectivity
+ * information added.
  * <P>
- *  Six types are supported:
- *		right-hand, left-hand, wye, double crossover, right-handed single crossover,
- *      and left-handed single crossover.  Note that double-slip
- *      turnouts can be handled as two turnouts, throat to throat, and three-way
- *		turnouts can be handles as two turnouts, left-hand and right-hand,
- *      arranged throat to continuing route.
+ * Six types are supported: right-hand, left-hand, wye, double crossover,
+ * right-handed single crossover, and left-handed single crossover. Note that
+ * double-slip turnouts can be handled as two turnouts, throat to throat, and
+ * three-way turnouts can be handles as two turnouts, left-hand and right-hand,
+ * arranged throat to continuing route.
  * <P>
- * A LayoutTurnout has three or four connection points, designated A, B, C, and D.
- *		For right-handed or left-handed turnouts, A corresponds to the throat.
- *		At the crossing, A-B (and C-D for crossovers) is a straight segment
- *		(continuing route).  A-C (and B-D for crossovers) is the diverging
- *		route.  B-C (and A-D for crossovers) is an illegal condition.
+ * A LayoutTurnout has three or four connection points, designated A, B, C, and
+ * D. For right-handed or left-handed turnouts, A corresponds to the throat. At
+ * the crossing, A-B (and C-D for crossovers) is a straight segment (continuing
+ * route). A-C (and B-D for crossovers) is the diverging route. B-C (and A-D for
+ * crossovers) is an illegal condition.
  * <P>
- * A LayoutTurnout carries Block information.  For right-handed, left-handed, and wye
- *      turnouts, the entire turnout is in one block,however, a block border may occur
- *      at any connection (A,B,C,D). For a double crossover turnout, up to four blocks
- *      may be assigned, one for each connection point, but if only one block is assigned,
- *      that block applies to the entire Turnout::
+ * {@literal
+ *           Turnouts
+ * Right-hand       Left-hand
+ *
+ *                        C
+ *                       //
+ * A ==**== B       A ==**== B
+ *      \\
+ *       C
+ *
+ *    Wye           Three-way
+ *
+ *       B                D
+ *      //               //
+ * A ==**           A ==**== B
+ *      \\               \\
+ *       C                C
+ *
+ *           Crossovers
+ * Right-hand            left-hand
+ * A ==**===== B      A ====**== B
+ *      \\                 //
+ *       \\               //
+ *  D ====**== C     D ==**===== C
+ *
+ *             Double
+ *        A ==**==**== B
+ *             \\//
+ *              XX
+ *             //\\
+ *        D ==**==**== C
+ * literal}
  * <P>
- * For drawing purposes, each LayoutTurnout carries a center point and displacements
- *		for B and C. For right-handed or left-handed turnouts, the displacement for
- *		A = - the displacement for B, and the center point is at the junction of the
- *		diverging route and the straight through continuing route.  For double
- *		crossovers, the center point is at the center of the turnout, and the
- *		displacement for A = - the displacement for C and the displacement for D =
- *		- the displacement for B.  The center point and these displacements may be
- *		adjusted by the user when in edit mode.  For double crossovers, AB and BC
- *      are constrained to remain perpendicular.  For single crossovers, AB and CD
- *		are constrained to remain parallel, and AC and BD are constrained to remain
- *      parallel.
+ * A LayoutTurnout carries Block information. For right-handed, left-handed, and
+ * wye turnouts, the entire turnout is in one block,however, a block border may
+ * occur at any connection (A,B,C,D). For a double crossover turnout, up to four
+ * blocks may be assigned, one for each connection point, but if only one block
+ * is assigned, that block applies to the entire turnout.
  * <P>
- * When LayoutTurnouts are first created, a rotation (degrees) is provided.
- *		For 0.0 rotation, the turnout lies on the east-west line with A facing
- *		east.  Rotations are performed in a clockwise direction.
+ * For drawing purposes, each LayoutTurnout carries a center point and
+ * displacements for B and C. For right-handed or left-handed turnouts, the
+ * displacement for A = - the displacement for B, and the center point is at the
+ * junction of the diverging route and the straight through continuing route.
+ * For double crossovers, the center point is at the center of the turnout, and
+ * the displacement for A = - the displacement for C and the displacement for D
+ * = - the displacement for B. The center point and these displacements may be
+ * adjusted by the user when in edit mode. For double crossovers, AB and BC are
+ * constrained to remain perpendicular. For single crossovers, AB and CD are
+ * constrained to remain parallel, and AC and BD are constrained to remain
+ * parallel.
  * <P>
- * When LayoutTurnouts are first created, there are no connections.  Block information
- *		and connections may be added when available.
+ * When LayoutTurnouts are first created, a rotation (degrees) is provided. For
+ * 0.0 rotation, the turnout lies on the east-west line with A facing east.
+ * Rotations are performed in a clockwise direction.
  * <P>
- * When a LayoutTurnout is first created, it is enabled for control of an assigned
- *		actual Turnout:: Clicking on the turnout center point will toggle the Turnout::
- *		This can be disabled via the popup menu.
+ * When LayoutTurnouts are first created, there are no connections. Block
+ * information and connections may be added when available.
  * <P>
- * Signal Head names are saved here to keep track of where signals are. LayoutTurnout
- *		only serves as a storage place for signal head names. The names are placed here
- *		by tools, e.g., Set Signals at Turnout, and Set Signals at Double Crossover.
+ * When a LayoutTurnout is first created, it is enabled for control of an
+ * assigned actual turnout. Clicking on the turnout center point will toggle the
+ * turnout. This can be disabled via the popup menu.
  * <P>
- * A LayoutTurnout may be linked to another LayoutTurnout to form a turnout pair.
- *		Throat-To-Throat Turnouts - Two turnouts connected closely at their throats,
- *			so closely that signals are not appropriate at the their throats. This is the
- *			situation when two RH, LH, or WYE turnouts are used to model a double slip.
- *		3-Way Turnout - Two turnouts modeling a 3-way turnout, where the throat of the
- *			second turnout is closely connected to the continuing track of the first
- *			Turnout::  The throat will have three heads, or one head.
- * A link is required to be able to correctly interpret the use of signal heads.
+ * Signal Head names are saved here to keep track of where signals are.
+ * LayoutTurnout only serves as a storage place for signal head names. The names
+ * are placed here by tools, e.g., Set Signals at Turnout, and Set Signals at
+ * Double Crossover.
+ * <P>
+ * A LayoutTurnout may be linked to another LayoutTurnout to form a turnout
+ * pair. Throat-To-Throat Turnouts - Two turnouts connected closely at their
+ * throats, so closely that signals are not appropriate at the their throats.
+ * This is the situation when two RH, LH, or WYE turnouts are used to model a
+ * double slip. 3-Way Turnout - Two turnouts modeling a 3-way turnout, where the
+ * throat of the second turnout is closely connected to the continuing track of
+ * the first turnout. The throat will have three heads, or one head. A link is
+ * required to be able to correctly interpret the use of signal heads.
  *
  * @author Dave Duchamp Copyright (c) 2004-2007
- * @version $Revision: 22335 $
+ * @author George Warner Copyright (c) 2017-2018
  */
 
 ///*public*/ class LayoutTurnout
@@ -110,7 +143,26 @@
 /**
  * constructor method
  */
-/*public*/ LayoutTurnout::LayoutTurnout(QString id, int t, QPointF c, double rot, double xFactor, double yFactor, LayoutEditor* myPanel, int version)
+/*protected*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id,
+        /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor) : LayoutTrack(id, c, layoutEditor) {
+    //super(id, c, layoutEditor);
+}
+
+/*public*/ LayoutTurnout::LayoutTurnout(QString id, int t, QPointF c, double rot, double xFactor, double yFactor,
+                                        LayoutEditor* layoutEditor) : LayoutTrack(id, c, layoutEditor)
+{
+ common(id, t, c, rot, xFactor, yFactor, layoutEditor, 1);
+}
+
+/*public*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id, int t, /*@Nonnull*/ QPointF c, double rot,
+           double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v)
+  : LayoutTrack(id, c, layoutEditor)
+{
+ common(id, t, c, rot, xFactor, yFactor, layoutEditor, v);
+}
+
+
+void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFactor, double yFactor, LayoutEditor *myPanel, int v)
 {
  log = new Logger("LayoutTurnout");
  this->version = version;
@@ -207,7 +259,7 @@
     disableWhenOccupied = false;
     block = nullptr;
     blockName = "";
-    layoutEditor = myPanel;
+    myPanel = myPanel;
     ident = id;
     type = t;
     center = c;
@@ -215,40 +267,40 @@
     if (type==LH_TURNOUT)
     {
      //.dispB.setLocation(layoutEditor->getTurnoutBX(),0.0);
-     dispB.setX(layoutEditor->getTurnoutBX());
+     dispB.setX(myPanel->getTurnoutBX());
      dispB.setY(0.0);
      //dispC.setLocation(layoutEditor->getTurnoutCX(),-layoutEditor->getTurnoutWid());
-     dispC.setX(layoutEditor->getTurnoutCX());
-     dispC.setY(-(layoutEditor->getTurnoutWid()));
+     dispC.setX(myPanel->getTurnoutCX());
+     dispC.setY(-(myPanel->getTurnoutWid()));
     }
     else if (type==RH_TURNOUT)
     {
      //.dispB.setLocation(layoutEditor->getTurnoutBX(),0.0);
-     dispB.setX(layoutEditor->getTurnoutBX());
+     dispB.setX(myPanel->getTurnoutBX());
      dispB.setY(0.0);
      //dispC.setLocation(layoutEditor->getTurnoutCX(),layoutEditor->getTurnoutWid());
-     dispC.setX(layoutEditor->getTurnoutCX());
-     dispC.setY(layoutEditor->getTurnoutWid());
+     dispC.setX(myPanel->getTurnoutCX());
+     dispC.setY(myPanel->getTurnoutWid());
     }
     else if (type==WYE_TURNOUT)
     {
      //.dispB.setLocation(layoutEditor->getTurnoutBX(),0.5*layoutEditor->getTurnoutWid());
-     dispB.setX(layoutEditor->getTurnoutBX());
-     dispB.setY(0.5*layoutEditor->getTurnoutWid());
+     dispB.setX(myPanel->getTurnoutBX());
+     dispB.setY(0.5*myPanel->getTurnoutWid());
      //dispC.setLocation(layoutEditor->getTurnoutBX(),-0.5*layoutEditor->getTurnoutWid());
-     dispC.setX(layoutEditor->getTurnoutBX());
-     dispC.setY(-0.5*layoutEditor->getTurnoutWid());
+     dispC.setX(myPanel->getTurnoutBX());
+     dispC.setY(-0.5*myPanel->getTurnoutWid());
 
     }
     else if (type==DOUBLE_XOVER)
     {
      //dispB.setLocation(layoutEditor->getXOverLong(),-layoutEditor->getXOverHWid());
-     dispB.setX(layoutEditor->getXOverLong());
-     dispB.setY(-(layoutEditor->getXOverHWid()));
+     dispB.setX(myPanel->getXOverLong());
+     dispB.setY(-(myPanel->getXOverHWid()));
 
      //dispC.setLocation(layoutEditor->getXOverLong(),layoutEditor->getXOverHWid());
-     dispC.setX(layoutEditor->getXOverLong());
-     dispC.setY(layoutEditor->getXOverHWid());
+     dispC.setX(myPanel->getXOverLong());
+     dispC.setY(myPanel->getXOverHWid());
 
         blockB = nullptr;
         blockBName = "";
@@ -260,11 +312,11 @@
     else if (type==RH_XOVER)
     {
      //dispB.setLocation(layoutEditor->xOverShort(),-layoutEditor->xOverHWid());
-     dispB.setX(layoutEditor->getXOverShort());
-     dispB.setY(-(layoutEditor->getXOverHWid()));
+     dispB.setX(myPanel->getXOverShort());
+     dispB.setY(-(myPanel->getXOverHWid()));
      //dispC.setLocation(layoutEditor->xOverLong(),layoutEditor->xOverHWid());
-     dispC.setX(layoutEditor->getXOverLong());
-     dispC.setY(layoutEditor->getXOverHWid());
+     dispC.setX(myPanel->getXOverLong());
+     dispC.setY(myPanel->getXOverHWid());
 
         blockB = nullptr;
         blockBName = "";
@@ -276,11 +328,11 @@
     else if (type==LH_XOVER)
     {
      //dispB.setLocation(layoutEditor->xOverLong(),-layoutEditor->xOverHWid());
-     dispB.setX(layoutEditor->getXOverLong());
-     dispB.setY(-(layoutEditor->getXOverHWid()));
+     dispB.setX(myPanel->getXOverLong());
+     dispB.setY(-(myPanel->getXOverHWid()));
      //dispC.setLocation(layoutEditor->xOverShort(),layoutEditor->xOverHWid());
-     dispC.setX(layoutEditor->getXOverShort());
-     dispC.setY(layoutEditor->getXOverHWid());
+     dispC.setX(myPanel->getXOverShort());
+     dispC.setY(myPanel->getXOverHWid());
 
         blockB = nullptr;
         blockBName = "";
@@ -355,6 +407,46 @@
 /*public*/ QString LayoutTurnout::getBlockCName() {return blockCName;}
 /*public*/ QString LayoutTurnout::getBlockDName() {return blockDName;}
 /*public*/ QString LayoutTurnout::getSignalA1Name() {return signalA1Name;}
+/*public*/ SignalHead* LayoutTurnout::getSignalHead(int loc)
+{
+    NamedBeanHandle<SignalHead*>* signalHead = nullptr;
+    switch (loc) {
+        case POINTA:
+            signalHead = signalA1HeadNamed;
+            break;
+        case POINTA2:
+            signalHead = signalA2HeadNamed;
+            break;
+        case POINTA3:
+            signalHead = signalA3HeadNamed;
+            break;
+        case POINTB:
+            signalHead = signalB1HeadNamed;
+            break;
+        case POINTB2:
+            signalHead = signalB2HeadNamed;
+            break;
+        case POINTC:
+            signalHead = signalC1HeadNamed;
+            break;
+        case POINTC2:
+            signalHead = signalC2HeadNamed;
+            break;
+        case POINTD:
+            signalHead = signalD1HeadNamed;
+            break;
+        case POINTD2:
+            signalHead = signalD2HeadNamed;
+            break;
+        default:
+            log->warn(tr("Unhandled point type: %1").arg(loc));
+            break;
+    }
+    if (signalHead != nullptr) {
+        return signalHead->getBean();
+    }
+    return nullptr;
+}
 /*public*/ void LayoutTurnout::setSignalA1Name(QString signalName) {signalA1Name = signalName;}
 /*public*/ QString LayoutTurnout::getSignalA2Name() {return signalA2Name;}
 /*public*/ void LayoutTurnout::setSignalA2Name(QString signalName) {signalA2Name = signalName;}
@@ -373,6 +465,74 @@
 /*public*/ QString LayoutTurnout::getSignalD2Name() {return signalD2Name;}
 /*public*/ void LayoutTurnout::setSignalD2Name(QString signalName) {signalD2Name = signalName;}
 
+/*public*/ void LayoutTurnout::removeBeanReference(NamedBean* nb) {
+        if (nb == nullptr) {
+            return;
+        }
+        if (qobject_cast<SignalMast*>(nb)) {
+            if (nb->equals(getSignalAMast())) {
+                setSignalAMast("");
+                return;
+            }
+            if (nb->equals(getSignalBMast())) {
+                setSignalBMast("");
+                return;
+            }
+            if (nb->equals(getSignalCMast())) {
+                setSignalCMast("null");
+                return;
+            }
+            if (nb->equals(getSignalDMast())) {
+                setSignalDMast("null");
+                return;
+            }
+        } else if (qobject_cast<Sensor*>(nb)) {
+            if (nb->equals(getSensorA())) {
+                setSensorA("");
+                return;
+            }
+            if (nb->equals(getSensorB())) {
+                setSensorB("");
+                return;
+            }
+            if (nb->equals(getSensorC())) {
+                setSensorC("");
+                return;
+            }
+            if (nb->equals(getSensorB())) {
+                setSensorD("");
+                return;
+            }
+        } else if (qobject_cast<SignalHead*>(nb)) {
+            if (nb->equals(getSignalHead(POINTA))) {
+                setSignalA1Name("");
+            }
+            if (nb->equals(getSignalHead(POINTA2))) {
+                setSignalA2Name("");
+            }
+            if (nb->equals(getSignalHead(POINTA3))) {
+                setSignalA3Name("");
+            }
+            if (nb->equals(getSignalHead(POINTB))) {
+                setSignalB1Name("");
+            }
+            if (nb->equals(getSignalHead(POINTB2))) {
+                setSignalB2Name("");
+            }
+            if (nb->equals(getSignalHead(POINTC))) {
+                setSignalC1Name("");
+            }
+            if (nb->equals(getSignalHead(POINTC2))) {
+                setSignalC2Name("");
+            }
+            if (nb->equals(getSignalHead(POINTD))) {
+                setSignalD1Name("");
+            }
+            if (nb->equals(getSignalHead(POINTD2))) {
+                setSignalD2Name("");
+            }
+        }
+    }
 /*public*/ QString LayoutTurnout::getSignalAMastName() {
         if (signalAMastNamed != nullptr) {
             return signalAMastNamed->getName();
@@ -644,7 +804,7 @@
 /*public*/ void LayoutTurnout::setDisableWhenOccupied(bool state) {disableWhenOccupied = state;}
 /*public*/ bool LayoutTurnout::isDisabledWhenOccupied() {return disableWhenOccupied;}
 
-/*public*/ QObject* LayoutTurnout::getConnection(int location) throw (JmriException)
+/*public*/ LayoutTrack *LayoutTurnout::getConnection(int location) throw (JmriException)
 {
  switch (location)
  {
@@ -661,7 +821,7 @@
  throw new JmriException("Invalid Point");
 }
 
-/*public*/ void LayoutTurnout::setConnection(int location, QObject* o, int type) throw (JmriException)
+/*public*/ void LayoutTurnout::setConnection(int location, LayoutTrack* o, int type) throw (JmriException)
 {
     if ((type != TRACK) && (type != NONE)) {
         log->error("unexpected type of connection to layoutturnout - " + QString::number(type));
@@ -686,7 +846,7 @@
     }
 }
 
-/*public*/ void LayoutTurnout::setConnectA(QObject* o,int type)
+/*public*/ void LayoutTurnout::setConnectA(LayoutTrack* o,int type)
 {
  connectA = o;
  if ( (type!=LayoutEditor::TRACK) && (type!=LayoutEditor::NONE) )
@@ -694,7 +854,7 @@
   log->error("unexpected type of A connection to layoutturnout - "+QString("%1").arg(type));
  }
 }
-/*public*/ void LayoutTurnout::setConnectB(QObject* o,int type)
+/*public*/ void LayoutTurnout::setConnectB(LayoutTrack *o, int type)
 {
  connectB = o;
  if ( (type!=LayoutEditor::TRACK) && (type!=LayoutEditor::NONE) )
@@ -702,7 +862,7 @@
   log->error("unexpected type of B connection to layoutturnout - "+QString("%1").arg(type));
  }
 }
-/*public*/ void LayoutTurnout::setConnectC(QObject* o,int type)
+/*public*/ void LayoutTurnout::setConnectC(LayoutTrack* o,int type)
 {
  connectC = o;
  if ( (type!=LayoutEditor::TRACK) && (type!=LayoutEditor::NONE) )
@@ -710,7 +870,7 @@
   log->error("unexpected type of C connection to layoutturnout - "+QString("%1").arg(type));
  }
 }
-/*public*/ void LayoutTurnout::setConnectD(QObject* o,int type)
+/*public*/ void LayoutTurnout::setConnectD(LayoutTrack *o, int type)
 {
  connectD = o;
  if ( (type!=LayoutEditor::TRACK) && (type!=LayoutEditor::NONE) )

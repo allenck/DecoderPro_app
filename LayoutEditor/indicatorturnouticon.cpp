@@ -458,7 +458,7 @@ QMap<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::cloneMaps(Indicato
 /*private*/ void IndicatorTurnoutIcon::setStatus(OBlock* block, int state)
 {
  _status = _pathUtil->setStatus(block, state);
- _pathUtil->setLocoIcon(block->getValue().toString(), QPoint(getLocation().x(), getLocation().y()), getSize(), _editor);
+ _pathUtil->setLocoIcon(block->getValue().toString(), QPoint(((Positionable*)this)->getLocation().x(), ((Positionable*)this)->getLocation().y()), getSize(), _editor);
  if (_status==("DontUseTrack"))
  {
   setControlling(false);

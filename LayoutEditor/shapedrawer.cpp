@@ -190,7 +190,7 @@ private void newLine() {
   f->anchorPoint(event->screenPos().x(), event->screenPos().y());
  }
  //if (pos instanceof PositionableShape && _editor.isEditable()) {
- if(qobject_cast<PositionableShape*>(pos) != NULL && _editor->isEditable())
+ if(qobject_cast<PositionableShape*>((QObject*)pos) != NULL && _editor->isEditable())
  {
   if (pos != _currentSelection)
   {

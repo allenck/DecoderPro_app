@@ -360,7 +360,8 @@ void BlockContentsIcon::editBlock() {
     _iconEditorFrame->dispose();
     _iconEditorFrame = NULL;
     _iconEditor = NULL;
-    invalidate();
+//    invalidate();
+    updateScene();
 }
 
 //@Override

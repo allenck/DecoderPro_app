@@ -466,9 +466,9 @@ void MultiSensorIcon::updateSensor()
     // find if we want to increment or decrement
     bool dec = false;
     if (updown) {
-        if ((yy-getY()) > maxHeight()/2) dec = true;
+        if ((yy-((Positionable*)this)->getY()) > maxHeight()/2) dec = true;
     } else {
-        if ((xx-getX()) < maxWidth()/2) dec = true;
+        if ((xx-((Positionable*)this)->getX()) < maxWidth()/2) dec = true;
     }
 
     // get new index

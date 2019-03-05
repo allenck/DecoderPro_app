@@ -9,6 +9,9 @@ QT       -= gui
 TARGET = ftdilib
 TEMPLATE = lib
 
+MOC_DIR = moc_obj
+OBJECTS_DIR += moc_obj
+
 DEFINES += FTDILIB_LIBRARY
 
 SOURCES += ftdilib.cpp \
