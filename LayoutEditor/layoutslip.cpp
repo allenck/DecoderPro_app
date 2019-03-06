@@ -88,10 +88,10 @@ QComboBox* TurnoutState::getComboB()
 /*public*/ LayoutSlip::LayoutSlip(QString id, QPointF c, double rot, LayoutEditor* myPanel, int type) : LayoutTurnout(id, -1, c,rot,0,0,myPanel)
 {
  init();
- instance = this;
+ //instance = this;
  layoutEditor = myPanel;
- ident = id;
- center = c;
+ //ident = id;
+ //center = c;
  dispC =  QPointF(-20.0,0.0);
  dispB =  QPointF(-14.0,14.0);
  setTurnoutType(type);
@@ -791,7 +791,7 @@ double LayoutSlip::round (double x) {
 }
 void LayoutSlip::OnEditAction()
 {
- editLayoutSlip(instance);
+ editLayoutSlip(this);
 }
 
 void LayoutSlip::on_setSignalsAct_triggered()
@@ -800,7 +800,7 @@ void LayoutSlip::on_setSignalsAct_triggered()
  {
   tools = new LayoutEditorTools(layoutEditor);
  }
- tools->setSlipFromMenu((LayoutSlip*)instance,
+ tools->setSlipFromMenu(this,
  layoutEditor->signalIconEditor,layoutEditor->signalFrame);
 }
 
@@ -810,7 +810,7 @@ void LayoutSlip::on_setSignalMastsAct_triggered()
  {
   tools = new LayoutEditorTools(layoutEditor);
  }
- tools->setSignalMastsAtSlipFromMenu((LayoutSlip*)instance, boundaryBetween, layoutEditor->signalFrame);
+ tools->setSignalMastsAtSlipFromMenu(this, boundaryBetween, layoutEditor->signalFrame);
 }
 
 void LayoutSlip::on_setSensorsAct_triggered()
@@ -819,7 +819,7 @@ void LayoutSlip::on_setSensorsAct_triggered()
  {
   tools = new LayoutEditorTools(layoutEditor);
  }
- tools->setSensorsAtSlipFromMenu((LayoutSlip*)instance, boundaryBetween, layoutEditor->sensorIconEditor, layoutEditor->sensorFrame);
+ tools->setSensorsAtSlipFromMenu(this, boundaryBetween, layoutEditor->sensorIconEditor, layoutEditor->sensorFrame);
 }
 
 void LayoutSlip::on_rotate_triggered()
@@ -863,7 +863,7 @@ void LayoutSlip::on_rotate_triggered()
 
 void LayoutSlip::on_removeAction_triggered()
 {
- if (layoutEditor->removeLayoutSlip(instance))
+ if (layoutEditor->removeLayoutSlip(this))
  {
     // Returned true if user did not cancel
     remove();

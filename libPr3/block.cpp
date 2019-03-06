@@ -5,6 +5,7 @@
 #include "locoaddress.h"
 #include "lnsensor.h"
 #include "signalspeedmap.h"
+#include "path.h"
 
 ///*static*/ const int Block::OCCUPIED = Sensor::ACTIVE;
 ///*static*/ const int Block::UNOCCUPIED = Sensor::INACTIVE;

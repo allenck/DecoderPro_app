@@ -3,6 +3,7 @@
 #include "abstractreporter.h"
 #include "instancemanager.h"
 #include "level.h"
+#include "path.h"
 
 BlockManagerXml::BlockManagerXml(QObject *parent) :
     AbstractMemoryManagerConfigXML(parent)

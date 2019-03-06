@@ -2,13 +2,17 @@
 #include "fileutil.h"
 #include "Roster/rosterentry.h"
 #include "Roster/roster.h"
+#include "path.h"
+#include "instancemanager.h"
+#include "blockmanager.h"
+
 
 /*private*/ /*static*/ QString BlockValueFile::defaultFileName = FileUtil::getUserFilesPath()+"blockvalues.xml";
 
 BlockValueFile::BlockValueFile(QObject *parent) :
     XmlFile(parent)
 {
- blockManager = InstanceManager::blockManagerInstance();
+ blockManager = static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager"));
  log = new Logger("BlockValueFile");
  QDomDocument doc = QDomDocument("block_values");
  root = doc.createElement("block_values");

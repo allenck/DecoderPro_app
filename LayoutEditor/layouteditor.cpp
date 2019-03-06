@@ -59,6 +59,10 @@
 #include "signalmastlogicmanager.h"
 #include "signalmastlogic.h"
 #include "positionablepoint.h"
+#include "optional.h"
+#include <limits>
+#include "layouttrackeditors.h"
+#include "layouteditorchecks.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -1153,10 +1157,10 @@ void LayoutEditor::On_turnoutCircleSizeButtonMapper_triggered(int size)
  * Set up editable JmriBeanComboBoxes
  *
  * @param inComboBox     the editable JmriBeanComboBoxes to set up
- * @param inValidateMode boolean: if true, valid text == green, invalid text
+ * @param inValidateMode bool: if true, valid text == green, invalid text
  *                       == red background; if false, valid text == green,
  *                       invalid text == yellow background
- * @param inEnable       boolean to enable / disable the JmriBeanComboBox
+ * @param inEnable       bool to enable / disable the JmriBeanComboBox
  */
 /*public*/ /*static*/ void LayoutEditor::setupComboBox(/*@Nonnull*/ JmriBeanComboBox* inComboBox, bool inValidateMode, bool inEnable) {
     setupComboBox(inComboBox, inValidateMode, inEnable, !inValidateMode);
@@ -1166,11 +1170,11 @@ void LayoutEditor::On_turnoutCircleSizeButtonMapper_triggered(int size)
  * Set up editable JmriBeanComboBoxes
  *
  * @param inComboBox     the editable JmriBeanComboBoxes to set up
- * @param inValidateMode boolean: if true, valid text == green, invalid text
+ * @param inValidateMode bool: if true, valid text == green, invalid text
  *                       == red background; if false, valid text == green,
  *                       invalid text == yellow background
- * @param inEnable       boolean to enable / disable the JmriBeanComboBox
- * @param inFirstBlank   boolean to enable / disable the first item being
+ * @param inEnable       bool to enable / disable the JmriBeanComboBox
+ * @param inFirstBlank   bool to enable / disable the first item being
  *                       blank
  */
 /*public*/ /*static*/ void LayoutEditor::setupComboBox(/*@Nonnull*/ JmriBeanComboBox* inComboBox, bool inValidateMode, bool inEnable, bool inFirstBlank) {
@@ -1366,58 +1370,7 @@ double LayoutEditor::getPaintScale()
     selectedObject = nullptr;
     if (allControlling())
     {
-     // check if mouse is on a turnout
-     selectedObject = nullptr;
-     for (int i = 0; i<turnoutList->size();i++)
-     {
-      LayoutTurnout* t = turnoutList->at(i);
-      // check the center point
-      QPointF pt = t->getCoordsCenter();
-      QRectF r =  QRectF(
-                pt.x()-SIZE2,pt.y()-SIZE2,2.0*SIZE2,2.0*SIZE2);
-      if (r.contains(dLoc))
-      {
-       // mouse was pressed on this turnout
-       selectedObject = t;
-       selectedPointType = TURNOUT_CENTER;
-       break;
-      }
-     }
-     for(int i=0; i < slipList->count(); i++)
-     {
-      LayoutSlip* sl = slipList->at(i);
-      // check the center point
-      QPointF pt = sl->getCoordsCenter();
-      QRectF r =  QRectF(pt.x()-(SIZE2*2.0),pt.y()-(SIZE2*2.0),4.0*SIZE2,4.0*SIZE2);
-      if (r.contains(dLoc))
-      {
-       // mouse was pressed on this turnout
-       selectedObject = sl;
-       selectedPointType = SLIP_CENTER;
-       break;
-      }
-     }
-
-    for (int i = 0; i<turntableList->size();i++)
-    {
-     LayoutTurntable* x = turntableList->at(i);
-     for (int k = 0; k<x->getNumberRays(); k++)
-     {
-      if (x->getRayConnectOrdered(k)!=nullptr)
-      {
-       // check the A connection point
-       QPointF pt = x->getRayCoordsOrdered(k);
-       QRectF r = QRectF(pt.x() - SIZE, pt.y() - SIZE,SIZE2,SIZE2);
-       if (r.contains(dLoc))
-       {
-           // mouse was pressed on this connection point
-           selectedObject = x;
-           selectedPointType = TURNTABLE_RAY_OFFSET+x->getRayIndex(k);
-           break;
-       }
-      }
-     }
-    }
+     checkControls(false);
     }
     // initialize starting selection - cancel any previous selection rectangle
     selectionActive = true;
@@ -1435,60 +1388,7 @@ double LayoutEditor::getPaintScale()
   {
    // not in edit mode - check if mouse is on a turnout (using wider search range)
    selectedObject = nullptr;
-   for (int i = 0; i<turnoutList->size();i++)
-   {
-    LayoutTurnout* t = turnoutList->at(i);
-    // check a rectangle as large as turnout circle, but at least size 4
-    QPointF pt = t->getCoordsCenter();
-    double size = SIZE * turnoutCircleSize;
-    if (size < SIZE2*2.0) size = SIZE2*2.0;
-    QRectF r = QRectF(
-            pt.x()-size, pt.y()-size, size+size, size+size);
-    if (r.contains(dLoc))
-    {
-     // mouse was pressed on this turnout
-     selectedObject = t;
-     selectedPointType = TURNOUT_CENTER;
-     break;
-    }
-   }
-   for(int i=0; i< slipList->count(); i++)
-   {
-    LayoutSlip* sl = slipList->at(i);
-    // check the center point
-    QPointF pt = sl->getCoordsCenter();
-    QRectF r = QRectF(pt.x()-(SIZE2*2.0),pt.y()-(SIZE2*2.0),4.0*SIZE2,4.0*SIZE2);
-    if (r.contains(dLoc))
-    {
-     // mouse was pressed on this turnout
-      selectedObject = sl;
-      selectedPointType = SLIP_CENTER;
-      break;
-     }
-    }
-#if 1 //TODO
-
-    for (int i = 0; i<turntableList->size();i++)
-    {
-     LayoutTurntable* x = turntableList->at(i);
-     for (int k = 0; k<x->getNumberRays(); k++)
-     {
-      if (x->getRayConnectOrdered(k)!=nullptr)
-      {
-       // check the A connection point
-       QPointF pt = x->getRayCoordsOrdered(k);
-       QRectF r = QRectF(
-               pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-       if (r.contains(dLoc)) {
-           // mouse was pressed on this connection point
-           selectedObject = x;
-           selectedPointType = TURNTABLE_RAY_OFFSET+x->getRayIndex(k);
-           break;
-       }
-      }
-     }
-    }
-#endif
+   checkControls(true);
  }
  else if ( (/*event.isMetaDown() ||*/ /*event.isAltDown()*/event->modifiers()&Qt::AltModifier) &&
               (!(/*event.isShiftDown()*/event->modifiers()&Qt::ShiftModifier)) && (!(/*event.isControlDown()*/event->modifiers()&Qt::ControlModifier)) )
@@ -1527,6 +1427,239 @@ double LayoutEditor::getPaintScale()
  //thisPanel.requestFocusInWindow();
  return;
 }
+
+/**
+ * Called by {@link #mousePressed} to determine if the mouse click was in a turnout control location.
+ * If so, update selectedPointType and selectedObject for use by {@link #mouseReleased}.
+ * <p>
+ * If there's no match, selectedObject is set to null and selectedPointType
+ * is left referring to the results of the checking the last track on the list.
+ * <p>
+ * Refers to the current value of {@link #layoutTrackList) and {@link #dLoc}.
+ *
+ * @param useRectangles set true to use rectangle; false for circles.
+ */
+/*private*/ void LayoutEditor::checkControls(bool useRectangles) {
+    selectedObject = nullptr;  // deliberate side-effect
+    for (LayoutTrack* theTrack : layoutTrackList)
+    {
+        selectedPointType = theTrack->findHitPointType(dLoc, useRectangles); // deliberate side-effect
+        if (LayoutTrack::isControlHitType(selectedPointType)) {
+            selectedObject = theTrack; // deliberate side-effect
+            return;
+        }
+    }
+}
+
+// optional parameter avoid
+/*private*/ bool LayoutEditor::findLayoutTracksHitPoint(
+        /*@Nonnull*/ QPointF loc, bool requireUnconnected) {
+    return findLayoutTracksHitPoint(loc, requireUnconnected, nullptr);
+}
+
+// optional parameter requireUnconnected
+/*private*/ bool LayoutEditor::findLayoutTracksHitPoint(/*@Nonnull*/ QPointF loc) {
+    return findLayoutTracksHitPoint(loc, false, nullptr);
+}
+
+/*private*/ bool LayoutEditor::findLayoutTracksHitPoint(/*@Nonnull*/ QPointF loc,
+        bool requireUnconnected, /*@Nullable*/ LayoutTrack* avoid) {
+    bool result = false; // assume failure (pessimist!)
+
+    foundObject = nullptr;
+    foundPointType = LayoutTrack::NONE;
+#if 0
+    //Optional<LayoutTrack*> opt = layoutTrackList.stream().filter(layoutTrack ->
+    QList<LayoutTrack*> opt = QList<LayoutTrack*>();
+    for(LayoutTrack* layoutTrack : layoutTrackList)
+    {
+        if ((layoutTrack != avoid) && (layoutTrack != selectedObject)) {
+         opt.append(layoutTrack);
+            foundPointType = layoutTrack->findHitPointType(loc, false, requireUnconnected);
+        }
+        return (LayoutTrack::NONE != foundPointType);
+    }//).findFirst();
+
+    LayoutTrack* layoutTrack = nullptr;
+    if (opt.isPresent()) {
+        layoutTrack = opt.get();
+    }
+    if (layoutTrack != nullptr) {
+        foundObject = layoutTrack;
+        foundLocation = layoutTrack->getCoordsForConnectionType(foundPointType);
+        foundNeedsConnect = layoutTrack->isDisconnected(foundPointType);
+        result = true;
+    }
+#endif
+    return result;
+}
+
+/*private*/ TrackSegment* LayoutEditor::checkTrackSegmentPopUps(/*@Nonnull*/ QPointF loc) {
+    TrackSegment* result = nullptr;
+
+    //NOTE: Rather than calculate all the hit rectangles for all
+    // the points below and test if this location is in any of those
+    // rectangles just create a hit rectangle for the location and
+    // see if any of the points below are in it instead...
+    QRectF r = trackControlCircleRectAt(loc);
+
+    //check Track Segments, if any
+    for (TrackSegment* ts : getTrackSegments()) {
+        if (r.contains(ts->getCentreSeg())) {
+            result = ts;
+            break;
+        }
+    }
+    return result;
+}
+
+/*private*/ PositionableLabel* LayoutEditor::checkBackgroundPopUps(/*@Nonnull*/ QPointF loc) {
+    PositionableLabel* result = nullptr;
+    //check background images, if any
+    for (int i = backgroundImage->size() - 1; i >= 0; i--) {
+        PositionableLabel* b = backgroundImage->at(i);
+        QRectF r = b->getBounds();
+        if (r.contains(loc)) {
+            result = b;
+            break;
+        }
+    }
+    return result;
+}
+
+/*private*/ SensorIcon* LayoutEditor::checkSensorIconPopUps(/*@Nonnull*/ QPointF loc) {
+    SensorIcon* result = nullptr;
+    //check sensor images, if any
+    for (int i = sensorImage->size() - 1; i >= 0; i--) {
+        SensorIcon* s = sensorImage->at(i);
+        QRectF r = s->getBounds();
+        if (r.contains(loc)) {
+            result = s;
+        }
+    }
+    return result;
+}
+
+/*private*/ SignalHeadIcon* LayoutEditor::checkSignalHeadIconPopUps(/*@Nonnull*/ QPointF loc) {
+    SignalHeadIcon* result = nullptr;
+    //check signal head images, if any
+    for (int i = signalHeadImage->size() - 1; i >= 0; i--) {
+        SignalHeadIcon* s = signalHeadImage->at(i);
+        QRectF r = s->getBounds();
+        if (r.contains(loc)) {
+            result = s;
+            break;
+        }
+    }
+    return result;
+}
+
+/*private*/ SignalMastIcon* LayoutEditor::checkSignalMastIconPopUps(/*@Nonnull*/ QPointF loc) {
+    SignalMastIcon* result = nullptr;
+    //check signal head images, if any
+    for (int i = signalMastList->size() - 1; i >= 0; i--) {
+        SignalMastIcon* s = signalMastList->at(i);
+        QRectF r = s->getBounds();
+        if (r.contains(loc)) {
+            result = s;
+            break;
+        }
+    }
+    return result;
+}
+
+/*private*/ PositionableLabel* LayoutEditor::checkLabelImagePopUps(/*@Nonnull*/ QPointF loc) {
+    PositionableLabel* result = nullptr;
+    int level = 0;
+
+    for (int i = labelImage->size() - 1; i >= 0; i--) {
+        PositionableLabel* s = labelImage->at(i);
+        double x = s->getX();
+        double y = s->getY();
+        double w = 10.0;
+        double h = 5.0;
+
+        if (s->isIcon() || s->isRotated() || s->getPopupUtility()->getOrientation() != PositionablePopupUtil::HORIZONTAL) {
+            w = s->maxWidth();
+            h = s->maxHeight();
+        } else if (s->isText()) {
+            h = s->getFont().pointSize();
+            w = (h * 2 * (s->getText().length())) / 3;
+        }
+
+        QRectF r = QRectF(x, y, w, h);
+        if (r.contains(loc)) {
+            if (s->getDisplayLevel() >= level) {
+                //Check to make sure that we are returning the highest level label.
+                result = s;
+                level = s->getDisplayLevel();
+            }
+        }
+    }
+    return result;
+}
+
+/*private*/ AnalogClock2Display* LayoutEditor::checkClockPopUps(/*@Nonnull*/ QPointF loc) {
+    AnalogClock2Display* result = nullptr;
+    //check clocks, if any
+    for (int i = clocks->size() - 1; i >= 0; i--) {
+        AnalogClock2Display* s = clocks->at(i);
+        QRectF r = s->getBounds();
+        if (r.contains(loc)) {
+            result = s;
+            break;
+        }
+    }
+    return result;
+}
+
+/*private*/ MultiSensorIcon* LayoutEditor::checkMultiSensorPopUps(/*@Nonnull */QPointF loc) {
+    MultiSensorIcon* result = nullptr;
+    //check multi sensor icons, if any
+    for (int i = multiSensors->size() - 1; i >= 0; i--) {
+        MultiSensorIcon* s = multiSensors->at(i);
+        QRectF r = s->getBounds();
+        if (r.contains(loc)) {
+            result = s;
+            break;
+        }
+    }
+    return result;
+}
+
+/*private*/ LocoIcon* LayoutEditor::checkMarkerPopUps(/*@Nonnull*/ QPointF loc) {
+    LocoIcon* result = nullptr;
+    //check marker icons, if any
+    for (int i = markerImage->size() - 1; i >= 0; i--) {
+        LocoIcon* l = markerImage->at(i);
+        QRectF r = l->getBounds();
+        if (r.contains(loc)) {
+            //mouse was pressed in marker icon
+            result = l;
+            break;
+        }
+    }
+    return result;
+}
+
+/**
+ * get the coordinates for the connection type of the specified object
+ *
+ * @param layoutTrack    the object (Layout track subclass)
+ * @param connectionType the type of connection
+ * @return the coordinates for the connection type of the specified object
+ */
+//@Nonnull
+/*public*/ /*static*/ QPointF LayoutEditor::getCoords(/*@Nonnull*/ LayoutTrack* layoutTrack, int connectionType) {
+    QPointF result = QPointF();
+    if (layoutTrack != nullptr) {
+        result = layoutTrack->getCoordsForConnectionType(connectionType);
+    } else {
+        log->error(tr("Null connection point of type %1").arg(connectionType));
+    }
+    return result;
+}
+
 
 // mouse pressed and released.
 /*public*/ void LayoutEditor::mouseClicked(QGraphicsSceneMouseEvent* event)
@@ -2803,28 +2936,28 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 }
 
 /*private*/ PositionablePoint* LayoutEditor::addAnchor(QPointF p) {
-        numAnchors++;
-        // get unique name
-        QString name = "";
-        bool duplicate = true;
-        while (duplicate) {
-            name = "A" + numAnchors;
-            if (finder->findPositionablePointByName(name) == nullptr) {
-                duplicate = false;
-            }
-            if (duplicate) {
-                numAnchors++;
-            }
+    numAnchors++;
+    // get unique name
+    QString name = "";
+    bool duplicate = true;
+    while (duplicate) {
+        name = "A" + numAnchors;
+        if (finder->findPositionablePointByName(name) == nullptr) {
+            duplicate = false;
         }
-        // create object
-        PositionablePoint* o = new PositionablePoint(name,
-                PositionablePoint::ANCHOR, p, this);
-        //if (o!=nullptr) {
-        pointList->append(o);
-        setDirty(true);
-        //}
-        return o;
+        if (duplicate) {
+            numAnchors++;
+        }
     }
+    // create object
+    PositionablePoint* o = new PositionablePoint(name,
+            PositionablePoint::ANCHOR, p, this);
+    //if (o!=nullptr) {
+    pointList->append(o);
+    setDirty(true);
+    //}
+    return o;
+}
 
 //
 //
@@ -2937,10 +3070,11 @@ void LayoutEditor::onCalculateBounds()
     }
 
     // don't let origin go negative
-    panelBounds = panelBounds.intersected(MathUtil::zeroToInfinityRectangle2D());
+    QRectF zeroToInfinityQRectF(0.0, 0.0, std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity());
+    panelBounds = panelBounds.intersected(zeroToInfinityQRectF);
 
     // make sure it includes the origin
-//    panelBounds.united(MathUtil::zeroPoint2D());
+//    panelBounds.united(MathUtil::zeroQPointF());
 
     log->debug(tr("resizePanelBounds: %1, %2, %3, %4").arg(panelBounds.x()).arg(panelBounds.y()).arg(panelBounds.width()).arg(panelBounds.height()));
 
@@ -2959,7 +3093,8 @@ void LayoutEditor::onCalculateBounds()
     QRectF scrollBounds = QRectF(0,0, scrollPane->sizeHint().width(), scrollPane->sizeHint().height());
 
     // don't let origin go negative
-    scrollBounds = scrollBounds.intersected(MathUtil::zeroToInfinityRectangle2D());
+    QRectF zeroToInfinityQRectF(0.0, 0.0, std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity());
+    scrollBounds = scrollBounds.intersected(zeroToInfinityQRectF);
 
     // calculate the horzontial and vertical scales
     double scaleWidth = scrollPane->width() / layoutBounds.width();
@@ -2975,10 +3110,10 @@ void LayoutEditor::onCalculateBounds()
 //    scrollBounds = scrollBounds.adjust(0,0, result.x(), result.y());//MathUtil::scale(layoutBounds, result);
 
     // don't let origin go negative
-//    scrollBounds = scrollBounds.intersected(MathUtil::zeroToInfinityRectangle2D());
+//    scrollBounds = scrollBounds.intersected(MathUtil::zeroToInfinityQRectF());
 
     // and scroll to it
-    //scrollPane->scrollRectToVisible(MathUtil::rectangle2DToRectangle(scrollBounds));
+    //scrollPane->scrollRectToVisible(MathUtil::QRectFToRectangle(scrollBounds));
     //scrollPane->ensureVisible(scrollBounds.x(), scrollBounds.y());
     if(result == xScale)
      return result;
@@ -4113,7 +4248,34 @@ bool LayoutEditor::isDirty() {return bDirty;}
     return new QGraphicsEllipseItem(inPoint.x() - circleRadius,
                                 inPoint.y() - circleRadius, circleDiameter, circleDiameter);
 }
+//these are convenience methods to return rectangles
+//to use when (hit point-in-rect testing
+//
+//compute the control point rect at inPoint
+/*public*/ QRectF LayoutEditor::trackEditControlRectAt(/*@Nonnull*/ QPointF inPoint) {
+    return QRectF(inPoint.x() - SIZE,
+            inPoint.y() - SIZE, SIZE2, SIZE2);
+}
 
+//compute the turnout circle control rect at inPoint
+/*public*/ QRectF LayoutEditor::trackControlCircleRectAt(/*@Nonnull*/ QPointF inPoint) {
+    return QRectF(inPoint.x() - circleRadius,
+            inPoint.y() - circleRadius, circleDiameter, circleDiameter);
+}
+#if 0
+//these are convenience methods to return circles used to draw onscreen
+//
+//compute the control point rect at inPoint; use the turnout circle size
+/*public*/ Ellipse2D trackEditControlCircleAt(/*@Nonnull*/ QPointF inPoint) {
+    return trackControlCircleAt(inPoint);
+}
+
+//compute the turnout circle at inPoint (used for drawing)
+public Ellipse2D trackControlCircleAt(@Nonnull Point2D inPoint) {
+    return new Ellipse2D.Double(inPoint.getX() - circleRadius,
+            inPoint.getY() - circleRadius, circleDiameter, circleDiameter);
+}
+#endif
 /**
 *  Special internal class to allow drawing of layout to a JLayeredPane
 *  This is the 'target' pane where the layout is displayed
@@ -4163,7 +4325,522 @@ bool LayoutEditor::isDirty() {return bDirty;}
    drawSlipCircles(g2);
   }
 }
+#if 0
+//
+    // this is called by the layoutEditorComponent
+    //
+    protected void draw(Graphics2D g2) {
 
+        //drawPositionableLabelBorder(g2);
+        //Optional antialising, to eliminate (reduce) staircase on diagonal lines
+        if (antialiasingOn) {
+            g2.setRenderingHints(antialiasing);
+        }
+
+        // things that only get drawn in edit mode
+        if (isEditable()) {
+            if (getDrawGrid()) {
+                drawPanelGrid(g2);
+            }
+            drawLayoutTracksHidden(g2);
+        }
+        drawTrackSegmentsDashed(g2);
+        drawLayoutTracksBallast(g2);
+        drawLayoutTracksTies(g2);
+        drawLayoutTracksRails(g2);
+        drawLayoutTracksBlockLines(g2);
+
+        drawPositionablePoints(g2, false);
+        drawPositionablePoints(g2, true);
+
+        drawDecorations(g2);
+
+        // things that only get drawn in edit mode
+        if (isEditable()) {
+            drawLayoutTrackEditControls(g2);
+
+            drawMemoryRects(g2);
+            drawBlockContentsRects(g2);
+
+            if (allControlling()) {
+                drawTurnoutControls(g2);
+            }
+            drawSelectionRect(g2);
+            highLightSelection(g2);
+
+            drawTrackSegmentInProgress(g2);
+        } else if (turnoutCirclesWithoutEditMode) {
+            if (allControlling()) {
+                drawTurnoutControls(g2);
+            }
+        }
+    }   // draw
+
+    //
+    //  draw hidden layout tracks
+    //
+    private void drawLayoutTracksHidden(Graphics2D g2) {
+        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
+        Stroke stroke = new BasicStroke(1.F);
+        Stroke dashedStroke = new BasicStroke(1.F,
+                BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
+                new float[]{6.F, 4.F}, 0);
+
+        //setup for drawing hidden sideline rails
+        g2.setColor(ltdo.getSideRailColor());
+        g2.setStroke(stroke);
+        boolean main = false, block = false, hidden = true, dashed = false;
+        draw1(g2, main, block, hidden, dashed);
+        g2.setStroke(dashedStroke);
+        draw1(g2, main, block, hidden, dashed = true);
+
+        //setup for drawing mainline rails
+        main = true;
+        g2.setColor(ltdo.getMainRailColor());
+        g2.setStroke(stroke);
+        draw1(g2, main, block, hidden, dashed = false);
+        g2.setStroke(dashedStroke);
+        dashed = true;
+        draw1(g2, main, block, hidden, dashed);
+    }
+
+    //
+    //  draw dashed track segments
+    //
+    private void drawTrackSegmentsDashed(Graphics2D g2) {
+        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
+        boolean main = false, block = false, hidden = false, dashed = true;
+
+        if (ltdo.getSideRailCount() > 0) {
+            //setup for drawing dashed sideline rails
+            int railWidth = ltdo.getSideRailWidth();
+            float[] dashArray = new float[]{6.F + railWidth, 4.F + railWidth};
+            g2.setStroke(new BasicStroke(
+                    railWidth,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                    10.F, dashArray, 0));
+            g2.setColor(ltdo.getSideRailColor());
+            if ((ltdo.getSideRailCount() & 1) == 1) {
+                draw1(g2, main, block, hidden, dashed);
+            }
+            if (ltdo.getSideRailCount() >= 2) {
+                float railDisplacement = railWidth + (ltdo.getSideRailGap() / 2.F);
+                draw2(g2, main, railDisplacement, dashed);
+            }
+        }
+
+        if (ltdo.getMainRailCount() > 0) {
+            //setup for drawing dashed mainline rails
+            main = true;
+            int railWidth = ltdo.getMainRailWidth();
+            float[] dashArray = new float[]{6.F + railWidth, 4.F + railWidth};
+            g2.setStroke(new BasicStroke(
+                    railWidth,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                    10.F, dashArray, 0));
+            g2.setColor(ltdo.getMainRailColor());
+            if ((ltdo.getMainRailCount() & 1) == 1) {
+                draw1(g2, main, block, hidden, dashed);
+            }
+            if (ltdo.getMainRailCount() >= 2) {
+                float railDisplacement = railWidth + (ltdo.getSideRailGap() / 2.F);
+                draw2(g2, main, railDisplacement, dashed);
+            }
+        }
+    }   // drawTrackSegmentsDashed
+
+    //
+    // draw layout track ballast
+    //
+    private void drawLayoutTracksBallast(Graphics2D g2) {
+        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
+        boolean main = false, block = false, hidden = false, dashed = false;
+
+        //setup for drawing sideline ballast
+        int ballastWidth = ltdo.getSideBallastWidth();
+        if (ballastWidth > 0) {
+            g2.setStroke(new BasicStroke(ballastWidth,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2.setColor(ltdo.getSideBallastColor());
+            draw1(g2, main, block, hidden, dashed);
+        }
+
+        //setup for drawing mainline ballast
+        ballastWidth = ltdo.getMainBallastWidth();
+        if (ballastWidth > 0) {
+            g2.setStroke(new BasicStroke(ballastWidth,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2.setColor(ltdo.getMainBallastColor());
+            main = true;
+            draw1(g2, main, block, hidden, dashed);
+        }
+    }
+
+    //
+    // draw layout track ties
+    //
+    private void drawLayoutTracksTies(Graphics2D g2) {
+        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
+
+        // setup for drawing sideline ties
+        int tieLength = ltdo.getSideTieLength();
+        int tieWidth = ltdo.getSideTieWidth();
+        int tieGap = ltdo.getSideTieGap();
+        if ((tieLength > 0) && (tieWidth > 0) && (tieGap > 0)) {
+            g2.setStroke(new BasicStroke(tieLength,
+                    BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
+                    new float[]{tieWidth, tieGap}, 0));
+            g2.setColor(ltdo.getSideTieColor());
+            draw1(g2, false);  // main = false
+        }
+
+        // setup for drawing mainline ties
+        tieLength = ltdo.getMainTieLength();
+        tieWidth = ltdo.getMainTieWidth();
+        tieGap = ltdo.getMainTieGap();
+        if ((tieLength > 0) && (tieWidth > 0) && (tieGap > 0)) {
+            g2.setStroke(new BasicStroke(tieLength,
+                    BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
+                    new float[]{tieWidth, tieGap}, 0));
+            g2.setColor(ltdo.getMainTieColor());
+            draw1(g2, true); // main = true
+        }
+    }
+
+    //
+    // draw layout track rails
+    //
+    private void drawLayoutTracksRails(Graphics2D g2) {
+        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
+        int railWidth = ltdo.getSideRailWidth();
+        Color railColor = ltdo.getSideRailColor();
+
+        boolean main = false, block = false, hidden = false, dashed = false;
+
+        if (ltdo.getSideRailCount() > 1) {
+            //setup for drawing sideline rails
+            float railDisplacement = railWidth + (ltdo.getSideRailGap() / 2.F);
+            g2.setStroke(new BasicStroke(railWidth,
+                    BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+            g2.setColor(railColor);
+            draw2(g2, main, railDisplacement);
+        }
+
+        if ((ltdo.getSideRailCount() & 1) == 1) {
+            //setup for drawing sideline rails
+            g2.setStroke(new BasicStroke(
+                    railWidth,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2.setColor(railColor);
+            draw1(g2, main, block, hidden, dashed);
+        }
+
+        main = true;
+
+        railWidth = ltdo.getMainRailWidth();
+        railColor = ltdo.getMainRailColor();
+        if (ltdo.getMainRailCount() > 1) {
+            //setup for drawing mainline rails
+            float railDisplacement = railWidth + (ltdo.getMainRailGap() / 2.F);
+            g2.setStroke(new BasicStroke(railWidth,
+                    BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+            g2.setColor(railColor);
+            draw2(g2, main, railDisplacement);
+        }
+        if ((ltdo.getMainRailCount() & 1) == 1) {
+            //setup for drawing mainline rails
+            g2.setStroke(new BasicStroke(
+                    railWidth,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2.setColor(railColor);
+            dashed = false;
+            draw1(g2, main, block, hidden, dashed);
+        }
+    }   // drawLayoutTracksRails
+
+    //
+    // draw layout track block lines
+    //
+    private void drawLayoutTracksBlockLines(Graphics2D g2) {
+        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
+
+        //setup for drawing sideline block lines
+        int blockLineWidth = ltdo.getSideBlockLineWidth();
+        float[] dashArray = new float[]{6.F + blockLineWidth, 4.F + blockLineWidth};
+
+        Stroke blockLineStroke = null;
+        int dashPercentageX10 = ltdo.getSideBlockLineDashPercentageX10();
+        if (dashPercentageX10 > 0) {
+            float[] blockLineDashArray = new float[]{
+                dashPercentageX10 + blockLineWidth,
+                10.F - dashPercentageX10 + blockLineWidth};
+            blockLineStroke = new BasicStroke(
+                    blockLineWidth,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                    10.F, blockLineDashArray, 0);
+            g2.setStroke(blockLineStroke);
+        } else {
+            blockLineStroke = new BasicStroke(
+                    ltdo.getSideBlockLineWidth(),
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            g2.setStroke(new BasicStroke(
+                    blockLineWidth,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                    10.F, dashArray, 0));
+        }
+
+        //note: color is set in layout track's draw1 when isBlock is true
+        boolean main = false, block = true, hidden = false, dashed = true;
+        draw1(g2, main, block, hidden, dashed);
+        g2.setStroke(blockLineStroke);
+        draw1(g2, main, block, hidden, dashed = false);
+
+        //setup for drawing mainline block lines
+        blockLineWidth = ltdo.getMainBlockLineWidth();
+        dashArray = new float[]{6.F + blockLineWidth, 4.F + blockLineWidth};
+
+        dashPercentageX10 = ltdo.getMainBlockLineDashPercentageX10();
+        if (dashPercentageX10 > 0) {
+            float[] blockLineDashArray = new float[]{
+                dashPercentageX10 + blockLineWidth,
+                10 - dashPercentageX10 + blockLineWidth};
+            blockLineStroke = new BasicStroke(
+                    blockLineWidth,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                    10.F, blockLineDashArray, 0);
+            g2.setStroke(blockLineStroke);
+        } else {
+            blockLineStroke = new BasicStroke(
+                    ltdo.getMainBlockLineWidth(),
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            g2.setStroke(new BasicStroke(
+                    blockLineWidth,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                    10.F, dashArray, 0));
+        }
+        //note: color is set in layout track's draw1 when isBlock is true
+        draw1(g2, main = true, block, hidden, dashed = true);
+        g2.setStroke(blockLineStroke);
+        dashed = false;
+        draw1(g2, main, block, hidden, dashed);
+    }
+
+    // isDashed defaults to false
+    private void draw1(Graphics2D g2,
+            boolean isMain,
+            boolean isBlock,
+            boolean isHidden) {
+        draw1(g2, isMain, isBlock, isHidden, false);
+    }
+
+    // isHidden defaults to false
+    private void draw1(Graphics2D g2,
+            boolean isMain,
+            boolean isBlock) {
+        draw1(g2, isMain, isBlock, false);
+    }
+
+    // isBlock defaults to false
+    private void draw1(Graphics2D g2, boolean isMain) {
+        draw1(g2, isMain, false);
+    }
+
+    // draw single line (ballast, ties & block lines)
+    private void draw1(Graphics2D g2,
+            boolean isMain,
+            boolean isBlock,
+            boolean isHidden,
+            boolean isDashed) {
+        for (LayoutTrack layoutTrack : layoutTrackList) {
+            if (!(layoutTrack instanceof PositionablePoint)) {
+                if (isHidden == layoutTrack.isHidden()) {
+                    if ((layoutTrack instanceof TrackSegment)) {
+                        if (((TrackSegment) layoutTrack).isDashed() == isDashed) {
+                            layoutTrack.draw1(g2, isMain, isBlock);
+                        }
+                    } else if (!isDashed) {
+                        layoutTrack.draw1(g2, isMain, isBlock);
+                    }
+                }
+            }
+        }
+    }
+
+    // draw positionable points
+    private void drawPositionablePoints(Graphics2D g2, boolean isMain) {
+        for (LayoutTrack layoutTrack : layoutTrackList) {
+            if (layoutTrack instanceof PositionablePoint) {
+                layoutTrack.draw1(g2, isMain, false);
+            }
+        }
+    }
+
+    // isDashed defaults to false
+    private void draw2(Graphics2D g2, boolean isMain, float railDisplacement) {
+        draw2(g2, isMain, railDisplacement, false);
+    }
+
+    // draw parallel lines (rails)
+    private void draw2(Graphics2D g2, boolean isMain,
+            float railDisplacement, boolean isDashed) {
+        for (LayoutTrack layoutTrack : layoutTrackList) {
+            if ((layoutTrack instanceof TrackSegment)) {
+                if (((TrackSegment) layoutTrack).isDashed() == isDashed) {
+                    layoutTrack.draw2(g2, isMain, railDisplacement);
+                }
+            } else if (!isDashed) {
+                layoutTrack.draw2(g2, isMain, railDisplacement);
+            }
+        }
+    }
+
+    // draw decorations
+    private void drawDecorations(EditScene g2) {
+        for (LayoutTrack tr : layoutTrackList) {
+            tr.drawDecorations(g2);
+        }
+    }
+
+    // draw track segment (in progress)
+    private void drawTrackSegmentInProgress(Graphics2D g2) {
+        //check for segment in progress
+        if (isEditable() && (beginObject != null) && trackButton.isSelected()) {
+            g2.setColor(defaultTrackColor);
+            g2.setStroke(new BasicStroke(sidelineTrackWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+            g2.draw(new Line2D.Double(beginLocation, currentLocation));
+
+            // highlight unconnected endpoints of all tracks
+            Color highlightColor = ColorUtil.setAlpha(Color.red, 0.25);
+            Color connectColor = ColorUtil.setAlpha(Color.green, 0.5);
+            g2.setColor(highlightColor);
+            g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            for (LayoutTrack lt : getLayoutTracks()) {
+                if (lt != beginObject) {
+                    if (lt == foundObject) {
+                        lt.highlightUnconnected(g2);
+                        g2.setColor(connectColor);
+                        lt.highlightUnconnected(g2, foundPointType);
+                        g2.setColor(highlightColor);
+                    } else {
+                        lt.highlightUnconnected(g2);
+                    }
+                }
+            }
+        }
+    }
+
+    // draw layout track edit controls
+    private void drawLayoutTrackEditControls(Graphics2D g2) {
+        g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+
+        for (LayoutTrack tr : layoutTrackList) {
+            tr.drawEditControls(g2);
+        }
+    }
+
+    // draw layout turnout controls
+    private void drawTurnoutControls(Graphics2D g2) {
+        g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+        g2.setColor(turnoutCircleColor);
+        // loop over all turnouts
+        boolean editable = isEditable();
+        for (LayoutTrack tr : layoutTrackList) {
+            if (tr instanceof LayoutTurnout) {  //<== this includes LayoutSlips
+                LayoutTurnout lt = (LayoutTurnout) tr;
+                if (editable || !(lt.isHidden() || lt.isDisabled())) {
+                    lt.drawTurnoutControls(g2);
+                }
+            } else if (tr instanceof LayoutTurntable) {
+                LayoutTurntable lt = (LayoutTurntable) tr;
+                if (editable || !lt.isHidden()) {
+                    lt.drawTurnoutControls(g2);
+                }
+            }
+        }
+    }
+
+    // get selection rectangle
+    private Rectangle2D getSelectionRect() {
+        double selX = Math.min(selectionX, selectionX + selectionWidth);
+        double selY = Math.min(selectionY, selectionY + selectionHeight);
+        Rectangle2D result = new Rectangle2D.Double(selX, selY,
+                Math.abs(selectionWidth), Math.abs(selectionHeight));
+        return result;
+    }
+
+    // set selection rectangle
+    public void setSelectionRect(@Nonnull Rectangle2D selectionRect) {
+        //selectionRect = selectionRect.createIntersection(MathUtil.zeroToInfinityRectangle2D);
+        selectionX = selectionRect.getX();
+        selectionY = selectionRect.getY();
+        selectionWidth = selectionRect.getWidth();
+        selectionHeight = selectionRect.getHeight();
+
+        // There's already code in the super class (Editor) to draw
+        // the selection rect... We just have to set _selectRect
+        _selectRect = MathUtil.rectangle2DToRectangle(selectionRect);
+
+        selectionRect = MathUtil.scale(selectionRect, getZoom());
+
+        JComponent targetPanel = getTargetPanel();
+        Rectangle targetRect = targetPanel.getVisibleRect();
+        // this will make it the size of the targetRect
+        // (effectively centering it onscreen)
+        Rectangle2D selRect2D = MathUtil.inset(selectionRect,
+                (selectionRect.getWidth() - targetRect.getWidth()) / 2.0,
+                (selectionRect.getHeight() - targetRect.getHeight()) / 2.0);
+        // don't let the origin go negative
+        selRect2D = selRect2D.createIntersection(MathUtil.zeroToInfinityRectangle2D);
+        Rectangle selRect = MathUtil.rectangle2DToRectangle(selRect2D);
+        if (!targetRect.contains(selRect)) {
+            targetPanel.scrollRectToVisible(selRect);
+        }
+
+        clearSelectionGroups();
+        selectionActive = true;
+        createSelectionGroups();
+        //redrawPanel(); // createSelectionGroups already calls this
+    }
+
+    private void drawSelectionRect(Graphics2D g2) {
+        if (selectionActive && (selectionWidth != 0.0) && (selectionHeight != 0.0)) {
+            // The Editor super class draws a dashed red selection rectangle...
+            // We're going to also draw a non-dashed yellow selection rectangle...
+            // This could be code stripped if the super-class implementation is "good enough"
+            Stroke stroke = g2.getStroke();
+            Color color = g2.getColor();
+
+            g2.setColor(new Color(204, 207, 88));
+            g2.setStroke(new BasicStroke(3.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+
+            g2.draw(getSelectionRect());    // this sets _selectRect also
+
+            g2.setColor(color);
+            g2.setStroke(stroke);
+        } else {
+            _selectRect = null; // and clear it to turn it off
+        }
+    }
+
+    private void drawMemoryRects(Graphics2D g2) {
+        g2.setColor(defaultTrackColor);
+        g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+
+        for (MemoryIcon l : memoryLabelList) {
+            g2.draw(new Rectangle2D.Double(l.getX(), l.getY(), l.getSize().width, l.getSize().height));
+        }
+    }
+
+    private void drawBlockContentsRects(Graphics2D g2) {
+        g2.setColor(defaultTrackColor);
+        g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+
+        for (BlockContentsIcon l : blockContentsLabelList) {
+            g2.draw(new Rectangle2D.Double(l.getX(), l.getY(), l.getSize().width, l.getSize().height));
+        }
+    }
+
+#endif
 
 /*protected*/ void LayoutEditor::setTrackStrokeWidth(bool need)
 {
@@ -4640,7 +5317,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
           //g2.setColor(QColor::green);
        color = Qt::green;
       }
-//      g2.draw(new Rectangle2D.Double (
+//      g2.draw(new QRectF.Double (
 //                      pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2));
       QGraphicsRectItem* rect = new QGraphicsRectItem(pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2);
       rect->setPen(QPen(color, 1));
@@ -4654,7 +5331,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
           //g2.setColor(QColor::green);
        color = Qt::green;
       }
-//      g2.draw(new Rectangle2D.Double (
+//      g2.draw(new QRectF.Double (
 //                      pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2));
       rect = new QGraphicsRectItem(pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2);
       rect->setPen(QPen(color, 1));
@@ -4668,7 +5345,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
           //g2.setColor(QColor::green);
        color = Qt::green;
       }
-//      g2.draw(new Rectangle2D.Double (
+//      g2.draw(new QRectF.Double (
 //                      pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2));
       rect = new QGraphicsRectItem(pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2);
       rect->setPen(QPen(color, 1));
@@ -4682,7 +5359,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
           //g2.setColor(QColor::green);
        color = Qt::green;
       }
-//      g2.draw(new Rectangle2D.Double (
+//      g2.draw(new QRectF.Double (
 //                      pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2));
       rect = new QGraphicsRectItem(pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2);
       rect->setPen(QPen(color, 1));
@@ -4714,7 +5391,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
               //g2.setColor(QColor::green);
            color = Qt::green;
           }
-//          g2.draw(new Rectangle2D.Double (
+//          g2.draw(new QRectF.Double (
 //                      pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2));
           QGraphicsRectItem* rect = new QGraphicsRectItem(pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2);
           rect->setPen(QPen(color, trackWidth));
@@ -4861,7 +5538,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   {
 //      g2.setColor(defaultTrackColor);
 //      g2.setStroke(new BasicStroke(1.0F,BasicStroke.CAP_BUTT,BasicStroke.JOIN_ROUND));
-//      g2.draw(new Rectangle2D.Double (selectionX, selectionY, selectionWidth, selectionHeight));
+//      g2.draw(new QRectF.Double (selectionX, selectionY, selectionWidth, selectionHeight));
    if(rectItem != nullptr)
    {
     Q_ASSERT(rectItem->scene()!=0);
@@ -4893,7 +5570,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
    }
    l->_itemGroup = new MyGraphicsItemGroup();
    l->_itemGroup->setName("drawMemoryRects");
-   //g2.draw(new Rectangle2D.Double (l.x(), l.y(), l.getSize().width, l.getSize().height));
+   //g2.draw(new QRectF.Double (l.x(), l.y(), l.getSize().width, l.getSize().height));
    //g2->addRect(QRectF(l->getX(), l->getY(), l->getSize().width(), l->getSize().height()),QPen(color, 1));
    QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(((Positionable*)l)->getX(), ((Positionable*)l)->getY(), l->getSize().width(), l->getSize().height()));
    item->setPen(QPen(color, 1));
@@ -8478,13 +9155,29 @@ int LayoutEditor::getTurnoutType(QString name)
      if (conTools==nullptr) log->error("Unable to establish link to Connectivity Tools for Layout Editor panel "+layoutName);
      return conTools;
  }
- /*public*/ LayoutEditorTools* LayoutEditor::getLETools() {
-     if (tools == nullptr) {
-         tools = new LayoutEditorTools(/*thisPanel*/this);
-     }
-     if (tools==nullptr) log->error("Unable to establish link to Layout Editor Tools for Layout Editor panel "+layoutName);
-     return tools;
- }
+
+/*public*/ LayoutEditorTools* LayoutEditor::getLETools() {
+    if (tools == nullptr) {
+        tools = new LayoutEditorTools(/*thisPanel*/this);
+    }
+    if (tools==nullptr) log->error("Unable to establish link to Layout Editor Tools for Layout Editor panel "+layoutName);
+    return tools;
+}
+
+ /*public*/ LayoutTrackEditors* LayoutEditor::getLayoutTrackEditors() {
+    if (layoutTrackEditors == nullptr) {
+        layoutTrackEditors = new LayoutTrackEditors(this);
+    }
+    return layoutTrackEditors;
+}
+
+ /*public*/ LayoutEditorChecks* LayoutEditor::getLEChecks()
+ {
+    if (layoutEditorChecks == nullptr) {
+        layoutEditorChecks = new LayoutEditorChecks(this);
+    }
+    return layoutEditorChecks;
+}
 /*public*/ void LayoutEditor::addToPopUpMenu(NamedBean* nb, QMenu* item, int menu)
 {
  if(nb==nullptr || item==nullptr){
@@ -8710,9 +9403,9 @@ void LayoutEditor::closeEvent(QCloseEvent *)
   if (true)
   { //(Nope, it's not working ether)
     //save it in the user preferences for the window
-   QRectF windowRectangle2D =  QRectF(upperLeftX, upperLeftY, windowWidth, windowHeight);
-   prefsMgr->setProperty(windowFrameRef, "windowRectangle2D", windowRectangle2D);
-   QVariant prefsProp = prefsMgr->getProperty(windowFrameRef, "windowRectangle2D");
+   QRectF windowQRectF =  QRectF(upperLeftX, upperLeftY, windowWidth, windowHeight);
+   prefsMgr->setProperty(windowFrameRef, "windowQRectF", windowQRectF);
+   QVariant prefsProp = prefsMgr->getProperty(windowFrameRef, "windowQRectF");
    log->info(tr("testing prefsProp: ") + prefsProp.toString());
   }
  } //);
@@ -8762,7 +9455,9 @@ void LayoutEditor::closeEvent(QCloseEvent *)
 
 /*public*/ void LayoutEditor::setPanelBounds(QRectF newBounds) {
     // don't let origin go negative
- newBounds = newBounds.intersected(MathUtil::zeroToInfinityRectangle2D());
+ QRectF zeroToInfinityQRectF(0.0, 0.0, std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity());
+
+ newBounds = newBounds.intersected(zeroToInfinityQRectF);
 
     if (getPanelBounds() !=(newBounds)) {
         panelWidth = (int) newBounds.width();
@@ -8791,7 +9486,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
     QRectF b = MathUtil.inset(bounds, gridSize1st * gridSize2nd / -2.0);
 
     // don't let origin go negative
-    b = b.createIntersection(MathUtil.zeroToInfinityRectangle2D);
+    b = b.createIntersection(MathUtil.zeroToInfinityQRectF);
 
     result.add(b);
 
@@ -9269,7 +9964,7 @@ void LayoutEditor::on_okMove_clicked()
  * @return the point {0, 0}
  */
 //@CheckReturnValue
-/*public*/ /*static*/ QPointF LayoutEditor::zeroPoint2D() {
+/*public*/ /*static*/ QPointF LayoutEditor::zeroQPointF() {
     return QPointF(0, 0);
 }
 

@@ -26,7 +26,7 @@
 #include <QMenuBar>
 #include <QMenu>
 #include "inputdialog.h"
-//#include "logixwidget.h"
+#include "path.h"
 #include "actionevent.h"
 
 SectionTableAction::SectionTableAction(QObject *parent) :

@@ -559,3 +559,4 @@
     }
     return result;
 }
+/*private*/ /*final*/ /*static*/ Logger* LayoutEditorFindItems::log = LoggerFactory::getLogger("LayoutEditorFindItems");

@@ -41,7 +41,9 @@ public:
      * @return true if the path can be traversed; always true
      * if no path elements (BeanSettings) are defined.
      */
+
     /*public*/ bool checkPathSet();
+#if 0
     /**
      * Direction not known or not specified. May also
      * represent "stopped", in the sense of not moving in any direction.
@@ -103,7 +105,27 @@ public:
      * Downward, e.g. on a schematic diagram or CTC panel
      */
     /*public*/ const static /*final*/ int DOWN  =0x02000;
-    /**
+#endif
+ enum DIR
+ {
+  NONE = 0x00000,
+  NORTH = 0x00010,
+  SOUTH = 0x00020,
+  EAST = 0x00040,
+  WEST = 0x00080,
+  NORTH_EAST = NORTH | EAST,
+  SOUTH_EAST = SOUTH | EAST,
+  SOUTH_WEST = SOUTH | WEST,
+  NORTH_WEST = NORTH | WEST,
+  CW = 0x00100,
+  CCW = 0x00200,
+  LEFT = 0x00400,
+  RIGHT = 0x00800,
+  UP = 0x01000,
+  DOWN = 0x02000
+ };
+ Q_ENUM(DIR)
+    /**)
      * Decode the direction constants into a human-readable
      * form.
      * This should eventually be internationalized.

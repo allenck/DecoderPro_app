@@ -136,9 +136,9 @@ private:
  /*private*/ bool dccControlledTurnTable;// = false;
 
  // persistent instance variables (saved between sessions)
- /*private*/ QString ident;// = "";
+ ///*private*/ QString ident;// = "";
  /*private*/ double radius;// = 25.0;
- /*private*/ QPointF center;// = new Point2D.Double(50.0, 50.0);
+ ///*private*/ QPointF center;// = new Point2D.Double(50.0, 50.0);
  /*private*/ QList<RayTrack*> rayList;// = new QList<RayTrack>(); // list of Ray Track objects.
  /*private*/ int lastKnownIndex;// = -1;
  double round(double x);

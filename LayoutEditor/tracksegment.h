@@ -33,18 +33,22 @@ public:
     /*public*/ bool getMainline();
     /*public*/ void setMainline(bool main);
     /*public*/ void setArc(bool boo);
-    /*public*/ bool getCircle();
+    QT_DEPRECATED /*public*/ bool getCircle();
     /*public*/ void setCircle(bool boo);
-    /*public*/ bool getFlip() {return flip;}
+    QT_DEPRECATED /*public*/ bool getFlip();
     /*public*/ void setFlip(bool boo);
     ///*public*/ int getStartAngle() {return startangle;}
     ///*public*/ void setStartAngle(int x) {startangle = x;}
-    /*public*/ double getAngle() {return angle;}
+    QT_DEPRECATED /*public*/ bool getBezier();
+    /*public*/ bool isBezier();
+    /*public*/ void setBezier(bool boo);
+
+    /*public*/ double getAngle();
     /*public*/ void setAngle(double x);
     //This method is used to determine if we need to redraw a curved piece of track
     //It saves having to recalculate the circle details each time.
-    /*public*/ bool trackNeedsRedraw() { return changed; }
-    /*public*/ void trackRedrawn() { changed = false; }
+    /*public*/ bool trackNeedsRedraw();
+    /*public*/ void trackRedrawn();
     ///*public*/ int getRadius() {return radius;}
     ///*public*/ void setRadius(int x) {radius = x;}
 
@@ -99,8 +103,8 @@ public:
     /*public*/ void setCW(double CW);
     /*public*/ double getCH();
     /*public*/ void setCH(double CH);
-    /*public*/ double getStartadj();
-    /*public*/ void setStartadj(double Startadj);
+    /*public*/ double getStartAdj();
+    /*public*/ void setStartAdj(double Startadj);
     /*public*/ double getCentreX();
     /*public*/ void setCentreX(double CentreX);
     /*public*/ double getCentreY();
@@ -123,6 +127,28 @@ public:
     };
     /*public*/ int showConstructionLine;// = SHOWCON;
     /*public*/ QRectF getBounds();
+    /*public*/ bool isBumperEndStart();
+    /*public*/ void setBumperEndStart(bool newVal);
+    /*public*/ bool isBumperEndStop();
+    /*public*/ void setBumperEndStop(bool newVal);
+    /*private*/ bool bumperEndStop = false;
+    /*public*/ QColor getBumperColor();
+    /*public*/ void setBumperColor(QColor newVal);
+    /*public*/ int getBumperLineWidth();
+    /*public*/ void setBumperLineWidth(int newVal);
+    /*public*/ int getBumperLength();
+    /*public*/ void setBumperLength(int newVal);
+    /*public*/ bool isBumperFlipped();
+    /*public*/ void setBumperFlipped(bool newVal);
+    /*public*/ double getCentreSegX();
+    /*public*/ void setCentreSegX(double CentreX);
+    /*public*/ double getCentreSegY();
+    /*public*/ void setCentreSegY(double CentreY) ;
+    /*public*/ QPointF getCentreSeg();
+    /*public*/ bool isCircle();
+    /*public*/ bool isFlip();
+    /*public*/ bool isArc();
+    /*public*/ void setCentreSeg(QPointF p);
 
 signals:
     
@@ -135,12 +161,12 @@ private:
     // defined constants
 
     // operational instance variables (not saved between sessions)
-    /*private*/ LayoutBlock* layoutBlock;// = NULL;
-    /*private*/ TrackSegment* instance;// = NULL;
+    /*private*/ LayoutBlock* block;// = NULL;
+//    /*private*/ TrackSegment* instance;// = NULL;
     /*private*/ LayoutEditor* layoutEditor;// = NULL;
 
     // persistent instances variables (saved between sessions)
-    /*private*/ QString ident;// = "";
+//    /*private*/ QString ident;// = "";
     /*private*/ QString blockName;// = "";
     /*private*/ bool dashed;// = false;
     /*private*/ bool mainline;// = false;
@@ -150,6 +176,9 @@ private:
     /*private*/ double angle;// =0.0D;
     /*private*/ bool circle;//=false;
     /*private*/ bool changed;//=false;
+    /*private*/ bool bezier = false;
+    // for Bezier
+    /*private*/ QList<QPointF> bezierControlPoints;// = QList<QPointF>(); // list of control point displacements
 
     /*private*/ QString getConnectName(QObject* o,int type);
     /*private*/ LayoutBlock* getBlock (QObject* connect, int type);
@@ -175,11 +204,24 @@ private:
  void drawHiddenTrack(LayoutEditor* editor, QGraphicsScene* g2);
  void invalidate(QGraphicsScene* g2);
  void drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, bool mainline);
- /*private*/ void CalculateTrackSegmentAngle(LayoutEditor* editor);
+ /*private*/ void calculateTrackSegmentAngle();
  void drawSolidTrack(LayoutEditor* editor, QGraphicsScene* g2, bool isMainline);
  void drawTrackOvals(LayoutEditor *editor, QGraphicsScene *g2);
  void drawTrackCircleCentre(LayoutEditor *editor, QGraphicsScene *g2);
  /*private*/ void reCalculateTrackSegmentAngle(double x, double y);
+ /*private*/ int bumperLineWidth = 2;
+ /*private*/ bool bumperFlipped = false;
+ /*private*/ bool bumperEndStart = false;
+ /*private*/ QColor bumperColor;// = Color.BLACK;
+ /*private*/ void setupDefaultBumperSizes(LayoutEditor* layoutEditor);
+ /*private*/ int bumperLength = 6;
+ /*
+  * The following are used only as a temporary store after a circle or arc
+  * has been calculated. This prevents the need to recalculate the values
+  * each time a re-draw is required.
+  */
+ /*private*/ double centreSegX;
+ /*private*/ double centreSegY;
 
 protected:
  /*protected*/ void updateBlockInfo();
@@ -189,6 +231,8 @@ protected:
  /*protected*/ int type1 = 0;
  /*protected*/ LayoutTrack* connect2 = nullptr;
  /*protected*/ int type2 = 0;
+ /*protected*/ void drawDecorations(EditScene* g2);
+
 
  friend class LayoutEditor;
  friend class EditTrackSegmentDlg;

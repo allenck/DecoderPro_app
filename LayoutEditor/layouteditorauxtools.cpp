@@ -1,6 +1,10 @@
 #include "layouteditorauxtools.h"
 #include <qmath.h>
 #include "instancemanager.h"
+#include "path.h"
+#include "tracksegment.h"
+#include "layoutturnout.h"
+
 //LayoutEditorAuxTools::LayoutEditorAuxTools(QObject *parent) :
 //    QObject(parent)
 //{
@@ -87,525 +91,86 @@
 {
  if (initialized)
  {
-  log->error("Call to initialize a connectivity list that has already been initialized");
-  return;
- }
- cList = new QVector<LayoutConnectivity*>();
- LayoutBlock* blk1 = NULL;
- LayoutBlock* blk2 = NULL;
- LayoutConnectivity* c = NULL;
- QPointF p1;
- QPointF p2;
- // Check for block boundaries at positionable points->
- if (layoutEditor->pointList->size()>0)
- {
-  PositionablePoint* p = NULL;
-  TrackSegment* ts1 = NULL;
-  TrackSegment* ts2 = NULL;
-  for (int i = 0; i<layoutEditor->pointList->size(); i++)
-  {
-   p = layoutEditor->pointList->at(i);
-   if (p->getType() == PositionablePoint::ANCHOR)
-   {
-    // within PositionablePoints, only ANCHOR points can be block boundaries
-    ts1 = p->getConnect1();
-    ts2 = p->getConnect2();
-    if ( (ts1!=NULL) && (ts2!=NULL) )
-    {
-     blk1 = ts1->getLayoutBlock();
-     blk2 = ts2->getLayoutBlock();
-     if ( (blk1!=NULL) && (blk2!=NULL) && (blk1!=blk2) )
-     {
-      // this is a block boundary, create a LayoutConnectivity
-      c = new LayoutConnectivity(blk1,blk2);
-      // determine direction from block 1 to block 2
-      if (ts1->getConnect1()==p) p1 = layoutEditor->getCoords(
-                                        ts1->getConnect2(),ts1->getType2());
-      else p1 = layoutEditor->getCoords(ts1->getConnect1(),ts1->getType1());
-      if (ts2->getConnect1()==p) p2 = layoutEditor->getCoords(
-                                        ts2->getConnect2(),ts2->getType2());
-      else p2 = layoutEditor->getCoords(ts2->getConnect1(),ts2->getType1());
-      c->setDirection(computeDirection(p1,p2));
-      // save Connections
-      c->setConnections(ts1,ts2,LayoutEditor::TRACK,p);
-      // add to list
-      cList->append(c);
-     }
+        log->error("Call to initialize a connectivity list that has already been initialized");  // NOI18N
+        return;
     }
-   }
-  }
- }
- // Check for block boundaries at layout turnouts and level crossings
- if (layoutEditor->trackList->size()>0)
- {
-  LayoutTurnout* lt = NULL;
-  int type = 0;
-  LevelXing* lx = NULL;
-  LayoutSlip* ls = NULL;
-  TrackSegment* ts = NULL;
-  for (int i = 0; i<layoutEditor->trackList->size(); i++)
-  {
-   ts = layoutEditor->trackList->at(i);
-   // ensure that block is assigned
-   blk1 = ts->getLayoutBlock();
-   if (blk1!=NULL)
-   {
-    // check first connection for turnout or level crossing
-    if ( (ts->getType1()>=LayoutEditor::TURNOUT_A) &&
-                                    (ts->getType1()<=LayoutEditor::LEVEL_XING_D) )
-    {
-     // have connection to turnout or level crossing
-     if (ts->getType1()<=LayoutEditor::TURNOUT_D)
-     {
-      // have connection to a turnout, is block different
-      lt = (LayoutTurnout*)ts->getConnect1();
-      type = ts->getType1();
-      blk2 = lt->getLayoutBlock();
-      if (lt->getTurnoutType()>LayoutTurnout::WYE_TURNOUT)
-      {
-       // not RH, LH, or WYE turnout - other blocks possible
-       if ( (type==LayoutEditor::TURNOUT_B) && (lt->getLayoutBlockB()!=NULL) )
-        blk2 = lt->getLayoutBlockB();
-       if ( (type==LayoutEditor::TURNOUT_C) && (lt->getLayoutBlockC()!=NULL) )
-        blk2 = lt->getLayoutBlockC();
-       if ( (type==LayoutEditor::TURNOUT_D) && (lt->getLayoutBlockD()!=NULL) )
-        blk2 = lt->getLayoutBlockD();
-      }
-      if ((blk2!=NULL) && (blk1!=blk2))
-      {
-       // have a block boundary, create a LayoutConnectivity
-       c = new LayoutConnectivity(blk1,blk2);
-       c->setConnections(ts,lt,type,NULL);
-       c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect2(),
-            ts->getType2()),layoutEditor->getCoords(ts->getConnect1(),type)));
-       // add to list
-       cList->append(c);
-      }
-     }
-     else
-     {
-      // have connection to a level crossing
-      lx = (LevelXing*)ts->getConnect1();
-      type = ts->getType1();
-      if ( (type==LayoutEditor::LEVEL_XING_A) || (type==LayoutEditor::LEVEL_XING_C) )
-      {
-       blk2 = lx->getLayoutBlockAC();
-      }
-      else
-      {
-       blk2 = lx->getLayoutBlockBD();
-      }
-      if ((blk2!=NULL) && (blk1!=blk2))
-      {
-       // have a block boundary, create a LayoutConnectivity
-       c = new LayoutConnectivity(blk1,blk2);
-       c->setConnections(ts,lx,type,NULL);
-       c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect2(),
-                ts->getType2()),layoutEditor->getCoords(ts->getConnect1(),type)));
-       // add to list
-       cList->append(c);
-      }
-     }
+    cList = new QVector<LayoutConnectivity*>();
+    QList<LayoutConnectivity*> lcs;
+
+    for (LayoutTrack* lt : layoutEditor->getLayoutTracks()) {
+        if ((qobject_cast<PositionablePoint*>(lt))
+                || (qobject_cast<TrackSegment*>(lt))
+                || (qobject_cast<LayoutTurnout*>(lt)))
+        { // <== includes LayoutSlips
+            lcs = lt->getLayoutConnectivity();
+            //cList->addAll(lcs); // append to list
+            foreach(LayoutConnectivity* lc, lcs)
+             cList->append(lc);
+        }
     }
-    else if ((ts->getType1()>=LayoutEditor::SLIP_A) && (ts->getType1()<=LayoutEditor::SLIP_D))
-    {
-     // have connection to a slip crossing
-     ls = (LayoutSlip*)ts->getConnect1();
-     type = ts->getType1();
-     blk2= ls->getLayoutBlock();
-     if ((blk2!=NULL) && (blk1!=blk2))
-     {
-        // have a block boundary, create a LayoutConnectivity
-        c = new LayoutConnectivity(blk1,blk2);
-        c->setConnections(ts,ls,type,NULL);
-        c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect2(),
-                ts->getType2()),layoutEditor->getCoords(ts->getConnect1(),type)));
-        // add to list
-        cList->append(c);
-     }
-    }
-    // check second connection for turnout or level crossing
-    if ( (ts->getType2()>=LayoutEditor::TURNOUT_A) &&
-                            (ts->getType2()<=LayoutEditor::LEVEL_XING_D) )
-    {
-     // have connection to turnout or level crossing
-     if (ts->getType2()<=LayoutEditor::TURNOUT_D)
-     {
-      // have connection to a turnout
-      lt = (LayoutTurnout*)ts->getConnect2();
-      type = ts->getType2();
-      blk2 = lt->getLayoutBlock();
-      if (lt->getTurnoutType()>LayoutTurnout::WYE_TURNOUT)
-      {
-       // not RH, LH, or WYE turnout - other blocks possible
-       if ( (type==LayoutEditor::TURNOUT_B) && (lt->getLayoutBlockB()!=NULL) )
-        blk2 = lt->getLayoutBlockB();
-       if ( (type==LayoutEditor::TURNOUT_C) && (lt->getLayoutBlockC()!=NULL) )
-        blk2 = lt->getLayoutBlockC();
-       if ( (type==LayoutEditor::TURNOUT_D) && (lt->getLayoutBlockD()!=NULL) )
-        blk2 = lt->getLayoutBlockD();
-      }
-      if ((blk2!=NULL) && (blk1!=blk2))
-      {
-       // have a block boundary, create a LayoutConnectivity
-       c = new LayoutConnectivity(blk1,blk2);
-       c->setConnections(ts,lt,type,NULL);
-       c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect1(),
-                ts->getType1()),layoutEditor->getCoords(ts->getConnect2(),type)));
-       // add to list
-       cList->append(c);
-      }
-     }
-     else
-     {
-      // have connection to a level crossing
-      lx = (LevelXing*)ts->getConnect2();
-      type = ts->getType2();
-      if ( (type==LayoutEditor::LEVEL_XING_A) || (type==LayoutEditor::LEVEL_XING_C) )
-      {
-       blk2 = lx->getLayoutBlockAC();
-      }
-      else
-      {
-       blk2 = lx->getLayoutBlockBD();
-      }
-      if ((blk2!=NULL) && (blk1!=blk2))
-      {
-       // have a block boundary, create a LayoutConnectivity
-       c = new LayoutConnectivity(blk1,blk2);
-       c->setConnections(ts,lx,type,NULL);
-       c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect1(),
-                ts->getType1()),layoutEditor->getCoords(ts->getConnect2(),type)));
-       // add to list
-       cList->append(c);
-      }
-     }
-    }
-    else if ((ts->getType2()>=LayoutEditor::SLIP_A) && (ts->getType2()<=LayoutEditor::SLIP_D))
-     {
-      // have connection to a slip crossing
-      ls = (LayoutSlip*)ts->getConnect2();
-      type = ts->getType2();
-      blk2= ls->getLayoutBlock();
-      if ((blk2!=NULL) && (blk1!=blk2))
-      {
-       // have a block boundary, create a LayoutConnectivity
-       c = new LayoutConnectivity(blk1,blk2);
-       c->setConnections(ts,ls,type,NULL);
-       c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect1(),
-                    ts->getType1()),layoutEditor->getCoords(ts->getConnect2(),type)));
-       // add to list
-       cList->append(c);
-      }
-     }
-    }
-   }
-  }
-  // check for block boundaries internal to crossover turnouts
-  if (layoutEditor->turnoutList->size()>0)
-  {
-   LayoutTurnout* lt = NULL;
-   for (int i = 0;i<layoutEditor->turnoutList->size();i++)
-   {
-    lt = layoutEditor->turnoutList->at(i);
-   // check for layout turnout
-   if ( (lt->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER) &&
-                    (lt->getLayoutBlock()!=NULL) )
-   {
-    // have a crossover turnout with at least one block, check for multiple blocks
-    if ( (lt->getLayoutBlockB()!=lt->getLayoutBlock()) || (lt->getLayoutBlockC()!=lt->getLayoutBlock()) ||
-                    (lt->getLayoutBlockD()!=lt->getLayoutBlock()) )
-    {
-     // have multiple blocks and therefore internal block boundaries
-     if (lt->getLayoutBlock()!=lt->getLayoutBlockB())
-     {
-      // have a AB block boundary, create a LayoutConnectivity
-      c = new LayoutConnectivity(lt->getLayoutBlock(),lt->getLayoutBlockB());
-      c->setXoverBoundary(lt,LayoutConnectivity::XOVER_BOUNDARY_AB);
-      c->setDirection(computeDirection(lt->getCoordsA(),lt->getCoordsB()));
-      cList->append(c);
-     }
-     if ((lt->getTurnoutType()!=LayoutTurnout::LH_XOVER) &&
-                                (lt->getLayoutBlock()!=lt->getLayoutBlockC()))
-     {
-      // have a AC block boundary, create a LayoutConnectivity
-      c = new LayoutConnectivity(lt->getLayoutBlock(),lt->getLayoutBlockC());
-      c->setXoverBoundary(lt,LayoutConnectivity::XOVER_BOUNDARY_AC);
-      c->setDirection(computeDirection(lt->getCoordsA(),lt->getCoordsC()));
-      cList->append(c);
-     }
-     if (lt->getLayoutBlockC()!=lt->getLayoutBlockD())
-     {
-      // have a CD block boundary, create a LayoutConnectivity
-      c = new LayoutConnectivity(lt->getLayoutBlockC(),lt->getLayoutBlockD());
-      c->setXoverBoundary(lt,LayoutConnectivity::XOVER_BOUNDARY_CD);
-      c->setDirection(computeDirection(lt->getCoordsC(),lt->getCoordsD()));
-      cList->append(c);
-     }
-     if ((lt->getTurnoutType()!=LayoutTurnout::RH_XOVER) &&
-                                    (lt->getLayoutBlockB()!=lt->getLayoutBlockD()))
-     {
-      // have a BD block boundary, create a LayoutConnectivity
-      c = new LayoutConnectivity(lt->getLayoutBlockB(),lt->getLayoutBlockD());
-      c->setXoverBoundary(lt,LayoutConnectivity::XOVER_BOUNDARY_BD);
-      c->setDirection(computeDirection(lt->getCoordsB(),lt->getCoordsD()));
-      cList->append(c);
-     }
-    }
-   }
-  }
- }
- initialized = true;
-}
+    initialized = true;
+}   // initializeBlockConnectivity
 
 /**
  * Updates the block connectivity (block boundaries) for a Layout Editor panel after changes may have
  *		been made.
  */
 /*private*/ void LayoutEditorAuxTools::updateBlockConnectivity() {
-    int sz = cList->size();
-    QVector<bool> found = QVector<bool>(sz);
-    for (int i=0;i<sz;i++) {found.replace(i,false);}
-    LayoutBlock* blk1 = NULL;
-    LayoutBlock* blk2 = NULL;
-    LayoutConnectivity* c = NULL;
-    QPointF p1;
-    QPointF p2;
-    // Check for block boundaries at positionable points->
-    if (layoutEditor->pointList->size()>0) {
-        PositionablePoint* p = NULL;
-        TrackSegment* ts1 = NULL;
-        TrackSegment* ts2 = NULL;
-        for (int i = 0; i<layoutEditor->pointList->size(); i++) {
-            p = layoutEditor->pointList->at(i);
-            if (p->getType() == PositionablePoint::ANCHOR) {
-                // within PositionablePoints, only ANCHOR points can be block boundaries
-                ts1 = p->getConnect1();
-                ts2 = p->getConnect2();
-                if ( (ts1!=NULL) && (ts2!=NULL) ) {
-                    blk1 = ts1->getLayoutBlock();
-                    blk2 = ts2->getLayoutBlock();
-                    if ( (blk1!=NULL) && (blk2!=NULL) && (blk1!=blk2) ) {
-                        // this is a block boundary, create a LayoutConnectivity
-                        c = new LayoutConnectivity(blk1,blk2);
-                        // determine direction from block 1 to block 2
-                        if (ts1->getConnect1()==p) p1 = layoutEditor->getCoords(
-                                                            ts1->getConnect2(),ts1->getType2());
-                        else p1 = layoutEditor->getCoords(ts1->getConnect1(),ts1->getType1());
-                        if (ts2->getConnect1()==p) p2 = layoutEditor->getCoords(
-                                                            ts2->getConnect2(),ts2->getType2());
-                        else p2 = layoutEditor->getCoords(ts2->getConnect1(),ts2->getType1());
-                        c->setDirection(computeDirection(p1,p2));
-                        // save Connections
-                        c->setConnections(ts1,ts2,LayoutEditor::TRACK,p);
-                        // add to list, if not already present
-                        checkConnectivity(c,found);
-                    }
-                }
-            }
-        }
-    }
-    // Check for block boundaries at layout turnouts and level crossings
-    if (layoutEditor->trackList->size()>0) {
-        LayoutTurnout* lt = NULL;
-        int type = 0;
-        LevelXing* lx = NULL;
-        LayoutSlip* ls = NULL;
-        TrackSegment* ts = NULL;
-        for (int i = 0; i<layoutEditor->trackList->size(); i++) {
-            ts = layoutEditor->trackList->at(i);
-            // ensure that block is assigned
-            blk1 = ts->getLayoutBlock();
-            if (blk1!=NULL) {
-                // check first connection for turnout or level crossing
-                if ( (ts->getType1()>=LayoutEditor::TURNOUT_A) &&
-                                            (ts->getType1()<=LayoutEditor::LEVEL_XING_D) ) {
-                    // have connection to turnout or level crossing
-                    if (ts->getType1()<=LayoutEditor::TURNOUT_D) {
-                        // have connection to a turnout, is block different
-                        lt = (LayoutTurnout*)ts->getConnect1();
-                        type = ts->getType1();
-                        blk2 = lt->getLayoutBlock();
-                        if (lt->getTurnoutType()>LayoutTurnout::WYE_TURNOUT) {
-                            // not RH, LH, or WYE turnout - other blocks possible
-                            if ( (type==LayoutEditor::TURNOUT_B) && (lt->getLayoutBlockB()!=NULL) )
-                                blk2 = lt->getLayoutBlockB();
-                            if ( (type==LayoutEditor::TURNOUT_C) && (lt->getLayoutBlockC()!=NULL) )
-                                blk2 = lt->getLayoutBlockC();
-                            if ( (type==LayoutEditor::TURNOUT_D) && (lt->getLayoutBlockD()!=NULL) )
-                                blk2 = lt->getLayoutBlockD();
-                        }
-                        if ((blk2!=NULL) && (blk1!=blk2)) {
-                            // have a block boundary, create a LayoutConnectivity
-                            c = new LayoutConnectivity(blk1,blk2);
-                            c->setConnections(ts,lt,type,NULL);
-                            c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect2(),
-                                    ts->getType2()),layoutEditor->getCoords(ts->getConnect1(),type)));
-                            // add to list
-                            checkConnectivity(c,found);
-                        }
-                    }
-                    else {
-                        // have connection to a level crossing
-                        lx = (LevelXing*)ts->getConnect1();
-                        type = ts->getType1();
-                        if ( (type==LayoutEditor::LEVEL_XING_A) || (type==LayoutEditor::LEVEL_XING_C) ) {
-                            blk2 = lx->getLayoutBlockAC();
-                        }
-                        else {
-                            blk2 = lx->getLayoutBlockBD();
-                        }
-                        if ((blk2!=NULL) && (blk1!=blk2)) {
-                            // have a block boundary, create a LayoutConnectivity
-                            c = new LayoutConnectivity(blk1,blk2);
-                            c->setConnections(ts,lx,type,NULL);
-                            c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect2(),
-                                    ts->getType2()),layoutEditor->getCoords(ts->getConnect1(),type)));
-                            // add to list
-                            checkConnectivity(c,found);
-                        }
-                    }
-                } else if ((ts->getType1()>=LayoutEditor::SLIP_A) && (ts->getType1()<=LayoutEditor::SLIP_D)){
-                    // have connection to a slip crossing
-                    ls = (LayoutSlip*)ts->getConnect1();
-                    type = ts->getType1();
-                    blk2= ls->getLayoutBlock();
-                    if ((blk2!=NULL) && (blk1!=blk2)) {
-                        // have a block boundary, create a LayoutConnectivity
-                        c = new LayoutConnectivity(blk1,blk2);
-                        c->setConnections(ts,ls,type,NULL);
-                        c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect2(),
-                                ts->getType2()),layoutEditor->getCoords(ts->getConnect1(),type)));
-                        // add to list
-                        checkConnectivity(c,found);
-                    }
-                }
-                // check second connection for turnout or level crossing
-                if ( (ts->getType2()>=LayoutEditor::TURNOUT_A) &&
-                                            (ts->getType2()<=LayoutEditor::LEVEL_XING_D) ) {
-                    // have connection to turnout or level crossing
-                    if (ts->getType2()<=LayoutEditor::TURNOUT_D) {
-                        // have connection to a turnout
-                        lt = (LayoutTurnout*)ts->getConnect2();
-                        type = ts->getType2();
-                        blk2 = lt->getLayoutBlock();
-                        if (lt->getTurnoutType()>LayoutTurnout::WYE_TURNOUT) {
-                            // not RH, LH, or WYE turnout - other blocks possible
-                            if ( (type==LayoutEditor::TURNOUT_B) && (lt->getLayoutBlockB()!=NULL) )
-                                blk2 = lt->getLayoutBlockB();
-                            if ( (type==LayoutEditor::TURNOUT_C) && (lt->getLayoutBlockC()!=NULL) )
-                                blk2 = lt->getLayoutBlockC();
-                            if ( (type==LayoutEditor::TURNOUT_D) && (lt->getLayoutBlockD()!=NULL) )
-                                blk2 = lt->getLayoutBlockD();
-                        }
-                        if ((blk2!=NULL) && (blk1!=blk2)) {
-                            // have a block boundary, create a LayoutConnectivity
-                            c = new LayoutConnectivity(blk1,blk2);
-                            c->setConnections(ts,lt,type,NULL);
-                            c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect1(),
-                                    ts->getType1()),layoutEditor->getCoords(ts->getConnect2(),type)));
-                            // add to list
-                            checkConnectivity(c,found);
-                        }
-                    }
-                    else {
-                        // have connection to a level crossing
-                        lx = (LevelXing*)ts->getConnect2();
-                        type = ts->getType2();
-                        if ( (type==LayoutEditor::LEVEL_XING_A) || (type==LayoutEditor::LEVEL_XING_C) ) {
-                            blk2 = lx->getLayoutBlockAC();
-                        }
-                        else {
-                            blk2 = lx->getLayoutBlockBD();
-                        }
-                        if ((blk2!=NULL) && (blk1!=blk2)) {
-                            // have a block boundary, create a LayoutConnectivity
-                            c = new LayoutConnectivity(blk1,blk2);
-                            c->setConnections(ts,lx,type,NULL);
-                            c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect1(),
-                                    ts->getType1()),layoutEditor->getCoords(ts->getConnect2(),type)));
-                            // add to list
-                            checkConnectivity(c,found);
-                        }
-                    }
-                } else if ((ts->getType2()>=LayoutEditor::SLIP_A) && (ts->getType2()<=LayoutEditor::SLIP_D)){
-                    // have connection to a slip crossing
-                    ls = (LayoutSlip*)ts->getConnect2();
-                    type = ts->getType2();
-                    blk2= ls->getLayoutBlock();
-                    if ((blk2!=NULL) && (blk1!=blk2)) {
-                        // have a block boundary, create a LayoutConnectivity
-                        c = new LayoutConnectivity(blk1,blk2);
-                        c->setConnections(ts,ls,type,NULL);
-                        c->setDirection(computeDirection(layoutEditor->getCoords(ts->getConnect1(),
-                                ts->getType1()),layoutEditor->getCoords(ts->getConnect2(),type)));
-                        // add to list
-                        checkConnectivity(c,found);
-                    }
-                }
-            }
-        }
-    }
-    // check for block boundaries internal to crossover turnouts
-    if (layoutEditor->turnoutList->size()>0) {
-        LayoutTurnout* lt = NULL;
-        for (int i = 0;i<layoutEditor->turnoutList->size();i++) {
-            lt = layoutEditor->turnoutList->at(i);
-            // check for layout turnout
-            if ( (lt->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER) &&
-                    (lt->getLayoutBlock()!=NULL) ) {
-                // have a crossover turnout with at least one block, check for multiple blocks
-                if ( (lt->getLayoutBlockB()!=NULL) || (lt->getLayoutBlockC()!=NULL) ||
-                                (lt->getLayoutBlockD()!=NULL) ) {
-                    // have multiple blocks and therefore internal block boundaries
-                    if ((lt->getLayoutBlockB()!=NULL) && (lt->getLayoutBlock()!=lt->getLayoutBlockB())) {
-                        // have a AB block boundary, create a LayoutConnectivity
-                        c = new LayoutConnectivity(lt->getLayoutBlock(),lt->getLayoutBlockB());
-                        c->setXoverBoundary(lt,LayoutConnectivity::XOVER_BOUNDARY_AB);
-                        c->setDirection(computeDirection(lt->getCoordsA(),lt->getCoordsB()));
-                        checkConnectivity(c,found);
-                    }
-                    if ((lt->getTurnoutType()!=LayoutTurnout::LH_XOVER) && (lt->getLayoutBlockC()!=NULL) &&
-                                                (lt->getLayoutBlock()!=lt->getLayoutBlockC())) {
-                        // have a AC block boundary, create a LayoutConnectivity
-                        c = new LayoutConnectivity(lt->getLayoutBlock(),lt->getLayoutBlockC());
-                        c->setXoverBoundary(lt,LayoutConnectivity::XOVER_BOUNDARY_AC);
-                        c->setDirection(computeDirection(lt->getCoordsA(),lt->getCoordsC()));
-                        checkConnectivity(c,found);
-                    }
-                    if ((lt->getLayoutBlockC()!=NULL) && (lt->getLayoutBlockD()!=NULL) &&
-                                                (lt->getLayoutBlockC()!=lt->getLayoutBlockD())) {
-                        // have a CD block boundary, create a LayoutConnectivity
-                        c = new LayoutConnectivity(lt->getLayoutBlockC(),lt->getLayoutBlockD());
-                        c->setXoverBoundary(lt,LayoutConnectivity::XOVER_BOUNDARY_CD);
-                        c->setDirection(computeDirection(lt->getCoordsC(),lt->getCoordsD()));
-                        checkConnectivity(c,found);
-                    }
-                    if ((lt->getTurnoutType()!=LayoutTurnout::RH_XOVER) && (lt->getLayoutBlockB()!=NULL) &&
-                            (lt->getLayoutBlockD()!=NULL) && (lt->getLayoutBlockB()!=lt->getLayoutBlockD())) {
-                        // have a BD block boundary, create a LayoutConnectivity
-                        c = new LayoutConnectivity(lt->getLayoutBlockB(),lt->getLayoutBlockD());
-                        c->setXoverBoundary(lt,LayoutConnectivity::XOVER_BOUNDARY_BD);
-                        c->setDirection(computeDirection(lt->getCoordsB(),lt->getCoordsD()));
-                        checkConnectivity(c,found);
-                    }
-                }
-            }
-        }
-    }
-    // delete any LayoutConnectivity objects no longer needed
-    for (int i = sz-1;i>=0;i--) {
-        if (!found[i]) {
-// djd debugging - message to list connectivity being removed
-//				LayoutConnectivity xx = (LayoutConnectivity)cList.get(i);
-//				log->error("  Deleting Layout Connectivity - "+xx.getBlock1().getID()+", "+
-//													xx.getBlock2().getID());
-// end debugging
-            cList->remove(i);
-        }
-    }
-    blockConnectivityChanged = false;
-}
+ int sz = cList->size();
+ QVector<bool> found = QVector<bool>(sz,false);
+ //Arrays.fill(found, false);
+
+ QList<LayoutConnectivity*> lcs;
+
+ // Check for block boundaries at positionable points.
+ for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
+     lcs = p->getLayoutConnectivity();
+     for (LayoutConnectivity* lc : lcs) {
+         // add to list, if not already present
+         checkConnectivity(lc, found);
+     }
+ }
+
+ // Check for block boundaries at layout turnouts and level crossings
+ for (TrackSegment* ts : layoutEditor->getTrackSegments()) {
+     lcs = ts->getLayoutConnectivity();
+     for (LayoutConnectivity* lc : lcs) {
+         // add to list, if not already present
+         checkConnectivity(lc, found);
+     }
+ }
+
+ // check for block boundaries internal to crossover turnouts
+ for (LayoutTrack* lt : layoutEditor->getLayoutTurnouts()) {
+     lcs = lt->getLayoutConnectivity();
+     for (LayoutConnectivity* lc : lcs) {
+         // add to list, if not already present
+         checkConnectivity(lc, found);
+     }
+ }
+
+ // check for block boundaries internal to slips
+ for (LayoutSlip* ls : layoutEditor->getLayoutSlips()) {
+     lcs = ls->getLayoutConnectivity();
+     for (LayoutConnectivity* lc : lcs) {
+         // add to list, if not already present
+         checkConnectivity(lc, found);
+     }
+ }
+
+ // delete any LayoutConnectivity objects no longer needed
+ for (int i = sz - 1; i >= 0; i--) {
+     if (!found[i]) {
+         // djd debugging - message to list connectivity being removed
+         //    LayoutConnectivity xx = (LayoutConnectivity)cList.get(i);
+         //    log.error("  Deleting Layout Connectivity - " + xx.getBlock1().getId() + ", " + xx.getBlock2().getId());
+         // end debugging
+         cList->remove(i);
+     }
+ }
+ blockConnectivityChanged = false;
+}   // updateBlockConnectivity
+
 //
 /*private*/ void LayoutEditorAuxTools::checkConnectivity(LayoutConnectivity* c,QVector<bool> found) {
     // initialize input LayoutConnectivity components

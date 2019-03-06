@@ -18942,6 +18942,11 @@ void PythonQtWrapper_LayoutEditor::drawLabelImages(LayoutEditor* theWrappedObjec
   ( theWrappedObject->drawLabelImages(g2));
 }
 
+void PythonQtWrapper_LayoutEditor::drawTurnouts(LayoutEditor* theWrappedObject, EditScene*  g2)
+{
+  ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_drawTurnouts(g2));
+}
+
 LayoutTurnout*  PythonQtWrapper_LayoutEditor::findLayoutTurnoutByName(LayoutEditor* theWrappedObject, QString  name)
 {
   return ( theWrappedObject->findLayoutTurnoutByName(name));
@@ -19587,6 +19592,16 @@ bool  PythonQtWrapper_LayoutEditor::showAlignPopup(LayoutEditor* theWrappedObjec
   return ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_showAlignPopup());
 }
 
+QRectF  PythonQtWrapper_LayoutEditor::trackControlCircleRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
+{
+  return ( theWrappedObject->trackControlCircleRectAt(inPoint));
+}
+
+QRectF  PythonQtWrapper_LayoutEditor::trackEditControlRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
+{
+  return ( theWrappedObject->trackEditControlRectAt(inPoint));
+}
+
 QGraphicsEllipseItem*  PythonQtWrapper_LayoutEditor::turnoutCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
 {
   return ( theWrappedObject->turnoutCircleAt(inPoint));
@@ -19605,6 +19620,11 @@ bool  PythonQtWrapper_LayoutEditor::validatePhysicalTurnout(LayoutEditor* theWra
 QPointF  PythonQtWrapper_LayoutEditor::static_LayoutEditor_zeroPoint2D()
 {
   return (LayoutEditor::zeroPoint2D());
+}
+
+QPointF  PythonQtWrapper_LayoutEditor::static_LayoutEditor_zeroQPointF()
+{
+  return (LayoutEditor::zeroQPointF());
 }
 
 

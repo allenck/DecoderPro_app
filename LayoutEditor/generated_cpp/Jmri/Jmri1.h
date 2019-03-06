@@ -1810,6 +1810,7 @@ virtual void windowClosing(QCloseEvent*  e);
 class PythonQtPublicPromoter_LayoutEditor : public LayoutEditor
 { public:
 inline void promoted_addBackgroundColorMenuEntry(QMenu*  menu, QActionGroup*  colorButtonGroup, const QString  name, QColor  color) { this->addBackgroundColorMenuEntry(menu, colorButtonGroup, name, color); }
+inline void promoted_drawTurnouts(EditScene*  g2) { this->drawTurnouts(g2); }
 static inline QPointF  promoted_getCoords(QObject*  o, int  type) { return getCoords(o, type); }
 inline QList<Positionable* >  promoted_getSelectedItems(QGraphicsSceneMouseEvent*  event) { return this->getSelectedItems(event); }
 inline void promoted_init() { this->init(); }
@@ -1876,6 +1877,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    bool  containsSignalHead(LayoutEditor* theWrappedObject, SignalHead*  head);
    void py_q_dispose(LayoutEditor* theWrappedObject){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_dispose());}
    void drawLabelImages(LayoutEditor* theWrappedObject, EditScene*  g2);
+   void drawTurnouts(LayoutEditor* theWrappedObject, EditScene*  g2);
    LayoutTurnout*  findLayoutTurnoutByName(LayoutEditor* theWrappedObject, QString  name);
    LayoutTurnout*  findLayoutTurnoutBySensor(LayoutEditor* theWrappedObject, QString  sensorName);
    LayoutTurnout*  findLayoutTurnoutBySignalMast(LayoutEditor* theWrappedObject, QString  signalMastName);
@@ -2016,10 +2018,13 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    bool  showAlignPopup(LayoutEditor* theWrappedObject);
    void py_q_showPopUp(LayoutEditor* theWrappedObject, Positionable*  p, QGraphicsSceneMouseEvent*  event){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_showPopUp(p, event));}
    void py_q_targetWindowClosingEvent(LayoutEditor* theWrappedObject, QCloseEvent*  e){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_targetWindowClosingEvent(e));}
+   QRectF  trackControlCircleRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint);
+   QRectF  trackEditControlRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint);
    QGraphicsEllipseItem*  turnoutCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint);
    QRectF  unionToPanelBounds(LayoutEditor* theWrappedObject, QRectF  bounds);
    bool  validatePhysicalTurnout(LayoutEditor* theWrappedObject, QString  turnoutName, QWidget*  openPane = 0);
    QPointF  static_LayoutEditor_zeroPoint2D();
+   QPointF  static_LayoutEditor_zeroQPointF();
 void py_set__labelImage(LayoutEditor* theWrappedObject, QVector<PositionableLabel* >*  _labelImage){ theWrappedObject->_labelImage = _labelImage; }
 QVector<PositionableLabel* >*  py_get__labelImage(LayoutEditor* theWrappedObject){ return theWrappedObject->_labelImage; }
 void py_set_backgroundImage(LayoutEditor* theWrappedObject, QVector<PositionableLabel* >*  backgroundImage){ theWrappedObject->backgroundImage = backgroundImage; }
@@ -2189,8 +2194,6 @@ void py_set_blockDName(LayoutTurnout* theWrappedObject, QString  blockDName){ th
 QString  py_get_blockDName(LayoutTurnout* theWrappedObject){ return theWrappedObject->blockDName; }
 void py_set_blockName(LayoutTurnout* theWrappedObject, QString  blockName){ theWrappedObject->blockName = blockName; }
 QString  py_get_blockName(LayoutTurnout* theWrappedObject){ return theWrappedObject->blockName; }
-void py_set_center(LayoutTurnout* theWrappedObject, QPointF  center){ theWrappedObject->center = center; }
-QPointF  py_get_center(LayoutTurnout* theWrappedObject){ return theWrappedObject->center; }
 void py_set_connectAName(LayoutTurnout* theWrappedObject, QString  connectAName){ theWrappedObject->connectAName = connectAName; }
 QString  py_get_connectAName(LayoutTurnout* theWrappedObject){ return theWrappedObject->connectAName; }
 void py_set_connectBName(LayoutTurnout* theWrappedObject, QString  connectBName){ theWrappedObject->connectBName = connectBName; }
@@ -2209,8 +2212,6 @@ void py_set_dispB(LayoutTurnout* theWrappedObject, QPointF  dispB){ theWrappedOb
 QPointF  py_get_dispB(LayoutTurnout* theWrappedObject){ return theWrappedObject->dispB; }
 void py_set_dispC(LayoutTurnout* theWrappedObject, QPointF  dispC){ theWrappedObject->dispC = dispC; }
 QPointF  py_get_dispC(LayoutTurnout* theWrappedObject){ return theWrappedObject->dispC; }
-void py_set_ident(LayoutTurnout* theWrappedObject, QString  ident){ theWrappedObject->ident = ident; }
-QString  py_get_ident(LayoutTurnout* theWrappedObject){ return theWrappedObject->ident; }
 void py_set_linkType(LayoutTurnout* theWrappedObject, int  linkType){ theWrappedObject->linkType = linkType; }
 int  py_get_linkType(LayoutTurnout* theWrappedObject){ return theWrappedObject->linkType; }
 void py_set_linkedTurnoutName(LayoutTurnout* theWrappedObject, QString  linkedTurnoutName){ theWrappedObject->linkedTurnoutName = linkedTurnoutName; }

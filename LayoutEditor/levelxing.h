@@ -167,7 +167,7 @@ private:
     /*private*/ LayoutEditor* layoutEditor;// = NULL;
 
     // persistent instances variables (saved between sessions)
-    /*private*/ QString ident;// = "";
+//    /*private*/ QString ident;// = "";
     /*private*/ QString blockNameAC;// = "";
     /*private*/ QString blockNameBD; //"";
     /*private*/ QString signalAName; //"";  // signal at A track junction

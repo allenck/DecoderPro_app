@@ -31,6 +31,8 @@ namespace Ui {
 class LayoutEditor;
 }
 
+class LayoutEditorChecks;
+class LayoutTrackEditors;
 class LayoutTrackDrawingOptions;
 class StoreXmlUserAction;
 class TurnoutSelection;
@@ -321,6 +323,11 @@ public:
     /*public*/ MultiIconEditor* signalIconEditor;// = NULL;
     /*public*/ ConnectivityUtil* getConnectivityUtil();
     /*public*/ LayoutEditorTools* getLETools();
+    /*public*/ LayoutEditorAuxTools* getLEAuxTools();
+    /*public*/ LayoutTrackEditors* getLayoutTrackEditors();
+    /*public*/ LayoutEditorChecks* getLEChecks();
+
+
     /*public*/ void addToPopUpMenu(NamedBean* nb, QMenu* item, int menu);
     /*public*/ void addMultiSensor(MultiSensorIcon* l);
     /*public*/ void makeBackupFile(QString name);
@@ -400,6 +407,10 @@ public:
     /*public*/ QList<LayoutTrack *> getLayoutTracks();
     /*public*/ QList<LayoutTurnout *> getLayoutTurnoutsAndSlips();
     /*public*/ bool removeFromContents(Positionable* l);
+    /*public*/ static QPointF getCoords(/*@Nonnull*/ LayoutTrack* layoutTrack, int connectionType);
+    /*public*/ QRectF trackEditControlRectAt(/*@Nonnull*/ QPointF inPoint);
+    /*public*/ QRectF trackControlCircleRectAt(/*@Nonnull*/ QPointF inPoint);
+    /*public*/ static QPointF zeroQPointF();
 
 
 
@@ -434,7 +445,6 @@ private:
  /*private*/ int numLayoutTurnouts;// = //0;
  /*private*/ int numLayoutTurntables;// = 0;
  StoreXmlUserAction* savePanels;
-
  //bool bDirty;
  bool isDirty();
  void resetDirty();
@@ -491,7 +501,6 @@ private:
  /*private*/ QColor defaultTextColor; //QColor.black;
  /*private*/ QColor turnoutCircleColor; //defaultTrackColor; //matches earlier versions
  /*private*/ int   turnoutCircleSize; //2;  //matches earlier versions
- /*protected*/ void drawTurnouts(EditScene* g2);
 
  /*private*/ void drawXings(EditScene* g2);
 // /*private*/ void drawXingAC(EditScene* g2,LevelXing* x);
@@ -727,7 +736,22 @@ private:
  /*private*/ QString findBeanUsage(NamedBean* sm);
  /*private*/ void removeBeanRefs(NamedBean* sm);
  /*private*/ bool removeSignalMast(SignalMastIcon* si);
-
+ /*private*/ void checkControls(bool useRectangles);
+ /*private*/ bool findLayoutTracksHitPoint(/*@Nonnull*/ QPointF loc, bool requireUnconnected);
+ /*private*/ bool findLayoutTracksHitPoint(/*@Nonnull*/ QPointF loc);
+ /*private*/ bool findLayoutTracksHitPoint(/*@Nonnull*/ QPointF loc,
+         bool requireUnconnected, /*@Nullable*/ LayoutTrack* avoid);
+ /*private*/ TrackSegment* checkTrackSegmentPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ PositionableLabel* checkBackgroundPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ SensorIcon* checkSensorIconPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ SignalHeadIcon* checkSignalHeadIconPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ SignalMastIcon* checkSignalMastIconPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ PositionableLabel* checkLabelImagePopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ AnalogClock2Display* checkClockPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ MultiSensorIcon* checkMultiSensorPopUps(/*@Nonnull */QPointF loc);
+ /*private*/ LocoIcon* checkMarkerPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ /*transient*/ LayoutTrackEditors* layoutTrackEditors = nullptr;
+ /*private*/ /*transient*/ LayoutEditorChecks* layoutEditorChecks = nullptr;
 
 private slots:
  void OnScenePos(QGraphicsSceneMouseEvent*);
@@ -889,6 +913,7 @@ protected:
  /*protected*/ void setOptionMenuBackgroundColor();
  /*protected*/ void setOptionMenuTrackColor();
  /*protected*/ void removeBackground(PositionableLabel* b);
+ /*protected*/ void drawTurnouts(EditScene* g2);
 
 
 friend class TrackSegment;

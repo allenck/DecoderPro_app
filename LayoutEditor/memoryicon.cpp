@@ -8,6 +8,7 @@
 #include "abstractmemory.h"
 #include <QSignalMapper>
 #include "rostericonfactory.h"
+#include "path.h"
 
 //MemoryIcon::MemoryIcon(QObject *parent) :
 //    DisplayMemoryIcon(parent)

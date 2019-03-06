@@ -1,6 +1,7 @@
 #include "layoutblockroutetablemodel.h"
 #include "layoutblock.h"
 #include "instancemanager.h"
+#include "path.h"
 
 //LayoutBlockRouteTableModel::LayoutBlockRouteTableModel(QObject *parent) :
 //  AbstractTableModel(parent)

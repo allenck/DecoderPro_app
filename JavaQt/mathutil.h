@@ -24,17 +24,30 @@ public:
  /*public*/ static double diffAngle(double a, double b);
 #endif
  /*public*/ static double pin(double inValue, double inMin, double inMax);
+ /*public*/ static QPointF add(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
+ /*public*/ static QPointF subtract(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
+ /*public*/ static QPointF multiply(/*@Nonnull*/ QPointF p, double s);
+ /*public*/ static QPointF multiply(/*@Nonnull*/ QPointF p, double x, double y);
+ /*public*/ static QPointF multiply(double s, /*@Nonnull*/ QPointF p);
+ /*public*/ static QPointF multiply(/*@Nonnull*/ QPointF p1, /*@Nonnull*/ QPointF p2);
+ /*public*/ static QPointF divide(/*@Nonnull*/ QPointF p, double s);
+ /*public*/ static QPointF divide(/*@Nonnull*/ QPointF p, double x, double y);
+
  /*public*/ static double distance(QPointF p1, QPointF pt);
  /*public*/ static QRectF zeroRectangle2D();
  /*public*/ static QRectF zeroToInfinityRectangle2D();
  /*public*/ static QRectF infinityRectangle2D();
  /*public*/ static QRectF inset(/*@Nonnull*/ QRectF r, double i);
  /*public*/ static QRectF inset(/*@Nonnull*/ QRectF r, double h, double v);
- /*public*/ static /*final*/ QPointF zeroPoint2D;// = zeroPoint2D();
-// /*public*/ static /*final*/ QPointF infinityPoint2D;// = infinityPoint2D();
+ /*public*/ static /*final*/ QPointF zeroQPointF;// = zeroQPointF();
+// /*public*/ static /*final*/ QPointF infinityQPointF;// = infinityQPointF();
 // /*public*/ static /*final*/ QRectF zeroRectangle2D;// = zeroRectangle2D();
 // /*public*/ static /*final*/ QRectF zeroToInfinityRectangle2D;// = zeroToInfinityRectangle2D();
 // /*public*/ static /*final*/ QRectF infinityRectangle2D;// = infinityRectangle2D();
+ /*public*/ static double computeAngleRAD(/*@Nonnull*/ QPointF p);
+ /*public*/ static double computeAngleDEG(/*@Nonnull*/ QPointF p);
+ /*public*/ static double computeAngleRAD(/*@Nonnull*/ QPointF p1, /*@Nonnull*/ QPointF p2);
+ /*public*/ static double computeAngleDEG(/*@Nonnull*/ QPointF p1, /*@Nonnull*/ QPointF p2);
 
 private:
  MathUtil();

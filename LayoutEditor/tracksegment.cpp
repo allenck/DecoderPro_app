@@ -5,6 +5,10 @@
 #include "layoutblockroutetableaction.h"
 #include "layoutturntable.h"
 #include "layouteditorfinditems.h"
+#include "jmricolorchooser.h"
+#include "layouttrackdrawingoptions.h"
+#include <QPointF>
+#include "mathutil.h"
 
 //TrackSegment::TrackSegment(QObject *parent) :
 //    QObject(parent)
@@ -71,15 +75,18 @@ TrackSegment::TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2,
  {
   type2 = t2;
  }
- instance = this;
- ident = id;
+// instance = this;
+// ident = id;
  dashed = dash;
  mainline = main;
-//    arc = false;
-//    flip = false;
-//    angle = 0.0D;
-//    circle = false;
+ arc = false;
+ flip = false;
+ angle = 0.0;
+ circle = false;
+ bezier = false;
+ setupDefaultBumperSizes(layoutEditor);
 }
+
 // alternate constructor for loading layout editor panels
 /*public*/
 TrackSegment::TrackSegment(QString id, QString c1Name, int t1, QString c2Name, int t2, bool dash, bool main, bool hide, LayoutEditor* myPanel)
@@ -91,27 +98,29 @@ TrackSegment::TrackSegment(QString id, QString c1Name, int t1, QString c2Name, i
  type1 = t1;
  tConnect2Name = c2Name;
  type2 = t2;
- instance = this;
- ident = id;
+ //instance = this;
+ //ident = id;
  dashed = dash;
  mainline = main;
  hidden = hide;
+ setupDefaultBumperSizes(layoutEditor);
 }
+
 void TrackSegment::init(QString id)
 {
 // operational instance variables (not saved between sessions)
  setObjectName("TS_"+id);
 
- layoutBlock = NULL;
- instance = NULL;
+ block = NULL;
+ //instance = NULL;
  layoutEditor = NULL;
- item = NULL;
+ item = nullptr;
  circleItem = NULL;
  trackOval = NULL;
  showConstructionLine = SHOWCON;
 
 // persistent instances variables (saved between sessions)
- QString ident = "";
+ //QString ident = "";
  blockName = "";
  connect1 = NULL;
  type1 = 0;
@@ -128,6 +137,8 @@ void TrackSegment::init(QString id)
  active = true;
  popup = NULL;
  needsRedraw = false;
+ bumperColor = QColor(Qt::black);
+ bezierControlPoints = QList<QPointF>(); // list of control point displacements
 
 }
 /**
@@ -135,7 +146,7 @@ void TrackSegment::init(QString id)
 */
 /*public*/ QString TrackSegment::getID()
 {
-       return ident;
+ return ident;
 }
 
 /*public*/ QString TrackSegment::getBlockName() {
@@ -194,6 +205,13 @@ void TrackSegment::init(QString id)
     mainline = main;
 }
 
+/**
+ * @return true if track segment is an arc
+ */
+/*public*/ bool TrackSegment::isArc() {
+    return arc;
+}
+
 /*public*/ void TrackSegment::setArc(bool boo) {
     arc = boo;
     changed=true;
@@ -201,20 +219,62 @@ void TrackSegment::init(QString id)
 
 /*public*/ bool TrackSegment::getCircle() {return circle;}
 
+
+/**
+ * @return true if track segment is circle
+ */
+/*public*/ bool TrackSegment::isCircle() {
+    return circle;
+}
+
 /*public*/ void
 TrackSegment::setCircle(bool boo) {
     circle = boo;
     changed=true;
 }
-//    /*public*/ bool getFlip() {return flip;}
-/*public*/ void
-TrackSegment::setFlip(bool boo) {
+/*public*/ bool TrackSegment::getFlip() {return flip;}
+/**
+ * @return true if track segment circle or arc should be drawn flipped
+ */
+/*public*/ bool TrackSegment::isFlip() {
+    return flip;
+}
+/*public*/ void TrackSegment::setFlip(bool boo) {
     flip = boo;
     changed=true;
 }
 ///*public*/ int getStartAngle() {return startangle;}
 ///*public*/ void setStartAngle(int x) {startangle = x;}
-//    /*public*/ double getAngle() {return angle;}
+
+/**
+ * @return true if track segment is a bezier curve
+ * @deprecated since 4.9.4; use {@link #isBezier()} instead
+ */
+//@Deprecated // Java standard pattern for boolean getters is "isBezier()"
+/*public*/ bool TrackSegment::getBezier() {
+    return bezier;
+}
+
+/**
+ * @return true if track segment is a bezier curve
+ */
+/*public*/ bool TrackSegment::isBezier() {
+    return bezier;
+}
+
+/*public*/ void TrackSegment::setBezier(bool boo) {
+    if (bezier != boo) {
+        bezier = boo;
+        if (bezier) {
+            arc = false;
+            circle = false;
+            hideConstructionLines(SHOWCON);
+        }
+        changed = true;
+    }
+}
+
+/*public*/ double TrackSegment::getAngle() {return angle;}
 /*public*/ void
 TrackSegment::setAngle(double x)
 {
@@ -230,19 +290,20 @@ TrackSegment::setAngle(double x)
 }
 //This method is used to determine if we need to redraw a curved piece of track
 //It saves having to recalculate the circle details each time.
-//    /*public*/ bool trackNeedsRedraw() { return changed; }
-//    /*public*/ void trackRedrawn() { changed = false; }
+/*public*/ bool TrackSegment::trackNeedsRedraw() { return changed; }
+
+/*public*/ void TrackSegment::trackRedrawn() { changed = false; }
 ///*public*/ int getRadius() {return radius;}
 ///*public*/ void setRadius(int x) {radius = x;}
 
 /*public*/ LayoutBlock*
 TrackSegment::getLayoutBlock()
 {
- if ( (layoutBlock==NULL) && (blockName!=NULL) && (blockName!="") )
+ if ( (block==nullptr) && (blockName!="") && (blockName!="") )
  {
-  layoutBlock = layoutEditor->provideLayoutBlock(blockName);
+  block = layoutEditor->provideLayoutBlock(blockName);
  }
- return layoutBlock;
+ return block;
 }
 
 /*public*/ QString TrackSegment::getConnect1Name() {return getConnectName(connect1,type1);}
@@ -291,10 +352,10 @@ TrackSegment::getConnectName(QObject* o,int type)
 /*public*/ void TrackSegment::setObjects(LayoutEditor* p)
 {
  if (!tBlockName.isEmpty()) {
-     layoutBlock = p->getLayoutBlock(tBlockName);
-     if (layoutBlock != nullptr) {
+     block = p->getLayoutBlock(tBlockName);
+     if (block != nullptr) {
          blockName = tBlockName;
-         layoutBlock->incrementUse();
+         block->incrementUse();
      } else {
          log.error("bad blockname '" + tBlockName + "' in tracksegment " + getName());
      }
@@ -303,8 +364,9 @@ TrackSegment::getConnectName(QObject* o,int type)
  //NOTE: testing "type-less" connects
  // (read comments for findObjectByName in LayoutEditorFindItems.java)
  connect1 = p->getFinder()->findObjectByName(tConnect1Name);
- if (nullptr == connect1) { // findObjectByName failed... try findObjectByTypeAndName
-     log.warn("Unknown connect1 object prefix: '" + tConnect1Name + "' of type " + type1 + ".");
+ if (nullptr == connect1)
+ { // findObjectByName failed... try findObjectByTypeAndName
+     log.warn("Unknown connect1 object prefix: '" + tConnect1Name + "' of type " + QString::number(type1) + ".");
      connect1 = p->getFinder()->findObjectByTypeAndName(type1, tConnect1Name);
  }
  connect2 = p->getFinder()->findObjectByName(tConnect2Name);
@@ -318,7 +380,7 @@ TrackSegment::getConnectName(QObject* o,int type)
  * Set Up a Layout Block for a Track Segment
  */
 /*public*/ void TrackSegment::setLayoutBlock (LayoutBlock* b) {
-    layoutBlock = b;
+    block = b;
     if (b!=NULL) {
         blockName = b->getID();
     }
@@ -328,13 +390,13 @@ TrackSegment::getConnectName(QObject* o,int type)
 }
 /*protected*/ void TrackSegment::updateBlockInfo()
 {
- if (layoutBlock!=NULL)
-  layoutBlock->updatePaths();
+ if (block!=NULL)
+  block->updatePaths();
  LayoutBlock* b1 = getBlock(connect1,type1);
- if ((b1!=NULL)&&(b1!=layoutBlock))
+ if ((b1!=NULL)&&(b1!=block))
   b1->updatePaths();
  LayoutBlock* b2 = getBlock(connect2,type2);
- if ((b2!=NULL)&&(b2!=layoutBlock)&&(b2!=b1))
+ if ((b2!=NULL)&&(b2!=block)&&(b2!=b1))
   b2->updatePaths();
  //if(getConnect1() instanceof PositionablePoint)
  if(qobject_cast<PositionablePoint*>(getConnect1())!= NULL)
@@ -371,11 +433,12 @@ TrackSegment::getConnectName(QObject* o,int type)
 
 /*private*/ LayoutBlock* TrackSegment::getBlock (QObject* connect, int type)
 {
- if (connect==NULL) return NULL;
+ if (connect==NULL)
+  return NULL;
  if (type==LayoutEditor::POS_POINT)
  {
   PositionablePoint* p = (PositionablePoint*)connect;
-  if (p->getConnect1()!=instance)
+  if (p->getConnect1()!=this)
   {
    if (p->getConnect1()!=NULL) return (p->getConnect1()->getLayoutBlock());
     else return NULL;
@@ -392,7 +455,549 @@ TrackSegment::getConnectName(QObject* o,int type)
  }
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void TrackSegment::drawDecorations(EditScene* g2) {
 
+    if (getName() == ("T9")) {
+        log.debug("STOP");
+    }
+
+    // get end points and calculate start/stop angles (in radians)
+    QPointF ep1 = LayoutEditor::getCoords(getConnect1(), getType1());
+    QPointF ep2 = LayoutEditor::getCoords(getConnect2(), getType2());
+    QPointF p1, p2, p3, p4, p5, p6, p7;
+    QPointF p1P = ep1, p2P = ep2, p3P, p4P, p5P, p6P, p7P;
+    double startAngleRAD, stopAngleRAD;
+#if 1
+    if (isArc()) {
+        calculateTrackSegmentAngle();
+        double startAngleDEG = getStartAdj(), extentAngleDEG = getTmpAngle();
+        startAngleRAD = (M_PI_2) - qDegreesToRadians(startAngleDEG);
+        stopAngleRAD = (M_PI_2) - qDegreesToRadians(startAngleDEG + extentAngleDEG);
+        if (isFlip()) {
+            startAngleRAD += M_PI;
+            stopAngleRAD += M_PI;
+        } else {
+            double temp = startAngleRAD;
+            startAngleRAD = stopAngleRAD;
+            stopAngleRAD = temp;
+        }
+    } else if (isBezier()) {
+        QPointF cp0 = bezierControlPoints.at(0);
+        QPointF cpN = bezierControlPoints.at(bezierControlPoints.size() - 1);
+        startAngleRAD = (M_PI_2) - MathUtil::computeAngleRAD(cp0, ep1);
+        stopAngleRAD = (M_PI_2) - MathUtil::computeAngleRAD(ep2, cpN);
+    } else {
+        QPointF delta = MathUtil::subtract(ep2, ep1);
+        startAngleRAD = (M_PI_2) - MathUtil::computeAngleRAD(delta);
+        stopAngleRAD = startAngleRAD;
+    }
+#endif
+#if 0
+    //
+    // arrow decorations
+    //
+    if (arrowStyle > 0) {
+        g2.setStroke(new BasicStroke(arrowLineWidth,
+                BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.F));
+        g2.setColor(arrowColor);
+
+        // draw the out arrows
+        int offset = 1;
+        if (arrowEndStart) {
+            if (arrowDirIn) {
+                offset = drawArrow(g2, ep1, Math.PI + startAngleRAD, false, offset);
+            }
+            if (arrowDirOut) {
+                offset = drawArrow(g2, ep1, Math.PI + startAngleRAD, true, offset);
+            }
+        }
+        offset = 1;
+        if (arrowEndStop) {
+            if (arrowDirIn) {
+                offset = drawArrow(g2, ep2, stopAngleRAD, false, offset);
+            }
+            if (arrowDirOut) {
+                offset = drawArrow(g2, ep2, stopAngleRAD, true, offset);
+            }
+        }
+    }   // arrow decoration
+
+    //
+    //  bridge decorations
+    //
+    if (bridgeSideLeft || bridgeSideRight) {
+        float halfWidth = bridgeDeckWidth / 2.F;
+
+        g2.setStroke(new BasicStroke(bridgeLineWidth,
+                BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.F));
+        g2.setColor(bridgeColor);
+
+        if (isArc()) {
+            calculateTrackSegmentAngle();
+            Rectangle2D cRectangle2D = new Rectangle2D.Double(
+                    getCX(), getCY(), getCW(), getCH());
+            double startAngleDEG = getStartAdj(), extentAngleDEG = getTmpAngle();
+            if (bridgeSideLeft) {
+                Rectangle2D cLeftRectangle2D = MathUtil.inset(cRectangle2D, -halfWidth);
+                g2.draw(new Arc2D.Double(
+                        cLeftRectangle2D.getX(),
+                        cLeftRectangle2D.getY(),
+                        cLeftRectangle2D.getWidth(),
+                        cLeftRectangle2D.getHeight(),
+                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+            }
+            if (bridgeSideRight) {
+                Rectangle2D cLRightRectangle2D = MathUtil.inset(cRectangle2D, +halfWidth);
+                g2.draw(new Arc2D.Double(
+                        cLRightRectangle2D.getX(),
+                        cLRightRectangle2D.getY(),
+                        cLRightRectangle2D.getWidth(),
+                        cLRightRectangle2D.getHeight(),
+                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+            }
+            trackRedrawn();
+        } else if (isBezier()) {
+            int cnt = bezierControlPoints.size() + 2;
+            QPointF[] points = new QPointF[cnt];
+            points[0] = ep1;
+            for (int idx = 0; idx < cnt - 2; idx++) {
+                points[idx + 1] = bezierControlPoints.get(idx);
+            }
+            points[cnt - 1] = ep2;
+
+            if (bridgeSideLeft) {
+                MathUtil.drawBezier(g2, points, -halfWidth);
+            }
+            if (bridgeSideRight) {
+                MathUtil.drawBezier(g2, points, +halfWidth);
+            }
+        } else {
+            QPointF delta = MathUtil.subtract(ep2, ep1);
+            QPointF vector = MathUtil.normalize(delta, halfWidth);
+            vector = MathUtil.orthogonal(vector);
+
+            if (bridgeSideLeft) {
+                QPointF ep1L = MathUtil.add(ep1, vector);
+                QPointF ep2L = MathUtil.add(ep2, vector);
+                g2.draw(new Line2D.Double(ep1L, ep2L));
+            }
+            if (bridgeSideRight) {
+                QPointF ep1R = MathUtil.subtract(ep1, vector);
+                QPointF ep2R = MathUtil.subtract(ep2, vector);
+                g2.draw(new Line2D.Double(ep1R, ep2R));
+            }
+        }   // if isArc() {} else if isBezier() {} else...
+
+        if (bridgeHasEntry) {
+            if (bridgeSideRight) {
+                p1 = new QPointF.Double(-bridgeApproachWidth, -bridgeApproachWidth - halfWidth);
+                p2 = new QPointF.Double(0.0, -halfWidth);
+                p1P = MathUtil.add(MathUtil.rotateRAD(p1, startAngleRAD), ep1);
+                p2P = MathUtil.add(MathUtil.rotateRAD(p2, startAngleRAD), ep1);
+                g2.draw(new Line2D.Double(p1P, p2P));
+            }
+            if (bridgeSideLeft) {
+                p1 = new QPointF.Double(-bridgeApproachWidth, +bridgeApproachWidth + halfWidth);
+                p2 = new QPointF.Double(0.0, +halfWidth);
+                p1P = MathUtil.add(MathUtil.rotateRAD(p1, startAngleRAD), ep1);
+                p2P = MathUtil.add(MathUtil.rotateRAD(p2, startAngleRAD), ep1);
+                g2.draw(new Line2D.Double(p1P, p2P));
+            }
+        }
+        if (bridgeHasExit) {
+            if (bridgeSideRight) {
+                p1 = new QPointF.Double(+bridgeApproachWidth, -bridgeApproachWidth - halfWidth);
+                p2 = new QPointF.Double(0.0, -halfWidth);
+                p1P = MathUtil.add(MathUtil.rotateRAD(p1, stopAngleRAD), ep2);
+                p2P = MathUtil.add(MathUtil.rotateRAD(p2, stopAngleRAD), ep2);
+                g2.draw(new Line2D.Double(p1P, p2P));
+            }
+            if (bridgeSideLeft) {
+                p1 = new QPointF.Double(+bridgeApproachWidth, +bridgeApproachWidth + halfWidth);
+                p2 = new QPointF.Double(0.0, +halfWidth);
+                p1P = MathUtil.add(MathUtil.rotateRAD(p1, stopAngleRAD), ep2);
+                p2P = MathUtil.add(MathUtil.rotateRAD(p2, stopAngleRAD), ep2);
+                g2.draw(new Line2D.Double(p1P, p2P));
+            }
+        }
+    }   // if (bridgeValue != null)
+
+    //
+    //  end bumper decorations
+    //
+    if (bumperEndStart || bumperEndStop) {
+        if (getName().equals("T15")) {
+            log.debug("STOP");
+        }
+        g2.setStroke(new BasicStroke(bumperLineWidth,
+                BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.F));
+        g2.setColor(bumperColor);
+
+        float halfLength = bumperLength / 2.F;
+
+        if (bumperFlipped) {
+            double temp = startAngleRAD;
+            startAngleRAD = stopAngleRAD;
+            stopAngleRAD = temp;
+        }
+
+        // common points
+        p1 = new QPointF.Double(0.F, -halfLength);
+        p2 = new QPointF.Double(0.F, +halfLength);
+
+        if (bumperEndStart) {
+            p1P = MathUtil.add(MathUtil.rotateRAD(p1, startAngleRAD), ep1);
+            p2P = MathUtil.add(MathUtil.rotateRAD(p2, startAngleRAD), ep1);
+        }
+        if (bumperEndStop) {
+            p1P = MathUtil.add(MathUtil.rotateRAD(p1, stopAngleRAD), ep2);
+            p2P = MathUtil.add(MathUtil.rotateRAD(p2, stopAngleRAD), ep2);
+        }
+        // draw cross tie
+        g2.draw(new Line2D.Double(p1P, p2P));
+    }   // if (bumperEndStart || bumperEndStop)
+
+    //
+    //  tunnel decorations
+    //
+    if (tunnelSideRight || tunnelSideLeft) {
+        float halfWidth = tunnelFloorWidth / 2.F;
+        g2.setStroke(new BasicStroke(tunnelLineWidth,
+                BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
+                new float[]{6.F, 4.F}, 0));
+        g2.setColor(tunnelColor);
+
+        if (isArc()) {
+            calculateTrackSegmentAngle();
+            Rectangle2D cRectangle2D = new Rectangle2D.Double(
+                    getCX(), getCY(), getCW(), getCH());
+            double startAngleDEG = getStartAdj(), extentAngleDEG = getTmpAngle();
+            if (tunnelSideRight) {
+                Rectangle2D cLeftRectangle2D = MathUtil.inset(cRectangle2D, -halfWidth);
+                g2.draw(new Arc2D.Double(
+                        cLeftRectangle2D.getX(),
+                        cLeftRectangle2D.getY(),
+                        cLeftRectangle2D.getWidth(),
+                        cLeftRectangle2D.getHeight(),
+                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+            }
+            if (tunnelSideLeft) {
+                Rectangle2D cLRightRectangle2D = MathUtil.inset(cRectangle2D, +halfWidth);
+                g2.draw(new Arc2D.Double(
+                        cLRightRectangle2D.getX(),
+                        cLRightRectangle2D.getY(),
+                        cLRightRectangle2D.getWidth(),
+                        cLRightRectangle2D.getHeight(),
+                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+            }
+            trackRedrawn();
+        } else if (isBezier()) {
+            int cnt = bezierControlPoints.size() + 2;
+            QPointF[] points = new QPointF[cnt];
+            points[0] = ep1;
+            for (int idx = 0; idx < cnt - 2; idx++) {
+                points[idx + 1] = bezierControlPoints.get(idx);
+            }
+            points[cnt - 1] = ep2;
+
+            if (tunnelSideRight) {
+                MathUtil.drawBezier(g2, points, -halfWidth);
+            }
+            if (tunnelSideLeft) {
+                MathUtil.drawBezier(g2, points, +halfWidth);
+            }
+        } else {
+            QPointF delta = MathUtil.subtract(ep2, ep1);
+            QPointF vector = MathUtil.normalize(delta, halfWidth);
+            vector = MathUtil.orthogonal(vector);
+
+            if (tunnelSideRight) {
+                QPointF ep1L = MathUtil.add(ep1, vector);
+                QPointF ep2L = MathUtil.add(ep2, vector);
+                g2.draw(new Line2D.Double(ep1L, ep2L));
+            }
+            if (tunnelSideLeft) {
+                QPointF ep1R = MathUtil.subtract(ep1, vector);
+                QPointF ep2R = MathUtil.subtract(ep2, vector);
+                g2.draw(new Line2D.Double(ep1R, ep2R));
+            }
+        }   // if isArc() {} else if isBezier() {} else...
+
+        g2.setStroke(new BasicStroke(tunnelLineWidth,
+                BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.F));
+        g2.setColor(tunnelColor);
+
+        double halfEntranceWidth = tunnelEntranceWidth / 2.0;
+        double halfFloorWidth = tunnelFloorWidth / 2.0;
+        double halfDiffWidth = halfEntranceWidth - halfFloorWidth;
+
+        if (tunnelHasEntry) {
+            if (tunnelSideLeft) {
+                p1 = new QPointF.Double(0.0, 0.0);
+                p2 = new QPointF.Double(0.0, -halfFloorWidth);
+                p3 = new QPointF.Double(0.0, -halfEntranceWidth);
+                p4 = new QPointF.Double(-halfEntranceWidth - halfFloorWidth, -halfEntranceWidth);
+                p5 = new QPointF.Double(-halfEntranceWidth - halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
+                p6 = new QPointF.Double(-halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
+                p7 = new QPointF.Double(-halfDiffWidth, 0.0);
+
+                p1P = MathUtil.add(MathUtil.rotateRAD(p1, startAngleRAD), ep1);
+                p2P = MathUtil.add(MathUtil.rotateRAD(p2, startAngleRAD), ep1);
+                p3P = MathUtil.add(MathUtil.rotateRAD(p3, startAngleRAD), ep1);
+                p4P = MathUtil.add(MathUtil.rotateRAD(p4, startAngleRAD), ep1);
+                p5P = MathUtil.add(MathUtil.rotateRAD(p5, startAngleRAD), ep1);
+                p6P = MathUtil.add(MathUtil.rotateRAD(p6, startAngleRAD), ep1);
+                p7P = MathUtil.add(MathUtil.rotateRAD(p7, startAngleRAD), ep1);
+
+                GeneralPath path = new GeneralPath();
+                path.moveTo(p1P.getX(), p1P.getY());
+                path.lineTo(p2P.getX(), p2P.getY());
+                path.quadTo(p3P.getX(), p3P.getY(), p4P.getX(), p4P.getY());
+                path.lineTo(p5P.getX(), p5P.getY());
+                path.quadTo(p6P.getX(), p6P.getY(), p7P.getX(), p7P.getY());
+                path.closePath();
+                g2.fill(path);
+            }
+            if (tunnelSideRight) {
+                p1 = new QPointF.Double(0.0, 0.0);
+                p2 = new QPointF.Double(0.0, +halfFloorWidth);
+                p3 = new QPointF.Double(0.0, +halfEntranceWidth);
+                p4 = new QPointF.Double(-halfEntranceWidth - halfFloorWidth, +halfEntranceWidth);
+                p5 = new QPointF.Double(-halfEntranceWidth - halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
+                p6 = new QPointF.Double(-halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
+                p7 = new QPointF.Double(-halfDiffWidth, 0.0);
+
+                p1P = MathUtil.add(MathUtil.rotateRAD(p1, startAngleRAD), ep1);
+                p2P = MathUtil.add(MathUtil.rotateRAD(p2, startAngleRAD), ep1);
+                p3P = MathUtil.add(MathUtil.rotateRAD(p3, startAngleRAD), ep1);
+                p4P = MathUtil.add(MathUtil.rotateRAD(p4, startAngleRAD), ep1);
+                p5P = MathUtil.add(MathUtil.rotateRAD(p5, startAngleRAD), ep1);
+                p6P = MathUtil.add(MathUtil.rotateRAD(p6, startAngleRAD), ep1);
+                p7P = MathUtil.add(MathUtil.rotateRAD(p7, startAngleRAD), ep1);
+
+                GeneralPath path = new GeneralPath();
+                path.moveTo(p1P.getX(), p1P.getY());
+                path.lineTo(p2P.getX(), p2P.getY());
+                path.quadTo(p3P.getX(), p3P.getY(), p4P.getX(), p4P.getY());
+                path.lineTo(p5P.getX(), p5P.getY());
+                path.quadTo(p6P.getX(), p6P.getY(), p7P.getX(), p7P.getY());
+                path.closePath();
+                g2.fill(path);
+            }
+        }
+        if (tunnelHasExit) {
+            if (tunnelSideLeft) {
+                p1 = new QPointF.Double(0.0, 0.0);
+                p2 = new QPointF.Double(0.0, -halfFloorWidth);
+                p3 = new QPointF.Double(0.0, -halfEntranceWidth);
+                p4 = new QPointF.Double(halfEntranceWidth + halfFloorWidth, -halfEntranceWidth);
+                p5 = new QPointF.Double(halfEntranceWidth + halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
+                p6 = new QPointF.Double(halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
+                p7 = new QPointF.Double(halfDiffWidth, 0.0);
+
+                p1P = MathUtil.add(MathUtil.rotateRAD(p1, stopAngleRAD), ep2);
+                p2P = MathUtil.add(MathUtil.rotateRAD(p2, stopAngleRAD), ep2);
+                p3P = MathUtil.add(MathUtil.rotateRAD(p3, stopAngleRAD), ep2);
+                p4P = MathUtil.add(MathUtil.rotateRAD(p4, stopAngleRAD), ep2);
+                p5P = MathUtil.add(MathUtil.rotateRAD(p5, stopAngleRAD), ep2);
+                p6P = MathUtil.add(MathUtil.rotateRAD(p6, stopAngleRAD), ep2);
+                p7P = MathUtil.add(MathUtil.rotateRAD(p7, stopAngleRAD), ep2);
+
+                GeneralPath path = new GeneralPath();
+                path.moveTo(p1P.getX(), p1P.getY());
+                path.lineTo(p2P.getX(), p2P.getY());
+                path.quadTo(p3P.getX(), p3P.getY(), p4P.getX(), p4P.getY());
+                path.lineTo(p5P.getX(), p5P.getY());
+                path.quadTo(p6P.getX(), p6P.getY(), p7P.getX(), p7P.getY());
+                path.closePath();
+                g2.fill(path);
+            }
+            if (tunnelSideRight) {
+                p1 = new QPointF.Double(0.0, 0.0);
+                p2 = new QPointF.Double(0.0, +halfFloorWidth);
+                p3 = new QPointF.Double(0.0, +halfEntranceWidth);
+                p4 = new QPointF.Double(halfEntranceWidth + halfFloorWidth, +halfEntranceWidth);
+                p5 = new QPointF.Double(halfEntranceWidth + halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
+                p6 = new QPointF.Double(halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
+                p7 = new QPointF.Double(halfDiffWidth, 0.0);
+
+                p1P = MathUtil.add(MathUtil.rotateRAD(p1, stopAngleRAD), ep2);
+                p2P = MathUtil.add(MathUtil.rotateRAD(p2, stopAngleRAD), ep2);
+                p3P = MathUtil.add(MathUtil.rotateRAD(p3, stopAngleRAD), ep2);
+                p4P = MathUtil.add(MathUtil.rotateRAD(p4, stopAngleRAD), ep2);
+                p5P = MathUtil.add(MathUtil.rotateRAD(p5, stopAngleRAD), ep2);
+                p6P = MathUtil.add(MathUtil.rotateRAD(p6, stopAngleRAD), ep2);
+                p7P = MathUtil.add(MathUtil.rotateRAD(p7, stopAngleRAD), ep2);
+
+                GeneralPath path = new GeneralPath();
+                path.moveTo(p1P.getX(), p1P.getY());
+                path.lineTo(p2P.getX(), p2P.getY());
+                path.quadTo(p3P.getX(), p3P.getY(), p4P.getX(), p4P.getY());
+                path.lineTo(p5P.getX(), p5P.getY());
+                path.quadTo(p6P.getX(), p6P.getY(), p7P.getX(), p7P.getY());
+                path.closePath();
+                g2.fill(path);
+            }
+        }
+    }   // if (tunnelValue != null)
+#endif
+}   // drawDecorations
+#if 0
+/*private*/ int drawArrow(
+        EditScene* g2,
+        QPointF ep,
+        double angleRAD,
+        bool dirOut,
+        int offset) {
+    QPointF p1, p2, p3, p4, p5, p6;
+    switch (arrowStyle) {
+        default: {
+            arrowStyle = 0;
+            break;
+        }
+        case 0: {
+            break;
+        }
+        case 1: {
+            if (dirOut) {
+                p1 = new QPointF.Double(offset, -arrowLength);
+                p2 = new QPointF.Double(offset + arrowLength, 0.0);
+                p3 = new QPointF.Double(offset, +arrowLength);
+            } else {
+                p1 = new QPointF.Double(offset + arrowLength, -arrowLength);
+                p2 = new QPointF.Double(offset, 0.0);
+                p3 = new QPointF.Double(offset + arrowLength, +arrowLength);
+            }
+            p1 = MathUtil.add(MathUtil.rotateRAD(p1, angleRAD), ep);
+            p2 = MathUtil.add(MathUtil.rotateRAD(p2, angleRAD), ep);
+            p3 = MathUtil.add(MathUtil.rotateRAD(p3, angleRAD), ep);
+
+            g2.draw(new Line2D.Double(p1, p2));
+            g2.draw(new Line2D.Double(p2, p3));
+            offset += arrowLength + arrowGap;
+            break;
+        }
+        case 2: {
+            if (dirOut) {
+                p1 = new QPointF.Double(offset, -arrowLength);
+                p2 = new QPointF.Double(offset + arrowLength, 0.0);
+                p3 = new QPointF.Double(offset, +arrowLength);
+                p4 = new QPointF.Double(offset + arrowLineWidth + arrowGap, -arrowLength);
+                p5 = new QPointF.Double(offset + arrowLineWidth + arrowGap + arrowLength, 0.0);
+                p6 = new QPointF.Double(offset + arrowLineWidth + arrowGap, +arrowLength);
+            } else {
+                p1 = new QPointF.Double(offset + arrowLength, -arrowLength);
+                p2 = new QPointF.Double(offset, 0.0);
+                p3 = new QPointF.Double(offset + arrowLength, +arrowLength);
+                p4 = new QPointF.Double(offset + arrowLineWidth + arrowGap + arrowLength, -arrowLength);
+                p5 = new QPointF.Double(offset + arrowLineWidth + arrowGap, 0.0);
+                p6 = new QPointF.Double(offset + arrowLineWidth + arrowGap + arrowLength, +arrowLength);
+            }
+            p1 = MathUtil.add(MathUtil.rotateRAD(p1, angleRAD), ep);
+            p2 = MathUtil.add(MathUtil.rotateRAD(p2, angleRAD), ep);
+            p3 = MathUtil.add(MathUtil.rotateRAD(p3, angleRAD), ep);
+            p4 = MathUtil.add(MathUtil.rotateRAD(p4, angleRAD), ep);
+            p5 = MathUtil.add(MathUtil.rotateRAD(p5, angleRAD), ep);
+            p6 = MathUtil.add(MathUtil.rotateRAD(p6, angleRAD), ep);
+
+            g2.draw(new Line2D.Double(p1, p2));
+            g2.draw(new Line2D.Double(p2, p3));
+            g2.draw(new Line2D.Double(p4, p5));
+            g2.draw(new Line2D.Double(p5, p6));
+            offset += arrowLength + (2 * (arrowLineWidth + arrowGap));
+            break;
+        }
+        case 3: {
+            if (dirOut) {
+                p1 = new QPointF.Double(offset, -arrowLength);
+                p2 = new QPointF.Double(offset + arrowLength, 0.0);
+                p3 = new QPointF.Double(offset, +arrowLength);
+            } else {
+                p1 = new QPointF.Double(offset + arrowLength, -arrowLength);
+                p2 = new QPointF.Double(offset, 0.0);
+                p3 = new QPointF.Double(offset + arrowLength, +arrowLength);
+            }
+            p1 = MathUtil.add(MathUtil.rotateRAD(p1, angleRAD), ep);
+            p2 = MathUtil.add(MathUtil.rotateRAD(p2, angleRAD), ep);
+            p3 = MathUtil.add(MathUtil.rotateRAD(p3, angleRAD), ep);
+
+            GeneralPath path = new GeneralPath();
+            path.moveTo(p1.getX(), p1.getY());
+            path.lineTo(p2.getX(), p2.getY());
+            path.lineTo(p3.getX(), p3.getY());
+            path.closePath();
+            if (arrowLineWidth > 1) {
+                g2.fill(path);
+            } else {
+                g2.draw(path);
+            }
+            offset += arrowLength + arrowGap;
+            break;
+        }
+        case 4: {
+            if (dirOut) {
+                p1 = new QPointF.Double(offset, 0.0);
+                p2 = new QPointF.Double(offset + (2 * arrowLength), -arrowLength);
+                p3 = new QPointF.Double(offset + (3 * arrowLength), 0.0);
+                p4 = new QPointF.Double(offset + (2 * arrowLength), +arrowLength);
+            } else {
+                p1 = new QPointF.Double(offset + (3 * arrowLength), 0.0);
+                p2 = new QPointF.Double(offset, -arrowLength);
+                p3 = new QPointF.Double(offset + arrowLength, 0.0);
+                p4 = new QPointF.Double(offset, +arrowLength);
+            }
+            p1 = MathUtil.add(MathUtil.rotateRAD(p1, angleRAD), ep);
+            p2 = MathUtil.add(MathUtil.rotateRAD(p2, angleRAD), ep);
+            p3 = MathUtil.add(MathUtil.rotateRAD(p3, angleRAD), ep);
+            p4 = MathUtil.add(MathUtil.rotateRAD(p4, angleRAD), ep);
+
+            g2.draw(new Line2D.Double(p1, p3));
+            g2.draw(new Line2D.Double(p2, p3));
+            g2.draw(new Line2D.Double(p3, p4));
+            offset += (3 * arrowLength) + arrowGap;
+            break;
+        }
+        case 5: {
+            if (dirOut) {
+                p1 = new QPointF.Double(offset, 0.0);
+                p2 = new QPointF.Double(offset + (2 * arrowLength), -arrowLength);
+                p3 = new QPointF.Double(offset + (3 * arrowLength), 0.0);
+                p4 = new QPointF.Double(offset + (2 * arrowLength), +arrowLength);
+            } else {
+                p1 = new QPointF.Double(offset + (3 * arrowLength), 0.0);
+                p2 = new QPointF.Double(offset, -arrowLength);
+                p3 = new QPointF.Double(offset + arrowLength, 0.0);
+                p4 = new QPointF.Double(offset, +arrowLength);
+            }
+            p1 = MathUtil.add(MathUtil.rotateRAD(p1, angleRAD), ep);
+            p2 = MathUtil.add(MathUtil.rotateRAD(p2, angleRAD), ep);
+            p3 = MathUtil.add(MathUtil.rotateRAD(p3, angleRAD), ep);
+            p4 = MathUtil.add(MathUtil.rotateRAD(p4, angleRAD), ep);
+
+            GeneralPath path = new GeneralPath();
+            path.moveTo(p4.getX(), p4.getY());
+            path.lineTo(p2.getX(), p2.getY());
+            path.lineTo(p3.getX(), p3.getY());
+            path.closePath();
+            if (arrowLineWidth > 1) {
+                g2.fill(path);
+            } else {
+                g2.draw(path);
+            }
+            g2.draw(new Line2D.Double(p1, p3));
+
+            offset += (3 * arrowLength) + arrowGap;
+            break;
+        }
+    }
+
+    return offset;
+}   // drawArrow
+#endif
 /**
  * Display popup menu for information and editing
  */
@@ -522,7 +1127,7 @@ void TrackSegment::on_changeType(QAction *act)
 
 void TrackSegment::on_actionRemove()
 {
- layoutEditor->removeTrackSegment(instance);
+ layoutEditor->removeTrackSegment(this);
  remove();
  dispose();
 }
@@ -856,12 +1461,90 @@ void TrackSegment::remove() {
     cH = CH;
 }
 
-/*public*/ double TrackSegment::getStartadj(){
+/*public*/ double TrackSegment::getStartAdj(){
     return startadj;
 }
 
-/*public*/ void TrackSegment::setStartadj(double Startadj){
+/*public*/ void TrackSegment::setStartAdj(double Startadj){
     startadj = Startadj;
+}
+
+/*public*/ double TrackSegment::getCentreSegX() {
+    return centreSegX;
+}
+
+/*public*/ void TrackSegment::setCentreSegX(double CentreX) {
+    centreSegX = CentreX;
+}
+
+/*public*/ double TrackSegment::getCentreSegY() {
+    return centreSegY;
+}
+
+/*public*/ void TrackSegment::setCentreSegY(double CentreY) {
+    centreSegY = CentreY;
+}
+
+/**
+ * @return the location of the middle of the segment (on the segment)
+ */
+/*public*/ QPointF TrackSegment::getCentreSeg() {
+    QPointF result =QPointF();
+
+    if ((connect1 != nullptr) && (connect2 != nullptr)) {
+        // get therackSegment:: end points
+        QPointF ep1 = LayoutEditor::getCoords(getConnect1(), getType1());
+        QPointF ep2 = LayoutEditor::getCoords(getConnect2(), getType2());
+
+        if (isCircle()) {
+            result = center; //new Point2D.Double(centreX, centreY);
+        } else if (isArc()) {
+            //center = MathUtil.midPoint(getBounds());
+         center = getBounds().center();
+            if (isFlip()) {
+                QPointF t = ep1;
+                ep1 = ep2;
+                ep2 = t;
+            }
+            QPointF delta = MathUtil::subtract(ep1, ep2);
+            // are they of the same sign?
+            if ((delta.x() >= 0.0) != (delta.y() >= 0.0)) {
+                delta = MathUtil::divide(delta, +5.0, -5.0);
+            } else {
+                delta = MathUtil::divide(delta, -5.0, +5.0);
+            }
+            result =MathUtil::add(center, delta);
+        }
+#if 0
+        else if (isBezier()) {
+            // compute result Bezier point for (t == 0.5);
+            // copy all the control points (including end points) into an array
+            int len = bezierControlPoints.size() + 2;
+            QVector<QPointF> points = QVector<QPointF>(len);
+            points.replace(0, ep1);
+            for (int idx = 1; idx < len - 1; idx++) {
+                points.replace(idx, bezierControlPoints.at(idx - 1));
+            }
+            points.replace(len - 1, ep2);
+
+            // calculate midpoints of all points (len - 1 order times)
+            for (int idx = len - 1; idx > 0; idx--) {
+                for (int jdx = 0; jdx < idx; jdx++) {
+                    points.replace(jdx,  MathUtil::midpoint(points[jdx], points[jdx + 1]));
+                }
+            }
+            result = points[0];
+        } else {
+            result = MathUtil::midpoint(ep1, ep2);
+        }
+#endif
+        center = result;
+    }
+    return result;
+}
+
+/*public*/ void TrackSegment::setCentreSeg(QPointF p) {
+    center = p;
 }
 
 /*public*/ double TrackSegment::getCentreX(){
@@ -931,7 +1614,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, QGraphicsScene *g2)
 //   g2.setStroke(new BasicStroke(1.0F,BasicStroke.CAP_BUTT,BasicStroke.JOIN_ROUND));
 //   g2.draw(new Line2D.Double(getCoords(t->getConnect1(),t.getType1()), getCoords(t->getConnect2(),t.getType2())));
 //   g2->addLine(QLineF(getCoords(t->getConnect1(),t->getType1()), getCoords(t->getConnect2(),t->getType2())),QPen(color, trackWidth));
-  QGraphicsLineItem* lineItem = new QGraphicsLineItem(QLineF(editor->getCoords(getConnect1(),getType1()), editor->getCoords(getConnect2(),getType2())));
+  QGraphicsLineItem* lineItem = new QGraphicsLineItem(QLineF(LayoutEditor::getCoords(getConnect1(),getType1()), LayoutEditor::getCoords(getConnect2(),getType2())));
   lineItem->setPen(QPen(color, 1.0));
   item = lineItem;
   g2->addItem(item);
@@ -947,7 +1630,7 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
  editor->setTrackStrokeWidth(mainline);
  if (getArc())
  {
-  CalculateTrackSegmentAngle(editor);
+  calculateTrackSegmentAngle();
   //Stroke drawingStroke;
   //Stroke originalStroke = g2.getStroke();
   QPen drawingStroke;
@@ -962,7 +1645,7 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
   //g2.draw(new Arc2D.Double(t.getCX(), t.getCY(), t.getCW(), t.getCH(), t->getStartadj(), t.getTmpAngle(), Arc2D.OPEN));
   //g2->addEllipse(t->getCX(), t->getCY(), t->getCW(), t->getCH(),drawingStroke);
   QGraphicsArcItem* lineItem = new QGraphicsArcItem(getCX(), getCY(), getCW(), getCH());
-  lineItem->setStartAngle(getStartadj()*16);
+  lineItem->setStartAngle(getStartAdj()*16);
   lineItem->setSpanAngle(getTmpAngle()*16);
   lineItem->setPen(drawingStroke);
   item = lineItem;
@@ -971,8 +1654,8 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
  }
  else
  {
-  QPointF end1 = editor->getCoords(getConnect1(),getType1());
-  QPointF end2 = editor->getCoords(getConnect2(),getType2());
+  QPointF end1 = LayoutEditor::getCoords(getConnect1(),getType1());
+  QPointF end2 = LayoutEditor::getCoords(getConnect2(),getType2());
   double delX = end1.x() - end2.x();
   double delY = end1.y() - end2.y();
   double cLength = qSqrt( (delX*delX) + (delY*delY) );
@@ -1000,14 +1683,14 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
 /*
 * Calculates the initial parameters for drawing a circular track segment.
 */
-/*private*/ void TrackSegment::CalculateTrackSegmentAngle(LayoutEditor* editor)
+/*private*/ void TrackSegment::calculateTrackSegmentAngle()
 {
-  QPointF pt1 = editor->getCoords(getConnect1(),getType1());
-  QPointF pt2 = editor->getCoords(getConnect2(),getType2());
+  QPointF pt1 = LayoutEditor::getCoords(getConnect1(),getType1());
+  QPointF pt2 = LayoutEditor::getCoords(getConnect2(),getType2());
   if (getFlip())
   {
-   pt1 = editor->getCoords(getConnect2(),getType2());
-   pt2 = editor->getCoords(getConnect1(),getType1());
+   pt1 = LayoutEditor::getCoords(getConnect2(),getType2());
+   pt2 = LayoutEditor::getCoords(getConnect1(),getType1());
   }
   if((getTmpPt1()!=pt1) || (getTmpPt2()!=pt2) || trackNeedsRedraw())
   {
@@ -1046,7 +1729,7 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
     radius = (chord/2)/(qSin(halfAngle));
     // Circle
     double startRad = qAtan2(a, o) - halfAngle;
-    setStartadj(radToDeg(startRad));
+    setStartAdj(radToDeg(startRad));
     if(getCircle())
     {
      // Circle - Compute center
@@ -1061,7 +1744,7 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
     else
     {
      // Elipse - Round start angle to the closest multiple of 90
-     setStartadj(qRound(getStartadj() / 90.0) * 90.0);
+     setStartAdj(qRound(getStartAdj() / 90.0) * 90.0);
      // Elipse - Compute rectangle required by Arc2D.Double
      setCW(qAbs(a)*2.0);
      setCH(qAbs(o)*2.0);
@@ -1091,10 +1774,10 @@ void TrackSegment::drawSolidTrack(LayoutEditor* editor, QGraphicsScene* g2, bool
  //setTrackStrokeWidth(g2,mainline);
  if(getArc())
  {
-  CalculateTrackSegmentAngle(editor);
+  calculateTrackSegmentAngle();
   //g2.draw(new Arc2D.Double(t.getCX(), t.getCY(), t.getCW(), t.getCH(), t->getStartadj(), t.getTmpAngle(), Arc2D.OPEN));
   QGraphicsArcItem* lineItem = new QGraphicsArcItem(getCX(), getCY(), getCW(), getCH());
-  lineItem->setStartAngle(getStartadj()*16);
+  lineItem->setStartAngle(getStartAdj()*16);
   lineItem->setSpanAngle(getTmpAngle()*16);
   lineItem->setPen(QPen(QColor(color),editor->trackWidth));
   item = lineItem;
@@ -1103,7 +1786,7 @@ void TrackSegment::drawSolidTrack(LayoutEditor* editor, QGraphicsScene* g2, bool
  {
   //g2.draw(new Line2D.Double(getCoords(t.getConnect1(),t.getType1()), getCoords(t.getConnect2(),t.getType2())));
   //g2->addLine(QLineF(getCoords(t->getConnect1(),t->getType1()), getCoords(t->getConnect2(),t->getType2())),QPen(QColor(color),trackWidth));
-  QGraphicsLineItem* lineItem = new QGraphicsLineItem(QLineF(editor->getCoords(getConnect1(),getType1()), editor->getCoords(getConnect2(),getType2())));
+  QGraphicsLineItem* lineItem = new QGraphicsLineItem(QLineF(LayoutEditor::getCoords(getConnect1(),getType1()), LayoutEditor::getCoords(getConnect2(),getType2())));
   lineItem->setPen(QPen(QColor(color),editor->trackWidth));
   item = lineItem;
   g2->addItem(item);
@@ -1114,8 +1797,8 @@ void TrackSegment::drawTrackOvals(LayoutEditor *editor, QGraphicsScene *g2)
 {
  QColor color;
  color = (editor->defaultTrackColor);
- QPointF pt1 = editor->getCoords(getConnect1(),getType1());
- QPointF pt2 = editor->getCoords(getConnect2(),getType2());
+ QPointF pt1 = LayoutEditor::getCoords(getConnect1(),getType1());
+ QPointF pt2 = LayoutEditor::getCoords(getConnect2(),getType2());
  double cX = (pt1.x() + pt2.x())/2.0;
  double cY = (pt1.y() + pt2.y())/2.0;
  //g2.draw(new Ellipse2D.Double (cX-SIZE2, cY-SIZE2, SIZE2+SIZE2, SIZE2+SIZE2));
@@ -1136,7 +1819,7 @@ void TrackSegment::drawTrackOvals(LayoutEditor *editor, QGraphicsScene *g2)
   //g2->addLine(QLineF(getCoords(t->getConnect1(),t->getType1()), getCoords(t->getConnect2(),t->getType2())),QPen(color,1));
   if(!editor->hideTrackSegmentConstructionLines->isChecked())
   {
-   QGraphicsLineItem* item = new QGraphicsLineItem(QLineF(editor->getCoords(getConnect1(),getType1()), editor->getCoords(getConnect2(),getType2())));
+   QGraphicsLineItem* item = new QGraphicsLineItem(QLineF(LayoutEditor::getCoords(getConnect1(),getType1()), LayoutEditor::getCoords(getConnect2(),getType2())));
    item->setPen(QPen(color,1));
    group->addToGroup(item);
   }
@@ -1146,12 +1829,12 @@ void TrackSegment::drawTrackOvals(LayoutEditor *editor, QGraphicsScene *g2)
    //g2->addLine(QLineF(getCoords(t->getConnect1(),t->getType1()),  QPointF(t->getCentreX(),t->getCentreY())),QPen(color,trackWidth));
    if(!editor->hideTrackSegmentConstructionLines->isChecked())
    {
-    QGraphicsLineItem* item1 = new QGraphicsLineItem(QLineF(editor->getCoords(getConnect1(),getType1()),  QPointF(getCentreX(),getCentreY())));
+    QGraphicsLineItem* item1 = new QGraphicsLineItem(QLineF(LayoutEditor::getCoords(getConnect1(),getType1()),  QPointF(getCentreX(),getCentreY())));
     item1->setPen(QPen(color,1));
     group->addToGroup(item1);
     //g2.draw(new Line2D.Double(getCoords(t.getConnect2(),t.getType2()), new QPointF.Double(t.getCentreX(),t.getCentreY())));
     //g2->addLine(QLineF(getCoords(t->getConnect2(),t->getType2()), QPointF(t->getCentreX(),t->getCentreY())),QPen(color, trackWidth));
-    QGraphicsLineItem* item2 = new QGraphicsLineItem(QLineF(editor->getCoords(getConnect2(),getType2()), QPointF(getCentreX(),getCentreY())));
+    QGraphicsLineItem* item2 = new QGraphicsLineItem(QLineF(LayoutEditor::getCoords(getConnect2(),getType2()), QPointF(getCentreX(),getCentreY())));
     item2->setPen(QPen(color, 1));
     group->addToGroup(item2);
    }
@@ -1255,6 +1938,9 @@ double TrackSegment::degToRad(double degrees)
     }
 }
 
+
+
+
 /**
  * @return the bounds of this track segment
  */
@@ -1275,4 +1961,101 @@ double TrackSegment::degToRad(double degrees)
 
 //    return result;
  return item->boundingRect();
+}
+//
+//  bumper decoration accessors
+//
+/*public*/ bool TrackSegment::isBumperEndStart() {
+    return bumperEndStart;
+}
+
+/*public*/ void TrackSegment::setBumperEndStart(bool newVal) {
+    if (bumperEndStart != newVal) {
+        bumperEndStart = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isBumperEndStop() {
+    return bumperEndStop;
+}
+
+/*public*/ void TrackSegment::setBumperEndStop(bool newVal) {
+    if (bumperEndStop != newVal) {
+        bumperEndStop = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ QColor TrackSegment::getBumperColor() {
+    return bumperColor;
+}
+
+/*public*/ void TrackSegment::setBumperColor(QColor newVal) {
+    if (bumperColor != newVal) {
+        bumperColor = newVal;
+        JmriColorChooser::addRecentColor(newVal);
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ int TrackSegment::getBumperLineWidth() {
+    return bumperLineWidth;
+}
+
+/*public*/ void TrackSegment::setBumperLineWidth(int newVal) {
+    if (bumperLineWidth != newVal) {
+        bumperLineWidth = qMax(1, newVal);   // don't let value be less than 1
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*private*/ void TrackSegment::setupDefaultBumperSizes(LayoutEditor* layoutEditor) {
+    LayoutTrackDrawingOptions* ltdo = layoutEditor->getLayoutTrackDrawingOptions();
+
+    // use these as default sizes for end bumpers
+    int tieLength = ltdo->getSideTieLength();
+    int tieWidth = ltdo->getSideTieWidth();
+    int railWidth = ltdo->getSideRailWidth();
+    int railGap = ltdo->getSideRailGap();
+    if (mainline) {
+        tieLength = ltdo->getMainTieLength();
+        tieWidth = ltdo->getMainTieWidth();
+        railWidth = ltdo->getMainRailWidth();
+        railGap = ltdo->getMainRailGap();
+    }
+    bumperLineWidth = railWidth;
+    bumperLength = railGap + railWidth;
+    if ((tieLength > 0) && (tieWidth > 0)) {
+        bumperLineWidth = tieWidth;
+        bumperLength = tieLength * 3 / 2;
+    }
+}
+
+/*public*/ int TrackSegment::getBumperLength() {
+    return bumperLength;
+}
+
+/*public*/ void TrackSegment::setBumperLength(int newVal) {
+    if (bumperLength != newVal) {
+        bumperLength = qMax(0, newVal);   // don't let value be less than 0
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isBumperFlipped() {
+    return bumperFlipped;
+}
+
+/*public*/ void TrackSegment::setBumperFlipped(bool newVal) {
+    if (bumperFlipped != newVal) {
+        bumperFlipped = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
 }

@@ -143,7 +143,7 @@ private:
 
  Logger log;
  QMenu* popup;// = NULL;
- QGraphicsItem* item;
+ //QGraphicsItem* item;
  /*private*/ PositionablePoint* linkedPoint;
  JDialog* editLink;// = null;
  QList<PositionablePoint*>* pointList;

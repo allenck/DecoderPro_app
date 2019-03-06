@@ -14365,7 +14365,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
  QString turnoutName = turn->getDisplayName();
  QString farTurnoutName = farTurn->getDisplayName();
 
- QString logixName = "SYS_LAYOUTSLIP:"+slip->ident;
+ QString logixName = "SYS_LAYOUTSLIP:"+slip->getName();
  QString sensorName = "IS:"+logixName+"C"+number;
  Sensor* sensor = ((ProxySensorManager*) InstanceManager::sensorManagerInstance())->provideSensor(sensorName);
  if (sensor==nullptr) {

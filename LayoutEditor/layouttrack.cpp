@@ -45,6 +45,7 @@
  this->center = c;
  this->layoutEditor = layoutEditor;
  defaultTrackColor = ColorUtil::stringToColor(layoutEditor->getDefaultTrackColor());
+ item = new QGraphicsItem();
 }
 
 /*public*/ /*abstract*/ bool LayoutTrack::isMainline() {return false;}
@@ -157,7 +158,7 @@
 //protected abstract void drawDecorations(Graphics2D g2);
 //note: placeholder until I get this implemented in all sub-classes
 //TODO: replace with abstract declaration (above)
-/*protected*/ void LayoutTrack::drawDecorations(QGraphicsScene* g2) {
+/*protected*/ void LayoutTrack::drawDecorations(EditScene* g2) {
     //nothing to do here... move along...
 }
 /**

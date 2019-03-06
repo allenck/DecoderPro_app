@@ -6,7 +6,7 @@
 #include "namedbeanhandle.h"
 #include "exceptions.h"
 #include "physicallocationreporter.h"
-#include "path.h"
+
 
 class Path;
 class LIBPR3SHARED_EXPORT Block : public AbstractNamedBean /*, public PhysicalLocationReporter*/

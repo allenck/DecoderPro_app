@@ -58,7 +58,7 @@
  rects = NULL;
 
  // persistent instances variables (saved between sessions)
- ident = "";
+ //ident = "";
  blockNameAC = "";
  blockNameBD = "";
  signalAName = "";  // signal at A track junction
@@ -121,8 +121,8 @@
 
  instance = this;
  layoutEditor = myPanel;
- ident = id;
- center = c;
+// ident = id;
+// center = c;
 }
 
 /*public*/ void LevelXing::removeBeanReference(NamedBean* nb) {

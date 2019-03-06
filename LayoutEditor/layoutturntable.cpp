@@ -69,8 +69,8 @@
 
  instance = this;
  layoutEditor = myPanel;
- ident = id;
- center = c;
+// ident = id;
+// center = c;
  radius = 25.0;
  rayList = QList<RayTrack*>(); // list of Ray Track objects.
  active = true;

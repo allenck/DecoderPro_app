@@ -1,5 +1,5 @@
 #include "layoutconnectivity.h"
-
+#include "path.h"
 /**
  * A LayoutConnectivity object represents a junction between two LayoutBlocks
  *		on a LayoutEditor panel.

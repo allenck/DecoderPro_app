@@ -18,6 +18,8 @@
 #include "oblocktablemodel.h"
 #include "blockeditaction.h"
 #include "systemnamecomparator.h"
+#include "path.h"
+
 
 BlockTableAction::BlockTableAction(QObject *parent) :
   AbstractTableAction(tr("Block Table"), parent)

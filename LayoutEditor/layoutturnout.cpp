@@ -162,7 +162,7 @@
 }
 
 
-void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFactor, double yFactor, LayoutEditor *myPanel, int v)
+void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFactor, double yFactor, LayoutEditor *layoutEditor, int v)
 {
  log = new Logger("LayoutTurnout");
  this->version = version;
@@ -251,7 +251,7 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  signalDMastNamed = nullptr; // single or double crossover only
 
 
-    instance = this;
+    //instance = this;
     namedTurnout = nullptr;
     turnoutName = "";
     mTurnoutListener = nullptr;
@@ -259,48 +259,50 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
     disableWhenOccupied = false;
     block = nullptr;
     blockName = "";
-    myPanel = myPanel;
-    ident = id;
+    //myPanel = myPanel;
+//    ident = id;
     type = t;
-    center = c;
+//    center = c;
+    version = v;
+
     // adjust initial coordinates
     if (type==LH_TURNOUT)
     {
      //.dispB.setLocation(layoutEditor->getTurnoutBX(),0.0);
-     dispB.setX(myPanel->getTurnoutBX());
+     dispB.setX(layoutEditor->getTurnoutBX());
      dispB.setY(0.0);
      //dispC.setLocation(layoutEditor->getTurnoutCX(),-layoutEditor->getTurnoutWid());
-     dispC.setX(myPanel->getTurnoutCX());
-     dispC.setY(-(myPanel->getTurnoutWid()));
+     dispC.setX(layoutEditor->getTurnoutCX());
+     dispC.setY(-(layoutEditor->getTurnoutWid()));
     }
     else if (type==RH_TURNOUT)
     {
      //.dispB.setLocation(layoutEditor->getTurnoutBX(),0.0);
-     dispB.setX(myPanel->getTurnoutBX());
+     dispB.setX(layoutEditor->getTurnoutBX());
      dispB.setY(0.0);
      //dispC.setLocation(layoutEditor->getTurnoutCX(),layoutEditor->getTurnoutWid());
-     dispC.setX(myPanel->getTurnoutCX());
-     dispC.setY(myPanel->getTurnoutWid());
+     dispC.setX(layoutEditor->getTurnoutCX());
+     dispC.setY(layoutEditor->getTurnoutWid());
     }
     else if (type==WYE_TURNOUT)
     {
      //.dispB.setLocation(layoutEditor->getTurnoutBX(),0.5*layoutEditor->getTurnoutWid());
-     dispB.setX(myPanel->getTurnoutBX());
-     dispB.setY(0.5*myPanel->getTurnoutWid());
+     dispB.setX(layoutEditor->getTurnoutBX());
+     dispB.setY(0.5*layoutEditor->getTurnoutWid());
      //dispC.setLocation(layoutEditor->getTurnoutBX(),-0.5*layoutEditor->getTurnoutWid());
-     dispC.setX(myPanel->getTurnoutBX());
-     dispC.setY(-0.5*myPanel->getTurnoutWid());
+     dispC.setX(layoutEditor->getTurnoutBX());
+     dispC.setY(-0.5*layoutEditor->getTurnoutWid());
 
     }
     else if (type==DOUBLE_XOVER)
     {
      //dispB.setLocation(layoutEditor->getXOverLong(),-layoutEditor->getXOverHWid());
-     dispB.setX(myPanel->getXOverLong());
-     dispB.setY(-(myPanel->getXOverHWid()));
+     dispB.setX(layoutEditor->getXOverLong());
+     dispB.setY(-(layoutEditor->getXOverHWid()));
 
      //dispC.setLocation(layoutEditor->getXOverLong(),layoutEditor->getXOverHWid());
-     dispC.setX(myPanel->getXOverLong());
-     dispC.setY(myPanel->getXOverHWid());
+     dispC.setX(layoutEditor->getXOverLong());
+     dispC.setY(layoutEditor->getXOverHWid());
 
         blockB = nullptr;
         blockBName = "";
@@ -312,11 +314,11 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
     else if (type==RH_XOVER)
     {
      //dispB.setLocation(layoutEditor->xOverShort(),-layoutEditor->xOverHWid());
-     dispB.setX(myPanel->getXOverShort());
-     dispB.setY(-(myPanel->getXOverHWid()));
+     dispB.setX(layoutEditor->getXOverShort());
+     dispB.setY(-(layoutEditor->getXOverHWid()));
      //dispC.setLocation(layoutEditor->xOverLong(),layoutEditor->xOverHWid());
-     dispC.setX(myPanel->getXOverLong());
-     dispC.setY(myPanel->getXOverHWid());
+     dispC.setX(layoutEditor->getXOverLong());
+     dispC.setY(layoutEditor->getXOverHWid());
 
         blockB = nullptr;
         blockBName = "";
@@ -328,11 +330,11 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
     else if (type==LH_XOVER)
     {
      //dispB.setLocation(layoutEditor->xOverLong(),-layoutEditor->xOverHWid());
-     dispB.setX(myPanel->getXOverLong());
-     dispB.setY(-(myPanel->getXOverHWid()));
+     dispB.setX(layoutEditor->getXOverLong());
+     dispB.setY(-(layoutEditor->getXOverHWid()));
      //dispC.setLocation(layoutEditor->xOverShort(),layoutEditor->xOverHWid());
-     dispC.setX(myPanel->getXOverShort());
-     dispC.setY(myPanel->getXOverHWid());
+     dispC.setX(layoutEditor->getXOverShort());
+     dispC.setY(layoutEditor->getXOverHWid());
 
         blockB = nullptr;
         blockBName = "";
@@ -1994,7 +1996,7 @@ void LayoutTurnout::on_setSignalMastsAct_triggered()
  {
    tools = new LayoutEditorTools(layoutEditor);
  }
- tools->setSignalMastsAtTurnoutFromMenu(instance,  boundaryBetween.toList());
+ tools->setSignalMastsAtTurnoutFromMenu(this,  boundaryBetween.toList());
 }
 
 void LayoutTurnout::on_setSensorsAct_triggered()
@@ -2003,7 +2005,7 @@ void LayoutTurnout::on_setSensorsAct_triggered()
     tools = new LayoutEditorTools(layoutEditor);
  }
 
- tools->setSensorsAtTurnoutFromMenu(instance, boundaryBetween.toList(), layoutEditor->sensorIconEditor, layoutEditor->sensorFrame);
+ tools->setSensorsAtTurnoutFromMenu(this, boundaryBetween.toList(), layoutEditor->sensorIconEditor, layoutEditor->sensorFrame);
 }
 
 void LayoutTurnout::on_setSignalsAct_triggered()
@@ -2015,17 +2017,17 @@ void LayoutTurnout::on_setSignalsAct_triggered()
  if ( (getTurnoutType()==DOUBLE_XOVER) || (getTurnoutType()==RH_XOVER) ||
                         (getTurnoutType()==LH_XOVER) )
  {
-  tools->setSignalsAtXoverTurnoutFromMenu(instance,
+  tools->setSignalsAtXoverTurnoutFromMenu(this,
         layoutEditor->signalIconEditor,layoutEditor->signalFrame);
  }
  else if (linkType==NO_LINK)
  {
-  tools->setSignalsAtTurnoutFromMenu(instance,
+  tools->setSignalsAtTurnoutFromMenu(this,
         layoutEditor->signalIconEditor,layoutEditor->signalFrame);
  }
  else if (linkType==THROAT_TO_THROAT)
  {
-  tools->setThroatToThroatFromMenu(instance,linkedTurnoutName,
+  tools->setThroatToThroatFromMenu(this,linkedTurnoutName,
         layoutEditor->signalIconEditor,layoutEditor->signalFrame);
  }
  else if (linkType==FIRST_3_WAY) {

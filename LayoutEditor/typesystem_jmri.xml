@@ -31,6 +31,7 @@
  <enum-type name ="LayoutTurnout::POINTS" />
  <enum-type name ="LayoutTurnout::LINKTYPES" />
  <enum-type name ="LayoutTurnout::TURNOUTTYPES" />
+ <enum-type name ="Path::DIR" />
 
  <rejection class="TableModel"/>
  <rejection class="AbstractTableModel"/>

@@ -7,6 +7,7 @@
 #include "jseparator.h"
 #include "connectivityutil.h"
 #include "createeditblock.h"
+#include "path.h"
 
 QVector<int>* LayoutBlock::updateReferences = new QVector<int>();
 long LayoutBlock::time=0;

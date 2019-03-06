@@ -90,6 +90,7 @@ public slots:
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger("LayoutTrack");
+ QGraphicsItem* item;
 
 protected:
  /*protected*/ LayoutEditor* layoutEditor = nullptr;
@@ -119,7 +120,10 @@ protected:
  /*protected*/ void highlightUnconnected(QGraphicsScene* g2);
  /*protected*/ /*abstract*/ virtual void drawEditControls(QGraphicsScene* g2);
  /*protected*/ /*abstract*/ virtual void drawTurnoutControls(QGraphicsScene* g2);
- /*protected*/ void drawDecorations(QGraphicsScene* g2);
+ /*protected*/ void drawDecorations(EditScene *g2);
+
+ friend class LayoutEditorAuxTools;
+ friend class LayoutEditor;
 };
 
 #endif // LAYOUTTRACK_H

@@ -1,18 +1,17 @@
 #include "section.h"
 #include "instancemanager.h"
 #include "scale.h"
-//#ifdef LAYOUTS
-#include "../LayoutEditor/layoutturnout.h"
-#include "../LayoutEditor/layoutblock.h"
-#include "../LayoutEditor/tracksegment.h"
-//#endif
-#include "../libPr3/Signal/signalhead.h"
+#include "layoutturnout.h"
+#include "layoutblock.h"
+#include "tracksegment.h"
+#include "signalhead.h"
 #include "block.h"
-#include "../LayoutEditor/layouteditor.h"
-#include "../LayoutEditor/connectivityutil.h"
-#include "../libPr3/Signal/abstractsignalheadmanager.h"
+#include "layouteditor.h"
+#include "connectivityutil.h"
+#include "abstractsignalheadmanager.h"
 #include "vptr.h"
 #include "jmrijframe.h"
+#include "path.h"
 
 const /*static*/ /*final*/ int Section::UNOCCUPIED = 0x04;
 

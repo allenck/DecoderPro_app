@@ -100,7 +100,7 @@ public:
      /*public*/ static /*final*/ double xOverHWidDefault;// = 10.0;
      /*public*/ static /*final*/ double xOverShortDefault;// = 10.0;
 
-    /*public*/ QString ident;   // name of this layout turnout (hidden from user)
+//    /*public*/ QString ident;   // name of this layout turnout (hidden from user)
     /*public*/ QString turnoutName;// = "";   // should be the name (system or user) of
                                 //	an existing physical turnout
     /*public*/ QString secondTurnoutName /*= ""*/;   /* should be the name (system or user) of
@@ -139,7 +139,7 @@ public:
     /*public*/ int continuingSense;// = Turnout::CLOSED;
     /*public*/ bool disabled;// = false;
     /*public*/ bool disableWhenOccupied;// = false;
-    /*public*/ QPointF center;// = new QPoint.Double(50.0,50.0);
+//    /*public*/ QPointF center;// = new QPoint.Double(50.0,50.0);
     /*public*/ QPointF dispB;// = new QPoint.Double(20.0,0.0);
     /*public*/ QPointF dispC;// = new QPoint.Double(20.0,10.0);
     /*public*/ QString linkedTurnoutName;// = ""; // name of the linked Turnout (as entered in tool)
@@ -445,8 +445,8 @@ protected:
     //Second turnout is used to either throw a second turnout in a cross over or if one turnout address is used to throw two physical ones
     /*protected*/ NamedBeanHandle<Turnout*>* secondNamedTurnout;// = NULL;
     /*protected*/ LayoutBlock* block;// = NULL;
-    /*protected*/ LayoutTurnout* instance;// = NULL;
-    /*protected*/ LayoutEditor* layoutEditor;// = NULL;
+//    /*protected*/ LayoutTurnout* instance;// = NULL;
+//    /*protected*/ LayoutEditor* layoutEditor;// = NULL;
     /*protected*/ void rotateCoords(double rot);
     /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e, bool editable);
 
@@ -483,6 +483,7 @@ friend class LayoutTurnoutXml;
 friend class ETWindowListener;
 friend class ConnectivityUtil;
 };
+
 class ETWindowListener : public WindowListener
 {
  Q_OBJECT

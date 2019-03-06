@@ -7,6 +7,7 @@
 #include "signalhead.h"
 #include "signalmast.h"
 #include "signalmastmanager.h"
+#include "path.h"
 
 //PositionablePoint::PositionablePoint(QObject *parent) :
 //    QObject(parent)
@@ -52,7 +53,7 @@
  trackSegment2Name = "";
 
  // persistent instances variables (saved between sessions)
- ident = "";
+ //ident = "";
  type = 0;
  connect1 = NULL;
  connect2 = NULL;
@@ -1136,8 +1137,9 @@ void PositionablePoint::invalidate(QGraphicsScene* g2)
 {
  if(item != NULL)
  {
-  Q_ASSERT(item->scene()!=0);
-  g2->removeItem(item);
+  //Q_ASSERT(item->scene()!=0);
+  if(item->scene()!= nullptr)
+   g2->removeItem(item);
   item = NULL;
  }
 }
