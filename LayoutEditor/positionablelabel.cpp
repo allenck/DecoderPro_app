@@ -36,7 +36,8 @@ PositionableLabel::PositionableLabel(QWidget *parent) :
 //    /*public*/ static final ResourceBundle rbean = ResourceBundle.getBundle("jmri.NamedBeanBundle");
 
 
-/*public*/ PositionableLabel::PositionableLabel(QString s, Editor* editor, Positionable* parent) : JLabel(s, editor)
+/*public*/ PositionableLabel::PositionableLabel(QString s, Editor* editor, Positionable* parent)
+ : JLabel(s, editor)
 {
  common(parent);
  //super(s);

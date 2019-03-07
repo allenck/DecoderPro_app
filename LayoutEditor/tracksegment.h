@@ -130,6 +130,27 @@ public:
     };
     /*public*/ int showConstructionLine;// = SHOWCON;
     /*public*/ QRectF getBounds();
+    /*public*/ bool hasDecorations();
+    /*public*/ QMap<QString, QString>* getDecorations();
+    /*public*/ void setDecorations(QMap<QString, QString>* decorations);
+    /*public*/ int getArrowStyle();
+    /*public*/ void setArrowStyle(int newVal);
+    /*public*/ bool isArrowEndStart();
+    /*public*/ void setArrowEndStart(bool newVal);
+    /*public*/ bool isArrowEndStop();
+    /*public*/ void setArrowEndStop(bool newVal);
+    /*public*/ bool isArrowDirIn();
+    /*public*/ void setArrowDirIn(bool newVal);
+    /*public*/ bool isArrowDirOut();
+    /*public*/ void setArrowDirOut(bool newVal);
+    /*public*/ QColor getArrowColor() ;
+    /*public*/ void setArrowColor(QColor newVal);
+    /*public*/ int getArrowLineWidth() ;
+    /*public*/ void setArrowLineWidth(int newVal);
+    /*public*/ int getArrowLength();
+    /*public*/ void setArrowLength(int newVal);
+    /*public*/ int getArrowGap();
+    /*public*/ void setArrowGap(int newVal);
     /*public*/ bool isBridgeSideRight();
     /*public*/ void setBridgeSideRight(bool newVal);
     /*public*/ bool isBridgeSideLeft();
@@ -146,7 +167,6 @@ public:
     /*public*/ void setBridgeLineWidth(int newVal);
     /*public*/ int getBridgeApproachWidth();
     /*public*/ void setBridgeApproachWidth(int newVal);
-
     /*public*/ bool isBumperEndStart();
     /*public*/ void setBumperEndStart(bool newVal);
     /*public*/ bool isBumperEndStop();
@@ -252,6 +272,17 @@ private:
  void drawTrackOvals(LayoutEditor *editor, QGraphicsScene *g2);
  void drawTrackCircleCentre(LayoutEditor *editor, QGraphicsScene *g2);
  /*private*/ void reCalculateTrackSegmentAngle(double x, double y);
+
+ /*private*/ int arrowGap = 1;
+ /*private*/ int arrowStyle = 0;
+ /*private*/ bool arrowEndStart = false;
+ /*private*/ bool arrowEndStop = false;
+ /*private*/ bool arrowDirIn = false;
+ /*private*/ bool arrowDirOut = false;
+ /*private*/ QColor arrowColor;// = Color.BLACK;
+ /*private*/ int arrowLineWidth = 4;
+ /*private*/ int arrowLength = 4;
+
  /*private*/ bool bridgeSideRight = false;
  /*private*/ bool bridgeSideLeft  = false;
  /*private*/ bool bridgeHasEntry = false;

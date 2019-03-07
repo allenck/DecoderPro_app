@@ -1,4 +1,4 @@
-#include "tracksegment.h"
+﻿#include "tracksegment.h"
 #include "edittracksegmentdlg.h"
 #include <QMenu>
 #include "abstractaction.h"
@@ -10,6 +10,7 @@
 #include <QPointF>
 #include "mathutil.h"
 #include "loggerfactory.h"
+#include "colorutil.h"
 
 //TrackSegment::TrackSegment(QObject *parent) :
 //    QObject(parent)
@@ -120,6 +121,7 @@ void TrackSegment::init(QString id)
  trackOval = NULL;
  showConstructionLine = SHOWCON;
  bridgeColor = QColor(Qt::black);
+ arrowColor = QColor(Qt::black);
 
 
 // persistent instances variables (saved between sessions)
@@ -668,7 +670,7 @@ TrackSegment::getLayoutBlock()
     //  end bumper decorations
     //
     if (bumperEndStart || bumperEndStop) {
-        if (getName().equals("T15")) {
+        if (getName() == ("T15")) {
             log->debug("STOP");
         }
         g2.setStroke(new BasicStroke(bumperLineWidth,
@@ -1333,7 +1335,7 @@ void TrackSegment::flipAngle()
     }
     void segmentEditBlockPressed(ActionEvent a) {
         // check if a block name has been entered
-        if (!blockName.equals(blockNameField.getText().trim()) ) {
+        if (!blockName == (blockNameField.getText().trim()) ) {
             // block has changed, if old block exists, decrement use
             if (block!=NULL) {
                 block.decrementUse();
@@ -1387,7 +1389,7 @@ void TrackSegment::flipAngle()
         if ( (oldDashed!=dashed) || (oldMainline!=mainline) || (oldHidden!=hidden) )
             needsRedraw = true;
         // check if Block changed
-        if ( !blockName.equals(blockNameField.getText().trim()) ) {
+        if ( !blockName == (blockNameField.getText().trim()) ) {
             // block has changed, if old block exists, decrement use
             if (block!=NULL) {
                 block.decrementUse();
@@ -2212,6 +2214,523 @@ double TrackSegment::degToRad(double degrees)
 
 //    return result;
  return item->boundingRect();
+}
+/*======================*\
+|* decoration accessors *|
+\*======================*/
+//@Override
+/*public*/ bool TrackSegment::hasDecorations() {
+    return ((arrowStyle > 0)
+            || (bridgeSideLeft || bridgeSideRight)
+            || (bumperEndStart || bumperEndStop)
+            || (tunnelSideLeft || tunnelSideRight));
+}
+
+/**
+ * get decorations
+ *
+ * @return decorations to set
+ */
+//@Override
+/*public*/ QMap<QString, QString>* TrackSegment::getDecorations() {
+    if (decorations == nullptr) {
+        decorations = new QMap<QString, QString>();
+    } //if (decorathions != null)
+
+    //
+    // arrow decorations
+    //
+    if (arrowStyle > 0) {
+        // <decoration name="arrow" value="double;both;linewidth=1;length=12;gap=1" />
+        QStringList arrowValues = QStringList();
+
+        arrowValues.append("style=" + QString::number(arrowStyle));
+
+        if (arrowEndStart && arrowEndStop) {
+            // default behaviour is both
+        } else if (arrowEndStop) {
+            arrowValues.append("stop");
+        } else {
+            arrowEndStart = true;
+            arrowValues.append("start");
+        }
+
+        if (arrowDirIn && !arrowDirOut) {
+            arrowValues.append("in");
+        } else if (!arrowDirIn && arrowDirOut) {
+            arrowValues.append("out");
+        } else {
+            arrowDirIn = true;
+            arrowDirOut = true;
+            arrowValues.append("both");
+        }
+        arrowValues.append("color=" + ColorUtil::colorToHexString(arrowColor));
+        arrowValues.append("linewidth=" +  QString::number(arrowLineWidth));
+        arrowValues.append("length=" +  QString::number(arrowLength));
+        arrowValues.append("gap=" +  QString::number(arrowGap));
+        decorations->insert("arrow",arrowValues.join(";"));
+    }   // if (arrowCount > 0)
+
+    //
+    //  bridge decorations
+    //
+    if (bridgeSideLeft || bridgeSideRight) {
+        // <decoration name="bridge" value="both;linewidth=2;deckwidth=8" />
+        QStringList bridgeValues = QStringList();
+
+        if (bridgeHasEntry && !bridgeHasExit) {
+            bridgeValues.append("entry");
+        } else if (!bridgeHasEntry && bridgeHasExit) {
+            bridgeValues.append("exit");
+        } else if (bridgeHasEntry && bridgeHasExit) {
+            bridgeValues.append("both");
+        }
+        if (bridgeSideLeft && !bridgeSideRight) {
+            bridgeValues.append("left");
+        } else if (!bridgeSideLeft && bridgeSideRight) {
+            bridgeValues.append("right");
+        }
+        bridgeValues.append("color=" + ColorUtil::colorToHexString(bridgeColor));
+        bridgeValues.append("linewidth=" +  QString::number(bridgeLineWidth));
+        bridgeValues.append("approachwidth=" +  QString::number(bridgeApproachWidth));
+        bridgeValues.append("deckwidth=" +  QString::number(bridgeDeckWidth));
+
+        decorations->insert("bridge", bridgeValues.join(";"));;
+    }   // if (bridgeSideLeft || bridgeSideRight)
+
+    //
+    //  end bumper decorations
+    //
+    if (bumperEndStart || bumperEndStop) {
+        // <decoration name="bumper" value="double;linewidth=2;length=6;gap=2;flipped" />
+        QStringList bumperValues = QStringList();
+        if (bumperEndStart) {
+            bumperValues.append("start");
+        } else if (bumperEndStop) {
+            bumperValues.append("stop");
+        }
+
+        if (bumperFlipped) {
+            bumperValues.append("flip");
+        }
+        bumperValues.append("color=" + ColorUtil::colorToHexString(bumperColor));
+        bumperValues.append("length=" + QString::number(bumperLength));
+        bumperValues.append("linewidth=" +  QString::number(bumperLineWidth));
+
+        decorations->insert("bumper", bumperValues.join(";"));
+    }   // if (bumperCount > 0)
+
+    //
+    //  tunnel decorations
+    //
+    if (tunnelSideLeft || tunnelSideRight) {
+        // <decoration name="tunnel" value="both;linewidth=2;floorwidth=8" />
+        QStringList tunnelValues = QStringList();
+
+        if (tunnelHasEntry && !tunnelHasExit) {
+            tunnelValues.append("entry");
+        } else if (!tunnelHasEntry && tunnelHasExit) {
+            tunnelValues.append("exit");
+        } else if (tunnelHasEntry && tunnelHasExit) {
+            tunnelValues.append("both");
+        }
+
+        if (tunnelSideLeft && !tunnelSideRight) {
+            tunnelValues.append("left");
+        } else if (tunnelSideLeft && !tunnelSideRight) {
+            tunnelValues.append("right");
+        }
+        tunnelValues.append("color=" + ColorUtil::colorToHexString(tunnelColor));
+        tunnelValues.append("linewidth=" +  QString::number(tunnelLineWidth));
+        tunnelValues.append("entrancewidth=" +  QString::number(tunnelEntranceWidth));
+        tunnelValues.append("floorwidth=" +  QString::number(tunnelFloorWidth));
+
+        decorations->insert("tunnel", tunnelValues.join(";"));
+    }   // if (tunnelSideLeft || tunnelSideRight)
+    return decorations;
+} // getDecorations
+
+/**
+ * set decorations
+ *
+ * @param decorations to set
+ */
+//@Override
+/*public*/ void TrackSegment::setDecorations(QMap<QString, QString>* decorations) {
+    LayoutTrack::setDecorations(decorations);
+    if (decorations != nullptr) {
+        //for (Map.Entry<String, String> entry : decorations.entrySet())
+        QMapIterator<QString, QString> entry(*decorations);
+        while(entry.hasNext())
+        {
+            log->debug("Key = " + entry.key() + ", Value = " + entry.value());
+            QString key = entry.key();
+            //
+            // arrow decorations
+            //
+            if (key == ("arrow")) {
+                QString arrowValue = entry.value();
+                // <decoration name="arrow" value="double;both;linewidth=1;length=12;gap=1" />
+                bool atStart = true, atStop = true;
+                bool hasIn = false, hasOut = false;
+                int lineWidth = 1, length = 3, gap = 1, count = 1;
+                QColor color = defaultTrackColor;
+                QStringList values = arrowValue.split(";");
+                for (int i = 0; i < values.length(); i++) {
+                    QString value = values[i];
+                    if (value == ("single")) {
+                        count = 1;
+                    } else if (value == ("double")) {
+                        count = 2;
+                    } else if (value == ("triple")) {
+                        count = 3;
+                    } else if (value.startsWith("style=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        count = (valueString.toInt());
+                    } else if (value == ("start")) {
+                        atStop = false;
+                    } else if (value == ("stop")) {
+                        atStart = false;
+                    } else if (value == ("in")) {
+                        hasIn = true;
+                    } else if (value == ("out")) {
+                        hasOut = true;
+                    } else if (value == ("both")) {
+                        hasIn = true;
+                        hasOut = true;
+                    } else if (value.startsWith("color=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        color = ColorUtil::stringToColor(valueString);
+                    } else if (value.startsWith("linewidth=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        lineWidth = (valueString.toInt());
+                    } else if (value.startsWith("length=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        length = (valueString.toInt());
+                    } else if (value.startsWith("gap=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        gap = (valueString.toInt());
+                    } else {
+                        log->debug("arrow value ignored: " + value);
+                    }
+                }
+                hasIn |= !hasOut;   // if hasOut is false make hasIn true
+                if (!atStart && !atStop) {   // if both false
+                    atStart = true; // set both true
+                    atStop = true;
+                }
+                setArrowEndStart(atStart);
+                setArrowEndStop(atStop);
+                setArrowDirIn(hasIn);
+                setArrowDirOut(hasOut);
+                setArrowColor(color);
+                setArrowLineWidth(lineWidth);
+                setArrowLength(length);
+                setArrowGap(gap);
+                // set count last so it will fix ends and dir (if necessary)
+                setArrowStyle(count);
+            } // if (key == ("arrow")) {
+            //
+            //  bridge decorations
+            //
+            else if (key == ("bridge")) {
+                QString bridgeValue = entry.value();
+                // <decoration name="bridge" value="both;linewidth=2;deckwidth=8" />
+                // right/left default true; in/out default false
+                bool hasLeft = true, hasRight = true, hasEntry = false, hasExit = false;
+                int approachWidth = 4, lineWidth = 1, deckWidth = 2;
+                QColor color = defaultTrackColor;
+                QStringList values = bridgeValue.split(";");
+                for (int i = 0; i < values.length(); i++) {
+                    QString value = values[i];
+                    //log.info("value[{}]: \"{}\"", i, value);
+                    if (value == ("left")) {
+                        hasRight = false;
+                    } else if (value == ("right")) {
+                        hasLeft = false;
+                    } else if (value == ("entry")) {
+                        hasEntry = true;
+                    } else if (value == ("exit")) {
+                        hasExit = true;
+                    } else if (value == ("both")) {
+                        hasEntry = true;
+                        hasExit = true;
+                    } else if (value.startsWith("color=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        color = ColorUtil::stringToColor(valueString);
+                    } else if (value.startsWith("approachwidth=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        approachWidth = (valueString.toInt());
+                    } else if (value.startsWith("linewidth=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        lineWidth = (valueString.toInt());
+                    } else if (value.startsWith("deckwidth=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        deckWidth = (valueString.toInt());
+                    } else {
+                        log->debug("bridge value ignored: " + value);
+                    }
+                }
+                // these both can't be false
+                if (!hasLeft && !hasRight) {
+                    hasLeft = true;
+                    hasRight = true;
+                }
+                setBridgeSideRight(hasRight);
+                setBridgeSideLeft(hasLeft);
+                setBridgeHasEntry(hasEntry);
+                setBridgeHasExit(hasExit);
+                setBridgeColor(color);
+                setBridgeDeckWidth(deckWidth);
+                setBridgeLineWidth(lineWidth);
+                setBridgeApproachWidth(approachWidth);
+            } // if (key == ("bridge")) {
+            //
+            //  bumper decorations
+            //
+            else if (key == ("bumper")) {
+                QString bumperValue = entry.value();
+                if (getName() == ("T15")) {
+                    log->debug("STOP");
+                }
+                // <decoration name="bumper" value="double;linewidth=2;length=6;gap=2;flipped" />
+                int lineWidth = 1, length = 4;
+                bool isFlipped = false, atStart = true, atStop = true;
+                QColor color = defaultTrackColor;
+                QStringList values = bumperValue.split(";");
+                for (int i = 0; i < values.length(); i++) {
+                    QString value = values[i];
+                    //log.info("value[{}]: \"{}\"", i, value);
+                    if (value == ("start")) {
+                        atStop = false;
+                    } else if (value == ("stop")) {
+                        atStart = false;
+                    } else if (value == ("both")) {
+                        // this is the default behaviour; parameter ignored
+                    } else if (value == ("flip")) {
+                        isFlipped = true;
+                    } else if (value.startsWith("color=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        color = ColorUtil::stringToColor(valueString);
+                    } else if (value.startsWith("linewidth=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        lineWidth = (valueString.toInt());
+                    } else if (value.startsWith("length=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        length = (valueString.toInt());
+                    } else {
+                        log->debug("bumper value ignored: " + value);
+                    }
+                }
+                atStop |= !atStart;   // if atStart is false make atStop true
+                setBumperEndStart(atStart);
+                setBumperEndStop(atStop);
+                setBumperColor(color);
+                setBumperLineWidth(lineWidth);
+                setBumperLength(length);
+                setBumperFlipped(isFlipped);
+            } // if (key == ("bumper")) {
+            //
+            //  tunnel decorations
+            //
+            else if (key == ("tunnel")) {
+                QString tunnelValue = entry.value();
+                // <decoration name="tunnel" value="both;linewidth=2;floorwidth=8" />
+                // right/left default true; in/out default false
+                bool hasLeft = true, hasRight = true, hasIn = false, hasOut = false;
+                int entranceWidth = 4, lineWidth = 1, floorWidth = 2;
+                QColor color = defaultTrackColor;
+                QStringList values = tunnelValue.split(";");
+                for (int i = 0; i < values.length(); i++) {
+                    QString value = values[i];
+                    //log.info("value[{}]: \"{}\"", i, value);
+                    if (value == ("left")) {
+                        hasRight = false;
+                    } else if (value == ("right")) {
+                        hasLeft = false;
+                    } else if (value == ("entry")) {
+                        hasIn = true;
+                    } else if (value == ("exit")) {
+                        hasOut = true;
+                    } else if (value == ("both")) {
+                        hasIn = true;
+                        hasOut = true;
+                    } else if (value.startsWith("color=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        color = ColorUtil::stringToColor(valueString);
+                    } else if (value.startsWith("entrancewidth=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        entranceWidth = (valueString.toInt());
+                    } else if (value.startsWith("linewidth=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        lineWidth = (valueString.toInt());
+                    } else if (value.startsWith("floorwidth=")) {
+                        QString valueString = value.mid(value.lastIndexOf("=") + 1);
+                        floorWidth = (valueString.toInt());
+                    } else {
+                        log->debug("tunnel value ignored: " + value);
+                    }
+                }
+                // these both can't be false
+                if (!hasLeft && !hasRight) {
+                    hasLeft = true;
+                    hasRight = true;
+                }
+                setTunnelSideRight(hasRight);
+                setTunnelSideLeft(hasLeft);
+                setTunnelHasEntry(hasIn);
+                setTunnelHasExit(hasOut);
+                setTunnelColor(color);
+                setTunnelEntranceWidth(entranceWidth);
+                setTunnelLineWidth(lineWidth);
+                setTunnelFloorWidth(floorWidth);
+            } // if (tunnelValue != null)
+            else {
+                log->debug("Unknown decoration key: " + key + ", value: " + entry.value());
+            }
+        }   // for (Map.Entry<String, String> entry : decorations.entrySet())
+    } //if (decorathions != null)
+}   // setDirections
+
+//
+//  arrow decoration accessors
+//
+/*public*/ int TrackSegment::getArrowStyle() {
+    return arrowStyle;
+}
+
+/*public*/ void TrackSegment::setArrowStyle(int newVal) {
+    if (arrowStyle != newVal) {
+        if (newVal > 0) {
+            if (!arrowEndStart && !arrowEndStop) {
+                arrowEndStart = true;
+                arrowEndStop = true;
+            }
+            if (!arrowDirIn && !arrowDirOut) {
+                arrowDirOut = true;
+            }
+        }
+        arrowStyle = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isArrowEndStart() {
+    return arrowEndStart;
+}
+
+/*public*/ void TrackSegment::setArrowEndStart(bool newVal) {
+    if (arrowEndStart != newVal) {
+        arrowEndStart = newVal;
+        if (!arrowEndStart && !arrowEndStop) {
+            arrowStyle = 0;
+        } else if (arrowStyle == 0) {
+            arrowStyle = 1;
+        }
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isArrowEndStop() {
+    return arrowEndStop;
+}
+
+/*public*/ void TrackSegment::setArrowEndStop(bool newVal) {
+    if (arrowEndStop != newVal) {
+        arrowEndStop = newVal;
+        if (!arrowEndStart && !arrowEndStop) {
+            arrowStyle = 0;
+        } else if (arrowStyle == 0) {
+            arrowStyle = 1;
+        }
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isArrowDirIn() {
+    return arrowDirIn;
+}
+
+/*public*/ void TrackSegment::setArrowDirIn(bool newVal) {
+    if (arrowDirIn != newVal) {
+        arrowDirIn = newVal;
+        if (!arrowDirIn && !arrowDirOut) {
+            arrowStyle = 0;
+        } else if (arrowStyle == 0) {
+            arrowStyle = 1;
+        }
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isArrowDirOut() {
+    return arrowDirOut;
+}
+
+/*public*/ void TrackSegment::setArrowDirOut(bool newVal) {
+    if (arrowDirOut != newVal) {
+        arrowDirOut = newVal;
+        if (!arrowDirIn && !arrowDirOut) {
+            arrowStyle = 0;
+        } else if (arrowStyle == 0) {
+            arrowStyle = 1;
+        }
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ QColor TrackSegment::getArrowColor() {
+    return arrowColor;
+}
+
+/*public*/ void TrackSegment::setArrowColor(QColor newVal) {
+    if (arrowColor != newVal) {
+        arrowColor = newVal;
+        JmriColorChooser::addRecentColor(newVal);
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ int TrackSegment::getArrowLineWidth() {
+    return arrowLineWidth;
+}
+
+/*public*/ void TrackSegment::setArrowLineWidth(int newVal) {
+    if (arrowLineWidth != newVal) {
+        arrowLineWidth =qMax(1, newVal);   // don't let value be less than 1
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ int TrackSegment::getArrowLength() {
+    return arrowLength;
+}
+
+/*public*/ void TrackSegment::setArrowLength(int newVal) {
+    if (arrowLength != newVal) {
+        arrowLength = qMax(2, newVal);
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ int TrackSegment::getArrowGap() {
+    return arrowGap;
+}
+
+/*public*/ void TrackSegment::setArrowGap(int newVal) {
+    if (arrowGap != newVal) {
+        arrowGap =qMax(0, newVal);
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
 }
 //
 //  bridge decoration accessors

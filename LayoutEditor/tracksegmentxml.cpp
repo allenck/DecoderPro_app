@@ -43,26 +43,152 @@ TrackSegmentXml::TrackSegmentXml(QObject *parent) :
  element.setAttribute("dashed",  (p->getDashed() ? "yes" : "no"));
  element.setAttribute("mainline",  (p->getMainline() ? "yes" : "no"));
  element.setAttribute("hidden",  (p->getHidden() ? "yes" : "no"));
- element.setAttribute("arc",  (p->getArc() ? "yes" : "no"));
- if (p->getArc())
+ if (p->isArc())
  {
+  element.setAttribute("arc", "yes");
   element.setAttribute("flip",  (p->getFlip() ? "yes" : "no"));
   element.setAttribute("circle",  (p->getCircle() ? "yes" : "no"));
-  if ((p->getCircle()) && (p->getAngle() != 0.0))
+  if ((p->isCircle()) && (p->getAngle() != 0.0))
   {
    element.setAttribute("angle",  (p->getAngle()));
    element.setAttribute("hideConLines",  (p->hideConstructionLines() ? "yes" : "no"));
   }
-  else
-   element.setAttribute("angle",  (p->getTmpAngle())); // ACK add this
+ }
+ if ( p->isBezier())
+ {
+     element.setAttribute("bezier", "yes");
+     element.setAttribute("hideConLines", ( p->hideConstructionLines() ? "yes" : "no"));
+     // add control points
+     QDomElement elementControlpoints = doc.createElement("controlpoints");
+     for (int i = 0; i < p->getNumberOfBezierControlPoints(); i++) {
+         QDomElement elementControlpoint = doc.createElement("controlpoint");
 
+         elementControlpoint.setAttribute("index", "" + i);
+
+         QPointF pt = p->getBezierControlPoint(i);
+         elementControlpoint.setAttribute("x",  pt.x());
+         elementControlpoint.setAttribute("y",  pt.y());
+
+         elementControlpoints.appendChild(elementControlpoint);
+     }
+     element.appendChild(elementControlpoints);
+ }
+
+ // store decorations
+ QMap<QString, QString>* decorations = p->getDecorations();
+ if ((decorations != nullptr) && (decorations->size() > 0)) {
+     QDomElement decorationsElement = doc.createElement("decorations");
+     //for (Map.Entry<String, String> entry : decorations.entrySet())
+     QMapIterator<QString, QString> entry(*decorations);
+     while(entry.hasNext())
+     {
+      entry.next();
+         QString name = entry.key();
+         if (name != ("arrow") && name !=("bridge")
+                 && name != ("bumper") && name != ("tunnel")) {
+             QDomElement decorationElement = doc.createElement("decoration");
+             decorationElement.setAttribute("name", name);
+             QString value = entry.value();
+             if (!value.isEmpty()) {
+                 decorationElement.setAttribute("value", value);
+             }
+             decorationsElement.appendChild(decorationElement);
+         }
+     }
+     element.appendChild(decorationsElement);
+
+     if (p->getArrowStyle() > 0) {
+         QDomElement decorationElement = doc.createElement("arrow");
+         decorationElement.setAttribute("style", ( p->getArrowStyle()));
+         if (p->isArrowEndStart() &&  p->isArrowEndStop()) {
+             decorationElement.setAttribute("end", "both");
+         } else if ( p->isArrowEndStop()) {
+             decorationElement.setAttribute("end", "stop");
+         } else {
+             decorationElement.setAttribute("end", "start");
+         }
+         if (p->isArrowDirIn() && p->isArrowDirOut()) {
+             decorationElement.setAttribute("direction", "both");
+         } else if (p->isArrowDirOut()) {
+             decorationElement.setAttribute("direction", "out");
+         } else {
+             decorationElement.setAttribute("direction", "in");
+         }
+         decorationElement.setAttribute("color", ColorUtil::colorToHexString(p->getArrowColor()));
+         decorationElement.setAttribute("linewidth", (p->getArrowLineWidth()));
+         decorationElement.setAttribute("length", (p->getArrowLength()));
+         decorationElement.setAttribute("gap", (p->getArrowGap()));
+         decorationsElement.appendChild(decorationElement);
+     }
+     if ( p->isBridgeSideLeft() ||  p->isBridgeSideRight()) {
+         QDomElement decorationElement = doc.createElement("bridge");
+         if ( p->isBridgeSideLeft() &&  p->isBridgeSideRight()) {
+             decorationElement.setAttribute("side", "both");
+         } else if ( p->isBridgeSideLeft()) {
+             decorationElement.setAttribute("side", "left");
+         } else {
+             decorationElement.setAttribute("side", "right");
+         }
+         if ( p->isBridgeHasEntry() &&  p->isBridgeHasExit()) {
+             decorationElement.setAttribute("end", "both");
+         } else if ( p->isBridgeHasEntry()) {
+             decorationElement.setAttribute("end", "entry");
+         } else if ( p->isBridgeHasExit()) {
+             decorationElement.setAttribute("end", "exit");
+         }
+         decorationElement.setAttribute("color", ColorUtil::colorToHexString( p->getBridgeColor()));
+         decorationElement.setAttribute("linewidth", ( p->getBridgeLineWidth()));
+         decorationElement.setAttribute("approachwidth", ( p->getBridgeApproachWidth()));
+         decorationElement.setAttribute("deckwidth", ( p->getBridgeDeckWidth()));
+         decorationsElement.appendChild(decorationElement);
+     }
+     if ( p->isBumperEndStart() ||  p->isBumperEndStop()) {
+         QDomElement decorationElement =doc.createElement("bumper");
+         if ( p->isBumperEndStart() &&  p->isBumperEndStop()) {
+             decorationElement.setAttribute("end", "both");
+         } else if ( p->isBumperEndStop()) {
+             decorationElement.setAttribute("end", "stop");
+         } else {
+             decorationElement.setAttribute("end", "start");
+         }
+         decorationElement.setAttribute("color", ColorUtil::colorToHexString( p->getBumperColor()));
+         decorationElement.setAttribute("linewidth", ( p->getBumperLineWidth()));
+         decorationElement.setAttribute("length", ( p->getBumperLength()));
+         if ( p->isBumperFlipped()) {
+             decorationElement.setAttribute("flip", "true");
+         }
+         decorationsElement.appendChild(decorationElement);
+     }
+
+     if ( p->isTunnelSideLeft() ||  p->isTunnelSideRight()) {
+         QDomElement decorationElement = doc.createElement("tunnel");
+         if ( p->isTunnelSideLeft() &&  p->isTunnelSideRight()) {
+             decorationElement.setAttribute("side", "both");
+         } else if ( p->isTunnelSideLeft()) {
+             decorationElement.setAttribute("side", "left");
+         } else {
+             decorationElement.setAttribute("side", "right");
+         }
+         if ( p->isTunnelHasEntry() &&  p->isTunnelHasExit()) {
+             decorationElement.setAttribute("end", "both");
+         } else if ( p->isTunnelHasEntry()) {
+             decorationElement.setAttribute("end", "entry");
+         } else if ( p->isTunnelHasExit()) {
+             decorationElement.setAttribute("end", "exit");
+         }
+         decorationElement.setAttribute("color", ColorUtil::colorToHexString( p->getTunnelColor()));
+         decorationElement.setAttribute("linewidth", ( p->getTunnelLineWidth()));
+         decorationElement.setAttribute("entrancewidth", ( p->getTunnelEntranceWidth()));
+         decorationElement.setAttribute("floorwidth", ( p->getTunnelFloorWidth()));
+         decorationsElement.appendChild(decorationElement);
+     }
  }
  element.setAttribute("class", "jmri.jmrit.display.configurexml.TrackSegmentXml");
  return element;
 }
 
-/*public*/ bool TrackSegmentXml::load(QDomElement /*element*/) throw (Exception){
-    Logger::error("Invalid method called");
+/*public*/ bool TrackSegmentXml::load(QDomElement /*shared*/, QDomElement /*perNode*/) throw (Exception){
+    log->error("Invalid method called");
     return false;
 }
 
@@ -90,7 +216,7 @@ TrackSegmentXml::TrackSegmentXml(QObject *parent) :
  //} catch (DataConversionException e) {
  if(!bOk)
  {
-  Logger::error("failed to convert tracksegment attribute");
+  log->error("failed to convert tracksegment attribute");
  }
  bool dash = true;
  if (element.attribute("dashed")==("no")) {
@@ -120,7 +246,7 @@ TrackSegmentXml::TrackSegmentXml(QObject *parent) :
  catch (NullPointerException e)
  {
  }//considered normal if the attribute is not present }
- if (l->getArc())
+ if (l->isArc())
  {
   //int angle = 0;
   //int startangle = 0;
@@ -136,11 +262,11 @@ TrackSegmentXml::TrackSegmentXml(QObject *parent) :
       }
   } catch (NullPointerException e) {
   }
-  if (l->getCircle()) {
+  if (l->isCircle()) {
       try {
           l->setAngle(element.attribute("angle").toDouble());
       } catch (DataConversionException e) {
-          Logger::error("failed to convert tracksegment attribute");
+          log->error("failed to convert tracksegment attribute");
       } catch (NullPointerException e) {  // considered normal if the attribute not present
       }
   }
@@ -151,6 +277,297 @@ TrackSegmentXml::TrackSegmentXml(QObject *parent) :
   } catch (NullPointerException e) {
   }//considered normal if the attribute is not present }
  }
+ try {
+             if (element.attribute("bezier")== "true") {
+                 // load control points
+                 QDomElement controlpointsElement = doc.createElement("controlpoints");
+                 if (!controlpointsElement.isNull()) {
+                     QDomNodeList elementList = controlpointsElement.elementsByTagName("controlpoint");
+                     if (!elementList.isEmpty()) {
+                         if (elementList.size() >= 2) {
+                             for (int i = 0; i < elementList.size(); i++) {
+                                 double x = 0.0;
+                                 double y = 0.0;
+                                 int index = 0;
+                                 QDomElement relem = elementList.at(i).toElement();
+                                 try
+                                 {
+                                  bool bok;
+                                     index = (relem.attribute("index")).toInt(&bok);
+                                     if(!bok) throw DataConversionException();
+                                     x = (relem.attribute("x")).toFloat(&bok);
+                                     if(!bok) throw DataConversionException();
+                                     y = (relem.attribute("y")).toFloat(&bok);
+                                     if(!bok) throw DataConversionException();
+
+                                 } catch(DataConversionException ex) {
+                                     log->error("failed to convert controlpoint coordinates or index attributes");
+                                 }
+                                 l->setBezierControlPoint(QPointF(x, y), index);
+                             }
+                         } else {
+                             log->error("Track segment Bezier two controlpoint elements not found. (found " + QString::number(elementList.size()) + ")");
+                         }
+                     } else {
+                         log->error("Track segment Bezier controlpoint elements not found.");
+                     }
+                 } else {
+                     log->error("Track segment Bezier controlpoints element not found.");
+                 }
+                 // NOTE: do this LAST (so reCenter won't be called yet)
+                 l->setBezier(true);
+             }
+         } catch (DataConversionException e) {
+             log->error("failed to convert tracksegment attribute");
+         } catch (NullPointerException e) {  // considered normal if the attribute is not present
+         }
+
+         //if (l.getName() == ("T31")) {
+         //    log.debug("Stop");
+         //}
+         // load decorations
+         QDomElement decorationsElement = element.firstChildElement("decorations");
+         if (!decorationsElement.isNull()) {
+             QDomNodeList decorationElementList = decorationsElement.childNodes();
+             if (!decorationElementList.isEmpty()) {
+                 QMap<QString, QString>* decorations = new QMap<QString, QString>();
+                 //for (Element decorationElement : decorationElementList)
+                 for(int i=0; i < decorationElementList.size(); i++)
+                 {
+                  QDomElement decorationElement= decorationElementList.at(i).toElement();
+                     QString decorationName = decorationElement.tagName();
+                     if (decorationName == ("arrow")) {
+                         QString a = decorationElement.attribute("style");
+                         if (a != "") {
+                             bool bok;
+                                 l->setArrowStyle(a.toInt(&bok));
+                             if(!bok) {
+                             }
+                         }
+                         // assume both ends
+                         l->setArrowEndStart(true);
+                         l->setArrowEndStop(true);
+                         a = decorationElement.attribute("end");
+                         if (a != "") {
+                             QString value = a ;
+                             if (value == ("start")) {
+                                 l->setArrowEndStop(false);
+                             } else if (value == ("stop")) {
+                                 l->setArrowEndStart(false);
+                             }
+                         }
+                         // assume both directions
+                         l->setArrowDirIn(true);
+                         l->setArrowDirOut(true);
+                         a = decorationElement.attribute("direction");
+                         if (a != "") {
+                             QString value = a ;
+                             if (value == ("in")) {
+                                 l->setArrowDirOut(false);
+                             } else if (value == ("out")) {
+                                 l->setArrowDirIn(false);
+                             }
+                         }
+                         a = decorationElement.attribute("color");
+                         if (a != "") {
+                             l->setArrowColor(ColorUtil::stringToColor(a ));
+                         }
+                         a = decorationElement.attribute("linewidth");
+                         if (a != "") {
+                             try
+                          {
+                                 l->setArrowLineWidth(a.toInt());
+                             } catch (DataConversionException e) {
+                             }
+                         }
+                         a = decorationElement.attribute("length");
+                         if (a != "") {
+                             try {
+                                 l->setArrowLength(a.toInt());
+                             } catch (DataConversionException e) {
+                             }
+                         }
+                         a = decorationElement.attribute("gap");
+                         if (a != "") {
+                             try {
+                                 l->setArrowGap(a.toInt());
+                             } catch (DataConversionException e) {
+                             }
+                         }
+                     } else if (decorationName == ("bridge")) {
+                         // assume both sides
+                         l->setBridgeSideLeft(true);
+                         l->setBridgeSideRight(true);
+                         QString a = decorationElement.attribute("side");
+                         if (a != "") {
+                             QString value = a ;
+                             if (value == ("right")) {
+                                 l->setBridgeSideLeft(false);
+                             } else if (value == ("left")) {
+                                 l->setBridgeSideRight(false);
+                             }
+                         }
+                         // assume neither end
+                         l->setBridgeHasEntry(false);
+                         l->setBridgeHasExit(false);
+                         a = decorationElement.attribute("end");
+                         if (a != "") {
+                             QString value = a ;
+                             if (value == ("both")) {
+                                 l->setBridgeHasEntry(true);
+                                 l->setBridgeHasExit(true);
+                             } else if (value == ("entry")) {
+                                 l->setBridgeHasEntry(true);
+                                 l->setBridgeHasExit(false);
+                             } else if (value == ("exit")) {
+                                 l->setBridgeHasEntry(false);
+                                 l->setBridgeHasExit(true);
+                             }
+                         }
+
+                         a = decorationElement.attribute("color");
+                         if (a != "") {
+                             l->setBridgeColor(ColorUtil::stringToColor(a ));
+                         }
+
+                         a = decorationElement.attribute("linewidth");
+                         if (a != "") {
+                             try {
+                                 l->setBridgeLineWidth(a.toInt());
+                             } catch (DataConversionException e) {
+                             }
+                         }
+
+                         a = decorationElement.attribute("approachwidth");
+                         if (a != "") {
+                             try {
+                                 l->setBridgeApproachWidth(a.toInt());
+                             } catch (DataConversionException e) {
+                             }
+                         }
+
+                         a = decorationElement.attribute("deckwidth");
+                         if (a != "") {
+                             try {
+                                 l->setBridgeDeckWidth(a.toInt());
+                             } catch (DataConversionException e) {
+                             }
+                         }
+                     } else if (decorationName == ("bumper")) {
+                         // assume both ends
+                         l->setBumperEndStart(true);
+                         l->setBumperEndStop(true);
+                         QString a = decorationElement.attribute("end");
+                         if (a != "") {
+                             QString value = a ;
+                             if (value == ("start")) {
+                                 l->setBumperEndStop(false);
+                             } else if (value == ("stop")) {
+                                 l->setBumperEndStart(false);
+                             }
+                         }
+
+                         a = decorationElement.attribute("color");
+                         if (a != "") {
+                             l->setBumperColor(ColorUtil::stringToColor(a ));
+                         }
+
+                         a = decorationElement.attribute("linewidth");
+                         if (a != "") {
+                             try {
+                                 l->setBumperLineWidth(a.toInt());
+                             } catch (DataConversionException e) {
+                             }
+                         }
+
+                         a = decorationElement.attribute("length");
+                         if (a != "") {
+                             try {
+                                 l->setBumperLength(a.toInt());
+                             } catch (DataConversionException e) {
+                             }
+                         }
+
+                         a = decorationElement.attribute("flip");
+                         if (a != "") {
+                             try {
+                                 l->setBumperFlipped(a == "true");
+                             } catch (DataConversionException e) {
+                             }
+                         }
+                     } else if (decorationName == ("tunnel")) {
+                         // assume both sides
+                         l->setTunnelSideLeft(true);
+                         l->setTunnelSideRight(true);
+                         QString a = decorationElement.attribute("side");
+                         if (a != "") {
+                             QString value = a ;
+                             if (value == ("right")) {
+                                 l->setTunnelSideLeft(false);
+                             } else if (value == ("left")) {
+                                 l->setTunnelSideRight(false);
+                             }
+                         }
+                         // assume neither end
+                         l->setTunnelHasEntry(false);
+                         l->setTunnelHasExit(false);
+                         a = decorationElement.attribute("end");
+                         if (a != "") {
+                             QString value = a ;
+                             if (value == ("both")) {
+                                 l->setTunnelHasEntry(true);
+                                 l->setTunnelHasExit(true);
+                             } else if (value == ("entry")) {
+                                 l->setTunnelHasEntry(true);
+                                 l->setTunnelHasExit(false);
+                             } else if (value == ("exit")) {
+                                 l->setTunnelHasEntry(false);
+                                 l->setTunnelHasExit(true);
+                             }
+                         }
+
+                         a = decorationElement.attribute("color");
+                         if (a != "") {
+                             l->setTunnelColor(ColorUtil::stringToColor(a ));
+                         }
+
+                         a = decorationElement.attribute("linewidth");
+                         if (a != "") {
+                             try {
+                                 l->setTunnelLineWidth(a.toInt());
+                             } catch (DataConversionException e) {
+                             }
+                         }
+
+                         a = decorationElement.attribute("entrancewidth");
+                         if (a != "") {
+                             try {
+                                 l->setTunnelEntranceWidth(a.toInt());
+                             } catch (DataConversionException e) {
+                             }
+                         }
+
+                         a = decorationElement.attribute("floorwidth");
+                         if (a != "") {
+                             try {
+                                 l->setTunnelFloorWidth(a.toInt());
+                             } catch (DataConversionException e) {
+                             }
+                         }
+                     } else {
+                         try {
+                             QString eName = decorationElement.attribute("name") ;
+                             QString a = decorationElement.attribute("value");
+                             QString eValue = (a != "") ? a  : "";
+                             decorations->insert(eName, eValue);
+                         } catch (NullPointerException e) {  // considered normal if the attribute is not present
+                             continue;
+                         }
+                     }
+                 }
+                 l->setDecorations(decorations);
+             }
+         }
  // get remaining attribute
  QString a = element.attribute("blockname");
  if (a != "") {
@@ -158,3 +575,6 @@ TrackSegmentXml::TrackSegmentXml(QObject *parent) :
  }
  p->trackList->append(l);
 }
+
+/*private*/ /*final*/ /*static*/ Logger* TrackSegmentXml::log
+           = LoggerFactory::getLogger("TrackSegmentXml");

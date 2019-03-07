@@ -11,12 +11,14 @@ public:
  ~TrackSegmentXml() {}
  TrackSegmentXml(const TrackSegmentXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);
- /*public*/ bool load(QDomElement element) throw (Exception);
+ /*public*/ bool load(QDomElement element, QDomElement) throw (Exception);
  /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
 
 signals:
 
 public slots:
+private:
+ static Logger* log;
 
 };
 Q_DECLARE_METATYPE(TrackSegmentXml)
