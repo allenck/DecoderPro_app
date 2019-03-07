@@ -19488,6 +19488,11 @@ void PythonQtWrapper_LayoutEditor::setScale(LayoutEditor* theWrappedObject, doub
   ( theWrappedObject->setScale(scaleX, scaleY));
 }
 
+void PythonQtWrapper_LayoutEditor::setSelectionRect(LayoutEditor* theWrappedObject, QRectF  selectionRect)
+{
+  ( theWrappedObject->setSelectionRect(selectionRect));
+}
+
 void PythonQtWrapper_LayoutEditor::setSelectionsHidden(LayoutEditor* theWrappedObject, bool  enabled, Positionable*  p)
 {
   ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_setSelectionsHidden(enabled, p));
@@ -19808,7 +19813,7 @@ if (_wrapper) {
 }
   LayoutTrack::customEvent(event0);
 }
-void PythonQtShell_LayoutTrack::draw1(EditScene*  g20, bool  isMain1, bool  isBlock2)
+void PythonQtShell_LayoutTrack::draw1(EditScene*  g20, bool  isMain1, bool  isBlock2, QPen  arg__4)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -19816,9 +19821,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("draw1");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "bool"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
-      void* args[4] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&isBlock2};
+      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "bool" , "QPen"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(5, argumentList);
+      void* args[5] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&isBlock2, (void*)&arg__4};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -19828,9 +19833,9 @@ if (_wrapper) {
     }
   }
 }
-  LayoutTrack::draw1(g20, isMain1, isBlock2);
+  LayoutTrack::draw1(g20, isMain1, isBlock2, arg__4);
 }
-void PythonQtShell_LayoutTrack::draw2(EditScene*  g20, bool  isMain1, float  railDisplacement2)
+void PythonQtShell_LayoutTrack::draw2(EditScene*  g20, bool  isMain1, float  railDisplacement2, QPen  arg__4)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -19838,9 +19843,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("draw2");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "float"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
-      void* args[4] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&railDisplacement2};
+      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "float" , "QPen"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(5, argumentList);
+      void* args[5] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&railDisplacement2, (void*)&arg__4};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -19850,7 +19855,7 @@ if (_wrapper) {
     }
   }
 }
-  LayoutTrack::draw2(g20, isMain1, railDisplacement2);
+  LayoutTrack::draw2(g20, isMain1, railDisplacement2, arg__4);
 }
 void PythonQtShell_LayoutTrack::drawDecorations(EditScene*  g20)
 {
@@ -19874,7 +19879,7 @@ if (_wrapper) {
 }
   LayoutTrack::drawDecorations(g20);
 }
-void PythonQtShell_LayoutTrack::drawEditControls(EditScene*  g20)
+void PythonQtShell_LayoutTrack::drawEditControls(EditScene*  g20, QPen  stroke1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -19882,9 +19887,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("drawEditControls");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "EditScene*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&g20};
+      static const char* argumentList[] ={"" , "EditScene*" , "QPen"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&g20, (void*)&stroke1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -19894,9 +19899,9 @@ if (_wrapper) {
     }
   }
 }
-  LayoutTrack::drawEditControls(g20);
+  LayoutTrack::drawEditControls(g20, stroke1);
 }
-void PythonQtShell_LayoutTrack::drawTurnoutControls(EditScene*  g20)
+void PythonQtShell_LayoutTrack::drawTurnoutControls(EditScene*  g20, QPen  stroke1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -19904,9 +19909,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("drawTurnoutControls");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "EditScene*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&g20};
+      static const char* argumentList[] ={"" , "EditScene*" , "QPen"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&g20, (void*)&stroke1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -19916,7 +19921,7 @@ if (_wrapper) {
     }
   }
 }
-  LayoutTrack::drawTurnoutControls(g20);
+  LayoutTrack::drawTurnoutControls(g20, stroke1);
 }
 bool  PythonQtShell_LayoutTrack::event(QEvent*  event0)
 {
@@ -20432,14 +20437,14 @@ void PythonQtWrapper_LayoutTrack::collectContiguousTracksNamesInBlockNamed(Layou
   ( theWrappedObject->collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet));
 }
 
-void PythonQtWrapper_LayoutTrack::draw1(LayoutTrack* theWrappedObject, EditScene*  g2, bool  isMain, bool  isBlock)
+void PythonQtWrapper_LayoutTrack::draw1(LayoutTrack* theWrappedObject, EditScene*  g2, bool  isMain, bool  isBlock, QPen  arg__4)
 {
-  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_draw1(g2, isMain, isBlock));
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_draw1(g2, isMain, isBlock, arg__4));
 }
 
-void PythonQtWrapper_LayoutTrack::draw2(LayoutTrack* theWrappedObject, EditScene*  g2, bool  isMain, float  railDisplacement)
+void PythonQtWrapper_LayoutTrack::draw2(LayoutTrack* theWrappedObject, EditScene*  g2, bool  isMain, float  railDisplacement, QPen  arg__4)
 {
-  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_draw2(g2, isMain, railDisplacement));
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_draw2(g2, isMain, railDisplacement, arg__4));
 }
 
 void PythonQtWrapper_LayoutTrack::drawDecorations(LayoutTrack* theWrappedObject, EditScene*  g2)
@@ -20447,9 +20452,9 @@ void PythonQtWrapper_LayoutTrack::drawDecorations(LayoutTrack* theWrappedObject,
   ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_drawDecorations(g2));
 }
 
-void PythonQtWrapper_LayoutTrack::drawEditControls(LayoutTrack* theWrappedObject, EditScene*  g2)
+void PythonQtWrapper_LayoutTrack::drawEditControls(LayoutTrack* theWrappedObject, EditScene*  g2, QPen  stroke)
 {
-  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_drawEditControls(g2));
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_drawEditControls(g2, stroke));
 }
 
 void PythonQtWrapper_LayoutTrack::drawHidden(LayoutTrack* theWrappedObject, EditScene*  g2)
@@ -20457,9 +20462,9 @@ void PythonQtWrapper_LayoutTrack::drawHidden(LayoutTrack* theWrappedObject, Edit
   ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_drawHidden(g2));
 }
 
-void PythonQtWrapper_LayoutTrack::drawTurnoutControls(LayoutTrack* theWrappedObject, EditScene*  g2)
+void PythonQtWrapper_LayoutTrack::drawTurnoutControls(LayoutTrack* theWrappedObject, EditScene*  g2, QPen  stroke)
 {
-  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_drawTurnoutControls(g2));
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_drawTurnoutControls(g2, stroke));
 }
 
 int  PythonQtWrapper_LayoutTrack::findHitPointType(LayoutTrack* theWrappedObject, QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected)
@@ -20792,7 +20797,7 @@ if (_wrapper) {
 }
   LayoutTurnout::customEvent(event0);
 }
-void PythonQtShell_LayoutTurnout::draw1(EditScene*  g20, bool  isMain1, bool  isBlock2)
+void PythonQtShell_LayoutTurnout::draw1(EditScene*  g20, bool  isMain1, bool  isBlock2, QPen  arg__4)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20800,9 +20805,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("draw1");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "bool"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
-      void* args[4] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&isBlock2};
+      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "bool" , "QPen"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(5, argumentList);
+      void* args[5] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&isBlock2, (void*)&arg__4};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -20812,9 +20817,9 @@ if (_wrapper) {
     }
   }
 }
-  LayoutTurnout::draw1(g20, isMain1, isBlock2);
+  LayoutTurnout::draw1(g20, isMain1, isBlock2, arg__4);
 }
-void PythonQtShell_LayoutTurnout::draw2(EditScene*  g20, bool  isMain1, float  railDisplacement2)
+void PythonQtShell_LayoutTurnout::draw2(EditScene*  g20, bool  isMain1, float  railDisplacement2, QPen  arg__4)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20822,9 +20827,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("draw2");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "float"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
-      void* args[4] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&railDisplacement2};
+      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "float" , "QPen"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(5, argumentList);
+      void* args[5] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&railDisplacement2, (void*)&arg__4};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -20834,7 +20839,7 @@ if (_wrapper) {
     }
   }
 }
-  LayoutTurnout::draw2(g20, isMain1, railDisplacement2);
+  LayoutTurnout::draw2(g20, isMain1, railDisplacement2, arg__4);
 }
 void PythonQtShell_LayoutTurnout::drawDecorations(EditScene*  g20)
 {
@@ -20858,7 +20863,7 @@ if (_wrapper) {
 }
   LayoutTurnout::drawDecorations(g20);
 }
-void PythonQtShell_LayoutTurnout::drawEditControls(EditScene*  g20)
+void PythonQtShell_LayoutTurnout::drawEditControls(EditScene*  g20, QPen  stroke1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20866,9 +20871,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("drawEditControls");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "EditScene*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&g20};
+      static const char* argumentList[] ={"" , "EditScene*" , "QPen"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&g20, (void*)&stroke1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -20878,9 +20883,9 @@ if (_wrapper) {
     }
   }
 }
-  LayoutTurnout::drawEditControls(g20);
+  LayoutTurnout::drawEditControls(g20, stroke1);
 }
-void PythonQtShell_LayoutTurnout::drawTurnoutControls(EditScene*  g20)
+void PythonQtShell_LayoutTurnout::drawTurnoutControls(EditScene*  g20, QPen  stroke1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20888,9 +20893,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("drawTurnoutControls");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "EditScene*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&g20};
+      static const char* argumentList[] ={"" , "EditScene*" , "QPen"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&g20, (void*)&stroke1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -20900,7 +20905,7 @@ if (_wrapper) {
     }
   }
 }
-  LayoutTurnout::drawTurnoutControls(g20);
+  LayoutTurnout::drawTurnoutControls(g20, stroke1);
 }
 bool  PythonQtShell_LayoutTurnout::event(QEvent*  event0)
 {

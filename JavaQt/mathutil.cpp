@@ -313,6 +313,19 @@ MathUtil::MathUtil()
     return QRectF(r.x() + h, r.y() + v, r.width() - (2 * h), r.height() - (2 * v));
 }
 /**
+ * scale a rectangle
+ *
+ * @param r the rectangle
+ * @param s the scale
+ * @return the scaled rectangle
+ */
+//TODO: add test case
+//@CheckReturnValue
+/*public*/ /*static*/ QRectF MathUtil::scale(/*@Nonnull*/ QRectF r, double s) {
+    return QRectF(r.x() * s, r.y() * s, r.width() * s, r.height() * s);
+}
+
+/**
  * @param p the point
  * @return the point orthogonal to this one (relative to {0, 0})
  */
@@ -329,6 +342,18 @@ MathUtil::MathUtil()
 //@CheckReturnValue
 /*public*/ /*static*/ QPointF MathUtil::normalize(/*@Nonnull*/ QPointF p, double length) {
     return multiply(normalize(p), length);
+}
+
+
+/**
+ * Convert Rectangle2D to Rectangle
+ *
+ * @param r the Rectangle
+ * @return the Rectangle2D
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QRect MathUtil::rectangle2DToRectangle(/*@Nonnull*/ QRectF r) {
+    return QRect((int) r.x(), (int) r.y(), (int) r.width(), (int) r.height());
 }
 
 /**

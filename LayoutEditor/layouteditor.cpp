@@ -63,6 +63,9 @@
 #include <limits>
 #include "layouttrackeditors.h"
 #include "layouteditorchecks.h"
+#include "mathutil.h"
+#include "blockcontentsicon.h"
+#include "layouttrackdrawingoptions.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -4325,523 +4328,708 @@ public Ellipse2D trackControlCircleAt(@Nonnull Point2D inPoint) {
    drawSlipCircles(g2);
   }
 }
-#if 0
+#if 1
 //
-    // this is called by the layoutEditorComponent
-    //
-    protected void draw(Graphics2D g2) {
+// this is called by the layoutEditorComponent
+//
+/*protected*/ void LayoutEditor::draw(EditScene* g2) {
 
-        //drawPositionableLabelBorder(g2);
-        //Optional antialising, to eliminate (reduce) staircase on diagonal lines
-        if (antialiasingOn) {
-            g2.setRenderingHints(antialiasing);
+    //drawPositionableLabelBorder(g2);
+    //Optional antialising, to eliminate (reduce) staircase on diagonal lines
+    if (antialiasingOn) {
+        editPanel->setRenderHint(QPainter::Antialiasing);
+    }
+
+    // things that only get drawn in edit mode
+    if (isEditable()) {
+        if (getDrawGrid()) {
+            drawPanelGrid(g2);
         }
+        drawLayoutTracksHidden(g2);
+    }
+    drawTrackSegmentsDashed(g2);
+    drawLayoutTracksBallast(g2);
+    drawLayoutTracksTies(g2);
+    drawLayoutTracksRails(g2);
+    drawLayoutTracksBlockLines(g2);
 
-        // things that only get drawn in edit mode
-        if (isEditable()) {
-            if (getDrawGrid()) {
-                drawPanelGrid(g2);
-            }
-            drawLayoutTracksHidden(g2);
+    QPen stroke = QPen(defaultTrackColor,1);
+    drawPositionablePoints(g2, false, stroke);
+    drawPositionablePoints(g2, true, stroke);
+
+    drawDecorations(g2);
+
+    // things that only get drawn in edit mode
+    if (isEditable()) {
+        drawLayoutTrackEditControls(g2);
+
+        drawMemoryRects(g2);
+        drawBlockContentsRects(g2);
+
+        if (allControlling()) {
+            drawTurnoutControls(g2);
         }
-        drawTrackSegmentsDashed(g2);
-        drawLayoutTracksBallast(g2);
-        drawLayoutTracksTies(g2);
-        drawLayoutTracksRails(g2);
-        drawLayoutTracksBlockLines(g2);
+        drawSelectionRect(g2);
+        highLightSelection(g2);
 
-        drawPositionablePoints(g2, false);
-        drawPositionablePoints(g2, true);
-
-        drawDecorations(g2);
-
-        // things that only get drawn in edit mode
-        if (isEditable()) {
-            drawLayoutTrackEditControls(g2);
-
-            drawMemoryRects(g2);
-            drawBlockContentsRects(g2);
-
-            if (allControlling()) {
-                drawTurnoutControls(g2);
-            }
-            drawSelectionRect(g2);
-            highLightSelection(g2);
-
-            drawTrackSegmentInProgress(g2);
-        } else if (turnoutCirclesWithoutEditMode) {
-            if (allControlling()) {
-                drawTurnoutControls(g2);
-            }
+        drawTrackSegmentInProgress(g2);
+    } else if (turnoutCirclesWithoutEditMode) {
+        if (allControlling()) {
+            drawTurnoutControls(g2);
         }
-    }   // draw
+    }
+}   // draw
 
-    //
-    //  draw hidden layout tracks
-    //
-    private void drawLayoutTracksHidden(Graphics2D g2) {
-        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
-        Stroke stroke = new BasicStroke(1.F);
-        Stroke dashedStroke = new BasicStroke(1.F,
-                BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
-                new float[]{6.F, 4.F}, 0);
+//
+//  draw hidden layout tracks
+//
+/*private*/ void LayoutEditor::drawLayoutTracksHidden(EditScene* g2) {
+    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
+//    Stroke stroke = new BasicStroke(1.F);
+//    Stroke dashedStroke = new BasicStroke(1.F,
+//            BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
+//            new float[]{6.F, 4.F}, 0);
+    QPen stroke = QPen(ltdo->getSideRailColor(),1.0, Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
+    QPen dashedStroke = QPen(ltdo->getMainRailColor(), 1.0, Qt::DashLine,Qt::RoundCap, Qt::RoundJoin);
 
-        //setup for drawing hidden sideline rails
-        g2.setColor(ltdo.getSideRailColor());
-        g2.setStroke(stroke);
-        boolean main = false, block = false, hidden = true, dashed = false;
-        draw1(g2, main, block, hidden, dashed);
-        g2.setStroke(dashedStroke);
-        draw1(g2, main, block, hidden, dashed = true);
+    //setup for drawing hidden sideline rails
+//    g2.setColor(ltdo->getSideRailColor());
+//    g2.setStroke(stroke);
+    bool main = false, block = false, hidden = true, dashed = false;
+    draw1(g2, main, block, hidden, dashed, stroke);
+    //g2.setStroke(dashedStroke);
+    draw1(g2, main, block, hidden, dashed = true, dashedStroke);
 
+    //setup for drawing mainline rails
+    main = true;
+    //g2.setColor(ltdo->getMainRailColor());
+    stroke.setColor(ltdo->getMainRailColor());
+    //g2.setStroke(stroke);
+    draw1(g2, main, block, hidden, dashed = false, stroke);
+    //g2.setStroke(dashedStroke);
+    dashed = true;
+    draw1(g2, main, block, hidden, dashed, dashedStroke);
+}
+
+//
+//  draw dashed track segments
+//
+/*private*/ void LayoutEditor::drawTrackSegmentsDashed(EditScene* g2) {
+    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
+    bool main = false, block = false, hidden = false, dashed = true;
+
+    if (ltdo->getSideRailCount() > 0) {
+        //setup for drawing dashed sideline rails
+        int railWidth = ltdo->getSideRailWidth();
+        //float[] dashArray = new float[]{6.F + railWidth, 4.F + railWidth};
+        QVector<qreal> dashArray = QVector<qreal>() << 6.0 + railWidth << 4.0 + railWidth;
+//        g2.setStroke(new BasicStroke(
+//                railWidth,
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+//                10.F, dashArray, 0));
+//        g2.setColor(ltdo->getSideRailColor());
+        QPen stroke = QPen(ltdo->getSideRailColor(), railWidth, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
+        stroke.setDashPattern(dashArray);
+        stroke.setDashOffset(10.0);
+        if ((ltdo->getSideRailCount() & 1) == 1) {
+            draw1(g2, main, block, hidden, dashed, stroke);
+        }
+        if (ltdo->getSideRailCount() >= 2) {
+            float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
+            draw2(g2, main, railDisplacement, dashed, stroke);
+        }
+    }
+
+    if (ltdo->getMainRailCount() > 0) {
+        //setup for drawing dashed mainline rails
+        main = true;
+        int railWidth = ltdo->getMainRailWidth();
+        //float[] dashArray = new float[]{6.F + railWidth, 4.F + railWidth};
+        QVector<qreal> dashArray = QVector<qreal>() << 6.0 + railWidth << 4.0 + railWidth;
+//        g2.setStroke(new BasicStroke(
+//                railWidth,
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+//                10.F, dashArray, 0));
+//        g2.setColor(ltdo->getMainRailColor());
+        QPen stroke = QPen(ltdo->getMainRailColor(), railWidth,  Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
+        stroke.setDashPattern(dashArray);
+        stroke.setDashOffset(10.0);
+        if ((ltdo->getMainRailCount() & 1) == 1) {
+            draw1(g2, main, block, hidden, dashed,stroke);
+        }
+        if (ltdo->getMainRailCount() >= 2) {
+            float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
+            draw2(g2, main, railDisplacement, dashed,stroke);
+        }
+    }
+}   // drawTrackSegmentsDashed
+
+//
+// draw layout track ballast
+//
+/*private*/ void LayoutEditor::drawLayoutTracksBallast(EditScene* g2) {
+    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
+    bool main = false, block = false, hidden = false, dashed = false;
+
+    //setup for drawing sideline ballast
+    int ballastWidth = ltdo->getSideBallastWidth();
+    if (ballastWidth > 0) {
+//        g2.setStroke(new BasicStroke(ballastWidth,
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+//        g2.setColor(ltdo->getSideBallastColor());
+     QPen stroke = QPen(ltdo->getSideBallastColor(), ballastWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        draw1(g2, main, block, hidden, dashed, stroke);
+    }
+
+    //setup for drawing mainline ballast
+    ballastWidth = ltdo->getMainBallastWidth();
+    if (ballastWidth > 0) {
+//        g2.setStroke(new BasicStroke(ballastWidth,
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+//        g2.setColor(ltdo->getMainBallastColor());
+     QPen stroke = QPen(ltdo->getMainBallastColor(), ballastWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+
+        main = true;
+        draw1(g2, main, block, hidden, dashed, stroke);
+    }
+}
+
+//
+// draw layout track ties
+//
+/*private*/ void LayoutEditor::drawLayoutTracksTies(EditScene* g2) {
+    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
+
+    // setup for drawing sideline ties
+    int tieLength = ltdo->getSideTieLength();
+    int tieWidth = ltdo->getSideTieWidth();
+    int tieGap = ltdo->getSideTieGap();
+    if ((tieLength > 0) && (tieWidth > 0) && (tieGap > 0)) {
+//        g2.setStroke(new BasicStroke(tieLength,
+//                BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
+//                new float[]{tieWidth, tieGap}, 0));
+//        g2.setColor(ltdo->getSideTieColor());
+     QPen stroke = QPen(ltdo->getSideTieColor(), tieLength, Qt::DashLine, Qt::FlatCap, Qt::BevelJoin);
+     QVector<qreal> dashPattern = QVector<qreal>() << tieWidth << tieGap;
+     stroke.setDashPattern(dashPattern);
+     stroke.setDashOffset(10.);
+        draw1(g2, false, stroke);  // main = false
+    }
+
+    // setup for drawing mainline ties
+    tieLength = ltdo->getMainTieLength();
+    tieWidth = ltdo->getMainTieWidth();
+    tieGap = ltdo->getMainTieGap();
+    if ((tieLength > 0) && (tieWidth > 0) && (tieGap > 0)) {
+//        g2.setStroke(new BasicStroke(tieLength,
+//                BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
+//                new float[]{tieWidth, tieGap}, 0));
+//        g2.setColor(ltdo->getMainTieColor());
+     QPen stroke = QPen(ltdo->getMainTieColor(), tieLength, Qt::DashLine, Qt::FlatCap, Qt::BevelJoin);
+     QVector<qreal> dashPattern = QVector<qreal>() << tieWidth << tieGap;
+     stroke.setDashPattern(dashPattern);
+     stroke.setDashOffset(10.);
+        draw1(g2, true, stroke); // main = true
+    }
+}
+
+//
+// draw layout track rails
+//
+/*private*/ void LayoutEditor::drawLayoutTracksRails(EditScene* g2) {
+    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
+    int railWidth = ltdo->getSideRailWidth();
+    QColor railColor = ltdo->getSideRailColor();
+
+    bool main = false, block = false, hidden = false, dashed = false;
+
+    if (ltdo->getSideRailCount() > 1) {
+        //setup for drawing sideline rails
+        float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
+//        g2.setStroke(new BasicStroke(railWidth,
+//                BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+//        g2.setColor(railColor);
+        QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        draw2(g2, main, railDisplacement, stroke);
+    }
+
+    if ((ltdo->getSideRailCount() & 1) == 1) {
+        //setup for drawing sideline rails
+//        g2.setStroke(new BasicStroke(
+//                railWidth,
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+//        g2.setColor(railColor);
+     QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        draw1(g2, main, block, hidden, dashed, stroke);
+    }
+
+    main = true;
+
+    railWidth = ltdo->getMainRailWidth();
+    railColor = ltdo->getMainRailColor();
+    if (ltdo->getMainRailCount() > 1) {
         //setup for drawing mainline rails
-        main = true;
-        g2.setColor(ltdo.getMainRailColor());
-        g2.setStroke(stroke);
-        draw1(g2, main, block, hidden, dashed = false);
-        g2.setStroke(dashedStroke);
-        dashed = true;
-        draw1(g2, main, block, hidden, dashed);
+        float railDisplacement = railWidth + (ltdo->getMainRailGap() / 2.F);
+//        g2.setStroke(new BasicStroke(railWidth,
+//                BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+//        g2.setColor(railColor);
+        QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        draw2(g2, main, railDisplacement, stroke);
     }
-
-    //
-    //  draw dashed track segments
-    //
-    private void drawTrackSegmentsDashed(Graphics2D g2) {
-        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
-        boolean main = false, block = false, hidden = false, dashed = true;
-
-        if (ltdo.getSideRailCount() > 0) {
-            //setup for drawing dashed sideline rails
-            int railWidth = ltdo.getSideRailWidth();
-            float[] dashArray = new float[]{6.F + railWidth, 4.F + railWidth};
-            g2.setStroke(new BasicStroke(
-                    railWidth,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                    10.F, dashArray, 0));
-            g2.setColor(ltdo.getSideRailColor());
-            if ((ltdo.getSideRailCount() & 1) == 1) {
-                draw1(g2, main, block, hidden, dashed);
-            }
-            if (ltdo.getSideRailCount() >= 2) {
-                float railDisplacement = railWidth + (ltdo.getSideRailGap() / 2.F);
-                draw2(g2, main, railDisplacement, dashed);
-            }
-        }
-
-        if (ltdo.getMainRailCount() > 0) {
-            //setup for drawing dashed mainline rails
-            main = true;
-            int railWidth = ltdo.getMainRailWidth();
-            float[] dashArray = new float[]{6.F + railWidth, 4.F + railWidth};
-            g2.setStroke(new BasicStroke(
-                    railWidth,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                    10.F, dashArray, 0));
-            g2.setColor(ltdo.getMainRailColor());
-            if ((ltdo.getMainRailCount() & 1) == 1) {
-                draw1(g2, main, block, hidden, dashed);
-            }
-            if (ltdo.getMainRailCount() >= 2) {
-                float railDisplacement = railWidth + (ltdo.getSideRailGap() / 2.F);
-                draw2(g2, main, railDisplacement, dashed);
-            }
-        }
-    }   // drawTrackSegmentsDashed
-
-    //
-    // draw layout track ballast
-    //
-    private void drawLayoutTracksBallast(Graphics2D g2) {
-        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
-        boolean main = false, block = false, hidden = false, dashed = false;
-
-        //setup for drawing sideline ballast
-        int ballastWidth = ltdo.getSideBallastWidth();
-        if (ballastWidth > 0) {
-            g2.setStroke(new BasicStroke(ballastWidth,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            g2.setColor(ltdo.getSideBallastColor());
-            draw1(g2, main, block, hidden, dashed);
-        }
-
-        //setup for drawing mainline ballast
-        ballastWidth = ltdo.getMainBallastWidth();
-        if (ballastWidth > 0) {
-            g2.setStroke(new BasicStroke(ballastWidth,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            g2.setColor(ltdo.getMainBallastColor());
-            main = true;
-            draw1(g2, main, block, hidden, dashed);
-        }
-    }
-
-    //
-    // draw layout track ties
-    //
-    private void drawLayoutTracksTies(Graphics2D g2) {
-        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
-
-        // setup for drawing sideline ties
-        int tieLength = ltdo.getSideTieLength();
-        int tieWidth = ltdo.getSideTieWidth();
-        int tieGap = ltdo.getSideTieGap();
-        if ((tieLength > 0) && (tieWidth > 0) && (tieGap > 0)) {
-            g2.setStroke(new BasicStroke(tieLength,
-                    BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
-                    new float[]{tieWidth, tieGap}, 0));
-            g2.setColor(ltdo.getSideTieColor());
-            draw1(g2, false);  // main = false
-        }
-
-        // setup for drawing mainline ties
-        tieLength = ltdo.getMainTieLength();
-        tieWidth = ltdo.getMainTieWidth();
-        tieGap = ltdo.getMainTieGap();
-        if ((tieLength > 0) && (tieWidth > 0) && (tieGap > 0)) {
-            g2.setStroke(new BasicStroke(tieLength,
-                    BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
-                    new float[]{tieWidth, tieGap}, 0));
-            g2.setColor(ltdo.getMainTieColor());
-            draw1(g2, true); // main = true
-        }
-    }
-
-    //
-    // draw layout track rails
-    //
-    private void drawLayoutTracksRails(Graphics2D g2) {
-        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
-        int railWidth = ltdo.getSideRailWidth();
-        Color railColor = ltdo.getSideRailColor();
-
-        boolean main = false, block = false, hidden = false, dashed = false;
-
-        if (ltdo.getSideRailCount() > 1) {
-            //setup for drawing sideline rails
-            float railDisplacement = railWidth + (ltdo.getSideRailGap() / 2.F);
-            g2.setStroke(new BasicStroke(railWidth,
-                    BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-            g2.setColor(railColor);
-            draw2(g2, main, railDisplacement);
-        }
-
-        if ((ltdo.getSideRailCount() & 1) == 1) {
-            //setup for drawing sideline rails
-            g2.setStroke(new BasicStroke(
-                    railWidth,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            g2.setColor(railColor);
-            draw1(g2, main, block, hidden, dashed);
-        }
-
-        main = true;
-
-        railWidth = ltdo.getMainRailWidth();
-        railColor = ltdo.getMainRailColor();
-        if (ltdo.getMainRailCount() > 1) {
-            //setup for drawing mainline rails
-            float railDisplacement = railWidth + (ltdo.getMainRailGap() / 2.F);
-            g2.setStroke(new BasicStroke(railWidth,
-                    BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-            g2.setColor(railColor);
-            draw2(g2, main, railDisplacement);
-        }
-        if ((ltdo.getMainRailCount() & 1) == 1) {
-            //setup for drawing mainline rails
-            g2.setStroke(new BasicStroke(
-                    railWidth,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            g2.setColor(railColor);
-            dashed = false;
-            draw1(g2, main, block, hidden, dashed);
-        }
-    }   // drawLayoutTracksRails
-
-    //
-    // draw layout track block lines
-    //
-    private void drawLayoutTracksBlockLines(Graphics2D g2) {
-        LayoutTrackDrawingOptions ltdo = getLayoutTrackDrawingOptions();
-
-        //setup for drawing sideline block lines
-        int blockLineWidth = ltdo.getSideBlockLineWidth();
-        float[] dashArray = new float[]{6.F + blockLineWidth, 4.F + blockLineWidth};
-
-        Stroke blockLineStroke = null;
-        int dashPercentageX10 = ltdo.getSideBlockLineDashPercentageX10();
-        if (dashPercentageX10 > 0) {
-            float[] blockLineDashArray = new float[]{
-                dashPercentageX10 + blockLineWidth,
-                10.F - dashPercentageX10 + blockLineWidth};
-            blockLineStroke = new BasicStroke(
-                    blockLineWidth,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                    10.F, blockLineDashArray, 0);
-            g2.setStroke(blockLineStroke);
-        } else {
-            blockLineStroke = new BasicStroke(
-                    ltdo.getSideBlockLineWidth(),
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-            g2.setStroke(new BasicStroke(
-                    blockLineWidth,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                    10.F, dashArray, 0));
-        }
-
-        //note: color is set in layout track's draw1 when isBlock is true
-        boolean main = false, block = true, hidden = false, dashed = true;
-        draw1(g2, main, block, hidden, dashed);
-        g2.setStroke(blockLineStroke);
-        draw1(g2, main, block, hidden, dashed = false);
-
-        //setup for drawing mainline block lines
-        blockLineWidth = ltdo.getMainBlockLineWidth();
-        dashArray = new float[]{6.F + blockLineWidth, 4.F + blockLineWidth};
-
-        dashPercentageX10 = ltdo.getMainBlockLineDashPercentageX10();
-        if (dashPercentageX10 > 0) {
-            float[] blockLineDashArray = new float[]{
-                dashPercentageX10 + blockLineWidth,
-                10 - dashPercentageX10 + blockLineWidth};
-            blockLineStroke = new BasicStroke(
-                    blockLineWidth,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                    10.F, blockLineDashArray, 0);
-            g2.setStroke(blockLineStroke);
-        } else {
-            blockLineStroke = new BasicStroke(
-                    ltdo.getMainBlockLineWidth(),
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-            g2.setStroke(new BasicStroke(
-                    blockLineWidth,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                    10.F, dashArray, 0));
-        }
-        //note: color is set in layout track's draw1 when isBlock is true
-        draw1(g2, main = true, block, hidden, dashed = true);
-        g2.setStroke(blockLineStroke);
+    if ((ltdo->getMainRailCount() & 1) == 1) {
+        //setup for drawing mainline rails
+//        g2.setStroke(new BasicStroke(
+//                railWidth,
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+//        g2.setColor(railColor);
         dashed = false;
-        draw1(g2, main, block, hidden, dashed);
+        QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        draw1(g2, main, block, hidden, dashed, stroke);
+    }
+}   // drawLayoutTracksRails
+
+//
+// draw layout track block lines
+//
+/*private*/ void LayoutEditor::drawLayoutTracksBlockLines(EditScene* g2) {
+    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
+
+    //setup for drawing sideline block lines
+    int blockLineWidth = ltdo->getSideBlockLineWidth();
+    //float[] dashArray = new float[]{6.F + blockLineWidth, 4.F + blockLineWidth};
+    QVector<float> dashArray = QVector<float>() << 6.0 + blockLineWidth << 4.0 + blockLineWidth;
+
+    //Stroke blockLineStroke = null;
+    QPen blockLineStroke;
+    QPen stroke;
+    int dashPercentageX10 = ltdo->getSideBlockLineDashPercentageX10();
+    if (dashPercentageX10 > 0)
+    {
+     //float[] blockLineDashArray = new float[]{
+     QVector<float> blockLineDashArray = QVector<float>() <<
+     dashPercentageX10 + blockLineWidth <<
+            10.0 - dashPercentageX10 + blockLineWidth;
+//        blockLineStroke = new BasicStroke(
+//                blockLineWidth,
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+//                10.F, blockLineDashArray, 0);
+     //g2.setStroke(blockLineStroke);
+        blockLineStroke = QPen(defaultTrackColor, blockLineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        blockLineStroke.setDashOffset(10.0);
+        stroke = blockLineStroke;
+    } else {
+//        blockLineStroke = new BasicStroke(
+//                ltdo->getSideBlockLineWidth(),
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+     blockLineStroke = QPen(defaultTrackColor, blockLineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+
+//        g2.setStroke(new BasicStroke(
+//                blockLineWidth,
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+//                10.F, dashArray, 0));
+     stroke = QPen(defaultTrackColor, ltdo->getSideBlockLineWidth(), Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+     stroke.setDashOffset(10.0);
     }
 
-    // isDashed defaults to false
-    private void draw1(Graphics2D g2,
-            boolean isMain,
-            boolean isBlock,
-            boolean isHidden) {
-        draw1(g2, isMain, isBlock, isHidden, false);
-    }
+    //note: color is set in layout track's draw1 when isBlock is true
+    bool main = false, block = true, hidden = false, dashed = true;
+    draw1(g2, main, block, hidden, dashed, stroke);
+    //g2.setStroke(blockLineStroke);
+    stroke = blockLineStroke;
+    draw1(g2, main, block, hidden, dashed = false, stroke);
 
-    // isHidden defaults to false
-    private void draw1(Graphics2D g2,
-            boolean isMain,
-            boolean isBlock) {
-        draw1(g2, isMain, isBlock, false);
+    //setup for drawing mainline block lines
+    blockLineWidth = ltdo->getMainBlockLineWidth();
+    //dashArray = new float[]{6.F + blockLineWidth, 4.F + blockLineWidth};
+    dashArray = QVector<float>() << 6.0 + blockLineWidth << 4.0 + blockLineWidth;
+    dashPercentageX10 = ltdo->getMainBlockLineDashPercentageX10();
+    if (dashPercentageX10 > 0) {
+//        float[] blockLineDashArray = new float[]{
+//            dashPercentageX10 + blockLineWidth,
+//            10 - dashPercentageX10 + blockLineWidth};
+     QVector<qreal> blockLineDashArray = QVector<qreal>() << dashPercentageX10 + blockLineWidth << 10 - dashPercentageX10 + blockLineWidth;
+//        blockLineStroke = new BasicStroke(
+//                blockLineWidth,
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+//                10.F, blockLineDashArray, 0);
+     blockLineStroke = QPen(defaultTrackColor, blockLineWidth, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
+     blockLineStroke.setDashPattern(blockLineDashArray);
+     blockLineStroke.setDashOffset(10.0);
+//        g2.setStroke(blockLineStroke);
+    } else {
+//        blockLineStroke = new BasicStroke(
+//                ltdo->getMainBlockLineWidth(),
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+//        g2.setStroke(new BasicStroke(
+//                blockLineWidth,
+//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+//                10.F, dashArray, 0));
+     blockLineStroke = QPen(defaultTrackColor, ltdo->getMainBlockLineWidth(), Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
+     stroke = QPen(defaultTrackColor, ltdo->getMainBlockLineWidth(), Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
+     stroke.setDashOffset(10.0);
     }
+    //note: color is set in layout track's draw1 when isBlock is true
+    draw1(g2, main = true, block, hidden, dashed = true, stroke);
+    //g2.setStroke(blockLineStroke);
+    dashed = false;
+    draw1(g2, main, block, hidden, dashed, blockLineStroke);
+}
 
-    // isBlock defaults to false
-    private void draw1(Graphics2D g2, boolean isMain) {
-        draw1(g2, isMain, false);
-    }
+// isDashed defaults to false
+/*private*/ void LayoutEditor::draw1(EditScene* g2,
+        bool isMain,
+        bool isBlock,
+        bool isHidden, QPen drawingStroke) {
+    draw1(g2, isMain, isBlock, isHidden, false, drawingStroke);
+}
 
-    // draw single line (ballast, ties & block lines)
-    private void draw1(Graphics2D g2,
-            boolean isMain,
-            boolean isBlock,
-            boolean isHidden,
-            boolean isDashed) {
-        for (LayoutTrack layoutTrack : layoutTrackList) {
-            if (!(layoutTrack instanceof PositionablePoint)) {
-                if (isHidden == layoutTrack.isHidden()) {
-                    if ((layoutTrack instanceof TrackSegment)) {
-                        if (((TrackSegment) layoutTrack).isDashed() == isDashed) {
-                            layoutTrack.draw1(g2, isMain, isBlock);
-                        }
-                    } else if (!isDashed) {
-                        layoutTrack.draw1(g2, isMain, isBlock);
+// isHidden defaults to false
+/*private*/ void LayoutEditor::draw1(EditScene* g2,
+        bool isMain,
+        bool isBlock, QPen drawingStroke) {
+    draw1(g2, isMain, isBlock, false,drawingStroke);
+}
+
+// isBlock defaults to false
+/*private*/ void LayoutEditor::draw1(EditScene* g2, bool isMain, QPen drawingStroke) {
+    draw1(g2, isMain, false, drawingStroke);
+}
+
+// draw single line (ballast, ties & block lines)
+/*private*/ void LayoutEditor::draw1(EditScene* g2,
+        bool isMain,
+        bool isBlock,
+        bool isHidden,
+        bool isDashed, QPen drawingStroke) {
+    for (LayoutTrack* layoutTrack : layoutTrackList) {
+        if (!(qobject_cast<PositionablePoint*>(layoutTrack))) {
+            if (isHidden == layoutTrack->isHidden()) {
+                if ((qobject_cast<TrackSegment*>(layoutTrack))) {
+                    if (((TrackSegment*) layoutTrack)->isDashed() == isDashed) {
+                        layoutTrack->draw1(g2, isMain, isBlock, drawingStroke);
                     }
+                } else if (!isDashed) {
+                    layoutTrack->draw1(g2, isMain, isBlock, drawingStroke);
                 }
             }
         }
     }
-
-    // draw positionable points
-    private void drawPositionablePoints(Graphics2D g2, boolean isMain) {
-        for (LayoutTrack layoutTrack : layoutTrackList) {
-            if (layoutTrack instanceof PositionablePoint) {
-                layoutTrack.draw1(g2, isMain, false);
-            }
-        }
-    }
-
-    // isDashed defaults to false
-    private void draw2(Graphics2D g2, boolean isMain, float railDisplacement) {
-        draw2(g2, isMain, railDisplacement, false);
-    }
-
-    // draw parallel lines (rails)
-    private void draw2(Graphics2D g2, boolean isMain,
-            float railDisplacement, boolean isDashed) {
-        for (LayoutTrack layoutTrack : layoutTrackList) {
-            if ((layoutTrack instanceof TrackSegment)) {
-                if (((TrackSegment) layoutTrack).isDashed() == isDashed) {
-                    layoutTrack.draw2(g2, isMain, railDisplacement);
-                }
-            } else if (!isDashed) {
-                layoutTrack.draw2(g2, isMain, railDisplacement);
-            }
-        }
-    }
-
-    // draw decorations
-    private void drawDecorations(EditScene g2) {
-        for (LayoutTrack tr : layoutTrackList) {
-            tr.drawDecorations(g2);
-        }
-    }
-
-    // draw track segment (in progress)
-    private void drawTrackSegmentInProgress(Graphics2D g2) {
-        //check for segment in progress
-        if (isEditable() && (beginObject != null) && trackButton.isSelected()) {
-            g2.setColor(defaultTrackColor);
-            g2.setStroke(new BasicStroke(sidelineTrackWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-            g2.draw(new Line2D.Double(beginLocation, currentLocation));
-
-            // highlight unconnected endpoints of all tracks
-            Color highlightColor = ColorUtil.setAlpha(Color.red, 0.25);
-            Color connectColor = ColorUtil.setAlpha(Color.green, 0.5);
-            g2.setColor(highlightColor);
-            g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            for (LayoutTrack lt : getLayoutTracks()) {
-                if (lt != beginObject) {
-                    if (lt == foundObject) {
-                        lt.highlightUnconnected(g2);
-                        g2.setColor(connectColor);
-                        lt.highlightUnconnected(g2, foundPointType);
-                        g2.setColor(highlightColor);
-                    } else {
-                        lt.highlightUnconnected(g2);
-                    }
-                }
-            }
-        }
-    }
-
-    // draw layout track edit controls
-    private void drawLayoutTrackEditControls(Graphics2D g2) {
-        g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-
-        for (LayoutTrack tr : layoutTrackList) {
-            tr.drawEditControls(g2);
-        }
-    }
-
-    // draw layout turnout controls
-    private void drawTurnoutControls(Graphics2D g2) {
-        g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-        g2.setColor(turnoutCircleColor);
-        // loop over all turnouts
-        boolean editable = isEditable();
-        for (LayoutTrack tr : layoutTrackList) {
-            if (tr instanceof LayoutTurnout) {  //<== this includes LayoutSlips
-                LayoutTurnout lt = (LayoutTurnout) tr;
-                if (editable || !(lt.isHidden() || lt.isDisabled())) {
-                    lt.drawTurnoutControls(g2);
-                }
-            } else if (tr instanceof LayoutTurntable) {
-                LayoutTurntable lt = (LayoutTurntable) tr;
-                if (editable || !lt.isHidden()) {
-                    lt.drawTurnoutControls(g2);
-                }
-            }
-        }
-    }
-
-    // get selection rectangle
-    private Rectangle2D getSelectionRect() {
-        double selX = Math.min(selectionX, selectionX + selectionWidth);
-        double selY = Math.min(selectionY, selectionY + selectionHeight);
-        Rectangle2D result = new Rectangle2D.Double(selX, selY,
-                Math.abs(selectionWidth), Math.abs(selectionHeight));
-        return result;
-    }
-
-    // set selection rectangle
-    public void setSelectionRect(@Nonnull Rectangle2D selectionRect) {
-        //selectionRect = selectionRect.createIntersection(MathUtil.zeroToInfinityRectangle2D);
-        selectionX = selectionRect.getX();
-        selectionY = selectionRect.getY();
-        selectionWidth = selectionRect.getWidth();
-        selectionHeight = selectionRect.getHeight();
-
-        // There's already code in the super class (Editor) to draw
-        // the selection rect... We just have to set _selectRect
-        _selectRect = MathUtil.rectangle2DToRectangle(selectionRect);
-
-        selectionRect = MathUtil.scale(selectionRect, getZoom());
-
-        JComponent targetPanel = getTargetPanel();
-        Rectangle targetRect = targetPanel.getVisibleRect();
-        // this will make it the size of the targetRect
-        // (effectively centering it onscreen)
-        Rectangle2D selRect2D = MathUtil.inset(selectionRect,
-                (selectionRect.getWidth() - targetRect.getWidth()) / 2.0,
-                (selectionRect.getHeight() - targetRect.getHeight()) / 2.0);
-        // don't let the origin go negative
-        selRect2D = selRect2D.createIntersection(MathUtil.zeroToInfinityRectangle2D);
-        Rectangle selRect = MathUtil.rectangle2DToRectangle(selRect2D);
-        if (!targetRect.contains(selRect)) {
-            targetPanel.scrollRectToVisible(selRect);
-        }
-
-        clearSelectionGroups();
-        selectionActive = true;
-        createSelectionGroups();
-        //redrawPanel(); // createSelectionGroups already calls this
-    }
-
-    private void drawSelectionRect(Graphics2D g2) {
-        if (selectionActive && (selectionWidth != 0.0) && (selectionHeight != 0.0)) {
-            // The Editor super class draws a dashed red selection rectangle...
-            // We're going to also draw a non-dashed yellow selection rectangle...
-            // This could be code stripped if the super-class implementation is "good enough"
-            Stroke stroke = g2.getStroke();
-            Color color = g2.getColor();
-
-            g2.setColor(new Color(204, 207, 88));
-            g2.setStroke(new BasicStroke(3.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-
-            g2.draw(getSelectionRect());    // this sets _selectRect also
-
-            g2.setColor(color);
-            g2.setStroke(stroke);
-        } else {
-            _selectRect = null; // and clear it to turn it off
-        }
-    }
-
-    private void drawMemoryRects(Graphics2D g2) {
-        g2.setColor(defaultTrackColor);
-        g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-
-        for (MemoryIcon l : memoryLabelList) {
-            g2.draw(new Rectangle2D.Double(l.getX(), l.getY(), l.getSize().width, l.getSize().height));
-        }
-    }
-
-    private void drawBlockContentsRects(Graphics2D g2) {
-        g2.setColor(defaultTrackColor);
-        g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-
-        for (BlockContentsIcon l : blockContentsLabelList) {
-            g2.draw(new Rectangle2D.Double(l.getX(), l.getY(), l.getSize().width, l.getSize().height));
-        }
-    }
-
+}
 #endif
+// draw positionable points
+/*private*/ void LayoutEditor::drawPositionablePoints(EditScene* g2, bool isMain, QPen drawingStroke) {
+    for (LayoutTrack* layoutTrack : layoutTrackList) {
+        if (qobject_cast<PositionablePoint*>(layoutTrack)) {
+            layoutTrack->draw1(g2, isMain, false, drawingStroke);
+        }
+    }
+}
 
+// isDashed defaults to false
+/*private*/ void LayoutEditor::draw2(EditScene* g2, bool isMain, float railDisplacement, QPen drawingStroke) {
+    draw2(g2, isMain, railDisplacement, false, drawingStroke);
+}
+
+// draw parallel lines (rails)
+/*private*/ void LayoutEditor::draw2(EditScene* g2, bool isMain,
+        float railDisplacement, bool isDashed, QPen drawingStroke) {
+    for (LayoutTrack* layoutTrack : layoutTrackList) {
+        if ((qobject_cast<TrackSegment*>(layoutTrack))) {
+            if (((TrackSegment*) layoutTrack)->isDashed() == isDashed) {
+                layoutTrack->draw2(g2, isMain, railDisplacement, drawingStroke);
+            }
+        } else if (!isDashed) {
+            layoutTrack->draw2(g2, isMain, railDisplacement, drawingStroke);
+        }
+    }
+}
+
+// draw decorations
+/*private*/ void LayoutEditor::drawDecorations(EditScene* g2) {
+    for (LayoutTrack* tr : layoutTrackList) {
+        tr->drawDecorations(g2);
+    }
+}
+
+// draw track segment (in progress)
+/*private*/ void LayoutEditor::drawTrackSegmentInProgress(EditScene* g2) {
+    //check for segment in progress
+    if (isEditable() && (beginObject != nullptr) && ui->trackButton->isChecked()) {
+//        g2.setColor(defaultTrackColor);
+//        g2.setStroke(new BasicStroke(sidelineTrackWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+     QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::FlatCap, Qt::RoundJoin);
+        //g2.draw(new Line2D.Double(beginLocation, currentLocation));
+     QGraphicsLineItem* item = new QGraphicsLineItem(beginLocation.x(), beginLocation.y(), currentLocation.x(), currentLocation.y());
+     item->setPen(stroke);
+
+        // highlight unconnected endpoints of all tracks
+        QColor highlightColor = ColorUtil::setAlpha(QColor(Qt::red), 0.25);
+        QColor connectColor = ColorUtil::setAlpha(QColor(Qt::green), 0.5);
+//        g2.setColor(highlightColor);
+//        g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        stroke = QPen(highlightColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
+
+        for (LayoutTrack* lt : getLayoutTracks()) {
+            if (lt != beginObject) {
+                if (lt == foundObject) {
+                    lt->highlightUnconnected(g2);
+//                    g2.setColor(connectColor);
+                    lt->highlightUnconnected(g2, foundPointType);
+//                    g2.setColor(highlightColor);
+                } else {
+                    lt->highlightUnconnected(g2);
+                }
+            }
+        }
+    }
+}
+
+// draw layout track edit controls
+/*private*/ void LayoutEditor::drawLayoutTrackEditControls(EditScene* g2) {
+    //g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+ QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
+
+    for (LayoutTrack* tr : layoutTrackList) {
+        tr->drawEditControls(g2, stroke);
+    }
+}
+
+// draw layout turnout controls
+/*private*/ void LayoutEditor::drawTurnoutControls(EditScene* g2) {
+//    g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+//    g2.setColor(turnoutCircleColor);
+ QPen stroke = QPen(turnoutCircleColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
+
+    // loop over all turnouts
+    bool editable = isEditable();
+    for (LayoutTrack* tr : layoutTrackList) {
+        if (qobject_cast<LayoutTurnout*>(tr)) {  //<== this includes LayoutSlips
+            LayoutTurnout* lt = (LayoutTurnout*) tr;
+            if (editable || !(lt->isHidden() || lt->isDisabled())) {
+                lt->drawTurnoutControls(g2, stroke);
+            }
+        } else if (qobject_cast<LayoutTurntable*>(tr)) {
+            LayoutTurntable* lt = (LayoutTurntable*) tr;
+            if (editable || !lt->isHidden()) {
+                lt->drawTurnoutControls(g2, stroke);
+            }
+        }
+    }
+}
+
+// get selection rectangle
+/*private*/ QRectF LayoutEditor::getSelectionRect() {
+    double selX = qMin(selectionX, selectionX + selectionWidth);
+    double selY = qMin(selectionY, selectionY + selectionHeight);
+    QRectF result =QRectF(selX, selY,
+            qAbs(selectionWidth), qAbs(selectionHeight));
+    return result;
+}
+
+// set selection rectangle
+/*public*/ void LayoutEditor::setSelectionRect(/*@Nonnull*/ QRectF selectionRect) {
+    //selectionRect = selectionRect.createIntersection(MathUtil.zeroToInfinityRectangle2D);
+    selectionX = selectionRect.x();
+    selectionY = selectionRect.y();
+    selectionWidth = selectionRect.width();
+    selectionHeight = selectionRect.height();
+
+    // There's already code in the super class (Editor) to draw
+    // the selection rect... We just have to set _selectRect
+    _selectRect = MathUtil::rectangle2DToRectangle(selectionRect);
+
+    selectionRect = MathUtil::scale(selectionRect, getZoom());
+#if 0 // TODO:
+    JComponent* targetPanel = getTargetPanel()->views().at(0)->window();
+    QRect targetRect = targetPanel->getVisibleRect();
+    // this will make it the size of the targetRect
+    // (effectively centering it onscreen)
+    QRectF selRect2D = MathUtil::inset(selectionRect,
+            (selectionRect.width() - targetRect.width()) / 2.0,
+            (selectionRect.height() - targetRect.height()) / 2.0);
+    // don't let the origin go negative
+    selRect2D = selRect2D.createIntersection(MathUtil::zeroToInfinityRectangle2D);
+    QRect selRect = MathUtil::rectangle2DToRectangle(selRect2D);
+    if (!targetRect.contains(selRect)) {
+        targetPanel->scrollRectToVisible(selRect);
+    }
+#endif
+    clearSelectionGroups();
+    selectionActive = true;
+    createSelectionGroups();
+    //redrawPanel(); // createSelectionGroups already calls this
+}
+
+/*private*/ void LayoutEditor::drawSelectionRect(EditScene* g2) {
+    if (selectionActive && (selectionWidth != 0.0) && (selectionHeight != 0.0)) {
+        // The Editor super class draws a dashed red selection rectangle...
+        // We're going to also draw a non-dashed yellow selection rectangle...
+        // This could be code stripped if the super-class implementation is "good enough"
+//        Stroke stroke = g2.getStroke();
+//        Color color = g2.getColor();
+
+//        g2.setColor(new Color(204, 207, 88));
+//        g2.setStroke(new BasicStroke(3.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+     QPen stroke = QPen(QColor(204, 207, 88), 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
+
+
+        //g2.draw(getSelectionRect());    // this sets _selectRect also
+     QGraphicsRectItem* r = new QGraphicsRectItem(getSelectionRect());
+     r->setPen(stroke);
+     g2->addItem(r);
+
+//        g2.setColor(color);
+//        g2.setStroke(stroke);
+    } else {
+        _selectRect = QRectF(); // and clear it to turn it off
+    }
+}
+
+
+/*private*/ void LayoutEditor::drawMemoryRects(EditScene* g2) {
+//    g2.setColor(defaultTrackColor);
+//    g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+ QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
+
+    for (MemoryIcon* l : *memoryLabelList) {
+        //g2.draw(new Rectangle2D.Double(l.getX(), l.getY(), l.getSize().width, l.getSize().height));
+     QGraphicsRectItem* r = new QGraphicsRectItem(QRectF(l->x(), l->y(), l->getSize().width(), l->getSize().height()));
+     r->setPen(stroke);
+     r->setPos(((Positionable*)l)->getLocation());
+     g2->addItem(r);
+    }
+}
+
+/*private*/ void LayoutEditor::drawBlockContentsRects(EditScene* g2) {
+//    g2.setColor(defaultTrackColor);
+//    g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+ QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
+
+    for (BlockContentsIcon* l : *blockContentsLabelList) {
+        //g2.draw(new Rectangle2D.Double(l.getX(), l.getY(), l.getSize().width, l.getSize().height));
+     QGraphicsRectItem* r = new QGraphicsRectItem(QRectF(l->x(), l->y(), l->getSize().width(), l->getSize().height()));
+     r->setPen(stroke);
+     r->setPos(((Positionable*)l)->getLocation());
+     g2->addItem(r);
+    }
+}
+
+
+#if 1
+/*private*/ void LayoutEditor::drawPanelGrid(EditScene* g2)
+{
+  //Dimension dim = getSize();
+  if(panelGridGroup!=nullptr)
+  {
+   Q_ASSERT(panelGridGroup->scene()!=0);
+   g2->removeItem(panelGridGroup);
+   //g2->destroyItemGroup(panelGridGroup);
+  }
+  panelGridGroup = nullptr;
+  if(!isEditable() || !drawGrid)
+   return;
+  panelGridGroup = new QGraphicsItemGroup();
+  //g2->addItem(panelGridGroup);
+  QSizeF dim = g2->sceneRect().size();
+  double pix = 10.0;
+  double maxX = dim.width();
+  double maxY = dim.height();
+  QPointF startPt = QPointF(0.0, 10.0);
+  QPointF stopPt = QPointF(maxX, 10.0);
+ //  BasicStroke narrow = new   BasicStroke(1.0F,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
+ //  BasicStroke wide = new BasicStroke(2.0F,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
+ //  g2.setColor(QColor::gray);
+ //  g2.setStroke(narrow);
+ QPen narrow = QPen(QColor(Qt::gray),1,  Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
+ QPen wide = QPen(QColor(Qt::gray),2,  Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
+
+ // draw horizontal lines
+ while (pix<maxY)
+ {
+  startPt= QPointF(0,pix);
+  stopPt = QPointF(maxX,pix);
+  if ( (((int)pix) % 100) < 5.0)
+  {
+//  g2.setStroke(wide);
+//  g2.draw(new Line2D.Double(startPt,stopPt));
+//  g2.setStroke(narrow);
+   //g2->addLine(QLineF(startPt, stopPt),wide);
+   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
+   line->setPen(wide);
+   panelGridGroup->addToGroup(line);
+  }
+  else
+  {
+//  g2.draw(new Line2D.Double(startPt,stopPt));
+   //g2->addLine(QLineF(startPt, stopPt),narrow);
+   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
+   line->setPen(narrow);
+   panelGridGroup->addToGroup(line);
+  }
+  pix += 10.0;
+ }
+ // draw vertical lines
+ pix = 10.0;
+ while (pix<maxX)
+ {
+  startPt=QPointF(pix,0.0);
+  stopPt= QPointF(pix,maxY);
+  if ( (((int)pix) % 100) < 5.0)
+  {
+//  g2.setStroke(wide);
+//  g2.draw(new Line2D.Double(startPt,stopPt));
+//  g2.setStroke(narrow);
+   //g2->addLine(QLineF(startPt, stopPt),wide);
+   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
+   line->setPen(wide);
+   panelGridGroup->addToGroup(line);
+  }
+  else
+  {
+  //g2.draw(new Line2D.Double(startPt,stopPt));
+   //g2->addLine(QLineF(startPt, stopPt),narrow);
+   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
+   line->setPen(narrow);
+   panelGridGroup->addToGroup(line);
+  }
+  pix += 10.0;
+ }
+ if(panelGridGroup && panelGridGroup->scene())
+  log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
+ g2->addItem(panelGridGroup);
+}
+#endif
+#if 0
+/*private*/ Stream<LayoutTrack> getLayoutTracksOfClass(Class<? extends LayoutTrack> layoutTrackClass) {
+    return layoutTrackList.stream()
+            .filter(layoutTrackClass::isInstance)
+            .map(layoutTrackClass::cast);
+}
+#else
+/*private*/ QList<LayoutTrack*> LayoutEditor::getLayoutTracksOfClass(QString type)
+{
+ QList<LayoutTrack*> list = QList<LayoutTrack*>();
+ foreach(LayoutTrack* lt, layoutTrackList)
+ {
+  if(QString(metaObject()->className()) == type)
+   list.append(lt);
+ }
+ return list;
+}
+#endif
+/*public*/ QList<PositionablePoint*> LayoutEditor::getPositionablePoints() {
+    //return getLayoutTracksOfClass("PositionablePoint");
+ QList<PositionablePoint*> list = QList<PositionablePoint*>();
+ foreach(LayoutTrack* lt, layoutTrackList)
+ {
+  if(QString(metaObject()->className()) == "PositionablePoint")
+   list.append((PositionablePoint*)lt);
+ }
+ return list;
+//    )
+//            .map(PositionablePoint.class::cast)
+//            .collect(Collectors.toCollection(ArrayList<PositionablePoint>::new));
+}
 /*protected*/ void LayoutEditor::setTrackStrokeWidth(bool need)
 {
  if (main == need) return;
@@ -5530,7 +5718,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   }
 }
 
-#if 1
+#if 0
 
 /*private*/ void LayoutEditor::drawSelectionRect(EditScene* editScene)
 {
@@ -5552,7 +5740,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   }
 }
 #endif
-#if 1
+#if 0
 /*private*/ void LayoutEditor::drawMemoryRects(EditScene* g2)
 {
  QColor color;
@@ -5579,90 +5767,6 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
     log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
    g2->addItem(l->_itemGroup);
   }
-}
-#endif
-#if 1
-/*private*/ void LayoutEditor::drawPanelGrid(EditScene* g2)
-{
-  //Dimension dim = getSize();
-  if(panelGridGroup!=nullptr)
-  {
-   Q_ASSERT(panelGridGroup->scene()!=0);
-   g2->removeItem(panelGridGroup);
-   //g2->destroyItemGroup(panelGridGroup);
-  }
-  panelGridGroup = nullptr;
-  if(!isEditable() || !drawGrid)
-   return;
-  panelGridGroup = new QGraphicsItemGroup();
-  //g2->addItem(panelGridGroup);
-  QSizeF dim = g2->sceneRect().size();
-  double pix = 10.0;
-  double maxX = dim.width();
-  double maxY = dim.height();
-  QPointF startPt = QPointF(0.0, 10.0);
-  QPointF stopPt = QPointF(maxX, 10.0);
- //  BasicStroke narrow = new   BasicStroke(1.0F,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
- //  BasicStroke wide = new BasicStroke(2.0F,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
- //  g2.setColor(QColor::gray);
- //  g2.setStroke(narrow);
- QPen narrow = QPen(QColor(Qt::gray),1,  Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
- QPen wide = QPen(QColor(Qt::gray),2,  Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
-
- // draw horizontal lines
- while (pix<maxY)
- {
-  startPt= QPointF(0,pix);
-  stopPt = QPointF(maxX,pix);
-  if ( (((int)pix) % 100) < 5.0)
-  {
-//  g2.setStroke(wide);
-//  g2.draw(new Line2D.Double(startPt,stopPt));
-//  g2.setStroke(narrow);
-   //g2->addLine(QLineF(startPt, stopPt),wide);
-   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
-   line->setPen(wide);
-   panelGridGroup->addToGroup(line);
-  }
-  else
-  {
-//  g2.draw(new Line2D.Double(startPt,stopPt));
-   //g2->addLine(QLineF(startPt, stopPt),narrow);
-   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
-   line->setPen(narrow);
-   panelGridGroup->addToGroup(line);
-  }
-  pix += 10.0;
- }
- // draw vertical lines
- pix = 10.0;
- while (pix<maxX)
- {
-  startPt=QPointF(pix,0.0);
-  stopPt= QPointF(pix,maxY);
-  if ( (((int)pix) % 100) < 5.0)
-  {
-//  g2.setStroke(wide);
-//  g2.draw(new Line2D.Double(startPt,stopPt));
-//  g2.setStroke(narrow);
-   //g2->addLine(QLineF(startPt, stopPt),wide);
-   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
-   line->setPen(wide);
-   panelGridGroup->addToGroup(line);
-  }
-  else
-  {
-  //g2.draw(new Line2D.Double(startPt,stopPt));
-   //g2->addLine(QLineF(startPt, stopPt),narrow);
-   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
-   line->setPen(narrow);
-   panelGridGroup->addToGroup(line);
-  }
-  pix += 10.0;
- }
- if(panelGridGroup && panelGridGroup->scene())
-  log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
- g2->addItem(panelGridGroup);
 }
 #endif
 
@@ -6475,38 +6579,9 @@ double LayoutEditor::toRadians(double degrees)
  }
  return nullptr;
 }
-#if 0
-/*private*/ Stream<LayoutTrack> getLayoutTracksOfClass(Class<? extends LayoutTrack> layoutTrackClass) {
-    return layoutTrackList.stream()
-            .filter(layoutTrackClass::isInstance)
-            .map(layoutTrackClass::cast);
-}
-#else
-/*private*/ QList<LayoutTrack*> LayoutEditor::getLayoutTracksOfClass(QString type)
-{
- QList<LayoutTrack*> list = QList<LayoutTrack*>();
- foreach(LayoutTrack* lt, layoutTrackList)
- {
-  if(QString(metaObject()->className()) == type)
-   list.append(lt);
- }
- return list;
-}
-#endif
 
-/*public*/ QList<PositionablePoint*> LayoutEditor::getPositionablePoints() {
-    //return getLayoutTracksOfClass("PositionablePoint");
- QList<PositionablePoint*> list = QList<PositionablePoint*>();
- foreach(LayoutTrack* lt, layoutTrackList)
- {
-  if(QString(metaObject()->className()) == "PositionablePoint")
-   list.append((PositionablePoint*)lt);
- }
- return list;
-//    )
-//            .map(PositionablePoint.class::cast)
-//            .collect(Collectors.toCollection(ArrayList<PositionablePoint>::new));
-}
+
+
 
 /*public*/ QList<LayoutSlip*> LayoutEditor::getLayoutSlips() {
 //    return getLayoutTracksOfClass("LayoutSlip");

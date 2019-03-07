@@ -411,6 +411,7 @@ public:
     /*public*/ QRectF trackEditControlRectAt(/*@Nonnull*/ QPointF inPoint);
     /*public*/ QRectF trackControlCircleRectAt(/*@Nonnull*/ QPointF inPoint);
     /*public*/ static QPointF zeroQPointF();
+    /*public*/ void setSelectionRect(/*@Nonnull*/ QRectF selectionRect);
 
 
 
@@ -509,11 +510,43 @@ private:
  /*private*/ void drawSlipCircles(EditScene* g2);
  /*private*/ void drawTurnoutRects(EditScene* g2);
  /*private*/ void drawXingRects(EditScene* g2);
- /*private*/ void drawSelectionRect(EditScene* editScene);
+ ///*private*/ void drawSelectionRect(EditScene* editScene);
  /*private*/ void drawPoints(EditScene* g2);
  /*private*/ void drawSlips(QGraphicsScene* g2);
  /*private*/ void drawTurntables(EditScene* g2);
 // /*private*/ void drawMemoryRects(EditScene* editScene);
+
+ /*protected*/ void draw(EditScene* g2);
+ /*private*/ void drawLayoutTracksHidden(EditScene* g2);
+ /*private*/ void drawTrackSegmentsDashed(EditScene* g2);
+ /*private*/ void drawLayoutTracksBallast(EditScene* g2);
+ /*private*/ void drawLayoutTracksTies(EditScene* g2);
+ /*private*/ void drawLayoutTracksRails(EditScene* g2);
+ /*private*/ void drawLayoutTracksBlockLines(EditScene* g2);
+ /*private*/ void draw1(EditScene* g2,
+         bool isMain,
+         bool isBlock,
+         bool isHidden, QPen drawingStroke);
+ /*private*/ void draw1(EditScene* g2,
+         bool isMain,
+         bool isBlock, QPen drawingStroke);
+ /*private*/ void draw1(EditScene* g2, bool isMain, QPen drawingStroke);
+ /*private*/ void draw1(EditScene* g2,
+         bool isMain,
+         bool isBlock,
+         bool isHidden,
+         bool isDashed, QPen drawingStroke);
+ /*private*/ void drawPositionablePoints(EditScene* g2, bool isMain, QPen drawingStroke);
+ /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, QPen drawingStroke);
+ /*private*/ void draw2(EditScene* g2, bool isMain,float railDisplacement, bool isDashed, QPen drawingStroke);
+ /*private*/ void drawDecorations(EditScene* g2);
+ /*private*/ void drawTrackSegmentInProgress(EditScene* g2);
+ /*private*/ void drawLayoutTrackEditControls(EditScene* g2);
+ /*private*/ void drawTurnoutControls(EditScene* g2);
+ /*private*/ QRectF getSelectionRect();
+ /*private*/ void drawSelectionRect(EditScene* g2);
+ /*private*/ void drawMemoryRects(EditScene* g2);
+ /*private*/ void drawBlockContentsRects(EditScene* g2);
  /*private*/ bool checkSelect(QPointF loc, bool requireUnconnected);
  /*private*/ bool checkSelect(QPointF loc, bool requireUnconnected, QObject* avoid);
  /*private*/ void amendSelectionGroup(Positionable* p);
@@ -570,7 +603,7 @@ private:
  bool noWarnPositionablePoint;
  bool noWarnSlip;
  /*private*/ void disconnect(QObject* o, int type);
- /*private*/ void drawMemoryRects(EditScene* g2);
+ ///*private*/ void drawMemoryRects(EditScene* g2);
  /*private*/ PositionableLabel* checkLabelImages(QPointF loc);
  /**
  * Add a sensor indicator to the Draw Panel
@@ -914,6 +947,7 @@ protected:
  /*protected*/ void setOptionMenuTrackColor();
  /*protected*/ void removeBackground(PositionableLabel* b);
  /*protected*/ void drawTurnouts(EditScene* g2);
+ ///*protected*/ void draw(EditScene* g2);
 
 
 friend class TrackSegment;

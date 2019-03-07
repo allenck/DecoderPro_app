@@ -324,8 +324,8 @@ protected:
  /*protected*/ LayoutTrack* connect2 = nullptr;
  /*protected*/ int type2 = 0;
  /*protected*/ void drawDecorations(EditScene* g2);
- /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
- /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+ /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, QPen drawingStroke);
+ /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, QPen drawingStroke);
  /*protected*/ void highlightUnconnected(EditScene* g2, int selectedType);
  /*protected*/ void drawEditControls(EditScene* g2);
  /*protected*/ void drawTurnoutControls(EditScene* g2);

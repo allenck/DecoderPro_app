@@ -617,7 +617,7 @@ void DisplayMemoryIcon::on_editMemoryValueAction_triggered()
 {
  originalX=x;
  originalY=y;
- updateSize();
+ //updateSize();
 }
 
 /*public*/ int DisplayMemoryIcon::getOriginalX()
@@ -640,7 +640,7 @@ void DisplayMemoryIcon::on_editMemoryValueAction_triggered()
  {
   Positionable::setLocation(x,y);
  }
- JLabel::setLocation(x,y);
+ //JLabel::setLocation(x,y);
 }
 #if 1
 /*public*/ bool DisplayMemoryIcon::setEditIconMenu(QMenu* popup)

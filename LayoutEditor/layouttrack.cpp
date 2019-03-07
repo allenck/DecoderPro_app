@@ -144,7 +144,7 @@
  * @param isMain  true if drawing mainlines
  * @param isBlock true if drawing block lines
  */
-/*protected*/ /*abstract*/ void LayoutTrack::draw1(EditScene * /*g2*/, bool /*isMain*/, bool /*isBlock*/) {}
+/*protected*/ /*abstract*/ void LayoutTrack::draw1(EditScene * /*g2*/, bool /*isMain*/, bool /*isBlock*/, QPen /*drawingStroke*/) {}
 
 /**
  * draw two lines (rails)
@@ -153,7 +153,7 @@
  * @param isMain           true if drawing mainlines
  * @param railDisplacement the offset from center to draw the lines
  */
-/*protected*/ /*abstract*/ void LayoutTrack::draw2(EditScene* g2, bool isMain, float railDisplacement) {}
+/*protected*/ /*abstract*/ void LayoutTrack::draw2(EditScene* g2, bool isMain, float railDisplacement, QPen) {}
 
 /**
  * draw hidden track
@@ -197,14 +197,14 @@
  *
  * @param g2 the graphics context
  */
-/*protected*/ /*abstract*/ void LayoutTrack::drawEditControls(EditScene *g2) {}
+/*protected*/ /*abstract*/ void LayoutTrack::drawEditControls(EditScene *g2, QPen stroke) {}
 
 /**
  * draw the turnout controls
  *
  * @param g2 the graphics context
  */
-/*protected*/ /*abstract*/ void LayoutTrack::drawTurnoutControls(EditScene* g2) {}
+/*protected*/ /*abstract*/ void LayoutTrack::drawTurnoutControls(EditScene* g2, QPen stroke) {}
 
 /**
  * draw track decorations

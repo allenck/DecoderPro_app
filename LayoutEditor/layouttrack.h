@@ -114,13 +114,13 @@ protected:
  /*protected*/ static bool isControlHitType(int hitType);
  /*protected*/ static bool isPopupHitType(int hitType);
  /*public*/ /*abstract*/ virtual bool isMainline();
- /*protected*/ /*abstract*/ virtual void draw1(EditScene* g2, bool isMain, bool isBlock);
- /*protected*/ /*abstract*/ virtual void draw2(EditScene *g2, bool isMain, float railDisplacement);
+ /*protected*/ /*abstract*/ virtual void draw1(EditScene* g2, bool isMain, bool isBlock, QPen);
+ /*protected*/ /*abstract*/ virtual void draw2(EditScene *g2, bool isMain, float railDisplacement, QPen );
  /*protected*/ void drawHidden(EditScene* g2);
  /*protected*/ /*abstract*/ virtual void highlightUnconnected(EditScene *g2, int specificType);
  /*protected*/ virtual void highlightUnconnected(EditScene* g2);
- /*protected*/ /*abstract*/ virtual void drawEditControls(EditScene* g2);
- /*protected*/ /*abstract*/ virtual void drawTurnoutControls(EditScene *g2);
+ /*protected*/ /*abstract*/ virtual void drawEditControls(EditScene* g2, QPen stroke);
+ /*protected*/ /*abstract*/ virtual void drawTurnoutControls(EditScene *g2, QPen stroke);
  /*protected*/ virtual void drawDecorations(EditScene *g2);
  /*protected*/ QMap<QString, QString>* decorations = nullptr;
  /*protected*/ QColor getColorForTrackBlock(

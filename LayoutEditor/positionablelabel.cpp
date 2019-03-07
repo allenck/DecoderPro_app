@@ -388,7 +388,7 @@ return _displayLevel; }
  }
  else
  {
-  if(_text && getText()!=NULL)
+  if(_text && getText()!="")
   {
    if (getText().trimmed().length()==0)
    {

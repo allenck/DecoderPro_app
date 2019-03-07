@@ -1826,7 +1826,7 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void TrackSegment::draw1(EditScene* g2, bool isMain, bool isBlock) {
+/*protected*/ void TrackSegment::draw1(EditScene* g2, bool isMain, bool isBlock, QPen drawingStroke) {
     if (!isBlock && isDashed() && getLayoutBlock() != nullptr) {
         // Skip the dashed rail layer, the block layer will display the dashed track
         // This removes random rail fragments from between the block dashes
@@ -1878,7 +1878,7 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void TrackSegment::draw2(EditScene* g2, bool isMain, float railDisplacement) {
+/*protected*/ void TrackSegment::draw2(EditScene* g2, bool isMain, float railDisplacement, QPen drawingStroke) {
     if (isDashed() && getLayoutBlock() != nullptr) {
         // Skip the dashed rail layer, the block layer will display the dashed track
         // This removes random rail fragments from between the block dashes
