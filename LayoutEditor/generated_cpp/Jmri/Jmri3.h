@@ -22,6 +22,7 @@
 #include <qstringlist.h>
 #include <qurl.h>
 #include <qvector.h>
+#include <reportermanager.h>
 #include <rfidsensormanager.h>
 #include <roster.h>
 #include <rosterentry.h>
@@ -46,6 +47,71 @@
 #include <vetoablechangesupport.h>
 #include <windowlistener.h>
 #include <xmlfile.h>
+
+
+
+class PythonQtShell_ReporterManager : public ReporterManager
+{
+public:
+    PythonQtShell_ReporterManager(QObject*  parent = 0):ReporterManager(parent),_wrapper(NULL) {}
+
+   ~PythonQtShell_ReporterManager();
+
+virtual void Register(NamedBean*  s);
+virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual bool  allowMultipleAdditions(QString  arg__1) const;
+virtual void childEvent(QChildEvent*  event);
+virtual void customEvent(QEvent*  event);
+virtual void deregister(NamedBean*  s);
+virtual void dispose();
+virtual bool  event(QEvent*  event);
+virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual NamedBean*  getBeanBySystemName(QString  systemName);
+virtual NamedBean*  getBeanByUserName(QString  userName);
+virtual QString  getBeanTypeHandled();
+virtual QString  getEntryToolTip();
+virtual NamedBean*  getNamedBean(QString  name);
+virtual QSet<NamedBean* >  getNamedBeanSet();
+virtual QString  getNextValidAddress(QString  arg__1, QString  arg__2) const;
+virtual QStringList  getSystemNameArray();
+virtual QStringList  getSystemNameList() const;
+virtual QString  getSystemPrefix();
+virtual int  getXMLOrder();
+virtual QString  makeSystemName(QString  s);
+virtual QString  normalizeSystemName(QString  inputName);
+virtual void propertyChange(PropertyChangeEvent*  e);
+virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void timerEvent(QTimerEvent*  event);
+virtual char  typeLetter();
+virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual void vetoableChange(PropertyChangeEvent*  evt);
+
+  const QMetaObject* metaObject() const;
+  int qt_metacall(QMetaObject::Call call, int id, void** args);
+  PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtPublicPromoter_ReporterManager : public ReporterManager
+{ public:
+inline bool  py_q_allowMultipleAdditions(QString  arg__1) const { return ReporterManager::allowMultipleAdditions(arg__1); }
+inline QString  py_q_getNextValidAddress(QString  arg__1, QString  arg__2) const { return ReporterManager::getNextValidAddress(arg__1, arg__2); }
+inline QStringList  py_q_getSystemNameList() const { return ReporterManager::getSystemNameList(); }
+};
+
+class PythonQtWrapper_ReporterManager : public QObject
+{ Q_OBJECT
+public:
+public slots:
+ReporterManager* new_ReporterManager(QObject*  parent = 0);
+void delete_ReporterManager(ReporterManager* obj) { delete obj; } 
+   bool  allowMultipleAdditions(ReporterManager* theWrappedObject, QString  arg__1) const;
+   bool  py_q_allowMultipleAdditions(ReporterManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_allowMultipleAdditions(arg__1));}
+   QString  getNextValidAddress(ReporterManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
+   QString  py_q_getNextValidAddress(ReporterManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getNextValidAddress(arg__1, arg__2));}
+   QStringList  py_q_getSystemNameList(ReporterManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getSystemNameList());}
+};
+
+
 
 
 

@@ -18,6 +18,7 @@
 #include "editturnout.h"
 #include "jmribeancombobox.h"
 #include <QGroupBox>
+#include "path.h"
 
 //LayoutTurnout::LayoutTurnout(QObject *parent) :
 //    QObject(parent)
@@ -144,12 +145,14 @@
  * constructor method
  */
 /*protected*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id,
-        /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor) : LayoutTrack(id, c, layoutEditor) {
+        /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor)
+ : LayoutTrack(id, c, layoutEditor) {
     //super(id, c, layoutEditor);
 }
 
 /*public*/ LayoutTurnout::LayoutTurnout(QString id, int t, QPointF c, double rot, double xFactor, double yFactor,
-                                        LayoutEditor* layoutEditor) : LayoutTrack(id, c, layoutEditor)
+                                        LayoutEditor* layoutEditor)
+ : LayoutTrack(id, c, layoutEditor)
 {
  common(id, t, c, rot, xFactor, yFactor, layoutEditor, 1);
 }
@@ -211,7 +214,6 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  disabled = false;
  hidden = false;
  disableWhenOccupied = false;
- center =  QPointF(50.0,50.0);
  dispB =  QPointF(20.0,0.0);
  dispC =  QPointF(20.0,10.0);
  linkedTurnoutName = ""; // name of the linked Turnout (as entered in tool)
@@ -937,6 +939,36 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  double y = center.y() - dispB.y();
  return  QPointF(x,y);
 }
+/**
+ * return the coordinates for a specified connection type
+ *
+ * @param connectionType the connection type
+ * @return the coordinates for the specified connection type
+ */
+//@Override
+/*public*/ QPointF LayoutTurnout::getCoordsForConnectionType(int connectionType) {
+    QPointF result = center;
+    switch (connectionType) {
+        case TURNOUT_CENTER:
+            break;
+        case TURNOUT_A:
+            result = getCoordsA();
+            break;
+        case TURNOUT_B:
+            result = getCoordsB();
+            break;
+        case TURNOUT_C:
+            result = getCoordsC();
+            break;
+        case TURNOUT_D:
+            result = getCoordsD();
+            break;
+        default:
+            log->error("Invalid connection type " + QString::number(connectionType)); //I18IN
+    }
+    return result;
+}
+
 /**
  * @return the bounds of this turnout
  */
@@ -3205,6 +3237,238 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
     removeSML(getSignalDMast());
   }
  }
+}
+/*
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ QList<LayoutConnectivity*> LayoutTurnout::getLayoutConnectivity()
+{
+ QList<LayoutConnectivity*> results = QList<LayoutConnectivity*>();
+
+ LayoutConnectivity* lc = nullptr;
+
+ LayoutBlock* lbA = getLayoutBlock(), *lbB = getLayoutBlockB(), *lbC = getLayoutBlockC(), *lbD = getLayoutBlockD();
+ if ((getTurnoutType() >= LayoutTurnout::DOUBLE_XOVER) && (lbA != nullptr)) {
+     // have a crossover turnout with at least one block, check for multiple blocks
+     if ((lbA != lbB) || (lbA != lbC) || (lbA != lbD)) {
+         // have multiple blocks and therefore internal block boundaries
+         if (lbA != lbB) {
+             // have a AB block boundary, create a LayoutConnectivity
+             log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lbA->getDisplayName()).arg(lbB->getDisplayName()).arg(this->getTurnoutName()));
+             lc = new LayoutConnectivity(lbA, lbB);
+             lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_AB);
+             lc->setDirection(Path::computeDirection(getCoordsA(), getCoordsB()));
+             results.append(lc);
+         }
+         if ((getTurnoutType() != LayoutTurnout::LH_XOVER) && (lbA != lbC)) {
+             // have a AC block boundary, create a LayoutConnectivity
+             log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lbA->getDisplayName()).arg(lbC->getDisplayName()).arg(this->getTurnoutName()));
+             lc = new LayoutConnectivity(lbA, lbC);
+             lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_AC);
+             lc->setDirection(Path::computeDirection(getCoordsA(), getCoordsC()));
+             results.append(lc);
+         }
+         if (lbC != lbD) {
+             // have a CD block boundary, create a LayoutConnectivity
+             log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lbC->getDisplayName()).arg(lbD->getDisplayName()).arg(this->getTurnoutName()));
+             lc = new LayoutConnectivity(lbC, lbD);
+             lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_CD);
+             lc->setDirection(Path::computeDirection(getCoordsC(), getCoordsD()));
+             results.append(lc);
+         }
+         if ((getTurnoutType() != LayoutTurnout::RH_XOVER) && (lbB != lbD)) {
+             // have a BD block boundary, create a LayoutConnectivity
+             log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lbB->getDisplayName()).arg(lbD->getDisplayName()).arg(this->getTurnoutName()));
+             lc = new LayoutConnectivity(lbB, lbD);
+             lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_BD);
+             lc->setDirection(Path::computeDirection(getCoordsB(), getCoordsD()));
+             results.append(lc);
+         }
+     }
+ }
+ return results;
+}   // getLayoutConnectivity()
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QList<int> LayoutTurnout::checkForFreeConnections() {
+    QList<int> result = QList<int>();
+
+    //check the A connection point
+    if (getConnectA() == nullptr) {
+        result.append((TURNOUT_A));
+    }
+
+    //check the B connection point
+    if (getConnectB() == nullptr) {
+        result.append((TURNOUT_B));
+    }
+
+    //check the C connection point
+    if (getConnectC() == nullptr) {
+        result.append((TURNOUT_C));
+    }
+
+    //check the D connection point
+    if ((getTurnoutType() == DOUBLE_XOVER)
+            || (getTurnoutType() == LH_XOVER)
+            || (getTurnoutType() == RH_XOVER)) {
+        if (getConnectD() == nullptr) {
+            result.append((TURNOUT_D));
+        }
+    }
+    return result;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool LayoutTurnout::checkForUnAssignedBlocks() {
+    // because getLayoutBlock[BCD] will return block [A] if they're null
+    // we only need to test block [A]
+    return (getLayoutBlock() != nullptr);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void LayoutTurnout::checkForNonContiguousBlocks(
+        /*@Nonnull*/QMap<QString, QList<QSet<QString>* >* >* blockNamesToTrackNameSetsMap) {
+    /*
+     * For each (non-null) blocks of this track do:
+     * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
+     * #2) If this track is already in the TrackNameSet for this block
+     *     then return (done!)
+     * #3) else add a new set (with this block/track) to
+     *     blockNamesToTrackNameSetMap and check all the connections in this
+     *     block (by calling the 2nd method below)
+     * <p>
+     *     Basically, we're maintaining contiguous track sets for each block found
+     *     (in blockNamesToTrackNameSetMap)
+     */
+
+    // We're only using a map here because it's convient to
+    // use it to pair up blocks and connections
+    QHash<LayoutTrack*, QString> blocksAndTracksMap = QHash<LayoutTrack*, QString>();
+    if (connectA != nullptr) {
+        blocksAndTracksMap.insert(connectA, getBlockName());
+    }
+    if (connectB != nullptr) {
+        blocksAndTracksMap.insert(connectB, getBlockBName());
+    }
+    if (connectC != nullptr) {
+        blocksAndTracksMap.insert(connectC, getBlockCName());
+    }
+    if ((getTurnoutType() == DOUBLE_XOVER)
+            || (getTurnoutType() == LH_XOVER)
+            || (getTurnoutType() == RH_XOVER)
+            || (getTurnoutType() == SINGLE_SLIP)
+            || (getTurnoutType() == DOUBLE_SLIP)) {
+        if (connectD != nullptr) {
+            blocksAndTracksMap.insert(connectD, getBlockDName());
+        }
+    }
+    QList<QSet<QString>*>* TrackNameSets = nullptr;
+    QSet<QString>* TrackNameSet = nullptr;
+    //for (Map.Entry<LayoutTrack, String> entry : blocksAndTracksMap.entrySet()) {
+    QHashIterator<LayoutTrack*, QString> entry(blocksAndTracksMap);
+    while(entry.hasNext())
+    {
+        LayoutTrack* theConnect = entry.key();
+        QString theBlockName = entry.value();
+
+        TrackNameSet = nullptr;    // assume not found (pessimist!)
+        TrackNameSets = blockNamesToTrackNameSetsMap->value(theBlockName);
+        if (TrackNameSets != nullptr) { // (#1)
+            for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
+                if (checkTrackNameSet->contains(getName())) { // (#2)
+                    TrackNameSet = checkTrackNameSet;
+                    break;
+                }
+            }
+        } else {    // (#3)
+            log->debug(tr("*New block ('%1') trackNameSets").arg(theBlockName));
+            TrackNameSets = nullptr;
+            blockNamesToTrackNameSetsMap->insert(theBlockName, TrackNameSets);
+        }
+        if (TrackNameSet == nullptr) {
+            TrackNameSet = new QSet<QString>();
+            TrackNameSets->append(TrackNameSet);
+        }
+        TrackNameSet->insert(getName());
+        if (TrackNameSet->contains(getName())) {
+            log->debug(tr("*    Add track '%1' to trackNameSet for block '%2'").arg(getName()).arg(theBlockName));
+        }
+        theConnect->collectContiguousTracksNamesInBlockNamed(theBlockName, TrackNameSet);
+    }
+}   // collectContiguousTracksNamesInBlockNamed
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void LayoutTurnout::collectContiguousTracksNamesInBlockNamed(
+        /*@Nonnull*/ QString blockName,
+        /*@Nonnull*/ QSet<QString>* TrackNameSet) {
+    if (!TrackNameSet->contains(getName())) {
+
+        // create list of our connects
+        QList<LayoutTrack*> connects = QList<LayoutTrack*>();
+        if (getBlockName() == (blockName)
+                && (connectA != nullptr)) {
+            connects.append(connectA);
+        }
+        if (getBlockBName() == (blockName)
+                && (connectB != nullptr)) {
+            connects.append(connectB);
+        }
+        if (getBlockCName() == (blockName)
+                && (connectC != nullptr)) {
+            connects.append(connectC);
+        }
+        if ((getTurnoutType() == DOUBLE_XOVER)
+                || (getTurnoutType() == LH_XOVER)
+                || (getTurnoutType() == RH_XOVER)
+                || (getTurnoutType() == SINGLE_SLIP)
+                || (getTurnoutType() == DOUBLE_SLIP)) {
+            if (getBlockDName() == (blockName)
+                    && (connectD != nullptr)) {
+                connects.append(connectD);
+            }
+        }
+
+        for (LayoutTrack* connect : connects) {
+            // if we are added to the TrackNameSet
+         TrackNameSet->insert(getName());
+            if (TrackNameSet->contains(getName())) {
+                log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
+            }
+            // it's time to play... flood your neighbour!
+            connect->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+        }
+    }
+}   // collectContiguousTracksNamesInBlockNamed
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void LayoutTurnout::setAllLayoutBlocks(LayoutBlock* layoutBlock) {
+    setLayoutBlock(layoutBlock);
+    if ((getTurnoutType() == DOUBLE_XOVER)
+            || (getTurnoutType() == LH_XOVER)
+            || (getTurnoutType() == RH_XOVER)
+            || (getTurnoutType() == SINGLE_SLIP)
+            || (getTurnoutType() == DOUBLE_SLIP)) {
+        setLayoutBlockB(layoutBlock);
+        setLayoutBlockC(layoutBlock);
+        setLayoutBlockD(layoutBlock);
+    }
 }
 
 void LayoutTurnout::removeSML(SignalMast* signalMast){

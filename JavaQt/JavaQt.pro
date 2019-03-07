@@ -210,7 +210,8 @@ SOURCES += javaqt.cpp \
     colorchooserdialog.cpp \
     abstractcolorchooserpanel.cpp \
     jmricolorchooserpanel.cpp \
-    jlabel.cpp
+    jlabel.cpp \
+    editscene.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -456,7 +457,8 @@ HEADERS += javaqt.h\
     jcolorchooser.h \
     jmricolorchooserpanel.h \
     linkingobject.h \
-    jlabel.h
+    jlabel.h \
+    editscene.h
 
 unix {
     target.path = /usr/lib

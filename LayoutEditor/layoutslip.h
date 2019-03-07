@@ -188,6 +188,7 @@ public:
     /*public*/ LayoutTrack* getConnection(int location) throw (JmriException);
     /*public*/ void setConnection(int location, LayoutTrack *o, int type) throw (JmriException);
     /*public*/ void drawSlipCircles(EditScene* g2);
+    /*public*/ QPointF getCoordsForConnectionType(int connectionType);
 
 signals:
     
@@ -233,6 +234,13 @@ private:
 protected:
  /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e, bool editable);
  /*protected*/ void editLayoutSlip(LayoutTurnout* o);
+ /*protected*/ QPointF getCoordsLeft();
+ /*protected*/ QPointF getCoordsRight();
+ /*protected*/ int getConnectivityStateForLayoutBlocks(
+         /*@Nullable*/ LayoutBlock* thisLayoutBlock,
+         /*@Nullable*/ LayoutBlock* prevLayoutBlock,
+         /*@Nullable*/ LayoutBlock* nextLayoutBlock,
+         bool suppress);
 
 friend class LoadXml;
 friend class LayoutEditor;

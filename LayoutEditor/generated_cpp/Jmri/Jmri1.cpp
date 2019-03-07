@@ -17,6 +17,7 @@
 #include <jmrijframe.h>
 #include <layoutblockmanager.h>
 #include <layouteditor.h>
+#include <layouttrack.h>
 #include <layoutturnout.h>
 #include <light.h>
 #include <lightmanager.h>
@@ -19002,6 +19003,11 @@ QList<Positionable* >  PythonQtWrapper_LayoutEditor::getContents(LayoutEditor* t
   return ( theWrappedObject->getContents());
 }
 
+QPointF  PythonQtWrapper_LayoutEditor::static_LayoutEditor_getCoords(LayoutTrack*  layoutTrack, int  connectionType)
+{
+  return (LayoutEditor::getCoords(layoutTrack, connectionType));
+}
+
 QPointF  PythonQtWrapper_LayoutEditor::static_LayoutEditor_getCoords(QObject*  o, int  type)
 {
   return (PythonQtPublicPromoter_LayoutEditor::promoted_getCoords(o, type));
@@ -19052,6 +19058,16 @@ QString  PythonQtWrapper_LayoutEditor::getLayoutName(LayoutEditor* theWrappedObj
   return ( theWrappedObject->getLayoutName());
 }
 
+QList<LayoutTrack* >  PythonQtWrapper_LayoutEditor::getLayoutTracks(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getLayoutTracks());
+}
+
+QList<LayoutTrack* >  PythonQtWrapper_LayoutEditor::getLayoutTurnouts(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getLayoutTurnouts());
+}
+
 QList<LayoutTurnout* >  PythonQtWrapper_LayoutEditor::getLayoutTurnoutsAndSlips(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getLayoutTurnoutsAndSlips());
@@ -19060,6 +19076,11 @@ QList<LayoutTurnout* >  PythonQtWrapper_LayoutEditor::getLayoutTurnoutsAndSlips(
 int  PythonQtWrapper_LayoutEditor::getLayoutWidth(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getLayoutWidth());
+}
+
+QList<LayoutTrack* >  PythonQtWrapper_LayoutEditor::getLevelXings(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getLevelXings());
 }
 
 float  PythonQtWrapper_LayoutEditor::getMainlineTrackWidth(LayoutEditor* theWrappedObject)
@@ -19629,9 +19650,1730 @@ QPointF  PythonQtWrapper_LayoutEditor::static_LayoutEditor_zeroQPointF()
 
 
 
+PythonQtShell_LayoutTrack::~PythonQtShell_LayoutTrack() {
+  PythonQtPrivate* priv = PythonQt::priv();
+  if (priv) { priv->shellClassDeleted(this); }
+}
+QList<int >  PythonQtShell_LayoutTrack::checkForFreeConnections()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("checkForFreeConnections");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QList<int >"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QList<int > returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("checkForFreeConnections", methodInfo, result);
+          } else {
+            returnValue = *((QList<int >*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTrack::checkForFreeConnections();
+}
+void PythonQtShell_LayoutTrack::checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetMaps0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("checkForNonContiguousBlocks");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QMap<QString , QList<QSet<QString >  >  >"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&blockNamesToTrackNameSetMaps0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::checkForNonContiguousBlocks(blockNamesToTrackNameSetMaps0);
+}
+bool  PythonQtShell_LayoutTrack::checkForUnAssignedBlocks()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("checkForUnAssignedBlocks");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("checkForUnAssignedBlocks", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTrack::checkForUnAssignedBlocks();
+}
+void PythonQtShell_LayoutTrack::childEvent(QChildEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("childEvent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QChildEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::childEvent(event0);
+}
+void PythonQtShell_LayoutTrack::collectContiguousTracksNamesInBlockNamed(QString  blockName0, QSet<QString >*  trackNameSet1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("collectContiguousTracksNamesInBlockNamed");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString" , "QSet<QString >*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&blockName0, (void*)&trackNameSet1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::collectContiguousTracksNamesInBlockNamed(blockName0, trackNameSet1);
+}
+void PythonQtShell_LayoutTrack::customEvent(QEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("customEvent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::customEvent(event0);
+}
+void PythonQtShell_LayoutTrack::draw1(EditScene*  g20, bool  isMain1, bool  isBlock2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("draw1");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      void* args[4] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&isBlock2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::draw1(g20, isMain1, isBlock2);
+}
+void PythonQtShell_LayoutTrack::draw2(EditScene*  g20, bool  isMain1, float  railDisplacement2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("draw2");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "float"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      void* args[4] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&railDisplacement2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::draw2(g20, isMain1, railDisplacement2);
+}
+void PythonQtShell_LayoutTrack::drawDecorations(EditScene*  g20)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("drawDecorations");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&g20};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::drawDecorations(g20);
+}
+void PythonQtShell_LayoutTrack::drawEditControls(EditScene*  g20)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("drawEditControls");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&g20};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::drawEditControls(g20);
+}
+void PythonQtShell_LayoutTrack::drawTurnoutControls(EditScene*  g20)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("drawTurnoutControls");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&g20};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::drawTurnoutControls(g20);
+}
+bool  PythonQtShell_LayoutTrack::event(QEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("event");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "QEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("event", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTrack::event(event0);
+}
+bool  PythonQtShell_LayoutTrack::eventFilter(QObject*  watched0, QEvent*  event1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("eventFilter");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "QObject*" , "QEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      bool returnValue{};
+      void* args[3] = {NULL, (void*)&watched0, (void*)&event1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("eventFilter", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTrack::eventFilter(watched0, event1);
+}
+int  PythonQtShell_LayoutTrack::findHitPointType(QPointF  hitPoint0, bool  useRectangles1, bool  requireUnconnected2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("findHitPointType");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"int" , "QPointF" , "bool" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      int returnValue{};
+      void* args[4] = {NULL, (void*)&hitPoint0, (void*)&useRectangles1, (void*)&requireUnconnected2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("findHitPointType", methodInfo, result);
+          } else {
+            returnValue = *((int*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTrack::findHitPointType(hitPoint0, useRectangles1, requireUnconnected2);
+}
+QRectF  PythonQtShell_LayoutTrack::getBounds()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBounds");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QRectF"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QRectF returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBounds", methodInfo, result);
+          } else {
+            returnValue = *((QRectF*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTrack::getBounds();
+}
+LayoutTrack*  PythonQtShell_LayoutTrack::getConnection(int  connectionType0) throw (JmriException)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getConnection");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"LayoutTrack*" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      LayoutTrack* returnValue{};
+      void* args[2] = {NULL, (void*)&connectionType0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getConnection", methodInfo, result);
+          } else {
+            returnValue = *((LayoutTrack**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTrack::getConnection(connectionType0);
+}
+QPointF  PythonQtShell_LayoutTrack::getCoordsForConnectionType(int  arg__1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getCoordsForConnectionType");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QPointF" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QPointF returnValue{};
+      void* args[2] = {NULL, (void*)&arg__1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getCoordsForConnectionType", methodInfo, result);
+          } else {
+            returnValue = *((QPointF*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTrack::getCoordsForConnectionType(arg__1);
+}
+void PythonQtShell_LayoutTrack::highlightUnconnected(EditScene*  g20)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("highlightUnconnected");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&g20};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::highlightUnconnected(g20);
+}
+void PythonQtShell_LayoutTrack::highlightUnconnected(EditScene*  g20, int  specificType1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("highlightUnconnected");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&g20, (void*)&specificType1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::highlightUnconnected(g20, specificType1);
+}
+bool  PythonQtShell_LayoutTrack::isDisconnected(int  connectionType0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isDisconnected");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&connectionType0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isDisconnected", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTrack::isDisconnected(connectionType0);
+}
+bool  PythonQtShell_LayoutTrack::isMainline()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isMainline");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isMainline", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTrack::isMainline();
+}
+void PythonQtShell_LayoutTrack::reCheckBlockBoundary()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("reCheckBlockBoundary");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::reCheckBlockBoundary();
+}
+void PythonQtShell_LayoutTrack::scaleCoords(float  xFactor0, float  yFactor1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("scaleCoords");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "float" , "float"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&xFactor0, (void*)&yFactor1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::scaleCoords(xFactor0, yFactor1);
+}
+void PythonQtShell_LayoutTrack::setConnection(int  connectionType0, LayoutTrack*  o1, int  type2) throw (JmriException)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setConnection");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int" , "LayoutTrack*" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      void* args[4] = {NULL, (void*)&connectionType0, (void*)&o1, (void*)&type2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::setConnection(connectionType0, o1, type2);
+}
+void PythonQtShell_LayoutTrack::setObjects(LayoutEditor*  le0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setObjects");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "LayoutEditor*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&le0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::setObjects(le0);
+}
+QMenu*  PythonQtShell_LayoutTrack::showPopup(QGraphicsSceneMouseEvent*  mouseEvent0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("showPopup");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QMenu*" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QMenu* returnValue{};
+      void* args[2] = {NULL, (void*)&mouseEvent0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("showPopup", methodInfo, result);
+          } else {
+            returnValue = *((QMenu**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTrack::showPopup(mouseEvent0);
+}
+void PythonQtShell_LayoutTrack::timerEvent(QTimerEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("timerEvent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QTimerEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::timerEvent(event0);
+}
+void PythonQtShell_LayoutTrack::translateCoords(float  xFactor0, float  yFactor1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("translateCoords");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "float" , "float"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&xFactor0, (void*)&yFactor1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::translateCoords(xFactor0, yFactor1);
+}
+LayoutTrack* PythonQtWrapper_LayoutTrack::new_LayoutTrack(QString  ident, QPointF  c, LayoutEditor*  layoutEditor, QObject*  parent)
+{ 
+return new PythonQtShell_LayoutTrack(ident, c, layoutEditor, parent); }
+
+LayoutTrack* PythonQtWrapper_LayoutTrack::new_LayoutTrack(const LayoutTrack&  arg__1)
+{ 
+return new PythonQtShell_LayoutTrack(arg__1); }
+
+const QMetaObject* PythonQtShell_LayoutTrack::metaObject() const {
+  if (QObject::d_ptr->metaObject) {
+    return QObject::d_ptr->dynamicMetaObject();
+  } else if (_wrapper) {
+    return PythonQt::priv()->getDynamicMetaObject(_wrapper, &LayoutTrack::staticMetaObject);
+  } else {
+    return &LayoutTrack::staticMetaObject;
+  }
+}
+int PythonQtShell_LayoutTrack::qt_metacall(QMetaObject::Call call, int id, void** args) {
+  int result = LayoutTrack::qt_metacall(call, id, args);
+  return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
+}
+QList<int >  PythonQtWrapper_LayoutTrack::checkForFreeConnections(LayoutTrack* theWrappedObject)
+{
+  return ( theWrappedObject->checkForFreeConnections());
+}
+
+void PythonQtWrapper_LayoutTrack::checkForNonContiguousBlocks(LayoutTrack* theWrappedObject, QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetMaps)
+{
+  ( theWrappedObject->checkForNonContiguousBlocks(blockNamesToTrackNameSetMaps));
+}
+
+bool  PythonQtWrapper_LayoutTrack::checkForUnAssignedBlocks(LayoutTrack* theWrappedObject)
+{
+  return ( theWrappedObject->checkForUnAssignedBlocks());
+}
+
+void PythonQtWrapper_LayoutTrack::collectContiguousTracksNamesInBlockNamed(LayoutTrack* theWrappedObject, QString  blockName, QSet<QString >*  trackNameSet)
+{
+  ( theWrappedObject->collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet));
+}
+
+void PythonQtWrapper_LayoutTrack::draw1(LayoutTrack* theWrappedObject, EditScene*  g2, bool  isMain, bool  isBlock)
+{
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_draw1(g2, isMain, isBlock));
+}
+
+void PythonQtWrapper_LayoutTrack::draw2(LayoutTrack* theWrappedObject, EditScene*  g2, bool  isMain, float  railDisplacement)
+{
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_draw2(g2, isMain, railDisplacement));
+}
+
+void PythonQtWrapper_LayoutTrack::drawDecorations(LayoutTrack* theWrappedObject, EditScene*  g2)
+{
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_drawDecorations(g2));
+}
+
+void PythonQtWrapper_LayoutTrack::drawEditControls(LayoutTrack* theWrappedObject, EditScene*  g2)
+{
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_drawEditControls(g2));
+}
+
+void PythonQtWrapper_LayoutTrack::drawHidden(LayoutTrack* theWrappedObject, EditScene*  g2)
+{
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_drawHidden(g2));
+}
+
+void PythonQtWrapper_LayoutTrack::drawTurnoutControls(LayoutTrack* theWrappedObject, EditScene*  g2)
+{
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_drawTurnoutControls(g2));
+}
+
+int  PythonQtWrapper_LayoutTrack::findHitPointType(LayoutTrack* theWrappedObject, QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected)
+{
+  return ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_findHitPointType(hitPoint, useRectangles, requireUnconnected));
+}
+
+int  PythonQtWrapper_LayoutTrack::findHitPointType(LayoutTrack* theWrappedObject, QPointF  p)
+{
+  return ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_findHitPointType(p));
+}
+
+int  PythonQtWrapper_LayoutTrack::findHitPointType(LayoutTrack* theWrappedObject, QPointF  p, bool  useRectangles)
+{
+  return ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_findHitPointType(p, useRectangles));
+}
+
+QRectF  PythonQtWrapper_LayoutTrack::getBounds(LayoutTrack* theWrappedObject)
+{
+  return ( theWrappedObject->getBounds());
+}
+
+LayoutTrack*  PythonQtWrapper_LayoutTrack::getConnection(LayoutTrack* theWrappedObject, int  connectionType) throw (JmriException)
+{
+  return ( theWrappedObject->getConnection(connectionType));
+}
+
+QPointF  PythonQtWrapper_LayoutTrack::getCoordsCenter(LayoutTrack* theWrappedObject)
+{
+  return ( theWrappedObject->getCoordsCenter());
+}
+
+QPointF  PythonQtWrapper_LayoutTrack::getCoordsForConnectionType(LayoutTrack* theWrappedObject, int  arg__1)
+{
+  return ( theWrappedObject->getCoordsForConnectionType(arg__1));
+}
+
+QMap<QString , QString >*  PythonQtWrapper_LayoutTrack::getDecorations(LayoutTrack* theWrappedObject)
+{
+  return ( theWrappedObject->getDecorations());
+}
+
+bool  PythonQtWrapper_LayoutTrack::getHidden(LayoutTrack* theWrappedObject)
+{
+  return ( theWrappedObject->getHidden());
+}
+
+QString  PythonQtWrapper_LayoutTrack::getId(LayoutTrack* theWrappedObject)
+{
+  return ( theWrappedObject->getId());
+}
+
+QString  PythonQtWrapper_LayoutTrack::getName(LayoutTrack* theWrappedObject)
+{
+  return ( theWrappedObject->getName());
+}
+
+QString  PythonQtWrapper_LayoutTrack::getTurnoutStateString(LayoutTrack* theWrappedObject, int  turnoutState)
+{
+  return ( theWrappedObject->getTurnoutStateString(turnoutState));
+}
+
+bool  PythonQtWrapper_LayoutTrack::hasDecorations(LayoutTrack* theWrappedObject)
+{
+  return ( theWrappedObject->hasDecorations());
+}
+
+void PythonQtWrapper_LayoutTrack::highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2)
+{
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_highlightUnconnected(g2));
+}
+
+void PythonQtWrapper_LayoutTrack::highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2, int  specificType)
+{
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_highlightUnconnected(g2, specificType));
+}
+
+bool  PythonQtWrapper_LayoutTrack::static_LayoutTrack_isConnectionHitType(int  hitType)
+{
+  return (PythonQtPublicPromoter_LayoutTrack::promoted_isConnectionHitType(hitType));
+}
+
+bool  PythonQtWrapper_LayoutTrack::static_LayoutTrack_isControlHitType(int  hitType)
+{
+  return (PythonQtPublicPromoter_LayoutTrack::promoted_isControlHitType(hitType));
+}
+
+bool  PythonQtWrapper_LayoutTrack::isDisconnected(LayoutTrack* theWrappedObject, int  connectionType)
+{
+  return ( theWrappedObject->isDisconnected(connectionType));
+}
+
+bool  PythonQtWrapper_LayoutTrack::isHidden(LayoutTrack* theWrappedObject)
+{
+  return ( theWrappedObject->isHidden());
+}
+
+bool  PythonQtWrapper_LayoutTrack::isMainline(LayoutTrack* theWrappedObject)
+{
+  return ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_isMainline());
+}
+
+bool  PythonQtWrapper_LayoutTrack::static_LayoutTrack_isPopupHitType(int  hitType)
+{
+  return (PythonQtPublicPromoter_LayoutTrack::promoted_isPopupHitType(hitType));
+}
+
+void PythonQtWrapper_LayoutTrack::reCheckBlockBoundary(LayoutTrack* theWrappedObject)
+{
+  ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_reCheckBlockBoundary());
+}
+
+QPointF  PythonQtWrapper_LayoutTrack::rotatePoint(LayoutTrack* theWrappedObject, QPointF  p, double  sineRot, double  cosineRot)
+{
+  return ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_rotatePoint(p, sineRot, cosineRot));
+}
+
+void PythonQtWrapper_LayoutTrack::scaleCoords(LayoutTrack* theWrappedObject, float  xFactor, float  yFactor)
+{
+  ( theWrappedObject->scaleCoords(xFactor, yFactor));
+}
+
+void PythonQtWrapper_LayoutTrack::setConnection(LayoutTrack* theWrappedObject, int  connectionType, LayoutTrack*  o, int  type) throw (JmriException)
+{
+  ( theWrappedObject->setConnection(connectionType, o, type));
+}
+
+void PythonQtWrapper_LayoutTrack::setCoordsCenter(LayoutTrack* theWrappedObject, QPointF  p)
+{
+  ( theWrappedObject->setCoordsCenter(p));
+}
+
+void PythonQtWrapper_LayoutTrack::setDecorations(LayoutTrack* theWrappedObject, QMap<QString , QString >*  decorations)
+{
+  ( theWrappedObject->setDecorations(decorations));
+}
+
+void PythonQtWrapper_LayoutTrack::static_LayoutTrack_setDefaultTrackColor(QColor  color)
+{
+  (LayoutTrack::setDefaultTrackColor(color));
+}
+
+void PythonQtWrapper_LayoutTrack::setHidden(LayoutTrack* theWrappedObject, bool  hide)
+{
+  ( theWrappedObject->setHidden(hide));
+}
+
+void PythonQtWrapper_LayoutTrack::setObjects(LayoutTrack* theWrappedObject, LayoutEditor*  le)
+{
+  ( theWrappedObject->setObjects(le));
+}
+
+QMenu*  PythonQtWrapper_LayoutTrack::showPopup(LayoutTrack* theWrappedObject)
+{
+  return ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_showPopup());
+}
+
+QMenu*  PythonQtWrapper_LayoutTrack::showPopup(LayoutTrack* theWrappedObject, QGraphicsSceneMouseEvent*  mouseEvent)
+{
+  return ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_showPopup(mouseEvent));
+}
+
+QMenu*  PythonQtWrapper_LayoutTrack::showPopup(LayoutTrack* theWrappedObject, QPointF  where)
+{
+  return ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_showPopup(where));
+}
+
+void PythonQtWrapper_LayoutTrack::translateCoords(LayoutTrack* theWrappedObject, float  xFactor, float  yFactor)
+{
+  ( theWrappedObject->translateCoords(xFactor, yFactor));
+}
+
+
+
 PythonQtShell_LayoutTurnout::~PythonQtShell_LayoutTurnout() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
+}
+QList<int >  PythonQtShell_LayoutTurnout::checkForFreeConnections()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("checkForFreeConnections");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QList<int >"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QList<int > returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("checkForFreeConnections", methodInfo, result);
+          } else {
+            returnValue = *((QList<int >*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::checkForFreeConnections();
+}
+void PythonQtShell_LayoutTurnout::checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("checkForNonContiguousBlocks");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QMap<QString , QList<QSet<QString >* >* >*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&blockNamesToTrackNameSetsMap0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::checkForNonContiguousBlocks(blockNamesToTrackNameSetsMap0);
+}
+bool  PythonQtShell_LayoutTurnout::checkForUnAssignedBlocks()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("checkForUnAssignedBlocks");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("checkForUnAssignedBlocks", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::checkForUnAssignedBlocks();
+}
+void PythonQtShell_LayoutTurnout::childEvent(QChildEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("childEvent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QChildEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::childEvent(event0);
+}
+void PythonQtShell_LayoutTurnout::collectContiguousTracksNamesInBlockNamed(QString  blockName0, QSet<QString >*  TrackNameSet1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("collectContiguousTracksNamesInBlockNamed");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString" , "QSet<QString >*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&blockName0, (void*)&TrackNameSet1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::collectContiguousTracksNamesInBlockNamed(blockName0, TrackNameSet1);
+}
+void PythonQtShell_LayoutTurnout::customEvent(QEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("customEvent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::customEvent(event0);
+}
+void PythonQtShell_LayoutTurnout::draw1(EditScene*  g20, bool  isMain1, bool  isBlock2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("draw1");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      void* args[4] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&isBlock2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::draw1(g20, isMain1, isBlock2);
+}
+void PythonQtShell_LayoutTurnout::draw2(EditScene*  g20, bool  isMain1, float  railDisplacement2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("draw2");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "float"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      void* args[4] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&railDisplacement2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::draw2(g20, isMain1, railDisplacement2);
+}
+void PythonQtShell_LayoutTurnout::drawDecorations(EditScene*  g20)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("drawDecorations");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&g20};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::drawDecorations(g20);
+}
+void PythonQtShell_LayoutTurnout::drawEditControls(EditScene*  g20)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("drawEditControls");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&g20};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::drawEditControls(g20);
+}
+void PythonQtShell_LayoutTurnout::drawTurnoutControls(EditScene*  g20)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("drawTurnoutControls");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&g20};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::drawTurnoutControls(g20);
+}
+bool  PythonQtShell_LayoutTurnout::event(QEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("event");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "QEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("event", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::event(event0);
+}
+bool  PythonQtShell_LayoutTurnout::eventFilter(QObject*  watched0, QEvent*  event1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("eventFilter");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "QObject*" , "QEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      bool returnValue{};
+      void* args[3] = {NULL, (void*)&watched0, (void*)&event1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("eventFilter", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::eventFilter(watched0, event1);
+}
+int  PythonQtShell_LayoutTurnout::findHitPointType(QPointF  hitPoint0, bool  useRectangles1, bool  requireUnconnected2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("findHitPointType");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"int" , "QPointF" , "bool" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      int returnValue{};
+      void* args[4] = {NULL, (void*)&hitPoint0, (void*)&useRectangles1, (void*)&requireUnconnected2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("findHitPointType", methodInfo, result);
+          } else {
+            returnValue = *((int*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::findHitPointType(hitPoint0, useRectangles1, requireUnconnected2);
+}
+QRectF  PythonQtShell_LayoutTurnout::getBounds()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBounds");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QRectF"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QRectF returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBounds", methodInfo, result);
+          } else {
+            returnValue = *((QRectF*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::getBounds();
+}
+LayoutTrack*  PythonQtShell_LayoutTurnout::getConnection(int  location0) throw (JmriException)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getConnection");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"LayoutTrack*" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      LayoutTrack* returnValue{};
+      void* args[2] = {NULL, (void*)&location0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getConnection", methodInfo, result);
+          } else {
+            returnValue = *((LayoutTrack**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::getConnection(location0);
+}
+QPointF  PythonQtShell_LayoutTurnout::getCoordsForConnectionType(int  connectionType0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getCoordsForConnectionType");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QPointF" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QPointF returnValue{};
+      void* args[2] = {NULL, (void*)&connectionType0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getCoordsForConnectionType", methodInfo, result);
+          } else {
+            returnValue = *((QPointF*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::getCoordsForConnectionType(connectionType0);
+}
+void PythonQtShell_LayoutTurnout::highlightUnconnected(EditScene*  g20)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("highlightUnconnected");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&g20};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::highlightUnconnected(g20);
+}
+void PythonQtShell_LayoutTurnout::highlightUnconnected(EditScene*  g20, int  specificType1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("highlightUnconnected");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&g20, (void*)&specificType1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::highlightUnconnected(g20, specificType1);
+}
+bool  PythonQtShell_LayoutTurnout::isDisconnected(int  connectionType0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isDisconnected");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&connectionType0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isDisconnected", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::isDisconnected(connectionType0);
+}
+bool  PythonQtShell_LayoutTurnout::isMainline()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isMainline");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isMainline", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::isMainline();
+}
+void PythonQtShell_LayoutTurnout::reCheckBlockBoundary()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("reCheckBlockBoundary");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::reCheckBlockBoundary();
+}
+void PythonQtShell_LayoutTurnout::scaleCoords(float  xFactor0, float  yFactor1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("scaleCoords");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "float" , "float"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&xFactor0, (void*)&yFactor1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::scaleCoords(xFactor0, yFactor1);
+}
+void PythonQtShell_LayoutTurnout::setConnection(int  location0, LayoutTrack*  o1, int  type2) throw (JmriException)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setConnection");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int" , "LayoutTrack*" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      void* args[4] = {NULL, (void*)&location0, (void*)&o1, (void*)&type2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::setConnection(location0, o1, type2);
+}
+void PythonQtShell_LayoutTurnout::setObjects(LayoutEditor*  p0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setObjects");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "LayoutEditor*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&p0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::setObjects(p0);
+}
+QMenu*  PythonQtShell_LayoutTurnout::showPopup(QGraphicsSceneMouseEvent*  mouseEvent0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("showPopup");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QMenu*" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QMenu* returnValue{};
+      void* args[2] = {NULL, (void*)&mouseEvent0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("showPopup", methodInfo, result);
+          } else {
+            returnValue = *((QMenu**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::showPopup(mouseEvent0);
+}
+void PythonQtShell_LayoutTurnout::timerEvent(QTimerEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("timerEvent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QTimerEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::timerEvent(event0);
+}
+void PythonQtShell_LayoutTurnout::translateCoords(float  xFactor0, float  yFactor1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("translateCoords");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "float" , "float"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&xFactor0, (void*)&yFactor1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::translateCoords(xFactor0, yFactor1);
 }
 LayoutTurnout* PythonQtWrapper_LayoutTurnout::new_LayoutTurnout(QString  id, QPointF  c, LayoutEditor*  layoutEditor)
 { 
@@ -19701,11 +21443,6 @@ QString  PythonQtWrapper_LayoutTurnout::getBlockDName(LayoutTurnout* theWrappedO
 QString  PythonQtWrapper_LayoutTurnout::getBlockName(LayoutTurnout* theWrappedObject)
 {
   return ( theWrappedObject->getBlockName());
-}
-
-QRectF  PythonQtWrapper_LayoutTurnout::getBounds(LayoutTurnout* theWrappedObject)
-{
-  return ( theWrappedObject->getBounds());
 }
 
 QObject*  PythonQtWrapper_LayoutTurnout::getConnectA(LayoutTurnout* theWrappedObject)
@@ -19973,11 +21710,6 @@ bool  PythonQtWrapper_LayoutTurnout::isMainlineD(LayoutTurnout* theWrappedObject
   return ( theWrappedObject->isMainlineD());
 }
 
-void PythonQtWrapper_LayoutTurnout::reCheckBlockBoundary(LayoutTurnout* theWrappedObject)
-{
-  ( theWrappedObject->reCheckBlockBoundary());
-}
-
 void PythonQtWrapper_LayoutTurnout::remove(LayoutTurnout* theWrappedObject)
 {
   ( theWrappedObject->remove());
@@ -20003,11 +21735,6 @@ QPointF  PythonQtWrapper_LayoutTurnout::rotatePoint(LayoutTurnout* theWrappedObj
   return ( ((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->promoted_rotatePoint(p, sineAng, cosineAng));
 }
 
-void PythonQtWrapper_LayoutTurnout::scaleCoords(LayoutTurnout* theWrappedObject, float  xFactor, float  yFactor)
-{
-  ( theWrappedObject->scaleCoords(xFactor, yFactor));
-}
-
 void PythonQtWrapper_LayoutTurnout::setAdditionalEditPopUpMenu(LayoutTurnout* theWrappedObject, QMenu*  popup)
 {
   ( theWrappedObject->setAdditionalEditPopUpMenu(popup));
@@ -20016,6 +21743,26 @@ void PythonQtWrapper_LayoutTurnout::setAdditionalEditPopUpMenu(LayoutTurnout* th
 void PythonQtWrapper_LayoutTurnout::setAdditionalViewPopUpMenu(LayoutTurnout* theWrappedObject, QMenu*  popup)
 {
   ( theWrappedObject->setAdditionalViewPopUpMenu(popup));
+}
+
+void PythonQtWrapper_LayoutTurnout::setConnectA(LayoutTurnout* theWrappedObject, LayoutTrack*  o, int  type)
+{
+  ( theWrappedObject->setConnectA(o, type));
+}
+
+void PythonQtWrapper_LayoutTurnout::setConnectB(LayoutTurnout* theWrappedObject, LayoutTrack*  o, int  type)
+{
+  ( theWrappedObject->setConnectB(o, type));
+}
+
+void PythonQtWrapper_LayoutTurnout::setConnectC(LayoutTurnout* theWrappedObject, LayoutTrack*  o, int  type)
+{
+  ( theWrappedObject->setConnectC(o, type));
+}
+
+void PythonQtWrapper_LayoutTurnout::setConnectD(LayoutTurnout* theWrappedObject, LayoutTrack*  o, int  type)
+{
+  ( theWrappedObject->setConnectD(o, type));
 }
 
 void PythonQtWrapper_LayoutTurnout::setContinuingSense(LayoutTurnout* theWrappedObject, int  sense)
@@ -20081,11 +21828,6 @@ void PythonQtWrapper_LayoutTurnout::setLinkType(LayoutTurnout* theWrappedObject,
 void PythonQtWrapper_LayoutTurnout::setLinkedTurnoutName(LayoutTurnout* theWrappedObject, QString  s)
 {
   ( theWrappedObject->setLinkedTurnoutName(s));
-}
-
-void PythonQtWrapper_LayoutTurnout::setObjects(LayoutTurnout* theWrappedObject, LayoutEditor*  p)
-{
-  ( theWrappedObject->setObjects(p));
 }
 
 void PythonQtWrapper_LayoutTurnout::setSecondTurnout(LayoutTurnout* theWrappedObject, QString  tName)
@@ -29595,279 +31337,6 @@ void PythonQtWrapper_LnSensorManager::setUpdateBusy(LnSensorManager* theWrappedO
 void PythonQtWrapper_LnSensorManager::setUpdateNotBusy(LnSensorManager* theWrappedObject)
 {
   ( theWrappedObject->setUpdateNotBusy());
-}
-
-
-
-PythonQtShell_LnTrafficController::~PythonQtShell_LnTrafficController() {
-  PythonQtPrivate* priv = PythonQt::priv();
-  if (priv) { priv->shellClassDeleted(this); }
-}
-void PythonQtShell_LnTrafficController::childEvent(QChildEvent*  event0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("childEvent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QChildEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  LnTrafficController::childEvent(event0);
-}
-void PythonQtShell_LnTrafficController::customEvent(QEvent*  event0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("customEvent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  LnTrafficController::customEvent(event0);
-}
-bool  PythonQtShell_LnTrafficController::event(QEvent*  event0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("event");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"bool" , "QEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      bool returnValue{};
-      void* args[2] = {NULL, (void*)&event0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("event", methodInfo, result);
-          } else {
-            returnValue = *((bool*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return LnTrafficController::event(event0);
-}
-bool  PythonQtShell_LnTrafficController::eventFilter(QObject*  watched0, QEvent*  event1)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("eventFilter");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"bool" , "QObject*" , "QEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      bool returnValue{};
-      void* args[3] = {NULL, (void*)&watched0, (void*)&event1};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("eventFilter", methodInfo, result);
-          } else {
-            returnValue = *((bool*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return LnTrafficController::eventFilter(watched0, event1);
-}
-bool  PythonQtShell_LnTrafficController::isXmtBusy()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("isXmtBusy");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"bool"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      bool returnValue{};
-      void* args[1] = {NULL};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("isXmtBusy", methodInfo, result);
-          } else {
-            returnValue = *((bool*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return LnTrafficController::isXmtBusy();
-}
-void PythonQtShell_LnTrafficController::sendLocoNetMessage(LocoNetMessage*  arg__1)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("sendLocoNetMessage");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "LocoNetMessage*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&arg__1};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  LnTrafficController::sendLocoNetMessage(arg__1);
-}
-bool  PythonQtShell_LnTrafficController::status()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("status");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"bool"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      bool returnValue{};
-      void* args[1] = {NULL};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("status", methodInfo, result);
-          } else {
-            returnValue = *((bool*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return LnTrafficController::status();
-}
-void PythonQtShell_LnTrafficController::timerEvent(QTimerEvent*  event0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("timerEvent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QTimerEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  LnTrafficController::timerEvent(event0);
-}
-LnTrafficController* PythonQtWrapper_LnTrafficController::new_LnTrafficController()
-{ 
-return new PythonQtShell_LnTrafficController(); }
-
-const QMetaObject* PythonQtShell_LnTrafficController::metaObject() const {
-  if (QObject::d_ptr->metaObject) {
-    return QObject::d_ptr->dynamicMetaObject();
-  } else if (_wrapper) {
-    return PythonQt::priv()->getDynamicMetaObject(_wrapper, &LnTrafficController::staticMetaObject);
-  } else {
-    return &LnTrafficController::staticMetaObject;
-  }
-}
-int PythonQtShell_LnTrafficController::qt_metacall(QMetaObject::Call call, int id, void** args) {
-  int result = LnTrafficController::qt_metacall(call, id, args);
-  return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
-}
-int  PythonQtWrapper_LnTrafficController::getReceivedByteCount(LnTrafficController* theWrappedObject)
-{
-  return ( theWrappedObject->getReceivedByteCount());
-}
-
-int  PythonQtWrapper_LnTrafficController::getReceivedMsgCount(LnTrafficController* theWrappedObject)
-{
-  return ( theWrappedObject->getReceivedMsgCount());
-}
-
-int  PythonQtWrapper_LnTrafficController::getTransmittedMsgCount(LnTrafficController* theWrappedObject)
-{
-  return ( theWrappedObject->getTransmittedMsgCount());
-}
-
-LnTrafficController*  PythonQtWrapper_LnTrafficController::static_LnTrafficController_instance()
-{
-  return (LnTrafficController::instance());
-}
-
-bool  PythonQtWrapper_LnTrafficController::isXmtBusy(LnTrafficController* theWrappedObject)
-{
-  return ( theWrappedObject->isXmtBusy());
-}
-
-void PythonQtWrapper_LnTrafficController::resetStatistics(LnTrafficController* theWrappedObject)
-{
-  ( theWrappedObject->resetStatistics());
 }
 
 

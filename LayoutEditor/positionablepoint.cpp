@@ -8,6 +8,8 @@
 #include "signalmast.h"
 #include "signalmastmanager.h"
 #include "path.h"
+#include "mathutil.h"
+#include <limits>
 
 //PositionablePoint::PositionablePoint(QObject *parent) :
 //    QObject(parent)
@@ -1121,6 +1123,86 @@ void PositionablePoint::updatePointBox() {
         setLinkedPoint(pointList->at(linkPointsBox->currentIndex()));
     }
     editLink->setVisible(false);
+}
+/**
+ * {@inheritDoc}
+ */
+///@Override
+/*protected*/ int PositionablePoint::findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
+    int result = NONE;  // assume point not on connection
+    //note: optimization here: instead of creating rectangles for all the
+    // points to check below, we create a rectangle for the test point
+    // and test if the points below are in that rectangle instead.
+    QRectF r = layoutEditor->trackControlCircleRectAt(hitPoint);
+    QPointF p, minPoint = MathUtil::zeroPoint2D;
+
+    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+    double distance, minDistance = std::numeric_limits<double>::infinity();//POSITIVE_INFINITY;
+
+    if (!requireUnconnected || (getConnect1() == nullptr)
+            || ((getType() == ANCHOR) && (getConnect2() == nullptr))) {
+        // test point control rectangle
+        p = getCoordsCenter();
+        distance = MathUtil::distance(p, hitPoint);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minPoint = p;
+            result = POS_POINT;
+        }
+    }
+    if ((useRectangles && !r.contains(minPoint))
+            || (!useRectangles && (minDistance > circleRadius))) {
+        result = NONE;
+    }
+    return result;
+}   // findHitPointType
+
+/**
+ * return the coordinates for a specified connection type
+ *
+ * @param connectionType the connection type
+ * @return the coordinates for the specified connection type
+ */
+//@Override
+/*public*/ QPointF PositionablePoint::getCoordsForConnectionType(int connectionType) {
+    QPointF result = getCoordsCenter();
+    if (connectionType != POS_POINT) {
+        log.error("Invalid connection type " + QString::number(connectionType)); //I18IN
+    }
+    return result;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ LayoutTrack* PositionablePoint::getConnection(int connectionType) throw (JmriException) {
+    LayoutTrack* result = nullptr;
+    if (connectionType == POS_POINT) {
+        result = getConnect1();
+        if (nullptr == result) {
+            result = getConnect2();
+        }
+    } else {
+        log.error("Invalid connection type " + QString::number(connectionType)); //I18IN
+        throw JmriException("Invalid Point");
+    }
+    return result;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void PositionablePoint::setConnection(int connectionType, LayoutTrack *o, int type) throw (JmriException) {
+    if ((type != TRACK) && (type != NONE)) {
+        log.error("unexpected type of connection to positionable point - " + QString::number(type));
+        throw JmriException("unexpected type of connection to positionable point - " + QString::number(type));
+    }
+    if (connectionType != POS_POINT) {
+        log.error("Invalid Connection Type " + QString::number(connectionType)); //I18IN
+        throw JmriException("Invalid Connection Type " + QString::number(connectionType));
+    }
 }
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PositionablePoint.class.getName());
 

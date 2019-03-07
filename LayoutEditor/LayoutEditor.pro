@@ -95,7 +95,6 @@ message("Qt path=" + $$(QTDIR))
 
 SOURCES += \
     jmrijframe.cpp \
-    editscene.cpp \
     layoutturnout.cpp \
     levelxing.cpp \
     layoutblock.cpp \
@@ -475,7 +474,6 @@ SOURCES += \
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
     jmrijframe.h \
-    editscene.h \
     layoutturnout.h \
     levelxing.h \
     layoutblock.h \

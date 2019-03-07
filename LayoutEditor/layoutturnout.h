@@ -139,7 +139,6 @@ public:
     /*public*/ int continuingSense;// = Turnout::CLOSED;
     /*public*/ bool disabled;// = false;
     /*public*/ bool disableWhenOccupied;// = false;
-//    /*public*/ QPointF center;// = new QPoint.Double(50.0,50.0);
     /*public*/ QPointF dispB;// = new QPoint.Double(20.0,0.0);
     /*public*/ QPointF dispC;// = new QPoint.Double(20.0,10.0);
     /*public*/ QString linkedTurnoutName;// = ""; // name of the linked Turnout (as entered in tool)
@@ -328,7 +327,15 @@ public:
  /*public*/ void setVersion(int v);
  virtual /*public*/ LayoutTrack* getConnection(int location) throw (JmriException);
  virtual /*public*/ void setConnection(int location, LayoutTrack *o, int type) throw (JmriException);
+ /*public*/ QPointF getCoordsForConnectionType(int connectionType);
  /*public*/ QRectF getBounds();
+ /*public*/ QList<int> checkForFreeConnections();
+ /*public*/ bool checkForUnAssignedBlocks();
+ /*public*/ void checkForNonContiguousBlocks(/*@Nonnull*/QMap<QString, QList<QSet<QString> *> *> *blockNamesToTrackNameSetsMap);
+ /*public*/ void collectContiguousTracksNamesInBlockNamed(
+   /*@Nonnull*/ QString blockName,
+   /*@Nonnull*/ QSet<QString>* TrackNameSet);
+ /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -449,9 +456,8 @@ protected:
 //    /*protected*/ LayoutEditor* layoutEditor;// = NULL;
     /*protected*/ void rotateCoords(double rot);
     /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e, bool editable);
+    /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
 
- friend class LayoutEditor;
- friend class EditTurnout;
 /*protected*/ JmriJFrame* editLayoutTurnoutFrame;// = NULL;
 /*protected*/ JTextField* blockNameField;// = new QLineEdit(16);
 /*protected*/ bool needRedraw;// = false;
@@ -476,12 +482,15 @@ protected:
  /*protected*/ NamedBeanHandle<SignalHead*>* signalD1HeadNamed = nullptr; // single or double crossover only
  /*protected*/ NamedBeanHandle<SignalHead*>* signalD2HeadNamed = nullptr; // LH_Xover and double crossover only
 
-friend class LoadXml;
-friend class LayoutSlip;
-friend class SetSignalsActionListener;
-friend class LayoutTurnoutXml;
-friend class ETWindowListener;
-friend class ConnectivityUtil;
+ friend class LayoutEditor;
+ friend class EditTurnout;
+ friend class LoadXml;
+ friend class LayoutSlip;
+ friend class SetSignalsActionListener;
+ friend class LayoutTurnoutXml;
+ friend class ETWindowListener;
+ friend class ConnectivityUtil;
+ friend class LayoutEditorAuxTools;
 };
 
 class ETWindowListener : public WindowListener

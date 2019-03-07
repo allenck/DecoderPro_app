@@ -426,7 +426,54 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
     double y = center.y() - dispB.y();
     return  QPointF(x,y);
 }
+/*protected*/ QPointF LayoutSlip::getCoordsLeft() {
+    QPointF leftCenter = MathUtil::midPoint(getCoordsA(), getCoordsB());
+    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+    double leftFract = circleRadius / MathUtil::distance(center, leftCenter);//center.distance(leftCenter);
+    return MathUtil::lerp(center, leftCenter, leftFract);
+}
 
+/*protected*/ QPointF LayoutSlip::getCoordsRight() {
+    QPointF rightCenter = MathUtil::midPoint(getCoordsC(), getCoordsD());
+    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+    double rightFract = circleRadius / MathUtil::distance(center, rightCenter);//center.distance(rightCenter);
+    return MathUtil::lerp(center, rightCenter, rightFract);
+}
+/**
+ * return the coordinates for the specified connection type
+ *
+ * @param connectionType the connection type
+ * @return the Point2D coordinates
+ */
+//@Override
+/*public*/ QPointF LayoutSlip::getCoordsForConnectionType(int connectionType) {
+    QPointF result = center;
+    switch (connectionType) {
+        case SLIP_A:
+            result = getCoordsA();
+            break;
+        case SLIP_B:
+            result = getCoordsB();
+            break;
+        case SLIP_C:
+            result = getCoordsC();
+            break;
+        case SLIP_D:
+            result = getCoordsD();
+            break;
+        case SLIP_CENTER:
+            break;
+        case SLIP_LEFT:
+            result = getCoordsLeft();
+            break;
+        case SLIP_RIGHT:
+            result = getCoordsRight();
+            break;
+        default:
+            log.error("Invalid connection type " + QString(connectionType)); //I18IN
+    }
+    return result;
+}
 /*private*/ void LayoutSlip::updateBlockInfo()
 {
  LayoutBlock* b1 = NULL;
@@ -454,6 +501,85 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
  }
  reCheckBlockBoundary();
 }
+/*
+    this is used by ConnectivityUtil to determine the turnout state necessary to get from prevLayoutBlock ==> currLayoutBlock ==> nextLayoutBlock
+ */
+//@Override
+/*protected*/ int LayoutSlip::getConnectivityStateForLayoutBlocks(
+        /*@Nullable*/ LayoutBlock* thisLayoutBlock,
+        /*@Nullable*/ LayoutBlock* prevLayoutBlock,
+        /*@Nullable*/ LayoutBlock* nextLayoutBlock,
+        bool suppress) {
+    int result = Turnout::UNKNOWN;
+    LayoutBlock* layoutBlockA = ((TrackSegment*) getConnectA())->getLayoutBlock();
+    LayoutBlock* layoutBlockB = ((TrackSegment*) getConnectB())->getLayoutBlock();
+    LayoutBlock* layoutBlockC = ((TrackSegment*) getConnectC())->getLayoutBlock();
+    LayoutBlock* layoutBlockD = ((TrackSegment*) getConnectD())->getLayoutBlock();
+
+    if (layoutBlockA == thisLayoutBlock) {
+        if (layoutBlockC == nextLayoutBlock || layoutBlockC == prevLayoutBlock) {
+            result = LayoutSlip::STATE_AC;
+        } else if (layoutBlockD == nextLayoutBlock || layoutBlockD == prevLayoutBlock) {
+            result = LayoutSlip::STATE_AD;
+        } else if (layoutBlockC == thisLayoutBlock) {
+            result = LayoutSlip::STATE_AC;
+        } else if (layoutBlockD == thisLayoutBlock) {
+            result = LayoutSlip::STATE_AD;
+        }
+    } else if (layoutBlockB == thisLayoutBlock) {
+        if (getTurnoutType() == LayoutSlip::DOUBLE_SLIP) {
+            if (layoutBlockD == nextLayoutBlock || layoutBlockD == prevLayoutBlock) {
+                result = LayoutSlip::STATE_BD;
+            } else if (layoutBlockC == nextLayoutBlock || layoutBlockC == prevLayoutBlock) {
+                result = LayoutSlip::STATE_BC;
+            } else if (layoutBlockD == thisLayoutBlock) {
+                result = LayoutSlip::STATE_BD;
+            } else if (layoutBlockC == thisLayoutBlock) {
+                result = LayoutSlip::STATE_BC;
+            }
+        } else {
+            if (layoutBlockD == nextLayoutBlock || layoutBlockD == prevLayoutBlock) {
+                result = LayoutSlip::STATE_BD;
+            } else if (layoutBlockD == thisLayoutBlock) {
+                result = LayoutSlip::STATE_BD;
+            }
+        }
+    } else if (layoutBlockC == thisLayoutBlock) {
+        if (getTurnoutType() == LayoutSlip::DOUBLE_SLIP) {
+            if (layoutBlockA == nextLayoutBlock || layoutBlockA == prevLayoutBlock) {
+                result = LayoutSlip::STATE_AC;
+            } else if (layoutBlockB == nextLayoutBlock || layoutBlockB == prevLayoutBlock) {
+                result = LayoutSlip::STATE_BC;
+            } else if (layoutBlockA == thisLayoutBlock) {
+                result = LayoutSlip::STATE_AC;
+            } else if (layoutBlockB == thisLayoutBlock) {
+                result = LayoutSlip::STATE_BC;
+            }
+        } else {
+            if (layoutBlockA == nextLayoutBlock || layoutBlockA == prevLayoutBlock) {
+                result = LayoutSlip::STATE_AC;
+            } else if (layoutBlockA == thisLayoutBlock) {
+                result = LayoutSlip::STATE_AC;
+            }
+        }
+    } else if (layoutBlockD == thisLayoutBlock) {
+        if (layoutBlockA == nextLayoutBlock || layoutBlockA == prevLayoutBlock) {
+            result = LayoutSlip::STATE_AD;
+        } else if (layoutBlockB == nextLayoutBlock || layoutBlockB == prevLayoutBlock) {
+            result = LayoutSlip::STATE_BD;
+        } else if (layoutBlockA == thisLayoutBlock) {
+            result = LayoutSlip::STATE_AD;
+        } else if (layoutBlockB == thisLayoutBlock) {
+            result = LayoutSlip::STATE_AD;
+        }
+    } else {
+        result = LayoutSlip::UNKNOWN;
+    }
+    if (!suppress && (result == LayoutSlip::UNKNOWN)) {
+        log.error("Cannot determine slip setting for " + getName());
+    }
+    return result;
+}   // getConnectivityStateForLayoutBlocks
 
 /*public*/ void LayoutSlip::reCheckBlockBoundary(){
     if(connectA==NULL && connectB==NULL && connectC==NULL && connectD==NULL){
@@ -1199,12 +1325,12 @@ painter->setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin))
 
 /*public*/ void LayoutSlip::drawSlipCircles(EditScene* g2) {
     double circleRadius = controlPointSize * layoutEditor->getTurnoutCircleSize();
-    QPointF leftCenter = MathUtil::midpoint(getCoordsA(), getCoordsB());
+    QPointF leftCenter = MathUtil::midPoint(getCoordsA(), getCoordsB());
     double leftFract = circleRadius / MathUtil::distance(center,leftCenter);
     QPointF leftCircleCenter = MathUtil::lerp(center, leftCenter, leftFract);
     g2->addItem(layoutEditor->turnoutCircleAt(leftCircleCenter));
 
-    QPointF rightCenter =MathUtil:: midpoint(getCoordsC(), getCoordsD());
+    QPointF rightCenter =MathUtil:: midPoint(getCoordsC(), getCoordsD());
     double rightFract = circleRadius / MathUtil::distance(center, rightCenter);
     QPointF rightCircleCenter = MathUtil::lerp(center, rightCenter, rightFract);
     g2->addItem(layoutEditor->turnoutCircleAt(rightCircleCenter));

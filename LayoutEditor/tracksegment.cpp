@@ -9,6 +9,7 @@
 #include "layouttrackdrawingoptions.h"
 #include <QPointF>
 #include "mathutil.h"
+#include "loggerfactory.h"
 
 //TrackSegment::TrackSegment(QObject *parent) :
 //    QObject(parent)
@@ -51,7 +52,7 @@ TrackSegment::TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2,
  // validate input
  if ( (c1==NULL) || (c2==NULL) )
  {
-  log.error("Invalid object in TrackSegment constructor call - "+id);
+  log->error("Invalid object in TrackSegment constructor call - "+id);
  }
  connect1 = c1;
  connect2 = c2;
@@ -59,7 +60,7 @@ TrackSegment::TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2,
   || ( ((t1 > LayoutEditor::LEVEL_XING_D) && (t1 < LayoutEditor::SLIP_A))
   || ((t1 > LayoutEditor::SLIP_D) && (t1 < LayoutEditor::TURNTABLE_RAY_OFFSET))))
  {
-  log.error("Invalid connect type 1 in TrackSegment constructor - "+id);
+  log->error("Invalid connect type 1 in TrackSegment constructor - "+id);
  }
  else
  {
@@ -69,7 +70,7 @@ TrackSegment::TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2,
              ( ((t2>LayoutEditor::LEVEL_XING_D) && (t2<LayoutEditor::SLIP_A))
                  || ((t2>LayoutEditor::SLIP_D) && (t2<LayoutEditor::TURNTABLE_RAY_OFFSET)) ) )
  {
-  log.error("Invalid connect type 2 in TrackSegment constructor - "+id);
+  log->error("Invalid connect type 2 in TrackSegment constructor - "+id);
  }
  else
  {
@@ -118,6 +119,8 @@ void TrackSegment::init(QString id)
  circleItem = NULL;
  trackOval = NULL;
  showConstructionLine = SHOWCON;
+ bridgeColor = QColor(Qt::black);
+
 
 // persistent instances variables (saved between sessions)
  //QString ident = "";
@@ -138,6 +141,8 @@ void TrackSegment::init(QString id)
  popup = NULL;
  needsRedraw = false;
  bumperColor = QColor(Qt::black);
+ tunnelColor = QColor(Qt::black);
+
  bezierControlPoints = QList<QPointF>(); // list of control point displacements
 
 }
@@ -182,6 +187,13 @@ void TrackSegment::init(QString id)
 
 /*public*/ bool TrackSegment::getDashed()
 {
+ return dashed;
+}
+
+/**
+ * @return true if track segment should be drawn dashed
+ */
+/*public*/ bool TrackSegment::isDashed() {
     return dashed;
 }
 
@@ -309,35 +321,61 @@ TrackSegment::getLayoutBlock()
 /*public*/ QString TrackSegment::getConnect1Name() {return getConnectName(connect1,type1);}
 /*public*/ QString TrackSegment::getConnect2Name() {return getConnectName(connect2,type2);}
 
-/*private*/ QString
-TrackSegment::getConnectName(QObject* o,int type)
-{
- if (type == LayoutEditor::POS_POINT)
- {
-  return ((PositionablePoint*)o)->getID();
- }
- if ( (type == LayoutEditor::TURNOUT_A) || (type == LayoutEditor::TURNOUT_B) ||
-         (type == LayoutEditor::TURNOUT_C) || (type == LayoutEditor::TURNOUT_D) )
- {
-  return ((LayoutTurnout*)o)->getName();
- }
- if ( (type == LayoutEditor::LEVEL_XING_A) || (type == LayoutEditor::LEVEL_XING_B) ||
-         (type == LayoutEditor::LEVEL_XING_C) || (type == LayoutEditor::LEVEL_XING_D) )
- {
-  return ((LevelXing*)o)->getID();
- }
- if ( (type == LayoutEditor::SLIP_A) || (type == LayoutEditor::SLIP_B) ||
-         (type == LayoutEditor::SLIP_C) || (type == LayoutEditor::SLIP_D) )
- {
-  return ((LayoutSlip*)o)->getName();
- }
-#if 1 //TODO
+/*private*/ QString TrackSegment::getConnectName(/*@Nullable*/ LayoutTrack* layoutTrack, int type) {
+    return (layoutTrack == nullptr) ? nullptr : layoutTrack->getName();
+}
 
- if (type>=LayoutEditor::TURNTABLE_RAY_OFFSET) {
-     return ((LayoutTurntable*)o)->getID();
- }
-#endif
- return "";
+/**
+ * {@inheritDoc}
+ * <p>
+ * This implementation returns null because {@link #getConnect1} and
+ * {@link #getConnect2} should be used instead.
+ */
+// only implemented here to suppress "does not override abstract method " error in compiler
+//@Override
+/*public*/ LayoutTrack* TrackSegment::getConnection(int connectionType) throw (JmriException) {
+    // nothing to see here, move along
+    return nullptr;
+}
+
+/**
+ * {@inheritDoc}
+ * <p>
+ * This implementation does nothing because {@link #setNewConnect1} and
+ * {@link #setNewConnect2} should be used instead.
+ */
+// only implemented here to suppress "does not override abstract method " error in compiler
+//@Override
+/*public*/ void TrackSegment::setConnection(int connectionType, /*@Nullable*/ LayoutTrack* o, int type) throw (JmriException) {
+    // nothing to see here, move along
+}
+
+/*public*/ int TrackSegment::getNumberOfBezierControlPoints() {
+    return bezierControlPoints.size();
+}
+
+/*public*/ QPointF TrackSegment::getBezierControlPoint(int index) {
+    QPointF result = center;
+    if (index < 0) {
+        index += bezierControlPoints.size();
+    }
+    if ((index >= 0) && (index < bezierControlPoints.size())) {
+        result = bezierControlPoints.at(index);
+    }
+    return result;
+}
+
+/*public*/ void TrackSegment::setBezierControlPoint(/*@Nullable*/ QPointF p, int index) {
+    if (index < 0) {
+        index += bezierControlPoints.size();
+    }
+    if ((index >= 0) && (index <= bezierControlPoints.size())) {
+        if (index < bezierControlPoints.size()) {
+            bezierControlPoints.insert(index, p);
+        } else {
+            bezierControlPoints.append(p);
+        }
+    }
 }
 // initialization instance variables (used when loading a LayoutEditor)
 //	public String tBlockName = "";
@@ -357,7 +395,7 @@ TrackSegment::getConnectName(QObject* o,int type)
          blockName = tBlockName;
          block->incrementUse();
      } else {
-         log.error("bad blockname '" + tBlockName + "' in tracksegment " + getName());
+         log->error("bad blockname '" + tBlockName + "' in tracksegment " + getName());
      }
  }
 
@@ -366,12 +404,12 @@ TrackSegment::getConnectName(QObject* o,int type)
  connect1 = p->getFinder()->findObjectByName(tConnect1Name);
  if (nullptr == connect1)
  { // findObjectByName failed... try findObjectByTypeAndName
-     log.warn("Unknown connect1 object prefix: '" + tConnect1Name + "' of type " + QString::number(type1) + ".");
+     log->warn("Unknown connect1 object prefix: '" + tConnect1Name + "' of type " + QString::number(type1) + ".");
      connect1 = p->getFinder()->findObjectByTypeAndName(type1, tConnect1Name);
  }
  connect2 = p->getFinder()->findObjectByName(tConnect2Name);
  if (nullptr == connect2) { // findObjectByName failed; try findObjectByTypeAndName
-     log.warn("Unknown connect2 object prefix: '" + tConnect2Name + "' of type " + type2 + ".");
+     log->warn("Unknown connect2 object prefix: '" + tConnect2Name + "' of type " + type2 + ".");
      connect2 = p->getFinder()->findObjectByTypeAndName(type2, tConnect2Name);
  }
 }
@@ -462,7 +500,7 @@ TrackSegment::getConnectName(QObject* o,int type)
 /*protected*/ void TrackSegment::drawDecorations(EditScene* g2) {
 
     if (getName() == ("T9")) {
-        log.debug("STOP");
+        log->debug("STOP");
     }
 
     // get end points and calculate start/stop angles (in radians)
@@ -631,7 +669,7 @@ TrackSegment::getConnectName(QObject* o,int type)
     //
     if (bumperEndStart || bumperEndStop) {
         if (getName().equals("T15")) {
-            log.debug("STOP");
+            log->debug("STOP");
         }
         g2.setStroke(new BasicStroke(bumperLineWidth,
                 BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.F));
@@ -1302,12 +1340,12 @@ void TrackSegment::flipAngle()
             }
             // get new block, or NULL if block has been removed
             blockName = blockNameField.getText().trim();
-            block = layoutEditor.provideLayoutBlock(blockName);
+            block = layoutEditor->provideLayoutBlock(blockName);
             if (block == NULL) {
                 blockName = "";
             }
             needsRedraw = true;
-            layoutEditor.auxTools.setBlockConnectivityChanged();
+            layoutEditor->auxTools.setBlockConnectivityChanged();
             updateBlockInfo();
         }
         // check if a block exists to edit
@@ -1318,7 +1356,7 @@ void TrackSegment::flipAngle()
             return;
         }
         block.editLayoutBlock(editTrackSegmentFrame);
-        layoutEditor.setDirty();
+        layoutEditor->setDirty();
         needsRedraw = true;
     }
     void segmentEditDonePressed(ActionEvent a) {
@@ -1356,20 +1394,20 @@ void TrackSegment::flipAngle()
             }
             // get new block, or NULL if block has been removed
             blockName = blockNameField.getText().trim();
-            block = layoutEditor.provideLayoutBlock(blockName);
+            block = layoutEditor->provideLayoutBlock(blockName);
             if (block == NULL) {
                 blockName = "";
             }
             needsRedraw = true;
-            layoutEditor.auxTools.setBlockConnectivityChanged();
+            layoutEditor->auxTools.setBlockConnectivityChanged();
             updateBlockInfo();
         }
         editOpen = false;
         editTrackSegmentFrame.setVisible(false);
         editTrackSegmentFrame.dispose();
         editTrackSegmentFrame = NULL;
-        if (needsRedraw) layoutEditor.redrawPanel();
-        layoutEditor.setDirty();
+        if (needsRedraw) layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
     }
     void segmentEditCancelPressed(ActionEvent a) {
         editOpen = false;
@@ -1377,8 +1415,8 @@ void TrackSegment::flipAngle()
         editTrackSegmentFrame.dispose();
         editTrackSegmentFrame = NULL;
         if (needsRedraw) {
-            layoutEditor.setDirty();
-            layoutEditor.redrawPanel();
+            layoutEditor->setDirty();
+            layoutEditor->redrawPanel();
         }
     }
 #endif
@@ -1488,59 +1526,65 @@ void TrackSegment::remove() {
 /**
  * @return the location of the middle of the segment (on the segment)
  */
-/*public*/ QPointF TrackSegment::getCentreSeg() {
-    QPointF result =QPointF();
+/*public*/ QPointF TrackSegment::getCentreSeg()
+{
+ QPointF result =MathUtil::zeroPoint2D;
 
-    if ((connect1 != nullptr) && (connect2 != nullptr)) {
-        // get therackSegment:: end points
-        QPointF ep1 = LayoutEditor::getCoords(getConnect1(), getType1());
-        QPointF ep2 = LayoutEditor::getCoords(getConnect2(), getType2());
+ if ((connect1 != nullptr) && (connect2 != nullptr))
+ {
+  // get the end points
+  QPointF ep1 = LayoutEditor::getCoords(getConnect1(), getType1());
+  QPointF ep2 = LayoutEditor::getCoords(getConnect2(), getType2());
 
-        if (isCircle()) {
-            result = center; //new Point2D.Double(centreX, centreY);
-        } else if (isArc()) {
-            //center = MathUtil.midPoint(getBounds());
-         center = getBounds().center();
-            if (isFlip()) {
-                QPointF t = ep1;
-                ep1 = ep2;
-                ep2 = t;
-            }
-            QPointF delta = MathUtil::subtract(ep1, ep2);
-            // are they of the same sign?
-            if ((delta.x() >= 0.0) != (delta.y() >= 0.0)) {
-                delta = MathUtil::divide(delta, +5.0, -5.0);
-            } else {
-                delta = MathUtil::divide(delta, -5.0, +5.0);
-            }
-            result =MathUtil::add(center, delta);
-        }
-#if 0
-        else if (isBezier()) {
-            // compute result Bezier point for (t == 0.5);
-            // copy all the control points (including end points) into an array
-            int len = bezierControlPoints.size() + 2;
-            QVector<QPointF> points = QVector<QPointF>(len);
-            points.replace(0, ep1);
-            for (int idx = 1; idx < len - 1; idx++) {
-                points.replace(idx, bezierControlPoints.at(idx - 1));
-            }
-            points.replace(len - 1, ep2);
+  if (isCircle()) {
+      result = center; //new QPointF.Double(centreX, centreY);
+  }
+  else if (isArc())
+  {
+      //center = MathUtil.midPoint(getBounds());
+   center = getBounds().center();
+      if (isFlip()) {
+          QPointF t = ep1;
+          ep1 = ep2;
+          ep2 = t;
+      }
+      QPointF delta = MathUtil::subtract(ep1, ep2);
+      // are they of the same sign?
+      if ((delta.x() >= 0.0) != (delta.y() >= 0.0)) {
+          delta = MathUtil::divide(delta, +5.0, -5.0);
+      } else {
+          delta = MathUtil::divide(delta, -5.0, +5.0);
+      }
+      result =MathUtil::add(center, delta);
+  }
+#if 1
+  else if (isBezier()) {
+      // compute result Bezier point for (t == 0.5);
+      // copy all the control points (including end points) into an array
+      int len = bezierControlPoints.size() + 2;
+      QVector<QPointF> points = QVector<QPointF>(len);
+      points.replace(0, ep1);
+      for (int idx = 1; idx < len - 1; idx++) {
+          points.replace(idx, bezierControlPoints.at(idx - 1));
+      }
+      points.replace(len - 1, ep2);
 
-            // calculate midpoints of all points (len - 1 order times)
-            for (int idx = len - 1; idx > 0; idx--) {
-                for (int jdx = 0; jdx < idx; jdx++) {
-                    points.replace(jdx,  MathUtil::midpoint(points[jdx], points[jdx + 1]));
-                }
-            }
-            result = points[0];
-        } else {
-            result = MathUtil::midpoint(ep1, ep2);
-        }
+      // calculate midpoints of all points (len - 1 order times)
+      for (int idx = len - 1; idx > 0; idx--) {
+          for (int jdx = 0; jdx < idx; jdx++) {
+              points.replace(jdx,  MathUtil::midPoint(points[jdx], points[jdx + 1]));
+          }
+      }
+      result = points[0];
+  }
 #endif
-        center = result;
-    }
-    return result;
+  else
+  {
+   result = MathUtil::midPoint(ep1, ep2);
+  }
+  center = result;
+ }
+ return result;
 }
 
 /*public*/ void TrackSegment::setCentreSeg(QPointF p) {
@@ -1563,6 +1607,11 @@ void TrackSegment::remove() {
     centreY = CentreY;
 }
 
+/*public*/ QPointF TrackSegment::getCentre()
+{
+ return QPointF(centreX, centreY);
+}
+
 /*public*/ double TrackSegment::getTmpAngle(){
     return tmpangle;
 }
@@ -1571,12 +1620,24 @@ void TrackSegment::remove() {
     tmpangle = TmpAngle;
 }
 
-/*public*/ QPointF TrackSegment::getCoordsCenterCircle() { return  QPointF(getCentreX(),getCentreY()); }
+/*public*/ QPointF TrackSegment::getCoordsCenterCircle()
+{
+ return  getCentre();
+}
+/**
+ * set center coordinates
+ *
+ * @param p the coordinates to set
+ */
+/*public*/ void TrackSegment::setCoordsCenterCircle(QPointF p) {
+    centreX = p.x();
+    centreY = p.y();
+}
 
 /*public*/ double TrackSegment::getChordLength() { return chordLength; }
 /*public*/ void TrackSegment::setChordLength(double chord) { chordLength=chord;}
 
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(TrackSegment.class.getName());
+/*static*/ Logger* TrackSegment::log = LoggerFactory::getLogger("TrackSegment");
 
 //}
 
@@ -1759,6 +1820,177 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
    }
   }
 }
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void TrackSegment::draw1(EditScene* g2, bool isMain, bool isBlock) {
+    if (!isBlock && isDashed() && getLayoutBlock() != nullptr) {
+        // Skip the dashed rail layer, the block layer will display the dashed track
+        // This removes random rail fragments from between the block dashes
+        return;
+    }
+#if 0
+    QColor color;
+    if (isMain == mainline) {
+        if (isBlock) {
+            color = setColorForTrackBlock(g2, getLayoutBlock());
+        }
+        if (isArc()) {
+            calculateTrackSegmentAngle();
+//            g2.draw(new Arc2D.Double(getCX(), getCY(), getCW(), getCH(), getStartAdj(), getTmpAngle(), Arc2D.OPEN));
+            QGraphicsArcItem* lineItem = new QGraphicsArcItem(getCX(), getCY(), getCW(), getCH());
+            lineItem->setStartAngle(getStartAdj()*16);
+            lineItem->setSpanAngle(getTmpAngle()*16);
+            lineItem->setPen(QPen(QColor(color),layoutEditor->trackWidth));
+            item = lineItem;
+            g2->addItem(item);
+
+            trackRedrawn();
+        }
+        else if (isBezier()) {
+            QPointF pt1 = LayoutEditor::getCoords(getConnect1(), getType1());
+            QPointF pt2 = LayoutEditor::getCoords(getConnect2(), getType2());
+
+            int cnt = bezierControlPoints.size();
+            QVector<QPointF> points = Qvector<QPointF>(cnt + 2);
+            points.replace(0, pt1);
+            for (int idx = 0; idx < cnt; idx++) {
+                points.replace(idx + 1, bezierControlPoints.at(idx));
+            }
+            points[cnt + 1] = pt2;
+
+            MathUtil::drawBezier(g2, points);
+        } else {
+            QPointF end1 = LayoutEditor::getCoords(getConnect1(), getType1());
+            QPointF end2 = LayoutEditor::getCoords(getConnect2(), getType2());
+
+            //g2.draw(new Line2D.Double(end1, end2));
+            QGraphicsPathItem* lineItem = new QGraphicsPathItem()
+        }
+    }
+#endif
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void TrackSegment::draw2(EditScene* g2, bool isMain, float railDisplacement) {
+    if (isDashed() && getLayoutBlock() != nullptr) {
+        // Skip the dashed rail layer, the block layer will display the dashed track
+        // This removes random rail fragments from between the block dashes
+        return;
+    }
+#if 0
+    if (isMain == mainline) {
+        if (isArc()) {
+            calculateTrackSegmentAngle();
+            Rectangle2D cRectangle2D = new Rectangle2D.Double(
+                    getCX(), getCY(), getCW(), getCH());
+            Rectangle2D cLeftRectangle2D = MathUtil.inset(cRectangle2D, -railDisplacement);
+            double startAdj = getStartAdj(), tmpAngle = getTmpAngle();
+            g2.draw(new Arc2D.Double(
+                    cLeftRectangle2D.getX(),
+                    cLeftRectangle2D.getY(),
+                    cLeftRectangle2D.getWidth(),
+                    cLeftRectangle2D.getHeight(),
+                    startAdj, tmpAngle, Arc2D.OPEN));
+            Rectangle2D cLRightRectangle2D = MathUtil.inset(cRectangle2D, +railDisplacement);
+            g2.draw(new Arc2D.Double(
+                    cLRightRectangle2D.getX(),
+                    cLRightRectangle2D.getY(),
+                    cLRightRectangle2D.getWidth(),
+                    cLRightRectangle2D.getHeight(),
+                    startAdj, tmpAngle, Arc2D.OPEN));
+            trackRedrawn();
+        } else if (isBezier()) {
+            QPointF pt1 = LayoutEditor.getCoords(getConnect1(), getType1());
+            QPointF pt2 = LayoutEditor.getCoords(getConnect2(), getType2());
+
+            int cnt = bezierControlPoints.size();
+            QPointF[] points = new QPointF[cnt + 2];
+            points[0] = pt1;
+            for (int idx = 0; idx < cnt; idx++) {
+                points[idx + 1] = bezierControlPoints.get(idx);
+            }
+            points[cnt + 1] = pt2;
+
+            MathUtil.drawBezier(g2, points, -railDisplacement);
+            MathUtil.drawBezier(g2, points, +railDisplacement);
+        } else {
+            QPointF end1 = LayoutEditor.getCoords(getConnect1(), getType1());
+            QPointF end2 = LayoutEditor.getCoords(getConnect2(), getType2());
+
+            QPointF delta = MathUtil.subtract(end2, end1);
+            QPointF vector = MathUtil.normalize(delta, railDisplacement);
+            vector = MathUtil.orthogonal(vector);
+
+            QPointF ep1L = MathUtil.add(end1, vector);
+            QPointF ep2L = MathUtil.add(end2, vector);
+            g2.draw(new Line2D.Double(ep1L, ep2L));
+
+            QPointF ep1R = MathUtil.subtract(end1, vector);
+            QPointF ep2R = MathUtil.subtract(end2, vector);
+            g2.draw(new Line2D.Double(ep1R, ep2R));
+        }
+    }
+#endif
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void TrackSegment::highlightUnconnected(EditScene* g2, int selectedType) {
+    // TrackSegments are always connected
+    // nothing to see here... move along...
+}
+
+//@Override
+/*protected*/ void TrackSegment::drawEditControls(EditScene* g2) {
+#if 0
+    g2.setColor(Color.black);
+    if (isShowConstructionLines()) {
+        QPointF ep1 = LayoutEditor.getCoords(getConnect1(), getType1());
+        QPointF ep2 = LayoutEditor.getCoords(getConnect2(), getType2());
+        if (isCircle()) {
+            // draw radiuses
+            QPointF circleCenterPoint = getCoordsCenterCircle();
+            g2.draw(new Line2D.Double(circleCenterPoint, ep1));
+            g2.draw(new Line2D.Double(circleCenterPoint, ep2));
+            // Draw a circle and square at the circles centre, that
+            // allows the user to change the angle by dragging the mouse.
+            g2.draw(layoutEditor.trackEditControlCircleAt(circleCenterPoint));
+            g2.draw(layoutEditor.trackEditControlRectAt(circleCenterPoint));
+        } else if (isBezier()) {
+            //draw construction lines and control circles
+            QPointF lastPt = ep1;
+            for (QPointF bcp : bezierControlPoints) {
+                g2.draw(new Line2D.Double(lastPt, bcp));
+                lastPt = bcp;
+                g2.draw(layoutEditor.trackEditControlRectAt(bcp));
+            }
+            g2.draw(new Line2D.Double(lastPt, ep2));
+        }
+    }
+    g2.draw(layoutEditor.trackEditControlCircleAt(getCentreSeg()));
+#endif
+}   // drawEditControls
+
+//@Override
+/*protected*/ void TrackSegment::drawTurnoutControls(EditScene* g2) {
+    // TrackSegments don't have turnout controls...
+    // nothing to see here... move along...
+}
+
+/*
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void TrackSegment::reCheckBlockBoundary() {
+    // nothing to see here... move along...
+}
 
 void TrackSegment::drawSolidTrack(LayoutEditor* editor, QGraphicsScene* g2, bool /*isMainline*/)
 {
@@ -1786,7 +2018,11 @@ void TrackSegment::drawSolidTrack(LayoutEditor* editor, QGraphicsScene* g2, bool
  {
   //g2.draw(new Line2D.Double(getCoords(t.getConnect1(),t.getType1()), getCoords(t.getConnect2(),t.getType2())));
   //g2->addLine(QLineF(getCoords(t->getConnect1(),t->getType1()), getCoords(t->getConnect2(),t->getType2())),QPen(QColor(color),trackWidth));
-  QGraphicsLineItem* lineItem = new QGraphicsLineItem(QLineF(LayoutEditor::getCoords(getConnect1(),getType1()), LayoutEditor::getCoords(getConnect2(),getType2())));
+  QPointF p1 = LayoutEditor::getCoords(getConnect1(),getType1());
+  QPointF p2 = LayoutEditor::getCoords(getConnect2(),getType2());
+  log->debug(tr("line '%5' from %1,%2 -> %3,%4").arg(p1.x()).arg(p1.y()).arg(p2.x()).arg(p2.y()).arg(ident));
+  QGraphicsLineItem* lineItem = new QGraphicsLineItem(QLineF(LayoutEditor::getCoords(getConnect1(),getType1()),
+                                                             LayoutEditor::getCoords(getConnect2(),getType2())));
   lineItem->setPen(QPen(QColor(color),editor->trackWidth));
   item = lineItem;
   g2->addItem(item);
@@ -1938,7 +2174,22 @@ double TrackSegment::degToRad(double degrees)
     }
 }
 
-
+/**
+ * Get the coordinates for a specified connection type.
+ *
+ * @param connectionType the connection type
+ * @return the coordinates for the specified connection type
+ */
+//@Override
+/*public*/ QPointF TrackSegment::getCoordsForConnectionType(int connectionType) {
+    QPointF result = getCentreSeg();
+    if (connectionType == TRACK_CIRCLE_CENTRE) {
+        result = getCoordsCenterCircle();
+    } else if ((connectionType >= BEZIER_CONTROL_POINT_OFFSET_MIN) && (connectionType <= BEZIER_CONTROL_POINT_OFFSET_MAX)) {
+        result = getBezierControlPoint(connectionType - BEZIER_CONTROL_POINT_OFFSET_MIN);
+    }
+    return result;
+}
 
 
 /**
@@ -1962,6 +2213,106 @@ double TrackSegment::degToRad(double degrees)
 //    return result;
  return item->boundingRect();
 }
+//
+//  bridge decoration accessors
+//
+/*public*/ bool TrackSegment::isBridgeSideRight() {
+    return bridgeSideRight;
+}
+
+/*public*/ void TrackSegment::setBridgeSideRight(bool newVal) {
+    if (bridgeSideRight != newVal) {
+        bridgeSideRight = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isBridgeSideLeft() {
+    return bridgeSideLeft;
+}
+
+/*public*/ void TrackSegment::setBridgeSideLeft(bool newVal) {
+    if (bridgeSideLeft != newVal) {
+        bridgeSideLeft = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isBridgeHasEntry() {
+    return bridgeHasEntry;
+}
+
+/*public*/ void TrackSegment::setBridgeHasEntry(bool newVal) {
+    if (bridgeHasEntry != newVal) {
+        bridgeHasEntry = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isBridgeHasExit() {
+    return bridgeHasExit;
+}
+
+/*public*/ void TrackSegment::setBridgeHasExit(bool newVal) {
+    if (bridgeHasExit != newVal) {
+        bridgeHasExit = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ QColor TrackSegment::getBridgeColor() {
+    return bridgeColor;
+}
+
+/*public*/ void TrackSegment::setBridgeColor(QColor newVal) {
+    if (bridgeColor != newVal) {
+        bridgeColor = newVal;
+        JmriColorChooser::addRecentColor(newVal);
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ int TrackSegment::getBridgeDeckWidth() {
+    return bridgeDeckWidth;
+}
+
+/*public*/ void TrackSegment::setBridgeDeckWidth(int newVal) {
+    if (bridgeDeckWidth != newVal) {
+        bridgeDeckWidth = qMax(0, newVal);   // don't let value be less than 0
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ int TrackSegment::getBridgeLineWidth() {
+    return bridgeLineWidth;
+}
+
+/*public*/ void TrackSegment::setBridgeLineWidth(int newVal) {
+    if (bridgeLineWidth != newVal) {
+        bridgeLineWidth = qMax(1, newVal);   // don't let value be less than 1
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ int TrackSegment::getBridgeApproachWidth() {
+    return bridgeApproachWidth;
+}
+
+/*public*/ void TrackSegment::setBridgeApproachWidth(int newVal) {
+    if (bridgeApproachWidth != newVal) {
+        bridgeApproachWidth = qMax(0, newVal);   // don't let value be less than 0
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
 //
 //  bumper decoration accessors
 //
@@ -2059,3 +2410,104 @@ double TrackSegment::degToRad(double degrees)
         layoutEditor->setDirty();
     }
 }
+
+//
+//  tunnel decoration accessors
+//
+/*public*/ bool TrackSegment::isTunnelSideRight() {
+    return tunnelSideRight;
+}
+
+/*public*/ void TrackSegment::setTunnelSideRight(bool newVal) {
+    if (tunnelSideRight != newVal) {
+        tunnelSideRight = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isTunnelSideLeft() {
+    return tunnelSideLeft;
+}
+
+/*public*/ void TrackSegment::setTunnelSideLeft(bool newVal) {
+    if (tunnelSideLeft != newVal) {
+        tunnelSideLeft = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isTunnelHasEntry() {
+    return tunnelHasEntry;
+}
+
+/*public*/ void TrackSegment::setTunnelHasEntry(bool newVal) {
+    if (tunnelHasEntry != newVal) {
+        tunnelHasEntry = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ bool TrackSegment::isTunnelHasExit() {
+    return tunnelHasExit;
+}
+
+/*public*/ void TrackSegment::setTunnelHasExit(bool newVal) {
+    if (tunnelHasExit != newVal) {
+        tunnelHasExit = newVal;
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ QColor TrackSegment::getTunnelColor() {
+    return tunnelColor;
+}
+
+/*public*/ void TrackSegment::setTunnelColor(QColor newVal) {
+    if (tunnelColor != newVal) {
+        tunnelColor = newVal;
+        JmriColorChooser::addRecentColor(newVal);
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ int TrackSegment::getTunnelFloorWidth() {
+    return tunnelFloorWidth;
+}
+
+/*public*/ void TrackSegment::setTunnelFloorWidth(int newVal) {
+    if (tunnelFloorWidth != newVal) {
+        tunnelFloorWidth =qMax(0, newVal);   // don't let value be less than 0
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ int TrackSegment::getTunnelLineWidth() {
+    return tunnelLineWidth;
+}
+
+/*public*/ void TrackSegment::setTunnelLineWidth(int newVal) {
+    if (tunnelLineWidth != newVal) {
+        tunnelLineWidth = qMax(1, newVal);   // don't let value be less than 1
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+
+/*public*/ int TrackSegment::getTunnelEntranceWidth() {
+    return tunnelEntranceWidth;
+}
+
+/*public*/ void TrackSegment::setTunnelEntranceWidth(int newVal) {
+    if (tunnelEntranceWidth != newVal) {
+        tunnelEntranceWidth = qMax(0, newVal);   // don't let value be less than 0
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
+    }
+}
+

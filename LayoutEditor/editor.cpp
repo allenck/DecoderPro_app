@@ -534,7 +534,7 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
  _editable = state;
  for (int i = 0; i<_contents->size(); i++)
  {
-  ((PositionableLabel*)_contents->at(i))->setEditable(state);
+  _contents->at(i)->setEditable(state);
  }
  if (!_editable)
  {
@@ -1569,7 +1569,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
     log->error("updateScene failed!");
 
   if(!bAdded)
-      log->error("add failed " + QString(((QObject*)l)->metaObject()->className()));
+      log->error("add failed " + QString(l->self()->metaObject()->className()));
 //  QRectF r = ((PositionableLabel*)l)->getBounds();
 //  editScene->invalidate(r,QGraphicsScene::ItemLayer);
 // }

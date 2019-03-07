@@ -1431,6 +1431,36 @@ void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
 }
 
 /**
+ * return the coordinates for a specified connection type
+ *
+ * @param connectionType the connection type
+ * @return the coordinates for the specified connection type
+ */
+//@Override
+/*public*/ QPointF LevelXing::LevelXing::LevelXing::getCoordsForConnectionType(int connectionType) {
+    QPointF result = center;
+    switch (connectionType) {
+        case LEVEL_XING_CENTER:
+            break;
+        case LEVEL_XING_A:
+            result = getCoordsA();
+            break;
+        case LEVEL_XING_B:
+            result = getCoordsB();
+            break;
+        case LEVEL_XING_C:
+            result = getCoordsC();
+            break;
+        case LEVEL_XING_D:
+            result = getCoordsD();
+            break;
+        default:
+            log.error("Invalid connection type " + QString::number(connectionType)); //I18IN
+    }
+    return result;
+}
+
+/**
  * @return the bounds of this crossing
  */
 //@Override

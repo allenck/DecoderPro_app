@@ -180,6 +180,6 @@
  <object-type name="EditScene" />
  <object-type name="JLabel" />
  <object-type name="LayoutTurnout"/>
- <object-type name="LayoutTtrack"/>
+ <object-type name="LayoutTrack"/>
 
 </typesystem>

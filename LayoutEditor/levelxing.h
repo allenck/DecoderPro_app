@@ -143,6 +143,7 @@ public:
     /*public*/ void setSignalDMast(QString signalMast);
     /*public*/ LayoutTrack* getConnection(int location) throw (JmriException);
     /*public*/ void setConnection(int location, LayoutTrack *o, int type) throw (JmriException);
+    /*public*/ QPointF getCoordsForConnectionType(int connectionType);
     /*public*/ QRectF getBounds();
     /*public*/ Sensor* getSensorA();
     /*public*/ Sensor* getSensorB();

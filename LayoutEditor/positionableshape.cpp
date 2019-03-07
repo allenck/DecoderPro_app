@@ -758,7 +758,8 @@ void PositionableShape::OnCancel_clicked()
 
  makeShape();
  //_itemGroup->setPos(getX(), getY());
- _handleGroup->setPos(getX(), getY());
+ if(_handleGroup)
+  _handleGroup->setPos(getX(), getY());
 
  //if(showTooltip()) _itemGroup->setToolTip(getTooltip());
  //int degrees = getDegrees() + getIcon()->getRotation();

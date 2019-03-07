@@ -1651,7 +1651,7 @@ double LayoutEditor::getPaintScale()
  */
 //@Nonnull
 /*public*/ /*static*/ QPointF LayoutEditor::getCoords(/*@Nonnull*/ LayoutTrack* layoutTrack, int connectionType) {
-    QPointF result = QPointF();
+    QPointF result = MathUtil::zeroPoint2D;
     if (layoutTrack != nullptr) {
         result = layoutTrack->getCoordsForConnectionType(connectionType);
     } else {

@@ -45,51 +45,7 @@
  this->center = c;
  this->layoutEditor = layoutEditor;
  defaultTrackColor = ColorUtil::stringToColor(layoutEditor->getDefaultTrackColor());
- item = new QGraphicsItem();
-}
-
-/*public*/ /*abstract*/ bool LayoutTrack::isMainline() {return false;}
-/**
- * draw one line (Ballast, ties, center or 3rd rail, block lines)
- *
- * @param g2      the graphics context
- * @param isMain  true if drawing mainlines
- * @param isBlock true if drawing block lines
- */
-/*protected*/ /*abstract*/ void LayoutTrack::draw1(QGraphcsScene* /*g2*/, bool /*isMain*/, bool /*isBlock*/) {}
-
-/**
- * draw two lines (rails)
- *
- * @param g2               the graphics context
- * @param isMain           true if drawing mainlines
- * @param railDisplacement the offset from center to draw the lines
- */
-/*protected*/ /*abstract*/ void LayoutTrack::draw2(QGraphicsScene* g2, bool isMain, float railDisplacement) {}
-
-/**
- * draw hidden track
- *
- * @param g2 the graphics context
- */
-//protected abstract void drawHidden(Graphics2D g2);
-//note: placeholder until I get this implemented in all sub-classes
-//TODO: replace with abstract declaration (above)
-/*protected*/ void LayoutTrack::drawHidden(QGraphicsScene* g2) {
-    //nothing to do here... move along...
-}
-
-/**
- * highlight unconnected connections
- *
- * @param g2           the graphics context
- * @param specificType the specific connection to draw (or NONE for all)
- */
-/*protected*/ /*abstract*/ void LayoutTrack::highlightUnconnected(QGraphicsScene* g2, int specificType) {}
-
-// optional parameter specificType = NONE
-/*protected*/ void LayoutTrack::highlightUnconnected(QGraphicsScene* g2) {
-    highlightUnconnected(g2, NONE);
+ item = nullptr;
 }
 
 /**
@@ -121,10 +77,110 @@
     center = p;
 }
 
-/*public*/ /*static*/ void LayoutTrack::setDefaultTrackColor(QColor color) {
+/**
+ * @return true if this track segment has decorations
+ */
+/*public*/ bool LayoutTrack::hasDecorations() {
+    return false;
+}
+
+/**
+ * get decorations
+ *
+ * @return the decorations
+ */
+/*public*/ QMap<QString, QString>* LayoutTrack::getDecorations() {
+    return decorations;
+}
+
+/**
+ * set decorations
+ *
+ * @param decorations to set
+ */
+/*public*/ void LayoutTrack::setDecorations(QMap<QString, QString>* decorations) {
+    this->decorations = decorations;
+}
+
+/*public*/ /*static*/ void LayoutTrack::setDefaultTrackColor(/*@Nullable*/ QColor color) {
     defaultTrackColor = color;
 }
 
+/*protected*/ QColor LayoutTrack::getColorForTrackBlock(
+        /*@Nullable*/ LayoutBlock* layoutBlock, bool forceBlockTrackColor) {
+    QColor result = ColorUtil::CLEAR;  // transparent
+    if (layoutBlock != nullptr) {
+        if (forceBlockTrackColor) {
+            result = layoutBlock->getBlockTrackColor();
+        } else {
+            result = layoutBlock->getBlockColor();
+        }
+    }
+    return result;
+}
+
+// optional parameter forceTrack = false
+/*protected*/ QColor LayoutTrack::getColorForTrackBlock(/*@Nullable*/ LayoutBlock* lb) {
+    return getColorForTrackBlock(lb, false);
+}
+
+/*protected*/ QColor LayoutTrack::setColorForTrackBlock(EditScene* g2,
+        /*@Nullable*/ LayoutBlock* layoutBlock, bool forceBlockTrackColor) {
+    QColor result = getColorForTrackBlock(layoutBlock, forceBlockTrackColor);
+// TODO:    g2.setColor(result);
+    return result;
+}
+
+// optional parameter forceTrack = false
+/*protected*/ QColor LayoutTrack::setColorForTrackBlock(EditScene* g2, /*@Nullable*/ LayoutBlock* lb) {
+    return setColorForTrackBlock(g2, lb, false);
+}
+
+/*public*/ /*abstract*/ bool LayoutTrack::isMainline() {return false;}
+/**
+ * draw one line (Ballast, ties, center or 3rd rail, block lines)
+ *
+ * @param g2      the graphics context
+ * @param isMain  true if drawing mainlines
+ * @param isBlock true if drawing block lines
+ */
+/*protected*/ /*abstract*/ void LayoutTrack::draw1(EditScene * /*g2*/, bool /*isMain*/, bool /*isBlock*/) {}
+
+/**
+ * draw two lines (rails)
+ *
+ * @param g2               the graphics context
+ * @param isMain           true if drawing mainlines
+ * @param railDisplacement the offset from center to draw the lines
+ */
+/*protected*/ /*abstract*/ void LayoutTrack::draw2(EditScene* g2, bool isMain, float railDisplacement) {}
+
+/**
+ * draw hidden track
+ *
+ * @param g2 the graphics context
+ */
+//protected abstract void drawHidden(Graphics2D g2);
+//note: placeholder until I get this implemented in all sub-classes
+//TODO: replace with abstract declaration (above)
+/*protected*/ void LayoutTrack::drawHidden(EditScene *g2) {
+    //nothing to do here... move along...
+}
+
+/**
+ * highlight unconnected connections
+ *
+ * @param g2           the graphics context
+ * @param specificType the specific connection to draw (or NONE for all)
+ */
+/*protected*/ /*abstract*/ void LayoutTrack::highlightUnconnected(EditScene *g2, int specificType) {}
+
+// optional parameter specificType = NONE
+/*protected*/ void LayoutTrack::highlightUnconnected(EditScene* g2) {
+    highlightUnconnected(g2, NONE);
+}
+
+//may not be needed sinc QGraphicsScene may suffice
 //NOTE: not /*public*/ because "center" is a member variable
 /*protected*/ QPointF LayoutTrack::rotatePoint(QPointF p, double sineRot, double cosineRot) {
     double cX = center.x();
@@ -141,14 +197,14 @@
  *
  * @param g2 the graphics context
  */
-/*protected*/ /*abstract*/ void LayoutTrack::drawEditControls(QGraphicsScene* g2) {}
+/*protected*/ /*abstract*/ void LayoutTrack::drawEditControls(EditScene *g2) {}
 
 /**
  * draw the turnout controls
  *
  * @param g2 the graphics context
  */
-/*protected*/ /*abstract*/ void LayoutTrack::drawTurnoutControls(QGraphicsScene* g2) {}
+/*protected*/ /*abstract*/ void LayoutTrack::drawTurnoutControls(EditScene* g2) {}
 
 /**
  * draw track decorations
@@ -403,7 +459,10 @@
  * @param connectionType the connection type
  * @return the coordinates for the specified connection type
  */
-/*public*/ /*abstract*/ QPointF LayoutTrack::getCoordsForConnectionType(int connectionType) {return QPointF();}
+/*public*/ /*abstract*/ QPointF LayoutTrack::getCoordsForConnectionType(int /*connectionType*/)
+{
+ return QPointF();
+}
 
 /**
  * @return the bounds of this track
@@ -472,7 +531,7 @@
  * @param type           where on the LayoutTrack we are connected
  * @throws JmriException - if connectionType or type are invalid
  */
-/*public*/ /*abstract*/ void LayoutTrack::setConnection(int connectionType, LayoutTrack o, int type) throw (JmriException) {}
+/*public*/ /*abstract*/ void LayoutTrack::setConnection(int connectionType, LayoutTrack* o, int type) throw (JmriException) {}
 
 /**
  * abstract method... subclasses should implement _IF_ they need to recheck
@@ -556,7 +615,7 @@
  */
 /*public*/ /*abstract*/ void LayoutTrack::collectContiguousTracksNamesInBlockNamed(
         /*@Nonnull*/ QString blockName,
-  /*@Nonnull*/ QSet<QString> trackNameSet) {}
+  /*@Nonnull*/ QSet<QString>* trackNameSet) {}
 
 /**
  * Assign all the layout blocks in this track

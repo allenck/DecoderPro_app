@@ -172,6 +172,94 @@ if (key != QVariant()) {
 updateSize();
 }
 
+
+//@Override
+/*public*/ void MemoryIcon::updateSize() {
+    if (_popupUtil->getFixedWidth() == 0) {
+        //setSize(maxWidth(), maxHeight());
+        switch (_popupUtil->getJustification()) {
+            case LEFT:
+                DisplayMemoryIcon::setLocation(getOriginalX(), getOriginalY());
+                break;
+            case RIGHT:
+                DisplayMemoryIcon::setLocation(getOriginalX() - maxWidth(), getOriginalY());
+                break;
+            case CENTRE:
+                DisplayMemoryIcon::setLocation(getOriginalX() - (maxWidth() / 2), getOriginalY());
+                break;
+            default:
+                log->warn(tr("Unhandled justification code: %1").arg(_popupUtil->getJustification()));
+                break;
+        }
+        setSize(maxWidth(), maxHeight());
+    } else {
+        DisplayMemoryIcon::updateSize();
+        if (_icon && _namedIcon != nullptr) {
+            _namedIcon->reduceTo(maxWidthTrue(), maxHeightTrue(), 0.2);
+        }
+    }
+}
+
+
+/*public*/ void MemoryIcon::setOriginalLocation(int x, int y) {
+    originalX = x;
+    originalY = y;
+    updateSize();
+}
+
+/*public*/ int MemoryIcon::getOriginalX() {
+    return originalX;
+}
+
+/*public*/ int MemoryIcon::getOriginalY() {
+    return originalY;
+}
+
+//@Override
+/*public*/ void MemoryIcon::setLocation(int x, int y) {
+    if (_popupUtil->getFixedWidth() == 0) {
+        setOriginalLocation(x, y);
+    } else {
+        DisplayMemoryIcon::setLocation(x, y);
+    }
+}
+
+//@Override
+/*public*/ bool MemoryIcon::setEditIconMenu(QMenu* popup) {
+    QString txt = tr("Edit %1 Icon...").arg(tr("Memory"));
+    AbstractAction* act;
+    popup->addAction(act = new AbstractAction(txt, this));//
+//    {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            edit();
+//        }
+//    });
+//    return true;
+      connect(act, SIGNAL(triggered(bool)), this, SLOT(edit()));
+}
+
+//@Override
+/*protected*/ void MemoryIcon::edit() {
+    makeIconEditorFrame(this, "Memory", true, nullptr);
+    _iconEditor->setPickList(PickListModel::memoryPickModelInstance());
+//    ActionListener addIconAction = (ActionEvent a) -> {
+//        editMemory();
+//    };
+    MIActionListener* addIconAction = new MIActionListener(this);
+    _iconEditor->complete(addIconAction, false, true, true);
+    _iconEditor->setSelection(getMemory());
+}
+
+void MemoryIcon::editMemory() {
+    setMemory(_iconEditor->getTableSelection()->getDisplayName());
+    updateSize();
+    _iconEditorFrame->dispose();
+    _iconEditorFrame = nullptr;
+    _iconEditor = nullptr;
+    update();
+}
+
 /*protected*/ QVariant MemoryIcon::updateIconFromRosterVal(RosterEntry* roster)
 {
     re = roster;

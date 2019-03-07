@@ -25,22 +25,52 @@ public:
     /*public*/ QString getNameString();
 //    /*public*/ bool updateScene();
     /*public*/ QString getGroupName();
+ /*public*/ void updateSize();
+ /*public*/ void setOriginalLocation(int x, int y);
+ /*public*/ int getOriginalX();
+ /*public*/ int getOriginalY();
+ /*public*/ void setLocation(int x, int y);
+ /*public*/ bool setEditIconMenu(QMenu* popup);
+ enum POS
+ {
+  LEFT = 0x00,
+  RIGHT = 0x02,
+  CENTRE = 0x04
+ };
+ Q_ENUM(POS)
 
 signals:
 
 public slots:
     void on_updateBlockItemAction_toggled(bool bState);
     /*public*/ void propertyChange(PropertyChangeEvent* e);
+    void edit();
+
 private:
  QString defaultText;// = " ";
  LayoutBlock* lBlock;// = NULL;
 Logger* log;
+/*Stores the original location of the memory, this is then used to calculate
+     the position of the text dependant upon the justification*/
+    /*private*/ int originalX = 0;
+    /*private*/ int originalY = 0;
+    void editMemory();
+
 protected:
 /*protected*/ void setValue(QVariant obj);
 /*protected*/ void addRosterToMemory(RosterEntry* roster);
 /*protected*/ void displayState(QVariant key);
 /*protected*/ QVariant updateIconFromRosterVal(RosterEntry* roster);
-
+friend class MIActionListener;
 };
 
+class MIActionListener : public ActionListener
+{
+ Q_OBJECT
+ MemoryIcon* memoryIcon;
+public:
+ MIActionListener(MemoryIcon* memoryIcon) {this->memoryIcon = memoryIcon;}
+public slots:
+ void actionPerformed() { memoryIcon->editMemory();}
+};
 #endif // MEMORYICON_H

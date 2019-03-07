@@ -25,24 +25,24 @@ public:
     /*public*/ PositionableJPanel(Editor* editor, QObject *parent = 0);
     /*public*/ Positionable* deepClone();
     /*public*/ Positionable* finishClone(PositionableJPanel* pos);
-//    /*public*/ void setPositionable(bool enabled);
-//    /*public*/ bool isPositionable();
-//    /*public*/ void setEditable(bool enabled);
-//    /*public*/ bool isEditable() ;
-//    /*public*/ void setViewCoordinates(bool enabled) ;
-//    /*public*/ bool getViewCoordinates();
-//    /*public*/ void setControlling(bool enabled);
-//    /*public*/ bool isControlling();
-//    /*public*/ void setHidden(bool hide);
-//    /*public*/ bool isHidden();
-//    /*public*/ void showHidden();
-//    /*public*/ void setLevel(int l);
-//    /*public*/ void setDisplayLevel(int l);
-//    /*public*/ int getDisplayLevel();
-//    /*public*/ void setShowTooltip(bool set) ;
-//    /*public*/ bool showTooltip();
-//    /*public*/ void setTooltip(QString tip);
-//    /*public*/ QString getTooltip();
+    /*public*/ void setPositionable(bool enabled);
+    /*public*/ bool isPositionable();
+    /*public*/ void setEditable(bool enabled);
+    /*public*/ bool isEditable() ;
+    /*public*/ void setViewCoordinates(bool enabled) ;
+    /*public*/ bool getViewCoordinates();
+    /*public*/ void setControlling(bool enabled);
+    /*public*/ bool isControlling();
+    /*public*/ void setHidden(bool hide);
+    /*public*/ bool isHidden();
+    /*public*/ void showHidden();
+    /*public*/ void setLevel(int l);
+    /*public*/ void setDisplayLevel(int l);
+    /*public*/ int getDisplayLevel();
+    /*public*/ void setShowTooltip(bool set) ;
+    /*public*/ bool showTooltip();
+    /*public*/ void setTooltip(QString tip);
+    /*public*/ QString getTooltip();
     /*public*/ void setScale(double s);
     /*public*/ double getScale();
     // no subclasses support rotations (yet)
@@ -117,7 +117,7 @@ private:
     PositionablePopupUtil* _popupUtil = nullptr;
     QString name;
     int _x, _y;
-    bool _bOpaque;
+    bool _bOpaque = false;
     MyGraphicsProxyWidget* widget = nullptr;
 
 protected:
@@ -132,7 +132,7 @@ protected:
     /*protected*/ bool _viewCoordinates = false;
     /*protected*/ bool _controlling = true;
     /*protected*/ bool _hidden = false;
-    /*protected*/ int _displayLevel;
+    /*protected*/ int _displayLevel=0;
     /*protected*/ void makeIconEditorFrame(QObject* pos, QString name, bool table, IconAdder* editor);
     //QGraphicsItemGroup* _itemGroup;
 friend class MemoryComboIcon;

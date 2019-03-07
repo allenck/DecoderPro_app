@@ -99,6 +99,9 @@ public:
     /*public*/ QWidget* getLinkPanel();
     /*public*/ bool isDisconnected(int connectionType);
     /*public*/ bool isMainline();
+    /*public*/ QPointF getCoordsForConnectionType(int connectionType);
+    /*public*/ LayoutTrack* getConnection(int connectionType) throw (JmriException);
+    /*public*/ void setConnection(int connectionType, LayoutTrack* o, int type) throw (JmriException);
 
 signals:
     
@@ -167,6 +170,7 @@ protected:
  /*protected*/ void draw2(QGraphicsScene g2, bool isMain, float railDisplacement);
  /*protected*/ void highlightUnconnected(QGraphicsScene* g2, int specificType);
  /*protected*/ /*abstract*/ virtual void drawEditControls(QGraphicsScene* g2);
+ /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
 
 
 friend class LayoutEditor;

@@ -319,6 +319,64 @@
     }
     ray->setAngle(angle);
 }
+/**
+ * Get the coordinates for a specified connection type.
+ *
+ * @param locationType the connection type
+ * @return the coordinates
+ */
+//@Override
+/*public*/ QPointF LayoutTurntable::getCoordsForConnectionType(int locationType) {
+    QPointF result = getCoordsCenter();
+    if (TURNTABLE_CENTER == locationType) {
+        // nothing to see here, move along...
+        // (results are already correct)
+    } else if (locationType >= TURNTABLE_RAY_OFFSET) {
+        result = getRayCoordsIndexed(locationType - TURNTABLE_RAY_OFFSET);
+    } else {
+        log->error("Invalid connection type " + QString::number(locationType)); // NOI18N
+    }
+    return result;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ LayoutTrack* LayoutTurntable::getConnection(int connectionType) throw (JmriException) {
+    LayoutTrack* result = nullptr;
+    if (connectionType >= TURNTABLE_RAY_OFFSET) {
+        result = getRayConnectIndexed(connectionType - TURNTABLE_RAY_OFFSET);
+    } else {
+        log->error("Invalid Turntable connection type " + QString::number(connectionType)); // NOI18N
+        throw JmriException("Invalid Point");
+    }
+    return result;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void LayoutTurntable::setConnection(int connectionType, LayoutTrack* o, int type) throw (JmriException) {
+    if ((type != TRACK) && (type != NONE)) {
+        log->error("unexpected type of connection to LevelXing - " + QString::number(type));
+        throw JmriException("unexpected type of connection to LevelXing - " + type);
+    }
+    if (connectionType >= TURNTABLE_RAY_OFFSET) {
+        if ((o == nullptr) || (qobject_cast<TrackSegment*>(o))) {
+            setRayConnect((TrackSegment*) o, connectionType - TURNTABLE_RAY_OFFSET);
+        } else {
+            QString msg = tr("Invalid object type ") + o->metaObject()->className(); // NOI18N
+            log->error(msg);
+            throw JmriException(msg);
+        }
+    } else {
+        QString msg = "Invalid Connection Type " + QString::number(connectionType); // NOI18N
+        log->error(msg);
+        throw JmriException(msg);
+    }
+}
 
 /**
  * Methods to test if ray is a mainline track or not Returns true if

@@ -1,4 +1,7 @@
 #include "mathutil.h"
+#include <QPainterPath>
+#include "loggerfactory.h"
+#include <cmath>
 
 MathUtil::MathUtil()
 {
@@ -24,7 +27,7 @@ MathUtil::MathUtil()
     //return (Double.doubleToLongBits(a) == Double.doubleToLongBits(b));
  return qFuzzyCompare(a,b);
 }
-/*public*/ /*static*/ /*final*/ QPointF zeroQPointF = QPointF();
+/*public*/ /*static*/ /*final*/ QPointF MathUtil::zeroPoint2D = QPointF();
 // /*public*/ /*static*/ /*final*/ QPointF infinityQPointF = MathUtil::infinityQPointF();
 // /*public*/ /*static*/ /*final*/ QRectF zeroRectangle2D = MathUtil::zeroRectangle2D();
 // /*public*/ /*static*/ /*final*/ QRectF zeroToInfinityRectangle2D = MathUtil::zeroToInfinityRectangle2D();
@@ -94,7 +97,7 @@ MathUtil::MathUtil()
 }
 
 // return a QPointF at the mid point between p1 & p2
-/*public*/ /*static*/ QPointF MathUtil::midpoint(QPointF p1, QPointF p2) {
+/*public*/ /*static*/ QPointF MathUtil::midPoint(QPointF p1, QPointF p2) {
     return lerp(p1, p2, 0.5);
 }
 
@@ -107,15 +110,14 @@ MathUtil::MathUtil()
 /*public*/ /*static*/ QPointF MathUtil::fourth(QPointF p1, QPointF p2) {
     return lerp(p1, p2, 1.0 / 4.0);
 }
-#if 0
 //
 // Wrap a double between two values (for example +/- 180 or 0-360 degrees)
 // Note: THIS IS NOT A PIN OR TRUNCATE; VALUES WRAP AROUND BETWEEN MIN & MAX
 // (And yes, this works correctly with negative numbers)
 //
 /*public*/ /*static*/ double MathUtil::wrap(double inValue, double inMin, double inMax) {
-    double valueRange = inMax - inMin;
-    return inMin + ((((inValue - inMin) % valueRange) + valueRange) % valueRange);
+    int valueRange = inMax - inMin;
+    return inMin + ((int)(((int)(inValue - inMin) % valueRange) + valueRange) % valueRange);
 }
 
 // wrap an double between +/-180
@@ -142,7 +144,7 @@ MathUtil::MathUtil()
 /*public*/ /*static*/ double MathUtil::diffAngle(double a, double b) {
     return qAbs(wrapPM180(a - b));
 }
-#endif
+
 // pin a value between min & max
 /*public*/ /*static*/ double MathUtil::pin(double inValue, double inMin, double inMax) {
     return qMin(qMax(inValue, inMin), inMax);
@@ -310,3 +312,238 @@ MathUtil::MathUtil()
 /*public*/ /*static*/ QRectF MathUtil::inset(/*@Nonnull*/ QRectF r, double h, double v) {
     return QRectF(r.x() + h, r.y() + v, r.width() - (2 * h), r.height() - (2 * v));
 }
+/**
+ * @param p the point
+ * @return the point orthogonal to this one (relative to {0, 0})
+ */
+/*public*/ /*static*/ QPointF MathUtil::orthogonal(/*@Nonnull*/ QPointF p) {
+    return QPointF(-p.x(), p.y());
+}
+/**
+ * normalize a point (vector) to a length
+ *
+ * @param p      the point (vector)
+ * @param length the length to normalize to
+ * @return the normalized point (vector)
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::normalize(/*@Nonnull*/ QPointF p, double length) {
+    return multiply(normalize(p), length);
+}
+
+/**
+ * normalize a point (vector)
+ *
+ * @param p the point (vector)
+ * @return the normalized point (vector)
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::normalize(/*@Nonnull*/ QPointF p) {
+    QPointF result = p;
+
+    double length = MathUtil::length(p);
+    if (length >= 0.001) {
+        result = divide(p, length);
+    }
+    return result;
+}
+/**
+ * calculate the length of a point (vector)
+ *
+ * @param p the point (vector)
+ * @return the length of the point (vector)
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ double MathUtil::length(/*@Nonnull*/ QPointF p) {
+    return hypot(p.x(), p.y());
+}
+
+
+// recursive routine to plot a cubic Bezier...
+// (also returns distance!)
+/*private*/ /*static*/ double MathUtil::plotBezier(
+        QPainterPath path,
+        /*@Nonnull*/ QPointF p0,
+        /*@Nonnull*/ QPointF p1,
+        /*@Nonnull*/ QPointF p2,
+        /*@Nonnull*/ QPointF p3,
+        int depth,
+        double displacement) {
+    double result;
+
+    // calculate flatness to determine if we need to recurse...
+    double l01 = distance(p0, p1);
+    double l12 = distance(p1, p2);
+    double l23 = distance(p2, p3);
+    double l03 = distance(p0, p3);
+    double flatness = (l01 + l12 + l23) / l03;
+
+    // depth prevents stack overflow
+    // (I picked 12 because 2^12 = 2048 is larger than most monitors ;-)
+    // the flatness comparison value is somewhat arbitrary.
+    // (I just kept moving it closer to 1 until I got good results. ;-)
+    if ((depth > 12) || (flatness <= 1.001)) {
+        QPointF vO = normalize(orthogonal(subtract(p3, p0)), displacement);
+        if (bezier1st) {
+            QPointF p0P = add(p0, vO);
+            path.moveTo(p0P.x(), p0P.y());
+            bezier1st = false;
+        }
+        QPointF p3P = add(p3, vO);
+        path.lineTo(p3P.x(), p3P.y());
+        result = l03;
+    } else {
+        // first order midpoints
+        QPointF q0 = midPoint(p0, p1);
+        QPointF q1 = midPoint(p1, p2);
+        QPointF q2 = midPoint(p2, p3);
+
+        // second order midpoints
+        QPointF r0 = midPoint(q0, q1);
+        QPointF r1 = midPoint(q1, q2);
+
+        // third order midPoint
+        QPointF s = midPoint(r0, r1);
+
+        // draw left side Bezier
+        result = MathUtil::plotBezier(path, p0, q0, r0, s, depth + 1, displacement);
+        // draw right side Bezier
+        result += MathUtil::plotBezier(path, s, r1, q2, p3, depth + 1, displacement);
+    }
+    return result;
+}
+
+/**
+     * Draw a cubic Bezier curve
+     *
+     * @param g2 the Graphics2D to draw to
+     * @param p0 origin control point
+     * @param p1 first control point
+     * @param p2 second control point
+     * @param p3 terminating control point
+     *
+     * @return the length of the Bezier curve
+     */
+    /*public*/ /*static*/ double MathUtil::drawBezier(
+            EditScene* g2,
+            /*@Nonnull*/ QPointF p0,
+            /*@Nonnull*/ QPointF p1,
+            /*@Nonnull*/ QPointF p2,
+            /*@Nonnull*/ QPointF p3) {
+        QPainterPath path = QPainterPath();
+        bezier1st = true;
+        double result = MathUtil::plotBezier(path, p0, p1, p2, p3, 0, 0.0);
+        //g2.draw(path);
+        return result;
+    }
+#if 0
+    // recursive routine to plot a Bezier curve...
+    // (also returns distance!)
+    /*private*/ static doubleMathUtil:: plotBezier(
+            QPainterPath path,
+            /*@Nonnull*/ QList<QPointF> points,
+            int depth,
+            double displacement) {
+        int len = points.length(), idx, jdx;
+        double result;
+
+        // calculate flatness to determine if we need to recurse...
+        double outer_distance = 0;
+        for (idx = 1; idx < len; idx++) {
+            outer_distance += MathUtil::distance(points[idx - 1], points[idx]);
+        }
+        double inner_distance = MathUtil::distance(points[0], points[len - 1]);
+        double flatness = outer_distance / inner_distance;
+
+        // depth prevents stack overflow
+        // (I picked 12 because 2^12 = 2048 is larger than most monitors ;-)
+        // the flatness comparison value is somewhat arbitrary.
+        // (I just kept moving it closer to 1 until I got good results. ;-)
+        if ((depth > 12) || (flatness <= 1.001)) {
+            QPointF p0 = points[0], pN = points[len - 1];
+            QPointF vO = normalize(orthogonal(subtract(pN, p0)), displacement);
+            if (bezier1st) {
+                QPointF p0P = add(p0, vO);
+                path.moveTo(p0P.x(), p0P.y());
+                bezier1st = false;
+            }
+            QPointF pNP = add(pN, vO);
+            path.lineTo(pNP.x(), pNP.y());
+            result = inner_distance;
+        } else {
+            // calculate (len - 1) order of points
+            // (zero'th order are the input points)
+            //Point2D[][] nthOrderPoints = new Point2D[len - 1][];
+            QVector<QVector<QPointF> > nthOrderPoints = QVector<QVector<QPointF>(len -1);
+            for (idx = 0; idx < len - 1; idx++) {
+                nthOrderPoints[idx] = new Point2D[len - 1 - idx];
+                for (jdx = 0; jdx < len - 1 - idx; jdx++) {
+                    if (idx == 0) {
+                        nthOrderPoints[idx][jdx] = midPoint(points[jdx], points[jdx + 1]);
+                    } else {
+                        nthOrderPoints[idx][jdx] = midPoint(nthOrderPoints[idx - 1][jdx], nthOrderPoints[idx - 1][jdx + 1]);
+                    }
+                }
+            }
+
+            // collect left points
+            Point2D[] leftPoints = new Point2D[len];
+            leftPoints[0] = points[0];
+            for (idx = 0; idx < len - 1; idx++) {
+                leftPoints[idx + 1] = nthOrderPoints[idx][0];
+            }
+            // draw left side Bezier
+            result = plotBezier(path, leftPoints, depth + 1, displacement);
+
+            // collect right points
+            Point2D[] rightPoints = new Point2D[len];
+            for (idx = 0; idx < len - 1; idx++) {
+                rightPoints[idx] = nthOrderPoints[len - 2 - idx][idx];
+            }
+            rightPoints[idx] = points[len - 1];
+
+            // draw right side Bezier
+            result += plotBezier(path, rightPoints, depth + 1, displacement);
+        }
+        return result;
+    }
+
+    /**
+     * Draw a Bezier curve
+     *
+     * @param g2  the Graphics2D to draw to
+     * @param p control points
+     * @param displacement right/left to draw a line parallel to the Bezier
+     * @return the length of the Bezier curve
+     */
+    public static double drawBezier(
+            Graphics2D g2,
+            @Nonnull Point2D p[],
+            double displacement) {
+        double result;
+        GeneralPath path = new GeneralPath();
+        bezier1st = true;
+        if (p.length == 4) {    // draw cubic bezier?
+            result = plotBezier(path, p[0], p[1], p[2], p[3], 0, displacement);
+        } else {    // (nope)
+            result = plotBezier(path, p, 0, displacement);
+        }
+        g2.draw(path);
+        return result;
+        }
+
+    /**
+     * Draw a Bezier curve
+     *
+     * @param g2  the Graphics2D to draw to
+     * @param p control points
+     * @return the length of the Bezier curve
+     */
+    public static double drawBezier(Graphics2D g2, @Nonnull Point2D p[]) {
+        return drawBezier(g2, p, 0.0);
+    }
+#endif
+/*private*/ /*static*/ bool MathUtil::bezier1st = false;
+
+/*private*/ /*final*/ /*static*/ Logger* MathUtil::log = LoggerFactory::getLogger("MathUtil");
+

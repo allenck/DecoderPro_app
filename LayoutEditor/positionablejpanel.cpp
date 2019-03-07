@@ -63,62 +63,63 @@
     return (Positionable*)pos;
 }
 
-///*public*/ void PositionableJPanel::setPositionable(bool enabled) {_positionable = enabled;}
-///*public*/ bool PositionableJPanel::isPositionable() { return _positionable; }
+/*public*/ void PositionableJPanel::setPositionable(bool enabled) {_positionable = enabled;}
+/*public*/ bool PositionableJPanel::isPositionable() { return _positionable; }
 
-///*public*/ void PositionableJPanel::setEditable(bool enabled) {_editable = enabled;}
-///*public*/ bool PositionableJPanel::isEditable() { return _editable; }
+/*public*/ void PositionableJPanel::setEditable(bool enabled) {_editable = enabled;}
+/*public*/ bool PositionableJPanel::isEditable() { return _editable; }
 
-///*public*/ void PositionableJPanel::setViewCoordinates(bool enabled) { _viewCoordinates = enabled; }
-///*public*/ bool PositionableJPanel::getViewCoordinates() { return _viewCoordinates; }
+/*public*/ void PositionableJPanel::setViewCoordinates(bool enabled) { _viewCoordinates = enabled; }
+/*public*/ bool PositionableJPanel::getViewCoordinates() { return _viewCoordinates; }
 
-///*public*/ void PositionableJPanel::setControlling(bool enabled) {_controlling = enabled;}
-///*public*/ bool PositionableJPanel::isControlling() { return _controlling; }
+/*public*/ void PositionableJPanel::setControlling(bool enabled) {_controlling = enabled;}
+/*public*/ bool PositionableJPanel::isControlling() { return _controlling; }
 
-///*public*/ void PositionableJPanel::setHidden(bool hide) {_hidden = hide; }
-///*public*/ bool PositionableJPanel::isHidden() { return _hidden;  }
-///*public*/ void PositionableJPanel::showHidden() {
-//    if(!_hidden || _editor->isEditable()) {
-//        setVisible(true);
-//    } else {
-//        setVisible(false);
-//    }
-//}
+/*public*/ void PositionableJPanel::setHidden(bool hide) {_hidden = hide; }
+/*public*/ bool PositionableJPanel::isHidden() { return _hidden;  }
+/*public*/ void PositionableJPanel::showHidden() {
+    if(!_hidden || _editor->isEditable()) {
+        ((Positionable*)this)->setVisible(true);
+    } else {
+        ((Positionable*)this)->setVisible(false);
+    }
+}
 
-///**
-//* Delayed setDisplayLevel for DnD
-//*/
-///*public*/ void PositionableJPanel::setLevel(int l) {
-//    _displayLevel = l;
-//}
-///*public*/ void PositionableJPanel::setDisplayLevel(int l) {
-//    int oldDisplayLevel = _displayLevel;
-//    _displayLevel = l;
-//    if (oldDisplayLevel!=l){
-//        log->debug("Changing label display level from "+QString::number(oldDisplayLevel)+" to "+QString::number(_displayLevel));
-//        _editor->displayLevelChange((Positionable*)this);
-//    }
-//}
-///*public*/ int PositionableJPanel::getDisplayLevel() { return _displayLevel; }
+/**
+* Delayed setDisplayLevel for DnD
+*/
+/*public*/ void PositionableJPanel::setLevel(int l) {
+    _displayLevel = l;
+}
+/*public*/ void PositionableJPanel::setDisplayLevel(int l) {
+    int oldDisplayLevel = _displayLevel;
+    _displayLevel = l;
+    if (oldDisplayLevel!=l){
+        log->debug("Changing label display level from "+QString::number(oldDisplayLevel)+" to "+QString::number(_displayLevel));
+        _editor->displayLevelChange((Positionable*)this);
+    }
+}
+/*public*/ int PositionableJPanel::getDisplayLevel() { return _displayLevel; }
 
-///*public*/ void PositionableJPanel::setShowTooltip(bool set) {
-//    _showTooltip = set;
-//}
-///*public*/ bool PositionableJPanel::showTooltip() {
-//    return _showTooltip;
-//}
-///*public*/ void PositionableJPanel::setTooltip(QString tip) {
-//    _tooltip = tip;
-//}
-///*public*/ QString PositionableJPanel::getTooltip() {
-//    return _tooltip;
-//}
+/*public*/ void PositionableJPanel::setShowTooltip(bool set) {
+    _showTooltip = set;
+}
+/*public*/ bool PositionableJPanel::showTooltip() {
+    return _showTooltip;
+}
+/*public*/ void PositionableJPanel::setTooltip(QString tip) {
+    _tooltip = tip;
+}
+/*public*/ QString PositionableJPanel::getTooltip() {
+    return _tooltip;
+}
 /*public*/ void PositionableJPanel::setScale(double s) {
     _scale = s;
 }
 /*public*/ double PositionableJPanel::getScale() {
     return _scale;
 }
+
 // no subclasses support rotations (yet)
 /*public*/ void PositionableJPanel::rotate(int /*deg*/) {
 }
@@ -446,7 +447,7 @@ bool PositionableJPanel::updateScene() // TODO: this function not in Java
   _itemGroup->setTransformOriginPoint(center);
   _itemGroup->setRotation(item->rotation());
  }
- _itemGroup->setZValue(getDisplayLevel());
+ _itemGroup->setZValue(_displayLevel);
  _itemGroup->update();
  return true;
 }
