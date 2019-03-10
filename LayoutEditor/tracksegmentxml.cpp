@@ -573,7 +573,7 @@ TrackSegmentXml::TrackSegmentXml(QObject *parent) :
  if (a != "") {
      l->tBlockName = a;
  }
- p->trackList->append(l);
+ p->getLayoutTracks()->append(l);
 }
 
 /*private*/ /*final*/ /*static*/ Logger* TrackSegmentXml::log

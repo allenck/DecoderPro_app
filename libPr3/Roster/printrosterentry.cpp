@@ -21,7 +21,7 @@
 #include "hardcopywriter.h"
 #include "imageicon.h"
 #include <QImage>
-#include "../../LayoutEditor/jlabel.h"
+#include "jlabel.h"
 
 //PrintRosterEntry::PrintRosterEntry(QObject *parent) :
 //    PaneContainer(parent)

@@ -62,6 +62,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -1778,7 +1779,7 @@ inline void py_q_setForeground(QColor  arg__1) { Positionable::setForeground(arg
 inline void py_q_setHidden(bool  arg__1) { Positionable::setHidden(arg__1); }
 inline void py_q_setLevel(int  arg__1) { Positionable::setLevel(arg__1); }
 inline void py_q_setLocation(QPointF  arg__1) { Positionable::setLocation(arg__1); }
-inline void py_q_setLocation(int  arg__1, int  arg__2) { this->setLocation(arg__1, arg__2); }
+inline void py_q_setLocation(int  arg__1, int  arg__2) { Positionable::setLocation(arg__1, arg__2); }
 inline void py_q_setOpaque(bool  arg__1) { Positionable::setOpaque(arg__1); }
 inline void py_q_setPositionable(bool  arg__1) { Positionable::setPositionable(arg__1); }
 inline bool  py_q_setRotateMenu(QMenu*  arg__1) { return Positionable::setRotateMenu(arg__1); }

@@ -376,47 +376,49 @@ private:
 //    JCheckBoxMenuItem* disableItem = NULL;
 //    JCheckBoxMenuItem* disableWhenOccupiedItem = NULL;
     LayoutEditorTools* tools;// = NULL;
-Logger* log;
-QAction* actionRHTurnout;
-QAction* actionLHTurnout;
-QAction* actionWYETurnout;
-QAction* actionXOverTurnout;
-QAction* actionRHXOverTurnout;
-QAction* actionLHXOverTurnout;
-QAction* actionIdent;
-QAction* actionNoTurnout;
-QAction* actionNewTurnout;
-// variables for Edit Layout Turnout pane
-/*private*/ QLineEdit* turnoutNameField;// = new QLineEdit(16);
-/*private*/ QComboBox* secondTurnoutComboBox;
-/*private*/ QLabel* secondTurnoutLabel;
-/*private*/ QLineEdit* blockBNameField;// = new QLineEdit(16);
-/*private*/ QLineEdit* blockCNameField;// = new QLineEdit(16);
-/*private*/ QLineEdit* blockDNameField;// = new QLineEdit(16);
-/*private*/ QComboBox* stateBox;// = new QComboBox();
-/*private*/ QCheckBox* hiddenBox;// = new QCheckBox(rb.getQString("HideTurnout"));
-/*private*/ int turnoutClosedIndex;
-/*private*/ int turnoutThrownIndex;
-/*private*/ QPushButton* turnoutEditBlock;
-/*private*/ QPushButton* turnoutEditDone;
-/*private*/ QPushButton* turnoutEditCancel;
-/*private*/ QPushButton* turnoutEditBlockB;
-/*private*/ QPushButton* turnoutEditBlockC;
-/*private*/ QPushButton* turnoutEditBlockD;
-/*private*/ bool editOpen;// = false;
-/*private*/ QCheckBox* additionalTurnout;// = new QCheckBox(rb.getQString("SupportingTurnout"));
-bool active;// = true;
-QVector<QObject*>* editAdditionalMenu;// = new QVector<QMenuItem*>();
-QVector<QObject*>* viewAdditionalMenu;// = new QVector<QMenuItem*>();
-QGraphicsItemGroup* item;
-QGraphicsItem* rects;
-QGraphicsEllipseItem* circle;
-void invalidate(QGraphicsScene* g2);
-void drawTurnouts(LayoutEditor* editor, QGraphicsScene* g2);
-void drawTurnoutCircles(LayoutEditor *editor, QGraphicsScene *g2);
-void repaint(LayoutEditor *editor, QGraphicsScene *g2);
-QVector<QString> boundaryBetween;
-void windowClosing(QCloseEvent*);
+    static Logger* log;
+    QAction* actionRHTurnout;
+    QAction* actionLHTurnout;
+    QAction* actionWYETurnout;
+    QAction* actionXOverTurnout;
+    QAction* actionRHXOverTurnout;
+    QAction* actionLHXOverTurnout;
+    QAction* actionIdent;
+    QAction* actionNoTurnout;
+    QAction* actionNewTurnout;
+    // variables for Edit Layout Turnout pane
+    /*private*/ QLineEdit* turnoutNameField;// = new QLineEdit(16);
+    /*private*/ QComboBox* secondTurnoutComboBox;
+    /*private*/ QLabel* secondTurnoutLabel;
+    /*private*/ QLineEdit* blockBNameField;// = new QLineEdit(16);
+    /*private*/ QLineEdit* blockCNameField;// = new QLineEdit(16);
+    /*private*/ QLineEdit* blockDNameField;// = new QLineEdit(16);
+    /*private*/ QComboBox* stateBox;// = new QComboBox();
+    /*private*/ QCheckBox* hiddenBox;// = new QCheckBox(rb.getQString("HideTurnout"));
+    /*private*/ int turnoutClosedIndex;
+    /*private*/ int turnoutThrownIndex;
+    /*private*/ QPushButton* turnoutEditBlock;
+    /*private*/ QPushButton* turnoutEditDone;
+    /*private*/ QPushButton* turnoutEditCancel;
+    /*private*/ QPushButton* turnoutEditBlockB;
+    /*private*/ QPushButton* turnoutEditBlockC;
+    /*private*/ QPushButton* turnoutEditBlockD;
+    /*private*/ bool editOpen;// = false;
+    /*private*/ QCheckBox* additionalTurnout;// = new QCheckBox(rb.getQString("SupportingTurnout"));
+    bool active;// = true;
+    QVector<QObject*>* editAdditionalMenu;// = new QVector<QMenuItem*>();
+    QVector<QObject*>* viewAdditionalMenu;// = new QVector<QMenuItem*>();
+    QGraphicsItemGroup* item;
+    QGraphicsItem* rects;
+    QGraphicsEllipseItem* circle;
+    void invalidate(QGraphicsScene* g2);
+    void drawTurnouts(LayoutEditor* editor, QGraphicsScene* g2);
+    void drawTurnoutCircles(LayoutEditor *editor, QGraphicsScene *g2);
+    void repaint(LayoutEditor *editor, QGraphicsScene *g2);
+    QVector<QString> boundaryBetween;
+    void windowClosing(QCloseEvent*);
+    void setTrackSegmentBlocks();
+    void setTrackSegmentBlock(int pointType, bool isAutomatic);
 
 
 private slots:
@@ -458,29 +460,31 @@ protected:
     /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e, bool editable);
     /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
 
-/*protected*/ JmriJFrame* editLayoutTurnoutFrame;// = NULL;
-/*protected*/ JTextField* blockNameField;// = new QLineEdit(16);
-/*protected*/ bool needRedraw;// = false;
-/*protected*/ bool needsBlockUpdate;// = false;
- /*protected*/ NamedBeanHandle<SignalMast*>* signalAMastNamed;// = NULL; // Throat
- /*protected*/ NamedBeanHandle<SignalMast*>* signalBMastNamed;// = NULL; // Continuing
- /*protected*/ NamedBeanHandle<SignalMast*>* signalCMastNamed;// = NULL; // diverging
- /*protected*/ NamedBeanHandle<SignalMast*>* signalDMastNamed;// = NULL; // single or double crossover only
- /*protected*/ QPointF rotatePoint(QPointF p, double sineAng, double cosineAng);
- /*protected*/ int getConnectivityStateForLayoutBlocks(        LayoutBlock* currLayoutBlock,
-                                                               LayoutBlock* prevLayoutBlock,
-                                                               LayoutBlock* nextLayoutBlock,
-                                                               bool suppress);
+    /*protected*/ JmriJFrame* editLayoutTurnoutFrame;// = NULL;
+    /*protected*/ JTextField* blockNameField;// = new QLineEdit(16);
+    /*protected*/ bool needRedraw;// = false;
+    /*protected*/ bool needsBlockUpdate;// = false;
+    /*protected*/ NamedBeanHandle<SignalMast*>* signalAMastNamed;// = NULL; // Throat
+    /*protected*/ NamedBeanHandle<SignalMast*>* signalBMastNamed;// = NULL; // Continuing
+    /*protected*/ NamedBeanHandle<SignalMast*>* signalCMastNamed;// = NULL; // diverging
+    /*protected*/ NamedBeanHandle<SignalMast*>* signalDMastNamed;// = NULL; // single or double crossover only
+    /*protected*/ QPointF rotatePoint(QPointF p, double sineAng, double cosineAng);
+    /*protected*/ int getConnectivityStateForLayoutBlocks(        LayoutBlock* currLayoutBlock,
+                                                                  LayoutBlock* prevLayoutBlock,
+                                                                  LayoutBlock* nextLayoutBlock,
+                                                                  bool suppress);
 
- /*protected*/ NamedBeanHandle<SignalHead*>* signalA1HeadNamed = nullptr; // signal 1 (continuing) (throat for RH, LH, WYE)
- /*protected*/ NamedBeanHandle<SignalHead*>* signalA2HeadNamed = nullptr; // signal 2 (diverging) (throat for RH, LH, WYE)
- /*protected*/ NamedBeanHandle<SignalHead*>* signalA3HeadNamed = nullptr; // signal 3 (second diverging) (3-way turnouts only)
- /*protected*/ NamedBeanHandle<SignalHead*>* signalB1HeadNamed = nullptr; // continuing (RH, LH, WYE) signal 1 (double crossover)
- /*protected*/ NamedBeanHandle<SignalHead*>* signalB2HeadNamed = nullptr; // LH_Xover and double crossover only
- /*protected*/ NamedBeanHandle<SignalHead*>* signalC1HeadNamed = nullptr; // diverging (RH, LH, WYE) signal 1 (double crossover)
- /*protected*/ NamedBeanHandle<SignalHead*>* signalC2HeadNamed = nullptr; // RH_Xover and double crossover only
- /*protected*/ NamedBeanHandle<SignalHead*>* signalD1HeadNamed = nullptr; // single or double crossover only
- /*protected*/ NamedBeanHandle<SignalHead*>* signalD2HeadNamed = nullptr; // LH_Xover and double crossover only
+    /*protected*/ NamedBeanHandle<SignalHead*>* signalA1HeadNamed = nullptr; // signal 1 (continuing) (throat for RH, LH, WYE)
+    /*protected*/ NamedBeanHandle<SignalHead*>* signalA2HeadNamed = nullptr; // signal 2 (diverging) (throat for RH, LH, WYE)
+    /*protected*/ NamedBeanHandle<SignalHead*>* signalA3HeadNamed = nullptr; // signal 3 (second diverging) (3-way turnouts only)
+    /*protected*/ NamedBeanHandle<SignalHead*>* signalB1HeadNamed = nullptr; // continuing (RH, LH, WYE) signal 1 (double crossover)
+    /*protected*/ NamedBeanHandle<SignalHead*>* signalB2HeadNamed = nullptr; // LH_Xover and double crossover only
+    /*protected*/ NamedBeanHandle<SignalHead*>* signalC1HeadNamed = nullptr; // diverging (RH, LH, WYE) signal 1 (double crossover)
+    /*protected*/ NamedBeanHandle<SignalHead*>* signalC2HeadNamed = nullptr; // RH_Xover and double crossover only
+    /*protected*/ NamedBeanHandle<SignalHead*>* signalD1HeadNamed = nullptr; // single or double crossover only
+    /*protected*/ NamedBeanHandle<SignalHead*>* signalD2HeadNamed = nullptr; // LH_Xover and double crossover only
+    /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, QPen stroke);
+    /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, QPen stroke);
 
  friend class LayoutEditor;
  friend class EditTurnout;

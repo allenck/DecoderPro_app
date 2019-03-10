@@ -19,8 +19,7 @@
         if (name.length() <= 0) {
             return NULL;
         }
-        for (int i = 0; i < layoutEditor->trackList->size(); i++) {
-            TrackSegment* t = layoutEditor->trackList->at(i);
+        for (TrackSegment* t : layoutEditor->getTrackSegments()) {
             if (t->getID()==(name)) {
                 return t;
             }
@@ -32,8 +31,7 @@
         if (name.length() <= 0) {
             return NULL;
         }
-        for (int i = 0; i < layoutEditor->pointList->size(); i++) {
-            PositionablePoint* p = layoutEditor->pointList->at(i);
+        for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
             if (p->getID()==(name)) {
                 return p;
             }
@@ -42,9 +40,8 @@
     }
 
     /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointAtTrackSegments(TrackSegment* tr1, TrackSegment* tr2) {
-        for (int i = 0; i < layoutEditor->pointList->size(); i++) {
-            PositionablePoint* p = layoutEditor->pointList->at(i);
-            if (((p->getConnect1() == tr1) && (p->getConnect2() == tr2))
+for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
+ if (((p->getConnect1() == tr1) && (p->getConnect2() == tr2))
                     || ((p->getConnect1() == tr2) && (p->getConnect2() == tr1))) {
                 return p;
             }
@@ -53,8 +50,8 @@
     }
 
     /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionableLinkPoint(LayoutBlock* blk1) {
-        for (PositionablePoint* p : *layoutEditor->pointList) {
-            if (p->getType() == PositionablePoint::EDGE_CONNECTOR) {
+for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
+ if (p->getType() == PositionablePoint::EDGE_CONNECTOR) {
                 if ((p->getConnect1() != NULL && p->getConnect1()->getLayoutBlock() == blk1)
                         || (p->getConnect2() != NULL && p->getConnect2()->getLayoutBlock() == blk1)) {
                     return p;
@@ -72,8 +69,7 @@
             return QList<TrackSegment*>();
         }
         QList<TrackSegment*> ts = QList<TrackSegment*>();
-        for (int i = 0; i < layoutEditor->trackList->size(); i++) {
-            TrackSegment* t = layoutEditor->trackList->at(i);
+        for (TrackSegment* t : layoutEditor->getTrackSegments()) {
             if (t->getBlockName()==(name)) {
                 ts.append(t);
             }
@@ -82,9 +78,8 @@
     }
 
     /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByEastBoundSignal(QString signalName) {
-        for (int i = 0; i < layoutEditor->pointList->size(); i++) {
-            PositionablePoint* p = layoutEditor->pointList->at(i);
-            if (p->getEastBoundSignal()==(signalName)) {
+for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
+ if (p->getEastBoundSignal()==(signalName)) {
                 return p;
             }
         }
@@ -92,9 +87,8 @@
     }
 
     /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByWestBoundSignal(QString signalName) {
-        for (int i = 0; i < layoutEditor->pointList->size(); i++) {
-            PositionablePoint* p = layoutEditor->pointList->at(i);
-            if (p->getWestBoundSignal()==(signalName)) {
+for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
+ if (p->getWestBoundSignal()==(signalName)) {
                 return p;
             }
         }
@@ -103,19 +97,19 @@
 
     /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByWestBoundBean(NamedBean* bean) {
         if (qobject_cast<SignalMast*>(bean)) {
-            for (PositionablePoint* p : *layoutEditor->pointList) {
+            for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
                 if (p->getWestBoundSignalMast() == bean) {
                     return p;
                 }
             }
         } else if (qobject_cast<Sensor*>(bean)) {
-            for (PositionablePoint* p : *layoutEditor->pointList) {
+            for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
                 if (p->getWestBoundSensor() == bean) {
                     return p;
                 }
             }
         } else if (qobject_cast<SignalHead*>(bean)) {
-            for (PositionablePoint* p : *layoutEditor->pointList) {
+            for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
                 if (p->getWestBoundSignal()==(bean->getSystemName())
                         || p->getWestBoundSignal()==(bean->getSystemName())) {
                     return p;
@@ -127,19 +121,19 @@
 
     /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByEastBoundBean(NamedBean* bean) {
         if (qobject_cast<SignalMast*>(bean)) {
-            for (PositionablePoint* p : *layoutEditor->pointList) {
+            for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
                 if (p->getEastBoundSignalMast() == bean) {
                     return p;
                 }
             }
         } else if (qobject_cast<Sensor*>(bean)) {
-            for (PositionablePoint* p : *layoutEditor->pointList) {
+            for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
                 if (p->getEastBoundSensor() == bean) {
                     return p;
                 }
             }
         } else if (qobject_cast<SignalHead*>(bean)) {
-            for (PositionablePoint* p : *layoutEditor->pointList) {
+            for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
                 if (p->getEastBoundSignal()==(bean->getSystemName())
                         || p->getEastBoundSignal()==(bean->getSystemName())) {
                     return p;
@@ -150,9 +144,8 @@
     }
 
     /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByWestBoundSignalMast(QString signalMastName) {
-        for (int i = 0; i < layoutEditor->pointList->size(); i++) {
-            PositionablePoint* p = layoutEditor->pointList->value(i);
-            if (p->getWestBoundSignalMastName()==(signalMastName)) {
+for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
+ if (p->getWestBoundSignalMastName()==(signalMastName)) {
                 return p;
             }
         }
@@ -161,22 +154,22 @@
 
     /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByBean(NamedBean* bean) {
         if (qobject_cast<SignalMast*>(bean)) {
-            for (PositionablePoint* p : *layoutEditor->pointList) {
-                if (p->getWestBoundSignalMast() == bean
+for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
+ if (p->getWestBoundSignalMast() == bean
                         || p->getEastBoundSignalMast() == bean) {
                     return p;
                 }
             }
         } else if (qobject_cast<Sensor*>(bean)) {
-            for (PositionablePoint* p : *layoutEditor->pointList) {
-                if (p->getWestBoundSensor() == bean
+for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
+ if (p->getWestBoundSensor() == bean
                         || p->getEastBoundSensor() == bean) {
                     return p;
                 }
             }
         } else if (qobject_cast<SignalHead*>(bean)) {
-            for (PositionablePoint* p : *layoutEditor->pointList) {
-                if (p->getEastBoundSignal()==(bean->getSystemName())
+for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
+ if (p->getEastBoundSignal()==(bean->getSystemName())
                         || p->getWestBoundSignal()==(bean->getSystemName())) {
 
                     return p;
@@ -196,9 +189,10 @@
     }
 
     /*public*/ LayoutTurnout* LayoutEditorFindItems::findLayoutTurnoutByBean(NamedBean* bean) {
+ QList<LayoutTurnout*> layoutTurnouts = layoutEditor->getLayoutTurnouts();
         if (qobject_cast<SignalMast*>(bean)) {
-            for (LayoutTurnout* t : *layoutEditor->turnoutList) {
-                if (t->getSignalAMast() == bean
+     for (LayoutTurnout* t : layoutTurnouts) {
+     if (t->getSignalAMast() == bean
                         || t->getSignalBMast() == bean
                         || t->getSignalCMast() == bean
                         || t->getSignalDMast() == bean) {
@@ -206,7 +200,7 @@
                 }
             }
         } else if (qobject_cast<Sensor*>(bean)) {
-            for (LayoutTurnout* t : *layoutEditor->turnoutList) {
+            for (LayoutTurnout* t : layoutTurnouts) {
                 if (t->getSensorA() == bean
                         || t->getSensorB() == bean
                         || t->getSensorC() == bean
@@ -215,7 +209,7 @@
                 }
             }
         } else if (qobject_cast<SignalHead*>(bean)) {
-            for (LayoutTurnout* t : *layoutEditor->turnoutList) {
+            for (LayoutTurnout* t : layoutTurnouts) {
                 if (t->getSignalA1Name()==(bean->getSystemName())
                         || t->getSignalA2Name()==(bean->getSystemName())
                         || t->getSignalA3Name()==(bean->getSystemName())) {
@@ -256,7 +250,7 @@
                 }
             }
         } else if (qobject_cast<Turnout*>(bean)) {
-            for (LayoutTurnout* t : *layoutEditor->turnoutList) {
+            for (LayoutTurnout* t : layoutTurnouts) {
                 if (bean==(t->getTurnout())) {
                     return t;
                 }
@@ -278,8 +272,9 @@
     }
 
     /*public*/ LevelXing* LayoutEditorFindItems::findLevelXingByBean(NamedBean* bean) {
-        if (qobject_cast<SignalMast*>(bean)) {
-            for (LevelXing* l : *layoutEditor->xingList) {
+       QList<LevelXing*> levelXings = layoutEditor->getLevelXings();
+       if (qobject_cast<SignalMast*>(bean)) {
+            for (LevelXing* l : levelXings) {
                 if (l->getSignalAMast() == bean
                         || l->getSignalBMast() == bean
                         || l->getSignalCMast() == bean
@@ -288,7 +283,7 @@
                 }
             }
         } else if (qobject_cast<Sensor*>(bean)) {
-            for (LevelXing* l : *layoutEditor->xingList) {
+            for (LevelXing* l : levelXings) {
                 if (l->getSensorA() == bean
                         || l->getSensorB() == bean
                         || l->getSensorC() == bean
@@ -298,7 +293,7 @@
             }
 
         } else if (qobject_cast<SignalHead*>(bean)) {
-            for (LevelXing* l : *layoutEditor->xingList) {
+            for (LevelXing* l : levelXings) {
                 if (l->getSignalAName()==(bean->getSystemName())
                         || l->getSignalBName()==(bean->getSystemName())
                         || l->getSignalCName()==(bean->getSystemName())
@@ -317,8 +312,9 @@
     }
 
     /*public*/ LayoutSlip* LayoutEditorFindItems::findLayoutSlipByBean(NamedBean* bean) {
+        QList<LayoutSlip*> layoutSlips = layoutEditor->getLayoutSlips();
         if (qobject_cast< SignalMast*>(bean)) {
-            for (LayoutSlip* l : *layoutEditor->slipList) {
+            for (LayoutSlip* l : layoutSlips) {
                 if (l->getSignalAMast() == bean
                         || l->getSignalBMast() == bean
                         || l->getSignalCMast() == bean
@@ -327,7 +323,7 @@
                 }
             }
         } else if (qobject_cast<Sensor*>(bean)) {
-            for (LayoutSlip* l : *layoutEditor->slipList) {
+            for (LayoutSlip* l : layoutSlips) {
                 if (l->getSensorA() == bean
                         || l->getSensorB() == bean
                         || l->getSensorC() == bean
@@ -336,7 +332,7 @@
                 }
             }
         } else if (qobject_cast<SignalHead*>(bean)) {
-            for (LayoutSlip* l : *layoutEditor->slipList) {
+            for (LayoutSlip* l : layoutSlips) {
                 if (l->getSignalA1Name()==(bean->getSystemName())
                         || l->getSignalA2Name()==(bean->getSystemName())
                         || l->getSignalA3Name()==(bean->getSystemName())) {
@@ -376,7 +372,7 @@
                 }
             }
         } else if (qobject_cast<Turnout*>(bean)) {
-            for (LayoutSlip* l : *layoutEditor->slipList) {
+            for (LayoutSlip* l : layoutSlips) {
                 if (bean==(l->getTurnout())) {
                     return l;
                 }
@@ -397,18 +393,18 @@
     }
 
     /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByEastBoundSensor(QString sensorName) {
-        for (int i = 0; i < layoutEditor->pointList->size(); i++) {
-            PositionablePoint* p = layoutEditor->pointList->at(i);
-            if (p->getEastBoundSensorName()==(sensorName)) {
+PositionablePoint* result = nullptr;
+for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
+ if (p->getEastBoundSensorName()==(sensorName)) {
                 return p;
             }
         }
-        return NULL;
+        return result;
     }
 
     /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByWestBoundSensor(QString sensorName) {
-        for (int i = 0; i < layoutEditor->pointList->size(); i++) {
-            PositionablePoint* p = layoutEditor->pointList->at(i);
+ PositionablePoint* result = nullptr;
+ for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
             if (p->getWestBoundSensorName()==(sensorName)) {
                 return p;
             }
@@ -418,55 +414,43 @@
     }
 
     /*public*/ LayoutTurnout* LayoutEditorFindItems::findLayoutTurnoutByName(QString name) {
-        if (name.length() <= 0) {
-            return NULL;
-        }
-        for (int i = 0; i < layoutEditor->turnoutList->size(); i++) {
-            LayoutTurnout* t = layoutEditor->turnoutList->value(i);
+        LayoutTurnout* result = nullptr;
+           for (LayoutTurnout* t : layoutEditor->getLayoutTurnouts()) {
             if (t->getName()==(name)) {
                 return t;
             }
         }
-        return nullptr;
+        return result;
     }
 
     /*public*/ LayoutTurnout* LayoutEditorFindItems::findLayoutTurnoutByTurnoutName(QString name) {
-        if (name.length() <= 0) {
-            return NULL;
-        }
-        for (int i = 0; i < layoutEditor->turnoutList->size(); i++) {
-            LayoutTurnout* t = layoutEditor->turnoutList->at(i);
-            if (t->getTurnoutName()==(name)) {
+        LayoutTurnout* result = nullptr;
+     for (LayoutTurnout* t : layoutEditor->getLayoutTurnouts()) {
+      if (t->getTurnoutName()==(name)) {
                 return t;
             }
         }
-        return NULL;
+        return result;
     }
 
     /*public*/ LevelXing* LayoutEditorFindItems::findLevelXingByName(QString name) {
-        if (name.length() <= 0) {
-            return NULL;
-        }
-        for (int i = 0; i < layoutEditor->xingList->size(); i++) {
-            LevelXing* x = layoutEditor->xingList->at(i);
-            if (x->getID()==(name)) {
+LevelXing* result = nullptr;
+for (LevelXing* x : layoutEditor->getLevelXings()) {
+ if (x->getID()==(name)) {
                 return x;
             }
         }
-        return NULL;
+        return result;
     }
 
     /*public*/ LayoutSlip* LayoutEditorFindItems::findLayoutSlipByName(QString name) {
-        if (name.length() <= 0) {
-            return NULL;
-        }
-        for (int i = 0; i < layoutEditor->slipList->size(); i++) {
-            LayoutSlip* x = layoutEditor->slipList->at(i);
-            if (x->getName()==(name)) {
+        LayoutSlip* result = nullptr;
+for (LayoutSlip* x : layoutEditor->getLayoutSlips()) {
+ if (x->getName()==(name)) {
                 return x;
             }
         }
-        return NULL;
+        return result;
     }
 
     /*public*/ LayoutTurntable* LayoutEditorFindItems::findLayoutTurntableByName(QString name) {
@@ -559,4 +543,22 @@
     }
     return result;
 }
+/**
+ * Determine the first unused LayoutTrack object name...
+ * @param inPrefix ...with this prefix...
+ * @param inStartIndex ...and this starting index...
+ * @return the first unused LayoutTrack object name
+ */
+/*public*/ QString LayoutEditorFindItems::uniqueName(QString inPrefix, int inStartIndex) {
+    QString result;
+    for (int idx = inStartIndex; true; idx++) {
+        //result = String.format("%s%d", inPrefix, idx);
+        result = QString("%1%2").arg(inPrefix).arg(idx);
+        if (findObjectByName(result) == nullptr) {
+            break;
+        }
+    }
+    return result;
+}
+
 /*private*/ /*final*/ /*static*/ Logger* LayoutEditorFindItems::log = LoggerFactory::getLogger("LayoutEditorFindItems");

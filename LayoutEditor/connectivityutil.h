@@ -156,7 +156,7 @@ public:
      * .
      */
     /*public*/ TrackNode* getNextNode(TrackNode* cNode, int cNodeState);
-    /*public*/ TrackNode* getTrackNode(QObject* cNode, int cNodeType, TrackSegment* cTrack, int cNodeState);
+    /*public*/ TrackNode* getTrackNode(LayoutTrack *cNode, int cNodeType, TrackSegment* cTrack, int cNodeState);
 
     /**
      * Returns an "exit block" for the specified track node if there is one, else returns NULL.

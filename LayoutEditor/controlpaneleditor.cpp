@@ -1145,10 +1145,10 @@ void ControlPanelEditor::selectAllAction()
   while (it.hasNext())
   {
    Positionable* pos = it.next();
-   if (_disableShapeSelection && qobject_cast<PositionableShape*>((QObject*)pos)) {
+   if (_disableShapeSelection && qobject_cast<PositionableShape*>(pos->self())) {
        continue;
    }
-   if (_disablePortalSelection && qobject_cast<PortalIcon*>((QObject*)pos)) {
+   if (_disablePortalSelection && qobject_cast<PortalIcon*>(pos->self())) {
        continue;
    }
    list.append(pos);

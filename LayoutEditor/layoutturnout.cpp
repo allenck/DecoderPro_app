@@ -19,6 +19,8 @@
 #include "jmribeancombobox.h"
 #include <QGroupBox>
 #include "path.h"
+#include "mathutil.h"
+#include "layouteditorfinditems.h"
 
 //LayoutTurnout::LayoutTurnout(QObject *parent) :
 //    QObject(parent)
@@ -778,21 +780,22 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
   secondNamedTurnout = nullptr;
  }
  if ( (type == RH_TURNOUT) || (type ==LH_TURNOUT) || (type == WYE_TURNOUT) ){
+  LayoutEditorFindItems* lf = layoutEditor->getFinder();
   if(oldSecondTurnoutName!=nullptr && oldSecondTurnoutName!=(""))
   {
    Turnout* oldTurnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
                         getTurnout(oldSecondTurnoutName);
-   LayoutTurnout* oldLinked = layoutEditor->findLayoutTurnoutByTurnoutName(oldTurnout->getSystemName());
+   LayoutTurnout* oldLinked = lf->findLayoutTurnoutByTurnoutName(oldTurnout->getSystemName());
    if(oldLinked==nullptr)
-    oldLinked = layoutEditor->findLayoutTurnoutByTurnoutName(oldTurnout->getUserName());
+    oldLinked = lf->findLayoutTurnoutByTurnoutName(oldTurnout->getUserName());
    if((oldLinked!=nullptr) && oldLinked->getSecondTurnout()==getTurnout())
     oldLinked->setSecondTurnout(nullptr);
   }
   if(turnout!=nullptr)
   {
-   LayoutTurnout* newLinked = layoutEditor->findLayoutTurnoutByTurnoutName(turnout->getSystemName());
+   LayoutTurnout* newLinked = lf->findLayoutTurnoutByTurnoutName(turnout->getSystemName());
    if(newLinked==nullptr)
-    newLinked = layoutEditor->findLayoutTurnoutByTurnoutName(turnout->getUserName());
+    newLinked = lf->findLayoutTurnoutByTurnoutName(turnout->getUserName());
    if(newLinked!=nullptr)
    {
     newLinked->setSecondTurnout(turnoutName);
@@ -1141,6 +1144,150 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
     }
     else {
         log->error ("Attempt to set block D name, but not a crossover");
+    }
+}
+
+/**
+ * Check each connection point and update the block value for very short
+ * track segments.
+ *
+ * @since 4.11.6
+ */
+void LayoutTurnout::setTrackSegmentBlocks() {
+    setTrackSegmentBlock(TURNOUT_A, false);
+    setTrackSegmentBlock(TURNOUT_B, false);
+    setTrackSegmentBlock(TURNOUT_C, false);
+    if (getTurnoutType() > WYE_TURNOUT) {
+        setTrackSegmentBlock(TURNOUT_D, false);
+    }
+}
+
+/**
+ * Update the block for a track segment that provides a short connection
+ * between a turnout and another object, normally another turnout. These are
+ * hard to see and are frequently missed.
+ * <p>
+ * Skip block changes if signal heads, masts or sensors have been assigned.
+ * Only track segments with a length less than the turnout circle radius
+ * will be changed.
+ *
+ * @since 4.11.6
+ * @param pointType   The point type which indicates which turnout
+ *                    connection.
+ * @param isAutomatic True for the automatically generated track segment
+ *                    created by the drag-n-drop process. False for existing
+ *                    connections which require a track segment length
+ *                    calculation.
+ */
+void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
+    TrackSegment* trkSeg;
+    QPointF pointCoord;
+    LayoutBlock* currBlk = block;
+    bool xOver = getTurnoutType() > WYE_TURNOUT && getTurnoutType() < SINGLE_SLIP;
+    switch (pointType) {
+        case TURNOUT_A:
+        case SLIP_A:
+            if (signalA1HeadNamed != nullptr) {
+                return;
+            }
+            if (signalA2HeadNamed != nullptr) {
+                return;
+            }
+            if (signalA3HeadNamed != nullptr) {
+                return;
+            }
+            if (getSignalAMast() != nullptr) {
+                return;
+            }
+            if (getSensorA() != nullptr) {
+                return;
+            }
+            trkSeg = (TrackSegment*) connectA;
+            pointCoord = getCoordsA();
+            break;
+        case TURNOUT_B:
+        case SLIP_B:
+            if (signalB1HeadNamed != nullptr) {
+                return;
+            }
+            if (signalB2HeadNamed != nullptr) {
+                return;
+            }
+            if (getSignalBMast() != nullptr) {
+                return;
+            }
+            if (getSensorB() != nullptr) {
+                return;
+            }
+            trkSeg = (TrackSegment*) connectB;
+            pointCoord = getCoordsB();
+            if (xOver) {
+                currBlk = blockB != nullptr ? blockB : block;
+            }
+            break;
+        case TURNOUT_C:
+        case SLIP_C:
+            if (signalC1HeadNamed != nullptr) {
+                return;
+            }
+            if (signalC2HeadNamed != nullptr) {
+                return;
+            }
+            if (getSignalCMast() != nullptr) {
+                return;
+            }
+            if (getSensorC() != nullptr) {
+                return;
+            }
+            trkSeg = (TrackSegment*) connectC;
+            pointCoord = getCoordsC();
+            if (xOver) {
+                currBlk = blockC != nullptr ? blockC : block;
+            }
+            break;
+        case TURNOUT_D:
+        case SLIP_D:
+            if (signalD1HeadNamed != nullptr) {
+                return;
+            }
+            if (signalD2HeadNamed != nullptr) {
+                return;
+            }
+            if (getSignalDMast() != nullptr) {
+                return;
+            }
+            if (getSensorD() != nullptr) {
+                return;
+            }
+            trkSeg = (TrackSegment*) connectD;
+            pointCoord = getCoordsD();
+            if (xOver) {
+                currBlk = blockD != nullptr ? blockD : block;
+            }
+            break;
+        default:
+            log->error(tr("setTrackSegmentBlock: Invalid pointType: %1").arg(pointType));
+            return;
+    }
+    if (trkSeg != nullptr) {
+        double chkSize = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+        double segLength = 0;
+        if (!isAutomatic) {
+            QPointF segCenter = trkSeg->getCoordsCenter();
+            segLength = MathUtil::distance(pointCoord, segCenter) * 2;
+        }
+        if (segLength < chkSize) {
+            if (log->isDebugEnabled()) {
+                log->debug("Set block:");
+                log->debug(tr("    seg: %1").arg(trkSeg->getName()));
+                log->debug(tr("    cor: %1,%2").arg(pointCoord.x()).arg(pointCoord.y()));
+                log->debug(tr("    blk: %1").arg((currBlk == nullptr) ? "nullptr" : currBlk->getDisplayName()));
+                log->debug(tr("    len: %1").arg(segLength));
+            }
+
+            trkSeg->setLayoutBlock(currBlk);
+            layoutEditor->getLEAuxTools()->setBlockConnectivityChanged();
+        }
     }
 }
 
@@ -3548,7 +3695,1325 @@ void LayoutTurnout::remove()
    popup->addMenu((QMenu*)mi);
  }
 }
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LayoutTurnout::class.getName());
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void LayoutTurnout::draw1(EditScene* g2, bool isMain, bool isBlock, QPen stroke)
+{
+ if (isBlock && getLayoutBlock() == nullptr) {
+     // Skip the block layer if there is no block assigned.
+     return;
+ }
+
+ QPointF pA = getCoordsA();
+ QPointF pB = getCoordsB();
+ QPointF pC = getCoordsC();
+ QPointF pD = getCoordsD();
+
+ bool mainlineA = isMainlineA();
+ bool mainlineB = isMainlineB();
+ bool mainlineC = isMainlineC();
+ bool mainlineD = isMainlineD();
+
+ bool drawUnselectedLeg = layoutEditor->isTurnoutDrawUnselectedLeg();
+
+ //Color color = g2.getColor();
+ QColor color = stroke.color();
+
+ // if this isn't a block line all these will be the same color
+ QColor colorA = color;
+ QColor colorB = color;
+ QColor colorC = color;
+ QColor colorD = color;
+
+ if (isBlock) {
+     LayoutBlock* lb = getLayoutBlock();
+     colorA = (lb == nullptr) ? color : lb->getBlockColor();
+     lb = getLayoutBlockB();
+     colorB = (lb == nullptr) ? color : lb->getBlockColor();
+     lb = getLayoutBlockC();
+     colorC = (lb == nullptr) ? color : lb->getBlockColor();
+     lb = getLayoutBlockD();
+     colorD = (lb == nullptr) ? color : lb->getBlockColor();
+ }
+
+ // middles
+ QPointF pM = getCoordsCenter();
+ QPointF pABM = MathUtil::midPoint(pA, pB);
+ QPointF pAM = MathUtil::lerp(pA, pABM, 5.0 / 8.0);
+ QPointF pAMP = MathUtil::midPoint(pAM, pABM);
+ QPointF pBM = MathUtil::lerp(pB, pABM, 5.0 / 8.0);
+ QPointF pBMP = MathUtil::midPoint(pBM, pABM);
+
+ QPointF pCDM = MathUtil::midPoint(pC, pD);
+ QPointF pCM = MathUtil::lerp(pC, pCDM, 5.0 / 8.0);
+ QPointF pCMP = MathUtil::midPoint(pCM, pCDM);
+ QPointF pDM = MathUtil::lerp(pD, pCDM, 5.0 / 8.0);
+ QPointF pDMP = MathUtil::midPoint(pDM, pCDM);
+
+ QPointF pAF = MathUtil::midPoint(pAM, pM);
+ QPointF pBF = MathUtil::midPoint(pBM, pM);
+ QPointF pCF = MathUtil::midPoint(pCM, pM);
+ QPointF pDF = MathUtil::midPoint(pDM, pM);
+
+ int state = UNKNOWN;
+ if (layoutEditor->isAnimating()) {
+     Turnout* to = getTurnout();
+     if (to != nullptr) {
+         state = to->getKnownState();
+     }
+ }
+
+ int type = getTurnoutType();
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+ QGraphicsLineItem* lineItem;
+ if (type == DOUBLE_XOVER)
+ {
+  if (state != Turnout::THROWN && state != Turnout::INCONSISTENT)
+  { // unknown or continuing path - not crossed over
+   if (isMain == mainlineA) {
+       //g2.setColor(colorA);
+    stroke.setColor(colorA);
+       //g2.draw(new Line2D.Double(pA, pABM));
+    lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+    if (!isBlock || drawUnselectedLeg)
+    {
+       // g2.draw(new Line2D.Double(pAF, pM));
+     lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+   }
+   if (isMain == mainlineB)
+   {
+       //g2.setColor(colorB);
+    stroke.setColor(colorB);
+//             g2.draw(new Line2D.Double(pB, pABM));
+    lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pABM.x(), pABM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+    if (!isBlock || drawUnselectedLeg) {
+        //g2.draw(new Line2D.Double(pBF, pM));
+     lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+   }
+   if (isMain == mainlineC)
+   {
+       //g2.setColor(colorC);
+    stroke.setColor(colorC);
+       //g2.draw(new Line2D.Double(pC, pCDM));
+    lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+    if (!isBlock || drawUnselectedLeg)
+    {
+     //g2.draw(new Line2D.Double(pCF, pM));
+     lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+   }
+   if (isMain == mainlineD)
+   {
+    //g2.setColor(colorD);
+    stroke.setColor(colorD);
+    //g2.draw(new Line2D.Double(pD, pCDM));
+    lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pCDM.x(), pCDM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+    if (!isBlock || drawUnselectedLeg)
+    {
+           //g2.draw(new Line2D.Double(pDF, pM));
+     lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+   }
+  }
+  if (state != Turnout::CLOSED && state != Turnout::INCONSISTENT)
+  { // unknown or diverting path - crossed over
+   if (isMain == mainlineA)
+   {
+    //g2.setColor(colorA);
+    stroke.setColor(colorA);
+    //g2.draw(new Line2D.Double(pA, pAM));
+    lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+    //g2.draw(new Line2D.Double(pAM, pM));
+    lineItem = new QGraphicsLineItem(pAM.x(), pAM.y(), pM.x(), pM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+    if (!isBlock || drawUnselectedLeg) {
+        //g2.draw(new Line2D.Double(pAMP, pABM));
+     lineItem = new QGraphicsLineItem(pAMP.x(), pAMP.y(), pABM.x(), pABM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+   }
+   if (isMain == mainlineB) {
+       //g2.setColor(colorB);
+    stroke.setColor(colorB);
+    //g2.draw(new Line2D.Double(pB, pBM));
+    lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+    //g2.draw(new Line2D.Double(pBM, pM));
+    lineItem = new QGraphicsLineItem(pBM.x(), pBM.y(), pM.x(), pM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);if (!isBlock || drawUnselectedLeg)
+    {
+     //g2.draw(new Line2D.Double(pBMP, pABM));
+     lineItem = new QGraphicsLineItem(pBMP.x(), pBMP.y(), pM.x(), pM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+   }
+   if (isMain == mainlineC)
+   {
+    //g2.setColor(colorC);
+    stroke.setColor(colorC);
+    //g2.draw(new Line2D.Double(pC, pCM));
+    lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+    //g2.draw(new Line2D.Double(pCM, pM));
+     lineItem = new QGraphicsLineItem(pCM.x(), pCM.y(), pM.x(), pM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    if (!isBlock || drawUnselectedLeg) {
+        //g2.draw(new Line2D.Double(pCMP, pCDM));
+     lineItem = new QGraphicsLineItem(pCMP.x(), pCMP.y(), pCDM.x(), pCDM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+   }
+   if (isMain == mainlineD)
+   {
+       //g2.setColor(colorD);
+    stroke.setColor(colorD);
+       //g2.draw(new Line2D.Double(pD, pDM));
+    lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+       //g2.draw(new Line2D.Double(pDM, pM));
+    lineItem = new QGraphicsLineItem(pDM.x(), pDM.y(), pM.x(), pM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+    if (!isBlock || drawUnselectedLeg)
+    {
+     //g2.draw(new Line2D.Double(pDMP, pCDM));
+     lineItem = new QGraphicsLineItem(pDMP.x(), pDMP.y(), pCDM.x(), pCDM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+   }
+  }
+  if (state == Turnout::INCONSISTENT)
+  {
+   if (isMain == mainlineA)
+   {
+       //g2.setColor(colorA);
+    stroke.setColor(colorA);
+       //g2.draw(new Line2D.Double(pA, pAM));
+    lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+
+   }
+   if (isMain == mainlineB) {
+       //g2.setColor(colorB);
+    stroke.setColor(colorB);
+//      g2.draw(new Line2D.Double(pB, pBM));
+    lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+   }
+   if (isMain == mainlineC) {
+       //g2.setColor(colorC);
+    stroke.setColor(colorC);
+       //g2.draw(new Line2D.Double(pC, pCM));
+    lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+   }
+   if (isMain == mainlineD) {
+       //g2.setColor(colorD);
+    stroke.setColor(colorD);
+       //g2.draw(new Line2D.Double(pD, pDM));
+    lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+   }
+   if (!isBlock || drawUnselectedLeg)
+   {
+    if (isMain == mainlineA)
+    {
+//           g2.setColor(colorA);
+     stroke.setColor(colorA);
+        //g2.draw(new Line2D.Double(pAF, pM));
+     lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+    if (isMain == mainlineC) {
+        //g2.setColor(colorC);
+     stroke.setColor(colorC);
+        //g2.draw(new Line2D.Double(pCF, pM));
+     lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+    if (isMain == mainlineB) {
+        //g2.setColor(colorB);
+     stroke.setColor(colorB);
+        //g2.draw(new Line2D.Double(pBF, pM));
+     lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+    if (isMain == mainlineD) {
+        //g2.setColor(colorD);
+     stroke.setColor(colorD);
+        //g2.draw(new Line2D.Double(pDF, pM));
+     lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
+     lineItem->setPen(stroke);
+     itemGroup->addToGroup(lineItem);
+    }
+   }
+  }
+ }
+#if 0
+    else if ((type == RH_XOVER)
+         || (type == LH_XOVER)) {    // draw (rh & lh) cross overs
+     pAF = MathUtil::midPoint(pABM, pM);
+     pBF = MathUtil::midPoint(pABM, pM);
+     pCF = MathUtil::midPoint(pCDM, pM);
+     pDF = MathUtil::midPoint(pCDM, pM);
+     if (state != Turnout.THROWN && state != INCONSISTENT) { // unknown or continuing path - not crossed over
+         if (isMain == mainlineA) {
+             g2.setColor(colorA);
+             g2.draw(new Line2D.Double(pA, pABM));
+         }
+         if (isMain == mainlineB) {
+             g2.setColor(colorB);
+             g2.draw(new Line2D.Double(pABM, pB));
+         }
+         if (isMain == mainlineC) {
+             g2.setColor(colorC);
+             g2.draw(new Line2D.Double(pC, pCDM));
+         }
+         if (isMain == mainlineD) {
+             g2.setColor(colorD);
+             g2.draw(new Line2D.Double(pCDM, pD));
+         }
+         if (!isBlock || drawUnselectedLeg) {
+             if (getTurnoutType() == RH_XOVER) {
+                 if (isMain == mainlineA) {
+                     g2.setColor(colorA);
+                     g2.draw(new Line2D.Double(pAF, pM));
+                 }
+                 if (isMain == mainlineC) {
+                     g2.setColor(colorC);
+                     g2.draw(new Line2D.Double(pCF, pM));
+                 }
+             } else if (getTurnoutType() == LH_XOVER) {
+                 if (isMain == mainlineB) {
+                     g2.setColor(colorB);
+                     g2.draw(new Line2D.Double(pBF, pM));
+                 }
+                 if (isMain == mainlineD) {
+                     g2.setColor(colorD);
+                     g2.draw(new Line2D.Double(pDF, pM));
+                 }
+             }
+         }
+     }
+     if (state != Turnout.CLOSED && state != INCONSISTENT) { // unknown or diverting path - crossed over
+         if (getTurnoutType() == RH_XOVER) {
+             if (isMain == mainlineA) {
+                 g2.setColor(colorA);
+                 g2.draw(new Line2D.Double(pA, pABM));
+                 g2.draw(new Line2D.Double(pABM, pM));
+             }
+             if (!isBlock || drawUnselectedLeg) {
+                 if (isMain == mainlineB) {
+                     g2.setColor(colorB);
+                     g2.draw(new Line2D.Double(pBM, pB));
+                 }
+             }
+             if (isMain == mainlineC) {
+                 g2.setColor(colorC);
+                 g2.draw(new Line2D.Double(pC, pCDM));
+                 g2.draw(new Line2D.Double(pCDM, pM));
+             }
+             if (!isBlock || drawUnselectedLeg) {
+                 if (isMain == mainlineD) {
+                     g2.setColor(colorD);
+                     g2.draw(new Line2D.Double(pDM, pD));
+                 }
+             }
+         } else if (getTurnoutType() == LH_XOVER) {
+             if (!isBlock || drawUnselectedLeg) {
+                 if (isMain == mainlineA) {
+                     g2.setColor(colorA);
+                     g2.draw(new Line2D.Double(pA, pAM));
+                 }
+             }
+             if (isMain == mainlineB) {
+                 g2.setColor(colorB);
+                 g2.draw(new Line2D.Double(pB, pABM));
+                 g2.draw(new Line2D.Double(pABM, pM));
+             }
+             if (!isBlock || drawUnselectedLeg) {
+                 if (isMain == mainlineC) {
+                     g2.setColor(colorC);
+                     g2.draw(new Line2D.Double(pC, pCM));
+                 }
+             }
+             if (isMain == mainlineD) {
+                 g2.setColor(colorD);
+                 g2.draw(new Line2D.Double(pD, pCDM));
+                 g2.draw(new Line2D.Double(pCDM, pM));
+             }
+         }
+     }
+     if (state == INCONSISTENT) {
+         if (isMain == mainlineA) {
+             g2.setColor(colorA);
+             g2.draw(new Line2D.Double(pA, pAM));
+         }
+         if (isMain == mainlineB) {
+             g2.setColor(colorB);
+             g2.draw(new Line2D.Double(pB, pBM));
+         }
+         if (isMain == mainlineC) {
+             g2.setColor(colorC);
+             g2.draw(new Line2D.Double(pC, pCM));
+         }
+         if (isMain == mainlineD) {
+             g2.setColor(colorD);
+             g2.draw(new Line2D.Double(pD, pDM));
+         }
+         if (!isBlock || drawUnselectedLeg) {
+             if (getTurnoutType() == RH_XOVER) {
+                 if (isMain == mainlineA) {
+                     g2.setColor(colorA);
+                     g2.draw(new Line2D.Double(pAF, pM));
+                 }
+                 if (isMain == mainlineC) {
+                     g2.setColor(colorC);
+                     g2.draw(new Line2D.Double(pCF, pM));
+                 }
+             } else if (getTurnoutType() == LH_XOVER) {
+                 if (isMain == mainlineB) {
+                     g2.setColor(colorB);
+                     g2.draw(new Line2D.Double(pBF, pM));
+                 }
+                 if (isMain == mainlineD) {
+                     g2.setColor(colorD);
+                     g2.draw(new Line2D.Double(pDF, pM));
+                 }
+             }
+         }
+     }
+ } else if ((type == SINGLE_SLIP) || (type == DOUBLE_SLIP)) {
+     log->error("slips should be being drawn by LayoutSlip sub-class");
+ }
+#endif
+    else {    // LH, RH, or WYE Turnouts
+     // draw A<===>center
+     if (isMain == mainlineA) {
+         //g2.setColor(colorA);
+      stroke.setColor(colorA);
+         //g2.draw(new Line2D.Double(pA, pM));
+      lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pM.x(), pM.y());
+      lineItem->setPen(stroke);
+      itemGroup->addToGroup(lineItem);
+     }
+
+     if (state == UNKNOWN || (continuingSense == state && state != Turnout::INCONSISTENT)) { // unknown or continuing path
+         // draw center<===>B
+         if (isMain == mainlineB) {
+             //g2.setColor(colorB);
+          stroke.setColor(colorB);
+             //g2.draw(new Line2D.Double(pM, pB));
+          lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pB.x(), pB.y());
+          lineItem->setPen(stroke);
+          itemGroup->addToGroup(lineItem);
+         }
+     } else if (!isBlock || drawUnselectedLeg) {
+         // draw center<--=>B
+         if (isMain == mainlineB) {
+             //g2.setColor(colorB);
+          stroke.setColor(colorB);
+             //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pB), pB));
+          lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pB).x(), MathUtil::twoThirdsPoint(pM, pB).y(), pB.x(), pB.y());
+          lineItem->setPen(stroke);
+          itemGroup->addToGroup(lineItem);
+         }
+     }
+
+     if (state == UNKNOWN || (continuingSense != state && state != Turnout::INCONSISTENT))
+     { // unknown or diverting path
+         // draw center<===>C
+         if (isMain == mainlineC)
+         {
+             //g2.setColor(colorC);
+          stroke.setColor(colorC);
+             //g2.draw(new Line2D.Double(pM, pC));
+          lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pC.x(), pC.y());
+          lineItem->setPen(stroke);
+          itemGroup->addToGroup(lineItem);
+         }
+     } else if (!isBlock || drawUnselectedLeg) {
+         // draw center<--=>C
+         if (isMain == mainlineC) {
+             //g2.setColor(colorC);
+          stroke.setColor(colorC);
+             //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pC), pC));
+          lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pC).x(), MathUtil::twoThirdsPoint(pM, pC).y(), pC.x(), pC.y());
+          lineItem->setPen(stroke);
+          itemGroup->addToGroup(lineItem);
+         }
+     }
+ }
+ item = itemGroup;
+ g2->addItem(item);
+}   // draw1
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement, QPen stroke) {
+    int type = getTurnoutType();
+
+    QPointF pA = getCoordsA();
+    QPointF pB = getCoordsB();
+    QPointF pC = getCoordsC();
+    QPointF pD = getCoordsD();
+    QPointF pM = getCoordsCenter();
+
+    QPointF vAM = MathUtil::normalize(MathUtil::subtract(pM, pA));
+    QPointF vAMo = MathUtil::orthogonal(MathUtil::normalize(vAM, railDisplacement));
+
+    QPointF pAL = MathUtil::subtract(pA, vAMo);
+    QPointF pAR = MathUtil::add(pA, vAMo);
+
+    QPointF vBM = MathUtil::normalize(MathUtil::subtract(pB, pM));
+    double dirBM_DEG = MathUtil::computeAngleDEG(vBM);
+    QPointF vBMo = MathUtil::normalize(MathUtil::orthogonal(vBM), railDisplacement);
+    QPointF pBL = MathUtil::subtract(pB, vBMo);
+    QPointF pBR = MathUtil::add(pB, vBMo);
+    QPointF pMR = MathUtil::add(pM, vBMo);
+
+    QPointF vCM = MathUtil::normalize(MathUtil::subtract(pC, pM));
+    double dirCM_DEG = MathUtil::computeAngleDEG(vCM);
+
+    QPointF vCMo = MathUtil::normalize(MathUtil::orthogonal(vCM), railDisplacement);
+    QPointF pCL = MathUtil::subtract(pC, vCMo);
+    QPointF pCR = MathUtil::add(pC, vCMo);
+    QPointF pML = MathUtil::subtract(pM, vBMo);
+
+    double deltaBMC_DEG = MathUtil::absDiffAngleDEG(dirBM_DEG, dirCM_DEG);
+    double deltaBMC_RAD = qDegreesToRadians(deltaBMC_DEG);
+
+    double hypotF = railDisplacement / qSin(deltaBMC_RAD / 2.0);
+
+    QPointF vDisF = MathUtil::normalize(MathUtil::add(vAM, vCM), hypotF);
+    if (type == WYE_TURNOUT) {
+        vDisF = MathUtil::normalize(vAM, hypotF);
+    }
+    QPointF pF = MathUtil::add(pM, vDisF);
+
+    QPointF pFR = MathUtil::add(pF, MathUtil::multiply(vBMo, 2.0));
+    QPointF pFL = MathUtil::subtract(pF, MathUtil::multiply(vCMo, 2.0));
+
+    // QPointF pFPR = MathUtil::add(pF, MathUtil::normalize(vBMo, 2.0));
+    // QPointF pFPL = MathUtil::subtract(pF, MathUtil::normalize(vCMo, 2.0));
+    QPointF vDisAP = MathUtil::normalize(vAM, hypotF);
+    QPointF pAP = MathUtil::subtract(pM, vDisAP);
+    QPointF pAPR = MathUtil::add(pAP, vAMo);
+    QPointF pAPL = MathUtil::subtract(pAP, vAMo);
+
+    // QPointF vSo = MathUtil::normalize(vAMo, 2.0);
+    // QPointF pSL = MathUtil::add(pAPL, vSo);
+    // QPointF pSR = MathUtil::subtract(pAPR, vSo);
+
+    bool mainlineA = isMainlineA();
+    bool mainlineB = isMainlineB();
+    bool mainlineC = isMainlineC();
+    bool mainlineD = isMainlineD();
+
+    int state = UNKNOWN;
+    if (layoutEditor->isAnimating()) {
+         Turnout* to = getTurnout();
+        if (to != nullptr) {
+            state = to->getKnownState();
+        }
+    }
+    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+    QGraphicsLineItem* lineItem;
+    switch (type) {
+        case RH_TURNOUT: {
+            if (isMain == mainlineA) {
+                //g2.draw(new Line2D.Double(pAL, pML));
+             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pML.x(), pML.y());
+             lineItem->setPen(stroke);
+             itemGroup->addToGroup(lineItem);
+                //g2.draw(new Line2D.Double(pAR, pAPR));
+             lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pAPR.x(), pAPR.y());
+             lineItem->setPen(stroke);
+             itemGroup->addToGroup(lineItem);
+            }
+            if (isMain == mainlineB) {
+                //g2.draw(new Line2D.Double(pML, pBL));
+             lineItem = new QGraphicsLineItem(pML.x(), pML.y(), pBL.x(), pBL.y());
+             lineItem->setPen(stroke);
+             itemGroup->addToGroup(lineItem);
+                //g2.draw(new Line2D.Double(pF, pBR));
+             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pBR.x(), pBR.y());
+             lineItem->setPen(stroke);
+             itemGroup->addToGroup(lineItem);
+
+                if (continuingSense == state) {  // unknown or diverting path
+//                         g2.draw(new Line2D.Double(pSR, pFPR));
+//                     } else {
+                    //g2.draw(new Line2D.Double(pAPR, pF));
+                 lineItem = new QGraphicsLineItem(pAPR.x(), pAPR.y(), pF.x(), pF.y());
+                 lineItem->setPen(stroke);
+                 itemGroup->addToGroup(lineItem);
+                }
+            }
+            if (isMain == mainlineC) {
+                //g2.draw(new Line2D.Double(pF, pCL));
+             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pCL.x(), pCL.y());
+             lineItem->setPen(stroke);
+             itemGroup->addToGroup(lineItem);
+                //g2.draw(new Line2D.Double(pFR, pCR));
+             lineItem = new QGraphicsLineItem(pFR.x(), pFR.y(), pCR.x(), pCR.y());
+             lineItem->setPen(stroke);
+             itemGroup->addToGroup(lineItem);
+
+                QPainterPath* path = new QPainterPath();
+                path->moveTo(pAPR.x(), pAPR.y());
+                path->quadTo(pMR.x(), pMR.y(), pFR.x(), pFR.y());
+                path->lineTo(pCR.x(), pCR.y());
+                //g2.draw(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(*path);
+                pathItem->setPen(stroke);
+                itemGroup->addToGroup(pathItem);
+                if (continuingSense != state) {  // unknown or diverting path
+                    path = new QPainterPath();
+                    path->moveTo(pAPL.x(), pAPL.y());
+                    path->quadTo(pML.x(), pML.y(), pF.x(), pF.y());
+                    //g2.draw(path);
+                    pathItem = new QGraphicsPathItem(*path);
+                    pathItem->setPen(stroke);
+                    itemGroup->addToGroup(pathItem);//                     } else {
+//                         path = new GeneralPath();
+//                         path.moveTo(pSL.getX(), pSL.getY());
+//                         path.quadTo(pML.getX(), pML.getY(), pFPL.getX(), pFPL.getY());
+//                         g2.draw(path);
+                }
+            }
+            break;
+        }   // case RH_TURNOUT
+
+        case LH_TURNOUT: {
+            if (isMain == mainlineA) {
+                //g2.draw(new Line2D.Double(pAR, pMR));
+             lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pMR.x(), pMR.y());
+             lineItem->setPen(stroke);
+             itemGroup->addToGroup(lineItem);
+                //g2.draw(new Line2D.Double(pAL, pAPL));
+             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pAPL.x(), pAPL.y());
+             lineItem->setPen(stroke);
+             itemGroup->addToGroup(lineItem);
+            }
+            if (isMain == mainlineB) {
+                //g2.draw(new Line2D.Double(pMR, pBR));
+             lineItem = new QGraphicsLineItem(pMR.x(), pMR.y(), pBR.x(), pBR.y());
+             lineItem->setPen(stroke);
+             itemGroup->addToGroup(lineItem);
+                //g2.draw(new Line2D.Double(pF, pBL));
+             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pBL.x(), pBL.y());
+             lineItem->setPen(stroke);
+             itemGroup->addToGroup(lineItem);
+                if (continuingSense == state) {  // straight path
+//                         g2.draw(new Line2D.Double(pSL, pFPL));  Offset problem
+//                     } else {
+                    //g2.draw(new Line2D.Double(pAPL, pF));
+                 lineItem = new QGraphicsLineItem(pAPL.x(), pAPL.y(), pF.x(), pF.y());
+                 lineItem->setPen(stroke);
+                 itemGroup->addToGroup(lineItem);
+                }
+            }
+            if (isMain == mainlineC) {
+                //g2.draw(new Line2D.Double(pF, pCR));
+             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pCR.x(), pCR.y());
+             lineItem->setPen(stroke);
+             itemGroup->addToGroup(lineItem);
+                QPainterPath path = QPainterPath();
+                path.moveTo(pAPL.x(), pAPL.y());
+                path.quadTo(pML.x(), pML.y(), pFL.x(), pFL.y());
+                path.lineTo(pCL.x(), pCL.y());
+                //g2.draw(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+                pathItem->setPen(stroke);
+                itemGroup->addToGroup(pathItem);
+                //                     } else {
+                if (continuingSense != state) {  // unknown or diverting path
+                    path =  QPainterPath();
+                    path.moveTo(pAPR.x(), pAPR.y());
+                    path.quadTo(pMR.x(), pMR.y(), pF.x(), pF.y());
+                    //g2.draw(path);
+                    pathItem = new QGraphicsPathItem(path);
+                    pathItem->setPen(stroke);
+                    itemGroup->addToGroup(pathItem);
+//                     } else {
+//                     } else {
+//                         path = new GeneralPath();
+//                         path.moveTo(pSR.getX(), pSR.getY());
+//                         path.quadTo(pMR.getX(), pMR.getY(), pFPR.getX(), pFPR.getY());
+//                         g2.draw(path);
+                }
+            }
+            break;
+        }   // case LH_TURNOUT
+#if 0
+        case WYE_TURNOUT: {
+            if (isMain == mainlineA) {
+                g2.draw(new Line2D.Double(pAL, pAPL));
+                g2.draw(new Line2D.Double(pAR, pAPR));
+            }
+            if (isMain == mainlineB) {
+                g2.draw(new Line2D.Double(pF, pBL));
+                GeneralPath path = new GeneralPath();
+                path.moveTo(pAPR.getX(), pAPR.getY());
+                path.quadTo(pMR.getX(), pMR.getY(), pFR.getX(), pFR.getY());
+                path.lineTo(pBR.getX(), pBR.getY());
+                g2.draw(path);
+                if (continuingSense != state) {  // unknown or diverting path
+                    path = new GeneralPath();
+                    path.moveTo(pAPR.getX(), pAPR.getY());
+                    path.quadTo(pMR.getX(), pMR.getY(), pF.getX(), pF.getY());
+                    g2.draw(path);
+//                     } else {
+//                         path = new GeneralPath();
+//                         path.moveTo(pSR.getX(), pSR.getY());
+//                         path.quadTo(pMR.getX(), pMR.getY(), pFPR.getX(), pFPR.getY());
+//     bad                    g2.draw(path);
+                }
+            }
+            if (isMain == mainlineC) {
+                pML = MathUtil::subtract(pM, vCMo);
+                GeneralPath path = new GeneralPath();
+                path.moveTo(pAPL.getX(), pAPL.getY());
+                path.quadTo(pML.getX(), pML.getY(), pFL.getX(), pFL.getY());
+                path.lineTo(pCL.getX(), pCL.getY());
+                g2.draw(path);
+                g2.draw(new Line2D.Double(pF, pCR));
+                if (continuingSense != state) {  // unknown or diverting path
+//                         path = new GeneralPath();
+//                         path.moveTo(pSL.getX(), pSL.getY());
+//                         path.quadTo(pML.getX(), pML.getY(), pFPL.getX(), pFPL.getY());
+//           bad              g2.draw(path);
+                } else {
+                    path = new GeneralPath();
+                    path.moveTo(pAPL.getX(), pAPL.getY());
+                    path.quadTo(pML.getX(), pML.getY(), pF.getX(), pF.getY());
+                    g2.draw(path);
+                }
+            }
+            break;
+        }   // case WYE_TURNOUT
+
+        case DOUBLE_XOVER: {
+            // A, B, C, D end points (left and right)
+            QPointF vAB = MathUtil::normalize(MathUtil::subtract(pB, pA), railDisplacement);
+            double dirAB_DEG = MathUtil::computeAngleDEG(vAB);
+            QPointF vABo = MathUtil::orthogonal(MathUtil::normalize(vAB, railDisplacement));
+            pAL = MathUtil::subtract(pA, vABo);
+            pAR = MathUtil::add(pA, vABo);
+            pBL = MathUtil::subtract(pB, vABo);
+            pBR = MathUtil::add(pB, vABo);
+            QPointF vCD = MathUtil::normalize(MathUtil::subtract(pD, pC), railDisplacement);
+            QPointF vCDo = MathUtil::orthogonal(MathUtil::normalize(vCD, railDisplacement));
+            pCL = MathUtil::add(pC, vCDo);
+            pCR = MathUtil::subtract(pC, vCDo);
+            QPointF pDL = MathUtil::add(pD, vCDo);
+            QPointF pDR = MathUtil::subtract(pD, vCDo);
+
+            // AB, CD mid points (left and right)
+            QPointF pABM = MathUtil::midPoint(pA, pB);
+            QPointF pABL = MathUtil::midPoint(pAL, pBL);
+            QPointF pABR = MathUtil::midPoint(pAR, pBR);
+            QPointF pCDM = MathUtil::midPoint(pC, pD);
+            QPointF pCDL = MathUtil::midPoint(pCL, pDL);
+            QPointF pCDR = MathUtil::midPoint(pCR, pDR);
+
+            // A, B, C, D mid points
+            double halfParallelDistance = MathUtil::distance(pABM, pCDM) / 2.0;
+            QPointF pAM = MathUtil::subtract(pABM, MathUtil::normalize(vAB, halfParallelDistance));
+            QPointF pAML = MathUtil::subtract(pAM, vABo);
+            QPointF pAMR = MathUtil::add(pAM, vABo);
+            QPointF pBM = MathUtil::add(pABM, MathUtil::normalize(vAB, halfParallelDistance));
+            QPointF pBML = MathUtil::subtract(pBM, vABo);
+            QPointF pBMR = MathUtil::add(pBM, vABo);
+            QPointF pCM = MathUtil::subtract(pCDM, MathUtil::normalize(vCD, halfParallelDistance));
+            QPointF pCML = MathUtil::subtract(pCM, vABo);
+            QPointF pCMR = MathUtil::add(pCM, vABo);
+            QPointF pDM = MathUtil::add(pCDM, MathUtil::normalize(vCD, halfParallelDistance));
+            QPointF pDML = MathUtil::subtract(pDM, vABo);
+            QPointF pDMR = MathUtil::add(pDM, vABo);
+
+            // crossing points
+            QPointF vACM = MathUtil::normalize(MathUtil::subtract(pCM, pAM), railDisplacement);
+            QPointF vACMo = MathUtil::orthogonal(vACM);
+            QPointF vBDM = MathUtil::normalize(MathUtil::subtract(pDM, pBM), railDisplacement);
+            QPointF vBDMo = MathUtil::orthogonal(vBDM);
+            QPointF pBDR = MathUtil::add(pM, vACM);
+            QPointF pBDL = MathUtil::subtract(pM, vACM);
+
+            // crossing diamond point (no gaps)
+            QPointF pVR = MathUtil::add(pBDL, vBDM);
+            QPointF pKL = MathUtil::subtract(pBDL, vBDM);
+            QPointF pKR = MathUtil::add(pBDR, vBDM);
+            QPointF pVL = MathUtil::subtract(pBDR, vBDM);
+
+            // crossing diamond points (with gaps)
+            QPointF vACM2 = MathUtil::normalize(vACM, 2.0);
+            QPointF vBDM2 = MathUtil::normalize(vBDM, 2.0);
+            // (syntax of "pKLtC" is "point LK toward C", etc.)
+            QPointF pKLtC = MathUtil::add(pKL, vACM2);
+            QPointF pKLtD = MathUtil::add(pKL, vBDM2);
+            QPointF pVLtA = MathUtil::subtract(pVL, vACM2);
+            QPointF pVLtD = MathUtil::add(pVL, vBDM2);
+            QPointF pKRtA = MathUtil::subtract(pKR, vACM2);
+            QPointF pKRtB = MathUtil::subtract(pKR, vBDM2);
+            QPointF pVRtB = MathUtil::subtract(pVR, vBDM2);
+            QPointF pVRtC = MathUtil::add(pVR, vACM2);
+
+            // A, B, C, D frog points
+            vCM = MathUtil::normalize(MathUtil::subtract(pCM, pM));
+            dirCM_DEG = MathUtil::computeAngleDEG(vCM);
+            double deltaBAC_DEG = MathUtil::absDiffAngleDEG(dirAB_DEG, dirCM_DEG);
+            double deltaBAC_RAD = Math.toRadians(deltaBAC_DEG);
+            hypotF = railDisplacement / Math.sin(deltaBAC_RAD / 2.0);
+            QPointF vACF = MathUtil::normalize(MathUtil::add(vACM, vAB), hypotF);
+            QPointF pAFL = MathUtil::add(pAM, vACF);
+            QPointF pCFR = MathUtil::subtract(pCM, vACF);
+            QPointF vBDF = MathUtil::normalize(MathUtil::add(vBDM, vCD), hypotF);
+            QPointF pBFL = MathUtil::add(pBM, vBDF);
+            QPointF pDFR = MathUtil::subtract(pDM, vBDF);
+
+            // A, B, C, D frog points
+            QPointF pAFR = MathUtil::add(MathUtil::add(pAFL, vACMo), vACMo);
+            QPointF pBFR = MathUtil::subtract(MathUtil::subtract(pBFL, vBDMo), vBDMo);
+            QPointF pCFL = MathUtil::subtract(MathUtil::subtract(pCFR, vACMo), vACMo);
+            QPointF pDFL = MathUtil::add(MathUtil::add(pDFR, vBDMo), vBDMo);
+
+            // end of switch rails (closed)
+            QPointF vABF = MathUtil::normalize(vAB, hypotF);
+            pAP = MathUtil::subtract(pAM, vABF);
+            pAPL = MathUtil::subtract(pAP, vABo);
+            pAPR = MathUtil::add(pAP, vABo);
+            QPointF pBP = MathUtil::add(pBM, vABF);
+            QPointF pBPL = MathUtil::subtract(pBP, vABo);
+            QPointF pBPR = MathUtil::add(pBP, vABo);
+
+            QPointF vCDF = MathUtil::normalize(vCD, hypotF);
+            QPointF pCP = MathUtil::subtract(pCM, vCDF);
+            QPointF pCPL = MathUtil::add(pCP, vCDo);
+            QPointF pCPR = MathUtil::subtract(pCP, vCDo);
+            QPointF pDP = MathUtil::add(pDM, vCDF);
+            QPointF pDPL = MathUtil::add(pDP, vCDo);
+            QPointF pDPR = MathUtil::subtract(pDP, vCDo);
+
+            // end of switch rails (open)
+            QPointF vS = MathUtil::normalize(vABo, 2.0);
+            QPointF pASL = MathUtil::add(pAPL, vS);
+            // QPointF pASR = MathUtil::subtract(pAPR, vS);
+            QPointF pBSL = MathUtil::add(pBPL, vS);
+            // QPointF pBSR = MathUtil::subtract(pBPR, vS);
+            QPointF pCSR = MathUtil::subtract(pCPR, vS);
+            // QPointF pCSL = MathUtil::add(pCPL, vS);
+            QPointF pDSR = MathUtil::subtract(pDPR, vS);
+            // QPointF pDSL = MathUtil::add(pDPL, vS);
+
+            // end of switch rails (open at frogs)
+            QPointF pAFS = MathUtil::subtract(pAFL, vS);
+            QPointF pBFS = MathUtil::subtract(pBFL, vS);
+            QPointF pCFS = MathUtil::add(pCFR, vS);
+            QPointF pDFS = MathUtil::add(pDFR, vS);
+
+            // vSo = MathUtil::orthogonal(vS);
+            // QPointF pAFSR = MathUtil::add(pAFL, vSo);
+            // QPointF pBFSR = MathUtil::subtract(pBFL, vSo);
+            // QPointF pCFSL = MathUtil::subtract(pCFR, vSo);
+            // QPointF pDFSL = MathUtil::add(pDFR, vSo);
+
+            if (isMain == mainlineA) {
+                g2.draw(new Line2D.Double(pAL, pABL));
+                g2.draw(new Line2D.Double(pVRtB, pKLtD));
+                g2.draw(new Line2D.Double(pAFL, pABR));
+                g2.draw(new Line2D.Double(pAFL, pKL));
+                GeneralPath path = new GeneralPath();
+                path.moveTo(pAR.getX(), pAR.getY());
+                path.lineTo(pAPR.getX(), pAPR.getY());
+                path.quadTo(pAMR.getX(), pAMR.getY(), pAFR.getX(), pAFR.getY());
+                path.lineTo(pVR.getX(), pVR.getY());
+                g2.draw(path);
+                if (state != Turnout.CLOSED) {  // unknown or diverting path
+                    path = new GeneralPath();
+                    path.moveTo(pAPL.getX(), pAPL.getY());
+                    path.quadTo(pAML.getX(), pAML.getY(), pAFL.getX(), pAFL.getY());
+                    g2.draw(path);
+//                         g2.draw(new Line2D.Double(pASR, pAFSR));
+                } else {                        // continuing path
+                    g2.draw(new Line2D.Double(pAPR, pAFL));
+                    path = new GeneralPath();
+                    path.moveTo(pASL.getX(), pASL.getY());
+                    path.quadTo(pAML.getX(), pAML.getY(), pAFS.getX(), pAFS.getY());
+//                         g2.draw(path);
+                }
+            }
+            if (isMain == mainlineB) {
+                g2.draw(new Line2D.Double(pABL, pBL));
+                g2.draw(new Line2D.Double(pKLtC, pVLtA));
+                g2.draw(new Line2D.Double(pBFL, pABR));
+                g2.draw(new Line2D.Double(pBFL, pKL));
+                GeneralPath path = new GeneralPath();
+                path.moveTo(pBR.getX(), pBR.getY());
+                path.lineTo(pBPR.getX(), pBPR.getY());
+                path.quadTo(pBMR.getX(), pBMR.getY(), pBFR.getX(), pBFR.getY());
+                path.lineTo(pVL.getX(), pVL.getY());
+                g2.draw(path);
+                if (state != Turnout.CLOSED) {  // unknown or diverting path
+                    path = new GeneralPath();
+                    path.moveTo(pBPL.getX(), pBPL.getY());
+                    path.quadTo(pBML.getX(), pBML.getY(), pBFL.getX(), pBFL.getY());
+                    g2.draw(path);
+//                         g2.draw(new Line2D.Double(pBSR, pBFSR));
+                } else {
+                    g2.draw(new Line2D.Double(pBPR, pBFL));
+                    path = new GeneralPath();
+                    path.moveTo(pBSL.getX(), pBSL.getY());
+                    path.quadTo(pBML.getX(), pBML.getY(), pBFS.getX(), pBFS.getY());
+//                         g2.draw(path);
+                }
+            }
+            if (isMain == mainlineC) {
+                g2.draw(new Line2D.Double(pCR, pCDR));
+                g2.draw(new Line2D.Double(pKRtB, pVLtD));
+                g2.draw(new Line2D.Double(pCFR, pCDL));
+                g2.draw(new Line2D.Double(pCFR, pKR));
+                GeneralPath path = new GeneralPath();
+                path.moveTo(pCL.getX(), pCL.getY());
+                path.lineTo(pCPL.getX(), pCPL.getY());
+                path.quadTo(pCML.getX(), pCML.getY(), pCFL.getX(), pCFL.getY());
+                path.lineTo(pVL.getX(), pVL.getY());
+                g2.draw(path);
+                if (state != Turnout.CLOSED) {  // unknown or diverting path
+                    path = new GeneralPath();
+                    path.moveTo(pCPR.getX(), pCPR.getY());
+                    path.quadTo(pCMR.getX(), pCMR.getY(), pCFR.getX(), pCFR.getY());
+                    g2.draw(path);
+//                         g2.draw(new Line2D.Double(pCSL, pCFSL));
+                } else {
+                    g2.draw(new Line2D.Double(pCPL, pCFR));
+                    path = new GeneralPath();
+                    path.moveTo(pCSR.getX(), pCSR.getY());
+                    path.quadTo(pCMR.getX(), pCMR.getY(), pCFS.getX(), pCFS.getY());
+//                         g2.draw(path);
+                }
+            }
+            if (isMain == mainlineD) {
+                g2.draw(new Line2D.Double(pCDR, pDR));
+                g2.draw(new Line2D.Double(pKRtA, pVRtC));
+                g2.draw(new Line2D.Double(pDFR, pCDL));
+                g2.draw(new Line2D.Double(pDFR, pKR));
+                GeneralPath path = new GeneralPath();
+                path.moveTo(pDL.getX(), pDL.getY());
+                path.lineTo(pDPL.getX(), pDPL.getY());
+                path.quadTo(pDML.getX(), pDML.getY(), pDFL.getX(), pDFL.getY());
+                path.lineTo(pVR.getX(), pVR.getY());
+                g2.draw(path);
+                if (state != Turnout.CLOSED) {  // unknown or diverting path
+                    path = new GeneralPath();
+                    path.moveTo(pDPR.getX(), pDPR.getY());
+                    path.quadTo(pDMR.getX(), pDMR.getY(), pDFR.getX(), pDFR.getY());
+                    g2.draw(path);
+//                         g2.draw(new Line2D.Double(pDSL, pDFSL));
+                } else {
+                    g2.draw(new Line2D.Double(pDPL, pDFR));
+                    path = new GeneralPath();
+                    path.moveTo(pDSR.getX(), pDSR.getY());
+                    path.quadTo(pDMR.getX(), pDMR.getY(), pDFS.getX(), pDFS.getY());
+//                         g2.draw(path);
+                }
+            }
+            break;
+        }   // case DOUBLE_XOVER
+
+        case RH_XOVER: {
+            // A, B, C, D end points (left and right)
+            QPointF vAB = MathUtil::normalize(MathUtil::subtract(pB, pA), railDisplacement);
+            double dirAB_DEG = MathUtil::computeAngleDEG(vAB);
+            QPointF vABo = MathUtil::orthogonal(MathUtil::normalize(vAB, railDisplacement));
+            pAL = MathUtil::subtract(pA, vABo);
+            pAR = MathUtil::add(pA, vABo);
+            pBL = MathUtil::subtract(pB, vABo);
+            pBR = MathUtil::add(pB, vABo);
+            QPointF vCD = MathUtil::normalize(MathUtil::subtract(pD, pC), railDisplacement);
+            QPointF vCDo = MathUtil::orthogonal(MathUtil::normalize(vCD, railDisplacement));
+            pCL = MathUtil::add(pC, vCDo);
+            pCR = MathUtil::subtract(pC, vCDo);
+            QPointF pDL = MathUtil::add(pD, vCDo);
+            QPointF pDR = MathUtil::subtract(pD, vCDo);
+
+            // AB and CD mid points
+            QPointF pABM = MathUtil::midPoint(pA, pB);
+            QPointF pABL = MathUtil::subtract(pABM, vABo);
+            QPointF pABR = MathUtil::add(pABM, vABo);
+            QPointF pCDM = MathUtil::midPoint(pC, pD);
+            QPointF pCDL = MathUtil::subtract(pCDM, vABo);
+            QPointF pCDR = MathUtil::add(pCDM, vABo);
+
+            // directions
+            QPointF vAC = MathUtil::normalize(MathUtil::subtract(pCDM, pABM), railDisplacement);
+            QPointF vACo = MathUtil::orthogonal(MathUtil::normalize(vAC, railDisplacement));
+            double dirAC_DEG = MathUtil::computeAngleDEG(vAC);
+            double deltaBAC_DEG = MathUtil::absDiffAngleDEG(dirAB_DEG, dirAC_DEG);
+            double deltaBAC_RAD = Math.toRadians(deltaBAC_DEG);
+
+            // AC mid points
+            QPointF pACL = MathUtil::subtract(pM, vACo);
+            QPointF pACR = MathUtil::add(pM, vACo);
+
+            // frogs
+            hypotF = railDisplacement / Math.sin(deltaBAC_RAD / 2.0);
+            QPointF vF = MathUtil::normalize(MathUtil::add(vAB, vAC), hypotF);
+            QPointF pABF = MathUtil::add(pABM, vF);
+            QPointF pCDF = MathUtil::subtract(pCDM, vF);
+
+            // frog primes
+            QPointF pABFP = MathUtil::add(MathUtil::add(pABF, vACo), vACo);
+            QPointF pCDFP = MathUtil::subtract(MathUtil::subtract(pCDF, vACo), vACo);
+
+            // end of switch rails (closed)
+            QPointF vABF = MathUtil::normalize(vAB, hypotF);
+            pAP = MathUtil::subtract(pABM, vABF);
+            pAPL = MathUtil::subtract(pAP, vABo);
+            pAPR = MathUtil::add(pAP, vABo);
+            QPointF pCP = MathUtil::add(pCDM, vABF);
+            QPointF pCPL = MathUtil::add(pCP, vCDo);
+            QPointF pCPR = MathUtil::subtract(pCP, vCDo);
+
+            // end of switch rails (open)
+            QPointF vS = MathUtil::normalize(vAB, 2.0);
+            QPointF vSo = MathUtil::orthogonal(vS);
+            QPointF pASL = MathUtil::add(pAPL, vSo);
+            // QPointF pASR = MathUtil::subtract(pAPR, vSo);
+            // QPointF pCSL = MathUtil::add(pCPL, vSo);
+            QPointF pCSR = MathUtil::subtract(pCPR, vSo);
+
+            // end of switch rails (open at frogs)
+            QPointF pABFS = MathUtil::subtract(pABF, vSo);
+            // QPointF pABFSP = MathUtil::subtract(pABF, vS);
+            QPointF pCDFS = MathUtil::add(pCDF, vSo);
+            // QPointF pCDFSP = MathUtil::add(pCDF, vS);
+
+            if (isMain == mainlineA) {
+                g2.draw(new Line2D.Double(pAL, pABL));
+                GeneralPath path = new GeneralPath();
+                path.moveTo(pAR.getX(), pAR.getY());
+                path.lineTo(pAPR.getX(), pAPR.getY());
+                path.quadTo(pABR.getX(), pABR.getY(), pABFP.getX(), pABFP.getY());
+                path.lineTo(pACR.getX(), pACR.getY());
+                g2.draw(path);
+                g2.draw(new Line2D.Double(pABF, pACL));
+                if (state != Turnout.CLOSED) {  // unknown or diverting path
+                    path = new GeneralPath();
+                    path.moveTo(pAPL.getX(), pAPL.getY());
+                    path.quadTo(pABL.getX(), pABL.getY(), pABF.getX(), pABF.getY());
+                    g2.draw(path);
+//                         g2.draw(new Line2D.Double(pASR, pABFSP));
+                } else {                        // continuing path
+                    g2.draw(new Line2D.Double(pAPR, pABF));
+                    path = new GeneralPath();
+                    path.moveTo(pASL.getX(), pASL.getY());
+                    path.quadTo(pABL.getX(), pABL.getY(), pABFS.getX(), pABFS.getY());
+//                         g2.draw(path);
+                }
+            }
+            if (isMain == mainlineB) {
+                g2.draw(new Line2D.Double(pABL, pBL));
+                g2.draw(new Line2D.Double(pABF, pBR));
+            }
+            if (isMain == mainlineC) {
+                g2.draw(new Line2D.Double(pCR, pCDR));
+                GeneralPath path = new GeneralPath();
+                path.moveTo(pCL.getX(), pCL.getY());
+                path.lineTo(pCPL.getX(), pCPL.getY());
+                path.quadTo(pCDL.getX(), pCDL.getY(), pCDFP.getX(), pCDFP.getY());
+                path.lineTo(pACL.getX(), pACL.getY());
+                g2.draw(path);
+                g2.draw(new Line2D.Double(pCDF, pACR));
+                if (state != Turnout.CLOSED) {  // unknown or diverting path
+                    path = new GeneralPath();
+                    path.moveTo(pCPR.getX(), pCPR.getY());
+                    path.quadTo(pCDR.getX(), pCDR.getY(), pCDF.getX(), pCDF.getY());
+                    g2.draw(path);
+//                         g2.draw(new Line2D.Double(pCSL, pCDFSP));
+                } else {                        // continuing path
+                    g2.draw(new Line2D.Double(pCPL, pCDF));
+                    path = new GeneralPath();
+                    path.moveTo(pCSR.getX(), pCSR.getY());
+                    path.quadTo(pCDR.getX(), pCDR.getY(), pCDFS.getX(), pCDFS.getY());
+//                         g2.draw(path);
+                }
+            }
+            if (isMain == mainlineD) {
+                g2.draw(new Line2D.Double(pCDR, pDR));
+                g2.draw(new Line2D.Double(pCDF, pDL));
+            }
+            break;
+        }   // case RH_XOVER
+
+        case LH_XOVER: {
+            // B, A, D, C end points (left and right)
+            QPointF vBA = MathUtil::normalize(MathUtil::subtract(pA, pB), railDisplacement);
+            double dirBA_DEG = MathUtil::computeAngleDEG(vBA);
+            QPointF vBAo = MathUtil::orthogonal(MathUtil::normalize(vBA, railDisplacement));
+            pBL = MathUtil::add(pB, vBAo);
+            pBR = MathUtil::subtract(pB, vBAo);
+            pAL = MathUtil::add(pA, vBAo);
+            pAR = MathUtil::subtract(pA, vBAo);
+            QPointF vDC = MathUtil::normalize(MathUtil::subtract(pC, pD), railDisplacement);
+            QPointF vDCo = MathUtil::orthogonal(MathUtil::normalize(vDC, railDisplacement));
+            QPointF pDL = MathUtil::subtract(pD, vDCo);
+            QPointF pDR = MathUtil::add(pD, vDCo);
+            pCL = MathUtil::subtract(pC, vDCo);
+            pCR = MathUtil::add(pC, vDCo);
+
+            // BA and DC mid points
+            QPointF pBAM = MathUtil::midPoint(pB, pA);
+            QPointF pBAL = MathUtil::add(pBAM, vBAo);
+            QPointF pBAR = MathUtil::subtract(pBAM, vBAo);
+            QPointF pDCM = MathUtil::midPoint(pD, pC);
+            QPointF pDCL = MathUtil::add(pDCM, vBAo);
+            QPointF pDCR = MathUtil::subtract(pDCM, vBAo);
+
+            // directions
+            QPointF vBD = MathUtil::normalize(MathUtil::subtract(pDCM, pBAM), railDisplacement);
+            QPointF vBDo = MathUtil::orthogonal(MathUtil::normalize(vBD, railDisplacement));
+            double dirBD_DEG = MathUtil::computeAngleDEG(vBD);
+            double deltaABD_DEG = MathUtil::absDiffAngleDEG(dirBA_DEG, dirBD_DEG);
+            double deltaABD_RAD = Math.toRadians(deltaABD_DEG);
+
+            // BD mid points
+            QPointF pBDL = MathUtil::add(pM, vBDo);
+            QPointF pBDR = MathUtil::subtract(pM, vBDo);
+
+            // frogs
+            hypotF = railDisplacement / Math.sin(deltaABD_RAD / 2.0);
+            QPointF vF = MathUtil::normalize(MathUtil::add(vBA, vBD), hypotF);
+            QPointF pBFL = MathUtil::add(pBAM, vF);
+            QPointF pBF = MathUtil::subtract(pBFL, vBDo);
+            QPointF pBFR = MathUtil::subtract(pBF, vBDo);
+            QPointF pDFR = MathUtil::subtract(pDCM, vF);
+            QPointF pDF = MathUtil::add(pDFR, vBDo);
+            QPointF pDFL = MathUtil::add(pDF, vBDo);
+
+            // end of switch rails (closed)
+            QPointF vBAF = MathUtil::normalize(vBA, hypotF);
+            QPointF pBP = MathUtil::subtract(pBAM, vBAF);
+            QPointF pBPL = MathUtil::add(pBP, vBAo);
+            QPointF pBPR = MathUtil::subtract(pBP, vBAo);
+            QPointF pDP = MathUtil::add(pDCM, vBAF);
+            QPointF pDPL = MathUtil::subtract(pDP, vDCo);
+            QPointF pDPR = MathUtil::add(pDP, vDCo);
+
+            // end of switch rails (open)
+            QPointF vS = MathUtil::normalize(vBA, 2.0);
+            QPointF vSo = MathUtil::orthogonal(vS);
+            QPointF pBSL = MathUtil::subtract(pBPL, vSo);
+            // QPointF pBSR = MathUtil::add(pBPR, vSo);
+            // QPointF pDSL = MathUtil::subtract(pDPL, vSo);
+            QPointF pDSR = MathUtil::add(pDPR, vSo);
+
+            // end of switch rails (open at frogs)
+            QPointF pBAFS = MathUtil::add(pBFL, vSo);
+            // QPointF pBAFSP = MathUtil::subtract(pBFL, vS);
+            QPointF pDCFS = MathUtil::subtract(pDFR, vSo);
+            // QPointF pDCFSP = MathUtil::add(pDFR, vS);
+
+            if (isMain == mainlineA) {
+                g2.draw(new Line2D.Double(pBAL, pAL));
+                g2.draw(new Line2D.Double(pBFL, pAR));
+            }
+            if (isMain == mainlineB) {
+                g2.draw(new Line2D.Double(pBL, pBAL));
+                GeneralPath path = new GeneralPath();
+                path.moveTo(pBR.getX(), pBR.getY());
+                path.lineTo(pBPR.getX(), pBPR.getY());
+                path.quadTo(pBAR.getX(), pBAR.getY(), pBFR.getX(), pBFR.getY());
+                path.lineTo(pBDR.getX(), pBDR.getY());
+                g2.draw(path);
+                g2.draw(new Line2D.Double(pBFL, pBDL));
+                if (state != Turnout.CLOSED) {  // unknown or diverting path
+                    path = new GeneralPath();
+                    path.moveTo(pBPL.getX(), pBPL.getY());
+                    path.quadTo(pBAL.getX(), pBAL.getY(), pBFL.getX(), pBFL.getY());
+                    g2.draw(path);
+//                         g2.draw(new Line2D.Double(pBSR, pBAFSP));
+                } else {                        // continuing path
+                    g2.draw(new Line2D.Double(pBPR, pBFL));
+                    path = new GeneralPath();
+                    path.moveTo(pBSL.getX(), pBSL.getY());
+                    path.quadTo(pBAL.getX(), pBAL.getY(), pBAFS.getX(), pBAFS.getY());
+//                         g2.draw(path);
+                }
+            }
+            if (isMain == mainlineC) {
+                g2.draw(new Line2D.Double(pDCR, pCR));
+                g2.draw(new Line2D.Double(pDFR, pCL));
+            }
+            if (isMain == mainlineD) {
+                g2.draw(new Line2D.Double(pDR, pDCR));
+                GeneralPath path = new GeneralPath();
+                path.moveTo(pDL.getX(), pDL.getY());
+                path.lineTo(pDPL.getX(), pDPL.getY());
+                path.quadTo(pDCL.getX(), pDCL.getY(), pDFL.getX(), pDFL.getY());
+                path.lineTo(pBDL.getX(), pBDL.getY());
+                g2.draw(path);
+                g2.draw(new Line2D.Double(pDFR, pBDR));
+                if (state != Turnout.CLOSED) {  // unknown or diverting path
+                    path = new GeneralPath();
+                    path.moveTo(pDPR.getX(), pDPR.getY());
+                    path.quadTo(pDCR.getX(), pDCR.getY(), pDFR.getX(), pDFR.getY());
+                    g2.draw(path);
+//                         g2.draw(new Line2D.Double(pDSL, pDCFSP));
+                } else {                        // continuing path
+                    g2.draw(new Line2D.Double(pDPL, pDFR));
+                    path = new GeneralPath();
+                    path.moveTo(pDSR.getX(), pDSR.getY());
+                    path.quadTo(pDCR.getX(), pDCR.getY(), pDCFS.getX(), pDCFS.getY());
+//                         g2.draw(path);
+                }
+            }
+            break;
+        }   // case LH_XOVER
+        case SINGLE_SLIP:
+        case DOUBLE_SLIP: {
+            log->error("slips should be being drawn by LayoutSlip sub-class");
+            break;
+        }
+#endif
+        default: {
+            // this should never happen... but...
+            log->error("Unknown turnout type: " + type);
+            break;
+        }
+    }
+    item = itemGroup;
+    g2->addItem(itemGroup);
+}
+#if 0
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void highlightUnconnected(EditScene* g2, int specificType) {
+    if (((specificType == NONE) || (specificType == TURNOUT_A))
+            && (getConnectA() == nullptr)) {
+        g2.fill(layoutEditor.trackControlCircleAt(getCoordsA()));
+    }
+
+    if (((specificType == NONE) || (specificType == TURNOUT_B))
+            && (getConnectB() == nullptr)) {
+        g2.fill(layoutEditor.trackControlCircleAt(getCoordsB()));
+    }
+
+    if (((specificType == NONE) || (specificType == TURNOUT_C))
+            && (getConnectC() == nullptr)) {
+        g2.fill(layoutEditor.trackControlCircleAt(getCoordsC()));
+    }
+    if ((getTurnoutType() == DOUBLE_XOVER)
+            || (getTurnoutType() == RH_XOVER)
+            || (getTurnoutType() == LH_XOVER)) {
+        if (((specificType == NONE) || (specificType == TURNOUT_D))
+                && (getConnectD() == nullptr)) {
+            g2.fill(layoutEditor.trackControlCircleAt(getCoordsD()));
+        }
+    }
+}
+
+//@Override
+/*protected*/ void drawTurnoutControls(EditScene* g2) {
+    if (!disabled && !(disableWhenOccupied && isOccupied())) {
+        g2.draw(layoutEditor.trackControlCircleAt(center));
+    }
+}
+
+//@Override
+/*protected*/ void drawEditControls(EditScene* g2) {
+    QPointF pt = getCoordsA();
+    if (getTurnoutType() >= DOUBLE_XOVER && getTurnoutType() <= DOUBLE_SLIP) {
+        if (getConnectA() == nullptr) {
+            g2.setColor(Color.magenta);
+        } else {
+            g2.setColor(Color.blue);
+        }
+    } else {
+        if (getConnectA() == nullptr) {
+            g2.setColor(Color.red);
+        } else {
+            g2.setColor(Color.green);
+        }
+    }
+    g2.draw(layoutEditor.trackEditControlRectAt(pt));
+
+    pt = getCoordsB();
+    if (getConnectB() == nullptr) {
+        g2.setColor(Color.red);
+    } else {
+        g2.setColor(Color.green);
+    }
+    g2.draw(layoutEditor.trackEditControlRectAt(pt));
+
+    pt = getCoordsC();
+    if (getConnectC() == nullptr) {
+        g2.setColor(Color.red);
+    } else {
+        g2.setColor(Color.green);
+    }
+    g2.draw(layoutEditor.trackEditControlRectAt(pt));
+
+    if ((getTurnoutType() == DOUBLE_XOVER)
+            || (getTurnoutType() == RH_XOVER)
+            || (getTurnoutType() == LH_XOVER)
+            || (getTurnoutType() == SINGLE_SLIP)
+            || (getTurnoutType() == DOUBLE_SLIP)) {
+        pt = getCoordsD();
+        if (getConnectD() == nullptr) {
+            g2.setColor(Color.red);
+        } else {
+            g2.setColor(Color.green);
+        }
+        g2.draw(layoutEditor.trackEditControlRectAt(pt));
+    }
+}   // drawEditControls
+
+#endif
 
 //}
 void LayoutTurnout::on_removeAction_triggered() // [slot]
@@ -3596,6 +5061,7 @@ void LayoutTurnout::on_rotateItemAction_triggered()
   }
  }
 }
+
 void LayoutTurnout::invalidate(QGraphicsScene *g2)
 {
  if(item != nullptr && item->scene() != 0)
@@ -4597,3 +6063,4 @@ void LayoutTurnout::redrawPanel()
  layoutEditor->redrawPanel();
 }
 
+/*static*/ Logger* LayoutTurnout::log = LoggerFactory::getLogger("LayoutTurnout");

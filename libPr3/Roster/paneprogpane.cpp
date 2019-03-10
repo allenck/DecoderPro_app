@@ -25,8 +25,7 @@
 #include "hardcopywriter.h"
 #include <QProgressBar>
 #include <QVector>
-//#include "stringtokenizer.h"
-#include "../../LayoutEditor/jlabel.h"
+#include "jlabel.h"
 #include <QFont>
 #include "slotmanager.h"
 

@@ -13,7 +13,6 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QIcon>
-//#include "../../LayoutEditor/jlabel.h"
 #include "imageicon.h"
 #include <QPixmap>
 #include <QPainter>

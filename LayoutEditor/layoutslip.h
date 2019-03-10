@@ -241,6 +241,7 @@ protected:
          /*@Nullable*/ LayoutBlock* prevLayoutBlock,
          /*@Nullable*/ LayoutBlock* nextLayoutBlock,
          bool suppress);
+ /*protected*/ void drawTurnoutControls(EditScene* g2, QPen stroke);
 
 friend class LoadXml;
 friend class LayoutEditor;

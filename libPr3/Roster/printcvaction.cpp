@@ -7,7 +7,7 @@
 #include "cvtablemodel.h"
 #include <QVector>
 #include "cvtablemodel.h"
-#include "../../LayoutEditor/jlabel.h"
+#include "jlabel.h"
 
 //PrintCvAction::PrintCvAction(QObject *parent) :
 //    QAction(parent)

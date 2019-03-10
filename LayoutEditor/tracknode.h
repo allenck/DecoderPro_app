@@ -10,12 +10,12 @@ class LIBLAYOUTEDITORSHARED_EXPORT TrackNode : public QObject
     Q_OBJECT
 public:
     explicit TrackNode(QObject *parent = 0);
-    /*public*/ TrackNode(QObject* node, int nodeType, TrackSegment* segment, bool endBumper, int nodeState);
+    /*public*/ TrackNode(LayoutTrack *node, int nodeType, TrackSegment* segment, bool endBumper, int nodeState);
     /**
      * Access methods
      */
-    /*public*/ void setNode(QObject* node) {_Node = node;}
-    /*public*/ QObject* getNode() {return _Node;}
+    /*public*/ void setNode(LayoutTrack* node) {_Node = node;}
+    /*public*/ LayoutTrack* getNode() {return _Node;}
     /*public*/ void setNodeType(int type) {_NodeType = type;}
     /*public*/ int getNodeType() {return _NodeType;}
     /*public*/ void setTrackSegment(TrackSegment* s) { _TrackSegment = s;}
@@ -33,7 +33,7 @@ signals:
 public slots:
 private:
     // instance variables
-    QObject* _Node;// = NULL;
+    LayoutTrack* _Node;// = NULL;
     int _NodeType;// = LayoutEditor::NONE;
     TrackSegment* _TrackSegment;// = NULL;
     bool _ReachedEndBumper;// = false;

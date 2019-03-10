@@ -5,7 +5,7 @@
 #include <QColor>
 #include "block.h"
 //#include "mylayouteditor.h"
-#include "../libPr3/memory.h"
+#include "memory.h"
 #include "turnout.h"
 #include <QDialog>
 #include <QLineEdit>

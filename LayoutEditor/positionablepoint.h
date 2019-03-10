@@ -102,6 +102,7 @@ public:
     /*public*/ QPointF getCoordsForConnectionType(int connectionType);
     /*public*/ LayoutTrack* getConnection(int connectionType) throw (JmriException);
     /*public*/ void setConnection(int connectionType, LayoutTrack* o, int type) throw (JmriException);
+    /*public*/ bool replaceTrackConnection(/*@Nullable*/ TrackSegment* oldTrack,/* @Nullable */TrackSegment* newTrack);
 
 signals:
     
@@ -143,6 +144,8 @@ private:
     QComboBox* editorCombo; // Stores with LayoutEditor or "None"
     /*private*/ void setEastBoundSignalName(/*@CheckForNull*/ QString signalHead);
     /*private*/ void setWestBoundSignalName(/*@CheckForNull*/ QString signalHead);
+    void removeSML(SignalMast* signalMast);
+    void removeLinkedPoint();
 
  Logger log;
  QMenu* popup;// = NULL;
@@ -169,7 +172,7 @@ protected:
  /*protected*/ void draw1(QGraphicsScene* g2, bool isMain, bool isBlock);
  /*protected*/ void draw2(QGraphicsScene g2, bool isMain, float railDisplacement);
  /*protected*/ void highlightUnconnected(QGraphicsScene* g2, int specificType);
- /*protected*/ /*abstract*/ virtual void drawEditControls(QGraphicsScene* g2);
+ /*protected*/ /*abstract*/ virtual void drawEditControls(EditScene *g2);
  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
 
 

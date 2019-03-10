@@ -269,6 +269,6 @@ LevelXingXml::LevelXingXml(QObject *parent) :
         }
     }
 
-    p->xingList->append(l);
+    p->getLayoutTracks()->append(l);
 }
 

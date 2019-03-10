@@ -4,7 +4,7 @@
 #include "abstractsignalhead.h"
 #include "abstractsignalheadmanager.h"
 #include "defaultsignalmastmanager.h"
-
+#include "layouteditorfinditems.h"
 
 ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     QObject(parent)
@@ -524,8 +524,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
 {
  QVector<PositionablePoint*>* list = new QVector<PositionablePoint*>();
  LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
- for (int i = 0; i<layoutEditor->pointList->size(); i++) {
-        PositionablePoint* p = layoutEditor->pointList->at(i);
+ for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
         if ((p->getConnect2()!=nullptr) && (p->getConnect1()!=nullptr))
         {
                             if ((p->getConnect2()->getLayoutBlock()!=nullptr) && (p->getConnect1()->getLayoutBlock()!=nullptr)) {
@@ -547,8 +546,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
 /*public*/ QVector<LevelXing*>* ConnectivityUtil::getLevelCrossingsThisBlock(Block* block) {
     QVector<LevelXing*>* list = new QVector<LevelXing*>();
     LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
-    for (int i = 0; i<layoutEditor->xingList->size(); i++) {
-        LevelXing* x = layoutEditor->xingList->at(i);
+    for (LevelXing* x : layoutEditor->getLevelXings()) {
         bool found = false;
         if ( (x->getLayoutBlockAC()==lBlock) || (x->getLayoutBlockBD()==lBlock) ) found = true;
         else if ( (x->getConnectA()!=nullptr) && (((TrackSegment*)x->getConnectA())->getLayoutBlock()==lBlock) )
@@ -583,8 +581,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
     QVector<LayoutTurnout*>* list = new QVector<LayoutTurnout*>();
     LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
     QString lBlockName = block->getUserName();
-    for (int i = 0; i<layoutEditor->turnoutList->size(); i++) {
-        LayoutTurnout* t = layoutEditor->turnoutList->at(i);
+    for (LayoutTurnout* t : layoutEditor->getLayoutTurnouts()) {
         if ( (t->getBlockName()==(lBlockName)) || (t->getBlockBName()==(lBlockName)) ||
                 (t->getBlockCName()==(lBlockName)) || (t->getBlockDName()==(lBlockName)) ) list->append(t);
         else if ( (t->getConnectA()!=nullptr) && (((TrackSegment*)t->getConnectA())->getLayoutBlock()==lBlock) )
@@ -1119,399 +1116,446 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  *<P>
  * Returns a TrackNode if a node or end_of-track is reached. Returns nullptr if trouble following the track.
  */
-/*public*/ TrackNode* ConnectivityUtil::getTrackNode(QObject* cNode, int cNodeType, TrackSegment* /*cTrack*/, int cNodeState) {
-    // initialize
-    QObject* node = nullptr;
-    int nodeType = LayoutEditor::NONE;
-    TrackSegment* track = nullptr;
-    bool hitEnd = false;
-    //@SuppressWarnings("unused")
-    int pType = cNodeType;
-    QObject* pObject = cNode;
-    TrackSegment* tTrack = nullptr;
-    switch (cNodeType)
+/*public*/ TrackNode* ConnectivityUtil::getTrackNode(LayoutTrack* cNode, int cNodeType, TrackSegment* /*cTrack*/, int cNodeState)
+{
+ // initialize
+ LayoutTrack* node = nullptr;
+ int nodeType = LayoutEditor::NONE;
+ TrackSegment* track = nullptr;
+ bool hitEnd = false;
+ //@SuppressWarnings("unused")
+ int pType = cNodeType;
+ LayoutTrack* pObject = cNode;
+ TrackSegment* tTrack = nullptr;
+ switch (cNodeType)
+ {
+  case LayoutEditor::POS_POINT:
+   if (qobject_cast<PositionablePoint*>( cNode))
+   {
+    PositionablePoint* p = (PositionablePoint*)cNode;
+    if (p->getType()==PositionablePoint::END_BUMPER)
     {
-     case LayoutEditor::POS_POINT:
+     log.error("Attempt to search beyond end of track");
+     return nullptr;
+    }
+    if (p->getConnect1()==tTrack)
+    {
+     tTrack = p->getConnect2();
+    }
+    else
+    {
+     tTrack = p->getConnect1();
+    }
+   }
+   else
+   {
+     log.warn("cNodeType wrong for cNode");
+   }
+   break;
+  case LayoutTrack::TURNOUT_A:
+  {
+   if (qobject_cast<LayoutTurnout*>(cNode))
+   {
+    LayoutTurnout* lt = (LayoutTurnout*) cNode;
+    if ((lt->getTurnoutType() == LayoutTurnout::RH_TURNOUT)
+            || (lt->getTurnoutType() == LayoutTurnout::LH_TURNOUT)
+            || (lt->getTurnoutType() == LayoutTurnout::WYE_TURNOUT))
+    {
+     if ((lt->getLinkedTurnoutName() == "")
+            || (lt->getLinkedTurnoutName().isEmpty()))
      {
-      PositionablePoint* p = (PositionablePoint*)cNode;
-      if (p->getType()==PositionablePoint::END_BUMPER)
+      if (lt->getContinuingSense() == Turnout::CLOSED)
       {
-       log.error("Attempt to search beyond end of track");
-       return nullptr;
-      }
-      if (p->getConnect1()==tTrack)
-       tTrack = p->getConnect2();
-      else
-       tTrack = p->getConnect1();
-      break;
-     }
-     case LayoutEditor::TURNOUT_A:
-     {
-            if	( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_TURNOUT) ||
-                    (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_TURNOUT) ||
-                    (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::WYE_TURNOUT) ) {
-                if ( (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==nullptr) ||
-                                    (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==("")) ) {
-                    // Standard turnout - node type A
-                    if (((LayoutTurnout*)cNode)->getContinuingSense()==Turnout::CLOSED) {
-                        if (cNodeState==0) {
-                            tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectB();
-                            pType = LayoutEditor::TURNOUT_B;
-                        }
-                        else if (cNodeState==1) {
-                            tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectC();
-                            pType = LayoutEditor::TURNOUT_C;
-                        }
-                        else {
-                            log.error("Bad cNodeState argument when searching track-std. normal");
-                            return nullptr;
-                        }
-                    }
-                    else {
-                        if (cNodeState==0) {
-                            tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectC();
-                            pType = LayoutEditor::TURNOUT_C;
-                        }
-                        else if (cNodeState==1) {
-                            tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectB();
-                            pType = LayoutEditor::TURNOUT_B;
-                        }
-                        else {
-                            log.error("Bad cNodeState argument when searching track-std reversed");
-                            return nullptr;
-                        }
-                    }
-                }
-                else {
-                    // linked turnout - node type A
-                    LayoutTurnout* lto = layoutEditor->findLayoutTurnoutByName(((LayoutTurnout*)cNode)->getLinkedTurnoutName());
-                    if (((LayoutTurnout*)cNode)->getLinkType()==LayoutTurnout::THROAT_TO_THROAT) {
-                        if (cNodeState==0) {
-                            if (lto->getContinuingSense()==Turnout::CLOSED) {
-                                tTrack = (TrackSegment*)lto->getConnectB();
-                                pType = LayoutEditor::TURNOUT_B;
-                            }
-                            else {
-                                tTrack = (TrackSegment*)lto->getConnectC();
-                                pType = LayoutEditor::TURNOUT_C;
-                            }
-                        }
-                            else if (cNodeState==1) {
-                            if (lto->getContinuingSense()==Turnout::CLOSED) {
-                                tTrack = (TrackSegment*)lto->getConnectC();
-                                pType = LayoutEditor::TURNOUT_C;
-                            }
-                            else {
-                                tTrack = (TrackSegment*)lto->getConnectB();
-                                pType = LayoutEditor::TURNOUT_B;
-                            }
-                        }
-                        else {
-                            log.error("Bad cNodeState argument when searching track - THROAT_TO_THROAT");
-                            return nullptr;
-                        }
-                        pObject = lto;
-                    }
-                    else if (((LayoutTurnout*)cNode)->getLinkType()==LayoutTurnout::FIRST_3_WAY) {
-                        if (cNodeState==0) {
-                            if (lto->getContinuingSense()==Turnout::CLOSED) {
-                                tTrack = (TrackSegment*)lto->getConnectB();
-                                pType = LayoutEditor::TURNOUT_B;
-                            }
-                            else {
-                                tTrack = (TrackSegment*)lto->getConnectC();
-                                pType = LayoutEditor::TURNOUT_C;
-                            }
-                            pObject = lto;
-                        }
-                        else if (cNodeState==1) {
-                            if (((LayoutTurnout*)cNode)->getContinuingSense()==Turnout::CLOSED) {
-                                tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectC();
-                                pType = LayoutEditor::TURNOUT_C;
-                            }
-                            else {
-                                tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectB();
-                                pType = LayoutEditor::TURNOUT_B;
-                            }
-                        }
-                        else if (cNodeState==2) {
-                            if (lto->getContinuingSense()==Turnout::CLOSED) {
-                                tTrack = (TrackSegment*)lto->getConnectC();
-                                pType = LayoutEditor::TURNOUT_C;
-                            }
-                            else {
-                                tTrack = (TrackSegment*)lto->getConnectB();
-                                pType = LayoutEditor::TURNOUT_B;
-                            }
-                            pObject = lto;
-                        }
-                        else {
-                            log.error("Bad cNodeState argument when searching track - FIRST_3_WAY");
-                            return nullptr;
-                        }
-                    }
-                }
-            }
-            else if ( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_XOVER) ||
-                    (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_XOVER) ||
-                    (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) ) {
-                // crossover turnout - node type A
-                if (cNodeState==0) {
-                    tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectB();
-                    pType = LayoutEditor::TURNOUT_B;
-                }
-                else if (cNodeState==1) {
-                    if ( (cNodeType==LayoutEditor::TURNOUT_A) &&
-                                (!(((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_XOVER)) ){
-                        tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectC();
-                        pType = LayoutEditor::TURNOUT_C;
-                    }
-                    else {
-                        log.error("Request to follow not allowed switch setting at LH_XOVER or RH_OVER");
-                        return nullptr;
-                    }
-                }
-                else {
-                    log.error("Bad cNodeState argument when searching track- XOVER A");
-                    return nullptr;
-                }
-            }
+       switch (cNodeState)
+       {
+        case 0:
+            tTrack = (TrackSegment*) lt->getConnectB();
+            pType = LayoutTrack::TURNOUT_B;
             break;
-    }
-        case LayoutEditor::TURNOUT_B:
-        case LayoutEditor::TURNOUT_C:
-    {
-            if ( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_TURNOUT) ||
-                    (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_TURNOUT) ||
-                    (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::WYE_TURNOUT) ) {
-                if ( (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==nullptr) ||
-                            (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==("")) ||
-                                (((LayoutTurnout*)cNode)->getLinkType()==LayoutTurnout::FIRST_3_WAY) ) {
-                    tTrack = (TrackSegment*)(((LayoutTurnout*)cNode)->getConnectA());
-                    pType = LayoutEditor::TURNOUT_A;
-                }
-                else {
-                    LayoutTurnout* lto = layoutEditor->findLayoutTurnoutByName(((LayoutTurnout*)cNode)->getLinkedTurnoutName());
-                    if (((LayoutTurnout*)cNode)->getLinkType()==LayoutTurnout::SECOND_3_WAY) {
-                        tTrack = (TrackSegment*)(lto->getConnectA());
-                        pType = LayoutEditor::TURNOUT_A;
-                    }
-                    else if (((LayoutTurnout*)cNode)->getLinkType()==LayoutTurnout::THROAT_TO_THROAT) {
-                        if (cNodeState==0) {
-                                if (lto->getContinuingSense()==Turnout::CLOSED) {
-                                tTrack = (TrackSegment*)lto->getConnectB();
-                                pType = LayoutEditor::TURNOUT_B;
-                            }
-                            else {
-                                tTrack = (TrackSegment*)lto->getConnectC();
-                                pType = LayoutEditor::TURNOUT_C;
-                            }
-                        }
-                        else if (cNodeState==1) {
-                            if (lto->getContinuingSense()==Turnout::CLOSED) {
-                                tTrack = (TrackSegment*)lto->getConnectC();
-                                pType = LayoutEditor::TURNOUT_C;
-                            }
-                            else {
-                                tTrack = (TrackSegment*)lto->getConnectB();
-                                pType = LayoutEditor::TURNOUT_B;
-                            }
-                        }
-                        else {
-                            log.error("Bad cNodeState argument when searching track - THROAT_TO_THROAT - 2");
-                            return nullptr;
-                        }
-                    }
-                    pObject = lto;
-                }
-            }
-            else if ( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_XOVER) ||
-                    (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_XOVER) ||
-                    (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) ) {
-                if (cNodeState==0) {
-                    if (cNodeType==LayoutEditor::TURNOUT_B) {
-                        tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectA();
-                        pType = LayoutEditor::TURNOUT_A;
-                    }
-                    else if (cNodeType==LayoutEditor::TURNOUT_C) {
-                        tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectD();
-                        pType = LayoutEditor::TURNOUT_D;
-                    }
-                }
-                else if (cNodeState==1) {
-                    if ( (cNodeType==LayoutEditor::TURNOUT_C) &&
-                                (!(((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_XOVER)) ) {
-                        tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectA();
-                        pType = LayoutEditor::TURNOUT_A;
-                    }
-                    else if ( (cNodeType==LayoutEditor::TURNOUT_B) &&
-                                (!(((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_XOVER)) ){
-                        tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectD();
-                        pType = LayoutEditor::TURNOUT_D;
-                    }
-                    else {
-                        log.error("Request to follow not allowed switch setting at LH_XOVER or RH_OVER");
-                        return nullptr;
-                    }
-                }
-                else {
-                    log.error("Bad cNodeState argument when searching track - XOVER B or C");
-                    return nullptr;
-                }
-            }
-            break;
-    }
-        case LayoutEditor::TURNOUT_D:
-    {
-            if ( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_XOVER) ||
-                    (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_XOVER) ||
-                    (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) ) {
-                if (cNodeState==0) {
-                    tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectC();
-                    pType = LayoutEditor::TURNOUT_C;
-                }
-                else if (cNodeState==1) {
-                    if (!(((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_XOVER)) {
-                        tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectB();
-                        pType = LayoutEditor::TURNOUT_B;
-                    }
-                    else {
-                        log.error("Request to follow not allowed switch setting at LH_XOVER or RH_OVER");
-                        return nullptr;
-                    }
-                }
-                else {
-                    log.error("Bad cNodeState argument when searching track - XOVER D");
-                    return nullptr;
-                }
-            }
-            else {
-                log.error ("Bad traak node type - TURNOUT_D, but not a crossover turnout");
-                return nullptr;
-            }
-            break;
-    }
-        case LayoutEditor::LEVEL_XING_A :
-
-            tTrack = (TrackSegment*)((LevelXing*)cNode)->getConnectC();
-            pType = LayoutEditor::LEVEL_XING_C;
-            break;
-        case LayoutEditor::LEVEL_XING_B :
-            tTrack = (TrackSegment*)((LevelXing*)cNode)->getConnectD();
-            pType = LayoutEditor::LEVEL_XING_D;
-            break;
-        case LayoutEditor::LEVEL_XING_C:
-            tTrack = (TrackSegment*)((LevelXing*)cNode)->getConnectA();
-            pType = LayoutEditor::LEVEL_XING_A;
-            break;
-        case LayoutEditor::LEVEL_XING_D:
-            tTrack = (TrackSegment*)((LevelXing*)cNode)->getConnectB();
-            pType = LayoutEditor::LEVEL_XING_B;
-            break;
-        case LayoutEditor::SLIP_A :
-            if(cNodeState==0){
-                tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectC();
-                pType = LayoutEditor::SLIP_C;
-            } else if (cNodeState ==1){
-                tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectD();
-                pType = LayoutEditor::SLIP_D;
-            }
-            break;
-        case LayoutEditor::SLIP_B :
-            if(cNodeState==0){
-                tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectD();
-                pType = LayoutEditor::SLIP_D;
-            } else if (cNodeState==1 && (((LayoutSlip*)cNode)->getTurnoutType()==LayoutTurnout::DOUBLE_SLIP)){
-                tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectC();
-                pType = LayoutEditor::SLIP_C;
-            } else {
-                log.error("Request to follow not allowed on a single slip");
-                return nullptr;
-            }
-            break;
-        case LayoutEditor::SLIP_C:
-            if(cNodeState==0){
-                tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectA();
-                pType = LayoutEditor::SLIP_A;
-            } else if (cNodeState==1 && (((LayoutSlip*)cNode)->getTurnoutType()==LayoutTurnout::DOUBLE_SLIP)){
-                tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectB();
-                pType = LayoutEditor::SLIP_B;
-            } else {
-                log.error("Request to follow not allowed on a single slip");
-                return nullptr;
-            }
-            break;
-        case LayoutEditor::SLIP_D:
-            if(cNodeState==0){
-                tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectB();
-                pType = LayoutEditor::SLIP_B;
-            } else if (cNodeState ==1){
-                tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectA();
-                pType = LayoutEditor::SLIP_A;
-            }
+        case 1:
+            tTrack = (TrackSegment*) lt->getConnectC();
+            pType = LayoutTrack::TURNOUT_C;
             break;
         default:
-            log.error("Unable to initiate 'getTrackNode'.  Probably bad input Track Node.");
+            log.error("Bad cNodeState argument when searching track-std. normal");
             return nullptr;
-    }
-
-    // follow track to anchor block boundary, turnout, or level crossing
-    bool hasNode = false;
-    QObject* tObject = nullptr;
-    int tType = 0;
-    if (tTrack==nullptr){
-        log.error("Error tTrack is nullptr!");
+       }
+      }
+      else
+      {
+       switch(cNodeState)
+       {
+       case 0:
+              tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectC();
+              pType = LayoutEditor::TURNOUT_C;
+       case 1:
+              tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectB();
+              pType = LayoutEditor::TURNOUT_B;
+       default:
+              log.error("Bad cNodeState argument when searching track-std reversed");
+              return nullptr;
+       }
+      }
+     }
+     else
+     {
+      // linked turnout - node type A
+      LayoutTurnout* lto = layoutEditor->getFinder()->findLayoutTurnoutByName(lt->getLinkedTurnoutName());
+      if (((LayoutTurnout*)cNode)->getLinkType()==LayoutTurnout::THROAT_TO_THROAT)
+      {
+       switch(cNodeState)
+       {
+       case 0:
+        if (lto->getContinuingSense()==Turnout::CLOSED) {
+            tTrack = (TrackSegment*)lto->getConnectB();
+            pType = LayoutEditor::TURNOUT_B;
+        }
+        else {
+            tTrack = (TrackSegment*)lto->getConnectC();
+            pType = LayoutEditor::TURNOUT_C;
+        }
+        pObject = lto;
+        break;
+       case 1:
+        if (lto->getContinuingSense()==Turnout::CLOSED) {
+            tTrack = (TrackSegment*)lto->getConnectC();
+            pType = LayoutEditor::TURNOUT_C;
+        }
+        else {
+            tTrack = (TrackSegment*)lto->getConnectB();
+            pType = LayoutEditor::TURNOUT_B;
+        }
+        break;
+       case 2:
+        if (lto->getContinuingSense() == Turnout::CLOSED) {
+            tTrack = (TrackSegment*) lto->getConnectC();
+            pType = LayoutTrack::TURNOUT_C;
+        } else {
+            tTrack = (TrackSegment*) lto->getConnectB();
+            pType = LayoutTrack::TURNOUT_B;
+        }
+        pObject = lto;
+        break;
+       default:
+        log.error("Bad cNodeState argument when searching track - THROAT_TO_THROAT");
         return nullptr;
-    }
-    while (!hasNode) {
-        if (tTrack->getConnect1()==pObject) {
-            tObject = tTrack->getConnect2();
-            tType = tTrack->getType2();
+       }
+       pObject = lto;
+      }
+      else if (((LayoutTurnout*)cNode)->getLinkType()==LayoutTurnout::FIRST_3_WAY)
+      {
+       switch (cNodeState)
+       {
+       case 0:
+        if (lto->getContinuingSense()==Turnout::CLOSED) {
+            tTrack = (TrackSegment*)lto->getConnectB();
+            pType = LayoutEditor::TURNOUT_B;
         }
         else {
-            tObject = tTrack->getConnect1();
-            tType = tTrack->getType1();
+            tTrack = (TrackSegment*)lto->getConnectC();
+            pType = LayoutEditor::TURNOUT_C;
         }
-        if (tObject==nullptr) {
-            log.error("Error while following track looking for next node");
-            return nullptr;
-        }
-        if (tType!=LayoutEditor::POS_POINT) {
-            node = tObject;
-            nodeType = tType;
-            track = tTrack;
-            hasNode = true;
+        pObject = lto;
+        break;
+       case 1:
+        if (((LayoutTurnout*)cNode)->getContinuingSense()==Turnout::CLOSED)
+        {
+            tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectC();
+            pType = LayoutEditor::TURNOUT_C;
         }
         else {
-            PositionablePoint* p = (PositionablePoint*)tObject;
-            if (p->getType()==PositionablePoint::END_BUMPER) {
-                hitEnd = true;
-                hasNode = true;
-            }
-            else {
-                TrackSegment* con1 = p->getConnect1();
-                TrackSegment* con2 = p->getConnect2();
-                if ( (con1==nullptr) || (con2==nullptr) ) {
-                    log.error("Error - Breakin connectivity at Anchor Point when searching for track node");
-                    return nullptr;
-                }
-                if (con1->getLayoutBlock()!=con2->getLayoutBlock()) {
-                    node = tObject;
-                    nodeType = LayoutEditor::POS_POINT;
-                    track = tTrack;
-                    hasNode = true;
-                }
-                else {
-                    if (con1==tTrack)
-                        tTrack = con2;
-                    else
-                        tTrack = con1;
-                    pObject = tObject;
-                }
-            }
+            tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectB();
+            pType = LayoutEditor::TURNOUT_B;
         }
+        break;
+       case 2:
+        if (lto->getContinuingSense()==Turnout::CLOSED) {
+            tTrack = (TrackSegment*)lto->getConnectC();
+            pType = LayoutEditor::TURNOUT_C;
+        }
+        else {
+            tTrack = (TrackSegment*)lto->getConnectB();
+            pType = LayoutEditor::TURNOUT_B;
+        }
+        pObject = lto;
+        break;
+       default:
+        log.error("Bad cNodeState argument when searching track - FIRST_3_WAY");
+        return nullptr;
+       }
+      }
+     }
     }
-    return (new TrackNode(node, nodeType, track, hitEnd, cNodeState));
+    else if ( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_XOVER) ||
+             (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_XOVER) ||
+             (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) )
+    {
+     // crossover turnout - node type A
+     switch(cNodeState)
+     {
+     case 0:
+      tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectB();
+      pType = LayoutEditor::TURNOUT_B;
+      break;
+     case 1:
+      if ( (cNodeType==LayoutEditor::TURNOUT_A) &&
+                  (!(((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_XOVER)) )
+      {
+          tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectC();
+          pType = LayoutEditor::TURNOUT_C;
+      }
+      else
+      {
+          log.error("Request to follow not allowed switch setting at LH_XOVER or RH_OVER");
+          return nullptr;
+      }
+      break;
+     default:
+      log.error("Bad cNodeState argument when searching track- XOVER A");
+      return nullptr;
+     }
+    }
+   }
+   else
+   {
+    log.error("cNodeType wrong for cNode");
+   }
+   break;
+  }
+  case LayoutTrack::TURNOUT_B:
+  case LayoutTrack::TURNOUT_C:
+  {
+         if ( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_TURNOUT) ||
+                 (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_TURNOUT) ||
+                 (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::WYE_TURNOUT) ) {
+             if ( (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==nullptr) ||
+                         (((LayoutTurnout*)cNode)->getLinkedTurnoutName()==("")) ||
+                             (((LayoutTurnout*)cNode)->getLinkType()==LayoutTurnout::FIRST_3_WAY) ) {
+                 tTrack = (TrackSegment*)(((LayoutTurnout*)cNode)->getConnectA());
+                 pType = LayoutEditor::TURNOUT_A;
+             }
+             else {
+                 LayoutTurnout* lto = layoutEditor->getFinder()->findLayoutTurnoutByName(((LayoutTurnout*)cNode)->getLinkedTurnoutName());
+                 if (((LayoutTurnout*)cNode)->getLinkType()==LayoutTurnout::SECOND_3_WAY) {
+                     tTrack = (TrackSegment*)(lto->getConnectA());
+                     pType = LayoutEditor::TURNOUT_A;
+                 }
+                 else if (((LayoutTurnout*)cNode)->getLinkType()==LayoutTurnout::THROAT_TO_THROAT) {
+                     if (cNodeState==0) {
+                             if (lto->getContinuingSense()==Turnout::CLOSED) {
+                             tTrack = (TrackSegment*)lto->getConnectB();
+                             pType = LayoutEditor::TURNOUT_B;
+                         }
+                         else {
+                             tTrack = (TrackSegment*)lto->getConnectC();
+                             pType = LayoutEditor::TURNOUT_C;
+                         }
+                     }
+                     else if (cNodeState==1) {
+                         if (lto->getContinuingSense()==Turnout::CLOSED) {
+                             tTrack = (TrackSegment*)lto->getConnectC();
+                             pType = LayoutEditor::TURNOUT_C;
+                         }
+                         else {
+                             tTrack = (TrackSegment*)lto->getConnectB();
+                             pType = LayoutEditor::TURNOUT_B;
+                         }
+                     }
+                     else {
+                         log.error("Bad cNodeState argument when searching track - THROAT_TO_THROAT - 2");
+                         return nullptr;
+                     }
+                 }
+                 pObject = lto;
+             }
+         }
+         else if ( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_XOVER) ||
+                 (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_XOVER) ||
+                 (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) ) {
+             if (cNodeState==0) {
+                 if (cNodeType==LayoutEditor::TURNOUT_B) {
+                     tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectA();
+                     pType = LayoutEditor::TURNOUT_A;
+                 }
+                 else if (cNodeType==LayoutEditor::TURNOUT_C) {
+                     tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectD();
+                     pType = LayoutEditor::TURNOUT_D;
+                 }
+             }
+             else if (cNodeState==1) {
+                 if ( (cNodeType==LayoutEditor::TURNOUT_C) &&
+                             (!(((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_XOVER)) ) {
+                     tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectA();
+                     pType = LayoutEditor::TURNOUT_A;
+                 }
+                 else if ( (cNodeType==LayoutEditor::TURNOUT_B) &&
+                             (!(((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_XOVER)) ){
+                     tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectD();
+                     pType = LayoutEditor::TURNOUT_D;
+                 }
+                 else {
+                     log.error("Request to follow not allowed switch setting at LH_XOVER or RH_OVER");
+                     return nullptr;
+                 }
+             }
+             else {
+                 log.error("Bad cNodeState argument when searching track - XOVER B or C");
+                 return nullptr;
+             }
+         }
+         break;
+ }
+     case LayoutTrack::TURNOUT_D:
+ {
+         if ( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_XOVER) ||
+                 (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_XOVER) ||
+                 (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) ) {
+             if (cNodeState==0) {
+                 tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectC();
+                 pType = LayoutEditor::TURNOUT_C;
+             }
+             else if (cNodeState==1) {
+                 if (!(((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_XOVER)) {
+                     tTrack = (TrackSegment*)((LayoutTurnout*)cNode)->getConnectB();
+                     pType = LayoutEditor::TURNOUT_B;
+                 }
+                 else {
+                     log.error("Request to follow not allowed switch setting at LH_XOVER or RH_OVER");
+                     return nullptr;
+                 }
+             }
+             else {
+                 log.error("Bad cNodeState argument when searching track - XOVER D");
+                 return nullptr;
+             }
+         }
+         else {
+             log.error ("Bad traak node type - TURNOUT_D, but not a crossover turnout");
+             return nullptr;
+         }
+         break;
+ }
+     case LayoutEditor::LEVEL_XING_A :
+
+         tTrack = (TrackSegment*)((LevelXing*)cNode)->getConnectC();
+         pType = LayoutEditor::LEVEL_XING_C;
+         break;
+     case LayoutEditor::LEVEL_XING_B :
+         tTrack = (TrackSegment*)((LevelXing*)cNode)->getConnectD();
+         pType = LayoutEditor::LEVEL_XING_D;
+         break;
+     case LayoutEditor::LEVEL_XING_C:
+         tTrack = (TrackSegment*)((LevelXing*)cNode)->getConnectA();
+         pType = LayoutEditor::LEVEL_XING_A;
+         break;
+     case LayoutEditor::LEVEL_XING_D:
+         tTrack = (TrackSegment*)((LevelXing*)cNode)->getConnectB();
+         pType = LayoutEditor::LEVEL_XING_B;
+         break;
+     case LayoutEditor::SLIP_A :
+         if(cNodeState==0){
+             tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectC();
+             pType = LayoutEditor::SLIP_C;
+         } else if (cNodeState ==1){
+             tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectD();
+             pType = LayoutEditor::SLIP_D;
+         }
+         break;
+     case LayoutEditor::SLIP_B :
+         if(cNodeState==0){
+             tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectD();
+             pType = LayoutEditor::SLIP_D;
+         } else if (cNodeState==1 && (((LayoutSlip*)cNode)->getTurnoutType()==LayoutTurnout::DOUBLE_SLIP)){
+             tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectC();
+             pType = LayoutEditor::SLIP_C;
+         } else {
+             log.error("Request to follow not allowed on a single slip");
+             return nullptr;
+         }
+         break;
+     case LayoutEditor::SLIP_C:
+         if(cNodeState==0){
+             tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectA();
+             pType = LayoutEditor::SLIP_A;
+         } else if (cNodeState==1 && (((LayoutSlip*)cNode)->getTurnoutType()==LayoutTurnout::DOUBLE_SLIP)){
+             tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectB();
+             pType = LayoutEditor::SLIP_B;
+         } else {
+             log.error("Request to follow not allowed on a single slip");
+             return nullptr;
+         }
+         break;
+     case LayoutEditor::SLIP_D:
+         if(cNodeState==0){
+             tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectB();
+             pType = LayoutEditor::SLIP_B;
+         } else if (cNodeState ==1){
+             tTrack = (TrackSegment*)((LayoutSlip*)cNode)->getConnectA();
+             pType = LayoutEditor::SLIP_A;
+         }
+         break;
+     default:
+         log.error("Unable to initiate 'getTrackNode'.  Probably bad input Track Node.");
+         return nullptr;
+ }
+
+ // follow track to anchor block boundary, turnout, or level crossing
+ bool hasNode = false;
+ LayoutTrack* tObject = nullptr;
+ int tType = 0;
+ if (tTrack==nullptr){
+     log.error("Error tTrack is nullptr!");
+     return nullptr;
+ }
+ while (!hasNode) {
+     if (tTrack->getConnect1()==pObject) {
+         tObject = tTrack->getConnect2();
+         tType = tTrack->getType2();
+     }
+     else {
+         tObject = tTrack->getConnect1();
+         tType = tTrack->getType1();
+     }
+     if (tObject==nullptr) {
+         log.error("Error while following track looking for next node");
+         return nullptr;
+     }
+     if (tType!=LayoutEditor::POS_POINT) {
+         node = tObject;
+         nodeType = tType;
+         track = tTrack;
+         hasNode = true;
+     }
+     else {
+         PositionablePoint* p = (PositionablePoint*)tObject;
+         if (p->getType()==PositionablePoint::END_BUMPER) {
+             hitEnd = true;
+             hasNode = true;
+         }
+         else {
+             TrackSegment* con1 = p->getConnect1();
+             TrackSegment* con2 = p->getConnect2();
+             if ( (con1==nullptr) || (con2==nullptr) ) {
+                 log.error("Error - Breakin connectivity at Anchor Point when searching for track node");
+                 return nullptr;
+             }
+             if (con1->getLayoutBlock()!=con2->getLayoutBlock()) {
+                 node = tObject;
+                 nodeType = LayoutEditor::POS_POINT;
+                 track = tTrack;
+                 hasNode = true;
+             }
+             else {
+                 if (con1==tTrack)
+                     tTrack = con2;
+                 else
+                     tTrack = con1;
+                 pObject = tObject;
+             }
+         }
+     }
+ }
+ return (new TrackNode(node, nodeType, track, hitEnd, cNodeState));
 }
 
 /**
@@ -2521,17 +2565,17 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
 }
 /*public*/ QVector<LayoutTurnout*>* ConnectivityUtil::getAllTurnoutsThisBlock(LayoutBlock* lb) {
     QVector<LayoutTurnout*>* list = new QVector<LayoutTurnout*>();
-    for (int i = 0; i < layoutEditor->turnoutList->size(); i++) {
-        LayoutTurnout* lt = layoutEditor->turnoutList->at(i);
+    for (int i = 0; i < layoutEditor->getLayoutTracks()->size(); i++)
+    {
+     if(qobject_cast<LayoutTurnout*>(layoutEditor->getLayoutTracks()->at(i)))
+     {
+        LayoutTurnout* lt = (LayoutTurnout*)layoutEditor->getLayoutTracks()->at(i);
         if ( (lt->getLayoutBlock()==lb) || (lt->getLayoutBlockB()==lb) ||
                 (lt->getLayoutBlockC()==lb) || (lt->getLayoutBlockD()==lb) ) {
             list->append(lt);
         }
+     }
     }
-//    foreach(LayoutTurnout* lt , layoutEditor->slipList){
-//        if(lt->getLayoutBlock()==lb)
-//            list->append(lt);
-//    }
     return list;
 }
 

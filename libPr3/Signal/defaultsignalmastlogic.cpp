@@ -363,15 +363,8 @@ class RunnableThis : public Runnable
     log->debug(layout->at(i)->getLayoutName());
    if (facingBlock==nullptr)
    {
-    facingBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getFacingBlockByMast(getSourceMast()->getUserName(), layout->at(i));
-    if (facingBlock==nullptr)
-     facingBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getFacingBlockByMast(getSourceMast()->getSystemName(), layout->at(i));
-   }
-   if (protectingBlock==nullptr)
-   {
-    protectingBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getProtectedBlockByMast(getSourceMast()->getUserName(), layout->at(i));
-    if (protectingBlock==nullptr)
-      protectingBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getProtectedBlockByMast(getSourceMast()->getSystemName(), layout->at(i));
+    facingBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->
+      getFacingBlockByMast(getSourceMast(), layout->at(i));
    }
   }
  }

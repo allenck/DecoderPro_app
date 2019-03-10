@@ -37,7 +37,7 @@ TrackNode::TrackNode(QObject *parent) :
  */
 ///*public*/ class TrackNode {
 
-    /*public*/ TrackNode::TrackNode(QObject* node, int nodeType, TrackSegment* segment, bool endBumper, int nodeState)
+    /*public*/ TrackNode::TrackNode(LayoutTrack* node, int nodeType, TrackSegment* segment, bool endBumper, int nodeState)
 {
  _Node = NULL;
  _NodeType = LayoutEditor::NONE;

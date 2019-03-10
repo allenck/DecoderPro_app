@@ -78,6 +78,10 @@ private:
   /*private*/ void initializeColorCombo(QComboBox* colorCombo) ;
   /*private*/ void setColorCombo(QComboBox* colorCombo, QColor color);
   /*private*/ QColor getSelectedColor(QComboBox* colorCombo);
+  bool doFromCombo;
+  QStringList fromSet;
+  QStringList toSet;
+  /*private*/ void selectPoints(LayoutEditor* panel);
 
 private slots:
  /*private*/ void addButton();

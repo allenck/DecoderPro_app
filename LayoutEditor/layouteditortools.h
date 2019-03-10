@@ -4,11 +4,12 @@
 #include <QObject>
 #include "layouteditor.h"
 //#include "multiiconeditor.h"
-#include "../libPr3/Signal/signalhead.h"
+#include "signalhead.h"
 #include "layoutturnout.h"
 #include "actionevent.h"
 #include <QRadioButton>
 #include "liblayouteditor_global.h"
+#include "jmribeancombobox.h"
 
 class LevelXing;
 class LayoutSlip;
@@ -58,7 +59,7 @@ QString headName, JmriJFrame* frame);
     /*public*/ void setSignalsAtXoverTurnoutFromMenu( LayoutTurnout* to, MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ void setSensorsAtTurnouts(JFrame* frame);
     /*public*/ void setSignalsAtXoverTurnout( MultiIconEditor* theEditor, JFrame* theFrame );
-    /*public*/ void removeAssignment(Sensor* sensor);
+    ///*public*/ bool removeAssignment(Sensor* sensor);
     /*public*/ void setSignalMastsAtTurnouts();
     /*public*/ bool isSensorAssignedAnywhere(Sensor* sensor);
     /*public*/ bool removeSensorAssignment(Sensor* sensor);
@@ -108,6 +109,7 @@ QString headName, JmriJFrame* frame);
                     MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ void setSignalsAt3WayTurnout( MultiIconEditor* theEditor, JFrame* theFrame );
 
+
 signals:
     
 public slots:
@@ -150,6 +152,16 @@ private:
     /*private*/ SignalHead* auxSignal; //NULL;
 
     // operational variables for Set Signals at Turnout* tool
+    /*private*/ JmriJFrame* setSignalsAtTurnoutFrame = nullptr;
+    /*private*/ bool setSignalsAtTurnoutOpenFlag = false;
+    /*private*/ bool setSignalsAtTurnoutFromMenuFlag = false;
+    /*private*/ /*final*/ JmriBeanComboBox* turnoutComboBox;// = new JmriBeanComboBox(
+//            InstanceManager::turnoutManagerInstance(),
+//            nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ JmriBeanComboBox* signalMastsTurnoutComboBox;// = new JmriBeanComboBox(
+//                InstanceManager.turnoutManagerInstance(), null,
+//                JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
+    /*private*/ double placeSignalDirectionDEG = 0.0;
     /*private*/ JmriJFrame* setSignalsFrame;// = NULL;
     /*private*/ bool setSignalsOpen;// = false;
     /*private*/ JTextField* turnoutNameField ;//= new JTextField(16);
@@ -369,8 +381,8 @@ private:
 
     //Border blackline = BorderFactory.createLineBorder(Color.black);
     // operational variables for Set Signals at Double Crossover Turnout tool
-    /*private*/ JmriJFrame setSignalsAtXoverTurnoutFrame = nullptr;
-    /*private*/ JmriJFrame setSensorsAtBlockBoundaryFrame = nullptr;
+    /*private*/ JmriJFrame* setSignalsAtXoverTurnoutFrame = nullptr;
+    /*private*/ JmriJFrame* setSensorsAtBlockBoundaryFrame = nullptr;
     /*private*/ bool setSignalsAtXoverTurnoutOpenFlag = false;
     /*private*/ bool setSignalsAtXoverTurnoutFromMenuFlag = false;
 
@@ -385,7 +397,7 @@ private:
     /*private*/ int isHeadAssignedHere(SignalHead* head, LayoutTurnout* lTurnout);
     /*private*/ void warnOfSkippedTurnout(JmriJFrame* frame, QString turnoutName, QString headName);
     /*private*/ TrackSegment* getContinuingTrack(LayoutTurnout* to, int type);
-    /*private*/ bool getTurnoutInformation(bool crossover);
+    /*private*/ bool getTurnoutInformation(bool isCrossover);
     /*private*/ bool getTurnoutSignalHeadInformation();
     /*private*/ void placeThroatContinuing();
     /*private*/ void placeThroatDiverging();

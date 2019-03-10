@@ -211,6 +211,9 @@ public:
     /*public*/ int getNumberOfBezierControlPoints();
     /*public*/ QPointF getBezierControlPoint(int index);
     /*public*/ void setBezierControlPoint(/*@Nullable*/ QPointF p, int index);
+    /*public*/ double getDirectionRAD();
+    /*public*/ double getDirectionDEG();
+    /*public*/ void splitTrackSegment();
 
 signals:
     
@@ -257,7 +260,12 @@ private:
     /*private*/ double centreX;
     /*private*/ double centreY;
     /*private*/ double tmpangle;
-    QMenu* popup;// = NULL;
+    /*private*/ QMenu* popupMenu = nullptr;
+    /*private*/ QAction* mainlineCheckBoxMenuItem;// = new JCheckBoxMenuItem(Bundle.getMessage("MainlineCheckBoxMenuItemTitle"));
+    /*private*/ QAction* hiddenCheckBoxMenuItem;// = new JCheckBoxMenuItem(Bundle.getMessage("HiddenCheckBoxMenuItemTitle"));
+    /*private*/ QAction* dashedCheckBoxMenuItem;// = new JCheckBoxMenuItem(Bundle.getMessage("DashedCheckBoxMenuItemTitle"));
+    /*private*/ QAction* flippedCheckBoxMenuItem;// = new JCheckBoxMenuItem(Bundle.getMessage("FlippedCheckBoxMenuItemTitle"));
+
     /*private*/ bool needsRedraw;// = false;
  QGraphicsItem* item;
  QGraphicsItem* circleItem;
@@ -314,6 +322,15 @@ private:
   */
  /*private*/ double centreSegX;
  /*private*/ double centreSegY;
+ /*private*/ void addBezierControlPointBefore(int index);
+ /*private*/ void addBezierControlPointAfter(int index);
+ /*private*/ void deleteBezierControlPoint(int index);
+ /*private*/ int drawArrow(EditScene* g2,
+                           QPointF ep,
+                           double angleRAD,
+                           bool dirOut,
+                           int offset, QPen stroke);
+
 
 protected:
  /*protected*/ void updateBlockInfo();
@@ -329,6 +346,7 @@ protected:
  /*protected*/ void highlightUnconnected(EditScene* g2, int selectedType);
  /*protected*/ void drawEditControls(EditScene* g2);
  /*protected*/ void drawTurnoutControls(EditScene* g2);
+ /*protected*/ void showBezierPopUp(QGraphicsSceneMouseEvent* e, int hitPointType);
 
 
  friend class LayoutEditor;

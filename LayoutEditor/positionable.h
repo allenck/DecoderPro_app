@@ -182,7 +182,7 @@ public:
         /*public*/ virtual int getX() = 0;
         /*public*/ virtual int getY() = 0;
     /*public*/ virtual QPointF getLocation() {return QPointF();}
-        /*public*/ virtual void setLocation(int /*x*/, int /*y*/) = 0;
+ /*public*/ virtual void setLocation(int /*x*/, int /*y*/){}
         /*public*/ virtual void setLocation(QPointF /*p*/) {}
         /*public*/ virtual void setSize(int /*width*/, int /*height*/) {}
         /*public*/ virtual void setVisible(bool b) {_bVisible = b;}

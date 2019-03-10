@@ -17,6 +17,9 @@ public:
 signals:
 
 public slots:
+private:
+ QString getElement(QDomElement el, QString child);
+
 
 };
 Q_DECLARE_METATYPE(LayoutTurnoutXml)

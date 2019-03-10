@@ -7,7 +7,7 @@
 #include "throttlewindow.h"
 #include <QLabel>
 #include <QProgressBar>
-#include "../../LayoutEditor/jlabel.h"
+#include "jlabel.h"
 #include "throttleframemanager.h"
 #include "throttlespreferences.h"
 

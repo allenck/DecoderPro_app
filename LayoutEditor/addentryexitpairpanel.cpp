@@ -34,6 +34,8 @@
 /*public*/ AddEntryExitPairPanel::AddEntryExitPairPanel(LayoutEditor* panel, QWidget *parent) :
   JmriPanel(parent)
 {
+  fromSet = QStringList();
+  toSet = QStringList();
 
  selectPanel = new QComboBox();
  fromPoint = new QComboBox();
@@ -274,43 +276,66 @@ ValidPoints* AddEntryExitPairPanel::getValidPointFromCombo(QComboBox* box)
  {
      return;
  }
- if (panel == panels->at(selectPanel->currentIndex()))
- {
+ if (panel == panels->value(selectPanel->currentIndex())) {
      return;
  }
- panel = panels->at(selectPanel->currentIndex());
+ panel = panels->value(selectPanel->currentIndex());
+ fromSet.clear();
+ toSet.clear();
+ doFromCombo = true;
+ selectPoints(panel);
+
+ // Do other panels if any
+ doFromCombo = false;
+ panels = static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
+ for (int i = 0; i < panels->size(); i++) {
+     if (panels->at(i) != panel) {
+         selectPoints(panels->value(i));
+     }
+ }
+
+ // Update the combo boxes
  fromPoint->clear();
+// fromSet.forEach((ent) -> {
+//     fromPoint.addItem(ent);
+// });
+ foreach(QString ent, fromSet)
+  fromPoint->addItem(ent);
  toPoint->clear();
- foreach (PositionablePoint* pp, *panel->pointList)
- {
-  addPointToCombo(pp->getWestBoundSignalMastName(), pp->getWestBoundSensorName());
-  addPointToCombo(pp->getEastBoundSignalMastName(), pp->getEastBoundSensorName());
- }
-
- foreach (LayoutTurnout* t, *panel->turnoutList)
- {
-     addPointToCombo(t->getSignalAMastName(), t->getSensorAName());
-     addPointToCombo(t->getSignalBMastName(), t->getSensorBName());
-     addPointToCombo(t->getSignalCMastName(), t->getSensorCName());
-     addPointToCombo(t->getSignalDMastName(), t->getSensorDName());
- }
-
- foreach (LevelXing* xing, *panel->xingList)
- {
-     addPointToCombo(xing->getSignalAMastName(), xing->getSensorAName());
-     addPointToCombo(xing->getSignalBMastName(), xing->getSensorBName());
-     addPointToCombo(xing->getSignalCMastName(), xing->getSensorCName());
-     addPointToCombo(xing->getSignalDMastName(), xing->getSensorDName());
- }
- foreach (LayoutSlip* slip, *panel->slipList)
- {
-     addPointToCombo(slip->getSignalAMastName(), slip->getSensorAName());
-     addPointToCombo(slip->getSignalBMastName(), slip->getSensorBName());
-     addPointToCombo(slip->getSignalCMastName(), slip->getSensorCName());
-     addPointToCombo(slip->getSignalDMastName(), slip->getSensorDName());
- }
+// toSet.forEach((ent) -> {
+//     toPoint.addItem(ent);
+// });
+ foreach(QString ent, toSet)
+  toPoint->addItem(ent);
 }
 
+/*private*/ void AddEntryExitPairPanel::selectPoints(LayoutEditor* panel) {
+    for (PositionablePoint* pp : panel->getPositionablePoints()) {
+        addPointToCombo(pp->getWestBoundSignalMastName(), pp->getWestBoundSensorName());
+        addPointToCombo(pp->getEastBoundSignalMastName(), pp->getEastBoundSensorName());
+    }
+
+    for (LayoutTurnout* t : panel->getLayoutTurnouts()) {
+        addPointToCombo(t->getSignalAMastName(), t->getSensorAName());
+        addPointToCombo(t->getSignalBMastName(), t->getSensorBName());
+        addPointToCombo(t->getSignalCMastName(), t->getSensorCName());
+        addPointToCombo(t->getSignalDMastName(), t->getSensorDName());
+    }
+
+    for (LevelXing* xing : panel->getLevelXings()) {
+        addPointToCombo(xing->getSignalAMastName(), xing->getSensorAName());
+        addPointToCombo(xing->getSignalBMastName(), xing->getSensorBName());
+        addPointToCombo(xing->getSignalCMastName(), xing->getSensorCName());
+        addPointToCombo(xing->getSignalDMastName(), xing->getSensorDName());
+    }
+
+    for (LayoutSlip* slip : panel->getLayoutSlips()) {
+        addPointToCombo(slip->getSignalAMastName(), slip->getSensorAName());
+        addPointToCombo(slip->getSignalBMastName(), slip->getSensorBName());
+        addPointToCombo(slip->getSignalCMastName(), slip->getSensorCName());
+        addPointToCombo(slip->getSignalDMastName(), slip->getSensorDName());
+    }
+}
 void AddEntryExitPairPanel::addPointToCombo(QString signalMastName, QString sensorName)
 {
  NamedBean* source = NULL;

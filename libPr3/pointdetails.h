@@ -58,6 +58,7 @@ public:
     void removeSource(Source* src);
     void setButtonState(int state);
     /*synchronized*/ /*public*/ void setNXButtonState(int state);
+    /*public*/ void setRefObjectByPanel(NamedBean* refObs, LayoutEditor* pnl);
 
 signals:
     void propertyChange(PropertyChangeEvent*);

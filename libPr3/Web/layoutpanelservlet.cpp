@@ -114,33 +114,12 @@ LayoutPanelServlet::LayoutPanelServlet()
    }
   }
 
-  // include PositionablePoints
-  int num = editor->pointList->size();
-  log->debug(tr("N positionablepoint elements: %1").arg(num));
-  if (num > 0)
-  {
-   for (int i = 0; i < num; i++)
-   {
-    QObject* sub = editor->pointList->at(i);
-    try
-    {
-     QDomElement e = ConfigXmlManager::elementFromObject(sub);
-     if (e != QDomElement())
-     {
-      panel.appendChild(e);
-     }
-    } catch (Exception e)
-    {
-     log->error("Error storing panel positionalpoint element: " + e.getMessage());
-    }
-   }
-  }
 
   // include LayoutBlocks
   LayoutBlockManager* tm = (LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager");
   QStringListIterator iter = (tm->getSystemNameList());
   ProxySensorManager* sm = (ProxySensorManager*)InstanceManager::sensorManagerInstance();
-  num = 0;
+  int num = 0;
   while (iter.hasNext())
   {
    QString sname = iter.next();
@@ -196,110 +175,110 @@ LayoutPanelServlet::LayoutPanelServlet()
   log->debug(tr("N layoutblock elements: %1").arg(num));
 
   // include LevelXings
-  num = editor->xingList->size();
-  log->debug(tr("N levelxing elements: %1").arg(num));
-  if (num > 0)
-  {
-   for (int i = 0; i < num; i++)
-   {
-    QObject* sub =(QObject*) editor->xingList->at(i);
-    try
-    {
-     QDomElement e = ConfigXmlManager::elementFromObject(sub);
-     if (e != QDomElement()) {
-         panel.appendChild(e);
-     }
-    }
-    catch (Exception e)
-    {
-     log->error("Error storing panel levelxing element: " + e.getMessage());
-    }
-   }
-  }
-  // include LayoutTurnouts
-  num = editor->turnoutList->size();
-  log->debug(tr("N layoutturnout elements: %1").arg(num));
-  if (num > 0)
-  {
-   for (int i = 0; i < num; i++)
-   {
-    QObject* sub = (QObject*)editor->turnoutList->at(i);
-    try {
-        QDomElement e = ConfigXmlManager::elementFromObject(sub);
-        if (e != QDomElement()) {
-            panel.appendChild(e);
-        }
-    } catch (Exception e) {
-        log->error("Error storing panel layoutturnout element: " + e.getMessage());
-    }
-   }
-  }
+//  num = editor->xingList->size();
+//  log->debug(tr("N levelxing elements: %1").arg(num));
+//  if (num > 0)
+//  {
+//   for (int i = 0; i < num; i++)
+//   {
+//    QObject* sub =(QObject*) editor->xingList->at(i);
+//    try
+//    {
+//     QDomElement e = ConfigXmlManager::elementFromObject(sub);
+//     if (e != QDomElement()) {
+//         panel.appendChild(e);
+//     }
+//    }
+//    catch (Exception e)
+//    {
+//     log->error("Error storing panel levelxing element: " + e.getMessage());
+//    }
+//   }
+//  }
+//  // include LayoutTurnouts
+//  num = editor->turnoutList->size();
+//  log->debug(tr("N layoutturnout elements: %1").arg(num));
+//  if (num > 0)
+//  {
+//   for (int i = 0; i < num; i++)
+//   {
+//    QObject* sub = (QObject*)editor->turnoutList->at(i);
+//    try {
+//        QDomElement e = ConfigXmlManager::elementFromObject(sub);
+//        if (e != QDomElement()) {
+//            panel.appendChild(e);
+//        }
+//    } catch (Exception e) {
+//        log->error("Error storing panel layoutturnout element: " + e.getMessage());
+//    }
+//   }
+//  }
 
-  // include TrackSegments
-  num = editor->trackList->size();
-  log->debug(tr("N tracksegment elements: %1").arg(num));
-  if (num > 0)
-  {
-   for (int i = 0; i < num; i++)
-   {
-    QObject* sub =(QObject*) editor->trackList->at(i);
-    try
-    {
-     QDomElement e = ConfigXmlManager::elementFromObject(sub);
-     if (e != QDomElement()) {
-         panel.appendChild(e);
-     }
-    }
-    catch (Exception e)
-    {
-     log->error("Error storing panel tracksegment element: " + e.getMessage());
-    }
-   }
-  }
-  // include LayoutSlips
-  num = editor->slipList->size();
-  log->debug(tr("N layoutSlip elements: %1").arg(num));
-  if (num > 0)
-  {
-   for (int i = 0; i < num; i++)
-   {
-    QObject* sub = (QObject*)editor->slipList->at(i);
-    try
-    {
-     QDomElement e = ConfigXmlManager::elementFromObject(sub);
-     if (e != QDomElement())
-     {
-      panel.appendChild(e);
-     }
-    }
-    catch (Exception e)
-    {
-     log->error("Error storing panel layoutSlip element: " + e.getMessage());
-    }
-   }
-  }
-  // include LayoutTurntables
-  num = editor->turntableList->size();
-  log->debug(tr("N turntable elements: %1").arg(num));
-  if (num > 0)
-  {
-   for (int i = 0; i < num; i++)
-   {
-    QObject* sub = (QObject*)editor->turntableList->at(i);
-    try
-    {
-     QDomElement e = ConfigXmlManager::elementFromObject(sub);
-     if (e != QDomElement())
-     {
-      panel.appendChild(e);
-     }
-    }
-    catch (Exception e)
-    {
-     log->error("Error storing panel turntable element: " + e.getMessage());
-    }
-   }
-  }
+//  // include TrackSegments
+//  num = editor->layoutTrackList->size();
+//  log->debug(tr("N tracksegment elements: %1").arg(num));
+//  if (num > 0)
+//  {
+//   for (int i = 0; i < num; i++)
+//   {
+//    QObject* sub =(QObject*) editor->layoutTrackList->at(i);
+//    try
+//    {
+//     QDomElement e = ConfigXmlManager::elementFromObject(sub);
+//     if (e != QDomElement()) {
+//         panel.appendChild(e);
+//     }
+//    }
+//    catch (Exception e)
+//    {
+//     log->error("Error storing panel tracksegment element: " + e.getMessage());
+//    }
+//   }
+//  }
+//  // include LayoutSlips
+//  num = editor->slipList->size();
+//  log->debug(tr("N layoutSlip elements: %1").arg(num));
+//  if (num > 0)
+//  {
+//   for (int i = 0; i < num; i++)
+//   {
+//    QObject* sub = (QObject*)editor->slipList->at(i);
+//    try
+//    {
+//     QDomElement e = ConfigXmlManager::elementFromObject(sub);
+//     if (e != QDomElement())
+//     {
+//      panel.appendChild(e);
+//     }
+//    }
+//    catch (Exception e)
+//    {
+//     log->error("Error storing panel layoutSlip element: " + e.getMessage());
+//    }
+//   }
+//  }
+//  // include LayoutTurntables
+//  num = editor->turntableList->size();
+//  log->debug(tr("N turntable elements: %1").arg(num));
+//  if (num > 0)
+//  {
+//   for (int i = 0; i < num; i++)
+//   {
+//    QObject* sub = (QObject*)editor->turntableList->at(i);
+//    try
+//    {
+//     QDomElement e = ConfigXmlManager::elementFromObject(sub);
+//     if (e != QDomElement())
+//     {
+//      panel.appendChild(e);
+//     }
+//    }
+//    catch (Exception e)
+//    {
+//     log->error("Error storing panel turntable element: " + e.getMessage());
+//    }
+//   }
+//  }
 
      //write out formatted document
 //        Document doc = new Document(panel);

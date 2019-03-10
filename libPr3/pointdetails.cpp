@@ -10,6 +10,8 @@
 #include "abstractsignalheadmanager.h"
 #include <QThread>
 #include <QVector>
+#include "panelmenu.h"
+#include "layouteditorfinditems.h"
 
 //PointDetails::PointDetails(QObject *parent) :
 //    QObject(parent)
@@ -238,93 +240,51 @@ SignalHead* PointDetails::getSignalHead() { return signalhead; }
 /*public*/ LayoutEditor* PointDetails::getPanel() { return panel; }
 
 /*public*/ void PointDetails::setRefObject(NamedBean* refObs){
+ QList<LayoutEditor*>* panels = static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->
+         getLayoutEditorPanelList();
+ for (LayoutEditor* pnl : *panels) {
+     if (refLoc == nullptr) {
+         setRefObjectByPanel(refObs, pnl);
+     }
+ }
+}
+
+/*public*/ void PointDetails::setRefObjectByPanel(NamedBean* refObs, LayoutEditor* pnl) {
     refObj = refObs;
-    if (panel!=NULL && refObj!=NULL){
-        //if (refObj instanceof SignalMast)
-        if(qobject_cast<SignalMast*>(refObj)!=NULL)
-        {
-            QString mast = ((SignalMast*)refObj)->getUserName();
-            refLoc = panel->findPositionablePointByEastBoundSignalMast(mast);
-            if(refLoc==NULL)
-                refLoc = panel->findPositionablePointByWestBoundSignalMast(mast);
-            if(refLoc==NULL)
-                refLoc = panel->findLayoutTurnoutBySignalMast(mast);
-            if(refLoc==NULL)
-                refLoc = panel->findLevelXingBySignalMast(mast);
-            if(refLoc==NULL)
-                refLoc = panel->findLayoutSlipBySignalMast(mast);
-            if(refLoc==NULL){
-                mast = ((SignalMast*)refObj)->getSystemName();
-                if(refLoc==NULL)
-                    refLoc = panel->findPositionablePointByWestBoundSignalMast(mast);
-                if(refLoc==NULL)
-                    refLoc = panel->findLayoutTurnoutBySignalMast(mast);
-                if(refLoc==NULL)
-                    refLoc = panel->findLevelXingBySignalMast(mast);
-                if(refLoc==NULL)
-                    refLoc = panel->findLayoutSlipBySignalMast(mast);
+    if (pnl != nullptr && refObj != nullptr) {
+        if (qobject_cast<SignalMast*>(refObj) || qobject_cast<Sensor*>(refObj)) {
+            //String mast = ((SignalMast)refObj).getUserName();
+            refLoc = pnl->getFinder()->findPositionablePointByEastBoundBean(refObj);
+            if (refLoc == nullptr) {
+                refLoc = pnl->getFinder()->findPositionablePointByWestBoundBean(refObj);
             }
-        }
-        else
-            //if (refObj instanceof Sensor)
-            if(qobject_cast<Sensor*>(refObj)!=NULL)
-            {
-            QString sourceSensor = ((Sensor*)refObj)->getSystemName();
-            refLoc = panel->findPositionablePointByEastBoundSensor(sourceSensor);
-            if(refLoc==NULL)
-                refLoc = panel->findPositionablePointByWestBoundSensor(sourceSensor);
-            if(refLoc==NULL)
-                refLoc = panel->findLayoutTurnoutBySensor(sourceSensor);
-            if(refLoc==NULL)
-                refLoc = panel->findLevelXingBySensor(sourceSensor);
-            if(refLoc==NULL)
-                refLoc = panel->findLayoutSlipBySensor(sourceSensor);
-            if(refLoc==NULL){
-                sourceSensor = ((Sensor*)refObj)->getUserName();
-                refLoc = panel->findPositionablePointByEastBoundSensor(sourceSensor);
-                if(refLoc==NULL)
-                    refLoc = panel->findPositionablePointByWestBoundSensor(sourceSensor);
-                if(refLoc==NULL)
-                    refLoc = panel->findLayoutTurnoutBySensor(sourceSensor);
-                if(refLoc==NULL)
-                    refLoc = panel->findLevelXingBySensor(sourceSensor);
-                if(refLoc==NULL)
-                    refLoc = panel->findLayoutSlipBySensor(sourceSensor);
+            if (refLoc == nullptr) {
+                refLoc = pnl->getFinder()->findLayoutTurnoutByBean(refObj);
             }
-            setSensor((Sensor*)refObj);
-        }
-            else
-                //if (refObj instanceof SignalHead)
-                if(qobject_cast<SignalHead*>(refObj)!=NULL)
-                {
-            QString signal = ((SignalHead*)refObj)->getDisplayName();
-            refLoc = panel->findPositionablePointByEastBoundSignal(signal);
-            if(refLoc==NULL)
-                refLoc = panel->findPositionablePointByWestBoundSignal(signal);
+            if (refLoc == nullptr) {
+                refLoc = pnl->getFinder()->findLevelXingByBean(refObj);
+            }
+            if (refLoc == nullptr) {
+                refLoc = pnl->getFinder()->findLayoutSlipByBean(refObj);
+            }
+            if (qobject_cast<Sensor*>(refObj)) {
+                setSensor((Sensor*) refObj);
+            }
+        } else if (qobject_cast<SignalHead*>(refObj)) {
+            QString signal = ((SignalHead*) refObj)->getDisplayName();
+            refLoc = pnl->getFinder()->findPositionablePointByEastBoundSignal(signal);
+            if (refLoc == nullptr) {
+                refLoc = pnl->getFinder()->findPositionablePointByWestBoundSignal(signal);
+            }
         }
     }
-    if (refLoc!=NULL){
-        //if(refLoc instanceof PositionablePoint)
-        if(qobject_cast<PositionablePoint*>(refLoc)!=NULL)
-        {
+    if (refLoc != nullptr) {
+        if (qobject_cast<PositionablePoint*>(refLoc)) {
             //((PositionablePoint)refLoc).addPropertyChangeListener(this);
-        }
-        else
-            //if (refLoc instanceof LayoutTurnout)
-            if(qobject_cast<LayoutTurnout*>(refLoc)!=NULL)
-            {
+        } else if (qobject_cast<LayoutTurnout*>(refLoc)) {  //<== this includes LayoutSlips
             //((LayoutTurnout)refLoc).addPropertyChangeListener(this);
-        }
-            //else if (refLoc instanceof LevelXing)
-        if(qobject_cast<LayoutTurnout*>(refLoc)!=NULL)
-            {
+        } else if (qobject_cast<LevelXing*>(refLoc)) {
             //((LevelXing)refLoc).addPropertyChangeListener(this);
-        }
-        else
-            //if (refLoc instanceof LayoutSlip){
-            if(qobject_cast<LayoutSlip*>(refLoc)!=NULL)
-            {
-            //((Layoutslip)refLoc).addPropertyChangeListener(this);
         }
     }
     //With this set ref we can probably add a listener to it, so that we can detect when a change to the point details takes place
@@ -684,6 +644,7 @@ NamedBean* PointDetails::getSignal(){
             {
         LevelXing* x = (LevelXing*)getRefLocation();
         if((x->getSensorAName()==(username)) ||( x->getSensorAName()==(systemname)))
+        {
             if(x->getSignalAMastName()!=(""))
                 signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(x->getSignalAMastName());
             else if(x->getSignalAName()!=(""))
@@ -706,6 +667,7 @@ NamedBean* PointDetails::getSignal(){
                 signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(x->getSignalDMastName());
             else if(x->getSignalDName()!=(""))
                 signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(x->getSignalDName());
+        }
     }
     else
      //if(getRefLocation() instanceof LayoutSlip)

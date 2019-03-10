@@ -10,6 +10,8 @@
 #include "path.h"
 #include "mathutil.h"
 #include <limits>
+#include "signalmastlogicmanager.h"
+#include "signallingguitools.h"
 
 //PositionablePoint::PositionablePoint(QObject *parent) :
 //    QObject(parent)
@@ -594,6 +596,72 @@ return nullptr;
 }
 
 /**
+ * replace old track connection with new track connection
+ *
+ * @param oldTrack the old track connection
+ * @param newTrack the new track connection
+ * @return true if successful
+ */
+/*public*/ bool PositionablePoint::replaceTrackConnection(/*@Nullable*/ TrackSegment* oldTrack,/* @Nullable */TrackSegment* newTrack) {
+    bool result = false; // assume failure (pessimist!)
+    // trying to replace old track with null?
+    if (newTrack == nullptr) {
+        // (yes) remove old connection
+        if (oldTrack != nullptr) {
+            result = true;  // assume success (optimist!)
+            if (connect1 == oldTrack) {
+                connect1 = nullptr;        // disconnect connect1
+                reCheckBlockBoundary();
+                removeLinkedPoint();
+                connect1 = connect2;    // Move connect2 to connect1
+                connect2 = nullptr;        // disconnect connect2
+            } else if (connect2 == oldTrack) {
+                connect2 = nullptr;
+                reCheckBlockBoundary();
+            } else {
+                result = false; // didn't find old connection
+            }
+        } else {
+            result = false; // can't replace null with null
+        }
+        if (!result) {
+            log.error(tr("Attempt to remove non-existant track connection: %1").arg(oldTrack->getName()));
+        }
+    } else // already connected to newTrack?
+    if ((connect1 != newTrack) && (connect2 != newTrack)) {
+        // (no) find a connection we can connect to
+        result = true;  // assume success (optimist!)
+        if (connect1 == oldTrack) {
+            connect1 = newTrack;
+        } else if ((type == ANCHOR) && (connect2 == oldTrack)) {
+            connect2 = newTrack;
+            if (connect1->getLayoutBlock() == connect2->getLayoutBlock()) {
+                westBoundSignalMastNamed = nullptr;
+                eastBoundSignalMastNamed = nullptr;
+                setWestBoundSensor("");
+                setEastBoundSensor("");
+            }
+        } else {
+            log.error("Attempt to assign more than allowed number of connections");
+            result = false;
+        }
+    } else {
+        log.error(tr("Already connected to %1").arg(newTrack->getName()));
+        result = false;
+    }
+    return result;
+}   // replaceTrackConnection
+
+void PositionablePoint::removeSML(SignalMast* signalMast) {
+    if (signalMast == nullptr) {
+        return;
+    }
+    if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled()
+        && static_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->isSignalMastUsed(signalMast)) {
+        SignallingGuiTools::removeSignalMastLogic(nullptr, signalMast);
+    }
+}
+/**
  * return true if this connection type is disconnected
  *
  * @param connectionType - the connection type to test
@@ -656,39 +724,38 @@ return nullptr;
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::drawEditControls(QGraphicsScene* g2) {
- QColor color;
- QGraphicsRectItem* rectItem;
+/*protected*/ void PositionablePoint::drawEditControls(EditScene* g2) {
  TrackSegment* ts1 = getConnect1();
+ QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
  if (ts1 == nullptr)
  {
-  //g2.setColor(Color.red);    QColor color;
-  color = QColor(Qt::red);
+     //g2.setColor(Color.red);
+  stroke.setColor(Qt::red);
  }
- else
- {
-  TrackSegment* ts2 = nullptr;
-  if (getType() == ANCHOR) {
-      ts2 = getConnect2();
-  }
-  else if (getType() == EDGE_CONNECTOR)
-  {
-   if (getLinkedPoint() != nullptr) {
-       ts2 = getLinkedPoint()->getConnect1();
-   }
-  }
-  if ((getType() != END_BUMPER) && (ts2 == nullptr)) {
-      //g2.setColor(Color.yellow);
-   color = QColor(Qt::yellow);
-  } else {
-      //g2.setColor(Color.green);
-   color = QColor(Qt::green);
-  }
+ else {
+     TrackSegment* ts2 = nullptr;
+     if (getType() == ANCHOR) {
+         ts2 = getConnect2();
+     } else if (getType() == EDGE_CONNECTOR) {
+         if (getLinkedPoint() != nullptr) {
+             ts2 = getLinkedPoint()->getConnect1();
+         }
+     }
+     if ((getType() != END_BUMPER) && (ts2 == nullptr)) {
+         //g2.setColor(Color.yellow);
+      stroke.setColor(Qt::yellow);
+
+     } else {
+         //g2.setColor(Color.green);
+      stroke.setColor(Qt::green);
+     }
  }
  //g2.draw(layoutEditor->trackEditControlRectAt(getCoordsCenter()));
- QPointF pt = getCoordsCenter();
- rectItem = new QGraphicsRectItem(QRect(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2),0);
- rectItem->setPen( QPen( color, 1, Qt::SolidLine ) );
+ QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsCenter()));
+   rectItem->setPen(stroke);
+ item = rectItem;
+ g2->addItem(item);
+
 }   // drawEditControls
 
 /**
@@ -967,6 +1034,22 @@ void PositionablePoint::dispose()
  popup = NULL;
 }
 
+void PositionablePoint::removeLinkedPoint() {
+ if (type == EDGE_CONNECTOR && getLinkedPoint() != nullptr) {
+
+     if (getConnect2() != nullptr && getLinkedEditor() != nullptr) {
+         //as we have removed the point, need to force the update on the remote end.
+         LayoutEditor* oldLinkedEditor = getLinkedEditor();
+         TrackSegment* ts = getConnect2();
+         getLinkedPoint()->setLinkedPoint(nullptr);
+         oldLinkedEditor->repaint();
+         oldLinkedEditor->getLEAuxTools()->setBlockConnectivityChanged();
+         ts->updateBlockInfo();
+     }
+     linkedPoint = nullptr;
+     //linkedEditor=null;
+ }
+}
 /**
  * Removes this object from display and persistance
  */
@@ -1066,13 +1149,16 @@ void PositionablePoint::updatePointBox() {
     }
     int ourDir = getConnect1Dir();
     linkPointsBox->setEnabled(true);
-    //for (PositionablePoint* p : VPtr<LayoutEditor*>::asPtr(editorCombo->currentData().item().pointList)
-    for(int i = 1; i< editorCombo->count(); i++)
-    {
-     QVector<PositionablePoint*>* pointList = VPtr<LayoutEditor>::asPtr(editorCombo->itemData(i))->pointList;
-     for(int j=0;  j< pointList->count(); j++)
+//    //for (PositionablePoint* p : VPtr<LayoutEditor*>::asPtr(editorCombo->currentData().item().pointList)
+//    for(int i = 1; i< editorCombo->count(); i++)
+//    {
+//     QVector<PositionablePoint*>* pointList = VPtr<LayoutEditor>::asPtr(editorCombo->itemData(i))->pointList;
+
+//     for(int j=0;  j< pointList->count(); j++)
+    LayoutEditor* le = VPtr<LayoutEditor>::asPtr(editorCombo->itemData(editorCombo->currentIndex()));
+     for (PositionablePoint* p : le->getPositionablePoints()) {
      {
-      PositionablePoint* p = pointList->at(j);
+      //PositionablePoint* p = pointList->at(j);
         if (p->getType() == EDGE_CONNECTOR) {
             if (p->getLinkedPoint() == this) {
                 pointList->append(p);

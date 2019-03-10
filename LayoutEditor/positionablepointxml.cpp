@@ -163,9 +163,9 @@ PositionablePointXml::PositionablePointXml(QObject *parent) :
   if (linkedEditor != NULL)
   {
    QString linkedPoint = element.attribute("linkpointid");
-   foreach (PositionablePoint* point, *linkedEditor->pointList)
+   for (PositionablePoint* point : linkedEditor->getPositionablePoints())
    {
-    if (point->getType() == PositionablePoint::EDGE_CONNECTOR && point->getID()==(linkedPoint))
+    if (point->getType() == PositionablePoint::EDGE_CONNECTOR && point->getId() == (linkedPoint))
     {
      point->setLinkedPoint(l);
      l->setLinkedPoint(point);
@@ -175,5 +175,5 @@ PositionablePointXml::PositionablePointXml(QObject *parent) :
   }
  }
 
- p->pointList->append(l);
+ p->getLayoutTracks()->append(l);
 }

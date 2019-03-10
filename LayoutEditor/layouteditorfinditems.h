@@ -48,6 +48,7 @@ public:
  /*public*/ LayoutSlip* findLayoutSlipByName(QString name);
  QT_DEPRECATED /*public*/ LayoutTrack* findObjectByTypeAndName(int type, QString name);
  /*public*/ LayoutTrack* findObjectByName(QString name);
+ /*public*/ QString uniqueName(QString inPrefix, int inStartIndex);
 
 signals:
 

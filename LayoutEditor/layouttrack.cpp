@@ -153,7 +153,7 @@
  * @param isMain           true if drawing mainlines
  * @param railDisplacement the offset from center to draw the lines
  */
-/*protected*/ /*abstract*/ void LayoutTrack::draw2(EditScene* g2, bool isMain, float railDisplacement, QPen) {}
+/*protected*/ /*abstract*/ void LayoutTrack::draw2(EditScene* g2, bool /*isMain*/, float /*railDisplacement*/, QPen /*drawingStroke*/) {}
 
 /**
  * draw hidden track

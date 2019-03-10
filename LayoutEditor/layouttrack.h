@@ -115,7 +115,7 @@ protected:
  /*protected*/ static bool isPopupHitType(int hitType);
  /*public*/ /*abstract*/ virtual bool isMainline();
  /*protected*/ /*abstract*/ virtual void draw1(EditScene* g2, bool isMain, bool isBlock, QPen);
- /*protected*/ /*abstract*/ virtual void draw2(EditScene *g2, bool isMain, float railDisplacement, QPen );
+ /*protected*/ /*abstract*/ virtual void draw2(EditScene *g2, bool, float, QPen );
  /*protected*/ void drawHidden(EditScene* g2);
  /*protected*/ /*abstract*/ virtual void highlightUnconnected(EditScene *g2, int specificType);
  /*protected*/ virtual void highlightUnconnected(EditScene* g2);

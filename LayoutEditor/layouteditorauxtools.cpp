@@ -97,7 +97,7 @@
     cList = new QVector<LayoutConnectivity*>();
     QList<LayoutConnectivity*> lcs;
 
-    for (LayoutTrack* lt : layoutEditor->getLayoutTracks()) {
+    for (LayoutTrack* lt : *layoutEditor->getLayoutTracks()) {
         if ((qobject_cast<PositionablePoint*>(lt))
                 || (qobject_cast<TrackSegment*>(lt))
                 || (qobject_cast<LayoutTurnout*>(lt)))

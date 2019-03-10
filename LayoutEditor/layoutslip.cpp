@@ -443,7 +443,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
  * return the coordinates for the specified connection type
  *
  * @param connectionType the connection type
- * @return the Point2D coordinates
+ * @return the QPointF coordinates
  */
 //@Override
 /*public*/ QPointF LayoutSlip::getCoordsForConnectionType(int connectionType) {
@@ -1608,6 +1608,431 @@ void LayoutSlip::updateState()
   }
  }
 }
+#if 0
+/**
+    * Check if either turnout is inconsistent.
+    * This is used to create an alternate slip image.
+    *
+    * @return true if either turnout is inconsistent.
+    */
+   private boolean isTurnoutInconsistent() {
+       Turnout tA = getTurnout();
+       if (tA != null && tA.getKnownState() == INCONSISTENT) {
+           return true;
+       }
+       Turnout tB = getTurnoutB();
+       if (tB != null && tB.getKnownState() == INCONSISTENT) {
+           return true;
+       }
+       return false;
+   }
+
+   @Override
+   protected void draw1(Graphics2D g2, boolean drawMain, boolean isBlock) {
+       if (isBlock && getLayoutBlock() == null) {
+           // Skip the block layer since there is no block assigned.
+           return;
+       }
+
+       QPointF pA = getCoordsA();
+       QPointF pB = getCoordsB();
+       QPointF pC = getCoordsC();
+       QPointF pD = getCoordsD();
+
+       boolean mainlineA = isMainlineA();
+       boolean mainlineB = isMainlineB();
+       boolean mainlineC = isMainlineC();
+       boolean mainlineD = isMainlineD();
+
+       boolean drawUnselectedLeg = layoutEditor.isTurnoutDrawUnselectedLeg();
+
+       Color color = g2.getColor();
+
+       // if this isn't a block line all these will be the same color
+       Color colorA = color;
+       Color colorB = color;
+       Color colorC = color;
+       Color colorD = color;
+
+       if (isBlock) {
+           LayoutBlock lb = getLayoutBlock();
+           colorA = (lb == null) ? color : lb.getBlockColor();
+           lb = getLayoutBlockB();
+           colorB = (lb == null) ? color : lb.getBlockColor();
+           lb = getLayoutBlockC();
+           colorC = (lb == null) ? color : lb.getBlockColor();
+           lb = getLayoutBlockD();
+           colorD = (lb == null) ? color : lb.getBlockColor();
+       }
+
+       QPointF oneForthPointAC = MathUtil.oneFourthPoint(pA, pC);
+       QPointF oneThirdPointAC = MathUtil.oneThirdPoint(pA, pC);
+       QPointF midPointAC = MathUtil.midPoint(pA, pC);
+       QPointF twoThirdsPointAC = MathUtil.twoThirdsPoint(pA, pC);
+       QPointF threeFourthsPointAC = MathUtil.threeFourthsPoint(pA, pC);
+
+       QPointF oneForthPointBD = MathUtil.oneFourthPoint(pB, pD);
+       QPointF oneThirdPointBD = MathUtil.oneThirdPoint(pB, pD);
+       QPointF midPointBD = MathUtil.midPoint(pB, pD);
+       QPointF twoThirdsPointBD = MathUtil.twoThirdsPoint(pB, pD);
+       QPointF threeFourthsPointBD = MathUtil.threeFourthsPoint(pB, pD);
+
+       QPointF midPointAD = MathUtil.midPoint(oneThirdPointAC, twoThirdsPointBD);
+       QPointF midPointBC = MathUtil.midPoint(oneThirdPointBD, twoThirdsPointAC);
+
+       if (isTurnoutInconsistent()) {
+           // If either turnout is inconsistent, draw an alternate slip image
+           // draw A<= =>C
+           if (drawMain == mainlineA) {
+               g2.setColor(colorA);
+               g2.draw(new Line2D.Double(pA, oneForthPointAC));
+           }
+           if (drawMain == mainlineC) {
+               g2.setColor(colorC);
+               g2.draw(new Line2D.Double(threeFourthsPointAC, pC));
+           }
+           // draw B<= =>D
+           if (drawMain == mainlineB) {
+               g2.setColor(colorB);
+               g2.draw(new Line2D.Double(pB, oneForthPointBD));
+           }
+           if (drawMain == mainlineD) {
+               g2.setColor(colorD);
+               g2.draw(new Line2D.Double(threeFourthsPointBD, pD));
+           }
+           return;
+       }
+
+       int slipState = getSlipState();
+
+       if (slipState == STATE_AD) {
+           // draw A<===>D
+           if (drawMain == mainlineA) {
+               g2.setColor(colorA);
+               g2.draw(new Line2D.Double(pA, oneThirdPointAC));
+               g2.draw(new Line2D.Double(oneThirdPointAC, midPointAD));
+           }
+           if (drawMain == mainlineD) {
+               g2.setColor(colorD);
+               g2.draw(new Line2D.Double(midPointAD, twoThirdsPointBD));
+               g2.draw(new Line2D.Double(twoThirdsPointBD, pD));
+           }
+       } else if (slipState == STATE_AC) {
+           // draw A<===>C
+           if (drawMain == mainlineA) {
+               g2.setColor(colorA);
+               g2.draw(new Line2D.Double(pA, midPointAC));
+           }
+           if (drawMain == mainlineC) {
+               g2.setColor(colorC);
+               g2.draw(new Line2D.Double(midPointAC, pC));
+           }
+       } else if (!isBlock || drawUnselectedLeg) {
+           // draw A<= =>C
+           if (drawMain == mainlineA) {
+               g2.setColor(colorA);
+               g2.draw(new Line2D.Double(pA, oneForthPointAC));
+           }
+           if (drawMain == mainlineC) {
+               g2.setColor(colorC);
+               g2.draw(new Line2D.Double(threeFourthsPointAC, pC));
+           }
+       }
+
+       if (slipState == STATE_BD) {
+           // draw B<===>D
+           if (drawMain == mainlineB) {
+               g2.setColor(colorB);
+               g2.draw(new Line2D.Double(pB, midPointBD));
+           }
+           if (drawMain == mainlineD) {
+               g2.setColor(colorD);
+               g2.draw(new Line2D.Double(midPointBD, pD));
+           }
+       } else if (!isBlock || drawUnselectedLeg) {
+           // draw B<= =>D
+           if (drawMain == mainlineB) {
+               g2.setColor(colorB);
+               g2.draw(new Line2D.Double(pB, oneForthPointBD));
+           }
+           if (drawMain == mainlineD) {
+               g2.setColor(colorD);
+               g2.draw(new Line2D.Double(threeFourthsPointBD, pD));
+           }
+       }
+
+       if (slipState == STATE_BC) {
+           if (getTurnoutType() == DOUBLE_SLIP) {
+               // draw B<===>C
+               if (drawMain == mainlineB) {
+                   g2.setColor(colorB);
+                   g2.draw(new Line2D.Double(pB, oneThirdPointBD));
+                   g2.draw(new Line2D.Double(oneThirdPointBD, midPointBC));
+               }
+               if (drawMain == mainlineC) {
+                   g2.setColor(colorC);
+                   g2.draw(new Line2D.Double(midPointBC, twoThirdsPointAC));
+                   g2.draw(new Line2D.Double(twoThirdsPointAC, pC));
+               }
+           }   // DOUBLE_SLIP
+       } else if (!isBlock || drawUnselectedLeg) {
+           // draw B<= =>C
+           if (drawMain == mainlineB) {
+               g2.setColor(colorB);
+               g2.draw(new Line2D.Double(pB, oneForthPointBD));
+           }
+           if (drawMain == mainlineC) {
+               g2.setColor(colorC);
+               g2.draw(new Line2D.Double(threeFourthsPointAC, pC));
+           }
+       }
+   }   // draw1
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void draw2(Graphics2D g2, boolean drawMain, float railDisplacement) {
+       QPointF pA = getCoordsA();
+       QPointF pB = getCoordsB();
+       QPointF pC = getCoordsC();
+       QPointF pD = getCoordsD();
+       QPointF pM = getCoordsCenter();
+
+       QPointF vAC = MathUtil.normalize(MathUtil.subtract(pC, pA), railDisplacement);
+       double dirAC_DEG = MathUtil.computeAngleDEG(pA, pC);
+       QPointF vACo = MathUtil.orthogonal(vAC);
+       QPointF pAL = MathUtil.subtract(pA, vACo);
+       QPointF pAR = MathUtil.add(pA, vACo);
+       QPointF pCL = MathUtil.subtract(pC, vACo);
+       QPointF pCR = MathUtil.add(pC, vACo);
+
+       QPointF vBD = MathUtil.normalize(MathUtil.subtract(pD, pB), railDisplacement);
+       double dirBD_DEG = MathUtil.computeAngleDEG(pB, pD);
+       QPointF vBDo = MathUtil.orthogonal(vBD);
+       QPointF pBL = MathUtil.subtract(pB, vBDo);
+       QPointF pBR = MathUtil.add(pB, vBDo);
+       QPointF pDL = MathUtil.subtract(pD, vBDo);
+       QPointF pDR = MathUtil.add(pD, vBDo);
+
+       double deltaDEG = MathUtil.absDiffAngleDEG(dirAC_DEG, dirBD_DEG);
+       double deltaRAD = Math.toRadians(deltaDEG);
+
+       double hypotV = railDisplacement / Math.cos((PI - deltaRAD) / 2.0);
+       double hypotK = railDisplacement / Math.cos(deltaRAD / 2.0);
+
+       log.debug("dir AC: {}, BD: {}, diff: {}", dirAC_DEG, dirBD_DEG, deltaDEG);
+
+       QPointF vDisK = MathUtil.normalize(MathUtil.subtract(vAC, vBD), hypotK);
+       QPointF vDisV = MathUtil.normalize(MathUtil.orthogonal(vDisK), hypotV);
+       QPointF pKL = MathUtil.subtract(pM, vDisK);
+       QPointF pKR = MathUtil.add(pM, vDisK);
+       QPointF pVL = MathUtil.add(pM, vDisV);
+       QPointF pVR = MathUtil.subtract(pM, vDisV);
+
+       // this is the vector (rail gaps) for the diamond parts
+       double railGap = 2.0 / Math.sin(deltaRAD);
+       QPointF vAC2 = MathUtil.normalize(vAC, railGap);
+       QPointF vBD2 = MathUtil.normalize(vBD, railGap);
+       // KR and VR toward A, KL and VL toward C
+       QPointF pKRtA = MathUtil.subtract(pKR, vAC2);
+       QPointF pVRtA = MathUtil.subtract(pVR, vAC2);
+       QPointF pKLtC = MathUtil.add(pKL, vAC2);
+       QPointF pVLtC = MathUtil.add(pVL, vAC2);
+
+       // VR and KL toward B, KR and VL toward D
+       QPointF pVRtB = MathUtil.subtract(pVR, vBD2);
+       QPointF pKLtB = MathUtil.subtract(pKL, vBD2);
+       QPointF pKRtD = MathUtil.add(pKR, vBD2);
+       QPointF pVLtD = MathUtil.add(pVL, vBD2);
+
+       // outer (closed) switch points
+       QPointF pAPL = MathUtil.add(pAL, MathUtil.subtract(pVL, pAR));
+       QPointF pBPR = MathUtil.add(pBR, MathUtil.subtract(pVL, pBL));
+       QPointF pCPR = MathUtil.add(pCR, MathUtil.subtract(pVR, pCL));
+       QPointF pDPL = MathUtil.add(pDL, MathUtil.subtract(pVR, pDR));
+
+       // this is the vector (rail gaps) for the inner (open) switch points
+       QPointF vACo2 = MathUtil.normalize(vACo, 2.0);
+       QPointF vBDo2 = MathUtil.normalize(vBDo, 2.0);
+       QPointF pASL = MathUtil.add(pAPL, vACo2);
+       QPointF pBSR = MathUtil.subtract(pBPR, vBDo2);
+       QPointF pCSR = MathUtil.subtract(pCPR, vACo2);
+       QPointF pDSL = MathUtil.add(pDPL, vBDo2);
+
+       QPointF pVLP = MathUtil.add(pVLtD, vAC2);
+       QPointF pVRP = MathUtil.subtract(pVRtA, vBD2);
+
+       QPointF pKLH = MathUtil.midPoint(pM, pKL);
+       QPointF pKRH = MathUtil.midPoint(pM, pKR);
+
+       boolean mainlineA = isMainlineA();
+       boolean mainlineB = isMainlineB();
+       boolean mainlineC = isMainlineC();
+       boolean mainlineD = isMainlineD();
+
+       if (drawMain == mainlineA) {
+           g2.draw(new Line2D.Double(pAR, pVL));
+           g2.draw(new Line2D.Double(pVLtD, pKLtB));
+           GeneralPath path = new GeneralPath();
+           path.moveTo(pAL.getX(), pAL.getY());
+           path.lineTo(pAPL.getX(), pAPL.getY());
+           path.quadTo(pKL.getX(), pKL.getY(), pDPL.getX(), pDPL.getY());
+           g2.draw(path);
+       }
+       if (drawMain == mainlineB) {
+           g2.draw(new Line2D.Double(pBL, pVL));
+           g2.draw(new Line2D.Double(pVLtC, pKRtA));
+           if (getTurnoutType() == DOUBLE_SLIP) {
+               GeneralPath path = new GeneralPath();
+               path.moveTo(pBR.getX(), pBR.getY());
+               path.lineTo(pBPR.getX(), pBPR.getY());
+               path.quadTo(pKR.getX(), pKR.getY(), pCPR.getX(), pCPR.getY());
+               g2.draw(path);
+           } else {
+               g2.draw(new Line2D.Double(pBR, pKR));
+           }
+       }
+       if (drawMain == mainlineC) {
+           g2.draw(new Line2D.Double(pCL, pVR));
+           g2.draw(new Line2D.Double(pVRtB, pKRtD));
+           if (getTurnoutType() == DOUBLE_SLIP) {
+               GeneralPath path = new GeneralPath();
+               path.moveTo(pCR.getX(), pCR.getY());
+               path.lineTo(pCPR.getX(), pCPR.getY());
+               path.quadTo(pKR.getX(), pKR.getY(), pBPR.getX(), pBPR.getY());
+               g2.draw(path);
+           } else {
+               g2.draw(new Line2D.Double(pCR, pKR));
+           }
+       }
+       if (drawMain == mainlineD) {
+           g2.draw(new Line2D.Double(pDR, pVR));
+           g2.draw(new Line2D.Double(pVRtA, pKLtC));
+           GeneralPath path = new GeneralPath();
+           path.moveTo(pDL.getX(), pDL.getY());
+           path.lineTo(pDPL.getX(), pDPL.getY());
+           path.quadTo(pKL.getX(), pKL.getY(), pAPL.getX(), pAPL.getY());
+           g2.draw(path);
+       }
+
+       int slipState = getSlipState();
+       if (slipState == STATE_AD) {
+           if (drawMain == mainlineA) {
+               g2.draw(new Line2D.Double(pASL, pKL));
+               g2.draw(new Line2D.Double(pVLP, pKLH));
+           }
+           if (drawMain == mainlineB) {
+               g2.draw(new Line2D.Double(pBPR, pKR));
+               g2.draw(new Line2D.Double(pVLtC, pKRH));
+           }
+           if (drawMain == mainlineC) {
+               g2.draw(new Line2D.Double(pCPR, pKR));
+               g2.draw(new Line2D.Double(pVRtB, pKRH));
+           }
+           if (drawMain == mainlineD) {
+               g2.draw(new Line2D.Double(pDSL, pKL));
+               g2.draw(new Line2D.Double(pVRP, pKLH));
+           }
+       } else if (slipState == STATE_AC) {
+           if (drawMain == mainlineA) {
+               g2.draw(new Line2D.Double(pAPL, pKL));
+               g2.draw(new Line2D.Double(pVLtD, pKLH));
+           }
+           if (drawMain == mainlineB) {
+               g2.draw(new Line2D.Double(pBSR, pKR));
+               g2.draw(new Line2D.Double(pVLP, pKRH));
+           }
+           if (drawMain == mainlineC) {
+               g2.draw(new Line2D.Double(pCPR, pKR));
+               g2.draw(new Line2D.Double(pVRtB, pKRH));
+           }
+           if (drawMain == mainlineD) {
+               g2.draw(new Line2D.Double(pDSL, pKL));
+               g2.draw(new Line2D.Double(pVRP, pKLH));
+           }
+       } else if (slipState == STATE_BD) {
+           if (drawMain == mainlineA) {
+               g2.draw(new Line2D.Double(pASL, pKL));
+               g2.draw(new Line2D.Double(pVLP, pKLH));
+           }
+           if (drawMain == mainlineB) {
+               g2.draw(new Line2D.Double(pBPR, pKR));
+               g2.draw(new Line2D.Double(pVLtC, pKRH));
+           }
+           if (drawMain == mainlineC) {
+               g2.draw(new Line2D.Double(pCSR, pKR));
+               g2.draw(new Line2D.Double(pVRP, pKRH));
+           }
+           if (drawMain == mainlineD) {
+               g2.draw(new Line2D.Double(pDPL, pKL));
+               g2.draw(new Line2D.Double(pVRtA, pKLH));
+           }
+       } else if ((getTurnoutType() == DOUBLE_SLIP)
+               && (slipState == STATE_BC)) {
+           if (drawMain == mainlineA) {
+               g2.draw(new Line2D.Double(pAPL, pKL));
+               g2.draw(new Line2D.Double(pVLtD, pKLH));
+           }
+           if (drawMain == mainlineB) {
+               g2.draw(new Line2D.Double(pBSR, pKR));
+               g2.draw(new Line2D.Double(pVLP, pKRH));
+           }
+           if (drawMain == mainlineC) {
+               g2.draw(new Line2D.Double(pCSR, pKR));
+               g2.draw(new Line2D.Double(pVRP, pKRH));
+           }
+           if (drawMain == mainlineD) {
+               g2.draw(new Line2D.Double(pDPL, pKL));
+               g2.draw(new Line2D.Double(pVRtA, pKLH));
+           }
+       }   // DOUBLE_SLIP
+   }   // draw2
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void highlightUnconnected(Graphics2D g2, int specificType) {
+       if (((specificType == NONE) || (specificType == SLIP_A))
+               && (getConnectA() == null)) {
+           g2.fill(layoutEditor.trackControlCircleAt(getCoordsA()));
+       }
+
+       if (((specificType == NONE) || (specificType == SLIP_B))
+               && (getConnectB() == null)) {
+           g2.fill(layoutEditor.trackControlCircleAt(getCoordsB()));
+       }
+
+       if (((specificType == NONE) || (specificType == SLIP_C))
+               && (getConnectC() == null)) {
+           g2.fill(layoutEditor.trackControlCircleAt(getCoordsC()));
+       }
+
+       if (((specificType == NONE) || (specificType == SLIP_D))
+               && (getConnectD() == null)) {
+           g2.fill(layoutEditor.trackControlCircleAt(getCoordsD()));
+       }
+   }
+#endif
+   //@Override
+   /*protected*/ void LayoutSlip::drawTurnoutControls(EditScene* g2, QPen stroke) {
+       // drawHidden left/right turnout control circles
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+       QPointF leftCircleCenter = getCoordsLeft();
+
+       //g2.draw(layoutEditor->trackControlCircleAt(leftCircleCenter));
+       QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(leftCircleCenter);
+       item->setPen(stroke);
+       itemGroup->addToGroup(item);
+
+       QPointF rightCircleCenter = getCoordsRight();
+       //g2.draw(layoutEditor->trackControlCircleAt(rightCircleCenter));
+       item = layoutEditor->trackControlCircleAt(rightCircleCenter);
+       item->setPen(stroke);
+       itemGroup->addToGroup(item);
+       g2->addItem(itemGroup);
+   }   // drawTurnoutControls
 
 
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LayoutSlip::class.getName());

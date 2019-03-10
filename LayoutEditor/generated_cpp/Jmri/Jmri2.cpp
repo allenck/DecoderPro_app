@@ -49,6 +49,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -18045,7 +18046,7 @@ if (_wrapper) {
     }
   }
 }
-  
+  Positionable::setLocation(arg__1, arg__2);
 }
 void PythonQtShell_Positionable::setOpaque(bool  arg__1)
 {

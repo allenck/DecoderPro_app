@@ -101,8 +101,20 @@ MathUtil::MathUtil()
     return lerp(p1, p2, 0.5);
 }
 
+/**
+ * calculate the point 1/3 of the way between two points
+ *
+ * @param pA the first point
+ * @param pB the second point
+ * @return the point one third of the way from pA to pB
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::oneThirdPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB) {
+    return lerp(pA, pB, 1.0 / 3.0);
+}
+
 // return a QPointF one third of the way from p1 to p2
-/*public*/ /*static*/ QPointF MathUtil::third(QPointF p1, QPointF p2) {
+/*public*/ /*static*/ QPointF MathUtil::twoThirdsPoint(QPointF p1, QPointF p2) {
     return lerp(p1, p2, 1.0 / 3.0);
 }
 
@@ -141,8 +153,43 @@ MathUtil::MathUtil()
 }
 
 // return the absolute difference (0-180) between two angles
-/*public*/ /*static*/ double MathUtil::diffAngle(double a, double b) {
+/*public*/ /*static*/ double MathUtil::diffAngleDEG(double a, double b) {
     return qAbs(wrapPM180(a - b));
+}
+
+/**
+ * calculate the absolute difference (0-180) between two angles
+ *
+ * @param a the first angle
+ * @param b the second angle
+ * @return the absolute difference between the two angles (in degrees)
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ double MathUtil::absDiffAngleDEG(double a, double b) {
+    return qAbs(diffAngleDEG(a, b));
+}
+/**
+ * calculate the relative difference (+/-PI) between two angles
+ *
+ * @param a the first angle
+ * @param b the second angle
+ * @return the relative difference between the two angles (in radians)
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ double MathUtil::diffAngleRAD(double a, double b) {
+    return wrap(a - b, -M_PI, +M_PI);
+}
+
+/**
+ * calculate the absolute difference (0-PI) between two angles
+ *
+ * @param a the first angle
+ * @param b the second angle
+ * @return the absolute difference between the two angles (in radians)
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ double MathUtil::absDiffAngleRAD(double a, double b) {
+    return qAbs(diffAngleRAD(a, b));
 }
 
 // pin a value between min & max
@@ -244,6 +291,98 @@ MathUtil::MathUtil()
 //@CheckReturnValue
 /*public*/ /*static*/ QPointF MathUtil::divide(/*@Nonnull*/ QPointF p, double x, double y) {
     return  QPointF(p.x() / x, p.y() / y);
+}
+
+/**
+ * offset a point by two scalars
+ *
+ * @param p the point
+ * @param x the x scalar
+ * @param y the y scalar
+ * @return the point offset by the scalars
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::offset(/*@Nonnull*/ QPointF p, double x, double y) {
+    return QPointF(p.x() + x, p.y() + y);
+}
+
+/**
+ * rotate x and y coordinates (by radians)
+ *
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @param a the angle (in radians)
+ * @return the point rotated by the angle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::rotateRAD(double x, double y, double a) {
+    double cosA = qCos(a), sinA = qSin(a);
+    return QPointF(cosA * x - sinA * y, sinA * x + cosA * y);
+}
+
+/**
+ * rotate x and y coordinates (by degrees)
+ *
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @param a the angle (in radians)
+ * @return the point rotated by the angle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::rotateDEG(double x, double y, double a) {
+    return rotateRAD(x, y, qDegreesToRadians(a));
+}
+
+/**
+ * rotate a point (by radians)
+ *
+ * @param p the point
+ * @param a the angle (in radians)
+ * @return the point rotated by the angle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::rotateRAD(/*@Nonnull*/ QPointF p, double a) {
+    return rotateRAD(p.x(), p.y(), a);
+}
+
+/**
+ * rotate a point (by degrees)
+ *
+ * @param p the point
+ * @param a the angle (in radians)
+ * @return the point rotated by the angle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::rotateDEG(/*@Nonnull*/ QPointF p, double a) {
+    return rotateRAD(p, qDegreesToRadians(a));
+}
+
+/**
+ * rotate a point around another point (by radians)
+ *
+ * @param p    the point being rotated
+ * @param c    the point its being rotated around
+ * @param aRAD the angle (in radians)
+ * @return the point rotated by the angle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::rotateRAD(
+        /*@Nonnull*/ QPointF p, /*@Nonnull*/ QPointF c, double aRAD) {
+    return add(c, rotateRAD(subtract(p, c), aRAD));
+}
+
+/**
+ * rotate a point around another point (by degrees)
+ *
+ * @param p    the point being rotated
+ * @param c    the point its being rotated around
+ * @param aDEG the angle (in radians)
+ * @return the point rotated by the angle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::rotateDEG(
+        /*@Nonnull*/ QPointF p, /*@Nonnull*/ QPointF c, double aDEG) {
+    return rotateRAD(p, c, qDegreesToRadians(aDEG));
 }
 
 /**
@@ -449,19 +588,20 @@ MathUtil::MathUtil()
      *
      * @return the length of the Bezier curve
      */
-    /*public*/ /*static*/ double MathUtil::drawBezier(
-            EditScene* g2,
+    /*public*/ /*static*/ QPainterPath MathUtil::drawBezier(
             /*@Nonnull*/ QPointF p0,
             /*@Nonnull*/ QPointF p1,
             /*@Nonnull*/ QPointF p2,
-            /*@Nonnull*/ QPointF p3) {
+            /*@Nonnull*/ QPointF p3)
+        {
         QPainterPath path = QPainterPath();
         bezier1st = true;
         double result = MathUtil::plotBezier(path, p0, p1, p2, p3, 0, 0.0);
         //g2.draw(path);
-        return result;
+
+        return path;
     }
-#if 0
+#if 0 // TODO:
     // recursive routine to plot a Bezier curve...
     // (also returns distance!)
     /*private*/ static doubleMathUtil:: plotBezier(
@@ -498,10 +638,10 @@ MathUtil::MathUtil()
         } else {
             // calculate (len - 1) order of points
             // (zero'th order are the input points)
-            //Point2D[][] nthOrderPoints = new Point2D[len - 1][];
+            //QPointF[][] nthOrderPoints = new QPointF[len - 1][];
             QVector<QVector<QPointF> > nthOrderPoints = QVector<QVector<QPointF>(len -1);
             for (idx = 0; idx < len - 1; idx++) {
-                nthOrderPoints[idx] = new Point2D[len - 1 - idx];
+                nthOrderPoints[idx] = new QPointF[len - 1 - idx];
                 for (jdx = 0; jdx < len - 1 - idx; jdx++) {
                     if (idx == 0) {
                         nthOrderPoints[idx][jdx] = midPoint(points[jdx], points[jdx + 1]);
@@ -512,7 +652,7 @@ MathUtil::MathUtil()
             }
 
             // collect left points
-            Point2D[] leftPoints = new Point2D[len];
+            QPointF[] leftPoints = new QPointF[len];
             leftPoints[0] = points[0];
             for (idx = 0; idx < len - 1; idx++) {
                 leftPoints[idx + 1] = nthOrderPoints[idx][0];
@@ -521,7 +661,7 @@ MathUtil::MathUtil()
             result = plotBezier(path, leftPoints, depth + 1, displacement);
 
             // collect right points
-            Point2D[] rightPoints = new Point2D[len];
+            QPointF[] rightPoints = new QPointF[len];
             for (idx = 0; idx < len - 1; idx++) {
                 rightPoints[idx] = nthOrderPoints[len - 2 - idx][idx];
             }
@@ -532,7 +672,7 @@ MathUtil::MathUtil()
         }
         return result;
     }
-
+#endif
     /**
      * Draw a Bezier curve
      *
@@ -541,21 +681,22 @@ MathUtil::MathUtil()
      * @param displacement right/left to draw a line parallel to the Bezier
      * @return the length of the Bezier curve
      */
-    public static double drawBezier(
-            Graphics2D g2,
-            @Nonnull Point2D p[],
-            double displacement) {
+    /*public*/ /*static*/ QPainterPath MathUtil::drawBezier(
+            /*@Nonnull*/ QVector<QPointF> p,
+            double displacement)
+    {
         double result;
-        GeneralPath path = new GeneralPath();
+        QPainterPath path = QPainterPath();
         bezier1st = true;
-        if (p.length == 4) {    // draw cubic bezier?
+        if (p.length() == 4) {    // draw cubic bezier?
             result = plotBezier(path, p[0], p[1], p[2], p[3], 0, displacement);
-        } else {    // (nope)
-            result = plotBezier(path, p, 0, displacement);
         }
-        g2.draw(path);
-        return result;
-        }
+//        else {    // (nope)
+//            result = plotBezier(path, p, 0, displacement);
+//        }
+//        g2.draw(path);
+       return path;
+    }
 
     /**
      * Draw a Bezier curve
@@ -564,10 +705,10 @@ MathUtil::MathUtil()
      * @param p control points
      * @return the length of the Bezier curve
      */
-    public static double drawBezier(Graphics2D g2, @Nonnull Point2D p[]) {
-        return drawBezier(g2, p, 0.0);
+    /*public*/ /*static*/ QPainterPath MathUtil::drawBezier(/*@Nonnull*/ QVector<QPointF> p) {
+        return drawBezier(p, 0.0);
     }
-#endif
+
 /*private*/ /*static*/ bool MathUtil::bezier1st = false;
 
 /*private*/ /*final*/ /*static*/ Logger* MathUtil::log = LoggerFactory::getLogger("MathUtil");

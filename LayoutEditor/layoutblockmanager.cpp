@@ -401,7 +401,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if (cType==LayoutEditor::TRACK) {
         // block boundary is at an Anchor Point
         LayoutEditorTools* tools = new LayoutEditorTools(panel);
-        PositionablePoint* p = panel->findPositionablePointAtTrackSegments(tr,(TrackSegment*)connected);
+        PositionablePoint* p = panel->getFinder()->findPositionablePointAtTrackSegments(tr, (TrackSegment*) connected);
         bool block1IsWestEnd = tools->isAtWestEndOfAnchor(tr,p);
         if ( (block1IsWestEnd && facingIsBlock1) || (!block1IsWestEnd && !facingIsBlock1) ) {
             // block1 is on the west (north) end of the block boundary
@@ -537,7 +537,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                         return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalA2Name()));
                 }
                 else if (state==Turnout::CLOSED) {
-                    LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(lt->getLinkedTurnoutName(),panel);
+                    LayoutTurnout* tLinked = panel->getFinder()->findLayoutTurnoutByTurnoutName(lt->getLinkedTurnoutName());
                     state = ((AbstractTurnout*)tLinked->getTurnout())->getKnownState();
                     if (state==Turnout::CLOSED) {
                         if (tLinked->getContinuingSense()==Turnout::CLOSED)
@@ -705,7 +705,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 // there is only one signal head here - return it
                 return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalC1Name()));
             // There are two signals here get linked turnout and decide which to return from linked turnout state
-            LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(lt->getLinkedTurnoutName(),panel);
+            LayoutTurnout* tLinked = panel->getFinder()->findLayoutTurnoutByTurnoutName(lt->getLinkedTurnoutName());
             int state = ((AbstractTurnout*)tLinked->getTurnout())->getKnownState();
             if (state==Turnout::CLOSED) {
                 if (lt->getContinuingSense()==Turnout::CLOSED)
@@ -741,7 +741,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             }
             else {
                 // signal is at the linked turnout - the throat of the 3-way turnout
-                LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(lt->getLinkedTurnoutName(),panel);
+                LayoutTurnout* tLinked = panel->getFinder()->findLayoutTurnoutByTurnoutName(lt->getLinkedTurnoutName());
                 if (lt->getContinuingSense()==Turnout::CLOSED) {
                     return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(tLinked->getSignalA1Name()));
                 }
@@ -889,7 +889,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                 // there is only one signal head here - return it
                 return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalB1Name()));
             // There are two signals here get linked turnout and decide which to return from linked turnout state
-            LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(lt->getLinkedTurnoutName(),panel);
+            LayoutTurnout* tLinked = panel->getFinder()->findLayoutTurnoutByTurnoutName(lt->getLinkedTurnoutName());
             int state = ((AbstractTurnout*)tLinked->getTurnout())->getKnownState();
             if (state==Turnout::CLOSED) {
                 if (lt->getContinuingSense()==Turnout::CLOSED)
@@ -932,7 +932,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             }
             else {
                 // signal is at the linked turnout - the throat of the 3-way turnout
-                LayoutTurnout* tLinked = getLayoutTurnoutFromTurnoutName(lt->getLinkedTurnoutName(),panel);
+                LayoutTurnout* tLinked = panel->getFinder()->findLayoutTurnoutByTurnoutName(lt->getLinkedTurnoutName());
                 if (lt->getContinuingSense()==Turnout::CLOSED) {
                     if ( (tLinked->getSignalA3Name()==NULL) || (tLinked->getSignalA3Name()==("")) )
                         return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(tLinked->getSignalA1Name()));
@@ -1125,16 +1125,16 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     }
     return NULL;
 }
-/*private*/ LayoutTurnout* LayoutBlockManager::getLayoutTurnoutFromTurnoutName(QString turnoutName,LayoutEditor* panel) {
-    Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(turnoutName);
-    if (t==NULL) return NULL;
-    LayoutTurnout* lt = NULL;
-    for (int i=0; i<panel->turnoutList->size(); i++) {
-        lt = panel->turnoutList->at(i);
-        if (lt->getTurnout()==t) return lt;
-    }
-    return NULL;
-}
+///*private*/ LayoutTurnout* LayoutBlockManager::getLayoutTurnoutFromTurnoutName(QString turnoutName,LayoutEditor* panel) {
+//    Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(turnoutName);
+//    if (t==NULL) return NULL;
+//    LayoutTurnout* lt = NULL;
+//    for (int i=0; i<panel->turnoutList->size(); i++) {
+//        lt = panel->turnoutList->at(i);
+//        if (lt->getTurnout()==t) return lt;
+//    }
+//    return NULL;
+//}
 
 /**
  * Method to return the named bean of either a Sensor or signalmast facing into a specified Block from a specified protected Block.
@@ -1166,8 +1166,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     }
     if(panel==NULL)
         panel = fLayoutBlock->getMaxConnectedPanel();
-    for(int i = 0; i<panel->trackList->size(); i++){
-        TrackSegment* t = panel->trackList->at(i);
+
+    for (TrackSegment* t : panel->getTrackSegments()) {
         if(t->getLayoutBlock()==fLayoutBlock){
             PositionablePoint* p = NULL;
             if(t->getType1()==LayoutEditor::POS_POINT){
@@ -1213,9 +1213,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  }
  if(panel==NULL)
   panel = fLayoutBlock->getMaxConnectedPanel();
- for(int i = 0; i<panel->trackList->size(); i++)
+ for (TrackSegment* t : panel->getTrackSegments())
  {
-  TrackSegment* t = panel->trackList->at(i);
   if(t->getLayoutBlock()==fLayoutBlock)
   {
    PositionablePoint* p = NULL;
@@ -1342,7 +1341,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if (cType==LayoutEditor::TRACK) {
         // block boundary is at an Anchor Point
         LayoutEditorTools* tools = new LayoutEditorTools(panel);
-        PositionablePoint* p = panel->findPositionablePointAtTrackSegments(tr,(TrackSegment*)connected);
+        PositionablePoint* p = panel->getFinder()->findPositionablePointAtTrackSegments(tr, (TrackSegment*) connected);
         bool block1IsWestEnd = tools->isAtWestEndOfAnchor(tr,p);
         if ( (block1IsWestEnd && facingIsBlock1) || (!block1IsWestEnd && !facingIsBlock1) ) {
             // block1 is on the west (north) end of the block boundary
@@ -1523,7 +1522,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if (cType==LayoutEditor::TRACK) {
         // block boundary is at an Anchor Point
         LayoutEditorTools* tools = new LayoutEditorTools(panel);
-        PositionablePoint* p = panel->findPositionablePointAtTrackSegments(tr,(TrackSegment*)connected);
+        PositionablePoint* p = panel->getFinder()->findPositionablePointAtTrackSegments(tr, (TrackSegment*) connected);
         bool block1IsWestEnd = tools->isAtWestEndOfAnchor(tr,p);
         if ( (block1IsWestEnd && facingIsBlock1) || (!block1IsWestEnd && !facingIsBlock1) ) {
             // block1 is on the west (north) end of the block boundary
@@ -1826,235 +1825,200 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         return protectingBlocks;
     }	//getProtectingBlocksByBean
 
-/*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockByMast(SignalMast* signalMast, LayoutEditor* panel){
-    LayoutBlock* protect = getProtectedBlockByMast(signalMast->getUserName(), panel);
-    if(protect == NULL)
-        protect = getProtectedBlockByMast(signalMast->getSystemName(), panel);
-    return protect;
-}
 
 /**
  * Method to return the LayoutBlock that a given signal is protecting.
  */
-/*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockByMast(QString signalMastName, LayoutEditor* panel){
-    PositionablePoint* pp = panel->findPositionablePointByEastBoundSignalMast(signalMastName);
-    TrackSegment* tr = NULL;
-    bool east = true;
-    //Don't think that the logic for this is the right way round
-    if (pp==NULL) {
-        pp = panel->findPositionablePointByWestBoundSignalMast(signalMastName);  // was east
-        east = false;
-    }
-    if(pp!=NULL){
-        LayoutEditorTools* tools = new LayoutEditorTools(panel);
-        if(east){
-            if(tools->isAtWestEndOfAnchor(pp->getConnect1(), pp)){
-                tr=pp->getConnect2();
-            }
-            else {
-                tr=pp->getConnect1();
-            }
-        } else {
-            if(tools->isAtWestEndOfAnchor(pp->getConnect1(), pp)){
-                tr=pp->getConnect1();
-            }
-            else {
-                tr=pp->getConnect2();
-            }
-        }
+/*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockByMast(SignalMast* signalMast, LayoutEditor* panel){
+ QList<LayoutBlock*> proBlocks = getProtectingBlocksByBean(signalMast, panel);
 
-        if (tr!=NULL){
-            return tr->getLayoutBlock();
-        }
-    }
-
-    LayoutTurnout* t = panel->findLayoutTurnoutBySignalMast(signalMastName);
-    if(t!=NULL){
-        if(t->getSignalAMastName()==(signalMastName)){
-            if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlockB()!=NULL){
-                if(t->getConnectA()!=NULL && qobject_cast<TrackSegment*>(t->getConnectA())!= NULL)
-                {
-                    if(((TrackSegment*)t->getConnectA())->getLayoutBlock()==t->getLayoutBlock()){
-                        if(t->getLayoutBlock()!=t->getLayoutBlockB()){
-                            return t->getLayoutBlockB();
-                        }
-                    }
-                }
-            }
-            //This is only valid where the block boundary is external to the mast
-            return t->getLayoutBlock();
-        } else if (t->getSignalBMastName()==(signalMastName)) {
-            if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlock()!=NULL){
-                if(t->getConnectB()!=NULL && qobject_cast<TrackSegment*>(t->getConnectB())!= NULL){
-                    if(((TrackSegment*)t->getConnectB())->getLayoutBlock()==t->getLayoutBlockB()){
-                        if(t->getLayoutBlock()!=t->getLayoutBlockB()){
-                            return t->getLayoutBlock();
-                        }
-                    }
-                }
-            }
-            return t->getLayoutBlockB();
-        } else if (t->getSignalCMastName()==(signalMastName)) {
-            if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlockD()!=NULL){
-                if(t->getConnectC()!=NULL && qobject_cast<TrackSegment*>(t->getConnectC())!= NULL){
-                    if(((TrackSegment*)t->getConnectC())->getLayoutBlock()==t->getLayoutBlockC()){
-                        if(t->getLayoutBlockC()!=t->getLayoutBlockD()){
-                            return t->getLayoutBlockD();
-                        }
-                    }
-                }
-            }
-            return t->getLayoutBlockC();
-        } else {
-            if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlockC()!=NULL){
-                if(t->getConnectD()!=NULL && qobject_cast<TrackSegment*>(t->getConnectD())!= NULL){
-                    if(((TrackSegment*)t->getConnectD())->getLayoutBlock()==t->getLayoutBlockD()){
-                        if(t->getLayoutBlockC()!=t->getLayoutBlockD()){
-                            return t->getLayoutBlockC();
-                        }
-                    }
-                }
-            }
-            return t->getLayoutBlockD();
-        }
-    }
-
-    LevelXing* l = panel->findLevelXingBySignalMast(signalMastName);
-    if(l!=NULL){
-        if(l->getSignalAMastName()==(signalMastName)){
-            return l->getLayoutBlockAC();
-        } else if (l->getSignalBMastName()==(signalMastName)) {
-            return l->getLayoutBlockBD();
-        } else if (l->getSignalCMastName()==(signalMastName)) {
-            return l->getLayoutBlockAC();
-        } else {
-            return l->getLayoutBlockBD();
-        }
-
-    }
-    LayoutSlip* ls = panel->findLayoutSlipBySignalMast(signalMastName);
-    if(ls!=NULL){
-        return ls->getLayoutBlock();
-    }
-    return NULL;
+ if (proBlocks.isEmpty()) {
+     return nullptr;
+ }
+ return proBlocks.at(0);
 }
 
-/**
- * Method to return the LayoutBlock that a given signal mast is facing.
- */
-/*public*/ LayoutBlock* LayoutBlockManager::getFacingBlockByMast(SignalMast* signalMast, LayoutEditor* panel){
-    LayoutBlock* facing = getFacingBlockByMast(signalMast->getUserName(), panel);
-    if(facing == NULL)
-        facing = getFacingBlockByMast(signalMast->getSystemName(), panel);
-    return facing;
-}
 
 /**
  * Method to return the LayoutBlock that a given signal is facing.
  */
-/*public*/ LayoutBlock* LayoutBlockManager::getFacingBlockByMast(QString signalMastName, LayoutEditor* panel)
+/*public*/ LayoutBlock* LayoutBlockManager::getFacingBlockByMast(SignalMast* signalMast, LayoutEditor* panel)
 {
- PositionablePoint* pp = ((LayoutEditor*)panel)->findPositionablePointByEastBoundSignalMast(signalMastName); //was west
-    TrackSegment* tr = NULL;
+ return getFacingBlockByBean(signalMast, panel);
+}
+
+/**
+ * If the panel variable is null, search all LE panels.
+ * This was added to support multi panel entry/exit.
+ * @param bean  The sensor, mast or head to be located.
+ * @param panel The panel to search. Search all LE panels if null.
+ * @return the facing layout block.
+ */
+//@CheckReturnValue
+//@Nullable
+/*private*/ LayoutBlock* LayoutBlockManager::getFacingBlockByBean(
+        /*@Nonnull*/ NamedBean* bean,
+        LayoutEditor* panel) {
+    if (panel == nullptr) {
+        QList<LayoutEditor*>* panels = static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->
+                getLayoutEditorPanelList();
+        LayoutBlock* returnBlock = nullptr;
+        for (LayoutEditor* p : *panels) {
+            returnBlock = getFacingBlockByBeanByPanel(bean, p);
+            if (returnBlock != nullptr) {
+                break;
+            }
+        }
+        return returnBlock;
+    } else {
+        return getFacingBlockByBeanByPanel(bean, panel);
+    }
+}
+//@CheckReturnValue
+//@Nullable
+/*private*/ LayoutBlock* LayoutBlockManager::getFacingBlockByBeanByPanel(
+        /*@Nonnull*/ NamedBean* bean,
+        /*@Nonnull */LayoutEditor* panel) {
+    PositionablePoint* pp = panel->getFinder()->findPositionablePointByEastBoundBean(bean);
+    TrackSegment* tr = nullptr;
     bool east = true;
+
     //Don't think that the logic for this is the right way round
-    if (pp==NULL) {
-        pp = ((LayoutEditor*)panel)->findPositionablePointByWestBoundSignalMast(signalMastName);  // was east
+    if (pp == nullptr) {
+        pp = panel->getFinder()->findPositionablePointByWestBoundBean(bean);
         east = false;
     }
-    if(pp!=NULL){
-        LayoutEditorTools* tools = new LayoutEditorTools(panel);
-        if(east){
-            if(tools->isAtWestEndOfAnchor(pp->getConnect1(), pp)){
-                tr=pp->getConnect1();
-            }
-            else {
-                tr=pp->getConnect2();
+
+    if (pp != nullptr) {
+//            LayoutEditorTools tools = panel.getLETools(); //TODO: Dead-code strip this
+
+        if (east) {
+            if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+                tr = pp->getConnect1();
+            } else {
+                tr = pp->getConnect2();
             }
         } else {
-            if(tools->isAtWestEndOfAnchor(pp->getConnect1(), pp)){
-                tr=pp->getConnect2();
-            }
-            else {
-                tr=pp->getConnect1();
+            if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+                tr = pp->getConnect2();
+            } else {
+                tr = pp->getConnect1();
             }
         }
 
-        if (tr!=NULL){
+        if (tr != nullptr) {
             log.debug("found facing block by positionable point");
+
             return tr->getLayoutBlock();
         }
     }
-    LayoutTurnout* t = ((LayoutEditor*)panel)->findLayoutTurnoutBySignalMast(signalMastName);
-    if(t!=NULL){
+    LayoutTurnout* t = panel->getFinder()->findLayoutTurnoutByBean(bean);
+
+    if (t != nullptr) {
         log.debug("found signalmast at turnout " + t->getTurnout()->getDisplayName());
-        QObject* connect;
-        if(t->getSignalAMastName()==(signalMastName)){
-            connect = t->getConnectA();
-        } else if (t->getSignalBMastName()==(signalMastName)) {
-            connect = t->getConnectB();
-        } else if (t->getSignalCMastName()==(signalMastName)) {
-            connect = t->getConnectC();
-        } else {
-            connect = t->getConnectD();
+        QObject* connect = nullptr;
+
+        if (qobject_cast<SignalMast*>(bean)) {
+            if (t->getSignalAMast() == bean) {
+                connect = t->getConnectA();
+            } else if (t->getSignalBMast() == bean) {
+                connect = t->getConnectB();
+            } else if (t->getSignalCMast() == bean) {
+                connect = t->getConnectC();
+            } else {
+                connect = t->getConnectD();
+            }
+        } else if (qobject_cast<Sensor*>(bean)) {
+            if (t->getSensorA() == bean) {
+                connect = t->getConnectA();
+            } else if (t->getSensorB() == bean) {
+                connect = t->getConnectB();
+            } else if (t->getSensorC() == bean) {
+                connect = t->getConnectC();
+            } else {
+                connect = t->getConnectD();
+            }
         }
-        //if (connect instanceof TrackSegment){
-        if(qobject_cast<TrackSegment*>(connect)!=NULL)
-        {
+
+        if (qobject_cast<TrackSegment*>(bean)) {
             tr = (TrackSegment*) connect;
             log.debug("return block " + tr->getLayoutBlock()->getDisplayName());
-            return tr->getLayoutBlock();
 
-        }
-    }
-
-    LevelXing* l = ((LayoutEditor*)panel)->findLevelXingBySignalMast(signalMastName);
-    if(l!=NULL){
-        QObject* connect;
-        if(l->getSignalAMastName()==(signalMastName)){
-            connect = l->getConnectA();
-        } else if (l->getSignalBMastName()==(signalMastName)) {
-            connect = l->getConnectB();
-        } else if (l->getSignalCMastName()==(signalMastName)) {
-            connect = l->getConnectC();
-        } else {
-            connect = l->getConnectD();
-        }
-
-        //if (connect instanceof TrackSegment){
-        if(qobject_cast<TrackSegment*>(connect)!=NULL)
-        {
-            tr = (TrackSegment*) connect;
-            log.debug("return block " + tr->getLayoutBlock()->getDisplayName());
-            return tr->getLayoutBlock();
-
-        }
-
-    }
-
-    LayoutSlip* ls = ((LayoutEditor*)panel)->findLayoutSlipBySignalMast(signalMastName);
-    if(ls!=NULL){
-        QObject* connect;
-        if(ls->getSignalAMastName()==(signalMastName)){
-            connect = ls->getConnectA();
-        } else if (ls->getSignalBMastName()==(signalMastName)) {
-            connect = ls->getConnectB();
-        } else if (ls->getSignalCMastName()==(signalMastName)) {
-            connect = ls->getConnectC();
-        } else {
-            connect = ls->getConnectD();
-        }
-
-        //if (connect instanceof TrackSegment){
-        if(qobject_cast<TrackSegment*>(connect)!=NULL)
-        {
-            tr = (TrackSegment*) connect;
-            log.debug("return block " + tr->getLayoutBlock()->getDisplayName());
             return tr->getLayoutBlock();
         }
     }
-    return NULL;
-}
+
+    LevelXing* l = panel->getFinder()->findLevelXingByBean(bean);
+
+    if (l != nullptr) {
+        QObject* connect = nullptr;
+
+        if (qobject_cast<SignalMast*>(bean)) {
+            if (l->getSignalAMast() == bean) {
+                connect = l->getConnectA();
+            } else if (l->getSignalBMast() == bean) {
+                connect = l->getConnectB();
+            } else if (l->getSignalCMast() == bean) {
+                connect = l->getConnectC();
+            } else {
+                connect = l->getConnectD();
+            }
+        } else if (qobject_cast<Sensor*>(bean)) {
+            if (l->getSensorA() == bean) {
+                connect = l->getConnectA();
+            } else if (l->getSensorB() == bean) {
+                connect = l->getConnectB();
+            } else if (l->getSensorC() == bean) {
+                connect = l->getConnectC();
+            } else {
+                connect = l->getConnectD();
+            }
+        }
+
+        if (qobject_cast<TrackSegment*>(connect)) {
+            tr = (TrackSegment*) connect;
+            log.debug("return block " + tr->getLayoutBlock()->getDisplayName());
+
+            return tr->getLayoutBlock();
+        }
+    }
+
+    LayoutSlip* ls = panel->getFinder()->findLayoutSlipByBean(bean);
+
+    if (ls != nullptr) {
+        QObject* connect = nullptr;
+
+        if (qobject_cast<SignalMast*>(bean)) {
+            if (ls->getSignalAMast() == bean) {
+                connect = ls->getConnectA();
+            } else if (ls->getSignalBMast() == bean) {
+                connect = ls->getConnectB();
+            } else if (ls->getSignalCMast() == bean) {
+                connect = ls->getConnectC();
+            } else {
+                connect = ls->getConnectD();
+            }
+        } else if (qobject_cast<Sensor*>(bean)) {
+            if (ls->getSensorA() == bean) {
+                connect = ls->getConnectA();
+            } else if (ls->getSensorB() == bean) {
+                connect = ls->getConnectB();
+            } else if (ls->getSensorC() == bean) {
+                connect = ls->getConnectC();
+            } else {
+                connect = ls->getConnectD();
+            }
+        }
+
+        if (qobject_cast<TrackSegment*>(connect)) {
+            tr = (TrackSegment*) connect;
+            log.debug("return block " + tr->getLayoutBlock()->getDisplayName());
+
+            return tr->getLayoutBlock();
+        }
+    }
+    return nullptr;
+}	//getFacingblockByBean
 
 /**
  * Method to return the LayoutBlock that a given sensor is protecting.
@@ -2070,102 +2034,10 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  * Method to return the LayoutBlock that a given sensor is protecting.
  */
 /*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockBySensor(QString sensorName, LayoutEditor* panel){
-    PositionablePoint* pp = panel->findPositionablePointByEastBoundSensor(sensorName);
-    TrackSegment* tr;
-    bool east = true;
-    if (pp==NULL) {
-        pp = panel->findPositionablePointByWestBoundSensor(sensorName);
-        east=false;
-    }
-    if(pp!=NULL){
-        LayoutEditorTools* tools = new LayoutEditorTools(panel);
-        if(east) {
-            if(tools->isAtWestEndOfAnchor(pp->getConnect1(), pp)){
-                tr=pp->getConnect2();
-            }
-            else {
-                tr=pp->getConnect1();
-            }
-        } else {
-            if(tools->isAtWestEndOfAnchor(pp->getConnect1(), pp)){
-                tr=pp->getConnect1();
-            }
-            else {
-                tr=pp->getConnect2();
-            }
-        }
-        if (tr!=NULL){
-            return tr->getLayoutBlock();
-        }
-    }
+ Sensor* sensor = InstanceManager::sensorManagerInstance()->getSensor(sensorName);
 
-    LayoutTurnout* t = panel->findLayoutTurnoutBySensor(sensorName);
-    if(t!=NULL){
-        if(t->getSensorAName()==(sensorName)){
-            if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlockB()!=NULL){
-                if(t->getConnectA()!=NULL && qobject_cast<TrackSegment*>(t->getConnectA())!=NULL){
-                    if(((TrackSegment*)t->getConnectA())->getLayoutBlock()==t->getLayoutBlock()){
-                        if(t->getLayoutBlock()!=t->getLayoutBlockB()){
-                            return t->getLayoutBlockB();
-                        }
-                    }
-                }
-            }
-            return t->getLayoutBlock();
-        } else if (t->getSensorBName()==(sensorName)) {
-            if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlock()!=NULL){
-                if(t->getConnectB()!=NULL && qobject_cast<TrackSegment*>(t->getConnectB())!=NULL){
-                    if(((TrackSegment*)t->getConnectB())->getLayoutBlock()==t->getLayoutBlockB()){
-                        if(t->getLayoutBlock()!=t->getLayoutBlockB()){
-                            return t->getLayoutBlock();
-                        }
-                    }
-                }
-            }
-            return t->getLayoutBlockB();
-        } else if (t->getSensorCName()==(sensorName)) {
-            if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlockD()!=NULL){
-                if(t->getConnectC()!=NULL && qobject_cast<TrackSegment*>(t->getConnectC())!=NULL){
-                    if(((TrackSegment*)t->getConnectC())->getLayoutBlock()==t->getLayoutBlockC()){
-                        if(t->getLayoutBlockC()!=t->getLayoutBlockD()){
-                            return t->getLayoutBlockD();
-                        }
-                    }
-                }
-            }
-            return t->getLayoutBlockC();
-        } else {
-            if (t->getTurnoutType()>=LayoutTurnout::DOUBLE_XOVER  && t->getTurnoutType()<=LayoutTurnout::LH_XOVER && t->getLayoutBlockC()!=NULL){
-                if(t->getConnectD()!=NULL && qobject_cast<TrackSegment*>(t->getConnectD())!=NULL){
-                    if(((TrackSegment*)t->getConnectD())->getLayoutBlock()==t->getLayoutBlockD()){
-                        if(t->getLayoutBlockC()!=t->getLayoutBlockD()){
-                            return t->getLayoutBlockC();
-                        }
-                    }
-                }
-            }
-            return t->getLayoutBlockD();
-        }
-    }
+ return getProtectedBlockBySensor(sensor, panel);
 
-    LevelXing* l = panel->findLevelXingBySensor(sensorName);
-    if(l!=NULL){
-        if(l->getSensorAName()==(sensorName)){
-            return l->getLayoutBlockAC();
-        } else if (l->getSensorBName()==(sensorName)) {
-            return l->getLayoutBlockBD();
-        } else if (l->getSensorCName()==(sensorName)) {
-            return l->getLayoutBlockAC();
-        } else {
-            return l->getLayoutBlockBD();
-        }
-
-    }
-    LayoutSlip* ls = panel->findLayoutSlipBySensor(sensorName);
-    if(ls!=NULL){
-        return ls->getLayoutBlock();
-    }
-    return NULL;
 }
 
 /**
@@ -2182,99 +2054,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  * Method to return the LayoutBlock that a given sensor is facing.
  */
 /*public*/ LayoutBlock* LayoutBlockManager::getFacingBlockBySensor(QString sensorName, LayoutEditor* panel){
-    PositionablePoint* pp = panel->findPositionablePointByEastBoundSensor(sensorName); //was west
-    TrackSegment* tr = NULL;
-    bool east = true;
-    //Don't think that the logic for this is the right way round
-    if (pp==NULL) {
-        pp = panel->findPositionablePointByWestBoundSensor(sensorName);  // was east
-        east = false;
-    }
-    if(pp!=NULL){
-        LayoutEditorTools* tools = new LayoutEditorTools(panel);
-        if(east){
-            if(tools->isAtWestEndOfAnchor(pp->getConnect1(), pp)){
-                tr=pp->getConnect1();
-            }
-            else {
-                tr=pp->getConnect2();
-            }
-        } else {
-            if(tools->isAtWestEndOfAnchor(pp->getConnect1(), pp)){
-                tr=pp->getConnect2();
-            }
-            else {
-                tr=pp->getConnect1();
-            }
-        }
+ Sensor* sensor = InstanceManager::sensorManagerInstance()->getSensor(sensorName);
+ return (sensor == nullptr) ? nullptr : getFacingBlockBySensor(sensor, panel);
 
-        if (tr!=NULL){
-            log.debug("found facing block by positionable point");
-            return tr->getLayoutBlock();
-        }
-    }
-    LayoutTurnout* t = panel->findLayoutTurnoutBySensor(sensorName);
-    if(t!=NULL){
-        log.debug("found signalmast at turnout " + t->getTurnout()->getDisplayName());
-        QObject* connect;
-        if(t->getSensorAName()==(sensorName)){
-            connect = t->getConnectA();
-        } else if (t->getSensorBName()==(sensorName)) {
-            connect = t->getConnectB();
-        } else if (t->getSensorCName()==(sensorName)) {
-            connect = t->getConnectC();
-        } else {
-            connect = t->getConnectD();
-        }
-        if (qobject_cast<TrackSegment*>(connect)!= NULL){
-            tr = (TrackSegment*) connect;
-            log.debug("return block " + tr->getLayoutBlock()->getDisplayName());
-            return tr->getLayoutBlock();
-
-        }
-    }
-
-    LevelXing* l = panel->findLevelXingBySensor(sensorName);
-    if(l!=NULL){
-        QObject* connect;
-        if(l->getSensorAName()==(sensorName)){
-            connect = l->getConnectA();
-        } else if (l->getSensorBName()==(sensorName)) {
-            connect = l->getConnectB();
-        } else if (l->getSensorCName()==(sensorName)) {
-            connect = l->getConnectC();
-        } else {
-            connect = l->getConnectD();
-        }
-
-        if (qobject_cast<TrackSegment*>(connect)!= NULL){
-            tr = (TrackSegment*) connect;
-            log.debug("return block " + tr->getLayoutBlock()->getDisplayName());
-            return tr->getLayoutBlock();
-
-        }
-
-    }
-    LayoutSlip* ls = panel->findLayoutSlipBySensor(sensorName);
-    if(ls!=NULL){
-        QObject* connect;
-        if(ls->getSensorAName()==(sensorName)){
-            connect = ls->getConnectA();
-        } else if (ls->getSensorBName()==(sensorName)) {
-            connect = ls->getConnectB();
-        } else if (ls->getSensorCName()==(sensorName)) {
-            connect = ls->getConnectC();
-        } else {
-            connect = ls->getConnectD();
-        }
-
-        if (qobject_cast<TrackSegment*>(connect)!= NULL ){
-            tr = (TrackSegment*) connect;
-            log.debug("return block " + tr->getLayoutBlock()->getDisplayName());
-            return tr->getLayoutBlock();
-        }
-    }
-    return NULL;
 }
 
 /*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlock(SignalHead* signalHead, LayoutEditor* panel){
@@ -2289,10 +2071,10 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  */
  /* @TODO This needs to be expanded to cover turnouts and level crossings. */
 /*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlock(QString signalName, LayoutEditor* panel){
-    PositionablePoint* pp = panel->findPositionablePointByEastBoundSignal(signalName);
+    PositionablePoint* pp = panel->getFinder()->findPositionablePointByEastBoundSignal(signalName);
     TrackSegment* tr;
     if (pp==NULL) {
-        pp = panel->findPositionablePointByWestBoundSignal(signalName);
+        pp = panel->getFinder()->findPositionablePointByWestBoundSignal(signalName);
         if (pp==NULL)
             return NULL;
         tr = pp->getConnect1();
@@ -2317,10 +2099,10 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  */
  /* @TODO This needs to be expanded to cover turnouts and level crossings. */
 /*public*/ LayoutBlock* LayoutBlockManager::getFacingBlock(QString signalName, LayoutEditor* panel){
-    PositionablePoint* pp = panel->findPositionablePointByWestBoundSignal(signalName);
+    PositionablePoint* pp = panel->getFinder()->findPositionablePointByWestBoundSignal(signalName);
     TrackSegment* tr;
     if (pp==NULL) {
-        pp = panel->findPositionablePointByWestBoundSignal(signalName);
+        pp = panel->getFinder()->findPositionablePointByWestBoundSignal(signalName);
         if (pp==NULL)
             return NULL;
         tr = pp->getConnect1();

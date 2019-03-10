@@ -51,10 +51,8 @@ public:
 /*public*/ LayoutBlock* getByUserName(QString key);
 //static LayoutBlockManager* _instance;// = NULL;
 static /*public*/ LayoutBlockManager* instance();
-/*public*/ LayoutBlock* getFacingBlockByMast(SignalMast* signalMast, LayoutEditor* panel);
-/*public*/ LayoutBlock* getFacingBlockByMast(QString signalMastName, LayoutEditor* panel);
+/*public*/ LayoutBlock* getFacingBlockByMast(SignalMast *signalMast, LayoutEditor* panel);
 /*public*/ LayoutBlock* getProtectedBlockByMast(SignalMast* signalMast, LayoutEditor* panel);
-/*public*/ LayoutBlock* getProtectedBlockByMast(QString signalMastName, LayoutEditor* panel);
 /*public*/ LayoutBlockConnectivityTools* getLayoutBlockConnectivityTools();
 /*public*/ QList<LayoutBlock*> getProtectingBlocksByNamedBean( /*@Nullable*/ NamedBean* nb, /*@Nullable*/ LayoutEditor* panel);
 /*private*/ QList<LayoutBlock*> getProtectingBlocksByBean(/*@Nullable*/ NamedBean* bean, /*@Nullable*/ LayoutEditor* panel);
@@ -125,9 +123,15 @@ bool stabilised;// = false;
 QThread* thr;// = NULL;
 
 /*private*/ NamedBeanHandle<Sensor*>* namedStabilisedIndicator;
-/*private*/ LayoutTurnout* getLayoutTurnoutFromTurnoutName(QString turnoutName,LayoutEditor* panel);
+///*private*/ LayoutTurnout* getLayoutTurnoutFromTurnoutName(QString turnoutName,LayoutEditor* panel);
 LayoutBlockConnectivityTools* lbct;// = new LayoutBlockConnectivityTools();
 /*private*/ QList<LayoutBlock*> getProtectingBlocksByBeanByPanel(/*@Nullable*/ NamedBean* bean,/*@Nullable*/ LayoutEditor* panel);
+/*private*/ LayoutBlock* getFacingBlockByBean(
+        /*@Nonnull*/ NamedBean* bean,
+        LayoutEditor* panel);
+/*private*/ LayoutBlock* getFacingBlockByBeanByPanel(
+        /*@Nonnull*/ NamedBean* bean,
+        /*@Nonnull */LayoutEditor* panel);
 
 protected:
 /*protected*/ bool _enableAdvancedRouting;// = false;

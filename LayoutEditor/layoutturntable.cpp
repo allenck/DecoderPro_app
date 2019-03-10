@@ -80,7 +80,7 @@
  editTurntableFrame = NULL;
  radiusField = new JTextField(8);
  angleField = new JTextField(8);
- turntableEditDone;
+ //turntableEditDone = new QPushButton();
  oldRadius = "";
  editOpen = false;
  needsRedraw = false;

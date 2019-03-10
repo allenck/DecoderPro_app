@@ -866,7 +866,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
   // using Entry Points directly will lead to a problem, try following track - first from A following B
   int dir = EntryPoint::UNKNOWN;
   Block* tBlock = nullptr;
-  TrackNode* tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_A, (TrackSegment*)t->getConnectA(),false, Turnout::CLOSED);
+  TrackNode* tn = new TrackNode(t, LayoutEditor::TURNOUT_A, (TrackSegment*)t->getConnectA(),false, Turnout::CLOSED);
   while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) )
   {
    tn = cUtil->getNextNode(tn, 0);
@@ -875,7 +875,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
   if (tBlock==nullptr)
   {
    // try from A following C
-   tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_A, (TrackSegment*)t->getConnectA(), false, Turnout::THROWN);
+   tn = new TrackNode(t, LayoutEditor::TURNOUT_A, (TrackSegment*)t->getConnectA(), false, Turnout::THROWN);
    while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) )
    {
     tn = cUtil->getNextNode(tn, 0);
@@ -891,7 +891,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
   {
    // try from B following A
    tBlock = nullptr;
-   tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_B, (TrackSegment*)t->getConnectB(),
+   tn = new TrackNode(t, LayoutEditor::TURNOUT_B, (TrackSegment*)t->getConnectB(),
                                     false, Turnout::CLOSED);
    while ( (tBlock==nullptr) && (tn!=nullptr && (!tn->reachedEndOfTrack())) )
    {
@@ -1013,7 +1013,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             // set direction by tracking from a or b
             int dir = EntryPoint::UNKNOWN;
             Block* tBlock = nullptr;
-            TrackNode* tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_A, (TrackSegment*)t->getConnectA(), false, Turnout::CLOSED);
+            TrackNode* tn = new TrackNode(t, LayoutEditor::TURNOUT_A, (TrackSegment*)t->getConnectA(), false, Turnout::CLOSED);
             while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                 tn = cUtil->getNextNode(tn, 0);
                 tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
@@ -1023,7 +1023,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                 if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
-                tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_B, (TrackSegment*)t->getConnectB(),
+                tn = new TrackNode(t, LayoutEditor::TURNOUT_B, (TrackSegment*)t->getConnectB(),
                                     false, Turnout::CLOSED);
                 while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                     tn = cUtil->getNextNode(tn, 0);
@@ -1076,7 +1076,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             // set direction by tracking from c or d
             int dir = EntryPoint::UNKNOWN;
             Block* tBlock = nullptr;
-            TrackNode* tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_D, (TrackSegment*)t->getConnectD(),  false, Turnout::CLOSED);
+            TrackNode* tn = new TrackNode(t, LayoutEditor::TURNOUT_D, (TrackSegment*)t->getConnectD(),  false, Turnout::CLOSED);
             while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                 tn = cUtil->getNextNode(tn, 0);
                 tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
@@ -1086,7 +1086,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                 if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
-                tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_C, (TrackSegment*)t->getConnectC(),
+                tn = new TrackNode(t, LayoutEditor::TURNOUT_C, (TrackSegment*)t->getConnectC(),
                                     false, Turnout::CLOSED);
                 while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                     tn = cUtil->getNextNode(tn, 0);
@@ -1165,7 +1165,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             // set direction by tracking from a or b
             int dir = EntryPoint::UNKNOWN;
             Block* tBlock = nullptr;
-            TrackNode* tn = new TrackNode((QObject*)t, LayoutEditor::SLIP_A, (TrackSegment*)t->getConnectA(),
+            TrackNode* tn = new TrackNode(t, LayoutEditor::SLIP_A, (TrackSegment*)t->getConnectA(),
                                     false, LayoutSlip::STATE_AC);
             while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                 tn = cUtil->getNextNode(tn, 0);
@@ -1176,7 +1176,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                 if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
-                tn = new TrackNode((QObject*)t, LayoutEditor::SLIP_C, (TrackSegment*)t->getConnectC(),
+                tn = new TrackNode(t, LayoutEditor::SLIP_C, (TrackSegment*)t->getConnectC(),
                                     false, LayoutSlip::STATE_AC);
                 while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                     tn = cUtil->getNextNode(tn, 0);
@@ -1222,7 +1222,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
             // set direction by tracking from c or d
             int dir = EntryPoint::UNKNOWN;
             Block* tBlock = nullptr;
-            TrackNode* tn = new TrackNode((QObject*)t, LayoutEditor::SLIP_D, (TrackSegment*)t->getConnectD(),
+            TrackNode* tn = new TrackNode(t, LayoutEditor::SLIP_D, (TrackSegment*)t->getConnectD(),
                                     false, LayoutSlip::STATE_BD);
             while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                 tn = cUtil->getNextNode(tn, 0);
@@ -1233,7 +1233,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
                 if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
-                tn = new TrackNode((QObject*)t, LayoutEditor::TURNOUT_B, (TrackSegment*)t->getConnectB(),
+                tn = new TrackNode(t, LayoutEditor::TURNOUT_B, (TrackSegment*)t->getConnectB(),
                                     false, LayoutSlip::STATE_BD);
                 while ( (tBlock==nullptr) && (tn!=nullptr) && (!tn->reachedEndOfTrack()) ) {
                     tn = cUtil->getNextNode(tn, 0);
@@ -1537,9 +1537,9 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
              // have a signaled AC level crossing internal to this block
              if ( (x->getSignalAName()!=nullptr) && (x->getSignalAName()!=("")) ) {
                  // there is a signal at A in the level crossing
-                 TrackNode* tn = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_A,
+                 TrackNode* tn = new TrackNode(x, LayoutEditor::LEVEL_XING_A,
                                      (TrackSegment*)x->getConnectA(), false, 0);
-                 TrackNode* altNode = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_C,
+                 TrackNode* altNode = new TrackNode(x, LayoutEditor::LEVEL_XING_C,
                                      (TrackSegment*)x->getConnectC(), false, 0);
                  SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalAName());
@@ -1547,9 +1547,9 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
              }
              if ( (x->getSignalCName()!=nullptr) && (x->getSignalCName()!=("")) ) {
                  // there is a signal at C in the level crossing
-                 TrackNode* tn = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_C,
+                 TrackNode* tn = new TrackNode(x, LayoutEditor::LEVEL_XING_C,
                                      (TrackSegment*)x->getConnectC(), false, 0);
-                 TrackNode* altNode = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_A,
+                 TrackNode* altNode = new TrackNode(x, LayoutEditor::LEVEL_XING_A,
                                      (TrackSegment*)x->getConnectA(), false, 0);
                  SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalCName());
@@ -1592,9 +1592,9 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
              // have a signaled BD level crossing internal to this block
              if ( (x->getSignalBName()!=nullptr) && (x->getSignalBName()!=("")) ) {
                  // there is a signal at B in the level crossing
-                 TrackNode* tn = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_B,
+                 TrackNode* tn = new TrackNode(x, LayoutEditor::LEVEL_XING_B,
                                      (TrackSegment*)x->getConnectB(), false, 0);
-                 TrackNode* altNode = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_D,
+                 TrackNode* altNode = new TrackNode(x, LayoutEditor::LEVEL_XING_D,
                                      (TrackSegment*)x->getConnectD(), false, 0);
                  SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalBName());
@@ -1602,9 +1602,9 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
              }
              if ( (x->getSignalDName()!=nullptr) && (x->getSignalDName()!=("")) ) {
                  // there is a signal at C in the level crossing
-                 TrackNode* tn = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_D,
+                 TrackNode* tn = new TrackNode(x, LayoutEditor::LEVEL_XING_D,
                                      (TrackSegment*)x->getConnectD(), false, 0);
-                 TrackNode* altNode = new TrackNode((QObject*)x, LayoutEditor::LEVEL_XING_B,
+                 TrackNode* altNode = new TrackNode(x, LayoutEditor::LEVEL_XING_B,
                                      (TrackSegment*)x->getConnectB(), false, 0);
                  SignalHead* sh = ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(
                                                  x->getSignalDName());
@@ -2063,9 +2063,7 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
 /*private*/ LayoutTurnout* Section::getLayoutTurnoutFromTurnoutName(QString turnoutName, LayoutEditor* panel) {
     Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(turnoutName);
     if (t==nullptr) return nullptr;
-    LayoutTurnout* lt = nullptr;
-    for (int i=0; i<panel->turnoutList->size(); i++) {
-        lt = panel->turnoutList->at(i);
+    for (LayoutTurnout* lt : panel->getLayoutTurnouts()) {
         if (lt->getTurnout()==t) return lt;
     }
     return nullptr;

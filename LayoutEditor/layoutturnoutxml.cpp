@@ -424,5 +424,12 @@ LayoutTurnoutXml::LayoutTurnoutXml(QObject *parent) :
         }
     }
 
-    p->turnoutList->append(l);
+    p->getLayoutTracks()->append(l);
 }
+
+QString LayoutTurnoutXml::getElement(QDomElement el, QString child) {
+        if (!el.firstChildElement(child).isNull()) {
+            return el.firstChildElement(child).text();
+        }
+        return "";
+    }

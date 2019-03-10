@@ -3031,7 +3031,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
    if (!added)
    {
     selections->append(p);
-    statusBar()->showMessage( tr("select %1 x=%2,y=%3, w=%4, h= %5").arg(((QObject*)p)->metaObject()->className()).arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height()));
+    statusBar()->showMessage( tr("select %1 x=%2,y=%3, w=%4, h= %5").arg(p->self()->metaObject()->className()).arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height()));
    }
   }
  }
