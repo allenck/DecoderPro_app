@@ -380,8 +380,9 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
 /*public*/ QList<NamedBean*> JmriBeanComboBox::getExcludeItems() {
         return this->exclude;
 }
+
+/*public*/ void JmriBeanComboBox::setItemEnabled(int inIndex, bool inEnabled) {
 #if 0
-/*public*/ void setItemEnabled(int inIndex, bool inEnabled) {
     ListSelectionModel lsm = getEnabledItems();
     if (lsm != null) {
         if (inEnabled) {
@@ -390,8 +391,9 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
             lsm.removeSelectionInterval(inIndex, inIndex);
         }
     }
+#endif
 }
-
+#if 0
 /*public*/ bool isItemEnabled(int inIndex) {
     bool result = false;
     ListSelectionModel lsm = getEnabledItems();

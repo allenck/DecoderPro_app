@@ -86,12 +86,15 @@ public:
  };
  Q_ENUM(POINTS)
  // operational instance variables (not saved between sessions)
-     /*public*/ static /*final*/ int UNKNOWN;// = Turnout.UNKNOWN;
-     /*public*/ static /*final*/ int STATE_AC;// = 0x02;
-     /*public*/ static /*final*/ int STATE_BD;// = 0x04;
-     /*public*/ static /*final*/ int STATE_AD;// = 0x06;
-     /*public*/ static /*final*/ int STATE_BC;// = 0x08;
-
+ enum STATES
+ {
+  UNKNOWN = Turnout::UNKNOWN,
+  STATE_AC = 0x02,
+  STATE_BD = 0x04,
+  STATE_AD = 0x06,
+  STATE_BC = 0x08
+};
+ Q_ENUM(STATES)
      // program default turnout size parameters
      /*public*/ static /*final*/ double turnoutBXDefault;// = 20.0;  // RH, LH, WYE
      /*public*/ static /*final*/ double turnoutCXDefault;// = 20.0;
@@ -103,11 +106,6 @@ public:
 //    /*public*/ QString ident;   // name of this layout turnout (hidden from user)
     /*public*/ QString turnoutName;// = "";   // should be the name (system or user) of
                                 //	an existing physical turnout
-    /*public*/ QString secondTurnoutName /*= ""*/;   /* should be the name (system or user) of
-                                an existing physical turnout. Second turnout is
-                                used to allow the throwing of two different turnout
-                                to control one cross-over
-                                */
     /*public*/ QString blockName;// = "";  // name for block, if there is one
     /*public*/ QString blockBName;// = "";  // Xover - name for second block, if there is one
     /*public*/ QString blockCName;// = "";  // Xover - name for third block, if there is one
@@ -157,6 +155,8 @@ public:
     /*public*/ bool useBlockSpeed();
     /*public*/ QString getTurnoutName();
     /*public*/ QString getSecondTurnoutName();
+    /*public*/ bool isSecondTurnoutInverted();
+    /*public*/ void setSecondTurnoutInverted(bool inverted);
     /*public*/ bool getHidden();
     /*public*/ void setHidden(bool hide);
     /*public*/ QString getBlockName();
@@ -331,11 +331,22 @@ public:
  /*public*/ QRectF getBounds();
  /*public*/ QList<int> checkForFreeConnections();
  /*public*/ bool checkForUnAssignedBlocks();
- /*public*/ void checkForNonContiguousBlocks(/*@Nonnull*/QMap<QString, QList<QSet<QString> *> *> *blockNamesToTrackNameSetsMap);
- /*public*/ void collectContiguousTracksNamesInBlockNamed(
-   /*@Nonnull*/ QString blockName,
-   /*@Nonnull*/ QSet<QString>* TrackNameSet);
+ /*public*/ void checkForNonContiguousBlocks(/*@Nonnull*/QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap);
+ /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
+   /*@Nonnull*/ QSet<QString> TrackNameSet);
  /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
+ /*public*/ void setState(int state);
+ /*public*/ int getState();
+ /*public*/ bool isMainline();
+
+
+ //make 'public' because of Jmri.h!
+ /*private*/ QString secondTurnoutName /*= ""*/;   /* should be the name (system or user) of
+                             an existing physical turnout. Second turnout is
+                             used to allow the throwing of two different turnout
+                             to control one cross-over
+                             */
+ /*private*/ bool secondTurnoutInverted = false;
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -419,6 +430,7 @@ private:
     void windowClosing(QCloseEvent*);
     void setTrackSegmentBlocks();
     void setTrackSegmentBlock(int pointType, bool isAutomatic);
+    /*private*/ bool isOccupied();
 
 
 private slots:
@@ -457,7 +469,7 @@ protected:
 //    /*protected*/ LayoutTurnout* instance;// = NULL;
 //    /*protected*/ LayoutEditor* layoutEditor;// = NULL;
     /*protected*/ void rotateCoords(double rot);
-    /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e, bool editable);
+    /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);
     /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
 
     /*protected*/ JmriJFrame* editLayoutTurnoutFrame;// = NULL;
@@ -483,8 +495,13 @@ protected:
     /*protected*/ NamedBeanHandle<SignalHead*>* signalC2HeadNamed = nullptr; // RH_Xover and double crossover only
     /*protected*/ NamedBeanHandle<SignalHead*>* signalD1HeadNamed = nullptr; // single or double crossover only
     /*protected*/ NamedBeanHandle<SignalHead*>* signalD2HeadNamed = nullptr; // LH_Xover and double crossover only
-    /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, QPen stroke);
-    /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, QPen stroke);
+    /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
+    /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+    /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
+    /*protected*/ void drawTurnoutControls(EditScene* g2);
+    /*protected*/ void drawEditControls(EditScene* g2);
+    /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
+
 
  friend class LayoutEditor;
  friend class EditTurnout;

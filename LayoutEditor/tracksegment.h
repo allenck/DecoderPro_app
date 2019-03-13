@@ -17,6 +17,8 @@ public:
     // alternate constructor for loading layout editor panels
     /*public*/ TrackSegment(QString id, QString c1Name, int t1, QString c2Name, int t2, bool dash, bool main, bool hide, LayoutEditor* myPanel);
     /*public*/ bool getArc() {return arc;}
+    /*public*/ QString toString();
+
     /**
      * Accessor methods
     */
@@ -29,9 +31,10 @@ public:
     QT_DEPRECATED /*public*/ bool getDashed();
     /*public*/ bool isDashed();
     /*public*/ void setDashed(bool dash);
-    /*public*/ bool getHidden();
-    /*public*/ void setHidden(bool hide);
-    /*public*/ bool getMainline();
+//    /*public*/ bool getHidden();
+//    /*public*/ void setHidden(bool hide);
+    QT_DEPRECATED /*public*/ bool getMainline();
+    /*public*/ bool isMainline();
     /*public*/ void setMainline(bool main);
     /*public*/ void setArc(bool boo);
     QT_DEPRECATED /*public*/ bool getCircle();
@@ -61,6 +64,10 @@ public:
      */
     /*public*/ void setLayoutBlock (LayoutBlock* b);
     /*public*/ void setLayoutBlockByName (QString name);
+    /*public*/ void scaleCoords(float xFactor, float yFactor);
+    /*public*/ void translateCoords(float xFactor, float yFactor);
+    /*public*/ void setCoordsCenter(/*@Nonnull*/ QPointF newCenterPoint);
+
     // initialization instance variables (used when loading a LayoutEditor)
     /*public*/ QString tBlockName;// = "";
     /*public*/ QString tConnect1Name;// = "";
@@ -85,6 +92,9 @@ public:
      * "active" means that the object is still displayed, and should be stored.
      */
     /*public*/ bool isActive();
+    /*public*/ bool isShowConstructionLines();
+    /*public*/ void hideConstructionLines(int hide);
+    /*public*/ bool hideConstructionLines();
     /**
     * The following are used only as a temporary store after a circle or arc has been calculated.
     * This prevents the need to recalculate the values each time a re-draw is required.
@@ -107,9 +117,9 @@ public:
     /*public*/ double getStartAdj();
     /*public*/ void setStartAdj(double Startadj);
     /*public*/ double getCentreX();
-    /*public*/ void setCentreX(double CentreX);
+    /*public*/ void setCentreX(double x);
     /*public*/ double getCentreY();
-    /*public*/ void setCentreY(double CentreY);
+    /*public*/ void setCentreY(double y);
     /*public*/ QPointF getCentre();
     /*public*/ double getTmpAngle();
     /*public*/ void setTmpAngle(double TmpAngle);
@@ -120,8 +130,6 @@ public:
     void changeType(int choice);
     double radToDeg(double radians);
     double degToRad(double degrees);
-    /*public*/ void hideConstructionLines(int hide) ;
-    /*public*/ bool hideConstructionLines();
     /*public*/ enum CONSTRUCT
     {
      SHOWCON = 0x01,
@@ -213,7 +221,13 @@ public:
     /*public*/ void setBezierControlPoint(/*@Nullable*/ QPointF p, int index);
     /*public*/ double getDirectionRAD();
     /*public*/ double getDirectionDEG();
-    /*public*/ void splitTrackSegment();
+    /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
+    /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
+                   /*@Nonnull*/ QSet<QString> TrackNameSet);
+    /*public*/ void checkForNonContiguousBlocks(
+            /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap);
+    /*public*/ bool checkForUnAssignedBlocks();
+    /*public*/ QList<int> checkForFreeConnections();
 
 signals:
     
@@ -222,6 +236,8 @@ public slots:
     void on_changeType(QAction* act);
     void flipAngle();
     void on_actionRemove();
+    /*public*/ void splitTrackSegment();
+
 private:
     // defined constants
 
@@ -233,21 +249,20 @@ private:
     // persistent instances variables (saved between sessions)
 //    /*private*/ QString ident;// = "";
     /*private*/ QString blockName;// = "";
-    /*private*/ bool dashed;// = false;
-    /*private*/ bool mainline;// = false;
-    /*private*/ bool hidden;// = false;
-    /*private*/ bool arc;// = false;
-    /*private*/ bool flip;// = false;
+    /*private*/ bool dashed = false;
+    /*private*/ bool mainline = false;
+    /*private*/ bool arc = false;
+    /*private*/ bool flip = false;
     /*private*/ double angle;// =0.0D;
-    /*private*/ bool circle;//=false;
-    /*private*/ bool changed;//=false;
+    /*private*/ bool circle=false;
+    /*private*/ bool changed=false;
     /*private*/ bool bezier = false;
     // for Bezier
     /*private*/ QList<QPointF> bezierControlPoints;// = QList<QPointF>(); // list of control point displacements
 
     /*private*/ QString getConnectName(LayoutTrack* o,int type);
 
-    /*private*/ LayoutBlock* getBlock (QObject* connect, int type);
+    /*private*/ LayoutBlock* getBlock (LayoutTrack *connect, int type);
     /*private*/ double chordLength;
     bool active;// = true;
     /*private*/ QPointF pt1;
@@ -331,6 +346,25 @@ private:
                            bool dirOut,
                            int offset, QPen stroke);
 
+private slots:
+ void onMakeLabel1();
+ void onMakeLabel2();
+ void onMainlineCheckBox();
+ void onHiddenChecKBox();
+ void onDashedCheckBox();
+ void onFlippedCheckBox();
+ void onSetArrowStyle();
+ void onArrowEnd();
+ void onArrowDirection();
+ void onArrowColor();
+ void onArrowWidth();
+ void onArrowLength();
+ void onArrowGap();
+ void onEdit();
+ void onDelete();
+ void onChangeTo();
+ void onConstruct();
+ void onViewBlockRouting();
 
 protected:
  /*protected*/ void updateBlockInfo();
@@ -341,22 +375,24 @@ protected:
  /*protected*/ LayoutTrack* connect2 = nullptr;
  /*protected*/ int type2 = 0;
  /*protected*/ void drawDecorations(EditScene* g2);
- /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, QPen drawingStroke);
- /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, QPen drawingStroke);
+ /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
+ /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
  /*protected*/ void highlightUnconnected(EditScene* g2, int selectedType);
- /*protected*/ void drawEditControls(EditScene* g2);
- /*protected*/ void drawTurnoutControls(EditScene* g2);
+ /*protected*/ void drawEditControls(EditScene* g2, QPen stroke);
+ /*protected*/ void drawTurnoutControls(EditScene* g2, QPen stroke);
  /*protected*/ void showBezierPopUp(QGraphicsSceneMouseEvent* e, int hitPointType);
-
+ /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
+ /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
+ /**
+  * Display popup menu for information and editing
+  */
+ /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);
 
  friend class LayoutEditor;
  friend class EditTrackSegmentDlg;
  friend class LoadXml;
- /**
-  * Display popup menu for information and editing
-  */
- /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e);
  friend class PositionablePoint;
+ friend class LayoutEditorAuxTools;
 };
 class TSAbstractAction : public AbstractAction
 {

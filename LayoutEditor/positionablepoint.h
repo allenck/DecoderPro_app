@@ -89,7 +89,7 @@ public:
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* e);
     /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* e);
     /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* e);
-    void invalidate(QGraphicsScene* g2);
+    void invalidate(EditScene *g2);
     void draw(QGraphicsScene* g);
     /*public*/ QString getLinkEditorName();
     /*public*/ PositionablePoint* getLinkedPoint() ;
@@ -113,8 +113,8 @@ public slots:
     /*public*/ void updateLink();
 
 private:
-    /*private*/ PositionablePoint* instance; //null;
-    /*private*/ LayoutEditor* layoutEditor; //null;
+    /*private*/ PositionablePoint* instance = nullptr;
+    /*private*/ LayoutEditor* layoutEditor = nullptr;
 
     // persistent instances variables (saved between sessions)
     ///*private*/ QString ident; //"";
@@ -168,11 +168,11 @@ protected:
  /*protected*/ int getConnect1Dir();
  /*protected*/ NamedBeanHandle<SignalHead*>* signalEastHeadNamed = nullptr; // signal head for east (south) bound trains
  /*protected*/ NamedBeanHandle<SignalHead*>* signalWestHeadNamed = nullptr; // signal head for west (north) bound trains
- /*protected*/ void drawTurnoutControls(QGraphicsScene* g2);
- /*protected*/ void draw1(QGraphicsScene* g2, bool isMain, bool isBlock);
- /*protected*/ void draw2(QGraphicsScene g2, bool isMain, float railDisplacement);
- /*protected*/ void highlightUnconnected(QGraphicsScene* g2, int specificType);
- /*protected*/ /*abstract*/ virtual void drawEditControls(EditScene *g2);
+ /*protected*/ void drawTurnoutControls(EditScene* g2);
+ /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
+ /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+ /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
+ /*protected*/ /*abstract*/ void drawEditControls(EditScene *g2, QPen stroke);
  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
 
 

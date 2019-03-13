@@ -9,6 +9,9 @@ class JAVAQTSHARED_EXPORT GridBagLayout : public QGridLayout
  public:
     GridBagLayout(QWidget* parent = 0);
     void addWidget(QWidget* widget, GridBagConstraints gbc);
+    void columnWidths(QList<int> columns);
+    void rowHeights(QList<int> rows);
+
 };
 
 #endif // GRIDBAGLAYOUT_H

@@ -823,6 +823,46 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
 }
 
 // ============ End NX Pair Delete Methods ============
+/**
+ * Create a list of sensors that have the layout block as either
+ * facing or protecting.
+ * Called by {@link jmri.jmrit.display.layoutEditor.LayoutTrackEditors#hasNxSensorPairs}.
+ * @since 4.11.2
+ * @param layoutBlock The layout block to be checked.
+ * @return the a list of sensors affected by the layout block or an empty list.
+ */
+/*public*/ QList<QString> EntryExitPairs::layoutBlockSensors(/*@Nonnull*/ LayoutBlock* layoutBlock) {
+    log->debug(tr("layoutBlockSensors: %1").arg(layoutBlock->getDisplayName()));
+    QList<QString> blockSensors = QList<QString>();
+    //nxpair.forEach((pdSrc, src) ->
+    QHashIterator<PointDetails*, Source*> iter(nxpair);
+    while(iter.hasNext())
+    {
+     iter.next();
+     PointDetails* pdSrc = iter.key();
+     Source* src = iter.value();
+        Sensor* sBean = pdSrc->getSensor();
+        for (LayoutBlock* sProtect : pdSrc->getProtecting()) {
+            if (layoutBlock == pdSrc->getFacing() || layoutBlock == sProtect) {
+                log->debug(tr("  Source = '%1', Facing = '%2', Protecting = '%3'         ").arg(
+                        sBean->getDisplayName()).arg(pdSrc->getFacing()->getDisplayName()).arg(sProtect->getDisplayName()));
+                blockSensors.append(sBean->getDisplayName());
+            }
+        }
+
+        for (PointDetails* pdDest : *src->getDestinationPoints()) {
+            Sensor* dBean = pdDest->getSensor();
+            for (LayoutBlock* dProtect : pdDest->getProtecting()) {
+                if (layoutBlock == pdDest->getFacing() || layoutBlock == dProtect) {
+                    log->debug(tr("    Destination = '%1', Facing = '%2', Protecting = '%2'     ").arg(
+                            dBean->getDisplayName()).arg(pdDest->getFacing()->getDisplayName()).arg(dProtect->getDisplayName()));
+                    blockSensors.append(dBean->getDisplayName());
+                }
+            }
+        }
+    }//);
+    return blockSensors;
+}
 
 /*public*/ bool EntryExitPairs::isDestinationValid(QObject* source, QObject* dest, LayoutEditor* panel){
     if( nxpair.contains(getPointDetails(source, panel))){

@@ -81,7 +81,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -544,7 +543,6 @@ void delete_Editor(Editor* obj) { delete obj; }
    void removeFromTarget(Editor* theWrappedObject, Positionable*  l);
    void removeSelections(Editor* theWrappedObject, Positionable*  p);
    void py_q_repaint(Editor* theWrappedObject){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_repaint());}
-   void setAllControlling(Editor* theWrappedObject, bool  state);
    void setAllEditable(Editor* theWrappedObject, bool  state);
    void py_q_setAllEditable(Editor* theWrappedObject, bool  state){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_setAllEditable(state));}
    void setBackgroundColor(Editor* theWrappedObject, QColor  col);
@@ -1907,6 +1905,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    bool  getAutoBlockAssignment(LayoutEditor* theWrappedObject);
    QColor  getBackgroundColor(LayoutEditor* theWrappedObject);
    QString  py_q_getClassName(LayoutEditor* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_getClassName());}
+   const QIcon  getColourIcon(LayoutEditor* theWrappedObject, QColor  color);
    QList<Positionable* >  getContents(LayoutEditor* theWrappedObject);
    QPointF  static_LayoutEditor_getCoords(LayoutTrack*  layoutTrack, int  connectionType);
    QPointF  static_LayoutEditor_getCoords(QObject*  o, int  type);
@@ -2085,19 +2084,21 @@ virtual QList<int >  checkForFreeConnections();
 virtual void checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetMaps);
 virtual bool  checkForUnAssignedBlocks();
 virtual void childEvent(QChildEvent*  event);
-virtual void collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >*  trackNameSet);
+virtual void collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >  trackNameSet);
 virtual void customEvent(QEvent*  event);
-virtual void draw1(EditScene*  g2, bool  isMain, bool  isBlock, QPen  arg__4);
-virtual void draw2(EditScene*  g2, bool  arg__2, float  arg__3, QPen  arg__4);
+virtual void draw1(EditScene*  g2, bool  isMain, bool  isBlock);
+virtual void draw2(EditScene*  g2, bool  arg__2, float  arg__3);
 virtual void drawDecorations(EditScene*  g2);
-virtual void drawEditControls(EditScene*  g2, QPen  stroke);
-virtual void drawTurnoutControls(EditScene*  g2, QPen  stroke);
+virtual void drawEditControls(EditScene*  g2);
+virtual void drawTurnoutControls(EditScene*  g2);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual int  findHitPointType(QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected);
 virtual QRectF  getBounds();
 virtual LayoutTrack*  getConnection(int  connectionType) throw (JmriException);
 virtual QPointF  getCoordsForConnectionType(int  arg__1);
+virtual QMap<QString , QString >*  getDecorations();
+virtual bool  hasDecorations();
 virtual void highlightUnconnected(EditScene*  g2);
 virtual void highlightUnconnected(EditScene*  g2, int  specificType);
 virtual bool  isDisconnected(int  connectionType);
@@ -2105,6 +2106,8 @@ virtual bool  isMainline();
 virtual void reCheckBlockBoundary();
 virtual void scaleCoords(float  xFactor, float  yFactor);
 virtual void setConnection(int  connectionType, LayoutTrack*  o, int  type) throw (JmriException);
+virtual void setCoordsCenter(QPointF  p);
+virtual void setDecorations(QMap<QString , QString >*  decorations);
 virtual void setObjects(LayoutEditor*  le);
 virtual QMenu*  showPopup(QGraphicsSceneMouseEvent*  mouseEvent);
 virtual void timerEvent(QTimerEvent*  event);
@@ -2117,12 +2120,12 @@ virtual void translateCoords(float  xFactor, float  yFactor);
 
 class PythonQtPublicPromoter_LayoutTrack : public LayoutTrack
 { public:
-inline void promoted_draw1(EditScene*  g2, bool  isMain, bool  isBlock, QPen  arg__4) { this->draw1(g2, isMain, isBlock, arg__4); }
-inline void promoted_draw2(EditScene*  g2, bool  arg__2, float  arg__3, QPen  arg__4) { this->draw2(g2, arg__2, arg__3, arg__4); }
+inline void promoted_draw1(EditScene*  g2, bool  isMain, bool  isBlock) { this->draw1(g2, isMain, isBlock); }
+inline void promoted_draw2(EditScene*  g2, bool  arg__2, float  arg__3) { this->draw2(g2, arg__2, arg__3); }
 inline void promoted_drawDecorations(EditScene*  g2) { this->drawDecorations(g2); }
-inline void promoted_drawEditControls(EditScene*  g2, QPen  stroke) { this->drawEditControls(g2, stroke); }
+inline void promoted_drawEditControls(EditScene*  g2) { this->drawEditControls(g2); }
 inline void promoted_drawHidden(EditScene*  g2) { this->drawHidden(g2); }
-inline void promoted_drawTurnoutControls(EditScene*  g2, QPen  stroke) { this->drawTurnoutControls(g2, stroke); }
+inline void promoted_drawTurnoutControls(EditScene*  g2) { this->drawTurnoutControls(g2); }
 inline int  promoted_findHitPointType(QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected) { return this->findHitPointType(hitPoint, useRectangles, requireUnconnected); }
 inline int  promoted_findHitPointType(QPointF  p) { return this->findHitPointType(p); }
 inline int  promoted_findHitPointType(QPointF  p, bool  useRectangles) { return this->findHitPointType(p, useRectangles); }
@@ -2140,16 +2143,18 @@ inline QMenu*  promoted_showPopup(QPointF  where) { return this->showPopup(where
 inline QList<int >  py_q_checkForFreeConnections() { return LayoutTrack::checkForFreeConnections(); }
 inline void py_q_checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetMaps) { LayoutTrack::checkForNonContiguousBlocks(blockNamesToTrackNameSetMaps); }
 inline bool  py_q_checkForUnAssignedBlocks() { return LayoutTrack::checkForUnAssignedBlocks(); }
-inline void py_q_collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >*  trackNameSet) { LayoutTrack::collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet); }
-inline void py_q_draw1(EditScene*  g2, bool  isMain, bool  isBlock, QPen  arg__4) { LayoutTrack::draw1(g2, isMain, isBlock, arg__4); }
-inline void py_q_draw2(EditScene*  g2, bool  arg__2, float  arg__3, QPen  arg__4) { LayoutTrack::draw2(g2, arg__2, arg__3, arg__4); }
+inline void py_q_collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >  trackNameSet) { LayoutTrack::collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet); }
+inline void py_q_draw1(EditScene*  g2, bool  isMain, bool  isBlock) { LayoutTrack::draw1(g2, isMain, isBlock); }
+inline void py_q_draw2(EditScene*  g2, bool  arg__2, float  arg__3) { LayoutTrack::draw2(g2, arg__2, arg__3); }
 inline void py_q_drawDecorations(EditScene*  g2) { LayoutTrack::drawDecorations(g2); }
-inline void py_q_drawEditControls(EditScene*  g2, QPen  stroke) { LayoutTrack::drawEditControls(g2, stroke); }
-inline void py_q_drawTurnoutControls(EditScene*  g2, QPen  stroke) { LayoutTrack::drawTurnoutControls(g2, stroke); }
+inline void py_q_drawEditControls(EditScene*  g2) { LayoutTrack::drawEditControls(g2); }
+inline void py_q_drawTurnoutControls(EditScene*  g2) { LayoutTrack::drawTurnoutControls(g2); }
 inline int  py_q_findHitPointType(QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected) { return LayoutTrack::findHitPointType(hitPoint, useRectangles, requireUnconnected); }
 inline QRectF  py_q_getBounds() { return LayoutTrack::getBounds(); }
 inline LayoutTrack*  py_q_getConnection(int  connectionType) throw (JmriException) { return LayoutTrack::getConnection(connectionType); }
 inline QPointF  py_q_getCoordsForConnectionType(int  arg__1) { return LayoutTrack::getCoordsForConnectionType(arg__1); }
+inline QMap<QString , QString >*  py_q_getDecorations() { return LayoutTrack::getDecorations(); }
+inline bool  py_q_hasDecorations() { return LayoutTrack::hasDecorations(); }
 inline void py_q_highlightUnconnected(EditScene*  g2) { LayoutTrack::highlightUnconnected(g2); }
 inline void py_q_highlightUnconnected(EditScene*  g2, int  specificType) { LayoutTrack::highlightUnconnected(g2, specificType); }
 inline bool  py_q_isDisconnected(int  connectionType) { return LayoutTrack::isDisconnected(connectionType); }
@@ -2157,6 +2162,8 @@ inline bool  py_q_isMainline() { return LayoutTrack::isMainline(); }
 inline void py_q_reCheckBlockBoundary() { LayoutTrack::reCheckBlockBoundary(); }
 inline void py_q_scaleCoords(float  xFactor, float  yFactor) { LayoutTrack::scaleCoords(xFactor, yFactor); }
 inline void py_q_setConnection(int  connectionType, LayoutTrack*  o, int  type) throw (JmriException) { LayoutTrack::setConnection(connectionType, o, type); }
+inline void py_q_setCoordsCenter(QPointF  p) { LayoutTrack::setCoordsCenter(p); }
+inline void py_q_setDecorations(QMap<QString , QString >*  decorations) { LayoutTrack::setDecorations(decorations); }
 inline void py_q_setObjects(LayoutEditor*  le) { LayoutTrack::setObjects(le); }
 inline QMenu*  py_q_showPopup(QGraphicsSceneMouseEvent*  mouseEvent) { return LayoutTrack::showPopup(mouseEvent); }
 inline void py_q_translateCoords(float  xFactor, float  yFactor) { LayoutTrack::translateCoords(xFactor, yFactor); }
@@ -2175,19 +2182,19 @@ void delete_LayoutTrack(LayoutTrack* obj) { delete obj; }
    void py_q_checkForNonContiguousBlocks(LayoutTrack* theWrappedObject, QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetMaps){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_checkForNonContiguousBlocks(blockNamesToTrackNameSetMaps));}
    bool  checkForUnAssignedBlocks(LayoutTrack* theWrappedObject);
    bool  py_q_checkForUnAssignedBlocks(LayoutTrack* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_checkForUnAssignedBlocks());}
-   void collectContiguousTracksNamesInBlockNamed(LayoutTrack* theWrappedObject, QString  blockName, QSet<QString >*  trackNameSet);
-   void py_q_collectContiguousTracksNamesInBlockNamed(LayoutTrack* theWrappedObject, QString  blockName, QSet<QString >*  trackNameSet){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet));}
-   void draw1(LayoutTrack* theWrappedObject, EditScene*  g2, bool  isMain, bool  isBlock, QPen  arg__4);
-   void py_q_draw1(LayoutTrack* theWrappedObject, EditScene*  g2, bool  isMain, bool  isBlock, QPen  arg__4){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_draw1(g2, isMain, isBlock, arg__4));}
-   void draw2(LayoutTrack* theWrappedObject, EditScene*  g2, bool  arg__2, float  arg__3, QPen  arg__4);
-   void py_q_draw2(LayoutTrack* theWrappedObject, EditScene*  g2, bool  arg__2, float  arg__3, QPen  arg__4){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_draw2(g2, arg__2, arg__3, arg__4));}
+   void collectContiguousTracksNamesInBlockNamed(LayoutTrack* theWrappedObject, QString  blockName, QSet<QString >  trackNameSet);
+   void py_q_collectContiguousTracksNamesInBlockNamed(LayoutTrack* theWrappedObject, QString  blockName, QSet<QString >  trackNameSet){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet));}
+   void draw1(LayoutTrack* theWrappedObject, EditScene*  g2, bool  isMain, bool  isBlock);
+   void py_q_draw1(LayoutTrack* theWrappedObject, EditScene*  g2, bool  isMain, bool  isBlock){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_draw1(g2, isMain, isBlock));}
+   void draw2(LayoutTrack* theWrappedObject, EditScene*  g2, bool  arg__2, float  arg__3);
+   void py_q_draw2(LayoutTrack* theWrappedObject, EditScene*  g2, bool  arg__2, float  arg__3){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_draw2(g2, arg__2, arg__3));}
    void drawDecorations(LayoutTrack* theWrappedObject, EditScene*  g2);
    void py_q_drawDecorations(LayoutTrack* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_drawDecorations(g2));}
-   void drawEditControls(LayoutTrack* theWrappedObject, EditScene*  g2, QPen  stroke);
-   void py_q_drawEditControls(LayoutTrack* theWrappedObject, EditScene*  g2, QPen  stroke){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_drawEditControls(g2, stroke));}
+   void drawEditControls(LayoutTrack* theWrappedObject, EditScene*  g2);
+   void py_q_drawEditControls(LayoutTrack* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_drawEditControls(g2));}
    void drawHidden(LayoutTrack* theWrappedObject, EditScene*  g2);
-   void drawTurnoutControls(LayoutTrack* theWrappedObject, EditScene*  g2, QPen  stroke);
-   void py_q_drawTurnoutControls(LayoutTrack* theWrappedObject, EditScene*  g2, QPen  stroke){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_drawTurnoutControls(g2, stroke));}
+   void drawTurnoutControls(LayoutTrack* theWrappedObject, EditScene*  g2);
+   void py_q_drawTurnoutControls(LayoutTrack* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_drawTurnoutControls(g2));}
    int  findHitPointType(LayoutTrack* theWrappedObject, QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected);
    int  py_q_findHitPointType(LayoutTrack* theWrappedObject, QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected){  return (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_findHitPointType(hitPoint, useRectangles, requireUnconnected));}
    int  findHitPointType(LayoutTrack* theWrappedObject, QPointF  p);
@@ -2200,11 +2207,13 @@ void delete_LayoutTrack(LayoutTrack* obj) { delete obj; }
    QPointF  getCoordsForConnectionType(LayoutTrack* theWrappedObject, int  arg__1);
    QPointF  py_q_getCoordsForConnectionType(LayoutTrack* theWrappedObject, int  arg__1){  return (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_getCoordsForConnectionType(arg__1));}
    QMap<QString , QString >*  getDecorations(LayoutTrack* theWrappedObject);
+   QMap<QString , QString >*  py_q_getDecorations(LayoutTrack* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_getDecorations());}
    bool  getHidden(LayoutTrack* theWrappedObject);
    QString  getId(LayoutTrack* theWrappedObject);
    QString  getName(LayoutTrack* theWrappedObject);
    QString  getTurnoutStateString(LayoutTrack* theWrappedObject, int  turnoutState);
    bool  hasDecorations(LayoutTrack* theWrappedObject);
+   bool  py_q_hasDecorations(LayoutTrack* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_hasDecorations());}
    void highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2);
    void py_q_highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_highlightUnconnected(g2));}
    void highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2, int  specificType);
@@ -2225,7 +2234,9 @@ void delete_LayoutTrack(LayoutTrack* obj) { delete obj; }
    void setConnection(LayoutTrack* theWrappedObject, int  connectionType, LayoutTrack*  o, int  type) throw (JmriException);
    void py_q_setConnection(LayoutTrack* theWrappedObject, int  connectionType, LayoutTrack*  o, int  type) throw (JmriException){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_setConnection(connectionType, o, type));}
    void setCoordsCenter(LayoutTrack* theWrappedObject, QPointF  p);
+   void py_q_setCoordsCenter(LayoutTrack* theWrappedObject, QPointF  p){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_setCoordsCenter(p));}
    void setDecorations(LayoutTrack* theWrappedObject, QMap<QString , QString >*  decorations);
+   void py_q_setDecorations(LayoutTrack* theWrappedObject, QMap<QString , QString >*  decorations){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_setDecorations(decorations));}
    void static_LayoutTrack_setDefaultTrackColor(QColor  color);
    void setHidden(LayoutTrack* theWrappedObject, bool  hide);
    void setObjects(LayoutTrack* theWrappedObject, LayoutEditor*  le);
@@ -2256,31 +2267,34 @@ public:
    ~PythonQtShell_LayoutTurnout();
 
 virtual QList<int >  checkForFreeConnections();
-virtual void checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap);
+virtual void checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetsMap);
 virtual bool  checkForUnAssignedBlocks();
 virtual void childEvent(QChildEvent*  event);
-virtual void collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >*  TrackNameSet);
+virtual void collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >  TrackNameSet);
 virtual void customEvent(QEvent*  event);
-virtual void draw1(EditScene*  g2, bool  isMain, bool  isBlock, QPen  stroke);
-virtual void draw2(EditScene*  g2, bool  isMain, float  railDisplacement, QPen  stroke);
+virtual void draw1(EditScene*  g2, bool  isMain, bool  isBlock);
+virtual void draw2(EditScene*  g2, bool  isMain, float  railDisplacement);
 virtual void drawDecorations(EditScene*  g2);
-virtual void drawEditControls(EditScene*  g2, QPen  stroke);
-virtual void drawTurnoutControls(EditScene*  g2, QPen  stroke);
+virtual void drawEditControls(EditScene*  g2);
+virtual void drawTurnoutControls(EditScene*  g2);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual int  findHitPointType(QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected);
 virtual QRectF  getBounds();
 virtual LayoutTrack*  getConnection(int  location) throw (JmriException);
 virtual QPointF  getCoordsForConnectionType(int  connectionType);
-virtual void highlightUnconnected(EditScene*  g2);
+virtual QMap<QString , QString >*  getDecorations();
+virtual bool  hasDecorations();
 virtual void highlightUnconnected(EditScene*  g2, int  specificType);
 virtual bool  isDisconnected(int  connectionType);
 virtual bool  isMainline();
 virtual void reCheckBlockBoundary();
 virtual void scaleCoords(float  xFactor, float  yFactor);
 virtual void setConnection(int  location, LayoutTrack*  o, int  type) throw (JmriException);
+virtual void setCoordsCenter(QPointF  p);
+virtual void setDecorations(QMap<QString , QString >*  decorations);
 virtual void setObjects(LayoutEditor*  p);
-virtual QMenu*  showPopup(QGraphicsSceneMouseEvent*  mouseEvent);
+virtual QMenu*  showPopup(QGraphicsSceneMouseEvent*  e);
 virtual void timerEvent(QTimerEvent*  event);
 virtual void translateCoords(float  xFactor, float  yFactor);
 
@@ -2291,24 +2305,35 @@ virtual void translateCoords(float  xFactor, float  yFactor);
 
 class PythonQtPublicPromoter_LayoutTurnout : public LayoutTurnout
 { public:
-inline void promoted_draw1(EditScene*  g2, bool  isMain, bool  isBlock, QPen  stroke) { this->draw1(g2, isMain, isBlock, stroke); }
-inline void promoted_draw2(EditScene*  g2, bool  isMain, float  railDisplacement, QPen  stroke) { this->draw2(g2, isMain, railDisplacement, stroke); }
+inline void promoted_draw1(EditScene*  g2, bool  isMain, bool  isBlock) { this->draw1(g2, isMain, isBlock); }
+inline void promoted_draw2(EditScene*  g2, bool  isMain, float  railDisplacement) { this->draw2(g2, isMain, railDisplacement); }
+inline void promoted_drawEditControls(EditScene*  g2) { this->drawEditControls(g2); }
+inline void promoted_drawTurnoutControls(EditScene*  g2) { this->drawTurnoutControls(g2); }
+inline int  promoted_findHitPointType(QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected) { return this->findHitPointType(hitPoint, useRectangles, requireUnconnected); }
+inline void promoted_highlightUnconnected(EditScene*  g2, int  specificType) { this->highlightUnconnected(g2, specificType); }
 inline void promoted_rotateCoords(double  rot) { this->rotateCoords(rot); }
 inline QPointF  promoted_rotatePoint(QPointF  p, double  sineAng, double  cosineAng) { return this->rotatePoint(p, sineAng, cosineAng); }
-inline void promoted_showPopUp(QGraphicsSceneMouseEvent*  e, bool  editable) { this->showPopUp(e, editable); }
+inline QMenu*  promoted_showPopup(QGraphicsSceneMouseEvent*  e) { return this->showPopup(e); }
 inline QList<int >  py_q_checkForFreeConnections() { return LayoutTurnout::checkForFreeConnections(); }
-inline void py_q_checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap) { LayoutTurnout::checkForNonContiguousBlocks(blockNamesToTrackNameSetsMap); }
+inline void py_q_checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetsMap) { LayoutTurnout::checkForNonContiguousBlocks(blockNamesToTrackNameSetsMap); }
 inline bool  py_q_checkForUnAssignedBlocks() { return LayoutTurnout::checkForUnAssignedBlocks(); }
-inline void py_q_collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >*  TrackNameSet) { LayoutTurnout::collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet); }
-inline void py_q_draw1(EditScene*  g2, bool  isMain, bool  isBlock, QPen  stroke) { LayoutTurnout::draw1(g2, isMain, isBlock, stroke); }
-inline void py_q_draw2(EditScene*  g2, bool  isMain, float  railDisplacement, QPen  stroke) { LayoutTurnout::draw2(g2, isMain, railDisplacement, stroke); }
+inline void py_q_collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >  TrackNameSet) { LayoutTurnout::collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet); }
+inline void py_q_draw1(EditScene*  g2, bool  isMain, bool  isBlock) { LayoutTurnout::draw1(g2, isMain, isBlock); }
+inline void py_q_draw2(EditScene*  g2, bool  isMain, float  railDisplacement) { LayoutTurnout::draw2(g2, isMain, railDisplacement); }
+inline void py_q_drawEditControls(EditScene*  g2) { LayoutTurnout::drawEditControls(g2); }
+inline void py_q_drawTurnoutControls(EditScene*  g2) { LayoutTurnout::drawTurnoutControls(g2); }
+inline int  py_q_findHitPointType(QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected) { return LayoutTurnout::findHitPointType(hitPoint, useRectangles, requireUnconnected); }
 inline QRectF  py_q_getBounds() { return LayoutTurnout::getBounds(); }
 inline LayoutTrack*  py_q_getConnection(int  location) throw (JmriException) { return LayoutTurnout::getConnection(location); }
 inline QPointF  py_q_getCoordsForConnectionType(int  connectionType) { return LayoutTurnout::getCoordsForConnectionType(connectionType); }
+inline void py_q_highlightUnconnected(EditScene*  g2, int  specificType) { LayoutTurnout::highlightUnconnected(g2, specificType); }
+inline bool  py_q_isMainline() { return LayoutTurnout::isMainline(); }
 inline void py_q_reCheckBlockBoundary() { LayoutTurnout::reCheckBlockBoundary(); }
 inline void py_q_scaleCoords(float  xFactor, float  yFactor) { LayoutTurnout::scaleCoords(xFactor, yFactor); }
 inline void py_q_setConnection(int  location, LayoutTrack*  o, int  type) throw (JmriException) { LayoutTurnout::setConnection(location, o, type); }
+inline void py_q_setCoordsCenter(QPointF  p) { LayoutTurnout::setCoordsCenter(p); }
 inline void py_q_setObjects(LayoutEditor*  p) { LayoutTurnout::setObjects(p); }
+inline QMenu*  py_q_showPopup(QGraphicsSceneMouseEvent*  e) { return LayoutTurnout::showPopup(e); }
 };
 
 class PythonQtWrapper_LayoutTurnout : public QObject
@@ -2322,13 +2347,16 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    void addEditPopUpMenu(LayoutTurnout* theWrappedObject, QObject*  menu);
    void addViewPopUpMenu(LayoutTurnout* theWrappedObject, QObject*  menu);
    QList<int >  py_q_checkForFreeConnections(LayoutTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_checkForFreeConnections());}
-   void py_q_checkForNonContiguousBlocks(LayoutTurnout* theWrappedObject, QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_checkForNonContiguousBlocks(blockNamesToTrackNameSetsMap));}
+   void py_q_checkForNonContiguousBlocks(LayoutTurnout* theWrappedObject, QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetsMap){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_checkForNonContiguousBlocks(blockNamesToTrackNameSetsMap));}
    bool  py_q_checkForUnAssignedBlocks(LayoutTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_checkForUnAssignedBlocks());}
-   void py_q_collectContiguousTracksNamesInBlockNamed(LayoutTurnout* theWrappedObject, QString  blockName, QSet<QString >*  TrackNameSet){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet));}
+   void py_q_collectContiguousTracksNamesInBlockNamed(LayoutTurnout* theWrappedObject, QString  blockName, QSet<QString >  TrackNameSet){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet));}
    void dispose(LayoutTurnout* theWrappedObject);
-   void py_q_draw1(LayoutTurnout* theWrappedObject, EditScene*  g2, bool  isMain, bool  isBlock, QPen  stroke){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_draw1(g2, isMain, isBlock, stroke));}
-   void py_q_draw2(LayoutTurnout* theWrappedObject, EditScene*  g2, bool  isMain, float  railDisplacement, QPen  stroke){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_draw2(g2, isMain, railDisplacement, stroke));}
+   void py_q_draw1(LayoutTurnout* theWrappedObject, EditScene*  g2, bool  isMain, bool  isBlock){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_draw1(g2, isMain, isBlock));}
+   void py_q_draw2(LayoutTurnout* theWrappedObject, EditScene*  g2, bool  isMain, float  railDisplacement){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_draw2(g2, isMain, railDisplacement));}
+   void py_q_drawEditControls(LayoutTurnout* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_drawEditControls(g2));}
+   void py_q_drawTurnoutControls(LayoutTurnout* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_drawTurnoutControls(g2));}
    void drawTurnoutRects(LayoutTurnout* theWrappedObject, LayoutEditor*  editor, QGraphicsScene*  g2);
+   int  py_q_findHitPointType(LayoutTurnout* theWrappedObject, QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_findHitPointType(hitPoint, useRectangles, requireUnconnected));}
    QString  getBlockBName(LayoutTurnout* theWrappedObject);
    QStringList  getBlockBoundaries(LayoutTurnout* theWrappedObject);
    QString  getBlockCName(LayoutTurnout* theWrappedObject);
@@ -2379,17 +2407,21 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    SignalMast*  getSignalDMast(LayoutTurnout* theWrappedObject);
    QString  getSignalDMastName(LayoutTurnout* theWrappedObject);
    SignalHead*  getSignalHead(LayoutTurnout* theWrappedObject, int  loc);
+   int  getState(LayoutTurnout* theWrappedObject);
    Turnout*  getTurnout(LayoutTurnout* theWrappedObject);
    QString  getTurnoutName(LayoutTurnout* theWrappedObject);
    int  getTurnoutType(LayoutTurnout* theWrappedObject);
    int  getVersion(LayoutTurnout* theWrappedObject);
+   void py_q_highlightUnconnected(LayoutTurnout* theWrappedObject, EditScene*  g2, int  specificType){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_highlightUnconnected(g2, specificType));}
    bool  isActive(LayoutTurnout* theWrappedObject);
    bool  isDisabled(LayoutTurnout* theWrappedObject);
    bool  isDisabledWhenOccupied(LayoutTurnout* theWrappedObject);
+   bool  py_q_isMainline(LayoutTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_isMainline());}
    bool  isMainlineA(LayoutTurnout* theWrappedObject);
    bool  isMainlineB(LayoutTurnout* theWrappedObject);
    bool  isMainlineC(LayoutTurnout* theWrappedObject);
    bool  isMainlineD(LayoutTurnout* theWrappedObject);
+   bool  isSecondTurnoutInverted(LayoutTurnout* theWrappedObject);
    void py_q_reCheckBlockBoundary(LayoutTurnout* theWrappedObject){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_reCheckBlockBoundary());}
    void remove(LayoutTurnout* theWrappedObject);
    void removeBeanReference(LayoutTurnout* theWrappedObject, NamedBean*  nb);
@@ -2408,7 +2440,7 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    void setCoordsA(LayoutTurnout* theWrappedObject, QPointF  p);
    void setCoordsB(LayoutTurnout* theWrappedObject, QPointF  p);
    void setCoordsC(LayoutTurnout* theWrappedObject, QPointF  p);
-   void setCoordsCenter(LayoutTurnout* theWrappedObject, QPointF  p);
+   void py_q_setCoordsCenter(LayoutTurnout* theWrappedObject, QPointF  p){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_setCoordsCenter(p));}
    void setCoordsD(LayoutTurnout* theWrappedObject, QPointF  p);
    void setHidden(LayoutTurnout* theWrappedObject, bool  hide);
    void setLayoutBlockBByName(LayoutTurnout* theWrappedObject, QString  name);
@@ -2419,6 +2451,7 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    void setLinkedTurnoutName(LayoutTurnout* theWrappedObject, QString  s);
    void py_q_setObjects(LayoutTurnout* theWrappedObject, LayoutEditor*  p){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_setObjects(p));}
    void setSecondTurnout(LayoutTurnout* theWrappedObject, QString  tName);
+   void setSecondTurnoutInverted(LayoutTurnout* theWrappedObject, bool  inverted);
    void setSensorA(LayoutTurnout* theWrappedObject, QString  sensorName);
    void setSensorB(LayoutTurnout* theWrappedObject, QString  sensorName);
    void setSensorC(LayoutTurnout* theWrappedObject, QString  sensorName);
@@ -2436,9 +2469,10 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    void setSignalD1Name(LayoutTurnout* theWrappedObject, QString  signalName);
    void setSignalD2Name(LayoutTurnout* theWrappedObject, QString  signalName);
    void setSignalDMast(LayoutTurnout* theWrappedObject, QString  signalMast);
+   void setState(LayoutTurnout* theWrappedObject, int  state);
    void setTurnout(LayoutTurnout* theWrappedObject, QString  tName);
    void setVersion(LayoutTurnout* theWrappedObject, int  v);
-   void showPopUp(LayoutTurnout* theWrappedObject, QGraphicsSceneMouseEvent*  e, bool  editable);
+   QMenu*  py_q_showPopup(LayoutTurnout* theWrappedObject, QGraphicsSceneMouseEvent*  e){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_showPopup(e));}
    void toggleTurnout(LayoutTurnout* theWrappedObject);
    bool  useBlockSpeed(LayoutTurnout* theWrappedObject);
 void py_set_blockBName(LayoutTurnout* theWrappedObject, QString  blockBName){ theWrappedObject->blockBName = blockBName; }
@@ -2479,6 +2513,8 @@ void py_set_linkType(LayoutTurnout* theWrappedObject, int  linkType){ theWrapped
 int  py_get_linkType(LayoutTurnout* theWrappedObject){ return theWrappedObject->linkType; }
 void py_set_linkedTurnoutName(LayoutTurnout* theWrappedObject, QString  linkedTurnoutName){ theWrappedObject->linkedTurnoutName = linkedTurnoutName; }
 QString  py_get_linkedTurnoutName(LayoutTurnout* theWrappedObject){ return theWrappedObject->linkedTurnoutName; }
+void py_set_secondTurnoutInverted(LayoutTurnout* theWrappedObject, bool  secondTurnoutInverted){ theWrappedObject->secondTurnoutInverted = secondTurnoutInverted; }
+bool  py_get_secondTurnoutInverted(LayoutTurnout* theWrappedObject){ return theWrappedObject->secondTurnoutInverted; }
 void py_set_secondTurnoutName(LayoutTurnout* theWrappedObject, QString  secondTurnoutName){ theWrappedObject->secondTurnoutName = secondTurnoutName; }
 QString  py_get_secondTurnoutName(LayoutTurnout* theWrappedObject){ return theWrappedObject->secondTurnoutName; }
 void py_set_signalA1Name(LayoutTurnout* theWrappedObject, QString  signalA1Name){ theWrappedObject->signalA1Name = signalA1Name; }

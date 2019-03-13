@@ -27,7 +27,7 @@
 
 QComboBox* TurnoutState::getComboA()
 {
- if(turnoutABox==NULL)
+ if(turnoutABox==nullptr)
  {
   QStringList state;
   state << ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText() << ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText();
@@ -41,7 +41,7 @@ QComboBox* TurnoutState::getComboA()
 
 QComboBox* TurnoutState::getComboB()
 {
- if(turnoutBBox==NULL)
+ if(turnoutBBox==nullptr)
  {
   QStringList state;
   state << ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText() << ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText();
@@ -100,28 +100,28 @@ QComboBox* TurnoutState::getComboB()
 void LayoutSlip::init()
 {
  turnoutBName="";
- namedTurnoutB = NULL;
- mTurnoutListener = NULL;
- popup = NULL;
- tools = NULL;
+ namedTurnoutB = nullptr;
+ mTurnoutListener = nullptr;
+ popup = nullptr;
+ tools = nullptr;
  testState = UNKNOWN;
  active = true;
- turnoutStates = new QHash<int, TurnoutState*>();
+ turnoutStates =  QHash<int, TurnoutState*>();
  currentState = UNKNOWN;
- connectA = NULL;
- connectB = NULL;
- connectC = NULL;
- connectD = NULL;
+ connectA = nullptr;
+ connectB = nullptr;
+ connectC = nullptr;
+ connectD = nullptr;
  needRedraw = false;
  needsBlockUpdate = false;
- namedTurnout = NULL;
+ namedTurnout = nullptr;
  editOpen = false;
  active = false;
- sensorANamed =NULL;
- sensorBNamed = NULL;
- sensorCNamed = NULL;
- sensorDNamed = NULL;
- rects = NULL;
+ sensorANamed =nullptr;
+ sensorBNamed = nullptr;
+ sensorCNamed = nullptr;
+ sensorDNamed = nullptr;
+ rects = nullptr;
  editAdditionalMenu = new QVector<QObject*>();
  viewAdditionalMenu = new QVector<QObject*>();
  editOpen = false;
@@ -140,17 +140,17 @@ void LayoutSlip::init()
  type=slipType;
  if(type==DOUBLE_SLIP)
  {
-  turnoutStates->insert(STATE_AC, new TurnoutState(Turnout::CLOSED, Turnout::CLOSED));
-  turnoutStates->insert(STATE_BD, new TurnoutState(Turnout::THROWN, Turnout::THROWN));
-  turnoutStates->insert(STATE_AD, new TurnoutState(Turnout::CLOSED, Turnout::THROWN));
-  turnoutStates->insert(STATE_BC, new TurnoutState(Turnout::THROWN, Turnout::CLOSED));
+  turnoutStates.insert(STATE_AC, new TurnoutState(Turnout::CLOSED, Turnout::CLOSED));
+  turnoutStates.insert(STATE_BD, new TurnoutState(Turnout::THROWN, Turnout::THROWN));
+  turnoutStates.insert(STATE_AD, new TurnoutState(Turnout::CLOSED, Turnout::THROWN));
+  turnoutStates.insert(STATE_BC, new TurnoutState(Turnout::THROWN, Turnout::CLOSED));
  }
  else
  {
-  turnoutStates->insert(STATE_AC, new TurnoutState(Turnout::CLOSED, Turnout::THROWN));
-  turnoutStates->insert(STATE_BD, new TurnoutState(Turnout::THROWN, Turnout::CLOSED));
-  turnoutStates->insert(STATE_AD, new TurnoutState(Turnout::THROWN, Turnout::THROWN));
-  turnoutStates->remove(STATE_BC);
+  turnoutStates.insert(STATE_AC, new TurnoutState(Turnout::CLOSED, Turnout::THROWN));
+  turnoutStates.insert(STATE_BD, new TurnoutState(Turnout::THROWN, Turnout::CLOSED));
+  turnoutStates.insert(STATE_AD, new TurnoutState(Turnout::THROWN, Turnout::THROWN));
+  turnoutStates.remove(STATE_BC);
  }
 }
 
@@ -166,31 +166,31 @@ void LayoutSlip::init()
 
 /*public*/ QString LayoutSlip::getTurnoutBName()
 {
- if (namedTurnoutB!=NULL)
+ if (namedTurnoutB!=nullptr)
      return namedTurnoutB->getName();
  return turnoutBName;
 }
 
 /*public*/ Turnout* LayoutSlip::getTurnoutB()
 {
- if (namedTurnoutB==NULL)
+ if (namedTurnoutB==nullptr)
  {
   // set physical turnout if possible and needed
   setTurnoutB(turnoutBName);
-  if (namedTurnoutB==NULL)
-   return NULL;
+  if (namedTurnoutB==nullptr)
+   return nullptr;
  }
  return namedTurnoutB->getBean();
 }
 
 /*public*/ void LayoutSlip::setTurnoutB(QString tName)
 {
- if (namedTurnoutB!=NULL)
+ if (namedTurnoutB!=nullptr)
   deactivateTurnout();
  turnoutBName = tName;
  Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
                      getTurnout(turnoutBName);
- if (turnout!=NULL)
+ if (turnout!=nullptr)
  {
   namedTurnoutB =((NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(turnoutBName, turnout);
   activateTurnout();
@@ -198,7 +198,7 @@ void LayoutSlip::init()
  else
  {
   turnoutBName = "";
-  namedTurnoutB = NULL;
+  namedTurnoutB = nullptr;
  }
 }
 
@@ -246,13 +246,13 @@ void LayoutSlip::init()
 /*public*/ QString LayoutSlip::getDisplayName()
 {
  QString name = "Slip :";
- if(getTurnoutName()!=NULL)
+ if(getTurnoutName()!=nullptr)
  {
   name += "("+getTurnoutName();
-  if(getTurnoutBName()!=NULL)
+  if(getTurnoutBName()!=nullptr)
    name+=":"+getTurnoutBName()+")";
  }
- else if(getTurnoutBName()!=NULL)
+ else if(getTurnoutBName()!=nullptr)
  {
   name += "("+getTurnoutBName()+")";
  }
@@ -351,15 +351,15 @@ void LayoutSlip::init()
          break;
      }
  }
- setTurnoutState(turnoutStates->value(currentState));
+ setTurnoutState(turnoutStates.value(currentState));
 
 }
 
 void LayoutSlip::setTurnoutState(TurnoutState* ts)
 {
- if(getTurnout()!=NULL)
+ if(getTurnout()!=nullptr)
      getTurnout()->setCommandedState(ts->getTurnoutAState());
- if(getTurnoutB()!=NULL)
+ if(getTurnoutB()!=nullptr)
      getTurnoutB()->setCommandedState(ts->getTurnoutBState());
 }
 
@@ -368,7 +368,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
  */
 /*private*/ void LayoutSlip::activateTurnout()
 {
- if (namedTurnout!=NULL)
+ if (namedTurnout!=nullptr)
  {
 //        namedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener =
 //                            new PropertyChangeListener());
@@ -380,7 +380,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
      AbstractTurnout* t = (AbstractTurnout* )namedTurnout->getBean();
      connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(updateState()));
     }
-    if (namedTurnoutB!=NULL)
+    if (namedTurnoutB!=nullptr)
     {
 //        namedTurnoutB->getBean()->addPropertyChangeListener(mTurnoutListener =
 //                            new PropertyChangeListener());
@@ -396,12 +396,12 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 }
 /*private*/ void LayoutSlip::deactivateTurnout()
 {
-    if (mTurnoutListener!=NULL) {
+    if (mTurnoutListener!=nullptr) {
         namedTurnout->getBean()->removePropertyChangeListener(mTurnoutListener);
-        if(namedTurnoutB!=NULL){
+        if(namedTurnoutB!=nullptr){
             namedTurnoutB->getBean()->removePropertyChangeListener(mTurnoutListener);
         }
-        mTurnoutListener = NULL;
+        mTurnoutListener = nullptr;
     }
 }
 
@@ -476,28 +476,28 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 }
 /*private*/ void LayoutSlip::updateBlockInfo()
 {
- LayoutBlock* b1 = NULL;
- LayoutBlock* b2 = NULL;
- if (block!=NULL) block->updatePaths();
- if (connectA!=NULL) {
+ LayoutBlock* b1 = nullptr;
+ LayoutBlock* b2 = nullptr;
+ if (block!=nullptr) block->updatePaths();
+ if (connectA!=nullptr) {
      b1 = ((TrackSegment*)connectA)->getLayoutBlock();
-     if ((b1!=NULL)&&(b1!=block)) b1->updatePaths();
+     if ((b1!=nullptr)&&(b1!=block)) b1->updatePaths();
  }
- if (connectC!=NULL)
+ if (connectC!=nullptr)
  {
      b2 = ((TrackSegment*)connectC)->getLayoutBlock();
-     if ((b2!=NULL)&&(b2!=block)&&(b2!=b1)) b2->updatePaths();
+     if ((b2!=nullptr)&&(b2!=block)&&(b2!=b1)) b2->updatePaths();
  }
 
- if (connectB!=NULL)
+ if (connectB!=nullptr)
  {
      b1 = ((TrackSegment*)connectB)->getLayoutBlock();
-     if ((b1!=NULL)&&(b1!=block)) b1->updatePaths();
+     if ((b1!=nullptr)&&(b1!=block)) b1->updatePaths();
  }
- if (connectD!=NULL)
+ if (connectD!=nullptr)
  {
      b2 = ((TrackSegment*)connectD)->getLayoutBlock();
-     if ((b2!=NULL)&&(b2!=block)&&(b2!=b1)) b2->updatePaths();
+     if ((b2!=nullptr)&&(b2!=block)&&(b2!=b1)) b2->updatePaths();
  }
  reCheckBlockBoundary();
 }
@@ -582,7 +582,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 }   // getConnectivityStateForLayoutBlocks
 
 /*public*/ void LayoutSlip::reCheckBlockBoundary(){
-    if(connectA==NULL && connectB==NULL && connectC==NULL && connectD==NULL){
+    if(connectA==nullptr && connectB==nullptr && connectC==nullptr && connectD==nullptr){
         //This is no longer a block boundary, therefore will remove signal masts and sensors if present
         if(getSignalAMastName()!=(""))
             removeSML(getSignalAMastName());
@@ -601,7 +601,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
         setSensorC("");
         setSensorD("");
         //May want to look at a method to remove the assigned mast from the panel and potentially any logics generated
-    }  else if(connectA==NULL || connectB==NULL || connectC==NULL || connectD==NULL){
+    }  else if(connectA==nullptr || connectB==nullptr || connectC==nullptr || connectD==nullptr){
         //could still be in the process of rebuilding the point details
         return;
     }
@@ -612,7 +612,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
     TrackSegment* trkD;
 
     //if(connectA instanceof TrackSegment){
-    if(qobject_cast<TrackSegment*>(connectA)!= NULL)
+    if(qobject_cast<TrackSegment*>(connectA)!= nullptr)
     {
         trkA = (TrackSegment*)connectA;
         if(trkA->getLayoutBlock()==block)
@@ -624,7 +624,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
         }
     }
     //if(connectC instanceof TrackSegment) {
-    if(qobject_cast<TrackSegment*>(connectC)!= NULL)
+    if(qobject_cast<TrackSegment*>(connectC)!= nullptr)
     {
         trkC = (TrackSegment*)connectC;
         if(trkC->getLayoutBlock()==block){
@@ -635,7 +635,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
         }
     }
     //if(connectB instanceof TrackSegment){
-    if(qobject_cast<TrackSegment*>(connectB)!= NULL)
+    if(qobject_cast<TrackSegment*>(connectB)!= nullptr)
     {
         trkB = (TrackSegment*)connectB;
         if(trkB->getLayoutBlock()==block){
@@ -647,7 +647,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
     }
 
     //if(connectD instanceof TrackSegment) {
-    if(qobject_cast<TrackSegment*>(connectD)!= NULL)
+    if(qobject_cast<TrackSegment*>(connectD)!= nullptr)
     {
         trkD = (TrackSegment*)connectC;
         if(trkD->getLayoutBlock()==block){
@@ -661,12 +661,12 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 
 void LayoutSlip::removeSML(QString signalMast){
 #if 1 // TODO:
-    if(signalMast==NULL || signalMast == (""))
+    if(signalMast==nullptr || signalMast == (""))
         return;
     SignalMast* mast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
     if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && InstanceManager::signalMastLogicManagerInstance()->isSignalMastUsed(mast)){
         InstanceManager::signalMastLogicManagerInstance()->disableLayoutEditorUse(mast);
-        SignallingGuiTools::removeSignalMastLogic(NULL, mast);
+        SignallingGuiTools::removeSignalMastLogic(nullptr, mast);
     }
 #endif
 }
@@ -677,8 +677,8 @@ void LayoutSlip::removeSML(QString signalMast){
  *  Defaults to not mainline if connecting track segments are missing
  */
 /*public*/ bool LayoutSlip::isMainline() {
-    if ( ((connectA != NULL) && (((TrackSegment*)connectA)->getMainline())) ||
-        ((connectB != NULL) && (((TrackSegment*)connectB)->getMainline())) ) {
+    if ( ((connectA != nullptr) && (((TrackSegment*)connectA)->getMainline())) ||
+        ((connectB != nullptr) && (((TrackSegment*)connectB)->getMainline())) ) {
         return true;
     }
     else {
@@ -686,6 +686,83 @@ void LayoutSlip::removeSML(QString signalMast){
     }
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ int LayoutSlip::findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
+    int result = NONE;  // assume point not on connection
+
+    if (!requireUnconnected) {
+        // calculate radius of turnout control circle
+        double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+
+        // get left and right centers
+        QPointF leftCenter = getCoordsLeft();
+        QPointF rightCenter = getCoordsRight();
+
+        if (useRectangles) {
+            // calculate turnout's left control rectangle
+            QRectF leftRectangle = layoutEditor->trackControlCircleRectAt(leftCenter);
+            if (leftRectangle.contains(hitPoint)) {
+                //point is in this turnout's left control rectangle
+                result = SLIP_LEFT;
+            }
+            QRectF rightRectangle = layoutEditor->trackControlCircleRectAt(rightCenter);
+            if (rightRectangle.contains(hitPoint)) {
+                //point is in this turnout's right control rectangle
+                result = SLIP_RIGHT;
+            }
+        } else {
+            //check east/west turnout control circles
+            double leftDistance = MathUtil::distance(hitPoint,leftCenter);
+            double rightDistance = MathUtil::distance(hitPoint, rightCenter);
+
+            if ((leftDistance <= circleRadius) || (rightDistance <= circleRadius)) {
+                //mouse was pressed on this slip
+                result = (leftDistance < rightDistance) ? SLIP_LEFT : SLIP_RIGHT;
+            }
+        }
+    }
+
+    // have we found anything yet?
+    if (result == NONE) {
+        // rather than create rectangles for all the points below and
+        // see if the passed in point is in one of those rectangles
+        // we can create a rectangle for the passed in point and then
+        // test if any of the points below are in that rectangle instead.
+        QRectF r = layoutEditor->trackEditControlRectAt(hitPoint);
+
+        if (!requireUnconnected || (getConnectA() == nullptr)) {
+            //check the A connection point
+            if (r.contains(getCoordsA())) {
+                result = SLIP_A;
+            }
+        }
+
+        if (!requireUnconnected || (getConnectB() == nullptr)) {
+            //check the B connection point
+            if (r.contains(getCoordsB())) {
+                result = SLIP_B;
+            }
+        }
+
+        if (!requireUnconnected || (getConnectC() == nullptr)) {
+            //check the C connection point
+            if (r.contains(getCoordsC())) {
+                result = SLIP_C;
+            }
+        }
+
+        if (!requireUnconnected || (getConnectD() == nullptr)) {
+            //check the D connection point
+            if (r.contains(getCoordsD())) {
+                result = SLIP_D;
+            }
+        }
+    }
+    return result;
+}   // findHitPointType
 /**
  * Modify coordinates methods
  */
@@ -741,7 +818,7 @@ double LayoutSlip::round (double x) {
     connectD = p->findTrackSegmentByName(connectDName);
     if (tBlockName.length()>0) {
         block = p->getLayoutBlock(tBlockName);
-        if (block!=NULL) {
+        if (block!=nullptr) {
             blockName = tBlockName;
             block->incrementUse();
         }
@@ -754,9 +831,9 @@ double LayoutSlip::round (double x) {
 /**
  * Display popup menu for information and editing
  */
-/*protected*/ void LayoutSlip::showPopUp(QGraphicsSceneMouseEvent* /*e*/, bool editable)
+/*protected*/ QMenu *LayoutSlip::showPopup(QGraphicsSceneMouseEvent* /*e*/)
 {
- if (popup != NULL )
+ if (popup != nullptr )
  {
   popup->clear();
  }
@@ -764,11 +841,11 @@ double LayoutSlip::round (double x) {
  {
   popup = new QMenu();
  }
- if(editable)
+ if(layoutEditor->isEditable())
  {
   popup->addAction(new QAction(getName(),this));
   bool blockAssigned = false;
-  if ( (blockName==NULL) || (blockName==("")) )
+  if ( (blockName==nullptr) || (blockName==("")) )
    popup->addAction (new QAction(tr("NoBlock"),this));
   else
   {
@@ -797,8 +874,8 @@ double LayoutSlip::round (double x) {
 //                }
 //            });
   connect(removeAction, SIGNAL(triggered()), this, SLOT(on_removeAction_triggered()));
-  if ( (connectA==NULL) && (connectB==NULL) &&
-                    (connectC==NULL) && (connectD==NULL) )
+  if ( (connectA==nullptr) && (connectB==nullptr) &&
+                    (connectC==nullptr) && (connectD==nullptr) )
   {
    QAction* rotateItem = new QAction(tr("Rotate")+"...", this);
    popup->addAction(rotateItem);
@@ -857,7 +934,7 @@ double LayoutSlip::round (double x) {
 
     for (int i = 0; i<4; i++)
     {
-     if(boundaryBetween->at(i) !=NULL)
+     if(boundaryBetween->at(i) !=nullptr)
       blockBoundaries=true;
     }
     if (blockBoundaries)
@@ -914,6 +991,7 @@ double LayoutSlip::round (double x) {
   //popup.show(e.getComponent(), e.x(), e.y());
   popup->exec(QCursor::pos());
  }
+ return popup;
 }
 void LayoutSlip::OnEditAction()
 {
@@ -922,7 +1000,7 @@ void LayoutSlip::OnEditAction()
 
 void LayoutSlip::on_setSignalsAct_triggered()
 {
- if (tools == NULL)
+ if (tools == nullptr)
  {
   tools = new LayoutEditorTools(layoutEditor);
  }
@@ -932,7 +1010,7 @@ void LayoutSlip::on_setSignalsAct_triggered()
 
 void LayoutSlip::on_setSignalMastsAct_triggered()
 {
- if (tools == NULL)
+ if (tools == nullptr)
  {
   tools = new LayoutEditorTools(layoutEditor);
  }
@@ -941,7 +1019,7 @@ void LayoutSlip::on_setSignalMastsAct_triggered()
 
 void LayoutSlip::on_setSensorsAct_triggered()
 {
- if (tools == NULL)
+ if (tools == nullptr)
  {
   tools = new LayoutEditorTools(layoutEditor);
  }
@@ -1001,10 +1079,10 @@ void LayoutSlip::on_removeAction_triggered()
 {
  /*final*/ QVector<QString>* boundaryBetween = new QVector<QString>(4);
 
- if ( (blockName!=NULL) && (blockName!=("")) && (block!=NULL) )
+ if ( (blockName!=nullptr) && (blockName!=("")) && (block!=nullptr) )
  {
   //if ((connectA instanceof TrackSegment) &&
-  if((qobject_cast<TrackSegment*>(connectA)!=NULL) &&
+  if((qobject_cast<TrackSegment*>(connectA)!=nullptr) &&
   (((TrackSegment*)connectA)->getLayoutBlock()!=block))
   {
    try
@@ -1018,7 +1096,7 @@ void LayoutSlip::on_removeAction_triggered()
    }
   }
   //if ((connectC instanceof TrackSegment) &&
-  if((qobject_cast<TrackSegment*>(connectC)!= NULL) &&
+  if((qobject_cast<TrackSegment*>(connectC)!= nullptr) &&
           (((TrackSegment*)connectC)->getLayoutBlock()!=block))
   {
    try
@@ -1111,7 +1189,7 @@ void LayoutSlip::on_removeAction_triggered()
   panel2Layout->addWidget(new QLabel(tr("Turnout")+" B:"),0,2);
 
   //for(Entry <Integer, TurnoutState> ts: turnoutStates.entrySet()){
-  QHashIterator<int, TurnoutState*> iter(*turnoutStates);
+  QHashIterator<int, TurnoutState*> iter(turnoutStates);
   int row = 1;
   while(iter.hasNext())
   {
@@ -1365,36 +1443,36 @@ SampleStates::SampleStates(int state, LayoutSlip* parent)
  switch(testState)
  {
   case STATE_AC :
-   turnAState = turnoutStates->value(STATE_BD)->getTestTurnoutAState();
-   turnBState = turnoutStates->value(STATE_BD)->getTestTurnoutBState();
+   turnAState = turnoutStates.value(STATE_BD)->getTestTurnoutAState();
+   turnBState = turnoutStates.value(STATE_BD)->getTestTurnoutBState();
    testState = STATE_BD;
    break;
   case STATE_BD :
-   turnAState = turnoutStates->value(STATE_AD)->getTestTurnoutAState();
-   turnBState = turnoutStates->value(STATE_AD)->getTestTurnoutBState();
+   turnAState = turnoutStates.value(STATE_AD)->getTestTurnoutAState();
+   turnBState = turnoutStates.value(STATE_AD)->getTestTurnoutBState();
    testState = STATE_AD;
    break;
   case STATE_AD : if(type==SINGLE_SLIP)
   {
-   turnAState = turnoutStates->value(STATE_AC)->getTestTurnoutAState();
-   turnBState = turnoutStates->value(STATE_AC)->getTestTurnoutBState();
+   turnAState = turnoutStates.value(STATE_AC)->getTestTurnoutAState();
+   turnBState = turnoutStates.value(STATE_AC)->getTestTurnoutBState();
    testState = STATE_AC;
   }
   else
   {
-   turnAState = turnoutStates->value(STATE_BC)->getTestTurnoutAState();
-   turnBState = turnoutStates->value(STATE_BC)->getTestTurnoutBState();
+   turnAState = turnoutStates.value(STATE_BC)->getTestTurnoutAState();
+   turnBState = turnoutStates.value(STATE_BC)->getTestTurnoutBState();
    testState = STATE_BC;
   }
   break;
  case STATE_BC :
-  turnAState = turnoutStates->value(STATE_AC)->getTestTurnoutAState();
-  turnBState = turnoutStates->value(STATE_AC)->getTestTurnoutBState();
+  turnAState = turnoutStates.value(STATE_AC)->getTestTurnoutAState();
+  turnBState = turnoutStates.value(STATE_AC)->getTestTurnoutBState();
   testState = STATE_AC;
   break;
  default       :
-  turnAState = turnoutStates->value(STATE_BD)->getTestTurnoutAState();
-  turnBState = turnoutStates->value(STATE_BD)->getTestTurnoutBState();
+  turnAState = turnoutStates.value(STATE_BD)->getTestTurnoutAState();
+  turnBState = turnoutStates.value(STATE_BD)->getTestTurnoutBState();
   testState = STATE_BD;
    break;
  }
@@ -1481,7 +1559,7 @@ void LayoutSlip::slipEditDonePressed(ActionEvent* a)
   layoutEditor->auxTools->setBlockConnectivityChanged();
   needsBlockUpdate = true;
  }
- foreach(TurnoutState* ts, turnoutStates->values())
+ foreach(TurnoutState* ts, turnoutStates.values())
  {
   ts->updateStatesFromCombo();
  }
@@ -1555,10 +1633,12 @@ void LayoutSlip::disableSML(QString signalMast)
 {
  if(type!=SINGLE_SLIP)
      return false;
- return turnoutStates->value(STATE_AC)==(turnoutStates->value(STATE_BD));
+ return turnoutStates.value(STATE_AC)==(turnoutStates.value(STATE_BD));
 }
 
-
+/*protected*/ QHash<int, TurnoutState*> LayoutSlip::getTurnoutStates() {
+    return turnoutStates;
+}
 /*public*/ int LayoutSlip::getTurnoutState(Turnout* turn, int state){
  if(turn==getTurnout())
  {
@@ -1568,23 +1648,23 @@ void LayoutSlip::disableSML(QString signalMast)
 }
 
 /*public*/ int LayoutSlip::getTurnoutState(int state){
-    return turnoutStates->value((state))->getTurnoutAState();
+    return turnoutStates.value((state))->getTurnoutAState();
 }
 
 /*public*/ int LayoutSlip::getTurnoutBState(int state)
 {
- return turnoutStates->value((state))->getTurnoutBState();
+ return turnoutStates.value((state))->getTurnoutBState();
 }
 
 /*public*/ void LayoutSlip::setTurnoutStates(int state, QString turnStateA, QString turnStateB)
 {
- if(!turnoutStates->contains(state))
+ if(!turnoutStates.contains(state))
  {
   log.error("Trying to set invalid state for slip " + getDisplayName());
   return;
  }
- turnoutStates->value(state)->setTurnoutAState((turnStateA).toInt());
- turnoutStates->value(state)->setTurnoutBState((turnStateB).toInt());
+ turnoutStates.value(state)->setTurnoutAState((turnStateA).toInt());
+ turnoutStates.value(state)->setTurnoutBState((turnStateB).toInt());
 }
 
 //Internal call to update the state of the slip depending upon the turnout states.
@@ -1593,7 +1673,7 @@ void LayoutSlip::updateState()
  int state_a = getTurnout()->getKnownState();
  int state_b = getTurnoutB()->getKnownState();
  //for(Entry<Integer, TurnoutState*> en: turnoutStates.entrySet()){
- QHashIterator<int, TurnoutState*> en(*turnoutStates);
+ QHashIterator<int, TurnoutState*> en(turnoutStates);
  while(en.hasNext())
  {
   en.next();

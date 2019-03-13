@@ -469,7 +469,8 @@ SOURCES += \
     colordialog.cpp \
     linkinglabel.cpp \
     layouttrackeditors.cpp \
-    layouteditorchecks.cpp
+    layouteditorchecks.cpp \
+    layouttrackdrawingoptionsdialog.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -858,7 +859,8 @@ HEADERS += liblayouteditor_global.h \
     colordialog.h \
     linkinglabel.h \
     layouttrackeditors.h \
-    layouteditorchecks.h
+    layouteditorchecks.h \
+    layouttrackdrawingoptionsdialog.h
 
 FORMS    += \
     edittracksegmentdlg.ui \

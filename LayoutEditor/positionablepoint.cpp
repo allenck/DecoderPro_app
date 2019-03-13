@@ -51,7 +51,7 @@
 {
  setObjectName(id);
  instance = NULL;
- layoutEditor = NULL;
+ this->layoutEditor = layoutEditor;
  // initialization instance variables (used when loading a LayoutEditor)
  trackSegment1Name = "";
  trackSegment2Name = "";
@@ -696,7 +696,7 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::draw1(QGraphicsScene* g2, bool isMain, bool isBlock) {
+/*protected*/ void PositionablePoint::draw1(EditScene* g2, bool /*isMain*/, bool /*isBlock*/) {
     //nothing to do here... move along...
 }   // draw1
 
@@ -704,7 +704,7 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::draw2(QGraphicsScene g2, bool isMain, float railDisplacement) {
+/*protected*/ void PositionablePoint::draw2(EditScene* g2, bool /*isMain*/, float /*railDisplacement*/) {
     //nothing to do here... move along...
 }
 
@@ -712,11 +712,13 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::highlightUnconnected(QGraphicsScene* g2, int specificType) {
+/*protected*/ void PositionablePoint::highlightUnconnected(EditScene *g2, int specificType) {
     if ((specificType == NONE) || (specificType == POS_POINT)) {
         if ((getConnect1() == nullptr)
                 || ((getType() == ANCHOR) && (getConnect2() == nullptr))) {
  // TODO:           g2.fill(layoutEditor->trackControlCircleAt(getCoordsCenter()));
+         QGraphicsEllipseItem* circleItem = layoutEditor->trackControlCircleAt(getCoordsCenter());
+         g2->addItem(circleItem);
         }
     }
 }
@@ -724,13 +726,12 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::drawEditControls(EditScene* g2) {
+/*protected*/ void PositionablePoint::drawEditControls(EditScene* g2, QPen stroke) {
  TrackSegment* ts1 = getConnect1();
- QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
  if (ts1 == nullptr)
  {
      //g2.setColor(Color.red);
-  stroke.setColor(Qt::red);
+  stroke.setColor(QColor(Qt::red));
  }
  else {
      TrackSegment* ts2 = nullptr;
@@ -743,11 +744,10 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
      }
      if ((getType() != END_BUMPER) && (ts2 == nullptr)) {
          //g2.setColor(Color.yellow);
-      stroke.setColor(Qt::yellow);
-
+      stroke.setColor(QColor(Qt::yellow));
      } else {
          //g2.setColor(Color.green);
-      stroke.setColor(Qt::green);
+      stroke.setColor(QColor(Qt::green));
      }
  }
  //g2.draw(layoutEditor->trackEditControlRectAt(getCoordsCenter()));
@@ -762,7 +762,7 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::drawTurnoutControls(QGraphicsScene* g2) {
+/*protected*/ void PositionablePoint::drawTurnoutControls(EditScene *g2) {
     // PositionablePoints don't have turnout controls...
     // nothing to see here... move along...
 }
@@ -1301,7 +1301,7 @@ void PositionablePoint::on_actRemove_triggered()
   dispose();
  }
 }
-void PositionablePoint::invalidate(QGraphicsScene* g2)
+void PositionablePoint::invalidate(EditScene* g2)
 {
  if(item != NULL)
  {

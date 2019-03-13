@@ -1,6 +1,4 @@
 #include "optional.h"
-#include "exceptions.h"
-#include "consumer.h"
 
 //Optional::Optional(QObject *parent) : QObject(parent)
 //{
@@ -39,10 +37,10 @@ template<class T>
  * @implNote Generally only one empty instance, {@link Optional#EMPTY},
  * should exist per VM.
  */
-template<class T>
-/*private*/ Optional<T>::Optional(QObject* parent) : QObject(parent) {
-    this->value = NULL;
-}
+//template<class T>
+///*private*/ Optional<T>::Optional(QObject* parent) : QObject(parent) {
+//    this->value = NULL;
+//}
 
 /**
  * Returns an empty {@code Optional} instance.  No value is present for this
@@ -56,12 +54,12 @@ template<class T>
  * @param <T> Type of the non-existent value
  * @return an empty {@code Optional}
  */
- template <class T>
-/*public*/ /*static<T>*/ Optional<T> Optional<T>::empty() {
-   // @SuppressWarnings("unchecked")
-    Optional<T> t = (Optional<T>) Optional::EMPTY;
-    return t;
-}
+// template <class T>
+///*public*/ /*static<T>*/ Optional<T> Optional<T>::empty() {
+//   // @SuppressWarnings("unchecked")
+//    Optional<T> t = (Optional<T>) Optional::EMPTY;
+//    return t;
+//}
 
 /**
  * Constructs an instance with the value present.
@@ -69,10 +67,10 @@ template<class T>
  * @param value the non-NULL value to be present
  * @throws NullPointerException if value is NULL
  */
- template <class T>
-/*private*/ Optional<T>::Optional(T* value) {
-    this->value = /*Objects.requireNonNull*/(value);
-}
+// template <class T>
+///*private*/ Optional<T>::Optional(T* value) {
+//    this->value = /*Objects.requireNonNull*/(value);
+//}
 #if 0
 /**
  * Returns an {@code Optional} with the specified present non-NULL value.
@@ -108,23 +106,23 @@ template<class T>
  *
  * @see Optional#isPresent()
  */
-template<class T>
-/*public*/ T Optional<T>::get() {
-    if (value == NULL) {
-        throw new NoSuchElementException("No value present");
-    }
-    return value;
-}
+//template<class T>
+///*public*/ T Optional<T>::get() {
+//    if (value == NULL) {
+//        throw new NoSuchElementException("No value present");
+//    }
+//    return value;
+//}
 
 /**
  * Return {@code true} if there is a value present, otherwise {@code false}.
  *
  * @return {@code true} if there is a value present, otherwise {@code false}
  */
-template<class T>
-/*public*/ bool Optional<T>::isPresent() {
-    return value != NULL;
-}
+//template<class T>
+///*public*/ bool Optional<T>::isPresent() {
+//    return value != NULL;
+//}
 
 /**
  * If a value is present, invoke the specified consumer with the value,
@@ -134,11 +132,11 @@ template<class T>
  * @throws NullPointerException if value is present and {@code consumer} is
  * NULL
  */
-template<class T>
-/*public*/ void Optional<T>::ifPresent(Consumer</*? super*/ T>* consumer) {
-    if (value != NULL)
-        consumer->accept(value);
-}
+//template<class T>
+///*public*/ void Optional<T>::ifPresent(Consumer</*? super*/ T>* consumer) {
+//    if (value != NULL)
+//        consumer->accept(value);
+//}
 #if 0
 /**
  * If a value is present, and the value matches the given predicate,

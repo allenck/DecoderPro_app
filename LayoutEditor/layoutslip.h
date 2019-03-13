@@ -221,7 +221,7 @@ private:
  Logger log;
  int testState;// = UNKNOWN;
  bool active;// = true;
- QHash <int, TurnoutState*>* turnoutStates;// = new QHash<int, TurnoutState>(4);
+ QHash <int, TurnoutState*> turnoutStates;// = new QHash<int, TurnoutState>(4);
  // variables for Edit slip Crossing pane
  QPushButton* slipEditDone;
  QPushButton* slipEditCancel;
@@ -232,7 +232,7 @@ private:
  TestState* testPanel;
 
 protected:
- /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e, bool editable);
+ /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);
  /*protected*/ void editLayoutSlip(LayoutTurnout* o);
  /*protected*/ QPointF getCoordsLeft();
  /*protected*/ QPointF getCoordsRight();
@@ -242,10 +242,13 @@ protected:
          /*@Nullable*/ LayoutBlock* nextLayoutBlock,
          bool suppress);
  /*protected*/ void drawTurnoutControls(EditScene* g2, QPen stroke);
+ /*protected*/ QHash<int, TurnoutState *> getTurnoutStates();
+ /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles, bool requireUnconnected);
 
 friend class LoadXml;
 friend class LayoutEditor;
 friend class TestState;
+friend class LayoutTrackEditors;
 };
 
 class SampleStates : public QWidget

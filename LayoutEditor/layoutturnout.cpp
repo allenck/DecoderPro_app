@@ -21,6 +21,7 @@
 #include "path.h"
 #include "mathutil.h"
 #include "layouteditorfinditems.h"
+#include <cmath>
 
 //LayoutTurnout::LayoutTurnout(QObject *parent) :
 //    QObject(parent)
@@ -129,11 +130,6 @@
 
     // Defined text resource
 //    ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.display.layoutEditor.LayoutEditorBundle");
-/*public*/ /*static*/ /*final*/ int LayoutTurnout::UNKNOWN = Turnout::UNKNOWN;
-/*public*/ /*static*/ /*final*/ int LayoutTurnout::STATE_AC = 0x02;
-/*public*/ /*static*/ /*final*/ int LayoutTurnout::STATE_BD = 0x04;
-/*public*/ /*static*/ /*final*/ int LayoutTurnout::STATE_AD = 0x06;
-/*public*/ /*static*/ /*final*/ int LayoutTurnout::STATE_BC = 0x08;
 
 // program default turnout size parameters
 /*public*/ /*static*/ /*final*/ double LayoutTurnout::turnoutBXDefault = 20.0;  // RH, LH, WYE
@@ -405,6 +401,10 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
         return secondNamedTurnout->getName();
     return secondTurnoutName;
 }
+
+/*public*/ bool LayoutTurnout::isSecondTurnoutInverted() {
+        return secondTurnoutInverted;
+    }
 
 /*public*/ bool LayoutTurnout::getHidden() {return hidden;}
 /*public*/ void LayoutTurnout::setHidden(bool hide) {hidden = hide;}
@@ -802,6 +802,10 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
    }
   }
  }
+}
+
+/*public*/ void LayoutTurnout::setSecondTurnoutInverted(bool inverted) {
+    secondTurnoutInverted = inverted;
 }
 
 /*public*/ void LayoutTurnout::setContinuingSense(int sense) {continuingSense=sense;}
@@ -1365,6 +1369,90 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
         return ((TrackSegment*)connectC)->getMainline();
     return false;
 }
+//@Override
+/*public*/ bool LayoutTurnout::isMainline() {
+    return (isMainlineA() || isMainlineB() || isMainlineC() || isMainlineD());
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ int LayoutTurnout::findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
+    int result = NONE;  // assume point not on connection
+    //note: optimization here: instead of creating rectangles for all the
+    // points to check below, we create a rectangle for the test point
+    // and test if the points below are in that rectangle instead.
+    QRectF r = layoutEditor->trackControlCircleRectAt(hitPoint);
+    QPointF p, minPoint = MathUtil::zeroPoint2D;
+
+    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+    double distance, minDistance = std::numeric_limits<double>::infinity();//POSITIVE_INFINITY;
+
+    // check center coordinates
+    if (!requireUnconnected) {
+        p = getCoordsCenter();
+        distance = MathUtil::distance(p, hitPoint);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minPoint = p;
+            result = TURNOUT_CENTER;
+        }
+    }
+
+    //check the A connection point
+    if (!requireUnconnected || (getConnectA() == nullptr)) {
+        p = getCoordsA();
+        distance = MathUtil::distance(p, hitPoint);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minPoint = p;
+            result = TURNOUT_A;
+        }
+    }
+
+    //check the B connection point
+    if (!requireUnconnected || (getConnectB() == nullptr)) {
+        p = getCoordsB();
+        distance = MathUtil::distance(p, hitPoint);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minPoint = p;
+            result = TURNOUT_B;
+        }
+    }
+
+    //check the C connection point
+    if (!requireUnconnected || (getConnectC() == nullptr)) {
+        p = getCoordsC();
+        distance = MathUtil::distance(p, hitPoint);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minPoint = p;
+            result = TURNOUT_C;
+        }
+    }
+
+    //check the D connection point
+    if ((getTurnoutType() == DOUBLE_XOVER)
+            || (getTurnoutType() == LH_XOVER)
+            || (getTurnoutType() == RH_XOVER)) {
+        if (!requireUnconnected || (getConnectD() == nullptr)) {
+            p = getCoordsD();
+            distance = MathUtil::distance(p, hitPoint);
+            if (distance < minDistance) {
+                minDistance = distance;
+                minPoint = p;
+                result = TURNOUT_D;
+            }
+        }
+    }
+    if ((useRectangles && !r.contains(minPoint))
+            || (!useRectangles && (minDistance > circleRadius))) {
+        result = NONE;
+    }
+    return result;
+}   // findHitPointType
 
 /**
  * Modify coordinates methods
@@ -1552,6 +1640,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
  */
 /*private*/ void LayoutTurnout::activateTurnout()
 {
+#if 1
  if (namedTurnout!=nullptr)
  {
   //namedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener =
@@ -1569,6 +1658,35 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
   secondNamedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener, secondNamedTurnout->getName(), "Layout Editor Turnout");
   connect(secondNamedTurnout->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(redrawPanel()));
  }
+#else
+ if (namedTurnout != nullptr)
+ {
+     namedTurnout.getBean().addPropertyChangeListener(
+             mTurnoutListener = (java.beans.PropertyChangeEvent e) -> {
+                 if (secondNamedTurnout != null) {
+                     int new2ndState = secondNamedTurnout.getBean().getState();
+                     if (e.getSource().equals(secondNamedTurnout.getBean())
+                     && e.getNewValue().equals(new2ndState)) {
+                         int old1stState = namedTurnout.getBean().getState();
+                         int new1stState = new2ndState;
+                         if (secondTurnoutInverted) {
+                             new1stState = Turnout.invertTurnoutState(new1stState);
+                         }
+                         if (old1stState != new1stState) {
+                             namedTurnout.getBean().setCommandedState(new1stState);
+                         }
+                     }
+                 }
+                 layoutEditor.redrawPanel();
+             },
+             namedTurnout.getName(),
+             "Layout Editor Turnout"
+     );
+ }
+ if (secondNamedTurnout != null) {
+     secondNamedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener, secondNamedTurnout->getName(), "Layout Editor Turnout");
+ }
+#endif
 }
 /*private*/ void LayoutTurnout::deactivateTurnout()
 {
@@ -1616,6 +1734,91 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
   }
  }
 }
+
+/*public*/ void LayoutTurnout::setState(int state) {
+ if ((getTurnout() != nullptr) && !disabled) {
+     if (disableWhenOccupied && isOccupied()) {
+         log->debug("Turnout not changed as Block is Occupied");
+     } else {
+         getTurnout()->setCommandedState(state);
+         if (getSecondTurnout() != nullptr) {
+             if (secondTurnoutInverted) {
+                 if (state == Turnout::CLOSED) {
+                     getSecondTurnout()->setCommandedState(Turnout::THROWN);
+                 } else {
+                     getSecondTurnout()->setCommandedState(Turnout::CLOSED);
+                 }
+             } else {
+                 getSecondTurnout()->setCommandedState(state);
+             }
+         }
+     }
+ }
+}
+
+/*public*/ int LayoutTurnout::getState() {
+ int result = UNKNOWN;
+ if (getTurnout() != nullptr) {
+     result = getTurnout()->getKnownState();
+ }
+ return result;
+}
+
+/**
+* is this turnout occupied?
+*
+* @return true if occupied
+*/
+/*private*/ bool LayoutTurnout::isOccupied() {
+ if ((getTurnoutType() == RH_TURNOUT)
+         || (getTurnoutType() == LH_TURNOUT)
+         || (getTurnoutType() == WYE_TURNOUT)) {
+     if (getLayoutBlock()->getOccupancy() == LayoutBlock::OCCUPIED) {
+         log->debug("Block " + getBlockName() + "is Occupied");
+         return true;
+     }
+ }
+ if ((getTurnoutType() == DOUBLE_XOVER)
+         || (getTurnoutType() == RH_XOVER)
+         || (getTurnoutType() == LH_XOVER)) {
+     //If the turnout is set for straight over, we need to deal with the straight over connecting blocks
+     if (getTurnout()->getKnownState() == Turnout::CLOSED) {
+         if ((getLayoutBlock()->getOccupancy() == LayoutBlock::OCCUPIED)
+                 && (getLayoutBlockB()->getOccupancy() == LayoutBlock::OCCUPIED)) {
+             log->debug("Blocks " + getBlockName() + " & " + getBlockBName() + " are Occupied");
+             return true;
+         }
+         if ((getLayoutBlockC()->getOccupancy() == LayoutBlock::OCCUPIED)
+                 && (getLayoutBlockD()->getOccupancy() == LayoutBlock::OCCUPIED)) {
+             log->debug("Blocks " + getBlockCName() + " & " + getBlockDName() + " are Occupied");
+             return true;
+         }
+     }
+
+ }
+ if ((getTurnoutType() == DOUBLE_XOVER)
+         || (getTurnoutType() == LH_XOVER)) {
+     if (getTurnout()->getKnownState() == Turnout::THROWN) {
+         if ((getLayoutBlockB()->getOccupancy() == LayoutBlock::OCCUPIED)
+                 && (getLayoutBlockD()->getOccupancy() == LayoutBlock::OCCUPIED)) {
+             log->debug("Blocks " + getBlockBName() + " & " + getBlockDName() + " are Occupied");
+             return true;
+         }
+     }
+ }
+
+ if ((getTurnoutType() == DOUBLE_XOVER)
+         || (getTurnoutType() == RH_XOVER)) {
+     if (getTurnout()->getKnownState() == Turnout::THROWN) {
+         if ((getLayoutBlock()->getOccupancy() == LayoutBlock::OCCUPIED)
+                 && (getLayoutBlockC()->getOccupancy() == LayoutBlock::OCCUPIED)) {
+             log->debug(tr("Blocks ") + getLayoutBlock()->getDisplayName() + " & " + getBlockCName() + " are Occupied");
+             return true;
+         }
+     }
+ }
+ return false;
+}   // isOccupied
 
 /*private*/ bool LayoutTurnout::disableOccupiedTurnout()
 {
@@ -1795,7 +1998,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
 /**
  * Display popup menu for information and editing
  */
-/*protected*/ void LayoutTurnout::showPopUp(QGraphicsSceneMouseEvent* /*e*/, bool editable)
+/*protected*/ QMenu *LayoutTurnout::showPopup(QGraphicsSceneMouseEvent* /*e*/)
 {
  if (popup != nullptr )
  {
@@ -1805,7 +2008,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
  {
   popup = new QMenu();
  }
- if(editable)
+ if(layoutEditor->isEditable())
  {
   switch (getTurnoutType())
   {
@@ -2133,6 +2336,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
   //popup.show(e.getComponent(), e->x(), e->y());
   popup->exec(QCursor::pos());
  }
+ return popup;
 }
 
 void LayoutTurnout::on_viewBlockRouting()
@@ -3485,7 +3689,7 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  */
 //@Override
 /*public*/ void LayoutTurnout::checkForNonContiguousBlocks(
-        /*@Nonnull*/QMap<QString, QList<QSet<QString>* >* >* blockNamesToTrackNameSetsMap) {
+        /*@Nonnull*/QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap) {
     /*
      * For each (non-null) blocks of this track do:
      * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
@@ -3520,8 +3724,8 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
             blocksAndTracksMap.insert(connectD, getBlockDName());
         }
     }
-    QList<QSet<QString>*>* TrackNameSets = nullptr;
-    QSet<QString>* TrackNameSet = nullptr;
+    QList<QSet<QString> > TrackNameSets;// = nullptr;
+    QSet<QString> TrackNameSet;// = nullptr;
     //for (Map.Entry<LayoutTrack, String> entry : blocksAndTracksMap.entrySet()) {
     QHashIterator<LayoutTrack*, QString> entry(blocksAndTracksMap);
     while(entry.hasNext())
@@ -3529,26 +3733,26 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
         LayoutTrack* theConnect = entry.key();
         QString theBlockName = entry.value();
 
-        TrackNameSet = nullptr;    // assume not found (pessimist!)
-        TrackNameSets = blockNamesToTrackNameSetsMap->value(theBlockName);
-        if (TrackNameSets != nullptr) { // (#1)
-            for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
-                if (checkTrackNameSet->contains(getName())) { // (#2)
+        TrackNameSet = QSet<QString>();    // assume not found (pessimist!)
+        TrackNameSets = blockNamesToTrackNameSetsMap.value(theBlockName);
+        if (!TrackNameSets.isEmpty()) { // (#1)
+            for (QSet<QString> checkTrackNameSet : TrackNameSets) {
+                if (checkTrackNameSet.contains(getName())) { // (#2)
                     TrackNameSet = checkTrackNameSet;
                     break;
                 }
             }
         } else {    // (#3)
             log->debug(tr("*New block ('%1') trackNameSets").arg(theBlockName));
-            TrackNameSets = nullptr;
-            blockNamesToTrackNameSetsMap->insert(theBlockName, TrackNameSets);
+            TrackNameSets = QList<QSet<QString> >();
+            blockNamesToTrackNameSetsMap.insert(theBlockName, TrackNameSets);
         }
-        if (TrackNameSet == nullptr) {
-            TrackNameSet = new QSet<QString>();
-            TrackNameSets->append(TrackNameSet);
+        if (TrackNameSet.isEmpty()) {
+            TrackNameSet = QSet<QString>();
+            TrackNameSets.append(TrackNameSet);
         }
-        TrackNameSet->insert(getName());
-        if (TrackNameSet->contains(getName())) {
+        TrackNameSet.insert(getName());
+        if (TrackNameSet.contains(getName())) {
             log->debug(tr("*    Add track '%1' to trackNameSet for block '%2'").arg(getName()).arg(theBlockName));
         }
         theConnect->collectContiguousTracksNamesInBlockNamed(theBlockName, TrackNameSet);
@@ -3561,8 +3765,8 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
 //@Override
 /*public*/ void LayoutTurnout::collectContiguousTracksNamesInBlockNamed(
         /*@Nonnull*/ QString blockName,
-        /*@Nonnull*/ QSet<QString>* TrackNameSet) {
-    if (!TrackNameSet->contains(getName())) {
+        /*@Nonnull*/ QSet<QString> TrackNameSet) {
+    if (!TrackNameSet.contains(getName())) {
 
         // create list of our connects
         QList<LayoutTrack*> connects = QList<LayoutTrack*>();
@@ -3591,8 +3795,8 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
 
         for (LayoutTrack* connect : connects) {
             // if we are added to the TrackNameSet
-         TrackNameSet->insert(getName());
-            if (TrackNameSet->contains(getName())) {
+         TrackNameSet.insert(getName());
+            if (TrackNameSet.contains(getName())) {
                 log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
             }
             // it's time to play... flood your neighbour!
@@ -3699,12 +3903,13 @@ void LayoutTurnout::remove()
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LayoutTurnout::draw1(EditScene* g2, bool isMain, bool isBlock, QPen stroke)
+/*protected*/ void LayoutTurnout::draw1(EditScene* g2, bool isMain, bool isBlock)
 {
  if (isBlock && getLayoutBlock() == nullptr) {
      // Skip the block layer if there is no block assigned.
      return;
  }
+// invalidate(g2);
 
  QPointF pA = getCoordsA();
  QPointF pB = getCoordsB();
@@ -3719,7 +3924,7 @@ void LayoutTurnout::remove()
  bool drawUnselectedLeg = layoutEditor->isTurnoutDrawUnselectedLeg();
 
  //Color color = g2.getColor();
- QColor color = stroke.color();
+ QColor color = layoutEditor->drawingStroke.color();
 
  // if this isn't a block line all these will be the same color
  QColor colorA = color;
@@ -3774,63 +3979,63 @@ void LayoutTurnout::remove()
   { // unknown or continuing path - not crossed over
    if (isMain == mainlineA) {
        //g2.setColor(colorA);
-    stroke.setColor(colorA);
+    layoutEditor->drawingStroke.setColor(colorA);
        //g2.draw(new Line2D.Double(pA, pABM));
     lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
        // g2.draw(new Line2D.Double(pAF, pM));
      lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineB)
    {
        //g2.setColor(colorB);
-    stroke.setColor(colorB);
+    layoutEditor->drawingStroke.setColor(colorB);
 //             g2.draw(new Line2D.Double(pB, pABM));
     lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pABM.x(), pABM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg) {
         //g2.draw(new Line2D.Double(pBF, pM));
      lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineC)
    {
        //g2.setColor(colorC);
-    stroke.setColor(colorC);
+    layoutEditor->drawingStroke.setColor(colorC);
        //g2.draw(new Line2D.Double(pC, pCDM));
     lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
      //g2.draw(new Line2D.Double(pCF, pM));
      lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineD)
    {
     //g2.setColor(colorD);
-    stroke.setColor(colorD);
+    layoutEditor->drawingStroke.setColor(colorD);
     //g2.draw(new Line2D.Double(pD, pCDM));
     lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pCDM.x(), pCDM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
            //g2.draw(new Line2D.Double(pDF, pM));
      lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
    }
@@ -3840,76 +4045,76 @@ void LayoutTurnout::remove()
    if (isMain == mainlineA)
    {
     //g2.setColor(colorA);
-    stroke.setColor(colorA);
+    layoutEditor->drawingStroke.setColor(colorA);
     //g2.draw(new Line2D.Double(pA, pAM));
     lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
     //g2.draw(new Line2D.Double(pAM, pM));
     lineItem = new QGraphicsLineItem(pAM.x(), pAM.y(), pM.x(), pM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg) {
         //g2.draw(new Line2D.Double(pAMP, pABM));
      lineItem = new QGraphicsLineItem(pAMP.x(), pAMP.y(), pABM.x(), pABM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineB) {
        //g2.setColor(colorB);
-    stroke.setColor(colorB);
+    layoutEditor->drawingStroke.setColor(colorB);
     //g2.draw(new Line2D.Double(pB, pBM));
     lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
     //g2.draw(new Line2D.Double(pBM, pM));
     lineItem = new QGraphicsLineItem(pBM.x(), pBM.y(), pM.x(), pM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);if (!isBlock || drawUnselectedLeg)
     {
      //g2.draw(new Line2D.Double(pBMP, pABM));
      lineItem = new QGraphicsLineItem(pBMP.x(), pBMP.y(), pM.x(), pM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineC)
    {
     //g2.setColor(colorC);
-    stroke.setColor(colorC);
+    layoutEditor->drawingStroke.setColor(colorC);
     //g2.draw(new Line2D.Double(pC, pCM));
     lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
     //g2.draw(new Line2D.Double(pCM, pM));
      lineItem = new QGraphicsLineItem(pCM.x(), pCM.y(), pM.x(), pM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg) {
         //g2.draw(new Line2D.Double(pCMP, pCDM));
      lineItem = new QGraphicsLineItem(pCMP.x(), pCMP.y(), pCDM.x(), pCDM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineD)
    {
        //g2.setColor(colorD);
-    stroke.setColor(colorD);
+    layoutEditor->drawingStroke.setColor(colorD);
        //g2.draw(new Line2D.Double(pD, pDM));
     lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
        //g2.draw(new Line2D.Double(pDM, pM));
     lineItem = new QGraphicsLineItem(pDM.x(), pDM.y(), pM.x(), pM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
      //g2.draw(new Line2D.Double(pDMP, pCDM));
      lineItem = new QGraphicsLineItem(pDMP.x(), pDMP.y(), pCDM.x(), pCDM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
    }
@@ -3919,35 +4124,35 @@ void LayoutTurnout::remove()
    if (isMain == mainlineA)
    {
        //g2.setColor(colorA);
-    stroke.setColor(colorA);
+    layoutEditor->drawingStroke.setColor(colorA);
        //g2.draw(new Line2D.Double(pA, pAM));
     lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
 
    }
    if (isMain == mainlineB) {
        //g2.setColor(colorB);
-    stroke.setColor(colorB);
+    layoutEditor->drawingStroke.setColor(colorB);
 //      g2.draw(new Line2D.Double(pB, pBM));
     lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
    }
    if (isMain == mainlineC) {
        //g2.setColor(colorC);
-    stroke.setColor(colorC);
+    layoutEditor->drawingStroke.setColor(colorC);
        //g2.draw(new Line2D.Double(pC, pCM));
     lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
    }
    if (isMain == mainlineD) {
        //g2.setColor(colorD);
-    stroke.setColor(colorD);
+    layoutEditor->drawingStroke.setColor(colorD);
        //g2.draw(new Line2D.Double(pD, pDM));
     lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
-    lineItem->setPen(stroke);
+    lineItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(lineItem);
    }
    if (!isBlock || drawUnselectedLeg)
@@ -3955,34 +4160,34 @@ void LayoutTurnout::remove()
     if (isMain == mainlineA)
     {
 //           g2.setColor(colorA);
-     stroke.setColor(colorA);
+     layoutEditor->drawingStroke.setColor(colorA);
         //g2.draw(new Line2D.Double(pAF, pM));
      lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
     if (isMain == mainlineC) {
         //g2.setColor(colorC);
-     stroke.setColor(colorC);
+     layoutEditor->drawingStroke.setColor(colorC);
         //g2.draw(new Line2D.Double(pCF, pM));
      lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
     if (isMain == mainlineB) {
         //g2.setColor(colorB);
-     stroke.setColor(colorB);
+     layoutEditor->drawingStroke.setColor(colorB);
         //g2.draw(new Line2D.Double(pBF, pM));
      lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
     if (isMain == mainlineD) {
         //g2.setColor(colorD);
-     stroke.setColor(colorD);
+     layoutEditor->drawingStroke.setColor(colorD);
         //g2.draw(new Line2D.Double(pDF, pM));
      lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
-     lineItem->setPen(stroke);
+     lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
    }
@@ -4130,10 +4335,10 @@ void LayoutTurnout::remove()
      // draw A<===>center
      if (isMain == mainlineA) {
          //g2.setColor(colorA);
-      stroke.setColor(colorA);
+      layoutEditor->drawingStroke.setColor(colorA);
          //g2.draw(new Line2D.Double(pA, pM));
       lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pM.x(), pM.y());
-      lineItem->setPen(stroke);
+      lineItem->setPen(layoutEditor->drawingStroke);
       itemGroup->addToGroup(lineItem);
      }
 
@@ -4141,20 +4346,20 @@ void LayoutTurnout::remove()
          // draw center<===>B
          if (isMain == mainlineB) {
              //g2.setColor(colorB);
-          stroke.setColor(colorB);
+          layoutEditor->drawingStroke.setColor(colorB);
              //g2.draw(new Line2D.Double(pM, pB));
           lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pB.x(), pB.y());
-          lineItem->setPen(stroke);
+          lineItem->setPen(layoutEditor->drawingStroke);
           itemGroup->addToGroup(lineItem);
          }
      } else if (!isBlock || drawUnselectedLeg) {
          // draw center<--=>B
          if (isMain == mainlineB) {
              //g2.setColor(colorB);
-          stroke.setColor(colorB);
+          layoutEditor->drawingStroke.setColor(colorB);
              //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pB), pB));
           lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pB).x(), MathUtil::twoThirdsPoint(pM, pB).y(), pB.x(), pB.y());
-          lineItem->setPen(stroke);
+          lineItem->setPen(layoutEditor->drawingStroke);
           itemGroup->addToGroup(lineItem);
          }
      }
@@ -4165,20 +4370,20 @@ void LayoutTurnout::remove()
          if (isMain == mainlineC)
          {
              //g2.setColor(colorC);
-          stroke.setColor(colorC);
+          layoutEditor->drawingStroke.setColor(colorC);
              //g2.draw(new Line2D.Double(pM, pC));
           lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pC.x(), pC.y());
-          lineItem->setPen(stroke);
+          lineItem->setPen(layoutEditor->drawingStroke);
           itemGroup->addToGroup(lineItem);
          }
      } else if (!isBlock || drawUnselectedLeg) {
          // draw center<--=>C
          if (isMain == mainlineC) {
              //g2.setColor(colorC);
-          stroke.setColor(colorC);
+          layoutEditor->drawingStroke.setColor(colorC);
              //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pC), pC));
           lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pC).x(), MathUtil::twoThirdsPoint(pM, pC).y(), pC.x(), pC.y());
-          lineItem->setPen(stroke);
+          lineItem->setPen(layoutEditor->drawingStroke);
           itemGroup->addToGroup(lineItem);
          }
      }
@@ -4191,8 +4396,10 @@ void LayoutTurnout::remove()
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement, QPen stroke) {
+/*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement) {
     int type = getTurnoutType();
+
+//    invalidate(g2);
 
     QPointF pA = getCoordsA();
     QPointF pB = getCoordsB();
@@ -4265,21 +4472,21 @@ void LayoutTurnout::remove()
             if (isMain == mainlineA) {
                 //g2.draw(new Line2D.Double(pAL, pML));
              lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pML.x(), pML.y());
-             lineItem->setPen(stroke);
+             lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
                 //g2.draw(new Line2D.Double(pAR, pAPR));
              lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pAPR.x(), pAPR.y());
-             lineItem->setPen(stroke);
+             lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
             }
             if (isMain == mainlineB) {
                 //g2.draw(new Line2D.Double(pML, pBL));
              lineItem = new QGraphicsLineItem(pML.x(), pML.y(), pBL.x(), pBL.y());
-             lineItem->setPen(stroke);
+             lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
                 //g2.draw(new Line2D.Double(pF, pBR));
              lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pBR.x(), pBR.y());
-             lineItem->setPen(stroke);
+             lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
 
                 if (continuingSense == state) {  // unknown or diverting path
@@ -4287,18 +4494,18 @@ void LayoutTurnout::remove()
 //                     } else {
                     //g2.draw(new Line2D.Double(pAPR, pF));
                  lineItem = new QGraphicsLineItem(pAPR.x(), pAPR.y(), pF.x(), pF.y());
-                 lineItem->setPen(stroke);
+                 lineItem->setPen(layoutEditor->drawingStroke);
                  itemGroup->addToGroup(lineItem);
                 }
             }
             if (isMain == mainlineC) {
                 //g2.draw(new Line2D.Double(pF, pCL));
              lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pCL.x(), pCL.y());
-             lineItem->setPen(stroke);
+             lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
                 //g2.draw(new Line2D.Double(pFR, pCR));
              lineItem = new QGraphicsLineItem(pFR.x(), pFR.y(), pCR.x(), pCR.y());
-             lineItem->setPen(stroke);
+             lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
 
                 QPainterPath* path = new QPainterPath();
@@ -4307,7 +4514,7 @@ void LayoutTurnout::remove()
                 path->lineTo(pCR.x(), pCR.y());
                 //g2.draw(path);
                 QGraphicsPathItem* pathItem = new QGraphicsPathItem(*path);
-                pathItem->setPen(stroke);
+                pathItem->setPen(layoutEditor->drawingStroke);
                 itemGroup->addToGroup(pathItem);
                 if (continuingSense != state) {  // unknown or diverting path
                     path = new QPainterPath();
@@ -4315,7 +4522,7 @@ void LayoutTurnout::remove()
                     path->quadTo(pML.x(), pML.y(), pF.x(), pF.y());
                     //g2.draw(path);
                     pathItem = new QGraphicsPathItem(*path);
-                    pathItem->setPen(stroke);
+                    pathItem->setPen(layoutEditor->drawingStroke);
                     itemGroup->addToGroup(pathItem);//                     } else {
 //                         path = new GeneralPath();
 //                         path.moveTo(pSL.getX(), pSL.getY());
@@ -4330,35 +4537,35 @@ void LayoutTurnout::remove()
             if (isMain == mainlineA) {
                 //g2.draw(new Line2D.Double(pAR, pMR));
              lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pMR.x(), pMR.y());
-             lineItem->setPen(stroke);
+             lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
                 //g2.draw(new Line2D.Double(pAL, pAPL));
              lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pAPL.x(), pAPL.y());
-             lineItem->setPen(stroke);
+             lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
             }
             if (isMain == mainlineB) {
                 //g2.draw(new Line2D.Double(pMR, pBR));
              lineItem = new QGraphicsLineItem(pMR.x(), pMR.y(), pBR.x(), pBR.y());
-             lineItem->setPen(stroke);
+             lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
                 //g2.draw(new Line2D.Double(pF, pBL));
              lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pBL.x(), pBL.y());
-             lineItem->setPen(stroke);
+             lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
                 if (continuingSense == state) {  // straight path
 //                         g2.draw(new Line2D.Double(pSL, pFPL));  Offset problem
 //                     } else {
                     //g2.draw(new Line2D.Double(pAPL, pF));
                  lineItem = new QGraphicsLineItem(pAPL.x(), pAPL.y(), pF.x(), pF.y());
-                 lineItem->setPen(stroke);
+                 lineItem->setPen(layoutEditor->drawingStroke);
                  itemGroup->addToGroup(lineItem);
                 }
             }
             if (isMain == mainlineC) {
                 //g2.draw(new Line2D.Double(pF, pCR));
              lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pCR.x(), pCR.y());
-             lineItem->setPen(stroke);
+             lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
                 QPainterPath path = QPainterPath();
                 path.moveTo(pAPL.x(), pAPL.y());
@@ -4366,7 +4573,7 @@ void LayoutTurnout::remove()
                 path.lineTo(pCL.x(), pCL.y());
                 //g2.draw(path);
                 QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
-                pathItem->setPen(stroke);
+                pathItem->setPen(layoutEditor->drawingStroke);
                 itemGroup->addToGroup(pathItem);
                 //                     } else {
                 if (continuingSense != state) {  // unknown or diverting path
@@ -4375,7 +4582,7 @@ void LayoutTurnout::remove()
                     path.quadTo(pMR.x(), pMR.y(), pF.x(), pF.y());
                     //g2.draw(path);
                     pathItem = new QGraphicsPathItem(path);
-                    pathItem->setPen(stroke);
+                    pathItem->setPen(layoutEditor->drawingStroke);
                     itemGroup->addToGroup(pathItem);
 //                     } else {
 //                     } else {
@@ -4927,76 +5134,113 @@ void LayoutTurnout::remove()
     item = itemGroup;
     g2->addItem(itemGroup);
 }
-#if 0
+#if 1
 /**
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void highlightUnconnected(EditScene* g2, int specificType) {
+/*protected*/ void LayoutTurnout::highlightUnconnected(EditScene* g2, int specificType) {
     if (((specificType == NONE) || (specificType == TURNOUT_A))
             && (getConnectA() == nullptr)) {
-        g2.fill(layoutEditor.trackControlCircleAt(getCoordsA()));
+        //g2.fill(layoutEditor->trackControlCircleAt(getCoordsA()));
+     QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(getCoordsA());
+     item->setPen(QPen(defaultTrackColor, 1));
     }
 
     if (((specificType == NONE) || (specificType == TURNOUT_B))
             && (getConnectB() == nullptr)) {
-        g2.fill(layoutEditor.trackControlCircleAt(getCoordsB()));
+        //g2.fill(layoutEditor->trackControlCircleAt(getCoordsB()));
+     QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(getCoordsB());
+     item->setPen(QPen(defaultTrackColor, 1));
     }
 
     if (((specificType == NONE) || (specificType == TURNOUT_C))
             && (getConnectC() == nullptr)) {
-        g2.fill(layoutEditor.trackControlCircleAt(getCoordsC()));
+        //g2.fill(layoutEditor->trackControlCircleAt(getCoordsC()));
+     QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(getCoordsC());
+     item->setPen(QPen(defaultTrackColor, 1));
     }
     if ((getTurnoutType() == DOUBLE_XOVER)
             || (getTurnoutType() == RH_XOVER)
             || (getTurnoutType() == LH_XOVER)) {
         if (((specificType == NONE) || (specificType == TURNOUT_D))
                 && (getConnectD() == nullptr)) {
-            g2.fill(layoutEditor.trackControlCircleAt(getCoordsD()));
+            //g2.fill(layoutEditor.trackControlCircleAt(getCoordsD()));
+         QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(getCoordsD());
+         item->setPen(QPen(defaultTrackColor, 1));
         }
     }
+    rects = item;
+    g2->addItem(rects);
+
 }
 
 //@Override
-/*protected*/ void drawTurnoutControls(EditScene* g2) {
+/*protected*/ void LayoutTurnout::drawTurnoutControls(EditScene* g2)
+{
     if (!disabled && !(disableWhenOccupied && isOccupied())) {
-        g2.draw(layoutEditor.trackControlCircleAt(center));
+        //g2.draw(layoutEditor.trackControlCircleAt(center));
+     QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(center);
+     item->setPen(layoutEditor->drawingStroke);
+     rects = item;
+     g2->addItem(rects);
     }
 }
 
 //@Override
-/*protected*/ void drawEditControls(EditScene* g2) {
+/*protected*/ void LayoutTurnout::drawEditControls(EditScene* g2)
+{
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+
     QPointF pt = getCoordsA();
-    if (getTurnoutType() >= DOUBLE_XOVER && getTurnoutType() <= DOUBLE_SLIP) {
+    if (getTurnoutType() >= DOUBLE_XOVER && getTurnoutType() <= DOUBLE_SLIP)
+    {
         if (getConnectA() == nullptr) {
-            g2.setColor(Color.magenta);
+            //g2.setColor(Color.magenta);
+         layoutEditor->drawingStroke.setColor(QColor(Qt::magenta));
         } else {
-            g2.setColor(Color.blue);
+            //g2.setColor(Color.blue);
+         layoutEditor->drawingStroke.setColor(Qt::blue);
         }
     } else {
         if (getConnectA() == nullptr) {
-            g2.setColor(Color.red);
+            //g2.setColor(Color.red);
+         layoutEditor->drawingStroke.setColor(Qt::red);
         } else {
-            g2.setColor(Color.green);
+            //g2.setColor(Color.green);
+         layoutEditor->drawingStroke.setColor(Qt::green);
         }
     }
-    g2.draw(layoutEditor.trackEditControlRectAt(pt));
+    //g2.draw(layoutEditor.trackEditControlRectAt(pt));
+    QGraphicsRectItem* item = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
+    item->setPen(layoutEditor->drawingStroke);
+    itemGroup->addToGroup(item);
 
     pt = getCoordsB();
     if (getConnectB() == nullptr) {
-        g2.setColor(Color.red);
+        //g2.setColor(Color.red);
+     layoutEditor->drawingStroke.setColor(Qt::red);
     } else {
-        g2.setColor(Color.green);
+        //g2.setColor(Color.green);
+     layoutEditor->drawingStroke.setColor(Qt::green);
     }
-    g2.draw(layoutEditor.trackEditControlRectAt(pt));
+    //g2.draw(layoutEditor.trackEditControlRectAt(pt));
+    item =  new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
+    item->setPen(layoutEditor->drawingStroke);
+    itemGroup->addToGroup(item);
 
     pt = getCoordsC();
     if (getConnectC() == nullptr) {
-        g2.setColor(Color.red);
+     //g2.setColor(Color.red);
+     layoutEditor->drawingStroke.setColor(Qt::red);
     } else {
-        g2.setColor(Color.green);
+     //g2.setColor(Color.green);
+     layoutEditor->drawingStroke.setColor(Qt::green);
     }
-    g2.draw(layoutEditor.trackEditControlRectAt(pt));
+    //g2.draw(layoutEditor.trackEditControlRectAt(pt));
+    item = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
+    item->setPen(layoutEditor->drawingStroke);
+    itemGroup->addToGroup(item);
 
     if ((getTurnoutType() == DOUBLE_XOVER)
             || (getTurnoutType() == RH_XOVER)
@@ -5005,11 +5249,18 @@ void LayoutTurnout::remove()
             || (getTurnoutType() == DOUBLE_SLIP)) {
         pt = getCoordsD();
         if (getConnectD() == nullptr) {
-            g2.setColor(Color.red);
+         //g2.setColor(Color.red);
+         layoutEditor->drawingStroke.setColor(Qt::red);
         } else {
-            g2.setColor(Color.green);
+         //g2.setColor(Color.green);
+         layoutEditor->drawingStroke.setColor(Qt::green);
+        //g2.draw(layoutEditor.trackEditControlRectAt(pt));
+         item = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
+         item->setPen(layoutEditor->drawingStroke);
+         itemGroup->addToGroup(item);
         }
-        g2.draw(layoutEditor.trackEditControlRectAt(pt));
+        rects = itemGroup;
+        g2->addItem(rects);
     }
 }   // drawEditControls
 
@@ -5076,6 +5327,7 @@ void LayoutTurnout::invalidate(QGraphicsScene *g2)
   rects = nullptr;
  }
 }
+
 void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
 {
  QColor color;
@@ -5945,6 +6197,7 @@ else
  item = group;
  g2->addItem(item);
 }
+
 void LayoutTurnout::drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2)
 {
  QColor color;

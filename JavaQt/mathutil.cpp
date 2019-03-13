@@ -96,9 +96,38 @@ MathUtil::MathUtil()
         lerp(p1.y(), p2.y(), interpolant));
 }
 
-// return a QPointF at the mid point between p1 & p2
-/*public*/ /*static*/ QPointF MathUtil::midPoint(QPointF p1, QPointF p2) {
-    return lerp(p1, p2, 0.5);
+/**
+ * calculate the center of the rectangle
+ *
+ * @param r the rectangle
+ * @return the center of the rectangle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::center(/*@Nonnull*/ QRectF r) {
+    return QPointF(r.center().x(), r.center().y());
+}
+
+/**
+ * calculate the midpoint of the rectangle
+ *
+ * @param r the rectangle
+ * @return the midpoint of the rectangle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::midPoint(/*@Nonnull*/ QRectF r) {
+    return center(r);
+}
+
+/**
+ * calculate the midpoint between two points
+ *
+ * @param pA the first point
+ * @param pB the second point
+ * @return the midpoint between the two points
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::midPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB) {
+    return lerp(pA, pB, 0.5);
 }
 
 /**

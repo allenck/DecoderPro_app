@@ -8,6 +8,19 @@
 #include "instancemanager.h"
 #include "blockmanager.h"
 #include "jtextfield.h"
+#include "jmribeancombobox.h"
+#include "blockmanager.h"
+#include "mathutil.h"
+#include "block.h"
+#include <QMenu>
+#include <QGridLayout>
+#include "layoutslip.h"
+#include "entryexitpairs.h"
+#include "userpreferencesmanager.h"
+#include "namedbean.h"
+#include "layouteditor.h"
+#include "joptionpane.h"
+#include "layoutturnout.h"
 
 /**
  * Editors for all layout track objects (PositionablePoint, TrackSegment,
@@ -31,6 +44,23 @@
          InstanceManager::getDefault("BlockManager")), nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
  editTrackSegmentArcTextField = new JTextField(5);
 
+ editLayoutTurnoutBlockNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
+         InstanceManager::getDefault("BlockManager")), nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ editLayoutTurnoutBlockBNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
+         InstanceManager::getDefault("BlockManager")), nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ editLayoutTurnoutBlockCNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
+         InstanceManager::getDefault("BlockManager")), nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ editLayoutTurnoutBlockDNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
+         InstanceManager::getDefault("BlockManager")), nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ editLayoutTurnoutStateComboBox = new QComboBox();
+ editLayoutTurnoutHiddenCheckBox = new QCheckBox(tr("HideTurnout"));  // NOI18N
+ editLayoutTurnout2ndTurnoutCheckBox = new QCheckBox(tr("SupportingTurnout"));  // NOI18N
+ editLayoutTurnout2ndTurnoutInvertCheckBox = new QCheckBox(tr("SecondTurnoutInvert"));  // NOI18N
+
+ editLayoutSlipHiddenBox = new QCheckBox(tr("HideSlip"));
+ editLayoutSlipBlockNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
+         InstanceManager::getDefault("BlockManager")), nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+
 }
 
 /*=================*\
@@ -43,27 +73,27 @@
     if (qobject_cast<PositionablePoint*>(layoutTrack)) {
         // PositionablePoint's don't have an editor...
     }
-#if 0
-    else if (layoutTrack instanceof TrackSegment) {
-        editTrackSegment((TrackSegment) layoutTrack);
-    } else // this has to be before LayoutTurnout
-    if (layoutTrack instanceof LayoutSlip) {
-        editLayoutSlip((LayoutSlip) layoutTrack);
-    } else if (layoutTrack instanceof LayoutTurnout) {
-        editLayoutTurnout((LayoutTurnout) layoutTrack);
-    } else if (layoutTrack instanceof LevelXing) {
-        editLevelXing((LevelXing) layoutTrack);
-    } else if (layoutTrack instanceof LayoutTurntable) {
-        editLayoutTurntable((LayoutTurntable) layoutTrack);
+    else if (qobject_cast<TrackSegment*>(layoutTrack)) {
+        editTrackSegment((TrackSegment*) layoutTrack);
     }
-#endif
+    else // this has to be before LayoutTurnout
+    if (qobject_cast<LayoutSlip*>(layoutTrack)) {
+        editLayoutSlip((LayoutSlip*) layoutTrack);
+    }
+    else if (qobject_cast<LayoutTurnout*>(layoutTrack)) {
+        editLayoutTurnout((LayoutTurnout*) layoutTrack);
+    } else if (qobject_cast<LevelXing*>(layoutTrack)) {
+        editLevelXing((LevelXing*) layoutTrack);
+    } else if (qobject_cast<PositionablePoint*>(layoutTrack)) {
+        editLayoutTurntable((LayoutTurntable*) layoutTrack);
+    }
     else
     {
         log->error(tr("editLayoutTrack unknown LayoutTrack subclass:") + layoutTrack->metaObject()->className());  // NOI18N
     }
 }
 
-#if 0
+
 /**
  * Create a list of NX sensors that refer to the current layout block.
  * This is used to disable block selection in the edit dialog.
@@ -72,16 +102,18 @@
  * @param loBlk The current layout block.
  * @return true if sensors are affected.
  */
-/*boolean*/ hasNxSensorPairs(LayoutBlock loBlk) {
-    if (loBlk == null) {
+bool LayoutTrackEditors::hasNxSensorPairs(LayoutBlock* loBlk) {
+    if (loBlk == nullptr) {
         return false;
     }
-    List<String> blockSensors = InstanceManager.getDefault(jmri.jmrit.entryexit.EntryExitPairs.class)
-            .layoutBlockSensors(loBlk);
+    QList<QString> blockSensors = static_cast<EntryExitPairs*>(InstanceManager::getDefault("EntryExitPairs"))
+            ->layoutBlockSensors(loBlk);
     if (blockSensors.isEmpty()) {
         return false;
     }
-    sensorList.addAll(blockSensors);
+    //sensorList.addAll(blockSensors);
+    for(QString blockSensor : blockSensors)
+     sensorList.append(blockSensor);
     return true;
 }
 
@@ -92,31 +124,32 @@
  * for a default manager type class.
  * @since 4.11.2
  */
-@InvokeOnGuiThread
-void showSensorMessage() {
+//@InvokeOnGuiThread
+void LayoutTrackEditors::showSensorMessage() {
     if (sensorList.isEmpty()) {
         return;
     }
-    StringBuilder msg = new StringBuilder(tr("BlockSensorLine1"));  // NOI18N
-    msg.append(tr("BlockSensorLine2"));  // NOI18N
-    String chkDup = "";
-    sensorList.sort(null);
-    for (String sName : sensorList) {
-        if (!sName.equals(chkDup)) {
+    QString msg = tr("<html>Block selection is disabled because the current block is being used by Entry/Exit Pairs.<p>");  // NOI18N
+    msg.append(tr("The Entry/Exit sensors are listed below."));  // NOI18N
+    QString chkDup = "";
+    //sensorList.sort(null);
+    qSort(sensorList.begin(), sensorList.end());
+    for (QString sName : sensorList) {
+        if (sName !=(chkDup)) {
             msg.append("<br>&nbsp;&nbsp;&nbsp; " + sName);  // NOI18N
         }
         chkDup = sName;
     }
     msg.append("<br>&nbsp;</html>");  // NOI18N
-    jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class).
+    static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))->
         showInfoMessage(
             tr("BlockSensorTitle"),  // NOI18N
-            msg.toString(),
+            msg,
             "jmri.jmrit.display.PanelMenu",  // NOI18N
             "BlockSensorMessage");  // NOI18N
     return;
 }
-#endif
+
 /*==================*\
 | Edit Track Segment |
 \*==================*/
@@ -140,7 +173,7 @@ void showSensorMessage() {
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 
         // add dashed choice
-        JPanel panel31 = new JPanel();
+        QWidget* panel31 = new QWidget();
         panel31.setLayout(new FlowLayout());
         editTrackSegmentDashedComboBox.removeAllItems();
         editTrackSegmentDashedComboBox.addItem(tr("Solid"));  // NOI18N
@@ -148,12 +181,12 @@ void showSensorMessage() {
         editTrackSegmentDashedComboBox.addItem(tr("Dashed"));  // NOI18N
         editTrackSegmentDashedIndex = 1;
         editTrackSegmentDashedComboBox.setToolTipText(tr("DashedToolTip"));  // NOI18N
-        panel31.add(new JLabel(tr("Style") + " : "));
+        panel31.add(new QLabel(tr("Style") + " : "));
         panel31.add(editTrackSegmentDashedComboBox);
         contentPane.add(panel31);
 
         // add mainline choice
-        JPanel panel32 = new JPanel();
+        QWidget* panel32 = new QWidget();
         panel32.setLayout(new FlowLayout());
         editTrackSegmentMainlineComboBox.removeAllItems();
         editTrackSegmentMainlineComboBox.addItem(tr("Mainline"));  // NOI18N
@@ -165,16 +198,16 @@ void showSensorMessage() {
         contentPane.add(panel32);
 
         // add hidden choice
-        JPanel panel33 = new JPanel();
+        QWidget* panel33 = new QWidget();
         panel33.setLayout(new FlowLayout());
         editTrackSegmentHiddenCheckBox.setToolTipText(tr("HiddenToolTip"));  // NOI18N
         panel33.add(editTrackSegmentHiddenCheckBox);
         contentPane.add(panel33);
 
         // setup block name
-        JPanel panel2 = new JPanel();
+        QWidget* panel2 = new QWidget();
         panel2.setLayout(new FlowLayout());
-        JLabel blockNameLabel = new JLabel(tr("BlockID"));  // NOI18N
+        QLabel* blockNameLabel = new QLabel(tr("BlockID"));  // NOI18N
         panel2.add(blockNameLabel);
         LayoutEditor.setupComboBox(editTrackSegmentBlockNameComboBox, false, true);
         editTrackSegmentBlockNameComboBox.setToolTipText(tr("EditBlockNameHint"));  // NOI18N
@@ -182,16 +215,16 @@ void showSensorMessage() {
 
         contentPane.add(panel2);
 
-        JPanel panel20 = new JPanel();
+        QWidget* panel20 = new QWidget();
         panel20.setLayout(new FlowLayout());
-        JLabel arcLabel = new JLabel(tr("SetArcAngle"));  // NOI18N
+        QLabel* arcLabel = new QLabel(tr("SetArcAngle"));  // NOI18N
         panel20.add(arcLabel);
         panel20.add(editTrackSegmentArcTextField);
         editTrackSegmentArcTextField.setToolTipText(tr("SetArcAngleHint"));  // NOI18N
         contentPane.add(panel20);
 
         // set up Edit Block, Done and Cancel buttons
-        JPanel panel5 = new JPanel();
+        QWidget* panel5 = new QWidget();
         panel5.setLayout(new FlowLayout());
 
         // Edit Block
@@ -289,15 +322,15 @@ void showSensorMessage() {
 @InvokeOnGuiThread
 /*private*/ void editTracksegmentDonePressed(ActionEvent a) {
     // set dashed
-    boolean oldDashed = trackSegment.isDashed();
+    bool oldDashed = trackSegment.isDashed();
     trackSegment.setDashed(editTrackSegmentDashedComboBox.getSelectedIndex() == editTrackSegmentDashedIndex);
 
     // set mainline
-    boolean oldMainline = trackSegment.isMainline();
+    bool oldMainline = trackSegment.isMainline();
     trackSegment.setMainline(editTrackSegmentMainlineComboBox.getSelectedIndex() == editTrackSegmentMainlineTrackIndex);
 
     // set hidden
-    boolean oldHidden = trackSegment.isHidden();
+    bool oldHidden = trackSegment.isHidden();
     trackSegment.setHidden(editTrackSegmentHiddenCheckBox.isSelected());
 
     if (trackSegment.isArc()) {
@@ -354,68 +387,39 @@ void showSensorMessage() {
         editTrackSegmentNeedsRedraw = false;
     }
 }
-
+#endif
 /*===================*\
 | Edit Layout Turnout |
 \*===================*/
-// variables for Edit Layout Turnout pane
-/*private*/ LayoutTurnout layoutTurnout = null;
 
-/*private*/ JmriJFrame editLayoutTurnoutFrame = null;
-/*private*/ JmriBeanComboBox editLayoutTurnout1stTurnoutComboBox = null;
-/*private*/ JmriBeanComboBox editLayoutTurnout2ndTurnoutComboBox = null;
-/*private*/ JLabel editLayoutTurnout2ndTurnoutLabel = null;
-/*private*/ JmriBeanComboBox editLayoutTurnoutBlockNameComboBox = new JmriBeanComboBox(
-        InstanceManager.getDefault(BlockManager.class), null, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-/*private*/ JmriBeanComboBox editLayoutTurnoutBlockBNameComboBox = new JmriBeanComboBox(
-        InstanceManager.getDefault(BlockManager.class), null, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-/*private*/ JmriBeanComboBox editLayoutTurnoutBlockCNameComboBox = new JmriBeanComboBox(
-        InstanceManager.getDefault(BlockManager.class), null, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-/*private*/ JmriBeanComboBox editLayoutTurnoutBlockDNameComboBox = new JmriBeanComboBox(
-        InstanceManager.getDefault(BlockManager.class), null, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-/*private*/ JComboBox<String> editLayoutTurnoutStateComboBox = new JComboBox<String>();
-/*private*/ JCheckBox editLayoutTurnoutHiddenCheckBox = new JCheckBox(tr("HideTurnout"));  // NOI18N
-/*private*/ JButton editLayoutTurnoutBlockButton;
-/*private*/ JButton editLayoutTurnoutDoneButton;
-/*private*/ JButton editLayoutTurnoutCancelButton;
-/*private*/ JButton editLayoutTurnoutBlockBButton;
-/*private*/ JButton editLayoutTurnoutBlockCButton;
-/*private*/ JButton editLayoutTurnoutBlockDButton;
-/*private*/ JCheckBox editLayoutTurnout2ndTurnoutCheckBox = new JCheckBox(tr("SupportingTurnout"));  // NOI18N
-/*private*/ JCheckBox editLayoutTurnout2ndTurnoutInvertCheckBox = new JCheckBox(tr("SecondTurnoutInvert"));  // NOI18N
-
-/*private*/ boolean editLayoutTurnoutOpen = false;
-/*private*/ boolean editLayoutTurnoutNeedRedraw = false;
-/*private*/ boolean editLayoutTurnoutNeedsBlockUpdate = false;
-/*private*/ int editLayoutTurnoutClosedIndex;
-/*private*/ int editLayoutTurnoutThrownIndex;
 
 /**
  * Edit a Layout Turnout
  */
-/*protected*/ void editLayoutTurnout(@Nonnull LayoutTurnout layoutTurnout) {
-    this.layoutTurnout = layoutTurnout;
+/*protected*/ void LayoutTrackEditors::editLayoutTurnout(/*@Nonnull*/ LayoutTurnout* layoutTurnout) {
+    this->layoutTurnout = layoutTurnout;
+#if 0
     sensorList.clear();
 
     if (editLayoutTurnoutOpen) {
         editLayoutTurnoutFrame.setVisible(true);
-    } else if (editLayoutTurnoutFrame == null) { // Initialize if needed
+    } else if (editLayoutTurnoutFrame == nullptr) { // Initialize if needed
         editLayoutTurnoutFrame = new JmriJFrame(tr("EditTurnout"), false, true);  // NOI18N
         editLayoutTurnoutFrame.addHelpMenu("package.jmri.jmrit.display.EditLayoutTurnout", true);  // NOI18N
         editLayoutTurnoutFrame.setLocation(50, 30);
         Container contentPane = editLayoutTurnoutFrame.getContentPane();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         // setup turnout name
-        JPanel panel1 = new JPanel();
+        QWidget* panel1 = new QWidget();
         panel1.setLayout(new FlowLayout());
-        JLabel turnoutNameLabel = new JLabel(tr("MakeLabel", tr("BeanNameTurnout")));  // NOI18N
+        QLabel* turnoutNameLabel = new QLabel(tr("MakeLabel", tr("BeanNameTurnout")));  // NOI18N
         panel1.add(turnoutNameLabel);
 
         // add combobox to select turnout
         editLayoutTurnout1stTurnoutComboBox = new JmriBeanComboBox(
-                InstanceManager.turnoutManagerInstance(),
-                layoutTurnout.getTurnout(),
-                JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
+                InstanceManager::turnoutManagerInstance(),
+                LayoutTurnout::getTurnout(),
+                JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
         LayoutEditor.setupComboBox(editLayoutTurnout1stTurnoutComboBox, true, true);
 
         // disable items that are already in use
@@ -426,9 +430,9 @@ void showSensorMessage() {
                 log.debug("PopupMenuWillBecomeVisible");  // NOI18N
                 Object o = e.getSource();
                 if (o instanceof JmriBeanComboBox) {
-                    JmriBeanComboBox jbcb = (JmriBeanComboBox) o;
+                    JmriBeanComboBox* jbcb = (JmriBeanComboBox) o;
                     for (int idx = 0; idx < jbcb.getItemCount(); idx++) {
-                        jbcb.setItemEnabled(idx, layoutEditor.validatePhysicalTurnout(jbcb.getItemAt(idx), null));
+                        jbcb.setItemEnabled(idx, layoutEditor.validatePhysicalTurnout(jbcb.getItemAt(idx), nullptr));
                     }
                 }
             }
@@ -453,13 +457,13 @@ void showSensorMessage() {
         panel1.add(editLayoutTurnout1stTurnoutComboBox);
         contentPane.add(panel1);
 
-        JPanel panel1a = new JPanel();
+        QWidget* panel1a = new QWidget();
         panel1a.setLayout(new BoxLayout(panel1a, BoxLayout.Y_AXIS));
 
         editLayoutTurnout2ndTurnoutComboBox = new JmriBeanComboBox(
-                InstanceManager.turnoutManagerInstance(),
-                layoutTurnout.getSecondTurnout(),
-                JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
+                InstanceManager::turnoutManagerInstance(),
+                LayoutTurnout::getSecondTurnout(),
+                JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
         LayoutEditor.setupComboBox(editLayoutTurnout2ndTurnoutComboBox, true, false);
 
         editLayoutTurnout2ndTurnoutComboBox.addPopupMenuListener(pml);
@@ -467,7 +471,7 @@ void showSensorMessage() {
         editLayoutTurnout2ndTurnoutComboBox.setDisabledColor(Color.red);
 
         editLayoutTurnout2ndTurnoutCheckBox.addActionListener((ActionEvent e) -> {
-            boolean additionalEnabled = editLayoutTurnout2ndTurnoutCheckBox.isSelected();
+            bool additionalEnabled = editLayoutTurnout2ndTurnoutCheckBox.isSelected();
             editLayoutTurnout2ndTurnoutLabel.setEnabled(additionalEnabled);
             editLayoutTurnout2ndTurnoutComboBox.setEnabled(additionalEnabled);
             editLayoutTurnout2ndTurnoutInvertCheckBox.setEnabled(additionalEnabled);
@@ -475,36 +479,36 @@ void showSensorMessage() {
         panel1a.add(editLayoutTurnout2ndTurnoutCheckBox);
         contentPane.add(panel1a);
 
-        editLayoutTurnout2ndTurnoutLabel = new JLabel(tr("Supporting", tr("BeanNameTurnout")));  // NOI18N
+        editLayoutTurnout2ndTurnoutLabel = new QLabel(tr("Supporting", tr("BeanNameTurnout")));  // NOI18N
         editLayoutTurnout2ndTurnoutLabel.setEnabled(false);
-        JPanel panel1b = new JPanel();
+        QWidget* panel1b = new QWidget();
         panel1b.add(editLayoutTurnout2ndTurnoutLabel);
         panel1b.add(editLayoutTurnout2ndTurnoutComboBox);
         editLayoutTurnout2ndTurnoutInvertCheckBox.addActionListener((ActionEvent e) -> {
-            layoutTurnout.setSecondTurnoutInverted(editLayoutTurnout2ndTurnoutInvertCheckBox.isSelected());
+            LayoutTurnout::setSecondTurnoutInverted(editLayoutTurnout2ndTurnoutInvertCheckBox.isSelected());
         });
         editLayoutTurnout2ndTurnoutInvertCheckBox.setEnabled(false);
         panel1b.add(editLayoutTurnout2ndTurnoutInvertCheckBox);
         contentPane.add(panel1b);
 
         // add continuing state choice, if not crossover
-        if ((layoutTurnout.getTurnoutType() != LayoutTurnout.DOUBLE_XOVER)
-                && (layoutTurnout.getTurnoutType() != LayoutTurnout.RH_XOVER)
-                && (layoutTurnout.getTurnoutType() != LayoutTurnout.LH_XOVER)) {
-            JPanel panel3 = new JPanel();
+        if ((LayoutTurnout::getTurnoutType() != LayoutTurnout::DOUBLE_XOVER)
+                && (LayoutTurnout::getTurnoutType() != LayoutTurnout::RH_XOVER)
+                && (LayoutTurnout::getTurnoutType() != LayoutTurnout::LH_XOVER)) {
+            QWidget* panel3 = new QWidget();
             panel3.setLayout(new FlowLayout());
             editLayoutTurnoutStateComboBox.removeAllItems();
-            editLayoutTurnoutStateComboBox.addItem(InstanceManager.turnoutManagerInstance().getClosedText());
+            editLayoutTurnoutStateComboBox.addItem(InstanceManager::turnoutManagerInstance().getClosedText());
             editLayoutTurnoutClosedIndex = 0;
-            editLayoutTurnoutStateComboBox.addItem(InstanceManager.turnoutManagerInstance().getThrownText());
+            editLayoutTurnoutStateComboBox.addItem(InstanceManager::turnoutManagerInstance().getThrownText());
             editLayoutTurnoutThrownIndex = 1;
             editLayoutTurnoutStateComboBox.setToolTipText(tr("StateToolTip"));  // NOI18N
-            panel3.add(new JLabel(tr("ContinuingState")));  // NOI18N
+            panel3.add(new QLabel(tr("ContinuingState")));  // NOI18N
             panel3.add(editLayoutTurnoutStateComboBox);
             contentPane.add(panel3);
         }
 
-        JPanel panel33 = new JPanel();
+        QWidget* panel33 = new QWidget();
         panel33.setLayout(new FlowLayout());
         editLayoutTurnoutHiddenCheckBox.setToolTipText(tr("HiddenToolTip"));  // NOI18N
         panel33.add(editLayoutTurnoutHiddenCheckBox);
@@ -513,7 +517,7 @@ void showSensorMessage() {
         TitledBorder border = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
         border.setTitle(tr("BeanNameBlock"));  // NOI18N
         // setup block name
-        JPanel panel2 = new JPanel();
+        QWidget* panel2 = new QWidget();
         panel2.setBorder(border);
         panel2.setLayout(new FlowLayout());
         panel2.add(editLayoutTurnoutBlockNameComboBox);
@@ -524,10 +528,10 @@ void showSensorMessage() {
             editLayoutTurnoutEditBlockPressed(e);
         });
         contentPane.add(panel2);
-        if ((layoutTurnout.getTurnoutType() == LayoutTurnout.DOUBLE_XOVER)
-                || (layoutTurnout.getTurnoutType() == LayoutTurnout.RH_XOVER)
-                || (layoutTurnout.getTurnoutType() == LayoutTurnout.LH_XOVER)) {
-            JPanel panel21 = new JPanel();
+        if ((LayoutTurnout::getTurnoutType() == LayoutTurnout::DOUBLE_XOVER)
+                || (LayoutTurnout::getTurnoutType() == LayoutTurnout::RH_XOVER)
+                || (LayoutTurnout::getTurnoutType() == LayoutTurnout::LH_XOVER)) {
+            QWidget* panel21 = new QWidget();
             panel21.setLayout(new FlowLayout());
             TitledBorder borderblk2 = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
             borderblk2.setTitle(tr("BeanNameBlock") + " 2");  // NOI18N
@@ -543,7 +547,7 @@ void showSensorMessage() {
             editLayoutTurnoutBlockBButton.setToolTipText(tr("EditBlockHint", "2"));  // NOI18N
             contentPane.add(panel21);
 
-            JPanel panel22 = new JPanel();
+            QWidget* panel22 = new QWidget();
             panel22.setLayout(new FlowLayout());
             TitledBorder borderblk3 = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
             borderblk3.setTitle(tr("BeanNameBlock") + " 3");  // NOI18N
@@ -558,7 +562,7 @@ void showSensorMessage() {
             editLayoutTurnoutBlockCButton.setToolTipText(tr("EditBlockHint", "3"));  // NOI18N
             contentPane.add(panel22);
 
-            JPanel panel23 = new JPanel();
+            QWidget* panel23 = new QWidget();
             panel23.setLayout(new FlowLayout());
             TitledBorder borderblk4 = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
             borderblk4.setTitle(tr("BeanNameBlock") + " 4");  // NOI18N
@@ -574,7 +578,7 @@ void showSensorMessage() {
             contentPane.add(panel23);
         }
         // set up Edit Block, Done and Cancel buttons
-        JPanel panel5 = new JPanel();
+        QWidget* panel5 = new QWidget();
         panel5.setLayout(new FlowLayout());
         // Edit Block
 
@@ -602,47 +606,47 @@ void showSensorMessage() {
         contentPane.add(panel5);
     }
 
-    editLayoutTurnout1stTurnoutComboBox.setText(layoutTurnout.getTurnoutName());
+    editLayoutTurnout1stTurnoutComboBox.setText(LayoutTurnout::getTurnoutName());
 
-    editLayoutTurnoutHiddenCheckBox.setSelected(layoutTurnout.isHidden());
+    editLayoutTurnoutHiddenCheckBox.setSelected(LayoutTurnout::isHidden());
 
     // Set up for Edit
-    editLayoutTurnoutBlockNameComboBox.setText(layoutTurnout.getBlockName());
-    editLayoutTurnoutBlockNameComboBox.setEnabled(!hasNxSensorPairs(layoutTurnout.getLayoutBlock()));
-    if ((layoutTurnout.getTurnoutType() == LayoutTurnout.DOUBLE_XOVER)
-            || (layoutTurnout.getTurnoutType() == LayoutTurnout.RH_XOVER)
-            || (layoutTurnout.getTurnoutType() == LayoutTurnout.LH_XOVER)) {
-        editLayoutTurnoutBlockBNameComboBox.setText(layoutTurnout.getBlockBName());
-        editLayoutTurnoutBlockCNameComboBox.setText(layoutTurnout.getBlockCName());
-        editLayoutTurnoutBlockDNameComboBox.setText(layoutTurnout.getBlockDName());
-        editLayoutTurnoutBlockBNameComboBox.setEnabled(!hasNxSensorPairs(layoutTurnout.getLayoutBlockB()));
-        editLayoutTurnoutBlockCNameComboBox.setEnabled(!hasNxSensorPairs(layoutTurnout.getLayoutBlockC()));
-        editLayoutTurnoutBlockDNameComboBox.setEnabled(!hasNxSensorPairs(layoutTurnout.getLayoutBlockD()));
+    editLayoutTurnoutBlockNameComboBox.setText(LayoutTurnout::getBlockName());
+    editLayoutTurnoutBlockNameComboBox.setEnabled(!hasNxSensorPairs(LayoutTurnout::getLayoutBlock()));
+    if ((LayoutTurnout::getTurnoutType() == LayoutTurnout::DOUBLE_XOVER)
+            || (LayoutTurnout::getTurnoutType() == LayoutTurnout::RH_XOVER)
+            || (LayoutTurnout::getTurnoutType() == LayoutTurnout::LH_XOVER)) {
+        editLayoutTurnoutBlockBNameComboBox.setText(LayoutTurnout::getBlockBName());
+        editLayoutTurnoutBlockCNameComboBox.setText(LayoutTurnout::getBlockCName());
+        editLayoutTurnoutBlockDNameComboBox.setText(LayoutTurnout::getBlockDName());
+        editLayoutTurnoutBlockBNameComboBox.setEnabled(!hasNxSensorPairs(LayoutTurnout::getLayoutBlockB()));
+        editLayoutTurnoutBlockCNameComboBox.setEnabled(!hasNxSensorPairs(LayoutTurnout::getLayoutBlockC()));
+        editLayoutTurnoutBlockDNameComboBox.setEnabled(!hasNxSensorPairs(LayoutTurnout::getLayoutBlockD()));
     }
 
-    if ((layoutTurnout.getTurnoutType() != LayoutTurnout.DOUBLE_XOVER)
-            && (layoutTurnout.getTurnoutType() != LayoutTurnout.RH_XOVER)
-            && (layoutTurnout.getTurnoutType() != LayoutTurnout.LH_XOVER)) {
+    if ((LayoutTurnout::getTurnoutType() != LayoutTurnout::DOUBLE_XOVER)
+            && (LayoutTurnout::getTurnoutType() != LayoutTurnout::RH_XOVER)
+            && (LayoutTurnout::getTurnoutType() != LayoutTurnout::LH_XOVER)) {
         editLayoutTurnout2ndTurnoutCheckBox.setText(tr("ThrowTwoTurnouts"));  // NOI18N
     }
 
-    boolean enable2nd = !layoutTurnout.getSecondTurnoutName().isEmpty();
+    bool enable2nd = !LayoutTurnout::getSecondTurnoutName().isEmpty();
     editLayoutTurnout2ndTurnoutCheckBox.setSelected(enable2nd);
     editLayoutTurnout2ndTurnoutInvertCheckBox.setEnabled(enable2nd);
     editLayoutTurnout2ndTurnoutLabel.setEnabled(enable2nd);
     editLayoutTurnout2ndTurnoutComboBox.setEnabled(enable2nd);
     if (enable2nd) {
-        editLayoutTurnout2ndTurnoutInvertCheckBox.setSelected(layoutTurnout.isSecondTurnoutInverted());
-        editLayoutTurnout2ndTurnoutComboBox.setText(layoutTurnout.getSecondTurnoutName());
+        editLayoutTurnout2ndTurnoutInvertCheckBox.setSelected(LayoutTurnout::isSecondTurnoutInverted());
+        editLayoutTurnout2ndTurnoutComboBox.setText(LayoutTurnout::getSecondTurnoutName());
     } else {
         editLayoutTurnout2ndTurnoutInvertCheckBox.setSelected(false);
         editLayoutTurnout2ndTurnoutComboBox.setText("");
     }
 
-    if ((layoutTurnout.getTurnoutType() != LayoutTurnout.DOUBLE_XOVER)
-            && (layoutTurnout.getTurnoutType() != LayoutTurnout.RH_XOVER)
-            && (layoutTurnout.getTurnoutType() != LayoutTurnout.LH_XOVER)) {
-        if (layoutTurnout.getContinuingSense() == Turnout.CLOSED) {
+    if ((LayoutTurnout::getTurnoutType() != LayoutTurnout::DOUBLE_XOVER)
+            && (LayoutTurnout::getTurnoutType() != LayoutTurnout::RH_XOVER)
+            && (LayoutTurnout::getTurnoutType() != LayoutTurnout::LH_XOVER)) {
+        if (LayoutTurnout::getContinuingSense() == Turnout.CLOSED) {
             editLayoutTurnoutStateComboBox.setSelectedIndex(editLayoutTurnoutClosedIndex);
         } else {
             editLayoutTurnoutStateComboBox.setSelectedIndex(editLayoutTurnoutThrownIndex);
@@ -652,7 +656,7 @@ void showSensorMessage() {
     editLayoutTurnoutFrame.addWindowListener(new java.awt.event.WindowAdapter() {
         @Override
         /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-            editLayoutTurnoutCancelPressed(null);
+            editLayoutTurnoutCancelPressed(nullptr);
         }
     });
     editLayoutTurnoutFrame.pack();
@@ -661,55 +665,55 @@ void showSensorMessage() {
     editLayoutTurnoutNeedsBlockUpdate = false;
 
     showSensorMessage();
-
+#endif
 }   // editLayoutTurnout
-
+#if 0
 /*private*/ void editLayoutTurnoutEditBlockPressed(ActionEvent a) {
     // check if a block name has been entered
     String newName = editLayoutTurnoutBlockNameComboBox.getUserName();
-    if (!layoutTurnout.getBlockName().equals(newName)) {
-        // get new block, or null if block has been removed
+    if (!LayoutTurnout::getBlockName().equals(newName)) {
+        // get new block, or nullptr if block has been removed
         try {
-            layoutTurnout.setLayoutBlock(layoutEditor.provideLayoutBlock(newName));
+            LayoutTurnout::setLayoutBlock(layoutEditor.provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
-            layoutTurnout.setLayoutBlock(null);
+            LayoutTurnout::setLayoutBlock(nullptr);
         }
         editLayoutTurnoutNeedRedraw = true;
         editLayoutTurnoutNeedsBlockUpdate = true;
     }
     // check if a block exists to edit
-    if (layoutTurnout.getLayoutBlock() == null) {
+    if (LayoutTurnout::getLayoutBlock() == nullptr) {
         JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
                 tr("Error1"),  // NOI18N
                 tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);  // NOI18N
         return;
     }
-    layoutTurnout.getLayoutBlock().editLayoutBlock(editLayoutTurnoutFrame);
+    LayoutTurnout::getLayoutBlock().editLayoutBlock(editLayoutTurnoutFrame);
     editLayoutTurnoutNeedRedraw = true;
     layoutEditor.setDirty();
 }   // editLayoutTurnoutEditBlockPressed
 
-/*private*/ void editLayoutTurnoutEditBlockBPressed(ActionEvent a) {
+/*private*/ void editLayoutTurnoutEditBlockBPressed(/*ActionEvent a*/) {
     // check if a block name has been entered
     String newName = editLayoutTurnoutBlockBNameComboBox.getUserName();
-    if (!layoutTurnout.getBlockBName().equals(newName)) {
+    if (!LayoutTurnout::getBlockBName().equals(newName)) {
         // get new block, or null if block has been removed
         try {
-            layoutTurnout.setLayoutBlockB(layoutEditor.provideLayoutBlock(newName));
+            LayoutTurnout::setLayoutBlockB(layoutEditor.provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
-            layoutTurnout.setLayoutBlockB(null);
+            LayoutTurnout::setLayoutBlockB(nullptr);
         }
         editLayoutTurnoutNeedRedraw = true;
         editLayoutTurnoutNeedsBlockUpdate = true;
     }
     // check if a block exists to edit
-    if (layoutTurnout.getLayoutBlockB() == null) {
+    if (LayoutTurnout::getLayoutBlockB() == null) {
         JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
                 tr("Error1"),  // NOI18N
                 tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);  // NOI18N
         return;
     }
-    layoutTurnout.getLayoutBlockB().editLayoutBlock(editLayoutTurnoutFrame);
+    LayoutTurnout::getLayoutBlockB().editLayoutBlock(editLayoutTurnoutFrame);
     editLayoutTurnoutNeedRedraw = true;
     layoutEditor.setDirty();
 }   // editLayoutTurnoutEditBlockBPressed
@@ -717,24 +721,24 @@ void showSensorMessage() {
 /*private*/ void editLayoutTurnoutEditBlockCPressed(ActionEvent a) {
     // check if a block name has been entered
     String newName = editLayoutTurnoutBlockCNameComboBox.getUserName();
-    if (!layoutTurnout.getBlockCName().equals(newName)) {
+    if (!LayoutTurnout::getBlockCName().equals(newName)) {
         // get new block, or null if block has been removed
         try {
-            layoutTurnout.setLayoutBlockC(layoutEditor.provideLayoutBlock(newName));
+            LayoutTurnout::setLayoutBlockC(layoutEditor.provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
-            layoutTurnout.setLayoutBlockC(null);
+            LayoutTurnout::setLayoutBlockC(null);
         }
         editLayoutTurnoutNeedRedraw = true;
         editLayoutTurnoutNeedsBlockUpdate = true;
     }
     // check if a block exists to edit
-    if (layoutTurnout.getLayoutBlockC() == null) {
+    if (LayoutTurnout::getLayoutBlockC() == null) {
         JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
                 tr("Error1"),  // NOI18N
                 tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);  // NOI18N
         return;
     }
-    layoutTurnout.getLayoutBlockC().editLayoutBlock(editLayoutTurnoutFrame);
+    LayoutTurnout::getLayoutBlockC().editLayoutBlock(editLayoutTurnoutFrame);
     editLayoutTurnoutNeedRedraw = true;
     layoutEditor.setDirty();
 }   // editLayoutTurnoutEditBlockCPressed
@@ -742,24 +746,24 @@ void showSensorMessage() {
 /*private*/ void editLayoutTurnoutEditBlockDPressed(ActionEvent a) {
     // check if a block name has been entered
     String newName = editLayoutTurnoutBlockDNameComboBox.getUserName();
-    if (!layoutTurnout.getBlockDName().equals(newName)) {
+    if (!LayoutTurnout::getBlockDName().equals(newName)) {
         // get new block, or null if block has been removed
         try {
-            layoutTurnout.setLayoutBlockD(layoutEditor.provideLayoutBlock(newName));
+            LayoutTurnout::setLayoutBlockD(layoutEditor.provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
-            layoutTurnout.setLayoutBlockD(null);
+            LayoutTurnout::setLayoutBlockD(null);
         }
         editLayoutTurnoutNeedRedraw = true;
         editLayoutTurnoutNeedsBlockUpdate = true;
     }
     // check if a block exists to edit
-    if (layoutTurnout.getLayoutBlockD() == null) {
+    if (LayoutTurnout::getLayoutBlockD() == null) {
         JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
                 tr("Error1"),  // NOI18N
                 tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);  // NOI18N
         return;
     }
-    layoutTurnout.getLayoutBlockD().editLayoutBlock(editLayoutTurnoutFrame);
+    LayoutTurnout::getLayoutBlockD().editLayoutBlock(editLayoutTurnoutFrame);
     editLayoutTurnoutNeedRedraw = true;
     layoutEditor.setDirty();
 }   // editLayoutTurnoutEditBlockDPressed
@@ -767,13 +771,13 @@ void showSensorMessage() {
 /*private*/ void editLayoutTurnoutDonePressed(ActionEvent a) {
     // check if Turnout changed
     String newName = editLayoutTurnout1stTurnoutComboBox.getDisplayName();
-    if (!layoutTurnout.getTurnoutName().equals(newName)) {
+    if (!LayoutTurnout::getTurnoutName().equals(newName)) {
         // turnout has changed
         if (layoutEditor.validatePhysicalTurnout(
                 newName, editLayoutTurnoutFrame)) {
-            layoutTurnout.setTurnout(newName);
+            LayoutTurnout::setTurnout(newName);
         } else {
-            layoutTurnout.setTurnout(null);
+            LayoutTurnout::setTurnout(null);
             editLayoutTurnout1stTurnoutComboBox.setText("");
         }
         editLayoutTurnoutNeedRedraw = true;
@@ -781,94 +785,94 @@ void showSensorMessage() {
 
     if (editLayoutTurnout2ndTurnoutCheckBox.isSelected()) {
         newName = editLayoutTurnout2ndTurnoutComboBox.getDisplayName();
-        if (!layoutTurnout.getSecondTurnoutName().equals(newName)) {
-            if ((layoutTurnout.getTurnoutType() == LayoutTurnout.DOUBLE_XOVER)
-                    || (layoutTurnout.getTurnoutType() == LayoutTurnout.RH_XOVER)
-                    || (layoutTurnout.getTurnoutType() == LayoutTurnout.LH_XOVER)) {
+        if (!LayoutTurnout::getSecondTurnoutName().equals(newName)) {
+            if ((LayoutTurnout::getTurnoutType() == LayoutTurnout::DOUBLE_XOVER)
+                    || (LayoutTurnout::getTurnoutType() == LayoutTurnout::RH_XOVER)
+                    || (LayoutTurnout::getTurnoutType() == LayoutTurnout::LH_XOVER)) {
                 // turnout has changed
                 if (layoutEditor.validatePhysicalTurnout(
                         newName, editLayoutTurnoutFrame)) {
-                    layoutTurnout.setSecondTurnout(newName);
+                    LayoutTurnout::setSecondTurnout(newName);
                 } else {
                     editLayoutTurnout2ndTurnoutCheckBox.setSelected(false);
-                    layoutTurnout.setSecondTurnout(null);
+                    LayoutTurnout::setSecondTurnout(null);
                     editLayoutTurnout2ndTurnoutComboBox.setText("");
                 }
                 editLayoutTurnoutNeedRedraw = true;
             } else {
-                layoutTurnout.setSecondTurnout(newName);
+                LayoutTurnout::setSecondTurnout(newName);
             }
         }
     } else {
-        layoutTurnout.setSecondTurnout(null);
+        LayoutTurnout::setSecondTurnout(null);
     }
 
     // set the continuing route Turnout State
-    if ((layoutTurnout.getTurnoutType() == LayoutTurnout.RH_TURNOUT)
-            || (layoutTurnout.getTurnoutType() == LayoutTurnout.LH_TURNOUT)
-            || (layoutTurnout.getTurnoutType() == LayoutTurnout.WYE_TURNOUT)) {
-        layoutTurnout.setContinuingSense(Turnout.CLOSED);
+    if ((LayoutTurnout::getTurnoutType() == LayoutTurnout::RH_TURNOUT)
+            || (LayoutTurnout::getTurnoutType() == LayoutTurnout::LH_TURNOUT)
+            || (LayoutTurnout::getTurnoutType() == LayoutTurnout::WYE_TURNOUT)) {
+        LayoutTurnout::setContinuingSense(Turnout.CLOSED);
         if (editLayoutTurnoutStateComboBox.getSelectedIndex() == editLayoutTurnoutThrownIndex) {
-            layoutTurnout.setContinuingSense(Turnout.THROWN);
+            LayoutTurnout::setContinuingSense(Turnout.THROWN);
         }
     }
 
     // check if Block changed
     newName = editLayoutTurnoutBlockNameComboBox.getUserName();
-    if (!layoutTurnout.getBlockName().equals(newName)) {
+    if (!LayoutTurnout::getBlockName().equals(newName)) {
         // get new block, or null if block has been removed
         try {
-            layoutTurnout.setLayoutBlock(layoutEditor.provideLayoutBlock(newName));
+            LayoutTurnout::setLayoutBlock(layoutEditor.provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
-            layoutTurnout.setLayoutBlock(null);
+            LayoutTurnout::setLayoutBlock(null);
         }
         editLayoutTurnoutNeedRedraw = true;
         editLayoutTurnoutNeedsBlockUpdate = true;
     }
-    if ((layoutTurnout.getTurnoutType() == LayoutTurnout.DOUBLE_XOVER)
-            || (layoutTurnout.getTurnoutType() == LayoutTurnout.LH_XOVER)
-            || (layoutTurnout.getTurnoutType() == LayoutTurnout.RH_XOVER)) {
+    if ((LayoutTurnout::getTurnoutType() == LayoutTurnout::DOUBLE_XOVER)
+            || (LayoutTurnout::getTurnoutType() == LayoutTurnout::LH_XOVER)
+            || (LayoutTurnout::getTurnoutType() == LayoutTurnout::RH_XOVER)) {
         // check if Block 2 changed
         newName = editLayoutTurnoutBlockBNameComboBox.getUserName();
-        if (!layoutTurnout.getBlockBName().equals(newName)) {
+        if (!LayoutTurnout::getBlockBName().equals(newName)) {
             // get new block, or null if block has been removed
             try {
-                layoutTurnout.setLayoutBlockB(layoutEditor.provideLayoutBlock(newName));
+                LayoutTurnout::setLayoutBlockB(layoutEditor.provideLayoutBlock(newName));
             } catch (IllegalArgumentException ex) {
-                layoutTurnout.setLayoutBlockB(null);
+                LayoutTurnout::setLayoutBlockB(null);
             }
             editLayoutTurnoutNeedRedraw = true;
             editLayoutTurnoutNeedsBlockUpdate = true;
         }
         // check if Block 3 changed
         newName = editLayoutTurnoutBlockCNameComboBox.getUserName();
-        if (!layoutTurnout.getBlockCName().equals(newName)) {
+        if (!LayoutTurnout::getBlockCName().equals(newName)) {
             // get new block, or null if block has been removed
             try {
-                layoutTurnout.setLayoutBlockC(layoutEditor.provideLayoutBlock(newName));
+                LayoutTurnout::setLayoutBlockC(layoutEditor.provideLayoutBlock(newName));
             } catch (IllegalArgumentException ex) {
-                layoutTurnout.setLayoutBlockC(null);
+                LayoutTurnout::setLayoutBlockC(null);
             }
             editLayoutTurnoutNeedRedraw = true;
             editLayoutTurnoutNeedsBlockUpdate = true;
         }
         // check if Block 4 changed
         newName = editLayoutTurnoutBlockDNameComboBox.getUserName();
-        if (!layoutTurnout.getBlockDName().equals(newName)) {
+        if (!LayoutTurnout::getBlockDName().equals(newName)) {
             // get new block, or null if block has been removed
             try {
-                layoutTurnout.setLayoutBlockD(layoutEditor.provideLayoutBlock(newName));
+                LayoutTurnout::setLayoutBlockD(layoutEditor.provideLayoutBlock(newName));
             } catch (IllegalArgumentException ex) {
-                layoutTurnout.setLayoutBlockD(null);
+                LayoutTurnout::setLayoutBlockD(null);
             }
             editLayoutTurnoutNeedRedraw = true;
             editLayoutTurnoutNeedsBlockUpdate = true;
         }
     }
     // set hidden
-    boolean oldHidden = layoutTurnout.isHidden();
-    layoutTurnout.setHidden(editLayoutTurnoutHiddenCheckBox.isSelected());
-    if (oldHidden != layoutTurnout.isHidden()) {
+    bool oldHidden = LayoutTurnout::isHidden();
+    LayoutTurnout::setHidden(editLayoutTurnoutHiddenCheckBox.isSelected());
+    if (oldHidden != LayoutTurnout::isHidden()) {
         editLayoutTurnoutNeedRedraw = true;
     }
     editLayoutTurnoutOpen = false;
@@ -876,8 +880,8 @@ void showSensorMessage() {
     editLayoutTurnoutFrame.dispose();
     editLayoutTurnoutFrame = null;
     if (editLayoutTurnoutNeedsBlockUpdate) {
-        layoutTurnout.updateBlockInfo();
-        layoutTurnout.reCheckBlockBoundary();
+        LayoutTurnout::updateBlockInfo();
+        LayoutTurnout::reCheckBlockBoundary();
     }
     if (editLayoutTurnoutNeedRedraw) {
         layoutEditor.redrawPanel();
@@ -892,7 +896,7 @@ void showSensorMessage() {
     editLayoutTurnoutFrame.dispose();
     editLayoutTurnoutFrame = null;
     if (editLayoutTurnoutNeedsBlockUpdate) {
-        layoutTurnout.updateBlockInfo();
+        LayoutTurnout::updateBlockInfo();
     }
     if (editLayoutTurnoutNeedRedraw) {
         layoutEditor.redrawPanel();
@@ -900,70 +904,55 @@ void showSensorMessage() {
         editLayoutTurnoutNeedRedraw = false;
     }
 }
-
+#endif
 /*================*\
 | Edit Layout Slip |
 \*================*/
-// variables for Edit slip Crossing pane
-/*private*/ LayoutSlip layoutSlip = null;
-
-/*private*/ JmriJFrame editLayoutSlipFrame = null;
-/*private*/ JButton editLayoutSlipDoneButton;
-/*private*/ JButton editLayoutSlipCancelButton;
-/*private*/ JButton editLayoutSlipBlockButton;
-/*private*/ JmriBeanComboBox editLayoutSlipTurnoutAComboBox;
-/*private*/ JmriBeanComboBox editLayoutSlipTurnoutBComboBox;
-/*private*/ JCheckBox editLayoutSlipHiddenBox = new JCheckBox(tr("HideSlip"));
-/*private*/ JmriBeanComboBox editLayoutSlipBlockNameComboBox = new JmriBeanComboBox(
-        InstanceManager.getDefault(BlockManager.class), null, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-
-/*private*/ boolean editLayoutSlipOpen = false;
-/*private*/ boolean editLayoutSlipNeedsRedraw = false;
-/*private*/ boolean editLayoutSlipNeedsBlockUpdate = false;
 
 /**
  * Edit a Slip
  */
-/*protected*/ void editLayoutSlip(LayoutSlip layoutSlip) {
+/*protected*/ void LayoutTrackEditors::editLayoutSlip(LayoutSlip* layoutSlip) {
     sensorList.clear();
 
-    this.layoutSlip = layoutSlip;
+    this->layoutSlip = layoutSlip;
     if (editLayoutSlipOpen) {
-        editLayoutSlipFrame.setVisible(true);
-    } else if (editLayoutSlipFrame == null) {   // Initialize if needed
+        editLayoutSlipFrame->setVisible(true);
+    } else if (editLayoutSlipFrame == nullptr) {   // Initialize if needed
         editLayoutSlipFrame = new JmriJFrame(tr("EditSlip"), false, true);  // NOI18N
-        editLayoutSlipFrame.addHelpMenu("package.jmri.jmrit.display.EditLayoutSlip", true);  // NOI18N
-        editLayoutSlipFrame.setLocation(50, 30);
+        editLayoutSlipFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutSlip", true);  // NOI18N
+        editLayoutSlipFrame->setLocation(50, 30);
 
-        Container contentPane = editLayoutSlipFrame.getContentPane();
-        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+        QWidget* contentPane = editLayoutSlipFrame->getContentPane();
+        contentPane->setLayout(new QVBoxLayout());//contentPane, BoxLayout.Y_AXIS));
 
-        JPanel panel1 = new JPanel();
-        panel1.setLayout(new FlowLayout());
-        JLabel turnoutNameLabel = new JLabel(tr("BeanNameTurnout") + " A " + tr("Name"));  // NOI18N
-        panel1.add(turnoutNameLabel);
+        QWidget* panel1 = new QWidget();
+        panel1->setLayout(new FlowLayout());
+        QLabel* turnoutNameLabel = new QLabel(tr("BeanNameTurnout") + " A " + tr("Name"));  // NOI18N
+        panel1->layout()->addWidget(turnoutNameLabel);
         editLayoutSlipTurnoutAComboBox = new JmriBeanComboBox(
-                InstanceManager.turnoutManagerInstance(),
-                layoutSlip.getTurnout(),
-                JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-        LayoutEditor.setupComboBox(editLayoutSlipTurnoutAComboBox, true, true);
+                InstanceManager::turnoutManagerInstance(),
+                layoutSlip->getTurnout(),
+                JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+        LayoutEditor::setupComboBox(editLayoutSlipTurnoutAComboBox, true, true);
 
         // disable items that are already in use
-        PopupMenuListener pml = new PopupMenuListener() {
+#if 0 // see after this method:
+        SlipPopupMenuListener pml = new slipPopupMenuListener() {
             @Override
             /*public*/ void popupMenuWillBecomeVisible(PopupMenuEvent e) {
                 // This method is called before the popup menu becomes visible.
                 log.debug("PopupMenuWillBecomeVisible");  // NOI18N
                 Object o = e.getSource();
                 if (o instanceof JmriBeanComboBox) {
-                    JmriBeanComboBox jbcb = (JmriBeanComboBox) o;
+                    JmriBeanComboBox* jbcb = (JmriBeanComboBox) o;
                     jmri.Manager m = jbcb.getManager();
-                    if (m != null) {
+                    if (m != nullptr) {
                         int idx = 0;
                         for (Object obj : m.getNamedBeanSet()) {
                             NamedBean bean = (NamedBean) obj;  // entire class needs more attention to typing
                             String systemName = bean.getSystemName();
-                            jbcb.setItemEnabled(idx++, layoutEditor.validatePhysicalTurnout(systemName, null));
+                            jbcb.setItemEnabled(idx++, layoutEditor.validatePhysicalTurnout(systemName, nullptr));
                         }
                     }
                 }
@@ -981,40 +970,48 @@ void showSensorMessage() {
                 log.debug("PopupMenuCanceled");  // NOI18N
             }
         };
+#endif
+        SlipPopupMenuListener* pml = new SlipPopupMenuListener(popup, this);
+#if 0
+        editLayoutSlipTurnoutAComboBox->addPopupMenuListener(pml);
+        editLayoutSlipTurnoutAComboBox->setEnabledColor(QColor(Qt::darkGreen));
+        editLayoutSlipTurnoutAComboBox->setDisabledColor(QColor(Qt::red));
+#endif
+        panel1->layout()->addWidget(editLayoutSlipTurnoutAComboBox);
+        contentPane->layout()->addWidget(panel1);
 
-        editLayoutSlipTurnoutAComboBox.addPopupMenuListener(pml);
-        editLayoutSlipTurnoutAComboBox.setEnabledColor(Color.green.darker().darker());
-        editLayoutSlipTurnoutAComboBox.setDisabledColor(Color.red);
-
-        panel1.add(editLayoutSlipTurnoutAComboBox);
-        contentPane.add(panel1);
-
-        JPanel panel1a = new JPanel();
-        panel1a.setLayout(new FlowLayout());
-        JLabel turnoutBNameLabel = new JLabel(tr("BeanNameTurnout") + " B " + tr("Name"));  // NOI18N
-        panel1a.add(turnoutBNameLabel);
+        QWidget* panel1a = new QWidget();
+        panel1a->setLayout(new FlowLayout());
+        QLabel* turnoutBNameLabel = new QLabel(tr("BeanNameTurnout") + " B " + tr("Name"));  // NOI18N
+        panel1a->layout()->addWidget(turnoutBNameLabel);
 
         editLayoutSlipTurnoutBComboBox = new JmriBeanComboBox(
-                InstanceManager.turnoutManagerInstance(),
-                layoutSlip.getTurnoutB(),
-                JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-        LayoutEditor.setupComboBox(editLayoutSlipTurnoutBComboBox, true, true);
-
+                InstanceManager::turnoutManagerInstance(),
+                layoutSlip->getTurnoutB(),
+                JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+        LayoutEditor::setupComboBox(editLayoutSlipTurnoutBComboBox, true, true);
+#if 0
         editLayoutSlipTurnoutBComboBox.addPopupMenuListener(pml);
-        editLayoutSlipTurnoutBComboBox.setEnabledColor(Color.green.darker().darker());
-        editLayoutSlipTurnoutBComboBox.setDisabledColor(Color.red);
+        editLayoutSlipTurnoutBComboBox.setEnabledColor(QColor(Qt::darkGreen));
+        editLayoutSlipTurnoutBComboBox.setDisabledColor(QColor(Qt::red));
+#endif
+        panel1a->layout()->addWidget(editLayoutSlipTurnoutBComboBox);
 
-        panel1a.add(editLayoutSlipTurnoutBComboBox);
+        contentPane->layout()->addWidget(panel1a);
 
-        contentPane.add(panel1a);
+        QWidget* panel2 = new QWidget();
+        QGridLayout* panel2Layout;
+        panel2->setLayout(panel2Layout = new QGridLayout()); //GridLayout(0, 3, 2, 2));
 
-        JPanel panel2 = new JPanel();
-        panel2.setLayout(new GridLayout(0, 3, 2, 2));
-
-        panel2.add(new Label("   "));
-        panel2.add(new Label(tr("BeanNameTurnout") + " A:"));  // NOI18N
-        panel2.add(new Label(tr("BeanNameTurnout") + " B:"));  // NOI18N
-        for (Map.Entry<Integer, LayoutSlip.TurnoutState> ts : layoutSlip.getTurnoutStates().entrySet()) {
+        panel2Layout->addWidget(new QLabel("   "),0, 0, 1, 1);
+        panel2Layout->addWidget(new QLabel(tr("Turnout") + " A:"),0, 1, 1,1);  // NOI18N
+        panel2Layout->addWidget(new QLabel(tr("Turnout") + " B:"), 0,2, 1,1);  // NOI18N
+        //for (Map.Entry<Integer, LayoutSlip.TurnoutState> ts : layoutSlip.getTurnoutStates().entrySet())
+        QHashIterator<int, TurnoutState*> entry(layoutSlip->getTurnoutStates());
+        while(entry.hasNext())
+        {
+         entry.hasNext();
+#if 0
             SampleStates draw = new SampleStates(ts.getKey());
             draw.repaint();
             draw.setPreferredSize(new Dimension(40, 40));
@@ -1022,29 +1019,30 @@ void showSensorMessage() {
 
             panel2.add(ts.getValue().getComboA());
             panel2.add(ts.getValue().getComboB());
+#endif
         }
-
+#if 0
         testPanel = new TestState();
         testPanel.setSize(40, 40);
         testPanel.setPreferredSize(new Dimension(40, 40));
         panel2.add(testPanel);
-        JButton testButton = new JButton("Test");  // NOI18N
+        QPushButton* testButton = new JButton("Test");  // NOI18N
         testButton.addActionListener((ActionEvent e) -> {
             toggleStateTest();
         });
         panel2.add(testButton);
         contentPane.add(panel2);
 
-        JPanel panel33 = new JPanel();
+        QWidget* panel33 = new QWidget();
         panel33.setLayout(new FlowLayout());
         editLayoutSlipHiddenBox.setToolTipText(tr("HiddenToolTip"));  // NOI18N
         panel33.add(editLayoutSlipHiddenBox);
         contentPane.add(panel33);
 
         // setup block name
-        JPanel panel3 = new JPanel();
+        QWidget* panel3 = new QWidget();
         panel3.setLayout(new FlowLayout());
-        JLabel block1NameLabel = new JLabel(tr("BlockID"));  // NOI18N
+        QLabel* block1NameLabel = new QLabel(tr("BlockID"));  // NOI18N
         panel3.add(block1NameLabel);
         panel3.add(editLayoutSlipBlockNameComboBox);
         LayoutEditor.setupComboBox(editLayoutSlipBlockNameComboBox, false, true);
@@ -1052,7 +1050,7 @@ void showSensorMessage() {
 
         contentPane.add(panel3);
         // set up Edit Block buttons
-        JPanel panel4 = new JPanel();
+        QWidget* panel4 = new QWidget();
         panel4.setLayout(new FlowLayout());
         // Edit Block
         panel4.add(editLayoutSlipBlockButton = new JButton(tr("EditBlock", "")));  // NOI18N
@@ -1065,7 +1063,7 @@ void showSensorMessage() {
 
         contentPane.add(panel4);
         // set up Done and Cancel buttons
-        JPanel panel5 = new JPanel();
+        QWidget* panel5 = new QWidget();
         panel5.setLayout(new FlowLayout());
         panel5.add(editLayoutSlipDoneButton = new JButton(tr("ButtonDone")));  // NOI18N
 
@@ -1088,24 +1086,26 @@ void showSensorMessage() {
         });
         editLayoutSlipCancelButton.setToolTipText(tr("CancelHint", tr("ButtonCancel")));  // NOI18N
         contentPane.add(panel5);
+#endif
     }
 
-    editLayoutSlipHiddenBox.setSelected(layoutSlip.isHidden());
+    editLayoutSlipHiddenBox->setChecked(layoutSlip->isHidden());
 
     // Set up for Edit
-    editLayoutSlipTurnoutAComboBox.setText(layoutSlip.getTurnoutName());
-    editLayoutSlipTurnoutBComboBox.setText(layoutSlip.getTurnoutBName());
-    editLayoutSlipBlockNameComboBox.setText(layoutSlip.getBlockName());
-    editLayoutSlipBlockNameComboBox.setEnabled(!hasNxSensorPairs(layoutSlip.getLayoutBlock()));
+    editLayoutSlipTurnoutAComboBox->setText(layoutSlip->getTurnoutName());
+    editLayoutSlipTurnoutBComboBox->setText(layoutSlip->getTurnoutBName());
+    editLayoutSlipBlockNameComboBox->setText(layoutSlip->getBlockName());
+    editLayoutSlipBlockNameComboBox->setEnabled(!hasNxSensorPairs(layoutSlip->getLayoutBlock()));
 
-    editLayoutSlipFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-        @Override
-        /*public*/ void windowClosing(WindowEvent e) {
-            editLayoutSlipCancelPressed(null);
-        }
-    });
-    editLayoutSlipFrame.pack();
-    editLayoutSlipFrame.setVisible(true);
+//    editLayoutSlipFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+//        @Override
+//        /*public*/ void windowClosing(WindowEvent e) {
+//            editLayoutSlipCancelPressed(nullptr);
+//        }
+//    });
+    editLayoutSlipFrame->addWindowListener(new SlipEditWindowListener(this));
+    editLayoutSlipFrame->pack();
+    editLayoutSlipFrame->setVisible(true);
     editLayoutSlipOpen = true;
     editLayoutSlipNeedsBlockUpdate = false;
 
@@ -1113,89 +1113,134 @@ void showSensorMessage() {
 
 }   // editLayoutSlip
 
-/*private*/ void drawSlipState(Graphics2D g2, int state) {
-    Point2D cenP = layoutSlip.getCoordsCenter();
-    Point2D A = MathUtil.subtract(layoutSlip.getCoordsA(), cenP);
-    Point2D B = MathUtil.subtract(layoutSlip.getCoordsB(), cenP);
-    Point2D C = MathUtil.subtract(layoutSlip.getCoordsC(), cenP);
-    Point2D D = MathUtil.subtract(layoutSlip.getCoordsD(), cenP);
+    /*public*/ SlipPopupMenuListener::SlipPopupMenuListener(QMenu* popup,LayoutTrackEditors *layoutTrackEditors)
+    {
+     this->layoutTrackEditors = layoutTrackEditors;
+     this->popup = popup;
+     connect(popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuWillBecomeInvisible()));
+     connect(popup, SIGNAL(aboutToHide()), this, SLOT(popupMenuWillBecomeVisible()));
+     connect(popup, SIGNAL(destroyed(QObject*)), this, SLOT(popupMenuCanceled()));
+    }
 
-    Point2D ctrP = new Point2D.Double(20.0, 20.0);
-    A = MathUtil.add(MathUtil.normalize(A, 18.0), ctrP);
-    B = MathUtil.add(MathUtil.normalize(B, 18.0), ctrP);
-    C = MathUtil.add(MathUtil.normalize(C, 18.0), ctrP);
-    D = MathUtil.add(MathUtil.normalize(D, 18.0), ctrP);
+    /*public*/ void SlipPopupMenuListener::popupMenuWillBecomeVisible(/*PopupMenuEvent e*/) {
+        // This method is called before the popup menu becomes visible.
+        layoutTrackEditors->log->debug("PopupMenuWillBecomeVisible");  // NOI18N
+        QObject* o = sender();//e.getSource();
+        if (qobject_cast<JmriBeanComboBox*>(o))
+        {
+            JmriBeanComboBox* jbcb = (JmriBeanComboBox*) o;
+            Manager* m = jbcb->getManager();
+            if (m != nullptr)
+            {
+                int idx = 0;
+                for (NamedBean* bean : m->getNamedBeanSet())
+                {
+                   // NamedBean bean = (NamedBean) obj;  // entire class needs more attention to typing
+                    QString systemName = bean->getSystemName();
+#if 0
+                    jbcb->setItemEnabled(idx++, layoutTrackEditors->layoutEditor->validatePhysicalTurnout(systemName, nullptr));
+#endif
+                }
+            }
+        }
+    }
+
+    //@Override
+    /*public*/ void SlipPopupMenuListener::popupMenuWillBecomeInvisible(/*PopupMenuEvent e*/) {
+        // This method is called before the popup menu becomes invisible
+        layoutTrackEditors->log->debug("PopupMenuWillBecomeInvisible");  // NOI18N
+    }
+
+    //@Override
+    /*public*/ void SlipPopupMenuListener::popupMenuCanceled(/*PopupMenuEvent e*/) {
+        // This method is called when the popup menu is canceled
+        layoutTrackEditors->log->debug("PopupMenuCanceled");  // NOI18N
+    }
+//};
+#if 0
+/*private*/ void SlipPopupMenuListener::drawSlipState(EditScene* g2, int state) {
+    QPointF cenP = layoutSlip.getCoordsCenter();
+    QPointF A = MathUtil::subtract(layoutSlip.getCoordsA(), cenP);
+    QPointF B = MathUtil::subtract(layoutSlip.getCoordsB(), cenP);
+    QPointF C = MathUtil::subtract(layoutSlip.getCoordsC(), cenP);
+    QPointF D = MathUtil::subtract(layoutSlip.getCoordsD(), cenP);
+
+    QPointF ctrP = new QPointF.Double(20.0, 20.0);
+    A = MathUtil::add(MathUtil::normalize(A, 18.0), ctrP);
+    B = MathUtil::add(MathUtil::normalize(B, 18.0), ctrP);
+    C = MathUtil::add(MathUtil::normalize(C, 18.0), ctrP);
+    D = MathUtil::add(MathUtil::normalize(D, 18.0), ctrP);
 
     g2.setColor(Color.black);
     g2.setStroke(new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
 
-    g2.draw(new Line2D.Double(A, MathUtil.oneThirdPoint(A, C)));
-    g2.draw(new Line2D.Double(C, MathUtil.oneThirdPoint(C, A)));
+    g2.draw(new Line2D.Double(A, MathUtil::oneThirdPoint(A, C)));
+    g2.draw(new Line2D.Double(C, MathUtil::oneThirdPoint(C, A)));
 
-    if (state == LayoutTurnout.STATE_AC || state == LayoutTurnout.STATE_BD || state == LayoutTurnout.UNKNOWN) {
-        g2.draw(new Line2D.Double(A, MathUtil.oneThirdPoint(A, D)));
-        g2.draw(new Line2D.Double(D, MathUtil.oneThirdPoint(D, A)));
+    if (state == LayoutTurnout::STATE_AC || state == LayoutTurnout::STATE_BD || state == LayoutTurnout::UNKNOWN) {
+        g2.draw(new Line2D.Double(A, MathUtil::oneThirdPoint(A, D)));
+        g2.draw(new Line2D.Double(D, MathUtil::oneThirdPoint(D, A)));
 
-        if (layoutSlip.getSlipType() == LayoutTurnout.DOUBLE_SLIP) {
-            g2.draw(new Line2D.Double(B, MathUtil.oneThirdPoint(B, C)));
-            g2.draw(new Line2D.Double(C, MathUtil.oneThirdPoint(C, B)));
+        if (layoutSlip.getSlipType() == LayoutTurnout::DOUBLE_SLIP) {
+            g2.draw(new Line2D.Double(B, MathUtil::oneThirdPoint(B, C)));
+            g2.draw(new Line2D.Double(C, MathUtil::oneThirdPoint(C, B)));
         }
     } else {
-        g2.draw(new Line2D.Double(B, MathUtil.oneThirdPoint(B, D)));
-        g2.draw(new Line2D.Double(D, MathUtil.oneThirdPoint(D, B)));
+        g2.draw(new Line2D.Double(B, MathUtil::oneThirdPoint(B, D)));
+        g2.draw(new Line2D.Double(D, MathUtil::oneThirdPoint(D, B)));
     }
 
-    if (layoutSlip.getSlipType() == LayoutTurnout.DOUBLE_SLIP) {
-        if (state == LayoutTurnout.STATE_AC) {
-            g2.draw(new Line2D.Double(B, MathUtil.oneThirdPoint(B, D)));
-            g2.draw(new Line2D.Double(D, MathUtil.oneThirdPoint(D, B)));
+    if (layoutSlip.getSlipType() == LayoutTurnout::DOUBLE_SLIP) {
+        if (state == LayoutTurnout::STATE_AC) {
+            g2.draw(new Line2D.Double(B, MathUtil::oneThirdPoint(B, D)));
+            g2.draw(new Line2D.Double(D, MathUtil::oneThirdPoint(D, B)));
 
             g2.setColor(Color.red);
             g2.draw(new Line2D.Double(A, C));
-        } else if (state == LayoutTurnout.STATE_BD) {
+        } else if (state == LayoutTurnout::STATE_BD) {
             g2.setColor(Color.red);
             g2.draw(new Line2D.Double(B, D));
-        } else if (state == LayoutTurnout.STATE_AD) {
-            g2.draw(new Line2D.Double(B, MathUtil.oneThirdPoint(B, C)));
+        } else if (state == LayoutTurnout::STATE_AD) {
+            g2.draw(new Line2D.Double(B, MathUtil::oneThirdPoint(B, C)));
 
-            g2.draw(new Line2D.Double(C, MathUtil.oneThirdPoint(C, B)));
+            g2.draw(new Line2D.Double(C, MathUtil::oneThirdPoint(C, B)));
 
             g2.setColor(Color.red);
             g2.draw(new Line2D.Double(A, D));
-        } else if (state == LayoutTurnout.STATE_BC) {
-            g2.draw(new Line2D.Double(A, MathUtil.oneThirdPoint(A, D)));
+        } else if (state == LayoutTurnout::STATE_BC) {
+            g2.draw(new Line2D.Double(A, MathUtil::oneThirdPoint(A, D)));
 
-            g2.draw(new Line2D.Double(D, MathUtil.oneThirdPoint(D, A)));
+            g2.draw(new Line2D.Double(D, MathUtil::oneThirdPoint(D, A)));
             g2.setColor(Color.red);
             g2.draw(new Line2D.Double(B, C));
         } else {
-            g2.draw(new Line2D.Double(B, MathUtil.oneThirdPoint(B, D)));
-            g2.draw(new Line2D.Double(D, MathUtil.oneThirdPoint(D, B)));
+            g2.draw(new Line2D.Double(B, MathUtil::oneThirdPoint(B, D)));
+            g2.draw(new Line2D.Double(D, MathUtil::oneThirdPoint(D, B)));
         }
     } else {
-        g2.draw(new Line2D.Double(A, MathUtil.oneThirdPoint(A, D)));
-        g2.draw(new Line2D.Double(D, MathUtil.oneThirdPoint(D, A)));
+        g2.draw(new Line2D.Double(A, MathUtil::oneThirdPoint(A, D)));
+        g2.draw(new Line2D.Double(D, MathUtil::oneThirdPoint(D, A)));
 
-        if (state == LayoutTurnout.STATE_AD) {
+        if (state == LayoutTurnout::STATE_AD) {
             g2.setColor(Color.red);
             g2.draw(new Line2D.Double(A, D));
-        } else if (state == LayoutTurnout.STATE_AC) {
-            g2.draw(new Line2D.Double(B, MathUtil.oneThirdPoint(B, D)));
-            g2.draw(new Line2D.Double(D, MathUtil.oneThirdPoint(D, B)));
+        } else if (state == LayoutTurnout::STATE_AC) {
+            g2.draw(new Line2D.Double(B, MathUtil::oneThirdPoint(B, D)));
+            g2.draw(new Line2D.Double(D, MathUtil::oneThirdPoint(D, B)));
 
             g2.setColor(Color.red);
             g2.draw(new Line2D.Double(A, C));
-        } else if (state == LayoutTurnout.STATE_BD) {
+        } else if (state == LayoutTurnout::STATE_BD) {
             g2.setColor(Color.red);
             g2.draw(new Line2D.Double(B, D));
         } else {
-            g2.draw(new Line2D.Double(B, MathUtil.oneThirdPoint(B, D)));
-            g2.draw(new Line2D.Double(D, MathUtil.oneThirdPoint(D, B)));
+            g2.draw(new Line2D.Double(B, MathUtil::oneThirdPoint(B, D)));
+            g2.draw(new Line2D.Double(D, MathUtil::oneThirdPoint(D, B)));
         }
     }
 }   // drawSlipState
 
-class SampleStates extends JPanel {
+class SampleStates extends QWidget* {
 
     // Methods, constructors, fields.
     SampleStates(int state) {
@@ -1204,7 +1249,7 @@ class SampleStates extends JPanel {
     }
     int state;
 
-    @Override
+    //@Override
     /*public*/ void paintComponent(Graphics g) {
         super.paintComponent(g);    // paints background
         if (g instanceof Graphics2D) {
@@ -1213,56 +1258,56 @@ class SampleStates extends JPanel {
     }
 }
 
-/*private*/ int testState = LayoutTurnout.UNKNOWN;
-
+#endif
 /**
  * Toggle slip states if clicked on, physical turnout exists, and not
  * disabled
  */
-/*public*/ void toggleStateTest() {
+/*public*/ void LayoutTrackEditors::toggleStateTest() {
     int turnAState;
     int turnBState;
     switch (testState) {
         default:
-        case LayoutTurnout.STATE_AC: {
-            testState = LayoutTurnout.STATE_AD;
+        case LayoutTurnout::STATE_AC: {
+            testState = LayoutTurnout::STATE_AD;
             break;
         }
 
-        case LayoutTurnout.STATE_BD: {
-            if (layoutSlip.getSlipType() == LayoutTurnout.SINGLE_SLIP) {
-                testState = LayoutTurnout.STATE_AC;
+        case LayoutTurnout::STATE_BD: {
+            if (layoutSlip->getSlipType() == LayoutTurnout::SINGLE_SLIP) {
+                testState = LayoutTurnout::STATE_AC;
             } else {
-                testState = LayoutTurnout.STATE_BC;
+                testState = LayoutTurnout::STATE_BC;
             }
             break;
         }
 
-        case LayoutTurnout.STATE_AD: {
-            testState = LayoutTurnout.STATE_BD;
+        case LayoutTurnout::STATE_AD: {
+            testState = LayoutTurnout::STATE_BD;
             break;
         }
 
-        case LayoutTurnout.STATE_BC: {
-            testState = LayoutTurnout.STATE_AC;
+        case LayoutTurnout::STATE_BC: {
+            testState = LayoutTurnout::STATE_AC;
             break;
         }
     }
-    turnAState = layoutSlip.getTurnoutStates().get(testState).getTestTurnoutAState();
-    turnBState = layoutSlip.getTurnoutStates().get(testState).getTestTurnoutBState();
+    turnAState = layoutSlip->getTurnoutStates().value(testState)->getTestTurnoutAState();
+    turnBState = layoutSlip->getTurnoutStates().value(testState)->getTestTurnoutBState();
 
-    if (editLayoutSlipTurnoutAComboBox.getSelectedBean() != null) {
-        ((Turnout) editLayoutSlipTurnoutAComboBox.getSelectedBean()).setCommandedState(turnAState);
+    if (editLayoutSlipTurnoutAComboBox->getSelectedBean() != nullptr) {
+        ((Turnout*) editLayoutSlipTurnoutAComboBox->getSelectedBean())->setCommandedState(turnAState);
     }
-    if (editLayoutSlipTurnoutBComboBox.getSelectedBean() != null) {
-        ((Turnout) editLayoutSlipTurnoutBComboBox.getSelectedBean()).setCommandedState(turnBState);
+    if (editLayoutSlipTurnoutBComboBox->getSelectedBean() != nullptr) {
+        ((Turnout*) editLayoutSlipTurnoutBComboBox->getSelectedBean())->setCommandedState(turnBState);
     }
-    if (testPanel != null) {
-        testPanel.repaint();
+    if (testPanel != nullptr) {
+        testPanel->repaint();
     }
 }   // togleStateTest
 
-class TestState extends JPanel {
+#if 0
+class TestState extends QWidget* {
 
     @Override
     /*public*/ void paintComponent(Graphics g) {
@@ -1272,109 +1317,109 @@ class TestState extends JPanel {
         }
     }
 }
+#endif
 
-/*private*/ TestState testPanel;
-
-/*private*/ void editLayoutSlipEditBlockPressed(ActionEvent a) {
+/*private*/ void LayoutTrackEditors::editLayoutSlipEditBlockPressed(/*ActionEvent a*/) {
     // check if a block name has been entered
-    String newName = editLayoutSlipBlockNameComboBox.getUserName();
-    if (!layoutSlip.getBlockName().equals(newName)) {
+    QString newName = editLayoutSlipBlockNameComboBox->getUserName();
+    if (layoutSlip->getBlockName() !=(newName)) {
         // get new block, or null if block has been removed
         try {
-            layoutSlip.setLayoutBlock(layoutEditor.provideLayoutBlock(newName));
+            layoutSlip->setLayoutBlock(layoutEditor->provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
-            layoutSlip.setLayoutBlock(null);
+            layoutSlip->setLayoutBlock(nullptr);
         }
         editLayoutSlipNeedsRedraw = true;
         editLayoutSlipNeedsBlockUpdate = true;
     }
     // check if a block exists to edit
-    if (layoutSlip.getLayoutBlock() == null) {
-        JOptionPane.showMessageDialog(editLayoutSlipFrame,
-                tr("Error1"),
-                tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+    if (layoutSlip->getLayoutBlock() == nullptr) {
+        JOptionPane::showMessageDialog(editLayoutSlipFrame,
+                tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."),
+                tr("Error"), JOptionPane::ERROR_MESSAGE);
         return;
     }
-    layoutSlip.getLayoutBlock().editLayoutBlock(editLayoutSlipFrame);
+    layoutSlip->getLayoutBlock()->editLayoutBlock(editLayoutSlipFrame);
     editLayoutSlipNeedsRedraw = true;
-    layoutEditor.setDirty();
+    layoutEditor->setDirty();
 }   // editLayoutSlipEditBlockPressed(
 
-/*private*/ void editLayoutSlipDonePressed(ActionEvent a) {
-    String newName = editLayoutSlipTurnoutAComboBox.getDisplayName();
-    if (!layoutSlip.getTurnoutName().equals(newName)) {
-        if (layoutEditor.validatePhysicalTurnout(newName, editLayoutSlipFrame)) {
-            layoutSlip.setTurnout(newName);
+/*private*/ void LayoutTrackEditors::editLayoutSlipDonePressed(/*ActionEvent a*/) {
+    QString newName = editLayoutSlipTurnoutAComboBox->getDisplayName();
+    if (layoutSlip->getTurnoutName() != (newName)) {
+        if (layoutEditor->validatePhysicalTurnout(newName, editLayoutSlipFrame)) {
+            layoutSlip->setTurnout(newName);
         } else {
-            layoutSlip.setTurnout("");
+            layoutSlip->setTurnout("");
         }
         editLayoutSlipNeedsRedraw = true;
     }
 
-    newName = editLayoutSlipTurnoutBComboBox.getDisplayName();
-    if (!layoutSlip.getTurnoutBName().equals(newName)) {
-        if (layoutEditor.validatePhysicalTurnout(newName, editLayoutSlipFrame)) {
-            layoutSlip.setTurnoutB(newName);
+    newName = editLayoutSlipTurnoutBComboBox->getDisplayName();
+    if (layoutSlip->getTurnoutBName() != (newName)) {
+        if (layoutEditor->validatePhysicalTurnout(newName, editLayoutSlipFrame)) {
+            layoutSlip->setTurnoutB(newName);
         } else {
-            layoutSlip.setTurnoutB("");
+            layoutSlip->setTurnoutB("");
         }
         editLayoutSlipNeedsRedraw = true;
     }
 
-    newName = editLayoutSlipBlockNameComboBox.getUserName();
-    if (!layoutSlip.getBlockName().equals(newName)) {
+    newName = editLayoutSlipBlockNameComboBox->getUserName();
+    if (layoutSlip->getBlockName() !=(newName)) {
         // get new block, or null if block has been removed
         try {
-            layoutSlip.setLayoutBlock(layoutEditor.provideLayoutBlock(newName));
+            layoutSlip->setLayoutBlock(layoutEditor->provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
-            layoutSlip.setLayoutBlock(null);
-            editLayoutSlipBlockNameComboBox.setText("");
-            editLayoutSlipBlockNameComboBox.setSelectedIndex(-1);
+            layoutSlip->setLayoutBlock(nullptr);
+            editLayoutSlipBlockNameComboBox->setText("");
+            editLayoutSlipBlockNameComboBox->setCurrentIndex(-1);
         }
         editLayoutSlipNeedsRedraw = true;
-        layoutEditor.getLEAuxTools().setBlockConnectivityChanged();
+        layoutEditor->getLEAuxTools()->setBlockConnectivityChanged();
         editLayoutSlipNeedsBlockUpdate = true;
     }
-    for (LayoutSlip.TurnoutState ts : layoutSlip.getTurnoutStates().values()) {
-        ts.updateStatesFromCombo();
+    for (TurnoutState* ts : layoutSlip->getTurnoutStates().values()) {
+        ts->updateStatesFromCombo();
     }
 
     // set hidden
-    boolean oldHidden = layoutSlip.isHidden();
-    layoutSlip.setHidden(editLayoutSlipHiddenBox.isSelected());
-    if (oldHidden != layoutSlip.isHidden()) {
+    bool oldHidden = layoutSlip->isHidden();
+    layoutSlip->setHidden(editLayoutSlipHiddenBox->isChecked());
+    if (oldHidden != layoutSlip->isHidden()) {
         editLayoutSlipNeedsRedraw = true;
     }
 
     editLayoutSlipOpen = false;
-    editLayoutSlipFrame.setVisible(false);
-    editLayoutSlipFrame.dispose();
-    editLayoutSlipFrame = null;
+    editLayoutSlipFrame->setVisible(false);
+    editLayoutSlipFrame->dispose();
+    editLayoutSlipFrame = nullptr;
     if (editLayoutSlipNeedsBlockUpdate) {
-        layoutSlip.updateBlockInfo();
+        layoutSlip->updateBlockInfo();
     }
     if (editLayoutSlipNeedsRedraw) {
-        layoutEditor.redrawPanel();
-        layoutEditor.setDirty();
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
         editLayoutSlipNeedsRedraw = false;
     }
 }   // editLayoutSlipDonePressed
 
-/*private*/ void editLayoutSlipCancelPressed(ActionEvent a) {
+/*private*/ void LayoutTrackEditors::editLayoutSlipCancelPressed(/*ActionEvent a*/) {
     editLayoutSlipOpen = false;
-    editLayoutSlipFrame.setVisible(false);
-    editLayoutSlipFrame.dispose();
-    editLayoutSlipFrame = null;
+    editLayoutSlipFrame->setVisible(false);
+    editLayoutSlipFrame->dispose();
+    editLayoutSlipFrame = nullptr;
     if (editLayoutSlipNeedsBlockUpdate) {
-        layoutSlip.updateBlockInfo();
+        layoutSlip->updateBlockInfo();
     }
     if (editLayoutSlipNeedsRedraw) {
-        layoutEditor.redrawPanel();
-        layoutEditor.setDirty();
+        layoutEditor->redrawPanel();
+        layoutEditor->setDirty();
         editLayoutSlipNeedsRedraw = false;
     }
 }
 
+#if 0
 /*===============*\
 | Edit Level Xing |
 \*===============*/
@@ -1382,26 +1427,27 @@ class TestState extends JPanel {
 /*private*/ LevelXing levelXing;
 
 // variables for Edit Level Crossing pane
-/*private*/ JmriJFrame editLevelXingFrame = null;
-/*private*/ JCheckBox editLevelXingHiddenCheckBox = new JCheckBox(tr("HideCrossing"));  // NOI18N
+/*private*/ JmriJFrame* editLevelXingFrame = nullptr;
+/*private*/ QCheckBox* editLevelXingHiddenCheckBox = new JCheckBox(tr("HideCrossing"));  // NOI18N
 
-/*private*/ JmriBeanComboBox editLevelXingBlock1NameComboBox = new JmriBeanComboBox(
-        InstanceManager.getDefault(BlockManager.class), null, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-/*private*/ JmriBeanComboBox editLevelXingBlock2NameComboBox = new JmriBeanComboBox(
-        InstanceManager.getDefault(BlockManager.class), null, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-/*private*/ JButton editLevelXingDoneButton;
-/*private*/ JButton editLevelXingCancelButton;
-/*private*/ JButton editLevelXingBlock1Button;
-/*private*/ JButton editLevelXingBlock2Button;
+/*private*/ JmriBeanComboBox* editLevelXingBlock1NameComboBox = new JmriBeanComboBox(
+        InstanceManager::getDefault(BlockManager.class), null, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+/*private*/ JmriBeanComboBox* editLevelXingBlock2NameComboBox = new JmriBeanComboBox(
+        InstanceManager::getDefault(BlockManager.class), null, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+/*private*/ QPushButton* editLevelXingDoneButton;
+/*private*/ QPushButton* editLevelXingCancelButton;
+/*private*/ QPushButton* editLevelXingBlock1Button;
+/*private*/ QPushButton* editLevelXingBlock2Button;
 
-/*private*/ boolean editLevelXingOpen = false;
-/*private*/ boolean editLevelXingNeedsRedraw = false;
-/*private*/ boolean editLevelXingNeedsBlockUpdate = false;
-
+/*private*/ bool editLevelXingOpen = false;
+/*private*/ bool editLevelXingNeedsRedraw = false;
+/*private*/ bool editLevelXingNeedsBlockUpdate = false;
+#endif
 /**
  * Edit a Level Crossing
  */
-/*protected*/ void editLevelXing(LevelXing levelXing) {
+/*protected*/ void LayoutTrackEditors::editLevelXing(LevelXing* levelXing) {
+#if 0
     sensorList.clear();
 
     this.levelXing = levelXing;
@@ -1415,16 +1461,16 @@ class TestState extends JPanel {
         Container contentPane = editLevelXingFrame.getContentPane();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 
-        JPanel panel33 = new JPanel();
+        QWidget* panel33 = new QWidget();
         panel33.setLayout(new FlowLayout());
         editLevelXingHiddenCheckBox.setToolTipText(tr("HiddenToolTip"));  // NOI18N
         panel33.add(editLevelXingHiddenCheckBox);
         contentPane.add(panel33);
 
         // setup block 1 name
-        JPanel panel1 = new JPanel();
+        QWidget* panel1 = new QWidget();
         panel1.setLayout(new FlowLayout());
-        JLabel block1NameLabel = new JLabel(tr("Block_ID", 1));  // NOI18N
+        QLabel* block1NameLabel = new QLabel(tr("Block_ID", 1));  // NOI18N
         panel1.add(block1NameLabel);
         panel1.add(editLevelXingBlock1NameComboBox);
         LayoutEditor.setupComboBox(editLevelXingBlock1NameComboBox, false, true);
@@ -1432,9 +1478,9 @@ class TestState extends JPanel {
         contentPane.add(panel1);
 
         // setup block 2 name
-        JPanel panel2 = new JPanel();
+        QWidget* panel2 = new QWidget();
         panel2.setLayout(new FlowLayout());
-        JLabel block2NameLabel = new JLabel(tr("Block_ID", 2));  // NOI18N
+        QLabel* block2NameLabel = new QLabel(tr("Block_ID", 2));  // NOI18N
         panel2.add(block2NameLabel);
         panel2.add(editLevelXingBlock2NameComboBox);
         LayoutEditor.setupComboBox(editLevelXingBlock2NameComboBox, false, true);
@@ -1442,7 +1488,7 @@ class TestState extends JPanel {
         contentPane.add(panel2);
 
         // set up Edit 1 Block and Edit 2 Block buttons
-        JPanel panel4 = new JPanel();
+        QWidget* panel4 = new QWidget();
         panel4.setLayout(new FlowLayout());
         // Edit 1 Block
         panel4.add(editLevelXingBlock1Button = new JButton(tr("EditBlock", 1)));  // NOI18N
@@ -1458,7 +1504,7 @@ class TestState extends JPanel {
         editLevelXingBlock2Button.setToolTipText(tr("EditBlockHint", "")); // empty value for block 1  // NOI18N
         contentPane.add(panel4);
         // set up Done and Cancel buttons
-        JPanel panel5 = new JPanel();
+        QWidget* panel5 = new QWidget();
         panel5.setLayout(new FlowLayout());
         panel5.add(editLevelXingDoneButton = new JButton(tr("ButtonDone")));  // NOI18N
         editLevelXingDoneButton.addActionListener((ActionEvent e) -> {
@@ -1501,9 +1547,9 @@ class TestState extends JPanel {
     editLevelXingNeedsBlockUpdate = false;
 
     showSensorMessage();
-
+#endif
 }   // editLevelXing
-
+#if 0
 /*private*/ void editLevelXingBlockACPressed(ActionEvent a) {
     // check if a block name has been entered
     String newName = editLevelXingBlock1NameComboBox.getUserName();
@@ -1611,7 +1657,7 @@ class TestState extends JPanel {
     }
 
     // set hidden
-    boolean oldHidden = levelXing.isHidden();
+    bool oldHidden = levelXing.isHidden();
     levelXing.setHidden(editLevelXingHiddenCheckBox.isSelected());
     if (oldHidden != levelXing.isHidden()) {
         editLevelXingNeedsRedraw = true;
@@ -1652,26 +1698,27 @@ class TestState extends JPanel {
 // variables for Edit Turntable pane
 /*private*/ LayoutTurntable layoutTurntable = null;
 
-/*private*/ JmriJFrame editLayoutTurntableFrame = null;
+/*private*/ JmriJFrame* editLayoutTurntableFrame = null;
 /*private*/ JTextField editLayoutTurntableRadiusTextField = new JTextField(8);
 /*private*/ JTextField editLayoutTurntableAngleTextField = new JTextField(8);
-/*private*/ JButton editLayoutTurntableDoneButton;
-/*private*/ JButton editLayoutTurntableCancelButton;
+/*private*/ QPushButton* editLayoutTurntableDoneButton;
+/*private*/ QPushButton* editLayoutTurntableCancelButton;
 
-/*private*/ JPanel editLayoutTurntableRayPanel;
-/*private*/ JButton editLayoutTurntableAddRayTrackButton;
-///*private*/ JButton editLayoutTurntableDeleteRayTrackButton;
-/*private*/ JCheckBox editLayoutTurntableDccControlledCheckBox;
+/*private*/ QWidget* editLayoutTurntableRayPanel;
+/*private*/ QPushButton* editLayoutTurntableAddRayTrackButton;
+///*private*/ QPushButton* editLayoutTurntableDeleteRayTrackButton;
+/*private*/ QCheckBox* editLayoutTurntableDccControlledCheckBox;
 
-/*private*/ String editLayoutTurntableOldRadius = "";
-/*private*/ boolean editLayoutTurntableOpen = false;
-/*private*/ boolean editLayoutTurntableNeedsRedraw = false;
-
+/*private*/ QString editLayoutTurntableOldRadius = "";
+/*private*/ bool editLayoutTurntableOpen = false;
+/*private*/ bool editLayoutTurntableNeedsRedraw = false;
+#endif
 /**
  * Edit a Turntable
  */
-/*protected*/ void editLayoutTurntable(LayoutTurntable layoutTurntable) {
-    this.layoutTurntable = layoutTurntable;
+/*protected*/ void LayoutTrackEditors::editLayoutTurntable(LayoutTurntable* layoutTurntable) {
+    this->layoutTurntable = layoutTurntable;
+#if 0
     if (editLayoutTurntableOpen) {
         editLayoutTurntableFrame.setVisible(true);
     } else // Initialize if needed
@@ -1681,8 +1728,8 @@ class TestState extends JPanel {
         editLayoutTurntableFrame.setLocation(50, 30);
 
         Container contentPane = editLayoutTurntableFrame.getContentPane();
-        JPanel headerPane = new JPanel();
-        JPanel footerPane = new JPanel();
+        QWidget* headerPane = new QWidget();
+        QWidget* footerPane = new QWidget();
         headerPane.setLayout(new BoxLayout(headerPane, BoxLayout.Y_AXIS));
         footerPane.setLayout(new BoxLayout(footerPane, BoxLayout.Y_AXIS));
         contentPane.setLayout(new BorderLayout());
@@ -1690,24 +1737,24 @@ class TestState extends JPanel {
         contentPane.add(footerPane, BorderLayout.SOUTH);
 
         // setup radius
-        JPanel panel1 = new JPanel();
+        QWidget* panel1 = new QWidget();
         panel1.setLayout(new FlowLayout());
-        JLabel radiusLabel = new JLabel(tr("TurntableRadius"));  // NOI18N
+        QLabel* radiusLabel = new QLabel(tr("TurntableRadius"));  // NOI18N
         panel1.add(radiusLabel);
         panel1.add(editLayoutTurntableRadiusTextField);
         editLayoutTurntableRadiusTextField.setToolTipText(tr("TurntableRadiusHint"));  // NOI18N
         headerPane.add(panel1);
 
         // setup add ray track
-        JPanel panel2 = new JPanel();
+        QWidget* panel2 = new QWidget();
         panel2.setLayout(new FlowLayout());
-        JLabel rayAngleLabel = new JLabel(tr("RayAngle"));  // NOI18N
+        QLabel* rayAngleLabel = new QLabel(tr("RayAngle"));  // NOI18N
         panel2.add(rayAngleLabel);
         panel2.add(editLayoutTurntableAngleTextField);
         editLayoutTurntableAngleTextField.setToolTipText(tr("RayAngleHint"));  // NOI18N
         headerPane.add(panel2);
 
-        JPanel panel3 = new JPanel();
+        QWidget* panel3 = new QWidget();
         panel3.setLayout(new FlowLayout());
         panel3.add(editLayoutTurntableAddRayTrackButton = new JButton(tr("AddRayTrack")));  // NOI18N
         editLayoutTurntableAddRayTrackButton.setToolTipText(tr("AddRayTrackHint"));  // NOI18N
@@ -1720,7 +1767,7 @@ class TestState extends JPanel {
         headerPane.add(panel3);
 
         // set up Done and Cancel buttons
-        JPanel panel5 = new JPanel();
+        QWidget* panel5 = new QWidget();
         panel5.setLayout(new FlowLayout());
         panel5.add(editLayoutTurntableDoneButton = new JButton(tr("ButtonDone")));  // NOI18N
         editLayoutTurntableDoneButton.addActionListener((ActionEvent e) -> {
@@ -1743,7 +1790,7 @@ class TestState extends JPanel {
         editLayoutTurntableCancelButton.setToolTipText(tr("CancelHint", tr("ButtonCancel")));  // NOI18N
         footerPane.add(panel5);
 
-        editLayoutTurntableRayPanel = new JPanel();
+        editLayoutTurntableRayPanel = new QWidget();
         editLayoutTurntableRayPanel.setLayout(new BoxLayout(editLayoutTurntableRayPanel, BoxLayout.Y_AXIS));
         JScrollPane rayScrollPane = new JScrollPane(editLayoutTurntableRayPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         contentPane.add(rayScrollPane, BorderLayout.CENTER);
@@ -1774,8 +1821,9 @@ class TestState extends JPanel {
     editLayoutTurntableFrame.pack();
     editLayoutTurntableFrame.setVisible(true);
     editLayoutTurntableOpen = true;
+#endif
 }   // editLayoutTurntable
-
+#if 0
 //Remove old rays and add them back in
 /*private*/ void updateRayPanel() {
     for (Component comp : editLayoutTurntableRayPanel.getComponents()) {
@@ -1832,7 +1880,7 @@ class TestState extends JPanel {
 //    LayoutTurntable.RayTrack closest = null;
 //    double bestDel = 360.0;
 //    for (LayoutTurntable.RayTrack rt : layoutTurntable.getRayList()) {
-//        double del = MathUtil.absDiffAngleDEG(rt.getAngle(), ang);
+//        double del = MathUtil::absDiffAngleDEG(rt.getAngle(), ang);
 //        if (del < bestDel) {
 //            bestDel = del;
 //            closest = rt;
@@ -1890,15 +1938,15 @@ class TestState extends JPanel {
 /*===================*\
 | Turntable Ray Panel |
 \*===================*/
-/*public*/ class TurntableRayPanel extends JPanel {
+/*public*/ class TurntableRayPanel extends QWidget* {
 
     // variables for Edit Turntable ray pane
     /*private*/ RayTrack rayTrack = null;
-    /*private*/ JPanel rayTurnoutPanel;
-    /*private*/ transient JmriBeanComboBox turnoutNameComboBox;
+    /*private*/ QWidget* rayTurnoutPanel;
+    /*private*/ transient JmriBeanComboBox* turnoutNameComboBox;
     /*private*/ TitledBorder rayTitledBorder;
-    /*private*/ JComboBox<String> rayTurnoutStateComboBox;
-    /*private*/ JLabel rayTurnoutStateLabel;
+    /*private*/ QComboBox* rayTurnoutStateComboBox;
+    /*private*/ QLabel* rayTurnoutStateLabel;
     /*private*/ JTextField rayAngleTextField;
     /*private*/ final int[] rayTurnoutStateValues = new int[]{Turnout.CLOSED, Turnout.THROWN};
     /*private*/ final DecimalFormat twoDForm = new DecimalFormat("#.00");
@@ -1909,11 +1957,11 @@ class TestState extends JPanel {
     /*public*/ TurntableRayPanel(@Nonnull RayTrack rayTrack) {
         this.rayTrack = rayTrack;
 
-        JPanel top = new JPanel();
+        QWidget* top = new QWidget();
 
-        /*JLabel lbl = new JLabel("Index :"+connectionIndex);
+        /*QLabel* lbl = new QLabel("Index :"+connectionIndex);
              top.add(lbl);*/
-        top.add(new JLabel(tr("RayAngle") + " : "));  // NOI18N
+        top.add(new QLabel(tr("RayAngle") + " : "));  // NOI18N
         top.add(rayAngleTextField = new JTextField(5));
         rayAngleTextField.addFocusListener(new FocusListener() {
             @Override
@@ -1937,19 +1985,19 @@ class TestState extends JPanel {
         this.add(top);
 
         turnoutNameComboBox = new JmriBeanComboBox(
-                InstanceManager.turnoutManagerInstance(),
+                InstanceManager::turnoutManagerInstance(),
                 rayTrack.getTurnout(),
-                JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
+                JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
         LayoutEditor.setupComboBox(turnoutNameComboBox, true, true);
         turnoutNameComboBox.setSelectedBean(rayTrack.getTurnout());
 
-        String turnoutStateThrown = InstanceManager.turnoutManagerInstance().getThrownText();
-        String turnoutStateClosed = InstanceManager.turnoutManagerInstance().getClosedText();
+        String turnoutStateThrown = InstanceManager::turnoutManagerInstance().getThrownText();
+        String turnoutStateClosed = InstanceManager::turnoutManagerInstance().getClosedText();
         String[] turnoutStates = new String[]{turnoutStateClosed, turnoutStateThrown};
 
-        rayTurnoutStateComboBox = new JComboBox<String>(turnoutStates);
-        rayTurnoutStateLabel = new JLabel(tr("TurnoutState"));  // NOI18N
-        rayTurnoutPanel = new JPanel();
+        rayTurnoutStateComboBox = new QComboBox(turnoutStates);
+        rayTurnoutStateLabel = new QLabel(tr("TurnoutState"));  // NOI18N
+        rayTurnoutPanel = new QWidget();
 
         rayTurnoutPanel.setBorder(new EtchedBorder());
         rayTurnoutPanel.add(turnoutNameComboBox);
@@ -1962,7 +2010,7 @@ class TestState extends JPanel {
         }
         this.add(rayTurnoutPanel);
 
-        JButton deleteRayButton;
+        QPushButton* deleteRayButton;
         top.add(deleteRayButton = new JButton(tr("ButtonDelete")));  // NOI18N
         deleteRayButton.setToolTipText(tr("DeleteRayTrack"));  // NOI18N
         deleteRayButton.addActionListener((ActionEvent e) -> {
@@ -2010,7 +2058,7 @@ class TestState extends JPanel {
     }
 
     /*private*/ void showTurnoutDetails() {
-        boolean vis = layoutTurntable.isTurnoutControlled();
+        bool vis = layoutTurntable.isTurnoutControlled();
         rayTurnoutPanel.setVisible(vis);
         turnoutNameComboBox.setVisible(vis);
         rayTurnoutStateComboBox.setVisible(vis);

@@ -46,14 +46,14 @@ public slots:
  void on_locoColor_selected(QAction* act);
  void on_throttleAction();
 private:
- /*private*/ int _dockX;// = 0;
- /*private*/ int _dockY;// = 0;
+ /*private*/ int _dockX = 0;
+ /*private*/ int _dockY = 0;
  Editor* editor;
  //  jmri.jmrit.throttle.ThrottleFrame tf = null;
- QActionGroup* locoButtonGroup;// = NULL;
+ QActionGroup* locoButtonGroup = nullptr;
  //QGraphicsItem* item;
  //ThrottleFrame* tf;
- ThrottleWindow* tw;
+ ThrottleWindow* tw = nullptr;
  QColor _locoColor;
 
 protected:

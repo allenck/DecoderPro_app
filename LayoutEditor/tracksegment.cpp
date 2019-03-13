@@ -11,6 +11,12 @@
 #include "mathutil.h"
 #include "loggerfactory.h"
 #include "colorutil.h"
+#include <QAction>
+#include "layouttrackeditors.h"
+#include "quickpromptutil.h"
+#include <climits>
+#include "path.h"
+#include "layouttrackdrawingoptions.h"
 
 //TrackSegment::TrackSegment(QObject *parent) :
 //    QObject(parent)
@@ -146,15 +152,28 @@ void TrackSegment::init(QString id)
  tunnelColor = QColor(Qt::black);
 
  bezierControlPoints = QList<QPointF>(); // list of control point displacements
- mainlineCheckBoxMenuItem = new QAction(tr("MainlineCheckBoxMenuItemTitle"));
+ mainlineCheckBoxMenuItem = new QAction(tr("Mainline"),this);
  mainlineCheckBoxMenuItem->setCheckable(true);
- hiddenCheckBoxMenuItem = new QAction(tr("HiddenCheckBoxMenuItemTitle"));
+ hiddenCheckBoxMenuItem = new QAction(tr("Hidden"),this);
  hiddenCheckBoxMenuItem->setCheckable(true);
- dashedCheckBoxMenuItem = new QAction(tr("DashedCheckBoxMenuItemTitle"));
+ dashedCheckBoxMenuItem = new QAction(tr("Dashed"));
  dashedCheckBoxMenuItem->setCheckable(true);
- flippedCheckBoxMenuItem = new QAction(tr("FlippedCheckBoxMenuItemTitle"));
+ flippedCheckBoxMenuItem = new QAction(tr("Flip"));
  flippedCheckBoxMenuItem->setCheckable(true);
 }
+/**
+ * Get debugging string for the TrackSegment.
+ *
+ * @return text showing id and connections of this segment
+ */
+//@Override
+/*public*/ QString TrackSegment::toString() {
+    return "TrackSegment " + getName()
+            + " c1:{" + getConnect1Name() + " (" + type1 + "},"
+            + " c2:{" + getConnect2Name() + " (" + type2 + "}";
+
+}
+
 /**
  * Accessor methods
 */
@@ -210,15 +229,23 @@ void TrackSegment::init(QString id)
     dashed = dash;
 }
 
-/*public*/ bool TrackSegment::getHidden() {
-    return hidden;
-}
+///*public*/ bool TrackSegment::getHidden() {
+//    return hidden;
+//}
 
-/*public*/ void TrackSegment::setHidden(bool hide) {
-    hidden = hide;
-}
+///*public*/ void TrackSegment::setHidden(bool hide) {
+//    hidden = hide;
+//}
 
 /*public*/ bool TrackSegment::getMainline() {
+    return mainline;
+}
+
+/**
+ * @return true if track segment is a main line
+ */
+//@Override
+/*public*/ bool TrackSegment::isMainline() {
     return mainline;
 }
 
@@ -386,7 +413,7 @@ TrackSegment::getLayoutBlock()
  */
 // only implemented here to suppress "does not override abstract method " error in compiler
 //@Override
-/*public*/ void TrackSegment::setConnection(int connectionType, /*@Nullable*/ LayoutTrack* o, int type) throw (JmriException) {
+/*public*/ void TrackSegment::setConnection(int /*connectionType*/, /*@Nullable*/ LayoutTrack* /*o*/, int /*type*/) throw (JmriException) {
     // nothing to see here, move along
 }
 
@@ -427,6 +454,7 @@ TrackSegment::getLayoutBlock()
  *        method is called after the entire LayoutEditor is loaded to set the specific
  *        TrackSegment objects.
  */
+//@Override
 /*public*/ void TrackSegment::setObjects(LayoutEditor* p)
 {
  if (!tBlockName.isEmpty()) {
@@ -466,6 +494,55 @@ TrackSegment::getLayoutBlock()
 /*public*/ void TrackSegment::setLayoutBlockByName (QString name) {
     blockName = name;
 }
+/*
+ * non-accessor methods
+ */
+/**
+ * scale this LayoutTrack's coordinates by the x and y factors
+ *
+ * @param xFactor the amount to scale X coordinates
+ * @param yFactor the amount to scale Y coordinates
+ */
+//@Override
+/*public*/ void TrackSegment::scaleCoords(float xFactor, float yFactor) {
+    QPointF factor = QPointF(xFactor, yFactor);
+    center = MathUtil::multiply(center, factor);
+    if (isBezier()) {
+        for (QPointF p : bezierControlPoints) {
+// TODO:            p.setLocation(MathUtil::multiply(p, factor));
+        }
+    }
+}
+
+/**
+ * translate this LayoutTrack's coordinates by the x and y factors
+ *
+ * @param xFactor the amount to translate X coordinates
+ * @param yFactor the amount to translate Y coordinates
+ */
+//@Override
+/*public*/ void TrackSegment::translateCoords(float xFactor, float yFactor) {
+    setCoordsCenter(MathUtil::add(center, QPointF(xFactor, yFactor)));
+}
+
+/**
+ * set center coordinates
+ *
+ * @param newCenterPoint the coordinates to set
+ */
+//@Override
+/*public*/ void TrackSegment::setCoordsCenter(/*@Nonnull*/ QPointF newCenterPoint) {
+    if (center != newCenterPoint) {
+        if (isBezier()) {
+            QPointF delta = MathUtil::subtract(newCenterPoint, center);
+            for (QPointF p : bezierControlPoints) {
+// TODO:                p.setLocation(MathUtil.add(p, delta));
+            }
+        }
+        center = newCenterPoint;
+    }
+}
+
 /*protected*/ void TrackSegment::updateBlockInfo()
 {
  if (block!=NULL)
@@ -509,7 +586,7 @@ TrackSegment::getLayoutBlock()
   ((LayoutSlip*)getConnect2())->reCheckBlockBoundary();
 }
 
-/*private*/ LayoutBlock* TrackSegment::getBlock (QObject* connect, int type)
+/*private*/ LayoutBlock* TrackSegment::getBlock (LayoutTrack* connect, int type)
 {
  if (connect==NULL)
   return NULL;
@@ -532,6 +609,55 @@ TrackSegment::getLayoutBlock()
   return (layoutEditor->getAffectedBlock(connect,type));
  }
 }
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ int TrackSegment::findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
+    int result = NONE;  // assume point not on connection
+
+    if (!requireUnconnected) {
+        //note: optimization here: instead of creating rectangles for all the
+        // points to check below, we create a rectangle for the test point
+        // and test if the points below are in that rectangle instead.
+        QRectF r = layoutEditor->trackControlCircleRectAt(hitPoint);
+        QPointF p, minPoint = MathUtil::zeroPoint2D;
+
+        double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+        double distance, minDistance = std::numeric_limits<double>::infinity();
+
+        if (isCircle()) {
+            p = getCoordsCenterCircle();
+            distance = MathUtil::distance(p, hitPoint);
+            if (distance < minDistance) {
+                minDistance = distance;
+                minPoint = p;
+                result = TRACK_CIRCLE_CENTRE;
+            }
+        } else if (isBezier()) {
+            // hit testing for the control points
+            for (int index = 0; index < bezierControlPoints.size(); index++) {
+                p = bezierControlPoints.at(index);
+                distance = MathUtil::distance(p, hitPoint);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    minPoint = p;
+                    result = BEZIER_CONTROL_POINT_OFFSET_MIN + index;
+                }
+            }
+        }
+        if ((useRectangles && !r.contains(minPoint))
+                || (!useRectangles && (minDistance > circleRadius))) {
+            result = NONE;
+        }
+        if (result == NONE) {
+            if (r.contains(getCentreSeg())) {
+                result = TRACK;
+            }
+        }
+    }
+    return result;
+}   // findHitPointType
 
 /**
  * {@inheritDoc}
@@ -1131,390 +1257,468 @@ TrackSegment::getLayoutBlock()
 /**
  * Display popup menu for information and editing
  */
-/*protected*/ void TrackSegment::showPopUp(QGraphicsSceneMouseEvent* /*e*/)
+/*protected*/ QMenu* TrackSegment::showPopup(QGraphicsSceneMouseEvent* /*e*/)
 {
-#if 0
- if (popupMenu != null) {
-     popupMenu.removeAll();
+ if (popupMenu != nullptr) {
+     popupMenu->clear();
  } else {
-     popupMenu = new JPopupMenu();
+     popupMenu = new QMenu();
  }
 
- String info = Bundle.getMessage("TrackSegment");
+ QString info = tr("TrackSegment");
  if (isArc()) {
      if (isCircle()) {
-         info = info + " (" + Bundle.getMessage("Circle") + ")";
+         info = info + " (" + tr("Circle") + ")";
      } else {
-         info = info + " (" + Bundle.getMessage("Ellipse") + ")";
+         info = info + " (" + tr("Ellipse") + ")";
      }
  } else if (isBezier()) {
-     info = info + " (" + Bundle.getMessage("Bezier") + ")";
+     info = info + " (" + tr("Bezier") + ")";
  } else {
-     info = info + " (" + Bundle.getMessage("Line") + ")";
+     info = info + " (" + tr("Line") + ")";
  }
 
- JMenuItem jmi = popupMenu.add(Bundle.getMessage("MakeLabel", info) + getName());
- jmi.setEnabled(false);
+ QAction* jmi = popupMenu->addSection(tr("%1: ").arg(info) + getName());
+ jmi->setEnabled(false);
 
  if (blockName.isEmpty()) {
-     jmi = popupMenu.add(Bundle.getMessage("NoBlock"));
+     jmi = popupMenu->addSection(tr("NoBlock"));
  } else {
-     jmi = popupMenu.add(Bundle.getMessage("MakeLabel", Bundle.getMessage("BeanNameBlock")) + getLayoutBlock().getDisplayName());
+     jmi = popupMenu->addSection(tr(" %1: ").arg(tr("Block")) + getLayoutBlock()->getDisplayName());
  }
- jmi.setEnabled(false);
+ jmi->setEnabled(false);
 
  // if there are any track connections
- if ((connect1 != null) || (connect2 != null)) {
-     JMenu connectionsMenu = new JMenu(Bundle.getMessage("Connections")); // there is no pane opening (which is what ... implies)
-     if (connect1 != null) {
-         connectionsMenu.add(new AbstractAction(Bundle.getMessage("MakeLabel", "1") + connect1.getName()) {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-                 LayoutEditorFindItems lf = layoutEditor.getFinder();
-                 LayoutTrack lt = lf.findObjectByName(connect1.getName());
-                 // this shouldn't ever be null... however...
-                 if (lt != null) {
-                     layoutEditor.setSelectionRect(lt.getBounds());
-                     lt.showPopup();
-                 }
-             }
-         });
+ QAction* act;
+
+ if ((connect1 != nullptr) || (connect2 != nullptr)) {
+     QMenu* connectionsMenu = new QMenu(tr("Connections")); // there is no pane opening (which is what ... implies)
+     if (connect1 != nullptr)
+     {
+         connectionsMenu->addAction(act = new AbstractAction(tr(" %1: ").arg("1") + connect1->getName(), this));
+//         {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 LayoutEditorFindItems lf = layoutEditor.getFinder();
+//                 LayoutTrack lt = lf.findObjectByName(connect1.getName());
+//                 // this shouldn't ever be null... however...
+//                 if (lt != null) {
+//                     layoutEditor.setSelectionRect(lt.getBounds());
+//                     lt.showPopup();
+//                 }
+//             }
+//         });
      }
-     if (connect2 != null) {
-         connectionsMenu.add(new AbstractAction(Bundle.getMessage("MakeLabel", "2") + connect2.getName()) {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-                 LayoutEditorFindItems lf = layoutEditor.getFinder();
-                 LayoutTrack lt = lf.findObjectByName(connect2.getName());
-                 // this shouldn't ever be null... however...
-                 if (lt != null) {
-                     layoutEditor.setSelectionRect(lt.getBounds());
-                     lt.showPopup();
-                 }
-             }
-         });
+     connect(act, SIGNAL(triggered()), this, SLOT(onMakeLabel1()));
+     if (connect2 != nullptr) {
+         connectionsMenu->addAction(act =new AbstractAction(tr(" %1: ").arg("2") + connect2->getName(),this));
+//         {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 LayoutEditorFindItems lf = layoutEditor.getFinder();
+//                 LayoutTrack lt = lf.findObjectByName(connect2.getName());
+//                 // this shouldn't ever be null... however...
+//                 if (lt != null) {
+//                     layoutEditor.setSelectionRect(lt.getBounds());
+//                     lt.showPopup();
+//                 }
+//             }
+//         });
+       connect(act, SIGNAL(triggered()), this, SLOT(onMakeLabel2()));
      }
-     popupMenu.add(connectionsMenu);
+     popupMenu->addMenu(connectionsMenu);
  }
 
- popupMenu.add(new JSeparator(JSeparator.HORIZONTAL));
+ popupMenu->addSeparator(); //new JSeparator(JSeparator.HORIZONTAL));
 
- popupMenu.add(mainlineCheckBoxMenuItem);
- mainlineCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setMainline(mainlineCheckBoxMenuItem.isSelected());
- });
- mainlineCheckBoxMenuItem.setToolTipText(Bundle.getMessage("MainlineCheckBoxMenuItemToolTip"));
- mainlineCheckBoxMenuItem.setSelected(mainline);
+ QActionGroup* trackTypeActGrp = new QActionGroup(this);
+ popupMenu->addAction(mainlineCheckBoxMenuItem);
+ trackTypeActGrp->addAction(mainlineCheckBoxMenuItem);
+// mainlineCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setMainline(mainlineCheckBoxMenuItem.isSelected());
+// });
+ connect(mainlineCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(onMainlineCheckBox()));
+ mainlineCheckBoxMenuItem->setToolTip(tr("Sets track segment type - check for mainline track, uncheck for side track."));
+ mainlineCheckBoxMenuItem->setChecked(mainline);
 
- popupMenu.add(hiddenCheckBoxMenuItem);
- hiddenCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setHidden(hiddenCheckBoxMenuItem.isSelected());
- });
- hiddenCheckBoxMenuItem.setToolTipText(Bundle.getMessage("HiddenCheckBoxMenuItemToolTip"));
- hiddenCheckBoxMenuItem.setSelected(hidden);
+ popupMenu->addAction(hiddenCheckBoxMenuItem);
+ trackTypeActGrp->addAction(hiddenCheckBoxMenuItem);
+// hiddenCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setHidden(hiddenCheckBoxMenuItem.isSelected());
+// });
+ connect(hiddenCheckBoxMenuItem, SIGNAL(toggled(bool)), this, SLOT(onHiddenChecKBox()));
+ hiddenCheckBoxMenuItem->setToolTip(tr("Check this to hide the track when not in edit mode"));
+ hiddenCheckBoxMenuItem->setChecked(hidden);
 
- popupMenu.add(dashedCheckBoxMenuItem);
- dashedCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setDashed(dashedCheckBoxMenuItem.isSelected());
- });
- dashedCheckBoxMenuItem.setToolTipText(Bundle.getMessage("DashedCheckBoxMenuItemToolTip"));
- dashedCheckBoxMenuItem.setSelected(dashed);
+ popupMenu->addAction(dashedCheckBoxMenuItem);
+ trackTypeActGrp->addAction(dashedCheckBoxMenuItem);
+// dashedCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setDashed(dashedCheckBoxMenuItem.isSelected());
+// });
+ connect(dashedCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(onDashedCheckBox()));
+ dashedCheckBoxMenuItem->setToolTip(tr("Sets track segment style - checked for dashed, unchecked for solid."));
+ dashedCheckBoxMenuItem->setChecked(dashed);
 
  if (isArc()) {
-     popupMenu.add(flippedCheckBoxMenuItem);
-     flippedCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
-         setFlip(flippedCheckBoxMenuItem.isSelected());
-     });
-     flippedCheckBoxMenuItem.setToolTipText(Bundle.getMessage("FlippedCheckBoxMenuItemToolTip"));
-     flippedCheckBoxMenuItem.setSelected(isFlip());
+     popupMenu->addAction(flippedCheckBoxMenuItem);
+//     flippedCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
+//         setFlip(flippedCheckBoxMenuItem.isSelected());
+//     });
+     connect(flippedCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(onFlippedCheckBox()));
+     flippedCheckBoxMenuItem->setToolTip(tr("Check this move the center of the arc/circle to the other side of the track"));
+     flippedCheckBoxMenuItem->setChecked(isFlip());
  }
 
  //
  // decorations menu
  //
- JMenu decorationsMenu = new JMenu(Bundle.getMessage("DecorationMenuTitle"));
- decorationsMenu.setToolTipText(Bundle.getMessage("DecorationMenuToolTip"));
+ QMenu* decorationsMenu = new QMenu(tr("Decorations"));
+ decorationsMenu->setToolTip(tr("Select this menu to change decoration settings for this track"));
 
  //
  // arrows menus
  //
- JMenu arrowsMenu = new JMenu(Bundle.getMessage("ArrowsMenuTitle"));
- decorationsMenu.setToolTipText(Bundle.getMessage("ArrowsMenuToolTip"));
- decorationsMenu.add(arrowsMenu);
+ QMenu* arrowsMenu = new QMenu(tr("Arrows"));
+ decorationsMenu->setToolTip(tr("Select this menu to change arrow decoration settings for this track"));
+ decorationsMenu->addMenu(arrowsMenu);
 
- JMenu arrowsCountMenu = new JMenu(Bundle.getMessage("DecorationStyleMenuTitle"));
- arrowsCountMenu.setToolTipText(Bundle.getMessage("DecorationStyleMenuToolTip"));
- arrowsMenu.add(arrowsCountMenu);
+ QMenu* arrowsCountMenu = new QMenu(tr("Style"));
+ arrowsCountMenu->setToolTip(tr("Select the style of arrow decorations to add to this track"));
+ arrowsMenu->addMenu(arrowsCountMenu);
 
- JCheckBoxMenuItem jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
- arrowsCountMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationNoneMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowStyle(0);
- });
- jcbmi.setSelected(arrowStyle == 0);
+ QActionGroup* styleActionGroup = new QActionGroup(this);
 
- ImageIcon imageIcon = new ImageIcon(FileUtil.findURL("program:resources/icons/decorations/ArrowStyle1.png"));
- jcbmi = new JCheckBoxMenuItem(imageIcon);
- arrowsCountMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationStyleMenuToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowStyle(1);
- });
- jcbmi.setSelected(arrowStyle == 1);
+ QAction* jcbmi = new QAction(tr("None"),this);
+ jcbmi->setData(0);
+ jcbmi->setCheckable(true);
+ styleActionGroup->addAction(jcbmi);
+ arrowsCountMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to remove this decoration from this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowStyle(0);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onSetArrowStyle()));
+ jcbmi->setChecked(arrowStyle == 0);
 
- imageIcon = new ImageIcon(FileUtil.findURL("program:resources/icons/decorations/ArrowStyle2.png"));
- jcbmi = new JCheckBoxMenuItem(imageIcon);
- arrowsCountMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationStyleMenuToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowStyle(2);
- });
- jcbmi.setSelected(arrowStyle == 2);
+ QIcon imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle1.png").toString());
+ jcbmi = new QAction(imageIcon, "1",this);
+ jcbmi->setData(1);
+ jcbmi->setCheckable(true);
+ styleActionGroup->addAction(jcbmi);
+ arrowsCountMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select the style of arrow decorations to add to this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowStyle(1);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onSetArrowStyle()));
+ jcbmi->setChecked(arrowStyle == 1);
 
- imageIcon = new ImageIcon(FileUtil.findURL("program:resources/icons/decorations/ArrowStyle3.png"));
- jcbmi = new JCheckBoxMenuItem(imageIcon);
- arrowsCountMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationStyleMenuToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowStyle(3);
- });
- jcbmi.setSelected(arrowStyle == 3);
+ imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle2.png").toString());
+ jcbmi = new QAction(imageIcon, "2", this);
+ jcbmi->setData(2);
+ jcbmi->setCheckable(true);
+ styleActionGroup->addAction(jcbmi);
+ arrowsCountMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select the style of arrow decorations to add to this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowStyle(2);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onSetArrowStyle()));
+ jcbmi->setChecked(arrowStyle == 2);
 
- imageIcon = new ImageIcon(FileUtil.findURL("program:resources/icons/decorations/ArrowStyle4.png"));
- jcbmi = new JCheckBoxMenuItem(imageIcon);
- arrowsCountMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationStyleMenuToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowStyle(4);
- });
- jcbmi.setSelected(arrowStyle == 4);
+ imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle3.png").toString());
+ jcbmi = new QAction(imageIcon, "3", this);
+ jcbmi->setData(3);
+ jcbmi->setCheckable(true);
+ styleActionGroup->addAction(jcbmi);
+ arrowsCountMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select the style of arrow decorations to add to this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowStyle(3);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onSetArrowStyle()));
+ jcbmi->setChecked(arrowStyle == 3);
 
- imageIcon = new ImageIcon(FileUtil.findURL("program:resources/icons/decorations/ArrowStyle5.png"));
- jcbmi = new JCheckBoxMenuItem(imageIcon);
- arrowsCountMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationStyleMenuToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowStyle(5);
- });
- jcbmi.setSelected(arrowStyle == 5);
+ imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle4.png").toString());
+ jcbmi = new QAction(imageIcon, "4", this);
+ jcbmi->setData(4);
+ jcbmi->setCheckable(true);
+ styleActionGroup->addAction(jcbmi);
+ arrowsCountMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select the style of arrow decorations to add to this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowStyle(4);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onSetArrowStyle()));
+ jcbmi->setChecked(arrowStyle == 4);
 
- JMenu arrowsEndMenu = new JMenu(Bundle.getMessage("DecorationEndMenuTitle"));
- arrowsEndMenu.setToolTipText(Bundle.getMessage("DecorationEndMenuToolTip"));
- arrowsMenu.add(arrowsEndMenu);
+ imageIcon = QIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle5.png").toString());
+ jcbmi = new QAction(imageIcon, "5", this);
+ jcbmi->setData(5);
+ jcbmi->setCheckable(true);
+ styleActionGroup->addAction(jcbmi);
+ arrowsCountMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select the style of arrow decorations to add to this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowStyle(5);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onSetArrowStyle()));
+ jcbmi->setChecked(arrowStyle == 5);
 
- jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
- arrowsEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationNoneMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowEndStart(false);
-     setArrowEndStop(false);
- });
- jcbmi.setSelected(!arrowEndStart && !arrowEndStop);
+ QMenu*arrowsEndMenu = new QMenu(tr("Which end"));
+ arrowsEndMenu->setToolTip(tr("Select at which end(s) to add this decoration"));
+ arrowsMenu->addMenu(arrowsEndMenu);
 
- jcbmi = new QAction(tr("DecorationStartMenuItemTitle"));
- arrowsEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationStartMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowEndStart(true);
-     setArrowEndStop(false);
- });
- jcbmi.setSelected(arrowEndStart && !arrowEndStop);
+ QActionGroup* arrowEndActionGroup = new QActionGroup(this);
+ jcbmi = new QAction(tr("None"),this);
+ jcbmi->setData(0);
+ jcbmi->setCheckable(true);
+ arrowEndActionGroup->addAction(jcbmi);
+ arrowsEndMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to remove this decoration from this track"));
+// jcbmi.add(ActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowEndStart(false);
+//     setArrowEndStop(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onArrowEnd()));
+ jcbmi->setChecked(!arrowEndStart && !arrowEndStop);
+ jcbmi = new QAction(tr("Start"), this);
+ jcbmi->setData(1);
+ jcbmi->setCheckable(true);
+ arrowEndActionGroup->addAction(jcbmi);
+ arrowsEndMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration at the beginning of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowEndStart(true);
+//     setArrowEndStop(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onArrowEnd()));
+ jcbmi->setChecked(arrowEndStart && !arrowEndStop);
 
- jcbmi = new QAction(tr("DecorationEndMenuItemTitle"));
- arrowsEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationEndMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowEndStop(true);
-     setArrowEndStart(false);
- });
- jcbmi.setSelected(!arrowEndStart && arrowEndStop);
+ jcbmi = new QAction(tr("End"),this);
+ jcbmi->setData(2);
+ jcbmi->setCheckable(true);
+ arrowEndActionGroup->addAction(jcbmi);
+ arrowsEndMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration at the end of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowEndStop(true);
+//     setArrowEndStart(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onArrowEnd()));
+ jcbmi->setChecked(!arrowEndStart && arrowEndStop);
+ jcbmi = new QAction(tr("Both"), this);
+ jcbmi->setData(3);
+ jcbmi->setCheckable(true);
+ arrowEndActionGroup->addAction(jcbmi);
+ arrowsEndMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration at both ends of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowEndStart(true);
+//     setArrowEndStop(true);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onArrowEnd()));
+ jcbmi->setChecked(arrowEndStart && arrowEndStop);
 
- jcbmi = new QAction(tr("DecorationBothMenuItemTitle"));
- arrowsEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationBothMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowEndStart(true);
-     setArrowEndStop(true);
- });
- jcbmi.setSelected(arrowEndStart && arrowEndStop);
+ QMenu* arrowsDirMenu = new QMenu(tr("Direction"));
+ arrowsDirMenu->setToolTip(tr("Select the direction to point the arrows"));
+ arrowsMenu->addMenu(arrowsDirMenu);
 
- JMenu arrowsDirMenu = new JMenu(Bundle.getMessage("ArrowsDirectionMenuTitle"));
- arrowsDirMenu.setToolTipText(Bundle.getMessage("ArrowsDirectionMenuToolTip"));
- arrowsMenu.add(arrowsDirMenu);
+ QActionGroup* arrowDirectionActionGroup = new QActionGroup(this);
+ jcbmi = new QAction(tr("None"), this);
+ jcbmi->setData(0);
+ jcbmi->setCheckable(true);
+ arrowDirectionActionGroup->addAction(jcbmi);
+ arrowsDirMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowDirIn(false);
+//     setArrowDirOut(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onArrowDirection()));
+ jcbmi->setChecked(!arrowDirIn && !arrowDirOut);
 
- jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
- arrowsDirMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationNoneMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowDirIn(false);
-     setArrowDirOut(false);
- });
- jcbmi.setSelected(!arrowDirIn && !arrowDirOut);
+ jcbmi = new QAction(tr("In"));
+ jcbmi->setData(1);
+ jcbmi->setCheckable(true);
+ arrowDirectionActionGroup->addAction(jcbmi);
+ arrowsDirMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to draw arrows pointing in"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowDirIn(true);
+//     setArrowDirOut(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onArrowDirection()));
+ jcbmi->setChecked(arrowDirIn && !arrowDirOut);
 
- jcbmi = new QAction(tr("ArrowsDirectionInMenuItemTitle"));
- arrowsDirMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("ArrowsDirectionInMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowDirIn(true);
-     setArrowDirOut(false);
- });
- jcbmi.setSelected(arrowDirIn && !arrowDirOut);
+ jcbmi = new QAction(tr("Out"));
+ jcbmi->setData(2);
+ jcbmi->setCheckable(true);
+ arrowDirectionActionGroup->addAction(jcbmi);
+ arrowsDirMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to draw arrows pointing out"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowDirOut(true);
+//     setArrowDirIn(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onArrowDirection()));
+ jcbmi->setChecked(!arrowDirIn && arrowDirOut);
 
- jcbmi = new QAction(tr("ArrowsDirectionOutMenuItemTitle"));
- arrowsDirMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("ArrowsDirectionOutMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowDirOut(true);
-     setArrowDirIn(false);
- });
- jcbmi.setSelected(!arrowDirIn && arrowDirOut);
+ jcbmi = new QAction(tr("Both"));
+ jcbmi->setData(3);
+ jcbmi->setCheckable(true);
+ arrowDirectionActionGroup->addAction(jcbmi);
+ arrowsDirMenu->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to draw arrow(s) pointing in and out"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setArrowDirIn(true);
+//     setArrowDirOut(true);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onArrowDirection()));
+ jcbmi->setChecked(arrowDirIn && arrowDirOut);
 
- jcbmi = new QAction(tr("ArrowsDirectionBothMenuItemTitle"));
- arrowsDirMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("ArrowsDirectionBothMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setArrowDirIn(true);
-     setArrowDirOut(true);
- });
- jcbmi.setSelected(arrowDirIn && arrowDirOut);
+ arrowsMenu->addAction(jmi = new QAction(tr("Color"),this));
 
- jmi = arrowsMenu.add(new JMenuItem(Bundle.getMessage("DecorationColorMenuItemTitle")));
- jmi.setToolTipText(Bundle.getMessage("DecorationColorMenuItemToolTip"));
- jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     Color newColor = JmriColorChooser.showDialog(null, "Choose a color", arrowColor);
-     if ((newColor != null) && !newColor.equals(arrowColor)) {
-         setArrowColor(newColor);
-     }
- });
- jmi.setForeground(arrowColor);
- jmi.setBackground(ColorUtil.contrast(arrowColor));
+ jmi->setToolTip(tr("Select this to change the color of this decoration"));
+// jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     Color newColor = JmriColorChooser::showDialog(null, "Choose a color", arrowColor);
+//     if ((newColor != null) && !newColor.equals(arrowColor)) {
+//         setArrowColor(newColor);
+//     }
+// });
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onArrowColor()));
+// jmi->setForeground(arrowColor);
+ jmi->setIcon(layoutEditor->getColourIcon(arrowColor));
+// jmi->setBackground(ColorUtil::contrast(arrowColor));
 
- jmi = arrowsMenu.add(new JMenuItem(Bundle.getMessage("MakeLabel",
-         Bundle.getMessage("DecorationLineWidthMenuItemTitle")) + arrowLineWidth));
- jmi.setToolTipText(Bundle.getMessage("DecorationLineWidthMenuItemToolTip"));
- jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     //prompt for arrow line width
-     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
-             Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
-             arrowLineWidth);
-     setArrowLineWidth(newValue);
- });
+ arrowsMenu->addAction(jmi = new QAction(tr(" %1: ").arg(
+         tr("Line Width: ") + QString::number(arrowLineWidth)), this));
+ jmi->setToolTip(tr("Select this to change the line width of this decoration"));
+// jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     //prompt for arrow line width
+//     int newValue = QuickPromptUtil::promptForInt(layoutEditor,
+//             tr("Line Width"),
+//             tr("Line Width""),
+//             arrowLineWidth);
+//     setArrowLineWidth(newValue);
+// });
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onArrowWidth()));
 
- jmi = arrowsMenu.add(new JMenuItem(Bundle.getMessage("MakeLabel",
-         Bundle.getMessage("DecorationLengthMenuItemTitle")) + arrowLength));
- jmi.setToolTipText(Bundle.getMessage("DecorationLengthMenuItemToolTip"));
- jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     //prompt for arrow length
-     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             Bundle.getMessage("DecorationLengthMenuItemTitle"),
-             Bundle.getMessage("DecorationLengthMenuItemTitle"),
-             arrowLength);
-     setArrowLength(newValue);
- });
+ arrowsMenu->addAction(jmi = new QAction(tr(" %1: ").arg(
+         tr("Length: ") + QString::number(arrowLength)),this));
+ jmi->setToolTip(tr("Select this to change the length of this decoration"));
+// jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     //prompt for arrow length
+//     int newValue = QuickPromptUtil::promptForInt(layoutEditor,
+//             tr("Length"),
+//             tr("Length"),
+//             arrowLength);
+//     setArrowLength(newValue);
+// });
+connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onArrowLength()));
 
- jmi = arrowsMenu.add(new JMenuItem(Bundle.getMessage("MakeLabel",
-         Bundle.getMessage("DecorationGapMenuItemTitle")) + arrowGap));
- jmi.setToolTipText(Bundle.getMessage("DecorationGapMenuItemToolTip"));
- jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     //prompt for arrow gap
-     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             Bundle.getMessage("DecorationGapMenuItemTitle"),
-             Bundle.getMessage("DecorationGapMenuItemTitle"),
-             arrowGap);
-     setArrowGap(newValue);
- });
+ arrowsMenu->addAction(jmi =new QAction(tr(" %1: ").arg(
+         tr("Space %1: ") + QString::number(arrowGap)), this));
+ jmi->setToolTip(tr("Select this to change the space between multiple decorations"));
+// jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     //prompt for arrow gap
+//     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
+//             tr("DecorationGapMenuItemTitle"),
+//             tr("DecorationGapMenuItemTitle"),
+//             arrowGap);
+//     setArrowGap(newValue);
+// });
+connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onArrowGap()));
 
  //
  // bridge menus
  //
- JMenu bridgeMenu = new JMenu(Bundle.getMessage("BridgeMenuTitle"));
- decorationsMenu.setToolTipText(Bundle.getMessage("BridgeMenuToolTip"));
- decorationsMenu.add(bridgeMenu);
-
- JMenu bridgeSideMenu = new JMenu(Bundle.getMessage("DecorationSideMenuTitle"));
- bridgeSideMenu.setToolTipText(Bundle.getMessage("DecorationSideMenuToolTip"));
+ QMenu* bridgeMenu = new QMenu(tr("Bridge"));
+ decorationsMenu->setToolTip(tr("Select this menu to change bridge decoration settings for this track"));
+ decorationsMenu->addMenu(bridgeMenu);
+#if 0
+ QMenu* bridgeSideMenu = new QMenu(tr("DecorationSideMenuTitle"));
+ bridgeSideMenu->setToolTip(tr("DecorationSideMenuToolTip"));
  bridgeMenu.add(bridgeSideMenu);
 
  jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
  bridgeSideMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationNoneMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setBridgeSideLeft(false);
      setBridgeSideRight(false);
  });
- jcbmi.setSelected(!bridgeSideLeft && !bridgeSideRight);
+ jcbmi->setChecked(!bridgeSideLeft && !bridgeSideRight);
 
  jcbmi = new QAction(tr("DecorationSideLeftMenuItemTitle"));
  bridgeSideMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationSideLeftMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationSideLeftMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setBridgeSideLeft(true);
      setBridgeSideRight(false);
  });
- jcbmi.setSelected(bridgeSideLeft && !bridgeSideRight);
+ jcbmi->setChecked(bridgeSideLeft && !bridgeSideRight);
 
  jcbmi = new QAction(tr("DecorationSideRightMenuItemTitle"));
  bridgeSideMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationSideRightMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationSideRightMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setBridgeSideRight(true);
      setBridgeSideLeft(false);
  });
- jcbmi.setSelected(!bridgeSideLeft && bridgeSideRight);
+ jcbmi->setChecked(!bridgeSideLeft && bridgeSideRight);
 
  jcbmi = new QAction(tr("DecorationBothMenuItemTitle"));
  bridgeSideMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationBothMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationBothMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setBridgeSideLeft(true);
      setBridgeSideRight(true);
  });
- jcbmi.setSelected(bridgeSideLeft && bridgeSideRight);
+ jcbmi->setChecked(bridgeSideLeft && bridgeSideRight);
 
- JMenu bridgeEndMenu = new JMenu(Bundle.getMessage("DecorationEndMenuTitle"));
- bridgeEndMenu.setToolTipText(Bundle.getMessage("DecorationEndMenuToolTip"));
+ QMenu* bridgeEndMenu = new QMenu(tr("DecorationEndMenuTitle"));
+ bridgeEndMenu->setToolTip(tr("DecorationEndMenuToolTip"));
  bridgeMenu.add(bridgeEndMenu);
 
  jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
  bridgeEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationNoneMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setBridgeHasEntry(false);
      setBridgeHasExit(false);
  });
- jcbmi.setSelected(!bridgeHasEntry && !bridgeHasExit);
+ jcbmi->setChecked(!bridgeHasEntry && !bridgeHasExit);
 
  jcbmi = new QAction(tr("DecorationEntryMenuItemTitle"));
  bridgeEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationEntryMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationEntryMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setBridgeHasEntry(true);
      setBridgeHasExit(false);
  });
- jcbmi.setSelected(bridgeHasEntry && !bridgeHasExit);
+ jcbmi->setChecked(bridgeHasEntry && !bridgeHasExit);
 
  jcbmi = new QAction(tr("DecorationExitMenuItemTitle"));
  bridgeEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationExitMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationExitMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setBridgeHasExit(true);
      setBridgeHasEntry(false);
  });
- jcbmi.setSelected(!bridgeHasEntry && bridgeHasExit);
+ jcbmi->setChecked(!bridgeHasEntry && bridgeHasExit);
 
  jcbmi = new QAction(tr("DecorationBothMenuItemTitle"));
  bridgeEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationBothMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationBothMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setBridgeHasEntry(true);
      setBridgeHasExit(true);
  });
- jcbmi.setSelected(bridgeHasEntry && bridgeHasExit);
+ jcbmi->setChecked(bridgeHasEntry && bridgeHasExit);
 
- jmi = bridgeMenu.add(new JMenuItem(Bundle.getMessage("DecorationColorMenuItemTitle")));
- jmi.setToolTipText(Bundle.getMessage("DecorationColorMenuItemToolTip"));
+ jmi = bridgeMenu.add(new QMenuItem(tr("DecorationColorMenuItemTitle")));
+ jmi->setToolTip(tr("DecorationColorMenuItemToolTip"));
  jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      Color newColor = JmriColorChooser.showDialog(null, "Choose a color", bridgeColor);
      if ((newColor != null) && !newColor.equals(bridgeColor)) {
@@ -1524,38 +1728,38 @@ TrackSegment::getLayoutBlock()
  jmi.setForeground(bridgeColor);
  jmi.setBackground(ColorUtil.contrast(bridgeColor));
 
- jmi = bridgeMenu.add(new JMenuItem(Bundle.getMessage("MakeLabel",
-         Bundle.getMessage("DecorationLineWidthMenuItemTitle")) + bridgeLineWidth));
- jmi.setToolTipText(Bundle.getMessage("DecorationLineWidthMenuItemToolTip"));
+ jmi = bridgeMenu.add(new QMenuItem(tr(" %1: ",
+         tr("DecorationLineWidthMenuItemTitle")) + bridgeLineWidth));
+ jmi->setToolTip(tr("DecorationLineWidthMenuItemToolTip"));
  jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      //prompt for bridge line width
      int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
-             Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
+             tr("DecorationLineWidthMenuItemTitle"),
+             tr("DecorationLineWidthMenuItemTitle"),
              bridgeLineWidth);
      setBridgeLineWidth(newValue);
  });
 
- jmi = bridgeMenu.add(new JMenuItem(Bundle.getMessage("MakeLabel",
-         Bundle.getMessage("BridgeApproachWidthMenuItemTitle")) + bridgeApproachWidth));
- jmi.setToolTipText(Bundle.getMessage("BridgeApproachWidthMenuItemToolTip"));
+ jmi = bridgeMenu.add(new QMenuItem(tr(" %1: ",
+         tr("BridgeApproachWidthMenuItemTitle")) + bridgeApproachWidth));
+ jmi->setToolTip(tr("BridgeApproachWidthMenuItemToolTip"));
  jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      //prompt for bridge approach width
      int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             Bundle.getMessage("BridgeApproachWidthMenuItemTitle"),
-             Bundle.getMessage("BridgeApproachWidthMenuItemTitle"),
+             tr("BridgeApproachWidthMenuItemTitle"),
+             tr("BridgeApproachWidthMenuItemTitle"),
              bridgeApproachWidth);
      setBridgeApproachWidth(newValue);
  });
 
- jmi = bridgeMenu.add(new JMenuItem(Bundle.getMessage("MakeLabel",
-         Bundle.getMessage("BridgeDeckWidthMenuItemTitle")) + bridgeDeckWidth));
- jmi.setToolTipText(Bundle.getMessage("BridgeDeckWidthMenuItemToolTip"));
+ jmi = bridgeMenu.add(new QMenuItem(tr(" %1: ",
+         tr("BridgeDeckWidthMenuItemTitle")) + bridgeDeckWidth));
+ jmi->setToolTip(tr("BridgeDeckWidthMenuItemToolTip"));
  jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      //prompt for bridge deck width
      int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             Bundle.getMessage("BridgeDeckWidthMenuItemTitle"),
-             Bundle.getMessage("BridgeDeckWidthMenuItemTitle"),
+             tr("BridgeDeckWidthMenuItemTitle"),
+             tr("BridgeDeckWidthMenuItemTitle"),
              bridgeDeckWidth);
      setBridgeDeckWidth(newValue);
  });
@@ -1563,43 +1767,43 @@ TrackSegment::getLayoutBlock()
  //
  // end bumper menus
  //
- JMenu endBumperMenu = new JMenu(Bundle.getMessage("EndBumperMenuTitle"));
- decorationsMenu.setToolTipText(Bundle.getMessage("EndBumperMenuToolTip"));
+ QMenu* endBumperMenu = new QMenu(tr("EndBumperMenuTitle"));
+ decorationsMenu->setToolTip(tr("EndBumperMenuToolTip"));
  decorationsMenu.add(endBumperMenu);
 
- JMenu endBumperEndMenu = new JMenu(Bundle.getMessage("DecorationEndMenuTitle"));
- endBumperEndMenu.setToolTipText(Bundle.getMessage("DecorationEndMenuToolTip"));
+ QMenu* endBumperEndMenu = new QMenu(tr("DecorationEndMenuTitle"));
+ endBumperEndMenu->setToolTip(tr("DecorationEndMenuToolTip"));
  endBumperMenu.add(endBumperEndMenu);
 
  jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
  endBumperEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationNoneMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setBumperEndStart(false);
      setBumperEndStop(false);
  });
- jcbmi.setSelected(!bumperEndStart && !bumperEndStop);
+ jcbmi->setChecked(!bumperEndStart && !bumperEndStop);
 
  jcbmi = new QAction(tr("DecorationStartMenuItemTitle"));
  endBumperEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationStartMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationStartMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setBumperEndStart(true);
      setBumperEndStop(false);
  });
- jcbmi.setSelected(bumperEndStart && !bumperEndStop);
+ jcbmi->setChecked(bumperEndStart && !bumperEndStop);
 
  jcbmi = new QAction(tr("DecorationEndMenuItemTitle"));
  endBumperEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationEndMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationEndMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setBumperEndStop(true);
      setBumperEndStart(false);
  });
- jcbmi.setSelected(!bumperEndStart && bumperEndStop);
+ jcbmi->setChecked(!bumperEndStart && bumperEndStop);
 
- jmi = endBumperMenu.add(new JMenuItem(Bundle.getMessage("DecorationColorMenuItemTitle")));
- jmi.setToolTipText(Bundle.getMessage("DecorationColorMenuItemToolTip"));
+ jmi = endBumperMenu.add(new QMenuItem(tr("DecorationColorMenuItemTitle")));
+ jmi->setToolTip(tr("DecorationColorMenuItemToolTip"));
  jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      Color newColor = JmriColorChooser.showDialog(null, "Choose a color", bumperColor);
      if ((newColor != null) && !newColor.equals(bumperColor)) {
@@ -1609,26 +1813,26 @@ TrackSegment::getLayoutBlock()
  jmi.setForeground(bumperColor);
  jmi.setBackground(ColorUtil.contrast(bumperColor));
 
- jmi = endBumperMenu.add(new JMenuItem(Bundle.getMessage("MakeLabel",
-         Bundle.getMessage("DecorationLineWidthMenuItemTitle")) + bumperLineWidth));
- jmi.setToolTipText(Bundle.getMessage("DecorationLineWidthMenuItemToolTip"));
+ jmi = endBumperMenu.add(new QMenuItem(tr(" %1: ",
+         tr("DecorationLineWidthMenuItemTitle")) + bumperLineWidth));
+ jmi->setToolTip(tr("DecorationLineWidthMenuItemToolTip"));
  jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      //prompt for width
      int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
-             Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
+             tr("DecorationLineWidthMenuItemTitle"),
+             tr("DecorationLineWidthMenuItemTitle"),
              bumperLineWidth);
      setBumperLineWidth(newValue);
  });
 
- jmi = endBumperMenu.add(new JMenuItem(Bundle.getMessage("MakeLabel",
-         Bundle.getMessage("DecorationLengthMenuItemTitle")) + bumperLength));
- jmi.setToolTipText(Bundle.getMessage("DecorationLengthMenuItemToolTip"));
+ jmi = endBumperMenu.add(new QMenuItem(tr(" %1: ",
+         tr("DecorationLengthMenuItemTitle")) + bumperLength));
+ jmi->setToolTip(tr("DecorationLengthMenuItemToolTip"));
  jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      //prompt for length
      int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             Bundle.getMessage("DecorationLengthMenuItemTitle"),
-             Bundle.getMessage("DecorationLengthMenuItemTitle"),
+             tr("DecorationLengthMenuItemTitle"),
+             tr("DecorationLengthMenuItemTitle"),
              bumperLength);
      setBumperLength(newValue);
  });
@@ -1636,92 +1840,92 @@ TrackSegment::getLayoutBlock()
  //
  // tunnel menus
  //
- JMenu tunnelMenu = new JMenu(Bundle.getMessage("TunnelMenuTitle"));
- decorationsMenu.setToolTipText(Bundle.getMessage("TunnelMenuToolTip"));
+ QMenu* tunnelMenu = new QMenu(tr("TunnelMenuTitle"));
+ decorationsMenu->setToolTip(tr("TunnelMenuToolTip"));
  decorationsMenu.add(tunnelMenu);
 
- JMenu tunnelSideMenu = new JMenu(Bundle.getMessage("DecorationSideMenuTitle"));
- tunnelSideMenu.setToolTipText(Bundle.getMessage("DecorationSideMenuToolTip"));
+ QMenu* tunnelSideMenu = new QMenu(tr("DecorationSideMenuTitle"));
+ tunnelSideMenu->setToolTip(tr("DecorationSideMenuToolTip"));
  tunnelMenu.add(tunnelSideMenu);
 
  jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
  tunnelSideMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationNoneMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setTunnelSideLeft(false);
      setTunnelSideRight(false);
  });
- jcbmi.setSelected(!tunnelSideLeft && !tunnelSideRight);
+ jcbmi->setChecked(!tunnelSideLeft && !tunnelSideRight);
 
  jcbmi = new QAction(tr("DecorationSideLeftMenuItemTitle"));
  tunnelSideMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationSideLeftMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationSideLeftMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setTunnelSideLeft(true);
      setTunnelSideRight(false);
  });
- jcbmi.setSelected(tunnelSideLeft && !tunnelSideRight);
+ jcbmi->setChecked(tunnelSideLeft && !tunnelSideRight);
 
  jcbmi = new QAction(tr("DecorationSideRightMenuItemTitle"));
  tunnelSideMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationSideRightMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationSideRightMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setTunnelSideRight(true);
      setTunnelSideLeft(false);
  });
- jcbmi.setSelected(!tunnelSideLeft && tunnelSideRight);
+ jcbmi->setChecked(!tunnelSideLeft && tunnelSideRight);
 
  jcbmi = new QAction(tr("DecorationBothMenuItemTitle"));
  tunnelSideMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationBothMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationBothMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setTunnelSideLeft(true);
      setTunnelSideRight(true);
  });
- jcbmi.setSelected(tunnelSideLeft && tunnelSideRight);
+ jcbmi->setChecked(tunnelSideLeft && tunnelSideRight);
 
- JMenu tunnelEndMenu = new JMenu(Bundle.getMessage("DecorationEndMenuTitle"));
- tunnelEndMenu.setToolTipText(Bundle.getMessage("DecorationEndMenuToolTip"));
+ QMenu* tunnelEndMenu = new QMenu(tr("DecorationEndMenuTitle"));
+ tunnelEndMenu->setToolTip(tr("DecorationEndMenuToolTip"));
  tunnelMenu.add(tunnelEndMenu);
 
  jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
  tunnelEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationNoneMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setTunnelHasEntry(false);
      setTunnelHasExit(false);
  });
- jcbmi.setSelected(!tunnelHasEntry && !tunnelHasExit);
+ jcbmi->setChecked(!tunnelHasEntry && !tunnelHasExit);
 
  jcbmi = new QAction(tr("DecorationEntryMenuItemTitle"));
  tunnelEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationEntryMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationEntryMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setTunnelHasEntry(true);
      setTunnelHasExit(false);
  });
- jcbmi.setSelected(tunnelHasEntry && !tunnelHasExit);
+ jcbmi->setChecked(tunnelHasEntry && !tunnelHasExit);
 
  jcbmi = new QAction(tr("DecorationExitMenuItemTitle"));
  tunnelEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationExitMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationExitMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setTunnelHasExit(true);
      setTunnelHasEntry(false);
  });
- jcbmi.setSelected(!tunnelHasEntry && tunnelHasExit);
+ jcbmi->setChecked(!tunnelHasEntry && tunnelHasExit);
 
  jcbmi = new QAction(tr("DecorationBothMenuItemTitle"));
  tunnelEndMenu.add(jcbmi);
- jcbmi.setToolTipText(Bundle.getMessage("DecorationBothMenuItemToolTip"));
+ jcbmi->setToolTip(tr("DecorationBothMenuItemToolTip"));
  jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      setTunnelHasEntry(true);
      setTunnelHasExit(true);
  });
- jcbmi.setSelected(tunnelHasEntry && tunnelHasExit);
+ jcbmi->setChecked(tunnelHasEntry && tunnelHasExit);
 
- jmi = tunnelMenu.add(new JMenuItem(Bundle.getMessage("DecorationColorMenuItemTitle")));
- jmi.setToolTipText(Bundle.getMessage("DecorationColorMenuItemToolTip"));
+ jmi = tunnelMenu.add(new QMenuItem(tr("DecorationColorMenuItemTitle")));
+ jmi->setToolTip(tr("DecorationColorMenuItemToolTip"));
  jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      Color newColor = JmriColorChooser.showDialog(null, "Choose a color", tunnelColor);
      if ((newColor != null) && !newColor.equals(tunnelColor)) {
@@ -1731,131 +1935,333 @@ TrackSegment::getLayoutBlock()
  jmi.setForeground(tunnelColor);
  jmi.setBackground(ColorUtil.contrast(tunnelColor));
 
- jmi = tunnelMenu.add(new JMenuItem(Bundle.getMessage("MakeLabel",
-         Bundle.getMessage("TunnelFloorWidthMenuItemTitle")) + tunnelFloorWidth));
- jmi.setToolTipText(Bundle.getMessage("TunnelFloorWidthMenuItemToolTip"));
+ jmi = tunnelMenu.add(new QMenuItem(tr(" %1: ",
+         tr("TunnelFloorWidthMenuItemTitle")) + tunnelFloorWidth));
+ jmi->setToolTip(tr("TunnelFloorWidthMenuItemToolTip"));
  jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      //prompt for tunnel floor width
      int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             Bundle.getMessage("TunnelFloorWidthMenuItemTitle"),
-             Bundle.getMessage("TunnelFloorWidthMenuItemTitle"),
+             tr("TunnelFloorWidthMenuItemTitle"),
+             tr("TunnelFloorWidthMenuItemTitle"),
              tunnelFloorWidth);
      setTunnelFloorWidth(newValue);
  });
 
- jmi = tunnelMenu.add(new JMenuItem(Bundle.getMessage("MakeLabel",
-         Bundle.getMessage("DecorationLineWidthMenuItemTitle")) + tunnelLineWidth));
- jmi.setToolTipText(Bundle.getMessage("DecorationLineWidthMenuItemToolTip"));
+ jmi = tunnelMenu.add(new QMenuItem(tr(" %1: ",
+         tr("DecorationLineWidthMenuItemTitle")) + tunnelLineWidth));
+ jmi->setToolTip(tr("DecorationLineWidthMenuItemToolTip"));
  jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      //prompt for tunnel line width
      int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
-             Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
+             tr("DecorationLineWidthMenuItemTitle"),
+             tr("DecorationLineWidthMenuItemTitle"),
              tunnelLineWidth);
      setTunnelLineWidth(newValue);
  });
 
- jmi = tunnelMenu.add(new JMenuItem(Bundle.getMessage("MakeLabel",
-         Bundle.getMessage("TunnelEntranceWidthMenuItemTitle")) + tunnelEntranceWidth));
- jmi.setToolTipText(Bundle.getMessage("TunnelEntranceWidthMenuItemToolTip"));
+ jmi = tunnelMenu.add(new QMenuItem(tr(" %1: ",
+         tr("TunnelEntranceWidthMenuItemTitle")) + tunnelEntranceWidth));
+ jmi->setToolTip(tr("TunnelEntranceWidthMenuItemToolTip"));
  jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
      //prompt for tunnel entrance width
      int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             Bundle.getMessage("TunnelEntranceWidthMenuItemTitle"),
-             Bundle.getMessage("TunnelEntranceWidthMenuItemTitle"),
+             tr("TunnelEntranceWidthMenuItemTitle"),
+             tr("TunnelEntranceWidthMenuItemTitle"),
              tunnelEntranceWidth);
      setTunnelEntranceWidth(newValue);
  });
-
- popupMenu.add(decorationsMenu);
-
- popupMenu.add(new JSeparator(JSeparator.HORIZONTAL));
- popupMenu.add(new AbstractAction(Bundle.getMessage("ButtonEdit")) {
-     @Override
-     public void actionPerformed(ActionEvent e) {
-         layoutEditor.getLayoutTrackEditors().editTrackSegment(TrackSegment.this);
-     }
- });
- popupMenu.add(new AbstractAction(Bundle.getMessage("ButtonDelete")) {
-     @Override
-     public void actionPerformed(ActionEvent e) {
-         layoutEditor.removeTrackSegment(TrackSegment.this);
-         remove();
-         dispose();
-     }
- });
- popupMenu.add(new AbstractAction(Bundle.getMessage("SplitTrackSegment")) {
-     @Override
-     public void actionPerformed(ActionEvent e) {
-         splitTrackSegment();
-     }
- });
-
- JMenu lineType = new JMenu(Bundle.getMessage("ChangeTo"));
- jmi = lineType.add(new JCheckBoxMenuItem(new AbstractAction(Bundle.getMessage("Line")) {
-     @Override
-     public void actionPerformed(ActionEvent e) {
-         changeType(0);
-     }
- }));
- jmi.setSelected(!isArc() && !isBezier());
-
- jmi = lineType.add(new JCheckBoxMenuItem(new AbstractAction(Bundle.getMessage("Circle")) {
-     @Override
-     public void actionPerformed(ActionEvent e) {
-         changeType(1);
-     }
- }));
- jmi.setSelected(isArc() && isCircle());
-
- jmi = lineType.add(new JCheckBoxMenuItem(new AbstractAction(Bundle.getMessage("Ellipse")) {
-     @Override
-     public void actionPerformed(ActionEvent e) {
-         changeType(2);
-     }
- }));
- jmi.setSelected(isArc() && !isCircle());
-
- jmi = lineType.add(new JCheckBoxMenuItem(new AbstractAction(Bundle.getMessage("Bezier")) {
-     @Override
-     public void actionPerformed(ActionEvent e) {
-         changeType(3);
-     }
- }));
- jmi.setSelected(!isArc() && isBezier());
-
- popupMenu.add(lineType);
-
- if (isArc() || isBezier()) {
-     if (hideConstructionLines()) {
-         popupMenu.add(new AbstractAction(Bundle.getMessage("ShowConstruct")) {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-                 hideConstructionLines(SHOWCON);
-             }
-         });
-     } else {
-         popupMenu.add(new AbstractAction(Bundle.getMessage("HideConstruct")) {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-                 hideConstructionLines(HIDECON);
-             }
-         });
-     }
- }
- if ((!blockName.isEmpty()) && (jmri.InstanceManager.getDefault(LayoutBlockManager.class).isAdvancedRoutingEnabled())) {
-     popupMenu.add(new AbstractAction(Bundle.getMessage("ViewBlockRouting")) {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-             AbstractAction routeTableAction = new LayoutBlockRouteTableAction("ViewRouting", getLayoutBlock());
-             routeTableAction.actionPerformed(e);
-         }
-     });
- }
- popupMenu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
- return popupMenu;
 #endif
+ popupMenu->addMenu(decorationsMenu);
+ popupMenu->addSeparator();//new JSeparator(JSeparator.HORIZONTAL));
+
+ popupMenu->addAction(act =new AbstractAction(tr("Edit"), this));
+// {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         layoutEditor.getLayoutTrackEditors().editTrackSegment(TrackSegment.this);
+//     }
+// });
+   connect(act, SIGNAL(triggered(bool)), this, SLOT(onEdit()));
+ popupMenu->addAction(new AbstractAction(tr("Delete"),this));
+// {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         layoutEditor.removeTrackSegment(TrackSegment.this);
+//         remove();
+//         dispose();
+//     })
+// });
+   connect(act, SIGNAL(triggered(bool)), this, SLOT(onDelete()));
+
+ popupMenu->addAction(new AbstractAction(tr("SplitTrackSegment"),this));
+// {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         splitTrackSegment();
+//     }
+// });
+ connect(act, SIGNAL(triggered(bool)), this, SLOT(splitTrackSegment()));
+
+ QMenu* lineType = new QMenu(tr("Change To"));
+ QActionGroup* lineTypeActGrp = new QActionGroup(this);
+
+ lineType->addAction(jmi =new QAction(tr("Line"), this));
+   jmi->setCheckable(true);
+   jmi->setData(0);
+   lineTypeActGrp->addAction(jmi);
+
+// {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         changeType(0);
+//     }
+// }));
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onChangeTo()));
+ jmi->setChecked(!isArc() && !isBezier());
+
+ lineType->addAction(jmi = new QAction(tr("Circle"), this));
+ jmi->setCheckable(true);
+ jmi->setData(1);
+ lineTypeActGrp->addAction(jmi);
+// {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         changeType(1);
+//     }
+// }));
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onChangeTo()));
+ jmi->setChecked(isArc() && isCircle());
+
+ lineType->addAction(jmi = new QAction(tr("Ellipse"),this));
+ jmi->setCheckable(true);
+ jmi->setData(2);
+ lineTypeActGrp->addAction(jmi);
+// {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         changeType(2);
+//     }
+// }));
+ jmi->setChecked(isArc() && !isCircle());
+
+ lineType->addAction(new QAction(tr("Bezier"), this));
+ jmi->setCheckable(true);
+ jmi->setData(3);
+ lineTypeActGrp->addAction(jmi);
+// {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         changeType(3);
+//     }
+// }));
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onChangeTo()));
+ jmi->setChecked(!isArc() && isBezier());
+
+ popupMenu->addMenu(lineType);
+
+   QActionGroup* constructActGrp = new QActionGroup(this);
+ if (isArc() || isBezier())
+ {
+  if (hideConstructionLines())
+  {
+   popupMenu->addAction(act =new AbstractAction(tr("Show Construction Line"),this));
+   act->setCheckable(true);
+   act->setData(SHOWCON);
+   constructActGrp->addAction(act);
+// {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 hideConstructionLines(SHOWCON);
+//             }
+//         });
+   connect(act, SIGNAL(triggered(bool)), this, SLOT(onConstruct()));
+     } else {
+         popupMenu->addAction(new AbstractAction(tr("HideConstruct"), this));
+   act->setCheckable(true);
+   act->setData(HIDECON);
+   constructActGrp->addAction(act);
+//         {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+//                 hideConstructionLines(HIDECON);
+//             }
+//         });
+   connect(act, SIGNAL(triggered(bool)), this, SLOT(onConstruct()));
+     }
+ }
+ if ((!blockName.isEmpty()) && (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())) {
+     popupMenu->addAction(act =new AbstractAction(tr("View Block Routing"),this));
+// {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             AbstractAction routeTableAction = new LayoutBlockRouteTableAction("ViewRouting", getLayoutBlock());
+//             routeTableAction.actionPerformed(e);
+//         }
+//     });
+   connect(act, SIGNAL(triggered(bool)), this, SLOT(onViewBlockRouting()));
+ }
+
+ //popupMenu.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+ popupMenu->exec(QCursor::pos());
+ return popupMenu;
 }   // showPopup
+
+void TrackSegment::onMakeLabel1()
+{
+ LayoutEditorFindItems* lf = layoutEditor->getFinder();
+ LayoutTrack* lt = lf->findObjectByName(connect1->getName());
+ // this shouldn't ever be null... however...
+ if (lt != nullptr) {
+     layoutEditor->setSelectionRect(lt->getBounds());
+     lt->showPopup();
+ }
+}
+
+void TrackSegment::onMakeLabel2()
+{
+ LayoutEditorFindItems* lf = layoutEditor->getFinder();
+ LayoutTrack* lt = lf->findObjectByName(connect2->getName());
+ // this shouldn't ever be null... however...
+ if (lt != nullptr) {
+     layoutEditor->setSelectionRect(lt->getBounds());
+     lt->showPopup();
+ }
+}
+void TrackSegment::onMainlineCheckBox()
+{
+ setMainline(mainlineCheckBoxMenuItem->isChecked());
+}
+
+void TrackSegment::onHiddenChecKBox()
+{
+ setHidden(hiddenCheckBoxMenuItem->isChecked());
+}
+void TrackSegment::onDashedCheckBox()
+{
+ setDashed(dashedCheckBoxMenuItem->isChecked());
+}
+void TrackSegment::onFlippedCheckBox()
+{
+  setFlip(flippedCheckBoxMenuItem->isChecked());
+}
+void TrackSegment::onSetArrowStyle()
+{
+ QObject* act = sender();
+ if(qobject_cast<QAction*>(act))
+ setArrowStyle(((QAction*)act)->data().toInt());
+}
+void TrackSegment::onArrowEnd()
+{
+ QObject* act = sender();
+ if(qobject_cast<QAction*>(act))
+  switch(((QAction*)act)->data().toInt())
+  {
+  case NONE:
+   setArrowEndStart(false);
+   setArrowEndStop(false);
+   break;
+  case 1:
+   setArrowEndStart(true);
+   setArrowEndStop(false);
+   break;
+  case 2:
+   setArrowEndStop(true);
+   setArrowEndStart(false);
+   break;
+  case 3:
+   setArrowEndStop(true);
+   setArrowEndStart(true);
+  break;
+  }
+}
+void TrackSegment::onArrowDirection()
+{
+ QObject* act = sender();
+ if(qobject_cast<QAction*>(act))
+  switch(((QAction*)act)->data().toInt())
+  {
+   case 0:
+   setArrowDirIn(false);
+   setArrowDirOut(false);
+   break;
+  case 1:
+   setArrowDirIn(true);
+   setArrowDirOut(false);
+   break;
+  case 2:
+   setArrowDirOut(true);
+   setArrowDirIn(false);
+   break;
+  case 3:
+   setArrowDirIn(true);
+   setArrowDirOut(true);
+   break;
+  }
+}
+void TrackSegment::onArrowColor()
+{
+ QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", arrowColor);
+ if ((newColor.isValid() ) && newColor!=(arrowColor)) {
+     setArrowColor(newColor);
+ }
+}
+void TrackSegment::onArrowWidth()
+{
+ int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
+         tr("Line Width"),
+         tr("Line Width"),
+         arrowLineWidth);
+ setArrowLineWidth(newValue);
+
+}
+void TrackSegment::onArrowLength()
+{
+ //prompt for arrow length
+ int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
+         tr("Length"),
+         tr("Length"),
+         arrowLength);
+ setArrowLength(newValue);
+
+}
+void TrackSegment::onArrowGap()
+{
+ //prompt for arrow gap
+ int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
+         tr("Space"),
+         tr("Space"),
+         arrowGap);
+ setArrowGap(newValue);
+
+}
+void TrackSegment::onEdit()
+{
+  layoutEditor->getLayoutTrackEditors()->editTrackSegment(this);
+}
+void TrackSegment::onDelete()
+{
+ layoutEditor->removeTrackSegment(this);
+ remove();
+ dispose();
+}
+void TrackSegment::onConstruct()
+{
+ QObject* act = sender();
+ if(qobject_cast<QAction*>(act))
+ hideConstructionLines(((QAction*)act)->data().toInt());
+}
+void TrackSegment::onChangeTo()
+{
+ QObject* act = sender();
+ if(qobject_cast<QAction*>(act))
+   changeType(((QAction*)act)->data().toInt());
+}
+
+void TrackSegment::onViewBlockRouting()
+{
+ AbstractAction* routeTableAction = new LayoutBlockRouteTableAction("View Routing", getLayoutBlock());
+ routeTableAction->actionPerformed();
+}
 
 /**
 * split track segment into two track segments with an anchor between
@@ -1924,19 +2330,19 @@ TrackSegment::getLayoutBlock()
      popupMenu = new QMenu();
  }
 #if 0
- JMenuItem jmi = popupMenu.add(Bundle.getMessage("BezierControlPoint") + " #" + bezierControlPointIndex);
+ QMenuItem jmi = popupMenu.add(tr("BezierControlPoint") + " #" + bezierControlPointIndex);
  jmi.setEnabled(false);
  popupMenu.add(new JSeparator(JSeparator.HORIZONTAL));
 
  if (bezierControlPoints.size() < BEZIER_CONTROL_POINT_OFFSET_MAX - BEZIER_CONTROL_POINT_OFFSET_MIN) {
-     popupMenu.add(new AbstractAction(Bundle.getMessage("AddBezierControlPointAfter")) {
+     popupMenu.add(new AbstractAction(tr("AddBezierControlPointAfter")) {
 
          @Override
          public void actionPerformed(ActionEvent e) {
              addBezierControlPointAfter(bezierControlPointIndex);
          }
      });
-     popupMenu.add(new AbstractAction(Bundle.getMessage("AddBezierControlPointBefore")) {
+     popupMenu.add(new AbstractAction(tr("AddBezierControlPointBefore")) {
 
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -1946,7 +2352,7 @@ TrackSegment::getLayoutBlock()
  }
 
  if (bezierControlPoints.size() > 2) {
-     popupMenu.add(new AbstractAction(Bundle.getMessage("DeleteBezierControlPoint") + " #" + bezierControlPointIndex) {
+     popupMenu.add(new AbstractAction(tr("DeleteBezierControlPoint") + " #" + bezierControlPointIndex) {
 
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -2110,54 +2516,54 @@ void TrackSegment::flipAngle()
             Container contentPane = editTrackSegmentFrame.getContentPane();
             contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
             // add dashed choice
-            JPanel panel31 = new JPanel();
+            QWidget* panel31 = new QWidget();
             panel31.setLayout(new FlowLayout());
             dashedBox.removeAllItems();
             dashedBox.addItem( rb.getQString("Solid") );
             solidIndex = 0;
             dashedBox.addItem( rb.getQString("Dashed") );
             dashedIndex = 1;
-            dashedBox.setToolTipText(rb.getQString("DashedToolTip"));
+            dashedBox->setToolTip(rb.getQString("DashedToolTip"));
             panel31.add (new JLabel(rb.getQString("Style")+" : "));
             panel31.add (dashedBox);
             contentPane.add(panel31);
             // add mainline choice
-            JPanel panel32 = new JPanel();
+            QWidget* panel32 = new QWidget();
             panel32.setLayout(new FlowLayout());
             mainlineBox.removeAllItems();
             mainlineBox.addItem( rb.getQString("Mainline") );
             mainlineTrackIndex = 0;
             mainlineBox.addItem( rb.getQString("NotMainline") );
             sideTrackIndex = 1;
-            mainlineBox.setToolTipText(rb.getQString("MainlineToolTip"));
+            mainlineBox->setToolTip(rb.getQString("MainlineToolTip"));
             panel32.add (mainlineBox);
             contentPane.add(panel32);
             // add hidden choice
-            JPanel panel33 = new JPanel();
+            QWidget* panel33 = new QWidget();
             panel33.setLayout(new FlowLayout());
-            hiddenBox.setToolTipText(rb.getQString("HiddenToolTip"));
+            hiddenBox->setToolTip(rb.getQString("HiddenToolTip"));
             panel33.add (hiddenBox);
             contentPane.add(panel33);
             // setup block name
-            JPanel panel2 = new JPanel();
+            QWidget* panel2 = new QWidget();
             panel2.setLayout(new FlowLayout());
             JLabel blockNameLabel = new JLabel( rb.getQString("BlockID"));
             panel2.add(blockNameLabel);
             panel2.add(blockNameField);
-            blockNameField.setToolTipText( rb.getQString("EditBlockNameHint") );
+            blockNameField->setToolTip( rb.getQString("EditBlockNameHint") );
             contentPane.add(panel2);
             if((getArc())&&(getCircle())){
-                JPanel panel20 = new JPanel();
+                QWidget* panel20 = new QWidget();
                 panel20.setLayout(new FlowLayout());
                 JLabel arcLabel = new JLabel( "Set Arc Angle");
                 panel20.add(arcLabel);
                 panel20.add(arcField);
-                arcField.setToolTipText( "Set Arc Angle" );
+                arcField->setToolTip( "Set Arc Angle" );
                 contentPane.add(panel20);
                 arcField.setText(getAngle());
             }
             // set up Edit Block, Done and Cancel buttons
-            JPanel panel5 = new JPanel();
+            QWidget* panel5 = new QWidget();
             panel5.setLayout(new FlowLayout());
             // Edit Block
             panel5.add(segmentEditBlock = new JButton(rb.getQString("EditBlock")));
@@ -2166,14 +2572,14 @@ void TrackSegment::flipAngle()
                     segmentEditBlockPressed(e);
                 }
             });
-            segmentEditBlock.setToolTipText( rb.getQString("EditBlockHint") );
+            segmentEditBlock->setToolTip( rb.getQString("EditBlockHint") );
             panel5.add(segmentEditDone = new JButton(rb.getQString("Done")));
             segmentEditDone.addActionListener(new ActionListener() {
                 /*public*/ void actionPerformed(ActionEvent e) {
                     segmentEditDonePressed(e);
                 }
             });
-            segmentEditDone.setToolTipText( rb.getQString("DoneHint") );
+            segmentEditDone->setToolTip( rb.getQString("DoneHint") );
             // Cancel
             panel5.add(segmentEditCancel = new JButton(rb.getQString("Cancel")));
             segmentEditCancel.addActionListener(new ActionListener() {
@@ -2181,19 +2587,19 @@ void TrackSegment::flipAngle()
                     segmentEditCancelPressed(e);
                 }
             });
-            segmentEditCancel.setToolTipText( rb.getQString("CancelHint") );
+            segmentEditCancel->setToolTip( rb.getQString("CancelHint") );
             contentPane.add(panel5);
         }
         // Set up for Edit
         if (mainline)
-            mainlineBox.setSelectedIndex(mainlineTrackIndex);
+            mainlineBox->setCheckedIndex(mainlineTrackIndex);
         else
-            mainlineBox.setSelectedIndex(sideTrackIndex);
+            mainlineBox->setCheckedIndex(sideTrackIndex);
         if (dashed)
-            dashedBox.setSelectedIndex(dashedIndex);
+            dashedBox->setCheckedIndex(dashedIndex);
         else
-            dashedBox.setSelectedIndex(solidIndex);
-        hiddenBox.setSelected(hidden);
+            dashedBox->setCheckedIndex(solidIndex);
+        hiddenBox->setChecked(hidden);
         blockNameField.setText(blockName);
         editTrackSegmentFrame.addWindowListener(new java.awt.event.WindowAdapter() {
                 /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
@@ -2218,7 +2624,7 @@ void TrackSegment::flipAngle()
                 blockName = "";
             }
             needsRedraw = true;
-            layoutEditor->auxTools.setBlockConnectivityChanged();
+            layoutEditor->auxTools->setBlockConnectivityChanged();
             updateBlockInfo();
         }
         // check if a block exists to edit
@@ -2272,7 +2678,7 @@ void TrackSegment::flipAngle()
                 blockName = "";
             }
             needsRedraw = true;
-            layoutEditor->auxTools.setBlockConnectivityChanged();
+            layoutEditor->auxTools->setBlockConnectivityChanged();
             updateBlockInfo();
         }
         editOpen = false;
@@ -2316,6 +2722,15 @@ void TrackSegment::remove() {
 /*public*/ bool TrackSegment::isActive() {
     return active;
 }
+
+/*public*/ bool TrackSegment::isShowConstructionLines() {
+    if ((showConstructionLine & HIDECON) == HIDECON
+            || (showConstructionLine & HIDECONALL) == HIDECONALL) {
+        return false;
+    }
+    return true;
+}
+
 
 /**
 * The following are used only as a temporary store after a circle or arc has been calculated.
@@ -2411,46 +2826,50 @@ void TrackSegment::remove() {
 
   if (isCircle()) {
       result = center; //new QPointF(centreX, centreY);
+      //result =  QPointF(centreX, centreY);
+
   }
   else if (isArc())
   {
-      //center = MathUtil::midPoint(getBounds());
-   center = getBounds().center();
-      if (isFlip()) {
-          QPointF t = ep1;
-          ep1 = ep2;
-          ep2 = t;
-      }
-      QPointF delta = MathUtil::subtract(ep1, ep2);
-      // are they of the same sign?
-      if ((delta.x() >= 0.0) != (delta.y() >= 0.0)) {
-          delta = MathUtil::divide(delta, +5.0, -5.0);
-      } else {
-          delta = MathUtil::divide(delta, -5.0, +5.0);
-      }
-      result =MathUtil::add(center, delta);
+   center = MathUtil::midPoint(getBounds());
+   //center = getBounds().center();
+   if (isFlip())
+   {
+       QPointF t = ep1;
+       ep1 = ep2;
+       ep2 = t;
+   }
+   QPointF delta = MathUtil::subtract(ep1, ep2);
+   // are they of the same sign?
+   if ((delta.x() >= 0.0) != (delta.y() >= 0.0)) {
+       delta = MathUtil::divide(delta, +5.0, -5.0);
+   } else {
+       delta = MathUtil::divide(delta, -5.0, +5.0);
+   }
+   result =MathUtil::add(center, delta);
   }
-#if 1
-  else if (isBezier()) {
-      // compute result Bezier point for (t == 0.5);
-      // copy all the control points (including end points) into an array
-      int len = bezierControlPoints.size() + 2;
-      QVector<QPointF> points = QVector<QPointF>(len);
-      points.replace(0, ep1);
-      for (int idx = 1; idx < len - 1; idx++) {
-          points.replace(idx, bezierControlPoints.at(idx - 1));
-      }
-      points.replace(len - 1, ep2);
+  else if (isBezier())
+  {
+   // compute result Bezier point for (t == 0.5);
+   // copy all the control points (including end points) into an array
+   int len = bezierControlPoints.size() + 2;
+   QVector<QPointF> points = QVector<QPointF>(len);
+   points.replace(0, ep1);
+   for (int idx = 1; idx < len - 1; idx++)
+   {
+       points.replace(idx, bezierControlPoints.at(idx - 1));
+   }
+   points.replace(len - 1, ep2);
 
-      // calculate midpoints of all points (len - 1 order times)
-      for (int idx = len - 1; idx > 0; idx--) {
-          for (int jdx = 0; jdx < idx; jdx++) {
-              points.replace(jdx,  MathUtil::midPoint(points[jdx], points[jdx + 1]));
-          }
-      }
-      result = points[0];
+   // calculate midpoints of all points (len - 1 order times)
+   for (int idx = len - 1; idx > 0; idx--)
+   {
+    for (int jdx = 0; jdx < idx; jdx++) {
+        points.replace(jdx,  MathUtil::midPoint(points[jdx], points[jdx + 1]));
+    }
+   }
+   result = points[0];
   }
-#endif
   else
   {
    result = MathUtil::midPoint(ep1, ep2);
@@ -2468,16 +2887,16 @@ void TrackSegment::remove() {
     return centreX;
 }
 
-/*public*/ void TrackSegment::setCentreX(double CentreX){
-    centreX = CentreX;
+/*public*/ void TrackSegment::setCentreX(double x){
+    centreX = x;
 }
 
 /*public*/ double TrackSegment::getCentreY(){
     return centreY;
 }
 
-/*public*/ void TrackSegment::setCentreY(double CentreY){
-    centreY = CentreY;
+/*public*/ void TrackSegment::setCentreY(double y){
+    centreY = y;
 }
 
 /*public*/ QPointF TrackSegment::getCentre()
@@ -2519,23 +2938,27 @@ void TrackSegment::on_actionEdit_triggered()
  EditTrackSegmentDlg* dlg = new EditTrackSegmentDlg(this, layoutEditor);
  dlg->show();
 }
+
+// remove any prior objects from the scene
 void TrackSegment::invalidate(QGraphicsScene *g2)
 {
  if(item != NULL)
  {
-  g2->removeItem(item);
+  if(item->scene())
+   g2->removeItem(item);
  }
  if(trackOval != NULL)
  {
-  g2->removeItem(trackOval);
+  if(trackOval->scene())
+   g2->removeItem(trackOval);
   trackOval =NULL;
  }
  if(circleItem != NULL)
  {
-  g2->removeItem(circleItem);
- circleItem = NULL;
+  if(circleItem->scene())
+   g2->removeItem(circleItem);
+  circleItem = NULL;
  }
-
 }
 void TrackSegment::drawHiddenTrack(LayoutEditor* editor, QGraphicsScene *g2)
 {
@@ -2693,18 +3116,28 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
    }
   }
 }
+
 /**
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void TrackSegment::draw1(EditScene* g2, bool isMain, bool isBlock, QPen drawingStroke) {
+/*protected*/ void TrackSegment::draw1(EditScene* g2, bool isMain, bool isBlock) {
     if (!isBlock && isDashed() && getLayoutBlock() != nullptr) {
         // Skip the dashed rail layer, the block layer will display the dashed track
         // This removes random rail fragments from between the block dashes
         return;
     }
-#if 1
+    if(this->isMainline() )
+    {
+     LayoutTrackDrawingOptions* ltdo = layoutEditor->getLayoutTrackDrawingOptions();
+     if(ltdo->getMainRailWidth() != layoutEditor->drawingStroke.width())
+      log->warn(tr("invalid line width %1, %2 vs %3").arg(ident).arg(ltdo->getMainRailWidth()).arg(layoutEditor->drawingStroke.width()));
+    }
+
     QColor color;
+    QPen drawingStroke = QPen(color, 1);
+//    invalidate(g2);
+
     if (isMain == mainline) {
         if (isBlock) {
             color = setColorForTrackBlock(g2, getLayoutBlock());
@@ -2753,19 +3186,21 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
             trackRedrawn();
         }
     }
-#endif
 }
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void TrackSegment::draw2(EditScene* g2, bool isMain, float railDisplacement, QPen drawingStroke) {
+/*protected*/ void TrackSegment::draw2(EditScene* g2, bool isMain, float railDisplacement) {
     if (isDashed() && getLayoutBlock() != nullptr) {
         // Skip the dashed rail layer, the block layer will display the dashed track
         // This removes random rail fragments from between the block dashes
         return;
     }
+    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+
+//    invalidate(g2);
 
     if (isMain == mainline) {
         if (isArc()) {
@@ -2783,9 +3218,8 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
             QGraphicsArcItem* lineItem = new QGraphicsArcItem(cLeftRectangle2D.x(), cLeftRectangle2D.y(), cLeftRectangle2D.width(), cLeftRectangle2D.height());
             lineItem->setStartAngle(getStartAdj()*16);
             lineItem->setSpanAngle(getTmpAngle()*16);
-            lineItem->setPen(drawingStroke);
-            item = lineItem;
-            g2->addItem(item);
+            lineItem->setPen(layoutEditor->drawingStroke);
+            itemGroup->addToGroup(lineItem);
             QRectF cLRightRectangle2D = MathUtil::inset(cRectangle2D, +railDisplacement);
 //            g2.draw(new Arc2D(
 //                    cLRightRectangle2D.getX(),
@@ -2796,28 +3230,33 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
             lineItem = new QGraphicsArcItem(cLRightRectangle2D.x(), cLRightRectangle2D.y(), cLRightRectangle2D.width(), cLRightRectangle2D.height());
             lineItem->setStartAngle(getStartAdj()*16);
             lineItem->setSpanAngle(getTmpAngle()*16);
-            lineItem->setPen(drawingStroke);
-            item = lineItem;
-            g2->addItem(item);
+            lineItem->setPen(layoutEditor->drawingStroke);
+            itemGroup->addToGroup(lineItem);
             trackRedrawn();
         }
-#if 0
+#if 1
         else if (isBezier()) {
-            QPointF pt1 = LayoutEditor.getCoords(getConnect1(), getType1());
-            QPointF pt2 = LayoutEditor.getCoords(getConnect2(), getType2());
+            QPointF pt1 = LayoutEditor::getCoords(getConnect1(), getType1());
+            QPointF pt2 = LayoutEditor::getCoords(getConnect2(), getType2());
 
             int cnt = bezierControlPoints.size();
-            QPointF[] points = new QPointF[cnt + 2];
-            points[0] = pt1;
+            QVector<QPointF> points = QVector<QPointF>(cnt + 2);
+            points.replace(0, pt1);
             for (int idx = 0; idx < cnt; idx++) {
-                points[idx + 1] = bezierControlPoints.get(idx);
+                points.replace(idx + 1, bezierControlPoints.at(idx));
             }
-            points[cnt + 1] = pt2;
+            points.replace(cnt + 1, pt2);
 
-            MathUtil::drawBezier(g2, points, -railDisplacement);
-            MathUtil::drawBezier(g2, points, +railDisplacement);
+            QPainterPath path = MathUtil::drawBezier(points, -railDisplacement);
+            QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+            pathItem->setPen(layoutEditor->drawingStroke);
+            itemGroup->addToGroup(pathItem);
+            path = MathUtil::drawBezier(points, +railDisplacement);
+            pathItem = new QGraphicsPathItem(path);
+            pathItem->setPen(layoutEditor->drawingStroke);
+            itemGroup->addToGroup(pathItem);
         }
-#else
+#endif
         else {
             QPointF end1 = LayoutEditor::getCoords(getConnect1(), getType1());
             QPointF end2 = LayoutEditor::getCoords(getConnect2(), getType2());
@@ -2831,22 +3270,21 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
             //g2.draw(new Line2D(ep1L, ep2L));
             QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
             QGraphicsLineItem* lineItem = new QGraphicsLineItem(ep1L.x(), ep1L.y(), ep2L.x(), ep2L.y());
-            lineItem->setPen(drawingStroke);
+            lineItem->setPen(layoutEditor->drawingStroke);
             itemGroup->addToGroup(lineItem);
 
             QPointF ep1R = MathUtil::subtract(end1, vector);
             QPointF ep2R = MathUtil::subtract(end2, vector);
             //g2.draw(new Line2D(ep1R, ep2R));
             lineItem = new QGraphicsLineItem(ep1R.x(), ep1R.y(), ep2R.x(), ep2R.y());
-            lineItem->setPen(drawingStroke);
+            lineItem->setPen(layoutEditor->drawingStroke);
             itemGroup->addToGroup(lineItem);
-            item = itemGroup;
-            g2->addItem(item);
-            trackRedrawn();
 
         }
+        item = itemGroup;
+        g2->addItem(item);
+        trackRedrawn();
     }
-#endif
 }
 
 /**
@@ -2859,39 +3297,74 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
 }
 
 //@Override
-/*protected*/ void TrackSegment::drawEditControls(EditScene* g2) {
-#if 0
-    g2.setColor(Color.black);
-    if (isShowConstructionLines()) {
-        QPointF ep1 = LayoutEditor.getCoords(getConnect1(), getType1());
-        QPointF ep2 = LayoutEditor.getCoords(getConnect2(), getType2());
-        if (isCircle()) {
-            // draw radiuses
-            QPointF circleCenterPoint = getCoordsCenterCircle();
-            g2.draw(new Line2D(circleCenterPoint, ep1));
-            g2.draw(new Line2D(circleCenterPoint, ep2));
-            // Draw a circle and square at the circles centre, that
-            // allows the user to change the angle by dragging the mouse.
-            g2.draw(layoutEditor.trackEditControlCircleAt(circleCenterPoint));
-            g2.draw(layoutEditor.trackEditControlRectAt(circleCenterPoint));
-        } else if (isBezier()) {
-            //draw construction lines and control circles
-            QPointF lastPt = ep1;
-            for (QPointF bcp : bezierControlPoints) {
-                g2.draw(new Line2D(lastPt, bcp));
-                lastPt = bcp;
-                g2.draw(layoutEditor.trackEditControlRectAt(bcp));
-            }
-            g2.draw(new Line2D(lastPt, ep2));
-        }
-    }
-    g2.draw(layoutEditor.trackEditControlCircleAt(getCentreSeg()));
+/*protected*/ void TrackSegment::drawEditControls(EditScene* g2, QPen stroke)
+{
+    //g2.setColor(Color.black)
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+ QGraphicsLineItem* lineItem;
+ if (isShowConstructionLines())
+ {
+  QPointF ep1 = LayoutEditor::getCoords(getConnect1(), getType1());
+  QPointF ep2 = LayoutEditor::getCoords(getConnect2(), getType2());
+  if (isCircle())
+  {
+   // draw radiuses
+   QPointF circleCenterPoint = getCoordsCenterCircle();
+   //g2.draw(new Line2D(circleCenterPoint, ep1));
+   lineItem = new QGraphicsLineItem(circleCenterPoint.x(), circleCenterPoint.y(), ep1.x(), ep1.y());
+   lineItem->setPen(stroke);
+   itemGroup->addToGroup(lineItem);
+   //g2.draw(new Line2D(circleCenterPoint, ep2));
+   lineItem = new QGraphicsLineItem(circleCenterPoint.x(), circleCenterPoint.y(), ep2.x(), ep2.y());
+   lineItem->setPen(stroke);
+   itemGroup->addToGroup(lineItem);
+   // Draw a circle and square at the circles centre, that
+   // allows the user to change the angle by dragging the mouse.
+   //g2.draw(layoutEditor->trackEditControlCircleAt(circleCenterPoint));
+   QGraphicsEllipseItem* circleItem = layoutEditor->trackEditControlCircleAt(circleCenterPoint);
+   circleItem->setPen(stroke);
+   itemGroup->addToGroup(circleItem);
+   //g2.draw(layoutEditor->trackEditControlRectAt(circleCenterPoint));
+   QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(circleCenterPoint));
+   rectItem->setPen(stroke);
+   itemGroup->addToGroup(rectItem);
+  }
+#if 1
+  else if (isBezier())
+  {
+   //draw construction lines and control circles
+   QPointF lastPt = ep1;
+   for (QPointF bcp : bezierControlPoints)
+   {
+       //g2.draw(new Line2D(lastPt, bcp));
+    lineItem = new QGraphicsLineItem(lastPt.x(), lastPt.y(), bcp.x(), bcp.y());
+    lineItem->setPen(stroke);
+    itemGroup->addToGroup(lineItem);
+    lastPt = bcp;
+    //g2.draw(layoutEditor.trackEditControlRectAt(bcp));
+    QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(bcp));
+    rectItem->setPen(stroke);
+    itemGroup->addToGroup(rectItem);
+   }
+   //g2.draw(new Line2D(lastPt, ep2));
+   lineItem = new QGraphicsLineItem(lastPt.x(), lastPt.y(), ep2.x(), ep2.y());
+   lineItem->setPen(stroke);
+   itemGroup->addToGroup(lineItem);
+  }
+ }
 #endif
+ //g2.draw(layoutEditor.trackEditControlCircleAt(getCentreSeg()));
+ QPointF ctr = getCentreSeg();
+ QGraphicsEllipseItem* circleItem = layoutEditor->trackEditControlCircleAt(ctr);
+ circleItem->setPen(stroke);
+ itemGroup->addToGroup(circleItem);
+ trackOval = itemGroup;
+ g2->addItem(trackOval);
 }   // drawEditControls
 
 //@Override
-/*protected*/ void TrackSegment::drawTurnoutControls(EditScene* g2) {
-    // TrackSegments don't have turnout controls...
+/*protected*/ void TrackSegment::drawTurnoutControls(EditScene* g2, QPen stroke) {
+    // TrackSegments don't have turnout controls->..
     // nothing to see here... move along...
 }
 
@@ -3142,7 +3615,8 @@ double TrackSegment::degToRad(double degrees)
  */
 //@Override
 /*public*/ QMap<QString, QString>* TrackSegment::getDecorations() {
-    if (decorations == nullptr) {
+    if (decorations == nullptr)
+    {
         decorations = new QMap<QString, QString>();
     } //if (decorathions != null)
 
@@ -3265,7 +3739,8 @@ double TrackSegment::degToRad(double degrees)
  * @param decorations to set
  */
 //@Override
-/*public*/ void TrackSegment::setDecorations(QMap<QString, QString>* decorations) {
+/*public*/ void TrackSegment::setDecorations(QMap<QString, QString>* decorations)
+{
     LayoutTrack::setDecorations(decorations);
     if (decorations != nullptr) {
         //for (Map.Entry<String, String> entry : decorations.entrySet())
@@ -3939,3 +4414,250 @@ double TrackSegment::degToRad(double degrees)
     }
 }
 
+/*
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ QList<LayoutConnectivity*> TrackSegment::getLayoutConnectivity() {
+    QList<LayoutConnectivity*> results = QList<LayoutConnectivity*>();
+
+    LayoutConnectivity* lc = nullptr;
+    LayoutBlock* lb1 = getLayoutBlock(), *lb2 = nullptr;
+    // ensure that block is assigned
+    if (lb1 != nullptr) {
+        // check first connection for turnout or level crossing
+        if ((type1 >= TURNOUT_A) && (type1 <= LEVEL_XING_D)) {
+            // have connection to turnout or level crossing
+            if (type1 <= TURNOUT_D) {
+                // have connection to a turnout, is block different
+                LayoutTurnout* lt = (LayoutTurnout*) getConnect1();
+                lb2 = lt->getLayoutBlock();
+                if (lt->getTurnoutType() > LayoutTurnout::WYE_TURNOUT) {
+                    // not RH, LH, or WYE turnout - other blocks possible
+                    if ((type1 == TURNOUT_B) && (lt->getLayoutBlockB() != nullptr)) {
+                        lb2 = lt->getLayoutBlockB();
+                    }
+                    if ((type1 == TURNOUT_C) && (lt->getLayoutBlockC() != nullptr)) {
+                        lb2 = lt->getLayoutBlockC();
+                    }
+                    if ((type1 == TURNOUT_D) && (lt->getLayoutBlockD() != nullptr)) {
+                        lb2 = lt->getLayoutBlockD();
+                    }
+                }
+                if ((lb2 != nullptr) && (lb1 != lb2)) {
+                    // have a block boundary, create a LayoutConnectivity
+                    log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+                    lc = new LayoutConnectivity(lb1, lb2);
+                    lc->setConnections(this, lt, type1, nullptr);
+                    lc->setDirection(Path::computeDirection(
+                            LayoutEditor::getCoords(getConnect2(), type2),
+                            LayoutEditor::getCoords(getConnect1(), type1)));
+                    results.append(lc);
+                }
+            } else {
+                // have connection to a level crossing
+                LevelXing* lx = (LevelXing*) getConnect1();
+                if ((type1 == LEVEL_XING_A) || (type1 == LEVEL_XING_C)) {
+                    lb2 = lx->getLayoutBlockAC();
+                } else {
+                    lb2 = lx->getLayoutBlockBD();
+                }
+                if ((lb2 != nullptr) && (lb1 != lb2)) {
+                    // have a block boundary, create a LayoutConnectivity
+                 log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+                    lc = new LayoutConnectivity(lb1, lb2);
+                    lc->setConnections(this, lx, type1, nullptr);
+                    lc->setDirection(Path::computeDirection(
+                            LayoutEditor::getCoords(getConnect2(), type2),
+                            LayoutEditor::getCoords(getConnect1(), type1)));
+                    results.append(lc);
+                }
+            }
+        } else if ((type1 >= SLIP_A) && (type1 <= SLIP_D)) {
+            // have connection to a slip crossing
+            LayoutSlip* ls = (LayoutSlip*) getConnect1();
+            lb2 = ls->getLayoutBlock();
+            if ((lb2 != nullptr) && (lb1 != lb2)) {
+                // have a block boundary, create a LayoutConnectivity
+             log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+                lc = new LayoutConnectivity(lb1, lb2);
+                lc->setConnections(this, ls, type1, nullptr);
+                lc->setDirection(Path::computeDirection(LayoutEditor::getCoords(getConnect2(),
+                        type2), LayoutEditor::getCoords(getConnect1(), type1)));
+                results.append(lc);
+            }
+        }
+        // check second connection for turnout or level crossing
+        if ((type2 >= TURNOUT_A) && (type2 <= LEVEL_XING_D)) {
+            // have connection to turnout or level crossing
+            if (type2 <= TURNOUT_D) {
+                // have connection to a turnout
+                LayoutTurnout* lt = (LayoutTurnout*) getConnect2();
+                lb2 = lt->getLayoutBlock();
+                if (lt->getTurnoutType() > LayoutTurnout::WYE_TURNOUT) {
+                    // not RH, LH, or WYE turnout - other blocks possible
+                    if ((type2 == TURNOUT_B) && (lt->getLayoutBlockB() != nullptr)) {
+                        lb2 = lt->getLayoutBlockB();
+                    }
+                    if ((type2 == TURNOUT_C) && (lt->getLayoutBlockC() != nullptr)) {
+                        lb2 = lt->getLayoutBlockC();
+                    }
+                    if ((type2 == TURNOUT_D) && (lt->getLayoutBlockD() != nullptr)) {
+                        lb2 = lt->getLayoutBlockD();
+                    }
+                }
+                if ((lb2 != nullptr) && (lb1 != lb2)) {
+                    // have a block boundary, create a LayoutConnectivity
+                 log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+                    lc = new LayoutConnectivity(lb1, lb2);
+                    lc->setConnections(this, lt, type2, nullptr);
+                    lc->setDirection(Path::computeDirection(
+                            LayoutEditor::getCoords(getConnect1(), type1),
+                            LayoutEditor::getCoords(getConnect2(), type2)));
+                    results.append(lc);
+                }
+            } else {
+                // have connection to a level crossing
+                LevelXing* lx = (LevelXing*) getConnect2();
+                if ((type2 == LEVEL_XING_A) || (type2 == LEVEL_XING_C)) {
+                    lb2 = lx->getLayoutBlockAC();
+                } else {
+                    lb2 = lx->getLayoutBlockBD();
+                }
+                if ((lb2 != nullptr) && (lb1 != lb2)) {
+                    // have a block boundary, create a LayoutConnectivity
+                 log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+                    lc = new LayoutConnectivity(lb1, lb2);
+                    lc->setConnections(this, lx, type2, nullptr);
+                    lc->setDirection(Path::computeDirection(
+                            LayoutEditor::getCoords(getConnect1(), type1),
+                            LayoutEditor::getCoords(getConnect2(), type2)));
+                    results.append(lc);
+                }
+            }
+        } else if ((type2 >= SLIP_A) && (type2 <= SLIP_D)) {
+            // have connection to a slip crossing
+            LayoutSlip* ls = (LayoutSlip*) getConnect2();
+            lb2 = ls->getLayoutBlock();
+            if ((lb2 != nullptr) && (lb1 != lb2)) {
+                // have a block boundary, create a LayoutConnectivity
+             log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+                lc = new LayoutConnectivity(lb1, lb2);
+                lc->setConnections(this, ls, type2, nullptr);
+                lc->setDirection(Path::computeDirection(
+                        LayoutEditor::getCoords(getConnect1(), type1),
+                        LayoutEditor::getCoords(getConnect2(), type2)));
+                results.append(lc);
+            }
+        } else {
+            // this is routinely reached in normal operations
+            // (nothing to see here... move along)
+        }
+    }   // if (lb1 != null)
+    return results;
+}   // getLayoutConnectivity()
+
+/**
+ * {@inheritDoc}
+ */
+/*//@Override
+public*/ QList<int> TrackSegment::checkForFreeConnections() {
+    QList<int> result = QList<int>();
+    // Track Segments always have all their connections so...
+    // (nothing to see here... move along)
+    return result;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool TrackSegment::checkForUnAssignedBlocks() {
+    return (getLayoutBlock() != nullptr);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void TrackSegment::checkForNonContiguousBlocks(
+        /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap) {
+    /*
+     * For each (non-null) blocks of this track do:
+     * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
+     * #2) If this track is already in the TrackNameSet for this block
+     *     then return (done!)
+     * #3) else add a new set (with this block/track) to
+     *     blockNamesToTrackNameSetMap and
+     * #4) collect all the connections in this block
+     * <p>
+     *     Basically, we're maintaining contiguous track sets for each block found
+     *     (in blockNamesToTrackNameSetMap)
+     */
+    QList<QSet<QString> > TrackNameSets = QList<QSet<QString> >();
+    QSet<QString> TrackNameSet = QSet<QString>();    // assume not found (pessimist!)
+    if (blockName != nullptr) {
+        TrackNameSets = blockNamesToTrackNameSetsMap.value(blockName);
+        if (!TrackNameSets.isEmpty()) { // (#1)
+            for (QSet<QString> checkTrackNameSet : TrackNameSets) {
+                if (checkTrackNameSet.contains(getName())) { // (#2)
+                    TrackNameSet = checkTrackNameSet;
+                    break;
+                }
+            }
+        } else {    // (#3)
+            log->debug(tr("*New block ('%1') trackNameSets").arg(blockName));
+            TrackNameSets = QList<QSet<QString> >();
+            blockNamesToTrackNameSetsMap.insert(blockName, TrackNameSets);
+        }
+        if (TrackNameSet.isEmpty()) {
+            TrackNameSet = QSet<QString>();//new LinkedHashSet<>();
+            TrackNameSets.append(TrackNameSet);
+        }
+        TrackNameSet.insert(getName());
+        if (TrackNameSet.contains(getName())) {
+            log->debug(tr("*    Add track '%1' to TrackNameSets for block '%2'").arg(getName()).arg(blockName));
+        }
+        // (#4)
+        if (connect1 != nullptr) {
+            connect1->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+        }
+        if (connect2 != nullptr) { // (#4)
+            connect2->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+        }
+    }
+}   // collectContiguousTracksNamesInBlockNamed
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void TrackSegment::collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
+        /*@Nonnull*/ QSet<QString> TrackNameSet) {
+    if (!TrackNameSet.contains(getName())) {
+        // is this the blockName we're looking for?
+        if (this->blockName == blockName) {
+            // if we are added to the TrackNameSet
+            TrackNameSet.insert(getName());
+            if (TrackNameSet.contains(getName())) {
+                log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
+            }
+            // these should never be null... but just in case...
+            // it's time to play... flood your neighbours!
+            if (connect1 != nullptr) {
+                connect1->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+            }
+            if (connect2 != nullptr) {
+                connect2->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+            }
+        }
+    }
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void TrackSegment::setAllLayoutBlocks(LayoutBlock* layoutBlock) {
+    setLayoutBlock(layoutBlock);
+}

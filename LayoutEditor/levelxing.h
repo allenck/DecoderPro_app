@@ -252,7 +252,7 @@ protected:
 /**
  * Display popup menu for information and editing
  */
- /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e, bool isEditable);
+ /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);
  /*protected*/ NamedBeanHandle<SignalHead*>* signalAHeadNamed;// = NULL; // signal at A track junction
  /*protected*/ NamedBeanHandle<SignalHead*>* signalBHeadNamed;// = NULL; // signal at B track junction
  /*protected*/ NamedBeanHandle<SignalHead*>* signalCHeadNamed;// = NULL; // signal at C track junction

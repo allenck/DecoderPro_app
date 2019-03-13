@@ -95,7 +95,6 @@ private:
  /*private*/ int sideTieLength = 0;
  /*private*/ QColor sideBallastColor;// = Color.BLACK;
 
-
 };
 
 #endif // LAYOUTTRACKDRAWINGOPTIONS_H

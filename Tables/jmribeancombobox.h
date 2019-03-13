@@ -160,6 +160,7 @@ public:
             */
            SYSTEMNAMEUSERNAME = 5
     };
+    /*public*/ void setItemEnabled(int inIndex, bool inEnabled);
 
 signals:
 
@@ -201,7 +202,6 @@ public:
 //    /*public*/ EnabledComboBoxRenderer(ListSelectionModel inEnabledItems);
 //    /*public*/ void setEnabledItems(ListSelectionModel inEnabledItems) ;
 //    /*public*/ ListSelectionModel getEnabledItems();
-    /*public*/ void setItemEnabled(int inIndex, bool inEnabled);
     /*public*/ bool isItemEnabled(int inIndex);
     /*public*/ void setEnabledColor(QColor inEnabledColor);
     /*public*/ QColor getEnabledColor();

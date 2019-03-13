@@ -257,7 +257,6 @@ public:
     /*public*/ bool getFlag(int whichOption, bool localFlag);
     /*public*/ void setGlobalSetsLocalFlag(bool set) ;
     /*public*/ bool allPositionable();
-    /*public*/ void setAllControlling(bool state) ;
     /*public*/ bool allControlling();
     /*public*/ bool showHidden();
     /*public*/ bool showToolTip();
@@ -333,6 +332,7 @@ public slots:
     /*public*/ void setShowHidden(bool state);
     /*public*/ void setAllShowTooltip(bool state);
     /*public*/ void setPanelMenuVisible(bool state);
+    /*public*/ void setAllControlling(bool state) ;
 
 private:
     /*private*/ bool _debug;// = false;

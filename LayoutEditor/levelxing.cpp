@@ -676,7 +676,7 @@ double LevelXing::round (double x) {
 /**
  * Display popup menu for information and editing
  */
-/*protected*/ void LevelXing::showPopUp(QGraphicsSceneMouseEvent* /*e*/, bool isEditable)
+/*protected*/ QMenu *LevelXing::showPopup(QGraphicsSceneMouseEvent* /*e*/)
 {
  if (popup != NULL )
  {
@@ -686,7 +686,7 @@ double LevelXing::round (double x) {
  {
   popup = new QMenu();
  }
- if(isEditable)
+ if(layoutEditor->isEditable())
  {
   popup->addAction(new QAction(tr("LevelCrossing"),this));
   bool blockACAssigned = false;
@@ -838,6 +838,7 @@ double LevelXing::round (double x) {
 //  layoutEditor.setShowAlignmentMenu(popup);
 //  popup.show(e.getComponent(), e.x(), e.y());
   popup->exec(QCursor::pos());
+  return popup;
  }
 // else if(!viewAdditionalMenu.isEmpty())
 // {

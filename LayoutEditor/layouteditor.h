@@ -28,7 +28,7 @@
 #include "colorutil.h"
 #include "component.h"
 #include "jmribeancombobox.h"
-
+#include <QPen>
 
 namespace Ui {
 class LayoutEditor;
@@ -418,6 +418,7 @@ public:
     /*public*/ static QPointF zeroQPointF();
     /*public*/ void setSelectionRect(/*@Nonnull*/ QRectF selectionRect);
     /*public*/ void addEdgeConnector() ;
+    const QIcon getColourIcon(QColor color);
 
 
 private:
@@ -529,19 +530,19 @@ private:
  /*private*/ void draw1(EditScene* g2,
          bool isMain,
          bool isBlock,
-         bool isHidden, QPen drawingStroke);
+         bool isHidden);
  /*private*/ void draw1(EditScene* g2,
          bool isMain,
-         bool isBlock, QPen drawingStroke);
- /*private*/ void draw1(EditScene* g2, bool isMain, QPen drawingStroke);
+         bool isBlock);
+ /*private*/ void draw1(EditScene* g2, bool isMain);
  /*private*/ void draw1(EditScene* g2,
          bool isMain,
          bool isBlock,
          bool isHidden,
-         bool isDashed, QPen drawingStroke);
- /*private*/ void drawPositionablePoints(EditScene* g2, bool isMain, QPen drawingStroke);
- /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, QPen drawingStroke);
- /*private*/ void draw2(EditScene* g2, bool isMain,float railDisplacement, bool isDashed, QPen drawingStroke);
+         bool isDashed);
+ /*private*/ void drawPositionablePoints(EditScene* g2, bool isMain);
+ /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+ /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, bool isDashed);
  /*private*/ void drawDecorations(EditScene* g2);
  /*private*/ void drawTrackSegmentInProgress(EditScene* g2);
  /*private*/ void drawLayoutTrackEditControls(EditScene* g2);
@@ -643,7 +644,6 @@ private:
  //void setScale(double scaleX, double scaleY);
  //QStringList _Colors;
  //QList<QColor> _colors;
- const QIcon getColourIcon(QColor color);
  bool tooltipsWithoutEditMode;
  bool tooltipsInEditMode;
  bool autoAssignBlocks;
@@ -831,7 +831,7 @@ private:
  /*private*/ void showEditPopUps(/*@Nonnull */QGraphicsSceneMouseEvent* event);
  /*private*/ void hitPointCheckLayoutTurnouts(/*@Nonnull*/ LayoutTurnout* lt);
  /*private*/ void hitPointCheckLayoutTurnoutSubs(/*@Nonnull*/ QPointF dLoc);
-
+ QPen drawingStroke;
 
 private slots:
  void OnScenePos(QGraphicsSceneMouseEvent*);
@@ -914,7 +914,7 @@ private slots:
  void onZoomIn();
  void onZoomOut();
  double zoomToFit();
-
+ void onLayoutTrackDrawingOptionsDialog();
 protected:
  /**
  * Return a List of all items whose bounding rectangle contain the mouse position.

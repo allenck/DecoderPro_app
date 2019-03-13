@@ -225,7 +225,7 @@ void on_disableControlMenu_toggled(bool bState); // [slot]
 /*protected*/ virtual void edit();
 
 protected:
-/*protected*/ Editor* _editor;
+/*protected*/ Editor* _editor = nullptr;
 
 /*private*/ bool debug; //false;
 /*protected*/ bool _icon; //false;

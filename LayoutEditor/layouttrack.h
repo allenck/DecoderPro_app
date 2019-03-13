@@ -57,10 +57,10 @@ public:
  /*public*/ QString getId();
  /*public*/ QString getName() ;
  /*public*/ QPointF getCoordsCenter();
- /*public*/ void setCoordsCenter(/*@Nonnull*/ QPointF p);
- /*public*/ bool hasDecorations();
- /*public*/ QMap<QString, QString> *getDecorations();
- /*public*/ void setDecorations(QMap<QString, QString>* decorations);
+ /*public*/ virtual void setCoordsCenter(/*@Nonnull*/ QPointF p);
+ /*public*/ virtual bool hasDecorations();
+ /*public*/ virtual QMap<QString, QString> *getDecorations();
+ /*public*/ virtual void setDecorations(QMap<QString, QString>* decorations);
  /*public*/ static void setDefaultTrackColor(QColor color);
  /*public*/ bool isHidden();
  //@Deprecated // Java standard pattern for bool getters is "isHidden()"
@@ -81,10 +81,10 @@ public:
  /*public*/ /*abstract*/ virtual void checkForNonContiguousBlocks(
          /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetMaps);
  /*public*/ /*abstract*/ virtual void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-         /*@Nonnull*/ QSet<QString> *trackNameSet);
+         /*@Nonnull*/ QSet<QString> trackNameSet);
  /*public*/ /*abstract*/ virtual void setAllLayoutBlocks(LayoutBlock* /*layoutBlock*/);
  QGraphicsItem* item;
-
+ /*public*/ virtual void invalidate(EditScene* g2) {}
 
 signals:
 
@@ -114,13 +114,13 @@ protected:
  /*protected*/ static bool isControlHitType(int hitType);
  /*protected*/ static bool isPopupHitType(int hitType);
  /*public*/ /*abstract*/ virtual bool isMainline();
- /*protected*/ /*abstract*/ virtual void draw1(EditScene* g2, bool isMain, bool isBlock, QPen);
- /*protected*/ /*abstract*/ virtual void draw2(EditScene *g2, bool, float, QPen );
+ /*protected*/ /*abstract*/ virtual void draw1(EditScene* g2, bool isMain, bool isBlock);
+ /*protected*/ /*abstract*/ virtual void draw2(EditScene *g2, bool, float);
  /*protected*/ void drawHidden(EditScene* g2);
  /*protected*/ /*abstract*/ virtual void highlightUnconnected(EditScene *g2, int specificType);
  /*protected*/ virtual void highlightUnconnected(EditScene* g2);
- /*protected*/ /*abstract*/ virtual void drawEditControls(EditScene* g2, QPen stroke);
- /*protected*/ /*abstract*/ virtual void drawTurnoutControls(EditScene *g2, QPen stroke);
+ /*protected*/ /*abstract*/ virtual void drawEditControls(EditScene* g2);
+ /*protected*/ /*abstract*/ virtual void drawTurnoutControls(EditScene *g2);
  /*protected*/ virtual void drawDecorations(EditScene *g2);
  /*protected*/ QMap<QString, QString>* decorations = nullptr;
  /*protected*/ QColor getColorForTrackBlock(
@@ -132,6 +132,7 @@ protected:
 
  friend class LayoutEditorAuxTools;
  friend class LayoutEditor;
+ friend class TrackSegment;
 };
 
 #endif // LAYOUTTRACK_H

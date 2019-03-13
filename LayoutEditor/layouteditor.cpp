@@ -63,9 +63,9 @@
 #include <limits>
 #include "layouttrackeditors.h"
 #include "layouteditorchecks.h"
-#include "mathutil.h"
 #include "blockcontentsicon.h"
 #include "layouttrackdrawingoptions.h"
+#include "layouttrackdrawingoptionsdialog.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -504,7 +504,19 @@ _contents = new QVector<Positionable*>();
 //     setDirty(true);
 //     repaint();
 // });
-
+ // TODO: move this to proper menu.
+ // set track drawing options menu item
+ QAction* jmi = new QAction(tr("SetTrackDrawingOptions"));
+ //trackMenu.add(jmi);
+ ui->menuOptions->addAction(jmi);
+ jmi->setToolTip(tr("SetTrackDrawingOptionsToolTip"));
+// jmi.addActionListener((ActionEvent event) -> {
+//     LayoutTrackDrawingOptionsDialog ltdod
+//             = new LayoutTrackDrawingOptionsDialog(
+//                     this, true, getLayoutTrackDrawingOptions());
+//     ltdod.setVisible(true);
+// });
+connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDialog()));
  //
  //background color menu item
  //
@@ -809,6 +821,14 @@ connect(ui->iconLabelButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()))
  _layoutTrackSelection = QList<LayoutTrack*>();
 
 }
+ void LayoutEditor::onLayoutTrackDrawingOptionsDialog()
+ {
+  LayoutTrackDrawingOptionsDialog* ltdod
+          = new LayoutTrackDrawingOptionsDialog(
+                  this, true, getLayoutTrackDrawingOptions());
+  ltdod->setVisible(true);
+
+ }
 
  void LayoutEditor::onChangeIcons()
  {
@@ -1223,7 +1243,7 @@ void LayoutEditor::On_turnoutCircleSizeButtonMapper_triggered(int size)
     inComboBox->setFirstItemBlank(inFirstBlank);
 
     // set the max number of rows that will fit onscreen
-//    JComboBoxUtil.setupComboBoxMaxRows(inComboBox);
+//    JComboBoxutil->setupComboBoxMaxRows(inComboBox);
 
     inComboBox->setCurrentIndex(-1);
 }
@@ -1501,22 +1521,27 @@ double LayoutEditor::getPaintScale()
 
     foundObject = nullptr;
     foundPointType = LayoutTrack::NONE;
-#if 0
-    //Optional<LayoutTrack*> opt = layoutTrackList.stream().filter(layoutTrack ->
-    QList<LayoutTrack*> opt = QList<LayoutTrack*>();
-    for(LayoutTrack* layoutTrack : layoutTrackList)
+#if 1
+    Optional<LayoutTrack*> opt;// = layoutTrackList.stream().filter(layoutTrack ->
+    for(LayoutTrack* layoutTrack : *layoutTrackList)
     {
         if ((layoutTrack != avoid) && (layoutTrack != selectedObject)) {
-         opt.append(layoutTrack);
             foundPointType = layoutTrack->findHitPointType(loc, false, requireUnconnected);
-        }
-        return (LayoutTrack::NONE != foundPointType);
-    }//).findFirst();
 
-    LayoutTrack* layoutTrack = nullptr;
-    if (opt.isPresent()) {
-        layoutTrack = opt.get();
-    }
+//        return (LayoutTrack::NONE != foundPointType);
+        if(LayoutTrack::NONE != foundPointType)
+        {
+         foundObject = layoutTrack;
+         break;
+        }
+      }
+    }//).findFirst();
+    //opt.findFirst();
+
+    LayoutTrack* layoutTrack = foundObject;
+//    if (opt.isPresent()) {
+//        layoutTrack = opt.get();
+//    }
     if (layoutTrack != nullptr) {
         foundObject = layoutTrack;
         foundLocation = layoutTrack->getCoordsForConnectionType(foundPointType);
@@ -2544,13 +2569,13 @@ double LayoutEditor::getPaintScale()
       switch (foundPointType)
       {
        case TURNOUT_CENTER:
-        ((LayoutTurnout*)foundObject)->showPopUp(event, isEditable());
+        ((LayoutTurnout*)foundObject)->showPopup(event);
         break;
        case LEVEL_XING_CENTER:
-        ((LevelXing*)foundObject)->showPopUp(event, isEditable());
+        ((LevelXing*)foundObject)->showPopup(event);
         break;
        case SLIP_CENTER:
-        ((LayoutSlip*)foundObject)->showPopUp(event, isEditable());
+        ((LayoutSlip*)foundObject)->showPopup(event);
         break;
        default: break;
       }
@@ -2603,25 +2628,33 @@ double LayoutEditor::getPaintScale()
  }
 }
 
-/*private*/ void LayoutEditor::showEditPopUps(/*@Nonnull */QGraphicsSceneMouseEvent* event) {
-  if (findLayoutTracksHitPoint(dLoc)) {
-      if ((foundPointType >= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN)
-              && (foundPointType <= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MAX)) {
-          ((TrackSegment*) foundObject)->showBezierPopUp(event, foundPointType);
-      } else if (foundPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET) {
-          LayoutTurntable* t = (LayoutTurntable*) foundObject;
-          if (t->isTurnoutControlled()) {
-              ((LayoutTurntable*) foundObject)->showRayPopUp(event, foundPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
-          }
-      } else if (LayoutTrack::isPopupHitType(foundPointType)) {
-          foundObject->showPopup(event);
-      } else if ((foundPointType >= LayoutTrack::TURNOUT_A)
-              && (foundPointType <= LayoutTrack::TURNOUT_D)) {
-          // don't curently have edit popup for these
-      } else {
-          log->warn("Unknown foundPointType:" + QString::number(foundPointType));
-      }
-  } else {
+/*private*/ void LayoutEditor::showEditPopUps(/*@Nonnull */QGraphicsSceneMouseEvent* event)
+{
+  if (findLayoutTracksHitPoint(dLoc))
+  {
+   if ((foundPointType >= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN)
+           && (foundPointType <= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MAX)) {
+       ((TrackSegment*) foundObject)->showBezierPopUp(event, foundPointType);
+   }
+   else if (foundPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET) {
+       LayoutTurntable* t = (LayoutTurntable*) foundObject;
+       if (t->isTurnoutControlled()) {
+           ((LayoutTurntable*) foundObject)->showRayPopUp(event, foundPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
+       }
+   }
+   else if (LayoutTrack::isPopupHitType(foundPointType)) {
+       foundObject->showPopup(event);
+   }
+   else if ((foundPointType >= LayoutTrack::TURNOUT_A)
+           && (foundPointType <= LayoutTrack::TURNOUT_D)) {
+       // don't curently have edit popup for these
+   }
+   else {
+       log->warn("Unknown foundPointType:" + QString::number(foundPointType));
+   }
+  }
+  else
+  {
       do {
           TrackSegment* ts = checkTrackSegmentPopUps(dLoc);
           if (ts != nullptr) {
@@ -2685,93 +2718,99 @@ double LayoutEditor::getPaintScale()
 */
 //@Override
 /*protected*/ void LayoutEditor::showPopUp(/*@Nonnull*/ Positionable* p, /*@Nonnull */QGraphicsSceneMouseEvent* event) {
-  if (!((JComponent*) p)->isVisible()) {
-      return; //component must be showing on the screen to determine its location
-  }
+  //if (!((JComponent*) p)->isVisible()) {
+//  if(p->self()->item && !p->item.isVisible())
+//      return; //component must be showing on the screen to determine its location
+//  }
   QMenu* popup = new QMenu();
-#if 0
+#if 1
 
   if (p->isEditable()) {
       QAction* jmi = nullptr;
       if (showAlignPopup()) {
           setShowAlignmentMenu(popup);
-          popup.add(new AbstractAction(Bundle.getMessage("ButtonDelete")) {
-              @Override
-              public void actionPerformed(ActionEvent event) {
-                  deleteSelectedItems();
-              }
-          });
-      } else {
-          if (p.doViemMenu()) {
-              String objectType = p.getClass().getName();
-              objectType = objectType.substring(objectType.lastIndexOf('.') + 1);
-              jmi = popup.add(objectType);
-              jmi.setEnabled(false);
+//          popup.add(new AbstractAction(Bundle.getMessage("ButtonDelete")) {
+//              @Override
+//              public void actionPerformed(ActionEvent event) {
+//                  deleteSelectedItems();
+//              }
+//          });
+          AbstractAction* act = new AbstractAction(tr("Delete"), this);
+          connect(act, SIGNAL(triggered(bool)), this, SLOT(deleteSelectedItems()));
+      }
+      else
+      {
+          if (p->doViemMenu())
+          {
+              QString objectType = p->self()->metaObject()->className();
+              objectType = objectType.mid(objectType.lastIndexOf('.') + 1);
+              jmi = popup->addSection(objectType);
+              jmi->setEnabled(false);
 
-              jmi = popup.add(p.getNameString());
-              jmi.setEnabled(false);
+              jmi = popup->addSection(p->getNameString());
+              jmi->setEnabled(false);
 
-              if (p.isPositionable()) {
+              if (p->isPositionable()) {
                   setShowCoordinatesMenu(p, popup);
               }
               setDisplayLevelMenu(p, popup);
               setPositionableMenu(p, popup);
           }
 
-          boolean popupSet = false;
-          popupSet |= p.setRotateOrthogonalMenu(popup);
-          popupSet |= p.setRotateMenu(popup);
+          bool popupSet = false;
+          popupSet |= p->setRotateOrthogonalMenu(popup);
+          popupSet |= p->setRotateMenu(popup);
           if (popupSet) {
-              popup.addSeparator();
+              popup->addSeparator();
               popupSet = false;
           }
-          popupSet = p.setEditIconMenu(popup);
-          popupSet = p.setTextEditMenu(popup);
+          popupSet = p->setEditIconMenu(popup);
+          popupSet = p->setTextEditMenu(popup);
 
-          PositionablePopupUtil util = p.getPopupUtility();
+          PositionablePopupUtil* util = p->getPopupUtility();
 
-          if (util != null) {
-              util.setFixedTextMenu(popup);
-              util.setTextMarginMenu(popup);
-              util.setTextBorderMenu(popup);
-              util.setTextFontMenu(popup);
-              util.setBackgroundMenu(popup);
-              util.setTextJustificationMenu(popup);
-              util.setTextOrientationMenu(popup);
-              popup.addSeparator();
-              util.propertyUtil(popup);
-              util.setAdditionalEditPopUpMenu(popup);
+          if (util != nullptr) {
+              util->setFixedTextMenu(popup);
+              util->setTextMarginMenu(popup);
+              util->setTextBorderMenu(popup);
+              util->setTextFontMenu(popup);
+              util->setBackgroundMenu(popup);
+              util->setTextJustificationMenu(popup);
+              util->setTextOrientationMenu(popup);
+              popup->addSeparator();
+              util->propertyUtil(popup);
+              util->setAdditionalEditPopUpMenu(popup);
               popupSet = true;
           }
 
           if (popupSet) {
-              popup.addSeparator();
+              popup->addSeparator();
               popupSet = false;
           }
-          p.setDisableControlMenu(popup);
+          p->setDisableControlMenu(popup);
           setShowAlignmentMenu(popup);
 
           //for Positionables with unique settings
-          p.showPopUp(popup);
+          p->showPopUp(popup);
           setShowToolTipMenu(p, popup);
 
           setRemoveMenu(p, popup);
 
-          if (p.doViemMenu()) {
+          if (p->doViemMenu()) {
               setHiddenMenu(p, popup);
           }
       }
   } else {
-      p.showPopUp(popup);
-      PositionablePopupUtil util = p.getPopupUtility();
+      p->showPopUp(popup);
+      PositionablePopupUtil* util = p->getPopupUtility();
 
-      if (util != null) {
-          util.setAdditionalViewPopUpMenu(popup);
+      if (util != nullptr) {
+          util->setAdditionalViewPopUpMenu(popup);
       }
   }
-  popup.show((Component) p, p.getWidth() / 2 + (int) ((getZoom() - 1.0) * p.getX()),
-          p.getHeight() / 2 + (int) ((getZoom() - 1.0) * p.getY()));
-
+//  popup.show((Component) p, p.getWidth() / 2 + (int) ((getZoom() - 1.0) * p.getX()),
+//          p.getHeight() / 2 + (int) ((getZoom() - 1.0) * p.getY()));
+  popup->exec(QCursor::pos());
   /*popup.show((Component)pt, event.getX(), event.getY());*/
 #endif
 }
@@ -4607,10 +4646,13 @@ bool LayoutEditor::isDirty() {return bDirty;}
 
     //drawPositionableLabelBorder(g2);
     //Optional antialising, to eliminate (reduce) staircase on diagonal lines
-    if (antialiasingOn) {
-        editPanel->setRenderHint(QPainter::Antialiasing);
+    //if (antialiasingOn) {
+        editPanel->setRenderHint(QPainter::Antialiasing, antialiasingOn);
+    //}
+    foreach (LayoutTrack* layoutTrack, *layoutTrackList)
+    {
+     layoutTrack->invalidate(g2);
     }
-
     // things that only get drawn in edit mode
     if (isEditable()) {
         if (getDrawGrid()) {
@@ -4624,9 +4666,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
     drawLayoutTracksRails(g2);
     drawLayoutTracksBlockLines(g2);
 
-    QPen stroke = QPen(defaultTrackColor,1);
-    drawPositionablePoints(g2, false, stroke);
-    drawPositionablePoints(g2, true, stroke);
+    QPen stroke = drawingStroke;
+    drawPositionablePoints(g2, false);
+    drawPositionablePoints(g2, true);
 
     drawDecorations(g2);
 
@@ -4657,32 +4699,39 @@ bool LayoutEditor::isDirty() {return bDirty;}
 /*private*/ void LayoutEditor::drawLayoutTracksHidden(EditScene* g2) {
     LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
 //    Stroke stroke = new BasicStroke(1.F);
-//    Stroke dashedStroke = new BasicStroke(1.F,
-//            BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
-//            new float[]{6.F, 4.F}, 0);
     QPen stroke = QPen(ltdo->getSideRailColor(),1.0, Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
     QVector<qreal> dashArray = QVector<qreal>() << 6.0 << 4.0;
+//            BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
+//            new float[]{6.F, 4.F}, 0);
+
     QPen dashedStroke = QPen(ltdo->getMainRailColor(), 1.0, Qt::DashLine,Qt::RoundCap, Qt::RoundJoin);
     dashedStroke.setDashOffset(10.);
     dashedStroke.setDashPattern(dashArray);
 
     //setup for drawing hidden sideline rails
 //    g2.setColor(ltdo->getSideRailColor());
+    stroke.setColor(ltdo->getSideRailColor());
 //    g2.setStroke(stroke);
+    drawingStroke = stroke;
     bool main = false, block = false, hidden = true, dashed = false;
-    draw1(g2, main, block, hidden, dashed, stroke);
+    draw1(g2, main, block, hidden, dashed);
     //g2.setStroke(dashedStroke);
-    draw1(g2, main, block, hidden, dashed = true, dashedStroke);
+    dashedStroke.setColor(ltdo->getSideRailColor());
+    drawingStroke = dashedStroke;
+    draw1(g2, main, block, hidden, dashed = true);
 
     //setup for drawing mainline rails
     main = true;
     //g2.setColor(ltdo->getMainRailColor());
     stroke.setColor(ltdo->getMainRailColor());
     //g2.setStroke(stroke);
-    draw1(g2, main, block, hidden, dashed = false, stroke);
+    drawingStroke = stroke;
+    draw1(g2, main, block, hidden, dashed = false);
     //g2.setStroke(dashedStroke);
+    dashedStroke.setColor(ltdo->getMainRailColor());
+    drawingStroke = dashedStroke;
     dashed = true;
-    draw1(g2, main, block, hidden, dashed, dashedStroke);
+    draw1(g2, main, block, hidden, dashed);
 }
 
 //
@@ -4692,7 +4741,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
     LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
     bool main = false, block = false, hidden = false, dashed = true;
 
-    if (ltdo->getSideRailCount() > 0) {
+    if (ltdo->getSideRailCount() > 0)
+    {
         //setup for drawing dashed sideline rails
         int railWidth = ltdo->getSideRailWidth();
         //float[] dashArray = new float[]{6.F + railWidth, 4.F + railWidth};
@@ -4705,12 +4755,13 @@ bool LayoutEditor::isDirty() {return bDirty;}
         QPen stroke = QPen(ltdo->getSideRailColor(), railWidth, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
         stroke.setDashPattern(dashArray);
         stroke.setDashOffset(10.0);
+        drawingStroke = stroke;
         if ((ltdo->getSideRailCount() & 1) == 1) {
-            draw1(g2, main, block, hidden, dashed, stroke);
+            draw1(g2, main, block, hidden, dashed);
         }
         if (ltdo->getSideRailCount() >= 2) {
             float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
-            draw2(g2, main, railDisplacement, dashed, stroke);
+            draw2(g2, main, railDisplacement, dashed);
         }
     }
 
@@ -4728,12 +4779,13 @@ bool LayoutEditor::isDirty() {return bDirty;}
         QPen stroke = QPen(ltdo->getMainRailColor(), railWidth,  Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
         stroke.setDashPattern(dashArray);
         stroke.setDashOffset(10.0);
+        drawingStroke = stroke;
         if ((ltdo->getMainRailCount() & 1) == 1) {
-            draw1(g2, main, block, hidden, dashed,stroke);
+            draw1(g2, main, block, hidden, dashed);
         }
         if (ltdo->getMainRailCount() >= 2) {
             float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
-            draw2(g2, main, railDisplacement, dashed,stroke);
+            draw2(g2, main, railDisplacement, dashed);
         }
     }
 }   // drawTrackSegmentsDashed
@@ -4752,7 +4804,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 //        g2.setColor(ltdo->getSideBallastColor());
      QPen stroke = QPen(ltdo->getSideBallastColor(), ballastWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        draw1(g2, main, block, hidden, dashed, stroke);
+     drawingStroke = stroke;
+        draw1(g2, main, block, hidden, dashed);
     }
 
     //setup for drawing mainline ballast
@@ -4762,9 +4815,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 //        g2.setColor(ltdo->getMainBallastColor());
      QPen stroke = QPen(ltdo->getMainBallastColor(), ballastWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-
+     drawingStroke = stroke;
         main = true;
-        draw1(g2, main, block, hidden, dashed, stroke);
+        draw1(g2, main, block, hidden, dashed);
     }
 }
 
@@ -4787,7 +4840,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
      QVector<qreal> dashPattern = QVector<qreal>() << tieWidth << tieGap;
      stroke.setDashPattern(dashPattern);
      stroke.setDashOffset(10.);
-        draw1(g2, false, stroke);  // main = false
+     drawingStroke = stroke;
+        draw1(g2, false);  // main = false
     }
 
     // setup for drawing mainline ties
@@ -4803,7 +4857,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
      QVector<qreal> dashPattern = QVector<qreal>() << tieWidth << tieGap;
      stroke.setDashPattern(dashPattern);
      stroke.setDashOffset(10.);
-        draw1(g2, true, stroke); // main = true
+     drawingStroke = stroke;
+
+        draw1(g2, true); // main = true
     }
 }
 
@@ -4824,7 +4880,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //                BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
 //        g2.setColor(railColor);
         QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        draw2(g2, main, railDisplacement, stroke);
+        drawingStroke = stroke;
+        draw2(g2, main, railDisplacement);
     }
 
     if ((ltdo->getSideRailCount() & 1) == 1) {
@@ -4834,7 +4891,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 //        g2.setColor(railColor);
      QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        draw1(g2, main, block, hidden, dashed, stroke);
+     drawingStroke = stroke;
+        draw1(g2, main, block, hidden, dashed);
     }
 
     main = true;
@@ -4848,7 +4906,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //                BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
 //        g2.setColor(railColor);
         QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        draw2(g2, main, railDisplacement, stroke);
+        drawingStroke = stroke;
+        draw2(g2, main, railDisplacement);
     }
     if ((ltdo->getMainRailCount() & 1) == 1) {
         //setup for drawing mainline rails
@@ -4858,7 +4917,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //        g2.setColor(railColor);
         dashed = false;
         QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        draw1(g2, main, block, hidden, dashed, stroke);
+        drawingStroke = stroke;
+        draw1(g2, main, block, hidden, dashed);
     }
 }   // drawLayoutTracksRails
 
@@ -4902,16 +4962,18 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //                blockLineWidth,
 //                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
 //                10.F, dashArray, 0));
-     stroke = QPen(defaultTrackColor, ltdo->getSideBlockLineWidth(), Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+     stroke = QPen(defaultTrackColor, ltdo->getSideBlockLineWidth(), Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
+     stroke.setDashPattern(dashArray);
      stroke.setDashOffset(10.0);
+     drawingStroke = stroke;
     }
 
     //note: color is set in layout track's draw1 when isBlock is true
     bool main = false, block = true, hidden = false, dashed = true;
-    draw1(g2, main, block, hidden, dashed, stroke);
+    draw1(g2, main, block, hidden, dashed);
     //g2.setStroke(blockLineStroke);
-    stroke = blockLineStroke;
-    draw1(g2, main, block, hidden, dashed = false, stroke);
+    drawingStroke = blockLineStroke;
+    draw1(g2, main, block, hidden, dashed = false);
 
     //setup for drawing mainline block lines
     blockLineWidth = ltdo->getMainBlockLineWidth();
@@ -4931,43 +4993,45 @@ bool LayoutEditor::isDirty() {return bDirty;}
      blockLineStroke.setDashPattern(blockLineDashArray);
      blockLineStroke.setDashOffset(10.0);
 //        g2.setStroke(blockLineStroke);
+     drawingStroke = blockLineStroke;
     } else {
 //        blockLineStroke = new BasicStroke(
 //                ltdo->getMainBlockLineWidth(),
 //                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+     blockLineStroke=QPen(defaultTrackColor, blockLineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 //        g2.setStroke(new BasicStroke(
 //                blockLineWidth,
 //                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
 //                10.F, dashArray, 0));
-     blockLineStroke = QPen(defaultTrackColor, ltdo->getMainBlockLineWidth(), Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
-     stroke = QPen(defaultTrackColor, ltdo->getMainBlockLineWidth(), Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
-     stroke.setDashOffset(10.0);
+     drawingStroke = QPen(defaultTrackColor, ltdo->getMainBlockLineWidth(), Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
+     drawingStroke.setDashOffset(10.0);
     }
     //note: color is set in layout track's draw1 when isBlock is true
-    draw1(g2, main = true, block, hidden, dashed = true, stroke);
+    draw1(g2, main = true, block, hidden, dashed = true);
     //g2.setStroke(blockLineStroke);
+    drawingStroke = blockLineStroke;
     dashed = false;
-    draw1(g2, main, block, hidden, dashed, blockLineStroke);
+    draw1(g2, main, block, hidden, dashed);
 }
 
 // isDashed defaults to false
 /*private*/ void LayoutEditor::draw1(EditScene* g2,
         bool isMain,
         bool isBlock,
-        bool isHidden, QPen drawingStroke) {
-    draw1(g2, isMain, isBlock, isHidden, false, drawingStroke);
+        bool isHidden) {
+    draw1(g2, isMain, isBlock, isHidden, false);
 }
 
 // isHidden defaults to false
 /*private*/ void LayoutEditor::draw1(EditScene* g2,
         bool isMain,
-        bool isBlock, QPen drawingStroke) {
-    draw1(g2, isMain, isBlock, false,drawingStroke);
+        bool isBlock) {
+    draw1(g2, isMain, isBlock, false);
 }
 
 // isBlock defaults to false
-/*private*/ void LayoutEditor::draw1(EditScene* g2, bool isMain, QPen drawingStroke) {
-    draw1(g2, isMain, false, drawingStroke);
+/*private*/ void LayoutEditor::draw1(EditScene* g2, bool isMain) {
+    draw1(g2, isMain, false);
 }
 
 // draw single line (ballast, ties & block lines)
@@ -4975,22 +5039,22 @@ bool LayoutEditor::isDirty() {return bDirty;}
         bool isMain,
         bool isBlock,
         bool isHidden,
-        bool isDashed, QPen drawingStroke)
+        bool isDashed)
 {
  for (LayoutTrack* layoutTrack : *layoutTrackList)
  {
-  //if (!(qobject_cast<PositionablePoint*>(layoutTrack)))
+  if (!(qobject_cast<PositionablePoint*>(layoutTrack)))
   {
    if (isHidden == layoutTrack->isHidden())
    {
     if ((qobject_cast<TrackSegment*>(layoutTrack)))
     {
      if (((TrackSegment*) layoutTrack)->isDashed() == isDashed) {
-         layoutTrack->draw1(g2, isMain, isBlock, drawingStroke);
+         layoutTrack->draw1(g2, isMain, isBlock);
      }
     } else if (!isDashed)
     {
-     layoutTrack->draw1(g2, isMain, isBlock, drawingStroke);
+     layoutTrack->draw1(g2, isMain, isBlock);
     }
    }
   }
@@ -4998,34 +5062,34 @@ bool LayoutEditor::isDirty() {return bDirty;}
 }
 #endif
 // draw positionable points
-/*private*/ void LayoutEditor::drawPositionablePoints(EditScene* g2, bool isMain, QPen drawingStroke)
+/*private*/ void LayoutEditor::drawPositionablePoints(EditScene* g2, bool isMain)
 {
  for (LayoutTrack* layoutTrack : *layoutTrackList)
  {
   if (qobject_cast<PositionablePoint*>(layoutTrack)) {
-      layoutTrack->draw1(g2, isMain, false, drawingStroke);
+      layoutTrack->draw1(g2, isMain, false);
   }
  }
 }
 
 // isDashed defaults to false
-/*private*/ void LayoutEditor::draw2(EditScene* g2, bool isMain, float railDisplacement, QPen drawingStroke) {
-    draw2(g2, isMain, railDisplacement, false, drawingStroke);
+/*private*/ void LayoutEditor::draw2(EditScene* g2, bool isMain, float railDisplacement) {
+    draw2(g2, isMain, railDisplacement, false);
 }
 
 // draw parallel lines (rails)
 /*private*/ void LayoutEditor::draw2(EditScene* g2, bool isMain,
-        float railDisplacement, bool isDashed, QPen drawingStroke)
+        float railDisplacement, bool isDashed)
 {
  for (LayoutTrack* layoutTrack : *layoutTrackList)
  {
   if ((qobject_cast<TrackSegment*>(layoutTrack)))
   {
    if (((TrackSegment*) layoutTrack)->isDashed() == isDashed) {
-       layoutTrack->draw2(g2, isMain, railDisplacement, drawingStroke);
+       layoutTrack->draw2(g2, isMain, railDisplacement);
    }
   } else if (!isDashed) {
-      layoutTrack->draw2(g2, isMain, railDisplacement, drawingStroke);
+      layoutTrack->draw2(g2, isMain, railDisplacement);
   }
  }
 }
@@ -5060,8 +5124,10 @@ bool LayoutEditor::isDirty() {return bDirty;}
                 if (lt == foundObject) {
                     lt->highlightUnconnected(g2);
 //                    g2.setColor(connectColor);
+                    drawingStroke.setColor(connectColor);
                     lt->highlightUnconnected(g2, foundPointType);
 //                    g2.setColor(highlightColor);
+                    drawingStroke.setColor(highlightColor);
                 } else {
                     lt->highlightUnconnected(g2);
                 }
@@ -5074,9 +5140,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
 /*private*/ void LayoutEditor::drawLayoutTrackEditControls(EditScene* g2) {
     //g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
  QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
-
+ drawingStroke = stroke;
     for (LayoutTrack* tr : *layoutTrackList) {
-        tr->drawEditControls(g2, stroke);
+        tr->drawEditControls(g2);
     }
 }
 
@@ -5085,19 +5151,19 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //    g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
 //    g2.setColor(turnoutCircleColor);
  QPen stroke = QPen(turnoutCircleColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
-
+ drawingStroke = stroke;
     // loop over all turnouts
     bool editable = isEditable();
     for (LayoutTrack* tr : *layoutTrackList) {
         if (qobject_cast<LayoutTurnout*>(tr)) {  //<== this includes LayoutSlips
             LayoutTurnout* lt = (LayoutTurnout*) tr;
             if (editable || !(lt->isHidden() || lt->isDisabled())) {
-                lt->drawTurnoutControls(g2, stroke);
+                lt->drawTurnoutControls(g2);
             }
         } else if (qobject_cast<LayoutTurntable*>(tr)) {
             LayoutTurntable* lt = (LayoutTurntable*) tr;
             if (editable || !lt->isHidden()) {
-                lt->drawTurnoutControls(g2, stroke);
+                lt->drawTurnoutControls(g2);
             }
         }
     }
@@ -5114,7 +5180,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 
 // set selection rectangle
 /*public*/ void LayoutEditor::setSelectionRect(/*@Nonnull*/ QRectF selectionRect) {
-    //selectionRect = selectionRect.createIntersection(MathUtil.zeroToInfinityRectangle2D);
+    //selectionRect = selectionRect.createIntersection(Mathutil->zeroToInfinityRectangle2D);
     selectionX = selectionRect.x();
     selectionY = selectionRect.y();
     selectionWidth = selectionRect.width();
@@ -8139,7 +8205,7 @@ void LayoutEditor::on_actionAdd_loco_triggered()
      inputFileChooser = new JFileChooser(System::getProperty(
                                              "user.dir") + File::separator + "resources" + File::separator +
                                          "icons");
-//     FileChooserFilter filt = new jmri.util.FileChooserFilter("Graphics Files");
+//     FileChooserFilter filt = new jmri.util->FileChooserFilter("Graphics Files");
 //     filt.   addExtension("gif");
 //     filt.   addExtension("jpg");
      QString filt = "Graphics Files (*.gif, *.jpg)";
@@ -9833,10 +9899,10 @@ void LayoutEditor::closeEvent(QCloseEvent *)
     QRectF result = getPanelBounds();
 #if 0
     // make room to expand
-    QRectF b = MathUtil.inset(bounds, gridSize1st * gridSize2nd / -2.0);
+    QRectF b = Mathutil->inset(bounds, gridSize1st * gridSize2nd / -2.0);
 
     // don't let origin go negative
-    b = b.createIntersection(MathUtil.zeroToInfinityQRectF);
+    b = b.createIntersection(Mathutil->zeroToInfinityQRectF);
 
     result.add(b);
 
@@ -10157,7 +10223,7 @@ void LayoutEditor::trackWidthDonePressed(/*ActionEvent evemt*/) {
         return;
     }
 
-    if (!MathUtil.equals(sidelineTrackWidth, wid)) {
+    if (!Mathutil->equals(sidelineTrackWidth, wid)) {
         sidelineTrackWidth = wid;
         trackWidthChange = true;
     }
@@ -10183,7 +10249,7 @@ void LayoutEditor::trackWidthDonePressed(/*ActionEvent evemt*/) {
                 tr("ErrorTitle"),
                 JOptionPane.ERROR_MESSAGE);
     } else {
-        if (!MathUtil.equals(mainlineTrackWidth, wid)) {
+        if (!Mathutil->equals(mainlineTrackWidth, wid)) {
             mainlineTrackWidth = wid;
             trackWidthChange = true;
         }
@@ -10327,7 +10393,7 @@ void LayoutEditor::gridSizesDonePressed(/*ActionEvent event*/) {
         return;
     }
 
-    if (!MathUtil.equals(gridSize2nd, siz)) {
+    if (!Mathutil->equals(gridSize2nd, siz)) {
         gridSize2nd = (int) siz;
         gridSizesChange = true;
     }
@@ -10353,7 +10419,7 @@ void LayoutEditor::gridSizesDonePressed(/*ActionEvent event*/) {
                 tr("ErrorTitle"),
                 JOptionPane.ERROR_MESSAGE);
     } else {
-        if (!MathUtil.equals(gridSize1st, siz)) {
+        if (!Mathutil->equals(gridSize1st, siz)) {
             gridSize1st = (int) siz;
             gridSizesChange = true;
         }

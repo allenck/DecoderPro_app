@@ -242,7 +242,7 @@ void LayoutEditorChecks::onCheckUnnecessaryAnchorsMenu()
 
     // check all tracks for free connections
     QList<QString> trackNames = QList<QString>();
-    for (LayoutTrack* layoutTrack : layoutEditor->getLayoutTracks()) {
+    for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
         QList<int> connections = layoutTrack->checkForFreeConnections();
         if (!connections.isEmpty()) {
             // add this track's name to the list of track names
@@ -310,7 +310,7 @@ void LayoutEditorChecks::onCheckUnnecessaryAnchorsMenu()
 
     // check all tracks for un-assigned blocks
     QList<QString> trackNames = QList<QString> ();
-    for (LayoutTrack* layoutTrack : layoutEditor->getLayoutTracks()) {
+    for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
         if (!layoutTrack->checkForUnAssignedBlocks()) {
             // add this track to the list of un-assigned track names
             trackNames.append(layoutTrack->getName());
@@ -374,7 +374,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
 
     // collect all contiguous blocks
     QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetMaps =  QMap<QString, QList<QSet<QString> > >();
-    for (LayoutTrack* layoutTrack : layoutEditor->getLayoutTracks()) {
+    for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
         layoutTrack->checkForNonContiguousBlocks(blockNamesToTrackNameSetMaps);
     }
 
@@ -433,7 +433,7 @@ void SubMenuActionListener::actionPerformed()
     if (!trackNameSet.isEmpty()) {
         // collect all the bounds...
         QRectF bounds = QRectF();
-        for (LayoutTrack* layoutTrack : layoutEditor->getLayoutTracks()) {
+        for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
             if (trackNameSet.contains(layoutTrack->getName())) {
                 QRectF trackBounds = layoutTrack->getBounds();
                 if (bounds.isNull()) {
@@ -450,7 +450,7 @@ void SubMenuActionListener::actionPerformed()
         layoutEditor->clearSelectionGroups();
 
         // amend all tracks in this block to the layout editor selection group
-        for (LayoutTrack* layoutTrack : layoutEditor->getLayoutTracks()) {
+        for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
             if (trackNameSet.contains(layoutTrack->getName())) {
                 layoutEditor->amendSelectionGroup(layoutTrack);
             }

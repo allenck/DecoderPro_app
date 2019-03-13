@@ -192,6 +192,7 @@ public:
     /*public*/ QList<DestinationPoints*> getStackedInterlocks();
     /*public*/ bool isRouteStacked(DestinationPoints* dp, bool reverse);
     /*synchronized*/ /*public*/ void cancelStackedRoute(DestinationPoints* dp, bool reverse);
+    /*public*/ QList<QString> layoutBlockSensors(/*@Nonnull*/ LayoutBlock* layoutBlock);
 
 signals:
     void propertyChange(PropertyChangeEvent*);

@@ -518,6 +518,7 @@ protected:
     friend class LBWindowListener;
     friend class JsonLayoutBlockSocketService;
     friend class LayoutBlockListener;
+    friend class LayoutTrackEditors;
 }; // end class LayoutBlock
 
 class Routes : public QObject
