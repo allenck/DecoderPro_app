@@ -32,7 +32,7 @@
         return NULL;
     }
     for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
-        if (p->getID()==(name)) {
+        if (p->getId()==(name)) {
             return p;
         }
     }

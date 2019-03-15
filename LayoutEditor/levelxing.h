@@ -14,7 +14,7 @@
 #include "layouteditortools.h"
 #include <QWidget>
 #include "liblayouteditor_global.h"
-
+#include <cmath>
 
 class QMenuItem;
 class LayoutBlock;
@@ -149,6 +149,10 @@ public:
     /*public*/ Sensor* getSensorB();
     /*public*/ Sensor* getSensorC();
     /*public*/ Sensor* getSensorD();
+    /*public*/ void addViewPopUpMenu(QMenuItem menu);
+    /*public*/ void setAdditionalEditPopUpMenu(QMenu* popup);
+    /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
+    /*public*/ void translateCoords(float xFactor, float yFactor);
 
 signals:
     
@@ -226,9 +230,6 @@ private:
     QVector<SignalMast*>* sml;// = new QVector<SignalMast*>();
     QVector<QMenu*>* editAdditionalMenu;// = new QVector<QMenuItem*>(0);
     QVector<QMenu*>* viewAdditionalMenu;// = new QVector<QMenuItem*>(0);
-    /*public*/ void addViewPopUpMenu(QMenuItem menu);
-    /*public*/ void setAdditionalEditPopUpMenu(QMenu* popup);
-    /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
  QGraphicsItemGroup* item;
  QGraphicsItemGroup* rects;
 Logger log;
@@ -262,6 +263,12 @@ protected:
  /*protected*/ NamedBeanHandle<SignalMast*>* signalBMastNamed;// = NULL; // signal at B track junction
  /*protected*/ NamedBeanHandle<SignalMast*>* signalCMastNamed;// = NULL; // signal at C track junction
  /*protected*/ NamedBeanHandle<SignalMast*>* signalDMastNamed;// = NULL; // signal at D track junction
+/*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
+/*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+/*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
+/*protected*/ void drawEditControls(EditScene* g2);
+/*protected*/ void drawTurnoutControls(EditScene* g2);
+/*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
 
 friend class LayoutEditor;
 friend class LoadXml;

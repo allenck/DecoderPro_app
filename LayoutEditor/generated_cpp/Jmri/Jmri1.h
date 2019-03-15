@@ -81,6 +81,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -2101,6 +2102,7 @@ virtual QMap<QString , QString >*  getDecorations();
 virtual bool  hasDecorations();
 virtual void highlightUnconnected(EditScene*  g2);
 virtual void highlightUnconnected(EditScene*  g2, int  specificType);
+virtual void invalidate(EditScene*  g2);
 virtual bool  isDisconnected(int  connectionType);
 virtual bool  isMainline();
 virtual void reCheckBlockBoundary();
@@ -2157,6 +2159,7 @@ inline QMap<QString , QString >*  py_q_getDecorations() { return LayoutTrack::ge
 inline bool  py_q_hasDecorations() { return LayoutTrack::hasDecorations(); }
 inline void py_q_highlightUnconnected(EditScene*  g2) { LayoutTrack::highlightUnconnected(g2); }
 inline void py_q_highlightUnconnected(EditScene*  g2, int  specificType) { LayoutTrack::highlightUnconnected(g2, specificType); }
+inline void py_q_invalidate(EditScene*  g2) { LayoutTrack::invalidate(g2); }
 inline bool  py_q_isDisconnected(int  connectionType) { return LayoutTrack::isDisconnected(connectionType); }
 inline bool  py_q_isMainline() { return LayoutTrack::isMainline(); }
 inline void py_q_reCheckBlockBoundary() { LayoutTrack::reCheckBlockBoundary(); }
@@ -2218,6 +2221,8 @@ void delete_LayoutTrack(LayoutTrack* obj) { delete obj; }
    void py_q_highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_highlightUnconnected(g2));}
    void highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2, int  specificType);
    void py_q_highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2, int  specificType){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_highlightUnconnected(g2, specificType));}
+   void invalidate(LayoutTrack* theWrappedObject, EditScene*  g2);
+   void py_q_invalidate(LayoutTrack* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_invalidate(g2));}
    bool  static_LayoutTrack_isConnectionHitType(int  hitType);
    bool  static_LayoutTrack_isControlHitType(int  hitType);
    bool  isDisconnected(LayoutTrack* theWrappedObject, int  connectionType);
@@ -2251,6 +2256,10 @@ void py_set_item(LayoutTrack* theWrappedObject, QGraphicsItem*  item){ theWrappe
 QGraphicsItem*  py_get_item(LayoutTrack* theWrappedObject){ return theWrappedObject->item; }
 void py_set_propertyChangeSupport(LayoutTrack* theWrappedObject, PropertyChangeSupport*  propertyChangeSupport){ theWrappedObject->propertyChangeSupport = propertyChangeSupport; }
 PropertyChangeSupport*  py_get_propertyChangeSupport(LayoutTrack* theWrappedObject){ return theWrappedObject->propertyChangeSupport; }
+void py_set_turnoutItem(LayoutTrack* theWrappedObject, QGraphicsItem*  turnoutItem){ theWrappedObject->turnoutItem = turnoutItem; }
+QGraphicsItem*  py_get_turnoutItem(LayoutTrack* theWrappedObject){ return theWrappedObject->turnoutItem; }
+void py_set_turnoutItem2(LayoutTrack* theWrappedObject, QGraphicsItem*  turnoutItem2){ theWrappedObject->turnoutItem2 = turnoutItem2; }
+QGraphicsItem*  py_get_turnoutItem2(LayoutTrack* theWrappedObject){ return theWrappedObject->turnoutItem2; }
 };
 
 
@@ -2355,7 +2364,6 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    void py_q_draw2(LayoutTurnout* theWrappedObject, EditScene*  g2, bool  isMain, float  railDisplacement){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_draw2(g2, isMain, railDisplacement));}
    void py_q_drawEditControls(LayoutTurnout* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_drawEditControls(g2));}
    void py_q_drawTurnoutControls(LayoutTurnout* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_drawTurnoutControls(g2));}
-   void drawTurnoutRects(LayoutTurnout* theWrappedObject, LayoutEditor*  editor, QGraphicsScene*  g2);
    int  py_q_findHitPointType(LayoutTurnout* theWrappedObject, QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_findHitPointType(hitPoint, useRectangles, requireUnconnected));}
    QString  getBlockBName(LayoutTurnout* theWrappedObject);
    QStringList  getBlockBoundaries(LayoutTurnout* theWrappedObject);

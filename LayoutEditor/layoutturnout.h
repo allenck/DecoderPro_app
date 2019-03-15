@@ -322,7 +322,6 @@ public:
 
  /*public*/ void setAdditionalEditPopUpMenu(QMenu* popup);
  /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
- void drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2);
  /*public*/ int getVersion() ;
  /*public*/ void setVersion(int v);
  virtual /*public*/ LayoutTrack* getConnection(int location) throw (JmriException);
@@ -422,10 +421,15 @@ private:
     QGraphicsItemGroup* item;
     QGraphicsItem* rects;
     QGraphicsEllipseItem* circle;
-    void invalidate(QGraphicsScene* g2);
-    void drawTurnouts(LayoutEditor* editor, QGraphicsScene* g2);
-    void drawTurnoutCircles(LayoutEditor *editor, QGraphicsScene *g2);
-    void repaint(LayoutEditor *editor, QGraphicsScene *g2);
+    QGraphicsItemGroup* turnoutItemMain = nullptr;
+    QGraphicsItemGroup* turnoutItemSide = nullptr;
+    void invalidate(EditScene *g2);
+    void invalidate(EditScene *g2, bool isMain);
+    void invalidate(QGraphicsItemGroup* turnoutItem);
+//    void drawTurnouts(LayoutEditor* editor, QGraphicsScene* g2);
+//    void drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2);
+//    void drawTurnoutCircles(LayoutEditor *editor, QGraphicsScene *g2);
+//    void repaint(LayoutEditor *editor, QGraphicsScene *g2);
     QVector<QString> boundaryBetween;
     void windowClosing(QCloseEvent*);
     void setTrackSegmentBlocks();

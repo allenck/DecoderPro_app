@@ -640,34 +640,37 @@ NamedBean* PointDetails::getSignal(){
 
     else
             //if(getRefLocation() instanceof LevelXing)
-                if(qobject_cast<LevelXing*>(getRefLocation())!= NULL)
-            {
+    if(qobject_cast<LevelXing*>(getRefLocation())!= NULL)
+    {
         LevelXing* x = (LevelXing*)getRefLocation();
-        if((x->getSensorAName()==(username)) ||( x->getSensorAName()==(systemname)))
+        if((x->getSensorA() == sen))
         {
-            if(x->getSignalAMastName()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(x->getSignalAMastName());
-            else if(x->getSignalAName()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(x->getSignalAName());
-
-            else if((x->getSensorBName()==(username)) || (x->getSensorBName()==(systemname)))
-            if(x->getSignalBMastName()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(x->getSignalBMastName());
-            else if(x->getSignalBName()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(x->getSignalBName());
-
-            else if((x->getSensorCName()==(username)) || (x->getSensorCName()==(systemname)))
-            if(x->getSignalCMastName()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(x->getSignalCMastName());
-            else if(x->getSignalCName()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(x->getSignalCName());
-
-            else if((x->getSensorDName()==(username) )|| (x->getSensorDName()==(systemname)))
-            if(x->getSignalDMastName()!=(""))
-                signal =   ((DefaultSignalMastManager*)sm)->getSignalMast(x->getSignalDMastName());
-            else if(x->getSignalDName()!=(""))
-                signal =  ((AbstractSignalHeadManager*)sh)->getSignalHead(x->getSignalDName());
+         if(x->getSignalAMast() !=nullptr)
+             signal =  x->getSignalAMast();
+         else if(x->getSignalAName()!=(""))
+             signal =  sh->getSignalHead(x->getSignalAName());
         }
+        else if(x->getSensorB() == sen)
+        {
+          if(x->getSignalBMast() !=nullptr)
+           signal =   x->getSignalBMast();
+          else if(x->getSignalBName()!=(""))
+           signal =  sh->getSignalHead(x->getSignalBName());
+        }
+        else if(x->getSensorC() == sen)
+        {
+            if(x->getSignalCMast() !=nullptr)
+                signal =   x->getSignalCMast();
+            else if(x->getSignalCName()!=(""))
+                signal =  sh->getSignalHead(x->getSignalCName());
+        }
+         else if(x->getSensorD() == sen)
+         {
+            if(x->getSignalDMast()!=nullptr)
+                signal =   x->getSignalDMast();
+            else if(x->getSignalDName()!=(""))
+                signal =  sh->getSignalHead(x->getSignalDName());
+         }
     }
     else
      //if(getRefLocation() instanceof LayoutSlip)

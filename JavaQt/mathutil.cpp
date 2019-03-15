@@ -147,10 +147,30 @@ MathUtil::MathUtil()
     return lerp(p1, p2, 1.0 / 3.0);
 }
 
-// return a QPointF one forth of the way from p1 to p2
-/*public*/ /*static*/ QPointF MathUtil::fourth(QPointF p1, QPointF p2) {
-    return lerp(p1, p2, 1.0 / 4.0);
+/**
+ * calculate the point 1/4 of the way between two points
+ *
+ * @param pA the first point
+ * @param pB the second point
+ * @return the point one fourth of the way from pA to pB
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::oneFourthPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB) {
+    return lerp(pA, pB, 1.0 / 4.0);
 }
+
+/**
+ * calculate the point 3/4 of the way between two points
+ *
+ * @param pA the first point
+ * @param pB the second point
+ * @return the point three fourths of the way from pA to pB
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::threeFourthsPoint(/*@Nonnull*/ QPointF pA,/* @Nonnull*/ QPointF pB) {
+    return lerp(pA, pB, 3.0 / 4.0);
+}
+
 //
 // Wrap a double between two values (for example +/- 180 or 0-360 degrees)
 // Note: THIS IS NOT A PIN OR TRUNCATE; VALUES WRAP AROUND BETWEEN MIN & MAX
@@ -220,7 +240,17 @@ MathUtil::MathUtil()
 /*public*/ /*static*/ double MathUtil::absDiffAngleRAD(double a, double b) {
     return qAbs(diffAngleRAD(a, b));
 }
-
+/**
+ * return the maximum coordinates of two points
+ *
+ * @param pA the first point
+ * @param pB the second point
+ * @return the maximum coordinates
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::max(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB) {
+    return  QPointF(qMax(pA.x(), pB.x()), qMax(pA.y(), pB.y()));
+}
 // pin a value between min & max
 /*public*/ /*static*/ double MathUtil::pin(double inValue, double inMin, double inMax) {
     return qMin(qMax(inValue, inMin), inMax);

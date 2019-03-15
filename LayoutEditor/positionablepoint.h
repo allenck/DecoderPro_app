@@ -28,7 +28,7 @@ public:
     /**
      * Accessor methods
     */
-    /*public*/ QString getID();
+//    /*public*/ QString getID();
     /*public*/ int getType();
     /*public*/ TrackSegment* getConnect1();
     /*public*/ TrackSegment* getConnect2();
@@ -90,7 +90,7 @@ public:
     /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* e);
     /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* e);
     void invalidate(EditScene *g2);
-    void draw(QGraphicsScene* g);
+    void draw(EditScene *g);
     /*public*/ QString getLinkEditorName();
     /*public*/ PositionablePoint* getLinkedPoint() ;
     /*public*/ QString getLinkedPointId();
@@ -103,6 +103,13 @@ public:
     /*public*/ LayoutTrack* getConnection(int connectionType) throw (JmriException);
     /*public*/ void setConnection(int connectionType, LayoutTrack* o, int type) throw (JmriException);
     /*public*/ bool replaceTrackConnection(/*@Nullable*/ TrackSegment* oldTrack,/* @Nullable */TrackSegment* newTrack);
+    /*public*/ QList<int> checkForFreeConnections();
+    /*public*/ bool checkForUnAssignedBlocks();
+    /*public*/ void checkForNonContiguousBlocks(
+            /*@Nonnullptr*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap);
+    /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnullptr*/ QString blockName,
+            /*@Nonnullptr*/ QSet<QString> TrackNameSet);
+    /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
 
 signals:
     
@@ -113,6 +120,7 @@ public slots:
     /*public*/ void updateLink();
 
 private:
+    static Logger* log;
     /*private*/ PositionablePoint* instance = nullptr;
     /*private*/ LayoutEditor* layoutEditor = nullptr;
 
@@ -146,8 +154,8 @@ private:
     /*private*/ void setWestBoundSignalName(/*@CheckForNull*/ QString signalHead);
     void removeSML(SignalMast* signalMast);
     void removeLinkedPoint();
+    QGraphicsItem* rects = nullptr;
 
- Logger log;
  QMenu* popup;// = NULL;
  //QGraphicsItem* item;
  /*private*/ PositionablePoint* linkedPoint;
@@ -172,12 +180,14 @@ protected:
  /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
  /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
  /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
- /*protected*/ /*abstract*/ void drawEditControls(EditScene *g2, QPen stroke);
+ /*protected*/ /*abstract*/ void drawEditControls(EditScene *g2);
  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
+ /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
 
 
 friend class LayoutEditor;
 friend class LoadXml;
+friend class LayoutEditorAuxTools;
 };
 
 #endif // POSITIONABLEPOINT_H

@@ -36,6 +36,10 @@ class RayTrack : public QObject
 public:
  /*public*/  RayTrack(double angle, int index, LayoutTurntable* lt);
  // accessor routines
+ /*public*/ void setDisabled(bool boo);
+ /*public*/ bool isDisabled();
+ /*public*/ void setDisabledWhenOccupied(bool boo);
+ /*public*/ bool isDisabledWhenOccupied();
  /*public*/  TrackSegment* getConnect();
  /*public*/  void setConnect(TrackSegment* tr);
  /*public*/  double getAngle();
@@ -76,6 +80,10 @@ public slots:
  void updateDetails();
  void showTurnoutDetails();
  void dispose();
+ bool disabled = false;
+ bool disableWhenOccupied = false;
+ /*private*/ bool isOccupied();
+
  friend class LayoutTurntable;
 };
 
@@ -120,6 +128,14 @@ public:
  /*public*/  double diffAngle(double a, double b);
  /*public*/  bool isActive();
  /*public*/ QRectF getBounds();
+ /*public*/ void translateCoords(float xFactor, float yFactor);
+ /*public*/ QList<int> checkForFreeConnections();
+ /*public*/ bool checkForUnAssignedBlocks();
+ /*public*/ void checkForNonContiguousBlocks(
+         /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap);
+ /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
+                                                          /*@Nonnull*/ QSet<QString> TrackNameSet);
+ /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
 
 signals:
 
@@ -170,6 +186,7 @@ private:
   void remove();
   bool active;// = true;
   QGraphicsItemGroup* item;
+  QGraphicsItemGroup* rects;
 
 private slots:
   void turntableEditDonePressed(ActionEvent* a = 0);
@@ -180,6 +197,15 @@ private slots:
   /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e);
   /*protected*/ void showRayPopUp(QGraphicsSceneMouseEvent* e, int index);
   /*protected*/ void editTurntable(LayoutTurntable* x);
+  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
+  /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
+  /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+  /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
+  /*protected*/ void drawTurnoutControls(EditScene* g2);
+  /*protected*/ void drawEditControls(EditScene* g2);
+  /*protected*/ void reCheckBlockBoundary();
+  /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
+
  friend class RayTrack;
  friend class LayoutEditor;
 };

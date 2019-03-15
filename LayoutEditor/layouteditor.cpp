@@ -66,6 +66,7 @@
 #include "blockcontentsicon.h"
 #include "layouttrackdrawingoptions.h"
 #include "layouttrackdrawingoptionsdialog.h"
+#include <QPointF>
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -2485,7 +2486,7 @@ double LayoutEditor::getPaintScale()
   {
    // controlling layout, in edit mode
    LayoutSlip* t = (LayoutSlip*)selectedObject;
-   t->toggleState(selectedPointType);
+   t->toggleTurnout();
   }
   else if ( ( selectedObject!=nullptr) && (selectedPointType>=TURNTABLE_RAY_OFFSET) /*&&
                allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier) && (!event.isPopupTrigger())*/ &&
@@ -2545,7 +2546,7 @@ double LayoutEditor::getPaintScale()
   {
    // controlling layout, not in edit mode
    LayoutSlip* t = (LayoutSlip*)selectedObject;
-   t->toggleState(selectedPointType);
+   t->toggleTurnout();
   }
 #if 1
   else if ( ( selectedObject!=nullptr) && (selectedPointType>=TURNTABLE_RAY_OFFSET)/* &&
@@ -2820,13 +2821,16 @@ double LayoutEditor::getPaintScale()
  calcLocation(event->scenePos(), 0, 0);
  // ignore this event if still at the original point
  if ((!isDragging) && (xLoc == getAnchorX()) && (yLoc==getAnchorY())) return;
+
  // process this mouse dragged event
  if (isEditable())
  {
   ui->xLabel->setText(QString("%1").arg(xLoc));
   ui->yLabel->setText(QString("%1").arg(yLoc));
  }
- QPointF newPos = QPointF(dLoc.x() + startDel.y(), dLoc.y() + startDel.y());
+ QPointF newPos = currentPoint = QPointF(dLoc.x() + startDel.y(), dLoc.y() + startDel.y());
+ //don't allow negative placement, objects could become unreachable
+ currentPoint = MathUtil::max(currentPoint, MathUtil::zeroPoint2D);
 
  if ((selectedObject!=nullptr) && (/*event.isMetaDown() ||*/ ((event->modifiers()&Qt::MetaModifier)!=0) || (selectedPointType==MARKER)))
   {
@@ -2858,336 +2862,180 @@ double LayoutEditor::getPaintScale()
      newPos.setX(xx);
      newPos.setY(yy);
     }
-    if (_pointSelection!=nullptr || _turnoutSelection!=nullptr || _positionableSelection!=nullptr /*|| _labelSelection != nullptr*/)
+    if ((_positionableSelection && _positionableSelection->size() > 0)
+           || (_layoutTrackSelection.size() > 0))
     {
-     int offsetx = xLoc - _lastX;
-     int offsety = yLoc - _lastY;
-     //We should do a move based upon a selection group.
-     int xNew;
-     int yNew;
-     if (_positionableSelection!=nullptr)
-     {
-      for (int i = 0; i<_positionableSelection->size(); i++)
-      {
-       Positionable* c = _positionableSelection->at(i);
-       if ((/*c instanceof MemoryIcon*/static_cast<MemoryIcon*>(c)!=nullptr) && (c->getPopupUtility()->getFixedWidth()==0))
-       {
-        MemoryIcon* pm = (MemoryIcon*) c;
-        xNew = (pm->getOriginalX()+offsetx);
-        yNew = (pm->getOriginalY()+offsety);
+       QPointF lastPoint = QPointF(_lastX, _lastY);
+       QPointF offset = MathUtil::subtract(currentPoint, lastPoint);
+       QPointF newPoint;
+
+       for (Positionable* c : *_positionableSelection) {
+           if ((qobject_cast< MemoryIcon*>(c->self())) && (c->getPopupUtility()->getFixedWidth() == 0)) {
+               MemoryIcon* pm = (MemoryIcon*) c->self();
+               newPoint = QPointF(pm->getOriginalX(), pm->getOriginalY());
+           } else {
+               newPoint = c->getLocation();
+           }
+           newPoint = MathUtil::add(newPoint, offset);
+           //don't allow negative placement, objects could become unreachable
+           newPoint = MathUtil::max(newPoint, MathUtil::zeroPoint2D);
+           //c.setLocation(MathUtil.point2DToPoint(newPoint));
+           c->setLocation(newPoint);
        }
-       else
-       {
-       QPointF upperLeft = c->getLocation();
-       xNew = (int)(upperLeft.x()+offsetx);
-       yNew = (int)(upperLeft.y()+offsety);
-      }
-      if (xNew<0) xNew=0;
-      if (yNew<0) yNew=0;
-      c->setLocation(xNew,yNew);
-      c->updateScene();
-     }
-    }
-//    if(_labelSelection != nullptr)
-//    {
-//     for(int i=0; i < _labelSelection->size(); i++)
-//     {
-//      PositionableLabel* l = _labelSelection->at(i);
-//      QPointF upperLeft = l->getLocation();
-//      xNew = (int)(upperLeft.x()+offsetx);
-//      yNew = (int)(upperLeft.y()+offsety);
 
-//      if (xNew<0) xNew=0;
-//      if (yNew<0) yNew=0;
-//      l->setLocation(xNew,yNew);
-//     }
-//    }
-    if(_labelImage != nullptr)
-    {
-      for(int i=0; i < _labelImage->size(); i++)
-      {
-       PositionableLabel* l = _labelImage->at(i);
-       QPointF upperLeft = ((Positionable*)l)->getLocation();
-       xNew = (int)(upperLeft.x()+offsetx);
-       yNew = (int)(upperLeft.y()+offsety);
+       for (LayoutTrack* lt : _layoutTrackSelection) {
+           QPointF center = lt->getCoordsCenter();
+           newPoint = MathUtil::add(center, offset);
+           //don't allow negative placement, objects could become unreachable
+           newPoint = MathUtil::max(newPoint, MathUtil::zeroPoint2D);
+           lt->setCoordsCenter(newPoint);
+       }
 
-       if (xNew<0) xNew=0;
-       if (yNew<0) yNew=0;
-       ((Positionable*)l)->setLocation(xNew,yNew);
-      }
-    }
-    if (_turnoutSelection!=nullptr)
-    {
-     for (int i = 0; i<_turnoutSelection->size();i++)
-     {
-      LayoutTurnout* t = _turnoutSelection->at(i);
-      QPointF center = t->getCoordsCenter();
-      xNew = (int) center.x()+offsetx;
-      yNew = (int) center.y()+offsety;
-      if (xNew<0) xNew=0;
-      if (yNew<0) yNew=0;
-      t->setCoordsCenter( QPointF(xNew, yNew));
-     }
-    }
-    if (_xingSelection!=nullptr)
-    {
-     // loop over all defined level crossings
-     for (int i = 0; i<_xingSelection->size();i++)
-     {
-      LevelXing* x = _xingSelection->at(i);
-      QPointF center = x->getCoordsCenter();
-      xNew = (int) center.x()+offsetx;
-      yNew = (int) center.y()+offsety;
-      if (xNew<0) xNew=0;
-      if (yNew<0) yNew=0;
-      x->setCoordsCenter(QPointF(xNew, yNew));
-     }
-    }
-    if (_slipSelection!=nullptr)
-    {
-     // loop over all defined level crossings
-     for (int i = 0; i<_slipSelection->size(); i++)
-     {
-      LayoutSlip* x = _slipSelection->at(i);
-      QPointF center = x->getCoordsCenter();
-      xNew = (int) center.x()+offsetx;
-      yNew = (int) center.y()+offsety;
-      if (xNew<0) xNew=0;
-      if (yNew<0) yNew=0;
-      x->setCoordsCenter(QPointF(xNew, yNew));
-     }
-    }
-    // loop over all defined turntables
-    if (_turntableSelection!=nullptr)
-    {
-     for (int i = 0; i<_turntableSelection->size();i++)
-     {
-      LayoutTurntable* x = _turntableSelection->at(i);
-                      QPointF center = x->getCoordsCenter();
-                      xNew = (int) center.x()+offsetx;
-                      yNew = (int) center.y()+offsety;
-                      if (xNew<0) xNew=0;
-                      if (yNew<0) yNew=0;
-                      x->setCoordsCenter( QPointF(xNew, yNew));
-                  }
-     }
-     // loop over all defined Anchor Points and End Bumpers
-     if (_pointSelection!=nullptr)
-     {
-      for (int i = 0; i<_pointSelection->size();i++)
-      {
-       PositionablePoint* p = _pointSelection->at(i);
-       QPointF coord = p->getCoordsCenter();
-       xNew = (int) coord.x()+offsetx;
-       yNew = (int) coord.y()+offsety;
-       if (xNew<0) xNew=0;
-       if (yNew<0) yNew=0;
-       p->setCoords(QPointF(xNew, yNew));
-      }
-     }
-     _lastX = xLoc;
-     _lastY = yLoc;
+       _lastX = xLoc;
+       _lastY = yLoc;
     }
     else
     {
-     switch (selectedPointType)
-     {
-     case POS_POINT:
-      ((PositionablePoint*)selectedObject)->setCoords(newPos);
-      isDragging = true;
-      break;
-     case TURNOUT_CENTER:
-      ((LayoutTurnout*)selectedObject)->setCoordsCenter(newPos);
-      isDragging = true;
-      break;
-     case TURNOUT_A:
-     {
-      LayoutTurnout* o = (LayoutTurnout*)selectedObject;
-      o->setCoordsA(newPos);
-      break;
-     }
-     case TURNOUT_B:
-     {
-      LayoutTurnout* o = (LayoutTurnout*)selectedObject;
-      o->setCoordsB(newPos);
-      break;
-     }
-     case TURNOUT_C:
-     {
-      LayoutTurnout* o = (LayoutTurnout*)selectedObject;
-      o->setCoordsC(newPos);
-      break;
-     }
-     case TURNOUT_D:
-     {
-      LayoutTurnout* o = (LayoutTurnout*)selectedObject;
-      o->setCoordsD(newPos);
-      break;
-     }
-     case LEVEL_XING_CENTER:
-     {
-      ((LevelXing*)selectedObject)->setCoordsCenter(newPos);
-      isDragging = true;
-      break;
-     }
-     case LEVEL_XING_A:
-     {
-      LevelXing* x = (LevelXing*)selectedObject;
-      x->setCoordsA(newPos);
-      break;
-     }
-     case LEVEL_XING_B:
-     {
-      LevelXing* x = (LevelXing*)selectedObject;
-      x->setCoordsB(newPos);
-      break;
-     }
-     case LEVEL_XING_C:
-     {
-      LevelXing* x = (LevelXing*)selectedObject;
-      x->setCoordsC(newPos);
-      break;
-     }
-     case LEVEL_XING_D:
-     {
-     LevelXing* x = (LevelXing*)selectedObject;
-      x->setCoordsD(newPos);
-      break;
-     }
-     case SLIP_CENTER:
-      ((LayoutSlip*)selectedObject)->setCoordsCenter(newPos);
-      isDragging = true;
-      break;
-     case SLIP_A:
-     {
-      LayoutSlip* sl = (LayoutSlip*)selectedObject;
-      sl->setCoordsA(newPos);
-      break;
-     }
-     case SLIP_B:
-     {
-      LayoutSlip* sl = (LayoutSlip*)selectedObject;
-      sl = (LayoutSlip*)selectedObject;
-      sl->setCoordsB(newPos);
-      break;
-     }
-     case SLIP_C:
-     {
-      LayoutSlip* sl = (LayoutSlip*)selectedObject;
-      sl = (LayoutSlip*)selectedObject;
-      sl->setCoordsC(newPos);
-      break;
-     }
-     case SLIP_D:
-     {
-      LayoutSlip* sl = (LayoutSlip*)selectedObject;
-      sl = (LayoutSlip*)selectedObject;
-      sl->setCoordsD(newPos);
-      break;
-     }
-     case TURNTABLE_CENTER:
-      ((LayoutTurntable*)selectedObject)->setCoordsCenter(newPos);
-      isDragging = true;
-      break;
-     case LAYOUT_POS_LABEL:
-     {
-      PositionableLabel* l = (PositionableLabel*)selectedObject;
-      if (l->isPositionable())
-      {
-       int xint = (int)newPos.x();
-       int yint = (int)newPos.y();
-       // don't allow negative placement, object could become unreachable
-       if (xint<0) xint = 0;
-       if (yint<0) yint = 0;
-       ((Positionable*)l)->setLocation(xint, yint);
-       isDragging = true;
+       switch (selectedPointType) {
+           case LayoutTrack::POS_POINT: {
+               ((PositionablePoint*) selectedObject)->setCoordsCenter(currentPoint);
+               isDragging = true;
+               break;
+           }
 
-//       if(l->item != nullptr)
-//       {
-//        editScene->removeItem(l->item);
-//        l->item = nullptr;
-//       }
+           case LayoutTrack::TURNOUT_CENTER: {
+            LayoutTurnout* t = ((LayoutTurnout*) selectedObject);
+               t->setCoordsCenter(currentPoint);
+               if(t->connectA) t->connectA->invalidate(editScene);
+               if(t->connectB) t->connectB->invalidate(editScene);
+               if(t->connectC) t->connectC->invalidate(editScene);
+               if(t->connectD) t->connectD->invalidate(editScene);
+               isDragging = true;
+               break;
+           }
 
-//       if(l->isIcon())
-//       {
-//        l->item = new QGraphicsPixmapItem(QPixmap::fromImage(l->getIcon()->getOriginalImage()));
-//        editScene->addItem(l->item);
-//        l->item->setPos(l->getLocation());
-//       }
-//       else
-//       {
-//        l->item = new QGraphicsTextItem(l->getUnRotatedText());
-//        editScene->addItem(l->item);
-//        l->item->setPos(l->getLocation());
-//       }
-      }
-      break;
-     }
-#if 1
-     case LAYOUT_POS_JCOMP:
-     {
-      PositionableJComponent* c = (PositionableJComponent*)selectedObject;
-      if (c->isPositionable()) {
-          int xint = (int)newPos.x();
-          int yint = (int)newPos.y();
-          // don't allow negative placement, object could become unreachable
-          if (xint<0) xint = 0;
-          if (yint<0) yint = 0;
-          c->setLocation(xint, yint);
-          isDragging = true;
-      }
-      break;
-     }
-#endif
-     case MULTI_SENSOR:
-     {
-      PositionableLabel* pl = (PositionableLabel*)selectedObject;
-      if (pl->isPositionable())
-      {
-       int xint = (int)newPos.x();
-       int yint = (int)newPos.y();
-       // don't allow negative placement, object could become unreachable
-       if (xint<0) xint = 0;
-       if (yint<0) yint = 0;
-       ((Positionable*)pl)->setLocation(xint, yint);
-       isDragging = true;
-      }
-      break;
-     }
-     case TRACK_CIRCLE_CENTRE:
-     {
-      TrackSegment* t = (TrackSegment*)selectedObject;
-      t->reCalculateTrackSegmentAngle(newPos.x(), newPos.y());
-      break;
-     }
-     case MARKER:
-      if(static_cast<LocoIcon*>(selectedObject)!= nullptr)
-      {
-       LocoIcon* l = (LocoIcon*)selectedObject;
-       int xint = (int)newPos.x();
-       int yint = (int)newPos.y();
-       // don't allow negative placement, object could become unreachable
-       if (xint<0) xint = 0;
-       if (yint<0) yint = 0;
-       l->setLocation(xint, yint);
-       isDragging = true;
-      }
-      break;
-     default:
-   if (selectedPointType>=TURNTABLE_RAY_OFFSET)
-   {
-    LayoutTurntable* turn = (LayoutTurntable*)selectedObject;
-    turn->setRayCoordsIndexed(newPos.x(),newPos.y(),
-                          selectedPointType-TURNTABLE_RAY_OFFSET);
+           case LayoutTrack::TURNOUT_A: {
+               ((LayoutTurnout*) selectedObject)->setCoordsA(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::TURNOUT_B: {
+               ((LayoutTurnout*) selectedObject)->setCoordsB(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::TURNOUT_C: {
+               ((LayoutTurnout*) selectedObject)->setCoordsC(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::TURNOUT_D: {
+               ((LayoutTurnout*) selectedObject)->setCoordsD(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::LEVEL_XING_CENTER: {
+               ((LevelXing*) selectedObject)->setCoordsCenter(currentPoint);
+               isDragging = true;
+               break;
+           }
+
+           case LayoutTrack::LEVEL_XING_A: {
+               ((LevelXing*) selectedObject)->setCoordsA(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::LEVEL_XING_B: {
+               ((LevelXing*) selectedObject)->setCoordsB(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::LEVEL_XING_C: {
+               ((LevelXing*) selectedObject)->setCoordsC(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::LEVEL_XING_D: {
+               ((LevelXing*) selectedObject)->setCoordsD(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::SLIP_LEFT:
+           case LayoutTrack::SLIP_RIGHT: {
+               ((LayoutSlip*) selectedObject)->setCoordsCenter(currentPoint);
+               isDragging = true;
+               break;
+           }
+
+           case LayoutTrack::SLIP_A: {
+               ((LayoutSlip*) selectedObject)->setCoordsA(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::SLIP_B: {
+               ((LayoutSlip*) selectedObject)->setCoordsB(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::SLIP_C: {
+               ((LayoutSlip*) selectedObject)->setCoordsC(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::SLIP_D: {
+               ((LayoutSlip*) selectedObject)->setCoordsD(currentPoint);
+               break;
+           }
+
+           case LayoutTrack::TURNTABLE_CENTER: {
+               ((LayoutTurntable*) selectedObject)->setCoordsCenter(currentPoint);
+               isDragging = true;
+               break;
+           }
+
+           case LayoutTrack::LAYOUT_POS_LABEL:
+           case LayoutTrack::MULTI_SENSOR: {
+               PositionableLabel* pl = (PositionableLabel*) selectedObject;
+
+               if (pl->isPositionable()) {
+                   pl->setLocation((int) currentPoint.x(), (int) currentPoint.y());
+                   isDragging = true;
+               }
+               break;
+           }
+
+           case LayoutTrack::LAYOUT_POS_JCOMP: {
+               PositionableJComponent* c = (PositionableJComponent*) selectedObject;
+
+               if (c->isPositionable()) {
+                   c->setLocation((int) currentPoint.x(), (int) currentPoint.y());
+                   isDragging = true;
+               }
+               break;
+           }
+
+           case LayoutTrack::TRACK_CIRCLE_CENTRE: {
+               TrackSegment* t = (TrackSegment*) selectedObject;
+               t->reCalculateTrackSegmentAngle(currentPoint.x(), currentPoint.y());
+               break;
+           }
+
+           default: {
+               if ((foundPointType >= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN)
+                       && (foundPointType <= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MAX)) {
+                   int index = selectedPointType - LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN;
+                   ((TrackSegment*) selectedObject)->setBezierControlPoint(currentPoint, index);
+               } else if (selectedPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET) {
+                   LayoutTurntable* turn = (LayoutTurntable*) selectedObject;
+                   turn->setRayCoordsIndexed(currentPoint.x(), currentPoint.y(),
+                           selectedPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
+               }
+               break;
+           }
+       }
    }
-     break;
-    }
-   }
-   //repaint();
-   paintTargetPanel(editScene);
-   }
-   else
-   if ( (beginObject!=nullptr) && event->modifiers()&Qt::ShiftModifier && ui->trackButton->isChecked() )
+  }
+  else if ( (beginObject!=nullptr) && event->modifiers()&Qt::ShiftModifier && ui->trackButton->isChecked() )
   {
    // dragging from first end of Track Segment
    currentLocation= QPointF(xLoc,yLoc);
@@ -4007,37 +3855,39 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
   g->addItem(highlightRect);
 }
 
-/*private*/ void LayoutEditor::createSelectionGroups(){
+/*private*/ void LayoutEditor::createSelectionGroups()
+{
   QList <Positionable*> contents = getContents();
   QRectF selectionRect(selectionX, selectionY, selectionWidth, selectionHeight);
-  for (Positionable* o : contents) {
-              if (selectionRect.contains(o->getLocation())) {
-                  if (!_positionableSelection->contains(o)) {
-                      _positionableSelection->append(o);
-                  }
-              }
-          }
+  for (Positionable* o : contents)
+  {
+     if (selectionRect.contains(o->getLocation())) {
+         if (!_positionableSelection->contains(o)) {
+             _positionableSelection->append(o);
+         }
+     }
+ }
 
-          for (LayoutTrack* lt : *layoutTrackList) {
-              QPointF center = lt->getCoordsCenter();
-              if (selectionRect.contains(center)) {
-                  if (!_layoutTrackSelection.contains(lt)) {
-                      _layoutTrackSelection.append(lt);
-                  }
-              }
-          }
-          redrawPanel();
+ for (LayoutTrack* lt : *layoutTrackList) {
+     QPointF center = lt->getCoordsCenter();
+     if (selectionRect.contains(center)) {
+         if (!_layoutTrackSelection.contains(lt)) {
+             _layoutTrackSelection.append(lt);
+         }
+     }
+ }
+ redrawPanel();
 }
 
 
 /*private*/ void LayoutEditor::clearSelectionGroups(){
   _pointSelection=nullptr;
-//  _turntableSelection=nullptr;
+  _turntableSelection=nullptr;
   _xingSelection=nullptr;
-//  _slipSelection=nullptr;
+  _slipSelection=nullptr;
   _turnoutSelection=nullptr;
   _positionableSelection=nullptr;
-  _labelSelection=nullptr;
+  //_labelSelection=nullptr;
 }
 /**
 * Return a List of all items whose bounding rectangle contain the mouse position.
@@ -4638,7 +4488,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  draw(editScene);
 #endif
 }
-#if 1
+
 //
 // this is called by the layoutEditorComponent
 //
@@ -4649,10 +4499,13 @@ bool LayoutEditor::isDirty() {return bDirty;}
     //if (antialiasingOn) {
         editPanel->setRenderHint(QPainter::Antialiasing, antialiasingOn);
     //}
-    foreach (LayoutTrack* layoutTrack, *layoutTrackList)
+#if 1
+    // remove existing items from scene
+    for(LayoutTrack* layoutTrack : *layoutTrackList)
     {
      layoutTrack->invalidate(g2);
     }
+#endif
     // things that only get drawn in edit mode
     if (isEditable()) {
         if (getDrawGrid()) {
@@ -4660,6 +4513,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
         }
         drawLayoutTracksHidden(g2);
     }
+
     drawTrackSegmentsDashed(g2);
     drawLayoutTracksBallast(g2);
     drawLayoutTracksTies(g2);
@@ -4892,7 +4746,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //        g2.setColor(railColor);
      QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
      drawingStroke = stroke;
-        draw1(g2, main, block, hidden, dashed);
+     draw1(g2, main, block, hidden, dashed);
     }
 
     main = true;
@@ -5049,10 +4903,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
    {
     if ((qobject_cast<TrackSegment*>(layoutTrack)))
     {
-     if (((TrackSegment*) layoutTrack)->isDashed() == isDashed) {
-         layoutTrack->draw1(g2, isMain, isBlock);
+     if (((TrackSegment*) layoutTrack)->isDashed() == isDashed)
+     {
+      layoutTrack->draw1(g2, isMain, isBlock);
      }
-    } else if (!isDashed)
+    }
+    else if (!isDashed)
     {
      layoutTrack->draw1(g2, isMain, isBlock);
     }
@@ -5060,7 +4916,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
   }
  }
 }
-#endif
+
 // draw positionable points
 /*private*/ void LayoutEditor::drawPositionablePoints(EditScene* g2, bool isMain)
 {
@@ -5436,8 +5292,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
 // }
 }
 
-/*private*/ void LayoutEditor::drawSlips(QGraphicsScene* g2)
-{
+///*private*/ void LayoutEditor::drawSlips(QGraphicsScene* g2)
+//{
 // for (int i = 0; i<slipList->size();i++)
 // {
 //  LayoutSlip* x = slipList->at(i);
@@ -5713,10 +5569,10 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //   log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
 //  g2->addItem(x->item);
 // }
-}
+//}
 
-/*private*/ void LayoutEditor::drawTurnoutCircles(EditScene* g2)
-{
+///*private*/ void LayoutEditor::drawTurnoutCircles(EditScene* g2)
+//{
   // loop over all defined turnouts
 //  for (int i = 0; i<turnoutList->size();i++)
 //  {
@@ -5726,10 +5582,10 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //    t->drawTurnoutCircles(this, g2);
 //   }
 //  }
-} //drawTurnoutCircles
+//} //drawTurnoutCircles
 
-/*private*/ void LayoutEditor::drawSlipCircles(EditScene* g2)
-{
+///*private*/ void LayoutEditor::drawSlipCircles(EditScene* g2)
+//{
  //loop over all defined slips
 
 // for (int i = 0; i<slipList->size();i++)
@@ -5740,10 +5596,10 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //   sl->drawSlipCircles(g2);
 //  }
 // }
-}  //drawSlipCircles
+//}  //drawSlipCircles
 
-/*private*/ void LayoutEditor::drawTurnoutRects(EditScene* g2)
-{
+///*private*/ void LayoutEditor::drawTurnoutRects(EditScene* g2)
+//{
   // loop over all defined turnouts
 //  for (int i = 0; i<turnoutList->size();i++)
 //  {
@@ -5755,8 +5611,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //   LayoutSlip* s = slipList->at(i);
 //   s->drawTurnoutRects(this, g2);
 //  }
-}
-#if 1
+//}
+#if 0
 /*private*/ void LayoutEditor::drawTurntables(EditScene* g2)
 {
   // loop over all defined layout turntables
@@ -5825,18 +5681,18 @@ bool LayoutEditor::isDirty() {return bDirty;}
   }
 }
 #endif
-/*private*/ void LayoutEditor::drawXingRects(EditScene* g2)
-{
+///*private*/ void LayoutEditor::drawXingRects(EditScene* g2)
+//{
  // loop over all defined level crossings
 // for (int i = 0; i<xingList->size();i++)
 // {
 //  LevelXing* x = xingList->at(i);
 //  x->drawXingRects(this, g2);
 // }
-}
-#if 1// see drawSlips.
-/*private*/ void LayoutEditor::drawSlipRects(EditScene* /*g2*/)
-{
+//}
+#if 0// see drawSlips.
+///*private*/ void LayoutEditor::drawSlipRects(EditScene* /*g2*/)
+//{
   // loop over all defined level crossings
 //  for (int i = 0; i<slipList->size();i++)
 //  {
@@ -5906,8 +5762,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //      rect->setPen(QPen(color, 1));
 //      x->item->addToGroup(rect);
 //  }
-}
-#endif
+//}
 /*private*/ void LayoutEditor::drawTurntableRects(EditScene* /*g2*/)
 {
   // loop over all defined turntables
@@ -5948,11 +5803,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
   LayoutTrack* t =layoutTrackList->at(i);
   if (isEditable() && t->getHidden())
   {
-   ((TrackSegment*)t)->invalidate(g2);
+   //((TrackSegment*)t)->invalidate(g2);
    ((TrackSegment*)t)->drawHiddenTrack(this, g2);
   }
  }
 }
+#endif
 void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 {
  QColor color;
@@ -5980,7 +5836,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 //    l->item->setRotation(l->item->rotation()+ l->getDegrees());
 // }
 }
-
+#if 0
 /*private*/ void LayoutEditor::drawDashedTrack(EditScene* g2, bool mainline)
 {
  for (TrackSegment* t : getTrackSegments()) {
@@ -6066,7 +5922,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 //   p->draw( g2);
 //  }
 }
-
+#endif
 #if 0
 
 /*private*/ void LayoutEditor::drawSelectionRect(EditScene* editScene)

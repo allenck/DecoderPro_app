@@ -22,6 +22,7 @@
 #include "mathutil.h"
 #include "layouteditorfinditems.h"
 #include <cmath>
+#include <QApplication>
 
 //LayoutTurnout::LayoutTurnout(QObject *parent) :
 //    QObject(parent)
@@ -1300,75 +1301,120 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
  *  Returns true if connecting track segment is mainline
  *  Defaults to not mainline if connecting track segment is missing
  */
-/*public*/ bool LayoutTurnout::isMainlineA() {
-    if (connectA != nullptr)
-        return ((TrackSegment*)connectA)->getMainline();
-    else {
-        // if no connection, depends on type of turnout
-        if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
-            // All crossovers - straight continuing is B
-            if (connectB != nullptr)
-                return ((TrackSegment*)connectB)->getMainline();
-        }
-        // must be RH, LH, or WYE turnout - A is the switch throat
-        else if ( ((connectB != nullptr) &&
-                (((TrackSegment*)connectB)->getMainline())) ||
-                    ((connectC != nullptr) &&
-                        (((TrackSegment*)connectC)->getMainline())) )
-            return true;
-    }
-    return false;
+/*public*/ bool LayoutTurnout::isMainlineA()
+{
+ if (connectA != nullptr)
+ {
+     return ((TrackSegment*)connectA)->getMainline();
+ }
+ else {
+  // if no connection, depends on type of turnout
+  if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) )
+  {
+   // All crossovers - straight continuing is B
+   if (connectB != nullptr)
+       return ((TrackSegment*)connectB)->getMainline();
+  }
+  else if ((getTurnoutType() == SINGLE_SLIP)
+                      || (getTurnoutType() == DOUBLE_SLIP))
+  {
+   if (connectD != nullptr) {
+       return ((TrackSegment*) connectD)->isMainline();
+   }
+  } // must be RH, LH, or WYE turnout - A is the switch throat
+  else if ( ((connectB != nullptr) &&
+          (((TrackSegment*)connectB)->getMainline())) ||
+              ((connectC != nullptr) &&
+                  (((TrackSegment*)connectC)->getMainline())) )
+      return true;
+ }
+ return false;
 }
-/*public*/ bool LayoutTurnout::isMainlineB() {
-    if (connectB != nullptr)
-        return ((TrackSegment*)connectB)->getMainline();
-    else {
-        // if no connection, depends on type of turnout
-        if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
-            // All crossovers - straight continuing is A
-            if (connectA != nullptr)
-                return ((TrackSegment*)connectA)->getMainline();
-        }
-        // must be RH, LH, or WYE turnout - A is the switch throat,
-        //		B is normally the continuing straight
-        else if (continuingSense == Turnout::CLOSED) {
-            // user hasn't changed the continuing turnout state
-            if (connectA != nullptr)
-                // if throat is mainline, this leg must be also
-                return ((TrackSegment*)connectA)->getMainline();
-        }
-    }
-    return false;
+
+/*public*/ bool LayoutTurnout::isMainlineB()
+{
+ if (connectB != nullptr)
+ {
+     return ((TrackSegment*)connectB)->getMainline();
+ }
+ else {
+  // if no connection, depends on type of turnout
+  if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) )
+  {
+      // All crossovers - straight continuing is A
+      if (connectA != nullptr)
+          return ((TrackSegment*)connectA)->getMainline();
+  } else if (getTurnoutType() == DOUBLE_SLIP)
+  {
+   if (connectD != nullptr)
+   {
+       return ((TrackSegment*) connectD)->isMainline();
+   }
+  } // must be RH, LH, or WYE turnout - A is the switch throat,
+  //		B is normally the continuing straight
+  else if (continuingSense == Turnout::CLOSED)
+  {
+   // user hasn't changed the continuing turnout state
+   if (connectA != nullptr)
+   { // if throat is mainline, this leg must be also
+       return ((TrackSegment*)connectA)->getMainline();
+   }
+  }
+ }
+ return false;
 }
-/*public*/ bool LayoutTurnout::isMainlineC() {
-    if (connectC != nullptr)
+/*public*/ bool LayoutTurnout::isMainlineC()
+{
+ if (connectC != nullptr)
+ {
         return ((TrackSegment*)connectC)->getMainline();
-    else {
-        // if no connection, depends on type of turnout
-        if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
-            // All crossovers - straight continuing is D
-            if (connectD != nullptr)
-                return ((TrackSegment*)connectD)->getMainline();
-        }
-        // must be RH, LH, or WYE turnout - A is the switch throat,
-        //		B is normally the continuing straight
-        else if (continuingSense == Turnout::THROWN) {
-            // user has changed the continuing turnout state
-            if (connectA != nullptr)
-                // if throat is mainline, this leg must be also
-                return ((TrackSegment*)connectA)->getMainline();
-        }
-    }
-    return false;
+ }
+ else
+ {
+  // if no connection, depends on type of turnout
+  if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) )
+  {
+   // All crossovers - straight continuing is D
+   if (connectD != nullptr)
+       return ((TrackSegment*)connectD)->getMainline();
+  } else if (getTurnoutType() == DOUBLE_SLIP)
+  {
+   if (connectB != nullptr)
+   {
+       return ((TrackSegment*) connectB)->isMainline();
+   }
+  } // must be RH, LH, or WYE turnout - A is the switch throat,
+  //		B is normally the continuing straight
+  else if (continuingSense == Turnout::THROWN)
+  {
+   // user has changed the continuing turnout state
+   if (connectA != nullptr)
+   {    // if throat is mainline, this leg must be also
+       return ((TrackSegment*)connectA)->getMainline();
+   }
+  }
+ }
+ return false;
 }
-/*public*/ bool LayoutTurnout::isMainlineD() {
-    // this is a crossover turnout
-    if (connectD != nullptr)
-        return ((TrackSegment*)connectD)->getMainline();
-    else if (connectC != nullptr)
-        return ((TrackSegment*)connectC)->getMainline();
-    return false;
+/*public*/ bool LayoutTurnout::isMainlineD()
+{
+ // this is a crossover turnout
+ if (connectD != nullptr)
+ {
+  return ((TrackSegment*)connectD)->getMainline();
+ }
+ else if ((getTurnoutType() == SINGLE_SLIP)
+             || (getTurnoutType() == DOUBLE_SLIP))
+ {
+  if (connectB != nullptr) {
+      return ((TrackSegment*) connectB)->isMainline();
+  }
+ } else if (connectC != nullptr) {
+     return ((TrackSegment*)connectC)->getMainline();
+ }
+ return false;
 }
+
 //@Override
 /*public*/ bool LayoutTurnout::isMainline() {
     return (isMainlineA() || isMainlineB() || isMainlineC() || isMainlineD());
@@ -1707,31 +1753,16 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
  */
 /*public*/ void LayoutTurnout::toggleTurnout()
 {
- if ((getTurnout()!=nullptr) && (!disabled))
- {
-  if (disableWhenOccupied)
-  {
-   if(disableOccupiedTurnout())
-   {
-    log->debug("Turnout not changed as Block is Occupied");
-    return;
-   }
-  }
-  // toggle turnout
-  int knownState = ((AbstractTurnout*)getTurnout())->getKnownState();
-  Q_UNUSED(knownState);
-  if (((AbstractTurnout*)getTurnout())->getKnownState()==Turnout::CLOSED)
-  {
-   ((AbstractTurnout*)getTurnout())->setCommandedState(Turnout::THROWN);
-   if(getSecondTurnout()!=nullptr)
-    ((AbstractTurnout*)getSecondTurnout())->setCommandedState(Turnout::THROWN);
-  }
-  else
-  {
-   ((AbstractTurnout*)getTurnout())->setCommandedState(Turnout::CLOSED);
-   if(getSecondTurnout()!=nullptr)
-    ((AbstractTurnout*)getSecondTurnout())->setCommandedState(Turnout::CLOSED);
-  }
+ if (getTurnout() != nullptr) {
+     // toggle turnout
+     if (getTurnout()->getKnownState() == Turnout::CLOSED) {
+         setState(Turnout::THROWN);
+     } else {
+         setState(Turnout::CLOSED);
+     }
+//     invalidate((EditScene*)nullptr);
+ } else {
+     log->debug("Turnout Icon not associated with a Turnout");
  }
 }
 
@@ -2014,33 +2045,33 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
   {
    case RH_TURNOUT:
     //popup.add(tr("RHTurnout"));
-    actionRHTurnout = new QAction(tr("RHTurnout"), this);
-    popup->addAction(actionRHTurnout);
+    //actionRHTurnout = new QAction(tr("RHTurnout"), this);
+    popup->addSection(tr("RH Turnout"));
     break;
    case LH_TURNOUT:
     //popup.add(tr("LHTurnout"));
-    actionLHTurnout = new QAction(tr("LHTurnout"), this);
-    popup->addAction(actionLHTurnout);
+    //actionLHTurnout = new QAction(tr("LHTurnout"), this);
+    popup->addSection(tr("LH Turnout"));
     break;
    case WYE_TURNOUT:
    //popup.add(tr("WYETurnout"));
-    actionWYETurnout = new QAction(tr("WYETurnout"), this);
-      popup->addAction(actionWYETurnout);
+    //actionWYETurnout = new QAction(tr("WYETurnout"), this);
+      popup->addSection(tr("WYETurnout"));
     break;
    case DOUBLE_XOVER:
     //popup.add(tr("XOverTurnout"));
-    actionXOverTurnout = new QAction(tr("Double Crossover"), this);
-      popup->addAction(actionXOverTurnout);
+    //actionXOverTurnout = new QAction(tr("Double Crossover"), this);
+      popup->addSection(tr("Double Crossover"));
     break;
    case RH_XOVER:
     //popup.add(tr("RHXOverTurnout"));
-    actionRHXOverTurnout = new QAction(tr("Right-Hand Crossover "), this);
-    popup->addAction(actionRHXOverTurnout);
+    //actionRHXOverTurnout = new QAction(tr("Right-Hand Crossover "), this);
+    popup->addSection(tr("Right-Hand Crossover "));
     break;
    case LH_XOVER:
     //popup.add(tr("LHXOverTurnout"));
-    actionLHXOverTurnout = new QAction(tr("Left-Hand Crossover "), this);
-    popup->addAction(actionLHXOverTurnout);
+    //actionLHXOverTurnout = new QAction(tr("Left-Hand Crossover "), this);
+    popup->addSection(tr("Left-Hand Crossover "));
     break;
    default : break;
   }
@@ -3909,7 +3940,6 @@ void LayoutTurnout::remove()
      // Skip the block layer if there is no block assigned.
      return;
  }
-// invalidate(g2);
 
  QPointF pA = getCoordsA();
  QPointF pB = getCoordsB();
@@ -3970,9 +4000,17 @@ void LayoutTurnout::remove()
      }
  }
 
+ log->debug(tr("draw1 turnout %1 isMain = %2, state = %3").arg(getTurnoutName()).arg(isMain?"true":"false").arg(getTurnoutStateString(getState())));
+
  int type = getTurnoutType();
- QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+ QGraphicsItemGroup* itemGroupA = new QGraphicsItemGroup();
+ QGraphicsItemGroup* itemGroupB = new QGraphicsItemGroup();
+ QGraphicsItemGroup* itemGroupC = new QGraphicsItemGroup();
+ QGraphicsItemGroup* itemGroupD = new QGraphicsItemGroup();
  QGraphicsLineItem* lineItem;
+
+ invalidate(g2, isMain);
+
  if (type == DOUBLE_XOVER)
  {
   if (state != Turnout::THROWN && state != Turnout::INCONSISTENT)
@@ -3983,13 +4021,13 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pA, pABM));
     lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupA->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
        // g2.draw(new Line2D.Double(pAF, pM));
      lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupA->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineB)
@@ -3999,12 +4037,12 @@ void LayoutTurnout::remove()
 //             g2.draw(new Line2D.Double(pB, pABM));
     lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pABM.x(), pABM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupB->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg) {
         //g2.draw(new Line2D.Double(pBF, pM));
      lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupB->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineC)
@@ -4014,13 +4052,13 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pC, pCDM));
     lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupC->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
      //g2.draw(new Line2D.Double(pCF, pM));
      lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupC->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineD)
@@ -4030,13 +4068,13 @@ void LayoutTurnout::remove()
     //g2.draw(new Line2D.Double(pD, pCDM));
     lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pCDM.x(), pCDM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupD->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
            //g2.draw(new Line2D.Double(pDF, pM));
      lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupD->addToGroup(lineItem);
     }
    }
   }
@@ -4049,16 +4087,16 @@ void LayoutTurnout::remove()
     //g2.draw(new Line2D.Double(pA, pAM));
     lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupA->addToGroup(lineItem);
     //g2.draw(new Line2D.Double(pAM, pM));
     lineItem = new QGraphicsLineItem(pAM.x(), pAM.y(), pM.x(), pM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupA->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg) {
         //g2.draw(new Line2D.Double(pAMP, pABM));
      lineItem = new QGraphicsLineItem(pAMP.x(), pAMP.y(), pABM.x(), pABM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupA->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineB) {
@@ -4067,16 +4105,16 @@ void LayoutTurnout::remove()
     //g2.draw(new Line2D.Double(pB, pBM));
     lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupB->addToGroup(lineItem);
     //g2.draw(new Line2D.Double(pBM, pM));
     lineItem = new QGraphicsLineItem(pBM.x(), pBM.y(), pM.x(), pM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);if (!isBlock || drawUnselectedLeg)
+    itemGroupB->addToGroup(lineItem);if (!isBlock || drawUnselectedLeg)
     {
      //g2.draw(new Line2D.Double(pBMP, pABM));
      lineItem = new QGraphicsLineItem(pBMP.x(), pBMP.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupB->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineC)
@@ -4086,16 +4124,16 @@ void LayoutTurnout::remove()
     //g2.draw(new Line2D.Double(pC, pCM));
     lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupC->addToGroup(lineItem);
     //g2.draw(new Line2D.Double(pCM, pM));
      lineItem = new QGraphicsLineItem(pCM.x(), pCM.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupC->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg) {
         //g2.draw(new Line2D.Double(pCMP, pCDM));
      lineItem = new QGraphicsLineItem(pCMP.x(), pCMP.y(), pCDM.x(), pCDM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupC->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineD)
@@ -4105,17 +4143,17 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pD, pDM));
     lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupD->addToGroup(lineItem);
        //g2.draw(new Line2D.Double(pDM, pM));
     lineItem = new QGraphicsLineItem(pDM.x(), pDM.y(), pM.x(), pM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupD->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
      //g2.draw(new Line2D.Double(pDMP, pCDM));
      lineItem = new QGraphicsLineItem(pDMP.x(), pDMP.y(), pCDM.x(), pCDM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupD->addToGroup(lineItem);
     }
    }
   }
@@ -4128,7 +4166,7 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pA, pAM));
     lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupA->addToGroup(lineItem);
 
    }
    if (isMain == mainlineB) {
@@ -4137,7 +4175,7 @@ void LayoutTurnout::remove()
 //      g2.draw(new Line2D.Double(pB, pBM));
     lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupB->addToGroup(lineItem);
    }
    if (isMain == mainlineC) {
        //g2.setColor(colorC);
@@ -4145,7 +4183,7 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pC, pCM));
     lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupC->addToGroup(lineItem);
    }
    if (isMain == mainlineD) {
        //g2.setColor(colorD);
@@ -4153,7 +4191,7 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pD, pDM));
     lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
+    itemGroupD->addToGroup(lineItem);
    }
    if (!isBlock || drawUnselectedLeg)
    {
@@ -4164,7 +4202,7 @@ void LayoutTurnout::remove()
         //g2.draw(new Line2D.Double(pAF, pM));
      lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupA->addToGroup(lineItem);
     }
     if (isMain == mainlineC) {
         //g2.setColor(colorC);
@@ -4172,7 +4210,7 @@ void LayoutTurnout::remove()
         //g2.draw(new Line2D.Double(pCF, pM));
      lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupC->addToGroup(lineItem);
     }
     if (isMain == mainlineB) {
         //g2.setColor(colorB);
@@ -4180,7 +4218,7 @@ void LayoutTurnout::remove()
         //g2.draw(new Line2D.Double(pBF, pM));
      lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupB->addToGroup(lineItem);
     }
     if (isMain == mainlineD) {
         //g2.setColor(colorD);
@@ -4188,149 +4226,257 @@ void LayoutTurnout::remove()
         //g2.draw(new Line2D.Double(pDF, pM));
      lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
+     itemGroupD->addToGroup(lineItem);
     }
    }
   }
  }
-#if 0
-    else if ((type == RH_XOVER)
-         || (type == LH_XOVER)) {    // draw (rh & lh) cross overs
-     pAF = MathUtil::midPoint(pABM, pM);
-     pBF = MathUtil::midPoint(pABM, pM);
-     pCF = MathUtil::midPoint(pCDM, pM);
-     pDF = MathUtil::midPoint(pCDM, pM);
-     if (state != Turnout.THROWN && state != INCONSISTENT) { // unknown or continuing path - not crossed over
+#if 1
+ else if ((type == RH_XOVER)
+      || (type == LH_XOVER))
+ {    // draw (rh & lh) cross overs
+  pAF = MathUtil::midPoint(pABM, pM);
+  pBF = MathUtil::midPoint(pABM, pM);
+  pCF = MathUtil::midPoint(pCDM, pM);
+  pDF = MathUtil::midPoint(pCDM, pM);
+  if (state != Turnout::THROWN && state != Turnout::INCONSISTENT)
+  { // unknown or continuing path - not crossed over
          if (isMain == mainlineA) {
-             g2.setColor(colorA);
-             g2.draw(new Line2D.Double(pA, pABM));
+             //g2.setColor(colorA);
+          layoutEditor->drawingStroke.setColor(colorA);
+             //g2.draw(new Line2D.Double(pA, pABM));
+          lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
+          lineItem->setPen(layoutEditor->drawingStroke);
+          itemGroupA->addToGroup(lineItem);
          }
          if (isMain == mainlineB) {
-             g2.setColor(colorB);
-             g2.draw(new Line2D.Double(pABM, pB));
+//             g2.setColor(colorB);
+          layoutEditor->drawingStroke.setColor(colorB);
+//             g2.draw(new Line2D.Double(pABM, pB));
+          lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
+          lineItem->setPen(layoutEditor->drawingStroke);
+          itemGroupB->addToGroup(lineItem);
          }
          if (isMain == mainlineC) {
-             g2.setColor(colorC);
-             g2.draw(new Line2D.Double(pC, pCDM));
+             //g2.setColor(colorC);
+          layoutEditor->drawingStroke.setColor(colorC);
+             //g2.draw(new Line2D.Double(pC, pCDM));
+          lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
+          lineItem->setPen(layoutEditor->drawingStroke);
+          itemGroupC->addToGroup(lineItem);
          }
          if (isMain == mainlineD) {
-             g2.setColor(colorD);
-             g2.draw(new Line2D.Double(pCDM, pD));
+             //g2.setColor(colorD);
+          layoutEditor->drawingStroke.setColor(colorD);
+             //g2.draw(new Line2D.Double(pCDM, pD));
+          lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
+          lineItem->setPen(layoutEditor->drawingStroke);
+          itemGroupD->addToGroup(lineItem);
          }
          if (!isBlock || drawUnselectedLeg) {
              if (getTurnoutType() == RH_XOVER) {
                  if (isMain == mainlineA) {
-                     g2.setColor(colorA);
-                     g2.draw(new Line2D.Double(pAF, pM));
+                     //g2.setColor(colorA);
+                  layoutEditor->drawingStroke.setColor(colorA);
+                     //g2.draw(new Line2D.Double(pAF, pM));
+                  lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupA->addToGroup(lineItem);
                  }
                  if (isMain == mainlineC) {
-                     g2.setColor(colorC);
-                     g2.draw(new Line2D.Double(pCF, pM));
+                     //g2.setColor(colorC);
+                  layoutEditor->drawingStroke.setColor(colorC);
+                     //g2.draw(new Line2D.Double(pCF, pM));
+                  lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupC->addToGroup(lineItem);
                  }
              } else if (getTurnoutType() == LH_XOVER) {
                  if (isMain == mainlineB) {
-                     g2.setColor(colorB);
-                     g2.draw(new Line2D.Double(pBF, pM));
+                     //g2.setColor(colorB);
+                  layoutEditor->drawingStroke.setColor(colorB);
+                     //g2.draw(new Line2D.Double(pBF, pM));
+                  lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupB->addToGroup(lineItem);
                  }
                  if (isMain == mainlineD) {
-                     g2.setColor(colorD);
-                     g2.draw(new Line2D.Double(pDF, pM));
+                     //g2.setColor(colorD);
+                  layoutEditor->drawingStroke.setColor(colorD);
+                     //g2.draw(new Line2D.Double(pDF, pM));
+                  lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupD->addToGroup(lineItem);
                  }
              }
          }
      }
-     if (state != Turnout.CLOSED && state != INCONSISTENT) { // unknown or diverting path - crossed over
+     if (state != Turnout::CLOSED && state != Turnout::INCONSISTENT) { // unknown or diverting path - crossed over
          if (getTurnoutType() == RH_XOVER) {
              if (isMain == mainlineA) {
-                 g2.setColor(colorA);
-                 g2.draw(new Line2D.Double(pA, pABM));
-                 g2.draw(new Line2D.Double(pABM, pM));
+                 //g2.setColor(colorA);
+              layoutEditor->drawingStroke.setColor(colorA);
+                 //g2.draw(new Line2D.Double(pA, pABM));
+              lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
+              lineItem->setPen(layoutEditor->drawingStroke);
+              itemGroupA->addToGroup(lineItem);
+                //;g2.draw(new Line2D.Double(pABM, pM));
+                lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
+                lineItem->setPen(layoutEditor->drawingStroke);
+                itemGroupA->addToGroup(lineItem);
              }
              if (!isBlock || drawUnselectedLeg) {
                  if (isMain == mainlineB) {
-                     g2.setColor(colorB);
-                     g2.draw(new Line2D.Double(pBM, pB));
+                     //g2.setColor(colorB);
+                  layoutEditor->drawingStroke.setColor(colorB);
+                     //g2.draw(new Line2D.Double(pBM, pB));
+                  lineItem = new QGraphicsLineItem(pBM.x(), pBM.y(), pB.x(), pB.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupB->addToGroup(lineItem);
                  }
              }
              if (isMain == mainlineC) {
-                 g2.setColor(colorC);
-                 g2.draw(new Line2D.Double(pC, pCDM));
-                 g2.draw(new Line2D.Double(pCDM, pM));
+                 //g2.setColor(colorC);
+              layoutEditor->drawingStroke.setColor(colorC);
+                 //g2.draw(new Line2D.Double(pC, pCDM));
+              lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
+              lineItem->setPen(layoutEditor->drawingStroke);
+              itemGroupC->addToGroup(lineItem);
+              //g2.draw(new Line2D.Double(pCDM, pM));
+              lineItem = new QGraphicsLineItem(pCDM.x(), pCDM.y(), pM.x(), pM.y());
+              lineItem->setPen(layoutEditor->drawingStroke);
+              itemGroupC->addToGroup(lineItem);
              }
              if (!isBlock || drawUnselectedLeg) {
                  if (isMain == mainlineD) {
-                     g2.setColor(colorD);
-                     g2.draw(new Line2D.Double(pDM, pD));
+                     //g2.setColor(colorD);
+                  layoutEditor->drawingStroke.setColor(colorD);
+                     //g2.draw(new Line2D.Double(pDM, pD));
+                  lineItem = new QGraphicsLineItem(pDM.x(), pDM.y(), pD.x(), pD.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupD->addToGroup(lineItem);
                  }
              }
          } else if (getTurnoutType() == LH_XOVER) {
              if (!isBlock || drawUnselectedLeg) {
                  if (isMain == mainlineA) {
-                     g2.setColor(colorA);
-                     g2.draw(new Line2D.Double(pA, pAM));
+                     //g2.setColor(colorA);
+                  layoutEditor->drawingStroke.setColor(colorA);
+                     //g2.draw(new Line2D.Double(pA, pAM));
+                  lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupA->addToGroup(lineItem);
                  }
              }
              if (isMain == mainlineB) {
-                 g2.setColor(colorB);
-                 g2.draw(new Line2D.Double(pB, pABM));
-                 g2.draw(new Line2D.Double(pABM, pM));
-             }
+                 //g2.setColor(colorB);
+              layoutEditor->drawingStroke.setColor(colorB);
+                 //g2.draw(new Line2D.Double(pB, pABM));
+              lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pABM.x(), pABM.y());
+              lineItem->setPen(layoutEditor->drawingStroke);
+              itemGroupB->addToGroup(lineItem);
+              //g2.draw(new Line2D.Double(pABM, pM));
+              lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
+              lineItem->setPen(layoutEditor->drawingStroke);
+              itemGroupB->addToGroup(lineItem);}
              if (!isBlock || drawUnselectedLeg) {
                  if (isMain == mainlineC) {
-                     g2.setColor(colorC);
-                     g2.draw(new Line2D.Double(pC, pCM));
-                 }
+                     //g2.setColor(colorC);
+                  layoutEditor->drawingStroke.setColor(colorC);
+                     //g2.draw(new Line2D.Double(pC, pCM));
+                  lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupC->addToGroup(lineItem);}
              }
              if (isMain == mainlineD) {
-                 g2.setColor(colorD);
-                 g2.draw(new Line2D.Double(pD, pCDM));
-                 g2.draw(new Line2D.Double(pCDM, pM));
-             }
+                 //g2.setColor(colorD);
+              layoutEditor->drawingStroke.setColor(colorD);
+                 //g2.draw(new Line2D.Double(pD, pCDM));
+              lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pCDM.x(), pCDM.y());
+              lineItem->setPen(layoutEditor->drawingStroke);
+              itemGroupD->addToGroup(lineItem);
+              //g2.draw(new Line2D.Double(pCDM, pM));
+              lineItem = new QGraphicsLineItem(pCDM.x(), pCDM.y(), pM.x(), pM.y());
+              lineItem->setPen(layoutEditor->drawingStroke);
+              itemGroupD->addToGroup(lineItem);}
          }
      }
-     if (state == INCONSISTENT) {
+     if (state == Turnout::INCONSISTENT) {
          if (isMain == mainlineA) {
-             g2.setColor(colorA);
-             g2.draw(new Line2D.Double(pA, pAM));
+             //g2.setColor(colorA);
+          layoutEditor->drawingStroke.setColor(colorA);
+             //g2.draw(new Line2D.Double(pA, pAM));
+          lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
+          lineItem->setPen(layoutEditor->drawingStroke);
+          itemGroupA->addToGroup(lineItem);
          }
          if (isMain == mainlineB) {
-             g2.setColor(colorB);
-             g2.draw(new Line2D.Double(pB, pBM));
+             //g2.setColor(colorB);
+          layoutEditor->drawingStroke.setColor(colorB);
+             //g2.draw(new Line2D.Double(pB, pBM));
+          lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
+          lineItem->setPen(layoutEditor->drawingStroke);
+          itemGroupB->addToGroup(lineItem);
          }
          if (isMain == mainlineC) {
-             g2.setColor(colorC);
-             g2.draw(new Line2D.Double(pC, pCM));
+             //g2.setColor(colorC);
+          layoutEditor->drawingStroke.setColor(colorC);
+             //g2.draw(new Line2D.Double(pC, pCM));
+          lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
+          lineItem->setPen(layoutEditor->drawingStroke);
+          itemGroupC->addToGroup(lineItem);
          }
          if (isMain == mainlineD) {
-             g2.setColor(colorD);
-             g2.draw(new Line2D.Double(pD, pDM));
+             //g2.setColor(colorD);
+          layoutEditor->drawingStroke.setColor(colorD);
+             //g2.draw(new Line2D.Double(pD, pDM));
+          lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
+          lineItem->setPen(layoutEditor->drawingStroke);
+          itemGroupD->addToGroup(lineItem);
          }
          if (!isBlock || drawUnselectedLeg) {
              if (getTurnoutType() == RH_XOVER) {
                  if (isMain == mainlineA) {
-                     g2.setColor(colorA);
-                     g2.draw(new Line2D.Double(pAF, pM));
+                     //g2.setColor(colorA);
+                  layoutEditor->drawingStroke.setColor(colorA);
+                     //g2.draw(new Line2D.Double(pAF, pM));
+                  lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupA->addToGroup(lineItem);
                  }
                  if (isMain == mainlineC) {
-                     g2.setColor(colorC);
-                     g2.draw(new Line2D.Double(pCF, pM));
+                     //g2.setColor(colorC);
+                  layoutEditor->drawingStroke.setColor(colorC);
+                     //g2.draw(new Line2D.Double(pCF, pM));
+                  lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupC->addToGroup(lineItem);
                  }
              } else if (getTurnoutType() == LH_XOVER) {
                  if (isMain == mainlineB) {
-                     g2.setColor(colorB);
-                     g2.draw(new Line2D.Double(pBF, pM));
+                     //g2.setColor(colorB);
+                  layoutEditor->drawingStroke.setColor(colorB);
+                     //g2.draw(new Line2D.Double(pBF, pM));
+                  lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupB->addToGroup(lineItem);
                  }
                  if (isMain == mainlineD) {
-                     g2.setColor(colorD);
-                     g2.draw(new Line2D.Double(pDF, pM));
+                     //g2.setColor(colorD);
+                  layoutEditor->drawingStroke.setColor(colorD);
+                     //g2.draw(new Line2D.Double(pDF, pM));
+                  lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
+                  lineItem->setPen(layoutEditor->drawingStroke);
+                  itemGroupD->addToGroup(lineItem);
                  }
              }
          }
      }
- } else if ((type == SINGLE_SLIP) || (type == DOUBLE_SLIP)) {
-     log->error("slips should be being drawn by LayoutSlip sub-class");
  }
 #endif
+ else if ((type == SINGLE_SLIP) || (type == DOUBLE_SLIP)) {
+     log->error("slips should be being drawn by LayoutSlip sub-class");
+ }
     else {    // LH, RH, or WYE Turnouts
      // draw A<===>center
      if (isMain == mainlineA) {
@@ -4339,10 +4485,12 @@ void LayoutTurnout::remove()
          //g2.draw(new Line2D.Double(pA, pM));
       lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pM.x(), pM.y());
       lineItem->setPen(layoutEditor->drawingStroke);
-      itemGroup->addToGroup(lineItem);
+      itemGroupA->addToGroup(lineItem);
      }
 
-     if (state == UNKNOWN || (continuingSense == state && state != Turnout::INCONSISTENT)) { // unknown or continuing path
+
+     if (state == UNKNOWN || (continuingSense == state && state != Turnout::INCONSISTENT))
+     { // unknown or continuing path
          // draw center<===>B
          if (isMain == mainlineB) {
              //g2.setColor(colorB);
@@ -4350,7 +4498,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(pM, pB));
           lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pB.x(), pB.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
+          itemGroupB->addToGroup(lineItem);
          }
      } else if (!isBlock || drawUnselectedLeg) {
          // draw center<--=>B
@@ -4360,7 +4508,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pB), pB));
           lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pB).x(), MathUtil::twoThirdsPoint(pM, pB).y(), pB.x(), pB.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
+          itemGroupB->addToGroup(lineItem);
          }
      }
 
@@ -4374,7 +4522,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(pM, pC));
           lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pC.x(), pC.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
+          itemGroupC->addToGroup(lineItem);
          }
      } else if (!isBlock || drawUnselectedLeg) {
          // draw center<--=>C
@@ -4384,12 +4532,31 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pC), pC));
           lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pC).x(), MathUtil::twoThirdsPoint(pM, pC).y(), pC.x(), pC.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
+          itemGroupC->addToGroup(lineItem);
          }
      }
  }
- item = itemGroup;
- g2->addItem(item);
+ if(isMain)
+ {
+  if(turnoutItemMain == nullptr)
+   turnoutItemMain = new QGraphicsItemGroup();
+  turnoutItemMain->addToGroup(itemGroupA);
+  turnoutItemMain->addToGroup(itemGroupB);
+  turnoutItemMain->addToGroup(itemGroupC);
+  turnoutItemMain->addToGroup(itemGroupD);
+  g2->addItem(turnoutItemMain);
+ }
+ else
+ {
+  if(turnoutItemSide== nullptr)
+   turnoutItemSide = new QGraphicsItemGroup();
+  turnoutItemSide->addToGroup(itemGroupA);
+  turnoutItemSide->addToGroup(itemGroupB);
+  turnoutItemSide->addToGroup(itemGroupC);
+  turnoutItemSide->addToGroup(itemGroupD);
+  g2->addItem(turnoutItemSide);
+ }
+
 }   // draw1
 
 /**
@@ -4399,7 +4566,12 @@ void LayoutTurnout::remove()
 /*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement) {
     int type = getTurnoutType();
 
-//    invalidate(g2);
+    if(turnoutItem!=nullptr && turnoutItem->scene()!=nullptr)
+    {
+     g2->removeItem(turnoutItem);
+     turnoutItem = nullptr;
+    }
+
 
     QPointF pA = getCoordsA();
     QPointF pB = getCoordsB();
@@ -4489,7 +4661,8 @@ void LayoutTurnout::remove()
              lineItem->setPen(layoutEditor->drawingStroke);
              itemGroup->addToGroup(lineItem);
 
-                if (continuingSense == state) {  // unknown or diverting path
+                if (continuingSense == state)
+                {  // unknown or diverting path
 //                         g2.draw(new Line2D.Double(pSR, pFPR));
 //                     } else {
                     //g2.draw(new Line2D.Double(pAPR, pF));
@@ -5119,20 +5292,20 @@ void LayoutTurnout::remove()
             }
             break;
         }   // case LH_XOVER
+#endif
         case SINGLE_SLIP:
         case DOUBLE_SLIP: {
             log->error("slips should be being drawn by LayoutSlip sub-class");
             break;
         }
-#endif
         default: {
             // this should never happen... but...
             log->error("Unknown turnout type: " + type);
             break;
         }
     }
-    item = itemGroup;
-    g2->addItem(itemGroup);
+    turnoutItem = itemGroup;
+    g2->addItem(turnoutItem);
 }
 #if 1
 /**
@@ -5191,6 +5364,11 @@ void LayoutTurnout::remove()
 /*protected*/ void LayoutTurnout::drawEditControls(EditScene* g2)
 {
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+ if(rects!=nullptr && rects->scene()!=nullptr)
+ {
+  g2->removeItem(rects);
+  rects = nullptr;
+ }
 
     QPointF pt = getCoordsA();
     if (getTurnoutType() >= DOUBLE_XOVER && getTurnoutType() <= DOUBLE_SLIP)
@@ -5313,21 +5491,39 @@ void LayoutTurnout::on_rotateItemAction_triggered()
  }
 }
 
-void LayoutTurnout::invalidate(QGraphicsScene *g2)
+void LayoutTurnout::invalidate(EditScene *g2)
 {
- if(item != nullptr && item->scene() != 0)
+ invalidate(turnoutItemMain);
+ invalidate(turnoutItemSide);
+ if(rects!=nullptr && rects->scene()!=nullptr)
  {
-  g2->removeItem(item);
-  item = nullptr;
- }
- if(rects != nullptr && rects->scene() != 0)
- {
-  Q_ASSERT(rects->scene()!=0);
-  g2->removeItem(rects);
+  rects->scene()->removeItem(rects);
+  delete rects;
   rects = nullptr;
  }
+
+}
+void LayoutTurnout::invalidate(EditScene *g2, bool isMain)
+{
+ if(isMain)
+  invalidate(turnoutItemMain);
+ else
+  invalidate(turnoutItemSide);
 }
 
+void LayoutTurnout::invalidate(QGraphicsItemGroup* turnoutItem)
+{
+ if(turnoutItem!=nullptr && turnoutItem->scene())
+ {
+  QRectF r = turnoutItem->boundingRect();
+//  QGraphicsScene* scene = turnoutItem->scene();
+//  scene->removeItem(turnoutItem);
+//  scene->update(r);
+  layoutEditor->getTargetPanel()->removeItem(turnoutItem);
+ }
+ turnoutItem = nullptr;
+}
+#if 0
 void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
 {
  QColor color;
@@ -6300,7 +6496,7 @@ void LayoutTurnout::drawTurnoutCircles(LayoutEditor *editor, QGraphicsScene *g2)
 
 void LayoutTurnout::repaint(LayoutEditor *editor, QGraphicsScene *g2)
 {
- invalidate(g2);
+ //invalidate(g2);
  drawTurnouts(editor, g2);
  if(editor->isEditable())
  {
@@ -6311,8 +6507,10 @@ void LayoutTurnout::repaint(LayoutEditor *editor, QGraphicsScene *g2)
   drawTurnoutCircles(editor, g2);
  }
 }
+#endif
 void LayoutTurnout::redrawPanel()
 {
+ invalidate((EditScene*)nullptr);
  layoutEditor->redrawPanel();
 }
 

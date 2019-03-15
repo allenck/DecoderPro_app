@@ -6,7 +6,6 @@
 #include <QComboBox>
 
 class EditScene;
-class TestState;
 class JmriBeanComboBox;
 class InstanceManager;
 /*static*/ class LIBLAYOUTEDITORSHARED_EXPORT TurnoutState
@@ -110,18 +109,13 @@ public:
      */
     /*public*/ LayoutSlip(QString id, QPointF c, double rot, LayoutEditor* myPanel, int type);
     /*public*/ void setTurnoutType(int slipType);
- /*public*/ void setSlipType(int slipType);
+    /*public*/ void setSlipType(int slipType);
     /*public*/ int getSlipType();
     /*public*/ int getSlipState();
     /*public*/ QString getTurnoutBName() ;
     /*public*/ Turnout* getTurnoutB();
     /*public*/ void setTurnoutB(QString tName);
     /*public*/ QString getDisplayName();
-    /**
-     * Toggle slip states if clicked on, physical turnout exists, and
-     *    not disabled
-     */
-    /*public*/ void toggleState(int selectedPointType);
 
     // operational instance variables (not saved between sessions)
 
@@ -163,7 +157,6 @@ public:
     /*public*/ void scaleCoords(float xFactor, float yFactor);
     double round (double x);
     /*public*/ void setObjects(LayoutEditor* p);
-    void drawSlipState(int state, QPainter* painter);
     /**
      * Clean up when this object is no longer needed.  Should not
      * be called while the object is still displayed; see remove()
@@ -177,8 +170,7 @@ public:
     /**
      * "active" means that the object is still displayed, and should be stored.
      */
-    /*public*/ bool isActive();
-    /*public*/ bool singleSlipStraightEqual();
+
     /*public*/ int getTurnoutState(Turnout* turn, int state);
     /*public*/ int getTurnoutState(int state);
     /*public*/ int getTurnoutBState(int state);
@@ -189,6 +181,9 @@ public:
     /*public*/ void setConnection(int location, LayoutTrack *o, int type) throw (JmriException);
     /*public*/ void drawSlipCircles(EditScene* g2);
     /*public*/ QPointF getCoordsForConnectionType(int connectionType);
+    /*public*/ void toggleState();
+    /*public*/ bool isActive();
+    /*public*/ bool singleSlipStraightEqual();
 
 signals:
     
@@ -201,8 +196,6 @@ public slots:
   void on_setSignalMastsAct_triggered();
   void on_setSensorsAct_triggered();
   /*public*/ void toggleStateTest();
-  void slipEditDonePressed(ActionEvent* a = 0);
-  void slipEditCancelPressed(ActionEvent* a = 0);
 
 private:
     /*private*/ QString turnoutBName;//="";
@@ -229,7 +222,7 @@ private:
  bool editOpen;// = false;
  /*private*/ JmriBeanComboBox* turnoutAComboBox;
  /*private*/ JmriBeanComboBox* turnoutBComboBox;
- TestState* testPanel;
+ /*private*/ bool isTurnoutInconsistent();
 
 protected:
  /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);
@@ -241,33 +234,16 @@ protected:
          /*@Nullable*/ LayoutBlock* prevLayoutBlock,
          /*@Nullable*/ LayoutBlock* nextLayoutBlock,
          bool suppress);
- /*protected*/ void drawTurnoutControls(EditScene* g2, QPen stroke);
+ /*protected*/ void drawTurnoutControls(EditScene* g2);
  /*protected*/ QHash<int, TurnoutState *> getTurnoutStates();
  /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles, bool requireUnconnected);
+ /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
+ /*protected*/ void draw1(EditScene* g2, bool drawMain, bool isBlock);
+ /*protected*/ void draw2(EditScene* g2, bool drawMain, float railDisplacement);
 
 friend class LoadXml;
 friend class LayoutEditor;
-friend class TestState;
 friend class LayoutTrackEditors;
-};
-
-class SampleStates : public QWidget
-{
- Q_OBJECT
- int state;
- LayoutSlip* parent;
-public:
-// Methods, constructors, fields.
-    SampleStates(int state, LayoutSlip* parent);
-    /*public*/ void paintEvent(QPaintEvent* event);
-};
-class TestState : public QWidget
-{
- Q_OBJECT
- LayoutSlip* parent;
-public:
- TestState(LayoutSlip* parent);
- /*public*/ void paintEvent(QPaintEvent* event) ;
 };
 
 #endif // LAYOUTSLIP_H

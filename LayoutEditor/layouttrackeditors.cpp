@@ -1301,9 +1301,9 @@ class SampleStates extends QWidget* {
     if (editLayoutSlipTurnoutBComboBox->getSelectedBean() != nullptr) {
         ((Turnout*) editLayoutSlipTurnoutBComboBox->getSelectedBean())->setCommandedState(turnBState);
     }
-    if (testPanel != nullptr) {
-        testPanel->repaint();
-    }
+//    if (testPanel != nullptr) {
+//        testPanel->repaint();
+//    }
 }   // togleStateTest
 
 #if 0

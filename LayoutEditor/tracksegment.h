@@ -282,18 +282,23 @@ private:
     /*private*/ QAction* flippedCheckBoxMenuItem;// = new JCheckBoxMenuItem(Bundle.getMessage("FlippedCheckBoxMenuItemTitle"));
 
     /*private*/ bool needsRedraw;// = false;
- QGraphicsItem* item;
- QGraphicsItem* circleItem;
- QGraphicsItem* trackOval;
+ QGraphicsItemGroup* itemMain = nullptr;
+ QGraphicsItemGroup* itemSide = nullptr;
+ QGraphicsItem* dashedItem = nullptr;
+
+// QGraphicsItem* circleItem;
+// QGraphicsItem* trackOval;
+ QGraphicsItem* decorationItems = nullptr;
+ QGraphicsItemGroup* rects = nullptr;
  void init(QString ident);
  static Logger* log;
  void drawHiddenTrack(LayoutEditor* editor, QGraphicsScene* g2);
- void invalidate(QGraphicsScene* g2);
+ void invalidate(EditScene *g2);
  void drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, bool mainline);
  /*private*/ void calculateTrackSegmentAngle();
- void drawSolidTrack(LayoutEditor* editor, QGraphicsScene* g2, bool isMainline);
- void drawTrackOvals(LayoutEditor *editor, QGraphicsScene *g2);
- void drawTrackCircleCentre(LayoutEditor *editor, QGraphicsScene *g2);
+// void drawSolidTrack(LayoutEditor* editor, QGraphicsScene* g2, bool isMainline);
+// void drawTrackOvals(LayoutEditor *editor, QGraphicsScene *g2);
+// void drawTrackCircleCentre(LayoutEditor *editor, QGraphicsScene *g2);
  /*private*/ void reCalculateTrackSegmentAngle(double x, double y);
 
  /*private*/ int arrowGap = 1;
@@ -378,8 +383,8 @@ protected:
  /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
  /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
  /*protected*/ void highlightUnconnected(EditScene* g2, int selectedType);
- /*protected*/ void drawEditControls(EditScene* g2, QPen stroke);
- /*protected*/ void drawTurnoutControls(EditScene* g2, QPen stroke);
+ /*protected*/ void drawEditControls(EditScene* g2);
+ /*protected*/ void drawTurnoutControls(EditScene* g2);
  /*protected*/ void showBezierPopUp(QGraphicsSceneMouseEvent* e, int hitPointType);
  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
  /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();

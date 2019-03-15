@@ -69,6 +69,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -20246,6 +20247,28 @@ if (_wrapper) {
 }
   LayoutTrack::highlightUnconnected(g20, specificType1);
 }
+void PythonQtShell_LayoutTrack::invalidate(EditScene*  g20)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("invalidate");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&g20};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTrack::invalidate(g20);
+}
 bool  PythonQtShell_LayoutTrack::isDisconnected(int  connectionType0)
 {
 if (_wrapper) {
@@ -20665,6 +20688,11 @@ void PythonQtWrapper_LayoutTrack::highlightUnconnected(LayoutTrack* theWrappedOb
 void PythonQtWrapper_LayoutTrack::highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2, int  specificType)
 {
   ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_highlightUnconnected(g2, specificType));
+}
+
+void PythonQtWrapper_LayoutTrack::invalidate(LayoutTrack* theWrappedObject, EditScene*  g2)
+{
+  ( theWrappedObject->invalidate(g2));
 }
 
 bool  PythonQtWrapper_LayoutTrack::static_LayoutTrack_isConnectionHitType(int  hitType)
@@ -21631,11 +21659,6 @@ void PythonQtWrapper_LayoutTurnout::addViewPopUpMenu(LayoutTurnout* theWrappedOb
 void PythonQtWrapper_LayoutTurnout::dispose(LayoutTurnout* theWrappedObject)
 {
   ( theWrappedObject->dispose());
-}
-
-void PythonQtWrapper_LayoutTurnout::drawTurnoutRects(LayoutTurnout* theWrappedObject, LayoutEditor*  editor, QGraphicsScene*  g2)
-{
-  ( theWrappedObject->drawTurnoutRects(editor, g2));
 }
 
 QString  PythonQtWrapper_LayoutTurnout::getBlockBName(LayoutTurnout* theWrappedObject)

@@ -42,7 +42,7 @@
 //{
 
     // Defined text resource
-//    ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.display.layoutEditor.LayoutEditorBundle");
+//    ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.display.LayoutEditor::LayoutEditorBundle");
 
     // operational instance variables (not saved between sessions)
 
@@ -50,7 +50,7 @@
  : LayoutTrack(id, c, layoutEditor,parent)
 {
  setObjectName(id);
- instance = NULL;
+ instance = nullptr;
  this->layoutEditor = layoutEditor;
  // initialization instance variables (used when loading a LayoutEditor)
  trackSegment1Name = "";
@@ -59,17 +59,17 @@
  // persistent instances variables (saved between sessions)
  //ident = "";
  type = 0;
- connect1 = NULL;
- connect2 = NULL;
+ connect1 = nullptr;
+ connect2 = nullptr;
  //coords = QPointF(10.0,10.0);
  //eastBoundSignalName = ""; // signal head for east (south) bound trains
  //westBoundSignalName = ""; // signal head for west (north) bound trains
  /* We use a namedbeanhandle for the the sensors, even though we only store the name here,
         this is so that we can keep up with moves and changes of userNames */
- eastBoundSensorNamed = NULL;
- westBoundSensorNamed = NULL;
- eastBoundSignalMastNamed = NULL;
- westBoundSignalMastNamed = NULL;
+ eastBoundSensorNamed = nullptr;
+ westBoundSensorNamed = nullptr;
+ eastBoundSignalMastNamed = nullptr;
+ westBoundSignalMastNamed = nullptr;
 
  //eastBoundSignalMastName = "";
  //westBoundSignalMastName = "";
@@ -81,19 +81,19 @@
  }
  else
  {
-  log.error("Illegal type of PositionablePoint - "+t);
+  log->error("Illegal type of PositionablePoint - "+t);
   type = ANCHOR;
  }
  //ident = id;
  //coords = p;
- popup = NULL;
+ popup = nullptr;
  active = true;
- //tools = NULL;
+ //tools = nullptr;
  // cursor location reference for this move (relative to object)
  xClick = 0;
  yClick = 0;
-// item = NULL;
- editLink = NULL;
+// item = nullptr;
+ editLink = nullptr;
 
 }
 
@@ -125,13 +125,13 @@
 /**
  * Accessor methods
 */
-/*public*/ QString PositionablePoint::getID() {return ident;}
+///*public*/ QString PositionablePoint::getID() {return ident;}
 /*public*/ int PositionablePoint::getType() {return type;}
 
 /*public*/ TrackSegment* PositionablePoint::getConnect1() {return connect1;}
 /*public*/ TrackSegment* PositionablePoint::getConnect2()
 {
- if (type == EDGE_CONNECTOR && getLinkedPoint() != NULL) {
+ if (type == EDGE_CONNECTOR && getLinkedPoint() != nullptr) {
      return getLinkedPoint()->getConnect1();
  }
  return connect2;
@@ -140,7 +140,7 @@
 /*public*/ void PositionablePoint::setCoords(QPointF p) {coords = p;}
 
 /*public*/ QString PositionablePoint::getLinkEditorName() {
-    if (getLinkedEditor() != NULL) {
+    if (getLinkedEditor() != nullptr) {
         return getLinkedEditor()->getLayoutName();
     }
     return "";
@@ -151,8 +151,8 @@
 }
 
 /*public*/ QString PositionablePoint::getLinkedPointId() {
-    if (linkedPoint != NULL) {
-        return linkedPoint->getID();
+    if (linkedPoint != nullptr) {
+        return linkedPoint->getId();
     }
     return "";
 }
@@ -161,28 +161,28 @@
     if (p == linkedPoint) {
         return;
     }
-    if (linkedPoint != NULL && linkedPoint != p) {
+    if (linkedPoint != nullptr && linkedPoint != p) {
         PositionablePoint* oldLinkedPoint = linkedPoint;
-        linkedPoint = NULL;
-        if (oldLinkedPoint->getLinkedPoint() != NULL) {
-            oldLinkedPoint->setLinkedPoint(NULL);
+        linkedPoint = nullptr;
+        if (oldLinkedPoint->getLinkedPoint() != nullptr) {
+            oldLinkedPoint->setLinkedPoint(nullptr);
         }
-        if (oldLinkedPoint->getConnect1() != NULL) {
+        if (oldLinkedPoint->getConnect1() != nullptr) {
             TrackSegment* ts = oldLinkedPoint->getConnect1();
             oldLinkedPoint->getLayoutEditor()->auxTools->setBlockConnectivityChanged();
             ts->updateBlockInfo();
             oldLinkedPoint->getLayoutEditor()->repaint();
         }
-        if (getConnect1() != NULL) {
+        if (getConnect1() != nullptr) {
             layoutEditor->auxTools->setBlockConnectivityChanged();
             getConnect1()->updateBlockInfo();
             layoutEditor->repaint();
         }
     }
     linkedPoint = p;
-    if (p != NULL) {
+    if (p != nullptr) {
         p->setLinkedPoint(this);
-        if (getConnect1() != NULL) {
+        if (getConnect1() != nullptr) {
             layoutEditor->auxTools->setBlockConnectivityChanged();
             getConnect1()->updateBlockInfo();
             layoutEditor->repaint();
@@ -191,17 +191,17 @@
 }
 
 /*public*/ LayoutEditor* PositionablePoint::getLinkedEditor() {
-    if (getLinkedPoint() != NULL) {
+    if (getLinkedPoint() != nullptr) {
         return getLinkedPoint()->getLayoutEditor();
     }
-    return NULL;
+    return nullptr;
 }
 
 /*protected*/ LayoutEditor* PositionablePoint::getLayoutEditor() {
     return layoutEditor;
 }
 //@CheckReturnValue
-//@Nonnull
+//@Nonnullptr
 /*public*/ QString PositionablePoint::getEastBoundSignal() {
     SignalHead* h = getEastBoundSignalHead();
     if (h != nullptr) {
@@ -254,7 +254,7 @@
     }
 }
 
-/*private*/ void PositionablePoint::setEastBoundSignalName(/*@CheckForNull*/ QString signalHead) {
+/*private*/ void PositionablePoint::setEastBoundSignalName(/*@CheckFornullptr*/ QString signalHead) {
     if (signalHead == "" || signalHead.isEmpty()) {
         signalEastHeadNamed = nullptr;
         return;
@@ -269,7 +269,7 @@
 }
 
 //@CheckReturnValue
-//@Nonnull
+//@Nonnullptr
 /*public*/ QString PositionablePoint::getWestBoundSignal() {
     SignalHead* h = getWestBoundSignalHead();
     if (h != nullptr) {
@@ -322,7 +322,7 @@
     }
 }
 
-/*private*/ void PositionablePoint::setWestBoundSignalName(/*@CheckForNull*/ QString signalHead) {
+/*private*/ void PositionablePoint::setWestBoundSignalName(/*@CheckFornullptr*/ QString signalHead) {
     if (signalHead == "" || signalHead.isEmpty()) {
         signalWestHeadNamed = nullptr;
         return;
@@ -337,55 +337,55 @@
 }
 
 /*public*/ QString PositionablePoint::getEastBoundSensorName() {
-    if (eastBoundSensorNamed != NULL) {
+    if (eastBoundSensorNamed != nullptr) {
         return eastBoundSensorNamed->getName();
     }
     return "";
 }
 /*public*/ Sensor* PositionablePoint::getEastBoundSensor() {
-    if(eastBoundSensorNamed!=NULL)
+    if(eastBoundSensorNamed!=nullptr)
         return eastBoundSensorNamed->getBean();
     return nullptr;
 }
 /*public*/ void PositionablePoint::setEastBoundSensor(QString sensorName) {
-    if(sensorName==NULL || sensorName==("")){
-        eastBoundSensorNamed=NULL;
+    if(sensorName==nullptr || sensorName==("")){
+        eastBoundSensorNamed=nullptr;
         return;
     }
 
     Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(sensorName);
-    if (sensor != NULL) {
+    if (sensor != nullptr) {
         eastBoundSensorNamed =((NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(sensorName, sensor);
     } else {
-        eastBoundSensorNamed=NULL;
+        eastBoundSensorNamed=nullptr;
     }
 }
 
 /*public*/ QString PositionablePoint::getWestBoundSensorName() {
-        if (westBoundSensorNamed != NULL) {
+        if (westBoundSensorNamed != nullptr) {
             return westBoundSensorNamed->getName();
         }
         return "";
     }
 /*public*/ Sensor* PositionablePoint::getWestBoundSensor() {
-    if(westBoundSensorNamed!=NULL)
+    if(westBoundSensorNamed!=nullptr)
         return westBoundSensorNamed->getBean();
     return nullptr;
 }
 /*public*/ void PositionablePoint::setWestBoundSensor(QString sensorName) {
-    if(sensorName==NULL || sensorName==("")){
-        westBoundSensorNamed=NULL;
+    if(sensorName==nullptr || sensorName==("")){
+        westBoundSensorNamed=nullptr;
         return;
     }
     Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(sensorName);
-    if (sensor != NULL) {
+    if (sensor != nullptr) {
         westBoundSensorNamed =((NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(sensorName, sensor);
     } else {
-        westBoundSensorNamed=NULL;
+        westBoundSensorNamed=nullptr;
     }
 }
 /*public*/ QString PositionablePoint::getEastBoundSignalMastName() {
-        if (getEastBoundSignalMastNamed() != NULL) {
+        if (getEastBoundSignalMastNamed() != nullptr) {
             return getEastBoundSignalMastNamed()->getName();
         }
         return "";
@@ -405,7 +405,7 @@
      int dir = getConnect1Dir();
      if (dir == Path::SOUTH || dir == Path::EAST || dir == Path::SOUTH + Path::EAST) {
          return eastBoundSignalMastNamed;
-     } else if (getLinkedPoint() != NULL) {
+     } else if (getLinkedPoint() != nullptr) {
          int linkDir = getLinkedPoint()->getConnect1Dir();
          if (linkDir == Path::SOUTH || linkDir == Path::EAST || linkDir == Path::SOUTH + Path::EAST) {
              return getLinkedPoint()->getEastBoundSignalMastNamed();
@@ -424,7 +424,7 @@
   {
    return westBoundSignalMastNamed;
   }
-  else if (getLinkedPoint() != NULL)
+  else if (getLinkedPoint() != nullptr)
   {
    int linkDir = getLinkedPoint()->getConnect1Dir();
    if (linkDir == Path::SOUTH || linkDir == Path::EAST || linkDir == Path::SOUTH + Path::EAST) {
@@ -440,7 +440,7 @@
     if (signalMast != "" && !signalMast.isEmpty()) {
         mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
         if (mast == nullptr) {
-            log.error("Unable to find Signal Mast " + signalMast);
+            log->error("Unable to find Signal Mast " + signalMast);
             return;
         }
     } else {
@@ -467,7 +467,7 @@
 }
 
 /*public*/ QString PositionablePoint::getWestBoundSignalMastName() {
-        if (getWestBoundSignalMastNamed() != NULL) {
+        if (getWestBoundSignalMastNamed() != nullptr) {
             return getWestBoundSignalMastNamed()->getName();
         }
         return "";
@@ -485,7 +485,7 @@ return nullptr;
         if (signalMast != "" && !signalMast.isEmpty()) {
             mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
             if (mast == nullptr) {
-                log.error("Unable to find Signal Mast " + signalMast);
+                log->error("Unable to find Signal Mast " + signalMast);
                 return;
             }
         } else {
@@ -554,15 +554,15 @@ return nullptr;
  * Setup and remove connections to track
  */
 /*public*/ bool PositionablePoint::setTrackConnection (TrackSegment* track) {
-    if (track==NULL) {
+    if (track==nullptr) {
         return false;
     }
     if ( (connect1!=track) && (connect2!=track) ) {
         // not connected to this track
-        if (connect1==NULL) {
+        if (connect1==nullptr) {
             connect1 = track;
         }
-        else if ( (type!=END_BUMPER) && (connect2==NULL) ) {
+        else if ( (type!=END_BUMPER) && (connect2==nullptr) ) {
             connect2 = track;
             if(connect1->getLayoutBlock()==connect2->getLayoutBlock()){
                 setWestBoundSignalMast("");
@@ -572,7 +572,7 @@ return nullptr;
             }
         }
         else {
-            log.error ("Attempt to assign more than allowed number of connections");
+            log->error ("Attempt to assign more than allowed number of connections");
             return false;
         }
     }
@@ -583,15 +583,15 @@ return nullptr;
 {
     if (track==connect1)
     {
-        connect1 = NULL;
+        connect1 = nullptr;
         reCheckBlockBoundary();
     }
     else if (track==connect2) {
-        connect2 = NULL;
+        connect2 = nullptr;
         reCheckBlockBoundary();
     }
     else {
-        log.error ("Attempt to remove non-existant track connection");
+        log->error ("Attempt to remove non-existant track connection");
     }
 }
 
@@ -602,9 +602,9 @@ return nullptr;
  * @param newTrack the new track connection
  * @return true if successful
  */
-/*public*/ bool PositionablePoint::replaceTrackConnection(/*@Nullable*/ TrackSegment* oldTrack,/* @Nullable */TrackSegment* newTrack) {
+/*public*/ bool PositionablePoint::replaceTrackConnection(/*@nullptrable*/ TrackSegment* oldTrack,/* @nullptrable */TrackSegment* newTrack) {
     bool result = false; // assume failure (pessimist!)
-    // trying to replace old track with null?
+    // trying to replace old track with nullptr?
     if (newTrack == nullptr) {
         // (yes) remove old connection
         if (oldTrack != nullptr) {
@@ -622,10 +622,10 @@ return nullptr;
                 result = false; // didn't find old connection
             }
         } else {
-            result = false; // can't replace null with null
+            result = false; // can't replace nullptr with nullptr
         }
         if (!result) {
-            log.error(tr("Attempt to remove non-existant track connection: %1").arg(oldTrack->getName()));
+            log->error(tr("Attempt to remove non-existant track connection: %1").arg(oldTrack->getName()));
         }
     } else // already connected to newTrack?
     if ((connect1 != newTrack) && (connect2 != newTrack)) {
@@ -642,11 +642,11 @@ return nullptr;
                 setEastBoundSensor("");
             }
         } else {
-            log.error("Attempt to assign more than allowed number of connections");
+            log->error("Attempt to assign more than allowed number of connections");
             result = false;
         }
     } else {
-        log.error(tr("Already connected to %1").arg(newTrack->getName()));
+        log->error(tr("Already connected to %1").arg(newTrack->getName()));
         result = false;
     }
     return result;
@@ -673,7 +673,7 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
     if (connectionType == POS_POINT) {
         result = ((getConnect1() == nullptr) || (getConnect2() == nullptr));
     } else {
-        log.error("Invalid connection type " + connectionType); //I18IN
+        log->error("Invalid connection type " + connectionType); //I18IN
     }
     return result;
 }
@@ -726,7 +726,14 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::drawEditControls(EditScene* g2, QPen stroke) {
+/*protected*/ void PositionablePoint::drawEditControls(EditScene* g2)
+{
+ QPen stroke = QPen(Qt::black, 1);
+ if(rects!=nullptr && rects->scene()!=nullptr)
+ {
+  g2->removeItem(rects);
+  rects = nullptr;
+ }
  TrackSegment* ts1 = getConnect1();
  if (ts1 == nullptr)
  {
@@ -753,8 +760,8 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
  //g2.draw(layoutEditor->trackEditControlRectAt(getCoordsCenter()));
  QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsCenter()));
    rectItem->setPen(stroke);
- item = rectItem;
- g2->addItem(item);
+ rects = rectItem;
+ g2->addItem(rects);
 
 }   // drawEditControls
 
@@ -770,7 +777,7 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
 /*public*/ void PositionablePoint::reCheckBlockBoundary(){
     if(type==END_BUMPER)
         return;
-    if(connect1==NULL && connect2==NULL){
+    if(connect1==nullptr && connect2==nullptr){
         //This is no longer a block boundary, therefore will remove signal masts and sensors if present
 //        if(!getWestBoundSignalMast().equals(""))
 //            removeSML(getWestBoundSignalMast());
@@ -781,7 +788,7 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
         setWestBoundSensor("");
         setEastBoundSensor("");
         //May want to look at a method to remove the assigned mast from the panel and potentially any SignalMast logics generated
-    }  else if(connect1==NULL || connect2==NULL){
+    }  else if(connect1==nullptr || connect2==nullptr){
         //could still be in the process of rebuilding the point details
         return;
     } else if (connect1->getLayoutBlock()==connect2->getLayoutBlock()){
@@ -800,12 +807,12 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
 #if 0 // TODO:
 
 void removeSML(QString signalMast){
-    if(signalMast==NULL || signalMast.equals(""))
+    if(signalMast==nullptr || signalMast.equals(""))
         return;
     jmri.SignalMast mast = jmri.InstanceManager.signalMastManagerInstance().getSignalMast(signalMast);
     if(jmri.InstanceManager.layoutBlockManagerInstance().isAdvancedRoutingEnabled() && InstanceManager.signalMastLogicManagerInstance().isSignalMastUsed(mast)){
-        if(SignallingGuiTools.removeSignalMastLogic(NULL, mast)){
-            if (tools == NULL) {
+        if(SignallingGuiTools.removeSignalMastLogic(nullptr, mast)){
+            if (tools == nullptr) {
                 tools = new LayoutEditorTools(layoutEditor);
             }
             tools.removeSignalMastFromPanel(signalMast);
@@ -824,7 +831,7 @@ void removeSML(QString signalMast){
     // remember where we are
     xClick = e->scenePos().x();
     yClick = e->scenePos().y();
-    // if (debug) log.debug("Pressed: "+where(e));
+    // if (debug) log->debug("Pressed: "+where(e));
 //    if (e.isPopupTrigger()) {
 //        showPopUp(e);
 //    }
@@ -832,7 +839,7 @@ void removeSML(QString signalMast){
 
 /*public*/ void PositionablePoint::mouseReleased(QGraphicsSceneMouseEvent* e)
 {
- // if (debug) log.debug("Release: "+where(e));
+ // if (debug) log->debug("Release: "+where(e));
  //if (e.isPopupTrigger())
  if((e->buttons()& Qt::RightButton) != 0)
  {
@@ -854,7 +861,7 @@ void removeSML(QString signalMast){
  */
 /*protected*/ void PositionablePoint::showPopUp(QGraphicsSceneMouseEvent* /*e*/)
 {
- if (popup != NULL )
+ if (popup != nullptr )
  {
   popup->clear();
  }
@@ -868,16 +875,16 @@ void removeSML(QString signalMast){
  {
  case ANCHOR:
  {
-  popup->addAction(new QAction(tr("Anchor ")+ getID(),this));
-  LayoutBlock* block1 = NULL;
-  LayoutBlock* block2 = NULL;
-  if (connect1!=NULL) block1 = connect1->getLayoutBlock();
-  if (connect2!=NULL) block2 = connect2->getLayoutBlock();
-  if ( (block1!=NULL) && (block1==block2) )
+  popup->addAction(new QAction(tr("Anchor ")+ getId(),this));
+  LayoutBlock* block1 = nullptr;
+  LayoutBlock* block2 = nullptr;
+  if (connect1!=nullptr) block1 = connect1->getLayoutBlock();
+  if (connect2!=nullptr) block2 = connect2->getLayoutBlock();
+  if ( (block1!=nullptr) && (block1==block2) )
   {
    popup->addAction(new QAction(tr("Block")+": "+block1->getID(),this));
   }
-  else if ( (block1!=NULL) && (block2!=NULL) && (block1!=block2) )
+  else if ( (block1!=nullptr) && (block2!=nullptr) && (block1!=block2) )
   {
    popup->addAction(new QAction(tr("BlockDivider"),this));
    popup->addAction(new QAction(" "+tr("Block1ID")+": "+block1->getID(),this));
@@ -888,10 +895,10 @@ void removeSML(QString signalMast){
  }
  case END_BUMPER:
  {
-  popup->addAction(new QAction(tr("End Bumper ")+ getID() ,this));
-  LayoutBlock* blockEnd = NULL;
-  if (connect1!=NULL) blockEnd = connect1->getLayoutBlock();
-  if (blockEnd!=NULL)
+  popup->addAction(new QAction(tr("End Bumper ")+ getId() ,this));
+  LayoutBlock* blockEnd = nullptr;
+  if (connect1!=nullptr) blockEnd = connect1->getLayoutBlock();
+  if (blockEnd!=nullptr)
   {
    popup->addAction(new QAction(tr("BlockID")+": "+blockEnd->getID(),this));
   }
@@ -906,7 +913,7 @@ void removeSML(QString signalMast){
 // {
 //  /*public*/ void actionPerformed(ActionEvent e)
 //  {
-//   if (layoutEditor.removePositionablePoint(instance))
+//   if (LayoutEditor::removePositionablePoint(instance))
 //   {
 //    // user is serious about removing this point from the panel
 //    remove();
@@ -935,31 +942,31 @@ void removeSML(QString signalMast){
     popup->addAction(act =new QAction(tr("Set Signals"), this));
 //   {
 //                /*public*/ void actionPerformed(ActionEvent e) {
-//                if (tools == NULL) {
+//                if (tools == nullptr) {
 //                    tools = new LayoutEditorTools(layoutEditor);
 //                }
 //                // bring up signals at level crossing tool dialog
 //                tools.setSignalsAtBlockBoundaryFromMenu(instance,
-//                    layoutEditor.signalIconEditor,layoutEditor.signalFrame);
+//                    LayoutEditor::signalIconEditor,LayoutEditor::signalFrame);
 //                }
 //            });
    connect(act, SIGNAL(triggered()), this, SLOT(On_setSignals()));
    popup->addAction(act = new QAction(tr("Set Sensors"), this));
 //   {
 //       /*public*/ void actionPerformed(ActionEvent event) {
-//           if (tools == NULL) {
+//           if (tools == nullptr) {
 //               tools = new LayoutEditorTools(layoutEditor);
 //           }
 //           // bring up signals at block boundary tool dialog
 //           tools.setSensorsAtBlockBoundaryFromMenu(instance,
-//               layoutEditor.sensorIconEditor,layoutEditor.sensorFrame);
+//               LayoutEditor::sensorIconEditor,LayoutEditor::sensorFrame);
 //       }
 //   });
      connect(act, SIGNAL(triggered()), this, SLOT(On_setSensors()));
    popup->addAction(act = new QAction(tr("Set Signal Masts"), this));
 //   {
 //       /*public*/ void actionPerformed(ActionEvent event) {
-//           if (tools == NULL) {
+//           if (tools == nullptr) {
 //               tools = new LayoutEditorTools(layoutEditor);
 //           }
 //           // bring up signals at block boundary tool dialog
@@ -973,19 +980,19 @@ void removeSML(QString signalMast){
         popup->addAction(act = new QAction(tr("Set Sensors"), this));
 //        {
 //            /*public*/ void actionPerformed(ActionEvent event) {
-//                if (tools == NULL) {
+//                if (tools == nullptr) {
 //                    tools = new LayoutEditorTools(layoutEditor);
 //                }
 //                // bring up signals at block boundary tool dialog
 //                tools.setSensorsAtBlockBoundaryFromMenu(instance,
-//                    layoutEditor.sensorIconEditor,layoutEditor.sensorFrame);
+//                    LayoutEditor::sensorIconEditor,LayoutEditor::sensorFrame);
 //            }
 //        });
           connect(act, SIGNAL(triggered()), this, SLOT(On_setSensors()));
         popup->addAction(act = new QAction(tr("Set Signal Masts"),this));
 //        {
 //            /*public*/ void actionPerformed(ActionEvent event) {
-//                if (tools == NULL) {
+//                if (tools == nullptr) {
 //                    tools = new LayoutEditorTools(layoutEditor);
 //                }
 //                // bring up signals at block boundary tool dialog
@@ -1030,8 +1037,8 @@ void PositionablePoint::On_setSignalMasts()
  */
 void PositionablePoint::dispose()
 {
- if (popup != NULL) popup->clear();
- popup = NULL;
+ if (popup != nullptr) popup->clear();
+ popup = nullptr;
 }
 
 void PositionablePoint::removeLinkedPoint() {
@@ -1047,7 +1054,7 @@ void PositionablePoint::removeLinkedPoint() {
          ts->updateBlockInfo();
      }
      linkedPoint = nullptr;
-     //linkedEditor=null;
+     //linkedEditor=nullptr;
  }
 }
 /**
@@ -1069,8 +1076,8 @@ void PositionablePoint::remove()
 
 void PositionablePoint::setLink()
 {
- if (getConnect1() == NULL || getConnect1()->getLayoutBlock() == NULL) {
-     log.error("Can not set link until we have a connecting track with a block assigned");
+ if (getConnect1() == nullptr || getConnect1()->getLayoutBlock() == nullptr) {
+     log->error("Can not set link until we have a connecting track with a block assigned");
      return;
  }
  editLink = new JDialog();
@@ -1164,8 +1171,8 @@ void PositionablePoint::updatePointBox() {
                 pointList->append(p);
                 linkPointsBox->addItem(p->getConnect2()->getLayoutBlock()->getDisplayName());
                 linkPointsBox->setCurrentText(p->getConnect2()->getLayoutBlock()->getDisplayName());
-            } else if (p->getLinkedPoint() == NULL) {
-                if (p->getConnect1() != NULL && p->getConnect1()->getLayoutBlock() != NULL) {
+            } else if (p->getLinkedPoint() == nullptr) {
+                if (p->getConnect1() != nullptr && p->getConnect1()->getLayoutBlock() != nullptr) {
                     if (p->getConnect1()->getLayoutBlock() != getConnect1()->getLayoutBlock() && ourDir != p->getConnect1Dir()) {
                         pointList->append(p);
                         linkPointsBox->addItem(p->getConnect1()->getLayoutBlock()->getDisplayName());
@@ -1180,9 +1187,9 @@ void PositionablePoint::updatePointBox() {
 
 /*public*/ void PositionablePoint::updateLink() {
     if (editorCombo->currentIndex() == 0 || linkPointsBox->currentIndex() == -1) {
-        if (getLinkedPoint() != NULL && getConnect2() != NULL) {
-            QString removeremote = NULL;
-            QString removelocal = NULL;
+        if (getLinkedPoint() != nullptr && getConnect2() != nullptr) {
+            QString removeremote = nullptr;
+            QString removelocal = nullptr;
             if (getConnect1Dir() == Path::EAST || getConnect1Dir() == Path::SOUTH) {
                 removeremote = getLinkedPoint()->getEastBoundSignal();
                 removelocal = getWestBoundSignal();
@@ -1204,7 +1211,7 @@ void PositionablePoint::updatePointBox() {
                 BlockBossLogic::getStoppedObject(removelocal);
             }
         }
-        setLinkedPoint(NULL);
+        setLinkedPoint(nullptr);
     } else {
         setLinkedPoint(pointList->at(linkPointsBox->currentIndex()));
     }
@@ -1253,7 +1260,7 @@ void PositionablePoint::updatePointBox() {
 /*public*/ QPointF PositionablePoint::getCoordsForConnectionType(int connectionType) {
     QPointF result = getCoordsCenter();
     if (connectionType != POS_POINT) {
-        log.error("Invalid connection type " + QString::number(connectionType)); //I18IN
+        log->error("Invalid connection type " + QString::number(connectionType)); //I18IN
     }
     return result;
 }
@@ -1270,7 +1277,7 @@ void PositionablePoint::updatePointBox() {
             result = getConnect2();
         }
     } else {
-        log.error("Invalid connection type " + QString::number(connectionType)); //I18IN
+        log->error("Invalid connection type " + QString::number(connectionType)); //I18IN
         throw JmriException("Invalid Point");
     }
     return result;
@@ -1282,11 +1289,11 @@ void PositionablePoint::updatePointBox() {
 //@Override
 /*public*/ void PositionablePoint::setConnection(int connectionType, LayoutTrack *o, int type) throw (JmriException) {
     if ((type != TRACK) && (type != NONE)) {
-        log.error("unexpected type of connection to positionable point - " + QString::number(type));
+        log->error("unexpected type of connection to positionable point - " + QString::number(type));
         throw JmriException("unexpected type of connection to positionable point - " + QString::number(type));
     }
     if (connectionType != POS_POINT) {
-        log.error("Invalid Connection Type " + QString::number(connectionType)); //I18IN
+        log->error("Invalid Connection Type " + QString::number(connectionType)); //I18IN
         throw JmriException("Invalid Connection Type " + QString::number(connectionType));
     }
 }
@@ -1303,16 +1310,16 @@ void PositionablePoint::on_actRemove_triggered()
 }
 void PositionablePoint::invalidate(EditScene* g2)
 {
- if(item != NULL)
+ if(item != nullptr)
  {
   //Q_ASSERT(item->scene()!=0);
   if(item->scene()!= nullptr)
    g2->removeItem(item);
-  item = NULL;
+  item = nullptr;
  }
 }
 #if 1
-void PositionablePoint::draw(QGraphicsScene* g2)
+void PositionablePoint::draw(EditScene* g2)
 {
     QColor color;
     QGraphicsRectItem* rectItem;
@@ -1324,7 +1331,7 @@ void PositionablePoint::draw(QGraphicsScene* g2)
       {
        // in edit mode, draw locater rectangle
        QPointF pt = getCoordsCenter(); // getCoords()
-       if ((getConnect1()==NULL) || (getConnect2()==NULL))
+       if ((getConnect1()==nullptr) || (getConnect2()==nullptr))
        {
         //g2.setColor(Color.red);
         color = QColor(Qt::red);
@@ -1349,7 +1356,7 @@ void PositionablePoint::draw(QGraphicsScene* g2)
      {
       // in edit mode, draw locater rectangle
       QPointF pt = getCoordsCenter();
-      if (getConnect1()==NULL)
+      if (getConnect1()==nullptr)
        {
         //g2.setColor(Color.red);
         color = QColor(Qt::red);
@@ -1366,7 +1373,7 @@ void PositionablePoint::draw(QGraphicsScene* g2)
       }
       break;
      default:
-     log.error("Illegal type of Positionable Point");
+     log->error("Illegal type of Positionable Point");
     }
     g2->addItem(item);
 }
@@ -1386,3 +1393,242 @@ void PositionablePoint::draw(QGraphicsScene* g2)
  }
  return result;
 }
+/*
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ QList<LayoutConnectivity*> PositionablePoint::getLayoutConnectivity() {
+    QList<LayoutConnectivity*> results = QList<LayoutConnectivity*>();
+    LayoutConnectivity* lc = nullptr;
+    LayoutBlock* blk1 = nullptr, *blk2 = nullptr;
+    TrackSegment* ts1 = getConnect1();
+    QPointF p1, p2;
+
+    if (getType() == ANCHOR) {
+        TrackSegment* ts2 = getConnect2();
+        if ((ts1 != nullptr) && (ts2 != nullptr)) {
+            blk1 = ts1->getLayoutBlock();
+            blk2 = ts2->getLayoutBlock();
+            if ((blk1 != nullptr) && (blk2 != nullptr) && (blk1 != blk2)) {
+                // this is a block boundary, create a LayoutConnectivity
+                log->debug(tr("Block boundary ('%1'<->'%2') found at %3").arg(blk1->getDisplayName()).arg(blk2->getDisplayName()).arg(this->getId()));
+                lc = new LayoutConnectivity(blk1, blk2);
+                // determine direction from block 1 to block 2
+                if (ts1->getConnect1() == this) {
+                    p1 = LayoutEditor::getCoords(ts1->getConnect2(), ts1->getType2());
+                } else {
+                    p1 = LayoutEditor::getCoords(ts1->getConnect1(), ts1->getType1());
+                }
+                if (ts2->getConnect1() == this) {
+                    p2 = LayoutEditor::getCoords(ts2->getConnect2(), ts2->getType2());
+                } else {
+                    p2 = LayoutEditor::getCoords(ts2->getConnect1(), ts2->getType1());
+                }
+                lc->setDirection(Path::computeDirection(p1, p2));
+                // save Connections
+                lc->setConnections(ts1, ts2, TRACK, this);
+                results.append(lc);
+            }
+        }
+    } else if (getType() == EDGE_CONNECTOR) {
+        TrackSegment* ts2 = nullptr;
+        if (getLinkedPoint() != nullptr) {
+            ts2 = getLinkedPoint()->getConnect1();
+        }
+        if ((ts1 != nullptr) && (ts2 != nullptr)) {
+            blk1 = ts1->getLayoutBlock();
+            blk2 = ts2->getLayoutBlock();
+            if ((blk1 != nullptr) && (blk2 != nullptr) && (blk1 != blk2)) {
+                // this is a block boundary, create a LayoutConnectivity
+                log->debug(tr("Block boundary ('%1'<->'%2') found at %3").arg(blk1->getDisplayName()).arg(blk2->getDisplayName()).arg(this->getId()));
+                lc = new LayoutConnectivity(blk1, blk2);
+
+                // determine direction from block 1 to block 2
+                if (ts1->getConnect1() == this) {
+                    p1 = LayoutEditor::getCoords(ts1->getConnect2(), ts1->getType2());
+                } else {
+                    p1 = LayoutEditor::getCoords(ts1->getConnect1(), ts1->getType1());
+                }
+
+                //Need to find a way to compute the direction for this for a split over the panel
+                //In this instance work out the direction of the first track relative to the positionable poin.
+                lc->setDirection(Path::computeDirection(p1, getCoordsCenter()));
+                // save Connections
+                lc->setConnections(ts1, ts2, TRACK, this);
+                results.append(lc);
+            }
+        }
+    }
+    return results;
+}   // getLayoutConnectivity()
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QList<int> PositionablePoint::checkForFreeConnections() {
+    QList<int> result = QList<int>();
+
+    if ((getConnect1() == nullptr)
+            || ((getType() == ANCHOR) && (getConnect2() == nullptr))) {
+        result.append((POS_POINT));
+    }
+    return result;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool PositionablePoint::checkForUnAssignedBlocks() {
+    // Positionable Points don't have blocks so...
+    // nothing to see here... move along...
+    return true;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void PositionablePoint::checkForNonContiguousBlocks(
+        /*@Nonnullptr*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap) {
+    /*
+     * For each (non-nullptr) blocks of this track do:
+     * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
+     * #2) If this track is not in one of the TrackNameSets for this block
+     * #3) add a new set (with this block/track) to
+     *     blockNamesToTrackNameSetMap and
+     * #4) check all the connections in this
+     *     block (by calling the 2nd method below)
+     * <p>
+     *     Basically, we're maintaining contiguous track sets for each block found
+     *     (in blockNamesToTrackNameSetMap)
+     */
+    //check the 1st connection points block
+    TrackSegment* ts1 = getConnect1();
+    QString blk1 = nullptr;
+    QList<QSet<QString> > TrackNameSets;// = nullptr;
+    QSet<QString> TrackNameSet;// = nullptr;    // assume not found (pessimist!)
+
+    // this should never be nullptr... but just in case...
+    if (ts1 != nullptr) {
+        blk1 = ts1->getBlockName();
+        if (blk1 != nullptr) {
+            TrackNameSets = blockNamesToTrackNameSetsMap.value(blk1);
+            if (!TrackNameSets.isEmpty()) { // (#1)
+                for (QSet<QString> checkTrackNameSet : TrackNameSets) {
+                    if (checkTrackNameSet.contains(getName())) { // (#2)
+                        TrackNameSet = checkTrackNameSet;
+                        break;
+                    }
+                }
+            } else {    // (#3)
+                log->debug(tr("*New block ('%1') trackNameSets").arg(blk1));
+                TrackNameSets = QList<QSet<QString> >();
+                blockNamesToTrackNameSetsMap.insert(blk1, TrackNameSets);
+            }
+            if (TrackNameSet.isEmpty()) {
+                TrackNameSet = QSet<QString>();
+                log->debug(tr("*    Add track '%1' to trackNameSet for block '%2'").arg(getName()).arg(blk1));
+                TrackNameSet.insert(getName());
+                TrackNameSets.append(TrackNameSet);
+            }
+            if (connect1 != nullptr) { // (#4)
+                connect1->collectContiguousTracksNamesInBlockNamed(blk1, TrackNameSet);
+            }
+        }
+    }
+
+    if (getType() == ANCHOR) {
+        //check the 2nd connection points block
+        TrackSegment* ts2 = getConnect2();
+        // this should never be nullptr... but just in case...
+        if (ts2 != nullptr) {
+            QString blk2 = ts2->getBlockName();
+            if (blk2 != nullptr) {
+                TrackNameSet =QSet<QString>();    // assume not found (pessimist!)
+                TrackNameSets = blockNamesToTrackNameSetsMap.value(blk2);
+                if (!TrackNameSets.isEmpty()) { // (#1)
+                    for (QSet<QString> checkTrackNameSet : TrackNameSets) {
+                        if (checkTrackNameSet.contains(getName())) { // (#2)
+                            TrackNameSet = checkTrackNameSet;
+                            break;
+                        }
+                    }
+                } else {    // (#3)
+                    log->debug(tr("*New block ('%1') trackNameSets").arg(blk2));
+                    TrackNameSets = QList<QSet<QString> >();
+                    blockNamesToTrackNameSetsMap.insert(blk2, TrackNameSets);
+                }
+                if (TrackNameSet.isEmpty()) {
+                    TrackNameSet = QSet<QString>();
+                    log->debug(tr("*    Add track '%1' to TrackNameSet for block '%2'").arg(getName()).arg(blk2));
+                    TrackNameSets.append(TrackNameSet);
+                    TrackNameSet.insert(getName());
+                }
+                if (connect2 != nullptr) { // (#4)
+                    connect2->collectContiguousTracksNamesInBlockNamed(blk2, TrackNameSet);
+                }
+            }
+        }
+    }
+} // collectContiguousTracksNamesInBlockNamed
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void PositionablePoint::collectContiguousTracksNamesInBlockNamed(/*@Nonnullptr*/ QString blockName,
+        /*@Nonnullptr*/ QSet<QString> TrackNameSet) {
+    if (!TrackNameSet.contains(getName())) {
+        TrackSegment* ts1 = getConnect1();
+        // this should never be nullptr... but just in case...
+        if (ts1 != nullptr) {
+            QString blk1 = ts1->getBlockName();
+            // is this the blockName we're looking for?
+            if (blk1 == (blockName)) {
+                // if we are added to the TrackNameSet
+             TrackNameSet.insert(getName());
+                if (TrackNameSet.contains(getName())) {
+                    log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
+                }
+                // this should never be nullptr... but just in case...
+                if (connect1 != nullptr) {
+                    connect1->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+                }
+            }
+        }
+        if (getType() == ANCHOR) {
+            TrackSegment* ts2 = getConnect2();
+            // this should never be nullptr... but just in case...
+            if (ts2 != nullptr) {
+                QString blk2 = ts2->getBlockName();
+                // is this the blockName we're looking for?
+                if (blk2 == (blockName)) {
+                    // if we are added to the TrackNameSet
+                 TrackNameSet.insert(getName());
+                    if (TrackNameSet.contains(getName())) {
+                        log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
+                    }
+                    // this should never be nullptr... but just in case...
+                    if (connect2 != nullptr) {
+                        // it's time to play... flood your neighbour!
+                        connect2->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void PositionablePoint::setAllLayoutBlocks(LayoutBlock* layoutBlock) {
+    // positionable points don't have blocks...
+    // nothing to see here, move along...
+}
+
+/*private*/ /*final*/ /*static*/ Logger* PositionablePoint::log
+            = LoggerFactory::getLogger("PositionablePoint");

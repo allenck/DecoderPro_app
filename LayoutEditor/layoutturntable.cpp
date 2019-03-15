@@ -12,6 +12,9 @@
 #include "borderlayout.h"
 #include <qmessagebox.h>
 #include <QGroupBox>
+#include "mathutil.h"
+#include <QPen>
+
 
 //LayoutTurntable::LayoutTurntable(QObject *parent) :
 //  QObject(parent)
@@ -428,6 +431,60 @@
             round(center.y() * yFactor));
     center = pt;
 }
+/**
+ * translate this LayoutTrack's coordinates by the x and y factors
+ *
+ * @param xFactor the amount to translate X coordinates
+ * @param yFactor the amount to translate Y coordinates
+ */
+//@Override
+/*public*/ void LayoutTurntable::translateCoords(float xFactor, float yFactor) {
+    QPointF factor = QPointF(xFactor, yFactor);
+    center = MathUtil::add(center, factor);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ int LayoutTurntable::findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
+    int result = NONE;  // assume point not on connection
+    //note: optimization here: instead of creating rectangles for all the
+    // points to check below, we create a rectangle for the test point
+    // and test if the points below are in that rectangle instead.
+    QRectF r = layoutEditor->trackControlCircleRectAt(hitPoint);
+    QPointF p, minPoint = MathUtil::zeroPoint2D;
+
+    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+    double distance, minDistance = std::numeric_limits<double>::infinity(); //POSITIVE_INFINITY;
+    if (!requireUnconnected) {
+        //check the center point
+        p = getCoordsCenter();
+        distance = MathUtil::distance(p, hitPoint);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minPoint = p;
+            result = TURNTABLE_CENTER;
+        }
+    }
+
+    for (int k = 0; k < getNumberRays(); k++) {
+        if (!requireUnconnected || (getRayConnectOrdered(k) == nullptr)) {
+            p = getRayCoordsOrdered(k);
+            distance = MathUtil::distance(p, hitPoint);
+            if (distance < minDistance) {
+                minDistance = distance;
+                minPoint = p;
+                result = TURNTABLE_RAY_OFFSET + getRayIndex(k);
+            }
+        }
+    }
+    if ((useRectangles && !r.contains(minPoint))
+            || (!useRectangles && (minDistance > circleRadius))) {
+        result = NONE;
+    }
+    return result;
+}   // findHitPointType
 
 double LayoutTurntable::round(double x) {
     int i = (int) (x + 0.5);
@@ -865,6 +922,370 @@ void LayoutTurntable::dispose() {
         ray->dispose();
     }
 }
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void LayoutTurntable::draw1(EditScene* g2, bool isMain, bool isBlock) {
+    float trackWidth = 2.0;
+    float halfTrackWidth = trackWidth / 2.f;
+    double radius = getRadius(), diameter = radius + radius;
+    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+
+    if(item!=nullptr && item->scene()!=nullptr)
+    {
+     g2->removeItem(item);
+     item = nullptr;
+    }
+
+    if (isBlock && isMain)
+    {
+        //Stroke stroke = g2.getStroke();
+     QPen stroke = layoutEditor->drawingStroke;
+     QColor color = stroke.color();//g2.getColor();
+        // draw turntable circle - default track color, side track width
+        //g2.setStroke(new BasicStroke(trackWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+        //g2.setColor(defaultTrackColor);
+     QPen newStroke = QPen(defaultTrackColor, trackWidth, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin);
+        //g2.draw(new Ellipse2D.Double(center.getX() - radius, center.getY() - radius, diameter, diameter));
+     QGraphicsEllipseItem* ellipseItem = new QGraphicsEllipseItem(center.x() - radius, center.y() - radius, diameter, diameter);
+     ellipseItem->setPen((newStroke));
+     itemGroup->addToGroup(ellipseItem);
+//     g2.setStroke(stroke);
+//     g2.setColor(color);
+    }
+
+    // draw ray tracks
+    for (int j = 0; j < getNumberRays(); j++) {
+        bool main = false;
+        TrackSegment* ts = getRayConnectOrdered(j);
+        if (ts != nullptr) {
+            main = ts->isMainline();
+        }
+        if (isBlock) {
+            if (ts == nullptr) {
+                //g2.setColor(defaultTrackColor);
+             layoutEditor->drawingStroke.setColor(defaultTrackColor);
+            } else {
+                layoutEditor->drawingStroke.setColor(setColorForTrackBlock(g2, ts->getLayoutBlock()));
+            }
+        }
+        if (main == isMain) {
+            QPointF pt2 = getRayCoordsOrdered(j);
+            QPointF delta = MathUtil::normalize(MathUtil::subtract(pt2, center), radius);
+            QPointF pt1 = MathUtil::add(center, delta);
+            //g2.draw(new Line2D.Double(pt1, pt2));
+            QGraphicsLineItem* lineItem = new QGraphicsLineItem(pt1.x(), pt1.y(), pt2.x(), pt2.y());
+            lineItem->setPen(layoutEditor->drawingStroke);
+            itemGroup->addToGroup(lineItem);
+            if (isTurnoutControlled() && (getPosition() == j)) {
+                delta = MathUtil::normalize(delta, radius - halfTrackWidth);
+                pt1 = MathUtil::subtract(center, delta);
+                //g2.draw(new Line2D.Double(pt1, pt2));
+            lineItem = new QGraphicsLineItem(pt1.x(), pt1.y(), pt2.x(), pt2.y());}
+        }
+    }
+    item = itemGroup;
+    g2->addItem(itemGroup);
+}   // draw1
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void LayoutTurntable::draw2(EditScene* g2, bool isMain, float railDisplacement) {
+    float trackWidth = 2.F;
+    float halfTrackWidth = trackWidth / 2.f;
+    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+
+    if(item!=nullptr && item->scene()!=nullptr)
+    {
+     g2->removeItem(item);
+     item = nullptr;
+    }
+
+
+    // draw ray tracks
+    for (int j = 0; j < getNumberRays(); j++) {
+        bool main = false;
+        TrackSegment* ts = getRayConnectOrdered(j);
+        if (ts != nullptr) {
+            main = ts->isMainline();
+        }
+        if (main == isMain) {
+            QPointF pt2 = getRayCoordsOrdered(j);
+            QPointF vDelta = MathUtil::normalize(MathUtil::subtract(pt2, center), radius);
+            QPointF vDeltaO = MathUtil::normalize(MathUtil::orthogonal(vDelta), railDisplacement);
+            QPointF pt1 = MathUtil::add(center, vDelta);
+            QPointF pt1L = MathUtil::subtract(pt1, vDeltaO);
+            QPointF pt1R = MathUtil::add(pt1, vDeltaO);
+            QPointF pt2L = MathUtil::subtract(pt2, vDeltaO);
+            QPointF pt2R = MathUtil::add(pt2, vDeltaO);
+            //g2.draw(new Line2D.Double(pt1L, pt2L));
+            QGraphicsLineItem* lineItem = new QGraphicsLineItem(pt1L.x(), pt1L.y(), pt2L.x(), pt2L.y());
+            lineItem->setPen(layoutEditor->drawingStroke);
+            itemGroup->addToGroup(lineItem);
+            //g2.draw(new Line2D.Double(pt1R, pt2R));
+            lineItem = new QGraphicsLineItem(pt1R.x(), pt1R.y(), pt2R.x(), pt2R.y());
+            lineItem->setPen(layoutEditor->drawingStroke);
+            itemGroup->addToGroup(lineItem);
+            if (isTurnoutControlled() && (getPosition() == j)) {
+                vDelta = MathUtil::normalize(vDelta, radius - halfTrackWidth);
+                pt1 = MathUtil::subtract(center, vDelta);
+                pt1L = MathUtil::subtract(pt1, vDeltaO);
+                pt1R = MathUtil::add(pt1, vDeltaO);
+                //g2.draw(new Line2D.Double(pt1L, pt2L));
+                lineItem = new QGraphicsLineItem(pt1L.x(), pt1L.y(), pt2L.x(), pt2L.y());
+                lineItem->setPen(layoutEditor->drawingStroke);
+                itemGroup->addToGroup(lineItem);
+                //g2.draw(new Line2D.Double(pt1R, pt2R));
+                lineItem = new QGraphicsLineItem(pt1R.x(), pt1R.y(), pt2R.x(), pt2R.y());
+                lineItem->setPen(layoutEditor->drawingStroke);
+                itemGroup->addToGroup(lineItem);}
+        }
+    }
+    item = itemGroup;
+    g2->addItem(itemGroup);
+
+}   // draw2
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void LayoutTurntable::highlightUnconnected(EditScene* g2, int specificType) {
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+
+    for (int j = 0; j < getNumberRays(); j++) {
+        if ((specificType == NONE) || (specificType == (TURNTABLE_RAY_OFFSET + j))) {
+            if (getRayConnectOrdered(j) == nullptr) {
+                QPointF pt = getRayCoordsOrdered(j);
+                //g2.fill(layoutEditor.trackControlCircleAt(pt));
+                QGraphicsEllipseItem* circleItem = layoutEditor->trackControlCircleAt(pt);
+                circleItem->setPen(QPen(defaultTrackColor, 1));
+                itemGroup->addToGroup(circleItem);
+            }
+        }
+    }
+    ((QGraphicsItemGroup*)item)->addToGroup(itemGroup);
+}
+
+/**
+ * draw this turntable's controls
+ *
+ * @param g2 the graphics port to draw to
+ */
+//@Override
+/*protected*/ void LayoutTurntable::drawTurnoutControls(EditScene* g2) {
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+    if (isTurnoutControlled()) {
+        // draw control circles at all but current position ray tracks
+        for (int j = 0; j < getNumberRays(); j++) {
+            if (getPosition() != j) {
+                RayTrack* rt = rayList.at(j);
+                if (!rt->isDisabled() && !(rt->isDisabledWhenOccupied() && rt->isOccupied())) {
+                    QPointF pt = getRayCoordsOrdered(j);
+                    //g2.draw(layoutEditor.trackControlCircleAt(pt));
+                    QGraphicsEllipseItem* circleItem = layoutEditor->trackControlCircleAt(pt);
+                    circleItem->setPen(QPen(defaultTrackColor, 1));
+                    itemGroup->addToGroup(circleItem);}
+            }
+        }
+    }
+    ((QGraphicsItemGroup*)item)->addToGroup(itemGroup);
+
+}
+
+/**
+ * draw this turntable's edit controls
+ *
+ * @param g2 the graphics port to draw to
+ */
+//@Override
+/*protected*/ void LayoutTurntable::drawEditControls(EditScene* g2)
+{
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+ if(rects!=nullptr && rects->scene()!=nullptr)
+ {
+  g2->removeItem(rects);
+  rects = nullptr;
+ }
+
+ QPointF pt = getCoordsCenter();
+    //g2.setColor(defaultTrackColor);
+    layoutEditor->drawingStroke.setColor(defaultTrackColor);
+    //g2.draw(layoutEditor.trackControlCircleAt(pt));
+    QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(pt);
+    ellipseItem->setPen(layoutEditor->drawingStroke);
+    itemGroup->addToGroup(ellipseItem);
+
+    for (int j = 0; j < getNumberRays(); j++) {
+        pt = getRayCoordsOrdered(j);
+
+        if (getRayConnectOrdered(j) == nullptr) {
+            //g2.setColor(Color.red);
+         layoutEditor->drawingStroke.setColor(Qt::red);
+        } else {
+            //g2.setColor(Color.green);
+         layoutEditor->drawingStroke.setColor(Qt::green);
+        }
+        //g2.draw(layoutEditor.trackEditControlRectAt(pt));
+        QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
+        rectItem->setPen(layoutEditor->drawingStroke);
+        itemGroup->addToGroup(rectItem);
+    }
+    rects = itemGroup;
+    g2->addItem(rects);
+}
+
+
+/*
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void LayoutTurntable::reCheckBlockBoundary() {
+    // nothing to see here... move along...
+}
+
+/*
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ QList<LayoutConnectivity*> LayoutTurntable::getLayoutConnectivity() {
+    // nothing to see here... move along...
+    return QList<LayoutConnectivity*>();
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QList<int> LayoutTurntable::checkForFreeConnections() {
+    QList<int> result = QList<int>();
+
+    for (int k = 0; k < getNumberRays(); k++) {
+        if (getRayConnectOrdered(k) == nullptr) {
+            result.append((TURNTABLE_RAY_OFFSET + getRayIndex(k)));
+        }
+    }
+    return result;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool LayoutTurntable::checkForUnAssignedBlocks() {
+    // Layout turnouts get their block information from the
+    // track segments attached to their rays so...
+    // nothing to see here... move along...
+    return true;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void LayoutTurntable::checkForNonContiguousBlocks(/*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap) {
+    /*
+     * For each (non-null) blocks of this track do:
+     * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
+     * #2) If this track is already in the TrackNameSet for this block
+     *     then return (done!)
+     * #3) else add a new set (with this block/track) to
+     *     blockNamesToTrackNameSetMap and check all the connections in this
+     *     block (by calling the 2nd method below)
+     * <p>
+     *     Basically, we're maintaining contiguous track sets for each block found
+     *     (in blockNamesToTrackNameSetMap)
+     */
+
+    // We're using a map here because it is convient to
+    // use it to pair up blocks and connections
+    QHash<LayoutTrack*, QString> blocksAndTracksMap = QHash<LayoutTrack*, QString>();
+    for (int k = 0; k < getNumberRays(); k++) {
+        TrackSegment* ts = getRayConnectOrdered(k);
+        if (ts != nullptr) {
+            QString blockName = ts->getBlockName();
+            blocksAndTracksMap.insert(ts, blockName);
+        }
+    }
+
+    QList<QSet<QString> > TrackNameSets;// = null;
+    QSet<QString> TrackNameSet;// = null;
+    QHashIterator<LayoutTrack*, QString> entry(blocksAndTracksMap);
+    //for (Map.Entry<LayoutTrack, String> entry : blocksAndTracksMap.entrySet())
+    while(entry.hasNext())
+    {
+     entry.next();
+        LayoutTrack* theConnect = entry.key();
+        QString theBlockName = entry.value();
+
+        TrackNameSet = QSet<QString>();    // assume not found (pessimist!)
+        TrackNameSets = blockNamesToTrackNameSetsMap.value(theBlockName);
+        if (!TrackNameSets.isEmpty()) { // (#1)
+            for (QSet<QString> checkTrackNameSet : TrackNameSets) {
+                if (checkTrackNameSet.contains(getName())) { // (#2)
+                    TrackNameSet = checkTrackNameSet;
+                    break;
+                }
+            }
+        } else {    // (#3)
+            log->debug(tr("*New block ('%1') trackNameSets").arg(theBlockName));
+            TrackNameSets = QList<QSet<QString> >();
+            blockNamesToTrackNameSetsMap.insert(theBlockName, TrackNameSets);
+        }
+        if (TrackNameSet.isEmpty()) {
+            TrackNameSet = QSet<QString>();
+            TrackNameSets.append(TrackNameSet);
+        }
+        TrackNameSet.insert(getName());
+        if (TrackNameSet.contains(getName())) {
+            log->debug(tr("*    Add track '%1' to trackNameSet for block '%2'").arg(getName()).arg(theBlockName));
+        }
+        theConnect->collectContiguousTracksNamesInBlockNamed(theBlockName, TrackNameSet);
+    }
+} // collectContiguousTracksNamesInBlockNamed
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void LayoutTurntable::collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
+        /*@Nonnull*/ QSet<QString> TrackNameSet) {
+    if (!TrackNameSet.contains(getName())) {
+        // for all the rays with matching blocks in this turnout
+        //  #1) if it's track segment's block is in this block
+        //  #2)     add turntable to TrackNameSet (if not already there)
+        //  #3)     if the track segment isn't in the TrackNameSet
+        //  #4)         flood it
+        for (int k = 0; k < getNumberRays(); k++) {
+            TrackSegment* ts = getRayConnectOrdered(k);
+            if (ts != nullptr) {
+                QString blk = ts->getBlockName();
+                if ((blk != nullptr) && (blk ==(blockName))) { // (#1)
+                    // if we are added to the TrackNameSet
+                  TrackNameSet.insert(getName());
+                 if (TrackNameSet.contains(getName())) {
+                        log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
+                    }
+                    // it's time to play... flood your neighbours!
+                    ts->collectContiguousTracksNamesInBlockNamed(blockName,
+                            TrackNameSet); // (#4)
+                }
+            }
+        }
+    }
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void LayoutTurntable::setAllLayoutBlocks(LayoutBlock* layoutBlock) {
+    // turntables don't have blocks...
+    // nothing to see here, move along...
+}
 
 /**
  * Removes this object from display and persistance
@@ -899,57 +1320,119 @@ void LayoutTurntable::remove() {
  }
 
  // accessor routines
- /*public*/  TrackSegment* RayTrack::getConnect() {
+/**
+ * set ray track disabled
+ *
+ * @param boo set true to disable
+ */
+/*public*/ void RayTrack::setDisabled(bool boo) {
+ if (disabled != boo) {
+     disabled = boo;
+     if (lt->layoutEditor != nullptr) {
+         lt->layoutEditor->redrawPanel();
+     }
+ }
+}
+
+/**
+ * is ray track disabled
+ *
+ * @return true if so
+ */
+/*public*/ bool RayTrack::isDisabled() {
+    return disabled;
+}
+
+/**
+ * set ray track disabled if occupied
+ *
+ * @param boo set true to disable if occupied
+ */
+/*public*/ void RayTrack::setDisabledWhenOccupied(bool boo) {
+ if (disableWhenOccupied != boo) {
+     disableWhenOccupied = boo;
+     if (lt->layoutEditor != nullptr) {
+         lt->layoutEditor->redrawPanel();
+     }
+ }
+}
+
+/**
+ * is ray track disabled if occupied
+ *
+ * @return true if so
+ */
+/*public*/ bool RayTrack::isDisabledWhenOccupied() {
+    return disableWhenOccupied;
+}
+
+/*public*/  TrackSegment* RayTrack::getConnect() {
      return _connect;
- }
+}
 
- /*public*/  void RayTrack::setConnect(TrackSegment* tr) {
-     _connect = tr;
- }
+/*public*/  void RayTrack::setConnect(TrackSegment* tr) {
+    _connect = tr;
+}
 
- /*public*/  double RayTrack::getAngle() {
-     return rayAngle;
- }
+/*public*/  double RayTrack::getAngle() {
+    return rayAngle;
+}
 
- /*public*/  void RayTrack::setAngle(double an) {
-     rayAngle = normalizeAngle(an);
- }
+/*public*/  void RayTrack::setAngle(double an) {
+    rayAngle = normalizeAngle(an);
+}
 
- /*public*/  int RayTrack::getConnectionIndex() {
-     return connectionIndex;
- }
+/*public*/  int RayTrack::getConnectionIndex() {
+    return connectionIndex;
+}
+/**
+ * is this ray occupied?
+ *
+ * @return true if occupied
+ */
+/*private*/ bool RayTrack::isOccupied() {
+    bool result = false; // assume not
+    if (_connect != nullptr) {  // does it have a connection? (yes)
+        LayoutBlock* lb = _connect->getLayoutBlock();
+        if (lb != nullptr) {   // does the connection have a block? (yes)
+            // is the block occupied?
+            result = (lb->getOccupancy() == LayoutBlock::OCCUPIED);
+        }
+    }
+    return result;
+}
 
- /*public*/  double RayTrack::normalizeAngle(double a) {
-     double angle = a;
-     while (angle < 0.0) {
-         angle += 360.0;
-     }
-     while (angle >= 360.0) {
-         angle -= 360.0;
-     }
-     return angle;
- }
+/*public*/  double RayTrack::normalizeAngle(double a) {
+    double angle = a;
+    while (angle < 0.0) {
+        angle += 360.0;
+    }
+    while (angle >= 360.0) {
+        angle -= 360.0;
+    }
+    return angle;
+}
 
- /*public*/  double RayTrack::diffAngle(double a, double b) {
-     double anA = normalizeAngle(a);
-     double anB = normalizeAngle(b);
-     if (anA >= anB) {
-         if ((anA - anB) <= 180.0) {
-             return (anA - anB);
-         } else {
-             return (anB + 360.0 - anA);
-         }
-     } else {
-         if ((anB - anA) <= 180.0) {
-             return (anB - anA);
-         } else {
-             return (anA + 360.0 - anB);
-         }
-     }
- }
+/*public*/  double RayTrack::diffAngle(double a, double b) {
+    double anA = normalizeAngle(a);
+    double anB = normalizeAngle(b);
+    if (anA >= anB) {
+        if ((anA - anB) <= 180.0) {
+            return (anA - anB);
+        } else {
+            return (anB + 360.0 - anA);
+        }
+    } else {
+        if ((anB - anA) <= 180.0) {
+            return (anB - anA);
+        } else {
+            return (anA + 360.0 - anB);
+        }
+    }
+}
 
- /*public*/  void RayTrack::setTurnout(QString turnoutName, int state) {
-     Turnout* turnout = NULL;
+/*public*/  void RayTrack::setTurnout(QString turnoutName, int state) {
+    Turnout* turnout = NULL;
 //        if (mTurnoutListener == NULL) {
 //            mTurnoutListener = new PropertyChangeListener() {
 //                /*public*/  void propertyChange(PropertyChangeEvent e) {
@@ -962,72 +1445,72 @@ void LayoutTurntable::remove() {
 //            };
 //        }
 //        connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     if (turnoutName != NULL) {
-         turnout = InstanceManager::turnoutManagerInstance()->
-                 getTurnout(turnoutName);
-     }
-     if (namedTurnout != NULL && namedTurnout->getBean() != turnout) {
-         //namedTurnout->getBean().removePropertyChangeListener(mTurnoutListener);
-      disconnect(namedTurnout->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
-     }
-     if (turnout != NULL && (namedTurnout == NULL || namedTurnout->getBean() != turnout)) {
-         namedTurnout = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(turnoutName, turnout);
-         //turnout.addPropertyChangeListener(mTurnoutListener, turnoutName, "Layout Editor Turntable");
-         connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    if (turnoutName != NULL) {
+        turnout = InstanceManager::turnoutManagerInstance()->
+                getTurnout(turnoutName);
+    }
+    if (namedTurnout != NULL && namedTurnout->getBean() != turnout) {
+        //namedTurnout->getBean().removePropertyChangeListener(mTurnoutListener);
+     disconnect(namedTurnout->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+    }
+    if (turnout != NULL && (namedTurnout == NULL || namedTurnout->getBean() != turnout)) {
+        namedTurnout = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(turnoutName, turnout);
+        //turnout.addPropertyChangeListener(mTurnoutListener, turnoutName, "Layout Editor Turntable");
+        connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
-         lt->needsRedraw = true;
-     }
-     if (turnout == NULL) {
-         namedTurnout = NULL;
-     }
+        lt->needsRedraw = true;
+    }
+    if (turnout == NULL) {
+        namedTurnout = NULL;
+    }
 
-     if (this->turnoutState != state) {
-         this->turnoutState = state;
-         lt->needsRedraw = true;
-     }
+    if (this->turnoutState != state) {
+        this->turnoutState = state;
+        lt->needsRedraw = true;
+    }
+}
+/*public*/ void RayTrack::propertyChange(PropertyChangeEvent* /*e*/)
+{
+ if (getTurnout()->getKnownState() == turnoutState) {
+     lt->lastKnownIndex = connectionIndex;
+     lt->layoutEditor->redrawPanel();
+     lt->layoutEditor->setDirty();
  }
- /*public*/ void RayTrack::propertyChange(PropertyChangeEvent* /*e*/)
- {
-  if (getTurnout()->getKnownState() == turnoutState) {
-      lt->lastKnownIndex = connectionIndex;
-      lt->layoutEditor->redrawPanel();
-      lt->layoutEditor->setDirty();
-  }
- }
- /*public*/  void RayTrack::setPosition() {
-     if (namedTurnout != NULL) {
-         getTurnout()->setCommandedState(turnoutState);
-     }
- }
+}
+/*public*/  void RayTrack::setPosition() {
+    if (namedTurnout != NULL) {
+        getTurnout()->setCommandedState(turnoutState);
+    }
+}
 
- /*public*/  Turnout* RayTrack::getTurnout() {
-     if (namedTurnout == NULL) {
-         return NULL;
-     }
-     return namedTurnout->getBean();
- }
+/*public*/  Turnout* RayTrack::getTurnout() {
+    if (namedTurnout == NULL) {
+        return NULL;
+    }
+    return namedTurnout->getBean();
+}
 
- /*public*/  QString RayTrack::getTurnoutName() {
-     if (namedTurnout == NULL) {
-         return NULL;
-     }
-     return namedTurnout->getName();
- }
+/*public*/  QString RayTrack::getTurnoutName() {
+    if (namedTurnout == NULL) {
+        return NULL;
+    }
+    return namedTurnout->getName();
+}
 
- /*public*/  int RayTrack::getTurnoutState() {
-     return turnoutState;
- }
+/*public*/  int RayTrack::getTurnoutState() {
+    return turnoutState;
+}
 
 /*public*/  QWidget* RayTrack::getPanel()
 {
- if (panel == NULL)
- {
-  QWidget* top = new QWidget();
-  top->setLayout(new FlowLayout);
-  /*JLabel lbl = new JLabel("Index :"+connectionIndex);
-   top.add(lbl);*/
-  top->layout()->addWidget(new JLabel(tr("RayAngle") + " : "));
-  top->layout()->addWidget(angle = new JTextField(5));
+if (panel == NULL)
+{
+ QWidget* top = new QWidget();
+ top->setLayout(new FlowLayout);
+ /*JLabel lbl = new JLabel("Index :"+connectionIndex);
+  top.add(lbl);*/
+ top->layout()->addWidget(new JLabel(tr("RayAngle") + " : "));
+ top->layout()->addWidget(angle = new JTextField(5));
 //            angle.addFocusListener(
 //                    new FocusListener() {
 //                        /*public*/  void focusGained(FocusEvent e) {
@@ -1045,117 +1528,117 @@ void LayoutTurntable::remove() {
 //                        }
 //                    }
 //            );
-   panel = new QGroupBox();
-   panel->setLayout(new QVBoxLayout);//(panel, BoxLayout.Y_AXIS));
-   panel->layout()->addWidget(top);
+  panel = new QGroupBox();
+  panel->setLayout(new QVBoxLayout);//(panel, BoxLayout.Y_AXIS));
+  panel->layout()->addWidget(top);
 
-   beanBox = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), getTurnout());
-   QString turnoutStateThrown = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText();
-   QString turnoutStateClosed = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText();
-   QStringList turnoutStates = QStringList() << turnoutStateClosed << turnoutStateThrown;
+  beanBox = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), getTurnout());
+  QString turnoutStateThrown = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText();
+  QString turnoutStateClosed = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText();
+  QStringList turnoutStates = QStringList() << turnoutStateClosed << turnoutStateThrown;
 
-   turnoutStateCombo = new QComboBox(/*turnoutStates*/);
-   turnoutStateCombo->addItems(turnoutStates);
-   turnoutStateLabel = new JLabel(tr("Turnout State"));
-   turnoutPanel = new QWidget();
-   turnoutPanel->setLayout(new FlowLayout);
-   //turnoutPanel.setBorder(new EtchedBorder());
-   turnoutPanel->layout()->addWidget(beanBox);
-   turnoutPanel->layout()->addWidget(turnoutStateLabel);
-   turnoutPanel->layout()->addWidget(turnoutStateCombo);
-   if (turnoutState == Turnout::CLOSED) {
-       turnoutStateCombo->setCurrentIndex(turnoutStateCombo->findText(turnoutStateClosed));
-   } else {
-       turnoutStateCombo->setCurrentIndex(turnoutStateCombo->findText(turnoutStateThrown));
-   }
-   panel->layout()->addWidget(turnoutPanel);
+  turnoutStateCombo = new QComboBox(/*turnoutStates*/);
+  turnoutStateCombo->addItems(turnoutStates);
+  turnoutStateLabel = new JLabel(tr("Turnout State"));
+  turnoutPanel = new QWidget();
+  turnoutPanel->setLayout(new FlowLayout);
+  //turnoutPanel.setBorder(new EtchedBorder());
+  turnoutPanel->layout()->addWidget(beanBox);
+  turnoutPanel->layout()->addWidget(turnoutStateLabel);
+  turnoutPanel->layout()->addWidget(turnoutStateCombo);
+  if (turnoutState == Turnout::CLOSED) {
+      turnoutStateCombo->setCurrentIndex(turnoutStateCombo->findText(turnoutStateClosed));
+  } else {
+      turnoutStateCombo->setCurrentIndex(turnoutStateCombo->findText(turnoutStateThrown));
+  }
+  panel->layout()->addWidget(turnoutPanel);
 
-   QPushButton* deleteRayButton;
-   top->layout()->addWidget(deleteRayButton = new QPushButton(tr("Remove")));
-   deleteRayButton->setToolTip(tr("Delete Ray Track"));
+  QPushButton* deleteRayButton;
+  top->layout()->addWidget(deleteRayButton = new QPushButton(tr("Remove")));
+  deleteRayButton->setToolTip(tr("Delete Ray Track"));
 //            deleteRayButton.addActionListener(new ActionListener() {
 //                /*public*/  void actionPerformed(ActionEvent e) {
 //                    delete();
 //                    updateRayPanel();
 //                }
 //            });
-   connect(deleteRayButton, SIGNAL(clicked(bool)), this, SLOT(on_deleteRayButton_clicked()));
-   //border = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
+  connect(deleteRayButton, SIGNAL(clicked(bool)), this, SLOT(on_deleteRayButton_clicked()));
+  //border = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
 
-   //panel.setBorder(border);
-   QString gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 5px; margin-top: 1ex; /* leave space at the top for the title */} "
-                  "QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
+  //panel.setBorder(border);
+  QString gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 5px; margin-top: 1ex; /* leave space at the top for the title */} "
+                 "QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
 
-   panel->setStyleSheet(gbStyleSheet);
-  }
-  showTurnoutDetails();
-
-  angle->setText(twoDForm->format(getAngle()));
-  panel->setTitle("Ray : " + QString::number(connectionIndex));
-  if (_connect == NULL) {
-      panel->setTitle(tr("Unconnected") + " : " + QString::number(connectionIndex));
-  } else if (_connect != NULL && _connect->getLayoutBlock() != NULL) {
-      panel->setTitle(tr("Connected") + " : " + _connect->getLayoutBlock()->getDisplayName());
-  }
-  return panel;
+  panel->setStyleSheet(gbStyleSheet);
  }
+ showTurnoutDetails();
 
- void RayTrack::on_deleteRayButton_clicked()
- {
-   _delete();
-   lt->updateRayPanel();
+ angle->setText(twoDForm->format(getAngle()));
+ panel->setTitle("Ray : " + QString::number(connectionIndex));
+ if (_connect == NULL) {
+     panel->setTitle(tr("Unconnected") + " : " + QString::number(connectionIndex));
+ } else if (_connect != NULL && _connect->getLayoutBlock() != NULL) {
+     panel->setTitle(tr("Connected") + " : " + _connect->getLayoutBlock()->getDisplayName());
  }
- void RayTrack::_delete() {
+ return panel;
+}
+
+void RayTrack::on_deleteRayButton_clicked()
+{
+  _delete();
+  lt->updateRayPanel();
+}
+void RayTrack::_delete() {
 //        int n = JOptionPane.showConfirmDialog(NULL,
 //                tr("Question7"),
 //                tr("WarningTitle"),
 //                JOptionPane.YES_NO_OPTION);
-  int n = QMessageBox::question(NULL, tr("Warning"), tr("Are you sure you want to remove this ray from the turntable, along with any connected Track Segments?"), QMessageBox::Yes | QMessageBox::No);
-     if (n == QMessageBox::No) {
-         return;
-     }
-     lt->deleteRay(this);
- }
+ int n = QMessageBox::question(NULL, tr("Warning"), tr("Are you sure you want to remove this ray from the turntable, along with any connected Track Segments?"), QMessageBox::Yes | QMessageBox::No);
+    if (n == QMessageBox::No) {
+        return;
+    }
+    lt->deleteRay(this);
+}
 
- void RayTrack::updateDetails()
+void RayTrack::updateDetails()
+{
+ if (beanBox == NULL || turnoutStateCombo == NULL)
  {
-  if (beanBox == NULL || turnoutStateCombo == NULL)
+  return;
+ }
+ setTurnout(beanBox->getDisplayName(), turnoutStateValues[turnoutStateCombo->currentIndex()]);
+ if (angle->text()!=(twoDForm->format(getAngle())))
+ {
+  bool ok;
+  double ang = angle->text().toDouble(&ok);
+  setAngle(ang);
+  lt->needsRedraw = true;
+  if(!ok)
   {
-   return;
-  }
-  setTurnout(beanBox->getDisplayName(), turnoutStateValues[turnoutStateCombo->currentIndex()]);
-  if (angle->text()!=(twoDForm->format(getAngle())))
-  {
-   bool ok;
-   double ang = angle->text().toDouble(&ok);
-   setAngle(ang);
-   lt->needsRedraw = true;
-   if(!ok)
-   {
-    log->error("Angle is not in correct format so will skip " + angle->text());
-   }
+   log->error("Angle is not in correct format so will skip " + angle->text());
   }
  }
+}
 
- void RayTrack::showTurnoutDetails()
- {
-  turnoutPanel->setVisible(lt->isTurnoutControlled());
-  beanBox->setVisible(lt->isTurnoutControlled());
-  turnoutStateCombo->setVisible(lt->isTurnoutControlled());
-  turnoutStateLabel->setVisible(lt->isTurnoutControlled());
- }
+void RayTrack::showTurnoutDetails()
+{
+ turnoutPanel->setVisible(lt->isTurnoutControlled());
+ beanBox->setVisible(lt->isTurnoutControlled());
+ turnoutStateCombo->setVisible(lt->isTurnoutControlled());
+ turnoutStateLabel->setVisible(lt->isTurnoutControlled());
+}
 
- void RayTrack::dispose()
+void RayTrack::dispose()
+{
+ if (getTurnout() != NULL)
  {
-  if (getTurnout() != NULL)
-  {
-      //getTurnout().removePropertyChangeListener(mTurnoutListener);
-   disconnect(getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  }
-  if (lt->lastKnownIndex == connectionIndex) {
-      lt->lastKnownIndex = -1;
-  }
+     //getTurnout().removePropertyChangeListener(mTurnoutListener);
+  disconnect(getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
+ if (lt->lastKnownIndex == connectionIndex) {
+     lt->lastKnownIndex = -1;
+ }
+}
 //}; // End class RayTrack
 
 /*public*/  double LayoutTurntable::normalizeAngle(double a) {

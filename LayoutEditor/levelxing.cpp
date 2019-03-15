@@ -6,6 +6,7 @@
 #include "signalmastlogicmanager.h"
 #include "signalmastmanager.h"
 #include "layoutblockroutetableaction.h"
+#include "mathutil.h"
 
 //LevelXing::LevelXing(QObject *parent) :
 //    QObject(parent)
@@ -558,7 +559,271 @@
     }
     reCheckBlockBoundary();
 }
+/**
+ * draw this level crossing
+ *
+ * @param g2 the graphics port to draw to
+ */
+//@Override
+/*protected*/ void LevelXing::draw1(EditScene* g2, bool isMain, bool isBlock) {
 
+ if(item!=nullptr && item->scene()!=nullptr)
+ {
+  g2->removeItem(item);
+  item = nullptr;
+ }
+
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+
+ if (isMain == isMainlineAC()) {
+  if (isBlock) {
+      layoutEditor->drawingStroke.setColor(setColorForTrackBlock(g2, getLayoutBlockAC()));
+  }
+  //g2.draw(new Line2D.Double(getCoordsA(), getCoordsC()));
+  QGraphicsLineItem* lineItem = new QGraphicsLineItem(getCoordsA().x(), getCoordsA().y(), getCoordsC().x(), getCoordsC().y());
+  lineItem->setPen(layoutEditor->drawingStroke);
+  itemGroup->addToGroup(lineItem);
+ }
+ if (isMain == isMainlineBD())
+ {
+  if (isBlock) {
+      layoutEditor->drawingStroke.setColor(setColorForTrackBlock(g2, getLayoutBlockBD()));
+  }
+  //g2.draw(new Line2D.Double(getCoordsB(), getCoordsD()));
+  QGraphicsLineItem* lineItem = new QGraphicsLineItem(getCoordsB().x(), getCoordsB().y(), getCoordsD().x(), getCoordsD().y());
+  lineItem->setPen(layoutEditor->drawingStroke);
+  itemGroup->addToGroup(lineItem);
+ }
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void LevelXing::draw2(EditScene* g2, bool isMain, float railDisplacement) {
+    QPointF pA = getCoordsA();
+    QPointF pB = getCoordsB();
+    QPointF pC = getCoordsC();
+    QPointF pD = getCoordsD();
+    QPointF pM = getCoordsCenter();
+
+    QPointF vAC = MathUtil::normalize(MathUtil::subtract(pC, pA), railDisplacement);
+    double dirAC_DEG = MathUtil::computeAngleDEG(pA, pC);
+    QPointF vACo = MathUtil::orthogonal(vAC);
+    QPointF pAL = MathUtil::subtract(pA, vACo);
+    QPointF pAR = MathUtil::add(pA, vACo);
+    QPointF pCL = MathUtil::subtract(pC, vACo);
+    QPointF pCR = MathUtil::add(pC, vACo);
+
+    QPointF vBD = MathUtil::normalize(MathUtil::subtract(pD, pB), railDisplacement);
+    double dirBD_DEG = MathUtil::computeAngleDEG(pB, pD);
+    QPointF vBDo = MathUtil::orthogonal(vBD);
+    QPointF pBL = MathUtil::subtract(pB, vBDo);
+    QPointF pBR = MathUtil::add(pB, vBDo);
+    QPointF pDL = MathUtil::subtract(pD, vBDo);
+    QPointF pDR = MathUtil::add(pD, vBDo);
+
+    double deltaDEG = MathUtil::absDiffAngleDEG(dirAC_DEG, dirBD_DEG);
+    double deltaRAD = qDegreesToRadians(deltaDEG);
+
+    double hypotK = railDisplacement / qCos((M_PI - deltaRAD) / 2.0);
+    double hypotV = railDisplacement / qCos(deltaRAD / 2.0);
+
+    log.debug(tr("dir AC: %1, BD: %2, diff: %3").arg(dirAC_DEG).arg(dirBD_DEG).arg(deltaDEG));
+
+    QPointF vDisK = MathUtil::normalize(MathUtil::add(vAC, vBD), hypotK);
+    QPointF vDisV = MathUtil::normalize(MathUtil::orthogonal(vDisK), hypotV);
+    QPointF pKL = MathUtil::subtract(pM, vDisK);
+    QPointF pKR = MathUtil::add(pM, vDisK);
+    QPointF pVL = MathUtil::subtract(pM, vDisV);
+    QPointF pVR = MathUtil::add(pM, vDisV);
+    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+    if(item!=nullptr && item->scene()!=nullptr)
+    {
+     g2->removeItem(item);
+     item = nullptr;
+    }
+
+    if (isMain == isMainlineAC()) {
+        // this is the *2.0 vector (rail gap) for the AC diamond parts
+        QPointF vAC2 = MathUtil::normalize(vAC, 2.0);
+        // KL toward C, VR toward A, VL toward C and KR toward A
+        QPointF pKLtC = MathUtil::add(pKL, vAC2);
+        QPointF pVRtA = MathUtil::subtract(pVR, vAC2);
+        QPointF pVLtC = MathUtil::add(pVL, vAC2);
+        QPointF pKRtA = MathUtil::subtract(pKR, vAC2);
+
+        // draw right AC rail: AR====KL == VR====CR
+        //g2.draw(new Line2D.Double(pAR, pKL));
+        QGraphicsLineItem* lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pKL.x(), pKL.y());
+        lineItem->setPen(layoutEditor->drawingStroke);
+        itemGroup->addToGroup(lineItem);
+        //g2.draw(new Line2D.Double(pKLtC, pVRtA));
+        lineItem = new QGraphicsLineItem(pKLtC.x(), pKLtC.y(), pVRtA.x(), pVRtA.y());
+        lineItem->setPen(layoutEditor->drawingStroke);
+        itemGroup->addToGroup(lineItem);
+        //g2.draw(new Line2D.Double(pVR, pCR));
+        lineItem = new QGraphicsLineItem(pVR.x(), pVR.y(), pCR.x(), pCR.y());
+        lineItem->setPen(layoutEditor->drawingStroke);
+        itemGroup->addToGroup(lineItem);
+
+        // draw left AC rail: AL====VL == KR====CL
+        //g2.draw(new Line2D.Double(pAL, pVL));
+        lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pVL.x(), pVL.y());
+        lineItem->setPen(layoutEditor->drawingStroke);
+        itemGroup->addToGroup(lineItem);
+        //g2.draw(new Line2D.Double(pVLtC, pKRtA));
+        lineItem = new QGraphicsLineItem(pVLtC.x(), pVLtC.y(), pKRtA.x(), pKRtA.y());
+        //g2.draw(new Line2D.Double(pKR, pCL));
+    lineItem = new QGraphicsLineItem(pKR.x(), pKR.y(), pCL.x(), pCL.y());
+    }
+    if (isMain == isMainlineBD())
+    {
+     // this is the *2.0 vector (rail gap) for the BD diamond parts
+     QPointF vBD2 = MathUtil::normalize(vBD, 2.0);
+     // VR toward D, KR toward B, KL toward D and VL toward B
+     QPointF pVRtD = MathUtil::add(pVR, vBD2);
+     QPointF pKRtB = MathUtil::subtract(pKR, vBD2);
+     QPointF pKLtD = MathUtil::add(pKL, vBD2);
+     QPointF pVLtB = MathUtil::subtract(pVL, vBD2);
+
+     // draw right BD rail: BR====VR == KR====DR
+     //g2.draw(new Line2D.Double(pBR, pVR));
+     QGraphicsLineItem* lineItem = new QGraphicsLineItem(pBR.x(), pBR.y(), pVR.x(), pVR.y());
+     lineItem->setPen(layoutEditor->drawingStroke);
+     itemGroup->addToGroup(lineItem);
+     //g2.draw(new Line2D.Double(pVRtD, pKRtB));
+     lineItem = new QGraphicsLineItem(pVRtD.x(), pVRtD.y(), pKRtB.x(), pKRtB.y());
+     //g2.draw(new Line2D.Double(pKR, pDR));
+     lineItem = new QGraphicsLineItem(pKR.x(), pKR.y(), pDR.x(), pDR.y());
+
+     // draw left BD rail: BL====KL == VL====DL
+     //g2.draw(new Line2D.Double(pBL, pKL));
+     lineItem = new QGraphicsLineItem(pBL.x(), pBL.y(), pKL.x(), pKL.y());
+     //g2.draw(new Line2D.Double(pKLtD, pVLtB));
+     lineItem = new QGraphicsLineItem(pKLtD.x(), pKLtD.y(), pVLtB.x(), pVLtB.y());
+     //g2.draw(new Line2D.Double(pVL, pDL));
+     lineItem = new QGraphicsLineItem(pVL.x(), pVL.y(), pDL.x(), pDL.y());
+    }
+    item = itemGroup;
+    g2->addItem(item);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void LevelXing::highlightUnconnected(EditScene* g2, int specificType)
+{
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+  QPen stroke = QPen(defaultTrackColor, 1);
+
+    if (((specificType == NONE) || (specificType == LEVEL_XING_A))
+            && (getConnectA() == nullptr)) {
+        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsA()));
+     QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsA());
+     ellipseItem->setPen(stroke);
+     itemGroup->addToGroup(ellipseItem);
+    }
+
+    if (((specificType == NONE) || (specificType == LEVEL_XING_B))
+            && (getConnectB() == nullptr)) {
+        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsB()));
+     QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsB());
+     ellipseItem->setPen(stroke);
+     itemGroup->addToGroup(ellipseItem);
+    }
+
+    if (((specificType == NONE) || (specificType == LEVEL_XING_C))
+            && (getConnectC() == nullptr)) {
+        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsC()));
+     QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsC());
+     ellipseItem->setPen(stroke);
+     itemGroup->addToGroup(ellipseItem);
+    }
+
+    if (((specificType == NONE) || (specificType == LEVEL_XING_D))
+            && (getConnectD() == nullptr)) {
+        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsD()));
+     QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsD());
+     ellipseItem->setPen(stroke);
+     itemGroup->addToGroup(ellipseItem);
+    }
+
+    ((QGraphicsItemGroup*)item)->addToGroup(itemGroup);
+}
+
+//@Override
+/*protected*/ void LevelXing::drawEditControls(EditScene* g2)
+{
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+ if(rects!=nullptr && rects->scene()!=nullptr)
+ {
+  g2->removeItem(rects);
+  rects = nullptr;
+ }
+    //g2.setColor(defaultTrackColor);
+ QPen stroke = layoutEditor->drawingStroke;
+
+    //TODO:uncomment this line g2.draw(layoutEditor.trackEditControlCircleAt(getCoordsCenter()));
+
+    if (getConnectA() == nullptr) {
+        //g2.setColor(Color.magenta);
+     stroke.setColor(Qt::magenta);
+    } else {
+        //g2.setColor(Color.blue);
+     stroke.setColor(Qt::blue);
+    }
+    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsA()));
+    QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsA()));
+    rectItem->setPen(stroke);
+    itemGroup->addToGroup(rectItem);
+
+    if (getConnectB() == nullptr) {
+        //g2.setColor(Color.red);
+    stroke.setColor(Qt::red);
+    } else {
+        //g2.setColor(Color.green);
+     stroke.setColor(Qt::green);
+    }
+    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsB()));
+    rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsB()));
+    rectItem->setPen(stroke);
+    itemGroup->addToGroup(rectItem);
+
+    if (getConnectC() == nullptr) {
+        //g2.setColor(Color.red);
+     stroke.setColor(Qt::red);
+    } else {
+        //g2.setColor(Color.green);
+     stroke.setColor(Qt::green);
+    }
+    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsC()));
+    rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsC()));
+    rectItem->setPen(stroke);
+    itemGroup->addToGroup(rectItem);
+
+    if (getConnectD() == nullptr) {
+        //g2.setColor(Color.red);
+     stroke.setColor(Qt::red);
+    } else {
+        //g2.setColor(Color.green);
+     stroke.setColor(Qt::green);
+    }
+    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsD()));
+    rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsB()));
+    rectItem->setPen(stroke);
+    itemGroup->addToGroup(rectItem);
+
+    rects = itemGroup;
+    g2->addItem(rects);
+}
+
+//@Override
+/*protected*/ void LevelXing::drawTurnoutControls(EditScene* g2) {
+    // LevelXings don't have turnout controls...
+    // nothing to see here... move along...
+}
 //@Override
 /*public*/ void LevelXing::reCheckBlockBoundary() {
     // nothing to see here... move along...
@@ -630,13 +895,94 @@ double LevelXing::round (double x) {
     return i;
 }
 
-// initialization instance variables (used when loading a LayoutEditor)
-///*public*/ QString connectAName = "";
-///*public*/ QString connectBName = "";
-///*public*/ QString connectCName = "";
-///*public*/ QString connectDName = "";
-///*public*/ QString tBlockNameAC = "";
-///*public*/ QString tBlockNameBD = "";
+/**
+ * translate this LayoutTrack's coordinates by the x and y factors
+ *
+ * @param xFactor the amount to translate X coordinates
+ * @param yFactor the amount to translate Y coordinates
+ */
+//@Override
+/*public*/ void LevelXing::translateCoords(float xFactor, float yFactor) {
+    QPointF factor =  QPointF(xFactor, yFactor);
+    center = MathUtil::add(center, factor);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ int LevelXing::findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
+    int result = NONE;  // assume point not on connection
+    //note: optimization here: instead of creating rectangles for all the
+    // points to check below, we create a rectangle for the test point
+    // and test if the points below are in that rectangle instead.
+    QRectF r = layoutEditor->trackControlCircleRectAt(hitPoint);
+    QPointF p, minPoint = MathUtil::zeroPoint2D;
+
+    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+    double distance, minDistance = std::numeric_limits<double>::infinity();//POSITIVE_INFINITY;
+
+    //check the center point
+    if (!requireUnconnected) {
+        p = getCoordsCenter();
+        distance = MathUtil::distance(p, hitPoint);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minPoint = p;
+            result = LEVEL_XING_CENTER;
+        }
+    }
+
+    //check the A connection point
+    if (!requireUnconnected || (getConnectA() == nullptr)) {
+        p = getCoordsA();
+        distance = MathUtil::distance(p, hitPoint);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minPoint = p;
+            result = LEVEL_XING_A;
+        }
+    }
+
+    //check the B connection point
+    if (!requireUnconnected || (getConnectB() == nullptr)) {
+        p = getCoordsB();
+        distance = MathUtil::distance(p, hitPoint);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minPoint = p;
+            result = LEVEL_XING_B;
+        }
+    }
+
+    //check the C connection point
+    if (!requireUnconnected || (getConnectC() == nullptr)) {
+        p = getCoordsC();
+        distance = MathUtil::distance(p, hitPoint);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minPoint = p;
+            result = LEVEL_XING_C;
+        }
+    }
+
+    //check the D connection point
+    if (!requireUnconnected || (getConnectD() == nullptr)) {
+        p = getCoordsD();
+        distance = MathUtil::distance(p, hitPoint);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minPoint = p;
+            result = LEVEL_XING_D;
+        }
+    }
+    if ((useRectangles && !r.contains(minPoint))
+            || (!useRectangles && (minDistance > circleRadius))) {
+        result = NONE;
+    }
+    return result;
+}   // findHitPointType
+
 /**
  * Initialization method
  *   The above variables are initialized by PositionablePointXml, then the following

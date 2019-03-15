@@ -510,14 +510,14 @@ private:
  /*private*/ void drawXings(EditScene* g2);
 // /*private*/ void drawXingAC(EditScene* g2,LevelXing* x);
 // /*private*/ void drawXingBD(EditScene* g2,LevelXing* x);
- /*private*/ void drawTurnoutCircles(EditScene* g2);
- /*private*/ void drawSlipCircles(EditScene* g2);
- /*private*/ void drawTurnoutRects(EditScene* g2);
- /*private*/ void drawXingRects(EditScene* g2);
+// /*private*/ void drawTurnoutCircles(EditScene* g2);
+// /*private*/ void drawSlipCircles(EditScene* g2);
+// /*private*/ void drawTurnoutRects(EditScene* g2);
+// /*private*/ void drawXingRects(EditScene* g2);
  ///*private*/ void drawSelectionRect(EditScene* editScene);
- /*private*/ void drawPoints(EditScene* g2);
- /*private*/ void drawSlips(QGraphicsScene* g2);
- /*private*/ void drawTurntables(EditScene* g2);
+// /*private*/ void drawPoints(EditScene* g2);
+// /*private*/ void drawSlips(QGraphicsScene* g2);
+// /*private*/ void drawTurntables(EditScene* g2);
 // /*private*/ void drawMemoryRects(EditScene* editScene);
 
  /*protected*/ void draw(EditScene* g2);
@@ -591,17 +591,17 @@ private:
  int _lastX, _lastY;
  /*private*/ void drawPanelGrid(EditScene* g2);
  /*private*/ bool drawGrid; //false;
- /*private*/ void drawTrackInProgress(EditScene* g2);
- /*private*/ void drawHiddenTrack(EditScene* g2);
- /*private*/ void drawDashedTrack(EditScene* g2, bool mainline);
- /*private*/ void drawSolidTrack(EditScene* g2, bool isMainline);
+// /*private*/ void drawTrackInProgress(EditScene* g2);
+// /*private*/ void drawHiddenTrack(EditScene* g2);
+// /*private*/ void drawDashedTrack(EditScene* g2, bool mainline);
+// /*private*/ void drawSolidTrack(EditScene* g2, bool isMainline);
 // /*private*/ void CalculateTrackSegmentAngle(TrackSegment* t);
- /*private*/ void drawTrackOvals(EditScene* g2);
+// /*private*/ void drawTrackOvals(EditScene* g2);
  bool antialiasingOn;// = false;
 // /*private*/ void checkPopUp(QGraphicsSceneMouseEvent* event);
 // /*private*/ TrackSegment* checkTrackSegments(QPointF loc);
 
- /*private*/ void drawTrackCircleCentre(EditScene* g2);
+// /*private*/ void drawTrackCircleCentre(EditScene* g2);
  double toRadians(double degrees);
  double toDegrees(double radians);
  /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event);
@@ -683,8 +683,8 @@ private:
  /*private*/ void substituteAnchor(QPointF loc, QObject* o, TrackSegment* t);
  /*private*/ PositionablePoint* addAnchor(QPointF p);
  /*private*/ QPointF windowCenter();
- /*private*/ void drawTurntableRects(EditScene* g2);
- /*private*/ void drawSlipRects(EditScene* g2);
+// /*private*/ void drawTurntableRects(EditScene* g2);
+// /*private*/ void drawSlipRects(EditScene* g2);
  QAction* turnoutCirclesOnItem;
  QActionGroup* backgroundColorButtonGroup;
  QSignalMapper* backgroundColorButtonMapper;

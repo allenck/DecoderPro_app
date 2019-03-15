@@ -19,7 +19,8 @@ public:
  /*public*/ static QPointF midPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
  /*public*/ static QPointF oneThirdPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
  /*public*/ static QPointF twoThirdsPoint(QPointF p1, QPointF p2);
- /*public*/ static QPointF fourth(QPointF p1, QPointF p2);
+ /*public*/ static QPointF oneFourthPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
+ /*public*/ static QPointF threeFourthsPoint(/*@Nonnull*/ QPointF pA,/* @Nonnull*/ QPointF pB);
  /*public*/ static double wrap(double inValue, double inMin, double inMax);
  /*public*/ static double wrapPM180(double inValue);
  /*public*/ static double wrapPM360(double inValue);
@@ -29,6 +30,7 @@ public:
  /*public*/ static double diffAngleRAD(double a, double b);
  /*public*/ static double absDiffAngleDEG(double a, double b);
  /*public*/ static double absDiffAngleRAD(double a, double b);
+ /*public*/ static QPointF max(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
  /*public*/ static double pin(double inValue, double inMin, double inMax);
  /*public*/ static QPointF add(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
  /*public*/ static QPointF subtract(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);

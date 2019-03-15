@@ -31,7 +31,7 @@ PositionablePointXml::PositionablePointXml(QObject *parent) :
  QDomElement element = doc.createElement("positionablepoint");
 
  // include attributes
- element.setAttribute("ident", p->getID());
+ element.setAttribute("ident", p->getId());
  element.setAttribute("type",  p->getType());
  QPointF coords = p->getCoordsCenter();
  element.setAttribute("x",  coords.x());

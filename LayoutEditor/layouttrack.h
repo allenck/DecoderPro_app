@@ -84,6 +84,8 @@ public:
          /*@Nonnull*/ QSet<QString> trackNameSet);
  /*public*/ /*abstract*/ virtual void setAllLayoutBlocks(LayoutBlock* /*layoutBlock*/);
  QGraphicsItem* item;
+ QGraphicsItem* turnoutItem = nullptr;
+ QGraphicsItem* turnoutItem2 = nullptr;
  /*public*/ virtual void invalidate(EditScene* g2) {}
 
 signals:
@@ -92,6 +94,7 @@ public slots:
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger("LayoutTrack");
+ QGraphicsItem* hiddenItems = nullptr;
 
 protected:
  /*protected*/ LayoutEditor* layoutEditor = nullptr;

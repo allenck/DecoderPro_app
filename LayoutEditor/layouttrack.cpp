@@ -237,8 +237,14 @@
     return hidden;
 }
 
-/*public*/ void LayoutTrack::setHidden(bool hide) {
-    hidden = hide;
+/*public*/ void LayoutTrack::setHidden(bool hide)
+{
+ hidden = hide;
+ if(hiddenItems!= nullptr && hiddenItems->scene() != nullptr)
+ {
+  hiddenItems->scene()->removeItem(hiddenItems);
+  hiddenItems = nullptr;
+ }
 }
 
 /*
