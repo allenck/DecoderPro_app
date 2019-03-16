@@ -4003,13 +4003,11 @@ void LayoutTurnout::remove()
  log->debug(tr("draw1 turnout %1 isMain = %2, state = %3").arg(getTurnoutName()).arg(isMain?"true":"false").arg(getTurnoutStateString(getState())));
 
  int type = getTurnoutType();
- QGraphicsItemGroup* itemGroupA = new QGraphicsItemGroup();
- QGraphicsItemGroup* itemGroupB = new QGraphicsItemGroup();
- QGraphicsItemGroup* itemGroupC = new QGraphicsItemGroup();
- QGraphicsItemGroup* itemGroupD = new QGraphicsItemGroup();
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+
  QGraphicsLineItem* lineItem;
 
- invalidate(g2, isMain);
+ invalidateItemType(isMain);
 
  if (type == DOUBLE_XOVER)
  {
@@ -4021,13 +4019,13 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pA, pABM));
     lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupA->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
        // g2.draw(new Line2D.Double(pAF, pM));
      lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupA->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineB)
@@ -4037,12 +4035,12 @@ void LayoutTurnout::remove()
 //             g2.draw(new Line2D.Double(pB, pABM));
     lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pABM.x(), pABM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupB->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg) {
         //g2.draw(new Line2D.Double(pBF, pM));
      lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupB->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineC)
@@ -4052,13 +4050,13 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pC, pCDM));
     lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupC->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
      //g2.draw(new Line2D.Double(pCF, pM));
      lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupC->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineD)
@@ -4068,13 +4066,13 @@ void LayoutTurnout::remove()
     //g2.draw(new Line2D.Double(pD, pCDM));
     lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pCDM.x(), pCDM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupD->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
            //g2.draw(new Line2D.Double(pDF, pM));
      lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupD->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
    }
   }
@@ -4087,16 +4085,16 @@ void LayoutTurnout::remove()
     //g2.draw(new Line2D.Double(pA, pAM));
     lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupA->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
     //g2.draw(new Line2D.Double(pAM, pM));
     lineItem = new QGraphicsLineItem(pAM.x(), pAM.y(), pM.x(), pM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupA->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg) {
         //g2.draw(new Line2D.Double(pAMP, pABM));
      lineItem = new QGraphicsLineItem(pAMP.x(), pAMP.y(), pABM.x(), pABM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupA->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineB) {
@@ -4105,16 +4103,16 @@ void LayoutTurnout::remove()
     //g2.draw(new Line2D.Double(pB, pBM));
     lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupB->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
     //g2.draw(new Line2D.Double(pBM, pM));
     lineItem = new QGraphicsLineItem(pBM.x(), pBM.y(), pM.x(), pM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupB->addToGroup(lineItem);if (!isBlock || drawUnselectedLeg)
+    itemGroup->addToGroup(lineItem);if (!isBlock || drawUnselectedLeg)
     {
      //g2.draw(new Line2D.Double(pBMP, pABM));
      lineItem = new QGraphicsLineItem(pBMP.x(), pBMP.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupB->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineC)
@@ -4124,16 +4122,16 @@ void LayoutTurnout::remove()
     //g2.draw(new Line2D.Double(pC, pCM));
     lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupC->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
     //g2.draw(new Line2D.Double(pCM, pM));
      lineItem = new QGraphicsLineItem(pCM.x(), pCM.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupC->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg) {
         //g2.draw(new Line2D.Double(pCMP, pCDM));
      lineItem = new QGraphicsLineItem(pCMP.x(), pCMP.y(), pCDM.x(), pCDM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupC->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
    }
    if (isMain == mainlineD)
@@ -4143,17 +4141,17 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pD, pDM));
     lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupD->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
        //g2.draw(new Line2D.Double(pDM, pM));
     lineItem = new QGraphicsLineItem(pDM.x(), pDM.y(), pM.x(), pM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupD->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
     if (!isBlock || drawUnselectedLeg)
     {
      //g2.draw(new Line2D.Double(pDMP, pCDM));
      lineItem = new QGraphicsLineItem(pDMP.x(), pDMP.y(), pCDM.x(), pCDM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupD->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
    }
   }
@@ -4166,7 +4164,7 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pA, pAM));
     lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupA->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
 
    }
    if (isMain == mainlineB) {
@@ -4175,7 +4173,7 @@ void LayoutTurnout::remove()
 //      g2.draw(new Line2D.Double(pB, pBM));
     lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupB->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
    }
    if (isMain == mainlineC) {
        //g2.setColor(colorC);
@@ -4183,7 +4181,7 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pC, pCM));
     lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupC->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
    }
    if (isMain == mainlineD) {
        //g2.setColor(colorD);
@@ -4191,7 +4189,7 @@ void LayoutTurnout::remove()
        //g2.draw(new Line2D.Double(pD, pDM));
     lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroupD->addToGroup(lineItem);
+    itemGroup->addToGroup(lineItem);
    }
    if (!isBlock || drawUnselectedLeg)
    {
@@ -4202,7 +4200,7 @@ void LayoutTurnout::remove()
         //g2.draw(new Line2D.Double(pAF, pM));
      lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupA->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
     if (isMain == mainlineC) {
         //g2.setColor(colorC);
@@ -4210,7 +4208,7 @@ void LayoutTurnout::remove()
         //g2.draw(new Line2D.Double(pCF, pM));
      lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupC->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
     if (isMain == mainlineB) {
         //g2.setColor(colorB);
@@ -4218,7 +4216,7 @@ void LayoutTurnout::remove()
         //g2.draw(new Line2D.Double(pBF, pM));
      lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupB->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
     if (isMain == mainlineD) {
         //g2.setColor(colorD);
@@ -4226,7 +4224,7 @@ void LayoutTurnout::remove()
         //g2.draw(new Line2D.Double(pDF, pM));
      lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupD->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
     }
    }
   }
@@ -4247,7 +4245,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(pA, pABM));
           lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupA->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
          if (isMain == mainlineB) {
 //             g2.setColor(colorB);
@@ -4255,7 +4253,7 @@ void LayoutTurnout::remove()
 //             g2.draw(new Line2D.Double(pABM, pB));
           lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupB->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
          if (isMain == mainlineC) {
              //g2.setColor(colorC);
@@ -4263,7 +4261,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(pC, pCDM));
           lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupC->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
          if (isMain == mainlineD) {
              //g2.setColor(colorD);
@@ -4271,7 +4269,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(pCDM, pD));
           lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupD->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
          if (!isBlock || drawUnselectedLeg) {
              if (getTurnoutType() == RH_XOVER) {
@@ -4281,7 +4279,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pAF, pM));
                   lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupA->addToGroup(lineItem);
+                  itemGroup->addToGroup(lineItem);
                  }
                  if (isMain == mainlineC) {
                      //g2.setColor(colorC);
@@ -4289,7 +4287,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pCF, pM));
                   lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupC->addToGroup(lineItem);
+                  itemGroup->addToGroup(lineItem);
                  }
              } else if (getTurnoutType() == LH_XOVER) {
                  if (isMain == mainlineB) {
@@ -4298,7 +4296,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pBF, pM));
                   lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupB->addToGroup(lineItem);
+                  itemGroup->addToGroup(lineItem);
                  }
                  if (isMain == mainlineD) {
                      //g2.setColor(colorD);
@@ -4306,7 +4304,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pDF, pM));
                   lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupD->addToGroup(lineItem);
+                  itemGroup->addToGroup(lineItem);
                  }
              }
          }
@@ -4319,11 +4317,11 @@ void LayoutTurnout::remove()
                  //g2.draw(new Line2D.Double(pA, pABM));
               lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
               lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroupA->addToGroup(lineItem);
+              itemGroup->addToGroup(lineItem);
                 //;g2.draw(new Line2D.Double(pABM, pM));
                 lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
                 lineItem->setPen(layoutEditor->drawingStroke);
-                itemGroupA->addToGroup(lineItem);
+                itemGroup->addToGroup(lineItem);
              }
              if (!isBlock || drawUnselectedLeg) {
                  if (isMain == mainlineB) {
@@ -4332,7 +4330,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pBM, pB));
                   lineItem = new QGraphicsLineItem(pBM.x(), pBM.y(), pB.x(), pB.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupB->addToGroup(lineItem);
+                  itemGroup->addToGroup(lineItem);
                  }
              }
              if (isMain == mainlineC) {
@@ -4341,11 +4339,11 @@ void LayoutTurnout::remove()
                  //g2.draw(new Line2D.Double(pC, pCDM));
               lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
               lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroupC->addToGroup(lineItem);
+              itemGroup->addToGroup(lineItem);
               //g2.draw(new Line2D.Double(pCDM, pM));
               lineItem = new QGraphicsLineItem(pCDM.x(), pCDM.y(), pM.x(), pM.y());
               lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroupC->addToGroup(lineItem);
+              itemGroup->addToGroup(lineItem);
              }
              if (!isBlock || drawUnselectedLeg) {
                  if (isMain == mainlineD) {
@@ -4354,7 +4352,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pDM, pD));
                   lineItem = new QGraphicsLineItem(pDM.x(), pDM.y(), pD.x(), pD.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupD->addToGroup(lineItem);
+                  itemGroup->addToGroup(lineItem);
                  }
              }
          } else if (getTurnoutType() == LH_XOVER) {
@@ -4365,7 +4363,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pA, pAM));
                   lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupA->addToGroup(lineItem);
+                  itemGroup->addToGroup(lineItem);
                  }
              }
              if (isMain == mainlineB) {
@@ -4374,11 +4372,11 @@ void LayoutTurnout::remove()
                  //g2.draw(new Line2D.Double(pB, pABM));
               lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pABM.x(), pABM.y());
               lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroupB->addToGroup(lineItem);
+              itemGroup->addToGroup(lineItem);
               //g2.draw(new Line2D.Double(pABM, pM));
               lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
               lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroupB->addToGroup(lineItem);}
+              itemGroup->addToGroup(lineItem);}
              if (!isBlock || drawUnselectedLeg) {
                  if (isMain == mainlineC) {
                      //g2.setColor(colorC);
@@ -4386,7 +4384,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pC, pCM));
                   lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupC->addToGroup(lineItem);}
+                  itemGroup->addToGroup(lineItem);}
              }
              if (isMain == mainlineD) {
                  //g2.setColor(colorD);
@@ -4394,11 +4392,11 @@ void LayoutTurnout::remove()
                  //g2.draw(new Line2D.Double(pD, pCDM));
               lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pCDM.x(), pCDM.y());
               lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroupD->addToGroup(lineItem);
+              itemGroup->addToGroup(lineItem);
               //g2.draw(new Line2D.Double(pCDM, pM));
               lineItem = new QGraphicsLineItem(pCDM.x(), pCDM.y(), pM.x(), pM.y());
               lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroupD->addToGroup(lineItem);}
+              itemGroup->addToGroup(lineItem);}
          }
      }
      if (state == Turnout::INCONSISTENT) {
@@ -4408,7 +4406,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(pA, pAM));
           lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupA->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
          if (isMain == mainlineB) {
              //g2.setColor(colorB);
@@ -4416,7 +4414,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(pB, pBM));
           lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupB->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
          if (isMain == mainlineC) {
              //g2.setColor(colorC);
@@ -4424,7 +4422,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(pC, pCM));
           lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupC->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
          if (isMain == mainlineD) {
              //g2.setColor(colorD);
@@ -4432,7 +4430,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(pD, pDM));
           lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupD->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
          if (!isBlock || drawUnselectedLeg) {
              if (getTurnoutType() == RH_XOVER) {
@@ -4442,7 +4440,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pAF, pM));
                   lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupA->addToGroup(lineItem);
+                  itemGroup->addToGroup(lineItem);
                  }
                  if (isMain == mainlineC) {
                      //g2.setColor(colorC);
@@ -4450,7 +4448,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pCF, pM));
                   lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupC->addToGroup(lineItem);
+                  itemGroup->addToGroup(lineItem);
                  }
              } else if (getTurnoutType() == LH_XOVER) {
                  if (isMain == mainlineB) {
@@ -4459,7 +4457,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pBF, pM));
                   lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupB->addToGroup(lineItem);
+                  itemGroup->addToGroup(lineItem);
                  }
                  if (isMain == mainlineD) {
                      //g2.setColor(colorD);
@@ -4467,7 +4465,7 @@ void LayoutTurnout::remove()
                      //g2.draw(new Line2D.Double(pDF, pM));
                   lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
                   lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroupD->addToGroup(lineItem);
+                  itemGroup->addToGroup(lineItem);
                  }
              }
          }
@@ -4485,7 +4483,7 @@ void LayoutTurnout::remove()
          //g2.draw(new Line2D.Double(pA, pM));
       lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pM.x(), pM.y());
       lineItem->setPen(layoutEditor->drawingStroke);
-      itemGroupA->addToGroup(lineItem);
+      itemGroup->addToGroup(lineItem);
      }
 
 
@@ -4498,7 +4496,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(pM, pB));
           lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pB.x(), pB.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupB->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
      } else if (!isBlock || drawUnselectedLeg) {
          // draw center<--=>B
@@ -4508,7 +4506,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pB), pB));
           lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pB).x(), MathUtil::twoThirdsPoint(pM, pB).y(), pB.x(), pB.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupB->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
      }
 
@@ -4522,7 +4520,7 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(pM, pC));
           lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pC.x(), pC.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupC->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
      } else if (!isBlock || drawUnselectedLeg) {
          // draw center<--=>C
@@ -4532,29 +4530,19 @@ void LayoutTurnout::remove()
              //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pC), pC));
           lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pC).x(), MathUtil::twoThirdsPoint(pM, pC).y(), pC.x(), pC.y());
           lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroupC->addToGroup(lineItem);
+          itemGroup->addToGroup(lineItem);
          }
      }
  }
  if(isMain)
  {
-  if(turnoutItemMain == nullptr)
-   turnoutItemMain = new QGraphicsItemGroup();
-  turnoutItemMain->addToGroup(itemGroupA);
-  turnoutItemMain->addToGroup(itemGroupB);
-  turnoutItemMain->addToGroup(itemGroupC);
-  turnoutItemMain->addToGroup(itemGroupD);
-  g2->addItem(turnoutItemMain);
+  itemMain = itemGroup;
+  g2->addItem(itemMain);
  }
  else
  {
-  if(turnoutItemSide== nullptr)
-   turnoutItemSide = new QGraphicsItemGroup();
-  turnoutItemSide->addToGroup(itemGroupA);
-  turnoutItemSide->addToGroup(itemGroupB);
-  turnoutItemSide->addToGroup(itemGroupC);
-  turnoutItemSide->addToGroup(itemGroupD);
-  g2->addItem(turnoutItemSide);
+  itemSide = itemGroup;
+  g2->addItem(itemSide);
  }
 
 }   // draw1
@@ -4566,12 +4554,7 @@ void LayoutTurnout::remove()
 /*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement) {
     int type = getTurnoutType();
 
-    if(turnoutItem!=nullptr && turnoutItem->scene()!=nullptr)
-    {
-     g2->removeItem(turnoutItem);
-     turnoutItem = nullptr;
-    }
-
+    invalidateItemType(isMain);
 
     QPointF pA = getCoordsA();
     QPointF pB = getCoordsB();
@@ -4697,9 +4680,9 @@ void LayoutTurnout::remove()
                     pathItem = new QGraphicsPathItem(*path);
                     pathItem->setPen(layoutEditor->drawingStroke);
                     itemGroup->addToGroup(pathItem);//                     } else {
-//                         path = new GeneralPath();
-//                         path.moveTo(pSL.getX(), pSL.getY());
-//                         path.quadTo(pML.getX(), pML.getY(), pFPL.getX(), pFPL.getY());
+//                         path = new QPainterPath();
+//                         path.moveTo(pSL.x(), pSL.y());
+//                         path.quadTo(pML.x(), pML.y(), pFPL.x(), pFPL.y());
 //                         g2.draw(path);
                 }
             }
@@ -4759,58 +4742,79 @@ void LayoutTurnout::remove()
                     itemGroup->addToGroup(pathItem);
 //                     } else {
 //                     } else {
-//                         path = new GeneralPath();
-//                         path.moveTo(pSR.getX(), pSR.getY());
-//                         path.quadTo(pMR.getX(), pMR.getY(), pFPR.getX(), pFPR.getY());
+//                         path = new QPainterPath();
+//                         path.moveTo(pSR.x(), pSR.y());
+//                         path.quadTo(pMR.x(), pMR.y(), pFPR.x(), pFPR.y());
 //                         g2.draw(path);
                 }
             }
             break;
         }   // case LH_TURNOUT
-#if 0
         case WYE_TURNOUT: {
             if (isMain == mainlineA) {
-                g2.draw(new Line2D.Double(pAL, pAPL));
-                g2.draw(new Line2D.Double(pAR, pAPR));
-            }
+                //g2.draw(new Line2D.Double(pAL, pAPL));
+             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pAPL.x(), pAPL.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pAR, pAPR));
+             lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pAPR.x(), pAPR.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);}
             if (isMain == mainlineB) {
-                g2.draw(new Line2D.Double(pF, pBL));
-                GeneralPath path = new GeneralPath();
-                path.moveTo(pAPR.getX(), pAPR.getY());
-                path.quadTo(pMR.getX(), pMR.getY(), pFR.getX(), pFR.getY());
-                path.lineTo(pBR.getX(), pBR.getY());
-                g2.draw(path);
+                //g2.draw(new Line2D.Double(pF, pBL));
+             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pBL.x(), pBL.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             QPainterPath path = QPainterPath();
+                path.moveTo(pAPR.x(), pAPR.y());
+                path.quadTo(pMR.x(), pMR.y(), pFR.x(), pFR.x());
+                path.lineTo(pBR.x(), pBR.y());
+                //g2.draw(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+                pathItem->setPen(layoutEditor->drawingStroke);
+                itemGroup->addToGroup(pathItem);
                 if (continuingSense != state) {  // unknown or diverting path
-                    path = new GeneralPath();
-                    path.moveTo(pAPR.getX(), pAPR.getY());
-                    path.quadTo(pMR.getX(), pMR.getY(), pF.getX(), pF.getY());
-                    g2.draw(path);
-//                     } else {
-//                         path = new GeneralPath();
-//                         path.moveTo(pSR.getX(), pSR.getY());
-//                         path.quadTo(pMR.getX(), pMR.getY(), pFPR.getX(), pFPR.getY());
+                    path = QPainterPath();
+                    path.moveTo(pAPR.x(), pAPR.y());
+                    path.quadTo(pMR.x(), pMR.y(), pF.x(), pF.y());
+                    //g2.draw(path);
+                    pathItem = new QGraphicsPathItem(path);
+                    pathItem->setPen(layoutEditor->drawingStroke);
+                    itemGroup->addToGroup(pathItem);
+                    //                     } else {
+//                         path = new QPainterPath();
+//                         path.moveTo(pSR.x(), pSR.y());
+//                         path.quadTo(pMR.x(), pMR.y(), pFPR.x(), pFPR.y());
 //     bad                    g2.draw(path);
                 }
             }
             if (isMain == mainlineC) {
                 pML = MathUtil::subtract(pM, vCMo);
-                GeneralPath path = new GeneralPath();
-                path.moveTo(pAPL.getX(), pAPL.getY());
-                path.quadTo(pML.getX(), pML.getY(), pFL.getX(), pFL.getY());
-                path.lineTo(pCL.getX(), pCL.getY());
-                g2.draw(path);
-                g2.draw(new Line2D.Double(pF, pCR));
+                QPainterPath path = QPainterPath();
+                path.moveTo(pAPL.x(), pAPL.y());
+                path.quadTo(pML.x(), pML.y(), pFL.x(), pFL.y());
+                path.lineTo(pCL.x(), pCL.y());
+                //g2.draw(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+                pathItem->setPen(layoutEditor->drawingStroke);
+                itemGroup->addToGroup(pathItem);
+                //g2.draw(new Line2D.Double(pF, pCR));
+                lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pCR.x(), pCR.y());
+                lineItem->setPen(layoutEditor->drawingStroke);
+                itemGroup->addToGroup(lineItem);
                 if (continuingSense != state) {  // unknown or diverting path
-//                         path = new GeneralPath();
-//                         path.moveTo(pSL.getX(), pSL.getY());
-//                         path.quadTo(pML.getX(), pML.getY(), pFPL.getX(), pFPL.getY());
+//                         path = new QPainterPath();
+//                         path.moveTo(pSL.x(), pSL.y());
+//                         path.quadTo(pML.x(), pML.y(), pFPL.x(), pFPL.y());
 //           bad              g2.draw(path);
                 } else {
-                    path = new GeneralPath();
-                    path.moveTo(pAPL.getX(), pAPL.getY());
-                    path.quadTo(pML.getX(), pML.getY(), pF.getX(), pF.getY());
-                    g2.draw(path);
-                }
+                    path = QPainterPath();
+                    path.moveTo(pAPL.x(), pAPL.y());
+                    path.quadTo(pML.x(), pML.y(), pF.x(), pF.y());
+                    //g2.draw(path);
+                    pathItem = new QGraphicsPathItem(path);
+                    pathItem->setPen(layoutEditor->drawingStroke);
+                    itemGroup->addToGroup(pathItem);}
             }
             break;
         }   // case WYE_TURNOUT
@@ -4885,8 +4889,8 @@ void LayoutTurnout::remove()
             vCM = MathUtil::normalize(MathUtil::subtract(pCM, pM));
             dirCM_DEG = MathUtil::computeAngleDEG(vCM);
             double deltaBAC_DEG = MathUtil::absDiffAngleDEG(dirAB_DEG, dirCM_DEG);
-            double deltaBAC_RAD = Math.toRadians(deltaBAC_DEG);
-            hypotF = railDisplacement / Math.sin(deltaBAC_RAD / 2.0);
+            double deltaBAC_RAD = qDegreesToRadians(deltaBAC_DEG);
+            hypotF = railDisplacement / qSin(deltaBAC_RAD / 2.0);
             QPointF vACF = MathUtil::normalize(MathUtil::add(vACM, vAB), hypotF);
             QPointF pAFL = MathUtil::add(pAM, vACF);
             QPointF pCFR = MathUtil::subtract(pCM, vACF);
@@ -4941,108 +4945,190 @@ void LayoutTurnout::remove()
             // QPointF pDFSL = MathUtil::add(pDFR, vSo);
 
             if (isMain == mainlineA) {
-                g2.draw(new Line2D.Double(pAL, pABL));
-                g2.draw(new Line2D.Double(pVRtB, pKLtD));
-                g2.draw(new Line2D.Double(pAFL, pABR));
-                g2.draw(new Line2D.Double(pAFL, pKL));
-                GeneralPath path = new GeneralPath();
-                path.moveTo(pAR.getX(), pAR.getY());
-                path.lineTo(pAPR.getX(), pAPR.getY());
-                path.quadTo(pAMR.getX(), pAMR.getY(), pAFR.getX(), pAFR.getY());
-                path.lineTo(pVR.getX(), pVR.getY());
-                g2.draw(path);
-                if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new GeneralPath();
-                    path.moveTo(pAPL.getX(), pAPL.getY());
-                    path.quadTo(pAML.getX(), pAML.getY(), pAFL.getX(), pAFL.getY());
-                    g2.draw(path);
-//                         g2.draw(new Line2D.Double(pASR, pAFSR));
+                //g2.draw(new Line2D.Double(pAL, pABL));
+             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pABL.x(), pABL.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pVRtB, pKLtD));
+             lineItem = new QGraphicsLineItem(pVRtB.x(), pVRtB.y(), pKLtD.x(), pKLtD.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pAFL, pABR));
+             lineItem = new QGraphicsLineItem(pAFL.x(), pAFL.y(), pABR.x(), pABR.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+               //g2.draw(new Line2D.Double(pAFL, pKL));
+             lineItem = new QGraphicsLineItem(pAFL.x(), pAFL.y(), pKL.x(), pKL.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             QPainterPath path = QPainterPath();
+                path.moveTo(pAR.x(), pAR.y());
+                path.lineTo(pAPR.x(), pAPR.y());
+                path.quadTo(pAMR.x(), pAMR.y(), pAFR.x(), pAFR.y());
+                path.lineTo(pVR.x(), pVR.y());
+                //g2.draw(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+                pathItem->setPen(layoutEditor->drawingStroke);
+                itemGroup->addToGroup(pathItem);
+                if (state != Turnout::CLOSED) {  // unknown or diverting path
+                    path = QPainterPath();
+                    path.moveTo(pAPL.x(), pAPL.y());
+                    path.quadTo(pAML.x(), pAML.y(), pAFL.x(), pAFL.y());
+                    //g2.draw(path);
+                    pathItem = new QGraphicsPathItem(path);
+                    pathItem->setPen(layoutEditor->drawingStroke);
+                    itemGroup->addToGroup(pathItem);//                         g2.draw(new Line2D.Double(pASR, pAFSR));
                 } else {                        // continuing path
-                    g2.draw(new Line2D.Double(pAPR, pAFL));
-                    path = new GeneralPath();
-                    path.moveTo(pASL.getX(), pASL.getY());
-                    path.quadTo(pAML.getX(), pAML.getY(), pAFS.getX(), pAFS.getY());
+                    //g2.draw(new Line2D.Double(pAPR, pAFL));
+                 lineItem = new QGraphicsLineItem(pAPR.x(), pAPR.y(), pAFL.x(), pAFL.y());
+                 lineItem->setPen(layoutEditor->drawingStroke);
+                 itemGroup->addToGroup(lineItem);
+                 path = QPainterPath();
+                    path.moveTo(pASL.x(), pASL.y());
+                    path.quadTo(pAML.x(), pAML.y(), pAFS.x(), pAFS.y());
 //                         g2.draw(path);
                 }
             }
             if (isMain == mainlineB) {
-                g2.draw(new Line2D.Double(pABL, pBL));
-                g2.draw(new Line2D.Double(pKLtC, pVLtA));
-                g2.draw(new Line2D.Double(pBFL, pABR));
-                g2.draw(new Line2D.Double(pBFL, pKL));
-                GeneralPath path = new GeneralPath();
-                path.moveTo(pBR.getX(), pBR.getY());
-                path.lineTo(pBPR.getX(), pBPR.getY());
-                path.quadTo(pBMR.getX(), pBMR.getY(), pBFR.getX(), pBFR.getY());
-                path.lineTo(pVL.getX(), pVL.getY());
-                g2.draw(path);
-                if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new GeneralPath();
-                    path.moveTo(pBPL.getX(), pBPL.getY());
-                    path.quadTo(pBML.getX(), pBML.getY(), pBFL.getX(), pBFL.getY());
-                    g2.draw(path);
-//                         g2.draw(new Line2D.Double(pBSR, pBFSR));
+                //g2.draw(new Line2D.Double(pABL, pBL));
+             lineItem = new QGraphicsLineItem(pABL.x(), pABL.y(), pBL.x(), pBL.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pKLtC, pVLtA));
+             lineItem = new QGraphicsLineItem(pKLtC.x(), pKLtC.y(), pVLtA.x(), pVLtA.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pBFL, pABR));
+             lineItem = new QGraphicsLineItem(pBFL.x(), pBFL.y(), pABR.x(), pABR.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pBFL, pKL));
+             lineItem = new QGraphicsLineItem(pBFL.x(), pBFL.y(), pKL.x(), pKL.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             QPainterPath path =  QPainterPath();
+                path.moveTo(pBR.x(), pBR.y());
+                path.lineTo(pBPR.x(), pBPR.y());
+                path.quadTo(pBMR.x(), pBMR.y(), pBFR.x(), pBFR.y());
+                path.lineTo(pVL.x(), pVL.y());
+                //g2.draw(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+                pathItem->setPen(layoutEditor->drawingStroke);
+                itemGroup->addToGroup(pathItem);
+                if (state != Turnout::CLOSED) {  // unknown or diverting path
+                    path = QPainterPath();
+                    path.moveTo(pBPL.x(), pBPL.y());
+                    path.quadTo(pBML.x(), pBML.y(), pBFL.x(), pBFL.y());
+                    //g2.draw(path);
+                    pathItem = new QGraphicsPathItem(path);
+                    pathItem->setPen(layoutEditor->drawingStroke);
+                    itemGroup->addToGroup(pathItem);//                         g2.draw(new Line2D.Double(pBSR, pBFSR));
                 } else {
-                    g2.draw(new Line2D.Double(pBPR, pBFL));
-                    path = new GeneralPath();
-                    path.moveTo(pBSL.getX(), pBSL.getY());
-                    path.quadTo(pBML.getX(), pBML.getY(), pBFS.getX(), pBFS.getY());
+                    //g2.draw(new Line2D.Double(pBPR, pBFL));
+                 lineItem = new QGraphicsLineItem(pBPR.x(), pBPR.y(), pBFL.x(), pBFL.y());
+                 lineItem->setPen(layoutEditor->drawingStroke);
+                 itemGroup->addToGroup(lineItem);
+                 path = QPainterPath();
+                    path.moveTo(pBSL.x(), pBSL.y());
+                    path.quadTo(pBML.x(), pBML.y(), pBFS.x(), pBFS.y());
 //                         g2.draw(path);
                 }
             }
             if (isMain == mainlineC) {
-                g2.draw(new Line2D.Double(pCR, pCDR));
-                g2.draw(new Line2D.Double(pKRtB, pVLtD));
-                g2.draw(new Line2D.Double(pCFR, pCDL));
-                g2.draw(new Line2D.Double(pCFR, pKR));
-                GeneralPath path = new GeneralPath();
-                path.moveTo(pCL.getX(), pCL.getY());
-                path.lineTo(pCPL.getX(), pCPL.getY());
-                path.quadTo(pCML.getX(), pCML.getY(), pCFL.getX(), pCFL.getY());
-                path.lineTo(pVL.getX(), pVL.getY());
-                g2.draw(path);
-                if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new GeneralPath();
-                    path.moveTo(pCPR.getX(), pCPR.getY());
-                    path.quadTo(pCMR.getX(), pCMR.getY(), pCFR.getX(), pCFR.getY());
-                    g2.draw(path);
-//                         g2.draw(new Line2D.Double(pCSL, pCFSL));
+                //g2.draw(new Line2D.Double(pCR, pCDR));
+             lineItem = new QGraphicsLineItem(pCR.x(), pCR.y(), pCR.x(), pCDR.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pKRtB, pVLtD));
+             lineItem = new QGraphicsLineItem(pKRtB.x(), pKRtB.y(), pVLtD.x(), pVLtD.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pCFR, pCDL));
+             lineItem = new QGraphicsLineItem(pCFR.x(), pCFR.y(), pCDL.x(), pCDL.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pCFR, pKR));
+             lineItem = new QGraphicsLineItem(pCFR.x(), pCFR.y(), pKR.x(), pKR.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             QPainterPath path = QPainterPath();
+                path.moveTo(pCL.x(), pCL.y());
+                path.lineTo(pCPL.x(), pCPL.y());
+                path.quadTo(pCML.x(), pCML.y(), pCFL.x(), pCFL.y());
+                path.lineTo(pVL.x(), pVL.y());
+                //g2.draw(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+                pathItem->setPen(layoutEditor->drawingStroke);
+                itemGroup->addToGroup(pathItem);
+                if (state != Turnout::CLOSED) {  // unknown or diverting path
+                    path = QPainterPath();
+                    path.moveTo(pCPR.x(), pCPR.y());
+                    path.quadTo(pCMR.x(), pCMR.y(), pCFR.x(), pCFR.y());
+                    //g2.draw(path);
+                    pathItem = new QGraphicsPathItem(path);
+                    pathItem->setPen(layoutEditor->drawingStroke);
+                    itemGroup->addToGroup(pathItem);
+                    //                         g2.draw(new Line2D.Double(pCSL, pCFSL));
                 } else {
-                    g2.draw(new Line2D.Double(pCPL, pCFR));
-                    path = new GeneralPath();
-                    path.moveTo(pCSR.getX(), pCSR.getY());
-                    path.quadTo(pCMR.getX(), pCMR.getY(), pCFS.getX(), pCFS.getY());
+                    //g2.draw(new Line2D.Double(pCPL, pCFR));
+                 lineItem = new QGraphicsLineItem(pCPL.x(), pCPL.y(), pCFR.x(), pCFR.y());
+                 lineItem->setPen(layoutEditor->drawingStroke);
+                 itemGroup->addToGroup(lineItem);
+                 path = QPainterPath();
+                    path.moveTo(pCSR.x(), pCSR.y());
+                    path.quadTo(pCMR.x(), pCMR.y(), pCFS.x(), pCFS.y());
 //                         g2.draw(path);
                 }
             }
             if (isMain == mainlineD) {
-                g2.draw(new Line2D.Double(pCDR, pDR));
-                g2.draw(new Line2D.Double(pKRtA, pVRtC));
-                g2.draw(new Line2D.Double(pDFR, pCDL));
-                g2.draw(new Line2D.Double(pDFR, pKR));
-                GeneralPath path = new GeneralPath();
-                path.moveTo(pDL.getX(), pDL.getY());
-                path.lineTo(pDPL.getX(), pDPL.getY());
-                path.quadTo(pDML.getX(), pDML.getY(), pDFL.getX(), pDFL.getY());
-                path.lineTo(pVR.getX(), pVR.getY());
-                g2.draw(path);
-                if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new GeneralPath();
-                    path.moveTo(pDPR.getX(), pDPR.getY());
-                    path.quadTo(pDMR.getX(), pDMR.getY(), pDFR.getX(), pDFR.getY());
-                    g2.draw(path);
-//                         g2.draw(new Line2D.Double(pDSL, pDFSL));
+                //g2.draw(new Line2D.Double(pCDR, pDR));
+             lineItem = new QGraphicsLineItem(pCDR.x(), pCDR.y(), pDR.x(), pDR.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pKRtA, pVRtC));
+             lineItem = new QGraphicsLineItem(pKRtA.x(), pKRtA.y(), pVRtC.x(), pVRtC.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pDFR, pCDL));
+             lineItem = new QGraphicsLineItem(pDFR.x(), pDFR.y(), pCDL.x(), pCDL.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             //g2.draw(new Line2D.Double(pDFR, pKR));
+             lineItem = new QGraphicsLineItem(pDFR.x(), pDFR.y(), pKR.x(), pKR.y());
+             lineItem->setPen(layoutEditor->drawingStroke);
+             itemGroup->addToGroup(lineItem);
+             QPainterPath path = QPainterPath();
+                path.moveTo(pDL.x(), pDL.y());
+                path.lineTo(pDPL.x(), pDPL.y());
+                path.quadTo(pDML.x(), pDML.y(), pDFL.x(), pDFL.y());
+                path.lineTo(pVR.x(), pVR.y());
+                //g2.draw(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+                pathItem->setPen(layoutEditor->drawingStroke);
+                itemGroup->addToGroup(pathItem);
+                if (state != Turnout::CLOSED) {  // unknown or diverting path
+                    path = QPainterPath();
+                    path.moveTo(pDPR.x(), pDPR.y());
+                    path.quadTo(pDMR.x(), pDMR.y(), pDFR.x(), pDFR.y());
+                    //g2.draw(path);
+                    pathItem = new QGraphicsPathItem(path);
+                    pathItem->setPen(layoutEditor->drawingStroke);
+                    itemGroup->addToGroup(pathItem);
+                    //                         g2.draw(new Line2D.Double(pDSL, pDFSL));
                 } else {
-                    g2.draw(new Line2D.Double(pDPL, pDFR));
-                    path = new GeneralPath();
-                    path.moveTo(pDSR.getX(), pDSR.getY());
-                    path.quadTo(pDMR.getX(), pDMR.getY(), pDFS.getX(), pDFS.getY());
+                    //g2.draw(new Line2D.Double(pDPL, pDFR));
+                 lineItem = new QGraphicsLineItem(pDPL.x(), pDPL.y(), pDFR.x(), pDFR.y());
+                 lineItem->setPen(layoutEditor->drawingStroke);
+                 itemGroup->addToGroup(lineItem);
+                 path = QPainterPath();
+                    path.moveTo(pDSR.x(), pDSR.y());
+                    path.quadTo(pDMR.x(), pDMR.y(), pDFS.x(), pDFS.y());
 //                         g2.draw(path);
                 }
             }
             break;
         }   // case DOUBLE_XOVER
-
+#if 0
         case RH_XOVER: {
             // A, B, C, D end points (left and right)
             QPointF vAB = MathUtil::normalize(MathUtil::subtract(pB, pA), railDisplacement);
@@ -5113,24 +5199,24 @@ void LayoutTurnout::remove()
 
             if (isMain == mainlineA) {
                 g2.draw(new Line2D.Double(pAL, pABL));
-                GeneralPath path = new GeneralPath();
-                path.moveTo(pAR.getX(), pAR.getY());
-                path.lineTo(pAPR.getX(), pAPR.getY());
-                path.quadTo(pABR.getX(), pABR.getY(), pABFP.getX(), pABFP.getY());
-                path.lineTo(pACR.getX(), pACR.getY());
+                QPainterPath path = new QPainterPath();
+                path.moveTo(pAR.x(), pAR.y());
+                path.lineTo(pAPR.x(), pAPR.y());
+                path.quadTo(pABR.x(), pABR.y(), pABFP.x(), pABFP.y());
+                path.lineTo(pACR.x(), pACR.y());
                 g2.draw(path);
                 g2.draw(new Line2D.Double(pABF, pACL));
                 if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new GeneralPath();
-                    path.moveTo(pAPL.getX(), pAPL.getY());
-                    path.quadTo(pABL.getX(), pABL.getY(), pABF.getX(), pABF.getY());
+                    path = new QPainterPath();
+                    path.moveTo(pAPL.x(), pAPL.y());
+                    path.quadTo(pABL.x(), pABL.y(), pABF.x(), pABF.y());
                     g2.draw(path);
 //                         g2.draw(new Line2D.Double(pASR, pABFSP));
                 } else {                        // continuing path
                     g2.draw(new Line2D.Double(pAPR, pABF));
-                    path = new GeneralPath();
-                    path.moveTo(pASL.getX(), pASL.getY());
-                    path.quadTo(pABL.getX(), pABL.getY(), pABFS.getX(), pABFS.getY());
+                    path = new QPainterPath();
+                    path.moveTo(pASL.x(), pASL.y());
+                    path.quadTo(pABL.x(), pABL.y(), pABFS.x(), pABFS.y());
 //                         g2.draw(path);
                 }
             }
@@ -5140,24 +5226,24 @@ void LayoutTurnout::remove()
             }
             if (isMain == mainlineC) {
                 g2.draw(new Line2D.Double(pCR, pCDR));
-                GeneralPath path = new GeneralPath();
-                path.moveTo(pCL.getX(), pCL.getY());
-                path.lineTo(pCPL.getX(), pCPL.getY());
-                path.quadTo(pCDL.getX(), pCDL.getY(), pCDFP.getX(), pCDFP.getY());
-                path.lineTo(pACL.getX(), pACL.getY());
+                QPainterPath path = new QPainterPath();
+                path.moveTo(pCL.x(), pCL.y());
+                path.lineTo(pCPL.x(), pCPL.y());
+                path.quadTo(pCDL.x(), pCDL.y(), pCDFP.x(), pCDFP.y());
+                path.lineTo(pACL.x(), pACL.y());
                 g2.draw(path);
                 g2.draw(new Line2D.Double(pCDF, pACR));
                 if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new GeneralPath();
-                    path.moveTo(pCPR.getX(), pCPR.getY());
-                    path.quadTo(pCDR.getX(), pCDR.getY(), pCDF.getX(), pCDF.getY());
+                    path = new QPainterPath();
+                    path.moveTo(pCPR.x(), pCPR.y());
+                    path.quadTo(pCDR.x(), pCDR.y(), pCDF.x(), pCDF.y());
                     g2.draw(path);
 //                         g2.draw(new Line2D.Double(pCSL, pCDFSP));
                 } else {                        // continuing path
                     g2.draw(new Line2D.Double(pCPL, pCDF));
-                    path = new GeneralPath();
-                    path.moveTo(pCSR.getX(), pCSR.getY());
-                    path.quadTo(pCDR.getX(), pCDR.getY(), pCDFS.getX(), pCDFS.getY());
+                    path = new QPainterPath();
+                    path.moveTo(pCSR.x(), pCSR.y());
+                    path.quadTo(pCDR.x(), pCDR.y(), pCDFS.x(), pCDFS.y());
 //                         g2.draw(path);
                 }
             }
@@ -5242,24 +5328,24 @@ void LayoutTurnout::remove()
             }
             if (isMain == mainlineB) {
                 g2.draw(new Line2D.Double(pBL, pBAL));
-                GeneralPath path = new GeneralPath();
-                path.moveTo(pBR.getX(), pBR.getY());
-                path.lineTo(pBPR.getX(), pBPR.getY());
-                path.quadTo(pBAR.getX(), pBAR.getY(), pBFR.getX(), pBFR.getY());
-                path.lineTo(pBDR.getX(), pBDR.getY());
+                QPainterPath path = new QPainterPath();
+                path.moveTo(pBR.x(), pBR.y());
+                path.lineTo(pBPR.x(), pBPR.y());
+                path.quadTo(pBAR.x(), pBAR.y(), pBFR.x(), pBFR.y());
+                path.lineTo(pBDR.x(), pBDR.y());
                 g2.draw(path);
                 g2.draw(new Line2D.Double(pBFL, pBDL));
                 if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new GeneralPath();
-                    path.moveTo(pBPL.getX(), pBPL.getY());
-                    path.quadTo(pBAL.getX(), pBAL.getY(), pBFL.getX(), pBFL.getY());
+                    path = new QPainterPath();
+                    path.moveTo(pBPL.x(), pBPL.y());
+                    path.quadTo(pBAL.x(), pBAL.y(), pBFL.x(), pBFL.y());
                     g2.draw(path);
 //                         g2.draw(new Line2D.Double(pBSR, pBAFSP));
                 } else {                        // continuing path
                     g2.draw(new Line2D.Double(pBPR, pBFL));
-                    path = new GeneralPath();
-                    path.moveTo(pBSL.getX(), pBSL.getY());
-                    path.quadTo(pBAL.getX(), pBAL.getY(), pBAFS.getX(), pBAFS.getY());
+                    path = new QPainterPath();
+                    path.moveTo(pBSL.x(), pBSL.y());
+                    path.quadTo(pBAL.x(), pBAL.y(), pBAFS.x(), pBAFS.y());
 //                         g2.draw(path);
                 }
             }
@@ -5269,24 +5355,24 @@ void LayoutTurnout::remove()
             }
             if (isMain == mainlineD) {
                 g2.draw(new Line2D.Double(pDR, pDCR));
-                GeneralPath path = new GeneralPath();
-                path.moveTo(pDL.getX(), pDL.getY());
-                path.lineTo(pDPL.getX(), pDPL.getY());
-                path.quadTo(pDCL.getX(), pDCL.getY(), pDFL.getX(), pDFL.getY());
-                path.lineTo(pBDL.getX(), pBDL.getY());
+                QPainterPath path = new QPainterPath();
+                path.moveTo(pDL.x(), pDL.y());
+                path.lineTo(pDPL.x(), pDPL.y());
+                path.quadTo(pDCL.x(), pDCL.y(), pDFL.x(), pDFL.y());
+                path.lineTo(pBDL.x(), pBDL.y());
                 g2.draw(path);
                 g2.draw(new Line2D.Double(pDFR, pBDR));
                 if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new GeneralPath();
-                    path.moveTo(pDPR.getX(), pDPR.getY());
-                    path.quadTo(pDCR.getX(), pDCR.getY(), pDFR.getX(), pDFR.getY());
+                    path = new QPainterPath();
+                    path.moveTo(pDPR.x(), pDPR.y());
+                    path.quadTo(pDCR.x(), pDCR.y(), pDFR.x(), pDFR.y());
                     g2.draw(path);
 //                         g2.draw(new Line2D.Double(pDSL, pDCFSP));
                 } else {                        // continuing path
                     g2.draw(new Line2D.Double(pDPL, pDFR));
-                    path = new GeneralPath();
-                    path.moveTo(pDSR.getX(), pDSR.getY());
-                    path.quadTo(pDCR.getX(), pDCR.getY(), pDCFS.getX(), pDCFS.getY());
+                    path = new QPainterPath();
+                    path.moveTo(pDSR.x(), pDSR.y());
+                    path.quadTo(pDCR.x(), pDCR.y(), pDCFS.x(), pDCFS.y());
 //                         g2.draw(path);
                 }
             }
@@ -5304,9 +5390,16 @@ void LayoutTurnout::remove()
             break;
         }
     }
-    turnoutItem = itemGroup;
-    g2->addItem(turnoutItem);
-}
+    if(isMain)
+    {
+     itemMain = itemGroup;
+     g2->addItem(itemMain);
+    }
+    else
+    {
+     itemSide = itemGroup;
+     g2->addItem(itemSide);
+    }}
 #if 1
 /**
  * {@inheritDoc}
@@ -5351,18 +5444,24 @@ void LayoutTurnout::remove()
 //@Override
 /*protected*/ void LayoutTurnout::drawTurnoutControls(EditScene* g2)
 {
-    if (!disabled && !(disableWhenOccupied && isOccupied())) {
-        //g2.draw(layoutEditor.trackControlCircleAt(center));
-     QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(center);
-     item->setPen(layoutEditor->drawingStroke);
-     rects = item;
-     g2->addItem(rects);
-    }
+ invalidateItem(circles);
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+ if (!disabled && !(disableWhenOccupied && isOccupied()))
+ {
+     //g2.draw(layoutEditor.trackControlCircleAt(center));
+  QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(center);
+  item->setPen(layoutEditor->drawingStroke);
+  itemGroup->addToGroup(item);
+
+  circles = itemGroup;
+  g2->addItem(circles);
+ }
 }
 
 //@Override
 /*protected*/ void LayoutTurnout::drawEditControls(EditScene* g2)
 {
+ invalidateItem(rects);
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
  if(rects!=nullptr && rects->scene()!=nullptr)
  {
@@ -5493,36 +5592,29 @@ void LayoutTurnout::on_rotateItemAction_triggered()
 
 void LayoutTurnout::invalidate(EditScene *g2)
 {
- invalidate(turnoutItemMain);
- invalidate(turnoutItemSide);
+ invalidateItem(itemMain);
+ invalidateItem(itemSide);
  if(rects!=nullptr && rects->scene()!=nullptr)
  {
   rects->scene()->removeItem(rects);
   delete rects;
   rects = nullptr;
  }
-
-}
-void LayoutTurnout::invalidate(EditScene *g2, bool isMain)
-{
- if(isMain)
-  invalidate(turnoutItemMain);
- else
-  invalidate(turnoutItemSide);
-}
-
-void LayoutTurnout::invalidate(QGraphicsItemGroup* turnoutItem)
-{
- if(turnoutItem!=nullptr && turnoutItem->scene())
+ if(circles!=nullptr && circles->scene()!=nullptr)
  {
-  QRectF r = turnoutItem->boundingRect();
-//  QGraphicsScene* scene = turnoutItem->scene();
-//  scene->removeItem(turnoutItem);
-//  scene->update(r);
-  layoutEditor->getTargetPanel()->removeItem(turnoutItem);
+  circles->scene()->removeItem(circles);
+  delete circles;
+  circles = nullptr;
  }
- turnoutItem = nullptr;
+
+ if(item!=nullptr && item->scene()!=nullptr)
+ {
+  item->scene()->removeItem(item);
+  delete item;
+  item = nullptr;
+ }
 }
+
 #if 0
 void LayoutTurnout::drawTurnouts(LayoutEditor *editor, QGraphicsScene *g2)
 {

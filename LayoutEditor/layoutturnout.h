@@ -337,6 +337,7 @@ public:
  /*public*/ void setState(int state);
  /*public*/ int getState();
  /*public*/ bool isMainline();
+ void invalidate(EditScene *g2);
 
 
  //make 'public' because of Jmri.h!
@@ -418,14 +419,12 @@ private:
     bool active;// = true;
     QVector<QObject*>* editAdditionalMenu;// = new QVector<QMenuItem*>();
     QVector<QObject*>* viewAdditionalMenu;// = new QVector<QMenuItem*>();
-    QGraphicsItemGroup* item;
-    QGraphicsItem* rects;
+    QGraphicsItemGroup* item = nullptr;
+    QGraphicsItemGroup* circles = nullptr;
+    QGraphicsItemGroup* rects = nullptr;
     QGraphicsEllipseItem* circle;
-    QGraphicsItemGroup* turnoutItemMain = nullptr;
-    QGraphicsItemGroup* turnoutItemSide = nullptr;
-    void invalidate(EditScene *g2);
-    void invalidate(EditScene *g2, bool isMain);
-    void invalidate(QGraphicsItemGroup* turnoutItem);
+//    QGraphicsItemGroup* turnoutItemMain = nullptr;
+//    QGraphicsItemGroup* turnoutItemSide = nullptr;
 //    void drawTurnouts(LayoutEditor* editor, QGraphicsScene* g2);
 //    void drawTurnoutRects(LayoutEditor *editor, QGraphicsScene *g2);
 //    void drawTurnoutCircles(LayoutEditor *editor, QGraphicsScene *g2);
@@ -516,6 +515,7 @@ protected:
  friend class ETWindowListener;
  friend class ConnectivityUtil;
  friend class LayoutEditorAuxTools;
+ friend class LayoutTrackEditors;
 };
 
 class ETWindowListener : public WindowListener

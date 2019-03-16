@@ -1122,14 +1122,15 @@ QString JmriJFrame::getTitle() { return windowTitle();}
  return QVariant();
 }
 
-QWidget* JmriJFrame::getContentPane()
+QWidget* JmriJFrame::getContentPane(bool addLayout)
 {
  if(centralWidget() == nullptr)
  {
   QWidget* centralWidget = new QWidget();
   centralWidget->setObjectName("JmriJFrameCentralWidget");
   centralWidget->resize(300,300);
-  //centralWidget()->setLayout(new QVBoxLayout);
+  if(addLayout)
+   centralWidget->setLayout(new QVBoxLayout);
   setCentralWidget(centralWidget);
  }
  return centralWidget();

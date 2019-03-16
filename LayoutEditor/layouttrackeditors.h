@@ -122,6 +122,18 @@ private slots:
  /*private*/ void editLayoutSlipEditBlockPressed(/*ActionEvent a*/);
  /*private*/ void editLayoutSlipDonePressed(/*ActionEvent a*/);
  /*private*/ void editLayoutSlipCancelPressed(/*ActionEvent a*/);
+ /*private*/ void editTrackSegmentEditBlockPressed(/*ActionEvent a*/);
+ /*private*/ void editTracksegmentDonePressed(/*ActionEvent a*/);
+ /*private*/ void editTrackSegmentCancelPressed(/*ActionEvent a*/);
+ /*private*/ void onEditLayoutTurnout2ndTurnoutCheckBox(bool);
+ /*private*/ void onEditLayoutTurnout2ndTurnoutInvertCheckBox(bool);
+ /*private*/ void editLayoutTurnoutCancelPressed(/*ActionEvent a*/);
+ /*private*/ void editLayoutTurnoutEditBlockPressed(/*ActionEvent a*/);
+ /*private*/ void editLayoutTurnoutEditBlockBPressed(/*ActionEvent a*/);
+ /*private*/ void editLayoutTurnoutEditBlockCPressed(/*ActionEvent a*/);
+ /*private*/ void editLayoutTurnoutEditBlockDPressed(/*ActionEvent a*/);
+ /*private*/ void editLayoutTurnoutDonePressed(/*ActionEvent a*/);
+
 
 protected:
  /*protected*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack);
@@ -136,6 +148,9 @@ friend class TrackSegment;
 friend class SlipEditWindowListener;
 friend class SlipEditWindowListener;
 friend class SlipPopupMenuListener;
+friend class EditTrackSegmentWindowListener;
+friend class EditLayoutWindowListener;
+friend class TurnoutPopupMenuListener;
 };
 
 class SlipPopupMenuListener : public PopupMenuListener
@@ -143,7 +158,7 @@ class SlipPopupMenuListener : public PopupMenuListener
  Q_OBJECT
  LayoutTrackEditors* layoutTrackEditors;
 public:
- SlipPopupMenuListener(QMenu *popup, LayoutTrackEditors* layoutTrackEditors);
+ SlipPopupMenuListener( LayoutTrackEditors* layoutTrackEditors);
 public slots:
  /*public*/ void popupMenuWillBecomeVisible(/*PopupMenuEvent e*/);
 
@@ -151,7 +166,6 @@ public slots:
 
  /*public*/ void popupMenuCanceled(/*PopupMenuEvent e*/);
 private:
- QMenu* popup;
 };
 class SlipEditWindowListener : public WindowListener
 {
@@ -163,5 +177,46 @@ public:
  {
   layoutTrackEditors->editLayoutSlipCancelPressed();
  }
+};
+
+class EditTrackSegmentWindowListener : public WindowListener
+{
+ Q_OBJECT
+ LayoutTrackEditors* layoutTrackEditors;
+public:
+ EditTrackSegmentWindowListener(LayoutTrackEditors* layoutTrackEditors) {this->layoutTrackEditors = layoutTrackEditors;}
+ void windowClosing(QCloseEvent *)
+ {
+  layoutTrackEditors->editTrackSegmentCancelPressed();
+ }
+
+};
+class EditLayoutWindowListener : public  WindowListener
+{
+ Q_OBJECT
+ LayoutTrackEditors* layoutTrackEditors;
+public:
+ EditLayoutWindowListener(LayoutTrackEditors* layoutTrackEditors) {this->layoutTrackEditors = layoutTrackEditors;}
+ void windowClosing(QCloseEvent *)
+ {
+  layoutTrackEditors->editLayoutTurnoutCancelPressed();
+ }
+
+};
+
+class TurnoutPopupMenuListener : public PopupMenuListener
+{
+ Q_OBJECT
+ LayoutTrackEditors* layoutTrackEditors;
+public:
+ TurnoutPopupMenuListener(LayoutTrackEditors* layoutTrackEditors);
+
+public slots:
+ /*public*/ void popupMenuWillBecomeVisible(/*PopupMenuEvent e*/);
+
+ /*public*/ void popupMenuWillBecomeInvisible(/*PopupMenuEvent e*/);
+
+ /*public*/ void popupMenuCanceled(/*PopupMenuEvent e*/);
+
 };
 #endif // LAYOUTTRACKEDITORS_H

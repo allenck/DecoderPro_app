@@ -81,7 +81,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -2102,7 +2101,7 @@ virtual QMap<QString , QString >*  getDecorations();
 virtual bool  hasDecorations();
 virtual void highlightUnconnected(EditScene*  g2);
 virtual void highlightUnconnected(EditScene*  g2, int  specificType);
-virtual void invalidate(EditScene*  g2);
+virtual void invalidate(EditScene*  arg__1);
 virtual bool  isDisconnected(int  connectionType);
 virtual bool  isMainline();
 virtual void reCheckBlockBoundary();
@@ -2159,7 +2158,7 @@ inline QMap<QString , QString >*  py_q_getDecorations() { return LayoutTrack::ge
 inline bool  py_q_hasDecorations() { return LayoutTrack::hasDecorations(); }
 inline void py_q_highlightUnconnected(EditScene*  g2) { LayoutTrack::highlightUnconnected(g2); }
 inline void py_q_highlightUnconnected(EditScene*  g2, int  specificType) { LayoutTrack::highlightUnconnected(g2, specificType); }
-inline void py_q_invalidate(EditScene*  g2) { LayoutTrack::invalidate(g2); }
+inline void py_q_invalidate(EditScene*  arg__1) { LayoutTrack::invalidate(arg__1); }
 inline bool  py_q_isDisconnected(int  connectionType) { return LayoutTrack::isDisconnected(connectionType); }
 inline bool  py_q_isMainline() { return LayoutTrack::isMainline(); }
 inline void py_q_reCheckBlockBoundary() { LayoutTrack::reCheckBlockBoundary(); }
@@ -2221,8 +2220,10 @@ void delete_LayoutTrack(LayoutTrack* obj) { delete obj; }
    void py_q_highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_highlightUnconnected(g2));}
    void highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2, int  specificType);
    void py_q_highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2, int  specificType){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_highlightUnconnected(g2, specificType));}
-   void invalidate(LayoutTrack* theWrappedObject, EditScene*  g2);
-   void py_q_invalidate(LayoutTrack* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_invalidate(g2));}
+   void invalidate(LayoutTrack* theWrappedObject, EditScene*  arg__1);
+   void py_q_invalidate(LayoutTrack* theWrappedObject, EditScene*  arg__1){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_invalidate(arg__1));}
+   void invalidateItem(LayoutTrack* theWrappedObject, QGraphicsItemGroup*  turnoutItem);
+   void invalidateItemType(LayoutTrack* theWrappedObject, bool  isMain);
    bool  static_LayoutTrack_isConnectionHitType(int  hitType);
    bool  static_LayoutTrack_isControlHitType(int  hitType);
    bool  isDisconnected(LayoutTrack* theWrappedObject, int  connectionType);
@@ -2254,12 +2255,12 @@ void delete_LayoutTrack(LayoutTrack* obj) { delete obj; }
    void py_q_translateCoords(LayoutTrack* theWrappedObject, float  xFactor, float  yFactor){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_translateCoords(xFactor, yFactor));}
 void py_set_item(LayoutTrack* theWrappedObject, QGraphicsItem*  item){ theWrappedObject->item = item; }
 QGraphicsItem*  py_get_item(LayoutTrack* theWrappedObject){ return theWrappedObject->item; }
+void py_set_itemMain(LayoutTrack* theWrappedObject, QGraphicsItemGroup*  itemMain){ theWrappedObject->itemMain = itemMain; }
+QGraphicsItemGroup*  py_get_itemMain(LayoutTrack* theWrappedObject){ return theWrappedObject->itemMain; }
+void py_set_itemSide(LayoutTrack* theWrappedObject, QGraphicsItemGroup*  itemSide){ theWrappedObject->itemSide = itemSide; }
+QGraphicsItemGroup*  py_get_itemSide(LayoutTrack* theWrappedObject){ return theWrappedObject->itemSide; }
 void py_set_propertyChangeSupport(LayoutTrack* theWrappedObject, PropertyChangeSupport*  propertyChangeSupport){ theWrappedObject->propertyChangeSupport = propertyChangeSupport; }
 PropertyChangeSupport*  py_get_propertyChangeSupport(LayoutTrack* theWrappedObject){ return theWrappedObject->propertyChangeSupport; }
-void py_set_turnoutItem(LayoutTrack* theWrappedObject, QGraphicsItem*  turnoutItem){ theWrappedObject->turnoutItem = turnoutItem; }
-QGraphicsItem*  py_get_turnoutItem(LayoutTrack* theWrappedObject){ return theWrappedObject->turnoutItem; }
-void py_set_turnoutItem2(LayoutTrack* theWrappedObject, QGraphicsItem*  turnoutItem2){ theWrappedObject->turnoutItem2 = turnoutItem2; }
-QGraphicsItem*  py_get_turnoutItem2(LayoutTrack* theWrappedObject){ return theWrappedObject->turnoutItem2; }
 };
 
 

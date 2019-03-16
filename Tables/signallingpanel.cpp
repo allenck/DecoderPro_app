@@ -1613,7 +1613,7 @@ void SignallingPanel::editDetails(){
 //{
     BlockModel::BlockModel(SignallingPanel* self) : SPTableModel(self)
     {
-     BlockManager* mgr = InstanceManager::blockManagerInstance(); //.addPropertyChangeListener(this);
+     BlockManager* mgr = static_cast<BlockManager*>(InstanceManager::getDefault("BlockMamager")); //.addPropertyChangeListener(this);
      connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
 

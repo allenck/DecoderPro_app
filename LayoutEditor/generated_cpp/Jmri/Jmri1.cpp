@@ -69,7 +69,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -20247,7 +20246,7 @@ if (_wrapper) {
 }
   LayoutTrack::highlightUnconnected(g20, specificType1);
 }
-void PythonQtShell_LayoutTrack::invalidate(EditScene*  g20)
+void PythonQtShell_LayoutTrack::invalidate(EditScene*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20257,7 +20256,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "EditScene*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&g20};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -20267,7 +20266,7 @@ if (_wrapper) {
     }
   }
 }
-  LayoutTrack::invalidate(g20);
+  LayoutTrack::invalidate(arg__1);
 }
 bool  PythonQtShell_LayoutTrack::isDisconnected(int  connectionType0)
 {
@@ -20690,9 +20689,19 @@ void PythonQtWrapper_LayoutTrack::highlightUnconnected(LayoutTrack* theWrappedOb
   ( ((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->promoted_highlightUnconnected(g2, specificType));
 }
 
-void PythonQtWrapper_LayoutTrack::invalidate(LayoutTrack* theWrappedObject, EditScene*  g2)
+void PythonQtWrapper_LayoutTrack::invalidate(LayoutTrack* theWrappedObject, EditScene*  arg__1)
 {
-  ( theWrappedObject->invalidate(g2));
+  ( theWrappedObject->invalidate(arg__1));
+}
+
+void PythonQtWrapper_LayoutTrack::invalidateItem(LayoutTrack* theWrappedObject, QGraphicsItemGroup*  turnoutItem)
+{
+  ( theWrappedObject->invalidateItem(turnoutItem));
+}
+
+void PythonQtWrapper_LayoutTrack::invalidateItemType(LayoutTrack* theWrappedObject, bool  isMain)
+{
+  ( theWrappedObject->invalidateItemType(isMain));
 }
 
 bool  PythonQtWrapper_LayoutTrack::static_LayoutTrack_isConnectionHitType(int  hitType)

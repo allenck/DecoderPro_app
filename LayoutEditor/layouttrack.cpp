@@ -1,4 +1,4 @@
-#include "layouttrack.h"
+﻿#include "layouttrack.h"
 #include <QColor>
 #include "turnout.h"
 #include "layouteditor.h"
@@ -630,5 +630,26 @@
  *                    block to selection" item)
  */
 /*public*/ /*abstract*/ void LayoutTrack::setAllLayoutBlocks(LayoutBlock* /*layoutBlock*/) {}
+
+/*public*/ void LayoutTrack::invalidateItemType(bool isMain)
+{
+ if(isMain)
+  invalidateItem(itemMain);
+ else
+  invalidateItem(itemSide);
+}
+
+/*public*/ void LayoutTrack::invalidateItem(QGraphicsItemGroup* turnoutItem)
+{
+ if(turnoutItem!=nullptr && turnoutItem->scene())
+ {
+  QRectF r = turnoutItem->boundingRect();
+//  QGraphicsScene* scene = turnoutItem->scene();
+//  scene->removeItem(turnoutItem);
+//  scene->update(r);
+  layoutEditor->getTargetPanel()->removeItem(turnoutItem);
+ }
+ turnoutItem = nullptr;
+}
 
 /*private*/ /*final*/ /*static*/ Logger* LayoutTrack::log = LoggerFactory::getLogger("LayoutTrack");

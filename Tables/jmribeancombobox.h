@@ -4,6 +4,7 @@
 #include <QComboBox>
 #include "logger.h"
 #include "libtables_global.h"
+#include "popupmenulistener.h"
 
 class Manager;
 class NamedBean;
@@ -34,7 +35,17 @@ public:
     /*public*/ QString getDisplayName();
     /*public*/ QString getText();
     /*public*/ void setText(QString inText);
-
+    /*public*/ void addPopupMenuListener(PopupMenuListener* pml);
+    /*public*/ void enableItem(int inIndex);
+    /*public*/ void disableItem(int inIndex);
+    /*public*/ void setEnabledColor(QColor inEnabledColor);
+    /*public*/ QColor getEnabledColor();
+    /*public*/ void setDisabledColor(QColor inDisabledColor);
+    /*public*/ QColor getDisabledColor();
+    /*public*/ void setEnabledBackgroundColor(QColor inEnabledBackgroundColor);
+    /*public*/ QColor getEnabledBackgroundColor();
+    /*public*/ void setDisabledBackgroundColor(QColor inDisabledBackgroundColor);
+    /*public*/ QColor getDisabledBackgroundColor();
 
 #if 0
     /**
@@ -186,6 +197,7 @@ private:
     /*private*/ void validateText();
     void updateComboBox(QString select);
     void common(Manager* manager, NamedBean* nBean, int displayOrder);
+    PopupMenuListener* popupMenuListner;
 
 };
 #if 0

@@ -2906,10 +2906,10 @@ double LayoutEditor::getPaintScale()
            case LayoutTrack::TURNOUT_CENTER: {
             LayoutTurnout* t = ((LayoutTurnout*) selectedObject);
                t->setCoordsCenter(currentPoint);
-               if(t->connectA) t->connectA->invalidate(editScene);
-               if(t->connectB) t->connectB->invalidate(editScene);
-               if(t->connectC) t->connectC->invalidate(editScene);
-               if(t->connectD) t->connectD->invalidate(editScene);
+               if(t->connectA) t->connectA->invalidateItemType(editScene);
+               if(t->connectB) t->connectB->invalidateItemType(editScene);
+               if(t->connectC) t->connectC->invalidateItemType(editScene);
+               if(t->connectD) t->connectD->invalidateItemType(editScene);
                isDragging = true;
                break;
            }
@@ -4503,7 +4503,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
     // remove existing items from scene
     for(LayoutTrack* layoutTrack : *layoutTrackList)
     {
-     layoutTrack->invalidate(g2);
+     layoutTrack->invalidateItemType(g2);
     }
 #endif
     // things that only get drawn in edit mode
@@ -7068,7 +7068,7 @@ QGraphicsView* LayoutEditor::panel()
   if ( (block1!=nullptr) && (block1!=block) ) block1->updatePaths();
   if ( (block2!=nullptr) && (block2!=block) && (block2!=block1) ) block2->updatePaths();
   //
-  o->invalidate(editScene);
+  o->invalidateItemType(editScene);
   setDirty(true);
   //repaint();
   paintTargetPanel(editScene);

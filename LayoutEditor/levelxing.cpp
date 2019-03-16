@@ -567,11 +567,7 @@
 //@Override
 /*protected*/ void LevelXing::draw1(EditScene* g2, bool isMain, bool isBlock) {
 
- if(item!=nullptr && item->scene()!=nullptr)
- {
-  g2->removeItem(item);
-  item = nullptr;
- }
+ invalidateItemType(isMain);
 
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
@@ -593,6 +589,16 @@
   QGraphicsLineItem* lineItem = new QGraphicsLineItem(getCoordsB().x(), getCoordsB().y(), getCoordsD().x(), getCoordsD().y());
   lineItem->setPen(layoutEditor->drawingStroke);
   itemGroup->addToGroup(lineItem);
+ }
+ if(isMain)
+ {
+  itemMain = itemGroup;
+  g2->addItem(itemMain);
+ }
+ else
+ {
+  itemSide = itemGroup;
+  g2->addItem(itemSide);
  }
 }
 
@@ -638,11 +644,8 @@
     QPointF pVL = MathUtil::subtract(pM, vDisV);
     QPointF pVR = MathUtil::add(pM, vDisV);
     QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
-    if(item!=nullptr && item->scene()!=nullptr)
-    {
-     g2->removeItem(item);
-     item = nullptr;
-    }
+
+    invalidateItemType(isMain);
 
     if (isMain == isMainlineAC()) {
         // this is the *2.0 vector (rail gap) for the AC diamond parts
@@ -705,8 +708,16 @@
      //g2.draw(new Line2D.Double(pVL, pDL));
      lineItem = new QGraphicsLineItem(pVL.x(), pVL.y(), pDL.x(), pDL.y());
     }
-    item = itemGroup;
-    g2->addItem(item);
+    if(isMain)
+    {
+     itemMain = itemGroup;
+     g2->addItem(itemMain);
+    }
+    else
+    {
+     itemSide = itemGroup;
+     g2->addItem(itemSide);
+    }
 }
 
 /**

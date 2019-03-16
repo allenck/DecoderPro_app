@@ -932,11 +932,7 @@ void LayoutTurntable::dispose() {
     double radius = getRadius(), diameter = radius + radius;
     QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
-    if(item!=nullptr && item->scene()!=nullptr)
-    {
-     g2->removeItem(item);
-     item = nullptr;
-    }
+    invalidateItem(item);
 
     if (isBlock && isMain)
     {
@@ -998,12 +994,7 @@ void LayoutTurntable::dispose() {
     float halfTrackWidth = trackWidth / 2.f;
     QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
-    if(item!=nullptr && item->scene()!=nullptr)
-    {
-     g2->removeItem(item);
-     item = nullptr;
-    }
-
+    invalidateItem(item);
 
     // draw ray tracks
     for (int j = 0; j < getNumberRays(); j++) {
@@ -1056,18 +1047,21 @@ void LayoutTurntable::dispose() {
 /*protected*/ void LayoutTurntable::highlightUnconnected(EditScene* g2, int specificType) {
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
-    for (int j = 0; j < getNumberRays(); j++) {
-        if ((specificType == NONE) || (specificType == (TURNTABLE_RAY_OFFSET + j))) {
-            if (getRayConnectOrdered(j) == nullptr) {
-                QPointF pt = getRayCoordsOrdered(j);
-                //g2.fill(layoutEditor.trackControlCircleAt(pt));
-                QGraphicsEllipseItem* circleItem = layoutEditor->trackControlCircleAt(pt);
-                circleItem->setPen(QPen(defaultTrackColor, 1));
-                itemGroup->addToGroup(circleItem);
-            }
-        }
-    }
-    ((QGraphicsItemGroup*)item)->addToGroup(itemGroup);
+ invalidateItem(rects);
+
+ for (int j = 0; j < getNumberRays(); j++) {
+     if ((specificType == NONE) || (specificType == (TURNTABLE_RAY_OFFSET + j))) {
+         if (getRayConnectOrdered(j) == nullptr) {
+             QPointF pt = getRayCoordsOrdered(j);
+             //g2.fill(layoutEditor.trackControlCircleAt(pt));
+             QGraphicsEllipseItem* circleItem = layoutEditor->trackControlCircleAt(pt);
+             circleItem->setPen(QPen(defaultTrackColor, 1));
+             itemGroup->addToGroup(circleItem);
+         }
+     }
+ }
+ rects = itemGroup;
+ g2->addItem(rects);
 }
 
 /**
@@ -1076,7 +1070,10 @@ void LayoutTurntable::dispose() {
  * @param g2 the graphics port to draw to
  */
 //@Override
-/*protected*/ void LayoutTurntable::drawTurnoutControls(EditScene* g2) {
+/*protected*/ void LayoutTurntable::drawTurnoutControls(EditScene* g2)
+{
+ invalidateItem(circles);
+
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
     if (isTurnoutControlled()) {
         // draw control circles at all but current position ray tracks
@@ -1092,8 +1089,9 @@ void LayoutTurntable::dispose() {
             }
         }
     }
-    ((QGraphicsItemGroup*)item)->addToGroup(itemGroup);
 
+    circles = itemGroup;
+    g2->addItem(rects);
 }
 
 /**
@@ -1104,12 +1102,9 @@ void LayoutTurntable::dispose() {
 //@Override
 /*protected*/ void LayoutTurntable::drawEditControls(EditScene* g2)
 {
+ invalidateItem(rects);
+
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
- if(rects!=nullptr && rects->scene()!=nullptr)
- {
-  g2->removeItem(rects);
-  rects = nullptr;
- }
 
  QPointF pt = getCoordsCenter();
     //g2.setColor(defaultTrackColor);
@@ -1137,7 +1132,6 @@ void LayoutTurntable::dispose() {
     rects = itemGroup;
     g2->addItem(rects);
 }
-
 
 /*
  * {@inheritDoc}

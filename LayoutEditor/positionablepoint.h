@@ -89,7 +89,7 @@ public:
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* e);
     /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* e);
     /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* e);
-    void invalidate(EditScene *g2);
+    void invalidateItemType(EditScene *g2);
     void draw(EditScene *g);
     /*public*/ QString getLinkEditorName();
     /*public*/ PositionablePoint* getLinkedPoint() ;

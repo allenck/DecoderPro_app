@@ -191,11 +191,10 @@ public slots:
   void on_removeAction_triggered();
   void on_rotate_triggered();
   void updateState();
-  void OnEditAction();
+//  void OnEditAction();
   void on_setSignalsAct_triggered();
   void on_setSignalMastsAct_triggered();
   void on_setSensorsAct_triggered();
-  /*public*/ void toggleStateTest();
 
 private:
     /*private*/ QString turnoutBName;//="";
@@ -226,7 +225,7 @@ private:
 
 protected:
  /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);
- /*protected*/ void editLayoutSlip(LayoutTurnout* o);
+// /*protected*/ void editLayoutSlip(LayoutTurnout* o);
  /*protected*/ QPointF getCoordsLeft();
  /*protected*/ QPointF getCoordsRight();
  /*protected*/ int getConnectivityStateForLayoutBlocks(

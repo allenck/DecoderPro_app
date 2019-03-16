@@ -937,10 +937,10 @@ double LayoutSlip::round (double x) {
  }
  return popup;
 }
-void LayoutSlip::OnEditAction()
-{
- editLayoutSlip(this);
-}
+//void LayoutSlip::OnEditAction()
+//{
+// editLayoutSlip(this);
+//}
 
 void LayoutSlip::on_setSignalsAct_triggered()
 {
@@ -1260,11 +1260,10 @@ void LayoutSlip::updateState()
     QPointF midPointAD = MathUtil::midPoint(oneThirdPointAC, twoThirdsPointBD);
     QPointF midPointBC = MathUtil::midPoint(oneThirdPointBD, twoThirdsPointAC);
 
-    QGraphicsItemGroup* itemGroupA= new QGraphicsItemGroup();
-    QGraphicsItemGroup* itemGroupB = new QGraphicsItemGroup();
-    QGraphicsItemGroup* itemGroupC = new QGraphicsItemGroup();
-    QGraphicsItemGroup* itemGroupD = new QGraphicsItemGroup();
-    invalidate(g2, drawMain);
+    QGraphicsItemGroup* itemGroup= new QGraphicsItemGroup();
+
+    invalidateItemType(drawMain);
+
     if (isTurnoutInconsistent()) {
         // If either turnout is inconsistent, draw an alternate slip image
         // draw A<= =>C
@@ -1274,7 +1273,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(pA, oneForthPointAC));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(pA.x(), pA.y(), oneForthPointAC.x(), oneForthPointAC.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineC) {
             //g2.setColor(colorC);
@@ -1282,7 +1281,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(threeFourthsPointAC, pC));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(threeFourthsPointAC.x(), threeFourthsPointAC.y(), pC.x(), pC.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         // draw B<= =>D
         if (drawMain == mainlineB) {
@@ -1291,7 +1290,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(pB, oneForthPointBD));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(pB.x(), pB.y(), oneForthPointBD.x(), oneForthPointBD.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineD) {
             //g2.setColor(colorD);
@@ -1299,7 +1298,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(threeFourthsPointBD, pD));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(threeFourthsPointBD.x(), threeFourthsPointBD.y(), pD.x(), pD.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         return;
     }
@@ -1314,11 +1313,11 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(pA, oneThirdPointAC));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(pA.x(), pA.y(), oneThirdPointAC.x(), oneThirdPointAC.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
             //g2.draw(new Line2D.Double(oneThirdPointAC, midPointAD));
          lineItem = new QGraphicsLineItem(oneThirdPointAC.x(), oneThirdPointAC.y(), midPointAD.x(), midPointAD.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineD) {
             //g2.setColor(colorD);
@@ -1326,11 +1325,11 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(midPointAD, twoThirdsPointBD));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(midPointAD.x(), midPointAD.y(), twoThirdsPointBD.x(), twoThirdsPointBD.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
             //g2.draw(new Line2D.Double(twoThirdsPointBD, pD));
          lineItem = new QGraphicsLineItem(twoThirdsPointBD.x(), twoThirdsPointBD.y(), pD.x(), pD.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
     } else if (slipState == STATE_AC) {
         // draw A<===>C
@@ -1340,7 +1339,7 @@ void LayoutSlip::updateState()
             //.draw(new Line2D.Double(pA, midPointAC));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(pA.x(), pA.y(), midPointAC.x(), midPointAC.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineC) {
             //g2.setColor(colorC);
@@ -1348,7 +1347,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(midPointAC, pC));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(midPointAC.x(), midPointAC.y(), pC.x(), pC.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
     } else if (!isBlock || drawUnselectedLeg) {
         // draw A<= =>C
@@ -1358,7 +1357,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(pA, oneForthPointAC));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(pA.x(), pA.y(), oneForthPointAC.x(), oneForthPointAC.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineC) {
             //g2.setColor(colorC);
@@ -1366,7 +1365,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(threeFourthsPointAC, pC));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(threeFourthsPointAC.x(), threeFourthsPointAC.y(), pC.x(), pC.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
     }
 
@@ -1378,7 +1377,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(pB, midPointBD));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(pB.x(), pB.y(), midPointBD.x(), midPointBD.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineD) {
             //g2.setColor(colorD);
@@ -1386,7 +1385,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(midPointBD, pD));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(midPointBD.x(), midPointBD.y(), pD.x(), pD.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
     } else if (!isBlock || drawUnselectedLeg) {
         // draw B<= =>D
@@ -1396,7 +1395,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(pB, oneForthPointBD));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(pB.x(), pB.y(), oneForthPointBD.x(), oneForthPointBD.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineD) {
             //g2.setColor(colorD);
@@ -1404,7 +1403,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(threeFourthsPointBD, pD));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(threeFourthsPointBD.x(), threeFourthsPointBD.y(), pD.x(), pD.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
     }
 
@@ -1417,11 +1416,11 @@ void LayoutSlip::updateState()
                 //g2.draw(new Line2D.Double(pB, oneThirdPointBD));
              QGraphicsLineItem* lineItem = new QGraphicsLineItem(pB.x(), pB.y(), oneThirdPointBD.x(), oneThirdPointBD.y());
              lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroupB->addToGroup(lineItem);
+             itemGroup->addToGroup(lineItem);
                 //g2.draw(new Line2D.Double(oneThirdPointBD, midPointBC));
              lineItem = new QGraphicsLineItem(oneThirdPointBD.x(), oneThirdPointBD.y(), midPointBC.x(), midPointBC.y());
              lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroupB->addToGroup(lineItem);
+             itemGroup->addToGroup(lineItem);
             }
             if (drawMain == mainlineC) {
                 //g2.setColor(colorC);
@@ -1429,11 +1428,11 @@ void LayoutSlip::updateState()
                 //g2.draw(new Line2D.Double(midPointBC, twoThirdsPointAC));
              QGraphicsLineItem* lineItem = new QGraphicsLineItem(midPointBC.x(), midPointBC.y(), twoThirdsPointAC.x(), twoThirdsPointAC.y());
              lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroupC->addToGroup(lineItem);
+             itemGroup->addToGroup(lineItem);
                 //g2.draw(new Line2D.Double(twoThirdsPointAC, pC));
              lineItem = new QGraphicsLineItem(twoThirdsPointAC.x(), twoThirdsPointAC.y(), pC.x(), pC.y());
              lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroupC->addToGroup(lineItem);
+             itemGroup->addToGroup(lineItem);
             }
         }   // DOUBLE_SLIP
     } else if (!isBlock || drawUnselectedLeg) {
@@ -1444,7 +1443,7 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(pB, oneForthPointBD));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(pB.x(), pB.y(), oneForthPointBD.x(), oneForthPointBD.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineC) {
             //g2.setColor(colorC);
@@ -1452,28 +1451,18 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(threeFourthsPointAC, pC));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(threeFourthsPointAC.x(), threeFourthsPointAC.y(), pC.x(), pC.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
     }
     if(drawMain)
     {
-     if(turnoutItemMain == nullptr)
-      turnoutItemMain = new QGraphicsItemGroup();
-     turnoutItemMain->addToGroup(itemGroupA);
-     turnoutItemMain->addToGroup(itemGroupB);
-     turnoutItemMain->addToGroup(itemGroupC);
-     turnoutItemMain->addToGroup(itemGroupD);
-     g2->addItem(turnoutItemMain);
+     itemMain = itemGroup;
+     g2->addItem(itemMain);
     }
     else
     {
-     if(turnoutItemSide== nullptr)
-      turnoutItemSide = new QGraphicsItemGroup();
-     turnoutItemSide->addToGroup(itemGroupA);
-     turnoutItemSide->addToGroup(itemGroupB);
-     turnoutItemSide->addToGroup(itemGroupC);
-     turnoutItemSide->addToGroup(itemGroupD);
-     g2->addItem(turnoutItemSide);
+     itemSide = itemGroup;
+     g2->addItem(itemSide);
     }
 }   // draw1
 
@@ -1559,22 +1548,19 @@ void LayoutSlip::updateState()
     bool mainlineB = isMainlineB();
     bool mainlineC = isMainlineC();
     bool mainlineD = isMainlineD();
-    QGraphicsItemGroup* itemGroupA = new QGraphicsItemGroup();
-    QGraphicsItemGroup* itemGroupB = new QGraphicsItemGroup();
-    QGraphicsItemGroup* itemGroupC = new QGraphicsItemGroup();
-    QGraphicsItemGroup* itemGroupD = new QGraphicsItemGroup();
+    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
-    invalidate(g2, drawMain);
+    invalidateItemType(drawMain);
 
     if (drawMain == mainlineA) {
         //g2.draw(new Line2D.Double(pAR, pVL));
      QGraphicsLineItem* lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pVL.x(), pVL.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupA->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
         //g2.draw(new Line2D.Double(pVLtD, pKLtB));
      lineItem = new QGraphicsLineItem(pVLtD.x(), pVLtD.y(), pKLtB.x(), pKLtB.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupA->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
         QPainterPath path =  QPainterPath();
         path.moveTo(pAL.x(), pAL.y());
         path.lineTo(pAPL.x(), pAPL.y());
@@ -1582,18 +1568,18 @@ void LayoutSlip::updateState()
         //g2.draw(path);
         QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
         pathItem->setPen(layoutEditor->drawingStroke);
-        itemGroupA->addToGroup(pathItem);
+        itemGroup->addToGroup(pathItem);
     }
 #if 1
     if (drawMain == mainlineB) {
         //g2.draw(new Line2D.Double(pBL, pVL));
      QGraphicsLineItem* lineItem = new QGraphicsLineItem(pBL.x(), pBL.y(), pVL.x(), pVL.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupB->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
         //g2.draw(new Line2D.Double(pVLtC, pKRtA));
      lineItem = new QGraphicsLineItem(pVLtC.x(), pVLtC.y(), pKRtA.x(), pKRtA.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupB->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
         if (getTurnoutType() == DOUBLE_SLIP) {
             QPainterPath path = QPainterPath();
             path.moveTo(pBR.x(), pBR.y());
@@ -1602,23 +1588,23 @@ void LayoutSlip::updateState()
             //g2.draw(path);
             QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
             pathItem->setPen(layoutEditor->drawingStroke);
-            itemGroupB->addToGroup(pathItem);
+            itemGroup->addToGroup(pathItem);
         } else {
             //g2.draw(new Line2D.Double(pBR, pKR));
          QGraphicsLineItem* lineItem = new QGraphicsLineItem(pBR.x(), pBR.y(), pKR.x(), pKR.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
     }
     if (drawMain == mainlineC) {
         //g2.draw(new Line2D.Double(pCL, pVR));
      QGraphicsLineItem* lineItem = new QGraphicsLineItem(pCL.x(), pCL.y(), pVR.x(), pVR.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupC->addToGroup(lineItem);
+     itemGroup->addToGroup(lineItem);
      //g2.draw(new Line2D.Double(pVRtB, pKRtD));
      lineItem = new QGraphicsLineItem(pVRtB.x(), pVRtB.y(), pKRtD.x(), pKRtD.y());
      lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroupC->addToGroup(lineItem);   if (getTurnoutType() == DOUBLE_SLIP) {
+     itemGroup->addToGroup(lineItem);   if (getTurnoutType() == DOUBLE_SLIP) {
             QPainterPath path = QPainterPath();
             path.moveTo(pCR.x(), pCR.y());
             path.lineTo(pCPR.x(), pCPR.y());
@@ -1626,12 +1612,12 @@ void LayoutSlip::updateState()
             //g2.draw(path);
             QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
             pathItem->setPen(layoutEditor->drawingStroke);
-            itemGroupC->addToGroup(pathItem);
+            itemGroup->addToGroup(pathItem);
      } else {
             //g2.draw(new Line2D.Double(pCR, pKR));
       lineItem = new QGraphicsLineItem(pCR.x(), pCR.y(), pKR.x(), pKR.y());
       lineItem->setPen(layoutEditor->drawingStroke);
-      itemGroupC->addToGroup(lineItem);
+      itemGroup->addToGroup(lineItem);
      }
     }
 
@@ -1639,11 +1625,11 @@ void LayoutSlip::updateState()
         //g2.draw(new Line2D.Double(pDR, pVR));
         QGraphicsLineItem* lineItem = new QGraphicsLineItem(pDR.x(), pDR.y(), pVR.x(), pVR.y());
         lineItem->setPen(layoutEditor->drawingStroke);
-        itemGroupD->addToGroup(lineItem);
+        itemGroup->addToGroup(lineItem);
         //g2.draw(new Line2D.Double(pVRtA, pKLtC));
         lineItem = new QGraphicsLineItem(pVRtA.x(), pVRtA.y(), pKLtC.x(), pKLtC.y());
         lineItem->setPen(layoutEditor->drawingStroke);
-        itemGroupD->addToGroup(lineItem);
+        itemGroup->addToGroup(lineItem);
         QPainterPath path = QPainterPath();
         path.moveTo(pDL.x(), pDL.y());
         path.lineTo(pDPL.x(), pDPL.y());
@@ -1651,7 +1637,7 @@ void LayoutSlip::updateState()
         //g2.draw(path);
         QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
         pathItem->setPen(layoutEditor->drawingStroke);
-        itemGroupD->addToGroup(pathItem);
+        itemGroup->addToGroup(pathItem);
     }
 #if 1
     int slipState = getSlipState();
@@ -1661,123 +1647,123 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(pASL, pKL));
          lineItem = new QGraphicsLineItem(pASL.x(), pASL.y(), pKL.x(), pKL.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVLP, pKLH));
          lineItem = new QGraphicsLineItem(pVLP.x(), pVLP.y(), pKLH.x(), pKLH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineB) {
             //g2.draw(new Line2D.Double(pBPR, pKR));
          lineItem = new QGraphicsLineItem(pBPR.x(), pBPR.y(), pKR.x(), pKR.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVLtC, pKRH));
          lineItem = new QGraphicsLineItem(pVLtC.x(), pVLtC.y(), pKRH.x(), pKRH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineC) {
             //g2.draw(new Line2D.Double(pCPR, pKR));
          lineItem = new QGraphicsLineItem(pCPR.x(), pCPR.y(), pKR.x(), pKR.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVRtB, pKRH));
          lineItem = new QGraphicsLineItem(pVRtB.x(), pVRtB.y(), pKRH.x(), pKRH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineD) {
             //g2.draw(new Line2D.Double(pDSL, pKL));
          lineItem = new QGraphicsLineItem(pDSL.x(), pDSL.y(), pKL.x(), pKL.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVRP, pKLH));
          lineItem = new QGraphicsLineItem(pVRP.x(), pVRP.y(), pKLH.x(), pKLH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
     } else if (slipState == STATE_AC) {
         if (drawMain == mainlineA) {
             //g2.draw(new Line2D.Double(pAPL, pKL));
          lineItem = new QGraphicsLineItem(pAPL.x(), pAPL.y(), pKL.x(), pKL.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVLtD, pKLH));
          lineItem = new QGraphicsLineItem(pVLtD.x(), pVLtD.y(), pKLH.x(), pKLH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineB) {
             //g2.draw(new Line2D.Double(pBSR, pKR));
          lineItem = new QGraphicsLineItem(pBSR.x(), pBSR.y(), pKR.x(), pKR.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVLP, pKRH));
          lineItem = new QGraphicsLineItem(pVLP.x(), pVLP.y(), pKRH.x(), pKRH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineC) {
             //g2.draw(new Line2D.Double(pCPR, pKR));
          lineItem = new QGraphicsLineItem(pCPR.x(), pCPR.y(), pKR.x(), pKR.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVRtB, pKRH));
          lineItem = new QGraphicsLineItem(pVRtB.x(), pVRtB.y(), pKRH.x(), pKRH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineD) {
             //g2.draw(new Line2D.Double(pDSL, pKL));
          lineItem = new QGraphicsLineItem(pDSL.x(), pDSL.y(), pKL.x(), pKL.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVRP, pKLH));
          lineItem = new QGraphicsLineItem(pVRP.x(), pVRP.y(), pKLH.x(), pKLH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
     } else if (slipState == STATE_BD) {
         if (drawMain == mainlineA) {
             //g2.draw(new Line2D.Double(pASL, pKL));
          lineItem = new QGraphicsLineItem(pASL.x(), pASL.y(), pKL.x(), pKL.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVLP, pKLH));
          lineItem = new QGraphicsLineItem(pVLP.x(), pVLP.y(), pKLH.x(), pKLH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineB) {
            // g2.draw(new Line2D.Double(pBPR, pKR));
          lineItem = new QGraphicsLineItem(pBPR.x(), pBPR.y(), pKR.x(), pKR.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVLtC, pKRH));
          lineItem = new QGraphicsLineItem(pVLtC.x(), pVLtC.y(), pKRH.x(), pKRH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineC) {
             //g2.draw(new Line2D.Double(pCSR, pKR));
          lineItem = new QGraphicsLineItem(pCSR.x(), pCSR.y(), pKR.x(), pKR.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVRP, pKRH));
          lineItem = new QGraphicsLineItem(pVRP.x(), pVRP.y(), pKRH.x(), pKRH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineD) {
             //g2.draw(new Line2D.Double(pDPL, pKL));
          lineItem = new QGraphicsLineItem(pDPL.x(), pDPL.y(), pKL.x(), pKL.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVRtA, pKLH));
          lineItem = new QGraphicsLineItem(pVRtA.x(), pVRtA.y(), pKLH.x(), pKLH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
     } else if ((getTurnoutType() == DOUBLE_SLIP)
             && (slipState == STATE_BC)) {
@@ -1785,62 +1771,52 @@ void LayoutSlip::updateState()
             //g2.draw(new Line2D.Double(pAPL, pKL));
          lineItem = new QGraphicsLineItem(pAPL.x(), pAPL.y(), pKL.x(), pKL.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVLtD, pKLH));
          lineItem = new QGraphicsLineItem(pVLtD.x(), pVLtD.y(), pKLH.x(), pKLH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupA->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineB) {
             //g2.draw(new Line2D.Double(pBSR, pKR));
          lineItem = new QGraphicsLineItem(pBSR.x(), pBSR.y(), pKR.x(), pKR.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVLP, pKRH));
          lineItem = new QGraphicsLineItem(pVLP.x(), pVLP.y(), pKRH.x(), pKRH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupB->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineC) {
             //g2.draw(new Line2D.Double(pCSR, pKR));
          lineItem = new QGraphicsLineItem(pCSR.x(), pCSR.y(), pKR.x(), pKR.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVRP, pKRH));
          lineItem = new QGraphicsLineItem(pVRP.x(), pVRP.y(), pKRH.x(), pKRH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupC->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
         }
         if (drawMain == mainlineD) {
             //g2.draw(new Line2D.Double(pDPL, pKL));
          lineItem = new QGraphicsLineItem(pDPL.x(), pDPL.y(), pKL.x(), pKL.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);
+         itemGroup->addToGroup(lineItem);
          //g2.draw(new Line2D.Double(pVRtA, pKLH));
          lineItem = new QGraphicsLineItem(pVRtA.x(), pVRtA.y(), pKLH.x(), pKLH.y());
          lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroupD->addToGroup(lineItem);}
+         itemGroup->addToGroup(lineItem);}
     }   // DOUBLE_SLIP
 #endif
     if(drawMain)
     {
-     if(turnoutItemMain == nullptr)
-      turnoutItemMain = new QGraphicsItemGroup();
-     turnoutItemMain->addToGroup(itemGroupA);
-     turnoutItemMain->addToGroup(itemGroupB);
-     turnoutItemMain->addToGroup(itemGroupC);
-     turnoutItemMain->addToGroup(itemGroupD);
-     g2->addItem(turnoutItemMain);
+     itemMain = itemGroup;
+     g2->addItem(itemMain);
     }
     else
     {
-     if(turnoutItemSide== nullptr)
-      turnoutItemSide = new QGraphicsItemGroup();
-     turnoutItemSide->addToGroup(itemGroupA);
-     turnoutItemSide->addToGroup(itemGroupB);
-     turnoutItemSide->addToGroup(itemGroupC);
-     turnoutItemSide->addToGroup(itemGroupD);
-     g2->addItem(turnoutItemSide);
+     itemSide = itemGroup;
+     g2->addItem(itemSide);
     }
 }   // draw2
 
@@ -1851,8 +1827,10 @@ void LayoutSlip::updateState()
 /*protected*/ void LayoutSlip::highlightUnconnected(EditScene* g2, int specificType)
 {
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
- //invalidate(g2);
-    if (((specificType == NONE) || (specificType == SLIP_A))
+
+ invalidateItem(rects);
+
+ if (((specificType == NONE) || (specificType == SLIP_A))
             && (getConnectA() == nullptr)) {
         //g2.fill(layoutEditor->trackControlCircleAt(getCoordsA()));
      QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsA());
@@ -1883,6 +1861,7 @@ void LayoutSlip::updateState()
      ellipseItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(ellipseItem);
     }
+
     rects = itemGroup;
     g2->addItem(rects);
 }
@@ -1892,6 +1871,8 @@ void LayoutSlip::updateState()
        // drawHidden left/right turnout control circles
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
        QPointF leftCircleCenter = getCoordsLeft();
+
+       invalidateItem(circles);
 
        //g2.draw(layoutEditor->trackControlCircleAt(leftCircleCenter));
        QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(leftCircleCenter);
@@ -1903,8 +1884,9 @@ void LayoutSlip::updateState()
        ellipseItem = layoutEditor->trackControlCircleAt(rightCircleCenter);
        ellipseItem->setPen(layoutEditor->drawingStroke);
        itemGroup->addToGroup(ellipseItem);
-       item = itemGroup;
-       g2->addItem(itemGroup);
+
+       circles = itemGroup;
+       g2->addItem(circles);
    }   // drawTurnoutControls
 
 

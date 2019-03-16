@@ -185,8 +185,9 @@ private:
   void dispose();
   void remove();
   bool active;// = true;
-  QGraphicsItemGroup* item;
-  QGraphicsItemGroup* rects;
+  QGraphicsItemGroup* item = nullptr;
+  QGraphicsItemGroup* rects = nullptr;
+  QGraphicsItemGroup* circles = nullptr;
 
 private slots:
   void turntableEditDonePressed(ActionEvent* a = 0);

@@ -282,13 +282,11 @@ private:
     /*private*/ QAction* flippedCheckBoxMenuItem;// = new JCheckBoxMenuItem(Bundle.getMessage("FlippedCheckBoxMenuItemTitle"));
 
     /*private*/ bool needsRedraw;// = false;
- QGraphicsItemGroup* itemMain = nullptr;
- QGraphicsItemGroup* itemSide = nullptr;
- QGraphicsItem* dashedItem = nullptr;
+ QGraphicsItemGroup* dashedItem = nullptr;
 
 // QGraphicsItem* circleItem;
 // QGraphicsItem* trackOval;
- QGraphicsItem* decorationItems = nullptr;
+ QGraphicsItemGroup* decorationItems = nullptr;
  QGraphicsItemGroup* rects = nullptr;
  void init(QString ident);
  static Logger* log;
@@ -349,7 +347,7 @@ private:
                            QPointF ep,
                            double angleRAD,
                            bool dirOut,
-                           int offset, QPen stroke);
+                           int offset, QPen stroke, QGraphicsItemGroup *itemGroup);
 
 private slots:
  void onMakeLabel1();
@@ -398,6 +396,7 @@ protected:
  friend class LoadXml;
  friend class PositionablePoint;
  friend class LayoutEditorAuxTools;
+ friend class LayoutTrackEditors;
 };
 class TSAbstractAction : public AbstractAction
 {

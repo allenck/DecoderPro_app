@@ -1308,7 +1308,7 @@ void PositionablePoint::on_actRemove_triggered()
   dispose();
  }
 }
-void PositionablePoint::invalidate(EditScene* g2)
+void PositionablePoint::invalidateItemType(EditScene* g2)
 {
  if(item != nullptr)
  {

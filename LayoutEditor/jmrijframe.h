@@ -46,7 +46,7 @@ public:
     void setTitle(QString _title);
     /*public*/ virtual void initComponents() /*throw (Exception)*/;
     QString getTitle();
-    QWidget* getContentPane();
+    QWidget* getContentPane(bool addLayout = false);
     void setAlwaysOnTop(bool checked);
     void setContentPane(QWidget*);
     /*public*/ void setEscapeKeyAction(AbstractAction* action);

@@ -87,6 +87,11 @@ void JmriBeanComboBox::common(Manager *manager, NamedBean *nBean, int displayOrd
  updateComboBox(currentText());
 }
 
+/*public*/ void JmriBeanComboBox::addPopupMenuListener(PopupMenuListener *pml)
+{
+ popupMenuListner = pml;
+}
+
 void JmriBeanComboBox::updateComboBox(QString inSelect)
 {
  if(_manager == NULL) return;
@@ -402,47 +407,47 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
     }
     return result;
 }
-
-/*public*/ void enableItem(int inIndex) {
+#endif
+/*public*/ void JmriBeanComboBox::enableItem(int inIndex) {
     setItemEnabled(inIndex, true);
 }
 
-/*public*/ void disableItem(int inIndex) {
+/*public*/ void JmriBeanComboBox::disableItem(int inIndex) {
     setItemEnabled(inIndex, false);
 }
 
-/*public*/ void setEnabledColor(Color inEnabledColor) {
-    getEnabledComboBoxRenderer().setEnabledColor(inEnabledColor);
+/*public*/ void JmriBeanComboBox::setEnabledColor(QColor inEnabledColor) {
+//    getEnabledComboBoxRenderer().setEnabledColor(inEnabledColor);
 }
 
-/*public*/ QColor getEnabledColor() {
-    return getEnabledComboBoxRenderer().getEnabledColor();
+/*public*/ QColor JmriBeanComboBox::getEnabledColor() {
+//    return getEnabledComboBoxRenderer().getEnabledColor();
 }
 
-/*public*/ void setDisabledColor(QColor inDisabledColor) {
-    getEnabledComboBoxRenderer().setDisabledColor(inDisabledColor);
+/*public*/ void JmriBeanComboBox::setDisabledColor(QColor inDisabledColor) {
+//    getEnabledComboBoxRenderer().setDisabledColor(inDisabledColor);
 }
 
-/*public*/ QColor getDisabledColor() {
-    return getEnabledComboBoxRenderer().getDisabledColor();
+/*public*/ QColor JmriBeanComboBox::getDisabledColor() {
+//    return getEnabledComboBoxRenderer().getDisabledColor();
 }
 
-/*public*/ void setEnabledBackgroundColor(QColor inEnabledBackgroundColor) {
-    getEnabledComboBoxRenderer().setEnabledBackgroundColor(inEnabledBackgroundColor);
+/*public*/ void JmriBeanComboBox::setEnabledBackgroundColor(QColor inEnabledBackgroundColor) {
+//    getEnabledComboBoxRenderer().setEnabledBackgroundColor(inEnabledBackgroundColor);
 }
 
-/*public*/ QColor getEnabledBackgroundColor() {
-    return getEnabledComboBoxRenderer().getEnabledBackgroundColor();
+/*public*/ QColor JmriBeanComboBox::getEnabledBackgroundColor() {
+//    return getEnabledComboBoxRenderer().getEnabledBackgroundColor();
 }
 
-/*public*/ void setDisabledBackgroundColor(QColor inDisabledBackgroundColor) {
-    getEnabledComboBoxRenderer().setDisabledBackgroundColor(inDisabledBackgroundColor);
+/*public*/ void JmriBeanComboBox::setDisabledBackgroundColor(QColor inDisabledBackgroundColor) {
+//    getEnabledComboBoxRenderer().setDisabledBackgroundColor(inDisabledBackgroundColor);
 }
 
-/*public*/ QColor getDisabledBackgroundColor() {
-    return getEnabledComboBoxRenderer().getDisabledBackgroundColor();
+/*public*/ QColor JmriBeanComboBox::getDisabledBackgroundColor() {
+//    return getEnabledComboBoxRenderer().getDisabledBackgroundColor();
 }
-#endif
+
 /*public*/ void JmriBeanComboBox::setValidateMode(bool inValidateMode) {
     if (_validateMode != inValidateMode) {
         _validateMode = inValidateMode;
