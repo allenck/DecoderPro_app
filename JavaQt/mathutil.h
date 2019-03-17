@@ -79,8 +79,7 @@ public:
 
 private:
  MathUtil();
- /*private*/ static double plotBezier(
-         QPainterPath path,
+ /*private*/ static double plotBezier(QPainterPath &path,
          /*@Nonnull*/ QPointF p0,
          /*@Nonnull*/ QPointF p1,
          /*@Nonnull*/ QPointF p2,

@@ -736,55 +736,75 @@ TrackSegment::getLayoutBlock()
             }
         }
     }   // arrow decoration
-#if 0
+#if 1
     //
     //  bridge decorations
     //
-    if (bridgeSideLeft || bridgeSideRight) {
-        float halfWidth = bridgeDeckWidth / 2.F;
+    if (bridgeSideLeft || bridgeSideRight)
+    {
+        float halfWidth = bridgeDeckWidth / 2.0;
 
-        g2.setStroke(new BasicStroke(bridgeLineWidth,
-                BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.F));
-        g2.setColor(bridgeColor);
+//        g2.setStroke(new BasicStroke(bridgeLineWidth,
+//                BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.F));
+//        g2.setColor(bridgeColor);
+        QPen stroke = QPen(bridgeColor, bridgeLineWidth, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
 
         if (isArc()) {
             calculateTrackSegmentAngle();
-            Rectangle2D cRectangle2D = new Rectangle2D(
+            QRectF cRectangle2D =  QRectF(
                     getCX(), getCY(), getCW(), getCH());
             double startAngleDEG = getStartAdj(), extentAngleDEG = getTmpAngle();
             if (bridgeSideLeft) {
-                Rectangle2D cLeftRectangle2D = MathUtil::inset(cRectangle2D, -halfWidth);
-                g2.draw(new Arc2D(
-                        cLeftRectangle2D.getX(),
-                        cLeftRectangle2D.getY(),
-                        cLeftRectangle2D.getWidth(),
-                        cLeftRectangle2D.getHeight(),
-                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+                QRectF cLeftRectangle2D = MathUtil::inset(cRectangle2D, -halfWidth);
+//                g2.draw(new Arc2D(
+//                        cLeftRectangle2D.getX(),
+//                        cLeftRectangle2D.getY(),
+//                        cLeftRectangle2D.getWidth(),
+//                        cLeftRectangle2D.getHeight(),
+//                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+                QGraphicsArcItem* arcItem = new QGraphicsArcItem(cLeftRectangle2D.x(),cLeftRectangle2D.y(),cLeftRectangle2D.width(),cLeftRectangle2D.height());
+                arcItem->setStartAngle(startAngleDEG * 16);
+                arcItem->setSpanAngle(extentAngleDEG * 16);
+                arcItem->setPen(stroke);
+                itemGroup->addToGroup(arcItem);
             }
             if (bridgeSideRight) {
-                Rectangle2D cLRightRectangle2D = MathUtil::inset(cRectangle2D, +halfWidth);
-                g2.draw(new Arc2D(
-                        cLRightRectangle2D.getX(),
-                        cLRightRectangle2D.getY(),
-                        cLRightRectangle2D.getWidth(),
-                        cLRightRectangle2D.getHeight(),
-                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+                QRectF cLRightRectangle2D = MathUtil::inset(cRectangle2D, +halfWidth);
+//                g2.draw(new Arc2D(
+//                        cLRightRectangle2D.getX(),
+//                        cLRightRectangle2D.getY(),
+//                        cLRightRectangle2D.getWidth(),
+//                        cLRightRectangle2D.getHeight(),
+//                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+                QGraphicsArcItem* arcItem = new QGraphicsArcItem(cLRightRectangle2D.x(),cLRightRectangle2D.y(),cLRightRectangle2D.width(),cLRightRectangle2D.height());
+                arcItem->setStartAngle(startAngleDEG * 16);
+                arcItem->setSpanAngle(extentAngleDEG * 16);
+                arcItem->setPen(stroke);
+                itemGroup->addToGroup(arcItem);
             }
             trackRedrawn();
         } else if (isBezier()) {
             int cnt = bezierControlPoints.size() + 2;
-            QPointF[] points = new QPointF[cnt];
-            points[0] = ep1;
+            QVector<QPointF> points = QVector<QPointF>(cnt);
+            points.replace(0, ep1);
             for (int idx = 0; idx < cnt - 2; idx++) {
-                points[idx + 1] = bezierControlPoints.get(idx);
+                points.replace(idx + 1, bezierControlPoints.at(idx));
             }
-            points[cnt - 1] = ep2;
+            points.replace(cnt - 1, ep2);
 
             if (bridgeSideLeft) {
-                MathUtil::drawBezier(g2, points, -halfWidth);
+//                MathUtil::drawBezier(g2, points, -halfWidth);
+             QPainterPath path = MathUtil::drawBezier(points, -halfWidth);
+             QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+             pathItem->setPen(stroke);
+             itemGroup->addToGroup(pathItem);
             }
             if (bridgeSideRight) {
-                MathUtil::drawBezier(g2, points, +halfWidth);
+                //MathUtil::drawBezier(g2, points, +halfWidth);
+             QPainterPath path = MathUtil::drawBezier(points, +halfWidth);
+             QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+             pathItem->setPen(stroke);
+             itemGroup->addToGroup(pathItem);
             }
         } else {
             QPointF delta = MathUtil::subtract(ep2, ep1);
@@ -794,45 +814,63 @@ TrackSegment::getLayoutBlock()
             if (bridgeSideLeft) {
                 QPointF ep1L = MathUtil::add(ep1, vector);
                 QPointF ep2L = MathUtil::add(ep2, vector);
-                g2.draw(new Line2D(ep1L, ep2L));
+                //g2.draw(new Line2D(ep1L, ep2L));
+                QGraphicsLineItem* lineItem = new QGraphicsLineItem(ep1L.x(), ep1L.y(), ep2L.x(), ep2L.y());
+                lineItem->setPen(stroke);
+                itemGroup->addToGroup(lineItem);
             }
             if (bridgeSideRight) {
                 QPointF ep1R = MathUtil::subtract(ep1, vector);
                 QPointF ep2R = MathUtil::subtract(ep2, vector);
-                g2.draw(new Line2D(ep1R, ep2R));
+                //g2.draw(new Line2D(ep1R, ep2R));
+                QGraphicsLineItem* lineItem = new QGraphicsLineItem(ep1R.x(), ep1R.y(), ep2R.x(), ep2R.y());
+                lineItem->setPen(stroke);
+                itemGroup->addToGroup(lineItem);
             }
         }   // if isArc() {} else if isBezier() {} else...
 
         if (bridgeHasEntry) {
             if (bridgeSideRight) {
-                p1 = new QPointF(-bridgeApproachWidth, -bridgeApproachWidth - halfWidth);
-                p2 = new QPointF(0.0, -halfWidth);
+                p1 = QPointF(-bridgeApproachWidth, -bridgeApproachWidth - halfWidth);
+                p2 = QPointF(0.0, -halfWidth);
                 p1P = MathUtil::add(MathUtil::rotateRAD(p1, startAngleRAD), ep1);
                 p2P = MathUtil::add(MathUtil::rotateRAD(p2, startAngleRAD), ep1);
-                g2.draw(new Line2D(p1P, p2P));
+                //g2.draw(new Line2D(p1P, p2P));
+                QGraphicsLineItem* lineItem = new QGraphicsLineItem(p1P.x(), p1P.y(), p2P.x(), p2P.y());
+                lineItem->setPen(stroke);
+                itemGroup->addToGroup(lineItem);
             }
             if (bridgeSideLeft) {
-                p1 = new QPointF(-bridgeApproachWidth, +bridgeApproachWidth + halfWidth);
-                p2 = new QPointF(0.0, +halfWidth);
+                p1 = QPointF(-bridgeApproachWidth, +bridgeApproachWidth + halfWidth);
+                p2 = QPointF(0.0, +halfWidth);
                 p1P = MathUtil::add(MathUtil::rotateRAD(p1, startAngleRAD), ep1);
                 p2P = MathUtil::add(MathUtil::rotateRAD(p2, startAngleRAD), ep1);
-                g2.draw(new Line2D(p1P, p2P));
+                //g2.draw(new Line2D(p1P, p2P));
+                QGraphicsLineItem* lineItem = new QGraphicsLineItem(p1P.x(), p1P.y(), p2P.x(), p2P.y());
+                lineItem->setPen(stroke);
+                itemGroup->addToGroup(lineItem);
             }
         }
         if (bridgeHasExit) {
             if (bridgeSideRight) {
-                p1 = new QPointF(+bridgeApproachWidth, -bridgeApproachWidth - halfWidth);
-                p2 = new QPointF(0.0, -halfWidth);
+                p1 = QPointF(+bridgeApproachWidth, -bridgeApproachWidth - halfWidth);
+                p2 = QPointF(0.0, -halfWidth);
                 p1P = MathUtil::add(MathUtil::rotateRAD(p1, stopAngleRAD), ep2);
                 p2P = MathUtil::add(MathUtil::rotateRAD(p2, stopAngleRAD), ep2);
-                g2.draw(new Line2D(p1P, p2P));
+                //g2.draw(new Line2D(p1P, p2P));
+                QGraphicsLineItem* lineItem = new QGraphicsLineItem(p1P.x(), p1P.y(), p2P.x(), p2P.y());
+                lineItem->setPen(stroke);
+                itemGroup->addToGroup(lineItem);
             }
             if (bridgeSideLeft) {
-                p1 = new QPointF(+bridgeApproachWidth, +bridgeApproachWidth + halfWidth);
-                p2 = new QPointF(0.0, +halfWidth);
+                p1 = QPointF(+bridgeApproachWidth, +bridgeApproachWidth + halfWidth);
+                p2 = QPointF(0.0, +halfWidth);
                 p1P = MathUtil::add(MathUtil::rotateRAD(p1, stopAngleRAD), ep2);
                 p2P = MathUtil::add(MathUtil::rotateRAD(p2, stopAngleRAD), ep2);
-                g2.draw(new Line2D(p1P, p2P));
+                //g2.draw(new Line2D(p1P, p2P));
+                QGraphicsLineItem* lineItem = new QGraphicsLineItem(p1P.x(), p1P.y(), p2P.x(), p2P.y());
+                lineItem->setPen(stroke);
+                itemGroup->addToGroup(lineItem);
             }
         }
     }   // if (bridgeValue != null)
@@ -877,55 +915,78 @@ TrackSegment::getLayoutBlock()
         itemGroup->addToGroup(line);
     }   // if (bumperEndStart || bumperEndStop)
 #endif
-#if 0
+#if 1
     //
     //  tunnel decorations
     //
     if (tunnelSideRight || tunnelSideLeft) {
         float halfWidth = tunnelFloorWidth / 2.F;
-        g2.setStroke(new BasicStroke(tunnelLineWidth,
-                BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
-                new float[]{6.F, 4.F}, 0));
-        g2.setColor(tunnelColor);
+//        g2.setStroke(new BasicStroke(tunnelLineWidth,
+//                BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
+//                new float[]{6.F, 4.F}, 0));
+//        g2.setColor(tunnelColor);
+        QVector<qreal> dashArray = QVector<qreal>() << 6.0<< 4.0;
+        QPen stroke = QPen(tunnelColor, bridgeLineWidth, Qt::DashLine, Qt::FlatCap, Qt::MiterJoin);
+        stroke.setDashOffset(10.0);
+        stroke.setDashPattern(dashArray);
 
         if (isArc()) {
             calculateTrackSegmentAngle();
-            Rectangle2D cRectangle2D = new Rectangle2D(
+            QRectF cRectangle2D = QRectF(
                     getCX(), getCY(), getCW(), getCH());
             double startAngleDEG = getStartAdj(), extentAngleDEG = getTmpAngle();
             if (tunnelSideRight) {
-                Rectangle2D cLeftRectangle2D = MathUtil::inset(cRectangle2D, -halfWidth);
-                g2.draw(new Arc2D(
-                        cLeftRectangle2D.getX(),
-                        cLeftRectangle2D.getY(),
-                        cLeftRectangle2D.getWidth(),
-                        cLeftRectangle2D.getHeight(),
-                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+                QRectF cLeftRectangle2D = MathUtil::inset(cRectangle2D, -halfWidth);
+//                g2.draw(new Arc2D(
+//                        cLeftRectangle2D.getX(),
+//                        cLeftRectangle2D.getY(),
+//                        cLeftRectangle2D.getWidth(),
+//                        cLeftRectangle2D.getHeight(),
+//                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+                QGraphicsArcItem* arcItem = new QGraphicsArcItem(cLeftRectangle2D.x(),cLeftRectangle2D.y(),cLeftRectangle2D.width(),cLeftRectangle2D.height());
+                arcItem->setStartAngle(startAngleDEG * 16);
+                arcItem->setSpanAngle(extentAngleDEG * 16);
+                arcItem->setPen(stroke);
+                itemGroup->addToGroup(arcItem);
             }
             if (tunnelSideLeft) {
-                Rectangle2D cLRightRectangle2D = MathUtil::inset(cRectangle2D, +halfWidth);
-                g2.draw(new Arc2D(
-                        cLRightRectangle2D.getX(),
-                        cLRightRectangle2D.getY(),
-                        cLRightRectangle2D.getWidth(),
-                        cLRightRectangle2D.getHeight(),
-                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+                QRectF cLRightRectangle2D = MathUtil::inset(cRectangle2D, +halfWidth);
+//                g2.draw(new Arc2D(
+//                        cLRightRectangle2D.getX(),
+//                        cLRightRectangle2D.getY(),
+//                        cLRightRectangle2D.getWidth(),
+//                        cLRightRectangle2D.getHeight(),
+//                        startAngleDEG, extentAngleDEG, Arc2D.OPEN));
+                QGraphicsArcItem* arcItem = new QGraphicsArcItem(cLRightRectangle2D.x(),cLRightRectangle2D.y(),cLRightRectangle2D.width(),cLRightRectangle2D.height());
+                arcItem->setStartAngle(startAngleDEG * 16);
+                arcItem->setSpanAngle(extentAngleDEG * 16);
+                arcItem->setPen(stroke);
+                itemGroup->addToGroup(arcItem);
             }
             trackRedrawn();
         } else if (isBezier()) {
             int cnt = bezierControlPoints.size() + 2;
-            QPointF[] points = new QPointF[cnt];
-            points[0] = ep1;
+            QVector<QPointF> points = QVector<QPointF>(cnt);
+            points.replace(0, ep1);
             for (int idx = 0; idx < cnt - 2; idx++) {
-                points[idx + 1] = bezierControlPoints.get(idx);
+                points.replace(idx + 1, bezierControlPoints.at(idx));
             }
-            points[cnt - 1] = ep2;
+            points.replace(cnt - 1, ep2);
+
 
             if (tunnelSideRight) {
-                MathUtil::drawBezier(g2, points, -halfWidth);
+//                MathUtil::drawBezier(g2, points, -halfWidth);
+             QPainterPath path = MathUtil::drawBezier(points, -halfWidth);
+             QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+             pathItem->setPen(stroke);
+             itemGroup->addToGroup(pathItem);
             }
             if (tunnelSideLeft) {
-                MathUtil::drawBezier(g2, points, +halfWidth);
+//                MathUtil::drawBezier(g2, points, +halfWidth);
+             QPainterPath path = MathUtil::drawBezier(points, +halfWidth);
+             QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+             pathItem->setPen(stroke);
+             itemGroup->addToGroup(pathItem);
             }
         } else {
             QPointF delta = MathUtil::subtract(ep2, ep1);
@@ -935,18 +996,25 @@ TrackSegment::getLayoutBlock()
             if (tunnelSideRight) {
                 QPointF ep1L = MathUtil::add(ep1, vector);
                 QPointF ep2L = MathUtil::add(ep2, vector);
-                g2.draw(new Line2D(ep1L, ep2L));
+//                g2.draw(new Line2D(ep1L, ep2L));
+                QGraphicsLineItem* lineItem = new QGraphicsLineItem(ep1L.x(), ep1L.y(), ep2L.x(), ep2L.y());
+                lineItem->setPen(stroke);
+                itemGroup->addToGroup(lineItem);
             }
             if (tunnelSideLeft) {
                 QPointF ep1R = MathUtil::subtract(ep1, vector);
                 QPointF ep2R = MathUtil::subtract(ep2, vector);
-                g2.draw(new Line2D(ep1R, ep2R));
+//                g2.draw(new Line2D(ep1R, ep2R));
+                QGraphicsLineItem* lineItem = new QGraphicsLineItem(ep1R.x(), ep1R.y(), ep2R.x(), ep2R.y());
+                lineItem->setPen(stroke);
+                itemGroup->addToGroup(lineItem);
             }
         }   // if isArc() {} else if isBezier() {} else...
 
-        g2.setStroke(new BasicStroke(tunnelLineWidth,
-                BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.F));
-        g2.setColor(tunnelColor);
+//        g2.setStroke(new BasicStroke(tunnelLineWidth,
+//                BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.F));
+//        g2.setColor(tunnelColor);
+        stroke = QPen(tunnelColor, tunnelLineWidth, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
 
         double halfEntranceWidth = tunnelEntranceWidth / 2.0;
         double halfFloorWidth = tunnelFloorWidth / 2.0;
@@ -954,13 +1022,12 @@ TrackSegment::getLayoutBlock()
 
         if (tunnelHasEntry) {
             if (tunnelSideLeft) {
-                p1 = new QPointF(0.0, 0.0);
-                p2 = new QPointF(0.0, -halfFloorWidth);
-                p3 = new QPointF(0.0, -halfEntranceWidth);
-                p4 = new QPointF(-halfEntranceWidth - halfFloorWidth, -halfEntranceWidth);
-                p5 = new QPointF(-halfEntranceWidth - halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
-                p6 = new QPointF(-halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
-                p7 = new QPointF(-halfDiffWidth, 0.0);
+                p1 = QPointF(0.0, 0.0);
+                p2 = QPointF(0.0, -halfFloorWidth);
+                p3 = QPointF(0.0, -halfEntranceWidth);
+                p5 = QPointF(-halfEntranceWidth - halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
+                p6 = QPointF(-halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
+                p7 = QPointF(-halfDiffWidth, 0.0);
 
                 p1P = MathUtil::add(MathUtil::rotateRAD(p1, startAngleRAD), ep1);
                 p2P = MathUtil::add(MathUtil::rotateRAD(p2, startAngleRAD), ep1);
@@ -970,23 +1037,26 @@ TrackSegment::getLayoutBlock()
                 p6P = MathUtil::add(MathUtil::rotateRAD(p6, startAngleRAD), ep1);
                 p7P = MathUtil::add(MathUtil::rotateRAD(p7, startAngleRAD), ep1);
 
-                GeneralPath path = new GeneralPath();
-                path.moveTo(p1P.getX(), p1P.getY());
-                path.lineTo(p2P.getX(), p2P.getY());
-                path.quadTo(p3P.getX(), p3P.getY(), p4P.getX(), p4P.getY());
-                path.lineTo(p5P.getX(), p5P.getY());
-                path.quadTo(p6P.getX(), p6P.getY(), p7P.getX(), p7P.getY());
-                path.closePath();
-                g2.fill(path);
+                QPainterPath path = QPainterPath();
+                path.moveTo(p1P.x(), p1P.y());
+                path.lineTo(p2P.x(), p2P.y());
+                path.quadTo(p3P.x(), p3P.y(), p4P.x(), p4P.y());
+                path.lineTo(p5P.x(), p5P.y());
+                path.quadTo(p6P.x(), p6P.y(), p7P.x(), p7P.y());
+                path.closeSubpath();
+                //g2.fill(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+                pathItem->setPen(stroke);
+                itemGroup->addToGroup(pathItem);
             }
             if (tunnelSideRight) {
-                p1 = new QPointF(0.0, 0.0);
-                p2 = new QPointF(0.0, +halfFloorWidth);
-                p3 = new QPointF(0.0, +halfEntranceWidth);
-                p4 = new QPointF(-halfEntranceWidth - halfFloorWidth, +halfEntranceWidth);
-                p5 = new QPointF(-halfEntranceWidth - halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
-                p6 = new QPointF(-halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
-                p7 = new QPointF(-halfDiffWidth, 0.0);
+                p1 = QPointF(0.0, 0.0);
+                p2 = QPointF(0.0, +halfFloorWidth);
+                p3 = QPointF(0.0, +halfEntranceWidth);
+                p4 = QPointF(-halfEntranceWidth - halfFloorWidth, +halfEntranceWidth);
+                p5 = QPointF(-halfEntranceWidth - halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
+                p6 = QPointF(-halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
+                p7 = QPointF(-halfDiffWidth, 0.0);
 
                 p1P = MathUtil::add(MathUtil::rotateRAD(p1, startAngleRAD), ep1);
                 p2P = MathUtil::add(MathUtil::rotateRAD(p2, startAngleRAD), ep1);
@@ -996,25 +1066,28 @@ TrackSegment::getLayoutBlock()
                 p6P = MathUtil::add(MathUtil::rotateRAD(p6, startAngleRAD), ep1);
                 p7P = MathUtil::add(MathUtil::rotateRAD(p7, startAngleRAD), ep1);
 
-                GeneralPath path = new GeneralPath();
-                path.moveTo(p1P.getX(), p1P.getY());
-                path.lineTo(p2P.getX(), p2P.getY());
-                path.quadTo(p3P.getX(), p3P.getY(), p4P.getX(), p4P.getY());
-                path.lineTo(p5P.getX(), p5P.getY());
-                path.quadTo(p6P.getX(), p6P.getY(), p7P.getX(), p7P.getY());
-                path.closePath();
-                g2.fill(path);
+                QPainterPath path = QPainterPath();
+                path.moveTo(p1P.x(), p1P.y());
+                path.lineTo(p2P.x(), p2P.y());
+                path.quadTo(p3P.x(), p3P.y(), p4P.x(), p4P.y());
+                path.lineTo(p5P.x(), p5P.y());
+                path.quadTo(p6P.x(), p6P.y(), p7P.x(), p7P.y());
+                path.closeSubpath();
+                //g2.fill(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+                pathItem->setPen(stroke);
+                itemGroup->addToGroup(pathItem);
             }
         }
         if (tunnelHasExit) {
             if (tunnelSideLeft) {
-                p1 = new QPointF(0.0, 0.0);
-                p2 = new QPointF(0.0, -halfFloorWidth);
-                p3 = new QPointF(0.0, -halfEntranceWidth);
-                p4 = new QPointF(halfEntranceWidth + halfFloorWidth, -halfEntranceWidth);
-                p5 = new QPointF(halfEntranceWidth + halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
-                p6 = new QPointF(halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
-                p7 = new QPointF(halfDiffWidth, 0.0);
+                p1 = QPointF(0.0, 0.0);
+                p2 = QPointF(0.0, -halfFloorWidth);
+                p3 = QPointF(0.0, -halfEntranceWidth);
+                p4 = QPointF(halfEntranceWidth + halfFloorWidth, -halfEntranceWidth);
+                p5 = QPointF(halfEntranceWidth + halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
+                p6 = QPointF(halfFloorWidth, -halfEntranceWidth + halfDiffWidth);
+                p7 = QPointF(halfDiffWidth, 0.0);
 
                 p1P = MathUtil::add(MathUtil::rotateRAD(p1, stopAngleRAD), ep2);
                 p2P = MathUtil::add(MathUtil::rotateRAD(p2, stopAngleRAD), ep2);
@@ -1024,23 +1097,26 @@ TrackSegment::getLayoutBlock()
                 p6P = MathUtil::add(MathUtil::rotateRAD(p6, stopAngleRAD), ep2);
                 p7P = MathUtil::add(MathUtil::rotateRAD(p7, stopAngleRAD), ep2);
 
-                GeneralPath path = new GeneralPath();
-                path.moveTo(p1P.getX(), p1P.getY());
-                path.lineTo(p2P.getX(), p2P.getY());
-                path.quadTo(p3P.getX(), p3P.getY(), p4P.getX(), p4P.getY());
-                path.lineTo(p5P.getX(), p5P.getY());
-                path.quadTo(p6P.getX(), p6P.getY(), p7P.getX(), p7P.getY());
-                path.closePath();
-                g2.fill(path);
+                QPainterPath path = QPainterPath();
+                path.moveTo(p1P.x(), p1P.y());
+                path.lineTo(p2P.x(), p2P.y());
+                path.quadTo(p3P.x(), p3P.y(), p4P.x(), p4P.y());
+                path.lineTo(p5P.x(), p5P.y());
+                path.quadTo(p6P.x(), p6P.y(), p7P.x(), p7P.y());
+                path.closeSubpath();
+                //g2.fill(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+                pathItem->setPen(stroke);
+                itemGroup->addToGroup(pathItem);
             }
             if (tunnelSideRight) {
-                p1 = new QPointF(0.0, 0.0);
-                p2 = new QPointF(0.0, +halfFloorWidth);
-                p3 = new QPointF(0.0, +halfEntranceWidth);
-                p4 = new QPointF(halfEntranceWidth + halfFloorWidth, +halfEntranceWidth);
-                p5 = new QPointF(halfEntranceWidth + halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
-                p6 = new QPointF(halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
-                p7 = new QPointF(halfDiffWidth, 0.0);
+                p1 = QPointF(0.0, 0.0);
+                p2 = QPointF(0.0, +halfFloorWidth);
+                p3 = QPointF(0.0, +halfEntranceWidth);
+                p4 = QPointF(halfEntranceWidth + halfFloorWidth, +halfEntranceWidth);
+                p5 = QPointF(halfEntranceWidth + halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
+                p6 = QPointF(halfFloorWidth, +halfEntranceWidth - halfDiffWidth);
+                p7 = QPointF(halfDiffWidth, 0.0);
 
                 p1P = MathUtil::add(MathUtil::rotateRAD(p1, stopAngleRAD), ep2);
                 p2P = MathUtil::add(MathUtil::rotateRAD(p2, stopAngleRAD), ep2);
@@ -1050,14 +1126,17 @@ TrackSegment::getLayoutBlock()
                 p6P = MathUtil::add(MathUtil::rotateRAD(p6, stopAngleRAD), ep2);
                 p7P = MathUtil::add(MathUtil::rotateRAD(p7, stopAngleRAD), ep2);
 
-                GeneralPath path = new GeneralPath();
-                path.moveTo(p1P.getX(), p1P.getY());
-                path.lineTo(p2P.getX(), p2P.getY());
-                path.quadTo(p3P.getX(), p3P.getY(), p4P.getX(), p4P.getY());
-                path.lineTo(p5P.getX(), p5P.getY());
-                path.quadTo(p6P.getX(), p6P.getY(), p7P.getX(), p7P.getY());
-                path.closePath();
-                g2.fill(path);
+                QPainterPath path = QPainterPath();
+                path.moveTo(p1P.x(), p1P.y());
+                path.lineTo(p2P.x(), p2P.y());
+                path.quadTo(p3P.x(), p3P.y(), p4P.x(), p4P.y());
+                path.lineTo(p5P.x(), p5P.y());
+                path.quadTo(p6P.x(), p6P.y(), p7P.x(), p7P.y());
+                path.closeSubpath();
+                //g2.fill(path);
+                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+                pathItem->setPen(stroke);
+                itemGroup->addToGroup(pathItem);
             }
         }
     }   // if (tunnelValue != null)
@@ -1641,258 +1720,316 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onArrowGap()));
  QMenu* bridgeMenu = new QMenu(tr("Bridge"));
  decorationsMenu->setToolTip(tr("Select this menu to change bridge decoration settings for this track"));
  decorationsMenu->addMenu(bridgeMenu);
-#if 0
- QMenu* bridgeSideMenu = new QMenu(tr("DecorationSideMenuTitle"));
- bridgeSideMenu->setToolTip(tr("DecorationSideMenuToolTip"));
- bridgeMenu.add(bridgeSideMenu);
 
- jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
- bridgeSideMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setBridgeSideLeft(false);
-     setBridgeSideRight(false);
- });
+ QMenu* bridgeSideMenu = new QMenu(tr("Side"));
+ bridgeSideMenu->setToolTip(tr("Select on which side(s) to add this decoration"));
+ bridgeMenu->addMenu(bridgeSideMenu);
+
+ QActionGroup* bridgeSideActionGroup = new QActionGroup(this);
+ jcbmi = new QAction(tr("None"),this);
+ jcbmi->setCheckable(true);
+ bridgeSideMenu->addAction(jcbmi);
+ bridgeSideActionGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to remove this decoration from this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setBridgeSideLeft(false);
+//     setBridgeSideRight(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeSideNone()));
  jcbmi->setChecked(!bridgeSideLeft && !bridgeSideRight);
 
- jcbmi = new QAction(tr("DecorationSideLeftMenuItemTitle"));
- bridgeSideMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationSideLeftMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setBridgeSideLeft(true);
-     setBridgeSideRight(false);
- });
+ jcbmi = new QAction(tr("Left"), this);
+ jcbmi->setCheckable(true);
+ bridgeSideMenu->addAction(jcbmi);
+ bridgeSideActionGroup->addAction(jcbmi);
+// jcbmi->setToolTip(tr("Select this to add this decoration to the left side of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setBridgeSideLeft(true);
+//     setBridgeSideRight(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeSideLeft()));
  jcbmi->setChecked(bridgeSideLeft && !bridgeSideRight);
 
- jcbmi = new QAction(tr("DecorationSideRightMenuItemTitle"));
- bridgeSideMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationSideRightMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setBridgeSideRight(true);
-     setBridgeSideLeft(false);
- });
+ jcbmi = new QAction(tr("Right"),this);
+ jcbmi->setCheckable(true);
+ bridgeSideMenu->addAction(jcbmi);
+ bridgeSideActionGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration to the right side of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setBridgeSideRight(true);
+//     setBridgeSideLeft(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeSideRight()));
  jcbmi->setChecked(!bridgeSideLeft && bridgeSideRight);
 
- jcbmi = new QAction(tr("DecorationBothMenuItemTitle"));
- bridgeSideMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationBothMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setBridgeSideLeft(true);
-     setBridgeSideRight(true);
- });
+ jcbmi = new QAction(tr("Both"));
+ jcbmi->setCheckable(true);
+ bridgeSideMenu->addAction(jcbmi);
+ bridgeSideActionGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration at both ends of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setBridgeSideLeft(true);
+//     setBridgeSideRight(true);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeSideBoth()));
  jcbmi->setChecked(bridgeSideLeft && bridgeSideRight);
 
- QMenu* bridgeEndMenu = new QMenu(tr("DecorationEndMenuTitle"));
- bridgeEndMenu->setToolTip(tr("DecorationEndMenuToolTip"));
- bridgeMenu.add(bridgeEndMenu);
+ QMenu* bridgeEndMenu = new QMenu(tr("End"));
+ bridgeEndMenu->setToolTip(tr("Select at which end(s) to add this decoration"));
+ bridgeMenu->addMenu(bridgeEndMenu);
 
- jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
- bridgeEndMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setBridgeHasEntry(false);
-     setBridgeHasExit(false);
- });
+ QActionGroup* bridgeEndActionGroup = new QActionGroup(this);
+ jcbmi = new QAction(tr("None"), this);
+ jcbmi->setCheckable(true);
+ bridgeEndMenu->addAction(jcbmi);
+ bridgeEndActionGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to remove this decoration from this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setBridgeHasEntry(false);
+//     setBridgeHasExit(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeEndNone()));
  jcbmi->setChecked(!bridgeHasEntry && !bridgeHasExit);
 
- jcbmi = new QAction(tr("DecorationEntryMenuItemTitle"));
- bridgeEndMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationEntryMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setBridgeHasEntry(true);
-     setBridgeHasExit(false);
- });
+ jcbmi = new QAction(tr("Entry"));
+ jcbmi->setCheckable(true);
+ bridgeEndMenu->addAction(jcbmi);
+ bridgeEndActionGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration at the entry of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setBridgeHasEntry(true);
+//     setBridgeHasExit(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeEndEntry()));
  jcbmi->setChecked(bridgeHasEntry && !bridgeHasExit);
 
- jcbmi = new QAction(tr("DecorationExitMenuItemTitle"));
- bridgeEndMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationExitMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setBridgeHasExit(true);
-     setBridgeHasEntry(false);
- });
+ jcbmi = new QAction(tr("Exit"));
+ jcbmi->setCheckable(true);
+ bridgeEndMenu->addAction(jcbmi);
+ bridgeEndActionGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration at the exit of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setBridgeHasExit(true);
+//     setBridgeHasEntry(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeEndExit()));
  jcbmi->setChecked(!bridgeHasEntry && bridgeHasExit);
 
- jcbmi = new QAction(tr("DecorationBothMenuItemTitle"));
- bridgeEndMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationBothMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setBridgeHasEntry(true);
-     setBridgeHasExit(true);
- });
+ jcbmi = new QAction(tr("Both"));
+ jcbmi->setCheckable(true);
+ bridgeEndMenu->addAction(jcbmi);
+ bridgeEndActionGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration at both ends of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setBridgeHasEntry(true);
+//     setBridgeHasExit(true);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeEndBoth()));
  jcbmi->setChecked(bridgeHasEntry && bridgeHasExit);
 
- jmi = bridgeMenu.add(new QMenuItem(tr("DecorationColorMenuItemTitle")));
- jmi->setToolTip(tr("DecorationColorMenuItemToolTip"));
- jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     Color newColor = JmriColorChooser.showDialog(null, "Choose a color", bridgeColor);
-     if ((newColor != null) && !newColor.equals(bridgeColor)) {
-         setBridgeColor(newColor);
-     }
- });
- jmi.setForeground(bridgeColor);
- jmi.setBackground(ColorUtil.contrast(bridgeColor));
+ bridgeMenu->addAction(jmi = new QAction(tr("Color"),this));
+ jmi->setToolTip(tr("Select this to change the color of this decoration"));
+// jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     Color newColor = JmriColorChooser.showDialog(null, "Choose a color", bridgeColor);
+//     if ((newColor != null) && !newColor.equals(bridgeColor)) {
+//         setBridgeColor(newColor);
+//     }
+// });
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeColor()));
+// jmi.setForeground(bridgeColor);
+// jmi.setBackground(ColorUtil.contrast(bridgeColor));
+ jmi->setIcon(layoutEditor->getColourIcon(bridgeColor));
 
- jmi = bridgeMenu.add(new QMenuItem(tr(" %1: ",
-         tr("DecorationLineWidthMenuItemTitle")) + bridgeLineWidth));
- jmi->setToolTip(tr("DecorationLineWidthMenuItemToolTip"));
- jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     //prompt for bridge line width
-     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             tr("DecorationLineWidthMenuItemTitle"),
-             tr("DecorationLineWidthMenuItemTitle"),
-             bridgeLineWidth);
-     setBridgeLineWidth(newValue);
- });
+ bridgeMenu->addAction(jmi = new QAction(tr(" %1: ").arg(
+         tr("Line Width")) + QString::number(bridgeLineWidth),this));
+ jmi->setToolTip(tr("Select this to change the line width of this decoration"));
+// jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     //prompt for bridge line width
+//     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
+//             tr("DecorationLineWidthMenuItemTitle"),
+//             tr("DecorationLineWidthMenuItemTitle"),
+//             bridgeLineWidth);
+//     setBridgeLineWidth(newValue);
+// });
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeLineWidth()));
 
- jmi = bridgeMenu.add(new QMenuItem(tr(" %1: ",
-         tr("BridgeApproachWidthMenuItemTitle")) + bridgeApproachWidth));
+ bridgeMenu->addAction(jmi = new QAction(tr(" %1: ").arg(
+         tr("Approach Width") + " " + QString::number(bridgeApproachWidth)),this));
  jmi->setToolTip(tr("BridgeApproachWidthMenuItemToolTip"));
- jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     //prompt for bridge approach width
-     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             tr("BridgeApproachWidthMenuItemTitle"),
-             tr("BridgeApproachWidthMenuItemTitle"),
-             bridgeApproachWidth);
-     setBridgeApproachWidth(newValue);
- });
+// jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     //prompt for bridge approach width
+//     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
+//             tr("BridgeApproachWidthMenuItemTitle"),
+//             tr("BridgeApproachWidthMenuItemTitle"),
+//             bridgeApproachWidth);
+//     setBridgeApproachWidth(newValue);
+// });
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeApproachWidth()));
 
- jmi = bridgeMenu.add(new QMenuItem(tr(" %1: ",
-         tr("BridgeDeckWidthMenuItemTitle")) + bridgeDeckWidth));
- jmi->setToolTip(tr("BridgeDeckWidthMenuItemToolTip"));
- jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     //prompt for bridge deck width
-     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             tr("BridgeDeckWidthMenuItemTitle"),
-             tr("BridgeDeckWidthMenuItemTitle"),
-             bridgeDeckWidth);
-     setBridgeDeckWidth(newValue);
- });
+ bridgeMenu->addAction(jmi = new QAction(tr(" %1: ").arg(
+         tr("Deck Width") + " "+ QString::number(bridgeDeckWidth)),this));
+ jmi->setToolTip(tr("Select this to change the distance between the sides of the bridge decorations for this track"));
+// jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     //prompt for bridge deck width
+//     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
+//             tr("BridgeDeckWidthMenuItemTitle"),
+//             tr("BridgeDeckWidthMenuItemTitle"),
+//             bridgeDeckWidth);
+//     setBridgeDeckWidth(newValue);
+// });
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onBridgeDeckWidth()));
 
  //
  // end bumper menus
  //
- QMenu* endBumperMenu = new QMenu(tr("EndBumperMenuTitle"));
- decorationsMenu->setToolTip(tr("EndBumperMenuToolTip"));
- decorationsMenu.add(endBumperMenu);
+ QMenu* endBumperMenu = new QMenu(tr("End Bumpers"));
+ decorationsMenu->setToolTip(tr("Select this menu to change the end bumper decoration settings for this track"));
+ decorationsMenu->addMenu(endBumperMenu);
 
- QMenu* endBumperEndMenu = new QMenu(tr("DecorationEndMenuTitle"));
- endBumperEndMenu->setToolTip(tr("DecorationEndMenuToolTip"));
- endBumperMenu.add(endBumperEndMenu);
+ QMenu* endBumperEndMenu = new QMenu(tr("End"));
+ endBumperEndMenu->setToolTip(tr("Select at which end(s) to add this decoration"));
+ endBumperMenu->addMenu(endBumperEndMenu);
 
- jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
- endBumperEndMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setBumperEndStart(false);
-     setBumperEndStop(false);
- });
+ QActionGroup* bumperEndActonGroup = new QActionGroup(this);
+ jcbmi = new QAction(tr("None"),this);
+ jcbmi->setCheckable(true);
+ endBumperEndMenu->addAction(jcbmi);
+ bumperEndActonGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to remove this decoration from this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setBumperEndStart(false);
+//     setBumperEndStop(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onBumperEndNone()));
  jcbmi->setChecked(!bumperEndStart && !bumperEndStop);
 
- jcbmi = new QAction(tr("DecorationStartMenuItemTitle"));
- endBumperEndMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationStartMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setBumperEndStart(true);
-     setBumperEndStop(false);
- });
+ jcbmi = new QAction(tr("Start"));
+ jcbmi->setCheckable(true);
+ endBumperEndMenu->addAction(jcbmi);
+ bumperEndActonGroup->addAction(jcbmi);
+// jcbmi->setToolTip(tr("Select this to add this decoration at the beginning of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setBumperEndStart(true);
+//     setBumperEndStop(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onBumperEndStart()));
  jcbmi->setChecked(bumperEndStart && !bumperEndStop);
 
- jcbmi = new QAction(tr("DecorationEndMenuItemTitle"));
- endBumperEndMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationEndMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setBumperEndStop(true);
-     setBumperEndStart(false);
- });
+ jcbmi = new QAction(tr("End"));
+ jcbmi->setCheckable(true);
+ endBumperEndMenu->addAction(jcbmi);
+ bumperEndActonGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration at the end of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setBumperEndStop(true);
+//     setBumperEndStart(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onBumperEndStop()));
  jcbmi->setChecked(!bumperEndStart && bumperEndStop);
 
- jmi = endBumperMenu.add(new QMenuItem(tr("DecorationColorMenuItemTitle")));
- jmi->setToolTip(tr("DecorationColorMenuItemToolTip"));
- jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     Color newColor = JmriColorChooser.showDialog(null, "Choose a color", bumperColor);
-     if ((newColor != null) && !newColor.equals(bumperColor)) {
-         setBumperColor(newColor);
-     }
- });
- jmi.setForeground(bumperColor);
- jmi.setBackground(ColorUtil.contrast(bumperColor));
+ endBumperMenu->addAction(jmi = new QAction(tr("Color"),this));
+ jmi->setToolTip(tr("Select this to change the color of this decoration"));
+// jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     Color newColor = JmriColorChooser.showDialog(null, "Choose a color", bumperColor);
+//     if ((newColor != null) && !newColor.equals(bumperColor)) {
+//         setBumperColor(newColor);
+//     }
+// });
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onBumperColor()));
+// jmi.setForeground(bumperColor);
+// jmi.setBackground(ColorUtil.contrast(bumperColor));
+ jmi->setIcon(layoutEditor->getColourIcon(bumperColor));
 
- jmi = endBumperMenu.add(new QMenuItem(tr(" %1: ",
-         tr("DecorationLineWidthMenuItemTitle")) + bumperLineWidth));
+ endBumperMenu->addAction(jmi = new QAction(tr(" %1: ").arg(
+         tr("Line Width")) + QString::number(bumperLineWidth),this));
  jmi->setToolTip(tr("DecorationLineWidthMenuItemToolTip"));
- jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     //prompt for width
-     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             tr("DecorationLineWidthMenuItemTitle"),
-             tr("DecorationLineWidthMenuItemTitle"),
-             bumperLineWidth);
-     setBumperLineWidth(newValue);
- });
+// jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     //prompt for width
+//     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
+//             tr("DecorationLineWidthMenuItemTitle"),
+//             tr("DecorationLineWidthMenuItemTitle"),
+//             bumperLineWidth);
+//     setBumperLineWidth(newValue);
+// });
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onBumperLineWidth()));
 
- jmi = endBumperMenu.add(new QMenuItem(tr(" %1: ",
-         tr("DecorationLengthMenuItemTitle")) + bumperLength));
+ endBumperMenu->addAction(jmi = new QAction(tr(" %1: ").arg(
+         tr("Length")) + QString::number(bumperLength),this));
  jmi->setToolTip(tr("DecorationLengthMenuItemToolTip"));
- jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     //prompt for length
-     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-             tr("DecorationLengthMenuItemTitle"),
-             tr("DecorationLengthMenuItemTitle"),
-             bumperLength);
-     setBumperLength(newValue);
- });
+// jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     //prompt for length
+//     int newValue = QuickPromptUtil.promptForInt(layoutEditor,
+//             tr("DecorationLengthMenuItemTitle"),
+//             tr("DecorationLengthMenuItemTitle"),
+//             bumperLength);
+//     setBumperLength(newValue);
+// });
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onBumperLineLength()));
 
  //
  // tunnel menus
  //
- QMenu* tunnelMenu = new QMenu(tr("TunnelMenuTitle"));
- decorationsMenu->setToolTip(tr("TunnelMenuToolTip"));
- decorationsMenu.add(tunnelMenu);
+ QMenu* tunnelMenu = new QMenu(tr("Tunnel"));
+ decorationsMenu->setToolTip(tr("Select this menu to change the tunnel decoration settings for this track"));
+ decorationsMenu->addMenu(tunnelMenu);
 
- QMenu* tunnelSideMenu = new QMenu(tr("DecorationSideMenuTitle"));
- tunnelSideMenu->setToolTip(tr("DecorationSideMenuToolTip"));
- tunnelMenu.add(tunnelSideMenu);
+ QMenu* tunnelSideMenu = new QMenu(tr("Side"));
+ tunnelSideMenu->setToolTip(tr("Select on which side(s) to add this decoration"));
+ tunnelMenu->addMenu(tunnelSideMenu);
 
- jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
- tunnelSideMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setTunnelSideLeft(false);
-     setTunnelSideRight(false);
- });
+ QActionGroup* tunnelSideActionGroup = new QActionGroup(this);
+ jcbmi = new QAction(tr("None"));
+ jcbmi->setCheckable(true);
+ tunnelSideMenu->addAction(jcbmi);
+ tunnelSideActionGroup->addAction(jcbmi);
+// jcbmi->setToolTip(tr("Select this to remove this decoration from this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setTunnelSideLeft(false);
+//     setTunnelSideRight(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onTunnelSideNone()));
  jcbmi->setChecked(!tunnelSideLeft && !tunnelSideRight);
 
- jcbmi = new QAction(tr("DecorationSideLeftMenuItemTitle"));
- tunnelSideMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationSideLeftMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setTunnelSideLeft(true);
-     setTunnelSideRight(false);
- });
+ jcbmi = new QAction(tr("Left"));
+ jcbmi->setCheckable(true);
+ tunnelSideMenu->addAction(jcbmi);
+ tunnelSideActionGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration to the left side of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setTunnelSideLeft(true);
+//     setTunnelSideRight(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onTunnelSideLeft()));
  jcbmi->setChecked(tunnelSideLeft && !tunnelSideRight);
 
- jcbmi = new QAction(tr("DecorationSideRightMenuItemTitle"));
- tunnelSideMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationSideRightMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setTunnelSideRight(true);
-     setTunnelSideLeft(false);
- });
+ jcbmi = new QAction(tr("Right"));
+ jcbmi->setCheckable(true);
+ tunnelSideMenu->addAction(jcbmi);
+ tunnelSideActionGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration to the right side of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setTunnelSideRight(true);
+//     setTunnelSideLeft(false);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onTunnelSideRight()));
  jcbmi->setChecked(!tunnelSideLeft && tunnelSideRight);
 
- jcbmi = new QAction(tr("DecorationBothMenuItemTitle"));
- tunnelSideMenu.add(jcbmi);
- jcbmi->setToolTip(tr("DecorationBothMenuItemToolTip"));
- jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-     setTunnelSideLeft(true);
-     setTunnelSideRight(true);
- });
+ jcbmi = new QAction(tr("Both"));
+ jcbmi->setCheckable(true);
+ tunnelSideMenu->addAction(jcbmi);
+ tunnelSideActionGroup->addAction(jcbmi);
+ jcbmi->setToolTip(tr("Select this to add this decoration at both ends of this track"));
+// jcbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//     setTunnelSideLeft(true);
+//     setTunnelSideRight(true);
+// });
+ connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onTunnelSideBoth()));
  jcbmi->setChecked(tunnelSideLeft && tunnelSideRight);
 
- QMenu* tunnelEndMenu = new QMenu(tr("DecorationEndMenuTitle"));
- tunnelEndMenu->setToolTip(tr("DecorationEndMenuToolTip"));
- tunnelMenu.add(tunnelEndMenu);
-
+ QMenu* tunnelEndMenu = new QMenu(tr("End"));
+ tunnelEndMenu->setToolTip(tr("Select at which end(s) to add this decoration"));
+ tunnelMenu->addMenu(tunnelEndMenu);
+#if 0
  jcbmi = new QAction(tr("DecorationNoneMenuItemTitle"));
  tunnelEndMenu.add(jcbmi);
  jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
@@ -2047,9 +2184,10 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onArrowGap()));
 //         changeType(2);
 //     }
 // }));
+ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onChangeTo()));
  jmi->setChecked(isArc() && !isCircle());
 
- lineType->addAction(new QAction(tr("Bezier"), this));
+ lineType->addAction(jmi =new QAction(tr("Bezier"), this));
  jmi->setCheckable(true);
  jmi->setData(3);
  lineTypeActGrp->addAction(jmi);
@@ -2268,6 +2406,153 @@ void TrackSegment::onViewBlockRouting()
  routeTableAction->actionPerformed();
 }
 
+void TrackSegment::onBridgeSideNone()
+{
+ setBridgeSideLeft(false);
+ setBridgeSideRight(false);
+}
+void TrackSegment::onBridgeSideLeft()
+{
+ setBridgeSideLeft(true);
+ setBridgeSideRight(false);
+}
+void TrackSegment::onBridgeSideRight()
+{
+ setBridgeSideLeft(false);
+ setBridgeSideRight(true);
+}
+void TrackSegment::onBridgeSideBoth()
+{
+ setBridgeSideLeft(true);
+ setBridgeSideRight(true);
+}
+void TrackSegment::onBridgeEndNone()
+{
+ setBridgeHasEntry(false);
+ setBridgeHasExit(false);
+}
+void TrackSegment::onBridgeEndEntry()
+{
+ setBridgeHasEntry(true);
+ setBridgeHasExit(false);
+}
+void TrackSegment::onBridgeEndExit()
+{
+ setBridgeHasEntry(false);
+ setBridgeHasExit(true);
+}
+void TrackSegment::onBridgeEndBoth()
+{
+ setBridgeHasEntry(true);
+ setBridgeHasExit(true);
+}
+void TrackSegment::onBridgeColor()
+{
+ QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", bridgeColor);
+ if ((!newColor.isValid()) && newColor!=(bridgeColor)) {
+     setBridgeColor(newColor);
+ }
+}
+void TrackSegment::onBridgeLineWidth()
+{
+ //prompt for bridge line width
+ int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
+         tr("DecorationLineWidthMenuItemTitle"),
+         tr("DecorationLineWidthMenuItemTitle"),
+         bridgeLineWidth);
+ setBridgeLineWidth(newValue);
+
+}
+void TrackSegment::onBridgeApproachWidth()
+{
+ //prompt for bridge approach width
+ int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
+         tr("BridgeApproachWidthMenuItemTitle"),
+         tr("BridgeApproachWidthMenuItemTitle"),
+         bridgeApproachWidth);
+ setBridgeApproachWidth(newValue);
+}
+void TrackSegment::onBridgeDeckWidth()
+{
+ //prompt for bridge deck width
+ int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
+         tr("BridgeDeckWidthMenuItemTitle"),
+         tr("BridgeDeckWidthMenuItemTitle"),
+         bridgeDeckWidth);
+ setBridgeDeckWidth(newValue);
+}
+void TrackSegment::onBumperEndNone()
+{
+ setBumperEndStart(false);
+ setBumperEndStop(false);
+}
+void TrackSegment::onBumperEndStart()
+{
+ setBumperEndStart(true);
+ setBumperEndStop(false);
+}
+void TrackSegment::onBumperEndStop()
+{
+ setBumperEndStart(false);
+ setBumperEndStop(true);
+}
+void TrackSegment::onBumperColor()
+{
+ QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", bridgeColor);
+ if ((!newColor.isValid()) && newColor!=(bumperColor)) {
+     setBumperColor(newColor);
+ }
+}
+void TrackSegment::onBumperLineWidth()
+{
+ //prompt for width
+ int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
+         tr("DecorationLineWidthMenuItemTitle"),
+         tr("DecorationLineWidthMenuItemTitle"),
+         bumperLineWidth);
+ setBumperLineWidth(newValue);
+}
+void TrackSegment::onBumperLineLength()
+{
+ //prompt for length
+ int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
+         tr("DecorationLengthMenuItemTitle"),
+         tr("DecorationLengthMenuItemTitle"),
+         bumperLength);
+ setBumperLength(newValue);
+}
+void TrackSegment::onTunnelSideNone()
+{
+ setTunnelSideLeft(false);
+ setTunnelSideRight(false);
+}
+void TrackSegment::onTunnelSideLeft()
+{
+ setTunnelSideLeft(true);
+ setTunnelSideRight(false);
+}
+void TrackSegment::onTunnelSideRight()
+{
+ setTunnelSideLeft(false);
+ setTunnelSideRight(true);
+}
+void TrackSegment::onTunnelSideBoth()
+{
+ setTunnelSideLeft(true);
+ setTunnelSideRight(true);
+}
+void TrackSegment::onAddControlPointAfter()
+{
+ addBezierControlPointAfter(bezierControlPointIndex);
+}
+void TrackSegment::onAddControlPointBefore()
+{
+ addBezierControlPointBefore(bezierControlPointIndex);
+}
+void TrackSegment::onDeleteControlPoint()
+{
+ deleteBezierControlPoint(bezierControlPointIndex);
+}
 /**
 * split track segment into two track segments with an anchor between
 */
@@ -2328,45 +2613,55 @@ void TrackSegment::onViewBlockRouting()
 * Display popup menu for information and editing.
 */
 /*protected*/ void TrackSegment::showBezierPopUp(QGraphicsSceneMouseEvent* e, int hitPointType) {
- int bezierControlPointIndex = hitPointType - BEZIER_CONTROL_POINT_OFFSET_MIN;
+  bezierControlPointIndex = hitPointType - BEZIER_CONTROL_POINT_OFFSET_MIN;
  if (popupMenu != nullptr) {
      popupMenu->clear();
  } else {
      popupMenu = new QMenu();
  }
-#if 0
- QMenuItem jmi = popupMenu.add(tr("BezierControlPoint") + " #" + bezierControlPointIndex);
- jmi.setEnabled(false);
- popupMenu.add(new JSeparator(JSeparator.HORIZONTAL));
 
- if (bezierControlPoints.size() < BEZIER_CONTROL_POINT_OFFSET_MAX - BEZIER_CONTROL_POINT_OFFSET_MIN) {
-     popupMenu.add(new AbstractAction(tr("AddBezierControlPointAfter")) {
+ /*QMenuItem* jmi =*/ popupMenu->addSection(tr("ControlPoint") + " #" + QString::number(bezierControlPointIndex));
+ //jmi.setEnabled(false);
+ popupMenu->addSeparator(); //new JSeparator(JSeparator.HORIZONTAL));
 
-         @Override
-         public void actionPerformed(ActionEvent e) {
-             addBezierControlPointAfter(bezierControlPointIndex);
-         }
-     });
-     popupMenu.add(new AbstractAction(tr("AddBezierControlPointBefore")) {
+ if (bezierControlPoints.size() < BEZIER_CONTROL_POINT_OFFSET_MAX - BEZIER_CONTROL_POINT_OFFSET_MIN)
+ {
+  QAction* action;
+     popupMenu->addAction(action = new AbstractAction(tr("Add Control Point After"), this));
+//     {
 
-         @Override
-         public void actionPerformed(ActionEvent e) {
-             addBezierControlPointBefore(bezierControlPointIndex);
-         }
-     });
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             addBezierControlPointAfter(bezierControlPointIndex);
+//         }
+//     });
+       connect(action, SIGNAL(triggered(bool)), this, SLOT(onAddControlPointAfter()));
+     popupMenu->addAction(action = new AbstractAction(tr("Add Control Point Before"),this));
+//     {
+
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             addBezierControlPointBefore(bezierControlPointIndex);
+//         }
+//     });
+      connect(action, SIGNAL(triggered(bool)), this, SLOT(onAddControlPointBefore()));
  }
 
- if (bezierControlPoints.size() > 2) {
-     popupMenu.add(new AbstractAction(tr("DeleteBezierControlPoint") + " #" + bezierControlPointIndex) {
+ if (bezierControlPoints.size() > 2)
+ {
+  QAction* action;
+     popupMenu->addAction(action = new AbstractAction(tr("Delete Control Point") + " #" + QString::number(bezierControlPointIndex), this));
+//     {
 
-         @Override
-         public void actionPerformed(ActionEvent e) {
-             deleteBezierControlPoint(bezierControlPointIndex);
-         }
-     });
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             deleteBezierControlPoint(bezierControlPointIndex);
+//         }
+//     });
+       connect(action, SIGNAL(triggered(bool)), this, SLOT(onDeleteControlPoint()));
  }
- popupMenu.show(e.getComponent(), e.getX(), e.getY());
-#endif
+ //popupMenu.show(e.getComponent(), e.getX(), e.getY());
+ popupMenu->exec(QCursor::pos());
 }
 
 /*private*/ void TrackSegment::addBezierControlPointBefore(int index) {
@@ -3178,7 +3473,6 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, EditScene* g2, bool mai
          lineItem->setPen(layoutEditor->drawingStroke);
          itemGroup->addToGroup(lineItem);
      }
-#if 1
      else if (isBezier())
      {
          QPointF pt1 = LayoutEditor::getCoords(getConnect1(), getType1());
@@ -3198,7 +3492,6 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, EditScene* g2, bool mai
          itemGroup->addToGroup(pathItem);
 
      }
-#endif
      else {
          QPointF end1 = LayoutEditor::getCoords(getConnect1(), getType1());
          QPointF end2 = LayoutEditor::getCoords(getConnect2(), getType2());

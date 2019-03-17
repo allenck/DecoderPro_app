@@ -585,7 +585,7 @@ MathUtil::MathUtil()
 // recursive routine to plot a cubic Bezier...
 // (also returns distance!)
 /*private*/ /*static*/ double MathUtil::plotBezier(
-        QPainterPath path,
+        QPainterPath &path,
         /*@Nonnull*/ QPointF p0,
         /*@Nonnull*/ QPointF p1,
         /*@Nonnull*/ QPointF p2,
@@ -747,9 +747,11 @@ MathUtil::MathUtil()
         double result;
         QPainterPath path = QPainterPath();
         bezier1st = true;
-        if (p.length() == 4) {    // draw cubic bezier?
-            result = plotBezier(path, p[0], p[1], p[2], p[3], 0, displacement);
-        }
+        path.moveTo(p.at(0));
+        path.cubicTo(p.at(1), p.at(2), p.at(3));
+//        if (p.length() == 4) {    // draw cubic bezier?
+//            result = plotBezier(path, p[0], p[1], p[2], p[3], 0, displacement);
+//        }
 //        else {    // (nope)
 //            result = plotBezier(path, p, 0, displacement);
 //        }

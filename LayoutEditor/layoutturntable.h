@@ -206,9 +206,12 @@ private slots:
   /*protected*/ void drawEditControls(EditScene* g2);
   /*protected*/ void reCheckBlockBoundary();
   /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
+  /*protected*/ QList<RayTrack*> getRayList();
 
  friend class RayTrack;
  friend class LayoutEditor;
+ friend class LayoutTrackEditors;
+ friend class TurntableRayPanel;
 };
 
 #endif // LAYOUTTURNTABLE_H

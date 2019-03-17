@@ -202,6 +202,11 @@
     ray->setConnect(tr);
 }
 
+// should only be used by xml save code
+/*protected*/ QList<RayTrack*> LayoutTurntable::getRayList() {
+    return rayList;
+}
+
 /*public*/  int LayoutTurntable::getNumberRays() {
     return rayList.size();
 }

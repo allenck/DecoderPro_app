@@ -23,6 +23,9 @@
 #include "layoutturnout.h"
 #include "jtextfield.h"
 #include <QGroupBox>
+#include "levelxing.h"
+#include "jtextfield.h"
+#include "layoutturntable.h"
 
 /**
  * Editors for all layout track objects (PositionablePoint, TrackSegment,
@@ -62,6 +65,13 @@
  editLayoutSlipHiddenBox = new QCheckBox(tr("HideSlip"));
  editLayoutSlipBlockNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
          InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ editLevelXingBlock1NameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
+     InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ editLevelXingBlock2NameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
+     InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ editLevelXingHiddenCheckBox = new QCheckBox(tr("Hide Crossing"));  // NOI18N
+ editLayoutTurntableRadiusTextField = new JTextField(8);
+ editLayoutTurntableAngleTextField = new JTextField(8);
 
 }
 
@@ -145,7 +155,7 @@ void LayoutTrackEditors::showSensorMessage() {
     msg.append("<br>&nbsp;</html>");  // NOI18N
     static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))->
         showInfoMessage(
-            tr("BlockSensorTitle"),  // NOI18N
+            tr("Block Entry/Exit Sensor Notification"),  // NOI18N
             msg,
             "jmri.jmrit.display.PanelMenu",  // NOI18N
             "BlockSensorMessage");  // NOI18N
@@ -1519,442 +1529,448 @@ if (editLayoutSlipNeedsRedraw) {
 /*===============*\
 | Edit Level Xing |
 \*===============*/
-// variables for Edit Track Segment pane
-/*private*/ LevelXing levelXing;
-
-// variables for Edit Level Crossing pane
-/*private*/ JmriJFrame* editLevelXingFrame =  nullptr;
-/*private*/ QCheckBox* editLevelXingHiddenCheckBox = new JCheckBox(tr("HideCrossing"));  // NOI18N
-
-/*private*/ JmriBeanComboBox* editLevelXingBlock1NameComboBox = new JmriBeanComboBox(
-    InstanceManager::getDefault(BlockManager.class),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
-/*private*/ JmriBeanComboBox* editLevelXingBlock2NameComboBox = new JmriBeanComboBox(
-    InstanceManager::getDefault(BlockManager.class),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
-/*private*/ QPushButton* editLevelXingDoneButton;
-/*private*/ QPushButton* editLevelXingCancelButton;
-/*private*/ QPushButton* editLevelXingBlock1Button;
-/*private*/ QPushButton* editLevelXingBlock2Button;
-
-/*private*/ bool editLevelXingOpen = false;
-/*private*/ bool editLevelXingNeedsRedraw = false;
-/*private*/ bool editLevelXingNeedsBlockUpdate = false;
 #endif
 /**
 * Edit a Level Crossing
 */
 /*protected*/ void LayoutTrackEditors::editLevelXing(LevelXing* levelXing) {
-#if 0
-sensorList.clear();
+#if 1
+ sensorList.clear();
 
-this.levelXing = levelXing;
-if (editLevelXingOpen) {
-    editLevelXingFrame->setVisible(true);
-} else // Initialize if needed
-if (editLevelXingFrame ==  nullptr) {
+ this->levelXing = levelXing;
+ if (editLevelXingOpen) {
+     editLevelXingFrame->setVisible(true);
+ } else // Initialize if needed
+ if (editLevelXingFrame ==  nullptr) {
     editLevelXingFrame = new JmriJFrame(tr("EditXing"), false, true);  // NOI18N
-    editLevelXingFrame.addHelpMenu("package.jmri.jmrit.display.EditLevelXing", true);  // NOI18N
-    editLevelXingFrame.setLocation(50, 30);
-    Container contentPane = editLevelXingFrame.getContentPane();
-    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+    editLevelXingFrame->addHelpMenu("package.jmri.jmrit.display.EditLevelXing", true);  // NOI18N
+    editLevelXingFrame->setLocation(50, 30);
+    QWidget* contentPane = editLevelXingFrame->getContentPane();
+    contentPane->setLayout(new QVBoxLayout());//contentPane, BoxLayout.Y_AXIS));
 
     QWidget* panel33 = new QWidget();
-    panel33.setLayout(new FlowLayout());
+    FlowLayout* panel33Layout;
+    panel33->setLayout(panel33Layout =new FlowLayout());
     editLevelXingHiddenCheckBox->setToolTip(tr("HiddenToolTip"));  // NOI18N
-    panel33.add(editLevelXingHiddenCheckBox);
+    panel33Layout->addWidget(editLevelXingHiddenCheckBox);
     contentPane->layout()->addWidget(panel33);
 
     // setup block 1 name
     QWidget* panel1 = new QWidget();
-    panel1.setLayout(new FlowLayout());
-    QLabel* block1NameLabel = new QLabel(tr("Block_ID", 1));  // NOI18N
-    panel1.add(block1NameLabel);
-    panel1.add(editLevelXingBlock1NameComboBox);
+    FlowLayout* panel1Layout;
+    panel1->setLayout(panel1Layout = new FlowLayout());
+    QLabel* block1NameLabel = new QLabel(tr("Block %1").arg(1));  // NOI18N
+    panel1Layout->addWidget(block1NameLabel);
+    panel1Layout->addWidget(editLevelXingBlock1NameComboBox);
      layoutEditor->setupComboBox(editLevelXingBlock1NameComboBox, false, true);
     editLevelXingBlock1NameComboBox->setToolTip(tr("Edit Block name to change the linked block. If new name, block will be created."));  // NOI18N
     contentPane->layout()->addWidget(panel1);
 
     // setup block 2 name
     QWidget* panel2 = new QWidget();
-    panel2.setLayout(new FlowLayout());
-    QLabel* block2NameLabel = new QLabel(tr("Block_ID", 2));  // NOI18N
-    panel2.add(block2NameLabel);
-    panel2.add(editLevelXingBlock2NameComboBox);
+    FlowLayout* panel2Layout;
+    panel2->setLayout(panel2Layout = new FlowLayout());
+    QLabel* block2NameLabel = new QLabel(tr("Block %1").arg(2));  // NOI18N
+    panel2Layout->addWidget(block2NameLabel);
+    panel2Layout->addWidget(editLevelXingBlock2NameComboBox);
      layoutEditor->setupComboBox(editLevelXingBlock2NameComboBox, false, true);
     editLevelXingBlock2NameComboBox->setToolTip(tr("Edit Block name to change the linked block. If new name, block will be created."));  // NOI18N
     contentPane->layout()->addWidget(panel2);
 
     // set up Edit 1 Block and Edit 2 Block buttons
     QWidget* panel4 = new QWidget();
-    panel4.setLayout(new FlowLayout());
+    FlowLayout* panel4Layout;
+    panel4->setLayout(panel4Layout = new FlowLayout());
     // Edit 1 Block
-    panel4.add(editLevelXingBlock1Button = new QPushButton(tr("EditBlock", 1)));  // NOI18N
-    editLevelXingBlock1Button.addActionListener((ActionEvent e) -> {
-        editLevelXingBlockACPressed(e);
-    });
+    panel4Layout->addWidget(editLevelXingBlock1Button = new QPushButton(tr("Create/Edit Block %1").arg(1)));  // NOI18N
+//    editLevelXingBlock1Button.addActionListener((ActionEvent e) -> {
+//        editLevelXingBlockACPressed(e);
+//    });
+    connect(editLevelXingBlock1Button, SIGNAL(clicked(bool)), this, SLOT(editLevelXingBlockACPressed()));
     editLevelXingBlock1Button->setToolTip(tr("Click here to create/edit information for Block %1 shown above.", "")); // empty value for block 1  // NOI18N
     // Edit 2 Block
-    panel4.add(editLevelXingBlock2Button = new QPushButton(tr("EditBlock", 2)));  // NOI18N
-    editLevelXingBlock2Button.addActionListener((ActionEvent e) -> {
-        editLevelXingBlockBDPressed(e);
-    });
+    panel4Layout->addWidget(editLevelXingBlock2Button = new QPushButton(tr("Create/Edit Block %1").arg(2)));  // NOI18N
+//    editLevelXingBlock2Button.addActionListener((ActionEvent e) -> {
+//        editLevelXingBlockBDPressed(e);
+//    });
+    connect(editLevelXingBlock2Button, SIGNAL(clicked(bool)), this, SLOT(editLevelXingBlockBDPressed()));
+
     editLevelXingBlock2Button->setToolTip(tr("Click here to create/edit information for Block %1 shown above.", "")); // empty value for block 1  // NOI18N
     contentPane->layout()->addWidget(panel4);
     // set up Done and Cancel buttons
     QWidget* panel5 = new QWidget();
-    panel5.setLayout(new FlowLayout());
+    FlowLayout* panel5Layout;
+    panel5->setLayout(panel5Layout = new FlowLayout());
     panel5Layout->addWidget(editLevelXingDoneButton = new QPushButton(tr("ButtonDone")));  // NOI18N
-    editLevelXingDoneButton.addActionListener((ActionEvent e) -> {
-        editLevelXingDonePressed(e);
-    });
-    editLevelXingDoneButton->setToolTip(tr("Click [{0}] to accept any changes made above and close this dialog.", tr("ButtonDone")));  // NOI18N
+//    editLevelXingDoneButton.addActionListener((ActionEvent e) -> {
+//        editLevelXingDonePressed(e);
+//    });
+    connect(editLevelXingDoneButton, SIGNAL(clicked(bool)), this, SLOT(editLevelXingDonePressed()));
+    editLevelXingDoneButton->setToolTip(tr("Click [%1] to accept any changes made above and close this dialog.").arg(tr("Done")));  // NOI18N
 
     // make this button the default button (return or enter activates)
     // Note: We have to invoke this later because we don't currently have a root pane
-    SwingUtilities.invokeLater(() -> {
-        JRootPane rootPane = SwingUtilities.getRootPane(editLevelXingDoneButton);
-        rootPane.setDefaultButton(editLevelXingDoneButton);
-    });
+//    SwingUtilities.invokeLater(() -> {
+//        JRootPane rootPane = SwingUtilities.getRootPane(editLevelXingDoneButton);
+//        rootPane.setDefaultButton(editLevelXingDoneButton);
+//    });
+    editLevelXingDoneButton->setDefault(true);
 
     // Cancel
     panel5Layout->addWidget(editLevelXingCancelButton = new QPushButton(tr("ButtonCancel")));  // NOI18N
-    editLevelXingCancelButton.addActionListener((ActionEvent e) -> {
-        editLevelXingCancelPressed(e);
-    });
-    editLevelXingCancelButton->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.", tr("ButtonCancel")));  // NOI18N
+//    editLevelXingCancelButton.addActionListener((ActionEvent e) -> {
+//        editLevelXingCancelPressed(e);
+//    });
+    connect(editLevelXingCancelButton, SIGNAL(clicked(bool)), this, SLOT(editLevelXingCancelPressed()));
+    editLevelXingCancelButton->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("ButtonCancel")));  // NOI18N
     contentPane->layout()->addWidget(panel5);
 }
 
-editLevelXingHiddenCheckBox->setChecked(levelXing.isHidden());
+ editLevelXingHiddenCheckBox->setChecked(levelXing->isHidden());
 
-// Set up for Edit
-editLevelXingBlock1NameComboBox->setText(levelXing.getBlockNameAC());
-editLevelXingBlock2NameComboBox->setText(levelXing.getBlockNameBD());
-editLevelXingBlock1NameComboBox->setEnabled(!hasNxSensorPairs(levelXing.getLayoutBlockAC()));  // NOI18N
-editLevelXingBlock2NameComboBox->setEnabled(!hasNxSensorPairs(levelXing.getLayoutBlockBD()));  // NOI18N
-editLevelXingFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-    @Override
-    /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-        editLevelXingCancelPressed( nullptr);
-    }
-});
-editLevelXingFrame.pack();
-editLevelXingFrame->setVisible(true);
-editLevelXingOpen = true;
-editLevelXingNeedsBlockUpdate = false;
+ // Set up for Edit
+ editLevelXingBlock1NameComboBox->setText(levelXing->getBlockNameAC());
+ editLevelXingBlock2NameComboBox->setText(levelXing->getBlockNameBD());
+ editLevelXingBlock1NameComboBox->setEnabled(!hasNxSensorPairs(levelXing->getLayoutBlockAC()));  // NOI18N
+ editLevelXingBlock2NameComboBox->setEnabled(!hasNxSensorPairs(levelXing->getLayoutBlockBD()));  // NOI18N
+ editLevelXingFrame->addWindowListener(new LevelXingEditWindowListener(this));
+// {
+//    @Override
+//    /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
+//        editLevelXingCancelPressed( nullptr);
+//    }
+// });
 
-showSensorMessage();
+ editLevelXingFrame->pack();
+ editLevelXingFrame->setVisible(true);
+ editLevelXingOpen = true;
+ editLevelXingNeedsBlockUpdate = false;
+
+ showSensorMessage();
 #endif
 }   // editLevelXing
-#if 0
-/*private*/ void editLevelXingBlockACPressed(ActionEvent a) {
+
+/*private*/ void LayoutTrackEditors::editLevelXingBlockACPressed(/*ActionEvent a*/) {
 // check if a block name has been entered
-String newName = editLevelXingBlock1NameComboBox.getUserName();
-if (!levelXing.getBlockNameAC() == (newName)) {
+QString newName = editLevelXingBlock1NameComboBox->getUserName();
+if (levelXing->getBlockNameAC() != (newName)) {
     // get new block, or  nullptr if block has been removed
     if (!newName.isEmpty()) {
         try {
-            levelXing.setLayoutBlockAC( layoutEditor->provideLayoutBlock(newName));
+            levelXing->setLayoutBlockAC( layoutEditor->provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
-            levelXing.setLayoutBlockAC( nullptr);
+            levelXing->setLayoutBlockAC( nullptr);
             editLevelXingBlock1NameComboBox->setText("");
             editLevelXingBlock1NameComboBox->setCurrentIndex(-1);
         }
     } else {
-        levelXing.setLayoutBlockAC( nullptr);
+        levelXing->setLayoutBlockAC( nullptr);
     }
     editLevelXingNeedsRedraw = true;
-     layoutEditor->getLEAuxTools().setBlockConnectivityChanged();
+     layoutEditor->getLEAuxTools()->setBlockConnectivityChanged();
     editLevelXingNeedsBlockUpdate = true;
-}
-// check if a block exists to edit
-if (levelXing.getLayoutBlockAC() ==  nullptr) {
-    JOptionPane.showMessageDialog(editLevelXingFrame,
-            tr("Error1"),  // NOI18N
-            tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);  // NOI18N
-    return;
-}
-levelXing.getLayoutBlockAC().editLayoutBlock(editLevelXingFrame);
-editLevelXingNeedsRedraw = true;
+ }
+ // check if a block exists to edit
+ if (levelXing->getLayoutBlockAC() ==  nullptr) {
+     JOptionPane::showMessageDialog(editLevelXingFrame,
+             tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."),  // NOI18N
+             tr("ErrorTitle"), JOptionPane::ERROR_MESSAGE);  // NOI18N
+     return;
+ }
+ levelXing->getLayoutBlockAC()->editLayoutBlock(editLevelXingFrame);
+ editLevelXingNeedsRedraw = true;
 }   // editLevelXingBlockACPressed
 
-/*private*/ void editLevelXingBlockBDPressed(ActionEvent a) {
+/*private*/ void LayoutTrackEditors::editLevelXingBlockBDPressed(/*ActionEvent a*/) {
 // check if a block name has been entered
-String newName = editLevelXingBlock2NameComboBox.getUserName();
+QString newName = editLevelXingBlock2NameComboBox->getUserName();
 if (-1 != editLevelXingBlock2NameComboBox->currentIndex()) {
-    newName = editLevelXingBlock2NameComboBox.getSelectedDisplayName();
+    newName = editLevelXingBlock2NameComboBox->currentText();
 } else {
-    newName = (newName !=  nullptr) ? NamedBean.normalizeUserName(newName) : "";
+    newName = (newName !=  nullptr) ? NamedBean::normalizeUserName(newName) : "";
 }
-if (!levelXing.getBlockNameBD() == (newName)) {
+if (levelXing->getBlockNameBD() != (newName)) {
     // get new block, or  nullptr if block has been removed
     if (!newName.isEmpty()) {
         try {
-            levelXing.setLayoutBlockBD( layoutEditor->provideLayoutBlock(newName));
+            levelXing->setLayoutBlockBD( layoutEditor->provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
-            levelXing.setLayoutBlockBD( nullptr);
+            levelXing->setLayoutBlockBD( nullptr);
             editLevelXingBlock2NameComboBox->setText("");
             editLevelXingBlock2NameComboBox->setCurrentIndex(-1);
         }
     } else {
-        levelXing.setLayoutBlockBD( nullptr);
+        levelXing->setLayoutBlockBD( nullptr);
     }
     editLevelXingNeedsRedraw = true;
-     layoutEditor->getLEAuxTools().setBlockConnectivityChanged();
+     layoutEditor->getLEAuxTools()->setBlockConnectivityChanged();
     editLevelXingNeedsBlockUpdate = true;
-}
-// check if a block exists to edit
-if (levelXing.getLayoutBlockBD() ==  nullptr) {
-    JOptionPane.showMessageDialog(editLevelXingFrame,
-            tr("Error1"),  // NOI18N
-            tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);  // NOI18N
-    return;
-}
-levelXing.getLayoutBlockBD().editLayoutBlock(editLevelXingFrame);
-editLevelXingNeedsRedraw = true;
+ }
+ // check if a block exists to edit
+ if (levelXing->getLayoutBlockBD() ==  nullptr) {
+     JOptionPane::showMessageDialog(editLevelXingFrame,
+             tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."),  // NOI18N
+             tr("Error"), JOptionPane::ERROR_MESSAGE);  // NOI18N
+     return;
+ }
+ levelXing->getLayoutBlockBD()->editLayoutBlock(editLevelXingFrame);
+ editLevelXingNeedsRedraw = true;
 }   // editLevelXingBlockBDPressed
 
-/*private*/ void editLevelXingDonePressed(ActionEvent a) {
-// check if Blocks changed
-String newName = editLevelXingBlock1NameComboBox.getUserName();
-if (!levelXing.getBlockNameAC() == (newName)) {
+/*private*/ void LayoutTrackEditors::editLevelXingDonePressed(/*ActionEvent a*/) {
+ // check if Blocks changed
+ QString newName = editLevelXingBlock1NameComboBox->getUserName();
+ if (levelXing->getBlockNameAC() != (newName)) {
     // get new block, or  nullptr if block has been removed
     if (!newName.isEmpty()) {
         try {
-            levelXing.setLayoutBlockAC( layoutEditor->provideLayoutBlock(newName));
+            levelXing->setLayoutBlockAC( layoutEditor->provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
-            levelXing.setLayoutBlockAC( nullptr);
+            levelXing->setLayoutBlockAC( nullptr);
             editLevelXingBlock1NameComboBox->setText("");
             editLevelXingBlock1NameComboBox->setCurrentIndex(-1);
         }
     } else {
-        levelXing.setLayoutBlockAC( nullptr);
+        levelXing->setLayoutBlockAC( nullptr);
     }
     editLevelXingNeedsRedraw = true;
-     layoutEditor->getLEAuxTools().setBlockConnectivityChanged();
+     layoutEditor->getLEAuxTools()->setBlockConnectivityChanged();
     editLevelXingNeedsBlockUpdate = true;
-}
-newName = editLevelXingBlock2NameComboBox.getUserName();
-if (!levelXing.getBlockNameBD() == (newName)) {
+ }
+ newName = editLevelXingBlock2NameComboBox->getUserName();
+ if (levelXing->getBlockNameBD() != (newName)) {
     // get new block, or  nullptr if block has been removed
     if (!newName.isEmpty()) {
         try {
-            levelXing.setLayoutBlockBD( layoutEditor->provideLayoutBlock(newName));
+            levelXing->setLayoutBlockBD( layoutEditor->provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
-            levelXing.setLayoutBlockBD( nullptr);
+            levelXing->setLayoutBlockBD( nullptr);
             editLevelXingBlock2NameComboBox->setText("");
             editLevelXingBlock2NameComboBox->setCurrentIndex(-1);
         }
     } else {
-        levelXing.setLayoutBlockBD( nullptr);
+        levelXing->setLayoutBlockBD( nullptr);
     }
     editLevelXingNeedsRedraw = true;
-     layoutEditor->getLEAuxTools().setBlockConnectivityChanged();
+     layoutEditor->getLEAuxTools()->setBlockConnectivityChanged();
     editLevelXingNeedsBlockUpdate = true;
 }
 
-// set hidden
-bool oldHidden = levelXing.isHidden();
-levelXing.setHidden(editLevelXingHiddenCheckBox->isChecked());
-if (oldHidden != levelXing.isHidden()) {
-    editLevelXingNeedsRedraw = true;
-}
+ // set hidden
+ bool oldHidden = levelXing->isHidden();
+ levelXing->setHidden(editLevelXingHiddenCheckBox->isChecked());
+ if (oldHidden != levelXing->isHidden()) {
+     editLevelXingNeedsRedraw = true;
+ }
 
-editLevelXingOpen = false;
-editLevelXingFrame->setVisible(false);
-editLevelXingFrame.dispose();
-editLevelXingFrame =  nullptr;
-if (editLevelXingNeedsBlockUpdate) {
-    levelXing.updateBlockInfo();
-}
-if (editLevelXingNeedsRedraw) {
-     layoutEditor->redrawPanel();
-     layoutEditor->setDirty();
-    editLevelXingNeedsRedraw = false;
-}
+ editLevelXingOpen = false;
+ editLevelXingFrame->setVisible(false);
+ editLevelXingFrame->dispose();
+ editLevelXingFrame =  nullptr;
+ if (editLevelXingNeedsBlockUpdate) {
+     levelXing->updateBlockInfo();
+ }
+ if (editLevelXingNeedsRedraw) {
+      layoutEditor->redrawPanel();
+      layoutEditor->setDirty();
+     editLevelXingNeedsRedraw = false;
+ }
 }   // editLevelXingDonePressed
 
-/*private*/ void editLevelXingCancelPressed(ActionEvent a) {
-editLevelXingOpen = false;
-editLevelXingFrame->setVisible(false);
-editLevelXingFrame.dispose();
-editLevelXingFrame =  nullptr;
-if (editLevelXingNeedsBlockUpdate) {
-    levelXing.updateBlockInfo();
-}
-if (editLevelXingNeedsRedraw) {
-     layoutEditor->redrawPanel();
-     layoutEditor->setDirty();
-    editLevelXingNeedsRedraw = false;
-}
+/*private*/ void LayoutTrackEditors::editLevelXingCancelPressed(/*ActionEvent a*/) {
+ editLevelXingOpen = false;
+ editLevelXingFrame->setVisible(false);
+ editLevelXingFrame->dispose();
+ editLevelXingFrame =  nullptr;
+ if (editLevelXingNeedsBlockUpdate) {
+     levelXing->updateBlockInfo();
+ }
+ if (editLevelXingNeedsRedraw) {
+      layoutEditor->redrawPanel();
+      layoutEditor->setDirty();
+     editLevelXingNeedsRedraw = false;
+ }
 }
 
 /*==============*\
 | Edit Turntable |
 \*==============*/
-// variables for Edit Turntable pane
-/*private*/ LayoutTurntable layoutTurntable =  nullptr;
 
-/*private*/ JmriJFrame* editLayoutTurntableFrame =  nullptr;
-/*private*/ JTextField editLayoutTurntableRadiusTextField = new JTextField(8);
-/*private*/ JTextField editLayoutTurntableAngleTextField = new JTextField(8);
-/*private*/ QPushButton* editLayoutTurntableDoneButton;
-/*private*/ QPushButton* editLayoutTurntableCancelButton;
-
-/*private*/ QWidget* editLayoutTurntableRayPanel;
-/*private*/ QPushButton* editLayoutTurntableAddRayTrackButton;
-///*private*/ QPushButton* editLayoutTurntableDeleteRayTrackButton;
-/*private*/ QCheckBox* editLayoutTurntableDccControlledCheckBox;
-
-/*private*/ QString editLayoutTurntableOldRadius = "";
-/*private*/ bool editLayoutTurntableOpen = false;
-/*private*/ bool editLayoutTurntableNeedsRedraw = false;
-#endif
 /**
 * Edit a Turntable
 */
 /*protected*/ void LayoutTrackEditors::editLayoutTurntable(LayoutTurntable* layoutTurntable) {
 this->layoutTurntable = layoutTurntable;
-#if 0
+#if 1
 if (editLayoutTurntableOpen) {
     editLayoutTurntableFrame->setVisible(true);
 } else // Initialize if needed
 if (editLayoutTurntableFrame ==  nullptr) {
     editLayoutTurntableFrame = new JmriJFrame(tr("EditTurntable"), false, true);  // NOI18N
-    editLayoutTurntableFrame.addHelpMenu("package.jmri.jmrit.display.EditTurntable", true);  // NOI18N
-    editLayoutTurntableFrame.setLocation(50, 30);
+    editLayoutTurntableFrame->addHelpMenu("package.jmri.jmrit.display.EditTurntable", true);  // NOI18N
+    editLayoutTurntableFrame->setLocation(50, 30);
 
-    Container contentPane = editLayoutTurntableFrame.getContentPane();
+    QWidget* contentPane = editLayoutTurntableFrame->getContentPane();
     QWidget* headerPane = new QWidget();
     QWidget* footerPane = new QWidget();
-    headerPane.setLayout(new BoxLayout(headerPane, BoxLayout.Y_AXIS));
-    footerPane.setLayout(new BoxLayout(footerPane, BoxLayout.Y_AXIS));
-    contentPane.setLayout(new BorderLayout());
-    contentPane->layout()->addWidget(headerPane, BorderLayout.NORTH);
-    contentPane->layout()->addWidget(footerPane, BorderLayout.SOUTH);
+    headerPane->setLayout(new QVBoxLayout());//headerPane, BoxLayout.Y_AXIS));
+    footerPane->setLayout(new QVBoxLayout());//footerPane, BoxLayout.Y_AXIS));
+    QVBoxLayout* contentPaneLayout;
+    contentPane->setLayout(new QVBoxLayout());//BorderLayout());
+    contentPaneLayout->addWidget(headerPane, 0, Qt::AlignTop);//BorderLayout.NORTH);
+    contentPaneLayout->addWidget(footerPane,0, Qt::AlignBottom);// BorderLayout.SOUTH);
 
     // setup radius
     QWidget* panel1 = new QWidget();
-    panel1.setLayout(new FlowLayout());
+    FlowLayout* panel1Layout;
+    panel1->setLayout(panel1Layout =new FlowLayout());
     QLabel* radiusLabel = new QLabel(tr("TurntableRadius"));  // NOI18N
-    panel1.add(radiusLabel);
-    panel1.add(editLayoutTurntableRadiusTextField);
+    panel1Layout->addWidget(radiusLabel);
+    panel1Layout->addWidget(editLayoutTurntableRadiusTextField);
     editLayoutTurntableRadiusTextField->setToolTip(tr("TurntableRadiusHint"));  // NOI18N
-    headerPane.add(panel1);
+    headerPane->layout()->addWidget(panel1);
 
     // setup add ray track
     QWidget* panel2 = new QWidget();
-    panel2.setLayout(new FlowLayout());
+    FlowLayout* panel2Layout;
+    panel2->setLayout(panel2Layout = new FlowLayout());
     QLabel* rayAngleLabel = new QLabel(tr("RayAngle"));  // NOI18N
-    panel2.add(rayAngleLabel);
-    panel2.add(editLayoutTurntableAngleTextField);
+    panel2Layout->addWidget(rayAngleLabel);
+    panel2Layout->addWidget(editLayoutTurntableAngleTextField);
     editLayoutTurntableAngleTextField->setToolTip(tr("RayAngleHint"));  // NOI18N
-    headerPane.add(panel2);
+    headerPane->layout()->addWidget(panel2);
 
     QWidget* panel3 = new QWidget();
-    panel3.setLayout(new FlowLayout());
-    panel3.add(editLayoutTurntableAddRayTrackButton = new QPushButton(tr("AddRayTrack")));  // NOI18N
+    FlowLayout* panel3Layout;
+    panel3->setLayout(panel3Layout = new FlowLayout());
+    panel3Layout->addWidget(editLayoutTurntableAddRayTrackButton = new QPushButton(tr("AddRayTrack")));  // NOI18N
     editLayoutTurntableAddRayTrackButton->setToolTip(tr("AddRayTrackHint"));  // NOI18N
-    editLayoutTurntableAddRayTrackButton.addActionListener((ActionEvent e) -> {
-        addRayTrackPressed(e);
-        updateRayPanel();
-    });
-
-    panel3.add(editLayoutTurntableDccControlledCheckBox = new JCheckBox(tr("TurntableDCCControlled")));  // NOI18N
-    headerPane.add(panel3);
+//    editLayoutTurntableAddRayTrackButton.addActionListener((ActionEvent e) -> {
+//        addRayTrackPressed(e);
+//        updateRayPanel();
+//    });
+    connect(editLayoutTurntableAddRayTrackButton, SIGNAL(clicked(bool)), this, SLOT(onEditLayoutTurntableAddRayTrackButton()));
+    panel3Layout->addWidget(editLayoutTurntableDccControlledCheckBox = new QCheckBox(tr("DCC Controlled Turntable")));  // NOI18N
+    headerPane->layout()->addWidget(panel3);
 
     // set up Done and Cancel buttons
     QWidget* panel5 = new QWidget();
-    panel5.setLayout(new FlowLayout());
+    FlowLayout* panel5Layout;
+    panel5->setLayout(panel5Layout = new FlowLayout());
     panel5Layout->addWidget(editLayoutTurntableDoneButton = new QPushButton(tr("ButtonDone")));  // NOI18N
-    editLayoutTurntableDoneButton.addActionListener((ActionEvent e) -> {
-        editLayoutTurntableDonePressed(e);
-    });
+//    editLayoutTurntableDoneButton.addActionListener((ActionEvent e) -> {
+//        editLayoutTurntableDonePressed(e);
+//    });
+    connect(editLayoutTurntableDoneButton, SIGNAL(clicked(bool)), this, SLOT(editLayoutTurntableDonePressed()));
 
     // make this button the default button (return or enter activates)
     // Note: We have to invoke this later because we don't currently have a root pane
-    SwingUtilities.invokeLater(() -> {
-        JRootPane rootPane = SwingUtilities.getRootPane(editLayoutTurntableDoneButton);
-        rootPane.setDefaultButton(editLayoutTurntableDoneButton);
-    });
+//    SwingUtilities.invokeLater(() -> {
+//        JRootPane rootPane = SwingUtilities.getRootPane(editLayoutTurntableDoneButton);
+//        rootPane.setDefaultButton(editLayoutTurntableDoneButton);
+//    });
+    editLayoutTurntableDoneButton->setDefault(true);
 
-    editLayoutTurntableDoneButton->setToolTip(tr("Click [{0}] to accept any changes made above and close this dialog.", tr("ButtonDone")));  // NOI18N
+    editLayoutTurntableDoneButton->setToolTip(tr("Click [{0}] to accept any changes made above and close this dialog.").arg(tr("Done")));  // NOI18N
     // Cancel
     panel5Layout->addWidget(editLayoutTurntableCancelButton = new QPushButton(tr("ButtonCancel")));  // NOI18N
-    editLayoutTurntableCancelButton.addActionListener((ActionEvent e) -> {
-        turntableEditCancelPressed(e);
-    });
-    editLayoutTurntableCancelButton->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.", tr("ButtonCancel")));  // NOI18N
-    footerPane.add(panel5);
+//    editLayoutTurntableCancelButton.addActionListener((ActionEvent e) -> {
+//        turntableEditCancelPressed(e);
+//    });
+    connect(editLayoutTurntableCancelButton, SIGNAL(clicked(bool)), this, SLOT(turntableEditCancelPressed()));
+    editLayoutTurntableCancelButton->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));  // NOI18N
+    footerPane->layout()->addWidget(panel5);
 
     editLayoutTurntableRayPanel = new QWidget();
-    editLayoutTurntableRayPanel.setLayout(new BoxLayout(editLayoutTurntableRayPanel, BoxLayout.Y_AXIS));
-    JScrollPane rayScrollPane = new JScrollPane(editLayoutTurntableRayPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    contentPane->layout()->addWidget(rayScrollPane, BorderLayout.CENTER);
-}
-editLayoutTurntableDccControlledCheckBox->setChecked(layoutTurntable.isTurnoutControlled());
-editLayoutTurntableDccControlledCheckBox.addActionListener((ActionEvent e) -> {
-    layoutTurntable.setTurnoutControlled(editLayoutTurntableDccControlledCheckBox->isChecked());
+    editLayoutTurntableRayPanel->setLayout(new QVBoxLayout());//editLayoutTurntableRayPanel, BoxLayout.Y_AXIS));
+    QScrollArea* rayScrollPane = new QScrollArea();//editLayoutTurntableRayPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    rayScrollPane->setWidget(editLayoutTurntableRayPanel);
+    rayScrollPane->setWidgetResizable(true);
+    contentPaneLayout->addWidget(rayScrollPane, 0, Qt::AlignCenter);//BorderLayout.CENTER);
+ }
+ editLayoutTurntableDccControlledCheckBox->setChecked(layoutTurntable->isTurnoutControlled());
+// editLayoutTurntableDccControlledCheckBox.addActionListener((ActionEvent e) -> {
+//     layoutTurntable.setTurnoutControlled(editLayoutTurntableDccControlledCheckBox->isChecked());
 
-    for (Component comp : editLayoutTurntableRayPanel.getComponents()) {
-        if (comp instanceof TurntableRayPanel) {
-            TurntableRayPanel trp = (TurntableRayPanel) comp;
-            trp.showTurnoutDetails();
-        }
-    }
-    editLayoutTurntableFrame.pack();
-});
-updateRayPanel();
-// Set up for Edit
-editLayoutTurntableRadiusTextField->setText(" " + layoutTurntable.getRadius());
-editLayoutTurntableOldRadius = editLayoutTurntableRadiusTextField.getText();
-editLayoutTurntableAngleTextField->setText("0");
-editLayoutTurntableFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-    @Override
-    /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-        turntableEditCancelPressed( nullptr);
-    }
-});
-editLayoutTurntableFrame.pack();
-editLayoutTurntableFrame->setVisible(true);
-editLayoutTurntableOpen = true;
+//     for (Component comp : editLayoutTurntableRayPanel.getComponents()) {
+//         if (comp instanceof TurntableRayPanel) {
+//             TurntableRayPanel trp = (TurntableRayPanel) comp;
+//             trp.showTurnoutDetails();
+//         }
+//     }
+//     editLayoutTurntableFrame.pack();
+// });
+ connect(editLayoutTurntableDccControlledCheckBox, SIGNAL(clicked(bool)), this, SLOT(onEditLayoutTurntableDccControlledCheckBox()));
+ updateRayPanel();
+ // Set up for Edit
+ editLayoutTurntableRadiusTextField->setText(" " + QString::number(layoutTurntable->getRadius()));
+ editLayoutTurntableOldRadius = editLayoutTurntableRadiusTextField->text();
+ editLayoutTurntableAngleTextField->setText("0");
+ editLayoutTurntableFrame->addWindowListener(new TurntableEditWindowListener(this));
+// {
+//     @Override
+//     /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
+//         turntableEditCancelPressed( nullptr);
+//     }
+// });
+ editLayoutTurntableFrame->pack();
+ editLayoutTurntableFrame->setVisible(true);
+ editLayoutTurntableOpen = true;
 #endif
 }   // editLayoutTurntable
-#if 0
+
 //Remove old rays and add them back in
-/*private*/ void updateRayPanel() {
-for (Component comp : editLayoutTurntableRayPanel.getComponents()) {
-    editLayoutTurntableRayPanel.remove(comp);
+/*private*/ void LayoutTrackEditors::updateRayPanel() {
+ for (QWidget* comp : editLayoutTurntableRayPanel->findChildren<QWidget*>()) {
+     editLayoutTurntableRayPanel->layout()->removeWidget(comp);
+ }
+
+ editLayoutTurntableRayPanel->setLayout(new QVBoxLayout());//editLayoutTurntableRayPanel, BoxLayout.Y_AXIS));
+ for (RayTrack* rt : layoutTurntable->getRayList()) {
+     editLayoutTurntableRayPanel->layout()->addWidget(new TurntableRayPanel(rt, this));
+ }
+ editLayoutTurntableRayPanel->update();
+ editLayoutTurntableRayPanel->repaint();
+ editLayoutTurntableFrame->pack();
 }
 
-editLayoutTurntableRayPanel.setLayout(new BoxLayout(editLayoutTurntableRayPanel, BoxLayout.Y_AXIS));
-for (LayoutTurntable.RayTrack rt : layoutTurntable.getRayList()) {
-    editLayoutTurntableRayPanel.add(new TurntableRayPanel(rt));
+void LayoutTrackEditors::onEditLayoutTurntableAddRayTrackButton()
+{
+  addRayTrackPressed();
+  updateRayPanel();
 }
-editLayoutTurntableRayPanel.revalidate();
-editLayoutTurntableRayPanel.repaint();
-editLayoutTurntableFrame.pack();
+/*private*/ void LayoutTrackEditors::saveRayPanelDetail() {
+ for (QWidget* comp : editLayoutTurntableRayPanel->findChildren<QWidget*>()) {
+     if (qobject_cast<TurntableRayPanel*>(comp)) {
+         TurntableRayPanel* trp = (TurntableRayPanel*) comp;
+         trp->updateDetails();
+     }
+ }
 }
 
-/*private*/ void saveRayPanelDetail() {
-for (Component comp : editLayoutTurntableRayPanel.getComponents()) {
-    if (comp instanceof TurntableRayPanel) {
-        TurntableRayPanel trp = (TurntableRayPanel) comp;
-        trp.updateDetails();
+void LayoutTrackEditors::onEditLayoutTurntableDccControlledCheckBox()
+{
+ for (QWidget* comp : editLayoutTurntableRayPanel->findChildren<QWidget*>())
+ {
+    if (qobject_cast<TurntableRayPanel*>(comp)) {
+        TurntableRayPanel* trp = (TurntableRayPanel*) comp;
+        trp->showTurnoutDetails();
     }
-}
+    editLayoutTurntableFrame->pack();
+ }
 }
 
-/*private*/ void addRayTrackPressed(ActionEvent a) {
+/*private*/ void LayoutTrackEditors::addRayTrackPressed(/*ActionEvent a*/) {
 double ang = 0.0;
-try {
-    ang = Float.parseFloat(editLayoutTurntableAngleTextField.getText());
-} catch (Exception e) {
-    JOptionPane.showMessageDialog(editLayoutTurntableFrame, tr("EntryError") + ": "  // NOI18N
-            + e + tr("TryAgain"), tr("ErrorTitle"),  // NOI18N
-            JOptionPane.ERROR_MESSAGE);
+bool bok;
+    ang = editLayoutTurntableAngleTextField->text().toFloat(&bok);
+ if(!bok) {
+    JOptionPane::showMessageDialog(editLayoutTurntableFrame, tr("Error in entry") + ": "  // NOI18N
+            + "angle" + tr("Please reenter or Cancel."), tr("Error"),  // NOI18N
+            JOptionPane::ERROR_MESSAGE);
     return;
 }
-layoutTurntable.addRay(ang);
+layoutTurntable->addRay(ang);
  layoutEditor->redrawPanel();
  layoutEditor->setDirty();
 editLayoutTurntableNeedsRedraw = false;
@@ -1990,178 +2006,190 @@ editLayoutTurntableNeedsRedraw = false;
 //    layoutTurntable.deleteRay(closest);
 //}
 
-/*private*/ void editLayoutTurntableDonePressed(ActionEvent a) {
-// check if new radius was entered
-String str = editLayoutTurntableRadiusTextField.getText();
-if (!str == (editLayoutTurntableOldRadius)) {
+/*private*/ void LayoutTrackEditors::editLayoutTurntableDonePressed(/*ActionEvent a*/) {
+ // check if new radius was entered
+ QString str = editLayoutTurntableRadiusTextField->text();
+ if (str != (editLayoutTurntableOldRadius)) {
     double rad = 0.0;
-    try {
-        rad = Float.parseFloat(str);
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(editLayoutTurntableFrame, tr("EntryError") + ": "  // NOI18N
-                + e + tr("TryAgain"), tr("ErrorTitle"),  // NOI18N
-                JOptionPane.ERROR_MESSAGE);
+    bool bok;
+        rad = str.toFloat(&bok);
+    if(!bok) {
+        JOptionPane::showMessageDialog(editLayoutTurntableFrame, tr("Error in entry") + ": "  // NOI18N
+                + "radius" + tr("Please reenter or Cancel."), tr("Error"),  // NOI18N
+                JOptionPane::ERROR_MESSAGE);
         return;
     }
-    layoutTurntable.setRadius(rad);
+    layoutTurntable->setRadius(rad);
     editLayoutTurntableNeedsRedraw = true;
-}
-// clean up
-editLayoutTurntableOpen = false;
-editLayoutTurntableFrame->setVisible(false);
-editLayoutTurntableFrame.dispose();
-editLayoutTurntableFrame =  nullptr;
-saveRayPanelDetail();
-if (editLayoutTurntableNeedsRedraw) {
-     layoutEditor->redrawPanel();
-     layoutEditor->setDirty();
-    editLayoutTurntableNeedsRedraw = false;
-}
+ }
+ // clean up
+ editLayoutTurntableOpen = false;
+ editLayoutTurntableFrame->setVisible(false);
+ editLayoutTurntableFrame->dispose();
+ editLayoutTurntableFrame =  nullptr;
+ saveRayPanelDetail();
+ if (editLayoutTurntableNeedsRedraw) {
+      layoutEditor->redrawPanel();
+      layoutEditor->setDirty();
+     editLayoutTurntableNeedsRedraw = false;
+ }
 }   // editLayoutTurntableDonePressed
 
-/*private*/ void turntableEditCancelPressed(ActionEvent a) {
-editLayoutTurntableOpen = false;
-editLayoutTurntableFrame->setVisible(false);
-editLayoutTurntableFrame.dispose();
-editLayoutTurntableFrame =  nullptr;
-if (editLayoutTurntableNeedsRedraw) {
-     layoutEditor->redrawPanel();
-     layoutEditor->setDirty();
-    editLayoutTurntableNeedsRedraw = false;
-}
+/*private*/ void LayoutTrackEditors::turntableEditCancelPressed(/*ActionEvent a*/) {
+ editLayoutTurntableOpen = false;
+ editLayoutTurntableFrame->setVisible(false);
+ editLayoutTurntableFrame->dispose();
+ editLayoutTurntableFrame =  nullptr;
+ if (editLayoutTurntableNeedsRedraw) {
+      layoutEditor->redrawPanel();
+      layoutEditor->setDirty();
+     editLayoutTurntableNeedsRedraw = false;
+ }
 }
 
 /*===================*\
 | Turntable Ray Panel |
 \*===================*/
-/*public*/ class TurntableRayPanel extends QWidget* {
-
-// variables for Edit Turntable ray pane
-/*private*/ RayTrack rayTrack =  nullptr;
-/*private*/ QWidget* rayTurnoutPanel;
-/*private*/ transient JmriBeanComboBox* turnoutNameComboBox;
-/*private*/ TitledBorder rayTitledBorder;
-/*private*/ QComboBox* rayTurnoutStateComboBox;
-/*private*/ QLabel* rayTurnoutStateLabel;
-/*private*/ JTextField rayAngleTextField;
-/*private*/ final int[] rayTurnoutStateValues = new int[]{Turnout.CLOSED, Turnout.THROWN};
-/*private*/ final DecimalFormat twoDForm = new DecimalFormat("#.00");
 
 /**
  * constructor method
  */
-/*public*/ TurntableRayPanel(@Non nullptr RayTrack rayTrack) {
-    this.rayTrack = rayTrack;
+/*public*/ TurntableRayPanel::TurntableRayPanel(/*@Non nullptr*/ RayTrack* rayTrack, LayoutTrackEditors *layoutTrackeditors) {
+    this->rayTrack = rayTrack;
+  rayTurnoutStateValues = QVector<int>() <<Turnout::CLOSED << Turnout::THROWN;
+ this->layoutTrackEditors = layoutTrackeditors;
+  twoDForm = new DecimalFormat("#.00");
 
     QWidget* top = new QWidget();
-
+top->setLayout(new QHBoxLayout());
     /*QLabel* lbl = new QLabel("Index :"+connectionIndex);
          top.add(lbl);*/
-    top.add(new QLabel(tr("RayAngle") + " : "));  // NOI18N
-    top.add(rayAngleTextField = new JTextField(5));
-    rayAngleTextField.addFocusListener(new FocusListener() {
-        @Override
-        /*public*/ void focusGained(FocusEvent e) {
-        }
+    top->layout()->addWidget(new QLabel(tr("RayAngle") + " : "));  // NOI18N
+    top->layout()->addWidget(rayAngleTextField = new JTextField(5));
+//    rayAngleTextField.addFocusListener(new FocusListener() {
+//        @Override
+//        /*public*/ void focusGained(FocusEvent e) {
+//        }
 
-        @Override
-        /*public*/ void focusLost(FocusEvent e) {
-            try {
-                Float.parseFloat(rayAngleTextField.getText());
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(editLayoutTurntableFrame, tr("EntryError") + ": "  // NOI18N
-                        + ex + tr("TryAgain"), tr("ErrorTitle"),  // NOI18N
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
-    }
-    );
-    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    this.add(top);
+//        @Override
+//        /*public*/ void focusLost(FocusEvent e) {
+//            try {
+//                Float.parseFloat(rayAngleTextField.getText());
+//            } catch (Exception ex) {
+//                JOptionPane.showMessageDialog(editLayoutTurntableFrame, tr("EntryError") + ": "  // NOI18N
+//                        + ex + tr("TryAgain"), tr("ErrorTitle"),  // NOI18N
+//                        JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
+//        }
+//    }
+//    );
+    connect(rayAngleTextField, SIGNAL(editingFinished()), this, SLOT(rayAngleTextFieldEditingFinished()));
+    this->setLayout(new QVBoxLayout());//this, BoxLayout.Y_AXIS));
+    this->layout()->addWidget(top);
 
     turnoutNameComboBox = new JmriBeanComboBox(
             InstanceManager::turnoutManagerInstance(),
-            rayTrack.getTurnout(),
+            rayTrack->getTurnout(),
             JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
-     layoutEditor->setupComboBox(turnoutNameComboBox, true, true);
-    turnoutNameComboBox->setCheckedBean(rayTrack.getTurnout());
+     layoutTrackeditors->layoutEditor->setupComboBox(turnoutNameComboBox, true, true);
+    turnoutNameComboBox->findText(rayTrack->getTurnout()->getDisplayName());
 
-    String turnoutStateThrown = InstanceManager::turnoutManagerInstance().getThrownText();
-    String turnoutStateClosed = InstanceManager::turnoutManagerInstance().getClosedText();
-    String[] turnoutStates = new String[]{turnoutStateClosed, turnoutStateThrown};
+    QString turnoutStateThrown = InstanceManager::turnoutManagerInstance()->getThrownText();
+    QString turnoutStateClosed = InstanceManager::turnoutManagerInstance()->getClosedText();
+    QStringList turnoutStates = QStringList() << turnoutStateClosed<< turnoutStateThrown;
 
-    rayTurnoutStateComboBox = new QComboBox(turnoutStates);
+    rayTurnoutStateComboBox = new QComboBox(/*turnoutStates*/);
+    rayTurnoutStateComboBox->addItems(turnoutStates);
     rayTurnoutStateLabel = new QLabel(tr("TurnoutState"));  // NOI18N
     rayTurnoutPanel = new QWidget();
 
-    rayTurnoutPanel.setBorder(new EtchedBorder());
-    rayTurnoutPanel.add(turnoutNameComboBox);
-    rayTurnoutPanel.add(rayTurnoutStateLabel);
-    rayTurnoutPanel.add(rayTurnoutStateComboBox);
-    if (rayTrack.getTurnoutState() == Turnout.CLOSED) {
-        rayTurnoutStateComboBox->setCheckedItem(turnoutStateClosed);
+//    rayTurnoutPanel.setBorder(new EtchedBorder());
+    rayTurnoutPanel->layout()->addWidget(turnoutNameComboBox);
+    rayTurnoutPanel->layout()->addWidget(rayTurnoutStateLabel);
+    rayTurnoutPanel->layout()->addWidget(rayTurnoutStateComboBox);
+    if (rayTrack->getTurnoutState() == Turnout::CLOSED) {
+        //rayTurnoutStateComboBox->setCheckedItem(turnoutStateClosed);
+     rayTurnoutStateComboBox->findText(turnoutStateClosed);
     } else {
-        rayTurnoutStateComboBox->setCheckedItem(turnoutStateThrown);
+        rayTurnoutStateComboBox->findText(turnoutStateThrown);
     }
-    this.add(rayTurnoutPanel);
+    this->layout()->addWidget(rayTurnoutPanel);
 
     QPushButton* deleteRayButton;
-    top.add(deleteRayButton = new QPushButton(tr("ButtonDelete")));  // NOI18N
-    deleteRayButton->setToolTip(tr("DeleteRayTrack"));  // NOI18N
-    deleteRayButton.addActionListener((ActionEvent e) -> {
-        delete();
-        updateRayPanel();
-    });
-    rayTitledBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
+    top->layout()->addWidget(deleteRayButton = new QPushButton(tr("Delete")));  // NOI18N
+    deleteRayButton->setToolTip(tr("Delete Ray Track"));  // NOI18N
+//    deleteRayButton.addActionListener((ActionEvent e) -> {
+//        delete();
+//        updateRayPanel();
+//    });
+    connect(deleteRayButton, SIGNAL(clicked(bool)), this, SLOT(onDelete()));
+//    rayTitledBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
 
-    this.setBorder(rayTitledBorder);
+    //this.setBorder(rayTitledBorder);
 
     showTurnoutDetails();
 
-    rayAngleTextField->setText(twoDForm.format(rayTrack.getAngle()));
-    rayTitledBorder.setTitle(tr("Ray") + " : " + rayTrack.getConnectionIndex());  // NOI18N
-    if (rayTrack.getConnect() ==  nullptr) {
-        rayTitledBorder.setTitle(tr("Unconnected") + " : " + rayTrack.getConnectionIndex());  // NOI18N
-    } else if (rayTrack.getConnect().getLayoutBlock() !=  nullptr) {
-        rayTitledBorder.setTitle(tr("Connected") + " : " + rayTrack.getConnect().getLayoutBlock().getDisplayName());  // NOI18N
+    rayAngleTextField->setText(twoDForm->format(rayTrack->getAngle()));
+    rayTitledBorder->setTitle(tr("Ray") + " : " + rayTrack->getConnectionIndex());  // NOI18N
+    if (rayTrack->getConnect() ==  nullptr) {
+        rayTitledBorder->setTitle(tr("Unconnected") + " : " + rayTrack->getConnectionIndex());  // NOI18N
+    } else if (rayTrack->getConnect()->getLayoutBlock() !=  nullptr) {
+        rayTitledBorder->setTitle(tr("Connected") + " : " + rayTrack->getConnect()->getLayoutBlock()->getDisplayName());  // NOI18N
     }
 }
 
-/*private*/ void delete() {
-    int n = JOptionPane.showConfirmDialog( nullptr,
-            tr("Question7"),  // NOI18N
-            tr("WarningTitle"),  // NOI18N
-            JOptionPane.YES_NO_OPTION);
-    if (n == JOptionPane.YES_OPTION) {
-        layoutTurntable.deleteRay(rayTrack);
+void TurntableRayPanel::rayAngleTextFieldEditingFinished()
+{
+ bool bok;
+     rayAngleTextField->text().toFloat(&bok);
+ if(!bok) {
+     JOptionPane::showMessageDialog(layoutTrackEditors->editLayoutTurntableFrame, tr("Error in entry") + ": "  // NOI18N
+             + "invalid float value" + tr("Please reenter or Cancel."), tr("Error"),  // NOI18N
+             JOptionPane::ERROR_MESSAGE);
+     return;
+ }
+}
+ void TurntableRayPanel::onDelete()
+ {
+  _delete();
+  layoutTrackEditors->updateRayPanel();
+
+ }
+/*private*/ void TurntableRayPanel::_delete() {
+    int n = JOptionPane::showConfirmDialog( nullptr,
+            tr("Are you sure you want to remove this ray from the turntable, along with any connected Track Segments?"),  // NOI18N
+            tr("Warning"),  // NOI18N
+            JOptionPane::YES_NO_OPTION);
+    if (n == JOptionPane::YES_OPTION) {
+        layoutTrackEditors->layoutTurntable->deleteRay(rayTrack);
     }
 }
 
-/*private*/ void updateDetails() {
+/*private*/ void TurntableRayPanel::updateDetails() {
     if (turnoutNameComboBox ==  nullptr || rayTurnoutStateComboBox ==  nullptr) {
         return;
     }
-    rayTrack.setTurnout(turnoutNameComboBox.getDisplayName(), rayTurnoutStateValues[rayTurnoutStateComboBox->currentIndex()]);
-    if (!rayAngleTextField.getText() == (twoDForm.format(rayTrack.getAngle()))) {
-        try {
-            double ang = Float.parseFloat(rayAngleTextField.getText());
-            rayTrack.setAngle(ang);
-        } catch (Exception e) {
-            log.error("Angle is not in correct format so will skip " + rayAngleTextField.getText());  // NOI18N
+    rayTrack->setTurnout(turnoutNameComboBox->getDisplayName(), rayTurnoutStateValues[rayTurnoutStateComboBox->currentIndex()]);
+    if (rayAngleTextField->text() != (twoDForm->format(rayTrack->getAngle()))) {
+        bool bok;
+            double ang = rayAngleTextField->text().toFloat(&bok);
+            rayTrack->setAngle(ang);
+        if(!bok) {
+            layoutTrackEditors->log->error("Angle is not in correct format so will skip " + rayAngleTextField->text());  // NOI18N
         }
     }
 }
 
-/*private*/ void showTurnoutDetails() {
-    bool vis = layoutTurntable.isTurnoutControlled();
+/*private*/ void TurntableRayPanel::showTurnoutDetails() {
+    bool vis = layoutTrackEditors->layoutTurntable->isTurnoutControlled();
     rayTurnoutPanel->setVisible(vis);
     turnoutNameComboBox->setVisible(vis);
     rayTurnoutStateComboBox->setVisible(vis);
     rayTurnoutStateLabel->setVisible(vis);
 }
-}   // class TurntableRayPanel
-#endif
+//}   // class TurntableRayPanel
+
 /*private*/ /*final*/ /*static*/ Logger* LayoutTrackEditors::log = LoggerFactory::getLogger("LayoutTrackEditors");
 
 

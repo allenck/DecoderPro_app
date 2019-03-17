@@ -273,6 +273,7 @@ protected:
 friend class LayoutEditor;
 friend class LoadXml;
 friend class EditLevelXingDlg;
+friend class LayoutTrackEditors;
 };
 
 #endif // LEVELXING_H

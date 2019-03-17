@@ -348,6 +348,7 @@ private:
                            double angleRAD,
                            bool dirOut,
                            int offset, QPen stroke, QGraphicsItemGroup *itemGroup);
+int bezierControlPointIndex;
 
 private slots:
  void onMakeLabel1();
@@ -368,6 +369,31 @@ private slots:
  void onChangeTo();
  void onConstruct();
  void onViewBlockRouting();
+ void onBridgeSideNone();
+ void onBridgeSideLeft();
+ void onBridgeSideRight();
+ void onBridgeSideBoth();
+ void onBridgeEndNone();
+ void onBridgeEndEntry();
+ void onBridgeEndExit();
+ void onBridgeEndBoth();
+ void onBridgeColor();
+ void onBridgeLineWidth();
+ void onBridgeApproachWidth();
+ void onBridgeDeckWidth();
+ void onBumperEndStart();
+ void onBumperEndStop();
+ void onBumperEndNone();
+ void onBumperColor();
+ void onBumperLineWidth();
+ void onBumperLineLength();
+ void onTunnelSideNone();
+ void onTunnelSideLeft();
+ void onTunnelSideRight();
+ void onTunnelSideBoth();
+ void onAddControlPointAfter();
+ void onAddControlPointBefore();
+ void onDeleteControlPoint();
 
 protected:
  /*protected*/ void updateBlockInfo();

@@ -6,6 +6,7 @@
 #include "windowlistener.h"
 #include "layoutturnout.h"
 #include <QWidget>
+#include "decimalformat.h"
 
 class TestState;
 class LayoutBlock;
@@ -113,7 +114,48 @@ private:
  QMenu* popup;
  /*private*/ TestState* testPanel;
  /*private*/ int testState = LayoutTurnout::UNKNOWN;
- LayoutTurntable* layoutTurntable;
+
+ // variables for Edit Track Segment pane
+ /*private*/ LevelXing* levelXing;
+
+ // variables for Edit Level Crossing pane
+ /*private*/ JmriJFrame* editLevelXingFrame =  nullptr;
+ /*private*/ QCheckBox* editLevelXingHiddenCheckBox ;//= new JCheckBox(tr("HideCrossing"));  // NOI18N
+
+ /*private*/ JmriBeanComboBox* editLevelXingBlock1NameComboBox;// = new JmriBeanComboBox(
+//     InstanceManager::getDefault(BlockManager.class),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ /*private*/ JmriBeanComboBox* editLevelXingBlock2NameComboBox;// = new JmriBeanComboBox(
+//     InstanceManager::getDefault(BlockManager.class),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ /*private*/ QPushButton* editLevelXingDoneButton;
+ /*private*/ QPushButton* editLevelXingCancelButton;
+ /*private*/ QPushButton* editLevelXingBlock1Button;
+ /*private*/ QPushButton* editLevelXingBlock2Button;
+
+ /*private*/ bool editLevelXingOpen = false;
+ /*private*/ bool editLevelXingNeedsRedraw = false;
+ /*private*/ bool editLevelXingNeedsBlockUpdate = false;
+
+ // variables for Edit Turntable pane
+ /*private*/ LayoutTurntable* layoutTurntable =  nullptr;
+
+ /*private*/ JmriJFrame* editLayoutTurntableFrame =  nullptr;
+ /*private*/ JTextField* editLayoutTurntableRadiusTextField;// = new JTextField(8);
+ /*private*/ JTextField* editLayoutTurntableAngleTextField;// = new JTextField(8);
+ /*private*/ QPushButton* editLayoutTurntableDoneButton;
+ /*private*/ QPushButton* editLayoutTurntableCancelButton;
+
+ /*private*/ QWidget* editLayoutTurntableRayPanel;
+ /*private*/ QPushButton* editLayoutTurntableAddRayTrackButton;
+ ///*private*/ QPushButton* editLayoutTurntableDeleteRayTrackButton;
+ /*private*/ QCheckBox* editLayoutTurntableDccControlledCheckBox;
+
+ /*private*/ QString editLayoutTurntableOldRadius = "";
+ /*private*/ bool editLayoutTurntableOpen = false;
+ /*private*/ bool editLayoutTurntableNeedsRedraw = false;
+ /*private*/ void updateRayPanel();
+ /*private*/ void saveRayPanelDetail();
+
+
 
  bool hasNxSensorPairs(LayoutBlock* loBlk);
  void showSensorMessage();
@@ -134,6 +176,15 @@ private slots:
  /*private*/ void editLayoutTurnoutEditBlockCPressed(/*ActionEvent a*/);
  /*private*/ void editLayoutTurnoutEditBlockDPressed(/*ActionEvent a*/);
  /*private*/ void editLayoutTurnoutDonePressed(/*ActionEvent a*/);
+ /*private*/ void editLevelXingBlockACPressed(/*ActionEvent a*/);
+ /*private*/ void editLevelXingBlockBDPressed(/*ActionEvent a*/);
+ /*private*/ void editLevelXingDonePressed(/*ActionEvent a*/);
+ /*private*/ void editLevelXingCancelPressed(/*ActionEvent a*/);
+ /*private*/ void addRayTrackPressed(/*ActionEvent a*/);
+ /*private*/ void editLayoutTurntableDonePressed(/*ActionEvent a*/);
+ /*private*/ void turntableEditCancelPressed(/*ActionEvent a*/);
+ void onEditLayoutTurntableAddRayTrackButton();
+ void onEditLayoutTurntableDccControlledCheckBox();
 
 
 protected:
@@ -155,6 +206,9 @@ friend class TurnoutPopupMenuListener;
 friend class LayoutSlip;
 friend class TestState;
 friend class SampleStates;
+friend class LevelXingEditWindowListener;
+friend class TurntableEditWindowListener;
+friend class TurntableRayPanel;
 };
 
 class SlipPopupMenuListener : public PopupMenuListener
@@ -269,4 +323,57 @@ SampleStates(int state, LayoutTrackEditors* lte) {
  }
 };
 
+class LevelXingEditWindowListener : public WindowListener
+{
+ Q_OBJECT
+ LayoutTrackEditors* layoutTrackEditors;
+public:
+ LevelXingEditWindowListener(LayoutTrackEditors* layoutTrackEditors) {this->layoutTrackEditors = layoutTrackEditors;}
+ void windowClosing(QCloseEvent *)
+ {
+  layoutTrackEditors->editLevelXingCancelPressed();
+ }
+};
+class TurntableEditWindowListener : public WindowListener
+{
+ Q_OBJECT
+ LayoutTrackEditors* layoutTrackEditors;
+public:
+ TurntableEditWindowListener(LayoutTrackEditors* layoutTrackEditors) {this->layoutTrackEditors = layoutTrackEditors;}
+ void windowClosing(QCloseEvent *)
+ {
+  layoutTrackEditors->turntableEditCancelPressed();
+ }
+};
+
+class RayTrack;
+class QGroupBox;
+/*public*/ class TurntableRayPanel  : public QWidget
+{
+ Q_OBJECT
+ // variables for Edit Turntable ray pane
+ /*private*/ RayTrack* rayTrack =  nullptr;
+ /*private*/ QWidget* rayTurnoutPanel;
+ /*private*/ /*transient*/ JmriBeanComboBox* turnoutNameComboBox;
+ /*private*/ QGroupBox* rayTitledBorder;
+ /*private*/ QComboBox* rayTurnoutStateComboBox;
+ /*private*/ QLabel* rayTurnoutStateLabel;
+ /*private*/ JTextField* rayAngleTextField;
+ /*private*/ /*final*/ QVector<int> rayTurnoutStateValues;// = new int[]{Turnout.CLOSED, Turnout.THROWN};
+ /*private*/ /*final*/ DecimalFormat* twoDForm;// = new DecimalFormat("#.00");
+ LayoutTrackEditors* layoutTrackEditors;
+ /**
+  * constructor method
+  */
+ /*public*/ TurntableRayPanel(/*@Non nullptr*/ RayTrack* rayTrack, LayoutTrackEditors* layoutTrackEditors);
+private:
+ /*private*/ void _delete();
+ /*private*/ void updateDetails();
+ /*private*/ void showTurnoutDetails();
+
+private slots:
+ void rayAngleTextFieldEditingFinished();
+ void onDelete();
+friend class LayoutTrackEditors;
+};   // class TurntableRayPanel
 #endif // LAYOUTTRACKEDITORS_H
