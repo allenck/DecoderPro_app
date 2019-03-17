@@ -5,6 +5,10 @@
 #include "logger.h"
 #include "libtables_global.h"
 #include "popupmenulistener.h"
+#include <QItemDelegate>
+#include <QBoxLayout>
+#include <QPainter>
+#include <QString>
 
 class Manager;
 class NamedBean;
@@ -75,6 +79,32 @@ public:
     */
     /*public*/ /*final*/ const static int SYSTEMNAMEUSERNAME = 0x04;
 #endif
+    /*public*/ enum DisplayOptions {
+           /**
+            * Format the entries in the combo box using the display name.
+            */
+           DISPLAYNAME = 1,
+           /**
+            * Format the entries in the combo box using the username. If the
+            * username value is blank for a bean then the system name is used.
+            */
+           USERNAME = 2,
+           /**
+            * Format the entries in the combo box using the system name.
+            */
+           SYSTEMNAME = 3,
+           /**
+            * Format the entries in the combo box with the username followed by the
+            * system name.
+            */
+           USERNAMESYSTEMNAME =4,
+           /**
+            * Format the entries in the combo box with the system name followed by
+            * the username.
+            */
+           SYSTEMNAMEUSERNAME = 5
+    };
+    Q_ENUM(DisplayOptions)
     /*public*/ void dispose();
 //    /*public*/ /*interface*/ class KeySelectionManager {
 //            /** Given <code>aKey</code> and the model, returns the row
@@ -146,32 +176,8 @@ public:
 //        }
 //    };
     /*public*/ void setSelectedBeanByName(QString inBeanName);
-    /*public*/ enum DisplayOptions {
-           /**
-            * Format the entries in the combo box using the display name.
-            */
-           DISPLAYNAME = 1,
-           /**
-            * Format the entries in the combo box using the username. If the
-            * username value is blank for a bean then the system name is used.
-            */
-           USERNAME = 2,
-           /**
-            * Format the entries in the combo box using the system name.
-            */
-           SYSTEMNAME = 3,
-           /**
-            * Format the entries in the combo box with the username followed by the
-            * system name.
-            */
-           USERNAMESYSTEMNAME =4,
-           /**
-            * Format the entries in the combo box with the system name followed by
-            * the username.
-            */
-           SYSTEMNAMEUSERNAME = 5
-    };
     /*public*/ void setItemEnabled(int inIndex, bool inEnabled);
+    /*public*/ bool isItemEnabled(int inIndex);
 
 signals:
 
@@ -197,8 +203,17 @@ private:
     /*private*/ void validateText();
     void updateComboBox(QString select);
     void common(Manager* manager, NamedBean* nBean, int displayOrder);
-    PopupMenuListener* popupMenuListner;
+    PopupMenuListener* popupMenuListener;
+    QAbstractItemView* _view = nullptr;
+    QAbstractItemModel* _model = nullptr;
+    QColor enabledColor;
+    QColor disabledColor;
+    QColor enabledBackgroundColor;
+    QColor disabledBackgroundColor;
+    QMap<QString, bool> itemMap;
+    void showPopup();
 
+    friend class ComboDelegate;
 };
 #if 0
 /*static*/ class EnabledComboBoxRenderer //extends BasicComboBoxRenderer
@@ -228,4 +243,36 @@ public:
 //            int inIndex, boolean isSelected, boolean inCellHasFocus) ;
 };
 #endif
+class ComboDelegate : public QItemDelegate {
+    JmriBeanComboBox* jbcb;
+public:
+    ComboDelegate(JmriBeanComboBox* jbcb) {this->jbcb = jbcb;}
+void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
+    QStyleOptionViewItem newOption(option);
+//    if(index.data().toString()=="Black"){
+        newOption.palette.setColor(QPalette::Text, Qt::white);
+//    }
+
+    drawBackground(painter, newOption, index);
+    QItemDelegate::paint(painter, newOption, index);
+}
+
+void drawBackground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
+    QString text=index.data().toString();
+//    if(text=="Red") painter->fillRect(option.rect, Qt::red);
+//    else if(text=="Black") painter->fillRect(option.rect, Qt::black);
+    if(jbcb->itemMap.contains(text))
+    {
+     bool state = jbcb->itemMap.value(text);
+     if(state)
+         painter->fillRect(option.rect, jbcb->enabledColor);
+     else
+         painter->fillRect(option.rect, jbcb->disabledColor);
+    }
+    painter->fillRect(option.rect, Qt::magenta);
+}
+
+};
+
+
 #endif // JMRIBEANCOMBOBOX_H

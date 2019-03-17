@@ -12,7 +12,7 @@
 #include "createeditblock.h"
 #include "mathutil.h"
 #include "signallingguitools.h"
-
+#include "layouttrackeditors.h"
 
 //LayoutSlip::LayoutSlip(QObject *parent) :
 //    LayoutTurnout(parent)
@@ -115,7 +115,6 @@ void LayoutSlip::init()
  needRedraw = false;
  needsBlockUpdate = false;
  namedTurnout = nullptr;
- editOpen = false;
  active = false;
  sensorANamed =nullptr;
  sensorBNamed = nullptr;
@@ -124,7 +123,6 @@ void LayoutSlip::init()
  rects = nullptr;
  editAdditionalMenu = new QVector<QObject*>();
  viewAdditionalMenu = new QVector<QObject*>();
- editOpen = false;
 }
 
 /*public*/ void LayoutSlip::setTurnoutType(int slipType)
@@ -937,10 +935,10 @@ double LayoutSlip::round (double x) {
  }
  return popup;
 }
-//void LayoutSlip::OnEditAction()
-//{
-// editLayoutSlip(this);
-//}
+void LayoutSlip::OnEditAction()
+{
+ layoutEditor->getLayoutTrackEditors()->editLayoutSlip(this);
+}
 
 void LayoutSlip::on_setSignalsAct_triggered()
 {
@@ -1262,9 +1260,19 @@ void LayoutSlip::updateState()
 
     QGraphicsItemGroup* itemGroup= new QGraphicsItemGroup();
 
-    invalidateItemType(drawMain);
+//    invalidateItemType(drawMain);
+    if(itemMain)
+     itemGroup = itemMain;
+    else
+    {
+     itemGroup = new QGraphicsItemGroup();
+     itemMain = itemGroup;
+     g2->addItem(itemMain);
+    }
 
-    if (isTurnoutInconsistent()) {
+
+    if (isTurnoutInconsistent())
+    {
         // If either turnout is inconsistent, draw an alternate slip image
         // draw A<= =>C
         if (drawMain == mainlineA) {
@@ -1305,7 +1313,8 @@ void LayoutSlip::updateState()
 
     int slipState = getSlipState();
 
-    if (slipState == STATE_AD) {
+    if (slipState == STATE_AD)
+    {
         // draw A<===>D
         if (drawMain == mainlineA) {
             //g2.setColor(colorA);
@@ -1331,7 +1340,9 @@ void LayoutSlip::updateState()
          lineItem->setPen(layoutEditor->drawingStroke);
          itemGroup->addToGroup(lineItem);
         }
-    } else if (slipState == STATE_AC) {
+    }
+    else if (slipState == STATE_AC)
+    {
         // draw A<===>C
         if (drawMain == mainlineA) {
             //g2.setColor(colorA);
@@ -1349,7 +1360,9 @@ void LayoutSlip::updateState()
          lineItem->setPen(layoutEditor->drawingStroke);
          itemGroup->addToGroup(lineItem);
         }
-    } else if (!isBlock || drawUnselectedLeg) {
+    }
+    else if (!isBlock || drawUnselectedLeg)
+    {
         // draw A<= =>C
         if (drawMain == mainlineA) {
             //g2.setColor(colorA);
@@ -1369,7 +1382,8 @@ void LayoutSlip::updateState()
         }
     }
 
-    if (slipState == STATE_BD) {
+    if (slipState == STATE_BD)
+    {
         // draw B<===>D
         if (drawMain == mainlineB) {
             //g2.setColor(colorB);
@@ -1387,7 +1401,9 @@ void LayoutSlip::updateState()
          lineItem->setPen(layoutEditor->drawingStroke);
          itemGroup->addToGroup(lineItem);
         }
-    } else if (!isBlock || drawUnselectedLeg) {
+    }
+    else if (!isBlock || drawUnselectedLeg)
+    {
         // draw B<= =>D
         if (drawMain == mainlineB) {
             //g2.setColor(colorB);
@@ -1435,7 +1451,9 @@ void LayoutSlip::updateState()
              itemGroup->addToGroup(lineItem);
             }
         }   // DOUBLE_SLIP
-    } else if (!isBlock || drawUnselectedLeg) {
+    }
+    else if (!isBlock || drawUnselectedLeg)
+    {
         // draw B<= =>C
         if (drawMain == mainlineB) {
             //g2.setColor(colorB);
@@ -1454,16 +1472,16 @@ void LayoutSlip::updateState()
          itemGroup->addToGroup(lineItem);
         }
     }
-    if(drawMain)
-    {
-     itemMain = itemGroup;
-     g2->addItem(itemMain);
-    }
-    else
-    {
-     itemSide = itemGroup;
-     g2->addItem(itemSide);
-    }
+//    if(drawMain)
+//    {
+//     itemMain = itemGroup;
+//     g2->addItem(itemMain);
+//    }
+//    else
+//    {
+//     itemSide = itemGroup;
+//     g2->addItem(itemSide);
+//    }
 }   // draw1
 
 /**
@@ -1550,7 +1568,15 @@ void LayoutSlip::updateState()
     bool mainlineD = isMainlineD();
     QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
-    invalidateItemType(drawMain);
+//    invalidateItemType(drawMain);
+    if(itemMain)
+     itemGroup = itemMain;
+    else
+    {
+     itemGroup = new QGraphicsItemGroup();
+     itemMain = itemGroup;
+     g2->addItem(itemMain);
+    }
 
     if (drawMain == mainlineA) {
         //g2.draw(new Line2D.Double(pAR, pVL));
@@ -1808,16 +1834,16 @@ void LayoutSlip::updateState()
          itemGroup->addToGroup(lineItem);}
     }   // DOUBLE_SLIP
 #endif
-    if(drawMain)
-    {
-     itemMain = itemGroup;
-     g2->addItem(itemMain);
-    }
-    else
-    {
-     itemSide = itemGroup;
-     g2->addItem(itemSide);
-    }
+//    if(drawMain)
+//    {
+//     itemMain = itemGroup;
+//     g2->addItem(itemMain);
+//    }
+//    else
+//    {
+//     itemSide = itemGroup;
+//     g2->addItem(itemSide);
+//    }
 }   // draw2
 
 /**
@@ -1828,7 +1854,7 @@ void LayoutSlip::updateState()
 {
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
- invalidateItem(rects);
+ invalidateItem(g2,rects);
 
  if (((specificType == NONE) || (specificType == SLIP_A))
             && (getConnectA() == nullptr)) {
@@ -1872,7 +1898,7 @@ void LayoutSlip::updateState()
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
        QPointF leftCircleCenter = getCoordsLeft();
 
-       invalidateItem(circles);
+       invalidateItem(g2,circles);
 
        //g2.draw(layoutEditor->trackControlCircleAt(leftCircleCenter));
        QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(leftCircleCenter);

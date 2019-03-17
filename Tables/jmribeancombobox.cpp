@@ -10,6 +10,8 @@
 #include "systemnamecomparator.h"
 #include "abstractmanager.h"
 #include "proxyreportermanager.h"
+#include <qabstractitemview.h>
+#include "namedbean.h"
 
 JmriBeanComboBox::JmriBeanComboBox(QWidget* parent) :
     QComboBox(parent)
@@ -55,6 +57,8 @@ void JmriBeanComboBox::common(Manager *manager, NamedBean *nBean, int displayOrd
  //setEditable(true);
  //setKeySelectionManager(new beanSelectionManager());
  _lastSelected = "";
+ _view = view();
+ _model = _view->model();
 }
 
 /*public*/ void JmriBeanComboBox::propertyChange(PropertyChangeEvent* e)
@@ -89,9 +93,19 @@ void JmriBeanComboBox::common(Manager *manager, NamedBean *nBean, int displayOrd
 
 /*public*/ void JmriBeanComboBox::addPopupMenuListener(PopupMenuListener *pml)
 {
- popupMenuListner = pml;
+ popupMenuListener = pml;
+ setItemDelegate(new ComboDelegate(this));
+ pml->popupMenuWillBecomeVisible();
 }
 
+void JmriBeanComboBox::showPopup()
+{
+ if(popupMenuListener)
+ {
+  popupMenuListener->popupMenuWillBecomeVisible();
+ }
+ QComboBox::showPopup();
+}
 void JmriBeanComboBox::updateComboBox(QString inSelect)
 {
  if(_manager == NULL) return;
@@ -396,15 +410,28 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
             lsm.removeSelectionInterval(inIndex, inIndex);
         }
     }
+#else
+    Manager* m = getManager();
+    QList<NamedBean*> namedBean = m->getNamedBeanSet().toList();
+    QString systemName = namedBean.at(inIndex)->getSystemName();
+    itemMap.insert(systemName, inEnabled);
 #endif
 }
-#if 0
-/*public*/ bool isItemEnabled(int inIndex) {
+#if 1
+/*public*/ bool JmriBeanComboBox::isItemEnabled(int inIndex) {
     bool result = false;
+#if 0
     ListSelectionModel lsm = getEnabledItems();
     if (lsm != null) {
         result = lsm.isSelectedIndex(inIndex);
     }
+#else
+    Manager* m = getManager();
+    QList<NamedBean*> namedBean = m->getNamedBeanSet().toList();
+    QString systemName = namedBean.at(inIndex)->getSystemName();
+    return itemMap.value(systemName);
+
+#endif
     return result;
 }
 #endif
@@ -418,34 +445,42 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
 
 /*public*/ void JmriBeanComboBox::setEnabledColor(QColor inEnabledColor) {
 //    getEnabledComboBoxRenderer().setEnabledColor(inEnabledColor);
+    enabledColor = inEnabledColor;
 }
 
 /*public*/ QColor JmriBeanComboBox::getEnabledColor() {
 //    return getEnabledComboBoxRenderer().getEnabledColor();
+    return enabledColor;
 }
 
 /*public*/ void JmriBeanComboBox::setDisabledColor(QColor inDisabledColor) {
 //    getEnabledComboBoxRenderer().setDisabledColor(inDisabledColor);
+    disabledColor = inDisabledColor;
 }
 
 /*public*/ QColor JmriBeanComboBox::getDisabledColor() {
 //    return getEnabledComboBoxRenderer().getDisabledColor();
+    return disabledColor;
 }
 
 /*public*/ void JmriBeanComboBox::setEnabledBackgroundColor(QColor inEnabledBackgroundColor) {
 //    getEnabledComboBoxRenderer().setEnabledBackgroundColor(inEnabledBackgroundColor);
+    enabledBackgroundColor = inEnabledBackgroundColor;
 }
 
 /*public*/ QColor JmriBeanComboBox::getEnabledBackgroundColor() {
 //    return getEnabledComboBoxRenderer().getEnabledBackgroundColor();
+    return enabledBackgroundColor;
 }
 
 /*public*/ void JmriBeanComboBox::setDisabledBackgroundColor(QColor inDisabledBackgroundColor) {
 //    getEnabledComboBoxRenderer().setDisabledBackgroundColor(inDisabledBackgroundColor);
+     disabledBackgroundColor = inDisabledBackgroundColor;
 }
 
 /*public*/ QColor JmriBeanComboBox::getDisabledBackgroundColor() {
 //    return getEnabledComboBoxRenderer().getDisabledBackgroundColor();
+    return disabledBackgroundColor;
 }
 
 /*public*/ void JmriBeanComboBox::setValidateMode(bool inValidateMode) {
@@ -623,3 +658,4 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
             }
         };
 #endif
+

@@ -2906,10 +2906,10 @@ double LayoutEditor::getPaintScale()
            case LayoutTrack::TURNOUT_CENTER: {
             LayoutTurnout* t = ((LayoutTurnout*) selectedObject);
                t->setCoordsCenter(currentPoint);
-               if(t->connectA) t->connectA->invalidateItemType(editScene);
-               if(t->connectB) t->connectB->invalidateItemType(editScene);
-               if(t->connectC) t->connectC->invalidateItemType(editScene);
-               if(t->connectD) t->connectD->invalidateItemType(editScene);
+//               if(t->connectA) t->connectA->invalidateItemType(editScene);
+//               if(t->connectB) t->connectB->invalidateItemType(editScene);
+//               if(t->connectC) t->connectC->invalidateItemType(editScene);
+//               if(t->connectD) t->connectD->invalidateItemType(editScene);
                isDragging = true;
                break;
            }
@@ -4493,7 +4493,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
 // this is called by the layoutEditorComponent
 //
 /*protected*/ void LayoutEditor::draw(EditScene* g2) {
-
+  if(isDrawing) return;
+  isDrawing = true;
     //drawPositionableLabelBorder(g2);
     //Optional antialising, to eliminate (reduce) staircase on diagonal lines
     //if (antialiasingOn) {
@@ -4503,7 +4504,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
     // remove existing items from scene
     for(LayoutTrack* layoutTrack : *layoutTrackList)
     {
-     layoutTrack->invalidateItemType(g2);
+     layoutTrack->invalidate(g2);
     }
 #endif
     // things that only get drawn in edit mode
@@ -4545,6 +4546,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
             drawTurnoutControls(g2);
         }
     }
+    isDrawing = false;
 }   // draw
 
 //
@@ -4695,7 +4697,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
      stroke.setDashPattern(dashPattern);
      stroke.setDashOffset(10.);
      drawingStroke = stroke;
-        draw1(g2, false);  // main = false
+     draw1(g2, false);  // main = false
     }
 
     // setup for drawing mainline ties
@@ -4774,6 +4776,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
         drawingStroke = stroke;
         draw1(g2, main, block, hidden, dashed);
     }
+
 }   // drawLayoutTracksRails
 
 //
@@ -7068,7 +7071,7 @@ QGraphicsView* LayoutEditor::panel()
   if ( (block1!=nullptr) && (block1!=block) ) block1->updatePaths();
   if ( (block2!=nullptr) && (block2!=block) && (block2!=block1) ) block2->updatePaths();
   //
-  o->invalidateItemType(editScene);
+//  o->invalidateItemType(editScene);
   setDirty(true);
   //repaint();
   paintTargetPanel(editScene);

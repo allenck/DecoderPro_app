@@ -334,6 +334,7 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
+virtual QWidget*  getContentPane(bool  addLayout = false);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();
@@ -1501,6 +1502,7 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
+virtual QWidget*  getContentPane(bool  addLayout = false);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();
@@ -1554,6 +1556,7 @@ inline void py_q_componentResized(QResizeEvent*  e) { JmriJFrame::componentResiz
 inline void py_q_dispose() { JmriJFrame::dispose(); }
 inline bool  py_q_eventFilter(QObject*  target, QEvent*  event) { return JmriJFrame::eventFilter(target, event); }
 inline QString  py_q_getClassName() { return JmriJFrame::getClassName(); }
+inline QWidget*  py_q_getContentPane(bool  addLayout = false) { return JmriJFrame::getContentPane(addLayout); }
 inline QVariant  py_q_getProperty(QString  key) { return JmriJFrame::getProperty(key); }
 inline QString  py_q_getTitle() { return JmriJFrame::getTitle(); }
 inline void py_q_handleModified() { JmriJFrame::handleModified(); }
@@ -1585,7 +1588,7 @@ void delete_JmriJFrame(JmriJFrame* obj) { delete obj; }
    bool  getAllowInFrameServlet(JmriJFrame* theWrappedObject);
    QString  getClassName(JmriJFrame* theWrappedObject);
    QString  py_q_getClassName(JmriJFrame* theWrappedObject){  return (((PythonQtPublicPromoter_JmriJFrame*)theWrappedObject)->py_q_getClassName());}
-   QWidget*  getContentPane(JmriJFrame* theWrappedObject);
+   QWidget*  py_q_getContentPane(JmriJFrame* theWrappedObject, bool  addLayout = false){  return (((PythonQtPublicPromoter_JmriJFrame*)theWrappedObject)->py_q_getContentPane(addLayout));}
    bool  getEscapeKeyClosesWindow(JmriJFrame* theWrappedObject);
    JmriJFrame*  static_JmriJFrame_getFrame(QString  name);
    QList<JmriJFrame* >*  static_JmriJFrame_getFrameList();
@@ -1749,6 +1752,7 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
+virtual QWidget*  getContentPane(bool  addLayout = false);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();
@@ -2222,8 +2226,7 @@ void delete_LayoutTrack(LayoutTrack* obj) { delete obj; }
    void py_q_highlightUnconnected(LayoutTrack* theWrappedObject, EditScene*  g2, int  specificType){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_highlightUnconnected(g2, specificType));}
    void invalidate(LayoutTrack* theWrappedObject, EditScene*  arg__1);
    void py_q_invalidate(LayoutTrack* theWrappedObject, EditScene*  arg__1){  (((PythonQtPublicPromoter_LayoutTrack*)theWrappedObject)->py_q_invalidate(arg__1));}
-   void invalidateItem(LayoutTrack* theWrappedObject, QGraphicsItemGroup*  turnoutItem);
-   void invalidateItemType(LayoutTrack* theWrappedObject, bool  isMain);
+   QGraphicsItemGroup*  invalidateItem(LayoutTrack* theWrappedObject, EditScene*  g2, QGraphicsItemGroup*  turnoutItem);
    bool  static_LayoutTrack_isConnectionHitType(int  hitType);
    bool  static_LayoutTrack_isControlHitType(int  hitType);
    bool  isDisconnected(LayoutTrack* theWrappedObject, int  connectionType);
@@ -2296,6 +2299,7 @@ virtual QPointF  getCoordsForConnectionType(int  connectionType);
 virtual QMap<QString , QString >*  getDecorations();
 virtual bool  hasDecorations();
 virtual void highlightUnconnected(EditScene*  g2, int  specificType);
+virtual void invalidate(EditScene*  g2);
 virtual bool  isDisconnected(int  connectionType);
 virtual bool  isMainline();
 virtual void reCheckBlockBoundary();
@@ -2337,6 +2341,7 @@ inline QRectF  py_q_getBounds() { return LayoutTurnout::getBounds(); }
 inline LayoutTrack*  py_q_getConnection(int  location) throw (JmriException) { return LayoutTurnout::getConnection(location); }
 inline QPointF  py_q_getCoordsForConnectionType(int  connectionType) { return LayoutTurnout::getCoordsForConnectionType(connectionType); }
 inline void py_q_highlightUnconnected(EditScene*  g2, int  specificType) { LayoutTurnout::highlightUnconnected(g2, specificType); }
+inline void py_q_invalidate(EditScene*  g2) { LayoutTurnout::invalidate(g2); }
 inline bool  py_q_isMainline() { return LayoutTurnout::isMainline(); }
 inline void py_q_reCheckBlockBoundary() { LayoutTurnout::reCheckBlockBoundary(); }
 inline void py_q_scaleCoords(float  xFactor, float  yFactor) { LayoutTurnout::scaleCoords(xFactor, yFactor); }
@@ -2422,6 +2427,7 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    int  getTurnoutType(LayoutTurnout* theWrappedObject);
    int  getVersion(LayoutTurnout* theWrappedObject);
    void py_q_highlightUnconnected(LayoutTurnout* theWrappedObject, EditScene*  g2, int  specificType){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_highlightUnconnected(g2, specificType));}
+   void py_q_invalidate(LayoutTurnout* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_invalidate(g2));}
    bool  isActive(LayoutTurnout* theWrappedObject);
    bool  isDisabled(LayoutTurnout* theWrappedObject);
    bool  isDisabledWhenOccupied(LayoutTurnout* theWrappedObject);

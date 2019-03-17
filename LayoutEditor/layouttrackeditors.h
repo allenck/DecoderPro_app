@@ -5,6 +5,7 @@
 #include "popupmenulistener.h"
 #include "windowlistener.h"
 #include "layoutturnout.h"
+#include <QWidget>
 
 class TestState;
 class LayoutBlock;
@@ -108,7 +109,7 @@ private:
  /*private*/ bool editLayoutSlipOpen = false;
  /*private*/ bool editLayoutSlipNeedsRedraw = false;
  /*private*/ bool editLayoutSlipNeedsBlockUpdate = false;
- /*private*/ void drawSlipState(EditScene* g2, int state);
+ /*private*/ void drawSlipState(QPainter* g2, int state);
  QMenu* popup;
  /*private*/ TestState* testPanel;
  /*private*/ int testState = LayoutTurnout::UNKNOWN;
@@ -151,14 +152,17 @@ friend class SlipPopupMenuListener;
 friend class EditTrackSegmentWindowListener;
 friend class EditLayoutWindowListener;
 friend class TurnoutPopupMenuListener;
+friend class LayoutSlip;
+friend class TestState;
+friend class SampleStates;
 };
 
 class SlipPopupMenuListener : public PopupMenuListener
 {
  Q_OBJECT
- LayoutTrackEditors* layoutTrackEditors;
+ LayoutTrackEditors* lte;
 public:
- SlipPopupMenuListener( LayoutTrackEditors* layoutTrackEditors);
+ SlipPopupMenuListener( LayoutTrackEditors* lte);
 public slots:
  /*public*/ void popupMenuWillBecomeVisible(/*PopupMenuEvent e*/);
 
@@ -219,4 +223,50 @@ public slots:
  /*public*/ void popupMenuCanceled(/*PopupMenuEvent e*/);
 
 };
+class TestState : public QWidget {
+ Q_OBJECT
+ LayoutTrackEditors* lte;
+ public:
+ TestState(LayoutTrackEditors* lte){this->lte = lte;}
+ //@Override
+#if 0
+ /*public*/ void paintComponent(Graphics g) {
+     super.paintComponent(g);
+     if (g instanceof Graphics2D) {
+         drawSlipState((Graphics2D) g, testState);
+     }
+ }
+#endif
+ /*public*/ void paintEvent(QPaintEvent *event)
+ {
+  QPainter* painter = new QPainter(this);
+  lte->drawSlipState(painter, lte->testState);
+ }
+
+};
+class SampleStates :  public QWidget {
+ Q_OBJECT
+LayoutTrackEditors* lte;
+int state;
+public:
+// Methods, constructors, fields.
+SampleStates(int state, LayoutTrackEditors* lte) {
+    //super();
+    this->state = state;
+ this->lte = lte;
+}
+
+//@Override
+/*public*/ void paintEvent(QPaintEvent *event)
+{
+//    super.paintComponent(g);    // paints background
+//    if (g instanceof Graphics2D) {
+//        drawSlipState((Graphics2D) g, state);
+//    }
+    QPainter* painter = new QPainter(this);
+    lte->drawSlipState(painter, state);
+
+ }
+};
+
 #endif // LAYOUTTRACKEDITORS_H

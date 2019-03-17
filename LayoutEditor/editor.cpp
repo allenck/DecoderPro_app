@@ -408,7 +408,7 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
     return editScene->sceneRect().size();
 }
 
-/*public*/  QGraphicsScene* Editor::getTargetPanel() {
+/*public*/  EditScene* Editor::getTargetPanel() {
     //return editPanel->scene();
  return editScene;
 }

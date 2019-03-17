@@ -482,6 +482,7 @@ private:
  QVector<PositionableLabel*>* _labelSelection; //new QVector<PositionableLabel>();  // PositionableLabel list
 /*private*/ QList<LayoutTrack*> getLayoutTracksOfClass(QString type);
 
+  bool isDrawing = false;
 
  /*private*/ void clearSelectionGroups();
  QWidget* openFrame;

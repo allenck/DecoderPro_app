@@ -982,7 +982,7 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
   contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
   QWidget* panel8 = new QWidget();
   panel8->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* memoryLabel = new /*JLabel*/ QLabel( tr("MemoryVariable")+":");
+  /*JLabel*/ QLabel* memoryLabel = new /*JLabel*/ QLabel( tr("Memory Variable")+":");
   panel8->layout()->addWidget(memoryLabel);
   panel8->layout()->addWidget(memoryNameField);
   memoryNameField->setToolTip( tr("Enter name (system or user) of Memory Variable (optional).") );

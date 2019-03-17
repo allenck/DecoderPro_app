@@ -283,7 +283,7 @@ public:
     /*public*/ const static int VIEWPOPUPONLY = 0x00;
     /*public*/ const static int EDITPOPUPONLY = 0x01;
     /*public*/ const static int BOTHPOPUPS = 0x02;
-    /*public*/ QGraphicsScene* getTargetPanel();
+    /*public*/ EditScene *getTargetPanel();
     //void setDirty() { bDirty = true;}
     void setDirty(bool bDirty=true) {this->bDirty = bDirty;}
     /*public*/ virtual void setTitle();

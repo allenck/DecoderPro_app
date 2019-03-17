@@ -87,8 +87,8 @@ public:
  QGraphicsItemGroup* itemMain = nullptr;
  QGraphicsItemGroup* itemSide = nullptr;
  /*public*/ virtual void invalidate(EditScene* /*g2*/) {}
- /*public*/ void invalidateItemType(bool isMain);
- /*public*/ void invalidateItem(QGraphicsItemGroup* turnoutItem);
+// /*public*/ void invalidateItemType(bool isMain);
+ /*public*/ QGraphicsItemGroup* invalidateItem(EditScene* g2, QGraphicsItemGroup* turnoutItem);
 
 signals:
 

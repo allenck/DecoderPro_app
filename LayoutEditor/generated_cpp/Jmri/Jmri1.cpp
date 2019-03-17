@@ -2229,6 +2229,39 @@ if (_wrapper) {
 }
   return Editor::getClassName();
 }
+QWidget*  PythonQtShell_Editor::getContentPane(bool  addLayout0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getContentPane");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QWidget*" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QWidget* returnValue{};
+      void* args[2] = {NULL, (void*)&addLayout0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getContentPane", methodInfo, result);
+          } else {
+            returnValue = *((QWidget**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return Editor::getContentPane(addLayout0);
+}
 QVariant  PythonQtShell_Editor::getProperty(QString  key0)
 {
 if (_wrapper) {
@@ -14963,6 +14996,39 @@ if (_wrapper) {
 }
   return JmriJFrame::getClassName();
 }
+QWidget*  PythonQtShell_JmriJFrame::getContentPane(bool  addLayout0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getContentPane");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QWidget*" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QWidget* returnValue{};
+      void* args[2] = {NULL, (void*)&addLayout0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getContentPane", methodInfo, result);
+          } else {
+            returnValue = *((QWidget**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return JmriJFrame::getContentPane(addLayout0);
+}
 QVariant  PythonQtShell_JmriJFrame::getProperty(QString  key0)
 {
 if (_wrapper) {
@@ -15939,11 +16005,6 @@ bool  PythonQtWrapper_JmriJFrame::getAllowInFrameServlet(JmriJFrame* theWrappedO
 QString  PythonQtWrapper_JmriJFrame::getClassName(JmriJFrame* theWrappedObject)
 {
   return ( theWrappedObject->getClassName());
-}
-
-QWidget*  PythonQtWrapper_JmriJFrame::getContentPane(JmriJFrame* theWrappedObject)
-{
-  return ( theWrappedObject->getContentPane());
 }
 
 bool  PythonQtWrapper_JmriJFrame::getEscapeKeyClosesWindow(JmriJFrame* theWrappedObject)
@@ -17524,6 +17585,39 @@ if (_wrapper) {
   }
 }
   return LayoutEditor::getClassName();
+}
+QWidget*  PythonQtShell_LayoutEditor::getContentPane(bool  addLayout0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getContentPane");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QWidget*" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QWidget* returnValue{};
+      void* args[2] = {NULL, (void*)&addLayout0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getContentPane", methodInfo, result);
+          } else {
+            returnValue = *((QWidget**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutEditor::getContentPane(addLayout0);
 }
 QVariant  PythonQtShell_LayoutEditor::getProperty(QString  key0)
 {
@@ -20694,14 +20788,9 @@ void PythonQtWrapper_LayoutTrack::invalidate(LayoutTrack* theWrappedObject, Edit
   ( theWrappedObject->invalidate(arg__1));
 }
 
-void PythonQtWrapper_LayoutTrack::invalidateItem(LayoutTrack* theWrappedObject, QGraphicsItemGroup*  turnoutItem)
+QGraphicsItemGroup*  PythonQtWrapper_LayoutTrack::invalidateItem(LayoutTrack* theWrappedObject, EditScene*  g2, QGraphicsItemGroup*  turnoutItem)
 {
-  ( theWrappedObject->invalidateItem(turnoutItem));
-}
-
-void PythonQtWrapper_LayoutTrack::invalidateItemType(LayoutTrack* theWrappedObject, bool  isMain)
-{
-  ( theWrappedObject->invalidateItemType(isMain));
+  return ( theWrappedObject->invalidateItem(g2, turnoutItem));
 }
 
 bool  PythonQtWrapper_LayoutTrack::static_LayoutTrack_isConnectionHitType(int  hitType)
@@ -21354,6 +21443,28 @@ if (_wrapper) {
   }
 }
   LayoutTurnout::highlightUnconnected(g20, specificType1);
+}
+void PythonQtShell_LayoutTurnout::invalidate(EditScene*  g20)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("invalidate");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&g20};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::invalidate(g20);
 }
 bool  PythonQtShell_LayoutTurnout::isDisconnected(int  connectionType0)
 {

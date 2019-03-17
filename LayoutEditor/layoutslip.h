@@ -191,7 +191,7 @@ public slots:
   void on_removeAction_triggered();
   void on_rotate_triggered();
   void updateState();
-//  void OnEditAction();
+  void OnEditAction();
   void on_setSignalsAct_triggered();
   void on_setSignalMastsAct_triggered();
   void on_setSensorsAct_triggered();
@@ -214,13 +214,6 @@ private:
  int testState;// = UNKNOWN;
  bool active;// = true;
  QHash <int, TurnoutState*> turnoutStates;// = new QHash<int, TurnoutState>(4);
- // variables for Edit slip Crossing pane
- QPushButton* slipEditDone;
- QPushButton* slipEditCancel;
- QPushButton* turnoutEditBlock;
- bool editOpen;// = false;
- /*private*/ JmriBeanComboBox* turnoutAComboBox;
- /*private*/ JmriBeanComboBox* turnoutBComboBox;
  /*private*/ bool isTurnoutInconsistent();
 
 protected:

@@ -932,7 +932,7 @@ void LayoutTurntable::dispose() {
     double radius = getRadius(), diameter = radius + radius;
     QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
-    invalidateItem(item);
+    invalidateItem(g2,item);
 
     if (isBlock && isMain)
     {
@@ -994,7 +994,7 @@ void LayoutTurntable::dispose() {
     float halfTrackWidth = trackWidth / 2.f;
     QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
-    invalidateItem(item);
+    invalidateItem(g2,item);
 
     // draw ray tracks
     for (int j = 0; j < getNumberRays(); j++) {
@@ -1047,7 +1047,7 @@ void LayoutTurntable::dispose() {
 /*protected*/ void LayoutTurntable::highlightUnconnected(EditScene* g2, int specificType) {
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
- invalidateItem(rects);
+ invalidateItem(g2,rects);
 
  for (int j = 0; j < getNumberRays(); j++) {
      if ((specificType == NONE) || (specificType == (TURNTABLE_RAY_OFFSET + j))) {
@@ -1072,7 +1072,7 @@ void LayoutTurntable::dispose() {
 //@Override
 /*protected*/ void LayoutTurntable::drawTurnoutControls(EditScene* g2)
 {
- invalidateItem(circles);
+ invalidateItem(g2,circles);
 
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
     if (isTurnoutControlled()) {
@@ -1102,7 +1102,7 @@ void LayoutTurntable::dispose() {
 //@Override
 /*protected*/ void LayoutTurntable::drawEditControls(EditScene* g2)
 {
- invalidateItem(rects);
+ invalidateItem(g2,rects);
 
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 

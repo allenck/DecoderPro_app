@@ -290,9 +290,9 @@ private:
  QGraphicsItemGroup* rects = nullptr;
  void init(QString ident);
  static Logger* log;
- void drawHiddenTrack(LayoutEditor* editor, QGraphicsScene* g2);
+ void drawHiddenTrack(LayoutEditor* editor, EditScene *g2);
  void invalidate(EditScene *g2);
- void drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, bool mainline);
+ void drawDashedTrack(LayoutEditor* editor, EditScene *g2, bool mainline);
  /*private*/ void calculateTrackSegmentAngle();
 // void drawSolidTrack(LayoutEditor* editor, QGraphicsScene* g2, bool isMainline);
 // void drawTrackOvals(LayoutEditor *editor, QGraphicsScene *g2);

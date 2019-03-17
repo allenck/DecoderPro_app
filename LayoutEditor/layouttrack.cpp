@@ -631,25 +631,30 @@
  */
 /*public*/ /*abstract*/ void LayoutTrack::setAllLayoutBlocks(LayoutBlock* /*layoutBlock*/) {}
 
-/*public*/ void LayoutTrack::invalidateItemType(bool isMain)
-{
- if(isMain)
-  invalidateItem(itemMain);
- else
-  invalidateItem(itemSide);
-}
+///*public*/ void LayoutTrack::invalidateItemType(bool isMain)
+//{
+// if(isMain)
+//  invalidateItem(itemMain);
+// else
+//  invalidateItem(itemSide);
+//}
 
-/*public*/ void LayoutTrack::invalidateItem(QGraphicsItemGroup* turnoutItem)
+/*public*/ QGraphicsItemGroup* LayoutTrack::invalidateItem(EditScene* g2, QGraphicsItemGroup* item)
 {
- if(turnoutItem!=nullptr && turnoutItem->scene())
+ if(item!=nullptr && item->scene() != nullptr)
  {
-  QRectF r = turnoutItem->boundingRect();
-//  QGraphicsScene* scene = turnoutItem->scene();
-//  scene->removeItem(turnoutItem);
-//  scene->update(r);
-  layoutEditor->getTargetPanel()->removeItem(turnoutItem);
+  for(QGraphicsItem* i : item->childItems())
+  {
+   if(qgraphicsitem_cast<QGraphicsItemGroup*>(i) && qgraphicsitem_cast<QGraphicsItemGroup*>(i)->childItems().count()>0)
+    invalidateItem(g2, qgraphicsitem_cast<QGraphicsItemGroup*>(i));
+   g2->removeItem(i);
+  }
+  if(item->scene() == g2)
+   g2->destroyItemGroup(item);
+
  }
- turnoutItem = nullptr;
+ item = nullptr;
+ return item;
 }
 
 /*private*/ /*final*/ /*static*/ Logger* LayoutTrack::log = LoggerFactory::getLogger("LayoutTrack");

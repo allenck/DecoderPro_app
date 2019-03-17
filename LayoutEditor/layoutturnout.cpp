@@ -4007,7 +4007,15 @@ void LayoutTurnout::remove()
 
  QGraphicsLineItem* lineItem;
 
- invalidateItemType(isMain);
+ //invalidateItemType(isMain);
+ if(itemMain)
+  itemGroup = itemMain;
+ else
+ {
+  itemGroup = new QGraphicsItemGroup();
+  itemMain = itemGroup;
+  g2->addItem(itemMain);
+ }
 
  if (type == DOUBLE_XOVER)
  {
@@ -4534,16 +4542,16 @@ void LayoutTurnout::remove()
          }
      }
  }
- if(isMain)
- {
-  itemMain = itemGroup;
-  g2->addItem(itemMain);
- }
- else
- {
-  itemSide = itemGroup;
-  g2->addItem(itemSide);
- }
+// if(isMain)
+// {
+//  itemMain = itemGroup;
+//  g2->addItem(itemMain);
+// }
+// else
+// {
+//  itemSide = itemGroup;
+//  g2->addItem(itemSide);
+// }
 
 }   // draw1
 
@@ -4553,8 +4561,6 @@ void LayoutTurnout::remove()
 //@Override
 /*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement) {
     int type = getTurnoutType();
-
-    invalidateItemType(isMain);
 
     QPointF pA = getCoordsA();
     QPointF pB = getCoordsB();
@@ -4621,6 +4627,18 @@ void LayoutTurnout::remove()
         }
     }
     QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+
+    //    invalidateItemType(isMain);
+    //invalidateItemType(isMain);
+    if(itemMain)
+     itemGroup = itemMain;
+    else
+    {
+     itemGroup = new QGraphicsItemGroup();
+     itemMain = itemGroup;
+     g2->addItem(itemMain);
+    }
+
     QGraphicsLineItem* lineItem;
     switch (type) {
         case RH_TURNOUT: {
@@ -5390,16 +5408,17 @@ void LayoutTurnout::remove()
             break;
         }
     }
-    if(isMain)
-    {
+//    if(isMain)
+//    {
      itemMain = itemGroup;
      g2->addItem(itemMain);
-    }
-    else
-    {
-     itemSide = itemGroup;
-     g2->addItem(itemSide);
-    }}
+//    }
+//    else
+//    {
+//     itemSide = itemGroup;
+//     g2->addItem(itemSide);
+//    }
+}
 #if 1
 /**
  * {@inheritDoc}
@@ -5444,7 +5463,7 @@ void LayoutTurnout::remove()
 //@Override
 /*protected*/ void LayoutTurnout::drawTurnoutControls(EditScene* g2)
 {
- invalidateItem(circles);
+ invalidateItem(g2,circles);
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
  if (!disabled && !(disableWhenOccupied && isOccupied()))
  {
@@ -5461,7 +5480,7 @@ void LayoutTurnout::remove()
 //@Override
 /*protected*/ void LayoutTurnout::drawEditControls(EditScene* g2)
 {
- invalidateItem(rects);
+ invalidateItem(g2,rects);
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
  if(rects!=nullptr && rects->scene()!=nullptr)
  {
@@ -5592,27 +5611,11 @@ void LayoutTurnout::on_rotateItemAction_triggered()
 
 void LayoutTurnout::invalidate(EditScene *g2)
 {
- invalidateItem(itemMain);
- invalidateItem(itemSide);
- if(rects!=nullptr && rects->scene()!=nullptr)
- {
-  rects->scene()->removeItem(rects);
-  delete rects;
-  rects = nullptr;
- }
- if(circles!=nullptr && circles->scene()!=nullptr)
- {
-  circles->scene()->removeItem(circles);
-  delete circles;
-  circles = nullptr;
- }
-
- if(item!=nullptr && item->scene()!=nullptr)
- {
-  item->scene()->removeItem(item);
-  delete item;
-  item = nullptr;
- }
+ itemMain =invalidateItem(g2,itemMain);
+ //invalidateItem(itemSide);
+ rects=invalidateItem(g2,rects);
+ circles = invalidateItem(g2,circles);
+ item = invalidateItem(g2, item);
 }
 
 #if 0
@@ -6602,7 +6605,7 @@ void LayoutTurnout::repaint(LayoutEditor *editor, QGraphicsScene *g2)
 #endif
 void LayoutTurnout::redrawPanel()
 {
- invalidate((EditScene*)nullptr);
+ invalidate(layoutEditor->getTargetPanel());
  layoutEditor->redrawPanel();
 }
 

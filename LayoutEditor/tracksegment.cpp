@@ -671,7 +671,7 @@ TrackSegment::getLayoutBlock()
         log->debug("STOP");
     }
 
- invalidateItem(decorationItems);
+ invalidateItem(g2, decorationItems);
 
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
@@ -2947,16 +2947,16 @@ void TrackSegment::on_actionEdit_triggered()
 // remove any prior objects from the scene
 void TrackSegment::invalidate(EditScene *g2)
 {
- invalidateItem(itemMain);
- invalidateItem(itemSide);
- invalidateItem(hiddenItems);
- invalidateItem(rects);
- invalidateItem(dashedItem);
- invalidateItem(decorationItems);
+ itemMain =invalidateItem(g2,itemMain);
+// invalidateItem(itemSide);
+ hiddenItems = invalidateItem(g2, hiddenItems);
+ rects = invalidateItem(g2, rects);
+ dashedItem =invalidateItem(g2, dashedItem);
+ decorationItems =invalidateItem(g2, decorationItems);
 }
-void TrackSegment::drawHiddenTrack(LayoutEditor* editor, QGraphicsScene *g2)
+void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
 {
- invalidateItem(hiddenItems);
+ invalidateItem(g2, hiddenItems);
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
  QColor color;
  //if (isEditable() && getHidden())
@@ -2975,7 +2975,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, QGraphicsScene *g2)
   editor->setTrackStrokeWidth(!editor->main);
  }
 }
-void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, bool mainline)
+void TrackSegment::drawDashedTrack(LayoutEditor* editor, EditScene* g2, bool mainline)
 {
  QColor color;
  LayoutBlock* b = getLayoutBlock();
@@ -2984,7 +2984,7 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
  editor->setTrackStrokeWidth(mainline);
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
- invalidateItem(dashedItem);
+ invalidateItem(g2,dashedItem);
 
  if (getArc())
  {
@@ -3136,9 +3136,33 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
 
  QColor color;
  //    QPen drawingStroke = QPen(color, 1);
- QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+ //QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
- invalidateItemType(isMain);
+ //itemMain =invalidateItem(g2,itemMain);
+ QGraphicsItemGroup* itemGroup;
+// if(isMain)
+// {
+  if(itemMain)
+   itemGroup = itemMain;
+  else
+  {
+   itemGroup = new QGraphicsItemGroup();
+   itemMain = itemGroup;
+   g2->addItem(itemMain);
+  }
+// }
+// else
+// {
+//  if(itemSide)
+//   itemGroup = itemSide;
+//  else
+//  {
+//   itemGroup = new QGraphicsItemGroup();
+//   itemSide = itemGroup;
+//   g2->addItem(itemSide);
+//  }
+// }
+
  if(isMain == mainline)
  {
      if (isBlock) {
@@ -3185,16 +3209,16 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
          itemGroup->addToGroup(lineItem);
 
      }
-     if(isMain)
-     {
-      itemMain = itemGroup;
-      g2->addItem(itemMain);
-     }
-     else
-     {
-      itemSide = itemGroup;
-      g2->addItem(itemSide);
-     }
+//     if(isMain)
+//     {
+//      itemMain = itemGroup;
+//      g2->addItem(itemMain);
+//     }
+//     else
+//     {
+//      itemSide = itemGroup;
+//      g2->addItem(itemSide);
+//     }
      trackRedrawn();
  }
 }
@@ -3209,9 +3233,17 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
         // This removes random rail fragments from between the block dashes
         return;
     }
-    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+    QGraphicsItemGroup* itemGroup;// = new QGraphicsItemGroup();
 
-    invalidateItemType(isMain);
+    itemMain =invalidateItem(g2, itemMain);
+    if(itemMain)
+     itemGroup = itemMain;
+    else
+    {
+     itemGroup = new QGraphicsItemGroup();
+     itemMain = itemGroup;
+     g2->addItem(itemMain);
+    }
 
     if (isMain == mainline) {
         if (isArc()) {
@@ -3245,7 +3277,6 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
             itemGroup->addToGroup(lineItem);
             trackRedrawn();
         }
-#if 1
         else if (isBezier()) {
             QPointF pt1 = LayoutEditor::getCoords(getConnect1(), getType1());
             QPointF pt2 = LayoutEditor::getCoords(getConnect2(), getType2());
@@ -3267,7 +3298,6 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
             pathItem->setPen(layoutEditor->drawingStroke);
             itemGroup->addToGroup(pathItem);
         }
-#endif
         else {
             QPointF end1 = LayoutEditor::getCoords(getConnect1(), getType1());
             QPointF end2 = LayoutEditor::getCoords(getConnect2(), getType2());
@@ -3291,16 +3321,16 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
             itemGroup->addToGroup(lineItem);
 
         }
-        if(isMainline())
-        {
-         itemSide = itemGroup;
-         g2->addItem(itemSide);
-        }
-        else
-        {
-         itemMain = itemGroup;
-         g2->addItem(itemMain);
-        }
+//        if(isMain)
+//        {
+//         itemMain = itemGroup;
+//         g2->addItem(itemMain);
+//        }
+//        else
+//        {
+//         itemSide = itemGroup;
+//         g2->addItem(itemSide);
+//        }
         trackRedrawn();
     }
 }
@@ -3320,7 +3350,7 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, QGraphicsScene* g2, boo
     //g2.setColor(Color.black)
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
- invalidateItem(rects);
+ invalidateItem(g2, rects);
 
  QGraphicsLineItem* lineItem;
  if (isShowConstructionLines())
