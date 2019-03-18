@@ -22,13 +22,13 @@ public:
      *
      * @return   The object on which the Event initially occurred.
      */
-    /*public*/ QObject* getSource();
+ /*public*/ QObject* getSource();
     /**
      * Returns a String representation of this EventObject.
      *
      * @return  A a String representation of this EventObject.
      */
-    /*public*/ QString toString();
+ /*public*/ QString toString();
 
 signals:
     

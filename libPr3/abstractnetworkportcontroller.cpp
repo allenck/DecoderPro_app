@@ -621,3 +621,29 @@ QString AbstractNetworkPortController::statetoString(QAbstractSocket::SocketStat
     }
     return statestring;
 }
+/*
+ * Set the connection timeout to the specified value.
+ * If the socket is not null, set the SO_TIMEOUT option on the
+ * socket as well.
+ * @param t timeout value in milliseconds.
+ */
+/*protected*/ void AbstractNetworkPortController::setConnectionTimeout(int t) {
+    connTimeout = t;
+#if 0
+    try {
+        if (socketConn != nullptr) {
+            socketConn->s->setSoTimeout(getConnectionTimeout());
+        }
+    } catch (SocketException se) {
+        log->debug("Unable to set socket timeout option on socket");
+    }
+#endif
+}
+
+/*
+ * Get the connection timeout value.
+ * @return timeout value in milliseconds.
+ */
+/*protected*/ int AbstractNetworkPortController::getConnectionTimeout() {
+    return connTimeout;
+}

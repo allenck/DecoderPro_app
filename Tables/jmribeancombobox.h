@@ -268,6 +268,7 @@ void drawBackground(QPainter *painter, const QStyleOptionViewItem &option, const
          painter->fillRect(option.rect, jbcb->enabledColor);
      else
          painter->fillRect(option.rect, jbcb->disabledColor);
+     return;
     }
     painter->fillRect(option.rect, Qt::magenta);
 }

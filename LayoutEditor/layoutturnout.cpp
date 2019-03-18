@@ -1760,7 +1760,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
      } else {
          setState(Turnout::CLOSED);
      }
-//     invalidate((EditScene*)nullptr);
+//     invalidate(layoutEditor->editScene);
  } else {
      log->debug("Turnout Icon not associated with a Turnout");
  }

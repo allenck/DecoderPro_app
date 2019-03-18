@@ -1106,13 +1106,13 @@ void LayoutTrackEditors::showSensorMessage() {
     {
      ts.next();
 #if 1
-        SampleStates* draw = new SampleStates(ts.key(), this);
-        draw->repaint();
-        draw->resize(QSize(40, 40));
-        panel2Layout->addWidget(draw);
+     SampleStates* draw = new SampleStates(ts.key(), this);
+     draw->repaint();
+     draw->resize(QSize(40, 40));
+     panel2Layout->addWidget(draw);
 
-        panel2Layout->addWidget(ts.value()->getComboA());
-        panel2Layout->addWidget(ts.value()->getComboB());
+     panel2Layout->addWidget(ts.value()->getComboA());
+     panel2Layout->addWidget(ts.value()->getComboB());
 #endif
     }
 #if 1
@@ -1222,10 +1222,10 @@ void LayoutTrackEditors::showSensorMessage() {
  this->lte = layoutTrackEditors;
 }
 
-/*public*/ void SlipPopupMenuListener::popupMenuWillBecomeVisible(/*PopupMenuEvent e*/) {
+/*public*/ void SlipPopupMenuListener::popupMenuWillBecomeVisible(PopupMenuEvent* e) {
     // This method is called before the popup menu becomes visible.
     lte->log->debug("PopupMenuWillBecomeVisible");  // NOI18N
-    QObject* o = sender();//e.getSource();
+    QObject* o = e->getSource();
     if (qobject_cast<JmriBeanComboBox*>(o))
     {
         JmriBeanComboBox* jbcb = (JmriBeanComboBox*) o;
@@ -1244,13 +1244,13 @@ void LayoutTrackEditors::showSensorMessage() {
 }
 
 //@Override
-/*public*/ void SlipPopupMenuListener::popupMenuWillBecomeInvisible(/*PopupMenuEvent e*/) {
+/*public*/ void SlipPopupMenuListener::popupMenuWillBecomeInvisible(PopupMenuEvent *) {
     // This method is called before the popup menu becomes invisible
     lte->log->debug("PopupMenuWillBecomeInvisible");  // NOI18N
 }
 
 //@Override
-/*public*/ void SlipPopupMenuListener::popupMenuCanceled(/*PopupMenuEvent e*/) {
+/*public*/ void SlipPopupMenuListener::popupMenuCanceled(PopupMenuEvent *) {
     // This method is called when the popup menu is canceled
     lte->log->debug("PopupMenuCanceled");  // NOI18N
 }

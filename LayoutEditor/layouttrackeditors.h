@@ -218,11 +218,11 @@ class SlipPopupMenuListener : public PopupMenuListener
 public:
  SlipPopupMenuListener( LayoutTrackEditors* lte);
 public slots:
- /*public*/ void popupMenuWillBecomeVisible(/*PopupMenuEvent e*/);
+ /*public*/ void popupMenuWillBecomeVisible(PopupMenuEvent *e);
 
- /*public*/ void popupMenuWillBecomeInvisible(/*PopupMenuEvent e*/);
+ /*public*/ void popupMenuWillBecomeInvisible(PopupMenuEvent*);
 
- /*public*/ void popupMenuCanceled(/*PopupMenuEvent e*/);
+ /*public*/ void popupMenuCanceled(PopupMenuEvent*);
 private:
 };
 class SlipEditWindowListener : public WindowListener
@@ -298,6 +298,7 @@ class TestState : public QWidget {
  }
 
 };
+
 class SampleStates :  public QWidget {
  Q_OBJECT
 LayoutTrackEditors* lte;

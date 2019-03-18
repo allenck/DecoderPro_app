@@ -12,6 +12,7 @@
 #include "proxyreportermanager.h"
 #include <qabstractitemview.h>
 #include "namedbean.h"
+#include "systemnamecomparator.h"
 
 JmriBeanComboBox::JmriBeanComboBox(QWidget* parent) :
     QComboBox(parent)
@@ -95,14 +96,14 @@ void JmriBeanComboBox::common(Manager *manager, NamedBean *nBean, int displayOrd
 {
  popupMenuListener = pml;
  setItemDelegate(new ComboDelegate(this));
- pml->popupMenuWillBecomeVisible();
+ pml->popupMenuWillBecomeVisible(new PopupMenuEvent(this));
 }
 
 void JmriBeanComboBox::showPopup()
 {
  if(popupMenuListener)
  {
-  popupMenuListener->popupMenuWillBecomeVisible();
+  popupMenuListener->popupMenuWillBecomeVisible(new PopupMenuEvent(this));
  }
  QComboBox::showPopup();
 }
@@ -140,6 +141,8 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
     QStringList nameList = QStringList();
     for (QObject* obj : _manager->getNamedBeanSet()) {
         nameList.append(((NamedBean*)obj)->getSystemName());
+        if(!itemMap.contains(((NamedBean*)obj)->getSystemName()))
+            itemMap.insert(((NamedBean*)obj)->getSystemName(), false);
     }
 
     //exclude.stream().filter((bean) -> (bean != null)).forEachOrdered((bean) -> {
@@ -194,7 +197,7 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
         }
     }
     //java.util.Arrays.sort(displayList, new AlphanumComparator());
-    qSort(displayList.begin(), displayList.end());
+    qSort(displayList.begin(), displayList.end(), SystemNameComparator::compare);
     return displayList.toList();
 }
 

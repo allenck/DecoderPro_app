@@ -747,11 +747,11 @@ MathUtil::MathUtil()
         double result;
         QPainterPath path = QPainterPath();
         bezier1st = true;
-        path.moveTo(p.at(0));
-        path.cubicTo(p.at(1), p.at(2), p.at(3));
-//        if (p.length() == 4) {    // draw cubic bezier?
-//            result = plotBezier(path, p[0], p[1], p[2], p[3], 0, displacement);
-//        }
+//        path.moveTo(p.at(0));
+//        path.cubicTo(p.at(1), p.at(2), p.at(3));
+        if (p.length() == 4) {    // draw cubic bezier?
+            result = plotBezier(path, p[0], p[1], p[2], p[3], 0, displacement);
+        }
 //        else {    // (nope)
 //            result = plotBezier(path, p, 0, displacement);
 //        }

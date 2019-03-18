@@ -10,19 +10,14 @@ class JmriBeanComboBox;
 class InstanceManager;
 /*static*/ class LIBLAYOUTEDITORSHARED_EXPORT TurnoutState
 {
+ int turnoutA = Turnout::CLOSED;
+ int turnoutB = Turnout::CLOSED;
  public:
- int turnoutA;// = Turnout::CLOSED;
- int turnoutB;// = Turnout::CLOSED;
- QComboBox* turnoutABox;
- QComboBox* turnoutBBox;
+ QComboBox* turnoutABox = nullptr;
+ QComboBox* turnoutBBox = nullptr;
 
  TurnoutState(int turnoutA, int turnoutB)
  {
-  turnoutA = Turnout::CLOSED;
-  turnoutB = Turnout::CLOSED;
-  turnoutABox = NULL;
-  turnoutBBox = NULL;
-
   this->turnoutA = turnoutA;
   this->turnoutB = turnoutB;
  }

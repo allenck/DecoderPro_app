@@ -11,8 +11,8 @@
 #include <QTextBrowser>
 #include <QLineEdit>
 #include <QPushButton>
+#endif // end SCRIPTING_ENABLED
 
-#endif
 //void myMessageOutput(QtMsgType type, const char *msg)
 //{
 // switch (type)
@@ -41,9 +41,7 @@ int main(int argc, char *argv[])
 
  MyApplication a(argc, argv);
 #ifdef SCRIPTING_ENABLED
- //PythonQt::init(PythonQt::IgnoreSiteModule | PythonQt::RedirectStdOut);
  PythonQt::init(PythonQt::RedirectStdOut);
- //PythonQt_QtAll::init();
  PythonWrappers::defineClasses();
 
 # if 0 // test Python install
@@ -79,7 +77,7 @@ int main(int argc, char *argv[])
  mainModule.call("appendText", QVariantList() << "The ultimate answer is ");
  PythonQt::init(PythonQt::IgnoreSiteModule | PythonQt::RedirectStdOut);
  PythonQt_QtAll::init();
-# endif
+# endif // end SCRIPTING_ENABLED
 
 #endif
 // PanelPro w(0);

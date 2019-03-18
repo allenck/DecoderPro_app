@@ -46,6 +46,7 @@ private:
  Logger* log;
  QString statetoString(QAbstractSocket::SocketState socketState);
  QMessageBox* msg;
+ int connTimeout;
 
 private slots:
  void on_socketConn_error(QAbstractSocket::SocketError);
@@ -66,6 +67,9 @@ protected:
  /*protected*/ void setHostAddress(QString s);
  /*protected*/ QString getHostAddress();
  /*protected*/ virtual void resetupConnection();
+ /*protected*/ void setConnectionTimeout(int t);
+ /*protected*/ int getConnectionTimeout();
+
  friend class Reconnectwait;
 };
 class Reconnectwait : public QObject
@@ -85,6 +89,8 @@ private:
     int secondCount;// = 0;
     int reconnectinterval;
     bool bFirstTime;
+    int connTimeout;
+
 private slots:
     void checkSocket();
 public:

@@ -6814,6 +6814,7 @@ double LayoutEditor::toRadians(double degrees)
  {
   if(qobject_cast<LayoutSlip*>(lt))
    continue;
+  if(qobject_cast<LayoutTurnout*>(lt))
   list.append((LayoutTurnout*)lt);
  }
  return list;

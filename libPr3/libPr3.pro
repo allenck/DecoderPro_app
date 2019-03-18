@@ -868,7 +868,14 @@ SOURCES += \
     zeroconfserviceevent.cpp \
     stacknxpanel.cpp \
     sound.cpp \
-    mixerprovider.cpp
+    mixerprovider.cpp \
+    jmriclient/jmriclientportcontroller.cpp \
+    jmriclient/jmriclientsystemconnectionmemo.cpp \
+    jmriclient/jmriclienttrafficcontroller.cpp \
+    jmriclient/jmriclientmessage.cpp \
+    jmriclient/jmriclientreply.cpp \
+    jmriclient/networkdriveradapter.cpp \
+    zeroconfclient.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1727,7 +1734,16 @@ HEADERS += \
     zeroconfserviceevent.h \
     stacknxpanel.h \
     sound.h \
-    mixerprovider.h
+    mixerprovider.h \
+    jmriclient/jmriclientportcontroller.h \
+    jmriclient/jmriclientsystemconnectionmemo.h \
+    jmriclient/jmriclientinterface.h \
+    jmriclient/jmriclienttrafficcontroller.h \
+    jmriclient/jmriclientlistener.h \
+    jmriclient/jmriclientmessage.h \
+    jmriclient/jmriclientreply.h \
+    jmriclient/networkdriveradapter.h \
+    zeroconfclient.h
 
  !contains(FTDI, 1) {
     HEADERS +=
