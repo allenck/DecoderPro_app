@@ -520,7 +520,7 @@ void delete_Editor(Editor* obj) { delete obj; }
    QList<Positionable* >*  getSelectedItems(Editor* theWrappedObject, QGraphicsSceneMouseEvent*  event);
    QList<Positionable* >*  getSelectedItems(Editor* theWrappedObject, QPointF  pt);
    JFrame*  getTargetFrame(Editor* theWrappedObject);
-   QGraphicsScene*  getTargetPanel(Editor* theWrappedObject);
+   EditScene*  getTargetPanel(Editor* theWrappedObject);
    QSizeF  getTargetPanelSize(Editor* theWrappedObject);
    QString  py_q_getTitle(Editor* theWrappedObject){  return (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_getTitle());}
    void init(Editor* theWrappedObject, QString  name);

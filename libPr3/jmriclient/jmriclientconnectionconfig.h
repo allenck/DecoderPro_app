@@ -1,13 +1,15 @@
-#ifndef CONNECTIONCONFIG_H
-#define CONNECTIONCONFIG_H
+#ifndef JMRICLIENTCONNECTIONCONFIG_H
+#define JMRICLIENTCONNECTIONCONFIG_H
 #include "abstractnetworkconnectionconfig.h"
 
-class JmriClientConnectionConfig : public AbstractNetworkConnectionConfig
+class JMRIClientConnectionConfig : public AbstractNetworkConnectionConfig
 {
  Q_OBJECT
 public:
- JmriClientConnectionConfig();
- /*public*/ JmriClientConnectionConfig(NetworkPortAdapter* p);
+ Q_INVOKABLE JMRIClientConnectionConfig();
+ ~JMRIClientConnectionConfig() {}
+ JMRIClientConnectionConfig(const JMRIClientConnectionConfig&) : AbstractNetworkConnectionConfig() {}
+ /*public*/ JMRIClientConnectionConfig(NetworkPortAdapter* p);
  /*public*/ QString name();
  /*public*/ bool isPortAdvanced();
  /*public*/ void updateAdapter();
@@ -29,5 +31,5 @@ protected:
 
 
 };
-
-#endif // CONNECTIONCONFIG_H
+Q_DECLARE_METATYPE(JMRIClientConnectionConfig)
+#endif // JMRICLIENTCONNECTIONCONFIG_H

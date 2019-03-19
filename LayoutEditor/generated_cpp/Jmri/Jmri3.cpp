@@ -21528,7 +21528,7 @@ if (_wrapper) {
 }
   return Turnout::getValidDecoderNames();
 }
-QStringList  PythonQtShell_Turnout::getValidFeedbackNames()
+QVector<QString >  PythonQtShell_Turnout::getValidFeedbackNames()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21536,9 +21536,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getValidFeedbackNames");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QStringList"};
+      static const char* argumentList[] ={"QVector<QString >"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QStringList returnValue{};
+      QVector<QString > returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -21547,7 +21547,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getValidFeedbackNames", methodInfo, result);
           } else {
-            returnValue = *((QStringList*)args[0]);
+            returnValue = *((QVector<QString >*)args[0]);
           }
         }
       }
@@ -22416,7 +22416,7 @@ QStringList  PythonQtWrapper_Turnout::getValidDecoderNames(Turnout* theWrappedOb
   return ( theWrappedObject->getValidDecoderNames());
 }
 
-QStringList  PythonQtWrapper_Turnout::getValidFeedbackNames(Turnout* theWrappedObject)
+QVector<QString >  PythonQtWrapper_Turnout::getValidFeedbackNames(Turnout* theWrappedObject)
 {
   return ( theWrappedObject->getValidFeedbackNames());
 }

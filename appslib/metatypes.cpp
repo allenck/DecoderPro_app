@@ -290,6 +290,9 @@
 #include "sensortableaction.h"
 #include "enginemanager.h"
 #include "enginemanagerxml.h"
+#include "jmriclient/jmriclientconnectionconfigxml.h"
+#include "jmriclient/jmriclientconnectionconfig.h"
+
 
 bool Metatypes::done = false;
 
@@ -594,6 +597,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SensorTableAction>("SensorTableAction");
  qRegisterMetaType<Operations::EngineManager>("EngineManager");
  qRegisterMetaType<Operations::EngineManagerXml>("EngineManagerXml");
+ qRegisterMetaType<JMRIClientConnectionConfigXml>("JMRIClientConnectionConfigXml");
+ qRegisterMetaType<JMRIClientConnectionConfig>("JMRIClientConnectionConfig");
 
  Metatypes::done = true;
 }

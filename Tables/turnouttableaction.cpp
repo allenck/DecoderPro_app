@@ -383,7 +383,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //        });
 
       //     return c;
-     modeColDelegate->setItems( t->getValidFeedbackNames(), t->getFeedbackModeName());
+     modeColDelegate->setItems( t->getValidFeedbackNames().toList(), t->getFeedbackModeName());
      return t->getFeedbackModeName();
     }
     case SENSOR1COL:
@@ -401,26 +401,26 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     case OPSONOFFCOL:
     {
      //return self->makeAutomationBox(t);
-     QStringList* automationList = self->makeAutomationBox(t);
+     QVector<QString> automationList = self->makeAutomationBox(t);
      QString currValue;
      if (t->getInhibitOperation())
      {
-      currValue = automationList->at(0);
+      currValue = automationList.at(0);
      }
      else if (t->getTurnoutOperation() == NULL)
      {
-      currValue = automationList->at(1);
+      currValue = automationList.at(1);
      }
      else if (t->getTurnoutOperation()->isNonce())
      {
-      currValue = automationList->at(2);
+      currValue = automationList.at(2);
      }
      else
      {
       currValue = t->getTurnoutOperation()->getName();
      }
 
-     opsOnOffColDelegate->setItems(*automationList, currValue);
+     opsOnOffColDelegate->setItems(automationList.toList(), currValue);
      return currValue;
     }
     case OPSEDITCOL:
@@ -1105,9 +1105,9 @@ void RangeListener::actionPerformed(ActionEvent */*e*/)
  * @param t	the turnout
  * @return	the JComboBox
  */
-/*protected*/ /*QComboBox**/QStringList* TurnoutTableAction::makeAutomationBox(Turnout* t) {
-    QStringList* str = new QStringList();
-    *str << "empty";
+/*protected*/ /*QComboBox**/QVector<QString>TurnoutTableAction::makeAutomationBox(Turnout* t) {
+    QVector<QString> str = QVector<QString>();
+    str << "empty";
 //    /*final*/ QComboBox* cb = new QComboBox();
 //    cb->addItems(str);
     /*final*/ Turnout* myTurnout = t;
@@ -1157,11 +1157,11 @@ void RangeListener::actionPerformed(ActionEvent */*e*/)
  * @param t	turnout
  * @param cb	the JComboBox
  */
-/*public*/ /*static*/ void TurnoutTableAction::updateAutomationBox(Turnout* t, /*QComboBox* cb*/ QStringList* str)
+/*public*/ /*static*/ void TurnoutTableAction::updateAutomationBox(Turnout* t, /*QComboBox* cb*/ QVector<QString> str)
 {
  Logger* log = new Logger("TurnoutTableAction");
  QList<TurnoutOperation*> ops = TurnoutOperationManager::getInstance()->getTurnoutOperations();
- str->clear();
+ str.clear();
  QVector<QString> strings =  QVector<QString>(/*20*/);
  QVector<QString> defStrings =  QVector<QString>(/*20*/);
  if(log->isDebugEnabled()) log->debug("start "+QString::number(ops.length()));
@@ -1197,7 +1197,7 @@ void RangeListener::actionPerformed(ActionEvent */*e*/)
     for (int i=0; i<strings.size(); ++i)
     {
 //        cb->addItem(strings.at(i));
-     str->append(strings.at(i));
+     str.append(strings.at(i));
     }
 //    if (t->getInhibitOperation()) {
 //        cb->setCurrentIndex(0);

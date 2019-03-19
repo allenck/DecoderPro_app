@@ -4,17 +4,42 @@
 #include <QObject>
 #include "runnable.h"
 #include "logger.h"
+#include <QTcpServer>
 
+class ZeroConfService;
+class ShutDownTask;
 class QTcpSocket;
-class JmriServer : public QObject
+class JmriServer : public QTcpServer
 {
  Q_OBJECT
 public:
  explicit JmriServer(QObject *parent = 0);
+ /*public*/ /*synchronized*/ static JmriServer* instance();
+ /*public*/ JmriServer(int port, QObject *parent);
+ /*public*/ JmriServer(int port, int timeout, QObject* parent);
+ /*public*/ void start();
+ /*public*/ void stop();
 
 signals:
 
 public slots:
+
+private:
+ // /*private*/ Thread listenThread = NULL;
+ /*private*/ static JmriServer* _instance;// = NULL;
+ void common(int port, int timeout);
+
+
+protected:
+ /*protected*/ int portNo = 3000; // Port to listen to for new clients.
+ /*protected*/ int timeout = 0; // Timeout in milliseconds (0 = no timeout).
+ /*protected*/ QTcpSocket* connectSocket;
+ /*protected*/ ZeroConfService* service = NULL;
+ /*protected*/ ShutDownTask* shutDownTask = NULL;
+// /*protected*/ ArrayList<ClientListener> connectedClientThreads = new ArrayList<ClientListener>();
+ /*protected*/ void advertise();
+ /*protected*/ void advertise(QString type);
+ /*protected*/ void advertise(QString type, QMap<QString, QVariant> properties);
 
 };
 #if 0

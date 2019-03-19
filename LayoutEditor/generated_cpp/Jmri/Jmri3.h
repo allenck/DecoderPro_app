@@ -2317,7 +2317,7 @@ virtual QString  getSystemName() const;
 virtual TurnoutOperation*  getTurnoutOperation();
 virtual QString  getUserName();
 virtual QStringList  getValidDecoderNames();
-virtual QStringList  getValidFeedbackNames();
+virtual QVector<QString >  getValidFeedbackNames();
 virtual int  getValidFeedbackTypes();
 virtual bool  hashCode();
 virtual bool  isConsistentState();
@@ -2380,7 +2380,7 @@ inline float  py_q_getStraightLimit() { return Turnout::getStraightLimit(); }
 inline QString  py_q_getStraightSpeed() { return Turnout::getStraightSpeed(); }
 inline TurnoutOperation*  py_q_getTurnoutOperation() { return Turnout::getTurnoutOperation(); }
 inline QStringList  py_q_getValidDecoderNames() { return Turnout::getValidDecoderNames(); }
-inline QStringList  py_q_getValidFeedbackNames() { return Turnout::getValidFeedbackNames(); }
+inline QVector<QString >  py_q_getValidFeedbackNames() { return Turnout::getValidFeedbackNames(); }
 inline int  py_q_getValidFeedbackTypes() { return Turnout::getValidFeedbackTypes(); }
 inline bool  py_q_isConsistentState() { return Turnout::isConsistentState(); }
 inline void py_q_provideFirstFeedbackSensor(QString  arg__1) throw (JmriException)  { Turnout::provideFirstFeedbackSensor(arg__1); }
@@ -2457,8 +2457,8 @@ void delete_Turnout(Turnout* obj) { delete obj; }
    TurnoutOperation*  py_q_getTurnoutOperation(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_getTurnoutOperation());}
    QStringList  getValidDecoderNames(Turnout* theWrappedObject);
    QStringList  py_q_getValidDecoderNames(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_getValidDecoderNames());}
-   QStringList  getValidFeedbackNames(Turnout* theWrappedObject);
-   QStringList  py_q_getValidFeedbackNames(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_getValidFeedbackNames());}
+   QVector<QString >  getValidFeedbackNames(Turnout* theWrappedObject);
+   QVector<QString >  py_q_getValidFeedbackNames(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_getValidFeedbackNames());}
    int  getValidFeedbackTypes(Turnout* theWrappedObject);
    int  py_q_getValidFeedbackTypes(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_getValidFeedbackTypes());}
    int  static_Turnout_invertTurnoutState(int  inState);

@@ -71,7 +71,7 @@ public:
     /*public*/ void setControlType(int num);
     /*public*/ int getValidFeedbackTypes();
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP") // OK until Java 1.6 allows return of //cheap array copy
-    /*public*/ QStringList getValidFeedbackNames();
+    /*public*/ QVector<QString> getValidFeedbackNames();
     /*public*/ void setFeedbackMode(QString mode) throw(IllegalArgumentException);
     /*public*/ void setFeedbackMode(int mode) throw(IllegalArgumentException);
     /*public*/ int getFeedbackMode();
@@ -179,9 +179,9 @@ private:
 protected:
     AbstractTurnout(QString systemName, QObject *parent=0);
     AbstractTurnout(QString systemName, QString userName, QObject *parent=0);
-    QStringList _validFeedbackNames;
+    QVector<QString> _validFeedbackNames;
 
-    QList<int> _validFeedbackModes;
+    QVector<int> _validFeedbackModes;
 
     int _validFeedbackTypes; //= DIRECT | ONESENSOR | TWOSENSOR;
 

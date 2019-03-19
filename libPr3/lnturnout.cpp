@@ -7,8 +7,8 @@
 //{
 //}
 QTimer* LnTurnout::meterTimer =/* new QTimer()*/NULL;
-QStringList LnTurnout::modeNames;
-QList<int> LnTurnout::modeValues;
+QVector<QString> LnTurnout::modeNames;
+QVector<int> LnTurnout::modeValues;
 /**
  * Extend jmri.AbstractTurnout for LocoNet layouts
  * <P>
@@ -88,8 +88,8 @@ LnTurnout::LnTurnout(QString prefix, int number, LnTrafficController* controller
  /*private*/ void LnTurnout::initFeedbackModes() {
     if (_validFeedbackNames.length() != _validFeedbackModes.length())
         log->error("int and string feedback arrays different length");
-    QStringList tempModeNames; // = new String[_validFeedbackNames.length+3];
-    QList<int> tempModeValues;// = new int[_validFeedbackNames.length+3];
+    QVector<QString> tempModeNames; // = new String[_validFeedbackNames.length+3];
+    QVector<int> tempModeValues;// = new int[_validFeedbackNames.length+3];
     for (int i = 0; i<_validFeedbackNames.length(); i++)
     {
      tempModeNames << _validFeedbackNames[i];

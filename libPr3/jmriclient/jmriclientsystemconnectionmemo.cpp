@@ -1,6 +1,11 @@
 #include "jmriclientsystemconnectionmemo.h"
 #include "jmriclienttrafficcontroller.h"
 #include "instancemanager.h"
+#include "jmriclientturnout.h"
+#include "jmriclientsensor.h"
+#include "jmriclientpowermanager.h"
+#include "jmriclientturnoutmanager.h"
+#include "jmriclientsensormanager.h"
 
 /**
  * Lightweight class to denote that a system is active and provide general
@@ -66,17 +71,17 @@
  * common manager config in one place.
  */
 /*public*/ void JMRIClientSystemConnectionMemo::configureManagers() {
+    setPowerManager((PowerManager*)new JMRIClientPowerManager(this));
+    InstanceManager::store(getPowerManager(), "PowerManager");
+    setTurnoutManager(new JMRIClientTurnoutManager(this));
+    InstanceManager::setTurnoutManager(getTurnoutManager());
+    setSensorManager(new JMRIClientSensorManager(this));
+    InstanceManager::setSensorManager(getSensorManager());
 #if 0 // TODO:
-    setPowerManager(new jmri.jmrix.jmriclient.JMRIClientPowerManager(this));
-    jmri.InstanceManager.store(getPowerManager(), jmri.PowerManager.class);
-    setTurnoutManager(new jmri.jmrix.jmriclient.JMRIClientTurnoutManager(this));
-    jmri.InstanceManager.setTurnoutManager(getTurnoutManager());
-    setSensorManager(new jmri.jmrix.jmriclient.JMRIClientSensorManager(this));
-    jmri.InstanceManager.setSensorManager(getSensorManager());
-    setLightManager(new jmri.jmrix.jmriclient.JMRIClientLightManager(this));
-    jmri.InstanceManager.setLightManager(getLightManager());
-    setReporterManager(new jmri.jmrix.jmriclient.JMRIClientReporterManager(this));
-    jmri.InstanceManager.setReporterManager(getReporterManager());
+    setLightManager(new JMRIClientLightManager(this));
+    InstanceManager::setLightManager(getLightManager());
+    setReporterManager(new JMRIClientReporterManager(this));
+    InstanceManager::setReporterManager(getReporterManager());
 #endif
 }
 
@@ -84,13 +89,18 @@
  * Request all status from the configured managers.
  */
 /*public*/ void JMRIClientSystemConnectionMemo::requestAllStatus() {
-#if 0 //TODO:
-    getTurnoutManager().getNamedBeanSet().forEach((turn) -> {
-        ((JMRIClientTurnout)(turn)).requestUpdateFromLayout();
-    });
-    getSensorManager().getNamedBeanSet().forEach((sen) -> {
-        ((JMRIClientSensor)(sen)).requestUpdateFromLayout();
-    });
+//    getTurnoutManager().getNamedBeanSet().forEach((turn) -> {
+//        ((JMRIClientTurnout)(turn)).requestUpdateFromLayout();
+//    });
+    foreach(NamedBean* turn, getTurnoutManager()->getNamedBeanSet())
+     ((JMRIClientTurnout*)(turn))->requestUpdateFromLayout();
+
+//    getSensorManager().getNamedBeanSet().forEach((sen) -> {
+//        ((JMRIClientSensor)(sen)).requestUpdateFromLayout();
+//    });
+    foreach(NamedBean* sen, getSensorManager()->getNamedBeanSet())
+     ((JMRIClientSensor*)(sen))->requestUpdateFromLayout();
+#if 0
     getLightManager().getNamedBeanSet().forEach((light) -> {
         ((JMRIClientLight)light).requestUpdateFromLayout();
     });

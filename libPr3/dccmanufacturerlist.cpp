@@ -1,5 +1,6 @@
 #include "dccmanufacturerlist.h"
 #include "rfid/rfidconnectiontypelist.h"
+#include "jmriclientconnectiontypelist.h"
 
 DCCManufacturerList::DCCManufacturerList(QObject *parent) :
     QObject(parent)
@@ -153,7 +154,7 @@ QString     DCCManufacturerList::MRC = "MRC";
 //             ESU <<
 //             HORNBY <<
 //             IEEE802154 <<
-//             JMRI <<
+             JMRI <<
 //             LENZ <<
 //             LIONEL <<
 //             MAPLE <<
@@ -229,7 +230,7 @@ QString     DCCManufacturerList::MRC = "MRC";
 //        if(System==(ZIMO)) { return new jmri.jmrix.zimo.Mx1ConnectionTypeList().getAvailableProtocolClasses(); }
 //        if(System==(ZTC)) { return new jmri.jmrix.lenz.ztc640.ZTC640ConnectionTypeList().getAvailableProtocolClasses(); }
 //        if(System==(OTHER)) { return new jmri.jmrix.OtherConnectionTypeList().getAvailableProtocolClasses(); }
-//        if(System==(JMRI)) { return new jmri.jmrix.jmriclient.JMRIClientConnectionTypeList().getAvailableProtocolClasses(); }
+        if(System==(JMRI)) { return (new JMRIClientConnectionTypeList())->getAvailableProtocolClasses(); }
 //        return new jmri.jmrix.internal.InternalConnectionTypeList().getAvailableProtocolClasses();
  return QStringList();
 }

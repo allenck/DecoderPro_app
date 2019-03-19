@@ -12,8 +12,8 @@
 AbstractTurnout::AbstractTurnout(QObject *parent) :
     Turnout(parent)
 {
- _validFeedbackNames =  QStringList();
- _validFeedbackModes =  QList<int>();
+ _validFeedbackNames =  QVector<QString>();
+ _validFeedbackModes =  QVector<int>();
  _validFeedbackNames << QString("DIRECT")<< QString("ONESENSOR")<< QString("TWOSENSOR")<< QString("DELAYED") ;
 
  _validFeedbackModes << Turnout::DIRECT<<Turnout::ONESENSOR<<Turnout::TWOSENSOR<<Turnout::DELAYED;
@@ -346,7 +346,7 @@ void AbstractTurnout::setKnownStateToCommanded()
 }
 
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP") // OK until Java 1.6 allows return of //cheap array copy
-/*public*/ QStringList AbstractTurnout::getValidFeedbackNames() {
+/*public*/ QVector<QString> AbstractTurnout::getValidFeedbackNames() {
     return _validFeedbackNames;
 }
 

@@ -201,7 +201,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
  * @return true if succeeded
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool AbstractTurnoutManagerConfigXML::loadTurnouts(QDomElement turnouts)
+/*public*/ bool AbstractTurnoutManagerConfigXML::loadTurnouts(QDomElement turnouts, QDomElement /*perNode*/)
 {
  bool result = true;
  QDomNodeList operationList = turnouts.elementsByTagName("operations");

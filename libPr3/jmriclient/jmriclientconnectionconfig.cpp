@@ -21,7 +21,7 @@
  * Constructor for an object being created during load process; Swing init
  * is deferred.
  */
-/*public*/ JmriClientConnectionConfig::JmriClientConnectionConfig(NetworkPortAdapter* p)
+/*public*/ JMRIClientConnectionConfig::JMRIClientConnectionConfig(NetworkPortAdapter* p)
  : AbstractNetworkConnectionConfig(p)
 {
     //super(p);
@@ -31,36 +31,36 @@
 /**
  * Constructor for a functional Swing object with no preexisting adapter
  */
-/*public*/JmriClientConnectionConfig:: JmriClientConnectionConfig() {
+/*public*/JMRIClientConnectionConfig:: JMRIClientConnectionConfig() {
    // super();
  common();
 }
 
-void JmriClientConnectionConfig::common()
+void JMRIClientConnectionConfig::common()
 {
  transmitPrefixLabel = new QLabel("Server Connection Prefix");
  transmitPrefixField = new JTextField(10);
 }
 
 //@Override
-/*public*/ QString JmriClientConnectionConfig::name() {
+/*public*/ QString JMRIClientConnectionConfig::name() {
     return "Simple Network Connection";
 }
 
 //@Override
-/*protected*/ void JmriClientConnectionConfig::setInstance() {
+/*protected*/ void JMRIClientConnectionConfig::setInstance() {
     if (adapter == nullptr) {
         adapter = new NetworkDriverAdapter();
     }
 }
 
 //@Override
-/*public*/ bool JmriClientConnectionConfig::isPortAdvanced() {
+/*public*/ bool JMRIClientConnectionConfig::isPortAdvanced() {
     return true;
 }
 
 //@Override
-/*protected*/ void JmriClientConnectionConfig::checkInitDone() {
+/*protected*/ void JMRIClientConnectionConfig::checkInitDone() {
     AbstractNetworkConnectionConfig::checkInitDone();
     if (adapter->getSystemConnectionMemo() != nullptr) {
         transmitPrefixField->setText(((JMRIClientSystemConnectionMemo*) adapter->getSystemConnectionMemo())->getTransmitPrefix());
@@ -90,7 +90,7 @@ void JmriClientConnectionConfig::common()
 
 
 //@Override
-/*protected*/ void JmriClientConnectionConfig::showAdvancedItems() {
+/*protected*/ void JMRIClientConnectionConfig::showAdvancedItems() {
     AbstractNetworkConnectionConfig::showAdvancedItems(); // we're adding to the normal advanced items.
     if (adapter->getSystemConnectionMemo() != nullptr) {
         cR->gridy += 2;
@@ -108,7 +108,7 @@ void JmriClientConnectionConfig::common()
 }
 
 //@Override
-/*public*/ void JmriClientConnectionConfig::updateAdapter() {
+/*public*/ void JMRIClientConnectionConfig::updateAdapter() {
     AbstractNetworkConnectionConfig::updateAdapter(); // we're adding more details to the connection.
     if (adapter->getSystemConnectionMemo() != nullptr) {
         ((JMRIClientSystemConnectionMemo*) adapter->getSystemConnectionMemo())->setTransmitPrefix(transmitPrefixField->text());
@@ -116,11 +116,11 @@ void JmriClientConnectionConfig::common()
 }
 
 //@Override
-/*public*/ bool JmriClientConnectionConfig::isHostNameAdvanced() {
+/*public*/ bool JMRIClientConnectionConfig::isHostNameAdvanced() {
     return showAutoConfig->isChecked();
 }
 
 //@Override
-/*public*/ bool JmriClientConnectionConfig::isAutoConfigPossible() {
+/*public*/ bool JMRIClientConnectionConfig::isAutoConfigPossible() {
     return true;
 }

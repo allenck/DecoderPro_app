@@ -12,7 +12,7 @@ public:
  InternalTurnoutManagerXml(const InternalTurnoutManagerXml&) : AbstractTurnoutManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement turnouts);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
-    /*public*/ bool load(QDomElement turnouts) throw (Exception);
+    /*public*/ bool load(QDomElement turnouts, QDomElement perNode) throw (Exception);
 
 signals:
 

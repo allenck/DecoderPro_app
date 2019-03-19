@@ -45,8 +45,8 @@ public slots:
 
 private:
  LnTrafficController* controller;
- static QStringList modeNames;
- static QList<int> modeValues;
+ static QVector<QString> modeNames;
+ static QVector<int> modeValues;
  bool pending;
  // data members
  int _number;   // loconet turnout number

@@ -3783,7 +3783,7 @@ JFrame*  PythonQtWrapper_Editor::getTargetFrame(Editor* theWrappedObject)
   return ( theWrappedObject->getTargetFrame());
 }
 
-QGraphicsScene*  PythonQtWrapper_Editor::getTargetPanel(Editor* theWrappedObject)
+EditScene*  PythonQtWrapper_Editor::getTargetPanel(Editor* theWrappedObject)
 {
   return ( theWrappedObject->getTargetPanel());
 }

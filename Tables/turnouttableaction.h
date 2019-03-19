@@ -34,7 +34,7 @@ public:
     /*public*/ void setManager(Manager* man);
     Q_INVOKABLE /*public*/ QString getClassDescription();
     static QString getName();
-    /*public*/ static void updateAutomationBox(Turnout* t, /*QComboBox* cb*/QStringList* sl);
+    /*public*/ static void updateAutomationBox(Turnout* t, /*QComboBox* cb*/QVector<QString> sl);
     /*public*/ void addToFrame(BeanTableFrame* f);
     /*public*/ void setMenuBar(BeanTableFrame* f);
     /*public*/ void addToPanel(AbstractTableTabAction* f);
@@ -107,7 +107,7 @@ protected:
 
 protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
-    /*protected*/ /*QComboBox**/QStringList* makeAutomationBox(Turnout* t);
+    /*protected*/ /*QComboBox**/QVector<QString> makeAutomationBox(Turnout* t);
     /*private*/ void canAddRange(ActionEvent* e = 0);
  friend class CBActionListener;
  friend class RangeListener;

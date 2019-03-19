@@ -198,7 +198,7 @@ virtual QString  getSystemName() const;
 virtual TurnoutOperation*  getTurnoutOperation();
 virtual QString  getUserName();
 virtual QStringList  getValidDecoderNames();
-virtual QStringList  getValidFeedbackNames();
+virtual QVector<QString >  getValidFeedbackNames();
 virtual int  getValidFeedbackTypes();
 virtual bool  hashCode();
 virtual bool  isConsistentState();

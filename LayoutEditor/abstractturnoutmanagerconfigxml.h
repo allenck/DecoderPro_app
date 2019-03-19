@@ -11,8 +11,8 @@ public:
     ~AbstractTurnoutManagerConfigXML();
     /*public*/ QDomElement store(QObject* o);
     /*abstract*/ /*public*/ virtual void setStoreElementClass(QDomElement turnouts) = 0;
-    /*abstract*/ /*public*/ virtual bool load(QDomElement turnouts) throw (Exception) = 0;
-    /*public*/ bool loadTurnouts(QDomElement turnouts);
+    /*abstract*/ /*public*/ virtual bool load(QDomElement turnouts, QDomElement perNode) throw (Exception) = 0;
+    /*public*/ bool loadTurnouts(QDomElement turnouts, QDomElement perNode);
     /*public*/ int loadOrder();
 
 signals:

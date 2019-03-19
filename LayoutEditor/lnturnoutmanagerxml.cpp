@@ -30,8 +30,8 @@ LnTurnoutManagerXml::LnTurnoutManagerXml(QObject *parent) :
     log->error("Invalid method called");
 }
 
-/*public*/ bool LnTurnoutManagerXml::load(QDomElement turnouts) throw (Exception){
+/*public*/ bool LnTurnoutManagerXml::load(QDomElement turnouts, QDomElement perNode) throw (Exception){
 
     // load individual turnouts
-    return loadTurnouts(turnouts);
+    return loadTurnouts(turnouts, perNode);
 }

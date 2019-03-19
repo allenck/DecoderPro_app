@@ -93,6 +93,8 @@ private:
   friend class LayoutBlock;
   friend class CatalogTree;
   friend class AbstractCatalogTree;
+  friend class JMRIClientTurnout;
+  friend class JMRIClientLight;
 };
 
 #endif // ABSTRACTNAMEDBEAN_H

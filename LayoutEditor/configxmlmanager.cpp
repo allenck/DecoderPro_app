@@ -883,6 +883,8 @@ File userPrefsFile;*/
       prefix = "LocobufferUsb";
      else if(sl.at(3) == "locobuffer")
       prefix = "Locobuffer";
+     else if(sl.at(3) == "networkdriver")
+      prefix = "JMRIClient";
       QString newClassName = prefix+"ConnectionConfigXml";
       if(!prefix.isEmpty())
        classname = newClassName;

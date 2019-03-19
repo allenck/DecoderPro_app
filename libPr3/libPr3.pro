@@ -875,8 +875,24 @@ SOURCES += \
     jmriclient/jmriclientmessage.cpp \
     jmriclient/jmriclientreply.cpp \
     jmriclient/networkdriveradapter.cpp \
-    zeroconfclient.cpp
-#    jmriclient/jmriclientconnectionconfig.cpp
+    zeroconfclient.cpp \
+    jmriclient/jmriclientconnectionconfig.cpp \
+    jmriclient/jmriclientconnectionconfigxml.cpp \
+    jmriclientconnectiontypelist.cpp \
+    jmriclient/jmriclientpowermanager.cpp \
+    jmriclient/jmriclientturnoutmanagerxml.cpp \
+    jmriclient/jmriclientturnoutmanager.cpp \
+    jmriclient/jmriclientsensormanagerxml.cpp \
+    jmriclient/jmriclientsensormanager.cpp \
+    jmriclient/jmriclientsensor.cpp \
+    jmriclient/jmriclientturnout.cpp \
+    jmriclient/jmriclientlight.cpp \
+    jmriclient/jmriclientlightmanager.cpp \
+    jmriclient/jmriclientlightmanagerxml.cpp \
+    jmriclient/jmriclientreporter.cpp \
+    jmriclient/jmriclientreportermanager.cpp \
+    jmriclient/jmriclientreportermanagerxml.cpp \
+    simpleserver.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1744,8 +1760,24 @@ HEADERS += \
     jmriclient/jmriclientmessage.h \
     jmriclient/jmriclientreply.h \
     jmriclient/networkdriveradapter.h \
-    zeroconfclient.h
-#    jmriclient/jmriclientconnectionconfig.h
+    zeroconfclient.h \
+    jmriclient/jmriclientconnectionconfig.h \
+    jmriclient/jmriclientconnectionconfigxml.h \
+    jmriclientconnectiontypelist.h \
+    jmriclient/jmriclientpowermanager.h \
+    jmriclient/jmriclientturnoutmanagerxml.h \
+    jmriclient/jmriclientturnoutmanager.h \
+    jmriclient/jmriclientsensormanagerxml.h \
+    jmriclient/jmriclientsensormanager.h \
+    jmriclient/jmriclientsensor.h \
+    jmriclient/jmriclientturnout.h \
+    jmriclient/jmriclientlight.h \
+    jmriclient/jmriclientlightmanager.h \
+    jmriclient/jmriclientlightmanagerxml.h \
+    jmriclient/jmriclientreporter.h \
+    jmriclient/jmriclientreportermanager.h \
+    jmriclient/jmriclientreportermanagerxml.h \
+    simpleserver.h
 
  !contains(FTDI, 1) {
     HEADERS +=

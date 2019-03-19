@@ -83,6 +83,9 @@ QDomElement AbstractSerialConnectionConfigXml::store(QObject* o, bool /*shared*/
    javaClassName = "jmri.jmrix.sprog.sprog.configurexml.ConnectionConfigXml";
   else if(className == "SprogCSConnectionConfigXml" )
    javaClassName = "jmri.jmrix.sprog.sprogCS.configurexml.ConnectionConfigXml";
+  else if(className == "JMRIClientConnectionConfigXml" )
+   javaClassName = "jmri.jmrix.jmriclient.networkdriver.configurexml.ConnectionConfigXml";
+
  }
 
  e.setAttribute("class", javaClassName);

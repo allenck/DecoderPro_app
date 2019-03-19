@@ -220,7 +220,7 @@ public:
          * representation of the feedback type.
          * The values depend on the implemented system.
          */
-        virtual QStringList getValidFeedbackNames() {return QStringList();}
+        virtual QVector<QString> getValidFeedbackNames() {return QVector<QString>();}
 
         /**
          * Set the feedback mode from a human readable name.

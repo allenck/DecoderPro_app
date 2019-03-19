@@ -116,7 +116,7 @@ BeanItemPanel* TurnoutEditAction::feedback() {
     _feedback->setName(tr("Feedback"));
 
     modeBox = new QComboBox();
-    modeBox->addItems(((Turnout*) bean)->getValidFeedbackNames());
+    modeBox->addItems(((Turnout*) bean)->getValidFeedbackNames().toList());
     oldModeSelection = ((Turnout*) bean)->getFeedbackModeName();
     modeBox->setCurrentIndex(modeBox->findText(oldModeSelection));
 
@@ -325,7 +325,7 @@ FeedbackResetItemListener::FeedbackResetItemListener(TurnoutEditAction *act)
  QStringList* automationList = new QStringList;
  for(int i = 0; i < act->automationBox->count(); i++)
   automationList->append(act->automationBox->itemText(i));
- TurnoutTableAction::updateAutomationBox(t, automationList);
+ TurnoutTableAction::updateAutomationBox(t, automationList->toVector());
  //automationBox.addActionListener(automationSelectionListener);
  connect(act->automationBox, SIGNAL(currentIndexChanged(int)), this, SLOT(actionPerformed()));
 
@@ -370,7 +370,7 @@ void TurnoutEditAction::updateFeedbackOptions()
  QStringList* automationList = new QStringList;
  for(int i = 0; i < automationBox->count(); i++)
   automationList->append(automationBox->itemText(i));
- TurnoutTableAction::updateAutomationBox(t, automationList);
+ TurnoutTableAction::updateAutomationBox(t, automationList->toVector());
 }
 
 void TurnoutEditAction::updateAutomationOptions() {
