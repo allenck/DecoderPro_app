@@ -7,7 +7,7 @@
 #include <QLabel>
 #include <QComboBox>
 #include <jtextfield.h>
-#include <QGridLayout>
+#include "gridbaglayout.h"
 #include "gridbagconstraints.h"
 #include <QCheckBox>
 #include "connectionconfigmanager.h"
@@ -27,7 +27,7 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
  connectionNameField = new JTextField(16);
  options = QHash<QString, Option*>();
  additionalItems = new QList<QWidget*>();
- gbLayout = new QGridLayout();
+ gbLayout = new GridBagLayout();
  gbLayout->setObjectName("gbLayout");
  cL = new GridBagConstraints();
  cR = new GridBagConstraints();
@@ -161,9 +161,9 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
    cL->gridy = i;
 //   gbLayout.setConstraints(options.value(item).getLabel(), cL);
 //   gbLayout.setConstraints(options.get(item).getComponent(), cR);
-   gbLayout->addWidget(options.value(item)->getLabel(), cL->gridy, cL->gridx);
+   gbLayout->addWidget(options.value(item)->getLabel(), *cL);
    options.value(item)->getLabel()->setVisible(true);
-   gbLayout->addWidget(options.value(item)->getComponent(), cR->gridy, cR->gridx);
+   gbLayout->addWidget(options.value(item)->getComponent(), *cR);
    options.value(item)->getComponent()->setVisible(true);
    i++;
   }
@@ -175,18 +175,18 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
   cL->gridy = i;
 //  gbLayout.setConstraints(systemPrefixLabel, cL);
 //  gbLayout.setConstraints(systemPrefixField, cR);
-  gbLayout->addWidget(systemPrefixLabel, cL->gridy, cL->gridx);
+  gbLayout->addWidget(systemPrefixLabel, *cL);
   systemPrefixLabel->setVisible(true);
-  gbLayout->addWidget(systemPrefixField, cR->gridy, cR->gridx);
+  gbLayout->addWidget(systemPrefixField, *cR);
   systemPrefixField->setVisible(true);
   i++;
   cR->gridy = i;
   cL->gridy = i;
 //  gbLayout.setConstraints(connectionNameLabel, cL);
 //  gbLayout.setConstraints(connectionNameField, cR);
-  gbLayout->addWidget(connectionNameLabel, cL->gridy, cL->gridx);
+  gbLayout->addWidget(connectionNameLabel, *cL);
   connectionNameLabel->setVisible(true);
-  gbLayout->addWidget(connectionNameField, cR->gridy, cR->gridx);
+  gbLayout->addWidget(connectionNameField, *cR);
   connectionNameField->setVisible(true);
   i++;
  }
@@ -196,7 +196,7 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
   cL->gridy = i;
   cR->gridy = i;
 //  gbLayout.setConstraints(showAdvanced, cL);
-  gbLayout->addWidget(showAdvanced, cL->gridy, cL->gridx);
+  gbLayout->addWidget(showAdvanced, *cL);
   showAdvanced->setVisible(true);
   cL->gridwidth = 1;
   i++;

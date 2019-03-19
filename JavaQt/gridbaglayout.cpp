@@ -21,3 +21,8 @@ void GridBagLayout::rowHeights(QList<int> rows)
  for(int i =0; i < rows.count(); i++)
   setRowMinimumHeight(i, rows.at(i));
 }
+
+void GridBagLayout::setConstraints(GridBagConstraints gbc)
+{
+ this->gbc = gbc;
+}

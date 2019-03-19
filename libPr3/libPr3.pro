@@ -876,6 +876,7 @@ SOURCES += \
     jmriclient/jmriclientreply.cpp \
     jmriclient/networkdriveradapter.cpp \
     zeroconfclient.cpp
+#    jmriclient/jmriclientconnectionconfig.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1744,6 +1745,7 @@ HEADERS += \
     jmriclient/jmriclientreply.h \
     jmriclient/networkdriveradapter.h \
     zeroconfclient.h
+#    jmriclient/jmriclientconnectionconfig.h
 
  !contains(FTDI, 1) {
     HEADERS +=

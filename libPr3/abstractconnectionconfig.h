@@ -8,8 +8,9 @@
 #include "libPr3_global.h"
 
 //class LocobufferConnectionConfig;
+class ConnectionConfig;
 class PortAdapter;
-class QGridLayout;
+class GridBagLayout;
 class GridBagConstraints;
 class Option;
 class QCheckBox;
@@ -72,7 +73,7 @@ protected:
     /*protected*/ QHash<QString, AbstractConnectionConfig::Option*> options;// = new Hashtable<>();
     virtual /*abstract*/ /*protected*/ void setInstance();
     /*protected*/ QList<QWidget*>* additionalItems;// = new QList<QWidget*>();
-    /*protected*/ QGridLayout* gbLayout;// = new QGridLayout();
+    /*protected*/ GridBagLayout* gbLayout;// = new QGridLayout();
     /*protected*/ GridBagConstraints* cL;// = new GridBagConstraints();
     /*protected*/ GridBagConstraints* cR;// = new GridBagConstraints();
     /*protected*/ int addStandardDetails(PortAdapter* adapter, bool incAdvanced, int i);

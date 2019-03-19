@@ -2,7 +2,8 @@
 #define GRIDBAGLAYOUT_H
 #include <QGridLayout>
 #include "javaqt_global.h"
-class GridBagConstraints;
+#include "gridbagconstraints.h"
+
 class JAVAQTSHARED_EXPORT GridBagLayout : public QGridLayout
 {
     Q_OBJECT
@@ -11,7 +12,10 @@ class JAVAQTSHARED_EXPORT GridBagLayout : public QGridLayout
     void addWidget(QWidget* widget, GridBagConstraints gbc);
     void columnWidths(QList<int> columns);
     void rowHeights(QList<int> rows);
+    void setConstraints(GridBagConstraints gbc);
 
+private:
+    GridBagConstraints gbc;
 };
 
 #endif // GRIDBAGLAYOUT_H

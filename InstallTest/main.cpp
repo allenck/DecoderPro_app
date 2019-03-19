@@ -1,6 +1,10 @@
 #include <QApplication>
 #include "myapplication.h"
 #include "installtest.h"
+#ifdef SCRIPTING_ENABLED
+#include "PythonQt.h"
+#include "PythonQt_QtAll.h"
+#endif
 
 int main(int argc, char *argv[])
 {

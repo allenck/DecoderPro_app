@@ -16,6 +16,7 @@
 #include <pr3adapter.h>
 #include "jmrixconfigpane.h"
 #include <QSignalMapper>
+#include "gridbaglayout.h"
 
 //AbstractSerialConnectionConfig::AbstractSerialConnectionConfig(QObject *parent) :
 //    AbstractConnectionConfig(parent)
@@ -504,7 +505,7 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
 //  {
 //   _details->layout()->removeItem((QLayout*)o);
   delete _details->layout();
-  gbLayout = new QGridLayout;
+  gbLayout = new GridBagLayout();
 //    //o->deleteLater();
 //  }
  cL->anchor = GridBagConstraints::WEST;
@@ -532,8 +533,8 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
  if(_details->layout() == NULL)
   _details->setLayout(gbLayout);
  else
-  if(qobject_cast<QGridLayout*>(_details->layout()) != NULL)
-    gbLayout = (QGridLayout*)_details->layout();
+  if(qobject_cast<GridBagLayout*>(_details->layout()) != NULL)
+    gbLayout = (GridBagLayout*)_details->layout();
  i = addStandardDetails(incAdvancedOptions, i);
  if (showAdvanced->isChecked())
  {
@@ -546,9 +547,9 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
 //    gbLayout.setConstraints(portBox, cR);
 
     //panel.add(row1Label);
-   gbLayout->addWidget(portBoxLabel, cL->gridy, cL->gridx);
+   gbLayout->addWidget(portBoxLabel, *cL);
    portBoxLabel->setVisible(true);
-   gbLayout->addWidget(portBox, cR->gridy, cR->gridx);
+   gbLayout->addWidget(portBox, *cR);
    portBox->setVisible(true);
    i++;
   }
@@ -559,9 +560,9 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
    cL->gridy = i;
 //    gbLayout.setConstraints(baudBoxLabel, cL);
 //    gbLayout.setConstraints(baudBox, cR);
-   gbLayout->addWidget(baudBoxLabel, cL->gridy, cL->gridx);
+   gbLayout->addWidget(baudBoxLabel, *cL);
    baudBoxLabel->setVisible(true);
-   gbLayout->addWidget(baudBox, cR->gridy, cR->gridx);
+   gbLayout->addWidget(baudBox, *cR);
    baudBox->setVisible(true);
    i++;
   }
@@ -573,9 +574,9 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
     cL->gridy = i;
 //    gbLayout.setConstraints(options.get(item).getLabel(), cL);
 //    gbLayout.setConstraints(options.get(item).getComponent(), cR);
-    gbLayout->addWidget(options.value(item)->getLabel(), cL->gridy, cL->gridx);
+    gbLayout->addWidget(options.value(item)->getLabel(), *cL);
     options.value(item)->getLabel()->setVisible(true);
-    gbLayout->addWidget(options.value(item)->getComponent(), cR->gridy, cR->gridx);
+    gbLayout->addWidget(options.value(item)->getComponent(), *cR);
     options.value(item)->getComponent()->setVisible(true);
     i++;
    }
@@ -586,7 +587,7 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
  {
   cL->gridy = i;
 //  gbLayout.setConstraints(item, cL);
-  gbLayout->addWidget(item, cL->gridy, cL->gridx);
+  gbLayout->addWidget(item, *cL);
   item->setVisible(true);
   i++;
  }
@@ -610,9 +611,9 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
   cL->gridy = i;
 //    gbLayout.setConstraints(portBoxLabel, cL);
 //    gbLayout.setConstraints(portBox, cR);
-  gbLayout->addWidget(portBoxLabel, cL->gridy, cL->gridx);
+  gbLayout->addWidget(portBoxLabel, *cL);
   portBoxLabel->setVisible(true);
-  gbLayout->addWidget(portBox, cR->gridy, cR->gridx);
+  gbLayout->addWidget(portBox, *cR);
   portBox->setVisible(true);
   i++;
  }
@@ -623,9 +624,8 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
   cL->gridy = i;
 //    gbLayout.setConstraints(baudBoxLabel, cL);
 //    gbLayout.setConstraints(baudBox, cR);
-  gbLayout->addWidget(baudBoxLabel, cL->gridy, cL->gridx);
-  baudBoxLabel->setVisible(true);
-  gbLayout->addWidget(baudBox, cR->gridy, cR->gridx);
+  gbLayout->addWidget(baudBoxLabel,*cL);
+  gbLayout->addWidget(baudBox,*cR);
   baudBox->setVisible(true);
   i++;
  }

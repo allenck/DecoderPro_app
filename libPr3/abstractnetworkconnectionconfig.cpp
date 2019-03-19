@@ -10,7 +10,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QFont>
-#include <QGridLayout>
+#include "gridbaglayout.h"
 #include "insets.h"
 #include "gridbagconstraints.h"
 #include "abstractnetworkportcontroller.h"
@@ -490,7 +490,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
   }
  }
  delete _details->layout();
- gbLayout = new QGridLayout;
+ gbLayout = new GridBagLayout;
 
  cL->anchor = GridBagConstraints::WEST;
  cL->insets = new Insets(2, 5, 0, 5);
@@ -536,9 +536,9 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //   gbLayout->setConstraints(hostNameFieldLabel, cL);
 //   gbLayout->setConstraints(hostNameField, cR);
    //_details.add(hostNameFieldLabel);
-   gbLayout->addWidget(hostNameFieldLabel,cL->gridy, cL->gridx);
+   gbLayout->addWidget(hostNameFieldLabel,*cL);
    //_details.add(hostNameField);
-   gbLayout->addWidget(hostNameField, cR->gridy, cR->gridx);
+   gbLayout->addWidget(hostNameField, *cR);
    hostNameFieldLabel->setVisible(true);
    hostNameField->setVisible(true);
    i++;
@@ -551,9 +551,9 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //   gbLayout->setConstraints(portFieldLabel, cL);
 //   gbLayout->setConstraints(portField, cR);
    //_details.add(portFieldLabel);
-   gbLayout->addWidget(portFieldLabel,cL->gridy, cL->gridx);
+   gbLayout->addWidget(portFieldLabel,*cL);
    //_details.add(portField);
-   gbLayout->addWidget(portField, cR->gridy, cR->gridx);
+   gbLayout->addWidget(portField, *cR);
    portField->setVisible(true);
    portField->setVisible(true);
    i++;
@@ -566,9 +566,9 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //   gbLayout->setConstraints(adNameFieldLabel, cL);
 //   gbLayout->setConstraints(adNameField, cR);
    //_details.add(adNameFieldLabel);
-   gbLayout->addWidget(adNameFieldLabel,cL->gridy, cL->gridx);
+   gbLayout->addWidget(adNameFieldLabel,*cL);
    //_details.add(adNameField);
-   gbLayout->addWidget(adNameField, cR->gridy, cR->gridx);
+   gbLayout->addWidget(adNameField, *cR);
    adNameFieldLabel->setVisible(true);
    adNameField->setVisible(true);
    cR->gridy = i;
@@ -576,9 +576,9 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //   gbLayout->setConstraints(serviceTypeFieldLabel, cL);
 //   gbLayout->setConstraints(serviceTypeField, cR);
    //_details.add(serviceTypeFieldLabel);
-   gbLayout->addWidget(serviceTypeFieldLabel,cL->gridy, cL->gridx);
+   gbLayout->addWidget(serviceTypeFieldLabel,*cL);
    //_details.add(serviceTypeField);
-   gbLayout->addWidget(serviceTypeField, cR->gridy, cR->gridx);
+   gbLayout->addWidget(serviceTypeField, *cR);
    i++;
    serviceTypeField->setVisible(true);
    serviceTypeFieldLabel->setVisible(true);
@@ -593,9 +593,9 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //    gbLayout->setConstraints(options.get(item).getLabel(), cL);
 //    gbLayout->setConstraints(options.get(item).getComponent(), cR);
 //                _details.add(options.get(item).getLabel());
-    gbLayout->addWidget(options.value(item)->getLabel(),cL->gridy, cL->gridx);
+    gbLayout->addWidget(options.value(item)->getLabel(),*cL);
 //                _details.add(options.get(item).getComponent());
-    gbLayout->addWidget(options.value(item)->getComponent(), cR->gridy, cR->gridx);
+    gbLayout->addWidget(options.value(item)->getComponent(), *cR);
     i++;
     options.value(item)->getLabel()->setVisible(true);
     options.value(item)->getComponent()->setVisible(true);
@@ -608,7 +608,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
   cL->gridy = i;
 //  gbLayout->setConstraints(item, cL);
   //_details.add(item);
-  gbLayout->addWidget(item,cL->gridy, cL->gridx);
+  gbLayout->addWidget(item,*cL);
   item->setVisible(true);
   i++;
  }
@@ -629,7 +629,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
   cL->gridy = i;
 //     gbLayout->setConstraints(showAutoConfig, cR);
 //     _details.add(showAutoConfig);
-  gbLayout->addWidget(showAutoConfig,cL->gridy, cL->gridx);
+  gbLayout->addWidget(showAutoConfig,*cL);
 //     _details.add(showAutoConfig);
 //     gbLayout->setConstraints(showAutoConfig, cR);
   i++;
@@ -643,9 +643,9 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //     gbLayout->setConstraints(hostNameFieldLabel, cL);
 //     gbLayout->setConstraints(hostNameField, cR);
 //     _details.add(hostNameFieldLabel);
-  gbLayout->addWidget(hostNameFieldLabel,cL->gridy, cL->gridx);
+  gbLayout->addWidget(hostNameFieldLabel,*cL);
 //     _details.add(hostNameField);
-  gbLayout->addWidget(hostNameField, cR->gridy, cR->gridx);
+  gbLayout->addWidget(hostNameField, *cR);
   i++;
   hostNameField->setVisible(true);
   hostNameFieldLabel->setVisible(true);
@@ -658,9 +658,9 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //     gbLayout->setConstraints(portFieldLabel, cL);
 //     gbLayout->setConstraints(portField, cR);
 //     _details.add(portFieldLabel);
-  gbLayout->addWidget(portFieldLabel,cL->gridy, cL->gridx);
+  gbLayout->addWidget(portFieldLabel,*cL);
 //     _details.add(portField);
-  gbLayout->addWidget(portField, cR->gridy, cR->gridx);
+  gbLayout->addWidget(portField, *cR);
   i++;
   portFieldLabel->setVisible(true);
   portField->setVisible(true);

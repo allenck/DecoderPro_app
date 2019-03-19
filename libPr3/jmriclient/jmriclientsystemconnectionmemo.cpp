@@ -66,7 +66,7 @@
  * common manager config in one place.
  */
 /*public*/ void JMRIClientSystemConnectionMemo::configureManagers() {
-#if 0
+#if 0 // TODO:
     setPowerManager(new jmri.jmrix.jmriclient.JMRIClientPowerManager(this));
     jmri.InstanceManager.store(getPowerManager(), jmri.PowerManager.class);
     setTurnoutManager(new jmri.jmrix.jmriclient.JMRIClientTurnoutManager(this));
@@ -84,7 +84,7 @@
  * Request all status from the configured managers.
  */
 /*public*/ void JMRIClientSystemConnectionMemo::requestAllStatus() {
-#if 0
+#if 0 //TODO:
     getTurnoutManager().getNamedBeanSet().forEach((turn) -> {
         ((JMRIClientTurnout)(turn)).requestUpdateFromLayout();
     });
@@ -111,130 +111,121 @@
     powerManager = p;
 }
 
-#if 0
 /*
  * Provides access to the Sensor Manager for this particular connection.
  */
-/*public*/ SensorManager getSensorManager() {
+/*public*/ SensorManager* JMRIClientSystemConnectionMemo::getSensorManager() {
     return sensorManager;
 
 }
 
-/*public*/ void setSensorManager(SensorManager s) {
+/*public*/ void JMRIClientSystemConnectionMemo::setSensorManager(SensorManager* s) {
     sensorManager = s;
 }
 
-private SensorManager sensorManager = null;
 
 /*
  * Provides access to the Turnout Manager for this particular connection.
  * NOTE: Turnout manager defaults to NULL
  */
-/*public*/ TurnoutManager getTurnoutManager() {
+/*public*/ TurnoutManager* JMRIClientSystemConnectionMemo::getTurnoutManager() {
     return turnoutManager;
 
 }
 
-/*public*/ void setTurnoutManager(TurnoutManager t) {
+/*public*/ void JMRIClientSystemConnectionMemo::setTurnoutManager(TurnoutManager* t) {
     turnoutManager = t;
 }
-
-private TurnoutManager turnoutManager = null;
 
 /*
  * Provides access to the Light Manager for this particular connection.
  * NOTE: Light manager defaults to NULL
  */
-/*public*/ LightManager getLightManager() {
+/*public*/ LightManager* JMRIClientSystemConnectionMemo::getLightManager() {
     return lightManager;
 }
 
-/*public*/ void setLightManager(LightManager t) {
+/*public*/ void JMRIClientSystemConnectionMemo::setLightManager(LightManager* t) {
     lightManager = t;
 }
-private LightManager lightManager = null;
 
 /*
  * Provides access to the Reporter Manager for this particular connection.
  * NOTE: Reporter manager defaults to NULL
  */
-/*public*/ ReporterManager getReporterManager() {
+/*public*/ ReporterManager* JMRIClientSystemConnectionMemo::getReporterManager() {
     return reporterManager;
 }
 
-/*public*/ void setReporterManager(ReporterManager t) {
+/*public*/ void JMRIClientSystemConnectionMemo::setReporterManager(ReporterManager* t) {
     reporterManager = t;
 }
 
-private ReporterManager reporterManager = null;
 
-/*public*/ void setTransmitPrefix(String tPrefix) {
-    transmitPrefix = tPrefix.toUpperCase();
+/*public*/ void JMRIClientSystemConnectionMemo::setTransmitPrefix(QString tPrefix) {
+    transmitPrefix = tPrefix.toUpper();
 }
 
-/*public*/ String getTransmitPrefix() {
-    if (transmitPrefix == null) {
+/*public*/ QString JMRIClientSystemConnectionMemo::getTransmitPrefix() {
+    if (transmitPrefix == "") {
         return getSystemPrefix();
     }
     return transmitPrefix;
 }
 
-private String transmitPrefix = null;
 
 //@Override
-protected ResourceBundle getActionModelResourceBundle() {
-    //No actions that can be loaded at startup
-    return null;
-}
+//protected ResourceBundle getActionModelResourceBundle() {
+//    //No actions that can be loaded at startup
+//    return null;
+//}
 
 //@Override
-@SuppressWarnings("unchecked")
-/*public*/ <T> T get(Class<?> T) {
+//@SuppressWarnings("unchecked")
+/*public*/  QObject *JMRIClientSystemConnectionMemo::get(QString T) {
     if (getDisabled()) {
-        return null;
+        return nullptr;
     }
-    if (T.equals(jmri.PowerManager.class)) {
-        return (T) getPowerManager();
+    if (T == ("PowerManager")) {
+        return  (Manager*) getPowerManager();
     }
-    if (T.equals(jmri.SensorManager.class)) {
-        return (T) getSensorManager();
+    if (T == ("SensorManager")) {
+        return  (Manager*) getSensorManager();
     }
-    if (T.equals(jmri.TurnoutManager.class)) {
-        return (T) getTurnoutManager();
+    if (T == ("TurnoutManager")) {
+        return  (Manager*) getTurnoutManager();
     }
-    if (T.equals(jmri.LightManager.class)) {
-        return (T) getLightManager();
+    if (T == ("LightManager")) {
+        return  (Manager*) getLightManager();
     }
-    if (T.equals(jmri.ReporterManager.class)) {
-        return (T) getReporterManager();
+    if (T == ("ReporterManager")) {
+        return  (Manager*) getReporterManager();
     }
-    return super.get(T);
+    return SystemConnectionMemo::get (T);
 }
 
 /**
  * Tells which managers this class provides.
  */
 //@Override
-/*public*/ bool provides(Class<?> type) {
+/*public*/ bool JMRIClientSystemConnectionMemo::provides(QString type) {
     if (getDisabled()) {
         return false;
     }
-    if (type.equals(jmri.PowerManager.class)) {
-        return (null != powerManager);
+    if (type == ("PowerManager")) {
+        return (nullptr != powerManager);
     }
-    if (type.equals(jmri.SensorManager.class)) {
-        return (null != sensorManager);
+    if (type == ("SensorManager")) {
+        return (nullptr != sensorManager);
     }
-    if (type.equals(jmri.TurnoutManager.class)) {
-        return (null != turnoutManager);
+    if (type == ("TurnoutManager")) {
+        return (nullptr != turnoutManager);
     }
-    if (type.equals(jmri.LightManager.class)) {
-        return (null != lightManager);
+    if (type == ("LightManager")) {
+        return (nullptr != lightManager);
     }
-    if (type.equals(jmri.ReporterManager.class)) {
-        return (null != reporterManager);
+    if (type == ("ReporterManager")) {
+        return (nullptr != reporterManager);
     }
-    return super.provides(type);
+    return SystemConnectionMemo::provides(type);
 }
-
-#endif
