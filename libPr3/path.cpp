@@ -1,5 +1,6 @@
 #include "path.h"
 #include <QtMath>
+#include "mathutil.h"
 
 Path::Path(QObject *parent) :
     QObject(parent)
@@ -316,7 +317,7 @@ void Path::common()
 
     double angleDEG;// = MathUtil.computeAngleDEG(p2, p1);
     qRadiansToDegrees(atan2(p1.y() - p2.y(), p1.x() - p2.x()));
-    //angleDEG = MathUtil.wrap360(angleDEG);  // don't want to deal with negative numbers here...
+    angleDEG = MathUtil::wrap360(angleDEG);  // don't want to deal with negative numbers here...
      while (angleDEG < 0 )
      {
       angleDEG -= 360.0;
