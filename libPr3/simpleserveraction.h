@@ -6,8 +6,8 @@ class SimpleServerAction : public AbstractAction
 {
  Q_OBJECT
 public:
- SimpleServerAction(QObject* parent);
- /*public*/ SimpleServerAction(QString s, QObject *parent);
+ SimpleServerAction(QObject* parent= 0);
+ Q_INVOKABLE /*public*/ SimpleServerAction(QString s, QObject *parent);
  ~SimpleServerAction() {}
  SimpleServerAction(const SimpleServerAction&) () : AbstractAction() {}
 public slots:
