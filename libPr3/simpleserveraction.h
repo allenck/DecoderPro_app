@@ -9,7 +9,7 @@ public:
  SimpleServerAction(QObject* parent= 0);
  Q_INVOKABLE /*public*/ SimpleServerAction(QString s, QObject *parent);
  ~SimpleServerAction() {}
- SimpleServerAction(const SimpleServerAction&) () : AbstractAction() {}
+ SimpleServerAction(const SimpleServerAction&) : AbstractAction() {}
 public slots:
  /*public*/ void actionPerformed(/*ActionEvent e*/);
 
