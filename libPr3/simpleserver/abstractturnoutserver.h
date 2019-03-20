@@ -13,11 +13,11 @@ class AbstractTurnoutServer : public QObject
  Q_OBJECT
 public:
  explicit AbstractTurnoutServer(QObject *parent = nullptr);
- /*abstract*/ virtual /*public*/ void sendStatus(QString turnoutName, int Status) throw (IOException);
+ /*abstract*/ virtual /*public*/ void sendStatus(QString turnoutName, int Status) throw (IOException) {}
 
- /*abstract*/ virtual  /*public*/ void sendErrorStatus(QString turnoutName) throw (IOException);
+ /*abstract*/ virtual  /*public*/ void sendErrorStatus(QString turnoutName) throw (IOException) {}
 
- /*abstract*/ virtual  /*public*/ void parseStatus(QString statusString) throw (JmriException, IOException);
+ /*abstract*/ virtual  /*public*/ void parseStatus(QString statusString) throw (JmriException, IOException) {}
  /*public*/ Turnout* initTurnout(QString turnoutName) throw (IllegalArgumentException);
  /*public*/ void closeTurnout(QString turnoutName);
  /*public*/ void throwTurnout(QString turnoutName);
