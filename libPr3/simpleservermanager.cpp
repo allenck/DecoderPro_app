@@ -20,7 +20,7 @@
     preferences = static_cast<SimpleServerPreferences*>(InstanceManager::getDefault("SimpleServerPreferences"));
 }
 
-/*public*/ /*static*/ SimpleServerManager* getInstance() {
+/*public*/ /*static*/ SimpleServerManager* SimpleServerManager::getInstance() {
     if (InstanceManager::getNullableDefault("SimpleServerManager") == nullptr) {
         InstanceManager::store(new SimpleServerManager(), "SimpleServerManager"); // NOI18N
     }
