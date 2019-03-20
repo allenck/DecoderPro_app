@@ -17,8 +17,8 @@ public:
  /*public*/ /*synchronized*/ static JmriServer* instance();
  /*public*/ JmriServer(int port, QObject *parent);
  /*public*/ JmriServer(int port, int timeout, QObject* parent);
- /*public*/ void start();
- /*public*/ void stop();
+ /*public*/ virtual void start();
+ /*public*/ virtual void stop();
 
 signals:
 

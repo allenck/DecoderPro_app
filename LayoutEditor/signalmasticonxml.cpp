@@ -128,7 +128,7 @@ SignalMastIconXml::SignalMastIconXml(QObject *parent) :
  {
   log->error("SignalMast named '"+attr+"' not found.");
   ed->loadFailed();
- //    return;
+  return;
  }
 
  attr=element.attribute("imageset");

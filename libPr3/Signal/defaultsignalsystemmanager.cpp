@@ -96,7 +96,7 @@ QStringList* DefaultSignalSystemManager::getListOfNames()
                       +"resources"+QDir::separator()+"signals");
  if(!signalDir->exists()){
   log->info("User signal resource directory has not been created");
-  if(!signalDir->mkdir(signalDir->absolutePath()))
+  if(!signalDir->mkpath(signalDir->absolutePath()))
    log->error("Unable to create signal resource directory: " +signalDir->absolutePath());
  }
  files = signalDir->entryList();

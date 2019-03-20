@@ -1,6 +1,11 @@
 #include "simpleserver.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
+#include "simpleservermanager.h"
+#include <QTcpSocket>
+#include "simpleserver/simplepowerserver.h"
+#include "simpleserver/simplesensorserver.h"
+#include "simpleserver/simpleturnoutserver.h"
 
 /**
  * This is an implementation of a simple server for JMRI. There is currently no
@@ -39,11 +44,216 @@ void SimpleServer::common(int port)
     //super(port);
     InstanceManager::setDefault("SimpleServer",this);
     log->info("JMRI SimpleServer started on port " + QString::number(port));
+    clients = new QLinkedList<JMRIClientRxHandler*>();
 }
 
 //@Override
 /*protected*/ void SimpleServer::advertise() {
     JmriServer::advertise(QString("_jmri-simple._tcp.local."));
+}
+
+/*protected*/ void SimpleServer::removeClient(JMRIClientRxHandler* handler)
+{
+    /*synchronized (clients)*/
+ {
+  clients->removeOne(handler);
+ }
+ //updateClientStateListener();
+}
+
+void SimpleServer::on_newConnection()
+{
+ QTcpSocket* socket = nextPendingConnection();
+ if(socket != NULL)
+ {
+  QString remoteAddress = socket->peerAddress().toString();
+  JMRIClientRxHandler* rxHandler;
+  addClient(rxHandler = new JMRIClientRxHandler(remoteAddress,socket, connectionNbr++));
+
+  log->debug("New connection from "+ remoteAddress);
+ }
+}
+
+/*protected*/ void SimpleServer::addClient(JMRIClientRxHandler *handler)
+{
+    /*synchronized (clients) */
+ {
+  clients->append(handler);
+ }
+// updateClientStateListener();
+}
+
+//@Override
+/*public*/ void SimpleServer::stop() {
+    log->info("Stopping Simple Server.");
+    try
+    {
+     if (serverSocket != NULL) {
+         serverSocket->close();
+     }
+    }
+    catch (IOException ex) {
+    }
+
+//    updateServerStateListener();
+
+    // Now close all the client connections
+    QLinkedList<JMRIClientRxHandler*> clientsArray;
+    /*synchronized (clients)*/
+    {
+     clientsArray = *clients;
+  //  }
+  //  for (int i = 0; i < clientsArray.size(); i++)
+  //  {
+  //   ((ClientRxHandler*) clientsArray[i])->close();
+  //  }
+     while(!clientsArray.isEmpty())
+     {
+      clientsArray.takeFirst()->close();
+     }
+    }
+}
+JMRIClientRxHandler::JMRIClientRxHandler(QString newRemoteAddress, QTcpSocket *newSocket, int connectionNbr, QObject *parent)
+{
+ clientSocket = newSocket;
+ setPriority(QThread::HighestPriority);
+ remoteAddress = newRemoteAddress;
+ setObjectName("JMRIClientRxHandler:" + QString(" #%1").arg(connectionNbr));
+ bIsInterrupted = false;
+ log = new Logger(objectName());
+ log->setDebugEnabled(true);
+ //lastSentMessage = NULL;
+ log->debug(tr("started, connected to ") + newRemoteAddress);
+ powerServer = new SimplePowerServer(clientSocket);
+ turnoutServer = new SimpleTurnoutServer(clientSocket);
+ //SimpleLightServer* lightServer;// = new SimpleLightServer(inStream, outStream);
+ sensorServer = new SimpleSensorServer(clientSocket);
+// SimpleSignalHeadServer* signalHeadServer;// = new SimpleSignalHeadServer(inStream, outStream);
+// SimpleReporterServer* reporterServer;// = new SimpleReporterServer(inStream, outStream);
+// SimpleOperationsServer* operationsServer;// = new SimpleOperationsServer(inStream, outStream);
+
+
+ txHandler = new JMRIClientTxHandler(remoteAddress, newSocket, connectionNbr);
+}
+
+void JMRIClientRxHandler::run()
+{
+ connect(clientSocket, SIGNAL(disconnected()), this, SLOT(on_clientSocket_disconnected()));
+ inStream = new QTextStream(clientSocket);
+ connect(clientSocket, SIGNAL(readyRead()), this, SLOT(on_readyRead()));
+ connect(clientSocket, SIGNAL(disconnected()), this, SLOT(quit()));
+ exec();
+ inStream = NULL;
+ clientSocket->close();
+ //SimpleServer::getDefault()->removeClient(this
+ SimpleServerManager::getSimpleServer()->removeClient(this);
+ log->info("JMRIClientRxHandler: Exiting");
+}
+
+void JMRIClientRxHandler::on_readyRead()
+{
+
+ while (!isInterrupted()  && clientSocket->isValid() && clientSocket->isOpen() )
+ {
+  if(log->isDebugEnabled() && clientSocket->bytesAvailable() > 0)
+   log->debug(tr("Socket has %1 bytes ready").arg(clientSocket->bytesAvailable()));
+  inString = inStream->readLine();
+  if (inString.isEmpty())
+  {
+   //log->debug("ClientRxHandler: Remote Connection Closed");
+   //interrupt();
+   return;
+  }
+  else
+  {
+   log->debug("JMRIClientRxHandler: Received: " + inString);
+   emit passMessage(inString);
+   handleMessage(inString);
+  }
+ }
+}
+
+bool JMRIClientRxHandler::isInterrupted()
+{
+ return bIsInterrupted;
+}
+
+void JMRIClientRxHandler::on_clientSocket_disconnected()
+{
+
+}
+
+void JMRIClientRxHandler::close()
+{
+
+}
+
+void JMRIClientRxHandler::message(QString msg)
+{
+ emit message(msg);
+}
+/*public*/ void JMRIClientTxHandler::run()
+{
+
+
+ exec();
+ // Interrupt the Parent to let it know we are exiting for some reason
+ //parentThread.interrupt();
+// parentThread->exit();
+
+// parentThread = NULL;
+ log->info("JMRIClientTxHandler: Exiting");
+}
+void JMRIClientRxHandler::displayError(QAbstractSocket::SocketError)
+{
+
+}
+
+void JMRIClientTxHandler::sendMessage(QString msg)
+{
+//    try {
+// queueCondition->wait(mutex);
+ if(!clientSocket->isOpen() || !clientSocket->isValid())
+  exit();
+
+// outBuf = QString("VERSION JMRI Server ");
+// outBuf.append(Version::name());
+// outBuf.append("\r\n");
+// //outStream.write(outBuf.toString().getBytes());
+// *outStream << outBuf;
+
+ if (clientSocket->isOpen())
+ {
+
+
+  if (msg != NULL)
+  {
+   outBuf.clear();
+//   outBuf.append("RECEIVE ");
+   outBuf.append(msg/*toString()*/);
+   //log->debug("ClientTxHandler: Send: " + outBuf);
+   outBuf.append("\r\n");
+   *outStream << outBuf;
+   outStream->flush();
+   //mutex->unlock();
+
+  }
+ }
+//    } catch (IOException ex) {
+//        log->error("ClientTxHandler: IO Exception");
+//    } catch (InterruptedException ex) {
+//        //Thread.currentThread().interrupt(); // retain if needed later
+//        log->debug("ClientTxHandler: Interrupted Exception");
+//    }
+ outBuf = "";
+
+}
+JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *newSocket, int connectionNbr)
+{
+ Q_UNUSED(newRemoteAddress);
+ Q_UNUSED(newSocket);
+ Q_UNUSED(connectionNbr);
+ log->debug("JMRIClientTxHandler called");
 }
 #if 0
 // Handle communication to a client through inStream and outStream
@@ -77,36 +287,48 @@ void SimpleServer::common(int port)
             // so break out of the loop.
             break;
         }
-
-        if (log.isDebugEnabled()) {
-            log.debug("Received from client: " + cmd);
+#endif
+    void JMRIClientRxHandler::handleMessage(QString cmd)
+    {
+        if (log->isDebugEnabled()) {
+            log->debug("Received from client: " + cmd);
         }
         if (cmd.startsWith("POWER")) {
             try {
-                powerServer.parseStatus(cmd);
-                powerServer.sendStatus(InstanceManager.getDefault(jmri.PowerManager.class).getPower());
+                powerServer->parseStatus(cmd);
+                powerServer->sendStatus(static_cast<PowerManager*>(InstanceManager::getDefault("PowerManager"))->getPower());
             } catch (JmriException je) {
-                outStream.writeBytes("not supported\n");
+                //outStream.writeBytes("not supported\n");
+          powerServer->sendStatus("not supported");
+
             }
         } else if (cmd.startsWith("TURNOUT")) {
             try {
-                turnoutServer.parseStatus(cmd);
+                turnoutServer->parseStatus(cmd);
             } catch (JmriException je) {
-                outStream.writeBytes("not supported\n");
+                //outStream.writeBytes("not supported\n");
+          turnoutServer->sendErrorStatus("not supported");
             }
-        } else if (cmd.startsWith("LIGHT")) {
+        }
+#if 0
+        else if (cmd.startsWith("LIGHT")) {
             try {
                 lightServer.parseStatus(cmd);
             } catch (JmriException je) {
                 outStream.writeBytes("not supported\n");
             }
-        } else if (cmd.startsWith("SENSOR")) {
+        }
+#endif
+        else if (cmd.startsWith("SENSOR")) {
             try {
-                sensorServer.parseStatus(cmd);
+                sensorServer->parseStatus(cmd);
             } catch (JmriException je) {
-                outStream.writeBytes("not supported\n");
+                //outStream.writeBytes("not supported\n");
+          sensorServer->sendErrorStatus("not supported");
             }
-        } else if (cmd.startsWith("SIGNALHEAD")) {
+        }
+#if 0
+        else if (cmd.startsWith("SIGNALHEAD")) {
             try {
                 signalHeadServer.parseStatus(cmd);
             } catch (JmriException je) {
@@ -124,12 +346,21 @@ void SimpleServer::common(int port)
             } catch (JmriException je) {
                 outStream.writeBytes("not supported\n");
             }
-        } else {
-            outStream.writeBytes("Unknown Command " + cmd + "\n");
         }
-    }
-    inputScanner.close();
+#endif
+        else {
+            //outStream.writeBytes("Unknown Command " + cmd + "\n");
+         clientSocket->write(QString("Unknown Command " + cmd + "\n").toLocal8Bit());
+        }
+//    }
+//    inputScanner.close();
 
 }
-#endif
+
+void SimpleServer::start()
+{
+ JmriServer::start();
+
+}
+
 /*private*/ /*final*/ /*static*/ Logger* SimpleServer::log = LoggerFactory::getLogger("SimpleServer");

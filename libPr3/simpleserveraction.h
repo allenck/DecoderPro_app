@@ -8,10 +8,11 @@ class SimpleServerAction : public AbstractAction
 public:
  SimpleServerAction(QObject* parent);
  /*public*/ SimpleServerAction(QString s, QObject *parent);
-
+ ~SimpleServerAction() {}
+ SimpleServerAction(const SimpleServerAction&) () : AbstractAction() {}
 public slots:
  /*public*/ void actionPerformed(/*ActionEvent e*/);
 
 };
-
+Q_DECLARE_METATYPE(SimpleServerAction)
 #endif // SIMPLESERVERACTION_H

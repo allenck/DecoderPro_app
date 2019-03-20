@@ -292,6 +292,7 @@
 #include "enginemanagerxml.h"
 #include "jmriclient/jmriclientconnectionconfigxml.h"
 #include "jmriclient/jmriclientconnectionconfig.h"
+#include "simpleserveraction.h"
 
 
 bool Metatypes::done = false;
@@ -599,6 +600,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<Operations::EngineManagerXml>("EngineManagerXml");
  qRegisterMetaType<JMRIClientConnectionConfigXml>("JMRIClientConnectionConfigXml");
  qRegisterMetaType<JMRIClientConnectionConfig>("JMRIClientConnectionConfig");
+ qRegisterMetaType<SimpleServerAction>("SimpleServerAction");
 
  Metatypes::done = true;
 }

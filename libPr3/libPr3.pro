@@ -897,7 +897,13 @@ SOURCES += \
     simpleserveraction.cpp \
     simpleserverpreferences.cpp \
     abstractserverpreferences.cpp \
-    simpleservermenu.cpp
+    simpleservermenu.cpp \
+    simpleserver/abstractpowerserver.cpp \
+    simpleserver/simplepowerserver.cpp \
+    simpleserver/abstractsensorserver.cpp \
+    simpleserver/abstractturnoutserver.cpp \
+    simpleserver/simpleturnoutserver.cpp \
+    simpleserver/simplesensorserver.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1787,7 +1793,13 @@ HEADERS += \
     simpleserveraction.h \
     simpleserverpreferences.h \
     abstractserverpreferences.h \
-    simpleservermenu.h
+    simpleservermenu.h \
+    simpleserver/abstractpowerserver.h \
+    simpleserver/simplepowerserver.h \
+    simpleserver/abstractsensorserver.h \
+    simpleserver/abstractturnoutserver.h \
+    simpleserver/simpleturnoutserver.h \
+    simpleserver/simplesensorserver.h
 
  !contains(FTDI, 1) {
     HEADERS +=
