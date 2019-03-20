@@ -20,7 +20,8 @@ JMRIClientConnectionTypeList::JMRIClientConnectionTypeList()
     //@Override
     /*public*/ QStringList JMRIClientConnectionTypeList::getAvailableProtocolClasses() {
         QStringList list = QStringList() <<
-            "jmri.jmrix.jmriclient.networkdriver.ConnectionConfig";
+//            "jmri.jmrix.jmriclient.networkdriver.ConnectionConfig";
+                                            "JMRIClientConnectionConfig";
      return list;
     }
 

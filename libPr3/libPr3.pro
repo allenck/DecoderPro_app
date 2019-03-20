@@ -864,8 +864,6 @@ SOURCES += \
     rfid/olimexrfidprotocol.cpp \
     rfid/id12larfidprotocol.cpp \
     rfid/standalonemessage.cpp \
-    zeroconfservice.cpp \
-    zeroconfserviceevent.cpp \
     stacknxpanel.cpp \
     sound.cpp \
     mixerprovider.cpp \
@@ -876,6 +874,8 @@ SOURCES += \
     jmriclient/jmriclientreply.cpp \
     jmriclient/networkdriveradapter.cpp \
     zeroconfclient.cpp \
+    zeroconfservice.cpp \
+    zeroconfserviceevent.cpp \
     jmriclient/jmriclientconnectionconfig.cpp \
     jmriclient/jmriclientconnectionconfigxml.cpp \
     jmriclientconnectiontypelist.cpp \
