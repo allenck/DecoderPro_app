@@ -14,6 +14,7 @@ public:
  /*public*/ SimpleServerPreferences* getPreferences();
  /*public*/ static SimpleServerPreferences* getSimpleServerPreferences();
  /*public*/ SimpleServer* getServer();
+ /*public*/ static SimpleServer* getSimpleServer();
 
 signals:
 

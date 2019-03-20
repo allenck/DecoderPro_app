@@ -45,6 +45,6 @@
     return server;
 }
 
-/*public*/ static SimpleServer* SimpleServerManager::getSimpleServer() {
+/*public*/ /*static*/ SimpleServer* SimpleServerManager::getSimpleServer() {
     return getInstance()->getServer();
 }
