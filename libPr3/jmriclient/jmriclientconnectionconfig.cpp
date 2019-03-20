@@ -88,6 +88,16 @@ void JMRIClientConnectionConfig::common()
     }
 }
 
+void JMRIClientConnectionConfig::onTransmitPrefixField_editingFinished()
+{
+ ((JMRIClientSystemConnectionMemo*) adapter->getSystemConnectionMemo())->setTransmitPrefix(transmitPrefixField->text());
+ transmitPrefixField->setText(((JMRIClientSystemConnectionMemo*) adapter->getSystemConnectionMemo())->getTransmitPrefix());
+}
+void JMRIClientConnectionConfig::onTransmitPrefixField_left()
+{
+ ((JMRIClientSystemConnectionMemo*) adapter->getSystemConnectionMemo())->setTransmitPrefix(transmitPrefixField->text());
+ transmitPrefixField->setText(((JMRIClientSystemConnectionMemo*) adapter->getSystemConnectionMemo())->getTransmitPrefix());
+}
 
 //@Override
 /*protected*/ void JMRIClientConnectionConfig::showAdvancedItems() {

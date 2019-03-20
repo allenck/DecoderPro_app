@@ -892,7 +892,12 @@ SOURCES += \
     jmriclient/jmriclientreporter.cpp \
     jmriclient/jmriclientreportermanager.cpp \
     jmriclient/jmriclientreportermanagerxml.cpp \
-    simpleserver.cpp
+    simpleserver.cpp \
+    simpleservermanager.cpp \
+    simpleserveraction.cpp \
+    simpleserverpreferences.cpp \
+    abstractserverpreferences.cpp \
+    simpleservermenu.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1777,7 +1782,12 @@ HEADERS += \
     jmriclient/jmriclientreporter.h \
     jmriclient/jmriclientreportermanager.h \
     jmriclient/jmriclientreportermanagerxml.h \
-    simpleserver.h
+    simpleserver.h \
+    simpleservermanager.h \
+    simpleserveraction.h \
+    simpleserverpreferences.h \
+    abstractserverpreferences.h \
+    simpleservermenu.h
 
  !contains(FTDI, 1) {
     HEADERS +=
