@@ -18,8 +18,9 @@
 /*public*/ NetworkDriverAdapter::NetworkDriverAdapter()
  : JMRIClientPortController(new JMRIClientSystemConnectionMemo())
 {
-    //super(new JMRIClientSystemConnectionMemo());
-    setPort(2048); // set the default port on construction
+ //super(new JMRIClientSystemConnectionMemo());
+ setObjectName("NetworkDriverAdapter");
+ setPort(2048); // set the default port on construction
 }
 
 /**
