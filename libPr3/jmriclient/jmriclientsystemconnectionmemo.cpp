@@ -6,6 +6,7 @@
 #include "jmriclientpowermanager.h"
 #include "jmriclientturnoutmanager.h"
 #include "jmriclientsensormanager.h"
+#include "jmriclientcomponentfactory.h"
 
 /**
  * Lightweight class to denote that a system is active and provide general
@@ -25,11 +26,10 @@
     this->jt = jt;
     _register(); // registers general type
     InstanceManager::store(this, "JMRIClientSystemConnectionMemo"); // also register as specific type
-#if 0
+
     // create and register the JMRIClientComponentFactory
-    InstanceManager::store(cf = new jmri.jmrix.jmriclient.swing.JMRIClientComponentFactory(this),
-            jmri.jmrix.swing.ComponentFactory.class);
-#endif
+    InstanceManager::store(cf = new JMRIClientComponentFactory(this),
+            "ComponentFactory");
 }
 
 /*public*/ JMRIClientSystemConnectionMemo::JMRIClientSystemConnectionMemo() : SystemConnectionMemo("J", "JMRI Client") {
@@ -37,10 +37,10 @@
     this->jt = new JMRIClientTrafficController();
     _register(); // registers general type
     InstanceManager::store(this, "JMRIClientSystemConnectionMemo"); // also register as specific type
-#if 0
+
     // create and register the JMRIClientComponentFactory
-    InstanceManager.store(cf = new jmri.jmrix.jmriclient.swing.JMRIClientComponentFactory(this), jmri.jmrix.swing.ComponentFactory.class);
-#endif
+    InstanceManager::store(cf = new JMRIClientComponentFactory(this), "ComponentFactory");
+
 }
 
 

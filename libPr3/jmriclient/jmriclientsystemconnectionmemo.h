@@ -11,6 +11,7 @@ class ComponentFactory;
 class JMRIClientTrafficController;
 class JMRIClientSystemConnectionMemo : public SystemConnectionMemo
 {
+ Q_OBJECT
 public:
  JMRIClientSystemConnectionMemo();
  /*public*/ JMRIClientSystemConnectionMemo(JMRIClientTrafficController* jt);

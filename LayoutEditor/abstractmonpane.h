@@ -6,7 +6,7 @@
 #include "liblayouteditor_global.h"
 //#include "jmrijframe.h"
 
-
+class Message;
 class QFile;
 class JLabel;
 class QFileDialog;
@@ -32,6 +32,9 @@ public:
     /*public*/ void setFixedWidthFont();
     /*public*/ QString getHelpTarget();
     /*public*/ virtual QString getClassName();
+ /*public*/ void logMessage(Message* message);
+ /*public*/ void logMessage(QString messagePrefix,Message* message);
+ /*public*/ void logMessage(QString messagePrefix, QString rawPrefix, Message *message);
 
 signals:
 

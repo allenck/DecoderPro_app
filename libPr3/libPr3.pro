@@ -903,7 +903,12 @@ SOURCES += \
     simpleserver/abstractsensorserver.cpp \
     simpleserver/abstractturnoutserver.cpp \
     simpleserver/simpleturnoutserver.cpp \
-    simpleserver/simplesensorserver.cpp
+    simpleserver/simplesensorserver.cpp \
+    jmriclient/jmriclientcomponentfactory.cpp \
+    jmriclient/jmriclientmenu.cpp \
+    jmriclient/jmriclientmonpane.cpp \
+    jmriclient/packetgenaction.cpp \
+    jmriclient/packetgenframe.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1799,7 +1804,13 @@ HEADERS += \
     simpleserver/abstractsensorserver.h \
     simpleserver/abstractturnoutserver.h \
     simpleserver/simpleturnoutserver.h \
-    simpleserver/simplesensorserver.h
+    simpleserver/simplesensorserver.h \
+    jmriclient/jmriclientcomponentfactory.h \
+    jmriclient/jmriclientmenu.h \
+    jmriclient/jmriclientmonpane.h \
+    jmriclient/jmriclientmonaction.h \
+    jmriclient/packetgenaction.h \
+    jmriclient/packetgenframe.h
 
  !contains(FTDI, 1) {
     HEADERS +=

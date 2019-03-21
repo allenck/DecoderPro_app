@@ -15,6 +15,7 @@
 #include "QFont"
 #include <QTextStream>
 #include <QRegExpValidator>
+#include "message.h"
 
 //AbstractMonPane::AbstractMonPane(QWidget *parent) :
 //    JmriPanel(parent)
@@ -378,6 +379,43 @@ void AbstractMonPane::OnAlwaysOnTopCheckBox(bool bChecked)
 //@Override
 /*public*/ QString AbstractMonPane::getHelpTarget() {
     return "package.jmri.jmrix.AbstractMonFrame";
+}
+/**
+ *  Log an Message derived message.
+ *
+ *  @param message message object to log.
+ */
+/*public*/ void AbstractMonPane::logMessage(Message* message){
+ logMessage("","",message);
+}
+
+/**
+ *  Log an Message derived message.
+ *
+ *  @param messagePrefix text to prefix the message with.
+ *  @param message message object to log.
+ */
+/*public*/ void AbstractMonPane::logMessage(QString messagePrefix,Message* message){
+ logMessage(messagePrefix,"",message);
+}
+
+/**
+ *  Log an Message derived message with a prefixed label.
+ *
+ *  @param messagePrefix text to prefix the message with.
+ *  @param rawPrefix label to add to the start of the message.
+ *  @param message message object to log.
+ */
+/*public*/ void AbstractMonPane::logMessage(QString messagePrefix,QString rawPrefix,Message* message){
+    // display the raw data if requested
+    QString raw = rawPrefix; //new StringBuilder(rawPrefix);
+    if (rawCheckBox->isChecked()) {
+        raw.append(message->toString());
+    }
+
+    // display the decoded data
+    QString text=message->toMonitorString();
+    nextLine(messagePrefix + " " + text + "\n", raw);
 }
 
 /*public*/ void AbstractMonPane::nextLine(QString line, QString raw)

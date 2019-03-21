@@ -22,6 +22,12 @@
     virtual void setElement(int n, int v) = 0;
 
  virtual QString toString() {return "";}
+ /*
+  * @return a human readable representation of the message.
+  */
+ /*public*/ /*default*/ QString toMonitorString(){
+       return toString();
+ }
 
 };
 
