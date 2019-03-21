@@ -908,7 +908,13 @@ SOURCES += \
     jmriclient/jmriclientmenu.cpp \
     jmriclient/jmriclientmonpane.cpp \
     jmriclient/packetgenaction.cpp \
-    jmriclient/packetgenframe.cpp
+    jmriclient/packetgenframe.cpp \
+    servermenu.cpp \
+    jmrisrcpservermenu.cpp \
+    jmrisrcpserveraction.cpp \
+    jmrisrcpservermanager.cpp \
+    jmrisrcpserverpreferences.cpp \
+    jmrisrcpserver.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1810,7 +1816,13 @@ HEADERS += \
     jmriclient/jmriclientmonpane.h \
     jmriclient/jmriclientmonaction.h \
     jmriclient/packetgenaction.h \
-    jmriclient/packetgenframe.h
+    jmriclient/packetgenframe.h \
+    servermenu.h \
+    jmrisrcpservermenu.h \
+    jmrisrcpserveraction.h \
+    jmrisrcpservermanager.h \
+    jmrisrcpserverpreferences.h \
+    jmrisrcpserver.h
 
  !contains(FTDI, 1) {
     HEADERS +=

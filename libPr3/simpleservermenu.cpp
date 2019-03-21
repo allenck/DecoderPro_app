@@ -8,18 +8,18 @@
  */
 ///*public*/ class SimpleServerMenu extends JMenu {
 
-/*public*/ SimpleServerMenu::SimpleServerMenu(QString name) {
+/*public*/ SimpleServerMenu::SimpleServerMenu(QString name, QWidget* parent)  : QMenu(parent){
     //this();
     setTitle(name);
 }
 
-/*public*/ SimpleServerMenu::SimpleServerMenu() {
+/*public*/ SimpleServerMenu::SimpleServerMenu(QWidget* parent) : QMenu(parent) {
 
     //super();
 
     //ResourceBundle rb = ResourceBundle.getBundle("jmri.jmris.simpleserver.SimpleServerBundle");
 
     setTitle(tr("Simple Server"));
-    addAction(new SimpleServerAction(tr("Start Server"),this));
+    addAction(new SimpleServerAction(tr("Start Server"),parent));
 
 }
