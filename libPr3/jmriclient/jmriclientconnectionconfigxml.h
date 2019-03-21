@@ -6,7 +6,7 @@ class JMRIClientConnectionConfigXml : public AbstractNetworkConnectionConfigXml
 {
  Q_OBJECT
 public:
- Q_INVOKABLE JMRIClientConnectionConfigXml();
+ Q_INVOKABLE JMRIClientConnectionConfigXml(QObject* parent = nullptr);
  ~JMRIClientConnectionConfigXml() {}
  JMRIClientConnectionConfigXml(const JMRIClientConnectionConfigXml&) : AbstractNetworkConnectionConfigXml() {}
 protected:

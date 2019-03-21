@@ -19,7 +19,7 @@
  */
 // /*public*/ class ConnectionConfigXml extends AbstractNetworkConnectionConfigXml {
 
-/*public*/ JMRIClientConnectionConfigXml::JMRIClientConnectionConfigXml() {
+/*public*/ JMRIClientConnectionConfigXml::JMRIClientConnectionConfigXml(QObject* parent) : AbstractNetworkConnectionConfigXml(parent){
    //super();
  setProperty("javaClassName", "jmri.jmrix.jmriclient.networkdriver.configurexml.ConnectionConfigXml");
 }

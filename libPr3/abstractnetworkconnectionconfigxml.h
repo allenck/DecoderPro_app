@@ -27,7 +27,7 @@ protected:
  /*abstract*/ /*protected*/ virtual void _register();
 
  /*protected*/ virtual void getInstance(QObject* object);
- /*protected*/ void extendElement(QDomElement e);
+ /*protected*/ virtual void extendElement(QDomElement e);
  // /*protected*/ void unpackElement(QDomElement e);
 
 };

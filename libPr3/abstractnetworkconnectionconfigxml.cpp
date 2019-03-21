@@ -129,115 +129,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
  */
 /*protected*/ void AbstractNetworkConnectionConfigXml::extendElement(QDomElement e) {
 }
-#if 0
-/**
- * Update static data from XML file
- *
- * @param e Top level QDomElement to unpack.
- * @return true if successful
- */
-/*public*/ bool AbstractNetworkConnectionConfigXml::load(QDomElement e) throw (Exception)
-{
- bool result = true;
- getInstance();
 
- bool mdnsConfig = false;
- try
- {
-  mdnsConfig = (e.attribute("mdnsConfigure")==("true"));
- }
- catch (NullPointerException ex) {  // considered normal if the attributes are not present
- }
- ((AbstractNetworkPortController*)adapter)->setMdnsConfigure(mdnsConfig);
-
- if (mdnsConfig)
- {
-
-  // configure host name
-  QString hostName = NULL;
-  try {
-      hostName = e.attribute("address");
-      // the hostname is optional when mDNS is being used.
-      ((AbstractNetworkPortController*)adapter)->setHostName(hostName);
-  }
-  catch (NullPointerException ex)   {  // considered normal if the attributes are not present
-  }
-
-  // configure the Service Type
-  QString serviceType = "";
-  try {
-      serviceType = e.attribute("serviceType");
-      // the Service Type is optional when mDNS is being used.
-      adapter->setServiceType(serviceType);
-  } catch (NullPointerException ex) {  // considered normal if the attributes are not present
-  }
-
-  // configure the advertisement name
-  QString advertisementName = "";
-  try {
-      advertisementName = e.attribute("advertisementName");
-      // the Advertisement Name is optional when mDNS is being used.
-      adapter->setAdvertisementName(advertisementName);
-  } catch (NullPointerException ex) {  // considered normal if the attributes are not present
-  }
-
-  // get the host IP and port number
-  // via mdns
-  adapter->autoConfigure();
-
- }
- else
- {
-
-  // get the host name and port number via parameters.
-
-  // configure host name
-  QString hostName = "";
-  try {
-      hostName = e.attribute("address");
-  } catch (NullPointerException ex) {  // considered normal if the attributes are not present
-  }
-  ((AbstractNetworkPortController*)adapter)->setHostName(hostName);
-
-//        try {
-  bool bOk;
-      int port = e.attribute("port").toInt(&bOk);
-      if(bOk)
-       ((AbstractNetworkPortController*)adapter)->setPort(port);
-//        } catch (DataConversionException ex) {
-      else log->warn("Could not parse port attribute");
-//        } catch (NullPointerException ex) {  // considered normal if the attributes are not present
-//        }
- }
-
- loadCommon(e, ((AbstractNetworkPortController*)adapter));
- // register, so can be picked up next time
- _register();
-
- if (((AbstractNetworkPortController*)adapter)->getDisabled()) {
-  unpackElement(e);
-  return result;
- }
- try {
-     ((AbstractNetworkPortController*)adapter)->_connect(((AbstractNetworkPortController*)adapter)->getHostName(), ((AbstractNetworkPortController*)adapter)->getPort());
- } catch (Exception ex) {
-     ConfigXmlManager::creationErrorEncountered(
-             NULL, "opening connection",
-             ex.getMessage(),
-             NULL, NULL, NULL
-     );
-  return false;
- }
-
- // if successful so far, go ahead and configure
- ((AbstractNetworkPortController*)adapter)->configure();
-
- // once all the configure processing has happened, do any
- // extra config
- unpackElement(e);
- return result;
-}
-#endif
 //@Override
 /*public*/ bool AbstractNetworkConnectionConfigXml::load(QDomElement shared, QDomElement perNode) //throws Exception
 {
@@ -339,15 +231,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
  unpackElement(shared, perNode);
  return result;
 }
-#if 0
-/**
- * Customizable method if you need to add anything more
- *
- * @param e QDomElement being created, update as needed
- */
-/*protected*/ void AbstractNetworkConnectionConfigXml::unpackElement(QDomElement e) {
-}
-#endif
+
 /**
  * Update static data from XML file
  *
