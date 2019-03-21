@@ -21,6 +21,7 @@
 
 /*public*/ JMRIClientConnectionConfigXml::JMRIClientConnectionConfigXml() {
    //super();
+ setProperty("javaClassName", "jmri.jmrix.jmriclient.networkdriver.configurexml.ConnectionConfigXml");
 }
 
 //@Override
@@ -57,6 +58,11 @@
     if (shared.attribute("transmitPrefix") != "") {
         ((JMRIClientSystemConnectionMemo*) adapter->getSystemConnectionMemo())->setTransmitPrefix(shared.attribute("transmitPrefix"));
     }
+}
+
+/*protected*/ QString JMRIClientConnectionConfigXml::javaClass()
+{
+ return "jmri.jmrix.jmriclient.networkdriver.configurexml.ConnectionConfigXml";
 }
 
 

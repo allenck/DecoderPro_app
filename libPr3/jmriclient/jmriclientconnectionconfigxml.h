@@ -15,6 +15,7 @@ protected:
  /*protected*/ void _register();
  /*protected*/ void extendElement(QDomElement e);
  /*protected*/ void unpackElement(QDomElement shared, QDomElement perNode);
+ /*protected*/ QString javaClass();
 
 };
 Q_DECLARE_METATYPE(JMRIClientConnectionConfigXml)

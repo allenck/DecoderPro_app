@@ -99,6 +99,8 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
       QString prefix;
       if(sl.at(2) == "rfid" && sl.at(3) == "serialdriver")
        prefix = "RfidSerial";
+      else if(sl.at(2)== "jmriclient" && sl.at(3) == "networkdriver")
+          prefix = "JMRIClient";
       else
       if(sl.at(3) == "pr3")
       {

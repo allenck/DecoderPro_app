@@ -6,12 +6,15 @@ class JmriSRCPServerAction : public AbstractAction
 {
  Q_OBJECT
 public:
- JmriSRCPServerAction(QWidget* parent);
- /*public*/ JmriSRCPServerAction(QString s, QWidget* parent) ;
+ JmriSRCPServerAction() {}
+ Q_INVOKABLE JmriSRCPServerAction(QWidget* parent);
+ Q_INVOKABLE /*public*/ JmriSRCPServerAction(QString s, QWidget* parent) ;
+ ~JmriSRCPServerAction() {}
+ JmriSRCPServerAction(const JmriSRCPServerAction&) : AbstractAction() {}
 
 public slots:
  /*public*/ void actionPerformed(/*ActionEvent e*/);
 
 };
-
+Q_DECLARE_METATYPE(JmriSRCPServerAction)
 #endif // JMRISRCPSERVERACTION_H

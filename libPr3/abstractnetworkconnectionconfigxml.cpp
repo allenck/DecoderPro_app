@@ -113,7 +113,8 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
   javaClassName = "jmri.jmrix.loconet.pr3.configurexml.ConnectionConfigXml";
  else if(className == "LocobufferUsbConnectionConfigXml" )
   javaClassName = "jmri.jmrix.loconet.locobufferusb.configurexml.ConnectionConfigXml";
-
+ else if(className == "JMRIClientConnectionConfig")
+  javaClassName = "jmri.jmrix.jmriclient.networkdriver.connectionconfigxml.ConnectionConfigXml";
  e.setAttribute("class", javaClassName);
 
  extendElement(e);
