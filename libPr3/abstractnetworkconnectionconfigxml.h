@@ -21,7 +21,7 @@ public slots:
 private:
  Logger* log;
 protected:
- /*protected*/ NetworkPortAdapter* adapter;
+ /*protected*/ NetworkPortAdapter* adapter = nullptr;
  /*abstract*/ /*protected*/ virtual void getInstance();
 
  /*abstract*/ /*protected*/ virtual void _register();

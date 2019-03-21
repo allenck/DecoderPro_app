@@ -64,7 +64,7 @@ protected:
  /*protected*/ JTextField* serviceTypeField;// = new JTextField(15);
  /*protected*/ QLabel* serviceTypeFieldLabel;
 
- /*protected*/ NetworkPortAdapter* adapter;// = null;
+ /*protected*/ NetworkPortAdapter* adapter = nullptr;
  /*abstract*/ /*protected*/ virtual void setInstance();
  /*protected*/ int addStandardDetails(bool incAdvanced, int i);
 
