@@ -10,7 +10,7 @@ public:
  /*public*/ SystemConnectionMemo* getSystemConnectionMemo();
 
 protected:
- /*protected*/ JMRIClientPortController(JMRIClientSystemConnectionMemo* connectionMemo);
+ /*protected*/ JMRIClientPortController(JMRIClientSystemConnectionMemo* connectionMemo, QObject* parent = nullptr);
  /*protected*/ void resetupConnection();
 
 };

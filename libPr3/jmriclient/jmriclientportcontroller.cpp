@@ -16,7 +16,7 @@
 
 // base class. Implementations will provide InputStream and OutputStream
 // objects to JMRIClientTrafficController classes, who in turn will deal in messages.
-/*protected*/ JMRIClientPortController::JMRIClientPortController(JMRIClientSystemConnectionMemo* connectionMemo)
+/*protected*/ JMRIClientPortController::JMRIClientPortController(JMRIClientSystemConnectionMemo* connectionMemo, QObject *parent)
  : AbstractNetworkPortController(connectionMemo){
     //super(connectionMemo);
     allowConnectionRecovery=true;
