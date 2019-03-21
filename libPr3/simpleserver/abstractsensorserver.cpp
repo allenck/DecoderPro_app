@@ -151,3 +151,4 @@
 //        String name = null;
 //        Sensor sensor = null;
 //    }
+    /*private*/ /*final*/ /*static*/ Logger* AbstractSensorServer::log = LoggerFactory::getLogger("AbstractSensorServer");

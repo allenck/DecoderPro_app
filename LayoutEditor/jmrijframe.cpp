@@ -1121,6 +1121,7 @@ QString JmriJFrame::getTitle() { return windowTitle();}
  //return Beans.getIntrospectedProperty(this, key);
  return QVariant();
 }
+QWidget* JmriJFrame::getContentPane() {getContentPane(false);}
 
 QWidget* JmriJFrame::getContentPane(bool addLayout)
 {
