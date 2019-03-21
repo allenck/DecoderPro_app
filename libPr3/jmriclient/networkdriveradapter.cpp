@@ -15,8 +15,8 @@
 
 //    static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrix.jmriclient.JMRIClientConfigurationBundle");
 
-/*public*/ NetworkDriverAdapter::NetworkDriverAdapter()
- : JMRIClientPortController(new JMRIClientSystemConnectionMemo())
+/*public*/ NetworkDriverAdapter::NetworkDriverAdapter(QObject *parent)
+ : JMRIClientPortController(new JMRIClientSystemConnectionMemo(), parent)
 {
  //super(new JMRIClientSystemConnectionMemo());
  setObjectName("NetworkDriverAdapter");

@@ -6,7 +6,7 @@ class ZeroConfClient;
 class NetworkDriverAdapter : public JMRIClientPortController
 {
 public:
- NetworkDriverAdapter();
+ NetworkDriverAdapter(QObject* parent = nullptr);
  /*public*/ void configure();
  /*public*/ bool status();
  QT_DEPRECATED static /*public*/ NetworkDriverAdapter* instance();
