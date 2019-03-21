@@ -21,7 +21,7 @@
  * Constructor for an object being created during load process; Swing init
  * is deferred.
  */
-/*public*/ JMRIClientConnectionConfig::JMRIClientConnectionConfig(NetworkPortAdapter* p)
+/*public*/ JMRIClientConnectionConfig::JMRIClientConnectionConfig(NetworkPortAdapter* p, QObject* parent)
  : AbstractNetworkConnectionConfig(p)
 {
     //super(p);
@@ -31,7 +31,9 @@
 /**
  * Constructor for a functional Swing object with no preexisting adapter
  */
-/*public*/JMRIClientConnectionConfig:: JMRIClientConnectionConfig() {
+/*public*/JMRIClientConnectionConfig:: JMRIClientConnectionConfig(QObject* parent)
+ : AbstractNetworkConnectionConfig(parent)
+{
    // super();
  common();
 }

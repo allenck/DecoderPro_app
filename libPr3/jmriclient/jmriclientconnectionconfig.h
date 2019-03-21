@@ -6,10 +6,10 @@ class JMRIClientConnectionConfig : public AbstractNetworkConnectionConfig
 {
  Q_OBJECT
 public:
- Q_INVOKABLE JMRIClientConnectionConfig();
+ Q_INVOKABLE JMRIClientConnectionConfig(QObject* parent = nullptr);
  ~JMRIClientConnectionConfig() {}
  JMRIClientConnectionConfig(const JMRIClientConnectionConfig&) : AbstractNetworkConnectionConfig() {}
- /*public*/ JMRIClientConnectionConfig(NetworkPortAdapter* p);
+ Q_INVOKABLE/*public*/ JMRIClientConnectionConfig(NetworkPortAdapter* p, QObject *parent = nullptr);
  /*public*/ QString name();
  /*public*/ bool isPortAdvanced();
  /*public*/ void updateAdapter();
