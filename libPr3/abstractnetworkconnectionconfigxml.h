@@ -29,7 +29,7 @@ protected:
  /*protected*/ virtual void getInstance(QObject* object);
  /*protected*/ virtual void extendElement(QDomElement e);
  // /*protected*/ void unpackElement(QDomElement e);
-
+ /*protected*/ virtual QString javaClass() {}
 };
 
 #endif // ABSTRACTNETWORKCONNECTIONCONFIGXML_H

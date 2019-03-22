@@ -100,7 +100,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
  }
 
  QString className = this->metaObject()->className();
- QString  javaClassName;
+ QString  javaClassName = javaClass();
  // JMRI uses a className with the name "ConnectionConfigXml" for all adapters but stores them in
  // different directories. So, we have to retore the name that JMRI uses.
  if(className == "LnOverTcpConnectionConfigXml")
