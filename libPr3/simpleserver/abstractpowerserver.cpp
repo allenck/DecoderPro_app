@@ -34,17 +34,19 @@
  if (p == nullptr)
  {
   p = static_cast<PowerManager*>(InstanceManager::getNullableDefault("PowerManager"));
-  if (p == nullptr) {
+  if (p == nullptr)
+  {
       log->error("No power manager instance found");
       try {
           sendErrorStatus();
-      } catch (IOException ie) {
+      }
+      catch (IOException ie) {
       }
       return false;
   }
   else {
       //p.addPropertyChangeListener(this);
-   connect(p->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//   connect(p->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
  }
  return true;
