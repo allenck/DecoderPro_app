@@ -60,6 +60,7 @@
     }
 }
 
+//@Override
 /*protected*/ QString JMRIClientConnectionConfigXml::javaClass()
 {
  return "jmri.jmrix.jmriclient.networkdriver.configurexml.ConnectionConfigXml";
