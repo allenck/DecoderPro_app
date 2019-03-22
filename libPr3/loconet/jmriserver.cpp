@@ -87,7 +87,7 @@ void JmriServer::common(int port, int timeout)
 /*public*/ void JmriServer::start()
 {
  listen(QHostAddress::Any, portNo);
- connect(this, SIGNAL(newConnection()), this, SLOT());
+ connect(this, SIGNAL(newConnection()), this, SLOT(on_newConnection()));
 }
 // Advertise the service with ZeroConf
 /*protected*/ void JmriServer::advertise() {

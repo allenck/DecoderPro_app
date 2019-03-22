@@ -68,46 +68,47 @@
   return;
  }
  log->debug(tr("Attempting to connect to host: %1 on port %2").arg(m_HostName).arg(QString::number(m_port)));
- //try {
- if(socketConn == NULL)
+ try
  {
-  socketConn = new QTcpSocket(/*getHostAddress(), m_port*/);
-  connect(socketConn, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(on_socketConn_error(QAbstractSocket::SocketError)));
-  connect(socketConn,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(st_stateChange(QAbstractSocket::SocketState)));
-  connect(socketConn, SIGNAL(hostFound()), this, SLOT(on_socketConn_hostFound()));
-  connect(socketConn, SIGNAL(connected()), this, SLOT(on_socketConn_connected()));
-  connect(socketConn, SIGNAL(disconnected()), this, SLOT(on_socketConn_disconnected()));
- }
- //else socketConn->reset();
+  if(socketConn == NULL)
+  {
+   socketConn = new QTcpSocket(/*getHostAddress(), m_port*/);
+   connect(socketConn, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(on_socketConn_error(QAbstractSocket::SocketError)));
+   connect(socketConn,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(st_stateChange(QAbstractSocket::SocketState)));
+   connect(socketConn, SIGNAL(hostFound()), this, SLOT(on_socketConn_hostFound()));
+   connect(socketConn, SIGNAL(connected()), this, SLOT(on_socketConn_connected()));
+   connect(socketConn, SIGNAL(disconnected()), this, SLOT(on_socketConn_disconnected()));
+  }
+  //else socketConn->reset();
 
- socketConn->connectToHost(getHostAddress(), m_port);
-    //socketConn.setKeepAlive(true);
- //opened = true;
+  socketConn->connectToHost(getHostAddress(), m_port);
+     //socketConn.setKeepAlive(true);
+  opened = true;
 
- if (m_port != 0)
- {
-  ConnectionStatus::instance()->setConnectionState(
-              m_HostName + ":" + QString::number(m_port), ConnectionStatus::CONNECTION_DOWN);
+  if (m_port != 0)
+  {
+   ConnectionStatus::instance()->setConnectionState(
+               m_HostName + ":" + QString::number(m_port), ConnectionStatus::CONNECTION_DOWN);
+  }
+  else
+  {
+   ConnectionStatus::instance()->setConnectionState(
+               m_HostName, ConnectionStatus::CONNECTION_DOWN);
+  }
+  if (opened && m_port != 0)
+  {
+   ConnectionStatus::instance()->setConnectionState(
+              m_HostName + ":" + m_port, ConnectionStatus::CONNECTION_UP);
+  }
+  else if (opened)
+  {
+   ConnectionStatus::instance()->setConnectionState(
+              m_HostName, ConnectionStatus::CONNECTION_UP);
+  }
  }
- else
- {
-  ConnectionStatus::instance()->setConnectionState(
-              m_HostName, ConnectionStatus::CONNECTION_DOWN);
- }
- if (opened && m_port != 0)
- {
-  ConnectionStatus::instance()->setConnectionState(
-             m_HostName + ":" + m_port, ConnectionStatus::CONNECTION_UP);
- }
- else if (opened)
- {
-  ConnectionStatus::instance()->setConnectionState(
-             m_HostName, ConnectionStatus::CONNECTION_UP);
- }
-}
-#if 0
-     opened = true;
- } catch (IOException e) {
+#if 1
+//     opened = true;
+ catch (IOException e) {
      log->error("error opening network connection: " + e.getMessage());
      if (m_port != 0) {
          ConnectionStatus::instance()->setConnectionState(
@@ -118,6 +119,7 @@
      }
      throw (e);
  }
+}
 #endif
 void AbstractNetworkPortController::on_socketConn_hostFound()
 {

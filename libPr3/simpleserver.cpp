@@ -6,6 +6,9 @@
 #include "simpleserver/simplepowerserver.h"
 #include "simpleserver/simplesensorserver.h"
 #include "simpleserver/simpleturnoutserver.h"
+#include "version.h"
+#include "webserverpreferences.h"
+#include "nodeidentity.h"
 
 /**
  * This is an implementation of a simple server for JMRI. There is currently no
@@ -254,6 +257,13 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
  Q_UNUSED(newSocket);
  Q_UNUSED(connectionNbr);
  log->debug("JMRIClientTxHandler called");
+ // Start by sending a welcome message
+#if 1
+ newSocket->write(QString("JMRI " + Version::name() + " \n").toLocal8Bit());
+ newSocket->write(QString("RAILROAD " + static_cast<WebServerPreferences*>(InstanceManager::getDefault("WebServerPreferences"))->getRailroadName() + " \n").toLocal8Bit());
+ newSocket->write(QString("NODE " + NodeIdentity::identity() + " \n").toLocal8Bit());
+#endif
+
 }
 #if 0
 // Handle communication to a client through inStream and outStream

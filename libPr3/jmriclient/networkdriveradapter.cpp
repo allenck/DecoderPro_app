@@ -2,7 +2,7 @@
 #include "loggerfactory.h"
 #include "jmriclientsystemconnectionmemo.h"
 #include "jmriclienttrafficcontroller.h"
-
+#include "zeroconfclient.h"
 
 /**
  * Implements NetworkPortAdapter for the jmriclient system network connection.
@@ -86,21 +86,21 @@
 #if 0
     if (mdnsClient == nullptr) {
         mdnsClient = new ZeroConfClient();
-        mdnsClient.startServiceListener(serviceType);
+        mdnsClient->startServiceListener(serviceType);
     }
     try {
         // if there is a hostname set, use the host name (which can
         // be changed) to find the service.
-        String qualifiedHostName = m_HostName
-                + "." + rb.getString("defaultMDNSDomainName");
-        setHostAddress(mdnsClient.getServiceOnHost(serviceType,
+        QString qualifiedHostName = m_HostName
+                + "." + tr("local.");
+        setHostAddress(mdnsClient->getServiceOnHost(serviceType,
                 qualifiedHostName).getHostAddresses()[0]);
-    } catch (java.lang.NullPointerException npe) {
+    } catch (NullPointerException npe) {
         // if there is no hostname set, use the service name (which can't
         // be changed) to find the service.
-        String qualifiedServiceName = rb.getString("defaultMDNSServiceName")
+        QString qualifiedServiceName = tr("local.")
                 + "." + serviceType;
-        setHostAddress(mdnsClient.getServicebyAdName(serviceType,
+        setHostAddress(mdnsClient->getServicebyAdName(serviceType,
                 qualifiedServiceName).getHostAddresses()[0]);
     }
 #endif

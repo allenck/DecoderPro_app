@@ -7,7 +7,7 @@ class JMRIClientListener;
 class JMRIClientTrafficController : public AbstractMRTrafficController
 {
 public:
- JMRIClientTrafficController();
+ JMRIClientTrafficController(QObject*parent = nullptr);
  /*public*/ /*synchronized*/ void addJMRIClientListener(JMRIClientListener* l);
  /*public*/ /*synchronized*/ void removeJMRIClientListener(JMRIClientListener* l);
  /*public*/ void sendJMRIClientMessage(JMRIClientMessage* m, JMRIClientListener* reply);

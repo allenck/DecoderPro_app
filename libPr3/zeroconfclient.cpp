@@ -64,7 +64,8 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
     }
     return services;
 }
-
+#endif
+#if 0
 /**
  * Request the first service of a particular service on a specified host.
  *
@@ -73,7 +74,7 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
  * @return JmDNS service entry for the first service of a particular service
  *         on the specified host..
  */
-/*public*/ ServiceInfo getServiceOnHost(@Nonnull String service, @Nonnull String hostname) {
+/*public*/ ServiceInfo getServiceOnHost(/*@Nonnull*/ QString service, /*@Nonnull*/ QString hostname) {
     for (JmDNS server : ZeroConfService.netServices().values()) {
         ServiceInfo[] infos = server.list(service);
         for (ServiceInfo info : infos) {
@@ -84,7 +85,8 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
     }
     return null;
 }
-
+#endif
+#if 0
 /**
  * Request the first service of a particular service with a particular
  * service name.

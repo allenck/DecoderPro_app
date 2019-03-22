@@ -22,7 +22,8 @@
 /**
  * Create a new JMRIClientTrafficController instance.
  */
-/*public*/ JMRIClientTrafficController::JMRIClientTrafficController() {
+/*public*/ JMRIClientTrafficController::JMRIClientTrafficController(QObject *parent)
+ : AbstractMRTrafficController(parent){
     //super();
     setAllowUnexpectedReply(true);
 }

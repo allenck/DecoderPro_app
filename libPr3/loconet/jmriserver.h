@@ -23,6 +23,7 @@ public:
 signals:
 
 public slots:
+ virtual void on_newConnection() {}
 
 private:
  // /*private*/ Thread listenThread = NULL;

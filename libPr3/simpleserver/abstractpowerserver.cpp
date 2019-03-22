@@ -29,22 +29,25 @@
      }*/
 }
 
-/*protected*/ bool AbstractPowerServer::mgrOK() {
-    if (p == nullptr) {
-        p = static_cast<PowerManager*>(InstanceManager::getNullableDefault("PowerManager"));
-        if (p == nullptr) {
-            log->error("No power manager instance found");
-            try {
-                sendErrorStatus();
-            } catch (IOException ie) {
-            }
-            return false;
-        } else {
-            //p.addPropertyChangeListener(this);
-         connect(p->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-        }
-    }
-    return true;
+/*protected*/ bool AbstractPowerServer::mgrOK()
+{
+ if (p == nullptr)
+ {
+  p = static_cast<PowerManager*>(InstanceManager::getNullableDefault("PowerManager"));
+  if (p == nullptr) {
+      log->error("No power manager instance found");
+      try {
+          sendErrorStatus();
+      } catch (IOException ie) {
+      }
+      return false;
+  }
+  else {
+      //p.addPropertyChangeListener(this);
+   connect(p->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  }
+ }
+ return true;
 }
 
 /*public*/ void AbstractPowerServer::setOnStatus() {
@@ -76,16 +79,25 @@
 }
 
 //@Override
-/*public*/ void AbstractPowerServer::propertyChange(PropertyChangeEvent* ev) {
-    try {
-        sendStatus(p->getPower());
-    } catch (JmriException ex) {
-        try {
-            sendErrorStatus();
-        } catch (IOException ie) {
-        }
-    } catch (IOException ie2) {
-    }
+/*public*/ void AbstractPowerServer::propertyChange(PropertyChangeEvent* /*ev*/)
+{
+ try
+ {
+  sendStatus(p->getPower());
+ }
+ catch (JmriException ex)
+ {
+  try
+  {
+   sendErrorStatus();
+  }
+  catch (IOException ie)
+  {
+  }
+ }
+ catch (IOException ie2)
+ {
+ }
 }
 
 /*public*/ void AbstractPowerServer::dispose() {
