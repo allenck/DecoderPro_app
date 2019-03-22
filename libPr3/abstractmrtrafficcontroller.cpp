@@ -370,6 +370,7 @@
             QTime startTime = QTime::currentTime();
  // TODO:           synchronized(xmtRunnable)
             {
+             if(xmtRunnable)
                 xmtRunnable->wait(mWaitBeforePoll);
             }
             //long endTime = Calendar.getInstance().getTimeInMillis();
