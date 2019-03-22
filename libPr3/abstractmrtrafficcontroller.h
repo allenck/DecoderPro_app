@@ -117,24 +117,24 @@ protected:
  //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SBSC_USE_STRINGBUFFER_CONCATENATION")
  // String + only used for debug, so inefficient String processing not really a problem
  // though it would be good to fix it if you're working in this area
- /*protected*/ bool xmtException;// = false;
+ /*protected*/ bool xmtException = false;
  /*synchronized*/ /*protected*/ void forwardToPort(AbstractMRMessage* m, AbstractMRListener* reply);
  /*protected*/ void connectionWarn() ;
  /*protected*/ void portWarn(Exception e);
  /*protected*/ void portWarnTCP(Exception e);
- QThread* xmtThread;// = NULL;
- /*protected*/ Runnable* xmtRunnable;// = NULL;
+ QThread* xmtThread = nullptr;
+ /*protected*/ Runnable* xmtRunnable = nullptr;
  QThread* rcvThread;// = NULL;
  // data members to hold the streams
- /*protected*/ QDataStream* istream;// = NULL;
- /*protected*/ QDataStream* ostream;// = NULL;
+ /*protected*/ QDataStream* istream = nullptr;
+ /*protected*/ QDataStream* ostream = nullptr;
 
- /*protected*/ bool rcvException;// = false;
+ /*protected*/ bool rcvException = false;
 
  /*protected*/ int maxRcvExceptionCount;// = 100;
  /*protected*/ void reportReceiveLoopException(Exception e);
  /*abstract*/ /*protected*/ virtual AbstractMRReply* newReply(){return NULL;}
- /*abstract*/ /*protected*/ virtual bool endOfMessage(AbstractMRReply* r) {return false;}
+ /*abstract*/ /*protected*/ virtual bool endOfMessage(AbstractMRReply* /*r*/) {return false;}
  /*protected*/ void waitForStartOfReply(QDataStream* istream) throw (IOException);
  /*protected*/ char readByteProtected(QDataStream* istream) throw (IOException);
  /*protected*/ void loadChars(AbstractMRReply* msg, QDataStream* istream) throw (IOException);
