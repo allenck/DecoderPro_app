@@ -360,6 +360,7 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
 void SimpleServer::start()
 {
  JmriServer::start();
+ log->info(tr("SimpleServer started, listening on port %1").arg(portNo));
 
 }
 

@@ -11,17 +11,21 @@
 {
     if (InstanceManager::getNullableDefault("SimpleServerPreferences") == nullptr) {
         QString fileName = FileUtil::getUserFilesPath() + "networkServices" + File::separator + "SimpleServer.xml";
+        SimpleServerPreferences* prefs;
         if ((File(fileName)).exists()) {
-            InstanceManager::store((QObject*)(new SimpleServerPreferences(fileName)), "SimpleServerPreferences"); // NOI18N
+            InstanceManager::store((QObject*)(prefs =new SimpleServerPreferences(fileName)), "SimpleServerPreferences"); // NOI18N
         } else {
-            InstanceManager::store((QObject*)new SimpleServerPreferences(), "SimpleServerPreferences");
+            InstanceManager::store((QObject*)(prefs =new SimpleServerPreferences()), "SimpleServerPreferences");
         }
+        prefs->init();
     }
     preferences = static_cast<SimpleServerPreferences*>(InstanceManager::getDefault("SimpleServerPreferences"));
 }
 
-/*public*/ /*static*/ SimpleServerManager* SimpleServerManager::getInstance() {
-    if (InstanceManager::getNullableDefault("SimpleServerManager") == nullptr) {
+/*public*/ /*static*/ SimpleServerManager* SimpleServerManager::getInstance()
+{
+    if (InstanceManager::getNullableDefault("SimpleServerManager") == nullptr)
+    {
         InstanceManager::store(new SimpleServerManager(), "SimpleServerManager"); // NOI18N
     }
     return static_cast<SimpleServerManager*>(InstanceManager::getDefault("SimpleServerManager"));

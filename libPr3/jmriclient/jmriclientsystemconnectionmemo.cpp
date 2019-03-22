@@ -7,6 +7,8 @@
 #include "jmriclientturnoutmanager.h"
 #include "jmriclientsensormanager.h"
 #include "jmriclientcomponentfactory.h"
+#include "jmriclientlightmanager.h"
+#include "jmriclientreportermanager.h"
 
 /**
  * Lightweight class to denote that a system is active and provide general
@@ -77,12 +79,10 @@
     InstanceManager::setTurnoutManager(getTurnoutManager());
     setSensorManager(new JMRIClientSensorManager(this));
     InstanceManager::setSensorManager(getSensorManager());
-#if 0 // TODO:
     setLightManager(new JMRIClientLightManager(this));
     InstanceManager::setLightManager(getLightManager());
     setReporterManager(new JMRIClientReporterManager(this));
     InstanceManager::setReporterManager(getReporterManager());
-#endif
 }
 
 /**

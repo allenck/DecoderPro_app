@@ -28,7 +28,7 @@ private:
  // /*private*/ Thread listenThread = NULL;
  /*private*/ static JmriServer* _instance;// = NULL;
  void common(int port, int timeout);
-
+ static Logger* log;
 
 protected:
  /*protected*/ int portNo = 3000; // Port to listen to for new clients.

@@ -9,6 +9,7 @@ public:
  /*public*/ static /*final*/ int DEFAULT_PORT;// = 2056;
  /*public*/ SimpleServerPreferences(QString fileName, QObject* parent =nullptr);
  /*public*/ int getDefaultPort();
+ /*public*/ QString getClass();
 
 private:
  static /*final*/ QString XML_PREFS_ELEMENT;// = "SimpleServerPreferences"; // NOI18N

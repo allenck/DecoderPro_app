@@ -294,6 +294,7 @@
 #include "jmriclient/jmriclientconnectionconfig.h"
 #include "simpleserveraction.h"
 #include "jmrisrcpserveraction.h"
+#include "lnmessageserveraction.h"
 
 bool Metatypes::done = false;
 
@@ -602,6 +603,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<JMRIClientConnectionConfig>("JMRIClientConnectionConfig");
  qRegisterMetaType<SimpleServerAction>("SimpleServerAction");
  qRegisterMetaType<JmriSRCPServerAction>("JmriSRCPServerAction");
+ qRegisterMetaType<LnMessageServerAction>("LnMessageServerAction");
 
  Metatypes::done = true;
 }

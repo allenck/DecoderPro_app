@@ -42,8 +42,15 @@
 }
 
 /*public*/ AbstractServerPreferences::AbstractServerPreferences(QObject *parent) {
-    Preferences* sharedPreferences = ProfileUtils::getPreferences(ProfileManager::getDefault()->getActiveProfile(), this->getClass(), true);
-    this->readPreferences(sharedPreferences);
+//    Preferences* sharedPreferences = ProfileUtils::getPreferences(ProfileManager::getDefault()->getActiveProfile(), this->getClass(), true);
+//    this->readPreferences(sharedPreferences);
+}
+
+/*public*/ void AbstractServerPreferences::init() // must be called after contructor complete!
+{
+ Preferences* sharedPreferences = ProfileUtils::getPreferences(ProfileManager::getDefault()->getActiveProfile(), this->getClass(), true);
+ this->readPreferences(sharedPreferences);
+
 }
 
 /*protected*/ void AbstractServerPreferences::readPreferences(Preferences* sharedPreferences) {

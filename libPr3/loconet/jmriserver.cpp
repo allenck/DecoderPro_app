@@ -2,6 +2,7 @@
 #include "exceptions.h"
 #include <QTcpSocket>
 #include "zeroconfservice.h"
+#include "loggerfactory.h"
 
 /*private*/ /*static*/ JmriServer* JmriServer::_instance = nullptr;
 
@@ -240,3 +241,4 @@ try {
 }
 //};
 #endif
+/*private*/ /*static*/ Logger* JmriServer::log = LoggerFactory::getLogger("JmriServer");

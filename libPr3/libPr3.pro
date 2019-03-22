@@ -914,7 +914,8 @@ SOURCES += \
     jmrisrcpserveraction.cpp \
     jmrisrcpservermanager.cpp \
     jmrisrcpserverpreferences.cpp \
-    jmrisrcpserver.cpp
+    jmrisrcpserver.cpp \
+    loconet/lnmessageserveraction.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1822,7 +1823,8 @@ HEADERS += \
     jmrisrcpserveraction.h \
     jmrisrcpservermanager.h \
     jmrisrcpserverpreferences.h \
-    jmrisrcpserver.h
+    jmrisrcpserver.h \
+    loconet/lnmessageserveraction.h
 
  !contains(FTDI, 1) {
     HEADERS +=

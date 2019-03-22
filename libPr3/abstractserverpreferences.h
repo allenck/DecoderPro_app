@@ -11,6 +11,7 @@ class AbstractServerPreferences : public Bean
 public:
  AbstractServerPreferences(QString fileName, QObject* parent = nullptr);
  /*public*/ AbstractServerPreferences(QObject *parent);
+ /*public*/ void init(); // must be called after contructor complete!
 
  /*public*/ void load(QDomElement child);
  /*public*/ bool compareValuesDifferent(AbstractServerPreferences* prefs);

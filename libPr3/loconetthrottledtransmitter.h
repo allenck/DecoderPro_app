@@ -45,7 +45,7 @@ public:
     long calcSendTimeMSec();
 #if 1 // TODO:
     //DelayQueue<Memo> queue;// = new DelayQueue<Memo>();
-    QQueue<Memo*>* queue;
+    QQueue<Memo*>* queue = nullptr;
 #endif
     // a separate method to ease testing by stopping clock
     long nowMSec();

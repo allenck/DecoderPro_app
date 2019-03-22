@@ -20,7 +20,7 @@
 }
 
 //@Override
-/*public*/ QString getClass()
+/*public*/ QString SimpleServerPreferences::getClass()
 {
  return "jmri.jmris.simpleserver.SimpleServerPreferences";
 }

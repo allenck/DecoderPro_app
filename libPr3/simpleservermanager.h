@@ -22,7 +22,7 @@ public slots:
 
 private:
  /*private*/ SimpleServerPreferences* preferences;
- /*private*/ SimpleServer* server;
+ /*private*/ SimpleServer* server = nullptr;
 
 };
 
