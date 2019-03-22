@@ -81,7 +81,11 @@
 /*private*/ /*static*/ /*synchronized*/ JmrixConfigPane* JmrixConfigPane::createPanel(int index)
 {
  ConnectionConfig* c = NULL;
- try {
+ try
+ {
+    ConnectionConfigManager*  ccm = static_cast<ConnectionConfigManager*>(InstanceManager::getDefault("ConnectionConfigManager"));
+    if(ccm->getConnections(index) == 0)
+        throw IndexOutOfBoundsException();
      c = ((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->getConnections(index);
      log->debug(tr("connection %1 is %2").arg(index).arg(c->metaObject()->className()));
  } catch (IndexOutOfBoundsException ex) {
