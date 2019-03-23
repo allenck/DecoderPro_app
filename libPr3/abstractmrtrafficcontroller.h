@@ -33,13 +33,13 @@ public:
     /*public*/ static /*final*/ const int POLLSTATE = 50;			// Send program mode or poll message
     /*public*/ bool hasTimeouts();
     /*public*/ AbstractPortController* controller;// = NULL;
-    /*public*/ bool status();
-    /*public*/ void connectPort(AbstractPortController* p);
-    /*public*/ QString getPortName();
-    /*public*/ void disconnectPort(AbstractPortController* p);
-    /*public*/ bool portReadyToSend(AbstractPortController* p) throw (Exception);
-    /*public*/ void receiveLoop();
-    /*public*/ void handleOneIncomingReply() throw (IOException);
+    /*public*/ virtual bool status();
+    /*public*/ virtual void connectPort(AbstractPortController* p);
+    /*public*/ virtual QString getPortName();
+    /*public*/ virtual void disconnectPort(AbstractPortController* p);
+    /*public*/ virtual bool portReadyToSend(AbstractPortController* p) throw (Exception);
+    /*public*/ virtual void receiveLoop();
+    /*public*/ virtual void handleOneIncomingReply() throw (IOException);
     /*public*/ AbstractMRListener* getLastSender();
 
     
@@ -107,21 +107,21 @@ protected:
  /*synchronized*/ /*protected*/ void sendMessage(AbstractMRMessage* m, AbstractMRListener* reply);
  /*protected*/ void transmitWait(int waitTime, int state, QString InterruptMessage);
  /*protected*/ bool flushReceiveChars;// = false;
- /*protected*/ void handleTimeout(AbstractMRMessage* msg,AbstractMRListener* l);
- /*protected*/ void resetTimeout(AbstractMRMessage* msg);
- /*protected*/ int addHeaderToOutput(QByteArray* msg, AbstractMRMessage* m);
+ /*protected*/ virtual void handleTimeout(AbstractMRMessage* msg,AbstractMRListener* l);
+ /*protected*/ virtual void resetTimeout(AbstractMRMessage* msg);
+ /*protected*/ virtual int addHeaderToOutput(QByteArray* msg, AbstractMRMessage* m);
  /*protected*/ int mWaitBeforePoll;// = 100;
  /*protected*/ long waitTimePoll;// = 0;
- /*protected*/ void addTrailerToOutput(QByteArray* msg, int offset, AbstractMRMessage* m);
- /*protected*/ int lengthOfByteStream(AbstractMRMessage* m);
+ /*protected*/ virtual void addTrailerToOutput(QByteArray* msg, int offset, AbstractMRMessage* m);
+ /*protected*/ virtual int lengthOfByteStream(AbstractMRMessage* m);
  //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SBSC_USE_STRINGBUFFER_CONCATENATION")
  // String + only used for debug, so inefficient String processing not really a problem
  // though it would be good to fix it if you're working in this area
  /*protected*/ bool xmtException = false;
- /*synchronized*/ /*protected*/ void forwardToPort(AbstractMRMessage* m, AbstractMRListener* reply);
- /*protected*/ void connectionWarn() ;
- /*protected*/ void portWarn(Exception e);
- /*protected*/ void portWarnTCP(Exception e);
+ /*synchronized*/ /*protected*/ virtual void forwardToPort(AbstractMRMessage* m, AbstractMRListener* reply);
+ /*protected*/ virtual void connectionWarn() ;
+ /*protected*/ virtual void portWarn(Exception e);
+ /*protected*/ virtual void portWarnTCP(Exception e);
  QThread* xmtThread = nullptr;
  /*protected*/ Runnable* xmtRunnable = nullptr;
  QThread* rcvThread;// = NULL;
@@ -132,15 +132,15 @@ protected:
  /*protected*/ bool rcvException = false;
 
  /*protected*/ int maxRcvExceptionCount;// = 100;
- /*protected*/ void reportReceiveLoopException(Exception e);
+ /*protected*/ virtual void reportReceiveLoopException(Exception e);
  /*abstract*/ /*protected*/ virtual AbstractMRReply* newReply(){return NULL;}
  /*abstract*/ /*protected*/ virtual bool endOfMessage(AbstractMRReply* /*r*/) {return false;}
- /*protected*/ void waitForStartOfReply(QDataStream* istream) throw (IOException);
+ /*protected*/ virtual void waitForStartOfReply(QDataStream* istream) throw (IOException);
  /*protected*/ char readByteProtected(QDataStream* istream) throw (IOException);
- /*protected*/ void loadChars(AbstractMRReply* msg, QDataStream* istream) throw (IOException);
- /*protected*/ bool canReceive();
- /*protected*/ /*final*/ void finalize() throw (Throwable);
- /*protected*/ void terminate();
+ /*protected*/ virtual void loadChars(AbstractMRReply* msg, QDataStream* istream) throw (IOException);
+ /*protected*/ virtual bool canReceive();
+ /*protected*/ /*final*/ virtual void finalize() throw (Throwable);
+ /*protected*/ virtual void terminate();
  friend class RcvNotifier;
  friend class XmtNotifier;
  friend class CleanupHook;

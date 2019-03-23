@@ -29,10 +29,10 @@ public:
  /*public*/ QString getTitle();
  /*public*/ void initContext(QObject* context);
  /*public*/ void dispose();
- /*public*/ /*synchronized*/ void reply(JMRIClientReply* l);  // receive a reply message and log it
 
 public slots:
-  /*public*/ /*synchronized*/ void message(JMRIClientMessage* l);  // receive a message and log it
+ /*public*/ /*synchronized*/ void reply(JMRIClientReply* l);  // receive a reply message and log it
+ /*public*/ /*synchronized*/ void message(JMRIClientMessage* l);  // receive a message and log it
 
 
 protected:
