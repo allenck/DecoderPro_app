@@ -466,7 +466,8 @@
     // last set it.
     if (mCurrentState != state)
      return;
-    xmtRunnable->wait(wait); // rcvr normally ends this w state change
+    if(xmtRunnable)
+        xmtRunnable->wait(wait); // rcvr normally ends this w state change
    }
   }
   catch (InterruptedException e)
@@ -698,7 +699,6 @@
         xmtThread = new QThread();
         xmtThread->setObjectName("Transmit");
         XmitWorker* xmitWorker = new XmitWorker(this);
-        xmtRunnable =xmitWorker;
         connect(xmtThread, SIGNAL(started()), xmitWorker, SLOT(run()));
         connect(xmitWorker, SIGNAL(finished()), xmtThread, SLOT(quit()));
         xmitWorker->moveToThread(xmtThread);
@@ -968,7 +968,7 @@ throw (IOException)
     {
      if(log->isDebugEnabled())
       log->debug("Automatic Recovery from Error Message: +msg.toString()");
- // TODO:              synchronized (xmtRunnable)
+ // TODO:              synchronized (xmtRunnable)f
      {
       mCurrentState = AUTORETRYSTATE;
       replyInDispatch = false;
