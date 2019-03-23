@@ -211,7 +211,8 @@
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
+/*public*/ bool JmriConfigurationManager::
+load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 {
     return this->load(FileUtil::fileToURL(file), registerDeferred);
 }

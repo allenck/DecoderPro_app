@@ -22,7 +22,7 @@
  * is deferred.
  */
 /*public*/ JMRIClientConnectionConfig::JMRIClientConnectionConfig(NetworkPortAdapter* p, QObject* parent)
- : AbstractNetworkConnectionConfig(p)
+ : AbstractNetworkConnectionConfig(p, parent)
 {
     //super(p);
  common();
