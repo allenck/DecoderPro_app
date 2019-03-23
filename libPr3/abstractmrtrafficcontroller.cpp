@@ -8,6 +8,8 @@
 #include "connectionstatus.h"
 #include <QThread>
 #include "abstractnetworkportcontroller.h"
+#include "jmriclient/jmriclientlistener.h"
+#include "abstractportcontroller.h"
 
 //AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) :
 //    QObject(parent)
@@ -95,6 +97,11 @@
   //cmdListeners->addElement(l);
   cmdListeners->append(l);
  }
+ if(qobject_cast<JMRIClientListener*>(l))
+ {
+  connect(this, SIGNAL(messageSent(Message*)), (JMRIClientListener*)l, SLOT(message(JMRIClientMessage*)));
+  connect(this, SIGNAL(replyRcvd(Message*)), (JMRIClientListener*)l, SLOT(reply(JMRIClientReply*)) );
+ }
 }
 
 /*protected*/ /*synchronized*/ void AbstractMRTrafficController::removeListener(AbstractMRListener* l)
@@ -103,6 +110,11 @@
  {
   //cmdListeners->removeElement(l);
   cmdListeners->remove(cmdListeners->indexOf(l));
+ }
+ if(qobject_cast<JMRIClientListener*>(l))
+ {
+  disconnect(this, SIGNAL(messageSent(Message*)), (JMRIClientListener*)l, SLOT(message(JMRIClientMessage*)));
+  disconnect(this, SIGNAL(replyRcvd(Message*)), (JMRIClientListener*)l, SLOT(reply(JMRIClientReply*)) );
  }
 }
 

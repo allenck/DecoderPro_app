@@ -43,8 +43,10 @@ public:
     /*public*/ AbstractMRListener* getLastSender();
 
     
-public slots:
-    
+signals:
+    void messageSent(Message* msg);
+    void replyRcvd(Message* msg);
+
 private:
  Logger* log;
  // this is a local variable, used here only;
@@ -106,7 +108,7 @@ protected:
  /*abstract*/ /*protected*/ virtual void forwardReply(AbstractMRListener* client, AbstractMRReply* m) {}
  /*synchronized*/ /*protected*/ void sendMessage(AbstractMRMessage* m, AbstractMRListener* reply);
  /*protected*/ void transmitWait(int waitTime, int state, QString InterruptMessage);
- /*protected*/ bool flushReceiveChars;// = false;
+ /*protected*/ bool flushReceiveChars = false;
  /*protected*/ virtual void handleTimeout(AbstractMRMessage* msg,AbstractMRListener* l);
  /*protected*/ virtual void resetTimeout(AbstractMRMessage* msg);
  /*protected*/ virtual int addHeaderToOutput(QByteArray* msg, AbstractMRMessage* m);

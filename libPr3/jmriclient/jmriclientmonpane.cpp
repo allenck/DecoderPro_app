@@ -23,13 +23,15 @@
 }
 
 //@Override
-/*public*/ void JMRIClientMonPane::initContext(QObject* context) {
-    if (qobject_cast<JMRIClientSystemConnectionMemo*>(context)) {
-        JMRIClientSystemConnectionMemo* memo = (JMRIClientSystemConnectionMemo*) context;
-        // connect to TrafficController
-        tc = memo->getJMRIClientTrafficController();
-        tc->addJMRIClientListener((JMRIClientListener*)this);
-}
+/*public*/ void JMRIClientMonPane::initContext(QObject* context)
+{
+ if (qobject_cast<JMRIClientSystemConnectionMemo*>(context))
+ {
+     JMRIClientSystemConnectionMemo* memo = (JMRIClientSystemConnectionMemo*) context;
+     // connect to TrafficController
+     tc = memo->getJMRIClientTrafficController();
+     tc->addJMRIClientListener((JMRIClientListener*)this);
+ }
 }
 
 //@Override
