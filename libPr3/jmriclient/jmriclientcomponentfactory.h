@@ -10,7 +10,7 @@ class JMRIClientComponentFactory : public ComponentFactory
 
 public:
  JMRIClientComponentFactory(JMRIClientSystemConnectionMemo* memo, QObject* parent = nullptr);
- /*public*/ QMenu* getMenu();
+ /*public*/ QMenu* getMenu(QWidget *frame);
 
  private:
  JMRIClientSystemConnectionMemo* memo;
