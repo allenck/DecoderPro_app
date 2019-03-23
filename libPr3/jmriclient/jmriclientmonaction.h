@@ -8,9 +8,9 @@
  * @author Bob Jacobsen Copyright (C) 2008
  * @author Paul Bender Copyright (C) 2018
  */
-/*public*/ class JMRIClientMonAction :public JMRIClientMonPane::Default
+/*public*/ class JMRIClientMonAction :public JmriNamedPaneActionDefault
 {
 public:
- JMRIClientMonAction(QObject* parent) : JMRIClientMonPane::Default(parent) {}
+ JMRIClientMonAction(QObject* parent) : JmriNamedPaneActionDefault(parent) {}
 };
 #endif // JMRICLIENTMONACTION_H

@@ -17,6 +17,7 @@
 #include "loaderpane.h"
 #include "../loconet/soundloaderpane.h"
 #include "../loconet/editorpane.h"
+#include "class.h"
 
 JmriNamedPaneAction::JmriNamedPaneAction(QObject *parent) :
   JmriAbstractAction("<none>", parent)
@@ -78,19 +79,20 @@ void JmriNamedPaneAction::common()
 
 /*public*/ JmriPanel* JmriNamedPaneAction::makePanel()
 {
-
-//        JmriPanel* p = (JmriPanel) Class.forName(paneClass).newInstance();
- QString className = paneClass;
- if(className.contains("."))
-  className = paneClass.mid(paneClass.lastIndexOf(".")+1);
- int typeId = QMetaType::type(className.toLocal8Bit());
- if(typeId != 0)
+ try
  {
-#if QT_VERSION < 0x050000
-  JmriPanel* p = (JmriPanel*) QMetaType::construct(typeId);
-#else
-  JmriPanel* p = (JmriPanel*) QMetaType::create(typeId);
-#endif
+  JmriPanel* p = (JmriPanel*) Class::forName(paneClass)->newInstance();
+// QString className = paneClass;
+// if(className.contains("."))
+//  className = paneClass.mid(paneClass.lastIndexOf(".")+1);
+// int typeId = QMetaType::type(className.toLocal8Bit());
+// if(typeId != 0)
+// {
+//#if QT_VERSION < 0x050000
+//  JmriPanel* p = (JmriPanel*) QMetaType::construct(typeId);
+//#else
+//  JmriPanel* p = (JmriPanel*) QMetaType::create(typeId);
+//#endif
   p->setWindowInterface(wi);
   p->resize(100,80);
   p->initComponents();
@@ -102,7 +104,19 @@ void JmriNamedPaneAction::common()
   p->adjustSize();
   return p;
  }
- else
+ catch(ClassNotFoundException ex)
+ {
+  log->warn("could not load pane class: " + paneClass);
+  //ex.printStackTrace();
+  return nullptr;
+ }
+ catch(IllegalAccessException ex)
+ {
+  log->warn("could not load pane class: " + paneClass);
+  //ex.printStackTrace();
+  return nullptr;
+ }
+ catch(InstantiationException ex)
  {
   log->warn("could not load pane class: " + paneClass);
   //ex.printStackTrace();
