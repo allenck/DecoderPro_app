@@ -698,6 +698,7 @@
         xmtThread = new QThread();
         xmtThread->setObjectName("Transmit");
         XmitWorker* xmitWorker = new XmitWorker(this);
+        xmtRunnable =xmitWorker;
         connect(xmtThread, SIGNAL(started()), xmitWorker, SLOT(run()));
         connect(xmitWorker, SIGNAL(finished()), xmtThread, SLOT(quit()));
         xmitWorker->moveToThread(xmtThread);
