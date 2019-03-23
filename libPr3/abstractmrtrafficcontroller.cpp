@@ -611,7 +611,7 @@
             {
                 if(portReadyToSend(controller))
                 {
-// TODO:                    ostream->write(msg);
+                  ostream->writeBytes(msg->data(), msg->length());
 // TODO:                    ostream->flush();
                     log->debug(tr("written, msg timeout: ")+QString("%1").arg(m->getTimeout())+" mSec");
                     break;
