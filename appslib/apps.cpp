@@ -335,6 +335,8 @@ bool Apps::configDeferredLoadOK = false;
   {
    file = singleConfig;
   }
+
+  // now (attempt to) load the config file
   log->debug(tr("Using config file(s) %1").arg(file->getPath()));
   if (file->exists())
   {
@@ -348,7 +350,7 @@ bool Apps::configDeferredLoadOK = false;
     log->error("Unhandled problem loading configuration", e);
     configOK = false;
    }
-   log->debug(tr("end load config file, OK=%1").arg(configOK?"yes":"No"));
+   log->debug(tr(", OK=%1").arg(configOK?"yes":"No"));
    }
    else
    {

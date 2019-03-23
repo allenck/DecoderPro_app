@@ -844,6 +844,8 @@ File userPrefsFile;*/
     prefix = "SprogCS";
    else if(sl.at(3) == "pr2")
     prefix = "Pr2";
+   else if(sl.at(3) == "networkdriver")
+    prefix = "JMRIClient";
 
    QString newClassName = prefix+"ConnectionConfigXml";
    if(!prefix.isEmpty())
@@ -883,7 +885,11 @@ File userPrefsFile;*/
       prefix = "LocobufferUsb";
      else if(sl.at(3) == "locobuffer")
       prefix = "Locobuffer";
-     else if(sl.at(3) == "networkdriver")
+     else if(sl.at(3) == "sprog")
+      prefix = "Sprog";
+     else if(sl.at(3) == "sprogCS")
+      prefix = "SprogCS";
+      else if(sl.at(3) == "networkdriver")
       prefix = "JMRIClient";
       QString newClassName = prefix+"ConnectionConfigXml";
       if(!prefix.isEmpty())
@@ -899,7 +905,6 @@ File userPrefsFile;*/
      if (adapter->loadDeferred() && registerDeferred)
      {
       // register in the list for deferred load
-
       loadDeferredList.insert(adapter->loadOrder(), item);
       if (log->isDebugEnabled()) log->debug("deferred load registered for " + item.tagName() + " "  + adapterName);
      }

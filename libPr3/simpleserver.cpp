@@ -256,6 +256,7 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
  Q_UNUSED(newRemoteAddress);
  Q_UNUSED(newSocket);
  Q_UNUSED(connectionNbr);
+ log = new Logger("JMRIClientTxHandler");
  log->debug("JMRIClientTxHandler called");
  // Start by sending a welcome message
 #if 1
