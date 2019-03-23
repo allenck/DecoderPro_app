@@ -10,18 +10,19 @@ class JMRIClientReply;
 class JMRIClientMonPane : public AbstractMonPane
 {
 public:
- /*static*/ /*public*/ class Default : public  JmriNamedPaneAction
- {
+// /*static*/ /*public*/ class Default : public  JmriNamedPaneAction
+// {
 
-   /*public*/ Default(QObject* parent) : JmriNamedPaneAction(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane", parent)
-   {
-          //super(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane");
-          setContext(static_cast<JMRIClientSystemConnectionMemo*>(InstanceManager::
-                  getDefault("JMRIClientSystemConnectionMemo")));
-   }
-  friend class JMRIClientMonAction;
- };
- JMRIClientMonPane(QWidget *parent);
+//   /*public*/ Default(QObject* parent) : JmriNamedPaneAction(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane", parent)
+//   {
+//          //super(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane");
+//          setContext(static_cast<JMRIClientSystemConnectionMemo*>(InstanceManager::
+//                  getDefault("JMRIClientSystemConnectionMemo")));
+//          connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed(ActionEvent*)));
+//   }
+//  friend class JMRIClientMonAction;
+// };
+ JMRIClientMonPane(QWidget *parent =nullptr);
  /*public*/ QString getTitle();
  /*public*/ void initContext(QObject* context);
  /*public*/ void dispose();
@@ -35,6 +36,26 @@ protected:
  /*protected*/ JMRIClientTrafficController* tc = nullptr;
  /*protected*/ void init();
 
+};
+/*static*/ /*public*/ class JmriNamedPaneActionDefault : public  JmriNamedPaneAction
+{
+ Q_OBJECT
+public:
+ /*public*/ JmriNamedPaneActionDefault(QObject* parent) : JmriNamedPaneAction(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane", parent)
+ {
+        //super(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane");
+        setContext(static_cast<JMRIClientSystemConnectionMemo*>(InstanceManager::
+                getDefault("JMRIClientSystemConnectionMemo")));
+        connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed(ActionEvent*)));
+ }
+public slots:
+void actionPerformed()
+{
+ JMRIClientMonPane* pane = new JMRIClientMonPane();
+ pane->setVisible(true);
+ pane->pack();
+}
+friend class JMRIClientMonAction;
 };
 
 #endif // JMRICLIENTMONPANE_H

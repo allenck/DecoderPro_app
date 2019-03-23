@@ -360,7 +360,7 @@
     // nothing to do
     if (mCurrentState!=IDLESTATE) {
           log->debug("Setting IDLESTATE");
-          log->debug("Current Mode " +mCurrentMode);
+          log->debug("Current Mode " + QString::number(mCurrentMode));
           mCurrentState =IDLESTATE;
     }
     // wait for something to send
