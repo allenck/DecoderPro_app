@@ -1163,6 +1163,8 @@ void AbstractMRTrafficController::startThreads()
 
 /*public*/ void AMRTRcvHandler:: run() //throw(LocoNetMessageException, EOFException, IOException, Exception)
 {
+    Message* msg = NULL;
+    QVector<char>* buffer = new QVector<char>();
  while (true)
  {   // loop permanently, program close will exit
 //  int opCode=0;
@@ -1173,8 +1175,6 @@ void AbstractMRTrafficController::startThreads()
 //  }
 //  // here opCode is OK. Create output message
 //  if (trafficController->fulldebug) log.debug(" (RcvHandler) Start message with opcode: "+QString("0x%1").arg(opCode,0,16));
-  Message* msg = NULL;
-  QVector<char>* buffer = new QVector<char>();
 //  while (msg == NULL)
 //  {
 ////    try
@@ -1249,8 +1249,9 @@ void AbstractMRTrafficController::startThreads()
   {
    if (trafficController->debug) log.debug("queue message for notification: "+msg->toString());
    emit passMessage((Message*)buffer);
-  }
+
   buffer= new QVector<char>();
+  }
   // done with this one
  } // end of permanent loop
 }
