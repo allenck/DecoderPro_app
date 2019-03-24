@@ -10,7 +10,11 @@
  */
 /*public*/ class JMRIClientMonAction :public JmriNamedPaneActionDefault
 {
+ Q_OBJECT
 public:
- JMRIClientMonAction(QObject* parent) : JmriNamedPaneActionDefault(parent) {}
+ JMRIClientMonAction(QObject* parent= 0) : JmriNamedPaneActionDefault(parent) {}
+ ~JMRIClientMonAction() {}
+ JMRIClientMonAction(const JMRIClientMonAction&) : JmriNamedPaneActionDefault() {}
 };
+Q_DECLARE_METATYPE(JMRIClientMonAction)
 #endif // JMRICLIENTMONACTION_H

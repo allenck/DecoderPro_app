@@ -9,7 +9,7 @@ class JMRIClientMessage;
 class JMRIClientReply;
 class JMRIClientMonPane : public AbstractMonPane
 {
-     Q_OBJECT
+ Q_OBJECT
 public:
 // /*static*/ /*public*/ class Default : public  JmriNamedPaneAction
 // {
@@ -45,7 +45,7 @@ Q_DECLARE_METATYPE(JMRIClientMonPane)
 {
  Q_OBJECT
 public:
- /*public*/ JmriNamedPaneActionDefault(QObject* parent) : JmriNamedPaneAction(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane", parent)
+ /*public*/ JmriNamedPaneActionDefault(QObject* parent =nullptr) : JmriNamedPaneAction(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane", parent)
  {
         //super(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane");
         setContext(static_cast<JMRIClientSystemConnectionMemo*>(InstanceManager::

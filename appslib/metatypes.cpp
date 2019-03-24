@@ -296,6 +296,7 @@
 #include "jmrisrcpserveraction.h"
 #include "lnmessageserveraction.h"
 #include "jmriclient/jmriclientmonpane.h"
+#include "jmriclient/jmriclientmonaction.h"
 
 bool Metatypes::done = false;
 
@@ -605,7 +606,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SimpleServerAction>("SimpleServerAction");
  qRegisterMetaType<JmriSRCPServerAction>("JmriSRCPServerAction");
  qRegisterMetaType<LnMessageServerAction>("LnMessageServerAction");
- qRegisterMetaType<JMRIClientMonPane>("JMRIClientMonPane");
+ qRegisterMetaType<JMRIClientMonAction>("JMRIClientMonAction");;
 
  Metatypes::done = true;
 }
