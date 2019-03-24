@@ -36,6 +36,7 @@ protected:
  friend class AbstractMRReply;
 
  friend class SprogMessage;
+ friend class AMRTXmtHandler;
 };
 
 #endif // ABSTRACTMESSAGE_H

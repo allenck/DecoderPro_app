@@ -11,6 +11,8 @@
 #include <QLinkedList>
 #include "rfid/rfidinterface.h"
 
+class AMRTXmtHandler;
+class AMRTRcvHandler;
 class AbstractMRListener;
 class AbstractMRMessage;
 class AbstractMRReply;
@@ -44,11 +46,13 @@ public:
 
     
 signals:
-    void messageSent(Message* msg);
-    void replyRcvd(Message* msg);
+ void messageProcessed(AbstractMRMessage* msg, bool bOutput =false);
+ void sendMessage(AbstractMRMessage*);
+ void replyRcvd(AbstractMRMessage* );
+ void messageSent(AbstractMRMessage*);
 
 private:
- Logger* log;
+ static Logger* log;
  // this is a local variable, used here only;
  // it's not the instance() variable, which is static
  // and done in individual subclasses.
@@ -74,6 +78,17 @@ private:
  // Defined this way to reduce new object creation
  /*private*/ QByteArray* rcvBuffer;// = new byte[1];
  /*private*/ void checkReplyInDispatch();
+ void startThreads();
+ AMRTXmtHandler* xmtHandler = nullptr;
+ AMRTRcvHandler* rcvHandler = nullptr;
+ bool fulldebug = true;
+ bool debug = true;
+ bool echo = true;
+
+private slots:
+ void msgRcvd(AbstractMRMessage** m);
+ void msgTransmitted(AbstractMRMessage*);
+
 
 protected:
 
@@ -143,13 +158,16 @@ protected:
  /*protected*/ virtual bool canReceive();
  /*protected*/ /*final*/ virtual void finalize() throw (Throwable);
  /*protected*/ virtual void terminate();
- friend class RcvNotifier;
- friend class XmtNotifier;
- friend class CleanupHook;
- friend class XmitWorker;
- friend class RcvWorker;
+// friend class RcvNotifier;
+// friend class XmtNotifier;
+// friend class CleanupHook;
+// friend class XmitWorker;
+// friend class RcvWorker;
+ friend class AMRTXmtHandler;
+ friend class AMRTRcvHandler;
 };
 
+#if 0
 /**
  * Internal class to remember the Reply object and destination
  * listener with a reply is received.
@@ -249,6 +267,82 @@ public slots:
 signals:
  void finished();
 
+
+};
+#endif
+/**
+ * Captive class to handle incoming characters.  This is a permanent loop,
+ * looking for input messages in character form on the
+ * stream connected to the LnPortController via <code>connectPort</code>.
+ */
+class AMRTRcvHandler : public QThread
+{
+ Q_OBJECT
+ public:
+ /**
+  * Remember the LnPacketizer object
+  */
+ AbstractMRTrafficController* trafficController;
+ Logger log;
+ /*public*/ AMRTRcvHandler(AbstractMRTrafficController* lt)
+ {
+  trafficController = lt;
+ }
+
+ //@SuppressWarnings("NULL")
+ /*public*/ void run();// throw(LocoNetMessageException, EOFException, IOException, Exception);
+
+signals:
+ void passMessage(Message* msg);
+
+public slots:
+ //void dataAvailable();
+ /**
+  * Read a single byte, protecting against various timeouts, etc.
+  * <P>
+  * When a gnu.io port is set to have a
+  * receive timeout (via the enableReceiveTimeout() method),
+  * some will return zero bytes or an EOFException at the end of the timeout.
+  * In that case, the read should be repeated to get the next real character.
+  *false
+  */
+protected:
+};
+
+
+/**
+ * Captive class to handle transmission
+ */
+class AMRTXmtHandler : public QThread
+{
+  Q_OBJECT
+public:
+ /**
+  * Remember the LnPacketizer object
+  */
+ AbstractMRTrafficController* trafficController;
+ Logger log;
+ /*public*/ AMRTXmtHandler(AbstractMRTrafficController* lt) {
+  trafficController = lt;
+ }
+ /*public*/ void run();
+signals:
+public slots:
+ void sendMessage(AbstractMRMessage *m);
+
+protected:
+ /**
+  * When a message is finally transmitted, forward it
+  * to listeners if echoing is needed
+  *
+  */
+ /*protected*/ void messageTransmitted(const char */*msg*/) {
+  if (trafficController->debug) log.debug(tr("message transmitted"));
+  if (!trafficController->echo) return;
+  // message is queued for transmit, echo it when needed
+  // return a notification via the queue to ensure end
+  //invokeLater(new Echo(this, new LocoNetMessage(msg)));
+ }
 
 };
 #endif // ABSTRACTMRTRAFFICCONTROLLER_H

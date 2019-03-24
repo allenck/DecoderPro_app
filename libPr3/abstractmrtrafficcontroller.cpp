@@ -10,6 +10,7 @@
 #include "abstractnetworkportcontroller.h"
 #include "jmriclient/jmriclientlistener.h"
 #include "abstractportcontroller.h"
+#include "loggerfactory.h"
 
 //AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) :
 //    QObject(parent)
@@ -40,7 +41,7 @@
 
 /*public*/ AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) : RfidInterface(parent)
 {
- log = new Logger("AbstractMRTrafficController");
+// log = new Logger("AbstractMRTrafficController");
  if (log->isDebugEnabled()) log->debug("setting instance: "+QString("%1").arg(this->objectName()));
  mCurrentMode = NORMALMODE;
  mCurrentState = IDLESTATE;
@@ -593,7 +594,7 @@
     // which includes the communications monitor, except the sender.
     // Schedule notification via the Swing event queue to ensure order
 //    Runnable* r = new XmtNotifier(m, mLastSender, this);
-    emit messageSent((Message*)m);
+    emit messageSent(m);
 // TODO:    javax.swing.SwingUtilities.invokeLater(r);
 
     // stream to port in single write, as that's needed by serial
@@ -709,6 +710,7 @@
                                   }
             });
 #endif
+#if 0
         xmtThread = new QThread();
         xmtThread->setObjectName("Transmit");
         XmitWorker* xmitWorker = new XmitWorker(this);
@@ -730,12 +732,15 @@
         xr++;
         rcvThread->setPriority((QThread::Priority)xr);      //bump up the priority
         rcvThread->start();
+#endif
+        startThreads();
 
     } catch (Exception e) {
         log->error("Failed to start up communications. Error was "+e.getMessage());
     }
 
 }
+#if 0
 XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
 {
  this->amrtc = amrtc;
@@ -755,7 +760,7 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
    emit finished();
  }
 }
-
+#endif
 /**
  * Get the port name for this connection
  */
@@ -960,7 +965,7 @@ throw (IOException)
  // which includes the communications monitor
  // return a notification via the Swing event queue to ensure proper thread
 // Runnable* r = new RcvNotifier(msg, mLastSender, this);
- emit replyRcvd((Message*)msg);
+ emit replyRcvd((AbstractMRMessage*)msg);
  try
  {
  // TODO:       javax.swing.SwingUtilities.invokeAndWait(r);
@@ -1112,14 +1117,197 @@ throw (IOException)
         }
     }
 }
-
+#if 0
 // allow creation of object outside package
 /*protected*/ RcvNotifier* newRcvNotifier(AbstractMRReply* pMsg, AbstractMRListener* pDest,
                 AbstractMRTrafficController* pTC)
 {
  return new RcvNotifier(pMsg, pDest, pTC);
 }
+#endif
+/**
+ * Invoked at startup to start the threads needed here.
+ */
+void AbstractMRTrafficController::startThreads()
+{
+   int priority = QThread::currentThread()->priority();
+   log->debug("startThreads current priority = "+QString("%1").arg(priority)+
+             " max available = "+QString("%1").arg(QThread::HighestPriority)+
+             " default = "+QString("%1").arg(QThread::NormalPriority)+
+             " min available = "+QString("%1").arg(QThread::LowestPriority));
 
+   // make sure that the xmt priority is no lower than the current priority
+   int xmtpriority = (QThread::HighestPriority-1 > priority ? QThread::HighestPriority-1 : QThread::HighestPriority);
+   // start the XmtHandler in a thread of its own
+   if( xmtHandler == NULL )
+     xmtHandler = new AMRTXmtHandler(this);
+   log->debug(QString("Xmt thread (%2) starts at priority %1").arg(xmtpriority).arg(xmtHandler->objectName()));
+   AMRTXmtHandler* outHandler = (AMRTXmtHandler*)xmtHandler;
+   connect(this, SIGNAL(sendMessage(Message*)), outHandler, SLOT(sendMessage(Message*)));
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractMRTrafficController.class.getName());
+//    xmtHandler->setPriority(QThread::HighPriority); // Highest -1
+   xmtHandler->start(QThread::HighPriority);
+
+   // start the RcvHandler in a thread of its own
+   if( rcvHandler == NULL )
+     rcvHandler = new AMRTRcvHandler(this) ;
+   int rcvpriority = QThread::HighestPriority;
+   log->debug(QString("rcv thread (%2) starts at priority %1").arg(rcvpriority).arg(rcvHandler->objectName()));
+   AMRTRcvHandler* handler = (AMRTRcvHandler*)rcvHandler;
+    connect(handler, SIGNAL(passMessage(Message*)), this, SLOT(msgRcvd(Message*)));
+
+   connect(handler, SIGNAL(finished()), this, SLOT(rcvTerminated()));
+   if (istream != NULL)
+     rcvHandler->start(QThread::HighestPriority);
+}
+
+/*public*/ void AMRTRcvHandler:: run() //throw(LocoNetMessageException, EOFException, IOException, Exception)
+{
+ while (true)
+ {   // loop permanently, program close will exit
+//  int opCode=0;
+//  // start by looking for command -  skip if bit not set
+//  while ( ((opCode = (trafficController->readByteProtected(trafficController->istream)&0xFF)) & 0x80) == 0 )
+//  {
+//   if (trafficController->fulldebug) log.debug("Skipping: "+QString("%1").arg(opCode,0,16));
+//  }
+//  // here opCode is OK. Create output message
+//  if (trafficController->fulldebug) log.debug(" (RcvHandler) Start message with opcode: "+QString("0x%1").arg(opCode,0,16));
+  Message* msg = NULL;
+  QVector<char>* buffer = new QVector<char>();
+//  while (msg == NULL)
+//  {
+////    try
+////    {
+//     // Capture 2nd byte, always present
+//   int byte2 = trafficController->readByteProtected(trafficController->istream)&0xFF;
+//   if (trafficController->fulldebug) log.debug("Byte2: "+QString("0x%1").arg(byte2,0,16));
+//   // Decide length
+//   switch((opCode & 0x60) >> 5)
+//   {
+//   case 0:     /* 2 byte message */
+//    msg = new LocoNetMessage(2);
+//    break;
+
+//   case 1:     /* 4 byte message */
+//    msg = new LocoNetMessage(4);
+//    break;
+
+//   case 2:     /* 6 byte message */
+//    msg = new LocoNetMessage(6);
+//    break;
+
+//   case 3:     /* N byte message */
+//    if (byte2<2)
+//     log.error("LocoNet message length invalid: "+QString("%1").arg(byte2)
+//                              +" opcode: "+QString("0x%1").arg(opCode,0,16));
+//    if(byte2 >= 2)
+//     msg = new LocoNetMessage(byte2);
+//    break;
+//   }
+//   if(msg == NULL)
+//    continue;
+//   // message exists, now fill it
+//   msg->setOpCode(opCode);
+//   msg->setElement(1, byte2);
+//   int len = msg->getNumDataElements();
+//   if (trafficController->fulldebug) log.debug("len: "+QString("%1").arg(len));
+//   for (int i = 2; i < len; i++)
+//   {
+//    // check for message-blocking error
+//    int b = trafficController->readByteProtected(trafficController->istream)&0xFF;
+//    if (trafficController->fulldebug) log.debug("char "+QString("%1").arg(i)+" is: "+QString("0x%1").arg(b,0,16));
+//    if ( (b&0x80) != 0) // new opcode?
+//    {
+//     log.warn("LocoNet message with opCode: "
+//                    +QString("%1").arg(opCode,0,16)
+//                    +" ended early. Expected length: "+QString("%1").arg(len)
+//                    +" seen length: "+QString("%1").arg(i)
+//                    +" unexpected byte: "
+//                    +QString("%1").arg(b,0,16));
+//     opCode = b;
+//     //throw new LocoNetMessageException();
+//     msg = NULL;
+//     break;
+//    }
+//    msg->setElement(i, b);
+//   } // end of for loop
+//  } // end of while (msg == NULL)
+//  if(msg == NULL)
+//   continue;
+//  // check parity
+//  if (!msg->checkParity())
+//  {
+//    log.warn("Ignore Loconet packet with bad checksum: "+msg->toString());
+//    //throw new LocoNetMessageException();
+//  }
+//  else
+  char iByte = trafficController->readByteProtected(trafficController->istream);
+  buffer->append(iByte);
+  if(iByte == 0x0d)
+  // message is complete, dispatch it !!
+  {
+   if (trafficController->debug) log.debug("queue message for notification: "+msg->toString());
+   emit passMessage((Message*)buffer);
+  }
+  buffer= new QVector<char>();
+  // done with this one
+ } // end of permanent loop
+}
+///*protected*/ char LnPacketizer::readByteProtected(QDataStream *istream)
+//{
+// while (true )
+// { // loop will repeat until character found
+
+//  int nchars = 0;
+//  nchars = istream->readRawData(rcvBuffer, 1);
+
+//  if (nchars>0)
+//  {
+//   return rcvBuffer[0];
+//  }
+//  mutex1.lock();
+//  dataAvailable->wait(&mutex1);
+//  mutex1.unlock();
+// }
+//}
+
+/*public*/ void AMRTXmtHandler::run() //throw(LocoNetMessageException, EOFException, IOException, Exception)
+{
+ bool debug = log.isDebugEnabled();
+
+  exec();
+ }
+void AMRTXmtHandler::sendMessage(AbstractMRMessage *m) // SLOT[]
+{
+
+   // input - now send
+//    try
+//    {
+    if (trafficController->ostream != NULL )
+    {
+     //if( trafficController->xmtBuffer.count() > 0)
+     {
+//      if (!trafficController->controller->okToSend())
+//      {
+//       log.debug("LocoNet port not ready to receive");
+//       return;
+//      }
+      QMutex mutex3;
+      mutex3.lock();
+//      trafficController->ostream->writeBytes(m->toCharArray().constData(),m->getNumDataElements());      //trafficController->xmtBuffer.remove(0,1);
+      trafficController->ostream->writeBytes(m->_dataChars.data(), m->_nDataChars);
+      mutex3.unlock();
+//      if(trafficController->serial != NULL) //HexFile won't have a serial object!
+//       trafficController->serial->flush();
+//      messageTransmitted(m->toCharArray().constData());
+     }
+    }
+    else
+    {
+     // no stream connected
+     log.warn("sendLocoNetMessage: no connection established");
+    }
+}
+/*static*/ Logger* AbstractMRTrafficController::log = LoggerFactory::getLogger("AbstractMRTrafficController");
 //}
