@@ -126,6 +126,7 @@ void AbstractNetworkPortController::on_socketConn_hostFound()
   log->debug(tr("host: %1 found").arg(m_HostName));
   //opened = true;
 }
+
 void AbstractNetworkPortController::on_socketConn_connected()
 {
  opened = true;
@@ -145,6 +146,7 @@ void AbstractNetworkPortController::on_socketConn_connected()
   msg = NULL;
  }
 }
+
 void AbstractNetworkPortController::on_socketConn_error(QAbstractSocket::SocketError e)
 {
  if(e == QAbstractSocket::ConnectionRefusedError)
@@ -373,14 +375,17 @@ void AbstractNetworkPortController::on_socketConn_disconnected()
               m_HostName, ConnectionStatus::CONNECTION_DOWN);
   }
  }
- socketConn->waitForConnected();
+ bool connected = socketConn->waitForConnected();
  //try {
       //return new DataInputStream(socketConn.getInputStream());
+ if(connected)
   return new QDataStream(socketConn);
-//    } catch (java.io.IOException ex1) {
-//        log->error("Exception getting input stream: " + ex1);
-//        return null;
-//    }
+ else
+//    } catch (java.io.IOException ex1)
+ {
+     log->error("Exception getting input stream: " + socketConn->errorString());
+     return nullptr;
+ }
 }
 
 //@Override

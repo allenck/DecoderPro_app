@@ -50,7 +50,7 @@ public:
         //super(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane");
         setContext(static_cast<JMRIClientSystemConnectionMemo*>(InstanceManager::
                 getDefault("JMRIClientSystemConnectionMemo")));
-        connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed(ActionEvent*)));
+        //connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed(ActionEvent*))); // JmriNamedPaneAction does this
  }
 public slots:
 void actionPerformed()

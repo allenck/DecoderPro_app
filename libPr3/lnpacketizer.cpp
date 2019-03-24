@@ -40,6 +40,7 @@ LnPacketizer::LnPacketizer(QObject* parent)
 // The methods to implement the LocoNetInterface
 
 /*public*/ bool LnPacketizer::status() { return ((ostream != NULL) & (istream != NULL)); }
+
 void LnPacketizer::connectPort(LnPortController* p)
 {
  istream = p->getInputStream();
