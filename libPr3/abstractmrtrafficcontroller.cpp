@@ -592,7 +592,8 @@
     // forward the message to the registered recipients,
     // which includes the communications monitor, except the sender.
     // Schedule notification via the Swing event queue to ensure order
-    Runnable* r = new XmtNotifier(m, mLastSender, this);
+//    Runnable* r = new XmtNotifier(m, mLastSender, this);
+    emit messageSent((Message*)m);
 // TODO:    javax.swing.SwingUtilities.invokeLater(r);
 
     // stream to port in single write, as that's needed by serial
@@ -870,10 +871,13 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
     while (true) { // loop will repeat until character found
         int nchars;
 // TODO:        nchars = istream->read(rcvBuffer, 0, 1);
+        char* temp;
+        nchars = istream->readRawData(temp, 1);
         if (nchars== -1) {
             // No more bytes can be read from the channel
-            throw new IOException("Connection not terminated normally");
+            throw IOException("Connection not terminated normally");
         }
+        rcvBuffer->append(temp);
         if (nchars>0) return rcvBuffer->at(0);
     }
 }
@@ -955,7 +959,8 @@ throw (IOException)
  // forward the message to the registered recipients,
  // which includes the communications monitor
  // return a notification via the Swing event queue to ensure proper thread
- Runnable* r = new RcvNotifier(msg, mLastSender, this);
+// Runnable* r = new RcvNotifier(msg, mLastSender, this);
+ emit replyRcvd((Message*)msg);
  try
  {
  // TODO:       javax.swing.SwingUtilities.invokeAndWait(r);
