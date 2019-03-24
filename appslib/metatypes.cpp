@@ -606,7 +606,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SimpleServerAction>("SimpleServerAction");
  qRegisterMetaType<JmriSRCPServerAction>("JmriSRCPServerAction");
  qRegisterMetaType<LnMessageServerAction>("LnMessageServerAction");
- qRegisterMetaType<JMRIClientMonAction>("JMRIClientMonAction");;
+ qRegisterMetaType<JMRIClientMonAction>("JMRIClientMonAction");
+ qRegisterMetaType<JMRIClientMonPane>("JMRIClientMonPane");
 
  Metatypes::done = true;
 }
