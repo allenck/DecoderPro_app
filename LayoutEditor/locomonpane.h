@@ -12,7 +12,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LocoMonPane : public AbstractMonPane
 {
     Q_OBJECT
 public:
-    explicit LocoMonPane(QWidget *parent = nullptr);
+    Q_INVOKABLE explicit LocoMonPane(QWidget *parent = nullptr);
  ~LocoMonPane();
  LocoMonPane(const LocoMonPane&) : AbstractMonPane() {}
     /*public*/ QString getHelpTarget();

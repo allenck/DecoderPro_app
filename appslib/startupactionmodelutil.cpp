@@ -271,6 +271,8 @@ entry.next();
   actionListBundle.insert("clockMonitor.LocoNetMenuStartupAction", "Clock Monitor");
   actionListBundle.insert("monitorLoconetStats.LocoNetMenuStartupAction", "Monitor LocoNet Stats");
 
+  actionListBundle.insert("jmri.jmrix.jmriclient.swing.mon.JMRIClientMonPane", "Monitor JMRIClient Messages");
+
   foreach(QString key, actionListBundle.keys())
   {
    try

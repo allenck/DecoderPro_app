@@ -9,7 +9,7 @@ class JMRIClientMessage;
 class JMRIClientReply;
 class JMRIClientMonPane : public AbstractMonPane
 {
-     Q_OBJECT
+ Q_OBJECT
 public:
 // /*static*/ /*public*/ class Default : public  JmriNamedPaneAction
 // {
