@@ -288,6 +288,7 @@ class AMRTRcvHandler : public QThread
  /*public*/ AMRTRcvHandler(AbstractMRTrafficController* lt)
  {
   trafficController = lt;
+  log = new Logger("AMRTRcvHandler");
  }
 
  //@SuppressWarnings("NULL")
