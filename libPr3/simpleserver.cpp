@@ -46,6 +46,7 @@ void SimpleServer::common(int port)
 {
     //super(port);
     InstanceManager::setDefault("SimpleServer",this);
+    log->setDebugEnabled(true);
     log->info("JMRI SimpleServer started on port " + QString::number(port));
     clients = new QLinkedList<JMRIClientRxHandler*>();
 }
@@ -67,13 +68,12 @@ void SimpleServer::common(int port)
 void SimpleServer::on_newConnection()
 {
  QTcpSocket* socket = nextPendingConnection();
+ QString remoteAddress = socket->peerAddress().toString();
+ log->debug("New connection from "+ remoteAddress);
  if(socket != NULL)
  {
-  QString remoteAddress = socket->peerAddress().toString();
   JMRIClientRxHandler* rxHandler;
   addClient(rxHandler = new JMRIClientRxHandler(remoteAddress,socket, connectionNbr++));
-
-  log->debug("New connection from "+ remoteAddress);
  }
 }
 
@@ -134,6 +134,7 @@ JMRIClientRxHandler::JMRIClientRxHandler(QString newRemoteAddress, QTcpSocket *n
 // SimpleSignalHeadServer* signalHeadServer;// = new SimpleSignalHeadServer(inStream, outStream);
 // SimpleReporterServer* reporterServer;// = new SimpleReporterServer(inStream, outStream);
 // SimpleOperationsServer* operationsServer;// = new SimpleOperationsServer(inStream, outStream);
+ connect(newSocket, SIGNAL(readyRead()), this, SLOT(on_readyRead()));
 
 
  txHandler = new JMRIClientTxHandler(remoteAddress, newSocket, connectionNbr);
@@ -160,6 +161,7 @@ void JMRIClientRxHandler::on_readyRead()
  {
   if(log->isDebugEnabled() && clientSocket->bytesAvailable() > 0)
    log->debug(tr("Socket has %1 bytes ready").arg(clientSocket->bytesAvailable()));
+  inStream = new QTextStream(clientSocket);
   inString = inStream->readLine();
   if (inString.isEmpty())
   {
