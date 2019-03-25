@@ -72,6 +72,7 @@ protected:
 
  friend class Reconnectwait;
  friend class AMRTRcvHandler;
+ friend class AMRTXmtHandler;
 };
 class Reconnectwait : public QObject
 {

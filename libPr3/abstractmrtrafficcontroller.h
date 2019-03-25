@@ -318,6 +318,9 @@ public:
   */
  AbstractMRTrafficController* trafficController;
  Logger log;
+ QTextStream* outText;
+ QTcpSocket* connSocket;
+
  /*public*/ AMRTXmtHandler(AbstractMRTrafficController* lt) {
   trafficController = lt;
  }

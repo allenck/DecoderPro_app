@@ -102,8 +102,8 @@
  }
  if(qobject_cast<JMRIClientListener*>(l))
  {
-  connect(this->rcvHandler, SIGNAL(messageSent(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(message(AbstractMRMessage*)));
-  connect(this->xmtHandler, SIGNAL(replyRcvd(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(reply(AbstractMRMessage*)) );
+  connect(this->rcvHandler, SIGNAL(passMessage(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(message(AbstractMRMessage*)));
+  connect(this, SIGNAL(messageSent(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(reply(AbstractMRMessage*)) );
  }
 }
 
@@ -1343,39 +1343,60 @@ void AMRTRcvHandler::on_ReadyRead()
 /*public*/ void AMRTXmtHandler::run() //throw(LocoNetMessageException, EOFException, IOException, Exception)
 {
  bool debug = log.isDebugEnabled();
-
+ connSocket = ((AbstractNetworkPortController*)trafficController->controller)->socketConn; //networkController->getSocket();
+ outText = new QTextStream(connSocket);
   exec();
  }
 void AMRTXmtHandler::sendMessage(AbstractMRMessage *m) // SLOT[]
 {
 
-   // input - now send
-//    try
-//    {
-    if (trafficController->ostream != NULL )
-    {
-     //if( trafficController->xmtBuffer.count() > 0)
-     {
-//      if (!trafficController->controller->okToSend())
-//      {
-//       log.debug("LocoNet port not ready to receive");
-//       return;
-//      }
-      QMutex mutex3;
-      mutex3.lock();
-//      trafficController->ostream->writeBytes(m->toCharArray().constData(),m->getNumDataElements());      //trafficController->xmtBuffer.remove(0,1);
-      trafficController->ostream->writeBytes(m->_dataChars.data(), m->_nDataChars);
-      mutex3.unlock();
-//      if(trafficController->serial != NULL) //HexFile won't have a serial object!
-//       trafficController->serial->flush();
-//      messageTransmitted(m->toCharArray().constData());
-     }
-    }
-    else
-    {
-     // no stream connected
-     log.warn("sendLocoNetMessage: no connection established");
-    }
+ bool debug = log.isDebugEnabled();
+ if(debug)
+  log.debug("send message");
+
+  // input - now send
+//  try {
+ if (outText != NULL)
+ {
+         //Commented out as the origianl LnPortnetworkController always returned true.
+         //if (!networkController.okToSend()) log->warn("LocoNet port not ready to receive"); // TCP, not RS232, so message is a real warning
+//  if (debug)
+//  {
+//   log->debug("start write to stream");
+//  }
+//  QString packet;// = new StringBuffer(msg.length * 3 + SEND_PREFIX.length() + 2);
+//  packet.append(trafficController->SEND_PREFIX);
+//  QString hexString;
+//  for (int Index = 0; Index < msg->getNumDataElements(); Index++)
+//  {
+//   packet.append(' ');
+//   hexString = QString::number(msg->getElement(Index) & 0xFF,16).toUpper();
+//   if (hexString.length() == 1) {
+//       packet.append('0');
+//   }
+//   packet.append(hexString);
+//  }
+//  if (debug)
+//  {
+//   log->debug("Write to LbServer: " + packet/*.toString()*/);
+//  }
+//  packet.append("\r\n");
+//  //ostream.write(packet.toString().getBytes());
+//  //*trafficController->ostream << packet;
+//  *outText << packet;
+//  outText->flush();
+  connSocket->write(m->toString().toLocal8Bit());
+  emit
+//  if (debug)
+//  {
+//   log->debug("end write to stream");
+//  }
+ }
+ else
+ {
+  // no stream connected
+  log.warn("sendLocoNetMessage: no connection established");
+ }
 }
 /*static*/ Logger* AbstractMRTrafficController::log = LoggerFactory::getLogger("AbstractMRTrafficController");
 //}
