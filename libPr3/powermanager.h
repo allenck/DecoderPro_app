@@ -35,7 +35,7 @@ class LIBPR3SHARED_EXPORT PowerManager : public QObject
     virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) {}
 
     virtual QString getUserName() {return "";}
- PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+ PropertyChangeSupport* pcs =nullptr;// = new PropertyChangeSupport(this);
 
  signals:
  public slots:

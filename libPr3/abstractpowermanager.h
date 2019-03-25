@@ -13,7 +13,7 @@ public:
  QString getUserName();
  virtual void removePropertyChangeListener(PropertyChangeListener* l);
  virtual /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
- PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+ //PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
 
 signals:
  //void propertyChange(QString p, QVariant old, QVariant n);
