@@ -102,8 +102,8 @@
  }
  if(qobject_cast<JMRIClientListener*>(l))
  {
-  connect(this, SIGNAL(messageSent(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(message(AbstractMRMessage*)));
-  connect(this, SIGNAL(replyRcvd(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(reply(AbstractMRMessage*)) );
+  connect(this->rcvHandler, SIGNAL(messageSent(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(message(AbstractMRMessage*)));
+  connect(this->xmtHandler, SIGNAL(replyRcvd(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(reply(AbstractMRMessage*)) );
  }
 }
 
@@ -116,8 +116,8 @@
  }
  if(qobject_cast<JMRIClientListener*>(l))
  {
-  disconnect(this, SIGNAL(messageSent(Message*)), (JMRIClientListener*)l, SLOT(message(JMRIClientMessage*)));
-  disconnect(this, SIGNAL(replyRcvd(Message*)), (JMRIClientListener*)l, SLOT(reply(JMRIClientReply*)) );
+  disconnect(this->rcvHandler, SIGNAL(messageSent(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(message(AbstractMRMessage*)));
+  disconnect(this->xmtHandler, SIGNAL(replyRcvd(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(reply(AbstractMRMessage*)) );
  }
 }
 
