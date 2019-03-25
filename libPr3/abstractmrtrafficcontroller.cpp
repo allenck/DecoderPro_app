@@ -100,9 +100,9 @@
   //cmdListeners->addElement(l);
   cmdListeners->append(l);
  }
- if(qobject_cast<JMRIClientListener*>(l))
+ //if(qobject_cast<JMRIClientListener*>(l))
  {
-  connect(this->rcvHandler, SIGNAL(passMessage(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(message(AbstractMRMessage*)));
+  connect(this->rcvHandler, SIGNAL(passMessage(AbstractMRMessage*)), l, SLOT(message(AbstractMRMessage*)));
   connect(this, SIGNAL(messageSent(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(reply(AbstractMRMessage*)) );
  }
 }
@@ -212,6 +212,10 @@
 /*protected*/ void AbstractMRTrafficController::setAllowUnexpectedReply(bool expected) {
     allowUnexpectedReply=expected;
 }
+///*protected*/ void AbstractMRTrafficController::notifyReply(AbstractMRReply* r)
+//{
+// notifyReply(r, nullptr);
+//}
 
 /**
  * Forward a "Reply" from layout to registered listeners.
@@ -221,7 +225,7 @@
  *              because it's the originating object.
  */
 //@SuppressWarnings("unchecked")
-/*protected*/ void AbstractMRTrafficController::notifyReply(AbstractMRReply* r, AbstractMRListener* dest)
+/*protected*/ void AbstractMRTrafficController::notifyReply(AbstractMRReply* r/*, AbstractMRListener* dest*/)
 {
     // make a copy of the listener vector to synchronized (not needed for transmit?)
     QVector<AbstractMRListener*>* v;
@@ -242,8 +246,8 @@
         if (log->isDebugEnabled()) log->debug("notify client: "+client->objectName());
         try {
             //skip dest for now, we'll send the message to there last.
-    if(dest!=client)
-                forwardReply(client, r);
+//    if(dest!=client)
+//                forwardReply(client, r);
         }
         catch (Exception* e) {
             log->warn(tr("notify: During reply dispatch to ")+client->metaObject()->className()+"\nException "+e->getMessage());
@@ -254,7 +258,7 @@
     // forward to the last listener who send a message
     // this is done _second_ so monitoring can have already stored the reply
     // before a response is sent
-    if (dest != NULL) forwardReply(dest, r);
+//    if (dest != NULL) forwardReply(dest, r);
 }
 
 /*abstract*/ /*protected*/ void forwardReply(AbstractMRListener* client, AbstractMRReply* m);
@@ -279,6 +283,7 @@
   }
   if(m!=NULL)
         log->debug(tr("just notified transmit thread with message ") +m->toString());
+  emit messageSent(m);
 }
 
 /**

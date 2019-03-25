@@ -15,9 +15,9 @@ class JMRIClientReply;
  Q_OBJECT
 public slots:
 
- /*public*/ virtual void message(AbstractMRMessage* /*m*/) {}
+ /*public*/ void message(AbstractMRMessage* /*m*/) {}
 
- /*public*/ virtual void reply(AbstractMRMessage* /*m*/) {}
+ /*public*/ void reply(AbstractMRMessage* /*m*/) {}
 };
 Q_DECLARE_INTERFACE(JMRIClientListener, "JMRIClientListener")
 #endif // JMRICLIENTLISTENER_H

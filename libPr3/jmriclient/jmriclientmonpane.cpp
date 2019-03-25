@@ -42,12 +42,12 @@ AbstractMonPane::dispose();
 }
 
 //@Override
-/*public*/ /*synchronized*/ void JMRIClientMonPane::message(JMRIClientMessage* l) {  // receive a message and log it
+/*public*/ /*synchronized*/ void JMRIClientMonPane::message(AbstractMRMessage* l) {  // receive a message and log it
     logMessage("cmd: ", (Message*)l);
 }
 
 //@Override
-/*public*/ /*synchronized*/ void JMRIClientMonPane::reply(JMRIClientReply* l) {  // receive a reply message and log it
+/*public*/ /*synchronized*/ void JMRIClientMonPane::reply(AbstractMRMessage* l) {  // receive a reply message and log it
     logMessage("rep: ",l);
 }
 

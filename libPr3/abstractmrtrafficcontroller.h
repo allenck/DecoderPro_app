@@ -160,7 +160,9 @@ protected:
  /*protected*/ virtual void terminate();
 
 protected slots:
- /*protected*/ void notifyReply(AbstractMRReply* r, AbstractMRListener* dest = nullptr);
+ /*protected*/ void notifyReply(AbstractMRReply* r);
+
+// /*protected*/ void notifyReply(AbstractMRReply* r, AbstractMRListener* dest = nullptr);
 
 // friend class RcvNotifier;
 // friend class XmtNotifier;
