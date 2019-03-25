@@ -4,6 +4,7 @@
 #include "jmrinamedpaneaction.h"
 #include "instancemanager.h"
 #include "jmriclientsystemconnectionmemo.h"
+#include "abstractmrmessage.h"
 
 class JMRIClientMessage;
 class JMRIClientReply;
@@ -31,8 +32,8 @@ public:
  /*public*/ void dispose();
 
 public slots:
- /*public*/ /*synchronized*/ void reply(JMRIClientReply* l);  // receive a reply message and log it
- /*public*/ /*synchronized*/ void message(JMRIClientMessage* l);  // receive a message and log it
+ /*public*/ /*synchronized*/ void reply(AbstractMRMessage* l);  // receive a reply message and log it
+ /*public*/ /*synchronized*/ void message(AbstractMRMessage *l);  // receive a message and log it
 
 
 protected:
