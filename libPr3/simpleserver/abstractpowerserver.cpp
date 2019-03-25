@@ -46,7 +46,7 @@
   }
   else {
       //p.addPropertyChangeListener(this);
-//   connect(p->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect(p->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
  }
  return true;

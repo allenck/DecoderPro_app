@@ -50,7 +50,7 @@ signals:
  void messageProcessed(AbstractMRMessage* msg, bool bOutput =false);
  void sendMessage(AbstractMRMessage*);
  void replyRcvd(AbstractMRMessage* );
- void messageSent(AbstractMRMessage*);
+ void messageSent(AbstractMRMessage*, AbstractMRListener* reply);
 
 private:
  static Logger* log;
@@ -331,8 +331,10 @@ public:
  }
  /*public*/ void run();
 signals:
+ void messageProcessed(AbstractMRMessage*);
+
 public slots:
- void sendMessage(AbstractMRMessage *m);
+ void sendMessage(AbstractMRMessage *m, AbstractMRListener* reply);
 
 protected:
  /**

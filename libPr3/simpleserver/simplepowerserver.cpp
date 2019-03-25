@@ -2,6 +2,7 @@
 #include <QTcpSocket>
 #include "powermanager.h"
 #include "loggerfactory.h"
+#include "instancemanager.h"
 
 /**
  * Simple Server interface between the JMRI power manager and a network
@@ -62,6 +63,22 @@
       // we should check to see if there is an
     }
 #endif
+    int status = p->getPower();
+    QStringList sl = statusString.split(" ");
+    if(sl.count()> 1 && sl.at(0) == "ON")
+    {
+     if(status != PowerManager::ON)
+      p->setPower(PowerManager::ON);
+     else
+      sendStatus(status);
+    }
+    if(sl.count()> 1 && sl.at(0) == "OFF")
+    {
+     if(status != PowerManager::OFF)
+      p->setPower(PowerManager::OFF);
+     else
+      sendStatus(status);
+    }
 }
 
 /*public*/ void SimplePowerServer::sendStatus(QString status) throw (IOException) {

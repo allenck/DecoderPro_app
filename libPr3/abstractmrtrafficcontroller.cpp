@@ -103,7 +103,7 @@
  //if(qobject_cast<JMRIClientListener*>(l))
  {
   connect(this->rcvHandler, SIGNAL(passMessage(AbstractMRMessage*)), l, SLOT(message(AbstractMRMessage*)));
-  connect(this, SIGNAL(messageSent(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(reply(AbstractMRMessage*)) );
+  connect(this->xmtHandler, SIGNAL(messageProcessed(AbstractMRMessage*)), l, SLOT(reply(AbstractMRMessage*)) );
  }
 }
 
@@ -283,7 +283,7 @@
   }
   if(m!=NULL)
         log->debug(tr("just notified transmit thread with message ") +m->toString());
-  emit messageSent(m);
+  emit messageSent(m, reply);
 }
 
 /**
@@ -601,7 +601,7 @@
     // which includes the communications monitor, except the sender.
     // Schedule notification via the Swing event queue to ensure order
 //    Runnable* r = new XmtNotifier(m, mLastSender, this);
-    emit messageSent(m);
+    //emit messageSent(m);
 // TODO:    javax.swing.SwingUtilities.invokeLater(r);
 
     // stream to port in single write, as that's needed by serial
@@ -1151,7 +1151,7 @@ void AbstractMRTrafficController::startThreads()
      xmtHandler = new AMRTXmtHandler(this);
    log->debug(QString("Xmt thread (%2) starts at priority %1").arg(xmtpriority).arg(xmtHandler->objectName()));
    AMRTXmtHandler* outHandler = (AMRTXmtHandler*)xmtHandler;
-   connect(this, SIGNAL(messageSent(AbstractMRMessage*)), outHandler, SLOT(sendMessage(AbstractMRMessage*)));
+   connect(this, SIGNAL(messageSent(AbstractMRMessage*, AbstractMRListener*)), outHandler, SLOT(sendMessage(AbstractMRMessage*, AbstractMRListener*)));
 
 //    xmtHandler->setPriority(QThread::HighPriority); // Highest -1
    xmtHandler->start(QThread::HighPriority);
@@ -1351,8 +1351,9 @@ void AMRTRcvHandler::on_ReadyRead()
  connSocket = ((AbstractNetworkPortController*)trafficController->controller)->socketConn; //networkController->getSocket();
  outText = new QTextStream(connSocket);
   exec();
- }
-void AMRTXmtHandler::sendMessage(AbstractMRMessage *m) // SLOT[]
+}
+
+void AMRTXmtHandler::sendMessage(AbstractMRMessage *m, AbstractMRListener *reply) // SLOT[]
 {
 
  bool debug = log.isDebugEnabled();
@@ -1391,7 +1392,8 @@ void AMRTXmtHandler::sendMessage(AbstractMRMessage *m) // SLOT[]
 //  *outText << packet;
 //  outText->flush();
   connSocket->write(m->toString().toLocal8Bit());
-  emit
+  emit messageProcessed(m);
+
 //  if (debug)
 //  {
 //   log->debug("end write to stream");
