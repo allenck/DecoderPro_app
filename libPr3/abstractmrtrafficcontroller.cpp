@@ -1146,7 +1146,7 @@ void AbstractMRTrafficController::startThreads()
      xmtHandler = new AMRTXmtHandler(this);
    log->debug(QString("Xmt thread (%2) starts at priority %1").arg(xmtpriority).arg(xmtHandler->objectName()));
    AMRTXmtHandler* outHandler = (AMRTXmtHandler*)xmtHandler;
-   connect(this, SIGNAL(sendMessage(Message*)), outHandler, SLOT(sendMessage(Message*)));
+   connect(this, SIGNAL(messageSent(AbstractMRMessage*)), outHandler, SLOT(sendMessage(AbstractMRMessage*)));
 
 //    xmtHandler->setPriority(QThread::HighPriority); // Highest -1
    xmtHandler->start(QThread::HighPriority);
@@ -1157,7 +1157,7 @@ void AbstractMRTrafficController::startThreads()
    int rcvpriority = QThread::HighestPriority;
    log->debug(QString("rcv thread (%2) starts at priority %1").arg(rcvpriority).arg(rcvHandler->objectName()));
    AMRTRcvHandler* handler = (AMRTRcvHandler*)rcvHandler;
-    connect(handler, SIGNAL(passMessage(Message*)), this, SLOT(msgRcvd(Message*)));
+    connect(handler, SIGNAL(passMessage(AbstractMRMessage*)), this, SLOT(notifyReply(AbstractMRReply*)));
 
    connect(handler, SIGNAL(finished()), this, SLOT(rcvTerminated()));
    if (istream != NULL)

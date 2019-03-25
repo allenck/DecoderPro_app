@@ -120,7 +120,6 @@ protected:
  volatile /*protected*/ int mCurrentState;
  /*protected*/ bool allowUnexpectedReply;
  /*protected*/ void setAllowUnexpectedReply(bool expected);
- /*protected*/ void notifyReply(AbstractMRReply* r, AbstractMRListener* dest);
  /*abstract*/ /*protected*/ virtual void forwardReply(AbstractMRListener* client, AbstractMRReply* m) {}
  /*synchronized*/ /*protected*/ void sendMessage(AbstractMRMessage* m, AbstractMRListener* reply);
  /*protected*/ void transmitWait(int waitTime, int state, QString InterruptMessage);
@@ -159,6 +158,10 @@ protected:
  /*protected*/ virtual bool canReceive();
  /*protected*/ /*final*/ virtual void finalize() throw (Throwable);
  /*protected*/ virtual void terminate();
+
+protected slots:
+ /*protected*/ void notifyReply(AbstractMRReply* r, AbstractMRListener* dest = nullptr);
+
 // friend class RcvNotifier;
 // friend class XmtNotifier;
 // friend class CleanupHook;

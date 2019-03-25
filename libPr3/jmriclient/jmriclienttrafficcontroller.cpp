@@ -54,7 +54,7 @@
  */
 //@Override
 /*protected*/ void JMRIClientTrafficController::forwardReply(AbstractMRListener* client, AbstractMRReply* m) {
-    ((JMRIClientListener*) client)->reply((JMRIClientReply*) m);
+    ((JMRIClientListener*) client)->reply((AbstractMRMessage*) m);
 }
 
 //@Override

@@ -1,6 +1,7 @@
 #ifndef JMRICLIENTLISTENER_H
 #define JMRICLIENTLISTENER_H
 #include "abstractmrlistener.h"
+#include "abstractmrmessage.h"
 
 class JMRIClientMessage;
 class JMRIClientReply;
@@ -14,9 +15,9 @@ class JMRIClientReply;
  Q_OBJECT
 public slots:
 
- /*public*/ virtual void message(JMRIClientMessage* /*m*/) {}
+ /*public*/ virtual void message(AbstractMRMessage* /*m*/) {}
 
- /*public*/ virtual void reply(JMRIClientReply* /*m*/) {}
+ /*public*/ virtual void reply(AbstractMRMessage* /*m*/) {}
 };
 Q_DECLARE_INTERFACE(JMRIClientListener, "JMRIClientListener")
 #endif // JMRICLIENTLISTENER_H
