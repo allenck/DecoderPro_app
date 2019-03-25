@@ -71,6 +71,7 @@ protected:
  /*protected*/ int getConnectionTimeout();
 
  friend class Reconnectwait;
+ friend class AMRTRcvHandler;
 };
 class Reconnectwait : public QObject
 {

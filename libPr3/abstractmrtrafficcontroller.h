@@ -11,6 +11,7 @@
 #include <QLinkedList>
 #include "rfid/rfidinterface.h"
 
+class QTcpSocket;
 class AMRTXmtHandler;
 class AMRTRcvHandler;
 class AbstractMRListener;
@@ -283,7 +284,7 @@ class AMRTRcvHandler : public QThread
   * Remember the LnPacketizer object
   */
  AbstractMRTrafficController* trafficController;
- Logger log;
+ Logger* log;
  /*public*/ AMRTRcvHandler(AbstractMRTrafficController* lt)
  {
   trafficController = lt;
@@ -293,20 +294,14 @@ class AMRTRcvHandler : public QThread
  /*public*/ void run();// throw(LocoNetMessageException, EOFException, IOException, Exception);
 
 signals:
- void passMessage(Message* msg);
+ void passMessage(AbstractMRMessage* msg);
 
-public slots:
- //void dataAvailable();
- /**
-  * Read a single byte, protecting against various timeouts, etc.
-  * <P>
-  * When a gnu.io port is set to have a
-  * receive timeout (via the enableReceiveTimeout() method),
-  * some will return zero bytes or an EOFException at the end of the timeout.
-  * In that case, the read should be repeated to get the next real character.
-  *false
-  */
-protected:
+private:
+   QTcpSocket* connSocket;
+   QTextStream* inText;
+   QMutex mutex;
+private slots:
+   void on_ReadyRead();
 };
 
 

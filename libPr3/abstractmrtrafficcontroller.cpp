@@ -12,6 +12,7 @@
 #include "abstractportcontroller.h"
 #include "loggerfactory.h"
 #include <QApplication>
+#include <QTcpSocket>
 
 //AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) :
 //    QObject(parent)
@@ -101,8 +102,8 @@
  }
  if(qobject_cast<JMRIClientListener*>(l))
  {
-  connect(this, SIGNAL(messageSent(Message*)), (JMRIClientListener*)l, SLOT(message(JMRIClientMessage*)));
-  connect(this, SIGNAL(replyRcvd(Message*)), (JMRIClientListener*)l, SLOT(reply(JMRIClientReply*)) );
+  connect(this, SIGNAL(messageSent(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(message(AbstractMRMessage*)));
+  connect(this, SIGNAL(replyRcvd(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(reply(AbstractMRMessage*)) );
  }
 }
 
@@ -1165,116 +1166,179 @@ void AbstractMRTrafficController::startThreads()
 
 /*public*/ void AMRTRcvHandler:: run() //throw(LocoNetMessageException, EOFException, IOException, Exception)
 {
-    Message* msg = NULL;
-    QVector<char>* buffer = new QVector<char>();
+ bool debug = log->isDebugEnabled();
+ if(log->isDebugEnabled() )
+  log->debug("AMRTRcvHandler starts");
+ connSocket = ((AbstractNetworkPortController*)trafficController->controller)->socketConn; //networkController->getSocket();
+// trafficController->istream = new QDataStream(connSocket);
+// trafficController->istream->setVersion(QDataStream::Qt_4_0);
+ //connect(connSocket, SIGNAL(disconnected()), this, SLOT(quit()));
+ inText = new QTextStream(connSocket);
+ //connSocket->waitForReadyRead();
+ connect(connSocket, SIGNAL(readyRead()), this, SLOT(on_ReadyRead()));
+
+ exec();
+
+ log->debug("LnTcpRcvHandler exiting!");
+}
+
+void AMRTRcvHandler::on_ReadyRead()
+{
+ QString rxLine;
+ bool debug = log->isDebugEnabled();
+
  while (true)
  {   // loop permanently, program close will exit
-//  int opCode=0;
-//  // start by looking for command -  skip if bit not set
-//  while ( ((opCode = (trafficController->readByteProtected(trafficController->istream)&0xFF)) & 0x80) == 0 )
-//  {
-//   if (trafficController->fulldebug) log.debug("Skipping: "+QString("%1").arg(opCode,0,16));
-//  }
-//  // here opCode is OK. Create output message
-//  if (trafficController->fulldebug) log.debug(" (RcvHandler) Start message with opcode: "+QString("0x%1").arg(opCode,0,16));
-//  while (msg == NULL)
-//  {
-////    try
-////    {
-//     // Capture 2nd byte, always present
-//   int byte2 = trafficController->readByteProtected(trafficController->istream)&0xFF;
-//   if (trafficController->fulldebug) log.debug("Byte2: "+QString("0x%1").arg(byte2,0,16));
-//   // Decide length
-//   switch((opCode & 0x60) >> 5)
-//   {
-//   case 0:     /* 2 byte message */
-//    msg = new LocoNetMessage(2);
-//    break;
 
-//   case 1:     /* 4 byte message */
-//    msg = new LocoNetMessage(4);
-//    break;
+  //if(connSocket->bytesAvailable() > 0 )
+  {
+   // start by looking for a complete line
+   if(connSocket == NULL || !connSocket->isValid())
+    return;
+   mutex.lock();
+   rxLine = inText->readLine(64);
+   mutex.unlock();
 
-//   case 2:     /* 6 byte message */
-//    msg = new LocoNetMessage(6);
-//    break;
-
-//   case 3:     /* N byte message */
-//    if (byte2<2)
-//     log.error("LocoNet message length invalid: "+QString("%1").arg(byte2)
-//                              +" opcode: "+QString("0x%1").arg(opCode,0,16));
-//    if(byte2 >= 2)
-//     msg = new LocoNetMessage(byte2);
-//    break;
-//   }
-//   if(msg == NULL)
+   if (rxLine.isEmpty())
+   {
+//    log->warn("run: input stream returned empty line, will wait");
+    //QByteArray ba = connSocket->peek(64);
+//    connSocket->waitForReadyRead();
 //    continue;
-//   // message exists, now fill it
-//   msg->setOpCode(opCode);
-//   msg->setElement(1, byte2);
-//   int len = msg->getNumDataElements();
-//   if (trafficController->fulldebug) log.debug("len: "+QString("%1").arg(len));
-//   for (int i = 2; i < len; i++)
-//   {
-//    // check for message-blocking error
-//    int b = trafficController->readByteProtected(trafficController->istream)&0xFF;
-//    if (trafficController->fulldebug) log.debug("char "+QString("%1").arg(i)+" is: "+QString("0x%1").arg(b,0,16));
-//    if ( (b&0x80) != 0) // new opcode?
+    return;
+   }
+
+   if (debug)
+   {
+    if(!rxLine.startsWith("VERSION"))
+     log->debug("Received: " + rxLine);
+   }
+
+   AbstractMRMessage* msg = new AbstractMRMessage(rxLine);
+#if 0
+   StringTokenizer* st = new StringTokenizer(rxLine);
+   if (st->nextToken()==(trafficController->RECEIVE_PREFIX))
+   {
+    LocoNetMessage* msg = NULL;
+    int opCode = st->nextToken().toInt(0, 16);
+    int byte2 = st->nextToken().toInt(0, 16);
+
+    // Decide length
+    switch ((opCode & 0x60) >> 5)
+    {
+     default:  // not really possible, but this closes selection for FindBugs
+     case 0:     /* 2 byte message */
+
+      msg = new LocoNetMessage(2);
+      break;
+
+     case 1:     /* 4 byte message */
+
+      msg = new LocoNetMessage(4);
+      break;
+
+     case 2:     /* 6 byte message */
+
+      msg = new LocoNetMessage(6);
+      break;
+
+     case 3:     /* N byte message */
+
+     if (byte2 < 2)
+     {
+       log->error("LocoNet message length invalid: " + QString::number(byte2)
+                 + " opcode: " + QString::number(opCode,16));
+     }
+     msg = new LocoNetMessage(byte2);
+     break;
+    }
+
+    // message exists, now fill it
+    msg->setOpCode(opCode);
+    msg->setElement(1, byte2);
+    int len = msg->getNumDataElements();
+    //log->debug("len: "+len);
+
+    for (int i = 2; i < len; i++)
+    {
+     // check for message-blocking error
+     int b = st->nextToken().toInt(0, 16);
+     //log->debug("char "+i+" is: "+Integer.toHexString(b));
+     if ((b & 0x80) != 0)
+     {
+
+      log->warn("LocoNet message with opCode: "
+                 + QString::number(opCode, 16)
+                 + " ended early. Expected length: " + len
+                 + " seen length: " + i
+                 + " unexpected byte: "
+                 + QString::number(b,16));
+      opCode = b;
+ //        throw new LocoNetMessageException();
+     }
+     msg->setElement(i, b);
+    }
+#endif
+    // message is complete, dispatch it !!
+//    if (log->isDebugEnabled())
 //    {
-//     log.warn("LocoNet message with opCode: "
-//                    +QString("%1").arg(opCode,0,16)
-//                    +" ended early. Expected length: "+QString("%1").arg(len)
-//                    +" seen length: "+QString("%1").arg(i)
-//                    +" unexpected byte: "
-//                    +QString("%1").arg(b,0,16));
-//     opCode = b;
-//     //throw new LocoNetMessageException();
-//     msg = NULL;
-//     break;
+//     log->debug("queue message for notification");
 //    }
-//    msg->setElement(i, b);
-//   } // end of for loop
-//  } // end of while (msg == NULL)
-//  if(msg == NULL)
-//   continue;
-//  // check parity
-//  if (!msg->checkParity())
-//  {
-//    log.warn("Ignore Loconet packet with bad checksum: "+msg->toString());
-//    //throw new LocoNetMessageException();
+
+#if 0
+    /*final*/ LocoNetMessage* thisMsg = msg;
+    /*final*/ LnPacketizer* thisTC = trafficController;
+    // return a notification via the queue to ensure end
+    Runnable r = new Runnable() {
+        LocoNetMessage msgForLater = thisMsg;
+        LnPacketizer myTC = thisTC;
+
+        /*public*/ void run() {
+            myTC.notify(msgForLater);
+        }
+    };
+ #endif
+    //javax.swing.SwingUtilities.invokeLater(r);'
+    //emit notifyMessage(msg);
+    emit passMessage(msg);
+
+  }
+  // done with this one
+  rxLine = "";
+
+//     } catch (LocoNetMessageException e) {
+//         // just let it ride for now
+//         log->warn("run: unexpected LocoNetMessageException: " + e);
+//     } catch (java.io.EOFException e) {
+//         // posted from idle port when enableReceiveTimeout used
+//         if (debug) {
+//             log->debug("EOFException, is LocoNet serial I/O using timeouts?");
+//         }
+//     } catch (java.io.IOException e) {
+//         // fired when write-end of HexFile reaches end
+//         if (debug) {
+//             log->debug("IOException, should only happen with HexFIle: " + e);
+//         }
+//         log->info("End of file");
+////                    disconnectPort(networkController);
+//         return;
+//     } // normally, we don't catch the unnamed Exception, but in this
+//     // permanently running loop it seems wise.
+//     catch (Exception e) {
+//         log->warn("run: unexpected Exception: " + e);
+//     }
 //  }
 //  else
-  char iByte = trafficController->readByteProtected(trafficController->istream);
-  buffer->append(iByte);
-  if(iByte == 0x0d)
-  // message is complete, dispatch it !!
-  {
-   if (trafficController->debug) log.debug("queue message for notification: "+msg->toString());
-   emit passMessage((Message*)buffer);
-
-  buffer= new QVector<char>();
-  }
-  qApp->processEvents();
-  // done with this one
- } // end of permanent loop
-}
-///*protected*/ char LnPacketizer::readByteProtected(QDataStream *istream)
-//{
-// while (true )
-// { // loop will repeat until character found
-
-//  int nchars = 0;
-//  nchars = istream->readRawData(rcvBuffer, 1);
-
-//  if (nchars>0)
 //  {
-//   return rcvBuffer[0];
+//   if(!connSocket->waitForReadyRead())
+//   {
+//    if(connSocket->error() != QAbstractSocket::SocketTimeoutError)
+//     log->error(connSocket->errorString());
+//   }
 //  }
-//  mutex1.lock();
-//  dataAvailable->wait(&mutex1);
-//  mutex1.unlock();
-// }
-//}
+ } // end of permanent loop
+ //log->debug("LnTcpRcvHandler exiting!");
+}
 
 /*public*/ void AMRTXmtHandler::run() //throw(LocoNetMessageException, EOFException, IOException, Exception)
 {
