@@ -11,6 +11,7 @@
 #include "jmriclient/jmriclientlistener.h"
 #include "abstractportcontroller.h"
 #include "loggerfactory.h"
+#include <QApplication>
 
 //AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) :
 //    QObject(parent)
@@ -884,6 +885,7 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
         }
         rcvBuffer->append(temp);
         if (nchars>0) return rcvBuffer->at(0);
+        qApp->processEvents();
     }
 }
 
@@ -1252,6 +1254,7 @@ void AbstractMRTrafficController::startThreads()
 
   buffer= new QVector<char>();
   }
+  qApp->processEvents();
   // done with this one
  } // end of permanent loop
 }
