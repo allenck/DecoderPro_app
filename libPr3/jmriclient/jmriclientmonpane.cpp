@@ -42,7 +42,7 @@ AbstractMonPane::dispose();
 }
 
 //@Override
-/*public*/ /*synchronized*/ void JMRIClientMonPane::message(AbstractMRMessage* l) {  // receive a message and log it
+/*public*/ /*synchronized*/ void JMRIClientMonPane::message(AbstractMRMessage* l, AbstractMRListener* listener) {  // receive a message and log it
     logMessage("cmd: ", (Message*)l);
 }
 

@@ -15,7 +15,7 @@
 {
  Q_OBJECT
 public slots:
- /*public*/ virtual void message(AbstractMRMessage* /*m*/) {}
+ /*public*/ virtual void message(AbstractMRMessage* /*m*/, AbstractMRListener*) {}
 
  /*public*/ virtual void reply(AbstractMRMessage* /*m*/) {}
 

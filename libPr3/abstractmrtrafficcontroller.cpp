@@ -102,7 +102,7 @@
  }
  //if(qobject_cast<JMRIClientListener*>(l))
  {
-  connect(this->rcvHandler, SIGNAL(passMessage(AbstractMRMessage*)), l, SLOT(message(AbstractMRMessage*)));
+  connect(this, SIGNAL(messageSent(AbstractMRMessage*,AbstractMRListener*)), l, SLOT(message(AbstractMRMessage*, AbstractMRListener*)));
   connect(this->xmtHandler, SIGNAL(messageProcessed(AbstractMRMessage*)), l, SLOT(reply(AbstractMRMessage*)) );
  }
 }

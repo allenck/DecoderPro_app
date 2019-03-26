@@ -15,7 +15,7 @@ class JMRIClientReply;
  Q_OBJECT
 public slots:
 
- /*public*/ void message(AbstractMRMessage* /*m*/) {}
+ /*public*/ void message(AbstractMRMessage* /*m*/, AbstractMRListener* ) {}
 
  /*public*/ void reply(AbstractMRMessage* /*m*/) {}
 };
