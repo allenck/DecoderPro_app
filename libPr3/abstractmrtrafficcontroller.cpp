@@ -1220,129 +1220,15 @@ void AMRTRcvHandler::on_ReadyRead()
    }
 
    AbstractMRMessage* msg = new AbstractMRMessage(rxLine);
-#if 0
-   StringTokenizer* st = new StringTokenizer(rxLine);
-   if (st->nextToken()==(trafficController->RECEIVE_PREFIX))
-   {
-    LocoNetMessage* msg = NULL;
-    int opCode = st->nextToken().toInt(0, 16);
-    int byte2 = st->nextToken().toInt(0, 16);
 
-    // Decide length
-    switch ((opCode & 0x60) >> 5)
-    {
-     default:  // not really possible, but this closes selection for FindBugs
-     case 0:     /* 2 byte message */
-
-      msg = new LocoNetMessage(2);
-      break;
-
-     case 1:     /* 4 byte message */
-
-      msg = new LocoNetMessage(4);
-      break;
-
-     case 2:     /* 6 byte message */
-
-      msg = new LocoNetMessage(6);
-      break;
-
-     case 3:     /* N byte message */
-
-     if (byte2 < 2)
-     {
-       log->error("LocoNet message length invalid: " + QString::number(byte2)
-                 + " opcode: " + QString::number(opCode,16));
-     }
-     msg = new LocoNetMessage(byte2);
-     break;
-    }
-
-    // message exists, now fill it
-    msg->setOpCode(opCode);
-    msg->setElement(1, byte2);
-    int len = msg->getNumDataElements();
-    //log->debug("len: "+len);
-
-    for (int i = 2; i < len; i++)
-    {
-     // check for message-blocking error
-     int b = st->nextToken().toInt(0, 16);
-     //log->debug("char "+i+" is: "+Integer.toHexString(b));
-     if ((b & 0x80) != 0)
-     {
-
-      log->warn("LocoNet message with opCode: "
-                 + QString::number(opCode, 16)
-                 + " ended early. Expected length: " + len
-                 + " seen length: " + i
-                 + " unexpected byte: "
-                 + QString::number(b,16));
-      opCode = b;
- //        throw new LocoNetMessageException();
-     }
-     msg->setElement(i, b);
-    }
-#endif
-    // message is complete, dispatch it !!
-//    if (log->isDebugEnabled())
-//    {
-//     log->debug("queue message for notification");
-//    }
-
-#if 0
-    /*final*/ LocoNetMessage* thisMsg = msg;
-    /*final*/ LnPacketizer* thisTC = trafficController;
-    // return a notification via the queue to ensure end
-    Runnable r = new Runnable() {
-        LocoNetMessage msgForLater = thisMsg;
-        LnPacketizer myTC = thisTC;
-
-        /*public*/ void run() {
-            myTC.notify(msgForLater);
-        }
-    };
- #endif
-    //javax.swing.SwingUtilities.invokeLater(r);'
-    //emit notifyMessage(msg);
     emit passMessage(msg);
 
   }
   // done with this one
   rxLine = "";
 
-//     } catch (LocoNetMessageException e) {
-//         // just let it ride for now
-//         log->warn("run: unexpected LocoNetMessageException: " + e);
-//     } catch (java.io.EOFException e) {
-//         // posted from idle port when enableReceiveTimeout used
-//         if (debug) {
-//             log->debug("EOFException, is LocoNet serial I/O using timeouts?");
-//         }
-//     } catch (java.io.IOException e) {
-//         // fired when write-end of HexFile reaches end
-//         if (debug) {
-//             log->debug("IOException, should only happen with HexFIle: " + e);
-//         }
-//         log->info("End of file");
-////                    disconnectPort(networkController);
-//         return;
-//     } // normally, we don't catch the unnamed Exception, but in this
-//     // permanently running loop it seems wise.
-//     catch (Exception e) {
-//         log->warn("run: unexpected Exception: " + e);
-//     }
-//  }
-//  else
-//  {
-//   if(!connSocket->waitForReadyRead())
-//   {
-//    if(connSocket->error() != QAbstractSocket::SocketTimeoutError)
-//     log->error(connSocket->errorString());
-//   }
-//  }
+
  } // end of permanent loop
- //log->debug("LnTcpRcvHandler exiting!");
 }
 
 /*public*/ void AMRTXmtHandler::run() //throw(LocoNetMessageException, EOFException, IOException, Exception)
@@ -1364,40 +1250,9 @@ void AMRTXmtHandler::sendMessage(AbstractMRMessage *m, AbstractMRListener *reply
 //  try {
  if (outText != NULL)
  {
-         //Commented out as the origianl LnPortnetworkController always returned true.
-         //if (!networkController.okToSend()) log->warn("LocoNet port not ready to receive"); // TCP, not RS232, so message is a real warning
-//  if (debug)
-//  {
-//   log->debug("start write to stream");
-//  }
-//  QString packet;// = new StringBuffer(msg.length * 3 + SEND_PREFIX.length() + 2);
-//  packet.append(trafficController->SEND_PREFIX);
-//  QString hexString;
-//  for (int Index = 0; Index < msg->getNumDataElements(); Index++)
-//  {
-//   packet.append(' ');
-//   hexString = QString::number(msg->getElement(Index) & 0xFF,16).toUpper();
-//   if (hexString.length() == 1) {
-//       packet.append('0');
-//   }
-//   packet.append(hexString);
-//  }
-//  if (debug)
-//  {
-//   log->debug("Write to LbServer: " + packet/*.toString()*/);
-//  }
-//  packet.append("\r\n");
-//  //ostream.write(packet.toString().getBytes());
-//  //*trafficController->ostream << packet;
-//  *outText << packet;
-//  outText->flush();
   connSocket->write(m->toString().toLocal8Bit());
   emit messageProcessed(m);
 
-//  if (debug)
-//  {
-//   log->debug("end write to stream");
-//  }
  }
  else
  {

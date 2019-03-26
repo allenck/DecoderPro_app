@@ -2,6 +2,7 @@
 #define ABSTRACTIDTAG_H
 #include "abstractnamedbean.h"
 #include "idtag.h"
+#include "reportable.h"
 
 class LIBPR3SHARED_EXPORT AbstractIdTag : public IdTag
 {

@@ -10,6 +10,8 @@
 #include <QMessageBox>
 #include "proxyreportermanager.h"
 #include <QSpinBox>
+#include <reportable.h>
+#include "vptr.h"
 
 //ReporterTableAction::ReporterTableAction()
 //{
@@ -96,8 +98,24 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 
 /*public*/ QString RtBeanTableDataModel::getValue(QString name) const
 {
-    QVariant value;
-    return (value = ((ProxyReporterManager*) act->reportManager)->getBySystemName(name)->getCurrentReport()) == QVariant() ? "" : value.toString();
+   QVariant value;
+   Reporter* r = act->reportManager->getBySystemName(name);
+   if (r == nullptr) {
+       return "";
+   }
+   value = r->getCurrentReport();
+   if(value == QVariant()) {
+      return "";
+   }
+   //else if(value instanceof jmri.Reportable)
+   if(value.canConvert<Reportable>())
+   {
+      //return ((jmri.Reportable)value).toReportString();
+       //return value.convert<Reportable>();
+       return VPtr<Reportable>::asPtr(value)->toReportString();
+   } else {
+      return value.toString();
+   }
 }
 
 /*public*/ Manager* RtBeanTableDataModel::getManager() {

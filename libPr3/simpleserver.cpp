@@ -9,6 +9,9 @@
 #include "version.h"
 #include "webserverpreferences.h"
 #include "nodeidentity.h"
+#include "simpleserver/simplelightserver.h"
+#include "simpleserver/simplesignalheadserver.h"
+#include "simpleserver/simplereporterserver.h"
 
 /**
  * This is an implementation of a simple server for JMRI. There is currently no
@@ -323,12 +326,13 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
           turnoutServer->sendErrorStatus("not supported");
             }
         }
-#if 0
+#if 1
         else if (cmd.startsWith("LIGHT")) {
             try {
-                lightServer.parseStatus(cmd);
+                lightServer->parseStatus(cmd);
             } catch (JmriException je) {
-                outStream.writeBytes("not supported\n");
+                //outStream.writeBytes("not supported\n");
+          lightServer->sendErrorStatus("not supported");
             }
         }
 #endif
@@ -340,20 +344,22 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
           sensorServer->sendErrorStatus("not supported");
             }
         }
-#if 0
+
         else if (cmd.startsWith("SIGNALHEAD")) {
             try {
-                signalHeadServer.parseStatus(cmd);
+                signalHeadServer->parseStatus(cmd);
             } catch (JmriException je) {
-                outStream.writeBytes("not supported\n");
+                signalHeadServer->sendErrorStatus("not supported\n");
             }
         } else if (cmd.startsWith("REPORTER")) {
             try {
-                reporterServer.parseStatus(cmd);
+                reporterServer->parseStatus(cmd);
             } catch (JmriException je) {
-                outStream.writeBytes("not supported\n");
+                reporterServer->sendErrorStatus("not supported\n");
             }
-        } else if (cmd.startsWith(SimpleOperationsServer.OPERATIONS)) {
+        }
+#if 0
+        else if (cmd.startsWith(SimpleOperationsServer.OPERATIONS)) {
             try {
                 operationsServer.parseStatus(cmd);
             } catch (JmriException je) {

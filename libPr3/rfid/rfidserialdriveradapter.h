@@ -1,6 +1,6 @@
 #ifndef RFIDSERIALDRIVERADAPTER_H
 #define RFIDSERIALDRIVERADAPTER_H
-#include "rfidportcontroller.h".h"
+#include "rfidportcontroller.h"
 
 class SerialPort;
 class RfidSerialDriverAdapter : public RfidPortController //SerialPortAdapter

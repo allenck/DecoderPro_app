@@ -915,7 +915,13 @@ SOURCES += \
     jmrisrcpservermanager.cpp \
     jmrisrcpserverpreferences.cpp \
     jmrisrcpserver.cpp \
-    loconet/lnmessageserveraction.cpp
+    loconet/lnmessageserveraction.cpp \
+    simpleserver/abstractlightserver.cpp \
+    simpleserver/simplelightserver.cpp \
+    simpleserver/abstractsignalheadserver.cpp \
+    simpleserver/simplesignalheadserver.cpp \
+    simpleserver/abstractreporterserver.cpp \
+    simpleserver/simplereporterserver.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1824,7 +1830,13 @@ HEADERS += \
     jmrisrcpservermanager.h \
     jmrisrcpserverpreferences.h \
     jmrisrcpserver.h \
-    loconet/lnmessageserveraction.h
+    loconet/lnmessageserveraction.h \
+    simpleserver/abstractlightserver.h \
+    simpleserver/simplelightserver.h \
+    simpleserver/abstractsignalheadserver.h \
+    simpleserver/simplesignalheadserver.h \
+    simpleserver/abstractreporterserver.h \
+    simpleserver/simplereporterserver.h
 
  !contains(FTDI, 1) {
     HEADERS +=

@@ -462,7 +462,8 @@ HEADERS += javaqt.h\
     editscene.h \
     quickpromptutil.h \
     popupmenulistener.h \
-    popupmenuevent.h
+    popupmenuevent.h \
+    reportable.h
 
 unix {
     target.path = /usr/lib

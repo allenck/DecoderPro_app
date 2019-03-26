@@ -5,6 +5,8 @@
 #include "reporter.h"
 #include <QDomElement>
 #include "libPr3_global.h"
+#include "reportable.h"
+
 /**
  * IdTag represents a tag that might be attached to a specific piece of
  * rolling stock to uniquely identify it.
@@ -29,13 +31,13 @@
  * @since       2.11.4
  */
 
-class LIBPR3SHARED_EXPORT IdTag : public AbstractNamedBean
+class LIBPR3SHARED_EXPORT IdTag : public Reportable
 {
     Q_OBJECT
 public:
-    explicit IdTag(QObject *parent = 0) : AbstractNamedBean(parent) {}
-    IdTag(QString systemName, QObject *parent) : AbstractNamedBean(systemName, parent) {}
-    IdTag(QString systemName, QString userName, QObject *parent) : AbstractNamedBean(systemName, userName, parent) {}
+    explicit IdTag(QObject *parent = 0) : Reportable(parent) {}
+    IdTag(QString systemName, QObject *parent) : Reportable(systemName, parent) {}
+    IdTag(QString systemName, QString userName, QObject *parent) : Reportable(systemName, userName, parent) {}
     /**
      * Constant representing an "unseen" state, indicating that the
      * ID tag has not yet been seen.
