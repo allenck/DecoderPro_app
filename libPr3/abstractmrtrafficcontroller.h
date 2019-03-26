@@ -87,8 +87,8 @@ private:
  bool echo = true;
 
 private slots:
- void msgRcvd(AbstractMRMessage** m);
- void msgTransmitted(AbstractMRMessage*);
+ //void msgRcvd(AbstractMRMessage** m);
+ //void msgTransmitted(AbstractMRMessage*);
 
 
 protected:
