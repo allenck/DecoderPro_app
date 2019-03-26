@@ -14,9 +14,9 @@ class AbstractSignalHeadServer : public QObject
  Q_OBJECT
 public:
  explicit AbstractSignalHeadServer(QObject *parent = nullptr);
- /*abstract*/ /*public*/ virtual void sendStatus(QString signalHead, int Status) throw (IOException) {}
- /*abstract*/ /*public*/ virtual void sendErrorStatus(QString signalHead) throw (IOException) {}
- /*abstract*/ /*public*/ virtual void parseStatus(QString statusString) throw (JmriException, IOException, JsonException);
+ /*abstract*/ /*public*/ virtual void sendStatus(QString /*signalHead*/, int /*Status*/) throw (IOException) {}
+ /*abstract*/ /*public*/ virtual void sendErrorStatus(QString /*signalHead*/) throw (IOException) {}
+ /*abstract*/ /*public*/ virtual void parseStatus(QString /*statusString*/) throw (JmriException, IOException, JsonException) {}
  /*public*/ void setSignalHeadAppearance(QString signalHeadName, QString signalHeadState);
  /*public*/ void dispose();
 
