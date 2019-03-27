@@ -2,6 +2,7 @@
 #define JMRICLIENTLIGHT_H
 #include "abstractlight.h"
 
+class AbstractMRListener;
 class JMRIClientMessage;
 class JMRIClientReply;
 class JMRIClientSystemConnectionMemo;

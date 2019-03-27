@@ -2,6 +2,7 @@
 #define JMRICLIENTSENSOR_H
 #include "abstractsensor.h"
 
+class AbstractMRListener;
 class JMRIClientMessage;
 class JMRIClientReply;
 class JMRIClientSystemConnectionMemo;

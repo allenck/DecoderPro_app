@@ -2,6 +2,7 @@
 #define JMRICLIENTREPORTER_H
 #include "abstractreporter.h"
 
+class AbstractMRListener;
 class JMRIClientTrafficController;
 class JMRIClientMessage;
 class JMRIClientReply;

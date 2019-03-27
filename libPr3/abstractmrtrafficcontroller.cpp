@@ -102,8 +102,8 @@
  }
  //if(qobject_cast<JMRIClientListener*>(l))
  {
-  connect(this, SIGNAL(messageSent(AbstractMRMessage*,AbstractMRListener*)), l, SLOT(message(AbstractMRMessage*, AbstractMRListener*)));
-  connect(this->xmtHandler, SIGNAL(messageProcessed(AbstractMRMessage*)), l, SLOT(reply(AbstractMRMessage*)) );
+  connect(rcvHandler, SIGNAL(incomingMessage(AbstractMRMessage*)), l, SLOT(message(AbstractMRMessage*)));
+  connect(this, SIGNAL(messageSent(AbstractMRMessage*)), l, SLOT(reply(AbstractMRMessage*)) );
  }
 }
 
@@ -116,8 +116,8 @@
  }
  if(qobject_cast<JMRIClientListener*>(l))
  {
-  disconnect(this->rcvHandler, SIGNAL(messageSent(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(message(AbstractMRMessage*)));
-  disconnect(this->xmtHandler, SIGNAL(replyRcvd(AbstractMRMessage*)), (JMRIClientListener*)l, SLOT(reply(AbstractMRMessage*)) );
+  disconnect(this->rcvHandler, SIGNAL(incomingMessage(AbstractMRMessage*)), l, SLOT(message(AbstractMRMessage*)));
+  disconnect(this, SIGNAL(messageSent(AbstractMRMessage*)), l, SLOT(reply(AbstractMRMessage*)) );
  }
 }
 
@@ -279,11 +279,11 @@
    {
     mCurrentState = NOTIFIEDSTATE;
 // TODO:    xmtRunnable.notify();
+    emit messageSent(m);
    }
   }
   if(m!=NULL)
         log->debug(tr("just notified transmit thread with message ") +m->toString());
-  emit messageSent(m, reply);
 }
 
 /**
@@ -1151,7 +1151,7 @@ void AbstractMRTrafficController::startThreads()
      xmtHandler = new AMRTXmtHandler(this);
    log->debug(QString("Xmt thread (%2) starts at priority %1").arg(xmtpriority).arg(xmtHandler->objectName()));
    AMRTXmtHandler* outHandler = (AMRTXmtHandler*)xmtHandler;
-   connect(this, SIGNAL(messageSent(AbstractMRMessage*, AbstractMRListener*)), outHandler, SLOT(sendMessage(AbstractMRMessage*, AbstractMRListener*)));
+   connect(this, SIGNAL(messageSent(AbstractMRMessage*)), outHandler, SLOT(sendMessage(AbstractMRMessage*)));
 
 //    xmtHandler->setPriority(QThread::HighPriority); // Highest -1
    xmtHandler->start(QThread::HighPriority);
@@ -1221,7 +1221,7 @@ void AMRTRcvHandler::on_ReadyRead()
 
    AbstractMRMessage* msg = new AbstractMRMessage(rxLine);
 
-    emit passMessage(msg);
+    emit incomingMessage(msg);
 
   }
   // done with this one
@@ -1239,7 +1239,7 @@ void AMRTRcvHandler::on_ReadyRead()
   exec();
 }
 
-void AMRTXmtHandler::sendMessage(AbstractMRMessage *m, AbstractMRListener *reply) // SLOT[]
+void AMRTXmtHandler::sendMessage(AbstractMRMessage *m) // SLOT[]
 {
 
  bool debug = log.isDebugEnabled();
@@ -1251,7 +1251,6 @@ void AMRTXmtHandler::sendMessage(AbstractMRMessage *m, AbstractMRListener *reply
  if (outText != NULL)
  {
   connSocket->write(m->toString().toLocal8Bit());
-  emit messageProcessed(m);
 
  }
  else

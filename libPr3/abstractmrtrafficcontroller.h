@@ -50,7 +50,7 @@ signals:
  void messageProcessed(AbstractMRMessage* msg, bool bOutput =false);
  void sendMessage(AbstractMRMessage*);
  void replyRcvd(AbstractMRMessage* );
- void messageSent(AbstractMRMessage*, AbstractMRListener* reply);
+ void messageSent(AbstractMRMessage*);
 
 private:
  static Logger* log;
@@ -300,12 +300,13 @@ class AMRTRcvHandler : public QThread
  /*public*/ void run();// throw(LocoNetMessageException, EOFException, IOException, Exception);
 
 signals:
- void passMessage(AbstractMRMessage* msg);
+ void incomingMessage(AbstractMRMessage* msg);
 
 private:
    QTcpSocket* connSocket;
    QTextStream* inText;
    QMutex mutex;
+
 private slots:
    void on_ReadyRead();
 };
@@ -331,10 +332,9 @@ public:
  }
  /*public*/ void run();
 signals:
- void messageProcessed(AbstractMRMessage*);
 
 public slots:
- void sendMessage(AbstractMRMessage *m, AbstractMRListener* reply);
+ void sendMessage(AbstractMRMessage *m);
 
 protected:
  /**

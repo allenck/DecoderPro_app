@@ -15,9 +15,9 @@
 {
  Q_OBJECT
 public slots:
- /*public*/ virtual void message(AbstractMRMessage* /*m*/, AbstractMRListener*) {}
+ /*public*/ virtual void message(AbstractMRMessage* /*m*/) {}
 
- /*public*/ virtual void reply(AbstractMRMessage* /*m*/) {}
+ /*public*/ virtual void reply(AbstractMRMessage* /*m*/, AbstractMRListener*) {}
 
  friend class AbstractMRTrafficController;
 };

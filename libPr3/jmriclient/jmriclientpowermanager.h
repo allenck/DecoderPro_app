@@ -3,6 +3,7 @@
 #include "powermanager.h"
 #include "propertychangesupport.h"
 
+class AbstractMRListener;
 class JMRIClientReply;
 class JMRIClientMessage;
 class JMRIClientSystemConnectionMemo;
