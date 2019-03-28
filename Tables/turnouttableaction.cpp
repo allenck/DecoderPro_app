@@ -403,7 +403,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
      //return self->makeAutomationBox(t);
      QVector<QString> automationList = self->makeAutomationBox(t);
      QString currValue;
-     if (t->getInhibitOperation())
+     if (t->getInhibitOperation() || t->getTurnoutOperation() == nullptr)
      {
       currValue = automationList.at(0);
      }
@@ -1112,6 +1112,7 @@ void RangeListener::actionPerformed(ActionEvent */*e*/)
 //    cb->addItems(str);
     /*final*/ Turnout* myTurnout = t;
     TurnoutTableAction::updateAutomationBox(t, str);
+//TODO:
 //    cb.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //                setTurnoutOperation(myTurnout, cb);

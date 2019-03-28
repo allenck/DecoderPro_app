@@ -434,6 +434,7 @@ private:
     void setTrackSegmentBlocks();
     void setTrackSegmentBlock(int pointType, bool isAutomatic);
     /*private*/ bool isOccupied();
+    QGraphicsItemGroup* itemGroup;// = new QGraphicsItemGroup();
 
 
 private slots:

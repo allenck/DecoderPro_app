@@ -4003,11 +4003,13 @@ void LayoutTurnout::remove()
  log->debug(tr("draw1 turnout %1 isMain = %2, state = %3").arg(getTurnoutName()).arg(isMain?"true":"false").arg(getTurnoutStateString(getState())));
 
  int type = getTurnoutType();
- QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+ //QGraphicsItemGroup* itemGroup;// = new QGraphicsItemGroup();
 
  QGraphicsLineItem* lineItem;
 
  //invalidateItemType(isMain);
+ if(!isMain && itemMain)
+  invalidate(g2);
  if(itemMain)
   itemGroup = itemMain;
  else

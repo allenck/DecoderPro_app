@@ -690,7 +690,8 @@ ActionJList::ActionJList(int index, BeanTableFrame* f) {
 //            openNewTableWindow(mouseItem);
 //        }
 //    });
-    connect(menuItem, SIGNAL(triggered(bool)), this, SLOT(openNewTableWindow(int)));
+    LTFrameActionListener* listener = new LTFrameActionListener(index, this);
+    connect(menuItem, SIGNAL(triggered(bool)), listener, SLOT(actionPerformed()));
 #if 0
     try {
         Object p2 = Toolkit.getDefaultToolkit().getDesktopProperty("awt_multiclick_time");

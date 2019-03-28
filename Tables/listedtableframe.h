@@ -4,6 +4,7 @@
 #include <QSplitter>
 #include <QModelIndex>
 #include <QStackedWidget>
+#include "actionlistener.h"
 
 class QGridLayout;
 class QVBoxLayout;
@@ -64,6 +65,7 @@ protected:
     /*protected*/ static QList<QString> getChoices();
     /*protected*/ void addToBottomBox(QWidget* comp, QString c);
  friend class ActionJList;
+ friend class LTFrameActionListener;
 };
 Q_DECLARE_METATYPE(ListedTableFrame)
 
@@ -152,5 +154,21 @@ public slots:
  protected:
     /*protected*/ void addToBottomBox(QWidget* comp);
     friend class ListedTableFrame;
+};
+class LTFrameActionListener : public ActionListener
+{
+  Q_OBJECT
+  ActionJList* ajl;
+ int index;
+public:
+ LTFrameActionListener(int index, ActionJList* ajl)
+ {
+  this->index = index;
+ }
+public slots:
+ void actionPerformed()
+ {
+  ajl->openNewTableWindow(index);
+ }
 };
 #endif // LISTEDTABLEFRAME_H

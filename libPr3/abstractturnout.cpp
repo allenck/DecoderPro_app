@@ -134,7 +134,7 @@ _enableCabLockout = false;
 
 _enablePushButtonLockout = false;
 _reportLocked = true;
- inhibitOperation = false; // do not automate this turnout, even if globally operations are on
+ inhibitOperation = true; // do not automate this turnout, even if globally operations are on
  binaryOutput = false;
  _validDecoderNames = PushbuttonPacket::getValidDecoderNames();
  _decoderName = PushbuttonPacket::unknown;
@@ -582,21 +582,16 @@ void AbstractTurnout::setKnownStateToCommanded()
     if (myTurnoutOperation != NULL) {
         myTurnoutOperation->addPropertyChangeListener((PropertyChangeListener*)this);
     }
-#if 1 // TODO:
     firePropertyChange("TurnoutOperationState", VPtr<TurnoutOperation>::asQVariant(oldOp), VPtr<TurnoutOperation>::asQVariant(myTurnoutOperation));
-#endif
 }
 
 /*protected*/ void AbstractTurnout::operationPropertyChange(PropertyChangeEvent* evt) {
-#if 1 // TODO:
-
     if ((TurnoutOperation*)evt->getSource() == myTurnoutOperation)
     {
         if (((TurnoutOperation*) evt->getSource())->isDeleted()) {
             setTurnoutOperation(NULL);
         }
     }
-#endif
 }
 
 /*public*/ bool AbstractTurnout::getInhibitOperation() {
@@ -619,14 +614,14 @@ void AbstractTurnout::setKnownStateToCommanded()
  TurnoutOperator* to = NULL;
  if (!inhibitOperation)
  {
-  if (myTurnoutOperation != NULL)
+  if (myTurnoutOperation != nullptr)
   {
    to = ((NoFeedbackTurnoutOperation*) myTurnoutOperation)->getOperator(this);
   }
   else
   {
-   TurnoutOperation* toper = TurnoutOperationManager::getInstance()                   ->getMatchingOperation((Turnout*)this,                           getFeedbackModeForOperation());
-   if (toper != NULL)
+   TurnoutOperation* toper = TurnoutOperationManager::getInstance()->getMatchingOperation((Turnout*)this, getFeedbackModeForOperation());
+   if (toper != nullptr)
    {
     to = ((NoFeedbackTurnoutOperation*)toper)->getOperator(this);
    }
@@ -678,7 +673,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  {
   (getFirstSensor())->removePropertyChangeListener((PropertyChangeListener*)this);
   Sensor* anb = getFirstSensor();
-  disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+  disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
  _firstNamedSensor = s;
@@ -688,7 +683,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  {
   ((AbstractNamedBean*)getFirstSensor())->addPropertyChangeListener((PropertyChangeListener*)this, s->getName(), "Feedback Sensor for " + getDisplayName());
   Sensor* anb = getFirstSensor();
-  connect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+  connect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -741,7 +736,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  {
   ((AbstractSensor*)getSecondSensor())->removePropertyChangeListener((PropertyChangeListener*)this);
   Sensor* anb = getSecondSensor();
-  disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+  disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
  _secondNamedSensor = s;
@@ -751,7 +746,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  {
   ((AbstractNamedBean*)getSecondSensor())->addPropertyChangeListener((PropertyChangeListener*)this, s->getName(), "Feedback Sensor for " + getDisplayName());
   Sensor* anb = getSecondSensor();
-  connect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+  connect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -824,7 +819,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  * if using an appropriate sensor mode
  */
 
-/*public*/ void AbstractTurnout::on_propertyChange(PropertyChangeEvent* evt)
+/*public*/ void AbstractTurnout::propertyChange(PropertyChangeEvent* evt)
 {
  if ((TurnoutOperation*)evt->getSource() == myTurnoutOperation)
  {

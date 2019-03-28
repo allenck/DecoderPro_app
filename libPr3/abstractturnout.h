@@ -158,7 +158,7 @@ signals:
     //void propertyChange(PropertyChangeEvent *);
 
 public slots:
-    void on_propertyChange(PropertyChangeEvent *evt);
+    void propertyChange(PropertyChangeEvent *evt);
 
 private:
     QString _divergeSpeed;
@@ -209,7 +209,7 @@ protected:
 #endif
     TurnoutOperation* myTurnoutOperation;
 
-    bool inhibitOperation;// = false; // do not automate this turnout, even if globally operations are on
+    bool inhibitOperation = true; // do not automate this turnout, even if globally operations are on
     bool binaryOutput;// = false;
     /**
      * Handle a request to change state, typically by sending a message to the

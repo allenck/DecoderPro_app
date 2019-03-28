@@ -1258,7 +1258,7 @@ void LayoutSlip::updateState()
     QPointF midPointAD = MathUtil::midPoint(oneThirdPointAC, twoThirdsPointBD);
     QPointF midPointBC = MathUtil::midPoint(oneThirdPointBD, twoThirdsPointAC);
 
-    QGraphicsItemGroup* itemGroup= new QGraphicsItemGroup();
+    //QGraphicsItemGroup* itemGroup;//= new QGraphicsItemGroup();
 
 //    invalidateItemType(drawMain);
     if(itemMain)
@@ -1269,7 +1269,6 @@ void LayoutSlip::updateState()
      itemMain = itemGroup;
      g2->addItem(itemMain);
     }
-
 
     if (isTurnoutInconsistent())
     {
