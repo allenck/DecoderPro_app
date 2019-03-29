@@ -14,7 +14,7 @@ class TurnoutEditAction : public BeanEditAction
 {
  Q_OBJECT
 public:
- TurnoutEditAction(QObject* parent = 0);
+ TurnoutEditAction(QModelIndex index, QObject* parent = 0);
  /*public*/ QString helpTarget();
 
  public slots:
@@ -62,7 +62,7 @@ public:
  QString defaultThrownSpeedText;
  QString defaultClosedSpeedText;
  BeanItemPanel* speed();
-
+ QModelIndex index;
 protected:
   /*protected*/ void initPanels();
 protected slots:
@@ -78,6 +78,7 @@ protected slots:
  friend class LockResetItemListener;
  friend class AutomationSelectionListener;
 };
+
 class FeedbackSaveItemListener : public ActionListener
 {
  Q_OBJECT
@@ -87,6 +88,7 @@ public:
 public slots:
  void actionPerformed(ActionEvent* = 0);
 };
+
 class FeedbackResetItemListener : public ActionListener
 {
  Q_OBJECT

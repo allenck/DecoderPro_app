@@ -1,4 +1,4 @@
-#ifndef TURNOUTTABLEACTION_H
+﻿#ifndef TURNOUTTABLEACTION_H
 #define TURNOUTTABLEACTION_H
 #include "abstracttableaction.h"
 #include "../LayoutEditor/beantabledatamodel.h"
@@ -34,7 +34,7 @@ public:
     /*public*/ void setManager(Manager* man);
     Q_INVOKABLE /*public*/ QString getClassDescription();
     static QString getName();
-    /*public*/ static void updateAutomationBox(Turnout* t, /*QComboBox* cb*/QVector<QString> sl);
+    /*public*/ static void updateAutomationBox(Turnout* t, /*QComboBox* cb*/QVector<QString> sl, QModelIndex index);
     /*public*/ void addToFrame(BeanTableFrame* f);
     /*public*/ void setMenuBar(BeanTableFrame* f);
     /*public*/ void addToPanel(AbstractTableTabAction* f);
@@ -83,7 +83,7 @@ private:
     QString userNameError;// = this.getName()+".DuplicateUserName";
     UserPreferencesManager* p;
     Logger* log;
-    void editButton(Turnout* t);
+    void editButton(Turnout* t, QModelIndex index);
     QCheckBox* showFeedbackBox;// = new JCheckBox("Show feedback information");
     QCheckBox* showLockBox;// = new JCheckBox("Show lock information");
     QCheckBox* showTurnoutSpeedBox;// = new JCheckBox("Show Turnout Speed Details");
@@ -107,7 +107,7 @@ protected:
 
 protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
-    /*protected*/ /*QComboBox**/QVector<QString> makeAutomationBox(Turnout* t);
+    /*protected*/ /*QComboBox**/QVector<QString> makeAutomationBox(Turnout* t, QModelIndex index);
     /*private*/ void canAddRange(ActionEvent* e = 0);
  friend class CBActionListener;
  friend class RangeListener;
@@ -220,6 +220,7 @@ public slots:
 class TTComboBoxDelegate : public QItemDelegate
 {
 Q_OBJECT
+
 public:
   TTComboBoxDelegate(QStringList items,  TurnoutTableAction* self, bool editable = false, QObject *parent = 0);
 

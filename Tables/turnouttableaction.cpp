@@ -401,7 +401,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     case OPSONOFFCOL:
     {
      //return self->makeAutomationBox(t);
-     QVector<QString> automationList = self->makeAutomationBox(t);
+     if(_table->itemDelegate(index) == nullptr || qobject_cast<TTComboBoxDelegate*>(_table->itemDelegate(index))== nullptr)
+          _table->setItemDelegate(new TTComboBoxDelegate(QStringList(), self));
+     QVector<QString> automationList = self->makeAutomationBox(t, index);
      QString currValue;
      if (t->getInhibitOperation() || t->getTurnoutOperation() == nullptr)
      {
@@ -420,7 +422,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
       currValue = t->getTurnoutOperation()->getName();
      }
 
-     opsOnOffColDelegate->setItems(automationList.toList(), currValue);
+     ((TTComboBoxDelegate*)_table->itemDelegate(index))-> setItems(automationList.toList(), currValue);
      return currValue;
     }
     case OPSEDITCOL:
@@ -632,7 +634,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
         WindowMaker w = new WindowMaker(t);
         javax.swing.SwingUtilities.invokeLater(w);
 #endif
-        self->editButton(t);
+        self->editButton(t, index);
         fireTableRowsUpdated(row,row);
         return true;
     }
@@ -810,7 +812,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     sensorsColDelegate = new TTEditDelegate(self);
     setColumnToHoldDelegate(_table, SENSOR1COL, sensorsColDelegate);
     setColumnToHoldDelegate(_table, SENSOR2COL, sensorsColDelegate);
-    setColumnToHoldDelegate(_table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), self));
+    //setColumnToHoldDelegate(_table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), self)); Each row needs it's own instance
     setColumnToHoldDelegate(_table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(QStringList(), self));
     setColumnToHoldDelegate(_table, LOCKOPRCOL, new TTComboBoxDelegate(self->lockOperations, self));
     setColumnToHoldDelegate(_table, STRAIGHTCOL, new TTComboBoxDelegate(self->speedListClosed.toList(), self,true));
@@ -1105,13 +1107,14 @@ void RangeListener::actionPerformed(ActionEvent */*e*/)
  * @param t	the turnout
  * @return	the JComboBox
  */
-/*protected*/ /*QComboBox**/QVector<QString>TurnoutTableAction::makeAutomationBox(Turnout* t) {
+/*protected*/ /*QComboBox**/QVector<QString>TurnoutTableAction::makeAutomationBox(Turnout* t, QModelIndex index) {
     QVector<QString> str = QVector<QString>();
     str << "empty";
+
 //    /*final*/ QComboBox* cb = new QComboBox();
 //    cb->addItems(str);
     /*final*/ Turnout* myTurnout = t;
-    TurnoutTableAction::updateAutomationBox(t, str);
+    TurnoutTableAction::updateAutomationBox(t, str, index);
 //TODO:
 //    cb.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
@@ -1158,13 +1161,14 @@ void RangeListener::actionPerformed(ActionEvent */*e*/)
  * @param t	turnout
  * @param cb	the JComboBox
  */
-/*public*/ /*static*/ void TurnoutTableAction::updateAutomationBox(Turnout* t, /*QComboBox* cb*/ QVector<QString> str)
+/*public*/ /*static*/ void TurnoutTableAction::updateAutomationBox(Turnout* t, /*QComboBox* cb*/ QVector<QString> str, QModelIndex index)
 {
  Logger* log = new Logger("TurnoutTableAction");
  QList<TurnoutOperation*> ops = TurnoutOperationManager::getInstance()->getTurnoutOperations();
  str.clear();
  QVector<QString> strings =  QVector<QString>(/*20*/);
  QVector<QString> defStrings =  QVector<QString>(/*20*/);
+
  if(log->isDebugEnabled()) log->debug("start "+QString::number(ops.length()));
  for (int i=0; i<ops.length(); ++i)
  {
@@ -1200,15 +1204,32 @@ void RangeListener::actionPerformed(ActionEvent */*e*/)
 //        cb->addItem(strings.at(i));
      str.append(strings.at(i));
     }
+    int row;
+
+    TTComboBoxDelegate* delegate = (TTComboBoxDelegate*)((TurnoutTableDataModel*)index.model())->table()->itemDelegate(index);
+    QString currTxt;
 //    if (t->getInhibitOperation()) {
 //        cb->setCurrentIndex(0);
+    if(t->getInhibitOperation())
+        currTxt = strings.at(0);
 //    } else if (t->getTurnoutOperation() == NULL) {
 //        cb->setCurrentIndex(1);
+    else if(t->getTurnoutOperation() == nullptr)
+        currTxt = strings.at(1);
 //    } else if (t->getTurnoutOperation()->isNonce()) {
 //        cb->setCurrentIndex(2);
+    else if (t->getTurnoutOperation()->isNonce()) {
+        currTxt= strings.at(2);
+    }
 //    } else {
 //        cb->setCurrentIndex(cb->findText(t->getTurnoutOperation()->getName()));
 //    }
+    else
+    {
+        currTxt = t->getTurnoutOperation()->getName();
+    }
+    ((TTComboBoxDelegate*)delegate)->setItems(strings.toList(), currTxt);
+
 }
 
 /**
@@ -1245,8 +1266,8 @@ void RangeListener::actionPerformed(ActionEvent */*e*/)
  }
 }
 
-void TurnoutTableAction::editButton(Turnout* t){
-    TurnoutEditAction* beanEdit = new TurnoutEditAction();
+void TurnoutTableAction::editButton(Turnout* t, QModelIndex index){
+    TurnoutEditAction* beanEdit = new TurnoutEditAction(index);
     beanEdit->setBean(t);
     beanEdit->actionPerformed(NULL);
 }
@@ -2045,6 +2066,7 @@ TTComboBoxDelegate::TTComboBoxDelegate(QStringList items, TurnoutTableAction *se
  this->items  = items;
  this->self = self;
  this->editable = editable;
+
 }
 QWidget* TTComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
 {

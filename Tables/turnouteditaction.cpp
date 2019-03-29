@@ -17,7 +17,7 @@
 #include "beanedititem.h"
 
 
-TurnoutEditAction::TurnoutEditAction(QObject* parent) : BeanEditAction(parent)
+TurnoutEditAction::TurnoutEditAction(QModelIndex index, QObject* parent) : BeanEditAction(parent)
 {
  useCurrent = new QCheckBox();
  inverted = new QCheckBox();
@@ -35,6 +35,7 @@ TurnoutEditAction::TurnoutEditAction(QObject* parent) : BeanEditAction(parent)
  speedListThrown =  QVector<QString>();
  lockBox = NULL;
  modeBox = NULL;
+ this->index = index;
 }
 /**
  * Provides an edit panel for a block object
@@ -241,6 +242,7 @@ BeanItemPanel* TurnoutEditAction::feedback() {
  _feedback->setResetItem(new FeedbackResetItemListener(this));
  return _feedback;
 }
+
 FeedbackSaveItemListener::FeedbackSaveItemListener(TurnoutEditAction *act)
 {
  this->act = act;
@@ -325,7 +327,7 @@ FeedbackResetItemListener::FeedbackResetItemListener(TurnoutEditAction *act)
  QStringList* automationList = new QStringList;
  for(int i = 0; i < act->automationBox->count(); i++)
   automationList->append(act->automationBox->itemText(i));
- TurnoutTableAction::updateAutomationBox(t, automationList->toVector());
+ TurnoutTableAction::updateAutomationBox(t, automationList->toVector(), act->index);
  //automationBox.addActionListener(automationSelectionListener);
  connect(act->automationBox, SIGNAL(currentIndexChanged(int)), this, SLOT(actionPerformed()));
 
@@ -370,7 +372,7 @@ void TurnoutEditAction::updateFeedbackOptions()
  QStringList* automationList = new QStringList;
  for(int i = 0; i < automationBox->count(); i++)
   automationList->append(automationBox->itemText(i));
- TurnoutTableAction::updateAutomationBox(t, automationList->toVector());
+ TurnoutTableAction::updateAutomationBox(t, automationList->toVector(),index);
 }
 
 void TurnoutEditAction::updateAutomationOptions() {
