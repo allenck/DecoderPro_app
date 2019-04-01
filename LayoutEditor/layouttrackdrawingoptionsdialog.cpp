@@ -1112,7 +1112,7 @@
 //    QPushButton* button = (QPushButton) evt.getSource();
  QColor value = Qt::gray;//button.getBackground();
  QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", value);
- if ((!newColor.isValid()) && newColor!=(value)) {
+ if ((newColor.isValid()) && newColor!=(value)) {
         makeCustomPreset();
 //        button.setBackground(newColor);
         ltdOptions->setMainRailColor(newColor);
@@ -1125,7 +1125,7 @@
 //    QPushButton* button = (QPushButton) evt.getSource();
  QColor value = Qt::gray;//button.getBackground();
  QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", value);
- if ((!newColor.isValid()) && newColor!=(value)) {
+ if ((newColor.isValid()) && newColor!=(value)) {
         makeCustomPreset();
 //        button.setBackground(newColor);
         ltdOptions->setSideRailColor(newColor);
@@ -1138,7 +1138,7 @@
 //    QPushButton* button = (QPushButton) evt.getSource();
  QColor value = Qt::gray;//button.getBackground();
  QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", value);
- if ((!newColor.isValid()) && newColor!=(value)) {
+ if ((newColor.isValid()) && newColor!=(value)) {
         makeCustomPreset();
 //        button.setBackground(newColor);
         ltdOptions->setMainBallastColor(newColor);
@@ -1151,7 +1151,7 @@
 //    QPushButton* button = (QPushButton) evt.getSource();
  QColor value = Qt::gray;//button.getBackground();
  QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", value);
- if ((!newColor.isValid()) && newColor!=(value)) {
+ if ((newColor.isValid()) && newColor!=(value)) {
         makeCustomPreset();
 //        button.setBackground(newColor);
         ltdOptions->setSideBallastColor(newColor);
@@ -1164,7 +1164,7 @@
 //    QPushButton* button = (QPushButton) evt.getSource();
     QColor value = Qt::gray;//button.getBackground();
     QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", value);
-    if ((!newColor.isValid()) && newColor!=(value)) {
+    if ((newColor.isValid()) && newColor!=(value)) {
         makeCustomPreset();
 //        button.setBackground(newColor);
         ltdOptions->setMainTieColor(newColor);
@@ -1177,7 +1177,7 @@
 //    QPushButton* button = (QPushButton) evt.getSource();
     QColor value = Qt::gray;//button.getBackground();
     QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", value);
-    if ((!newColor.isValid()) && newColor!=(value)) {
+    if ((newColor.isValid()) && newColor!=(value)) {
         makeCustomPreset();
 //        button->setBackground(newColor);
         ltdOptions->setSideTieColor(newColor);

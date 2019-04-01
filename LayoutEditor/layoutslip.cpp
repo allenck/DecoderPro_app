@@ -1206,7 +1206,7 @@ void LayoutSlip::updateState()
 }
 
 //@Override
-/*protected*/ void LayoutSlip::draw1(EditScene *g2, bool drawMain, bool isBlock) {
+/*protected*/ void LayoutSlip::draw1(EditScene *g2, bool drawMain, bool isBlock, ITEMTYPE type) {
     if (isBlock && getLayoutBlock() == nullptr) {
         // Skip the block layer since there is no block assigned.
         return;
@@ -1258,16 +1258,18 @@ void LayoutSlip::updateState()
     QPointF midPointAD = MathUtil::midPoint(oneThirdPointAC, twoThirdsPointBD);
     QPointF midPointBC = MathUtil::midPoint(oneThirdPointBD, twoThirdsPointAC);
 
-    //QGraphicsItemGroup* itemGroup;//= new QGraphicsItemGroup();
+    QGraphicsItemGroup* itemGroup = selectItemGroup(type, drawMain, isBlock);
 
 //    invalidateItemType(drawMain);
-    if(itemMain)
-     itemGroup = itemMain;
-    else
+//    if(itemMain)
+//     itemGroup = itemMain;
+//    else
+
+    if(itemGroup == nullptr)
     {
      itemGroup = new QGraphicsItemGroup();
-     itemMain = itemGroup;
-     g2->addItem(itemMain);
+     itemGroup->setZValue(Editor::HANDLES+1);
+     g2->addItem(itemGroup);
     }
 
     if (isTurnoutInconsistent())
@@ -1487,7 +1489,7 @@ void LayoutSlip::updateState()
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LayoutSlip::draw2(EditScene* g2, bool drawMain, float railDisplacement) {
+/*protected*/ void LayoutSlip::draw2(EditScene* g2, bool drawMain, float railDisplacement, ITEMTYPE type) {
     QPointF pA = getCoordsA();
     QPointF pB = getCoordsB();
     QPointF pC = getCoordsC();
@@ -1565,16 +1567,17 @@ void LayoutSlip::updateState()
     bool mainlineB = isMainlineB();
     bool mainlineC = isMainlineC();
     bool mainlineD = isMainlineD();
-    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+    QGraphicsItemGroup* itemGroup = selectItemGroup(type, drawMain, false);
 
 //    invalidateItemType(drawMain);
-    if(itemMain)
-     itemGroup = itemMain;
-    else
+//    if(type)
+//     itemGroup = type;
+//    else
+    if(itemGroup == nullptr)
     {
      itemGroup = new QGraphicsItemGroup();
-     itemMain = itemGroup;
-     g2->addItem(itemMain);
+     itemGroup->setZValue(Editor::HANDLES+1);
+     g2->addItem(itemGroup);
     }
 
     if (drawMain == mainlineA) {

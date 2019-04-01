@@ -696,7 +696,7 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::draw1(EditScene* g2, bool /*isMain*/, bool /*isBlock*/) {
+/*protected*/ void PositionablePoint::draw1(EditScene* g2, bool /*isMain*/, bool /*isBlock*/, ITEMTYPE type) {
     //nothing to do here... move along...
 }   // draw1
 
@@ -704,7 +704,7 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::draw2(EditScene* g2, bool /*isMain*/, float /*railDisplacement*/) {
+/*protected*/ void PositionablePoint::draw2(EditScene* g2, bool /*isMain*/, float /*railDisplacement*/, ITEMTYPE type) {
     //nothing to do here... move along...
 }
 
@@ -1317,12 +1317,20 @@ void PositionablePoint::invalidateItemType(EditScene* g2)
    g2->removeItem(item);
   item = nullptr;
  }
+ if(rects != nullptr)
+ {
+  //Q_ASSERT(item->scene()!=0);
+  if(rects->scene()!= nullptr)
+   g2->removeItem(rects);
+  rects = nullptr;
+ }
 }
 #if 1
 void PositionablePoint::draw(EditScene* g2)
 {
     QColor color;
     QGraphicsRectItem* rectItem;
+    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
     switch (getType())
     {
      case PositionablePoint::ANCHOR:
@@ -1346,7 +1354,8 @@ void PositionablePoint::draw(EditScene* g2)
        //QGraphicsRectItem* item = g2->addRect(pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2,QPen( color, 1, Qt::SolidLine ));
        rectItem = new QGraphicsRectItem(QRectF(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2));
        rectItem->setPen(QPen( color, 1, Qt::SolidLine ));
-       item = rectItem;
+       itemGroup->addToGroup(rectItem);
+       item = itemGroup;
        item->setFlags(QGraphicsItem::ItemIsMovable);
       }
       break;
@@ -1368,7 +1377,8 @@ void PositionablePoint::draw(EditScene* g2)
        }
        rectItem = new QGraphicsRectItem(QRect(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2),0);
        rectItem->setPen( QPen( color, 1, Qt::SolidLine ) );
-       item = rectItem;
+       itemGroup->addToGroup(rectItem);
+       item = itemGroup;
        item->setFlags(QGraphicsItem::ItemIsMovable);
       }
       break;
@@ -1628,6 +1638,16 @@ void PositionablePoint::draw(EditScene* g2)
 /*public*/ void PositionablePoint::setAllLayoutBlocks(LayoutBlock* layoutBlock) {
     // positionable points don't have blocks...
     // nothing to see here, move along...
+}
+
+void /*private*/ PositionablePoint::invalidate(EditScene * g2)
+{
+ if(rects != nullptr && rects->scene() == g2)
+ {
+  g2->removeItem(rects);
+  delete rects;
+ }
+ rects = nullptr;
 }
 
 /*private*/ /*final*/ /*static*/ Logger* PositionablePoint::log

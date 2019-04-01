@@ -531,16 +531,16 @@ private:
  /*private*/ void draw1(EditScene* g2,
          bool isMain,
          bool isBlock,
-         bool isHidden);
+         bool isHidden, LayoutTrack::ITEMTYPE type);
  /*private*/ void draw1(EditScene* g2,
          bool isMain,
-         bool isBlock);
- /*private*/ void draw1(EditScene* g2, bool isMain);
+         bool isBlock, LayoutTrack::ITEMTYPE type);
+ /*private*/ void draw1(EditScene* g2, bool isMain, LayoutTrack::ITEMTYPE type);
  /*private*/ void draw1(EditScene* g2,
          bool isMain,
          bool isBlock,
          bool isHidden,
-         bool isDashed);
+         bool isDashed, LayoutTrack::ITEMTYPE itemType);
  /*private*/ void drawPositionablePoints(EditScene* g2, bool isMain);
  /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
  /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, bool isDashed);
@@ -626,12 +626,13 @@ private:
  /*private*/ MultiSensorIcon* checkMultiSensors(QPointF loc);
  /*private*/ LocoIcon* checkMarkers(QPointF loc);
  /*private*/ MultiIconEditor* iconEditor;// = NULL;
- QGraphicsItemGroup* panelGridGroup;
+ QGraphicsItemGroup* panelGridGroup = nullptr;
  QGraphicsItem* trackInProgress;
  /*private*/ bool _globalSetsLocal;// = true;    // pre 2.9.6 behavior
  /*private*/ bool _useGlobalFlag;// = false;     // pre 2.9.6 behavior
  QGraphicsRectItem *rectItem; // selection rect.
- QGraphicsItemGroup* highlightRect;
+ QGraphicsItemGroup* highlightRect = nullptr;
+
  /*private*/ void highLightSelection(EditScene* g);
  bool noWarnGlobalDelete;
  bool noWarnLevelXing;
@@ -916,6 +917,8 @@ private slots:
  void onZoomOut();
  double zoomToFit();
  void onLayoutTrackDrawingOptionsDialog();
+ void On_clearTrack(); // for testing
+
 protected:
  /**
  * Return a List of all items whose bounding rectangle contain the mouse position.

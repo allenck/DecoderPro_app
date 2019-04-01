@@ -199,8 +199,8 @@ private slots:
   /*protected*/ void showRayPopUp(QGraphicsSceneMouseEvent* e, int index);
   /*protected*/ void editTurntable(LayoutTurntable* x);
   /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
-  /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
-  /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+  /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemType);
+  /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType);
   /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
   /*protected*/ void drawTurnoutControls(EditScene* g2);
   /*protected*/ void drawEditControls(EditScene* g2);

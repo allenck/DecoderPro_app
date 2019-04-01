@@ -3934,7 +3934,7 @@ void LayoutTurnout::remove()
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LayoutTurnout::draw1(EditScene* g2, bool isMain, bool isBlock)
+/*protected*/ void LayoutTurnout::draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE type)
 {
  if (isBlock && getLayoutBlock() == nullptr) {
      // Skip the block layer if there is no block assigned.
@@ -4002,24 +4002,20 @@ void LayoutTurnout::remove()
 
  log->debug(tr("draw1 turnout %1 isMain = %2, state = %3").arg(getTurnoutName()).arg(isMain?"true":"false").arg(getTurnoutStateString(getState())));
 
- int type = getTurnoutType();
- //QGraphicsItemGroup* itemGroup;// = new QGraphicsItemGroup();
+ int toType = getTurnoutType();
+ QGraphicsItemGroup* itemGroup = selectItemGroup(type, isMain, isBlock);
 
  QGraphicsLineItem* lineItem;
 
- //invalidateItemType(isMain);
- if(!isMain && itemMain)
-  invalidate(g2);
- if(itemMain)
-  itemGroup = itemMain;
- else
+ itemGroup = invalidateItem(g2,itemGroup);
+ if(itemGroup == nullptr)
  {
   itemGroup = new QGraphicsItemGroup();
-  itemMain = itemGroup;
-  g2->addItem(itemMain);
+  itemGroup->setZValue(Editor::HANDLES+1);
+  g2->addItem(itemGroup);
  }
 
- if (type == DOUBLE_XOVER)
+ if (toType == DOUBLE_XOVER)
  {
   if (state != Turnout::THROWN && state != Turnout::INCONSISTENT)
   { // unknown or continuing path - not crossed over
@@ -4117,10 +4113,11 @@ void LayoutTurnout::remove()
     //g2.draw(new Line2D.Double(pBM, pM));
     lineItem = new QGraphicsLineItem(pBM.x(), pBM.y(), pM.x(), pM.y());
     lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);if (!isBlock || drawUnselectedLeg)
+    itemGroup->addToGroup(lineItem);
+    if (!isBlock || drawUnselectedLeg)
     {
      //g2.draw(new Line2D.Double(pBMP, pABM));
-     lineItem = new QGraphicsLineItem(pBMP.x(), pBMP.y(), pM.x(), pM.y());
+     lineItem = new QGraphicsLineItem(pBMP.x(), pBMP.y(), pABM.x(), pABM.y());
      lineItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(lineItem);
     }
@@ -4239,9 +4236,8 @@ void LayoutTurnout::remove()
    }
   }
  }
-#if 1
- else if ((type == RH_XOVER)
-      || (type == LH_XOVER))
+ else if ((toType == RH_XOVER)
+      || (toType == LH_XOVER))
  {    // draw (rh & lh) cross overs
   pAF = MathUtil::midPoint(pABM, pM);
   pBF = MathUtil::midPoint(pABM, pM);
@@ -4481,11 +4477,10 @@ void LayoutTurnout::remove()
          }
      }
  }
-#endif
- else if ((type == SINGLE_SLIP) || (type == DOUBLE_SLIP)) {
+ else if ((toType == SINGLE_SLIP) || (toType == DOUBLE_SLIP)) {
      log->error("slips should be being drawn by LayoutSlip sub-class");
  }
-    else {    // LH, RH, or WYE Turnouts
+ else {    // LH, RH, or WYE Turnouts
      // draw A<===>center
      if (isMain == mainlineA) {
          //g2.setColor(colorA);
@@ -4495,7 +4490,6 @@ void LayoutTurnout::remove()
       lineItem->setPen(layoutEditor->drawingStroke);
       itemGroup->addToGroup(lineItem);
      }
-
 
      if (state == UNKNOWN || (continuingSense == state && state != Turnout::INCONSISTENT))
      { // unknown or continuing path
@@ -4544,25 +4538,14 @@ void LayoutTurnout::remove()
          }
      }
  }
-// if(isMain)
-// {
-//  itemMain = itemGroup;
-//  g2->addItem(itemMain);
-// }
-// else
-// {
-//  itemSide = itemGroup;
-//  g2->addItem(itemSide);
-// }
-
 }   // draw1
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement) {
-    int type = getTurnoutType();
+/*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type) {
+    int toType = getTurnoutType();
 
     QPointF pA = getCoordsA();
     QPointF pB = getCoordsB();
@@ -4597,7 +4580,7 @@ void LayoutTurnout::remove()
     double hypotF = railDisplacement / qSin(deltaBMC_RAD / 2.0);
 
     QPointF vDisF = MathUtil::normalize(MathUtil::add(vAM, vCM), hypotF);
-    if (type == WYE_TURNOUT) {
+    if (toType == WYE_TURNOUT) {
         vDisF = MathUtil::normalize(vAM, hypotF);
     }
     QPointF pF = MathUtil::add(pM, vDisF);
@@ -4628,21 +4611,19 @@ void LayoutTurnout::remove()
             state = to->getKnownState();
         }
     }
-    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+    QGraphicsItemGroup* itemGroup = selectItemGroup(type, isMain, false);
 
-    //    invalidateItemType(isMain);
-    //invalidateItemType(isMain);
-    if(itemMain)
-     itemGroup = itemMain;
-    else
+    //if(!isMain && itemGroup)
+     itemGroup = invalidateItem(g2,itemGroup);
+    if(itemGroup == nullptr)
     {
      itemGroup = new QGraphicsItemGroup();
-     itemMain = itemGroup;
-     g2->addItem(itemMain);
+     itemGroup->setZValue(Editor::HANDLES+1);
+     g2->addItem(itemGroup);
     }
 
     QGraphicsLineItem* lineItem;
-    switch (type) {
+    switch (toType) {
         case RH_TURNOUT: {
             if (isMain == mainlineA) {
                 //g2.draw(new Line2D.Double(pAL, pML));
@@ -5406,7 +5387,7 @@ void LayoutTurnout::remove()
         }
         default: {
             // this should never happen... but...
-            log->error("Unknown turnout type: " + type);
+            log->error("Unknown turnout type: " + toType);
             break;
         }
     }
@@ -5614,10 +5595,15 @@ void LayoutTurnout::on_rotateItemAction_triggered()
 void LayoutTurnout::invalidate(EditScene *g2)
 {
  itemMain =invalidateItem(g2,itemMain);
+ itemSide = invalidateItem(g2, itemSide);
  //invalidateItem(itemSide);
  rects=invalidateItem(g2,rects);
  circles = invalidateItem(g2,circles);
  item = invalidateItem(g2, item);
+ itemTies = invalidateItem(g2, itemTies);
+ itemTiesSide = invalidateItem(g2, itemTiesSide);
+ itemBallast = invalidateItem(g2, itemBallast);
+ itemBallastSide = invalidateItem(g2, itemBallastSide);
 }
 
 #if 0

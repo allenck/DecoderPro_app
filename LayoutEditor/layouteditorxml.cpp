@@ -10,6 +10,7 @@
 #include "joptionpane.h"
 #include "colorutil.h"
 #include "layoutturntable.h"
+#include <QMenuBar>
 
 LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   AbstractXmlAdapter(parent)
@@ -110,7 +111,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    {
     try
     {
-     QDomElement e = ConfigXmlManager::elementFromObject((QObject*)sub);
+     QDomElement e = ConfigXmlManager::elementFromObject(sub->self());
      if (!e.isNull())
      {
       panel.appendChild(e);
@@ -520,9 +521,13 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    panel->setDefaultAlternativeTrackColor(a);
  }
  try {
-     int red = element.attribute("redBackground").toInt();
-     int blue = element.attribute("blueBackground").toInt();
-     int green = element.attribute("greenBackground").toInt();
+  bool bok;
+     int red = element.attribute("redBackground").toInt(&bok);
+     if(!bok) throw DataConversionException();
+     int blue = element.attribute("blueBackground").toInt(&bok);
+     if(!bok) throw DataConversionException();
+     int green = element.attribute("greenBackground").toInt(&bok);
+     if(!bok) throw DataConversionException();
      panel->setDefaultBackgroundColor(ColorUtil::colorToString( QColor(red, green, blue)));
      panel->setBackgroundColor( QColor(red, green, blue));
  } catch (DataConversionException e) {
@@ -536,6 +541,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    panel->setDirectTurnoutControl(true);
   }
  }
+
  // Set editor's option flags, load content after
  // this so that individual item flags are set as saved
  panel->initView();
@@ -608,6 +614,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel->setLayoutDimensions(windowWidth, windowHeight, x, y, panelWidth, panelHeight);
  panel->setVisible(true);    // always show the panel
  panel->resetDirty();
+ panel->getTargetFrame()->menuBar()->setVisible(true);
 
  panel->paintTargetPanel(panel->editScene); // force redraw
 

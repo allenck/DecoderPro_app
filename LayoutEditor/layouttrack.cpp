@@ -144,7 +144,7 @@
  * @param isMain  true if drawing mainlines
  * @param isBlock true if drawing block lines
  */
-/*protected*/ /*abstract*/ void LayoutTrack::draw1(EditScene * /*g2*/, bool /*isMain*/, bool /*isBlock*/) {}
+/*protected*/ /*abstract*/ void LayoutTrack::draw1(EditScene * /*g2*/, bool /*isMain*/, bool /*isBlock*/, ITEMTYPE  /*type*/) {}
 
 /**
  * draw two lines (rails)
@@ -153,7 +153,7 @@
  * @param isMain           true if drawing mainlines
  * @param railDisplacement the offset from center to draw the lines
  */
-/*protected*/ /*abstract*/ void LayoutTrack::draw2(EditScene* g2, bool /*isMain*/, float /*railDisplacement*/) {}
+/*protected*/ /*abstract*/ void LayoutTrack::draw2(EditScene* g2, bool /*isMain*/, float /*railDisplacement*/, ITEMTYPE /*type*/ ) {}
 
 /**
  * draw hidden track
@@ -655,6 +655,50 @@
  }
  item = nullptr;
  return item;
+}
+
+/*protected*/ QGraphicsItemGroup* LayoutTrack::selectItemGroup(ITEMTYPE type, bool isMain, bool isBlock)
+{
+ if(!isBlock)
+ {
+  switch (type)
+  {
+  case dashed:
+   if(isMain)
+    return itemDashed;
+   else
+    return itemDashedSide;
+  case ties:
+   if(isMain)
+    return itemTies;
+   else
+    return itemTiesSide;
+  case ballast:
+   if(isMain)
+    return itemBallast;
+  else
+   return itemBallastSide;
+  case track:
+   if(isMain)
+    return itemMain;
+   else
+    return itemSide;
+  case points:
+   return itemPoints;
+
+  }
+ }
+  else
+ {
+  switch (type)
+  {
+ case block:
+  if(isMain)
+   return itemBlock;
+  else
+   return itemBlockSide;
+  }
+ }
 }
 
 /*private*/ /*final*/ /*static*/ Logger* LayoutTrack::log = LoggerFactory::getLogger("LayoutTrack");

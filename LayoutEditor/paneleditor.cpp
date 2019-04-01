@@ -518,7 +518,6 @@ void PanelEditor::onScrollableComboBox()
  setScroll(scrollableComboBox->currentIndex());
 }
 
-#if 1
 /**
 * Initializes the hiddencheckbox and its listener.
 * This has been taken out of the init, as checkbox is
@@ -538,9 +537,8 @@ void PanelEditor::onScrollableComboBox()
 //        });
         connect(hiddenBox, SIGNAL(clicked(bool)), this, SLOT(setShowHidden(bool)));
     }
-
 }
-#endif
+
 /**
  * After construction, initialize all the widgets to their saved config
  * settings.

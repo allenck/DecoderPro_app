@@ -499,8 +499,8 @@ protected:
     /*protected*/ NamedBeanHandle<SignalHead*>* signalC2HeadNamed = nullptr; // RH_Xover and double crossover only
     /*protected*/ NamedBeanHandle<SignalHead*>* signalD1HeadNamed = nullptr; // single or double crossover only
     /*protected*/ NamedBeanHandle<SignalHead*>* signalD2HeadNamed = nullptr; // LH_Xover and double crossover only
-    /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
-    /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+    /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE type);
+    /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type);
     /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
     /*protected*/ void drawTurnoutControls(EditScene* g2);
     /*protected*/ void drawEditControls(EditScene* g2);

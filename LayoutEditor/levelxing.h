@@ -263,8 +263,8 @@ protected:
  /*protected*/ NamedBeanHandle<SignalMast*>* signalBMastNamed;// = NULL; // signal at B track junction
  /*protected*/ NamedBeanHandle<SignalMast*>* signalCMastNamed;// = NULL; // signal at C track junction
  /*protected*/ NamedBeanHandle<SignalMast*>* signalDMastNamed;// = NULL; // signal at D track junction
-/*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
-/*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+/*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemType);
+/*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType);
 /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
 /*protected*/ void drawEditControls(EditScene* g2);
 /*protected*/ void drawTurnoutControls(EditScene* g2);

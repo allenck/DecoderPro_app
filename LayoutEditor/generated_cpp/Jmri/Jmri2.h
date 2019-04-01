@@ -84,61 +84,13 @@
 #include <qstyleoption.h>
 #include <qvector.h>
 #include <qwidget.h>
+#include <reportermanager.h>
 #include <sensor.h>
 #include <systemconnectionmemo.h>
 #include <throttlemanager.h>
 #include <turnout.h>
 #include <turnoutoperation.h>
 #include <windowlistener.h>
-
-
-
-class PythonQtShell_LnTrafficController : public LnTrafficController
-{
-public:
-    PythonQtShell_LnTrafficController():LnTrafficController(),_wrapper(NULL) {}
-
-   ~PythonQtShell_LnTrafficController();
-
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual bool  isXmtBusy();
-virtual void sendLocoNetMessage(LocoNetMessage*  arg__1);
-virtual bool  status();
-virtual void timerEvent(QTimerEvent*  event);
-
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class PythonQtPublicPromoter_LnTrafficController : public LnTrafficController
-{ public:
-inline bool  py_q_isXmtBusy() { return LnTrafficController::isXmtBusy(); }
-inline void py_q_sendLocoNetMessage(LocoNetMessage*  arg__1) { LnTrafficController::sendLocoNetMessage(arg__1); }
-inline bool  py_q_status() { return LnTrafficController::status(); }
-};
-
-class PythonQtWrapper_LnTrafficController : public QObject
-{ Q_OBJECT
-public:
-public slots:
-LnTrafficController* new_LnTrafficController();
-void delete_LnTrafficController(LnTrafficController* obj) { delete obj; } 
-   int  getReceivedByteCount(LnTrafficController* theWrappedObject);
-   int  getReceivedMsgCount(LnTrafficController* theWrappedObject);
-   int  getTransmittedMsgCount(LnTrafficController* theWrappedObject);
-   LnTrafficController*  static_LnTrafficController_instance();
-   bool  isXmtBusy(LnTrafficController* theWrappedObject);
-   bool  py_q_isXmtBusy(LnTrafficController* theWrappedObject){  return (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_isXmtBusy());}
-   void resetStatistics(LnTrafficController* theWrappedObject);
-   void py_q_sendLocoNetMessage(LnTrafficController* theWrappedObject, LocoNetMessage*  arg__1){  (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_sendLocoNetMessage(arg__1));}
-   bool  py_q_status(LnTrafficController* theWrappedObject){  return (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_status());}
-};
-
-
 
 
 
@@ -1267,7 +1219,7 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
-virtual QWidget*  getContentPane(bool  addLayout = false);
+virtual QWidget*  getContentPane(bool  addLayout);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();
@@ -2706,6 +2658,71 @@ void delete_ProxyTurnoutManager(ProxyTurnoutManager* obj) { delete obj; }
    Turnout*  newTurnout(ProxyTurnoutManager* theWrappedObject, QString  systemName, QString  userName);
    void setDefaultClosedSpeed(ProxyTurnoutManager* theWrappedObject, QString  speed) throw (JmriException);
    void setDefaultThrownSpeed(ProxyTurnoutManager* theWrappedObject, QString  speed) throw (JmriException);
+};
+
+
+
+
+
+class PythonQtShell_ReporterManager : public ReporterManager
+{
+public:
+    PythonQtShell_ReporterManager(QObject*  parent = 0):ReporterManager(parent),_wrapper(NULL) {}
+
+   ~PythonQtShell_ReporterManager();
+
+virtual void Register(NamedBean*  s);
+virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual bool  allowMultipleAdditions(QString  arg__1) const;
+virtual void childEvent(QChildEvent*  event);
+virtual void customEvent(QEvent*  event);
+virtual void deregister(NamedBean*  s);
+virtual void dispose();
+virtual bool  event(QEvent*  event);
+virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual NamedBean*  getBeanBySystemName(QString  systemName);
+virtual NamedBean*  getBeanByUserName(QString  userName);
+virtual QString  getBeanTypeHandled();
+virtual QString  getEntryToolTip();
+virtual NamedBean*  getNamedBean(QString  name);
+virtual QSet<NamedBean* >  getNamedBeanSet();
+virtual QString  getNextValidAddress(QString  arg__1, QString  arg__2) const;
+virtual QStringList  getSystemNameArray();
+virtual QStringList  getSystemNameList() const;
+virtual QString  getSystemPrefix();
+virtual int  getXMLOrder();
+virtual QString  makeSystemName(QString  s);
+virtual QString  normalizeSystemName(QString  inputName);
+virtual void propertyChange(PropertyChangeEvent*  e);
+virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void timerEvent(QTimerEvent*  event);
+virtual char  typeLetter();
+virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual void vetoableChange(PropertyChangeEvent*  evt);
+
+  const QMetaObject* metaObject() const;
+  int qt_metacall(QMetaObject::Call call, int id, void** args);
+  PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtPublicPromoter_ReporterManager : public ReporterManager
+{ public:
+inline bool  py_q_allowMultipleAdditions(QString  arg__1) const { return ReporterManager::allowMultipleAdditions(arg__1); }
+inline QString  py_q_getNextValidAddress(QString  arg__1, QString  arg__2) const { return ReporterManager::getNextValidAddress(arg__1, arg__2); }
+inline QStringList  py_q_getSystemNameList() const { return ReporterManager::getSystemNameList(); }
+};
+
+class PythonQtWrapper_ReporterManager : public QObject
+{ Q_OBJECT
+public:
+public slots:
+ReporterManager* new_ReporterManager(QObject*  parent = 0);
+void delete_ReporterManager(ReporterManager* obj) { delete obj; } 
+   bool  allowMultipleAdditions(ReporterManager* theWrappedObject, QString  arg__1) const;
+   bool  py_q_allowMultipleAdditions(ReporterManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_allowMultipleAdditions(arg__1));}
+   QString  getNextValidAddress(ReporterManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
+   QString  py_q_getNextValidAddress(ReporterManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getNextValidAddress(arg__1, arg__2));}
+   QStringList  py_q_getSystemNameList(ReporterManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getSystemNameList());}
 };
 
 

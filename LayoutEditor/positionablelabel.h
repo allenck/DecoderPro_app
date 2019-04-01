@@ -170,6 +170,7 @@ public:
  int getX();
  int getY();
  QObject* self() {return (QObject*)this;}
+ /*public*/ virtual QString getClassName();
 
 signals:
  void propertyChange(PropertyChangeEvent*);

@@ -1377,5 +1377,7 @@ int PositionableLabel::getX() {return _x;}
 
 int PositionableLabel::getY() {return _y;}
 
+/*public*/ QString PositionableLabel::getClassName() { return QString(metaObject()->className());}
+
 
 /*private*/ /*final*/ /*static*/ Logger* PositionableLabel::log = LoggerFactory::getLogger("PositionableLabel");

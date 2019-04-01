@@ -161,6 +161,7 @@ private:
  /*private*/ PositionablePoint* linkedPoint;
  JDialog* editLink;// = null;
  QList<PositionablePoint*>* pointList;
+ void /*private*/ invalidate(EditScene * g2);
 
 private slots:
  void on_actRemove_triggered();
@@ -177,8 +178,8 @@ protected:
  /*protected*/ NamedBeanHandle<SignalHead*>* signalEastHeadNamed = nullptr; // signal head for east (south) bound trains
  /*protected*/ NamedBeanHandle<SignalHead*>* signalWestHeadNamed = nullptr; // signal head for west (north) bound trains
  /*protected*/ void drawTurnoutControls(EditScene* g2);
- /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
- /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+ /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE type);
+ /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type);
  /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
  /*protected*/ /*abstract*/ void drawEditControls(EditScene *g2);
  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);

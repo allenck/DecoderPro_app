@@ -617,7 +617,14 @@ File userPrefsFile;*/
 
 /*static*/ /*public*/ QDomElement ConfigXmlManager::elementFromObject(QObject* o)
 {
- QString aName = QString(o->metaObject()->className()) + "Xml";
+ QString aName = "";
+// if(qobject_cast<PositionableLabel*>(o))
+// {
+//  aName = qobject_cast<PositionableLabel*>(o)->getClassName() + "Xml";
+// }
+// else
+ QString oName = o->objectName();
+  aName = QString(o->metaObject()->className()) + "Xml";
  if(QString(o->metaObject()->className()) == "Pr3ConnectionConfig")
   aName = "ConnectionConfigXml";
  log->debug(tr("store %1 using %2").arg(o->metaObject()->className()).arg(aName));

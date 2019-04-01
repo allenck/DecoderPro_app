@@ -41,6 +41,7 @@
  <rejection class="JLabel" function-name="contains" />
  <rejection class="JLabel" function-name="deepClone" />
  <rejection class="JLabel" function-name="doMouseClicked" />
+ <rejection class="LayoutTrack" />
  <object-type name="NamedBean" />
  <object-type name="AbstractNamedBean" />
  <object-type name="Turnout" />

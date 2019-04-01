@@ -56,7 +56,6 @@ PythonQt::priv()->registerClass(&JTextArea::staticMetaObject, "Jmri", PythonQtCr
 PythonQt::priv()->registerClass(&JmriJFrame::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_JmriJFrame>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_JmriJFrame>, module, 0);
 PythonQt::priv()->registerClass(&LayoutBlockManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LayoutBlockManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LayoutBlockManager>, module, 0);
 PythonQt::priv()->registerClass(&LayoutEditor::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LayoutEditor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LayoutEditor>, module, 0);
-PythonQt::priv()->registerClass(&LayoutTrack::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LayoutTrack>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LayoutTrack>, module, 0);
 PythonQt::priv()->registerClass(&LayoutTurnout::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LayoutTurnout>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LayoutTurnout>, module, 0);
 PythonQt::priv()->registerClass(&Light::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Light>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Light>, module, 0);
 PythonQt::priv()->registerClass(&LightManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LightManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LightManager>, module, 0);

@@ -931,13 +931,19 @@ void LayoutTurntable::dispose() {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LayoutTurntable::draw1(EditScene* g2, bool isMain, bool isBlock) {
+/*protected*/ void LayoutTurntable::draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemType) {
     float trackWidth = 2.0;
     float halfTrackWidth = trackWidth / 2.f;
     double radius = getRadius(), diameter = radius + radius;
-    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+    QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
-    invalidateItem(g2,item);
+    invalidateItem(g2,itemGroup);
+    if(itemGroup == nullptr)
+    {
+     itemGroup = new QGraphicsItemGroup();
+     itemGroup->setZValue(Editor::HANDLES+1);
+     g2->addItem(itemGroup);
+    }
 
     if (isBlock && isMain)
     {
@@ -986,21 +992,24 @@ void LayoutTurntable::dispose() {
             lineItem = new QGraphicsLineItem(pt1.x(), pt1.y(), pt2.x(), pt2.y());}
         }
     }
-    item = itemGroup;
-    g2->addItem(itemGroup);
 }   // draw1
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LayoutTurntable::draw2(EditScene* g2, bool isMain, float railDisplacement) {
+/*protected*/ void LayoutTurntable::draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType) {
     float trackWidth = 2.F;
     float halfTrackWidth = trackWidth / 2.f;
-    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+    QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
-    invalidateItem(g2,item);
-
+    invalidateItem(g2,itemGroup);
+    if(itemGroup == nullptr)
+    {
+     itemGroup = new QGraphicsItemGroup();
+     itemGroup->setZValue(Editor::HANDLES+1);
+     g2->addItem(itemGroup);
+    }
     // draw ray tracks
     for (int j = 0; j < getNumberRays(); j++) {
         bool main = false;
@@ -1040,8 +1049,6 @@ void LayoutTurntable::dispose() {
                 itemGroup->addToGroup(lineItem);}
         }
     }
-    item = itemGroup;
-    g2->addItem(itemGroup);
 
 }   // draw2
 

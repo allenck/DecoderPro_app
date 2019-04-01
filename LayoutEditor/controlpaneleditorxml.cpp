@@ -97,7 +97,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
   {
    try
    {
-    QDomElement e = ConfigXmlManager::elementFromObject((QObject*)sub);
+    QDomElement e = ConfigXmlManager::elementFromObject(sub->self());
     if (!e.isNull()) panel.appendChild(e);
    }
    catch (Exception e)

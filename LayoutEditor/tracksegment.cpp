@@ -671,7 +671,7 @@ TrackSegment::getLayoutBlock()
         log->debug("STOP");
     }
 
- invalidateItem(g2, decorationItems);
+ //invalidateItem(g2, decorationItems);
 
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
@@ -681,7 +681,7 @@ TrackSegment::getLayoutBlock()
     QPointF p1, p2, p3, p4, p5, p6, p7;
     QPointF p1P = ep1, p2P = ep2, p3P, p4P, p5P, p6P, p7P;
     double startAngleRAD, stopAngleRAD;
-#if 1
+
     if (isArc()) {
         calculateTrackSegmentAngle();
         double startAngleDEG = getStartAdj(), extentAngleDEG = getTmpAngle();
@@ -705,7 +705,7 @@ TrackSegment::getLayoutBlock()
         startAngleRAD = (M_PI_2) - MathUtil::computeAngleRAD(delta);
         stopAngleRAD = startAngleRAD;
     }
-#endif
+
     //
     // arrow decorations
     //
@@ -736,7 +736,7 @@ TrackSegment::getLayoutBlock()
             }
         }
     }   // arrow decoration
-#if 1
+
     //
     //  bridge decorations
     //
@@ -874,8 +874,7 @@ TrackSegment::getLayoutBlock()
             }
         }
     }   // if (bridgeValue != null)
-#endif
-#if 1
+
     //
     //  end bumper decorations
     //
@@ -914,8 +913,7 @@ TrackSegment::getLayoutBlock()
         line->setPen(stroke);
         itemGroup->addToGroup(line);
     }   // if (bumperEndStart || bumperEndStop)
-#endif
-#if 1
+
     //
     //  tunnel decorations
     //
@@ -1140,13 +1138,12 @@ TrackSegment::getLayoutBlock()
             }
         }
     }   // if (tunnelValue != null)
-#endif
+
     decorationItems= itemGroup;
     g2->addItem(decorationItems);
 
 }   // drawDecorations
 
-#if 1
 /*private*/ int TrackSegment::drawArrow(
         EditScene* g2,
         QPointF ep,
@@ -1337,7 +1334,7 @@ TrackSegment::getLayoutBlock()
     }
     return offset;
 }   // drawArrow
-#endif
+
 /**
  * Display popup menu for information and editing
  */
@@ -3243,12 +3240,21 @@ void TrackSegment::on_actionEdit_triggered()
 void TrackSegment::invalidate(EditScene *g2)
 {
  itemMain =invalidateItem(g2,itemMain);
-// invalidateItem(itemSide);
+ itemSide = invalidateItem(g2,itemSide);
  hiddenItems = invalidateItem(g2, hiddenItems);
  rects = invalidateItem(g2, rects);
- dashedItem =invalidateItem(g2, dashedItem);
+ //dashedItem =invalidateItem(g2, dashedItem);
  decorationItems =invalidateItem(g2, decorationItems);
+ itemDashed = invalidateItem(g2, itemDashed);
+ itemDashedSide = invalidateItem(g2, itemDashedSide);
+ itemTies = invalidateItem(g2, itemTies);
+ itemTiesSide = invalidateItem(g2, itemTiesSide);
+ itemBallast = invalidateItem(g2, itemBallast);
+ itemBallastSide = invalidateItem(g2, itemBallastSide);
+ itemPoints = invalidateItem(g2, itemPoints);
+ item = invalidateItem(g2, item);
 }
+
 void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
 {
  invalidateItem(g2, hiddenItems);
@@ -3270,72 +3276,72 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
   editor->setTrackStrokeWidth(!editor->main);
  }
 }
-void TrackSegment::drawDashedTrack(LayoutEditor* editor, EditScene* g2, bool mainline)
-{
- QColor color;
- LayoutBlock* b = getLayoutBlock();
- if (b!=NULL) color = (b->getBlockColor());
- else color = (editor->defaultTrackColor);
- editor->setTrackStrokeWidth(mainline);
- QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+//void TrackSegment::drawDashedTrack(LayoutEditor* editor, EditScene* g2, bool mainline)
+//{
+// QColor color;
+// LayoutBlock* b = getLayoutBlock();
+// if (b!=NULL) color = (b->getBlockColor());
+// else color = (editor->defaultTrackColor);
+// editor->setTrackStrokeWidth(mainline);
+// QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
- invalidateItem(g2,dashedItem);
+// invalidateItem(g2,dashedItem);
 
- if (getArc())
- {
-  calculateTrackSegmentAngle();
-  //Stroke drawingStroke;
-  //Stroke originalStroke = g2.getStroke();
-  QPen drawingStroke;
-  if (mainline)
-   //drawingStroke = new BasicStroke(mainlineTrackWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
-   drawingStroke = QPen(color,editor->mainlineTrackWidth,Qt::DashLine, Qt::SquareCap,Qt::BevelJoin);
-  else
-//    drawingStroke = new BasicStroke(sideTrackWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
-   drawingStroke =  QPen(color,editor->sidelineTrackWidth,Qt::DashLine, Qt::SquareCap,Qt::BevelJoin);
+// if (getArc())
+// {
+//  calculateTrackSegmentAngle();
+//  //Stroke drawingStroke;
+//  //Stroke originalStroke = g2.getStroke();
+//  QPen drawingStroke;
+//  if (mainline)
+//   //drawingStroke = new BasicStroke(mainlineTrackWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
+//   drawingStroke = QPen(color,editor->mainlineTrackWidth,Qt::DashLine, Qt::SquareCap,Qt::BevelJoin);
+//  else
+////    drawingStroke = new BasicStroke(sideTrackWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
+//   drawingStroke =  QPen(color,editor->sidelineTrackWidth,Qt::DashLine, Qt::SquareCap,Qt::BevelJoin);
 
-  //g2.setStroke(drawingStroke);
-  //g2.draw(new Arc2D(t.getCX(), t.getCY(), t.getCW(), t.getCH(), t->getStartadj(), t.getTmpAngle(), Arc2D.OPEN));
-  //g2->addEllipse(t->getCX(), t->getCY(), t->getCW(), t->getCH(),drawingStroke);
-  QGraphicsArcItem* lineItem = new QGraphicsArcItem(getCX(), getCY(), getCW(), getCH());
-  lineItem->setStartAngle(getStartAdj()*16);
-  lineItem->setSpanAngle(getTmpAngle()*16);
-  lineItem->setPen(drawingStroke);
-  itemGroup->addToGroup(lineItem);
+//  //g2.setStroke(drawingStroke);
+//  //g2.draw(new Arc2D(t.getCX(), t.getCY(), t.getCW(), t.getCH(), t->getStartadj(), t.getTmpAngle(), Arc2D.OPEN));
+//  //g2->addEllipse(t->getCX(), t->getCY(), t->getCW(), t->getCH(),drawingStroke);
+//  QGraphicsArcItem* lineItem = new QGraphicsArcItem(getCX(), getCY(), getCW(), getCH());
+//  lineItem->setStartAngle(getStartAdj()*16);
+//  lineItem->setSpanAngle(getTmpAngle()*16);
+//  lineItem->setPen(drawingStroke);
+//  itemGroup->addToGroup(lineItem);
 
-  dashedItem = itemGroup;
-  g2->addItem(dashedItem);
-  //g2.setStroke(originalStroke);
- }
- else
- {
-  QPointF end1 = LayoutEditor::getCoords(getConnect1(),getType1());
-  QPointF end2 = LayoutEditor::getCoords(getConnect2(),getType2());
-  double delX = end1.x() - end2.x();
-  double delY = end1.y() - end2.y();
-  double cLength = qSqrt( (delX*delX) + (delY*delY) );
-  // note: The preferred dimension of a dash (solid + blank space) is
-  //         5 * the track width - about 60% solid and 40% blank.
-  int nDashes = (int)( cLength / ((editor->trackWidth)*5.0) );
-  if (nDashes < 3) nDashes = 3;
-  double delXDash = -delX/( (nDashes) - 0.5 );
-  double delYDash = -delY/( (nDashes) - 0.5 );
-  double begX = end1.x();
-  double begY = end1.y();
-  QGraphicsItemGroup* group = new QGraphicsItemGroup();
-  for (int k = 0; k<nDashes; k++)
-  {
-   //g2->addLine(QLineF( QPointF(begX,begY), QPointF((begX+(delXDash*0.5)),(begY+(delYDash*0.5)))),QPen(color,trackWidth));
-   QGraphicsLineItem* lineItem = new QGraphicsLineItem(QLineF( QPointF(begX,begY), QPointF((begX+(delXDash*0.5)),(begY+(delYDash*0.5)))));
-   lineItem->setPen(QPen(color,editor->trackWidth));
-   group->addToGroup(lineItem);
-   begX += delXDash;
-   begY += delYDash;
-  }
-  dashedItem = group;
-  g2->addItem(dashedItem);
- }
-}
+//  dashedItem = itemGroup;
+//  g2->addItem(dashedItem);
+//  //g2.setStroke(originalStroke);
+// }
+// else
+// {
+//  QPointF end1 = LayoutEditor::getCoords(getConnect1(),getType1());
+//  QPointF end2 = LayoutEditor::getCoords(getConnect2(),getType2());
+//  double delX = end1.x() - end2.x();
+//  double delY = end1.y() - end2.y();
+//  double cLength = qSqrt( (delX*delX) + (delY*delY) );
+//  // note: The preferred dimension of a dash (solid + blank space) is
+//  //         5 * the track width - about 60% solid and 40% blank.
+//  int nDashes = (int)( cLength / ((editor->trackWidth)*5.0) );
+//  if (nDashes < 3) nDashes = 3;
+//  double delXDash = -delX/( (nDashes) - 0.5 );
+//  double delYDash = -delY/( (nDashes) - 0.5 );
+//  double begX = end1.x();
+//  double begY = end1.y();
+//  QGraphicsItemGroup* group = new QGraphicsItemGroup();
+//  for (int k = 0; k<nDashes; k++)
+//  {
+//   //g2->addLine(QLineF( QPointF(begX,begY), QPointF((begX+(delXDash*0.5)),(begY+(delYDash*0.5)))),QPen(color,trackWidth));
+//   QGraphicsLineItem* lineItem = new QGraphicsLineItem(QLineF( QPointF(begX,begY), QPointF((begX+(delXDash*0.5)),(begY+(delYDash*0.5)))));
+//   lineItem->setPen(QPen(color,editor->trackWidth));
+//   group->addToGroup(lineItem);
+//   begX += delXDash;
+//   begY += delYDash;
+//  }
+//  dashedItem = group;
+//  g2->addItem(dashedItem);
+// }
+//}
 
 /*
 * Calculates the initial parameters for drawing a circular track segment.
@@ -3421,7 +3427,7 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, EditScene* g2, bool mai
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void TrackSegment::draw1(EditScene* g2, bool isMain, bool isBlock)
+/*protected*/ void TrackSegment::draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE type)
 {
  if (!isBlock && isDashed() && getLayoutBlock() != nullptr) {
      // Skip the dashed rail layer, the block layer will display the dashed track
@@ -3430,89 +3436,62 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, EditScene* g2, bool mai
  }
 
  QColor color;
- //    QPen drawingStroke = QPen(color, 1);
- //QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
- //itemMain =invalidateItem(g2,itemMain);
- QGraphicsItemGroup* itemGroup;
-// if(isMain)
-// {
-  if(itemMain)
-   itemGroup = itemMain;
-  else
-  {
-   itemGroup = new QGraphicsItemGroup();
-   itemMain = itemGroup;
-   g2->addItem(itemMain);
-  }
-// }
-// else
-// {
-//  if(itemSide)
-//   itemGroup = itemSide;
-//  else
-//  {
-//   itemGroup = new QGraphicsItemGroup();
-//   itemSide = itemGroup;
-//   g2->addItem(itemSide);
-//  }
-// }
+ QGraphicsItemGroup* itemGroup = selectItemGroup(type, isMain, isBlock);
+ itemGroup = invalidateItem(g2, itemGroup);
+ if(itemGroup == nullptr)
+ {
+  itemGroup = new QGraphicsItemGroup();
+  itemGroup->setZValue(Editor::HANDLES+1);
+  g2->addItem(itemGroup);
+ }
 
  if(isMain == mainline)
  {
-     if (isBlock) {
-         color = setColorForTrackBlock(g2, getLayoutBlock());
-         layoutEditor->drawingStroke.setColor(color);
-     }
-     if (isArc()) {
-         calculateTrackSegmentAngle();
+  if (isBlock)
+  {
+      color = setColorForTrackBlock(g2, getLayoutBlock());
+      layoutEditor->drawingStroke.setColor(color);
+  }
+  if (isArc())
+  {
+   calculateTrackSegmentAngle();
 //            g2.draw(new Arc2D(getCX(), getCY(), getCW(), getCH(), getStartAdj(), getTmpAngle(), Arc2D.OPEN));
-         QGraphicsArcItem* lineItem = new QGraphicsArcItem(getCX(), getCY(), getCW(), getCH());
-         lineItem->setStartAngle(getStartAdj()*16);
-         lineItem->setSpanAngle(getTmpAngle()*16);
-         lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroup->addToGroup(lineItem);
-     }
-     else if (isBezier())
-     {
-         QPointF pt1 = LayoutEditor::getCoords(getConnect1(), getType1());
-         QPointF pt2 = LayoutEditor::getCoords(getConnect2(), getType2());
+   QGraphicsArcItem* lineItem = new QGraphicsArcItem(getCX(), getCY(), getCW(), getCH());
+   lineItem->setStartAngle(getStartAdj()*16);
+   lineItem->setSpanAngle(getTmpAngle()*16);
+   lineItem->setPen(layoutEditor->drawingStroke);
+   itemGroup->addToGroup(lineItem);
+  }
+  else if (isBezier())
+  {
+   QPointF pt1 = LayoutEditor::getCoords(getConnect1(), getType1());
+   QPointF pt2 = LayoutEditor::getCoords(getConnect2(), getType2());
 
-         int cnt = bezierControlPoints.size();
-         QVector<QPointF> points = QVector<QPointF>(cnt + 2);
-         points.replace(0, pt1);
-         for (int idx = 0; idx < cnt; idx++) {
-             points.replace(idx + 1, bezierControlPoints.at(idx));
-         }
-         points.replace(cnt + 1, pt2);
+   int cnt = bezierControlPoints.size();
+   QVector<QPointF> points = QVector<QPointF>(cnt + 2);
+   points.replace(0, pt1);
+   for (int idx = 0; idx < cnt; idx++) {
+       points.replace(idx + 1, bezierControlPoints.at(idx));
+   }
+   points.replace(cnt + 1, pt2);
 
-         QPainterPath path = MathUtil::drawBezier( points);
-         QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
-         pathItem->setPen(layoutEditor->drawingStroke);
-         itemGroup->addToGroup(pathItem);
+   QPainterPath path = MathUtil::drawBezier( points);
+   QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+   pathItem->setPen(layoutEditor->drawingStroke);
+   itemGroup->addToGroup(pathItem);
+  }
+  else
+  {
+   QPointF end1 = LayoutEditor::getCoords(getConnect1(), getType1());
+   QPointF end2 = LayoutEditor::getCoords(getConnect2(), getType2());
 
-     }
-     else {
-         QPointF end1 = LayoutEditor::getCoords(getConnect1(), getType1());
-         QPointF end2 = LayoutEditor::getCoords(getConnect2(), getType2());
-
-         //g2.draw(new Line2D(end1, end2));
-         QGraphicsLineItem* lineItem = new QGraphicsLineItem(end1.x(), end1.y(), end2.x(), end2.y());
-         lineItem->setPen(layoutEditor->drawingStroke);
-         itemGroup->addToGroup(lineItem);
-
-     }
-//     if(isMain)
-//     {
-//      itemMain = itemGroup;
-//      g2->addItem(itemMain);
-//     }
-//     else
-//     {
-//      itemSide = itemGroup;
-//      g2->addItem(itemSide);
-//     }
-     trackRedrawn();
+   //g2.draw(new Line2D(end1, end2));
+   QGraphicsLineItem* lineItem = new QGraphicsLineItem(end1.x(), end1.y(), end2.x(), end2.y());
+   lineItem->setPen(layoutEditor->drawingStroke);
+   itemGroup->addToGroup(lineItem);
+  }
+  trackRedrawn();
  }
 }
 
@@ -3520,22 +3499,19 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, EditScene* g2, bool mai
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void TrackSegment::draw2(EditScene* g2, bool isMain, float railDisplacement) {
+/*protected*/ void TrackSegment::draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type) {
     if (isDashed() && getLayoutBlock() != nullptr) {
         // Skip the dashed rail layer, the block layer will display the dashed track
         // This removes random rail fragments from between the block dashes
         return;
     }
-    QGraphicsItemGroup* itemGroup;// = new QGraphicsItemGroup();
+    QGraphicsItemGroup* itemGroup = selectItemGroup(type, isMain, false);
 
-    itemMain =invalidateItem(g2, itemMain);
-    if(itemMain)
-     itemGroup = itemMain;
-    else
+    if(itemGroup == nullptr)
     {
      itemGroup = new QGraphicsItemGroup();
-     itemMain = itemGroup;
-     g2->addItem(itemMain);
+     itemGroup->setZValue(Editor::HANDLES+1);
+     g2->addItem(itemGroup);
     }
 
     if (isMain == mainline) {
@@ -3614,16 +3590,6 @@ void TrackSegment::drawDashedTrack(LayoutEditor* editor, EditScene* g2, bool mai
             itemGroup->addToGroup(lineItem);
 
         }
-//        if(isMain)
-//        {
-//         itemMain = itemGroup;
-//         g2->addItem(itemMain);
-//        }
-//        else
-//        {
-//         itemSide = itemGroup;
-//         g2->addItem(itemSide);
-//        }
         trackRedrawn();
     }
 }

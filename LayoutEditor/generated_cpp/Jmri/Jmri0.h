@@ -685,8 +685,6 @@ void delete_AbstractPowerManager(AbstractPowerManager* obj) { delete obj; }
    void firePropertyChange(AbstractPowerManager* theWrappedObject, QString  p, QVariant  old, QVariant  n);
    QString  py_q_getUserName(AbstractPowerManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractPowerManager*)theWrappedObject)->py_q_getUserName());}
    void py_q_removePropertyChangeListener(AbstractPowerManager* theWrappedObject, PropertyChangeListener*  l){  (((PythonQtPublicPromoter_AbstractPowerManager*)theWrappedObject)->py_q_removePropertyChangeListener(l));}
-void py_set_pcs(AbstractPowerManager* theWrappedObject, PropertyChangeSupport*  pcs){ theWrappedObject->pcs = pcs; }
-PropertyChangeSupport*  py_get_pcs(AbstractPowerManager* theWrappedObject){ return theWrappedObject->pcs; }
 };
 
 
@@ -2674,7 +2672,7 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
-virtual QWidget*  getContentPane(bool  addLayout = false);
+virtual QWidget*  getContentPane(bool  addLayout);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();
@@ -3049,7 +3047,7 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
-virtual QWidget*  getContentPane(bool  addLayout = false);
+virtual QWidget*  getContentPane(bool  addLayout);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();

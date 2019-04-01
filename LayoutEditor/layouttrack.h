@@ -83,12 +83,33 @@ public:
  /*public*/ /*abstract*/ virtual void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
          /*@Nonnull*/ QSet<QString> trackNameSet);
  /*public*/ /*abstract*/ virtual void setAllLayoutBlocks(LayoutBlock* /*layoutBlock*/);
- QGraphicsItem* item;
+ QGraphicsItemGroup* item = nullptr;
  QGraphicsItemGroup* itemMain = nullptr;
  QGraphicsItemGroup* itemSide = nullptr;
+ QGraphicsItemGroup* itemDashed = nullptr;
+ QGraphicsItemGroup* itemDashedSide = nullptr;
+ QGraphicsItemGroup* itemTies = nullptr;
+ QGraphicsItemGroup* itemTiesSide = nullptr;
+ QGraphicsItemGroup* itemBallast = nullptr;
+ QGraphicsItemGroup* itemBallastSide = nullptr;
+ QGraphicsItemGroup* itemPoints = nullptr;
+ QGraphicsItemGroup* itemBlock = nullptr;
+ QGraphicsItemGroup* itemBlockSide = nullptr;
+
+
  /*public*/ virtual void invalidate(EditScene* /*g2*/) {}
 // /*public*/ void invalidateItemType(bool isMain);
  /*public*/ QGraphicsItemGroup* invalidateItem(EditScene* g2, QGraphicsItemGroup* turnoutItem);
+ enum ITEMTYPE
+ {
+  track,
+  ties,
+  ballast,
+  points,
+  block,
+  dashed
+ };
+ QGraphicsItemGroup* selectItemGroup(ITEMTYPE, bool isMain, bool isBlock);
 
 signals:
 
@@ -119,8 +140,8 @@ protected:
  /*protected*/ static bool isControlHitType(int hitType);
  /*protected*/ static bool isPopupHitType(int hitType);
  /*public*/ /*abstract*/ virtual bool isMainline();
- /*protected*/ /*abstract*/ virtual void draw1(EditScene* g2, bool isMain, bool isBlock);
- /*protected*/ /*abstract*/ virtual void draw2(EditScene *g2, bool, float);
+ /*protected*/ /*abstract*/ virtual void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE );
+ /*protected*/ /*abstract*/ virtual void draw2(EditScene *g2, bool, float, ITEMTYPE );
  /*protected*/ void drawHidden(EditScene* g2);
  /*protected*/ /*abstract*/ virtual void highlightUnconnected(EditScene *g2, int specificType);
  /*protected*/ virtual void highlightUnconnected(EditScene* g2);

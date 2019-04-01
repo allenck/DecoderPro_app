@@ -282,7 +282,7 @@ private:
     /*private*/ QAction* flippedCheckBoxMenuItem;// = new JCheckBoxMenuItem(Bundle.getMessage("FlippedCheckBoxMenuItemTitle"));
 
     /*private*/ bool needsRedraw;// = false;
- QGraphicsItemGroup* dashedItem = nullptr;
+ //QGraphicsItemGroup* dashedItem = nullptr;
 
 // QGraphicsItem* circleItem;
 // QGraphicsItem* trackOval;
@@ -292,7 +292,7 @@ private:
  static Logger* log;
  void drawHiddenTrack(LayoutEditor* editor, EditScene *g2);
  void invalidate(EditScene *g2);
- void drawDashedTrack(LayoutEditor* editor, EditScene *g2, bool mainline);
+// void drawDashedTrack(LayoutEditor* editor, EditScene *g2, bool mainline);
  /*private*/ void calculateTrackSegmentAngle();
 // void drawSolidTrack(LayoutEditor* editor, QGraphicsScene* g2, bool isMainline);
 // void drawTrackOvals(LayoutEditor *editor, QGraphicsScene *g2);
@@ -404,8 +404,8 @@ protected:
  /*protected*/ LayoutTrack* connect2 = nullptr;
  /*protected*/ int type2 = 0;
  /*protected*/ void drawDecorations(EditScene* g2);
- /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
- /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+ /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemMain);
+ /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type);
  /*protected*/ void highlightUnconnected(EditScene* g2, int selectedType);
  /*protected*/ void drawEditControls(EditScene* g2);
  /*protected*/ void drawTurnoutControls(EditScene* g2);

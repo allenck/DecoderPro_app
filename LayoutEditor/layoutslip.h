@@ -225,8 +225,8 @@ protected:
  /*protected*/ QHash<int, TurnoutState *> getTurnoutStates();
  /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles, bool requireUnconnected);
  /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
- /*protected*/ void draw1(EditScene* g2, bool drawMain, bool isBlock);
- /*protected*/ void draw2(EditScene* g2, bool drawMain, float railDisplacement);
+ /*protected*/ void draw1(EditScene* g2, bool drawMain, bool isBlock, ITEMTYPE type);
+ /*protected*/ void draw2(EditScene* g2, bool drawMain, float railDisplacement, ITEMTYPE type);
 
 friend class LoadXml;
 friend class LayoutEditor;

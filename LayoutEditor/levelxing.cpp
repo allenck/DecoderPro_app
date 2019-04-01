@@ -565,21 +565,17 @@
  * @param g2 the graphics port to draw to
  */
 //@Override
-/*protected*/ void LevelXing::draw1(EditScene* g2, bool isMain, bool isBlock) {
+/*protected*/ void LevelXing::draw1(EditScene* g2, bool isMain, bool isBlock, LayoutTrack::ITEMTYPE itemType) {
 
- QGraphicsItemGroup* itemGroup;// = new QGraphicsItemGroup();
+ QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
- //invalidateItemType(isMain);
- if(itemMain)
-  itemGroup = itemMain;
- else
+ invalidateItem(g2,itemGroup);
+ if(itemGroup == nullptr)
  {
   itemGroup = new QGraphicsItemGroup();
-  itemMain = itemGroup;
-  g2->addItem(itemMain);
+  itemGroup->setZValue(Editor::HANDLES+1);
+  g2->addItem(itemGroup);
  }
-
-
 
  if (isMain == isMainlineAC()) {
   if (isBlock) {
@@ -600,23 +596,13 @@
   lineItem->setPen(layoutEditor->drawingStroke);
   itemGroup->addToGroup(lineItem);
  }
-// if(isMain)
-// {
-//  itemMain = itemGroup;
-//  g2->addItem(itemMain);
-// }
-// else
-// {
-//  itemSide = itemGroup;
-//  g2->addItem(itemSide);
-// }
 }
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LevelXing::draw2(EditScene* g2, bool isMain, float railDisplacement) {
+/*protected*/ void LevelXing::draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType) {
     QPointF pA = getCoordsA();
     QPointF pB = getCoordsB();
     QPointF pC = getCoordsC();
@@ -653,16 +639,14 @@
     QPointF pKR = MathUtil::add(pM, vDisK);
     QPointF pVL = MathUtil::subtract(pM, vDisV);
     QPointF pVR = MathUtil::add(pM, vDisV);
-    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+    QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
-    //invalidateItemType(isMain);
-    if(itemMain)
-     itemGroup = itemMain;
-    else
+    invalidateItem(g2,itemGroup);
+    if(itemGroup == nullptr)
     {
      itemGroup = new QGraphicsItemGroup();
-     itemMain = itemGroup;
-     g2->addItem(itemMain);
+     itemGroup->setZValue(Editor::HANDLES+1);
+     g2->addItem(itemGroup);
     }
 
     if (isMain == isMainlineAC()) {

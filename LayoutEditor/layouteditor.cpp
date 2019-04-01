@@ -300,6 +300,8 @@ _contents = new QVector<Positionable*>();
  delayedPopupTrigger = false;
  isDragging = false;
  _defaultToolTip = "";
+ ui->menuBar->setVisible(true);
+ setupToolsMenu(ui->menuBar);
 
  ui->signalMastComboBox->setManager(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager")));
  ui->signalHeadComboBox->setManager(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")));
@@ -821,6 +823,7 @@ connect(ui->iconLabelButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()))
  _positionableSelection = new QVector<Positionable*>();
  _layoutTrackSelection = QList<LayoutTrack*>();
 
+ ui->menuBar->setVisible(true);
 }
  void LayoutEditor::onLayoutTrackDrawingOptionsDialog()
  {
@@ -3106,6 +3109,8 @@ double LayoutEditor::getPaintScale()
   if(static_cast<PositionableLabel*>(selection) != nullptr)
   {
    PositionableLabel* l = (PositionableLabel*)selection;
+   if(l == nullptr || l->_itemGroup == nullptr)
+   {
    QGraphicsRectItem* item = new QGraphicsRectItem(l->_itemGroup->boundingRect());
    item->setPen(QPen(QBrush(_highlightColor),1,Qt::SolidLine));
 
@@ -3113,6 +3118,7 @@ double LayoutEditor::getPaintScale()
    if(highlightRect && highlightRect->scene())
     log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
    editScene->addItem(highlightRect);
+   }
   }
   else
   if(static_cast<LayoutTurnout*>((QObject*)selection) != nullptr)
@@ -4506,13 +4512,25 @@ bool LayoutEditor::isDirty() {return bDirty;}
     {
      layoutTrack->invalidate(g2);
     }
+    QList<QGraphicsItem*> items = g2->items();
+    foreach(QGraphicsItem* item, items)
+    {
+     if(item->zValue() == Editor::HANDLES+1)
+     {
+      g2->removeItem(item);
+      delete item;
+     }
+    }
+
 #endif
     // things that only get drawn in edit mode
-    if (isEditable()) {
-        if (getDrawGrid()) {
-            drawPanelGrid(g2);
-        }
-        drawLayoutTracksHidden(g2);
+    if (isEditable())
+    {
+     if (getDrawGrid())
+     {
+      drawPanelGrid(g2);
+     }
+     drawLayoutTracksHidden(g2);
     }
 
     drawTrackSegmentsDashed(g2);
@@ -4570,11 +4588,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //    g2.setStroke(stroke);
     drawingStroke = stroke;
     bool main = false, block = false, hidden = true, dashed = false;
-    draw1(g2, main, block, hidden, dashed);
+    draw1(g2, main, block, hidden, dashed,LayoutTrack::track);
     //g2.setStroke(dashedStroke);
     dashedStroke.setColor(ltdo->getSideRailColor());
     drawingStroke = dashedStroke;
-    draw1(g2, main, block, hidden, dashed = true);
+    draw1(g2, main, block, hidden, dashed = true,LayoutTrack::track);
 
     //setup for drawing mainline rails
     main = true;
@@ -4582,12 +4600,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
     stroke.setColor(ltdo->getMainRailColor());
     //g2.setStroke(stroke);
     drawingStroke = stroke;
-    draw1(g2, main, block, hidden, dashed = false);
+    draw1(g2, main, block, hidden, dashed = false, LayoutTrack::track);
     //g2.setStroke(dashedStroke);
     dashedStroke.setColor(ltdo->getMainRailColor());
     drawingStroke = dashedStroke;
     dashed = true;
-    draw1(g2, main, block, hidden, dashed);
+    draw1(g2, main, block, hidden, dashed, LayoutTrack::track);
 }
 
 //
@@ -4613,11 +4631,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
         stroke.setDashOffset(10.0);
         drawingStroke = stroke;
         if ((ltdo->getSideRailCount() & 1) == 1) {
-            draw1(g2, main, block, hidden, dashed);
+            draw1(g2, main, block, hidden, LayoutTrack::dashed);
         }
         if (ltdo->getSideRailCount() >= 2) {
             float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
-            draw2(g2, main, railDisplacement, dashed);
+            draw2(g2, main, railDisplacement, LayoutTrack::dashed);
         }
     }
 
@@ -4637,11 +4655,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
         stroke.setDashOffset(10.0);
         drawingStroke = stroke;
         if ((ltdo->getMainRailCount() & 1) == 1) {
-            draw1(g2, main, block, hidden, dashed);
+            draw1(g2, main, block, hidden, dashed, LayoutTrack::dashed);
         }
         if (ltdo->getMainRailCount() >= 2) {
             float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
-            draw2(g2, main, railDisplacement, dashed);
+            draw2(g2, main, railDisplacement, LayoutTrack::dashed);
         }
     }
 }   // drawTrackSegmentsDashed
@@ -4661,7 +4679,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //        g2.setColor(ltdo->getSideBallastColor());
      QPen stroke = QPen(ltdo->getSideBallastColor(), ballastWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
      drawingStroke = stroke;
-        draw1(g2, main, block, hidden, dashed);
+        draw1(g2, main, block, hidden, dashed, LayoutTrack::ballast);
     }
 
     //setup for drawing mainline ballast
@@ -4673,7 +4691,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
      QPen stroke = QPen(ltdo->getMainBallastColor(), ballastWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
      drawingStroke = stroke;
         main = true;
-        draw1(g2, main, block, hidden, dashed);
+        draw1(g2, main, block, hidden, dashed,LayoutTrack::ballast);
     }
 }
 
@@ -4697,7 +4715,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
      stroke.setDashPattern(dashPattern);
      stroke.setDashOffset(10.);
      drawingStroke = stroke;
-     draw1(g2, false);  // main = false
+     draw1(g2, false, LayoutTrack::ties);  // main = false
     }
 
     // setup for drawing mainline ties
@@ -4715,7 +4733,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
      stroke.setDashOffset(10.);
      drawingStroke = stroke;
 
-        draw1(g2, true); // main = true
+        draw1(g2, true, LayoutTrack::ties); // main = true
     }
 }
 
@@ -4737,7 +4755,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //        g2.setColor(railColor);
         QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
         drawingStroke = stroke;
-        draw2(g2, main, railDisplacement);
+        draw2(g2, main, railDisplacement, LayoutTrack::track);
     }
 
     if ((ltdo->getSideRailCount() & 1) == 1) {
@@ -4748,7 +4766,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //        g2.setColor(railColor);
      QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
      drawingStroke = stroke;
-     draw1(g2, main, block, hidden, dashed);
+     draw1(g2, main, block, hidden, dashed, LayoutTrack::track);
     }
 
     main = true;
@@ -4774,7 +4792,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
         dashed = false;
         QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
         drawingStroke = stroke;
-        draw1(g2, main, block, hidden, dashed);
+        draw1(g2, main, block, hidden, dashed, LayoutTrack::track);
     }
 
 }   // drawLayoutTracksRails
@@ -4827,10 +4845,10 @@ bool LayoutEditor::isDirty() {return bDirty;}
 
     //note: color is set in layout track's draw1 when isBlock is true
     bool main = false, block = true, hidden = false, dashed = true;
-    draw1(g2, main, block, hidden, dashed);
+    draw1(g2, main, block, hidden, dashed, LayoutTrack::track);
     //g2.setStroke(blockLineStroke);
     drawingStroke = blockLineStroke;
-    draw1(g2, main, block, hidden, dashed = false);
+    draw1(g2, main, block, hidden, dashed = false,LayoutTrack::track);
 
     //setup for drawing mainline block lines
     blockLineWidth = ltdo->getMainBlockLineWidth();
@@ -4864,31 +4882,31 @@ bool LayoutEditor::isDirty() {return bDirty;}
      drawingStroke.setDashOffset(10.0);
     }
     //note: color is set in layout track's draw1 when isBlock is true
-    draw1(g2, main = true, block, hidden, dashed = true);
+    draw1(g2, main = true, block, hidden, dashed = true,LayoutTrack::track);
     //g2.setStroke(blockLineStroke);
     drawingStroke = blockLineStroke;
     dashed = false;
-    draw1(g2, main, block, hidden, dashed);
+    draw1(g2, main, block, hidden, dashed, LayoutTrack::track);
 }
 
 // isDashed defaults to false
 /*private*/ void LayoutEditor::draw1(EditScene* g2,
         bool isMain,
         bool isBlock,
-        bool isHidden) {
-    draw1(g2, isMain, isBlock, isHidden, false);
+        bool isHidden, LayoutTrack::ITEMTYPE type) {
+    draw1(g2, isMain, isBlock, isHidden, false, type);
 }
 
 // isHidden defaults to false
 /*private*/ void LayoutEditor::draw1(EditScene* g2,
         bool isMain,
-        bool isBlock) {
-    draw1(g2, isMain, isBlock, false);
+        bool isBlock, LayoutTrack::ITEMTYPE type) {
+    draw1(g2, isMain, isBlock, false, type);
 }
 
 // isBlock defaults to false
-/*private*/ void LayoutEditor::draw1(EditScene* g2, bool isMain) {
-    draw1(g2, isMain, false);
+/*private*/ void LayoutEditor::draw1(EditScene* g2, bool isMain, LayoutTrack::ITEMTYPE type) {
+    draw1(g2, isMain, false, type);
 }
 
 // draw single line (ballast, ties & block lines)
@@ -4896,7 +4914,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
         bool isMain,
         bool isBlock,
         bool isHidden,
-        bool isDashed)
+        bool isDashed, LayoutTrack::ITEMTYPE itemType)
 {
  for (LayoutTrack* layoutTrack : *layoutTrackList)
  {
@@ -4908,12 +4926,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
     {
      if (((TrackSegment*) layoutTrack)->isDashed() == isDashed)
      {
-      layoutTrack->draw1(g2, isMain, isBlock);
+      layoutTrack->draw1(g2, isMain, isBlock, itemType);
      }
     }
     else if (!isDashed)
     {
-     layoutTrack->draw1(g2, isMain, isBlock);
+     layoutTrack->draw1(g2, isMain, isBlock, itemType);
     }
    }
   }
@@ -4926,7 +4944,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  for (LayoutTrack* layoutTrack : *layoutTrackList)
  {
   if (qobject_cast<PositionablePoint*>(layoutTrack)) {
-      layoutTrack->draw1(g2, isMain, false);
+      layoutTrack->draw1(g2, isMain, false, LayoutTrack::points);
   }
  }
 }
@@ -4945,10 +4963,10 @@ bool LayoutEditor::isDirty() {return bDirty;}
   if ((qobject_cast<TrackSegment*>(layoutTrack)))
   {
    if (((TrackSegment*) layoutTrack)->isDashed() == isDashed) {
-       layoutTrack->draw2(g2, isMain, railDisplacement);
+       layoutTrack->draw2(g2, isMain, railDisplacement, LayoutTrack::dashed );
    }
   } else if (!isDashed) {
-      layoutTrack->draw2(g2, isMain, railDisplacement);
+      layoutTrack->draw2(g2, isMain, railDisplacement, LayoutTrack::track );
   }
  }
 }
@@ -5130,13 +5148,13 @@ bool LayoutEditor::isDirty() {return bDirty;}
 /*private*/ void LayoutEditor::drawPanelGrid(EditScene* g2)
 {
   //Dimension dim = getSize();
-  if(panelGridGroup!=nullptr)
+  if(panelGridGroup != nullptr)
   {
-   Q_ASSERT(panelGridGroup->scene()!=0);
+   //Q_ASSERT(panelGridGroup->scene()!=0);
    g2->removeItem(panelGridGroup);
+   delete panelGridGroup;
    //g2->destroyItemGroup(panelGridGroup);
   }
-  panelGridGroup = nullptr;
   if(!isEditable() || !drawGrid)
    return;
   panelGridGroup = new QGraphicsItemGroup();
@@ -6515,12 +6533,14 @@ void LayoutEditor::on_actionShow_grid_in_edit_mode_toggled(bool bChecked)
 {
  drawGrid = bChecked;
  ui->actionShow_grid_in_edit_mode->setChecked(bChecked);
+ drawPanelGrid(editScene);
  paintTargetPanel(editScene);
 }
 void LayoutEditor::on_actionEdit_mode_toggled(bool bState)
 {
  bIsEditable = bState;
  ui->actionEdit_mode->setChecked(bState);
+ drawPanelGrid(editScene);
  paintTargetPanel(editScene);
 }
 
@@ -10919,7 +10939,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 
     //scale track diagram
     jmi = new QAction(tr("Scale/Translate Track Diagram") + "...");
-    setToolTip(tr("elect this to scale and/or translate all layout track"));
+    setToolTip(tr("Select this to scale and/or translate all layout track"));
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
 //        //bring up scale track diagram dialog
@@ -11035,8 +11055,28 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
         addEntryExitPairAction.actionPerformed(event);
     });
 #endif
+    QAction* clearAction = new QAction(tr("Clear track"), this);
+    toolsMenu->addAction(clearAction);
+    connect(clearAction, SIGNAL(triggered(bool)), this, SLOT(On_clearTrack()));
 }
 
+void LayoutEditor::On_clearTrack()
+{
+ // remove existing items from scene
+ for(LayoutTrack* layoutTrack : *layoutTrackList)
+ {
+  layoutTrack->invalidate(editScene);
+ }
+ QList<QGraphicsItem*> items = editScene->items();
+ foreach(QGraphicsItem* item, items)
+ {
+  if(item->zValue() == Editor::HANDLES+1)
+  {
+   editScene->removeItem(item);
+   delete item;
+  }
+ }
+}
 //
 //update drop down menu display order menu
 //
