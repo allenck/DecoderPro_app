@@ -1253,6 +1253,7 @@ virtual QPaintDevice*  redirected(QPoint*  offset) const;
 virtual void repaint();
 virtual void resizeEvent(QResizeEvent*  e);
 virtual void setAllEditable(bool  state);
+virtual void setAllPositionable(bool  state);
 virtual void setNextLocation(Positionable*  obj);
 virtual void setRemoveMenu(Positionable*  p, QMenu*  popup);
 virtual void setScroll(int  state);
@@ -1936,6 +1937,7 @@ virtual void doMouseExited(QGraphicsSceneMouseEvent*  event);
 virtual void doMouseMoved(QGraphicsSceneMouseEvent*  event);
 virtual void doMousePressed(QGraphicsSceneMouseEvent*  event);
 virtual void doMouseReleased(QGraphicsSceneMouseEvent*  event);
+virtual QString  getClassName();
 virtual int  getDegrees();
 virtual QFont  getFont();
 virtual NamedBean*  getNamedBean();
@@ -1969,6 +1971,7 @@ inline void py_q_doMouseExited(QGraphicsSceneMouseEvent*  event) { PositionableL
 inline void py_q_doMouseMoved(QGraphicsSceneMouseEvent*  event) { PositionableLabel::doMouseMoved(event); }
 inline void py_q_doMousePressed(QGraphicsSceneMouseEvent*  event) { PositionableLabel::doMousePressed(event); }
 inline void py_q_doMouseReleased(QGraphicsSceneMouseEvent*  event) { PositionableLabel::doMouseReleased(event); }
+inline QString  py_q_getClassName() { return PositionableLabel::getClassName(); }
 inline int  py_q_getDegrees() { return PositionableLabel::getDegrees(); }
 inline QFont  py_q_getFont() { return PositionableLabel::getFont(); }
 inline NamedBean*  py_q_getNamedBean() { return PositionableLabel::getNamedBean(); }
@@ -2016,6 +2019,8 @@ void delete_PositionableLabel(PositionableLabel* obj) { delete obj; }
    Positionable*  finishClone(PositionableLabel* theWrappedObject, Positionable*  p);
    QColor  getBackground(PositionableLabel* theWrappedObject);
    QRectF  getBounds(PositionableLabel* theWrappedObject, QRectF  arg__1 = QRectF());
+   QString  getClassName(PositionableLabel* theWrappedObject);
+   QString  py_q_getClassName(PositionableLabel* theWrappedObject){  return (((PythonQtPublicPromoter_PositionableLabel*)theWrappedObject)->py_q_getClassName());}
    int  getDegrees(PositionableLabel* theWrappedObject);
    int  py_q_getDegrees(PositionableLabel* theWrappedObject){  return (((PythonQtPublicPromoter_PositionableLabel*)theWrappedObject)->py_q_getDegrees());}
    int  getDisplayLevel(PositionableLabel* theWrappedObject);

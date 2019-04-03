@@ -9,9 +9,7 @@
 #include "settrackwidthdlg.h"
 #include "addreporterdlg.h"
 #include <QFileDialog>
-//#include "loadxml.h"
 #include <QColor>
-//#include "savexml.h"
 #include "memoryiconcoordinateedit.h"
 #include "QFormLayout"
 #include "abstractsensor.h"
@@ -67,6 +65,12 @@
 #include "layouttrackdrawingoptions.h"
 #include "layouttrackdrawingoptionsdialog.h"
 #include <QPointF>
+#include "transitmanager.h"
+#include "dispatcherframe.h"
+#include "dispatcheraction.h"
+#include "activatetrainframe.h"
+#include "mathutil.h"
+#include <QActionGroup>
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -94,6 +98,19 @@ LayoutEditor::LayoutEditor(QString name, QWidget *parent) :
 LayoutEditor::~LayoutEditor()
 {
  delete ui;
+}
+
+//@Override
+/*public*/ void LayoutEditor::newPanelDefaults()
+{
+ getLayoutTrackDrawingOptions()->setMainRailWidth(2);
+ getLayoutTrackDrawingOptions()->setSideRailWidth(1);
+ setBackgroundColor(defaultBackgroundColor);
+ JmriColorChooser::addRecentColor(defaultTrackColor);
+ JmriColorChooser::addRecentColor(defaultOccupiedTrackColor);
+ JmriColorChooser::addRecentColor(defaultAlternativeTrackColor);
+ JmriColorChooser::addRecentColor(defaultBackgroundColor);
+ JmriColorChooser::addRecentColor(defaultTextColor);
 }
 
 void LayoutEditor::init()
@@ -130,17 +147,15 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
  //zoom
  minZoom = 0.25;
  maxZoom = 8.0;
+ toolBarSide = ToolBarSide("top");
 
 
  if(static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
  {
   log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
  }
-// PanelMenu::instance()->addEditorPanel(this);
-// PanelMenu::instance()->updatePanelMenu(ui->menuWindow);
- //connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
 
- HelpUtil::instance()->helpMenu(menuBar(), "package.jmri.jmrit.display.LayoutEditor", true);
+ //HelpUtil::instance()->helpMenu(menuBar(), "package.jmri.jmrit.display.LayoutEditor", true);
  resetDirty();
  // establish link to LayoutEditorAuxTools
  auxTools = new LayoutEditorAuxTools(this);
@@ -210,7 +225,7 @@ _contents = new QVector<Positionable*>();
  //xingList = new QVector<LevelXing*>();  // LevelXing list
  //slipList = new QVector<LayoutSlip*>();  // Layout slip list
  _editable = false;
- _controlLayout = false;
+ _controlLayout = true;
  _positionable = false;
  animatingLayout = true;
  showHelpBar = true;
@@ -300,8 +315,11 @@ _contents = new QVector<Positionable*>();
  delayedPopupTrigger = false;
  isDragging = false;
  _defaultToolTip = "";
- ui->menuBar->setVisible(true);
- setupToolsMenu(ui->menuBar);
+ toolBarFontSizeMenu = new QMenu(tr("Font Size"));
+ wideToolBarCheckBoxMenuItem = new QAction(("Wide ToolBar"), this);
+ wideToolBarCheckBoxMenuItem->setCheckable(true);
+ dropDownListsDisplayOrderMenu = new QMenu(tr("Drop Down Lists Display Order..."));
+
 
  ui->signalMastComboBox->setManager(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager")));
  ui->signalHeadComboBox->setManager(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")));
@@ -425,47 +443,6 @@ _contents = new QVector<Positionable*>();
  //_targetPanel = editScene;
  defaultBackgroundColor =  editScene->backgroundBrush().color();//QColor(Qt::lightGray);
 
-#if 0
- _Colors << tr("Black")<<tr("Dark Gray")<<tr("Gray")<<tr("Light Gray")<<tr("White")<<tr("Red")<<tr("Pink") <<tr("Orange")<<tr("Yellow")<<tr("Green")<<tr("Blue")<<tr("Magenta");
- _colors << QColor(Qt::black) << QColor(Qt::darkGray) << QColor(Qt::gray) << QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red)<<QColor(255,192,203) << QColor(255, 170, 0) << QColor(Qt::yellow ) << QColor(Qt::green) <<QColor(Qt::blue) <<QColor(Qt::magenta)<<QColor();
-// QActionGroup* trackColorActGrp =new QActionGroup(this);
-// QActionGroup* textColorActGrp = new QActionGroup(this);
- QActionGroup* backgroundColorActGrp = new QActionGroup(this);
- QBrush defaultBackgroundBrush = editScene->backgroundBrush();
- QColor defaultBackgroundColor = defaultBackgroundBrush.color();
-
- for(int i=0; i < _Colors.size(); i++)
- {
-  QColor desiredColor = _colors.at(i);
-  QVariant var = desiredColor;
-  QString sColor = _Colors.at(i);
-  const QIcon icon = getColourIcon(desiredColor);
-//  QAction* trackColorAct = new QAction(icon, sColor,this);
-//  trackColorAct->setCheckable(true);
-//  trackColorAct->setData(var);
-//  trackColorAct->setIconVisibleInMenu(true);
-//  ui->menuSet_default_track_color->addAction(trackColorAct);
-//  trackColorActGrp->addAction(trackColorAct);
-//  if(defaultTrackColor == desiredColor)
-//   trackColorAct->setChecked(true);
-
-//  QAction* textColorAct = new QAction(icon, sColor, this);
-//  textColorAct->setCheckable(true);
-//  textColorAct->setData(var);
-//  textColorAct->setIconVisibleInMenu(true);
-//  ui->menuSet_default_text_color->addAction(textColorAct);
-//  textColorActGrp->addAction(textColorAct);
-//  if(defaultTextColor == desiredColor)
-//   textColorAct->setChecked(true);
-  QAction* backgroundColorAct = new QAction(icon, sColor, this);
-  backgroundColorAct->setCheckable(true);
-  backgroundColorAct->setData(var);
-  backgroundColorAct->setIconVisibleInMenu(true);
-  ui->menuSet_Background_color->addAction(backgroundColorAct);
-  backgroundColorActGrp->addAction(backgroundColorAct);
-  if(defaultBackgroundColor == desiredColor)
-   backgroundColorAct->setChecked(true);
-#endif
   // saved state of options when panel was loaded or created
   savedEditMode = true;
   savedPositionable = true;
@@ -497,6 +474,7 @@ _contents = new QVector<Positionable*>();
  turnoutCircleColorMenuItems = new QVector<QAction*>(14);
  turnoutCircleSizeMenuItems = new QVector<QAction*>(10);
 
+#if 0
  //
  //background image menu item
  //
@@ -523,6 +501,8 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
  //
  //background color menu item
  //
+#endif
+#if 0
  QMenu* backgroundColorMenu = ui->menuSet_Background_color;//new QMenu(tr("Set Background Color"));
  backgroundColorButtonGroup = new QActionGroup(this);
  backgroundColorButtonMapper = new QSignalMapper();
@@ -541,12 +521,15 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
  addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Magenta"),   QColor(Qt::magenta));
  addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Cyan"),      QColor(Qt::cyan));
  ui->menuOptions->addMenu(backgroundColorMenu);
+#endif
+#if 0
+
  //
  //track colors item menu item
  //
+
  QMenu* trkColourMenu = new QMenu(tr("Default Track Colors"));
  ui->menuOptions->addMenu(trkColourMenu);
-
  QMenu* trackColorMenu = new QMenu(tr("Default Track Color"));
  trackColorButtonGroup = new QActionGroup(this);
  trackColorButtonMapper = new QSignalMapper();
@@ -565,7 +548,8 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
  addTrackColorMenuEntry(trackColorMenu, tr("Magenta"),   QColor(Qt::magenta));
  addTrackColorMenuEntry(trackColorMenu, tr("Cyan"),      QColor(Qt::cyan));
  trkColourMenu->addMenu(trackColorMenu);
-
+#endif
+#if 0
  QMenu* trackOccupiedColorMenu = new QMenu(tr("Default Occupied Track Color"));
  trackOccupiedColorButtonGroup = new QActionGroup(this);
  trackOccupiedColorButtonMapper = new QSignalMapper();
@@ -584,7 +568,8 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
  addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Magenta"),   QColor(Qt::magenta));
  addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Cyan"),      QColor(Qt::cyan));
  trkColourMenu->addMenu(trackOccupiedColorMenu);
-
+#endif
+#if 0
  QMenu* trackAlternativeColorMenu = new QMenu(tr("Default Alternative Track Color"));
  trackAlternativeColorButtonGroup = new QActionGroup(this);
  trackAlternativeColorButtonMapper = new QSignalMapper();
@@ -603,7 +588,8 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
  addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Magenta"),   QColor(Qt::magenta));
  addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Cyan"),      QColor(Qt::cyan));
  trkColourMenu->addMenu(trackAlternativeColorMenu);
-
+#endif
+#if 0
  //
  //add text color menu item
  //
@@ -625,7 +611,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
  addTextColorMenuEntry(textColorMenu,  tr("Magenta"),   QColor(Qt::magenta));
  addTextColorMenuEntry(textColorMenu,  tr("Cyan"),      QColor(Qt::cyan));
  ui->menuOptions->addMenu(textColorMenu);
-
+#endif
 
  editPanel->setMouseTracking(true);
  editPanel->setScene(editScene);
@@ -768,7 +754,7 @@ connect(ui->iconLabelButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()))
 
 
  autoAssignBlocks = true;
- tooltipsInEditMode = false;
+ tooltipsInEditMode = true;
  tooltipsWithoutEditMode = false;
  _loadFailed = false;
  _debug = true;
@@ -777,7 +763,7 @@ connect(ui->iconLabelButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()))
  _newIcon = nullptr;
  _delete = false;
  finder = new LayoutEditorFindItems(this);
- ui->menuOptions->addMenu( setupTurnoutSubMenu());
+ //ui->menuOptions->addMenu( setupTurnoutSubMenu());
 
 // register the resulting panel for later configuration
  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
@@ -822,6 +808,87 @@ connect(ui->iconLabelButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()))
  gDDMDO = JmriBeanComboBox::DisplayOptions::DISPLAYNAME;
  _positionableSelection = new QVector<Positionable*>();
  _layoutTrackSelection = QList<LayoutTrack*>();
+
+ xMoveField = new JTextField(6);
+ yMoveField = new JTextField(6);
+ ui->menuBar->setVisible(true);
+ setupOptionMenu(ui->menuBar);
+ setupToolsMenu(ui->menuBar);
+ setupZoomMenu(ui->menuBar);
+ setupMarkerMenu(ui->menuBar);
+ setupDispatcherMenu(ui->menuBar);
+ //setup Help menu
+ addHelpMenu("package.jmri.jmrit.display.LayoutEditor", true);
+
+ //initialize preferences
+ UserPreferencesManager* prefsMgr= static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager"));
+ if(prefsMgr)
+ {
+     QString windowFrameRef = getWindowFrameRef();
+
+     QVariant prefsProp = prefsMgr->getProperty(windowFrameRef, "toolBarSide");
+     //log.debug("{}.toolBarSide is {}", windowFrameRef, prefsProp);
+     if (prefsProp != QVariant()) {
+         ToolBarSide::TOOLBARSIDES newToolBarSide = ToolBarSide::getName( prefsProp.toString());
+         setToolBarSide(newToolBarSide);
+     }
+
+     //Note: since prefs default to false and we want wide to be the default
+     //we invert it and save it as thin
+     bool prefsToolBarIsWide = prefsMgr->getSimplePreferenceState(windowFrameRef + ".toolBarThin");
+     log->debug(tr("%1.toolBarThin is %2").arg(windowFrameRef).arg(prefsProp.toString()));
+     setToolBarWide(prefsToolBarIsWide);
+
+     bool prefsShowHelpBar = prefsMgr->getSimplePreferenceState(windowFrameRef + ".showHelpBar");
+     //log.debug("{}.showHelpBar is {}", windowFrameRef, prefsShowHelpBar);
+     setShowHelpBar(prefsShowHelpBar);
+
+     bool prefsAntialiasingOn = prefsMgr->getSimplePreferenceState(windowFrameRef + ".antialiasingOn");
+     //log.debug("{}.antialiasingOn is {}", windowFrameRef, prefsAntialiasingOn);
+     setAntialiasingOn(prefsAntialiasingOn);
+
+     bool prefsHighlightSelectedBlockFlag
+             = prefsMgr->getSimplePreferenceState(windowFrameRef + ".highlightSelectedBlock");
+     //log.debug("{}.highlightSelectedBlock is {}", windowFrameRef, prefsHighlightSelectedBlockFlag);
+     setHighlightSelectedBlock(prefsHighlightSelectedBlockFlag);
+
+     prefsProp = prefsMgr->getProperty(windowFrameRef, "toolBarFontSize");
+     //log.debug("{} prefsProp toolBarFontSize is {}", windowFrameRef, prefsProp);
+     //if (prefsProp != null) {
+     //float toolBarFontSize = Float.parseFloat(prefsProp.toString());
+     //setupToolBarFontSizes(toolBarFontSize);
+     //}
+     updateAllComboBoxesDropDownListDisplayOrderFromPrefs();
+#if 0
+     //this doesn't work as expected (1st one called messes up 2nd?)
+     Point prefsWindowLocation = prefsMgr.getWindowLocation(windowFrameRef);
+     Dimension prefsWindowSize = prefsMgr.getWindowSize(windowFrameRef);
+     log.debug("prefsMgr.prefsWindowLocation({}) is {}", windowFrameRef, prefsWindowLocation);
+     log.debug("prefsMgr.prefsWindowSize is({}) {}", windowFrameRef, prefsWindowSize);
+
+     //Point prefsWindowLocation = null;
+     //Dimension prefsWindowSize = null;
+     //use this instead?
+     if (true) { //(Nope, it's not working ether: prefsProp always comes back null)
+         prefsProp = prefsMgr.getProperty(windowFrameRef, "windowRectangle2D");
+         log.debug("prefsMgr.getProperty({}, \"windowRectangle2D\") is {}", windowFrameRef, prefsProp);
+
+         if (prefsProp != null) {
+             Rectangle2D windowRectangle2D = (Rectangle2D) prefsProp;
+             prefsWindowLocation.setLocation(windowRectangle2D.getX(), windowRectangle2D.getY());
+             prefsWindowSize.setSize(windowRectangle2D.getWidth(), windowRectangle2D.getHeight());
+         }
+     }
+
+     if ((prefsWindowLocation != null) && (prefsWindowSize != null)
+             && (prefsWindowSize.width >= 640) && (prefsWindowSize.height >= 480)) {
+         //note: panel width & height comes from the saved (xml) panel (file) on disk
+         setLayoutDimensions(prefsWindowSize.width, prefsWindowSize.height,
+                 prefsWindowLocation.x, prefsWindowLocation.y,
+                 panelWidth, panelHeight, true);
+     }
+#endif
+ }//); //Inst
 
  ui->menuBar->setVisible(true);
 }
@@ -961,7 +1028,7 @@ void LayoutEditor::blockContentsComboBoxChanged()
  log->debug("Frame size now w=" + QString::number(w) + ", h=" + QString::number(h));
  Editor::resize(w, h);
 }
-
+#if 0
 /*public*/ QMenu* LayoutEditor::setupTurnoutSubMenu()
 {
  //turnout options submenu
@@ -1003,6 +1070,7 @@ void LayoutEditor::blockContentsComboBoxChanged()
  connect(turnoutCircleColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(On_turnoutCircleColorButtonMapper_triggered(int)));
 
  // select turnout circle size
+#if 0
  QMenu* turnoutCircleSizeMenu = new QMenu(tr("Turnout Circle Size"));
  turnoutCircleSizeButtonGroup = new QActionGroup(this);
  turnoutCircleSizeButtonMapper = new QSignalMapper(this);
@@ -1016,7 +1084,7 @@ void LayoutEditor::blockContentsComboBoxChanged()
  addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "8", 8);
  turnoutOptionsMenu->addMenu(turnoutCircleSizeMenu);
  connect(turnoutCircleSizeButtonMapper, SIGNAL(mapped(int)), this, SLOT(On_turnoutCircleSizeButtonMapper_triggered(int)));
-
+#endif
  // enable drawing of unselected leg (helps when diverging angle is small)
  turnoutDrawUnselectedLegItem = new QAction(tr("Draw Unselected Turnout Leg"),this);
  turnoutDrawUnselectedLegItem->setCheckable(true);
@@ -1079,7 +1147,7 @@ void LayoutEditor::blockContentsComboBoxChanged()
 
  return turnoutOptionsMenu;
 }
-
+#endif
 void LayoutEditor::On_turnoutCirclesOnItem_triggered(bool)
 {
  turnoutCirclesWithoutEditMode = turnoutCirclesOnItem->isChecked();
@@ -1171,6 +1239,7 @@ void LayoutEditor::addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString 
 //                }
 //            }
 //        };
+
  QAction* r = new QAction(name, this);
  r->setCheckable(true);
  r->setData(size);
@@ -3195,9 +3264,153 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
     newZoomFactor = ((int) (zoomFactor * 4)) * 25;
     zoom025Item->setChecked(newZoomFactor == 25);
     zoom075Item->setChecked(newZoomFactor == 75);
-}//
-//
-//
+}
+
+/*private*/ void LayoutEditor::setupZoomMenu(QMenuBar* menuBar) {
+ QMenu* zoomMenu = ui->menuZoom;//new QMenu(tr("Zoom"));
+ //menuBar.add(zoomMenu);
+ QActionGroup* zoomButtonGroup = new QActionGroup(this);
+
+ //add zoom choices to menu
+ QAction* zoomInItem = new QAction(tr("Zoom In"),this);
+ //zoomInItem.setMnemonic(stringsToVTCodes.get(Bundle.getMessage("zoomInMnemonic")));
+ QString zoomInAccelerator = tr("EQUALS");
+ //log.debug("zoomInAccelerator: " + zoomInAccelerator);
+ //zoomInItem.setAccelerator(KeyStroke.getKeyStroke(stringsToVTCodes.get(zoomInAccelerator), primary_modifier));
+ zoomMenu->addAction(zoomInItem);
+// zoomInItem.addActionListener((ActionEvent event) -> {
+//     zoomIn();
+// });
+ connect(zoomInItem, SIGNAL(triggered(bool)), this, SLOT(zoomIn()));
+
+ QAction* zoomOutItem = new QAction(tr("Zoom Out"));
+// zoomOutItem.setMnemonic(stringsToVTCodes.get(Bundle.getMessage("zoomOutMnemonic")));
+// String zoomOutAccelerator = Bundle.getMessage("zoomOutAccelerator");
+ //log.debug("zoomOutAccelerator: " + zoomOutAccelerator);
+// zoomOutItem.setAccelerator(KeyStroke.getKeyStroke(stringsToVTCodes.get(zoomOutAccelerator), primary_modifier));
+ zoomMenu->addAction(zoomOutItem);
+// zoomOutItem.addActionListener((ActionEvent event) -> {
+//     zoomOut();
+// });
+ connect(zoomOutItem, SIGNAL(triggered(bool)), this, SLOT(zoomOut()));
+
+ QAction* zoomFitItem = new QAction(tr("Zoom To Fit"));
+ zoomMenu->addAction(zoomFitItem);
+// zoomFitItem.addActionListener((ActionEvent event) -> {
+//     zoomToFit();
+// });
+ connect(zoomFitItem, SIGNAL(triggered(bool)), this, SLOT(zoomToFit()));
+ zoomMenu->addSeparator();
+
+ zoomButtonGroup->setExclusive(true);
+ // add zoom choices to menu
+ QAction* zoom025Item = new QAction("x 0.25", this);
+ zoom025Item->setCheckable(true);
+ zoomMenu->addAction(zoom025Item);
+// zoom025Item.addActionListener(new ActionListener() {
+//     public void actionPerformed(ActionEvent event) {
+//         setZoom(0.25);
+//     }
+// });
+ connect(zoom025Item, SIGNAL(triggered(bool)), this, SLOT(onZoom025Item()));
+ zoomButtonGroup->addAction(zoom025Item);
+ QAction* zoom05Item = new QAction("x 0.5", this);
+ zoom05Item->setCheckable(true);
+ zoomMenu->addAction(zoom05Item);
+// zoom05Item.addActionListener(new ActionListener() {
+//     public void actionPerformed(ActionEvent event) {
+//         setZoom(0.5);
+//     }
+// });
+ connect(zoom05Item, SIGNAL(triggered(bool)), this, SLOT(onZoom05Item()));
+ zoomButtonGroup->addAction(zoom05Item);
+ QAction* zoom075Item = new QAction("x 0.75", this);
+ zoom075Item->setCheckable(true);
+ zoomMenu->addAction(zoom075Item);
+// zoom075Item.addActionListener(new ActionListener() {
+//     public void actionPerformed(ActionEvent event) {
+//         setZoom(0.75);
+//     }
+// });
+ connect(zoom075Item, SIGNAL(triggered(bool)), this, SLOT(onZoom075Item()));
+ zoomButtonGroup->addAction(zoom075Item);
+ QAction* noZoomItem = new QAction(tr("No Zoom"), this);
+ noZoomItem->setCheckable(true);
+ zoomMenu->addAction(noZoomItem);
+// noZoomItem.addActionListener(new ActionListener() {
+//     public void actionPerformed(ActionEvent event) {
+//         setZoom(1.0);
+//     }
+// });
+ connect(noZoomItem, SIGNAL(triggered(bool)), this, SLOT(onNoZoomItem()));
+ zoomButtonGroup->addAction(noZoomItem);
+ QAction* zoom15Item = new QAction("x 1.5", this);
+ zoom15Item->setCheckable(true);
+ zoomMenu->addAction(zoom15Item);
+// zoom15Item.addActionListener(new ActionListener() {
+//     public void actionPerformed(ActionEvent event) {
+//         setZoom(1.5);
+//     }
+// });
+ connect(zoom15Item, SIGNAL(triggered(bool)), this, SLOT(onZoom15Item()));
+ zoomButtonGroup->addAction(zoom15Item);
+ QAction* zoom20Item = new QAction("x 2.0",this);
+ zoom20Item->setCheckable(true);
+ zoomMenu->addAction(zoom20Item);
+// zoom20Item.addActionListener(new ActionListener() {
+//     public void actionPerformed(ActionEvent event) {
+//         setZoom(2.0);
+//     }
+// });
+ connect(zoom20Item, SIGNAL(triggered(bool)), this, SLOT(onZoom20Item()));
+ zoomButtonGroup->addAction(zoom20Item);
+ QAction* zoom30Item = new QAction("x 3.0", this);
+ zoomMenu->addAction(zoom30Item);
+// zoom30Item.addActionListener(new ActionListener() {
+//     public void actionPerformed(ActionEvent event) {
+//         setZoom(3.0);
+//     }
+// });
+ connect(zoom30Item, SIGNAL(triggered(bool)), this, SLOT(onZoom30Item()));
+ zoomButtonGroup->addAction(zoom30Item);
+ QAction* zoom40Item = new QAction("x 4.0", this);
+ zoomMenu->addAction(zoom40Item);
+// zoom40Item.addActionListener(new ActionListener() {
+//     public void actionPerformed(ActionEvent event) {
+//         setZoom(4.0);
+//     }
+// });
+ connect(zoom40Item, SIGNAL(triggered(bool)), this, SLOT(onZoom40Item()));
+ zoomButtonGroup->addAction(zoom40Item);
+ noZoomItem->setChecked(true);
+}
+
+void LayoutEditor::onZoom025Item()
+{
+ setZoom(0.25);
+}
+void LayoutEditor::onZoom05Item()
+{
+ setZoom(0.5);
+}
+void LayoutEditor::onZoom075Item()
+{
+ setZoom(0.75);
+}
+void LayoutEditor::onNoZoomItem()
+{
+ setZoom(1.0);
+}
+
+void LayoutEditor::onZoom15Item()
+{
+ setZoom(1.5);
+}
+void LayoutEditor::onZoom20Item()
+{
+ setZoom(2.0);
+}
+
 /*public*/ double LayoutEditor::setZoom(double zoomFactor) {
     //TODO: add code to re-calculate minZoom (so panel never smaller than view)
     double newZoom = MathUtil::pin(zoomFactor, minZoom, maxZoom);
@@ -6522,9 +6735,9 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   return _anchorY;
 }
 
-/*public*/ bool LayoutEditor::allPositionable() {
-  return _positionable;
-}
+///*public*/ bool LayoutEditor::allPositionable() {
+//  return _positionable;
+//}
 /*public*/ bool LayoutEditor::allControlling()
 {
   return _controlLayout;
@@ -8133,6 +8346,7 @@ void LayoutEditor::on_actionAdd_loco_triggered()
 *  Markers are always positionable.
 * @param state true for positionable.
 */
+//@Override
 /*public*/ void LayoutEditor::setAllPositionable(bool state)
 {
  PanelEditor::setAllPositionable(state);
@@ -8143,6 +8357,100 @@ void LayoutEditor::on_actionAdd_loco_triggered()
  }
  //_positionable =state;
 }
+
+/*private*/ void LayoutEditor::setupMarkerMenu(/*@Nonnull*/ QMenuBar* menuBar) {
+    QMenu* markerMenu = ui->menuMarker;//new QMenu(tr("Marker"));
+
+//    markerMenu.setMnemonic(stringsToVTCodes.get(Bundle.getMessage("MenuMarkerMnemonic")));
+    //menuBar.addMenu(markerMenu);
+    QAction* act;
+    markerMenu->addAction(act = new AbstractAction(tr("AddLoco") + "...",this));
+//    {
+//        @Override
+//        public void actionPerformed(ActionEvent event) {
+//            locoMarkerFromInput();
+//        }
+//    });
+    connect(act, SIGNAL(triggered()), this, SLOT(locoMarkerFromInput()));
+    markerMenu->addAction(act = new AbstractAction(tr("AddLocoRoster") + "...", this));
+//    {
+//        @Override
+//        public void actionPerformed(ActionEvent event) {
+//            locoMarkerFromRoster();
+//        }r
+//    });
+    connect(act, SIGNAL(triggered(bool)), this, SLOT(locoMarkerFromRoster()));
+    markerMenu->addAction(act =new AbstractAction(tr("Remove Markers"), this));
+//    {
+//        @Override
+//        public void actionPerformed(ActionEvent event) {
+//            removeMarkers();
+//        }
+//    });
+      connect(act, SIGNAL(triggered(bool)), this, SLOT(removeMarkers()));
+}
+
+/*private*/ void LayoutEditor::setupDispatcherMenu(/*@Nonnull*/ QMenuBar* menuBar) {
+    QMenu* dispMenu = new QMenu(tr("Dispatcher"));
+
+//    dispMenu.setMnemonic(stringsToVTCodes.get(Bundle.getMessage("MenuDispatcherMnemonic")));
+    QAction* act;
+    dispMenu->addAction(act = new DispatcherAction(tr("Open"),this));
+    menuBar->addMenu(dispMenu);
+    QAction* newTrainItem = new QAction(tr("New Train"), this);
+    dispMenu->addAction(newTrainItem);
+//    newTrainItem.addActionListener((ActionEvent event) -> {
+//        if (InstanceManager.getDefault(TransitManager.class).getNamedBeanSet().size() <= 0) {
+//            //Inform the user that there are no Transits available, and don't open the window
+//            JOptionPane.showMessageDialog(null,
+//                    ResourceBundle.getBundle("jmri.jmrit.dispatcher.DispatcherBundle").
+//                            getString("NoTransitsMessage"));
+//        } else {
+//            DispatcherFrame df = InstanceManager.getDefault(DispatcherFrame.class);
+//            if (!df.getNewTrainActive()) {
+//                df.getActiveTrainFrame().initiateTrain(event, null, null);
+//                df.setNewTrainActive(true);
+//            } else {
+//                df.getActiveTrainFrame().showActivateFrame(null);
+//            }
+//        }
+//    });
+}
+
+void LayoutEditor::onNewTrain()
+{
+ if (static_cast<TransitManager*>(InstanceManager::getDefault("TransitManager"))->getNamedBeanSet().size() <= 0) {
+     //Inform the user that there are no Transits available, and don't open the window
+     JOptionPane::showMessageDialog(nullptr,
+             tr("Cannot open Dispatcher - no Transits found.\nPlease create Transits and try again."));
+ } else {
+     DispatcherFrame* df = static_cast<DispatcherFrame*>(InstanceManager::getDefault("DispatcherFrame"));
+     if (!df->getNewTrainActive()) {
+         df->getActiveTrainFrame()->initiateTrain(/*event*/nullptr, nullptr, nullptr);
+         df->setNewTrainActive(true);
+     } else {
+         df->getActiveTrainFrame()->showActivateFrame(nullptr);
+     }
+ }
+}
+/*public*/ bool LayoutEditor::isIncludedTurnoutSkipped() {
+    return includedTurnoutSkipped;
+}
+
+/*public*/ void LayoutEditor::setIncludedTurnoutSkipped(bool boo) {
+    includedTurnoutSkipped = boo;
+}
+
+
+//TODO: @Deprecated // Java standard pattern for boolean getters is "isOpenDispatcherOnLoad()"
+/*public*/ bool LayoutEditor::getOpenDispatcherOnLoad() {
+    return openDispatcherOnLoad;
+}
+
+/*public*/ void LayoutEditor::setOpenDispatcherOnLoad(bool boo) {
+    openDispatcherOnLoad = boo;
+}
+
 /**
 * Remove marker icons from panel
 */
@@ -8270,19 +8578,19 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
 *  each item on the target panel. This also controls the relevant pop-up menu items.
 * @param state true for controlling.
 */
-/*public*/ void LayoutEditor::setAllControlling(bool state)
-{
- _controlLayout = state;
- if (_globalSetsLocal)
- {
-  for (int i = 0; i<_contents->size(); i++)
-  {
-   Positionable* pos = _contents->at(i);
-   if(qobject_cast<PositionableLabel*>((QObject*)pos)!= nullptr)
-    ((PositionableLabel*)pos)->setControlling(state);
-  }
- }
-}
+///*public*/ void LayoutEditor::setAllControlling(bool state)
+//{
+// _controlLayout = state;
+// if (_globalSetsLocal)
+// {
+//  for (int i = 0; i<_contents->size(); i++)
+//  {
+//   Positionable* pos = _contents->at(i);
+//   if(qobject_cast<PositionableLabel*>((QObject*)pos)!= nullptr)
+//    ((PositionableLabel*)pos)->setControlling(state);
+//  }
+// }
+//}
 /**
 * Does global flag sets Positionable and Control for individual items
 */
@@ -9134,6 +9442,12 @@ void LayoutEditor::OnDefaultTextColorSelected(int i)
 
 
 /*public*/ QString LayoutEditor::getLayoutName() {return layoutName;}
+
+//TODO: @Deprecated // Java standard pattern for boolean getters is "isShowHelpBar()"
+/*public*/ bool LayoutEditor::getShowHelpBar() {
+    return showHelpBar;
+}
+
 /*public*/ void LayoutEditor::setLayoutName(QString name)
 {
  layoutName = name;
@@ -9211,150 +9525,6 @@ void LayoutEditor::on_actionAdd_loco_from_roster_triggered()
  locoMarkerFromRoster();
 }
 
-//void LayoutEditor::on_menuWindow_aboutToShow()
-//{
-// ui->menuWindow->clear();
-// PanelMenu::instance()->updatePanelMenu(ui->menuWindow);
-//}
-
-//int LayoutEditor::getTurnoutType(QString name)
-//{
-// foreach (LayoutTurnout* t, *turnoutList)
-//  {
-//   if(t->getTurnoutName() == name)
-//   return t->getTurnoutType();
-// }
-// foreach (LayoutSlip* s, *slipList)
-// {
-//  if(s->getName() == name)
-//  return s->getTurnoutType();
-// }
-// return -1;
-//}
-// /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByEastBoundSignal(QString signalName){
-//     for (int i = 0; i<pointList->size(); i++) {
-//         PositionablePoint* p = pointList->at(i);
-//         if (p->getEastBoundSignal()==(signalName))
-//             return p;
-//     }
-//     return nullptr;
-// }
-
-// /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByWestBoundSignal(QString signalName){
-//     for (int i = 0; i<pointList->size(); i++) {
-//         PositionablePoint* p = pointList->at(i);
-//         if (p->getWestBoundSignal()==(signalName))
-//             return p;
-//     }
-//     return nullptr;
-// }
-
-// /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByEastBoundSignalMast(QString signalMastName){
-//     for (int i = 0; i<pointList->size(); i++) {
-//         PositionablePoint* p = pointList->at(i);
-//         if (p->getEastBoundSignalMastName()==(signalMastName))
-//             return p;
-//     }
-//     return nullptr;
-// }
-
-// /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByWestBoundSignalMast(QString signalMastName){
-//     for (int i = 0; i<pointList->size(); i++) {
-//         PositionablePoint* p = pointList->at(i);
-//         if (p->getWestBoundSignalMastName()==(signalMastName))
-//             return p;
-
-//     }
-//     return nullptr;
-// }
-// /*public*/ LayoutTurnout* LayoutEditor::findLayoutTurnoutBySignalMast(QString signalMastName){
-//     for(int i = 0; i<turnoutList->size(); i++){
-//         LayoutTurnout* t = turnoutList->at(i);
-//         if((t->getSignalAMastName()==(signalMastName)) ||
-//             (t->getSignalBMastName()==(signalMastName)) ||
-//             (t->getSignalCMastName()==(signalMastName)) ||
-//             (t->getSignalDMastName()==(signalMastName)))
-//             return t;
-//     }
-//     return nullptr;
-// }
-// /*public*/ LayoutTurnout* LayoutEditor::findLayoutTurnoutBySensor(QString sensorName){
-//     for(int i = 0; i<turnoutList->size(); i++){
-//         LayoutTurnout* t = turnoutList->at(i);
-//         if((t->getSensorAName()==(sensorName)) ||
-//             (t->getSensorBName()==(sensorName)) ||
-//             (t->getSensorCName()==(sensorName)) ||
-//             (t->getSensorDName()==(sensorName)))
-//             return t;
-//     }
-//     return nullptr;
-// }
-
-// /*public*/ LevelXing* LayoutEditor::findLevelXingBySignalMast(QString signalMastName){
-//     for(int i = 0; i<xingList->size(); i++){
-//         LevelXing* l = xingList->at(i);
-//         if((l->getSignalAMastName()==(signalMastName)) ||
-//             (l->getSignalBMastName()==(signalMastName)) ||
-//             (l->getSignalCMastName()==(signalMastName)) ||
-//             (l->getSignalDMastName()==(signalMastName)))
-//             return l;
-//     }
-//     return nullptr;
-// }
-
-// /*public*/ LevelXing* LayoutEditor::findLevelXingBySensor(QString sensorName){
-//     for(int i = 0; i<xingList->size(); i++){
-//         LevelXing* l = xingList->at(i);
-//         if((l->getSensorAName()==(sensorName)) ||
-//             (l->getSensorBName()==(sensorName)) ||
-//             (l->getSensorCName()==(sensorName)) ||
-//             (l->getSensorDName()==(sensorName)))
-//             return l;
-//     }
-//     return nullptr;
-// }
-
-// /*public*/ LayoutSlip* LayoutEditor::findLayoutSlipBySignalMast(QString signalMastName)
-//  {
-//  foreach(LayoutSlip* l, *slipList)
-//  {
-//   if((l->getSignalAMastName()==(signalMastName)) ||
-//       (l->getSignalBMastName()==(signalMastName)) ||
-//       (l->getSignalCMastName()==(signalMastName)) ||
-//       (l->getSignalDMastName()==(signalMastName)))
-//    return l;
-//  }
-//  return nullptr;
-// }
-
-// /*public*/ LayoutSlip* LayoutEditor::findLayoutSlipBySensor(QString sensorName){
-//     foreach(LayoutSlip* l, *slipList){
-//         if((l->getSensorAName()==(sensorName)) ||
-//             (l->getSensorBName()==(sensorName)) ||
-//             (l->getSensorCName()==(sensorName)) ||
-//             (l->getSensorDName()==(sensorName)))
-//             return l;
-//     }
-//     return nullptr;
-// }
-// /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByEastBoundSensor(QString sensorName){
-//     for (int i = 0; i<pointList->size(); i++) {
-//         PositionablePoint* p = pointList->at(i);
-//         if (p->getEastBoundSensorName()==sensorName)
-//             return p;
-//     }
-//     return nullptr;
-// }
-
-// /*public*/ PositionablePoint* LayoutEditor::findPositionablePointByWestBoundSensor(QString sensorName){
-//     for (int i = 0; i<pointList->size(); i++) {
-//         PositionablePoint* p = pointList->at(i);
-//         if (p->getWestBoundSensorName()==(sensorName))
-//             return p;
-
-//     }
-//     return nullptr;
-// }
  void LayoutEditor::on_actionSkip_unsignalled_Internal_Turnouts_toggled(bool bState)
  {
   skipIncludedTurnout = bState;
@@ -9652,6 +9822,222 @@ void LayoutEditor::closeEvent(QCloseEvent *)
   }
  }
 }
+/*=========================================*\
+|* Dialog box to enter move selection info *|
+\*=========================================*/
+
+//display dialog for translation a selection
+/*protected*/ void LayoutEditor::moveSelection()
+{
+    if (!selectionActive || (selectionWidth == 0.0) || (selectionHeight == 0.0)) {
+        //no selection has been made - nothing to move
+        JOptionPane::showMessageDialog(this, tr("Error - Cannot translate selection because no selection has been made.\nPlease select by dragging with the mouse and try again."),
+                tr("Error"), JOptionPane::ERROR_MESSAGE);
+
+        return;
+    }
+
+    if (moveSelectionOpen) {
+        moveSelectionFrame->setVisible(true);
+        return;
+    }
+
+    //Initialize if needed
+    if (moveSelectionFrame == nullptr) {
+        moveSelectionFrame = new JmriJFrame(tr("Translate Selection"));
+        moveSelectionFrame->addHelpMenu("package.jmri.jmrit.display.TranslateSelection", true);
+        moveSelectionFrame->setLocation(70, 30);
+        QWidget* theContentPane = moveSelectionFrame->getContentPane(false);
+        theContentPane->setLayout(new QVBoxLayout());//theContentPane, BoxLayout.PAGE_AXIS));
+
+        //setup x translate
+        QWidget* panel31 = new QWidget();
+        panel31->setLayout(new FlowLayout());
+        QLabel* xMoveLabel = new QLabel(tr("Horizontal (x) Translation:"));
+        panel31->layout()->addWidget(xMoveLabel);
+        panel31->layout()->addWidget(xMoveField);
+        xMoveField->setToolTip(tr("Enter units to move (0 = don't move; negative = move left; positive = move right)."));
+        theContentPane->layout()->addWidget(panel31);
+
+        //setup y translate
+        QWidget* panel32 = new QWidget();
+        panel32->setLayout(new FlowLayout());
+        QLabel* yMoveLabel = new QLabel(tr("Vertical (y) Translation:"));
+        panel32->layout()->addWidget(yMoveLabel);
+        panel32->layout()->addWidget(yMoveField);
+        yMoveField->setToolTip(tr("Enter units to move (0 = don't move; negative = move up; positive = move down)."));
+        theContentPane->layout()->addWidget(panel32);
+
+        //setup information message
+        QWidget* panel33 = new QWidget();
+        panel33->setLayout(new FlowLayout());
+        QLabel* message1Label = new QLabel(tr("Only items within selection rectangle will be moved."));
+        panel33->layout()->addWidget(message1Label);
+        theContentPane->layout()->addWidget(panel33);
+
+        //set up Done and Cancel buttons
+        QWidget* panel5 = new QWidget();
+        panel5->setLayout(new FlowLayout());
+        panel5->layout()->addWidget(moveSelectionDone = new QPushButton(tr("Move Selection")));
+//        moveSelectionDone.addActionListener((ActionEvent event) -> {
+//            moveSelectionDonePressed(event);
+//        });
+        connect(moveSelectionDone, SIGNAL(clicked(bool)), this, SLOT(moveSelectionDonePressed()));
+        moveSelectionDone->setToolTip(tr("Click here to move items within the selection rectangle."));
+
+        //make this button the default button (return or enter activates)
+        //Note: We have to invoke this later because we don't currently have a root pane
+//        SwingUtilities.invokeLater(() -> {
+//            JRootPane rootPane = SwingUtilities.getRootPane(moveSelectionDone);
+//            rootPane.setDefaultButton(moveSelectionDone);
+//        });
+//        setDefaultButton(moveSelectionDone);
+        panel5->layout()->addWidget(moveSelectionCancel = new QPushButton(tr("Cancel")));
+//        moveSelectionCancel.addActionListener((ActionEvent event) -> {
+//            moveSelectionCancelPressed();
+//        });
+        connect(moveSelectionCancel, SIGNAL(clicked(bool)), this, SLOT(moveSelectionCancelPressed()));
+        moveSelectionCancel->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));
+        theContentPane->layout()->addWidget(panel5);
+    }
+
+    //Set up for Entry of Translation
+    xMoveField->setText("0");
+    yMoveField->setText("0");
+//    moveSelectionFrame.addWindowListener(new WindowAdapter() {
+//        @Override
+//        public void windowClosing(WindowEvent event) {
+//            moveSelectionCancelPressed();
+//        }
+//    });
+    moveSelectionFrame->addWindowListener((WindowListener*)this);
+    moveSelectionFrame->pack();
+    moveSelectionFrame->setVisible(true);
+    moveSelectionOpen = true;
+}
+
+/*public*/ void LayoutEditor::windowClosing(QCloseEvent* event) {
+    moveSelectionCancelPressed();
+}
+
+void LayoutEditor::moveSelectionDonePressed(/*@Nonnull ActionEvent event*/) {
+    QString newText = "";
+    double xTranslation = 0.0F;
+    double yTranslation = 0.0F;
+
+    //get x translation
+    newText = xMoveField->text().trimmed();
+    bool bok;
+        xTranslation = newText.toDouble(&bok);
+    if(!bok) {
+        JOptionPane::showMessageDialog(moveSelectionFrame,
+                QString("%1: %2 %3").arg(tr("Error in entry")).arg(
+                        tr("invalid floating point format")).arg(tr("Try Again")),
+                tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
+
+        return;
+    }
+
+    //get y translation
+    newText = yMoveField->text().trimmed();
+    yTranslation = newText.toFloat(&bok);
+    if(!bok) {
+     JOptionPane::showMessageDialog(moveSelectionFrame,
+             QString("%1: %2 %3").arg(tr("Error in entry")).arg(
+                     tr("invalid floating point format")).arg(tr("Try Again")),
+             tr("Error"),
+             JOptionPane::ERROR_MESSAGE);
+
+
+        return;
+    }
+
+    //here when all numbers read in - translation if entered
+    if ((xTranslation != 0.0) || (yTranslation != 0.0)) {
+        QRectF selectionRect = getSelectionRect();
+
+        //set up undo information
+        undoRect = MathUtil::offset(selectionRect, xTranslation, yTranslation);
+        undoDeltaX = -xTranslation;
+        undoDeltaY = -yTranslation;
+        canUndoMoveSelection = true;
+
+        //apply translation to icon items within the selection
+        QList<Positionable*> contents = getContents();
+
+        for (Positionable* c : contents) {
+            QPointF upperLeft = c->getLocation();
+
+            if (selectionRect.contains(upperLeft)) {
+                int xNew = (int) (upperLeft.x() + xTranslation);
+                int yNew = (int) (upperLeft.y() + yTranslation);
+                c->setLocation(xNew, yNew);
+            }
+        }
+
+        QPointF delta = QPointF(xTranslation, yTranslation);
+        for (LayoutTrack* lt : *layoutTrackList) {
+            QPointF center = lt->getCoordsCenter();
+            if (selectionRect.contains(center)) {
+                lt->setCoordsCenter(MathUtil::add(center, delta));
+            }
+
+        }
+        selectionX = undoRect.x();
+        selectionY = undoRect.y();
+        selectionWidth = undoRect.width();
+        selectionHeight = undoRect.height();
+        resizePanelBounds(false);
+        setDirty();
+        redrawPanel();
+    }
+
+    //success - hide dialog
+    moveSelectionOpen = false;
+    moveSelectionFrame->setVisible(false);
+    moveSelectionFrame->dispose();
+    moveSelectionFrame = nullptr;
+}
+
+void LayoutEditor::moveSelectionCancelPressed() {
+    moveSelectionOpen = false;
+    moveSelectionFrame->setVisible(false);
+    moveSelectionFrame->dispose();
+    moveSelectionFrame = nullptr;
+}
+
+void LayoutEditor::undoMoveSelection() {
+    if (canUndoMoveSelection) {
+        QList<Positionable*> contents = getContents();
+
+        for (Positionable* c : contents) {
+            QPointF upperLeft = c->getLocation();
+
+            if (undoRect.contains(upperLeft)) {
+                int xNew = (int) (upperLeft.x() + undoDeltaX);
+                int yNew = (int) (upperLeft.y() + undoDeltaY);
+                c->setLocation(xNew, yNew);
+            }
+        }
+
+        QPointF delta = QPointF(undoDeltaX, undoDeltaY);
+        for (LayoutTrack* lt : *layoutTrackList) {
+            QPointF center = lt->getCoordsCenter();
+            if (undoRect.contains(center)) {
+                lt->setCoordsCenter(MathUtil::add(center, delta));
+            }
+        }
+        undoRect = MathUtil::offset(undoRect, delta.x(), delta.y());
+        selectionX = undoRect.x();
+        selectionY = undoRect.y();
+        selectionWidth = undoRect.width();
+        selectionHeight = undoRect.height();
+        resizePanelBounds(false);
+        redrawPanel();
+        canUndoMoveSelection = false;
+    }
+}
 
 /*public*/ void LayoutEditor::setCurrentPositionAndSize()
 {
@@ -9710,13 +10096,6 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  setDirty();
 }
 
-/*public*/ bool LayoutEditor::getOpenDispatcherOnLoad() {
-    return openDispatcherOnLoad;
-}
-
-/*public*/ void LayoutEditor::setOpenDispatcherOnLoad(bool boo) {
-    openDispatcherOnLoad = boo;
-}
 /*public*/ void LayoutEditor::setDirectTurnoutControl(bool boo) {
     useDirectTurnoutControl = boo;
 // TODO:     useDirectTurnoutControlItem->setChecked(useDirectTurnoutControl);
@@ -9865,7 +10244,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if (turnoutDrawUnselectedLeg != state)
  {
   turnoutDrawUnselectedLeg = state;
-  turnoutDrawUnselectedLegItem->setChecked(turnoutDrawUnselectedLeg);
+  turnoutDrawUnselectedLegCheckBoxMenuItem->setChecked(turnoutDrawUnselectedLeg);
  }
 }
 
@@ -9934,13 +10313,50 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if (antialiasingOn != state)
  {
   antialiasingOn = state;
-  //antialiasingOnItem->setChecked(antialiasingOn);
-  ui->actionEnable_antialiasing_smoother_lines->setChecked(antialiasingOn);
-  on_actionEnable_antialiasing_smoother_lines_toggled(state);
+  //this may not be set up yet...
+  if (antialiasingOnCheckBoxMenuItem != nullptr) {
+      antialiasingOnCheckBoxMenuItem->setChecked(antialiasingOn);
+
+  }
+  UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager"
+  ));
+  if(prefsMgr)  {
+      prefsMgr->setSimplePreferenceState(getWindowFrameRef() + ".antialiasingOn", antialiasingOn);
+  }//);
  }
 }
 
+//enable/disable using the "Extra" color to highlight the selected block
+/*public*/ void LayoutEditor::setHighlightSelectedBlock(bool state) {
+    if (highlightSelectedBlockFlag != state) {
+        highlightSelectedBlockFlag = state;
 
+        //this may not be set up yet...
+        if (ui->highlightBlockCheckBox != nullptr) {
+            ui->highlightBlockCheckBox->setChecked(highlightSelectedBlockFlag);
+        }
+
+        UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager"));
+        if(prefsMgr)
+        {
+            prefsMgr->setSimplePreferenceState(getWindowFrameRef() + ".highlightSelectedBlock", highlightSelectedBlockFlag);
+        }//);
+
+        // thread this so it won't break the AppVeyor checks
+//        new Thread(() ->
+        {
+            if (highlightSelectedBlockFlag) {
+                //use the "Extra" color to highlight the selected block
+                if (!highlightBlockInComboBox(ui->blockIDComboBox)) {
+                    highlightBlockInComboBox(ui->blockContentsComboBox);
+                }
+            } else {
+                //undo using the "Extra" color to highlight the selected block
+                highlightBlock(nullptr);
+            }
+        }//).start();
+    }
+}
 //
 //highlight the block selected by the specified combo Box
 //
@@ -10009,72 +10425,75 @@ void LayoutEditor::closeEvent(QCloseEvent *)
         enterTrackWidthFrame->setVisible(true);
         return;
     }
-#if 0
+
     //Initialize if needed
     if (enterTrackWidthFrame == nullptr) {
-        enterTrackWidthFrame = new JmriJFrame(tr("SetTrackWidth"));
-        enterTrackWidthFrame.addHelpMenu("package.jmri.jmrit.display.EnterTrackWidth", true);
-        enterTrackWidthFrame.setLocation(70, 30);
-        Container theContentPane = enterTrackWidthFrame.getContentPane();
-        theContentPane.setLayout(new BoxLayout(theContentPane, BoxLayout.PAGE_AXIS));
+        enterTrackWidthFrame = new JmriJFrame(tr("Set Track Line Width"));
+        enterTrackWidthFrame->addHelpMenu("package.jmri.jmrit.display.EnterTrackWidth", true);
+        enterTrackWidthFrame->setLocation(70, 30);
+        QWidget* theContentPane = enterTrackWidthFrame->getContentPane();
+        theContentPane->setLayout(new QVBoxLayout());//theContentPane, BoxLayout.PAGE_AXIS));
 
         //setup mainline track width (placed above side track for clarity, name 'panel3' kept)
-        JPanel panel3 = new JPanel();
-        panel3.setLayout(new FlowLayout());
-        JLabel mainlineWidthLabel = new JLabel(tr("MainlineTrackWidth"));
-        panel3.add(mainlineWidthLabel);
-        panel3.add(mainlineTrackWidthField);
-        mainlineTrackWidthField.setToolTipText(tr("MainlineTrackWidthHint"));
-        theContentPane.add(panel3);
+        QWidget* panel3 = new QWidget();
+        panel3->setLayout(new FlowLayout());
+        QLabel* mainlineWidthLabel = new QLabel(tr("Mainline Track Width"));
+        panel3->layout()->addWidget(mainlineWidthLabel);
+        panel3->layout()->addWidget(mainlineTrackWidthField);
+        mainlineTrackWidthField->setToolTip(tr("Enter width for mainline track (1 - 10 allowed)."));
+        theContentPane->layout()->addWidget(panel3);
 
         //setup side track width
-        JPanel panel2 = new JPanel();
-        panel2.setLayout(new FlowLayout());
-        JLabel sideWidthLabel = new JLabel(tr("sidelineTrackWidth"));
-        panel2.add(sideWidthLabel);
-        panel2.add(sidelineTrackWidthField);
-        sidelineTrackWidthField.setToolTipText(tr("sidelineTrackWidthHint"));
-        theContentPane.add(panel2);
+        QWidget* panel2 = new QWidget();
+        panel2->setLayout(new FlowLayout());
+        QLabel* sideWidthLabel = new QLabel(tr("sideline Track Width"));
+        panel2->layout()->addWidget(sideWidthLabel);
+        panel2->layout()->addWidget(sidelineTrackWidthField);
+        sidelineTrackWidthField->setToolTip(tr("sidelineTrackWidthHint"));
+        theContentPane->layout()->addWidget(panel2);
 
         //set up Done and Cancel buttons
-        JPanel panel5 = new JPanel();
-        panel5.setLayout(new FlowLayout());
-        panel5.add(trackWidthDone = new JButton(tr("ButtonDone")));
-        trackWidthDone.addActionListener((ActionEvent event) -> {
-            trackWidthDonePressed(event);
-        });
-        trackWidthDone.setToolTipText(tr("DoneHint", tr("ButtonDone")));
+        QWidget* panel5 = new QWidget();
+        panel5->setLayout(new FlowLayout());
+        panel5->layout()->addWidget(trackWidthDone = new QPushButton(tr("Done")));
+//        trackWidthDone.addActionListener((ActionEvent event) -> {
+//            trackWidthDonePressed(event);
+//        });
+        connect(trackWidthDone, SIGNAL(clicked(bool)), this, SLOT(trackWidthDonePressed()));
+        trackWidthDone->setToolTip(tr("Click [%1] to accept any changes made above and close this dialog.").arg(tr("Done")));
 
         //make this button the default button (return or enter activates)
         //Note: We have to invoke this later because we don't currently have a root pane
-        SwingUtilities.invokeLater(() -> {
-            JRootPane rootPane = SwingUtilities.getRootPane(trackWidthDone);
-            rootPane.setDefaultButton(trackWidthDone);
-        });
+//        SwingUtilities.invokeLater(() -> {
+//            JRootPane rootPane = SwingUtilities.getRootPane(trackWidthDone);
+//            rootPane.setDefaultButton(trackWidthDone);
+//        });
 
         //Cancel
-        panel5.add(trackWidthCancel = new JButton(tr("ButtonCancel")));
-        trackWidthCancel.addActionListener((ActionEvent event) -> {
-            trackWidthCancelPressed(event);
-        });
-        trackWidthCancel.setToolTipText(tr("CancelHint", tr("ButtonCancel")));
-        theContentPane.add(panel5);
+        panel5->layout()->addWidget(trackWidthCancel = new QPushButton(tr("Cancel")));
+//        trackWidthCancel.addActionListener((ActionEvent event) -> {
+//            trackWidthCancelPressed(event);
+//        });
+        connect(trackWidthCancel, SIGNAL(clicked(bool)), this, SLOT(trackWidthCancelPressed()));
+        trackWidthCancel->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));
+        theContentPane->layout()->addWidget(panel5);
     }
 
     //Set up for Entry of Track Widths
-    mainlineTrackWidthField.setText(Integer.toString((int) mainlineTrackWidth));
-    sidelineTrackWidthField.setText(Integer.toString((int) sidelineTrackWidth));
-    enterTrackWidthFrame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(WindowEvent event) {
-            trackWidthCancelPressed(null);
-        }
-    });
-    enterTrackWidthFrame.pack();
-    enterTrackWidthFrame.setVisible(true);
+    mainlineTrackWidthField->setText(QString::number((int) mainlineTrackWidth));
+    sidelineTrackWidthField->setText(QString::number((int) sidelineTrackWidth));
+//    enterTrackWidthFrame.addWindowListener(new WindowAdapter() {
+//        @Override
+//        public void windowClosing(WindowEvent event) {
+//            trackWidthCancelPressed(null);
+//        }
+//    });
+    enterTrackWidthFrame->addWindowListener(new EnterTrackWidthFrameWindowListener(this));
+    enterTrackWidthFrame->pack();
+    enterTrackWidthFrame->setVisible(true);
     trackWidthChange = false;
     enterTrackWidthOpen = true;
-#endif
+
 }
 
 void LayoutEditor::trackWidthDonePressed(/*ActionEvent evemt*/) {
@@ -10083,76 +10502,74 @@ void LayoutEditor::trackWidthDonePressed(/*ActionEvent evemt*/) {
     float wid = 0.0;
     bool bok;
         wid = (newWidth.toFloat(&bok));
-#if 0
     if(!bok) {
         JOptionPane::showMessageDialog(enterTrackWidthFrame,
-                String.format("%s: %s %s", tr("EntryError"),
-                        e, tr("TryAgain")),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
+                QString("%1: %2 %3").arg(tr("Error in entry")).arg(
+                        tr("invalid floating point")).arg(tr("Please reenter or Cancel.")),
+                tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
         return;
     }
 
     if ((wid < 1.0) || (wid > 10.0)) {
-        JOptionPane.showMessageDialog(enterTrackWidthFrame,
-                MessageFormat.format(tr("Error2"),
-                        new Object[]{String.format(" %s ", wid)}),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
+        JOptionPane::showMessageDialog(enterTrackWidthFrame,
+                tr("Error - Entered value \"%1\" is not in the allowed range.\nPlease enter a number from 1 to 10.").arg(
+                        tr(" %%1 ").arg(wid)),
+                tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
 
         return;
     }
 
-    if (!Mathutil->equals(sidelineTrackWidth, wid)) {
+    if (!MathUtil::equals(sidelineTrackWidth, wid)) {
         sidelineTrackWidth = wid;
         trackWidthChange = true;
     }
 
     //get mainline track width
-    newWidth = mainlineTrackWidthField.getText().trim();
-    try {
-        wid = Float.parseFloat(newWidth);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(enterTrackWidthFrame,
-                String.format("%s: %s %s", tr("EntryError"),
-                        e, tr("TryAgain")),
+    newWidth = mainlineTrackWidthField->text().trimmed();
+
+        wid = newWidth.toFloat(&bok);
+    if(!bok) {
+        JOptionPane::showMessageDialog(enterTrackWidthFrame,
+                QString("%1: %%2 %%3").arg(tr("Error in entry")).arg(tr("Invlid number format")).arg(
+                        tr("Please reenter or Cancel.")),
                 tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
+                JOptionPane::ERROR_MESSAGE);
 
         return;
     }
 
     if ((wid < 1.0) || (wid > 10.0)) {
-        JOptionPane.showMessageDialog(enterTrackWidthFrame,
-                MessageFormat.format(tr("Error2"),
-                        new Object[]{String.format(" %s ", wid)}),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
+     JOptionPane::showMessageDialog(enterTrackWidthFrame,
+             tr("Error - Entered value \"%1\" is not in the allowed range.\nPlease enter a number from 1 to 10.").arg(
+                     tr(" %%1 ").arg(wid)),
+             tr("Error"),
+             JOptionPane::ERROR_MESSAGE);
     } else {
-        if (!Mathutil->equals(mainlineTrackWidth, wid)) {
+        if (!MathUtil::equals(mainlineTrackWidth, wid)) {
             mainlineTrackWidth = wid;
             trackWidthChange = true;
         }
 
         //success - hide dialog and repaint if needed
         enterTrackWidthOpen = false;
-        enterTrackWidthFrame.setVisible(false);
-        enterTrackWidthFrame.dispose();
-        enterTrackWidthFrame = null;
+        enterTrackWidthFrame->setVisible(false);
+        enterTrackWidthFrame->dispose();
+        enterTrackWidthFrame = nullptr;
 
         if (trackWidthChange) {
             //Integrate-LayoutEditor-drawing-options-with-previous-drawing-options
-            if (layoutTrackDrawingOptions != null) {
-                layoutTrackDrawingOptions.setMainBlockLineWidth((int) mainlineTrackWidth);
-                layoutTrackDrawingOptions.setSideBlockLineWidth((int) sidelineTrackWidth);
-                layoutTrackDrawingOptions.setMainRailWidth((int) mainlineTrackWidth);
-                layoutTrackDrawingOptions.setSideRailWidth((int) sidelineTrackWidth);
+            if (layoutTrackDrawingOptions != nullptr) {
+                layoutTrackDrawingOptions->setMainBlockLineWidth((int) mainlineTrackWidth);
+                layoutTrackDrawingOptions->setSideBlockLineWidth((int) sidelineTrackWidth);
+                layoutTrackDrawingOptions->setMainRailWidth((int) mainlineTrackWidth);
+                layoutTrackDrawingOptions->setSideRailWidth((int) sidelineTrackWidth);
             }
             redrawPanel();
             setDirty();
         }
     }
-#endif
 }
 
 void LayoutEditor::trackWidthCancelPressed(/*ActionEvent event*/) {
@@ -10177,145 +10594,144 @@ void LayoutEditor::trackWidthCancelPressed(/*ActionEvent event*/) {
         enterGridSizesFrame->setVisible(true);
         return;
     }
-#if 0
     //Initialize if needed
     if (enterGridSizesFrame == nullptr) {
         enterGridSizesFrame = new JmriJFrame(tr("SetGridSizes"));
-        enterGridSizesFrame.addHelpMenu("package.jmri.jmrit.display.EnterGridSizes", true);
-        enterGridSizesFrame.setLocation(70, 30);
-        Container theContentPane = enterGridSizesFrame.getContentPane();
-        theContentPane.setLayout(new BoxLayout(theContentPane, BoxLayout.PAGE_AXIS));
+        enterGridSizesFrame->addHelpMenu("package.jmri.jmrit.display.EnterGridSizes", true);
+        enterGridSizesFrame->setLocation(70, 30);
+        QWidget* theContentPane = enterGridSizesFrame->getContentPane();
+        theContentPane->setLayout(new QVBoxLayout());//theContentPane, BoxLayout.PAGE_AXIS));
 
         //setup primary grid sizes
-        JPanel panel3 = new JPanel();
-        panel3.setLayout(new FlowLayout());
-        JLabel primaryGridSIzeLabel = new JLabel(tr("PrimaryGridSize"));
-        panel3.add(primaryGridSIzeLabel);
-        panel3.add(primaryGridSizeField);
-        primaryGridSizeField.setToolTipText(tr("PrimaryGridSizeHint"));
-        theContentPane.add(panel3);
+        QWidget* panel3 = new QWidget();
+        panel3->setLayout(new FlowLayout());
+        QLabel* primaryGridSIzeLabel = new QLabel(tr("Primary Grid Size:"));
+        panel3->layout()->addWidget(primaryGridSIzeLabel);
+        panel3->layout()->addWidget(primaryGridSizeField);
+        primaryGridSizeField->setToolTip(tr("Enter width for primary grid size"));
+        theContentPane->layout()->addWidget(panel3);
 
         //setup side track width
-        JPanel panel2 = new JPanel();
-        panel2.setLayout(new FlowLayout());
-        JLabel secondaryGridSizeLabel = new JLabel(tr("SecondaryGridSize"));
-        panel2.add(secondaryGridSizeLabel);
-        panel2.add(secondaryGridSizeField);
-        secondaryGridSizeField.setToolTipText(tr("SecondaryGridSizeHint"));
-        theContentPane.add(panel2);
+        QWidget* panel2 = new QWidget();
+        panel2->setLayout(new FlowLayout());
+        QLabel* secondaryGridSizeLabel = new QLabel(tr("Secondary Grid Size:"));
+        panel2->layout()->addWidget(secondaryGridSizeLabel);
+        panel2->layout()->addWidget(secondaryGridSizeField);
+        secondaryGridSizeField->setToolTip(tr("Enter width for secondary grid size"));
+        theContentPane->layout()->addWidget(panel2);
 
         //set up Done and Cancel buttons
-        JPanel panel5 = new JPanel();
-        panel5.setLayout(new FlowLayout());
-        panel5.add(gridSizesDone = new JButton(tr("ButtonDone")));
-        gridSizesDone.addActionListener((ActionEvent event) -> {
-            gridSizesDonePressed(event);
-        });
-        gridSizesDone.setToolTipText(tr("DoneHint", tr("ButtonDone")));
+        QWidget* panel5 = new QWidget();
+        panel5->setLayout(new FlowLayout());
+        panel5->layout()->addWidget(gridSizesDone = new QPushButton(tr("Done")));
+//        gridSizesDone.addActionListener((ActionEvent event) -> {
+//            gridSizesDonePressed(event);
+//        });
+        connect(gridSizesDone, SIGNAL(clicked(bool)), this, SLOT(gridSizesDonePressed()));
+        gridSizesDone->setToolTip(tr("Click [%1] to accept any changes made above and close this dialog.").arg(tr("Done")));
 
         //make this button the default button (return or enter activates)
         //Note: We have to invoke this later because we don't currently have a root pane
-        SwingUtilities.invokeLater(() -> {
-            JRootPane rootPane = SwingUtilities.getRootPane(gridSizesDone);
-            rootPane.setDefaultButton(gridSizesDone);
-        });
+//        SwingUtilities.invokeLater(() -> {
+//            JRootPane rootPane = SwingUtilities.getRootPane(gridSizesDone);
+//            rootPane.setDefaultButton(gridSizesDone);
+//        });
 
         //Cancel
-        panel5.add(gridSizesCancel = new JButton(tr("ButtonCancel")));
-        gridSizesCancel.addActionListener((ActionEvent event) -> {
-            gridSizesCancelPressed(event);
-        });
-        gridSizesCancel.setToolTipText(tr("CancelHint", tr("ButtonCancel")));
-        theContentPane.add(panel5);
+        panel5->layout()->addWidget(gridSizesCancel = new QPushButton(tr("Cancel")));
+//        gridSizesCancel.addActionListener((ActionEvent event) -> {
+//            gridSizesCancelPressed(event);
+//        });
+        connect(gridSizesCancel, SIGNAL(clicked(bool)), this, SLOT(gridSizesCancelPressed()));
+        gridSizesCancel->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));
+        theContentPane->layout()->addWidget(panel5);
     }
 
     //Set up for Entry of Track Widths
-    primaryGridSizeField.setText(Integer.toString(gridSize1st));
-    secondaryGridSizeField.setText(Integer.toString(gridSize2nd));
-    enterGridSizesFrame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(WindowEvent event) {
-            gridSizesCancelPressed(null);
-        }
-    });
-    enterGridSizesFrame.pack();
-    enterGridSizesFrame.setVisible(true);
+    primaryGridSizeField->setText(QString::number(gridSize1st));
+    secondaryGridSizeField->setText(QString::number(gridSize2nd));
+//    enterGridSizesFrame.addWindowListener(new WindowAdapter() {
+//        @Override
+//        public void windowClosing(WindowEvent event) {
+//            gridSizesCancelPressed(null);
+//        }
+//    });
+    enterGridSizesFrame->addWindowListener(new EnterGridSizesFrameWindowListener(this));
+    enterGridSizesFrame->pack();
+    enterGridSizesFrame->setVisible(true);
     gridSizesChange = false;
     enterGridSizesOpen = true;
-#endif
 }
 
 void LayoutEditor::gridSizesDonePressed(/*ActionEvent event*/) {
     QString newGridSize = "";
     float siz = 0.0;
-#if 0
+
     //get secondary grid size
-    newGridSize = secondaryGridSizeField.getText().trim();
-    try {
-        siz = Float.parseFloat(newGridSize);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(enterGridSizesFrame,
-                String.format("%s: %s %s", tr("EntryError"),
-                        e, tr("TryAgain")),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
+    newGridSize = secondaryGridSizeField->text().trimmed();
+    bool bok;
+        siz = newGridSize.toFloat(&bok);
+    if(!bok) {
+     JOptionPane::showMessageDialog(enterTrackWidthFrame,
+             QString("%1: %%2 %%3").arg(tr("Error in entry")).arg(tr("Invlid number format")).arg(
+                     tr("Please reenter or Cancel.")),
+             tr("ErrorTitle"),
+             JOptionPane::ERROR_MESSAGE);
 
         return;
     }
 
     if ((siz < 5.0) || (siz > 100.0)) {
-        JOptionPane.showMessageDialog(enterGridSizesFrame,
-                MessageFormat.format(tr("Error2a"),
-                        new Object[]{String.format(" %s ", siz)}),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
+        JOptionPane::showMessageDialog(enterGridSizesFrame,
+                tr("Error - Entered value \"%1\" is not in the allowed range.").arg(
+                        tr(" %1 ").arg(siz)),
+                tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
 
         return;
     }
 
-    if (!Mathutil->equals(gridSize2nd, siz)) {
+    if (!MathUtil::equals(gridSize2nd, siz)) {
         gridSize2nd = (int) siz;
         gridSizesChange = true;
     }
 
     //get mainline track width
-    newGridSize = primaryGridSizeField.getText().trim();
-    try {
-        siz = Float.parseFloat(newGridSize);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(enterGridSizesFrame,
-                String.format("%s: %s %s", tr("EntryError"),
-                        e, tr("TryAgain")),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
+    newGridSize = primaryGridSizeField->text().trimmed();
+        siz = newGridSize.toFloat(&bok);
+    if(!bok) {
+     JOptionPane::showMessageDialog(enterTrackWidthFrame,
+             QString("%1: %%2 %%3").arg(tr("Error in entry")).arg(tr("Invlid number format")).arg(
+                     tr("Please reenter or Cancel.")),
+             tr("ErrorTitle"),
+             JOptionPane::ERROR_MESSAGE);
 
         return;
     }
 
     if ((siz < 5) || (siz > 100.0)) {
-        JOptionPane.showMessageDialog(enterGridSizesFrame,
-                MessageFormat.format(tr("Error2a"),
-                        new Object[]{String.format(" %s ", siz)}),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
+     JOptionPane::showMessageDialog(enterGridSizesFrame,
+             tr("Error - Entered value \"%1\" is not in the allowed range.").arg(
+                     tr(" %1 ").arg(siz)),
+             tr("Error"),
+             JOptionPane::ERROR_MESSAGE);
     } else {
-        if (!Mathutil->equals(gridSize1st, siz)) {
+        if (!MathUtil::equals(gridSize1st, siz)) {
             gridSize1st = (int) siz;
             gridSizesChange = true;
         }
 
         //success - hide dialog and repaint if needed
         enterGridSizesOpen = false;
-        enterGridSizesFrame.setVisible(false);
-        enterGridSizesFrame.dispose();
-        enterGridSizesFrame = null;
+        enterGridSizesFrame->setVisible(false);
+        enterGridSizesFrame->dispose();
+        enterGridSizesFrame = nullptr;
 
         if (gridSizesChange) {
             redrawPanel();
             setDirty();
         }
     }
-#endif
 }
 
 void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
@@ -10885,6 +11301,929 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
  return "jmri.jmrit.display.layoutEditor.LayoutEditor";
 }
 
+///*private*/ /*transient*/ /*static*/ /*final*/ QMap<QString, LayoutEditor::ToolBarSide> LayoutEditor::ToolBarSide::ENUM_MAP = QMap<QString, LayoutEditor::ToolBarSide>();
+//LayoutEditor::ToolBarSide::ENUM_MAP //.insert("top",  LayoutEditor::ToolBarSide::eTOP);
+
+/**
+ * Set up the Option menu.
+ *
+ * @param menuBar to add the option menu to
+ * @return option menu that was added
+ */
+#if 1
+/*protected*/ QMenu* LayoutEditor::setupOptionMenu(/*@Nonnull*/ QMenuBar* menuBar) {
+    QMenu* optionMenu = ui->menuOptions;//new QMenu(tr("Options"));
+
+//    optionMenu.setMnemonic(stringsToVTCodes.get(Bundle.getMessage("OptionsMnemonic")));
+//    menuBar->addMenu(optionMenu);
+
+    //
+    //  edit mode
+    //
+    editModeCheckBoxMenuItem = new QAction(tr("Edit Mode"));
+    editModeCheckBoxMenuItem->setCheckable(true);
+    optionMenu->addAction(editModeCheckBoxMenuItem);
+//    editModeCheckBoxMenuItem.setMnemonic(stringsToVTCodes.get(Bundle.getMessage("EditModeMnemonic")));
+//    int primary_modifier = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+//    editModeCheckBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+//            stringsToVTCodes.get(Bundle.getMessage("EditModeAccelerator")), primary_modifier));
+//    editModeCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        setAllEditable(editModeCheckBoxMenuItem.isSelected());
+
+//        //show/hide the help bar
+//        if (toolBarSide.equals(ToolBarSide.eFLOAT)) {
+//            floatEditHelpPanel.setVisible(isEditable() && getShowHelpBar());
+//        } else {
+//            helpBarPanel.setVisible(isEditable() && getShowHelpBar());
+//        }
+
+//        if (isEditable()) {
+//            setAllShowToolTip(tooltipsInEditMode);
+
+//            //redo using the "Extra" color to highlight the selected block
+//            if (highlightSelectedBlockFlag) {
+//                if (!highlightBlockInComboBox(blockIDComboBox)) {
+//                    highlightBlockInComboBox(blockContentsComboBox);
+//                }
+//            }
+//        } else {
+//            setAllShowToolTip(tooltipsWithoutEditMode);
+
+//            //undo using the "Extra" color to highlight the selected block
+//            if (highlightSelectedBlockFlag) {
+//                highlightBlock(null);
+//            }
+//        }
+//        awaitingIconChange = false;
+//    });
+    connect(editModeCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setAllEditable(bool)));
+    editModeCheckBoxMenuItem->setChecked(isEditable());
+
+    //
+    // toolbar
+    //
+    QMenu* toolBarMenu = new QMenu(tr("Tool Bar")); //used for ToolBar SubMenu
+    optionMenu->addMenu(toolBarMenu);
+
+    //
+    //create toolbar side menu items: (top, left, bottom, right)
+    //
+
+    toolBarSideTopButton = new QAction(tr("Top"),this);
+    toolBarSideTopButton->setCheckable(true);
+//    toolBarSideTopButton.addActionListener((ActionEvent event) -> {
+//        setToolBarSide(ToolBarSide.eTOP);
+//    });
+    connect(toolBarSideTopButton, SIGNAL(triggered(bool)),this, SLOT(setToolBarSide(bool)));
+    toolBarSideTopButton->setChecked(toolBarSide.getName() == (/*ToolBarSide::eTOP*/"top"));
+
+    toolBarSideLeftButton = new QAction(tr("Left"));
+//    toolBarSideLeftButton.addActionListener((ActionEvent event) -> {
+//        setToolBarSide(ToolBarSide.eLEFT);
+//    });
+    toolBarSideLeftButton->setChecked(toolBarSide.getName()==(/*ToolBarSide::eLEFT)*/"left"));
+
+    toolBarSideBottomButton = new QAction(tr("Bottom"));
+    toolBarSideBottomButton->setCheckable(true);
+//    toolBarSideBottomButton.addActionListener((ActionEvent event) -> {
+//        setToolBarSide(ToolBarSide.eBOTTOM);
+//    });
+    toolBarSideBottomButton->setChecked(toolBarSide.getName()==(/*ToolBarSide::eBOTTOM*/"bottom"));
+
+    toolBarSideRightButton = new QAction(tr("Right"));
+    toolBarSideRightButton->setCheckable(true);
+//    toolBarSideRightButton.addActionListener((ActionEvent event) -> {
+//        setToolBarSide(ToolBarSide.eRIGHT);
+//    });
+    toolBarSideRightButton->setChecked(toolBarSide.getName()==(/*ToolBarSide::eRIGHT*/"right"));
+
+    toolBarSideFloatButton = new QAction(tr("Float"));
+    toolBarSideFloatButton->setCheckable(true);
+//    toolBarSideFloatButton.addActionListener((ActionEvent event) -> {
+//        setToolBarSide(ToolBarSide.eFLOAT);
+//    });
+    toolBarSideFloatButton->setChecked(toolBarSide.getName()==(/*ToolBarSide::eFLOAT*/"float"));
+
+    QMenu* toolBarSideMenu = new QMenu(tr("ToolBar Side"));
+    toolBarSideMenu->addAction(toolBarSideTopButton);
+    toolBarSideMenu->addAction(toolBarSideLeftButton);
+    toolBarSideMenu->addAction(toolBarSideBottomButton);
+    toolBarSideMenu->addAction(toolBarSideRightButton);
+    toolBarSideMenu->addAction(toolBarSideFloatButton);
+
+    QActionGroup* toolBarSideGroup = new QActionGroup(this);
+    toolBarSideGroup->addAction(toolBarSideTopButton);
+    toolBarSideGroup->addAction(toolBarSideLeftButton);
+    toolBarSideGroup->addAction(toolBarSideBottomButton);
+    toolBarSideGroup->addAction(toolBarSideRightButton);
+    toolBarSideGroup->addAction(toolBarSideFloatButton);
+    toolBarMenu->addMenu(toolBarSideMenu);
+
+    //
+    //toolbar wide menu
+    //
+    toolBarMenu->addAction(wideToolBarCheckBoxMenuItem);
+//    wideToolBarCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        bool newToolBarIsWide = wideToolBarCheckBoxMenuItem.isSelected();
+//        setToolBarWide(newToolBarIsWide);
+//    });
+    wideToolBarCheckBoxMenuItem->setChecked(wideToolBarCheckBoxMenuItem->isChecked());
+
+    //
+    //create setup font size menu items
+    //
+    QActionGroup* toolBarFontSizeGroup = new QActionGroup(this);
+
+    QStringList fontSizes = QStringList() <<"9" << "10" << "11" << "12" << "13" << "14" << "15" << "16" << "17" << "18";
+
+    for (QString fontSize : fontSizes) {
+        float fontSizeFloat =fontSize.toFloat();
+        QAction* fontSizeButton = new QAction(fontSize);
+        fontSizeButton->setCheckable(true);
+//        fontSizeButton.addActionListener((ActionEvent event) -> {
+//            setupToolBarFontSizes(fontSizeFloat);
+
+//            //save it in the user preferences for the window
+//            String windowFrameRef = getWindowFrameRef();
+//            InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefsMgr) -> {
+//                prefsMgr.setProperty(windowFrameRef, "toolBarFontSize", fontSizeFloat);
+//            });
+
+//            ///doing this for now (since window prefs seem to be whacked)
+//            GuiLafPreferencesManager manager = InstanceManager.getDefault(GuiLafPreferencesManager.class);
+//            manager.setFontSize((int) fontSizeFloat);
+//        });
+        toolBarFontSizeMenu->addAction(fontSizeButton);
+        toolBarFontSizeGroup->addAction(fontSizeButton);
+        fontSizeButton->setChecked(MathUtil::equals(fontSizeFloat, toolBarFontSize));
+    }
+#if 0
+    toolBarFontSizeMenu.addMenuListener(new MenuListener() {
+        @Override
+        public void menuSelected(MenuEvent event) {
+            String fontSizeString = String.valueOf((int) toolBarFontSize);
+
+            for (Component c : toolBarFontSizeMenu.getMenuComponents()) {
+                if (c instanceof JRadioButtonMenuItem) {
+                    JRadioButtonMenuItem crb = (JRadioButtonMenuItem) c;
+                    String menuItemFontSizeString = crb.getText();
+                    crb.setSelected(menuItemFontSizeString.equals(fontSizeString));
+                }
+            }
+        }
+
+        @Override
+        public void menuDeselected(MenuEvent event) {
+        }
+
+        @Override
+        public void menuCanceled(MenuEvent event) {
+        }
+    });
+#endif
+    //toolBarMenu.add(toolBarFontSizeMenu); //<<== disabled as per
+    //<https://github.com/JMRI/JMRI/pull/3145#issuecomment-283940658>
+    //
+    //setup drop down list display order menu
+    //
+    QActionGroup* dropDownListsDisplayOrderGroup = new QActionGroup(this);
+
+    QStringList ddldoChoices = QStringList() << tr("Display Name (User else System)") << tr("UserName") <<
+        tr("SystemName") << tr("User Name followed by System Name") <<
+        tr("System Name followed by User Name");
+
+    for (QString ddldoChoice : ddldoChoices) {
+        QAction* ddldoChoiceMenuItem = new QAction(ddldoChoice, this);
+        ddldoChoiceMenuItem->setCheckable(true);
+#if 0
+        ddldoChoiceMenuItem.addActionListener((ActionEvent event) -> {
+            JRadioButtonMenuItem ddldoMenuItem = (JRadioButtonMenuItem) event.getSource();
+            JPopupMenu parentMenu = (JPopupMenu) ddldoMenuItem.getParent();
+            int ddldoInt = parentMenu.getComponentZOrder(ddldoMenuItem) + 1;
+            JmriBeanComboBox.DisplayOptions ddldo = JmriBeanComboBox.DisplayOptions.valueOf(ddldoInt);
+
+            InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefsMgr) -> {
+                //change this comboboxes ddldo
+                String windowFrameRef = getWindowFrameRef();
+
+                //this is the preference name
+                String ddldoPrefName = "DropDownListsDisplayOrder";
+
+                //make a focused component specific preference name
+                Component focusedComponent = getFocusOwner();
+
+                if (focusedComponent instanceof JTextField) {
+                    focusedComponent = SwingUtilities.getUnwrappedParent(focusedComponent);
+                }
+
+                if (focusedComponent instanceof JmriBeanComboBox) {
+                    JmriBeanComboBox focusedJBCB = (JmriBeanComboBox) focusedComponent;
+
+                    //now try to get a preference specific to this combobox
+                    String ttt = focusedJBCB.getToolTipText();
+
+                    if (ttt != null) {
+                        //change the name of the preference based on the tool tip text
+                        ddldoPrefName = String.format("%s.%s", ddldoPrefName, ttt);
+                    }
+
+                    //now set the combo box display order
+                    focusedJBCB.setDisplayOrder(ddldo);
+                }
+
+                //update the users preference
+                String[] ddldoPrefs = {"DISPLAYNAME", "USERNAME", "SYSTEMNAME", "USERNAMESYSTEMNAME", "SYSTEMNAMEUSERNAME"};
+                prefsMgr.setProperty(windowFrameRef, ddldoPrefName, ddldoPrefs[ddldoInt]);
+            });
+        }); //addActionListener
+#endif
+        dropDownListsDisplayOrderMenu->addAction(ddldoChoiceMenuItem);
+        dropDownListsDisplayOrderGroup->addAction(ddldoChoiceMenuItem);
+
+        //if it matches the 1st choice then select it (for now; it will be updated later)
+        ddldoChoiceMenuItem->setChecked(ddldoChoice == (ddldoChoices[0]));
+    }
+    //TODO: update menu item based on focused combobox (if any)
+    //note: commented out to avoid findbug warning
+    //dropDownListsDisplayOrderMenu.addMenuListener(new MenuListener() {
+    //    @Override
+    //    public void menuSelected(MenuEvent event) {
+    //        log.debug("update menu item based on focused combobox");
+    //    }
+    //
+    //    @Override
+    //    public void menuDeselected(MenuEvent event) {
+    //    }
+    //
+    //    @Override
+    //    public void menuCanceled(MenuEvent event) {
+    //    }
+    //});
+    toolBarMenu->addMenu(dropDownListsDisplayOrderMenu);
+
+    //
+    // Scroll Bars
+    //
+    scrollMenu = new QMenu(tr("Panel scrollbars")); //used for ScrollBarsSubMenu
+    optionMenu->addMenu(scrollMenu);
+    QActionGroup* scrollGroup = new QActionGroup(this);
+    scrollBothMenuItem = new QAction(tr("Scroll Both"), this);
+    scrollGroup->addAction(scrollBothMenuItem);
+    scrollMenu->addAction(scrollBothMenuItem);
+    scrollBothMenuItem->setChecked(_scrollState == Editor::SCROLL_BOTH);
+//    scrollBothMenuItem.addActionListener((ActionEvent event) -> {
+//        _scrollState = Editor.SCROLL_BOTH;
+//        setScroll(_scrollState);
+//        redrawPanel();
+//    });
+    connect(scrollBothMenuItem, SIGNAL(triggered(bool)), this, SLOT(onActionBoth_scrollbars()));
+    scrollNoneMenuItem = new QAction(tr("No Scrollbars"), this);
+    scrollNoneMenuItem->setCheckable(true);
+    scrollGroup->addAction(scrollNoneMenuItem);
+    scrollMenu->addAction(scrollNoneMenuItem);
+    scrollNoneMenuItem->setChecked(_scrollState == Editor::SCROLL_NONE);
+//    scrollNoneMenuItem.addActionListener((ActionEvent event) -> {
+//        _scrollState = Editor.SCROLL_NONE;
+//        setScroll(_scrollState);
+//        redrawPanel();
+//    });
+    connect(scrollNoneMenuItem, SIGNAL(triggered(bool)), this, SLOT(onActionNo_scrollbars()));
+    scrollHorizontalMenuItem = new QAction(tr("Horizontal Scrollbars"),this);
+    scrollHorizontalMenuItem->setCheckable(true);
+    scrollGroup->addAction(scrollHorizontalMenuItem);
+    scrollMenu->addAction(scrollHorizontalMenuItem);
+    scrollHorizontalMenuItem->setChecked(_scrollState == Editor::SCROLL_HORIZONTAL);
+//    scrollHorizontalMenuItem.addActionListener((ActionEvent event) -> {
+//        _scrollState = Editor.SCROLL_HORIZONTAL;
+//        setScroll(_scrollState);
+//        redrawPanel();
+//    });
+    connect(scrollHorizontalMenuItem, SIGNAL(triggered(bool)), this, SLOT(onActionHorizontal_scrollbars()));
+    scrollVerticalMenuItem = new QAction(tr("Vertical scrollbars"), this);
+    scrollVerticalMenuItem->setCheckable(true);
+    scrollGroup->addAction(scrollVerticalMenuItem);
+    scrollMenu->addAction(scrollVerticalMenuItem);
+    scrollVerticalMenuItem->setChecked(_scrollState == Editor::SCROLL_VERTICAL);
+//    scrollVerticalMenuItem.addActionListener((ActionEvent event) -> {
+//        _scrollState = Editor.SCROLL_VERTICAL;
+//        setScroll(_scrollState);
+//        redrawPanel();
+//    });
+    connect(scrollVerticalMenuItem, SIGNAL(triggered(bool)), this, SLOT(onActionVertical_scrollbars()));
+
+    //
+    // Tooltips
+    //
+    tooltipMenu = new QMenu(tr("Show Icon tooltips"));
+    optionMenu->addMenu(tooltipMenu);
+    QActionGroup* tooltipGroup = new QActionGroup(this);
+    tooltipNoneMenuItem = new QAction(tr("No Tooltips"), this);
+    tooltipNoneMenuItem->setCheckable(true);
+    tooltipGroup->addAction(tooltipNoneMenuItem);
+    tooltipMenu->addAction(tooltipNoneMenuItem);
+    tooltipNoneMenuItem->setChecked((!tooltipsInEditMode) && (!tooltipsWithoutEditMode));
+//    tooltipNoneMenuItem.addActionListener((ActionEvent event) -> {
+//        tooltipsInEditMode = false;
+//        tooltipsWithoutEditMode = false;
+//        setAllShowToolTip(false);
+//    });
+    connect(tooltipNoneMenuItem, SIGNAL(triggered(bool)), this, SLOT(onTooltipNoneMenuItem()));
+    tooltipAlwaysMenuItem = new QAction(tr("Tooltips Always"),this);
+    tooltipAlwaysMenuItem->setCheckable(true);
+    tooltipGroup->addAction(tooltipAlwaysMenuItem);
+    tooltipMenu->addAction(tooltipAlwaysMenuItem);
+    tooltipAlwaysMenuItem->setChecked((tooltipsInEditMode) && (tooltipsWithoutEditMode));
+//    tooltipAlwaysMenuItem.addActionListener((ActionEvent event) -> {
+//        tooltipsInEditMode = true;
+//        tooltipsWithoutEditMode = true;
+//        setAllShowToolTip(true);
+//    });
+    connect(tooltipAlwaysMenuItem, SIGNAL(triggered(bool)), this, SLOT(onTooltipAlwaysMenuItem()));
+    tooltipInEditMenuItem = new QAction(tr("In Edit Mode only"),this);
+    tooltipInEditMenuItem->setCheckable(true);
+    tooltipGroup->addAction(tooltipInEditMenuItem);
+    tooltipMenu->addAction(tooltipInEditMenuItem);
+    tooltipInEditMenuItem->setChecked((tooltipsInEditMode) && (!tooltipsWithoutEditMode));
+//    tooltipInEditMenuItem.addActionListener((ActionEvent event) -> {
+//        tooltipsInEditMode = true;
+//        tooltipsWithoutEditMode = false;
+//        setAllShowToolTip(isEditable());
+//    });
+    connect(tooltipInEditMenuItem, SIGNAL(triggered(bool)), this, SLOT(onTooltipInEditMenuItem()));
+    tooltipNotInEditMenuItem = new QAction(tr("Not in Edit Mode only"), this);
+    tooltipNotInEditMenuItem->setCheckable(true);
+    tooltipGroup->addAction(tooltipNotInEditMenuItem);
+    tooltipMenu->addAction(tooltipNotInEditMenuItem);
+    tooltipNotInEditMenuItem->setChecked((!tooltipsInEditMode) && (tooltipsWithoutEditMode));
+//    tooltipNotInEditMenuItem.addActionListener((ActionEvent event) -> {
+//        tooltipsInEditMode = false;
+//        tooltipsWithoutEditMode = true;
+//        setAllShowToolTip(!isEditable());
+//    });
+    connect(tooltipNotInEditMenuItem, SIGNAL(triggered(bool)), this, SLOT(onTooltipNotInEditMenuItem()));
+
+    //
+    // show edit help
+    //
+    showHelpCheckBoxMenuItem = new QAction(tr("Show Help Bar in Edit Mode"));
+    showHelpCheckBoxMenuItem->setCheckable(true);
+    optionMenu->addAction(showHelpCheckBoxMenuItem);
+//    showHelpCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        boolean newShowHelpBar = showHelpCheckBoxMenuItem.isSelected();
+//        setShowHelpBar(newShowHelpBar);
+//    });
+    connect(showHelpCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setShowHelpBar(bool)));
+    showHelpCheckBoxMenuItem->setChecked(getShowHelpBar());
+
+    //
+    // Allow Repositioning
+    //
+    positionableCheckBoxMenuItem = new QAction(tr("Allow Repositioning"),this);
+    positionableCheckBoxMenuItem->setCheckable(true);
+    optionMenu->addAction(positionableCheckBoxMenuItem);
+//    positionableCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        setAllPositionable(positionableCheckBoxMenuItem.isSelected());
+//    });
+    connect(positionableCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setAllPositionable(bool)));
+    positionableCheckBoxMenuItem->setChecked(allPositionable());
+
+    //
+    // Allow Layout Control
+    //
+    controlCheckBoxMenuItem = new QAction(tr("Allow Layout Control"),this);
+    controlCheckBoxMenuItem->setCheckable(true);
+    optionMenu->addAction(controlCheckBoxMenuItem);
+//    controlCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        setAllControlling(controlCheckBoxMenuItem.isSelected());
+//        redrawPanel();
+//    });
+    connect(controlCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionAllow_layout_control_toggled(bool)));
+    controlCheckBoxMenuItem->setChecked(allControlling());
+
+    //
+    // use direct turnout control
+    //
+    useDirectTurnoutControlCheckBoxMenuItem = new QAction(tr("Use Direct Turnout Control"),this); //IN18N
+    useDirectTurnoutControlCheckBoxMenuItem->setCheckable(true);
+    optionMenu->addAction(useDirectTurnoutControlCheckBoxMenuItem);
+//    useDirectTurnoutControlCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        setDirectTurnoutControl(useDirectTurnoutControlCheckBoxMenuItem.isSelected());
+//    });
+    connect(useDirectTurnoutControlCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setDirectTurnoutControl(bool)));
+    useDirectTurnoutControlCheckBoxMenuItem->setChecked(useDirectTurnoutControl);
+
+    //
+    // antialiasing
+    //
+    antialiasingOnCheckBoxMenuItem = new QAction(tr("Enable antialiasing (Smoother lines)"),this);
+    antialiasingOnCheckBoxMenuItem->setCheckable(true);
+    optionMenu->addAction(antialiasingOnCheckBoxMenuItem);
+//    antialiasingOnCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        antialiasingOn = antialiasingOnCheckBoxMenuItem.isSelected();
+//        redrawPanel();
+//    });
+    connect(antialiasingOnCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionEnable_antialiasing_smoother_lines_toggled(bool)));
+    antialiasingOnCheckBoxMenuItem->setChecked(antialiasingOn);
+
+    //
+    // edit title
+    //
+    optionMenu->addSeparator();
+    QAction* titleItem = new QAction(tr("Edit Title") + "...",this);
+    optionMenu->addAction(titleItem);
+#if 0
+    titleItem.addActionListener((ActionEvent event) -> {
+        //prompt for name
+        String newName = (String) JOptionPane.showInputDialog(getTargetFrame(),
+                Bundle.getMessage("MakeLabel", Bundle.getMessage("EnterTitle")),
+                Bundle.getMessage("EditTitleMessageTitle"),
+                JOptionPane.PLAIN_MESSAGE, null, null, getLayoutName());
+
+        if (newName != null) {
+            if (!newName.equals(getLayoutName())) {
+                if (InstanceManager.getDefault(PanelMenu.class).isPanelNameUsed(newName)) {
+                    JOptionPane.showMessageDialog(null, Bundle.getMessage("CanNotRename"), Bundle.getMessage("PanelExist"),
+                            JOptionPane.ERROR_MESSAGE);
+                } else {
+                    setTitle(newName);
+                    setLayoutName(newName);
+                    getLayoutTrackDrawingOptions().setName(newName);
+                    InstanceManager.getDefault(PanelMenu.class).renameEditorPanel(LayoutEditor.this);
+                    setDirty();
+
+                    if (toolBarSide.equals(ToolBarSide.eFLOAT) && isEditable()) {
+                        // Rebuild the toolbox after a name change.
+                        deleteFloatingEditToolBox();
+                        createFloatingEditToolBox();
+                    }
+                }
+            }
+        }
+    });
+#endif
+
+
+    //
+    // set background color
+    //
+//    QAction* backgroundColorMenuItem = new QAction(t("Set Background Color", "..."),this);
+//    optionMenu->addAction(backgroundColorMenuItem);
+//    backgroundColorMenuItem.addActionListener((ActionEvent event) -> {
+//        Color desiredColor = JmriColorChooser.showDialog(this,
+//                Bundle.getMessage("SetBackgroundColor", ""),
+//                defaultBackgroundColor);
+//        if (desiredColor != null && !defaultBackgroundColor.equals(desiredColor)) {
+//            defaultBackgroundColor = desiredColor;
+//            setBackgroundColor(desiredColor);
+//            setDirty();
+//            redrawPanel();
+//        }
+//    });
+//    connect(backgroundColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_colorBackgroundMenuItemSelected()));
+    QMenu* backgroundColorMenu = new QMenu(tr("Set Background Color"));
+    backgroundColorButtonGroup = new QActionGroup(this);
+    backgroundColorButtonMapper = new QSignalMapper();
+    connect(backgroundColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_colorBackgroundMenuItemSelected(int)));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Black"),     QColor(Qt::black));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("DarkGray"),  QColor(Qt::darkGray));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Gray"),      QColor(Qt::gray));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("LightGray"), QColor(Qt::lightGray));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("White"),     QColor(Qt::white));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Red"),       QColor(Qt::red));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Pink"),      QColor(255,192,203));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Orange"),    QColor(255, 170, 0));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Yellow"),    QColor(Qt::yellow));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Green"),     QColor(Qt::green));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Blue"),      QColor(Qt::blue));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Magenta"),   QColor(Qt::magenta));
+    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Cyan"),      QColor(Qt::cyan));
+    optionMenu->addMenu(backgroundColorMenu);
+
+    //
+    // set default text color
+    //
+//    QAction* textColorMenuItem = new QAction(tr("Default Text Color", "..."),this);
+//    optionMenu->addAction(textColorMenuItem);
+//    textColorMenuItem.addActionListener((ActionEvent event) -> {
+//        Color desiredColor = JmriColorChooser.showDialog(this,
+//                Bundle.getMessage("DefaultTextColor", ""),
+//                defaultTextColor);
+//        if (desiredColor != null && !defaultTextColor.equals(desiredColor)) {
+//            setDefaultTextColor(desiredColor);
+//            setDirty();
+//            redrawPanel();
+//        }
+//    });
+//    connect(textColorMenuItem, SIGNAL(triggered(bool)), this, SLOT());
+    QMenu* textColorMenu = new QMenu(tr("Default Text Color"));
+    textColorButtonGroup = new QActionGroup(this);
+    textColorButtonMapper = new QSignalMapper();
+    connect(textColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(OnDefaultTextColorSelected(int)));
+    addTextColorMenuEntry(textColorMenu,  tr("Black"),     QColor(Qt::black));
+    addTextColorMenuEntry(textColorMenu,  tr("DarkGray"),  QColor(Qt::darkGray));
+    addTextColorMenuEntry(textColorMenu,  tr("Gray"),      QColor(Qt::gray));
+    addTextColorMenuEntry(textColorMenu,  tr("LightGray"), QColor(Qt::lightGray));
+    addTextColorMenuEntry(textColorMenu,  tr("White"),     QColor(Qt::white));
+    addTextColorMenuEntry(textColorMenu,  tr("Red"),       QColor(Qt::red));
+    addTextColorMenuEntry(textColorMenu,  tr("Pink"),      QColor(255,192,203));
+    addTextColorMenuEntry(textColorMenu,  tr("Orange"),    QColor(255, 170, 0));
+    addTextColorMenuEntry(textColorMenu,  tr("Yellow"),    QColor(Qt::yellow));
+    addTextColorMenuEntry(textColorMenu,  tr("Green"),     QColor(Qt::green));
+    addTextColorMenuEntry(textColorMenu,  tr("Blue"),      QColor(Qt::blue));
+    addTextColorMenuEntry(textColorMenu,  tr("Magenta"),   QColor(Qt::magenta));
+    addTextColorMenuEntry(textColorMenu,  tr("Cyan"),      QColor(Qt::cyan));
+    optionMenu->addMenu(textColorMenu);
+
+    //
+    //  save location and size
+    //
+    QAction* locationItem = new QAction(tr("Set Location"), this);
+    optionMenu->addAction(locationItem);
+//    locationItem.addActionListener((ActionEvent event) -> {
+//        setCurrentPositionAndSize();
+//        log.debug("Bounds:{}, {}, {}, {}, {}, {}", upperLeftX, upperLeftY, windowWidth, windowHeight, panelWidth, panelHeight);
+//    });
+    connect(locationItem, SIGNAL(triggered(bool)), this, SLOT());
+    //
+    // Add Options
+    //
+    QMenu* optionsAddMenu = new QMenu(tr("Add"));
+    optionMenu->addMenu(optionsAddMenu);
+
+    // add background image
+    QAction* backgroundItem = new QAction(tr("Add Background Image") + "...", this);
+    optionsAddMenu->addAction(backgroundItem);
+//    backgroundItem.addActionListener((ActionEvent event) -> {
+//        addBackground();
+//        //note: panel resized in addBackground
+//        setDirty();
+//        redrawPanel();
+//    });
+    connect(backgroundItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionAdd_background_image_2_triggered()));
+
+    // add fast clock
+    QAction* clockItem = new QAction(tr("Add %1").arg(tr("Fast Clock")), this);
+    optionsAddMenu->addAction(clockItem);
+//    clockItem.addActionListener((ActionEvent event) -> {
+//        AnalogClock2Display c = addClock();
+//        unionToPanelBounds(c.getBounds());
+//        setDirty();
+//        redrawPanel();
+//    });
+    connect(clockItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionAdd_Fast_Clock_triggered()));
+
+    //add turntable
+    QAction* turntableItem = new QAction(tr("Add Turntable"),this);
+    optionsAddMenu->addAction(turntableItem);
+//    turntableItem.addActionListener((ActionEvent event) -> {
+//        Point2D pt = windowCenter();
+//        if (selectionActive) {
+//            pt = MathUtil.midPoint(getSelectionRect());
+//        }
+//        addTurntable(pt);
+//        //note: panel resized in addTurntable
+//        setDirty();
+//        redrawPanel();
+//    });
+    connect(turntableItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionAdd_Turntable_triggered()));
+
+    // add reporter
+    QAction* reporterItem = new QAction(tr("AddReporter") + "...", this);
+    optionsAddMenu->addAction(reporterItem);
+//    reporterItem.addActionListener((ActionEvent event) -> {
+//        Point2D pt = windowCenter();
+//        if (selectionActive) {
+//            pt = MathUtil.midPoint(getSelectionRect());
+//        }
+//        enterReporter((int) pt.getX(), (int) pt.getY());
+//        //note: panel resized in enterReporter
+//        setDirty();
+//        redrawPanel();
+//    });
+    connect(reporterItem, SIGNAL(triggered(bool)), this, SLOT(on_actionAdd_reporter_label_triggered()));
+    //
+    // grid menu
+    //
+    QMenu* gridMenu = new QMenu(tr("Grid Options")); //used for Grid SubMenu
+    optionMenu->addMenu(gridMenu);
+
+    //show grid
+    showGridCheckBoxMenuItem = new QAction(tr("Show Grid in Edit Mode"), this);
+    showGridCheckBoxMenuItem->setCheckable(true);
+//    showGridCheckBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(stringsToVTCodes.get(
+//            Bundle.getMessage("ShowEditGridAccelerator")), primary_modifier));
+    gridMenu->addAction(showGridCheckBoxMenuItem);
+//    showGridCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        drawGrid = showGridCheckBoxMenuItem.isSelected();
+//        redrawPanel();
+//    });
+    connect(showGridCheckBoxMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionShow_grid_in_edit_mode_toggled(bool)));
+    showGridCheckBoxMenuItem->setChecked(getDrawGrid());
+
+    //snap to grid on add
+    snapToGridOnAddCheckBoxMenuItem = new QAction(tr("Snap to Grid when Adding"));
+    snapToGridOnAddCheckBoxMenuItem->setCheckable(true);
+//    snapToGridOnAddCheckBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(stringsToVTCodes.get(
+//            Bundle.getMessage("SnapToGridOnAddAccelerator")),
+//            primary_modifier | ActionEvent.SHIFT_MASK));
+    gridMenu->addAction(snapToGridOnAddCheckBoxMenuItem);
+//    snapToGridOnAddCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        snapToGridOnAdd = snapToGridOnAddCheckBoxMenuItem.isSelected();
+//        redrawPanel();
+//    });
+    connect(snapToGridOnAddCheckBoxMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionSnap_to_grid_when_adding_toggled(bool)));
+    snapToGridOnAddCheckBoxMenuItem->setChecked(snapToGridOnAdd);
+
+    //snap to grid on move
+    snapToGridOnMoveCheckBoxMenuItem = new QAction(tr("Snap to Grid when Moving"),this);
+    snapToGridOnMoveCheckBoxMenuItem->setCheckable(true);
+//    snapToGridOnMoveCheckBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(stringsToVTCodes.get(
+//            Bundle.getMessage("SnapToGridOnMoveAccelerator")),
+//            primary_modifier | ActionEvent.SHIFT_MASK));
+    gridMenu->addAction(snapToGridOnMoveCheckBoxMenuItem);
+//    snapToGridOnMoveCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        snapToGridOnMove = snapToGridOnMoveCheckBoxMenuItem.isSelected();
+//        redrawPanel();
+//    });
+    connect(snapToGridOnMoveCheckBoxMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionSnap_to_grid_when_moving_toggled(bool) ));
+    snapToGridOnMoveCheckBoxMenuItem->setChecked(snapToGridOnMove);
+
+    //specify grid square size
+    QAction* gridSizeItem = new QAction(tr("SetGridSizes") + "...", this);
+    gridMenu->addAction(gridSizeItem);
+//    gridSizeItem.addActionListener((ActionEvent event) -> {
+//        enterGridSizes();
+//    });
+    connect(gridSizeItem,  SIGNAL(triggered(bool)), this, SLOT(enterGridSizes()));
+    //
+    // track menu
+    //
+    QMenu* trackMenu = new QMenu(tr("Track Options"));
+    optionMenu->addMenu(trackMenu);
+
+    // set track drawing options menu item
+    QAction* jmi = new QAction(tr("Set Track Drawing Options"));
+    trackMenu->addAction(jmi);
+    jmi->setToolTip(tr("Select this item to change your track drawing options"));
+//    jmi.addActionListener((ActionEvent event) -> {
+//        LayoutTrackDrawingOptionsDialog ltdod
+//                = new LayoutTrackDrawingOptionsDialog(
+//                        this, true, getLayoutTrackDrawingOptions());
+//        ltdod.setVisible(true);
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDialog()));
+    //set track width menu item
+    // Note: Now set via LayoutTrackDrawingOptionsDialog (above)
+    //TODO: Dead code strip this
+    //JMenuItem widthItem = new JMenuItem(Bundle.getMessage("SetTrackWidth") + "...");
+    //trackMenu.add(widthItem);
+    //widthItem.addActionListener((ActionEvent event) -> {
+    //    //bring up enter track width dialog
+    //    enterTrackWidth();
+    //});
+    //track colors item menu item
+    QMenu* trkColourMenu = new QMenu(tr("Default Track Colors"));
+    trackMenu->addMenu(trkColourMenu);
+
+//    QAction* trackColorMenuItem = new QAction(tr("Set Default Track Color"),this);
+//    trkColourMenu->addAction(trackColorMenuItem);
+//    trackColorMenuItem.addActionListener((ActionEvent event) -> {
+//        Color desiredColor = JmriColorChooser.showDialog(this,
+//                Bundle.getMessage("DefaultTrackColor"),
+//                defaultTrackColor);
+//        if (desiredColor != null && !defaultTrackColor.equals(desiredColor)) {
+//            setDefaultTrackColor(desiredColor);
+//            setDirty();
+//            redrawPanel();
+//        }
+//    });
+//    connect(trackColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_addTrackColorMenuEntry_triggered));
+    QMenu* trackColorMenu = new QMenu(tr("Default Track Color"));
+    trackColorButtonGroup = new QActionGroup(this);
+    trackColorButtonMapper = new QSignalMapper();
+    connect(trackColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackColorMenuEntry_triggered(int)));
+    addTrackColorMenuEntry(trackColorMenu, tr("Black"),     QColor(Qt::black));
+    addTrackColorMenuEntry(trackColorMenu, tr("DarkGray"),  QColor(Qt::darkGray));
+    addTrackColorMenuEntry(trackColorMenu, tr("Gray"),      QColor(Qt::gray));
+    addTrackColorMenuEntry(trackColorMenu, tr("LightGray"), QColor(Qt::lightGray));
+    addTrackColorMenuEntry(trackColorMenu, tr("White"),     QColor(Qt::white));
+    addTrackColorMenuEntry(trackColorMenu, tr("Red"),       QColor(Qt::red));
+    addTrackColorMenuEntry(trackColorMenu, tr("Pink"),      QColor(255,192,203));
+    addTrackColorMenuEntry(trackColorMenu, tr("Orange"),    QColor(255, 170, 0));
+    addTrackColorMenuEntry(trackColorMenu, tr("Yellow"),    QColor(Qt::yellow));
+    addTrackColorMenuEntry(trackColorMenu, tr("Green"),     QColor(Qt::green));
+    addTrackColorMenuEntry(trackColorMenu, tr("Blue"),      QColor(Qt::blue));
+    addTrackColorMenuEntry(trackColorMenu, tr("Magenta"),   QColor(Qt::magenta));
+    addTrackColorMenuEntry(trackColorMenu, tr("Cyan"),      QColor(Qt::cyan));
+    optionMenu->addMenu(trackColorMenu);
+
+//    QAction* trackOccupiedColorMenuItem = new QAction(tr("Set Default Occupied Track Color"),this);
+//    trkColourMenu->addAction(trackOccupiedColorMenuItem);
+//    trackOccupiedColorMenuItem.addActionListener((ActionEvent event) -> {
+//        Color desiredColor = JmriColorChooser.showDialog(this,
+//                Bundle.getMessage("DefaultOccupiedTrackColor"),
+//                defaultOccupiedTrackColor);
+//        if (desiredColor != null && !defaultOccupiedTrackColor.equals(desiredColor)) {
+//            setDefaultOccupiedTrackColor(desiredColor);
+//            setDirty();
+//            redrawPanel();
+//        }
+//    });
+//    connect(trackOccupiedColorMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_addTrackOccupiedColorMenuEntry_triggered()));
+    QMenu* trackOccupiedColorMenu = new QMenu(tr("Default Occupied Track Color"));
+    trackOccupiedColorButtonGroup = new QActionGroup(this);
+    trackOccupiedColorButtonMapper = new QSignalMapper();
+    connect(trackOccupiedColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackOccupiedColorMenuEntry_triggered(int)));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Black"),     QColor(Qt::black));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("DarkGray"),  QColor(Qt::darkGray));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Gray"),      QColor(Qt::gray));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("LightGray"), QColor(Qt::lightGray));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("White"),     QColor(Qt::white));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Red"),       QColor(Qt::red));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Pink"),      QColor(255,192,203));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Orange"),    QColor(255, 170, 0));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Yellow"),    QColor(Qt::yellow));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Green"),     QColor(Qt::green));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Blue"),      QColor(Qt::blue));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Magenta"),   QColor(Qt::magenta));
+    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Cyan"),      QColor(Qt::cyan));
+    optionMenu->addMenu(trackOccupiedColorMenu);
+
+//    QAction* trackAlternativeColorMenuItem = new QAction(tr("Set Default Alternative Track Color"),this);
+//    trkColourMenu->addAction(trackAlternativeColorMenuItem);
+//    trackAlternativeColorMenuItem.addActionListener((ActionEvent event) -> {
+//        Color desiredColor = JmriColorChooser.showDialog(this,
+//                Bundle.getMessage("DefaultAlternativeTrackColor"),
+//                defaultAlternativeTrackColor);
+//        if (desiredColor != null && !defaultAlternativeTrackColor.equals(desiredColor)) {
+//            setDefaultAlternativeTrackColor(desiredColor);
+//            setDirty();
+//            redrawPanel();
+//        }
+//    });
+//    connect(trackAlternativeColorMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_addTrackAlternativeColorMenuEntry_triggered()));
+    QMenu* trackAlternativeColorMenu = new QMenu(tr("Default Alternative Track Color"));
+    trackAlternativeColorButtonGroup = new QActionGroup(this);
+    trackAlternativeColorButtonMapper = new QSignalMapper();
+    connect(trackAlternativeColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackAlternativeColorMenuEntry_triggered(int)));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Black"),     QColor(Qt::black));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("DarkGray"),  QColor(Qt::darkGray));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Gray"),      QColor(Qt::gray));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("LightGray"), QColor(Qt::lightGray));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("White"),     QColor(Qt::white));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Red"),       QColor(Qt::red));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Pink"),      QColor(255,192,203));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Orange"),    QColor(255, 170, 0));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Yellow"),    QColor(Qt::yellow));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Green"),     QColor(Qt::green));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Blue"),      QColor(Qt::blue));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Magenta"),   QColor(Qt::magenta));
+    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Cyan"),      QColor(Qt::cyan));
+    optionMenu->addMenu(trackAlternativeColorMenu);
+
+    //Automatically Assign Blocks to Track
+    autoAssignBlocksCheckBoxMenuItem = new QAction(tr("Automatically Assign Blocks to Track"),this);
+    autoAssignBlocksCheckBoxMenuItem->setCheckable(true);
+    trackMenu->addAction(autoAssignBlocksCheckBoxMenuItem);
+//    autoAssignBlocksCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        autoAssignBlocks = autoAssignBlocksCheckBoxMenuItem.isSelected();
+//    });
+    connect(autoAssignBlocksCheckBoxMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_autoAssignBlocksItem_triggered(bool)));
+    autoAssignBlocksCheckBoxMenuItem->setChecked(autoAssignBlocks);
+
+    //add hideTrackSegmentConstructionLines menu item
+    hideTrackSegmentConstructionLinesCheckBoxMenuItem = new QAction(tr("Hide Track Construction Lines"));
+    hideTrackSegmentConstructionLinesCheckBoxMenuItem->setCheckable(true);
+    trackMenu->addAction(hideTrackSegmentConstructionLinesCheckBoxMenuItem);
+//    hideTrackSegmentConstructionLinesCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        int show = TrackSegment.SHOWCON;
+
+//        if (hideTrackSegmentConstructionLinesCheckBoxMenuItem.isSelected()) {
+//            show = TrackSegment.HIDECONALL;
+//        }
+
+//        for (TrackSegment ts : getTrackSegments()) {
+//            ts.hideConstructionLines(show);
+//        }
+//        redrawPanel();
+//    });
+    connect(hideTrackSegmentConstructionLinesCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_hideTrackSegmentConstructionLines_toggled(bool) ));
+    hideTrackSegmentConstructionLinesCheckBoxMenuItem->setChecked(autoAssignBlocks);
+
+    //
+    //add turnout options submenu
+    //
+    QMenu* turnoutOptionsMenu = new QMenu(tr("Turnout Options"));
+    optionMenu->addMenu(turnoutOptionsMenu);
+
+    //animation item
+    animationCheckBoxMenuItem = new QAction(tr("Allow Turnout Animation"), this);
+    animationCheckBoxMenuItem->setCheckable(true);
+    turnoutOptionsMenu->addAction(animationCheckBoxMenuItem);
+//    animationCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        boolean mode = animationCheckBoxMenuItem.isSelected();
+//        setTurnoutAnimation(mode);
+//    });
+    connect(animationCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setTurnoutAnimation(bool)));
+    animationCheckBoxMenuItem->setChecked(true);
+
+    //circle on Turnouts
+    turnoutCirclesOnCheckBoxMenuItem = new QAction(tr("Show Turnout Circles"), this);
+    turnoutCirclesOnCheckBoxMenuItem->setCheckable(true);
+    turnoutOptionsMenu->addAction(turnoutCirclesOnCheckBoxMenuItem);
+//    turnoutCirclesOnCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        turnoutCirclesWithoutEditMode = turnoutCirclesOnCheckBoxMenuItem.isSelected();
+//        redrawPanel();
+//    });
+    connect(turnoutCirclesOnCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(On_turnoutCirclesOnItem_triggered(bool)));
+    turnoutCirclesOnCheckBoxMenuItem->setChecked(turnoutCirclesWithoutEditMode);
+
+    //select turnout circle color
+    QAction* turnoutCircleColorMenuItem = new QAction(tr("Set Turnout Circle Color"), this);
+
+//    turnoutCircleColorMenuItem.addActionListener((ActionEvent event) -> {
+//        Color desiredColor = JmriColorChooser.showDialog(this,
+//                Bundle.getMessage("TurnoutCircleColor"),
+//                turnoutCircleColor);
+//        if (desiredColor != null && !turnoutCircleColor.equals(desiredColor)) {
+//            setTurnoutCircleColor(desiredColor);
+//            setDirty();
+//            redrawPanel();
+//        }
+//    });
+    connect(turnoutCircleColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(onTurnoutCircleColorMenuItem()));
+    turnoutOptionsMenu->addAction(turnoutCircleColorMenuItem);
+
+    //select turnout circle size
+    QMenu* turnoutCircleSizeMenu = new QMenu(tr("Set Turnout Circle Size"));
+#if 1
+    turnoutCircleSizeButtonGroup = new QActionGroup(this);
+    turnoutCircleSizeButtonMapper = new QSignalMapper(this);
+    addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "1", 1);
+    addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "2", 2);
+    addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "3", 3);
+    addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "4", 4);
+    addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "5", 5);
+    addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "6", 6);
+    addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "7", 7);
+    addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "8", 8);
+    addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "9", 9);
+    addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "10", 10);
+#endif
+    turnoutOptionsMenu->addMenu(turnoutCircleSizeMenu);
+
+    //add "enable drawing of unselected leg " menu item (helps when diverging angle is small)
+    turnoutDrawUnselectedLegCheckBoxMenuItem = new QAction(tr("Draw Unselected Turnout Leg"),this);
+    turnoutDrawUnselectedLegCheckBoxMenuItem->setCheckable(true);
+    turnoutOptionsMenu->addAction(turnoutDrawUnselectedLegCheckBoxMenuItem);
+//    turnoutDrawUnselectedLegCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        turnoutDrawUnselectedLeg = turnoutDrawUnselectedLegCheckBoxMenuItem.isSelected();
+//        redrawPanel();
+//    });
+    connect(turnoutDrawUnselectedLegCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(On_turnoutDrawUnselectedLegItem_triggered(bool)));
+    turnoutDrawUnselectedLegCheckBoxMenuItem->setChecked(turnoutDrawUnselectedLeg);
+
+    return optionMenu;
+}
+#endif
+void LayoutEditor::onTurnoutCircleColorMenuItem()
+{
+ QColor desiredColor = JmriColorChooser::showDialog(this,
+         tr("Turnout Circle Color"),
+         turnoutCircleColor);
+ if (desiredColor != nullptr && turnoutCircleColor!=(desiredColor)) {
+     setTurnoutCircleColor(desiredColor);
+     setDirty();
+     redrawPanel();
+ }
+}
+
+void LayoutEditor::onTooltipNoneMenuItem()
+{
+ tooltipsInEditMode = false;
+ tooltipsWithoutEditMode = false;
+ setAllShowToolTip(false);
+}
+
+void LayoutEditor::onTooltipAlwaysMenuItem()
+{
+ tooltipsInEditMode = true;
+ tooltipsWithoutEditMode = true;
+ setAllShowToolTip(true);
+}
+void LayoutEditor::onTooltipInEditMenuItem()
+{
+ tooltipsInEditMode = true;
+ tooltipsWithoutEditMode = false;
+ setAllShowToolTip(isEditable());
+}
+void LayoutEditor::onTooltipNotInEditMenuItem()
+{
+ tooltipsInEditMode = false;
+ tooltipsWithoutEditMode = true;
+ setAllShowToolTip(!isEditable());
+}
+
 /*============================================*\
 |* LayoutTrackDrawingOptions accessor methods *|
 \*============================================*/
@@ -10919,10 +12258,10 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
  * @param menuBar the menu bar to add the Tools menu to
  */
 /*protected*/ void LayoutEditor::setupToolsMenu(/*@Nonnull*/ QMenuBar* menuBar) {
-    QMenu* toolsMenu = new QMenu(tr("Tools"));
+    QMenu* toolsMenu = ui->menuTools;//new QMenu(tr("Tools"));
 
 //    toolsMenu.setMnemonic(stringsToVTCodes.get(tr("MenuToolsMnemonic")));
-    menuBar->addMenu(toolsMenu);
+//    menuBar->addMenu(toolsMenu);
 
     //setup checks menu
     getLEChecks()->setupChecksMenu(toolsMenu);
@@ -10945,119 +12284,139 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        //bring up scale track diagram dialog
 //        scaleTrackDiagram();
 //    });
-#if 0
+
     //translate selection
-    jmi = new JMenuItem(tr("TranslateSelection") + "...");
-    jmi.setToolTipText(tr("TranslateSelectionToolTip"));
-    toolsMenu.add(jmi);
-    jmi.addActionListener((ActionEvent event) -> {
-        //bring up translate selection dialog
-        moveSelection();
-    });
+    jmi = new QAction(tr("Translate Selection") + "...", this);
+    jmi->setToolTip(tr("Click here to translate (move) the currently selected items"));
+    toolsMenu->addAction(jmi);
+//    jmi.addActionListener((ActionEvent event) -> {
+//        //bring up translate selection dialog
+//        moveSelection();
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(moveSelection()));
 
     //undo translate selection
-    jmi = new JMenuItem(tr("UndoTranslateSelection"));
-    jmi.setToolTipText(tr("UndoTranslateSelectionToolTip"));
-    toolsMenu.add(jmi);
-    jmi.addActionListener((ActionEvent event) -> {
-        //undo previous move selection
-        undoMoveSelection();
-    });
+    jmi = new QAction(tr("Undo Translate Selection"),this);
+    jmi->setToolTip(tr("Click here to undo the translate (move) selection"));
+    toolsMenu->addAction(jmi);
+//    jmi.addActionListener((ActionEvent event) -> {
+//        //undo previous move selection
+//        undoMoveSelection();
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(undoMoveSelection()));
 
     //reset turnout size to program defaults
-    jmi = new JMenuItem(tr("ResetTurnoutSize"));
-    jmi.setToolTipText(tr("ResetTurnoutSizeToolTip"));
-    toolsMenu.add(jmi);
-    jmi.addActionListener((ActionEvent event) -> {
-        //undo previous move selection
-        resetTurnoutSize();
-    });
-    toolsMenu.addSeparator();
+    jmi = new QAction(tr("Use Program Default Turnout Size"),this);
+    jmi->setToolTip(tr("Click here to reset to the default turnout size"));
+    toolsMenu->addAction(jmi);
+//    jmi.addActionListener((ActionEvent event) -> {
+//        //undo previous move selection
+//        resetTurnoutSize();
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(resetTurnoutSize()));
+    toolsMenu->addSeparator();
 
     //skip turnout
-    skipTurnoutCheckBoxMenuItem = new JCheckBoxMenuItem(tr("SkipInternalTurnout"));
-    skipTurnoutCheckBoxMenuItem.setToolTipText(tr("SkipInternalTurnoutToolTip"));
-    toolsMenu.add(skipTurnoutCheckBoxMenuItem);
-    skipTurnoutCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-        setIncludedTurnoutSkipped(skipTurnoutCheckBoxMenuItem.isSelected());
-    });
-    skipTurnoutCheckBoxMenuItem.setSelected(isIncludedTurnoutSkipped());
+    skipTurnoutCheckBoxMenuItem = new QAction(tr("Skip Unsignaled Internal Turnouts"), this);
+    skipTurnoutCheckBoxMenuItem->setCheckable(true);
+    skipTurnoutCheckBoxMenuItem->setToolTip(tr("SkipInternalTurnoutToolTip"));
+    toolsMenu->addAction(skipTurnoutCheckBoxMenuItem);
+//    skipTurnoutCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+//        setIncludedTurnoutSkipped(skipTurnoutCheckBoxMenuItem.isSelected());
+//    });
+    connect(skipTurnoutCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setIncludedTurnoutSkipped(bool)));
+    skipTurnoutCheckBoxMenuItem->setChecked(isIncludedTurnoutSkipped());
 
     //set signals at turnout
-    jmi = new JMenuItem(tr("SignalsAtTurnout") + "...");
-    jmi.setToolTipText(tr("SignalsAtTurnoutToolTip"));
-    toolsMenu.add(jmi);
-    jmi.addActionListener((ActionEvent event) -> {
-        //bring up signals at turnout tool dialog
-        getLETools().setSignalsAtTurnout(signalIconEditor, signalFrame);
-    });
+    jmi = new QAction(tr("Set Signal Heads at Turnout") + "...");
+    jmi->setToolTip(tr("Click here to set up the signal heads at a turnout"));
+    toolsMenu->addAction(jmi);
+//    jmi.addActionListener((ActionEvent event) -> {
+//        //bring up signals at turnout tool dialog
+//        getLETools()->setSignalsAtTurnout(signalIconEditor, signalFrame);
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Turnout_triggered()));
 
     //set signals at block boundary
-    jmi = new JMenuItem(tr("SignalsAtBoundary") + "...");
-    jmi.setToolTipText(tr("SignalsAtBoundaryToolTip"));
-    toolsMenu.add(jmi);
-    jmi.addActionListener((ActionEvent event) -> {
-        //bring up signals at block boundary tool dialog
-        getLETools().setSignalsAtBlockBoundary(signalIconEditor, signalFrame);
-    });
+    jmi = new QAction(tr("Set Signal Heads at Block Boundary") + "...", this);
+    jmi->setToolTip(tr("Click here to set up the signal heads at a block boundary"));
+    toolsMenu->addAction(jmi);
+//    jmi.addActionListener((ActionEvent event) -> {
+//        //bring up signals at block boundary tool dialog
+//        getLETools().setSignalsAtBlockBoundary(signalIconEditor, signalFrame);
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Block_Boundary_triggered()));
 
     //set signals at crossover turnout
-    jmi = new JMenuItem(tr("SignalsAtXoverTurnout") + "...");
-    jmi.setToolTipText(tr("SignalsAtXoverTurnoutToolTip"));
-    toolsMenu.add(jmi);
-    jmi.addActionListener((ActionEvent event) -> {
-        //bring up signals at crossover tool dialog
-        getLETools().setSignalsAtXoverTurnout(signalIconEditor, signalFrame);
-    });
+    jmi = new QAction(tr("Set Signal Heads at Crossover") + "...", this);
+    jmi->setToolTip(tr("Click here to set up the signal heads at a crossover"));
+    toolsMenu->addAction(jmi);
+//    jmi.addActionListener((ActionEvent event) -> {
+//        //bring up signals at crossover tool dialog
+//        getLETools().setSignalsAtXoverTurnout(signalIconEditor, signalFrame);
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Crossover_triggered()));
 
     //set signals at level crossing
-    jmi = new JMenuItem(tr("SignalsAtLevelXing") + "...");
-    jmi.setToolTipText(tr("SignalsAtLevelXingToolTip"));
-    toolsMenu.add(jmi);
-    jmi.addActionListener((ActionEvent event) -> {
-        //bring up signals at level crossing tool dialog
-        getLETools().setSignalsAtLevelXing(signalIconEditor, signalFrame);
-    });
+    jmi = new QAction(tr("Set Signal Heads at Level Crossing") + "...", this);
+    jmi->setToolTip(tr("Click here to set up the signal heads at a level crossing"));
+    toolsMenu->addAction(jmi);
+//    jmi.addActionListener((ActionEvent event) -> {
+//        //bring up signals at level crossing tool dialog
+//        getLETools().setSignalsAtLevelXing(signalIconEditor, signalFrame);
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Level_Crossing_triggered()));
 
     //set signals at throat-to-throat turnouts
-    jmi = new JMenuItem(tr("SignalsAtTToTTurnout") + "...");
-    jmi.setToolTipText(tr("SignalsAtTToTTurnoutToolTip"));
-    toolsMenu.add(jmi);
-    jmi.addActionListener((ActionEvent event) -> {
-        //bring up signals at throat-to-throat turnouts tool dialog
-        getLETools().setSignalsAtThroatToThroatTurnouts(signalIconEditor, signalFrame);
-    });
+    jmi = new QAction(tr("Set Signal Heads at Throat-to-Throat Turnouts") + "...", this);
+    jmi->setToolTip(tr("Click here to set up the signals on throat-to-throat turnouts"));
+    toolsMenu->addAction(jmi);
+//    jmi.addActionListener((ActionEvent event) -> {
+//        //bring up signals at throat-to-throat turnouts tool dialog
+//        getLETools().setSignalsAtThroatToThroatTurnouts(signalIconEditor, signalFrame);
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Throat_to_Throat_Turnouts_triggered()));
 
     //set signals at 3-way turnout
-    jmi = new JMenuItem(tr("SignalsAt3WayTurnout") + "...");
-    jmi.setToolTipText(tr("SignalsAt3WayTurnoutToolTip"));
-    toolsMenu.add(jmi);
-    jmi.addActionListener((ActionEvent event) -> {
-        //bring up signals at 3-way turnout tool dialog
-        getLETools().setSignalsAt3WayTurnout(signalIconEditor, signalFrame);
-    });
+    jmi = new QAction(tr("Set Signal Heads at 3-Way Turnout") + "...", this);
+    jmi->setToolTip(tr("Click here to set up the signal heads at a 3-way turnout"));
+    toolsMenu->addAction(jmi);
+//    jmi.addActionListener((ActionEvent event) -> {
+//        //bring up signals at 3-way turnout tool dialog
+//        getLETools().setSignalsAt3WayTurnout(signalIconEditor, signalFrame);
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Three_Way_Turnout()));
 
-    jmi = new JMenuItem(tr("SignalsAtSlip") + "...");
-    jmi.setToolTipText(tr("SignalsAtSlipToolTip"));
-    toolsMenu.add(jmi);
-    jmi.addActionListener((ActionEvent event) -> {
-        //bring up signals at throat-to-throat turnouts tool dialog
-        getLETools().setSignalsAtSlip(signalIconEditor, signalFrame);
-    });
+    jmi = new QAction(tr("Set Signal Heads at a Slip") + "...", this);
+    jmi->setToolTip(tr("Click here to set up the signal heads at a single or double slip"));
+    toolsMenu->addAction(jmi);
+//    jmi.addActionListener((ActionEvent event) -> {
+//        //bring up signals at throat-to-throat turnouts tool dialog
+//        getLETools().setSignalsAtSlip(signalIconEditor, signalFrame);
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Slip_triggered()));
 
-    jmi = new JMenuItem(tr("EntryExitTitle") + "...");
-    jmi.setToolTipText(tr("EntryExitToolTip"));
-    toolsMenu.add(jmi);
-    jmi.addActionListener((ActionEvent event) -> {
-        if (addEntryExitPairAction == null) {
-            addEntryExitPairAction = new AddEntryExitPairAction("ENTRY EXIT", LayoutEditor.this);
-        }
-        addEntryExitPairAction.actionPerformed(event);
-    });
-#endif
+    jmi = new QAction(tr("Entry Exit") + "...", this);
+    jmi->setToolTip(tr("Click here to set up Entry-Exit"));
+    toolsMenu->addAction(jmi);
+//    jmi.addActionListener((ActionEvent event) -> {
+//        if (addEntryExitPairAction == null) {
+//            addEntryExitPairAction = new AddEntryExitPairAction("ENTRY EXIT", LayoutEditor.this);
+//        }
+//        addEntryExitPairAction.actionPerformed(event);
+//    });
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionEntry_Exit_triggered()));
+
+    toolsMenu->addSeparator();
     QAction* clearAction = new QAction(tr("Clear track"), this);
     toolsMenu->addAction(clearAction);
     connect(clearAction, SIGNAL(triggered(bool)), this, SLOT(On_clearTrack()));
+}
+
+void LayoutEditor::onTranslateSelections()
+{
+ //bring up translate selection dialog
+ moveSelection();
 }
 
 void LayoutEditor::On_clearTrack()
@@ -11197,18 +12556,19 @@ void LayoutEditor::On_clearTrack()
     }
 #endif
 }
-#if 0
+#if 1
 //
 //
 //
-/*private*/ void setToolBarSide(ToolBarSide newToolBarSide) {
+/*private*/ void LayoutEditor::setToolBarSide(ToolBarSide::TOOLBARSIDES newToolBarSide) {
     // null if edit toolbar is not setup yet...
-    if ((editModeCheckBoxMenuItem != null) && !newToolBarSide.equals(toolBarSide)) {
-        toolBarSide = newToolBarSide;
-        InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefsMgr) -> {
-            prefsMgr.setProperty(getWindowFrameRef(), "toolBarSide", toolBarSide.getName());
-        });
-
+    if ((editModeCheckBoxMenuItem != nullptr) && !(newToolBarSide ==(toolBarSide.getName()))) {
+        toolBarSide.getName() = newToolBarSide;
+        UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager")); //.ifPresent((prefsMgr) -> {
+        if(prefsMgr)
+            prefsMgr->setProperty(getWindowFrameRef(), "toolBarSide", toolBarSide.getName());
+        }//);
+#if 0
         setupToolBar(); //re-layout all the toolbar items
 
         if (toolBarSide.equals(ToolBarSide.eFLOAT)) {
@@ -11242,24 +12602,25 @@ void LayoutEditor::On_clearTrack()
             helpBarPanel.setVisible(isEditable() && getShowHelpBar());
         }
     }
+#endif
 }
 
 //
 //
 //
-private void setToolBarWide(boolean newToolBarIsWide) {
+/*private*/ void LayoutEditor::setToolBarWide(bool newToolBarIsWide) {
     //null if edit toolbar not setup yet...
-    if ((editModeCheckBoxMenuItem != null) && (toolBarIsWide != newToolBarIsWide)) {
+    if ((editModeCheckBoxMenuItem != nullptr) && (toolBarIsWide != newToolBarIsWide)) {
         toolBarIsWide = newToolBarIsWide;
 
-        wideToolBarCheckBoxMenuItem.setSelected(toolBarIsWide);
-
-        InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefsMgr) -> {
+        wideToolBarCheckBoxMenuItem->setChecked(toolBarIsWide);
+        UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager"));
+        if(prefsMgr) {
             //Note: since prefs default to false and we want wide to be the default
             //we invert it and save it as thin
-            prefsMgr.setSimplePreferenceState(getWindowFrameRef() + ".toolBarThin", !toolBarIsWide);
-        });
-
+            prefsMgr->setSimplePreferenceState(getWindowFrameRef() + ".toolBarThin", !toolBarIsWide);
+        }//);
+#if 0
         setupToolBar(); //re-layout all the toolbar items
 
         if (getShowHelpBar()) {
@@ -11272,6 +12633,7 @@ private void setToolBarWide(boolean newToolBarIsWide) {
         } else {
             helpBarPanel.setVisible(isEditable() && getShowHelpBar());
         }
+#endif
     }
 }
 #endif

@@ -798,7 +798,7 @@ void SwitchboardEditor::onHideUnConnectedBox(bool bChecked)
 
 void SwitchboardEditor::onShowToolTipBox()
 {
- setAllShowTooltip(showToolTipBox->isChecked());
+ setAllShowToolTip(showToolTipBox->isChecked());
 }
 
 /*private*/ void SwitchboardEditor::makeFileMenu() {

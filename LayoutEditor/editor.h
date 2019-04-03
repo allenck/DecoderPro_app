@@ -225,7 +225,7 @@ public:
     const /*public*/ static int OPTION_HIDDEN = 3;
     const /*public*/ static int OPTION_TOOLTIP= 4;
     /*final*/ /*public*/ static QColor HIGHLIGHT_COLOR;// =  QColor(204, 207, 88);
-    /*public*/ void newPanelDefaults();
+    /*public*/ virtual void newPanelDefaults();
 
     //    const /*public*/ static int OPTION_COORDS = 5;
     /*public*/ void loadFailed();
@@ -328,9 +328,9 @@ signals:
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent *);
     /*public*/ virtual void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/;
-    /*public*/ void setAllPositionable(bool state) ;
+    /*public*/ virtual void setAllPositionable(bool state) ;
     /*public*/ void setShowHidden(bool state);
-    /*public*/ void setAllShowTooltip(bool state);
+    /*public*/ void setAllShowToolTip(bool state);
     /*public*/ void setPanelMenuVisible(bool state);
     /*public*/ void setAllControlling(bool state) ;
 
@@ -345,7 +345,7 @@ private:
     /*private*/ QScrollArea* _panelScrollPane;
     // Option menu items
     /*private*/ bool _positionable;// = true;
-    /*private*/ bool _controlLayout;// = true;
+    /*private*/ bool _controlLayout = true;
     /*private*/ bool _showHidden;// = true;
     /*private*/ bool _showTooltip;// = true;
     /*private*/ bool _globalSetsLocal;// = true;    // pre 2.9.6 behavior

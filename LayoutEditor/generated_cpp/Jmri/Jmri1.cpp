@@ -3097,6 +3097,28 @@ if (_wrapper) {
 }
   Editor::setAllEditable(state0);
 }
+void PythonQtShell_Editor::setAllPositionable(bool  state0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setAllPositionable");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&state0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Editor::setAllPositionable(state0);
+}
 void PythonQtShell_Editor::setNextLocation(Positionable*  arg__1)
 {
 if (_wrapper) {
@@ -18415,6 +18437,28 @@ if (_wrapper) {
 }
   LayoutEditor::setAllEditable(state0);
 }
+void PythonQtShell_LayoutEditor::setAllPositionable(bool  state0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setAllPositionable");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&state0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::setAllPositionable(state0);
+}
 void PythonQtShell_LayoutEditor::setNextLocation(Positionable*  obj0)
 {
 if (_wrapper) {
@@ -18888,7 +18932,7 @@ if (_wrapper) {
 }
   LayoutEditor::wheelEvent(event0);
 }
-void PythonQtShell_LayoutEditor::windowClosing(QCloseEvent*  e0)
+void PythonQtShell_LayoutEditor::windowClosing(QCloseEvent*  event0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -18898,7 +18942,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QCloseEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&e0};
+      void* args[2] = {NULL, (void*)&event0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -18908,7 +18952,7 @@ if (_wrapper) {
     }
   }
 }
-  LayoutEditor::windowClosing(e0);
+  LayoutEditor::windowClosing(event0);
 }
 LayoutEditor* PythonQtWrapper_LayoutEditor::new_LayoutEditor(QString  name, QWidget*  parent)
 { 
@@ -19024,11 +19068,6 @@ void PythonQtWrapper_LayoutEditor::addTurntable(LayoutEditor* theWrappedObject, 
 bool  PythonQtWrapper_LayoutEditor::allControlling(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->allControlling());
-}
-
-bool  PythonQtWrapper_LayoutEditor::allPositionable(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->allPositionable());
 }
 
 bool  PythonQtWrapper_LayoutEditor::containsSignalHead(LayoutEditor* theWrappedObject, SignalHead*  head)
@@ -19211,6 +19250,11 @@ QList<Positionable* >  PythonQtWrapper_LayoutEditor::getSelectedItems(LayoutEdit
   return ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_getSelectedItems(event));
 }
 
+bool  PythonQtWrapper_LayoutEditor::getShowHelpBar(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getShowHelpBar());
+}
+
 float  PythonQtWrapper_LayoutEditor::getSideTrackWidth(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getSideTrackWidth());
@@ -19351,6 +19395,11 @@ bool  PythonQtWrapper_LayoutEditor::isEditable(LayoutEditor* theWrappedObject)
   return ( theWrappedObject->isEditable());
 }
 
+bool  PythonQtWrapper_LayoutEditor::isIncludedTurnoutSkipped(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->isIncludedTurnoutSkipped());
+}
+
 bool  PythonQtWrapper_LayoutEditor::isTurnoutDrawUnselectedLeg(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->isTurnoutDrawUnselectedLeg());
@@ -19421,24 +19470,9 @@ void PythonQtWrapper_LayoutEditor::removeSignalHead(LayoutEditor* theWrappedObje
   ( theWrappedObject->removeSignalHead(head));
 }
 
-void PythonQtWrapper_LayoutEditor::resetTurnoutSize(LayoutEditor* theWrappedObject)
-{
-  ( theWrappedObject->resetTurnoutSize());
-}
-
 void PythonQtWrapper_LayoutEditor::scaleTrackDiagram(LayoutEditor* theWrappedObject)
 {
   ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_scaleTrackDiagram());
-}
-
-void PythonQtWrapper_LayoutEditor::setAllControlling(LayoutEditor* theWrappedObject, bool  state)
-{
-  ( theWrappedObject->setAllControlling(state));
-}
-
-void PythonQtWrapper_LayoutEditor::setAllPositionable(LayoutEditor* theWrappedObject, bool  state)
-{
-  ( theWrappedObject->setAllPositionable(state));
 }
 
 void PythonQtWrapper_LayoutEditor::setAntialiasingOn(LayoutEditor* theWrappedObject, bool  state)
@@ -19711,14 +19745,14 @@ double  PythonQtWrapper_LayoutEditor::setZoom(LayoutEditor* theWrappedObject, do
   return ( theWrappedObject->setZoom(zoomFactor));
 }
 
+QMenu*  PythonQtWrapper_LayoutEditor::setupOptionMenu(LayoutEditor* theWrappedObject, QMenuBar*  menuBar)
+{
+  return ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_setupOptionMenu(menuBar));
+}
+
 void PythonQtWrapper_LayoutEditor::setupToolsMenu(LayoutEditor* theWrappedObject, QMenuBar*  menuBar)
 {
   ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_setupToolsMenu(menuBar));
-}
-
-QMenu*  PythonQtWrapper_LayoutEditor::setupTurnoutSubMenu(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->setupTurnoutSubMenu());
 }
 
 bool  PythonQtWrapper_LayoutEditor::showAlignPopup(LayoutEditor* theWrappedObject)

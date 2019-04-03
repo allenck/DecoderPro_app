@@ -460,7 +460,7 @@ void ControlPanelEditor::on_makeCircuitMenu()
 //            setAllShowTooltip(showTooltipBox.isSelected());
 //        }
 //    });
- connect(showTooltipBox, SIGNAL(toggled(bool)), this, SLOT(setAllShowTooltip(bool)));
+ connect(showTooltipBox, SIGNAL(toggled(bool)), this, SLOT(setAllShowToolTip(bool)));
  showTooltipBox->setChecked(showToolTip());
 #if 1  // QGraphicsView already has scrollbars
  // Show/Hide Scroll Bars

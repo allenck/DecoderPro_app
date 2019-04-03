@@ -17,6 +17,7 @@ public:
  /*public*/ static QPointF center(/*@Nonnull*/ QRectF r);
  /*public*/ static QPointF midPoint(QRectF r);
  /*public*/ static QPointF midPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
+ /*public*/ static QRectF offset(/*@Nonnull*/ QRectF r, double x, double y);
  /*public*/ static QPointF oneThirdPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
  /*public*/ static QPointF twoThirdsPoint(QPointF p1, QPointF p2);
  /*public*/ static QPointF oneFourthPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);

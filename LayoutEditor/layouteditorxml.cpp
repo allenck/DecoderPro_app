@@ -615,6 +615,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel->setVisible(true);    // always show the panel
  panel->resetDirty();
  panel->getTargetFrame()->menuBar()->setVisible(true);
+ panel->menuBox->setChecked(true);
 
  panel->paintTargetPanel(panel->editScene); // force redraw
 

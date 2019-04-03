@@ -682,7 +682,7 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
     return _showHidden;
 }
 
-/*public*/ void Editor::setAllShowTooltip(bool state) {
+/*public*/ void Editor::setAllShowToolTip(bool state) {
     _showTooltip = state;
     for (int i = 0; i<_contents->size(); i++) {
         _contents->at(i)->setShowTooltip(state);
@@ -924,7 +924,7 @@ void Editor::closeEvent(QCloseEvent */*e*/)
   ed->setAllEditable(isEditable());
   ed->setAllPositionable(allPositionable());
   //ed.setShowCoordinates(showCoordinates());
-  ed->setAllShowTooltip(showToolTip());
+  ed->setAllShowToolTip(showToolTip());
   ed->setAllControlling(allControlling());
   ed->setShowHidden(isVisible());
   ed->setPanelMenu(frame->menuBar()->isVisible());

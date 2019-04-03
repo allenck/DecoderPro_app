@@ -31096,6 +31096,28 @@ if (_wrapper) {
 }
   ControlPanelEditor::setAllEditable(edit0);
 }
+void PythonQtShell_ControlPanelEditor::setAllPositionable(bool  state0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setAllPositionable");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&state0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::setAllPositionable(state0);
+}
 void PythonQtShell_ControlPanelEditor::setNextLocation(Positionable*  obj0)
 {
 if (_wrapper) {

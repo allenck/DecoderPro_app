@@ -17,7 +17,7 @@ AddPanelEditorDialog::AddPanelEditorDialog(QWidget *parent) :
  editor->getTargetFrame()->resize(600,400);
  editor->setAllEditable(ui->chkPopup->isChecked());
  editor->setAllPositionable(ui->chkReposition->isChecked());
- editor->setAllShowTooltip(ui->chkShowTooltips->isChecked());
+ editor->setAllShowToolTip(ui->chkShowTooltips->isChecked());
  editor->setAllControlling(ui->chkControlLayout->isChecked());
  editor->setShowHidden(ui->chkShowHidden->isChecked());
  editor->setPanelMenu(ui->chkHasMenu->isChecked());
@@ -118,7 +118,7 @@ void AddPanelEditorDialog::on_chkControlLayout_toggled(bool bState) {editor->set
 void AddPanelEditorDialog::on_chkHasMenu_toggled(bool /*bState*/) {editor->setPanelMenu(true);}
 void AddPanelEditorDialog::on_chkReposition_toggled(bool bState) {editor->setAllPositionable(bState);}
 void AddPanelEditorDialog::on_chkPopup_toggled(bool bState) {editor->setAllEditable(bState);}
-void AddPanelEditorDialog::on_chkShowTooltips_toggled(bool bState) {editor->setAllShowTooltip(bState);}
+void AddPanelEditorDialog::on_chkShowTooltips_toggled(bool bState) {editor->setAllShowToolTip(bState);}
 void AddPanelEditorDialog::on_chkShowHidden_toggled(bool bState) {editor->setShowHidden(bState);}
 
 

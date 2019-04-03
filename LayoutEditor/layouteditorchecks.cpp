@@ -28,16 +28,16 @@
  checkNoResultsMenuItem = new QAction(tr("CheckNoResultsMenuItemTitle"),this);
 
  // Check for Un-Connected Tracks
- checkUnConnectedTracksMenu = new QMenu(tr("CheckUnConnectedTracksMenuTitle"));
+ checkUnConnectedTracksMenu = new QMenu(tr("Un-Connected Tracks"));
 
  // Check for Un-Blocked Tracks
- checkUnBlockedTracksMenu = new QMenu(tr("CheckUnBlockedTracksMenuTitle"));
+ checkUnBlockedTracksMenu = new QMenu(tr("Un-Blocked Tracks"));
 
  // Check for Non-Contiguous Blocks
- checkNonContiguousBlocksMenu = new QMenu(tr("CheckNonContiguousBlocksMenuTitle"));
+ checkNonContiguousBlocksMenu = new QMenu(tr("Non-Contiguous Blocks"));
 
  // Check for Unnecessary Anchors
- checkUnnecessaryAnchorsMenu = new QMenu(tr("CheckUnnecessaryAnchorsMenuTitle"));
+ checkUnnecessaryAnchorsMenu = new QMenu(tr("Unnecessary Anchors"));
 
  this->layoutEditor = layoutEditor;
 }

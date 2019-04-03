@@ -471,95 +471,21 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>Options</string>
     </property>
-    <widget class="QMenu" name="menuShow_scrollbars">
-     <property name="title">
-      <string>Show scrollbars</string>
-     </property>
-     <addaction name="actionBoth_scrollbars"/>
-     <addaction name="actionNo_scrollbars"/>
-     <addaction name="actionHorizontal_only"/>
-     <addaction name="actionVertical_only"/>
-    </widget>
-    <widget class="QMenu" name="menuShow_icon_tooltips">
-     <property name="title">
-      <string>Show icon tooltips</string>
-     </property>
-     <addaction name="actionNever"/>
-     <addaction name="actionAlways"/>
-     <addaction name="actionIn_edit_mode_only"/>
-     <addaction name="actionNot_in_edit_mode_only"/>
-    </widget>
-    <widget class="QMenu" name="menuSet_Background_color">
-     <property name="title">
-      <string>Set Background color</string>
-     </property>
-    </widget>
-    <addaction name="actionEdit_mode"/>
-    <addaction name="actionAllow_repositioning"/>
-    <addaction name="actionAllow_layout_control"/>
-    <addaction name="actionAllow_turnout_animation"/>
-    <addaction name="actionShow_help_bar_in_edit_mode"/>
-    <addaction name="actionShow_grid_in_edit_mode"/>
-    <addaction name="actionSnap_to_grid_when_adding"/>
-    <addaction name="actionSnap_to_grid_when_moving"/>
-    <addaction name="menuShow_scrollbars"/>
-    <addaction name="menuShow_icon_tooltips"/>
-    <addaction name="actionEnable_antialiasing_smoother_lines"/>
-    <addaction name="separator"/>
-    <addaction name="actionNew_title"/>
-    <addaction name="actionAdd_background_image_2"/>
-    <addaction name="menuSet_Background_color"/>
-    <addaction name="actionAdd_Fast_Clock"/>
-    <addaction name="actionAdd_Turntable"/>
-    <addaction name="actionAdd_reporter_label"/>
-    <addaction name="actionEdit_track_width"/>
-    <addaction name="actionMoveLayout"/>
-    <addaction name="actionCalculate_bounds"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionScale_Translate_track_diagram"/>
-    <addaction name="actionTranslate_Selection"/>
-    <addaction name="actionUndo_Translate_Selection"/>
-    <addaction name="actionUse_Program_Default_Turnout_size"/>
-    <addaction name="separator"/>
-    <addaction name="actionSkip_unsignalled_Internal_Turnouts"/>
-    <addaction name="actionSet_Signals_at_Turnout"/>
-    <addaction name="actionSet_Signals_at_Block_Boundary"/>
-    <addaction name="actionSet_Signals_at_Crossover"/>
-    <addaction name="actionSet_Signals_at_Level_Crossing"/>
-    <addaction name="actionSet_SIgnals_at_Throat_to_Throat_Turnouts"/>
-    <addaction name="actionSet_Signals_at_Three_Way_Turnout"/>
-    <addaction name="actionSet_Signals_at_a_Slip"/>
-    <addaction name="actionEntry_Exit"/>
    </widget>
    <widget class="QMenu" name="menuZoom">
     <property name="title">
      <string>Zoom</string>
     </property>
-    <addaction name="actionNo_zoom"/>
-    <addaction name="actionX_1_5"/>
-    <addaction name="actionX_2_0"/>
-    <addaction name="actionX_3_0"/>
-    <addaction name="actionX_4_0"/>
     <addaction name="separator"/>
-    <addaction name="actionZoom_In"/>
-    <addaction name="actionZoom_Out"/>
-    <addaction name="actionZoom_to_fit"/>
    </widget>
    <widget class="QMenu" name="menuMarker">
     <property name="title">
      <string>Marker</string>
-    </property>
-    <addaction name="actionAdd_loco"/>
-    <addaction name="actionAdd_loco_from_roster"/>
-    <addaction name="actionRemove_markers"/>
-   </widget>
-   <widget class="QMenu" name="menuWindow">
-    <property name="title">
-     <string>Window</string>
     </property>
    </widget>
    <addaction name="menuFile"/>
@@ -567,7 +493,6 @@ p, li { white-space: pre-wrap; }
    <addaction name="menuTools"/>
    <addaction name="menuZoom"/>
    <addaction name="menuMarker"/>
-   <addaction name="menuWindow"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="font">

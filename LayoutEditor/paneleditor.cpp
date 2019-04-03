@@ -158,6 +158,10 @@ PanelEditor::~PanelEditor()
 //         Color.black, new Color(215, 225, 255), Color.black));
  // set scrollbar initial state
  setScroll(SCROLL_BOTH);
+ QMenuBar* frameMenubar = new QMenuBar();
+ frame->setMenuBar(frameMenubar);
+ frameMenubar->addMenu(HelpUtil::instance()->makeHelpMenu("package.jmri.jmrit.display.PanelEditor", true, this));
+
 
  // allow renaming the panel
  {
@@ -430,7 +434,6 @@ PanelEditor::~PanelEditor()
 // addMultiSensorDlg = NULL;
 // addBackgroundDlg = NULL;
  menuBar()->addMenu(WarrantTableAction::makeWarrantMenu(isEditable(),this));
- menuBar()->addMenu(HelpUtil::instance()->makeHelpMenu("package.jmri.jmrit.display.PanelEditor", true, this));
 
  //connect(ui->actionOpenEditor, SIGNAL(triggered()), this, SLOT(on_actionOpenEditor_triggered()));
 

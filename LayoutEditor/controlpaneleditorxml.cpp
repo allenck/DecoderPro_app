@@ -188,7 +188,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  value = true;
  if ((a = element.attribute("showtooltips"))!=NULL && a==("no"))
      value = false;
- panel->setAllShowTooltip(value);
+ panel->setAllShowToolTip(value);
 
  value = true;
  if ((a = element.attribute("controlling"))!=NULL && a==("no"))

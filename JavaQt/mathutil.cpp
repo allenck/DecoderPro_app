@@ -131,6 +131,19 @@ MathUtil::MathUtil()
 }
 
 /**
+ * offset a rectangle
+ *
+ * @param r the rectangle
+ * @param x the horzontial offset
+ * @param y the vertical offset
+ * @return the offset rectangle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QRectF MathUtil::offset(/*@Nonnull*/ QRectF r, double x, double y) {
+    return QRectF(r.x() + x, r.y() + y, r.width(), r.height());
+}
+
+/**
  * calculate the point 1/3 of the way between two points
  *
  * @param pA the first point

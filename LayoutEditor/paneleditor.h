@@ -145,6 +145,7 @@ protected:
  friend class RemoveMenuAction;
  friend class LockItemListener;
  friend class PanelEditorXml;
+ friend class LayoutEditorXml;
 };
 Q_DECLARE_METATYPE(PanelEditor)
 

@@ -3081,6 +3081,7 @@ virtual QPaintDevice*  redirected(QPoint*  offset) const;
 virtual void repaint();
 virtual void resizeEvent(QResizeEvent*  e);
 virtual void setAllEditable(bool  edit);
+virtual void setAllPositionable(bool  state);
 virtual void setNextLocation(Positionable*  obj);
 virtual void setRemoveMenu(Positionable*  p, QMenu*  popup);
 virtual void setScroll(int  state);

@@ -176,7 +176,7 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
     value = true;
     if ((a = element.attribute("showtooltips"))!="" && a==("no"))
         value = false;
-    panel->setAllShowTooltip(value);
+    panel->setAllShowToolTip(value);
 
     value = true;
     if ((a = element.attribute("controlling"))!="" && a==("no"))
