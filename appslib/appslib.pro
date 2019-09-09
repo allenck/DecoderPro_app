@@ -461,12 +461,12 @@ SOURCES += appslib.cpp \
     firsttimestartupwizard.cpp \
     firsttimestartupwizardaction.cpp \
     profileconfiguration.cpp \
-    ../../tests/RosterTest/rostertest.cpp \
-    ../../tests/temporaryfolder.cpp \
-    ../../tests/RosterTest/rostertestutil.cpp \
-    ../../tests/junitutil.cpp \
-    ../../tests/assert.cpp \
-    nullprofile.cpp
+    nullprofile.cpp \
+    ../tests/assert.cpp \
+    ../tests/junitutil.cpp \
+    ../tests/temporaryfolder.cpp \
+    ../tests/RosterTest/rostertest.cpp \
+    ../tests/RosterTest/rostertestutil.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -876,12 +876,12 @@ HEADERS += appslib.h\
     firsttimestartupwizard.h \
     firsttimestartupwizardaction.h \
     profileconfiguration.h \
-    ../../tests/RosterTest/rostertest.h \
-    ../../tests/temporaryfolder.h \
-    ../../tests/RosterTest/rostertestutil.h \
-    ../../tests/junitutil.h \
-    ../../tests/assert.h \
-    nullprofile.h
+    nullprofile.h \
+    ../tests/assert.h \
+    ../tests/junitutil.h \
+    ../tests/temporaryfolder.h \
+    ../tests/RosterTest/rostertest.h \
+    ../tests/RosterTest/rostertestutil.h
 
 unix:!symbian {
     maemo5 {
