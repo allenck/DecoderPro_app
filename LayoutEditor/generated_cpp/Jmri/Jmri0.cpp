@@ -30854,6 +30854,28 @@ if (_wrapper) {
 }
   return ControlPanelEditor::nativeEvent(eventType0, message1, result2);
 }
+void PythonQtShell_ControlPanelEditor::newPanelDefaults()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("newPanelDefaults");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::newPanelDefaults();
+}
 void PythonQtShell_ControlPanelEditor::pack()
 {
 if (_wrapper) {

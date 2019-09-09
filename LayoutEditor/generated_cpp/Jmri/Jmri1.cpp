@@ -2855,6 +2855,28 @@ if (_wrapper) {
 }
   return Editor::nativeEvent(eventType0, message1, result2);
 }
+void PythonQtShell_Editor::newPanelDefaults()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("newPanelDefaults");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Editor::newPanelDefaults();
+}
 void PythonQtShell_Editor::pack()
 {
 if (_wrapper) {
@@ -18217,6 +18239,28 @@ if (_wrapper) {
 }
   return LayoutEditor::nativeEvent(eventType0, message1, result2);
 }
+void PythonQtShell_LayoutEditor::newPanelDefaults()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("newPanelDefaults");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::newPanelDefaults();
+}
 void PythonQtShell_LayoutEditor::pack()
 {
 if (_wrapper) {
@@ -19568,6 +19612,11 @@ void PythonQtWrapper_LayoutEditor::setGlobalSetsLocalFlag(LayoutEditor* theWrapp
 void PythonQtWrapper_LayoutEditor::setHiddenMenu(LayoutEditor* theWrappedObject, Positionable*  p, QMenu*  popup)
 {
   ( theWrappedObject->setHiddenMenu(p, popup));
+}
+
+void PythonQtWrapper_LayoutEditor::setHighlightSelectedBlock(LayoutEditor* theWrappedObject, bool  state)
+{
+  ( theWrappedObject->setHighlightSelectedBlock(state));
 }
 
 void PythonQtWrapper_LayoutEditor::setLayoutDimensions(LayoutEditor* theWrappedObject, int  windowW, int  windowH, int  x, int  y, int  panelW, int  panelH, bool  merge)

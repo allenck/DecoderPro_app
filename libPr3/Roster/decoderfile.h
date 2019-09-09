@@ -27,9 +27,9 @@ public:
     /*public*/ QString getMfgID();
     /*public*/ QString getModel();
     /*public*/ QString getFamily();
- /*public*/ QString getReplacementModel() ;
- /*public*/ QString getReplacementFamily();
-    /*public*/ QString getFilename();
+    /*public*/ QString getReplacementModel() ;
+    /*public*/ QString getReplacementFamily();
+    /*public*/ QString getFileName();
     /*public*/ int getNumFunctions();
     /*public*/ int getNumOutputs();
     /*public*/ QString getModelComment();

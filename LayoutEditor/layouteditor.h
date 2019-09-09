@@ -230,7 +230,7 @@ public:
     /*public*/ int getWindowHeight() ;
     /*public*/ int getUpperLeftX() ;
     /*public*/ int getUpperLeftY() ;
-    /*public*/ bool getScroll();
+    QT_DEPRECATED /*public*/ bool getScroll();
     /*public*/ /*const*/ int getAnchorX();
     /*public*/ /*const*/ int getAnchorY();
 //    /*public*/ bool allPositionable();
@@ -294,10 +294,10 @@ public:
     /*public*/ QString getLayoutName();
     /*public*/ bool getShowHelpBar();
     /*public*/ void setLayoutName(QString name);
-    bool getDrawGrid() {return drawGrid;}
+    QT_DEPRECATED bool getDrawGrid() {return drawGrid;}
     void setDrawGrid(bool state);
-    bool getSnapOnAdd(){return snapToGridOnAdd;}
-    bool getSnapOnMove(){return snapToGridOnMove;}
+    QT_DEPRECATED bool getSnapOnAdd(){return snapToGridOnAdd;}
+    QT_DEPRECATED bool getSnapOnMove(){return snapToGridOnMove;}
     bool getAntialiasingOn(){return antialiasingOn;}
     bool getTurnoutCircles(){return turnoutCirclesWithoutEditMode;}
     bool getTooltipsNotEdit() {return tooltipsWithoutEditMode;}

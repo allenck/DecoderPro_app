@@ -639,7 +639,7 @@ void CombinedLocoSelPane::updateForDecoderNotID(int pMfgID, int pModelID)
  // find the decoderFile object
  setCursor(Qt::WaitCursor);
  DecoderFile* decoderFile = DecoderIndexFile::instance()->fileFromTitle(selectedDecoderType());
- if (log->isDebugEnabled()) log->debug("decoder file: "+decoderFile->getFilename());
+ if (log->isDebugEnabled()) log->debug("decoder file: "+decoderFile->getFileName());
 
  // create a dummy RosterEntry with the decoder info
  RosterEntry* re = new RosterEntry();

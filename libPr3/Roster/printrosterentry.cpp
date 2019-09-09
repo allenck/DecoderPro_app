@@ -71,10 +71,10 @@
  }
 
  CvTableModel* cvModel       = new CvTableModel(progStatus, mProgrammer);
- IndexedCvTableModel* iCvModel      = new IndexedCvTableModel(progStatus, mProgrammer);
+ //IndexedCvTableModel* iCvModel      = new IndexedCvTableModel(progStatus, mProgrammer);
 
  QStringList nameList = QStringList() << "name" << "Value";
- VariableTableModel* variableModel = new VariableTableModel(progStatus, nameList, cvModel, iCvModel);
+ VariableTableModel* variableModel = new VariableTableModel(progStatus, nameList, cvModel/*, iCvModel*/);
 
  QString decoderModel = _rosterEntry->getDecoderModel();
  QString decoderFamily = _rosterEntry->getDecoderFamily();
@@ -108,17 +108,17 @@
  QDomElement decoderRoot;
  try
  {
-  decoderRoot = d->rootFromName(DecoderFile::fileLocation+d->getFilename());
+  decoderRoot = d->rootFromName(DecoderFile::fileLocation+d->getFileName());
 
  }
  catch (JDOMException exj)
  {
-  log->error("could not parse "+d->getFilename()+": "+exj.getMessage());
+  log->error("could not parse "+d->getFileName()+": "+exj.getMessage());
   return;
  }
  catch (IOException exj)
  {
-  log->error("could not read "+d->getFilename()+": "+exj.getMessage());
+  log->error("could not read "+d->getFileName()+": "+exj.getMessage());
   return;
  }
 
@@ -139,7 +139,7 @@
  {
   // load each pane
   QString name = rawPaneList.at(i).toElement().attribute("name");
-  PaneProgPane* p = new PaneProgPane(this, name, rawPaneList.at(i).toElement(), cvModel, iCvModel, variableModel, d->getModelElement(), _rosterEntry);
+  PaneProgPane* p = new PaneProgPane(this, name, rawPaneList.at(i).toElement(), cvModel, /*iCvModel,*/ variableModel, d->getModelElement(), _rosterEntry);
   _paneList.append(p);
  }
 }

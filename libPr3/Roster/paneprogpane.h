@@ -36,7 +36,7 @@ class LIBPR3SHARED_EXPORT PaneProgPane : public QWidget //, public PaneContainer
     Q_OBJECT
 public:
     explicit PaneProgPane(QWidget *parent = 0);
-    /*public*/ PaneProgPane(PaneContainer* container, QString name, QDomElement pane, CvTableModel* cvModel, IndexedCvTableModel* icvModel, VariableTableModel* varModel, QDomElement modelElem, RosterEntry* rosterEntry, QWidget *parent = 0);
+    /*public*/ PaneProgPane(PaneContainer* container, QString name, QDomElement pane, CvTableModel* cvModel, /*IndexedCvTableModel* icvModel,*/ VariableTableModel* varModel, QDomElement modelElem, RosterEntry* rosterEntry, QWidget *parent = 0);
     /*public*/ QString getName();
     /*public*/ QString toString() ;
     void enableReadButtons();

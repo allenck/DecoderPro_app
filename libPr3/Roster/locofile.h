@@ -20,9 +20,9 @@ public:
     explicit LocoFile(QObject *parent = 0);
     /*public*/ QString titleString();
     /*public*/ static void loadCvModel(QDomElement loco, CvTableModel* cvModel, QString family);
- /*public*/ static void loadVariableModel(QDomElement loco, VariableTableModel* varModel);
- /*public*/ void writeFile(File* pFile, QDomElement pRootElement, RosterEntry* pEntry);
-    /*public*/ void writeFile(QFile* file, CvTableModel* cvModel, IndexedCvTableModel* iCvModel, VariableTableModel* variableModel, RosterEntry* r);
+    /*public*/ static void loadVariableModel(QDomElement loco, VariableTableModel* varModel);
+    /*public*/ void writeFile(File* pFile, QDomElement pRootElement, RosterEntry* pEntry);
+    /*public*/ void writeFile(QFile* file, CvTableModel* cvModel, VariableTableModel* variableModel, RosterEntry* r);
     /*public*/ void writeFile(QFile* pFile, QDomElement pRootElement, RosterEntry* pEntry);
     /*public*/ void writeFile(QFile* pFile, QDomElement existingElement, QDomElement newLocomotive);
     static /*public*/ QString getFileLocation();

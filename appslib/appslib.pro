@@ -460,7 +460,13 @@ SOURCES += appslib.cpp \
     editconnectionpreferences.cpp \
     firsttimestartupwizard.cpp \
     firsttimestartupwizardaction.cpp \
-    profileconfiguration.cpp
+    profileconfiguration.cpp \
+    ../../tests/RosterTest/rostertest.cpp \
+    ../../tests/temporaryfolder.cpp \
+    ../../tests/RosterTest/rostertestutil.cpp \
+    ../../tests/junitutil.cpp \
+    ../../tests/assert.cpp \
+    nullprofile.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -869,7 +875,13 @@ HEADERS += appslib.h\
     editconnectionpreferences.h \
     firsttimestartupwizard.h \
     firsttimestartupwizardaction.h \
-    profileconfiguration.h
+    profileconfiguration.h \
+    ../../tests/RosterTest/rostertest.h \
+    ../../tests/temporaryfolder.h \
+    ../../tests/RosterTest/rostertestutil.h \
+    ../../tests/junitutil.h \
+    ../../tests/assert.h \
+    nullprofile.h
 
 unix:!symbian {
     maemo5 {

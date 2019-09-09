@@ -151,7 +151,7 @@ PaneProgPane::PaneProgPane(QWidget *parent) :
  * @param modelElem "model" element from the Decoder Index, used to check what decoder options are present.
  */
 //@SuppressWarnings("unchecked")
-/*public*/ PaneProgPane::PaneProgPane(PaneContainer* container, QString name, QDomElement  pane, CvTableModel* cvModel, IndexedCvTableModel* icvModel, VariableTableModel* varModel, QDomElement  modelElem, RosterEntry* rosterEntry, QWidget *parent) : QWidget(parent)
+/*public*/ PaneProgPane::PaneProgPane(PaneContainer* container, QString name, QDomElement  pane, CvTableModel* cvModel, /*IndexedCvTableModel* icvModel,*/ VariableTableModel* varModel, QDomElement  modelElem, RosterEntry* rosterEntry, QWidget *parent) : QWidget(parent)
 {
  log = new Logger("PaneProgPane");
  log->setDebugEnabled(false);
@@ -190,7 +190,7 @@ PaneProgPane::PaneProgPane(QWidget *parent) :
  mName = name;
  this->setObjectName(name);
  _cvModel = cvModel;
- _indexedCvModel = icvModel;
+ //_indexedCvModel = icvModel;
  _varModel = varModel;
  this->rosterEntry = rosterEntry;
 

@@ -154,7 +154,7 @@ public:
     /*public*/ void setFunctionLockable(int fn, bool lockable);
     /*public*/ bool getFunctionLockable(int fn);
     /*public*/ void loadCvModel(VariableTableModel* varModel, CvTableModel* cvModel);
-    /*public*/ void writeFile(CvTableModel* cvModel, IndexedCvTableModel* iCvModel, VariableTableModel* variableModel);
+    /*public*/ void writeFile(CvTableModel* cvModel, /*IndexedCvTableModel* iCvModel,*/ VariableTableModel* variableModel);
     /*public*/ void changeDateUpdated();
     /*public*/ void setOpen(bool boo);
     /*public*/ bool isOpen();

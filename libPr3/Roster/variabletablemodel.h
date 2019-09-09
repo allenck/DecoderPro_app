@@ -28,7 +28,7 @@ public:
   DELETE_COLUMN = 7
  };
     explicit VariableTableModel(QObject *parent = 0);
-/*public*/ VariableTableModel(QLabel* status, QStringList h, CvTableModel* cvModel, IndexedCvTableModel* iCvModel, QObject *parent = 0);
+/*public*/ VariableTableModel(QLabel* status, QStringList h, CvTableModel* cvModel, /*IndexedCvTableModel* iCvModel,*/ QObject *parent = 0);
     /*public*/ int rowCount(const QModelIndex &parent) const;
     /*public*/ int columnCount(const QModelIndex &parent) const;
     /*public*/ QString getColumnName(int col);

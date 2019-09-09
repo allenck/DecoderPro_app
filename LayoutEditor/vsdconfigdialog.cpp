@@ -529,9 +529,9 @@
     // Doesn't matter which, so we'll use the LocoNet programmer.
     Programmer* p = InstanceManager::programmerManagerInstance()->getGlobalProgrammer();
     CvTableModel* cvModel = new CvTableModel(NULL, p);
-    IndexedCvTableModel* iCvModel = new IndexedCvTableModel(NULL, p);
+    //IndexedCvTableModel* iCvModel = new IndexedCvTableModel(NULL, p);
     QStringList items = QStringList() << "Name" << "Value";
-    VariableTableModel* variableModel = new VariableTableModel(NULL, items, cvModel, iCvModel);
+    VariableTableModel* variableModel = new VariableTableModel(NULL, items, cvModel/*, iCvModel*/);
 
     // Now, in theory we can call _rosterEntry.writeFile...
     if (_rosterEntry->getFileName() != NULL) {
@@ -550,7 +550,7 @@
     _rosterEntry->ensureFilenameExists();
 
     // create the RosterEntry to its file
-    _rosterEntry->writeFile(cvModel, iCvModel, variableModel); // where to get the models???
+    _rosterEntry->writeFile(cvModel, /*iCvModel,*/ variableModel); // where to get the models???
 
     // mark this as a success
     variableModel->setFileDirty(false);

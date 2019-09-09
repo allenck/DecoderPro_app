@@ -3071,6 +3071,7 @@ virtual void mousePressEvent(QMouseEvent*  event);
 virtual void mouseReleaseEvent(QMouseEvent*  event);
 virtual void moveEvent(QMoveEvent*  e);
 virtual bool  nativeEvent(const QByteArray&  eventType, void*  message, long*  result);
+virtual void newPanelDefaults();
 virtual void pack();
 virtual void paint(QGraphicsScene*  g);
 virtual QPaintEngine*  paintEngine() const;

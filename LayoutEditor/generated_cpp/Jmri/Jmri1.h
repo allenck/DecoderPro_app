@@ -357,6 +357,7 @@ virtual void mousePressEvent(QMouseEvent*  event);
 virtual void mouseReleaseEvent(QMouseEvent*  event);
 virtual void moveEvent(QMoveEvent*  e);
 virtual bool  nativeEvent(const QByteArray&  eventType, void*  message, long*  result);
+virtual void newPanelDefaults();
 virtual void pack();
 virtual void paint(QGraphicsScene*  g);
 virtual QPaintEngine*  paintEngine() const;
@@ -459,6 +460,7 @@ inline void py_q_dispose() { Editor::dispose(); }
 inline QString  py_q_getTitle() { return Editor::getTitle(); }
 inline void py_q_init(QString  name) { Editor::init(name); }
 inline void py_q_initView() { Editor::initView(); }
+inline void py_q_newPanelDefaults() { Editor::newPanelDefaults(); }
 inline void py_q_paint(QGraphicsScene*  g) { Editor::paint(g); }
 inline void py_q_paintTargetPanel(QGraphicsScene*  g) { Editor::paintTargetPanel(g); }
 inline void py_q_putItem(Positionable*  l) { Editor::putItem(l); }
@@ -536,6 +538,7 @@ void delete_Editor(Editor* obj) { delete obj; }
    void modifySelectionGroup(Editor* theWrappedObject, Positionable*  selection, QGraphicsSceneMouseEvent*  event);
    void moveItem(Editor* theWrappedObject, Positionable*  p, int  deltaX, int  deltaY);
    void newPanelDefaults(Editor* theWrappedObject);
+   void py_q_newPanelDefaults(Editor* theWrappedObject){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_newPanelDefaults());}
    void paint(Editor* theWrappedObject, QGraphicsScene*  g);
    void py_q_paint(Editor* theWrappedObject, QGraphicsScene*  g){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_paint(g));}
    void py_q_paintTargetPanel(Editor* theWrappedObject, QGraphicsScene*  g){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_paintTargetPanel(g));}
@@ -1778,6 +1781,7 @@ virtual void mousePressEvent(QMouseEvent*  event);
 virtual void mouseReleaseEvent(QMouseEvent*  event);
 virtual void moveEvent(QMoveEvent*  e);
 virtual bool  nativeEvent(const QByteArray&  eventType, void*  message, long*  result);
+virtual void newPanelDefaults();
 virtual void pack();
 virtual void paint(QGraphicsScene*  g);
 virtual QPaintEngine*  paintEngine() const;
@@ -1863,6 +1867,7 @@ inline void promoted_trackWidthDonePressed() { this->trackWidthDonePressed(); }
 inline void promoted_undoMoveSelection() { this->undoMoveSelection(); }
 inline void py_q_dispose() { LayoutEditor::dispose(); }
 inline QString  py_q_getClassName() { return LayoutEditor::getClassName(); }
+inline void py_q_newPanelDefaults() { LayoutEditor::newPanelDefaults(); }
 inline void py_q_putItem(Positionable*  l) { LayoutEditor::putItem(l); }
 inline void py_q_repaint() { LayoutEditor::repaint(); }
 inline void py_q_setAllEditable(bool  state) { LayoutEditor::setAllEditable(state); }
@@ -1974,6 +1979,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    bool  isTurnoutDrawUnselectedLeg(LayoutEditor* theWrappedObject);
    void loadFailed(LayoutEditor* theWrappedObject);
    void makeBackupFile(LayoutEditor* theWrappedObject, QString  name);
+   void py_q_newPanelDefaults(LayoutEditor* theWrappedObject){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_newPanelDefaults());}
    void paintTargetPanel(LayoutEditor* theWrappedObject, EditScene*  g2);
    QGraphicsView*  panel(LayoutEditor* theWrappedObject);
    void py_q_putItem(LayoutEditor* theWrappedObject, Positionable*  l){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_putItem(l));}
@@ -2009,6 +2015,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void setFilename(LayoutEditor* theWrappedObject, QString  path);
    void setGlobalSetsLocalFlag(LayoutEditor* theWrappedObject, bool  set);
    void setHiddenMenu(LayoutEditor* theWrappedObject, Positionable*  p, QMenu*  popup);
+   void setHighlightSelectedBlock(LayoutEditor* theWrappedObject, bool  state);
    void setLayoutDimensions(LayoutEditor* theWrappedObject, int  windowW, int  windowH, int  x, int  y, int  panelW, int  panelH, bool  merge = false);
    void setLayoutName(LayoutEditor* theWrappedObject, QString  name);
    void setMainlineTrackWidth(LayoutEditor* theWrappedObject, int  w);

@@ -460,7 +460,7 @@ if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
     _rosterEntry->ensureFilenameExists();
 
     // create the RosterEntry to its file
-    _rosterEntry->writeFile(cvModel, iCvModel, variableModel); // where to get the models???
+    _rosterEntry->writeFile(cvModel, /*iCvModel,*/ variableModel); // where to get the models???
 
     // mark this as a success
     variableModel->setFileDirty(false);

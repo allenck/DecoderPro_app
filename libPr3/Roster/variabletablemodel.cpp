@@ -39,7 +39,7 @@ VariableTableModel::VariableTableModel(QObject *parent) :
  *  "Name", "Value", "Range", "Read", "Write", "Comment", "CV", "Mask", "State"
  */
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // OK until Java 1.6 allows cheap array copy
-/*public*/ VariableTableModel::VariableTableModel(QLabel* status, QStringList h, CvTableModel* cvModel, IndexedCvTableModel* iCvModel, QObject *parent) :
+/*public*/ VariableTableModel::VariableTableModel(QLabel* status, QStringList h, CvTableModel* cvModel, QObject *parent) :
 AbstractTableModel(parent)
 {
 //super();
@@ -47,7 +47,7 @@ log = new Logger("VariableTableModel");
 //log->setDebugEnabled(true);
 _status = status;
 _cvModel = cvModel;
-_indxCvModel = iCvModel;
+//_indxCvModel = iCvModel;
 headers = h;
 rowVector = new QVector<VariableValue*>();
 _writeButtons = new QVector<QPushButton*>();

@@ -20,10 +20,11 @@ public:
     /*public*/ void setName(QString name);
     /*public*/ QString getId();
     /*public*/ File* getPath();
-    /*public*/ QString toString();
-    /*public*/ bool equals(QObject* obj);
-    /*public*/ bool isComplete();
-    /*public*/ QString getUniqueId();
+    /*public*/ virtual QString toString();
+//    /*public*/ virtual int hashCode();
+    /*public*/ virtual bool equals(QObject* obj);
+    /*public*/ virtual bool isComplete();
+    /*public*/ virtual QString getUniqueId();
     /*public*/ static bool containsProfile(File* path);
     /*public*/ static bool inProfile(File* path);
     /*public*/ static bool isProfile(File* path);
@@ -50,7 +51,7 @@ private:
  QT_DEPRECATED /*private*/ void readProfileXml() throw (IOException);
 
 protected:
- /*protected*/ Profile(File* path, bool isReadable, QObject *parent = 0);
+    /*protected*/ Profile(File* path, bool isReadable, QObject *parent = 0);
     /*protected*/ static /*final*/ QString ID;// = "id"; // NOI18N
     /*protected*/ static /*final*/ QString NAME;// = "name"; // NOI18N
     /*protected*/ static /*final*/ QString PATH;// = "path"; // NOI18N

@@ -9,7 +9,8 @@ class FileInputStream : public QDataStream
 public:
  /*public*/ FileInputStream(QString name, QObject* parent = nullptr) throw (FileNotFoundException);
  /*public*/ FileInputStream(File* file, QObject* parent = nullptr) throw (FileNotFoundException);
-
+ /*public*/ QChar read() throw (IOException);
+ /*public*/ void close() throw (IOException) ;
 private:
  void common(File*);
  /* File Descriptor - handle to the open file */
@@ -24,9 +25,8 @@ private:
 // /*private*/ FileChannel channel;// = null;
 
  /*private*/ /*final*/ QObject* closeLock;// = new Object();
- /*private*/ volatile bool close;//d = false;
+ /*private*/ volatile bool _close;//d = false;
  /*private*/ void open(QString name) throw (FileNotFoundException) ;
-
 };
 
 #endif // FILEINPUTSTREAM_H

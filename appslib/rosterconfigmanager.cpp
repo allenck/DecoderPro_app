@@ -32,6 +32,7 @@
  log = new Logger("RosterConfigManager");
  directory = FileUtil::PREFERENCES;
  defaultOwner = "";
+ rosters = QHash<Profile*, Roster*>();
 
     log->debug(tr("Roster is %1").arg(this->directory));
 //    FileUtilSupport::getDefault()->addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeEvent evt) -> {
@@ -161,4 +162,31 @@ void RosterConfigManager::onPropertyChange(PropertyChangeEvent* evt)
  this->directory = directory;
  log->debug(tr("Roster changed from %1 to %2").arg(oldDirectory).arg(this->directory));
  firePropertyChange(DIRECTORY, oldDirectory, directory);
+}
+/**
+ * Get the roster for the profile.
+ *
+ * @param profile the profile to get the roster for
+ * @return the roster for the profile
+ */
+//@Nonnull
+/*public*/ Roster* RosterConfigManager::getRoster(/*@CheckForNull*/ Profile* profile) {
+    Roster* roster = rosters.value(profile);
+    if (roster == nullptr) {
+        roster = new Roster();
+        rosters.insert(profile, roster);
+    }
+    return roster;
+}
+/**
+ * Set the roster for the profile.
+ *
+ * @param profile the profile to set the roster for
+ * @param roster the roster for the profile
+ * @return the roster just set, so this method can be used in a chain
+ */
+//@Nonnull
+/*public*/ Roster* RosterConfigManager::setRoster(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ Roster* roster) {
+    rosters.insert(profile, roster);
+    return getRoster(profile);
 }

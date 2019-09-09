@@ -347,22 +347,22 @@ PaneProgFrame::~PaneProgFrame()
   return;
  }
  if (log->isDebugEnabled()) log->debug("loadDecoderFile from "+DecoderFile::fileLocation
-                                    +" "+df->getFilename());
+                                    +" "+df->getFileName());
 
  try
  {
   if(DecoderFile::fileLocation.startsWith(QDir::separator()))
-   decoderRoot = df->rootFromName(DecoderFile::fileLocation+df->getFilename());
+   decoderRoot = df->rootFromName(DecoderFile::fileLocation+df->getFileName());
   else
   {
    QStringList slist = QStringList() << FileUtil::getUserFilesPath();
    //decoderRoot = df->rootFromName(XmlFile::xmlDir()+DecoderFile::fileLocation+df->getFilename());
-   decoderRoot = df->rootFromName(FileUtil::findURL(DecoderFile::fileLocation+ df->getFilename(),slist).path());
+   decoderRoot = df->rootFromName(FileUtil::findURL(DecoderFile::fileLocation+ df->getFileName(),slist).path());
    }
   }
  catch (Exception e)
  {
-  log->error("Exception while loading decoder XML file: "+df->getFilename(), e);
+  log->error("Exception while loading decoder XML file: "+df->getFileName(), e);
  }
 
  if(XmlInclude::scanForInclude(decoderRoot))
@@ -372,20 +372,20 @@ PaneProgFrame::~PaneProgFrame()
    return;
   XInclude* xinclude = new XInclude();
   File* f;
-  QUrl url = QUrl(DecoderFile::fileLocation+df->getFilename());
+  QUrl url = QUrl(DecoderFile::fileLocation+df->getFileName());
   if(ret == JOptionPane::YES_OPTION)
   {
-   xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ DecoderFile::fileLocation+ df->getFilename()), this);
+   xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ DecoderFile::fileLocation+ df->getFileName()), this);
   }
    else
   {
    QTemporaryDir dir;
-   xinclude->copyXml(&url, f = new File(dir.path()+df->getFilename()),this);
+   xinclude->copyXml(&url, f = new File(dir.path()+df->getFileName()),this);
   }
   decoderRoot = df->rootFromFile(f);
  }
 
- statusBar()->showMessage(tr("reading decoder file %1").arg(df->getFilename()));
+ statusBar()->showMessage(tr("reading decoder file %1").arg(df->getFileName()));
  // load variables from decoder tree
  df->getProductID();
  setCursor(Qt::WaitCursor);
@@ -1236,7 +1236,7 @@ void PaneProgFrame::updateDccAddress()
 {
  if (log->isDebugEnabled()) log->debug(tr("newPane '")+name+tr("' with enableEmpty ")+(enableEmpty?"true":"false")+" getShowEmptyPanes() "+(getShowEmptyPanes()?"true":"false"));
  // create a panel to hold columns
- PaneProgPane* p = new PaneProgPane((PaneContainer*)this, name, pane, cvModel, iCvModel, variableModel, modelElem, _rosterEntry);
+ PaneProgPane* p = new PaneProgPane((PaneContainer*)this, name, pane, cvModel, /*iCvModel,*/ variableModel, modelElem, _rosterEntry);
 //    p->setOpaque(true);
  // how to handle the tab depends on whether it has contents and option setting
  if ( enableEmpty || (p->cvList->size()!=0) || (p->varList->size()!=0) || (p->indexedCvList->size()!=0))
@@ -1659,7 +1659,7 @@ bool PaneProgFrame::doWrite()
  QString filename = _rosterEntry->getFileName();
 
  // create the RosterEntry to its file
- _rosterEntry->writeFile(cvModel, iCvModel, variableModel );
+ _rosterEntry->writeFile(cvModel, /*iCvModel,*/ variableModel );
 
  // mark this as a success
  variableModel->setFileDirty(false);

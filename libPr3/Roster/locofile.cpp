@@ -196,7 +196,7 @@ LocoFile::LocoFile(QObject *parent) :
  * @param variableModel provides the variable names and contents
  * @param r  RosterEntry providing name, etc, information
  */
-/*public*/ void LocoFile::writeFile(QFile* file, CvTableModel* cvModel, IndexedCvTableModel* iCvModel, VariableTableModel* variableModel, RosterEntry* r)
+/*public*/ void LocoFile::writeFile(QFile* file, CvTableModel* cvModel, /*IndexedCvTableModel* iCvModel, */VariableTableModel* variableModel, RosterEntry* r)
 {
  QFileInfo* info = new QFileInfo(*file);
  if (log->isDebugEnabled()) log->debug("writeFile to "+info->absoluteFilePath()+" "+info->fileName());
@@ -265,22 +265,22 @@ LocoFile::LocoFile(QObject *parent) :
          }
         }
 
-        // add the Indexed CV values to the
-        if (iCvModel!=NULL)
-        {
-            for (int i = 0; i < iCvModel->rowCount(QModelIndex()); i++)
-         {
-          QDomElement elem;
-                values.appendChild(elem =doc.createElement("indexedCVvalue"));
-                                  elem.setAttribute("name", iCvModel->getName(i));
-                                  elem.setAttribute("piCv", ((iCvModel->getCvByRow(i))->piCv()));
-                                  elem.setAttribute("piVal", QString::number((iCvModel->getCvByRow(i))->piVal()));
-                                  elem.setAttribute("siCv", ((iCvModel->getCvByRow(i))->siCv()));
-                                  elem.setAttribute("siVal", QString::number((iCvModel->getCvByRow(i))->siVal()));
-                                  elem.setAttribute("iCv", ((iCvModel->getCvByRow(i))->iCv()));
-                                  elem.setAttribute("value", iCvModel->getValString(i));
-            }
-        }
+//        // add the Indexed CV values to the
+//        if (iCvModel!=NULL)
+//        {
+//            for (int i = 0; i < iCvModel->rowCount(QModelIndex()); i++)
+//         {
+//          QDomElement elem;
+//                values.appendChild(elem =doc.createElement("indexedCVvalue"));
+//                                  elem.setAttribute("name", iCvModel->getName(i));
+//                                  elem.setAttribute("piCv", ((iCvModel->getCvByRow(i))->piCv()));
+//                                  elem.setAttribute("piVal", QString::number((iCvModel->getCvByRow(i))->piVal()));
+//                                  elem.setAttribute("siCv", ((iCvModel->getCvByRow(i))->siCv()));
+//                                  elem.setAttribute("siVal", QString::number((iCvModel->getCvByRow(i))->siVal()));
+//                                  elem.setAttribute("iCv", ((iCvModel->getCvByRow(i))->iCv()));
+//                                  elem.setAttribute("value", iCvModel->getValString(i));
+//            }
+//        }
         doc.appendChild(root);
         writeXML(file, doc);
 

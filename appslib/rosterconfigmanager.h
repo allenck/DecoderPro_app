@@ -4,6 +4,7 @@
 #include "propertychangeevent.h"
 
 class Logger;
+class Roster;
 class RosterConfigManager : public AbstractPreferencesManager
 {
  Q_OBJECT
@@ -20,6 +21,8 @@ public:
  /*public*/ void setDefaultOwner(QString defaultOwner);
  /*public*/ QString getDirectory();
  /*public*/ void setDirectory(QString directory);
+ /*public*/ Roster* getRoster(/*@CheckForNull*/ Profile* profile);
+ /*public*/ Roster* setRoster(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ Roster* roster);
 
 public slots:
  void onPropertyChange(PropertyChangeEvent*);
@@ -28,7 +31,7 @@ private:
  Logger* log;
  /*private*/ QString directory;// = FileUtil.PREFERENCES;
  /*private*/ QString defaultOwner;// = "";
-
+ /*private*/ /*final*/ QHash<Profile*, Roster*> rosters;// = new HashMap<>();
 };
 Q_DECLARE_METATYPE(RosterConfigManager)
 

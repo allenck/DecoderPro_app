@@ -937,7 +937,7 @@ void RosterEntry::init()
  * @param variableModel Variable contents to include in file
  *
  */
-/*public*/ void RosterEntry::writeFile(CvTableModel* cvModel, IndexedCvTableModel* iCvModel, VariableTableModel* variableModel) {
+/*public*/ void RosterEntry::writeFile(CvTableModel* cvModel, /*IndexedCvTableModel* iCvModel,*/ VariableTableModel* variableModel) {
     LocoFile* df = new LocoFile();
 
     // do I/O
@@ -953,7 +953,7 @@ void RosterEntry::init()
         changeDateUpdated();
 
         // and finally write the file
-        df->writeFile(f, cvModel, iCvModel, variableModel, this);
+        df->writeFile(f, cvModel, /*iCvModel,*/ variableModel, this);
 
     } catch (Exception e) {
         log->error("error during locomotive file output"/*, e*/);

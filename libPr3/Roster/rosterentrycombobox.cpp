@@ -650,3 +650,12 @@ void RosterEntryComboBox::on_currentIndexChanged(QString /*text*/)
  }
 }
 
+/*public*/ int RosterEntryComboBox::getItemCount()
+{
+ return count();
+}
+
+/*public*/ RosterEntry* RosterEntryComboBox::getItemAt(int i)
+{
+ return _currentSelection->at(i);
+}

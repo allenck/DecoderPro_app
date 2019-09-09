@@ -66,6 +66,7 @@ public:
     /*public*/ QString getNonSelectedItem();
     /*public*/ QList<RosterEntry*> * getSelectedRosterEntries();
     static /*final*/ QString SELECTED_ROSTER_ENTRIES;// = "selectedRosterEntries";
+    /*public*/ int getItemCount();
 
 signals:
     void propertyChange(QString, QList<RosterEntry*> *, QList<RosterEntry*> *);
@@ -73,6 +74,7 @@ signals:
 public slots:
     void on_currentIndexChanged(QString text);
     /*public*/ void propertyChange(PropertyChangeEvent* pce);
+    /*public*/ RosterEntry* getItemAt(int);
 
 private:
  Logger log;

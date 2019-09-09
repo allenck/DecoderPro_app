@@ -292,6 +292,7 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
 //    return hash;
 //}
 
+
 //@Override
 /*public*/ bool Profile::equals(QObject* obj) {
     if (obj == NULL) {

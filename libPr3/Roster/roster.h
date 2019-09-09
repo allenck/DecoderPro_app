@@ -42,6 +42,7 @@ public:
     static /*public*/ QString makeValidFilename(QString entry);
     /*public*/ RosterEntry* entryFromTitle(QString title );
     /*public*/ RosterEntry* getEntryForId(QString id);
+    /*public*/ QList<RosterEntry*> getEntriesByDccAddress(QString a);
     /*public*/ RosterEntry* getEntry(int i );
     /*public*/ static QString _AllEntries(QLocale locale);
     /*public*/ QString getSelectedRosterGroup();
@@ -173,6 +174,7 @@ protected:
  /*protected*/ QList<RosterEntry*>* _list;// = new QList<RosterEntry*>();
   /*protected*/ QVector<QString> _rosterGroupList;// = new ArrayList<QString>();
 
+  friend class RosterTest;
 };
 
 #endif // ROSTER_H

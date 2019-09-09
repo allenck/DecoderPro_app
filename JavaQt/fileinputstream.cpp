@@ -166,7 +166,7 @@ void FileInputStream::common(File * file)
  if(!f.open(QIODevice::ReadOnly))
    throw FileNotFoundException();
 }
-#if 0
+
 /**
  * Reads a byte of data from this input stream. This method blocks
  * if no input is yet available.
@@ -175,10 +175,10 @@ void FileInputStream::common(File * file)
  *             file is reached.
  * @exception  IOException  if an I/O error occurs.
  */
-/*public*/ int read() throws IOException {
-    return read0();
+/*public*/ QChar FileInputStream::read() throw (IOException) {
+    // return read0();
 }
-
+#if 0
 /*private*/ native int read0() throws IOException;
 
 /**
@@ -271,7 +271,7 @@ void FileInputStream::common(File * file)
  *             {@code close} or an I/O error occurs.
  */
 /*public*/ native int available() throws IOException;
-
+#endif
 /**
  * Closes this file input stream and releases any system resources
  * associated with the stream.
@@ -284,7 +284,8 @@ void FileInputStream::common(File * file)
  * @revised 1.4
  * @spec JSR-51
  */
-/*public*/ void close() throws IOException {
+/*public*/ void FileInputStream::close() throw (IOException) {
+#if 0
     synchronized (closeLock) {
         if (closed) {
             return;
@@ -300,8 +301,9 @@ void FileInputStream::common(File * file)
            close0();
        }
     });
+#endif
 }
-
+#if 0
 /**
  * Returns the <code>FileDescriptor</code>
  * object  that represents the connection to

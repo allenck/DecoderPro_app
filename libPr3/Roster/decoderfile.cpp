@@ -200,7 +200,7 @@ DecoderFile::DecoderFile(QObject *parent) :
     return _replacementFamily;
 }
 
-/*public*/ QString DecoderFile::getFilename()  { return _filename; }
+/*public*/ QString DecoderFile::getFileName()  { return _filename; }
 /*public*/ int DecoderFile::getNumFunctions() { return _numFns; }
 /*public*/ int DecoderFile::getNumOutputs()   { return _numOuts; }
 

@@ -321,7 +321,7 @@ if (p == NULL) {
  }
 
  cvModel       = new CvTableModel(statusLabel, mProgrammer);
- iCvModel      = new IndexedCvTableModel(statusLabel, mProgrammer);
+// iCvModel      = new IndexedCvTableModel(statusLabel, mProgrammer);
 
  QStringList labels = QStringList() << "Name" << "Value";
  variableModel = new VariableTableModel(statusLabel, labels,
@@ -331,11 +331,11 @@ if (p == NULL) {
   QDomElement decoderRoot = QDomElement();
   try 
   {
-   decoderRoot = decoderFile->rootFromName(DecoderFile::fileLocation+decoderFile->getFilename());
+   decoderRoot = decoderFile->rootFromName(DecoderFile::fileLocation+decoderFile->getFileName());
   } 
   catch (Exception e)
   { 
-   log->error("Exception while loading decoder XML file: "+decoderFile->getFilename(), e); return;
+   log->error("Exception while loading decoder XML file: "+decoderFile->getFileName(), e); return;
   } // NOI18N
   modelElem = decoderFile->getModelElement();
 
@@ -388,7 +388,7 @@ if (p == NULL) {
   QDomNodeList paneList = base.elementsByTagName("pane"); // NOI18N
   if (log->isDebugEnabled()) log->debug("will process "+QString::number(paneList.size())+" pane definitions"); // NOI18N
   QString name = getLocaleAttribute(paneList.at(0).toElement(), "name", "en");
-  progPane = new ThisProgPane((PaneContainer*)this, name, paneList.at(0).toElement(), cvModel, iCvModel, variableModel, modelElem, re);
+  progPane = new ThisProgPane((PaneContainer*)this, name, paneList.at(0).toElement(), cvModel, /*iCvModel,*/ variableModel, modelElem, re);
 
   progPane->setVariableValue("Short Address", cv1); // NOI18N
   progPane->setVariableValue("Long Address", longAddress); // NOI18N
@@ -535,7 +535,7 @@ void PaneProgDp3Action::saveRosterEntry() /*throws jmri.JmriException*/
  {
     re->setDccAddress(""+address);  // NOI18N
     re->setLongAddress(!shortAddr);
-    re->writeFile(cvModel, iCvModel, variableModel );
+    re->writeFile(cvModel, /*iCvModel,*/ variableModel );
 
     // mark this as a success
     variableModel->setFileDirty(false);
@@ -580,8 +580,8 @@ return new BusyGlassPane( QList<QWidget*>(),
 //private static final long serialVersionUID = 8855795459526662034L;
 
 /*public*/ ThisProgPane::ThisProgPane(PaneContainer* parent, QString name, QDomElement pane, CvTableModel* cvModel,
-                                      IndexedCvTableModel* icvModel, VariableTableModel* varModel, QDomElement modelElem, RosterEntry* re)
-    :PaneProgPane(parent, name, pane, cvModel, icvModel, varModel, modelElem, re)
+                                      /*IndexedCvTableModel* icvModel,*/ VariableTableModel* varModel, QDomElement modelElem, RosterEntry* re)
+    :PaneProgPane(parent, name, pane, cvModel, /*icvModel,*/ varModel, modelElem, re)
 {
     bottom->layout()->removeWidget(readChangesButton);
     bottom->layout()->removeWidget(writeChangesButton);
@@ -739,7 +739,7 @@ void ThisProgPane::On_readAllButton_clicked(bool bSelected)
    log->debug("openNewLoco");
    // find the decoderFile object
    DecoderFile* decoderFile = DecoderIndexFile::instance()->fileFromTitle(selectedDecoderType());
-   if (log->isDebugEnabled()) log->debug("decoder file: "+decoderFile->getFilename()); // NOI18N
+   if (log->isDebugEnabled()) log->debug("decoder file: "+decoderFile->getFileName()); // NOI18N
    if(pane->rosterIdField->text()==(tr("LabelNewDecoder"))){ // NOI18N
        pane->re = new RosterEntry();
        pane->re->setDecoderFamily(decoderFile->getFamily());

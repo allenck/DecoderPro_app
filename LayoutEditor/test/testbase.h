@@ -19,14 +19,14 @@ signals:
 public slots:
 };
 
-class TestIntermediate : public TestBase
+QT_DEPRECATED class TestIntermediate : public TestBase
 {
  Q_OBJECT
 public:
  explicit TestIntermediate(QObject *parent = nullptr);
  QString intermediate1();
  QString intermediate2();
- QString base3();
+ Q_INVOKABLE QT_DEPRECATED QString base3();
  virtual QString intermediate3();
  QMenu* getMenu();
 

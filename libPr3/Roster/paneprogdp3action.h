@@ -17,7 +17,7 @@ class LIBPR3SHARED_EXPORT ThisProgPane : public PaneProgPane
 */
 //private static final long serialVersionUID = 8855795459526662034L;
 public:
-/*public*/ ThisProgPane(PaneContainer* parent, QString name, QDomElement pane, CvTableModel* cvModel, IndexedCvTableModel* icvModel, VariableTableModel* varModel, QDomElement modelElem, RosterEntry* re);
+/*public*/ ThisProgPane(PaneContainer* parent, QString name, QDomElement pane, CvTableModel* cvModel, VariableTableModel* varModel, QDomElement modelElem, RosterEntry* re);
 /*public*/ void setCVValue(QString cv, int value);
 /*public*/ void setVariableValue(QString variable, int value);
 /*public*/ void dispose();

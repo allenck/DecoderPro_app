@@ -1,6 +1,9 @@
 #include <PythonQt.h>
 #include <QObject>
 #include <QVariant>
+#include <qbytearray.h>
+#include <qlist.h>
+#include <qobject.h>
 #include <test/testbase.h>
 
 
@@ -14,6 +17,11 @@ public:
 
 virtual QString  base3();
 virtual QString  base4();
+virtual void childEvent(QChildEvent*  event);
+virtual void customEvent(QEvent*  event);
+virtual bool  event(QEvent*  event);
+virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -54,7 +62,12 @@ public:
 
 virtual QString  base3();
 virtual QString  base4();
+virtual void childEvent(QChildEvent*  event);
+virtual void customEvent(QEvent*  event);
+virtual bool  event(QEvent*  event);
+virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  intermediate3();
+virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -94,7 +107,12 @@ public:
 
 virtual QString  base3();
 virtual QString  base4();
+virtual void childEvent(QChildEvent*  event);
+virtual void customEvent(QEvent*  event);
+virtual bool  event(QEvent*  event);
+virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  intermediate3();
+virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);

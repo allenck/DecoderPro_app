@@ -300,6 +300,23 @@ Roster::Roster(QObject *parent) :
 }
 
 /**
+ * Return a list of RosterEntry which have a particular DCC address.
+ *
+ * @param a The address.
+ * @return a List of matching entries, empty if there are not matches.
+ */
+//@Nonnull
+/*public*/ QList<RosterEntry*> Roster::getEntriesByDccAddress(QString a) {
+#if 0 // TODO
+    return findMatchingEntries(
+            (RosterEntry r) -> {
+                return r.getDccAddress().equals(a);
+            }
+    );
+#endif
+}
+
+/**
  * Return a specific entry by index
  */
 /*public*/ RosterEntry* Roster::getEntry(int i ) {
