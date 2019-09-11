@@ -94,6 +94,8 @@
 #include "throttlewindow.h"
 #include "application.h"
 #include "fileutilsupport.h"
+#include "../tests/RosterTest/rostertestaction.h"
+#include "../tests/RosterTest/rosterentrytestaction.h"
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -894,6 +896,14 @@ void Apps::On_handleQuit()
 
     d->addSeparator();
     d->addAction(new WiThrottleCreationAction(this));
+
+    d->addSeparator();
+    QMenu* testsMenu = new QMenu(tr("Tests"));
+    d->addMenu(testsMenu);
+    testsMenu->addAction(new RosterTestAction("Roster Test", this));
+    testsMenu->addAction(new RosterEntryTestAction("Roster Entry Test", this));
+
+
     menuBar->addMenu(d);
 
 }

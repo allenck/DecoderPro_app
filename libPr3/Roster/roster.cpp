@@ -222,6 +222,8 @@ Roster::Roster(QObject *parent) :
  */
 /*public*/ void Roster::addEntry(RosterEntry* e)
 {
+ if(e == nullptr)
+  throw (NullPointerException("Roster is null"));
  if (log->isDebugEnabled()) log->debug("Add entry "+e->getFileName());
  int i = _list->size()-1;// Last valid index
  while (i>=0)
@@ -969,6 +971,13 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
 
 /*public*/ QString Roster::getRosterIndexPath() {
     return this->getRosterLocation() + this->getRosterIndexFileName();
+}
+
+/*
+ * get the path to the file containing roster entry files.
+ */
+/*public*/ QString Roster::getRosterFilesLocation() {
+    return getDefault()->getRosterLocation() + "roster" + File::separator;
 }
 
 /**

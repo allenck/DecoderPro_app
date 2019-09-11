@@ -76,7 +76,6 @@ SOURCES += appslib.cpp \
     myapplication.cpp \
     operations/trainmanifesttext.cpp \
     createbuttonmodel.cpp \
-    #createbuttonpanelxml.cpp \
     splashwindow.cpp \
     toolsmenu.cpp \
     powerpanelaction.cpp \
@@ -462,11 +461,14 @@ SOURCES += appslib.cpp \
     firsttimestartupwizardaction.cpp \
     profileconfiguration.cpp \
     nullprofile.cpp \
-    ../tests/assert.cpp \
-    ../tests/junitutil.cpp \
-    ../tests/temporaryfolder.cpp \
-    ../tests/RosterTest/rostertest.cpp \
-    ../tests/RosterTest/rostertestutil.cpp
+    tests/assert.cpp \
+    tests/junitutil.cpp \
+    tests/temporaryfolder.cpp \
+    tests/RosterTest/rosterentrytestaction.cpp \
+    tests/RosterTest/rostertest.cpp \
+    tests/RosterTest/rostertestaction.cpp \
+    tests/RosterTest/rosterentrytest.cpp \
+    tests/RosterTest/rostertestutil.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -877,11 +879,14 @@ HEADERS += appslib.h\
     firsttimestartupwizardaction.h \
     profileconfiguration.h \
     nullprofile.h \
-    ../tests/assert.h \
-    ../tests/junitutil.h \
-    ../tests/temporaryfolder.h \
-    ../tests/RosterTest/rostertest.h \
-    ../tests/RosterTest/rostertestutil.h
+    tests/assert.h \
+    tests/junitutil.h \
+    tests/temporaryfolder.h \
+    tests/RosterTest/rosterentrytestaction.h \
+    tests/RosterTest/rostertest.h \
+    tests/RosterTest/rostertestaction.h \
+    tests/RosterTest/rosterentrytest.h \
+    tests/RosterTest/rostertestutil.h
 
 unix:!symbian {
     maemo5 {
@@ -892,8 +897,8 @@ unix:!symbian {
     INSTALLS += target
 }
 
-DEPENDPATH += . operations
-INCLUDEPATH += . operations
+DEPENDPATH +=  operations tests
+INCLUDEPATH +=  operations tests
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3

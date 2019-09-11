@@ -41,8 +41,8 @@ win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lapps
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
 else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
 
-INCLUDEPATH += $$PWD/../appslib
-DEPENDPATH += $$PWD/../appslib
+INCLUDEPATH += $$PWD/../appslib/
+DEPENDPATH += $$PWD/../appslib/
 
 HEADERS += \
     panelpro.h
@@ -122,13 +122,3 @@ TRANSLATIONS += \
     languages/panelpro_de.ts \
     languages/panelpro_en.ts
 
-
-
-
-#win32: LIBS += -lpython27
-
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Python27/libs/ -lpython27
-
-#INCLUDEPATH += $$PWD/../../../../../Python27/include
-#DEPENDPATH += $$PWD/../../../../../Python27/include

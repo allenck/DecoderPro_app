@@ -3406,6 +3406,14 @@ void LayoutEditor::onZoom15Item()
 {
  setZoom(1.5);
 }
+void LayoutEditor::onZoom30Item()
+{
+ setZoom(3.0);
+}
+void LayoutEditor::onZoom40Item()
+{
+ setZoom(4.0);
+}
 void LayoutEditor::onZoom20Item()
 {
  setZoom(2.0);

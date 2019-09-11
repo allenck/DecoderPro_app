@@ -166,6 +166,8 @@ public:
     /*public*/ static void setDefaultOwner(QString n);
     /*public*/ QList<RosterGroup*> getGroups();
     /*public*/ QList<RosterGroup*> getGroups(Roster* roster);
+    /*public*/ static RosterEntry* fromFile(/*@Nonnull*/ File* file) throw (JDOMException, IOException);
+    /*public*/ QString getDisplayName();
 
 
 signals:

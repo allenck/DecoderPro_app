@@ -1329,6 +1329,35 @@ if (!(_decoderFamily==("")))
     } catch (Exception e) { log->error(tr("Exception while loading loco XML file: ")+getFileName()+tr(" exception: ")+e.getMessage()); }
 }
 
+/**
+ * Create a RosterEntry from a file.
+ *
+ * @param file The file containing the RosterEntry
+ * @return a new RosterEntry
+ * @throws JDOMException if unable to parse file
+ * @throws IOException   if unable to read file
+ */
+/*public*/ /*static*/ RosterEntry* RosterEntry::fromFile(/*@Nonnull*/ File* file) throw (JDOMException, IOException) {
+    QDomElement loco = ((new LocoFile()))->rootFromFile(file).firstChildElement("locomotive");
+    if (loco.isNull()) {
+        throw new JDOMException("missing expected element");
+    }
+    RosterEntry* re = new RosterEntry(loco);
+    re->setFileName(file->getName());
+    return re;
+}
+
+//@Override
+/*public*/ QString RosterEntry::getDisplayName() {
+    if (this->getRoadName() != nullptr && !this->getRoadName().isEmpty()) { // NOI18N
+//            return Bundle.getMessage("RosterEntryDisplayName", this.getDccAddress(), this.getRoadName(),
+//                    this.getRoadNumber()); // NOI18N
+     return tr("%2 %3 (DCC %1)").arg(this->getDccAddress()).arg(this->getRoadName()).arg(this->getRoadNumber());
+    } else {
+//            return Bundle.getMessage("RosterEntryDisplayName", this.getDccAddress(), this.getId(), ""); // NOI18N
+    return tr("%2 %3 (DCC %1)").arg(this->getDccAddress()).arg(this->getId()).arg("");
+    }
+}
 
 /*public*/ /*synchronized*/ void RosterEntry::addPropertyChangeListener(PropertyChangeListener* l)
 {

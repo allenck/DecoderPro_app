@@ -2,6 +2,15 @@
 #define ASSERT_H
 
 #include <QObject>
+#include "exceptions.h"
+#include <QtXml>
+
+class AssertionError : public Exception
+{
+public:
+    AssertionError(QString s = "");
+    ~AssertionError() throw() {}
+};
 
 class Assert : public QObject
 {
@@ -23,12 +32,20 @@ public:
     /*public*/ static void assertEquals(QString message, int expected, int actual);
     /*public*/ static void assertEquals(double expected, double actual, double delta);
     /*public*/ static void assertEquals(float expected, float actual, float delta);
+    /*public*/ static void assertEquals(QDomElement expected, QDomElement actual, QDomElement delta);
 
+    /*public*/ static void assertEquals(QString expected, QString actual);
+    /*public*/ static void assertEquals(bool expected, bool actual);
 
     /*public*/ static void assertNotNull(QString message, QObject* object);
+    /*public*/ static void assertNotNull(QString message, QDomElement object);
     /*public*/ static void assertNotNull(QObject* object);
+    /*public*/ static void assertNotNull(QDomElement object);
+
     /*public*/ static void assertNull(QString message, QObject* object);
     /*public*/ static void assertNull(QObject* object);
+    /*public*/ static void assertNull(QString object);
+    /*public*/ static void assertNull(QDomElement object);
 
 signals:
 

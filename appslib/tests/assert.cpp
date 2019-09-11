@@ -24,6 +24,8 @@
          * 8: return
          *  */
         // </editor-fold>
+    if(!condition)
+        throw AssertionError(message);
     }
 
     /*public*/ /*static*/ void Assert::assertTrue(bool condition) {
@@ -75,6 +77,11 @@
          * 20: athrow
          *  */
         // </editor-fold>
+    if (message.isEmpty())
+    {
+            throw new AssertionError();
+        }
+        throw new AssertionError(message);
     }
 
     /*public*/ /*static*/ void Assert::fail() {
@@ -122,24 +129,41 @@
          *  */
         // </editor-fold>
     }
+
     /*public*/ /*static*/ void Assert::assertEquals(QString message, bool expected, bool actual)
     {
-
+        if(expected != actual)
+            fail(message);
     }
+
     /*public*/ /*static*/ void Assert::assertEquals(QString message, QString expected, QString actual)
     {
-
+    if(expected != actual)
+        fail(message);
     }
+
     /*public*/ /*static*/ void Assert::assertEquals(QString message, double expected, double actual)
     {
-
+    if(expected != actual)
+        fail(message);
     }
+
     /*public*/ /*static*/ void Assert::assertEquals(QString message, float expected, float actual)
     {
-
+    if(expected != actual)
+        fail(message);
     }
+
     /*public*/ /*static*/ void Assert::assertEquals(QString message, int expected, int actual)
     {
+    if(expected != actual)
+        fail(message);
+    }
+
+    /*public*/ /*static*/ void Assert::assertEquals(QDomElement expected, QDomElement actual, QDomElement delta)
+    {
+        if(expected.tagName() != actual.tagName())
+            fail(tr("unequal elements %1 vs %2").arg(expected.tagName()).arg(actual.tagName()));
 
     }
 
@@ -182,6 +206,20 @@
          *  */
         // </editor-fold>
     }
+#endif
+/*public*/ /*static*/ void Assert::assertEquals(QString expected, QString actual) {
+    if(expected != actual)
+    {
+        fail(tr("Strings do not match: \"%1\" vs \"%2\"").arg(expected).arg(actual));
+    }
+}
+/*public*/ /*static*/ void Assert::assertEquals(bool expected, bool actual) {
+    if(expected != actual)
+    {
+        fail(tr("Strings do not match: \"%1\" vs \"%2\"").arg(expected).arg(actual));
+    }
+}
+#if 0
 
     /*public*/ static void assertNotEquals(String message, Object unexpected, Object actual) {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
@@ -714,6 +752,11 @@
          *  */
         // </editor-fold>
     }
+    /*public*/ /*static*/ void Assert::assertNotNull(QString message, QDomElement object)
+    {
+     if(object.isNull())
+         fail(message);
+    }
 
     /*public*/ /*static*/ void Assert::assertNotNull(QObject* object) {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
@@ -723,6 +766,11 @@
          * 5: return
          *  */
         // </editor-fold>
+    }
+    /*public*/ /*static*/ void Assert::assertNotNull(QDomElement object)
+    {
+    if(object.isNull())
+        fail("element not empty");
     }
 
     /*public*/ /*static*/ void Assert::assertNull(QString message, QObject* object) {
@@ -747,6 +795,15 @@
          *  */
         // </editor-fold>
     }
+/*public*/ /*static*/ void Assert::assertNull(QString object) {
+ if(!object.isEmpty())
+     fail("string not empty");
+}
+/*public*/ /*static*/ void Assert::assertNull(QDomElement object) {
+ if(!object.isNull())
+     fail("element not empty");
+}
+
 #if 0
     private static void failNotNull(String message, Object actual) {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
@@ -1049,3 +1106,8 @@
         // </editor-fold>
     }
 #endif
+    AssertionError::AssertionError(QString s)
+    {
+     msg = s;
+    }
+
