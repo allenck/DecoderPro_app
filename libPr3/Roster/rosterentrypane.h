@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "libPr3_global.h"
-
+#include <QLineEdit>
 namespace Ui {
 class RosterEntryPane;
 }
@@ -23,6 +23,7 @@ public:
     /*public*/ void update(RosterEntry* r);
     /*public*/ void setDccAddress(QString a);
     /*public*/ void setDccAddressLong(bool m);
+    /*public*/ QLineEdit* id();
 public slots:
     void on_edID_editingFinished();
     void on_edRoadName_editingFinished();

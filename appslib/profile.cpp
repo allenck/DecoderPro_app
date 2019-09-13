@@ -170,10 +170,19 @@ void Profile::common(File *path, QString id,bool isReadable)
 
 /*protected*/ /*final*/ void Profile::save() throw (IOException)
 {
+#if 0
+ try
+ {
     ProfileProperties* p = new ProfileProperties(this);
     p->put(*_NAME, this->name, true);
     p->put(*_ID, this->id, true);
     this->saveXml();
+ }
+ catch (NullPointerException npe)
+ {
+
+ }
+#endif
 }
 
 /*
@@ -190,8 +199,9 @@ Properties* p = new Properties();
    p->setProperty(*_NAME, this->name);
    p->setProperty(*_ID, this->id);
    if (!f->exists() && !f->createNewFile()) {
-       //throw new IOException("Unable to create file at " + f.getAbsolutePath()); // NOI18N
     Logger::error("Unable to create file at " + f->getAbsolutePath());
+    throw new IOException("Unable to create file at " + f->getAbsolutePath()); // NOI18N
+
    }
    try
    {
@@ -208,7 +218,7 @@ Properties* p = new Properties();
     if (os != NULL) {
        //os->close();
     }
-   //throw ex;
+    throw ex;
    }
 }
 
@@ -408,5 +418,13 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
  }
  return false;
 }
-
+//@Override
+    /*public*/ int Profile::compareTo(Profile* o) {
+        if (this->equals(o)) {
+            return 0;
+        }
+        QString thisString = "" + this->getName() + this->getPath()->toString();
+        QString thatString = "" + o->getName() + o->getPath()->toString();
+        return thisString==(thatString);
+    }
 /*private*/ /*static*/ Logger* Profile::log =  LoggerFactory::getLogger("Profile");

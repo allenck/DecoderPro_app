@@ -461,14 +461,23 @@ SOURCES += appslib.cpp \
     firsttimestartupwizardaction.cpp \
     profileconfiguration.cpp \
     nullprofile.cpp \
-    tests/assert.cpp \
     tests/junitutil.cpp \
     tests/temporaryfolder.cpp \
     tests/RosterTest/rosterentrytestaction.cpp \
     tests/RosterTest/rostertest.cpp \
     tests/RosterTest/rostertestaction.cpp \
     tests/RosterTest/rosterentrytest.cpp \
-    tests/RosterTest/rostertestutil.cpp
+    tests/RosterTest/rostertestutil.cpp \
+    tests/assert1.cpp \
+    tests/RosterTest/rosterentrypanetest.cpp \
+    tests/RosterTest/rosterentrypanetestaction.cpp \
+    tests/ProfileTest/profiletest.cpp \
+    tests/ProfileTest/profiletestaction.cpp \
+    tests/ProfileTest/profilemanagertest.cpp \
+    tests/ProfileTest/profilemanagertestaction.cpp \
+    tests/loconet/slotmanagertest.cpp \
+    tests/loconet/loconetinterfacescaffold.cpp \
+    tests/loconet/slotmanagertestaction.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -879,14 +888,23 @@ HEADERS += appslib.h\
     firsttimestartupwizardaction.h \
     profileconfiguration.h \
     nullprofile.h \
-    tests/assert.h \
     tests/junitutil.h \
     tests/temporaryfolder.h \
     tests/RosterTest/rosterentrytestaction.h \
     tests/RosterTest/rostertest.h \
     tests/RosterTest/rostertestaction.h \
     tests/RosterTest/rosterentrytest.h \
-    tests/RosterTest/rostertestutil.h
+    tests/RosterTest/rostertestutil.h \
+    tests/assert1.h \
+    tests/RosterTest/rosterentrypanetest.h \
+    tests/RosterTest/rosterentrypanetestaction.h \
+    tests/ProfileTest/profiletest.h \
+    tests/ProfileTest/profiletestaction.h \
+    tests/ProfileTest/profilemanagertest.h \
+    tests/ProfileTest/profilemanagertestaction.h \
+    tests/loconet/slotmanagertest.h \
+    tests/loconet/loconetinterfacescaffold.h \
+    tests/loconet/slotmanagertestaction.h
 
 unix:!symbian {
     maemo5 {

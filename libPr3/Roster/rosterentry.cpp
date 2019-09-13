@@ -240,7 +240,7 @@ void RosterEntry::init()
   while (testFile.exists())
   {
    // oops - change filename and try again
-   newFilename = oldFilename.mid(0, oldFilename.length()-4)+count+".xml";
+   newFilename = oldFilename.mid(0, oldFilename.length()-4)+QString::number(count)+".xml";
    count++;
    log->debug("try to use "+newFilename+" as filename instead of "+oldFilename);
     //testFile = new File(LocoFile.getFileLocation()+newFilename);
@@ -425,21 +425,43 @@ void RosterEntry::init()
  * @throws ParseException if the date cannot be parsed
  */
 /*public*/ void RosterEntry::setDateModified(/*@Nonnull*/ QString date) throw (ParseException) {
+ QDateTime dt;
  try
  {
   // parse using ISO 8601 date format(s)
-  QDateTime dt = QDateTime::fromString(date, Qt::ISODate);
+  dt = QDateTime::fromString(date, Qt::ISODate);
   if(!dt.isValid()) throw ParseException(tr("error parsing date '%1'").arg(date));
   this->setDateModified(dt);
  }
  catch (ParseException ex)
  {
-  log->debug("ParseException in setDateModified");
-  // parse using defaults since thats how it was saved if saved
+  log->debug(tr("ParseException in setDateModified ISO attempt: \"%1\"").arg(date));
+  // next, try parse using defaults since thats how it was saved if saved
   // by earlier versions of JMRI
-  QDateTime dt = QDateTime::fromString(date,"dddd, d MMMM yy hh:mm:ss");
-  if(!dt.isValid()) throw IllegalArgumentException(tr("error parsing date '%1'").arg(date));
-  this->setDateModified(dt);
+  try {
+
+   //setDateModified(DateFormat.getDateTimeInstance().parse(date));
+   dt = QDateTime::fromString(date, Qt::TextDate);
+   if(!dt.isValid()) throw ParseException(tr("error parsing date '%1'").arg(date));
+   this->setDateModified(dt);
+  } catch (ParseException ex2) {
+      // then try with a specific format to handle e.g. "Apr 1, 2016 9:13:36 AM"
+      //DateFormat customFmt = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss a");
+      try {
+          //setDateModified(customFmt.parse(date));
+       dt = QDateTime::fromString(date, "MMM dd, yyyy hh:mm:ss a");
+       if(!dt.isValid()) throw ParseException(tr("error parsing date '%1'").arg(date));
+       this->setDateModified(dt);
+
+      } catch (ParseException ex3) {
+          // then try with a specific format to handle e.g. "01-Oct-2016 9:13:36"
+//          customFmt = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
+//          setDateModified(customFmt.parse(date));
+       dt = QDateTime::fromString(date, "dd-MMM-yyyy hh:mm:ss");
+       if(!dt.isValid()) throw ParseException(tr("error parsing date '%1'").arg(date));
+       this->setDateModified(dt);
+      }
+  }
  }
  catch (IllegalArgumentException ex2)
  {
@@ -447,7 +469,10 @@ void RosterEntry::init()
   log->error("IllegalArgumentException in RosterEntry.setDateModified - this may indicate a problem with the classpath, specifically multiple copies of the 'jackson` library. See release notes" );
   // parse using defaults since thats how it was saved if saved
   // by earlier versions of JMRI
-  //this.setDateModified(DateFormat.getDateTimeInstance().parse(date));
+  //this->setDateModified(DateFormat.getDateTimeInstance().parse(date));
+  dt = QDateTime::fromString(date, Qt::TextDate);
+  if(!dt.isValid()) throw ParseException(tr("error parsing date '%1'").arg(date));
+  this->setDateModified(dt);
  }
 }
 
@@ -470,7 +495,27 @@ void RosterEntry::init()
      firePropertyChange(RosterEntry::DATE_UPDATED, old, s);
  }
 }
-/*public*/ QString RosterEntry::getDateUpdated() { return _dateUpdated; }
+/**
+ * Get the date this entry was last modified. Returns the value of
+ * {@link #getDateModified()} in ISO 8601 format if that is not null,
+ * otherwise returns the raw value for the last modified date from the XML
+ * file for the roster entry.
+ * <p>
+ * Use getDateModified() if control over formatting is required
+ *
+ * @return the string representation of the date last modified
+ */
+/*public*/ QString RosterEntry::getDateUpdated() {
+ QDateTime date = this->getDateModified();
+ if(date.isNull())
+ {
+  return _dateUpdated;
+ }
+ else
+ {
+  return date.toString(Qt::ISODateWithMs)+"+0000";
+ }
+}
 
 //openCounter is used purely to indicate if the roster entry has been opened in an editing mode.
 /*public*/ void RosterEntry::setOpen(bool boo){
@@ -1392,7 +1437,7 @@ if (!(_decoderFamily==("")))
 *
 * @param e  Locomotive XML element
 */
-/*public*/ RosterEntry::RosterEntry(QDomElement e)
+/*public*/ RosterEntry::RosterEntry(QDomElement e, QObject *parent) : BasicRosterEntry(parent)
 {
  init();
  if (log->isDebugEnabled()) log->debug("ctor from element "+e.tagName());

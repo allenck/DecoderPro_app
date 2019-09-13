@@ -1,4 +1,6 @@
 #include "temporaryfolder.h"
+#include <QTemporaryDir>
+#include <QTemporaryFile>
 
 //TemporaryFolder::TemporaryFolder(QObject *parent) : QObject(parent)
 //{
@@ -117,6 +119,9 @@
          * 12: areturn
          *  */
         // </editor-fold>
+    QTemporaryDir* dir = new QTemporaryDir(folder);
+     File* f = new File(dir->path());
+     return f;
     }
 #if 0
     /*public*/ File newFolder(String[] folderNames) throws IOException {
@@ -220,6 +225,8 @@
          * 8: areturn
          *  */
         // </editor-fold>
+        QTemporaryDir dir;
+        return new File(dir.path());
     }
 #if 0
     /*private*/ File createTemporaryFolderIn(File parentFolder) throws IOException {

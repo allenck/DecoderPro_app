@@ -6,6 +6,7 @@
 #include "lnprogrammermanager.h"
 #include "locoio.h"
 #include "logger.h"
+#include <QStringList>
 
 //LnOpsModeProgrammer::LnOpsModeProgrammer(QObject *parent) :
 //    AddressedProgrammer(parent)
@@ -43,8 +44,88 @@
  mSlotMgr->writeCVOpsMode(CV, val, p, mAddress, mLongAddr);
 }
 
-/*public*/ void LnOpsModeProgrammer::readCV(int CV, ProgListener* p) throw (ProgrammerException) {
- mSlotMgr->readCVOpsMode(CV, p, mAddress, mLongAddr);
+/*public*/ void LnOpsModeProgrammer::readCV(QString CV, ProgListener* pL) throw (ProgrammerException) {
+// mSlotMgr->readCVOpsMode(CV, p, mAddress, mLongAddr);
+ this->p = nullptr;
+   // Check mode
+   QStringList parts;
+   LocoNetMessage* m;
+   if (getMode() == (LnProgrammerManager::LOCONETCSOPSWMODE)) {
+       memo->getSlotManager()->setMode(LnProgrammerManager::LOCONETCSOPSWMODE);
+       memo->getSlotManager()->readCV(CV, pL); // deal with this via service-mode programmer
+   }
+   else if (getMode() == (LnProgrammerManager::LOCONETBDOPSWMODE))
+   {
+       /**
+        * CV format is e.g. "113.12" where the first part defines the
+        * typeword for the specific board type and the second is the specific bit number
+        * Known values:
+        * <ul>
+        * <li>0x70 112 - PM4
+        * <li>0x71 113 - BDL16
+        * <li>0x72 114 - SE8
+        * <li>0x73 115 - DS64
+        * </ul>
+        */
+       if (bdOpSwAccessTimer == nullptr) {
+           initiializeBdOpsAccessTimer();
+       }
+       p = pL;
+       doingWrite = false;
+       // Board programming mode
+       log->debug(tr("read CV \"%1\" addr:%2").arg(CV).arg(mAddress));
+       parts = CV.split("\\.");
+       int typeWord = parts.at(0).toInt();
+       int state =0; //= Integer.parseInt(parts[parts.length>1 ? 1 : 0]);
+       if(parts.size() > 0)
+        state = 1;
+
+       // make message
+       m = new LocoNetMessage(6);
+       m->setOpCode(LnConstants::OPC_MULTI_SENSE);
+       int element = 0x62;
+       if ((mAddress & 0x80) != 0) {
+           element |= 1;
+       }
+       m->setElement(1, element);
+       m->setElement(2, (mAddress-1) & 0x7F);
+       m->setElement(3, typeWord);
+       int loc = (state - 1) / 8;
+       int bit = (state - 1) - loc * 8;
+       m->setElement(4, loc * 16 + bit * 2);
+
+       log->debug(tr("  Message %1").arg(m->toString()));
+       memo->getLnTrafficController()->sendLocoNetMessage(m);
+       bdOpSwAccessTimer->start();
+
+   } else if (getMode() == (LnProgrammerManager::LOCONETSV1MODE)) {
+       p = pL;
+       doingWrite = false;
+       // SV1 mode
+       log->debug(tr("read CV \"%1\" addr:%2").arg(CV).arg(mAddress));
+       // make message
+       int locoIOAddress = mAddress&0xFF;
+       int locoIOSubAddress = ((mAddress+256)/256)&0x7F;
+       m = LocoIO::readCV(locoIOAddress, locoIOSubAddress, decodeCvNum(CV));
+       // force version 1 tag
+       m->setElement(4, 0x01);
+
+       log->debug(tr("  Message %1").arg(m->toString()));
+       memo->getLnTrafficController()->sendLocoNetMessage(m);
+   } else if (getMode() == (LnProgrammerManager::LOCONETSV2MODE)) {
+       p = pL;
+       // SV2 mode
+       log->debug(tr("read CV \"%1\" addr:%2").arg(CV).arg(mAddress));
+       // make message
+       m = new LocoNetMessage(16);
+       loadSV2MessageFormat(m, mAddress, decodeCvNum(CV), 0);
+       m->setElement(3, 0x02); // 1 byte read
+       log->debug(tr("  Message %1").arg(m->toString()));
+       memo->getLnTrafficController()->sendLocoNetMessage(m);
+   } else {
+       // DCC ops mode
+       memo->getSlotManager()->readCVOpsMode(CV, pL, mAddress, mLongAddr);
+   }
 }
 
 /*public*/ void LnOpsModeProgrammer::confirmCV(int CV, int val, ProgListener* p) throw (ProgrammerException) {
@@ -90,7 +171,7 @@
   writeCV(CV, val, p);
  }
 }
-
+#if 0
 /*public*/ void LnOpsModeProgrammer::readCV(QString CV, ProgListener* p) throw (ProgrammerException)
 {
  this->p = NULL;
@@ -128,7 +209,7 @@
      readCV(CV, p);
  }
 }
-
+#endif
 /*public*/ void LnOpsModeProgrammer::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
  this->p = NULL;
@@ -327,6 +408,36 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
 /*public*/ bool LnOpsModeProgrammer::getCanWrite(QString addr) {
     return getCanWrite() && addr.toInt()<=1024;
 }
+/**
+ * Learn about whether the programmer does any kind of verification of write
+ * operations
+ *
+ * @param addr A CV address to check (in case this varies with CV range) or
+ *             null for any
+ * @return The confirmation behavior that can be counted on (might be better
+ *         in some cases)
+ */
+//@Nonnull
+/*public*/ Programmer::WriteConfirmMode LnOpsModeProgrammer::getWriteConfirmMode(QString addr){
+ if (getMode() ==(ProgrammingMode::OPSBYTEMODE)) {
+     return (Programmer::WriteConfirmMode)WriteConfirmMode::NotVerified;
+ }
+ return (Programmer::WriteConfirmMode)WriteConfirmMode::DecoderReply;
+}
+
+/**
+ * wrapper to call {@link jmri.ProgListener#programmingOpReply} that verifies
+ * the specified progListener is not null.
+ *
+ * @param p listener to notify
+ * @param value result value
+ * @param status code from jmri.ProgListener
+ */
+/*default*/ /*public*/ void LnOpsModeProgrammer::notifyProgListenerEnd(ProgListener* p, int value, int status) {
+    if ( p != nullptr ) {
+       p->programmingOpReply(value, status);
+    }
+}
 
 /*public*/ QString LnOpsModeProgrammer::decodeErrorCode(int i) {
     return mSlotMgr->decodeErrorCode(i);
@@ -337,7 +448,20 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
 /*public*/ int LnOpsModeProgrammer::getAddressNumber() { return mAddress; }
 
 /*public*/ QString LnOpsModeProgrammer::getAddress() { return QString::number(getAddressNumber())+" "+QString::number(getLongAddress()); }
-
+void LnOpsModeProgrammer::initiializeBdOpsAccessTimer() {
+        if (bdOpSwAccessTimer == nullptr) {
+//            bdOpSwAccessTimer = new javax.swing.Timer(1000, (ActionEvent e) -> {
+//                ProgListener temp = p;
+//                p = null;
+//                notifyProgListenerEnd(temp, 0, ProgListener.FailedTimeout);
+//            });
+         bdOpSwAccessTimer = new OpSwAccessTimer(this);
+        //bdOpSwAccessTimer->setInitialDelay(1000);
+           bdOpSwAccessTimer->setInterval(1000);
+        //bdOpSwAccessTimer->setRepeats(false);
+           bdOpSwAccessTimer->setSingleShot(true);
+        }
+    }
 // initialize logging
 //static Logger log = LoggerFactory.getLogger(LnOpsModeProgrammer.class.getName());
 

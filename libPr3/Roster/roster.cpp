@@ -233,7 +233,7 @@ Roster::Roster(QObject *parent) :
    break; // I can never remember whether I want break or continue here
   i--;
  }
- _list->append( e);
+ _list->insert(i+1, e);
  setDirty(true);
  firePropertyChange(ADD, QVariant(), VPtr<RosterEntry>::asQVariant(e));
 }
@@ -309,13 +309,19 @@ Roster::Roster(QObject *parent) :
  */
 //@Nonnull
 /*public*/ QList<RosterEntry*> Roster::getEntriesByDccAddress(QString a) {
-#if 0 // TODO
+#if 0 // done
     return findMatchingEntries(
             (RosterEntry r) -> {
                 return r.getDccAddress().equals(a);
             }
     );
 #endif
+    QList<RosterEntry*> l = QList<RosterEntry*>();
+    foreach (RosterEntry* re, *_list) {
+     if(re->getDccAddress() == a)
+      l.append(re);
+    }
+    return l;
 }
 
 /**
@@ -751,6 +757,7 @@ void Roster::writeFile (QFile* file) //throw (IOException)
 
  // name sure there are no bogus chars in name
  QString cleanName = entry.replace("[\\W]","_");  // remove \W, all non-word (a-zA-Z0-9_) characters
+ cleanName = cleanName.replace(" ", "_");
 
  // ensure suffix
  return cleanName+".xml";

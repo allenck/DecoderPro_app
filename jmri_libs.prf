@@ -86,13 +86,13 @@ else:unix: LIBS += -L$$PWD/LocoIO/ -lLocoIO
 INCLUDEPATH += $$PWD/LocoIO
 DEPENDPATH += $$PWD/LocoIO
 
-HEADERS += \
-    tests/RosterTest/rosterentrytest.h \
-    tests/RosterTest/rosterentrytestaction.h
+#HEADERS += \
+#    tests/RosterTest/rosterentrytest.h \
+#    tests/RosterTest/rosterentrytestaction.h
 
-SOURCES += \
-    tests/RosterTest/rosterentrytest.cpp \
-    tests/RosterTest/rosterentrytestaction.cpp
+#SOURCES += \
+#    tests/RosterTest/rosterentrytest.cpp \
+#    tests/RosterTest/rosterentrytestaction.cpp
 
 
 

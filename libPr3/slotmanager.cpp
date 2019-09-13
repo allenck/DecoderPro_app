@@ -885,9 +885,10 @@ void SlotManager::doConfirm(int CV, int val, ProgListener* p,
  * @param longAddr true if a long address, false if short address
  * @throws ProgrammerException
  */
-void SlotManager::readCVOpsMode(int CV, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException)
+void SlotManager::readCVOpsMode(QString CVname, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException)
 {
  Q_UNUSED(longAddr)
+    /*final*/ int CV = CVname.toInt();
     lopsa = addr&0x7f;
     hopsa = (addr/128)&0x7f;
     mServiceMode = false;

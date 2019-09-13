@@ -29,14 +29,15 @@ public:
     /*public*/ static bool inProfile(File* path);
     /*public*/ static bool isProfile(File* path);
     /*public*/ static /*final*/ QString CONFIG_FILENAME;// = "ProfileConfig.xml"; // NOI18N
- /*public*/ static /*final*/ QString PROFILE;// = "profile"; // NOI18N
- /*public*/ static /*final*/ QString PROPERTIES;// = "profile.properties"; // NOI18N
- /*public*/ static /*final*/ QString CONFIG;// = "profile.xml"; // NOI18N
- /*public*/ static /*final*/ QString SHARED_PROPERTIES;// = PROFILE + "/" + PROPERTIES; // NOI18N
- /*public*/ static /*final*/ QString SHARED_CONFIG;// = PROFILE + "/" + CONFIG; // NOI18N
- /*public*/ static /*final*/ QString UI_CONFIG;// = "user-interface.xml"; // NOI18N
- /*public*/ static /*final*/ QString SHARED_UI_CONFIG;// = PROFILE + "/" + UI_CONFIG; // NOI18N
- /*public*/ static /*final*/ QString UI_CONFIG_FILENAME;// = "UserPrefsProfileConfig.xml"; // NOI18N
+    /*public*/ static /*final*/ QString PROFILE;// = "profile"; // NOI18N
+    /*public*/ static /*final*/ QString PROPERTIES;// = "profile.properties"; // NOI18N
+    /*public*/ static /*final*/ QString CONFIG;// = "profile.xml"; // NOI18N
+    /*public*/ static /*final*/ QString SHARED_PROPERTIES;// = PROFILE + "/" + PROPERTIES; // NOI18N
+    /*public*/ static /*final*/ QString SHARED_CONFIG;// = PROFILE + "/" + CONFIG; // NOI18N
+    /*public*/ static /*final*/ QString UI_CONFIG;// = "user-interface.xml"; // NOI18N
+    /*public*/ static /*final*/ QString SHARED_UI_CONFIG;// = PROFILE + "/" + UI_CONFIG; // NOI18N
+    /*public*/ static /*final*/ QString UI_CONFIG_FILENAME;// = "UserPrefsProfileConfig.xml"; // NOI18N
+    /*public*/ virtual int compareTo(Profile* o);
 
 signals:
 
@@ -63,6 +64,7 @@ protected:
  friend class ProfileManagerDialog;
  friend class AddProfileDialog;
  friend class ProfilePreferencesPanel;
+ friend class ProfileTest;
 };
 
 #endif // PROFILE_H

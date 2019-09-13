@@ -46,10 +46,12 @@ private:
 class RosterEntryO1   : public      RosterEntry
 {
     Q_OBJECT
-        //@Override
-        protected:
+ public:
+    RosterEntryO1(QDomElement e, QObject* parent =0) : RosterEntry(e, parent){}
+    //@Override
+ protected:
     void warnShortLong(QString s) {
-        }
+    }
 };
 
 #endif // ROSTERENTRYTEST_H

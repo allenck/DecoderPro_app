@@ -19,6 +19,7 @@ public:
      this->msg = msg;
      this->localMsg = localMsg;
      this->cause = cause;
+     this->name = "Throwable";
     }
 
     Throwable(QString msg, QString localMsg)
@@ -26,6 +27,7 @@ public:
      this->msg = msg;
      this->localMsg = localMsg;
      this->cause = NULL;
+     this->name = "Throwable";
     }
 
     Throwable(QString msg, Throwable* cause)
@@ -33,12 +35,14 @@ public:
      this->msg = msg;
      this->localMsg = "";
      this->cause = cause;
+    this->name = "Throwable";
     }
     Throwable(QString msg)
     {
      this->msg = msg;
      this->localMsg = "";
      this->cause = cause;
+    this->name = "Throwable";
     }
 
 
@@ -47,18 +51,25 @@ public:
      this->cause = cause;
      this->msg = cause->msg;
      this->localMsg = cause->getLocalizedMessage();
+    this->name = "Throwable";
     }
     Throwable()
     {
      this->cause = NULL;
      this->msg = "";
      this->localMsg = "";
+     this->name = "Throwable";
     }
     ~Throwable() throw(){}
     QString msg;
     QString localMsg;
+    QString name;
     virtual QString getMessage() {return msg;}
     virtual QString getLocalizedMessage() {return localMsg;}
+    virtual QString toString() {
+     QString str = QString("exception %1: %2").arg(this->name).arg(msg);
+     return str;
+    }
     Throwable* cause;
 };
 class Exception : public Throwable
@@ -100,7 +111,9 @@ class JAVAQTSHARED_EXPORT IOException : public Exception
 public:
     IOException(QString msg = "");
     ~IOException() throw()
-    {}
+    {
+     name="IOException";
+    }
 QString getMessage();
     QString msg;
 };
@@ -165,7 +178,10 @@ class JAVAQTSHARED_EXPORT IllegalArgumentException : public Exception
 {
  public:
     IllegalArgumentException(QString s="");
-    ~IllegalArgumentException() throw() {}
+    ~IllegalArgumentException() throw()
+    {
+     name="IllegalArgumentException";
+    }
 };
 class JAVAQTSHARED_EXPORT NumberFormatException : public Exception
 {

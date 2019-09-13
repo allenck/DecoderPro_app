@@ -5,6 +5,7 @@
 #include "file.h"
 #include "exceptions.h"
 
+
 class TemporaryFolder : public QObject
 {
     Q_OBJECT

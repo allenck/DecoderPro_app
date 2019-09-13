@@ -225,7 +225,7 @@ public:
      * @param longAddr true if a long address, false if short address
      * @throws ProgrammerException
      */
-    void readCVOpsMode(int CV, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException);
+    void readCVOpsMode(QString CVname, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException);
     void readCV(int CV, ProgListener* p) throw(ProgrammerException);
     void doRead(int CV, ProgListener* p, int progByte) throw(ProgrammerException);
     QString getUserName();
@@ -408,6 +408,8 @@ protected slots:
  void readNextSlot();
  void On_notifyProgListenerEnd();
  /*synchronized*/ /*protected*/ void timeout();
+
+ friend class SlotManagerTest;
 };
 
 class SendProgrammingReplyDelay : public QObject

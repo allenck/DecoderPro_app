@@ -188,3 +188,7 @@ void RosterEntryPane::on_edDecoderComment_editingFinished()
 {
  re->setDecoderComment(ui->edDecoderComment->toPlainText());
 }
+/*public*/ QLineEdit* RosterEntryPane::id()
+{
+ return ui->edID;
+}

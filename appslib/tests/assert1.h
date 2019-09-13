@@ -1,5 +1,5 @@
-#ifndef ASSERT_H
-#define ASSERT_H
+#ifndef ASSERT1_H
+#define ASSERT1_H
 
 #include <QObject>
 #include "exceptions.h"
@@ -36,6 +36,9 @@ public:
 
     /*public*/ static void assertEquals(QString expected, QString actual);
     /*public*/ static void assertEquals(bool expected, bool actual);
+    /*public*/ static void assertNotEquals(QString message, QObject* unexpected, QObject* actual);
+    /*public*/ static void assertNotEquals(QString expected, QString actual);
+    /*public*/ static void assertNotEquals(QObject* unexpected, QObject* actual);
 
     /*public*/ static void assertNotNull(QString message, QObject* object);
     /*public*/ static void assertNotNull(QString message, QDomElement object);
@@ -52,4 +55,4 @@ signals:
 public slots:
 };
 
-#endif // ASSERT_H
+#endif // ASSERT1_H

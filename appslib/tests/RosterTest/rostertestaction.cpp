@@ -1,6 +1,6 @@
 #include "rostertestaction.h"
 #include "rostertest.h"
-#include "../assert.h"
+#include "../assert1.h"
 #include "joptionpane.h"
 
 RosterTestAction::RosterTestAction( QObject* parent) : AbstractAction(tr("Roster Test"), parent)
@@ -16,6 +16,7 @@ RosterTestAction::RosterTestAction(QString text, QObject* parent) : AbstractActi
 void RosterTestAction::actionPerformed()
 {
     RosterTest* rt = new RosterTest();
+    rt->setUp();
     try
     {
         rt->testDirty();
@@ -23,9 +24,24 @@ void RosterTestAction::actionPerformed()
         rt->testDontAddNullEntriesLater();
         rt->testDontAddNullEntriesFirst();
         rt->testAddrSearch();
+        rt->testGetByDccAddress();
+        rt->testSearchList();
+        rt->testComboBox();
+        rt->testBackupFile();
+        rt->testReadWrite();
+        rt->testAttributeAccess();
+        rt->testAttributeValueAccess();
+        rt->testAttributeList();
+        rt->testDefaultLocation();
+        rt->testProfileOnePointForward();
+        rt->testProfileTwoPointForward();
+        rt->testProfileTwoPointReverse();
+        rt->testProfileTwoPointForwardGetThrottleSetting();
+        rt->testProfileTwoPointReverseGetThrottleSetting();
     }
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
+    rt->tearDown();
 }

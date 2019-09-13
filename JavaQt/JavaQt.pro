@@ -212,7 +212,8 @@ SOURCES += javaqt.cpp \
     jmricolorchooserpanel.cpp \
     jlabel.cpp \
     editscene.cpp \
-    quickpromptutil.cpp
+    quickpromptutil.cpp \
+    fileoutputstream.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -463,7 +464,8 @@ HEADERS += javaqt.h\
     quickpromptutil.h \
     popupmenulistener.h \
     popupmenuevent.h \
-    reportable.h
+    reportable.h \
+    fileoutputstream.h
 
 unix {
     target.path = /usr/lib

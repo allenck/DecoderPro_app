@@ -57,7 +57,7 @@ public:
      /*public*/ /*final*/ static int MAXSOUNDNUM;// = 32;
     explicit RosterEntry(QObject *parent = 0);
     ~RosterEntry() {}
-    RosterEntry(const RosterEntry& /*e*/ ) : BasicRosterEntry() {}
+    RosterEntry(const RosterEntry& /*e*/, QObject* parent = 0 ) : BasicRosterEntry(parent) {}
     /*final*/const static int MAXFNNUM = 28;
     /*public*/ int getMAXFNNUM() { return MAXFNNUM; }
     /**
@@ -81,7 +81,7 @@ public:
      * backslash characters so that the filename will be generally usable.
      */
     /*public*/ void ensureFilenameExists();
-    /*public*/ RosterEntry(QDomElement e);
+    /*public*/ RosterEntry(QDomElement e, QObject *parent = 0);
     /*public*/ LocoAddress* getAddress(QDomElement element);
     /*public*/ void loadFunctions(QDomElement e3);
     /*public*/ void loadAttributes(QDomElement e3);
@@ -93,7 +93,7 @@ public:
     /*public*/ QStringList getAttributeList();
     /*public*/ int getMaxSpeedPCT();
     /*public*/ void setMaxSpeedPCT(int maxSpeedPCT);
-    /*protected*/ void warnShortLong(QString id);
+    /*protected*/ virtual void warnShortLong(QString id);
     /*public*/ QDomElement store(QDomDocument doc);
     /*public*/ QString toString();
     /*public*/ void updateFile();

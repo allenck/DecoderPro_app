@@ -4,7 +4,7 @@
 
 class RosterEntryTestAction : public AbstractAction
 {
-    Q_OBJECT
+ Q_OBJECT
 public:
  RosterEntryTestAction(QString text, QObject* parent);
 public slots:

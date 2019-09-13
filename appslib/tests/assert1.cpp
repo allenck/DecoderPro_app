@@ -1,4 +1,4 @@
-#include "assert.h"
+#include "assert1.h"
 
 //Assert::Assert(QObject *parent) : QObject(parent)
 //{
@@ -79,9 +79,9 @@
         // </editor-fold>
     if (message.isEmpty())
     {
-            throw new AssertionError();
+            throw AssertionError();
         }
-        throw new AssertionError(message);
+        throw AssertionError(message);
     }
 
     /*public*/ /*static*/ void Assert::fail() {
@@ -91,6 +91,7 @@
          * 4: return
          *  */
         // </editor-fold>
+        throw AssertionError(tr("Assert failed"));
     }
 
     /*public*/ /*static*/ void Assert::assertEquals(QString message, QObject* expected, QObject* actual) {
@@ -128,6 +129,12 @@
          * 57: return
          *  */
         // </editor-fold>
+        if(actual->metaObject()->className() != expected->metaObject()->className())
+            fail(tr("%1 message objects not same %2 vs %3").arg(actual->metaObject()->className()).arg(expected->metaObject()->className()));
+        if(expected != actual)
+        {
+            fail(message);
+        }
     }
 
     /*public*/ /*static*/ void Assert::assertEquals(QString message, bool expected, bool actual)
@@ -139,7 +146,7 @@
     /*public*/ /*static*/ void Assert::assertEquals(QString message, QString expected, QString actual)
     {
     if(expected != actual)
-        fail(message);
+        fail(tr("%1 not equal '%2' vs '%3'").arg(message).arg(expected).arg(actual));
     }
 
     /*public*/ /*static*/ void Assert::assertEquals(QString message, double expected, double actual)
@@ -219,33 +226,53 @@
         fail(tr("Strings do not match: \"%1\" vs \"%2\"").arg(expected).arg(actual));
     }
 }
+
+
+/*public*/ /*static*/ void Assert::assertNotEquals(QString message, QObject* unexpected, QObject* actual) {
+    // <editor-fold defaultstate="collapsed" desc="Compiled Code">
+    /* 0: aload_1
+     * 1: aload_2
+     * 2: invokestatic  org/junit/Assert.equalsRegardingNull:(Ljava/lang/Object;Ljava/lang/Object;)Z
+     * 5: ifeq          13
+     * 8: aload_0
+     * 9: aload_2
+     * 10: invokestatic  org/junit/Assert.failEquals:(Ljava/lang/String;Ljava/lang/Object;)V
+     * 13: return
+     *  */
+    // </editor-fold>
+    if(actual->metaObject()->className() == unexpected->metaObject()->className())
+        fail(tr("%1 message objects same %2 vs %3").arg(actual->metaObject()->className()).arg(unexpected->metaObject()->className()));
+    if(unexpected == actual)
+    {
+        fail(message);
+    }
+}
+
+/*public*/ /*static*/ void Assert::assertNotEquals(QString expected, QString actual) {
+    if(expected == actual)
+    {
+        fail(tr("Strings should not match: \"%1\" vs \"%2\"").arg(expected).arg(actual));
+    }
+}
+
+
+/*public*/ /*static*/ void Assert::assertNotEquals(QObject* unexpected, QObject* actual) {
+    // <editor-fold defaultstate="collapsed" desc="Compiled Code">
+    /* 0: aconst_null
+     * 1: aload_0
+     * 2: aload_1
+     * 3: invokestatic  org/junit/Assert.assertNotEquals:(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+     * 6: return
+     *  */
+    // </editor-fold>
+    if(actual->metaObject()->className() == unexpected->metaObject()->className())
+        fail(tr("%1 message objects same %2 vs %3").arg(actual->metaObject()->className()).arg(unexpected->metaObject()->className()));
+    if(unexpected == actual)
+    {
+        fail(tr("Objects should not be equal"));
+    }
+}
 #if 0
-
-    /*public*/ static void assertNotEquals(String message, Object unexpected, Object actual) {
-        // <editor-fold defaultstate="collapsed" desc="Compiled Code">
-        /* 0: aload_1
-         * 1: aload_2
-         * 2: invokestatic  org/junit/Assert.equalsRegardingNull:(Ljava/lang/Object;Ljava/lang/Object;)Z
-         * 5: ifeq          13
-         * 8: aload_0
-         * 9: aload_2
-         * 10: invokestatic  org/junit/Assert.failEquals:(Ljava/lang/String;Ljava/lang/Object;)V
-         * 13: return
-         *  */
-        // </editor-fold>
-    }
-
-    /*public*/ static void assertNotEquals(Object unexpected, Object actual) {
-        // <editor-fold defaultstate="collapsed" desc="Compiled Code">
-        /* 0: aconst_null
-         * 1: aload_0
-         * 2: aload_1
-         * 3: invokestatic  org/junit/Assert.assertNotEquals:(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
-         * 6: return
-         *  */
-        // </editor-fold>
-    }
-
     private static void failEquals(String message, Object actual) {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         /* 0: ldc           Values should be different.

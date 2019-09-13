@@ -3,7 +3,7 @@
 #include "file.h"
 #include "fileutil.h"
 #include "rosterentry.h"
-#include "../assert.h"
+#include "../assert1.h"
 #include "rosterentrycombobox.h"
 #include "instancemanager.h"
 #include "rosterspeedprofile.h"

@@ -1,3 +1,4 @@
+
 #include "apps.h"
 #include <QDateTime>
 #include "instancemanager.h"
@@ -94,8 +95,12 @@
 #include "throttlewindow.h"
 #include "application.h"
 #include "fileutilsupport.h"
-#include "../tests/RosterTest/rostertestaction.h"
-#include "../tests/RosterTest/rosterentrytestaction.h"
+#include "tests/RosterTest/rostertestaction.h"
+#include "tests/RosterTest/rosterentrytestaction.h"
+#include "tests/RosterTest/rosterentrypanetestaction.h"
+#include "tests/ProfileTest/profiletestaction.h"
+#include "tests/ProfileTest/profilemanagertestaction.h"
+#include "tests/loconet/slotmanagertestaction.h"""
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -615,7 +620,6 @@ void Apps::initGui() // must be called after Constructor is complete!
   Logger::error("Error in trying to initialize decoder index file {}"+ ex.getMessage());
  }
 }
-#if 1
 
 /*private*/ bool Apps::doDeferredLoad(File* file)
 {
@@ -638,7 +642,6 @@ void Apps::initGui() // must be called after Constructor is complete!
  }
  log->debug(QString("end deferred load from config file, OK=") + ( result?"true":"false"));
  return result;
-#endif
 }
 
 /**
@@ -876,7 +879,7 @@ void Apps::On_handleQuit()
 {
  ActiveSystemsMenu::addItems(menuBar, wi->getFrame());
 }
-#if 1
+
 /*protected*/ void Apps::debugMenu(QMenuBar* menuBar, WindowInterface* wi) {
     QMenu* d = new DebugMenu(wi->getFrame());
 #if 0
@@ -902,12 +905,19 @@ void Apps::On_handleQuit()
     d->addMenu(testsMenu);
     testsMenu->addAction(new RosterTestAction("Roster Test", this));
     testsMenu->addAction(new RosterEntryTestAction("Roster Entry Test", this));
+    testsMenu->addAction(new RosterEntryPaneTestAction("Roster Entry Pane Test", this));
 
+    testsMenu->addSeparator();
+    testsMenu->addAction(new ProfileTestAction(this));
+    testsMenu->addAction(new ProfileManagerTestAction(this));
+
+    testsMenu->addSeparator();
+    testsMenu->addAction(new SlotManagerTestAction(this));
 
     menuBar->addMenu(d);
 
 }
-#endif
+
 /*protected*/ void Apps::scriptMenu(QMenuBar* menuBar, WindowInterface* /*wi*/)
 {
  // temporarily remove Scripts menu; note that "Run Script"
@@ -1215,51 +1225,7 @@ void Apps::On_handleQuit()
 {
     return prefs;
 }
-#if 0
-/**
- * @deprecated as of 2.13.3, directly access the connection configuration
- * from the instance list
- * jmri.InstanceManager::configureManagerInstance().getInstanceList(jmri.jmrix.ConnectionConfig.class)
- */
-@Deprecated
-static /*public*/ String getConnection1() {
-    return MessageFormat.format(tr("ConnectionCredit"),
-            new Object[]{AppConfigBase.getConnection(0), AppConfigBase.getPort(0), AppConfigBase.getManufacturerName(0)});
-}
 
-/**
- * @deprecated as of 2.13.3, directly access the connection configuration
- * from the instance list
- * jmri.InstanceManager::configureManagerInstance().getInstanceList(jmri.jmrix.ConnectionConfig.class)
- */
-@Deprecated
-static /*public*/ String getConnection2() {
-    return MessageFormat.format(tr("ConnectionCredit"),
-            new Object[]{AppConfigBase.getConnection(1), AppConfigBase.getPort(1), AppConfigBase.getManufacturerName(1)});
-}
-
-/**
- * @deprecated as of 2.13.3, directly access the connection configuration
- * from the instance list
- * jmri.InstanceManager::configureManagerInstance().getInstanceList(jmri.jmrix.ConnectionConfig.class)
- */
-@Deprecated
-static /*public*/ String getConnection3() {
-    return MessageFormat.format(tr("ConnectionCredit"),
-            new Object[]{AppConfigBase.getConnection(2), AppConfigBase.getPort(2), AppConfigBase.getManufacturerName(2)});
-}
-
-/**
- * @deprecated as of 2.13.3, directly access the connection configuration
- * from the instance list
- * jmri.InstanceManager::configureManagerInstance().getInstanceList(jmri.jmrix.ConnectionConfig.class)
- */
-@Deprecated
-static /*public*/ String getConnection4() {
-    return MessageFormat.format(tr("ConnectionCredit"),
-            new Object[]{AppConfigBase.getConnection(3), AppConfigBase.getPort(3), AppConfigBase.getManufacturerName(3)});
-}
-#endif
 /*static*/ SplashWindow* Apps::sp = NULL;
 ///*static*/ AWTEventListener* Apps::debugListener = NULL;
 bool Apps::debugListener = false;
@@ -1271,25 +1237,9 @@ bool Apps::debugListener = false;
  splash(show, false);
 
 }
-#if 0
-/**
- * Invoke the standard Log4J logging initialization.
- *
- * No longer used here. ({@link #splash} calls the initialization directly.
- * Left as a deprecated method because other code, e.g. CATS is still using
- * in in JMRI 3.7 and perhaps 3.8
- *
- * @deprecated Since 3.7.2, use @{link jmri.util.Log4JUtil#initLog4J}
- * directly.
- */
-@Deprecated
-static /*protected*/ void initLog4J() {
-    jmri.util.Log4JUtil.initLog4J();
-}
-#endif
+
 /*static*/ /*protected*/ void Apps::splash(bool show, bool debug)
 {
-#if 1
  //Log4JUtil::initLog4J();
  if (debugListener == false && debug)
  {
@@ -1317,7 +1267,7 @@ static /*protected*/ void initLog4J() {
 //                },
 //                AWTEvent.KEY_EVENT_MASK);
   }
-#endif
+
   debugListener = true;
   // bring up splash window for startup
   if (sp == NULL)
@@ -1403,7 +1353,7 @@ void Apps::keyPressEvent(QKeyEvent *e)
  log->info("Requested loading with Logixs disabled.");
  debugmsg = false;
 }
-# if 1
+
 /**
  * The application decided to quit, handle that.
  */
@@ -1417,7 +1367,7 @@ void Apps::keyPressEvent(QKeyEvent *e)
 /*static*/ /*public*/ bool Apps::handleRestart() {
     return AppsBase::handleRestart();
 }
-#endif
+
 /**
  * Set up the configuration file name at startup.
  * <P>
@@ -1448,7 +1398,7 @@ void Apps::keyPressEvent(QKeyEvent *e)
   sl.append(QString(*args));
   args++;
  }
-#if 1 // TODO:
+
  if (sl.length() > 1 && sl.at(1) != NULL && !(sl.at(1).contains("=")))
  {
   def = sl.at(1);
@@ -1463,7 +1413,7 @@ void Apps::keyPressEvent(QKeyEvent *e)
    log.debug("Config file was specified as:" + arg);
   }
  }
-#endif
+
  Apps::configFilename = def;
  setJmriSystemProperty("configFilename", def);
 }

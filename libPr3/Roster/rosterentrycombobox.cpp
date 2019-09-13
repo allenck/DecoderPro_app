@@ -1,4 +1,5 @@
 #include "rosterentrycombobox.h"
+#include "vptr.h"
 
 /*static*/ /*final*/ QString RosterEntryComboBox::SELECTED_ROSTER_ENTRIES = "selectedRosterEntries";
 
@@ -532,16 +533,18 @@ void RosterEntryComboBox::on_currentIndexChanged(QString /*text*/)
    if (r->getAttribute(Roster::getRosterGroupProperty(rosterGroup)) != "" && r->getAttribute(Roster::getRosterGroupProperty(rosterGroup))==("yes"))
    {
     //addItem(r);
-    QVariant var = qVariantFromValue((void*)r);
-    addItem(r->getId(),var);
+//    QVariant var = qVariantFromValue((void*)r);
+//    addItem(r->getId(),var);
+    addItem(r->getId(), VPtr<RosterEntry>::asQVariant(r));
     //qDebug() << tr("Adding(1) roster entry %1").arg(r->getId());
    }
   }
   else
   {
    //addItem(r);
-   QVariant var = qVariantFromValue((void*)r);
-   addItem(r->getId(),var);
+//   QVariant var = qVariantFromValue((void*)r);
+//   addItem(r->getId(),var);
+   addItem(r->getId(), VPtr<RosterEntry>::asQVariant(r));
    //qDebug() << tr("Adding(2) roster entry %1").arg(r->getId());
 
   }
@@ -657,5 +660,6 @@ void RosterEntryComboBox::on_currentIndexChanged(QString /*text*/)
 
 /*public*/ RosterEntry* RosterEntryComboBox::getItemAt(int i)
 {
- return _currentSelection->at(i);
+ //return _currentSelection->at(i);
+ return VPtr<RosterEntry>::asPtr(itemData(i));
 }

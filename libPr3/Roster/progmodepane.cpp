@@ -44,18 +44,29 @@
  QBoxLayout* layout;
  setLayout(layout = new QBoxLayout((QBoxLayout::Direction)direction));
 
- // service mode support, always present
- mServicePane = new ProgServiceModePane(direction, group);
- layout->addWidget(mServicePane);
+ bool addSep = false;
 
- // ops mode support
- mOpsPane = NULL;
- if (InstanceManager::programmerManagerInstance()!=NULL &&
-         ((LnProgrammerManager*) InstanceManager::programmerManagerInstance())->isAddressedModePossible())
+ // create the ops mode 1st, so the service is 2nd,
+ // so it's the one that's selected
+ mOpsPane = nullptr;
+ if (InstanceManager::getNullableDefault("AddressedProgrammerManager") != nullptr
+         && ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->isAddressedModePossible()) {
+
+     mOpsPane = new ProgOpsModePane(direction, group);
+ }
+
+ // service mode support, if present
+ if (InstanceManager::getNullableDefault("GlobalProgrammerManager") != nullptr)
  {
+  mServicePane = new ProgServiceModePane(direction, group);
+  layout->addWidget(mServicePane);
+ }
 
-  layout->addWidget(new JSeparator());
-  mOpsPane = new ProgOpsModePane(direction, group);
+ // ops mode support added if present
+ if(mOpsPane != nullptr)
+ {
+  if(addSep)
+   layout->addWidget(new JSeparator());
   layout->addWidget(mOpsPane);
  }
 }
@@ -70,14 +81,14 @@
  * Get the configured programmer
  */
 /*public*/ Programmer* ProgModePane::getProgrammer() {
-    if (InstanceManager::programmerManagerInstance()==NULL) {
-        log->warn("request for programmer with no ProgrammerManager configured");
-        return NULL;
-    } else if (mServicePane->isSelected()) {
-        return mServicePane->getProgrammer();
-    } else if (mOpsPane!=NULL && mOpsPane->isSelected()) {
-        return mOpsPane->getProgrammer();
-    } else return NULL;
+ if (mServicePane!=nullptr && mServicePane->isSelected())
+ {
+     return mServicePane->getProgrammer();
+ } else if (mOpsPane != nullptr && mOpsPane->isSelected()) {
+     return mOpsPane->getProgrammer();
+ } else {
+     return nullptr;
+ }
 }
 
 /*public*/ void ProgModePane::dispose() {
