@@ -256,7 +256,7 @@ DccConsist::DccConsist(int address, QObject *parent) : Consist(parent)
  *  @param address is the Locomotive address to remove from the consist
  */
 /*protected*/ void DccConsist::removeFromAdvancedConsist(DccLocoAddress* LocoAddress) {
-    AddressedProgrammer* opsProg = ((AddressedProgrammerManager*)InstanceManager::programmerManagerInstance())->getAddressedProgrammer(LocoAddress->isLongAddress(),
+    AddressedProgrammer* opsProg = ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(LocoAddress->isLongAddress(),
                         LocoAddress->getNumber());
     try {
         opsProg->writeCV(19,0,(ProgListener*)this);

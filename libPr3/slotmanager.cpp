@@ -839,24 +839,59 @@ void SlotManager::confirmCVOpsMode(int CV, int val, ProgListener* p,
     mServiceMode = false;
     doConfirm(CV, val, p, 0x2F);  // although LPE implies 0x2C, 0x2F is observed
 }
-void SlotManager::confirmCV(int CV, int val, ProgListener* p) throw(ProgrammerException)
-{
+
+/**
+ * Confirm a CV via the Service Mode programmer.
+ *
+ * @param CVname a String containing the CV name
+ * @param val expected value
+ * @param p programmer
+ * @throws jmri.ProgrammerException if an unsupported programming mode is exercised
+ */
+//@Override
+/*public*/ void SlotManager::confirmCV(QString CVname, int val, ProgListener* p) throw (ProgrammerException) {
+    int CV = CVname.toInt();
     lopsa = 0;
     hopsa = 0;
     mServiceMode = true;
+    if (getMode() == (csOpSwProgrammingMode))
+    {
+        log->debug("cvOpSw mode!");
+        //handle Command Station OpSw programming here
+        QStringList parts = CVname.split("\\.");
+        if ((parts.at(0) ==("csOpSw")) && (parts.length()==2)) {
+            if (csOpSwAccessor == nullptr) {
+                csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
+            } else {
+                csOpSwAccessor->setProgrammerListener(p);
+            }
+            // perform the CsOpSwMode read access
+            log->debug("going to try the opsw access");
+            csOpSwAccessor->readCsOpSw(CVname, p);
+            return;
+        } else {
+            log->warn("rejecting the cs opsw access account unsupported CV name format");
+            // unsupported format in "cv" name.  Signal an error.
+            Programmer::notifyProgListenerEnd(p, 1, (int)ProgListener::SequenceError);
+            return;
+        }
+    }
+
     // parse the programming command
     int pcmd = 0x03;       // LPE imples 0x00, but 0x03 is observed
-    if (getMode() == ProgrammingMode::PAGEMODE) pcmd = pcmd | 0x20;
-    else if (getMode() == ProgrammingMode::DIRECTBYTEMODE) pcmd = pcmd | 0x28;
-    else if (getMode() == ProgrammingMode::REGISTERMODE
-             || getMode() == ProgrammingMode::ADDRESSMODE) pcmd = pcmd | 0x10;
-    else
-     //throw new ProgrammerException("mode not supported");
-     emit programmerException("mode not supported");
+    if (getMode() == (ProgrammingMode::PAGEMODE)) {
+        pcmd = pcmd | 0x20;
+    } else if (getMode() == (ProgrammingMode::DIRECTBYTEMODE)) {
+        pcmd = pcmd | 0x28;
+    } else if (getMode() == (ProgrammingMode::REGISTERMODE)
+            || getMode() == (ProgrammingMode::ADDRESSMODE)) {
+        pcmd = pcmd | 0x10;
+    } else {
+        throw ProgrammerException("mode not supported"); // NOI18N
+    }
 
     doConfirm(CV, val, p, pcmd);
 }
-
 void SlotManager::doConfirm(int CV, int val, ProgListener* p,
                       int pcmd) /*throw(ProgrammerException)*/
 {
@@ -895,6 +930,14 @@ void SlotManager::readCVOpsMode(QString CVname, ProgListener* p, int addr, bool 
     doRead(CV, p, 0x2F);  // although LPE implies 0x2C, 0x2F is observed
 }
 
+/**
+ * Read a CV via the OpsMode programmer.
+ *
+ * @param cvNum a String containing the CV number
+ * @param p programmer
+ * @throws jmri.ProgrammerException if an unsupported programming mode is exercised
+ */
+//@Override
 void SlotManager::readCV(int CV, ProgListener* p) throw(ProgrammerException)
 {
     lopsa = 0;
@@ -1188,10 +1231,63 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
 // initialize logging
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SlotManager.class.getName());
 
-/*public*/ void SlotManager::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
-{
- writeCV(CV.toInt(), val, p);
+/**
+ * Write a CV via the Service Mode programmer.
+ *
+ * @param cvNum CV id as String
+ * @param val value to write to the CV
+ * @param p programmer
+ * @throws jmri.ProgrammerException if an unsupported programming mode is exercised
+ */
+//@Override
+/*public*/ void SlotManager::writeCV(QString cvNum, int val, ProgListener* p) throw (ProgrammerException) {
+    log->debug(tr("writeCV(string): cvNum=%1, value=%2").arg(cvNum).arg(val));
+    if (getMode() == (csOpSwProgrammingMode)) {
+        log->debug("cvOpSw mode write!");
+        // handle Command Station OpSw programming here
+        QStringList parts = cvNum.split("\\.");
+        if ((parts.at(0) == ("csOpSw")) && (parts.length()==2)) {
+            if (csOpSwAccessor == nullptr) {
+                csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
+            } else {
+                csOpSwAccessor->setProgrammerListener(p);
+            }
+            // perform the CsOpSwMode read access
+            log->debug("going to try the opsw access");
+            csOpSwAccessor->writeCsOpSw(cvNum, val, p);
+            return;
+
+        } else {
+            log->warn("rejecting the cs opsw access account unsupported CV name format");
+            // unsupported format in "cv" name. Signal an error
+            Programmer::notifyProgListenerEnd(p, 1, ProgListener::SequenceError);
+            return;
+
+        }
+    } else {
+        // regular CV case
+        int CV = cvNum.toInt();
+
+        lopsa = 0;
+        hopsa = 0;
+        mServiceMode = true;
+        // parse the programming command
+        int pcmd = 0x43;       // LPE imples 0x40, but 0x43 is observed
+        if (getMode() == (ProgrammingMode::PAGEMODE)) {
+            pcmd = pcmd | 0x20;
+        } else if (getMode() == (ProgrammingMode::DIRECTBYTEMODE)) {
+            pcmd = pcmd | 0x28;
+        } else if (getMode() == (ProgrammingMode::REGISTERMODE)
+                || getMode() == (ProgrammingMode::ADDRESSMODE)) {
+            pcmd = pcmd | 0x10;
+        } else {
+            throw ProgrammerException("mode not supported"); // NOI18N
+        }
+
+        doWrite(CV, val, p, pcmd);
+    }
 }
+
 /**
  * Read a CV via the OpsMode programmer
  * <p>
@@ -1227,8 +1323,4 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
     } else {
         readCV((cvNum.toInt()), p);
     }
-}
-/*public*/ void SlotManager::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
-{
- confirmCV(CV.toInt(), val, p);
 }

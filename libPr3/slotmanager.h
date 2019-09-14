@@ -214,7 +214,7 @@ public:
     void doWrite(int CV, int val, ProgListener* p, int pcmd) throw(ProgrammerException);
     void confirmCVOpsMode(int CV, int val, ProgListener* p,
                           int addr, bool longAddr) throw(ProgrammerException);
-    void confirmCV(int CV, int val, ProgListener* p) throw(ProgrammerException);
+    //void confirmCV(int CV, int val, ProgListener* p) throw(ProgrammerException);
     void doConfirm(int CV, int val, ProgListener* p, int pcmd) /*throw(ProgrammerException)*/;
     /**
      * Invoked by LnOpsModeProgrammer to start an ops-mode

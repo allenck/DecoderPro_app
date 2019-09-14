@@ -39,7 +39,7 @@ public:
       *
       * @return a report string representing the Object.
       */
- /*public*/ /*default*/ virtual QString toReportString() {}
+ /*public*/ /*default*/ virtual QString toReportString() {return "";}
 
 };
 Q_DECLARE_METATYPE(Reportable)

@@ -3,6 +3,7 @@
 #include "nofeedbackturnoutoperation.h"
 #include "sensorturnoutoperation.h"
 #include "rawturnoutoperation.h"
+#include "class.h"
 
 TurnoutOperationManager* TurnoutOperationManager::theInstance = NULL;
 
@@ -215,16 +216,12 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
   {
    try
    {
-//    Class<?> thisClass = Class.forName(thisClassName);
-//    thisClass.newInstance();
-    TurnoutOperation* thisClass;
-    if(validTypes.at(i) == "NoFeedback")
-     thisClass = (TurnoutOperation*)new NoFeedbackTurnoutOperation();
-    else if(validTypes.at(i) == "Raw")
-     thisClass = (TurnoutOperation*)new RawTurnoutOperation();
-    else if(validTypes.at(i) == "Sensor")
-     thisClass = (TurnoutOperation*)new SensorTurnoutOperation();
-
+    Class* thisClass = Class::forName(thisClassName);
+    // creating the instance invokes the TurnoutOperation ctor,
+    // which calls addOperation here, which adds it to the
+    // turnoutOperations map.
+    //thisClass.getDeclaredConstructor().newInstance();
+    thisClass->newInstance();
     if (log->isDebugEnabled()) { log->debug("loaded TurnoutOperation class "+thisClassName); }
 } catch (ClassNotFoundException e1) { log->error("during loadOperationTypes", e1); }
   catch (InstantiationException e2) { log->error("during loadOperationTypes", e2); }

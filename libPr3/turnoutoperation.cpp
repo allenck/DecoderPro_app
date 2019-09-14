@@ -102,7 +102,7 @@ TurnoutOperation::TurnoutOperation(QString n, QObject *parent)
  pcs = new PropertyChangeSupport(this);
 }
 
-TurnoutOperation::TurnoutOperation(TurnoutOperation & other)
+TurnoutOperation::TurnoutOperation(TurnoutOperation & other) : QObject(parent)
 {this->parent = other.parent;
  this->name = other.name;
  this->feedbackModes = other.feedbackModes;

@@ -392,6 +392,8 @@ void AbstractTurnout::setKnownStateToCommanded()
  }
  log->error("Unexpected internal mode: "
          + QString::number(_activeFeedbackType));
+ throw IllegalArgumentException("Unexpected internal mode: "
+         + QString::number(_activeFeedbackType));
 }
 
 //@Override

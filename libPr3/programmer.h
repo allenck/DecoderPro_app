@@ -311,7 +311,19 @@ QT_DEPRECATED virtual void confirmCV(int /*CV*/, int /*val*/, ProgListener* /*p*
       };
      //@Nonnull
      /*public*/ virtual WriteConfirmMode getWriteConfirmMode(QString /*addr*/) {return NotVerified;}
-
+      /**
+       * wrapper to call {@link jmri.ProgListener#programmingOpReply} that verifies
+       * the specified progListener is not null.
+       *
+       * @param p listener to notify
+       * @param value result value
+       * @param status code from jmri.ProgListener
+       */
+      /*default*/ /*public*/ void notifyProgListenerEnd(ProgListener* p, int value, int status) {
+          if ( p != nullptr ) {
+             p->programmingOpReply(value, status);
+          }
+      }
      virtual void addPropertyChangeListener(PropertyChangeListener* /*p*/) {}
 virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) {}
 

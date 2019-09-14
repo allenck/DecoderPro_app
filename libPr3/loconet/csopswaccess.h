@@ -6,25 +6,10 @@
 #include "loconetsystemconnectionmemo.h"
 #include "proglistener.h"
 
-class CsOpSwAccess : public QObject
+class CsOpSwAccess : public LocoNetListener
 {
  Q_OBJECT
 public:
- /*public*/ CsOpSwAccess(/*@Nonnull*/ LocoNetSystemConnectionMemo* memo, /*@Nonnull */ProgListener* p, QObject* parent = 0);
- /*public*/ void setProgrammerListener(/*@NonNULL*/ ProgListener* p);
- /*public*/ void readCsOpSw(QString opSw, /*@NonNULL*/ ProgListener* pL) throw (ProgrammerException);
- /*public*/ void readCmdStationOpSw(int cv);
- /*public*/ void returnCmdStationOpSwVal(int cmdStnOpSwNum);
- /*public*/ bool updateCmdStnOpSw(int opSwNum, bool val);
- /*public*/ bool extractCmdStnOpSw(int cmdStnOpSwNum);
- /*public*/ LocoNetMessage* updateOpSwVal(int cmdStnOpSwNum, bool cmdStnOpSwVal);
-
-
-signals:
-
-public slots:
-
-private:
  enum CmdStnOpSwStateType {
      IDLE,
      QUERY,
@@ -34,6 +19,23 @@ private:
      WRITE,
      HAS_STATE
  };
+ /*public*/ CsOpSwAccess(/*@Nonnull*/ LocoNetSystemConnectionMemo* memo, /*@Nonnull */ProgListener* p, QObject* parent = 0);
+ /*public*/ void setProgrammerListener(/*@NonNULL*/ ProgListener* p);
+ /*public*/ void readCsOpSw(QString opSw, /*@NonNULL*/ ProgListener* pL) throw (ProgrammerException);
+ /*public*/ void writeCsOpSw(QString opSw, int val, /*@NonNULL*/ ProgListener* pL) throw (ProgrammerException);
+ /*public*/ void readCmdStationOpSw(int cv);
+ /*public*/ void returnCmdStationOpSwVal(int cmdStnOpSwNum);
+ /*public*/ bool updateCmdStnOpSw(int opSwNum, bool val);
+ /*public*/ bool extractCmdStnOpSw(int cmdStnOpSwNum);
+ /*public*/ LocoNetMessage* updateOpSwVal(int cmdStnOpSwNum, bool cmdStnOpSwVal);
+ /*public*/ void message(LocoNetMessage* m);
+ /*public*/ CmdStnOpSwStateType getState();
+
+signals:
+
+public slots:
+
+private:
  /*private*/ QTimer* csOpSwAccessTimer;
  /*private*/ QTimer* csOpSwValidTimer;
  /*private*/ CmdStnOpSwStateType cmdStnOpSwState;
@@ -50,6 +52,8 @@ private:
  void initializeCsOpSwAccessTimer();
  void initializeCsOpSwValidTimer();
  /*private*/ void finishTheWrite();
+ /*private*/ void updateStoredOpSwsFromRead(LocoNetMessage* m);
+ /*private*/ void changeOpSwBytes(int cmdStnOpSwNum, bool cmdStnOpSwVal);
 
 private slots:
  void on_csOpSwAccessTimer_timeout();
