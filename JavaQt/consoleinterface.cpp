@@ -12,7 +12,7 @@ ConsoleInterface::~ConsoleInterface() {}
  if(_instance == NULL) _instance = new ConsoleInterface();
  return _instance;
 }
-void ConsoleInterface::sendMessage(QString s)
+void ConsoleInterface::sendMessage(QString s, QString baseMsg, Priority* level)
 {
- emit message(s);
+ emit message(s, new LoggingEvent(level,baseMsg));
 }

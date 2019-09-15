@@ -12,6 +12,7 @@ public:
  /*public*/ static QString repeat(QString str, QString separator, int repeat);
  /*public*/ static QString removeEnd(QString str, QString remove);
  /*public*/ static bool isEmpty(QString str);
+ /*public*/ static QString deleteWhitespace(QString str);
 
 private:
  StringUtils();

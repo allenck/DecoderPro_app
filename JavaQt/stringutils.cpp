@@ -3485,7 +3485,7 @@ public class StringUtils {
         }
         return CharSetUtils.delete(str, " \t\r\n\b");
     }
-
+#endif
     /**
      * <p>Deletes all whitespaces from a String as defined by
      * {@link Character#isWhitespace(char)}.</p>
@@ -3500,10 +3500,11 @@ public class StringUtils {
      * @param str  the String to delete whitespace from, may be NULL
      * @return the String without whitespaces, <code>NULL</code> if NULL String input
      */
-    public static String deleteWhitespace(String str) {
+    /*public*/ /*static*/ QString StringUtils::deleteWhitespace(QString str) {
         if (isEmpty(str)) {
             return str;
         }
+#if 0
         int sz = str.length();
         char[] chs = new char[sz];
         int count = 0;
@@ -3516,8 +3517,10 @@ public class StringUtils {
             return str;
         }
         return new String(chs, 0, count);
+#endif
+     return str.replace(" ", "");
     }
-
+#if 0
     // Remove
     //-----------------------------------------------------------------------
     /**

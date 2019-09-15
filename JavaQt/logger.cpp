@@ -4,6 +4,7 @@
 #include "consoleinterface.h"
 //#include "systemconsole.h"
 #include "loggerbase.h"
+#include "loggingevent.h"
 
 //QString Logger::name;
 Logger::Logger(QString name, QObject *parent) :

@@ -187,8 +187,7 @@ void SlotManager::slotFromLocoAddress(int i, SlotListener* l)
 void SlotManager::checkStaleSlots() // [slot]
 {
   //long staleTimeout = QTime::currentTime() - 90000;
-  QDateTime staleTimeout = QDateTime::currentDateTime();
-  staleTimeout.addMSecs(-90000);
+  qint64 staleTimeout = QDateTime::currentDateTime().currentMSecsSinceEpoch() - 90000;
   LocoNetSlot* slot;
 
     // We will just check the normal loco slots 1 to 120
@@ -788,9 +787,10 @@ LnCommandStationType* SlotManager::getCommandStationType(){
  }
 }
 
-void SlotManager::writeCVOpsMode(int CV, int val, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException)
+void SlotManager::writeCVOpsMode(QString CVname, int val, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException)
 {
      Q_UNUSED(longAddr)
+  int CV = CVname.toInt();
     lopsa = addr&0x7f;
     hopsa = (addr/128)&0x7f;
     mServiceMode = false;
@@ -950,7 +950,7 @@ void SlotManager::readCV(int CV, ProgListener* p) throw(ProgrammerException)
     else if (getMode() == ProgrammingMode::REGISTERMODE
              || getMode() == ProgrammingMode::ADDRESSMODE) pcmd = pcmd | 0x10;
     else
-     throw new ProgrammerException("mode not supported");
+     throw ProgrammerException("mode not supported");
 
     doRead(CV, p, pcmd);
 }
@@ -980,7 +980,7 @@ void SlotManager::useProgrammer(ProgListener* p) // throws jmri.ProgrammerExcept
  {
   if (log->isInfoEnabled())
    log->info(QString("programmer already in use by %1").arg(_usingProgrammer->objectName()));
-  throw new ProgrammerException("programmer in use");
+  throw ProgrammerException("programmer in use");
  }
  else
  {
@@ -1037,7 +1037,8 @@ void SlotManager::notifyProgListenerEnd(int value, int status)
  // and send the reply
  ProgListener* p = _usingProgrammer;
  _usingProgrammer = nullptr;
- if (p!=nullptr) sendProgrammingReply(p, value, status);
+ if (p != nullptr)
+  sendProgrammingReply(p, value, status);
 }
 
 /**

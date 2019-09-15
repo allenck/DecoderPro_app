@@ -209,7 +209,7 @@ public:
      * Provide a snapshot of the slots in use
      */
     int getInUseCount();
-    void writeCVOpsMode(int CV, int val, ProgListener* p,int addr, bool longAddr) throw(ProgrammerException);
+    void writeCVOpsMode(QString CVname, int val, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException);
     void writeCV(int CV, int val, ProgListener* p) throw(ProgrammerException);
     void doWrite(int CV, int val, ProgListener* p, int pcmd) throw(ProgrammerException);
     void confirmCVOpsMode(int CV, int val, ProgListener* p,

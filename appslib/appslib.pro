@@ -477,7 +477,10 @@ SOURCES += appslib.cpp \
     tests/ProfileTest/profilemanagertestaction.cpp \
     tests/loconet/slotmanagertest.cpp \
     tests/loconet/loconetinterfacescaffold.cpp \
-    tests/loconet/slotmanagertestaction.cpp
+    tests/loconet/slotmanagertestaction.cpp \
+    tests/loconet/loconetslottest.cpp \
+    tests/loconet/loconetslottestaction.cpp \
+    tests/junitappender.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -904,7 +907,10 @@ HEADERS += appslib.h\
     tests/ProfileTest/profilemanagertestaction.h \
     tests/loconet/slotmanagertest.h \
     tests/loconet/loconetinterfacescaffold.h \
-    tests/loconet/slotmanagertestaction.h
+    tests/loconet/slotmanagertestaction.h \
+    tests/loconet/loconetslottest.h \
+    tests/loconet/loconetslottestaction.h \
+    tests/junitappender.h
 
 unix:!symbian {
     maemo5 {

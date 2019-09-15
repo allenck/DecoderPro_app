@@ -1,6 +1,7 @@
 #include "loconetinterfacescaffold.h"
 #include "loggerfactory.h"
 #include "loconetsystemconnectionmemo.h"
+#include "loconetmessage.h"
 
 /**
  * Test scaffold implementation of LocoNetInterface.

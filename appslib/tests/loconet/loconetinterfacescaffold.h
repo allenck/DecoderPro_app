@@ -24,6 +24,7 @@ private:
     QVector<LocoNetMessage*> outbound;// = new Vector<LocoNetMessage>();  // /*public*/ OK here, so long as this is a test class
 
  friend class SlotManagerTest;
+ friend class LocoNetSlotTest;
 };
 
 #endif // LOCONETINTERFACESCAFFOLD_H

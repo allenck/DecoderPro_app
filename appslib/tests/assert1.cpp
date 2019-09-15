@@ -1,4 +1,5 @@
 #include "assert1.h"
+#include "loggerfactory.h"
 
 //Assert::Assert(QObject *parent) : QObject(parent)
 //{
@@ -77,10 +78,11 @@
          * 20: athrow
          *  */
         // </editor-fold>
-    if (message.isEmpty())
-    {
-            throw AssertionError();
+        if (message.isEmpty())
+        {
+            throw AssertionError("unknown error");
         }
+        log->error("AssertionError: " + message);
         throw AssertionError(message);
     }
 
@@ -129,11 +131,14 @@
          * 57: return
          *  */
         // </editor-fold>
-        if(actual->metaObject()->className() != expected->metaObject()->className())
-            fail(tr("%1 message objects not same %2 vs %3").arg(actual->metaObject()->className()).arg(expected->metaObject()->className()));
         if(expected != actual)
         {
             fail(message);
+        }
+        if(actual != nullptr && expected != nullptr)
+        {
+            if(actual->metaObject()->className() != expected->metaObject()->className())
+                fail(tr("%1 message objects not same %2 vs %3").arg(actual->metaObject()->className()).arg(expected->metaObject()->className()));
         }
     }
 
@@ -247,6 +252,14 @@
         fail(message);
     }
 }
+/*public*/ /*static*/ void Assert::assertNotEquals(QString message, QString unexpected, QString actual)
+{
+    if(unexpected == actual)
+    {
+        fail(tr("%1 equal '%2' vs '%3'").arg(message).arg(unexpected).arg(actual));
+    }
+}
+
 
 /*public*/ /*static*/ void Assert::assertNotEquals(QString expected, QString actual) {
     if(expected == actual)
@@ -1138,3 +1151,4 @@
      msg = s;
     }
 
+    Logger* Assert::log = LoggerFactory::getLogger("Assert");

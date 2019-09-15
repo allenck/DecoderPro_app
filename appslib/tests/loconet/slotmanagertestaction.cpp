@@ -25,11 +25,13 @@ void SlotManagerTestAction::actionPerformed()
         smt->testReadCVOpsModeShort();
         smt->testWriteCVPaged();
         smt->testWriteCVRegister();
+        smt->testWriteCVDirectStringDCS240();
+        smt->testLackLogic();
+
     }
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
-
     }
     smt->tearDown();
 }

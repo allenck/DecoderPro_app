@@ -100,7 +100,9 @@
 #include "tests/RosterTest/rosterentrypanetestaction.h"
 #include "tests/ProfileTest/profiletestaction.h"
 #include "tests/ProfileTest/profilemanagertestaction.h"
-#include "tests/loconet/slotmanagertestaction.h"""
+#include "tests/loconet/slotmanagertestaction.h"
+#include "tests/loconet/loconetslottestaction.h"
+
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -903,16 +905,21 @@ void Apps::On_handleQuit()
     d->addSeparator();
     QMenu* testsMenu = new QMenu(tr("Tests"));
     d->addMenu(testsMenu);
-    testsMenu->addAction(new RosterTestAction("Roster Test", this));
-    testsMenu->addAction(new RosterEntryTestAction("Roster Entry Test", this));
-    testsMenu->addAction(new RosterEntryPaneTestAction("Roster Entry Pane Test", this));
+    QMenu* rosterTestMenu = new QMenu(tr("Roster Tests"));
+    testsMenu->addMenu(rosterTestMenu);
+    rosterTestMenu->addAction(new RosterTestAction("Roster Test", this));
+    rosterTestMenu->addAction(new RosterEntryTestAction("Roster Entry Test", this));
+    rosterTestMenu->addAction(new RosterEntryPaneTestAction("Roster Entry Pane Test", this));
 
-    testsMenu->addSeparator();
-    testsMenu->addAction(new ProfileTestAction(this));
-    testsMenu->addAction(new ProfileManagerTestAction(this));
+    QMenu* profileTestMenu = new QMenu(tr("Profile Tests"));
+    testsMenu->addMenu(profileTestMenu);
+    profileTestMenu->addAction(new ProfileTestAction(this));
+    profileTestMenu->addAction(new ProfileManagerTestAction(this));
 
-    testsMenu->addSeparator();
-    testsMenu->addAction(new SlotManagerTestAction(this));
+    QMenu* loconetTestMenu = new QMenu(tr("loconet Tests"));
+    testsMenu->addMenu(loconetTestMenu);
+    loconetTestMenu->addAction(new SlotManagerTestAction(this));
+    loconetTestMenu->addAction(new LocoNetSlotTestAction(this));
 
     menuBar->addMenu(d);
 

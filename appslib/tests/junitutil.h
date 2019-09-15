@@ -2,7 +2,9 @@
 #define JUNITUTIL_H
 
 #include <QObject>
+#include "exceptions.h"
 
+class ReleaseUntil;
 class Logger;
 class Profile;
 class JUnitUtil : public QObject
@@ -18,7 +20,9 @@ public:
     /*public*/ static void resetProfileManager();
     /*public*/ static void initRosterConfigManager();
     /*public*/ static void resetProfileManager(Profile* profile);
-
+    static /*public*/ void waitFor(ReleaseUntil *condition, QString name);
+    static /*public*/ bool waitFor(ReleaseUntil* condition);
+    static /*public*/ void waitFor(int time);
 signals:
 
 public slots:
@@ -77,4 +81,11 @@ private:
 
 };
 
+class /*interface*/ ReleaseUntil : public QObject
+{
+    Q_OBJECT
+public:
+    /*public*/ bool ready() throw (Exception) {}
+
+};
 #endif // JUNITUTIL_H

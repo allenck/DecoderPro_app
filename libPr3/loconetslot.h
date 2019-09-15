@@ -5,6 +5,8 @@
 #include "loconetmessage.h"
 #include "logger.h"
 #include "slotlistener.h"
+#include "exceptions.h"
+
 class SlotListener;
 class LIBPR3SHARED_EXPORT LocoNetSlot : public QObject
 {
@@ -75,12 +77,8 @@ public:
 
     // create a specific slot
     //public LocoNetSlot(int slotNum)  { slot = slotNum;}
-    LocoNetSlot(LocoNetMessage* l) // throws LocoNetException
-    {
-        slot = l->getElement(1);
-        setSlot(l);
-    }
-    void setSlot(LocoNetMessage* l); // throws LocoNetException
+    LocoNetSlot(LocoNetMessage* l, QObject *parent = 0)  throw (LocoNetException);
+    void setSlot(LocoNetMessage* l) throw (LocoNetException);
     /**
      * Load functions 9 through 28 from loconet "Set Direct"
      * message.
@@ -92,6 +90,7 @@ public:
      * @return Formatted LocoNet message to change value.
      */
     LocoNetMessage* writeMode(int status);
+    /*public*/ LocoNetMessage* writeThrottleID(int newID);
     /**
      * Update the status mode bits in STAT1 (D5, D4)
      * @param status New values for STAT1 (D5, D4)
@@ -100,7 +99,7 @@ public:
     LocoNetMessage* writeStatus(int status);
     LocoNetMessage* dispatchSlot();
     LocoNetMessage* writeSlot();
-    QDateTime getLastUpdateTime() { return lastUpdateTime ; }
+    qint64 getLastUpdateTime() { return lastUpdateTime ; }
     /**
      * Only valid for fast-clock slot.
      * @return "Days" value currently in fast-clock slot.
@@ -149,9 +148,13 @@ public:
     void setFcRate(int val);
     /*public*/ /*synchronized*/ void addSlotListener(SlotListener* l);
     /*public*/ /*synchronized*/ void removeSlotListener(SlotListener* l);
+    /*public*/ int getTrackStatus();
+    /*public*/ void setTrackStatus(int status);
+
 signals:
-    void LocoNetException(QString str = "");
+    //void LocoNetException(QString str = "");
 public slots:
+    void common(int slotNum);
 private:
  bool localF9 ;
  bool localF10;
@@ -189,15 +192,16 @@ private:
 
  int _pcmd;  // hold pcmd and pstat for programmer
 
- QDateTime lastUpdateTime ; // Time of last update for detecting stale slots
+ qint64 lastUpdateTime ; // Time of last update for detecting stale slots
 
  // data members to hold contact with the slot listeners
  QVector<SlotListener *> slotListeners;
- Logger* log;
+  static Logger* log;
  QMutex mutex;
 protected:
  void notifySlotListeners();
 friend class LnClockControl;
+friend class LocoNetSlotTest;
 };
 
 #endif // LOCONETSLOT_H

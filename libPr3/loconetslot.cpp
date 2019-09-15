@@ -1,11 +1,35 @@
 #include "loconetslot.h"
 #include "lnconstants.h"
 #include "Throttle/throttlewindow.h"
+#include "loggerfactory.h"
 
 LocoNetSlot::LocoNetSlot(int slotNum, QObject *parent) :
     QObject(parent)
 {
-  log = new Logger("LocoNetSlot");
+ common(slotNum);
+}
+
+/**
+  * Creates a slot object based on the contents of a LocoNet message.
+  * The slot number is assumed to be found in byte 2 of the message
+  *
+  * @param l  a LocoNet message
+  * @throws LocoNetException if the slot does not have an easily-found
+  * slot number
+  */
+ /*public*/ LocoNetSlot::LocoNetSlot(LocoNetMessage* l, QObject *parent) throw (LocoNetException) {
+ common(0);
+     // TODO: Consider limiting the types of LocoNet message which can be
+     // used to construct the object to only LocoNet slot write or slot
+     // report messages, since a LocoNetSlot object constructed from a LocoNet
+     // "speed" message or "dir/func" message does not give any other useful
+     // information for object initialization.
+     slot = l->getElement(2);
+     setSlot(l);
+}
+
+void LocoNetSlot::common(int slotNum)
+{
   slot = slotNum;
   localF9 = false;
   localF10 = false;
@@ -44,12 +68,12 @@ LocoNetSlot::LocoNetSlot(int slotNum, QObject *parent) :
 // methods to interact with LocoNet
 //@SuppressWarnings("fallthrough")
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SF_SWITCH_FALLTHROUGH")
-void LocoNetSlot::setSlot(LocoNetMessage* l)// throws LocoNetException
+void LocoNetSlot::setSlot(LocoNetMessage* l) throw (LocoNetException)
 { // exception if message can't be parsed
     // sort out valid messages, handle
     switch (l->getOpCode()) {
     case LnConstants::OPC_SL_RD_DATA:
-      lastUpdateTime = QDateTime::currentDateTime();
+      lastUpdateTime = QDateTime::currentDateTime().currentMSecsSinceEpoch();
       //fall through
     case LnConstants::OPC_WR_SL_DATA: {
         if ( l->getElement(1) != 0x0E ) return;  // not an appropriate reply
@@ -75,7 +99,7 @@ void LocoNetSlot::setSlot(LocoNetMessage* l)// throws LocoNetException
             log->error(QString("Asked to handle message not for this slot %1").arg(l->getElement(1)));
         stat = l->getElement(2);
         notifySlotListeners();
-        lastUpdateTime = QDateTime::currentDateTime() ;
+        lastUpdateTime = QDateTime::currentDateTime().currentMSecsSinceEpoch() ;
         return;
     case LnConstants::OPC_LOCO_SND: {
         // set sound functions in slot - first, clear bits
@@ -85,7 +109,7 @@ void LocoNetSlot::setSlot(LocoNetMessage* l)// throws LocoNetException
         _snd |= ((LnConstants::SND_F5 | LnConstants::SND_F6
                  | LnConstants::SND_F7 | LnConstants::SND_F8) & l->getElement(2));
         notifySlotListeners();
-        lastUpdateTime = QDateTime::currentDateTime() ;
+        lastUpdateTime = QDateTime::currentDateTime().currentMSecsSinceEpoch() ;
         return;
     }
     case  LnConstants::OPC_LOCO_DIRF: {
@@ -98,20 +122,20 @@ void LocoNetSlot::setSlot(LocoNetMessage* l)// throws LocoNetException
                   | LnConstants::DIRF_F1 | LnConstants::DIRF_F2
                   | LnConstants::DIRF_F3 | LnConstants::DIRF_F4) & l->getElement(2));
         notifySlotListeners();
-        lastUpdateTime = QDateTime::currentDateTime() ;
+        lastUpdateTime = QDateTime::currentDateTime().currentMSecsSinceEpoch() ;
         return;
     }
     case LnConstants::OPC_MOVE_SLOTS: {
         // change in slot status will be reported by the reply,
         // so don't need to do anything here (but could)
-        lastUpdateTime = QDateTime::currentDateTime() ;
+        lastUpdateTime = QDateTime::currentDateTime().currentMSecsSinceEpoch() ;
         return;
     }
     case LnConstants::OPC_LOCO_SPD: {
         // set speed
         spd  = l->getElement(2);
         notifySlotListeners();
-        lastUpdateTime = QDateTime::currentDateTime() ;
+        lastUpdateTime = QDateTime::currentDateTime().currentMSecsSinceEpoch() ;
         return;
     }
     default:
@@ -173,6 +197,18 @@ LocoNetMessage* LocoNetSlot::writeMode(int status)
     l->setElement(1, slot);
     l->setElement(2, (stat&~LnConstants::DEC_MODE_MASK)|status);
     return l;
+}
+
+/**
+ * Sets the object's ID value and returns a LocoNet message to inform the
+ * command station that the throttle ID has been changed.
+ * @param newID  the new ID number to set into the slot object
+ * @return a LocoNet message containing a "Slot Write" message to inform the
+ * command station that a specific throttle is controlling the slot.
+ */
+/*public*/ LocoNetMessage* LocoNetSlot::writeThrottleID(int newID) {
+    _id = (newID & 0x17F);
+    return writeSlot();
 }
 
 /**
@@ -261,6 +297,25 @@ void LocoNetSlot::notifySlotListeners()
   }
  }
 }
+/**
+ * Get the track status byte (location 7)
+ * <p>
+ * Note that the &lt;TRK&gt; byte is not accurate on some command stations.
+ *
+ * @return the effective &lt;TRK&gt; byte
+ */
+/*public*/ int LocoNetSlot::getTrackStatus() { return trk; }
+
+/**
+ * Set the track status byte (location 7)
+ * <p>
+ * Note that setting the LocoNetSlot object's track status may result in a
+ * change to the command station's actual track status if the slot's status
+ * is communicated to the command station via an OPC_WR_DL_DATA LocoNet message.
+ *
+ * @param status is the new track status value.
+ */
+/*public*/ void LocoNetSlot::setTrackStatus(int status) { trk = status; }
 
 /**
  * Only valid for fast-clock slot.
@@ -348,4 +403,4 @@ void LocoNetSlot::setFcRate(int val) {
     stat = val & 0x7F;
 }
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LocoNetSlot.class.getName());
+/*static*/ Logger* LocoNetSlot::log = LoggerFactory::getLogger("LocoNetSlot");

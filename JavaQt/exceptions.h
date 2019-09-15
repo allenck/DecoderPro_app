@@ -84,21 +84,7 @@ public:
  Exception(Exception* exception) : Throwable(exception) {}
 };
 
-class JAVAQTSHARED_EXPORT LocoNetException : public Exception
-{
-    //Q_OBJECT
-public:
-    /*explicit*/ LocoNetException( QString m=""/*, QObject *parent = 0*/);
-    QString getText();
-    ~LocoNetException() throw()
-    {}
-signals:
-    
-public slots:
-private:
- QString text;
-    
-};
+;
 class JAVAQTSHARED_EXPORT EOFException : public Exception
 {
 public:
@@ -173,6 +159,21 @@ public:
     JmriException(QString s);
     JmriException(Exception ex) : Exception(ex) {}
     QString toString();
+};
+class JAVAQTSHARED_EXPORT LocoNetException : public JmriException
+{
+    //Q_OBJECT
+public:
+    /*explicit*/ LocoNetException( QString m=""/*, QObject *parent = 0*/);
+    QString getText();
+    ~LocoNetException() throw()
+    {}
+signals:
+
+public slots:
+private:
+ QString text;
+
 };
 class JAVAQTSHARED_EXPORT IllegalArgumentException : public Exception
 {

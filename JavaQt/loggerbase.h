@@ -5,6 +5,8 @@
 #include <QVariant>
 #include "javaqt_global.h"
 #include "exceptions.h"
+#include "loggingevent.h"
+#include "priority.h"
 
 class JAVAQTSHARED_EXPORT LoggerBase : public QObject
 {

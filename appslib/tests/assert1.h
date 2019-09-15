@@ -12,6 +12,7 @@ public:
     ~AssertionError() throw() {}
 };
 
+class Logger;
 class Assert : public QObject
 {
     Q_OBJECT
@@ -39,6 +40,7 @@ public:
     /*public*/ static void assertNotEquals(QString message, QObject* unexpected, QObject* actual);
     /*public*/ static void assertNotEquals(QString expected, QString actual);
     /*public*/ static void assertNotEquals(QObject* unexpected, QObject* actual);
+    /*public*/ static void assertNotEquals(QString message, QString unexpected, QString actual);
 
     /*public*/ static void assertNotNull(QString message, QObject* object);
     /*public*/ static void assertNotNull(QString message, QDomElement object);
@@ -53,6 +55,8 @@ public:
 signals:
 
 public slots:
+private:
+    static Logger*log;
 };
 
 #endif // ASSERT1_H

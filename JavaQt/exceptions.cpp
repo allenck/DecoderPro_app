@@ -8,8 +8,7 @@
 
 //QString Exception::getLocalizedMessage() { return "default localized message!";}
 
-LocoNetException::LocoNetException(QString m/*, QObject *parent*/) /*:
-    QObject(parent)*/
+LocoNetException::LocoNetException(QString m) : JmriException(m)
 {
  msg = m;
 }

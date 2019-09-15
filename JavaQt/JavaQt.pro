@@ -213,7 +213,10 @@ SOURCES += javaqt.cpp \
     jlabel.cpp \
     editscene.cpp \
     quickpromptutil.cpp \
-    fileoutputstream.cpp
+    fileoutputstream.cpp \
+    loggingevent.cpp \
+    priority.cpp \
+    loglevel.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -465,7 +468,10 @@ HEADERS += javaqt.h\
     popupmenulistener.h \
     popupmenuevent.h \
     reportable.h \
-    fileoutputstream.h
+    fileoutputstream.h \
+    loggingevent.h \
+    priority.h \
+    loglevel.h
 
 unix {
     target.path = /usr/lib

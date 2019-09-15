@@ -2,6 +2,8 @@
 #define CONSOLEINTERFACE_H
 #include "javaqt_global.h"
 #include <QObject>
+#include "loggingevent.h"
+#include "priority.h"
 
 class JAVAQTSHARED_EXPORT ConsoleInterface : public QObject
 {
@@ -10,9 +12,9 @@ public:
     //explicit ConsoleInterface(QObject *parent = 0);
     ~ConsoleInterface();
     static ConsoleInterface* instance();
-    void sendMessage(QString);
+    void sendMessage(QString s, QString baseMsg, Priority *level);
 signals:
-    void message(QString);
+    void message(QString, LoggingEvent* evt);
 public slots:
 private:
     ConsoleInterface(QObject* parent = 0);

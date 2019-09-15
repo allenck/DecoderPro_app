@@ -4,6 +4,7 @@
 #include <QObject>
 #include "slotmanager.h"
 #include "proglistener.h"
+#include "junitutil.h"
 
 class LocoNetSlot;
 class LocoNetInterfaceScaffold;
@@ -25,6 +26,12 @@ public:
     /*public*/ void testWriteCVPaged() throw (ProgrammerException);
     /*public*/ void testWriteCVRegister() throw (ProgrammerException);
     /*public*/ void testWriteCVDirect() throw (ProgrammerException);
+    /*public*/ void testWriteCVDirectStringDCS240() throw (ProgrammerException);
+    /*public*/ void testLackLogic();
+    /*public*/ void testWriteCVDirectStringDCS240Interrupted() throw (ProgrammerException);
+    /*public*/ void testWriteCVOpsLongAddr() throw (ProgrammerException);
+    /*public*/ void testWriteCVOpsShortAddr() throw (ProgrammerException);
+    /*public*/ void testWriteThroughFacade() throw (ProgrammerException);
 
     /*public*/ void setUp();
     /*public*/ void tearDown();
@@ -52,6 +59,10 @@ private:
     friend class SlotManagerO1;
     friend class ProgListenerO1;
     friend class SlotListenerO1;
+    friend class ReleaseUntil01;
+    friend class ReleaseUntil02;
+    friend class ReleaseUntil03;
+    friend class ReleaseUntil04;
 };
 
 class SlotManagerO1 : public SlotManager
@@ -102,6 +113,39 @@ public:
     /*public*/ void notifyChangedSlot(LocoNetSlot* l) {
         smt->testSlot = l;
     }
+};
+
+class ReleaseUntil01 : public ReleaseUntil
+{
+    Q_OBJECT
+    SlotManagerTest* smt;
+public:
+    ReleaseUntil01(SlotManagerTest* smt) {this->smt = smt;}
+    bool ready() {return smt->startedLongTimer;}
+};
+class ReleaseUntil02 : public ReleaseUntil
+{
+    Q_OBJECT
+    SlotManagerTest* smt;
+public:
+    ReleaseUntil02(SlotManagerTest* smt) {this->smt = smt;}
+    bool ready() {return smt->value == 35;}
+};
+class ReleaseUntil03 : public ReleaseUntil
+{
+    Q_OBJECT
+    SlotManagerTest* smt;
+public:
+    ReleaseUntil03(SlotManagerTest* smt) {this->smt = smt;}
+    bool ready() {return smt->startedShortTimer;}
+};
+class ReleaseUntil04 : public ReleaseUntil
+{
+    Q_OBJECT
+    SlotManagerTest* smt;
+public:
+    ReleaseUntil04(SlotManagerTest* smt) {this->smt = smt;}
+    bool ready() {return smt->value == -1;}
 };
 
 #endif // SLOTMANAGERTEST_H
