@@ -184,7 +184,7 @@ private:
  //    <ADD2> is the high 7 bits (7-13) of the 14-bit loco address
  int spd;	// <SPD> is the current speed (0-127)
  int _dirf;	// <DIRF> is the current Direction and the setting for functions F0-F4
- int trk;	// <TRK> is the global track status
+ int trk = 7;	// <TRK> is the global track status
  int _ss2;	// <SS2> is the an additional slot status
  int _snd; 	// <SND> is the settings for functions F5-F8
  int _id;		// throttle id, made from
@@ -198,6 +198,7 @@ private:
  QVector<SlotListener *> slotListeners;
   static Logger* log;
  QMutex mutex;
+ // global track status should be reference through SlotManager
 protected:
  void notifySlotListeners();
 friend class LnClockControl;

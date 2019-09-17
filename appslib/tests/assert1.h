@@ -56,7 +56,6 @@ signals:
 
 public slots:
 private:
-    static Logger*log;
 };
 
 #endif // ASSERT1_H

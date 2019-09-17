@@ -96,9 +96,9 @@ LocoNetSlotTest::LocoNetSlotTest(QObject *parent) : QObject(parent)
         exceptionCaught = true;
     }
     Assert::assertFalse("do not expect an exception", exceptionCaught);
-#if 0 // TODO:
-    JUnitAppender.assertErrorMessage("Asked to handle message not for this slot (1) EF 0E 03 33 28 00 00 47 00 2B 00 00 00 60");
-#endif
+
+    JUnitAppender::assertErrorMessage("Asked to handle message not for this slot (1) EF 0E 03 33 28 00 00 47 00 2B 00 00 00 60");
+
     ia[0] = 0xE7;
     ia[2] = 1;
     lm = new LocoNetMessage(ia);

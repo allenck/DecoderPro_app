@@ -27,7 +27,14 @@ void SlotManagerTestAction::actionPerformed()
         smt->testWriteCVRegister();
         smt->testWriteCVDirectStringDCS240();
         smt->testLackLogic();
-
+        smt->testWriteCVDirectStringDCS240Interrupted();
+        smt->testWriteCVOpsLongAddr();
+        smt->testWriteCVOpsShortAddr();
+        smt->testWriteThroughFacade();
+        smt->testReadThroughFacade();
+        smt->testReadThroughFacadeFail();
+        smt->testGetProgrammingModes();
+        smt->testSendPacket();
     }
     catch (AssertionError er)
     {

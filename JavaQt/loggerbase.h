@@ -16,7 +16,7 @@ public:
  LoggerBase(const LoggerBase&);
  static void error(QString s, QVariant ex = QVariant());
  static void error(QString s, Throwable thrbl);
- static void warn(QString name,QString s);
+ static void warn(QString name, QString s);
  static void info(QString name,QString s);
  static void trace(QString name,QString s);
 // bool isDebugEnabled();

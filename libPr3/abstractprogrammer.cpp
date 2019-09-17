@@ -3,7 +3,7 @@
 #include "propertychangesupport.h"
 #include "defaultprogrammermanager.h"
 #include "programmingmode.h"
-#include "rosterentry.h" // for VPtr
+#include "vptr.h" // for VPtr
 
 /*static*/ int AbstractProgrammer::SHORT_TIMEOUT=2000;
 /*static*/ int AbstractProgrammer::LONG_TIMEOUT=60000;
@@ -106,14 +106,26 @@ QString AbstractProgrammer::decodeErrorCode(int code)
 
 //@Override
 /*public*/ /*final*/ void AbstractProgrammer::setMode(ProgrammingMode* m) {
-    if (getSupportedModes().contains(m)) {
-        ProgrammingMode* oldMode = mode;
-        mode = m;
-        notifyPropertyChange("Mode", VPtr<ProgrammingMode>::asQVariant( oldMode), VPtr<ProgrammingMode>::asQVariant(m));
-    } else {
-        //throw new IllegalArgumentException("Invalid requested mode: "+m);
-        log->error("Invalid requested mode " + m->getStandardName());
-    }
+ QList<ProgrammingMode*> validModes = getSupportedModes();
+
+ if (m == nullptr) {
+     if (validModes.size()>0) {
+         // null can only be set if there are no valid modes
+      log->error("Cannot set null mode when modes are present");
+         throw  IllegalArgumentException("Cannot set null mode when modes are present");
+     } else {
+         mode = nullptr;
+     }
+ }
+
+ if (validModes.contains(m)) {
+     ProgrammingMode* oldMode = mode;
+     mode = m;
+     notifyPropertyChange("Mode", VPtr<ProgrammingMode>::asQVariant(oldMode), VPtr<ProgrammingMode>::asQVariant(m));
+ } else {
+  log->error("Invalid requested mode: " + m->getStandardName());
+     throw  IllegalArgumentException("Invalid requested mode: " + m->getStandardName());
+ }
 }
 /*public*/ /*final*/ ProgrammingMode* AbstractProgrammer::getMode() { return mode; }
 

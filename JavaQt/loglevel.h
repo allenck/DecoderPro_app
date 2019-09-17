@@ -7,15 +7,14 @@ class LogLevel : public Priority
 public:
  enum VALS
  {
-   OFF,
-   FATAL,
-   ERROR,
-   WARN,
-   INFO,
-   DEBUG,
-   TRACE,
-   ALL
-
+   FATAL = 50000,
+   ERROR = 40000,
+   WARN = 30000,
+   INFO = 20000,
+   DEBUG = 10000,
+   ALL = -2147483648,
+   OFF = 2147483647,
+   TRACE = 5000
  };
  LogLevel();
  /*public*/ static /*final*/ int TRACE_INT;// = 5000;
@@ -31,7 +30,7 @@ private:
 
 protected:
  /*protected*/ LogLevel(int level, QString levelStr, int syslogEquivalent);
-
+friend class LoggerBase;
 };
 
 #endif // LOGLEVEL_H

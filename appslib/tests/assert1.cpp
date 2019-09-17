@@ -82,7 +82,7 @@
         {
             throw AssertionError("unknown error");
         }
-        log->error("AssertionError: " + message);
+        qDebug() <<"AssertionError: " + message;
         throw AssertionError(message);
     }
 
@@ -145,37 +145,39 @@
     /*public*/ /*static*/ void Assert::assertEquals(QString message, bool expected, bool actual)
     {
         if(expected != actual)
-            fail(message);
+            fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected?"true":"false").arg(actual?"true":"false"));
+
     }
 
     /*public*/ /*static*/ void Assert::assertEquals(QString message, QString expected, QString actual)
     {
     if(expected != actual)
-        fail(tr("%1 not equal '%2' vs '%3'").arg(message).arg(expected).arg(actual));
+        fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected).arg(actual));
     }
 
     /*public*/ /*static*/ void Assert::assertEquals(QString message, double expected, double actual)
     {
     if(expected != actual)
-        fail(message);
+        fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected).arg(actual));
+
     }
 
     /*public*/ /*static*/ void Assert::assertEquals(QString message, float expected, float actual)
     {
     if(expected != actual)
-        fail(message);
+        fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected).arg(actual));
     }
 
     /*public*/ /*static*/ void Assert::assertEquals(QString message, int expected, int actual)
     {
     if(expected != actual)
-        fail(message);
+        fail(tr("%1 not equal expected '0x%2' vs '0x%3'").arg(message).arg(expected,0,16).arg(actual,0,16));
     }
 
     /*public*/ /*static*/ void Assert::assertEquals(QDomElement expected, QDomElement actual, QDomElement delta)
     {
         if(expected.tagName() != actual.tagName())
-            fail(tr("unequal elements %1 vs %2").arg(expected.tagName()).arg(actual.tagName()));
+            fail(tr("unequal elements expected %1 vs %2").arg(expected.tagName()).arg(actual.tagName()));
 
     }
 
@@ -222,13 +224,13 @@
 /*public*/ /*static*/ void Assert::assertEquals(QString expected, QString actual) {
     if(expected != actual)
     {
-        fail(tr("Strings do not match: \"%1\" vs \"%2\"").arg(expected).arg(actual));
+        fail(tr("Strings do not match: expected \"%1\" vs \"%2\"").arg(expected).arg(actual));
     }
 }
 /*public*/ /*static*/ void Assert::assertEquals(bool expected, bool actual) {
     if(expected != actual)
     {
-        fail(tr("Strings do not match: \"%1\" vs \"%2\"").arg(expected).arg(actual));
+        fail(tr("Strings do not match: expected \"%1\" vs \"%2\"").arg(expected).arg(actual));
     }
 }
 
@@ -1151,4 +1153,3 @@
      msg = s;
     }
 
-    Logger* Assert::log = LoggerFactory::getLogger("Assert");

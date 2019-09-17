@@ -1,4 +1,6 @@
 #include "loggingevent.h"
+#include <QDateTime>
+#include "logger.h"
 
 LoggingEvent::LoggingEvent(QObject *parent) : QObject(parent)
 {
@@ -28,7 +30,7 @@ static final String TO_LEVEL = "toLevel";
 static final Class[] TO_LEVEL_PARAMS;
 static final Hashtable methodCache;
 #endif
-/*public*/ LoggingEvent::LoggingEvent(/*QString fqnOfCategoryClass, Category logger, */Priority *level, QString message, /*Throwable throwable*/QObject *parent) : QObject(parent){
+/*public*/ LoggingEvent::LoggingEvent(/*QString fqnOfCategoryClass,*/ QString loggerName, LogLevel *level, QString message, Throwable* throwable, QObject *parent) : QObject(parent){
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
      * 1: invokespecial java/lang/Object."<init>":()V
@@ -71,6 +73,9 @@ static final Hashtable methodCache;
     // </editor-fold>
  this->message = message;
  this->logLevel = (LogLevel*)level;
+ this->categoryName = loggerName;
+ this->throwable = throwable;
+ this->startTime = QDateTime::currentMSecsSinceEpoch();
 }
 #if 0
 /*public*/ LoggingEvent(String fqnOfCategoryClass, Category logger, long timeStamp, Priority level, Object message, Throwable throwable) {
@@ -207,7 +212,7 @@ static final Hashtable methodCache;
     // </editor-fold>
 }
 #endif
-/*public*/ LogLevel::PVAL LoggingEvent::getLevel() {
+/*public*/ int LoggingEvent::getLevel() {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
      * 1: getfield      org/apache/log4j/spi/LoggingEvent.level:Lorg/apache/log4j/Priority;
@@ -215,25 +220,27 @@ static final Hashtable methodCache;
      * 7: areturn
      *  */
     // </editor-fold>
- return level;
+ return logLevel->level;
 }
-#if 0
-/*public*/ QString getLoggerName() {
+
+/*public*/ QString LoggingEvent::getLoggerName() {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
      * 1: getfield      org/apache/log4j/spi/LoggingEvent.categoryName:Ljava/lang/String;
      * 4: areturn
      *  */
     // </editor-fold>
+ return categoryName;
 }
-
-/*public*/ Category getLogger() {
+#if 0
+/*public*/ /*Category*/Logger* LoggingEvent::getLogger() {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
      * 1: getfield      org/apache/log4j/spi/LoggingEvent.logger:Lorg/apache/log4j/Category;
      * 4: areturn
      *  */
     // </editor-fold>
+ return
 }
 #endif
 /*public*/ QString LoggingEvent::getMessage() {

@@ -120,9 +120,10 @@ public:
 //   static int STAT2_SL_NOT_ID  ; //0x04;  /* 1 = ID1/ID2 is not ID usage        */
 //   static int STAT2_SL_NOTENCOD; //0x08;  /* 1 = ID1/ID2 is not encoded alias   */
 //   static int STAT2_ALIAS_MASK ; //STAT2_SL_NOTENCOD | STAT2_SL_NOT_ID;
-//   static int STAT2_ID_IS_ALIAS; //STAT2_SL_NOT_ID;int LnConstants::STAT1_SL_SPURGE   = 0x80;  /* internal use only, not seen on net */
+//   static int STAT2_ID_IS_ALIAS; //STAT2_SL_NOT_ID;
    enum STAT
    {
+   STAT1_SL_SPURGE   = 0x80,  /* internal use only, not seen on net */
    STAT1_SL_CONUP    = 0x40,  /* consist status                     */
    STAT1_SL_BUSY     = 0x20,  /* used with STAT1_SL_ACTIVE,         */
    STAT1_SL_ACTIVE   = 0x10,  /*                                    */

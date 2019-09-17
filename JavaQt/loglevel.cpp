@@ -18,6 +18,9 @@ LogLevel::LogLevel()
      * 7: return
      *  */
     // </editor-fold>
+ this->level = level;
+ this->levelStr = levelStr;
+ this->syslogEquivalent = syslogEquivalent;
 }
 
 /*public*/ /*static*/ LogLevel LogLevel::toLevel(QString sArg) {

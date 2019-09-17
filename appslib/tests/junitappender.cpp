@@ -4,6 +4,7 @@
 #include "loggingevent.h"
 #include "stringutils.h"
 #include "consoleinterface.h"
+#include <QDebug>
 
 JUnitAppender::JUnitAppender(QObject *parent) : QObject(parent)
 {
@@ -42,23 +43,24 @@ void JUnitAppender::message(QString, LoggingEvent * evt)
 //        super.append(event);
 //    }
 }
-#if 0
+
 /**
  * Called once options are set.
  *
  * Currently just reflects back to super-class.
  */
-@Override
-/*public*/ void activateOptions() {
-    if (JUnitAppender.instance != null) {
-        System.err.println("JUnitAppender initialized more than once"); // can't count on logging here
+//@Override
+/*public*/ void JUnitAppender::activateOptions() {
+    if (JUnitAppender::_instance != nullptr) {
+        //System.err.println("JUnitAppender initialized more than once"); // can't count on logging here
+        qDebug() << "JUnitAppender initialized more than once";
     } else {
-        JUnitAppender.instance = this;
+        JUnitAppender::_instance = this;
     }
 
-    super.activateOptions();
+    //super.activateOptions();
 }
-
+#if 0
 /**
  * Do clean-up at end.
  *
@@ -153,7 +155,11 @@ static String  unexpectedInfoContent = null;
  * This causes log messages to be held for examination.
  */
 /*public*/ /*static*/ void JUnitAppender::start() {
-   // hold = true;
+   hold = true;
+   if(_instance == nullptr)
+   {
+     _instance = new JUnitAppender();
+   }
 }
 
 /**
@@ -163,7 +169,7 @@ static String  unexpectedInfoContent = null;
  * log.
  */
 /*public*/ /*static*/ void JUnitAppender::end() {
-    //hold = false;
+    hold = false;
     while (!list.isEmpty()) {
 //        LoggingEvent evt = list.remove(0);
         LoggingEvent* evt = list.at(0);
@@ -275,7 +281,7 @@ void superappend(LoggingEvent l) {
 
     LoggingEvent* evt = list.at(0);
     list.removeAt(0);
-#if 0
+
     // next piece of code appears three times, should be refactored away during Log4J 2 migration
     while ((evt->getLevel() == LogLevel::INFO) || (evt->getLevel() == LogLevel::DEBUG) || (evt->getLevel() == LogLevel::TRACE))
     { // better in Log4J 2
@@ -289,13 +295,14 @@ void superappend(LoggingEvent l) {
 
     // check the remaining message, if any
     if (evt->getLevel() != LogLevel::ERROR) {
+        qDebug() << "value: " << evt->getLevel() << "expected: " << LogLevel::ERROR;
         Assert::fail("Level mismatch when looking for ERROR message: \"" +
                 msg +
                 "\" found \"" +
                  evt->getMessage() +
                 "\"");
     }
-#endif
+
     if (!compare(evt, msg)) {
         Assert::fail("Looking for ERROR message \"" + msg + "\" got \"" + evt->getMessage() + "\"");
     }
@@ -467,7 +474,7 @@ void superappend(LoggingEvent l) {
 /*public*/ static void suppressWarnMessage(String msg) {
     suppressMessage(Level.WARN, msg);
 }
-
+#endif
 /**
  * See if a message (completely matching particular text) has been emitted
  * yet. White space is ignored. All messages before the requested one are
@@ -478,22 +485,24 @@ void superappend(LoggingEvent l) {
  * @return null if not present, else the LoggingEvent for possible further
  *         checks of level, etc
  */
-/*public*/ static LoggingEvent checkForMessage(String msg) {
+/*public*/ /*static*/ LoggingEvent* JUnitAppender::checkForMessage(QString msg) {
     if (list.isEmpty())
-        return null;
+        return nullptr;
 
-    LoggingEvent evt = list.remove(0);
+    LoggingEvent* evt = list.at(0);
+    list.removeAt(0);
     while (!compare(evt, msg)) {
         if (list.isEmpty()) {
-            return null; // normal to not find it
+            return nullptr; // normal to not find it
         }
-        evt = list.remove(0);
+        evt = list.at(0);
+        list.removeAt(0);
     }
     // fall through with a match
 
     return evt;
 }
-
+#if 0
 /**
  * See if a message that starts with particular text has been emitted yet.
  * White space is ignored. All messages before the matching one are dropped;
@@ -521,7 +530,7 @@ void superappend(LoggingEvent l) {
 
     return evt;
 }
-
+#endif
 /**
  * Check that the next queued message was of Warn severity, and has a
  * specific message. White space is ignored.
@@ -530,14 +539,14 @@ void superappend(LoggingEvent l) {
  *
  * @param msg the message to assert exists
  */
-/*public*/ static void assertWarnMessage(String msg) {
+/*public*/ /*static*/ void JUnitAppender::assertWarnMessage(QString msg) {
     if (list.isEmpty()) {
         Assert::fail("No message present: " + msg);
         return;
     }
-    LoggingEvent evt = checkForMessage(msg);
+    LoggingEvent* evt = checkForMessage(msg);
 
-    if (evt == null) {
+    if (evt == nullptr) {
         Assert::fail("Looking for message \"" + msg + "\" and didn't find it");
     }
 }
@@ -552,26 +561,28 @@ void superappend(LoggingEvent l) {
  *
  * @param msg the message to assert exists
  */
-/*public*/ static void assertMessage(String msg) {
+/*public*/ /*static*/ void JUnitAppender::assertMessage(QString msg) {
     if (list.isEmpty()) {
         Assert::fail("No message present: " + msg);
         return;
     }
-    LoggingEvent evt = list.remove(0);
+    LoggingEvent* evt = list.at(0);
+    list.removeAt(0);
 
-    while ((evt.getLevel() == Level.INFO) || (evt.getLevel() == Level.DEBUG) || (evt.getLevel() == Level.TRACE)) { // better in Log4J 2
+    while ((evt->getLevel() == LogLevel::INFO) || (evt->getLevel() == LogLevel::DEBUG) || (evt->getLevel() == LogLevel::TRACE)) { // better in Log4J 2
         if (list.isEmpty()) {
             Assert::fail("Message not found: " + msg);
             return;
         }
-        evt = list.remove(0);
+        evt = list.at(0);
+        list.removeAt(0);
     }
 
     if (!compare(evt, msg)) {
-        Assert::fail("Looking for message \"" + msg + "\" got \"" + evt.getMessage() + "\"");
+        Assert::fail("Looking for message \"" + msg + "\" got \"" + evt->getMessage() + "\"");
     }
 }
-#endif
+
 /**
  * Compare two message strings, handling nulls and ignoring whitespace.
  *
@@ -588,7 +599,7 @@ void superappend(LoggingEvent l) {
         return s2 == "";
     }
     QString s1 = e1->getMessage();
-    return StringUtils::deleteWhitespace(s1) ==(StringUtils::deleteWhitespace(s2));
+    return StringUtils::deleteWhitespace(s1.toUpper()) ==(StringUtils::deleteWhitespace(s2.toUpper()));
 }
 #if 0
 /**
@@ -609,8 +620,19 @@ protected static boolean compareStartsWith(LoggingEvent e1, String s2) {
     String s1 = e1.getMessage().toString();
     return StringUtils.deleteWhitespace(s1).startsWith(StringUtils.deleteWhitespace(s2));
 }
-
-/*public*/ static JUnitAppender instance() {
-    return JUnitAppender.instance;
-}
 #endif
+/*public*/ /*static*/ JUnitAppender* JUnitAppender::instance() {
+    return JUnitAppender::_instance;
+}
+
+/*static*/ /*private*/ JUnitAppender* JUnitAppender::_instance = nullptr;
+// package-level access for testing
+/*static*/ bool JUnitAppender::unexpectedFatalSeen = false;
+/*static*/ QString  JUnitAppender::unexpectedFatalContent = nullptr;
+/*static*/ bool JUnitAppender::unexpectedErrorSeen = false;
+/*static*/ QString  JUnitAppender::unexpectedErrorContent = nullptr;
+/*static*/ bool JUnitAppender::unexpectedWarnSeen = false;
+/*static*/ QString  JUnitAppender::unexpectedWarnContent = nullptr;
+/*static*/ bool JUnitAppender::unexpectedInfoSeen = false;
+/*static*/ QString  JUnitAppender::unexpectedInfoContent = nullptr;
+bool JUnitAppender::hold = false;

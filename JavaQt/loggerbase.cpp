@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QString>
 #include "consoleinterface.h"
-//#include "systemconsole.h"
+#include "loglevel.h"
 
 //QString Logger::name;
 LoggerBase::LoggerBase(QString /*name*/, QObject *parent) :
@@ -24,12 +24,14 @@ LoggerBase::LoggerBase(const LoggerBase & /*other*/) : QObject()
 /*static*/ void LoggerBase::error(QString s, QVariant ex)
 {
  qDebug() << tr("Error: ") << s << ex.toString();
- ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, s, new Priority(Priority::ERROR, "error",0));
+ //ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, s, new LogLevel(LogLevel::ERROR, "Error",0));
+ ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, new LoggingEvent("static", new LogLevel(LogLevel::ERROR, "Error",0),s,nullptr));
 }
 /*static*/ void LoggerBase::error(QString s, Throwable ex)
 {
  qDebug() << tr("Error: ") << s << ex.getMessage();
- ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, s, new Priority(Priority::ERROR, "Error", 0));
+ //ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, s, new LogLevel(LogLevel::ERROR, "Error", 0));
+ ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, new LoggingEvent("static", new LogLevel(LogLevel::ERROR, "Error",0),s,&ex));
 }
 
 //bool Logger::isDebugEnabled()
@@ -50,19 +52,22 @@ void LoggerBase::debug(QString name,QString s)
 void LoggerBase::warn(QString name,QString s)
 {
  qDebug() << tr("%1: Warning: %2").arg(name).arg(s);
- ConsoleInterface::instance()->sendMessage(tr("Warning: ")+ s, s, new Priority(Priority::WARN, "Warning",0));
+ //ConsoleInterface::instance()->sendMessage(tr("Warning: ")+ s, s, new LogLevel(LogLevel::WARN, "Warning",0));
+ ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, new LoggingEvent(name, new LogLevel(LogLevel::WARN, "Error",0),s,nullptr));
 }
 
 void LoggerBase::info(QString name,QString s)
 {
  qDebug() << tr("%1: Info: %2").arg(name).arg(s);
- ConsoleInterface::instance()->sendMessage(tr("Info: ")+ s, s, new Priority(Priority::INFO, "Info", 0));
+ //ConsoleInterface::instance()->sendMessage(tr("Info: ")+ s, s, new LogLevel(LogLevel::INFO, "Information", 0));
+ ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, new LoggingEvent(name, new LogLevel(LogLevel::INFO, "Error",0),s,nullptr));
 }
 
 void LoggerBase::trace(QString name,QString s)
 {
  qDebug() << tr("%1: trace: %2").arg(name).arg(s);
- ConsoleInterface::instance()->sendMessage(tr("Trace: ")+ s, s, new Priority(Priority::INFO, "Trace",0));
+ //ConsoleInterface::instance()->sendMessage(tr("Trace: ")+ s, s, new LogLevel(LogLevel::TRACE, "Trace",0));
+ ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, new LoggingEvent(name, new LogLevel(LogLevel::TRACE, "Error",0),s,nullptr));
 }
 
 //void Logger::setDebugEnabled(bool bState) { bDebugEnabled = bState;}

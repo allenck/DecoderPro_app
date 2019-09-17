@@ -164,13 +164,8 @@
         return 0;
     }
 }
-/*private*/ int SimpleProgFrame::getNewAddr() {
-    try {
-        return addrField->text().toInt();
-    } catch (NumberFormatException e) {
-        addrField->setText("");
-        return 0;
-    }
+/*private*/ QString SimpleProgFrame::getNewAddr() {
+        return addrField->text();
 }
 
 /*private*/ QString SimpleProgFrame::statusCode(int status) {

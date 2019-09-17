@@ -8,8 +8,8 @@ class MultiIndexProgrammerFacade : public AbstractProgrammerFacade
     Q_OBJECT
 public:
     //explicit MultiIndexProgrammerFacade(QObject *parent = 0);
-    /*public*/ MultiIndexProgrammerFacade(Programmer* prog, QString indexPI, QString indexSI, bool cvFirst, QObject* parent = 0);
-    enum ProgState { PROGRAMMING, FINISHREAD, FINISHWRITE, NOTPROGRAMMING };
+    /*public*/ MultiIndexProgrammerFacade(Programmer* prog, QString indexPI, QString indexSI, bool cvFirst, bool skipDupIndexWrite, QObject* parent = 0);
+    enum ProgState { PROGRAMMING, FINISHREAD, FINISHWRITE, FINISHCONFIRM,NOTPROGRAMMING };
     /*synchronized*/ /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException) ;
     /*synchronized*/ /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*synchronized*/ /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException) ;
@@ -23,19 +23,33 @@ signals:
 
 public slots:
 private:
+    QString defaultIndexPI;
+    QString defaultIndexSI;
+
     QString indexPI;
     QString indexSI;
     bool cvFirst;
+    bool skipDupIndexWrite;
+    long maxDelay = 1000;  // max mSec since last successful end-of-operation for skipDupIndexWrite; longer delay writes anyway
+
     // members for handling the programmer interface
 
     int _val;	// remember the value being read/written for confirmative reply
     QString _cv;	// remember the cv number being read/written
     int valuePI;  //  value to write to PI or -1
     int valueSI;  //  value to write to SI or -1
+    // remember last operation for skipDupIndexWrite
+    int lastValuePI = -1;  // value written in last operation
+    int lastValueSI = -1;  // value written in last operation
+    qint64 lastOpTime = -1;  // time of last complete
     void parseCV(QString cv);
     /*private*/ ProgListener* _usingProgrammer;// = NULL;
     ProgState state;// = ProgState::NOTPROGRAMMING;
-    Logger* log;
+    static Logger* log;
+    bool hasAlternateAddress(QString cv);
+    QString getAlternateAddress(QString cv);
+    int getAlternateValue(QString cv);
+    bool useCachePiSi();
 
 };
 

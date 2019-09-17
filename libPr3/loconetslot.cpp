@@ -51,14 +51,13 @@ void LocoNetSlot::common(int slotNum)
   localF26 = false;
   localF27 = false;
   localF28 = false;
-  trk = 7;
   stat = 0;	// <STAT> is the status of the slot
   addr = 0;	// full address of the loco, made from
   //    <ADDR> is the low 7 (0-6) bits of the Loco address
   //    <ADD2> is the high 7 bits (7-13) of the 14-bit loco address
   spd = 0;	// <SPD> is the current speed (0-127)
   _dirf = 0;	// <DIRF> is the current Direction and the setting for functions F0-F4
-  trk = 0;	// <TRK> is the global track status
+  trk = 7;	// <TRK> is the global track status
   _ss2 = 0;	// <SS2> is the an additional slot status
   _snd = 0; 	// <SND> is the settings for functions F5-F8
   _id = 0;  // throttle id, made from
@@ -79,7 +78,7 @@ void LocoNetSlot::setSlot(LocoNetMessage* l) throw (LocoNetException)
         if ( l->getElement(1) != 0x0E ) return;  // not an appropriate reply
         // valid, so fill contents
         if (slot != l->getElement(2))
-            log->error(QString("Asked to handle message not for this slot (%1) ").arg(slot));
+            log->error(QString("Asked to handle message not for this slot (%1) ").arg(slot) + l->toString());
         stat = l->getElement(3);
         _pcmd = l->getElement(4);
         addr = l->getElement(4)+128*l->getElement(9);
@@ -96,7 +95,7 @@ void LocoNetSlot::setSlot(LocoNetMessage* l) throw (LocoNetException)
     }
     case LnConstants::OPC_SLOT_STAT1:
         if (slot != l->getElement(1))
-            log->error(QString("Asked to handle message not for this slot %1").arg(l->getElement(1)));
+            log->error(QString("Asked to handle message not for this slot %1 ").arg(l->getElement(1)) +l->toString());
         stat = l->getElement(2);
         notifySlotListeners();
         lastUpdateTime = QDateTime::currentDateTime().currentMSecsSinceEpoch() ;
@@ -113,35 +112,63 @@ void LocoNetSlot::setSlot(LocoNetMessage* l) throw (LocoNetException)
         return;
     }
     case  LnConstants::OPC_LOCO_DIRF: {
-        // set direction, functions in slot - first, clear bits
-        _dirf &= ~(LnConstants::DIRF_DIR | LnConstants::DIRF_F0
-                  | LnConstants::DIRF_F1 | LnConstants::DIRF_F2
-                  | LnConstants::DIRF_F3 | LnConstants::DIRF_F4);
-        // and set them as masked
-        _dirf += ((LnConstants::DIRF_DIR | LnConstants::DIRF_F0
-                  | LnConstants::DIRF_F1 | LnConstants::DIRF_F2
-                  | LnConstants::DIRF_F3 | LnConstants::DIRF_F4) & l->getElement(2));
+     // When slot is consist-mid or consist-sub, this LocoNet Opcode
+        // can only change the functions; direction cannot be changed.
+        if (((stat & LnConstants::CONSIST_MASK) == LnConstants::CONSIST_MID) ||
+                ((stat & LnConstants::CONSIST_MASK) == LnConstants::CONSIST_SUB)) {
+            // set functions in slot - first, clear bits, preserving DIRF_DIR bit
+            _dirf &= LnConstants::DIRF_DIR | (~(LnConstants::DIRF_F0
+                    | LnConstants::DIRF_F1 | LnConstants::DIRF_F2
+                    | LnConstants::DIRF_F3 | LnConstants::DIRF_F4));
+            // and set the function bits from the LocoNet message
+            _dirf += ((LnConstants::DIRF_F0
+                    | LnConstants::DIRF_F1 | LnConstants::DIRF_F2
+                    | LnConstants::DIRF_F3 | LnConstants::DIRF_F4) & l->getElement(2));
+        } else {
+            // set direction, functions in slot - first, clear bits
+            _dirf &= ~(LnConstants::DIRF_DIR | LnConstants::DIRF_F0
+                    | LnConstants::DIRF_F1 | LnConstants::DIRF_F2
+                    | LnConstants::DIRF_F3 | LnConstants::DIRF_F4);
+            // and set them as masked
+            _dirf += ((LnConstants::DIRF_DIR | LnConstants::DIRF_F0
+                    | LnConstants::DIRF_F1 | LnConstants::DIRF_F2
+                    | LnConstants::DIRF_F3 | LnConstants::DIRF_F4) & l->getElement(2));
+
+        }
         notifySlotListeners();
-        lastUpdateTime = QDateTime::currentDateTime().currentMSecsSinceEpoch() ;
+        lastUpdateTime = QDateTime::currentMSecsSinceEpoch();//System.currentTimeMillis();
         return;
     }
     case LnConstants::OPC_MOVE_SLOTS: {
-        // change in slot status will be reported by the reply,
-        // so don't need to do anything here (but could)
-        lastUpdateTime = QDateTime::currentDateTime().currentMSecsSinceEpoch() ;
-        return;
+     int toSlot = l->getElement(2);
+     if ( toSlot == 0 ) {
+         //dispatched implies common
+         stat = (stat & ~LnConstants::LOCOSTAT_MASK) | LnConstants::LOCO_COMMON;
+     }
+     // change in slot status will be reported by the reply,
+     // so don't need to do anything here (but could)
+     lastUpdateTime = QDateTime::currentMSecsSinceEpoch();//System.currentTimeMillis();
+     notifySlotListeners();
+     return;
     }
     case LnConstants::OPC_LOCO_SPD: {
-        // set speed
-        spd  = l->getElement(2);
-        notifySlotListeners();
-        lastUpdateTime = QDateTime::currentDateTime().currentMSecsSinceEpoch() ;
-        return;
+     // This opcode has no effect on the slot's speed setting if the
+     // slot is mid-consist or sub-consist.
+     if (((stat & LnConstants::CONSIST_MASK) != LnConstants::CONSIST_MID) &&
+             ((stat & LnConstants::CONSIST_MASK) != LnConstants::CONSIST_SUB)) {
+
+         spd = l->getElement(2);
+         notifySlotListeners();
+         lastUpdateTime = QDateTime::currentMSecsSinceEpoch();//System.currentTimeMillis();
+     } else {
+         log->info(tr("Ignoring speed change for slot %1 marked as consist-mid or consist-sub.").arg(slot));
+     }
+     return;
     }
     default:
     {
-//     throw new LocoNetException("message can't be parsed");
-      emit LocoNetException("message can't be parsed");
+     log->debug( tr("message can't be parsed op code 0x%1").arg(l->getOpCode(),0,16 ));
+     throw LocoNetException("message can't be parsed");
     }
  }
 }
@@ -322,14 +349,16 @@ void LocoNetSlot::notifySlotListeners()
  * @return "Days" value currently in fast-clock slot.
  */
 int LocoNetSlot::getFcDays() {
-    if (getSlot()!=LnConstants::FC_SLOT) log->error("getFcDays invalid for slot "+getSlot());
+    if (getSlot()!=LnConstants::FC_SLOT)
+     log->error("getFcDays invalid for slot "+QString::number(getSlot()));
     return (addr&0x3f80)/0x80;
 }
 /**
  * For fast-clock slot, set "days" value.
  */
 void LocoNetSlot::setFcDays(int val) {
-    if (getSlot()!=LnConstants::FC_SLOT) log->error("setFcDays invalid for slot "+getSlot());
+    if (getSlot()!=LnConstants::FC_SLOT)
+     log->error("setFcDays invalid for slot "+QString::number(getSlot()));
     addr = val*128+(addr&0x7f);
 }
 
@@ -338,7 +367,8 @@ void LocoNetSlot::setFcDays(int val) {
  * @return "Hours" value currently stored in fast clock slot.
  */
 int LocoNetSlot::getFcHours() {
-    if (getSlot()!=LnConstants::FC_SLOT) log->error("getFcHours invalid for slot "+getSlot());
+    if (getSlot()!=LnConstants::FC_SLOT)
+     log->error("getFcHours invalid for slot "+ QString::number(getSlot()));
     int temp = ((256-_ss2) &0x7F) % 24;
     return (24 - temp) % 24;
 }
@@ -346,7 +376,7 @@ int LocoNetSlot::getFcHours() {
  * For fast-clock slot, set "hours" value.
  */
 void LocoNetSlot::setFcHours(int val) {
-    if (getSlot()!=LnConstants::FC_SLOT) log->error("setFcHours invalid for slot "+getSlot());
+    if (getSlot()!=LnConstants::FC_SLOT) log->error("setFcHours invalid for slot "+QString::number(getSlot()));
     _ss2 = (256-(24-val))&0x7F;
 }
 
@@ -356,7 +386,7 @@ void LocoNetSlot::setFcHours(int val) {
  */
 int LocoNetSlot::getFcMinutes()
 {
-    if (getSlot()!=LnConstants::FC_SLOT) log->error("getFcMinutes invalid for slot "+getSlot());
+    if (getSlot()!=LnConstants::FC_SLOT) log->error("getFcMinutes invalid for slot "+QString::number(getSlot()));
     int temp = ((255-_dirf) & 0x7F) % 60;
     return (60-temp)% 60;
 }
@@ -364,7 +394,7 @@ int LocoNetSlot::getFcMinutes()
  * For fast-clock slot, set "minutes" value.
  */
 void LocoNetSlot::setFcMinutes(int val) {
-    if (getSlot()!=LnConstants::FC_SLOT) log->error("setFcMinutes invalid for slot "+getSlot());
+    if (getSlot()!=LnConstants::FC_SLOT) log->error("setFcMinutes invalid for slot "+QString::number(getSlot()));
     _dirf = (255-(60-val))&0x7F;
 }
 
@@ -374,14 +404,15 @@ void LocoNetSlot::setFcMinutes(int val) {
  * next minute rollover. These ticks step at the current fast clock rate
  */
 int LocoNetSlot::getFcFracMins() {
-    if (getSlot()!=LnConstants::FC_SLOT) log->error("getFcMinutes invalid for slot "+getSlot());
+    if (getSlot()!=LnConstants::FC_SLOT) log->error("getFcMinutes invalid for slot "+QString::number(getSlot()));
     return 0x3FFF - ( (addr & 0x7F) | ((spd & 0x7F ) << 7 ) ) ;
 }
 /**
  * For fast-clock slot, set "frac_mins" value.
  */
 void LocoNetSlot::setFcFracMins(int val) {
-    if (getSlot()!=LnConstants::FC_SLOT) log->error("setFcMinutes invalid for slot "+getSlot());
+    if (getSlot()!=LnConstants::FC_SLOT)
+     log->error("setFcMinutes invalid for slot "+QString::number(getSlot()));
     int temp = 0x3FFF - val ;
     addr = addr | (temp & 0x7F);
     spd = ( temp >> 7 ) & 0x7F;
@@ -392,14 +423,14 @@ void LocoNetSlot::setFcFracMins(int val) {
  * @return Rate stored in fast clock slot.
  */
 int LocoNetSlot::getFcRate() {
-    if (getSlot()!=LnConstants::FC_SLOT) log->error("getFcMinutes invalid for slot "+getSlot());
+    if (getSlot()!=LnConstants::FC_SLOT) log->error("getFcMinutes invalid for slot "+QString::number(getSlot()));
     return stat;
 }
 /**
  * For fast-clock slot, set "rate" value.
  */
 void LocoNetSlot::setFcRate(int val) {
-    if (getSlot()!=LnConstants::FC_SLOT) log->error("setFcMinutes invalid for slot "+getSlot());
+    if (getSlot()!=LnConstants::FC_SLOT) log->error("setFcMinutes invalid for slot "+QString::number(getSlot()));
     stat = val & 0x7F;
 }
 

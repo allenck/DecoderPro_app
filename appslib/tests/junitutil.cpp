@@ -10,6 +10,7 @@
 #include "sleeperthread.h"
 #include "assert1.h"
 #include "junitappender.h"
+#include <QDebug>
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
@@ -149,6 +150,7 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 #endif
     } catch (Throwable e) {
 //        System.err.println("Could not start JUnitAppender, but test continues:\n" + e);
+        qDebug() << "Could not start JUnitAppender, but test continues:\n" + e.getMessage();
     }
 
     // clear the backlog and reset the UnexpectedMessageFlags so that

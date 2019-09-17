@@ -97,9 +97,10 @@ ProgrammerFacadeSelector::ProgrammerFacadeSelector(QObject *parent) :
    QString PI           = parameters.at(0).toElement().text();
    QString SI           = (parameters.size()>1) ? parameters.at(1).toElement().text() : "";
    bool cvFirst     = (parameters.size()>2) ? (parameters.at(2).toElement().text()==("false") ? false : true) : true;
+   bool skipDupIndexWrite = (parameters.size() > 3) ? (parameters.at(3).toElement().text() == ("false") ? false : allowCache) : allowCache; // if not present, use default
 
    MultiIndexProgrammerFacade* pf =
-            new MultiIndexProgrammerFacade(programmer, PI, SI, cvFirst);
+            new MultiIndexProgrammerFacade(programmer, PI, SI, cvFirst, skipDupIndexWrite);
 
    log->debug("new programmer "+QString(pf->metaObject()->className()));
    programmer = pf; // to go around and see if there are more

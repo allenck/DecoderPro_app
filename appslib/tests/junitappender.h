@@ -12,11 +12,16 @@ public:
     explicit JUnitAppender(QObject *parent = nullptr);
 
     /*public*/ static void assertErrorMessage(QString msg);
+    /*public*/ static void assertWarnMessage(QString msg);
+    /*public*/ static void assertMessage(QString msg);
+    /*public*/ static LoggingEvent* checkForMessage(QString msg);
     /*public*/ static void start();
     /*public*/ static void end();
     /*public*/ /*synchronized*/ void append(LoggingEvent* event);
     /*public*/ static int clearBacklog(LogLevel::VALS level);
     /*public*/ static int clearBacklog();
+    /*public*/ static JUnitAppender* instance();
+    /*public*/ void activateOptions();
 
 signals:
 
@@ -24,7 +29,17 @@ public slots:
     void message(QString, LoggingEvent*evt);
 private:
     static QList<LoggingEvent*> list;// = new java.util.ArrayList<>();
-    bool hold;
+    static bool hold;
+    static /*private*/ JUnitAppender* _instance;// = null;
+    // package-level access for testing
+    static bool unexpectedFatalSeen;// = false;
+    static QString  unexpectedFatalContent;// = null;
+    static bool unexpectedErrorSeen;// = false;
+    static QString  unexpectedErrorContent;// = null;
+    static bool unexpectedWarnSeen;// = false;
+    static QString  unexpectedWarnContent;// = null;
+    static bool unexpectedInfoSeen;// = false;
+    static QString  unexpectedInfoContent;// = null;
 
 protected:
     /*protected*/ static bool compare(LoggingEvent* e1, QString s2);

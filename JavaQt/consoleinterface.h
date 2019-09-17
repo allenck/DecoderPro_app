@@ -12,7 +12,7 @@ public:
     //explicit ConsoleInterface(QObject *parent = 0);
     ~ConsoleInterface();
     static ConsoleInterface* instance();
-    void sendMessage(QString s, QString baseMsg, Priority *level);
+    void sendMessage(QString s, LoggingEvent *evt);
 signals:
     void message(QString, LoggingEvent* evt);
 public slots:

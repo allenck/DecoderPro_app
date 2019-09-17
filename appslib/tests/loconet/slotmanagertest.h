@@ -32,6 +32,12 @@ public:
     /*public*/ void testWriteCVOpsLongAddr() throw (ProgrammerException);
     /*public*/ void testWriteCVOpsShortAddr() throw (ProgrammerException);
     /*public*/ void testWriteThroughFacade() throw (ProgrammerException);
+    /*public*/ void testReadThroughFacade() throw (ProgrammerException);
+    /*public*/ void testReadThroughFacadeFail() throw (ProgrammerException);
+    /*public*/ void testGetProgrammingModes();
+    /*public*/ void testSendPacket();
+
+
 
     /*public*/ void setUp();
     /*public*/ void tearDown();

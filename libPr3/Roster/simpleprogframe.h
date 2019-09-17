@@ -42,7 +42,7 @@ private:
 
     QLabel* resultsField;//   = new JLabel(" ");
     /*private*/ int getNewVal() ;
-    /*private*/ int getNewAddr();
+    /*private*/ QString getNewAddr();
     /*private*/ QString statusCode(int status);
 
 

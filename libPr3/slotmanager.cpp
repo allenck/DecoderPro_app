@@ -930,34 +930,11 @@ void SlotManager::readCVOpsMode(QString CVname, ProgListener* p, int addr, bool 
     doRead(CV, p, 0x2F);  // although LPE implies 0x2C, 0x2F is observed
 }
 
-/**
- * Read a CV via the OpsMode programmer.
- *
- * @param cvNum a String containing the CV number
- * @param p programmer
- * @throws jmri.ProgrammerException if an unsupported programming mode is exercised
- */
-//@Override
-void SlotManager::readCV(int CV, ProgListener* p) throw(ProgrammerException)
-{
-    lopsa = 0;
-    hopsa = 0;
-    mServiceMode = true;
-    // parse the programming command
-    int pcmd = 0x03;       // LPE imples 0x00, but 0x03 is observed
-    if (getMode() == ProgrammingMode::PAGEMODE) pcmd = pcmd | 0x20;
-    else if (getMode() == ProgrammingMode::DIRECTBYTEMODE) pcmd = pcmd | 0x28;
-    else if (getMode() == ProgrammingMode::REGISTERMODE
-             || getMode() == ProgrammingMode::ADDRESSMODE) pcmd = pcmd | 0x10;
-    else
-     throw ProgrammerException("mode not supported");
-
-    doRead(CV, p, pcmd);
-}
 
 void SlotManager::doRead(int CV, ProgListener* p, int progByte) throw(ProgrammerException)
 {
-    if (log->isDebugEnabled()) log->debug("readCV: "+QString::number(CV));
+    if (log->isDebugEnabled())
+     log->debug("readCV: "+QString::number(CV));
     stopEndOfProgrammingTimer();  // still programming, so no longer waiting for power off
 
     useProgrammer(p);
@@ -1013,7 +990,7 @@ LocoNetMessage* SlotManager::progTaskStart(int pcmd, int val, int cvnum, bool wr
  m->setElement(7, 0);  // TRK was 0, then 7 for PR2, now back to zero
 
  // store address in CVH, CVL. Note CVH format is truely wierd...
- m->setElement(8, (addr&0x300)/16 + (addr&0x80)/128 + (val&0x80)/128*2 );
+ m->setElement(8, ((addr & 0x300)>>4) | ((addr & 0x80) >> 7) | ((val & 0x80) >> 6));
  m->setElement(9,addr & 0x7F);
 
  // store low bits of CV value
@@ -1297,31 +1274,53 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
  * @throws jmri.ProgrammerException if an unsupported programming mode is exercised
  */
 //@Override
-/*public*/ void SlotManager::readCV(QString cvNum, ProgListener* p) throw (ProgrammerException) {
-    log->debug(tr("readCV(string): cvNum=%1").arg(cvNum));
-    if (getMode()== (csOpSwProgrammingMode)) {
-        log->debug("cvOpSw mode!");
-        //handle Command Station OpSw programming here
-        QStringList parts = cvNum.split("\\.");
-        if ((parts[0]==("csOpSw")) && (parts.length()==2)) {
-            if (csOpSwAccessor == nullptr) {
-                csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
-            } else {
-                csOpSwAccessor->setProgrammerListener(p);
-            }
-            // perform the CsOpSwMode read access
-            log->debug("going to try the opsw access");
-            csOpSwAccessor->readCsOpSw(cvNum, p);
-            return;
+/*public*/ void SlotManager::readCV(QString cvNum, ProgListener* p) throw (ProgrammerException)
+{
+ log->debug(tr("readCV(string): cvNum=%1 mode=%2").arg(cvNum).arg(getMode()->toString()));
+ if (getMode() == (csOpSwProgrammingMode))
+ {
+     log->debug("cvOpSw mode!");
+     //handle Command Station OpSw programming here
+     QStringList parts = cvNum.split("\\.");
+     if ((parts.at(0) ==("csOpSw")) && (parts.length()==2)) {
+         if (csOpSwAccessor == nullptr) {
+             csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
+         } else {
+             csOpSwAccessor->setProgrammerListener(p);
+         }
+         // perform the CsOpSwMode read access
+         log->debug("going to try the opsw access");
+         csOpSwAccessor->readCsOpSw(cvNum, p);
+         return;
 
-        } else {
-            log->warn("rejecting the cs opsw access account unsupported CV name format");
-            // unsupported format in "cv" name.  Signal an error.
-            p->programmingOpReply(1, ProgListener::SequenceError);
-            return;
+     } else {
+         log->warn("rejecting the cs opsw access account unsupported CV name format");
+         // unsupported format in "cv" name.  Signal an error.
+         Programmer::notifyProgListenerEnd(p, 1, ProgListener::SequenceError);
+         return;
 
-        }
-    } else {
-        readCV((cvNum.toInt()), p);
-    }
+     }
+ } else {
+     // regular integer address for DCC form
+     int CV = cvNum.toInt();
+
+     lopsa = 0;
+     hopsa = 0;
+     mServiceMode = true;
+     // parse the programming command
+     int pcmd = 0x03;       // LPE imples 0x00, but 0x03 is observed
+     if (getMode() == (ProgrammingMode::PAGEMODE)) {
+         pcmd = pcmd | 0x20;
+     } else if (getMode() ==(ProgrammingMode::DIRECTBYTEMODE)) {
+         pcmd = pcmd | 0x28;
+     } else if (getMode() ==(ProgrammingMode::REGISTERMODE)
+             || getMode() ==(ProgrammingMode::ADDRESSMODE)) {
+         pcmd = pcmd | 0x10;
+     } else {
+         throw ProgrammerException("mode not supported"); // NOI18N
+     }
+
+     doRead(CV, p, pcmd);
+
+ }
 }

@@ -4,6 +4,7 @@
 
 class LocoNetSlotTestAction : public AbstractAction
 {
+    Q_OBJECT
 public:
     LocoNetSlotTestAction(QObject* parent);
 public slots:

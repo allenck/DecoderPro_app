@@ -226,7 +226,6 @@ public:
      * @throws ProgrammerException
      */
     void readCVOpsMode(QString CVname, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException);
-    void readCV(int CV, ProgListener* p) throw(ProgrammerException);
     void doRead(int CV, ProgListener* p, int progByte) throw(ProgrammerException);
     QString getUserName();
     QString getSystemPrefix();

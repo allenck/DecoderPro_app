@@ -871,7 +871,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
     // do the write, response will wake the thread
     cvReturnValue = -1;
     try {
-         programmer->readCV(CV, new ProgListener2(this));
+         programmer->readCV(QString::number(CV), new ProgListener2(this));
 //         {
 //            /*public*/ void programmingOpReply(int value, int status) {
 //                cvReturnValue = value;

@@ -63,10 +63,15 @@ void LocoNetSlotTestAction::actionPerformed()
       lnst->testWriteThrottleID();
       lnst->testConsistingStateVsSpeedAccept();
       lnst->checkFunctionMessage();
-      lnst->checkFastClockGetSetMethods();
+//      lnst->checkFastClockGetSetMethods();
       lnst->checkSetAndGetTrackStatus();
       lnst->checkIsF0ToF8();}
     catch (AssertionError er)
+    {
+        JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
+
+    }
+    catch(Exception er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
 
