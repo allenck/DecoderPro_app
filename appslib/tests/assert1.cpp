@@ -800,6 +800,17 @@
          fail(message);
     }
 
+    /*public*/ /*static*/ void Assert::assertNotNull(QString message, int object)
+    {
+     if(object==0)
+         fail(message);
+    }
+    /*public*/ /*static*/ void Assert::assertNotNull(QString message, QString object)
+    {
+     if(object.isEmpty())
+         fail(message);
+    }
+
     /*public*/ /*static*/ void Assert::assertNotNull(QObject* object) {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         /* 0: aconst_null

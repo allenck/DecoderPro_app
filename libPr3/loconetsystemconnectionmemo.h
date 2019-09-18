@@ -43,6 +43,7 @@ class LIBPR3SHARED_EXPORT  LocoNetSystemConnectionMemo : public  SystemConnectio
 public:
  LocoNetSystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject* parent=0);
  LocoNetSystemConnectionMemo(QObject* parent=0);
+ /*public*/ LocoNetSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name);
  ~LocoNetSystemConnectionMemo();
  /**
   * Provides access to the TrafficController for this

@@ -45,14 +45,15 @@ AbstractMRReply::AbstractMRReply(QObject *parent) :
     init();
     _nDataChars = s.length();
     for (int i = 0; i<_nDataChars; i++)
-        _dataChars.replace(i, s.mid(i,1));
+        //_dataChars.replace(i, s.mid(i,1));
+     _dataChars.replace(i, s.toLocal8Bit().at(i));
 }
 void AbstractMRReply::init()
 {
     log = new Logger("AbstractMRReply");
     setBinary(false);
     unsolicited = false;
-    _dataChars = QByteArray(maxSize(),0);
+    _dataChars = QVector<int>(maxSize(),0);
 
 }
 

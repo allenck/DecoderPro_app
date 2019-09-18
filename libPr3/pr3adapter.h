@@ -34,7 +34,8 @@ public:
   * The PR3 can be used in numerous modes, so handle that
   */
  /*public*/ QStringList commandStationOptions();
- /*public*/ SystemConnectionMemo* getSystemConnectionMemo();
+ /*public*/ SystemConnectionMemo *getSystemConnectionMemo();
+ /*public*/ void setTranspondingAvailable(QString value);
 
 private:
  Logger* log;

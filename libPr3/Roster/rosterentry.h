@@ -89,7 +89,7 @@ public:
     /*public*/ QString getAttribute(QString key) ;
     /*public*/ QString titleString();
     /*public*/ void deleteAttribute(QString key);
-    /*public*/ QSet<QString> getAttributes();
+    /*public*/ QList<QString> getAttributes();
     /*public*/ QStringList getAttributeList();
     /*public*/ int getMaxSpeedPCT();
     /*public*/ void setMaxSpeedPCT(int maxSpeedPCT);

@@ -921,7 +921,8 @@ SOURCES += \
     simpleserver/abstractsignalheadserver.cpp \
     simpleserver/simplesignalheadserver.cpp \
     simpleserver/abstractreporterserver.cpp \
-    simpleserver/simplereporterserver.cpp
+    simpleserver/simplereporterserver.cpp \
+    lnpacketizerstrict.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1836,7 +1837,8 @@ HEADERS += \
     simpleserver/abstractsignalheadserver.h \
     simpleserver/simplesignalheadserver.h \
     simpleserver/abstractreporterserver.h \
-    simpleserver/simplereporterserver.h
+    simpleserver/simplereporterserver.h \
+    lnpacketizerstrict.h
 
  !contains(FTDI, 1) {
     HEADERS +=

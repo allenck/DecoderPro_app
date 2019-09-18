@@ -10,6 +10,7 @@ class LIBPR3SHARED_EXPORT LnTurnoutManager : public AbstractTurnoutManager
  Q_OBJECT
 public:
     LnTurnoutManager(LnTrafficController* fastcontroller, LnTrafficController* throttledcontroller, QString prefix, bool mTurnoutNoRetry, QObject* parent = 0);
+    /*public*/ LnTurnoutManager(LocoNetSystemConnectionMemo* memo, LocoNetInterface* throttledcontroller, bool mTurnoutNoRetry, QObject *parent = nullptr);
     virtual QString getSystemPrefix();
     virtual void dispose();
     virtual Turnout* createNewTurnout(QString systemName, QString userName);
@@ -18,8 +19,8 @@ public slots:
     void message(LocoNetMessage* l);
 
 private:
-    LnTrafficController* fastcontroller;
-    LnTrafficController* throttledcontroller;
+    LocoNetInterface* fastcontroller;
+    LocoNetInterface* throttledcontroller;
     bool mTurnoutNoRetry;
 
     QString prefix;

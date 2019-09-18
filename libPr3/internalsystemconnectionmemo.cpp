@@ -94,12 +94,11 @@
 
 /*public*/ InternalSensorManager* InternalSystemConnectionMemo::getSensorManager()
 {
- if (sensorManager == nullptr)
- {
-  log->debug(tr("Create InternalSensorManager \"%1\" by request").arg(getSystemPrefix()));
-  sensorManager = new InternalSensorManager(getSystemPrefix());
-  // special due to ProxyManager support
-  InstanceManager::setSensorManager(sensorManager);
+ if (sensorManager == nullptr) {
+     log->debug(tr("Create InternalSensorManager \"%1\" by request").arg(getSystemPrefix()));
+     sensorManager = new InternalSensorManager(this);
+     // special due to ProxyManager support
+     InstanceManager::setSensorManager(sensorManager);
  }
  return sensorManager;
 }
@@ -115,11 +114,11 @@
 }
 
 /*public*/ InternalTurnoutManager* InternalSystemConnectionMemo::getTurnoutManager() {
-    if (turnoutManager == nullptr) {
-        log->debug(tr("Create InternalTurnoutManager \"%1\" by request").arg( getSystemPrefix()));
-        turnoutManager = new InternalTurnoutManager(getSystemPrefix());
-        // special due to ProxyManager support
-        InstanceManager::setTurnoutManager(turnoutManager);
+ if (turnoutManager == nullptr) {
+     log->debug(tr("Create InternalTurnoutManager \"%1\" by request").arg(getSystemPrefix()));
+     turnoutManager = new InternalTurnoutManager(this);
+     // special due to ProxyManager support
+     InstanceManager::setTurnoutManager(turnoutManager);
     }
     return turnoutManager;
 }

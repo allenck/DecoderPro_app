@@ -3,6 +3,7 @@
 #include "abstractsensor.h"
 #include "instancemanager.h"
 #include "jmriuserpreferencesmanager.h"
+#include "internalsystemconnectionmemo.h"
 
 /**
  * Implementation of the InternalSensorManager interface.
@@ -10,7 +11,7 @@
  * @version			$Revision: 17977 $
  */
 ///*public*/ class InternalSensorManager extends AbstractSensorManager {
-InternalSensorManager::InternalSensorManager()
+InternalSensorManager::InternalSensorManager(QObject *parent) : AbstractSensorManager(parent)
 {
  setObjectName("InternalSensorManager");
  setProperty("JavaClassName", "jmri.jmrix.internal.InternalSensorManager");
@@ -19,6 +20,17 @@ InternalSensorManager::InternalSensorManager()
  registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
 
 }
+
+InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo, QObject *parent) : AbstractSensorManager(memo,parent)
+{
+ setObjectName("InternalSensorManager");
+ setProperty("JavaClassName", "jmri.jmrix.internal.InternalSensorManager");
+
+ prefix = "I";
+ registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+
+}
+
 /*public*/ InternalSensorManager::InternalSensorManager(QString prefix) {
     //super();
  setObjectName("InternalSensorManager");

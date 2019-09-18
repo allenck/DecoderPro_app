@@ -15,7 +15,7 @@ using namespace Sprog;
 ///*public*/ class SprogTurnoutManager extends jmri.managers.AbstractTurnoutManager {
 
 
-/*public*/ SprogTurnoutManager::SprogTurnoutManager(SprogSystemConnectionMemo* memo, QObject* parent) : AbstractTurnoutManager(parent)
+/*public*/ SprogTurnoutManager::SprogTurnoutManager(SprogSystemConnectionMemo* memo, QObject* parent) : AbstractTurnoutManager(memo,parent)
 {
     _memo = memo;
 }

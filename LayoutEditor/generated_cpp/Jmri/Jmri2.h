@@ -62,6 +62,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -97,7 +98,7 @@
 class PythonQtShell_LnTurnout : public LnTurnout
 {
 public:
-    PythonQtShell_LnTurnout(QString  prefix, int  number, LnTrafficController*  controller, QObject*  parent = 0):LnTurnout(prefix, number, controller, parent),_wrapper(NULL) {}
+    PythonQtShell_LnTurnout(QString  prefix, int  number, LocoNetInterface*  controller, QObject*  parent = 0):LnTurnout(prefix, number, controller, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_LnTurnout();
 
@@ -203,7 +204,7 @@ class PythonQtWrapper_LnTurnout : public QObject
 { Q_OBJECT
 public:
 public slots:
-LnTurnout* new_LnTurnout(QString  prefix, int  number, LnTrafficController*  controller, QObject*  parent = 0);
+LnTurnout* new_LnTurnout(QString  prefix, int  number, LocoNetInterface*  controller, QObject*  parent = 0);
 void delete_LnTurnout(LnTurnout* obj) { delete obj; } 
    bool  py_q_canInvert(LnTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_canInvert());}
    void py_q_dispose(LnTurnout* theWrappedObject){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_dispose());}
@@ -222,6 +223,7 @@ class PythonQtShell_LnTurnoutManager : public LnTurnoutManager
 {
 public:
     PythonQtShell_LnTurnoutManager(LnTrafficController*  fastcontroller, LnTrafficController*  throttledcontroller, QString  prefix, bool  mTurnoutNoRetry, QObject*  parent = 0):LnTurnoutManager(fastcontroller, throttledcontroller, prefix, mTurnoutNoRetry, parent),_wrapper(NULL) {}
+    PythonQtShell_LnTurnoutManager(LocoNetSystemConnectionMemo*  memo, LocoNetInterface*  throttledcontroller, bool  mTurnoutNoRetry, QObject*  parent = nullptr):LnTurnoutManager(memo, throttledcontroller, mTurnoutNoRetry, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_LnTurnoutManager();
 
@@ -247,6 +249,7 @@ virtual QString  getClosedText();
 virtual QString  getDefaultClosedSpeed();
 virtual QString  getDefaultThrownSpeed();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
@@ -289,6 +292,7 @@ class PythonQtWrapper_LnTurnoutManager : public QObject
 public:
 public slots:
 LnTurnoutManager* new_LnTurnoutManager(LnTrafficController*  fastcontroller, LnTrafficController*  throttledcontroller, QString  prefix, bool  mTurnoutNoRetry, QObject*  parent = 0);
+LnTurnoutManager* new_LnTurnoutManager(LocoNetSystemConnectionMemo*  memo, LocoNetInterface*  throttledcontroller, bool  mTurnoutNoRetry, QObject*  parent = nullptr);
 void delete_LnTurnoutManager(LnTurnoutManager* obj) { delete obj; } 
    Turnout*  py_q_createNewTurnout(LnTurnoutManager* theWrappedObject, QString  systemName, QString  userName){  return (((PythonQtPublicPromoter_LnTurnoutManager*)theWrappedObject)->py_q_createNewTurnout(systemName, userName));}
    void py_q_dispose(LnTurnoutManager* theWrappedObject){  (((PythonQtPublicPromoter_LnTurnoutManager*)theWrappedObject)->py_q_dispose());}
@@ -361,7 +365,9 @@ virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual LocoNetSystemConnectionMemo*  getSystemConnectionMemo();
 virtual void sendLocoNetMessage(LocoNetMessage*  arg__1);
+virtual void setSystemConnectionMemo(LocoNetSystemConnectionMemo*  m);
 virtual bool  status();
 virtual void timerEvent(QTimerEvent*  event);
 
@@ -372,7 +378,9 @@ virtual void timerEvent(QTimerEvent*  event);
 
 class PythonQtPublicPromoter_LocoNetInterface : public LocoNetInterface
 { public:
+inline LocoNetSystemConnectionMemo*  py_q_getSystemConnectionMemo() { return LocoNetInterface::getSystemConnectionMemo(); }
 inline void py_q_sendLocoNetMessage(LocoNetMessage*  arg__1) { LocoNetInterface::sendLocoNetMessage(arg__1); }
+inline void py_q_setSystemConnectionMemo(LocoNetSystemConnectionMemo*  m) { LocoNetInterface::setSystemConnectionMemo(m); }
 inline bool  py_q_status() { return LocoNetInterface::status(); }
 };
 
@@ -382,8 +390,12 @@ public:
 public slots:
 LocoNetInterface* new_LocoNetInterface(QObject*  parent = 0);
 void delete_LocoNetInterface(LocoNetInterface* obj) { delete obj; } 
+   LocoNetSystemConnectionMemo*  getSystemConnectionMemo(LocoNetInterface* theWrappedObject);
+   LocoNetSystemConnectionMemo*  py_q_getSystemConnectionMemo(LocoNetInterface* theWrappedObject){  return (((PythonQtPublicPromoter_LocoNetInterface*)theWrappedObject)->py_q_getSystemConnectionMemo());}
    void sendLocoNetMessage(LocoNetInterface* theWrappedObject, LocoNetMessage*  arg__1);
    void py_q_sendLocoNetMessage(LocoNetInterface* theWrappedObject, LocoNetMessage*  arg__1){  (((PythonQtPublicPromoter_LocoNetInterface*)theWrappedObject)->py_q_sendLocoNetMessage(arg__1));}
+   void setSystemConnectionMemo(LocoNetInterface* theWrappedObject, LocoNetSystemConnectionMemo*  m);
+   void py_q_setSystemConnectionMemo(LocoNetInterface* theWrappedObject, LocoNetSystemConnectionMemo*  m){  (((PythonQtPublicPromoter_LocoNetInterface*)theWrappedObject)->py_q_setSystemConnectionMemo(m));}
    bool  status(LocoNetInterface* theWrappedObject);
    bool  py_q_status(LocoNetInterface* theWrappedObject){  return (((PythonQtPublicPromoter_LocoNetInterface*)theWrappedObject)->py_q_status());}
 };
@@ -395,6 +407,8 @@ void delete_LocoNetInterface(LocoNetInterface* obj) { delete obj; }
 class PythonQtShell_LocoNetMessage : public LocoNetMessage
 {
 public:
+    PythonQtShell_LocoNetMessage():LocoNetMessage(),_wrapper(NULL) {}
+    PythonQtShell_LocoNetMessage(QString  s):LocoNetMessage(s),_wrapper(NULL) {}
     PythonQtShell_LocoNetMessage(QVector<char >  contents, QObject*  parent = 0):LocoNetMessage(contents, parent),_wrapper(NULL) {}
     PythonQtShell_LocoNetMessage(QVector<int >  contents, QObject*  parent = 0):LocoNetMessage(contents, parent),_wrapper(NULL) {}
     PythonQtShell_LocoNetMessage(const LocoNetMessage&  original, QObject*  parent = 0):LocoNetMessage(original, parent),_wrapper(NULL) {}
@@ -402,11 +416,6 @@ public:
 
    ~PythonQtShell_LocoNetMessage();
 
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -424,6 +433,8 @@ class PythonQtWrapper_LocoNetMessage : public QObject
 { Q_OBJECT
 public:
 public slots:
+LocoNetMessage* new_LocoNetMessage();
+LocoNetMessage* new_LocoNetMessage(QString  s);
 LocoNetMessage* new_LocoNetMessage(QVector<char >  contents, QObject*  parent = 0);
 LocoNetMessage* new_LocoNetMessage(QVector<int >  contents, QObject*  parent = 0);
 LocoNetMessage* new_LocoNetMessage(const LocoNetMessage&  original, QObject*  parent = 0);
@@ -454,8 +465,6 @@ void delete_LocoNetMessage(LocoNetMessage* obj) { delete obj; }
    QString  toString(LocoNetMessage* theWrappedObject);
    int  turnoutAddr(LocoNetMessage* theWrappedObject);
     QString py_toString(LocoNetMessage*);
-void py_set__dataBytes(LocoNetMessage* theWrappedObject, QVector<int >  _dataBytes){ theWrappedObject->_dataBytes = _dataBytes; }
-QVector<int >  py_get__dataBytes(LocoNetMessage* theWrappedObject){ return theWrappedObject->_dataBytes; }
 };
 
 
@@ -466,6 +475,7 @@ class PythonQtShell_LocoNetSystemConnectionMemo : public LocoNetSystemConnection
 {
 public:
     PythonQtShell_LocoNetSystemConnectionMemo(QObject*  parent = 0):LocoNetSystemConnectionMemo(parent),_wrapper(NULL) {}
+    PythonQtShell_LocoNetSystemConnectionMemo(QString  prefix, QString  name):LocoNetSystemConnectionMemo(prefix, name),_wrapper(NULL) {}
 
    ~PythonQtShell_LocoNetSystemConnectionMemo();
 
@@ -495,6 +505,7 @@ class PythonQtWrapper_LocoNetSystemConnectionMemo : public QObject
 public:
 public slots:
 LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(QObject*  parent = 0);
+LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(QString  prefix, QString  name);
 void delete_LocoNetSystemConnectionMemo(LocoNetSystemConnectionMemo* obj) { delete obj; } 
    void configureCommandStation(LocoNetSystemConnectionMemo* theWrappedObject, LnCommandStationType*  type, bool  mTurnoutNoRetry, bool  mTurnoutExtraSpace, bool  mTranspondingAvailable);
    void configureManagers(LocoNetSystemConnectionMemo* theWrappedObject);
@@ -585,6 +596,7 @@ virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
 virtual bool  getLoadDisabled();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QStringList  getSystemNameArray();
@@ -635,6 +647,7 @@ class PythonQtShell_Manager : public Manager
 {
 public:
     PythonQtShell_Manager(QObject*  parent = 0):Manager(parent),_wrapper(NULL) {}
+    PythonQtShell_Manager(SystemConnectionMemo*  memo, QObject*  parent = 0):Manager(memo, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_Manager();
 
@@ -650,6 +663,7 @@ virtual NamedBean*  getBeanBySystemName(QString  arg__1);
 virtual NamedBean*  getBeanByUserName(QString  arg__1);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  arg__1);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QStringList  getSystemNameArray();
@@ -678,6 +692,7 @@ inline NamedBean*  py_q_getBeanBySystemName(QString  arg__1) { return Manager::g
 inline NamedBean*  py_q_getBeanByUserName(QString  arg__1) { return Manager::getBeanByUserName(arg__1); }
 inline QString  py_q_getBeanTypeHandled() { return Manager::getBeanTypeHandled(); }
 inline QString  py_q_getEntryToolTip() { return Manager::getEntryToolTip(); }
+inline SystemConnectionMemo*  py_q_getMemo() { return Manager::getMemo(); }
 inline NamedBean*  py_q_getNamedBean(QString  arg__1) { return Manager::getNamedBean(arg__1); }
 inline QSet<NamedBean* >  py_q_getNamedBeanSet() { return Manager::getNamedBeanSet(); }
 inline QStringList  py_q_getSystemNameArray() { return Manager::getSystemNameArray(); }
@@ -696,6 +711,7 @@ class PythonQtWrapper_Manager : public QObject
 public:
 public slots:
 Manager* new_Manager(QObject*  parent = 0);
+Manager* new_Manager(SystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_Manager(Manager* obj) { delete obj; } 
    void Register(Manager* theWrappedObject, NamedBean*  arg__1);
    void py_q_Register(Manager* theWrappedObject, NamedBean*  arg__1){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_Register(arg__1));}
@@ -713,6 +729,8 @@ void delete_Manager(Manager* obj) { delete obj; }
    QString  py_q_getBeanTypeHandled(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBeanTypeHandled());}
    QString  getEntryToolTip(Manager* theWrappedObject);
    QString  py_q_getEntryToolTip(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getEntryToolTip());}
+   SystemConnectionMemo*  getMemo(Manager* theWrappedObject);
+   SystemConnectionMemo*  py_q_getMemo(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getMemo());}
    NamedBean*  getNamedBean(Manager* theWrappedObject, QString  arg__1);
    NamedBean*  py_q_getNamedBean(Manager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getNamedBean(arg__1));}
    QSet<NamedBean* >  getNamedBeanSet(Manager* theWrappedObject);
@@ -721,6 +739,7 @@ void delete_Manager(Manager* obj) { delete obj; }
    QStringList  py_q_getSystemNameArray(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getSystemNameArray());}
    QStringList  getSystemNameList(Manager* theWrappedObject);
    QStringList  py_q_getSystemNameList(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getSystemNameList());}
+   QString  getSystemNamePrefix(Manager* theWrappedObject);
    QString  getSystemPrefix(Manager* theWrappedObject);
    QString  py_q_getSystemPrefix(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getSystemPrefix());}
    int  static_Manager_getSystemPrefixLength(QString  inputName) throw (NamedBean::BadSystemNameException);
@@ -738,6 +757,12 @@ void delete_Manager(Manager* obj) { delete obj; }
    char  py_q_typeLetter(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_typeLetter());}
    Manager::NameValidity  validSystemNameFormat(Manager* theWrappedObject, QString  arg__1);
    Manager::NameValidity  py_q_validSystemNameFormat(Manager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_validSystemNameFormat(arg__1));}
+   QString  validateIntegerSystemNameFormat(Manager* theWrappedObject, QString  name, int  min, int  max, QLocale  locale);
+   QString  validateSystemNameFormat(Manager* theWrappedObject, QString  name) throw (BadSystemNameException);
+   QString  validateSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale) throw (BadSystemNameException);
+   QString  validateSystemNamePrefix(Manager* theWrappedObject, QString  name, QLocale  locale) throw (BadSystemNameException);
+   QString  validateTrimmedSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale);
+   QString  validateUppercaseTrimmedSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale);
 };
 
 
@@ -763,6 +788,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QStringList  getSystemNameArray();
@@ -2429,6 +2455,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual Manager*  getMgr(int  index);
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
@@ -2515,6 +2542,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual Manager*  getMgr(int  index);
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
@@ -2599,6 +2627,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual Manager*  getMgr(int  index);
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
@@ -2690,6 +2719,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  arg__1, QString  arg__2) const;

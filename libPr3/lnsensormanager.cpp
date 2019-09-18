@@ -60,7 +60,7 @@ void run ()
  LnSensorManager* sm;// = NULL;
  LocoNetInterface* tc;// = NULL;
 };
-
+#if 0
 LnSensorManager::LnSensorManager(LnTrafficController* tc, QString prefix, QObject *parent) :
     AbstractSensorManager(parent)
 {
@@ -84,6 +84,22 @@ LnSensorManager::LnSensorManager(LnTrafficController* tc, QString prefix, QObjec
  // until files have been read, but was stated automatically
  // in 2.9.5 for multi-system support.
  updateAll();
+}
+#endif
+/*public*/ LnSensorManager::LnSensorManager(LocoNetSystemConnectionMemo* memo, QObject *parent) : AbstractSensorManager(memo, parent) {
+    //super(memo);
+    tc = memo->getLnTrafficController();
+    if (tc == nullptr) {
+        log.error("SensorManager Created, yet there is no Traffic Controller");
+        return;
+    }
+    // ctor has to register for LocoNet events
+    tc->addLocoNetListener(~0, (LocoNetListener*)this);
+    connect(tc, SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
+    // start the update sequence. Until JMRI 2.9.4, this waited
+    // until files have been read, but starts automatically
+    // since 2.9.5 for multi-system support.
+    updateAll();
 }
 //public class LnSensorManager extends jmri.managers.AbstractSensorManager implements LocoNetListener {
 

@@ -5,6 +5,7 @@
 #include <QtCore>
 #include "lnconstants.h"
 #include "logger.h"
+#include "abstractmessage.h"
 
 /**
  * Represents a single command or response on the LocoNet.
@@ -35,11 +36,14 @@
  *
  */
 
-class LIBPR3SHARED_EXPORT LocoNetMessage : public QObject
+class LIBPR3SHARED_EXPORT LocoNetMessage : public AbstractMessage
 {
  Q_OBJECT
 public:
  explicit LocoNetMessage(int len, QObject *parent = 0);
+ /*public*/ LocoNetMessage();
+ /*public*/ LocoNetMessage(QString s);
+
  ~LocoNetMessage();
  /**
   * Create a message with specified contents
@@ -109,15 +113,15 @@ public:
   */
  /*public*/ int turnoutAddr();
 
- QVector<int> _dataBytes;
+ //QVector<int> _dataChars;
 
     
 signals:
     
 public slots:
 private:
- int _nDataBytes;
-    Logger* log;
+ //int _nDataChars;
+ static Logger* log;
 protected:
     /**
      * Check if a high bit is set, usually used to store it in some
@@ -129,7 +133,7 @@ protected:
     static /*protected*/ bool highBit(int val);
     static /*protected*/ int lowByte(int val);
     static /*protected*/ int highByte(int val);
-
+ friend class LocoNetMessageTest;
 };
 //Q_DECLARE_METATYPE(LocoNetMessage)
 #endif // LOCONETMESSAGE_H

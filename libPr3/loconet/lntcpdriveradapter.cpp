@@ -51,7 +51,7 @@ LnNetworkPortController(new LocoNetSystemConnectionMemo(), parent)
   // TODO: handle connection refused, etc.
  }
 
- LnOverTcpPacketizer* packets = new LnOverTcpPacketizer();
+ LnOverTcpPacketizer* packets = new LnOverTcpPacketizer((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo());
  packets->connectPort((LnNetworkPortController*)this);
 
  connect(packets->rcvHandler, SIGNAL(finished()), this, SLOT(on_rcvHandlerTerminated()));
@@ -70,7 +70,7 @@ LnNetworkPortController(new LocoNetSystemConnectionMemo(), parent)
 
 void LnTcpDriverAdapter::on_rcvHandlerTerminated()
 {
- LnOverTcpPacketizer* packets = new LnOverTcpPacketizer();
+ LnOverTcpPacketizer* packets = new LnOverTcpPacketizer((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo());
  packets->disconnectPort((LnNetworkPortController*)this);
 
  recover();

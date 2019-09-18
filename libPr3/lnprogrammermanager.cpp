@@ -47,6 +47,10 @@ LnProgrammerManager::LnProgrammerManager(SlotManager* pSlotManager, LocoNetSyste
     /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETSV2MODE    = new ProgrammingMode("LOCONETSV2MODE", tr("System Variable Type 2"));
     /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETBDOPSWMODE = new ProgrammingMode("LOCONETBDOPSWMODE", tr("Board Op Switches"));
     /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETCSOPSWMODE = new ProgrammingMode("LOCONETCSOPSWMODE", tr("Cmd Station Op Switches"));
+/**
+ * Programming in Ops mode via the LocoNet cable.
+ */
+/*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETOPSBOARD    = new ProgrammingMode("LOCONETOPSBOARD", tr("LocoNet-Attached Board"));
 
 /**
  * Types implemented here.
@@ -56,6 +60,7 @@ LnProgrammerManager::LnProgrammerManager(SlotManager* pSlotManager, LocoNetSyste
 {
  QList<ProgrammingMode*> ret =  QList<ProgrammingMode*>();
  ret.append(ProgrammingMode::OPSBYTEMODE);
+ ret.append(LOCONETOPSBOARD);
  ret.append(LOCONETSV2MODE);
  ret.append(LOCONETSV1MODE); // the show in interface in order listed here
  return ret;

@@ -72,6 +72,14 @@ private:
     //ActiveFlag activeFlag;
 //    LnPacketizer* packets;
     void common();
+    /**
+     *  Define the readable data and internal code
+     */
+    /*private*/ static QVector<QStringList> packetizers;// = { {Bundle.getMessage("PacketizerTypelnPacketizer"),"lnPacketizer" },
+//            {Bundle.getMessage("PacketizerTypelnPacketizerStrict"),"lnPacketizerStrict"} };
+    // "Normal (recommended)" "lnPacketizer"
+    // "Strict"               "lnPacketizerStrict"
+/*private*/ QStringList packetizerOptions();
 
 protected:
     /**
@@ -83,6 +91,8 @@ protected:
 
     // meanings are assigned to these above, so make sure the order is consistent
     /*protected*/ QStringList validOption1;
+    /*protected*/ LnPacketizer* getPacketizer(QString s);
+    /*protected*/ QString getPacketizerOption(QString s);
 
 };
 

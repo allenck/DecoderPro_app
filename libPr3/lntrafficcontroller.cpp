@@ -1,5 +1,8 @@
 #include "lntrafficcontroller.h"
 #include <QMutex>
+#include "loconetsystemconnectionmemo.h"
+#include "loggerfactory.h"
+
 LnTrafficController::LnTrafficController()
 {
  self = NULL;
@@ -7,6 +10,28 @@ LnTrafficController::LnTrafficController()
 // listeners.clear();
  setObjectName("LnTrafficController");
 }
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void LnTrafficController::setSystemConnectionMemo(LocoNetSystemConnectionMemo* m) {
+    log->debug(tr("LnTrafficController set memo to $1").arg(m->getUserName()));
+    memo = m;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ LocoNetSystemConnectionMemo* LnTrafficController::getSystemConnectionMemo() {
+    log->debug(tr("getSystemConnectionMemo %1 called in LnTC").arg(memo->getUserName()));
+    return memo;
+}
+
+// Abstract methods for the LocoNetInterface
+//@Override
+// /*abstract*/ public boolean status();
 /**
  * static function returning the LnTrafficController instance to use.
  *
@@ -102,3 +127,5 @@ int LnTrafficController::getReceivedByteCount() {
 }
 // TODO: For now, return false.
 bool LnTrafficController::isXmtBusy() { return false;}
+
+/*private*/ /*final*/ /*static*/ Logger* LnTrafficController::log = LoggerFactory::getLogger("LnTrafficController");

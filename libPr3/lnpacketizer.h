@@ -42,7 +42,7 @@ class LIBPR3SHARED_EXPORT LnPacketizer : public LnTrafficController
 {
  Q_OBJECT
 public:
- LnPacketizer(QObject* parent = 0);
+ LnPacketizer(LocoNetSystemConnectionMemo* m, QObject* parent = 0);
 //#ifdef USE_THREAD
  /**
   * Implement abstract method to signal if there's a backlog
@@ -153,6 +153,8 @@ private:
  LocoNetMessage* priorMsg; //=NULL;
  //LlnMon* monitor;
  QObject* parent;
+ LocoNetSystemConnectionMemo *memo;
+
 private slots:
 #ifndef USE_THREAD
  void dataReady();
@@ -193,6 +195,7 @@ protected:
  friend class PR3Adapter;
  friend class LnOverTcpPacketizer;
  friend class LnTcpDriverAdapter;
+ friend class LnPacketizerStrict;
 };
 //bool LnPacketizer::fulldebug;
 

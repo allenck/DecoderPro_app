@@ -7,6 +7,8 @@
 #include "speedprofilepanel.h"
 #include "abstractautomaton.h"
 #include "jsonthrottle.h"
+#include "loggerfactory.h"
+#include "throttlelistener.h"
 
 /**
  * Abstract implementation of a ThrottleManager.
@@ -21,11 +23,10 @@ AbstractThrottleManager::AbstractThrottleManager(QObject *parent)
     : ThrottleManager(parent)
 {
     this->parent = parent;
-    log = new Logger("AbstractThrottleManager");
     log->setDebugEnabled(true);
-    throttleListeners = new QHash<DccLocoAddress*,  QList<WaitingThrottle*>* >();
-    listenerOnly = new QHash<DccLocoAddress*,QList<WaitingThrottle*>* >();
-    addressThrottles = new QHash<DccLocoAddress*,Addresses*>();
+    throttleListeners = new QHash<LocoAddress*,  QList<WaitingThrottle*>* >();
+    listenerOnly = new QHash<LocoAddress*,QList<WaitingThrottle*>* >();
+    addressThrottles = new QHash<LocoAddress*,Addresses*>();
     userName = "Internal";
 }
 //abstract public class AbstractThrottleManager implements ThrottleManager {
@@ -40,9 +41,9 @@ AbstractThrottleManager::AbstractThrottleManager(QObject *parent)
     log->setDebugEnabled(true);
     adapterMemo = memo;
     userName = "Internal";
-    throttleListeners = new QHash<DccLocoAddress*,QList<WaitingThrottle*>* >();
-    listenerOnly = new QHash<DccLocoAddress*,QList<WaitingThrottle*>* >();
-    addressThrottles = new QHash<DccLocoAddress*,Addresses*>();
+    throttleListeners = new QHash<LocoAddress*,QList<WaitingThrottle*>* >();
+    listenerOnly = new QHash<LocoAddress*,QList<WaitingThrottle*>* >();
+    addressThrottles = new QHash<LocoAddress*,Addresses*>();
 }
 
 
@@ -110,95 +111,172 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  */
 /*protected*/ bool AbstractThrottleManager::singleUse() { return true; }
 
-/*public*/ bool AbstractThrottleManager::requestThrottle(BasicRosterEntry* re, ThrottleListener* l){
-    return requestThrottle(((RosterEntry*)re)->getDccLocoAddress(), re, l);
-}
-
-/*public*/ bool AbstractThrottleManager::requestThrottle(int address, bool isLongAddress, ThrottleListener* l) {
-    DccLocoAddress* la = new DccLocoAddress(address, isLongAddress);
-    return requestThrottle(la, NULL, l);
-}
-
-/*public*/ bool AbstractThrottleManager::requestThrottle(DccLocoAddress* la, ThrottleListener* l){
-    return requestThrottle(la, NULL, l);
-}
-
 /**
- * Request a throttle, given a decoder address. When the decoder address
- * is located, the ThrottleListener gets a callback via the ThrottleListener.notifyThrottleFound
- * method.
- * @param la DccLocoAddress of the decoder desired.
- * @param l The ThrottleListener awaiting notification of a found Throttle::
- * @return True if the request will continue, false if the request will not
- * be made. False may be returned if a the throttle is already in use.
- */
-/*public*/ bool AbstractThrottleManager::requestThrottle(DccLocoAddress* la, BasicRosterEntry* re, ThrottleListener* l)
-{
- bool throttleFree = true;
+     * @deprecated since 4.15.7; use
+     * #requestThrottle(BasicRosterEntry, ThrottleListener, boolean) instead
+     */
+    //@Deprecated
+    //@Override
+    /*public*/ bool AbstractThrottleManager::requestThrottle(BasicRosterEntry* re, ThrottleListener* l) {
+        return requestThrottle(re, l, false);
+    }
 
- // put the list in if not present
- if (!throttleListeners->contains(la))
-  throttleListeners->insert(la,  new QList<WaitingThrottle*>());
- // get the corresponding list to check length
- QList<WaitingThrottle*>* a = throttleListeners->value(la);
+    /**
+     * @deprecated since 4.15.7; use
+     * #requestThrottle(BasicRosterEntry, ThrottleListener, boolean) instead
+     */
+    //@Deprecated
+    //@Override
+    /*public*/ bool AbstractThrottleManager::requestThrottle(int address, bool isLongAddress, ThrottleListener* l) {
+        DccLocoAddress* la = new DccLocoAddress(address, isLongAddress);
+        return requestThrottle(la, l, false);
+    }
 
- if (addressThrottles->contains(la))
- {
-  log->debug("A throttle to address " + QString("%1").arg(la->getNumber()) + " already exists, so will return that throttle");
-  a->append(new WaitingThrottle(l, re));
-  notifyThrottleKnown(addressThrottles->value(la)->getThrottle(), la);
-  return throttleFree;
- }
- else
- {
-  log->debug(QString("%1").arg(la->getNumber()) + " has not been created before");
- }
+    /**
+     * @deprecated since 4.15.7; use
+     * #requestThrottle(LocoAddress, ThrottleListener, boolean) instead
+     */
+    //@Deprecated
+    //@Override
+    /*public*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* la, ThrottleListener* l) {
+        return requestThrottle(la, l, false);
+    }
 
- if (log->isDebugEnabled()) log->debug("After request in ATM: "+QString::number(a->size()));
- // check length
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/ bool AbstractThrottleManager::requestThrottle(int address, bool isLongAddress, ThrottleListener* l, bool canHandleDecisions) {
+        DccLocoAddress* la = new DccLocoAddress(address, isLongAddress);
+        return requestThrottle(la, nullptr, l, canHandleDecisions);
+    }
 
- if (singleUse() && (a->size()>0))
- {
-  throttleFree= false;
-  if (log->isDebugEnabled()) log->debug("case 1");
- }
- else if (a->size() == 0)
- {
-  a->append(new WaitingThrottle(l, re));
-  if (log->isDebugEnabled()) log->debug("case 2: "+la->toString()+";"/*+a*/);
-  requestThrottleSetup(la, true);
- }
- else
- {
-  a->append(new WaitingThrottle(l, re));
-  if (log->isDebugEnabled()) log->debug("case 3");
- }
- return throttleFree;
-}
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/ bool AbstractThrottleManager::requestThrottle(/*@Nonnull*/ BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions) {
+        return requestThrottle(re->getDccLocoAddress(), re, l, canHandleDecisions);
+    }
 
-/**
- * Request a throttle, given a decoder address. When the decoder address
- * is located, the ThrottleListener gets a callback via the ThrottleListener.notifyThrottleFound
- * method.
- * <P>
- * This is a convenience version of the call, which uses system-specific
- * logic to tell whether the address is a short or long form.
- * @param address The decoder address desired.
- * @param l The ThrottleListener awaiting notification of a found Throttle::
- * @return True if the request will continue, false if the request will not
- * be made. False may be returned if a the throttle is already in use.
- */
-/*public*/ bool AbstractThrottleManager::requestThrottle(int address, ThrottleListener* l) {
-    bool isLong = true;
-    //if (canBeShortAddress(address)) isLong = false;
-    return requestThrottle(address, isLong, l);
-}
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* la, ThrottleListener* l, bool canHandleDecisions) {
+        return requestThrottle(la, nullptr, l, canHandleDecisions);
+    }
 
-/**
- * Abstract member to actually do the work of configuring a new throttle,
- * usually via interaction with the DCC system
- */
-///*abstract public*/ void AbstractThrottleManager::requestThrottleSetup(LocoAddress* a, bool control);
+    /**
+     * @deprecated since 4.15.7; use
+     * #requestThrottle(LocoAddress, ThrottleListener, boolean) instead
+     */
+    //@Deprecated
+    //@Override
+    /*public*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l) {
+        return requestThrottle(re, l, false);
+    }
+
+    /**
+     * Request a throttle, given a decoder address. When the decoder address is
+     * located, the ThrottleListener gets a callback via the
+     * ThrottleListener.notifyThrottleFound method.
+     *
+     * @param la LocoAddress of the decoder desired.
+     * @param l  The ThrottleListener awaiting notification of a found throttle.
+     * @param re A BasicRosterEntry can be passed, this is attached to a throttle after creation.
+     * @return True if the request will continue, false if the request will not
+     *         be made. False may be returned if a the throttle is already in
+     *         use.
+     */
+    /*protected*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions) {
+        bool throttleFree = true;
+
+        // check for a valid throttle address
+        if (!canBeLongAddress(la->getNumber()) && !canBeShortAddress(la->getNumber())) {
+            return false;
+        }
+
+        // put the list in if not present
+        if (!throttleListeners->contains(la)) {
+            throttleListeners->insert(la, new QList<WaitingThrottle*>());
+        }
+        // get the corresponding list to check length
+        QList<WaitingThrottle*>* a = throttleListeners->value(la);
+
+        if (addressThrottles->contains(la)) {
+            log->debug(tr("A throttle to address %1 already exists, so will return that throttle").arg(la->getNumber()));
+            a->append(new WaitingThrottle(l, re, canHandleDecisions));
+            notifyThrottleKnown(addressThrottles->value(la)->getThrottle(), la);
+            return throttleFree;
+        } else {
+            log->debug(tr("%1 has not been created before").arg(la->getNumber() ));
+        }
+
+        log->debug(tr("After request in ATM: %1").arg(a->size()));
+
+        // check length
+        if (singleUse() && (a->size() > 0)) {
+            throttleFree = false;
+            log->debug("singleUser() is true, and the list of WaitingThrottles isn't empty, returning false");
+        } else if (a->size() == 0) {
+            a->append(new WaitingThrottle(l, re, canHandleDecisions));
+            log->debug(tr("list of WaitingThrottles is empty: %1; %2").arg(la->toString()).arg(a->size()));
+            log->debug("calling requestThrottleSetup()");
+            requestThrottleSetup(la, true);
+        } else {
+            a->append(new WaitingThrottle(l, re, canHandleDecisions));
+            log->debug("singleUse() returns false and there are existing WaitThrottles, adding a one to the list");
+        }
+        return throttleFree;
+    }
+
+
+    /**
+     * Request Throttle with no Steal / Share Callbacks
+     * {@inheritDoc}
+     * Request a throttle, given a decoder address. When the decoder address is
+     * located, the ThrottleListener gets a callback via the
+     * ThrottleListener.notifyThrottleFound method.
+     * <p>
+     * This is a convenience version of the call, which uses system-specific
+     * logic to tell whether the address is a short or long form.
+     *
+     * @param address The decoder address desired.
+     * @param l       The ThrottleListener awaiting notification of a found
+     *                throttle.
+     * @return True if the request will continue, false if the request will not
+     *         be made. False may be returned if a the throttle is already in
+     *         use.
+     */
+    //@Override
+    /*public*/ bool AbstractThrottleManager::requestThrottle(int address, ThrottleListener* l) {
+        bool isLong = true;
+        if (canBeShortAddress(address)) {
+            isLong = false;
+        }
+        return requestThrottle(new DccLocoAddress(address,isLong), nullptr, l, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/ bool AbstractThrottleManager::requestThrottle(int address, ThrottleListener* l, bool canHandleDecisions) {
+        bool isLong = true;
+        if (canBeShortAddress(address)) {
+            isLong = false;
+        }
+        return requestThrottle(new DccLocoAddress(address,isLong), nullptr, l, canHandleDecisions);
+    }
+
+    /**
+     * Abstract member to actually do the work of configuring a new throttle,
+     * usually via interaction with the DCC system
+     * @param a  address
+     * @param control  false  - read only.
+     */
+    // /*abstract*/ /*public*/ void requestThrottleSetup(LocoAddress* a, bool control);
 
  /**
  * Abstract member to actually do the work of configuring a new throttle,
@@ -231,7 +309,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
     }
 }
 
-/*private*/ void AbstractThrottleManager::cancelThrottleRequest(DccLocoAddress* la, ThrottleListener* l)
+/*private*/ void AbstractThrottleManager::cancelThrottleRequest(LocoAddress* la, ThrottleListener* l)
 {
  if (throttleListeners != NULL)
  {
@@ -260,7 +338,22 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    // if (canBeShortAddress(address)) isLong = false;
     cancelThrottleRequest(address, isLong, l);
 }
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractThrottleManager::responseThrottleDecision(int address, bool isLong, ThrottleListener* l, ThrottleListener::DecisionType decision) {
+    DccLocoAddress* la = new DccLocoAddress(address, isLong);
+    responseThrottleDecision(la,l,decision);
+}
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractThrottleManager::responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision) {
+    log->debug("Received response from ThrottleListener, this method should be overridden by a hardware type");
+}
 /**
  * If the system-specific ThrottleManager has been unable to create the DCC
  * throttle then it needs to be removed from the throttleListeners, otherwise
@@ -271,7 +364,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  * @param address The DCC Loco Address that the request failed on.
  * @param reason A text string passed by the ThrottleManae as to why
  */
-/*public*/ void AbstractThrottleManager::failedThrottleRequest(DccLocoAddress* address, QString reason)
+/*public*/ void AbstractThrottleManager::failedThrottleRequest(LocoAddress* address, QString reason)
 {
  QList<WaitingThrottle*>* a = throttleListeners->value(address);
  if (a->isEmpty())
@@ -341,11 +434,11 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 
 //QList<WaitingThrottle*>* a = throttleListeners->value(dla);
  QList<WaitingThrottle*>* a = NULL;
- QHashIterator<DccLocoAddress*, QList<WaitingThrottle*>* > it(*throttleListeners);
+ QHashIterator<LocoAddress*, QList<WaitingThrottle*>* > it(*throttleListeners);
  while(it.hasNext())
  {
   it.next();
-  DccLocoAddress* addr = it.key();
+  LocoAddress* addr = it.key();
   if((addr->getNumber() == dla->getNumber()) && (addr->getProtocol() == dla->getProtocol()))
   {
    a = it.value();
@@ -411,6 +504,57 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  }
 #endif
 }
+/**
+ * For when a steal / share decision is needed and the ThrottleListener has delegated
+ * this decision to the ThrottleManager.
+ * <p>
+ * Responds to the question by requesting a Throttle "Steal" by default.
+ * <p>
+ * Can be overridden by hardware types which do not wish the default behaviour to Steal.
+ * <p>
+ * This applies only to those systems where "stealing" or "sharing" applies, such as LocoNet.
+ * <p>
+ * @param address The LocoAddress the steal / share question relates to
+ * @param question The Question to be put to the ThrottleListener
+ */
+/*protected*/ void AbstractThrottleManager::makeHardwareDecision(LocoAddress* address, ThrottleListener::DecisionType question){
+    responseThrottleDecision(address, nullptr, ThrottleListener::DecisionType::STEAL );
+}
+
+/**
+ * When the system-specific ThrottleManager has been unable to create the DCC
+ * throttle because it is already in use and must be "stolen" or "shared" to take control,
+ * it needs to notify the listener of this situation.
+ * <p>
+ * This applies only to those systems where "stealing" or "sharing" applies, such as LocoNet.
+ * <p>
+ * @param address The LocoAddress the steal / share question relates to
+ * @param question The Question to be put to the ThrottleListener
+ * This applies only to those systems where "stealing" applies, such as LocoNet.
+ */
+/*protected*/ void AbstractThrottleManager::notifyDecisionRequest(LocoAddress* address, ThrottleListener::DecisionType question) {
+
+    if (throttleListeners != nullptr) {
+        QList<WaitingThrottle*>* a = throttleListeners->value(address);
+        if (a == nullptr) {
+            log->debug(tr("Cannot issue question, No throttle listeners registered for address %1").arg(address->getNumber()));
+            return;
+        }
+        ThrottleListener* l;
+        log->debug(tr("%1 listener(s) registered for address %2").arg(a->size()).arg(address->getNumber()));
+        for (int i = 0; i < a->size(); i++) {
+            if (a->value(i)->canHandleDecisions() ){
+                l = a->value(i)->getListener();
+                log->debug(tr("Notifying a throttle listener (address %1) of the steal share situation").arg(address->getNumber()));
+                l->notifyDecisionRequired(address,question);
+            }
+            else {
+                log->debug(tr("Passing %1 to hardware steal / share decision making").arg(address->getNumber()));
+                makeHardwareDecision(address,question);
+            }
+        }
+    }
+}
 
 /**
  * Check to see if the Dispatch Button should be enabled or not
@@ -451,7 +595,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 
   // get the corresponding list to check length
   QList<WaitingThrottle*>* a = listenerOnly->value(la);
-  a->append(new WaitingThrottle(p, re));
+  a->append(new WaitingThrottle(p, nullptr, false));
   //Only request that the throttle is set up if it hasn't already been
   //requested.
   if ((!throttleListeners->contains(la)) && (a->size()==1))
@@ -753,19 +897,22 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  return QVariant();
 }
 
- WaitingThrottle::WaitingThrottle(ThrottleListener* _l, BasicRosterEntry* _re)
+ WaitingThrottle::WaitingThrottle(ThrottleListener* _l, BasicRosterEntry* _re,  bool _canHandleDecisions)
  {
   setObjectName("WaitingThrottle");
   pl=NULL;
   l = _l;
   re = _re;
+  this->_canHandleDecisions = _canHandleDecisions;
  }
- WaitingThrottle::WaitingThrottle(PropertyChangeListener* _pl, BasicRosterEntry* _re)
+ WaitingThrottle::WaitingThrottle(PropertyChangeListener* _pl, BasicRosterEntry* _re,  bool _canHandleDecisions)
  {
   setObjectName("WaitingThrottle");
   l=NULL;
   pl = _pl;
   re = _re;
+  this->_canHandleDecisions = _canHandleDecisions;
+
  }
 
  PropertyChangeListener* WaitingThrottle::getPropertyChangeListener()
@@ -888,4 +1035,4 @@ list << "dcc" <<"dcc_short" << "dcc_long";
          return listeners->contains(l);
   }
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractThrottleManager.class.getName());
+/*static*/ Logger* AbstractThrottleManager::log = LoggerFactory::getLogger("AbstractThrottleManager");

@@ -18,6 +18,7 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -566,6 +567,39 @@ if (_wrapper) {
   }
 }
   return RfidSensorManager::getEntryToolTip();
+}
+SystemConnectionMemo*  PythonQtShell_RfidSensorManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return RfidSensorManager::getMemo();
 }
 NamedBean*  PythonQtShell_RfidSensorManager::getNamedBean(QString  name0)
 {
@@ -1441,6 +1475,11 @@ QString  PythonQtWrapper_Roster::getDefaultRosterGroup(Roster* theWrappedObject)
   return ( theWrappedObject->getDefaultRosterGroup());
 }
 
+QList<RosterEntry* >  PythonQtWrapper_Roster::getEntriesByDccAddress(Roster* theWrappedObject, QString  a)
+{
+  return ( theWrappedObject->getEntriesByDccAddress(a));
+}
+
 QList<RosterEntry* >  PythonQtWrapper_Roster::getEntriesInGroup(Roster* theWrappedObject, QString  group)
 {
   return ( theWrappedObject->getEntriesInGroup(group));
@@ -1479,6 +1518,11 @@ RosterEntry*  PythonQtWrapper_Roster::getGroupEntry(Roster* theWrappedObject, QS
 int  PythonQtWrapper_Roster::getGroupIndex(Roster* theWrappedObject, QString  group, RosterEntry*  re)
 {
   return ( theWrappedObject->getGroupIndex(group, re));
+}
+
+QString  PythonQtWrapper_Roster::getRosterFilesLocation(Roster* theWrappedObject)
+{
+  return ( theWrappedObject->getRosterFilesLocation());
 }
 
 QVector<QString >  PythonQtWrapper_Roster::getRosterGroupList(Roster* theWrappedObject)
@@ -2173,9 +2217,31 @@ if (_wrapper) {
 }
   return RosterEntry::toString();
 }
-RosterEntry* PythonQtWrapper_RosterEntry::new_RosterEntry(QDomElement  e)
+void PythonQtShell_RosterEntry::warnShortLong(QString  id0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("warnShortLong");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&id0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  RosterEntry::warnShortLong(id0);
+}
+RosterEntry* PythonQtWrapper_RosterEntry::new_RosterEntry(QDomElement  e, QObject*  parent)
 { 
-return new PythonQtShell_RosterEntry(e); }
+return new PythonQtShell_RosterEntry(e, parent); }
 
 RosterEntry* PythonQtWrapper_RosterEntry::new_RosterEntry(QObject*  parent)
 { 
@@ -2189,9 +2255,9 @@ RosterEntry* PythonQtWrapper_RosterEntry::new_RosterEntry(RosterEntry*  pEntry, 
 { 
 return new PythonQtShell_RosterEntry(pEntry, pID, parent); }
 
-RosterEntry* PythonQtWrapper_RosterEntry::new_RosterEntry(const RosterEntry&  arg__1)
+RosterEntry* PythonQtWrapper_RosterEntry::new_RosterEntry(const RosterEntry&  arg__1, QObject*  parent)
 { 
-return new PythonQtShell_RosterEntry(arg__1); }
+return new PythonQtShell_RosterEntry(arg__1, parent); }
 
 const QMetaObject* PythonQtShell_RosterEntry::metaObject() const {
   if (QObject::d_ptr->metaObject) {
@@ -2236,7 +2302,7 @@ LocoAddress*  PythonQtWrapper_RosterEntry::getAddress(RosterEntry* theWrappedObj
   return ( theWrappedObject->getAddress(element));
 }
 
-QSet<QString >  PythonQtWrapper_RosterEntry::getAttributes(RosterEntry* theWrappedObject)
+QList<QString >  PythonQtWrapper_RosterEntry::getAttributes(RosterEntry* theWrappedObject)
 {
   return ( theWrappedObject->getAttributes());
 }
@@ -2274,6 +2340,11 @@ QString  PythonQtWrapper_RosterEntry::getDecoderModel(RosterEntry* theWrappedObj
 QString  PythonQtWrapper_RosterEntry::static_RosterEntry_getDefaultOwner()
 {
   return (RosterEntry::getDefaultOwner());
+}
+
+QString  PythonQtWrapper_RosterEntry::getDisplayName(RosterEntry* theWrappedObject)
+{
+  return ( theWrappedObject->getDisplayName());
 }
 
 QString  PythonQtWrapper_RosterEntry::getFileName(RosterEntry* theWrappedObject)
@@ -5685,6 +5756,39 @@ if (_wrapper) {
 }
   return RouteManager::getEntryToolTip();
 }
+SystemConnectionMemo*  PythonQtShell_RouteManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return RouteManager::getMemo();
+}
 NamedBean*  PythonQtShell_RouteManager::getNamedBean(QString  name0)
 {
 if (_wrapper) {
@@ -8243,6 +8347,39 @@ if (_wrapper) {
 }
   return SensorManager::getEntryToolTip();
 }
+SystemConnectionMemo*  PythonQtShell_SensorManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return SensorManager::getMemo();
+}
 NamedBean*  PythonQtShell_SensorManager::getNamedBean(QString  name0)
 {
 if (_wrapper) {
@@ -8862,6 +8999,10 @@ if (_wrapper) {
 SensorManager* PythonQtWrapper_SensorManager::new_SensorManager(QObject*  parent)
 { 
 return new PythonQtShell_SensorManager(parent); }
+
+SensorManager* PythonQtWrapper_SensorManager::new_SensorManager(SystemConnectionMemo*  memo, QObject*  parent)
+{ 
+return new PythonQtShell_SensorManager(memo, parent); }
 
 const QMetaObject* PythonQtShell_SensorManager::metaObject() const {
   if (QObject::d_ptr->metaObject) {
@@ -22312,6 +22453,39 @@ if (_wrapper) {
 }
   return TurnoutManager::getEntryToolTip();
 }
+SystemConnectionMemo*  PythonQtShell_TurnoutManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return TurnoutManager::getMemo();
+}
 NamedBean*  PythonQtShell_TurnoutManager::getNamedBean(QString  name0)
 {
 if (_wrapper) {
@@ -23038,9 +23212,9 @@ if (_wrapper) {
 }
   TurnoutManager::vetoableChange(evt0);
 }
-TurnoutManager* PythonQtWrapper_TurnoutManager::new_TurnoutManager(QObject*  parent)
+TurnoutManager* PythonQtWrapper_TurnoutManager::new_TurnoutManager(SystemConnectionMemo*  memo, QObject*  parent)
 { 
-return new PythonQtShell_TurnoutManager(parent); }
+return new PythonQtShell_TurnoutManager(memo, parent); }
 
 const QMetaObject* PythonQtShell_TurnoutManager::metaObject() const {
   if (QObject::d_ptr->metaObject) {

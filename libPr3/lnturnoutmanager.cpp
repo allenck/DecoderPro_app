@@ -4,8 +4,7 @@
 #include "exceptions.h"
 #include "locobufferadapter.h"
 
-LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTrafficController* throttledcontroller, QString prefix, bool mTurnoutNoRetry, QObject* parent) : AbstractTurnoutManager(parent)
-
+LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTrafficController* throttledcontroller, QString prefix, bool mTurnoutNoRetry, QObject* parent) : AbstractTurnoutManager(nullptr,parent)
 {
  setObjectName("LnTurnoutManager");
  setProperty("JavaClassName", "jmri.jmrix.loconet.LnTurnoutManager");
@@ -25,6 +24,23 @@ LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTraffi
  else
   log.error("No layout connection, turnout manager can't function");
 }
+// ctor has to register for LocoNet events
+/*public*/ LnTurnoutManager::LnTurnoutManager(LocoNetSystemConnectionMemo* memo, LocoNetInterface* throttledcontroller, bool mTurnoutNoRetry, QObject* parent)
+ : AbstractTurnoutManager(memo, parent)
+{
+    //super(memo);
+    this->fastcontroller = memo->getLnTrafficController();
+    this->throttledcontroller = throttledcontroller;
+    this->mTurnoutNoRetry = mTurnoutNoRetry;
+
+    if (fastcontroller != nullptr) {
+        fastcontroller->addLocoNetListener(~0, (LocoNetListener*)this);
+    connect(fastcontroller, SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
+    } else {
+        log.error("No layout connection, turnout manager can't function");
+    }
+}
+
 //public class LnTurnoutManager extends jmri.managers.AbstractTurnoutManager implements LocoNetListener {
 
 //    // ctor has to register for LocoNet events

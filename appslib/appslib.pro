@@ -480,7 +480,29 @@ SOURCES += appslib.cpp \
     tests/loconet/slotmanagertestaction.cpp \
     tests/loconet/loconetslottest.cpp \
     tests/loconet/loconetslottestaction.cpp \
-    tests/junitappender.cpp
+    tests/junitappender.cpp \
+    tests/loconet/lnopsmodeprogrammertest.cpp \
+    tests/loconet/addressedprogrammertestbase.cpp \
+    tests/loconet/programmertestbase.cpp \
+    tests/assume.cpp \
+    tests/proglistenerscaffold.cpp \
+    tests/loconet/lnopsmodeprogrammertestaction.cpp \
+    tests/loconet/loconetmessagetest.cpp \
+    tests/loconet/loconetmessagetestaction.cpp \
+    tests/testsmenu.cpp \
+    tests/loconet/lntrafficcontrollertest.cpp \
+    tests/loconet/lntrafficcontrollertestaction.cpp \
+    tests/abstractmessagetestbase.cpp \
+    tests/sprog/sprogmessagetest.cpp \
+    tests/sprog/sprogmessagetestaction.cpp \
+    tests/loconet/lnpacketizertest.cpp \
+    tests/loconet/lnportcontrollertestaction.cpp \
+    tests/loconet/lnportcontrollertest.cpp \
+    tests/abstractserialportcontrollertestbase.cpp \
+    tests/abstractportcontrollertestbase.cpp \
+    tests/loconet/lnpacketizertestaction.cpp \
+    tests/abstractthrottletest.cpp \
+    tests/loconet/loconetthrottletest.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -910,7 +932,29 @@ HEADERS += appslib.h\
     tests/loconet/slotmanagertestaction.h \
     tests/loconet/loconetslottest.h \
     tests/loconet/loconetslottestaction.h \
-    tests/junitappender.h
+    tests/junitappender.h \
+    tests/loconet/lnopsmodeprogrammertest.h \
+    tests/loconet/addressedprogrammertestbase.h \
+    tests/loconet/programmertestbase.h \
+    tests/assume.h \
+    tests/proglistenerscaffold.h \
+    tests/loconet/lnopsmodeprogrammertestaction.h \
+    tests/loconet/loconetmessagetest.h \
+    tests/loconet/loconetmessagetestaction.h \
+    tests/testsmenu.h \
+    tests/loconet/lntrafficcontrollertest.h \
+    tests/loconet/lntrafficcontrollertestaction.h \
+    tests/abstractmessagetestbase.h \
+    tests/sprog/sprogmessagetest.h \
+    tests/sprog/sprogmessagetestaction.h \
+    tests/loconet/lnpacketizertest.h \
+    tests/loconet/lnportcontrollertestaction.h \
+    tests/loconet/lnportcontrollertest.h \
+    tests/abstractserialportcontrollertestbase.h \
+    tests/abstractportcontrollertestbase.h \
+    tests/loconet/lnpacketizertestaction.h \
+    tests/abstractthrottletest.h \
+    tests/loconet/loconetthrottletest.h
 
 unix:!symbian {
     maemo5 {
@@ -930,10 +974,12 @@ else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
 
 INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
     $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json \
-    $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal
+    $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal \
+    $$PWD/../libPr3/sprog
 DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
     $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json \
-    $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal
+    $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal \
+    $$PWD/../libPr3/sprog
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref

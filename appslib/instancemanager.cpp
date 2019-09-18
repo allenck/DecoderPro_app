@@ -284,7 +284,7 @@ void InstanceManager::deregister(QObject* item, QString type)
  * @param type The class Object for the item's type
  */
 /*public*/ /*<T>*/ void InstanceManager::remove(/*@Nonnull T*/QObject* item, /*@Nonnull Class<T>*/QString type) {
-    log->debug(tr("Remove item type %!").arg(type));
+    log->debug(tr("Remove item type %1").arg(type));
    QObjectList* l = getList(type);
     int index = l->indexOf(item);
     if (index != -1) { // -1 means items was not in list, and therefor, not registered

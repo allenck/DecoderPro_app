@@ -30,6 +30,18 @@ AbstractManager::AbstractManager(QObject *parent)
  pcs = new PropertyChangeSupport((QObject*)this);
  vcs = new VetoableChangeSupport((QObject*)this);
 }
+AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : Manager()
+{
+  Q_UNUSED(parent);
+  log = new Logger("AbstractManager");
+ _tsys = new QHash<QString, NamedBean*>;   // stores known Turnout instances by system name
+ _tuser = new QHash<QString, NamedBean*>;   // stores known Turnout instances by user name
+
+ //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
+
+ pcs = new PropertyChangeSupport((QObject*)this);
+ vcs = new VetoableChangeSupport((QObject*)this);
+}
 
 //abstract public class AbstractManager
 //    implements Manager, java.beans.PropertyChangeListener {

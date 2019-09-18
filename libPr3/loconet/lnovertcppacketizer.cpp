@@ -43,7 +43,7 @@
 
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
 //        justification = "Only used during system initialization")
-/*public*/ LnOverTcpPacketizer::LnOverTcpPacketizer(QObject *parent) : LnPacketizer(parent)
+/*public*/ LnOverTcpPacketizer::LnOverTcpPacketizer(LocoNetSystemConnectionMemo* m, QObject *parent) : LnPacketizer(m, parent)
 {
  setObjectName("LnOverTcpPacketizer");
  networkController = NULL;

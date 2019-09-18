@@ -3,6 +3,7 @@
 #include "eventlistener.h"
 
 class DccThrottle;
+class LocoAddress;
 class DccLocoAddress;
 /**
  * A listener interface for a class requesting a DccThrottle from the
@@ -25,6 +26,26 @@ class DccLocoAddress;
 {
  Q_OBJECT
 public:
+ /**
+      * A decision type requested from ThrottleManager to ThrottleListener,
+      * or decision made from ThrottleListener to ThrottleManager
+      *
+      * @since 4.15.7
+      */
+     enum DecisionType {
+         /**
+          * Notification for decision needed, Steal OR Cancel, or wish to Steal
+          */
+         STEAL,
+         /**
+          * Notification for decision needed, Share OR Cancel, or wish to Share
+          */
+         SHARE,
+         /**
+          * Notification for decision needed, Steal OR Share OR Cancel
+          */
+         STEAL_OR_SHARE
+     };
  ThrottleListener() : EventListener() {}
 public slots:
     /**
@@ -40,6 +61,14 @@ public slots:
      * @param address DccLocoAddress of the failed loco request.
      * @param reason  The reason why the throttle request failed.
      */
-    /*public*/ virtual void notifyFailedThrottleRequest(DccLocoAddress* /*address*/, QString /*reason*/) {}
+    /*public*/ virtual void notifyFailedThrottleRequest(LocoAddress* /*address*/, QString /*reason*/) {}
+ /**
+      * Get notification that a throttle request is in use by another
+      * device, and a "steal", "share", or "steal/share" decision may be required.
+      *
+      * @param address The LocoAddress that needs the decision.
+      * @param question The question being asked, steal / cancel, share / cancel, steal / share / cancel
+      */
+ /*public*/ virtual void notifyDecisionRequired(LocoAddress* /*address*/, DecisionType /*question*/){}
 };
 #endif // THROTTLELISTENER_H

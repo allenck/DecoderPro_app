@@ -101,7 +101,7 @@ signals:
     
 public slots:
 private:
-    Logger* log;
+    static Logger* log;
     // By making this private, and not protected, we are able to require that
     // all access is through the getter and setter, and that subclasses that
     // override the getter and setter must call the super implemenations of the

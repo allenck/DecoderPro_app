@@ -79,10 +79,12 @@ void PR3Adapter::configure()
  }
  else
  {
-  // MS100 modes
-  /*LnPacketizer* */packets = new LnPacketizer();
+  // MS100 modes - connecting to a separate command station
+  // get transponding option
+  setTranspondingAvailable(getOptionState("TranspondingPresent"));
+  // connect to a packetizing traffic controller
+  LnPacketizer* packets = getPacketizer(getOptionState(option4Name));
   packets->connectPort(this);
-  //packets->setSerial(&activeSerialPort->serial);
 
   // create memo
   /*PR3SystemConnectionMemo memo
@@ -154,8 +156,14 @@ void PR3Adapter::configure()
  return (QStringList)retval.toList();
 }
 
+/*public*/ void PR3Adapter::setTranspondingAvailable(QString value) {
+    // default (most common state) is off, so just check for Yes
+    mTranspondingAvailable = (value == ("Yes") || value == ("Yes"));
+    log->debug(tr("transponding available: %1").arg(mTranspondingAvailable)); // NOI18N
+}
+
 //@Override
-/*public*/ SystemConnectionMemo* PR3Adapter::getSystemConnectionMemo()
+/*public*/ SystemConnectionMemo *PR3Adapter::getSystemConnectionMemo()
 {
  return (SystemConnectionMemo*) LocoBufferAdapter::getSystemConnectionMemo();
 }

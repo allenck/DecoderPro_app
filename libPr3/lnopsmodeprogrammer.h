@@ -27,6 +27,9 @@ public:
    ReadAfterWrite
  };
  //explicit LnOpsModeProgrammer(QObject *parent = 0);
+  /*public*/ LnOpsModeProgrammer(LocoNetSystemConnectionMemo* memo,
+                                 int pAddress, bool pLongAddr, QObject *parent = 0);
+
     /*public*/ LnOpsModeProgrammer(SlotManager* pSlotMgr, LocoNetSystemConnectionMemo* memo,int pAddress, bool pLongAddr, QObject *parent = 0);
     /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
@@ -72,6 +75,7 @@ protected:
  void loadSV2MessageFormat(LocoNetMessage* m, int mAddress, int cvAddr, int data);
  friend class LnProgrammerManager;
  friend class OpSwAccessTimer;
+ friend class LnOpsModeProgrammerTest;
 };
 
 class OpSwAccessTimer : public QTimer

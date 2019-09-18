@@ -2,6 +2,7 @@
 #include "lnpacketizer.h"
 #include "slotmanager.h"
 #include "connectionstatus.h"
+#include "lnpacketizerstrict.h"
 
 /**
  * Provide access to LocoNet via a LocoBuffer attached to a serial comm port.
@@ -309,9 +310,9 @@ void LocoBufferAdapter::dataReady()
  setCommandStationType(getOptionState(option2Name));
  setTurnoutHandling(getOptionState(option3Name));
  // connect to a packetizing traffic controller
-//    LnPacketizer* packets = new LnPacketizer();
- packets = new LnPacketizer();
- packets->connectPort((LnPortController*)this);
+ // connect to a packetizing traffic controller
+         LnPacketizer* packets = getPacketizer(getOptionState(option4Name));
+         packets->connectPort(this);
  //packets->setSerial(&activeSerialPort->serial);
 
  // create memo
@@ -419,4 +420,61 @@ LnPacketizer* LocoBufferAdapter::packetizer()
 void LocoBufferAdapter::sendLocoNetMessage(LocoNetMessage* m)
 {
  packets->sendLocoNetMessage(m);
+}
+
+/**
+  *  Define the readable data and internal code
+  */
+ /*private*/ /*static*/ QVector<QStringList> LocoBufferAdapter::packetizers = { {"Normal (recommended)","lnPacketizer" },
+         {"Strict","lnPacketizerStrict"} };
+/**
+ *
+ * @return String array of readable choices
+ */
+/*private*/ QStringList LocoBufferAdapter::packetizerOptions() {
+    QStringList retval = QStringList(); //packetizers.length];
+    for (int i=0;i < packetizers.length(); i++) {
+        //retval[i] = packetizers[i][0];
+     retval.append(packetizers[i][0]);
+    }
+    return retval;
+}
+/**
+ * for a given readable choice return internal value
+ * or the default
+ *
+ * @param s  string containing ?a packetizer name?
+ * @return internal value
+ */
+/*protected*/ QString LocoBufferAdapter::getPacketizerOption(QString s) {
+    for (int i=0;i < packetizers.length(); i++) {
+        if (packetizers[i][0] ==(s)) {
+            return packetizers[i][1];
+        }
+    }
+    return "lnPacketizer";
+}
+
+/**
+ *
+ * @param s the packetizer to use in its readable form.
+ * @return a LnPacketizer
+ */
+/*protected*/ LnPacketizer* LocoBufferAdapter::getPacketizer(QString s) {
+    LnPacketizer* packets;
+    QString packetSelection = getPacketizerOption(s);
+    if(packetSelection =="lnPacketizer")
+    {
+            packets = new LnPacketizer((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo());
+    }
+    else if(packetSelection == "lnPacketizerStrict")
+    {
+            packets = new LnPacketizerStrict((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo());
+    }
+    else
+    {
+            packets = new LnPacketizer((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo());
+            log->warn(tr("Using Normal do not understand option [%1]").arg(packetSelection));
+    }
+    return packets;
 }

@@ -64,6 +64,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -195,6 +196,7 @@ virtual Light*  getBySystemName(QString  name);
 virtual Light*  getByUserName(QString  key);
 virtual QString  getEntryToolTip();
 virtual Light*  getLight(QString  name);
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QStringList  getSystemNameArray();
@@ -267,6 +269,7 @@ class PythonQtShell_AbstractManager : public AbstractManager
 {
 public:
     PythonQtShell_AbstractManager(QObject*  parent = 0):AbstractManager(parent),_wrapper(NULL) {}
+    PythonQtShell_AbstractManager(SystemConnectionMemo*  memo, QObject*  parent = 0):AbstractManager(memo, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_AbstractManager();
 
@@ -282,6 +285,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QStringList  getSystemNameArray();
@@ -331,6 +335,7 @@ class PythonQtWrapper_AbstractManager : public QObject
 public:
 public slots:
 AbstractManager* new_AbstractManager(QObject*  parent = 0);
+AbstractManager* new_AbstractManager(SystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_AbstractManager(AbstractManager* obj) { delete obj; } 
    void py_q_Register(AbstractManager* theWrappedObject, NamedBean*  s){  (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_Register(s));}
    void py_q_addPropertyChangeListener(AbstractManager* theWrappedObject, PropertyChangeListener*  l){  (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_addPropertyChangeListener(l));}
@@ -710,6 +715,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual Manager*  getMgr(int  index);
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
@@ -846,6 +852,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) const;
@@ -1006,6 +1013,7 @@ class PythonQtShell_AbstractSensorManager : public AbstractSensorManager
 {
 public:
     PythonQtShell_AbstractSensorManager(QObject*  parent = 0):AbstractSensorManager(parent),_wrapper(NULL) {}
+    PythonQtShell_AbstractSensorManager(SystemConnectionMemo*  memo, QObject*  parent = nullptr):AbstractSensorManager(memo, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_AbstractSensorManager();
 
@@ -1028,6 +1036,7 @@ virtual Sensor*  getByUserName(QString  key);
 virtual long  getDefaultSensorDebounceGoingActive();
 virtual long  getDefaultSensorDebounceGoingInActive();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
@@ -1083,6 +1092,7 @@ class PythonQtWrapper_AbstractSensorManager : public QObject
 public:
 public slots:
 AbstractSensorManager* new_AbstractSensorManager(QObject*  parent = 0);
+AbstractSensorManager* new_AbstractSensorManager(SystemConnectionMemo*  memo, QObject*  parent = nullptr);
 void delete_AbstractSensorManager(AbstractSensorManager* obj) { delete obj; } 
    bool  py_q_allowMultipleAdditions(AbstractSensorManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_allowMultipleAdditions(systemName));}
    Sensor*  createNewSensor(AbstractSensorManager* theWrappedObject, QString  arg__1, QString  arg__2);
@@ -1514,7 +1524,7 @@ void delete_AbstractTurnout(AbstractTurnout* obj) { delete obj; }
 class PythonQtShell_AbstractTurnoutManager : public AbstractTurnoutManager
 {
 public:
-    PythonQtShell_AbstractTurnoutManager(QObject*  parent = 0):AbstractTurnoutManager(parent),_wrapper(NULL) {}
+    PythonQtShell_AbstractTurnoutManager(SystemConnectionMemo*  memo, QObject*  parent = 0):AbstractTurnoutManager(memo, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_AbstractTurnoutManager();
 
@@ -1540,6 +1550,7 @@ virtual QString  getClosedText();
 virtual QString  getDefaultClosedSpeed();
 virtual QString  getDefaultThrownSpeed();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
@@ -1583,6 +1594,7 @@ inline Turnout*  py_q_getByUserName(QString  key) { return AbstractTurnoutManage
 inline QString  py_q_getClosedText() { return AbstractTurnoutManager::getClosedText(); }
 inline QString  py_q_getDefaultClosedSpeed() { return AbstractTurnoutManager::getDefaultClosedSpeed(); }
 inline QString  py_q_getDefaultThrownSpeed() { return AbstractTurnoutManager::getDefaultThrownSpeed(); }
+inline SystemConnectionMemo*  py_q_getMemo() { return AbstractTurnoutManager::getMemo(); }
 inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) { return AbstractTurnoutManager::getNextValidAddress(curAddress, prefix); }
 inline QString  py_q_getThrownText() { return AbstractTurnoutManager::getThrownText(); }
 inline Turnout*  py_q_getTurnout(QString  name) { return AbstractTurnoutManager::getTurnout(name); }
@@ -1601,7 +1613,7 @@ class PythonQtWrapper_AbstractTurnoutManager : public QObject
 { Q_OBJECT
 public:
 public slots:
-AbstractTurnoutManager* new_AbstractTurnoutManager(QObject*  parent = 0);
+AbstractTurnoutManager* new_AbstractTurnoutManager(SystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_AbstractTurnoutManager(AbstractTurnoutManager* obj) { delete obj; } 
    bool  py_q_allowMultipleAdditions(AbstractTurnoutManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_allowMultipleAdditions(systemName));}
    int  py_q_askControlType(AbstractTurnoutManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_askControlType(systemName));}
@@ -1614,6 +1626,7 @@ void delete_AbstractTurnoutManager(AbstractTurnoutManager* obj) { delete obj; }
    QString  py_q_getClosedText(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getClosedText());}
    QString  py_q_getDefaultClosedSpeed(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getDefaultClosedSpeed());}
    QString  py_q_getDefaultThrownSpeed(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getDefaultThrownSpeed());}
+   SystemConnectionMemo*  py_q_getMemo(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getMemo());}
    QString  py_q_getNextValidAddress(AbstractTurnoutManager* theWrappedObject, QString  curAddress, QString  prefix){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}
    QString  py_q_getThrownText(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getThrownText());}
    Turnout*  py_q_getTurnout(AbstractTurnoutManager* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getTurnout(name));}
@@ -2045,6 +2058,7 @@ virtual QString  getBeanTypeHandled();
 virtual Audio*  getBySystemName(QString  arg__1);
 virtual Audio*  getByUserName(QString  arg__1);
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QStringList  getSystemNameArray();
@@ -2913,6 +2927,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QStringList  getSystemNameArray();

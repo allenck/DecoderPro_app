@@ -431,7 +431,7 @@ Roster::Roster(QObject *parent) :
 //        RosterEntry* r = i.next();
     foreach(RosterEntry* r, *_list)
     {
-        QSet<QString> s = r->getAttributes();
+        QList<QString> s = r->getAttributes();
         if (!s.isEmpty())
         {
          foreach(QString str, s)

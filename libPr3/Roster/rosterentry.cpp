@@ -716,14 +716,9 @@ void RosterEntry::init()
  * is directly backed access, so e.g. removing an item
  * from this Set removes it from the RosterEntry too.
  */
-/*public*/ QSet<QString> RosterEntry::getAttributes()
+/*public*/ QList<QString> RosterEntry::getAttributes()
 {
- QSet<QString> newSet;
- if (attributePairs==NULL) return newSet;
- //return attributePairs->keys();
- foreach(QString s, attributePairs->keys())
-  newSet.insert(s);
- return newSet;
+  return attributePairs->keys();
 }
 
 /*public*/ QStringList RosterEntry::getAttributeList()
@@ -874,11 +869,11 @@ void RosterEntry::init()
   e.appendChild(d);
  }
 #endif
- QSet<QString> keyset = getAttributes();
+ QList<QString> keyset = getAttributes();
  if (!keyset.isEmpty())
  {
   //java.util.Iterator<QString> keys = keyset.iterator();
-  QSetIterator<QString> keys(keyset);
+  QListIterator<QString> keys(keyset);
   if (keys.hasNext())
   {
    d = doc.createElement("attributepairs");

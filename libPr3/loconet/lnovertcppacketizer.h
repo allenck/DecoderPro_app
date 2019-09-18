@@ -11,7 +11,7 @@ class LnOverTcpPacketizer : public LnPacketizer
 {
  Q_OBJECT
 public:
- explicit LnOverTcpPacketizer(QObject *parent = 0);
+ explicit LnOverTcpPacketizer(LocoNetSystemConnectionMemo *m, QObject *parent = 0);
  /*public*/ LnNetworkPortController* networkController;// = null;
  /*public*/ bool isXmtBusy();
  /*public*/ void connectPort(LnNetworkPortController* p);

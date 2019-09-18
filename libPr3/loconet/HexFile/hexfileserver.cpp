@@ -43,7 +43,7 @@
         return;
     }
     // connect to a packetizing LnTrafficController
-    packets = new LnPacketizer();
+    packets = new LnPacketizer((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo());
     packets->connectPort(port);
     connected = true;
 

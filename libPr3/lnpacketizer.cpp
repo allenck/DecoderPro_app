@@ -11,7 +11,7 @@
 //   	}
 QWaitCondition* LnPacketizer::dataAvailable = new QWaitCondition();
 
-LnPacketizer::LnPacketizer(QObject* parent)
+LnPacketizer::LnPacketizer(LocoNetSystemConnectionMemo *m, QObject* parent)
 {
  this->parent = parent;
  setObjectName("LnPacketizer");
@@ -36,6 +36,9 @@ LnPacketizer::LnPacketizer(QObject* parent)
  xmtList = new QLinkedList<QByteArray*>();
 #endif
  priorMsg=NULL;
+ // set the memo to point here
+  memo = m;
+  m->setLnTrafficController(this);
 }
 // The methods to implement the LocoNetInterface
 

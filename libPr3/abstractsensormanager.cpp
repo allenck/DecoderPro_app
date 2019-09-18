@@ -5,7 +5,16 @@
 
 
 AbstractSensorManager::AbstractSensorManager(QObject *parent) :
-    SensorManager(parent)
+    SensorManager(nullptr, parent)
+{
+ sensorDebounceGoingActive = 0L;
+ sensorDebounceGoingInActive = 0L;
+ //numberMatcher =  new QRegExp("\\d++")/*.matcher("")*/;
+ log = new Logger("AbstractSensorManager");
+}
+
+AbstractSensorManager::AbstractSensorManager(SystemConnectionMemo* memo, QObject *parent) :
+    SensorManager(memo, parent)
 {
  sensorDebounceGoingActive = 0L;
  sensorDebounceGoingInActive = 0L;
@@ -108,19 +117,11 @@ bool AbstractSensorManager::isNumber(QString s)
              +( (userName=="") ? "null" : userName));
   throw IllegalArgumentException(QString("SystemName cannot be NULL. UserName was %1").arg(( (userName=="") ? "NULL" : userName)));
  }
- // is system name in correct format?
- QString neededPrefix = QString("%1%2").arg(getSystemPrefix().mid(0,1)).arg(QString(typeLetter()));
- if (!systemName.startsWith(neededPrefix))
- {
-  log->error("Invalid system name for sensor: "+systemName
-                        +" needed "+neededPrefix);
-  throw  IllegalArgumentException(QString("Invalid system name for turnout: %1  needed %2").arg(systemName).arg(neededPrefix));
-//  systemName.replace(sysName.mid(0,1),getSystemPrefix().mid(0,1));
-//  qDebug() << tr("Sensor name changed from %1 to %2").arg(sysName).arg(systemName);
- }
+
+ sysName = validateSystemNameFormat(sysName);
 
  // return existing if there is one
- Sensor* s = nullptr;
+  Sensor* s = nullptr;
  if ( (userName!=nullptr) && ((s = getByUserName(userName)) != nullptr))
  {
   if (getBySystemName(systemName)!=s)

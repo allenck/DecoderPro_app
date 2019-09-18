@@ -39,7 +39,7 @@ if (i < 1) {
         throw new IllegalArgumentException("invalid length in call to ctor");
     }
     _nDataChars = i;
-    _dataChars = QByteArray(i,0);
+    _dataChars = QVector<int>(i);
 }
 
 // copy one
@@ -49,7 +49,10 @@ if (i < 1) {
     _nDataChars = m->_nDataChars;
 //    _dataChars = new int[_nDataChars];
 //    System.arraycopy(m._dataChars, 0, _dataChars, 0, _nDataChars);
-    _dataChars = QByteArray(m->_dataChars);
+    //_dataChars = QByteArray(m->_dataChars);
+    for(int i=0; i < m->getNumDataElements(); i++)
+     _dataChars[i] = m->_dataChars.at(i);
+
     setTimeout(m->getTimeout());
     setRetries(m->getRetries());
     setNeededMode(m->getNeededMode());
@@ -59,10 +62,9 @@ if (i < 1) {
 /*public*/ AbstractMRMessage::AbstractMRMessage(QString s, QObject* parent): AbstractMessage(parent) {
  common();
     common(s.length());
-//    for (int i = 0; i < _nDataChars; i++) {
-//        _dataChars[i] = s.toLocal8Bit().at(i);
-//    }
- _dataChars = s.toLocal8Bit();
+    for (int i = 0; i < _nDataChars; i++) {
+        _dataChars[i] = s.toLocal8Bit().at(i);
+    }
 }
 
 /*public*/ void AbstractMRMessage::setOpCode(int i) {

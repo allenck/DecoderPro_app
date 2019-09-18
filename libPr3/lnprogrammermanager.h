@@ -24,8 +24,10 @@ private:
     static /*final*/ ProgrammingMode* LOCONETSV2MODE;//    = new ProgrammingMode("LOCONETSV2MODE", Bundle.getMessage("LOCONETSV2MODE"));
     static /*final*/ ProgrammingMode* LOCONETBDOPSWMODE;// = new ProgrammingMode("LOCONETBDOPSWMODE", Bundle.getMessage("LOCONETBDOPSWMODE"));
     static /*final*/ ProgrammingMode* LOCONETCSOPSWMODE;// = new ProgrammingMode("LOCONETCSOPSWMODE", Bundle.getMessage("LOCONETCSOPSWMODE"));
+    static /*final*/ ProgrammingMode* LOCONETOPSBOARD;//    = new ProgrammingMode("LOCONETOPSBOARD", Bundle.getMessage("LOCONETOPSBOARD"));
 
  friend class LnOpsModeProgrammer;
+ friend class LnOpsModeProgrammerTest;
 };
 
 #endif // LNPROGRAMMERMANAGER_H

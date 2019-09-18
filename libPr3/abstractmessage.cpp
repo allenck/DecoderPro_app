@@ -17,7 +17,7 @@
 {
  this->parent = parent;
  log = new Logger("AbstractMessage");
- _dataChars = QByteArray();
+ _dataChars = QVector<int>();
 
  _nDataChars = 0;
 
@@ -28,7 +28,7 @@
  if (n<1)
   log->error("invalid length in call to ctor");
  _nDataChars = n;
- _dataChars = QByteArray(n,0);
+ _dataChars =  QVector<int>(n,0);
 }
 
 /*public*/ AbstractMessage::AbstractMessage(QString s)
@@ -46,7 +46,7 @@
  if (m == NULL)
   log->error("copy ctor of NULL message throws exception");
  _nDataChars = m->_nDataChars;
- _dataChars = QByteArray(_nDataChars,0);
+ _dataChars = QVector<int>(_nDataChars,0);
  for (int i = 0; i<_nDataChars; i++) _dataChars.replace(i, m->_dataChars.at(i));
 }
 

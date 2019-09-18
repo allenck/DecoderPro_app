@@ -80,6 +80,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -151,6 +152,7 @@ virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
 virtual bool  getLoadDisabled();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QStringList  getSystemNameArray();
@@ -1663,6 +1665,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QStringList  getSystemNameArray();
@@ -2517,6 +2520,7 @@ virtual Light*  getBySystemName(QString  arg__1);
 virtual Light*  getByUserName(QString  arg__1);
 virtual QString  getEntryToolTip();
 virtual Light*  getLight(QString  arg__1);
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QStringList  getSystemNameArray();
@@ -2744,7 +2748,7 @@ void delete_LnCommandStationType(LnCommandStationType* obj) { delete obj; }
 class PythonQtShell_LnPacketizer : public LnPacketizer
 {
 public:
-    PythonQtShell_LnPacketizer(QObject*  parent = 0):LnPacketizer(parent),_wrapper(NULL) {}
+    PythonQtShell_LnPacketizer(LocoNetSystemConnectionMemo*  m, QObject*  parent = 0):LnPacketizer(m, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_LnPacketizer();
 
@@ -2752,8 +2756,10 @@ virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual LocoNetSystemConnectionMemo*  getSystemConnectionMemo();
 virtual bool  isXmtBusy();
 virtual void sendLocoNetMessage(LocoNetMessage*  m);
+virtual void setSystemConnectionMemo(LocoNetSystemConnectionMemo*  m);
 virtual bool  status();
 virtual void timerEvent(QTimerEvent*  event);
 
@@ -2773,7 +2779,7 @@ class PythonQtWrapper_LnPacketizer : public QObject
 { Q_OBJECT
 public:
 public slots:
-LnPacketizer* new_LnPacketizer(QObject*  parent = 0);
+LnPacketizer* new_LnPacketizer(LocoNetSystemConnectionMemo*  m, QObject*  parent = 0);
 void delete_LnPacketizer(LnPacketizer* obj) { delete obj; } 
    void connectPort(LnPacketizer* theWrappedObject, LnPortController*  p);
    void disconnectPort(LnPacketizer* theWrappedObject, LnPortController*  p);
@@ -2969,6 +2975,7 @@ virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) const;
@@ -3103,7 +3110,7 @@ void delete_LnSensor(LnSensor* obj) { delete obj; }
 class PythonQtShell_LnSensorManager : public LnSensorManager
 {
 public:
-    PythonQtShell_LnSensorManager(LnTrafficController*  tc, QString  prefix, QObject*  parent = 0):LnSensorManager(tc, prefix, parent),_wrapper(NULL) {}
+    PythonQtShell_LnSensorManager(LocoNetSystemConnectionMemo*  memo, QObject*  parent = 0):LnSensorManager(memo, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_LnSensorManager();
 
@@ -3126,6 +3133,7 @@ virtual Sensor*  getByUserName(QString  key);
 virtual long  getDefaultSensorDebounceGoingActive();
 virtual long  getDefaultSensorDebounceGoingInActive();
 virtual QString  getEntryToolTip();
+virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
@@ -3167,7 +3175,7 @@ class PythonQtWrapper_LnSensorManager : public QObject
 { Q_OBJECT
 public:
 public slots:
-LnSensorManager* new_LnSensorManager(LnTrafficController*  tc, QString  prefix, QObject*  parent = 0);
+LnSensorManager* new_LnSensorManager(LocoNetSystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_LnSensorManager(LnSensorManager* obj) { delete obj; } 
    bool  py_q_allowMultipleAdditions(LnSensorManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_LnSensorManager*)theWrappedObject)->py_q_allowMultipleAdditions(systemName));}
    Sensor*  py_q_createNewSensor(LnSensorManager* theWrappedObject, QString  systemName, QString  userName){  return (((PythonQtPublicPromoter_LnSensorManager*)theWrappedObject)->py_q_createNewSensor(systemName, userName));}
@@ -3196,8 +3204,10 @@ virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual LocoNetSystemConnectionMemo*  getSystemConnectionMemo();
 virtual bool  isXmtBusy();
 virtual void sendLocoNetMessage(LocoNetMessage*  arg__1);
+virtual void setSystemConnectionMemo(LocoNetSystemConnectionMemo*  m);
 virtual bool  status();
 virtual void timerEvent(QTimerEvent*  event);
 
@@ -3208,8 +3218,10 @@ virtual void timerEvent(QTimerEvent*  event);
 
 class PythonQtPublicPromoter_LnTrafficController : public LnTrafficController
 { public:
+inline LocoNetSystemConnectionMemo*  py_q_getSystemConnectionMemo() { return LnTrafficController::getSystemConnectionMemo(); }
 inline bool  py_q_isXmtBusy() { return LnTrafficController::isXmtBusy(); }
 inline void py_q_sendLocoNetMessage(LocoNetMessage*  arg__1) { LnTrafficController::sendLocoNetMessage(arg__1); }
+inline void py_q_setSystemConnectionMemo(LocoNetSystemConnectionMemo*  m) { LnTrafficController::setSystemConnectionMemo(m); }
 inline bool  py_q_status() { return LnTrafficController::status(); }
 };
 
@@ -3221,12 +3233,14 @@ LnTrafficController* new_LnTrafficController();
 void delete_LnTrafficController(LnTrafficController* obj) { delete obj; } 
    int  getReceivedByteCount(LnTrafficController* theWrappedObject);
    int  getReceivedMsgCount(LnTrafficController* theWrappedObject);
+   LocoNetSystemConnectionMemo*  py_q_getSystemConnectionMemo(LnTrafficController* theWrappedObject){  return (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_getSystemConnectionMemo());}
    int  getTransmittedMsgCount(LnTrafficController* theWrappedObject);
    LnTrafficController*  static_LnTrafficController_instance();
    bool  isXmtBusy(LnTrafficController* theWrappedObject);
    bool  py_q_isXmtBusy(LnTrafficController* theWrappedObject){  return (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_isXmtBusy());}
    void resetStatistics(LnTrafficController* theWrappedObject);
    void py_q_sendLocoNetMessage(LnTrafficController* theWrappedObject, LocoNetMessage*  arg__1){  (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_sendLocoNetMessage(arg__1));}
+   void py_q_setSystemConnectionMemo(LnTrafficController* theWrappedObject, LocoNetSystemConnectionMemo*  m){  (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_setSystemConnectionMemo(m));}
    bool  py_q_status(LnTrafficController* theWrappedObject){  return (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_status());}
 };
 

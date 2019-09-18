@@ -203,7 +203,9 @@ using namespace Sprog;
 //@Override
 /*public*/ int SprogReply::match(QString s) {
     //QString rep = QString(_dataChars, 0, _nDataChars);
- QString rep = QString(_dataChars.mid(0, _nDataChars));
+ QString rep;// = QString(_dataChars.mid(0, _nDataChars));
+ for(int i=0; i < _nDataChars; i++)
+  rep.append(_dataChars.at(0));
     return rep.indexOf(s);
 }
 

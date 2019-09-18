@@ -4,12 +4,15 @@
 #include "abstractsensor.h"
 #include "libPr3_global.h"
 
+class InternalSystemConnectionMemo;
 class AbstractSensorManager;
 class LIBPR3SHARED_EXPORT InternalSensorManager : public AbstractSensorManager
 {
  Q_OBJECT
 public:
-    InternalSensorManager();
+    QT_DEPRECATED InternalSensorManager(QObject* parent = nullptr);
+    InternalSensorManager(InternalSystemConnectionMemo *memo, QObject* parent = nullptr);
+
     /*public*/ InternalSensorManager(QString prefix);
 
 private:

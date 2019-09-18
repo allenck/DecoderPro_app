@@ -53,6 +53,15 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(QObject* parent)
  InstanceManager::store(cf = new LnComponentFactory(this),
                                 "ComponentFactory");
 }
+/*public*/ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name)
+ : SystemConnectionMemo(prefix, name)
+{
+       //super(prefix, name); // NOI18N
+common();
+       // create and register the ComponentFactory for the GUI
+       InstanceManager::store(cf = new LnComponentFactory(this),
+               "ComponentFactory");
+   }
 
 void LocoNetSystemConnectionMemo::common()
 {
@@ -294,7 +303,7 @@ LnTurnoutManager* LocoNetSystemConnectionMemo::getTurnoutManager()
  if (getDisabled())
   return NULL;
  if (turnoutManager == NULL)
-  turnoutManager = new LnTurnoutManager(lt, tm, "L", mTurnoutNoRetry);
+  turnoutManager = new LnTurnoutManager(this, tm, mTurnoutNoRetry);
  return turnoutManager;
 }
 
@@ -303,7 +312,7 @@ LnClockControl* LocoNetSystemConnectionMemo::getClockControl() {
     if (getDisabled())
         return NULL;
     if (clockControl == NULL)
-        clockControl = new LnClockControl(getSlotManager(), getLnTrafficController());
+        clockControl = new LnClockControl(this);
     return clockControl;
 }
 
@@ -322,7 +331,7 @@ LnSensorManager* LocoNetSystemConnectionMemo::getSensorManager()
  if (getDisabled())
   return NULL;
  if (sensorManager == NULL)
-  sensorManager = new LnSensorManager(getLnTrafficController(), getSystemPrefix());
+  sensorManager = new LnSensorManager(this);
  return sensorManager;
 }
 

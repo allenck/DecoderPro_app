@@ -4,13 +4,14 @@
 //#include "lnturnout.h"
 #include "turnoutmanager.h"
 #include "turnoutoperationmanager.h"
+#include "systemconnectionmemo.h"
 
 class AbstractManager;
 class LIBPR3SHARED_EXPORT AbstractTurnoutManager : public TurnoutManager
 {
  Q_OBJECT
 public:
-    explicit AbstractTurnoutManager(QObject *parent = 0);
+    explicit AbstractTurnoutManager(SystemConnectionMemo* memo, QObject *parent = 0);
     virtual int getXMLOrder();
     virtual char typeLetter() ;
     Turnout* provideTurnout(QString name);
@@ -72,6 +73,7 @@ public:
       void setDefaultThrownSpeed(QString speed);// throws JmriException{
       QString getDefaultThrownSpeed();
       QString getDefaultClosedSpeed();
+      /*public*/ SystemConnectionMemo* getMemo();
 
 signals:
       void newTurnoutCreated(AbstractTurnoutManager* mgr, Turnout* t);
@@ -83,9 +85,11 @@ public slots:
   QString defaultClosedSpeed;
   QString defaultThrownSpeed;
 
+
 protected:
   virtual Turnout* createNewTurnout(QString systemName, QString userName)=0;
   //QMap<QString, Turnout*> turnoutMap; // key = systemName!
+  /*protected*/ /*final*/ SystemConnectionMemo* memo;
 };
 
 #endif // ABSTRACTTURNOUTMANAGER_H

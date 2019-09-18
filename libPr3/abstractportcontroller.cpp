@@ -3,12 +3,12 @@
 #include "systemconnectionmemo.h"
 #include "sleeperthread.h"
 #include <QDataStream>
+#include "loggerfactory.h"
 
 /*protected*/ AbstractPortController::AbstractPortController(SystemConnectionMemo* connectionMemo, QObject *parent)
     : NetworkPortAdapter(parent)
 {
  this->parent = parent;
- log = new Logger("AbstractPortController", this);
  //These are to support the old legacy files.
  option1Name = "1";
  option2Name = "2";
@@ -253,7 +253,6 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
  SleeperThread::msleep(milliseconds);
 }
 
-    //static private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractPortController.class.getName());
 //@Override
 /*public*/ bool AbstractPortController::isDirty()
 {
@@ -335,3 +334,4 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
  }
  this->connectionMemo = connectionMemo;
 }
+/*static*/ /*private*/ Logger* AbstractPortController::log = LoggerFactory::getLogger("AbstractPortController");

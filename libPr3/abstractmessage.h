@@ -2,7 +2,7 @@
 #define ABSTRACTMESSAGE_H
 #include "message.h"
 #include "logger.h"
-
+#include <QVector>
 
 class AbstractMessage : public Message
 {
@@ -28,7 +28,7 @@ private:
  // display format
 
 protected:
- /*protected*/ QByteArray _dataChars;// = NULL;
+ /*protected*/ QVector<int> _dataChars;// = NULL;
  // display format
  // contents (/*private*/)
  /*protected*/ int _nDataChars;// = 0;

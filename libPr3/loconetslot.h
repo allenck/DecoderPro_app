@@ -203,6 +203,7 @@ protected:
  void notifySlotListeners();
 friend class LnClockControl;
 friend class LocoNetSlotTest;
+friend class LnThrottleManager;
 };
 
 #endif // LOCONETSLOT_H

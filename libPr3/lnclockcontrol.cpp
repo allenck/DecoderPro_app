@@ -1,13 +1,30 @@
 #include "lnclockcontrol.h"
 #include "simpletimebase.h"
+#include "lnpowermanager.h"
 
 const double LnClockControl::CORRECTION = 915.0;
-LnClockControl::LnClockControl(SlotManager* sm, LnTrafficController* tc, QObject *parent) :
+/**
+ * Create a ClockControl object for a LocoNet clock.
+ *
+ * @param scm  the LocoNet System Connection Memo to associate with this
+ *              Clock Control object
+ */
+/*public*/ LnClockControl::LnClockControl(LocoNetSystemConnectionMemo* scm, QObject*parent) : DefaultClockControl(parent)
+{
+    common(scm->getSlotManager(), scm->getLnTrafficController(), scm->getPowerManager());
+}
+LnClockControl::LnClockControl(SlotManager* sm, LnTrafficController* tc, LnPowerManager* pm, QObject *parent) :
     DefaultClockControl(parent)
+{
+ common(sm, tc, pm);
+}
+
+void LnClockControl::common(SlotManager* sm, LnTrafficController* tc, LnPowerManager* pm)
 {
     setObjectName("LnClockControl");
     this->sm = sm;
     this->tc = tc;
+    this->pm = pm;
     // listen for updated slot contents
     if (sm!=NULL)
     {
@@ -241,7 +258,20 @@ LnClockControl::LnClockControl(SlotManager* sm, LnTrafficController* tc, QObject
         s->setFcRate(curRate);
         s->setFcFracMins(curFractionalMinutes);
         tc->sendLocoNetMessage(s->writeSlot());
-    }
+
+        // set other content
+        //     power (GTRK_POWER, 0x01 bit in byte 7)
+        bool power = true;
+        if (pm != nullptr) {
+            power = (pm->getPower() == PowerManager::ON);
+        } else {
+// TODO           jmri.util.Log4JUtil.warnOnce(log, "Can't access power manager for fast clock");
+        }
+        s->setTrackStatus(s->getTrackStatus() &  (~LnConstants::GTRK_POWER) );
+        if (power) s->setTrackStatus(s->getTrackStatus() | LnConstants::GTRK_POWER);
+
+        // and write
+        tc->sendLocoNetMessage(s->writeSlot());}
 }
 
 /*public*/ void LnClockControl::dispose() {

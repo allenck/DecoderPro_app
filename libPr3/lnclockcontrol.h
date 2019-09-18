@@ -51,7 +51,10 @@ class LIBPR3SHARED_EXPORT LnClockControl : public DefaultClockControl
 {
     Q_OBJECT
 public:
- explicit LnClockControl(SlotManager* sm, LnTrafficController* tc, QObject *parent = 0);
+ /*public*/ LnClockControl(LocoNetSystemConnectionMemo* scm, QObject *parent = 0);
+
+ explicit LnClockControl(SlotManager* sm, LnTrafficController* tc, LnPowerManager *pm, QObject *parent = 0);
+
     /**
      * Accessor routines
      */
@@ -92,8 +95,10 @@ public slots:
     /*public*/ void newMinute();
 
 private:
+ void common(SlotManager* sm, LnTrafficController* tc, LnPowerManager* pm);
     SlotManager* sm;
     LnTrafficController* tc;
+    LnPowerManager* pm;
 
     /* Operational variables */
     Timebase* clock;

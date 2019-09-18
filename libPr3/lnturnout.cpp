@@ -47,7 +47,7 @@ QVector<int> LnTurnout::modeValues;
 
 // public class LnTurnout extends AbstractTurnout implements LocoNetListener {
 
-LnTurnout::LnTurnout(QString prefix, int number, LnTrafficController* controller, QObject *parent) :
+LnTurnout::LnTurnout(QString prefix, int number, LocoNetInterface* controller, QObject *parent) :
     AbstractTurnout(prefix+"T"+QString("%1").arg(number),parent)
 {
  // a human-readable turnout number must be specified!

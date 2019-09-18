@@ -60,7 +60,7 @@ void SprogMessage::common(int i)
         log->error("invalid length in call to ctor");
     }
     _nDataChars = i;
-    _dataChars = QByteArray(i,0);
+    _dataChars = QVector<int>(i);
     _id = newMsgId();
 }
 
@@ -97,11 +97,9 @@ void SprogMessage::common(int i)
 /*public*/ SprogMessage::SprogMessage(QString s, QObject* parent) : AbstractMRMessage(parent)
 {
     _nDataChars = s.length();
-//    _dataChars = QByteArray(_nDataChars,0);
-//    for (int i = 0; i < _nDataChars; i++) {
-//        _dataChars.replace(i, s.toLocal8Bit().at(i);
-//    }
-    _dataChars = s.toLocal8Bit();
+    for (int i = 0; i < _nDataChars; i++) {
+        _dataChars[i] = s.toLocal8Bit().at(i);
+    }
     _id = newMsgId();
 }
 
@@ -113,12 +111,10 @@ void SprogMessage::common(int i)
         return;
     }
     _nDataChars = m->_nDataChars;
-//    _dataChars = new int[_nDataChars];
-//    for (int i = 0; i < _nDataChars; i++) {
-//        _dataChars[i] =m->_dataChars[i];
-//    }
-    _dataChars = QByteArray(m->_dataChars);
-    // Copy has a unique id
+    _dataChars = QVector<int>(_nDataChars);
+    for (int i = 0; i < _nDataChars; i++) {
+        _dataChars[i] = m->_dataChars[i];
+    }    // Copy has a unique id
     _id = newMsgId();
 }
 

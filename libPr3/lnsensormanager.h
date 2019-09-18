@@ -20,7 +20,9 @@ class LIBPR3SHARED_EXPORT LnSensorManager : public AbstractSensorManager
 {
     Q_OBJECT
 public:
-    LnSensorManager(LnTrafficController* tc, QString prefix, QObject *parent = 0);
+//    LnSensorManager(LnTrafficController* tc, QString prefix, QObject *parent = 0);
+    /*public*/ LnSensorManager(LocoNetSystemConnectionMemo* memo, QObject *parent = 0);
+
     virtual QString getSystemPrefix();
     // to free resources when no longer used
     virtual void dispose();

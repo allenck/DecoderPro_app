@@ -13,7 +13,7 @@ class LIBPR3SHARED_EXPORT LnTurnout : public AbstractTurnout
  Q_OBJECT
 public:
  //explicit LnTurnout(QObject *parent = 0);
- LnTurnout(QString prefix, int number, LnTrafficController* controller, QObject *parent = 0);
+ LnTurnout(QString prefix, int number, LocoNetInterface *controller, QObject *parent = 0);
  /*public*/ int getNumber();
  /**
   * Send a single OPC_SW_REQ message
@@ -44,7 +44,7 @@ public slots:
  void meterTimerTimeout();
 
 private:
- LnTrafficController* controller;
+ LocoNetInterface* controller;
  static QVector<QString> modeNames;
  static QVector<int> modeValues;
  bool pending;

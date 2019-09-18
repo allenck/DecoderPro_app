@@ -18,7 +18,7 @@ public slots:
      * @version	$Revision: 17977 $
      */
     //public interface SlotListener extends java.util.EventListener{
-    virtual void notifyChangedSlot(LocoNetSlot* s) =0;
+ virtual void notifyChangedSlot(LocoNetSlot* s) {}
 signals:
     
 public slots:

@@ -6,9 +6,10 @@
 #include "userpreferencesmanager.h"
 #include "signalspeedmap.h"
 
-AbstractTurnoutManager::AbstractTurnoutManager(QObject *parent) :
-    TurnoutManager(parent)
+AbstractTurnoutManager::AbstractTurnoutManager(SystemConnectionMemo* memo, QObject *parent) :
+    TurnoutManager(memo, parent)
 {
+ this->memo = memo;
  defaultClosedSpeed = "Normal";
  defaultThrownSpeed = "Restricted";
  //registerSelf(); //??
@@ -29,6 +30,11 @@ AbstractTurnoutManager::AbstractTurnoutManager(QObject *parent) :
 //        //super(Manager.TURNOUTS);
 //		TurnoutOperationManager.getInstance();		// force creation of an instance
 //	}
+
+// @Override
+/*public*/ SystemConnectionMemo* AbstractTurnoutManager::getMemo() {
+    return memo;
+}
 
 int AbstractTurnoutManager::getXMLOrder(){
     return Manager::TURNOUTS;

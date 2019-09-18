@@ -25,12 +25,16 @@ class LIBPR3SHARED_EXPORT WaitingThrottle : public QObject
  ThrottleListener* l;
  BasicRosterEntry* re;
  PropertyChangeListener* pl;
-
- WaitingThrottle(ThrottleListener* _l, BasicRosterEntry* _re);
- WaitingThrottle(PropertyChangeListener* _pl, BasicRosterEntry* _re);
+ bool _canHandleDecisions;
+public:
+ WaitingThrottle(ThrottleListener* _l, BasicRosterEntry* _re, bool _canHandleDecisions);
+ WaitingThrottle(PropertyChangeListener* _pl, BasicRosterEntry* _re, bool _canHandleDecisions);
  PropertyChangeListener* getPropertyChangeListener();
  ThrottleListener* getListener();
  BasicRosterEntry* getRosterEntry();
+ bool canHandleDecisions() {
+             return _canHandleDecisions;
+         }
 };
 
 /*protected*/ /*static*/ class LIBPR3SHARED_EXPORT Addresses : public QObject
@@ -75,37 +79,21 @@ public:
     /*public*/ LocoAddress* getAddress(QString value,LocoAddress::Protocol protocol);
     /*public*/ LocoAddress* getAddress(QString value, QString protocol);
     /*public*/ LocoAddress::Protocol getProtocolFromString(QString selection);
-    /*public*/ bool requestThrottle(BasicRosterEntry* re, ThrottleListener* l);
-    /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l);
-    /*public*/ bool requestThrottle(DccLocoAddress* la, ThrottleListener* l);
-    /**
-     * Request a throttle, given a decoder address. When the decoder address
-     * is located, the ThrottleListener gets a callback via the ThrottleListener.notifyThrottleFound
-     * method.
-     * @param la DccLocoAddress of the decoder desired.
-     * @param l The ThrottleListener awaiting notification of a found throttle.
-     * @return True if the request will continue, false if the request will not
-     * be made. False may be returned if a the throttle is already in use.
-     */
-    /*public*/ bool requestThrottle(DccLocoAddress* la, BasicRosterEntry* re, ThrottleListener* l);
-    /**
-     * Request a throttle, given a decoder address. When the decoder address
-     * is located, the ThrottleListener gets a callback via the ThrottleListener.notifyThrottleFound
-     * method.
-     * <P>
-     * This is a convenience version of the call, which uses system-specific
-     * logic to tell whether the address is a short or long form.
-     * @param address The decoder address desired.
-     * @param l The ThrottleListener awaiting notification of a found throttle.
-     * @return True if the request will continue, false if the request will not
-     * be made. False may be returned if a the throttle is already in use.
-     */
+    QT_DEPRECATED /*public*/ bool requestThrottle(BasicRosterEntry* re, ThrottleListener* l);
+    QT_DEPRECATED /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l);
+    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress *la, ThrottleListener* l);
+    /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l, bool canHandleDecisions);
+    /*public*/ bool requestThrottle(/*@Nonnull*/ BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions);
+    /*public*/ bool requestThrottle(LocoAddress* la, ThrottleListener* l, bool canHandleDecisions);
+    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l);
     /*public*/ bool requestThrottle(int address, ThrottleListener* l);
+    /*public*/ bool requestThrottle(int address, ThrottleListener* l, bool canHandleDecisions);
+
     /**
      * Abstract member to actually do the work of configuring a new throttle,
      * usually via interaction with the DCC system
      */
-    /*abstract public*/virtual void requestThrottleSetup(LocoAddress* a, bool control) = 0;
+    /*abstract public*/virtual void requestThrottleSetup(LocoAddress* /*a*/, bool /*control*/) {}
     /**
     * Abstract member to actually do the work of configuring a new throttle,
     * usually via interaction with the DCC system
@@ -138,7 +126,7 @@ public:
      * @param address The DCC Loco Address that the request failed on.
      * @param reason A text string passed by the ThrottleManae as to why
      */
-    /*public*/ void failedThrottleRequest(DccLocoAddress* address, QString reason);
+    /*public*/ void failedThrottleRequest(LocoAddress *address, QString reason);
     /**
      * Handle throttle information when it's finally available, e.g. when
      * a new Throttle object has been created.
@@ -168,12 +156,14 @@ public:
     /*public*/ void dispatchThrottle(DccThrottle* t, ThrottleListener* l);
     /*public*/ QVariant getThrottleInfo(DccLocoAddress* la, QString item);
     /*public*/ QString getAddressTypeString(LocoAddress::Protocol prot);
+    /*public*/ void responseThrottleDecision(int address, bool isLong, ThrottleListener* l, ThrottleListener::DecisionType decision);
+    /*public*/ void responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision);
 
 signals:
     
 public slots:
 private:
-    Logger* log;
+    static Logger* log;
     QObject* parent;
     /**
      * throttleListeners is indexed by the address, and
@@ -182,7 +172,7 @@ private:
      * at a time, the entries in this Hashmap are only valid during the
      * throttle setup process.
      */
-    /*private*/ QHash<DccLocoAddress*,QList<WaitingThrottle*>* >* throttleListeners;// = new QHash<DccLocoAddress,QList<WaitingThrottle>>(5);
+    /*private*/ QHash<LocoAddress*,QList<WaitingThrottle*>* >* throttleListeners;// = new QHash<DccLocoAddress,QList<WaitingThrottle>>(5);
     /**
      * listenerOnly is indexed by the address, and
      * contains as elements an ArrayList of propertyChangeListeners
@@ -190,15 +180,15 @@ private:
      * hasn't yet been created/
      * The entries in this Hashmap are only valid during the throttle setup process.
      */
-    /*private*/ QHash<DccLocoAddress*,QList<WaitingThrottle*>* >* listenerOnly;// = new HashMap<DccLocoAddress,ArrayList<WaitingThrottle>>(5);
+    /*private*/ QHash<LocoAddress*,QList<WaitingThrottle*>* >* listenerOnly;// = new HashMap<DccLocoAddress,ArrayList<WaitingThrottle>>(5);
     //This keeps a map of all the current active DCC loco Addresses that are in use.
     /**
      * addressThrottles is indexed by the address, and
      * contains as elements a subclass of the throttle assigned to an address and
      * the number of requests and active users for this address.
      */
-    /*private*/ QHash<DccLocoAddress*,Addresses*>* addressThrottles;// = new QHash<DccLocoAddress*,Addresses>();
-    /*private*/ void cancelThrottleRequest(DccLocoAddress* la, ThrottleListener* l);
+    /*private*/ QHash<LocoAddress*,Addresses*>* addressThrottles;// = new QHash<DccLocoAddress*,Addresses>();
+    /*private*/ void cancelThrottleRequest(LocoAddress *la, ThrottleListener* l);
 
 protected:
     /*protected*/ SystemConnectionMemo* adapterMemo;
@@ -210,6 +200,12 @@ protected:
      */
     /*protected*/ bool singleUse();
     /*protected*/ bool addressReleased(DccLocoAddress* la, ThrottleListener* l);
+    /*protected*/ void makeHardwareDecision(LocoAddress* address, ThrottleListener::DecisionType question);
+    /*protected*/ void notifyDecisionRequest(LocoAddress* address, ThrottleListener::DecisionType question);
+    /*protected*/ bool requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions);
+
+    friend class RetrySetup;
+    friend class LnThrottleManager;
 };
 
 #endif // ABSTRACTTHROTTLEMANAGER_H

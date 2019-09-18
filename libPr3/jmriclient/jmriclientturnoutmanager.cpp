@@ -13,7 +13,7 @@
 
 
 /*public*/ JMRIClientTurnoutManager::JMRIClientTurnoutManager(JMRIClientSystemConnectionMemo* memo, QObject *parent)
- : AbstractTurnoutManager(parent)
+ : AbstractTurnoutManager(memo, parent)
 {
     this->memo = memo;
     this->prefix = memo->getSystemPrefix();

@@ -47,6 +47,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -994,6 +995,39 @@ if (_wrapper) {
 }
   return AbstractLightManager::getLight(name0);
 }
+SystemConnectionMemo*  PythonQtShell_AbstractLightManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractLightManager::getMemo();
+}
 NamedBean*  PythonQtShell_AbstractLightManager::getNamedBean(QString  name0)
 {
 if (_wrapper) {
@@ -1902,6 +1936,39 @@ if (_wrapper) {
 }
   return AbstractManager::getEntryToolTip();
 }
+SystemConnectionMemo*  PythonQtShell_AbstractManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractManager::getMemo();
+}
 NamedBean*  PythonQtShell_AbstractManager::getNamedBean(QString  name0)
 {
 if (_wrapper) {
@@ -2323,6 +2390,10 @@ if (_wrapper) {
 AbstractManager* PythonQtWrapper_AbstractManager::new_AbstractManager(QObject*  parent)
 { 
 return new PythonQtShell_AbstractManager(parent); }
+
+AbstractManager* PythonQtWrapper_AbstractManager::new_AbstractManager(SystemConnectionMemo*  memo, QObject*  parent)
+{ 
+return new PythonQtShell_AbstractManager(memo, parent); }
 
 const QMetaObject* PythonQtShell_AbstractManager::metaObject() const {
   if (QObject::d_ptr->metaObject) {
@@ -5553,6 +5624,39 @@ if (_wrapper) {
 }
   return AbstractProxyManager::getEntryToolTip();
 }
+SystemConnectionMemo*  PythonQtShell_AbstractProxyManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractProxyManager::getMemo();
+}
 Manager*  PythonQtShell_AbstractProxyManager::getMgr(int  index0)
 {
 if (_wrapper) {
@@ -6695,6 +6799,39 @@ if (_wrapper) {
   }
 }
   return AbstractReporterManager::getEntryToolTip();
+}
+SystemConnectionMemo*  PythonQtShell_AbstractReporterManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractReporterManager::getMemo();
 }
 NamedBean*  PythonQtShell_AbstractReporterManager::getNamedBean(QString  name0)
 {
@@ -9141,6 +9278,39 @@ if (_wrapper) {
 }
   return AbstractSensorManager::getEntryToolTip();
 }
+SystemConnectionMemo*  PythonQtShell_AbstractSensorManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractSensorManager::getMemo();
+}
 NamedBean*  PythonQtShell_AbstractSensorManager::getNamedBean(QString  name0)
 {
 if (_wrapper) {
@@ -9738,6 +9908,10 @@ if (_wrapper) {
 AbstractSensorManager* PythonQtWrapper_AbstractSensorManager::new_AbstractSensorManager(QObject*  parent)
 { 
 return new PythonQtShell_AbstractSensorManager(parent); }
+
+AbstractSensorManager* PythonQtWrapper_AbstractSensorManager::new_AbstractSensorManager(SystemConnectionMemo*  memo, QObject*  parent)
+{ 
+return new PythonQtShell_AbstractSensorManager(memo, parent); }
 
 const QMetaObject* PythonQtShell_AbstractSensorManager::metaObject() const {
   if (QObject::d_ptr->metaObject) {
@@ -14837,6 +15011,39 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getEntryToolTip();
 }
+SystemConnectionMemo*  PythonQtShell_AbstractTurnoutManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractTurnoutManager::getMemo();
+}
 NamedBean*  PythonQtShell_AbstractTurnoutManager::getNamedBean(QString  name0)
 {
 if (_wrapper) {
@@ -15563,9 +15770,9 @@ if (_wrapper) {
 }
   AbstractTurnoutManager::vetoableChange(evt0);
 }
-AbstractTurnoutManager* PythonQtWrapper_AbstractTurnoutManager::new_AbstractTurnoutManager(QObject*  parent)
+AbstractTurnoutManager* PythonQtWrapper_AbstractTurnoutManager::new_AbstractTurnoutManager(SystemConnectionMemo*  memo, QObject*  parent)
 { 
-return new PythonQtShell_AbstractTurnoutManager(parent); }
+return new PythonQtShell_AbstractTurnoutManager(memo, parent); }
 
 const QMetaObject* PythonQtShell_AbstractTurnoutManager::metaObject() const {
   if (QObject::d_ptr->metaObject) {
@@ -20767,6 +20974,39 @@ if (_wrapper) {
   }
 }
   return AudioManager::getEntryToolTip();
+}
+SystemConnectionMemo*  PythonQtShell_AudioManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AudioManager::getMemo();
 }
 NamedBean*  PythonQtShell_AudioManager::getNamedBean(QString  name0)
 {
@@ -28974,6 +29214,39 @@ if (_wrapper) {
   }
 }
   return BlockManager::getEntryToolTip();
+}
+SystemConnectionMemo*  PythonQtShell_BlockManager::getMemo()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getMemo");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"SystemConnectionMemo*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      SystemConnectionMemo* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getMemo", methodInfo, result);
+          } else {
+            returnValue = *((SystemConnectionMemo**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BlockManager::getMemo();
 }
 NamedBean*  PythonQtShell_BlockManager::getNamedBean(QString  name0)
 {

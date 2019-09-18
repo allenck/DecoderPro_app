@@ -46,6 +46,8 @@ public:
     /*public*/ static void assertNotNull(QString message, QDomElement object);
     /*public*/ static void assertNotNull(QObject* object);
     /*public*/ static void assertNotNull(QDomElement object);
+    /*public*/ static void assertNotNull(QString message, int object);
+    /*public*/ static void assertNotNull(QString message, QString object);
 
     /*public*/ static void assertNull(QString message, QObject* object);
     /*public*/ static void assertNull(QObject* object);

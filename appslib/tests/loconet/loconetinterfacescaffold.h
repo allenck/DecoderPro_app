@@ -25,6 +25,7 @@ private:
 
  friend class SlotManagerTest;
  friend class LocoNetSlotTest;
+ friend class LnOpsModeProgrammerTest;
 };
 
 #endif // LOCONETINTERFACESCAFFOLD_H

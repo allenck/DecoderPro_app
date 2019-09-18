@@ -1,16 +1,18 @@
 #include "loconetmessage.h"
 #include "loconetmessageinterpret.h"
+#include "loggerfactory.h"
 
 LocoNetMessage::LocoNetMessage(int len, QObject *parent) :
-    QObject(parent)
+    AbstractMessage(parent)
 {
- //Q_ASSERT(len >0);
- log = new Logger("LocoNetMessage", this);
- if (len<1)
-  log->error("invalid length in call to ctor: "+QString::number(len));
-
- _nDataBytes = len;
- _dataBytes = QVector<int>(len,0);
+ if (len < 2) {
+     _nDataChars = 0;
+     _dataChars = QVector<int>(1);
+     log->error("LocoNetMessage does not allow object creation if length is less than 2."); // NOI18N
+     return;
+ }
+ _nDataChars = len;
+ _dataChars = QVector<int>(len);
  setObjectName("LocoNetMessage");
 }
 LocoNetMessage::~LocoNetMessage()
@@ -24,65 +26,102 @@ LocoNetMessage::~LocoNetMessage()
  * four values in the array
  */
 LocoNetMessage::LocoNetMessage(QVector<int> contents, QObject *parent) :
-    QObject(parent)
+    AbstractMessage(parent)
 {
- log = new Logger("LocoNetMessage", this);
- _nDataBytes = contents.count();
- for (int i=0; i<contents.count(); i++) _dataBytes.append(contents[i]);
+ if (contents.length() < 2) {
+     _nDataChars = 0;
+     _dataChars = QVector<int>(1);
+     log->error("Cannot create a LocoNet message of length shorter than two."); // NOI18N
+ }
+ _nDataChars = contents.count();
+ for (int i=0; i<contents.count(); i++) _dataChars.append(contents[i]);
  setObjectName("LocoNetMessage");
+}
+/**
+ * Create a LocoNetMessage object without providing any
+ * indication of its size or contents.
+ * <p>
+ * Because a LocoNet message requires at least a size, if
+ * not actual contents, this constructor always logs an error.
+ *
+ */
+/*public*/ LocoNetMessage::LocoNetMessage() {
+    _nDataChars = 0;
+    _dataChars = QVector<int>(1);
+    log->error("LocoNetMessage does not allow a constructor with no argument"); // NOI18N
+}
+/**
+ * Create a LocoNetMessage from a String
+ * <p>
+ * Because it is difficult to create a complete LocoNet object using a string,
+ * this method of AbstractMessage is not supported.
+ * <p>
+ * This constructor always logs an error
+ * @param s an unused parameter
+ */
+/*public*/ LocoNetMessage::LocoNetMessage(QString s) {
+    _nDataChars = 0;
+    _dataChars = QVector<int>(1);
+    log->error("LocoNetMessage does not allow a constructor with a 'String' argument"); // NOI18N
 }
 
 LocoNetMessage::LocoNetMessage(QVector<char> contents, QObject *parent) :
-    QObject(parent)
+    AbstractMessage(parent)
 {
- log = new Logger("LocoNetMessage", this);
- _nDataBytes = contents.count();
- for (int i=0; i<contents.count(); i++) _dataBytes.append((int)contents[i]);
+ if (contents.length() < 2) {
+     _nDataChars = 0;
+     _dataChars = QVector<int>(1);
+     log->error("Cannot create a LocoNet message of length shorter than two."); // NOI18N
+ }
+ _nDataChars = contents.count();
+ _dataChars = QVector<int>(contents.length());
+ for (int i = 0; i < contents.length(); i++) {
+     _dataChars[i] = contents[i] & 0xFF;
+ }
  setObjectName("LocoNetMessage");
 
 }
 
 LocoNetMessage::LocoNetMessage(const LocoNetMessage& original, QObject *parent) :
-    QObject(parent)
+    AbstractMessage(parent)
 {
-  log = new Logger("LocoNetMessage", this);
-  _nDataBytes = original._dataBytes.count();
-  this->_dataBytes.reserve(_nDataBytes);
-  this->_dataBytes = original._dataBytes;
+  _nDataChars = original._dataChars.count();
+  this->_dataChars.reserve(_nDataChars);
+  this->_dataChars = original._dataChars;
   setObjectName("LocoNetMessage");
 }
 
 //void LocoNetMessage::setOpCode(int i) { _dataBytes[0]=i;}
-void LocoNetMessage::setOpCode(int i) { _dataBytes.replace(0,i);}
-int LocoNetMessage::getOpCode() {return _dataBytes[0] & 0xff;}
+void LocoNetMessage::setOpCode(int i) { _dataChars.replace(0,i);}
+int LocoNetMessage::getOpCode() {return _dataChars[0] & 0xff;}
 
 /** Get a String representation of the op code in hex */
 QString LocoNetMessage::getOpCodeHex() { return QString("0x%1").arg(getOpCode(),0,16); }
 
     /** Get length, including op code and error-detection byte */
-int LocoNetMessage::getNumDataElements() {return _nDataBytes;}
+int LocoNetMessage::getNumDataElements() {return _nDataChars;}
 
 int LocoNetMessage::getElement(int n)
 {
- if (n < 0 || n >= _dataBytes.size())
+ if (n < 0 || n >= _dataChars.size())
  {
    log->error("reference element "+QString("%1").arg(n)
-            +" in message of "+QString("%1").arg(_dataBytes.size())
+            +" in message of "+QString("%1").arg(_dataChars.size())
                       +" elements: "+this->toString());
   return 0;
  }
- return _dataBytes[n] & 0xFF;
+ return _dataChars[n] & 0xFF;
 }
 void LocoNetMessage::setElement(int n, int v)
 {
- if (n < 0 || n >= _dataBytes.size())
+ if (n < 0 || n >= _dataChars.size())
   log->error("reference element "+ QString("%1").arg(n)
-            +" in message of "+_dataBytes.size()
+            +" in message of "+_dataChars.size()
                       +" elements: "+this->toString());
 // _dataBytes[n] = v;
- _dataBytes.replace(n,v);
+ _dataChars.replace(n,v);
 // _dataBytes.insert(n,v);
- if((_dataBytes.size() != _nDataBytes))
+ if((_dataChars.size() != _nDataChars))
      qDebug()<< "length does not match size ";
 }
 
@@ -92,12 +131,12 @@ QString LocoNetMessage::toString()
  int val ;
  QString sb;
  //for (int i=0; i<_nDataBytes; i++)
- for(int i=0; i<_nDataBytes; i++)
+ for(int i=0; i<_nDataChars; i++)
  {
   if( i > 0 )
    sb.append( ' ' ) ;
 
-  val = _dataBytes[i] & 0xFF ;
+  val = _dataChars[i] & 0xFF ;
 // sb.append( hexChars[ val >> 4 ] );
 // sb.append( hexChars[ val & 0x0F ] ) ;
   if(val < 16)
@@ -112,9 +151,9 @@ QVector<char> LocoNetMessage::toCharArray()
 {
  int val;
  QVector<char> v;
- for (int i=0; i<_nDataBytes; i++)
+ for (int i=0; i<_nDataChars; i++)
  {
-  val = _dataBytes.at(i) & 0xFF ;
+  val = _dataChars.at(i) & 0xFF ;
   v.append(val);
  }
  return v;
@@ -124,9 +163,9 @@ QByteArray LocoNetMessage::toByteArray()
 {
  int val;
  QByteArray ba;
- for (int i=0; i<_nDataBytes; i++)
+ for (int i=0; i<_nDataChars; i++)
  {
-  val = _dataBytes.at(i) & 0xFF ;
+  val = _dataChars.at(i) & 0xFF ;
   ba.append(val);
  }
  return ba;
@@ -243,19 +282,19 @@ bool LocoNetMessage::checkParity()
  //if (! (o instanceof LocoNetMessage)) return false;
  if(o->objectName() != "LocoNetMessage") return false;
  LocoNetMessage* m = (LocoNetMessage*) o;
- if (m->_nDataBytes != this->_nDataBytes) return false;
- for (int i = 0; i<_nDataBytes-1; i++)
-  if ((m->_dataBytes[i]&0xFF) != (this->_dataBytes[i]&0xFF))
+ if (m->_nDataChars != this->_nDataChars) return false;
+ for (int i = 0; i<_nDataChars-1; i++)
+  if ((m->_dataChars[i]&0xFF) != (this->_dataChars[i]&0xFF))
    return false;
  return true;
 }
 
 /*public*/ int LocoNetMessage::hashCode()
 {
- int r = _nDataBytes;
- if (_nDataBytes>0) r+= _dataBytes[0];
- if (_nDataBytes>1) r+= _dataBytes[1]*128;
- if (_nDataBytes>2) r+= _dataBytes[2]*128*128;
+ int r = _nDataChars;
+ if (_nDataChars>0) r+= _dataChars[0];
+ if (_nDataChars>1) r+= _dataChars[1]*128;
+ if (_nDataChars>2) r+= _dataChars[2]*128*128;
   return r;
 }
 
@@ -466,7 +505,7 @@ bool LocoNetMessage::checkParity()
 //      // Hex char array for toString conversion
 //    static char[] hexChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' } ;
 
-    // initialize logging
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LocoNetMessage.class.getName());
+// initialize logging
+Logger* LocoNetMessage::log = LoggerFactory::getLogger("LocoNetMessage");
 
-//}
+

@@ -2,12 +2,15 @@
 #define INTERNALTURNOUTMANAGER_H
 #include "abstractturnoutmanager.h"
 
+class InternalSystemConnectionMemo;
 class InternalTurnoutManager : public AbstractTurnoutManager
 {
  Q_OBJECT
 public:
- InternalTurnoutManager();
- /*public*/ InternalTurnoutManager(QString prefix);
+ QT_DEPRECATED InternalTurnoutManager(QObject* parent = nullptr);
+ QT_DEPRECATED /*public*/ InternalTurnoutManager(QString prefix, QObject* parent = nullptr);
+ /*public*/ InternalTurnoutManager(InternalSystemConnectionMemo* memo, QObject* parent = nullptr);
+
  /*public*/ QString getSystemPrefix();
  /*public*/ QString createSystemName(QString curAddress, QString prefix) throw (JmriException);
  /*public*/ QStringList getValidOperationTypes();

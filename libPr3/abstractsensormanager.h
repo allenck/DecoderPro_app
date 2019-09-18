@@ -13,6 +13,8 @@ class LIBPR3SHARED_EXPORT AbstractSensorManager : public SensorManager
     Q_OBJECT
 public:
     AbstractSensorManager(QObject *parent = 0);
+    AbstractSensorManager(SystemConnectionMemo* memo, QObject *parent =nullptr);
+
     /*public*/ virtual int getXMLOrder();
     /*public*/ virtual char typeLetter() ;
     /*public*/ Sensor* provideSensor(QString name);

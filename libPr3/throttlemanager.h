@@ -194,6 +194,28 @@ virtual void cancelThrottleRequest(int /*address*/, bool  /*isLong*/, ThrottleLi
  * @since 4.9.2
  */
 /*public*/ virtual void stealThrottleRequest(LocoAddress* /*address*/, ThrottleListener* /*l*/,bool /*steal*/) {}
+/**
+ * Steal or Share a requested throttle.
+ * <P>
+ * This is a convenience version of the call, which uses system-specific
+ * logic to tell whether the address is a short or long form.
+ *
+ * @param address desired decoder address
+ * @param isLong  true if requesting a DCC long (extended) address
+ * @param l  ThrottleListener requesting the throttle steal occur.
+ * @param decision from the ThrottleListener, STEAL or SHARE.
+ */
+/*public*/ virtual void responseThrottleDecision(int /*address*/, bool /*isLong*/, ThrottleListener* /*l*/, ThrottleListener::DecisionType decision) {}
+
+/**
+ * Steal or Share a requested throttle.
+ *
+ * @param address desired LocoAddress
+ * @param l The ThrottleListener which has made the decision
+ * @param decision from the ThrottleListener, STEAL or SHARE.
+ * @since 4.9.2
+ */
+/*public*/ virtual void responseThrottleDecision(LocoAddress* /*address*/, ThrottleListener* /*l*/, ThrottleListener::DecisionType /*decision*/) {}
 
 /**
  * Check to see if the Dispatch Button should be enabled or not

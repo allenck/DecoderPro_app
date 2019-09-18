@@ -5,6 +5,7 @@
 #include "loconetmessage.h"
 #include "loconetlistener.h"
 
+class LocoNetSystemConnectionMemo;
 class LIBPR3SHARED_EXPORT LocoNetInterface : public QObject
 {
  Q_OBJECT
@@ -36,17 +37,13 @@ class LIBPR3SHARED_EXPORT LocoNetInterface : public QObject
    * @param listener Object to be notified of new messages as they arrive.
    *
    */
-  //virtual void addLocoNetListener(int mask, const LocoNetListener* listener) =0;
-//{
-//}
+ virtual void addLocoNetListener(int mask, const LocoNetListener* listener){}
 
     /*
      * Stop notification of things happening on the LocoNet. Note that mask and LocoNetListener
      * must match a previous request exactly.
      */
-    //virtual void removeLocoNetListener(int mask, const LocoNetListener* listener) =0;
-//{
-//}
+ virtual void removeLocoNetListener(int mask, const LocoNetListener* listener) {}
 
     /*
      * Check whether an implementation is operational. True indicates OK.
@@ -83,6 +80,19 @@ const static int   SENSORS		=	   8;
      */
 const static int   POWER			=  16;
 
+/**
+     * Set the system connection memo associated with this connection.
+     *
+     * @param m associated systemConnectionMemo object
+     */
+   /*public*/ virtual void setSystemConnectionMemo(LocoNetSystemConnectionMemo* m) {}
+
+    /**
+     * Get the system connection memo associated with this connection.
+     *
+     * @return the associated systemConnectionMemo object
+     */
+    /*public*/ virtual LocoNetSystemConnectionMemo* getSystemConnectionMemo() {return nullptr;}
 
 signals:
  void messageProcessed(LocoNetMessage* msg);

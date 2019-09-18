@@ -20,6 +20,15 @@
  * @version			$Revision: 28274 $
  */
 // /*public*/ class LnOpsModeProgrammer implements AddressedProgrammer  {
+/*public*/ LnOpsModeProgrammer::LnOpsModeProgrammer(LocoNetSystemConnectionMemo* memo,
+            int pAddress, bool pLongAddr, QObject *parent) : AddressedProgrammer(parent)
+{
+    this->memo = memo;
+    mAddress = pAddress;
+    mLongAddr = pLongAddr;
+    // register to listen
+    memo->getLnTrafficController()->addLocoNetListener(~0, (LocoNetListener*)this);
+}
 
 /*public*/ LnOpsModeProgrammer::LnOpsModeProgrammer(SlotManager* pSlotMgr, LocoNetSystemConnectionMemo* memo, int pAddress, bool pLongAddr, QObject *parent)
     : AddressedProgrammer(parent)
@@ -333,7 +342,7 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
         mode = m;
         notifyPropertyChange("Mode", VPtr<ProgrammingMode>::asQVariant(mode), VPtr<ProgrammingMode>::asQVariant(m));
     } else {
-        throw new IllegalArgumentException("Invalid requested mode: "+m->toString());
+        throw IllegalArgumentException("Invalid requested mode: "+m->toString());
     }
 }
 /*public*/ /*final*/ ProgrammingMode* LnOpsModeProgrammer::getMode() { return mode; }
@@ -346,8 +355,11 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
 {
  QList<ProgrammingMode*> ret =  QList<ProgrammingMode*>();
  ret.append(ProgrammingMode::OPSBYTEMODE);
+ ret.append(LnProgrammerManager::LOCONETOPSBOARD);
  ret.append(LnProgrammerManager::LOCONETSV1MODE);
  ret.append(LnProgrammerManager::LOCONETSV2MODE);
+ ret.append(LnProgrammerManager::LOCONETBDOPSWMODE);
+ ret.append(LnProgrammerManager::LOCONETCSOPSWMODE);
  return ret;
 }
 

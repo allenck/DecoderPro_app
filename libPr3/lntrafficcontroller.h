@@ -4,12 +4,15 @@
 #include "loconetinterface.h"
 #include "logger.h"
 
+class LocoNetSystemConnectionMemo;
 class LIBPR3SHARED_EXPORT LnTrafficController : public LocoNetInterface
 {
  Q_OBJECT
 public:
  LnTrafficController();
  // Abstract methods for the LocoNetInterface
+ /*public*/ void setSystemConnectionMemo(LocoNetSystemConnectionMemo* m);
+ /*public*/ LocoNetSystemConnectionMemo* getSystemConnectionMemo();
  Q_DECL_DEPRECATED static /*public*/ LnTrafficController* instance();
 
  /*abstract public*/ virtual bool status() {return false;}
@@ -83,7 +86,8 @@ signals:
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LnTrafficController.class.getName());
 //    }
 private:
-  Logger log;
+  static Logger* log;
+  LocoNetSystemConnectionMemo* memo;
  protected:
   QVector<LocoNetListener*> listeners;
   int transmittedMsgCount;

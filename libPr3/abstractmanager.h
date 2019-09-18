@@ -26,6 +26,7 @@ class JAVAQTSHARED_EXPORT AbstractManager : public  Manager
     Q_OBJECT
 public:
     AbstractManager(QObject *parent = 0);
+    AbstractManager(SystemConnectionMemo* memo, QObject *parent = 0);
 //    virtual int getXMLOrder();
     virtual QString makeSystemName(QString s);
     // abstract methods to be extended by subclasses
