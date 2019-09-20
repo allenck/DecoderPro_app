@@ -18,7 +18,8 @@ class LIBPR3SHARED_EXPORT PowerManager : public QObject
  {
     UNKNOWN = 0,
     ON     = 2,
-    OFF    = 4
+    OFF    = 4,
+    IDLE = 0x08 // not supported by some connection types
  };
  Q_ENUM(STATES)
  static /*final*/ QString POWER;// = "Power"; // NOI18N
@@ -36,6 +37,8 @@ class LIBPR3SHARED_EXPORT PowerManager : public QObject
 
     virtual QString getUserName() {return "";}
  PropertyChangeSupport* pcs =nullptr;// = new PropertyChangeSupport(this);
+ /*public*/ /*default*/ bool implementsIdle();
+
 
  signals:
  public slots:

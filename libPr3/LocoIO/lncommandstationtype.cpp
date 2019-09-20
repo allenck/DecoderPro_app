@@ -56,11 +56,13 @@
     // name of a configuration file for loconet.cmdstnconfig
 QList<LnCommandStationType*> LnCommandStationType::values = QList<LnCommandStationType*>();
 
-LnCommandStationType::LnCommandStationType(QString name, bool canRead, bool progEndOp, QString throttleClassName, QString slotManagerClassName, LnCommandStationTypes type, QObject *parent) : QObject(parent)
+LnCommandStationType::LnCommandStationType(QString name, bool canRead, bool progEndOp, bool supportsIdle, bool supportsMultimeter, QString throttleClassName, QString slotManagerClassName, LnCommandStationTypes type, QObject *parent) : QObject(parent)
 {
  this->name = name;
  this->canRead = canRead;
  this->progEndOp = progEndOp;
+  this->supportsIdle = supportsIdle;
+  this->supportsMultiMeter = supportsMultimeter;
  this->throttleClassName = throttleClassName;
  this->slotManagerClassName = slotManagerClassName;
  this->type = type;
@@ -87,17 +89,20 @@ LnCommandStationType::LnCommandStationType(QString name, bool canRead, bool prog
 {
  if(values.isEmpty())
  {
-  values.append(new LnCommandStationType("DCS100 (Chief)",              true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS100));
-  values.append(new LnCommandStationType("DCS200",                      true,   false,  "LnThrottleManager",    "SlotManager",COMMAND_STATION_DCS200));
-  values.append(new LnCommandStationType("DCS50 (Zephyr)",              true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS050));
-  values.append(new LnCommandStationType("DCS51 (Zephyr Xtra)",         true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS051));
-  values.append(new LnCommandStationType("DB150 (Empire Builder)",      false,  true,   "LnThrottleManager",    "SlotManager", COMMAND_STATION_DB150));
-  values.append(new LnCommandStationType("LocoBuffer (PS)",             true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_LBPS));
-  values.append(new LnCommandStationType("Mix-Master",                  false,  true,   "LnThrottleManager",    "SlotManager", COMMAND_STATION_MM));
-  values.append(new LnCommandStationType("Intellibox-I",                true,   true,   "Ib1ThrottleManager",   "SlotManager", COMMAND_STATION_IBX_TYPE_1)), // NOI18N
-  values.append(new LnCommandStationType("Intellibox-II",               true,   true,   "Ib2ThrottleManager",   "UhlenbrockSlotManager", COMMAND_STATION_IBX_TYPE_2)); // NOI18N
-  values.append(new LnCommandStationType("PR3 standalone programmer",   true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_PR3_ALONE));
-  values.append(new LnCommandStationType("Stand-alone LocoNet",         false,  false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_STANDALONE));  // NOI18N
+  values.append(new LnCommandStationType("DCS100 (Chief)",              true,   false,  true,  false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS100));
+  values.append(new LnCommandStationType("DCS200",                      true,   false,  true,  false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS200));
+  values.append(new LnCommandStationType("DCS50 (Zephyr)",              true,   false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS050));
+  values.append(new LnCommandStationType("DCS51 (Zephyr Xtra)",         true,   false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS051));
+  values.append(new LnCommandStationType("DB150 (Empire Builder)",      false,  true,   true,  false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_DB150));
+  values.append(new LnCommandStationType("LocoBuffer (PS)",             true,   false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_LBPS));
+  values.append(new LnCommandStationType("Mix-Master",                  false,  true,   false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_MM));
+  values.append(new LnCommandStationType("Intellibox-I",                true,   true,   false, false, "Ib1ThrottleManager",   "SlotManager", COMMAND_STATION_IBX_TYPE_1)), // NOI18N
+  values.append(new LnCommandStationType("Intellibox-II",               true,   true,   false, false, "Ib2ThrottleManager",   "UhlenbrockSlotManager", COMMAND_STATION_IBX_TYPE_2)); // NOI18N
+  values.append(new LnCommandStationType("PR2 standalone programmer",   true,   false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_PR2_ALONE)); // NOI18N
+  values.append(new LnCommandStationType("PR3 standalone programmer",   true,   false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_PR3_ALONE));
+  values.append(new LnCommandStationType("Stand-alone LocoNet",         false,  false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_STANDALONE));  // NOI18N
+  values.append(new LnCommandStationType("DCS240 (Advanced Command Station)", true, false, true, true,"LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS240)); // NOI18N
+  values.append(new LnCommandStationType("DCS210 (Evolution Command Station)", true, false, true, true,"LnThrottleManager",   "SlotManager", COMMAND_STATION_DCS210)); // NOI18N
  }
 
  foreach (LnCommandStationType* p, values)
@@ -111,20 +116,20 @@ LnCommandStationType::LnCommandStationType(QString name, bool canRead, bool prog
 {
  if(values.isEmpty())
  {
-    values.append(new LnCommandStationType("DCS100 (Chief)",              true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS100));
-    values.append(new LnCommandStationType("DCS200",                      true,   false,  "LnThrottleManager",    "SlotManager",COMMAND_STATION_DCS200));
-    values.append(new LnCommandStationType("DCS50 (Zephyr)",              true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS050));
-    values.append(new LnCommandStationType("DCS51 (Zephyr Xtra)",         true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS051));
-    values.append(new LnCommandStationType("DB150 (Empire Builder)",      false,  true,   "LnThrottleManager",    "SlotManager", COMMAND_STATION_DB150));
-    values.append(new LnCommandStationType("LocoBuffer (PS)",             true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_LBPS));
-    values.append(new LnCommandStationType("Mix-Master",                  false,  true,   "LnThrottleManager",    "SlotManager", COMMAND_STATION_MM));
-    values.append(new LnCommandStationType("Intellibox-I",                true,   true,   "Ib1ThrottleManager",   "SlotManager", COMMAND_STATION_IBX_TYPE_1)), // NOI18N
-    values.append(new LnCommandStationType("Intellibox-II",               true,   true,   "Ib2ThrottleManager",   "UhlenbrockSlotManager", COMMAND_STATION_IBX_TYPE_2)); // NOI18N
-   values.append(new LnCommandStationType("LocoCentral",true, false,"LnThrottleManager", "SlotManager", COMMAND_STATION_LOCOCENTRAL));
-
-    values.append(new LnCommandStationType("PR3 standalone programmer",   true,   false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_PR3_ALONE));
-    values.append(new LnCommandStationType("Stand-alone LocoNet",         false,  false,  "LnThrottleManager",    "SlotManager", COMMAND_STATION_STANDALONE));  // NOI18N
-
+   values.append(new LnCommandStationType("DCS100 (Chief)",              true,   false,  true,  false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS100));
+   values.append(new LnCommandStationType("DCS200",                      true,   false,  true,  false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS200));
+   values.append(new LnCommandStationType("DCS50 (Zephyr)",              true,   false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS050));
+   values.append(new LnCommandStationType("DCS51 (Zephyr Xtra)",         true,   false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS051));
+   values.append(new LnCommandStationType("DB150 (Empire Builder)",      false,  true,   true,  false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_DB150));
+   values.append(new LnCommandStationType("LocoBuffer (PS)",             true,   false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_LBPS));
+   values.append(new LnCommandStationType("Mix-Master",                  false,  true,   false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_MM));
+   values.append(new LnCommandStationType("Intellibox-I",                true,   true,   false, false, "Ib1ThrottleManager",   "SlotManager", COMMAND_STATION_IBX_TYPE_1)), // NOI18N
+   values.append(new LnCommandStationType("Intellibox-II",               true,   true,   false, false, "Ib2ThrottleManager",   "UhlenbrockSlotManager", COMMAND_STATION_IBX_TYPE_2)); // NOI18N
+   values.append(new LnCommandStationType("PR2 standalone programmer",   true,   false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_PR2_ALONE)); // NOI18N
+   values.append(new LnCommandStationType("PR3 standalone programmer",   true,   false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_PR3_ALONE));
+   values.append(new LnCommandStationType("Stand-alone LocoNet",         false,  false,  false, false, "LnThrottleManager",    "SlotManager", COMMAND_STATION_STANDALONE));  // NOI18N
+   values.append(new LnCommandStationType("DCS240 (Advanced Command Station)", true, false, true, true,"LnThrottleManager",    "SlotManager", COMMAND_STATION_DCS240)); // NOI18N
+   values.append(new LnCommandStationType("DCS210 (Evolution Command Station)", true, false, true, true,"LnThrottleManager",   "SlotManager", COMMAND_STATION_DCS210)); // NOI18N
  }
  foreach (LnCommandStationType* p, values)
  {
@@ -209,3 +214,19 @@ QStringList LnCommandStationType::commandStationNames()
   }
   return list;
  }
+ /**
+ * Returns command station's support for OPC_IDLE
+ *
+ * @return true if OPC_IDLE forces broadcast of "stop", else false
+ */
+/*public*/ bool LnCommandStationType::getImplementsIdle() {
+    return supportsIdle;
+}
+
+/**
+ * Returns whether CS supports a multimedia
+ * @return true is MultiMedia support
+ */
+/*public*/ bool LnCommandStationType::getSupportsMultimeter() {
+    return supportsMultiMeter;
+}

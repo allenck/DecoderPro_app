@@ -4334,7 +4334,7 @@ if (_wrapper) {
 }
   LocoNetInterface::sendLocoNetMessage(arg__1);
 }
-void PythonQtShell_LocoNetInterface::setSystemConnectionMemo(LocoNetSystemConnectionMemo*  m0)
+void PythonQtShell_LocoNetInterface::setSystemConnectionMemo(LocoNetSystemConnectionMemo*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -4344,7 +4344,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "LocoNetSystemConnectionMemo*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&m0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -4354,7 +4354,7 @@ if (_wrapper) {
     }
   }
 }
-  LocoNetInterface::setSystemConnectionMemo(m0);
+  LocoNetInterface::setSystemConnectionMemo(arg__1);
 }
 bool  PythonQtShell_LocoNetInterface::status()
 {
@@ -4438,9 +4438,9 @@ void PythonQtWrapper_LocoNetInterface::sendLocoNetMessage(LocoNetInterface* theW
   ( theWrappedObject->sendLocoNetMessage(arg__1));
 }
 
-void PythonQtWrapper_LocoNetInterface::setSystemConnectionMemo(LocoNetInterface* theWrappedObject, LocoNetSystemConnectionMemo*  m)
+void PythonQtWrapper_LocoNetInterface::setSystemConnectionMemo(LocoNetInterface* theWrappedObject, LocoNetSystemConnectionMemo*  arg__1)
 {
-  ( theWrappedObject->setSystemConnectionMemo(m));
+  ( theWrappedObject->setSystemConnectionMemo(arg__1));
 }
 
 bool  PythonQtWrapper_LocoNetInterface::status(LocoNetInterface* theWrappedObject)
@@ -20359,6 +20359,11 @@ int  PythonQtWrapper_PowerManager::getPower(PowerManager* theWrappedObject)
 QString  PythonQtWrapper_PowerManager::getUserName(PowerManager* theWrappedObject)
 {
   return ( theWrappedObject->getUserName());
+}
+
+bool  PythonQtWrapper_PowerManager::implementsIdle(PowerManager* theWrappedObject)
+{
+  return ( theWrappedObject->implementsIdle());
 }
 
 void PythonQtWrapper_PowerManager::removePropertyChangeListener(PowerManager* theWrappedObject, PropertyChangeListener*  arg__1)

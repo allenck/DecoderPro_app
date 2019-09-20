@@ -97,6 +97,7 @@ protected:
   static LnTrafficController* self;
 
   friend class LnTrafficRouter;
+  friend class LnPowerManagerTest;
 };
 
 #endif // LNTRAFFICCONTROLLER_H

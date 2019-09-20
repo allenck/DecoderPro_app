@@ -2706,7 +2706,7 @@ void delete_ListSelectionModel(ListSelectionModel* obj) { delete obj; }
 class PythonQtShell_LnCommandStationType : public LnCommandStationType
 {
 public:
-    PythonQtShell_LnCommandStationType(QString  name, bool  canRead, bool  progEndOp, QString  throttleClassName, QString  slotManagerClassName, LnCommandStationType::LnCommandStationTypes  type = LnCommandStationType::COMMAND_STATION_UNKNOWN, QObject*  parent = 0):LnCommandStationType(name, canRead, progEndOp, throttleClassName, slotManagerClassName, type, parent),_wrapper(NULL) {}
+    PythonQtShell_LnCommandStationType(QString  name, bool  canRead, bool  progEndOp, bool  supportsIdle, bool  supportsMultiMeter, QString  throttleClassName, QString  slotManagerClassName, LnCommandStationType::LnCommandStationTypes  type = LnCommandStationType::COMMAND_STATION_UNKNOWN, QObject*  parent = 0):LnCommandStationType(name, canRead, progEndOp, supportsIdle, supportsMultiMeter, throttleClassName, slotManagerClassName, type, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_LnCommandStationType();
 
@@ -2726,16 +2726,18 @@ class PythonQtWrapper_LnCommandStationType : public QObject
 public:
 Q_ENUMS(LnCommandStationTypes )
 enum LnCommandStationTypes{
-  COMMAND_STATION_UNKNOWN = LnCommandStationType::COMMAND_STATION_UNKNOWN,   COMMAND_STATION_DCS100 = LnCommandStationType::COMMAND_STATION_DCS100,   COMMAND_STATION_DCS200 = LnCommandStationType::COMMAND_STATION_DCS200,   COMMAND_STATION_DCS050 = LnCommandStationType::COMMAND_STATION_DCS050,   COMMAND_STATION_DCS051 = LnCommandStationType::COMMAND_STATION_DCS051,   COMMAND_STATION_DB150 = LnCommandStationType::COMMAND_STATION_DB150,   COMMAND_STATION_LBPS = LnCommandStationType::COMMAND_STATION_LBPS,   COMMAND_STATION_MM = LnCommandStationType::COMMAND_STATION_MM,   COMMAND_STATION_IBX_TYPE_1 = LnCommandStationType::COMMAND_STATION_IBX_TYPE_1,   COMMAND_STATION_IBX_TYPE_2 = LnCommandStationType::COMMAND_STATION_IBX_TYPE_2,   COMMAND_STATION_LOCOCENTRAL = LnCommandStationType::COMMAND_STATION_LOCOCENTRAL,   COMMAND_STATION_PR3_ALONE = LnCommandStationType::COMMAND_STATION_PR3_ALONE,   COMMAND_STATION_PR2_ALONE = LnCommandStationType::COMMAND_STATION_PR2_ALONE,   COMMAND_STATION_STANDALONE = LnCommandStationType::COMMAND_STATION_STANDALONE};
+  COMMAND_STATION_UNKNOWN = LnCommandStationType::COMMAND_STATION_UNKNOWN,   COMMAND_STATION_DCS100 = LnCommandStationType::COMMAND_STATION_DCS100,   COMMAND_STATION_DCS200 = LnCommandStationType::COMMAND_STATION_DCS200,   COMMAND_STATION_DCS240 = LnCommandStationType::COMMAND_STATION_DCS240,   COMMAND_STATION_DCS210 = LnCommandStationType::COMMAND_STATION_DCS210,   COMMAND_STATION_DCS050 = LnCommandStationType::COMMAND_STATION_DCS050,   COMMAND_STATION_DCS051 = LnCommandStationType::COMMAND_STATION_DCS051,   COMMAND_STATION_DB150 = LnCommandStationType::COMMAND_STATION_DB150,   COMMAND_STATION_LBPS = LnCommandStationType::COMMAND_STATION_LBPS,   COMMAND_STATION_MM = LnCommandStationType::COMMAND_STATION_MM,   COMMAND_STATION_IBX_TYPE_1 = LnCommandStationType::COMMAND_STATION_IBX_TYPE_1,   COMMAND_STATION_IBX_TYPE_2 = LnCommandStationType::COMMAND_STATION_IBX_TYPE_2,   COMMAND_STATION_LOCOCENTRAL = LnCommandStationType::COMMAND_STATION_LOCOCENTRAL,   COMMAND_STATION_PR3_ALONE = LnCommandStationType::COMMAND_STATION_PR3_ALONE,   COMMAND_STATION_PR2_ALONE = LnCommandStationType::COMMAND_STATION_PR2_ALONE,   COMMAND_STATION_STANDALONE = LnCommandStationType::COMMAND_STATION_STANDALONE};
 public slots:
-LnCommandStationType* new_LnCommandStationType(QString  name, bool  canRead, bool  progEndOp, QString  throttleClassName, QString  slotManagerClassName, LnCommandStationType::LnCommandStationTypes  type = LnCommandStationType::COMMAND_STATION_UNKNOWN, QObject*  parent = 0);
+LnCommandStationType* new_LnCommandStationType(QString  name, bool  canRead, bool  progEndOp, bool  supportsIdle, bool  supportsMultiMeter, QString  throttleClassName, QString  slotManagerClassName, LnCommandStationType::LnCommandStationTypes  type = LnCommandStationType::COMMAND_STATION_UNKNOWN, QObject*  parent = 0);
 void delete_LnCommandStationType(LnCommandStationType* obj) { delete obj; } 
    QStringList  static_LnCommandStationType_commandStationNames();
    LnCommandStationType*  static_LnCommandStationType_getByName(QString  name);
    LnCommandStationType*  static_LnCommandStationType_getByType(LnCommandStationType::LnCommandStationTypes  type);
    bool  getCanRead(LnCommandStationType* theWrappedObject);
+   bool  getImplementsIdle(LnCommandStationType* theWrappedObject);
    QString  getName(LnCommandStationType* theWrappedObject);
    bool  getProgPowersOff(LnCommandStationType* theWrappedObject);
+   bool  getSupportsMultimeter(LnCommandStationType* theWrappedObject);
    ThrottleManager*  getThrottleManager(LnCommandStationType* theWrappedObject, LocoNetSystemConnectionMemo*  memo);
    QString  toString(LnCommandStationType* theWrappedObject);
     QString py_toString(LnCommandStationType*);
@@ -3196,7 +3198,7 @@ void delete_LnSensorManager(LnSensorManager* obj) { delete obj; }
 class PythonQtShell_LnTrafficController : public LnTrafficController
 {
 public:
-    PythonQtShell_LnTrafficController():LnTrafficController(),_wrapper(NULL) {}
+    PythonQtShell_LnTrafficController(QObject*  parent = nullptr):LnTrafficController(parent),_wrapper(NULL) {}
 
    ~PythonQtShell_LnTrafficController();
 
@@ -3229,7 +3231,7 @@ class PythonQtWrapper_LnTrafficController : public QObject
 { Q_OBJECT
 public:
 public slots:
-LnTrafficController* new_LnTrafficController();
+LnTrafficController* new_LnTrafficController(QObject*  parent = nullptr);
 void delete_LnTrafficController(LnTrafficController* obj) { delete obj; } 
    int  getReceivedByteCount(LnTrafficController* theWrappedObject);
    int  getReceivedMsgCount(LnTrafficController* theWrappedObject);

@@ -367,7 +367,7 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual LocoNetSystemConnectionMemo*  getSystemConnectionMemo();
 virtual void sendLocoNetMessage(LocoNetMessage*  arg__1);
-virtual void setSystemConnectionMemo(LocoNetSystemConnectionMemo*  m);
+virtual void setSystemConnectionMemo(LocoNetSystemConnectionMemo*  arg__1);
 virtual bool  status();
 virtual void timerEvent(QTimerEvent*  event);
 
@@ -380,7 +380,7 @@ class PythonQtPublicPromoter_LocoNetInterface : public LocoNetInterface
 { public:
 inline LocoNetSystemConnectionMemo*  py_q_getSystemConnectionMemo() { return LocoNetInterface::getSystemConnectionMemo(); }
 inline void py_q_sendLocoNetMessage(LocoNetMessage*  arg__1) { LocoNetInterface::sendLocoNetMessage(arg__1); }
-inline void py_q_setSystemConnectionMemo(LocoNetSystemConnectionMemo*  m) { LocoNetInterface::setSystemConnectionMemo(m); }
+inline void py_q_setSystemConnectionMemo(LocoNetSystemConnectionMemo*  arg__1) { LocoNetInterface::setSystemConnectionMemo(arg__1); }
 inline bool  py_q_status() { return LocoNetInterface::status(); }
 };
 
@@ -394,8 +394,8 @@ void delete_LocoNetInterface(LocoNetInterface* obj) { delete obj; }
    LocoNetSystemConnectionMemo*  py_q_getSystemConnectionMemo(LocoNetInterface* theWrappedObject){  return (((PythonQtPublicPromoter_LocoNetInterface*)theWrappedObject)->py_q_getSystemConnectionMemo());}
    void sendLocoNetMessage(LocoNetInterface* theWrappedObject, LocoNetMessage*  arg__1);
    void py_q_sendLocoNetMessage(LocoNetInterface* theWrappedObject, LocoNetMessage*  arg__1){  (((PythonQtPublicPromoter_LocoNetInterface*)theWrappedObject)->py_q_sendLocoNetMessage(arg__1));}
-   void setSystemConnectionMemo(LocoNetInterface* theWrappedObject, LocoNetSystemConnectionMemo*  m);
-   void py_q_setSystemConnectionMemo(LocoNetInterface* theWrappedObject, LocoNetSystemConnectionMemo*  m){  (((PythonQtPublicPromoter_LocoNetInterface*)theWrappedObject)->py_q_setSystemConnectionMemo(m));}
+   void setSystemConnectionMemo(LocoNetInterface* theWrappedObject, LocoNetSystemConnectionMemo*  arg__1);
+   void py_q_setSystemConnectionMemo(LocoNetInterface* theWrappedObject, LocoNetSystemConnectionMemo*  arg__1){  (((PythonQtPublicPromoter_LocoNetInterface*)theWrappedObject)->py_q_setSystemConnectionMemo(arg__1));}
    bool  status(LocoNetInterface* theWrappedObject);
    bool  py_q_status(LocoNetInterface* theWrappedObject){  return (((PythonQtPublicPromoter_LocoNetInterface*)theWrappedObject)->py_q_status());}
 };
@@ -2194,6 +2194,7 @@ void delete_PowerManager(PowerManager* obj) { delete obj; }
    int  py_q_getPower(PowerManager* theWrappedObject){  return (((PythonQtPublicPromoter_PowerManager*)theWrappedObject)->py_q_getPower());}
    QString  getUserName(PowerManager* theWrappedObject);
    QString  py_q_getUserName(PowerManager* theWrappedObject){  return (((PythonQtPublicPromoter_PowerManager*)theWrappedObject)->py_q_getUserName());}
+   bool  implementsIdle(PowerManager* theWrappedObject);
    void removePropertyChangeListener(PowerManager* theWrappedObject, PropertyChangeListener*  arg__1);
    void py_q_removePropertyChangeListener(PowerManager* theWrappedObject, PropertyChangeListener*  arg__1){  (((PythonQtPublicPromoter_PowerManager*)theWrappedObject)->py_q_removePropertyChangeListener(arg__1));}
    void setPower(PowerManager* theWrappedObject, int  arg__1);

@@ -51,7 +51,7 @@
     ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->setLnTrafficController(packets);
 
     // do the common manager config
-    LnCommandStationType* type = new LnCommandStationType("DCS100 (Chief)",true,   false,  "LnThrottleManager",    "SlotManager", LnCommandStationType::COMMAND_STATION_DCS100);
+    LnCommandStationType* type = new LnCommandStationType("DCS100 (Chief)",true, false, true, false, "LnThrottleManager",    "SlotManager", LnCommandStationType::COMMAND_STATION_DCS100);
     ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->configureCommandStation(type,   // full featured by default
             false, false, false);
     ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->configureManagers();

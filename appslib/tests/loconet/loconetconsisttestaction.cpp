@@ -5,7 +5,7 @@
 
 LocoNetConsistTestAction::LocoNetConsistTestAction(QObject *parent) : AbstractAction(tr("LocoNetConsist"), parent)
 {
-
+connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }
 
 void LocoNetConsistTestAction::actionPerformed()

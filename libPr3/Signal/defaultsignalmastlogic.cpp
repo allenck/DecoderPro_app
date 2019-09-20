@@ -10,7 +10,7 @@
 #include "signalspeedmap.h"
 #include "abstractsensor.h"
 #include "../LayoutEditor/connectivityutil.h"
-#include "Layout/layoutblock.h"
+#include "layoutblock.h"
 #include "defaultsignalappearancemap.h"
 #include "abstractsignalmast.h"
 #include "signalheadsignalmast.h"

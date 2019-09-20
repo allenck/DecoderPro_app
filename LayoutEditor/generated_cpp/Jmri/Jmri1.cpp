@@ -24299,9 +24299,9 @@ if (_wrapper) {
 }
   LnCommandStationType::timerEvent(event0);
 }
-LnCommandStationType* PythonQtWrapper_LnCommandStationType::new_LnCommandStationType(QString  name, bool  canRead, bool  progEndOp, QString  throttleClassName, QString  slotManagerClassName, LnCommandStationType::LnCommandStationTypes  type, QObject*  parent)
+LnCommandStationType* PythonQtWrapper_LnCommandStationType::new_LnCommandStationType(QString  name, bool  canRead, bool  progEndOp, bool  supportsIdle, bool  supportsMultiMeter, QString  throttleClassName, QString  slotManagerClassName, LnCommandStationType::LnCommandStationTypes  type, QObject*  parent)
 { 
-return new PythonQtShell_LnCommandStationType(name, canRead, progEndOp, throttleClassName, slotManagerClassName, type, parent); }
+return new PythonQtShell_LnCommandStationType(name, canRead, progEndOp, supportsIdle, supportsMultiMeter, throttleClassName, slotManagerClassName, type, parent); }
 
 const QMetaObject* PythonQtShell_LnCommandStationType::metaObject() const {
   if (QObject::d_ptr->metaObject) {
@@ -24336,6 +24336,11 @@ bool  PythonQtWrapper_LnCommandStationType::getCanRead(LnCommandStationType* the
   return ( theWrappedObject->getCanRead());
 }
 
+bool  PythonQtWrapper_LnCommandStationType::getImplementsIdle(LnCommandStationType* theWrappedObject)
+{
+  return ( theWrappedObject->getImplementsIdle());
+}
+
 QString  PythonQtWrapper_LnCommandStationType::getName(LnCommandStationType* theWrappedObject)
 {
   return ( theWrappedObject->getName());
@@ -24344,6 +24349,11 @@ QString  PythonQtWrapper_LnCommandStationType::getName(LnCommandStationType* the
 bool  PythonQtWrapper_LnCommandStationType::getProgPowersOff(LnCommandStationType* theWrappedObject)
 {
   return ( theWrappedObject->getProgPowersOff());
+}
+
+bool  PythonQtWrapper_LnCommandStationType::getSupportsMultimeter(LnCommandStationType* theWrappedObject)
+{
+  return ( theWrappedObject->getSupportsMultimeter());
 }
 
 ThrottleManager*  PythonQtWrapper_LnCommandStationType::getThrottleManager(LnCommandStationType* theWrappedObject, LocoNetSystemConnectionMemo*  memo)
@@ -30476,9 +30486,9 @@ if (_wrapper) {
 }
   LnTrafficController::timerEvent(event0);
 }
-LnTrafficController* PythonQtWrapper_LnTrafficController::new_LnTrafficController()
+LnTrafficController* PythonQtWrapper_LnTrafficController::new_LnTrafficController(QObject*  parent)
 { 
-return new PythonQtShell_LnTrafficController(); }
+return new PythonQtShell_LnTrafficController(parent); }
 
 const QMetaObject* PythonQtShell_LnTrafficController::metaObject() const {
   if (QObject::d_ptr->metaObject) {

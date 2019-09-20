@@ -509,7 +509,10 @@ SOURCES += appslib.cpp \
     tests/loconet/lntrafficroutertestaction.cpp \
     tests/loconet/loconetconsisttest.cpp \
     tests/loconet/loconetconsisttestaction.cpp \
-    tests/loconet/abstractconsisttestbase.cpp
+    tests/loconet/abstractconsisttestbase.cpp \
+    tests/loconet/lnpowermanagertest.cpp \
+    tests/abstractpowermanagertestbase.cpp \
+    tests/loconet/lnpowermanagertestaction.cpp
 
 HEADERS += appslib.h\
         appslib_global.h \
@@ -968,7 +971,10 @@ HEADERS += appslib.h\
     tests/loconet/lntrafficroutertestaction.h \
     tests/loconet/loconetconsisttest.h \
     tests/loconet/loconetconsisttestaction.h \
-    tests/loconet/abstractconsisttestbase.h
+    tests/loconet/abstractconsisttestbase.h \
+    tests/loconet/lnpowermanagertest.h \
+    tests/abstractpowermanagertestbase.h \
+    tests/loconet/lnpowermanagertestaction.h
 
 unix:!symbian {
     maemo5 {
