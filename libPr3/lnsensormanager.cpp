@@ -88,6 +88,7 @@ LnSensorManager::LnSensorManager(LnTrafficController* tc, QString prefix, QObjec
 #endif
 /*public*/ LnSensorManager::LnSensorManager(LocoNetSystemConnectionMemo* memo, QObject *parent) : AbstractSensorManager(memo, parent) {
     //super(memo);
+    this->prefix = memo->getSystemPrefix();
     tc = memo->getLnTrafficController();
     if (tc == nullptr) {
         log.error("SensorManager Created, yet there is no Traffic Controller");

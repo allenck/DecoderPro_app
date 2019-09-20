@@ -73,7 +73,7 @@ public:
      * <code>{@link #pathSeparatorChar}</code>.
      */
     /*public*/ static /*final*/ QString pathSeparator;// = "" + pathSeparatorChar;
-    /*public*/ bool rename(QString newName);
+    /*public*/ bool renameTo(File *dest);
     /*public*/ QDateTime lastModified();
     /*public*/ QString fileName();
     /*public*/ QString absoluteFilePath();

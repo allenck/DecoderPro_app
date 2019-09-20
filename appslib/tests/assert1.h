@@ -53,6 +53,7 @@ public:
     /*public*/ static void assertNull(QObject* object);
     /*public*/ static void assertNull(QString object);
     /*public*/ static void assertNull(QDomElement object);
+    /*public*/ static void assertNull(QString message, QString object);
 
 signals:
 

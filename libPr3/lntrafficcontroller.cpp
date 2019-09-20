@@ -3,7 +3,7 @@
 #include "loconetsystemconnectionmemo.h"
 #include "loggerfactory.h"
 
-LnTrafficController::LnTrafficController()
+LnTrafficController::LnTrafficController(QObject *parent)
 {
  self = NULL;
  resetStatistics();

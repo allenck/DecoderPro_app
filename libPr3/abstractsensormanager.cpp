@@ -119,10 +119,9 @@ bool AbstractSensorManager::isNumber(QString s)
  }
 
  sysName = validateSystemNameFormat(sysName);
-
  // return existing if there is one
   Sensor* s = nullptr;
- if ( (userName!=nullptr) && ((s = getByUserName(userName)) != nullptr))
+ if ( (userName!="") && ((s = getByUserName(userName)) != nullptr))
  {
   if (getBySystemName(systemName)!=s)
    log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");

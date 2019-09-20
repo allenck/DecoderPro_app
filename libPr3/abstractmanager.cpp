@@ -33,6 +33,7 @@ AbstractManager::AbstractManager(QObject *parent)
 AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : Manager()
 {
   Q_UNUSED(parent);
+ this->memo = memo;
   log = new Logger("AbstractManager");
  _tsys = new QHash<QString, NamedBean*>;   // stores known Turnout instances by system name
  _tuser = new QHash<QString, NamedBean*>;   // stores known Turnout instances by user name

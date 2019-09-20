@@ -5,6 +5,8 @@
 #include "jmriconfigurationprovider.h"
 #include "preferences.h"
 #include "jmripreferencesprovider.h"
+#include "profilemanager.h"
+#include "fileutil.h"
 
 /**
  * Utility methods to get information about {@link jmri.profile.Profile}s.
@@ -47,7 +49,7 @@
 /*public*/ /*static*/ AuxiliaryConfiguration* ProfileUtils::getUserInterfaceConfiguration(Profile* project) {
     return JmriUserInterfaceConfigurationProvider::getConfiguration(project);
 }
-#if 0
+#if 1
 /**
  * Copy one profile's configuration to another profile.
  *
@@ -57,20 +59,26 @@
  *                                  profile.
  * @throws IOException              If the copy cannot be completed.
  */
-/*public*/ static void copy(Profile source, Profile destination) throws IllegalArgumentException, IOException {
-    if (destination.equals(ProfileManager.getDefault().getActiveProfile())) {
+/*public*/ /*static*/ void ProfileUtils::copy(Profile* source, Profile* destination) throw (IllegalArgumentException, IOException ){
+    if (destination == (ProfileManager::getDefault()->getActiveProfile())) {
         throw new IllegalArgumentException("Target profile cannot be active profile.");
     }
-    FileUtil.copy(source.getPath(), destination.getPath());
-    File profile = new File(destination.getPath(), Profile.PROFILE);
-    File[] files = profile.listFiles((File pathname) -> (pathname.getName().endsWith(source.getUniqueId())));
-    if (files != null) {
-        for (File file : files) {
-            if (!file.renameTo(new File(profile, file.getName().replace(source.getUniqueId(), destination.getUniqueId())))) {
-                throw new IOException("Unable to rename " + file + " to use new profile ID");
+    FileUtil::copy(source->getPath(), destination->getPath());
+    File* profile = new File(destination->getPath(), Profile::PROFILE);
+    //File[] files = profile.listFiles((File pathname) -> (pathname.getName().endsWith(source.getUniqueId())));
+    QList<File*> files;
+    foreach(File* pathname, profile->listFiles())
+    {
+        if(pathname->getName().endsWith(source->getUniqueId()))
+            files.append(pathname);
+    }
+    if (!files.isEmpty()) {
+        for (File* file : files) {
+            if (!file->renameTo(new File(profile, file->getName().replace(source->getUniqueId(), destination->getUniqueId())))) {
+                throw new IOException("Unable to rename " + file->getPath() + " to use new profile ID");
             }
         }
     }
-    destination.save();
+    destination->save();
 }
 #endif

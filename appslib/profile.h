@@ -65,6 +65,8 @@ protected:
  friend class AddProfileDialog;
  friend class ProfilePreferencesPanel;
  friend class ProfileTest;
+ friend class ProfileUtilsTest;
+ friend class ProfileUtils;
 };
 
 #endif // PROFILE_H

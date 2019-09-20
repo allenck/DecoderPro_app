@@ -113,7 +113,7 @@ void RosterEntry::init()
  _URL = "";
  _sp = NULL;
  loadedOnce = false;
- attributePairs = NULL;
+ attributePairs = new QMap<QString,QString>();
  openCounter =0;
  functionLabels =  QVector<QString>(MAXFNNUM+1, "");
  functionSelectedImages = QVector<QString>(MAXFNNUM+1, "");

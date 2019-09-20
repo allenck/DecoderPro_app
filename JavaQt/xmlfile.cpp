@@ -441,7 +441,7 @@ XmlFile::XmlFile(QObject *parent) :
     return false;
    }
   }
-  if (file->rename(backupFullName))
+  if (file->renameTo(new File(backupFullName)))
   {
    if (log->isDebugEnabled())
    {

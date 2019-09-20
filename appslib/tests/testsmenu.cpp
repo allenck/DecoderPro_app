@@ -12,6 +12,8 @@
 #include "tests/sprog/sprogmessagetestaction.h"
 #include "tests/loconet/lnportcontrollertestaction.h"
 #include "tests/loconet/lnpacketizertestaction.h"
+#include "tests/ProfileTest/profileutilstestaction.h"
+#include "tests/loconet/lntrafficroutertestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -26,6 +28,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     addMenu(profileTestMenu);
     profileTestMenu->addAction(new ProfileTestAction(this));
     profileTestMenu->addAction(new ProfileManagerTestAction(this));
+    profileTestMenu->addAction(new ProfileUtilsTestAction(this));
 
     QMenu* loconetTestMenu = new QMenu(tr("loconet Tests"));
     addMenu(loconetTestMenu);

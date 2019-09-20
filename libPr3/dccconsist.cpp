@@ -5,6 +5,12 @@
 #include "instancemanager.h"
 #include "globalprogrammermanager.h"
 #include "addressedprogrammermanager.h"
+#include "consistpreferencesmanager.h"
+#include "rosterentry.h"
+#include "variabletablemodel.h"
+#include "decoderfile.h"
+#include "decoderindexfile.h"
+#include  "roster.h"
 
 DccConsist::DccConsist(int address, QObject *parent) : Consist(parent)
 {
@@ -166,6 +172,8 @@ DccConsist::DccConsist(int address, QObject *parent) : Consist(parent)
      if(!(consistList->contains(LocoAddress))) consistList->append(LocoAddress);
      consistDir->insert(LocoAddress,Direction);
          addToAdvancedConsist(LocoAddress, directionNormal);
+         //set the value in the roster entry for CV19
+         setRosterEntryCVValue(LocoAddress);
       }
       else {
     log->error("Consist Type Not Supported");
@@ -321,6 +329,125 @@ DccConsist::DccConsist(int address, QObject *parent) : Consist(parent)
         return (consistRoster->value(address));
     } else {
         return NULL;
+    }
+}
+/**
+ * Update the value in the roster entry for CV19 for the specified
+ * address
+ *
+ * @param address is the Locomotive address we are updating.
+ */
+/*protected*/ void DccConsist::setRosterEntryCVValue(DccLocoAddress* address){
+   updateRosterCV(address,getLocoDirection(address),this->consistAddress->getNumber());
+}
+
+/**
+ * Set the value in the roster entry's value for for CV19 to 0
+ *
+ * @param address is the Locomotive address we are updating.
+ */
+/*protected*/ void DccConsist::resetRosterEntryCVValue(DccLocoAddress* address){
+   updateRosterCV(address,getLocoDirection(address),0);
+}
+
+/**
+ * If allowed by the preferences, Update the CV19 value in the
+ * specified address's roster entry, if the roster entry is known.
+ *
+ * @param address is the Locomotive address we are updating.
+ * @param direction the direction to set.
+ * @param value the numeric value of the consist address.
+ */
+/*protected*/ void DccConsist::updateRosterCV(DccLocoAddress* address,bool direction,int value){
+     if(!((ConsistPreferencesManager*)InstanceManager::getDefault("ConsistPreferencesManager"))->isUpdateCV19()){
+        log->trace("Consist Manager updates of CV19 are disabled in preferences");
+        return;
+     }
+     if(getRosterId(address)==nullptr){
+        // roster entry unknown.
+        log->trace(tr("No RosterID for address %1 in consist %2.  Skipping CV19 update.").arg(address->toString()).arg(consistAddress->toString()));
+        return;
+     }
+     RosterEntry* entry = Roster::getDefault()->getEntryForId(getRosterId(address));
+
+     if(entry==nullptr || entry->getFileName()==nullptr || entry->getFileName() ==("")){
+        // roster entry unknown.
+        log->trace(tr("No file name available for RosterID %1,address %2, in consist %3.  Skipping CV19 update.").arg(getRosterId(address)).arg(address->toString()).arg(consistAddress->toString()));
+        return;
+     }
+     CvTableModel*  cvTable = new CvTableModel(nullptr, nullptr);  // will hold CV objects
+     VariableTableModel* varTable = new VariableTableModel(nullptr,QStringList()<<"Name"<<"Value",cvTable);
+     entry->readFile();  // read, but don’t yet process
+
+     // load from decoder file
+     loadDecoderFromLoco(entry,varTable);
+
+     entry->loadCvModel(varTable, cvTable);
+     CvValue* cv19Value = cvTable->getCvByNumber("19");
+     cv19Value->setValue((value & 0xff) | (direction?0x00:0x80 ));
+
+     entry->writeFile(cvTable,varTable);
+}
+
+ // copied from PaneProgFrame
+ /*protected*/ void DccConsist::loadDecoderFromLoco(RosterEntry* r,VariableTableModel* varTable) {
+     // get a DecoderFile from the locomotive xml
+     QString decoderModel = r->getDecoderModel();
+     QString decoderFamily = r->getDecoderFamily();
+     if (log->isDebugEnabled()) {
+         log->debug(tr("selected loco uses decoder %1 %2").arg(decoderFamily).arg(decoderModel));
+     }
+     // locate a decoder like that.
+     QList<DecoderFile*>* l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
+     if (log->isDebugEnabled()) {
+         log->debug(tr("found %1 matches").arg(l->size()));
+     }
+     if (l->isEmpty()) {
+         log->debug(tr("Loco uses %1 %2 decoder, but no such decoder defined").arg(decoderFamily).arg(decoderModel ));
+         // fall back to use just the decoder name, not family
+         l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", "", "", "", decoderModel);
+         if (log->isDebugEnabled()) {
+             log->debug(tr("found %1 matches without family key").arg(l->size()));
+         }
+     }
+     if (!l->isEmpty()) {
+         DecoderFile* d = l->at(0);
+         loadDecoderFile(d, r, varTable);
+     } else {
+         if (decoderModel ==("")) {
+             log->debug("blank decoderModel requested, so nothing loaded");
+         } else {
+             log->warn(tr("no matching \"%1\" decoder found for loco, no decoder info loaded").arg(decoderModel ));
+         }
+     }
+ }
+/*protected*/ void DccConsist::loadDecoderFile(DecoderFile* df, RosterEntry* re,VariableTableModel* variableModel) {
+    if (df == nullptr) {
+        log->warn("loadDecoder file invoked with null object");
+        return;
+    }
+    if (log->isDebugEnabled()) {
+        log->debug("loadDecoderFile from " + DecoderFile::fileLocation
+                + " " + df->getFileName());
+    }
+
+    QDomElement decoderRoot = QDomElement();
+
+    try {
+        decoderRoot = df->rootFromName(DecoderFile::fileLocation + df->getFileName());
+    }
+    catch (JDOMException  e) {
+        log->error("Exception while loading decoder XML file: " + df->getFileName(), e);
+    }
+    catch (IOException e) {
+        log->error("Exception while loading decoder XML file: " + df->getFileName(), e);
+    }
+    // load variables from decoder tree
+    df->getProductID();
+    if(!decoderRoot.isNull()) {
+       df->loadVariableModel(decoderRoot.firstChildElement("decoder"), variableModel);
+       // load function names
+       re->loadFunctions(decoderRoot.firstChildElement("decoder").firstChildElement("family").firstChildElement("functionlabels"));
     }
 }
 

@@ -1308,6 +1308,8 @@ void SensorIcon::on_setSensorTextAction()
  if(getSensor() != NULL)
   iState=((AbstractSensor*)getSensor())->getKnownState();
  state = _state2nameMap->value(iState);
+ if(state == "")
+  return false; // should not happen!
 
  if(_itemGroup != NULL)
  {

@@ -104,6 +104,7 @@ protected:
  friend class RetrySetup;
  friend class InformRejection;
  friend class LocoNetThrottleTest;
+ friend class LocoNetConsistTest;
 };
 
 /*

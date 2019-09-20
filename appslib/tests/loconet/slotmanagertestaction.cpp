@@ -1,5 +1,4 @@
 #include "slotmanagertestaction.h"
-#include "abstractaction.h"
 #include "slotmanagertest.h"
 #include "joptionpane.h"
 #include "assert1.h"

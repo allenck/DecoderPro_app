@@ -922,7 +922,9 @@ SOURCES += \
     simpleserver/simplesignalheadserver.cpp \
     simpleserver/abstractreporterserver.cpp \
     simpleserver/simplereporterserver.cpp \
-    lnpacketizerstrict.cpp
+    lnpacketizerstrict.cpp \
+    loconet/lntrafficrouter.cpp \
+    consistpreferencesmanager.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1838,7 +1840,9 @@ HEADERS += \
     simpleserver/simplesignalheadserver.h \
     simpleserver/abstractreporterserver.h \
     simpleserver/simplereporterserver.h \
-    lnpacketizerstrict.h
+    lnpacketizerstrict.h \
+    loconet/lntrafficrouter.h \
+    consistpreferencesmanager.h
 
  !contains(FTDI, 1) {
     HEADERS +=

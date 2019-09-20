@@ -2202,10 +2202,13 @@ int File::getPrefixLength() {
 /*public*/ QString File::toString() {
     return getPath();
 }
-/*public*/ bool File::rename(QString newName)
+/*public*/ bool File::renameTo(File* dest)
 {
- QFile qFile(path);
- return qFile.rename(newName);
+ if (dest == nullptr) {
+  throw NullPointerException();
+ }
+ QFile qFile(dest->getPath());
+ return qFile.rename(dest->fileName());
 }
 
 #if 0

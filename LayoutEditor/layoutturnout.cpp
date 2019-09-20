@@ -3361,25 +3361,25 @@ void LayoutTurnout::turnoutEditCancelPressed(ActionEvent* /*a*/) {
 void LayoutTurnout::on_blockNameField_textEdited(QString text)
 {
  QCompleter* completer;
- if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != nullptr)
+ if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
  blockNameField->setCompleter(completer);
 }
 void LayoutTurnout::on_blockBNameField_textEdited(QString text)
 {
  QCompleter* completer;
- if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != nullptr)
+ if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
  blockBNameField->setCompleter(completer);
 }
 void LayoutTurnout::on_blockCNameField_textEdited(QString text)
 {
  QCompleter* completer;
- if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != nullptr)
+ if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
  blockCNameField->setCompleter(completer);
 }
 void LayoutTurnout::on_blockDNameField_textEdited(QString text)
 {
  QCompleter* completer;
- if((completer = InstanceManager::blockManagerInstance()->getCompleter(text)) != nullptr)
+ if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
  blockDNameField->setCompleter(completer);
 }
 /*

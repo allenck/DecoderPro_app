@@ -160,7 +160,7 @@
  */
 Preferences* JmriPreferencesProvider::getPreferences(/*final*/ char* clazz)
 {
- if (clazz == NULL)
+ if (clazz == nullptr)
  {
   return this->root;
  }

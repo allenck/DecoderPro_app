@@ -7,6 +7,9 @@
 #include <QVector>
 #include <QMutex>
 
+class DecoderFile;
+class RosterEntry;
+class VariableTableModel;
 class DccLocoAddress;
 class ConsistListener;
 class DccConsist : public Consist
@@ -68,6 +71,12 @@ protected:
  /*protected*/ virtual void removeFromAdvancedConsist(DccLocoAddress* LocoAddress);
  /*protected*/ void notifyConsistListeners(DccLocoAddress*  LocoAddress, int ErrorCode) ;
  QMap<DccLocoAddress*, QString>* consistRoster;
+ /*protected*/ void setRosterEntryCVValue(DccLocoAddress* address);
+ /*protected*/ void resetRosterEntryCVValue(DccLocoAddress* address);
+ /*protected*/ void updateRosterCV(DccLocoAddress* address,bool direction,int value);
+ /*protected*/ void loadDecoderFromLoco(RosterEntry* r,VariableTableModel* varTable);
+ /*protected*/ void loadDecoderFile(DecoderFile* df, RosterEntry* re,VariableTableModel* variableModel);
+
 protected:
 };
 

@@ -3,6 +3,7 @@
 #include "jtable.h"
 #include "pushbuttondelegate.h"
 #include <QSortFilterProxyModel>
+#include "programmer.h"
 
 //CvTableModel::CvTableModel()
 //{

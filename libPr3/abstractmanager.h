@@ -114,6 +114,7 @@ friend class AudioTableDataModel;
 friend class TurnoutTableWidget;
 friend class OBlockTableModel;
 friend class SensorTableModel;
+SystemConnectionMemo* memo = nullptr;
 
 protected:
 /**

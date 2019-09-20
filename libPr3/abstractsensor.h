@@ -79,22 +79,22 @@ signals:
 
 public slots:
 private:
-    int restartcount;
-    Reporter* reporter;
-    int lastKnownState;// = _knownState;
+    int restartcount = 0;
+    Reporter* reporter = nullptr;
+    int lastKnownState = _knownState;
     Logger log;
 protected:
-    long sensorDebounceGoingActive;
-    long sensorDebounceGoingInActive;
-    bool _useDefaultTimerSettings;
-    QThread* thr;
+    long sensorDebounceGoingActive = 0L;
+    long sensorDebounceGoingInActive = 0L;
+    bool _useDefaultTimerSettings = false;
+    QThread* thr = nullptr;
     Runnable* r;
     void sensorDebounce();
-    bool _inverted;// = false;
+    bool _inverted = false;
 
     // internal data members
-    int _knownState;//     = UNKNOWN;
-    int _rawState ;//      = UNKNOWN;
+    int _knownState     = UNKNOWN;
+    int _rawState       = UNKNOWN;
  friend class LnSensor;
  friend class ASRunnable;
 };

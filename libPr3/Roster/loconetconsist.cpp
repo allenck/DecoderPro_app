@@ -277,6 +277,8 @@ void LocoNetConsist::common()
                 + " With Direction Normal " // NOI18N
                 + directionNormal + ".");
     }
+    //set the value in the roster entry for CV19
+    setRosterEntryCVValue(LocoAddress);
     consistRequestState = LINKSTAGEONESTATE;
     throttleManager->requestThrottle(LocoAddress, (ThrottleListener*)this);
 }

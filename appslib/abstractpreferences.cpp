@@ -179,7 +179,7 @@ AbstractPreferences::AbstractPreferences()
  */
 /*public*/ void AbstractPreferences::put(QString key, QString value)
 {
- if (key.isNull() || value.isNull())
+ if (key.isEmpty() || value.isEmpty())
      throw new NullPointerException();
  if (key.length() > MAX_KEY_LENGTH)
      throw  IllegalArgumentException("Key too long: "+key);

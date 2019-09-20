@@ -111,7 +111,7 @@ public:
   */
  //@CheckReturnValue
  //@Nonnull
- /*public*/ virtual SystemConnectionMemo* getMemo() {return memo;}
+ /*public*/ virtual SystemConnectionMemo* getMemo() {return nullptr;}
 
 /**
  * Provides access to the system prefix string.
@@ -377,7 +377,7 @@ private:
 //                        "DX", "DCCPP", "DP", "MR", "MC", "PI", "TM"
 //                    }));
         static QStringList legacyPrefixes;// = QStringList() << "DX" << "DCCPP" << "DP" << "MR" << "MC" << "PI" << "TM";
-     SystemConnectionMemo* memo = nullptr;
+     //SystemConnectionMemo* memo = nullptr;
     
 };
 Q_DECLARE_INTERFACE(Manager, "ManagerInterface")

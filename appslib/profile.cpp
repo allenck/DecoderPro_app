@@ -99,15 +99,19 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
  this->id = id + "." + ProfileManager::createUniqueId();
  this->path = pathWithExt;
  // use field, not local variables (path or pathWithExt) for paths below
- if (!this->path->exists() && !this->path->mkdirs()) {
-     throw IOException("Unable to create directory " + this->path->getPath()); // NOI18N
- }
- if (!this->path->isDirectory()) {
-     throw IllegalArgumentException(path->getPath() + " is not a directory"); // NOI18N
+// if (!this->path->exists() && !this->path->mkdirs()) {
+//     throw IOException("Unable to create directory " + this->path->getPath()); // NOI18N
+// }
+// if (!this->path->isDirectory()) {
+//     throw IllegalArgumentException(path->getPath() + " is not a directory"); // NOI18N
+// }
+ pathWithExt->mkdirs();
+ if (!pathWithExt->isDirectory()) {
+     throw new IllegalArgumentException(pathWithExt->getPath() + " is not a directory"); // NOI18N
  }
  this->save();
  if (!Profile::isProfile(this->path)) {
-     throw  IllegalArgumentException(path->getPath() + " does not contain a profile.properties file"); // NOI18N
+     throw  IllegalArgumentException(pathWithExt->getPath() + " does not contain a profile.properties file"); // NOI18N
  }
 }
 
@@ -170,7 +174,7 @@ void Profile::common(File *path, QString id,bool isReadable)
 
 /*protected*/ /*final*/ void Profile::save() throw (IOException)
 {
-#if 0
+#if 1
  try
  {
     ProfileProperties* p = new ProfileProperties(this);

@@ -857,6 +857,11 @@
      fail("element not empty");
 }
 
+/*public*/ /*static*/ void Assert::assertNull(QString message, QString object) {
+ if(!object.isNull())
+     fail(tr("%1, string not empty").arg(message));
+}
+
 #if 0
     private static void failNotNull(String message, Object actual) {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
