@@ -1,5 +1,6 @@
 #include "assert1.h"
 #include "loggerfactory.h"
+#include "programmingmode.h"
 
 //Assert::Assert(QObject *parent) : QObject(parent)
 //{
@@ -131,16 +132,29 @@
          * 57: return
          *  */
         // </editor-fold>
-        if(expected != actual)
-        {
-            fail(message);
-        }
         if(actual != nullptr && expected != nullptr)
         {
             if(actual->metaObject()->className() != expected->metaObject()->className())
                 fail(tr("%1 message objects not same %2 vs %3").arg(actual->metaObject()->className()).arg(expected->metaObject()->className()));
+            int ix = actual->metaObject()->indexOfMethod("equals");
+            if(ix != -1)
+            {
+             bool rslt = false;
+             if(!QMetaObject::invokeMethod(actual, "equals", Qt::DirectConnection, Q_RETURN_ARG(bool, rslt), Q_ARG(QObject, *expected)))
+                 fail(tr("invoke method 'equals' failed for %1").arg(actual->metaObject()->className()));
+             if(!rslt)
+                 fail(tr("%1 message objects not equal"));
+            }
         }
     }
+/*public*/ /*static*/ void Assert::assertEquals(QString message, ProgrammingMode* expected, ProgrammingMode* actual)
+{
+    if(actual != nullptr && expected != nullptr)
+    {
+        if(!actual->equals(expected))
+            fail(tr("%1 message ProgrammingMode not same %2 vs %3").arg(actual->getStandardName()).arg(expected->getStandardName()));
+    }
+}
 
     /*public*/ /*static*/ void Assert::assertEquals(QString message, bool expected, bool actual)
     {

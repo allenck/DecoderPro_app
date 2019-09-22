@@ -8,7 +8,7 @@ class LIBPR3SHARED_EXPORT LnLightManager : public AbstractLightManager
 {
     Q_OBJECT
 public:
-    explicit LnLightManager(LnTrafficController* tc, QString prefix, QObject *parent = 0);
+    explicit LnLightManager(LocoNetSystemConnectionMemo* memo, QObject *parent = 0);
     /**
      *  Returns the system letter for Loconet
      */

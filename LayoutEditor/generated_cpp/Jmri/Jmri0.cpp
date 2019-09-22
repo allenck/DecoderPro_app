@@ -47,7 +47,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -1578,9 +1577,9 @@ if (_wrapper) {
 }
   AbstractLightManager::vetoableChange(evt0);
 }
-AbstractLightManager* PythonQtWrapper_AbstractLightManager::new_AbstractLightManager(QObject*  parent)
+AbstractLightManager* PythonQtWrapper_AbstractLightManager::new_AbstractLightManager(SystemConnectionMemo*  memo, QObject*  parent)
 { 
-return new PythonQtShell_AbstractLightManager(parent); }
+return new PythonQtShell_AbstractLightManager(memo, parent); }
 
 const QMetaObject* PythonQtShell_AbstractLightManager::metaObject() const {
   if (QObject::d_ptr->metaObject) {
@@ -5200,6 +5199,39 @@ if (_wrapper) {
 }
   return AbstractPowerManager::getUserName();
 }
+bool  PythonQtShell_AbstractPowerManager::implementsIdle()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("implementsIdle");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("implementsIdle", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractPowerManager::implementsIdle();
+}
 void PythonQtShell_AbstractPowerManager::removePropertyChangeListener(PropertyChangeListener*  l0)
 {
 if (_wrapper) {
@@ -7284,9 +7316,9 @@ if (_wrapper) {
 }
   AbstractReporterManager::vetoableChange(evt0);
 }
-AbstractReporterManager* PythonQtWrapper_AbstractReporterManager::new_AbstractReporterManager(QObject*  parent)
+AbstractReporterManager* PythonQtWrapper_AbstractReporterManager::new_AbstractReporterManager(SystemConnectionMemo*  memo, QObject*  parent)
 { 
-return new PythonQtShell_AbstractReporterManager(parent); }
+return new PythonQtShell_AbstractReporterManager(memo, parent); }
 
 const QMetaObject* PythonQtShell_AbstractReporterManager::metaObject() const {
   if (QObject::d_ptr->metaObject) {

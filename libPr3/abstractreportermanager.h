@@ -5,12 +5,12 @@
 #include "exceptions.h"
 #include "reportermanager.h"
 
-class AbstractManager;
+
 class LIBPR3SHARED_EXPORT AbstractReporterManager :  public ReporterManager
 {
     Q_OBJECT
 public:
-    explicit AbstractReporterManager(QObject *parent = 0);
+    explicit AbstractReporterManager(SystemConnectionMemo *memo, QObject *parent = 0);
     virtual int getXMLOrder();
     virtual char typeLetter();
     Reporter* provideReporter(QString sName);

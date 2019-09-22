@@ -5,7 +5,7 @@
 #include "programmingmode.h"
 #include "lnprogrammermanager.h"
 #include "locoio.h"
-#include "logger.h"
+#include "loggerfactory.h".h"
 #include <QStringList>
 
 //LnOpsModeProgrammer::LnOpsModeProgrammer(QObject *parent) :
@@ -24,6 +24,7 @@
             int pAddress, bool pLongAddr, QObject *parent) : AddressedProgrammer(parent)
 {
     this->memo = memo;
+    mode = DefaultProgrammerManager::OPSBYTEMODE;
     mAddress = pAddress;
     mLongAddr = pLongAddr;
     // register to listen
@@ -35,10 +36,10 @@
 {
     mSlotMgr = pSlotMgr;
     this->memo = memo;
+    mode = DefaultProgrammerManager::OPSBYTEMODE;
     mAddress = pAddress;
     mLongAddr = pLongAddr;
     mode = ProgrammingMode::OPSBYTEMODE;
-    log = new Logger("LnOpsModeProgrammer");
 
     // register to listen
     //memo->getLnTrafficController()->addLocoNetListener(~0, this);
@@ -463,6 +464,6 @@ void LnOpsModeProgrammer::initiializeBdOpsAccessTimer() {
         }
     }
 // initialize logging
-//static Logger log = LoggerFactory.getLogger(LnOpsModeProgrammer.class.getName());
+/*static*/ Logger* LnOpsModeProgrammer::log = LoggerFactory::getLogger("LnOpsModeProgrammer");
 
 //}

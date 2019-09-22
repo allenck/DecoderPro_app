@@ -321,7 +321,7 @@ LnReporterManager* LocoNetSystemConnectionMemo::getReporterManager()
  if (getDisabled())
   return NULL;
  if (reporterManager == NULL)
-  reporterManager = new LnReporterManager(getLnTrafficController(), getSystemPrefix());
+  reporterManager = new LnReporterManager(this);
  return reporterManager;
 }
 
@@ -341,7 +341,7 @@ LnLightManager* LocoNetSystemConnectionMemo::getLightManager()
  if (getDisabled())
   return NULL;
  if (lightManager == NULL)
-  lightManager = new LnLightManager(getLnTrafficController(), getSystemPrefix());
+  lightManager = new LnLightManager(this);
  return lightManager;
 }
 

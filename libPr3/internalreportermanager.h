@@ -3,11 +3,12 @@
 #include "abstractreportermanager.h"
 #include "libPr3_global.h"
 
+class InternalSystemConnectionMemo;
 class LIBPR3SHARED_EXPORT InternalReporterManager : public AbstractReporterManager
 {
     Q_OBJECT
 public:
-    InternalReporterManager(QObject *parent = 0);
+    InternalReporterManager(InternalSystemConnectionMemo *memo, QObject *parent = 0);
     /*public*/ bool allowMultipleAdditions(QString systemName);
 
     /*public*/ QString getSystemPrefix();

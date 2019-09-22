@@ -68,7 +68,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -23365,9 +23364,9 @@ if (_wrapper) {
 }
   LightManager::vetoableChange(evt0);
 }
-LightManager* PythonQtWrapper_LightManager::new_LightManager(QObject*  parent)
+LightManager* PythonQtWrapper_LightManager::new_LightManager(SystemConnectionMemo*  memo, QObject*  parent)
 { 
-return new PythonQtShell_LightManager(parent); }
+return new PythonQtShell_LightManager(memo, parent); }
 
 const QMetaObject* PythonQtShell_LightManager::metaObject() const {
   if (QObject::d_ptr->metaObject) {
@@ -24359,6 +24358,11 @@ bool  PythonQtWrapper_LnCommandStationType::getSupportsMultimeter(LnCommandStati
 ThrottleManager*  PythonQtWrapper_LnCommandStationType::getThrottleManager(LnCommandStationType* theWrappedObject, LocoNetSystemConnectionMemo*  memo)
 {
   return ( theWrappedObject->getThrottleManager(memo));
+}
+
+LnCommandStationType::LnCommandStationTypes  PythonQtWrapper_LnCommandStationType::getType(LnCommandStationType* theWrappedObject)
+{
+  return ( theWrappedObject->getType());
 }
 
 QString  PythonQtWrapper_LnCommandStationType::toString(LnCommandStationType* theWrappedObject)
@@ -26615,6 +26619,39 @@ if (_wrapper) {
 }
   return LnPowerManager::getUserName();
 }
+bool  PythonQtShell_LnPowerManager::implementsIdle()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("implementsIdle");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("implementsIdle", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LnPowerManager::implementsIdle();
+}
 void PythonQtShell_LnPowerManager::removePropertyChangeListener(PropertyChangeListener*  l0)
 {
 if (_wrapper) {
@@ -27566,9 +27603,9 @@ if (_wrapper) {
 }
   LnReporterManager::vetoableChange(evt0);
 }
-LnReporterManager* PythonQtWrapper_LnReporterManager::new_LnReporterManager(LnTrafficController*  tc, QString  prefix, QObject*  parent)
+LnReporterManager* PythonQtWrapper_LnReporterManager::new_LnReporterManager(LocoNetSystemConnectionMemo*  memo, QObject*  parent)
 { 
-return new PythonQtShell_LnReporterManager(tc, prefix, parent); }
+return new PythonQtShell_LnReporterManager(memo, parent); }
 
 const QMetaObject* PythonQtShell_LnReporterManager::metaObject() const {
   if (QObject::d_ptr->metaObject) {

@@ -1,8 +1,9 @@
 #include "internalreportermanager.h"
 #include "abstractreporter.h"
+#include "internalsystemconnectionmemo.h"
 
-InternalReporterManager::InternalReporterManager(QObject *parent) :
-    AbstractReporterManager(parent)
+InternalReporterManager::InternalReporterManager(InternalSystemConnectionMemo* memo, QObject *parent) :
+    AbstractReporterManager(memo, parent)
 {
  setObjectName("InternalReporterManager");
 }

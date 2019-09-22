@@ -47,6 +47,7 @@ public:
     static QStringList commandStationNames();
     /*public*/ bool getImplementsIdle();
     /*public*/ bool getSupportsMultimeter();
+    /*public*/ LnCommandStationTypes getType();
 
 signals:
 

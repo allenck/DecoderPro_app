@@ -7,11 +7,11 @@ class ProgrammingMode : public QObject
 {
     Q_OBJECT
 public:
-    //explicit ProgrammingMode(QObject *parent = 0);
-    /*public*/ ProgrammingMode(QString standardName, QString localName="standardName",QObject *parent = nullptr);
-    /*public*/ QString toString();
+    /*public*/ ProgrammingMode(/*@Nonnull*/ QString standardName,QObject *parent = nullptr);
+    /*public*/ ProgrammingMode(QString standardName, QString localName,QObject *parent = nullptr);
+    Q_INVOKABLE/*public*/ bool equals(QObject* o);
+    Q_INVOKABLE/*public*/ QString toString();
     /*public*/ QString getStandardName();
-    /*public*/ bool equals(QObject* o);
     /*public*/ int hashCode();
  /**
   * NMRA "Paged" mode
@@ -84,6 +84,7 @@ public:
 signals:
 
 public slots:
+
 private:
     /*private*/ QString standardName;
     /*private*/ QString localName;

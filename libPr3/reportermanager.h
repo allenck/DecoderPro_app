@@ -9,7 +9,7 @@ class LIBPR3SHARED_EXPORT ReporterManager : public AbstractManager
     Q_OBJECT
 public:
     //explicit ReporterManager(QObject *parent = 0);
-    ReporterManager(QObject* parent =0) : AbstractManager(parent) {}
+    ReporterManager(SystemConnectionMemo* memo, QObject* parent =0) : AbstractManager(memo, parent) {}
     /**
      * Locate a Reporter object representing some specific device on the layout.
      *<P>

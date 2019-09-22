@@ -139,9 +139,9 @@
   // create a Generic Stand-alone port controller
   log->debug("Create Generic Standalone SpecificTrafficController"); // NOI18N
   control = new StandaloneTrafficController((RfidSystemConnectionMemo*)this->getSystemConnectionMemo());
-  ((RfidSystemConnectionMemo*)this->getSystemConnectionMemo())->configureManagers(
-          new StandaloneSensorManager(control, this->getSystemPrefix()),
-          new StandaloneReporterManager(control, this->getSystemPrefix()));
+//  ((RfidSystemConnectionMemo*)this->getSystemConnectionMemo())->configureManagers(
+//          new StandaloneSensorManager(control, this->getSystemPrefix()),
+//          new StandaloneReporterManager(control, this->getSystemPrefix()));
  }
  else if(opt1 == "MERG Concentrator")
  {// NOI18N
@@ -158,9 +158,9 @@
   log->warn(tr("adapter option %1 defaults to Generic Stand-alone").arg(opt1)); // NOI18N
   // create a Generic Stand-alone port controller
   control = new StandaloneTrafficController((RfidSystemConnectionMemo*)this->getSystemConnectionMemo());
-  ((RfidSystemConnectionMemo*)this->getSystemConnectionMemo())->configureManagers(
-          new StandaloneSensorManager(control, this->getSystemPrefix()),
-          new StandaloneReporterManager(control, this->getSystemPrefix()));
+//  ((RfidSystemConnectionMemo*)this->getSystemConnectionMemo())->configureManagers(
+//          new StandaloneSensorManager(control, this->getSystemPrefix()),
+//          new StandaloneReporterManager(control, this->getSystemPrefix()));
   //break;
  }
 

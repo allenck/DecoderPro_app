@@ -1,5 +1,7 @@
 #include "lnpowermanager.h"
 #include "loconetlistener.h"
+#include "lncommandstationtype.h"
+#include "slotmanager.h"
 
 //LnPowerManager::LnPowerManager(QObject *parent) :
 //    AbstractPowerManager(parent)
@@ -111,5 +113,37 @@ void LnPowerManager::updateTrackPowerStatus()
 {
  LnTrackStatusUpdateThread* thread = new LnTrackStatusUpdateThread(tc);
  thread->start();
+}
+
+/**
+ * Returns whether command station supports IDLE funcitonality
+ *
+ * @return true if connection's command station supports IDLE state, else false
+ */
+//@Override
+/*public*/ bool LnPowerManager::implementsIdle() {
+    bool supportsIdleState = false;
+    if (tc == nullptr) {
+        log.error("TC is null in LnPowerManager");
+        return false;
+    }
+    if (tc->memo == nullptr) {
+        log.error("TC.Memo is null in LnPowerManager");
+        return false;
+    }
+    LnCommandStationType* cmdStationType = tc->memo->getSlotManager()->getCommandStationType();
+    switch (cmdStationType->getType()) {
+        case LnCommandStationType::COMMAND_STATION_DB150:
+        case LnCommandStationType::COMMAND_STATION_DCS100:
+        case LnCommandStationType::COMMAND_STATION_DCS240:
+        case LnCommandStationType::COMMAND_STATION_DCS210:
+        case LnCommandStationType::COMMAND_STATION_DCS200:
+            supportsIdleState = true;
+            break;
+        default:
+            supportsIdleState = false;
+
+    }
+    return supportsIdleState;
 }
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LnPowerManager.class.getName());

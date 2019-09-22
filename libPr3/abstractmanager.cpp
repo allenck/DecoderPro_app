@@ -18,7 +18,7 @@
  * @author      Bob Jacobsen Copyright (C) 2003
  * @version	$Revision: 19272 $
  */
-AbstractManager::AbstractManager(QObject *parent)
+AbstractManager::AbstractManager(QObject *parent) : Manager(nullptr, parent)
 {
   Q_UNUSED(parent);
   log = new Logger("AbstractManager");
@@ -30,7 +30,7 @@ AbstractManager::AbstractManager(QObject *parent)
  pcs = new PropertyChangeSupport((QObject*)this);
  vcs = new VetoableChangeSupport((QObject*)this);
 }
-AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : Manager()
+AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : Manager(memo,parent)
 {
   Q_UNUSED(parent);
  this->memo = memo;

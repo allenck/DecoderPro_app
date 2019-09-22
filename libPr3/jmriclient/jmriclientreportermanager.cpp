@@ -14,7 +14,9 @@
 // /*public*/ class JMRIClientReporterManager extends jmri.managers.AbstractReporterManager {
 
 
-    /*public*/ JMRIClientReporterManager::JMRIClientReporterManager(JMRIClientSystemConnectionMemo* memo, QObject *parent) {
+    /*public*/ JMRIClientReporterManager::JMRIClientReporterManager(JMRIClientSystemConnectionMemo* memo, QObject *parent)
+    : AbstractReporterManager(memo, parent)
+    {
         this->memo = memo;
         this->prefix = memo->getSystemPrefix();
     }

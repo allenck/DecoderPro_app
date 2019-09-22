@@ -46,7 +46,7 @@ public:
     /**
      * No programming mode available
      */
-//    /*public*/ static /*final*/ ProgrammingMode* NONE;// = new ProgrammingMode("NONE");
+    /*public*/ static /*final*/ ProgrammingMode* NONE;// = new ProgrammingMode("NONE");
 
  /**
       * NMRA "Address-only" mode. Often implemented as a proper subset of

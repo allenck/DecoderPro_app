@@ -4,7 +4,7 @@
 #include <QObject>
 #include "reading.h"
 #include "measurement.h"
-
+#include "measurementlistener.h"
 class Logger;
 class Reporter;
 class Distributor : public QObject
@@ -13,7 +13,8 @@ class Distributor : public QObject
 public:
  explicit Distributor(QObject *parent = nullptr);
  /*public*/ static Distributor* instance();
- // /*public*/ void addMeasurementListener(/*MeasurementListener*/Reporter* l);
+ /*public*/ void addMeasurementListener(MeasurementListener* l);
+ /*public*/ void removeMeasurementListener(MeasurementListener* l);
  /*public*/ void submitReading(Reading* s);
  /*public*/ void submitMeasurement(Measurement* s);
 

@@ -14,7 +14,7 @@
 
 
     /*public*/ JMRIClientLightManager::JMRIClientLightManager(JMRIClientSystemConnectionMemo* memo, QObject *parent)
- : AbstractLightManager(parent){
+ : AbstractLightManager(memo,parent){
         this->memo = memo;
         this->prefix = memo->getSystemPrefix();
     }

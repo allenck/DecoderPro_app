@@ -1,8 +1,9 @@
 #include "rpsreportermanager.h"
 #include "rpsreporter.h"
 #include "distributor.h"
+#include "rpssystemconnectionmemo.h"
 
-RpsReporterManager::RpsReporterManager(QObject* parent) : AbstractReporterManager(parent)
+RpsReporterManager::RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* parent) : AbstractReporterManager(memo, parent)
 {
 
 }
@@ -27,14 +28,22 @@ RpsReporterManager::RpsReporterManager(QObject* parent) : AbstractReporterManage
     return (Reporter*)r;
 }
 
-/*static*/ /*public*/ RpsReporterManager* RpsReporterManager::instance() {
-    if (_instance == NULL) {
-        _instance = new RpsReporterManager();
-    }
-    return _instance;
-}
+///*static*/ /*public*/ RpsReporterManager* RpsReporterManager::instance() {
+//    if (_instance == NULL) {
+//        _instance = new RpsReporterManager(this);
+//    }
+//    return _instance;
+//}
 
-/*static*/ RpsReporterManager* RpsReporterManager::_instance = NULL;
+///*static*/ RpsReporterManager* RpsReporterManager::_instance = NULL;
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ SystemConnectionMemo *RpsReporterManager::getMemo() {
+    return  memo;
+}
 #if 0
 static { // class initialization
     // now want a ReporterManager always, not just when RPS is created

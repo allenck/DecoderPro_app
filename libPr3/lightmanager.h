@@ -7,7 +7,7 @@ class LightManager : public AbstractManager
 {
     Q_OBJECT
 public:
-    explicit LightManager(QObject *parent = 0) : AbstractManager(parent) {}
+    explicit LightManager(SystemConnectionMemo*memo, QObject *parent = 0) : AbstractManager(memo, parent) {}
     /**
      * Interface for obtaining Lights.
      * <P>

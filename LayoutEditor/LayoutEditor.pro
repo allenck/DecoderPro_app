@@ -470,7 +470,11 @@ SOURCES += \
     linkinglabel.cpp \
     layouttrackeditors.cpp \
     layouteditorchecks.cpp \
-    layouttrackdrawingoptionsdialog.cpp
+    layouttrackdrawingoptionsdialog.cpp \
+    rpssystemconnectionmemo.cpp \
+    rpscomponentfactory.cpp \
+    rpssensormanager.cpp \
+    rpssensor.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -860,7 +864,12 @@ HEADERS += liblayouteditor_global.h \
     linkinglabel.h \
     layouttrackeditors.h \
     layouteditorchecks.h \
-    layouttrackdrawingoptionsdialog.h
+    layouttrackdrawingoptionsdialog.h \
+    rpssystemconnectionmemo.h \
+    rpscomponentfactory.h \
+    rpssensormanager.h \
+    rpssensor.h \
+    measurementlistener.h
 
 FORMS    += \
     edittracksegmentdlg.ui \

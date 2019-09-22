@@ -101,16 +101,16 @@ LnPowerManagerTest::LnPowerManagerTest()
         memo->configureCommandStation(LnCommandStationType::getByName("DB150 (Empire Builder)"), false, false, false);
         Assert::assertTrue(p->implementsIdle());
         // DCS100 implements IDLE power state
-        memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS100 (Advanced Command Station)"));
+        memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS100 (Chief)"));
         Assert::assertTrue(p->implementsIdle());
         // DCS200 implements IDLE power state
-        memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS200)"));
+        memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS200"));
         Assert::assertTrue(p->implementsIdle());
         // DCS240 implements IDLE power state
-        memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS240 (Chief)"));
+        memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS240 (Advanced Command Station)"));
         Assert::assertTrue(p->implementsIdle());
         // DCS100 implements IDLE power state
-        memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS240 (Advanced Command Station)"));
+        memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS210 (Evolution Command Station)"));
         Assert::assertTrue(p->implementsIdle());
         // DCS50 does not implement IDLE power state
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS50 (Zephyr)"));
@@ -133,10 +133,9 @@ LnPowerManagerTest::LnPowerManagerTest()
     //@Override
     //@Test
     /*public*/ void LnPowerManagerTest::testStateIdle() throw (JmriException) {
-
         hearOn();  // set up an initial state
         // DCS51 does not implement IDLE power state
-        memo->configureCommandStation(LnCommandStationType::getByName("DCS200)"), false, false, false);
+        memo->configureCommandStation(LnCommandStationType::getByName("DCS200"), false, false, false);
         Assert::assertTrue(p->implementsIdle());
         hearIdle();
         Assert::assertEquals("power state", PowerManager::IDLE, p->getPower());

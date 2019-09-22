@@ -54,11 +54,11 @@ Distributor::Distributor(QObject *parent) : QObject(parent)
 //    }
     emit newReading(s);
 }
-#if 0
+
 /**
  * Request being informed when a new Measurement is available.
  */
-/*public*/ void addMeasurementListener(/*MeasurementListener*/Reporter* l) {
+/*public*/ void Distributor::addMeasurementListener(MeasurementListener* l) {
     // add only if not already registered
 //    if (!measurementListeners.contains(l)) {
 //        measurementListeners.addElement(l);
@@ -69,12 +69,12 @@ Distributor::Distributor(QObject *parent) : QObject(parent)
 /**
  * Request to no longer be informed when new Measurements arrive.
  */
-/*public*/ void removeMeasurementListener(MeasurementListener l) {
-    if (measurementListeners.contains(l)) {
-        measurementListeners.removeElement(l);
-    }
+/*public*/ void Distributor::removeMeasurementListener(MeasurementListener* l) {
+//    if (measurementListeners.contains(l)) {
+//        measurementListeners.removeElement(l);
+//    }
 }
-#endif
+
 /**
  * Invoked when a new Measurement is created
  */

@@ -37,7 +37,7 @@ class LIBPR3SHARED_EXPORT PowerManager : public QObject
 
     virtual QString getUserName() {return "";}
  PropertyChangeSupport* pcs =nullptr;// = new PropertyChangeSupport(this);
- /*public*/ /*default*/ bool implementsIdle();
+ /*public*/ /*default*/ virtual bool implementsIdle();
 
 
  signals:

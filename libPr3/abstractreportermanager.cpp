@@ -2,14 +2,15 @@
 #include <QMessageBox>
 #include "reportermanager.h"
 
-AbstractReporterManager::AbstractReporterManager(QObject *parent) :
-    ReporterManager(parent)
+AbstractReporterManager::AbstractReporterManager(SystemConnectionMemo* memo, QObject *parent) :
+    ReporterManager(memo, parent)
 {
  setProperty("JavaClassName", "jmri.managers.AbstractReporterManager");
 
  log = new Logger("AbstractReporterManager");
  //registerSelf();
 }
+
 /**
  * Abstract partial implementation of a ReporterManager.
  *

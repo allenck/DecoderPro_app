@@ -26,11 +26,11 @@ public:
     */
    ReadAfterWrite
  };
- //explicit LnOpsModeProgrammer(QObject *parent = 0);
-  /*public*/ LnOpsModeProgrammer(LocoNetSystemConnectionMemo* memo,
+   //explicit LnOpsModeProgrammer(QObject *parent = 0);
+   /*public*/ LnOpsModeProgrammer(LocoNetSystemConnectionMemo* memo,
                                  int pAddress, bool pLongAddr, QObject *parent = 0);
 
-    /*public*/ LnOpsModeProgrammer(SlotManager* pSlotMgr, LocoNetSystemConnectionMemo* memo,int pAddress, bool pLongAddr, QObject *parent = 0);
+    QT_DEPRECATED /*public*/ LnOpsModeProgrammer(SlotManager* pSlotMgr, LocoNetSystemConnectionMemo* memo,int pAddress, bool pLongAddr, QObject *parent = 0);
     /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
     /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
@@ -65,14 +65,16 @@ private:
     /*private*/ QTimer* bdOpSwAccessTimer = nullptr;
     void initiializeBdOpsAccessTimer();
 
+ static Logger* log;
+ LocoNetSystemConnectionMemo* memo;
+ int decodeCvNum(QString CV);
+ void loadSV2MessageFormat(LocoNetMessage* m, int mAddress, int cvAddr, int data);
+
 protected:
     // handle mode
     /*protected*/ ProgrammingMode* mode;// = DefaultProgrammerManager.OPSBYTEMODE;
     /*protected*/ void notifyPropertyChange(QString key, QVariant oldValue, QVariant value);
- Logger* log;
- LocoNetSystemConnectionMemo* memo;
- int decodeCvNum(QString CV);
- void loadSV2MessageFormat(LocoNetMessage* m, int mAddress, int cvAddr, int data);
+
  friend class LnProgrammerManager;
  friend class OpSwAccessTimer;
  friend class LnOpsModeProgrammerTest;

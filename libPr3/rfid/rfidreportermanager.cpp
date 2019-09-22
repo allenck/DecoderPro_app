@@ -1,5 +1,6 @@
 #include "rfidreportermanager.h"
 #include "rfidmessage.h"
+#include "rfidsystemconnectionmemo.h"
 
 //RfidReporterManager::RfidReporterManager(QObject *parent) :
 //    AbstractReporterManager(parent)
@@ -19,10 +20,10 @@
 //abstract public class RfidReporterManager extends AbstractReporterManager implements RfidListener {
 
 
-/*public*/ RfidReporterManager::RfidReporterManager(QString prefix, QObject *parent) : AbstractReporterManager(parent)
+/*public*/ RfidReporterManager::RfidReporterManager(RfidSystemConnectionMemo* memo, QObject *parent) : AbstractReporterManager(memo, parent)
 {
  //super();
- this->prefix = prefix;
+ //this->prefix = prefix;
  log = new Logger("RfidReporterManager");
 }
 

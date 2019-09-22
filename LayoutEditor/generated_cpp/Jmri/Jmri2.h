@@ -62,7 +62,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -2160,6 +2159,7 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual int  getPower();
 virtual QString  getUserName();
+virtual bool  implementsIdle();
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
 virtual void setPower(int  arg__1);
 virtual void timerEvent(QTimerEvent*  event);
@@ -2175,6 +2175,7 @@ inline void py_q_addPropertyChangeListener(PropertyChangeListener*  arg__1) { Po
 inline void py_q_dispose() { PowerManager::dispose(); }
 inline int  py_q_getPower() { return PowerManager::getPower(); }
 inline QString  py_q_getUserName() { return PowerManager::getUserName(); }
+inline bool  py_q_implementsIdle() { return PowerManager::implementsIdle(); }
 inline void py_q_removePropertyChangeListener(PropertyChangeListener*  arg__1) { PowerManager::removePropertyChangeListener(arg__1); }
 inline void py_q_setPower(int  arg__1) { PowerManager::setPower(arg__1); }
 };
@@ -2195,6 +2196,7 @@ void delete_PowerManager(PowerManager* obj) { delete obj; }
    QString  getUserName(PowerManager* theWrappedObject);
    QString  py_q_getUserName(PowerManager* theWrappedObject){  return (((PythonQtPublicPromoter_PowerManager*)theWrappedObject)->py_q_getUserName());}
    bool  implementsIdle(PowerManager* theWrappedObject);
+   bool  py_q_implementsIdle(PowerManager* theWrappedObject){  return (((PythonQtPublicPromoter_PowerManager*)theWrappedObject)->py_q_implementsIdle());}
    void removePropertyChangeListener(PowerManager* theWrappedObject, PropertyChangeListener*  arg__1);
    void py_q_removePropertyChangeListener(PowerManager* theWrappedObject, PropertyChangeListener*  arg__1){  (((PythonQtPublicPromoter_PowerManager*)theWrappedObject)->py_q_removePropertyChangeListener(arg__1));}
    void setPower(PowerManager* theWrappedObject, int  arg__1);
@@ -2703,7 +2705,7 @@ void delete_ProxyTurnoutManager(ProxyTurnoutManager* obj) { delete obj; }
 class PythonQtShell_ReporterManager : public ReporterManager
 {
 public:
-    PythonQtShell_ReporterManager(QObject*  parent = 0):ReporterManager(parent),_wrapper(NULL) {}
+    PythonQtShell_ReporterManager(SystemConnectionMemo*  memo, QObject*  parent = 0):ReporterManager(memo, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_ReporterManager();
 
@@ -2753,7 +2755,7 @@ class PythonQtWrapper_ReporterManager : public QObject
 { Q_OBJECT
 public:
 public slots:
-ReporterManager* new_ReporterManager(QObject*  parent = 0);
+ReporterManager* new_ReporterManager(SystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_ReporterManager(ReporterManager* obj) { delete obj; } 
    bool  allowMultipleAdditions(ReporterManager* theWrappedObject, QString  arg__1) const;
    bool  py_q_allowMultipleAdditions(ReporterManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_allowMultipleAdditions(arg__1));}

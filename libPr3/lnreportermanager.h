@@ -24,7 +24,7 @@ class LIBPR3SHARED_EXPORT LnReporterManager : public AbstractReporterManager
 {
     Q_OBJECT
 public:
-    explicit LnReporterManager(LnTrafficController* tc, QString prefix, QObject *parent = 0);
+    explicit LnReporterManager(LocoNetSystemConnectionMemo *memo, QObject *parent = 0);
     QString getSystemPrefix();
     void dispose();
     Reporter* createNewReporter(QString systemName, QString userName);

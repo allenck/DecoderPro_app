@@ -6,7 +6,7 @@ class LIBPR3SHARED_EXPORT InternalLightManager : public AbstractLightManager
 {
     Q_OBJECT
 public:
- explicit InternalLightManager(QObject *parent = 0);
+ explicit InternalLightManager(InternalSystemConnectionMemo* memo, QObject *parent = 0);
     /*public*/ QString getSystemPrefix();
     /*public*/ bool validSystemNameConfig(QString systemName);
     /*public*/ NameValidity validSystemNameFormat(QString systemName);

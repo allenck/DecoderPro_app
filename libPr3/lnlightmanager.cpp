@@ -1,10 +1,11 @@
 #include "lnlightmanager.h"
 #include "lnlight.h"
+#include "loconetsystemconnectionmemo.h"
 
-/*public*/ LnLightManager::LnLightManager(LnTrafficController* tc, QString prefix, QObject *parent) : AbstractLightManager(parent)
+/*public*/ LnLightManager::LnLightManager(LocoNetSystemConnectionMemo* memo, QObject *parent) : AbstractLightManager(memo, parent)
 {
- _trafficController = tc;
- this->prefix = prefix;
+// _trafficController = tc;
+// this->prefix = prefix;
  registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
 
 }

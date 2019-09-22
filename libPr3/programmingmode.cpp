@@ -104,6 +104,41 @@
 //        this.localName = Bundle.getMessage(standardName);  // note in jmri package
 //    }
 
+/**
+ * Create a ProgrammingMode instance.
+ *
+ * @param standardName a name, not to be translated, for internal use
+ */
+/*public*/ ProgrammingMode::ProgrammingMode(/*@Nonnull*/ QString standardName,QObject* parent) : QObject(parent)
+{
+ this->standardName = standardName;
+    //this.localName = Bundle.getMessage(standardName);  // note in jmri package
+ if(standardName == "PAGEMODE")
+  localName = "Paged";
+ else if(standardName == "OPSBITMODE")
+  localName = "Ops Bit";
+ else if(standardName == "OPSACCEXTBYTEMODE")
+  localName = "Ops Accessory Extended Byte";
+ else if(standardName == "OPSACCBITMODE")
+  localName = "Ops Accessory Bit";
+ else if(standardName == "OPSACCEXTBITMODE")
+  localName = "Ops Accessory Extended Bit";
+ else if(standardName == "OPSACCBYTEMODE")
+  localName = "Ops Accessory Byte";
+ else if(standardName == "ADDRESSMODE")
+  localName = "Address";
+ else if(standardName == "OPSBYTEMODE")
+  localName = "Ops Byte";
+ else if(standardName == "DIRECTBYTEMODE")
+  localName = "Direct Byte";
+ else if(standardName == "REGISTERMODE")
+  localName = "Register";
+ else if(standardName == "DIRECTBITMODE")
+  localName = "Direct Bit";
+ else if(standardName == "DIRECTMODE")
+  localName = "Direct";
+}
+
 /*
  * Create an instance where you directly
  * provide the localized name.

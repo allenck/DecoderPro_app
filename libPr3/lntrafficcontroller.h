@@ -98,6 +98,7 @@ protected:
 
   friend class LnTrafficRouter;
   friend class LnPowerManagerTest;
+  friend class LnPowerManager;
 };
 
 #endif // LNTRAFFICCONTROLLER_H

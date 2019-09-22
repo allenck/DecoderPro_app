@@ -25,6 +25,7 @@ public:
  bool isPowerUnknown() {return (power == UNKNOWN);}
  void dispose();
  //void message(LocoNetMessage* m); // move to slots
+ /*public*/ bool implementsIdle();
 
 signals:
     

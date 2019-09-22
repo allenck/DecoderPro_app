@@ -85,7 +85,7 @@
  if (lightManager == nullptr)
  {
      log->debug("Create InternalLightManager by request");
-     lightManager = new InternalLightManager();
+     lightManager = new InternalLightManager(this);
      // special due to ProxyManager support
      InstanceManager::setLightManager(lightManager);
  }
@@ -106,7 +106,7 @@
 /*public*/ InternalReporterManager* InternalSystemConnectionMemo::getReporterManager() {
     if (reporterManager == nullptr) {
         log->debug("Create InternalReporterManager by request");
-        reporterManager = new InternalReporterManager();
+        reporterManager = new InternalReporterManager(this);
         // special due to ProxyManager support
         InstanceManager::setReporterManager(reporterManager);
     }

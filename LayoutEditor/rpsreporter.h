@@ -3,12 +3,13 @@
 #include "abstractreporter.h"
 #include "measurement.h"
 #include "physicallocationreporter.h"
-
+#include "measurementlistener.h"
 class LocoAddress;
 class Region;
-class RpsReporter : public AbstractReporter
+class RpsReporter : public AbstractReporter, MeasurementListener
 {
  Q_OBJECT
+ Q_INTERFACES (MeasurementListener)
 public:
  /*public*/ RpsReporter(QString systemName, QObject* parent = 0) ;
  /*public*/ RpsReporter(QString systemName, QString userName, QObject* parent = 0);

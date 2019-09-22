@@ -1,8 +1,8 @@
 #include "abstractlightmanager.h"
+#include "systemconnectionmemo.h"
 
-
-AbstractLightManager::AbstractLightManager(QObject *parent) :
-    LightManager(parent)
+AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *parent) :
+    LightManager(memo, parent)
 {
  log= new Logger("AbstractLightManager");
 }

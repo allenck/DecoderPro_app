@@ -1,6 +1,6 @@
 #include "lnreportermanager.h"
 #include "lnreporter.h"
-
+#include "loconetsystemconnectionmemo.h"
 /**
  * LnReporterManager implements the ReporterManager.
  * <P>
@@ -17,12 +17,12 @@
  * @version         $Revision: 17977 $
  */
 
-LnReporterManager::LnReporterManager(LnTrafficController* tc, QString prefix, QObject *parent) :
-    AbstractReporterManager(parent)
+LnReporterManager::LnReporterManager(LocoNetSystemConnectionMemo*memo, QObject *parent) :
+    AbstractReporterManager(memo,parent)
 {
  setObjectName("LnReporterManager");
- this->prefix = prefix;
- this->tc = tc;
+// this->prefix = prefix;
+// this->tc = tc;
  registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
 
  if (tc != NULL)

@@ -64,7 +64,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -173,7 +172,7 @@ void delete_AbstractAutomaton(AbstractAutomaton* obj) { delete obj; }
 class PythonQtShell_AbstractLightManager : public AbstractLightManager
 {
 public:
-    PythonQtShell_AbstractLightManager(QObject*  parent = 0):AbstractLightManager(parent),_wrapper(NULL) {}
+    PythonQtShell_AbstractLightManager(SystemConnectionMemo*  memo, QObject*  parent = 0):AbstractLightManager(memo, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_AbstractLightManager();
 
@@ -243,7 +242,7 @@ class PythonQtWrapper_AbstractLightManager : public QObject
 { Q_OBJECT
 public:
 public slots:
-AbstractLightManager* new_AbstractLightManager(QObject*  parent = 0);
+AbstractLightManager* new_AbstractLightManager(SystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_AbstractLightManager(AbstractLightManager* obj) { delete obj; } 
    void py_q_activateAllLights(AbstractLightManager* theWrappedObject){  (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_activateAllLights());}
    bool  py_q_allowMultipleAdditions(AbstractLightManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_allowMultipleAdditions(systemName));}
@@ -663,6 +662,7 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual int  getPower();
 virtual QString  getUserName();
+virtual bool  implementsIdle();
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void setPower(int  arg__1);
 virtual void timerEvent(QTimerEvent*  event);
@@ -835,7 +835,7 @@ void delete_AbstractProxyManager(AbstractProxyManager* obj) { delete obj; }
 class PythonQtShell_AbstractReporterManager : public AbstractReporterManager
 {
 public:
-    PythonQtShell_AbstractReporterManager(QObject*  parent = 0):AbstractReporterManager(parent),_wrapper(NULL) {}
+    PythonQtShell_AbstractReporterManager(SystemConnectionMemo*  memo, QObject*  parent = 0):AbstractReporterManager(memo, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_AbstractReporterManager();
 
@@ -886,7 +886,7 @@ class PythonQtWrapper_AbstractReporterManager : public QObject
 { Q_OBJECT
 public:
 public slots:
-AbstractReporterManager* new_AbstractReporterManager(QObject*  parent = 0);
+AbstractReporterManager* new_AbstractReporterManager(SystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_AbstractReporterManager(AbstractReporterManager* obj) { delete obj; } 
    bool  py_q_allowMultipleAdditions(AbstractReporterManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_allowMultipleAdditions(systemName));}
    QString  py_q_getNextValidAddress(AbstractReporterManager* theWrappedObject, QString  curAddress, QString  prefix) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}

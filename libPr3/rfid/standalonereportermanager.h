@@ -9,7 +9,7 @@ class RfidTrafficController;
 class StandaloneReporterManager : public RfidReporterManager
 {
 public:
- StandaloneReporterManager(RfidTrafficController* tc, QString prefix, QObject* parent = nullptr);
+ StandaloneReporterManager(RfidSystemConnectionMemo* memo, QObject* parent = nullptr);
  /*public*/ void message(RfidMessage* m);
  /*public*/ /*synchronized*/ void reply(RfidReply* r);
  /*private*/ void processReply(StandaloneReply* r);

@@ -80,7 +80,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -2498,7 +2497,7 @@ void delete_Light(Light* obj) { delete obj; }
 class PythonQtShell_LightManager : public LightManager
 {
 public:
-    PythonQtShell_LightManager(QObject*  parent = 0):LightManager(parent),_wrapper(NULL) {}
+    PythonQtShell_LightManager(SystemConnectionMemo*  memo, QObject*  parent = 0):LightManager(memo, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_LightManager();
 
@@ -2566,7 +2565,7 @@ class PythonQtWrapper_LightManager : public QObject
 { Q_OBJECT
 public:
 public slots:
-LightManager* new_LightManager(QObject*  parent = 0);
+LightManager* new_LightManager(SystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_LightManager(LightManager* obj) { delete obj; } 
    void activateAllLights(LightManager* theWrappedObject);
    void py_q_activateAllLights(LightManager* theWrappedObject){  (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_activateAllLights());}
@@ -2739,6 +2738,7 @@ void delete_LnCommandStationType(LnCommandStationType* obj) { delete obj; }
    bool  getProgPowersOff(LnCommandStationType* theWrappedObject);
    bool  getSupportsMultimeter(LnCommandStationType* theWrappedObject);
    ThrottleManager*  getThrottleManager(LnCommandStationType* theWrappedObject, LocoNetSystemConnectionMemo*  memo);
+   LnCommandStationType::LnCommandStationTypes  getType(LnCommandStationType* theWrappedObject);
    QString  toString(LnCommandStationType* theWrappedObject);
     QString py_toString(LnCommandStationType*);
 };
@@ -2923,6 +2923,7 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual int  getPower();
 virtual QString  getUserName();
+virtual bool  implementsIdle();
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void setPower(int  v);
 virtual void timerEvent(QTimerEvent*  event);
@@ -2936,6 +2937,7 @@ class PythonQtPublicPromoter_LnPowerManager : public LnPowerManager
 { public:
 inline void py_q_dispose() { LnPowerManager::dispose(); }
 inline int  py_q_getPower() { return LnPowerManager::getPower(); }
+inline bool  py_q_implementsIdle() { return LnPowerManager::implementsIdle(); }
 inline void py_q_setPower(int  v) { LnPowerManager::setPower(v); }
 };
 
@@ -2947,6 +2949,7 @@ LnPowerManager* new_LnPowerManager(LocoNetSystemConnectionMemo*  memo, QObject* 
 void delete_LnPowerManager(LnPowerManager* obj) { delete obj; } 
    void py_q_dispose(LnPowerManager* theWrappedObject){  (((PythonQtPublicPromoter_LnPowerManager*)theWrappedObject)->py_q_dispose());}
    int  py_q_getPower(LnPowerManager* theWrappedObject){  return (((PythonQtPublicPromoter_LnPowerManager*)theWrappedObject)->py_q_getPower());}
+   bool  py_q_implementsIdle(LnPowerManager* theWrappedObject){  return (((PythonQtPublicPromoter_LnPowerManager*)theWrappedObject)->py_q_implementsIdle());}
    bool  isPowerOff(LnPowerManager* theWrappedObject);
    bool  isPowerOn(LnPowerManager* theWrappedObject);
    bool  isPowerUnknown(LnPowerManager* theWrappedObject);
@@ -2960,7 +2963,7 @@ void delete_LnPowerManager(LnPowerManager* obj) { delete obj; }
 class PythonQtShell_LnReporterManager : public LnReporterManager
 {
 public:
-    PythonQtShell_LnReporterManager(LnTrafficController*  tc, QString  prefix, QObject*  parent = 0):LnReporterManager(tc, prefix, parent),_wrapper(NULL) {}
+    PythonQtShell_LnReporterManager(LocoNetSystemConnectionMemo*  memo, QObject*  parent = 0):LnReporterManager(memo, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_LnReporterManager();
 
@@ -3011,7 +3014,7 @@ class PythonQtWrapper_LnReporterManager : public QObject
 { Q_OBJECT
 public:
 public slots:
-LnReporterManager* new_LnReporterManager(LnTrafficController*  tc, QString  prefix, QObject*  parent = 0);
+LnReporterManager* new_LnReporterManager(LocoNetSystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_LnReporterManager(LnReporterManager* obj) { delete obj; } 
    void py_q_dispose(LnReporterManager* theWrappedObject){  (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_dispose());}
    int  getBitFromSystemName(LnReporterManager* theWrappedObject, QString  systemName);

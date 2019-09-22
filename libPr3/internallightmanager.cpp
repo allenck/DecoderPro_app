@@ -1,8 +1,9 @@
 #include "internallightmanager.h"
 #include "abstractvariablelight.h"
+#include "internalsystemconnectionmemo.h"
 
-InternalLightManager::InternalLightManager(QObject *parent) :
-    AbstractLightManager(parent)
+InternalLightManager::InternalLightManager(InternalSystemConnectionMemo* memo, QObject *parent) :
+    AbstractLightManager(memo, parent)
 {
  setObjectName("InternalLightManager");
  setProperty("JavaClassName", "jmri.jmrix.internal.InternalLightManager");

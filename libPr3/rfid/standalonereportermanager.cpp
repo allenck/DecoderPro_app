@@ -10,6 +10,7 @@
 #include "rfidprotocol.h"
 #include "loggerfactory.h"
 #include "timeoutrfidreporter.h"
+#include "rfidsystemconnectionmemo.h"
 
 /**
  * Rfid implementation of a ReporterManager.
@@ -23,10 +24,10 @@
 ///*public*/ class StandaloneReporterManager extends RfidReporterManager {
 
 
-    /*public*/ StandaloneReporterManager::StandaloneReporterManager(RfidTrafficController* tc, QString prefix, QObject *parent) : RfidReporterManager(prefix, parent){
+    /*public*/ StandaloneReporterManager::StandaloneReporterManager(RfidSystemConnectionMemo* memo, QObject *parent) : RfidReporterManager(memo, parent){
         //super(prefix);
-        this->tc = tc;
-        this->prefix = prefix;
+//        this->tc = tc;
+//        this->prefix = prefix;
         attach();
     }
 

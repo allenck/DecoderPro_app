@@ -5,11 +5,13 @@
 #include "exceptions.h"
 #include "abstractlight.h"
 
+class SystemConnectionMemo;
 class LIBPR3SHARED_EXPORT AbstractLightManager : public  LightManager
 {
     Q_OBJECT
 public:
-    explicit AbstractLightManager(QObject *parent = 0);
+    //explicit AbstractLightManager(QObject *parent = 0);
+ /*public*/ AbstractLightManager(SystemConnectionMemo* memo, QObject *parent = 0);
     /*public*/ virtual int getXMLOrder();
     /*public*/ virtual char typeLetter();
     /**

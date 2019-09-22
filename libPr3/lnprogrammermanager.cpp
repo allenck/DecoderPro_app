@@ -44,9 +44,9 @@ LnProgrammerManager::LnProgrammerManager(SlotManager* pSlotManager, LocoNetSyste
 }
 
 /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETSV1MODE    = new ProgrammingMode("LOCONETSV1MODE", tr("System Variable Type 1"));
-    /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETSV2MODE    = new ProgrammingMode("LOCONETSV2MODE", tr("System Variable Type 2"));
-    /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETBDOPSWMODE = new ProgrammingMode("LOCONETBDOPSWMODE", tr("Board Op Switches"));
-    /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETCSOPSWMODE = new ProgrammingMode("LOCONETCSOPSWMODE", tr("Cmd Station Op Switches"));
+/*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETSV2MODE    = new ProgrammingMode("LOCONETSV2MODE", tr("System Variable Type 2"));
+/*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETBDOPSWMODE = new ProgrammingMode("LOCONETBDOPSWMODE", tr("Board Op Switches"));
+/*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETCSOPSWMODE = new ProgrammingMode("LOCONETCSOPSWMODE", tr("Cmd Station Op Switches"));
 /**
  * Programming in Ops mode via the LocoNet cable.
  */

@@ -230,3 +230,7 @@ QStringList LnCommandStationType::commandStationNames()
 /*public*/ bool LnCommandStationType::getSupportsMultimeter() {
     return supportsMultiMeter;
 }
+
+ /*public*/ LnCommandStationType::LnCommandStationTypes LnCommandStationType::getType() {
+     return type;
+ }

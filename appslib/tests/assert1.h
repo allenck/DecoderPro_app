@@ -5,6 +5,7 @@
 #include "exceptions.h"
 #include <QtXml>
 
+class ProgrammingMode;
 class AssertionError : public Exception
 {
 public:
@@ -34,9 +35,10 @@ public:
     /*public*/ static void assertEquals(double expected, double actual, double delta);
     /*public*/ static void assertEquals(float expected, float actual, float delta);
     /*public*/ static void assertEquals(QDomElement expected, QDomElement actual, QDomElement delta);
-
     /*public*/ static void assertEquals(QString expected, QString actual);
     /*public*/ static void assertEquals(bool expected, bool actual);
+    /*public*/ static void assertEquals(QString message, ProgrammingMode* expected, ProgrammingMode* actual);
+
     /*public*/ static void assertNotEquals(QString message, QObject* unexpected, QObject* actual);
     /*public*/ static void assertNotEquals(QString expected, QString actual);
     /*public*/ static void assertNotEquals(QObject* unexpected, QObject* actual);
