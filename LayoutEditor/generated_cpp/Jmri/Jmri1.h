@@ -3021,6 +3021,7 @@ void delete_LnReporterManager(LnReporterManager* obj) { delete obj; }
    QString  py_q_getEntryToolTip(LnReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_getEntryToolTip());}
    QString  py_q_getSystemPrefix(LnReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_getSystemPrefix());}
    Manager::NameValidity  py_q_validSystemNameFormat(LnReporterManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_validSystemNameFormat(systemName));}
+   QString  validateSystemNameFormat(LnReporterManager* theWrappedObject, QString  systemName, QLocale  locale);
 };
 
 
@@ -3047,6 +3048,7 @@ virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
+virtual int  getCommandedState();
 virtual QString  getComment();
 virtual QString  getDisplayName();
 virtual QString  getFullyFormattedDisplayName();
@@ -3064,11 +3066,13 @@ virtual long  getSensorDebounceGoingActiveTimer();
 virtual long  getSensorDebounceGoingInActiveTimer();
 virtual int  getState();
 virtual QString  getSystemName() const;
+virtual bool  getUseDefaultTimerSettings();
 virtual QString  getUserName();
 virtual bool  hashCode();
 virtual void removeProperty(QString  key);
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1) const;
 virtual void requestUpdateFromLayout() const;
+virtual void setCommandedState(int  s);
 virtual void setComment(QString  comment);
 virtual void setInverted(bool  inverted);
 virtual void setKnownState(int  s);
@@ -3077,6 +3081,7 @@ virtual void setSensorDebounceGoingActiveTimer(long  time);
 virtual void setSensorDebounceGoingInActiveTimer(long  time);
 virtual void setState(int  s);
 virtual void setSysName(QString  s);
+virtual void setUseDefaultTimerSettings(bool  boo);
 virtual void setUserName(QString  s);
 virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
@@ -3104,6 +3109,7 @@ LnSensor* new_LnSensor(QString  systemName, LnTrafficController*  tc = NULL, QSt
 LnSensor* new_LnSensor(QString  systemName, QString  userName, LnTrafficController*  tc = NULL, QString  prefix = "L", QObject*  parent = 0);
 void delete_LnSensor(LnSensor* obj) { delete obj; } 
    void py_q_dispose(LnSensor* theWrappedObject){  (((PythonQtPublicPromoter_LnSensor*)theWrappedObject)->py_q_dispose());}
+   void messageFromManager(LnSensor* theWrappedObject, LocoNetMessage*  l);
    void py_q_requestUpdateFromLayout(LnSensor* theWrappedObject) const{  (((PythonQtPublicPromoter_LnSensor*)theWrappedObject)->py_q_requestUpdateFromLayout());}
    void py_q_setKnownState(LnSensor* theWrappedObject, int  s){  (((PythonQtPublicPromoter_LnSensor*)theWrappedObject)->py_q_setKnownState(s));}
 };

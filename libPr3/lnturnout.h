@@ -36,6 +36,9 @@ public:
  //    /*public*/ void message(LocoNetMessage* l);
  /*public*/ virtual void dispose();
  /*public*/ bool canInvert();
+ /*public*/ void messageFromManager(LocoNetMessage* l);
+ static const int METERINTERVAL;// = 100;  // msec wait before closed
+ /*public*/ void setUseOffSwReqAsConfirmation(bool state);
 
 signals:
     
@@ -50,7 +53,6 @@ private:
  bool pending;
  // data members
  int _number;   // loconet turnout number
- static const int METERINTERVAL = 100;  // msec wait before closed
  static QTimer*  meterTimer;
  // data members
  /*private*/ void initFeedbackModes();
@@ -61,6 +63,27 @@ private:
  //to reflect the turnout invert property
  /*private*/ int adjustStateForInversion(int rawState);
  LnTurnoutTimerTask* timerTask;
+ /*private*/ void computeKnownStateOpSwAckReq(int sw2, int state);
+ /*private*/ void setKnownStateFromOutputStateClosedReport();
+ /*private*/ void setKnownStateFromOutputStateThrownReport() ;
+ /*private*/ void setKnownStateFromOutputStateOddReport();
+ /*private*/ void setKnownStateFromOutputStateReallyOddReport();
+ /*private*/ void computeFromOutputStateReport(int sw2);
+ /*private*/ void computeFeedbackFromSwitchReport(int sw2);
+ /*private*/ void computeFeedbackFromSwitchOffReport();
+ /*private*/ void computeFeedbackFromSwitchOnReport();
+ /*private*/ void computeFromSwFeedbackState(int sw2);
+ /*private*/ void computeFeedbackFromAuxInputReport(int sw2);
+ /*private*/ void handleReceivedOpSwRep(LocoNetMessage* l);
+ /*private*/ void handleReceivedOpSwAckReq(LocoNetMessage* l);
+ bool _useOffSwReqAsConfirmation = false;
+ /**
+  * True when setFeedbackMode has specified the mode;
+  * false when the mode is just left over from initialization.
+  * This is intended to indicate (when true) that a configuration
+  * file has set the value; message-created turnouts have it false.
+  */
+ bool feedbackDeliberatelySet = false; // package to allow access from LnTurnoutManager
 
 protected:
  // Handle a request to change state by sending a LocoNet command
@@ -68,7 +91,9 @@ protected:
 
  /*protected*/ virtual void turnoutPushbuttonLockout(bool _pushButtonLockout);
  friend class LnTurnoutTimerTask;
+ friend class LnTurnoutTest;
 };
+
 class LnTurnoutTimerTask : public TimerTask
 {
  Q_OBJECT

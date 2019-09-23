@@ -50,8 +50,13 @@ public:
 
    static int OPC_SW_REP_SW    ; //0x20;  /* switch input, aux input otherwise    */
    static int OPC_SW_REP_HI    ; //0x10;  /* input is HI, LO otherwise            */
-   static const int OPC_SW_REP_CLOSED; //0x20;  /* 'Closed' line is ON, OFF otherwise   */
-   static const int OPC_SW_REP_THROWN; //0x10;  /* 'Thrown' line is ON, OFF otherwise   */
+//   static const int OPC_SW_REP_CLOSED; //0x20;  /* 'Closed' line is ON, OFF otherwise   */
+//   static const int OPC_SW_REP_THROWN; //0x10;  /* 'Thrown' line is ON, OFF otherwise   */
+   enum OPC_SW_Rep_Vals
+   {
+     OPC_SW_REP_CLOSED=0x20,
+     OPC_SW_REP_THROWN =0x10
+   };
    static int OPC_SW_REP_INPUTS; //0x40;  /* sensor inputs, outputs otherwise     */
 
    static int OPC_SW_REQ_DIR   ; //0x20;  /* switch direction - closed/thrown     */

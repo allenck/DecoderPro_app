@@ -109,6 +109,10 @@ LnTurnout::LnTurnout(QString prefix, int number, LocoNetInterface* controller, Q
 
  /*public*/ int LnTurnout::getNumber() { return _number; }
 
+/*public*/ void LnTurnout::setUseOffSwReqAsConfirmation(bool state) {
+    _useOffSwReqAsConfirmation = state;
+}
+
  // Handle a request to change state by sending a LocoNet command
  /*protected*/ void LnTurnout::forwardCommandChangeToLayout(/*final*/ int newstate) {
 
@@ -134,7 +138,10 @@ LnTurnout::LnTurnout(QString prefix, int number, LocoNetInterface* controller, Q
          timerTask = new LnTurnoutTimerTask(newstate, this);
          connect(meterTimer, SIGNAL(timeout()), this, SLOT(meterTimerTimeout()));
     }
- }
+}
+/*static*/ const int LnTurnout::METERINTERVAL = 100;  // msec wait before closed
+
+
 LnTurnoutTimerTask::LnTurnoutTimerTask(int state, LnTurnout* turnout)
 {
  this->turnout = turnout;
@@ -200,6 +207,180 @@ void LnTurnout::sendSetOffMessage(int state) {
     sendOpcSwReqMessage(adjustStateForInversion(state), false);
 }
 
+/*private*/ void LnTurnout::computeKnownStateOpSwAckReq(int sw2, int state) {
+    bool on = ((sw2 & LnConstants::OPC_SW_REQ_OUT) != 0);
+    switch (getFeedbackMode()) {
+        case MONITORING:
+            if ((!on) || (!_useOffSwReqAsConfirmation)) {
+                newKnownState(state);
+            }
+            break;
+        case DIRECT:
+            newKnownState(state);
+            break;
+        default:
+            break;
+    }
+
+}
+/*private*/ void LnTurnout::setKnownStateFromOutputStateClosedReport() {
+    newCommandedState(CLOSED);
+    if (getFeedbackMode() == MONITORING || getFeedbackMode() == DIRECT) {
+        newKnownState(CLOSED);
+    }
+}
+
+/*private*/ void LnTurnout::setKnownStateFromOutputStateThrownReport() {
+    newCommandedState(THROWN);
+    if (getFeedbackMode() == MONITORING || getFeedbackMode() == DIRECT) {
+        newKnownState(THROWN);
+    }
+}
+
+/*private*/ void LnTurnout::setKnownStateFromOutputStateOddReport() {
+    newCommandedState(CLOSED + THROWN);
+    if (getFeedbackMode() == MONITORING || getFeedbackMode() == DIRECT) {
+        newKnownState(CLOSED + THROWN);
+    }
+}
+
+/*private*/ void LnTurnout::setKnownStateFromOutputStateReallyOddReport() {
+    newCommandedState(0);
+    if (getFeedbackMode() == MONITORING || getFeedbackMode() == DIRECT) {
+        newKnownState(0);
+    }
+}
+
+/*private*/ void LnTurnout::computeFromOutputStateReport(int sw2) {
+    // LnConstants::OPC_SW_REP_INPUTS not set, these report outputs
+    // sort out states
+    int state;
+    state = sw2
+            & (LnConstants::OPC_SW_REP_CLOSED | LnConstants::OPC_SW_REP_THROWN);
+    state = adjustStateForInversion(state);
+
+    switch (state) {
+        case LnConstants::OPC_SW_REP_CLOSED:
+            setKnownStateFromOutputStateClosedReport();
+            break;
+        case LnConstants::OPC_SW_REP_THROWN:
+            setKnownStateFromOutputStateThrownReport();
+            break;
+        case LnConstants::OPC_SW_REP_CLOSED | LnConstants::OPC_SW_REP_THROWN:
+            setKnownStateFromOutputStateOddReport();
+            break;
+        default:
+            setKnownStateFromOutputStateReallyOddReport();
+            break;
+    }
+}
+
+/*private*/ void LnTurnout::computeFeedbackFromSwitchReport(int sw2) {
+    // Switch input report
+    if ((sw2 & LnConstants::OPC_SW_REP_HI) != 0) {
+        computeFeedbackFromSwitchOffReport();
+    } else {
+        computeFeedbackFromSwitchOnReport();
+    }
+}
+
+/*private*/ void LnTurnout::computeFeedbackFromSwitchOffReport() {
+    // switch input closed (off)
+    if (getFeedbackMode() == EXACT) {
+        // reached closed state
+        newKnownState(adjustStateForInversion(CLOSED));
+    } else if (getFeedbackMode() == INDIRECT) {
+        // reached closed state
+        newKnownState(adjustStateForInversion(CLOSED));
+    } else if (!feedbackDeliberatelySet) {
+        // don't have a defined feedback mode, but know we've reached closed state
+        log->debug("setting CLOSED with !feedbackDeliberatelySet");
+        newKnownState(adjustStateForInversion(CLOSED));
+    }
+}
+
+/*private*/ void LnTurnout::computeFeedbackFromSwitchOnReport() {
+    // switch input thrown (input on)
+    if (getFeedbackMode() == EXACT) {
+        // leaving CLOSED on way to THROWN, go INCONSISTENT if not already THROWN
+        if (getKnownState() != THROWN) {
+            newKnownState(INCONSISTENT);
+        }
+    } else if (getFeedbackMode() == INDIRECT) {
+        // reached thrown state
+        newKnownState(adjustStateForInversion(THROWN));
+    } else if (!feedbackDeliberatelySet) {
+        // don't have a defined feedback mode, but know we're not in closed state, most likely is actually thrown
+        log->debug("setting THROWN with !feedbackDeliberatelySet");
+        newKnownState(adjustStateForInversion(THROWN));
+    }
+}
+
+/*private*/ void LnTurnout::computeFromSwFeedbackState(int sw2) {
+    // LnConstants::OPC_SW_REP_INPUTS set, these are feedback messages from inputs
+    // sort out states
+    if ((sw2 & LnConstants::OPC_SW_REP_SW) != 0) {
+        computeFeedbackFromSwitchReport(sw2);
+
+    } else {
+        computeFeedbackFromAuxInputReport(sw2);
+    }
+}
+
+/*private*/ void LnTurnout::computeFeedbackFromAuxInputReport(int sw2) {
+    // This is only valid in EXACT mode, so if we encounter it
+    //  without a feedback mode set, we switch to EXACT
+    if (!feedbackDeliberatelySet) {
+        setFeedbackMode(EXACT);
+        feedbackDeliberatelySet = false; // was set when setting feedback
+    }
+
+    if ((sw2 & LnConstants::OPC_SW_REP_HI) != 0) {
+        // aux input closed (off)
+        if (getFeedbackMode() == EXACT) {
+            // reached thrown state
+            newKnownState(adjustStateForInversion(THROWN));
+        }
+    } else {
+        // aux input thrown (input on)
+        if (getFeedbackMode() == EXACT) {
+            // leaving THROWN on the way to CLOSED, go INCONSISTENT if not already CLOSED
+            if (getKnownState() != CLOSED) {
+                newKnownState(INCONSISTENT);
+            }
+        }
+    }
+}
+/*private*/ void LnTurnout::handleReceivedOpSwRep(LocoNetMessage* l) {
+    int sw1 = l->getElement(1);
+    int sw2 = l->getElement(2);
+    if (myAddress(sw1, sw2)) {
+
+        log->debug("SW_REP received with valid address");
+        // see if its a turnout state report
+        if ((sw2 & LnConstants::OPC_SW_REP_INPUTS) == 0) {
+            computeFromOutputStateReport(sw2);
+        } else {
+            computeFromSwFeedbackState(sw2);
+        }
+    }
+}
+
+/*private*/ void LnTurnout::handleReceivedOpSwAckReq(LocoNetMessage* l) {
+        int sw2 = l->getElement(2);
+        if (myAddress(l->getElement(1), sw2)) {
+
+            log->debug("SW_REQ received with valid address");
+            //sort out states
+            int state;
+            state = ((sw2 & LnConstants::OPC_SW_REQ_DIR) != 0) ? CLOSED : THROWN;
+            state = adjustStateForInversion(state);
+
+            newCommandedState(state);
+            computeKnownStateOpSwAckReq(sw2, state);
+        }
+    }
+
  // implementing classes will typically have a function/listener to get
  // updates from the layout, which will then call
  //		public void firePropertyChange(String propertyName,
@@ -235,7 +416,7 @@ void LnTurnout::sendSetOffMessage(int state) {
              if (log->isDebugEnabled()) log->debug("SW_REP received with valid address");
              // see if its a turnout state report
              if ((sw2 & LnConstants::OPC_SW_REP_INPUTS)==0) {
-                 // LnConstants.OPC_SW_REP_INPUTS not set, these report outputs
+                 // LnConstants::OPC_SW_REP_INPUTS not set, these report outputs
                     // sort out states
                      int state;
                      state = sw2 &
@@ -261,7 +442,7 @@ void LnTurnout::sendSetOffMessage(int state) {
                      break;
                  }
              } else {
-                // LnConstants.OPC_SW_REP_INPUTS set, these are feedback messages from inputs
+                // LnConstants::OPC_SW_REP_INPUTS set, these are feedback messages from inputs
                     // sort out states
                     // see EXACT feedback note at top
                 if ((sw2 & LnConstants::OPC_SW_REP_SW) !=0) {
@@ -309,6 +490,29 @@ void LnTurnout::sendSetOffMessage(int state) {
      }
      // reach here only in error
  }
+
+// implementing classes will typically have a function/listener to get
+// updates from the layout, which will then call
+//        public void firePropertyChange(String propertyName,
+//                              Object oldValue,
+//                        Object newValue)
+// _once_ if anything has changed state (or set the commanded state directly)
+/*public*/ void LnTurnout::messageFromManager(LocoNetMessage* l) {
+    // parse message type
+    switch (l->getOpCode()) {
+        case LnConstants::OPC_SW_ACK:
+        case LnConstants::OPC_SW_REQ: {
+            handleReceivedOpSwAckReq(l);
+            return;
+            }
+        case LnConstants::OPC_SW_REP: {
+            handleReceivedOpSwRep(l);
+            return;
+        }
+        default:
+            return;
+    }
+}
 
  /*protected*/ void LnTurnout::turnoutPushbuttonLockout(bool _pushButtonLockout){
     if (log->isDebugEnabled())

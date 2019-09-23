@@ -1,6 +1,7 @@
 #include "assert1.h"
 #include "loggerfactory.h"
 #include "programmingmode.h"
+#include "reporter.h"
 
 //Assert::Assert(QObject *parent) : QObject(parent)
 //{
@@ -155,6 +156,22 @@
             fail(tr("%1 message ProgrammingMode not same %2 vs %3").arg(actual->getStandardName()).arg(expected->getStandardName()));
     }
 }
+/*public*/ /*static*/ void Assert::assertEquals(QString message, Reporter* expected, Reporter* actual)
+{
+    if(actual != nullptr && expected != nullptr)
+    {
+        if(!actual->equals(expected))
+            fail(tr("%1 message Reporter not same %2 vs %3").arg(actual->getDisplayName()).arg(expected->getDisplayName()));
+    }
+}
+/*public*/ /*static*/ void Assert::assertEquals(QString message, QVariant expected, QVariant actual)
+{
+    //if(actual != nullptr && expected != nullptr)
+    {
+        if(actual!=(expected))
+            fail(tr("%1 message Reporter not same %2 vs %3").arg(actual.toString()).arg(expected.toString()));
+    }
+}
 
     /*public*/ /*static*/ void Assert::assertEquals(QString message, bool expected, bool actual)
     {
@@ -187,6 +204,11 @@
     if(expected != actual)
         fail(tr("%1 not equal expected '0x%2' vs '0x%3'").arg(message).arg(expected,0,16).arg(actual,0,16));
     }
+/*public*/ /*static*/ void Assert::assertEquals(QString message, long expected, long actual)
+{
+if(expected != actual)
+    fail(tr("%1 not equal expected '0x%2' vs '0x%3'").arg(message).arg(expected,0,16).arg(actual,0,16));
+}
 
     /*public*/ /*static*/ void Assert::assertEquals(QDomElement expected, QDomElement actual, QDomElement delta)
     {
@@ -194,6 +216,11 @@
             fail(tr("unequal elements expected %1 vs %2").arg(expected.tagName()).arg(actual.tagName()));
 
     }
+/*public*/ /*static*/ void Assert::assertEquals(QString message, QChar expected, QChar actual)
+{
+if(expected != actual)
+    fail(tr("%1 not equal expected '0x%2' vs '0x%3'").arg(message).arg(expected,0,16).arg(actual,0,16));
+}
 
 #if 0
     private static bool equalsRegardingNull(Object expected, Object actual) {
@@ -235,7 +262,7 @@
         // </editor-fold>
     }
 #endif
-/*public*/ /*static*/ void Assert::assertEquals(QString expected, QString actual) {
+/*public*/ /*static*/ void Assert::assertEquals(QString actual, QString expected) {
     if(expected != actual)
     {
         fail(tr("Strings do not match: expected \"%1\" vs \"%2\"").arg(expected).arg(actual));
@@ -824,6 +851,11 @@
      if(object.isEmpty())
          fail(message);
     }
+/*public*/ /*static*/ void Assert::assertNotNull(QString message, QVariant object)
+{
+ if(object.isNull())
+     fail(tr("QVariant is null %1").arg(message));
+}
 
     /*public*/ /*static*/ void Assert::assertNotNull(QObject* object) {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
@@ -874,6 +906,10 @@
 /*public*/ /*static*/ void Assert::assertNull(QString message, QString object) {
  if(!object.isNull())
      fail(tr("%1, string not empty").arg(message));
+}
+/*public*/ /*static*/ void Assert::assertNull(QString message, QVariant object) {
+ if(!object.isNull())
+     fail(tr("%1, QVariant not null").arg(message));
 }
 
 #if 0

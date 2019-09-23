@@ -15,6 +15,8 @@
 #include "tests/ProfileTest/profileutilstestaction.h"
 #include "tests/loconet/lntrafficroutertestaction.h"
 #include "tests/loconet/lnpowermanagertestaction.h"
+#include "tests/loconet/lnturnouttestaction.h"
+#include "tests/loconet/lnsensortestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -41,6 +43,8 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addAction(new LnPortControllerTestAction(this));
     loconetTestMenu->addAction(new LnPacketizerTestAction(this));
     loconetTestMenu->addAction(new LnPowerManagerTestAction(this));
+    loconetTestMenu->addAction(new LnTurnoutTestAction(this));
+    loconetTestMenu->addAction(new LnSensorTestAction(this));
 
     QMenu* sprogTestMenu = new QMenu(tr("Sprog"));
     addMenu(sprogTestMenu);

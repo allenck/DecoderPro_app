@@ -86,6 +86,24 @@ void AbstractSensor::setSensorDebounceGoingInActiveTimer(long time)
 long AbstractSensor::getSensorDebounceGoingInActiveTimer()
 { return sensorDebounceGoingInActive; }
 
+//@Override
+/*public*/ void AbstractSensor::setUseDefaultTimerSettings(bool boo) {
+    if (boo == _useDefaultTimerSettings) {
+        return;
+    }
+    _useDefaultTimerSettings = boo;
+    if (_useDefaultTimerSettings) {
+        sensorDebounceGoingActive = ((SensorManager*)InstanceManager::sensorManagerInstance())->getDefaultSensorDebounceGoingActive();
+        sensorDebounceGoingInActive = ((SensorManager*)InstanceManager::sensorManagerInstance())->getDefaultSensorDebounceGoingInActive();
+    }
+    firePropertyChange("GlobalTimer", !boo, boo);
+}
+
+//@Override
+/*public*/ bool AbstractSensor::getUseDefaultTimerSettings() {
+    return _useDefaultTimerSettings;
+}
+
 void AbstractSensor::useDefaultTimerSettings(bool boo)
 {
  if(boo==_useDefaultTimerSettings)
@@ -328,6 +346,28 @@ void AbstractSensor::setReporter(Reporter* er){
 
 Reporter* AbstractSensor::getReporter(){
     return reporter;
+}
+
+/**
+ * Set the pull resistance
+ * <p>
+ * In this default implementation, the input value is ignored.
+ *
+ * @param r PullResistance value to use.
+ */
+//@Override
+/*public*/ void setPullResistance(Sensor::PullResistance r){
+}
+
+/**
+ * Get the pull resistance.
+ *
+ * @return the currently set PullResistance value.  In this default
+ * implementation, PullResistance.PULL_OFF is always returned.
+ */
+//@Override
+/*public*/ Sensor::PullResistance::PULLRESISTANCE getPullResistance(){
+   return Sensor::PullResistance::PULL_OFF;
 }
 ASRunnable::ASRunnable(QObject *as) : Runnable(as)
 {

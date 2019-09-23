@@ -28,12 +28,12 @@ public:
  /*public*/ bool updateCmdStnOpSw(int opSwNum, bool val);
  /*public*/ bool extractCmdStnOpSw(int cmdStnOpSwNum);
  /*public*/ LocoNetMessage* updateOpSwVal(int cmdStnOpSwNum, bool cmdStnOpSwVal);
- /*public*/ void message(LocoNetMessage* m);
  /*public*/ CmdStnOpSwStateType getState();
 
 signals:
 
 public slots:
+ /*public*/ void message(LocoNetMessage* m);
 
 private:
  /*private*/ QTimer* csOpSwAccessTimer;

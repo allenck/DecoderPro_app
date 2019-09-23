@@ -20,7 +20,7 @@ void LnOpsModeProgrammerTestAction::actionPerformed()
   lomp->testGetCanReadWithTransponding();
   lomp->testSV2DataBytes();
   lomp->testSV2highBits();
-   lomp->testSOps16001Read();
+//   lomp->testSOps16001Read();
    lomp->testSv1Write();
    lomp->testBoardRead0();
    lomp->testBoardRead1();

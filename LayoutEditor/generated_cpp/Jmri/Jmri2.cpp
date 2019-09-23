@@ -2416,6 +2416,11 @@ int  PythonQtWrapper_LnTurnout::getNumber(LnTurnout* theWrappedObject)
   return ( theWrappedObject->getNumber());
 }
 
+void PythonQtWrapper_LnTurnout::messageFromManager(LnTurnout* theWrappedObject, LocoNetMessage*  l)
+{
+  ( theWrappedObject->messageFromManager(l));
+}
+
 void PythonQtWrapper_LnTurnout::sendOpcSwReqMessage(LnTurnout* theWrappedObject, int  state, bool  on)
 {
   ( theWrappedObject->sendOpcSwReqMessage(state, on));
@@ -2424,6 +2429,11 @@ void PythonQtWrapper_LnTurnout::sendOpcSwReqMessage(LnTurnout* theWrappedObject,
 void PythonQtWrapper_LnTurnout::sendSetOffMessage(LnTurnout* theWrappedObject, int  state)
 {
   ( theWrappedObject->sendSetOffMessage(state));
+}
+
+void PythonQtWrapper_LnTurnout::setUseOffSwReqAsConfirmation(LnTurnout* theWrappedObject, bool  state)
+{
+  ( theWrappedObject->setUseOffSwReqAsConfirmation(state));
 }
 
 
@@ -21044,6 +21054,10 @@ if (_wrapper) {
 }
   ProgrammingMode::timerEvent(event0);
 }
+ProgrammingMode* PythonQtWrapper_ProgrammingMode::new_ProgrammingMode(QString  standardName, QObject*  parent)
+{ 
+return new PythonQtShell_ProgrammingMode(standardName, parent); }
+
 ProgrammingMode* PythonQtWrapper_ProgrammingMode::new_ProgrammingMode(QString  standardName, QString  localName, QObject*  parent)
 { 
 return new PythonQtShell_ProgrammingMode(standardName, localName, parent); }

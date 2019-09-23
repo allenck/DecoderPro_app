@@ -84,6 +84,7 @@
     destination = i;
     connected = true;
     i->addLocoNetListener(LocoNetInterface::ALL, (LocoNetListener*)this);
+//    connect(i, SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
 }
 
 /**

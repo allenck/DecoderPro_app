@@ -58,6 +58,8 @@ LnTrafficRouterTest::LnTrafficRouterTest(QObject *parent) : QObject(parent)
 //    };
     LocoNetListenerO1* l = new LocoNetListenerO1(this);
     router->addLocoNetListener(~0, l);
+    connect(router, SIGNAL(messageProcessed(LocoNetMessage*)), l, SLOT(message(LocoNetMessage*)));
+
     // send a message
     LocoNetMessage* m = new LocoNetMessage(3);
     router->message(m);

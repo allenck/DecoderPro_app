@@ -2,15 +2,20 @@
 #define LNCPSIGNALMAST_H
 #include "dccsignalmast.h"
 
+class LocoNetMessage;
 class LnTrafficController;
 class LNCPSignalMast : public DccSignalMast
 {
+ Q_OBJECT
 public:
  /*public*/ LNCPSignalMast(QString sys, QString user, QObject* parent = nullptr);
  /*public*/ LNCPSignalMast(QString sys, QObject* parent = nullptr);
  /*public*/ void setAspect(QString aspect);
  /*public*/ void setKnownState(QString aspect) ;
  /*public*/ void dispose();
+
+public slots:
+ /*public*/ void message(LocoNetMessage* l);
 
 private:
  void init();

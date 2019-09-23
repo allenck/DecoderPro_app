@@ -62,6 +62,7 @@ Q_OBJECT
     AbstractPowerManagerTestBase* tb;
 public:
     Listen(AbstractPowerManagerTestBase* tb) {this->tb = tb;}
+public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e) {
         tb->listenerResult = true;

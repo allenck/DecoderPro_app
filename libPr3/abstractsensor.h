@@ -72,6 +72,11 @@ public:
     void setReporter(Reporter* er);
     Reporter* getReporter();
     QString getStateName(int);
+    /*public*/ void setUseDefaultTimerSettings(bool boo);
+    /*public*/ bool getUseDefaultTimerSettings();
+    /*public*/ void setPullResistance(Sensor::PullResistance r);
+    /*public*/ Sensor::PullResistance::PULLRESISTANCE getPullResistance();
+
 
 signals:
     //void propertyChange(QString propertyName, int oldState, int knownState);

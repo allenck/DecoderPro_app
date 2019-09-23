@@ -7,6 +7,7 @@
 #include "namedbeanhandle.h"
 #include "reporter.h"
 #include "libPr3_global.h"
+#include <QStringList>
 
 class LIBPR3SHARED_EXPORT Sensor : public AbstractNamedBean
 {
@@ -48,7 +49,12 @@ public:
       INCONSISTENT =0x08
     };
     Q_ENUM(STATES)
-
+    enum DIGITALIO
+    {
+     ON = 0x02,
+     OFF = 0x04
+    };
+    Q_ENUM(DIGITALIO)
         /**
          * Known state on layout is a bound parameter
          * @return known state value
@@ -139,7 +145,8 @@ public:
         * Get the InActive debounce delay in milliSeconds.
         */
         virtual long getSensorDebounceGoingInActiveTimer() const /*=0*/ {return 0;}
-
+        virtual /*public*/ void setUseDefaultTimerSettings(bool boo)=0;
+        virtual /*public*/ bool getUseDefaultTimerSettings()=0;
         /**
         * Use the timers specified in the Sensor manager, for the debounce delay
         */
@@ -168,12 +175,59 @@ public:
          */
         virtual Reporter* getReporter() const /*=0*/ {return NULL;}
     int thisAddr;
+    virtual /*default*/ /*public*/ int getCommandedState();
+    virtual void setCommandedState(int s);
 
+    class PullResistance
+    {
+    public:
+     enum PULLRESISTANCE
+     {
+      PULL_UP,
+      PULL_DOWN,
+      PULL_OFF
+     };
+     QStringList shortNames = QStringList() << "up"<< "down" << "off";
+     QStringList peopleNames = QStringList() << "PullResistanceUp" << "PullResistanceDown" << "PullResistanceOff";
+     /*public*/ QString getShortName() {
+         return shortName;
+      }
+
+      /*public*/ QString getPeopleName() {
+         return peopleName;
+      }
+#if 0
+      static public PullResistance getByShortName(String shName) {
+          for (PullResistance p : PullResistance.values()) {
+              if (p.shortName.equals(shName)) {
+                  return p;
+              }
+          }
+          throw new java.lang.IllegalArgumentException("argument value " + shName + " not valid");
+      }
+
+      static public PullResistance getByPeopleName(String pName) {
+          for (PullResistance p : PullResistance.values()) {
+              if (p.peopleName.equals(pName)) {
+                  return p;
+              }
+          }
+          throw new java.lang.IllegalArgumentException("argument value " + pName + " not valid");
+      }
+#endif
+     //@Override
+     virtual /*public*/ QString toString(){
+        return( peopleName );
+     }
+    private:
+      QString shortName;
+      QString peopleName;
+    };
 signals:
     
 public slots:
 private:
-    
+    static Logger* log;
 };
 
 Q_DECLARE_INTERFACE(Sensor, "Sensor")

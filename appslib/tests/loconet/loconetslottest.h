@@ -79,6 +79,7 @@ class SlotListenerO2 : public SlotListener
 public:
     SlotListenerO2(LocoNetSlotTest* smt) {this->smt = smt;}
     //@Override
+public slots:
     /*public*/ void notifyChangedSlot(LocoNetSlot* l) {
     }
 };

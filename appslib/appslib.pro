@@ -509,13 +509,20 @@ SOURCES += appslib.cpp \
     tests/loconet/lntrafficroutertestaction.cpp \
     tests/loconet/loconetconsisttest.cpp \
     tests/loconet/loconetconsisttestaction.cpp \
-    tests/loconet/abstractconsisttestbase.cpp \
     tests/loconet/lnpowermanagertest.cpp \
     tests/abstractpowermanagertestbase.cpp \
-    tests/loconet/lnpowermanagertestaction.cpp
+    tests/loconet/lnpowermanagertestaction.cpp \
+    tests/abstractturnouttestbase.cpp \
+    tests/loconet/lnturnouttest.cpp \
+    tests/loconet/lnturnouttestaction.cpp \
+    tests/abstractreportertest.cpp \
+    tests/abstractsensortestbase.cpp \
+    tests/abstractconsisttestbase.cpp \
+    tests/loconet/lnsensortest.cpp \
+    tests/loconet/lnsensortestaction.cpp
 
 HEADERS += appslib.h\
-        appslib_global.h \
+    appslib_global.h \
     apps.h \
     myapplication.h \
     createbuttonmodel.h \
@@ -971,10 +978,17 @@ HEADERS += appslib.h\
     tests/loconet/lntrafficroutertestaction.h \
     tests/loconet/loconetconsisttest.h \
     tests/loconet/loconetconsisttestaction.h \
-    tests/loconet/abstractconsisttestbase.h \
     tests/loconet/lnpowermanagertest.h \
     tests/abstractpowermanagertestbase.h \
-    tests/loconet/lnpowermanagertestaction.h
+    tests/loconet/lnpowermanagertestaction.h \
+    tests/abstractturnouttestbase.h \
+    tests/loconet/lnturnouttest.h \
+    tests/loconet/lnturnouttestaction.h \
+    tests/abstractreportertest.h \
+    tests/abstractsensortestbase.h \
+    tests/abstractconsisttestbase.h \
+    tests/loconet/lnsensortest.h \
+    tests/loconet/lnsensortestaction.h
 
 unix:!symbian {
     maemo5 {

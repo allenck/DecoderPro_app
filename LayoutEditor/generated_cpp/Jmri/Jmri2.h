@@ -209,8 +209,10 @@ void delete_LnTurnout(LnTurnout* obj) { delete obj; }
    void py_q_dispose(LnTurnout* theWrappedObject){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_dispose());}
    void py_q_forwardCommandChangeToLayout(LnTurnout* theWrappedObject, int  newstate){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_forwardCommandChangeToLayout(newstate));}
    int  getNumber(LnTurnout* theWrappedObject);
+   void messageFromManager(LnTurnout* theWrappedObject, LocoNetMessage*  l);
    void sendOpcSwReqMessage(LnTurnout* theWrappedObject, int  state, bool  on);
    void sendSetOffMessage(LnTurnout* theWrappedObject, int  state);
+   void setUseOffSwReqAsConfirmation(LnTurnout* theWrappedObject, bool  state);
    void py_q_turnoutPushbuttonLockout(LnTurnout* theWrappedObject, bool  _pushButtonLockout){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_turnoutPushbuttonLockout(_pushButtonLockout));}
 };
 
@@ -2285,7 +2287,8 @@ void delete_ProgrammerManager(ProgrammerManager* obj) { delete obj; }
 class PythonQtShell_ProgrammingMode : public ProgrammingMode
 {
 public:
-    PythonQtShell_ProgrammingMode(QString  standardName, QString  localName = "standardName", QObject*  parent = nullptr):ProgrammingMode(standardName, localName, parent),_wrapper(NULL) {}
+    PythonQtShell_ProgrammingMode(QString  standardName, QObject*  parent = nullptr):ProgrammingMode(standardName, parent),_wrapper(NULL) {}
+    PythonQtShell_ProgrammingMode(QString  standardName, QString  localName, QObject*  parent = nullptr):ProgrammingMode(standardName, localName, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_ProgrammingMode();
 
@@ -2304,7 +2307,8 @@ class PythonQtWrapper_ProgrammingMode : public QObject
 { Q_OBJECT
 public:
 public slots:
-ProgrammingMode* new_ProgrammingMode(QString  standardName, QString  localName = "standardName", QObject*  parent = nullptr);
+ProgrammingMode* new_ProgrammingMode(QString  standardName, QObject*  parent = nullptr);
+ProgrammingMode* new_ProgrammingMode(QString  standardName, QString  localName, QObject*  parent = nullptr);
 void delete_ProgrammingMode(ProgrammingMode* obj) { delete obj; } 
    bool  equals(ProgrammingMode* theWrappedObject, QObject*  o);
    QString  getStandardName(ProgrammingMode* theWrappedObject);

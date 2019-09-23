@@ -35,6 +35,7 @@ public:
      * @param l
      */
     void dispose();
+    /*public*/ void messageFromManager(LocoNetMessage* l);
 
 signals:
     

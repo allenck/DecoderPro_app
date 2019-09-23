@@ -20,6 +20,9 @@ public:
     //					      	Object oldValue,
     //						Object newValue)
     // _once_ if anything has changed state (or set the commanded state directly)
+    /*public*/ void messageFromManager(LocoNetMessage* l);
+    /*public*/ /*final*/ bool isTranspondingLocationReport(LocoNetMessage* l);
+    /*public*/ /*final*/ bool isTranspondingFindReport(LocoNetMessage* l);
    /**
     * Provide an int value for use in scripts, etc.  This will be
     * the numeric locomotive address last seen, unless the last

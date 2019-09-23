@@ -156,4 +156,7 @@ int LnTurnoutManager::address(int a1, int a2) {
     return (((a2 & 0x0f) * 128) + (a1 & 0x7f) + 1);
 }
 
+/*public*/ /*static*/ /*final*/ QString LnTurnoutManager::BYPASSBUSHBYBITKEY = "Bypass Bushby Bit";
+/*public*/ /*static*/ /*final*/ QString LnTurnoutManager::SENDONANDOFFKEY = "Send ON/OFF";
+
     //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LnTurnoutManager.class.getName());

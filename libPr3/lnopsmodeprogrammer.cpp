@@ -29,6 +29,7 @@
     mLongAddr = pLongAddr;
     // register to listen
     memo->getLnTrafficController()->addLocoNetListener(~0, (LocoNetListener*)this);
+    connect(memo->getLnTrafficController(), SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
 }
 
 /*public*/ LnOpsModeProgrammer::LnOpsModeProgrammer(SlotManager* pSlotMgr, LocoNetSystemConnectionMemo* memo, int pAddress, bool pLongAddr, QObject *parent)

@@ -14,6 +14,9 @@ public:
     virtual QString getSystemPrefix();
     virtual void dispose();
     virtual Turnout* createNewTurnout(QString systemName, QString userName);
+    /*public*/ static /*final*/ QString BYPASSBUSHBYBITKEY;// = "Bypass Bushby Bit";
+    /*public*/ static /*final*/ QString SENDONANDOFFKEY;// = "Send ON/OFF";
+
 public slots:
     // listen for turnouts, creating them as needed
     void message(LocoNetMessage* l);

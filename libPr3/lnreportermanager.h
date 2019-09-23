@@ -31,6 +31,7 @@ public:
     /*public*/ int getBitFromSystemName(QString systemName);
     /*public*/ NameValidity validSystemNameFormat(QString systemName);
     /*public*/ QString getEntryToolTip();
+    /*public*/ QString validateSystemNameFormat(QString systemName, QLocale locale);
 
 public slots:
     void message(LocoNetMessage* l);

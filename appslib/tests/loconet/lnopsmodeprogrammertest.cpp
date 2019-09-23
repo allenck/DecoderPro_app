@@ -4,7 +4,6 @@
 #include "lnopsmodeprogrammer.h"
 #include "lnprogrammermanager.h"
 #include "loconetinterfacescaffold.h"
-#include "junitutil.h"
 
 LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
 {
@@ -110,7 +109,7 @@ LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
     Assert::assertEquals("one message sent", 1, lnis->outbound.size());
     Assert::assertEquals("No programming reply", 0, pl->getRcvdInvoked());
 
-//    Assert::assertEquals("message", "[EF 0E 7C 2F 00 7D 01 00 00 01 00 7F 7F 00]", lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper());
+    Assert::assertEquals("message", "[EF 0E 7C 2F 00 7D 01 00 00 01 00 7F 7F 00]", lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper());
 
  }
 

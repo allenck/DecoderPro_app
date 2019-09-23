@@ -17,7 +17,7 @@
  * @version         $Revision: 17977 $
  */
 
-LnReporterManager::LnReporterManager(LocoNetSystemConnectionMemo*memo, QObject *parent) :
+LnReporterManager::LnReporterManager(LocoNetSystemConnectionMemo* memo, QObject *parent) :
     AbstractReporterManager(memo,parent)
 {
  setObjectName("LnReporterManager");
@@ -25,6 +25,7 @@ LnReporterManager::LnReporterManager(LocoNetSystemConnectionMemo*memo, QObject *
 // this->tc = tc;
  registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
 
+ tc = memo->getLnTrafficController();
  if (tc != NULL)
  {
   tc->addLocoNetListener(~0, (LocoNetListener*)this);
@@ -112,6 +113,14 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
     return (getBitFromSystemName(systemName) != 0) ? NameValidity::VALID : NameValidity::INVALID;
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString LnReporterManager::validateSystemNameFormat(QString systemName, QLocale locale) {
+    return validateIntegerSystemNameFormat(systemName, 1, 4096, locale);
+}
+
 //@Override
 /*public*/ QString LnReporterManager::getEntryToolTip() {
     return tr("enter a number from 1 to 2048 (inclusive).");
@@ -121,14 +130,32 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
 void LnReporterManager::message(LocoNetMessage* l)
 {
  // check message type
- if (l->getOpCode() != 0xD0) return;
- if ( (l->getElement(1) & 0xC0) != 0) return;
-
- // message type OK, check address
- int addr = (l->getElement(1)&0x1F)*128 + l->getElement(2) +1;
-
- LnReporter* r = (LnReporter*) provideReporter("LR"+addr);
- r->message(l);	// make sure it got the message
+  int addr;
+  switch (l->getOpCode()) {
+      case LnConstants::OPC_MULTI_SENSE:
+          if ((l->getElement(1) & 0xC0) == 0) {
+              addr = (l->getElement(1) & 0x1F) * 128 + l->getElement(2) + 1;
+              break;
+          }
+          return;
+      case LnConstants::OPC_PEER_XFER:
+          if (l->getElement(1) == 0x09 && l->getElement(2) == 0x00) {
+              addr = (l->getElement(5) & 0x1F) * 128 + l->getElement(6) + 1;
+              break;
+          }
+          return;
+      case LnConstants::OPC_LISSY_UPDATE:
+          if (l->getElement(1) == 0x08) {
+              addr =  (l->getElement(4) & 0x7F);
+              break;
+          }
+          return;
+      default:
+          return;
+  }
+  log.debug(tr("Reporter[%1]").arg(addr));
+  LnReporter* r = (LnReporter*) provideReporter(getSystemNamePrefix() + QString::number(addr)); // NOI18N
+  r->messageFromManager(l); // make sure it got the message
 }
 
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LnReporterManager.class.getName());

@@ -69,117 +69,158 @@ void LnSensor::init(QString systemName, QString prefix)
  setObjectName("LnSensor");
 }
 
-    /**
-     * request an update on status by sending a loconet message
-     */
-    void LnSensor::requestUpdateFromLayout() const {
-        // the only known way to do this from LocoNet is to request the
-        // status of _all_ devices, which is here considered too
-        // heavyweight.  Perhaps this is telling us we need
-        // a "update all" in the SensorManager (and/or TurnoutManager)
-        // interface?
-    }
+/**
+ * request an update on status by sending a loconet message
+ */
+void LnSensor::requestUpdateFromLayout() const {
+    // the only known way to do this from LocoNet is to request the
+    // status of _all_ devices, which is here considered too
+    // heavyweight.  Perhaps this is telling us we need
+    // a "update all" in the SensorManager (and/or TurnoutManager)
+    // interface?
+}
 
-    /**
-     * User request to set the state, which means that we broadcast that to
-     * all listeners by putting it out on LocoNet.
-     * In turn, the code in this class should use setOwnState to handle
-     * internal sets and bean notifies.
-     * @param s
-     * @throws JmriException
-     */
-    void LnSensor::setKnownState(int s)// throws jmri.JmriException
+/**
+ * User request to set the state, which means that we broadcast that to
+ * all listeners by putting it out on LocoNet.
+ * In turn, the code in this class should use setOwnState to handle
+ * internal sets and bean notifies.
+ * @param s
+ * @throws JmriException
+ */
+void LnSensor::setKnownState(int s)// throws jmri.JmriException
+{
+    // send OPC_INPUT_REP with new state to this address
+    LocoNetMessage* l = new LocoNetMessage(4);
+    l->setOpCode(LnConstants::OPC_INPUT_REP);
+    a->insertAddress(l);
+    // set state
+    if ((s==Sensor::ACTIVE)^ _inverted) {
+        l->setElement(2, l->getElement(2)|0x10);
+    } // otherwise is already OK
+    l->setElement(2, l->getElement(2)|0x40);
+    // send
+    tc->sendLocoNetMessage(l);
+    AbstractSensor::setOwnState(s);
+}
+
+/**
+ * implementing classes will typically have a function/listener to get
+ * updates from the layout, which will then call
+ *      public void firePropertyChange(QString propertyName,
+ *      					Object oldValue,
+ *                                          Object newValue)
+ * _once_ if anything has changed state (or set the commanded state directly)
+ * @param l
+ */
+void LnSensor::message(LocoNetMessage* l)
+{
+ // parse message type
+ switch (l->getOpCode())
+ {
+  case LnConstants::OPC_INPUT_REP: // 0xb2
+  {               /* page 9 of Loconet PE */
+   int sw1 = l->getElement(1);
+   int sw2 = l->getElement(2);
+   if (a->matchAddress(sw1, sw2))
+   {
+    // save the state
+    bool state = ((sw2 & 0x10) != 0) ^ _inverted;
+    if (log->isDebugEnabled())
+        log->debug("INPUT_REP received with valid address, old state "
+                    +QString("%1").arg(getRawState())+" new packet "+QString("%1").arg(state));
+    if ( state && getRawState() != Sensor::ACTIVE)
     {
-        // send OPC_INPUT_REP with new state to this address
-        LocoNetMessage* l = new LocoNetMessage(4);
-        l->setOpCode(LnConstants::OPC_INPUT_REP);
-        a->insertAddress(l);
-        // set state
-        if ((s==Sensor::ACTIVE)^ _inverted) {
-            l->setElement(2, l->getElement(2)|0x10);
-        } // otherwise is already OK
-        l->setElement(2, l->getElement(2)|0x40);
-        // send
-        tc->sendLocoNetMessage(l);
-        AbstractSensor::setOwnState(s);
+        if (log->isDebugEnabled()) log->debug(tr("Set %1 ACTIVE").arg(getSystemName()));
+        setOwnState(Sensor::ACTIVE);
     }
-
-    /**
-     * implementing classes will typically have a function/listener to get
-     * updates from the layout, which will then call
-     *      public void firePropertyChange(QString propertyName,
-     *      					Object oldValue,
-     *                                          Object newValue)
-     * _once_ if anything has changed state (or set the commanded state directly)
-     * @param l
-     */
-    void LnSensor::message(LocoNetMessage* l)
+    else if ( (!state) && getRawState() != Sensor::INACTIVE)
     {
-     // parse message type
-     switch (l->getOpCode())
-     {
-      case LnConstants::OPC_INPUT_REP: // 0xb2
-      {               /* page 9 of Loconet PE */
-       int sw1 = l->getElement(1);
-       int sw2 = l->getElement(2);
-       if (a->matchAddress(sw1, sw2))
-       {
-        // save the state
-        bool state = ((sw2 & 0x10) != 0) ^ _inverted;
-        if (log->isDebugEnabled())
-            log->debug("INPUT_REP received with valid address, old state "
-                        +QString("%1").arg(getRawState())+" new packet "+QString("%1").arg(state));
-        if ( state && getRawState() != Sensor::ACTIVE)
-        {
-            if (log->isDebugEnabled()) log->debug(tr("Set %1 ACTIVE").arg(getSystemName()));
-            setOwnState(Sensor::ACTIVE);
-        }
-        else if ( (!state) && getRawState() != Sensor::INACTIVE)
-        {
-            if (log->isDebugEnabled()) log->debug(tr("Set %2 INACTIVE").arg(getSystemName()));
-            setOwnState(Sensor::INACTIVE);
-        }
-       }
-       return;
-      }
-      // Added by ACK to set feedback sensors 10/03/2018
-      case LnConstants::OPC_SW_REP:
-      {
-         int sw1 = l->getElement(1);
-         int sw2 = l->getElement(2);
+        if (log->isDebugEnabled()) log->debug(tr("Set %2 INACTIVE").arg(getSystemName()));
+        setOwnState(Sensor::INACTIVE);
+    }
+   }
+   return;
+  }
+  // Added by ACK to set feedback sensors 10/03/2018
+  case LnConstants::OPC_SW_REP:
+  {
+     int sw1 = l->getElement(1);
+     int sw2 = l->getElement(2);
 
-       int addr = (((sw2 & 0x0f) * 128) + (sw1 & 0x7f)) + 1;
-       if(addr == thisAddr)
-       {
-       // save the state
-       bool state = ((sw2 & 0x10) != 0) ^ _inverted;
-       if (log->isDebugEnabled())
-       {
-         log->debug(tr("OPC_SW_REP received with address %1, old state ").arg(addr)
-                       +QString("%1").arg(getRawState())+" new packet "+QString("%1\n").arg(state)+ LocoNetMessageInterpret::interpretOpcSwRep(l, "LS"));
-       }
-       if ( state && getRawState() != Sensor::ACTIVE)
-       {
-           if (log->isDebugEnabled()) log->debug(tr("Set %1 ACTIVE").arg(getSystemName()));
-           setOwnState(Sensor::ACTIVE);
-       }
-       else if ( (!state) && getRawState() != Sensor::INACTIVE)
-       {
-           if (log->isDebugEnabled()) log->debug(tr("Set %2 INACTIVE").arg(getSystemName()));
-           setOwnState(Sensor::INACTIVE);
-       }
-      }
+   int addr = (((sw2 & 0x0f) * 128) + (sw1 & 0x7f)) + 1;
+   if(addr == thisAddr)
+   {
+   // save the state
+   bool state = ((sw2 & 0x10) != 0) ^ _inverted;
+   if (log->isDebugEnabled())
+   {
+     log->debug(tr("OPC_SW_REP received with address %1, old state ").arg(addr)
+                   +QString("%1").arg(getRawState())+" new packet "+QString("%1\n").arg(state)+ LocoNetMessageInterpret::interpretOpcSwRep(l, "LS"));
+   }
+   if ( state && getRawState() != Sensor::ACTIVE)
+   {
+       if (log->isDebugEnabled()) log->debug(tr("Set %1 ACTIVE").arg(getSystemName()));
+       setOwnState(Sensor::ACTIVE);
+   }
+   else if ( (!state) && getRawState() != Sensor::INACTIVE)
+   {
+       if (log->isDebugEnabled()) log->debug(tr("Set %2 INACTIVE").arg(getSystemName()));
+       setOwnState(Sensor::INACTIVE);
+   }
+  }
+  return;
+ }
+  default:
       return;
-     }
-      default:
-          return;
-     }
-     // reach here only in error
-    }
+ }
+ // reach here only in error
+}
 
-    void LnSensor::dispose() {
-        tc->removeLocoNetListener(~0, (LocoNetListener*)this);
-        AbstractSensor::dispose();
-    }
+void LnSensor::dispose() {
+    tc->removeLocoNetListener(~0, (LocoNetListener*)this);
+    AbstractSensor::dispose();
+}
+/**
+ * implementing classes will typically have a function/listener to get
+ * updates from the layout, which will then call public void
+ * firePropertyChange(String propertyName, Object oldValue, Object newValue)
+ * _once_ if anything has changed state (or set the commanded state
+ * directly)
+ *
+ */
+/*public*/ void LnSensor::messageFromManager(LocoNetMessage* l) {
+    // parse message type
+    switch (l->getOpCode()) {
+        case LnConstants::OPC_INPUT_REP: {               /* page 9 of LocoNet PE */
 
-    /*private*/ /*final*/ /*static*/ Logger* LnSensor::log = LoggerFactory::getLogger("LnSensor");
+            int sw1 = l->getElement(1);
+            int sw2 = l->getElement(2);
+            if (a->matchAddress(sw1, sw2)) {
+                // save the state
+                bool state = ((sw2 & 0x10) != 0) ^ _inverted;
+                if (log->isDebugEnabled()) {
+                    log->debug("INPUT_REP received with valid address, old state "
+                            + QString::number(getRawState()) + " new packet " + (state?"true":"false")); // NOI18N
+                }
+                if (state && getRawState() != Sensor::ACTIVE) {
+                    if (log->isDebugEnabled()) {
+                        log->debug("Set ACTIVE"); // NOI18N
+                    }
+                    setOwnState(Sensor::ACTIVE);
+                } else if ((!state) && getRawState() != Sensor::INACTIVE) {
+                    if (log->isDebugEnabled()) {
+                        log->debug("Set INACTIVE"); // NOI18N
+                    }
+                    setOwnState(Sensor::INACTIVE);
+                }
+            }
+            return;
+        }
+        default:
+            return;
+    }
+    // reach here only in error
+}
+
+/*private*/ /*final*/ /*static*/ Logger* LnSensor::log = LoggerFactory::getLogger("LnSensor");

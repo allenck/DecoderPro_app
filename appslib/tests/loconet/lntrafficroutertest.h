@@ -33,6 +33,7 @@ class LocoNetListenerO1 : public LocoNetListener {
     LnTrafficRouterTest* ltrt;
 public:
     LocoNetListenerO1(LnTrafficRouterTest* ltrt) {this->ltrt = ltrt;}
+public slots:
     //@Override
     /*public*/ void message(LocoNetMessage* m) {
         ltrt->count++;

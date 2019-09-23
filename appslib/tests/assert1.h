@@ -6,6 +6,7 @@
 #include <QtXml>
 
 class ProgrammingMode;
+class Reporter;
 class AssertionError : public Exception
 {
 public:
@@ -32,12 +33,17 @@ public:
     /*public*/ static void assertEquals(QString message, double expected, double actual);
     /*public*/ static void assertEquals(QString message, float expected, float actual);
     /*public*/ static void assertEquals(QString message, int expected, int actual);
+    /*public*/ static void assertEquals(QString message, long expected, long actual);
     /*public*/ static void assertEquals(double expected, double actual, double delta);
     /*public*/ static void assertEquals(float expected, float actual, float delta);
     /*public*/ static void assertEquals(QDomElement expected, QDomElement actual, QDomElement delta);
     /*public*/ static void assertEquals(QString expected, QString actual);
     /*public*/ static void assertEquals(bool expected, bool actual);
     /*public*/ static void assertEquals(QString message, ProgrammingMode* expected, ProgrammingMode* actual);
+    /*public*/ static void assertEquals(QString message, Reporter* expected, Reporter* actual);
+    /*public*/ static void assertEquals(QString message, QVariant expected, QVariant actual);
+    /*public*/ static void assertEquals(QString message, QChar expected, QChar actual);
+
 
     /*public*/ static void assertNotEquals(QString message, QObject* unexpected, QObject* actual);
     /*public*/ static void assertNotEquals(QString expected, QString actual);
@@ -50,12 +56,15 @@ public:
     /*public*/ static void assertNotNull(QDomElement object);
     /*public*/ static void assertNotNull(QString message, int object);
     /*public*/ static void assertNotNull(QString message, QString object);
+    /*public*/ static void assertNotNull(QString message, QVariant object);
+
 
     /*public*/ static void assertNull(QString message, QObject* object);
     /*public*/ static void assertNull(QObject* object);
     /*public*/ static void assertNull(QString object);
     /*public*/ static void assertNull(QDomElement object);
     /*public*/ static void assertNull(QString message, QString object);
+    /*public*/ static void assertNull(QString message, QVariant object);
 
 signals:
 

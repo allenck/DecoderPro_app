@@ -43,8 +43,8 @@ int LnConstants::OPC_INPUT_REP_HI  = 0x10;  /* input is HI, LO otherwise        
 
 int LnConstants::OPC_SW_REP_SW     = 0x20;  /* switch input, aux input otherwise    */
 int LnConstants::OPC_SW_REP_HI     = 0x10;  /* input is HI, LO otherwise            */
-const int LnConstants::OPC_SW_REP_CLOSED = 0x20;  /* 'Closed' line is ON, OFF otherwise   */
-const int LnConstants::OPC_SW_REP_THROWN = 0x10;  /* 'Thrown' line is ON, OFF otherwise   */
+//const int LnConstants::OPC_SW_REP_CLOSED = 0x20;  /* 'Closed' line is ON, OFF otherwise   */
+//const int LnConstants::OPC_SW_REP_THROWN = 0x10;  /* 'Thrown' line is ON, OFF otherwise   */
 int LnConstants::OPC_SW_REP_INPUTS = 0x40;  /* sensor inputs, outputs otherwise     */
 
 int LnConstants::OPC_SW_REQ_DIR    = 0x20;  /* switch direction - closed/thrown     */

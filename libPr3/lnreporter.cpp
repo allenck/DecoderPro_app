@@ -65,6 +65,51 @@ int LnReporter::getNumber() { return _number; }
             lissyReport(l);
         else return; // nothing
     }
+    /**
+      * Process loconet message handed to us from the LnReporterManager
+      * @param l - a loconetmessage.
+      */
+    /*public*/ void LnReporter::messageFromManager(LocoNetMessage* l) {
+        // check message type
+        if (isTranspondingLocationReport(l) || isTranspondingFindReport(l)) {
+            transpondingReport(l);
+        }
+        if ((l->getOpCode() == LnConstants::OPC_LISSY_UPDATE) && (l->getElement(1) == 0x08)) {
+            lissyReport(l);
+        } else {
+            return; // nothing
+        }
+    }
+
+    /**
+     * Check if message is a Transponding Location Report message
+     *
+     * A Transponding Location Report message is sent by transponding hardware
+     * when a transponding mobile decoder enters or leaves a transponding zone.
+     *
+     * @param l LocoNet message to check
+     * @return true if message is a Transponding Location Report, else false.
+     */
+    /*public*/ /*final*/ bool LnReporter::isTranspondingLocationReport(LocoNetMessage* l) {
+        return ((l->getOpCode() == LnConstants::OPC_MULTI_SENSE)
+            && ((l->getElement(1) & 0xC0) == 0)) ;
+    }
+
+    /**
+     * Check if message is a Transponding Find Report message
+     *
+     * A Transponding Location Report message is sent by transponding hardware
+     * in response to a Transponding Find Request message when the addressed
+     * decoder is within a transponding zone and the decoder is transponding-enabled.
+     *
+     * @param l LocoNet message to check
+     * @return true if message is a Transponding Find Report, else false.
+     */
+    /*public*/ /*final*/ bool LnReporter::isTranspondingFindReport(LocoNetMessage* l) {
+        return (l->getOpCode() == LnConstants::OPC_PEER_XFER
+            && l->getElement(1) == 0x09
+            && l->getElement(2) == 0 );
+    }
 
     /**
      * Handle transponding message

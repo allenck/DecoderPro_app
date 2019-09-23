@@ -2,7 +2,7 @@
 #include "instancemanager.h"
 #include "assert1.h"
 #include "junitappender.h"
-#include "../RosterTest/rostertestutil.h"
+#include "RosterTest/rostertestutil.h"
 #include "roster.h"
 #include "rosterentry.h"
 #include "consistpreferencesmanager.h"

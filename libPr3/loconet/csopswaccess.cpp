@@ -14,6 +14,7 @@
     this->p = p;
     // listen to the LocoNet
     memo->getLnTrafficController()->addLocoNetListener(~0, this);
+    connect(memo->getLnTrafficController(), SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT());
     csOpSwAccessTimer = NULL;
     csOpSwValidTimer = NULL;
     cmdStnOpSwState = CmdStnOpSwStateType::IDLE;

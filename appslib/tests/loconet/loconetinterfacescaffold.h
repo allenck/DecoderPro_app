@@ -28,6 +28,9 @@ private:
  friend class LnOpsModeProgrammerTest;
  friend class LnTrafficRouterTest;
  friend class LnPowerManagerTest;
+ friend class LnTurnoutTest;
+ friend class ReleaseUntilO7;
+ friend class LocoNetInterfaceScaffoldO2;
 };
 
 #endif // LOCONETINTERFACESCAFFOLD_H

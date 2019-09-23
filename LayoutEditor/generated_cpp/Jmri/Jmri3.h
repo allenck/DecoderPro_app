@@ -734,6 +734,7 @@ virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
+virtual int  getCommandedState();
 virtual QString  getComment();
 virtual QString  getDisplayName();
 virtual QString  getFullyFormattedDisplayName();
@@ -751,11 +752,13 @@ virtual long  getSensorDebounceGoingActiveTimer() const;
 virtual long  getSensorDebounceGoingInActiveTimer() const;
 virtual int  getState();
 virtual QString  getSystemName() const;
+virtual bool  getUseDefaultTimerSettings();
 virtual QString  getUserName();
 virtual bool  hashCode();
 virtual void removeProperty(QString  key);
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1) const;
 virtual void requestUpdateFromLayout() const;
+virtual void setCommandedState(int  s);
 virtual void setComment(QString  comment);
 virtual void setInverted(bool  arg__1) const;
 virtual void setKnownState(int  arg__1);
@@ -764,6 +767,7 @@ virtual void setSensorDebounceGoingActiveTimer(long  arg__1) const;
 virtual void setSensorDebounceGoingInActiveTimer(long  arg__1) const;
 virtual void setState(int  arg__1);
 virtual void setSysName(QString  s);
+virtual void setUseDefaultTimerSettings(bool  boo);
 virtual void setUserName(QString  s);
 virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
@@ -781,17 +785,21 @@ class PythonQtPublicPromoter_Sensor : public Sensor
 inline void py_q_addPropertyChangeListener(PropertyChangeListener*  arg__1) const { Sensor::addPropertyChangeListener(arg__1); }
 inline bool  py_q_canInvert() { return Sensor::canInvert(); }
 inline void py_q_dispose() const { Sensor::dispose(); }
+inline int  py_q_getCommandedState() { return Sensor::getCommandedState(); }
 inline bool  py_q_getInverted() const { return Sensor::getInverted(); }
 inline int  py_q_getKnownState() const { return Sensor::getKnownState(); }
 inline int  py_q_getRawState() const { return Sensor::getRawState(); }
 inline long  py_q_getSensorDebounceGoingActiveTimer() const { return Sensor::getSensorDebounceGoingActiveTimer(); }
 inline long  py_q_getSensorDebounceGoingInActiveTimer() const { return Sensor::getSensorDebounceGoingInActiveTimer(); }
+inline bool  py_q_getUseDefaultTimerSettings() { return this->getUseDefaultTimerSettings(); }
 inline void py_q_removePropertyChangeListener(PropertyChangeListener*  arg__1) const { Sensor::removePropertyChangeListener(arg__1); }
 inline void py_q_requestUpdateFromLayout() const { Sensor::requestUpdateFromLayout(); }
+inline void py_q_setCommandedState(int  s) { Sensor::setCommandedState(s); }
 inline void py_q_setInverted(bool  arg__1) const { Sensor::setInverted(arg__1); }
 inline void py_q_setKnownState(int  arg__1) { Sensor::setKnownState(arg__1); }
 inline void py_q_setSensorDebounceGoingActiveTimer(long  arg__1) const { Sensor::setSensorDebounceGoingActiveTimer(arg__1); }
 inline void py_q_setSensorDebounceGoingInActiveTimer(long  arg__1) const { Sensor::setSensorDebounceGoingInActiveTimer(arg__1); }
+inline void py_q_setUseDefaultTimerSettings(bool  boo) { this->setUseDefaultTimerSettings(boo); }
 inline bool  py_q_useDefaultTimerSettings() const { return Sensor::useDefaultTimerSettings(); }
 inline void py_q_useDefaultTimerSettings(bool  arg__1) const { Sensor::useDefaultTimerSettings(arg__1); }
 };
@@ -808,6 +816,8 @@ void delete_Sensor(Sensor* obj) { delete obj; }
    bool  canInvert(Sensor* theWrappedObject);
    bool  py_q_canInvert(Sensor* theWrappedObject){  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_canInvert());}
    void py_q_dispose(Sensor* theWrappedObject) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_dispose());}
+   int  getCommandedState(Sensor* theWrappedObject);
+   int  py_q_getCommandedState(Sensor* theWrappedObject){  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_getCommandedState());}
    bool  getInverted(Sensor* theWrappedObject) const;
    bool  py_q_getInverted(Sensor* theWrappedObject) const{  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_getInverted());}
    int  getKnownState(Sensor* theWrappedObject) const;
@@ -818,9 +828,13 @@ void delete_Sensor(Sensor* obj) { delete obj; }
    long  py_q_getSensorDebounceGoingActiveTimer(Sensor* theWrappedObject) const{  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_getSensorDebounceGoingActiveTimer());}
    long  getSensorDebounceGoingInActiveTimer(Sensor* theWrappedObject) const;
    long  py_q_getSensorDebounceGoingInActiveTimer(Sensor* theWrappedObject) const{  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_getSensorDebounceGoingInActiveTimer());}
+   bool  getUseDefaultTimerSettings(Sensor* theWrappedObject);
+   bool  py_q_getUseDefaultTimerSettings(Sensor* theWrappedObject){  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_getUseDefaultTimerSettings());}
    void py_q_removePropertyChangeListener(Sensor* theWrappedObject, PropertyChangeListener*  arg__1) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_removePropertyChangeListener(arg__1));}
    void requestUpdateFromLayout(Sensor* theWrappedObject) const;
    void py_q_requestUpdateFromLayout(Sensor* theWrappedObject) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_requestUpdateFromLayout());}
+   void setCommandedState(Sensor* theWrappedObject, int  s);
+   void py_q_setCommandedState(Sensor* theWrappedObject, int  s){  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_setCommandedState(s));}
    void setInverted(Sensor* theWrappedObject, bool  arg__1) const;
    void py_q_setInverted(Sensor* theWrappedObject, bool  arg__1) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_setInverted(arg__1));}
    void setKnownState(Sensor* theWrappedObject, int  arg__1);
@@ -829,6 +843,8 @@ void delete_Sensor(Sensor* obj) { delete obj; }
    void py_q_setSensorDebounceGoingActiveTimer(Sensor* theWrappedObject, long  arg__1) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_setSensorDebounceGoingActiveTimer(arg__1));}
    void setSensorDebounceGoingInActiveTimer(Sensor* theWrappedObject, long  arg__1) const;
    void py_q_setSensorDebounceGoingInActiveTimer(Sensor* theWrappedObject, long  arg__1) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_setSensorDebounceGoingInActiveTimer(arg__1));}
+   void setUseDefaultTimerSettings(Sensor* theWrappedObject, bool  boo);
+   void py_q_setUseDefaultTimerSettings(Sensor* theWrappedObject, bool  boo){  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_setUseDefaultTimerSettings(boo));}
    bool  useDefaultTimerSettings(Sensor* theWrappedObject) const;
    bool  py_q_useDefaultTimerSettings(Sensor* theWrappedObject) const{  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_useDefaultTimerSettings());}
    void useDefaultTimerSettings(Sensor* theWrappedObject, bool  arg__1) const;

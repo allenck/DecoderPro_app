@@ -6710,6 +6710,39 @@ if (_wrapper) {
 }
   return Sensor::getBeanType();
 }
+int  PythonQtShell_Sensor::getCommandedState()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getCommandedState");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      int returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getCommandedState", methodInfo, result);
+          } else {
+            returnValue = *((int*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return Sensor::getCommandedState();
+}
 QString  PythonQtShell_Sensor::getComment()
 {
 if (_wrapper) {
@@ -7271,6 +7304,39 @@ if (_wrapper) {
 }
   return Sensor::getSystemName();
 }
+bool  PythonQtShell_Sensor::getUseDefaultTimerSettings()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getUseDefaultTimerSettings");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getUseDefaultTimerSettings", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return bool();
+}
 QString  PythonQtShell_Sensor::getUserName()
 {
 if (_wrapper) {
@@ -7402,6 +7468,28 @@ if (_wrapper) {
   }
 }
   Sensor::requestUpdateFromLayout();
+}
+void PythonQtShell_Sensor::setCommandedState(int  s0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setCommandedState");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&s0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Sensor::setCommandedState(s0);
 }
 void PythonQtShell_Sensor::setComment(QString  comment0)
 {
@@ -7579,6 +7667,28 @@ if (_wrapper) {
 }
   Sensor::setSysName(s0);
 }
+void PythonQtShell_Sensor::setUseDefaultTimerSettings(bool  boo0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setUseDefaultTimerSettings");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&boo0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  
+}
 void PythonQtShell_Sensor::setUserName(QString  s0)
 {
 if (_wrapper) {
@@ -7752,6 +7862,11 @@ bool  PythonQtWrapper_Sensor::canInvert(Sensor* theWrappedObject)
   return ( theWrappedObject->canInvert());
 }
 
+int  PythonQtWrapper_Sensor::getCommandedState(Sensor* theWrappedObject)
+{
+  return ( theWrappedObject->getCommandedState());
+}
+
 bool  PythonQtWrapper_Sensor::getInverted(Sensor* theWrappedObject) const
 {
   return ( theWrappedObject->getInverted());
@@ -7777,9 +7892,19 @@ long  PythonQtWrapper_Sensor::getSensorDebounceGoingInActiveTimer(Sensor* theWra
   return ( theWrappedObject->getSensorDebounceGoingInActiveTimer());
 }
 
+bool  PythonQtWrapper_Sensor::getUseDefaultTimerSettings(Sensor* theWrappedObject)
+{
+  return ( theWrappedObject->getUseDefaultTimerSettings());
+}
+
 void PythonQtWrapper_Sensor::requestUpdateFromLayout(Sensor* theWrappedObject) const
 {
   ( theWrappedObject->requestUpdateFromLayout());
+}
+
+void PythonQtWrapper_Sensor::setCommandedState(Sensor* theWrappedObject, int  s)
+{
+  ( theWrappedObject->setCommandedState(s));
 }
 
 void PythonQtWrapper_Sensor::setInverted(Sensor* theWrappedObject, bool  arg__1) const
@@ -7800,6 +7925,11 @@ void PythonQtWrapper_Sensor::setSensorDebounceGoingActiveTimer(Sensor* theWrappe
 void PythonQtWrapper_Sensor::setSensorDebounceGoingInActiveTimer(Sensor* theWrappedObject, long  arg__1) const
 {
   ( theWrappedObject->setSensorDebounceGoingInActiveTimer(arg__1));
+}
+
+void PythonQtWrapper_Sensor::setUseDefaultTimerSettings(Sensor* theWrappedObject, bool  boo)
+{
+  ( theWrappedObject->setUseDefaultTimerSettings(boo));
 }
 
 bool  PythonQtWrapper_Sensor::useDefaultTimerSettings(Sensor* theWrappedObject) const

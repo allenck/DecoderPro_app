@@ -27625,6 +27625,11 @@ int  PythonQtWrapper_LnReporterManager::getBitFromSystemName(LnReporterManager* 
   return ( theWrappedObject->getBitFromSystemName(systemName));
 }
 
+QString  PythonQtWrapper_LnReporterManager::validateSystemNameFormat(LnReporterManager* theWrappedObject, QString  systemName, QLocale  locale)
+{
+  return ( theWrappedObject->validateSystemNameFormat(systemName, locale));
+}
+
 
 
 PythonQtShell_LnSensor::~PythonQtShell_LnSensor() {
@@ -27982,6 +27987,39 @@ if (_wrapper) {
   }
 }
   return LnSensor::getBeanType();
+}
+int  PythonQtShell_LnSensor::getCommandedState()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getCommandedState");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      int returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getCommandedState", methodInfo, result);
+          } else {
+            returnValue = *((int*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LnSensor::getCommandedState();
 }
 QString  PythonQtShell_LnSensor::getComment()
 {
@@ -28544,6 +28582,39 @@ if (_wrapper) {
 }
   return LnSensor::getSystemName();
 }
+bool  PythonQtShell_LnSensor::getUseDefaultTimerSettings()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getUseDefaultTimerSettings");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getUseDefaultTimerSettings", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LnSensor::getUseDefaultTimerSettings();
+}
 QString  PythonQtShell_LnSensor::getUserName()
 {
 if (_wrapper) {
@@ -28675,6 +28746,28 @@ if (_wrapper) {
   }
 }
   LnSensor::requestUpdateFromLayout();
+}
+void PythonQtShell_LnSensor::setCommandedState(int  s0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setCommandedState");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&s0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LnSensor::setCommandedState(s0);
 }
 void PythonQtShell_LnSensor::setComment(QString  comment0)
 {
@@ -28852,6 +28945,28 @@ if (_wrapper) {
 }
   LnSensor::setSysName(s0);
 }
+void PythonQtShell_LnSensor::setUseDefaultTimerSettings(bool  boo0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setUseDefaultTimerSettings");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&boo0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LnSensor::setUseDefaultTimerSettings(boo0);
+}
 void PythonQtShell_LnSensor::setUserName(QString  s0)
 {
 if (_wrapper) {
@@ -29016,6 +29131,11 @@ int PythonQtShell_LnSensor::qt_metacall(QMetaObject::Call call, int id, void** a
   int result = LnSensor::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
+void PythonQtWrapper_LnSensor::messageFromManager(LnSensor* theWrappedObject, LocoNetMessage*  l)
+{
+  ( theWrappedObject->messageFromManager(l));
+}
+
 
 
 PythonQtShell_LnSensorManager::~PythonQtShell_LnSensorManager() {

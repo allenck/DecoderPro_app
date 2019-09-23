@@ -1,5 +1,8 @@
 #include "abstractturnoutmgrtestbase.h"
 #include "assert1.h"
+#include "assume.h"
+#include "junitappender.h"
+#include "junitutil.h"
 
 AbstractTurnoutMgrTestBase::AbstractTurnoutMgrTestBase(QObject *parent) : QObject(parent)
 {
@@ -53,7 +56,7 @@ AbstractTurnoutMgrTestBase::AbstractTurnoutMgrTestBase(QObject *parent) : QObjec
         try {
             l.provideTurnout("");
         } catch (IllegalArgumentException ex) {
-          jmri.util.JUnitAppender.assertErrorMessage("Invalid system name for Turnout: System name must start with \"" + l.getSystemNamePrefix() + "\".");
+          JUnitAppender::assertErrorMessage("Invalid system name for Turnout: System name must start with \"" + l.getSystemNamePrefix() + "\".");
           throw ex;
         }
     }

@@ -52,51 +52,53 @@
         dccByteAddr1 = ((char) (0x80 | midAddr));
         dccByteAddr2 = ((char) (0x01 | (highAddr << 4) | (lowAddr << 1)));
         tc->addLocoNetListener(~0, (LocoNetListener*)this);
+        connect(tc, SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
+
     }
 
-#if 0
+#if 1
     // implementing classes will typically have a function/listener to get
     // updates from the layout, which will then call
     //  /*public*/ void firePropertyChange(String propertyName,
     //      Object oldValue,
     //      Object newValue)
     // _once_ if anything has changed state (or set the commanded state directly)
-    @Override
-    /*public*/ void message(LocoNetMessage l) {
-        if (l.getOpCode() != LnConstants.OPC_IMM_PACKET) {
+    //@Override
+    /*public*/ void LNCPSignalMast::message(LocoNetMessage* l) {
+        if (l->getOpCode() != LnConstants::OPC_IMM_PACKET) {
             return;
         }
 
-        int val7f = l.getElement(2); /* fixed value of 0x7f */
+        int val7f = l->getElement(2); /* fixed value of 0x7f */
 
         if (val7f != 0x7f) {
             return;
         }
 
-        int reps = l.getElement(3);
+        int reps = l->getElement(3);
         int len = ((reps & 0x70) >> 4);
         if (len != 3) {
             return;
         }
-        int dhi = l.getElement(4);
-        int im1 = l.getElement(5);
-        int im2 = l.getElement(6);
-        int im3 = l.getElement(7);
+        int dhi = l->getElement(4);
+        int im1 = l->getElement(5);
+        int im2 = l->getElement(6);
+        int im3 = l->getElement(7);
 
-        byte[] packet = new byte[len];
-        packet[0] = (byte) (im1 + ((dhi & 0x01) != 0 ? 0x80 : 0));
-        packet[1] = (byte) (im2 + ((dhi & 0x02) != 0 ? 0x80 : 0));
+        QByteArray packet = QByteArray(len,0);
+        packet.replace( 0,   (im1 + ((dhi & 0x01) != 0 ? 0x80 : 0)));
+        packet.replace(1, (im2 + ((dhi & 0x02) != 0 ? 0x80 : 0)));
 
         if (myAddress(packet[0], packet[1])) {
-            packet[2] = (byte) (im3 + ((dhi & 0x04) != 0 ? 0x80 : 0));
+            packet.replace(2, (im3 + ((dhi & 0x04) != 0 ? 0x80 : 0)));
             int aspect = packet[2];
-            for (String appearance : appearanceToOutput.keySet()) {
-                if (appearanceToOutput.get(appearance) == aspect) {
+            for (QString appearance : appearanceToOutput.keys()) {
+                if (appearanceToOutput.value(appearance) == aspect) {
                     setKnownState(appearance);
                     return;
                 }
             }
-            log.error("Aspect for id " + aspect + "on signal mast " + this.getDisplayName() + " not found");
+            log->error("Aspect for id " + QString::number(aspect) + "on signal mast " + this->getDisplayName() + " not found");
         }
 
     }
