@@ -323,7 +323,7 @@ int RosterSpeedProfile::lowerKey(int key)
     //entry = speeds.lowerEntry(lowStep);
     while(iter.hasPrevious())
     {
-     iter.peekPrevious();
+     iter.previous();
      if(iter.key() < lowStep)
      {
       if (iter.value() != nullptr && lower <= 0.0f)
