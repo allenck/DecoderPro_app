@@ -178,13 +178,20 @@
  * forward and reverse values are in meters per second
  */
 /*public*/ void RosterSpeedProfile::setSpeed(int speedStep, float forward, float reverse) {
-    //int iSpeedStep = qRound(speedStep*1000);
-    if (!speeds.contains(speedStep)) {
-        speeds.insert(speedStep, new SpeedStep());
-    }
-    SpeedStep* ss = speeds.value(speedStep);
-    ss->setForwardSpeed(forward);
-    ss->setReverseSpeed(reverse);
+ //int iSpeedStep = qRound(speedStep*1000);
+ if (!speeds.contains(speedStep)) {
+     speeds.insert(speedStep, new SpeedStep());
+ }
+ SpeedStep* ss = speeds.value(speedStep);
+ ss->setForwardSpeed(forward);
+ ss->setReverseSpeed(reverse);
+ if (forward > 0.0f)
+ {
+     _hasForwardSpeeds = true;
+ }
+ if (reverse > 0.0f) {
+     _hasReverseSpeeds = true;
+ }
 }
 /*public*/ SpeedStep* RosterSpeedProfile::getSpeedStep(float speed) {
     int iSpeedStep = qRound(speed * 1000);
