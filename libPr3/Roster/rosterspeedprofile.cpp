@@ -912,6 +912,7 @@ static class SpeedSetting {
      iter.next();
      fasterKey = iter.key();
      fasterValue = iter.value()->getReverseSpeed();
+     entry = true;
      while (iter.hasNext() && iter.value()->getReverseSpeed() < speed)
      {
       iter.next();
@@ -921,7 +922,7 @@ static class SpeedSetting {
           slowerValue = value;
       }
       //entry = speeds.higherEntry(slowerKey);
-      if (iter.peekNext().key() != 0) {
+      if (iter.hasNext() && iter.peekNext().key() != 0) {
           fasterKey = iter.peekNext().key();
           value = iter.peekNext().value()->getReverseSpeed();
           if (value > 0.0f) {
