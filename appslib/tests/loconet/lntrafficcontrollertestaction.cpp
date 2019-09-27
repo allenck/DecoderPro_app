@@ -2,6 +2,7 @@
 #include "lntrafficcontrollertest.h"
 #include "joptionpane.h"
 #include "assert1.h"
+#include "loggerfactory.h"
 
 LnTrafficControllerTestAction::LnTrafficControllerTestAction(QObject *parent) : AbstractAction(tr("LnTrafficController Test"), parent)
 {
@@ -14,7 +15,14 @@ void LnTrafficControllerTestAction::actionPerformed()
     ltct->setUp();
     try
     {
-        ltct->testCtor();
+        QStringList testList = QStringList()
+        << "testCtor";
+        foreach(QString test, testList)
+        {
+         log->info(tr("begin '%1'").arg(test));
+         QMetaObject::invokeMethod(ltct, test.toLocal8Bit(), Qt::DirectConnection);
+         log->info(tr("end '%1'").arg(test));
+        }
     }
     catch (AssertionError er)
     {
@@ -22,3 +30,4 @@ void LnTrafficControllerTestAction::actionPerformed()
     }
     ltct->tearDown();
 }
+Logger* LnTrafficControllerTestAction::log = LoggerFactory::getLogger("LnTrafficControllerTestAction");

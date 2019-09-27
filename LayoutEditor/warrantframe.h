@@ -6,6 +6,7 @@
 #include "throttlesetting.h"
 #include "liblayouteditor_global.h"
 
+class DecimalFormat;
 class JTable;
 class QPushButton;
 class OBlock;
@@ -152,7 +153,7 @@ private slots:
     /*protected*/ void stopRunTrain();
     /*protected*/ Warrant* getWarrant();
     /*protected*/ void setThrottleCommand(QString cmd, QString value);
-    /*protected*/ void setSpeedCommand(float speed, bool isForward);
+    /*protected*/ void setSpeedCommand(float speed);
     /*protected*/ void setWarrant(Warrant* w);
     /*protected*/ void setStatusText(QString msg, QColor c);
 
@@ -197,6 +198,8 @@ class ThrottleTableModel : public QAbstractTableModel
     Q_OBJECT
 private:
     WarrantFrame* frame;
+    DecimalFormat* threeDigit;// = DecimalFormat("0.000");
+
 public:
     enum COLUMNS
     {
@@ -205,7 +208,8 @@ public:
      COMMAND_COLUMN =2,
      VALUE_COLUMN =3,
      BLOCK_COLUMN = 4,
-     NUMCOLS = 5
+     SPEED_COLUMN = 5,
+     NUMCOLS = 6
     };
     /*public*/ ThrottleTableModel(WarrantFrame* frame);
     /*public*/ int columnCount(const QModelIndex &parent) const;
@@ -215,7 +219,8 @@ public:
     /*public*/ int getPreferredWidth(int col);
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    /*private*/ QString getPreviousBlockName(int row);
+//    /*private*/ QString getPreviousBlockName(int row);
+    /*private*/ NamedBeanHandle <NamedBean*>* getPreviousBlockHandle(int row);
     void fireTableDataChanged();
 };
 

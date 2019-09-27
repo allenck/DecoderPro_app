@@ -8,8 +8,11 @@
 #include "instancemanager.h"
 #include "rosterspeedprofile.h"
 #include "../junitutil.h"
-#include "fileinputstream.h"
+#include "myfileinputstream.h"
 #include "nullprofile.h"
+//#include "printstream.h"
+#include "fileoutputstream.h"
+#include "fileutil.h"
 
 RosterTest::RosterTest(QObject *parent) : QObject(parent)
 {
@@ -31,17 +34,17 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
     //@Test
     /*public*/ void RosterTest::testDirty() {
         Roster* r = new Roster();
-        Assert::assertEquals("new object ", false, r->isDirty());
+        Assert::assertEquals("new object ", false, r->isDirty(),__FILE__, __LINE__);
         r->addEntry(new RosterEntry());
-        Assert::assertEquals("after add ", true, r->isDirty());
+        Assert::assertEquals("after add ", true, r->isDirty(),__FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void RosterTest::testAdd() {
         Roster* r = new Roster();
-        Assert::assertEquals("empty length ", 0, r->numEntries());
+        Assert::assertEquals("empty length ", 0, r->numEntries(),__FILE__, __LINE__);
         r->addEntry(new RosterEntry("file name Bob"));
-        Assert::assertEquals("one item ", 1, r->numEntries());
+        Assert::assertEquals("one item ", 1, r->numEntries(),__FILE__, __LINE__);
     }
 
     //@Test
@@ -196,18 +199,17 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         File* rosterDir = folder->newFolder();
         folder->newFolder();
         FileUtil::createDirectory(rosterDir);
-        File* f = new File(rosterDir, "Roster::xml");
+        File* f = new File(rosterDir, "roster.xml");
 
         // failure of test infrastructure if it exists already
-        Assert::assertTrue("test Roster::xml should not exist in new folder", !f->exists());
+        Assert::assertTrue("test roster.xml should not exist in new folder", !f->exists());
 
         // load a new one to ensure it exists
         QString contents = QString("stuff") + "           ";
-#if 0   // TODO:
-        PrintStream p = new PrintStream(new FileOutputStream(f));
-        p.println(contents);
-        p.close();
-#endif
+//        PrintStream* p = new PrintStream(new FileOutputStream(f));
+//        p->println(contents);
+//        p->close();
+        FileUtil::appendTextToFile(f,contents);
 
         File* bf = new File(rosterDir, "rosterBackupTest");
         // failure of test infrastructure if backup exists already
@@ -221,10 +223,10 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
 //            }
 //        };
         RTRoster* r = new RTRoster(rosterDir);
-        r->makeBackupFile((new File(rosterDir, "Roster::xml"))->getAbsolutePath());
+        r->makeBackupFile((new File(rosterDir, "roster.xml"))->getAbsolutePath());
 
         // and check
-        FileInputStream* in = new FileInputStream(new File(rosterDir, "rosterBackupTest"));
+        MyFileInputStream* in = new MyFileInputStream(new File(rosterDir, "rosterBackupTest"));
         Assert::assertEquals("read 0 ", contents.at(0), in->read());
         Assert::assertEquals("read 1 ", contents.at(1), in->read());
         Assert::assertEquals("read 2 ", contents.at(2), in->read());
@@ -238,12 +240,13 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         p.println(contents);
         p.close();
 #endif
+        FileUtil::appendTextToFile(f,contents);
 
         // now do the backup
         r->makeBackupFile(f->getAbsolutePath());
 
         // and check
-        in = new FileInputStream(new File(rosterDir, "rosterBackupTest"));
+        in = new MyFileInputStream(new File(rosterDir, "rosterBackupTest"));
         Assert::assertEquals("read 4 ", contents.at(0), in->read());
         Assert::assertEquals("read 5 ", contents.at(1), in->read());
         Assert::assertEquals("read 6 ", contents.at(2), in->read());
@@ -251,11 +254,16 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         in->close();
     }
 
+/*public*/ QString RTRoster::backupFileName(QString name) const{
+        return (new File(rosterDir, "rosterBackupTest"))->getAbsolutePath();
+    }
+
+
     //@Test
     /*public*/ void RosterTest::testReadWrite() throw (Exception) {
         // create a test roster & store in file
         Roster* r = RosterTestUtil::createTestRoster(new File(Roster::getDefault()->getRosterLocation()),"rosterTest.xml");
-        Assert::assertNotNull("exists", r);
+        Assert::assertNotNull("exists", r,__FILE__, __LINE__);
         // write it
         r->writeFile(r->getRosterIndexPath());
         // create new roster & read
@@ -263,7 +271,7 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         t->readFile(r->getRosterIndexPath());
 
         // check contents
-        Assert::assertEquals("search for 0 ", 0, t->matchingList(nullptr, "321", nullptr, nullptr, nullptr, nullptr, nullptr).size());
+        Assert::assertEquals("search for 0 ", 0, t->matchingList(nullptr, "321", nullptr, nullptr, nullptr, nullptr, nullptr).size(),__FILE__, __LINE__);
         Assert::assertEquals("search for 1 ", 1, t->matchingList("UP", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr).size());
         Assert::assertEquals("search for 3 ", 3, t->matchingList(nullptr, "123", nullptr, nullptr, nullptr, nullptr, nullptr).size());
     }
@@ -272,14 +280,14 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
     /*public*/ void RosterTest::testAttributeAccess() throw (Exception) {
         // create a test roster & store in file
         Roster* r = RosterTestUtil::createTestRoster(new File(Roster::getDefault()->getRosterLocation()),"rosterTest.xml");
-        Assert::assertNotNull("exists", r);
+        Assert::assertNotNull("exists", r,__FILE__, __LINE__);
 
         QList<RosterEntry*> l;
 
         l = r->getEntriesWithAttributeKey("key a");
-        Assert::assertEquals("match key a", 2, l.size());
+        Assert::assertEquals("match key a", 2, l.size(),__FILE__, __LINE__);
         l = r->getEntriesWithAttributeKey("no match");
-        Assert::assertEquals("no match", 0, l.size());
+        Assert::assertEquals("no match", 0, l.size(),__FILE__, __LINE__);
 
     }
 
@@ -287,14 +295,14 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
     /*public*/ void RosterTest::testAttributeValueAccess() throw (Exception) {
         // create a test roster & store in file
         Roster* r = RosterTestUtil::createTestRoster(new File(Roster::getDefault()->getRosterLocation()),"rosterTest.xml");
-        Assert::assertNotNull("exists", r);
+        Assert::assertNotNull("exists", r,__FILE__, __LINE__);
 
         QList<RosterEntry*> l;
 
         l = r->getEntriesWithAttributeKeyValue("key a", "value a");
-        Assert::assertEquals("match key a", 2, l.size());
+        Assert::assertEquals("match key a", 2, l.size(),__FILE__, __LINE__);
         l = r->getEntriesWithAttributeKeyValue("key a", "none");
-        Assert::assertEquals("no match key a", 0, l.size());
+        Assert::assertEquals("no match key a", 0, l.size(),__FILE__, __LINE__);
         l = r->getEntriesWithAttributeKeyValue("no match", "none");
         Assert::assertEquals("no match", 0, l.size());
 
@@ -304,15 +312,15 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
     /*public*/ void RosterTest::testAttributeList() throw (Exception) {
         // create a test roster & store in file
         Roster* r = RosterTestUtil::createTestRoster(new File(Roster::getDefault()->getRosterLocation()),"rosterTest.xml");
-        Assert::assertNotNull("exists", r);
+        Assert::assertNotNull("exists", r,__FILE__, __LINE__);
 
         QSet<QString> s;
 
         s = r->getAllAttributeKeys();
 
-        Assert::assertTrue("contains right key", s.contains("key b"));
-        Assert::assertTrue("not contains wrong key", !s.contains("no key"));
-        Assert::assertEquals("length", 2, s.size());
+        Assert::assertTrue("contains right key", s.contains("key b"),__FILE__, __LINE__);
+        Assert::assertTrue("not contains wrong key", !s.contains("no key"),__FILE__, __LINE__);
+        Assert::assertEquals("length", 2, s.size(),__FILE__, __LINE__);
 
     }
 
@@ -329,11 +337,11 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         RosterEntry* r = new RosterEntry();
         RosterSpeedProfile* rp = new RosterSpeedProfile(r);
         rp->setSpeed(1000, 500, 5000);
-        Assert::assertEquals(500.0,rp->getForwardSpeed(1.0f),(float)0.0);
-        Assert::assertEquals(375.0,rp->getForwardSpeed(0.75f),(float)0.0);
-        Assert::assertEquals(250.0,rp->getForwardSpeed(0.5f), (float)0.0);
-        Assert::assertEquals(125.0,rp->getForwardSpeed(0.25f),(float)0.0);
-        Assert::assertEquals(4.0,rp->getForwardSpeed(0.0078125f),(float)0.0); //routine will use 8 (round( value * 1000))
+        Assert::assertEquals(500.0f,rp->getForwardSpeed(1.0f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(375.0f,rp->getForwardSpeed(0.75f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(250.0f,rp->getForwardSpeed(0.5f), 0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(125.0f,rp->getForwardSpeed(0.25f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(4.0f,rp->getForwardSpeed(0.0078125f),0.0f,__FILE__, __LINE__); //routine will use 8 (round( value * 1000))
     }
 
     //@Test
@@ -342,22 +350,22 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         RosterSpeedProfile* rp = new RosterSpeedProfile(r);
         rp->setSpeed(1000, 500, 5000);
         rp->setSpeed(500, 250, 2500);
-        Assert::assertEquals(500.0,rp->getForwardSpeed(1.0f),(float)0.0);
-        Assert::assertEquals(375.0,rp->getForwardSpeed(0.75f),(float)0.0);
-        Assert::assertEquals(250.0,rp->getForwardSpeed(0.5f), (float)0.0);
-        Assert::assertEquals(125.0,rp->getForwardSpeed(0.25f),(float)0.0);
-        Assert::assertEquals(4.0,rp->getForwardSpeed(0.0078125f),(float)0.0); //routine will use 8 (round( value * 1000))
+        Assert::assertEquals(500.0f,rp->getForwardSpeed(1.0f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(375.0f,rp->getForwardSpeed(0.75f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(250.0f,rp->getForwardSpeed(0.5f), 0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(125.0f,rp->getForwardSpeed(0.25f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(4.0f,rp->getForwardSpeed(0.0078125f),0.0f,__FILE__, __LINE__); //routine will use 8 (round( value * 1000))
     }
     //@Test
     /*public*/ void RosterTest::testProfileOnePointReverse() {
         RosterEntry* r = new RosterEntry();
         RosterSpeedProfile* rp = new RosterSpeedProfile(r);
         rp->setSpeed(1000, 500, 5000);
-        Assert::assertEquals(5000.0,rp->getReverseSpeed(1.0f),(float)0.0);
-        Assert::assertEquals(3750.0,rp->getReverseSpeed(0.75f),(float)0.0);
-        Assert::assertEquals(2500.0,rp->getReverseSpeed(0.5f), (float)0.0);
-        Assert::assertEquals(1250.0,rp->getReverseSpeed(0.25f),(float)0.0);
-        Assert::assertEquals(40.0,rp->getReverseSpeed(0.0078125f),(float)0.0);   //routine will use 8 (round( value * 1000))
+        Assert::assertEquals(5000.0f,rp->getReverseSpeed(1.0f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(3750.0f,rp->getReverseSpeed(0.75f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(2500.0f,rp->getReverseSpeed(0.5f), 0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(1250.0f,rp->getReverseSpeed(0.25f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(40.0f,rp->getReverseSpeed(0.0078125f),0.0f,__FILE__, __LINE__);   //routine will use 8 (round( value * 1000))
     }
 
     //@Test
@@ -366,11 +374,11 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         RosterSpeedProfile* rp = new RosterSpeedProfile(r);
         rp->setSpeed(1000, 500, 5000);
         rp->setSpeed(500, 250, 2500);
-        Assert::assertEquals(5000.0,rp->getReverseSpeed(1.0f),(float)0.0);
-        Assert::assertEquals(3750.0,rp->getReverseSpeed(0.75f),(float)0.0);
-        Assert::assertEquals(2500.0,rp->getReverseSpeed(0.5f), (float)0.0);
-        Assert::assertEquals(1250.0,rp->getReverseSpeed(0.25f),(float)0.0);
-        Assert::assertEquals(40.0,rp->getReverseSpeed(0.0078125f),(float)0.0); //routine will use 8 (round( value * 1000))
+        Assert::assertEquals(5000.0f,rp->getReverseSpeed(1.0f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(3750.0f,rp->getReverseSpeed(0.75f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(2500.0f,rp->getReverseSpeed(0.5f), 0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(1250.0f,rp->getReverseSpeed(0.25f),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(40.0f,rp->getReverseSpeed(0.0078125f),0.0f,__FILE__, __LINE__); //routine will use 8 (round( value * 1000))
     }
 
     //@Test
@@ -379,9 +387,9 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         RosterSpeedProfile* rp = new RosterSpeedProfile(r);
         rp->setSpeed(1000, 500, 5000);
         rp->setSpeed(500, 250, 2500);
-        Assert::assertEquals(1.0,rp->getThrottleSetting(500,true),(float)0.0);
-        Assert::assertEquals(0.5,rp->getThrottleSetting(250,true),(float)0.0);
-        Assert::assertEquals(0.25,rp->getThrottleSetting(125,true),(float)0.0);
+        Assert::assertEquals(1.0f,rp->getThrottleSetting(500,true),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(0.5f,rp->getThrottleSetting(250,true),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(0.25f,rp->getThrottleSetting(125,true),0.0f,__FILE__, __LINE__);
     }
 
    //@Test
@@ -390,9 +398,9 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         RosterSpeedProfile* rp = new RosterSpeedProfile(r);
         rp->setSpeed(1000, 500, 5000);
         rp->setSpeed(500, 250, 2500);
-        Assert::assertEquals(1.0,rp->getThrottleSetting(5000,false),(float)0.0);
-        Assert::assertEquals(0.5,rp->getThrottleSetting(2500,false),(float)0.0);
-        Assert::assertEquals(0.25,rp->getThrottleSetting(1250,false),(float)0.0);
+        Assert::assertEquals(1.0f,rp->getThrottleSetting(5000,false),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(0.5f,rp->getThrottleSetting(2500,false),0.0f,__FILE__, __LINE__);
+        Assert::assertEquals(0.25f,rp->getThrottleSetting(1250,false),0.0f,__FILE__, __LINE__);
     }
 
     // The minimal setup for log4J

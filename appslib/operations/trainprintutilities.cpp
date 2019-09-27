@@ -330,8 +330,7 @@ namespace Operations
  /*private*/ /*static*/ QString TrainPrintUtilities::filterBuildReport(QString line, bool indent)
  {
   Logger*log = new Logger("TrainPrintUtilies");
-  //QStringList inputLine = line.split("\\s+"); // NOI18N
-  QStringList inputLine = line.split(" ");
+  QStringList inputLine = line.split(QRegExp("\\s+")); // NOI18N
   if (inputLine.length() == 0)
   {
    return "";

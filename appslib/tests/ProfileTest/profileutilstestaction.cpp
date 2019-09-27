@@ -2,6 +2,7 @@
 #include "profileutilstest.h"
 #include "joptionpane.h"
 #include "assert1.h"
+#include "loggerfactory.h"
 
 ProfileUtilsTestAction::ProfileUtilsTestAction(QObject *parent) :AbstractAction(tr("ProfileUtils"),parent)
 {
@@ -13,8 +14,15 @@ void ProfileUtilsTestAction::actionPerformed()
     put->setUp();
     try
     {
-     put->testCopy();
-     put->testCopyToActive();
+        QStringList testList = QStringList()
+         << "testCopy"
+         << "testCopyToActive";
+        foreach(QString test, testList)
+        {
+         log->info(tr("begin '%1'").arg(test));
+         QMetaObject::invokeMethod(put, test.toLocal8Bit(), Qt::DirectConnection);
+         log->info(tr("end '%1'").arg(test));
+        }
     }
     catch (AssertionError er)
     {
@@ -22,3 +30,4 @@ void ProfileUtilsTestAction::actionPerformed()
     }
     put->tearDown();
 }
+Logger* ProfileUtilsTestAction::log = LoggerFactory::getLogger("ProfileUtilsTestAction");

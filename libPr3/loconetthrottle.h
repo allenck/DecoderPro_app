@@ -16,7 +16,7 @@ public:
     /*public*/ LocoNetSlot* getLocoNetSlot();
     /*public*/ QString toString();
     /*public*/ void notifyChangedSlot(LocoNetSlot* pSlot);
-    /*public*/ void setSpeedStepMode(int Mode);
+    /*public*/ void setSpeedStepMode(SpeedStepMode::SSMODDES Mode);
     /*public*/ LocoAddress* getLocoAddress();
     /*public*/ void setF0(bool f0);
     /*public*/ void setF1(bool f1);

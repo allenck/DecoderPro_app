@@ -83,7 +83,7 @@
  * @see        java.io.File#getPath()
  * @see        java.lang.SecurityManager#checkRead(java.lang.String)
  */
-/*public*/ FileInputStream::FileInputStream(File* file, QObject* parent) throw (FileNotFoundException)
+/*public*/ FileInputStream::FileInputStream(File* file, QObject* parent) throw (FileNotFoundException) : QDataStream()
 {
  common(file);
 }
@@ -176,11 +176,21 @@ void FileInputStream::common(File * file)
  * @exception  IOException  if an I/O error occurs.
  */
 /*public*/ QChar FileInputStream::read() throw (IOException) {
-    // return read0();
+// if(this->atEnd())
+//  return -1;
+
+    return read0();
+}
+
+/*private*/ /*native*/ int FileInputStream::read0() throw (IOException)
+{
+ char* buf = new char[2];
+ if(this->readRawData(buf, 1) < 0)
+  return -1;
+ return buf[0];
+
 }
 #if 0
-/*private*/ native int read0() throws IOException;
-
 /**
  * Reads a subarray as a sequence of bytes.
  * @param b the data to be written

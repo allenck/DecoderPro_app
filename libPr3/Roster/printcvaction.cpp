@@ -217,7 +217,7 @@
 {
  /*final*/ int MAX_CVMNUM_SPACE = 1200;
 
- QStringList cvNumStrings = cvName.split("\\.");
+ QStringList cvNumStrings = cvName.split(QRegExp("\\."));
  long sortVal = 0;
  for (int i=0; i < (cvNumStrings.length()); i++)
  {

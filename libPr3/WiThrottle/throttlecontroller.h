@@ -2,6 +2,7 @@
 #define THROTTLECONTROLLER_H
 
 #include <QObject>
+#include "speedstepmode.h"
 
 class PropertyChangeEvent;
 class ConsistFunctionController;
@@ -78,7 +79,7 @@ protected:QVector<ThrottleControllerListener*>* listeners;
  /*protected*/ void setAddress(int number, bool isLong);
  /*protected*/ void handleFunction(QString inPackage);
  /*protected*/ void forceFunction(QString inPackage);
- /*protected*/ void handleSpeedStepMode(int newMode);
+ /*protected*/ void handleSpeedStepMode(SpeedStepMode::SSMODDES newMode);
  /*protected*/ void handleMomentary(QString inPackage);
  /*protected*/ void handleRequest(QString inPackage);
 

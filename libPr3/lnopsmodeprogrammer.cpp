@@ -77,7 +77,7 @@
        doingWrite = false;
        // Board programming mode
        log->debug(tr("read CV \"%1\" addr:%2").arg(CV).arg(mAddress));
-       parts = CV.split("\\.");
+       parts = CV.split(QRegExp("\\."));
        int typeWord = parts.at(0).toInt();
        int state =0; //= Integer.parseInt(parts[parts.length>1 ? 1 : 0]);
        if(parts.size() > 0)

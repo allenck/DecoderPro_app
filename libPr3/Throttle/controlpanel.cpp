@@ -1243,22 +1243,22 @@ void ControlPanel::OnSpinnerChanged(int)
 void ControlPanel::OnSpeedStep28()
 {
     setSpeedStepsMode(DccThrottle::SpeedStepMode28);
-    _throttle->setSpeedStepMode(DccThrottle::SpeedStepMode28);
+    _throttle->setSpeedStepMode(SpeedStepMode::NMRA_DCC_28);
 }
 void ControlPanel::OnSpeedStep14()
 {
  setSpeedStepsMode(DccThrottle::SpeedStepMode14);
- _throttle->setSpeedStepMode(DccThrottle::SpeedStepMode14);
+ _throttle->setSpeedStepMode(SpeedStepMode::NMRA_DCC_14);
 }
 void ControlPanel::OnSpeedStep27()
 {
  setSpeedStepsMode(DccThrottle::SpeedStepMode27);
- _throttle->setSpeedStepMode(DccThrottle::SpeedStepMode27);
+ _throttle->setSpeedStepMode(SpeedStepMode::NMRA_DCC_27);
 }
 void ControlPanel::OnSpeedStep128()
 {
  setSpeedStepsMode(DccThrottle::SpeedStepMode128);
- _throttle->setSpeedStepMode(DccThrottle::SpeedStepMode128);
+ _throttle->setSpeedStepMode(SpeedStepMode::NMRA_DCC_128);
 }
 /*public*/ void ControlPanel::accelerate10()
 {

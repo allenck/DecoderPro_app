@@ -19,9 +19,10 @@ public:
     virtual /*public*/ void checkOffMsgSent()=0;
     virtual /*public*/ void checkStatusRequestMsgSent()=0;
     virtual /*public*/ void setUp()=0; // load t with actual object; create scaffolds as needed
+    virtual /*public*/ void tearDown()=0;
     // start of common tests
     // test creation - real work is in the setup() routine
-    //@Test
+public slots:
     /*public*/ void testCreate();
     /*public*/ void testAddListener() throw (JmriException);
     /*public*/ void testRemoveListener();
@@ -36,7 +37,6 @@ public:
     /*public*/ void testGetBeanType();
     /*public*/ void testSensorStatusRequest();
     /*public*/ void testSensor() throw (JmriException);
-    virtual /*public*/ void tearDown()=0;
 signals:
 
 public slots:

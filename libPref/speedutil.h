@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+class SpeedStep;
+class RampData;
 class QDomElement;
 class SignalSpeedMap;
 class RosterSpeedProfile;
@@ -24,6 +26,12 @@ public:
  /*public*/ QString getRosterId();
  /*public*/ void setRosterId(QString id);
  /*public*/ DccLocoAddress* getDccAddress();
+ /*public*/ SpeedStep* getSpeedStep(float speed);
+ /*public*/ void setForwardSpeed(float speedStep, float forward);
+ /*public*/ void setReverseSpeed(float speedStep, float reverse);
+ /*public*/ float getForwardSpeed(float speedStep);
+ /*public*/ float getReverseSpeed(float speedStep);
+ /*public*/ float getDurationOfTravelInSeconds(bool isForward, float speedStep, int distance);
 
 signals:
 
@@ -53,6 +61,13 @@ private:
  float _settingsTravelled;
  long _changetime;
  int _numchanges;
+ /*private*/ void clearStats();
+ /*private*/ void makeUpRamp(RampData* ramp);
+ /*private*/ void makeDownRamp(RampData* ramp);
+ bool _isForward = true;
+ /*private*/ float _rampThrottleIncrement;   // user specified throttle increment for ramping
+ /*private*/ int _rampTimeIncrement; // user specified time for ramp step increment
+ /*private*/ void setSpeed(RosterSpeedProfile* profile, float throttle, float measuredSpeed, bool isForward);
 
 protected:
  /*protected*/ SpeedUtil(QList<BlockOrder*>* orders, QObject* parent = nullptr);
@@ -64,17 +79,23 @@ protected:
  /*protected*/ void stopRun(bool updateSpeedProfile);
  /*protected*/ void setThrottle( DccThrottle* throttle);
  /*protected*/ bool secondGreaterThanFirst(QString speed1, QString speed2);
- /*protected*/ float modifySpeed(float tSpeed, QString sType, bool isForward);
- /*protected*/ float getTrackSpeed(float throttleSetting, bool isForward);
+ /*protected*/ float modifySpeed(float tSpeed, QString sType);
+ /*protected*/ float getTrackSpeed(float throttleSetting);
  /*protected*/ float getThrottleSettingForSpeed(float trackSpeed, bool isForward);
- /*protected*/ float getDistanceTraveled(float speedSetting, QString speedtype, float time, bool isForward);
- /*protected*/ float getTimeForDistance(float throttleSetting, float distance, bool isForward);
+ /*protected*/ float getDistanceTraveled(float speedSetting, QString speedtype, float time);
+ /*protected*/ float getTimeForDistance(float throttleSetting, float distance);
  /*protected*/ float rampLengthForRampDown(float curSetting, QString curSpeedType, QString toSpeedType,
          bool isForward);
  /*protected*/ float rampLengthForSpeedChange(float fSpeed, float toSpeed, bool isForward);
  /*protected*/ float getRampThrottleIncrement();
  /*protected*/ int getRampTimeIncrement();
  /*protected*/ float getMomentumTime(float delta, bool increasing);
+ /*protected*/ void enteredBlock(int lastIdx, int newIdx);
+ /*protected*/ void speedChange();
+ /*protected*/ float getDistanceTravelled();
+ /*protected*/ void setDistanceTravelled(float dist);
+ /*protected*/ RampData* getRampForSpeedChange(float fromSpeed, float toSpeed);
+ /*protected*/ float getDistanceOfSpeedChange(float prevSpeed, float currSpeed, long speedTime);
 
 friend class NXFrame;
 friend class Warrant;

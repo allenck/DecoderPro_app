@@ -97,7 +97,7 @@ LocoNetSlotTest::LocoNetSlotTest(QObject *parent) : QObject(parent)
     }
     Assert::assertFalse("do not expect an exception", exceptionCaught);
 
-    JUnitAppender::assertErrorMessage("Asked to handle message not for this slot (1) EF 0E 03 33 28 00 00 47 00 2B 00 00 00 60");
+    JUnitAppender::assertErrorMessage("Asked to handle message not for this slot (1) EF 0E 03 33 28 00 00 47 00 2B 00 00 00 60",__FILE__, __LINE__);
 
     ia[0] = 0xE7;
     ia[2] = 1;
@@ -110,7 +110,7 @@ LocoNetSlotTest::LocoNetSlotTest(QObject *parent) : QObject(parent)
         exceptionCaught = true;
     }
     Assert::assertFalse("do not expect an exception", exceptionCaught);
-    Assert::assertNotEquals(QString("update time was updated"), QDateTime::fromMSecsSinceEpoch(lastTime).toString(), QDateTime::fromMSecsSinceEpoch(t->getLastUpdateTime()).toString());
+    Assert::assertNotEquals(QString("update time was updated"), QDateTime::fromMSecsSinceEpoch(lastTime).toString(), QDateTime::fromMSecsSinceEpoch(t->getLastUpdateTime()).toString(),__FILE__, __LINE__);
 
     QVector<int> ib = QVector<int>() <<0x81<< 0x00;
     lm = new LocoNetMessage(ib);
@@ -836,26 +836,26 @@ LocoNetSlotTest::LocoNetSlotTest(QObject *parent) : QObject(parent)
 /*public*/ void LocoNetSlotTest::checkFastClockGetSetMethods() {
     LocoNetSlot* s = new LocoNetSlot(15);
     s->setFcFracMins(12);
-    JUnitAppender::assertErrorMessage("setFcFracMins invalid for slot 15");
+    JUnitAppender::assertErrorMessage("setFcFracMins invalid for slot 15",__FILE__, __LINE__);
     s->setFcHours(1);
-    JUnitAppender::assertErrorMessage("setFcHours invalid for slot 15");
+    JUnitAppender::assertErrorMessage("setFcHours invalid for slot 15",__FILE__, __LINE__);
     s->setFcMinutes(12);
-    JUnitAppender::assertErrorMessage("setFcMinutes invalid for slot 15");
+    JUnitAppender::assertErrorMessage("setFcMinutes invalid for slot 15",__FILE__, __LINE__);
     s->setFcDays(5);
-    JUnitAppender::assertErrorMessage("setFcDays invalid for slot 15");
+    JUnitAppender::assertErrorMessage("setFcDays invalid for slot 15",__FILE__, __LINE__);
     s->setFcRate(0);
-    JUnitAppender::assertErrorMessage("setFcRate invalid for slot 15");
+    JUnitAppender::assertErrorMessage("setFcRate invalid for slot 15",__FILE__, __LINE__);
 
     s->getFcFracMins();
-    JUnitAppender::assertErrorMessage("getFcFracMins invalid for slot 15");
+    JUnitAppender::assertErrorMessage("getFcFracMins invalid for slot 15",__FILE__, __LINE__);
     s->getFcHours();
-    JUnitAppender::assertErrorMessage("getFcHours invalid for slot 15");
+    JUnitAppender::assertErrorMessage("getFcHours invalid for slot 15",__FILE__, __LINE__);
     s->getFcMinutes();
-    JUnitAppender::assertErrorMessage("getFcMinutes invalid for slot 15");
+    JUnitAppender::assertErrorMessage("getFcMinutes invalid for slot 15",__FILE__, __LINE__);
     s->getFcDays();
-    JUnitAppender::assertErrorMessage("getFcDays invalid for slot 15");
+    JUnitAppender::assertErrorMessage("getFcDays invalid for slot 15",__FILE__, __LINE__);
     s->getFcRate();
-    JUnitAppender::assertErrorMessage("getFcRate invalid for slot 15");
+    JUnitAppender::assertErrorMessage("getFcRate invalid for slot 15",__FILE__, __LINE__);
 
 
 
@@ -894,7 +894,7 @@ LocoNetSlotTest::LocoNetSlotTest(QObject *parent) : QObject(parent)
     sm->setSystemConnectionMemo(memo);
 
     LocoNetSlot* s = new LocoNetSlot(10);
-    Assert::assertEquals("slot number assigned correctly", 10, s->getSlot());
+    Assert::assertEquals("slot number assigned correctly", 10, s->getSlot(),__FILE__, __LINE__);
     LocoNetMessage* m = new LocoNetMessage(14);
 
     m->setOpCode(0xef);
@@ -915,7 +915,7 @@ LocoNetSlotTest::LocoNetSlotTest(QObject *parent) : QObject(parent)
         try {
             s->setSlot(m);
         } catch (LocoNetException e) {
-            Assert::fail("unexpected exception " + e.getMessage());
+            Assert::fail("unexpected exception " + e.getMessage(),__FILE__, __LINE__);
         }
         Assert::assertEquals("F0 value from LocoNet Message, loop "+i,((i & 0x10)== 0x10), s->isF0());
         Assert::assertEquals("F1 value from LocoNet Message, loop "+i,((i & 0x01)== 0x01), s->isF1());
@@ -934,7 +934,7 @@ LocoNetSlotTest::LocoNetSlotTest(QObject *parent) : QObject(parent)
         try {
             s->setSlot(m);
         } catch (LocoNetException e) {
-            Assert::fail("unexpected exception " + e.getMessage());
+            Assert::fail("unexpected exception " + e.getMessage(),__FILE__, __LINE__);
         }
         Assert::assertFalse ("F0 value from LocoNet Message, loop "+i, s->isF0());
         Assert::assertFalse ("F1 value from LocoNet Message, loop "+i, s->isF1());

@@ -1152,7 +1152,7 @@ public URL getURL(URI uri) {
 //    }
  QFile f(file->getPath());
  QString otext;
- if(f.open(QIODevice::ReadOnly))
+ if(f.open(QIODevice::ReadOnly|QIODevice::Append))
  {
   QTextStream is(&f);
   otext = is.readAll();

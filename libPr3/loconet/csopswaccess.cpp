@@ -44,7 +44,7 @@
     log->debug(tr("read Command Station OpSw%1").arg(opSw));
 
     QStringList parts;
-    parts = opSw.split("\\.");
+    parts = opSw.split(QRegExp("\\."));
     ProgListener* temp = pL;
     if ((parts.length() == 2) &&
            (parts.at(0)==("csOpSw")) &&
@@ -68,7 +68,7 @@
 
 /*public*/ void CsOpSwAccess::writeCsOpSw(QString opSw, int val, /*@NonNULL*/ ProgListener* pL) throw (ProgrammerException) {
     p = NULL;
-    QStringList parts = opSw.split("\\.");
+    QStringList parts = opSw.split(QRegExp("\\."));
     if (((val != 0) && (val != 1)) ||
             (parts.length() != 2) ||
             (parts.at(0)!=("csOpSw") ||

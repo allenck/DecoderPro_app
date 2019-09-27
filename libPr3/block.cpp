@@ -7,6 +7,7 @@
 #include "signalspeedmap.h"
 #include "path.h"
 
+
 ///*static*/ const int Block::OCCUPIED = Sensor::ACTIVE;
 ///*static*/ const int Block::UNOCCUPIED = Sensor::INACTIVE;
 //const int Block::UNOCCUPIED = 0x04;
@@ -15,6 +16,29 @@
 /*static const*/ int Block::TIGHT = 0x02;
 /*static const*/ int Block::SEVERE = 0x04;
 
+// this should only be used for debugging...
+/*public*/ QString Block::toDebugString() {
+    QString result = getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME) + " ";
+    switch (getState()) {
+        case UNDETECTED: {
+            result += "UNDETECTED";
+            break;
+        }
+        case UNOCCUPIED: {
+            result += "UNOCCUPIED";
+            break;
+        }
+        case OCCUPIED: {
+            result += "OCCUPIED";
+            break;
+        }
+        default: {
+            result += "unknown " + getState();
+            break;
+        }
+    }
+    return result;
+}
 
 /**
  * Represents a particular piece of track, more informally a "Block".
@@ -112,7 +136,7 @@
 {
     log = new Logger("Block");
     //super(systemName.toUpperCase(), userName);
-    _current = UNOCCUPIED; // state
+    _current = UNDETECTED; // state
     _sensor = NULL;
     _namedSensor = NULL;
     _sensorListener = NULL;
@@ -135,67 +159,63 @@
 
 /*public*/ bool Block::setSensor(QString pName)
 {
- if (pName == "" )
- {
-  setNamedSensor(NULL);
-  return false;
- }
- if (InstanceManager::sensorManagerInstance() != NULL)
- {
-  Sensor* sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(pName);
-  if (sensor != NULL)
-  {
-   setNamedSensor(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, sensor));
-   return true;
-  }
-  else
-  {
-   setNamedSensor(NULL);
-   log->error("Sensor '" + pName + "' not available");
-  }
- }
- else
- {
-  log->error("No SensorManager for this protocol");
- }
- return false;
-}
-
-/*public*/ void Block::setNamedSensor(NamedBeanHandle<Sensor*>* s)
-{
- if (_namedSensor != NULL)
- {
-  if (_sensorListener != NULL)
-  {
-   ((AbstractSensor*)getSensor())->removePropertyChangeListener(_sensorListener);
-   _sensorListener = NULL;
-  }
- }
- _namedSensor = s;
-
- if(_namedSensor !=NULL)
- {
-  //((AbstractSensor*)getSensor())->addPropertyChangeListener(_sensorListener = new PropertyChangeListener());
-  AbstractSensor* s = (AbstractSensor*)getSensor();
-// #if 0
-//  {
-//   // TODO:
-//   /*public*/ void propertyChange(PropertyChangeEvent* e) { handleSensorChange(e); }
-//  }, s->getName(), "Block Sensor " + getDisplayName());
-//  _current = getSensor()->getState();
-//#endif
-  connect(s->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleSensorChange(PropertyChangeEvent*)));
+ bool ret;
+  QString oldName = nullptr;
   Sensor* sensor = getSensor();
-  qDebug() << tr("Block %1 listens to sensor %2").arg(getSystemName()).arg(getSensor()->getSystemName());
-  //connect(((LnSensor*)sensor), SIGNAL(propertyChange(QString,int,int)), this, SLOT(handleSensorChange(QString,int,int)));
-  connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleSensorChange(PropertyChangeEvent*)));
- }
- else
- {
-  _current = UNOCCUPIED;
- }
+  if (sensor != nullptr) {
+      oldName = sensor->getDisplayName();
+  }
+  // save the non-sensor states
+  int saveState = getState() & ~(UNKNOWN | OCCUPIED | UNOCCUPIED | INCONSISTENT | UNDETECTED);
+  if (pName == "" || pName.trimmed().length() == 0) {
+      setNamedSensor(nullptr);
+      ret = true;
+  } else {
+      sensor = InstanceManager::sensorManagerInstance()->getByUserName(pName);
+      if (sensor == nullptr) {
+          sensor = InstanceManager::sensorManagerInstance()->getBySystemName(pName);
+      }
+      if (sensor == nullptr) {
+          if (log->isDebugEnabled()) {
+              log->debug(tr("no sensor named \"%1\" exists.").arg(pName));
+          }
+          ret = false;
+      } else {
+          setNamedSensor(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, sensor));
+          ret = true;
+      }
+  }
+  setState(getState() | saveState);
+  firePropertyChange("OccupancySensorChange", oldName, pName);
+  return ret;
 }
 
+/*public*/ void Block::setNamedSensor(NamedBeanHandle<Sensor*>* s) {
+  if (_namedSensor != nullptr) {
+      if (_sensorListener != nullptr) {
+          getSensor()->removePropertyChangeListener(_sensorListener);
+          disconnect(getSensor(), SIGNAL(propertyChange(PropertyChangeEvent*)), _sensorListener, SLOT(propertyChange(PropertyChangeEvent*)));
+          _sensorListener = nullptr;
+      }
+  }
+  _namedSensor = s;
+
+  if (_namedSensor != nullptr) {
+//      getSensor()->addPropertyChangeListener(_sensorListener = (PropertyChangeEvent e) -> {
+//          handleSensorChange(e);
+//      }, s.getName(), "Block Sensor " + getDisplayName());
+//      _current = getSensor()->getState();
+   BlockSensorListener* _sensorListener = new BlockSensorListener(this);
+   getSensor()->addPropertyChangeListener(_sensorListener);
+   _current = getSensor()->getState();
+  } else {
+      _current = UNDETECTED;
+  }
+}
+void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
+{
+ block->handleSensorChange(e);
+}
 /*public*/ Sensor* Block::getSensor() {
     if (_namedSensor!=NULL)
         return _namedSensor->getBean();

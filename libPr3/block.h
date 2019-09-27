@@ -16,10 +16,13 @@ public:
     /*public*/ Block(QString systemName, QString userName="",QObject* parent =0);
 //    static const int OCCUPIED = Sensor::ACTIVE;
 //    static const int UNOCCUPIED;// = 0x04;// Sensor::INACTIVE;
+ /*public*/ QString toDebugString();
+
     enum STATE
     {
      OCCUPIED = 0x02, // Sensor::Active,
-     UNOCCUPIED = 0x04
+     UNOCCUPIED = 0x04,
+     UNDETECTED = 0x100
     };
     Q_ENUM(STATE)
     // Curvature attributes
@@ -222,4 +225,13 @@ private:
 
 };
 
+class BlockSensorListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ Block* block;
+public:
+ BlockSensorListener(Block* block) {this->block = block;}
+public slots:
+ void propertyChange(PropertyChangeEvent*);
+};
 #endif // BLOCK_H

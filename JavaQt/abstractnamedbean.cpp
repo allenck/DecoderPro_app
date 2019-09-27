@@ -75,17 +75,17 @@ void AbstractNamedBean::setComment(QString comment)
 //@Override
 QString AbstractNamedBean::getDisplayName()
 {
- QString name = getUserName();
- if (name != "" && name.length() > 0)
- {
-  return name;
- }
- else
- {
-  return getSystemName();
- }
+ return NamedBean::getDisplayName();
 }
-
+/**
+ * {@inheritDoc}
+ */
+//@Override
+//@CheckReturnValue
+//@Nonnull
+/*final*/ /*public*/ QString AbstractNamedBean::getDisplayName(NamedBean::DisplayOptions displayOptions) {
+    return NamedBean::getDisplayName(displayOptions);
+}
 //@Override
 /*public*/ QString AbstractNamedBean::getFullyFormattedDisplayName()
 {

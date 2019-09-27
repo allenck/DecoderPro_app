@@ -11,9 +11,9 @@ class JUnitAppender : public QObject
 public:
     explicit JUnitAppender(QObject *parent = nullptr);
 
-    /*public*/ static void assertErrorMessage(QString msg);
-    /*public*/ static void assertWarnMessage(QString msg);
-    /*public*/ static void assertMessage(QString msg);
+    /*public*/ static void assertErrorMessage(QString msg, QString file, int line);
+    /*public*/ static void assertWarnMessage(QString msg, QString file, int line);
+    /*public*/ static void assertMessage(QString msg, QString file, int line);
     /*public*/ static LoggingEvent* checkForMessage(QString msg);
     /*public*/ static void start();
     /*public*/ static void end();

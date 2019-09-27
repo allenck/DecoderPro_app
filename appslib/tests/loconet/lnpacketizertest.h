@@ -11,11 +11,12 @@ class LnPacketizerTest : public QObject
     Q_OBJECT
 public:
     explicit LnPacketizerTest(QObject *parent = nullptr);
+    /*public*/ void setUp();
+    /*public*/ void tearDown();
+public slots:
     /*public*/ void testCtor();
     /*public*/ void testStatusWithoutInit();
     /*public*/ void testStartThreads();
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
 
 signals:
 

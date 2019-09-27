@@ -55,7 +55,7 @@ void MultiIndexProgrammerFacade::parseCV(QString cv) {
     if (cv.contains("."))
     {
         if (cvFirst) {
-            QStringList splits = cv.split("\\.");
+            QStringList splits = cv.split(QRegExp("\\."));
             switch (splits.length()) {
                 case 2:
                     if (hasAlternateAddress(splits[1])) {
@@ -92,7 +92,7 @@ void MultiIndexProgrammerFacade::parseCV(QString cv) {
                     break;
             }
         } else {
-            QStringList splits = cv.split("\\.");
+            QStringList splits = cv.split(QRegExp("\\."));
             switch (splits.length()) {
                 case 2:
                     if (hasAlternateAddress(splits[0])) {

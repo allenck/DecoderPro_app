@@ -49,13 +49,13 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
     m = new LocoNetMessage(2);
     Assert::assertEquals("length", 2, m->getNumDataElements());
     new LocoNetMessage(1);
-    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow object creation if length is less than 2.");
+    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow object creation if length is less than 2.",__FILE__, __LINE__);
 
     new LocoNetMessage(0);
-    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow object creation if length is less than 2.");
+    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow object creation if length is less than 2.",__FILE__, __LINE__);
 
     new LocoNetMessage(-1);
-    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow object creation if length is less than 2.");
+    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow object creation if length is less than 2.",__FILE__, __LINE__);
 }
 
 //@Test
@@ -67,11 +67,11 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("third value", 13, m->getElement(2));
     Assert::assertEquals("fourth value", 14, m->getElement(3));
     new LocoNetMessage(QVector<int>() << 0x85);
-    JUnitAppender::assertErrorMessage("Cannot create a LocoNet message of length shorter than two.");
+    JUnitAppender::assertErrorMessage("Cannot create a LocoNet message of length shorter than two.",__FILE__, __LINE__);
 
     QVector<char> t1 = QVector<char> () <</*(byte)*/(char) 0x81;
     new LocoNetMessage(t1);
-    JUnitAppender::assertErrorMessage("Cannot create a LocoNet message of length shorter than two.");
+    JUnitAppender::assertErrorMessage("Cannot create a LocoNet message of length shorter than two.",__FILE__, __LINE__);
 }
 
 //@Test
@@ -114,39 +114,39 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
 //@Test
 /*public*/ void LocoNetMessageTest::testConstructorNoParams() {
     LocoNetMessage* m = new LocoNetMessage();
-    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with no argument");
-    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements());
+    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with no argument",__FILE__, __LINE__);
+    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements(),__FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void LocoNetMessageTest::LocoNetMessageTest::testConstructorString() {
     LocoNetMessage* m = new LocoNetMessage("");
-    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument");
-    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements());
+    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument",__FILE__, __LINE__);
+    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements(),__FILE__, __LINE__);
 
     m = new LocoNetMessage("A");
-    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument");
-    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements());
+    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument",__FILE__, __LINE__);
+    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements(),__FILE__, __LINE__);
 
     m = new LocoNetMessage("AB");
-    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument");
-    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements());
+    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument",__FILE__, __LINE__);
+    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements(),__FILE__, __LINE__);
 
     m = new LocoNetMessage("ABC");
-    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument");
-    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements());
+    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument",__FILE__, __LINE__);
+    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements(),__FILE__, __LINE__);
 
     m = new LocoNetMessage("ABCD");
-    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument");
+    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument",__FILE__, __LINE__);
     Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements());
 
     m = new LocoNetMessage("81 7E");
-    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument");
+    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument",__FILE__, __LINE__);
     Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements());
 
     m = new LocoNetMessage("81 7e");
-    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument");
-    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements());
+    JUnitAppender::assertErrorMessage("LocoNetMessage does not allow a constructor with a 'String' argument",__FILE__, __LINE__);
+    Assert::assertEquals("expect 0-length LocoNetMessage object", 0, m->getNumDataElements(),__FILE__, __LINE__);
 }
 
 // use the makePeerXfr calls, already tested to check the decoding
@@ -160,47 +160,47 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
     m = LocoNetMessage::makePeerXfr(0x1050, 0x1051, test, 63);
     data = m->getPeerXfrData();
     for (int i = 0; i < 8; i++) {
-        Assert::assertEquals("simple value " + i, "" + test[i], "" + data[i]);
+        Assert::assertEquals("simple value " + i, "" + test[i], "" + data[i],__FILE__, __LINE__);
     }
 
     test = QVector<int>()<<0x81<< 0x21<< 0x83<< 0x84<< 0x54<< 0x86<< 0x66<< 0x88;
     m = LocoNetMessage::makePeerXfr(0x1050, 0x1051, test, 63);
     data = m->getPeerXfrData();
     for (int i = 0; i < 8; i++) {
-        Assert::assertEquals("high-bit value " + i, "" + test[i], "" + data[i]);
+        Assert::assertEquals("high-bit value " + i, "" + test[i], "" + data[i],__FILE__, __LINE__);
     }
 
     test = QVector<int>()<<0xB5<< 0xD3<< 0x63<< 0xF4<< 0x5E<< 0x77<< 0xFF<< 0x22;
     m = LocoNetMessage::makePeerXfr(0x1050, 0x1051, test, 63);
     data = m->getPeerXfrData();
     for (int i = 0; i < 8; i++) {
-        Assert::assertEquals("complicated value " + i, "" + test[i], "" + data[i]);
+        Assert::assertEquals("complicated value " + i, "" + test[i], "" + data[i],__FILE__, __LINE__);
     }
 
     m->setOpCode(0);
     data = m->getPeerXfrData();
-    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong opcode 0x0");
+    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong opcode 0x0",__FILE__, __LINE__);
 
     m->setOpCode(0xe4);
     data = m->getPeerXfrData();
-    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong opcode 228");
+    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong opcode 228",__FILE__, __LINE__);
 
     m->setOpCode(0xe5);
     m->setElement(1, 9);
     data = m->getPeerXfrData();
-    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong secondary code 9");
+    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong secondary code 9",__FILE__, __LINE__);
 
     m = new LocoNetMessage(QVector<int>()<<0xe5<< 0x10<< 0x42<< 0x40<< 0x00<< 0x00<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0);
     data = m->getPeerXfrData();
-    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 17");
+    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 17",__FILE__, __LINE__);
 
     m = new LocoNetMessage(QVector<int>()<<0xe5<< 0x10<< 0x42<< 0x40<< 0x00<< 0x00);
     data = m->getPeerXfrData();
-    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 6");
+    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 6",__FILE__, __LINE__);
 
     m = new LocoNetMessage(QVector<int>()<<0xe5<< 0x10<< 0x42<< 0x40<< 0x00);
     data = m->getPeerXfrData();
-    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 5");
+    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 5",__FILE__, __LINE__);
 
     for (int j = 0; j < 8; ++j) {
         test = QVector<int>()<<0x00<< 0x00<< 0x00<< 0x00<< 0x00<< 0x00<< 0x00<< 0x00;
@@ -208,7 +208,7 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
         m = LocoNetMessage::makePeerXfr(0x101, 0x8581, test, 0);
         data = m->getPeerXfrData();
         for (int i = 0; i < 8; i++) {
-            Assert::assertEquals("complicated value " + i, "" + test[i], "" + data[i]);
+            Assert::assertEquals("complicated value " + i, "" + test[i], "" + data[i],__FILE__, __LINE__);
         }
     }
 }
@@ -384,10 +384,10 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
                 ((0xffff >> (i+8)) & 0xFF),
                 LocoNetMessage::highByte(0xffff >> i));
     }
-    JUnitAppender::assertErrorMessage("highByte called with too large value: 10000");
-    JUnitAppender::assertErrorMessage("highByte called with too large value: 20000");
+    JUnitAppender::assertErrorMessage("highByte called with too large value: 10000",__FILE__, __LINE__);
+    JUnitAppender::assertErrorMessage("highByte called with too large value: 20000",__FILE__, __LINE__);
     LocoNetMessage::highByte(0xfeffff);
-    JUnitAppender::assertErrorMessage("highByte called with too large value: feffff");
+    JUnitAppender::assertErrorMessage("highByte called with too large value: feffff",__FILE__, __LINE__);
 }
 
 //@Test
@@ -396,7 +396,7 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
         Assert::assertEquals(((i & 0x80)== 0x80),LocoNetMessage::highBit(i));
         if ((i < 0) || ((i > 255))) {
             JUnitAppender::assertErrorMessage(
-                    "highBit called with too large value: 0x"+QString::number(i,0,16));
+                    "highBit called with too large value: 0x"+QString::number(i,0,16),__FILE__, __LINE__);
         }
     }
 
@@ -475,13 +475,13 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
 
     LocoNetMessage* m = new LocoNetMessage(a);
     m->getElement(-1);
-    JUnitAppender::assertErrorMessage("reference element -1 in message of 20 elements: 21 20 1F 1E 1D 1C 1B 1A 19 18 17 16 15 14 13 12 11 10 0F 0E");
+    JUnitAppender::assertErrorMessage("reference element -1 in message of 20 elements: 21 20 1F 1E 1D 1C 1B 1A 19 18 17 16 15 14 13 12 11 10 0F 0E",__FILE__, __LINE__);
 
     m->getElement(21);
-    JUnitAppender::assertErrorMessage("reference element 21 in message of 20 elements: 21 20 1F 1E 1D 1C 1B 1A 19 18 17 16 15 14 13 12 11 10 0F 0E");
+    JUnitAppender::assertErrorMessage("reference element 21 in message of 20 elements: 21 20 1F 1E 1D 1C 1B 1A 19 18 17 16 15 14 13 12 11 10 0F 0E",__FILE__, __LINE__);
 
     m->getElement(20);
-    JUnitAppender::assertErrorMessage("reference element 20 in message of 20 elements: 21 20 1F 1E 1D 1C 1B 1A 19 18 17 16 15 14 13 12 11 10 0F 0E");
+    JUnitAppender::assertErrorMessage("reference element 20 in message of 20 elements: 21 20 1F 1E 1D 1C 1B 1A 19 18 17 16 15 14 13 12 11 10 0F 0E",__FILE__, __LINE__);
 
     for (int i = 0; i < 20; ++i) {
         Assert::assertEquals(a[i], m->getElement(i));
@@ -521,12 +521,12 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
     Assert::assertEquals(0xff, m->getElement(3));
     m->setElement(-1, 3);
     JUnitAppender::assertErrorMessage(
-        "reference element -1 in message of 20 elements: 38 38 50 FF 38 38 38 38 38 38 38 38 38 38 38 38 38 38 38 38");
+        "reference element -1 in message of 20 elements: 38 38 50 FF 38 38 38 38 38 38 38 38 38 38 38 38 38 38 38 38",__FILE__, __LINE__);
 
     m->setElement(21, 45);
     Assert::assertEquals(0x50, m->getElement(2));
     JUnitAppender::assertErrorMessage(
-        "reference element 21 in message of 20 elements: 38 38 50 FF 38 38 38 38 38 38 38 38 38 38 38 38 38 38 38 38");
+        "reference element 21 in message of 20 elements: 38 38 50 FF 38 38 38 38 38 38 38 38 38 38 38 38 38 38 38 38",__FILE__, __LINE__);
 }
 
 //@Test
@@ -547,11 +547,11 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
 
     LocoNetMessage* m3 = new LocoNetMessage(QVector<int>()<<0x97);
     Assert::assertEquals(0x98, m3->hashCode());
-    JUnitAppender::assertErrorMessage("Cannot create a LocoNet message of length shorter than two.");
+    JUnitAppender::assertErrorMessage("Cannot create a LocoNet message of length shorter than two.",__FILE__, __LINE__);
 
     LocoNetMessage* m4 = new LocoNetMessage(QVector<int>());
     Assert::assertEquals(0x0, m4->hashCode());
-    JUnitAppender::assertErrorMessage("Cannot create a LocoNet message of length shorter than two.");
+    JUnitAppender::assertErrorMessage("Cannot create a LocoNet message of length shorter than two.",__FILE__, __LINE__);
 }
 
 //@Test

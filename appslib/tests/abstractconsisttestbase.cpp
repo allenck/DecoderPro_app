@@ -57,7 +57,7 @@ AbstractConsistTestBase::AbstractConsistTestBase(QObject *parent) : QObject(pare
     /*@Test*/ /*public*/ void AbstractConsistTestBase::testSetConsistTypeCS(){
         c->setConsistType(Consist::CS_CONSIST);
         // make sure an error message is generated.
-        JUnitAppender::assertErrorMessage("Consist Type Not Supported");
+        JUnitAppender::assertErrorMessage("Consist Type Not Supported",__FILE__, __LINE__);
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::checkAddressAllowedGood(){
@@ -112,8 +112,8 @@ AbstractConsistTestBase::AbstractConsistTestBase(QObject *parent) : QObject(pare
                            // any data to the command station
         c->restore(B,false); // revese direction.
         c->setRosterId(A,"ATSF123");
-        Assert::assertEquals("Roster ID A","ATSF123",c->getRosterId(A));
-        Assert::assertNull("Roster ID B", c->getRosterId(B));
+        Assert::assertEquals("Roster ID A","ATSF123",c->getRosterId(A),__FILE__, __LINE__);
+        Assert::assertNull("Roster ID B", c->getRosterId(B),__FILE__, __LINE__);
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::checkRemoveWithGetRosterIDAdvanced() throw (IOException,FileNotFoundException) {
@@ -126,10 +126,10 @@ AbstractConsistTestBase::AbstractConsistTestBase(QObject *parent) : QObject(pare
                            // any data to the command station
         c->restore(B,false); // revese direction.
         c->setRosterId(A,"ATSF123");
-        Assert::assertEquals("Roster ID A","ATSF123",c->getRosterId(A));
-        Assert::assertNull("Roster ID B",c->getRosterId(B));
+        Assert::assertEquals("Roster ID A","ATSF123",c->getRosterId(A),__FILE__, __LINE__);
+        Assert::assertNull("Roster ID B",c->getRosterId(B),__FILE__, __LINE__);
         c->remove(A);
-        Assert::assertFalse("Roster A is no longer in consist",c->contains(A));
+        Assert::assertFalse("Roster A is no longer in consist",c->contains(A),__FILE__, __LINE__);
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::checkAddRemoveWithRosterUpdateAdvanced() throw (IOException,FileNotFoundException) {
@@ -155,12 +155,12 @@ AbstractConsistTestBase::AbstractConsistTestBase(QObject *parent) : QObject(pare
 
         entry->loadCvModel(varTable, cvTable);
         CvValue* cv19Value = cvTable->getCvByNumber("19");
-        Assert::assertEquals("CV19 value after add",c->getConsistAddress()->getNumber(),cv19Value->getValue());
+        Assert::assertEquals("CV19 value after add",c->getConsistAddress()->getNumber(),cv19Value->getValue(),__FILE__, __LINE__);
 
-        Assert::assertEquals("Roster ID A","ATSF123",c->getRosterId(A));
-        Assert::assertNull("Roster ID B",c->getRosterId(B));
+        Assert::assertEquals("Roster ID A","ATSF123",c->getRosterId(A),__FILE__, __LINE__);
+        Assert::assertNull("Roster ID B",c->getRosterId(B),__FILE__, __LINE__);
         c->remove(A);
-        Assert::assertFalse("Roster A is no longer in consist",c->contains(A));
+        Assert::assertFalse("Roster A is no longer in consist",c->contains(A),__FILE__, __LINE__);
 
         cvTable = new CvTableModel(nullptr, nullptr);  // will hold CV objects
         varTable = new VariableTableModel(nullptr,QStringList()<<"Name"<<"Value",cvTable);

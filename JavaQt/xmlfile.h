@@ -37,7 +37,7 @@ public:
     /*public*/ void makeBackupFile(QString name) const;
     /*public*/ bool makeBackupFile(QString directory, File* file) const;
     /*public*/ void revertBackupFile(QString name);
-    /*public*/ QString backupFileName(QString name) const;
+    virtual /*public*/ QString backupFileName(QString name) const;
     /*public*/ QString createFileNameWithDate(QString name) const;
     static /*public*/ QDomDocument newDocument(QDomElement root, QString dtd);
     static /*public*/ QDomDocument newDocument(QDomElement root);
@@ -65,8 +65,8 @@ public:
         CheckDtdThenSchema
     };
     Q_ENUM(Validate)
-    /*public*/ Validate getValidate();
-    /*public*/ void setValidate(Validate v);
+    virtual /*public*/ Validate getValidate();
+    virtual /*public*/ void setValidate(Validate v);
     /**
      * Provide a JFileChooser initialized to the default user location, and with
      * a default filter.

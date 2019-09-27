@@ -15,6 +15,9 @@ class LnOpsModeProgrammerTest : public AddressedProgrammerTestBase
     Q_OBJECT
 public:
     LnOpsModeProgrammerTest();
+    /*public*/ void setUp();
+    /*public*/ void tearDown();
+public slots:
     /*public*/ void testGetCanWriteAddress();
     /*public*/ void testSetMode();
     /*public*/ void testGetMode();
@@ -34,9 +37,6 @@ public:
      /*public*/ void testSv2Read() throw (ProgrammerException);
      /*public*/ void testOpsReadDecoderTransponding() throw (ProgrammerException);
      /*public*/ void testOpsReadLocoNetMode() throw (ProgrammerException);
-    //@Override
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
 
 private:
     LocoNetInterfaceScaffold* lnis;

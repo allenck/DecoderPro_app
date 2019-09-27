@@ -11,9 +11,11 @@ class AbstractPortControllerTestBase : public QObject
     Q_OBJECT
 public:
     explicit AbstractPortControllerTestBase(QObject *parent = nullptr);
-    /*public*/ void testisDirtyNotNPE();
     /*public*/ void setUp();
     /*public*/ void tearDown();
+public slots:
+    /*public*/ void testisDirtyNotNPE();
+
 
 signals:
 

@@ -59,6 +59,7 @@ public:
  /*public*/ QString convertThrottleSettingToScaleSpeedWithUnits(float throttleSetting, bool isForward);
  /*public*/ float convertScaleSpeedToMMS(float scaleSpeed);
  /*public*/ float getThrottleSetting(float speed, bool isForward);
+ /*public*/ SpeedStep* getSpeedStep(float speed);
 
 signals:
 
@@ -97,24 +98,6 @@ private:
 
  bool increaseSpeed;// = false;
  void finishChange();
- /*static*/ class SpeedSetting
- {
-  float step;// = 0.0;
-  int duration;// = 0;
-public:
-  SpeedSetting(float step, int duration) {
-      this->step = step;
-      this->duration = duration;
-  }
-
-  float getSpeedStep() {
-      return step;
-  }
-
-  int getDuration() {
-      return duration;
-  }
- };
  Logger* log;
  int extraTime;// = 0;
  void calculateStepDetails(float speedStep, float distance);
@@ -126,36 +109,47 @@ private slots:
  /*synchronized*/ void setNextStep();
 
 };
-/*static*/ class SpeedStep
-{
+/*static*/ /*public*/ class SpeedStep {
 
- float forward;// = 0.0;
- float reverse;// = 0.0;
+    float forward = 0.0f;
+    float reverse = 0.0f;
+public:
+    /*public*/ SpeedStep() {
+    }
 
- SpeedStep()
- {
-  forward = 0.0;
-  reverse = 0.0;
- }
+    /*public*/ void setForwardSpeed(float speed) {
+        forward = speed;
+    }
 
- void setForwardSpeed(float speed) {
-     forward = speed;
- }
+    /*public*/ void setReverseSpeed(float speed) {
+        reverse = speed;
+    }
 
- void setReverseSpeed(float speed) {
-     reverse = speed;
- }
+    /*public*/ float getForwardSpeed() {
+        return forward;
+    }
 
- float getForwardSpeed() {
-     return forward;
- }
-
- float getReverseSpeed() {
-     return reverse;
- }
- friend class SpeedUtil;
- friend class RosterSpeedProfile;
- friend class SpeedTableModel;
- friend class MergePrompt;
+    /*public*/ float getReverseSpeed() {
+        return reverse;
+    }
 };
+/*static*/ class SpeedSetting
+{
+ float step;// = 0.0;
+ int duration;// = 0;
+public:
+ SpeedSetting(float step, int duration) {
+     this->step = step;
+     this->duration = duration;
+ }
+
+ float getSpeedStep() {
+     return step;
+ }
+
+ int getDuration() {
+     return duration;
+ }
+};
+
 #endif // ROSTERSPEEDPROFILE_H

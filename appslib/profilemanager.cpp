@@ -1052,7 +1052,8 @@ QString ProfileManager::FileFilter1::getDescription()
  */
 /*public*/ /*static*/ QString ProfileManager::createUniqueId() {
     //return Integer.toHexString(Float.floatToIntBits((float) Math.random()));
- return QUuid::createUuid().toString().mid(1,8);
+    QString uuid = QUuid::createUuid().toString();
+ return uuid.mid(1,8);
 }
 
 void ProfileManager::profileNameChange(Profile* profile, QString oldName) {

@@ -1101,27 +1101,19 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  * @param Mode - the current speed step mode - default should be 128
  *              speed step mode in most cases
  */
-/*public*/ void AbstractThrottle::setSpeedStepMode(int Mode) {
-    if(log->isDebugEnabled()) log->debug("Speed Step Mode Change to Mode: " + QString("%1").arg(Mode) +
-            " Current mode is: " + this->speedStepMode);
-if(speedStepMode!=Mode)
-        notifyPropertyChangeListener("SpeedSteps", this->speedStepMode,
-                      this->speedStepMode=Mode );
-    if(Mode==DccThrottle::SpeedStepMode14)
-        speedIncrement=SPEED_STEP_14_INCREMENT;
-    else if(Mode==DccThrottle::SpeedStepMode27)
-        speedIncrement=SPEED_STEP_27_INCREMENT;
-    else if(Mode==DccThrottle::SpeedStepMode28)
-        speedIncrement=SPEED_STEP_28_INCREMENT;
-    else // default to 128 speed step mode
-        speedIncrement=SPEED_STEP_128_INCREMENT;
+/*public*/ void AbstractThrottle::setSpeedStepMode(SpeedStepMode::SSMODDES Mode) {
+ log->debug(tr("Speed Step Mode Change from:%1 to Mode:%2").arg(this->speedStepMode).arg(Mode));
+ if (speedStepMode != Mode) {
+     notifyPropertyChangeListener("SpeedSteps", this->speedStepMode,
+             this->speedStepMode = Mode);
+ }
 }
 
 /*
  * getSpeedStepMode - get the current speed step value.
  * <P>
  */
- /*public*/ int AbstractThrottle::getSpeedStepMode() {
+ /*public*/ SpeedStepMode::SSMODDES AbstractThrottle::getSpeedStepMode() {
     return speedStepMode;
  }
 

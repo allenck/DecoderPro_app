@@ -858,7 +858,7 @@ void SlotManager::confirmCVOpsMode(int CV, int val, ProgListener* p,
     {
         log->debug("cvOpSw mode!");
         //handle Command Station OpSw programming here
-        QStringList parts = CVname.split("\\.");
+        QStringList parts = CVname.split(QRegExp("\\."));
         if ((parts.at(0) ==("csOpSw")) && (parts.length()==2)) {
             if (csOpSwAccessor == nullptr) {
                 csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
@@ -1223,7 +1223,7 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
     if (getMode() == (csOpSwProgrammingMode)) {
         log->debug("cvOpSw mode write!");
         // handle Command Station OpSw programming here
-        QStringList parts = cvNum.split("\\.");
+        QStringList parts = cvNum.split(QRegExp("\\."));
         if ((parts.at(0) == ("csOpSw")) && (parts.length()==2)) {
             if (csOpSwAccessor == nullptr) {
                 csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
@@ -1281,7 +1281,7 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
  {
      log->debug("cvOpSw mode!");
      //handle Command Station OpSw programming here
-     QStringList parts = cvNum.split("\\.");
+     QStringList parts = cvNum.split(QRegExp("\\."));
      if ((parts.at(0) ==("csOpSw")) && (parts.length()==2)) {
          if (csOpSwAccessor == nullptr) {
              csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);

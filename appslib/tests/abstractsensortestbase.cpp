@@ -46,7 +46,10 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 
     //@Test
     /*public*/ void AbstractSensorTestBase::testAddListener() throw (JmriException) {
-        t->addPropertyChangeListener(new ListenO2(this));
+    ListenO2* listen;
+
+    t->addPropertyChangeListener(listen =new ListenO2(this));
+        connect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), listen, SLOT(propertyChange(PropertyChangeEvent*)));
         listenerResult = false;
         t->setUserName("user id");
         Assert::assertTrue("listener invoked by setUserName", listenerResult);
@@ -59,7 +62,9 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
     /*public*/ void AbstractSensorTestBase::testRemoveListener() {
         ListenO2* ln = new ListenO2(this);
         t->addPropertyChangeListener(ln);
+        connect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), ln, SLOT(propertyChange(PropertyChangeEvent*)));
         t->removePropertyChangeListener(ln);
+        disconnect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), ln, SLOT(propertyChange(PropertyChangeEvent*)));
         listenerResult = false;
         t->setUserName("user id");
         Assert::assertFalse("listener should not have heard message after removeListener",
@@ -154,7 +159,7 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 
     //@Test
     /*public*/ void AbstractSensorTestBase::testGetBeanType(){
-        Assert::assertEquals("bean type", t->getBeanType(), tr("Sensor"));
+        Assert::assertEquals("bean type", t->getBeanType(), tr("Sensor"),__FILE__, __LINE__);
     }
 
     // Test outgoing status request

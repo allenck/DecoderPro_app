@@ -33,7 +33,8 @@ public:
     /*public*/ bool isFile();
     /*public*/ bool isHidden();
     /*public*/ QStringList list();
-    /*public*/ QString toString();
+    Q_INVOKABLE/*public*/ QString toString();
+    Q_INVOKABLE/*public*/ bool equals(File* other);
     /*public*/ QStringList list(FilenameFilter* filter);
     /*public*/ QList<File*> listFiles();
     /*public*/ QList<File*> listFiles(FilenameFilter* filter);

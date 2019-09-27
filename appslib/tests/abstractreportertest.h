@@ -11,12 +11,14 @@ class AbstractReporterTest : public QObject
 public:
     explicit AbstractReporterTest(QObject *parent = nullptr);
     virtual /*protected*/ QVariant generateObjectToReport()=0;
+    virtual /*public*/ void setUp()=0;
+    virtual /*public*/ void tearDown() =0;
+
+public slots:
     /*public*/ void testCtor();
     /*public*/ void testReport();
     /*public*/ void testGetBeanType();
     /*public*/ void testPropertyChange();
-    virtual /*public*/ void setUp()=0;
-    virtual /*public*/ void tearDown() =0;
 signals:
 
 public slots:

@@ -110,7 +110,7 @@ Version::Version()
  */
 /*static*/ /*public*/ bool Version::isCanonicalVersion(QString version)
 {
- QStringList parts = version.split("\\.");
+ QStringList parts = version.split(QRegExp("\\."));
  if (parts.length() != 3)
  {
         return false;
@@ -159,8 +159,8 @@ Version::Version()
     if (!isCanonicalVersion(version2)) {
         throw new IllegalArgumentException("Parameter version2 (" + version2 + ") is not a canonical version string.");
     }
-    QStringList p1 = version1.split("\\.");
-    QStringList p2 = version2.split("\\.");
+    QStringList p1 = version1.split(QRegExp("\\."));
+    QStringList p2 = version2.split(QRegExp("\\."));
     for (int i = 0; i < 3; i++)
     {
         result = p1[i]==(p2[i]);

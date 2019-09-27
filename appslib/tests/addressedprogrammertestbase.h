@@ -7,6 +7,7 @@ class AddressedProgrammerTestBase : public ProgrammerTestBase
     Q_OBJECT
 public:
     AddressedProgrammerTestBase();
+public slots:
     /*public*/ void testDefault();
     /*public*/ void testGetCanRead();
     /*public*/ void testSetGetMode();

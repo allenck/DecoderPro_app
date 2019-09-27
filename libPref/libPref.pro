@@ -60,11 +60,11 @@ SOURCES += libpref.cpp \
     nxframe.cpp \
     jmrixconfigpanexml.cpp \
     routefinder.cpp \
-    calibrater.cpp \
     webserverpreferences.cpp \
     webserverpreferencespanel.cpp \
     startupactionspreferencespanel.cpp \
-    speedutil.cpp
+    speedutil.cpp \
+    rampdata.cpp
 
 
 HEADERS += libpref.h\
@@ -118,11 +118,11 @@ HEADERS += libpref.h\
     nxframe.h \
     jmrixconfigpanexml.h \
     routefinder.h \
-    calibrater.h \
     webserverpreferences.h \
     webserverpreferencespanel.h \
     startupactionspreferencespanel.h \
-    speedutil.h
+    speedutil.h \
+    rampdata.h
 
 
 unix:!symbian {

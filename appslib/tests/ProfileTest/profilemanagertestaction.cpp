@@ -2,6 +2,8 @@
 #include "profilemanagertest.h"
 #include "joptionpane.h"
 #include "assert1.h"
+#include "loggerfactory.h"
+
 
 ProfileManagerTestAction::ProfileManagerTestAction(QObject *parent) : AbstractAction(tr("Profile Manager Test"), parent)
 {
@@ -19,9 +21,16 @@ void ProfileManagerTestAction::actionPerformed()
     pmt->setUp();
     try
     {
-     pmt->testCTor();
-     pmt->testSetActiveProfile_Profile();
-     pmt-> testSetActiveProfile_String();
+     QStringList testList = QStringList()
+         << "testCTor"
+         << "testSetActiveProfile_Profile"
+         << "testSetActiveProfile_String";
+     foreach(QString test, testList)
+     {
+      log->info(tr("begin '%1'").arg(test));
+      QMetaObject::invokeMethod(pmt, test.toLocal8Bit(), Qt::DirectConnection);
+      log->info(tr("end '%1'").arg(test));
+     }
     }
     catch (AssertionError ex)
     {
@@ -29,4 +38,5 @@ void ProfileManagerTestAction::actionPerformed()
 
     }
 }
+Logger* ProfileManagerTestAction::log = LoggerFactory::getLogger("ProfileManagerTestAction");
 

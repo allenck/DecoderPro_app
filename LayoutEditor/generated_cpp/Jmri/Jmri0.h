@@ -2909,6 +2909,7 @@ void delete_Block(Block* obj) { delete obj; }
    void py_q_setState(Block* theWrappedObject, int  v){  (((PythonQtPublicPromoter_Block*)theWrappedObject)->py_q_setState(v));}
    void setValue(Block* theWrappedObject, QVariant  value);
    void py_q_setValue(Block* theWrappedObject, QVariant  value){  (((PythonQtPublicPromoter_Block*)theWrappedObject)->py_q_setValue(value));}
+   QString  toDebugString(Block* theWrappedObject);
 };
 
 
@@ -3354,7 +3355,6 @@ virtual LocoAddress*  getLocoAddress();
 virtual BasicRosterEntry*  getRosterEntry();
 virtual float  getSpeedIncrement();
 virtual float  getSpeedSetting();
-virtual int  getSpeedStepMode();
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
 virtual void setF0(bool  arg__1);
 virtual void setF0Momentary(bool  arg__1);
@@ -3417,7 +3417,6 @@ virtual void setF9Momentary(bool  arg__1);
 virtual void setIsForward(bool  arg__1);
 virtual void setRosterEntry(BasicRosterEntry*  arg__1);
 virtual void setSpeedSetting(float  arg__1);
-virtual void setSpeedStepMode(int  arg__1);
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
@@ -3428,8 +3427,6 @@ virtual void timerEvent(QTimerEvent*  event);
 class PythonQtPublicPromoter_DccThrottle : public DccThrottle
 { public:
 inline float  py_q_getSpeedIncrement() { return DccThrottle::getSpeedIncrement(); }
-inline int  py_q_getSpeedStepMode() { return DccThrottle::getSpeedStepMode(); }
-inline void py_q_setSpeedStepMode(int  arg__1) { DccThrottle::setSpeedStepMode(arg__1); }
 };
 
 class PythonQtWrapper_DccThrottle : public QObject
@@ -3441,10 +3438,6 @@ DccThrottle* new_DccThrottle(const DccThrottle&  arg__1);
 void delete_DccThrottle(DccThrottle* obj) { delete obj; } 
    float  getSpeedIncrement(DccThrottle* theWrappedObject);
    float  py_q_getSpeedIncrement(DccThrottle* theWrappedObject){  return (((PythonQtPublicPromoter_DccThrottle*)theWrappedObject)->py_q_getSpeedIncrement());}
-   int  getSpeedStepMode(DccThrottle* theWrappedObject);
-   int  py_q_getSpeedStepMode(DccThrottle* theWrappedObject){  return (((PythonQtPublicPromoter_DccThrottle*)theWrappedObject)->py_q_getSpeedStepMode());}
-   void setSpeedStepMode(DccThrottle* theWrappedObject, int  arg__1);
-   void py_q_setSpeedStepMode(DccThrottle* theWrappedObject, int  arg__1){  (((PythonQtPublicPromoter_DccThrottle*)theWrappedObject)->py_q_setSpeedStepMode(arg__1));}
 };
 
 

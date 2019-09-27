@@ -2,6 +2,8 @@
 #include "profiletest.h"
 #include "assert1.h"
 #include "joptionpane.h"
+#include "loggerfactory.h"
+
 
 ProfileTestAction::ProfileTestAction(QObject *parent) : AbstractAction(tr("Profile Test"), parent)
 {
@@ -19,21 +21,28 @@ void ProfileTestAction::actionPerformed()
     pt->setUpClass();
     try
     {
-        pt->testProfileWithExtension();
-        pt->testSave();
-        pt->testGetName();
-        pt->testSetName();
-        pt->testGetId();
-        pt->testGetPath();
-        pt->testToString();
-        pt->testHashCode();
-        pt->testEquals();
-        pt->testIsComplete();
-        pt->testGetUniqueId();
-        pt->testContainsProfile();
-        pt->testInProfile();
-        pt->testIsProfile();
-        pt->testCompareTo();
+        QStringList testList = QStringList()
+        << "testProfileWithExtension"
+        << "testSave"
+        << "testGetName"
+        << "testSetName"
+        << "testGetId"
+        << "testGetPath"
+        << "testToString"
+        << "testHashCode"
+        << "testEquals"
+        << "testIsComplete"
+        << "testGetUniqueId"
+        << "testContainsProfile"
+        << "testInProfile"
+        << "testIsProfile"
+        << "testCompareTo";
+       foreach(QString test, testList)
+       {
+        log->info(tr("begin '%1'").arg(test));
+        QMetaObject::invokeMethod(pt, test.toLocal8Bit(), Qt::DirectConnection);
+        log->info(tr("end '%1'").arg(test));
+       }
     }
     catch (AssertionError ex)
     {
@@ -42,3 +51,4 @@ void ProfileTestAction::actionPerformed()
     }
     pt->tearDownClass();
 }
+Logger* ProfileTestAction::log = LoggerFactory::getLogger("ProfileTestAction");

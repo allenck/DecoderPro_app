@@ -70,6 +70,67 @@ public:
      INCONSISTENT= 0x08
     };
     Q_ENUM(STATES)
+    /*public*/ static /*final*/ QString DISPLAY_NAME_FORMAT;// = "%1 (%2)";
+
+    /**
+     * Format used for {@link #getDisplayName(DisplayOptions)} when displaying
+     * the user name and system name with quoation marks around the user name.
+     */
+    /*public*/ static /*final*/ QString QUOTED_NAME_FORMAT;// = "\"%1\" (%2)";
+
+    /**
+     * Display options for {@link #getDisplayName(DisplayOptions)}. The quoted
+     * forms are intended to be used in sentences and messages, while the
+     * unquoted forms are intended for use in user interface elements like lists
+     * and combo boxes.
+     */
+    /*public*/ enum DisplayOptions {
+        /**
+         * Display the user name; if the user name is null or empty, display the
+         * system name.
+         */
+        DISPLAYNAME,
+        /**
+         * Display the user name in quotes; if the user name is null or empty,
+         * display the system name in quotes.
+         */
+        QUOTED_DISPLAYNAME,
+        /**
+         * Display the user name; if the user name is null or empty, display the
+         * system name.
+         */
+        USERNAME,
+        /**
+         * Display the user name in quotes; if the user name is null or empty,
+         * display the system name in quotes.
+         */
+        QUOTED_USERNAME,
+        /**
+         * Display the system name. This should be used only when the context
+         * would cause displaying the user name to be more confusing than not or
+         * in text input fields for editing the system name.
+         */
+        SYSTEMNAME,
+        /**
+         * Display the system name in quotes. This should be used only when the
+         * context would cause displaying the user name to be more confusing
+         * than not or in text input fields for editing the system name.
+         */
+        QUOTED_SYSTEMNAME,
+        /**
+         * Display the user name followed by the system name in parenthesis. If
+         * the user name is null or empty, display the system name without
+         * parenthesis.
+         */
+        USERNAME_SYSTEMNAME,
+        /**
+         * Display the user name in quotes followed by the system name in
+         * parenthesis. If the user name is null or empty, display the system
+         * name in quotes.
+         */
+        QUOTED_USERNAME_SYSTEMNAME
+    };
+    Q_ENUM(DisplayOptions)
         // user identification, _bound_ parameter so manager(s) can listen
         virtual QString getUserName();
         virtual void setUserName(QString s);
@@ -83,6 +144,7 @@ public:
         * return user name if it exists, otherwise return System name
         */
         virtual QString getDisplayName();
+        virtual QString getDisplayName(DisplayOptions);
         virtual /*public*/ QString getFullyFormattedDisplayName() {return "";}
 
 

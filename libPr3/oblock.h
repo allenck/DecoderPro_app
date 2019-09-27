@@ -123,7 +123,7 @@ friend class Tracker;
 friend class TableFrame;
 friend class WarrantFrame;
 friend class Calibrater;
-
+friend class SpeedUtil;
 };
 
 #endif // OBLOCK_H

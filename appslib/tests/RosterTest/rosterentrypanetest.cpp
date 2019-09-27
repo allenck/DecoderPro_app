@@ -109,6 +109,9 @@ RosterEntryPaneTest::RosterEntryPaneTest(QObject *parent) : QObject(parent)
     p->hide();
 }
 
+void RosterEntryO2::warnShortLong(QString s) {
+}
+
 //@Test
 /*public*/ void RosterEntryPaneTest::testGuiChanged1() {
     RosterEntryPane* p = new RosterEntryPane(rOld);

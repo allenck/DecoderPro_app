@@ -186,8 +186,17 @@
     ss->setForwardSpeed(forward);
     ss->setReverseSpeed(reverse);
 }
+/*public*/ SpeedStep* RosterSpeedProfile::getSpeedStep(float speed) {
+    int iSpeedStep = qRound(speed * 1000);
+    return speeds.value(iSpeedStep);
+}
 
 /*public*/ void RosterSpeedProfile::setForwardSpeed(float speedStep, float forward) {
+ if (forward > 0.0f) {
+     _hasForwardSpeeds = true;
+ } else {
+     return;
+ }
     int iSpeedStep = qRound(speedStep * 1000);
     if (!speeds.contains(iSpeedStep)) {
         speeds.insert(iSpeedStep, new SpeedStep());
@@ -196,8 +205,14 @@
     ss->setForwardSpeed(forward);
 }
 
-/*public*/ void RosterSpeedProfile::setReverseSpeed(float speedStep, float reverse) {
-    int iSpeedStep = qRound(speedStep * 1000);
+/*public*/ void RosterSpeedProfile::setReverseSpeed(float speedStep, float reverse)
+{
+ if (reverse > 0.0f) {
+     _hasReverseSpeeds = true;
+ } else {
+     return;
+ }
+ int iSpeedStep = qRound(speedStep * 1000);
     if (!speeds.contains(iSpeedStep)) {
         speeds.insert(iSpeedStep, new SpeedStep());
     }
@@ -262,23 +277,70 @@ int RosterSpeedProfile::lowerKey(int key)
  */
 /*public*/ float RosterSpeedProfile::getReverseSpeed(float speedStep) {
     int iSpeedStep = qRound(speedStep * 1000);
-    if (speeds.contains(iSpeedStep)) {
-        return speeds.value(iSpeedStep)->getReverseSpeed();
+    if (iSpeedStep <= 0 || !_hasReverseSpeeds) {
+                return 0.0f;
     }
-    log->debug("no exact match reverse for " + iSpeedStep);
+    if (speeds.contains(iSpeedStep))
+    {
+     float speed = speeds.value(iSpeedStep)->getReverseSpeed();
+     if (speed > 0.0f) {
+         return speed;
+     }
+    }
+    log->debug("no exact match reverse for " + QString::number(iSpeedStep));
     float lower = 0;
     float higher = 0;
-    int highStep = 0;
-    int lowStep = 0;
-    if (/*speeds.*/higherKey(iSpeedStep) != 0) {
-        highStep = /*speeds.*/higherKey(iSpeedStep);
-        higher = speeds.value(highStep)->getForwardSpeed();
-    } else {
-        return -1.0f;
+    int highStep = iSpeedStep;
+    int lowStep = iSpeedStep;
+    // Note there may be zero values interspersed in the tree
+
+    //Entry<int, SpeedStep*> entry = speeds.higherEntry(highStep);
+    QMapIterator<int, SpeedStep*> iter(speeds);
+    while(iter.hasNext())
+    {
+     iter.next();
+     if(iter.key() > highStep)
+     {
+      if (iter.value() != nullptr && higher <= 0.0f)
+      {
+        highStep = iter.key();
+        float value = iter.value()->getReverseSpeed();
+        if (value > 0.0f) {
+            higher = value;
+        }
+        //entry = speeds.higherEntry(highStep);
+      }
+     }
     }
-    if (/*speeds.*/lowerKey(iSpeedStep) != 0) {
-        lowStep = /*speeds.*/lowerKey(iSpeedStep);
-        lower = speeds.value(lowStep)->getForwardSpeed();
+    bool nothingHigher = (higher <= 0.0f);
+    //entry = speeds.lowerEntry(lowStep);
+    while(iter.hasPrevious())
+    {
+     iter.peekPrevious();
+     if(iter.key() < lowStep)
+     {
+      if (iter.value() != nullptr && lower <= 0.0f)
+      {
+        lowStep = iter.key();
+        float value = iter.value()->getReverseSpeed();
+        if (value > 0.0f) {
+            lower = value;
+        }
+        //entry = speeds.lowerEntry(lowStep);
+      }
+     }
+    }
+    log->debug(tr("lowStep=%1, lower=%2 highStep=%3 higher=%4 for iSpeedStep=%5").arg(
+            lowStep).arg(lower).arg(highStep).arg(higher).arg(iSpeedStep));
+    if (lower <= 0.0f) {      // nothing lower
+        if (nothingHigher) {
+            log->error("Nothing in speed Profile");
+            return 0.0f;       // no reverse speeds at all
+        }
+        return higher * iSpeedStep / highStep;
+    }
+    if (nothingHigher) {
+        return lower * (1.0f + (iSpeedStep - lowStep) / (1000.0f - lowStep));
     }
 
     float valperstep = (higher - lower) / (highStep - lowStep);

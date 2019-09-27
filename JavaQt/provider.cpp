@@ -1708,11 +1708,11 @@
                     String s;
                     s = getAttribute("SupportedKeyFormats");
                     if (s != null) {
-                        supportedFormats = s.split("\\|");
+                        supportedFormats = s.split(QRegExp("\\|"));
                     }
                     s = getAttribute("SupportedKeyClasses");
                     if (s != null) {
-                        String[] classNames = s.split("\\|");
+                        String[] classNames = s.split(QRegExp("\\|"));
                         List<Class<?>> classList =
                             new ArrayList<>(classNames.length);
                         for (String className : classNames) {

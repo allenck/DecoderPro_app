@@ -10,6 +10,7 @@ class AbstractMessageTestBase : public QObject
 public:
     explicit AbstractMessageTestBase(QObject *parent = nullptr);
     /*abstract*/ /*public*/ virtual void setUp() {}
+public slots:
     /*public*/ void testCtor();
     /*public*/ void testToString();
     /*public*/ void testToMonitorString();

@@ -179,7 +179,7 @@ namespace Operations
    }
    else
    {
-    inputLine = line.split("\\s+"); // NOI18N
+    inputLine = line.split(QRegExp("\\s+")); // NOI18N
    }
    if (inputLine.length() < 1 || line==(""))
    {

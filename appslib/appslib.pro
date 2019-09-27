@@ -482,8 +482,6 @@ SOURCES += appslib.cpp \
     tests/loconet/loconetslottestaction.cpp \
     tests/junitappender.cpp \
     tests/loconet/lnopsmodeprogrammertest.cpp \
-    tests/loconet/addressedprogrammertestbase.cpp \
-    tests/loconet/programmertestbase.cpp \
     tests/assume.cpp \
     tests/proglistenerscaffold.cpp \
     tests/loconet/lnopsmodeprogrammertestaction.cpp \
@@ -519,7 +517,9 @@ SOURCES += appslib.cpp \
     tests/abstractsensortestbase.cpp \
     tests/abstractconsisttestbase.cpp \
     tests/loconet/lnsensortest.cpp \
-    tests/loconet/lnsensortestaction.cpp
+    tests/loconet/lnsensortestaction.cpp \
+    tests/addressedprogrammertestbase.cpp \
+    tests/programmertestbase.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -951,8 +951,6 @@ HEADERS += appslib.h\
     tests/loconet/loconetslottestaction.h \
     tests/junitappender.h \
     tests/loconet/lnopsmodeprogrammertest.h \
-    tests/loconet/addressedprogrammertestbase.h \
-    tests/loconet/programmertestbase.h \
     tests/assume.h \
     tests/proglistenerscaffold.h \
     tests/loconet/lnopsmodeprogrammertestaction.h \
@@ -988,7 +986,9 @@ HEADERS += appslib.h\
     tests/abstractsensortestbase.h \
     tests/abstractconsisttestbase.h \
     tests/loconet/lnsensortest.h \
-    tests/loconet/lnsensortestaction.h
+    tests/loconet/lnsensortestaction.h \
+    tests/addressedprogrammertestbase.h \
+    tests/programmertestbase.h
 
 unix:!symbian {
     maemo5 {

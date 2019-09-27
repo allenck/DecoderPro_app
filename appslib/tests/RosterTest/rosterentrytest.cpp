@@ -299,11 +299,12 @@ QDomDocument doc;
 
     QDomElement o = r->store(doc);
     // check
-#if 0
-    Assert::assertEquals("XML Element ", e.toString(), o.toString());
-#endif
+    Assert::assertEquals("XML Element ", e.tagName(), o.tagName(),__FILE__, __LINE__);
     Assert::assertEquals("family ", "91", o.firstChildElement("decoder").attribute("family"));
     Assert::assertEquals("model ", "33", o.firstChildElement("decoder").attribute("model"));
+}
+
+void RosterEntryO1::warnShortLong(QString s) {
 }
 
 //@Test

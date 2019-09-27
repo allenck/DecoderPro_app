@@ -174,57 +174,11 @@ void Profile::common(File *path, QString id,bool isReadable)
 
 /*protected*/ /*final*/ void Profile::save() throw (IOException)
 {
-#if 1
- try
- {
     ProfileProperties* p = new ProfileProperties(this);
     p->put(*_NAME, this->name, true);
     p->put(*_ID, this->id, true);
-    this->saveXml();
- }
- catch (NullPointerException npe)
- {
-
- }
-#endif
 }
 
-/*
- * Remove when or after support for writing ProfileConfig.xml is removed.
- */
-//@Deprecated
-/*protected*/ /*final*/ void Profile::saveXml() throw (IOException) {
-
-Properties* p = new Properties();
-
-   File* f = new File(this->path, *_PROPERTIES);
-   QTextStream* os = NULL;
-
-   p->setProperty(*_NAME, this->name);
-   p->setProperty(*_ID, this->id);
-   if (!f->exists() && !f->createNewFile()) {
-    Logger::error("Unable to create file at " + f->getAbsolutePath());
-    throw new IOException("Unable to create file at " + f->getAbsolutePath()); // NOI18N
-
-   }
-   try
-   {
-    QFile* ff = new QFile(f->getAbsolutePath());
-    if(!ff->open(QIODevice::WriteOnly))
-    {
-     Logger::error("can not open file write only " + f->getAbsolutePath());
-     return;
-    }
-    os = new QTextStream(ff);
-    p->storeToXML(os, "JMRI Profile"); // NOI18N
-    //os->close();
-   } catch (IOException ex) {
-    if (os != NULL) {
-       //os->close();
-    }
-    throw ex;
-   }
-}
 
 /**
  * @return the name
@@ -415,7 +369,7 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
    return true;
   }
   // Version 1
-  if ((new File(path, *_PROPERTIES))->canRead()) // i.e: "profile.properties"
+  if ((new File(path, *_PROPERTIES))->canRead() && path->getName() != (PROFILE)) // i.e: "profile.properties"
   {
    return true;
   }

@@ -58,7 +58,6 @@ protected:
     /*protected*/ static /*final*/ QString PATH;// = "path"; // NOI18N
     /*protected*/ Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent = 0) throw (IOException);
     /*protected*/ /*final*/ void save() throw (IOException);
-    QT_DEPRECATED /*protected*/ /*final*/ void saveXml() throw (IOException);
 
  friend class ProfileManager;
  friend class ProfileManagerDialog;

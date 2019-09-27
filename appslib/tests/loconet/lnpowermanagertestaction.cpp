@@ -2,6 +2,7 @@
 #include "lnpowermanagertest.h"
 #include "joptionpane.h"
 #include "assert1.h"
+#include "loggerfactory.h"
 
 
 LnPowerManagerTestAction::LnPowerManagerTestAction(QObject *parent) : AbstractAction(tr("LnPowerManagerTest"), parent)
@@ -11,17 +12,40 @@ LnPowerManagerTestAction::LnPowerManagerTestAction(QObject *parent) : AbstractAc
 
 void LnPowerManagerTestAction::actionPerformed()
 {
-    LnPowerManagerTest* lpmt = new LnPowerManagerTest();
-    lpmt->setUp();
+    LnPowerManagerTest* test = new LnPowerManagerTest();
+    test->setUp();
     try
     {
-     lpmt-> testImplementsIdle();
-     lpmt->testStateIdle();
-     lpmt->testSetPowerIdle();
+        QStringList testList = QStringList()
+            // tests in AbstractPowerManagerTestBase
+            << "testCreate"
+            << "testSetPowerOn"
+            << "testSetPowerOff"
+            << "testSetPowerIdle"
+            << "testStateOn"
+            << "testStateOff"
+            << "testStateIdle"
+            << "testAddListener"
+            << "testRemoveListener"
+            << "testDispose1"
+            << "testDispose2"
+            << "testImplementsIdle"
+
+            // tests in LnPowerManagerTest
+            << "testImplementsIdle"
+            << "testStateIdle"
+            << "testSetPowerIdle";
+        foreach(QString testName, testList)
+        {
+         log->info(tr("begin '%1'").arg(testName));
+         QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
+         log->info(tr("end '%1'").arg(testName));
+        }
     }
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
-    lpmt->tearDown();
+    test->tearDown();
 }
+Logger* LnPowerManagerTestAction::log = LoggerFactory::getLogger("LnPowerManagerTestAction");

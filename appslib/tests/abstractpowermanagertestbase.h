@@ -12,6 +12,7 @@ class AbstractPowerManagerTestBase : public QObject
 public:
     explicit AbstractPowerManagerTestBase(QObject *parent = nullptr);
     virtual /*public*/ void setUp() =0;
+public slots:
     /*public*/ void testCreate();
     /*public*/ void testSetPowerOn() throw (JmriException);
     /*public*/ void testSetPowerOff() throw (JmriException);

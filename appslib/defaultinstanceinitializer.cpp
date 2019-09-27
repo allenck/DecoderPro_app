@@ -65,6 +65,7 @@
 #include "listedtableframe.h"
 #include "lnprogrammermanager.h"
 #include "signalspeedmap.h"
+#include "decoderindexfile.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -195,6 +196,9 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  if (type == "SignalSystemManager") {
      return new DefaultSignalSystemManager();
+ }
+ if (type == "DecoderIndexFile") {
+     return new DecoderIndexFile();
  }
 
  if (type == "Timebase")

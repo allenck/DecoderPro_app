@@ -10,6 +10,9 @@ class RosterEntryTest : public QObject
  Q_OBJECT
 public:
  explicit RosterEntryTest(QObject *parent = nullptr);
+    /*public*/ void setUp();
+    /*public*/ void tearDown();
+public slots:
     /*public*/ void testCreate();
     /*public*/ void testPartialLoad();
     /*public*/ void testEmptyLoad();
@@ -33,8 +36,6 @@ public:
     /*public*/ void testAttributeList();
     /*public*/ void testXmlAttributesLoadStore();
     /*public*/ void testStoreAttribute();
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
 
 signals:
 
@@ -50,8 +51,7 @@ class RosterEntryO1   : public      RosterEntry
     RosterEntryO1(QDomElement e, QObject* parent =0) : RosterEntry(e, parent){}
     //@Override
  protected:
-    void warnShortLong(QString s) {
-    }
+    void warnShortLong(QString s);
 };
 
 #endif // ROSTERENTRYTEST_H

@@ -145,7 +145,7 @@ LocoNetConsistTest::LocoNetConsistTest(QObject *parent) : AbstractConsistTestBas
     m->setElement(9, 0x01);
     slotmanager->slot(4)->setSlot(m);
     } catch(LocoNetException lne) {
-      Assert::fail("failed to add addresses to slot during setup");
+      Assert::fail("failed to add addresses to slot during setup",__FILE__, __LINE__);
     }
     c = new LocoNetConsist(3,memo);
     ReturnSlotInfo();

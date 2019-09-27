@@ -132,10 +132,13 @@ public:
 
    ~PythonQtShell_Roster();
 
+virtual QString  backupFileName(QString  name) const;
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual XmlFile::Validate  getValidate();
+virtual void setValidate(XmlFile::Validate  v);
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
@@ -2755,10 +2758,13 @@ public:
 
    ~PythonQtShell_XmlFile();
 
+virtual QString  backupFileName(QString  name) const;
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual XmlFile::Validate  getValidate();
+virtual void setValidate(XmlFile::Validate  v);
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
@@ -2771,6 +2777,9 @@ class PythonQtPublicPromoter_XmlFile : public XmlFile
 inline bool  promoted_checkFile(QString  name) { return this->checkFile(name); }
 inline QFile*  promoted_findFile(QString  name) const { return this->findFile(name); }
 inline QDomElement  promoted_getRoot(QDataStream*  stream) { return this->getRoot(stream); }
+inline QString  py_q_backupFileName(QString  name) const { return XmlFile::backupFileName(name); }
+inline XmlFile::Validate  py_q_getValidate() { return XmlFile::getValidate(); }
+inline void py_q_setValidate(XmlFile::Validate  v) { XmlFile::setValidate(v); }
 };
 
 class PythonQtWrapper_XmlFile : public QObject
@@ -2781,6 +2790,7 @@ XmlFile* new_XmlFile(QObject*  parent = 0);
 void delete_XmlFile(XmlFile* obj) { delete obj; } 
    void static_XmlFile_addDefaultInfo(QDomElement  root);
    QString  backupFileName(XmlFile* theWrappedObject, QString  name) const;
+   QString  py_q_backupFileName(XmlFile* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_XmlFile*)theWrappedObject)->py_q_backupFileName(name));}
    bool  checkFile(XmlFile* theWrappedObject, QString  name);
    QString  createFileNameWithDate(XmlFile* theWrappedObject, QString  name) const;
    void static_XmlFile_dumpElement(QDomElement  name);
@@ -2791,6 +2801,7 @@ void delete_XmlFile(XmlFile* obj) { delete obj; }
    QString  getPathname(XmlFile* theWrappedObject);
    QDomElement  getRoot(XmlFile* theWrappedObject, QDataStream*  stream);
    XmlFile::Validate  getValidate(XmlFile* theWrappedObject);
+   XmlFile::Validate  py_q_getValidate(XmlFile* theWrappedObject){  return (((PythonQtPublicPromoter_XmlFile*)theWrappedObject)->py_q_getValidate());}
    void makeBackupFile(XmlFile* theWrappedObject, QString  name) const;
    QDomDocument  static_XmlFile_newDocument(QDomElement  root);
    QDomDocument  static_XmlFile_newDocument(QDomElement  root, QString  dtd);
@@ -2803,6 +2814,7 @@ void delete_XmlFile(XmlFile* obj) { delete obj; }
    void static_XmlFile_setDefaultValidate(XmlFile::Validate  v);
    void setDtdLocation(XmlFile* theWrappedObject, QString  v);
    void setValidate(XmlFile* theWrappedObject, XmlFile::Validate  v);
+   void py_q_setValidate(XmlFile* theWrappedObject, XmlFile::Validate  v){  (((PythonQtPublicPromoter_XmlFile*)theWrappedObject)->py_q_setValidate(v));}
    void writeXML(XmlFile* theWrappedObject, QFile*  file, QDomDocument  doc) const throw (FileNotFoundException);
    QString  static_XmlFile_xmlDir();
 };

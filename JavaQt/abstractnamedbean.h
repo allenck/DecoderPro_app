@@ -25,6 +25,8 @@ public:
      */
     void setComment(QString comment);
     QString getDisplayName();
+    /*final*/ /*public*/ QString getDisplayName(DisplayOptions displayOptions);
+
     /*public*/ QString getFullyFormattedDisplayName();
 
     /*public synchronized*/ virtual void addPropertyChangeListener(PropertyChangeListener* l, QString beanRef, const QString listenerRef);

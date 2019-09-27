@@ -10,12 +10,13 @@ namespace Sprog
         Q_OBJECT
     public:
         SprogMessageTest();
+        /*public*/ void setUp();
+        /*public*/ void tearDown();
+    public slots:
         /*public*/ void testReadCv();
         /*public*/ void testWriteCV();
         /*public*/ void testReadCvLarge();
         /*public*/ void testWriteCVLarge();
-        /*public*/ void setUp();
-        /*public*/ void tearDown();
     private:
         /*private*/ SprogMessage* msg = nullptr;
 

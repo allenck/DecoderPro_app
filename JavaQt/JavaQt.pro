@@ -216,7 +216,10 @@ SOURCES += javaqt.cpp \
     fileoutputstream.cpp \
     loggingevent.cpp \
     priority.cpp \
-    loglevel.cpp
+    loglevel.cpp \
+    filteroutputstream.cpp \
+    printstream.cpp \
+    myfileinputstream.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -471,7 +474,10 @@ HEADERS += javaqt.h\
     fileoutputstream.h \
     loggingevent.h \
     priority.h \
-    loglevel.h
+    loglevel.h \
+    filteroutputstream.h \
+    printstream.h \
+    myfileinputstream.h
 
 unix {
     target.path = /usr/lib

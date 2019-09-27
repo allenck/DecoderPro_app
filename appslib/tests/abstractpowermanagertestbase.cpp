@@ -142,12 +142,12 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
             Assert::assertEquals("messages sent", initialOutboundSize, outboundSize()); // just the first
             return;
         }
-        Assert::fail("Should have thrown exception after dispose()");
+        Assert::fail("Should have thrown exception after dispose()",__FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractPowerManagerTestBase::testImplementsIdle() {
         // assumes that Idle is not implemented; override this test for cases
         // where idle is implemented.
-        Assert::assertFalse(p->implementsIdle());
+        Assert::assertFalse(p->implementsIdle(),__FILE__, __LINE__);
     }

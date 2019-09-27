@@ -24,6 +24,7 @@ class RosterEntryComboBox;
 class BeanSelectCreatePanel;
 class JTextField;
 class QPushButton;
+class RosterSpeedProfile;
 class BlockSensorComboBox : public QComboBox
 {
  Q_OBJECT

@@ -53,6 +53,8 @@ private:
  /*private*/ QPushButton* _destUnits;
  QRadioButton* _forward;// = new JRadioButton();
  QRadioButton* _reverse;// = new JRadioButton();
+ /*private*/ /*final*/ QCheckBox* _noRamp;// = new JCheckBox();
+ /*private*/ /*final*/ QCheckBox* _noSound;// = new JCheckBox();
  QCheckBox*  _stageEStop;// = new JCheckBox();
  QCheckBox*  _haltStartBox;// = new JCheckBox();
  QCheckBox*  _calibrateBox;// = new JCheckBox();
@@ -78,7 +80,6 @@ private:
  /*private*/ float _totalLen;    // route length of warrant
 
  /*private*/ /*final*/ JTextField* _maxThrottleBox;// = new JTextField(6);
- /*private*/ /*final*/ QCheckBox* _noRamp;// = new JCheckBox();
  /*private*/ /*final*/ QCheckBox* _shareRouteBox;// = new JCheckBox();
 
  /*private*/ static NXFrame* _instance;
@@ -88,17 +89,18 @@ private:
  /*private*/ QWidget* makeSwitchPanel();
  /*private*/ void enableAuto(bool enable);
  /*private*/ bool makeAndRunWarrant();
- /*private*/ void runManual();
  /*private*/ QString getBoxData();
  /*private*/ float getPathLength(BlockOrder* bo);
  /*private*/ float getTotalLength(float defaultBlockLen);
- /*private*/ QString getTotalLength();
- /*private*/ float getUpRampLength();
- /*private*/ float getDownRampLength();
- /*private*/ float getRampLength(float totalLen, RosterSpeedProfile* speedProfile);
+ /*private*/ float getTotalLength();
+// /*private*/ float getUpRampLength();
+// /*private*/ float getDownRampLength();
+// /*private*/ float getRampLength(float totalLen, RosterSpeedProfile* speedProfile);
  /*private*/ QString makeCommands(Warrant* w);
  /*private*/ QPushButton* getButton(QString text);
  /*private*/ WarrantPreferences* updatePreferences();
+ /*private*/ float adjustdistance(float fromSpeed, float toSpeed, float distance, BlockOrder *bo) throw (JmriException);
+ /*private*/ void updateAutoRunPanel();
 
 protected:
  /*protected*/ QWidget* _controlPanel;

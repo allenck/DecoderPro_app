@@ -8,7 +8,7 @@
 class SpeedUtil;
 class CommandDelay;
 class BlockSpeedInfo;
-class Calibrater;
+//class Calibrater;
 class RosterEntry;
 class DccThrottle;
 class SignalSpeedMap;
@@ -36,15 +36,23 @@ public:
     // control states
     enum STATES
     {
+     STOP =0,
      HALT = 1,
      RESUME = 2,
      ABORT = 3,
      RETRY = 4,
-     WAIT_FOR_TRAIN = 9,
-     RUNNING = 5,
-     SPEED_RESTRICTED = 6,
-     WAIT_FOR_CLEAR = 7,
-     WAIT_FOR_SENSOR = 8
+     ESTOP = 5,
+     RAMP_HALT = 6,
+     RUNNING = 7,
+     SPEED_RESTRICTED = 8,
+     WAIT_FOR_CLEAR = 9,
+     WAIT_FOR_SENSOR = 10,
+     WAIT_FOR_TRAIN = 11,
+     WAIT_FOR_DELAYED_START = 12,
+     LEARNING = 13,
+     STOP_PENDING = 14,
+     RAMPING_UP = 15,
+     DEBUG = 7
     };
     enum POSITIONS
     {
@@ -110,7 +118,7 @@ public:
     /*public*/ void stopWarrant(bool abort);
     /*public*/ void setBlockOrders(QList<BlockOrder*>* orders);
     /*public*/ QString setRoute(int delay, QList<BlockOrder*> orders);
-
+    /*public*/ QString getCurrentBlockName();
 
 signals:
 //    void propertyChange(PropertyChangeEvent*);
@@ -149,7 +157,7 @@ private:
     /*private*/ NamedBean* _stoppingSignal;  // Signal stopping train movement
     /*private*/ OBlock* _shareTOBlock;       // Block in another warrant that controls a turnout in this block
     /*private*/ QString _message;            // last message returned from an action
-    /*private*/ Calibrater* _calibrater;     // Calibrates throttle speed factor
+//    /*private*/ Calibrater* _calibrater;     // Calibrates throttle speed factor
     RosterEntry*     _train;
 
     /*private*/ static SignalSpeedMap* _speedMap;
@@ -170,7 +178,15 @@ private:
     /*private*/ QString getPermissibleSpeedAt(BlockOrder* bo);
     /*private*/ bool allocateNextBlock(BlockOrder* bo);
     SpeedUtil* _speedUtil;
+    /*private*/ QString getSpeedMessage(QString speedType);
 
+    /*private*/ bool _waitForSignal; // train may not move until false
+    /*private*/ bool _waitForBlock; // train may not move until false
+    /*private*/ bool _waitForWarrant;
+    // Crossovers typically have both switches controlled by one TO, although each switch is in a different block
+    // At the origin and destination of warrants, TO's shared between warrants may set conflicting paths
+    /*private*/ OBlock* _myShareBlock;   // block belonging to this warrant
+    /*private*/ OBlock* _otherShareBlock;   // block belonging to another warrant
 Logger* log;
 protected:
     /*protected*/ bool _tempRunBlind;            // run mode flag
@@ -197,9 +213,13 @@ protected:
     /*protected*/ void startTracker();
 /*protected*/ void setOrders(QList<BlockOrder*>* orders) ;
 /*protected*/ QList<BlockOrder*>* getOrders();
-/*protected*/ void setCalibrater(Calibrater* c);
+///*protected*/ void setCalibrater(Calibrater* c);
 /*protected*/ RosterEntry* getRosterEntry();
 /*protected*/ DccThrottle* getThrottle();
+/*protected*/ bool isWaitingForSignal();
+/*protected*/ bool isWaitingForClear() ;
+/*protected*/ bool isWaitingForWarrant();
+/*protected*/ Warrant* getBlockingWarrant();
 
 
 friend class OBlock;

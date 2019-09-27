@@ -231,6 +231,20 @@
     return nullptr;
 }
 /**
+ * Call is only valid when in MODE_LEARN and MODE_RUN.
+ *
+ * @return Name of OBlock currently occupied
+ */
+/*public*/ QString Warrant::getCurrentBlockName() {
+    OBlock* block = getBlockAt(_idxCurrentOrder);
+    if (block == nullptr) {
+        return "";
+    } else {
+        return block->getDisplayName();
+    }
+}
+
+/**
 * Call is only valid when in MODE_LEARN and MODE_RUN
 */
 /*private*/ int Warrant::getBlockStateAt(int idx) {
@@ -397,9 +411,9 @@
  }
  return nullptr;
 }
-/*protected*/ void Warrant::setCalibrater(Calibrater* c) {
-    _calibrater = c;
-}
+///*protected*/ void Warrant::setCalibrater(Calibrater* c) {
+//    _calibrater = c;
+//}
 
 /**
 * Engineer reports its status
@@ -445,7 +459,24 @@
 }
 
 /*************** Methods for running trains ****************/
-
+/*protected*/ bool Warrant::isWaitingForSignal() {
+    return _waitForSignal;
+}
+/*protected*/ bool Warrant::isWaitingForClear() {
+    return _waitForBlock;
+}
+/*protected*/ bool Warrant::isWaitingForWarrant() {
+    return _waitForWarrant;
+}
+/*protected*/ Warrant* Warrant::getBlockingWarrant() {
+    if (_stoppingBlock != nullptr && !this->equals(_stoppingBlock->getWarrant())) {
+        return _stoppingBlock->getWarrant();
+    }
+    if (_otherShareBlock != nullptr) {
+        return _otherShareBlock->getWarrant();
+    }
+    return nullptr;
+}
 /*public*/ int Warrant::getRunMode() { return _runMode; }
 
 /*protected*/ QString Warrant::getRunModeMessage()
@@ -472,8 +503,6 @@
 {
  if (_delayStart)
  {
-//        return java.text.MessageFormat.format(WarrantTableAction.rb.getString("waitForDelayStart"),
-//                _trainName, getDisplayName(), getBlockOrderAt(0).getBlock().getDisplayName());
   return tr("Wait for %1 to arrive at starting block %3 of warrant %2. ").arg(_trainName).arg(getDisplayName()).arg(getBlockOrderAt(0)->getBlock()->getDisplayName());
  }
  switch (_runMode)
@@ -495,72 +524,154 @@
    }
    return tr("Idle");
   case Warrant::MODE_LEARN:
-//            return java.text.MessageFormat.format(WarrantTableAction.rb.getString("Learning"),
-//                                       getCurrentBlockOrder().getBlock().getDisplayName());
     return tr("Learn Mode in Blk %1.").arg(getCurrentBlockOrder()->getBlock()->getDisplayName());
   case Warrant::MODE_RUN:
   {
-            if (_engineer==nullptr) {
-                return tr("Engineer and throttle Gone");
-            }
-            QString key;
-            int cmdIdx = _engineer->getCurrentCommandIndex()+1;
-            if (cmdIdx>=_commands->size()) {
-                cmdIdx =_commands->size()-1;
-            }
-            int blkIdx = _idxCurrentOrder+1;
-            if (blkIdx>=_orders->size()) {
-                blkIdx = _orders->size()-1;
-            }
-            switch (_engineer->getRunState()) {
-                case Warrant::HALT:
-                    key = "Halted";
-                    break;
-                case Warrant::ABORT:
-                    if (!_commands->isEmpty() &&
-                            _engineer->getCurrentCommandIndex()>=_commands->size()-1) {
-                        _engineer = nullptr;
-                        return tr("End Of Script. ");
-                    }
-                    return tr("Train script aborted.");
-                case Warrant::WAIT_FOR_CLEAR:
-                    key = "WaitForClear";
-                    break;
-                case Warrant::WAIT_FOR_TRAIN:
-//                    return java.text.MessageFormat.format(rb.getString("WaitForTrain"),
-//                                cmdIdx, getBlockOrderAt(blkIdx).getBlock().getDisplayName());
-                return tr("Cmd #%1 wait for arrival at Blk %2.").arg(cmdIdx).arg(getBlockOrderAt(blkIdx)->getBlock()->getDisplayName());
-                case Warrant::WAIT_FOR_SENSOR:
-//                    return java.text.MessageFormat.format(rb.getString("WaitForSensor"),
-//                                cmdIdx, _engineer->getWaitSensor().getDisplayName(),
-//                                _commands->get(cmdIdx).getBlockName());
-                return tr("Cmd #%1 wait for event sensor %2 in Blk %3.").arg(cmdIdx).arg(_engineer->getWaitSensor()->getDisplayName()).arg(_commands->at(cmdIdx)->getBlockName());
-                case Warrant::SPEED_RESTRICTED:
-                    key = tr("Speed %3 in Blk %1 at Cmd #%2.").arg(getCurrentBlockOrder()->getBlock()->getDisplayName()).arg(_engineer->getCurrentCommandIndex()+1).arg(_engineer->getSpeedRestriction());
-                    break;
-                default:
-                key = tr("Running in Blk %1 at Cmd #%2 (%3).").arg(getCurrentBlockOrder()->getBlock()->getDisplayName()).arg(_engineer->getCurrentCommandIndex()+1).arg(_engineer->getSpeedRestriction());
-            }
-//            return java.text.MessageFormat.format(rb.getString(key),
-//                                getCurrentBlockOrder().getBlock().getDisplayName(),
-//                                _engineer->getCurrentCommandIndex()+1,
-//                                _engineer->getSpeedRestriction());
-        return key;
+   if (_engineer==nullptr) {
+       return tr("Engineer and throttle Gone");
+   }
+   int cmdIdx = _engineer->getCurrentCommandIndex()+1;
+   if (cmdIdx>=_commands->size()) {
+       cmdIdx =_commands->size()-1;
+   }
+   cmdIdx++;   // display is 1-based
+   OBlock* block = getCurrentBlockOrder()->getBlock();
+   if ((block->getState() & (OBlock::OCCUPIED | OBlock::UNDETECTED)) == 0) {
+       return tr("Train \"%1\" lost occupancy at block \"%2\".").arg(_trainName).arg(block->getDisplayName());
+   }
+   QString blockName = block->getDisplayName();
+   QString speed = getSpeedMessage(_curSpeedType);
+
+   switch (_engineer->getRunState()) {
+   case Warrant::RESUME:
+       return tr("Restart in block \"%1\" at Cmd #%2.  Resume speed to %3. ").arg(blockName).arg(cmdIdx).arg(speed);
+
+   case Warrant::RETRY:
+       return tr("Unprotected move forced into block \"%1\". Resume speed to %3 - Cmd #%2.").arg(blockName).arg(cmdIdx).arg(speed);
+
+   case Warrant::ABORT:
+       if (cmdIdx == _commands->size() - 1)
+       {
+           _engineer = nullptr;
+           return tr("End Of Script for train %1.").arg(_trainName);
+       }
+       return tr("Script aborted in block \"%1\" at Cmd #%2.").arg(blockName).arg(cmdIdx);
+
+   case Warrant::HALT:
+   case Warrant::WAIT_FOR_CLEAR:
+   {
+       QString s = "";
+       if (_waitForSignal) {
+           s = tr("Signal");
+       } else if (_waitForWarrant) {
+           Warrant* w = getBlockingWarrant();
+           if (w != nullptr) {
+               s = tr("Warrant \"%1\"").arg( w->getDisplayName());
+           } else {
+               s = tr("Waiting in block %1 for %2 to clear ahead.").arg(blockName).arg((_waitForSignal
+                       ? tr("Signal") : tr("Occupancy")));
+           }
+       } else if (_waitForBlock) {
+           s = tr("Occupancy");
+       } else {
+           return tr("Halted in block \"%1\" at Cmd #%2.").arg(blockName).arg(cmdIdx);
+       }
+       return tr("Train %1 waiting in Block %2 for %3 to clear ahead.").arg(
+               getTrainName()).arg(getCurrentBlockName()).arg(s);
+   }
+   case Warrant::WAIT_FOR_TRAIN:
+   {
+       int blkIdx = _idxCurrentOrder + 1;
+       if (blkIdx >= _orders->size())
+       {
+           blkIdx = _orders->size() - 1;
+       }
+       return tr("Overdue for arrival at block %2. Speed %3 - Cmd #%1.").arg(cmdIdx).arg(
+               getBlockOrderAt(blkIdx)->getBlock()->getDisplayName()).arg(speed);
+   }
+   case Warrant::WAIT_FOR_SENSOR:
+       return tr("Wait for event sensor %2 in Block %3. Speed %4 - Cmd #%1.").arg(
+               cmdIdx).arg(_engineer->getWaitSensor()->getDisplayName(),
+               blockName).arg(speed);
+
+   case Warrant::RUNNING:
+   case Warrant::SPEED_RESTRICTED:
+   case Warrant::RAMPING_UP:
+       return tr("Running in Block %1 at speed %3 - Cmd #%2.").arg(blockName).arg(cmdIdx).arg(speed);
+
+   case Warrant::RAMP_HALT:
+       return tr("Speed slowing from %1 in block %2 to halt.").arg(speed).arg(blockName);
+
+   case Warrant::STOP_PENDING:
+       return tr("Speed slowing from %1 in block %2 for %3 ahead.").arg(speed).arg(blockName).arg((_waitForSignal
+               ? tr("Signal") : (_waitForBlock
+                       ? tr("Occupancy") : tr("Warrant"))));
+
+   default:
+                return _message;
+   }
   }
   case Warrant::MODE_MANUAL:
   {
    BlockOrder* bo = getCurrentBlockOrder();
    if (bo!=nullptr)
    {
-//                return java.text.MessageFormat.format(rb.getString("ManualRunning"),
-//                        bo.getBlock().getDisplayName());
     return tr("Manual control in Blk %1.").arg(bo->getBlock()->getDisplayName());
    }
+   return tr("Manual run");
   }
+   default:
+   break;
  }
  return "ERROR mode= "+_runMode;
 }
 
+/**
+ * Calculates the scale speed of the current throttle setting for display
+ * @param speedType name of current speed
+ * @return text message
+ */
+/*private*/ QString Warrant::getSpeedMessage(QString speedType) {
+    float speed = 0;
+    QString units;
+    SignalSpeedMap* speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"));
+    switch (speedMap->getInterpretation()) {
+        case SignalSpeedMap::PERCENT_NORMAL:
+/*                units = Bundle.getMessage("percentNormal");
+            if (_idxCurrentOrder == _orders.size() - 1
+                    || _engineer.getCurrentCommandIndex() >= _commands.size() - 1) {
+                speed = _speedInfo.get(_idxCurrentOrder).getEntranceSpeed();
+            } else {
+                for (int idx = _engineer.getCurrentCommandIndex(); idx >=0; idx--) {
+                    ThrottleSetting ts = _commands.get(idx);
+                    if ("SPEED".equals(ts.getCommand().toUpperCase())) {
+                        speed = Float.parseFloat(ts.getValue());
+                        break;
+                    }
+                }
+            }
+            speed = (_engineer.getSpeedSetting() / speed) * 100;
+            break;*/
+        case SignalSpeedMap::PERCENT_THROTTLE:
+            units = tr("% Throttle");
+            speed = _engineer->getSpeedSetting() * 100;
+            break;
+        case SignalSpeedMap::SPEED_MPH:
+            units = "Mph";
+            speed = _speedUtil->getTrackSpeed(_engineer->getSpeedSetting()) * speedMap->getLayoutScale();
+            speed = speed * 2.2369363f;
+            break;
+        case SignalSpeedMap::SPEED_KMPH:
+            units = "Kmph";
+            speed = _speedUtil->getTrackSpeed(_engineer->getSpeedSetting()) * speedMap->getLayoutScale();
+            speed = speed * 3.6f;
+            break;
+        default:
+            log->error(tr("Unknown speed interpretation %1").arg(speedMap->getInterpretation()));
+            throw IllegalArgumentException("Unknown speed interpretation " + QString::number(speedMap->getInterpretation()));
+    }
+    return tr("%1 (%2%3)").arg(speedType).arg(qRound(speed)).arg(units);
+}
 
 /*protected*/ void Warrant::startTracker() {
     TrackerTableAction::markNewTracker(getCurrentBlockOrder()->getBlock(), _trainName);
@@ -590,7 +701,7 @@
         _student->dispose();     // releases throttle
         _student = nullptr;
     }
-    _calibrater = nullptr;
+//    _calibrater = nullptr;
     if (_engineer != nullptr) {
         if (abort) {
             _engineer->abort();
@@ -1787,14 +1898,14 @@
             _speedTimeMap.insert(blkName, new BlockSpeedInfo(firstSpeed, maxSpeed, lastSpeed, blkTime, firstIdx, i));
             if(_debug) log->debug("block: "+blkName+" entrance= "+QString::number(firstSpeed)+" max= "+QString::number(maxSpeed)+" exit= "+
                     QString::number(lastSpeed)+" time= "+QString::number(blkTime)+" from "+QString::number(firstIdx)+" to "+QString::number(i));
-            blkName = ts->getBlockName();
+            blkName = ts->getBeanDisplayName();
             blkTime = 0;
             firstSpeed = lastSpeed;
             maxSpeed = lastSpeed;
             hasSpeedChange = false;
             firstIdx = i;
         } else {        // collect block info
-            blkName = ts->getBlockName();
+            blkName = ts->getBeanDisplayName();
             blkTime += ts->getTime();
             if (cmd==("SPEED")) {
                 lastSpeed = (ts->getValue().toFloat());

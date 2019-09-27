@@ -924,7 +924,8 @@ SOURCES += \
     simpleserver/simplereporterserver.cpp \
     lnpacketizerstrict.cpp \
     loconet/lntrafficrouter.cpp \
-    consistpreferencesmanager.cpp
+    consistpreferencesmanager.cpp \
+    speedstepmode.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1842,7 +1843,8 @@ HEADERS += \
     simpleserver/simplereporterserver.h \
     lnpacketizerstrict.h \
     loconet/lntrafficrouter.h \
-    consistpreferencesmanager.h
+    consistpreferencesmanager.h \
+    speedstepmode.h
 
  !contains(FTDI, 1) {
     HEADERS +=

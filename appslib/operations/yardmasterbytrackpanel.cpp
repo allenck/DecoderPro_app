@@ -425,7 +425,7 @@ void YardmasterByTrackPanel::common()
                 QString s = trainCommon->pickupUtilityCars(&carList, car, !IS_MANIFEST, !TrainCommon::IS_TWO_COLUMN_TRACK);
                 if (s == NULL)
                     continue;
-                text = TrainSwitchListText::getStringHoldCar().split("\\{")[0] + s.trimmed();
+                text = TrainSwitchListText::getStringHoldCar().split(QRegExp("\\{"))[0] + s.trimmed();
             } else {
                 text = TrainSwitchListText::getStringHoldCar().arg(
                         TrainCommon::padAndTruncateString(car->getRoadName(),((CarRoads*) InstanceManager::getDefault("CarRoads"))->getMaxNameLength())).arg(

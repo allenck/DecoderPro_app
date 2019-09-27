@@ -60,7 +60,7 @@ void TwoIndexTcsProgrammerFacade::parseCV(QString cv) throw (IllegalArgumentExce
  valueSI = -1;
  if (cv.contains("."))
  {
-  QStringList splits = cv.split("\\.");
+  QStringList splits = cv.split(QRegExp("\\."));
   if (splits.length() == 3 && splits[0]==(format2Flag))
   {
             valuePI = splits[1].toInt();

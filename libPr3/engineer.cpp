@@ -256,7 +256,13 @@ Engineer::Engineer(Warrant* warrant, DccThrottle* throttle, QObject *parent) : Q
         if (log->isDebugEnabled()) log->debug("_speedType="+_speedType+", Speed set to "+
                                               QString::number( _speed)+" _waitForClear= "+(_waitForClear?"true":"false")+" warrant "+_warrant->getDisplayName());
     }
+/*protected*/ float Engineer::getSpeedSetting() {
+        return _throttle->getSpeedSetting();
+    }
 
+    /*protected*/ float Engineer::getScriptSpeed() {
+        return _normalSpeed;
+    }
     /*synchronized*/ /*public*/ int Engineer::getRunState()
     {
         QMutexLocker locker(&mutex);

@@ -29021,6 +29021,11 @@ void PythonQtWrapper_Block::setValue(Block* theWrappedObject, QVariant  value)
   ( theWrappedObject->setValue(value));
 }
 
+QString  PythonQtWrapper_Block::toDebugString(Block* theWrappedObject)
+{
+  return ( theWrappedObject->toDebugString());
+}
+
 
 
 PythonQtShell_BlockManager::~PythonQtShell_BlockManager() {
@@ -34716,39 +34721,6 @@ if (_wrapper) {
 }
   return DccThrottle::getSpeedSetting();
 }
-int  PythonQtShell_DccThrottle::getSpeedStepMode()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getSpeedStepMode");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"int"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      int returnValue{};
-      void* args[1] = {NULL};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getSpeedStepMode", methodInfo, result);
-          } else {
-            returnValue = *((int*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return DccThrottle::getSpeedStepMode();
-}
 void PythonQtShell_DccThrottle::removePropertyChangeListener(PropertyChangeListener*  arg__1)
 {
 if (_wrapper) {
@@ -36113,28 +36085,6 @@ if (_wrapper) {
 }
   DccThrottle::setSpeedSetting(arg__1);
 }
-void PythonQtShell_DccThrottle::setSpeedStepMode(int  arg__1)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("setSpeedStepMode");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "int"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&arg__1};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  DccThrottle::setSpeedStepMode(arg__1);
-}
 void PythonQtShell_DccThrottle::timerEvent(QTimerEvent*  event0)
 {
 if (_wrapper) {
@@ -36181,16 +36131,6 @@ int PythonQtShell_DccThrottle::qt_metacall(QMetaObject::Call call, int id, void*
 float  PythonQtWrapper_DccThrottle::getSpeedIncrement(DccThrottle* theWrappedObject)
 {
   return ( theWrappedObject->getSpeedIncrement());
-}
-
-int  PythonQtWrapper_DccThrottle::getSpeedStepMode(DccThrottle* theWrappedObject)
-{
-  return ( theWrappedObject->getSpeedStepMode());
-}
-
-void PythonQtWrapper_DccThrottle::setSpeedStepMode(DccThrottle* theWrappedObject, int  arg__1)
-{
-  ( theWrappedObject->setSpeedStepMode(arg__1));
 }
 
 

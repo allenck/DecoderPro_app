@@ -745,21 +745,21 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
 
     msg = NmraPacket::accDecPktOpsMode(511, 255, 0);
     slotmanager->sendPacket(msg, 9);
-    JUnitAppender::assertWarnMessage("Ops Mode Accessory Packet 'Send count' reduced from 9 to 8.");
+    JUnitAppender::assertWarnMessage("Ops Mode Accessory Packet 'Send count' reduced from 9 to 8.",__FILE__, __LINE__);
     Assert::assertEquals("nmra packet 9",
             "ED 0B 7F 57 0F 3F 00 6C 7E 00 00",
             lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper());
 
     msg = NmraPacket::accSignalDecoderPkt(1, 31);
     slotmanager->sendPacket(msg, 0);
-    JUnitAppender::assertWarnMessage("Ops Mode Accessory Packet 'Send count' of 0 is illegal and is forced to 1.");
+    JUnitAppender::assertWarnMessage("Ops Mode Accessory Packet 'Send count' of 0 is illegal and is forced to 1.",__FILE__, __LINE__);
     Assert::assertEquals("nmra packet 10",
             "ED 0B 7F 30 01 01 71 1F 00 00 00",
             lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper());
 
     msg = NmraPacket::accSignalDecoderPkt(2, 30);
     slotmanager->sendPacket(msg, -1);
-    JUnitAppender::assertWarnMessage("Ops Mode Accessory Packet 'Send count' of -1 is illegal and is forced to 1.");
+    JUnitAppender::assertWarnMessage("Ops Mode Accessory Packet 'Send count' of -1 is illegal and is forced to 1.",__FILE__, __LINE__);
     Assert::assertEquals("nmra packet 10",
             "ED 0B 7F 30 01 01 73 1E 00 00 00",
             lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper());

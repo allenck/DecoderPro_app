@@ -21,7 +21,7 @@
     //super(memo);
     this->address = address;
     addr = address->getNumber();
-    setSpeedStepMode(DccThrottle::SpeedStepMode28);
+    setSpeedStepMode(SpeedStepMode::NMRA_DCC_28);
     this->speedIncrement = 1;  // 128 step mode only
 }
 

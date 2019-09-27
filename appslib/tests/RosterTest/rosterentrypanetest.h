@@ -13,6 +13,7 @@ public:
     explicit RosterEntryPaneTest(QObject *parent = nullptr);
     /*public*/ void setUp();
     /*public*/ void tearDown();
+public slots:
     /*public*/ void testCreate();
     /*public*/ void testGuiChanged1();
     /*public*/ void testGuiChanged2();
@@ -43,8 +44,7 @@ public:
     RosterEntryO2(QObject* parent =0) : RosterEntry(parent){}
     RosterEntryO2(QDomElement e, QObject* parent =0) : RosterEntry(e, parent){}
 protected:
-    void warnShortLong(QString s) {
-    }
+    void warnShortLong(QString s);
 };
 
 #endif // ROSTERENTRYPANETEST_H

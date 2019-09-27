@@ -56,7 +56,7 @@ AbstractReporterTest::AbstractReporterTest(QObject *parent) : QObject(parent)
 
     //@Test
     /*public*/ void AbstractReporterTest::testGetBeanType(){
-         Assert::assertEquals("bean type",r->getBeanType(),tr("Reporter"));
+         Assert::assertEquals("bean type",r->getBeanType(),tr("Reporter"),__FILE__, __LINE__);
     }
 
     //@Test

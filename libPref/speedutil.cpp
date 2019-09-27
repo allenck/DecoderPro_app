@@ -12,6 +12,10 @@
 #include "rosterspeedprofile.h"
 #include "warrant.h"
 #include "nxframe.h"
+#include "blockorder.h"
+#include "opath.h"
+#include "oblock.h"
+#include "rampdata.h"
 
 SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
 {
@@ -421,7 +425,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
  * @param isForward direction of travel
  * @return modified throttle setting
  */
-/*protected*/ float SpeedUtil::modifySpeed(float tSpeed, QString sType, bool isForward) {
+/*protected*/ float SpeedUtil::modifySpeed(float tSpeed, QString sType) {
 //        if (log->isTraceEnabled()) log->trace("modifySpeed speed= {} for SpeedType= \"{}\"", tSpeed, sType);
     if (sType == ( Warrant::Stop)) {
         return 0.0f;
@@ -450,7 +454,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
     {
             signalSpeed = signalSpeed /  _signalSpeedMap->getLayoutScale();
             signalSpeed = signalSpeed / 2.2369363f;  // layout track speed mph -> mm/ms
-            float trackSpeed = getTrackSpeed(throttleSpeed, isForward);
+            float trackSpeed = getTrackSpeed(throttleSpeed);
             if (signalSpeed < trackSpeed) {
                 throttleSpeed = getThrottleSettingForSpeed(signalSpeed, _throttle->getIsForward());
                 if (throttleSpeed <= 0.0f) {
@@ -463,7 +467,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
     {
             signalSpeed = signalSpeed /  _signalSpeedMap->getLayoutScale();
             signalSpeed = signalSpeed / 3.6f;  // layout track speed mm/ms -> kmph
-            float trackSpeed = getTrackSpeed(throttleSpeed, isForward);
+            float trackSpeed = getTrackSpeed(throttleSpeed);
             if (signalSpeed < trackSpeed) {
                 throttleSpeed = getThrottleSettingForSpeed(signalSpeed, _throttle->getIsForward());
                 if (throttleSpeed <= 0.0f) {
@@ -492,13 +496,13 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
  * @param isForward direction
  * @return track speed in millimeters/millisecond (not mm/sec)
  */
-/*protected*/ float SpeedUtil::getTrackSpeed(float throttleSetting, bool isForward) {
+/*protected*/ float SpeedUtil::getTrackSpeed(float throttleSetting) {
     if (throttleSetting <= 0.0f) {
         return 0.0f;
     }
     RosterSpeedProfile* speedProfile = getSpeedProfile();
     // Note SpeedProfile uses milliseconds per second.
-    float speed = speedProfile->getSpeed(throttleSetting, isForward) / 1000;
+    float speed = speedProfile->getSpeed(throttleSetting, _isForward) / 1000;
     if (speed <= 0.0f) {
         float factor =  _signalSpeedMap->getDefaultThrottleFactor() * SCALE_FACTOR /  _signalSpeedMap->getLayoutScale();
         speed = throttleSetting * factor;
@@ -534,12 +538,12 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
  * @param isForward direction
  * @return distance in millimeters
  */
-/*protected*/ float SpeedUtil::getDistanceTraveled(float speedSetting, QString speedtype, float time, bool isForward) {
-    if (time <= 0) {
-        return 0;
-    }
-    float throttleSetting = modifySpeed(speedSetting, speedtype, isForward);
-    return getTrackSpeed(throttleSetting, isForward) * time;
+/*protected*/ float SpeedUtil::getDistanceTraveled(float speedSetting, QString speedtype, float time) {
+ if (time <= 0) {
+     return 0;
+ }
+ float throttleSetting = modifySpeed(speedSetting, speedtype);
+ return getTrackSpeed(throttleSetting) * time;
 }
 
 /**
@@ -549,8 +553,8 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
  * @param isForward direction
  * @return time in milliseconds
  */
-/*protected*/ float SpeedUtil::getTimeForDistance(float throttleSetting, float distance, bool isForward) {
-    float speed = getTrackSpeed(throttleSetting, isForward);
+/*protected*/ float SpeedUtil::getTimeForDistance(float throttleSetting, float distance) {
+    float speed = getTrackSpeed(throttleSetting);
     if (distance <= 0 || speed <= 0) {
         return 0.0f;
     }
@@ -598,8 +602,8 @@ protected float timeOfRampDistance(float rampLen, bool isForward) {
     if (curSpeedType == (toSpeedType)) {
         return 0.0f;
     }
-    float fromSpeed = modifySpeed(curSetting, curSpeedType, isForward);
-    float toSpeed = modifySpeed(curSetting, toSpeedType, isForward);
+    float fromSpeed = modifySpeed(curSetting, curSpeedType);
+    float toSpeed = modifySpeed(curSetting, toSpeedType);
     if (toSpeed > fromSpeed) {      // insure it is ramp down regardless of speedType order
         float tmp = fromSpeed;
         fromSpeed = toSpeed;
@@ -626,9 +630,9 @@ protected float timeOfRampDistance(float rampLen, bool isForward) {
 
     if (increasing) {
         while (fromSpeed < toSpeed) {
-            float dist = getTrackSpeed(fromSpeed + deltaThrottle/2, isForward) * momentumTime;
+            float dist = getTrackSpeed(fromSpeed + deltaThrottle/2) * momentumTime;
             if (deltaTime > momentumTime) {
-                dist += getTrackSpeed(fromSpeed + deltaThrottle, isForward) * (deltaTime - momentumTime);
+                dist += getTrackSpeed(fromSpeed + deltaThrottle) * (deltaTime - momentumTime);
             }
             fromSpeed += deltaThrottle;
             if (fromSpeed <= toSpeed) {
@@ -653,9 +657,9 @@ protected float timeOfRampDistance(float rampLen, bool isForward) {
             } else {
                 nextSpeed = fromSpeed - deltaThrottle;
             }
-            float dist = getTrackSpeed((fromSpeed + nextSpeed)/2, isForward) * momentumTime;
+            float dist = getTrackSpeed((fromSpeed + nextSpeed)/2) * momentumTime;
             if (deltaTime > momentumTime) {
-                dist += getTrackSpeed(nextSpeed, isForward) * (deltaTime - momentumTime);
+                dist += getTrackSpeed(nextSpeed) * (deltaTime - momentumTime);
             }
             if (dist <= 0.0f) {
                 break;
@@ -675,9 +679,89 @@ protected float timeOfRampDistance(float rampLen, bool isForward) {
     return rampLength;
 }
 
+/**
+ * Get the length of ramp for a speed change
+ * @param fromSpeed - starting speed setting
+ * @param toSpeed - ending speed setting
+ * @return distance in millimeters
+ */
+/*protected*/ RampData* SpeedUtil::getRampForSpeedChange(float fromSpeed, float toSpeed) {
+    RampData* ramp = new RampData(getRampThrottleIncrement(), getRampTimeIncrement());
+    ramp->makeThrottleSettings(fromSpeed, toSpeed);
+    if (ramp->isUpRamp()) {
+        makeUpRamp(ramp);
+    } else {
+        makeDownRamp(ramp);
+    }
+
+    if (log->isTraceEnabled()) log->debug(tr("rampLengthForSpeedChange()= %1 for fromSpeed= %2 toSpeed= %3").arg(
+            ramp->getRampLength()).arg(fromSpeed).arg(toSpeed));
+    return ramp;
+}
+
+/*private*/ void SpeedUtil::makeUpRamp(RampData* ramp) {
+    float rampLength = 0.0f;
+    float prevSetting = 0.0f;
+    float nextSetting;
+    QListIterator<float> iter = ramp->speedIterator(true);
+    if (iter.hasNext()) {
+        prevSetting = iter.next();
+    }
+    while (iter.hasNext()) {
+        nextSetting = iter.next();
+        rampLength += getDistanceOfSpeedChange(prevSetting, nextSetting, _rampTimeIncrement);
+//            if (log.isDebugEnabled()) log.debug("makeUpRamp()= {} for fromSpeed= {} toSpeed= {} dist= {}",
+//                    ramp.getRampLength(), prevSetting, nextSetting, getDistanceOfSpeedChange(prevSetting, nextSetting, _rampTimeIncrement));
+        prevSetting = nextSetting;
+    }
+    ramp->setRampLength(rampLength);
+}
+
+/*private*/ void SpeedUtil::makeDownRamp(RampData* ramp) {
+    float rampLength = 0.0f;
+    float prevSetting = 0.0f;
+    float nextSetting;
+    QListIterator<float> iter = ramp->speedIterator(false);
+    if (iter.hasPrevious()) {
+        prevSetting = iter.previous();
+    }
+    while (iter.hasPrevious()) {
+        nextSetting = iter.previous();
+        rampLength += getDistanceOfSpeedChange(prevSetting, nextSetting, _rampTimeIncrement);
+//            if (log.isDebugEnabled()) log.debug("makeDownRamp()= {} for fromSpeed= {} toSpeed= {} dist= {}",
+//                    ramp.getRampLength(), prevSetting, nextSetting, getDistanceOfSpeedChange(prevSetting, nextSetting, _rampTimeIncrement));
+        prevSetting = nextSetting;
+    }
+    ramp->setRampLength(rampLength);
+}
+/**
+ * Return the distance traveled at current speed after a speed change was made.
+ * Takes into account the momentum configured for the decoder to change from
+ * the previous speed to the current speed.  Assumes the velocity change is linear.
+ *
+ * @param prevSpeed throttle setting when speed changed to currSpeed
+ * @param currSpeed throttle setting being set
+ * @param speedTime elapsed time from when the speed change was made to now
+ * @return distance traveled
+ */
+/*protected*/ float SpeedUtil::getDistanceOfSpeedChange(float prevSpeed, float currSpeed, long speedTime) {
+    bool increasing = (prevSpeed <= currSpeed);
+    float momentumTime = getMomentumTime(currSpeed - prevSpeed, increasing);
+    if (speedTime <=momentumTime ) {
+        // most likely will be too far since currSpeed is not attained
+        return getTrackSpeed((prevSpeed + currSpeed)/2) * speedTime;
+    }
+    // assume a linear change of speed
+    float dist = getTrackSpeed((prevSpeed + currSpeed)/2) * momentumTime;
+    if (speedTime > momentumTime) { // time remainder at changed speed
+        dist += getTrackSpeed(currSpeed) * (speedTime - momentumTime);
+    }
+    return dist;
+}
+
 /*************** dynamic calibration ***********************/
 
-#if 0
+
 /**
  * Just entered block at newIdx. Do that calculation of speed from lastIdx
  *  Dynamic measurement of speed profile is being studied further.  For now the
@@ -685,48 +769,48 @@ protected float timeOfRampDistance(float rampLen, bool isForward) {
  * @param lastIdx BlockOrder index of where data collection started
  * @param newIdx BlockOrder index of block just entered
  */
-protected void enteredBlock(int lastIdx, int newIdx) {
+/*protected*/ void SpeedUtil::enteredBlock(int lastIdx, int newIdx) {
     speedChange();
     if (lastIdx > 0) {   // Distance traveled in 1st block unknown
         if (!log->isDebugEnabled() && _numchanges > 1) {
             return;
         }
         float totalLength = 0.0f;
-        bool isForward = _throttle.getIsForward();
+        bool isForward = _throttle->getIsForward();
         bool mergeOK = true;
         // actual exit - entry times
         if (newIdx > 1) {
             for (int i=lastIdx; i<newIdx; i++) {
-                BlockOrder blkOrder = _orders.get(i);
-                float length = blkOrder.getPath().getLengthMm();
+                BlockOrder* blkOrder = _orders->value(i);
+                float length = blkOrder->getPath()->getLengthMm();
                 if (length <= 0) {
-                    log->warn("Block {} does not have a length for path {}",
-                            blkOrder.getBlock().getDisplayName(), blkOrder.getPathName());
+                    log->warn(tr("Block %1 does not have a length for path %2").arg(
+                            blkOrder->getBlock()->getDisplayName()).arg(blkOrder->getPathName()));
                     mergeOK = false;
                 }
                 totalLength += length;
             }
         }
-        OBlock fromBlock = _orders.get(newIdx).getBlock();
-        OBlock toBlock = _orders.get(lastIdx).getBlock();
-        if (!mergeOK || (_numchanges > 1 && Math.abs(_distanceTravelled - totalLength) < 25.0f)) {   // allow 1 inch
+        OBlock* fromBlock = _orders->value(newIdx)->getBlock();
+        OBlock* toBlock = _orders->value(lastIdx)->getBlock();
+        if (!mergeOK || (_numchanges > 1 && qAbs(_distanceTravelled - totalLength) < 25.0f)) {   // allow 1 inch
             clearStats();
             if (log->isDebugEnabled())
-                log->debug("Speed data invalid between {} and {} (bad length data)", fromBlock.getDisplayName(), toBlock.getDisplayName());
+                log->debug(tr("Speed data invalid between %1 and %2 (bad length data)").arg(fromBlock->getDisplayName()).arg(toBlock->getDisplayName()));
             return;
         }
-        long elpsedTime = fromBlock._entryTime - toBlock._entryTime;
+        long elpsedTime = fromBlock->_entryTime - toBlock->_entryTime;
         float speed;
         float throttle;
         float aveSpeed = totalLength / elpsedTime;
         if (_numchanges == 1) {
-            throttle = _throttle.getSpeedSetting();
+            throttle = _throttle->getSpeedSetting();
             speed = aveSpeed;
         } else {
-            if (Math.abs(elpsedTime - _timeAtSpeed) < 30) { // only allow 30ms
+            if (qAbs(elpsedTime - _timeAtSpeed) < 30) { // only allow 30ms
                 clearStats();
                 if (log->isDebugEnabled())
-                    log->debug("Speed data invalid between {} and {} (timing bad)", fromBlock.getDisplayName(), toBlock.getDisplayName());
+                    log->debug(tr("Speed data invalid between %1 and %2 (timing bad)").arg(fromBlock->getDisplayName()).arg(toBlock->getDisplayName()));
                 return;
             }
             speed = totalLength / _timeAtSpeed;
@@ -734,41 +818,68 @@ protected void enteredBlock(int lastIdx, int newIdx) {
         }
         speed *= 1000;   // SpeedProfile is mm/sec
 
-        float stepIncrement = _throttle.getSpeedIncrement();
+        float stepIncrement = _throttle->getSpeedIncrement();
 
-        if (throttle < stepIncrement || speed <= 0.0f || Math.abs(aveSpeed - speed) < 20) {
+        if (throttle < stepIncrement || speed <= 0.0f || qAbs(aveSpeed - speed) < 20) {
             clearStats();
             if (log->isDebugEnabled())
-                log->debug("Speeds invalid between {} and {}", fromBlock.getDisplayName(), toBlock.getDisplayName());
+                log->debug(tr("Speeds invalid between %1 and %2").arg(fromBlock->getDisplayName()).arg(toBlock->getDisplayName()));
             return;
         }
-        float mergeSpeed = _mergeProfile.getSpeed(throttle, isForward);
-        float profileSpeed = _sessionProfile.getSpeed(throttle, isForward);
-        throttle = stepIncrement * Math.round(throttle/stepIncrement);
+        float mergeSpeed = _mergeProfile->getSpeed(throttle, isForward);
+        float profileSpeed = _sessionProfile->getSpeed(throttle, isForward);
+        throttle = stepIncrement * qRound(throttle/stepIncrement);
         if (log->isDebugEnabled()) {
-            log->debug("{} changes on block {}. ave speed= {}mm/ms",
-                    _numchanges, fromBlock.getDisplayName(), aveSpeed);
-            log->debug("throttle= {}, speed= {}, profileSpeed={}, mergeSpeed={}",
-                    throttle, speed, profileSpeed, mergeSpeed);
+            log->debug(tr("%1 changes on block %2. ave speed= %3mm/ms").arg(
+                    _numchanges).arg(fromBlock->getDisplayName()).arg(aveSpeed));
+            log->debug(tr("throttle= %1, speed= %2, profileSpeed=%3, mergeSpeed=%4").arg(
+                    throttle).arg(speed).arg(profileSpeed).arg(mergeSpeed));
         }
         if (_numchanges == 1) {
             mergeSpeed = (mergeSpeed + speed) / 2;
             if (isForward) {
-                _mergeProfile.setForwardSpeed(throttle, mergeSpeed);
-                _sessionProfile.setForwardSpeed(throttle, speed);
+                _mergeProfile->setForwardSpeed(throttle, mergeSpeed);
+                _sessionProfile->setForwardSpeed(throttle, speed);
             } else {
-                _mergeProfile.setReverseSpeed(throttle, mergeSpeed);
-                _sessionProfile.setReverseSpeed(throttle, speed);
+                _mergeProfile->setReverseSpeed(throttle, mergeSpeed);
+                _sessionProfile->setReverseSpeed(throttle, speed);
             }
-            if (log->isDebugEnabled()) log->debug("Set ProfileSpeed throttle= {}, sessionSpeed= {} mergeSpeed={}", throttle, speed, mergeSpeed);
+            if (log->isDebugEnabled()) log->debug(tr("Set ProfileSpeed throttle= %1, sessionSpeed= %2 mergeSpeed=%3").arg(throttle).arg(speed).arg(mergeSpeed));
         }
     }
     clearStats();
 }
+// if a speed has been recorded, average it. Otherwise write measuredSpeed
+/*private*/ void SpeedUtil::setSpeed(RosterSpeedProfile* profile, float throttle, float measuredSpeed, bool isForward) {
+    SpeedStep* ss = profile->getSpeedStep(throttle);
+    float mergeSpeed;
+    if (ss != nullptr) {
+        if (isForward) {
+            if (ss->getForwardSpeed() > 0.0f) {
+                mergeSpeed = (ss->getForwardSpeed() + measuredSpeed) / 2;
+            } else {
+                mergeSpeed = measuredSpeed;
+            }
+        } else {
+            if (ss->getReverseSpeed() > 0.0f) {
+                mergeSpeed = (ss->getReverseSpeed() + measuredSpeed) / 2;
+            } else {
+                mergeSpeed = measuredSpeed;
+            }
+        }
+    } else {
+        mergeSpeed = measuredSpeed;
+    }
+    if (isForward) {
+        profile->setForwardSpeed(throttle, mergeSpeed);
+    } else {
+        profile->setReverseSpeed(throttle, mergeSpeed);
+    }
+}
 
-/*private*/ void clearStats() {
+/*private*/ void SpeedUtil::clearStats() {
     _timeAtSpeed = 0;
-    _changetime = System.currentTimeMillis();
+    _changetime = QDateTime::currentMSecsSinceEpoch(); //System.currentTimeMillis();
     _distanceTravelled = 0.0f;
     _settingsTravelled = 0.0f;
     _numchanges = 0;
@@ -777,18 +888,18 @@ protected void enteredBlock(int lastIdx, int newIdx) {
 /*
  *
  */
-protected void speedChange() {
+/*protected*/ void SpeedUtil::speedChange() {
     _numchanges++;
     if (!log->isDebugEnabled() && _numchanges > 1) {
         return;
     }
-    long time = System.currentTimeMillis();
-    float throttleSetting = _throttle.getSpeedSetting();
+    long time = QDateTime::currentMSecsSinceEpoch(); //System.currentTimeMillis();
+    float throttleSetting = _throttle->getSpeedSetting();
     long elapsedTime = time - _changetime;
     if (throttleSetting > 0.0f) {
         _timeAtSpeed += elapsedTime;
-        RosterSpeedProfile speedProfile = getSpeedProfile();
-        float speed = speedProfile.getSpeed(throttleSetting, _throttle.getIsForward());
+        RosterSpeedProfile* speedProfile = getSpeedProfile();
+        float speed = speedProfile->getSpeed(throttleSetting, _throttle->getIsForward());
         if (speed > 0.0f) {
             _distanceTravelled += elapsedTime * speed / 1000;
         }
@@ -797,12 +908,12 @@ protected void speedChange() {
     _changetime = time;
 }
 
-protected float getDistanceTravelled() {
+/*protected*/ float SpeedUtil::getDistanceTravelled() {
     return _distanceTravelled;
 }
-protected void setDistanceTravelled(float dist) {
+/*protected*/ void SpeedUtil::setDistanceTravelled(float dist) {
     clearStats();
     _distanceTravelled = dist;
 }
-#endif
+
 /*private*/ /*final*/ /*static*/ Logger* SpeedUtil::log = LoggerFactory::getLogger("SpeedUtil");

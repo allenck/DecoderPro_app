@@ -618,7 +618,7 @@ protected void configOutputs(Element model) {
 // split and load labels
 void loadSplitLabel(int item, String theLabel) {
     if (item < MAX_ITEMS) {
-        String itemList[] = theLabel.split("\\|");
+        String itemList[] = theLabel.split(QRegExp("\\|"));
         if ( theLabel.equals("|") ) {
             itemName[item][0] = "";
             itemName[item][1] = "";

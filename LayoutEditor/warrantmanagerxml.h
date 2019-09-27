@@ -28,7 +28,7 @@ signals:
 
 public slots:
 private:
-    Logger* log;
+    static Logger* log;
 };
 Q_DECLARE_METATYPE(WarrantManagerXml)
 #endif // WARRANTMANAGERXML_H

@@ -360,7 +360,7 @@ namespace Operations
                              } else if (car->isUtility()) {
                                  QString s = pickupUtilityCars(carList, car, !IS_MANIFEST, !IS_TWO_COLUMN_TRACK);
                                  if (s != NULL) {
-                                     newLine(fileOut, TrainSwitchListText::getStringHoldCar().split("\\{")[0] + s.trimmed());
+                                     newLine(fileOut, TrainSwitchListText::getStringHoldCar().split(QRegExp("\\{"))[0] + s.trimmed());
                                  }
                              } else {
                                  newLine(fileOut, QString(messageFormatText = TrainSwitchListText::getStringHoldCar()).arg(

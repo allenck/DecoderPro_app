@@ -124,7 +124,7 @@ using namespace Sprog;
      *             step mode in most cases
      */
     //@Override
-    /*public*/ void SprogThrottle::setSpeedStepMode(int Mode) {
+    /*public*/ void SprogThrottle::setSpeedStepMode(SpeedStepMode::SSMODDES Mode) {
         SprogMessage* m;
         int mode = address->isLongAddress()
                 ? SprogConstants::LONG_ADD : 0;

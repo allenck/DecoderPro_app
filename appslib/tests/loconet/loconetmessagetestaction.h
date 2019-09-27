@@ -2,6 +2,7 @@
 #define LOCONETMESSAGETESTACTION_H
 #include "abstractaction.h"
 
+class Logger;
 class LocoNetMessageTestAction : public AbstractAction
 {
     Q_OBJECT
@@ -10,6 +11,8 @@ public:
 
 public slots:
     void actionPerformed();
+private:
+    static Logger* log;
 };
 
 #endif // LOCONETMESSAGETESTACTION_H

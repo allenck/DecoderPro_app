@@ -2,6 +2,8 @@
 #include "lnpacketizertest.h"
 #include "joptionpane.h"
 #include "assert1.h"
+#include "loggerfactory.h"
+
 
 LnPacketizerTestAction::LnPacketizerTestAction(QObject* parent) : AbstractAction(tr("LnPacketizer Test"), parent)
 {
@@ -14,9 +16,16 @@ void LnPacketizerTestAction::actionPerformed()
     lnpct->setUp();
     try
     {
-     lnpct->testCtor();
-     lnpct->testStatusWithoutInit();
-     lnpct->testStartThreads();
+     QStringList testList = QStringList()
+     << "testCtor"
+     << "testStatusWithoutInit"
+     << "testStartThreads";
+     foreach(QString test, testList)
+     {
+      log->info(tr("begin '%1'").arg(test));
+      QMetaObject::invokeMethod(lnpct, test.toLocal8Bit(), Qt::DirectConnection);
+      log->info(tr("end '%1'").arg(test));
+     }
     }
     catch (AssertionError er)
     {
@@ -24,3 +33,5 @@ void LnPacketizerTestAction::actionPerformed()
     }
     lnpct->tearDown();
 }
+Logger* LnPacketizerTestAction::log = LoggerFactory::getLogger("LnPacketizerTestAction");
+

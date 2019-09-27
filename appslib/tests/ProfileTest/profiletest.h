@@ -14,6 +14,7 @@ public:
     /*public*/ static void tearDownClass();
     /*public*/ void setUp();
     /*public*/ void tearDown();
+public slots:
     /*public*/ void testProfileWithExtension();
     /*public*/ void testSave() throw (IOException);
     /*public*/ void testGetName();

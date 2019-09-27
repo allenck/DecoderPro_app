@@ -7,11 +7,11 @@
 #include "throttlesetting.h"
 #include "instancemanager.h"
 #include "oblockmanager.h"
+#include "loggerfactory.h"
 
 WarrantManagerXml::WarrantManagerXml(QObject *parent) :
     AbstractXmlAdapter(parent)
 {
- log = new Logger("WarrantManagerXml");
  setObjectName("WarrantManagerXml");
 }
 /**
@@ -144,9 +144,18 @@ QDomElement WarrantManagerXml::storeCommand(ThrottleSetting* command, QString ty
     if (str=="") str = "";
     elem.setAttribute("value", str);
 
-    str = command->getBlockName();
-    if (str=="") str = "";
+    str = command->getBeanSystemName();
+    if (str=="") {
+        str = "";
+        log->error(tr("ThrottleSetting command has no bean name! %1").arg(command->toString()));
+    }
     elem.setAttribute("block", str);
+
+    float speed = command->getSpeed();
+    if (speed > 0.0f) {
+        // ignore attribute to allow loading into pre-4.9.2 versions
+        elem.setAttribute("speed", QString::number(speed));
+    }
 
     return elem;
 }
@@ -326,3 +335,4 @@ ThrottleSetting* WarrantManagerXml::loadThrottleCommand(QDomElement elem)
 /*public*/ int WarrantManagerXml::loadOrder(){
     return ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getXMLOrder();
 }
+/*private*/ /*final*/ /*static*/ Logger* WarrantManagerXml::log = LoggerFactory::getLogger("WarrantManagerXml");

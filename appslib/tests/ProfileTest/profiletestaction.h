@@ -2,6 +2,7 @@
 #define PROFILETESTACTION_H
 #include "abstractaction.h"
 
+class Logger;
 class ProfileTestAction : public AbstractAction
 {
     Q_OBJECT
@@ -11,6 +12,8 @@ public:
 
 public slots:
     void actionPerformed();
+private:
+    static Logger* log;
 };
 
 #endif // PROFILETESTACTION_H

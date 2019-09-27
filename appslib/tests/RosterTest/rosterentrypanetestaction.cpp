@@ -2,7 +2,7 @@
 #include "rosterentrypanetest.h"
 #include "assert1.h"
 #include "joptionpane.h"
-
+#include "loggerfactory.h"
 
 RosterEntryPaneTestAction::RosterEntryPaneTestAction(QString text, QObject* parent) : AbstractAction(text, parent)
 {
@@ -15,15 +15,22 @@ void RosterEntryPaneTestAction::actionPerformed()
     ret->setUp();
     try
     {
-        ret->testCreate();
-        ret->testGuiChanged1();
-        ret->testGuiChanged2();
-        ret->testGuiChanged3();
-        ret->testGuiChanged4();
-        ret->testGuiChanged5();
-        ret->testNotDuplicate();
-        ret->testIsDuplicate();
-        ret->testRenamedDuplicate();
+        QStringList testList = QStringList()
+             << "testCreate"
+             << "testGuiChanged1"
+             << "testGuiChanged2"
+             << "testGuiChanged3"
+             << "testGuiChanged4"
+             << "testGuiChanged5"
+             << "testNotDuplicate"
+             << "testIsDuplicate"
+             << "testRenamedDuplicate";
+        foreach(QString test, testList)
+        {
+         log->info(tr("begin '%1'").arg(test));
+         QMetaObject::invokeMethod(ret, test.toLocal8Bit(), Qt::DirectConnection);
+         log->info(tr("end '%1'").arg(test));
+        }
     }
     catch (AssertionError er)
     {
@@ -32,3 +39,4 @@ void RosterEntryPaneTestAction::actionPerformed()
     }
     ret->tearDown();
 }
+Logger* RosterEntryPaneTestAction::log = LoggerFactory::getLogger("RosterEntryPaneTestAction");

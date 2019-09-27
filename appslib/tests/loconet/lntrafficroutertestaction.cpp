@@ -2,6 +2,8 @@
 #include "lntrafficroutertest.h"
 #include "joptionpane.h"
 #include "assert1.h"
+#include "loggerfactory.h"
+
 
 LnTrafficRouterTestAction::LnTrafficRouterTestAction(QObject *parent) : AbstractAction(tr("LnTrafficRouter"), parent)
 {
@@ -11,17 +13,24 @@ LnTrafficRouterTestAction::LnTrafficRouterTestAction(QObject *parent) : Abstract
 
 void LnTrafficRouterTestAction::actionPerformed()
 {
-    LnTrafficRouterTest* ltrt = new LnTrafficRouterTest();
-    ltrt->setUp();
+    LnTrafficRouterTest* test = new LnTrafficRouterTest();
+    test->setUp();
     try
     {
-     ltrt->testReceiveAndForward();
-     ltrt->testConnectAndDisconnect();
-    }
+      QStringList testList = QStringList()
+     << "testReceiveAndForward"
+     << "testConnectAndDisconnect";
+      foreach(QString testName, testList)
+      {
+       log->info(tr("begin '%1'").arg(testName));
+       QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
+       log->info(tr("end '%1'").arg(testName));
+      }}
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
-    ltrt->tearDown();
+    test->tearDown();
 
 }
+Logger* LnTrafficRouterTestAction::log = LoggerFactory::getLogger("LnTrafficRouterTestAction");

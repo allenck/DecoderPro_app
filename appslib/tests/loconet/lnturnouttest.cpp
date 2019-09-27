@@ -532,7 +532,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         Assert::assertFalse("Did not expect or get an exception (7)", excep);
         Assert::assertEquals("Check direct feedback mode set (7)", "ONESENSOR", t->getFeedbackModeName());
 
-        JUnitAppender::assertWarnMessage("expected Sensor 1 not defined - LT21");
+        JUnitAppender::assertWarnMessage("expected Sensor 1 not defined - LT21",__FILE__, __LINE__);
 
 
         try {
@@ -542,8 +542,8 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         }
         Assert::assertFalse("Did not expect or get an exception (8)", excep);
         Assert::assertEquals("Check direct feedback mode set (8)", "TWOSENSOR", t->getFeedbackModeName());
-        JUnitAppender::assertWarnMessage("expected Sensor 1 not defined - LT21");
-        JUnitAppender::assertWarnMessage("expected Sensor 2 not defined - LT21");
+        JUnitAppender::assertWarnMessage("expected Sensor 1 not defined - LT21",__FILE__, __LINE__);
+        JUnitAppender::assertWarnMessage("expected Sensor 2 not defined - LT21",__FILE__, __LINE__);
     }
 
     //@Test
@@ -568,7 +568,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
     /*public*/ void LnTurnoutTest::testSetStateClosedAndThrown() {
         Assert::assertEquals("checking initial known state", Turnout::UNKNOWN, t->getKnownState());
         t->setCommandedState(Turnout::CLOSED + Turnout::THROWN);
-        JUnitAppender::assertErrorMessage("LocoNet turnout logic can't handle both THROWN and Turnout::CLOSED yet");
+        JUnitAppender::assertErrorMessage("LocoNet turnout logic can't handle both THROWN and Turnout::CLOSED yet",__FILE__, __LINE__);
         Assert::assertEquals("checking commanded state is Turnout::UNKNOWN after trying to send THROWN AND Turnout::CLOSED", Turnout::UNKNOWN, t->getKnownState());
         Assert::assertEquals("checking known state is Turnout::UNKNOWN after trying to send THROWN AND Turnout::CLOSED", Turnout::UNKNOWN, t->getKnownState());
         Assert::assertEquals("Checking to see if a LocoNet message was generated", 1, lnis->outbound.size());
@@ -581,7 +581,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
     /*public*/ void LnTurnoutTest::testWarningSendingOffWhenUsingOffAsConfirmation() {
         lnt->_useOffSwReqAsConfirmation = true;
         lnt->sendOpcSwReqMessage(Turnout::CLOSED, false);
-        JUnitAppender::assertWarnMessage("Turnout 21 is using OPC_SWREQ off as confirmation, but is sending OFF commands itself anyway");
+        JUnitAppender::assertWarnMessage("Turnout 21 is using OPC_SWREQ off as confirmation, but is sending OFF commands itself anyway",__FILE__, __LINE__);
         Assert::assertEquals("check message sent", 1, lnis->outbound.size());
     }
 
@@ -598,7 +598,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         //JUnitUtil.waitFor(()->{return lnis->outbound.size()==2;},"2nd message not received");
         ReleaseUntilO7* r07 = new ReleaseUntilO7(2, this);
         JUnitUtil::waitFor(r07, "2nd message not received");
-        JUnitAppender::assertWarnMessage("Turnout 21 is using OPC_SWREQ off as confirmation, but is sending OFF commands itself anyway");
+        JUnitAppender::assertWarnMessage("Turnout 21 is using OPC_SWREQ off as confirmation, but is sending OFF commands itself anyway",__FILE__, __LINE__);
         Assert::assertEquals("check second message Opcode", 0xB0, lnis->outbound.at(1)->getOpCode());
         Assert::assertEquals("check second message element 1", 20, lnis->outbound.at(1)->getElement(1));
         Assert::assertEquals("check second message element 2", 0x20, lnis->outbound.at(1)->getElement(2));
@@ -628,7 +628,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         //JUnitUtil.waitFor(()->{return lnis->outbound.size()==2;},"2nd message not received (2)");
         ReleaseUntilO7* r07 = new ReleaseUntilO7(2, this);
         JUnitUtil::waitFor(r07,"2nd message not received (2)");
-        JUnitAppender::assertWarnMessage("Turnout 21 is using OPC_SWREQ off as confirmation, but is sending OFF commands itself anyway");
+        JUnitAppender::assertWarnMessage("Turnout 21 is using OPC_SWREQ off as confirmation, but is sending OFF commands itself anyway",__FILE__, __LINE__);
         Assert::assertEquals("check second message Opcode", 0xB0, lnis->outbound.at(1)->getOpCode());
         Assert::assertEquals("check second message element 1", 20, lnis->outbound.at(1)->getElement(1));
         Assert::assertEquals("check second message element 2", 0x20, lnis->outbound.at(1)->getElement(2));

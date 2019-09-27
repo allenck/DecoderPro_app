@@ -2,6 +2,7 @@
 #include "loconetmessagetest.h"
 #include "assert1.h"
 #include "joptionpane.h"
+#include "loggerfactory.h"
 
 LocoNetMessageTestAction::LocoNetMessageTestAction(QObject* parent) : AbstractAction(tr("LocoNetMessage Test"), parent)
 {
@@ -10,39 +11,47 @@ LocoNetMessageTestAction::LocoNetMessageTestAction(QObject* parent) : AbstractAc
 
 void LocoNetMessageTestAction::actionPerformed()
 {
-    LocoNetMessageTest* lnmt = new LocoNetMessageTest();
-    lnmt->setUp();
+    LocoNetMessageTest* test = new LocoNetMessageTest();
+    test->setUp();
     try
     {
-     lnmt->testCtor();
-     lnmt->testArrayCtor();
-     lnmt->testGetPeerXfr();
-     lnmt->testConstructorNoParams();
-     lnmt->testConstructorString();
-     lnmt->testGetPeerXfrData();
-     lnmt->testEqualsFromInt();
-     lnmt->testEqualsFromBytes();
-     lnmt->testEqualsFromString();
-     lnmt->testEqualsSpecificCase();
-     lnmt->testToString();
-     lnmt->testToMonitorString();
-     lnmt->testLowByte();
-     lnmt->testHighByte();
-     lnmt->testHighBit();
-     lnmt->testInputRepAddr();
-     lnmt->testSensorAddr();
-     lnmt->testGetOpCodeHex();
-     lnmt->testTurnoutAddr();
-     lnmt->testGetElement();
-     lnmt->testsetElement();
-     lnmt->testHashCode();
-     lnmt->testSetParity();
-     lnmt->testCheckParity();;
+     QStringList testList = QStringList()
+     << "testCtor"
+     << "testArrayCtor"
+     << "testGetPeerXfr"
+     << "testConstructorNoParams"
+     << "testConstructorString"
+     << "testGetPeerXfrData"
+     << "testEqualsFromInt"
+     << "testEqualsFromBytes"
+     << "testEqualsFromString"
+     << "testEqualsSpecificCase"
+     << "testToString"
+     << "testToMonitorString"
+     << "testLowByte"
+     << "testHighByte"
+     << "testHighBit"
+     << "testInputRepAddr"
+     << "testSensorAddr"
+     << "testGetOpCodeHex"
+     << "testTurnoutAddr"
+     << "testGetElement"
+     << "testsetElement"
+     << "testHashCode"
+     << "testSetParity"
+     << "testCheckParity";
+     foreach(QString testName, testList)
+     {
+      log->info(tr("begin '%1'").arg(testName));
+      QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
+      log->info(tr("end '%1'").arg(testName));
+     }
     }
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
 
     }
-    lnmt->tearDown();
+    test->tearDown();
 }
+Logger* LocoNetMessageTestAction::log = LoggerFactory::getLogger("LocoNetMessageTestAction");

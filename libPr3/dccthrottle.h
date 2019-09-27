@@ -2,6 +2,7 @@
 #define DCCTHROTTLE_H
 #include "throttle.h"
 #include "libPr3_global.h"
+#include "speedstepmode.h"
 
 //class Throttle;
 class LIBPR3SHARED_EXPORT DccThrottle : public Throttle
@@ -52,13 +53,13 @@ static const int SpeedStepMode28Mot = 16;
  * @param Mode - the current speed step mode - default should be 128
  *              speed step mode in most cases
  */
-void virtual setSpeedStepMode(int /*Mode*/) {}
+void virtual setSpeedStepMode(SpeedStepMode::SSMODDES /*Mode*/) {}
 
 /*
  * getSpeedStepMode - get the current speed step value.
  * <P>
  */
-int virtual getSpeedStepMode() {return 0;}
+SpeedStepMode::SSMODDES virtual getSpeedStepMode() {return SpeedStepMode::UNKNOWN;}
 
 // information on consisting  (how do we set consisting?)
 

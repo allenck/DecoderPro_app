@@ -46,25 +46,7 @@
 
 /*protected*/ void BlockOrder::setExitName(QString name) { _exitName = name; }
 /*public*/ QString BlockOrder::getExitName() { return _exitName; }
-/*
-static String getOppositePortalName(OPath path, String portalName) {
-    if (portalName==NULL) {
-        if (path.getFromPortalName() == NULL) {
-            return path.getToPortalName();
-        } else if (path.getToPortalName() == NULL) {
-            return path.getFromPortalName();
-        }
-    } else if (portalName.equals(path.getFromPortalName())) {
-        return path.getToPortalName();
-    } else if (portalName.equals(path.getToPortalName())) {
-        return path.getFromPortalName();
-    } else {
-        log.error("getOppositePortalName failed. portalName \""+portalName+
-                  "\" not found in Path \""+path.getName()+"\".");
-    }
-    return NULL;
-}
-*/
+
 /*protected*/ bool BlockOrder::validateOrder() {
     return true;
 }

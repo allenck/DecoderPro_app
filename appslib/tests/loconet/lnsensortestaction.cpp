@@ -2,6 +2,7 @@
 #include "lnsensortest.h"
 #include "assert1.h"
 #include "joptionpane.h"
+#include "loggerfactory.h"
 
 LnSensorTestAction::LnSensorTestAction(QObject* parent) : AbstractAction(tr("LnSensor test"), parent)
 {
@@ -14,24 +15,32 @@ void LnSensorTestAction::actionPerformed()
   test->setUp();
   try
   {
+   QStringList testList = QStringList()
+
    // tests in AbstractSensorTestBase
-   test->testCreate();
-   test->testAddListener();
-   test->testRemoveListener();
-   test->testDispose();
-   test->testCommandInactive();
-   test->testCommandActive();
-   test->testInvertAfterInactive() ;
-   test->testInvertAfterActive();
-   test->testDebounceSettings() ;
-   test->testDebounce();
-   test->testGetPullResistance();
-   test->testGetBeanType();
-   test->testSensorStatusRequest();
-   test->testSensor();
+   << "testCreate"
+   << "testAddListener"
+   << "testRemoveListener"
+   << "testDispose"
+   << "testCommandInactive"
+   << "testCommandActive"
+   << "testInvertAfterInactive"
+   << "testInvertAfterActive"
+   << "testDebounceSettings"
+   << "testDebounce"
+   << "testGetPullResistance"
+   << "testGetBeanType"
+   << "testSensorStatusRequest"
+   << "testSensor"
 
    // tests in LnSensorTest
-   test->testLnSensorStatusMsg();
+   << "testLnSensorStatusMsg";
+      foreach(QString testName, testList)
+      {
+       log->info(tr("begin '%1'").arg(testName));
+       QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
+       log->info(tr("end '%1'").arg(testName));
+      }
   }
   catch (AssertionError er)
   {
@@ -40,3 +49,4 @@ void LnSensorTestAction::actionPerformed()
   }
   test->tearDown();
 }
+Logger* LnSensorTestAction::log = LoggerFactory::getLogger("LnSensorTestAction");

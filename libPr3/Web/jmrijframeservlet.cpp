@@ -506,7 +506,7 @@ void JmriJFrameServlet::sendClick(QString /*name*/, QWidget* c, int xg, int yg, 
   if (value->at(0).contains("?"))
   { // NOI18N
    // a user's click is in another key's value
-   QStringList values = value->at(0).split("?");  // ??split("\\?"); // NOI18N
+   QStringList values = value->at(0).split(QRegExp("\\?")); // NOI18N
    QStringList* l0 = new QStringList(); l0->append(values.at(0));
    QStringList* l1 = new QStringList(); l1->append(values.at(1));
    if (values.at(0).contains(","))

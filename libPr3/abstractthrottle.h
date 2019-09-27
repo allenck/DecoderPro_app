@@ -150,8 +150,8 @@ public:
     /*public*/ void setF26Momentary(bool f26Momentary);
     /*public*/ void setF27Momentary(bool f27Momentary);
     /*public*/ void setF28Momentary(bool f28Momentary);
-    /*public*/ void setSpeedStepMode(int Mode);
-     /*public*/ int getSpeedStepMode();
+    /*public*/ void setSpeedStepMode(SpeedStepMode::SSMODDES Mode);
+     /*public*/ SpeedStepMode::SSMODDES getSpeedStepMode();
      /*public*/ void setRosterEntry(BasicRosterEntry* re);
      /*public*/ BasicRosterEntry* getRosterEntry();
 
@@ -176,7 +176,7 @@ protected:
     /**
      * Question: should we set a default speed step mode so it's never zero?
      */
-    /*protected*/ int speedStepMode = 0;
+    /*protected*/ SpeedStepMode::SSMODDES speedStepMode;
     /*protected*/ bool isForward;
     /*protected*/ bool f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12;
     /*protected*/ bool f13, f14, f15, f16, f17, f18, f19, f20, f21, f22, f23,
@@ -212,7 +212,7 @@ protected:
      /*protected*/ int intSpeed(float speed);     // non-stop values in 128 speed
      /*protected*/ int intSpeed(float speed, int steps);
 
-
+ friend class AbstractThrottleTest;
 };
 
 #endif // ABSTRACTTHROTTLE_H

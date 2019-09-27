@@ -25,6 +25,7 @@
 #include "speedutil.h"
 #include "instancemanager.h"
 #include "joptionpane.h"
+#include "rampdata.h"
 
 //NXFrame::NXFrame(QWidget *parent) :
 //  WarrantRoute(parent)
@@ -87,8 +88,10 @@
  _minSpeedBox = new JTextField(6);
  _originDist = new JTextField(6);
  _destDist = new JTextField(6);
- _destUnits;_forward = new   QRadioButton();
+ _forward = new   QRadioButton();
  _reverse = new   QRadioButton();
+ _noRamp = new QCheckBox();
+ _noSound = new QCheckBox();
  _stageEStop = new   QCheckBox();
  _haltStartBox = new   QCheckBox();
  _calibrateBox = new   QCheckBox();
@@ -368,6 +371,10 @@ connect(_destUnits, SIGNAL(clicked(bool)), this, SLOT(onDestUnits()));
     QHBoxLayout* p2Layout = new QHBoxLayout(p2);
     p2Layout->addWidget(Box::createHorizontalGlue());
     p2Layout->addWidget(makeTextBoxPanel(_noRamp, tr("Don't Ramp Speed Changes"), "Warrant makes immediate speed changes when entering the approach block"));
+    p2Layout->addWidget(makeTextBoxPanel(_noSound, "NoSound", "ToolTipNoSound"));
+    p2Layout->addWidget(makeTextBoxPanel(_stageEStop, "StageEStop", ""));
+    p2Layout->addWidget(makeTextBoxPanel(_haltStartBox, "HaltAtStart", ""));
+    p2Layout->addWidget(makeTextBoxPanel(_shareRouteBox, "ShareRoute", "ToolTipShareRoute"));
 
     pp = new QWidget();
      //pp.setLayout(new BoxLayout(pp, BoxLayout.X_AXIS));
@@ -478,6 +485,26 @@ void NXFrame::onDestUnits()
      _destDist->setText(QString::number(num / 2.54,'g',2));
  }
 }
+/*private*/ void NXFrame::updateAutoRunPanel() {
+    _startDist = getPathLength(_orders->at(0)) / 2;
+    _stopDist = getPathLength(_orders->at(_orders->size()-1)) / 2;
+//        NumberFormat formatter = NumberFormat.getNumberInstance();
+    if (_originUnits->text() == ("In")) {
+        float num = qRound(_startDist * 100 / 25.4f);
+        _originDist->setText(QString::number(num / 100.0f));
+    } else {
+        float num = qRound(_startDist * 100);
+        _originDist->setText(QString::number(num / 1000.0f));
+    }
+    if (_destUnits->text() == ("In")) {
+        float num = qRound(_stopDist * 100 / 25.4f);
+        _destDist->setText(QString::number(num / 100.0f));
+    } else {
+        float num = qRound(_stopDist * 100);
+        _destDist->setText(QString::number(num / 1000.0f));
+    }
+    _autoRunPanel->update();
+}
 
 /*private*/ void NXFrame::makeMenus()
 {
@@ -521,134 +548,22 @@ void NXFrame::onDestUnits()
 //@Override
 /*public*/ void NXFrame::selectedRoute(QList<BlockOrder*> /*orders*/)
 {
- if (log->isDebugEnabled()) log->debug("NXFrame selectedRoute()");
- QString msg =  NULL;
- Warrant* warrant =   NULL;
- if (_runManual->isChecked())
- {
-  runManual();
-  return;
+ // TODO:
+ QWidget* con = (QWidget*)getContentPane();//->getComponent(0);
+ //con.removeAll();
+ QList<QWidget*> widgets = con->findChildren<QWidget*>();
+ foreach(QWidget* widget, widgets)
+  con->layout()->removeWidget(widget);
+ if (_runAuto->isChecked()) {
+     con->layout()->addWidget(_autoRunPanel);
+ } else {
+     con->layout()->addWidget(_trainPanel);
  }
- msg = checkLocoAddress();
- if (msg==  NULL)
- {
-  QString name = getTrainName();
-  if (name==  NULL || name.trimmed().length()==0)
-  {
-   name = getAddress();
-  }
-  QString s = QString::number(qrand()).mid(2);
-  warrant = new Warrant("IW"+s, "NX("+getAddress()+")");
-  warrant->setDccAddress(getTrainId());
-  warrant->setTrainName(name);
-
-  msg = getBoxData();
-  if (msg==  NULL) {
-      msg = makeCommands(warrant);
-  }
-  if (msg==  NULL) {
-      warrant->setBlockOrders(getOrders());
-      warrant->setOrders(getOrders());
-  }
- }
- if (msg==  NULL && warrant!=  NULL)
- {
-  Calibrater* calib =   NULL;
-  if (_calibrateBox->isChecked())
-  {
-   warrant->setViaOrder(getViaBlockOrder());
-   calib = new Calibrater(warrant, _forward->isChecked(), /*getLocation()*/pos());
-   msg = calib->verifyCalibrate();
-   if (msg!=  NULL)
-   {
-    calib =   NULL;
-   }
-  }
-  warrant->setCalibrater(calib);
-  WarrantTableFrame* tableFrame = WarrantTableFrame::getInstance();
-  if (msg==  NULL)
-  {
-   tableFrame->getModel()->addNXWarrant(warrant);   //need to catch propertyChange at start
-   if (log->isDebugEnabled()) log->debug("NXWarrant added to table");
-   msg = tableFrame->runTrain(warrant);
-   tableFrame->scrollTable();
-  }
-  if (msg!=  NULL)
-  {
-   if (log->isDebugEnabled()) log->debug("WarrantTableFrame run warrant. msg= "+msg+" Remove warrant "+warrant->getDisplayName());
-   tableFrame->getModel()->removeNXWarrant(warrant);
-  }
- }
- if (msg==  NULL)
- {
-//            if (log->isDebugEnabled()) log->debug("Warrant "+warrant.getDisplayName()+" running.");
-  if (_haltStartBox->isChecked())
-  {
-   _haltStart = true;
-//      class Halter implements Runnable {
-//          Warrant war;
-//          Halter (Warrant w) {
-//              war = w;
-//          }
-//          /*public*/ void run() {
-//              int limit = 0;
-//              try {
-//                  // wait until _engineer is assigned so HALT can take effect
-//                  while (!war.controlRunTrain(Warrant.HALT) && limit<3000) {
-//                      Thread.sleep(200);
-//                      limit += 200;
-//                  }
-//              } catch (InterruptedException e) {
-//                  war.controlRunTrain(Warrant.HALT);
-//              }
-//          }
-//      };
-   Halter* h = new Halter(warrant, this);
-   //new Thread(h).start();
-   QThread* thread = new QThread();
-   h->moveToThread(thread);
-   connect(thread, SIGNAL(started()), h, SLOT(process()));
-
-  }
-  else
-  {
-   _haltStart = false;
-  }
- }
- if (msg!=  NULL)
- {
-//  JOptionPane.showMessageDialog(this, msg,
-//            tr("WarningTitle"), JOptionPane.WARNING_MESSAGE);
-  QMessageBox::warning(this, tr("WarningTitle"), msg);
-  warrant =   NULL;
- }
- else
- {
-  closeFrame();
-  if (log->isDebugEnabled()) log->debug("Close Frame.");
- }
+ con->layout()->addWidget(_switchPanel);
+ updateAutoRunPanel();
+ pack();
 }
 
-/*private*/ void NXFrame::runManual()
-{
- QString name = _trainName->text();
- if (name ==   NULL || name.trimmed().length() == 0)
- {
-//   JOptionPane.showMessageDialog(this,   tr("noTrainName"),
-//                tr("WarningTitle"), JOptionPane.WARNING_MESSAGE);
-  QMessageBox::warning(this, tr("Warrant Warning"), tr("Enter a name for this train."));
-  return;
- }
- QString s = QString::number(qrand()).mid(2);
- Warrant* warrant = new Warrant("IW" + s, "NX(" + name + ")");
- warrant->setTrainName(name);
- warrant->setRoute(0, getOrders());
- WarrantTableFrame* tableFrame = WarrantTableFrame::getInstance();
- tableFrame->getModel()->addNXWarrant(warrant);
- warrant->setRunMode(Warrant::MODE_MANUAL,   NULL,   NULL,   NULL, false);
- tableFrame->scrollTable();
- closeFrame();
-}
 
 /*protected*/ void NXFrame::closeFrame()
 {
@@ -696,7 +611,7 @@ void NXFrame::onDestUnits()
 /*public*/ float NXFrame::getScale() {
     return _scale;
 }
-#if 1
+
 /*private*/ QString NXFrame::getBoxData()
 {
  QString text =   NULL;
@@ -811,25 +726,47 @@ void NXFrame::onDestUnits()
    return len;
 }
 
+/*private*/ float NXFrame::adjustdistance(float fromSpeed, float toSpeed, float distance, BlockOrder* bo) throw (JmriException) {
+        float pathLen = getPathLength(bo);
+        if (pathLen <= 0) {
+         throw JmriException(tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName()));
+        }
+        int timeIncrement = _speedUtil->getRampTimeIncrement();
+        float minDist = _speedUtil->getDistanceOfSpeedChange(fromSpeed, toSpeed, timeIncrement) +.1f;
+        if (distance < minDist) {
+            distance = minDist;
+        } else if (distance > pathLen - minDist) {
+            distance = pathLen - minDist;
+        }
+        return distance;
+    }
 /*
  * Return length of warrant route in mm.  Assume start and end is in the middle of first
  * and last blocks.  Use a default length for blocks with unspecified length.
  */
-/*private*/ QString NXFrame::getTotalLength() {
-    _totalLen = 0.0f;
-    QList<BlockOrder*>* orders = getOrders();
-    _totalLen = _startDist;
-    for (int i = 1; i < orders->size() - 1; i++) {
-        BlockOrder* bo = orders->at(i);
-        float len = getPathLength(bo);
-        if (len <= 0) {
-            return tr("Path %1 in block %2 has length zero.\nCannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName());
+/*private*/ float NXFrame::getTotalLength() {
+ float totalLen = 0.0f;
+ QList<BlockOrder*>* orders = getOrders();
+ float throttleIncrement = _speedUtil->getRampThrottleIncrement();
+ try {
+     _startDist = adjustdistance(0.0f, throttleIncrement, _startDist, orders->at(0));
+     totalLen = _startDist;
+     for (int i = 1; i < orders->size() - 1; i++) {
+         BlockOrder* bo = orders->value(i);
+         float pathLen = getPathLength(bo);
+         if (pathLen <= 0) {
+             throw JmriException(tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName()));
          }
-        _totalLen += len;
-    }
-    _totalLen += _stopDist;
-    return nullptr;
+         totalLen += pathLen;
+     }
+     _stopDist = adjustdistance(throttleIncrement, 0.0f, _stopDist, orders->at(0));
+     totalLen += _stopDist;
+ } catch (JmriException je) {
+     throw je;
+ }
+ return totalLen;
 }
+#if 0
 /*private*/ float NXFrame::getUpRampLength() {
     float speed = 0.0f;     // throttle setting
     float rampLength = 0.0f;
@@ -963,7 +900,7 @@ void NXFrame::onDestUnits()
             QString::number(_minSpeed)+" for rampLength = "+QString::number(rampLength)+" to reach speed "+ QString::number(_maxSpeed));
     return rampLength;
 }
-
+#endif
 /*private*/ QString NXFrame::makeCommands(Warrant* w) {
 
     int nextIdx = 0;        // block index - increment after getting a block order
@@ -974,283 +911,345 @@ void NXFrame::onDestUnits()
 //        getProfileForDirection(isForward);  // establish a SpeedProfile and present anomaly dialog. if needed
     bool hasProfileSpeeds = _speedUtil->profileHasSpeedInfo();
 
+    int cmdNum;
     w->addThrottleCommand(new ThrottleSetting(0, "F0", "true", blockName));
-    if (isForward) {
+    if (_forward->isChecked())
+    {
         w->addThrottleCommand(new ThrottleSetting(1000, "Forward", "true", blockName));
-        w->addThrottleCommand(new ThrottleSetting(1000, "F2", "true", blockName));
-        w->addThrottleCommand(new ThrottleSetting(2500, "F2", "false", blockName));
-        w->addThrottleCommand(new ThrottleSetting(1000, "F2", "true", blockName));
-        w->addThrottleCommand(new ThrottleSetting(2500, "F2", "false", blockName));
+        if(!_noSound->isChecked())
+        {
+         w->addThrottleCommand(new ThrottleSetting(1000, "F2", "true", blockName));
+         w->addThrottleCommand(new ThrottleSetting(2500, "F2", "false", blockName));
+         w->addThrottleCommand(new ThrottleSetting(1000, "F2", "true", blockName));
+         w->addThrottleCommand(new ThrottleSetting(2500, "F2", "false", blockName));
+         cmdNum = 7;
+        }
+        else
+        {
+         cmdNum = 3;
+        }
     } else {
         w->addThrottleCommand(new ThrottleSetting(1000, "Forward", "false", blockName));
-        w->addThrottleCommand(new ThrottleSetting(2000, "F3", "true", blockName));
-        w->addThrottleCommand(new ThrottleSetting(500, "F3", "false", blockName));
-        w->addThrottleCommand(new ThrottleSetting(500, "F3", "true", blockName));
-        w->addThrottleCommand(new ThrottleSetting(500, "F1", "true", blockName));
+        if(!_noSound->isChecked())
+        {
+            w->addThrottleCommand(new ThrottleSetting(2000, "F3", "true", blockName));
+            w->addThrottleCommand(new ThrottleSetting(500, "F3", "false", blockName));
+            w->addThrottleCommand(new ThrottleSetting(500, "F3", "true", blockName));
+            w->addThrottleCommand(new ThrottleSetting(500, "F1", "true", blockName));
+            cmdNum = 6;
+        }
+        else
+        {
+            cmdNum = 2;
+        }
+
     }
 
-    QString msg = getTotalLength();
-    if (msg != "") {
-        return msg;
+    float totalLen;
+    try {
+        totalLen = getTotalLength();
+    } catch (JmriException je) {
+        return je.getMessage();
     }
-    float increment = _throttleIncr;
-    float momentumTime = _speedUtil->getMomentumTime(increment, false);
-    float upRampLength;
-    float dnRampLength ;
-    if (_intervalTime >= momentumTime) {   // do longer ramp first
-        dnRampLength = getDownRampLength();
-        upRampLength = getUpRampLength();
-    } else {
-        upRampLength = getUpRampLength();
-        dnRampLength = getDownRampLength();
-    }
+
+    RampData* upRamp;
+    RampData* downRamp;
+    QListIterator<float> downIter = downRamp->speedIterator(false);
+    float intervalDist;
+    do {
+        upRamp = _speedUtil->getRampForSpeedChange(0.f, _maxThrottle);
+        downRamp = _speedUtil->getRampForSpeedChange(_maxThrottle, 0.f);
+        downIter = downRamp->speedIterator(false);
+        float prevSetting = downIter.previous();   // top value is _maxThrottle
+        _maxThrottle -= prevSetting  - downIter.previous();    // last throttle increment
+        // distance attaining final speed
+        intervalDist = _speedUtil->getDistanceOfSpeedChange(_maxThrottle, prevSetting, downRamp->getRampTimeIncrement());
+        log->debug(tr("Route length= %1, upRampLength= %2, dnRampLength= %3").arg(
+                totalLen).arg(upRamp->getRampLength()).arg(downRamp->getRampLength()));
+    } while ((upRamp->getRampLength() + intervalDist + downRamp->getRampLength()) > totalLen);
+    _maxThrottle = downRamp->getMaxSpeed();
 
     if (log->isDebugEnabled()) {
         if (hasProfileSpeeds) {
             log->debug(tr("maxThrottle= %1 (%2 meters per sec), scale= %3").arg(
-                    _maxThrottle).arg(_speedUtil->getTrackSpeed(_maxThrottle,isForward)).arg(_scale));
+                    _maxThrottle).arg(_speedUtil->getTrackSpeed(_maxThrottle)).arg(_scale));
         } else {
             log->debug(tr("maxThrottle= %1 scale= %2 no SpeedProfile data").arg(_maxThrottle).arg(_scale));
         }
-        log->debug(tr("Route length= %1, upRampLength= %2, dnRampLength= %3, startDist=#4, stopDist=%5").arg(
-                _totalLen).arg(upRampLength).arg(dnRampLength).arg(_startDist).arg(_stopDist));
     }
 
-    // estimate for blocks of zero length - an estimate of ramp length
-    float scaleFactor =  static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getDefaultThrottleFactor();
-    RosterEntry* ent = getTrain();
-    RosterSpeedProfile* speedProfile =   NULL;
-    if (ent!=  NULL) {
-        speedProfile = ent->getSpeedProfile();
-        if (speedProfile!=  NULL) {
-            float s = speedProfile->getSpeed(_maxSpeed, isForward);
-            if (log->isDebugEnabled()) log->debug("SpeedProfile _maxSpeed setting= "+QString::number(_maxSpeed)+" speed= "+QString::number(s)+"mps");
-            if (s<=0.0f) {
-                speedProfile =   NULL;
-            } else {
-                scaleFactor = s/(_maxSpeed*1000);
-            }
-        }
-    }
-    if (log->isDebugEnabled()) log->debug("scaleFactor= "+QString::number(scaleFactor)+" from "+(speedProfile!=  NULL?"SpeedProfile":"Default"));
-
-    float defaultBlockLen = 6*_maxSpeed*_intervalTime/scaleFactor;      // just a wild guess
-    float totalLen = getTotalLength(defaultBlockLen);
-    float rampLength = getRampLength(totalLen, speedProfile);
-
-    float blockLen = bo->getPath()->getLengthMm();    // length of path in current block
-    if (blockLen<=0) {
-        blockLen = defaultBlockLen;
-    }
-    blockLen /=2;
+    float blockLen = _startDist;    // length of path in current block
 
     // start train
-    float speedTime = 500;      // ms time to complete speed step from last block
-    float noopTime = 0;         // ms time for entry into next block
-    float curSpeed = 0;
-    // each speed step will last for _intervalTime ms
-    float curDistance = 0;          // distance traveled in current block
-    float remRamp = rampLength;
-    if (log->isDebugEnabled()) log->debug("Start Ramp Up in block \""+blockName+ "\" in "
-            +(int)speedTime+"ms, remRamp= "+remRamp+", blockLen= "+blockLen);
+    float speedTime = 0;    // ms time to complete speed step from last block
+    float noopTime = 0;     // ms time for entry into next block
+    QListIterator<float> iter = upRamp->speedIterator(true);
+    float curThrottle = iter.next();  // throttle setting
+    float nextThrottle = 0.0f;
+    float curDistance = 0;  // current distance traveled mm
+    float blkDistance = 0;  // distance traveled in current block mm
+    float upRampLength = upRamp->getRampLength();
+    float remRamp = upRampLength;
+    float remTotal = totalLen;
+    float dnRampLength = downRamp->getRampLength();
+    int timeInterval = downRamp->getRampTimeIncrement();
+    bool rampsShareBlock = false;
 
-    while (remRamp > 0.0f) {       // ramp up loop
+    if (log->isDebugEnabled()) {
+        log->debug(tr("Start in block \"%1\" startDist= %2 stopDist= %3").arg(blockName).arg(_startDist).arg(_stopDist));
+    }
+    while (iter.hasNext()) {       // ramp up loop
 
-        if (speedProfile !=   NULL) {
-            curDistance = speedProfile->getSpeed(curSpeed, isForward)*speedTime/1000;
-        } else {
-            curDistance = curSpeed*speedTime*scaleFactor;
-        }
-        while (curDistance < blockLen && remRamp > 0.0f) {
-            float dist;
-            if (speedProfile !=   NULL) {
-                dist = speedProfile->getSpeed((curSpeed + _minSpeed/2), isForward)*_intervalTime/1000;
-            } else {
-                dist = (curSpeed + _minSpeed/2)*_intervalTime*scaleFactor;
-            }
-            if (curDistance + dist <= blockLen && remRamp > 0.0f) {
-                curDistance += dist;
-                float remSpeed = _maxSpeed - curSpeed;
-                if (0<remSpeed && remSpeed < _minSpeed) {
-                    curSpeed += remSpeed;
-                    remRamp = -1;   // insure we break out of loop
-                } else {
-                    curSpeed += _minSpeed;
+        while (blkDistance < blockLen && iter.hasNext()) {
+            nextThrottle = iter.next();
+            float dist = _speedUtil->getDistanceOfSpeedChange(curThrottle, nextThrottle, timeInterval);
+            if (blkDistance + dist <= blockLen) {
+                blkDistance += dist;
+                remRamp -= dist;
+                curThrottle = nextThrottle;
+                w->addThrottleCommand(new ThrottleSetting((int) speedTime, "Speed",
+                        QString::number(curThrottle), blockName,
+                        (hasProfileSpeeds ? _speedUtil->getTrackSpeed(curThrottle) : 0.0f)));
+                if (log->isDebugEnabled()) {
+                    log->debug(tr("%1. Ramp Up in block \"%2\" to speed %3 in %4ms to distance= {}mm, remRamp= %5").arg(
+                            ++cmdNum).arg(blockName).arg(curThrottle).arg((int) speedTime).arg(blkDistance).arg(remRamp));
                 }
-                remRamp -= dist;
-                w->addThrottleCommand(new ThrottleSetting((int)speedTime, "Speed", QString::number(curSpeed), blockName));
-                if (log->isDebugEnabled()) log->debug("Ramp Up in block \""+blockName+ "\" to speed "+curSpeed+" in "
-                       +(int)speedTime+"ms to reach curDistance= "+curDistance+", remRamp= "+remRamp);
-                speedTime = _intervalTime;
+                speedTime = timeInterval;
             } else {
+                iter.previous();
                 break;
             }
         }
+        curDistance += blkDistance;
 
-        // Possible case where curDistance can exceed the length of a very short block that was just entered.
-        // Move to next block and adjust the distance times into that block
-        if (speedProfile !=   NULL) {
-            if (curDistance>=blockLen) {
-                noopTime = qRound(1000*speedProfile->getDurationOfTravelInSeconds(isForward, curSpeed, qRound(blockLen)));  // time to next block
-                speedTime = qRound(1000*speedProfile->getDurationOfTravelInSeconds(isForward, curSpeed, qRound(curDistance-blockLen)));
-            } else {
-                noopTime = qRound(1000*speedProfile->getDurationOfTravelInSeconds(isForward, curSpeed, qRound(blockLen-curDistance)));
-                speedTime = _intervalTime - noopTime;   // time to next speed change
-            }
+        if (blkDistance >= blockLen) {
+            // Possible case where blkDistance can exceed the length of a block that was just entered.
+            // Skip over block and move to next block and adjust the distance times into that block
+            noopTime = _speedUtil->getTimeForDistance(curThrottle, blockLen);   // noop distance to run through block
+            speedTime = _speedUtil->getTimeForDistance(curThrottle, blkDistance - blockLen);
+            curDistance += blockLen;
         } else {
-            if (curDistance>=blockLen) {
-                noopTime = (blockLen)/(curSpeed*scaleFactor);  // time to next block
-                speedTime = (curDistance-blockLen)/(curSpeed*scaleFactor);
+            // typical case where next speed change broke out of above loop
+            noopTime = _speedUtil->getTimeForDistance(curThrottle, (blockLen - blkDistance));   // time to next block
+            if (noopTime > timeInterval) {  // after last speed change
+                speedTime = 0;  // irrelevant, loop will end
+                if (!iter.hasNext()) {
+                    noopTime += timeInterval;   // add time to complete last speed change
+                }
             } else {
-                noopTime = (blockLen-curDistance)/(curSpeed*scaleFactor);  // time to next block
-                speedTime = _intervalTime - noopTime;   // time to next speed change
+                speedTime = timeInterval - noopTime;   // time to next speed change
             }
+            curDistance += blockLen - blkDistance;  // noop distance
         }
 
-        // break out here if deceleration is to be started in this block
-        if (totalLen - blockLen <= rampLength) {
+        // break out here if done or deceleration is to be started in this block
+        if (!iter.hasNext() || remTotal - blockLen <= dnRampLength) {
             break;
         }
-        if (nextIdx < orders->size()) {    // not the last block
-            totalLen -= blockLen;
-            if (log->isDebugEnabled()) log->debug("Leave RampUp block \""+blockName+"\" noopTime= "+noopTime+
-                    ", in distance="+curSpeed*noopTime*scaleFactor+", blockLen= "+blockLen+
-                    ", remRamp= "+remRamp);
-            bo = orders->at(nextIdx++);
-            blockName = bo->getBlock()->getDisplayName();
-            blockLen = bo->getPath()->getLengthMm();
-            if (blockLen<=0)  {
-                blockLen = defaultBlockLen;
-            }
-            w->addThrottleCommand(new ThrottleSetting((int)noopTime, "NoOp", "Enter Block", blockName));
-            if (log->isDebugEnabled()) log->debug("Enter block \""+blockName+"\" noopTime= "+
-                    noopTime+", blockLen= "+blockLen);
-        }
-    }
-    if (log->isDebugEnabled()) log->debug("Ramp Up done at block \""+blockName+"\" curSpeed=" +
-            QString::number(curSpeed)+", blockLen= "+QString::number(blockLen)+" totalLen= "+QString::number(totalLen)+", rampLength= "+
-            QString::number(rampLength)+", remRamp= "+QString::number(remRamp));
 
-    // run through mid route at max speed
-    while (nextIdx < orders->size()) {
-        if (totalLen-blockLen <= rampLength) {
-            // Start ramp down in current block
-            break;
+        remTotal -= blockLen;
+        if (log->isDebugEnabled()) {
+            log->debug(tr("Leave RampUp block \"%1\"  blkDistance= %2, blockLen= %3 remRamp= %4 curDistance= %5 remTotal=^").arg(
+                    blockName).arg(blkDistance).arg(blockLen).arg(remRamp).arg(curDistance).arg(remTotal));
         }
-        totalLen -= blockLen;
-        // constant speed, get time to next block
-        if (speedProfile !=   NULL) {
-            noopTime = qRound(1000*speedProfile->getDurationOfTravelInSeconds(isForward, curSpeed, qRound(blockLen-curDistance)));
-        } else {
-            noopTime = (blockLen-curDistance)/(curSpeed*scaleFactor);
-        }
-        if (log->isDebugEnabled()) log->debug("Leave MidRoute block \""+blockName+"\" noopTime= "+noopTime+
-                ", curDistance="+curDistance+", blockLen= "+blockLen+", totalLen= "+totalLen);
-        bo = orders->at(nextIdx++);
-        blockName = bo->getBlock()->getDisplayName();
-        blockLen = bo->getPath()->getLengthMm();
-        if (nextIdx == orders->size()) {
-            blockLen /= 2;
-        } else if (blockLen<=0) {
-            blockLen = defaultBlockLen;
-        }
-        w->addThrottleCommand(new ThrottleSetting((int)noopTime, "NoOp", "Enter Block", blockName));
-        if (log->isDebugEnabled()) log->debug("Enter block \""+blockName+"\" noopTime= "+noopTime);
-        curDistance = 0;
-    }
-
-    // Ramp down.  use negative delta
-    remRamp = rampLength;
-    speedTime = (totalLen-rampLength)/(curSpeed*scaleFactor);
-    curDistance = totalLen - rampLength;
-    if (log->isDebugEnabled()) log->debug("Begin Ramp Down at block \""+blockName+"\" curDistance= "
-            +curDistance+" SpeedTime= "+(int)speedTime+"ms, blockLen= "+blockLen+", totalLen= "+totalLen+
-            ", rampLength= "+rampLength+" curSpeed= "+curSpeed);
-
-    while (curSpeed >= _minSpeed) {
-        if (nextIdx == orders->size()) { // at last block
-            if (_stageEStop->isChecked()) {
-                w->addThrottleCommand(new ThrottleSetting(0, "Speed", "-0.5", blockName));
-                _intervalTime = 0;
-                break;
-            }
-        }
-
-        while (curDistance < blockLen && curSpeed >= _minSpeed) {
-            float dist;
-            if (speedProfile !=   NULL) {
-                dist = speedProfile->getSpeed((curSpeed - _minSpeed/2), isForward)*_intervalTime/1000;
-            } else {
-                dist = (curSpeed - _minSpeed/2)*_intervalTime*scaleFactor;
-            }
-            if (curDistance + dist <= blockLen) {
-                curDistance += dist;
-                curSpeed -= _minSpeed;
-                remRamp -= dist;
-                w->addThrottleCommand(new ThrottleSetting((int)speedTime, "Speed", QString::number(curSpeed), blockName));
-                if (log->isDebugEnabled()) log->debug("Ramp Down in block \""+blockName+"\" to speed "+
-                        curSpeed+" in "+(int)speedTime+"ms to reach curDistance= "+curDistance+" where blockLen= "+blockLen+", remRamp= "+remRamp);
-                speedTime = _intervalTime;
-            } else {
-                break;
-            }
-        }
-
         if (nextIdx < orders->size()) {
-            if (speedProfile !=   NULL) {
-                noopTime = qRound(1000*speedProfile->getDurationOfTravelInSeconds(isForward, curSpeed, qRound(blockLen-curDistance)));
-            } else {
-                noopTime = (blockLen-curDistance)/(curSpeed*scaleFactor);
-            }
-            if (noopTime<0 || _intervalTime<noopTime) {
-                log->error("Ramp Down NoOp time invalid! noopTime= "+QString::number(noopTime));
-                noopTime = _intervalTime/2;
-            }
-            speedTime = _intervalTime - noopTime;
-            totalLen -= blockLen;
-            if (log->isDebugEnabled()) log->debug("Leave RampDown block \""+blockName+"\" noopTime= "+noopTime+
-                    ", in distance="+curSpeed*noopTime*scaleFactor+", blockLen= "+blockLen+
-                    ", totalLen= "+totalLen+", remRamp= "+remRamp);
-            bo = orders->at(nextIdx++);
+            bo = orders->value(nextIdx++);
+            blockLen = getPathLength(bo);
+            if (blockLen <= 0) {
+                return tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName());
+             }
             blockName = bo->getBlock()->getDisplayName();
-            blockLen = bo->getPath()->getLengthMm();
-            if (blockLen<=0)  {
-                blockLen = defaultBlockLen;
+            w->addThrottleCommand(new ThrottleSetting((int) noopTime, "NoOp", "Enter Block", blockName,
+                    (hasProfileSpeeds ? _speedUtil->getTrackSpeed(curThrottle) : 0.0f)));
+            if (log->isDebugEnabled()) {
+                log->debug(tr("%1. Enter RampUp block \"%2\" noopTime= %3, speedTime= %4 blockLen= %5, remTotal= %6").arg(
+                    cmdNum++).arg(blockName).arg(noopTime).arg(speedTime).arg(blockLen).arg(remTotal));
             }
-            w->addThrottleCommand(new ThrottleSetting((int)noopTime, "NoOp", "Enter Block", blockName));
-            if (log->isDebugEnabled()) log->debug("Enter block \""+blockName+"\" noopTime= "+noopTime);
-            if (speedProfile !=   NULL) {
-                curDistance = speedProfile->getSpeed(curSpeed, isForward)*speedTime/1000;
-            } else {
-                curDistance = curSpeed*speedTime*scaleFactor;
-            }
-        } else {
-            if (blockLen==0) {
-                speedTime = 0;
-            }
-            break;
         }
+        blkDistance = _speedUtil->getDistanceTraveled(curThrottle, Warrant::Normal, speedTime);
     }
     if (log->isDebugEnabled()) {
-        curDistance += curSpeed*speedTime*scaleFactor;
-        remRamp -=  curSpeed*speedTime*scaleFactor;
-        log->debug("Ramp down last speed change in block \""+blockName+"\" to speed "+curSpeed+
-                " after "+(int)_intervalTime+"ms. at curDistance= "+curDistance+", remRamp= "+remRamp);
+        log->debug(tr("Ramp Up done at block \"%1\" curThrottle=%2 blkDistance=%3 curDistance=%4 remTotal= %5 remRamp=%6").arg(
+                blockName).arg(curThrottle).arg(blkDistance).arg(curDistance).arg(remTotal).arg(remRamp));
     }
-    w->addThrottleCommand(new ThrottleSetting((int)speedTime, "Speed", "0.0", blockName));
-    w->addThrottleCommand(new ThrottleSetting(500, "F1", "false", blockName));
-    w->addThrottleCommand(new ThrottleSetting(1000, "F2", "true", blockName));
-    w->addThrottleCommand(new ThrottleSetting(3000, "F2", "false", blockName));
+
+    if (remTotal - blockLen > dnRampLength) {    // At maxThrottle, remainder of block at max speed
+        if (nextIdx < orders->size()) {    // not the last block
+            remTotal -= blockLen;
+            bo = orders->value(nextIdx++);
+            blockLen = getPathLength(bo);
+            if (blockLen <= 0) {
+                return tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName());
+             }
+            blockName = bo->getBlock()->getDisplayName();
+            w->addThrottleCommand(new ThrottleSetting((int) noopTime, "NoOp", "Enter Block", blockName,
+                    (hasProfileSpeeds ? _speedUtil->getTrackSpeed(curThrottle) : 0.0f)));
+            if (log->isDebugEnabled()) {
+                log->debug(tr("%1. Enter block \"%2\" noopTime= %3).arg(blockLen= %4).arg(curDistance=%5").arg(
+                        cmdNum++).arg(blockName).arg(noopTime).arg(blockLen).arg(curDistance));
+            }
+            blkDistance = 0;
+        }
+
+        // run through mid route at max speed
+        while (nextIdx < orders->size() && remTotal - blockLen > dnRampLength) {
+            remTotal -= blockLen;
+            // constant speed, get time to next block
+            noopTime = _speedUtil->getTimeForDistance(curThrottle, blockLen);   // time to next block
+            curDistance += blockLen;
+            if (log->isDebugEnabled()) {
+                log->debug(tr("Leave MidRoute block \"%1\" noopTime= %2 blockLen= %3 curDistance=%4 remTotal= %5").arg(
+                        blockName).arg(noopTime).arg(blockLen).arg(curDistance).arg(remTotal));
+            }
+            bo = orders->value(nextIdx++);
+            blockLen = getPathLength(bo);
+            if (blockLen <= 0) {
+                return tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName());
+             }
+            blockName = bo->getBlock()->getDisplayName();
+            if (nextIdx == orders->size()) {
+                blockLen = _stopDist;
+            }
+            w->addThrottleCommand(new ThrottleSetting((int) noopTime, "NoOp", "Enter Block", blockName,
+                    (hasProfileSpeeds ? _speedUtil->getTrackSpeed(curThrottle) : 0.0f)));
+            if (log->isDebugEnabled()) {
+                log->debug(tr("%1. Enter MidRoute block \"%2\" noopTime= %3, blockLen= %4, curDistance=%5").arg(
+                        cmdNum++).arg(blockName).arg(noopTime).arg(blockLen).arg(curDistance));
+            }
+         }
+        blkDistance = 0;
+   } else {
+        // else Start ramp down in current block
+        rampsShareBlock = true;
+    }
+
+    // Ramp down.
+    remRamp = dnRampLength;
+    iter = downRamp->speedIterator(false);
+    iter.previous();   // discard, equals curThrottle
+    float remMaxSpeedDist;
+    if (!rampsShareBlock) {
+        remMaxSpeedDist = remTotal - dnRampLength;
+    } else {
+        remMaxSpeedDist = totalLen - upRampLength - dnRampLength;
+    }
+    // distance in block where down ramp is started
+    blkDistance += remMaxSpeedDist;
+    // time to start down ramp
+    speedTime = _speedUtil->getTimeForDistance(curThrottle, remMaxSpeedDist) + timeInterval;
+
+    if (log->isDebugEnabled()) {
+        log->debug(tr("Begin Ramp Down at block \"%1\" blockLen=%2, at distance= %3 curDistance = %4 remTotal= %5 curThrottle= %6 (%7)").arg(
+                blockName).arg(blockLen).arg(blkDistance).arg(curDistance).arg(remTotal).arg(curThrottle).arg(remMaxSpeedDist));
+    }
+
+    while (iter.hasPrevious()) {
+        bool atLastBlock = false;
+        if (nextIdx == orders->size()) { // at last block
+            atLastBlock = true;
+            if (_stageEStop->isChecked()) {
+                w->addThrottleCommand(new ThrottleSetting(50, "Speed", "-0.5", blockName,
+                        (hasProfileSpeeds ? _speedUtil->getTrackSpeed(curThrottle) : 0.0f)));
+                curThrottle = -0.5f;
+                if (log->isDebugEnabled()) {
+                    log->debug(tr("%1. At block \"%2\" EStop set speed= %3").arg(cmdNum++).arg(blockName).arg(-0.5));
+                }
+                break;
+            }
+        }
+
+        do /*while (blkDistance < blockLen && iter.hasPrevious())*/ {
+            bool hasPrevious = false;
+            if (iter.hasPrevious()) {
+                nextThrottle = iter.previous();
+                hasPrevious = true;
+            }
+            float dist = _speedUtil->getDistanceOfSpeedChange(curThrottle, nextThrottle, timeInterval);
+            blkDistance += dist;
+            remRamp -= dist;
+            curThrottle = nextThrottle;
+            if (curThrottle <= 0.0f && !atLastBlock) {
+                log->warn(tr("Set curThrottle = %1 in block \"%2\" (NOT the last block)!").arg(curThrottle).arg(blockName));
+                break;
+            }
+            if (hasPrevious) {
+                w->addThrottleCommand(new ThrottleSetting((int) speedTime, "Speed", QString::number(curThrottle), blockName,
+                        (hasProfileSpeeds ? _speedUtil->getTrackSpeed(curThrottle) : 0.0f)));
+                if (log->isDebugEnabled()) {
+                    log->debug(tr("%1. Ramp Down in block \"%2\" to curThrottle %3 in %4ms to distance= %5mm, remRamp= %6").arg(
+                            ++cmdNum).arg(blockName).arg(curThrottle).arg((int) speedTime).arg(blkDistance).arg(remRamp));
+                }
+            } else {
+                if (curThrottle > 0.0f) {
+                    log->warn(tr("No speed setting after command %1 in block \"%2\". curThrottle= %3 blkDistance= %4mm").arg(
+                            cmdNum).arg(blockName).arg(curThrottle).arg(blkDistance));
+                }
+                break;
+            }
+            speedTime = timeInterval;
+        } while (blkDistance < blockLen);
+        curDistance += blkDistance;
+
+        if (log->isDebugEnabled()) {
+            log->debug(tr("Leave RampDown block \"%1\"  blkDistance= %2, blockLen= %3 remRamp= %4 curDistance= %5 remTotal= %6").arg(
+                    blockName).arg(blkDistance).arg(blockLen).arg(remRamp).arg(curDistance).arg(remTotal));
+        }
+        if (blkDistance >= blockLen) {
+            // typical case where next speed change broke out of above loop
+            speedTime = _speedUtil->getTimeForDistance(curThrottle, blkDistance - blockLen); // time to run in next block
+            if (speedTime > timeInterval) {
+                noopTime = 0;
+            } else {
+                noopTime = timeInterval - speedTime;
+            }
+        } else {
+            speedTime = timeInterval - noopTime;
+        }
+
+        remTotal -= blockLen;
+        if (!atLastBlock) {
+            curDistance += blockLen - blkDistance;  // noop distance
+            bo = orders->value(nextIdx++);
+            if (nextIdx == orders->size()) {
+                blockLen = _stopDist;
+            } else {
+                blockLen = getPathLength(bo);
+                if (blockLen <= 0) {
+                 return tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName());
+
+                 }
+            }
+            blockName = bo->getBlock()->getDisplayName();
+            w->addThrottleCommand(new ThrottleSetting((int) noopTime, "NoOp", "Enter Block", blockName,
+                    (hasProfileSpeeds ? _speedUtil->getTrackSpeed(curThrottle) : 0.0f)));
+            if (log->isDebugEnabled()) {
+                log->debug(tr("%1. Enter block \"%2\" noopTime= %3ms, blockLen= %4, curDistance=%5").arg(
+                        cmdNum++).arg(blockName).arg(noopTime).arg(blockLen).arg(curDistance));
+            }
+            blkDistance = _speedUtil->getDistanceTraveled(curThrottle, Warrant::Normal, speedTime);
+        } else {
+            blkDistance = 0.0f;
+        }
+    }
+
+    // Ramp down finished
+    log->debug(tr("Ramp down done at block \"%1\",  remRamp= %2, curDistance= %3 remRamp= %4").arg(
+            blockName).arg(remRamp).arg(curDistance).arg(remTotal));
+    if (!_noSound->isChecked()) {
+        w->addThrottleCommand(new ThrottleSetting(500, "F1", "false", blockName));
+        w->addThrottleCommand(new ThrottleSetting(1000, "F2", "true", blockName));
+        w->addThrottleCommand(new ThrottleSetting(3000, "F2", "false", blockName));
+    }
     w->addThrottleCommand(new ThrottleSetting(1000, "F0", "false", blockName));
-/*      if (_addTracker.isSelected()) {
+    /*      if (_addTracker.isSelected()) {
         WarrantTableFrame._defaultAddTracker = true;
         w.addThrottleCommand(new ThrottleSetting(10, "START TRACKER", "", blockName));
     } else {
         WarrantTableFrame._defaultAddTracker = false;
     }*/
-    return   NULL;
+    return nullptr;
 }
-#endif
+
 /*private*/ bool NXFrame::makeAndRunWarrant()
 {
  QString msg = checkLocoAddress();

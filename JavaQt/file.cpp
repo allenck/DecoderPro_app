@@ -876,7 +876,10 @@ int File::getPrefixLength() {
 //    }
 //    return ((fs.getBooleanAttributes(this) & FileSystem.BA_DIRECTORY)
 //            != 0);
-    return QFileInfo(path).isDir();
+    QFileInfo info(path);
+    if(info.isFile())
+     return false;
+    return info.isDir();
 }
 
 /**
@@ -2318,4 +2321,14 @@ static {
 /*public*/ QString File::absoluteFilePath()
 {
  return QFileInfo(path).absoluteFilePath();
+}
+
+/*public*/ bool File::equals(File* other)
+{
+ if(other == this)
+  return true;
+ if(this->getAbsolutePath() == other->getAbsolutePath())
+  return true;
+ else
+  return false;
 }

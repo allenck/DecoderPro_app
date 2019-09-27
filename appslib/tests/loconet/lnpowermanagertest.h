@@ -11,11 +11,12 @@ class LnPowerManagerTest : public AbstractPowerManagerTestBase
     Q_OBJECT
 public:
     LnPowerManagerTest();
+    /*public*/ void setUp();
+    /*public*/ void tearDown();
+public slots:
     /*public*/ void testImplementsIdle();
     /*public*/ void testStateIdle() throw (JmriException);
     /*public*/ void testSetPowerIdle() throw (JmriException);
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
 
 private:
     LocoNetInterfaceScaffold* controller;  // holds dummy for testing

@@ -2,6 +2,8 @@
 #include "assert1.h"
 #include "lnopsmodeprogrammertest.h"
 #include "joptionpane.h"
+#include "loggerfactory.h"
+
 
 LnOpsModeProgrammerTestAction::LnOpsModeProgrammerTestAction(QObject* parent) : AbstractAction(tr("LnOpsModeProgrammer Test"), parent)
 {
@@ -14,25 +16,32 @@ void LnOpsModeProgrammerTestAction::actionPerformed()
  lomp->setUp();
  try
  {
-  lomp->testGetCanWriteAddress();
-  lomp->testSetMode();
-  lomp->testGetMode();
-  lomp->testGetCanReadWithTransponding();
-  lomp->testSV2DataBytes();
-  lomp->testSV2highBits();
-//   lomp->testSOps16001Read();
-   lomp->testSv1Write();
-   lomp->testBoardRead0();
-   lomp->testBoardRead1();
-   lomp->testBoardReadTimeout();
-   lomp->testBoardWrite();
-   lomp->testBoardWriteTimeout();
-   lomp->testSv1ARead();
-   lomp->testSv1BRead();
-   lomp->testSv2Write();
-   lomp->testSv2Read();
-   lomp->testOpsReadDecoderTransponding();
-   lomp->testOpsReadLocoNetMode();
+  QStringList testList = QStringList()
+  << "testGetCanWriteAddress"
+  << "testSetMode"
+  << "testGetMode"
+  << "testGetCanReadWithTransponding"
+  << "testSV2DataBytes"
+  << "testSV2highBits"
+  << "testSOps16001Read"
+   << "testSv1Write"
+   << "testBoardRead0"
+   << "testBoardRead1"
+   << "testBoardReadTimeout"
+   << "testBoardWrite"
+   << "testBoardWriteTimeout"
+   << "testSv1ARead"
+   << "testSv1BRead"
+   << "testSv2Write"
+   << "testSv2Read"
+   << "testOpsReadDecoderTransponding"
+   << "testOpsReadLocoNetMode";
+  foreach(QString test, testList)
+  {
+   log->info(tr("begin '%1'").arg(test));
+   QMetaObject::invokeMethod(lomp, test.toLocal8Bit(), Qt::DirectConnection);
+   log->info(tr("end '%1'").arg(test));
+  }
 
  }
  catch (AssertionError er)
@@ -40,4 +49,7 @@ void LnOpsModeProgrammerTestAction::actionPerformed()
      JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
 
  }
- lomp->tearDown();}
+ lomp->tearDown();
+}
+
+Logger* LnOpsModeProgrammerTestAction::log = LoggerFactory::getLogger("LnOpsModeProgrammerTestAction");

@@ -373,9 +373,9 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
             delay += WAITFOR_DELAY_STEP;
         }
 
-        Assert::fail("\"" + name + "\" did not occur in time");
+        Assert::fail("\"" + name + "\" did not occur in time", __FILE__, __LINE__);
     } catch (Exception ex) {
-        Assert::fail("Exception while waiting for \"" + name + "\" " + ex.getMessage());
+        Assert::fail("Exception while waiting for \"" + name + "\" " + ex.getMessage(), __FILE__, __LINE__);
     }
 #endif
 }
@@ -422,6 +422,20 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
         return false;
     }
 #endif
+    try {
+        while (delay < WAITFOR_MAX_DELAY) {
+            if (condition->ready()) {
+                return true;
+            }
+            SleeperThread::msleep(WAITFOR_DELAY_STEP);
+            delay += WAITFOR_DELAY_STEP;
+        }
+
+        Assert::fail("did not occur in time", __FILE__, __LINE__);
+    } catch (Exception ex) {
+        Assert::fail("Exception while waiting for  " + ex.getMessage(), __FILE__, __LINE__);
+    }
+
 }
 
 /**
@@ -459,6 +473,7 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
         return;
     }
 #endif
+    SleeperThread::msleep(time);
 }
 #if 0
 /**

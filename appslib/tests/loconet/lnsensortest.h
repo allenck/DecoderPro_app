@@ -5,6 +5,7 @@
 #include "lnsensor.h"
 class LnSensorTest : public AbstractSensorTestBase
 {
+    Q_OBJECT
 public:
     LnSensorTest(QObject* parent=nullptr);
     /*public*/ int numListeners();

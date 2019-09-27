@@ -11,9 +11,12 @@ class RosterTest : public QObject
     Q_OBJECT
 public:
     explicit RosterTest(QObject *parent = nullptr);
-
-    //@Rule
+    /*public*/ void setUp();
+    /*public*/ void tearDown();
     /*public*/ TemporaryFolder* folder;// = new TemporaryFolder();
+
+public slots:
+    //@Rule
     /*public*/ void testDirty();
     /*public*/ void testAdd();
     /*public*/ void testDontAddNullEntriesLater();
@@ -34,8 +37,6 @@ public:
     /*public*/ void testProfileTwoPointReverse();
     /*public*/ void testProfileTwoPointForwardGetThrottleSetting();
     /*public*/ void testProfileTwoPointReverseGetThrottleSetting();
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
 
 signals:
 
@@ -48,9 +49,10 @@ class RTRoster : public Roster
     File* rosterDir;
 public:
     RTRoster(File* rosterDir) {this->rosterDir = rosterDir;}
-    /*public*/ QString backupFileName(QString name) {
-        return (new File(rosterDir, "rosterBackupTest"))->getAbsolutePath();
-    }
+    /*public*/ QString backupFileName(QString name) const;
+//    {
+//        return (new File(rosterDir, "rosterBackupTest"))->getAbsolutePath();
+//    }
 };
 
 #endif // ROSTERTEST_H

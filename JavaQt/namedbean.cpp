@@ -7,6 +7,20 @@
 //const int NamedBean::UNKNOWN      = 0x01;
 //const int NamedBean::INCONSISTENT = 0x08;
 //#endif
+
+/**
+ * Format used for {@link #getDisplayName(DisplayOptions)} when displaying
+ * the user name and system name without quoation marks around the user
+ * name.
+ */
+/*public*/ /*static*/ /*final*/ QString NamedBean::DISPLAY_NAME_FORMAT = "%1 (%2)";
+
+/**
+ * Format used for {@link #getDisplayName(DisplayOptions)} when displaying
+ * the user name and system name with quoation marks around the user name.
+ */
+/*public*/ /*static*/ /*final*/ QString NamedBean::QUOTED_NAME_FORMAT = "\"%1\" (%2)";
+
 NamedBean::NamedBean(QObject *parent) : QObject(parent)
 {
  _parent = parent;
@@ -34,8 +48,53 @@ void NamedBean::setUserName(QString s)
 {
  _userName = s;
 }
+/**
+ * Get user name if it exists, otherwise return System name.
+ *
+ * @return the user name or system-specific name
+ */
+//@CheckReturnValue
+//@Nonnull
+/*public*/ /*default*/ QString NamedBean::getDisplayName() {
+    return getDisplayName(DisplayOptions::DISPLAYNAME);
+}
+
 QString NamedBean::getSystemName() { return _systemName;}
-QString NamedBean::getDisplayName() { return _displayName;}
+/**
+ * Get the name to display, formatted per {@link NamedBean.DisplayOptions}.
+ *
+ * @param options the DisplayOptions to use
+ * @return the display name formatted per options
+ */
+//@CheckReturnValue
+//@Nonnull
+/*public*/ /*default*/ QString NamedBean::getDisplayName(DisplayOptions options) {
+    QString userName = getUserName();
+    QString systemName = getSystemName();
+    // since there are two undisplayable states for the user name,
+    // empty or null, if user name is empty, make it null to avoid
+    // repeatedly checking for both those states later
+    if (!userName .isNull() && userName.isEmpty()) {
+        userName = "";
+    }
+    switch (options) {
+        case USERNAME_SYSTEMNAME:
+            return userName != "" ? QString(DISPLAY_NAME_FORMAT).arg(userName).arg(systemName) : systemName;
+        case QUOTED_USERNAME_SYSTEMNAME:
+            return userName != "null" ? QString(QUOTED_NAME_FORMAT).arg(userName).arg(systemName) : getDisplayName(DisplayOptions::QUOTED_SYSTEMNAME);
+        case SYSTEMNAME:
+            return systemName;
+        case QUOTED_SYSTEMNAME:
+            return QString("\"%1\"").arg(systemName);
+        case QUOTED_USERNAME:
+        case QUOTED_DISPLAYNAME:
+            return QString("\"%s\"").arg(userName != "" ? userName : systemName);
+        case USERNAME:
+        case DISPLAYNAME:
+        default:
+            return userName != "" ? userName : systemName;
+    }
+}
 
 void NamedBean::addPropertyChangeListener(PropertyChangeListener */*l*/)
 {

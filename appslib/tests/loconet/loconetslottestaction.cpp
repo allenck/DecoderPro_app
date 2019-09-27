@@ -2,7 +2,7 @@
 #include "loconetslottest.h"
 #include "assert1.h"
 #include "joptionpane.h"
-
+#include "loggerfactory.h"
 
 LocoNetSlotTestAction::LocoNetSlotTestAction(QObject *parent) : AbstractAction(tr("LocoNet Slot test"),parent)
 {
@@ -11,61 +11,69 @@ LocoNetSlotTestAction::LocoNetSlotTestAction(QObject *parent) : AbstractAction(t
 
 void LocoNetSlotTestAction::actionPerformed()
 {
-    LocoNetSlotTest* lnst = new LocoNetSlotTest();
+    LocoNetSlotTest* test = new LocoNetSlotTest();
+    test->setUp();
     try
     {
-      lnst->setUp();
-      lnst->testGetSlotSend();
-      lnst->testCTor();
-      lnst->testMessageCTor();
-      lnst->testGetSlot();
-      lnst->testSetSlot();
-      lnst->testDecoderType();
-      lnst->testSlotStatus();
-      lnst->testss2();
-      lnst->testConsistStatus();
-      lnst->testIsForward();
-      lnst->testIsF0();
-      lnst->testIsF1();
-      lnst->testIsF2();
-      lnst->testIsF3();
-      lnst->testIsF4();
-      lnst->testIsF5();
-      lnst->testIsF6();
-      lnst->testIsF7();
-      lnst->testIsF8();
-      lnst->testIsF9();
-      lnst->testIsF10();
-      lnst->testIsF11();
-      lnst->testIsF12();
-      lnst->testIsF13();
-      lnst->testIsF14();
-      lnst->testIsF15();
-      lnst->testIsF16();
-      lnst->testIsF17();
-      lnst->testIsF18();
-      lnst->testIsF19();
-      lnst->testIsF20();
-      lnst->testIsF21();
-      lnst->testIsF22();
-      lnst->testIsF23();
-      lnst->testIsF24();
-      lnst->testIsF25();
-      lnst->testIsF26();
-      lnst->testIsF27();
-      lnst->testIsF28();
-      lnst->testLocoAddr();
-      lnst->testSpeed();
-      lnst->testDirf();
-      lnst->testSnd();
-      lnst->testID();
-      lnst->testWriteSlot();
-      lnst->testWriteThrottleID();
-      lnst->testConsistingStateVsSpeedAccept();
-      lnst->checkFunctionMessage();
-//      lnst->checkFastClockGetSetMethods();
-      lnst->checkSetAndGetTrackStatus();
-      lnst->checkIsF0ToF8();}
+     QStringList testList = QStringList()
+      << "testGetSlotSend"
+      << "testCTor"
+      << "testMessageCTor"
+      << "testGetSlot"
+      << "testSetSlot"
+      << "testDecoderType"
+      << "testSlotStatus"
+      << "testss2"
+      << "testConsistStatus"
+      << "testIsForward"
+      << "testIsF0"
+      << "testIsF1"
+      << "testIsF2"
+      << "testIsF3"
+      << "testIsF4"
+      << "testIsF5"
+      << "testIsF6"
+      << "testIsF7"
+      << "testIsF8"
+      << "testIsF9"
+      << "testIsF10"
+      << "testIsF11"
+      << "testIsF12"
+      << "testIsF13"
+      << "testIsF14"
+      << "testIsF15"
+      << "testIsF16"
+      << "testIsF17"
+      << "testIsF18"
+      << "testIsF19"
+      << "testIsF20"
+      << "testIsF21"
+      << "testIsF22"
+      << "testIsF23"
+      << "testIsF24"
+      << "testIsF25"
+      << "testIsF26"
+      << "testIsF27"
+      << "testIsF28"
+      << "testLocoAddr"
+      << "testSpeed"
+      << "testDirf"
+      << "testSnd"
+      << "testID"
+      << "testWriteSlot"
+      << "testWriteThrottleID"
+      << "testConsistingStateVsSpeedAccept"
+      << "checkFunctionMessage"
+//      << "checkFastClockGetSetMethods"
+      << "checkSetAndGetTrackStatus"
+      << "checkIsF0ToF8";
+        foreach(QString testName, testList)
+        {
+         log->info(tr("begin '%1'").arg(testName));
+         QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
+         log->info(tr("end '%1'").arg(testName));
+        }
+    }
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
@@ -76,5 +84,7 @@ void LocoNetSlotTestAction::actionPerformed()
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
 
     }
-    lnst->tearDown();
+    test->tearDown();
 }
+
+Logger* LocoNetSlotTestAction::log = LoggerFactory::getLogger("LocoNetSlotTestAction");

@@ -28,7 +28,7 @@
 /*public*/ QString JMRIClientReply::getResponseCode() {
     // split into 3 parts {TIMESTAMP, ResponseCode, Rest}
     // and use the second one (ResponseCode)
-    QStringList part = toString().split("\\s"/*, 3*/);
+    QStringList part = toString().split(QRegExp("\\s")/*, 3*/);
     return part[1];
 }
 

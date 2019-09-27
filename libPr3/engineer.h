@@ -31,7 +31,10 @@ signals:
 public slots:
 private:
     /*private*/ int     _idxCurrentCommand;     // current throttle command
+    /*private*/ QString _currentCommand;
     /*private*/ float   _speed;
+    /*private*/ int _idxSkipToSpeedCommand;   // skip to this index to reset script when ramping
+    /*private*/ float _normalSpeed = 0;       // current commanded throttle setting (unmodified)
     /*private*/ QString  _speedType;// = "Normal";
     /*private*/ float   _minSpeed;// = 1.0f/127;
     /*private*/ bool _abort;// = false;
@@ -72,6 +75,8 @@ protected:
     /*protected*/ long getTimeForDistance(float speed, float distance);
     /*synchronized*/ /*protected*/ void checkHalt();
     /*protected*/ void releaseThrottle();
+    /*protected*/ float getSpeedSetting();
+    /*protected*/ float getScriptSpeed();
 
 friend class Warrant;
 friend class CommandDelay;

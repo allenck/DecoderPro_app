@@ -73,7 +73,7 @@
         write(writeBuffer, 0, 1);
     }
 }
-
+#endif
 /**
  * Writes an array of characters.
  *
@@ -83,10 +83,10 @@
  * @throws  IOException
  *          If an I/O error occurs
  */
-/*public*/ void write(char cbuf[]) throws IOException {
-    write(cbuf, 0, cbuf.length);
+/*public*/ void Writer::write(QByteArray cbuf) throw (IOException) {
+    write(cbuf, 0, cbuf.length());
 }
-
+#if 0
 /**
  * Writes a portion of an array of characters.
  *
@@ -113,7 +113,7 @@ abstract /*public*/ void write(char cbuf[], int off, int len) throws IOException
  * @throws  IOException
  *          If an I/O error occurs
  */
-/*public*/ void Writer::write(QString str) //throws IOException {
+/*public*/ void Writer::write(QString str) throw (IOException)
 {
     //write(str, 0, str.length());
  //setString(&str);
@@ -283,5 +283,5 @@ abstract /*public*/ void write(char cbuf[], int off, int len) throws IOException
  * @throws  IOException
  *          If an I/O error occurs
  */
-/*abstract*/ /*public*/ void Writer::close()  {} // throws IOException;
+/*abstract*/ /*public*/ void Writer::close()  throw (IOException) {}
 

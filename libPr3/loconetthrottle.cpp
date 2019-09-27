@@ -87,24 +87,23 @@
     this->isForward    = slot->isForward();
     this->slotStatus   = slot->slotStatus();
 
-//    switch(slot->decoderType())
-//    {
-//        case LnConstants::DEC_MODE_128:
-//        case LnConstants::DEC_MODE_128A:
- if(slot->decoderType() == LnConstants::DEC_MODE_128 || slot->decoderType() == LnConstants::DEC_MODE_128A)
-            setSpeedStepMode( DccThrottle::SpeedStepMode128 );
-//            break;
-//        case LnConstants::DEC_MODE_28:
-//        case LnConstants::DEC_MODE_28A:
-//        case LnConstants::DEC_MODE_28TRI:
- else if(slot->decoderType() == LnConstants::DEC_MODE_28 || slot->decoderType() == LnConstants::DEC_MODE_28A || slot->decoderType() == LnConstants::DEC_MODE_28TRI  )
-            setSpeedStepMode( DccThrottle::SpeedStepMode28 );
-//            break;
-//        case LnConstants::DEC_MODE_14:
- else if(slot->decoderType() == LnConstants::DEC_MODE_14 )
-            setSpeedStepMode( DccThrottle::SpeedStepMode14 );
-//            break;
-//    }
+    switch (slot->decoderType()) {
+             case LnConstants::DEC_MODE_128:
+             case LnConstants::DEC_MODE_128A:
+                 setSpeedStepMode(SpeedStepMode::NMRA_DCC_128);
+                 break;
+             case LnConstants::DEC_MODE_28:
+             case LnConstants::DEC_MODE_28A:
+             case LnConstants::DEC_MODE_28TRI:
+                 setSpeedStepMode(SpeedStepMode::NMRA_DCC_28);
+                 break;
+             case LnConstants::DEC_MODE_14:
+                 setSpeedStepMode(SpeedStepMode::NMRA_DCC_14);
+                 break;
+             default:
+                 log->warn(tr("Unhandled decoder type: %1").arg(slot->decoderType()));
+                 break;
+         }
 
     // listen for changesQVariant
     slot->addSlotListener((SlotListener*)this);
@@ -679,7 +678,7 @@
  *              speed step mode in most cases
  */
 //@Override
-/*public*/ void LocoNetThrottle::setSpeedStepMode(int Mode)
+/*public*/ void LocoNetThrottle::setSpeedStepMode(SpeedStepMode::SSMODDES Mode)
 {
  int status=slot->slotStatus();
  if(log->isDebugEnabled())

@@ -15,6 +15,7 @@ private:
  void common(File*);
  /* File Descriptor - handle to the open file */
 // /*private*/ /*final*/ FileDescriptor fd;
+ /*private*/ /*native*/ int read0() throw (IOException);
 
  /**
   * The path of the referenced file

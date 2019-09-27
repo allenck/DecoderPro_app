@@ -35,6 +35,7 @@
 #include "tablecolumnmodel.h"
 #include "defaulttablecolumnmodel.h"
 #include "speedutil.h"
+#include "decimalformat.h"
 
 #include <QSizePolicy>
 //WarrantFrame::WarrantFrame(QWidget *parent) :
@@ -1464,9 +1465,9 @@ void doAction(Object obj) {
      setThrottleCommand(cmd, value, bName);
  }
 
-/*protected*/ void WarrantFrame::setSpeedCommand(float speed, bool isForward) {
+/*protected*/ void WarrantFrame::setSpeedCommand(float speed) {
     if (_warrant->getSpeedUtil()->profileHasSpeedInfo()) {
-        _speed = _warrant->getSpeedUtil()->getTrackSpeed(speed, isForward);  // mm/ms
+        _speed = _warrant->getSpeedUtil()->getTrackSpeed(speed);  // mm/ms
     } else {
         _speed = 0.0;
     }
@@ -1700,6 +1701,8 @@ endResetModel();
 {
  //super();
 this->frame = frame;
+ threeDigit = new DecimalFormat("0.000");
+
 }
 
 /*public*/ int ThrottleTableModel::columnCount(const QModelIndex &/*parent*/) const
@@ -1722,6 +1725,8 @@ if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
      case COMMAND_COLUMN: return tr("Command");
      case VALUE_COLUMN: return tr("Value");
      case BLOCK_COLUMN: return tr("Block or Sensor Name");
+     case SPEED_COLUMN:
+          return tr("Speed (mm/sec)");
  }
 }
 return QVariant();
@@ -1798,7 +1803,9 @@ if (row >= frame->_throttleCommands->size()){
       }
       return ts->getValue();
   case BLOCK_COLUMN:
-         return ts->getBlockName();
+         return ts->getBeanDisplayName();
+  case SPEED_COLUMN:
+     return threeDigit->format(ts->getSpeed() * 1000);
  }
 }
 return QVariant();
@@ -1880,11 +1887,13 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
          break;
  }
      case VALUE_COLUMN:
- {
-     if (value == QVariant() || value.toString().length()==0){
+     {
+      if (value == QVariant() || value.toString().length()==0){
              msg =  tr("NULLValue %1").arg(tr("Value"));
              break;
          }
+      bool resetBlockColumn = true;
+
          QString cmd = ts->getCommand().toUpper();
           if ("SPEED"==(cmd)) {
              try {
@@ -1955,45 +1964,70 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
                  msg  =tr("\"%1\" is an invalid value for Command \"%2\".").arg(value.toString()).arg(cmd);
              }
          }
-          ts->setBlockName(getPreviousBlockName(row));
+          else {
+                ts->setValue(nullptr);
+            }
+            if (resetBlockColumn) {
+                ts->setNamedBeanHandle(getPreviousBlockHandle(row));
+            }
          break;
      }
      case BLOCK_COLUMN:
- {
-         QString cmd = ts->getCommand().toUpper();
-         if ("SET SENSOR"==(cmd) || "WAIT SENSOR"==(cmd)) {
-             try {
-                 Sensor* s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(value.toString());
-                 if (s != NULL) {
-                     ts->setBlockName(value.toString());
-                 } else {
-                     msg = tr("Sensor \"%1\" not found.").arg(value.toString());
-                 }
-             } catch (Exception ex) {
-                 msg =  tr("Sensor \"%1\" not found.").arg(value.toString()) + ex.getMessage();
-             }
-         } else if ("NOOP"==(cmd)) {
-             msg =  tr("Cannot change the block of a synchronization marker.  Only the elapsed time can be modified.") +  value.toString();
-         } else if ("RUN WARRANT"==(cmd)) {
-             try {
-                 Warrant* w = ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getWarrant(value.toString());
-                 if (w != NULL) {
-                     ts->setBlockName(value.toString());
-                 } else {
-                     msg =  tr("Warrant \"%1\" not found.").arg(value.toString());
-                 }
-             } catch (Exception ex) {
-                 msg  = tr("Warrant \"%1\" not found.").arg(cmd)+ex.getMessage();
-             }
-         } else {
-             QString name = getPreviousBlockName(row);
-             if (name!=(value.toString())) {
-                 msg = tr("This command must be in block \"%1\".").arg(name);
-                 ts->setBlockName(name);
-             }
-         }
-         break;
- }
+     {
+      if (ts==nullptr || ts->getCommand()=="" )
+      {
+          msg = tr("Enter a value in the %1 column first.").arg(tr("Command"));
+          break;
+      }
+      QString cmd = ts->getCommand().toUpper();
+      if ("SET SENSOR" ==(cmd) || "WAIT SENSOR" ==(cmd))
+      {
+          try {
+              Sensor* s = InstanceManager::sensorManagerInstance()->getSensor(value.toString());
+              if (s != nullptr) {
+                  ts->setNamedBean(cmd, value.toString());
+              } else {
+                  msg = tr("Sensor \"%1\" not found.").arg(value.toString());
+              }
+          } catch (Exception ex) {
+              msg = tr("Sensor \"%1\" not found.").arg(value.toString()) + ex.getMessage();
+          }
+      }
+      else if ("NOOP" == (cmd))
+      {
+          msg = tr("Cannot change the block of a synchronization marker.  Only the elapsed time can be modified. %1").arg(value.toString());
+      }
+      else if ("RUN WARRANT" ==(cmd))
+      {
+       try
+       {
+           Warrant* w = ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getWarrant(value.toString());
+           if (w != nullptr)
+           {
+               ts->setNamedBean(cmd, value.toString());
+           } else {
+               msg = tr("Warrant \"%1\" not found.").arg(value.toString());
+           }
+       } catch (Exception ex) {
+           msg = tr("Warrant \"%1\" not found.").arg(value.toString()) + ex.getMessage();
+       }
+      }
+      else {
+          NamedBeanHandle<NamedBean*>* bh = getPreviousBlockHandle(row);
+          if (bh != nullptr) {
+              QString name = bh->getBean()->getDisplayName();
+              if (name!=(value.toString())) {
+                  msg = tr("This command must be in block \"%1\".").arg(name);
+                  ts->setNamedBeanHandle(bh);
+              }
+          }
+      }
+      break;
+  }
+  case SPEED_COLUMN:
+       break;
+   default:
+    break;
  }
  if (msg != NULL) {
 //        JOptionPane.showMessageDialog(NULL, msg,
@@ -2008,15 +2042,27 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
  return false;
 }
 
-/*private*/ QString ThrottleTableModel::getPreviousBlockName(int row) {
-    for (int i=row; i>0; i--) {
-        QString name = frame->_throttleCommands->at(i-1)->getBlockName();
-        OBlock* b = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock(name);
-        if (b!=NULL) {
-            return name;
+///*private*/ QString ThrottleTableModel::getPreviousBlockName(int row) {
+//    for (int i=row; i>0; i--) {
+//        QString name = frame->_throttleCommands->at(i-1)->getBlockName();
+//        OBlock* b = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock(name);
+//        if (b!=NULL) {
+//            return name;
+//        }
+//    }
+//    return "StartBlock";
+//}
+/*private*/ NamedBeanHandle <NamedBean*>* ThrottleTableModel::getPreviousBlockHandle(int row)
+{
+    for (int i = row; i > 0; i--) {
+        NamedBeanHandle <NamedBean*>* bh = frame->_throttleCommands->at(i - 1)->getNamedBeanHandle();
+        //if (bh != null && (bh.getBean() instanceof OBlock))
+        if(bh!= nullptr && qobject_cast<OBlock*>(bh->getBean()))
+        {
+            return bh;
         }
     }
-    return "StartBlock";
+    return nullptr;
 }
 void ThrottleTableModel::fireTableDataChanged()
 {

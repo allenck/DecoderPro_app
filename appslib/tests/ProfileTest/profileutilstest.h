@@ -12,6 +12,7 @@ public:
     explicit ProfileUtilsTest(QObject *parent = nullptr);
     /*public*/ void setUp();
     /*public*/ void tearDown();
+public slots:
     /*public*/ void testCopy();
     /*public*/ void testCopyToActive();
 

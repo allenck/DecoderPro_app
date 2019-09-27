@@ -255,15 +255,15 @@ AbstractTurnoutTestBase::AbstractTurnoutTestBase(QObject *parent) : QObject(pare
         t->setCommandedState(Turnout::THROWN);
         checkThrownMsgSent();
         Assert::assertEquals(t->getState(), Turnout::THROWN);
-    Assert::assertEquals("listener notified of change for DIRECT feedback", Turnout::THROWN,listenStatus);
+    Assert::assertEquals("listener notified of change for DIRECT feedback", Turnout::THROWN,listenStatus,__FILE__, __LINE__);
 
     t->setCommandedState(Turnout::CLOSED);
         checkClosedMsgSent();
         Assert::assertEquals(t->getState(), Turnout::CLOSED);
-    Assert::assertEquals("listener notified of change for DIRECT feedback", Turnout::CLOSED,listenStatus);
+    Assert::assertEquals("listener notified of change for DIRECT feedback", Turnout::CLOSED,listenStatus,__FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractTurnoutTestBase::testGetBeanType(){
-         Assert::assertEquals("bean type", t->getBeanType(), ("Turnout"));
+         Assert::assertEquals("bean type", t->getBeanType(), ("Turnout"),__FILE__, __LINE__);
     }

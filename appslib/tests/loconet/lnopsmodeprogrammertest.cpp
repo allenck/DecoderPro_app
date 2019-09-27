@@ -25,13 +25,13 @@ LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
     } catch (IllegalArgumentException e) {
         return;
     }
-    Assert::fail("No IllegalArgumentException thrown");
+    Assert::fail("No IllegalArgumentException thrown"__FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void LnOpsModeProgrammerTest::testGetMode() {
     ProgrammingMode* intRet = lnopsmodeprogrammer->getMode();
-    Assert::assertEquals("OpsByteMode", ProgrammingMode::OPSBYTEMODE, intRet);
+    Assert::assertEquals("OpsByteMode", ProgrammingMode::OPSBYTEMODE, intRet, __FILE__, __LINE__);
 }
 
 //@Test

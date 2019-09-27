@@ -273,9 +273,9 @@ void superappend(LoggingEvent l) {
  *
  * @param msg the message to assert exists
  */
-/*public*/ /*static*/ void JUnitAppender::assertErrorMessage(QString msg) {
+/*public*/ /*static*/ void JUnitAppender::assertErrorMessage(QString msg, QString file, int line) {
     if (list.isEmpty()) {
-        Assert::fail("No message present: " + msg);
+        Assert::fail("No message present: " + msg,file, line);
         return;
     }
 
@@ -286,7 +286,7 @@ void superappend(LoggingEvent l) {
     while ((evt->getLevel() == LogLevel::INFO) || (evt->getLevel() == LogLevel::DEBUG) || (evt->getLevel() == LogLevel::TRACE))
     { // better in Log4J 2
         if (list.isEmpty()) {
-            Assert::fail("Only debug/info messages present: " + msg);
+            Assert::fail("Only debug/info messages present: " + msg,__FILE__, __LINE__);
             return;
         }
         //evt = list.remove(0);
@@ -300,11 +300,11 @@ void superappend(LoggingEvent l) {
                 msg +
                 "\" found \"" +
                  evt->getMessage() +
-                "\"");
+                "\"", file, line);
     }
 
     if (!compare(evt, msg)) {
-        Assert::fail("Looking for ERROR message \"" + msg + "\" got \"" + evt->getMessage() + "\"");
+        Assert::fail("Looking for ERROR message \"" + msg + "\" got \"" + evt->getMessage() + "\"", file, line);
     }
 }
 #if 0
@@ -539,15 +539,15 @@ void superappend(LoggingEvent l) {
  *
  * @param msg the message to assert exists
  */
-/*public*/ /*static*/ void JUnitAppender::assertWarnMessage(QString msg) {
+/*public*/ /*static*/ void JUnitAppender::assertWarnMessage(QString msg,QString file, int line) {
     if (list.isEmpty()) {
-        Assert::fail("No message present: " + msg);
+        Assert::fail("No message present: " + msg, file, line);
         return;
     }
     LoggingEvent* evt = checkForMessage(msg);
 
     if (evt == nullptr) {
-        Assert::fail("Looking for message \"" + msg + "\" and didn't find it");
+        Assert::fail("Looking for message \"" + msg + "\" and didn't find it", file, line);
     }
 }
 
@@ -561,9 +561,9 @@ void superappend(LoggingEvent l) {
  *
  * @param msg the message to assert exists
  */
-/*public*/ /*static*/ void JUnitAppender::assertMessage(QString msg) {
+/*public*/ /*static*/ void JUnitAppender::assertMessage(QString msg,QString file, int line) {
     if (list.isEmpty()) {
-        Assert::fail("No message present: " + msg);
+        Assert::fail("No message present: " + msg,file, line);
         return;
     }
     LoggingEvent* evt = list.at(0);
@@ -571,7 +571,7 @@ void superappend(LoggingEvent l) {
 
     while ((evt->getLevel() == LogLevel::INFO) || (evt->getLevel() == LogLevel::DEBUG) || (evt->getLevel() == LogLevel::TRACE)) { // better in Log4J 2
         if (list.isEmpty()) {
-            Assert::fail("Message not found: " + msg);
+            Assert::fail("Message not found: " + msg, file, line);
             return;
         }
         evt = list.at(0);
@@ -579,7 +579,7 @@ void superappend(LoggingEvent l) {
     }
 
     if (!compare(evt, msg)) {
-        Assert::fail("Looking for message \"" + msg + "\" got \"" + evt->getMessage() + "\"");
+        Assert::fail("Looking for message \"" + msg + "\" got \"" + evt->getMessage() + "\"", file, line);
     }
 }
 
