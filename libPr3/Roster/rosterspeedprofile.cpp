@@ -872,86 +872,96 @@ static class SpeedSetting {
     float fasterValue;
 
     QMapIterator<int, SpeedStep*> iter( speeds);
+    bool entry = false;
     if (!iter.hasNext()) {
         log->warn(tr("There are no speedprofile entries for [%1]").arg(this->getRosterEntry()->getId()));
         return (0.0);
     }
-#if 1
+
     // search through table until end or the entry is greater than
     // what we are looking for. This leaves the previous lower value in key. and slower
     // Note there may be zero values interspersed in the tree
-    if (isForward) {
+    if (isForward)
+    {
      iter.next();
-        fasterKey = iter.key();
-        fasterValue = iter.value()->getForwardSpeed();
-        //while (!entry.isEmpty() && entry.first()->getForwardSpeed() < speed)
-        while(iter.hasNext() && iter.next().value()->getForwardSpeed()< speed)
-        {
-          slowerKey = iter.key();
-            float value = iter.value()->getForwardSpeed();
-            if (value > 0.0) {
-                slowerValue = value;
-            }
-            //entry = speeds.higherEntry(slowerKey);
-            if (iter.peekNext().key() != 0) {
-                fasterKey = iter.peekNext().key();
-                value = iter.peekNext().value()->getForwardSpeed();
-                if (value > 0.0f) {
-                    fasterValue = value;
-                }
-            }
-        }
-    } else {
+     fasterKey = iter.key();
+     fasterValue = iter.value()->getForwardSpeed();
+     entry = true;
+     //while (!entry.isEmpty() && entry.first()->getForwardSpeed() < speed)
+     while(iter.hasNext() && iter.next().value()->getForwardSpeed()< speed)
+     {
+      iter.next();
+      slowerKey = iter.key();
+      float value = iter.value()->getForwardSpeed();
+      if (value > 0.0) {
+          slowerValue = value;
+      }
+      //entry = speeds.higherEntry(slowerKey);
+      if (iter.peekNext().key() != 0)
+      {
+       fasterKey = iter.peekNext().key();
+       value = iter.peekNext().value()->getForwardSpeed();
+       if (value > 0.0f) {
+           fasterValue = value;
+       }
+      }
+     }
+    }
+    else
+    {
      iter.next();
-        fasterKey = iter.key();
-        fasterValue = iter.value()->getReverseSpeed();
-        while (iter.hasNext() && iter.value()->getReverseSpeed() < speed) {
-            slowerKey = iter.key();
-            float value = iter.value()->getReverseSpeed();
-            if (value > 0.0f) {
-                slowerValue = value;
-            }
-            //entry = speeds.higherEntry(slowerKey);
-            if (iter.peekNext().key() != 0) {
-                fasterKey = iter.peekNext().key();
-                value = iter.peekNext().value()->getReverseSpeed();
-                if (value > 0.0f) {
-                    fasterValue = value;
-                }
-            }
-        }
+     fasterKey = iter.key();
+     fasterValue = iter.value()->getReverseSpeed();
+     while (iter.hasNext() && iter.value()->getReverseSpeed() < speed)
+     {
+      iter.next();
+      slowerKey = iter.key();
+      float value = iter.value()->getReverseSpeed();
+      if (value > 0.0f) {
+          slowerValue = value;
+      }
+      //entry = speeds.higherEntry(slowerKey);
+      if (iter.peekNext().key() != 0) {
+          fasterKey = iter.peekNext().key();
+          value = iter.peekNext().value()->getReverseSpeed();
+          if (value > 0.0f) {
+              fasterValue = value;
+          }
+      }
+     }
     }
     log->debug(tr("slowerKey=%1, slowerValue=%2 fasterKey=%3 fasterValue=%4 for speed=%5").arg(
             slowerKey).arg(slowerValue).arg(fasterKey).arg(fasterValue).arg(speed));
-    if (!iter.hasNext()) {
-        // faster does not exists use slower...
-        if (slowerValue <= 0.0f) { // neither does slower
-            return (0.0f);
-        }
-        //return slowerKey / 1000;
-        // extrapolate instead
-        float key = slowerKey * speed / slowerValue;
-        if (key < 1000.0f) {
-            return key / 1000.0f;
-        } else {
-            return 1.0f;
-        }
+
+    if (!entry)
+    {
+     // faster does not exists use slower...
+     if (slowerValue <= 0.0f) { // neither does slower
+         return (0.0f);
+     }
+     //return slowerKey / 1000;
+     // extrapolate instead
+     float key = slowerKey * speed / slowerValue;
+     if (key < 1000.0f) {
+         return key / 1000.0f;
+     } else {
+         return 1.0f;
+     }
     }
     if (/*Float.compare*/isEqual(slowerValue, speed)  || fasterValue <= slowerValue) {
         return slowerKey / 1000.0f;
     }
-    if (slowerValue <= 0.0f) {  // no entry had a slower speed, therefore key is invalid
-        slowerKey = 0;
-        if (fasterValue <= 0.0f) {  // neither is there a faster speed
-            return (0.0f);
-        }
+    if (slowerValue <= 0.0f)
+    {  // no entry had a slower speed, therefore key is invalid
+      slowerKey = 0;
+      if (fasterValue <= 0.0f) {  // neither is there a faster speed
+          return (0.0f);
+      }
     }
     // we need to interpolate
     float ratio = (speed - slowerValue) / (fasterValue - slowerValue);
     float setting = (slowerKey + ((fasterKey - slowerKey) * ratio)) / 1000.0f;
     return setting;
-#endif
-    return 0.0;
 }
 
 /**
