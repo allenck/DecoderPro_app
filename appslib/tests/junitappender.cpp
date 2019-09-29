@@ -177,37 +177,37 @@ static String  unexpectedInfoContent = null;
 //        instance().superappend(evt);
     }
 }
-#if 0
+
 /**
  * do common local processing of event, then pass up to super class
  *
  * @param l the event to process
  */
-void superappend(LoggingEvent l) {
-    if (l.getLevel() == Level.FATAL) {
+void JUnitAppender::superappend(LoggingEvent* l) {
+    if (l->getLevel() == LogLevel::FATAL) {
         unexpectedFatalSeen = true;
-        unexpectedFatalContent = l.getMessage().toString();
+        unexpectedFatalContent = l->getMessage();
     }
-    if (l.getLevel() == Level.ERROR) {
+    if (l->getLevel() == LogLevel::ERROR) {
         if (compare(l, "Uncaught Exception caught by jmri.util.exceptionhandler.UncaughtExceptionHandler")) {
             // still an error, just suppressed
         } else {
             unexpectedErrorSeen = true;
-            unexpectedErrorContent = l.getMessage().toString();
+            unexpectedErrorContent = l->getMessage();
         }
     }
-    if (l.getLevel() == Level.WARN) {
+    if (l->getLevel() == LogLevel::WARN) {
         unexpectedWarnSeen = true;
-        unexpectedWarnContent = l.getMessage().toString();
+        unexpectedWarnContent = l->getMessage();
     }
-    if (l.getLevel() == Level.INFO) {
+    if (l->getLevel() == LogLevel::INFO) {
         unexpectedInfoSeen = true;
-        unexpectedInfoContent = l.getMessage().toString();
+        unexpectedInfoContent = l->getMessage();
     }
 
-    super.append(l);
+    //super.append(l);
 }
-#endif
+
 /**
  * Remove any messages stored up, returning how many there were. This is
  * used to skip over messages that don't matter, e.g. during setting up a
@@ -247,24 +247,25 @@ void superappend(LoggingEvent l) {
 //    return clearBacklog(LogLevel::WARN);
     return 0;
 }
-#if 0
+
 /**
  * Verify that no messages were emitted, logging any that were. Does not
  * stop the logging. Clears the accumulated list.
  *
  * @return true if no messages logged
  */
-/*public*/ static boolean verifyNoBacklog() {
+/*public*/ /*static*/ bool JUnitAppender::verifyNoBacklog() {
     if (list.isEmpty()) {
         return true;
     }
     while (!list.isEmpty()) { // should probably add a skip of lower levels?
-        LoggingEvent evt = list.remove(0);
-        instance().superappend(evt);
+        LoggingEvent* evt = list.at(0);
+        list.removeAt(0);
+        instance()->superappend(evt);
     }
     return false;
 }
-#endif
+
 /**
  * Check that the next queued message was of Error severity, and has a
  * specific message. White space is ignored.

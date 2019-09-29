@@ -9,6 +9,7 @@
 #include "fileutil.h"
 #include "rosterconfigmanager.h"
 #include "fileoutputstream.h"
+#include "junitappender.h"
 
 RosterEntryTest::RosterEntryTest(QObject *parent) : QObject(parent)
 {
@@ -25,13 +26,13 @@ RosterEntryTest::RosterEntryTest(QObject *parent) : QObject(parent)
 //@Test
 /*public*/ void RosterEntryTest::testCreate() {
     RosterEntry* r = new RosterEntry("file here");
-    Assert::assertEquals("file name ", "file here", r->getFileName());
-    Assert::assertEquals("DCC Address ", "3", r->getDccAddress());
-    Assert::assertEquals("road name ", "", r->getRoadName());
-    Assert::assertEquals("road number ", "", r->getRoadNumber());
-    Assert::assertEquals("manufacturer ", "", r->getMfg());
-    Assert::assertEquals("model ", "", r->getDecoderModel());
-    Assert::assertEquals("family ", "", r->getDecoderFamily());
+    Assert::assertEquals("file name ", "file here", r->getFileName(),__FILE__, __LINE__);
+    Assert::assertEquals("DCC Address ", "3", r->getDccAddress(),__FILE__, __LINE__);
+    Assert::assertEquals("road name ", "", r->getRoadName(),__FILE__, __LINE__);
+    Assert::assertEquals("road number ", "", r->getRoadNumber(),__FILE__, __LINE__);
+    Assert::assertEquals("manufacturer ", "", r->getMfg(),__FILE__, __LINE__);
+    Assert::assertEquals("model ", "", r->getDecoderModel(),__FILE__, __LINE__);
+    Assert::assertEquals("family ", "", r->getDecoderFamily(),__FILE__, __LINE__);
 }
 
 //@Test
@@ -48,8 +49,7 @@ QDomDocument doc;
             QDomElement e1, e2;
             e.appendChild(
             e1 =  doc.createElement("locoaddress"));
-            e1.appendChild(
-                            e2 = doc.createElement("dcclocoaddress"));
+            e1.appendChild(e2 = doc.createElement("dcclocoaddress"));
                             e2.setAttribute("number", "1234");
                             e2.setAttribute("longaddress", "yes");
     doc.appendChild(e);
@@ -57,13 +57,13 @@ QDomDocument doc;
 
     RosterEntry* r = new RosterEntry(e);
     // check
-    Assert::assertEquals("file name ", "file here", r->getFileName());
-    Assert::assertEquals("DCC Address ", "1234", r->getDccAddress());
-    Assert::assertEquals("road name ", "SP", r->getRoadName());
-    Assert::assertEquals("road number ", "431", r->getRoadNumber());
-    Assert::assertEquals("manufacturer ", "Athearn", r->getMfg());
-    Assert::assertEquals("model ", "", r->getDecoderModel());
-    Assert::assertEquals("family ", "", r->getDecoderFamily());
+    Assert::assertEquals("file name ", "file here", r->getFileName(),__FILE__, __LINE__);
+    Assert::assertEquals("DCC Address ", "1234", r->getDccAddress(),__FILE__, __LINE__);
+    Assert::assertEquals("road name ", "SP", r->getRoadName(),__FILE__, __LINE__);
+    Assert::assertEquals("road number ", "431", r->getRoadNumber(),__FILE__, __LINE__);
+    Assert::assertEquals("manufacturer ", "Athearn", r->getMfg(),__FILE__, __LINE__);
+    Assert::assertEquals("model ", "", r->getDecoderModel(),__FILE__, __LINE__);
+    Assert::assertEquals("family ", "", r->getDecoderFamily(),__FILE__, __LINE__);
 }
 
 //@Test
@@ -83,13 +83,13 @@ QDomDocument doc;
 //        };
     RosterEntryO1* r = new RosterEntryO1(e);
     // check
-    Assert::assertEquals("file name ", "file here", r->getFileName());
-    Assert::assertEquals("DCC Address ", "3", r->getDccAddress());
-    Assert::assertEquals("road name ", "", r->getRoadName());
-    Assert::assertEquals("road number ", "", r->getRoadNumber());
-    Assert::assertEquals("manufacturer ", "", r->getMfg());
-    Assert::assertEquals("model ", "", r->getDecoderModel());
-    Assert::assertEquals("family ", "", r->getDecoderFamily());
+    Assert::assertEquals("file name ", "file here", r->getFileName(),__FILE__, __LINE__);
+    Assert::assertEquals("DCC Address ", "3", r->getDccAddress(),__FILE__, __LINE__);
+    Assert::assertEquals("road name ", "", r->getRoadName(),__FILE__, __LINE__);
+    Assert::assertEquals("road number ", "", r->getRoadNumber(),__FILE__, __LINE__);
+    Assert::assertEquals("manufacturer ", "", r->getMfg(),__FILE__, __LINE__);
+    Assert::assertEquals("model ", "", r->getDecoderModel(),__FILE__, __LINE__);
+    Assert::assertEquals("family ", "", r->getDecoderFamily(),__FILE__, __LINE__);
 }
 
 //@Test
@@ -121,13 +121,13 @@ QDomDocument doc;
 
 
         // check
-    Assert::assertEquals("file name ", "file here", r->getFileName());
-    Assert::assertEquals("DCC Address ", "1234", r->getDccAddress());
-    Assert::assertEquals("road name ", "SP", r->getRoadName());
-    Assert::assertEquals("road number ", "431", r->getRoadNumber());
-    Assert::assertEquals("manufacturer ", "Athearn", r->getMfg());
-    Assert::assertEquals("model ", "33", r->getDecoderModel());
-    Assert::assertEquals("family ", "91", r->getDecoderFamily());
+    Assert::assertEquals("file name ", "file here", r->getFileName(),__FILE__, __LINE__);
+    Assert::assertEquals("DCC Address ", "1234", r->getDccAddress(),__FILE__, __LINE__);
+    Assert::assertEquals("road name ", "SP", r->getRoadName(),__FILE__, __LINE__);
+    Assert::assertEquals("road number ", "431", r->getRoadNumber(),__FILE__, __LINE__);
+    Assert::assertEquals("manufacturer ", "Athearn", r->getMfg(),__FILE__, __LINE__);
+    Assert::assertEquals("model ", "33", r->getDecoderModel(),__FILE__, __LINE__);
+    Assert::assertEquals("family ", "91", r->getDecoderFamily(),__FILE__, __LINE__);
 }
 
 //@Test
@@ -140,12 +140,12 @@ QDomDocument doc;
     RosterEntry* r = RosterEntry::fromFile(new File("java/test/jmri/jmrit/roster/ACL1012-Schema.xml"));
 
     // check for various values
-    Assert::assertEquals("file name ", "ACL1012-Schema.xml", r->getFileName());
-    Assert::assertEquals("DCC Address ", "1012", r->getDccAddress());
-    Assert::assertEquals("road name ", "Atlantic Coast Line", r->getRoadName());
-    Assert::assertEquals("road number ", "1012", r->getRoadNumber());
-    Assert::assertEquals("model ", "Synch Diesel Sound 1812 - N Scale Atlas Short Board Dropin", r->getDecoderModel());
-    Assert::assertEquals("family ", "Brilliance Sound Decoders", r->getDecoderFamily());
+    Assert::assertEquals("file name ", "ACL1012-Schema.xml", r->getFileName(),__FILE__, __LINE__);
+    Assert::assertEquals("DCC Address ", "1012", r->getDccAddress(),__FILE__, __LINE__);
+    Assert::assertEquals("road name ", "Atlantic Coast Line", r->getRoadName(),__FILE__, __LINE__);
+    Assert::assertEquals("road number ", "1012", r->getRoadNumber(),__FILE__, __LINE__);
+    Assert::assertEquals("model ", "Synch Diesel Sound 1812 - N Scale Atlas Short Board Dropin", r->getDecoderModel(),__FILE__, __LINE__);
+    Assert::assertEquals("family ", "Brilliance Sound Decoders", r->getDecoderFamily(),__FILE__, __LINE__);
 }
 
 //@Test
@@ -158,12 +158,12 @@ QDomDocument doc;
     RosterEntry* r = RosterEntry::fromFile(new File("java/test/jmri/jmrit/roster/ACL1012-DTD.xml"));
 
     // check for various values
-    Assert::assertEquals("file name ", "ACL1012-DTD.xml", r->getFileName());
-    Assert::assertEquals("DCC Address ", "1012", r->getDccAddress());
-    Assert::assertEquals("road name ", "Atlantic Coast Line", r->getRoadName());
-    Assert::assertEquals("road number ", "1012", r->getRoadNumber());
-    Assert::assertEquals("model ", "Synch Diesel Sound 1812 - N Scale Atlas Short Board Dropin", r->getDecoderModel());
-    Assert::assertEquals("family ", "Brilliance Sound Decoders", r->getDecoderFamily());
+    Assert::assertEquals("file name ", "ACL1012-DTD.xml", r->getFileName(),__FILE__, __LINE__);
+    Assert::assertEquals("DCC Address ", "1012", r->getDccAddress(),__FILE__, __LINE__);
+    Assert::assertEquals("road name ", "Atlantic Coast Line", r->getRoadName(),__FILE__, __LINE__);
+    Assert::assertEquals("road number ", "1012", r->getRoadNumber(),__FILE__, __LINE__);
+    Assert::assertEquals("model ", "Synch Diesel Sound 1812 - N Scale Atlas Short Board Dropin", r->getDecoderModel(),__FILE__, __LINE__);
+    Assert::assertEquals("family ", "Brilliance Sound Decoders", r->getDecoderFamily(),__FILE__, __LINE__);
 }
 
 //@Test
@@ -171,8 +171,8 @@ QDomDocument doc;
     RosterEntry* r = new RosterEntry("file here");
 
     r->setFunctionLabel(3, "tree");
-    Assert::assertEquals("tree", r->getFunctionLabel(3));
-    Assert::assertEquals("", r->getFunctionLabel(4));
+    Assert::assertEquals("tree", r->getFunctionLabel(3),__FILE__, __LINE__);
+    Assert::assertEquals("", r->getFunctionLabel(4),__FILE__, __LINE__);
 
 }
 
@@ -182,8 +182,8 @@ QDomDocument doc;
 
     r->setId("test Id");
     r->setDateUpdated("unparseable date");
-#if 0
-    JUnitAppender::assertWarnMessage("Unable to parse \"unparseable date\" as a date in roster entry \"test Id\".");
+#if 1
+    JUnitAppender::assertWarnMessage("Unable to parse \"unparseable date\" as a date in roster entry \"test Id\".",__FILE__, __LINE__);
 #else
     log->warn("Unable to parse \"unparseable date\" as a date in roster entry \"test Id\".");
 #endif
@@ -210,10 +210,10 @@ QDomDocument doc;
     dt = dt.addSecs(7*3600);
     r->setDateModified(dt);
 #endif
-#if 0
-    Assert::assertTrue(jmri.util.JUnitAppender.verifyNoBacklog());
+#if 1
+    Assert::assertTrue(JUnitAppender::verifyNoBacklog(),__FILE__, __LINE__);
 #endif
-    Assert::assertEquals("2015-10-03T18:19:12.000+0000", r->getDateUpdated());
+    Assert::assertEquals("2015-10-03T18:19:12.000+0000", r->getDateUpdated(),__FILE__, __LINE__);
 }
 
 //@Test
@@ -222,8 +222,8 @@ QDomDocument doc;
 
     r->setId("test Id");
     r->setDateUpdated("2018-03-05T02:34:55Z");
-#if 0
-    Assert::assertTrue(jmri.util.JUnitAppender.verifyNoBacklog());
+#if 1
+    Assert::assertTrue(JUnitAppender::verifyNoBacklog(),__FILE__, __LINE__);
 #endif
     Assert::assertEquals("2018-03-05T02:34:55.000Z+0000", r->getDateUpdated());
 }
@@ -249,12 +249,12 @@ QDomDocument doc;
     r->setDateModified(dt);
 
 #endif
-#if 0
-    Assert::assertTrue(jmri.util.JUnitAppender.verifyNoBacklog());
+#if 1
+    Assert::assertTrue(JUnitAppender::verifyNoBacklog(),__FILE__, __LINE__);
 #endif
 
     // convert that same local time in ISO format and compare
-    Assert::assertEquals("2016-03-02T16:57:04.000+0000", r->getDateUpdated());
+    Assert::assertEquals("2016-03-02T16:57:04.000+0000", r->getDateUpdated(),__FILE__, __LINE__);
 }
 
 //@Test
@@ -267,11 +267,11 @@ QDomDocument doc;
     r->setFunctionLabel(4, "fort");
     r->setFunctionLockable(4, false);
 
-    Assert::assertEquals("tree", r->getFunctionLabel(3));
-    Assert::assertEquals(true, r->getFunctionLockable(3));
-    Assert::assertEquals("fort", r->getFunctionLabel(4));
-    Assert::assertEquals(false, r->getFunctionLockable(4));
-    Assert::assertEquals("", r->getFunctionLabel(5));
+    Assert::assertEquals("tree", r->getFunctionLabel(3),__FILE__, __LINE__);
+    Assert::assertEquals(true, r->getFunctionLockable(3),__FILE__, __LINE__);
+    Assert::assertEquals("fort", r->getFunctionLabel(4),__FILE__, __LINE__);
+    Assert::assertEquals(false, r->getFunctionLockable(4),__FILE__, __LINE__);
+    Assert::assertEquals("", r->getFunctionLabel(5),__FILE__, __LINE__);
 
 }
 
@@ -300,8 +300,8 @@ QDomDocument doc;
     QDomElement o = r->store(doc);
     // check
     Assert::assertEquals("XML Element ", e.tagName(), o.tagName(),__FILE__, __LINE__);
-    Assert::assertEquals("family ", "91", o.firstChildElement("decoder").attribute("family"));
-    Assert::assertEquals("model ", "33", o.firstChildElement("decoder").attribute("model"));
+    Assert::assertEquals("family ", "91", o.firstChildElement("decoder").attribute("family"),__FILE__, __LINE__);
+    Assert::assertEquals("model ", "33", o.firstChildElement("decoder").attribute("model"),__FILE__, __LINE__);
 }
 
 void RosterEntryO1::warnShortLong(QString s) {
@@ -340,33 +340,33 @@ void RosterEntryO1::warnShortLong(QString s) {
     RosterEntryO1* r = new RosterEntryO1(e);
 
     // check loaded
-    Assert::assertEquals("", r->getFunctionLabel(1));
-    Assert::assertEquals("label 2", r->getFunctionLabel(2));
-    Assert::assertEquals("lockable 2", true, r->getFunctionLockable(2));
-    Assert::assertEquals("label 3", r->getFunctionLabel(3));
-    Assert::assertEquals("lockable 2", false, r->getFunctionLockable(3));
-    Assert::assertEquals("", r->getFunctionLabel(4));
+    Assert::assertEquals("", r->getFunctionLabel(1),__FILE__, __LINE__);
+    Assert::assertEquals("label 2", r->getFunctionLabel(2),__FILE__, __LINE__);
+    Assert::assertEquals("lockable 2", true, r->getFunctionLockable(2),__FILE__, __LINE__);
+    Assert::assertEquals("label 3", r->getFunctionLabel(3),__FILE__, __LINE__);
+    Assert::assertEquals("lockable 2", false, r->getFunctionLockable(3),__FILE__, __LINE__);
+    Assert::assertEquals("", r->getFunctionLabel(4),__FILE__, __LINE__);
 
     QDomElement o = r->store(doc);
 
     // check stored element
-    Assert::assertEquals("num 2", "2", o.firstChildElement("functionlabels").firstChildElement("functionlabel").attribute("num"));
-    Assert::assertEquals("lockable 2", "true", o.firstChildElement("functionlabels").firstChildElement("functionlabel").attribute("lockable"));
-    Assert::assertEquals("label 2", "label 2", o.firstChildElement("functionlabels").firstChildElement("functionlabel").text());
+    Assert::assertEquals("num 2", "2", o.firstChildElement("functionlabels").firstChildElement("functionlabel").attribute("num"),__FILE__, __LINE__);
+    Assert::assertEquals("lockable 2", "true", o.firstChildElement("functionlabels").firstChildElement("functionlabel").attribute("lockable"),__FILE__, __LINE__);
+    Assert::assertEquals("label 2", "label 2", o.firstChildElement("functionlabels").firstChildElement("functionlabel").text(),__FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void RosterEntryTest::testEnsureFilenameExistsNew() {
     RosterEntry* r = new RosterEntry();
-    Assert::assertEquals("initial filename ", "", r->getFileName());
+    Assert::assertEquals("initial filename ", "", r->getFileName(),__FILE__, __LINE__);
     r->setId("test Roster Entry 123456789ABC");
-    Assert::assertEquals("initial ID ", "test Roster Entry 123456789ABC", r->getId());
+    Assert::assertEquals("initial ID ", "test Roster Entry 123456789ABC", r->getId(),__FILE__, __LINE__);
     File* f = new File(Roster::getDefault()->getRosterFilesLocation() + "test_Roster_Entry_123456789ABC.xml");
     if (f->exists()) {
         f->_delete();
     }
     r->ensureFilenameExists();
-    Assert::assertEquals("final filename ", "test_Roster_Entry_123456789ABC.xml", r->getFileName());
+    Assert::assertEquals("final filename ", "test_Roster_Entry_123456789ABC.xml", r->getFileName(),__FILE__, __LINE__);
     if (f->exists()) {
         f->_delete();  // clean up afterwards
     }
@@ -376,9 +376,9 @@ void RosterEntryO1::warnShortLong(QString s) {
 /*public*/ void RosterEntryTest::testEnsureFilenameExistsOld() throw (IOException) {
     FileUtil::createDirectory(Roster::getDefault()->getRosterFilesLocation());
     RosterEntry* r = new RosterEntry();
-    Assert::assertEquals("initial filename ", "", r->getFileName());
+    Assert::assertEquals("initial filename ", "", r->getFileName(),__FILE__, __LINE__);
     r->setId("test Roster Entry 123456789ABC");
-    Assert::assertEquals("initial ID ", "test Roster Entry 123456789ABC", r->getId());
+    Assert::assertEquals("initial ID ", "test Roster Entry 123456789ABC", r->getId(),__FILE__, __LINE__);
     File* f1 = new File(Roster::getDefault()->getRosterFilesLocation() + "test_Roster_Entry_123456789ABC.xml");
     if (!f1->exists()) {
         // create a dummy
@@ -396,7 +396,7 @@ void RosterEntryO1::warnShortLong(QString s) {
         f->close();
     }
     r->ensureFilenameExists();
-    Assert::assertEquals("final filename ", "test_Roster_Entry_123456789ABC1.xml", r->getFileName());
+    Assert::assertEquals("final filename ", "test_Roster_Entry_123456789ABC1.xml", r->getFileName(),__FILE__, __LINE__);
     if (f1->exists()) {
         f1->_delete();  // clean up afterwards
     }
@@ -408,14 +408,14 @@ void RosterEntryO1::warnShortLong(QString s) {
 //@Test
 /*public*/ void RosterEntryTest::testNoAttribute() {
     RosterEntry* r = new RosterEntry();
-    Assert::assertNull(r->getAttribute("foo"));
+    Assert::assertNull(r->getAttribute("foo"),__FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void RosterEntryTest::testOneAttribute() {
     RosterEntry* r = new RosterEntry();
     r->putAttribute("foo", "bar");
-    Assert::assertEquals("bar", r->getAttribute("foo"));
+    Assert::assertEquals("bar", r->getAttribute("foo"),__FILE__, __LINE__);
 }
 
 //@Test
@@ -423,7 +423,7 @@ void RosterEntryO1::warnShortLong(QString s) {
     RosterEntry* r = new RosterEntry();
     r->putAttribute("foo", "bar");
     r->putAttribute("foo", "a nicer bar");
-    Assert::assertEquals("a nicer bar", r->getAttribute("foo"));
+    Assert::assertEquals("a nicer bar", r->getAttribute("foo"),__FILE__, __LINE__);
 }
 
 //@Test
@@ -431,7 +431,7 @@ void RosterEntryO1::warnShortLong(QString s) {
     RosterEntry* r = new RosterEntry();
     r->putAttribute("foo", "bar");
     r->putAttribute("foo", "");
-    Assert::assertNull(r->getAttribute("foo"));
+    Assert::assertNull(r->getAttribute("foo"),__FILE__, __LINE__);
 }
 
 //@Test
@@ -441,12 +441,12 @@ void RosterEntryO1::warnShortLong(QString s) {
     r->putAttribute("key 3", "value 3");
     r->putAttribute("key 1", "value 1");
     QList<QString> l = r->getAttributes();
-    Assert::assertEquals("number returned", 3, l.size());
+    Assert::assertEquals("number returned", 3, l.size(),__FILE__, __LINE__);
    QListIterator<QString> i(l);
-    Assert::assertEquals("1st item", "key 1", i.next());
-    Assert::assertEquals("2nd item", "key 2", i.next());
-    Assert::assertEquals("3rd item", "key 3", i.next());
-    Assert::assertTrue(!i.hasNext());
+    Assert::assertEquals("1st item", "key 1", i.next(),__FILE__, __LINE__);
+    Assert::assertEquals("2nd item", "key 2", i.next(),__FILE__, __LINE__);
+    Assert::assertEquals("3rd item", "key 3", i.next(),__FILE__, __LINE__);
+    Assert::assertTrue(!i.hasNext(),__FILE__, __LINE__);
 }
 
 //@Test
@@ -484,9 +484,9 @@ QDomDocument doc;
     RosterEntryO1* r = new RosterEntryO1(e);
 
 
-    Assert::assertEquals("value 1", r->getAttribute("key 1"));
-    Assert::assertEquals("value 2", r->getAttribute("key 2"));
-    Assert::assertEquals("", r->getAttribute("key 4"));
+    Assert::assertEquals("value 1", r->getAttribute("key 1"),__FILE__, __LINE__);
+    Assert::assertEquals("value 2", r->getAttribute("key 2"),__FILE__, __LINE__);
+    Assert::assertEquals("", r->getAttribute("key 4"),__FILE__, __LINE__);
 }
 
 //@Test
@@ -496,22 +496,22 @@ QDomDocument doc;
 
     QDomDocument doc;
     QDomElement e = r->store(doc);
-    Assert::assertNotNull(e);
-    Assert::assertNotNull(e.firstChildElement("attributepairs"));
+    Assert::assertNotNull(e,__FILE__, __LINE__);
+    Assert::assertNotNull(e.firstChildElement("attributepairs"),__FILE__, __LINE__);
     Assert::assertNotNull(e.firstChildElement("attributepairs")
-            .firstChildElement("keyvaluepair"));
-    Assert::assertNotNull(e.firstChildElement("attributepairs")
-            .firstChildElement("keyvaluepair")
-            .firstChildElement("key"));
+            .firstChildElement("keyvaluepair"),__FILE__, __LINE__);
     Assert::assertNotNull(e.firstChildElement("attributepairs")
             .firstChildElement("keyvaluepair")
-            .firstChildElement("value"));
+            .firstChildElement("key"),__FILE__, __LINE__);
+    Assert::assertNotNull(e.firstChildElement("attributepairs")
+            .firstChildElement("keyvaluepair")
+            .firstChildElement("value"),__FILE__, __LINE__);
     Assert::assertEquals("foo", e.firstChildElement("attributepairs")
             .firstChildElement("keyvaluepair")
-            .firstChildElement("key").text());
-    Assert::assertNotNull("bar", e.firstChildElement("attributepairs"));
-            e.firstChildElement("keyvaluepair");
-            e.firstChildElement("value").text();
+            .firstChildElement("key").text(),__FILE__, __LINE__);
+    Assert::assertNotNull("bar", e.firstChildElement("attributepairs")
+            .firstChildElement("keyvaluepair")
+            .firstChildElement("value").text(),__FILE__, __LINE__);
 }
 
 //@Before

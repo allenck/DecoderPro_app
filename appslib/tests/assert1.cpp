@@ -387,7 +387,7 @@ if(expected == actual)
          fail(tr("Class %1 should not be equal.\nThere is no 'equals method! ").arg(unexpected->metaObject()->className()), file, line);
         }
     }
-    fail(tr("Objects should not be equal\nunexpected: %1\nactual:%2").arg(unexpected->metaObject()->className()).arg(actual->metaObject()->className()), file, line);
+    //fail(tr("Objects should not be equal\nunexpected: %1\nactual:%2").arg(unexpected->metaObject()->className()).arg(actual->metaObject()->className()), file, line);
 }
 #if 0
 private static void failEquals(String message, Object actual) {

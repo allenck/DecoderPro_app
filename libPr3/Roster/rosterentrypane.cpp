@@ -11,7 +11,7 @@ RosterEntryPane::RosterEntryPane(RosterEntry* r, QWidget *parent) :
 {
  ui->setupUi(this);
  re = r;
- addrSel = new DccLocoAddressSelector(/*ui->cbDCCAddr,(JTextField*) ui->edDccAddr*/);
+ addrSel = new DccLocoAddressSelector();
  updateGUI(re);
 }
 
@@ -72,12 +72,15 @@ void RosterEntryPane::updateGUI(RosterEntry* re)
  DccLocoAddress* a = addrSel->getAddress();
  if (a==NULL)
  {
-  if (r->getDccAddress()!=("")) return true;
+  if (r->getDccAddress()!=(""))
+   return true;
  }
  else
  {
-  if(r->getProtocol()!=a->getProtocol()) return true;
-  if ( r->getDccAddress()!=(QString::number(a->getNumber())) ) return true;
+  if(r->getProtocol()!=a->getProtocol())
+   return true;
+  if ( r->getDccAddress()!=(QString::number(a->getNumber())) )
+   return true;
  }
  return false;
 }

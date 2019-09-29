@@ -60,7 +60,7 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         } catch (NullPointerException e) {
             pass = true;
         }
-        Assert::assertTrue("Adding nullptr entry should have caused NPE", pass);
+        Assert::assertTrue("Adding nullptr entry should have caused NPE", pass,__FILE__, __LINE__);
     }
 
     //@Test
@@ -74,7 +74,7 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         } catch (NullPointerException e) {
             pass = true;
         }
-        Assert::assertTrue("Adding nullptr entry should have caused NPE", pass);
+        Assert::assertTrue("Adding nullptr entry should have caused NPE", pass,__FILE__, __LINE__);
     }
 
     //@Test
@@ -83,8 +83,8 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         RosterEntry* e = new RosterEntry("file name Bob");
         e->setRoadNumber("123");
         r->addEntry(e);
-        Assert::assertEquals("search not OK ", false, r->checkEntry(0, nullptr, "321", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr));
-        Assert::assertEquals("search OK ", true, r->checkEntry(0, nullptr, "123", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr));
+        Assert::assertEquals("search not OK ", false, r->checkEntry(0, nullptr, "321", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr),__FILE__, __LINE__);
+        Assert::assertEquals("search OK ", true, r->checkEntry(0, nullptr, "123", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr),__FILE__, __LINE__);
     }
 
     //@Test
@@ -93,22 +93,22 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         RosterEntry* e = new RosterEntry("file name Bob");
         e->setDccAddress("456");
         r->addEntry(e);
-        Assert::assertEquals("search not OK ", false, r->checkEntry(0, nullptr, nullptr, "123", nullptr, nullptr, nullptr, nullptr, nullptr));
-        Assert::assertEquals("search OK ", true, r->checkEntry(0, nullptr, nullptr, "456", nullptr, nullptr, nullptr, nullptr, nullptr));
+        Assert::assertEquals("search not OK ", false, r->checkEntry(0, nullptr, nullptr, "123", nullptr, nullptr, nullptr, nullptr, nullptr),__FILE__, __LINE__);
+        Assert::assertEquals("search OK ", true, r->checkEntry(0, nullptr, nullptr, "456", nullptr, nullptr, nullptr, nullptr, nullptr),__FILE__, __LINE__);
 
         QList<RosterEntry*> l;
 
         l = r->matchingList(nullptr, nullptr, "123", nullptr, nullptr, nullptr, nullptr);
-        Assert::assertEquals("match 123", 0, l.size());
+        Assert::assertEquals("match 123", 0, l.size(),__FILE__, __LINE__);
 
         l = r->matchingList(nullptr, nullptr, "456", nullptr, nullptr, nullptr, nullptr);
-        Assert::assertEquals("match 456", 1, l.size());
+        Assert::assertEquals("match 456", 1, l.size(),__FILE__, __LINE__);
 
         l = r->getEntriesByDccAddress("123");
-        Assert::assertEquals("address 123", 0, l.size());
+        Assert::assertEquals("address 123", 0, l.size(),__FILE__, __LINE__);
 
         l = r->getEntriesByDccAddress("456");
-        Assert::assertEquals("address 456", 1, l.size());
+        Assert::assertEquals("address 456", 1, l.size(),__FILE__, __LINE__);
     }
 
     //@Test
@@ -132,19 +132,19 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
 
         QList<RosterEntry*> l;
         l = r->matchingList(nullptr, "321", nullptr, nullptr, nullptr, nullptr, nullptr);
-        Assert::assertEquals("search for 0 ", 0, l.size());
+        Assert::assertEquals("search for 0 ", 0, l.size(),__FILE__, __LINE__);
 
         l = r->matchingList("UP", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
-        Assert::assertEquals("search for 1 ", 1, l.size());
-        Assert::assertEquals("search for 1 ", "UP", l.at(0)->getRoadName());
-        Assert::assertEquals("search for 1 ", "123", l.at(0)->getRoadNumber());
+        Assert::assertEquals("search for 1 ", 1, l.size(),__FILE__, __LINE__);
+        Assert::assertEquals("search for 1 ", "UP", l.at(0)->getRoadName(),__FILE__, __LINE__);
+        Assert::assertEquals("search for 1 ", "123", l.at(0)->getRoadNumber(),__FILE__, __LINE__);
 
         l = r->matchingList(nullptr, "123", nullptr, nullptr, nullptr, nullptr, nullptr);
-        Assert::assertEquals("search for 3 ", 3, l.size());
-        Assert::assertEquals("search for 3 ", "SP", l.at(2)->getRoadName());
-        Assert::assertEquals("search for 3 ", "123", l.at(2)->getRoadNumber());
-        Assert::assertEquals("search for 3 ", "UP", l.at(0)->getRoadName());
-        Assert::assertEquals("search for 3 ", "123", l.at(0)->getRoadNumber());
+        Assert::assertEquals("search for 3 ", 3, l.size(),__FILE__, __LINE__);
+        Assert::assertEquals("search for 3 ", "SP", l.at(2)->getRoadName(),__FILE__, __LINE__);
+        Assert::assertEquals("search for 3 ", "123", l.at(2)->getRoadNumber(),__FILE__, __LINE__);
+        Assert::assertEquals("search for 3 ", "UP", l.at(0)->getRoadName(),__FILE__, __LINE__);
+        Assert::assertEquals("search for 3 ", "123", l.at(0)->getRoadNumber(),__FILE__, __LINE__);
     }
 
     //@Test
@@ -176,17 +176,17 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         // "Select Loco" is the first entry in the RosterEntryComboBox, so an
         // empty comboBox has 1 item, and the first item is not a RosterEntry
         box = new RosterEntryComboBox(r, nullptr, "321", nullptr, nullptr, nullptr, nullptr, nullptr);
-        Assert::assertEquals("search for zero matches", 1, box->getItemCount());
+        Assert::assertEquals("search for zero matches", 1, box->getItemCount(),__FILE__, __LINE__);
 
         box = new RosterEntryComboBox(r, "UP", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
-        Assert::assertEquals("search for one match", 2, box->getItemCount());
-        Assert::assertEquals("search for one match", e3, box->getItemAt(1));
+        Assert::assertEquals("search for one match", 2, box->getItemCount(),__FILE__, __LINE__);
+        Assert::assertEquals("search for one match", e3, box->getItemAt(1),__FILE__, __LINE__);
 
         box = new RosterEntryComboBox(r, nullptr, "123", nullptr, nullptr, nullptr, nullptr, nullptr);
-        Assert::assertEquals("search for three matches", 4, box->getItemCount());
-        Assert::assertEquals("search for three matches", e1, box->getItemAt(1));
-        Assert::assertEquals("search for three matches", e2, box->getItemAt(2));
-        Assert::assertEquals("search for three matches", e3, box->getItemAt(3));
+        Assert::assertEquals("search for three matches", 4, box->getItemCount(),__FILE__, __LINE__);
+        Assert::assertEquals("search for three matches", e1, box->getItemAt(1),__FILE__, __LINE__);
+        Assert::assertEquals("search for three matches", e2, box->getItemAt(2),__FILE__, __LINE__);
+        Assert::assertEquals("search for three matches", e3, box->getItemAt(3),__FILE__, __LINE__);
 
     }
 
@@ -202,7 +202,7 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         File* f = new File(rosterDir, "roster.xml");
 
         // failure of test infrastructure if it exists already
-        Assert::assertTrue("test roster.xml should not exist in new folder", !f->exists());
+        Assert::assertTrue("test roster.xml should not exist in new folder", !f->exists(),__FILE__, __LINE__);
 
         // load a new one to ensure it exists
         QString contents = QString("stuff") + "           ";
@@ -213,7 +213,7 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
 
         File* bf = new File(rosterDir, "rosterBackupTest");
         // failure of test infrastructure if backup exists already
-        Assert::assertTrue("test backup file should not exist in new folder", !bf->exists());
+        Assert::assertTrue("test backup file should not exist in new folder", !bf->exists(),__FILE__, __LINE__);
 
         // now do the backup
 //        Roster* r = new Roster() {
@@ -227,15 +227,15 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
 
         // and check
         MyFileInputStream* in = new MyFileInputStream(new File(rosterDir, "rosterBackupTest"));
-        Assert::assertEquals("read 0 ", contents.at(0), in->read());
-        Assert::assertEquals("read 1 ", contents.at(1), in->read());
-        Assert::assertEquals("read 2 ", contents.at(2), in->read());
-        Assert::assertEquals("read 3 ", contents.at(3), in->read());
+        Assert::assertEquals("read 0 ", contents.at(0), in->read(),__FILE__, __LINE__);
+        Assert::assertEquals("read 1 ", contents.at(1), in->read(),__FILE__, __LINE__);
+        Assert::assertEquals("read 2 ", contents.at(2), in->read(),__FILE__, __LINE__);
+        Assert::assertEquals("read 3 ", contents.at(3), in->read(),__FILE__, __LINE__);
         in->close();
 
         // now see if backup works when a backup file already exists
         contents = QString("NEWER JUNK") + "           ";
-#if 0   // TODO:
+#if 0   // done:
         p = new PrintStream(new FileOutputStream(f));
         p.println(contents);
         p.close();
@@ -247,10 +247,10 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
 
         // and check
         in = new MyFileInputStream(new File(rosterDir, "rosterBackupTest"));
-        Assert::assertEquals("read 4 ", contents.at(0), in->read());
-        Assert::assertEquals("read 5 ", contents.at(1), in->read());
-        Assert::assertEquals("read 6 ", contents.at(2), in->read());
-        Assert::assertEquals("read 7 ", contents.at(3), in->read());
+        Assert::assertEquals("read 4 ", contents.at(0), in->read(),__FILE__, __LINE__);
+        Assert::assertEquals("read 5 ", contents.at(1), in->read(),__FILE__, __LINE__);
+        Assert::assertEquals("read 6 ", contents.at(2), in->read(),__FILE__, __LINE__);
+        Assert::assertEquals("read 7 ", contents.at(3), in->read(),__FILE__, __LINE__);
         in->close();
     }
 
@@ -272,8 +272,8 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
 
         // check contents
         Assert::assertEquals("search for 0 ", 0, t->matchingList(nullptr, "321", nullptr, nullptr, nullptr, nullptr, nullptr).size(),__FILE__, __LINE__);
-        Assert::assertEquals("search for 1 ", 1, t->matchingList("UP", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr).size());
-        Assert::assertEquals("search for 3 ", 3, t->matchingList(nullptr, "123", nullptr, nullptr, nullptr, nullptr, nullptr).size());
+        Assert::assertEquals("search for 1 ", 1, t->matchingList("UP", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr).size(),__FILE__, __LINE__);
+        Assert::assertEquals("search for 3 ", 3, t->matchingList(nullptr, "123", nullptr, nullptr, nullptr, nullptr, nullptr).size(),__FILE__, __LINE__);
     }
 
     //@Test
@@ -304,7 +304,7 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         l = r->getEntriesWithAttributeKeyValue("key a", "none");
         Assert::assertEquals("no match key a", 0, l.size(),__FILE__, __LINE__);
         l = r->getEntriesWithAttributeKeyValue("no match", "none");
-        Assert::assertEquals("no match", 0, l.size());
+        Assert::assertEquals("no match", 0, l.size(),__FILE__, __LINE__);
 
     }
 
@@ -326,10 +326,10 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
 
     //@Test
     /*public*/ void RosterTest::testDefaultLocation() {
-        Assert::assertTrue("creates a default", Roster::getDefault() != nullptr);
-        Assert::assertEquals("always same", Roster::getDefault(), Roster::getDefault());
+        Assert::assertTrue("creates a default", Roster::getDefault() != nullptr,__FILE__, __LINE__);
+        Assert::assertEquals("always same", Roster::getDefault(), Roster::getDefault(),__FILE__, __LINE__);
         // Default roster not stored in InstanceManager
-        Assert::assertNull("registered a default", InstanceManager::getNullableDefault("Roster"));
+        Assert::assertNull("registered a default", InstanceManager::getNullableDefault("Roster"),__FILE__, __LINE__);
     }
 
     //@Test

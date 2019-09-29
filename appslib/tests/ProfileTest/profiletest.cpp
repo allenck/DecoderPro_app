@@ -42,14 +42,14 @@ ProfileTest::ProfileTest(QObject *parent) : QObject(parent)
  {
     File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test" + Profile::EXTENSION);
     Profile* instance = new Profile("test", "test", profileFolder);
-    Assert::assertEquals("Name has no extension", "test", instance->getName());
+    Assert::assertEquals("Name has no extension", "test", instance->getName(),__FILE__, __LINE__);
     Assert::assertEquals("Path name has extension", "test" + Profile::EXTENSION, instance->getPath()->getName(),__FILE__, __LINE__);
  }
  catch (IOException  ex) {
-    Assert::fail(ex.getMessage(),__FILE__, __LINE__);
+    Assert::fail(ex.getMessage(), __FILE__, __LINE__);
  }
  catch ( IllegalArgumentException ex) {
-        Assert::fail(ex.getMessage(), __FILE__, __LINE__);
+    Assert::fail(ex.getMessage(), __FILE__, __LINE__);
  }
 }
 
@@ -64,7 +64,7 @@ ProfileTest::ProfileTest(QObject *parent) : QObject(parent)
     Profile* instance = new Profile("test", "test", profileFolder);
     instance->setName("saved");
     instance->save();
-    Assert::assertEquals("saved", (new ProfileProperties(instance->getPath()))->get(Profile::NAME, true));
+    Assert::assertEquals("saved", (new ProfileProperties(instance->getPath()))->get(Profile::NAME, true),__FILE__, __LINE__);
 }
 
 /**
@@ -75,7 +75,7 @@ ProfileTest::ProfileTest(QObject *parent) : QObject(parent)
     try {
         File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
         Profile* instance = new Profile("test", "test", profileFolder);
-        Assert::assertEquals("test", instance->getName());
+        Assert::assertEquals("test", instance->getName(),__FILE__, __LINE__);
     } catch (IOException  ex) {
         Assert::fail(ex.toString(),__FILE__, __LINE__);
     }
@@ -93,7 +93,7 @@ try {
     File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
     Profile* instance = new Profile("test", "test", profileFolder);
     instance->setName("changed");
-    Assert::assertEquals("changed", instance->getName());
+    Assert::assertEquals("changed", instance->getName(),__FILE__, __LINE__);
     } catch (IOException ex) {
         Assert::fail(ex.toString(),__FILE__, __LINE__);
     }
@@ -110,7 +110,7 @@ try {
         File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
         Profile* instance = new Profile("test", "test", profileFolder);
         QString id = (new ProfileProperties(instance->getPath()))->get(Profile::ID, true);
-        Assert::assertEquals(id, instance->getId());
+        Assert::assertEquals(id, instance->getId(),__FILE__, __LINE__);
     } catch (IOException  ex) {
     Assert::fail(ex.toString(),__FILE__, __LINE__);
     }
@@ -128,8 +128,8 @@ try {
         File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
         File* profileExtFolder = new File(profileFolder->getParentFile(), "test" + Profile::EXTENSION);
         Profile* instance = new Profile("test", "test", profileFolder);
-        Assert::assertNotEquals(profileFolder, instance->getPath());
-        Assert::assertEquals(profileExtFolder, instance->getPath());
+        Assert::assertNotEquals(profileFolder, instance->getPath(),__FILE__, __LINE__);
+        Assert::assertEquals(profileExtFolder, instance->getPath(),__FILE__, __LINE__);
     } catch (IOException  ex) {
         Assert::fail(ex.toString(),__FILE__, __LINE__);
     }
@@ -146,7 +146,7 @@ try {
 try {
     File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
     Profile* instance = new Profile("test", "test", profileFolder);
-    Assert::assertEquals(instance->getName(), instance->toString());
+    Assert::assertEquals(instance->getName(), instance->toString(),__FILE__, __LINE__);
     } catch (IOException  ex) {
         Assert::fail(ex.toString(),__FILE__, __LINE__);
     }
@@ -179,7 +179,7 @@ try {
 //@Test
 //@SuppressWarnings("unlikely-arg-type") // String seems to be unrelated to Profile
 /*public*/ void ProfileTest::testEquals() {
-try {
+ try {
     File* rootFolder = folder->newFolder(Profile::PROFILE);
     File* profileFolder = new File(rootFolder, "test");
     File* profileFolder2 = new File(rootFolder, "test2");
@@ -188,16 +188,17 @@ try {
     Profile* instance2 = new Profile("test", "test2", profileFolder2);
     FileUtil::copy(instance->getPath(), profileFolder3);
     Profile* instance3 = new Profile(profileFolder3);
-    Assert::assertFalse(instance ==(nullptr));
+    Assert::assertFalse(instance->equals(nullptr),__FILE__, __LINE__);
 //    Assert::assertFalse(instance ==(QString()));
-    Assert::assertFalse(instance ==(instance2));
-    Assert::assertTrue(instance ==(instance3));
-} catch (IOException  ex) {
-    Assert::fail(ex.toString(),__FILE__, __LINE__);
-}
-    catch (IllegalArgumentException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
-    }
+    Assert::assertFalse(instance->equals(instance2),__FILE__, __LINE__);
+    Assert::assertTrue(instance->equals(instance3),__FILE__, __LINE__);
+ }
+ catch (IllegalArgumentException ex) {
+     Assert::fail(ex.toString(),__FILE__, __LINE__);
+ }
+ catch (IOException  ex) {
+     Assert::fail(ex.toString(),__FILE__, __LINE__);
+ }
 }
 
 /**
@@ -205,16 +206,17 @@ try {
 */
 //@Test
 /*public*/ void ProfileTest::testIsComplete() {
-try {
+ try
+ {
     File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
     Profile* instance = new Profile("test", "test", profileFolder);
-    Assert::assertTrue(instance->isComplete());
-    } catch (IOException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
-    }
-    catch (IOException  ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
-    }
+    Assert::assertTrue(instance->isComplete(),__FILE__, __LINE__);
+  } catch (IOException ex) {
+      Assert::fail(ex.toString(),__FILE__, __LINE__);
+  }
+  catch (IOException  ex) {
+      Assert::fail(ex.toString(),__FILE__, __LINE__);
+  }
 }
 
 /**
@@ -227,7 +229,7 @@ try {
     Profile* instance = new Profile("test", "test", profileFolder);
     QString id = (new ProfileProperties(profileFolder))->get(Profile::ID, true);
     id = id.mid(id.lastIndexOf(".") + 1);
-    Assert::assertEquals(id, instance->getUniqueId());
+    Assert::assertEquals(id, instance->getUniqueId(),__FILE__, __LINE__);
     } catch (IOException  ex) {
         Assert::fail(ex.toString(),__FILE__, __LINE__);
     }
@@ -246,8 +248,8 @@ try {
     File* rootFolder2 = folder->newFolder(Profile::PATH);
     (new File(rootFolder2, "test2"))->mkdirs();
     new Profile("test", "test", profileFolder);
-    Assert::assertTrue(Profile::containsProfile(rootFolder));
-    Assert::assertFalse(Profile::containsProfile(rootFolder2));
+    Assert::assertTrue(Profile::containsProfile(rootFolder),__FILE__, __LINE__);
+    Assert::assertFalse(Profile::containsProfile(rootFolder2),__FILE__, __LINE__);
 } catch (IOException ex) {
     Assert::fail(ex.toString(),__FILE__, __LINE__);
 }
@@ -268,8 +270,8 @@ try {
     innerFolder->mkdirs();
     File* rootFolder2 = folder->newFolder(Profile::PATH);
     new Profile("test", "test", profileFolder);
-    Assert::assertTrue(Profile::inProfile(innerFolder));
-    Assert::assertFalse(Profile::inProfile(rootFolder2));
+    Assert::assertTrue(Profile::inProfile(innerFolder),__FILE__, __LINE__);
+    Assert::assertFalse(Profile::inProfile(rootFolder2),__FILE__, __LINE__);
     } catch (IOException ex) {
         Assert::fail(ex.toString(),__FILE__, __LINE__);
     }
@@ -289,9 +291,9 @@ try {
     new Profile("test", "test", profileFolder);
     File* innerFolder = new File(profileFolder, "test");
     innerFolder->mkdirs();
-    Assert::assertTrue(Profile::isProfile(profileFolder));
-    Assert::assertFalse(Profile::isProfile(rootFolder));
-    Assert::assertFalse(Profile::isProfile(innerFolder));
+    Assert::assertTrue(Profile::isProfile(profileFolder),__FILE__, __LINE__);
+    Assert::assertFalse(Profile::isProfile(rootFolder),__FILE__, __LINE__);
+    Assert::assertFalse(Profile::isProfile(innerFolder),__FILE__, __LINE__);
     } catch (IOException ex) {
         Assert::fail(ex.toString(),__FILE__, __LINE__);
     }
@@ -315,9 +317,9 @@ try {
     FileUtil::copy(instance->getPath(), profileFolder3);
     Profile* instance3 = new Profile(profileFolder3);
     // the contract for .compareTo is to return <= -1, 0, >= 1
-    Assert::assertTrue(-1 >= instance->compareTo(instance2));
-    Assert::assertEquals(0, instance->compareTo(instance3));
-    Assert::assertTrue(1 <= instance2->compareTo(instance));
+    Assert::assertTrue(-1 >= instance->compareTo(instance2),__FILE__, __LINE__);
+    Assert::assertEquals(0, instance->compareTo(instance3),__FILE__, __LINE__);
+    Assert::assertTrue(1 <= instance2->compareTo(instance),__FILE__, __LINE__);
     } catch (IOException ex) {
         Assert::fail(ex.toString(),__FILE__, __LINE__);
     }

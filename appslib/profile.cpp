@@ -77,41 +77,39 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
 /*public*/ Profile::Profile(QString name, QString id, File* path, QObject *parent) :
     QObject(parent)
 {
- File* pathWithExt; // path with extention
- if (path->getName().endsWith(*_EXTENSION)) {
+ File* pathWithExt; // path with extension
+ if (path->getName().endsWith(EXTENSION)) {
      pathWithExt = path;
  } else {
-     pathWithExt = new File(path->getParentFile(), path->getName() + *_EXTENSION);
+     pathWithExt = new File(path->getParentFile(), path->getName() + EXTENSION);
  }
- if (pathWithExt->getName() != (id + *_EXTENSION)) {
-     throw  IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
+ if (pathWithExt->getName() != (id + EXTENSION)) {
+     throw IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
  }
  if (Profile::isProfile(path) || Profile::isProfile(pathWithExt)) {
-     throw IllegalArgumentException("A profile already exists at " + path->getPath()); // NOI18N
+     throw IllegalArgumentException("A profile already exists at " + path->toString()); // NOI18N
  }
  if (Profile::containsProfile(path) || Profile::containsProfile(pathWithExt)) {
-     throw IllegalArgumentException(path->getPath() + " contains a profile in a subdirectory."); // NOI18N
+     throw IllegalArgumentException(path->toString() + " contains a profile in a subdirectory."); // NOI18N
  }
  if (Profile::inProfile(path) || Profile::inProfile(pathWithExt)) {
-     throw IllegalArgumentException(path->getPath() + " is within an existing profile."); // NOI18N
+     if (Profile::inProfile(path)) log->warn(tr("Exception: Path %1 is within an existing profile.").arg(path->toString())/*, new Exception("traceback")*/); // NOI18N
+     if (Profile::inProfile(pathWithExt)) log->warn(tr("Exception: pathWithExt %1 is within an existing profile.").arg(pathWithExt->toString())/*, new Exception("traceback")*/); // NOI18N
+     throw IllegalArgumentException(path->toString() + " is within an existing profile."); // NOI18N
  }
  this->name = name;
  this->id = id + "." + ProfileManager::createUniqueId();
  this->path = pathWithExt;
  // use field, not local variables (path or pathWithExt) for paths below
-// if (!this->path->exists() && !this->path->mkdirs()) {
-//     throw IOException("Unable to create directory " + this->path->getPath()); // NOI18N
-// }
-// if (!this->path->isDirectory()) {
-//     throw IllegalArgumentException(path->getPath() + " is not a directory"); // NOI18N
-// }
- pathWithExt->mkdirs();
- if (!pathWithExt->isDirectory()) {
-     throw new IllegalArgumentException(pathWithExt->getPath() + " is not a directory"); // NOI18N
+ if (!this->path->exists() && !this->path->mkdirs()) {
+     throw IOException("Unable to create directory " + this->path->toString()); // NOI18N
+ }
+ if (!this->path->isDirectory()) {
+     throw IllegalArgumentException(path->getPath() + " is not a directory"); // NOI18N
  }
  this->save();
  if (!Profile::isProfile(this->path)) {
-     throw  IllegalArgumentException(pathWithExt->getPath() + " does not contain a profile.properties file"); // NOI18N
+     throw IllegalArgumentException(path->getPath() + " does not contain a profile.properties file"); // NOI18N
  }
 }
 
@@ -317,11 +315,11 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
   {
    QStringList l = pathDir.entryList();
    QStringList filters = QStringList() << *_PROPERTIES;
-   foreach (QString file, pathDir.entryList(filters))
+   foreach (QString file, pathDir.entryList(filters, QDir::AllDirs | QDir::Files |QDir::NoDotAndDotDot))
    {
     if(file == *_PROPERTIES)
      return true;
-    if (Profile::containsProfile(new File(pathDir.absolutePath() + file)))
+    if (Profile::containsProfile(new File(pathDir.absolutePath() + QDir::separator() + file)))
     {
      return true;
     }
@@ -377,12 +375,13 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
  return false;
 }
 //@Override
-    /*public*/ int Profile::compareTo(Profile* o) {
-        if (this->equals(o)) {
-            return 0;
-        }
-        QString thisString = "" + this->getName() + this->getPath()->toString();
-        QString thatString = "" + o->getName() + o->getPath()->toString();
-        return thisString==(thatString);
+/*public*/ int Profile::compareTo(Profile* o) {
+    if (this->equals(o)) {
+        return 0;
     }
+    QString thisString = "" + this->getName() + this->getPath()->toString();
+    QString thatString = "" + o->getName() + o->getPath()->toString();
+    return thisString.compare(thatString);
+}
+
 /*private*/ /*static*/ Logger* Profile::log =  LoggerFactory::getLogger("Profile");

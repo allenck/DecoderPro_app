@@ -209,10 +209,12 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
             if (checkSequenceDumpsStack) lastSetUpStackTrace = Thread.currentThread().getStackTrace();
         }
     }
-
+#endif
     // checking time?
     if (checkTestDuration) checkTestDurationStartTime = QDateTime::currentMSecsSinceEpoch(); //System.currentTimeMillis();
-#endif
+
+    if(QDir::currentPath() != FileUtil::getProgramPath())
+     QDir::setCurrent(FileUtil::getProgramPath());
 }
 
 /**

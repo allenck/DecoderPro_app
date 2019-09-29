@@ -84,6 +84,8 @@ private:
  /*volatile*/ /*private*/ static FileUtilSupport* defaultInstance;// = null;
  /*private*/ void scanDir(QDir start, QStringList *paths, int depth);
  QStringList* paths = nullptr;
+ /*private*/ bool copyRecursively(const QString &srcFilePath,
+                                  const QString &tgtFilePath);
 
 private slots:
  void rowChanged(int);

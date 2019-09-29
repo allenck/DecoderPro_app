@@ -20,6 +20,7 @@ public:
     /*public*/ /*synchronized*/ void append(LoggingEvent* event);
     /*public*/ static int clearBacklog(LogLevel::VALS level);
     /*public*/ static int clearBacklog();
+    /*public*/ static bool verifyNoBacklog();
     /*public*/ static JUnitAppender* instance();
     /*public*/ void activateOptions();
 
@@ -40,6 +41,7 @@ private:
     static QString  unexpectedWarnContent;// = null;
     static bool unexpectedInfoSeen;// = false;
     static QString  unexpectedInfoContent;// = null;
+    void superappend(LoggingEvent* l);
 
 protected:
     /*protected*/ static bool compare(LoggingEvent* e1, QString s2);

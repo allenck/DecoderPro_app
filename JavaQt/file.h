@@ -34,7 +34,7 @@ public:
     /*public*/ bool isHidden();
     /*public*/ QStringList list();
     Q_INVOKABLE/*public*/ QString toString();
-    Q_INVOKABLE/*public*/ bool equals(File* other);
+    Q_INVOKABLE/*public*/ bool equals(QObject *other);
     /*public*/ QStringList list(FilenameFilter* filter);
     /*public*/ QList<File*> listFiles();
     /*public*/ QList<File*> listFiles(FilenameFilter* filter);

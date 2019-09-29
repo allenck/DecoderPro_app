@@ -16,6 +16,8 @@
 #include "joptionpane.h"
 #include "locofile.h"
 #include "loggerfactory.h"
+#include "locoaddressxml.h"
+
 
 QString RosterEntry::_defaultOwner = "";
 /*public*/ /*static*/ /*final*/ QString RosterEntry::ID = "id"; // NOI18N
@@ -371,8 +373,8 @@ void RosterEntry::init()
 /*public*/ QString RosterEntry::getDecoderComment() { return _decoderComment; }
 
 /*public*/ DccLocoAddress* RosterEntry::getDccLocoAddress() {
-    int n;
-    bool bOk;
+    int n = 0;
+    bool bOk = true;
     n = getDccAddress().toInt(&bOk);
     if(!bOk)
     {
@@ -1513,11 +1515,11 @@ if (!(_decoderFamily==("")))
   QDomElement e3;
    if (!(e3 = e.firstChildElement("dateUpdated")).isNull())
    {
-    _dateUpdated = e3.text();
+    this->setDateUpdated(e3.text());
    }
    if (!(e3 = e.firstChildElement("locoaddress")).isNull() )
    {
-    DccLocoAddress* la = (DccLocoAddress*)(getAddress(e3));
+    DccLocoAddress* la = (DccLocoAddress*)((new LocoAddressXml())->getAddress(e3));
     if (la!=NULL)
     {
      _dccAddress = QString::number(la->getNumber());

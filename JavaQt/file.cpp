@@ -2323,11 +2323,13 @@ static {
  return QFileInfo(path).absoluteFilePath();
 }
 
-/*public*/ bool File::equals(File* other)
+/*public*/ bool File::equals(QObject* other)
 {
+ if(qobject_cast<File*>(other) == nullptr)
+  return false;
  if(other == this)
   return true;
- if(this->getAbsolutePath() == other->getAbsolutePath())
+ if(this->getAbsolutePath() == ((File*)other)->getAbsolutePath())
   return true;
  else
   return false;

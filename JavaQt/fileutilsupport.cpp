@@ -110,7 +110,7 @@
 //    }
   QUrl* url = new QUrl(path);
   if(url->isEmpty() || !url->isValid())
-   throw new FileNotFoundException("Cannot create URL for file at " + path);
+   throw  FileNotFoundException("Cannot create URL for file at " + path);
   return url;
 }
 
@@ -1115,27 +1115,44 @@ public URL getURL(URI uri) {
    }
   }
  }
- if (source->isDirectory())
+ QString srcPath = source->getPath();
+ QString dstPath = dest->getPath();
+ QFile f(dstPath);
+ if(f.exists())
+  f.remove();
+ if(! copyRecursively(srcPath, dstPath))
  {
-  foreach (File* file, source->listFiles())
-  {
-   if (dest->exists())
-   {
-       QFile(dest->path).remove();
-   }
-   //FileUtil::copy(file, new File(dest, file->getName()));
-   QFile::copy(file->path, dest->path);
-  }
+  throw IOException(tr("error copying %1 to %2").arg(srcPath).arg(dstPath));
  }
- else
- {
-  Q_ASSERT(!dest->path.endsWith("//"));
-  QFile f(dest->path);
-  if(f.exists())
-   f.remove();
-  if(!QFile::copy(source->path, dest->path))
-   log->error(tr("copy of %1 to %2 failed!").arg(source->path).arg(dest->path) );
- }
+}
+/*private*/ bool FileUtilSupport::copyRecursively(const QString &srcFilePath,
+                                 const QString &tgtFilePath)
+{
+    QFileInfo srcFileInfo(srcFilePath);
+    if (srcFileInfo.isDir()) {
+        QDir targetDir(tgtFilePath);
+        targetDir.cdUp();
+        if (!QFileInfo(tgtFilePath).exists() && !targetDir.mkdir(QFileInfo(tgtFilePath).fileName()))
+            return false;
+        QDir sourceDir(srcFilePath);
+        QStringList fileNames = sourceDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+        foreach (const QString &fileName, fileNames) {
+            const QString newSrcFilePath
+                    = srcFilePath + QLatin1Char('/') + fileName;
+            const QString newTgtFilePath
+                    = tgtFilePath + QLatin1Char('/') + fileName;
+            if (!copyRecursively(newSrcFilePath, newTgtFilePath))
+                return false;
+        }
+    } else
+    {
+     QFile f(tgtFilePath);
+     if(f.exists())
+      f.remove();
+     if (!QFile::copy(srcFilePath, tgtFilePath))
+      return false;
+    }
+    return true;
 }
 /**
  * Simple helper method to just append a text string to the end of the given

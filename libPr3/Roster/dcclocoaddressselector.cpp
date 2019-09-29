@@ -73,7 +73,17 @@
 /*public*/ DccLocoAddressSelector::DccLocoAddressSelector(QStringList protocols, QWidget* parent) : QWidget(parent){
     //super();
  init();
- configureBox(protocols);
+ if ((InstanceManager::getNullableDefault("ThrottleManager") != nullptr)
+                 && !InstanceManager::throttleManagerInstance()->addressTypeUnique())
+ {
+     configureBox(InstanceManager::throttleManagerInstance()->getAddressTypes());
+ } else {
+     configureBox(
+//             QStringList() << LocoAddress::Protocol::DCC_SHORT.getPeopleName()
+//                 << LocoAddress::Protocol::DCC_LONG.getPeopleName());
+        QStringList() << LocoAddress::getPeopleName(LocoAddress::Protocol::DCC_SHORT)
+        << LocoAddress::getPeopleName(LocoAddress::Protocol::DCC_LONG));
+ }
 }
 
 void DccLocoAddressSelector::init()
@@ -114,14 +124,15 @@ void DccLocoAddressSelector::configureBox(QStringList protocols)
 /*public*/ DccLocoAddress* DccLocoAddressSelector::getAddress()
 {
  // no object if no address
- if (text->text()==("")) return NULL;
+ QString t= text->text();
+ if (t ==("")) return NULL;
 
  // ask the Throttle Manager to handle this!
  LocoAddress::Protocol protocol;
- if(InstanceManager::throttleManagerInstance()!=NULL)
+ if (InstanceManager::getNullableDefault("ThrottleManager") != nullptr)
  {
-  protocol = ((LnThrottleManager*)   InstanceManager::throttleManagerInstance())->getProtocolFromString((QString)box->currentText());
-  return (DccLocoAddress*)((AbstractThrottleManager*)InstanceManager::throttleManagerInstance())->getAddress(text->text(), protocol);
+  protocol = InstanceManager::throttleManagerInstance()->getProtocolFromString( box->currentText());
+  return (DccLocoAddress*) InstanceManager::throttleManagerInstance()->getAddress(text->text(), protocol);
  }
  // nothing, construct a default
  int num = text->text().toInt();

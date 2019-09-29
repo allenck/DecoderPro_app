@@ -23,7 +23,7 @@ ProfileManagerTest::ProfileManagerTest(QObject *parent) : QObject(parent)
 //@Test
 /*public*/ void ProfileManagerTest::testCTor() {
     ProfileManager* pm = new ProfileManager();
-    Assert::assertNotNull("exists", pm);
+    Assert::assertNotNull("exists", pm,__FILE__, __LINE__);
 }
 
 //@Test
@@ -31,13 +31,13 @@ ProfileManagerTest::ProfileManagerTest(QObject *parent) : QObject(parent)
     ProfileManager* pm = new ProfileManager();
     // null profile
     pm->setActiveProfile(nullptr);
-    Assert::assertNull(pm->getActiveProfile());
+    Assert::assertNull(pm->getActiveProfile(),__FILE__, __LINE__);
     // non-null profile
     File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
     NullProfile* p = new NullProfile("test", "test", profileFolder);
-    Assert::assertNotNull(p);
+    Assert::assertNotNull(p,__FILE__, __LINE__);
     pm->setActiveProfile(p);
-    Assert::assertEquals(p, pm->getActiveProfile());
+    Assert::assertEquals(p, pm->getActiveProfile(),__FILE__, __LINE__);
 }
 
 //@Test
@@ -45,15 +45,15 @@ ProfileManagerTest::ProfileManagerTest(QObject *parent) : QObject(parent)
     ProfileManager* pm = new ProfileManager();
     // null profile
     pm->setActiveProfile("");
-    Assert::assertNull(pm->getActiveProfile());
+    Assert::assertNull(pm->getActiveProfile(),__FILE__, __LINE__);
     // non-existant profile
     pm->setActiveProfile("NonExistantId");
-    Assert::assertNull(pm->getActiveProfile());
+    Assert::assertNull(pm->getActiveProfile(),__FILE__, __LINE__);
 //    JUnitAppender.assertWarnMessage("Unable to set active profile.  No profile with id NonExistantId could be found.");
     // existant non-profile directory (real directory, but no profile)
     QString folderName = folder->newFolder("non-profile")->getAbsolutePath();
     pm->setActiveProfile(folderName);
-    Assert::assertNull(pm->getActiveProfile());
+    Assert::assertNull(pm->getActiveProfile(),__FILE__, __LINE__);
 //    JUnitAppender.assertErrorMessage(folderName + " is not a profile folder.");
 //    JUnitAppender.assertWarnMessage("Unable to set active profile.  No profile with id " + folderName + " could be found.");
     // existant profile directory
@@ -63,8 +63,8 @@ ProfileManagerTest::ProfileManagerTest(QObject *parent) : QObject(parent)
     FileUtil::copy(new File("java/test/jmri/profile/samples/ln-simulator"), profileFolder); // where is existing profile?
     pm->setActiveProfile(folderName);
     Profile* p = new Profile(profileFolder);
-    Assert::assertNotNull(pm->getActiveProfile());
-    Assert::assertEquals(p, pm->getActiveProfile());
+    Assert::assertNotNull(pm->getActiveProfile(),__FILE__, __LINE__);
+    Assert::assertEquals(p, pm->getActiveProfile(),__FILE__, __LINE__);
 }
 
 // The minimal setup for log4J

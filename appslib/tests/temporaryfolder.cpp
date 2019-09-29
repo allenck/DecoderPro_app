@@ -120,6 +120,7 @@
          *  */
         // </editor-fold>
     QTemporaryDir* dir = new QTemporaryDir(folder);
+    dir->setAutoRemove(true);
      File* f = new File(dir->path());
      return f;
     }
