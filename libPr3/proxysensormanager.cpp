@@ -81,7 +81,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxyManager(p
  * instance already exists.
  * @return requested Turnout object or null if none exists
  */
-/*public*/ Sensor* ProxySensorManager::getBySystemName(QString sName) {
+/*public*/ Sensor *ProxySensorManager::getBySystemName(QString sName) {
     return (Sensor*) AbstractProxyManager::getBeanBySystemName(sName);
 }
 

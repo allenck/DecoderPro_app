@@ -222,6 +222,7 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
  * annotated method.
  */
 /*public*/ /*static*/ void JUnitUtil::tearDown() {
+ testClassName = "";
 
     // checking time?
     if (checkTestDuration) {
@@ -1094,8 +1095,11 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
         }
     }
 #endif
-    return "<unknown class>";
+    return testClassName;
 }
+/*static*/ QString JUnitUtil::testClassName = "";
+
+
 #if 0
 /**
  * Dispose of any disposable windows. This should only be used if there is
@@ -1325,6 +1329,21 @@ static void checkThreads() {
     return button;
 }
 #endif
+
+/*public*/ /*static*/ void JUnitUtil::runTests(QObject* test, QStringList testList)
+{
+ foreach(QString testName, testList)
+ {
+  testClassName = testName;
+  log->info(tr("begin '%1'").arg(testName));
+  if(!QMetaObject::invokeMethod(test, "setUp", Qt::DirectConnection))
+   throw Exception(tr("can't invoke 'setup' method when running test '%1").arg(testName));
+  QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
+  log->info(tr("end '%1'").arg(testName));
+  if(!QMetaObject::invokeMethod(test, "tearDown", Qt::DirectConnection))
+   throw Exception(tr("can't invoke 'tearDown' method when running test '%1").arg(testName));
+ }
+}
 /*private*/ /*final*/ /*static*/ Logger* JUnitUtil::log = LoggerFactory::getLogger("JUnitUtil");
 
 

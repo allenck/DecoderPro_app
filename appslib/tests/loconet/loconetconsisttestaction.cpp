@@ -13,7 +13,6 @@ connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 void LocoNetConsistTestAction::actionPerformed()
 {
     LocoNetConsistTest* test = new LocoNetConsistTest();
-    test->setUp();
     try
     {
 
@@ -38,6 +37,5 @@ void LocoNetConsistTestAction::actionPerformed()
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
-    test->tearDown();
 }
 Logger* LocoNetConsistTestAction::log = LoggerFactory::getLogger("LocoNetConsistTestAction");

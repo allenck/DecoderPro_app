@@ -2,7 +2,6 @@
 #define PROXYMANAGER_H
 #include "manager.h"
 
-#endif // PROXYMANAGER_H
 /**
  * Interface for Managers of NamedBeans that are proxies for a collection of
  * Managers for the same type of NamedBean.
@@ -10,16 +9,19 @@
  * @author Randall Wood Copyright 2019
  * @param <B> type of supported NamedBean
  */
-template<class B>
-/*public*/ class  ProxyManager/*<B /*extends NamedBean>*/ : public Manager<B> {
-
+//template<class B>
+/*public*/ class  ProxyManager/*<B extends NamedBean>*/ : public Manager
+{
+Q_OBJECT
+public:
+    ProxyManager(QObject* parent) : Manager(parent){}
     /**
      * Add a Manager to the collection of Managers.
      *
      * @param manager the Manager to add; if manager has already been added, it
      *                will not be added again
      */
- /*public*/ virtual void addManager(/*@Nonnull*/ Manager<B> manager) {}
+ /*public*/ virtual void addManager(/*@Nonnull*/ Manager* manager) {}
 
     /**
      * Get the default manager or the internal manager if no default manager has
@@ -28,7 +30,7 @@ template<class B>
      * @return the default manager or the internal manager
      */
     /*@Nonnull*/
- /*public*/ virtual Manager<B> getDefaultManager() {return Manager<B>();}
+ /*public*/ virtual Manager* getDefaultManager() {return  nullptr;}
 
     /**
      * Returns a list of all managers, including the internal manager. This is
@@ -37,7 +39,7 @@ template<class B>
      *
      * @return the list of managers
      */
- /*public*/ virtual QList<Manager<B>> getManagerList() {return QList<Manager<B>>();}
+ /*public*/ virtual QList<Manager*> getManagerList() {return QList<Manager*>();}
 
     /**
      * Get a list of all managers, with the default as the first item and internal
@@ -45,5 +47,6 @@ template<class B>
      *
      * @return the list of managers
      */
-    /*public*/ virtual QList<Manager<B>> getDisplayOrderManagerList() {return QList<Manager<B>>();}
+    /*public*/ virtual QList<Manager*> getDisplayOrderManagerList() {return QList<Manager*>();}
 };
+#endif // PROXYMANAGER_H

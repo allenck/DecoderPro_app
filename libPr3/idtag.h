@@ -2,7 +2,7 @@
 #define IDTAG_H
 #include <QDateTime>
 #include "abstractnamedbean.h"
-#include "reporter.h"
+#include "namedbean.h"
 #include <QDomElement>
 #include "libPr3_global.h"
 #include "reportable.h"
@@ -31,13 +31,14 @@
  * @since       2.11.4
  */
 
+class Reporter;
 class LIBPR3SHARED_EXPORT IdTag : public Reportable
 {
-    Q_OBJECT
+   // Q_OBJECT
 public:
-    explicit IdTag(QObject *parent = 0) : Reportable(parent) {}
-    IdTag(QString systemName, QObject *parent) : Reportable(systemName, parent) {}
-    IdTag(QString systemName, QString userName, QObject *parent) : Reportable(systemName, userName, parent) {}
+ IdTag(QObject* parent = nullptr) : Reportable(parent) {}
+ IdTag(QString sysName, QObject* parent) : Reportable(sysName,parent) {}
+ IdTag(QString sysName, QString usrName, QObject* parent) : Reportable(sysName, usrName, parent) {}
     /**
      * Constant representing an "unseen" state, indicating that the
      * ID tag has not yet been seen.
@@ -63,7 +64,7 @@ public:
      * This is the system name without the identifier
      * @return the tag ID
      */
-    /*public*/ virtual QString getTagID() = 0;
+ /*public*/ virtual QString getTagID(){return "";}
 
     /**
      * Set the Reporter that last saw this tag.
@@ -92,14 +93,14 @@ public:
      * @param storeState Determine if the state of this IdTag should be stored
      * @return Element with IdTag contents
      */
- /*public*/ virtual QDomElement store(bool /*storeState*/) {return QDomElement();}
+    /*public*/ virtual QDomElement store(bool /*storeState*/) {return QDomElement();}
 
     /**
      * Load contents of IdTag object from an XML element
      * @param e Element containing IdTag details
      */
     /*public*/ virtual void load(QDomElement /*e*/) {}
- /*public*/ virtual QString  toString() {return "";}
+    /*public*/ virtual QString  toString() {return "";}
 signals:
     
 public slots:
@@ -107,5 +108,6 @@ public slots:
 };
 //const int IdTag::UNSEEN = 0x02;
 //const int IdTag::SEEN = 0x03;
-
+Q_DECLARE_METATYPE(IdTag)
+//Q_DECLARE_INTERFACE(IdTag, "IdTag")
 #endif // IDTAG_H

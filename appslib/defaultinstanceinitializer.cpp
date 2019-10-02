@@ -66,6 +66,8 @@
 #include "lnprogrammermanager.h"
 #include "signalspeedmap.h"
 #include "decoderindexfile.h"
+#include "rfid/proxyidtagmanager.h"
+
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -241,7 +243,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return jjtpm;
  }
 
- if (type == "IdTagManager")
+ if (type == "DefaultIdTagManager")
  {
   DefaultIdTagManager* tm =new DefaultIdTagManager();
   InstanceManager::store(tm, type);
@@ -520,13 +522,12 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return tom;
  }
 
-// if(type == "SignalSpeedMap")
-// {
-//  SignalSpeedMap* ssm = new SignalSpeedMap();
-//  InstanceManager::store(ssm,type);
-//  ssm->initialize();
-//  return ssm;
-// }
+ if(type == "ProxyIdTagManager")
+ {
+  ProxyIdTagManager* pitm = new ProxyIdTagManager();
+  InstanceManager::store(pitm,type);
+  return pitm;
+ }
 
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);

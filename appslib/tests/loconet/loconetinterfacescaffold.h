@@ -5,6 +5,7 @@
 class LocoNetSystemConnectionMemo;
 class LocoNetInterfaceScaffold : public LnTrafficController
 {
+ Q_OBJECT
 public:
     LocoNetInterfaceScaffold();
     /*public*/ LocoNetInterfaceScaffold(LocoNetSystemConnectionMemo* adaptermemo);
@@ -14,6 +15,9 @@ public:
     /*public*/ void sendTestMessage(LocoNetMessage* m) ;
     /*public*/ int numListeners();
     /*public*/ QVector<LocoNetListener*> getListeners();
+
+signals:
+    void sendMessage(LocoNetMessage *m);
 
 private:
     static Logger* log;

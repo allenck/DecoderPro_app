@@ -13,7 +13,6 @@
 #include "loggerfactory.h"
 #include "namedbeancomparator.h"
 
-
 AbstractProxyManager::AbstractProxyManager(QObject *parent)
     : AbstractManager(parent)
 {

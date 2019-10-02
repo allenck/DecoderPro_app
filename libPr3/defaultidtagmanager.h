@@ -11,8 +11,9 @@
 #include "exceptions.h"
 #include "instancemanager.h"
 #include "abstractshutdowntask.h"
+#include "abstractmanager.h"
 
-class LIBPR3SHARED_EXPORT DefaultIdTagManager : public IdTagManager
+class DefaultIdTagManager : public IdTagManager
 {
     Q_OBJECT
 public:
@@ -27,10 +28,11 @@ public:
     /*public*/ IdTag* getBySystemName(QString name) ;
     /*public*/ IdTag* getByUserName(QString key);
     /*public*/ IdTag* getByTagID(QString tagID);
-    /*public*/ IdTag* newIdTag(QString systemName, QString userName);
+    /*public*/ virtual IdTag* newIdTag(QString systemName, QString userName);
     /*public*/ void Register(NamedBean* s);
     /*public*/ void deregister(NamedBean* s);
-    /*public*/ void writeIdTagDetails();// throw (IOException);
+    /*public*/ virtual void writeIdTagDetails();// throw (IOException);
+    /*public*/ virtual void readIdTagDetails();
     /*public*/ void setStateStored(bool state);
     /*public*/ bool isStateStored();
     /*public*/ void setFastClockUsed(bool fastClock);
@@ -51,7 +53,8 @@ private:
 
  protected:
  /*protected*/ void registerSelf();
- /*protected*/ IdTag* createNewIdTag(QString systemName, QString userName);
+ /*protected*/ virtual IdTag* createNewIdTag(QString systemName, QString userName);
+ /*protected*/ bool dirty = false;
 };
 
 class IdTagManagerXml : XmlFile
@@ -94,6 +97,7 @@ protected:
 
 friend class DefaultIdTagManager;
 };
+
 class DefaultIdTagShutdownTask : public AbstractShutDownTask
 {
   Q_OBJECT
@@ -107,7 +111,7 @@ class DefaultIdTagShutdownTask : public AbstractShutDownTask
      log.debug("Start writing IdTag details...");
 //     try
 //     {
-      ((DefaultIdTagManager*)InstanceManager::getDefault("IdTagManager"))->writeIdTagDetails();
+//      ((DefaultIdTagManager*)InstanceManager::getDefault("IdTagManager"))->writeIdTagDetails();
       //new jmri.managers.DefaultIdTagManager().writeIdTagDetails();
 //     }
 //     catch (IOException ioe)

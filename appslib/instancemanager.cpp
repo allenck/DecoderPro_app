@@ -70,6 +70,7 @@
 //#include "webserverpreferencesinstanceinitializer.h"
 #include "vptr.h"
 #include <QApplication>
+//#include "proxymanager.h"
 
 class ManagerLists : public QHash<QString,QObjectList*>
 {
@@ -810,14 +811,22 @@ void InstanceManager::setSensorManager(SensorManager* p)
  }
 }
 
-//void InstanceManager::addSensorManager(SensorManager* p)
-//{
-// //SensorManager* sensorManager = instance()->sensorManager;
-//// if(qobject_cast<LnSensorManager*>(sensorManager)!=NULL)
-////  return;
-// //if(qobject_cast<AbstractProxyManager*>(sensorManager)!= NULL)
-//    ((AbstractProxyManager*)instance()->sensorManager)->addManager(p);
-//}
+// Needs to have proxy manager converted to work
+// with current list of managers (and robust default
+// management) before this can be deprecated in favor of
+// store(p, IdTagManager.class)
+//@SuppressWarnings("unchecked") // AbstractProxyManager of the right type is type-safe by definition
+/*static*/ /*public*/ void InstanceManager::setIdTagManager(IdTagManager *p) {
+    log->debug(" setIdTagManager");
+#if 0
+    IdTagManager* apm = (IdTagManager*)getDefault("IdTagManager");
+    if (qobject_cast< ProxyManager*>(apm)) { // <?> due to type erasure
+        ((ProxyManager*) apm)->addManager(p);
+    } else {
+        log->error("Incorrect setup: IdTagManager default isn't an AbstractProxyManager<IdTag>");
+    }
+#endif
+}
 
 // Needs to have proxy manager converted to work
 // with current list of managers (and robust default

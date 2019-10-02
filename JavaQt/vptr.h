@@ -1,5 +1,7 @@
 #ifndef VPTR_H
 #define VPTR_H
+#include <QVariant>
+
 template <class T> class VPtr
 {
 public:
@@ -13,5 +15,6 @@ public:
     return qVariantFromValue((void *) ptr);
     }
 };
+
 
 #endif // VPTR_H

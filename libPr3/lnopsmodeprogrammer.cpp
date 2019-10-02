@@ -53,11 +53,11 @@
    // Check mode
    QStringList parts;
    LocoNetMessage* m;
-   if (getMode() == (LnProgrammerManager::LOCONETCSOPSWMODE)) {
+   if (getMode()->equals(LnProgrammerManager::LOCONETCSOPSWMODE)) {
        memo->getSlotManager()->setMode(LnProgrammerManager::LOCONETCSOPSWMODE);
        memo->getSlotManager()->readCV(CV, pL); // deal with this via service-mode programmer
    }
-   else if (getMode() == (LnProgrammerManager::LOCONETBDOPSWMODE))
+   else if (getMode()->equals(LnProgrammerManager::LOCONETBDOPSWMODE))
    {
        /**
         * CV format is e.g. "113.12" where the first part defines the
@@ -101,7 +101,7 @@
        memo->getLnTrafficController()->sendLocoNetMessage(m);
        bdOpSwAccessTimer->start();
 
-   } else if (getMode() == (LnProgrammerManager::LOCONETSV1MODE)) {
+   } else if (getMode()->equals(LnProgrammerManager::LOCONETSV1MODE)) {
        p = pL;
        doingWrite = false;
        // SV1 mode
@@ -115,7 +115,7 @@
 
        log->debug(tr("  Message %1").arg(m->toString()));
        memo->getLnTrafficController()->sendLocoNetMessage(m);
-   } else if (getMode() == (LnProgrammerManager::LOCONETSV2MODE)) {
+   } else if (getMode()->equals(LnProgrammerManager::LOCONETSV2MODE)) {
        p = pL;
        // SV2 mode
        log->debug(tr("read CV \"%1\" addr:%2").arg(CV).arg(mAddress));
@@ -135,7 +135,7 @@
 {
  this->p = NULL;
 // Check mode
- if (getMode()==(LnProgrammerManager::LOCONETSV1MODE))
+ if (getMode()->equals(LnProgrammerManager::LOCONETSV1MODE))
  {
   this->p = p;
   doingWrite = true;
@@ -152,7 +152,7 @@
   log->debug(tr("  Message %1").arg(m->toString()));
   memo->getLnTrafficController()->sendLocoNetMessage(m);
  }
- else if (getMode()==(LnProgrammerManager::LOCONETSV2MODE))
+ else if (getMode()->equals(LnProgrammerManager::LOCONETSV2MODE))
  {
   this->p = p;
   // SV2 mode
@@ -213,7 +213,7 @@
 {
  this->p = NULL;
  // Check mode
- if (getMode()==(LnProgrammerManager::LOCONETSV2MODE)) {
+ if (getMode()->equals(LnProgrammerManager::LOCONETSV2MODE)) {
      // SV2 mode
   log->error(tr("confirm CV \"%1\" addr:%2 in SV2 mode not implemented").arg(CV).arg(mAddress));
      p->programmingOpReply(0, ProgListener::UnknownError);
@@ -229,7 +229,7 @@
     if ((m->getElement( 1) & 0xFF) != 0x10) return;
 
     log->debug(tr("reply %1").arg(m->toString()));
-    if (getMode()==(LnProgrammerManager::LOCONETSV1MODE)) {
+    if (getMode()->equals(LnProgrammerManager::LOCONETSV1MODE)) {
         if ((m->getElement( 4) & 0xFF) != 0x01) return; // format 1
         if ((m->getElement( 5) & 0x70) != 0x00) return; // 5
 
@@ -260,7 +260,7 @@
             p = NULL;
             temp->programmingOpReply(val, code);
         }
-    } else if (getMode()==(LnProgrammerManager::LOCONETSV2MODE)) {
+    } else if (getMode()->equals(LnProgrammerManager::LOCONETSV2MODE)) {
         if ((m->getElement(3) != 0x41) && (m->getElement(3) != 0x42)) return; // need a "Write One Reply", or a "Read One Reply"
         if ((m->getElement( 4) & 0xFF) != 0x02) return; // format 2
         if ((m->getElement( 5) & 0x70) != 0x10) return; // need SVX1 high nibble = 1
@@ -391,17 +391,23 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
 }
 
 /**
- * Can this ops-mode programmer read back values?  Yes,
- * if transponding hardware is present, but we don't check that here.
+ * {@inheritDoc}
+ *
+ * Can this ops-mode programmer read back values? Yes, if transponding
+ * hardware is present and regular ops mode, or if in any other mode.
+ *
  * @return always true
  */
 //@Override
 /*public*/ bool LnOpsModeProgrammer::getCanRead() {
-    return true;
+ if (getMode()->equals(ProgrammingMode::OPSBYTEMODE))
+  return memo->getSlotManager()->getTranspondingAvailable(); // only way can be false
+ return true;
 }
+
 //@Override
-/*public*/ bool LnOpsModeProgrammer::getCanRead(QString addr) {
-    return getCanRead();
+/*public*/ bool LnOpsModeProgrammer::getCanRead(QString /*addr*/) {
+   return getCanRead();
 }
 
 //@Override
@@ -421,7 +427,7 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
  */
 //@Nonnull
 /*public*/ Programmer::WriteConfirmMode LnOpsModeProgrammer::getWriteConfirmMode(QString addr){
- if (getMode() ==(ProgrammingMode::OPSBYTEMODE)) {
+ if (getMode()->equals(ProgrammingMode::OPSBYTEMODE)) {
      return (Programmer::WriteConfirmMode)WriteConfirmMode::NotVerified;
  }
  return (Programmer::WriteConfirmMode)WriteConfirmMode::DecoderReply;

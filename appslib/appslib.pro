@@ -519,7 +519,10 @@ SOURCES += appslib.cpp \
     tests/loconet/lnsensortest.cpp \
     tests/loconet/lnsensortestaction.cpp \
     tests/addressedprogrammertestbase.cpp \
-    tests/programmertestbase.cpp
+    tests/programmertestbase.cpp \
+    tests/loconet/lnreportertest.cpp \
+    tests/abstractreportertestbase.cpp \
+    tests/loconet/lnreportertestaction.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -988,7 +991,10 @@ HEADERS += appslib.h\
     tests/loconet/lnsensortest.h \
     tests/loconet/lnsensortestaction.h \
     tests/addressedprogrammertestbase.h \
-    tests/programmertestbase.h
+    tests/programmertestbase.h \
+    tests/loconet/lnreportertest.h \
+    tests/abstractreportertestbase.h \
+    tests/loconet/lnreportertestaction.h
 
 unix:!symbian {
     maemo5 {

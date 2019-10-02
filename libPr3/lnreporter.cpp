@@ -1,5 +1,9 @@
 #include "lnreporter.h"
 #include <QRegExp>
+#include "instancemanager.h"
+#include "rfid/transpondingtagmanager.h"
+#include "rfid/abstractidtagreporter.h"
+#include "rfid/transpondingtag.h"
 
 //LnReporter::LnReporter(QObject *parent) :
 //    AbstractReporter(parent)
@@ -37,7 +41,7 @@
 //public class LnReporter extends AbstractReporter implements LocoNetListener, PhysicalLocationReporter {
 
 LnReporter::LnReporter(int number, LnTrafficController* tc, QString prefix, QObject* parent) :
-        AbstractReporter(prefix+"R"+QString("%1").arg(number), parent)
+        AbstractIdTagReporter(prefix+"R"+QString("%1").arg(number), parent)
 {  // a human-readable Reporter number must be specified!
         //super(prefix+"R"+number);  // can't use prefix here, as still in construction
  log.debug("new Reporter "+QString("%1").arg(number));
@@ -47,6 +51,7 @@ LnReporter::LnReporter(int number, LnTrafficController* tc, QString prefix, QObj
  connect(tc, SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
  this->tc = tc;
  lastLoco = -1;
+ entrySet = ReporterVariantEntrySet();
 }
 
 int LnReporter::getNumber() { return _number; }
@@ -112,28 +117,60 @@ int LnReporter::getNumber() { return _number; }
     }
 
     /**
-     * Handle transponding message
+     * Handle transponding message passed to us by the LnReporting Manager
+     *
+     * Assumes that the LocoNet message is a valid transponding message.
+     *
+     * @param l - incoming loconetmessage
      */
     void LnReporter::transpondingReport(LocoNetMessage* l) {
-        // check address
-        int addr = ((l->getElement(1)&0x1F)*128) + l->getElement(2) + 1;
-        if (addr != getNumber()) return;
-
-        // get direction
-        bool enter = ( (l->getElement(1) & 0x20) != 0) ;
-
-        // get loco address
+        bool enter;
         int loco;
-        if (l->getElement(3) == 0x7D )
-            loco = l->getElement(4);
-        else
-            loco = l->getElement(3)*128 + l->getElement(4);
+        IdTag* idTag;
+        if (l->getOpCode() == LnConstants::OPC_MULTI_SENSE) {
+            enter = ((l->getElement(1) & 0x20) != 0); // get reported direction
+        } else {
+            enter = true; // a response for a find request. Always handled as entry.
+        }
+        loco = getLocoAddrFromTranspondingMsg(l); // get loco address
 
-        lastLoco = (enter? loco : -1);
-        QString s = QString(QString("%1").arg(loco)+(enter?" enter":" exits"));
-        setReport(QVariant(s));
+        notify(nullptr); // set report to null to make sure listeners update
+
+        idTag = ((TranspondingTagManager*)InstanceManager::getDefault("TranspondingTagManager"))->provideIdTag("" + QString::number(loco));
+        idTag->setProperty("entryexit", "enter");
+        if (enter)
+        {
+            idTag->setProperty("entryexit", "enter");
+            if (!entrySet.contains((TranspondingTag*)idTag)) {
+                entrySet.insert((TranspondingTag*) idTag);
+            }
+        }
+        else {
+            idTag->setProperty("entryexit", "exits");
+            if (entrySet.contains((TranspondingTag*)idTag)) {
+                entrySet.remove((TranspondingTag*)idTag);
+            }
+        }
+        log.debug("Tag: " + idTag->toString());
+        notify(idTag);
+        setState(enter ? loco : -1);
     }
 
+    /**
+     * extract long or short address from transponding message
+     *
+     * Assumes that the LocoNet message is a valid transponding message.
+     *
+     * @param l LocoNet message
+     * @return loco address
+     */
+    /*public*/ int LnReporter::getLocoAddrFromTranspondingMsg(LocoNetMessage* l) {
+        if (l->getElement(3) == 0x7D) {
+            return l->getElement(4);
+        }
+        return l->getElement(3) * 128 + l->getElement(4);
+
+    }
     /**
      * Handle LISSY message
      */
@@ -197,14 +234,20 @@ int LnReporter::getNumber() { return _number; }
      log.debug("report string: " + rep);
 //     Matcher* m = this.parseReport(rep);
 //     if ((m!= NULL) && m.find()) {
-     QRegExp regExp("(\\d+) (enter|exits|seen)\\s*(northbound|southbound)?");  // Match a number followed by the word "enter".  This is the LocoNet pattern.)
-     QStringList sl = rep.split(" ");
-     if(regExp.exactMatch(rep) && sl.count() == 2)
+     QRegularExpression regExp("(\\d+) (enter|exits|seen)\\s*(northbound|southbound)?");  // Match a number followed by the word "enter".  This is the LocoNet pattern.)
+     QStringList sl = rep.split(regExp);
+     QRegularExpressionMatch match = regExp.match(rep);
+     if(match.hasMatch() && sl.count() == 2)
      {
       //log.debug("Parsed address: " + m.group(1));
-      log.debug("Parsed address: " + sl.at(1));
+      log.debug("Parsed address: " + match.captured(1));
       //return(new DccLocoAddress(Integer.parseInt(m.group(1)), LocoAddress.Protocol.DCC));
-      return(new DccLocoAddress(sl.at(1).toInt(), LocoAddress::DCC));
+      bool bok;
+      DccLocoAddress* addr = new DccLocoAddress(match.captured(1).toInt(&bok), LocoAddress::DCC);
+      if(bok)
+       return addr;
+      else
+       return nullptr;
 
      } else {
         return(NULL);
@@ -213,33 +256,35 @@ int LnReporter::getNumber() { return _number; }
 
     // Parses out a (possibly old) LnReporter-generated report string to extract the direction from the end.
     // Assumes the LocoReporter format is "NNNN [enter|exit]"
-    PhysicalLocationReporter::Direction LnReporter::getDirection(QString rep) {
-    // Extract the direction from the tail of the report string
-    log.debug("report string: " + rep);
-//    Matcher* m = this.parseReport(rep);
-//    if (m.find())
-    QRegExp regExp("(\\d+) (enter|exits|seen)\\s*(northbound|southbound)?");  // Match a number followed by the word "enter".  This is the LocoNet pattern.)
-    QStringList sl = rep.split(" ");
-    if(regExp.exactMatch(rep) && sl.count() == 2)
+    PhysicalLocationReporter::Direction LnReporter::getDirection(QString rep)
     {
-//        log.debug("Parsed direction: " + m.group(2));
-//        if (m.group(2).equals("enter")) {
-        log.debug("Parsed direction: " + sl.at(1));
-        if(sl.at(2) == "enter")
-        {
-        // LocoNet Enter message
-        return(PhysicalLocationReporter::ENTER);
-//        } else if (m.group(2).equals("seen")) {
-        } else if (sl.at(2)==("seen")) {
+     // Extract the direction from the tail of the report string
+     log.debug("report string: " + rep);
+ //    Matcher* m = this.parseReport(rep);
+ //    if (m.find())
+     QRegularExpression regExp("(\\d+) (enter|exits|seen)\\s*(northbound|southbound)?");  // Match a number followed by the word "enter".  This is the LocoNet pattern.)
+     QStringList sl = rep.split(" ");
+     QRegularExpressionMatch match = regExp.match(rep);
+     if(match.hasMatch() /*&& sl.count() == 3*/)
+     {
+ //        log.debug("Parsed direction: " + m.group(2));
+ //        if (m.group(2).equals("enter")) {
+         log.debug("Parsed direction: " + match.captured(2));
+         if(match.captured(2) == "enter")
+         {
+         // LocoNet Enter message
+         return(PhysicalLocationReporter::ENTER);
+ //        } else if (m.group(2).equals("seen")) {
+         } else if (match.captured(2)==("seen")) {
 
-        // Lissy message.  Treat them all as "entry" messages.
-        return(PhysicalLocationReporter::ENTER);
-        } else {
-        return(PhysicalLocationReporter::EXIT);
-        }
-    } else {
-        return(PhysicalLocationReporter::UNKNOWN);
-    }
+         // Lissy message.  Treat them all as "entry" messages.
+         return(PhysicalLocationReporter::ENTER);
+         } else {
+         return(PhysicalLocationReporter::EXIT);
+         }
+     } else {
+         return(PhysicalLocationReporter::UNKNOWN);
+     }
     }
 
     PhysicalLocation* LnReporter::getPhysicalLocation() {
@@ -250,7 +295,14 @@ int LnReporter::getNumber() { return _number; }
     PhysicalLocation* LnReporter::getPhysicalLocation(QString s) {
      return(PhysicalLocation::getBeanPhysicalLocation(this));
     }
-
+    // Collecting Reporter Interface methods
+    /**
+      * {@inheritDoc}
+      */
+     //Override
+     /*public*/ ReporterVariantEntrySet LnReporter::getCollection(){
+        return entrySet;
+     }
     //@SuppressWarnings("unused")
     bool LnReporter::myAddress(int a1, int a2) {
          // the "+ 1" in the following converts to throttle-visible numbering

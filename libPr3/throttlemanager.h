@@ -205,7 +205,7 @@ virtual void cancelThrottleRequest(int /*address*/, bool  /*isLong*/, ThrottleLi
  * @param l  ThrottleListener requesting the throttle steal occur.
  * @param decision from the ThrottleListener, STEAL or SHARE.
  */
-/*public*/ virtual void responseThrottleDecision(int /*address*/, bool /*isLong*/, ThrottleListener* /*l*/, ThrottleListener::DecisionType decision) {}
+/*public*/ virtual void responseThrottleDecision(int /*address*/, bool /*isLong*/, ThrottleListener* /*l*/, ThrottleListener::DecisionType /*decision*/) {}
 
 /**
  * Steal or Share a requested throttle.

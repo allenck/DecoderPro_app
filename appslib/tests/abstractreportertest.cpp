@@ -1,6 +1,7 @@
 #include "abstractreportertest.h"
 #include "assert1.h"
 #include "reporter.h"
+#include "rfid/reportervariant.h"
 
 AbstractReporterTest::AbstractReporterTest(QObject *parent) : QObject(parent)
 {

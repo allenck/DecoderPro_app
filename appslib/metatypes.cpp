@@ -297,6 +297,7 @@
 #include "lnmessageserveraction.h"
 #include "jmriclient/jmriclientmonpane.h"
 #include "jmriclient/jmriclientmonaction.h"
+#include "rfid/proxyidtagmanager.h"
 
 bool Metatypes::done = false;
 
@@ -608,6 +609,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LnMessageServerAction>("LnMessageServerAction");
  qRegisterMetaType<JMRIClientMonAction>("JMRIClientMonAction");
  qRegisterMetaType<JMRIClientMonPane>("JMRIClientMonPane");
+ qRegisterMetaType<ProxyIdTagManager>("ProxyIdTagManager");
 
  Metatypes::done = true;
 }

@@ -49,3 +49,11 @@
     /*public*/ bool ProgListenerScaffold::wasRightThread() {
         return wasOnRightThread;
     }
+
+/*public*/ bool ProgListenerScaffold::reset()
+{
+ rcvdInvoked = 0;
+ rcvdValue = -1;
+ rcvdStatus = -1;
+ wasOnRightThread = false;
+}

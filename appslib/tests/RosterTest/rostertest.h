@@ -11,8 +11,8 @@ class RosterTest : public QObject
     Q_OBJECT
 public:
     explicit RosterTest(QObject *parent = nullptr);
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
     /*public*/ TemporaryFolder* folder;// = new TemporaryFolder();
 
 public slots:

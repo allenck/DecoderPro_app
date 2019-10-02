@@ -4,6 +4,8 @@
 #include "idtagmanager.h"
 #include "fileutil.h"
 #include "defaultshutdownmanager.h"
+#include "namedbean.h"
+#include "rfid/defaultidtagmanagerxml.h"
 
 /*private*/ /*static*/ bool DefaultIdTagManager::_initialised = false;
 /*private*/ /*static*/ bool DefaultIdTagManager::_loading = false;
@@ -140,17 +142,21 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 /*protected*/ IdTag* DefaultIdTagManager::createNewIdTag(QString systemName, QString userName) {
-    // we've decided to enforce that IdTag system
-    // names start with ID by prepending if not present
-    if (!systemName.startsWith("ID")) // NOI18N
-        systemName = "ID"+systemName; // NOI18N
-    return (IdTag*)new DefaultIdTag(systemName, userName);
+ // Names start with the system prefix followed by D.
+ // Add the prefix if not present.
+ if (!systemName.startsWith(getSystemPrefix() + typeLetter())) {
+     systemName = getSystemPrefix() + typeLetter() + systemName;
+ }
+ return (IdTag*)new DefaultIdTag(systemName, userName);
 }
 
 //@Override
 /*public*/ IdTag* DefaultIdTagManager::newIdTag(QString systemName, QString userName)
 {
- if (!_initialised && !_loading) init();
+ if (!_initialised && !_loading)
+ {
+  init();
+ }
  if (log->isDebugEnabled()) log->debug("new IdTag:" +( (systemName==NULL) ? "NULL" : systemName)   // NOI18N
    +";"+( (userName==NULL) ? "NULL" : userName)); // NOI18N
  if (systemName == NULL)
@@ -160,18 +166,19 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
         throw new IllegalArgumentException("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
  }
+
  // return existing if there is one
  IdTag* s;
  if ( (userName!=NULL) && ((s = getByUserName(userName)) != NULL))
  {
   if (getBySystemName(systemName)!=s)
-   log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");
+   log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+((NamedBean*)s)->getSystemName()+")");
   return s;
  }
  if ( (s = getBySystemName(systemName)) != NULL)
  {
-  if ((s->getUserName() == NULL) && (userName != NULL))
-    s->setUserName(userName);
+  if ((((NamedBean*)s)->getUserName() == "") && (userName != NULL))
+    ((NamedBean*)s)->setUserName(userName);
   else if (userName != NULL) log->warn("Found IdTag via system name ("+systemName +") with non-NULL user name ("+userName+")"); // NOI18N
   return s;
  }
@@ -180,12 +187,12 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
  s = createNewIdTag(systemName, userName);
 
  // save in the maps
- Register(s);
+ Register((NamedBean*)s);
 
  emit newIdTagCreated((IdTag*)s);
 
  // if that failed, blame it on the input arguements
- if (s == NULL) throw new IllegalArgumentException();
+ if (s == NULL) throw IllegalArgumentException();
 
  return s;
 }
@@ -216,6 +223,13 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 {
     IdTagManagerXml::instance()->store();
     log->debug("...done writing IdTag details");
+}
+
+/*public*/ void DefaultIdTagManager::readIdTagDetails() {
+    log->debug("reading idTag Details");
+    (new DefaultIdTagManagerXml((TranspondingTagManager*)this,"IdTags.xml"))->load();  //NOI18N
+    this->dirty = false;
+    log->debug("...done reading IdTag details");
 }
 
 //@Override
@@ -448,7 +462,7 @@ doc.appendChild(root);
    for (int i=0; i<idTagList.size(); i++)
    {
     IdTag* t = manager->getBySystemName(idTagList.at(i));
-    if (log->isDebugEnabled()) log->debug("Writing IdTag: " + t->getSystemName());
+    if (log->isDebugEnabled()) log->debug("Writing IdTag: " + ((NamedBean*)t)->getSystemName());
         values.appendChild(((DefaultIdTag*)t)->store(doc, manager->isStateStored()));
     }
     writeXML(file, doc);

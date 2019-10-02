@@ -12,7 +12,6 @@ RosterEntryPaneTestAction::RosterEntryPaneTestAction(QString text, QObject* pare
 void RosterEntryPaneTestAction::actionPerformed()
 {
     RosterEntryPaneTest* ret = new RosterEntryPaneTest();
-    ret->setUp();
     try
     {
         QStringList testList = QStringList()
@@ -35,8 +34,6 @@ void RosterEntryPaneTestAction::actionPerformed()
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
-
     }
-    ret->tearDown();
 }
 Logger* RosterEntryPaneTestAction::log = LoggerFactory::getLogger("RosterEntryPaneTestAction");

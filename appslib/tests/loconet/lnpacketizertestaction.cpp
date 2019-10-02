@@ -3,7 +3,7 @@
 #include "joptionpane.h"
 #include "assert1.h"
 #include "loggerfactory.h"
-
+#include "junitutil.h"
 
 LnPacketizerTestAction::LnPacketizerTestAction(QObject* parent) : AbstractAction(tr("LnPacketizer Test"), parent)
 {
@@ -13,25 +13,24 @@ LnPacketizerTestAction::LnPacketizerTestAction(QObject* parent) : AbstractAction
 void LnPacketizerTestAction::actionPerformed()
 {
     LnPacketizerTest* lnpct = new LnPacketizerTest();
-    lnpct->setUp();
     try
     {
      QStringList testList = QStringList()
      << "testCtor"
      << "testStatusWithoutInit"
      << "testStartThreads";
-     foreach(QString test, testList)
-     {
-      log->info(tr("begin '%1'").arg(test));
-      QMetaObject::invokeMethod(lnpct, test.toLocal8Bit(), Qt::DirectConnection);
-      log->info(tr("end '%1'").arg(test));
-     }
+//     foreach(QString test, testList)
+//     {
+//      log->info(tr("begin '%1'").arg(test));
+//      QMetaObject::invokeMethod(lnpct, test.toLocal8Bit(), Qt::DirectConnection);
+//      log->info(tr("end '%1'").arg(test));
+//     }
+     JUnitUtil::runTests(lnpct, testList);
     }
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
-    lnpct->tearDown();
 }
 Logger* LnPacketizerTestAction::log = LoggerFactory::getLogger("LnPacketizerTestAction");
 

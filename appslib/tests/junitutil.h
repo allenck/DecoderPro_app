@@ -23,6 +23,9 @@ public:
     static /*public*/ void waitFor(ReleaseUntil *condition, QString name);
     static /*public*/ bool waitFor(ReleaseUntil* condition);
     static /*public*/ void waitFor(int time);
+    /*public*/ static void runTests(QObject *test, QStringList testList);
+    static QString getTestClassName();
+
 signals:
 
 public slots:
@@ -77,8 +80,7 @@ private:
 
     static /*private*/ bool isLoggingInitialized;// = false;
     static /*private*/ QString initPrefsDir;// = null;
-    static QString getTestClassName();
-
+    static QString testClassName;
 };
 
 class /*interface*/ ReleaseUntil : public QObject

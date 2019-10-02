@@ -37,8 +37,8 @@ using namespace Sprog;
 
 //@Override
 /*public*/ bool SprogProgrammer::getCanRead() {
-    if (getMode() == (ProgrammingMode::PAGEMODE)) return true;
-    else if (getMode() ==(ProgrammingMode::DIRECTBITMODE)) return true;
+    if (getMode()->equals(ProgrammingMode::PAGEMODE)) return true;
+    else if (getMode()->equals(ProgrammingMode::DIRECTBITMODE)) return true;
     else {
         log->error(tr("Unknown internal mode %1 returned true from getCanRead()").arg(getMode()->toString()));
         return true;

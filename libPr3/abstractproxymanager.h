@@ -5,10 +5,12 @@
 #include "logger.h"
 #include "libPr3_global.h"
 #include <QSet>
+#include "idtagmanager.h"
 
 class LIBPR3SHARED_EXPORT AbstractProxyManager :  public AbstractManager
 {
     Q_OBJECT
+  //Q_INTERFACES(IdTagManager)
 public:
     explicit AbstractProxyManager(QObject *parent = 0);
     /**

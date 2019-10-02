@@ -42,6 +42,7 @@
  * @since       2.11.4
  */
 /*public*/ /*interface*/class IdTagManager : public AbstractManager {
+ Q_OBJECT
 public:
      IdTagManager(QObject* parent = 0) : AbstractManager(parent) {}
     /**
@@ -174,5 +175,5 @@ public:
     /*public*/ virtual bool isInitialised() {return false;}
  friend class IdTagManagerXml;
 };
-
+//Q_DECLARE_INTERFACE(IdTagManager, "IdTagManager")
 #endif // IDTAGMANAGER_H

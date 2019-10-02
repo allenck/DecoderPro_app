@@ -10,8 +10,8 @@ namespace Sprog
         Q_OBJECT
     public:
         SprogMessageTest();
-        /*public*/ void setUp();
-        /*public*/ void tearDown();
+        Q_INVOKABLE/*public*/ void setUp();
+        Q_INVOKABLE/*public*/ void tearDown();
     public slots:
         /*public*/ void testReadCv();
         /*public*/ void testWriteCV();

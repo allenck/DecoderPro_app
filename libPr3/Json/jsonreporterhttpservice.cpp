@@ -3,6 +3,7 @@
 #include "jsonreporter.h"
 #include "reportermanager.h"
 #include "instancemanager.h"
+#include "reportervariant.h"
 /**
  *
  * @author Randall Wood (C) 2016

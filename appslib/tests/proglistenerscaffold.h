@@ -13,6 +13,7 @@ public:
     /*public*/ int getRcvdStatus();
     /*public*/ int getRcvdInvoked();
     /*public*/ bool wasRightThread();
+    /*public*/ bool reset();
 
 private:
     /*private*/ int rcvdValue;

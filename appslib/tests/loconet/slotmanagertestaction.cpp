@@ -13,7 +13,6 @@ connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 void SlotManagerTestAction::actionPerformed()
 {
     SlotManagerTest* test = new SlotManagerTest();
-    test->setUp();
     try
     {
       QStringList testList = QStringList()
@@ -38,17 +37,17 @@ void SlotManagerTestAction::actionPerformed()
         << "testReadThroughFacadeFail"
         << "testGetProgrammingModes"
         << "testSendPacket";
-      foreach(QString testName, testList)
-      {
-       log->info(tr("begin '%1'").arg(testName));
-       QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
-       log->info(tr("end '%1'").arg(testName));
-      }
+//      foreach(QString testName, testList)
+//      {
+//       log->info(tr("begin '%1'").arg(testName));
+//       QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
+//       log->info(tr("end '%1'").arg(testName));
+//      }
+      JUnitUtil::runTests(test, testList);
     }
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
-    test->tearDown();
 }
 Logger* SlotManagerTestAction::log = LoggerFactory::getLogger("SlotManagerTestAction");

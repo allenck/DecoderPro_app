@@ -12,6 +12,7 @@
 #include <QSpinBox>
 #include <reportable.h>
 #include "vptr.h"
+#include "rfid/reportervariant.h"
 
 //ReporterTableAction::ReporterTableAction()
 //{
@@ -108,7 +109,7 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
       return "";
    }
    //else if(value instanceof jmri.Reportable)
-   if(value.canConvert<Reportable>())
+   if(value.canConvert<Reportable*>())
    {
       //return ((jmri.Reportable)value).toReportString();
        //return value.convert<Reportable>();

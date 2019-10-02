@@ -12,7 +12,6 @@ SprogMessageTestAction::SprogMessageTestAction(QObject *parent) : AbstractAction
 void SprogMessageTestAction::actionPerformed()
 {
     Sprog::SprogMessageTest* smt = new Sprog::SprogMessageTest();
-    smt->setUp();
     try
     {
      QStringList testList = QStringList()
@@ -36,6 +35,5 @@ void SprogMessageTestAction::actionPerformed()
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
-    smt->tearDown();
 }
 Logger* SprogMessageTestAction::log = LoggerFactory::getLogger("SprogMessageTestAction");

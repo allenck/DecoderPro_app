@@ -74,7 +74,7 @@ void RfidReporter::init()
    }
    else
    {
-    log->debug(tr("Current report was: ")+(VPtr<IdTag>::asPtr(r->getCurrentReport())->getDisplayName()));
+ // TODO:   log->debug(tr("Current report was: ")+ VPtr<IdTag*>::asPtr(r->getCurrentReport())->getDisplayName());
    }
   }
   ((DefaultIdTag*)id)->setWhereLastSeen((Reporter*)this);

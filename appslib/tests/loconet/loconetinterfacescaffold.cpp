@@ -66,6 +66,10 @@ void LocoNetInterfaceScaffold::forwardMessage(int i) {
     // forward a test message to LocoNetListeners
     log->debug(tr("sendTestMessage    [%1]").arg(m->toString()));
 // TODO    notify(m);
+    // set the error correcting code byte(s) before transmittal
+    m->setParity();
+    LocoNetMessage* msgcopy = new LocoNetMessage(*m);
+    emit sendMessage(msgcopy);
     return;
 }
 

@@ -1,18 +1,45 @@
 #ifndef LNREPORTER_H
 #define LNREPORTER_H
-#include "abstractreporter.h"
+#include "rfid/abstractidtagreporter.h"
 #include "lntrafficcontroller.h"
 #include "locoaddress.h"
 #include "dcclocoaddress.h"
 #include "physicallocationreporter.h"
 
-class LnReporter : public AbstractReporter /*, public PhysicalLocationReporter*/
+class ReporterVariantEntrySet : public QSet<TranspondingTag*>
+{
+public:
+ bool contains(ReporterVariant rv) const
+ {
+   if(rv.type() == QMetaType::VoidStar)
+   {
+    QObject* obj = VPtr<QObject>::asPtr(rv);
+    if(obj == nullptr)
+     return false;
+
+    if(qobject_cast<TranspondingTag*>(obj)!= nullptr)
+    {
+     TranspondingTag* tag = (TranspondingTag*)obj;
+     return QSet<TranspondingTag*>::contains(tag);
+    }
+   }
+   return false;
+ }
+ bool contains(TranspondingTag* tag)
+ {
+  return contains(VPtr<TranspondingTag>::asQVariant(tag));
+ }
+};
+
+class IdTag;
+class TranspondingTag;
+class LnReporter : public AbstractIdTagReporter /*, public PhysicalLocationReporter*/
 
 {
     Q_OBJECT
 public:
     //explicit LnReporter(QObject *parent = 0);
-    LnReporter(int number, LnTrafficController* tc, QString prefix, QObject* parent); // a human-readable Reporter number must be specified!
+    LnReporter(int number, LnTrafficController* tc, QString prefix, QObject* parent= nullptr); // a human-readable Reporter number must be specified!
     int getNumber();
     // implementing classes will typically have a function/listener to get
     // updates from the layout, which will then call
@@ -54,6 +81,8 @@ public:
    PhysicalLocationReporter::Direction getDirection(QString rep);
    PhysicalLocation* getPhysicalLocation();
    PhysicalLocation* getPhysicalLocation(QString s);
+   /*public*/ int getLocoAddrFromTranspondingMsg(LocoNetMessage* l);
+   /*public*/ ReporterVariantEntrySet getCollection();
 
 signals:
     
@@ -70,7 +99,7 @@ private:
      * Handle LISSY message
      */
     void lissyReport(LocoNetMessage* l);
-    int lastLoco;
+    int lastLoco = -1;
     // parseReport()
     // Parses out a (possibly old) LnReporter-generated report string to extract info used by
     // the public PhysicalLocationReporter methods.  Returns a Matcher that, if successful, should
@@ -87,7 +116,10 @@ private:
     int _number;   // loconet Reporter number
     bool myAddress(int a1, int a2);
   Logger log;
+  /*private*/ int state = UNKNOWN;
+  ReporterVariantEntrySet entrySet;
     
+  friend class LnReporterTest;
 };
 
 #endif // LNREPORTER_H

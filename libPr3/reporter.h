@@ -4,7 +4,9 @@
 #include <QObject>
 #include "abstractnamedbean.h"
 #include "propertychangesupport.h"
+//#include "rfid/reportervariant.h"
 
+class ReporterVariant;
 class Reporter : /*virtual*/ public AbstractNamedBean
 {
     Q_OBJECT
@@ -68,14 +70,14 @@ public:
          * current report will be equal.  If nothing has ever
          * been reported, this will return a null object.
          */
-        virtual QVariant getLastReport()  {return QVariant();}
+        virtual ReporterVariant getLastReport()  =0; //{return QVariant();}
 
         /**
          * Query the current report.  If there is no current report
          * available (e.g. the reporting hardware says no information is
          * currently available) this will return a null object.
          */
-        virtual QVariant getCurrentReport() {return QVariant();}
+        virtual ReporterVariant getCurrentReport() =0;//{return QVariant();}
 
         /**
          * Set the report to an arbitrary object.

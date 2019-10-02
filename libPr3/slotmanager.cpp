@@ -804,10 +804,10 @@ void SlotManager::writeCV(int CV, int val, ProgListener* p) throw(ProgrammerExce
  mServiceMode = true;
     // parse the programming command
  int pcmd = 0x43;       // LPE implies 0x40, but 0x43 is observed
- if (getMode() == (ProgrammingMode::PAGEMODE)) pcmd = pcmd | 0x20;
- else if (getMode() == ProgrammingMode::DIRECTBYTEMODE) pcmd = pcmd | 0x28;
- else if (getMode() == ProgrammingMode::REGISTERMODE
-             || getMode() == ProgrammingMode::ADDRESSMODE) pcmd = pcmd | 0x10;
+ if (getMode()->equals(ProgrammingMode::PAGEMODE)) pcmd = pcmd | 0x20;
+ else if (getMode()->equals(ProgrammingMode::DIRECTBYTEMODE)) pcmd = pcmd | 0x28;
+ else if (getMode()->equals(ProgrammingMode::REGISTERMODE)
+             || getMode()->equals(ProgrammingMode::ADDRESSMODE)) pcmd = pcmd | 0x10;
  else
  //throw (new ProgrammerException("mode not supported"));
   emit programmerException("mode not supported");
@@ -854,7 +854,7 @@ void SlotManager::confirmCVOpsMode(int CV, int val, ProgListener* p,
     lopsa = 0;
     hopsa = 0;
     mServiceMode = true;
-    if (getMode() == (csOpSwProgrammingMode))
+    if (getMode()->equals(csOpSwProgrammingMode))
     {
         log->debug("cvOpSw mode!");
         //handle Command Station OpSw programming here
@@ -879,12 +879,12 @@ void SlotManager::confirmCVOpsMode(int CV, int val, ProgListener* p,
 
     // parse the programming command
     int pcmd = 0x03;       // LPE imples 0x00, but 0x03 is observed
-    if (getMode() == (ProgrammingMode::PAGEMODE)) {
+    if (getMode()->equals(ProgrammingMode::PAGEMODE)) {
         pcmd = pcmd | 0x20;
-    } else if (getMode() == (ProgrammingMode::DIRECTBYTEMODE)) {
+    } else if (getMode()->equals(ProgrammingMode::DIRECTBYTEMODE)) {
         pcmd = pcmd | 0x28;
-    } else if (getMode() == (ProgrammingMode::REGISTERMODE)
-            || getMode() == (ProgrammingMode::ADDRESSMODE)) {
+    } else if (getMode()->equals(ProgrammingMode::REGISTERMODE)
+            || getMode()->equals(ProgrammingMode::ADDRESSMODE)) {
         pcmd = pcmd | 0x10;
     } else {
         throw ProgrammerException("mode not supported"); // NOI18N
@@ -1220,7 +1220,7 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
 //@Override
 /*public*/ void SlotManager::writeCV(QString cvNum, int val, ProgListener* p) throw (ProgrammerException) {
     log->debug(tr("writeCV(string): cvNum=%1, value=%2").arg(cvNum).arg(val));
-    if (getMode() == (csOpSwProgrammingMode)) {
+    if (getMode()->equals(csOpSwProgrammingMode)) {
         log->debug("cvOpSw mode write!");
         // handle Command Station OpSw programming here
         QStringList parts = cvNum.split(QRegExp("\\."));
@@ -1251,12 +1251,12 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
         mServiceMode = true;
         // parse the programming command
         int pcmd = 0x43;       // LPE imples 0x40, but 0x43 is observed
-        if (getMode() == (ProgrammingMode::PAGEMODE)) {
+        if (getMode()->equals(ProgrammingMode::PAGEMODE)) {
             pcmd = pcmd | 0x20;
-        } else if (getMode() == (ProgrammingMode::DIRECTBYTEMODE)) {
+        } else if (getMode()->equals(ProgrammingMode::DIRECTBYTEMODE)) {
             pcmd = pcmd | 0x28;
-        } else if (getMode() == (ProgrammingMode::REGISTERMODE)
-                || getMode() == (ProgrammingMode::ADDRESSMODE)) {
+        } else if (getMode()->equals(ProgrammingMode::REGISTERMODE)
+                || getMode()->equals(ProgrammingMode::ADDRESSMODE)) {
             pcmd = pcmd | 0x10;
         } else {
             throw ProgrammerException("mode not supported"); // NOI18N
@@ -1277,7 +1277,7 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
 /*public*/ void SlotManager::readCV(QString cvNum, ProgListener* p) throw (ProgrammerException)
 {
  log->debug(tr("readCV(string): cvNum=%1 mode=%2").arg(cvNum).arg(getMode()->toString()));
- if (getMode() == (csOpSwProgrammingMode))
+ if (getMode()->equals(csOpSwProgrammingMode))
  {
      log->debug("cvOpSw mode!");
      //handle Command Station OpSw programming here
@@ -1309,12 +1309,12 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
      mServiceMode = true;
      // parse the programming command
      int pcmd = 0x03;       // LPE imples 0x00, but 0x03 is observed
-     if (getMode() == (ProgrammingMode::PAGEMODE)) {
+     if (getMode()->equals(ProgrammingMode::PAGEMODE)) {
          pcmd = pcmd | 0x20;
-     } else if (getMode() ==(ProgrammingMode::DIRECTBYTEMODE)) {
+     } else if (getMode()->equals(ProgrammingMode::DIRECTBYTEMODE)) {
          pcmd = pcmd | 0x28;
-     } else if (getMode() ==(ProgrammingMode::REGISTERMODE)
-             || getMode() ==(ProgrammingMode::ADDRESSMODE)) {
+     } else if (getMode()->equals(ProgrammingMode::REGISTERMODE)
+             || getMode()->equals(ProgrammingMode::ADDRESSMODE)) {
          pcmd = pcmd | 0x10;
      } else {
          throw ProgrammerException("mode not supported"); // NOI18N

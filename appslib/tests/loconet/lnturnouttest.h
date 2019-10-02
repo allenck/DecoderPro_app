@@ -15,6 +15,9 @@ public:
     /*public*/ int numListeners();
     /*public*/ void checkClosedMsgSent() throw (InterruptedException);
     /*public*/ void checkThrownMsgSent() throw (InterruptedException);
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
+public slots:
     /*public*/ void checkIncoming();
     /*public*/ void checkIncomingWithAck();
     /*public*/ void testLnTurnoutStatusMsg();
@@ -39,8 +42,6 @@ public:
     /*public*/ void testSetKnownStateFromOutputStateReport();
     /*public*/ void testComputeFeedbackFromSwitchOffReport();
     /*public*/ void testAdjustStateForInversion();
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
 
 private:
     static Logger* log;

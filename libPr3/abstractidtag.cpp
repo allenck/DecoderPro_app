@@ -1,7 +1,9 @@
 #include "abstractidtag.h"
+#include "rfid/proxyidtagmanager.h"
+#include "instancemanager.h"
 
 AbstractIdTag::AbstractIdTag(QObject *parent) :
-    IdTag(parent)
+    AddressedIdTag(parent)
 {
  init();
 }
@@ -33,14 +35,14 @@ const int IdTag::SEEN = 0x03;
 ///*public*/ abstract class AbstractIdTag extends AbstractNamedBean implements IdTag {
 
 /*public*/ AbstractIdTag::AbstractIdTag(QString systemName, QObject *parent)
-    : IdTag(systemName,parent)
+    : AddressedIdTag(systemName,parent)
 {
  init();
     //super(systemName.toUpperCase());
 }
 
 /*public*/ AbstractIdTag::AbstractIdTag(QString systemName, QString userName, QObject* parent)
-    : IdTag(systemName, userName, parent)
+    : AddressedIdTag(systemName, userName, parent)
 {
  //super(systemName.toUpperCase(), userName);
  init();
@@ -53,16 +55,42 @@ void AbstractIdTag::init()
 
  _whenLastSeen = QDateTime();
 
-
+ prefix = "";
 }
 
 //@Override
 /*public*/ QString AbstractIdTag::getTagID() {
-    // TODO: Convert this to allow for >1 char system name length
-    // Or, is this really necessary as it will always be 'I'nternal???
-    return this->mSystemName.mid(2);
+ if(prefix == "")
+ {
+  try
+  {
+   prefix = findPrefix();
+  }
+  catch ( NullPointerException  e) {
+         // if there isn't a ProxyIDTag Manager, assume the first D in the
+         //  system name is the type letter.
+         return mSystemName.mid(mSystemName.indexOf('D') + 1);
+
+     }
+  catch (  BadSystemNameException e) {
+         // if there isn't a ProxyIDTag Manager, assume the first D in the
+         //  system name is the type letter.
+         return mSystemName.mid(mSystemName.indexOf('D') + 1);
+
+     }
+ }
+ return mSystemName.mid(prefix.length()+1);
 }
 
+/*private*/ QString AbstractIdTag::findPrefix() {
+        QList<Manager*> managerList = ((ProxyIdTagManager*)InstanceManager::getDefault("ProxyIdTagManager"))->getManagerList();
+        for (Manager* m : managerList) {
+            if (m->getBeanBySystemName(mSystemName) != nullptr) {
+                return m->getSystemPrefix();
+            }
+        }
+        throw BadSystemNameException();
+    }
 //@Override
 /*public*/ Reporter* AbstractIdTag::getWhereLastSeen() {
     return this->_whereLastSeen;

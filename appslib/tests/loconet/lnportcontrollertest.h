@@ -11,8 +11,8 @@ class LnPortControllerTest : public AbstractSerialPortControllerTestBase
     Q_OBJECT
 public:
     explicit LnPortControllerTest(QObject *parent = nullptr);
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
 
 signals:
 

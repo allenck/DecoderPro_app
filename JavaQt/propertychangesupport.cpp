@@ -300,12 +300,9 @@
  */
 /*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue)
 {
- if (oldValue == QVariant() || newValue == QVariant() || !(oldValue==newValue))
- {
-  //firePropertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
-  emit propertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
-  //emit propertyChange(propertyName, oldValue, newValue);
- }
+ if (!oldValue.isNull() && oldValue==(newValue))
+  return;
+ emit propertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
 }
 
 //void PropertyChangeSupport::firePropertyChange(QString propertyName, QObject* oldValue, QObject* newValue)

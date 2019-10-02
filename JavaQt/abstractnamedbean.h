@@ -97,6 +97,7 @@ private:
   friend class AbstractCatalogTree;
   friend class JMRIClientTurnout;
   friend class JMRIClientLight;
+  friend class LnReporter;
 };
 
 #endif // ABSTRACTNAMEDBEAN_H

@@ -103,7 +103,6 @@ SOURCES += \
     dccmanufacturerlist.cpp \
     lnconnectiontypelist.cpp \
     activeflag.cpp \
-    loconetlistener.cpp \
     lnportcontroller.cpp \
     lntrafficcontroller.cpp \
     abstractserialportcontroller.cpp \
@@ -925,7 +924,14 @@ SOURCES += \
     lnpacketizerstrict.cpp \
     loconet/lntrafficrouter.cpp \
     consistpreferencesmanager.cpp \
-    speedstepmode.cpp
+    speedstepmode.cpp \
+    rfid/defaultidtagmanagerxml.cpp \
+    rfid/transpondingtagmanager.cpp \
+    rfid/conflictingsystemconnectionmemo.cpp \
+    rfid/transpondingtag.cpp \
+    rfid/proxyidtagmanager.cpp \
+    rfid/abstractidtagreporter.cpp \
+    rfid/idtaglistener.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1844,7 +1850,16 @@ HEADERS += \
     lnpacketizerstrict.h \
     loconet/lntrafficrouter.h \
     consistpreferencesmanager.h \
-    speedstepmode.h
+    speedstepmode.h \
+    rfid/transpondingtagmanager.h \
+    rfid/conflictingsystemconnectionmemo.h \
+    rfid/transpondingtag.h \
+    rfid/defaultidtagmanagerxml.h \
+    rfid/proxyidtagmanager.h \
+    rfid/abstractidtagreporter.h \
+    rfid/idtaglistener.h \
+    rfid/addressedidtag.h \
+    rfid/reportervariant.h
 
  !contains(FTDI, 1) {
     HEADERS +=
@@ -1925,8 +1940,8 @@ OTHER_FILES += \
     turnouts.sip \
     configure.py
 
-DEPENDPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet Json WiThrottle Web
-INCLUDEPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet Json WiThrottle Web
+DEPENDPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet Json WiThrottle Web rfid
+INCLUDEPATH += . Signal ./Throttle Roster LocoIO loconet/Pr3 loconet Json WiThrottle Web rfid
 
 win32:CONFIG(debug, debug|release): LIBS += -L"C:/Program Files (x86)/local/lib" -lquazip
 else:unix: LIBS += -L/usr/local/lib/ -lquazip

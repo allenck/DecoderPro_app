@@ -10,8 +10,8 @@ class ProfileManagerTest : public QObject
     Q_OBJECT
 public:
     explicit ProfileManagerTest(QObject *parent = nullptr);
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
 public slots:
     /*public*/ void testCTor();
     /*public*/ void testSetActiveProfile_Profile() throw (IOException);

@@ -47,6 +47,7 @@ protected:
  friend class ReleaseUntilO8;
  friend class ReleaseUntilO9;
 };
+
 /*protected*/ class ListenO2 : public PropertyChangeListener {
 Q_OBJECT
     AbstractSensorTestBase* test;
@@ -54,10 +55,9 @@ public:
     ListenO2(AbstractSensorTestBase* test) {this->test = test;}
 public slots:
     //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* e) {
-        test->listenerResult = true;
-    }
+    /*public*/ void propertyChange(PropertyChangeEvent* e);
 };
+
 class  ReleaseUntilO8 : public ReleaseUntil
 {
     Q_OBJECT

@@ -90,7 +90,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * instance already exists.
  * @return requested Turnout object or null if none exists
  */
-/*public*/ Turnout* ProxyTurnoutManager::getBySystemName(QString systemName)
+/*public*/ Turnout *ProxyTurnoutManager::getBySystemName(QString systemName)
 {
  return (Turnout*) AbstractProxyManager::getBeanBySystemName(systemName);
 }
@@ -100,7 +100,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * instance already exists.
  * @return requested Turnout object or null if none exists
  */
-/*public*/ Turnout* ProxyTurnoutManager::getByUserName(QString userName) {
+/*public*/ Turnout *ProxyTurnoutManager::getByUserName(QString userName) {
     return (Turnout*) AbstractProxyManager::getBeanByUserName(userName);
 }
 

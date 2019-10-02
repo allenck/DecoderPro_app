@@ -11,8 +11,8 @@ class LnPowerManagerTest : public AbstractPowerManagerTestBase
     Q_OBJECT
 public:
     LnPowerManagerTest();
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
 public slots:
     /*public*/ void testImplementsIdle();
     /*public*/ void testStateIdle() throw (JmriException);

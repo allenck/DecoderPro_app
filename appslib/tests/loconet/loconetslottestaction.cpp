@@ -3,6 +3,7 @@
 #include "assert1.h"
 #include "joptionpane.h"
 #include "loggerfactory.h"
+#include "junitutil.h"
 
 LocoNetSlotTestAction::LocoNetSlotTestAction(QObject *parent) : AbstractAction(tr("LocoNet Slot test"),parent)
 {
@@ -12,7 +13,6 @@ LocoNetSlotTestAction::LocoNetSlotTestAction(QObject *parent) : AbstractAction(t
 void LocoNetSlotTestAction::actionPerformed()
 {
     LocoNetSlotTest* test = new LocoNetSlotTest();
-    test->setUp();
     try
     {
      QStringList testList = QStringList()
@@ -67,12 +67,13 @@ void LocoNetSlotTestAction::actionPerformed()
 //      << "checkFastClockGetSetMethods"
       << "checkSetAndGetTrackStatus"
       << "checkIsF0ToF8";
-        foreach(QString testName, testList)
-        {
-         log->info(tr("begin '%1'").arg(testName));
-         QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
-         log->info(tr("end '%1'").arg(testName));
-        }
+//        foreach(QString testName, testList)
+//        {
+//         log->info(tr("begin '%1'").arg(testName));
+//         QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
+//         log->info(tr("end '%1'").arg(testName));
+//        }
+     JUnitUtil::runTests(test, testList);
     }
     catch (AssertionError er)
     {
@@ -84,7 +85,6 @@ void LocoNetSlotTestAction::actionPerformed()
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
 
     }
-    test->tearDown();
 }
 
 Logger* LocoNetSlotTestAction::log = LoggerFactory::getLogger("LocoNetSlotTestAction");

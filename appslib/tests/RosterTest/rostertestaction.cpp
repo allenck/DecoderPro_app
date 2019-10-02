@@ -17,30 +17,8 @@ RosterTestAction::RosterTestAction(QString text, QObject* parent) : AbstractActi
 void RosterTestAction::actionPerformed()
 {
     RosterTest* rt = new RosterTest();
-    rt->setUp();
     try
     {
-#if 0
-        rt->testDirty();
-        rt->testAdd();
-        rt->testDontAddNullEntriesLater();
-        rt->testDontAddNullEntriesFirst();
-        rt->testAddrSearch();
-        rt->testGetByDccAddress();
-        rt->testSearchList();
-        rt->testComboBox();
-        rt->testBackupFile();
-        rt->testReadWrite();
-        rt->testAttributeAccess();
-        rt->testAttributeValueAccess();
-        rt->testAttributeList();
-        rt->testDefaultLocation();
-        rt->testProfileOnePointForward();
-        rt->testProfileTwoPointForward();
-        rt->testProfileTwoPointReverse();
-        rt->testProfileTwoPointForwardGetThrottleSetting();
-        rt->testProfileTwoPointReverseGetThrottleSetting();
-#else
         QStringList testList = QStringList()
              << "testDirty"
              << "testAdd"
@@ -67,14 +45,11 @@ void RosterTestAction::actionPerformed()
          QMetaObject::invokeMethod(rt, test.toLocal8Bit(), Qt::DirectConnection);
          log->info(tr("end '%1'").arg(test));
         }
-
-#endif
     }
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
-    rt->tearDown();
 }
 
 Logger* RosterTestAction::log = LoggerFactory::getLogger("RosterTestAction");

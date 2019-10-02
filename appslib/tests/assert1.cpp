@@ -4,6 +4,7 @@
 //#include "reporter.h"
 #include "joptionpane.h"
 #include "mathutil.h"
+#include "junitutil.h"
 
 //Assert::Assert(QObject *parent) : QObject(parent)
 //{
@@ -70,7 +71,7 @@
      * 20: athrow
      *  */
     // </editor-fold>
-    QString info = tr("Assert at line %1 in %2\n").arg(line).arg(file);
+    QString info = tr("Assert at line %1 in %2:\n %3\n").arg(line).arg(file).arg(JUnitUtil::getTestClassName());
         //throw AssertionError("unknown error");
     JOptionPane::showMessageDialog(nullptr, info + message, "unknown error",  JOptionPane::WARNING_MESSAGE);
     return;
@@ -175,33 +176,32 @@
 
 /*public*/ /*static*/ void Assert::assertEquals(QString message, QString expected, QString actual, QString file, int line)
 {
-if(expected != actual)
-    fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected).arg(actual), file, line);
+ if(expected != actual)
+     fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected).arg(actual), file, line);
 }
 
 /*public*/ /*static*/ void Assert::assertEquals(QString message, double expected, double actual, QString file, int line)
 {
-if(! MathUtil::equals(expected, actual))
-    fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected).arg(actual), file, line);
-
+ if(! MathUtil::equals(expected, actual))
+     fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected).arg(actual), file, line);
 }
 
 /*public*/ /*static*/ void Assert::assertEquals(QString message, float expected, float actual, QString file, int line)
 {
-if(! MathUtil::equals(expected, actual))
-    fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected).arg(actual), file, line);
+ if(! MathUtil::equals(expected, actual))
+     fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected).arg(actual), file, line);
 }
 
 /*public*/ /*static*/ void Assert::assertEquals(QString message, int expected, int actual, QString file, int line)
 {
-if(expected != actual)
-    fail(tr("%1 not equal expected '0x%2' vs '0x%3'").arg(message).arg(expected,0,16).arg(actual,0,16), file, line);
+ if(expected != actual)
+     fail(tr("%1 not equal expected '0x%2 (%4)' vs '0x%3' (%5)").arg(message).arg(expected,0,16).arg(actual,0,16).arg(expected).arg(actual), file, line);
 }
 
 /*public*/ /*static*/ void Assert::assertEquals(QString message, long expected, long actual, QString file, int line)
 {
-if(expected != actual)
-fail(tr("%1 not equal expected '0x%2' vs '0x%3'").arg(message).arg(expected,0,16).arg(actual,0,16), file, line);
+ if(expected != actual)
+  fail(tr("%1 not equal expected '0x%2' vs '0x%3'").arg(message).arg(expected,0,16).arg(actual,0,16), file, line);
 }
 
 /*public*/ /*static*/ void Assert::assertEquals(QDomElement expected, QDomElement actual, QDomElement delta, QString file, int line)
@@ -212,8 +212,8 @@ fail(tr("%1 not equal expected '0x%2' vs '0x%3'").arg(message).arg(expected,0,16
 }
 /*public*/ /*static*/ void Assert::assertEquals(QString message, QChar expected, QChar actual, QString file, int line)
 {
-if(expected != actual)
-fail(tr("%1 not equal expected '0x%2' vs '0x%3'").arg(message).arg(expected,0,16).arg(actual,0,16), file, line);
+ if(expected != actual)
+  fail(tr("%1 not equal expected '0x%2' vs '0x%3'").arg(message).arg(expected,0,16).arg(actual,0,16), file, line);
 }
 
 #if 0
@@ -953,7 +953,7 @@ if(object.isNull())
      * 10: return
      *  */
     // </editor-fold>
-    if(object == nullptr)
+    if(object != nullptr)
         fail(tr("%1 object is null").arg(message), file, line);
 
 }

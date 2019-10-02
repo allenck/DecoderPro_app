@@ -15,8 +15,8 @@ class LnOpsModeProgrammerTest : public AddressedProgrammerTestBase
     Q_OBJECT
 public:
     LnOpsModeProgrammerTest();
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
 public slots:
     /*public*/ void testGetCanWriteAddress();
     /*public*/ void testSetMode();

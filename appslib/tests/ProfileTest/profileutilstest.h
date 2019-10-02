@@ -10,8 +10,8 @@ class ProfileUtilsTest : public QObject
     Q_OBJECT
 public:
     explicit ProfileUtilsTest(QObject *parent = nullptr);
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
 public slots:
     /*public*/ void testCopy();
     /*public*/ void testCopyToActive();

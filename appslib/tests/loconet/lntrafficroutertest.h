@@ -10,18 +10,15 @@ class LnTrafficRouterTest : public QObject
     Q_OBJECT
 public:
     explicit LnTrafficRouterTest(QObject *parent = nullptr);
-    /*public*/ void testConnectAndSend();
-
-
-    //@Test
-    /*public*/ void testReceiveAndForward();
-    /*public*/ void testConnectAndDisconnect();
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
 
 signals:
 
 public slots:
+ /*public*/ void testConnectAndSend();
+ /*public*/ void testReceiveAndForward();
+ /*public*/ void testConnectAndDisconnect();
 
 private:
     /*private*/ LocoNetSystemConnectionMemo* memo;

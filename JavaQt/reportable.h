@@ -26,12 +26,13 @@
 /*public*/ /*interface*/class Reportable : public AbstractNamedBean{
 Q_OBJECT
 public:
- Reportable(QObject* parent=nullptr) : AbstractNamedBean(parent) {}
- Reportable(QString sysName, QObject* parent=nullptr) : AbstractNamedBean(sysName, parent) {}
- Reportable(QString sysName, QString userName, QObject* parent=nullptr) : AbstractNamedBean(sysName, userName, parent) {}
- ~Reportable() {}
- Reportable(const Reportable&) : AbstractNamedBean() {}
-     /**
+   Reportable(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
+   Reportable(QString sysName, QObject* parent) : AbstractNamedBean(sysName,parent) {}
+   Reportable(QString sysName, QString usrName, QObject* parent) : AbstractNamedBean(sysName, usrName, parent) {}
+   ~Reportable() {}
+   Reportable(const Reportable&): AbstractNamedBean() {}
+
+    /**
       * Provide a string representation of the object, possibly including state
       * information, suitable for display in an on-screen reporter. A default
       * impelmentation provided here calls toString(), which may not be
@@ -43,4 +44,5 @@ public:
 
 };
 Q_DECLARE_METATYPE(Reportable)
+//Q_DECLARE_INTERFACE(Reportable, "Reportable")
 #endif // REPORTABLE_H

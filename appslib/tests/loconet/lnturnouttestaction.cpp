@@ -3,6 +3,7 @@
 #include "joptionpane.h"
 #include "assert1.h"
 #include "loggerfactory.h"
+#include "junitutil.h"
 
 
 LnTurnoutTestAction::LnTurnoutTestAction(QObject* parent) : AbstractAction(tr("LnTurnout test"), parent)
@@ -13,7 +14,6 @@ LnTurnoutTestAction::LnTurnoutTestAction(QObject* parent) : AbstractAction(tr("L
 void LnTurnoutTestAction::actionPerformed()
 {
     LnTurnoutTest* test = new LnTurnoutTest();
-    test->setUp();
     try
     {
      QStringList testList = QStringList()
@@ -62,17 +62,17 @@ void LnTurnoutTestAction::actionPerformed()
      << "testSetKnownStateFromOutputStateReport"
      << "testComputeFeedbackFromSwitchOffReport"
      << "testAdjustStateForInversion";
-     foreach(QString testName, testList)
-     {
-      log->info(tr("begin '%1'").arg(testName));
-      QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
-      log->info(tr("end '%1'").arg(testName));
-     }
+//     foreach(QString testName, testList)
+//     {
+//      log->info(tr("begin '%1'").arg(testName));
+//      QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
+//      log->info(tr("end '%1'").arg(testName));
+//     }
+     JUnitUtil::runTests(test, testList);
     }
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
-    test->tearDown();
 }
 Logger* LnTurnoutTestAction::log = LoggerFactory::getLogger("LnTurnoutTestAction");

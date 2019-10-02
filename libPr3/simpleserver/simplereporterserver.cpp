@@ -3,6 +3,7 @@
 #include "reportable.h"
 #include <QTcpSocket>
 #include "vptr.h"
+#include "reportervariant.h"
 /**
  * Simple Server interface between the JMRI reporter manager and a network
  * connection
@@ -34,7 +35,7 @@
     addReporterToList(reporterName);
     if (r != QVariant()) {
 //        if (r instanceof jmri.Reportable )
-     if(r.canConvert<Reportable*>())
+     if(r.canConvert<Reportable>())
         {
            this->sendMessage("REPORTER " + reporterName + " " + VPtr<Reportable>::asPtr(r)->toReportString() + "\n");
         } else {

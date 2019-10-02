@@ -11,7 +11,6 @@ connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 void ProfileUtilsTestAction::actionPerformed()
 {
     ProfileUtilsTest* put = new ProfileUtilsTest();
-    put->setUp();
     try
     {
         QStringList testList = QStringList()
@@ -28,6 +27,5 @@ void ProfileUtilsTestAction::actionPerformed()
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
-    put->tearDown();
 }
 Logger* ProfileUtilsTestAction::log = LoggerFactory::getLogger("ProfileUtilsTestAction");

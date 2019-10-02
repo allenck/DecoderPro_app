@@ -11,8 +11,8 @@ class RosterEntryPaneTest : public QObject
     Q_OBJECT
 public:
     explicit RosterEntryPaneTest(QObject *parent = nullptr);
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
 public slots:
     /*public*/ void testCreate();
     /*public*/ void testGuiChanged1();

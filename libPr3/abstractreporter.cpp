@@ -1,4 +1,5 @@
 #include "abstractreporter.h"
+#include <QApplication>
 
 AbstractReporter::AbstractReporter(QObject *parent) :
     Reporter(parent)
@@ -41,30 +42,45 @@ AbstractReporter::AbstractReporter(QString systemName, QString userName, QObject
  state = 0;
 }
 
-QVariant AbstractReporter::getCurrentReport()
-{
- return _currentReport;
+//@Override
+/*public*/ QString AbstractReporter::getBeanType() {
+    return tr("Reporter");
 }
 
-QVariant AbstractReporter::getLastReport() {return _lastReport;}
+ReporterVariant AbstractReporter::getCurrentReport()
+{
+ ReporterVariant  rv = ReporterVariant(_currentReport);
+ //return _currentReport;
+ return rv;
+}
+
+ReporterVariant AbstractReporter::getLastReport()
+{
+ ReporterVariant  rv = ReporterVariant(_lastReport);
+ //return _lastReport;
+ return rv;
+}
 
 /**
  * Provide a general method for updating the report.
  */
 void AbstractReporter::setReport(QVariant r)
 {
+
+ if (r == _currentReport)
+ {
+     return;
+ }
  QVariant old = _currentReport;
  QVariant oldLast = _lastReport;
  _currentReport = r;
- if (r != QVariant())
+ if (!r.isNull())
  {
-  _lastReport = old;
+  _lastReport = r;
   // notify
   firePropertyChange("lastReport", oldLast, _lastReport);
-  emit propertyChange(this, "lastReport", oldLast, _lastReport);
  }
  // notify
  firePropertyChange("currentReport", old, _currentReport);
- emit propertyChange(this, "currentReport", old, _currentReport);
 }
 

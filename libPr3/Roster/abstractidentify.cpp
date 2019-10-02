@@ -106,7 +106,7 @@ AbstractIdentify::AbstractIdentify(Programmer* programmer, QObject *parent) :
               + programmer->decodeErrorCode(status));
       state--;
       retry++;
-  } else if (programmer->getMode() != ProgrammingMode::PAGEMODE
+  } else if (!programmer->getMode()->equals(ProgrammingMode::PAGEMODE)
           && programmer->getSupportedModes().contains(ProgrammingMode::PAGEMODE)) {
       programmer->setMode(ProgrammingMode::PAGEMODE);
       retry = 0;
@@ -118,7 +118,7 @@ AbstractIdentify::AbstractIdentify(Programmer* programmer, QObject *parent) :
               + programmer->decodeErrorCode(status));
       statusUpdate("Stopping due to error: "
               + programmer->decodeErrorCode(status));
-      if (programmer->getMode() != savedMode) {  // restore original mode
+      if (!programmer->getMode()->equals(savedMode)) {  // restore original mode
           log->warn("Restoring " + savedMode->toString() + " mode");
           programmer->setMode(savedMode);
       }

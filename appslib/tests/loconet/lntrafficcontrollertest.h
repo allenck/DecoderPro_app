@@ -9,12 +9,12 @@ class LnTrafficControllerTest : public QObject
     Q_OBJECT
 public:
     explicit LnTrafficControllerTest(QObject *parent = nullptr);
-    /*public*/ void testCtor();
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
 signals:
 
 public slots:
+ /*public*/ void testCtor();
 
 private:
     /*private*/ LocoNetSystemConnectionMemo* memo;

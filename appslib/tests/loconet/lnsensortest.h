@@ -12,9 +12,10 @@ public:
     /*public*/ void checkOnMsgSent();
     /*public*/ void checkOffMsgSent();
     /*public*/ void checkStatusRequestMsgSent();
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
+public slots:
     /*public*/ void testLnSensorStatusMsg();
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
 
 private:
     static Logger* log;

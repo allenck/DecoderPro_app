@@ -68,7 +68,7 @@
      */
 
     /*public*/ PrintStream::PrintStream(QDataStream* out, QObject* parent) {
-        common(out, false);
+        common(false, out);
     }
 
 

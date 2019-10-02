@@ -2,15 +2,21 @@
 #define ABSTRACTREPORTER_H
 #include "reporter.h"
 #include "libPr3_global.h"
+#include "qvariant.h"
+#include "vptr.h"
+#include "rfid/transpondingtag.h"
+#include "rfid/reportervariant.h"
+
 class LIBPR3SHARED_EXPORT AbstractReporter : public Reporter
 {
  Q_OBJECT
 public:
- explicit AbstractReporter(QObject *parent = 0);
- AbstractReporter(QString systemName, QObject *parent = 0);
- AbstractReporter(QString systemName, QString userName, QObject *parent = 0);
-    QVariant getCurrentReport();
-    QVariant getLastReport();
+    explicit AbstractReporter(QObject *parent = 0);
+    AbstractReporter(QString systemName, QObject *parent = 0);
+    AbstractReporter(QString systemName, QString userName, QObject *parent = 0);
+    /*public*/ QString getBeanType();
+    ReporterVariant getCurrentReport();
+    ReporterVariant getLastReport();
     /**
      * Provide a general method for updating the report.
      */

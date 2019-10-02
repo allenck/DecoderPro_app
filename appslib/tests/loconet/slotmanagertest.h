@@ -14,6 +14,10 @@ class SlotManagerTest : public QObject
     Q_OBJECT
 public:
     explicit SlotManagerTest(QObject *parent = nullptr);
+ Q_INVOKABLE/*public*/ void setUp();
+ Q_INVOKABLE/*public*/ void tearDown();
+
+public slots:
     /*public*/ void testGetDirectFunctionAddressOK();
     /*public*/ void testGetDirectDccPacketOK();
     /*public*/ void testGetSlotSend();
@@ -39,8 +43,6 @@ public:
 
 
 
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
 
 signals:
 
@@ -116,9 +118,7 @@ class SlotListenerO1 : public SlotListener
 public:
     SlotListenerO1(SlotManagerTest* smt) {this->smt = smt;}
     //@Override
-    /*public*/ void notifyChangedSlot(LocoNetSlot* l) {
-        smt->testSlot = l;
-    }
+    /*public*/ void notifyChangedSlot(LocoNetSlot* l);
 };
 
 class ReleaseUntil01 : public ReleaseUntil

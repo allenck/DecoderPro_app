@@ -44,9 +44,10 @@
     : AbstractIdTag(systemName.toUpper(), userName, parent)
 {
         //super(systemName.toUpperCase(), userName);
-    init();
-        setWhereLastSeen(nullptr);
-    }
+ init();
+    setWhereLastSeen(nullptr);
+}
+
 void DefaultIdTag::init()
 {
  _currentState = UNKNOWN;

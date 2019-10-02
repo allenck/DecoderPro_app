@@ -15,12 +15,14 @@ class BadSystemNameException : public Exception
 {
  QString name;
  QLocale locale;
+ QString prefix;
 public:
  BadSystemNameException(QLocale locale, QString msg, QString name, QString prefix = "") : Exception()
  {
   this->msg = msg;
   this->locale = locale;
   this->name = name;
+  this->prefix = prefix;
  }
 };
 
@@ -34,7 +36,7 @@ class JAVAQTSHARED_EXPORT Manager : public QObject
  Q_OBJECT
 public:
     explicit Manager(QObject *parent = 0) : QObject(parent) {}
-    Manager(SystemConnectionMemo* memo, QObject *parent = 0) : QObject(parent) {}
+    Manager(SystemConnectionMemo* /*memo*/, QObject *parent = 0) : QObject(parent) {}
     /**
      * Basic interface for access to named, managed objects.
      * <P>

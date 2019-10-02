@@ -31,7 +31,7 @@
 #include "defaultinstanceinitializer.h"
 #include "../libPr3/routemanager.h"
 #include "lightmanager.h"
-
+//#include "rfid/transpondingtagmanager.h"
 #include "audiomanager.h"
 /**
  * Provides methods for locating various interface implementations.
@@ -99,6 +99,7 @@ public:
    friend class InstanceManager;
 };
 
+//class TranspondingTagManager;
 class SignalSpeedMap;
 class PrintWriter;
 class RouteManager;
@@ -255,6 +256,7 @@ static /*public*/ T* getNullableDefaultT(QString type)
 {
  return (T*)getDefault()->getInstance(type);
 }
+static /*public*/ void setIdTagManager(IdTagManager *p);
 
 
 signals:

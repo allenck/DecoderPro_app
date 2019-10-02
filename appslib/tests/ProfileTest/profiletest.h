@@ -12,8 +12,8 @@ public:
     explicit ProfileTest(QObject *parent = nullptr);
     /*public*/ static void setUpClass() ;
     /*public*/ static void tearDownClass();
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
+    Q_INVOKABLE/*public*/ void setUp();
+    Q_INVOKABLE/*public*/ void tearDown();
 public slots:
     /*public*/ void testProfileWithExtension();
     /*public*/ void testSave() throw (IOException);
