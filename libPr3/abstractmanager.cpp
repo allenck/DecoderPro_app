@@ -322,9 +322,15 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
  pcs->addPropertyChangeListener(l);
  //connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
-    /*public synchronized */void AbstractManager::removePropertyChangeListener(PropertyChangeListener* l) {
-        pcs->removePropertyChangeListener(l);
-    }
+/*public synchronized */void AbstractManager::removePropertyChangeListener(PropertyChangeListener* l) {
+    pcs->removePropertyChangeListener(l);
+}
+
+/*public*/ QList<PropertyChangeListener*>* AbstractManager::getPropertyChangeListeners()
+{
+ return pcs->getPropertyChangeListeners();
+}
+
 void AbstractManager::firePropertyChange(QString p, QVariant old, QVariant n)
 { pcs->firePropertyChange(p,old,n);}
 
@@ -437,6 +443,35 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
         }
     }
 #endif
+}
+/**
+ * {@inheritDoc}
+ *
+ * @return {@link jmri.Manager.NameValidity#INVALID} if system name does not
+ *         start with
+ *         {@link #getSystemNamePrefix()}; {@link jmri.Manager.NameValidity#VALID_AS_PREFIX_ONLY}
+ *         if system name equals {@link #getSystemNamePrefix()}; otherwise
+ *         {@link jmri.Manager.NameValidity#VALID} to allow Managers that do
+ *         not perform more specific validation to be considered valid.
+ */
+//@Override
+/*public*/ AbstractManager::NameValidity AbstractManager::validSystemNameFormat(QString systemName) {
+    return getSystemNamePrefix() == (systemName)
+            ? NameValidity::VALID_AS_PREFIX_ONLY
+            : systemName.startsWith(getSystemNamePrefix())
+            ? NameValidity::VALID
+            : NameValidity::INVALID;
+}
+
+/**
+ * {@inheritDoc}
+ *
+ * The implementation in {@link AbstractManager} should be final, but is not
+ * for four managers that have arbitrary prefixes.
+ */
+//@Override
+/*public*/ /*final*/ QString AbstractManager::getSystemPrefix() {
+    return memo->getSystemPrefix();
 }
 
 /**

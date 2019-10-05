@@ -18,6 +18,10 @@
 #include "tests/loconet/lnturnouttestaction.h"
 #include "tests/loconet/lnsensortestaction.h"
 #include "tests/loconet/lnreportertestaction.h"
+#include "tests/loconet/lnsensoraddresstestaction.h"
+#include "tests/loconet/lnsensormanagertestaction.h"
+#include "tests/loconet/lndeferprogrammertestaction.h"
+#include "tests/loconet/lnturnoutmanagertestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -38,15 +42,25 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     addMenu(loconetTestMenu);
     loconetTestMenu->addAction(new SlotManagerTestAction(this));
     loconetTestMenu->addAction(new LocoNetSlotTestAction(this));
-    loconetTestMenu->addAction(new LnOpsModeProgrammerTestAction(this));
+    QMenu* loconetProgrammersMenu = new QMenu(tr("Programmers"));
+    loconetTestMenu->addMenu(loconetProgrammersMenu);
+    loconetProgrammersMenu->addAction(new LnOpsModeProgrammerTestAction(this));
+    loconetProgrammersMenu->addAction(new LnDeferProgrammerTestAction(this));
     loconetTestMenu->addAction(new LocoNetMessageTestAction(this));
     loconetTestMenu->addAction(new LnTrafficControllerTestAction(this));
     loconetTestMenu->addAction(new LnPortControllerTestAction(this));
     loconetTestMenu->addAction(new LnPacketizerTestAction(this));
     loconetTestMenu->addAction(new LnPowerManagerTestAction(this));
-    loconetTestMenu->addAction(new LnTurnoutTestAction(this));
-    loconetTestMenu->addAction(new LnSensorTestAction(this));
+    QMenu* loconetSensorsMenu = new QMenu(tr("Sensors"));
+    loconetTestMenu->addMenu(loconetSensorsMenu);
+    loconetSensorsMenu->addAction(new LnSensorTestAction(this));
     loconetTestMenu->addAction(new LnReporterTestAction(this));
+    loconetSensorsMenu->addAction(new LnSensorAddressTestAction(this));
+    loconetSensorsMenu->addAction(new LnSensorManagerTestAction(this));
+    QMenu* loconetTurnoutsMenu = new QMenu(tr("Turnouts"));
+    loconetTestMenu->addMenu(loconetTurnoutsMenu);
+    loconetTurnoutsMenu->addAction(new LnTurnoutTestAction(this));
+    loconetTurnoutsMenu->addAction(new LnTurnoutManagerTestAction(this));
 
     QMenu* sprogTestMenu = new QMenu(tr("Sprog"));
     addMenu(sprogTestMenu);

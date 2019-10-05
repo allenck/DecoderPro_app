@@ -28,7 +28,7 @@ LnSensor::LnSensor(QString systemName, QString userName, LnTrafficController* tc
 {
  //super(systemName, userName);
  this->tc = tc;
- init(systemName, prefix.mid(0,1));
+ init(systemName, prefix);
 }
 
 LnSensor::LnSensor(QString systemName, LnTrafficController* tc, QString prefix,QObject *parent)
@@ -36,7 +36,7 @@ LnSensor::LnSensor(QString systemName, LnTrafficController* tc, QString prefix,Q
 {
  //super(systemName);
  this->tc = tc;
- init(systemName, prefix.mid(0,1));
+ init(systemName, prefix);
 }
 
 
@@ -101,7 +101,7 @@ void LnSensor::setKnownState(int s)// throws jmri.JmriException
     l->setElement(2, l->getElement(2)|0x40);
     // send
     tc->sendLocoNetMessage(l);
-    AbstractSensor::setOwnState(s);
+    //AbstractSensor::setOwnState(s);
 }
 
 /**
@@ -177,8 +177,9 @@ void LnSensor::message(LocoNetMessage* l)
  // reach here only in error
 }
 
-void LnSensor::dispose() {
+void LnSensor::dispose() const {
     tc->removeLocoNetListener(~0, (LocoNetListener*)this);
+    disconnect(pcs, SIGNAL(propertyChange(PropertyChangeEvent*)));
     AbstractSensor::dispose();
 }
 /**

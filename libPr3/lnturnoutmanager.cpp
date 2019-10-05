@@ -24,6 +24,7 @@ LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTraffi
  else
   log.error("No layout connection, turnout manager can't function");
 }
+
 // ctor has to register for LocoNet events
 /*public*/ LnTurnoutManager::LnTurnoutManager(LocoNetSystemConnectionMemo* memo, LocoNetInterface* throttledcontroller, bool mTurnoutNoRetry, QObject* parent)
  : AbstractTurnoutManager(memo, parent)
@@ -32,6 +33,7 @@ LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTraffi
     this->fastcontroller = memo->getLnTrafficController();
     this->throttledcontroller = throttledcontroller;
     this->mTurnoutNoRetry = mTurnoutNoRetry;
+    this->prefix = memo->getSystemPrefix();
 
     if (fastcontroller != nullptr) {
         fastcontroller->addLocoNetListener(~0, (LocoNetListener*)this);

@@ -314,13 +314,13 @@ LnReporterTest::LnReporterTest()
 
     //@Test
     /*public*/ void LnReporterTest::testGetNumber() {
-        Assert::assertEquals("getNumber - A", 3, ((LnReporter*)r)->getNumber());
+        Assert::assertEquals("getNumber - A", 3, ((LnReporter*)r)->getNumber(), __FILE__, __LINE__);
 
         r = new LnReporter(1, tc, "L");
-        Assert::assertEquals("getNumber - B", 1, ((LnReporter*)r)->getNumber());
+        Assert::assertEquals("getNumber - B", 1, ((LnReporter*)r)->getNumber(), __FILE__, __LINE__);
 
         r = new LnReporter(42, tc, "L");
-        Assert::assertEquals("getNumber - C", 42, ((LnReporter*)r)->getNumber());
+        Assert::assertEquals("getNumber - C", 42, ((LnReporter*)r)->getNumber(), __FILE__, __LINE__);
     }
 
     //@Test

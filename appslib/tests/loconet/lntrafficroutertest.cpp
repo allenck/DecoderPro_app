@@ -24,19 +24,19 @@ LnTrafficRouterTest::LnTrafficRouterTest(QObject *parent) : QObject(parent)
     LnTrafficRouter* router = new LnTrafficRouter(memo);
     memo->setLnTrafficController(router);
 
-    Assert::assertEquals("router is tc", memo->getLnTrafficController(), router);
+    Assert::assertEquals("router is tc", memo->getLnTrafficController(), router, __FILE__, __LINE__);
 
     // connect
     router->connect(upstream);
-    Assert::assertTrue("connected", router->status());
+    Assert::assertTrue("connected", router->status(), __FILE__, __LINE__);
 
     // send a message
     LocoNetMessage* m = new LocoNetMessage(3);
     router->sendLocoNetMessage(m);
 
     // check receipt
-    Assert::assertEquals("one message sent", 1, upstream->outbound.size());
-    Assert::assertTrue(upstream->outbound.at(0) == m);
+    Assert::assertEquals("one message sent", 1, upstream->outbound.size(), __FILE__, __LINE__);
+    Assert::assertTrue(upstream->outbound.at(0) == m, __FILE__, __LINE__);
 }
 
 /*static*/ int LnTrafficRouterTest::count = 0;
@@ -46,7 +46,7 @@ LnTrafficRouterTest::LnTrafficRouterTest(QObject *parent) : QObject(parent)
     // create object
     LnTrafficRouter* router = new LnTrafficRouter(memo);
     memo->setLnTrafficController(router);
-    Assert::assertEquals("router is tc", memo->getLnTrafficController(), router);
+    Assert::assertEquals("router is tc", memo->getLnTrafficController(), router, __FILE__, __LINE__);
 
     count = 0;
     // register a listener
@@ -65,7 +65,7 @@ LnTrafficRouterTest::LnTrafficRouterTest(QObject *parent) : QObject(parent)
     router->message(m);
 
     // check receipt
-    Assert::assertEquals("one message sent", 1, count);
+    Assert::assertEquals("one message sent", 1, count, __FILE__, __LINE__);
 }
 
 //@Test
@@ -76,15 +76,15 @@ LnTrafficRouterTest::LnTrafficRouterTest(QObject *parent) : QObject(parent)
     // create object
     LnTrafficRouter* router = new LnTrafficRouter(memo);
     memo->setLnTrafficController(router);
-    Assert::assertEquals("router is tc", memo->getLnTrafficController(), router);
+    Assert::assertEquals("router is tc", memo->getLnTrafficController(), router, __FILE__, __LINE__);
 
     // connect
     router->connect(upstream);
-    Assert::assertTrue("connected", router->status());
+    Assert::assertTrue("connected", router->status(), __FILE__, __LINE__);
 
     // disconnect
     router->disconnectPort(upstream);
-    Assert::assertTrue("not connected", !router->status());
+    Assert::assertTrue("not connected", !router->status(), __FILE__, __LINE__);
 }
 
 

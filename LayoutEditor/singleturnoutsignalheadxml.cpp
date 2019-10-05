@@ -134,8 +134,13 @@ NamedBeanHandle<Turnout*>* SingleTurnoutSignalHeadXml::loadTurnout(/*QObject o*/
  //QDomElement e = (QDomElement)o;
 
  QString name = e.text();
- Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(name);
-    return ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(name, t);
+
+ TurnoutManager* mgr = InstanceManager::turnoutManagerInstance();
+ //Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(name);
+ Turnout* t = ((ProxyTurnoutManager*)mgr)->provideTurnout(name);
+ NamedBeanHandle<Turnout*>* h = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(name, t);
+ //    return ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(name, t);
+ return h;
 }
 
 /*public*/ void SingleTurnoutSignalHeadXml::load(QDomElement /*element*/, QObject* /*o*/)throw (Exception){

@@ -19,25 +19,25 @@ SprogMessageTest::SprogMessageTest()
 //@Test
 /*public*/ void SprogMessageTest::testReadCv() {
     msg = SprogMessage::getReadCV(12, ProgrammingMode::PAGEMODE);
-    Assert::assertEquals("string compare ", "V 0012", msg->toString());
+    Assert::assertEquals("string compare ", "V 0012", msg->toString(), __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void SprogMessageTest::testWriteCV() {
     msg = SprogMessage::getWriteCV(12, 251, ProgrammingMode::PAGEMODE);
-    Assert::assertEquals("string compare ", "V 0012 251", msg->toString());
+    Assert::assertEquals("string compare ", "V 0012 251", msg->toString(), __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void SprogMessageTest::testReadCvLarge() {
     msg = SprogMessage::getReadCV(1021, ProgrammingMode::PAGEMODE);
-    Assert::assertEquals("string compare ", "V 1021", msg->toString());
+    Assert::assertEquals("string compare ", "V 1021", msg->toString(), __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void SprogMessageTest::testWriteCVLarge() {
     msg = SprogMessage::getWriteCV(1021, 251, ProgrammingMode::PAGEMODE);
-    Assert::assertEquals("string compare ", "V 1021 251", msg->toString());
+    Assert::assertEquals("string compare ", "V 1021 251", msg->toString(), __FILE__, __LINE__);
 }
 
 // The minimal setup for log4J

@@ -84,7 +84,7 @@ public:
          * ACTIVE to INACTIVE and vice-versa, with notifications;
          * UNKNOWN and INCONSISTENT are left unchanged.
          */
-        virtual void setInverted(bool /*inverted*/) const/* =0*/{}
+        virtual void setInverted(bool /*inverted*/) /* =0*/{}
 
         /**
          * Get the inverted state.  If true, the
@@ -139,7 +139,7 @@ public:
         * Set the InActive debounce delay in milliSeconds.
         * If a zero value is entered then debounce delay is de-activated.
         */
-        virtual void setSensorDebounceGoingInActiveTimer(long /*timer*/) const /*=0*/{}
+        virtual void setSensorDebounceGoingInActiveTimer(long /*timer*/) /*=0*/{}
 
         /**
         * Get the InActive debounce delay in milliSeconds.
@@ -150,12 +150,12 @@ public:
         /**
         * Use the timers specified in the Sensor manager, for the debounce delay
         */
-        virtual void useDefaultTimerSettings(bool /*boo*/) const /*=0*/{}
+        virtual void useDefaultTimerSettings(bool /*boo*/) /*=0*/{}
 
         /**
         * Does this sensor use the default timers for
         */
-        virtual bool useDefaultTimerSettings() const /*=0*/ {return false;}
+        virtual bool useDefaultTimerSettings() /*=0*/ {return false;}
 
         /**
          * Some sensor boards also serve the function of being able to report

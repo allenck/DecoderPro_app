@@ -921,8 +921,8 @@ private static bool floatIsDifferent(float f1, float f2, float delta) {
 }
 /*public*/ /*static*/ void Assert::assertNotNull(QString message, QVariant object, QString file, int line)
 {
-if(object.isNull())
- fail(tr("QVariant is null %1").arg(message), file, line);
+ if(object.isNull())
+  fail(tr("QVariant is null %1").arg(message), file, line);
 }
 
 /*public*/ /*static*/ void Assert::assertNotNull(QObject* object, QString file, int line) {
@@ -935,6 +935,10 @@ if(object.isNull())
     // </editor-fold>
     if(object == nullptr)
      fail(tr("object is null"), file, line);
+}
+/*public*/ /*static*/ void Assert::assertNotNull(QString object, QString file, int line) {
+    if(object.isEmpty())
+     fail(tr("string is null"), file, line);
 }
 /*public*/ /*static*/ void Assert::assertNotNull(QDomElement object, QString file, int line)
 {

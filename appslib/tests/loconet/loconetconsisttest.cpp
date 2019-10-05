@@ -55,21 +55,21 @@ LocoNetConsistTest::LocoNetConsistTest(QObject *parent) : AbstractConsistTestBas
     // DccLocoAddress constructor test.
     LocoNetConsist* c = new LocoNetConsist(new DccLocoAddress(3, false),memo);
     ReturnSlotInfo();
-    Assert::assertNotNull(c);
+    Assert::assertNotNull(c, __FILE__, __LINE__);
 }
 
 //@Test
 //@Override
 /*public*/ void LocoNetConsistTest::testGetConsistType(){
     // LocoNet consists default to CS consists.
-    Assert::assertEquals("default consist type",Consist::CS_CONSIST,c->getConsistType());
+    Assert::assertEquals("default consist type",Consist::CS_CONSIST,c->getConsistType(), __FILE__, __LINE__);
 }
 
 //@Test
 //@Override
 /*public*/ void LocoNetConsistTest::testSetConsistTypeCS(){
     c->setConsistType(Consist::CS_CONSIST);
-    Assert::assertEquals("default consist type",Consist::CS_CONSIST,c->getConsistType());
+    Assert::assertEquals("default consist type",Consist::CS_CONSIST,c->getConsistType(), __FILE__, __LINE__);
 }
 
 //@Override
@@ -83,7 +83,7 @@ LocoNetConsistTest::LocoNetConsistTest(QObject *parent) : AbstractConsistTestBas
     LocoNetConsist* c = new LocoNetConsist(3,memo);
     ReturnSlotInfo();
     c->setConsistType(Consist::ADVANCED_CONSIST);
-    Assert::assertTrue("AddressAllowed", c->isAddressAllowed(new DccLocoAddress(200,true)));
+    Assert::assertTrue("AddressAllowed", c->isAddressAllowed(new DccLocoAddress(200,true)), __FILE__, __LINE__);
 }
 
 //@Test
@@ -91,13 +91,13 @@ LocoNetConsistTest::LocoNetConsistTest(QObject *parent) : AbstractConsistTestBas
     LocoNetConsist* c = new LocoNetConsist(3,memo);
     ReturnSlotInfo();
     c->setConsistType(Consist::ADVANCED_CONSIST);
-    Assert::assertFalse("AddressAllowed", c->isAddressAllowed(new DccLocoAddress(0,false)));
+    Assert::assertFalse("AddressAllowed", c->isAddressAllowed(new DccLocoAddress(0,false)), __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void LocoNetConsistTest::checkSizeLimitCS(){
     c->setConsistType(Consist::CS_CONSIST);
-    Assert::assertEquals("CS Consist Limit",-1,c->sizeLimit());
+    Assert::assertEquals("CS Consist Limit",-1,c->sizeLimit(), __FILE__, __LINE__);
 }
 
 //@Test
@@ -110,8 +110,8 @@ LocoNetConsistTest::LocoNetConsistTest(QObject *parent) : AbstractConsistTestBas
     c->restore(A,true); // use restore here, as it does not send
                        // any data to the command station
     c->restore(B,false); // revese direction.
-    Assert::assertTrue("Direction in CS Consist", c->getLocoDirection(A));
-    Assert::assertFalse("Direction in CS Consist", c->getLocoDirection(B));
+    Assert::assertTrue("Direction in CS Consist", c->getLocoDirection(A), __FILE__, __LINE__);
+    Assert::assertFalse("Direction in CS Consist", c->getLocoDirection(B), __FILE__, __LINE__);
 }
 
 // The minimal setup for log4J

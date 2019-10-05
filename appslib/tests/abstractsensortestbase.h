@@ -20,8 +20,10 @@ public:
     virtual /*public*/ void checkStatusRequestMsgSent()=0;
     virtual /*public*/ void setUp()=0; // load t with actual object; create scaffolds as needed
     virtual /*public*/ void tearDown()=0;
+    virtual /*public*/ QString getSystemName(int i) {return "";}
     // start of common tests
     // test creation - real work is in the setup() routine
+
 public slots:
     /*public*/ void testCreate();
     /*public*/ void testAddListener() throw (JmriException);

@@ -18,6 +18,7 @@ public:
     /*public*/ static /*final*/ Level* FATAL;
     /*public*/ static /*final*/ Level* _ERROR;
 
+
     /**
      * SEVERE is a message level indicating a serious failure.
      * <p>

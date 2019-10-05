@@ -15,11 +15,11 @@ public:
  AbstractSensor(QString systemName, QString userName, QObject *parent = 0);
  int getKnownState() const;
  void setSensorDebounceGoingActiveTimer(long time);
- long getSensorDebounceGoingActiveTimer();
+ long getSensorDebounceGoingActiveTimer() const;
  void setSensorDebounceGoingInActiveTimer(long time);
- long getSensorDebounceGoingInActiveTimer();
- void useDefaultTimerSettings(bool boo);
- bool useDefaultTimerSettings();
+ long getSensorDebounceGoingInActiveTimer() const;
+ void useDefaultTimerSettings(bool boo) ;
+ bool useDefaultTimerSettings() ;
  // setKnownState() for implementations that can't
  // actually do it on the layout. Not intended for use by implementations
  // that can
@@ -28,7 +28,7 @@ public:
      * Set our internal state information, and notify bean listeners.
      */
     void setOwnState(int s);
-    int getRawState();
+    int getRawState() const;
     /**
      * Implement a shorter name for setKnownState.
      *<P>
@@ -60,7 +60,9 @@ public:
      * Used in polling loops in system-specific code,
      * so made final to allow optimization.
      */
-    /*final public*/ bool getInverted();
+    /*final public*/ bool getInverted() const;
+    /*public*/ bool canInvert();
+
     /**
      * Some sensor boards also serve the function of being able to report
      * back train identities via such methods as RailCom.
@@ -76,6 +78,8 @@ public:
     /*public*/ bool getUseDefaultTimerSettings();
     /*public*/ void setPullResistance(Sensor::PullResistance r);
     /*public*/ Sensor::PullResistance::PULLRESISTANCE getPullResistance();
+    /*public*/ QString describeState(int state);
+    /*public*/ QString getBeanType();
 
 
 signals:

@@ -931,7 +931,9 @@ SOURCES += \
     rfid/transpondingtag.cpp \
     rfid/proxyidtagmanager.cpp \
     rfid/abstractidtagreporter.cpp \
-    rfid/idtaglistener.cpp
+    rfid/idtaglistener.cpp \
+    loconet/lndeferprogrammer.cpp \
+    abstractproxyturnoutmanager.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1859,7 +1861,10 @@ HEADERS += \
     rfid/abstractidtagreporter.h \
     rfid/idtaglistener.h \
     rfid/addressedidtag.h \
-    rfid/reportervariant.h
+    rfid/reportervariant.h \
+    loconet/lndeferprogrammer.h \
+    vetoablechangeprovider.h \
+    abstractproxyturnoutmanager.h
 
  !contains(FTDI, 1) {
     HEADERS +=

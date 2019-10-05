@@ -3,46 +3,52 @@
 
 #include <QObject>
 #include "propertychangelistener.h"
+#include "abstractprovidingturnoutmanagertestbase.h"
 
-class AbstractTurnoutMgrTestBase : public QObject
+class ProxyTurnoutManager;
+class AbstractTurnoutMgrTestBase : public AbstractProvidingTurnoutManagerTestBase
 {
     Q_OBJECT
 public:
     explicit AbstractTurnoutMgrTestBase(QObject *parent = nullptr);
     virtual /*public*/ QString getSystemName(int i) = 0;
     virtual /*public*/ void setUp() = 0;
-    /*public*/ void testCreate();
-    /*public*/ void testDispose();
-    /*public*/ void testProvideFailure();
-    /*public*/ void testTurnoutPutGet();
-    /*public*/ void testProvideName();
-    /*public*/ void testDefaultSystemName();
-    /*public*/ void testSingleObject();
-    /*public*/ void testMisses();
-    /*public*/ void testUpperLower();
-    /*public*/ void testRename();
-    /*public*/ void testThrownText();
-    /*public*/ void testClosedText();
 
 signals:
 
 public slots:
+ /*public*/ void testCreate();
+ /*public*/ void testDispose();
+ /*public*/ void testProvideFailure();
+ /*public*/ void testTurnoutPutGet();
+ /*public*/ void testProvideName();
+ /*public*/ void testDefaultSystemName();
+ /*public*/ void testSingleObject();
+ /*public*/ void testMisses();
+ /*public*/ void testUpperLower();
+ /*public*/ void testRename();
+ /*public*/ void testThrownText();
+ /*public*/ void testClosedText();
+
 private:
     static /*protected*/ bool listenerResult;// = false;
+    ProxyTurnoutManager* l;
 
 protected:
     /*protected*/ int getNumToTest1();
     /*protected*/ int getNumToTest2();
-
+ friend class ListenO4;
+ friend class LnTurnoutManagerTest;
 };
-class ListenO1 : public PropertyChangeListener
+
+class ListenO4 : public PropertyChangeListener
 {
     Q_OBJECT
     AbstractTurnoutMgrTestBase* base;
 public:
-    ListenO1(AbstractTurnoutMgrTestBase* base) {this->base = base;}
+    ListenO4(AbstractTurnoutMgrTestBase* base) {this->base = base;}
     //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* e) {
+    /*public*/ void propertyChange(PropertyChangeEvent* /*e*/) {
         base->listenerResult = true;
     }
 };

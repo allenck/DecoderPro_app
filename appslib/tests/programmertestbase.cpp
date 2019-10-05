@@ -18,40 +18,40 @@ ProgrammerTestBase::ProgrammerTestBase(QObject *parent) : QObject(parent)
 
     //@Test
     /*public*/ void ProgrammerTestBase::testCtor() {
-        Assert::assertNotNull(programmer);
+        Assert::assertNotNull(programmer, __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProgrammerTestBase::testDefault() {
         Assert::assertEquals("Check Default", ProgrammingMode::DIRECTMODE,
-                programmer->getMode());
+                programmer->getMode(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProgrammerTestBase::testGetCanRead() {
-        Assert::assertTrue("can read", programmer->getCanRead());
+        Assert::assertTrue("can read", programmer->getCanRead(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProgrammerTestBase::testGetCanWrite() {
-        Assert::assertTrue("can write", programmer->getCanWrite());
+        Assert::assertTrue("can write", programmer->getCanWrite(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProgrammerTestBase::testGetCanReadAddress() {
-        Assert::assertFalse("can read address", programmer->getCanRead("1234"));
+        Assert::assertFalse("can read address", programmer->getCanRead("1234"), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProgrammerTestBase::testGetCanWriteAddress() {
-        Assert::assertTrue("can write address", programmer->getCanWrite("1234"));
+        Assert::assertTrue("can write address", programmer->getCanWrite("1234"), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProgrammerTestBase::testSetGetMode() {
         programmer->setMode(ProgrammingMode::REGISTERMODE);
         Assert::assertEquals("Check mode matches set", ProgrammingMode::REGISTERMODE,
-                programmer->getMode());
+                programmer->getMode(), __FILE__, __LINE__);
     }
 
     //@Test(expected = java.lang.IllegalArgumentException.class)
@@ -62,7 +62,7 @@ ProgrammerTestBase::ProgrammerTestBase(QObject *parent) : QObject(parent)
     //@Test
     /*public*/ void ProgrammerTestBase::testGetWriteConfirmMode(){
         Assert::assertEquals("Write Confirm Mode",Programmer::WriteConfirmMode::NotVerified,
-                programmer->getWriteConfirmMode("1234"));
+                programmer->getWriteConfirmMode("1234"), __FILE__, __LINE__);
     }
 
     //@Test

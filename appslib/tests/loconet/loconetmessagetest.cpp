@@ -296,8 +296,8 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("data 7", d[7], (m->getElement(14) & 0x7F) + ((pxct2 & 0x08) != 0 ? 0x80 : 0), __FILE__, __LINE__);
 
     // check code
-    Assert::assertEquals("code low nibble", code & 0x7, (m->getElement(5) & 0x70) / 16);
-    Assert::assertEquals("code high nibble", (code & 0x38) / 8, (m->getElement(10) & 0x70) / 16);
+    Assert::assertEquals("code low nibble", code & 0x7, (m->getElement(5) & 0x70) / 16, __FILE__, __LINE__);
+    Assert::assertEquals("code high nibble", (code & 0x38) / 8, (m->getElement(10) & 0x70) / 16, __FILE__, __LINE__);
 
     // check the source address
     Assert::assertEquals("low 7 src address", src & 0x7F, m->getElement(2), __FILE__, __LINE__);

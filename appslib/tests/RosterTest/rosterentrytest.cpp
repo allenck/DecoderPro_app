@@ -225,7 +225,7 @@ QDomDocument doc;
 #if 1
     Assert::assertTrue(JUnitAppender::verifyNoBacklog(),__FILE__, __LINE__);
 #endif
-    Assert::assertEquals("2018-03-05T02:34:55.000Z+0000", r->getDateUpdated());
+    Assert::assertEquals("2018-03-05T02:34:55.000Z+0000", r->getDateUpdated(),__FILE__, __LINE__);
 }
 
 //@Test

@@ -11,6 +11,7 @@
 #include "assert1.h"
 #include "junitappender.h"
 #include <QDebug>
+#include "testuserpreferencesmanager.h"
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
@@ -630,14 +631,14 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
         return state == bean.getState();
     }, "setAndWait " + bean.getSystemName() + ": " + state);
 }
-
-/*public*/ static void resetInstanceManager() {
+#endif
+/*public*/ /*static*/ void JUnitUtil::resetInstanceManager() {
     // clear all instances from the static InstanceManager
-    InstanceManager.getDefault().clearAll();
+    InstanceManager::getDefault()->clearAll();
     // ensure the auto-default UserPreferencesManager is not created by installing a test one
-    InstanceManager.setDefault(UserPreferencesManager.class, new TestUserPreferencesManager());
+    InstanceManager::setDefault("UserPreferencesManager", new TestUserPreferencesManager());
 }
-
+#if 0
 /*public*/ static void resetTurnoutOperationManager() {
     InstanceManager.reset(TurnoutOperationManager.class);
     InstanceManager.getDefault(TurnoutOperationManager.class); // force creation

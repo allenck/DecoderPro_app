@@ -44,7 +44,7 @@ LnSensorTest::LnSensorTest(QObject *parent) : AbstractSensorTestBase(parent)
         m->setElement(2, 0x60);     // Aux (low addr bit high), sensor low
         m->setElement(3, 0x38);
         s->messageFromManager(m);
-        Assert::assertEquals("Known state after inactivate ", Sensor::INACTIVE, s->getKnownState());
+        Assert::assertEquals("Known state after inactivate ", Sensor::INACTIVE, s->getKnownState(), __FILE__, __LINE__);
 
         m = new LocoNetMessage(4);
         m->setOpCode(0xb2);         // OPC_INPUT_REP
@@ -52,7 +52,7 @@ LnSensorTest::LnSensorTest(QObject *parent) : AbstractSensorTestBase(parent)
         m->setElement(2, 0x70);     // Aux (low addr bit high), sensor high
         m->setElement(3, 0x78);
         s->messageFromManager(m);
-        Assert::assertEquals("Known state after activate ", Sensor::ACTIVE, s->getKnownState());
+        Assert::assertEquals("Known state after activate ", Sensor::ACTIVE, s->getKnownState(), __FILE__, __LINE__);
     }
 
     // The minimal setup for log4J
@@ -71,6 +71,7 @@ LnSensorTest::LnSensorTest(QObject *parent) : AbstractSensorTestBase(parent)
 //                ((LnSensor)t).messageFromManager(m);
 //            }
 //        };
+        lnis = new LocoNetInterfaceScaffoldO2(this);
         t = new LnSensor("LS042", lnis, "L");
     }
 

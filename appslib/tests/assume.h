@@ -8,6 +8,8 @@ class Assume : public QObject
     Q_OBJECT
 public:
     static void assumeTrue(bool);
+    /*public*/ static void assumeTrue(QString message, bool b);
+
 signals:
 
 public slots:

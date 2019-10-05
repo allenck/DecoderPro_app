@@ -171,9 +171,9 @@
       setNamedSensor(nullptr);
       ret = true;
   } else {
-      sensor = InstanceManager::sensorManagerInstance()->getByUserName(pName);
+      sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(pName);
       if (sensor == nullptr) {
-          sensor = InstanceManager::sensorManagerInstance()->getBySystemName(pName);
+          sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getBySystemName(pName);
       }
       if (sensor == nullptr) {
           if (log->isDebugEnabled()) {

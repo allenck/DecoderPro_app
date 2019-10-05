@@ -159,7 +159,16 @@ public:
   */
  virtual void dispose()  {}
 
+ /**
+  * Get the count of managed objects.
+  *
+  * @return the number of managed objects
+  */
+ //@CheckReturnValue
+ virtual /*public*/ int getObjectCount() {return 0;}
+
  virtual QStringList getSystemNameArray()  {return QStringList();}
+
  virtual QStringList getSystemNameList()  {return QStringList();}
  /**
    * This provides an
@@ -226,11 +235,27 @@ public:
       */
      virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/) {}
      /**
+      * Add a {@link java.beans.PropertyChangeListener} for a specific property.
+      *
+      * @param propertyName The name of the property to listen on.
+      * @param listener     The PropertyChangeListener to be added
+      */
+      virtual /*public*/ void addPropertyChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ PropertyChangeListener* listener){}
+
+     /**
       * At a minimum,
       * subclasses must notify of changes to the list of available NamedBeans;
       * they may have other properties that will also notify.
       */
      virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/)  {}
+     /**
+      * Remove the specified listener of the specified property from this object.
+      *
+      * @param propertyName The name of the property to stop listening to.
+      * @param listener     The {@link java.beans.PropertyChangeListener} to
+      *                     remove.
+      */
+     virtual /*public*/ void removePropertyChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ PropertyChangeListener* listener){}
 
      /**
       * Add a VetoableChangeListener to the listener list.
@@ -240,11 +265,53 @@ public:
      /*public*/ virtual void addVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* /*l*/) {}
 
      /**
+      * Get all {@link java.beans.PropertyChangeListener}s currently attached to
+      * this object.
+      *
+      * @return An array of PropertyChangeListeners.
+      */
+     //@Nonnull
+     /*public*/ virtual QList<PropertyChangeListener *> *getPropertyChangeListeners() {return nullptr;}
+
+     /**
+      * Get all {@link java.beans.PropertyChangeListener}s currently listening to
+      * changes to the specified property.
+      *
+      * @param propertyName The name of the property of interest
+      * @return An array of PropertyChangeListeners.
+      */
+     //@Nonnull
+     virtual /*public*/ QList<PropertyChangeListener*>* getPropertyChangeListeners(/*@CheckForNull*/ QString propertyName) {return nullptr;}
+
+     /**
       * Remove a VetoableChangeListener to the listener list.
       *
       * @param l the listener
       */
      /*public*/ virtual void removeVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* /*l*/) {}
+
+     /**
+      * Method for a UI to delete a bean.
+      * <p>
+      * The UI should first request a "CanDelete", this will return a list of
+      * locations (and descriptions) where the bean is in use via throwing a
+      * VetoException, then if that comes back clear, or the user agrees with the
+      * actions, then a "DoDelete" can be called which inform the listeners to
+      * delete the bean, then it will be deregistered and disposed of.
+      * <p>
+      * If a property name of "DoNotDelete" is thrown back in the VetoException
+      * then the delete process should be aborted.
+      *
+      * @param n        The NamedBean to be deleted
+      * @param property The programmatic name of the request. "CanDelete" will
+      *                 enquire with all listeners if the item can be deleted.
+      *                 "DoDelete" tells the listener to delete the item.
+      * @throws java.beans.PropertyVetoException - If the recipients wishes the
+      *                                          delete to be aborted (see
+      *                                          above).
+      */
+      virtual /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* n, /*@Nonnull*/ QString property) throw (PropertyVetoException) {}
+
      /**
       * Remember a NamedBean Object created outside the manager.
       * <P>

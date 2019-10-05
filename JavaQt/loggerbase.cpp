@@ -49,6 +49,12 @@ void LoggerBase::debug(QString name,QString s)
  qDebug() << tr("%1: Debug: %2").arg(name).arg(s);
 }
 
+void LoggerBase::debug(QString name,QString s, Throwable throwable)
+{
+ qDebug() << tr("%1: Debug: %2 %3").arg(name).arg(s).arg(throwable.getMessage());
+}
+
+
 void LoggerBase::warn(QString name,QString s)
 {
  qDebug() << tr("%1: Warning: %2").arg(name).arg(s);

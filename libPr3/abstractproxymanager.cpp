@@ -319,7 +319,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  //Q_ASSERT(mgrs->count()> 0);
  for (int i = 0; i<nMgrs(); i++)
  {
-  if ( systemname.startsWith(((AbstractManager*)getMgr(i))->getSystemPrefix()+((AbstractManager*)getMgr(i))->typeLetter()))
+  if ( systemname.startsWith(((AbstractProxyManager*)getMgr(i))->getSystemPrefix()+((AbstractManager*)getMgr(i))->typeLetter()))
   {
    return i;
   }

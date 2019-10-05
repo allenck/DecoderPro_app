@@ -25,7 +25,7 @@ AbstractConsistTestBase::AbstractConsistTestBase(QObject *parent) : QObject(pare
     //abstract /*public*/ void tearDown(); // should clean up the consist c.
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::testCtor() {
-        Assert::assertNotNull(c);
+        Assert::assertNotNull(c, __FILE__, __LINE__);
     }
 
     //@Test(expected=java.lang.NullPointerException.class)
@@ -37,21 +37,21 @@ AbstractConsistTestBase::AbstractConsistTestBase(QObject *parent) : QObject(pare
         c->restore(B,false); // use restore here, as it does not send
                            // any data to the command station
         // before dispose, this should succeed.
-        Assert::assertTrue("Advanced Consist Contains",c->contains(A));
-        Assert::assertTrue("Advanced Consist Contains",c->contains(B));
+        Assert::assertTrue("Advanced Consist Contains",c->contains(A), __FILE__, __LINE__);
+        Assert::assertTrue("Advanced Consist Contains",c->contains(B), __FILE__, __LINE__);
         c->dispose();
         // after dispose, this should fail
-        Assert::assertTrue("Advanced Consist Contains",c->contains(A));
-        Assert::assertTrue("Advanced Consist Contains",c->contains(B));
+        Assert::assertTrue("Advanced Consist Contains",c->contains(A), __FILE__, __LINE__);
+        Assert::assertTrue("Advanced Consist Contains",c->contains(B), __FILE__, __LINE__);
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::testGetConsistType(){
-        Assert::assertEquals("default consist type",Consist::ADVANCED_CONSIST,c->getConsistType());
+        Assert::assertEquals("default consist type",Consist::ADVANCED_CONSIST,c->getConsistType(), __FILE__, __LINE__);
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::testSetConsistTypeAdvanced(){
         c->setConsistType(Consist::ADVANCED_CONSIST);
-        Assert::assertEquals("default consist type",Consist::ADVANCED_CONSIST,c->getConsistType());
+        Assert::assertEquals("default consist type",Consist::ADVANCED_CONSIST,c->getConsistType(), __FILE__, __LINE__);
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::testSetConsistTypeCS(){
@@ -61,16 +61,16 @@ AbstractConsistTestBase::AbstractConsistTestBase(QObject *parent) : QObject(pare
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::checkAddressAllowedGood(){
-        Assert::assertTrue("AddressAllowed", c->isAddressAllowed(new DccLocoAddress(200,true)));
+        Assert::assertTrue("AddressAllowed", c->isAddressAllowed(new DccLocoAddress(200,true)), __FILE__, __LINE__);
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::checkAddressAllowedBad(){
-        Assert::assertFalse("AddressAllowed", c->isAddressAllowed(new DccLocoAddress(0,false)));
+        Assert::assertFalse("AddressAllowed", c->isAddressAllowed(new DccLocoAddress(0,false)), __FILE__, __LINE__);
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::checkSizeLimitAdvanced(){
         c->setConsistType(Consist::ADVANCED_CONSIST);
-        Assert::assertEquals("Advanced Consist Limit",-1,c->sizeLimit());
+        Assert::assertEquals("Advanced Consist Limit",-1,c->sizeLimit(), __FILE__, __LINE__);
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::checkContainsAdvanced(){
@@ -78,17 +78,17 @@ AbstractConsistTestBase::AbstractConsistTestBase(QObject *parent) : QObject(pare
         DccLocoAddress* A = new DccLocoAddress(200,true);
         DccLocoAddress* B = new DccLocoAddress(250,true);
         // nothing added, should be false for all.
-        Assert::assertFalse("Advanced Consist Contains",c->contains(A));
-        Assert::assertFalse("Advanced Consist Contains",c->contains(B));
+        Assert::assertFalse("Advanced Consist Contains",c->contains(A), __FILE__, __LINE__);
+        Assert::assertFalse("Advanced Consist Contains",c->contains(B), __FILE__, __LINE__);
         // add just A
         c->restore(A,true); // use restore here, as it does not send
                            // any data to the command station
-        Assert::assertTrue("Advanced Consist Contains",c->contains(A));
-        Assert::assertFalse("Advanced Consist Contains",c->contains(B));
+        Assert::assertTrue("Advanced Consist Contains",c->contains(A), __FILE__, __LINE__);
+        Assert::assertFalse("Advanced Consist Contains",c->contains(B), __FILE__, __LINE__);
         // then add B
         c->restore(B,false);
-        Assert::assertTrue("Advanced Consist Contains",c->contains(A));
-        Assert::assertTrue("Advanced Consist Contains",c->contains(B));
+        Assert::assertTrue("Advanced Consist Contains",c->contains(A), __FILE__, __LINE__);
+        Assert::assertTrue("Advanced Consist Contains",c->contains(B), __FILE__, __LINE__);
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::checkGetLocoDirectionAdvanced(){
@@ -98,8 +98,8 @@ AbstractConsistTestBase::AbstractConsistTestBase(QObject *parent) : QObject(pare
         c->restore(A,true); // use restore here, as it does not send
                            // any data to the command station
         c->restore(B,false); // revese direction.
-        Assert::assertTrue("Direction in Advanced Consist",c->getLocoDirection(A));
-        Assert::assertFalse("Direction in Advanced Consist",c->getLocoDirection(B));
+        Assert::assertTrue("Direction in Advanced Consist",c->getLocoDirection(A), __FILE__, __LINE__);
+        Assert::assertFalse("Direction in Advanced Consist",c->getLocoDirection(B), __FILE__, __LINE__);
     }
 
     /*@Test*/ /*public*/ void AbstractConsistTestBase::checkGetSetLocoRosterIDAdvanced() throw (IOException,FileNotFoundException) {
@@ -171,7 +171,7 @@ AbstractConsistTestBase::AbstractConsistTestBase(QObject *parent) : QObject(pare
 
         entry->loadCvModel(varTable, cvTable);
         cv19Value = cvTable->getCvByNumber("19");
-        Assert::assertEquals("CV19 value after remove",0,cv19Value->getValue());
+        Assert::assertEquals("CV19 value after remove",0,cv19Value->getValue(), __FILE__, __LINE__);
     }
 
 

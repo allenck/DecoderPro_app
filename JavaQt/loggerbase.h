@@ -23,6 +23,7 @@ public:
 // bool isInfoEnabled();
 // bool isTraceEnabled();
  static void debug(QString name,QString s);
+ static void debug(QString name,QString s, Throwable throwable);
 // void setDebugEnabled(bool bState);
 // void setInfoEnabled(bool bState);
  static void sendError(QString name,QString s);

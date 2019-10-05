@@ -9,7 +9,7 @@ class OutputStreamWriter : public Writer
 public:
  /*public*/ OutputStreamWriter(QDataStream* out);
 
- /*public*/ void write(QString str, int off, int len) throw (IOException);
+// /*public*/ void write(QString str, int off, int len) throw (IOException);
 
 private:
  /*private*/ /*final*/ StreamEncoder* se;

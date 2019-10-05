@@ -28,7 +28,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
     // test creation - real work is in the setup() routine
     //@Test
     /*public*/ void AbstractPowerManagerTestBase::testCreate() {
-       Assert::assertNotNull("Power Manager Created",p);
+       Assert::assertNotNull("Power Manager Created",p, __FILE__, __LINE__);
     }
 
     // test setting power on, off, then getting reply from system
@@ -37,12 +37,12 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
         int initialSent = outboundSize();
         p->setPower(PowerManager::ON);
         // check one message sent, correct form, unknown state
-        Assert::assertEquals("messages sent", initialSent + 1, outboundSize());
-        Assert::assertTrue("message type OK", outboundOnOK(initialSent));
-        Assert::assertEquals("state before reply ", PowerManager::UNKNOWN, p->getPower());
+        Assert::assertEquals("messages sent", initialSent + 1, outboundSize(), __FILE__, __LINE__);
+        Assert::assertTrue("message type OK", outboundOnOK(initialSent), __FILE__, __LINE__);
+        Assert::assertEquals("state before reply ", PowerManager::UNKNOWN, p->getPower(), __FILE__, __LINE__);
         // arrange for reply
         sendOnReply();
-        Assert::assertEquals("state after reply ", PowerManager::ON, p->getPower());
+        Assert::assertEquals("state after reply ", PowerManager::ON, p->getPower(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -50,48 +50,48 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
         int startingMessages = outboundSize();
         p->setPower(PowerManager::OFF);
         // check one message sent, correct form
-        Assert::assertEquals("messages sent", startingMessages + 1, outboundSize());
-        Assert::assertTrue("message type OK", outboundOffOK(startingMessages));
-        Assert::assertEquals("state before reply ", PowerManager::UNKNOWN, p->getPower());
+        Assert::assertEquals("messages sent", startingMessages + 1, outboundSize(), __FILE__, __LINE__);
+        Assert::assertTrue("message type OK", outboundOffOK(startingMessages), __FILE__, __LINE__);
+        Assert::assertEquals("state before reply ", PowerManager::UNKNOWN, p->getPower(), __FILE__, __LINE__);
         // arrange for reply
         sendOffReply();
-        Assert::assertEquals("state after reply ", PowerManager::OFF, p->getPower());
+        Assert::assertEquals("state after reply ", PowerManager::OFF, p->getPower(), __FILE__, __LINE__);
 
     }
 
     //@Test
     /*public*/ void AbstractPowerManagerTestBase::testSetPowerIdle() throw (JmriException){
         if (p->implementsIdle()) {
-            Assert::assertTrue("LocoNet implements IDLE", p->implementsIdle());
+            Assert::assertTrue("LocoNet implements IDLE", p->implementsIdle(), __FILE__, __LINE__);
             int initialSent = outboundSize();
             p->setPower(PowerManager::IDLE);
             // check one message sent, correct form, unknown state
-            Assert::assertEquals("messages sent", initialSent + 1, outboundSize());
-            Assert::assertTrue("message type IDLE O.K.", outboundIdleOK(initialSent));
-            Assert::assertEquals("state before reply ", PowerManager::UNKNOWN, p->getPower());
+            Assert::assertEquals("messages sent", initialSent + 1, outboundSize(), __FILE__, __LINE__);
+            Assert::assertTrue("message type IDLE O.K.", outboundIdleOK(initialSent), __FILE__, __LINE__);
+            Assert::assertEquals("state before reply ", PowerManager::UNKNOWN, p->getPower(), __FILE__, __LINE__);
             // arrange for reply
             sendIdleReply();
-            Assert::assertEquals("state after reply ", PowerManager::IDLE, p->getPower());
+            Assert::assertEquals("state after reply ", PowerManager::IDLE, p->getPower(), __FILE__, __LINE__);
         }
     }
 
     //@Test
     /*public*/ void AbstractPowerManagerTestBase::testStateOn() throw (JmriException){
         hearOn();
-        Assert::assertEquals("power state", PowerManager::ON, p->getPower());
+        Assert::assertEquals("power state", PowerManager::ON, p->getPower(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractPowerManagerTestBase::testStateOff() throw (JmriException){
         hearOff();
-        Assert::assertEquals("power state", PowerManager::OFF, p->getPower());
+        Assert::assertEquals("power state", PowerManager::OFF, p->getPower(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractPowerManagerTestBase::testStateIdle() throw (JmriException){
         if (p->implementsIdle()) {
             hearIdle();
-            Assert::assertEquals("power state", PowerManager::IDLE, p->getPower());
+            Assert::assertEquals("power state", PowerManager::IDLE, p->getPower(), __FILE__, __LINE__);
         }
     }
 
@@ -101,11 +101,11 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
         listenerResult = false;
         p->setPower(PowerManager::ON);
         sendOnReply();
-        Assert::assertTrue("listener invoked by GPOFF", listenerResult);
+        Assert::assertTrue("listener invoked by GPOFF", listenerResult, __FILE__, __LINE__);
         listenerResult = false;
         p->setPower(PowerManager::OFF);
         sendOffReply();
-        Assert::assertTrue("listener invoked by GPON", listenerResult);
+        Assert::assertTrue("listener invoked by GPON", listenerResult, __FILE__, __LINE__);
     }
 
     //@Test
@@ -116,7 +116,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
         listenerResult = false;
         hearOn();
         Assert::assertTrue("listener should not have heard message after removeListener",
-                !listenerResult);
+                !listenerResult, __FILE__, __LINE__);
     }
 
     //@Test
@@ -125,7 +125,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
         int startingListeners = numListeners();
         p->getPower();
         p->dispose();
-        Assert::assertEquals("controller listeners remaining", startingListeners -1 , numListeners());
+        Assert::assertEquals("controller listeners remaining", startingListeners -1 , numListeners(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -139,7 +139,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
             p->setPower(PowerManager::OFF);
         } catch (JmriException e) {
             // this is OK branch, check message not sent
-            Assert::assertEquals("messages sent", initialOutboundSize, outboundSize()); // just the first
+            Assert::assertEquals("messages sent", initialOutboundSize, outboundSize(), __FILE__, __LINE__); // just the first
             return;
         }
         Assert::fail("Should have thrown exception after dispose()",__FILE__, __LINE__);

@@ -22,7 +22,8 @@ private:
     /*private*/ LocoNetInterfaceScaffold* lnis = nullptr;
 friend class LocoNetInterfaceScaffoldO2;
 };
-class LocoNetInterfaceScaffoldO2 : LocoNetInterfaceScaffold
+
+class LocoNetInterfaceScaffoldO2 : public LocoNetInterfaceScaffold
 {
     Q_OBJECT
     LnSensorTest* test;

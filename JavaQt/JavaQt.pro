@@ -219,7 +219,9 @@ SOURCES += javaqt.cpp \
     loglevel.cpp \
     filteroutputstream.cpp \
     printstream.cpp \
-    myfileinputstream.cpp
+    myfileinputstream.cpp \
+    bufferedwriter.cpp \
+    outputstreamwriter.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -477,7 +479,8 @@ HEADERS += javaqt.h\
     loglevel.h \
     filteroutputstream.h \
     printstream.h \
-    myfileinputstream.h
+    myfileinputstream.h \
+    providingmanager.h
 
 unix {
     target.path = /usr/lib

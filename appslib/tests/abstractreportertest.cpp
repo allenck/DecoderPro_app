@@ -32,10 +32,10 @@ AbstractReporterTest::AbstractReporterTest(QObject *parent) : QObject(parent)
     //@Test
     /*public*/ void AbstractReporterTest::testCtor() {
         // Check that it is not a null object
-        Assert::assertNotNull("Created Reporter not null", r);
+        Assert::assertNotNull("Created Reporter not null", r, __FILE__, __LINE__);
         // Check that CurrentReport and LastReport return a null object
-        Assert::assertNull("CurrentReport at initialisation is 'null'", r->getCurrentReport());
-        Assert::assertNull("LastReport at initialisation is 'null'", r->getLastReport());
+        Assert::assertNull("CurrentReport at initialisation is 'null'", r->getCurrentReport(), __FILE__, __LINE__);
+        Assert::assertNull("LastReport at initialisation is 'null'", r->getLastReport(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -43,16 +43,16 @@ AbstractReporterTest::AbstractReporterTest(QObject *parent) : QObject(parent)
         // Report a String
         r->setReport(generateObjectToReport());
         // Check that both CurrentReport and LastReport are not null
-        Assert::assertNotNull("CurrentReport Object exists", r->getCurrentReport());
-        Assert::assertNotNull("LastReport Object exists", r->getLastReport());
+        Assert::assertNotNull("CurrentReport Object exists", r->getCurrentReport(), __FILE__, __LINE__);
+        Assert::assertNotNull("LastReport Object exists", r->getLastReport(), __FILE__, __LINE__);
         // Check the value of both CurrentReport and LastReport
-        Assert::assertEquals("CurrentReport equals LastReport",r->getLastReport(), r->getCurrentReport());
+        Assert::assertEquals("CurrentReport equals LastReport",r->getLastReport(), r->getCurrentReport(), __FILE__, __LINE__);
 
         // Nothing to report now
         r->setReport("");
         // Check that CurrentReport returns a null value, but LastReport returns the reported String
-        Assert::assertNull("After null report, CurrentReport is null", r->getCurrentReport());
-        Assert::assertNotNull("After null report, LastReport String is not null",r->getLastReport());
+        Assert::assertNull("After null report, CurrentReport is null", r->getCurrentReport(), __FILE__, __LINE__);
+        Assert::assertNotNull("After null report, LastReport String is not null",r->getLastReport(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -68,17 +68,17 @@ AbstractReporterTest::AbstractReporterTest(QObject *parent) : QObject(parent)
         // Report a String
         r->setReport(generateObjectToReport());
         // Check that both CurrentReport and LastReport were seen
-        Assert::assertTrue("CurrentReport seen", currentReportSeen);
-        Assert::assertTrue("LastReport seen", lastReportSeen);
+        Assert::assertTrue("CurrentReport seen", currentReportSeen, __FILE__, __LINE__);
+        Assert::assertTrue("LastReport seen", lastReportSeen, __FILE__, __LINE__);
 
         // Nothing to report now
         currentReportSeen = false;
         lastReportSeen = false;
         r->setReport("");
         // Check that CurrentReport was seen
-        Assert::assertTrue("CurrentReport seen after null", currentReportSeen);
+        Assert::assertTrue("CurrentReport seen after null", currentReportSeen, __FILE__, __LINE__);
         // Check that LastReport was not seen (no change on null)
-        Assert::assertFalse("LastReport seen after null", lastReportSeen);
+        Assert::assertFalse("LastReport seen after null", lastReportSeen, __FILE__, __LINE__);
     }
 
 

@@ -522,7 +522,20 @@ SOURCES += appslib.cpp \
     tests/programmertestbase.cpp \
     tests/loconet/lnreportertest.cpp \
     tests/abstractreportertestbase.cpp \
-    tests/loconet/lnreportertestaction.cpp
+    tests/loconet/lnreportertestaction.cpp \
+    tests/loconet/lnsensoraddresstest.cpp \
+    tests/loconet/lnsensoraddresstestaction.cpp \
+    tests/loconet/lnsensormanagertest.cpp \
+    tests/abstractsensormgrtestbase.cpp \
+    tests/abstractmanagertestbase.cpp \
+    tests/loconet/lnsensormanagertestaction.cpp \
+    tests/loconet/lndeferprogranmmertest.cpp \
+    tests/abstractprovidingturnoutmanagertestbase.cpp \
+    tests/abstractturnoutmgrtestbase.cpp \
+    tests/loconet/lnturnoutmanagertest.cpp \
+    tests/testuserpreferencesmanager.cpp \
+    tests/loconet/lndeferprogrammertestaction.cpp \
+    tests/loconet/lnturnoutmanagertestaction.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -994,7 +1007,20 @@ HEADERS += appslib.h\
     tests/programmertestbase.h \
     tests/loconet/lnreportertest.h \
     tests/abstractreportertestbase.h \
-    tests/loconet/lnreportertestaction.h
+    tests/loconet/lnreportertestaction.h \
+    tests/loconet/lnsensoraddresstest.h \
+    tests/loconet/lnsensoraddresstestaction.h \
+    tests/loconet/lnsensormanagertest.h \
+    tests/abstractsensormgrtestbase.h \
+    tests/abstractmanagertestbase.h \
+    tests/loconet/lnsensormanagertestaction.h \
+    tests/loconet/lndeferprogranmmertest.h \
+    tests/abstractprovidingturnoutmanagertestbase.h \
+    tests/abstractturnoutmgrtestbase.h \
+    tests/loconet/lnturnoutmanagertest.h \
+    tests/testuserpreferencesmanager.h \
+    tests/loconet/lndeferprogrammertestaction.h \
+    tests/loconet/lnturnoutmanagertestaction.h
 
 unix:!symbian {
     maemo5 {

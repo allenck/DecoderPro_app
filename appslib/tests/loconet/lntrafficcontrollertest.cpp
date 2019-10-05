@@ -17,7 +17,7 @@ LnTrafficControllerTest::LnTrafficControllerTest(QObject *parent) : QObject(pare
 
 //@Test
 /*public*/ void LnTrafficControllerTest::testCtor() {
-    Assert::assertNotNull("exists", memo->getLnTrafficController() );
+    Assert::assertNotNull("exists", memo->getLnTrafficController() , __FILE__, __LINE__);
 }
 
 // The minimal setup for log4J

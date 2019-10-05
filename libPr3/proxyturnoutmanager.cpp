@@ -4,7 +4,7 @@
 #include "instancemanager.h"
 
 ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
-    : AbstractProxyManager(parent)
+    : AbstractProxyTurnoutManager(parent)
 {
  setObjectName("ProxyTurnoutManager");
  registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
@@ -35,18 +35,10 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
 //@Override
 /*public*/ void ProxyTurnoutManager::addManager(Manager* m)
 {
-    // check for already present
-    for (Manager* check : mgrs)
-    {
-     if (m == check) { // can't use contains(..) because of Comparator.equals is on the prefix
-         // already present, complain and skip
-         log.warn(tr("Manager already present: %1").arg(m->metaObject()->className())); // NOI18N
-         return;
-     }
-    }
-    AbstractProxyManager::addManager(m);
+    AbstractProxyTurnoutManager::addManager(m);
+    ((TurnoutOperationManager*)InstanceManager::getDefault("TurnoutOperationManager"))->loadOperationTypes();
 
-    //TurnoutOperationManager::getInstance()->loadOperationTypes();
+#if 0
     if (defaultManager == nullptr) defaultManager = m;  // 1st one is default
 
 //    propertyVetoListenerList.stream().forEach((l) -> {
@@ -63,6 +55,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
     if (log.isDebugEnabled()) {
         log.debug(QString("added manager ") + m->metaObject()->className());
     }
+#endif
 }
 
 /**
@@ -73,16 +66,23 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  */
 /*public*/ Turnout* ProxyTurnoutManager::getTurnout(QString name)
 {
- return (Turnout*)AbstractProxyManager::getNamedBean(name);
+ return (Turnout*)AbstractProxyTurnoutManager::getNamedBean(name);
 }
 
-/*protected*/ NamedBean* ProxyTurnoutManager::makeBean(int i, QString systemName, QString userName) {
-    return ((AbstractTurnoutManager*)getMgr(i))->newTurnout(systemName, userName);
+/*protected*/ NamedBean* ProxyTurnoutManager::makeBean(int i, QString systemName, QString userName)
+{
+    //return ((AbstractProxyTurnoutManager*)((AbstractProxyTurnoutManager*)getMgr(i)))->newTurnout(systemName, userName);
+ Manager* m = getMgr(i);
+ NamedBean* bean = ((AbstractTurnoutManager*)m)->newTurnout(systemName, userName);
+ return bean;
 }
 
 /*public*/ Turnout* ProxyTurnoutManager::provideTurnout(QString name) {
-    return (Turnout*) AbstractProxyManager::provideNamedBean(name);
+    return (Turnout*) AbstractProxyTurnoutManager::provideNamedBean(name);
 }
+//@Override
+/** {@inheritDoc} */
+/*public*/ Turnout* ProxyTurnoutManager::provide(/*@Nonnull */QString name) throw (IllegalArgumentException) { return provideTurnout(name); }
 
 
 /**
@@ -92,7 +92,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  */
 /*public*/ Turnout *ProxyTurnoutManager::getBySystemName(QString systemName)
 {
- return (Turnout*) AbstractProxyManager::getBeanBySystemName(systemName);
+ return (Turnout*) AbstractProxyTurnoutManager::getBeanBySystemName(systemName);
 }
 
 /**
@@ -101,7 +101,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * @return requested Turnout object or null if none exists
  */
 /*public*/ Turnout *ProxyTurnoutManager::getByUserName(QString userName) {
-    return (Turnout*) AbstractProxyManager::getBeanByUserName(userName);
+    return (Turnout*) AbstractProxyTurnoutManager::getBeanByUserName(userName);
 }
 
 /**

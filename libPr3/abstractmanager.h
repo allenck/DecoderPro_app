@@ -82,6 +82,15 @@ public:
     /*public synchronized */virtual void addPropertyChangeListener(PropertyChangeListener* l);
     /*public synchronized*/ virtual void removePropertyChangeListener(PropertyChangeListener* l);
     /**
+     * Get all {@link java.beans.PropertyChangeListener}s currently attached to
+     * this object.
+     *
+     * @return An array of PropertyChangeListeners.
+     */
+    //@Nonnull
+    /*public*/  QList<PropertyChangeListener *> *getPropertyChangeListeners();
+
+    /**
      * By default, register this manager to store as configuration
      * information.  Override to change that.
      **/
@@ -93,6 +102,8 @@ public:
     VetoableChangeSupport* vcs;// = new VetoableChangeSupport(this);
     /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l);
     /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l);
+    /*public*/ /*final*/ QString getSystemPrefix();
+    /*public*/ NameValidity validSystemNameFormat(QString systemName);
 
 signals:
     void beanDeleted(NamedBean* s);

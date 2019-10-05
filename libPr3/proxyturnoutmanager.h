@@ -1,11 +1,11 @@
 #ifndef PROXYTURNOUTMANAGER_H
 #define PROXYTURNOUTMANAGER_H
-#include "abstractproxymanager.h"
+#include "abstractproxyturnoutmanager.h"
 #include "turnoutmanager.h"
 #include "internalturnoutmanager.h"
 
 class QCompleter;
-class LIBPR3SHARED_EXPORT ProxyTurnoutManager : public AbstractProxyManager/*, public TurnoutManager*/
+class LIBPR3SHARED_EXPORT ProxyTurnoutManager : public AbstractProxyTurnoutManager/*, public TurnoutManager*/
 {
  Q_OBJECT
 public:
@@ -121,6 +121,7 @@ public:
  QCompleter* getCompleter(QString text);
 public slots:
  /*public*/ Turnout* provideTurnout(QString name);
+ /*public*/ Turnout* provide(/*@Nonnull */QString name) throw (IllegalArgumentException);
 
 
 signals:

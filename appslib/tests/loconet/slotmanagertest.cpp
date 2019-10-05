@@ -189,7 +189,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     slotmanager->readCV(CV1, lstn);
     Assert::assertEquals("read message",
             "EF 0E 7C 2B 00 00 00 00 00 1C 00 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper()), __FILE__, __LINE__;
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
     Assert::assertEquals("one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("initial status", -999, status, __FILE__, __LINE__);
 
@@ -288,8 +288,8 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("initial status", -999, status, __FILE__, __LINE__);
     Assert::assertEquals("write message",
             "EF 0E 7C 6B 00 00 00 00 00 1E 10 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper()), __FILE__, __LINE__;
-    Assert::assertEquals("one message sent", 1, lnis->outbound.size());
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
+    Assert::assertEquals("one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("initial status", -999, status, __FILE__, __LINE__);
 
     // LACK received back (DCS240 sequence)
@@ -300,7 +300,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     //JUnitUtil::waitFor(()->{return startedShortTimer;},"startedShortTimer not set");
     ReleaseUntil03* r03 = new ReleaseUntil03(this);
     JUnitUtil::waitFor(r03, "startedShortTimer not set");
-    Assert::assertEquals("post-LACK status", -999, status), __FILE__, __LINE__;
+    Assert::assertEquals("post-LACK status", -999, status, __FILE__, __LINE__);
     Assert::assertTrue("started short timer", startedShortTimer, __FILE__, __LINE__);
     Assert::assertFalse("didn't start long timer", startedLongTimer, __FILE__, __LINE__);
 
@@ -604,7 +604,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("initial status", -999, status, __FILE__, __LINE__);
 
     // check that final CV write happened
-    Assert::assertEquals("three messages sent", 3, lnis->outbound.size());
+    Assert::assertEquals("three messages sent", 3, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("write final CV message",
             "EF 0E 7C 2B 00 00 00 00 10 00 00 7F 7F 00",
             lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
@@ -620,7 +620,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     Assert::assertTrue("started long timer", startedLongTimer, __FILE__, __LINE__);
     Assert::assertFalse("didn't start short timer", startedShortTimer, __FILE__, __LINE__);
 //    util.JUnitUtil::releaseThread(this, releaseTestDelay);  // wait for slow reply
-    Assert::assertEquals("three messages sent", 3, lnis->outbound.size());
+    Assert::assertEquals("three messages sent", 3, lnis->outbound.size(), __FILE__, __LINE__);
 
     // completion received back (DCS240 sequence)
     log->debug("send E7 reply back");
@@ -629,8 +629,8 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
 //    util.JUnitUtil::releaseThread(this, releaseTestDelay);
     log->debug("checking..");
     Assert::assertEquals("reply status", 0, status, __FILE__, __LINE__);
-    Assert::assertEquals("reply value", 55, value);
-    Assert::assertEquals("three messages sent", 3, lnis->outbound.size());
+    Assert::assertEquals("reply value", 55, value, __FILE__, __LINE__);
+    Assert::assertEquals("three messages sent", 3, lnis->outbound.size(), __FILE__, __LINE__);
 
     log->debug(".... end testReadThroughFacade ...");
 }
@@ -663,12 +663,12 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     pf2->readCV(CV1, lstn);
 
     // Check for PI write
-    Assert::assertEquals("one message sent", 1, lnis->outbound.size());
+    Assert::assertEquals("one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("initial status", -999, status, __FILE__, __LINE__);
     Assert::assertEquals("write PI message",
             "EF 0E 7C 6B 00 00 00 00 00 1E 10 7F 7F 00",
             lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
-    Assert::assertEquals("one message sent", 1, lnis->outbound.size());
+    Assert::assertEquals("one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("initial status", -999, status, __FILE__, __LINE__);
 
     // LACK received back (DCS240 sequence) to PI write: rejected
@@ -694,7 +694,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("programming mode 1", ProgrammingMode::PAGEMODE, l.at(1), __FILE__, __LINE__);
     Assert::assertEquals("programming mode 2", ProgrammingMode::REGISTERMODE, l.at(2), __FILE__, __LINE__);
     Assert::assertEquals("programming mode 3", ProgrammingMode::ADDRESSMODE, l.at(3), __FILE__, __LINE__);
-    Assert::assertEquals("programming mode 4", "LOCONETCSOPSWMODE", l.at(4)->getStandardName());
+    Assert::assertEquals("programming mode 4", "LOCONETCSOPSWMODE", l.at(4)->getStandardName(), __FILE__, __LINE__);
 }
 
 //@Test

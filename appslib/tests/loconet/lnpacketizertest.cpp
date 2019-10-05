@@ -19,12 +19,12 @@ LnPacketizerTest::LnPacketizerTest(QObject *parent) : QObject(parent)
 
 //@Test
 /*public*/ void LnPacketizerTest::testCtor() {
-   Assert::assertNotNull("exists", lnp );
+   Assert::assertNotNull("exists", lnp , __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void LnPacketizerTest::testStatusWithoutInit() {
-   Assert::assertFalse("not connected", lnp->status() );
+   Assert::assertFalse("not connected", lnp->status() , __FILE__, __LINE__);
 }
 
 //@Test

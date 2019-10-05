@@ -19,15 +19,15 @@ AbstractMessageTestBase::AbstractMessageTestBase(QObject *parent) : QObject(pare
 
 //@Test
 /*public*/ void AbstractMessageTestBase::testCtor() {
-    Assert::assertNotNull("exists",m);
+    Assert::assertNotNull("exists",m, __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void AbstractMessageTestBase::testToString() {
-    Assert::assertNotNull("toString has result",m->toString());
+    Assert::assertNotNull("toString has result",m->toString(), __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void AbstractMessageTestBase::testToMonitorString() {
-    Assert::assertNotNull("toMonitorString has result",m->toMonitorString());
+    Assert::assertNotNull("toMonitorString has result",m->toMonitorString(), __FILE__, __LINE__);
 }

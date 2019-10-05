@@ -47,6 +47,11 @@ public:
          * due to e.g. an illegal name or name that can't be parsed.
          */
         virtual  Sensor* provideSensor(QString /*name*/) { return NULL;}
+        //@Override
+        /** {@inheritDoc} */
+        virtual /*default*/ /*public*/ Sensor* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException)
+        { return provideSensor(name); }
+
 
         /**
          * Locate via user name, then system name if needed.
@@ -123,12 +128,19 @@ public:
 
         virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/) const {return "";}// throws JmriException;
 
-    virtual long getDefaultSensorDebounceGoingActive() {return 0;}
+        virtual long getDefaultSensorDebounceGoingActive() {return 0;}
         virtual long getDefaultSensorDebounceGoingInActive() {return 0;}
 
         virtual void setDefaultSensorDebounceGoingActive(long /*timer*/) {}
 
         virtual void setDefaultSensorDebounceGoingInActive(long /*timer*/) {}
+        /**
+         * Do the sensor objects provided by this manager support configuring
+         * an internal pullup or pull down resistor?
+         *
+         * @return true if pull up/pull down configuration is supported.
+         */
+        virtual /*public*/ bool isPullResistanceConfigurable() {return false;}
 signals:
     
 public slots:

@@ -21,7 +21,7 @@ public:
     /*public*/ QList<Manager*> getDisplayOrderManagerList();
     /*public*/ Manager* getInternalManager();
     /*public*/ Manager* getDefaultManager();
-    /*public*/ void addManager(Manager* m);
+    virtual /*public*/ void addManager(Manager* m);
     /**
      * Locate via user name, then system name if needed.
      * Subclasses use this to provide e.g. getSensor, getTurnout, etc

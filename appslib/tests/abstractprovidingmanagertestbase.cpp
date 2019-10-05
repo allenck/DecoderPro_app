@@ -2,7 +2,7 @@
 #include "junitappender.h"
 #include "assert1.h"
 
-AbstractProvidingManagerTestBase::AbstractProvidingManagerTestBase()
+AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase()
 {
 
 }

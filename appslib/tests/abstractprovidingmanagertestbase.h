@@ -3,10 +3,10 @@
 
 #include "providingmanager.h"
 
-class AbstractProvidingManagerTestBase : public ProvidingManager<T>
+class AbstractProvidingTurnoutManagerTestBase : public ProvidingManager/*<T>*/
 {
 public:
-    AbstractProvidingManagerTestBase();
+    AbstractProvidingTurnoutManagerTestBase();
 };
 
 #endif // ABSTRACTPROVIDINGMANAGERTESTBASE_H

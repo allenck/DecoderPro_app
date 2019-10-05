@@ -39,11 +39,11 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
 //        }
 
         // check results
-        Assert::assertTrue("at least two messages", lnis->outbound.size() >= 2);
+        Assert::assertTrue("at least two messages", lnis->outbound.size() >= 2, __FILE__, __LINE__);
         Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 2)->toString().toUpper(),
-                "B0 14 30 00");  // Turnout::CLOSED/ON loconet message
+                "B0 14 30 00", __FILE__, __LINE__);  // Turnout::CLOSED/ON loconet message
         Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(),
-                "B0 14 20 00");  // Turnout::CLOSED/OFF loconet message
+                "B0 14 20 00", __FILE__, __LINE__);  // Turnout::CLOSED/OFF loconet message
     }
 
     /**
@@ -57,11 +57,11 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         }
 
         // check for messages
-        Assert::assertTrue("just two messages", lnis->outbound.size() == 2);
+        Assert::assertTrue("just two messages", lnis->outbound.size() == 2, __FILE__, __LINE__);
         Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 2)->toString().toUpper(),
-                "B0 14 10 00");  // THROWN/ON loconet message
+                "B0 14 10 00", __FILE__, __LINE__);  // THROWN/ON loconet message
         Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(),
-                "B0 14 00 00");  // THROWN/OFF loconet message
+                "B0 14 00 00", __FILE__, __LINE__);  // THROWN/OFF loconet message
     }
 
     //@Test
@@ -114,7 +114,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
             log->error("TO exception: " + e.getMessage());
         }
         Assert::assertTrue(lnis->outbound.at(0)
-                ->toString() == ("B0 14 30 00"), __FILE__, __LINE__);  // Turnout::CLOSED loconet message
+                ->toString().toUpper() == ("B0 14 30 00"), __FILE__, __LINE__);  // Turnout::CLOSED loconet message
         Assert::assertTrue(t->getCommandedState() == Turnout::CLOSED, __FILE__, __LINE__);
 
         // notify the Ln that somebody else changed it...
@@ -140,7 +140,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
             log->error("TO exception: " + e.getMessage());
         }
         Assert::assertTrue(lnis->outbound.at(0)
-                ->toString() == ("BD 14 10 00"), __FILE__, __LINE__);  // thrown loconet message
+                ->toString().toUpper() == ("B0 14 10 00"), __FILE__, __LINE__);  // thrown loconet message
         Assert::assertTrue(t->getCommandedState() == Turnout::THROWN, __FILE__, __LINE__);
 
         // notify the Ln that somebody else changed it...
@@ -303,9 +303,9 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         //}
 
         // check for messages
-        Assert::assertTrue("just one messages", lnis->outbound.size() == 1);
+        Assert::assertTrue("just one messages", lnis->outbound.size() == 1, __FILE__, __LINE__);
         Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString(),
-                "B0 14 10 00");  // THROWN/ON loconet message
+                "B0 14 10 00", __FILE__, __LINE__);  // THROWN/ON loconet message
         Assert::assertTrue(t->getCommandedState() == Turnout::THROWN, __FILE__, __LINE__);
     }
 
@@ -322,9 +322,9 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         //}
 
         // check for messages
-        Assert::assertTrue("just one messages", lnis->outbound.size() == 1);
+        Assert::assertTrue("just one messages", lnis->outbound.size() == 1, __FILE__, __LINE__);
         Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString(),
-                "B0 14 10 00");  // THROWN/ON loconet message
+                "B0 14 10 00", __FILE__, __LINE__);  // THROWN/ON loconet message
         Assert::assertTrue(t->getCommandedState() == Turnout::THROWN, __FILE__, __LINE__);
     }
 
@@ -341,9 +341,9 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         //}
 
         // check for messages
-        Assert::assertTrue("just two messages", lnis->outbound.size() == 2);
+        Assert::assertTrue("just two messages", lnis->outbound.size() == 2, __FILE__, __LINE__);
         Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString(),
-                "B0 14 00 00");  // THROWN/OFF loconet message
+                "B0 14 00 00", __FILE__, __LINE__);  // THROWN/OFF loconet message
         Assert::assertTrue(t->getCommandedState() == Turnout::THROWN, __FILE__, __LINE__);
     }
 
@@ -360,9 +360,9 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         //}
 
         // check for messages
-        Assert::assertTrue("just two messages", lnis->outbound.size() == 2);
+        Assert::assertTrue("just two messages", lnis->outbound.size() == 2, __FILE__, __LINE__);
         Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString(),
-                "B0 14 00 00");  // THROWN/OFF loconet message
+                "B0 14 00 00", __FILE__, __LINE__);  // THROWN/OFF loconet message
         Assert::assertTrue(t->getCommandedState() == Turnout::THROWN, __FILE__, __LINE__);
     }
 
@@ -451,7 +451,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         } catch (IllegalArgumentException e) {
             excep = true;
         }
-        Assert::assertTrue("expected exception happened (1)", excep);
+        Assert::assertTrue("expected exception happened (1)", excep, __FILE__, __LINE__);
 
         excep = false;
         try {
@@ -459,7 +459,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         } catch (IllegalArgumentException e) {
             excep = true;
         }
-        Assert::assertTrue("expected exception happened (2)", excep);
+        Assert::assertTrue("expected exception happened (2)", excep, __FILE__, __LINE__);
 
         excep = false;
         int value = -999;
@@ -469,8 +469,8 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         } catch (IllegalArgumentException e) {
             excep = true;
         }
-        Assert::assertFalse("exception did not happen (3)", excep);
-        Assert::assertEquals("check t has number", 2048, value);
+        Assert::assertFalse("exception did not happen (3)", excep, __FILE__, __LINE__);
+        Assert::assertEquals("check t has number", 2048, value, __FILE__, __LINE__);
     }
 
     //@Test
@@ -481,7 +481,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         } catch (IllegalArgumentException e) {
             excep = true;
         }
-        Assert::assertTrue("expected illegal argument exception happened (1)", excep);
+        Assert::assertTrue("expected illegal argument exception happened (1)", excep, __FILE__, __LINE__);
 
         excep = false;
         try {
@@ -489,7 +489,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         } catch (IllegalArgumentException e) {
             excep = true;
         }
-        Assert::assertTrue("expected illegal argument exception happened (2)", excep);
+        Assert::assertTrue("expected illegal argument exception happened (2)", excep, __FILE__, __LINE__);
 
         excep = false;
         try {
@@ -497,7 +497,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         } catch (IllegalArgumentException e) {
             excep = true;
         }
-        Assert::assertFalse("Did not expect or get an exception (3)", excep);
+        Assert::assertFalse("Did not expect or get an exception (3)", excep, __FILE__, __LINE__);
         Assert::assertEquals("Check direct feedback mode set (3)", "DIRECT", t->getFeedbackModeName(), __FILE__, __LINE__);
 
         try {
@@ -505,7 +505,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         } catch (IllegalArgumentException e) {
             excep = true;
         }
-        Assert::assertFalse("Did not expect or get an exception (4)", excep);
+        Assert::assertFalse("Did not expect or get an exception (4)", excep, __FILE__, __LINE__);
         Assert::assertEquals("Check direct feedback mode set (4)", "MONITORING", t->getFeedbackModeName(), __FILE__, __LINE__);
 
         try {
@@ -513,7 +513,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         } catch (IllegalArgumentException e) {
             excep = true;
         }
-        Assert::assertFalse("Did not expect or get an exception (5)", excep);
+        Assert::assertFalse("Did not expect or get an exception (5)", excep, __FILE__, __LINE__);
         Assert::assertEquals("Check direct feedback mode set (5)", "EXACT", t->getFeedbackModeName(), __FILE__, __LINE__);
 
         try {
@@ -521,7 +521,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         } catch (IllegalArgumentException e) {
             excep = true;
         }
-        Assert::assertFalse("Did not expect or get an exception (6)", excep);
+        Assert::assertFalse("Did not expect or get an exception (6)", excep, __FILE__, __LINE__);
         Assert::assertEquals("Check direct feedback mode set (6)", "INDIRECT", t->getFeedbackModeName(), __FILE__, __LINE__);
 
         try {
@@ -529,7 +529,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         } catch (IllegalArgumentException e) {
             excep = true;
         }
-        Assert::assertFalse("Did not expect or get an exception (7)", excep);
+        Assert::assertFalse("Did not expect or get an exception (7)", excep, __FILE__, __LINE__);
         Assert::assertEquals("Check direct feedback mode set (7)", "ONESENSOR", t->getFeedbackModeName(), __FILE__, __LINE__);
 
         JUnitAppender::assertWarnMessage("expected Sensor 1 not defined - LT21",__FILE__, __LINE__);
@@ -540,7 +540,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         } catch (IllegalArgumentException e) {
             excep = true;
         }
-        Assert::assertFalse("Did not expect or get an exception (8)", excep);
+        Assert::assertFalse("Did not expect or get an exception (8)", excep, __FILE__, __LINE__);
         Assert::assertEquals("Check direct feedback mode set (8)", "TWOSENSOR", t->getFeedbackModeName(), __FILE__, __LINE__);
         JUnitAppender::assertWarnMessage("expected Sensor 1 not defined - LT21",__FILE__, __LINE__);
         JUnitAppender::assertWarnMessage("expected Sensor 2 not defined - LT21",__FILE__, __LINE__);
@@ -557,11 +557,11 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
 
     //@Test
     /*public*/ void LnTurnoutTest::testSetUseOffSwReqAsConfirmation() {
-        Assert::assertFalse("check default offSwReqAsConfirmation", lnt->_useOffSwReqAsConfirmation);
+        Assert::assertFalse("check default offSwReqAsConfirmation", lnt->_useOffSwReqAsConfirmation, __FILE__, __LINE__);
         lnt->setUseOffSwReqAsConfirmation(true);
-        Assert::assertTrue("check first offSwReqAsConfirmation", lnt->_useOffSwReqAsConfirmation);
+        Assert::assertTrue("check first offSwReqAsConfirmation", lnt->_useOffSwReqAsConfirmation, __FILE__, __LINE__);
         lnt->setUseOffSwReqAsConfirmation(false);
-        Assert::assertFalse("check first offSwReqAsConfirmation", lnt->_useOffSwReqAsConfirmation);
+        Assert::assertFalse("check first offSwReqAsConfirmation", lnt->_useOffSwReqAsConfirmation, __FILE__, __LINE__);
     }
 
     //@Test

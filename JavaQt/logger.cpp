@@ -44,6 +44,10 @@ void Logger::debug(QString s)
 {
  LoggerBase::debug(name, s);
 }
+void Logger::debug(QString s, Throwable throwable)
+{
+ LoggerBase::debug(name, s, throwable);
+}
 
 void Logger::warn(QString s)
 {

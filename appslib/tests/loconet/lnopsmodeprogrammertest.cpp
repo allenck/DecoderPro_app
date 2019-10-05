@@ -155,11 +155,11 @@ LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
     Assert::assertEquals("one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("No programming reply", 0, pl->getRcvdInvoked(), __FILE__, __LINE__);
 
-    Assert::assertEquals("sent byte 0", 0xD0, lnis->outbound.at(0)->getElement(0) & 0xFF);
-    Assert::assertEquals("sent byte 1", 0x62, lnis->outbound.at(0)->getElement(1) & 0xFF);
-    Assert::assertEquals("sent byte 2", 0x03, lnis->outbound.at(0)->getElement(2) & 0xFF);
-    Assert::assertEquals("sent byte 3", 113, lnis->outbound.at(0)->getElement(3) & 0xFF);
-    Assert::assertEquals("sent byte 4", 0x0A, lnis->outbound.at(0)->getElement(4) & 0xFF);
+    Assert::assertEquals("sent byte 0", 0xD0, lnis->outbound.at(0)->getElement(0) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 1", 0x62, lnis->outbound.at(0)->getElement(1) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 2", 0x03, lnis->outbound.at(0)->getElement(2) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 3", 113, lnis->outbound.at(0)->getElement(3) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 4", 0x0A, lnis->outbound.at(0)->getElement(4) & 0xFF, __FILE__, __LINE__);
 
     int testVal = 0;
 
@@ -190,11 +190,11 @@ LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
     Assert::assertEquals("one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("No programming reply", 0, pl->getRcvdInvoked(), __FILE__, __LINE__);
 
-    Assert::assertEquals("sent byte 0", 0xD0, lnis->outbound.at(0)->getElement(0) & 0xFF);
-    Assert::assertEquals("sent byte 1", 0x62, lnis->outbound.at(0)->getElement(1) & 0xFF);
-    Assert::assertEquals("sent byte 2", 0x03, lnis->outbound.at(0)->getElement(2) & 0xFF);
-    Assert::assertEquals("sent byte 3", 113, lnis->outbound.at(0)->getElement(3) & 0xFF);
-    Assert::assertEquals("sent byte 4", 0x0A, lnis->outbound.at(0)->getElement(4) & 0xFF);
+    Assert::assertEquals("sent byte 0", 0xD0, lnis->outbound.at(0)->getElement(0) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 1", 0x62, lnis->outbound.at(0)->getElement(1) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 2", 0x03, lnis->outbound.at(0)->getElement(2) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 3", 113, lnis->outbound.at(0)->getElement(3) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 4", 0x0A, lnis->outbound.at(0)->getElement(4) & 0xFF, __FILE__, __LINE__);
 
     int testVal = 1;
 
@@ -247,11 +247,11 @@ LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
     Assert::assertEquals("one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("No programming reply", 0, pl->getRcvdInvoked(), __FILE__, __LINE__);
 
-    Assert::assertEquals("sent byte 0", 0xD0, lnis->outbound.at(0)->getElement(0) & 0xFF);
-    Assert::assertEquals("sent byte 1", 0x72, lnis->outbound.at(0)->getElement(1) & 0xFF);
-    Assert::assertEquals("sent byte 2", 0x03, lnis->outbound.at(0)->getElement(2) & 0xFF);
-    Assert::assertEquals("sent byte 3", 113, lnis->outbound.at(0)->getElement(3) & 0xFF);
-    Assert::assertEquals("sent byte 4", 0x0B, lnis->outbound.at(0)->getElement(4) & 0xFF);
+    Assert::assertEquals("sent byte 0", 0xD0, lnis->outbound.at(0)->getElement(0) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 1", 0x72, lnis->outbound.at(0)->getElement(1) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 2", 0x03, lnis->outbound.at(0)->getElement(2) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 3", 113, lnis->outbound.at(0)->getElement(3) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 4", 0x0B, lnis->outbound.at(0)->getElement(4) & 0xFF, __FILE__, __LINE__);
 
     // check echo of sent message has no effect
     LocoNetMessage* m = lnis->outbound.at(0);
@@ -302,8 +302,8 @@ LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
     Assert::assertEquals("one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("No programming reply", 0, pl->getRcvdInvoked(), __FILE__, __LINE__);
 
-    Assert::assertEquals("sent byte 0", 0xE5, lnis->outbound.at(0)->getElement(0) & 0xFF);
-    Assert::assertEquals("sent byte 2", 0x50, lnis->outbound.at(0)->getElement(2) & 0xFF);
+    Assert::assertEquals("sent byte 0", 0xE5, lnis->outbound.at(0)->getElement(0) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 2", 0x50, lnis->outbound.at(0)->getElement(2) & 0xFF, __FILE__, __LINE__);
 
     int testVal = 132;
 
@@ -331,8 +331,8 @@ LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
     Assert::assertEquals("one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("No programming reply", 0, pl->getRcvdInvoked(), __FILE__, __LINE__);
 
-    Assert::assertEquals("sent byte 0", 0xE5, lnis->outbound.at(0)->getElement(0) & 0xFF);
-    Assert::assertEquals("sent byte 2", 0x50, lnis->outbound.at(0)->getElement(2) & 0xFF);
+    Assert::assertEquals("sent byte 0", 0xE5, lnis->outbound.at(0)->getElement(0) & 0xFF, __FILE__, __LINE__);
+    Assert::assertEquals("sent byte 2", 0x50, lnis->outbound.at(0)->getElement(2) & 0xFF, __FILE__, __LINE__);
 
     int testVal = 47; // 0x2F
 

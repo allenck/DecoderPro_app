@@ -58,7 +58,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::AbstractThrottleTest::testGetSpeedSetting() {
     float expResult = 0.0F;
     float result = instance->getSpeedSetting();
-    Assert::assertEquals(expResult, result, 0.0);
+    Assert::assertEquals(expResult, result, 0.0f, __FILE__, __LINE__);
 }
 
 /**
@@ -68,7 +68,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::AbstractThrottleTest::testSetSpeedSettingAgain() {
     float speed = 1.0F;
     instance->setSpeedSettingAgain(speed);
-    Assert::assertEquals(speed, instance->getSpeedSetting(), 0.0);
+    Assert::assertEquals(speed, instance->getSpeedSetting(), 0.0f, __FILE__, __LINE__);
 }
 
 /**
@@ -78,7 +78,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::AbstractThrottleTest::testSetSpeedSetting() {
     float speed = 1.0F;
     instance->setSpeedSetting(speed);
-    Assert::assertEquals(speed, instance->getSpeedSetting(), 0.0);
+    Assert::assertEquals(speed, instance->getSpeedSetting(), 0.0f, __FILE__, __LINE__);
 }
 
 /**
@@ -88,7 +88,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::AbstractThrottleTest::testGetIsForward() {
     bool expResult = false;
     bool result = instance->getIsForward();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -107,7 +107,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::AbstractThrottleTest::testGetF0() {
     bool expResult = false;
     bool result = instance->getF0();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -117,7 +117,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::AbstractThrottleTest::testGetF1() {
     bool expResult = false;
     bool result = instance->getF1();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -127,7 +127,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF2() {
     bool expResult = false;
     bool result = instance->getF2();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -137,7 +137,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF3() {
     bool expResult = false;
     bool result = instance->getF3();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -147,7 +147,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF4() {
     bool expResult = false;
     bool result = instance->getF4();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -157,7 +157,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF5() {
     bool expResult = false;
     bool result = instance->getF5();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -167,7 +167,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF6() {
     bool expResult = false;
     bool result = instance->getF6();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -177,7 +177,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF7() {
     bool expResult = false;
     bool result = instance->getF7();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -187,7 +187,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF8() {
     bool expResult = false;
     bool result = instance->getF8();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -197,7 +197,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF9() {
     bool expResult = false;
     bool result = instance->getF9();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -207,7 +207,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF10() {
     bool expResult = false;
     bool result = instance->getF10();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -217,7 +217,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF11() {
     bool expResult = false;
     bool result = instance->getF11();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -227,7 +227,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF12() {
     bool expResult = false;
     bool result = instance->getF12();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -237,7 +237,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF13() {
     bool expResult = false;
     bool result = instance->getF13();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -247,7 +247,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF14() {
     bool expResult = false;
     bool result = instance->getF14();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -257,7 +257,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF15() {
     bool expResult = false;
     bool result = instance->getF15();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -267,7 +267,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF16() {
     bool expResult = false;
     bool result = instance->getF16();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -277,7 +277,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF17() {
     bool expResult = false;
     bool result = instance->getF17();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -287,7 +287,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF18() {
     bool expResult = false;
     bool result = instance->getF18();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -297,7 +297,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF19() {
     bool expResult = false;
     bool result = instance->getF19();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -307,7 +307,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF20() {
     bool expResult = false;
     bool result = instance->getF20();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -317,7 +317,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF21() {
     bool expResult = false;
     bool result = instance->getF21();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -327,7 +327,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF22() {
     bool expResult = false;
     bool result = instance->getF22();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -337,7 +337,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF23() {
     bool expResult = false;
     bool result = instance->getF23();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -347,7 +347,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF24() {
     bool expResult = false;
     bool result = instance->getF24();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -357,7 +357,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF25() {
     bool expResult = false;
     bool result = instance->getF25();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -367,7 +367,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF26() {
     bool expResult = false;
     bool result = instance->getF26();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -377,7 +377,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF27() {
     bool expResult = false;
     bool result = instance->getF27();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -387,7 +387,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF28() {
     bool expResult = false;
     bool result = instance->getF28();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -397,7 +397,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF0Momentary() {
     bool expResult = false;
     bool result = instance->getF0Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -407,7 +407,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF1Momentary() {
     bool expResult = false;
     bool result = instance->getF1Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -417,7 +417,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF2Momentary() {
     bool expResult = false;
     bool result = instance->getF2Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -427,7 +427,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF3Momentary() {
     bool expResult = false;
     bool result = instance->getF3Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -437,7 +437,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF4Momentary() {
     bool expResult = false;
     bool result = instance->getF4Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -447,7 +447,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF5Momentary() {
     bool expResult = false;
     bool result = instance->getF5Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -457,7 +457,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF6Momentary() {
     bool expResult = false;
     bool result = instance->getF6Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -467,7 +467,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF7Momentary() {
     bool expResult = false;
     bool result = instance->getF7Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -477,7 +477,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF8Momentary() {
     bool expResult = false;
     bool result = instance->getF8Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -487,7 +487,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF9Momentary() {
     bool expResult = false;
     bool result = instance->getF9Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -497,7 +497,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF10Momentary() {
     bool expResult = false;
     bool result = instance->getF10Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -507,7 +507,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF11Momentary() {
     bool expResult = false;
     bool result = instance->getF11Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -517,7 +517,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF12Momentary() {
     bool expResult = false;
     bool result = instance->getF12Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -527,7 +527,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF13Momentary() {
     bool expResult = false;
     bool result = instance->getF13Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -537,7 +537,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF14Momentary() {
     bool expResult = false;
     bool result = instance->getF14Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -547,7 +547,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF15Momentary() {
     bool expResult = false;
     bool result = instance->getF15Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -557,7 +557,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF16Momentary() {
     bool expResult = false;
     bool result = instance->getF16Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -567,7 +567,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF17Momentary() {
     bool expResult = false;
     bool result = instance->getF17Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -577,7 +577,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF18Momentary() {
     bool expResult = false;
     bool result = instance->getF18Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -587,7 +587,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF19Momentary() {
     bool expResult = false;
     bool result = instance->getF19Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -597,7 +597,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF20Momentary() {
     bool expResult = false;
     bool result = instance->getF20Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -607,7 +607,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF21Momentary() {
     bool expResult = false;
     bool result = instance->getF21Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -617,7 +617,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF22Momentary() {
     bool expResult = false;
     bool result = instance->getF22Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -627,7 +627,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF23Momentary() {
     bool expResult = false;
     bool result = instance->getF23Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -637,7 +637,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF24Momentary() {
     bool expResult = false;
     bool result = instance->getF24Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -647,7 +647,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF25Momentary() {
     bool expResult = false;
     bool result = instance->getF25Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -657,7 +657,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF26Momentary() {
     bool expResult = false;
     bool result = instance->getF26Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -667,7 +667,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF27Momentary() {
     bool expResult = false;
     bool result = instance->getF27Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -677,7 +677,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetF28Momentary() {
     bool expResult = false;
     bool result = instance->getF28Momentary();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -719,7 +719,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetListeners() {
     QVector<PropertyChangeListener*>* expResult = new QVector<PropertyChangeListener*>();
     QVector<PropertyChangeListener*>* result = instance->getListeners();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -764,7 +764,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetSpeedIncrement() {
     float expResult = 0.0F;
     float result = instance->getSpeedIncrement();
-    Assert::assertEquals(expResult, result, 0.0);
+    Assert::assertEquals(expResult, result, 0.0f, __FILE__, __LINE__);
 }
 
 /**
@@ -1418,7 +1418,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetSpeedStepMode() {
     SpeedStepMode::SSMODDES expResult = SpeedStepMode::UNKNOWN;
     SpeedStepMode::SSMODDES result = instance->getSpeedStepMode();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -1470,7 +1470,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 /*public*/ void AbstractThrottleTest::testGetRosterEntry() {
     BasicRosterEntry* expResult = nullptr;
     BasicRosterEntry* result = instance->getRosterEntry();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 
 /**
@@ -1478,7 +1478,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
  */
 //@Test
 /*public*/ void AbstractThrottleTest::testGetSpeed_float() {
-    Assert::assertEquals("Full Speed", 127, instance->intSpeed(1.0F));
+    Assert::assertEquals("Full Speed", 127, instance->intSpeed(1.0F), __FILE__, __LINE__);
     float incre = 0.007874016f;
     float speed = incre;
     // Cannot get speeedStep 1. range is 2 to 127
@@ -1486,7 +1486,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
     while (speed < 0.999f) {
         int result = instance->intSpeed(speed);
         log->debug(tr("speed= %1 step= %2").arg(speed).arg(result));
-        Assert::assertEquals("speed step ", i++, result);
+        Assert::assertEquals("speed step ", i++, result, __FILE__, __LINE__);
         speed += incre;
     }
 }
@@ -1499,23 +1499,23 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
     float speed = 0.001F;
     int maxStepHi = 127;
     int maxStepLo = 28;
-    Assert::assertEquals("Idle", 0, instance->intSpeed(0.0F, maxStepHi));
-    Assert::assertEquals("Idle", 0, instance->intSpeed(0.0F, maxStepLo));
-    Assert::assertEquals("Emergency", 1, instance->intSpeed(-1.0F, maxStepHi));
-    Assert::assertEquals("Emergency", 1, instance->intSpeed(-1.0F, maxStepLo));
-    Assert::assertEquals("Emergency", 1, instance->intSpeed(-0.001F, maxStepHi));
-    Assert::assertEquals("Emergency", 1, instance->intSpeed(-0.001F, maxStepLo));
-    Assert::assertEquals("Full Speed", maxStepHi, instance->intSpeed(1.0F, maxStepHi));
-    Assert::assertEquals("Full Speed", maxStepLo, instance->intSpeed(1.0F, maxStepLo));
+    Assert::assertEquals("Idle", 0, instance->intSpeed(0.0F, maxStepHi), __FILE__, __LINE__);
+    Assert::assertEquals("Idle", 0, instance->intSpeed(0.0F, maxStepLo), __FILE__, __LINE__);
+    Assert::assertEquals("Emergency", 1, instance->intSpeed(-1.0F, maxStepHi), __FILE__, __LINE__);
+    Assert::assertEquals("Emergency", 1, instance->intSpeed(-1.0F, maxStepLo), __FILE__, __LINE__);
+    Assert::assertEquals("Emergency", 1, instance->intSpeed(-0.001F, maxStepHi), __FILE__, __LINE__);
+    Assert::assertEquals("Emergency", 1, instance->intSpeed(-0.001F, maxStepLo), __FILE__, __LINE__);
+    Assert::assertEquals("Full Speed", maxStepHi, instance->intSpeed(1.0F, maxStepHi), __FILE__, __LINE__);
+    Assert::assertEquals("Full Speed", maxStepLo, instance->intSpeed(1.0F, maxStepLo), __FILE__, __LINE__);
     while (speed < 1.1F) { // loop ~ 1100 times
         int result = instance->intSpeed(speed, maxStepHi);
-        Assert::assertNotSame(QString::number(speed) + "(" + QString::number(maxStepHi) + " steps) should not idle", 0, result);
-        Assert::assertNotSame(QString::number(speed) + "(" + QString::number(maxStepHi) + " steps) should not eStop", 1, result);
-        Assert::assertTrue(QString::number(speed) + "(" + QString::number(maxStepHi) + " steps) should not exceed " + QString::number(maxStepHi), result <= 127);
+        Assert::assertNotSame(QString::number(speed) + "(" + QString::number(maxStepHi) + " steps) should not idle", 0, result, __FILE__, __LINE__);
+        Assert::assertNotSame(QString::number(speed) + "(" + QString::number(maxStepHi) + " steps) should not eStop", 1, result, __FILE__, __LINE__);
+        Assert::assertTrue(QString::number(speed) + "(" + QString::number(maxStepHi) + " steps) should not exceed " + QString::number(maxStepHi), result <= 127, __FILE__, __LINE__);
         result = instance->intSpeed(speed, maxStepLo);
-        Assert::assertNotSame(QString::number(speed) + "(" + QString::number(maxStepLo) + " steps) should not idle", 0, result);
-        Assert::assertNotSame(QString::number(speed) + "(" + QString::number(maxStepLo) + " steps) should not eStop", 1, result);
-        Assert::assertTrue(QString::number(speed) + "(" + QString::number(maxStepLo) + " steps) should not exceed " + QString::number(maxStepLo), result <= 127);
+        Assert::assertNotSame(QString::number(speed) + "(" + QString::number(maxStepLo) + " steps) should not idle", 0, result, __FILE__, __LINE__);
+        Assert::assertNotSame(QString::number(speed) + "(" + QString::number(maxStepLo) + " steps) should not eStop", 1, result, __FILE__, __LINE__);
+        Assert::assertTrue(QString::number(speed) + "(" + QString::number(maxStepLo) + " steps) should not exceed " + QString::number(maxStepLo), result <= 127, __FILE__, __LINE__);
         speed = speed + 0.001F;
     }
 }

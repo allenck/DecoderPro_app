@@ -53,6 +53,24 @@ AbstractSensor::AbstractSensor(QString systemName, QString userName, QObject *pa
   thr = NULL;
 }
 
+//@Override
+/*public*/ QString AbstractSensor::getBeanType() {
+    return tr("Sensor");
+}
+
+//@Override
+//@CheckReturnValue
+/*public*/ QString AbstractSensor::describeState(int state) {
+    switch (state) {
+        case ACTIVE:
+            return tr("Active");
+        case INACTIVE:
+            return tr("Inactive");
+        default:
+            return AbstractNamedBean::describeState(state);
+    }
+}
+
 // implementing classes will typically have a function/listener to get
 // updates from the layout, which will then call
 //		public void firePropertyChange(QString propertyName,
@@ -71,7 +89,7 @@ void AbstractSensor::setSensorDebounceGoingActiveTimer(long time)
  firePropertyChange("ActiveTimer", QVariant(oldValue), QVariant((qint32)sensorDebounceGoingActive));
 }
 
-long AbstractSensor::getSensorDebounceGoingActiveTimer()
+long AbstractSensor::getSensorDebounceGoingActiveTimer() const
 { return sensorDebounceGoingActive; }
 
 void AbstractSensor::setSensorDebounceGoingInActiveTimer(long time)
@@ -83,7 +101,7 @@ void AbstractSensor::setSensorDebounceGoingInActiveTimer(long time)
  firePropertyChange("InActiveTimer", oldValue,  QVariant((qint32)sensorDebounceGoingActive));
 }
 
-long AbstractSensor::getSensorDebounceGoingInActiveTimer()
+long AbstractSensor::getSensorDebounceGoingInActiveTimer() const
 { return sensorDebounceGoingInActive; }
 
 //@Override
@@ -93,8 +111,8 @@ long AbstractSensor::getSensorDebounceGoingInActiveTimer()
     }
     _useDefaultTimerSettings = boo;
     if (_useDefaultTimerSettings) {
-        sensorDebounceGoingActive = ((SensorManager*)InstanceManager::sensorManagerInstance())->getDefaultSensorDebounceGoingActive();
-        sensorDebounceGoingInActive = ((SensorManager*)InstanceManager::sensorManagerInstance())->getDefaultSensorDebounceGoingInActive();
+        sensorDebounceGoingActive = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getDefaultSensorDebounceGoingActive();
+        sensorDebounceGoingInActive = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getDefaultSensorDebounceGoingInActive();
     }
     firePropertyChange("GlobalTimer", !boo, boo);
 }
@@ -228,6 +246,7 @@ void AbstractSensor::setOwnState(int s)
    {
     try {
 //TODO:                        thr.interrupt();
+     thr->exit();
     } catch (Exception ie)
     {
      //Can be considered normal.
@@ -271,7 +290,7 @@ void AbstractSensor::setOwnState(int s)
  }
 }
 
-int AbstractSensor::getRawState()
+int AbstractSensor::getRawState() const
 {
     return _rawState;
 }
@@ -327,10 +346,14 @@ void AbstractSensor::setInverted(bool inverted)
  * Used in polling loops in system-specific code,
  * so made final to allow optimization.
  */
-/*final public */bool AbstractSensor::getInverted() { return _inverted; }
+/*final public */bool AbstractSensor::getInverted() const { return _inverted; }
 
 
-
+/**
+ * By default, all implementations based on this can invert
+ */
+//@Override
+/*public*/ bool AbstractSensor::canInvert() { return true; }
 
 /**
  * Some sensor boards also serve the function of being able to report
@@ -356,7 +379,7 @@ Reporter* AbstractSensor::getReporter(){
  * @param r PullResistance value to use.
  */
 //@Override
-/*public*/ void setPullResistance(Sensor::PullResistance r){
+/*public*/ void AbstractSensor::setPullResistance(Sensor::PullResistance r){
 }
 
 /**
@@ -366,7 +389,7 @@ Reporter* AbstractSensor::getReporter(){
  * implementation, PullResistance.PULL_OFF is always returned.
  */
 //@Override
-/*public*/ Sensor::PullResistance::PULLRESISTANCE getPullResistance(){
+/*public*/ Sensor::PullResistance::PULLRESISTANCE AbstractSensor::getPullResistance(){
    return Sensor::PullResistance::PULL_OFF;
 }
 ASRunnable::ASRunnable(QObject *as) : Runnable(as)

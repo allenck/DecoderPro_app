@@ -99,34 +99,34 @@ LnPowerManagerTest::LnPowerManagerTest()
 
         // DB150 implements IDLE power state
         memo->configureCommandStation(LnCommandStationType::getByName("DB150 (Empire Builder)"), false, false, false);
-        Assert::assertTrue(p->implementsIdle());
+        Assert::assertTrue(p->implementsIdle(), __FILE__, __LINE__);
         // DCS100 implements IDLE power state
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS100 (Chief)"));
-        Assert::assertTrue(p->implementsIdle());
+        Assert::assertTrue(p->implementsIdle(), __FILE__, __LINE__);
         // DCS200 implements IDLE power state
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS200"));
-        Assert::assertTrue(p->implementsIdle());
+        Assert::assertTrue(p->implementsIdle(), __FILE__, __LINE__);
         // DCS240 implements IDLE power state
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS240 (Advanced Command Station)"));
-        Assert::assertTrue(p->implementsIdle());
+        Assert::assertTrue(p->implementsIdle(), __FILE__, __LINE__);
         // DCS100 implements IDLE power state
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS210 (Evolution Command Station)"));
-        Assert::assertTrue(p->implementsIdle());
+        Assert::assertTrue(p->implementsIdle(), __FILE__, __LINE__);
         // DCS50 does not implement IDLE power state
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS50 (Zephyr)"));
-        Assert::assertFalse(p->implementsIdle());
+        Assert::assertFalse(p->implementsIdle(), __FILE__, __LINE__);
         // DCS51 does not implement IDLE power state
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("DCS51 (Zephyr Xtra)"));
-        Assert::assertFalse(p->implementsIdle());
+        Assert::assertFalse(p->implementsIdle(), __FILE__, __LINE__);
         // PR2 does not implement IDLE power state
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("PR2 standalone programmer"));
-        Assert::assertFalse(p->implementsIdle());
+        Assert::assertFalse(p->implementsIdle(), __FILE__, __LINE__);
         // PR3 does not implement IDLE power state
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("PR3 standalone programmer"));
-        Assert::assertFalse(p->implementsIdle());
+        Assert::assertFalse(p->implementsIdle(), __FILE__, __LINE__);
         // Standalone LocoNet does not implement IDLE power state
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("Stand-alone LocoNet"));
-        Assert::assertFalse(p->implementsIdle());
+        Assert::assertFalse(p->implementsIdle(), __FILE__, __LINE__);
 
     }
 
@@ -136,40 +136,40 @@ LnPowerManagerTest::LnPowerManagerTest()
         hearOn();  // set up an initial state
         // DCS51 does not implement IDLE power state
         memo->configureCommandStation(LnCommandStationType::getByName("DCS200"), false, false, false);
-        Assert::assertTrue(p->implementsIdle());
+        Assert::assertTrue(p->implementsIdle(), __FILE__, __LINE__);
         hearIdle();
-        Assert::assertEquals("power state", PowerManager::IDLE, p->getPower());
+        Assert::assertEquals("power state", PowerManager::IDLE, p->getPower(), __FILE__, __LINE__);
 
         hearOn(); // set up an initial state
         // PR2 does not implement IDLE power state
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("PR2 standalone programmer"));
-        Assert::assertFalse(p->implementsIdle());
+        Assert::assertFalse(p->implementsIdle(), __FILE__, __LINE__);
         hearIdle();
-        Assert::assertEquals("power state", PowerManager::ON, p->getPower());
+        Assert::assertEquals("power state", PowerManager::ON, p->getPower(), __FILE__, __LINE__);
     }
 
     //@Test
     //@Override
     /*public*/ void LnPowerManagerTest::testSetPowerIdle() throw (JmriException) {
         memo->configureCommandStation(LnCommandStationType::getByName("DCS200)"), false, false, false);
-        Assert::assertTrue("LocoNet implements IDLE", p->implementsIdle());
+        Assert::assertTrue("LocoNet implements IDLE", p->implementsIdle(), __FILE__, __LINE__);
         int initialSent = outboundSize();
         p->setPower(PowerManager::IDLE);
         // check one message sent, correct form, Idle state
-        Assert::assertEquals("messages sent", initialSent + 1, outboundSize());
-        Assert::assertTrue("message type IDLE O.K.", outboundIdleOK(initialSent));
-        Assert::assertEquals("state before reply ", PowerManager::UNKNOWN, p->getPower());
+        Assert::assertEquals("messages sent", initialSent + 1, outboundSize(), __FILE__, __LINE__);
+        Assert::assertTrue("message type IDLE O.K.", outboundIdleOK(initialSent), __FILE__, __LINE__);
+        Assert::assertEquals("state before reply ", PowerManager::UNKNOWN, p->getPower(), __FILE__, __LINE__);
         // arrange for reply
         sendIdleReply();
-        Assert::assertEquals("state after reply ", PowerManager::IDLE, p->getPower());
+        Assert::assertEquals("state after reply ", PowerManager::IDLE, p->getPower(), __FILE__, __LINE__);
 
         p->setPower(PowerManager::OFF);
         memo->getSlotManager()->setCommandStationType(LnCommandStationType::getByName("PR2 standalone programmer"));
-        Assert::assertFalse("LocoNet implements IDLE", p->implementsIdle());
+        Assert::assertFalse("LocoNet implements IDLE", p->implementsIdle(), __FILE__, __LINE__);
         initialSent = outboundSize();
         p->setPower(PowerManager::IDLE);
         // check no  message sent
-        Assert::assertEquals("messages sent", initialSent, outboundSize());
+        Assert::assertEquals("messages sent", initialSent, outboundSize(), __FILE__, __LINE__);
     }
 
     // setup a default interface

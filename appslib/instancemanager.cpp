@@ -835,10 +835,10 @@ void InstanceManager::setSensorManager(SensorManager* p)
 void InstanceManager::setTurnoutManager(TurnoutManager* p) {
  log->debug(" setTurnoutManager");
  TurnoutManager* apm = static_cast<TurnoutManager*>(getDefault("TurnoutManager"));
- if (qobject_cast<AbstractProxyManager*>(apm) != nullptr) { // <?> due to type erasure
+ if (qobject_cast<AbstractProxyTurnoutManager*>(apm) != nullptr) { // <?> due to type erasure
      ((ProxyTurnoutManager*) apm)->addManager(p);
  } else {
-     log->error("Incorrect setup: TurnoutManager default isn't an AbstractProxyManager<Turnout>");
+     log->error("Incorrect setup: TurnoutManager default isn't an AbstractProxyTurnoutManager<Turnout>");
  }
 }
 
@@ -998,6 +998,40 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
 //     store(p, PowerManager.class);
 // }
 /**
+ * Clear all managed instances from the common instance manager, effectively
+ * installing a new one.
+ */
+/*public*/ void InstanceManager::clearAll() {
+    log->debug("Clearing InstanceManager");
+    if (traceFileActive) traceFileWriter->println("clearAll");
+
+    // reset the instance manager, so future calls will invoke the new one
+    LazyInstanceManager::resetInstanceManager();
+#if 1 // TODO:
+    // continue to clean up this one
+//    new HashSet<>(managerLists.keySet()).forEach((type) -> {
+//        clear(type);
+//    });
+    QHash<QString,QObjectList*> lists(managerLists);
+    //managerLists.keySet().forEach((type) ->
+    foreach(QString type, lists.keys())
+    {
+        if (getInitializationState(type) != InitializationState::NOTSET) {
+            log->warn(tr("list of %1 was reinitialized during clearAll").arg(type)/*, new Exception()*/);
+            if (traceFileActive) traceFileWriter->println("WARN: list of "+type+" was reinitialized during clearAll");
+        }
+        if (!managerLists.value(type)->isEmpty()) {
+            log->warn(tr("list of %1 was not cleared, %2 entries").arg(type).arg(managerLists.value(type)->size())/*, new Exception()*/);
+            if (traceFileActive) traceFileWriter->println("WARN: list of "+type+" was not cleared, "+managerLists.value(type)->size()+" entries");
+        }
+    }//);
+#endif
+    if (traceFileActive) {
+        traceFileWriter->println(""); // marks new InstanceManager
+        traceFileWriter->flush();
+    }
+}
+/**
   * Clear all managed instances of a particular type from this
   * InstanceManager.
   *
@@ -1027,11 +1061,13 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
  if(log == nullptr)
   log = LoggerFactory::getLogger("InstanceManager");
 
-// if(LazyInstanceManager::instanceManager == nullptr)
-//  LazyInstanceManager::instanceManager = new InstanceManager();
-// return LazyInstanceManager::instanceManager;
- return *_instancePtr;
-}
+ // if(LazyInstanceManager::instanceManager == nullptr)
+ //  LazyInstanceManager::instanceManager = new InstanceManager();
+ // return LazyInstanceManager::instanceManager;
+  return *_instancePtr;
+ }
+
+/*public*/ /*static*/ InstanceManager* LazyInstanceManager::instanceManager = new InstanceManager();
 
 /*private*/ void InstanceManager::setInitializationState(QString type, InitializationState state) {
 //    log->trace(tr("set state %1 for %2").arg(type).arg(state));

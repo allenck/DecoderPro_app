@@ -125,7 +125,7 @@ private:
  Logger* log;
 protected:
  /*protected*/ /*final*/ QHash<QString, QString>* comboBoxLastSelection;// = new QHash<QString, QString>();
- /*protected*/ void showMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember, int type);
+ virtual /*protected*/ void showMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember, int type);
  /*protected*/ bool isLoading();
  /*protected*/ /*final*/ QString getClassName() ;
  /*protected*/ /*final*/ ClassPreferences* getClassPreferences(QString strClass) ;

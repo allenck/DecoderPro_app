@@ -35,6 +35,8 @@ private:
  friend class LnTurnoutTest;
  friend class ReleaseUntilO7;
  friend class LocoNetInterfaceScaffoldO2;
+ friend class LnDeferProgrammerTest;
+ friend class LnTurnoutManagerTest;
 };
 
 #endif // LOCONETINTERFACESCAFFOLD_H

@@ -15,7 +15,7 @@ LocoNetThrottleTest::LocoNetThrottleTest()
 
 //@Test
 /*public*/ void LocoNetThrottleTest::testCTor() {
-    Assert::assertNotNull(instance);
+    Assert::assertNotNull(instance, __FILE__, __LINE__);
 }
 
 // test the speed setting code.
@@ -36,10 +36,10 @@ LocoNetThrottleTest::LocoNetThrottleTest()
 //    };
     LocoNetSlot* s1 = new LocoNetSlotO1(0);
     LocoNetThrottle* t1 = new LocoNetThrottle(memo, s1);
-    Assert::assertEquals(0.0f, t1->getSpeedSetting(), 0.0);
+    Assert::assertEquals(0.0f, t1->getSpeedSetting(), 0.0f, __FILE__, __LINE__);
     t1->setSpeedSetting(0.5f);
     // the speed change SHOULD be changed.
-    Assert::assertEquals(0.5f, t1->getSpeedSetting(), 0.0);
+    Assert::assertEquals(0.5f, t1->getSpeedSetting(), 0.0f, __FILE__, __LINE__);
 
     // Case 2: The locomotive is a consist top.
 //    LocoNetSlot s2 = new LocoNetSlot(1) {
@@ -56,10 +56,10 @@ LocoNetThrottleTest::LocoNetThrottleTest()
     LocoNetSlot* s2 = new LocoNetSlotO2(0);
 
     LocoNetThrottle* t2 = new LocoNetThrottle(memo, s2);
-    Assert::assertEquals(0.0f, t2->getSpeedSetting(), 0.0);
+    Assert::assertEquals(0.0f, t2->getSpeedSetting(), 0.0f, __FILE__, __LINE__);
     t2->setSpeedSetting(0.5f);
     // the speed change SHOULD be changed.
-    Assert::assertEquals(0.5f, t2->getSpeedSetting(), 0.0);
+    Assert::assertEquals(0.5f, t2->getSpeedSetting(), 0.0f, __FILE__, __LINE__);
 
     // Case 3: The locomotive is a consist mid.
 //    LocoNetSlot s3 = new LocoNetSlot(2) {
@@ -76,10 +76,10 @@ LocoNetThrottleTest::LocoNetThrottleTest()
     LocoNetSlot* s3 = new LocoNetSlotO3(0);
 
     LocoNetThrottle* t3 = new LocoNetThrottle(memo, s3);
-    Assert::assertEquals(0.0f, t3->getSpeedSetting(), 0.0);
+    Assert::assertEquals(0.0f, t3->getSpeedSetting(), 0.0F, __FILE__, __LINE__);
     t3->setSpeedSetting(0.5f);
     // the speed change SHOULD NOT be changed.
-    Assert::assertEquals(0.0f, t3->getSpeedSetting(), 0.0);
+    Assert::assertEquals(0.0f, t3->getSpeedSetting(), 0.0f, __FILE__, __LINE__);
 
     // Case 3: The locomotive is a consist mid.
     // make sure the speed does NOT change for a consist sub
@@ -97,10 +97,10 @@ LocoNetThrottleTest::LocoNetThrottleTest()
     LocoNetSlot* s4 = new LocoNetSlotO4(0);
 
     LocoNetThrottle* t4 = new LocoNetThrottle(memo, s4);
-    Assert::assertEquals(0.0f, t4->getSpeedSetting(), 0.0);
+    Assert::assertEquals(0.0f, t4->getSpeedSetting(), 0.0f, __FILE__, __LINE__);
     t4->setSpeedSetting(0.5f);
     // the speed change SHOULD be ignored.
-    Assert::assertEquals(0.0f, t4->getSpeedSetting(), 0.0);
+    Assert::assertEquals(0.0f, t4->getSpeedSetting(), 0.0f, __FILE__, __LINE__);
 }
 
 /**
@@ -111,9 +111,9 @@ LocoNetThrottleTest::LocoNetThrottleTest()
 /*public*/ void LocoNetThrottleTest::testGetIsForward() {
     bool expResult = true;
     bool result = instance->getIsForward();
-    Assert::assertEquals(expResult, result);
+    Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
-#if 0
+#if 0 //TODO:
 /**
  * Test of getSpeedStepMode method, of class AbstractThrottle.
  */

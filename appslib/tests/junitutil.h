@@ -25,6 +25,7 @@ public:
     static /*public*/ void waitFor(int time);
     /*public*/ static void runTests(QObject *test, QStringList testList);
     static QString getTestClassName();
+    /*public*/ static void resetInstanceManager();
 
 signals:
 

@@ -107,7 +107,8 @@
      *
      * @param  out  An OutputStream
      */
-    /*public*/ OutputStreamWriter(QDataStream *out) : Writer(out){
+    /*public*/ OutputStreamWriter::OutputStreamWriter(QDataStream *out) //: Writer(out)
+    {
         //super(out);
 #if 0
         try {
@@ -186,7 +187,7 @@
      * be invoked by PrintStream.
      */
     void OutputStreamWriter::flushBuffer() throw (IOException) {
-        se.flushBuffer();
+//        se->flushBuffer();
     }
 #if 0
     /**
@@ -210,7 +211,7 @@
     /*public*/ void write(char cbuf[], int off, int len) throws IOException {
         se.write(cbuf, off, len);
     }
-#endif
+
     /**
      * Writes a portion of a string.
      *
@@ -237,3 +238,4 @@
         se.close();
     }
 }
+#endif

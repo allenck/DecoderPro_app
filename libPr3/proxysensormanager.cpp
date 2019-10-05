@@ -48,12 +48,13 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxyManager(p
  * @return Null if nothing by that name exists
  */
 /*public*/ Sensor* ProxySensorManager::getSensor(QString name) {
-    return (Sensor*)AbstractProxyManager::getNamedBean(name);
+ return (Sensor*)AbstractProxyManager::getNamedBean(name);
 }
 
 /*protected*/ Sensor* ProxySensorManager::makeBean(int i, QString systemName, QString userName)
 {
- Sensor* sensor =  ((AbstractSensorManager*)getMgr(i))->newSensor(systemName, userName);
+ log.debug(tr("makeBean(%1, \"%2\", \"%3\"").arg(i).arg(systemName).arg(userName));
+ Sensor* sensor =  ((SensorManager*)getMgr(i))->newSensor(systemName, userName);
  emit newSensorCreated((AbstractSensorManager*)getMgr(i),sensor);
  return sensor;
 }
@@ -63,18 +64,6 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxyManager(p
  return static_cast<Sensor*>(AbstractProxyManager::provideNamedBean(sName));
 }
 
-///*protected*/ NamedBean* ProxySensorManager::provideNamedBean(QString name) {
-//    NamedBean* t = getNamedBean(name);
-//    if (t!=nullptr) return t;
-//    // Doesn't exist. If the systemName was specified, find that system
-//    int index = matchTentative(name);
-//    if (index >= 0) return makeBean(index, name, "");
-//    log.debug("Did not find manager for name "+name+", defer to default");
-//    return makeBean(0,getMgr(0)->makeSystemName(name), "");
-////    int iI = nMgrs()-1;
-////    return makeBean(iI,getMgr(iI)->makeSystemName(name), ""); // use internalManager.
-
-//}
 
 /**
  * Locate an instance based on a system name.  Returns null if no

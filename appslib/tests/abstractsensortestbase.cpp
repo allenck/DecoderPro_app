@@ -40,32 +40,32 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 //@Test
 /*public*/ void AbstractSensorTestBase::testCreate() {
     // initial state when created must be UNKNOWN
-    Assert::assertEquals("initial state 1", Sensor::UNKNOWN, t->getState()), __FILE__, __LINE__;
+    Assert::assertEquals("initial state 1", Sensor::UNKNOWN, t->getState(), __FILE__, __LINE__);
     Assert::assertEquals("initial state 2", "Unknown", t->describeState(t->getState()), __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void AbstractSensorTestBase::testAddListener() throw (JmriException)
 {
- ListenO2* listen;
+  ListenO2* listen;
 
- t->addPropertyChangeListener(listen =new ListenO2(this));
-    connect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), listen, SLOT(propertyChange(PropertyChangeEvent*)));
-    listenerResult = false;
-    t->setUserName("user id");
-    Assert::assertTrue("listener invoked by setUserName", listenerResult, __FILE__, __LINE__);
-    listenerResult = false;
-    t->setState(Sensor::ACTIVE);
-    Assert::assertTrue("listener invoked by setState", listenerResult, __FILE__, __LINE__);
+  t->addPropertyChangeListener(listen =new ListenO2(this));
+  connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listen, SLOT(propertyChange(PropertyChangeEvent*)));
+  listenerResult = false;
+  t->setUserName("user id");
+  Assert::assertTrue("listener invoked by setUserName", listenerResult, __FILE__, __LINE__);
+  listenerResult = false;
+  t->setState(Sensor::ACTIVE);
+  Assert::assertTrue("listener invoked by setState", listenerResult, __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void AbstractSensorTestBase::testRemoveListener() {
     ListenO2* ln = new ListenO2(this);
     t->addPropertyChangeListener(ln);
-    connect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), ln, SLOT(propertyChange(PropertyChangeEvent*)));
+    connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), ln, SLOT(propertyChange(PropertyChangeEvent*)));
     t->removePropertyChangeListener(ln);
-    disconnect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), ln, SLOT(propertyChange(PropertyChangeEvent*)));
+    disconnect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), ln, SLOT(propertyChange(PropertyChangeEvent*)));
     listenerResult = false;
     t->setUserName("user id");
     Assert::assertFalse("listener should not have heard message after removeListener",
@@ -99,7 +99,7 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 /*public*/ void AbstractSensorTestBase::testInvertAfterInactive() throw (JmriException) {
     Assume::assumeTrue(t->canInvert());
     t->setState(Sensor::INACTIVE);
-t->setInverted(true);
+    t->setInverted(true);
     // check
     Assert::assertEquals("state 1", Sensor::ACTIVE, t->getState(), __FILE__, __LINE__);
     Assert::assertEquals("state 2", "Active", t->describeState(t->getState()), __FILE__, __LINE__);
@@ -118,7 +118,7 @@ t->setInverted(true);
 //@Test
 /*public*/ void AbstractSensorTestBase::testDebounceSettings() throw (JmriException) {
     t->setSensorDebounceGoingActiveTimer(81L);
-    Assert::assertEquals("timer", 81L, t->getSensorDebounceGoingActiveTimer());
+    Assert::assertEquals("timer", 81L, t->getSensorDebounceGoingActiveTimer(), __FILE__, __LINE__);
 
     t->setSensorDebounceGoingInActiveTimer(31L);
     Assert::assertEquals("timer", 31L, t->getSensorDebounceGoingInActiveTimer(), __FILE__, __LINE__);
@@ -202,7 +202,8 @@ t->setInverted(true);
     t->setState(Sensor::OFF);
     //jmri.util.JUnitUtil.waitFor(()->{return t->getCommandedState() == Sensor::OFF;}, "commanded state = OFF");
     r09 = new ReleaseUntilO9(Sensor::OFF, this);
-    JUnitUtil::waitFor(r09, "state = OFF");Assert::assertTrue("Sensor is ON", t->getCommandedState() == Sensor::OFF);
+    JUnitUtil::waitFor(r09, "state = OFF");
+    Assert::assertTrue("Sensor is ON", t->getCommandedState() == Sensor::OFF, __FILE__, __LINE__);
 }
 
 //dispose of t.

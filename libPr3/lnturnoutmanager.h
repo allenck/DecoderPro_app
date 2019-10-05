@@ -3,7 +3,7 @@
 #include "loconetinterface.h"
 #include "abstractturnoutmanager.h"
 #include "lntrafficcontroller.h"
-
+#include "providingmanager.h"
 //class AbstractTurnoutManager;
 class LIBPR3SHARED_EXPORT LnTurnoutManager : public AbstractTurnoutManager
 {
@@ -33,6 +33,7 @@ private:
 
 
  Logger log;
+ friend class LnTurnoutManagerTest;
 };
 
 #endif // LNTURNOUTMANAGER_H

@@ -19,7 +19,7 @@
 class LIBPR3SHARED_EXPORT LocoNetListener : public QObject
 {
 public:
- explicit LocoNetListener(QObject *parent = 0);
+ explicit LocoNetListener(QObject *parent = 0) : QObject(parent) {}
 /**
  * Member function that will be invoked by a LocoNetInterface implementation
  * to forward a LocoNet message from the layout.

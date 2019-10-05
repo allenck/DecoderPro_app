@@ -248,6 +248,7 @@ static void setReporterManager(ReporterManager* p);
 static void removePropertyChangeListener(PropertyChangeListener* l);
 //template<class T>
 /*public*/ /*<T>*/ QObjectList* getInstances(/*@Nonnull Class<T>*/ QString type);
+/*public*/ void clearAll();
 //template<class T>
 /*public*/  void clear(/*@Nonnull*/ /*Class<T>*/QString type);
 /*public*/ /*<T>*/ void remove(/*@Nonnull T*/QObject* item, /*@Nonnull Class<T>*/QString type);
@@ -344,6 +345,7 @@ protected:
  // /*public*/ static /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
  friend class RosterFrame;
  friend class SignalSpeedMap;
+ friend class LazyInstanceManager;
 };
 
 /**
@@ -353,5 +355,15 @@ protected:
 /*private*/ /*static*/ class LazyInstanceManager {
 public:
     /*public*/ static InstanceManager* instanceManager;// = new InstanceManager();
+ /**
+  * Replace the (static) InstanceManager.
+  */
+ /*public*/ /*synchronized*/ static void resetInstanceManager() {
+     try {
+         instanceManager = new InstanceManager();
+     } catch (Exception e) {
+         instanceManager->log->error("can't create new InstanceManager");
+     }
+ }
 };
 #endif // INSTANCEMANAGER_H

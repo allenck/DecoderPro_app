@@ -3,7 +3,7 @@
 #include "joptionpane.h"
 #include "assert1.h"
 #include "loggerfactory.h"
-
+#include "junitutil.h"
 
 LocoNetConsistTestAction::LocoNetConsistTestAction(QObject *parent) : AbstractAction(tr("LocoNetConsist"), parent)
 {
@@ -25,13 +25,8 @@ void LocoNetConsistTestAction::actionPerformed()
      << "checkAddressAllowedBadAdvanced"
      << "checkSizeLimitCS"
      << "checkGetLocoDirectionCS";
-     foreach(QString testName, testList)
-     {
-      log->info(tr("begin '%1'").arg(testName));
-      QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
-      log->info(tr("end '%1'").arg(testName));
-     }
 
+     JUnitUtil::runTests(test, testList);
     }
     catch (AssertionError er)
     {

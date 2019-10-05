@@ -184,6 +184,7 @@ virtual void childEvent(QChildEvent*  event);
 virtual QString  convertSystemNameToAlternate(QString  systemName);
 virtual Light*  createNewLight(QString  arg__1, QString  arg__2);
 virtual void customEvent(QEvent*  event);
+virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -198,6 +199,8 @@ virtual Light*  getLight(QString  name);
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
+virtual int  getObjectCount();
+virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -276,6 +279,7 @@ virtual void Register(NamedBean*  s);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
+virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -287,6 +291,8 @@ virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
+virtual int  getObjectCount();
+virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -320,6 +326,7 @@ inline NamedBean*  py_q_getBeanBySystemName(QString  systemName) { return Abstra
 inline NamedBean*  py_q_getBeanByUserName(QString  userName) { return AbstractManager::getBeanByUserName(userName); }
 inline NamedBean*  py_q_getNamedBean(QString  name) { return AbstractManager::getNamedBean(name); }
 inline QSet<NamedBean* >  py_q_getNamedBeanSet() { return AbstractManager::getNamedBeanSet(); }
+inline QList<PropertyChangeListener* >*  py_q_getPropertyChangeListeners() { return AbstractManager::getPropertyChangeListeners(); }
 inline QStringList  py_q_getSystemNameArray() { return AbstractManager::getSystemNameArray(); }
 inline QStringList  py_q_getSystemNameList() { return AbstractManager::getSystemNameList(); }
 inline QString  py_q_makeSystemName(QString  s) { return AbstractManager::makeSystemName(s); }
@@ -348,6 +355,7 @@ void delete_AbstractManager(AbstractManager* obj) { delete obj; }
    QObject*  getInstanceByUserName(AbstractManager* theWrappedObject, QString  userName);
    NamedBean*  py_q_getNamedBean(AbstractManager* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_getNamedBean(name));}
    QSet<NamedBean* >  py_q_getNamedBeanSet(AbstractManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_getNamedBeanSet());}
+   QList<PropertyChangeListener* >*  py_q_getPropertyChangeListeners(AbstractManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_getPropertyChangeListeners());}
    QStringList  py_q_getSystemNameArray(AbstractManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_getSystemNameArray());}
    QHash<QString , NamedBean* >*  getSystemNameHash(AbstractManager* theWrappedObject);
    QStringList  py_q_getSystemNameList(AbstractManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_getSystemNameList());}
@@ -707,6 +715,7 @@ virtual void Register(NamedBean*  s);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
+virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -719,6 +728,8 @@ virtual SystemConnectionMemo*  getMemo();
 virtual Manager*  getMgr(int  index);
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
+virtual int  getObjectCount();
+virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -844,6 +855,7 @@ virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual bool  allowMultipleAdditions(QString  systemName);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
+virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -856,6 +868,8 @@ virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) const;
+virtual int  getObjectCount();
+virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList() const;
 virtual QString  getSystemPrefix();
@@ -923,7 +937,7 @@ virtual int  getCommandedState();
 virtual QString  getComment();
 virtual QString  getDisplayName();
 virtual QString  getFullyFormattedDisplayName();
-virtual bool  getInverted();
+virtual bool  getInverted() const;
 virtual int  getKnownState() const;
 virtual QString  getListenerRef(PropertyChangeListener*  l);
 virtual QList<QString >*  getListenerRefs();
@@ -932,9 +946,9 @@ virtual QVariant  getProperty(QString  key);
 virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
 virtual QSet<QString >  getPropertyKeys();
-virtual int  getRawState();
-virtual long  getSensorDebounceGoingActiveTimer();
-virtual long  getSensorDebounceGoingInActiveTimer();
+virtual int  getRawState() const;
+virtual long  getSensorDebounceGoingActiveTimer() const;
+virtual long  getSensorDebounceGoingInActiveTimer() const;
 virtual int  getState();
 virtual QString  getSystemName() const;
 virtual bool  getUseDefaultTimerSettings();
@@ -968,11 +982,13 @@ virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoExcept
 class PythonQtPublicPromoter_AbstractSensor : public AbstractSensor
 { public:
 inline void promoted_sensorDebounce() { this->sensorDebounce(); }
-inline bool  py_q_getInverted() { return AbstractSensor::getInverted(); }
+inline bool  py_q_canInvert() { return AbstractSensor::canInvert(); }
+inline QString  py_q_describeState(int  state) { return AbstractSensor::describeState(state); }
+inline bool  py_q_getInverted() const { return AbstractSensor::getInverted(); }
 inline int  py_q_getKnownState() const { return AbstractSensor::getKnownState(); }
-inline int  py_q_getRawState() { return AbstractSensor::getRawState(); }
-inline long  py_q_getSensorDebounceGoingActiveTimer() { return AbstractSensor::getSensorDebounceGoingActiveTimer(); }
-inline long  py_q_getSensorDebounceGoingInActiveTimer() { return AbstractSensor::getSensorDebounceGoingInActiveTimer(); }
+inline int  py_q_getRawState() const { return AbstractSensor::getRawState(); }
+inline long  py_q_getSensorDebounceGoingActiveTimer() const { return AbstractSensor::getSensorDebounceGoingActiveTimer(); }
+inline long  py_q_getSensorDebounceGoingInActiveTimer() const { return AbstractSensor::getSensorDebounceGoingInActiveTimer(); }
 inline int  py_q_getState() { return AbstractSensor::getState(); }
 inline bool  py_q_getUseDefaultTimerSettings() { return AbstractSensor::getUseDefaultTimerSettings(); }
 inline void py_q_setInverted(bool  inverted) { AbstractSensor::setInverted(inverted); }
@@ -993,11 +1009,13 @@ AbstractSensor* new_AbstractSensor(QObject*  parent = 0);
 AbstractSensor* new_AbstractSensor(QString  systemName, QObject*  parent = 0);
 AbstractSensor* new_AbstractSensor(QString  systemName, QString  userName, QObject*  parent = 0);
 void delete_AbstractSensor(AbstractSensor* obj) { delete obj; } 
-   bool  py_q_getInverted(AbstractSensor* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getInverted());}
+   bool  py_q_canInvert(AbstractSensor* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_canInvert());}
+   QString  py_q_describeState(AbstractSensor* theWrappedObject, int  state){  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_describeState(state));}
+   bool  py_q_getInverted(AbstractSensor* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getInverted());}
    int  py_q_getKnownState(AbstractSensor* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getKnownState());}
-   int  py_q_getRawState(AbstractSensor* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getRawState());}
-   long  py_q_getSensorDebounceGoingActiveTimer(AbstractSensor* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getSensorDebounceGoingActiveTimer());}
-   long  py_q_getSensorDebounceGoingInActiveTimer(AbstractSensor* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getSensorDebounceGoingInActiveTimer());}
+   int  py_q_getRawState(AbstractSensor* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getRawState());}
+   long  py_q_getSensorDebounceGoingActiveTimer(AbstractSensor* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getSensorDebounceGoingActiveTimer());}
+   long  py_q_getSensorDebounceGoingInActiveTimer(AbstractSensor* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getSensorDebounceGoingInActiveTimer());}
    int  py_q_getState(AbstractSensor* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getState());}
    QString  getStateName(AbstractSensor* theWrappedObject, int  arg__1);
    bool  py_q_getUseDefaultTimerSettings(AbstractSensor* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getUseDefaultTimerSettings());}
@@ -1032,6 +1050,7 @@ virtual void childEvent(QChildEvent*  event);
 virtual Sensor*  createNewSensor(QString  arg__1, QString  arg__2);
 virtual QString  createSystemName(QString  curAddress, QString  prefix) throw (JmriException);
 virtual void customEvent(QEvent*  event);
+virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose() const;
 virtual bool  event(QEvent*  event);
@@ -1048,14 +1067,19 @@ virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
+virtual int  getObjectCount();
+virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual Sensor*  getSensor(QString  name);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
 virtual int  getXMLOrder();
+virtual bool  isPullResistanceConfigurable();
 virtual QString  makeSystemName(QString  s);
 virtual Sensor*  newSensor(QString  sysName, QString  userName);
 virtual QString  normalizeSystemName(QString  sysName);
+virtual Sensor*  provide(QString  name) throw (IllegalArgumentException)
+;
 virtual Sensor*  provideSensor(QString  name);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void setDefaultSensorDebounceGoingActive(long  timer);
@@ -1545,6 +1569,7 @@ virtual void childEvent(QChildEvent*  event);
 virtual Turnout*  createNewTurnout(QString  systemName, QString  userName);
 virtual QString  createSystemName(QString  curAddress, QString  prefix);
 virtual void customEvent(QEvent*  event);
+virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -1562,6 +1587,8 @@ virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
+virtual int  getObjectCount();
+virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -1575,6 +1602,7 @@ virtual QString  makeSystemName(QString  s);
 virtual Turnout*  newTurnout(QString  systemName, QString  userName);
 virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
+virtual Turnout*  provide(QString  name) throw (IllegalArgumentException) ;
 virtual Turnout*  provideTurnout(QString  name);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void setDefaultClosedSpeed(QString  speed);
@@ -2055,6 +2083,7 @@ virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void childEvent(QChildEvent*  event);
 virtual void cleanup();
 virtual void customEvent(QEvent*  event);
+virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -2069,6 +2098,8 @@ virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
+virtual int  getObjectCount();
+virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QStringList  getSystemNameList(QChar  arg__1);
@@ -2928,6 +2959,7 @@ virtual void Register(NamedBean*  s);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
+virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -2939,6 +2971,8 @@ virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
+virtual int  getObjectCount();
+virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();

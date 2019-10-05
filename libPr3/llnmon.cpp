@@ -1613,6 +1613,7 @@ QString LlnMon::format(LocoNetMessage l)
   break;
  }
 #if 0
+ case LnConstants::RE_OPC_IB2_F9_F12: {
   result = interpretIb2F9_to_F12(l);
   if (result.length() > 0) {
       return result;
@@ -1620,7 +1621,7 @@ QString LlnMon::format(LocoNetMessage l)
   break;
 }
 
-case LnConstants.RE_OPC_IB2_SPECIAL: { // 0xD4
+case LnConstants::RE_OPC_IB2_SPECIAL: { // 0xD4
   result = interpretIb2Special(l);
   if (result.length() > 0) {
       return result;

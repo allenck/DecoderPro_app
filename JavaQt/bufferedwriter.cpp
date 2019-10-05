@@ -224,7 +224,7 @@
             int b = off, t = off + len;
             while (b < t) {
                 int d = min(nChars - nextChar, t - b);
-                s.getChars(b, b + d, cb, nextChar);
+//                s.getChars(b, b + d, cb, nextChar);
                 b += d;
                 nextChar += d;
                 if (nextChar >= nChars)
@@ -241,7 +241,7 @@
      * @exception  IOException  If an I/O error occurs
      */
     /*public*/ void BufferedWriter::newLine() throw (IOException) {
-        write(lineSeparator);
+//        write(lineSeparator);
     }
 
     /**

@@ -26,6 +26,10 @@ public:
          * due to e.g. an illegal name or name that can't be parsed.
          */
      virtual Turnout* provideTurnout(QString /*name*/) {return NULL;}
+    /** {@inheritDoc} */ // from ProvidinManager
+     //@Override
+     virtual /*default*/ /*public*/ Turnout* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException) { return provideTurnout(name); }
+
 
         /**
          * Locate via user name, then system name if needed.

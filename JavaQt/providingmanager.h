@@ -11,7 +11,8 @@
  * @author Bob Jacobsen Copyright (C) 2003
  */
 
-class  ProvidingManager/*<E extends NamedBean>*/ : public Manager<E> {
+class  ProvidingManager// /*<E extends NamedBean>*/ : public Manager
+{
 
     /**
      * Get an existing instance via user name, then system name; if no matching instance is found, create a
@@ -38,6 +39,8 @@ class  ProvidingManager/*<E extends NamedBean>*/ : public Manager<E> {
      *                                  be parsed.
      */
     //@Nonnull
-    /*public*/ virtual E provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException);
+    /*public*/ virtual NamedBean* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException);
+ friend class AbstractProvidingTurnoutManagerTestBase;
 };
+Q_DECLARE_INTERFACE(ProvidingManager, "ProvidingManager")
 #endif // PROVIDINGMANAGER_H
