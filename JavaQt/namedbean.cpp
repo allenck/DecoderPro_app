@@ -147,7 +147,7 @@ int NamedBean::getState() { return _state;}
  * @return the state in localized form
  */
 //@CheckReturnValue
-/*public*/ QString describeState(int state) {return "";}
+/*public*/ QString NamedBean::describeState(int state) {return "";}
 
 QString NamedBean::getComment() { return _comment;}
 void NamedBean::setComment(QString comment)

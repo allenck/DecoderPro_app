@@ -18,11 +18,16 @@ public:
     /*public*/ static void start();
     /*public*/ static void end();
     /*public*/ /*synchronized*/ void append(LoggingEvent* event);
-    /*public*/ static int clearBacklog(LogLevel::VALS level);
+    /*public*/ static int clearBacklog(LogLevel *level);
     /*public*/ static int clearBacklog();
     /*public*/ static bool verifyNoBacklog();
     /*public*/ static JUnitAppender* instance();
     /*public*/ void activateOptions();
+    /*public*/ static void suppressMessage(LogLevel* level, QString msg, QString file, int line);
+    /*public*/ static void suppressMessageStartsWith(LogLevel* level, QString msg, QString file, int line);
+    /*public*/ static void suppressErrorMessage(QString msg, QString file, int line);
+    /*public*/ static void suppressErrorMessageStartsWith(QString msg, QString file, int line);
+    /*public*/ static void suppressWarnMessage(QString msg, QString file, int line);
 
 signals:
 
@@ -45,6 +50,7 @@ private:
 
 protected:
     /*protected*/ static bool compare(LoggingEvent* e1, QString s2);
+    /*protected*/ static bool compareStartsWith(LoggingEvent* e1, QString s2);
 
 };
 

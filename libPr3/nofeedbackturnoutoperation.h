@@ -19,8 +19,11 @@ public:
  */
  static /*public*/ /*final*/const int defaultInterval;// = 300;
  static /*public*/ /*final*/ const int defaultMaxTries;// = 2;
- /*public*/ NoFeedbackTurnoutOperation(QString n, int i, int mt, QObject *parent = 0);
- /*public*/ NoFeedbackTurnoutOperation(QObject *parent = 0);
+ Q_INVOKABLE/*public*/ NoFeedbackTurnoutOperation(QString n, int i, int mt, QObject *parent = 0);
+ Q_INVOKABLE/*public*/ NoFeedbackTurnoutOperation(QObject *parent = 0);
+ ~NoFeedbackTurnoutOperation() {}
+ NoFeedbackTurnoutOperation(const NoFeedbackTurnoutOperation&)
+  : CommonTurnoutOperation("NoFeedback", defaultInterval, defaultMaxTries) {}
  /*public*/ TurnoutOperation* makeCopy(QString n);
  /*public*/ int getDefaultInterval();
  /*public*/ int getDefaultMaxTries() ;
@@ -33,5 +36,5 @@ signals:
 public slots:
     
 };
-
+Q_DECLARE_METATYPE(NoFeedbackTurnoutOperation)
 #endif // NOFEEDBACKTURNOUTOPERATION_H

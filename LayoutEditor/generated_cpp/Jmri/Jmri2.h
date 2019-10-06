@@ -277,7 +277,7 @@ virtual void setDefaultClosedSpeed(QString  speed);
 virtual void setDefaultThrownSpeed(QString  speed);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
@@ -628,7 +628,7 @@ virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void setLoadDisabled(bool  arg__1);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
@@ -800,9 +800,9 @@ void delete_Manager(Manager* obj) { delete obj; }
    Manager::NameValidity  validSystemNameFormat(Manager* theWrappedObject, QString  arg__1);
    Manager::NameValidity  py_q_validSystemNameFormat(Manager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_validSystemNameFormat(arg__1));}
    QString  validateIntegerSystemNameFormat(Manager* theWrappedObject, QString  name, int  min, int  max, QLocale  locale);
-   QString  validateSystemNameFormat(Manager* theWrappedObject, QString  name) throw (BadSystemNameException);
-   QString  validateSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale) throw (BadSystemNameException);
-   QString  validateSystemNamePrefix(Manager* theWrappedObject, QString  name, QLocale  locale) throw (BadSystemNameException);
+   QString  validateSystemNameFormat(Manager* theWrappedObject, QString  name) throw (NamedBean::BadSystemNameException);
+   QString  validateSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale) throw (NamedBean::BadSystemNameException);
+   QString  validateSystemNamePrefix(Manager* theWrappedObject, QString  name, QLocale  locale) throw (NamedBean::BadSystemNameException);
    QString  validateTrimmedSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale);
    QString  validateUppercaseTrimmedSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale);
 };
@@ -846,7 +846,7 @@ virtual void propertyChange(PropertyChangeEvent*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
@@ -2495,6 +2495,7 @@ public:
    ~PythonQtShell_ProxyLightManager();
 
 virtual void Register(NamedBean*  s);
+virtual void addManager(Manager*  m);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
@@ -2585,6 +2586,7 @@ public:
    ~PythonQtShell_ProxySensorManager();
 
 virtual void Register(NamedBean*  s);
+virtual void addManager(Manager*  m);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
@@ -2619,7 +2621,7 @@ virtual NamedBean*  provideNamedBean(QString  name);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
@@ -2672,43 +2674,8 @@ public:
 
    ~PythonQtShell_ProxyTurnoutManager();
 
-virtual void Register(NamedBean*  s);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l);
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
-virtual void deregister(NamedBean*  s);
-virtual void dispose();
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual NamedBean*  getBeanBySystemName(QString  systemName);
-virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
-virtual QString  getEntryToolTip();
-virtual SystemConnectionMemo*  getMemo();
-virtual Manager*  getMgr(int  index);
-virtual NamedBean*  getNamedBean(QString  name);
-virtual QSet<NamedBean* >  getNamedBeanSet();
-virtual int  getObjectCount();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
-virtual QStringList  getSystemNameArray();
-virtual QStringList  getSystemNameList();
-virtual QString  getSystemPrefix();
-virtual QStringList  getUserNameList();
-virtual int  getXMLOrder();
 virtual NamedBean*  makeBean(int  i, QString  systemName, QString  userName);
 virtual Manager*  makeInternalManager() const;
-virtual QString  makeSystemName(QString  s);
-virtual int  match(QString  systemname);
-virtual int  matchTentative(QString  arg__1);
-virtual int  nMgrs();
-virtual QString  normalizeSystemName(QString  inputName);
-virtual NamedBean*  provideNamedBean(QString  name);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
-virtual void timerEvent(QTimerEvent*  event);
-virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
-virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -2719,7 +2686,6 @@ class PythonQtPublicPromoter_ProxyTurnoutManager : public ProxyTurnoutManager
 { public:
 inline NamedBean*  promoted_makeBean(int  i, QString  systemName, QString  userName) { return this->makeBean(i, systemName, userName); }
 inline Manager*  promoted_makeInternalManager() const { return this->makeInternalManager(); }
-inline int  py_q_getXMLOrder() { return ProxyTurnoutManager::getXMLOrder(); }
 inline NamedBean*  py_q_makeBean(int  i, QString  systemName, QString  userName) { return ProxyTurnoutManager::makeBean(i, systemName, userName); }
 inline Manager*  py_q_makeInternalManager() const { return ProxyTurnoutManager::makeInternalManager(); }
 };
@@ -2745,10 +2711,12 @@ void delete_ProxyTurnoutManager(ProxyTurnoutManager* obj) { delete obj; }
    QString  getThrownText(ProxyTurnoutManager* theWrappedObject);
    Turnout*  getTurnout(ProxyTurnoutManager* theWrappedObject, QString  name);
    QStringList  getValidOperationTypes(ProxyTurnoutManager* theWrappedObject);
-   int  py_q_getXMLOrder(ProxyTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->py_q_getXMLOrder());}
+   int  getXMLOrder(ProxyTurnoutManager* theWrappedObject);
    bool  isControlTypeSupported(ProxyTurnoutManager* theWrappedObject, QString  systemName);
    bool  isNumControlBitsSupported(ProxyTurnoutManager* theWrappedObject, QString  systemName);
+   NamedBean*  makeBean(ProxyTurnoutManager* theWrappedObject, int  i, QString  systemName, QString  userName);
    NamedBean*  py_q_makeBean(ProxyTurnoutManager* theWrappedObject, int  i, QString  systemName, QString  userName){  return (((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->py_q_makeBean(i, systemName, userName));}
+   Manager*  makeInternalManager(ProxyTurnoutManager* theWrappedObject) const;
    Manager*  py_q_makeInternalManager(ProxyTurnoutManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->py_q_makeInternalManager());}
    Turnout*  newTurnout(ProxyTurnoutManager* theWrappedObject, QString  systemName, QString  userName);
    void setDefaultClosedSpeed(ProxyTurnoutManager* theWrappedObject, QString  speed) throw (JmriException);
@@ -2796,7 +2764,7 @@ virtual void propertyChange(PropertyChangeEvent*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;

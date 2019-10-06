@@ -1011,7 +1011,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::typeLetter();
 }
-Manager::NameValidity  PythonQtShell_DefaultLogixManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_DefaultLogixManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1022,7 +1022,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -1042,7 +1042,7 @@ if (_wrapper) {
     }
   }
 }
-  return DefaultLogixManager::validSystemNameFormat(arg__1);
+  return DefaultLogixManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_DefaultLogixManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -17134,7 +17134,7 @@ if (_wrapper) {
 }
   return LayoutBlockManager::typeLetter();
 }
-Manager::NameValidity  PythonQtShell_LayoutBlockManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_LayoutBlockManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -17145,7 +17145,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -17165,7 +17165,7 @@ if (_wrapper) {
     }
   }
 }
-  return LayoutBlockManager::validSystemNameFormat(arg__1);
+  return LayoutBlockManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_LayoutBlockManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -30787,7 +30787,7 @@ if (_wrapper) {
 }
   LnSensorManager::updateAll();
 }
-Manager::NameValidity  PythonQtShell_LnSensorManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_LnSensorManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30798,7 +30798,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -30818,7 +30818,7 @@ if (_wrapper) {
     }
   }
 }
-  return LnSensorManager::validSystemNameFormat(arg__1);
+  return LnSensorManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_LnSensorManager::vetoableChange(PropertyChangeEvent*  evt0)
 {

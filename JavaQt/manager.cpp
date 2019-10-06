@@ -55,7 +55,7 @@
  *                                      messages in the default locale
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name) throw (BadSystemNameException)
+/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name) throw (NamedBean::BadSystemNameException)
 {
     return validateSystemNameFormat(name, /*Locale.getDefault()*/QLocale());
 }
@@ -83,7 +83,7 @@
  * @throws BadSystemNameException if provided name is an invalid format
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) throw (BadSystemNameException)
+/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) throw (NamedBean::BadSystemNameException)
 {
     return validateSystemNamePrefix(name, locale);
 }
@@ -104,13 +104,13 @@
  * @throws BadSystemNameException if provided name is an invalid format
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) throw (BadSystemNameException) {
+/*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) throw (NamedBean::BadSystemNameException) {
     QString prefix = getSystemNamePrefix();
     if (name == (prefix)) {
-        throw BadSystemNameException(locale, "InvalidSystemNameMatchesPrefix", name);
+        throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameMatchesPrefix", name);
     }
     if (!name.startsWith(prefix)) {
-        throw BadSystemNameException(locale, "InvalidSystemNameInvalidPrefix", prefix);
+        throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameInvalidPrefix", prefix);
     }
     return name;
 }
@@ -136,7 +136,7 @@
     QString prefix = getSystemNamePrefix();
     QString suffix = name.mid(prefix.length());
     if (suffix !=(suffix.trimmed())) {
-        throw BadSystemNameException(locale, "InvalidSystemNameTrailingWhitespace", name, prefix);
+        throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameTrailingWhitespace", name, prefix);
     }
     return name;
 }
@@ -162,7 +162,7 @@
     QString prefix = getSystemNamePrefix();
     QString suffix = name.mid(prefix.length());
     if (suffix != (suffix.toUpper())) {
-        throw BadSystemNameException(locale, "InvalidSystemNameNotUpperCase", name, prefix);
+        throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameNotUpperCase", name, prefix);
     }
     return name;
 }
@@ -191,12 +191,12 @@
     try {
         int number = (suffix.toInt());
         if (number < min) {
-            throw BadSystemNameException(locale, "InvalidSystemNameIntegerLessThan", name, QString::number(min));
+            throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameIntegerLessThan", name, QString::number(min));
         } else if (number > max) {
-            throw BadSystemNameException(locale, "InvalidSystemNameIntegerGreaterThan", name, QString::number(max));
+            throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameIntegerGreaterThan", name, QString::number(max));
         }
     } catch (NumberFormatException ex) {
-        throw BadSystemNameException(locale, "InvalidSystemNameNotInteger", name, prefix);
+        throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameNotInteger", name, prefix);
     }
     return name;
 }

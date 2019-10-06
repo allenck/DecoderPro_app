@@ -110,7 +110,7 @@
     if (points.length() < 3) {
      QString msg = tr("%1 needs at least 3 (x,y,z) point coordinates, but has only %2").arg(name).arg(points.length());
      
-        throw  BadSystemNameException(
+        throw NamedBean:: BadSystemNameException(
 //                Bundle.getMessage(Locale.ENGLISH, "SystemNameInvalidMissingPoints", name, points.length),
 //                Bundle.getMessage(locale, "SystemNameInvalidMissingPoints", name, points.length)
         QLocale(),msg,name);
@@ -118,7 +118,7 @@
     for (int i = 0; i < points.length(); i++) {
         if (!points[i].startsWith("(") || !points[i].endsWith(")")) {
          QString msg = tr("Point \"%2\" in %1 needs to be in the format \"(x,y,z) where x, y, and z are numbers\"").arg(name).arg(points[i]);
-            throw  BadSystemNameException(
+            throw  NamedBean::BadSystemNameException(
 //                    Bundle.getMessage(Locale.ENGLISH, "SystemNameInvalidPointInvalid", name, points[i]),
 //                    Bundle.getMessage(locale, "SystemNameInvalidPointInvalid", name, points[i])
             QLocale(),msg,name);
@@ -126,7 +126,7 @@
         QStringList coords = points[i].mid(1, points[i].length() - 1).split(",");
         if (coords.length() != 3) {
          QString msg = tr("Point \"%2\" in %1 needs to be in the format \"(x,y,z) where x, y, and z are numbers\"").arg(name).arg(points[i]);
-            throw  BadSystemNameException(
+            throw  NamedBean::BadSystemNameException(
 //                    Bundle.getMessage(Locale.ENGLISH, "SystemNameInvalidPointInvalid", name, points[i]),
 //                    Bundle.getMessage(locale, "SystemNameInvalidPointInvalid", name, points[i])
             QLocale(),msg,name);
@@ -136,7 +136,7 @@
                 coords[j].toDouble(&bok);
             if(!bok) {
              QString msg = tr("Coordinate \"%3\" in point \"%2\" in %1 needs to be a number").arg(name).arg(points[i]).arg(coords[i]);
-            throw BadSystemNameException(
+            throw NamedBean::BadSystemNameException(
 //                    Bundle.getMessage(Locale.ENGLISH, "SystemNameInvalidCoordInvalid", name, points[i], coords[j]),
 //                    Bundle.getMessage(locale, "SystemNameInvalidCoordInvalid", name, points[i], coords[j])
                 QLocale(),msg,name);

@@ -79,7 +79,7 @@ public:
          * @throws IllegalArgumentException if cannot create the Turnout
          * due to e.g. an illegal name or name that can't be parsed.
          */
-        virtual Turnout* newTurnout(QString /*systemName*/,QString /*userName*/) const { return NULL;}
+        virtual Turnout* newTurnout(QString /*systemName*/,QString /*userName*/)  { return NULL;}
 
         /**
          * Get a list of all Turnouts' system names.

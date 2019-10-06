@@ -2507,7 +2507,7 @@ if (_wrapper) {
 }
   return AbstractManager::typeLetter();
 }
-Manager::NameValidity  PythonQtShell_AbstractManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_AbstractManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2518,7 +2518,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -2538,7 +2538,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractManager::validSystemNameFormat(arg__1);
+  return AbstractManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_AbstractManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -2583,6 +2583,11 @@ int PythonQtShell_AbstractManager::qt_metacall(QMetaObject::Call call, int id, v
   int result = AbstractManager::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
+void PythonQtWrapper_AbstractManager::fireIndexedPropertyChange(AbstractManager* theWrappedObject, QString  p, int  pos, QVariant  old, QVariant  n)
+{
+  ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_fireIndexedPropertyChange(p, pos, old, n));
+}
+
 void PythonQtWrapper_AbstractManager::firePropertyChange(AbstractManager* theWrappedObject, QString  p, QVariant  old, QVariant  n)
 {
   ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_firePropertyChange(p, old, n));
@@ -2613,9 +2618,19 @@ QStringList  PythonQtWrapper_AbstractManager::getUserNameList(AbstractManager* t
   return ( theWrappedObject->getUserNameList());
 }
 
+void PythonQtWrapper_AbstractManager::handleUserNameUniqueness(AbstractManager* theWrappedObject, NamedBean*  s)
+{
+  ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_handleUserNameUniqueness(s));
+}
+
 void PythonQtWrapper_AbstractManager::registerSelf(AbstractManager* theWrappedObject)
 {
   ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_registerSelf());
+}
+
+void PythonQtWrapper_AbstractManager::registerUserName(AbstractManager* theWrappedObject, NamedBean*  s)
+{
+  ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_registerUserName(s));
 }
 
 
@@ -5524,6 +5539,28 @@ if (_wrapper) {
 }
   AbstractProxyManager::Register(s0);
 }
+void PythonQtShell_AbstractProxyManager::addManager(Manager*  m0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("addManager");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "Manager*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&m0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  AbstractProxyManager::addManager(m0);
+}
 void PythonQtShell_AbstractProxyManager::addPropertyChangeListener(PropertyChangeListener*  l0)
 {
 if (_wrapper) {
@@ -6580,7 +6617,7 @@ if (_wrapper) {
 }
   return AbstractProxyManager::typeLetter();
 }
-Manager::NameValidity  PythonQtShell_AbstractProxyManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_AbstractProxyManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6591,7 +6628,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -6611,7 +6648,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractProxyManager::validSystemNameFormat(arg__1);
+  return AbstractProxyManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_AbstractProxyManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -7613,7 +7650,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::typeLetter();
 }
-Manager::NameValidity  PythonQtShell_AbstractReporterManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_AbstractReporterManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -7624,7 +7661,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -7644,7 +7681,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractReporterManager::validSystemNameFormat(arg__1);
+  return AbstractReporterManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_AbstractReporterManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -10499,7 +10536,7 @@ if (_wrapper) {
 }
   AbstractSensorManager::updateAll();
 }
-Manager::NameValidity  PythonQtShell_AbstractSensorManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_AbstractSensorManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -10510,7 +10547,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -10530,7 +10567,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractSensorManager::validSystemNameFormat(arg__1);
+  return AbstractSensorManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_AbstractSensorManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -16485,7 +16522,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::typeLetter();
 }
-Manager::NameValidity  PythonQtShell_AbstractTurnoutManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_AbstractTurnoutManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16496,7 +16533,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -16516,7 +16553,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractTurnoutManager::validSystemNameFormat(arg__1);
+  return AbstractTurnoutManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_AbstractTurnoutManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -22383,7 +22420,7 @@ if (_wrapper) {
 }
   return AudioManager::typeLetter();
 }
-Manager::NameValidity  PythonQtShell_AudioManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_AudioManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -22394,7 +22431,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -22414,7 +22451,7 @@ if (_wrapper) {
     }
   }
 }
-  return AudioManager::validSystemNameFormat(arg__1);
+  return AudioManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_AudioManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -30562,7 +30599,7 @@ if (_wrapper) {
 }
   return BlockManager::typeLetter();
 }
-Manager::NameValidity  PythonQtShell_BlockManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_BlockManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30573,7 +30610,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -30593,7 +30630,7 @@ if (_wrapper) {
     }
   }
 }
-  return BlockManager::validSystemNameFormat(arg__1);
+  return BlockManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_BlockManager::vetoableChange(PropertyChangeEvent*  arg__1)
 {

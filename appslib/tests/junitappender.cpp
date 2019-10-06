@@ -1,6 +1,6 @@
 #include "junitappender.h"
 #include "assert1.h"
-#include "level.h"
+#include "loglevel.h"
 #include "loggingevent.h"
 #include "stringutils.h"
 #include "consoleinterface.h"
@@ -8,6 +8,7 @@
 
 JUnitAppender::JUnitAppender(QObject *parent) : QObject(parent)
 {
+ list.clear();
  connect(ConsoleInterface::instance(), SIGNAL(message(QString,LoggingEvent*)), this, SLOT(message(QString,LoggingEvent*)));
 }
 
@@ -87,35 +88,35 @@ static boolean unexpectedInfoSeen = false;
 static String  unexpectedInfoContent = null;
 
 /*public*/ static boolean unexpectedMessageSeen(Level l) {
-    if (l == Level.FATAL) {
+    if (l == LogLevel::FATAL) {
         return unexpectedFatalSeen;
     }
-    if (l == Level.ERROR) {
+    if (l == LogLevel::ERROR) {
         return unexpectedFatalSeen || unexpectedErrorSeen;
     }
-    if (l == Level.WARN) {
+    if (l == LogLevel::WARN) {
         return unexpectedFatalSeen || unexpectedErrorSeen || unexpectedWarnSeen;
     }
-    if (l == Level.INFO) {
+    if (l == LogLevel::INFO) {
         return unexpectedFatalSeen || unexpectedErrorSeen || unexpectedWarnSeen || unexpectedInfoSeen;
     }
     throw new java.lang.IllegalArgumentException("Did not expect " + l);
 }
 
 /*public*/ static String unexpectedMessageContent(Level l) {
-    if (l == Level.FATAL) {
+    if (l == LogLevel::FATAL) {
         return unexpectedFatalContent;
     }
-    if (l == Level.ERROR) {
+    if (l == LogLevel::ERROR) {
         if (unexpectedFatalContent != null ) return unexpectedFatalContent;
         return unexpectedErrorContent;
     }
-    if (l == Level.WARN) {
+    if (l == LogLevel::WARN) {
         if (unexpectedFatalContent != null ) return unexpectedFatalContent;
         if (unexpectedErrorContent != null ) return unexpectedErrorContent;
         return unexpectedWarnContent;
     }
-    if (l == Level.INFO) {
+    if (l == LogLevel::INFO) {
         if (unexpectedFatalContent != null ) return unexpectedFatalContent;
         if (unexpectedErrorContent != null ) return unexpectedErrorContent;
         if (unexpectedWarnContent != null ) return unexpectedWarnContent;
@@ -127,19 +128,19 @@ static String  unexpectedInfoContent = null;
 /*public*/ static void resetUnexpectedMessageFlags(Level severity) {
     // cases statements are organized to flow
     switch (severity.toInt()) {
-        case Level.INFO_INT:
+        case LogLevel::INFO_INT:
             unexpectedInfoSeen = false;
             unexpectedInfoContent = null;
             //$FALL-THROUGH$
-        case Level.WARN_INT:
+        case LogLevel::WARN_INT:
             unexpectedWarnSeen = false;
             unexpectedWarnContent = null;
             //$FALL-THROUGH$
-        case Level.ERROR_INT:
+        case LogLevel::ERROR_INT:
             unexpectedErrorSeen = false;
             unexpectedErrorContent = null;
             //$FALL-THROUGH$
-        case Level.FATAL_INT:
+        case LogLevel::FATAL_INT:
             unexpectedFatalSeen = false;
             unexpectedFatalContent = null;
             break;
@@ -218,12 +219,12 @@ void JUnitAppender::superappend(LoggingEvent* l) {
  * @return count of skipped messages
  * @see #clearBacklog()
  */
-/*public*/ /*static*/ int JUnitAppender::clearBacklog(LogLevel::VALS level) {
+/*public*/ /*static*/ int JUnitAppender::clearBacklog(LogLevel* level) {
     if (list.isEmpty()) {
         return 0;
     }
     int retval = 0;
-#if 0
+#if 1
     for (LoggingEvent* event : list) {
         if (event != nullptr && event->getLevel() != 0 && event->getLevel() >= level) {
             retval++; // higher number -> more severe, specific, limited
@@ -326,7 +327,7 @@ void JUnitAppender::superappend(LoggingEvent* l) {
     LoggingEvent evt = list.remove(0);
 
     // next piece of code appears three times, should be refactored away during Log4J 2 migration
-    while ((evt.getLevel() == Level.INFO) || (evt.getLevel() == Level.DEBUG) || (evt.getLevel() == Level.TRACE)) { // better in Log4J 2
+    while ((evt->getLevel() == LogLevel::INFO) || (evt->getLevel() == LogLevel::DEBUG) || (evt->getLevel() == LogLevel::TRACE)) { // better in Log4J 2
         if (list.isEmpty()) {
             Assert::fail("Only debug/info messages present: " + msg);
             return;
@@ -335,7 +336,7 @@ void JUnitAppender::superappend(LoggingEvent* l) {
     }
 
     // check the remaining message, if any
-    if (evt.getLevel() != Level.ERROR) {
+    if (evt->getLevel() != LogLevel::ERROR) {
         Assert::fail("Level mismatch when looking for ERROR message: \"" +
                 msg +
                 "\" found \"" +
@@ -347,7 +348,7 @@ void JUnitAppender::superappend(LoggingEvent* l) {
         Assert::fail("Looking for ERROR message \"" + msg + "\" got \"" + evt.getMessage() + "\"");
     }
 }
-
+#endif
 /**
  * If there's a next matching message of specific severity, just ignore it.
  * Not an error if not present; mismatch is an error. Skips messages of
@@ -357,43 +358,45 @@ void JUnitAppender::superappend(LoggingEvent* l) {
  * @param level the level at which to suppress the message
  * @param msg   the message to suppress
  */
-/*public*/ static void suppressMessage(Level level, String msg) {
+/*public*/ /*static*/ void JUnitAppender::suppressMessage(LogLevel *level, QString msg, QString file, int line) {
     if (list.isEmpty()) {
         return;
     }
 
-    LoggingEvent evt = list.remove(0);
+    LoggingEvent* evt = list.at(0);
+    list.removeAt(0);
 
-    while (((level.equals(Level.WARN)) &&
-            (evt.getLevel() == Level.TRACE ||
-                    evt.getLevel() == Level.DEBUG ||
-                    evt.getLevel() == Level.INFO ||
-                    evt.getLevel() == Level.WARN)) ||
-            ((level.equals(Level.ERROR)) &&
-                    (evt.getLevel() == Level.TRACE ||
-                            evt.getLevel() == Level.DEBUG ||
-                            evt.getLevel() == Level.INFO ||
-                            evt.getLevel() == Level.WARN ||
-                            evt.getLevel() == Level.ERROR))) { // this is much better with Log4J 2's compareTo method
+    while (((level->equals(LogLevel::WARN)) &&
+            (evt->getLevel() == LogLevel::TRACE ||
+                    evt->getLevel() == LogLevel::DEBUG ||
+                    evt->getLevel() == LogLevel::INFO ||
+                    evt->getLevel() == LogLevel::WARN)) ||
+            ((level->equals(LogLevel::ERROR)) &&
+                    (evt->getLevel() == LogLevel::TRACE ||
+                            evt->getLevel() == LogLevel::DEBUG ||
+                            evt->getLevel() == LogLevel::INFO ||
+                            evt->getLevel() == LogLevel::WARN ||
+                            evt->getLevel() == LogLevel::ERROR))) { // this is much better with Log4J 2's compareTo method
         if (list.isEmpty()) {
             return;
         }
-        evt = list.remove(0);
+        evt = list.at(0);
+        list.removeAt(0);
     }
 
     // check the remaining message, if any
-    if (evt.getLevel() != level) {
+    if (!evt->getLevel()->equals(level)) {
         Assert::fail("Level mismatch when looking for " +
-                level +
+                level->toString() +
                 " message: \"" +
                 msg +
                 "\" found \"" +
-                (String) evt.getMessage() +
-                "\"");
+                evt->getMessage() +
+                "\"", file,line);
     }
 
     if (!compare(evt, msg)) {
-        Assert::fail("Looking for " + level + " message \"" + msg + "\" got \"" + evt.getMessage() + "\"");
+        Assert::fail("Looking for " + level->toString() + " message \"" + msg + "\" got \"" + evt->getMessage() + "\"",file,line);
     }
 }
 
@@ -406,43 +409,45 @@ void JUnitAppender::superappend(LoggingEvent* l) {
  * @param level the level at which to suppress the message
  * @param msg   the message to suppress
  */
-/*public*/ static void suppressMessageStartsWith(Level level, String msg) {
+/*public*/ /*static*/ void JUnitAppender::suppressMessageStartsWith(LogLevel* level, QString msg, QString file, int line) {
     if (list.isEmpty()) {
         return;
     }
 
-    LoggingEvent evt = list.remove(0);
+    LoggingEvent* evt = list.at(0);
+    list.removeAt(0);
 
-    while (((level.equals(Level.WARN)) &&
-            (evt.getLevel() == Level.TRACE ||
-                    evt.getLevel() == Level.DEBUG ||
-                    evt.getLevel() == Level.INFO ||
-                    evt.getLevel() == Level.WARN)) ||
-            ((level.equals(Level.ERROR)) &&
-                    (evt.getLevel() == Level.TRACE ||
-                            evt.getLevel() == Level.DEBUG ||
-                            evt.getLevel() == Level.INFO ||
-                            evt.getLevel() == Level.WARN ||
-                            evt.getLevel() == Level.ERROR))) { // this is much better with Log4J 2's compareTo method
+    while (((level->equals(LogLevel::WARN)) &&
+            (evt->getLevel() == LogLevel::TRACE ||
+                    evt->getLevel() == LogLevel::DEBUG ||
+                    evt->getLevel() == LogLevel::INFO ||
+                    evt->getLevel() == LogLevel::WARN)) ||
+            ((level->equals(LogLevel::ERROR)) &&
+                    (evt->getLevel() == LogLevel::TRACE ||
+                            evt->getLevel() == LogLevel::DEBUG ||
+                            evt->getLevel() == LogLevel::INFO ||
+                            evt->getLevel() == LogLevel::WARN ||
+                            evt->getLevel() == LogLevel::ERROR))) { // this is much better with Log4J 2's compareTo method
         if (list.isEmpty()) {
             return;
         }
-        evt = list.remove(0);
+        evt = list.at(0);
+        list.removeAt(0);
     }
 
     // check the remaining message, if any
-    if (evt.getLevel() != level) {
+    if (!evt->getLevel()->equals(level)) {
         Assert::fail("Level mismatch when looking for " +
-                level +
+                level->toString() +
                 " message: \"" +
                 msg +
                 "\" found \"" +
-                (String) evt.getMessage() +
-                "\"");
+                 evt->getMessage() +
+                "\"", file,line);
     }
 
     if (!compareStartsWith(evt, msg)) {
-        Assert::fail("Looking for " + level + " message \"" + msg + "\" got \"" + evt.getMessage() + "\"");
+        Assert::fail("Looking for " + level->toString() + " message \"" + msg + "\" got \"" + evt->getMessage() + "\"", file, line);
     }
 }
 
@@ -452,8 +457,8 @@ void JUnitAppender::superappend(LoggingEvent* l) {
  *
  * @param msg the message to suppress
  */
-/*public*/ static void suppressErrorMessage(String msg) {
-    suppressMessage(Level.ERROR, msg);
+/*public*/ /*static*/ void JUnitAppender::suppressErrorMessage(QString msg, QString file, int line) {
+    suppressMessage(LogLevel::ERROR, msg, file, line);
 }
 
 /**
@@ -462,8 +467,8 @@ void JUnitAppender::superappend(LoggingEvent* l) {
  *
  * @param msg the message to suppress
  */
-/*public*/ static void suppressErrorMessageStartsWith(String msg) {
-    suppressMessageStartsWith(Level.ERROR, msg);
+/*public*/ /*static*/ void JUnitAppender::suppressErrorMessageStartsWith(QString msg, QString file, int line) {
+    suppressMessageStartsWith(LogLevel::ERROR, msg, file, line);
 }
 
 /**
@@ -472,10 +477,10 @@ void JUnitAppender::superappend(LoggingEvent* l) {
  *
  * @param msg the message to suppress
  */
-/*public*/ static void suppressWarnMessage(String msg) {
-    suppressMessage(Level.WARN, msg);
+/*public*/ /*static*/ void JUnitAppender::suppressWarnMessage(QString msg, QString file, int line) {
+    suppressMessage(LogLevel::WARN, msg, file, line);
 }
-#endif
+
 /**
  * See if a message (completely matching particular text) has been emitted
  * yet. White space is ignored. All messages before the requested one are
@@ -602,7 +607,7 @@ void JUnitAppender::superappend(LoggingEvent* l) {
     QString s1 = e1->getMessage();
     return StringUtils::deleteWhitespace(s1.toUpper()) ==(StringUtils::deleteWhitespace(s2.toUpper()));
 }
-#if 0
+
 /**
  * Compare two message strings, handling nulls and ignoring whitespace.
  *
@@ -610,18 +615,18 @@ void JUnitAppender::superappend(LoggingEvent* l) {
  * @param s2 the string to compare e1 to
  * @return true if message in e1 starts with s2; false otherwise
  */
-protected static boolean compareStartsWith(LoggingEvent e1, String s2) {
-    if (e1 == null) {
-        System.err.println("Logging event null when comparing to " + s2);
-        return s2 == null;
-    } else if (e1.getMessage() == null) {
-        System.err.println("Logging event has null message when comparing to " + s2);
-        return s2 == null;
+/*protected*/ /*static*/ bool JUnitAppender::compareStartsWith(LoggingEvent* e1, QString s2) {
+    if (e1 == nullptr) {
+        /*System.err.println*/qDebug() << ("Logging event null when comparing to " + s2);
+        return s2 == "";
+    } else if (e1->getMessage() == "") {
+        /*System.err.println*/qDebug() << ("Logging event has null message when comparing to " + s2);
+        return s2 == "";
     }
-    String s1 = e1.getMessage().toString();
-    return StringUtils.deleteWhitespace(s1).startsWith(StringUtils.deleteWhitespace(s2));
+    QString s1 = e1->getMessage();
+    return StringUtils::deleteWhitespace(s1).startsWith(StringUtils::deleteWhitespace(s2));
 }
-#endif
+
 /*public*/ /*static*/ JUnitAppender* JUnitAppender::instance() {
     return JUnitAppender::_instance;
 }
@@ -637,3 +642,4 @@ protected static boolean compareStartsWith(LoggingEvent e1, String s2) {
 /*static*/ bool JUnitAppender::unexpectedInfoSeen = false;
 /*static*/ QString  JUnitAppender::unexpectedInfoContent = nullptr;
 bool JUnitAppender::hold = false;
+

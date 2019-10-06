@@ -304,7 +304,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
 
         // check for messages
         Assert::assertTrue("just one messages", lnis->outbound.size() == 1, __FILE__, __LINE__);
-        Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString(),
+        Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(),
                 "B0 14 10 00", __FILE__, __LINE__);  // THROWN/ON loconet message
         Assert::assertTrue(t->getCommandedState() == Turnout::THROWN, __FILE__, __LINE__);
     }
@@ -323,7 +323,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
 
         // check for messages
         Assert::assertTrue("just one messages", lnis->outbound.size() == 1, __FILE__, __LINE__);
-        Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString(),
+        Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(),
                 "B0 14 10 00", __FILE__, __LINE__);  // THROWN/ON loconet message
         Assert::assertTrue(t->getCommandedState() == Turnout::THROWN, __FILE__, __LINE__);
     }
@@ -342,7 +342,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
 
         // check for messages
         Assert::assertTrue("just two messages", lnis->outbound.size() == 2, __FILE__, __LINE__);
-        Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString(),
+        Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(),
                 "B0 14 00 00", __FILE__, __LINE__);  // THROWN/OFF loconet message
         Assert::assertTrue(t->getCommandedState() == Turnout::THROWN, __FILE__, __LINE__);
     }
@@ -361,7 +361,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
 
         // check for messages
         Assert::assertTrue("just two messages", lnis->outbound.size() == 2, __FILE__, __LINE__);
-        Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString(),
+        Assert::assertEquals(lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(),
                 "B0 14 00 00", __FILE__, __LINE__);  // THROWN/OFF loconet message
         Assert::assertTrue(t->getCommandedState() == Turnout::THROWN, __FILE__, __LINE__);
     }
@@ -568,7 +568,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
     /*public*/ void LnTurnoutTest::testSetStateClosedAndThrown() {
         Assert::assertEquals("checking initial known state", Turnout::UNKNOWN, t->getKnownState(), __FILE__, __LINE__);
         t->setCommandedState(Turnout::CLOSED + Turnout::THROWN);
-        JUnitAppender::assertErrorMessage("LocoNet turnout logic can't handle both THROWN and Turnout::CLOSED yet",__FILE__, __LINE__);
+        JUnitAppender::assertErrorMessage("LocoNet turnout logic can't handle both THROWN and CLOSED yet",__FILE__, __LINE__);
         Assert::assertEquals("checking commanded state is Turnout::UNKNOWN after trying to send THROWN AND Turnout::CLOSED", Turnout::UNKNOWN, t->getKnownState(), __FILE__, __LINE__);
         Assert::assertEquals("checking known state is Turnout::UNKNOWN after trying to send THROWN AND Turnout::CLOSED", Turnout::UNKNOWN, t->getKnownState(), __FILE__, __LINE__);
         Assert::assertEquals("Checking to see if a LocoNet message was generated", 1, lnis->outbound.size(), __FILE__, __LINE__);

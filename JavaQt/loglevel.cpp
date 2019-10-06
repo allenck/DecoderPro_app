@@ -1,12 +1,21 @@
 #include "loglevel.h"
-LogLevel::LogLevel()
+LogLevel::LogLevel(QString sArg, int intLevel)
 {
-
+ this->sArg = sArg;
+ this->intLevel = intLevel;
 }
 // /*public*/ class Level extends Priority implements Serializable {
 
 /*public*/ /*static*/ /*final*/ int LogLevel::TRACE_INT = 5000;
 ///*static*/ /*final*/ long LogLevel::serialVersionUID = 3491141966387921974L;
+/*public*/ /*static*/ LogLevel* LogLevel::OFF = new LogLevel("OFF", StandardLevel::OFF);
+/*public*/ /*static*/ LogLevel* LogLevel::FATAL = new LogLevel("FATAL", StandardLevel::FATAL);
+/*public*/ /*static*/ LogLevel* LogLevel::ERROR = new LogLevel("ERROR",  StandardLevel::ERROR);
+/*public*/ /*static*/ LogLevel* LogLevel::WARN = new LogLevel("WARN",  StandardLevel::WARN);
+/*public*/ /*static*/ LogLevel* LogLevel::INFO = new LogLevel("INFO",  StandardLevel::INFO);
+/*public*/ /*static*/ LogLevel* LogLevel::DEBUG = new LogLevel("DEBUG",  StandardLevel::DEBUG);
+/*public*/ /*static*/ LogLevel* LogLevel::TRACE = new LogLevel("TRACE",  StandardLevel::TRACE);
+/*public*/ /*static*/ LogLevel* LogLevel::ALL = new LogLevel("ALL",  StandardLevel::ALL);
 
 /*protected*/ LogLevel::LogLevel(int level, QString levelStr, int syslogEquivalent) {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
@@ -18,9 +27,9 @@ LogLevel::LogLevel()
      * 7: return
      *  */
     // </editor-fold>
- this->level = level;
- this->levelStr = levelStr;
- this->syslogEquivalent = syslogEquivalent;
+ this->intLevel = level;
+ this->sArg = levelStr;
+ //this->syslogEquivalent = syslogEquivalent;
 }
 
 /*public*/ /*static*/ LogLevel LogLevel::toLevel(QString sArg) {
@@ -219,3 +228,11 @@ LogLevel::LogLevel()
     // </editor-fold>
 }
 #endif
+/*public*/ int LogLevel::toInt() {return intLevel;}
+
+/*public*/ QString LogLevel::toString() {return sArg;}
+
+/*public*/ bool LogLevel::equals(LogLevel* other)
+{
+ return this->toInt() == other->toInt();
+}

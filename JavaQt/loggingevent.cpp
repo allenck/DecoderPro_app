@@ -212,7 +212,7 @@ static final Hashtable methodCache;
     // </editor-fold>
 }
 #endif
-/*public*/ int LoggingEvent::getLevel() {
+/*public*/ LogLevel* LoggingEvent::getLevel() {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
      * 1: getfield      org/apache/log4j/spi/LoggingEvent.level:Lorg/apache/log4j/Priority;
@@ -220,7 +220,7 @@ static final Hashtable methodCache;
      * 7: areturn
      *  */
     // </editor-fold>
- return logLevel->level;
+ return logLevel;
 }
 
 /*public*/ QString LoggingEvent::getLoggerName() {

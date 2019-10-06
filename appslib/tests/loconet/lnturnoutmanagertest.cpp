@@ -22,7 +22,7 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
 
     //@Override
     /*public*/ QString LnTurnoutManagerTest::getSystemName(int i) {
-        return "LT" + i;
+        return "LT" + QString::number(i);
     }
 
     //@Test
@@ -169,7 +169,7 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
         lnis = new LocoNetInterfaceScaffold(memo);
         memo->setLnTrafficController(lnis);
         // create and register the manager object
-#if 0
+#if 1
         l = new LnTurnoutManager(memo, lnis, false);
         InstanceManager::setTurnoutManager(l);
 #endif

@@ -26,6 +26,7 @@ public:
     /*public*/ static void runTests(QObject *test, QStringList testList);
     static QString getTestClassName();
     /*public*/ static void resetInstanceManager();
+    /*public*/ static void initInternalTurnoutManager();
 
 signals:
 

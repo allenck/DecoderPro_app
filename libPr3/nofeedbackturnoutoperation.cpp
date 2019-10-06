@@ -15,7 +15,8 @@
 /*static*/ /*public*/ /*final*/const int NoFeedbackTurnoutOperation::defaultInterval = 300;
 /*static*/ /*public*/ /*final*/ const int NoFeedbackTurnoutOperation::defaultMaxTries = 2;
 
-/*public*/ NoFeedbackTurnoutOperation::NoFeedbackTurnoutOperation(QString n, int i, int mt, QObject *parent) : CommonTurnoutOperation(n, i, mt, parent)
+/*public*/ NoFeedbackTurnoutOperation::NoFeedbackTurnoutOperation(QString n, int i, int mt, QObject *parent)
+ : CommonTurnoutOperation(n, i, mt, parent)
 {
  //super(n, i, mt);
  //feedbackModes = Turnout::DIRECT | Turnout::ONESENSOR | Turnout::TWOSENSOR| Turnout::INDIRECT | Turnout::EXACT | Turnout::MONITORING;
@@ -27,7 +28,8 @@
  * constructor with default values - this creates the "defining instance" of
  * the operation type hence it cannot be deleted
  */
-/*public*/ NoFeedbackTurnoutOperation::NoFeedbackTurnoutOperation(QObject *parent) : CommonTurnoutOperation("NoFeedback", defaultInterval, defaultMaxTries, parent)
+/*public*/ NoFeedbackTurnoutOperation::NoFeedbackTurnoutOperation(QObject *parent)
+ : CommonTurnoutOperation("NoFeedback", defaultInterval, defaultMaxTries, parent)
 {
  //this("NoFeedback", defaultInterval, defaultMaxTries);
  setFeedbackModes(Turnout::DIRECT | Turnout::ONESENSOR | Turnout::TWOSENSOR| Turnout::INDIRECT | Turnout::EXACT | Turnout::MONITORING);

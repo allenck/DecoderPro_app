@@ -168,7 +168,7 @@ virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void setLoadDisabled(bool  s);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
@@ -1683,7 +1683,7 @@ virtual QString  normalizeSystemName(QString  inputName);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
@@ -3182,7 +3182,7 @@ virtual void setDefaultSensorDebounceGoingInActive(long  timer);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
 virtual void updateAll();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;

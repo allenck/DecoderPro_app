@@ -654,12 +654,12 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     // create a test user preferences manager
     InstanceManager.setDefault(UserPreferencesManager.class, new TestUserPreferencesManager());
 }
-
-/*public*/ static void initInternalTurnoutManager() {
+#endif
+/*public*/ /*static*/ void JUnitUtil::initInternalTurnoutManager() {
     // now done automatically by InstanceManager's autoinit
-    InstanceManager.turnoutManagerInstance();
+    InstanceManager::turnoutManagerInstance();
 }
-
+#if 0
 /*public*/ static void initInternalLightManager() {
     // now done automatically by InstanceManager's autoinit
     InstanceManager.lightManagerInstance();

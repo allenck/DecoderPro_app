@@ -106,8 +106,8 @@ public:
     /*public*/ NameValidity validSystemNameFormat(QString systemName);
 
 signals:
-    void beanDeleted(NamedBean* s);
-    void beanCreated(NamedBean* s);
+//    void beanDeleted(NamedBean* s);
+//    void beanCreated(NamedBean* s);
     //void propertyChange(PropertyChangeEvent* e);
     void vetoablePropertyChange(PropertyChangeEvent *evt);
 
@@ -116,8 +116,12 @@ public slots:
     /*public*/ virtual void vetoableChange(PropertyChangeEvent* evt); //throw PropertyVetoException
 protected:
     /*protected*/void registerSelf();
+    /*protected*/ void registerUserName(NamedBean* s);
 
 private:
+    QSet<NamedBean*> _beans;
+    /*private*/ int getPosition(NamedBean* s);
+
 friend class SectionTableDataModel;
 friend class ReporterPickModel;
 friend class TurnoutTableDataModel;
@@ -149,7 +153,10 @@ QObject* getInstanceBySystemName(QString systemName);
  */
 QObject* getInstanceByUserName(QString userName);
 void firePropertyChange(QString p, QVariant old, QVariant n);
+void fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n);
+
 /*protected*/ void fireVetoableChange(QString p, QVariant old, QVariant n) /*throws PropertyVetoException*/;
+/*protected*/ void handleUserNameUniqueness(NamedBean* s);
 
 protected slots:
 

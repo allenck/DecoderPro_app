@@ -3,7 +3,7 @@
 #include "joptionpane.h"
 #include "assert1.h"
 #include "loggerfactory.h"
-
+#include "junitutil.h"
 
 ProfileManagerTestAction::ProfileManagerTestAction(QObject *parent) : AbstractAction(tr("Profile Manager Test"), parent)
 {
@@ -17,19 +17,14 @@ connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 
 void ProfileManagerTestAction::actionPerformed()
 {
-    ProfileManagerTest* pmt = new ProfileManagerTest();
+    ProfileManagerTest* test = new ProfileManagerTest();
     try
     {
      QStringList testList = QStringList()
          << "testCTor"
          << "testSetActiveProfile_Profile"
          << "testSetActiveProfile_String";
-     foreach(QString test, testList)
-     {
-      log->info(tr("begin '%1'").arg(test));
-      QMetaObject::invokeMethod(pmt, test.toLocal8Bit(), Qt::DirectConnection);
-      log->info(tr("end '%1'").arg(test));
-     }
+     JUnitUtil::runTests(test, testList);
     }
     catch (AssertionError ex)
     {

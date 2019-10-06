@@ -82,7 +82,8 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
 }
 //@Override
 /** {@inheritDoc} */
-/*public*/ Turnout* ProxyTurnoutManager::provide(/*@Nonnull */QString name) throw (IllegalArgumentException) { return provideTurnout(name); }
+/*public*/ Turnout* ProxyTurnoutManager::provide(/*@Nonnull */QString name) throw (IllegalArgumentException)
+{ return provideTurnout(name); }
 
 
 /**

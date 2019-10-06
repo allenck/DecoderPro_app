@@ -7,9 +7,11 @@ class SensorTurnoutOperation : public CommonTurnoutOperation
 {
     Q_OBJECT
 public:
-    explicit SensorTurnoutOperation(QObject *parent = 0);
+    Q_INVOKABLE explicit SensorTurnoutOperation(QObject *parent = 0);
+    ~SensorTurnoutOperation() {}
+    SensorTurnoutOperation(const SensorTurnoutOperation&) : CommonTurnoutOperation("Sensor",defaultInterval,defaultMaxTries) {}
     // This class can deal with explicit feedback modes
-    /*public*/ SensorTurnoutOperation(QString n, int i, int mt, QObject *parent = 0);
+    Q_INVOKABLE /*public*/ SensorTurnoutOperation(QString n, int i, int mt, QObject *parent = 0);
 
     /*
      * Default values and constraints
@@ -30,5 +32,5 @@ public slots:
 
 
 };
-
+Q_DECLARE_METATYPE(SensorTurnoutOperation)
 #endif // SENSORTURNOUTOPERATION_H

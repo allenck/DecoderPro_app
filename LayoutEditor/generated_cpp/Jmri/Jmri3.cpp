@@ -1294,7 +1294,7 @@ if (_wrapper) {
 }
   RfidSensorManager::updateAll();
 }
-Manager::NameValidity  PythonQtShell_RfidSensorManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_RfidSensorManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1305,7 +1305,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -1325,7 +1325,7 @@ if (_wrapper) {
     }
   }
 }
-  return RfidSensorManager::validSystemNameFormat(arg__1);
+  return RfidSensorManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_RfidSensorManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -6581,7 +6581,7 @@ if (_wrapper) {
 }
   return RouteManager::typeLetter();
 }
-Manager::NameValidity  PythonQtShell_RouteManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_RouteManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6592,7 +6592,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -6612,7 +6612,7 @@ if (_wrapper) {
     }
   }
 }
-  return RouteManager::validSystemNameFormat(arg__1);
+  return RouteManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_RouteManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -9556,7 +9556,7 @@ if (_wrapper) {
 }
   SensorManager::updateAll();
 }
-Manager::NameValidity  PythonQtShell_SensorManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_SensorManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9567,7 +9567,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -9587,7 +9587,7 @@ if (_wrapper) {
     }
   }
 }
-  return SensorManager::validSystemNameFormat(arg__1);
+  return SensorManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_SensorManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -23882,7 +23882,7 @@ if (_wrapper) {
 }
   return TurnoutManager::makeSystemName(s0);
 }
-Turnout*  PythonQtShell_TurnoutManager::newTurnout(QString  arg__1, QString  arg__2) const
+Turnout*  PythonQtShell_TurnoutManager::newTurnout(QString  arg__1, QString  arg__2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24157,7 +24157,7 @@ if (_wrapper) {
 }
   return TurnoutManager::typeLetter();
 }
-Manager::NameValidity  PythonQtShell_TurnoutManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_TurnoutManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24168,7 +24168,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -24188,7 +24188,7 @@ if (_wrapper) {
     }
   }
 }
-  return TurnoutManager::validSystemNameFormat(arg__1);
+  return TurnoutManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_TurnoutManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -24304,7 +24304,7 @@ bool  PythonQtWrapper_TurnoutManager::isNumControlBitsSupported(TurnoutManager* 
   return ( theWrappedObject->isNumControlBitsSupported(arg__1));
 }
 
-Turnout*  PythonQtWrapper_TurnoutManager::newTurnout(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2) const
+Turnout*  PythonQtWrapper_TurnoutManager::newTurnout(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2)
 {
   return ( theWrappedObject->newTurnout(arg__1, arg__2));
 }

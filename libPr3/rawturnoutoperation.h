@@ -8,7 +8,9 @@ class LIBPR3SHARED_EXPORT RawTurnoutOperation : public CommonTurnoutOperation
 {
     Q_OBJECT
 public:
-    explicit RawTurnoutOperation(QObject *parent = 0);
+    Q_INVOKABLE explicit RawTurnoutOperation(QObject *parent = 0);
+    ~RawTurnoutOperation() {}
+    RawTurnoutOperation(const RawTurnoutOperation&) : CommonTurnoutOperation("Raw",defaultInterval,defaultMaxTries) {}
     static /*public*/ /*final*/ int defaultInterval;// = 300;
     static /*public*/ /*final*/ int defaultMaxTries;// = 1;
     /*public*/ RawTurnoutOperation(QString n, int i, int mt, QObject *parent);
@@ -31,5 +33,5 @@ private:
     void common();
 
 };
-
+Q_DECLARE_METATYPE(RawTurnoutOperation)
 #endif // RAWTURNOUTOPERATION_H

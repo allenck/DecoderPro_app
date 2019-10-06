@@ -24,7 +24,8 @@
 /*static*/ /*public*/ /*final*/ int RawTurnoutOperation::defaultInterval = 300;
 /*static*/ /*public*/ /*final*/ int RawTurnoutOperation::defaultMaxTries = 1;
 
-/*public*/ RawTurnoutOperation::RawTurnoutOperation(QString n, int i, int mt, QObject *parent) : CommonTurnoutOperation(n, i, mt, parent)
+/*public*/ RawTurnoutOperation::RawTurnoutOperation(QString n, int i, int mt, QObject *parent)
+ : CommonTurnoutOperation(n, i, mt, parent)
 {
  //super(n, i, mt);
  common();
@@ -35,7 +36,8 @@
  * constructor with default values - this creates the "defining instance" of
  * the operation type hence it cannot be deleted
  */
-/*public*/ RawTurnoutOperation::RawTurnoutOperation(QObject *parent) : CommonTurnoutOperation("Raw", defaultInterval, defaultMaxTries)
+/*public*/ RawTurnoutOperation::RawTurnoutOperation(QObject *parent)
+ : CommonTurnoutOperation("Raw", defaultInterval, defaultMaxTries)
 {
  //this("Raw", defaultInterval, defaultMaxTries);
  common();

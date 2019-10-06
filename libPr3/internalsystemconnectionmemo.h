@@ -14,7 +14,10 @@ class InternalSystemConnectionMemo : public SystemConnectionMemo
 {
  Q_OBJECT
 public:
- InternalSystemConnectionMemo(QObject* parent = nullptr);
+ /*public*/ InternalSystemConnectionMemo(QObject* parent=nullptr);
+ InternalSystemConnectionMemo(QString prefix, QString name, bool defaultInstanceType, QObject* parent = nullptr);
+ /*public*/ InternalSystemConnectionMemo(QString prefix, QString name, QObject* parent = nullptr);
+ /*public*/ InternalSystemConnectionMemo(bool defaultInstanceType, QObject* parent = nullptr);
  ~InternalSystemConnectionMemo() {}
  InternalSystemConnectionMemo(const InternalSystemConnectionMemo&) : SystemConnectionMemo() {}
  /*public*/ bool isAssignableFromType() {return true;}
@@ -32,16 +35,20 @@ public:
  /*public*/ void dispose();
 
 private:
- bool configured;// = false;
+ void common(QString prefix, QString name, bool defaultInstanceType);
+ bool configured = false;
  /*private*/ static /*final*/ Logger* log;// = LoggerFactory::getLogger("InternalSystemConnectionMemo");
- /*private*/ InternalConsistManager* consistManager;
- /*private*/ InternalLightManager* lightManager;
- /*private*/ InternalSensorManager* sensorManager;
- /*private*/ InternalReporterManager* reporterManager;
- /*private*/ InternalTurnoutManager* turnoutManager;
- /*private*/ DebugThrottleManager* throttleManager;
- /*private*/ DefaultPowerManager* powerManager;
- /*private*/ DebugProgrammerManager* programManager;
+ /*private*/ InternalConsistManager* consistManager = nullptr;
+ /*private*/ InternalLightManager* lightManager = nullptr;
+ /*private*/ InternalSensorManager* sensorManager = nullptr;
+ /*private*/ InternalReporterManager* reporterManager = nullptr;
+ /*private*/ InternalTurnoutManager* turnoutManager = nullptr;
+ /*private*/ DebugThrottleManager* throttleManager = nullptr;
+ /*private*/ DefaultPowerManager* powerManager = nullptr;
+ /*private*/ DebugProgrammerManager* programManager = nullptr;
+ // if true, this is the default Internal instance, which
+ // only provides a subset of types
+ bool defaultInstanceType = false;
 
 };
 Q_DECLARE_METATYPE(InternalSystemConnectionMemo)

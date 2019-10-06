@@ -8,6 +8,8 @@
 #include "jmriconfigurationmanager.h"
 #include "vetoablechangesupport.h"
 #include "namedbeancomparator.h"
+#include "namedbean.h"
+#include "vptr.h"
 
 /**
  * Abstract partial implementation for all Manager-type classes.
@@ -24,7 +26,7 @@ AbstractManager::AbstractManager(QObject *parent) : Manager(nullptr, parent)
   log = new Logger("AbstractManager");
  _tsys = new QHash<QString, NamedBean*>;   // stores known Turnout instances by system name
  _tuser = new QHash<QString, NamedBean*>;   // stores known Turnout instances by user name
-
+ _beans = QSet<NamedBean*>( _beans);
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
 
  pcs = new PropertyChangeSupport((QObject*)this);
@@ -37,6 +39,7 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
   log = new Logger("AbstractManager");
  _tsys = new QHash<QString, NamedBean*>;   // stores known Turnout instances by system name
  _tuser = new QHash<QString, NamedBean*>;   // stores known Turnout instances by user name
+ _beans = QSet<NamedBean*>( _beans);
 
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
 
@@ -103,6 +106,7 @@ void AbstractManager::dispose()
     _tsys = new QHash<QString, NamedBean*>();   // stores known Turnout instances by system name
     _tuser = new QHash<QString, NamedBean*>();   // stores known Turnout instances by user name
 
+    _beans.clear();
     _tsys->clear();
     _tuser->clear();
 
@@ -174,6 +178,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  */
 /*public*/ void AbstractManager::Register(NamedBean* s)
 {
+#if 0
  QString systemName;
  QString userName;
  QString cName = QString(s->metaObject()->className());
@@ -184,12 +189,14 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
 //  userName = ((AbstractCatalogTree*)s)->getUserName();
 // }
 // else
- {
+
  systemName = s->getSystemName();
+ NamedBean* existingBean = getBeanBySystemName(systemName);
+
  Q_ASSERT(!systemName.isEmpty());
  _tsys->insert(systemName, s);
   userName = s->getUserName();
- }
+
  if (userName != NULL) _tuser->insert(userName, s);
  firePropertyChange("length", QVariant(), /*Integer.valueOf*/(_tsys->size()));
  // listen for name and state changes to forward
@@ -204,6 +211,112 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  connect(ab->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
     emit beanCreated(s);
+#endif
+  QString systemName = s->getSystemName();
+
+  NamedBean* existingBean = getBeanBySystemName(systemName);
+  if (existingBean != nullptr) {
+      if (s == existingBean) {
+          log->debug(tr("the named bean is registered twice: %1").arg(systemName));
+      } else {
+          log->error(tr("systemName is already registered: %1").arg(systemName));
+          throw  NamedBean::DuplicateSystemNameException("systemName is already registered: " + systemName);
+      }
+  }
+  else {
+      // Check if the manager already has a bean with a system name that is
+      // not equal to the system name of the new bean, but there the two
+      // system names are treated as the same. For example LT1 and LT01.
+      if (_beans.contains(s)) {
+          //final AtomicReference<String> oldSysName = new AtomicReference<>();
+       QSet<QString> oldSysName = QSet<QString>();
+          //NamedBeanComparator<NamedBean*> c = new NamedBeanComparator<NamedBean*>();
+       NamedBeanComparator* c = new NamedBeanComparator();
+
+          //_beans.forEach((NamedBean t) ->
+          foreach (NamedBean* t, _beans)
+          {
+              if (c->compare(s, t) == 0) {
+                  oldSysName.insert(t->getSystemName());
+              }
+          }//);
+//          if (!systemName.equals(oldSysName.get())) {
+           if(oldSysName.contains(systemName))
+           {
+              QString msg = tr("systemName is already registered. Current system name: %1. New system name: %2").arg(
+                      systemName).arg(systemName);
+              log->error(msg);
+              throw  NamedBean::DuplicateSystemNameException(msg);
+          }
+      }
+  }
+
+  // clear caches
+//  cachedSystemNameArray = null;
+//  cachedSystemNameList = null;
+//  cachedNamedBeanList = null;
+
+  // save this bean
+  _beans.insert(s);
+  _tsys->insert(systemName, s);
+  registerUserName(s);
+
+  // notifications
+  int position = getPosition(s);
+//  fireDataListenersAdded(position, position, s);
+  fireIndexedPropertyChange("beans", position, QVariant(), VPtr<NamedBean>::asQVariant(s));
+  firePropertyChange("length", QVariant(), _beans.size());
+  // listen for name and state changes to forward
+  s->addPropertyChangeListener((PropertyChangeListener*)this);
+  AbstractNamedBean* ab = (AbstractNamedBean*)s;
+  connect(ab->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+
+}
+  // not efficient, but does job for now
+/*private*/ int AbstractManager::getPosition(NamedBean* s) {
+    int position = 0;
+    QSetIterator<NamedBean*> iter(_beans);
+    while (iter.hasNext()) {
+        if (s == iter.next()) return position;
+        position++;
+    }
+    return -1;
+}
+
+/**
+ * Invoked by {@link #register(NamedBean)} to register the user name of the
+ * bean.
+ *
+ * @param s the bean to register
+ */
+/*protected*/ void AbstractManager::registerUserName(NamedBean *s) {
+    QString userName = s->getUserName();
+    if (userName == "") {
+        return;
+    }
+
+    handleUserNameUniqueness(s);
+    // since we've handled uniqueness,
+    // store the new bean under the name
+    _tuser->insert(userName, s);
+}
+
+/**
+ * Invoked by {@link #registerUserName(NamedBean)} to ensure uniqueness of
+ * the NamedBean during registration.
+ *
+ * @param s the bean to register
+ */
+/*protected*/ void AbstractManager::handleUserNameUniqueness(NamedBean* s) {
+    QString userName = s->getUserName();
+    if (userName != "") {
+        // enforce uniqueness of user names
+        // by setting username to null in any existing bean with the same name
+        // Note that this is not a "move" operation for the user name
+        if (_tuser->value(userName) != nullptr && _tuser->value(userName) != s) {
+            _tuser->value(userName)->setUserName("");
+        }
+    }
 }
 
 /**
@@ -213,14 +326,27 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  * uses this method.
  */
 /*public*/ void AbstractManager::deregister(NamedBean* s) {
+ int position = getPosition(s);
+ // clear caches
+// cachedSystemNameArray = null;
+// cachedSystemNameList = null;
+// cachedNamedBeanList = null;
+
+ // stop listening for user name changes
     s->removePropertyChangeListener((PropertyChangeListener*)this);
+
+    // remove bean from local storage
     QString systemName = s->getSystemName();
+    _beans.remove(s);
     _tsys->remove(systemName);
     QString userName = s->getUserName();
-    if (userName != NULL) _tuser->remove(userName);
+    if (userName != "")
+     _tuser->remove(userName);
+//    fireDataListenersRemoved(position, position, s);
+    fireIndexedPropertyChange("beans", position, VPtr<NamedBean>::asQVariant(s), QVariant());
     firePropertyChange("length", QVariant(), /*Integer.valueOf*/(_tsys->size()));
     // listen for name and state changes to forward
-    emit beanDeleted(s);
+//    emit beanDeleted(s);
 }
 
 /**
@@ -334,6 +460,11 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
 void AbstractManager::firePropertyChange(QString p, QVariant old, QVariant n)
 { pcs->firePropertyChange(p,old,n);}
 
+void AbstractManager::fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n)
+{
+ pcs->fireIndexedPropertyChange(p,pos,old,n);
+}
+
 QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 {
  return _tsys;
@@ -415,7 +546,7 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
         message.append(tr("Found in the following <b>%1s</b>").arg(getBeanTypeHandled()))
                 .append("<ul>");
         bool found = false;
-        for (NamedBean* nb : _tsys->values()) {
+        for (NamedBean* nb : _beans) {
             try {
                 nb->vetoableChange(evt);
             } catch (PropertyVetoException e) {
@@ -434,7 +565,7 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
             throw  PropertyVetoException(message, evt);
         }
     } else {
-        for (NamedBean* nb : _tsys->values()) {
+        for (NamedBean* nb : _beans) {
             try {
                 nb->vetoableChange(evt);
             } catch (PropertyVetoException e) {

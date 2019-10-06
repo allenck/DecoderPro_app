@@ -13,7 +13,7 @@ public:
  explicit LoggingEvent(QObject *parent = nullptr);
  /*public*/ LoggingEvent(/*QString fqnOfCategoryClass,*/ /*Category*/QString loggerName, LogLevel* level, QString message, Throwable* throwable, QObject *parent = nullptr);
  /*public*/ QString getMessage();
- /*public*/ int getLevel();
+ /*public*/ LogLevel* getLevel();
  /*public*/ QString getLoggerName();
  /*public*/ /*final*/ QString categoryName;
 
@@ -23,7 +23,7 @@ public slots:
 private:
  /*private*/ /*transient*/ QString message;
  LogLevel* logLevel;
- LogLevel::PVAL level;
+ int level;
  /*private*/ static qint64 startTime;
 
  /*private*/ /*transient*/ QString loggerName;

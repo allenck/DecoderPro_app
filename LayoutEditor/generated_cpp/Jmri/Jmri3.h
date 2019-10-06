@@ -100,7 +100,7 @@ virtual void setDefaultSensorDebounceGoingInActive(long  timer);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
 virtual void updateAll();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
@@ -681,7 +681,7 @@ virtual Route*  provideRoute(QString  arg__1, QString  arg__2);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
@@ -921,7 +921,7 @@ virtual void setDefaultSensorDebounceGoingInActive(long  arg__1);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
 virtual void updateAll() const;
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
@@ -2566,7 +2566,7 @@ virtual int  getXMLOrder();
 virtual bool  isControlTypeSupported(QString  arg__1);
 virtual bool  isNumControlBitsSupported(QString  arg__1);
 virtual QString  makeSystemName(QString  s);
-virtual Turnout*  newTurnout(QString  arg__1, QString  arg__2) const;
+virtual Turnout*  newTurnout(QString  arg__1, QString  arg__2);
 virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
 virtual Turnout*  provide(QString  name) throw (IllegalArgumentException) ;
@@ -2576,7 +2576,7 @@ virtual void setDefaultClosedSpeed(QString  arg__1) const;
 virtual void setDefaultThrownSpeed(QString  arg__1) const;
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
@@ -2601,7 +2601,7 @@ inline Turnout*  py_q_getTurnout(QString  arg__1) { return TurnoutManager::getTu
 inline QStringList  py_q_getValidOperationTypes() { return TurnoutManager::getValidOperationTypes(); }
 inline bool  py_q_isControlTypeSupported(QString  arg__1) { return TurnoutManager::isControlTypeSupported(arg__1); }
 inline bool  py_q_isNumControlBitsSupported(QString  arg__1) { return TurnoutManager::isNumControlBitsSupported(arg__1); }
-inline Turnout*  py_q_newTurnout(QString  arg__1, QString  arg__2) const { return TurnoutManager::newTurnout(arg__1, arg__2); }
+inline Turnout*  py_q_newTurnout(QString  arg__1, QString  arg__2) { return TurnoutManager::newTurnout(arg__1, arg__2); }
 inline Turnout*  py_q_provide(QString  name) throw (IllegalArgumentException)  { return TurnoutManager::provide(name); }
 inline Turnout*  py_q_provideTurnout(QString  arg__1) { return TurnoutManager::provideTurnout(arg__1); }
 inline void py_q_setDefaultClosedSpeed(QString  arg__1) const { TurnoutManager::setDefaultClosedSpeed(arg__1); }
@@ -2644,8 +2644,8 @@ void delete_TurnoutManager(TurnoutManager* obj) { delete obj; }
    bool  py_q_isControlTypeSupported(TurnoutManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_isControlTypeSupported(arg__1));}
    bool  isNumControlBitsSupported(TurnoutManager* theWrappedObject, QString  arg__1);
    bool  py_q_isNumControlBitsSupported(TurnoutManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_isNumControlBitsSupported(arg__1));}
-   Turnout*  newTurnout(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
-   Turnout*  py_q_newTurnout(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_newTurnout(arg__1, arg__2));}
+   Turnout*  newTurnout(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2);
+   Turnout*  py_q_newTurnout(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_newTurnout(arg__1, arg__2));}
    Turnout*  provide(TurnoutManager* theWrappedObject, QString  name) throw (IllegalArgumentException) ;
    Turnout*  py_q_provide(TurnoutManager* theWrappedObject, QString  name) throw (IllegalArgumentException) {  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_provide(name));}
    Turnout*  provideTurnout(TurnoutManager* theWrappedObject, QString  arg__1);

@@ -32,7 +32,7 @@ public slots:
 
 private:
     static /*protected*/ bool listenerResult;// = false;
-    ProxyTurnoutManager* l;
+    TurnoutManager* l;
 
 protected:
     /*protected*/ int getNumToTest1();

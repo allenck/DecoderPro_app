@@ -298,6 +298,9 @@
 #include "jmriclient/jmriclientmonpane.h"
 #include "jmriclient/jmriclientmonaction.h"
 #include "rfid/proxyidtagmanager.h"
+#include "nofeedbackturnoutoperation.h"
+#include "sensorturnoutoperation.h"
+#include "rawturnoutoperation.h"
 
 bool Metatypes::done = false;
 
@@ -610,6 +613,9 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<JMRIClientMonAction>("JMRIClientMonAction");
  qRegisterMetaType<JMRIClientMonPane>("JMRIClientMonPane");
  qRegisterMetaType<ProxyIdTagManager>("ProxyIdTagManager");
+ qRegisterMetaType<RawTurnoutOperation>("RawTurnoutOperation");
+ qRegisterMetaType<NoFeedbackTurnoutOperation>("NoFeedbackTurnoutOperation");
+ qRegisterMetaType<SensorTurnoutOperation>("SensorTurnoutOperation");
 
  Metatypes::done = true;
 }

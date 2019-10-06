@@ -34,26 +34,41 @@
  */
 // /*public*/ class InternalSystemConnectionMemo extends jmrix.SystemConnectionMemo implements InstanceManagerAutoDefault {
 
-/*public*/ InternalSystemConnectionMemo::InternalSystemConnectionMemo(QObject *parent) : SystemConnectionMemo("I", "Internal", parent)
+/*public*/ InternalSystemConnectionMemo::InternalSystemConnectionMemo(QString prefix, QString name, bool defaultInstanceType, QObject *parent)
+ : SystemConnectionMemo(prefix, name, parent)
+{
+ common(prefix, name, defaultInstanceType);
+}
+
+/*public*/ InternalSystemConnectionMemo::InternalSystemConnectionMemo(QString prefix, QString name,QObject* parent)
+ : SystemConnectionMemo(prefix, name, parent)
+{
+ common(prefix, name, true);
+}
+
+/*public*/ InternalSystemConnectionMemo::InternalSystemConnectionMemo(bool defaultInstanceType,QObject* parent)
+ : SystemConnectionMemo("I", "Internal", parent)
+{
+ common("I", "Internal", defaultInstanceType);
+}
+
+// invoked by i.e. InstanceManager via the InstanceManagerAutoDefault
+// mechanism, this creates a partial system
+/*public*/ InternalSystemConnectionMemo::InternalSystemConnectionMemo(QObject* parent)
+ : SystemConnectionMemo("I", "Internal", parent)
+{
+    //this(true);
+ common("I", "Internal", true);
+}
+
+void InternalSystemConnectionMemo::common(QString prefix, QString name, bool defaultInstanceType)
 {
  setObjectName("InternalSystemConnectionMemo");
 
- configured = false;
- turnoutManager = nullptr;
- lightManager = nullptr;
- sensorManager = nullptr;
- reporterManager = nullptr;
- throttleManager = nullptr;
- powerManager = nullptr;
- programManager = nullptr;
-
- //super("I", "Internal");
  InstanceManager::store(this, "InternalSystemConnectionMemo"); // also register as specific type
- QObjectList* l = InstanceManager::getList("InternalSystemConnectionMemo");
-
  _register();
+ this->defaultInstanceType = defaultInstanceType;
 }
-
 
 /**
  * Configure the common managers for Internal connections. This puts the

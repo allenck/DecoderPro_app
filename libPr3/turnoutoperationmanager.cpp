@@ -207,7 +207,7 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
  QStringList validTypes = ((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getValidOperationTypes();
  for (int i=0; i<validTypes.length(); ++i)
  {
-  QString thisClassName = "jmri."+validTypes.at(i)+"TurnoutOperation";
+  QString thisClassName = /*"jmri."+*/validTypes.at(i)+"TurnoutOperation";
   if (validTypes.at(i) == NULL)
   {
    log->warn("NULL operation name in loadOperationTypes");

@@ -6,7 +6,6 @@
 #include "javaqt_global.h"
 #include "exceptions.h"
 
-class BadUserNameException;
 class JAVAQTSHARED_EXPORT NamedBean : public  QObject
 {
  Q_OBJECT
@@ -14,6 +13,38 @@ public:
     explicit NamedBean(QObject *parent = 0);
     NamedBean(QString name, QObject *parent = 0);
     NamedBean(const NamedBean&);
+    class BadSystemNameException : public Exception
+    {
+     QString name;
+     QLocale locale;
+     QString prefix;
+    public:
+     BadSystemNameException() {}
+     BadSystemNameException(QLocale locale, QString msg, QString name, QString prefix = "") : Exception()
+     {
+      this->msg = msg;
+      this->locale = locale;
+      this->name = name;
+      this->prefix = prefix;
+     }
+    };
+
+    class DuplicateSystemNameException : public Exception
+    {
+     QString name;
+     QLocale locale;
+     QString prefix;
+    public:
+     DuplicateSystemNameException(QString msg) {this->msg=msg;}
+     DuplicateSystemNameException(QLocale locale, QString msg, QString name, QString prefix = "") : Exception()
+     {
+      this->msg = msg;
+      this->locale = locale;
+      this->name = name;
+      this->prefix = prefix;
+     }
+    };
+
     /**
      * Provides common services for classes representing objects
      * on the layout, and allows a common form of access by their Managers.
@@ -235,7 +266,7 @@ public:
          */
         virtual int getState();
 
-        /*public*/ virtual QString describeState(int /*state*/) {return "";}
+        /*public*/ virtual QString describeState(int /*state*/);
 
         /**
          * Get associated comment text.
@@ -335,11 +366,7 @@ public:
     //@CheckReturnValue
     /*public*/ virtual int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1,/* @Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n2);
 
-    /*public*/ class BadUserNameException : public IllegalArgumentException {
-    };
 
-    /*public*/ class BadSystemNameException : public IllegalArgumentException {
-    };
 signals:
 
 public slots:
@@ -354,5 +381,6 @@ private:
  QString _comment;
  friend class AbstractAudio;
 };
+
 Q_DECLARE_INTERFACE(NamedBean, "Named bean")
 #endif // NAMEDBEAN_H

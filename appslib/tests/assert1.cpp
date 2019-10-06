@@ -24,7 +24,7 @@
 /*public*/ /*static*/ void Assert::assertTrue(QString message, bool condition, QString file, int line) {
     if(!condition)
         //throw AssertionError(message);
-        fail(tr("not true"), file, line);
+        fail(tr("%1 not true").arg(message), file, line);
 }
 
 /*public*/ /*static*/ void Assert::assertTrue(bool condition, QString file, int line) {

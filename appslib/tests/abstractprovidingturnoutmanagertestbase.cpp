@@ -35,8 +35,8 @@ AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase
         try {
             m->provide(""); // this should throw an IllegalArgumentException.
         } catch (IllegalArgumentException iae) {
-//            JUnitAppender::suppressErrorMessageStartsWith("Invalid system name for");
-            throw iae; // rethrow the expected exception, after suppressing the error
+            JUnitAppender::suppressErrorMessageStartsWith("Invalid system name for", __FILE__, __LINE__);
+//            throw iae; // rethrow the expected exception, after suppressing the error
         }
     }
 
@@ -85,6 +85,8 @@ AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase
         Field f1 = getField(e2->getClass(), "mSystemName");
         f1.setAccessible(true);
         f1.set(e2, e1.getSystemName());
+#else
+        e2->mSystemName = e1->getSystemName();
 #endif
         // Remove bean if it's already registered
         if (l->getBeanBySystemName(e1->getSystemName()) != nullptr) {
@@ -107,7 +109,7 @@ AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase
             // This should fail with an DuplicateSystemNameException.
             l->Register(e2);
             Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
-        } catch (/*NamedBean::DuplicateSystemName*/Exception ex) {
+        } catch (NamedBean::DuplicateSystemNameException ex) {
             Assert::assertEquals("exception message is correct", expectedMessage, ex.getMessage(), __FILE__, __LINE__);
             JUnitAppender::assertErrorMessage(expectedMessage, __FILE__, __LINE__);
         }

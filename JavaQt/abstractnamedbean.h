@@ -98,6 +98,7 @@ private:
   friend class JMRIClientTurnout;
   friend class JMRIClientLight;
   friend class LnReporter;
+  friend class AbstractProvidingTurnoutManagerTestBase;
 };
 
 #endif // ABSTRACTNAMEDBEAN_H

@@ -11,21 +11,6 @@
 #include <QSet>
 #include "exceptions.h"
 
-class BadSystemNameException : public Exception
-{
- QString name;
- QLocale locale;
- QString prefix;
-public:
- BadSystemNameException(QLocale locale, QString msg, QString name, QString prefix = "") : Exception()
- {
-  this->msg = msg;
-  this->locale = locale;
-  this->name = name;
-  this->prefix = prefix;
- }
-};
-
 class SystemConnectionMemo;
 class QString;
 class QStringList;
@@ -426,9 +411,9 @@ public:
      //@CheckReturnValue
      /*public*/ static int startsWithLegacySystemPrefix(/*@Nonnull*/ QString prefix);
      virtual /*public*/ QString getEntryToolTip() {return "";}
-     /*public*/ /*default*/ QString validateSystemNameFormat(/*@Nonnull*/ QString name) throw (BadSystemNameException);
-     /*public*/ /*default*/ QString validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) throw (BadSystemNameException);
-     /*public*/ /*default*/ QString validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) throw (BadSystemNameException);
+     /*public*/ /*default*/ QString validateSystemNameFormat(/*@Nonnull*/ QString name) throw (NamedBean::BadSystemNameException);
+     /*public*/ /*default*/ QString validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) throw (NamedBean::BadSystemNameException);
+     /*public*/ /*default*/ QString validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) throw (NamedBean::BadSystemNameException);
      /*public*/ /*default*/ QString validateTrimmedSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale);
      /*public*/ /*default*/ QString validateUppercaseTrimmedSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale);
      /*public*/ /*default*/ QString validateIntegerSystemNameFormat(/*@Nonnull*/ QString name, int min, int max, /*@Nonnull*/ QLocale locale);

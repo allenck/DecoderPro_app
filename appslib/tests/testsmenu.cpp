@@ -22,6 +22,7 @@
 #include "tests/loconet/lnsensormanagertestaction.h"
 #include "tests/loconet/lndeferprogrammertestaction.h"
 #include "tests/loconet/lnturnoutmanagertestaction.h"
+#include "tests/misc/proxyturnoutmanagertestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -38,11 +39,11 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     profileTestMenu->addAction(new ProfileManagerTestAction(this));
     profileTestMenu->addAction(new ProfileUtilsTestAction(this));
 
-    QMenu* loconetTestMenu = new QMenu(tr("LocoNet Tests"));
+    QMenu* loconetTestMenu = new QMenu(tr("LocoNet Tests ..."));
     addMenu(loconetTestMenu);
     loconetTestMenu->addAction(new SlotManagerTestAction(this));
     loconetTestMenu->addAction(new LocoNetSlotTestAction(this));
-    QMenu* loconetProgrammersMenu = new QMenu(tr("Programmers"));
+    QMenu* loconetProgrammersMenu = new QMenu(tr("Programmers ..."));
     loconetTestMenu->addMenu(loconetProgrammersMenu);
     loconetProgrammersMenu->addAction(new LnOpsModeProgrammerTestAction(this));
     loconetProgrammersMenu->addAction(new LnDeferProgrammerTestAction(this));
@@ -51,13 +52,13 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addAction(new LnPortControllerTestAction(this));
     loconetTestMenu->addAction(new LnPacketizerTestAction(this));
     loconetTestMenu->addAction(new LnPowerManagerTestAction(this));
-    QMenu* loconetSensorsMenu = new QMenu(tr("Sensors"));
+    QMenu* loconetSensorsMenu = new QMenu(tr("Sensors ..."));
     loconetTestMenu->addMenu(loconetSensorsMenu);
     loconetSensorsMenu->addAction(new LnSensorTestAction(this));
     loconetTestMenu->addAction(new LnReporterTestAction(this));
     loconetSensorsMenu->addAction(new LnSensorAddressTestAction(this));
     loconetSensorsMenu->addAction(new LnSensorManagerTestAction(this));
-    QMenu* loconetTurnoutsMenu = new QMenu(tr("Turnouts"));
+    QMenu* loconetTurnoutsMenu = new QMenu(tr("Turnouts ..."));
     loconetTestMenu->addMenu(loconetTurnoutsMenu);
     loconetTurnoutsMenu->addAction(new LnTurnoutTestAction(this));
     loconetTurnoutsMenu->addAction(new LnTurnoutManagerTestAction(this));
@@ -65,4 +66,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* sprogTestMenu = new QMenu(tr("Sprog"));
     addMenu(sprogTestMenu);
     sprogTestMenu->addAction(new SprogMessageTestAction(this));
+    QMenu* proxyMenu = new QMenu(tr("Proxy Managers ..."));
+    addMenu(proxyMenu);
+    proxyMenu->addAction(new ProxyTurnoutManagerTestAction(this));
 }
