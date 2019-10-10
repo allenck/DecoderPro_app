@@ -101,11 +101,32 @@ public:
     QT_DEPRECATED/*public*/ QList<NamedBean*>* getNamedBeanList() ;
     QT_DEPRECATED /*public*/ QStringList getSystemNameAddedOrderList();
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet();
+    /*public*/ void addDataListener(/*ManagerDataListener<E>*/QObject* e);
+    /*public*/ void removeDataListener(/*ManagerDataListener<E>*/QObject* e);
+    /*public*/ void setDataListenerMute(bool m);
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
+    /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners(QString propertyName);
+    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
+    /*public*/ int getObjectCount();
+    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l);
+    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l);
+    /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
+    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners();
+    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName);
+    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
 
 signals:
     //virtual void propertyChange(PropertyChangeEvent *e);
+ void notifyContentsChanged(ManagerDataEvent* e);
+ void notifyIntervalAdded(ManagerDataEvent* e);
+ void notifyIntervalRemoved(ManagerDataEvent* e);
+
 public slots:
     virtual void propertyChange(PropertyChangeEvent *e);
+    /*public*/ void contentsChanged(Manager::ManagerDataEvent/*<E>*/* e);
+    /*public*/ void intervalAdded(AbstractProxyManager::ManagerDataEvent/*<E>*/* e);
+    /*public*/ void intervalRemoved(AbstractProxyManager::ManagerDataEvent/*<E>*/* e);
 
 private:
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("AbstractProxyManager");
@@ -115,6 +136,12 @@ private:
     /*private*/ QStringList addedOrderList;// = QStringList();
     /*private*/ QSet<NamedBean*> namedBeanSet;// = null;
     /*private java.util.ArrayList*/QList<Manager*> mgrs;// = new /*java.util.ArrayList*/QList<AbstractManager>();
+    /*private*/ bool muted = false;
+    /*final*/ QList</*ManagerDataListener<E>*/QObject*> listeners;// = new ArrayList<>();
+    QVector<PropertyChangeListener*> propertyListenerList;// = new ArrayList<>();
+    QMap<QString, QVector<PropertyChangeListener*>* > namedPropertyListenerMap;// = new HashMap<>();
+    QVector<VetoableChangeListener*> propertyVetoListenerList;// = new ArrayList<>();
+    QMap<QString, QVector<VetoableChangeListener*>*> namedPropertyVetoListenerMap;// = new HashMap<>();
 
 protected:
     /**
@@ -157,6 +184,7 @@ protected:
     /*protected*/ virtual int match(QString systemname);
     /*protected*/ void updateOrderList();
     /*protected*/ void updateNamedBeanSet();
+    /*protected*/ void recomputeNamedBeanSet();
 
 
  friend class ProxyReporterManager;

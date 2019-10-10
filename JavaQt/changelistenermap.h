@@ -14,7 +14,7 @@ class ChangeListenerMap : public EventListener
 public:
     ChangeListenerMap() : EventListener()
  {
-  map = new QMap<QString, QList<L> >;
+  map = new QMap<QString, QVector<L> >;
   //map = NULL;
  }
 
@@ -31,16 +31,16 @@ void add(QString name, L listener)
  QMutexLocker locker(&mutex);
  if (this->map == NULL)
  {
-  this->map = new QMap<QString, QList<L> >;
+  this->map = new QMap<QString, QVector<L> >;
  }
- QList<L> array = this->map->value(name);
+ QVector<L> array = this->map->value(name);
 //        int size = (array != NULL)
 //                ? array.count()
 //                : 0;
  int size = array.count();
 
- QList<L> clone; // = newArray(size + 1);
- clone.reserve(size+1);
+ QVector<L> clone = newArray(size + 1);
+ //clone.reserve(size+1);
  for(int i=0; i < size+1; i++)
   clone << NULL;
  clone.replace(size, listener);
@@ -62,7 +62,7 @@ void remove(QString name, L listener)
  QMutexLocker locker(&mutex);
  if (this->map != NULL)
  {
-  QList<L> array = this->map->value(name);
+  QVector<L> array = this->map->value(name);
   if (!array .isEmpty())
   {
    for (int i = 0; i < array.length(); i++)
@@ -72,7 +72,7 @@ void remove(QString name, L listener)
      int size = array.length() - 1;
      if (size > 0)
      {
-      QList<L> clone; // = newArray(size);
+      QVector<L> clone; // = newArray(size);
       //System.arraycopy(array, 0, clone, 0, i);
       foreach(L val, array )
        clone.append(val);
@@ -100,13 +100,13 @@ void remove(QString name, L listener)
  * @return      the corresponding list of listeners
  */
 /*public final synchronized*/
-QList<L> get(QString name)
+QVector<L> get(QString name)
 {
  QMutexLocker locker(&mutex);
 
  return (this->map != NULL && !this->map->isEmpty())
             ? this->map->value(name)
-            : QList<L>();
+            : QVector<L>();
 }
 /**
  * Sets new list of listeners for the specified property.
@@ -115,20 +115,20 @@ QList<L> get(QString name)
  * @param listeners  new list of listeners
  */
 /*public final*/
-void set(QString name, QList<L> listeners)
+void set(QString name, QVector<L> listeners)
 {
  if (listeners != NULL)
  {
   if (this->map == NULL)
   {
-   this->map = new QMap<QString, QList<L> >;
+   this->map = new QMap<QString, QVector<L> >;
   }
-  this->map->put(name, listeners);
+  this->map->insert(name, listeners);
  }
  else if (this->map != NULL)
  {
   this->map->remove(name);
-  if (this->map.isEmpty())
+  if (this->map->isEmpty())
   {
    this->map = NULL;
   }
@@ -140,19 +140,19 @@ void set(QString name, QList<L> listeners)
  * @return an array of all listeners
  */
 /*public final synchronized*/
-QList<L>* getListeners()
+QVector<L> getListeners()
 {
   //QMutexLocker locker(&mutex);
 
     if (this->map == NULL) {
-        return NULL;
+        return QVector<L>();
     }
-    QList<L>* list = new QList<L>();
+    QVector<L> list = QVector<L>();
 
-    QList<L> listeners = this->map->value("");
+    QVector<L> listeners = this->map->value("");
     if (!listeners.isEmpty()) {
         foreach (L listener , listeners) {
-            list->append(listener);
+            list.append(listener);
         }
     }
 #if 1
@@ -165,7 +165,7 @@ QList<L>* getListeners()
 //            }
 //        }
 //    }
-    QMapIterator<QString, QList<L> > entry(*this->map);
+    QMapIterator<QString, QVector<L> > entry(*this->map);
     while(entry.hasNext())
     {
      entry.next();
@@ -175,7 +175,7 @@ QList<L>* getListeners()
       foreach (L listener , entry.value())
       {
        //listadd(newProxy(name, listener));
-       list->append(newProxy(name, listener));
+       list.append(newProxy(name, listener));
       }
      }
     }
@@ -189,15 +189,15 @@ QList<L>* getListeners()
  * @return an array of listeners for the named property
  */
 /*public final*/
-QList<L>* getListeners(QString name){
+QVector<L> getListeners(QString name){
     if (!name.isNull()) {
-        QList<L> listeners = this->map->value(name);
+        QVector<L> listeners = this->map->value(name);
         if (!listeners.isEmpty()) {
             //return listeners.clone();
-            return new QList<L>();
+            return QVector<L>();
         }
     }
-    return new QList<L>();
+    return QVector<L>();
 }
 /**
  * Indicates whether the map contains
@@ -215,7 +215,7 @@ bool hasListeners(QString name)
  {
   return false;
  }
- QList<L> array = this->map->value(NULL);
+ QVector<L> array = this->map->value(NULL);
     return (!array .isEmpty()) || ((!name.isEmpty()) && (this->map->value(name).isEmpty()));
 }
 #if 0
@@ -248,7 +248,7 @@ signals:
 
 public slots:
 private:
- QMap<QString, QList<L> >* map;
+ QMap<QString, QVector<L> >* map;
  QMutex mutex;
 protected:
 /**
@@ -260,7 +260,7 @@ protected:
  * @param length  the array length
  * @return        an array with specified length
  */
-virtual QList<L> newArray(int length) = 0;
+virtual QVector<L> newArray(int length) = 0;
 /**
  * Creates a proxy listener for the specified property.
  *

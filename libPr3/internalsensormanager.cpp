@@ -4,6 +4,7 @@
 #include "instancemanager.h"
 #include "jmriuserpreferencesmanager.h"
 #include "internalsystemconnectionmemo.h"
+#include "loggerfactory.h"
 
 /**
  * Implementation of the InternalSensorManager interface.
@@ -16,7 +17,7 @@ InternalSensorManager::InternalSensorManager(QObject *parent) : AbstractSensorMa
  setObjectName("InternalSensorManager");
  setProperty("JavaClassName", "jmri.jmrix.internal.InternalSensorManager");
 
- prefix = "I";
+ prefix = memo->getSystemPrefix();//"I";
  registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
 
 }
@@ -65,6 +66,12 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
     return defaultState;
 }
 
+/** {@inheritDoc} */
+//@Override
+/*public*/ QString InternalSensorManager::getEntryToolTip() {
+    return tr("abc123<br>(any string except $, :, \).");
+}
+
 /*public*/ QString InternalSensorManager::getNextValidAddress(QString curAddress, QString prefix)
 {
     //If the hardware address past does not already exist then this can
@@ -79,7 +86,7 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
     try {
         iName = curAddress.toInt();
     } catch (NumberFormatException ex) {
-        log.error("Unable to convert " + curAddress + " Hardware Address to a number");
+        log->error("Unable to convert " + curAddress + " Hardware Address to a number");
         ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",ex.getMessage(), "",true, false, Level::_ERROR);
         return NULL;
     }
@@ -99,5 +106,13 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
     }
 }
 
-/*public*/ QString InternalSensorManager::getSystemPrefix() { return prefix; }
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ SystemConnectionMemo* InternalSensorManager::getMemo() {
+    return  memo;
+}
+
+/*private*/ /*final*/ /*static*/ Logger* InternalSensorManager::log = LoggerFactory::getLogger("InternalSensorManager");
 

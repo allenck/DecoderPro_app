@@ -35,7 +35,7 @@ public:
  /*public*/ int getLeadSelectionRow();
  /*public*/ /*synchronized*/ void addPropertyChangeListener( PropertyChangeListener* listener);
  /*public*/ /*synchronized*/ void removePropertyChangeListener( PropertyChangeListener* listener);
- /*public*/ QList<PropertyChangeListener*>* getPropertyChangeListeners();
+ /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners();
  /*public*/ QString toString();
  /*public*/ QObject* clone() throw (CloneNotSupportedException);
 // template<class T>

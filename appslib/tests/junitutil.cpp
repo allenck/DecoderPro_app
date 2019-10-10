@@ -12,6 +12,16 @@
 #include "junitappender.h"
 #include <QDebug>
 #include "testuserpreferencesmanager.h"
+#include "configuremanager.h"
+#include "oblockmanager.h"
+#include "warrantmanager.h"
+#include "defaultsignalmastlogicmanager.h"
+#include "abstractsignalheadmanager.h"
+#include "defaultsignalmastmanager.h"
+#include "defaultmemorymanager.h"
+#include "internalreportermanager.h"
+#include "layoutblockmanager.h"
+#include <QApplication>
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
@@ -157,7 +167,7 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
     // clear the backlog and reset the UnexpectedMessageFlags so that
     // errors from a previous test do not interfere with the current test.
     JUnitAppender::clearBacklog();
-//    JUnitAppender::resetUnexpectedMessageFlags(Level.INFO);
+    JUnitAppender::resetUnexpectedMessageFlags(LogLevel::INFO);
 
 #if 0
     // do not set the UncaughtExceptionHandler while unit testing
@@ -178,10 +188,10 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
     // test left a window open, but different platforms seem to have just
     // enough differences that this is, for now, turned off
     resetWindows(false, false);
-
+#endif
     // Do a minimal amount of de-novo setup
     resetInstanceManager();
-
+#if 0
     // Log and/or check the use of setUp and tearDown
     if (checkSetUpTearDownSequence || printSetUpTearDownNames) {
         lastSetUpClassName = getTestClassName();
@@ -252,35 +262,31 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
                     System.err.println("----------------------");
                 }
             }
-#endif
             didSetUp = false;
             didTearDown = true;
-#if 0
             if (checkSequenceDumpsStack) lastTearDownStackTrace = Thread.currentThread().getStackTrace();
-#endif
         }
 
         // To save time & space, only print end when doing full check
-#if 0
         if (printSetUpTearDownNames && checkSetUpTearDownSequence)  System.err.println("<<   Ending test in "+lastTearDownClassName);
 #endif
-#if 0
     }
-
+#if 0
     // ideally this would be resetWindows(false, true) to force an error if an earlier
     // test left a window open, but different platforms seem to have just
     // enough differences that this is, for now, turned off
     resetWindows(false, false);
-
+#endif
     // Check final status of logging in the test just completed
-    JUnitAppender.end();
-    Level severity = Level.ERROR; // level at or above which we'll complain
-    bool unexpectedMessageSeen = JUnitAppender.unexpectedMessageSeen(severity);
-    String unexpectedMessageContent = JUnitAppender.unexpectedMessageContent(severity);
-    JUnitAppender.verifyNoBacklog();
-    JUnitAppender.resetUnexpectedMessageFlags(severity);
-    Assert.assertFalse("Unexpected "+severity+" or higher messages emitted: "+unexpectedMessageContent, unexpectedMessageSeen);
+    JUnitAppender::end();
 
+    LogLevel* severity = LogLevel::ERROR; // level at or above which we'll complain
+    bool unexpectedMessageSeen = JUnitAppender::unexpectedMessageSeen(severity);
+    QString unexpectedMessageContent = JUnitAppender::unexpectedMessageContent(severity);
+    JUnitAppender::verifyNoBacklog();
+    JUnitAppender::resetUnexpectedMessageFlags(severity);
+    Assert::assertFalse("Unexpected "+severity->toString()+" or higher messages emitted: "+unexpectedMessageContent, unexpectedMessageSeen, __FILE__, __LINE__);
+#if 0
     // Optionally, check that no threads were left running (controlled by jmri.util.JUnitUtil.checkRemnantThreads environment var)
     if (checkRemnantThreads) {
         checkThreads();
@@ -354,7 +360,7 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 //        log.error("Cannot use waitFor on Swing thread", new Exception());
 //        return;
 //    }
-#if 1
+
     int delay = 0;
     try {
         while (delay < WAITFOR_MAX_DELAY) {
@@ -381,7 +387,6 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
     } catch (Exception ex) {
         Assert::fail("Exception while waiting for \"" + name + "\" " + ex.getMessage(), __FILE__, __LINE__);
     }
-#endif
 }
 
 /**
@@ -640,107 +645,107 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 }
 #if 0
 /*public*/ static void resetTurnoutOperationManager() {
-    InstanceManager.reset(TurnoutOperationManager.class);
-    InstanceManager.getDefault(TurnoutOperationManager.class); // force creation
+    InstanceManager::reset(TurnoutOperationManager.class);
+    InstanceManager::getDefault(TurnoutOperationManager.class); // force creation
 }
 
 /*public*/ static void initConfigureManager() {
-    InstanceManager.setDefault(ConfigureManager.class, new JmriConfigurationManager());
+    InstanceManager::setDefault(ConfigureManager.class, new JmriConfigurationManager());
 }
 
 /*public*/ static void initDefaultUserMessagePreferences() {
     // remove the existing user preferences manager (if present)
-    InstanceManager.reset(UserPreferencesManager.class);
+    InstanceManager::reset(UserPreferencesManager.class);
     // create a test user preferences manager
-    InstanceManager.setDefault(UserPreferencesManager.class, new TestUserPreferencesManager());
+    InstanceManager::setDefault(UserPreferencesManager.class, new TestUserPreferencesManager());
 }
 #endif
 /*public*/ /*static*/ void JUnitUtil::initInternalTurnoutManager() {
     // now done automatically by InstanceManager's autoinit
     InstanceManager::turnoutManagerInstance();
 }
-#if 0
-/*public*/ static void initInternalLightManager() {
+
+/*public*/ /*static*/ void JUnitUtil::initInternalLightManager() {
     // now done automatically by InstanceManager's autoinit
-    InstanceManager.lightManagerInstance();
+    InstanceManager::lightManagerInstance();
 }
 
-/*public*/ static void initInternalSensorManager() {
+/*public*/ /*static*/ void JUnitUtil::initInternalSensorManager() {
     // now done automatically by InstanceManager's autoinit
-    InstanceManager.sensorManagerInstance();
-    InternalSensorManager.setDefaultStateForNewSensors(jmri.Sensor.UNKNOWN);
+    InstanceManager::sensorManagerInstance();
+    InternalSensorManager::setDefaultStateForNewSensors(Sensor::UNKNOWN);
 }
 
-/*public*/ static void initRouteManager() {
+/*public*/ /*static*/ void JUnitUtil::initRouteManager() {
     // routes provide sensors, so ensure the sensor manager is initialized
     // routes need turnouts, so ensure the turnout manager is initialized
-    JUnitUtil.initInternalSensorManager();
-    JUnitUtil.initInternalTurnoutManager();
+    JUnitUtil::initInternalSensorManager();
+    JUnitUtil::initInternalTurnoutManager();
     // now done automatically by InstanceManager's autoinit
-    InstanceManager.getDefault(RouteManager.class);
+    InstanceManager::getDefault("RouteManager");
 }
 
-/*public*/ static void initMemoryManager() {
-    MemoryManager m = new DefaultMemoryManager(InstanceManager.getDefault(InternalSystemConnectionMemo.class));
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m, jmri.Manager.MEMORIES);
+/*public*/ /*static*/ void JUnitUtil::initMemoryManager() {
+    MemoryManager* m = new DefaultMemoryManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::MEMORIES);
     }
 }
 
-/*public*/ static void initReporterManager() {
-    ReporterManager m = new InternalReporterManager(InstanceManager.getDefault(InternalSystemConnectionMemo.class));
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m, jmri.Manager.REPORTERS);
+/*public*/ /*static*/ void initReporterManager() {
+    ReporterManager* m = new InternalReporterManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::REPORTERS);
     }
 }
 
-/*public*/ static void initOBlockManager() {
-    OBlockManager b = new OBlockManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(b, jmri.Manager.OBLOCKS);
+/*public*/ /*static*/ void JUnitUtil::initOBlockManager() {
+    OBlockManager* b = new OBlockManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(b, Manager::OBLOCKS);
     }
 }
 
-/*public*/ static void initWarrantManager() {
-    WarrantManager w = new WarrantManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(w, jmri.Manager.WARRANTS);
+/*public*/ /*static*/ void JUnitUtil::initWarrantManager() {
+    WarrantManager* w = new WarrantManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(w, Manager::WARRANTS);
     }
 }
 
-/*public*/ static void initSignalMastLogicManager() {
-    SignalMastLogicManager w = new DefaultSignalMastLogicManager(InstanceManager.getDefault(InternalSystemConnectionMemo.class));
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(w, jmri.Manager.SIGNALMASTLOGICS);
+/*public*/ /*static*/ void JUnitUtil::initSignalMastLogicManager() {
+    SignalMastLogicManager* w = new DefaultSignalMastLogicManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(w, Manager::SIGNALMASTLOGICS);
     }
 }
 
-/*public*/ static void initLayoutBlockManager() {
-    LayoutBlockManager w = new LayoutBlockManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(w, jmri.Manager.LAYOUTBLOCKS);
+/*public*/ /*static*/ void JUnitUtil::initLayoutBlockManager() {
+    LayoutBlockManager* w = new LayoutBlockManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(w, Manager::LAYOUTBLOCKS);
     }
 }
 
-/*public*/ static void initSectionManager() {
-    jmri.SectionManager w = new jmri.SectionManager();
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(w, jmri.Manager.SECTIONS);
+/*public*/ /*static*/ void JUnitUtil::initSectionManager() {
+    SectionManager* w = new SectionManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(w, Manager::SECTIONS);
     }
 }
 
-/*public*/ static void initInternalSignalHeadManager() {
-    SignalHeadManager m = new AbstractSignalHeadManager(InstanceManager.getDefault(InternalSystemConnectionMemo.class));
-    InstanceManager.setDefault(SignalHeadManager.class, m);
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m, jmri.Manager.SIGNALHEADS);
+/*public*/ /*static*/ void JUnitUtil::initInternalSignalHeadManager() {
+    SignalHeadManager* m = new AbstractSignalHeadManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    InstanceManager::setDefault("SignalHeadManager", m);
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::SIGNALHEADS);
     }
 }
 
-/*public*/ static void initDefaultSignalMastManager() {
-    InstanceManager.setDefault(SignalMastManager.class, new DefaultSignalMastManager(InstanceManager.getDefault(InternalSystemConnectionMemo.class)));
+/*public*/ /*static*/ void JUnitUtil::initDefaultSignalMastManager() {
+    InstanceManager::setDefault("SignalMastManager", new DefaultSignalMastManager(InstanceManager::getDefault("InternalSystemConnectionMemo")));
 }
-
+#if 0
 /*public*/ static void initDebugCommandStation() {
     jmri.CommandStation cs = new jmri.CommandStation() {
         @Override
@@ -760,82 +765,82 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 
     };
 
-    InstanceManager.store(cs, jmri.CommandStation.class);
+    InstanceManager::store(cs, jmri.CommandStation.class);
 }
 
 /*public*/ static void initDebugThrottleManager() {
     jmri.ThrottleManager m = new DebugThrottleManager();
-    InstanceManager.store(m, ThrottleManager.class);
+    InstanceManager::store(m, ThrottleManager.class);
 }
 
 /*public*/ static void initDebugProgrammerManager() {
     DebugProgrammerManager m = new DebugProgrammerManager();
-    InstanceManager.store(m, AddressedProgrammerManager.class);
-    InstanceManager.store(m, GlobalProgrammerManager.class);
+    InstanceManager::store(m, AddressedProgrammerManager.class);
+    InstanceManager::store(m, GlobalProgrammerManager.class);
 }
 
 /*public*/ static void initDebugPowerManager() {
-    InstanceManager.setDefault(PowerManager.class, new PowerManagerScaffold());
+    InstanceManager::setDefault(PowerManager.class, new PowerManagerScaffold());
 }
 
 /*public*/ static void initIdTagManager() {
-    InstanceManager.reset(jmri.IdTagManager.class);
-    InstanceManager.store(new DefaultIdTagManager(InstanceManager.getDefault(InternalSystemConnectionMemo.class)), jmri.IdTagManager.class);
+    InstanceManager::reset(jmri.IdTagManager.class);
+    InstanceManager::store(new DefaultIdTagManager(InstanceManager::getDefault(InternalSystemConnectionMemo.class)), jmri.IdTagManager.class);
 }
 
 /*public*/ static void initRailComManager() {
-    InstanceManager.reset(jmri.RailComManager.class);
-    InstanceManager.store(new DefaultRailComManager(), jmri.RailComManager.class);
+    InstanceManager::reset(jmri.RailComManager.class);
+    InstanceManager::store(new DefaultRailComManager(), jmri.RailComManager.class);
 }
 
 /*public*/ static void initLogixManager() {
-    LogixManager m = new DefaultLogixManager(InstanceManager.getDefault(InternalSystemConnectionMemo.class));
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m, jmri.Manager.LOGIXS);
+    LogixManager m = new DefaultLogixManager(InstanceManager::getDefault(InternalSystemConnectionMemo.class));
+    if (InstanceManager::getNullableDefault(ConfigureManager.class) != null) {
+        InstanceManager::getDefault(ConfigureManager.class).registerConfig(m, jmri.Manager.LOGIXS);
     }
 }
 
 /*public*/ static void initConditionalManager() {
-    ConditionalManager m = new DefaultConditionalManager(InstanceManager.getDefault(InternalSystemConnectionMemo.class));
-    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m, jmri.Manager.CONDITIONALS);
+    ConditionalManager m = new DefaultConditionalManager(InstanceManager::getDefault(InternalSystemConnectionMemo.class));
+    if (InstanceManager::getNullableDefault(ConfigureManager.class) != null) {
+        InstanceManager::getDefault(ConfigureManager.class).registerConfig(m, jmri.Manager.CONDITIONALS);
     }
 }
 
 /*public*/ static void initInternalTurnoutManagerThrowException() {
-    InstanceManager.setDefault(TurnoutManager.class, new TurnoutManagerThrowExceptionScaffold());
+    InstanceManager::setDefault(TurnoutManager.class, new TurnoutManagerThrowExceptionScaffold());
 }
 
 /*public*/ static void initInternalSensorManagerThrowException() {
-    InstanceManager.setDefault(SensorManager.class, new SensorManagerThrowExceptionScaffold());
+    InstanceManager::setDefault(SensorManager.class, new SensorManagerThrowExceptionScaffold());
 }
 
 /*public*/ static void initLightManagerThrowException() {
-    InstanceManager.setDefault(LightManager.class, new InternalLightManagerThrowExceptionScaffold());
+    InstanceManager::setDefault(LightManager.class, new InternalLightManagerThrowExceptionScaffold());
 }
 
 /*public*/ static void initMemoryManagerThrowException() {
-    InstanceManager.setDefault(MemoryManager.class, new MemoryManagerThrowExceptionScaffold());
+    InstanceManager::setDefault(MemoryManager.class, new MemoryManagerThrowExceptionScaffold());
 }
 
 /*public*/ static void initSignalHeadManagerThrowException() {
-    InstanceManager.setDefault(SignalHeadManager.class, new SignalHeadManagerThrowExceptionScaffold());
+    InstanceManager::setDefault(SignalHeadManager.class, new SignalHeadManagerThrowExceptionScaffold());
 }
 
 /*public*/ static void initSignalMastManagerThrowException() {
-    InstanceManager.setDefault(SignalMastManager.class, new SignalMastManagerThrowExceptionScaffold());
+    InstanceManager::setDefault(SignalMastManager.class, new SignalMastManagerThrowExceptionScaffold());
 }
 
 /*public*/ static void initWarrantManagerThrowException() {
-    InstanceManager.setDefault(WarrantManager.class, new WarrantManagerThrowExceptionScaffold());
+    InstanceManager::setDefault(WarrantManager.class, new WarrantManagerThrowExceptionScaffold());
 }
 
 /*public*/ static void initOBlockManagerThrowException() {
-    InstanceManager.setDefault(OBlockManager.class, new OBlockManagerThrowExceptionScaffold());
+    InstanceManager::setDefault(OBlockManager.class, new OBlockManagerThrowExceptionScaffold());
 }
 
 /*public*/ static void initRouteManagerThrowException() {
-    InstanceManager.setDefault(RouteManager.class, new RouteManagerThrowExceptionScaffold());
+    InstanceManager::setDefault(RouteManager.class, new RouteManagerThrowExceptionScaffold());
 }
 
 /**
@@ -846,7 +851,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
  */
 /*public*/ static void initZeroConfServiceManager() {
     resetZeroConfServiceManager();
-    InstanceManager.setDefault(ZeroConfServiceManager.class, new MockZeroConfServiceManager());
+    InstanceManager::setDefault(ZeroConfServiceManager.class, new MockZeroConfServiceManager());
 }
 
 /**
@@ -855,8 +860,8 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
  * stopped all services it is managing.
  */
 /*public*/ static void resetZeroConfServiceManager() {
-    ZeroConfServiceManager manager = InstanceManager.containsDefault(ZeroConfServiceManager.class)
-            ? InstanceManager.getDefault(ZeroConfServiceManager.class)
+    ZeroConfServiceManager manager = InstanceManager::containsDefault(ZeroConfServiceManager.class)
+            ? InstanceManager::getDefault(ZeroConfServiceManager.class)
             : null;
     if (manager != null) {
         manager.stopAll();
@@ -879,7 +884,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
  * @see #initShutDownManager()
  */
 /*public*/ static void clearShutDownManager() {
-    ShutDownManager sm = InstanceManager.getNullableDefault(jmri.ShutDownManager.class);
+    ShutDownManager sm = InstanceManager::getNullableDefault(jmri.ShutDownManager.class);
     if (sm == null) return;
     List<ShutDownTask> list = sm.tasks();
     while (!list.isEmpty()) {
@@ -905,7 +910,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
  * ShuttingDown if the ShutDownManager is a MockShutDownManager.
  */
 /*public*/ static void initShutDownManager() {
-    ShutDownManager manager = InstanceManager.getDefault(ShutDownManager.class);
+    ShutDownManager manager = InstanceManager::getDefault(ShutDownManager.class);
     List<ShutDownTask> tasks = manager.tasks();
     while (!tasks.isEmpty()) {
         manager.deregister(tasks.get(0));
@@ -917,13 +922,13 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 }
 
 /*public*/ static void initStartupActionsManager() {
-    InstanceManager.store(
+    InstanceManager::store(
             new apps.StartupActionsManager(),
             apps.StartupActionsManager.class);
 }
 
 /*public*/ static void initConnectionConfigManager() {
-    InstanceManager.setDefault(ConnectionConfigManager.class, new ConnectionConfigManager());
+    InstanceManager::setDefault(ConnectionConfigManager.class, new ConnectionConfigManager());
 }
 #endif
 /*public*/ /*static*/ void JUnitUtil::initRosterConfigManager() {
@@ -981,7 +986,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 
 /*public*/ static void initGuiLafPreferencesManager() {
     GuiLafPreferencesManager m = new GuiLafPreferencesManager();
-    InstanceManager.setDefault(GuiLafPreferencesManager.class, m);
+    InstanceManager::setDefault(GuiLafPreferencesManager.class, m);
 }
 #endif
 /**
@@ -1100,8 +1105,6 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 }
 /*static*/ QString JUnitUtil::testClassName = "";
 
-
-#if 0
 /**
  * Dispose of any disposable windows. This should only be used if there is
  * no ability to actually close windows opened by a test using
@@ -1112,28 +1115,34 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
  * @param warn  log a warning for each window if true
  * @param error log an error (failing the test) for each window if true
  */
-/*public*/ static void resetWindows(bool warn, bool error) {
+/*public*/ /*static*/ void JUnitUtil::resetWindows(bool warn, bool error) {
     // close any open remaining windows from earlier tests
-    for (Frame frame : Frame.getFrames()) {
-        if (frame.isDisplayable()) {
-            if (frame.getClass().getName().equals("javax.swing.SwingUtilities$SharedOwnerFrame")) {
-                String message = "Cleaning up nameless invisible frame created by creating a dialog with a null parent in {}.";
-                if (error) {
-                    log.error(message, getTestClassName());
-                } else if (warn) {
-                    log.warn(message, getTestClassName());
-                }
-            } else {
-                String message = "Cleaning up frame \"{}\" (a {}) in {}.";
-                if (error) {
-                    log.error(message, frame.getTitle(), frame.getClass(), getTestClassName());
-                } else if (warn) {
-                    log.warn(message, frame.getTitle(), frame.getClass(), getTestClassName());
-                }
-            }
-            JUnitUtil.dispose(frame);
-        }
+    for (QWidget* frame : QApplication::topLevelWidgets())
+    {
+//        if (frame.isDisplayable()) {
+//            if (frame.getClass().getName().equals("javax.swing.SwingUtilities$SharedOwnerFrame")) {
+//                String message = "Cleaning up nameless invisible frame created by creating a dialog with a null parent in {}.";
+//                if (error) {
+//                    log.error(message, getTestClassName());
+//                } else if (warn) {
+//                    log.warn(message, getTestClassName());
+//                }
+//            } else
+     {
+       QString message = tr("Cleaning up frame \"%1\" (a %2) in %3.").arg(frame->windowTitle()).arg(frame->metaObject()->className()).arg(getTestClassName());
+       if (error) {
+           log->error(message);
+       } else if (warn) {
+           log->warn(message);
+       }
+       else
+        log->debug(message);
+//            }
+       if(qobject_cast<QMainWindow*>(frame))
+        JUnitUtil::dispose(frame);
+     }
     }
+#if 0
     for (Window window : Window.getWindows()) {
         if (window.isDisplayable()) {
             if (window.getClass().getName().equals("javax.swing.SwingUtilities$SharedOwnerFrame")) {
@@ -1154,8 +1163,10 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
             JUnitUtil.dispose(window);
         }
     }
+#endif
 }
 
+#if 0
 /**
  * Dispose of a visible frame searched for by title. Disposes of the first
  * visible frame found with the given title. Asserts that the calling test
@@ -1166,29 +1177,30 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
  *              title; false to require an exact match
  * @param cc    true if search is case sensitive; false otherwise
  */
-/*public*/ static void disposeFrame(String title, bool ce, bool cc) {
+/*public*/ static void disposeFrame(QString title, bool ce, bool cc) {
     Frame frame = FrameWaiter.getFrame(title, ce, cc);
     if (frame != null) {
         JUnitUtil.dispose(frame);
     } else {
-        Assert.fail("Unable to find frame \"" + title + "\" to dispose.");
+        Assert.fail("Unable to find frame \"" + title + "\" to dispose.", __FILE__, __LINE__);
     }
 }
-
+#endif
 /**
  * Dispose of a window. Disposes of the window on the GUI thread, returning
  * only after the window is disposed of.
  *
  * @param window the window to dispose of
  */
-/*public*/ static void dispose(@Nonnull Window window) {
-    java.util.Objects.requireNonNull(window, "Window cannot be null");
+/*public*/ /*static*/ void JUnitUtil::dispose(/*@Nonnull*/ QWidget* window) {
+    //java.util.Objects.requireNonNull(window, "Window cannot be null");
 
-    ThreadingUtil.runOnGUI(() -> {
-        window.dispose();
-    });
+//    ThreadingUtil.runOnGUI(() -> {
+//        window.dispose();
+//    });
+ window->close();
 }
-
+#if 0
 /*public*/ static Thread getThreadByName(String threadName) {
     for (Thread t : Thread.getAllStackTraces().keySet()) {
         if (t.getName().equals(threadName)) return t;
@@ -1281,7 +1293,7 @@ static void checkThreads() {
  * instance.
  */
 /*public*/ static void closeAllPanels() {
-    EditorManager manager = InstanceManager.getNullableDefault(EditorManager.class);
+    EditorManager manager = InstanceManager::getNullableDefault(EditorManager.class);
     if (manager != null) {
         for (Editor e : manager.getEditorsList()) {
             new EditorFrameOperator(e).closeFrameWithConfirmations();

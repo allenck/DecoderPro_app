@@ -764,9 +764,9 @@ void OBlockTableModel::deleteBean(OBlock* bean)
  {
      log->debug("Delete with " + QString::number(count) + " remaining listener");
      //java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(bean);
-     QList<PropertyChangeListener*>* listener = ((AbstractNamedBean*) bean)->getPropertyChangeListeners();
-     for (int i = 0; i < listener->length(); i++) {
-         log->debug(QString::number(i) + ") " + QString(listener->at(i)->metaObject()->className()));
+     QVector<PropertyChangeListener*> listener = ((AbstractNamedBean*) bean)->getPropertyChangeListeners();
+     for (int i = 0; i < listener.length(); i++) {
+         log->debug(QString::number(i) + ") " + QString(listener.at(i)->metaObject()->className()));
      }
  }
  if (!noWarnDelete)

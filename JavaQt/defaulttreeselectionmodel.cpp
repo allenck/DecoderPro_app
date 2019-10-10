@@ -816,9 +816,9 @@
  *
  * @since 1.4
  */
-/*public*/ QList<PropertyChangeListener*>* DefaultTreeSelectionModel::getPropertyChangeListeners() {
+/*public*/ QVector<PropertyChangeListener*> DefaultTreeSelectionModel::getPropertyChangeListeners() {
     if (changeSupport == nullptr) {
-        return new QList<PropertyChangeListener*>();
+        return QVector<PropertyChangeListener*>();
     }
     return changeSupport->getPropertyChangeListeners();
 }

@@ -93,13 +93,17 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
  if (log->isDebugEnabled()) log->debug(QString("newTurnout: %1").arg(( (systemName=="") ? "null" : systemName)));
 
  // is system name in correct format?
+#ifdef QT_DEBUG
+ QString pfx = getSystemPrefix();
+ char tl = typeLetter();
+#endif
  if (!systemName.startsWith(getSystemPrefix() + typeLetter())
-                 || !(systemName.length() > (getSystemPrefix() + typeLetter()).length()))
+     || !(systemName.length() > (getSystemPrefix() + typeLetter()).length()))
  {
-     log->error(tr("Invalid system name for turnout: %1 needed %2%3").arg(
-             systemName).arg(getSystemPrefix()).arg(typeLetter()));
-     throw IllegalArgumentException("Invalid system name for turnout: " + systemName
-             + " needed " + getSystemPrefix() + typeLetter());
+  log->error(tr("Invalid system name for turnout: %1 needed %2%3 followed by a suffix").arg(
+                      systemName).arg(getSystemPrefix()).arg(typeLetter()));
+  throw IllegalArgumentException("Invalid system name for turnout: " + systemName
+                                 + " needed " + getSystemPrefix() + typeLetter());
  }
 
  // return existing if there is one
@@ -122,10 +126,9 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
  s = createNewTurnout(systemName, userName);
 
  // if that failed, blame it on the input arguements
- //if (s == nullptr) throw new IllegalArgumentException(QString("Unable to create turnout from %1").arg(systemName));
  if(s == nullptr)
  {
-  throw IllegalArgumentException(tr("Unable to create turnout from %1 %2").arg(systemName).arg(userName));
+  throw IllegalArgumentException(tr("Unable to create turnout from %1").arg(systemName));
  }
 
  emit newTurnoutCreated(this, s);

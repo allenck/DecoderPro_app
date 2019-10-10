@@ -31,7 +31,9 @@ AbstractManager::AbstractManager(QObject *parent) : Manager(nullptr, parent)
 
  pcs = new PropertyChangeSupport((QObject*)this);
  vcs = new VetoableChangeSupport((QObject*)this);
+ listeners = QList<QObject*>();
 }
+
 AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : Manager(memo,parent)
 {
   Q_UNUSED(parent);
@@ -74,7 +76,6 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
       log->debug(tr("registering for config of type %1").arg(this->metaObject()->className()));
   }
 }
-/*public*/ QString AbstractManager::normalizeSystemName(/*@Nonnull*/ QString /*inputName*/) {return "";} //throws NamedBean.BadSystemNameException
 
 ///*abstract*/ /*public*/ int AbstractManager::getXMLOrder() { return 0;}
 
@@ -374,6 +375,11 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  }
 }
 
+/** {@inheritDoc} */
+//@Override
+//@CheckReturnValue
+/*public*/ int AbstractManager::getObjectCount() { return _beans.size();                                }
+
 QStringList AbstractManager::getSystemNameArray()
 {
  QStringList arr;// = new QStringList();
@@ -443,18 +449,40 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
     return out;
 }
 
-    /*public synchronized */void AbstractManager::addPropertyChangeListener(PropertyChangeListener* l)
+/*public synchronized */void AbstractManager::addPropertyChangeListener(PropertyChangeListener* l)
 {
  pcs->addPropertyChangeListener(l);
- //connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
+
 /*public synchronized */void AbstractManager::removePropertyChangeListener(PropertyChangeListener* l) {
     pcs->removePropertyChangeListener(l);
 }
 
-/*public*/ QList<PropertyChangeListener*>* AbstractManager::getPropertyChangeListeners()
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    pcs->addPropertyChangeListener(propertyName, listener);
+}
+
+/*public*/ QVector<PropertyChangeListener *> AbstractManager::getPropertyChangeListeners()
 {
  return pcs->getPropertyChangeListeners();
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ QVector<PropertyChangeListener*> AbstractManager::getPropertyChangeListeners(QString propertyName) {
+    return pcs->getPropertyChangeListeners(propertyName);
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractManager::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    pcs->removePropertyChangeListener(propertyName, listener);
 }
 
 void AbstractManager::firePropertyChange(QString p, QVariant old, QVariant n)
@@ -485,6 +513,33 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 //@OverridingMethodsMustInvokeSuper
 /*public*/ /*synchronized*/ void AbstractManager::removeVetoableChangeListener(VetoableChangeListener* l) {
     vcs->removeVetoableChangeListener(l);
+}
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractManager::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+    vcs->addVetoableChangeListener(propertyName, listener);
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ QVector<VetoableChangeListener*> AbstractManager::getVetoableChangeListeners() {
+    return vcs->getVetoableChangeListeners();
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ QVector<VetoableChangeListener*> AbstractManager::getVetoableChangeListeners(QString propertyName) {
+    return vcs->getVetoableChangeListeners(propertyName);
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractManager::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+    vcs->removeVetoableChangeListener(propertyName, listener);
 }
 
 /**
@@ -617,8 +672,51 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  //@CheckReturnValue
  //@Override
  //@Nonnull
-/*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName) //throws NamedBean.BadSystemNameException
+/*public*/ QString AbstractManager::normalizeSystemName(/*@Nonnull*/ QString inputName) //throws NamedBean.BadSystemNameException
 {
     return inputName;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractManager::addDataListener(/*ManagerDataListener<E>*/QObject* e) {
+    if (e != nullptr) listeners.append(e);
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractManager::removeDataListener(/*ManagerDataListener<E>*/QObject* e) {
+    if (e != nullptr) listeners.removeOne(e);
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractManager::setDataListenerMute(bool m) {
+    if (muted && !m) {
+        // send a total update, as we haven't kept track of specifics
+        ManagerDataEvent/*<E>*/* e = new ManagerDataEvent(this, ManagerDataEvent::CONTENTS_CHANGED, 0, getObjectCount()-1, nullptr);
+//        for (ManagerDataListener<E> listener : listeners) {
+//            listener.contentsChanged(e);
+//        }
+        emit notifyContentsChanged(e);
+    }
+    this->muted = m;
+}
+
+/*protected*/ void AbstractManager::fireDataListenersAdded(int start, int end, NamedBean* changedBean) {
+    if (muted) return;
+    ManagerDataEvent/*<E>*/* e = new ManagerDataEvent(this, ManagerDataEvent::INTERVAL_ADDED, start, end, changedBean);
+//    for (ManagerDataListener<E> m : listeners) {
+//        m.intervalAdded(e);
+//    }
+    emit notifyIntervalAdded(e);
+}
+/*protected*/ void AbstractManager::fireDataListenersRemoved(int start, int end, NamedBean* changedBean) {
+    if (muted) return;
+    ManagerDataEvent/*<E>*/* e = new ManagerDataEvent(this, ManagerDataEvent::INTERVAL_REMOVED, start, end, changedBean);
+//    for (ManagerDataListener<E> m : listeners) {
+//        m.intervalRemoved(e);
+//    }
+    emit notifyIntervalRemoved(e);
 }
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractManager.class.getName());

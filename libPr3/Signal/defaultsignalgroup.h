@@ -66,7 +66,7 @@ public:
     /*public*/ int getState();
     /*public*/ void setState(int state);
     /*public*/ /*synchronized*/ int getNumPropertyChangeListeners();
-    /*public*/ /*synchronized*/ QList<PropertyChangeListener*>* getPropertyChangeListeners();
+    /*public*/ /*synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
 

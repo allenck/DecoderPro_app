@@ -19,9 +19,12 @@
     this->prefix = memo->getSystemPrefix();
 }
 
+/**
+ * {@inheritDoc}
+ */
 //@Override
-/*public*/ QString JMRIClientTurnoutManager::getSystemPrefix() {
-    return prefix;
+/*public*/ SystemConnectionMemo* JMRIClientTurnoutManager::getMemo() {
+    return  memo;
 }
 
 //@Override

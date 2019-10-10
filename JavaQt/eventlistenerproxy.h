@@ -1,8 +1,10 @@
 #ifndef EVENTLISTENERPROXY_H
 #define EVENTLISTENERPROXY_H
 
+#include <QObject>
+
 template<class T>
-class EventListenerProxy
+class EventListenerProxy : public QObject
 {
 /**
  * An abstract wrapper class for an {@code EventListener} class
@@ -33,7 +35,7 @@ class EventListenerProxy
 //            implements EventListener {
 
  private:
-  T* listener;
+  T listener;
 
  /**
   * Creates a proxy for the specified listener.
@@ -41,7 +43,7 @@ class EventListenerProxy
   * @param listener  the listener object
   */
 public:
- EventListenerProxy(T* listener) {
+ EventListenerProxy(T listener) {
   this->listener = listener;
  }
 
@@ -50,7 +52,7 @@ public:
   *
   * @return  the listener associated with the proxy
   */
- /*public*/ T* getListener() {
+ /*public*/ T getListener() {
     return this->listener;
  }
 

@@ -209,7 +209,7 @@
      *         empty array if no listeners have been added
      * @since 1.4
      */
-    /*public*/ QList<PropertyChangeListener*>* PropertyChangeSupport::getPropertyChangeListeners() {
+    /*public*/ QVector<PropertyChangeListener*> PropertyChangeSupport::getPropertyChangeListeners() {
         return this->map->getListeners();
     }
 
@@ -280,7 +280,7 @@
  *         returned.
  * @since 1.4
  */
-/*public*/ QList<PropertyChangeListener*>* PropertyChangeSupport::getPropertyChangeListeners(QString propertyName) {
+/*public*/ QVector<PropertyChangeListener*> PropertyChangeSupport::getPropertyChangeListeners(QString propertyName) {
     return this->map->getListeners(propertyName);
 }
 
@@ -351,15 +351,15 @@
  {
   QString name = event->getPropertyName();
 
-  QList<PropertyChangeListener*> common = this->map->get(NULL);
-  QList<PropertyChangeListener*> named = !name.isEmpty() ? this->map->get(name): QList<PropertyChangeListener*>();
+  QVector<PropertyChangeListener*> common = this->map->get(NULL);
+  QVector<PropertyChangeListener*> named = !name.isEmpty() ? this->map->get(name): QVector<PropertyChangeListener*>();
 
   fire(common, event);
   fire(named, event);
  }
 }
 
-/*private static*/ void PropertyChangeSupport::fire(QList<PropertyChangeListener*> listeners, PropertyChangeEvent* event)
+/*private static*/ void PropertyChangeSupport::fire(QVector<PropertyChangeListener*> listeners, PropertyChangeEvent* event)
 {
  Logger* log = new Logger("PropertyChangeSupport");
 

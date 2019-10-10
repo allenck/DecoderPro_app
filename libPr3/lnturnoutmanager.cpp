@@ -58,8 +58,6 @@ LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTraffi
 //            log.error("No layout connection, turnout manager can't function");
 //    }
 
-QString LnTurnoutManager::getSystemPrefix() { return prefix; }
-
 void LnTurnoutManager::dispose()
 {
  if (fastcontroller != NULL)
@@ -71,13 +69,12 @@ void LnTurnoutManager::dispose()
 Turnout* LnTurnoutManager::createNewTurnout(QString systemName, QString userName)
 {
  int addr;
- try
- {
+ bool bok;
         //addr = Integer.valueOf(systemName.substring(getSystemPrefix().length()+1)).intValue();
-  addr = systemName.mid(getSystemPrefix().length()+1).toInt();
- } catch (NumberFormatException e)
+  addr = systemName.mid(getSystemPrefix().length()+1).toInt(&bok);
+ if(!bok)
  {
-  throw new IllegalArgumentException("Can't convert "+systemName.mid(getSystemPrefix().length()+1)+" to LocoNet turnout address");
+  throw IllegalArgumentException("Can't convert "+systemName.mid(getSystemPrefix().length()+1)+" to LocoNet turnout address");
  }
  LnTurnout* t = new LnTurnout(getSystemPrefix(), addr, throttledcontroller);
  t->setUserName(userName);

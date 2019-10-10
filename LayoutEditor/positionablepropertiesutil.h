@@ -66,9 +66,9 @@ public slots:
 
 private:
  Ui::PositionablePropertiesUtil *ui;
- PositionablePopupUtil* pop;
+ PositionablePopupUtil* pop = nullptr;
  void fontApply();
- QList<TextDetails>* txtList;
+ QList<TextDetails>* txtList = nullptr;
  /*private*/ int fontStyle;
  /*private*/ QColor defaultForeground;
  /*private*/ QColor defaultBackground;

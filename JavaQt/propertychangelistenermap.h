@@ -26,7 +26,7 @@ private:
      * @return        an array with specified length
      */
     //@Override
-    /*protected*/ QList<PropertyChangeListener*> newArray(int length);
+    /*protected*/ QVector<PropertyChangeListener*> newArray(int length);
     /**
      * Creates a {@link PropertyChangeListenerProxy PropertyChangeListenerProxy}
      * object for the specified property.

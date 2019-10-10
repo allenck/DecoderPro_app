@@ -3,10 +3,6 @@
 #include "instancemanager.h"
 #include "nmrapacket.h"
 
-//RawTurnoutOperator::RawTurnoutOperator(QObject *parent) :
-//    TurnoutOperator(parent)
-//{
-//}
 /**
  * Concrete subclass of TurnoutOperator for a turnout that has no feedback.
  * This operator sends raw NMRA accessory decoder packets to the layout

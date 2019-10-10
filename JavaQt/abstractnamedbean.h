@@ -42,7 +42,7 @@ public:
      * information is not available for some reason.
      */
     /*public synchronized*/ virtual int getNumPropertyChangeListeners();
-    /*public synchronized*/ virtual QList<PropertyChangeListener*>* getPropertyChangeListeners();
+    /*public synchronized*/ virtual QVector<PropertyChangeListener *> getPropertyChangeListeners();
     /*public*/ virtual QString getSystemName() const;
     /*public*/ virtual QString getUserName();
     /*public*/ virtual void setSysName(QString s); // needed for catalogtree
@@ -55,7 +55,7 @@ public:
     PropertyChangeSupport* pcs;
     /*public*/ void removeProperty(QString key);
     /*public*/ QString describeState(int state);
-    /*public*/ bool equals(QObject* obj);
+    Q_INVOKABLE /*public*/ bool equals(QObject* obj);
     /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n);
     /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
 

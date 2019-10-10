@@ -73,21 +73,12 @@ void JUnitAppender::message(QString, LoggingEvent * evt)
     super.close();
 }
 
-static boolean hold = false;
+static bool hold = false;
 
 static private JUnitAppender instance = null;
+#endif
 
-// package-level access for testing
-static boolean unexpectedFatalSeen = false;
-static String  unexpectedFatalContent = null;
-static boolean unexpectedErrorSeen = false;
-static String  unexpectedErrorContent = null;
-static boolean unexpectedWarnSeen = false;
-static String  unexpectedWarnContent = null;
-static boolean unexpectedInfoSeen = false;
-static String  unexpectedInfoContent = null;
-
-/*public*/ static boolean unexpectedMessageSeen(Level l) {
+/*public*/ /*static*/ bool JUnitAppender::unexpectedMessageSeen(LogLevel* l) {
     if (l == LogLevel::FATAL) {
         return unexpectedFatalSeen;
     }
@@ -100,56 +91,57 @@ static String  unexpectedInfoContent = null;
     if (l == LogLevel::INFO) {
         return unexpectedFatalSeen || unexpectedErrorSeen || unexpectedWarnSeen || unexpectedInfoSeen;
     }
-    throw new java.lang.IllegalArgumentException("Did not expect " + l);
+    throw IllegalArgumentException("Did not expect " + l->toString());
 }
 
-/*public*/ static String unexpectedMessageContent(Level l) {
+/*public*/ /*static*/ QString JUnitAppender::unexpectedMessageContent(LogLevel* l) {
     if (l == LogLevel::FATAL) {
         return unexpectedFatalContent;
     }
     if (l == LogLevel::ERROR) {
-        if (unexpectedFatalContent != null ) return unexpectedFatalContent;
+        if (unexpectedFatalContent != nullptr ) return unexpectedFatalContent;
         return unexpectedErrorContent;
     }
     if (l == LogLevel::WARN) {
-        if (unexpectedFatalContent != null ) return unexpectedFatalContent;
-        if (unexpectedErrorContent != null ) return unexpectedErrorContent;
+        if (unexpectedFatalContent != nullptr ) return unexpectedFatalContent;
+        if (unexpectedErrorContent != nullptr ) return unexpectedErrorContent;
         return unexpectedWarnContent;
     }
     if (l == LogLevel::INFO) {
-        if (unexpectedFatalContent != null ) return unexpectedFatalContent;
-        if (unexpectedErrorContent != null ) return unexpectedErrorContent;
-        if (unexpectedWarnContent != null ) return unexpectedWarnContent;
+        if (unexpectedFatalContent != nullptr ) return unexpectedFatalContent;
+        if (unexpectedErrorContent != nullptr ) return unexpectedErrorContent;
+        if (unexpectedWarnContent != nullptr ) return unexpectedWarnContent;
         return unexpectedInfoContent;
     }
-    throw new java.lang.IllegalArgumentException("Did not expect " + l);
+    throw IllegalArgumentException("Did not expect " + l->toString());
 }
 
-/*public*/ static void resetUnexpectedMessageFlags(Level severity) {
+/*public*/ /*static*/ void JUnitAppender::resetUnexpectedMessageFlags(LogLevel* severity) {
     // cases statements are organized to flow
-    switch (severity.toInt()) {
-        case LogLevel::INFO_INT:
+    switch (severity->toInt()) {
+        case StandardLevel::INFO:
             unexpectedInfoSeen = false;
-            unexpectedInfoContent = null;
+            unexpectedInfoContent = nullptr;
             //$FALL-THROUGH$
-        case LogLevel::WARN_INT:
+        case StandardLevel::WARN:
             unexpectedWarnSeen = false;
-            unexpectedWarnContent = null;
+            unexpectedWarnContent = nullptr;
             //$FALL-THROUGH$
-        case LogLevel::ERROR_INT:
+        case StandardLevel::ERROR:
             unexpectedErrorSeen = false;
-            unexpectedErrorContent = null;
+            unexpectedErrorContent = nullptr;
             //$FALL-THROUGH$
-        case LogLevel::FATAL_INT:
+        case StandardLevel::FATAL:
             unexpectedFatalSeen = false;
-            unexpectedFatalContent = null;
+            unexpectedFatalContent = nullptr;
             break;
         default:
-            Log.warn("Unhandled serverity code: {}", severity.toInt());
+            //Log.warn("Unhandled serverity code: {}", severity.toInt());
+     qDebug() << tr("Unhandled serverity code: %1").arg(severity->toInt());
             break;
     }
 }
-#endif
+
 /**
  * Tell appender that a JUnit test is starting.
  * <p>

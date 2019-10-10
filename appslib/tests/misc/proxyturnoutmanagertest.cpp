@@ -6,6 +6,9 @@
 #include "junitappender.h"
 #include "proxyturnoutmanager.h"
 #include "internalsystemconnectionmemo.h"
+#ifdef QT_DEBUG
+#include "systemconnectionmemomanager.h"
+#endif
 
 ProxyTurnoutManagerTest::ProxyTurnoutManagerTest(QObject *parent) : QObject(parent)
 {
@@ -28,7 +31,7 @@ ProxyTurnoutManagerTest::ProxyTurnoutManagerTest(QObject *parent) : QObject(pare
 ///*protected*/ class Listen implements PropertyChangeListener {
 
     //@Override
-    /*public*/ void ListenO5::propertyChange(PropertyChangeEvent* e) {
+    /*public*/ void ListenO5::propertyChange(PropertyChangeEvent* /*e*/) {
         test->listenerResult = true;
     }
 
@@ -51,7 +54,7 @@ ProxyTurnoutManagerTest::ProxyTurnoutManagerTest(QObject *parent) : QObject(pare
 //@Test
 /*public*/ void ProxyTurnoutManagerTest::testDefaultSystemName() {
     // create
-    Turnout* t = l->provideTurnout("" + getNumToTest1());
+    Turnout* t = l->provideTurnout("" + QString::number(getNumToTest1()));
     // check
     Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
     Assert::assertTrue("system name correct ", t == l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
@@ -63,8 +66,9 @@ ProxyTurnoutManagerTest::ProxyTurnoutManagerTest(QObject *parent) : QObject(pare
         l->provideTurnout("");
         Assert::fail("didn't throw", __FILE__, __LINE__);
     } catch (IllegalArgumentException ex) {
-        JUnitAppender::assertErrorMessage("Invalid system name for Turnout: System name must start with \"" + l->getSystemNamePrefix() + "\".");
-        throw ex;
+        //JUnitAppender::assertErrorMessage("Invalid system name for Turnout: System name must start with \"" + l->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
+        JUnitAppender::assertErrorMessage("Invalid system name for turnout: JT needed JT", __FILE__, __LINE__);
+     //throw ex;
     }
 }
 
@@ -175,11 +179,12 @@ ProxyTurnoutManagerTest::ProxyTurnoutManagerTest(QObject *parent) : QObject(pare
 }
 
 //@Before
-/*public*/ void ProxyTurnoutManagerTest::setUp() {
-    JUnitUtil::setUp();
-    // create and register the manager object
-    l = new InternalTurnoutManager(new InternalSystemConnectionMemo("J", "Juliet"));
-    InstanceManager::setTurnoutManager(l);
+/*public*/ void ProxyTurnoutManagerTest::setUp()
+{
+ JUnitUtil::setUp();
+ // create and register the manager object
+ l = new InternalTurnoutManager(new InternalSystemConnectionMemo("J", "Juliet"));
+ InstanceManager::setTurnoutManager(l);
 }
 
 //@After

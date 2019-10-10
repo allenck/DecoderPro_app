@@ -15,6 +15,13 @@ public:
     ~AssertionError() throw() {}
 };
 
+//#define Assert(a, b, c, d, e) Assert1(a, b, c, d, e)
+//#define Assert(a, b, c, d) Assert1(a, b, c, d)
+//#define Assert(a, b, c) Assert1(a, b, c, __FILE__, __LINE__)
+//#define Assert(a, b) Assert1(a, b, __FILE__, __LINE__)
+//#define Assert(a ) Assert1(a, __FILE__, __LINE__)
+//#define Assert Assert1
+
 class Logger;
 class Assert : public QObject
 {

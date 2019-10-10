@@ -2,7 +2,6 @@
 #define COMMONTURNOUTOPERATION_H
 #include "turnoutoperation.h"
 
-
 class TurnoutOperation;
 class TurnoutOperator;
 class AbstractTurnout;

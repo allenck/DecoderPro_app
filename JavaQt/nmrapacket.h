@@ -2,9 +2,9 @@
 #define NMRAPACKET_H
 #include <QByteArray>
 #include "logger.h"
-#include "libPr3_global.h"
+#include "javaqt_global.h"
 
-class LIBPR3SHARED_EXPORT NmraPacket
+class JAVAQTSHARED_EXPORT NmraPacket
 {
 public:
  /*public*/ static QByteArray idlePacket();

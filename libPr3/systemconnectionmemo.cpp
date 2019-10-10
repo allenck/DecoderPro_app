@@ -10,6 +10,7 @@
 #include "systemconnectionmemomanager.h"
 #include "nmraconsistmanager.h"
 #include "addressedprogrammermanager.h"
+#include "conflictingsystemconnectionmemo.h"
 
 /**
  * Lightweight abstract class to denote that a system is active,
@@ -48,24 +49,30 @@ SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QOb
  disabled = false;
  disabledAsLoaded = /*null*/ false; // Boolean can be true, false, or null
 // _instance = this;
-
+ if (qobject_cast<ConflictingSystemConnectionMemo*>(this)) {
+     this->prefix = prefix;
+     this->userName = userName;
+     return;
+ }
 
  log->debug(tr("SystemConnectionMemo created for prefix \"%1\" user name \"%2\"").arg(prefix).arg(userName));
  //initialise();
- if (!setSystemPrefix(prefix)) {
-     int x = 2;
-     while (!setSystemPrefix(prefix + QString::number(x))) {
-         x++;
-     }
-     log->debug(tr("created system prefix %1").arg(prefix + QString::number(x)));
+ if (!setSystemPrefix(prefix))
+ {
+  int x = 2;
+  while (!setSystemPrefix(prefix + QString::number(x))) {
+      x++;
+  }
+  log->debug(tr("created system prefix %1").arg(prefix + QString::number(x)));
  }
 
- if (!setUserName(userName)) {
-     int x = 2;
-     while (!setUserName(userName + QString::number(x))) {
-         x++;
-     }
-     log->debug(tr("created user name %1").arg(prefix + QString::number(x)));
+ if (!setUserName(userName))
+ {
+  int x = 2;
+  while (!setUserName(userName + QString::number(x))) {
+      x++;
+  }
+  log->debug(tr("created user name %1").arg(prefix + QString::number(x)));
  }
  addToActionList();
  // reset to null so these get set by the first setPrefix/setUserName
@@ -74,56 +81,6 @@ SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QOb
  this->userNameAsLoaded = "";
 }
 
-/**
- * Provides a method to reserve System Names and prefixes at creation
- */
-//void SystemConnectionMemo::initialise(){
-//    log->debug("initialise called");
-////    if (!initialised){
-////        addUserName("Internal");
-////        addSystemPrefix("I");
-////        initialised = true;
-////    }
-//}
-
-//bool SystemConnectionMemo::addUserName(QString userName){
-//    if (userNames == NULL)
-//        userNames = new QStringList();
-//    if (userNames->contains(userName))
-//        return false;
-
-//    userNames->append(userName);
-//    return true;
-//}
-
-////This should probably throwing an exception
-//bool SystemConnectionMemo::addSystemPrefix(QString systemPrefix)
-//{
-// if (sysPrefixes->contains(systemPrefix))
-//     return false;
-// sysPrefixes->append(systemPrefix);
-// return true;
-//}
-
-//void SystemConnectionMemo::removeUserName(QString userName){
-// if(!userNames->isEmpty())
-// {
-//  if (userNames->contains(userName)){
-//   int index = userNames->indexOf(userName);
-//   userNames->removeAt(index);
-//  }
-// }
-//}
-
-//void SystemConnectionMemo::removeSystemPrefix(QString systemPrefix){
-//    if(!sysPrefixes->isEmpty())
-//    {
-//        if (sysPrefixes->contains(systemPrefix)){
-//            int index = sysPrefixes->indexOf(systemPrefix);
-//            sysPrefixes->removeAt(index);
-//        }
-//    }
-//}
 
 /**
  * Store in InstanceManager with

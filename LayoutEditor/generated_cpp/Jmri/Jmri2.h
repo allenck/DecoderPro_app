@@ -138,7 +138,7 @@ virtual int  getNumPropertyChangeListeners();
 virtual int  getNumberOutputBits();
 virtual int  getPossibleLockModes();
 virtual QVariant  getProperty(QString  key);
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
 virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
 virtual QSet<QString >  getPropertyKeys();
 virtual bool  getReportLocked();
@@ -229,7 +229,9 @@ public:
    ~PythonQtShell_LnTurnoutManager();
 
 virtual void Register(NamedBean*  s);
+virtual void addDataListener(QObject*  e);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  allowMultipleAdditions(QString  systemName);
 virtual int  askControlType(QString  systemName);
 virtual int  askNumControlBits(QString  systemName);
@@ -237,7 +239,7 @@ virtual void childEvent(QChildEvent*  event);
 virtual Turnout*  createNewTurnout(QString  systemName, QString  userName);
 virtual QString  createSystemName(QString  curAddress, QString  prefix);
 virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
+virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -256,7 +258,8 @@ virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
 virtual int  getObjectCount();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -272,7 +275,9 @@ virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
 virtual Turnout*  provide(QString  name) throw (IllegalArgumentException) ;
 virtual Turnout*  provideTurnout(QString  name);
+virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void setDefaultClosedSpeed(QString  speed);
 virtual void setDefaultThrownSpeed(QString  speed);
 virtual void timerEvent(QTimerEvent*  event);
@@ -289,7 +294,6 @@ class PythonQtPublicPromoter_LnTurnoutManager : public LnTurnoutManager
 { public:
 inline Turnout*  py_q_createNewTurnout(QString  systemName, QString  userName) { return LnTurnoutManager::createNewTurnout(systemName, userName); }
 inline void py_q_dispose() { LnTurnoutManager::dispose(); }
-inline QString  py_q_getSystemPrefix() { return LnTurnoutManager::getSystemPrefix(); }
 };
 
 class PythonQtWrapper_LnTurnoutManager : public QObject
@@ -301,7 +305,6 @@ LnTurnoutManager* new_LnTurnoutManager(LocoNetSystemConnectionMemo*  memo, LocoN
 void delete_LnTurnoutManager(LnTurnoutManager* obj) { delete obj; } 
    Turnout*  py_q_createNewTurnout(LnTurnoutManager* theWrappedObject, QString  systemName, QString  userName){  return (((PythonQtPublicPromoter_LnTurnoutManager*)theWrappedObject)->py_q_createNewTurnout(systemName, userName));}
    void py_q_dispose(LnTurnoutManager* theWrappedObject){  (((PythonQtPublicPromoter_LnTurnoutManager*)theWrappedObject)->py_q_dispose());}
-   QString  py_q_getSystemPrefix(LnTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_LnTurnoutManager*)theWrappedObject)->py_q_getSystemPrefix());}
 };
 
 
@@ -493,12 +496,9 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual Manager*  get(QString  T);
 virtual bool  getDisabled();
-virtual QString  getSystemPrefix();
-virtual QString  getUserName();
 virtual void notifyPropertyChangeListener(QString  property, QVariant  oldValue, QVariant  newValue);
 virtual bool  provides(QString  type);
 virtual void setDisabled(bool  disabled);
-virtual bool  setSystemPrefix(QString  systemPrefix);
 virtual bool  setUserName(QString  name);
 virtual void timerEvent(QTimerEvent*  event);
 
@@ -599,10 +599,12 @@ public:
 
 virtual void Register(NamedBean*  s);
 virtual void activateAllLogixs();
+virtual void addDataListener(QObject*  e);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
+virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -616,7 +618,8 @@ virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual int  getObjectCount();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -624,7 +627,9 @@ virtual int  getXMLOrder();
 virtual QString  makeSystemName(QString  s);
 virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
+virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void setLoadDisabled(bool  arg__1);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
@@ -670,11 +675,12 @@ public:
    ~PythonQtShell_Manager();
 
 virtual void Register(NamedBean*  arg__1);
+virtual void addDataListener(QObject*  e);
 virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
+virtual void addPropertyChangeListener(QString  arg__1, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
+virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  arg__1);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -687,16 +693,17 @@ virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  arg__1);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual int  getObjectCount();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  propertyName);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  arg__1);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
 virtual int  getXMLOrder();
 virtual QString  makeSystemName(QString  arg__1);
 virtual QString  normalizeSystemName(QString  arg__1);
+virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
-virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  arg__1, PropertyChangeListener*  listener);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
 virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
@@ -709,9 +716,10 @@ virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1);
 class PythonQtPublicPromoter_Manager : public Manager
 { public:
 inline void py_q_Register(NamedBean*  arg__1) { Manager::Register(arg__1); }
+inline void py_q_addDataListener(QObject*  e) { Manager::addDataListener(e); }
 inline void py_q_addPropertyChangeListener(PropertyChangeListener*  arg__1) { Manager::addPropertyChangeListener(arg__1); }
-inline void py_q_addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener) { Manager::addPropertyChangeListener(propertyName, listener); }
-inline void py_q_deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException)  { Manager::deleteBean(n, property); }
+inline void py_q_addPropertyChangeListener(QString  arg__1, PropertyChangeListener*  listener) { Manager::addPropertyChangeListener(arg__1, listener); }
+inline void py_q_deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException)  { Manager::deleteBean(arg__1, arg__2); }
 inline void py_q_deregister(NamedBean*  arg__1) { Manager::deregister(arg__1); }
 inline void py_q_dispose() { Manager::dispose(); }
 inline NamedBean*  py_q_getBeanBySystemName(QString  arg__1) { return Manager::getBeanBySystemName(arg__1); }
@@ -722,16 +730,17 @@ inline SystemConnectionMemo*  py_q_getMemo() { return Manager::getMemo(); }
 inline NamedBean*  py_q_getNamedBean(QString  arg__1) { return Manager::getNamedBean(arg__1); }
 inline QSet<NamedBean* >  py_q_getNamedBeanSet() { return Manager::getNamedBeanSet(); }
 inline int  py_q_getObjectCount() { return Manager::getObjectCount(); }
-inline QList<PropertyChangeListener* >*  py_q_getPropertyChangeListeners() { return Manager::getPropertyChangeListeners(); }
-inline QList<PropertyChangeListener* >*  py_q_getPropertyChangeListeners(QString  propertyName) { return Manager::getPropertyChangeListeners(propertyName); }
+inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners() { return Manager::getPropertyChangeListeners(); }
+inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(QString  arg__1) { return Manager::getPropertyChangeListeners(arg__1); }
 inline QStringList  py_q_getSystemNameArray() { return Manager::getSystemNameArray(); }
 inline QStringList  py_q_getSystemNameList() { return Manager::getSystemNameList(); }
 inline QString  py_q_getSystemPrefix() { return Manager::getSystemPrefix(); }
 inline int  py_q_getXMLOrder() { return Manager::getXMLOrder(); }
 inline QString  py_q_makeSystemName(QString  arg__1) { return Manager::makeSystemName(arg__1); }
 inline QString  py_q_normalizeSystemName(QString  arg__1) { return Manager::normalizeSystemName(arg__1); }
+inline void py_q_removeDataListener(QObject*  e) { Manager::removeDataListener(e); }
 inline void py_q_removePropertyChangeListener(PropertyChangeListener*  arg__1) { Manager::removePropertyChangeListener(arg__1); }
-inline void py_q_removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener) { Manager::removePropertyChangeListener(propertyName, listener); }
+inline void py_q_removePropertyChangeListener(QString  arg__1, PropertyChangeListener*  listener) { Manager::removePropertyChangeListener(arg__1, listener); }
 inline char  py_q_typeLetter() { return Manager::typeLetter(); }
 inline Manager::NameValidity  py_q_validSystemNameFormat(QString  arg__1) { return Manager::validSystemNameFormat(arg__1); }
 };
@@ -745,12 +754,14 @@ Manager* new_Manager(SystemConnectionMemo*  arg__1, QObject*  parent = 0);
 void delete_Manager(Manager* obj) { delete obj; } 
    void Register(Manager* theWrappedObject, NamedBean*  arg__1);
    void py_q_Register(Manager* theWrappedObject, NamedBean*  arg__1){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_Register(arg__1));}
+   void addDataListener(Manager* theWrappedObject, QObject*  e);
+   void py_q_addDataListener(Manager* theWrappedObject, QObject*  e){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_addDataListener(e));}
    void addPropertyChangeListener(Manager* theWrappedObject, PropertyChangeListener*  arg__1);
    void py_q_addPropertyChangeListener(Manager* theWrappedObject, PropertyChangeListener*  arg__1){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_addPropertyChangeListener(arg__1));}
-   void addPropertyChangeListener(Manager* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener);
-   void py_q_addPropertyChangeListener(Manager* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_addPropertyChangeListener(propertyName, listener));}
-   void deleteBean(Manager* theWrappedObject, NamedBean*  n, QString  property) throw (PropertyVetoException) ;
-   void py_q_deleteBean(Manager* theWrappedObject, NamedBean*  n, QString  property) throw (PropertyVetoException) {  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_deleteBean(n, property));}
+   void addPropertyChangeListener(Manager* theWrappedObject, QString  arg__1, PropertyChangeListener*  listener);
+   void py_q_addPropertyChangeListener(Manager* theWrappedObject, QString  arg__1, PropertyChangeListener*  listener){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_addPropertyChangeListener(arg__1, listener));}
+   void deleteBean(Manager* theWrappedObject, NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
+   void py_q_deleteBean(Manager* theWrappedObject, NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) {  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_deleteBean(arg__1, arg__2));}
    void deregister(Manager* theWrappedObject, NamedBean*  arg__1);
    void py_q_deregister(Manager* theWrappedObject, NamedBean*  arg__1){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_deregister(arg__1));}
    void dispose(Manager* theWrappedObject);
@@ -771,10 +782,10 @@ void delete_Manager(Manager* obj) { delete obj; }
    QSet<NamedBean* >  py_q_getNamedBeanSet(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getNamedBeanSet());}
    int  getObjectCount(Manager* theWrappedObject);
    int  py_q_getObjectCount(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getObjectCount());}
-   QList<PropertyChangeListener* >*  getPropertyChangeListeners(Manager* theWrappedObject);
-   QList<PropertyChangeListener* >*  py_q_getPropertyChangeListeners(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getPropertyChangeListeners());}
-   QList<PropertyChangeListener* >*  getPropertyChangeListeners(Manager* theWrappedObject, QString  propertyName);
-   QList<PropertyChangeListener* >*  py_q_getPropertyChangeListeners(Manager* theWrappedObject, QString  propertyName){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getPropertyChangeListeners(propertyName));}
+   QVector<PropertyChangeListener* >  getPropertyChangeListeners(Manager* theWrappedObject);
+   QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getPropertyChangeListeners());}
+   QVector<PropertyChangeListener* >  getPropertyChangeListeners(Manager* theWrappedObject, QString  arg__1);
+   QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(Manager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getPropertyChangeListeners(arg__1));}
    QStringList  getSystemNameArray(Manager* theWrappedObject);
    QStringList  py_q_getSystemNameArray(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getSystemNameArray());}
    QStringList  getSystemNameList(Manager* theWrappedObject);
@@ -790,16 +801,20 @@ void delete_Manager(Manager* obj) { delete obj; }
    QString  py_q_makeSystemName(Manager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_makeSystemName(arg__1));}
    QString  normalizeSystemName(Manager* theWrappedObject, QString  arg__1);
    QString  py_q_normalizeSystemName(Manager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_normalizeSystemName(arg__1));}
+   void removeDataListener(Manager* theWrappedObject, QObject*  e);
+   void py_q_removeDataListener(Manager* theWrappedObject, QObject*  e){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_removeDataListener(e));}
    void removePropertyChangeListener(Manager* theWrappedObject, PropertyChangeListener*  arg__1);
    void py_q_removePropertyChangeListener(Manager* theWrappedObject, PropertyChangeListener*  arg__1){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_removePropertyChangeListener(arg__1));}
-   void removePropertyChangeListener(Manager* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener);
-   void py_q_removePropertyChangeListener(Manager* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_removePropertyChangeListener(propertyName, listener));}
+   void removePropertyChangeListener(Manager* theWrappedObject, QString  arg__1, PropertyChangeListener*  listener);
+   void py_q_removePropertyChangeListener(Manager* theWrappedObject, QString  arg__1, PropertyChangeListener*  listener){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_removePropertyChangeListener(arg__1, listener));}
+   void setDataListenerMute(Manager* theWrappedObject, bool  muted);
    int  static_Manager_startsWithLegacySystemPrefix(QString  prefix);
    char  typeLetter(Manager* theWrappedObject);
    char  py_q_typeLetter(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_typeLetter());}
    Manager::NameValidity  validSystemNameFormat(Manager* theWrappedObject, QString  arg__1);
    Manager::NameValidity  py_q_validSystemNameFormat(Manager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_validSystemNameFormat(arg__1));}
    QString  validateIntegerSystemNameFormat(Manager* theWrappedObject, QString  name, int  min, int  max, QLocale  locale);
+   QString  validateNmraAccessorySystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale);
    QString  validateSystemNameFormat(Manager* theWrappedObject, QString  name) throw (NamedBean::BadSystemNameException);
    QString  validateSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale) throw (NamedBean::BadSystemNameException);
    QString  validateSystemNamePrefix(Manager* theWrappedObject, QString  name, QLocale  locale) throw (NamedBean::BadSystemNameException);
@@ -819,10 +834,12 @@ public:
    ~PythonQtShell_MemoryManager();
 
 virtual void Register(NamedBean*  s);
+virtual void addDataListener(QObject*  e);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
+virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -835,7 +852,8 @@ virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual int  getObjectCount();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -843,7 +861,9 @@ virtual int  getXMLOrder();
 virtual QString  makeSystemName(QString  s);
 virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
+virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
@@ -2476,8 +2496,8 @@ void delete_PropertyChangeSupport(PropertyChangeSupport* obj) { delete obj; }
    void firePropertyChange(PropertyChangeSupport* theWrappedObject, PropertyChangeEvent*  event);
    void firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue);
    void firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue);
-   QList<PropertyChangeListener* >*  getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject);
-   QList<PropertyChangeListener* >*  getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject, QString  propertyName);
+   QVector<PropertyChangeListener* >  getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject);
+   QVector<PropertyChangeListener* >  getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject, QString  propertyName);
    bool  hasListeners(PropertyChangeSupport* theWrappedObject, QString  propertyName);
    void removePropertyChangeListener(PropertyChangeSupport* theWrappedObject, PropertyChangeListener*  listener);
    void removePropertyChangeListener(PropertyChangeSupport* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener);
@@ -2495,11 +2515,13 @@ public:
    ~PythonQtShell_ProxyLightManager();
 
 virtual void Register(NamedBean*  s);
+virtual void addDataListener(QObject*  e);
 virtual void addManager(Manager*  m);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
+virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -2513,7 +2535,8 @@ virtual Manager*  getMgr(int  index);
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual int  getObjectCount();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -2528,7 +2551,9 @@ virtual int  nMgrs();
 virtual QString  normalizeSystemName(QString  systemName);
 virtual void propertyChange(PropertyChangeEvent*  e);
 virtual NamedBean*  provideNamedBean(QString  name);
+virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
@@ -2586,11 +2611,13 @@ public:
    ~PythonQtShell_ProxySensorManager();
 
 virtual void Register(NamedBean*  s);
+virtual void addDataListener(QObject*  e);
 virtual void addManager(Manager*  m);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
+virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -2604,7 +2631,8 @@ virtual Manager*  getMgr(int  index);
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual int  getObjectCount();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
@@ -2618,7 +2646,9 @@ virtual int  matchTentative(QString  arg__1);
 virtual int  nMgrs();
 virtual QString  normalizeSystemName(QString  inputName);
 virtual NamedBean*  provideNamedBean(QString  name);
+virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
@@ -2735,11 +2765,13 @@ public:
    ~PythonQtShell_ReporterManager();
 
 virtual void Register(NamedBean*  s);
+virtual void addDataListener(QObject*  e);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  allowMultipleAdditions(QString  arg__1) const;
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  n, QString  property) throw (PropertyVetoException) ;
+virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -2753,7 +2785,8 @@ virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  arg__1, QString  arg__2) const;
 virtual int  getObjectCount();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList() const;
 virtual QString  getSystemPrefix();
@@ -2761,7 +2794,9 @@ virtual int  getXMLOrder();
 virtual QString  makeSystemName(QString  s);
 virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
+virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter();
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);

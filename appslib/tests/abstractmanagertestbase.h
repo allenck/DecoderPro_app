@@ -33,5 +33,13 @@ public slots:
         // do nothing
     }
 };
-
+class VetoableChangeListenerO1 : public VetoableChangeListener
+{
+ Q_OBJECT
+public:
+      //@Override
+      /*public*/ void vetoableChange(PropertyChangeEvent evt) throw (PropertyVetoException) {
+          // do nothing
+      }
+};
 #endif // ABSTRACTMANAGERTESTBASE_H

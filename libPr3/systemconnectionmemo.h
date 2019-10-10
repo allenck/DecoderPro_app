@@ -40,10 +40,10 @@ public:
   * Provides access to the system prefix string.
   * This was previously called the "System letter"
   */
- virtual QString getSystemPrefix();
+ QString getSystemPrefix();
  //This should probably throwing an exception
- virtual bool setSystemPrefix(QString systemPrefix);
- virtual QString getUserName();
+ bool setSystemPrefix(QString systemPrefix);
+ QString getUserName();
  //This should probably throwing an exception
  virtual bool setUserName(QString name);
  /**

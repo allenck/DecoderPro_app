@@ -71,7 +71,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  *         empty array if no listeners have been added
  * @since 1.4
  */
-/*public*/ QList<PropertyChangeListener*>* getPropertyChangeListeners();
+/*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners();
 /**
  * Add a PropertyChangeListensourceer for a specific property.  The listener
  * will be invoked only when a call on firePropertyChange names that
@@ -115,7 +115,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  *         returned.
  * @since 1.4
  */
-/*public*/ QList<PropertyChangeListener*>* getPropertyChangeListeners(QString propertyName);
+/*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners(QString propertyName);
 /**
  * Reports a bound property update to listeners
  * that have been registered to track updates of
@@ -225,7 +225,7 @@ void propertyChange(PropertyChangeEvent*);
 public slots:
 private:
  PropertyChangeListenerMap* map;
- /*private*/ static void fire(QList<PropertyChangeListener*> listeners, PropertyChangeEvent* event);
+ /*private*/ static void fire(QVector<PropertyChangeListener*> listeners, PropertyChangeEvent* event);
  /**
   * The object to be provided as the "source" for any generated events.
   */

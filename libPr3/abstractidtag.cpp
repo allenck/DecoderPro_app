@@ -66,12 +66,13 @@ void AbstractIdTag::init()
   {
    prefix = findPrefix();
   }
-  catch ( NullPointerException  e) {
+  catch ( NullPointerException  e)
+  {
          // if there isn't a ProxyIDTag Manager, assume the first D in the
          //  system name is the type letter.
          return mSystemName.mid(mSystemName.indexOf('D') + 1);
 
-     }
+  }
   catch (  BadSystemNameException e) {
          // if there isn't a ProxyIDTag Manager, assume the first D in the
          //  system name is the type letter.

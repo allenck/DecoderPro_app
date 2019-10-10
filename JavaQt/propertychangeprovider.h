@@ -1,6 +1,7 @@
 #ifndef PROPERTYCHANGEPROVIDER_H
 #define PROPERTYCHANGEPROVIDER_H
 #include "propertychangelistener.h"
+#include <QVector>
 
 /**
  * A set of methods that would need to be implemented to ensure the implementing
@@ -45,7 +46,7 @@ public:
      * @return An array of PropertyChangeListeners.
      */
     //@Nonnull
-    /*public*/ virtual QList<PropertyChangeListener*>* getPropertyChangeListeners() {return NULL;}
+    /*public*/ virtual QVector<PropertyChangeListener*>* getPropertyChangeListeners() {return NULL;}
 
     /**
      * Get all {@link java.beans.PropertyChangeListener}s currently listening to
@@ -55,7 +56,7 @@ public:
      * @return An array of PropertyChangeListeners.
      */
     //@Nonnull
-    /*public*/ virtual QList<PropertyChangeListener*>* getPropertyChangeListeners(/*QNullable*/ QString /*propertyName*/) {return NULL;}
+    /*public*/ virtual QVector<PropertyChangeListener*>* getPropertyChangeListeners(/*QNullable*/ QString /*propertyName*/) {return NULL;}
 
     /**
      * Remove the specified listener from this object.

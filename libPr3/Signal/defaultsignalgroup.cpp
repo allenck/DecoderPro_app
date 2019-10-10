@@ -713,10 +713,10 @@ bool SignalHeadItem::isSensorIncluded(Sensor* pSensor)
  * information is not available for some reason.
  */
 /*public*/ /*synchronized*/ int DefaultSignalGroup::getNumPropertyChangeListeners() {
-    return pcs->getPropertyChangeListeners()->length();
+    return pcs->getPropertyChangeListeners().length();
 }
 
-/*public*/ /*synchronized*/ QList<PropertyChangeListener*>* DefaultSignalGroup::getPropertyChangeListeners() {
+/*public*/ /*synchronized*/ QVector<PropertyChangeListener*> DefaultSignalGroup::getPropertyChangeListeners() {
     return pcs->getPropertyChangeListeners();
 }
 

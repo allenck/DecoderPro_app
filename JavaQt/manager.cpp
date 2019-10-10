@@ -1,5 +1,5 @@
 #include "manager.h"
-
+#include "nmrapacket.h"
 
 /*static*/ QStringList Manager::legacyPrefixes = QStringList() << "DX" << "DCCPP" << "DP" << "MR" << "MC" << "PI" << "TM";
 
@@ -107,10 +107,10 @@
 /*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) throw (NamedBean::BadSystemNameException) {
     QString prefix = getSystemNamePrefix();
     if (name == (prefix)) {
-        throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameMatchesPrefix", name);
+        throw NamedBean::BadSystemNameException(locale, tr("System name \"%1\" is missing suffix.").arg(name),name);
     }
     if (!name.startsWith(prefix)) {
-        throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameInvalidPrefix", prefix);
+        throw NamedBean::BadSystemNameException(locale, tr("System name must start with \"%1\".").arg(prefix),prefix);
     }
     return name;
 }
@@ -136,7 +136,7 @@
     QString prefix = getSystemNamePrefix();
     QString suffix = name.mid(prefix.length());
     if (suffix !=(suffix.trimmed())) {
-        throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameTrailingWhitespace", name, prefix);
+        throw NamedBean::BadSystemNameException(locale, tr("System name \"%1}\" contains trailing white space characters, but should not.").arg(name),name, prefix);
     }
     return name;
 }
@@ -162,7 +162,7 @@
     QString prefix = getSystemNamePrefix();
     QString suffix = name.mid(prefix.length());
     if (suffix != (suffix.toUpper())) {
-        throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameNotUpperCase", name, prefix);
+        throw NamedBean::BadSystemNameException(locale, tr("System name \"%1\" contains lowercase characters, but must be all uppercase.").arg(name), name, prefix);
     }
     return name;
 }
@@ -191,12 +191,183 @@
     try {
         int number = (suffix.toInt());
         if (number < min) {
-            throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameIntegerLessThan", name, QString::number(min));
+            throw NamedBean::BadSystemNameException(locale, tr("Number in \"%1\" must be greater than or equal to %2.").arg(name).arg(min), name, QString::number(min));
         } else if (number > max) {
-            throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameIntegerGreaterThan", name, QString::number(max));
+            throw NamedBean::BadSystemNameException(locale, tr("Number in \"%1\" must be less than or equal to %2.").arg(name).arg(max), name, QString::number(max));
         }
     } catch (NumberFormatException ex) {
-        throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameNotInteger", name, prefix);
+        throw NamedBean::BadSystemNameException(locale, tr("\"%1\" must be an integer after \"%2\".").arg(name).arg(prefix), name, prefix);
     }
     return name;
 }
+
+/**
+     * Convenience implementation of
+     * {@link #validateSystemNameFormat(java.lang.String, java.util.Locale)}
+     * that verifies name is a valid NMRA Accessory address after the prefix. A
+     * name is considered a valid NMRA accessory address if it is an integer
+     * between {@value NmraPacket#accIdLowLimit} and
+     * {@value NmraPacket#accIdHighLimit}, inclusive.
+     * <p>
+     * <strong>Note</strong> this <em>must</em> only be used if the connection
+     * type is externally documented to require these restrictions.
+     *
+     * @param name   the system name to validate
+     * @param locale the locale for a localized exception; this is needed for
+     *               the JMRI web server, which supports multiple locales
+     * @return the unchanged value of the name parameter
+     * @throws BadSystemNameException if provided name is an invalid format
+     */
+    //@Nonnull
+    /*public*/ /*default*/ QString Manager::validateNmraAccessorySystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) {
+        return this->validateIntegerSystemNameFormat(name, NmraPacket::accIdLowLimit, NmraPacket::accIdHighLimit, locale);
+    }
+
+/**
+  * Defines an event that encapsulates changes to a list.
+  * <p>
+  * Intended to be equivalent to {@link javax.swing.event.ListDataEvent}
+  * without introducing a Swing dependency into core JMRI.
+  *
+  * @param <E> the type to support in the event
+  * @since JMRI 4.11.4
+  */
+ //@javax.annotation.concurrent.Immutable
+// /*public*/ /*final*/ class ManagerDataEvent  /*<E extends NamedBean>*/: public EventObject
+// {
+//  public:
+     /**
+      * Equal to {@link javax.swing.event.ListDataEvent#CONTENTS_CHANGED}
+      */
+     /*final*/ /*static*/ /*public*/ int Manager::ManagerDataEvent::CONTENTS_CHANGED = 0;
+     /**
+      * Equal to {@link javax.swing.event.ListDataEvent#INTERVAL_ADDED}
+      */
+     /*final*/ /*static*/ /*public*/ int Manager::ManagerDataEvent::INTERVAL_ADDED = 1;
+     /**
+      * Equal to {@link javax.swing.event.ListDataEvent#INTERVAL_REMOVED}
+      */
+     /*final*/ /*static*/ /*public*/ int Manager::ManagerDataEvent::INTERVAL_REMOVED = 2;
+//   private:
+//     /*final*/ /*private*/ int type;
+//     /*final*/ /*private*/ int index0;
+//     /*final*/ /*private*/ int index1;
+//     /*final*/ /*private*/ /*E*/NamedBean* changedBean; // used when just one bean is added or removed as an efficiency measure
+//     /*final*/ /*private*/ Manager/*<E>*/ source;
+//        public:
+     /**
+      * Creates a <code>ListDataEvent</code> object.
+      *
+      * @param source      the source of the event (<code>null</code> not
+      *                    permitted).
+      * @param type        the type of the event (should be one of
+      *                    {@link #CONTENTS_CHANGED}, {@link #INTERVAL_ADDED}
+      *                    or {@link #INTERVAL_REMOVED}, although this is not
+      *                    enforced).
+      * @param index0      the index for one end of the modified range of
+      *                    list elements.
+      * @param index1      the index for the other end of the modified range
+      *                    of list elements.
+      * @param changedBean used when just one bean is added or removed,
+      *                    otherwise null
+      */
+     /*public*/ Manager::ManagerDataEvent::ManagerDataEvent(/*@Nonnull*/ Manager/*<E>*/* source, int type, int index0, int index1, /*E*/NamedBean* changedBean)
+     : EventObject(source)
+     {
+         //super(source);
+         this->source = source;
+         this->type = type;
+         this->index0 = qMin(index0, index1);  // from javax.swing.event.ListDataEvent implementation
+         this->index1 = qMax(index0, index1);  // from javax.swing.event.ListDataEvent implementation
+         this->changedBean = changedBean;
+     }
+
+     /**
+      * Returns the source of the event in a type-safe manner.
+      *
+      * @return the event source
+      */
+     //@Override
+     /*public*/ Manager/*<E>*/* Manager::ManagerDataEvent::getSource() {
+         return source;
+     }
+
+     /**
+      * Returns the index of the first item in the range of modified list
+      * items.
+      *
+      * @return The index of the first item in the range of modified list
+      *         items.
+      */
+     /*public*/ int Manager::ManagerDataEvent::getIndex0() {
+         return index0;
+     }
+
+     /**
+      * Returns the index of the last item in the range of modified list
+      * items.
+      *
+      * @return The index of the last item in the range of modified list
+      *         items.
+      */
+     /*public*/ int Manager::ManagerDataEvent::getIndex1() {
+         return index1;
+     }
+
+     /**
+      * Returns the changed bean or null
+      *
+      * @return null if more than one bean was changed
+      */
+     /*public*/ /*E*/NamedBean* Manager::ManagerDataEvent::getChangedBean() {
+         return changedBean;
+     }
+
+     /**
+      * Returns a code representing the type of this event, which is usually
+      * one of {@link #CONTENTS_CHANGED}, {@link #INTERVAL_ADDED} or
+      * {@link #INTERVAL_REMOVED}.
+      *
+      * @return The event type.
+      */
+     /*public*/ int Manager::ManagerDataEvent::getType() {
+         return type;
+     }
+
+     /**
+      * Returns a string representing the state of this event.
+      *
+      * @return A string.
+      */
+     //@Override
+     /*public*/ QString Manager::ManagerDataEvent::toString() {
+         return /*getClass().getName()*/QString(this->metaObject()->className()) + "[type=" + QString::number(type) + ",index0=" + QString::number(index0) + ",index1=" + QString::number(index1) + "]";
+     }
+//    }; // end class definition ManagerDataEvent
+    /**
+     * Register a {@link ManagerDataListener} to hear about adding or removing
+     * items from the list of NamedBeans.
+     *
+     * @param e the data listener to add
+     */
+     /*public*/ void Manager::addDataListener(/*ManagerDataListener<E>*/QObject* /*e*/) {}
+
+    /**
+     * Unregister a previously-added {@link ManagerDataListener}.
+     *
+     * @param e the data listener to remove
+     */
+    /*public*/ void Manager::removeDataListener(/*ManagerDataListener<E>*/QObject* /*e*/) {}
+
+    /**
+     * Temporarily suppress DataListener notifications.
+     * <p>
+     * This avoids O(N^2) behavior when doing bulk updates, i.e. when loading
+     * lots of Beans. Note that this is (1) optional, in the sense that the
+     * manager is not required to mute and (2) if present, its' temporary, in
+     * the sense that the manager must do a cumulative notification when done.
+     *
+     * @param muted true if notifications should be suppressed; false otherwise
+     */
+    /*public*/ /*default*/ void Manager::setDataListenerMute(bool muted) {
+    }

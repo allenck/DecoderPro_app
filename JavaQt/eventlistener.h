@@ -5,6 +5,7 @@
 #include "javaqt_global.h"
 class JAVAQTSHARED_EXPORT EventListener :public QObject
 {
+ Q_OBJECT
 public:
  EventListener();
     

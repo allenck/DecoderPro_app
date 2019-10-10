@@ -3,7 +3,7 @@
 #include "eventlistenerproxy.h"
 #include "propertychangelistener.h"
 
-class PropertyChangeListenerProxy : public EventListenerProxy<PropertyChangeListener>
+class PropertyChangeListenerProxy : public EventListenerProxy<PropertyChangeListener*>
 {
     //Q_OBJECT
 public:

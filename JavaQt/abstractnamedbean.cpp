@@ -176,10 +176,10 @@ QString AbstractNamedBean::getDisplayName()
  * information is not available for some reason.
  */
 /*public synchronized*/ int AbstractNamedBean::getNumPropertyChangeListeners() {
-    return pcs->getPropertyChangeListeners()->length();
+    return pcs->getPropertyChangeListeners().length();
 }
 
-/*public synchronized*/ QList<PropertyChangeListener*>* AbstractNamedBean::getPropertyChangeListeners() {
+/*public synchronized*/ QVector<PropertyChangeListener*> AbstractNamedBean::getPropertyChangeListeners() {
     return pcs->getPropertyChangeListeners();
 }
 

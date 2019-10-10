@@ -14,27 +14,33 @@ public:
     InternalSensorManager(InternalSystemConnectionMemo *memo, QObject* parent = nullptr);
 
     /*public*/ InternalSensorManager(QString prefix);
+    /*public*/ static /*synchronized*/ void setDefaultStateForNewSensors(int defaultSetting);
+    /*public*/ static /*synchronized*/ int getDefaultStateForNewSensors();
+    /*public*/ bool allowMultipleAdditions(QString systemName);
+    /*public*/ QString getNextValidAddress(QString curAddress, QString prefix);
+    // /*public*/ QString getSystemPrefix();
+     /*public*/ SystemConnectionMemo* getMemo();
+    /*public*/ QString getEntryToolTip();
 
 private:
- Logger log;
-protected:
-/*public*/ bool allowMultipleAdditions(QString systemName);
-/*public*/ QString getNextValidAddress(QString curAddress, QString prefix);
-/*public*/ QString getSystemPrefix();
-/*public*/ static /*synchronized*/ void setDefaultStateForNewSensors(int defaultSetting);
-/*public*/ static /*synchronized*/ int getDefaultStateForNewSensors();
+ static Logger* log;
 
 private:
  static int defaultState;// = Sensor::UNKNOWN;
-/**
- * Create an internal (dummy) sensor object
- * @return new null
- */
-/*protected*/ Sensor* createNewSensor(QString systemName, QString userName);
-/*protected*/ QString prefix;// = "I";
-friend class InternalSensorManagerXml;
-friend class SensorTableAction;
+
+ protected:
+
+ /**
+  * Create an internal (dummy) sensor object
+  * @return new null
+  */
+ /*protected*/ Sensor* createNewSensor(QString systemName, QString userName);
+ /*protected*/ QString prefix;// = "I";
+ friend class InternalSensorManagerXml;
+ friend class SensorTableAction;
+ friend class JUnitUtil;
 };
+
 class InternalAbstractSensor : public AbstractSensor
 {
  Q_OBJECT

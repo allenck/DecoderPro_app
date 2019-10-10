@@ -306,11 +306,14 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
            + "Xml";
    log->trace(tr("adapter class name is %1").arg(result));
    return result;
-} else {
+ } else {
    // no last dot found!
+  if(className.isEmpty())
+  {
    log->error("No package name found, which is not yet handled! "+ className);
-   return nullptr;
-}
+    return nullptr;
+  }
+ }
 #endif
  QString result = className + "Xml";
  return result;

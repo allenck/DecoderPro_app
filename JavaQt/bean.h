@@ -25,6 +25,7 @@ protected:
  /*protected*/ void fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue);
 friend class ManagerDefaultsConfigPane;
 friend class SATableModel;
+friend class ManagerDefaultSelector;
 };
 
 #endif // BEAN_H

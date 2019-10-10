@@ -20,6 +20,7 @@
 #include "conditionalvariable.h"
 #include "conditionalaction.h"
 #include "joptionpane.h"
+#include "vetoablechangesupport.h"
 
 //EntryExitPairs::EntryExitPairs(QObject *parent) :
 //    Manager(parent)
@@ -130,7 +131,9 @@ return (settingRouteColor == QColor() ? false : true);
  connect(checkTimer, SIGNAL(timeout()), this, SLOT(checkRoute()));
  deletePairList = QList<DeletePair*>();
  nxpair = QHash<PointDetails*, Source*>();
-
+ vcs = new VetoableChangeSupport(this);
+ listeners = QVector<ManagerDataListener*>();
+ pcs = new PropertyChangeSupport(this);
 
  if(InstanceManager::getDefault("ConfigureManager")!=NULL)
    static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(this);
@@ -251,6 +254,13 @@ return (settingRouteColor == QColor() ? false : true);
 
 /*public*/ QString EntryExitPairs::makeSystemName(QString /*s*/) {
     throw new UnsupportedOperationException("Not supported yet.");
+}
+
+/** {@inheritDoc} */
+//@Override
+//@CheckReturnValue
+/*public*/ int EntryExitPairs::getObjectCount() {
+    return getNamedBeanList()->size(); // not efficient
 }
 
 /*public*/ QStringList EntryExitPairs::getSystemNameArray() {
@@ -1258,4 +1268,83 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, LayoutBlock* 
   }
  }
 }
-//    };
+
+/*public*/ void EntryExitPairs::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+
+}
+
+
+//@Override
+/*public*/ /*synchronized*/ void EntryExitPairs::addVetoableChangeListener(VetoableChangeListener* l) {
+    vcs->addVetoableChangeListener(l);
+}
+
+//@Override
+/*public*/ /*synchronized*/ void EntryExitPairs::removeVetoableChangeListener(VetoableChangeListener* l) {
+    vcs->removeVetoableChangeListener(l);
+}
+
+
+//@Override
+/*public*/ void EntryExitPairs::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    pcs->addPropertyChangeListener(propertyName, listener);
+}
+
+//@Override
+/*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners() {
+    return pcs->getPropertyChangeListeners();
+}
+
+//@Override
+/*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners(QString propertyName) {
+    return pcs->getPropertyChangeListeners(propertyName);
+}
+
+//@Override
+/*public*/ void EntryExitPairs::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    pcs->removePropertyChangeListener(propertyName, listener);
+}
+
+//@Override
+/*public*/ void EntryExitPairs::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+    vcs->addVetoableChangeListener(propertyName, listener);
+}
+
+//@Override
+/*public*/ QVector<VetoableChangeListener*> EntryExitPairs::getVetoableChangeListeners() {
+    return vcs->getVetoableChangeListeners();
+}
+
+//@Override
+/*public*/ QVector<VetoableChangeListener*> EntryExitPairs::getVetoableChangeListeners(QString propertyName) {
+    return vcs->getVetoableChangeListeners(propertyName);
+}
+
+//@Override
+/*public*/ void EntryExitPairs::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+    vcs->removeVetoableChangeListener(propertyName, listener);
+}
+
+//@Override
+/*public*/ void EntryExitPairs::deleteBean(DestinationPoints* bean, QString property) throw (PropertyVetoException) {
+
+}
+
+//@Override
+/*public*/ QString EntryExitPairs::getBeanTypeHandled(bool plural) {
+    return tr(plural ? "Transits" : "Transit");  // NOI18N
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void EntryExitPairs::addDataListener(ManagerDataListener *e) {
+    if (e != nullptr) listeners.append(e);
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void EntryExitPairs::removeDataListener(ManagerDataListener *e) {
+    if (e != nullptr) listeners.removeOne(e);
+}
+
+

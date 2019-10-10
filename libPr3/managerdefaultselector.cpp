@@ -52,6 +52,7 @@
 
  //SystemConnectionMemoManager::addPropertyChangeListener((PropertyChangeListener*)this);
  SystemConnectionMemoManager* mgr = SystemConnectionMemoManager::getDefault();
+ connect(mgr->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 

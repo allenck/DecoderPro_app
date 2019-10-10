@@ -2848,7 +2848,7 @@ void DestinationMast::setTurnouts(QHash<NamedBeanHandle<Turnout*>*, int> turnout
 /*public*/ /*synchronized*/ int DefaultSignalMastLogic::getNumPropertyChangeListeners()
 {
  QMutexLocker locker(&mutex);
- return pcs->getPropertyChangeListeners()->count();
+ return pcs->getPropertyChangeListeners().count();
 }
 /*protected*/ void DefaultSignalMastLogic::firePropertyChange(QString p, QVariant old, QVariant n) { pcs->firePropertyChange(p,old,n);}
 

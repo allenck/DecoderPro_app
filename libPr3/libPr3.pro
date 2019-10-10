@@ -182,7 +182,6 @@ SOURCES += \
     basicrosterentry.cpp \
     abstractthrottle.cpp \
     commandstation.cpp \
-    nmrapacket.cpp \
     dccconsist.cpp \
     throttle.cpp \
     dccconsistmanager.cpp \
@@ -933,7 +932,8 @@ SOURCES += \
     rfid/abstractidtagreporter.cpp \
     rfid/idtaglistener.cpp \
     loconet/lndeferprogrammer.cpp \
-    abstractproxyturnoutmanager.cpp
+    abstractproxyturnoutmanager.cpp \
+    proxyturnoutmanagerxml.cpp
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1050,7 +1050,6 @@ HEADERS += \
     abstractthrottle.h \
     throttlemanager.h \
     commandstation.h \
-    nmrapacket.h \
     consistmanager.h \
     dccconsistmanager.h \
     dccconsist.h \
@@ -1864,7 +1863,8 @@ HEADERS += \
     rfid/reportervariant.h \
     loconet/lndeferprogrammer.h \
     vetoablechangeprovider.h \
-    abstractproxyturnoutmanager.h
+    abstractproxyturnoutmanager.h \
+    proxyturnoutmanagerxml.h
 
  !contains(FTDI, 1) {
     HEADERS +=

@@ -36,7 +36,7 @@ AbstractSensor::AbstractSensor(QString systemName, QObject *parent)
 }
 
 AbstractSensor::AbstractSensor(QString systemName, QString userName, QObject *parent)
- : Sensor(systemName.toUpper(), userName, parent)
+ : Sensor(systemName, userName, parent)
 {
   //super(systemName.toUpperCase(), userName);
   sensorDebounceGoingActive = 0L;

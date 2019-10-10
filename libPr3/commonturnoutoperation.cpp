@@ -1,9 +1,5 @@
 #include "commonturnoutoperation.h"
 
-//CommonTurnoutOperation::CommonTurnoutOperation(QObject *parent) :
-//    TurnoutOperation(parent)
-//{
-//}
 /**
  * CommonTurnoutOperation class - specialization of TurnoutOperation to contain
  * common properties and methods for concrete subclasses

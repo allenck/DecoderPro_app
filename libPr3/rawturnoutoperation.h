@@ -13,7 +13,7 @@ public:
     RawTurnoutOperation(const RawTurnoutOperation&) : CommonTurnoutOperation("Raw",defaultInterval,defaultMaxTries) {}
     static /*public*/ /*final*/ int defaultInterval;// = 300;
     static /*public*/ /*final*/ int defaultMaxTries;// = 1;
-    /*public*/ RawTurnoutOperation(QString n, int i, int mt, QObject *parent);
+    Q_INVOKABLE /*public*/ RawTurnoutOperation(QString n, int i, int mt, QObject *parent);
     /*public*/ TurnoutOperation* makeCopy(QString n);
     /*public*/ int getDefaultInterval();
     /*public*/ int getDefaultMaxTries();

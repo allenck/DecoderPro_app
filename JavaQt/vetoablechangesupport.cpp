@@ -2,6 +2,7 @@
 #include "propertychangeevent.h"
 #include "exceptions.h"
 #include "vetoablechangelistener.h"
+#include "vetoablechangelistenerproxy.h"
 
 /**
  * This is a utility class that can be used by beans that support constrained
@@ -62,6 +63,8 @@
             throw NullPointerException();
         }
         source = sourceBean;
+        map = new VetoableChangeListenerMap() ;
+
     }
 
    /**
@@ -117,7 +120,7 @@
         disconnect(this, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), listener, SLOT(vetoableChange(PropertyChangeEvent*)));
 
     }
-#if 0
+
     /**
      * Returns an array of all the listeners that were added to the
      * VetoableChangeSupport object with addVetoableChangeListener().
@@ -149,8 +152,8 @@
      *         empty array if no listeners have been added
      * @since 1.4
      */
-    /*public*/ VetoableChangeListener[] getVetoableChangeListeners(){
-        return this.map.getListeners();
+    /*public*/ QVector<VetoableChangeListener*> VetoableChangeSupport::getVetoableChangeListeners(){
+        //return this->map->getListeners();
     }
 
     /**
@@ -166,15 +169,14 @@
      * @param propertyName  The name of the property to listen on.
      * @param listener  The VetoableChangeListener to be added
      */
-    /*public*/ void addVetoableChangeListener(
-                                String propertyName,
-                VetoableChangeListener listener) {
-        if (listener == null || propertyName == null) {
+    /*public*/ void VetoableChangeSupport::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) \
+    {
+        if (listener == nullptr || propertyName == "") {
             return;
         }
-        listener = this.map.extract(listener);
-        if (listener != null) {
-            this.map.add(propertyName, listener);
+        //listener = this->map->extract(listener);
+        if (listener != nullptr) {
+            this->map->add(propertyName, listener);
         }
     }
 
@@ -191,15 +193,15 @@
      * @param propertyName  The name of the property that was listened on.
      * @param listener  The VetoableChangeListener to be removed
      */
-    /*public*/ void removeVetoableChangeListener(
-                                String propertyName,
-                VetoableChangeListener listener) {
-        if (listener == null || propertyName == null) {
+    /*public*/ void VetoableChangeSupport::removeVetoableChangeListener(
+                                QString propertyName,
+                VetoableChangeListener* listener) {
+        if (listener == nullptr || propertyName == "") {
             return;
         }
-        listener = this.map.extract(listener);
-        if (listener != null) {
-            this.map.remove(propertyName, listener);
+        listener = this->map->extract(listener);
+        if (listener != nullptr) {
+            this->map->remove(propertyName, listener);
         }
     }
 
@@ -214,10 +216,14 @@
      *         returned.
      * @since 1.4
      */
-    /*public*/ VetoableChangeListener[] getVetoableChangeListeners(String propertyName) {
-        return this.map.getListeners(propertyName);
-    }
+    /*public*/ QVector<VetoableChangeListener*> VetoableChangeSupport::getVetoableChangeListeners(QString propertyName) {
+#if 0
+        return this->map->getListeners(propertyName);
+#else
+ return QVector<VetoableChangeListener*>();
 #endif
+    }
+
     /**
      * Reports a constrained property update to listeners
      * that have been registered to track updates of
@@ -462,13 +468,15 @@
      * Serialization version ID, so we're compatible with JDK 1.1
      */
     static final long serialVersionUID = -5090210921595982017L;
-
+#endif
     /**
      * This is a {@link ChangeListenerMap ChangeListenerMap} implementation
      * that works with {@link VetoableChangeListener VetoableChangeListener} objects.
      */
-    private static final class VetoableChangeListenerMap extends ChangeListenerMap<VetoableChangeListener> {
-        private static final VetoableChangeListener[] EMPTY = {};
+//    /*private*/ /*static*/ /*final*/ class VetoableChangeListenerMap : public ChangeListenerMap<VetoableChangeListener*>
+//    {
+//     Q_OBJECT
+        /*private*/ /*static*/ /*final*/ QVector<VetoableChangeListener*> VetoableChangeListenerMap::EMPTY = QVector<VetoableChangeListener*>();
 
         /**
          * Creates an array of {@link VetoableChangeListener VetoableChangeListener} objects.
@@ -478,10 +486,10 @@
          * @param length  the array length
          * @return        an array with specified length
          */
-        @Override
-        protected VetoableChangeListener[] newArray(int length) {
+        //@Override
+        /*protected*/ QVector<VetoableChangeListener*> VetoableChangeListenerMap::newArray(int length) {
             return (0 < length)
-                    ? new VetoableChangeListener[length]
+                    ? QVector< VetoableChangeListener*>(length)
                     : EMPTY;
         }
 
@@ -493,20 +501,24 @@
          * @param listener  the listener to process events
          * @return          a {@code VetoableChangeListenerProxy} object
          */
-        @Override
-        protected VetoableChangeListener newProxy(String name, VetoableChangeListener listener) {
-            return new VetoableChangeListenerProxy(name, listener);
+        //@Override
+        /*protected*/ VetoableChangeListener* VetoableChangeListenerMap::newProxy(QString name, VetoableChangeListener* listener) {
+            return (VetoableChangeListener*)new VetoableChangeListenerProxy(name, listener);
         }
 
         /**
          * {@inheritDoc}
          */
-        /*public*/ final VetoableChangeListener extract(VetoableChangeListener listener) {
-            while (listener instanceof VetoableChangeListenerProxy) {
-                listener = ((VetoableChangeListenerProxy) listener).getListener();
+        /*public*/ /*final*/ VetoableChangeListener* VetoableChangeListenerMap::extract(VetoableChangeListener* listener) {
+            //while (listener instanceof VetoableChangeListenerProxy)
+            while(qobject_cast<VetoableChangeListenerProxy*>(listener) != nullptr)
+            {
+#if 0
+                listener = ((VetoableChangeListenerProxy*) listener)->getListener();
+#endif
             }
             return listener;
         }
-    }
-}
-#endif
+//    };
+
+

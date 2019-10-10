@@ -7,7 +7,8 @@ class JMRIClientTurnoutManager : public AbstractTurnoutManager
 {
 public:
  JMRIClientTurnoutManager(JMRIClientSystemConnectionMemo* memo, QObject* parent = nullptr);
- /*public*/ QString getSystemPrefix();
+ /*public*/ SystemConnectionMemo* getMemo();
+
  /*public*/ Turnout* createNewTurnout(QString systemName, QString userName);
  /*public*/ QString createSystemName(QString curAddress, QString prefix) throw (JmriException);
  /*public*/ bool allowMultipleAdditions(QString systemName);

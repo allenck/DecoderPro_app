@@ -23,6 +23,8 @@
 #include "tests/loconet/lndeferprogrammertestaction.h"
 #include "tests/loconet/lnturnoutmanagertestaction.h"
 #include "tests/misc/proxyturnoutmanagertestaction.h"
+#include "tests/loconet/lnlighttestaction.h"
+#include "tests/misc/proxysensormanagertestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -52,6 +54,9 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addAction(new LnPortControllerTestAction(this));
     loconetTestMenu->addAction(new LnPacketizerTestAction(this));
     loconetTestMenu->addAction(new LnPowerManagerTestAction(this));
+    QMenu* loconetLightMenu = new QMenu(tr("Lights ..."));
+    loconetTestMenu->addMenu(loconetLightMenu);
+    loconetLightMenu->addAction(new LnLightTestAction(this));
     QMenu* loconetSensorsMenu = new QMenu(tr("Sensors ..."));
     loconetTestMenu->addMenu(loconetSensorsMenu);
     loconetSensorsMenu->addAction(new LnSensorTestAction(this));
@@ -69,4 +74,5 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* proxyMenu = new QMenu(tr("Proxy Managers ..."));
     addMenu(proxyMenu);
     proxyMenu->addAction(new ProxyTurnoutManagerTestAction(this));
+    proxyMenu->addAction(new ProxySensorManagerTestAction(this));
 }

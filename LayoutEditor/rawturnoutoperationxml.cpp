@@ -23,10 +23,10 @@ RawTurnoutOperationXml::RawTurnoutOperationXml(QObject *parent) :
  //try {
       //Class<?> myOpClass = Class.forName("jmri.RawTurnoutOperation");
     RawTurnoutOperation* myOpClass = new RawTurnoutOperation();
-#if 0
+#if 0 // TODO:
         return CommonTurnoutOperationXml::loadOne(e, myOpClass.getConstructor(new Class[]{String.class, int.class, int.class}),
-                    RawTurnoutOperation.getDefaultIntervalStatic(),
-                    RawTurnoutOperation.getDefaultMaxTriesStatic());
+                    RawTurnoutOperation::getDefaultIntervalStatic(),
+                    RawTurnoutOperation::getDefaultMaxTriesStatic());
         } catch (ClassNotFoundException e1) {
             log.error("while creating NoFeedbackTurnoutOperation", e1);
             return null;

@@ -14,7 +14,7 @@ class InternalSystemConnectionMemo : public SystemConnectionMemo
 {
  Q_OBJECT
 public:
- /*public*/ InternalSystemConnectionMemo(QObject* parent=nullptr);
+ Q_INVOKABLE /*public*/ InternalSystemConnectionMemo(QObject* parent=nullptr);
  InternalSystemConnectionMemo(QString prefix, QString name, bool defaultInstanceType, QObject* parent = nullptr);
  /*public*/ InternalSystemConnectionMemo(QString prefix, QString name, QObject* parent = nullptr);
  /*public*/ InternalSystemConnectionMemo(bool defaultInstanceType, QObject* parent = nullptr);

@@ -10,6 +10,7 @@
 #include <QTimer>
 #include "source.h"
 
+class VetoableChangeSupport;
 class DeletePair;
 class JDialog;
 class StackNXPanel;
@@ -130,6 +131,7 @@ public:
     /*public*/ QString getSystemPrefix();
     /*public*/ char typeLetter() ;
     /*public*/ QString makeSystemName(QString s);
+    /*public*/ int getObjectCount();
     /*public*/ QStringList getSystemNameArray();
     /*public*/ QStringList getSystemNameList();
     /*public*/ void Register(NamedBean* n);
@@ -173,13 +175,11 @@ public:
     /*public*/ PointDetails* getPointDetails(QObject* obj, LayoutEditor* panel);
     PointDetails* getPointDetails(LayoutBlock* source, LayoutBlock* destination, LayoutEditor* panel);
     //No point in have multiple copies of what is the same thing.
-    static QList<PointDetails*>* pointDetails;// = new ArrayList<PointDetails>();
     /*public*/ QString getPointAsString(NamedBean* obj, LayoutEditor* panel);
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* list, NamedBean* obj, LayoutEditor* panel);
 //    java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
-    /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n) ;
     /*public*/ void automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) throw (JmriException);
     /*public*/ int getSettingTimer();
     /*public*/ void setSettingTimer(int i);
@@ -193,12 +193,27 @@ public:
     /*public*/ bool isRouteStacked(DestinationPoints* dp, bool reverse);
     /*synchronized*/ /*public*/ void cancelStackedRoute(DestinationPoints* dp, bool reverse);
     /*public*/ QList<QString> layoutBlockSensors(/*@Nonnull*/ LayoutBlock* layoutBlock);
+    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l);
+    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l);
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName);
+    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
+    /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
+    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners();
+    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName);
+    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
+    /*public*/ void deleteBean(DestinationPoints* bean, QString property) throw (PropertyVetoException);
+    /*public*/ QString getBeanTypeHandled(bool plural);
+    /*public*/ void addDataListener(ManagerDataListener/*<DestinationPoints>*/* e);
+    /*public*/ void removeDataListener(ManagerDataListener/*DestinationPoints>*/* e);
 
 signals:
     void propertyChange(PropertyChangeEvent*);
 public slots:
     void on_propertyChange(PropertyChangeEvent*);
     /*public*/ void propertyDestinationPropertyChange(PropertyChangeEvent* e);
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
 
 private:
     int routeClearOption;// = PROMPTUSER;
@@ -237,9 +252,16 @@ private:
     /*private*/ void deleteNxPairs();
     QHash<PointDetails*, Source*> nxpair;// = new HashMap<>();
     void createDeletePairList(NamedBean* sensor);
+    VetoableChangeSupport* vcs;// = new VetoableChangeSupport(this);
+    /*final*/ QVector<ManagerDataListener*> listeners;// = new QVector<ManagerDataListener</*DestinationPoints*/NamedBean*>*>();
+    static QList<PointDetails*>* pointDetails;// = new ArrayList<PointDetails>();
+    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
 
 private slots:
     /*synchronized*/ void checkRoute();
+protected:
+    /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n) ;
+
  friend class DeletePair;
 };
 Q_DECLARE_METATYPE(EntryExitPairs)

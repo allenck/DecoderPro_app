@@ -28,6 +28,9 @@ public:
     /*public*/ static void suppressErrorMessage(QString msg, QString file, int line);
     /*public*/ static void suppressErrorMessageStartsWith(QString msg, QString file, int line);
     /*public*/ static void suppressWarnMessage(QString msg, QString file, int line);
+    /*public*/ static void resetUnexpectedMessageFlags(LogLevel* severity);
+    /*public*/ static bool unexpectedMessageSeen(LogLevel* l);
+    /*public*/ static QString unexpectedMessageContent(LogLevel* l);
 
 signals:
 
@@ -47,6 +50,7 @@ private:
     static bool unexpectedInfoSeen;// = false;
     static QString  unexpectedInfoContent;// = null;
     void superappend(LoggingEvent* l);
+
 
 protected:
     /*protected*/ static bool compare(LoggingEvent* e1, QString s2);

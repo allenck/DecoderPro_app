@@ -27,6 +27,20 @@ public:
     static QString getTestClassName();
     /*public*/ static void resetInstanceManager();
     /*public*/ static void initInternalTurnoutManager();
+    /*public*/ static void initInternalLightManager();
+    /*public*/ static void initInternalSensorManager();
+    /*public*/ static void initRouteManager();
+    /*public*/ static void initMemoryManager();
+    /*public*/ static void initReporterManager();
+    /*public*/ static void initOBlockManager();
+    /*public*/ static void initWarrantManager();
+    /*public*/ static void initSignalMastLogicManager();
+    /*public*/ static void initLayoutBlockManager();
+    /*public*/ static void initSectionManager();
+    /*public*/ static void initInternalSignalHeadManager();
+    /*public*/ static void initDefaultSignalMastManager();
+    /*public*/ static void resetWindows(bool warn, bool error);
+    /*public*/ static void dispose(/*@Nonnull*/ QWidget* window);
 
 signals:
 

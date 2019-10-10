@@ -221,7 +221,9 @@ SOURCES += javaqt.cpp \
     printstream.cpp \
     myfileinputstream.cpp \
     bufferedwriter.cpp \
-    outputstreamwriter.cpp
+    outputstreamwriter.cpp \
+    nmrapacket.cpp \
+    vetoablechangelistenerproxy.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -480,7 +482,9 @@ HEADERS += javaqt.h\
     filteroutputstream.h \
     printstream.h \
     myfileinputstream.h \
-    providingmanager.h
+    providingmanager.h \
+    nmrapacket.h \
+    vetoablechangelistenerproxy.h
 
 unix {
     target.path = /usr/lib

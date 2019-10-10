@@ -255,7 +255,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
  {
   QDomElement elem = turnoutList.at(i).toElement();
   QString sysName = getSystemName(elem);
-  if ( sysName == nullptr )
+  if ( sysName == "" )
   {
    log->error("unexpected nullptr in systemName "+elem.tagName());
    result = false;

@@ -13,6 +13,9 @@
 #include "loggerfactory.h"
 #include "namedbeancomparator.h"
 
+// NOTE: This class is a repklacement for AbstractProxyManager that
+// implements TurnoutManager instead of AbstractManager
+
 AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
     : TurnoutManager(new SystemConnectionMemo(), parent)
 {

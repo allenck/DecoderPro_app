@@ -21,6 +21,12 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  defaultManager = nullptr;
  addedOrderList = QStringList();
  log->setDebugEnabled(true);
+ listeners = QList<QObject*>();
+ propertyListenerList = QVector<PropertyChangeListener*>();
+ namedPropertyListenerMap = QMap<QString, QVector<PropertyChangeListener*>* >();
+ propertyVetoListenerList = QVector<VetoableChangeListener*> ();
+ namedPropertyVetoListenerMap = QMap<QString, QVector<VetoableChangeListener*>*>();
+
 
  //registerSelf();
 }
@@ -120,20 +126,45 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 /*public*/ void AbstractProxyManager::addManager(Manager* m)
 {
  // check for already present
- if (mgrs.contains(m))
+ for (Manager* check : mgrs)
  {
-  // already present, complain and skip
-  log->warn(tr("Manager already present: %1").arg(m->metaObject()->className()));
-  return;
+  if (m == check) { // can't use contains(..) because of Comparator.equals is on the prefix
+      // already present, complain and skip
+      log->warn(tr("Manager already present: %1").arg(QString(m->metaObject()->className()))); // NOI18N
+      return;
+  }
  }
  mgrs.append(static_cast<AbstractManager*>(m));
 
- if (defaultManager == nullptr) defaultManager = m;  // 1st one is default
- AbstractManager* am = static_cast<AbstractManager*>(m);
- connect(am->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ //propertyVetoListenerList.stream().forEach((l) ->
+ foreach(VetoableChangeListener*l, propertyVetoListenerList)
+ {
+             m->addVetoableChangeListener(l);
+ }//);
+ //propertyListenerList.stream().forEach((l) ->
+ foreach(PropertyChangeListener* l, propertyListenerList)
+ {
+     m->addPropertyChangeListener(l);
+ }//);
+#if 0
+ //namedPropertyVetoListenerMap.entrySet().forEach((e) ->
+ foreach(QVector<PropertyChangeListener*> e,  namedPropertyVetoListenerMap.values())
+ {
+     //e.getValue().forEach((l) -> {
+         foreach(PropertyChangeListener*l, e)
+         {
+         m.addVetoableChangeListener(e.getKey(), l);
+     });
+ });
+ namedPropertyListenerMap.entrySet().forEach((e) -> {
+     e.getValue().forEach((l) -> {
+         m.addPropertyChangeListener(e.getKey(), l);
+     });
+ });
 
- updateOrderList();
- //updateNamedBeanSet();
+#endif
+ m->addDataListener(this);
+  recomputeNamedBeanSet();
 
  if (log->isDebugEnabled())
  {
@@ -317,11 +348,12 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 /*protected*/ int AbstractProxyManager::matchTentative(QString systemname)
 {
  //Q_ASSERT(mgrs->count()> 0);
- for (int i = 0; i<nMgrs(); i++)
+ for (Manager* m : mgrs)
  {
-  if ( systemname.startsWith(((AbstractProxyManager*)getMgr(i))->getSystemPrefix()+((AbstractManager*)getMgr(i))->typeLetter()))
+  QString str = m->getSystemPrefix();
+  if ( systemname.startsWith(m->getSystemPrefix()+m->typeLetter()))
   {
-   return i;
+   return mgrs.indexOf(m);
   }
  }
  return -1;
@@ -377,6 +409,132 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  }
 }
 
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractProxyManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    if (!namedPropertyListenerMap.contains(propertyName)) {
+        namedPropertyListenerMap.insert(propertyName,  new QVector<PropertyChangeListener*>());
+    }
+    if (!namedPropertyListenerMap.value(propertyName)->contains(listener)) {
+        namedPropertyListenerMap.value(propertyName)->append(listener);
+    }
+    for (Manager/*<E>*/* m : mgrs) {
+        m->addPropertyChangeListener(propertyName, listener);
+    }
+}
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ QVector<PropertyChangeListener *> AbstractProxyManager::getPropertyChangeListeners() {
+    QVector<PropertyChangeListener*> listeners = QVector<PropertyChangeListener*>(propertyListenerList);
+    for (QVector<PropertyChangeListener*>* list : namedPropertyListenerMap.values()) {
+        //listeners.addAll(list);
+     foreach (PropertyChangeListener* listener, *list) {
+      listeners.append(listener);
+     }
+    }
+    return listeners; //new PropertyChangeListener[listeners.size()]);
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ QVector<PropertyChangeListener *> AbstractProxyManager::getPropertyChangeListeners(QString propertyName) {
+    if (!namedPropertyListenerMap.contains(propertyName)) {
+        namedPropertyListenerMap.insert(propertyName,  new QVector<PropertyChangeListener*>());
+    }
+    QVector<PropertyChangeListener*>* listeners = namedPropertyListenerMap.value(propertyName);
+    return *listeners; //new PropertyChangeListener[listeners.size()]);
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractProxyManager::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    if (!namedPropertyListenerMap.contains(propertyName)) {
+        namedPropertyListenerMap.insert(propertyName, new QVector<PropertyChangeListener*>());
+    }
+    namedPropertyListenerMap.value(propertyName)->removeOne(listener);
+    for (Manager/*<E>*/* m : mgrs) {
+        m->removePropertyChangeListener(propertyName, listener);
+    }
+}
+/** {@inheritDoc} */
+//@Override
+/*public*/ /*synchronized*/ void AbstractProxyManager::addVetoableChangeListener(VetoableChangeListener* l) {
+    if (!propertyVetoListenerList.contains(l)) {
+        propertyVetoListenerList.append(l);
+    }
+    for (Manager/*<E>*/ *m : mgrs) {
+        m->addVetoableChangeListener(l);
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ /*synchronized*/ void AbstractProxyManager::removeVetoableChangeListener(VetoableChangeListener* l) {
+    if (propertyVetoListenerList.contains(l)) {
+        propertyVetoListenerList.removeOne(l);
+    }
+    for (Manager/*<E>*/* m : mgrs) {
+        m->removeVetoableChangeListener(l);
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractProxyManager::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+    if (!namedPropertyVetoListenerMap.contains(propertyName)) {
+        namedPropertyVetoListenerMap.insert(propertyName, new QVector<VetoableChangeListener*>());
+    }
+    if (!namedPropertyVetoListenerMap.value(propertyName)->contains(listener)) {
+        namedPropertyVetoListenerMap.value(propertyName)->append(listener);
+    }
+    for (Manager/*<E>*/* m : mgrs) {
+        m->addVetoableChangeListener(propertyName, listener);
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ QVector<VetoableChangeListener*> AbstractProxyManager::getVetoableChangeListeners() {
+    QList<VetoableChangeListener*> listeners =  QList<VetoableChangeListener*>(propertyVetoListenerList.toList());
+    for (QVector<VetoableChangeListener*>* list : namedPropertyVetoListenerMap.values()) {
+        //listeners.addAll(list);
+     foreach(VetoableChangeListener* l, *list)
+      listeners.append(l);
+    }
+    return listeners.toVector(); //new VetoableChangeListener[listeners.size()]);
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ QVector<VetoableChangeListener*> AbstractProxyManager::getVetoableChangeListeners(QString propertyName) {
+    if (!namedPropertyVetoListenerMap.contains(propertyName)) {
+        namedPropertyVetoListenerMap.insert(propertyName, new QVector<VetoableChangeListener*>());
+    }
+    QVector<VetoableChangeListener*>* listeners = namedPropertyVetoListenerMap.value(propertyName);
+    //return listeners.toArray(new VetoableChangeListener[listeners->size()]);
+    return *listeners;
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractProxyManager::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+    if (!namedPropertyVetoListenerMap.contains(propertyName)) {
+        namedPropertyVetoListenerMap.insert(propertyName, new QVector<VetoableChangeListener*>());
+    }
+    namedPropertyVetoListenerMap.value(propertyName)->removeOne(listener);
+    for (Manager/*<E>*/* m : mgrs) {
+        m->removeVetoableChangeListener(propertyName, listener);
+    }
+}
+
 /**
  * @return The system-specific prefix letter for the primary implementation
  */
@@ -413,6 +571,14 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
     return getMgr(0)->makeSystemName(s);
 }
 
+/** {@inheritDoc} */
+//@CheckReturnValue
+//@Override
+/*public*/ int AbstractProxyManager::getObjectCount() {
+    int count = 0;
+    for (Manager/*<E>*/* m : mgrs) { count += m->getObjectCount(); }
+    return count;
+}
 /*public*/ QStringList AbstractProxyManager::getSystemNameArray() {
     //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
     QSet<QString>* ts = new QSet<QString>();
@@ -498,6 +664,14 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
  }
 }
 
+/*protected*/ void AbstractProxyManager::recomputeNamedBeanSet() {
+        if (namedBeanSet.isEmpty()) return; // only maintain if requested
+        namedBeanSet.clear();
+        for (Manager/*<E>*/* m : mgrs) {
+            namedBeanSet.unite(m->getNamedBeanSet());
+        }
+    }
+
 /** {@inheritDoc} */
 //@Override
 //@Nonnull
@@ -538,5 +712,110 @@ void AbstractProxyManager::propertyChange(PropertyChangeEvent */*e*/)
 {
  //emit this->propertyChange(e);
 }
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractProxyManager::addDataListener(/*ManagerDataListener<E>*/QObject* e) {
+    if (e != nullptr)
+    {
+     listeners.append(e);
+     connect(this, SIGNAL(notifyContentsChanged(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(contentsChanged(Manager::ManagerDataEvent*)));
+     connect(this, SIGNAL(notifyIntervalAdded(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(intervalAdded(Manager::ManagerDataEvent*)));
+     connect(this, SIGNAL(notifyIntervalRemoved(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(intervalRemoved(Manager::ManagerDataEvent*)));
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractProxyManager::removeDataListener(/*ManagerDataListener<E>*/QObject* e) {
+    if (e != nullptr)
+    {
+     listeners.removeOne(e);
+     disconnect(this, SIGNAL(notifyContentsChanged(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(contentsChanged(Manager::ManagerDataEvent*)));
+     disconnect(this, SIGNAL(notifyIntervalAdded(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(intervalAdded(Manager::ManagerDataEvent*)));
+     disconnect(this, SIGNAL(notifyIntervalRemoved(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(intervalRemoved(Manager::ManagerDataEvent*)));
+    }
+}
+
+
+/**
+ * {@inheritDoc}
+ * From Manager.ManagerDataListener, receives notifications from underlying
+ * managers.
+ */
+//@Override
+/*public*/ void AbstractProxyManager::contentsChanged(Manager::ManagerDataEvent/*<E>*/* e) {
+}
+
+/**
+ * {@inheritDoc}
+ * From Manager.ManagerDataListener, receives notifications from underlying
+ * managers.
+ */
+//@Override
+/*public*/ void AbstractProxyManager::intervalAdded(AbstractProxyManager::ManagerDataEvent/*<E>*/* e) {
+    if (!namedBeanSet.isEmpty() && e->getIndex0() == e->getIndex1()) {
+        // just one element added, and we have the object reference
+        namedBeanSet.insert(e->getChangedBean());
+    } else {
+        recomputeNamedBeanSet();
+    }
+
+    if (muted) return;
+
+    int offset = 0;
+    for (Manager/*<E>*/* m : mgrs) {
+        if (m == e->getSource()) break;
+        offset += m->getObjectCount();
+    }
+
+    ManagerDataEvent/*<E>*/* eOut = new ManagerDataEvent/*<E>*/(this, Manager::ManagerDataEvent::INTERVAL_ADDED, e->getIndex0()+offset, e->getIndex1()+offset, e->getChangedBean());
+
+//    for (ManagerDataListener<E> m : listeners) {
+//        m.intervalAdded(eOut);
+//    }
+    emit notifyIntervalAdded(eOut);
+}
+
+/**
+ * {@inheritDoc}
+ * From Manager.ManagerDataListener, receives notifications from underlying
+ * managers.
+ */
+//@Override
+/*public*/ void AbstractProxyManager::intervalRemoved(AbstractProxyManager::ManagerDataEvent/*<E>*/* e) {
+    recomputeNamedBeanSet();
+
+    if (muted) return;
+
+    int offset = 0;
+    for (Manager/*<E>*/* m : mgrs) {
+        if (m == e->getSource()) break;
+        offset += m->getObjectCount();
+    }
+
+    ManagerDataEvent/*<E>*/* eOut = new ManagerDataEvent/*<E>*/(this, Manager::ManagerDataEvent::INTERVAL_REMOVED, e->getIndex0()+offset, e->getIndex1()+offset, e->getChangedBean());
+
+//    for (ManagerDataListener<E> m : listeners) {
+//        m.intervalRemoved(eOut);
+//    }
+    emit notifyIntervalRemoved(eOut);
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractProxyManager::setDataListenerMute(bool m) {
+    if (muted && !m)
+    {
+        // send a total update, as we haven't kept track of specifics
+        ManagerDataEvent/*<E>*/* e = new ManagerDataEvent/*<E>*/(this, ManagerDataEvent::CONTENTS_CHANGED, 0, getObjectCount()-1, nullptr);
+//        for (ManagerDataListener<E> listener : listeners) {
+//            listener.contentsChanged(e);
+//        }
+        emit notifyContentsChanged(e);
+    }
+    this->muted = m;
+}
+
 // initialize logging
 /*private*/ /*final*/ /*static*/ Logger* AbstractProxyManager::log = LoggerFactory::getLogger("AbstractProxyManager");

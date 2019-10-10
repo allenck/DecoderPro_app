@@ -243,8 +243,11 @@ void PositionablePropertiesUtil::fontApply()
  }
  ((PositionableLabel*)pop->_parent)->_editor->addToTarget((Positionable*)pop->_parent);
 }
+
 /*private*/ void PositionablePropertiesUtil::undoChanges()
 {
+ if(pop == nullptr)
+  return;
  //if (_parent instanceof SensorIcon) {
  if(qobject_cast<SensorIcon*>((QObject*)pop->_parent)!= NULL)
  {
