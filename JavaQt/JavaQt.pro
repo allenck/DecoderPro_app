@@ -484,7 +484,8 @@ HEADERS += javaqt.h\
     myfileinputstream.h \
     providingmanager.h \
     nmrapacket.h \
-    vetoablechangelistenerproxy.h
+    vetoablechangelistenerproxy.h \
+    proxymanager.h
 
 unix {
     target.path = /usr/lib

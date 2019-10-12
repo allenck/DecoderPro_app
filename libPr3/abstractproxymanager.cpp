@@ -135,6 +135,7 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
   }
  }
  mgrs.append(static_cast<AbstractManager*>(m));
+ if (defaultManager == nullptr) defaultManager = m;  // 1st one is default
 
  //propertyVetoListenerList.stream().forEach((l) ->
  foreach(VetoableChangeListener*l, propertyVetoListenerList)
@@ -267,14 +268,14 @@ AbstractProxyManager::AbstractProxyManager(QObject *parent)
 //@Override
 /*public*/ NamedBean* AbstractProxyManager::getBeanBySystemName(QString systemName)
 {
- //NamedBean* t = nullptr;
- foreach (Manager* m, this->mgrs) {
-     NamedBean* b = m->getBeanBySystemName(systemName);
-     if (b != nullptr) {
-         return b;
-     }
+ // System names can be matched to managers by system and type at front of name
+ int index = matchTentative(systemName);
+ if (index >= 0) {
+     Manager/*<E>*/* m = getMgr(index);
+     return m->getBeanBySystemName(systemName);
  }
- return nullptr;
+ log->debug(tr("getBeanBySystemName did not find manager from name %1, defer to default manager").arg(systemName)); // NOI18N
+ return getDefaultManager()->getBeanBySystemName(systemName);
 }
 
 //@Override
@@ -719,9 +720,10 @@ void AbstractProxyManager::propertyChange(PropertyChangeEvent */*e*/)
     if (e != nullptr)
     {
      listeners.append(e);
-     connect(this, SIGNAL(notifyContentsChanged(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(contentsChanged(Manager::ManagerDataEvent*)));
-     connect(this, SIGNAL(notifyIntervalAdded(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(intervalAdded(Manager::ManagerDataEvent*)));
-     connect(this, SIGNAL(notifyIntervalRemoved(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(intervalRemoved(Manager::ManagerDataEvent*)));
+     ManagerDataListener* listener = (ManagerDataListener*)e;
+     connect(this, SIGNAL(notifyContentsChanged(ManagerDataEvent*)), listener, SLOT(contentsChanged(ManagerDataEvent*)));
+     connect(this, SIGNAL(notifyIntervalAdded(ManagerDataEvent*)), listener, SLOT(intervalAdded(ManagerDataEvent*)));
+     connect(this, SIGNAL(notifyIntervalRemoved(ManagerDataEvent*)), listener, SLOT(intervalRemoved(ManagerDataEvent*)));
     }
 }
 

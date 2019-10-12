@@ -4,6 +4,7 @@
 #include <QObject>
 #include "propertychangelistener.h"
 #include "instancemanager.h"
+#include "light.h"
 
 class ALSLightListener;
 class Logger;

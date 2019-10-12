@@ -1,6 +1,6 @@
 #include "abstracttabletabaction.h"
 #include "jtable.h"
-#include "abstractproxymanager.h"
+//#include "abstractproxymanager.h"
 #include <QBoxLayout>
 #include "connectionnamefromsystemname.h"
 #include "QTabWidget"
@@ -15,6 +15,8 @@
 #include "mysortfilterproxymodel.h"
 #include "userpreferencesmanager.h"
 #include "instancemanager.h"
+#include "proxymanager.h"
+#include "proxylightmanager.h"
 
 //AbstractTableTabAction::AbstractTableTabAction(QObject *parent) :
 //    AbstractTableAction(parent)
@@ -59,9 +61,9 @@ AbstractTableTabAction::~AbstractTableTabAction()
  QGridLayout* dataPanelLayout;
  dataPanel->setLayout(dataPanelLayout = new QGridLayout());
  //if (getManager() instanceof jmri.managers.AbstractProxyManager)
- if(qobject_cast<AbstractProxyManager*>(getManager())!= nullptr)
+ if(qobject_cast<ProxyManager*>(getManager())!= nullptr)
  {
-  AbstractProxyManager* proxy = static_cast<AbstractProxyManager*>(getManager());
+  ProxyManager* proxy = static_cast<ProxyManager*>(getManager());
   QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
   AbstractTableAction* a = getNewTableAction("All");
   Q_UNUSED(a);

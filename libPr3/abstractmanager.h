@@ -4,7 +4,7 @@
 //#include "instancemanager.h"
 #include "manager.h"
 //#include "propertychangesupport.h"
-#include "javaqt_global.h"
+#include "libPr3_global.h"
 #include "propertyvetoexception.h"
 
 /**
@@ -21,7 +21,7 @@ class VetoableChangeSupport;
 class PropertyChangeSupport;
 class PropertyChangeListener;
 class PropertyChangeEvent;
-class JAVAQTSHARED_EXPORT AbstractManager : public  Manager
+class LIBPR3SHARED_EXPORT AbstractManager : public  Manager
 {
     Q_OBJECT
 public:
@@ -182,7 +182,7 @@ void fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n);
 
 protected slots:
 
- friend class AbstractProxyManager;
+ //friend class AbstractProxyManager;
  friend class PropertyChangeSupport;
  friend class BeanTableDataModel;
  friend class SGBeanTableDataModel;

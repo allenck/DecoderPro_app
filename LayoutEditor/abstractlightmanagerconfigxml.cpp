@@ -1,6 +1,8 @@
 #include "abstractlightmanagerconfigxml.h"
 #include "instancemanager.h"
 #include "internallightmanager.h"
+#include "proxylightmanager.h"
+
 
 AbstractLightManagerConfigXML::AbstractLightManagerConfigXML(QObject* parent) :
     AbstractNamedBeanManagerConfigXML(parent)

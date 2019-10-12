@@ -9,6 +9,8 @@
 #include "sensorentrywidget.h"
 #include "namedicon.h"
 #include <QSignalMapper>
+#include "actionlistener.h"
+#include "abstractsensormanager.h"
 
 MultiSensorIconWidget::MultiSensorIconWidget(MultiSensorIcon* icon, Editor* editor, QWidget *parent) :
     QWidget(parent),

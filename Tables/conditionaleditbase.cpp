@@ -12,6 +12,7 @@
 #include "signalmastmanager.h"
 #include "signalheadmanager.h"
 #include "conditionalvariable.h"
+#include "proxylightmanager.h"
 
 /**
  * This is the base class for the Conditional edit view classes. Contains shared

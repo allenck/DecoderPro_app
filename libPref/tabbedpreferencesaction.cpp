@@ -186,7 +186,7 @@ void TPRunnable::run()
 }
 
 //@Override
-/*public*/ void actionPerformed(ActionEvent* /*e*/)
+/*public*/ void TabbedPreferencesAction::actionPerformed(ActionEvent* /*e*/)
 {
  //actionPerformed();
 }

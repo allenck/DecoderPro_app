@@ -14,7 +14,7 @@
 ///*public*/ class ProxyIdTagManager extends AbstractProxyManager<IdTag>
 //        implements IdTagManager {
 
-    /*public*/ ProxyIdTagManager::ProxyIdTagManager(QObject* parent) : AbstractProxyManager(parent){
+    /*public*/ ProxyIdTagManager::ProxyIdTagManager(QObject* parent) : AbstractProxyIdTagManager(parent){
         //super();
     }
 
@@ -51,7 +51,7 @@
      */
     //@Override
     /*public*/ IdTag* ProxyIdTagManager::getIdTag(QString name) {
-        return (IdTag*)AbstractProxyManager::getNamedBean(name);
+        return (IdTag*)AbstractProxyIdTagManager::getNamedBean(name);
     }
 
     //@Override
@@ -77,7 +77,7 @@
      */
     //@Override
     /*public*/ IdTag* ProxyIdTagManager::provideIdTag(QString name) throw (IllegalArgumentException) {
-        return (IdTag*)AbstractProxyManager::provideNamedBean(name);
+        return (IdTag*)AbstractProxyIdTagManager::provideNamedBean(name);
     }
 
     /**
@@ -88,7 +88,7 @@
      */
     //@Override
     /*public*/ IdTag* ProxyIdTagManager::getBySystemName(QString systemName) {
-        return (IdTag*)AbstractProxyManager::getBeanBySystemName(systemName);
+        return (IdTag*)AbstractProxyIdTagManager::getBeanBySystemName(systemName);
     }
 
     /**
@@ -99,7 +99,7 @@
      */
     //@Override
     /*public*/ IdTag* ProxyIdTagManager::getByUserName(QString userName) {
-        return (IdTag*)AbstractProxyManager::getBeanByUserName(userName);
+        return (IdTag*)AbstractProxyIdTagManager::getBeanByUserName(userName);
     }
 
     /**
@@ -197,7 +197,7 @@
     }
 
     //@Override
-    /*public*/ QList<IdTag*> ProxyIdTagManager::getTagsForReporter(Reporter* reporter, long threshold) {
-        QList<IdTag*> out = QList<IdTag*>();
+    /*public*/ QList<IdTag *> *ProxyIdTagManager::getTagsForReporter(Reporter* reporter, long threshold) {
+        QList<IdTag*>* out = new QList<IdTag*>();
         return out;
     }

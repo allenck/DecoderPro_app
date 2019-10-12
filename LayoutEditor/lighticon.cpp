@@ -6,6 +6,7 @@
 #include "QGraphicsSceneMouseEvent"
 #include "abstractlight.h"
 #include "editor.h"
+#include "proxylightmanager.h"
 
 //LightIcon::LightIcon(QObject *parent) :
 //    PositionableLabel(parent)

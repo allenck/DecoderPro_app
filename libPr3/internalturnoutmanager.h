@@ -29,11 +29,11 @@ public:
  AbstractTurnoutO1(QString systemName, QString userName) : AbstractTurnout(systemName, userName) {}
 protected:
  //@Override
- /*protected*/ void forwardCommandChangeToLayout(int s) {
+ /*protected*/ void forwardCommandChangeToLayout(int /*s*/) {
  }
 
  //@Override
- /*protected*/ void turnoutPushbuttonLockout(bool b) {
+ /*protected*/ void turnoutPushbuttonLockout(bool /*b*/) {
  }
 
 protected:

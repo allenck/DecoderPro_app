@@ -1,10 +1,10 @@
 #ifndef PROXYREPORTERMANAGER_H
 #define PROXYREPORTERMANAGER_H
-#include "abstractproxymanager.h"
+#include "abstractproxyreportermanager.h"
 #include "reportermanager.h"
 #include "reporter.h"
 
-class LIBPR3SHARED_EXPORT ProxyReporterManager : public  AbstractProxyManager/*, public ReporterManager*/
+class LIBPR3SHARED_EXPORT ProxyReporterManager : public  AbstractProxyReporterManager/*, public ReporterManager*/
 {
     friend class AbstractProxyManager;
     Q_OBJECT
@@ -19,6 +19,7 @@ public:
      */
     /*public*/ Reporter* getReporter(QString name);
     /*public*/ Reporter* provideReporter(QString sName);
+    /*public*/ Reporter* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException);
     /**
      * Locate an instance based on a system name.  Returns null if no
      * instance already exists.
@@ -64,6 +65,9 @@ public:
     /*public*/ bool allowMultipleAdditions(QString systemName);
     /*public*/ QString getNextValidAddress(QString curAddress, QString prefix);
     /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
+    /*public*/ QString getEntryToolTip();
+    /*public*/ QString getBeanTypeHandled(bool plural);
+
 signals:
     
 public slots:

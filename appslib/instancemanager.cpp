@@ -71,6 +71,8 @@
 #include "vptr.h"
 #include <QApplication>
 //#include "proxymanager.h"
+#include "proxylightmanager.h"
+
 
 class ManagerLists : public QHash<QString,QObjectList*>
 {
@@ -804,7 +806,7 @@ void InstanceManager::setSensorManager(SensorManager* p)
 {
  log->debug(" setSensorManager");
  SensorManager* apm = static_cast<SensorManager*>(getDefault("SensorManager"));
- if (qobject_cast<AbstractProxyManager*>(apm)!= nullptr) { // <?> due to type erasure
+ if (qobject_cast<AbstractProxySensorManager*>(apm)!= nullptr) { // <?> due to type erasure
      ((ProxySensorManager*) apm)->addManager(p);
  } else {
      log->error("Incorrect setup: SensorManager default isn't an AbstractProxyManager<Sensor>");
@@ -849,7 +851,7 @@ void InstanceManager::setTurnoutManager(TurnoutManager* p) {
 
 void InstanceManager::setLightManager(LightManager* p) {
  log->debug(" setLightManager");
- ((AbstractProxyManager*) getDefault("LightManager"))->addManager(p);
+ ((AbstractProxyLightManager*) getDefault("LightManager"))->addManager(p);
  //store(p, LightManager.class);
 }
 
@@ -891,7 +893,7 @@ void InstanceManager::setConsistManager(ConsistManager* p) {
 
 void InstanceManager::setReporterManager(ReporterManager* p) {
  log->debug(" setReporterManager");
-   ((AbstractProxyManager*) getDefault("ReporterManager"))->addManager(p);
+   ((AbstractProxyReporterManager*) getDefault("ReporterManager"))->addManager(p);
    //store(p, ReporterManager.class);
 }
 

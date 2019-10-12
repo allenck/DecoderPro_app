@@ -5,6 +5,7 @@
 #include "instancemanager.h"
 #include "junitappender.h"
 #include "internalsystemconnectionmemo.h"
+#include "internalsensormanager.h"
 
 ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent)
 {
@@ -86,9 +87,10 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         try {
             l->provideSensor("");
             Assert::fail("didn't throw", __FILE__, __LINE__);
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             JUnitAppender::assertErrorMessage("Invalid system name for Sensor: System name must start with \"" + l->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
-            throw ex;
+//            throw ex;
         }
     }
 

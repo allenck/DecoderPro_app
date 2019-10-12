@@ -21,7 +21,7 @@ public slots:
 
 protected:
  // Manager<E> under test - setUp() loads this
- /*protected*/ ProxyManager* l = nullptr;
+ /*protected*/ Manager* l = nullptr;
 
 };
 
@@ -29,7 +29,7 @@ class PropertyChangeListenerO2 : public PropertyChangeListener {
 Q_OBJECT
     //@Override
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* evt) {
+    /*public*/ void propertyChange(PropertyChangeEvent* /*evt*/) {
         // do nothing
     }
 };
@@ -38,7 +38,7 @@ class VetoableChangeListenerO1 : public VetoableChangeListener
  Q_OBJECT
 public:
       //@Override
-      /*public*/ void vetoableChange(PropertyChangeEvent evt) throw (PropertyVetoException) {
+      /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/) throw (PropertyVetoException) {
           // do nothing
       }
 };

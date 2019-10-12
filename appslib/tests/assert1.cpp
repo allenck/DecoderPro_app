@@ -340,7 +340,7 @@ if(expected == actual)
 
 /*public*/ /*static*/ void Assert::assertNotEquals(QObject* unexpected, QObject* actual, QString file, int line)
 {
-    if(actual->metaObject()->className() == unexpected->metaObject()->className())
+    if(actual != nullptr && (actual->metaObject()->className() == unexpected->metaObject()->className()))
     {
         int ix = unexpected->metaObject()->indexOfMethod(QMetaObject::normalizedSignature("equals(QObject *)"));
         if(ix != -1)

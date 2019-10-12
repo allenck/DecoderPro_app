@@ -22,7 +22,6 @@
 #include <qstringlist.h>
 #include <qurl.h>
 #include <qvector.h>
-#include <rfidsensormanager.h>
 #include <roster.h>
 #include <rosterentry.h>
 #include <route.h>
@@ -46,92 +45,6 @@
 #include <vetoablechangesupport.h>
 #include <windowlistener.h>
 #include <xmlfile.h>
-
-
-
-class PythonQtShell_RfidSensorManager : public RfidSensorManager
-{
-public:
-    PythonQtShell_RfidSensorManager(QObject*  parent = 0):RfidSensorManager(parent),_wrapper(NULL) {}
-    PythonQtShell_RfidSensorManager(QString  prefix, QObject*  parent = 0):RfidSensorManager(prefix, parent),_wrapper(NULL) {}
-
-   ~PythonQtShell_RfidSensorManager();
-
-virtual void Register(NamedBean*  s);
-virtual void addDataListener(QObject*  e);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual bool  allowMultipleAdditions(QString  systemName);
-virtual void childEvent(QChildEvent*  event);
-virtual QString  createSystemName(QString  curAddress, QString  prefix) throw (JmriException);
-virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
-virtual void deregister(NamedBean*  s);
-virtual void dispose();
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual NamedBean*  getBeanBySystemName(QString  systemName);
-virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
-virtual Sensor*  getBySystemName(QString  key);
-virtual Sensor*  getByUserName(QString  key);
-virtual long  getDefaultSensorDebounceGoingActive();
-virtual long  getDefaultSensorDebounceGoingInActive();
-virtual QString  getEntryToolTip();
-virtual SystemConnectionMemo*  getMemo();
-virtual NamedBean*  getNamedBean(QString  name);
-virtual QSet<NamedBean* >  getNamedBeanSet();
-virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
-virtual int  getObjectCount();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
-virtual Sensor*  getSensor(QString  name);
-virtual QStringList  getSystemNameArray();
-virtual QStringList  getSystemNameList();
-virtual QString  getSystemPrefix();
-virtual int  getXMLOrder();
-virtual bool  isPullResistanceConfigurable();
-virtual QString  makeSystemName(QString  s);
-virtual Sensor*  newSensor(QString  sysName, QString  userName);
-virtual QString  normalizeSystemName(QString  sysName);
-virtual Sensor*  provide(QString  name) throw (IllegalArgumentException)
-;
-virtual Sensor*  provideSensor(QString  name);
-virtual void removeDataListener(QObject*  e);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
-virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void setDefaultSensorDebounceGoingActive(long  timer);
-virtual void setDefaultSensorDebounceGoingInActive(long  timer);
-virtual void timerEvent(QTimerEvent*  event);
-virtual char  typeLetter();
-virtual void updateAll();
-virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
-virtual void vetoableChange(PropertyChangeEvent*  evt);
-
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class PythonQtPublicPromoter_RfidSensorManager : public RfidSensorManager
-{ public:
-inline void py_q_dispose() { RfidSensorManager::dispose(); }
-inline QString  py_q_getSystemPrefix() { return RfidSensorManager::getSystemPrefix(); }
-};
-
-class PythonQtWrapper_RfidSensorManager : public QObject
-{ Q_OBJECT
-public:
-public slots:
-RfidSensorManager* new_RfidSensorManager(QObject*  parent = 0);
-RfidSensorManager* new_RfidSensorManager(QString  prefix, QObject*  parent = 0);
-void delete_RfidSensorManager(RfidSensorManager* obj) { delete obj; } 
-   void py_q_dispose(RfidSensorManager* theWrappedObject){  (((PythonQtPublicPromoter_RfidSensorManager*)theWrappedObject)->py_q_dispose());}
-   QString  py_q_getSystemPrefix(RfidSensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_RfidSensorManager*)theWrappedObject)->py_q_getSystemPrefix());}
-   void message(RfidSensorManager* theWrappedObject, QString  m);
-};
-
-
 
 
 
@@ -451,7 +364,7 @@ virtual Sensor*  getRouteSensor(int  arg__1);
 virtual int  getRouteSensorMode(int  index);
 virtual QString  getRouteSensorName(int  arg__1);
 virtual int  getState();
-virtual QString  getSystemName() const;
+virtual QString  getSystemName();
 virtual Sensor*  getTurnoutsAlgdSensor();
 virtual QString  getTurnoutsAlignedSensor();
 virtual QString  getUserName();
@@ -473,9 +386,8 @@ virtual void setProperty(QString  key, QVariant  value);
 virtual void setRoute();
 virtual void setRouteCommandDelay(int  arg__1);
 virtual void setState(int  arg__1);
-virtual void setSysName(QString  s);
 virtual void setTurnoutsAlignedSensor(QString  arg__1);
-virtual void setUserName(QString  s);
+virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException);
 virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
 virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException);
@@ -773,7 +685,7 @@ virtual int  getRawState() const;
 virtual long  getSensorDebounceGoingActiveTimer() const;
 virtual long  getSensorDebounceGoingInActiveTimer() const;
 virtual int  getState();
-virtual QString  getSystemName() const;
+virtual QString  getSystemName();
 virtual bool  getUseDefaultTimerSettings();
 virtual QString  getUserName();
 virtual bool  hashCode();
@@ -788,9 +700,8 @@ virtual void setProperty(QString  key, QVariant  value);
 virtual void setSensorDebounceGoingActiveTimer(long  arg__1) const;
 virtual void setSensorDebounceGoingInActiveTimer(long  arg__1);
 virtual void setState(int  arg__1);
-virtual void setSysName(QString  s);
 virtual void setUseDefaultTimerSettings(bool  boo);
-virtual void setUserName(QString  s);
+virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException);
 virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
 virtual bool  useDefaultTimerSettings();
@@ -1311,7 +1222,7 @@ virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
 virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getState();
-virtual QString  getSystemName() const;
+virtual QString  getSystemName();
 virtual QString  getUserName();
 virtual QVector<QString >  getValidStateNames();
 virtual QVector<int >  getValidStates();
@@ -1324,8 +1235,7 @@ virtual void setHeld(bool  arg__1);
 virtual void setLit(bool  arg__1);
 virtual void setProperty(QString  key, QVariant  value);
 virtual void setState(int  arg__1);
-virtual void setSysName(QString  s);
-virtual void setUserName(QString  s);
+virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException);
 virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
 virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException);
@@ -2334,7 +2244,7 @@ virtual Sensor*  getSecondSensor();
 virtual int  getState();
 virtual float  getStraightLimit();
 virtual QString  getStraightSpeed();
-virtual QString  getSystemName() const;
+virtual QString  getSystemName();
 virtual TurnoutOperation*  getTurnoutOperation();
 virtual QString  getUserName();
 virtual QStringList  getValidDecoderNames();
@@ -2364,9 +2274,8 @@ virtual void setProperty(QString  key, QVariant  value);
 virtual void setReportLocked(bool  arg__1);
 virtual void setState(int  arg__1);
 virtual void setStraightSpeed(QString  arg__1) const throw (JmriException) ;
-virtual void setSysName(QString  s);
 virtual void setTurnoutOperation(TurnoutOperation*  arg__1);
-virtual void setUserName(QString  s);
+virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException);
 virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
 virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException);

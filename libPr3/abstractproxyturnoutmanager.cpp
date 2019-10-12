@@ -24,6 +24,11 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  defaultManager = nullptr;
  addedOrderList = QStringList();
  log->setDebugEnabled(true);
+ propertyListenerList = QVector<PropertyChangeListener*>();
+ namedPropertyListenerMap = QMap<QString, QVector<PropertyChangeListener*>*>();
+ propertyVetoListenerList = QVector<VetoableChangeListener*>();
+ namedPropertyVetoListenerMap = QMap<QString, QVector<VetoableChangeListener*>*>();
+
 
  //registerSelf();
 }
@@ -303,6 +308,8 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
     log->debug("Did not find manager for system name "+systemName+", delegate to primary");
     int iI = nMgrs()-1;
     return makeBean(iI, systemName, userName);
+    //return makeBean(mgrs.entryIndex(getDefaultManager()), systemName, userName);
+
 }
 
 /*public*/ void AbstractProxyTurnoutManager::dispose() {
@@ -385,6 +392,58 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  }
 }
 
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractProxyTurnoutManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    if (!namedPropertyListenerMap.contains(propertyName)) {
+        namedPropertyListenerMap.insert(propertyName, new QVector<PropertyChangeListener*>());
+    }
+    if (!namedPropertyListenerMap.value(propertyName)->contains(listener)) {
+        namedPropertyListenerMap.value(propertyName)->append(listener);
+    }
+    for (Manager/*<E>*/* m : mgrs) {
+        m->addPropertyChangeListener(propertyName, listener);
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ QVector<PropertyChangeListener*> AbstractProxyTurnoutManager::getPropertyChangeListeners() {
+    QList<PropertyChangeListener*> listeners = QList<PropertyChangeListener*>(propertyListenerList.toList());
+    for (QVector<PropertyChangeListener*>* list : namedPropertyListenerMap.values()) {
+        //listeners.addAll(list);
+     foreach(PropertyChangeListener* listener, *list)
+      listeners.append(listener);
+    }
+    return listeners.toVector();//(new PropertyChangeListener[listeners.size()]);
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ QVector<PropertyChangeListener*> AbstractProxyTurnoutManager::getPropertyChangeListeners(QString propertyName) {
+    if (!namedPropertyListenerMap.contains(propertyName)) {
+        namedPropertyListenerMap.insert(propertyName, new QVector<PropertyChangeListener*>());
+    }
+    QVector<PropertyChangeListener*>* listeners = namedPropertyListenerMap.value(propertyName);
+    return *listeners;//(new PropertyChangeListener[listeners.size()]);
+}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractProxyTurnoutManager::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    if (!namedPropertyListenerMap.contains(propertyName)) {
+        namedPropertyListenerMap.insert(propertyName, new QVector<PropertyChangeListener*>());
+    }
+    namedPropertyListenerMap.value(propertyName)->removeOne(listener);
+    for (Manager/*<E>*/* m : mgrs) {
+        m->removePropertyChangeListener(propertyName, listener);
+    }
+}
+
 /**
  * @return The system-specific prefix letter for the primary implementation
  */
@@ -410,6 +469,15 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  */
 /*public*/ QString AbstractProxyTurnoutManager::makeSystemName(QString s) {
     return getMgr(0)->makeSystemName(s);
+}
+
+/** {@inheritDoc} */
+//@CheckReturnValue
+//@Override
+/*public*/ int AbstractProxyTurnoutManager::getObjectCount() {
+    int count = 0;
+    for (Manager/*<E>*/* m : mgrs) { count += m->getObjectCount(); }
+    return count;
 }
 
 /*public*/ QStringList AbstractProxyTurnoutManager::getSystemNameArray() {

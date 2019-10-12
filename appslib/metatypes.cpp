@@ -302,6 +302,7 @@
 #include "sensorturnoutoperation.h"
 #include "rawturnoutoperation.h"
 #include "proxyturnoutmanagerxml.h"
+#include "proxysensormanagerxml.h"
 
 bool Metatypes::done = false;
 
@@ -618,6 +619,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<NoFeedbackTurnoutOperation>("NoFeedbackTurnoutOperation");
  qRegisterMetaType<SensorTurnoutOperation>("SensorTurnoutOperation");
  qRegisterMetaType<ProxyTurnoutManagerXml>("ProxyTurnoutManagerXml");
+ qRegisterMetaType<ProxySensorManagerXml>("ProxySensorManagerXml");
 
  Metatypes::done = true;
 }

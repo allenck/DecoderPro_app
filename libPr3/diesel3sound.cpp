@@ -9,6 +9,7 @@
 #include "audiomanager.h"
 #include "audiosource.h"
 #include "sleeperthread.h"
+#include "actionlistener.h"
 
 //Diesel3Sound::Diesel3Sound(QObject *parent) :
 //  EngineSound(parent)
@@ -153,8 +154,8 @@
     //@Override
     /*public*/ QDomElement Diesel3Sound::getXml() {
         //QDomElement me = new Element("sound");
- QDomElement me = QDomElement();
- me.setTagName("sound");
+        QDomElement me = QDomElement();
+        me.setTagName("sound");
         me.setAttribute("name", this->getName());
         me.setAttribute("type", "engine");
         // Do something, eventually...

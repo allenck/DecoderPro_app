@@ -26,14 +26,6 @@ void AbstractNamedBean::common(QString sys, QString user, QObject *parent)
  */
 //public abstract class AbstractNamedBean implements NamedBean, java.io.Serializable {
 
-    //private AbstractNamedBean() {
-    //    mSystemName = NULL;
-    //    mUserName = NULL;
-    //    log.warn("Unexpected use of NULL ctor");
-    //    Exception e = new Exception();
-    //    e.printStackTrace();
-    //}
-
 AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : NamedBean(sys, parent)
 {
  Q_ASSERT(!sys.isEmpty());
@@ -43,8 +35,8 @@ AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : NamedBean(s
 AbstractNamedBean:: AbstractNamedBean(QString sysName, QString user, QObject* parent) : NamedBean(sysName,parent)
 {
  //Q_ASSERT(!sysName.isEmpty());
-common(sysName, user, parent);
- NamedBean::setUserName(user);
+ common(sysName, user, parent);
+ setUserName(user);
 }
 
 /**
@@ -183,22 +175,20 @@ QString AbstractNamedBean::getDisplayName()
     return pcs->getPropertyChangeListeners();
 }
 
-/*public*/ QString AbstractNamedBean::getSystemName() const  {return mSystemName;}
+/*public*/ QString AbstractNamedBean::getSystemName()   {return mSystemName;}
 /*public*/ QString AbstractNamedBean::getUserName() {return mUserName;}
 
-/*public*/ void AbstractNamedBean::setSysName(QString s)
-{
- mSystemName = s;
-}
+///*public*/ void AbstractNamedBean::setSysName(QString s)
+//{
+// mSystemName = s;
+//}
 
-/*public*/ void AbstractNamedBean::setUserName(QString s)
-{
- QString old = mUserName;
- mUserName = s;
- NamedBean::setUserName(s);
- firePropertyChange("UserName", old, s);
-// emit propertyChange(this, "UserName", old, s);
-// emit propertyChange(new PropertyChangeEvent(this, "UserName", old, s));
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractNamedBean::setUserName(QString s) throw (NamedBean::BadUserNameException) {
+    QString old = mUserName;
+    mUserName = NamedBean::normalizeUserName(s);
+    firePropertyChange("UserName", old, mUserName);
 }
 
 

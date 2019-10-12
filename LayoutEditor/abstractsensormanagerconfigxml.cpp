@@ -139,6 +139,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
  QDomNodeList sensorList = sensors.elementsByTagName("sensor");
  if (log->isDebugEnabled()) log->debug("Found "+QString::number(sensorList.size())+" sensors");
  SensorManager* tm = InstanceManager::sensorManagerInstance();
+ tm->setDataListenerMute(true);
  long goingActive = 0L;
  long goingInActive = 0L;
  if (!sensors.firstChildElement("globalDebounceTimers").isNull())
@@ -150,7 +151,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
    {
     QString active = timer.firstChildElement("goingActive").text();
     goingActive = active.toLong();
-    ((AbstractSensorManager*)tm)->setDefaultSensorDebounceGoingActive(goingActive);
+    tm->setDefaultSensorDebounceGoingActive(goingActive);
    }
   }
   catch (NumberFormatException ex)
@@ -164,7 +165,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
    {
     QString inActive = timer.firstChildElement("goingInActive").text();
     goingInActive = inActive.toLong();
-    ((AbstractSensorManager*)tm)->setDefaultSensorDebounceGoingInActive(goingInActive);
+    tm->setDefaultSensorDebounceGoingInActive(goingInActive);
    }
   }
   catch (NumberFormatException ex)
@@ -179,9 +180,8 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   QString sysName = getSystemName(sensorList.at(i).toElement());
   if (sysName == NULL)
   {
-   creationErrorEncountered (
-                                  "Unexpected missing system name while loading sensors",
-                                  NULL,NULL,NULL);
+   handleException("Unexpected missing system name while loading sensors",
+                                  NULL,NULL,NULL, nullptr);
    result = false;
    break;
   }
@@ -193,16 +193,17 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   if (sensorList.at(i).toElement().attribute("inverted")==("true"))
    inverted = true;
 
-  if (log->isDebugEnabled()) log->debug("create sensor: ("+sysName+")");
-  Sensor* s = ((ProxySensorManager*)tm)->newSensor(sysName, userName);
-
-  if (s==NULL)
+  if (log->isDebugEnabled())
+   log->debug("create sensor: ("+sysName+")");
+  Sensor* s;
+  try
   {
-   creationErrorEncountered (
-                                  "Could not create sensor",
-                                  sysName,userName,NULL);
-   result = false;
-   continue;
+   s = tm->newSensor(sysName, userName);
+  }
+  catch (IllegalArgumentException e) {
+      handleException("Could not create sensor", "", sysName, userName, Exception());
+      result = false;
+      continue;
   }
 
   // load common parts
@@ -216,7 +217,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
     if(!timer.firstChildElement("goingActive").isNull())
     {
      QString active = timer.firstChildElement("goingActive").text();
-     ((AbstractSensor*)s)->setSensorDebounceGoingActiveTimer(active.toLong());
+     s->setSensorDebounceGoingActiveTimer(active.toLong());
     }
    }
    catch (NumberFormatException ex)
@@ -229,7 +230,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
     if(!timer.firstChildElement("goingInActive").isNull())
     {
      QString inActive = timer.firstChildElement("goingInActive").text();
-     ((AbstractSensor*)s)->setSensorDebounceGoingInActiveTimer(inActive.toLong());
+     s->setSensorDebounceGoingInActiveTimer(inActive.toLong());
     }
    }
    catch (NumberFormatException ex)
@@ -242,7 +243,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   {
    if(sensorList.at(i).toElement().firstChildElement("useGlobalDebounceTimer").text()==("yes"))
    {
-    ((AbstractSensor*)s)->useDefaultTimerSettings(true);
+    s->useDefaultTimerSettings(true);
    }
   }
   ((AbstractSensor*)s)->setInverted(inverted);

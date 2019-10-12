@@ -23,6 +23,7 @@
 #include "warrant.h"
 #include "oblock.h"
 #include "loggerfactory.h"
+#include "proxylightmanager.h"
 
 ConditionalVariable::ConditionalVariable(QObject *parent) :
     QObject(parent)

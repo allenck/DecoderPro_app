@@ -45,6 +45,8 @@
  Q_OBJECT
 public:
      IdTagManager(QObject* parent = 0) : AbstractManager(parent) {}
+     IdTagManager(SystemConnectionMemo* memo, QObject *parent = nullptr) : AbstractManager(memo,parent) {}
+
     /**
      * Locate via tag ID, then user name, and finally
      * system name if needed.

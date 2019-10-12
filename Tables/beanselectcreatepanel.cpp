@@ -11,6 +11,8 @@
 #include "flowlayout.h"
 #include "jmriuserpreferencesmanager.h"
 #include "connectionnamefromsystemname.h"
+#include "proxymanager.h"
+#include "proxylightmanager.h"
 
 //BeanSelectCreatePanel::BeanSelectCreatePanel(QWidget *parent) :
 //    QWidget(parent)
@@ -73,7 +75,7 @@
  radioHLayout->addWidget(existingItem);
  radioHLayout->addWidget(newItem);
 
- if ( qobject_cast<AbstractProxyManager*>(_manager)!=NULL)
+ if ( qobject_cast<ProxyManager*>(_manager)!=NULL)
  {
   QList<Manager*> managerList =  QList<Manager*>();
   if(qobject_cast<ProxyTurnoutManager*>(_manager)!=NULL)

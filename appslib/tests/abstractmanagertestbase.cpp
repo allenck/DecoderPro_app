@@ -1,6 +1,7 @@
 #include "abstractmanagertestbase.h"
 #include "assert1.h"
 #include "manager.h"
+#include "proxymanager.h"
 
 AbstractManagerTestBase::AbstractManagerTestBase(QObject *parent) : QObject(parent)
 {

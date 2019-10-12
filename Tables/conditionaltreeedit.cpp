@@ -24,6 +24,7 @@
 #include "defaulttreeselectionmodel.h"
 #include "system.h"
 #include "htmldelegate.h"
+#include "light.h"
 
 /**
  * A tree based editor for maintaining Logix Conditionals, State Variables and

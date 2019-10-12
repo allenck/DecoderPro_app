@@ -22,12 +22,11 @@
 #include "logixmanager.h"
 #include "dccconsistmanager.h"
 #include "instanceinitializer.h"
-#include "abstractproxymanager.h"
+//#include "abstractproxymanager.h"
 #include "proxyreportermanager.h"
 #include "proxysensormanager.h"
 #include "throttlemanager.h"
 #include "proxyturnoutmanager.h"
-#include "proxylightmanager.h"
 #include "defaultinstanceinitializer.h"
 #include "../libPr3/routemanager.h"
 #include "lightmanager.h"
@@ -115,6 +114,7 @@ class SignalGroupManager;
 class SignalMastLogicManager;
 class LayoutBlockManager;
 class CatalogTreeManager;
+class ProxyLightManager;
 class APPSLIBSHARED_EXPORT InstanceManager : public QObject
 {
     Q_OBJECT

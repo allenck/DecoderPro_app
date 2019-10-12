@@ -25,6 +25,8 @@
 #include "tests/misc/proxyturnoutmanagertestaction.h"
 #include "tests/loconet/lnlighttestaction.h"
 #include "tests/misc/proxysensormanagertestaction.h"
+#include "tests/misc/proxyreportmanagertestaction.h"
+#include "tests/misc/proxylightmanagertestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -75,4 +77,6 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     addMenu(proxyMenu);
     proxyMenu->addAction(new ProxyTurnoutManagerTestAction(this));
     proxyMenu->addAction(new ProxySensorManagerTestAction(this));
+    proxyMenu->addAction(new ProxyReporterManagerTestAction(this));
+    proxyMenu->addAction(new ProxyLightManagerTestAction(this));
 }

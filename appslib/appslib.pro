@@ -541,7 +541,13 @@ SOURCES += appslib.cpp \
     tests/loconet/lnlighttest.cpp \
     tests/loconet/lnlighttestaction.cpp \
     tests/misc/proxysensormanagertest.cpp \
-    tests/misc/proxysensormanagertestaction.cpp
+    tests/misc/proxysensormanagertestaction.cpp \
+    tests/misc/proxyreportermanagertest.cpp \
+    tests/abstractreportermgrtestbase.cpp \
+    tests/abstractprovidingreportermanagertestbase.cpp \
+    tests/misc/proxyreportmanagertestaction.cpp \
+    tests/misc/proxylightmanagertest.cpp \
+    tests/misc/proxylightmanagertestaction.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -1032,7 +1038,13 @@ HEADERS += appslib.h\
     tests/loconet/lnlighttest.h \
     tests/loconet/lnlighttestaction.h \
     tests/misc/proxysensormanagertest.h \
-    tests/misc/proxysensormanagertestaction.h
+    tests/misc/proxysensormanagertestaction.h \
+    tests/misc/proxyreportermanagertest.h \
+    tests/abstractreportermgrtestbase.h \
+    tests/abstractprovidingreportermanagertestbase.h \
+    tests/misc/proxyreportmanagertestaction.h \
+    tests/misc/proxylightmanagertest.h \
+    tests/misc/proxylightmanagertestaction.h
 
 unix:!symbian {
     maemo5 {

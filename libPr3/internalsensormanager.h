@@ -47,6 +47,7 @@ class InternalAbstractSensor : public AbstractSensor
 public:
  InternalAbstractSensor(QString systemName, QString userName) : AbstractSensor(systemName, userName) {}
  /*public*/ void requestUpdateFromLayout() const {}
+
 };
 
 #endif // INTERNALSENSORMANAGER_H

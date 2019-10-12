@@ -1,6 +1,6 @@
 #ifndef LIGHTMANAGER_H
 #define LIGHTMANAGER_H
-#include "light.h"
+#include "abstractmanager.h"
 
 class Light;
 class LightManager : public AbstractManager

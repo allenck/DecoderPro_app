@@ -178,7 +178,7 @@ QString AbstractSerialPortController::getOptionState(QString option)
 /**
  * Standard error handling for port-not-found case
  */
-/*public*/ QString AbstractSerialPortController::handlePortNotFound(NoSuchPortException p,
+/*public*/ QString AbstractSerialPortController::handlePortNotFound(NoSuchPortException /*p*/,
                         QString portName,
                         Logger* log) {
             log->error("Serial port "+portName+" not found");

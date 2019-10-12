@@ -42,7 +42,11 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
 
 }
 
-/*public*/ bool InternalSensorManager::allowMultipleAdditions(QString /*systemName*/) { return true;  }
+/*public*/ bool InternalSensorManager::allowMultipleAdditions(QString /*systemName*/)
+{
+ return true;
+}
+
 /**
  * Create an internal (dummy) sensor object
  * @return new null
@@ -53,9 +57,18 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
 //    {
 //        /*public*/ void requestUpdateFromLayout(){}
 //    };
-  sen->setKnownState(getDefaultStateForNewSensors());
+  try
+  {
+   sen->setKnownState(getDefaultStateForNewSensors());
   return sen;
+  }
+  catch (JmriException ex) {
+   log->error("An error occurred while trying to set initial state for sensor " + sen->getDisplayName());
+   log->error(ex.toString());
+  }
+  log->debug(tr("Internal Sensor \"%1\", \"%2\" created").arg(systemName).arg(userName));
 }
+
 /*static*/ int InternalSensorManager::defaultState = Sensor::UNKNOWN;
 
 /*public*/ /*static*/ /*synchronized*/ void InternalSensorManager::setDefaultStateForNewSensors(int defaultSetting) {

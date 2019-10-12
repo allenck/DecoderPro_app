@@ -28,6 +28,7 @@
 #include "tablecolumnmodel.h"
 #include "tablecolumn.h"
 #include "variabletablemodel.h"
+#include "light.h"
 
 /**
  * The traditional list based conditional editor based on the original editor

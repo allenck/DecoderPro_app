@@ -111,7 +111,7 @@ bool AbstractSensorManager::isNumber(QString s)
  if (log->isDebugEnabled()) log->debug("newSensor:"
                                      +( (systemName=="") ? "NULL" : systemName)
                                      +";"+( (userName=="") ? "NULL" : userName));
- if (systemName == nullptr)
+ if (systemName == "")
  {
   log->error("SystemName cannot be NULL. UserName was "
              +( (userName=="") ? "null" : userName));
@@ -121,21 +121,23 @@ bool AbstractSensorManager::isNumber(QString s)
  sysName = validateSystemNameFormat(sysName);
  // return existing if there is one
   Sensor* s = nullptr;
- if ( (userName!="") && ((s = getByUserName(userName)) != nullptr))
- {
-  if (getBySystemName(systemName)!=s)
-   log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");
-  return s;
+  if ((userName != "") && ((s = getByUserName(userName)) != nullptr))
+  {
+     if (getBySystemName(sysName) != s) {
+         log->error(tr("inconsistent user (%1) and system name (%2) results; userName related to (%3)").arg(userName).arg(sysName).arg(s->getSystemName()));
+     }
+     return s;
  }
- if ( (s = getBySystemName(systemName)) != nullptr)
- {
-  if ((s->getUserName() == nullptr) && (userName != nullptr))
-    s->setUserName(userName);
-  else if (userName != nullptr)
-   log->warn("Found sensor via system name ("+systemName
-                                +") with non-NULL user name ("+userName+")");
-  return s;
- }
+  if ((s = getBySystemName(sysName)) != nullptr)
+  {
+      if ((s->getUserName() == "") && (userName != "")) {
+          s->setUserName(userName);
+      } else if (userName != "") {
+          log->warn(tr("Found sensor via system name (%1) with non-null user name (%2). Sensor \"%3(%4)\" cannot be used.").arg(
+                  sysName).arg(s->getUserName()).arg(sysName).arg(userName));
+      }
+      return s;
+  }
 
  // doesn't exist, make a new one
  s = createNewSensor(systemName, userName);

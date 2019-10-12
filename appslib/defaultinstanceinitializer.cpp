@@ -67,7 +67,7 @@
 #include "signalspeedmap.h"
 #include "decoderindexfile.h"
 #include "rfid/proxyidtagmanager.h"
-
+#include "proxylightmanager.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {

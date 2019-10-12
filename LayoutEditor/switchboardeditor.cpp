@@ -38,6 +38,7 @@
 #include <QActionGroup>
 #include "joptionpane.h"
 #include <QColor>
+#include "proxymanager.h"
 /**
  * Provides a simple editor for adding jmri.jmrit.display.switchBoard items to a
  * JLayeredPane inside a captive JFrame. Primary use is for new users.
@@ -220,9 +221,9 @@
     QLabel* beanManuTitle = new QLabel(tr("%1").arg(tr("Label")));
     beanSetupPaneLayout->addWidget(beanManuTitle);
     beanManuNames = new QComboBox();
-    if (qobject_cast<AbstractProxyManager*>(getManager(beanTypeChar))!= nullptr)
+    if (qobject_cast<ProxyManager*>(getManager(beanTypeChar))!= nullptr)
     { // from abstractTableTabAction
-        AbstractProxyManager* proxy = static_cast<AbstractProxyManager*>(getManager(beanTypeChar));
+        ProxyManager* proxy = static_cast<ProxyManager*>(getManager(beanTypeChar));
         QList<Manager*> managerList = proxy->getManagerList(); // picks up all managers to fetch
         for (int x = 0; x < managerList.size(); x++) {
             QString manuPrefix = managerList.value(x)->getSystemPrefix();
@@ -438,7 +439,7 @@ void SwitchboardEditor::onUpdateButton()
           break;
       case 2:
           name = _manu + "L" + _insert + QString::number(i);
-          nb = InstanceManager::lightManagerInstance()->getLight(name);
+          nb = (NamedBean*)InstanceManager::lightManagerInstance()->getLight(name);
           break;
       default:
           log->error(tr("addSwitchRange: cannot parse bean name. manuPrefix = %1; i = %2").arg(manuPrefix).arg(i));

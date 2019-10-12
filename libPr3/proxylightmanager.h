@@ -1,9 +1,9 @@
 #ifndef PROXYLIGHTMANAGER_H
 #define PROXYLIGHTMANAGER_H
-#include "abstractproxymanager.h"
+#include "abstractproxylightmanager.h"
 
 class Light;
-class LIBPR3SHARED_EXPORT ProxyLightManager : public AbstractProxyManager
+class LIBPR3SHARED_EXPORT ProxyLightManager : public AbstractProxyLightManager
 {
     Q_OBJECT
 public:
@@ -14,14 +14,17 @@ public:
  /*public*/ Light* getBySystemName(QString systemName);
  /*public*/ Light* getByUserName(QString userName);
  /*public*/ Light* newLight(QString systemName, QString userName);
- /*public*/ NameValidity validSystemNameFormat(QString systemName);
+// /*public*/ NameValidity validSystemNameFormat(QString systemName);
  /*public*/ bool validSystemNameConfig(QString systemName);
- /*public*/ QString normalizeSystemName(QString systemName);
+// /*public*/ QString normalizeSystemName(QString systemName);
  /*public*/ QString convertSystemNameToAlternate(QString systemName);
  /*public*/ void activateAllLights();
  /*public*/ bool supportsVariableLights(QString systemName);
  /*public*/ bool allowMultipleAdditions(QString systemName);
- /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
+// /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
+ /*public*/ QString getEntryToolTip();
+ /*public*/ QString getBeanTypeHandled(bool plural);
+ /*public*/ Light* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException);
 
 signals:
 

@@ -1,14 +1,13 @@
 #ifndef PROXYSENSORMANAGER_H
 #define PROXYSENSORMANAGER_H
-#include "abstractproxymanager.h"
-#include "sensormanager.h"
+#include "abstractproxysensormanager.h"
 #include <QString>
 #include "exceptions.h"
-#include "internalsensormanager.h"
-#include <QDebug>
+//#include "internalsensormanager.h"
+//#include <QDebug>
 #include <QCompleter>
 
-class LIBPR3SHARED_EXPORT ProxySensorManager : public AbstractProxyManager/*, public SensorManager*/
+class ProxySensorManager : public AbstractProxySensorManager/*, public SensorManager*/
 {
  Q_OBJECT
 public:
@@ -69,7 +68,7 @@ public:
  QCompleter* getCompleter(QString text);
 signals:
  void propertyChange(PropertyChangeEvent *e);
- void newSensorCreated(AbstractSensorManager*,Sensor*);
+ //void newSensorCreated(AbstractSensorManager*,Sensor*);
 
 private:
  Logger log;

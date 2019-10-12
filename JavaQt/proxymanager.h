@@ -21,7 +21,7 @@ public:
      * @param manager the Manager to add; if manager has already been added, it
      *                will not be added again
      */
- /*public*/ virtual void addManager(/*@Nonnull*/ Manager* manager) {}
+ /*public*/ virtual void addManager(/*@Nonnull*/ Manager* /*manager*/) {}
 
     /**
      * Get the default manager or the internal manager if no default manager has

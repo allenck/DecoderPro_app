@@ -96,6 +96,7 @@ public:
      * from the primary system.
      */
     /*public*/ QString makeSystemName(QString s);
+    /*public*/ int getObjectCount();
     /*public*/ QStringList getSystemNameArray();
     /**
      * Get a list of all system names.
@@ -105,6 +106,10 @@ public:
     QT_DEPRECATED/*public*/ QList<NamedBean*>* getNamedBeanList() ;
     QT_DEPRECATED /*public*/ QStringList getSystemNameAddedOrderList();
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet();
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName);
+    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
 
 signals:
     //virtual void propertyChange(PropertyChangeEvent *e);
@@ -119,7 +124,10 @@ private:
     /*private*/ QStringList addedOrderList;// = QStringList();
     /*private*/ QSet<NamedBean*> namedBeanSet;// = null;
     /*private java.util.ArrayList*/QList<Manager*> mgrs;// = new /*java.util.ArrayList*/QList<AbstractManager>();
-
+    QVector<PropertyChangeListener*> propertyListenerList;// = new ArrayList<>();
+    QMap<QString, QVector<PropertyChangeListener*>*> namedPropertyListenerMap;// = new HashMap<>();
+    QVector<VetoableChangeListener*> propertyVetoListenerList;// = new ArrayList<>();
+    QMap<QString, QVector<VetoableChangeListener*>*> namedPropertyVetoListenerMap;// = new HashMap<>();
 protected:
     /**
      * Number of managers available through

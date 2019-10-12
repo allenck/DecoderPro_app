@@ -43,10 +43,10 @@ public:
      */
     /*public synchronized*/ virtual int getNumPropertyChangeListeners();
     /*public synchronized*/ virtual QVector<PropertyChangeListener *> getPropertyChangeListeners();
-    /*public*/ virtual QString getSystemName() const;
-    /*public*/ virtual QString getUserName();
-    /*public*/ virtual void setSysName(QString s); // needed for catalogtree
-    /*public*/ virtual void setUserName(QString s);
+    /*public*/ QString getSystemName();
+    /*public*/ QString getUserName();
+//    /*public*/ virtual void setSysName(QString s); // needed for catalogtree
+    /*public*/ void setUserName(QString s) throw (NamedBean::BadUserNameException);
     /*public*/ virtual void dispose();
     /*public*/ virtual void setProperty(QString key, QVariant value);
     /*public*/ virtual QVariant getProperty(QString key);
@@ -99,6 +99,7 @@ private:
   friend class JMRIClientLight;
   friend class LnReporter;
   friend class AbstractProvidingTurnoutManagerTestBase;
+  friend class AbstractProvidingReporterManagerTestBase;
 };
 
 #endif // ABSTRACTNAMEDBEAN_H

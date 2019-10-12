@@ -23,31 +23,29 @@
 
 NamedBean::NamedBean(QObject *parent) : QObject(parent)
 {
- _parent = parent;
- _state = UNKNOWN;
+// _parent = parent;
+// _state = UNKNOWN;
 }
 
 NamedBean::NamedBean(QString name, QObject *parent) : QObject(parent)
 {
- _parent = parent;
- _name = name;
- _state = UNKNOWN;
- _systemName = name;
+// _parent = parent;
+// _name = name;
+// _state = UNKNOWN;
+// _systemName = name;
 }
 NamedBean::NamedBean(const NamedBean & other): QObject()
 {
- this->_parent = other._parent;
- this->_name = other._name;
- this->_state = other._state;
- this->_systemName = other._systemName;
- this->_userName = other._userName;
+// this->_parent = other._parent;
+// this->_name = other._name;
+// this->_state = other._state;
+// this->_systemName = other._systemName;
+// this->_userName = other._userName;
 }
 
-QString NamedBean::getUserName() { return _userName;}
-void NamedBean::setUserName(QString s)
-{
- _userName = s;
-}
+QString NamedBean::getUserName() { return "";}
+void NamedBean::setUserName(QString s) {}
+
 /**
  * Get user name if it exists, otherwise return System name.
  *
@@ -59,7 +57,7 @@ void NamedBean::setUserName(QString s)
     return getDisplayName(DisplayOptions::DISPLAYNAME);
 }
 
-QString NamedBean::getSystemName() { return _systemName;}
+QString NamedBean::getSystemName() { return "";}
 /**
  * Get the name to display, formatted per {@link NamedBean.DisplayOptions}.
  *
@@ -149,11 +147,9 @@ int NamedBean::getState() { return _state;}
 //@CheckReturnValue
 /*public*/ QString NamedBean::describeState(int state) {return "";}
 
-QString NamedBean::getComment() { return _comment;}
-void NamedBean::setComment(QString comment)
-{
- _comment = comment;
-}
+QString NamedBean::getComment() { return "";}
+void NamedBean::setComment(QString comment) {}
+
 void NamedBean::setProperty(QString /*key*/, QVariant /*value*/)
 {
 

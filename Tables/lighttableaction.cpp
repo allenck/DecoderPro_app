@@ -21,6 +21,7 @@
 #include "abstractlightmanager.h"
 #include "colorutil.h"
 #include "joptionpane.h"
+#include "proxylightmanager.h"
 
 //LightTableAction::LightTableAction()
 //{
@@ -364,16 +365,16 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
 /*public*/ NamedBean* LTBeanTableDataModel::getBySystemName(QString name) const
 {
     //return lta->lightManager->getBySystemName(name);
-    if(qobject_cast<AbstractProxyManager*>(lta->lightManager))
-     return ((AbstractProxyManager*)lta->lightManager)->getBeanBySystemName(name);
+    if(qobject_cast<AbstractProxyLightManager*>(lta->lightManager))
+     return ((AbstractProxyLightManager*)lta->lightManager)->getBeanBySystemName(name);
     else
      return ((AbstractTurnoutManager*)lta->lightManager)->getBeanBySystemName(name);
 }
 
 /*public*/ NamedBean* LTBeanTableDataModel::getByUserName(QString name) {
   // return lta->lightManager->getByUserName(name);
-    if(qobject_cast<AbstractProxyManager*>(lta->lightManager))
-     return ((AbstractProxyManager*)lta->lightManager)->getBeanByUserName(name);
+    if(qobject_cast<AbstractProxyLightManager*>(lta->lightManager))
+     return ((AbstractProxyLightManager*)lta->lightManager)->getBeanByUserName(name);
     else
      return ((AbstractTurnoutManager*)lta->lightManager)->getBeanByUserName(name);
 }
@@ -667,7 +668,7 @@ void LTAWindowListener::windowClosing(QCloseEvent *e)
     prefixBox->clear();
     UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     //if (InstanceManager::lightManagerInstance() instanceof AbstractProxyManager)
-    if(qobject_cast<AbstractProxyManager*>(InstanceManager::lightManagerInstance()) != NULL)
+    if(qobject_cast<AbstractProxyLightManager*>(InstanceManager::lightManagerInstance()) != NULL)
     {
         ProxyLightManager* proxy = (ProxyLightManager*) InstanceManager::lightManagerInstance();
         QList<Manager*> managerList = proxy->getDisplayOrderManagerList();

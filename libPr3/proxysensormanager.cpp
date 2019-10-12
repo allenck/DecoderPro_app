@@ -1,8 +1,9 @@
 #include "proxysensormanager.h"
 #include "internalsystemconnectionmemo.h"
 #include "instancemanager.h"
+#include "abstractsensormanager.h"
 
-ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxyManager(parent)
+ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorManager(parent)
 {
  setObjectName("ProxySensorManager");
  //qDebug() << "ProxySensorManger created";
@@ -26,18 +27,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxyManager(p
 
 /*protected*/ Manager* ProxySensorManager::makeInternalManager() const
 {
- QObjectList* l = InstanceManager::getList("InternalSystemConnectionMemo");
- InternalSystemConnectionMemo* memo;
- if(!l->isEmpty())
- {
-  memo = (InternalSystemConnectionMemo*)l->at(l->size()-1);
- }
- else
-  memo =(InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
- SensorManager* manager = memo->getSensorManager();
- l = InstanceManager::getList("InternalSystemConnectionMemo");
- if(l->isEmpty())
-  InstanceManager::store(memo,"InternalSystemConnectionMemo");
+ Manager* manager = (Manager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getSensorManager();
  return manager;
 }
 
@@ -48,20 +38,20 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxyManager(p
  * @return Null if nothing by that name exists
  */
 /*public*/ Sensor* ProxySensorManager::getSensor(QString name) {
- return (Sensor*)AbstractProxyManager::getNamedBean(name);
+ return (Sensor*)AbstractProxySensorManager::getNamedBean(name);
 }
 
 /*protected*/ Sensor* ProxySensorManager::makeBean(int i, QString systemName, QString userName)
 {
  log.debug(tr("makeBean(%1, \"%2\", \"%3\"").arg(i).arg(systemName).arg(userName));
  Sensor* sensor =  ((SensorManager*)getMgr(i))->newSensor(systemName, userName);
- emit newSensorCreated((AbstractSensorManager*)getMgr(i),sensor);
+ //emit newSensorCreated((AbstractSensorManager*)getMgr(i),sensor);
  return sensor;
 }
 
 /*public*/ Sensor* ProxySensorManager::provideSensor(QString sName)
 {
- return static_cast<Sensor*>(AbstractProxyManager::provideNamedBean(sName));
+ return static_cast<Sensor*>(AbstractProxySensorManager::provideNamedBean(sName));
 }
 
 
@@ -71,7 +61,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxyManager(p
  * @return requested Turnout object or null if none exists
  */
 /*public*/ Sensor *ProxySensorManager::getBySystemName(QString sName) {
-    return (Sensor*) AbstractProxyManager::getBeanBySystemName(sName);
+    return (Sensor*) AbstractProxySensorManager::getBeanBySystemName(sName);
 }
 
 /**
@@ -80,7 +70,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxyManager(p
  * @return requested Turnout object or null if none exists
  */
 /*public*/ Sensor* ProxySensorManager::getByUserName(QString userName) {
-    return (Sensor*) AbstractProxyManager::getBeanByUserName(userName);
+    return (Sensor*) AbstractProxySensorManager::getBeanByUserName(userName);
 }
 
 

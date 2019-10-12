@@ -28,6 +28,8 @@ private:
 private slots:
     /*private*/ void showPreferences();
     /*synchronized*/ static void setWait(bool boo);
+ /*public*/ void actionPerformed(ActionEvent* /*e*/);
+
 
 signals:
 public slots:

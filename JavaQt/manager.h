@@ -226,7 +226,7 @@ public:
       * @param propertyName The name of the property to listen on.
       * @param listener     The PropertyChangeListener to be added
       */
-      virtual /*public*/ void addPropertyChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ PropertyChangeListener* listener){}
+      virtual /*public*/ void addPropertyChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ PropertyChangeListener* /*listener*/){}
 
      /**
       * At a minimum,
@@ -241,7 +241,7 @@ public:
       * @param listener     The {@link java.beans.PropertyChangeListener} to
       *                     remove.
       */
-     virtual /*public*/ void removePropertyChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ PropertyChangeListener* listener){}
+     virtual /*public*/ void removePropertyChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ PropertyChangeListener* /*listener*/){}
 
      /**
       * Add a VetoableChangeListener to the listener list.
@@ -256,7 +256,7 @@ public:
       * @param propertyName The name of the property to listen on.
       * @param listener     The VetoableChangeListener to be added
       */
-     /*public*/ virtual void addVetoableChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ VetoableChangeListener* listener)  {}
+     /*public*/ virtual void addVetoableChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ VetoableChangeListener* /*listener*/)  {}
 
      /**
       * Get all {@link java.beans.VetoableChangeListener}s currently attached to
@@ -275,7 +275,7 @@ public:
       * @return An array of VetoableChangeListeners.
       */
      //@Nonnull
-     /*public*/ virtual QVector<VetoableChangeListener*> getVetoableChangeListeners(/*@CheckForNull*/ QString propertyName)
+     /*public*/ virtual QVector<VetoableChangeListener*> getVetoableChangeListeners(/*@CheckForNull*/ QString /*propertyName*/)
      { return QVector<VetoableChangeListener*>();}
 
      /**
@@ -311,7 +311,7 @@ public:
       * @param listener     The {@link java.beans.VetoableChangeListener} to
       *                     remove.
       */
- /*public*/ virtual void removeVetoableChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ VetoableChangeListener* listener) {}
+ /*public*/ virtual void removeVetoableChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ VetoableChangeListener* /*listener*/) {}
 
      /**
       * Method for a UI to delete a bean.
@@ -593,7 +593,9 @@ private:
      //SystemConnectionMemo* memo = nullptr;
     
 };
-Q_DECLARE_INTERFACE(Manager, "ManagerInterface")
+
+
+//Q_DECLARE_INTERFACE(Manager, "ManagerInterface")
 /**
  * Intended to be equivalent to {@link javax.swing.event.ListDataListener}
  * without introducing a Swing dependency into core JMRI.

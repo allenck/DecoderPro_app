@@ -1,17 +1,17 @@
 #ifndef PROXYIDTAGMANAGER_H
 #define PROXYIDTAGMANAGER_H
-#include "abstractproxymanager.h"
+#include "abstractproxyidtagmanager.h"
 #include "exceptions.h"
 
 class Reporter;
 class IdTag;
-class ProxyIdTagManager : public AbstractProxyManager
+class ProxyIdTagManager : public AbstractProxyIdTagManager
 {
  Q_OBJECT
 public:
  ProxyIdTagManager(QObject *parent = nullptr);
  ~ProxyIdTagManager() {}
- ProxyIdTagManager(const ProxyIdTagManager& ) : AbstractProxyManager() {}
+ ProxyIdTagManager(const ProxyIdTagManager& ) : AbstractProxyIdTagManager() {}
  /*public*/ int getXMLOrder();
  /*public*/ void init();
  /*public*/ bool isInitialised();
@@ -28,7 +28,7 @@ public:
  /*public*/ bool isStateStored();
  /*public*/ void setFastClockUsed(bool fastClock);
  /*public*/ bool isFastClockUsed();
- /*public*/ QList<IdTag*> getTagsForReporter(Reporter* reporter, long threshold);
+ /*public*/ QList<IdTag*>* getTagsForReporter(Reporter* reporter, long threshold);
 
 private:
 /*private*/ bool useFastClock = false;

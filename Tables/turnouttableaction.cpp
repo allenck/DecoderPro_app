@@ -33,6 +33,8 @@
 #include "systemnamecomparator.h"
 #include <QSpinBox>
 #include "colorutil.h"
+#include "proxymanager.h"
+#include "proxylightmanager.h"
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)
@@ -165,7 +167,7 @@ void TurnoutTableAction::common()
 /*protected*/ void TurnoutTableAction::createModel()
 {
  // store the terminology
- if(qobject_cast<AbstractProxyManager*>(turnManager)!= NULL)
+ if(qobject_cast<ProxyManager*>(turnManager)!= NULL)
  {
   closedText = ((ProxyTurnoutManager*)turnManager)->getClosedText();
   thrownText = ((ProxyTurnoutManager*)turnManager)->getThrownText();
@@ -284,8 +286,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  QString name = sysNameList.at(row);
  TurnoutManager* manager = self->turnManager;
  AbstractTurnout* t;
- if(qobject_cast<AbstractProxyManager*>(manager))
-  t = (AbstractTurnout*)((AbstractProxyManager*)manager)->getBeanBySystemName(name);
+ if(qobject_cast<ProxyManager*>(manager))
+  t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
  else
   t =(AbstractTurnout*) ((AbstractTurnoutManager*)manager)->getBySystemName(name);
 
@@ -322,8 +324,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  QString name = sysNameList.at(row);
  TurnoutManager* manager = self->turnManager;
  AbstractTurnout* t;
- if(qobject_cast<AbstractProxyManager*>(manager))
-  t = (AbstractTurnout*)((AbstractProxyManager*)manager)->getBeanBySystemName(name);
+ if(qobject_cast<AbstractProxyTurnoutManager*>(manager))
+  t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
  else
   t = (AbstractTurnout*)((AbstractTurnoutManager*)manager)->getBySystemName(name);
  if (t == NULL)
@@ -731,7 +733,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 {
  TurnoutManager* manager = self->turnManager;
  Turnout* t;
- if(qobject_cast<AbstractProxyManager*>(manager)!= NULL)
+ if(qobject_cast<AbstractProxyTurnoutManager*>(manager)!= NULL)
   t= ((ProxyTurnoutManager*)manager)->getBySystemName(name);
  else
   t= ((AbstractTurnoutManager*)manager)->getBySystemName(name);
@@ -750,7 +752,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 
 /*public*/ NamedBean* TurnoutTableDataModel::getBySystemName(QString name) const
  {
-  if(qobject_cast<AbstractProxyManager*>(self->turnManager)!= NULL)
+  if(qobject_cast<AbstractProxyTurnoutManager*>(self->turnManager)!= NULL)
    return ((ProxyTurnoutManager*)self->turnManager)->getBySystemName(name);
   else
    return ((AbstractTurnoutManager*)self->turnManager)->getBySystemName(name);
@@ -758,7 +760,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 
 /*public*/ NamedBean* TurnoutTableDataModel::getByUserName(QString name)
  {
-  if(qobject_cast<AbstractProxyManager*>(self->turnManager)!= NULL)
+  if(qobject_cast<AbstractProxyTurnoutManager*>(self->turnManager)!= NULL)
      return ((ProxyTurnoutManager*)self->turnManager)->getByUserName(name);
   else
   return ((AbstractTurnoutManager*)self->turnManager)->getByUserName(name);
@@ -1024,7 +1026,7 @@ TableSorter sorter;
   /* We use the proxy manager in this instance so that we can deal with
   duplicate usernames in multiple classes */
   //if (InstanceManager::turnoutManagerInstance() instanceof jmri.managers.AbstractProxyManager)
-  if(qobject_cast<AbstractProxyManager*>(InstanceManager::turnoutManagerInstance()) != NULL)
+  if(qobject_cast<AbstractProxyTurnoutManager*>(InstanceManager::turnoutManagerInstance()) != NULL)
   {
    ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance();
    QList<Manager*> managerList = proxy->getManagerList();

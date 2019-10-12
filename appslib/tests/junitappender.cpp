@@ -280,7 +280,7 @@ void JUnitAppender::superappend(LoggingEvent* l) {
     while ((evt->getLevel() == LogLevel::INFO) || (evt->getLevel() == LogLevel::DEBUG) || (evt->getLevel() == LogLevel::TRACE))
     { // better in Log4J 2
         if (list.isEmpty()) {
-            Assert::fail("Only debug/info messages present: " + msg,__FILE__, __LINE__);
+            Assert::fail("Only debug/info messages present: " + msg,file, line);
             return;
         }
         //evt = list.remove(0);

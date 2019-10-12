@@ -51,7 +51,7 @@
 #include "abstractmanager.h"
 #include "manager.h"
 #include "sensormanager.h"
-#include "abstractproxymanager.h"
+//#include "abstractproxymanager.h"
 #include "propertychangesupport.h"
 #include "propertychangeevent.h"
 #include "fileutil.h"

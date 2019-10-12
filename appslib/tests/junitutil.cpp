@@ -22,6 +22,7 @@
 #include "internalreportermanager.h"
 #include "layoutblockmanager.h"
 #include <QApplication>
+#include "internalsensormanager.h"
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {

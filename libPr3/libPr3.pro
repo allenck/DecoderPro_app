@@ -145,7 +145,7 @@ SOURCES += \
     lnreporter.cpp \
     lnreportermanager.cpp \
     timebase.cpp \
-    abstractproxymanager.cpp \
+    #abstractproxymanager.cpp \
     pr3systemconnectionmemo.cpp \
     proxyreportermanager.cpp \
     proxysensormanager.cpp \
@@ -200,6 +200,7 @@ SOURCES += \
     lnlight.cpp \
     abstractlight.cpp \
     lightcontrol.cpp \
+    abstractproxylightmanager.cpp \
     proxylightmanager.cpp \
     internallightmanager.cpp \
     loconetconsistmanager.cpp \
@@ -933,7 +934,12 @@ SOURCES += \
     rfid/idtaglistener.cpp \
     loconet/lndeferprogrammer.cpp \
     abstractproxyturnoutmanager.cpp \
-    proxyturnoutmanagerxml.cpp
+    proxyturnoutmanagerxml.cpp \
+    proxysensormanagerxml.cpp \
+    abstractproxysensormanager.cpp \
+    abstractproxyidtagmanager.cpp \
+    abstractproxyreportermanager.cpp
+
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -1000,7 +1006,7 @@ HEADERS += \
     reporter.h \
     lnreportermanager.h \
     timebase.h \
-    abstractproxymanager.h \
+    #abstractproxymanager.h \
     pr3systemconnectionmemo.h \
     proxyreportermanager.h \
     proxysensormanager.h \
@@ -1864,7 +1870,13 @@ HEADERS += \
     loconet/lndeferprogrammer.h \
     vetoablechangeprovider.h \
     abstractproxyturnoutmanager.h \
-    proxyturnoutmanagerxml.h
+    proxyturnoutmanagerxml.h \
+    proxysensormanagerxml.h \
+    abstractproxysensormanager.h \
+    abstractproxyidtagmanager.h \
+    abstractproxyreportermanager.h \
+    abstractproxylightmanager.h
+
 
  !contains(FTDI, 1) {
     HEADERS +=

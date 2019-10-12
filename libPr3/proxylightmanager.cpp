@@ -4,7 +4,7 @@
 #include "internalsystemconnectionmemo.h"
 
 ProxyLightManager::ProxyLightManager(QObject *parent) :
-    AbstractProxyManager(parent)
+    AbstractProxyLightManager(parent)
 {
  log = new Logger("ProxyLightManager");
  setObjectName("ProxyLightManager");
@@ -42,13 +42,17 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * @return Null if nothing by that name exists
  */
 /*public*/ Light* ProxyLightManager::getLight(QString name) {
-  return (Light*)AbstractProxyManager::getNamedBean(name);
+  return (Light*)AbstractProxyLightManager::getNamedBean(name);
 }
 
 /*protected*/ NamedBean* ProxyLightManager::makeBean(int i, QString systemName, QString userName)
 {
  return ((AbstractLightManager*)getMgr(i))->newLight(systemName, userName);
 }
+
+//@Override
+/** {@inheritDoc} */
+/*public*/ Light* ProxyLightManager::provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException) { return provideLight(name); }
 
 /**
  * Locate via user name, then system name if needed.
@@ -61,7 +65,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * @return Never null under normal circumstances
  */
 /*public*/ Light* ProxyLightManager::provideLight(QString name) {
-    return (Light*) AbstractProxyManager::provideNamedBean(name);
+    return (Light*) AbstractProxyLightManager::provideNamedBean(name);
 }
 
 /**
@@ -70,7 +74,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * @return requested Light object or null if none exists
  */
 /*public*/ Light *ProxyLightManager::getBySystemName(QString systemName) {
-    return (Light*) AbstractProxyManager::getBeanBySystemName(systemName);
+    return (Light*) AbstractProxyLightManager::getBeanBySystemName(systemName);
 }
 
 /**
@@ -79,7 +83,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * @return requested Turnout object or null if none exists
  */
 /*public*/ Light *ProxyLightManager::getByUserName(QString userName) {
-    return (Light*) AbstractProxyManager::getBeanByUserName(userName);
+    return (Light*) AbstractProxyLightManager::getBeanByUserName(userName);
 }
 
 /**
@@ -113,30 +117,30 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 /*public*/ Light* ProxyLightManager::newLight(QString systemName, QString userName) {
     return (Light*) newNamedBean(systemName, userName);
 }
-/*public*/ NamedBean* ProxyLightManager::newNamedBean(QString systemName, QString userName) {
-    // if the systemName is specified, find that system
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return makeBean(i, systemName, userName);
+///*public*/ NamedBean* ProxyLightManager::newNamedBean(QString systemName, QString userName) {
+//    // if the systemName is specified, find that system
+//    int i = matchTentative(systemName);
+//    if (i >= 0)
+//        return makeBean(i, systemName, userName);
 
-    // did not find a manager, allow it to default to the primary
-    log->debug("Did not find manager for system name "+systemName+", delegate to primary");
-    int iI = nMgrs()-1;
-    return makeBean(iI, systemName, userName);
-}
+//    // did not find a manager, allow it to default to the primary
+//    log->debug("Did not find manager for system name "+systemName+", delegate to primary");
+//    int iI = nMgrs()-1;
+//    return makeBean(iI, systemName, userName);
+//}
 
-/**
- * Validate system name format
- * Locate a system specfic LightManager based on a system name.  Returns false if no
- *      manager exists.
- * If a manager is found, return its determination of validity of system name format
- */
-/*public*/ Manager::NameValidity ProxyLightManager::validSystemNameFormat(QString systemName) {
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return ( (AbstractLightManager*)getMgr(i))->validSystemNameFormat(systemName);
-    return NameValidity::INVALID;
-}
+///**
+// * Validate system name format
+// * Locate a system specfic LightManager based on a system name.  Returns false if no
+// *      manager exists.
+// * If a manager is found, return its determination of validity of system name format
+// */
+///*public*/ Manager::NameValidity ProxyLightManager::validSystemNameFormat(QString systemName) {
+//    int i = matchTentative(systemName);
+//    if (i >= 0)
+//        return ( (AbstractLightManager*)getMgr(i))->validSystemNameFormat(systemName);
+//    return NameValidity::INVALID;
+//}
 
 /**
  * Validate system name against the hardware configuration
@@ -160,12 +164,12 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * manager exists.
  * If a manager is found, return its determination of a normalized system name
  */
-/*public*/ QString ProxyLightManager::normalizeSystemName(QString systemName) {
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return ( (AbstractLightManager*)getMgr(i))->normalizeSystemName(systemName);
-    return "";
-}
+///*public*/ QString ProxyLightManager::normalizeSystemName(QString systemName) {
+//    int i = matchTentative(systemName);
+//    if (i >= 0)
+//        return ( (AbstractLightManager*)getMgr(i))->normalizeSystemName(systemName);
+//    return "";
+//}
 
 /**
  * Convert a system name to an alternate format
@@ -214,6 +218,18 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
     return false;
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString ProxyLightManager::getEntryToolTip() {
+    return "Enter a number from 1 to 9999"; // Basic number format help
+}
+
+//@Override
+/*public*/ QString ProxyLightManager::getBeanTypeHandled(bool plural) {
+    return tr(plural ? "Lights" : "Light");
+}
 // initialize logging
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ProxyLightManager.class.getName());
 //}

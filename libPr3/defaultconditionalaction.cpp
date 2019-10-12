@@ -17,6 +17,7 @@
 #include "oblockmanager.h"
 #include "entryexitpairs.h"
 #include "oblock.h"
+#include "proxylightmanager.h"
 
 DefaultConditionalAction::DefaultConditionalAction(QObject* parent) :
     ConditionalAction(parent)

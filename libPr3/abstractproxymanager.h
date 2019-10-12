@@ -124,9 +124,9 @@ signals:
 
 public slots:
     virtual void propertyChange(PropertyChangeEvent *e);
-    /*public*/ void contentsChanged(Manager::ManagerDataEvent/*<E>*/* e);
-    /*public*/ void intervalAdded(AbstractProxyManager::ManagerDataEvent/*<E>*/* e);
-    /*public*/ void intervalRemoved(AbstractProxyManager::ManagerDataEvent/*<E>*/* e);
+    /*public*/ void contentsChanged(ManagerDataEvent/*<E>*/* e);
+    /*public*/ void intervalAdded(ManagerDataEvent/*<E>*/* e);
+    /*public*/ void intervalRemoved(ManagerDataEvent/*<E>*/* e);
 
 private:
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("AbstractProxyManager");

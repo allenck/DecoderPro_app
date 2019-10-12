@@ -5,7 +5,7 @@
 #include "internalsystemconnectionmemo.h"
 
 ProxyReporterManager::ProxyReporterManager(QObject *parent) :
-    AbstractProxyManager(parent)
+    AbstractProxyReporterManager(parent)
 {
  setObjectName("ProxyReporterManager");
  registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
@@ -42,7 +42,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 /*public*/ Reporter* ProxyReporterManager::getReporter(QString name)
 {
  //return dynamic_cast<Reporter*>(/*super.*/AbstractProxyManager::getNamedBean(name));
- return (Reporter*)AbstractProxyManager::getNamedBean(name);
+ return (Reporter*)AbstractProxyReporterManager::getNamedBean(name);
 }
 
 /*protected*/ NamedBean* ProxyReporterManager::makeBean(int i, QString systemName, QString userName)
@@ -54,8 +54,12 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 /*public*/ Reporter* ProxyReporterManager::provideReporter(QString sName)
 {
 //return dynamic_cast<Reporter*>( /*super.*/AbstractProxyManager::provideNamedBean(sName));
-    return (Reporter*)AbstractProxyManager::provideNamedBean(sName);
+    return (Reporter*)AbstractProxyReporterManager::provideNamedBean(sName);
 }
+
+//@Override
+/** {@inheritDoc} */
+/*public*/ Reporter* ProxyReporterManager::provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException) { return provideReporter(name); }
 
 /**
  * Locate an instance based on a system name.  Returns NULL if no
@@ -64,7 +68,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
  */
 /*public*/ Reporter* ProxyReporterManager::getBySystemName(QString sName) {
     //return dynamic_cast<Reporter*>( /*super.*/AbstractProxyManager::getBeanBySystemName(sName));
-return (Reporter*)AbstractProxyManager::getBeanBySystemName(sName);
+return (Reporter*)AbstractProxyReporterManager::getBeanBySystemName(sName);
 }
 
 /**
@@ -73,7 +77,7 @@ return (Reporter*)AbstractProxyManager::getBeanBySystemName(sName);
  * @return requested Reporter object or NULL if none exists
  */
 /*public*/ Reporter* ProxyReporterManager::getByUserName(QString userName) {
-    return dynamic_cast<Reporter*>( /*super.*/AbstractProxyManager::getBeanByUserName(userName));
+    return dynamic_cast<Reporter*>( /*super.*/AbstractProxyReporterManager::getBeanByUserName(userName));
 }
 
 /*public*/ Reporter* ProxyReporterManager::getByDisplayName(QString key) {
@@ -153,4 +157,17 @@ return(retv);
     // did not find a manager, allow it to default to the primary
     log.debug("Did not find manager for system name "+systemName+", delegate to primary");
     return makeBean(1, systemName, userName);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString ProxyReporterManager::getEntryToolTip() {
+    return "Enter a number from 1 to 9999"; // Basic number format help
+}
+
+//@Override
+/*public*/ QString ProxyReporterManager::getBeanTypeHandled(bool plural) {
+    return tr(plural ? "Reporters" : "Reporter");
 }

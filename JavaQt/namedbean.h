@@ -13,32 +13,122 @@ public:
     explicit NamedBean(QObject *parent = 0);
     NamedBean(QString name, QObject *parent = 0);
     NamedBean(const NamedBean&);
-    class BadSystemNameException : public Exception
+    /**
+     * Parent class for a set of classes that describe if a user name or system
+     * name is a bad name.
+     */
+    /*public*/ class BadNameException : public IllegalArgumentException {
+
+        /*private*/ /*final*/ QString localizedMessage;
+        protected:
+        /**
+         * Create an exception with no message to the user or for logging.
+         */
+        /*protected*/ BadNameException() {
+            //super();
+            localizedMessage = IllegalArgumentException::getMessage();
+        }
+
+        /**
+         * Create a localized exception, suitable for display to the user.This
+         * takes the non-localized message followed by the localized message.
+         * <p>
+         * Use {@link #getLocalizedMessage()} to display the message to the
+         * user, and use {@link #getMessage()} to record the message in logs.
+         *
+         * @param logging the English message for logging
+         * @param display the localized message for display
+         */
+        /*protected*/ BadNameException(QString logging, QString display) : IllegalArgumentException(logging)
+        {
+            //super(logging);
+            localizedMessage = display;
+        }
+        public:
+        //@Override
+        /*public*/ QString getLocalizedMessage() {
+            return localizedMessage;
+        }
+    };
+
+    /*public*/ class BadUserNameException : public BadNameException
+    {
+     QLocale locale;
+
+        public:
+        /**
+         * Create an exception with no message to the user or for logging. Use
+         * only when calling methods likely have alternate mechanism for
+         * allowing user to understand why exception was thrown.
+         */
+        /*public*/ BadUserNameException() {
+            //super();
+        }
+
+        /**
+         * Create a localized exception, suitable for display to the user. This
+         * takes the same arguments as
+         * {@link jmri.Bundle#getMessage(java.util.Locale, java.lang.String, java.lang.Object...)}
+         * as it uses that method to create both the localized and loggable
+         * messages.
+         * <p>
+         * Use {@link #getLocalizedMessage()} to display the message to the
+         * user, and use {@link #getMessage()} to record the message in logs.
+         * <p>
+         * <strong>Note</strong> the message must be accessible by
+         * {@link jmri.Bundle}.
+         *
+         * @param locale  the locale to be used
+         * @param message bundle key to be translated
+         * @param subs    One or more objects to be inserted into the message
+         */
+        /*public*/ BadUserNameException(QLocale locale, QString message/*, Object... subs*/)
+          : BadNameException(message,message)
+        {
+//            super(Bundle.getMessage(Locale.ENGLISH, message, subs),
+//                    Bundle.getMessage(locale, message, subs));
+          this->locale = locale;
+        }
+
+        /**
+         * Create a localized exception, suitable for display to the user. This
+         * takes the non-localized message followed by the localized message.
+         * <p>
+         * Use {@link #getLocalizedMessage()} to display the message to the
+         * user, and use {@link #getMessage()} to record the message in logs.
+         *
+         * @param logging the English message for logging
+         * @param display the localized message for display
+         */
+        /*public*/ BadUserNameException(QString logging, QString display) : BadNameException(logging, display){
+            //super(logging, display);
+        }
+    };
+    class BadSystemNameException : public BadNameException
     {
      QString name;
-     QLocale locale;
      QString prefix;
+     QLocale locale;
     public:
      BadSystemNameException() {}
-     BadSystemNameException(QLocale locale, QString msg, QString name, QString prefix = "") : Exception()
+     BadSystemNameException(QLocale locale, QString msg, QString name, QString prefix = "") : BadNameException(msg, msg)
      {
-      this->msg = msg;
       this->locale = locale;
       this->name = name;
       this->prefix = prefix;
      }
     };
 
-    class DuplicateSystemNameException : public Exception
+    class DuplicateSystemNameException : public IllegalArgumentException
     {
      QString name;
      QLocale locale;
      QString prefix;
     public:
      DuplicateSystemNameException(QString msg) {this->msg=msg;}
-     DuplicateSystemNameException(QLocale locale, QString msg, QString name, QString prefix = "") : Exception()
+     DuplicateSystemNameException(QLocale locale, QString msg, QString name, QString prefix = "") : IllegalArgumentException(msg)
      {
-      this->msg = msg;
+      //this->msg = msg;
       this->locale = locale;
       this->name = name;
       this->prefix = prefix;
@@ -375,10 +465,10 @@ private:
  QObject* _parent;
  QString _name;
  int _state;
- QString _userName;
- QString _systemName;
- QString _displayName;
- QString _comment;
+// QString _userName;
+// QString _systemName;
+// QString _displayName;
+// QString _comment;
  friend class AbstractAudio;
 };
 

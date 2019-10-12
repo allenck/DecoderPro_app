@@ -10,6 +10,7 @@
 #include "actionlistener.h"
 #include <QTimer>
 
+class Timebase;
 class Light;
 class LIBPR3SHARED_EXPORT LightControl : public QObject
 {
