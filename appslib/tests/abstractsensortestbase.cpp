@@ -141,14 +141,14 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
     Assert::assertEquals("post-set state", Sensor::UNKNOWN, t->getState(), __FILE__, __LINE__);
     //jmri.util.JUnitUtil.waitFor(()->{return t->getState() == t->getRawState();}, "raw state = state");
     ReleaseUntilO8* r08 = new ReleaseUntilO8(this);
-    JUnitUtil::waitFor(r08, "raw state = state");
+    JUnitUtil::waitFor(r08, "raw state = state", __FILE__, __LINE__);
     Assert::assertEquals("2nd state", Sensor::ACTIVE, t->getState(), __FILE__, __LINE__);
 
     t->setOwnState(Sensor::INACTIVE); // next is considered to run immediately, before debounce
     Assert::assertEquals("post-set state", Sensor::ACTIVE, t->getState(), __FILE__, __LINE__);
     //jmri.util.JUnitUtil.waitFor(()->{return t->getState() == t->getRawState();}, "raw state = state");
     r08 = new ReleaseUntilO8(this);
-    JUnitUtil::waitFor(r08, "raw state = state");
+    JUnitUtil::waitFor(r08, "raw state = state", __FILE__, __LINE__);
     Assert::assertEquals("Final state", Sensor::INACTIVE, t->getState(), __FILE__, __LINE__);
 }
 
@@ -177,32 +177,32 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
     t->setState(Sensor::ON);
     //jmri.util.JUnitUtil.waitFor(()->{return t->getState() == Sensor::ON;}, "state = ON");
     ReleaseUntilO9* r09 = new ReleaseUntilO9(Sensor::ON, this);
-    JUnitUtil::waitFor(r09, "state = ON");
+    JUnitUtil::waitFor(r09, "state = ON", __FILE__, __LINE__);
     Assert::assertTrue("Sensor is ON", t->getState() == Sensor::ON, __FILE__, __LINE__);
     t->setState(Sensor::OFF);
     //jmri.util.JUnitUtil.waitFor(()->{return t->getState() == Sensor::OFF;}, "state = OFF");
     r09 = new ReleaseUntilO9(Sensor::OFF, this);
-    JUnitUtil::waitFor(r09, "state = OFF");
+    JUnitUtil::waitFor(r09, "state = OFF", __FILE__, __LINE__);
     Assert::assertTrue("Sensor is ON", t->getState() == Sensor::OFF, __FILE__, __LINE__);
     t->setCommandedState(Sensor::ON);
     //jmri.util.JUnitUtil.waitFor(()->{return t->getState() == Sensor::ON;}, "state = ON");
     r09 = new ReleaseUntilO9(Sensor::ON, this);
-    JUnitUtil::waitFor(r09, "state = ON");
+    JUnitUtil::waitFor(r09, "state = ON", __FILE__, __LINE__);
     Assert::assertTrue("Sensor is ON", t->getState() == Sensor::ON, __FILE__, __LINE__);
     t->setCommandedState(Sensor::OFF);
     //jmri.util.JUnitUtil.waitFor(()->{return t->getState() == Sensor::OFF;}, "state = OFF");
     r09 = new ReleaseUntilO9(Sensor::OFF, this);
-    JUnitUtil::waitFor(r09, "state = OFF");
+    JUnitUtil::waitFor(r09, "state = OFF", __FILE__, __LINE__);
     Assert::assertTrue("Sensor is ON", t->getState() == Sensor::OFF, __FILE__, __LINE__);
     t->setState(Sensor::ON);
     //jmri.util.JUnitUtil.waitFor(()->{return t->getCommandedState() == Sensor::ON;}, "commanded state = ON");
     r09 = new ReleaseUntilO9(Sensor::ON, this);
-    JUnitUtil::waitFor(r09, "state = ON");
+    JUnitUtil::waitFor(r09, "state = ON", __FILE__, __LINE__);
     Assert::assertTrue("Sensor is ON", t->getCommandedState() == Sensor::ON, __FILE__, __LINE__);
     t->setState(Sensor::OFF);
     //jmri.util.JUnitUtil.waitFor(()->{return t->getCommandedState() == Sensor::OFF;}, "commanded state = OFF");
     r09 = new ReleaseUntilO9(Sensor::OFF, this);
-    JUnitUtil::waitFor(r09, "state = OFF");
+    JUnitUtil::waitFor(r09, "state = OFF", __FILE__, __LINE__);
     Assert::assertTrue("Sensor is ON", t->getCommandedState() == Sensor::OFF, __FILE__, __LINE__);
 }
 

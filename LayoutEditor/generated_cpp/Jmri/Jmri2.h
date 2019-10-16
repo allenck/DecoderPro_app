@@ -119,6 +119,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
+virtual QString  getBeanTypeHandled(bool  plural);
 virtual Turnout*  getBySystemName(QString  name);
 virtual Turnout*  getByUserName(QString  key);
 virtual QString  getClosedText();
@@ -141,7 +142,7 @@ virtual QStringList  getValidOperationTypes();
 virtual int  getXMLOrder();
 virtual bool  isControlTypeSupported(QString  systemName);
 virtual bool  isNumControlBitsSupported(QString  systemName);
-virtual QString  makeSystemName(QString  s);
+virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale());
 virtual Turnout*  newTurnout(QString  systemName, QString  userName);
 virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
@@ -484,6 +485,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
+virtual QString  getBeanTypeHandled(bool  plural);
 virtual QString  getEntryToolTip();
 virtual bool  getLoadDisabled();
 virtual SystemConnectionMemo*  getMemo();
@@ -496,7 +498,7 @@ virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
 virtual int  getXMLOrder();
-virtual QString  makeSystemName(QString  s);
+virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale());
 virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
 virtual void removeDataListener(QObject*  e);
@@ -560,6 +562,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  arg__1);
 virtual NamedBean*  getBeanByUserName(QString  arg__1);
 virtual QString  getBeanTypeHandled();
+virtual QString  getBeanTypeHandled(bool  plural);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  arg__1);
@@ -571,7 +574,9 @@ virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
 virtual int  getXMLOrder();
-virtual QString  makeSystemName(QString  arg__1);
+virtual QString  makeSystemName(QString  name);
+virtual QString  makeSystemName(QString  name, bool  arg__2, QLocale  locale);
+virtual QString  makeSystemName(QString  name, bool  logErrors);
 virtual QString  normalizeSystemName(QString  arg__1);
 virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
@@ -597,6 +602,7 @@ inline void py_q_dispose() { Manager::dispose(); }
 inline NamedBean*  py_q_getBeanBySystemName(QString  arg__1) { return Manager::getBeanBySystemName(arg__1); }
 inline NamedBean*  py_q_getBeanByUserName(QString  arg__1) { return Manager::getBeanByUserName(arg__1); }
 inline QString  py_q_getBeanTypeHandled() { return Manager::getBeanTypeHandled(); }
+inline QString  py_q_getBeanTypeHandled(bool  plural) { return Manager::getBeanTypeHandled(plural); }
 inline QString  py_q_getEntryToolTip() { return Manager::getEntryToolTip(); }
 inline SystemConnectionMemo*  py_q_getMemo() { return Manager::getMemo(); }
 inline NamedBean*  py_q_getNamedBean(QString  arg__1) { return Manager::getNamedBean(arg__1); }
@@ -608,7 +614,9 @@ inline QStringList  py_q_getSystemNameArray() { return Manager::getSystemNameArr
 inline QStringList  py_q_getSystemNameList() { return Manager::getSystemNameList(); }
 inline QString  py_q_getSystemPrefix() { return Manager::getSystemPrefix(); }
 inline int  py_q_getXMLOrder() { return Manager::getXMLOrder(); }
-inline QString  py_q_makeSystemName(QString  arg__1) { return Manager::makeSystemName(arg__1); }
+inline QString  py_q_makeSystemName(QString  name) { return Manager::makeSystemName(name); }
+inline QString  py_q_makeSystemName(QString  name, bool  arg__2, QLocale  locale) { return Manager::makeSystemName(name, arg__2, locale); }
+inline QString  py_q_makeSystemName(QString  name, bool  logErrors) { return Manager::makeSystemName(name, logErrors); }
 inline QString  py_q_normalizeSystemName(QString  arg__1) { return Manager::normalizeSystemName(arg__1); }
 inline void py_q_removeDataListener(QObject*  e) { Manager::removeDataListener(e); }
 inline void py_q_removePropertyChangeListener(PropertyChangeListener*  arg__1) { Manager::removePropertyChangeListener(arg__1); }
@@ -644,6 +652,8 @@ void delete_Manager(Manager* obj) { delete obj; }
    NamedBean*  py_q_getBeanByUserName(Manager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBeanByUserName(arg__1));}
    QString  getBeanTypeHandled(Manager* theWrappedObject);
    QString  py_q_getBeanTypeHandled(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBeanTypeHandled());}
+   QString  getBeanTypeHandled(Manager* theWrappedObject, bool  plural);
+   QString  py_q_getBeanTypeHandled(Manager* theWrappedObject, bool  plural){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
    QString  getEntryToolTip(Manager* theWrappedObject);
    QString  py_q_getEntryToolTip(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getEntryToolTip());}
    SystemConnectionMemo*  getMemo(Manager* theWrappedObject);
@@ -669,8 +679,12 @@ void delete_Manager(Manager* obj) { delete obj; }
    int  getXMLOrder(Manager* theWrappedObject);
    int  py_q_getXMLOrder(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getXMLOrder());}
    bool  static_Manager_isLegacySystemPrefix(QString  prefix);
-   QString  makeSystemName(Manager* theWrappedObject, QString  arg__1);
-   QString  py_q_makeSystemName(Manager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_makeSystemName(arg__1));}
+   QString  makeSystemName(Manager* theWrappedObject, QString  name);
+   QString  py_q_makeSystemName(Manager* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_makeSystemName(name));}
+   QString  makeSystemName(Manager* theWrappedObject, QString  name, bool  arg__2, QLocale  locale);
+   QString  py_q_makeSystemName(Manager* theWrappedObject, QString  name, bool  arg__2, QLocale  locale){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_makeSystemName(name, arg__2, locale));}
+   QString  makeSystemName(Manager* theWrappedObject, QString  name, bool  logErrors);
+   QString  py_q_makeSystemName(Manager* theWrappedObject, QString  name, bool  logErrors){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_makeSystemName(name, logErrors));}
    QString  normalizeSystemName(Manager* theWrappedObject, QString  arg__1);
    QString  py_q_normalizeSystemName(Manager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_normalizeSystemName(arg__1));}
    void removeDataListener(Manager* theWrappedObject, QObject*  e);
@@ -719,6 +733,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
+virtual QString  getBeanTypeHandled(bool  plural);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
@@ -730,7 +745,7 @@ virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
 virtual int  getXMLOrder();
-virtual QString  makeSystemName(QString  s);
+virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale());
 virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
 virtual void removeDataListener(QObject*  e);
@@ -2562,6 +2577,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
+virtual QString  getBeanTypeHandled(bool  plural);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
@@ -2574,7 +2590,7 @@ virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList() const;
 virtual QString  getSystemPrefix();
 virtual int  getXMLOrder();
-virtual QString  makeSystemName(QString  s);
+virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale());
 virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
 virtual void removeDataListener(QObject*  e);
@@ -2638,6 +2654,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled();
+virtual QString  getBeanTypeHandled(bool  plural);
 virtual Sensor*  getBySystemName(QString  key);
 virtual Sensor*  getByUserName(QString  key);
 virtual long  getDefaultSensorDebounceGoingActive();
@@ -2656,7 +2673,7 @@ virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix();
 virtual int  getXMLOrder();
 virtual bool  isPullResistanceConfigurable();
-virtual QString  makeSystemName(QString  s);
+virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale());
 virtual Sensor*  newSensor(QString  sysName, QString  userName);
 virtual QString  normalizeSystemName(QString  sysName);
 virtual Sensor*  provide(QString  name) throw (IllegalArgumentException)

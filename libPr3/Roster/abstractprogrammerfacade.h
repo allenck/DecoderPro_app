@@ -30,6 +30,8 @@ public:
 signals:
 
 public slots:
+ /*public*/ virtual void programmingOpReply(int value, int status) =0;
+
 protected:
     /*protected*/ Programmer* prog;
 

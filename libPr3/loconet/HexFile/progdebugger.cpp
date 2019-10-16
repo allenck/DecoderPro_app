@@ -4,6 +4,7 @@
 #include <QTimer>
 #include "programmingmode.h"
 #include "rosterentry.h"
+#include "abstractprogrammerfacade.h"
 
 //ProgDebugger::ProgDebugger(QObject *parent) :
 //    AddressedProgrammer(parent)
@@ -138,7 +139,13 @@ void ProgDebugger::PDRunnable1::run()
 {
  Logger* log = new Logger("PDRunnable1");
  log->debug("write CV reply");
- if (l!=NULL) l->programmingOpReply(-1, 0);   // 0 is OK status
+ if(l != nullptr)
+ {
+   if(qobject_cast<AbstractProgrammerFacade*>(l))
+    ((AbstractProgrammerFacade*)l)->programmingOpReply(-1, 0);
+   else
+     l->programmingOpReply(-1, 0);   // 0 is OK status
+ }
 }
 
 // read CV values
@@ -195,8 +202,22 @@ void ProgDebugger::PDRunnable2::run()
 Logger* log = new Logger("PDRunnable2");
 
  log->debug("read CV reply");
- if (parent->confirmOK) l->programmingOpReply(result, ProgListener::OK);
- else l->programmingOpReply(result, ProgListener::ConfirmFailed);
+ if(l != nullptr)
+ {
+  if(qobject_cast<AbstractProgrammerFacade*>(l))
+  {
+   if (parent->confirmOK)
+    ((AbstractProgrammerFacade*)l)->programmingOpReply(result, ProgListener::OK);
+   else ((AbstractProgrammerFacade*)l)->programmingOpReply(result, ProgListener::ConfirmFailed);
+
+  }
+  else
+  {
+   if (parent->confirmOK)
+    l->programmingOpReply(result, ProgListener::OK);
+   else l->programmingOpReply(result, ProgListener::ConfirmFailed);
+  }
+ }
 }
 
 /*public*/ void ProgDebugger::readCV(QString CV, ProgListener* p) throw (ProgrammerException) {
@@ -242,6 +263,11 @@ void ProgDebugger::PDRunnable3::run()
     // log->debug("read CV reply - start sleep");
     // try { Thread.sleep(100); } catch (Exception e) {}
     log->debug("read CV reply");
+    if(qobject_cast<AbstractProgrammerFacade*>(l))
+    {
+     ((AbstractProgrammerFacade*)l)->programmingOpReply(retval, 0);
+    }
+    else
     l->programmingOpReply(retval, 0);   // 0 is OK status
 }
 
@@ -338,8 +364,10 @@ void ProgDebugger::PDRunnable3::run()
  * Arrange for the return to be invoked on the Swing thread.
  */
 void ProgDebugger::sendReturn(Runnable* run) {
+ this->run = run;
     if (IMMEDIATERETURN) {
 //        javax.swing.SwingUtilities.invokeLater(run);
+     run->run();
     }
     else
     {
@@ -359,12 +387,14 @@ void ProgDebugger::sendReturn(Runnable* run) {
 //        }.init(timer, run);
 //        timer.addActionListener(l);
 //        timer.start();
-        QTimer::singleShot(DELAY, this, SLOT(OnTimer()));
+        QTimer::singleShot(DELAY, this, SLOT(On_timer()));
     }
 }
 void ProgDebugger::On_timer()
 {
 //TODO:
+ run->run();
+
 }
 ////    static Logger log = LoggerFactory.getLogger(ProgDebugger.class.getName());
 //}

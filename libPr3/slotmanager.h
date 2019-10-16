@@ -238,6 +238,7 @@ public:
     /*public*/ void setTranspondingAvailable(bool val);
     /*public*/ bool getTranspondingAvailable();
 
+    /*default*/ /*public*/ void notifyProgListenerEnd(ProgListener* p, int value, int status);
 
 signals:
     void changedSlot(LocoNetSlot* s);
@@ -409,6 +410,7 @@ protected slots:
  /*synchronized*/ /*protected*/ void timeout();
 
  friend class SlotManagerTest;
+ friend class LnDeferProgrammer;
 };
 
 class SendProgrammingReplyDelay : public QObject
@@ -418,8 +420,9 @@ class SendProgrammingReplyDelay : public QObject
  int value;
  int status;
  int delay;
+ SlotManager* slotManager;
 public:
- SendProgrammingReplyDelay(ProgListener* p, int value, int status, int delay);
+ SendProgrammingReplyDelay(ProgListener* p, int value, int status, int delay, SlotManager* slotManager);
 
 public slots:
  void timeout();

@@ -50,7 +50,7 @@ private:
     QString getAlternateAddress(QString cv);
     int getAlternateValue(QString cv);
     bool useCachePiSi();
-
+friend class MultiIndexProgrammerFacadeTest;
 };
 
 #endif // MULTIINDEXPROGRAMMERFACADE_H

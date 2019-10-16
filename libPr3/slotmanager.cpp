@@ -13,7 +13,7 @@ SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractPro
 {
  this->tc = tc;
  log = new Logger("SlotManager");
- log->setDebugEnabled(false);
+ log->setDebugEnabled(true);
  log->setInfoEnabled(true);
  // need a longer LONG_TIMEOUT for Fleischman command stations
  // change timeout values from AbstractProgrammer superclass
@@ -203,6 +203,7 @@ void SlotManager::addSlotListener(SlotListener* l) {
     // add only if not already registered
     if (!slotListeners.contains(l)) {
         slotListeners.append(l);
+        connect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
     }
 }
 
@@ -210,6 +211,8 @@ void SlotManager::removeSlotListener(SlotListener* l) {
     if (slotListeners.contains(l)) {
         int i = slotListeners.indexOf(l);
         slotListeners.remove(i);
+        disconnect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+
     }
 }
 
@@ -228,12 +231,13 @@ void SlotManager::notify(LocoNetSlot* s)
 //        }
  if (log->isDebugEnabled()) log->debug(QString("notify %1 SlotListeners about slot %2").arg(v->size()).arg(s->getSlot()));
  // forward to all listeners
- foreach(SlotListener* l, *v)
- {
-  connect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
- emit changedSlot(s);
-  disconnect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
-}
+// foreach(SlotListener* l, *v)
+// {
+//  connect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+//  emit changedSlot(s);
+//  disconnect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+// }
+  emit changedSlot(s);
 #if 0
     int cnt = v->size();
     for (int i=0; i < cnt; i++)
@@ -466,72 +470,66 @@ int SlotManager::findSlotFromMessage(LocoNetMessage* m) {
  // assume its for us...
  if (log->isDebugEnabled())
   log->debug("LACK in state "+QString::number(progState)+" message: "+m->toString());
- if ( checkLackByte1(m->getElement(1)) && progState == 1 )
+ if (checkLackByte1(m->getElement(1)) && progState == 1) 
  {
   // in programming state
   // check status byte
-  if (checkLackTaskAccepted(m->getElement(2)))
-  {// task accepted
-   // 'not implemented' (op on main)
-   // but BDL16 and other devices can eventually reply, so
-   // move to commandExecuting state
-   log->debug("LACK accepted, next state 2-commandExecuting");
-   if ( (_progRead || _progConfirm) && mServiceMode)
-    startLongTimer();
-   else
-    startShortTimer();
-   progState = 2;
-  }
-  else if (checkLackProgrammerBusy(m->getElement(2)))
-  {// task aborted as busy
-   // move to not programming state
-   progState = 0;
-   // notify user ProgListener
-   stopTimer();
-   notifyProgListenerLack(ProgListener::ProgrammerBusy);
-  }
-  else if (checkLackAcceptedBlind(m->getElement(2)))
-  { // task accepted blind
-   if((_progRead || _progConfirm) && !mServiceMode)
-   {// incorrect Reserved OpSw setting can cause this response to OpsMode Read
-    // just treat it as a normal OpsMode Read response
-    // move to commandExecuting state
-    log->debug("LACK accepted (ignoring incorrect OpSw), next state 2-commandExecuting");
-    startShortTimer();
-    progState = 2;
-   }
-   else
-   {
-    // move to not programming state
-    progState = 0;
-    // notify user ProgListener
-    stopTimer();
-    // have to send this in a little while to
-    // allow command station time to execute
-//    int delay = 100; // milliseconds
-//    QTimer timer = new QTimer(delay, new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent e) {
-//                notifyProgListenerEnd(-1, 0); // no value (e.g. -1), no error status (e.g.0)
-//            }
-//        });
-//    timer->stop();
-//    timer->setInterval(delay);
-//    timer->setSingleShot(true);
-//    timer->start();
-    QTimer::singleShot(postProgDelay, this, SLOT(On_notifyProgListenerEnd()));
-   }
-  }
-  else
-  { // not sure how to cope, so complain
-   log->warn("unexpected LACK reply code "+QString::number(m->getElement(2)) + "(0x"+QString::number(m->getElement(2),16)+")");
-   // move to not programming state
-   progState = 0;
-   // notify user ProgListener
-   stopTimer();
-   notifyProgListenerLack(ProgListener::UnknownError);
+  if (checkLackTaskAccepted(m->getElement(2))) 
+  { // task accepted
+      // 'not implemented' (op on main)
+      // but BDL16 and other devices can eventually reply, so
+      // move to commandExecuting state
+      log->debug("LACK accepted, next state 2"); // NOI18N
+      if ((_progRead || _progConfirm) && mServiceMode) {
+          startLongTimer();
+      } else {
+          startShortTimer();
+      }
+      progState = 2;
+  } else if (checkLackProgrammerBusy(m->getElement(2))) { // task aborted as busy
+      // move to not programming state
+      progState = 0;
+      // notify user ProgListener
+      stopTimer();
+      notifyProgListenerLack(ProgListener::ProgrammerBusy);
+  } else if (checkLackAcceptedBlind(m->getElement(2))) { // task accepted blind
+      if ((_progRead || _progConfirm) && !mServiceMode) { // incorrect Reserved OpSw setting can cause this response to OpsMode Read
+          // just treat it as a normal OpsMode Read response
+          // move to commandExecuting state
+          log->debug("LACK accepted (ignoring incorrect OpSw), next state 2"); // NOI18N
+          startShortTimer();
+          progState = 2;
+      } else {
+          // move to not programming state
+          progState = 0;
+          // notify user ProgListener
+          stopTimer();
+          // have to send this in a little while to
+          // allow command station time to execute
+//          QTimer* timer = new QTimer(postProgDelay, new java.awt.event.ActionListener() {
+//              @Override
+//              public void actionPerformed(java.awt.event.ActionEvent e) {
+//                  notifyProgListenerEnd(-1, 0); // no value (e.g. -1), no error status (e.g.0)
+//              }
+//          });
+          timer = new QTimer();
+          connect(timer, SIGNAL(timeout()), this, SLOT(On_notifyProgListenerEnd()));
+          timer->stop();
+          timer->setInterval(postProgDelay);
+          timer->setSingleShot(true);
+          timer->start();
+      }
+  } else { // not sure how to cope, so complain
+      log->warn(tr("unexpected LACK reply code %1").arg(m->getElement(2))); // NOI18N
+      // move to not programming state
+      progState = 0;
+      // notify user ProgListener
+      stopTimer();
+      notifyProgListenerLack(ProgListener::UnknownError);
   }
  }
 }
+
 void SlotManager::On_notifyProgListenerEnd() // SLOT
 {
  notifyProgListenerEnd(-1, 0); // no value (e.g. -1), no error status (e.g.0)
@@ -574,10 +572,10 @@ void SlotManager::respondToAddrRequest(LocoNetMessage* m, int i)
          mLocoAddrHash.remove((addr));
          // and send the notification
          log->debug("notify listener"); // NOI18N
-         connect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+//         connect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
          //l->notifyChangedSlot(_slots[i]);
          emit notifyChangedSlot(_slots[i]);
-         disconnect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+//         disconnect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
      } else {
          log->debug(tr("no request for addr %1").arg(addr)); // NOI18N
      }
@@ -601,7 +599,7 @@ void SlotManager::programmerOpMessage(LocoNetMessage* m, int i)
     break;
    case 2:   // commandExecuting
     // waiting for slot read, is it present?
-    if (m->getOpCode() == LnConstants::OPC_SL_RD_DATA)
+    if (m->getOpCode() == LnConstants::OPC_SL_RD_DATA) // 0xe7 231
     {
      // yes, this is the end
      // move to not programming state
@@ -653,10 +651,11 @@ void SlotManager::programmerOpMessage(LocoNetMessage* m, int i)
 /*public*/ QList<ProgrammingMode*> SlotManager::getSupportedModes()
 {
  QList<ProgrammingMode*> ret = QList<ProgrammingMode*>();
- ret.append(ProgrammingMode::PAGEMODE);
  ret.append(ProgrammingMode::DIRECTBYTEMODE);
+ ret.append(ProgrammingMode::PAGEMODE);
  ret.append(ProgrammingMode::REGISTERMODE);
  ret.append(ProgrammingMode::ADDRESSMODE);
+ ret.append(csOpSwProgrammingMode);
  return ret;
 }
 
@@ -945,9 +944,8 @@ void SlotManager::doRead(int CV, ProgListener* p, int progByte) throw(Programmer
 
     // format and send message
     startShortTimer();
-    tc->sendLocoNetMessage(progTaskStart(progByte, -1, CV, false));
+    tc->sendLocoNetMessage(progTaskStart(progByte, 0, CV, false));
 }
-
 
 // internal method to remember who's using the programmer
 void SlotManager::useProgrammer(ProgListener* p) // throws jmri.ProgrammerException
@@ -971,7 +969,6 @@ void SlotManager::useProgrammer(ProgListener* p) // throws jmri.ProgrammerExcept
  */
 LocoNetMessage* SlotManager::progTaskStart(int pcmd, int val, int cvnum, bool write)
 {
-
  Q_UNUSED(write)
  int  addr = cvnum-1;    // cvnum is in human readable form; addr is what's sent over loconet
 
@@ -1018,6 +1015,21 @@ void SlotManager::notifyProgListenerEnd(int value, int status)
   sendProgrammingReply(p, value, status);
 }
 
+
+/**
+ * wrapper to call {@link jmri.ProgListener#programmingOpReply} that verifies
+ * the specified progListener is not null.
+ *
+ * @param p listener to notify
+ * @param value result value
+ * @param status code from jmri.ProgListener
+ */
+/*default*/ /*public*/ void SlotManager::notifyProgListenerEnd(ProgListener* p, int value, int status) {
+    if ( p != nullptr ) {
+       p->programmingOpReply(value, status);
+    }
+}
+
 /**
  * Internal method to notify of the LACK result.
  * This is a separate routine from nPLRead in case we need to handle something later
@@ -1042,26 +1054,33 @@ void SlotManager::notifyProgListenerLack(int status)
 void SlotManager::sendProgrammingReply(ProgListener* p, int value, int status)
 {
  int delay = 20;  // value in service mode
- new SendProgrammingReplyDelay(p, value, status,  delay);
+ if (!mServiceMode) {
+     delay = 100;  // value in ops mode
+ }
+ new SendProgrammingReplyDelay(p, value, status,  delay, this);
 }
- SendProgrammingReplyDelay::SendProgrammingReplyDelay(ProgListener *p, int value, int status, int delay)
- {
-  this->p = p;
-  this->value = value;
-  this->status = status;
-  this->delay = delay;
-  QTimer* timer = new QTimer();
-  timer->setSingleShot(true);
-  connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
-  timer->start(delay);
- }
- void SendProgrammingReplyDelay::timeout()
- {
+
+SendProgrammingReplyDelay::SendProgrammingReplyDelay(ProgListener *p, int value, int status, int delay, SlotManager* slotManager)
+{
+ this->p = p;
+ this->value = value;
+ this->status = status;
+ this->delay = delay;
+ this->slotManager = slotManager;
+ QTimer* timer = new QTimer();
+ timer->setSingleShot(true);
+ connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
+ timer->start(delay);
+}
+
+void SendProgrammingReplyDelay::timeout()
+{
 //         p.programmingOpReply(value, status);
-  connect(this, SIGNAL(on_programmingOpReply(int,int)), p, SLOT(programmingOpReply(int,int)));
-  emit on_programmingOpReply(value, status);
-  disconnect(this, SIGNAL(on_programmingOpReply(int,int)), p, SLOT(programmingOpReply(int,int)));
- }
+//// connect(this, SIGNAL(on_programmingOpReply(int,int)), p, SLOT(programmingOpReply(int,int)));
+// emit on_programmingOpReply(value, status);
+//// disconnect(this, SIGNAL(on_programmingOpReply(int,int)), p, SLOT(programmingOpReply(int,int)));
+ ((Programmer*)slotManager)->notifyProgListenerEnd(p, value, status);
+}
 
 /**
  * Internal routine to stop power timer, as another programming
@@ -1279,48 +1298,52 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
  log->debug(tr("readCV(string): cvNum=%1 mode=%2").arg(cvNum).arg(getMode()->toString()));
  if (getMode()->equals(csOpSwProgrammingMode))
  {
-     log->debug("cvOpSw mode!");
-     //handle Command Station OpSw programming here
-     QStringList parts = cvNum.split(QRegExp("\\."));
-     if ((parts.at(0) ==("csOpSw")) && (parts.length()==2)) {
-         if (csOpSwAccessor == nullptr) {
-             csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
-         } else {
-             csOpSwAccessor->setProgrammerListener(p);
-         }
-         // perform the CsOpSwMode read access
-         log->debug("going to try the opsw access");
-         csOpSwAccessor->readCsOpSw(cvNum, p);
-         return;
+  log->debug("cvOpSw mode!");
+  //handle Command Station OpSw programming here
+  QStringList parts = cvNum.split(QRegExp("\\."));
+  if ((parts.at(0) ==("csOpSw")) && (parts.length()==2))
+  {
+   if (csOpSwAccessor == nullptr) {
+       csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
+   } else {
+       csOpSwAccessor->setProgrammerListener(p);
+   }
+   // perform the CsOpSwMode read access
+   log->debug("going to try the opsw access");
+   csOpSwAccessor->readCsOpSw(cvNum, p);
+   return;
+  }
+  else {
+   log->warn("rejecting the cs opsw access account unsupported CV name format");
+   // unsupported format in "cv" name.  Signal an error.
+   Programmer::notifyProgListenerEnd(p, 1, ProgListener::SequenceError);
+   return;
+  }
+ }
+ else
+ {
+  // regular integer address for DCC form
+  bool bok;
+  int CV = cvNum.toInt(&bok);
+  if(!bok) throw IllegalArgumentException();
 
-     } else {
-         log->warn("rejecting the cs opsw access account unsupported CV name format");
-         // unsupported format in "cv" name.  Signal an error.
-         Programmer::notifyProgListenerEnd(p, 1, ProgListener::SequenceError);
-         return;
+  lopsa = 0;
+  hopsa = 0;
+  mServiceMode = true;
+  // parse the programming command
+  int pcmd = 0x03;       // LPE imples 0x00, but 0x03 is observed
+  if (getMode()->equals(ProgrammingMode::PAGEMODE)) {
+      pcmd = pcmd | 0x20;
+  } else if (getMode()->equals(ProgrammingMode::DIRECTBYTEMODE)) {
+      pcmd = pcmd | 0x28;
+  } else if (getMode()->equals(ProgrammingMode::REGISTERMODE)
+          || getMode()->equals(ProgrammingMode::ADDRESSMODE)) {
+      pcmd = pcmd | 0x10;
+  } else {
+      throw ProgrammerException("mode not supported"); // NOI18N
+  }
 
-     }
- } else {
-     // regular integer address for DCC form
-     int CV = cvNum.toInt();
-
-     lopsa = 0;
-     hopsa = 0;
-     mServiceMode = true;
-     // parse the programming command
-     int pcmd = 0x03;       // LPE imples 0x00, but 0x03 is observed
-     if (getMode()->equals(ProgrammingMode::PAGEMODE)) {
-         pcmd = pcmd | 0x20;
-     } else if (getMode()->equals(ProgrammingMode::DIRECTBYTEMODE)) {
-         pcmd = pcmd | 0x28;
-     } else if (getMode()->equals(ProgrammingMode::REGISTERMODE)
-             || getMode()->equals(ProgrammingMode::ADDRESSMODE)) {
-         pcmd = pcmd | 0x10;
-     } else {
-         throw ProgrammerException("mode not supported"); // NOI18N
-     }
-
-     doRead(CV, p, pcmd);
+  doRead(CV, p, pcmd);
 
  }
 }

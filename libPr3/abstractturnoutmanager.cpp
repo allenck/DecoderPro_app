@@ -50,7 +50,7 @@ Turnout* AbstractTurnoutManager::provideTurnout(QString name)
     if (name.startsWith(getSystemPrefix().mid(0,1)+QString(typeLetter())))
         return newTurnout(name, nullptr);
     else
-        return newTurnout(makeSystemName(name), nullptr);
+        return newTurnout(makeSystemName(name, true, QLocale()), nullptr);
 }
 
 Turnout* AbstractTurnoutManager::getTurnout(QString name) {

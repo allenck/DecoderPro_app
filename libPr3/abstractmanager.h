@@ -28,7 +28,6 @@ public:
     AbstractManager(QObject *parent = 0);
     AbstractManager(SystemConnectionMemo* memo, QObject *parent = 0);
 //    virtual int getXMLOrder();
-     QString makeSystemName(QString s);
     // abstract methods to be extended by subclasses
     // to free resources when no longer used
      void dispose();
@@ -116,6 +115,11 @@ public:
     /*public*/ void setDataListenerMute(bool m);
     /*public*/ void addDataListener(/*ManagerDataListener<E>*/QObject* e);
     /*public*/ void removeDataListener(/*ManagerDataListener<E>*/QObject* e);
+//    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s);
+//    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors);
+    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors = true, QLocale locale = QLocale());
+    /*public*/ virtual SystemConnectionMemo* getMemo();
+
 
 signals:
 //    void beanDeleted(NamedBean* s);
@@ -141,6 +145,7 @@ private:
     /*private*/ bool muted = false;
     Logger* log;
     /*final*/ QList</*ManagerDataListener<E>>*/QObject*> listeners;// = new ArrayList<>();
+    SystemConnectionMemo* memo = nullptr;
 
 friend class SectionTableDataModel;
 friend class ReporterPickModel;
@@ -151,7 +156,7 @@ friend class OBlockTableModel;
 friend class SensorTableModel;
 friend class RpsReporterManager;
 friend class RpsSensorManager;
-SystemConnectionMemo* memo = nullptr;
+friend class InternalLightManager;
 
 protected:
 /**

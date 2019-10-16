@@ -20,8 +20,8 @@ public:
     /*public*/ static void resetProfileManager();
     /*public*/ static void initRosterConfigManager();
     /*public*/ static void resetProfileManager(Profile* profile);
-    static /*public*/ void waitFor(ReleaseUntil *condition, QString name);
-    static /*public*/ bool waitFor(ReleaseUntil* condition);
+    static /*public*/ void waitFor(ReleaseUntil *condition, QString name, QString file = __FILE__, int line = __LINE__);
+    static /*public*/ bool waitFor(ReleaseUntil* condition, QString file = __FILE__, int line = __LINE__);
     static /*public*/ void waitFor(int time);
     /*public*/ static void runTests(QObject *test, QStringList testList);
     static QString getTestClassName();
@@ -103,7 +103,7 @@ class /*interface*/ ReleaseUntil : public QObject
 {
     Q_OBJECT
 public:
-    /*public*/ bool ready() throw (Exception) {}
+    /*public*/ virtual bool ready() throw (Exception) {}
 
 };
 #endif // JUNITUTIL_H

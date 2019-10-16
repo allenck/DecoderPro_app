@@ -41,6 +41,7 @@
 //#include "defaultconditionalmanager.h"
 //#include "../LayoutEditor/memoryicon.h"
 //#include "lnturnoutmanager.h"
+#include "propertychangelistenerproxy.h"
 
 //PropertyChangeSupport::PropertyChangeSupport(QObject *parent) :
 //    QObject(parent)
@@ -106,7 +107,7 @@
  this->parent = parent;
  if (sourceBean == NULL) 
  {
-  throw new NullPointerException("Null Pointer");
+  throw NullPointerException("Null Pointer");
  }
  map = new PropertyChangeListenerMap();
  source = sourceBean;
@@ -129,19 +130,20 @@
   return;
  }
  // add to catch bad listener pointers: qDebug()<< tr("add listener ") + listener->metaObject()->className();
-#if 0
- if (listener instanceof PropertyChangeListenerProxy)
+#if 1
+ if (qobject_cast<PropertyChangeListenerProxy*>(listener) != nullptr)
  {
-  PropertyChangeListenerProxy proxy =
-                   (PropertyChangeListenerProxy)listener;
+  PropertyChangeListenerProxy* proxy =
+                   (PropertyChangeListenerProxy*)listener;
   // Call two argument add method.
-  addPropertyChangeListener(proxy.getPropertyName(),
-                                      proxy.getListener());
+  addPropertyChangeListener(proxy->getPropertyName(),
+                                      proxy->getListener());
  }
  else
 #endif
  {
   this->map->add("", listener);
+  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -162,56 +164,59 @@
  {
   return;
  }
-#if 0
- if (listener instanceof PropertyChangeListenerProxy)
+#if 1
+ if (qobject_cast<PropertyChangeListenerProxy*>(listener) != nullptr)
  {
-  PropertyChangeListenerProxy proxy =
-                (PropertyChangeListenerProxy)listener;
+  PropertyChangeListenerProxy* proxy =
+                (PropertyChangeListenerProxy*)listener;
   // Call two argument remove method.
-  removePropertyChangeListener(proxy.getPropertyName(),
-                                     proxy.getListener());
+  removePropertyChangeListener(proxy->getPropertyName(),
+                                     proxy->getListener());
  }
  else
 #endif
  {
      this->map->remove("", listener);
+  disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+
  }
+
 }
 
-    /**
-     * Returns an array of all the listeners that were added to the
-     * PropertyChangeSupport object with addPropertyChangeListener().
-     * <p>
-     * If some listeners have been added with a named property, then
-     * the returned array will be a mixture of PropertyChangeListeners
-     * and <code>PropertyChangeListenerProxy</code>s. If the calling
-     * method is interested in distinguishing the listeners then it must
-     * test each element to see if it's a
-     * <code>PropertyChangeListenerProxy</code>, perform the cast, and examine
-     * the parameter.
-     *
-     * <pre>
-     * PropertyChangeListener[] listeners = bean.getPropertyChangeListeners();
-     * for (int i = 0; i < listeners.length; i++) {
-     *   if (listeners[i] instanceof PropertyChangeListenerProxy) {
-     *     PropertyChangeListenerProxy proxy =
-     *                    (PropertyChangeListenerProxy)listeners[i];
-     *     if (proxy.getPropertyName().equals("foo")) {
-     *       // proxy is a PropertyChangeListener which was associated
-     *       // with the property named "foo"
-     *     }
-     *   }
-     * }
-     *</pre>
-     *
-     * @see PropertyChangeListenerProxy
-     * @return all of the <code>PropertyChangeListeners</code> added or an
-     *         empty array if no listeners have been added
-     * @since 1.4
-     */
-    /*public*/ QVector<PropertyChangeListener*> PropertyChangeSupport::getPropertyChangeListeners() {
-        return this->map->getListeners();
-    }
+/**
+ * Returns an array of all the listeners that were added to the
+ * PropertyChangeSupport object with addPropertyChangeListener().
+ * <p>
+ * If some listeners have been added with a named property, then
+ * the returned array will be a mixture of PropertyChangeListeners
+ * and <code>PropertyChangeListenerProxy</code>s. If the calling
+ * method is interested in distinguishing the listeners then it must
+ * test each element to see if it's a
+ * <code>PropertyChangeListenerProxy</code>, perform the cast, and examine
+ * the parameter.
+ *
+ * <pre>
+ * PropertyChangeListener[] listeners = bean.getPropertyChangeListeners();
+ * for (int i = 0; i < listeners.length; i++) {
+ *   if (listeners[i] instanceof PropertyChangeListenerProxy) {
+ *     PropertyChangeListenerProxy proxy =
+ *                    (PropertyChangeListenerProxy)listeners[i];
+ *     if (proxy.getPropertyName().equals("foo")) {
+ *       // proxy is a PropertyChangeListener which was associated
+ *       // with the property named "foo"
+ *     }
+ *   }
+ * }
+ *</pre>
+ *
+ * @see PropertyChangeListenerProxy
+ * @return all of the <code>PropertyChangeListeners</code> added or an
+ *         empty array if no listeners have been added
+ * @since 1.4
+ */
+/*public*/ QVector<PropertyChangeListener*> PropertyChangeSupport::getPropertyChangeListeners() {
+    return this->map->getListeners();
+}
 
 /**
  * Add a PropertyChangeListener for a specific property.  The listener
@@ -302,7 +307,8 @@
 {
  if (!oldValue.isNull() && oldValue==(newValue))
   return;
- emit propertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
+ //emit propertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
+ firePropertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
 }
 
 //void PropertyChangeSupport::firePropertyChange(QString propertyName, QObject* oldValue, QObject* newValue)
@@ -354,8 +360,9 @@
   QVector<PropertyChangeListener*> common = this->map->get(NULL);
   QVector<PropertyChangeListener*> named = !name.isEmpty() ? this->map->get(name): QVector<PropertyChangeListener*>();
 
-  fire(common, event);
-  fire(named, event);
+//  fire(common, event);
+//  fire(named, event);
+  emit propertyChange(event);
  }
 }
 
@@ -369,138 +376,8 @@
   {
    if(listener != NULL)
    {
-//    if(qobject_cast<DefaultMemoryManager*>(listener) != NULL)
-//     ((DefaultMemoryManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<BlockManager*>(listener) != NULL)
-//     ((BlockManager*)listener)->propertyChange(event);
-//    else
     if(qobject_cast<PropertyChangeListener*>(listener) != NULL)
      ((PropertyChangeListener*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<LnSensorManager*>(listener) != NULL)
-//     ((LnSensorManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<LnTurnoutManager*>(listener) != NULL)
-//     ((LnTurnoutManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<InternalTurnoutManager*>(listener) != NULL)
-//     ((InternalTurnoutManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<InternalSensorManager*>(listener) != NULL)
-//     ((InternalSensorManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<DefaultIdTagManager*>(listener) != NULL)
-//     ((DefaultIdTagManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<RfidReporterManager*>(listener) != NULL)
-//     ((RfidReporterManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<DefaultRouteManager*>(listener) != NULL)
-//     ((DefaultRouteManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<InternalLightManager*>(listener) != NULL)
-//     ((InternalLightManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<ThrottleWindow*>(listener) != NULL)
-//     ((ThrottleWindow*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<ListThrottles*>(listener) != NULL)
-//     ((ListThrottles*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<SlotMonitor*>(listener) != NULL)
-//     ((SlotMonitor*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<CvTableModel*>(listener) != NULL)
-//     ((CvTableModel*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<DecVariableValue*>(listener) != NULL)
-//     ((DecVariableValue*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<SplitVariableValue*>(listener) != NULL)
-//     ((SplitVariableValue*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<VariableTableModel*>(listener) != NULL)
-//     ((VariableTableModel*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<EnumVariableValue*>(listener) != NULL)
-//     ((EnumVariableValue*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<LongAddrVariableValue*>(listener) != NULL)
-//     ((LongAddrVariableValue*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<SpeedTableVarValue*>(listener) != NULL)
-//     ((SpeedTableVarValue*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<ComboRadioButtons*>(listener) != NULL)
-//     ((ComboRadioButtons*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<DecVarSlider*>(listener) != NULL)
-//     ((DecVarSlider*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<VarTextField*>(listener) != NULL)
-//     ((VarTextField*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<VarSlider*>(listener) != NULL)
-//     ((VarSlider*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<VarComboBox*>(listener) != NULL)
-//     ((VarComboBox*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<DccAddressPanel*>(listener) != NULL)
-//     ((DccAddressPanel*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<PaneProgPane*>(listener) != NULL)
-//     ((PaneProgPane*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<PwrListener*>(listener) != NULL)
-//     ((PwrListener*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<RosterFrame*>(listener) != NULL)
-//     ((RosterFrame*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<AbstractSignalHeadManager*>(listener) != NULL)
-//     ((AbstractSignalHeadManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<DefaultSignalMastManager*>(listener) != NULL)
-//     ((DefaultSignalMastManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<MemoryIcon*>(listener) != NULL)
-//     {} //((DefaultSignalMastManager*)listener)->propertyChange(event);
-//    if(qobject_cast<SignalHeadIcon*>(listener) != NULL)
-//     ((SignalHeadIcon*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<SignalMastIcon*>(listener) != NULL)
-//     ((SignalMastIcon*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<SignalMastWidget*>(listener) != NULL)
-//     ((SignalMastWidget*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<BlockBossLogic*>(listener) != NULL)
-//     ((BlockBossLogic*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<JmriBeanComboBox*>(listener) != NULL)
-//     ((JmriBeanComboBox*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<DefaultLogixManager*>(listener) != NULL)
-//     ((DefaultLogixManager*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<LBeanTableDataModel*>(listener) != NULL)
-//     ((LBeanTableDataModel*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<ConditionalTableModel*>(listener) != NULL)
-//     ((ConditionalTableModel*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<DefaultConditionalManager*>(listener) != NULL)
-//     ((DefaultConditionalManager*)listener)->propertyChange(event);
-//#ifndef WIN32
-//    else
-//    if(qobject_cast<TurnoutIcon*>(listener) != NULL)
-//     ((TurnoutIcon*)listener)->propertyChange(event);
-//    else
-//    if(qobject_cast<LightIcon*>(listener) != NULL)
-//     ((LightIcon*)listener)->propertyChange(event);
-//#endif
     else
     {
      log->error(tr("not implemented %1").arg(listener->metaObject()->className()));

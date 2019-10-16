@@ -128,7 +128,7 @@
  // Then redirect to it
  redirectSystemStreams();
 
- connect(ConsoleInterface::instance(), SIGNAL(message(QString)), this, SLOT(On_appendText(QString)));
+ connect(ConsoleInterface::instance(), SIGNAL(message(QString,LoggingEvent*)), this, SLOT(On_appendText(QString)));
 }
 
 void SystemConsole::On_appendText(QString text)

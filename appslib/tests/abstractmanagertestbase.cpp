@@ -51,14 +51,13 @@ AbstractManagerTestBase::AbstractManagerTestBase(QObject *parent) : QObject(pare
 
     //@Test
     /*public*/ /*final*/ void AbstractManagerTestBase::testPropertyChangeListenerAddAndRemove() {
-
         int base = l->getPropertyChangeListeners().length();
 
         PropertyChangeListenerO2* listener = new PropertyChangeListenerO2();
 //        {
-
 //            @Override
-//            /*public*/ void propertyChange(PropertyChangeEvent evt) {
+//            /*public*/ void PropertyChangeListenerO2::propertyChange(PropertyChangeEvent* evt)
+//            {
 //                // do nothing
 //            }
 //        };
@@ -78,15 +77,19 @@ AbstractManagerTestBase::AbstractManagerTestBase(QObject *parent) : QObject(pare
 
     }
 
+    /*public*/ void PropertyChangeListenerO2::propertyChange(PropertyChangeEvent* evt)
+    {
+        // do nothing
+    }
+
 
     //@Test
-    /*public*/ /*final*/ void AbstractManagerTestBase::testVetoableChangeListenerAddAndRemove() {
-#if 1 // needs VetoableChangeProvider
+    /*public*/ /*final*/ void AbstractManagerTestBase::testVetoableChangeListenerAddAndRemove()
+    {
         int base = l->getVetoableChangeListeners().length();
 
-        VetoableChangeListener* listener = new VetoableChangeListener();
+        VetoableChangeListener* listener = new VetoableChangeListenerO1();
 //        {
-
 //            @Override
 //            /*public*/ void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
 //                // do nothing
@@ -105,8 +108,10 @@ AbstractManagerTestBase::AbstractManagerTestBase(QObject *parent) : QObject(pare
         Assert::assertEquals(1, l->getVetoableChangeListeners("property").length(), __FILE__, __LINE__);
         l->removeVetoableChangeListener("property", listener);
         Assert::assertEquals(base, l->getVetoableChangeListeners().length(), __FILE__, __LINE__);
-#endif
+    }
 
+    /*public*/ void VetoableChangeListenerO1::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+            // do nothing
     }
 
     //@Test

@@ -134,7 +134,6 @@ void TwoIndexTcsProgrammerFacade::parseCV(QString cv) throw (IllegalArgumentExce
 
 
 
-
 // get notified of the final result
 // Note this assumes that there's only one phase to the operation
 /*public*/ void TwoIndexTcsProgrammerFacade::programmingOpReply(int value, int status) {

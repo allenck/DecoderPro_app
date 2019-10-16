@@ -1,8 +1,9 @@
 #include "propertychangelistenermap.h"
 #include "propertychangelistenerproxy.h"
+#include "propertychangelistener.h"
 
 PropertyChangeListenerMap::PropertyChangeListenerMap() :
-    ChangeListenerMap()
+    ChangeListenerMap<PropertyChangeListener*>()
 {
 }
 /**

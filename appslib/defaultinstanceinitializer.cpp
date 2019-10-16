@@ -243,6 +243,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return jjtpm;
  }
 
+ if (type == "IdTagManager")
+ {
+  DefaultIdTagManager* tm =new DefaultIdTagManager();
+  InstanceManager::store(tm, type);
+  return tm;
+ }
+
  if (type == "DefaultIdTagManager")
  {
   DefaultIdTagManager* tm =new DefaultIdTagManager();

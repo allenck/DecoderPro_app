@@ -80,13 +80,37 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 ///*abstract*/ /*public*/ int AbstractManager::getXMLOrder() { return 0;}
 
 
-QString AbstractManager::makeSystemName(QString s)
-{
- if(s.startsWith(getSystemPrefix()+typeLetter()))
-  return s;
- QString prefix = getSystemPrefix();
- char type = typeLetter();
- return prefix+type+s;
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ SystemConnectionMemo* AbstractManager::getMemo() {
+    return memo;
+}
+
+///** {@inheritDoc} */
+////@Override
+////abstract public int getXMLOrder();
+///*public*/ QString AbstractManager::makeSystemName(/*@Nonnull*/ QString s)
+//{
+// Manager::makeSystemName(s);
+//}
+///*public*/ QString AbstractManager::makeSystemName(/*@Nonnull*/ QString s, bool logErrors)
+//{
+// Manager::makeSystemName(s, logErrors);
+//}
+
+/** {@inheritDoc} */
+//@Override
+//@Nonnull
+/*public*/ QString AbstractManager::makeSystemName(/*@Nonnull*/ QString s, bool logErrors, QLocale locale) {
+    try {
+        return Manager::makeSystemName(s, logErrors, locale);
+    } catch (IllegalArgumentException ex) {
+        if (logErrors || log->isTraceEnabled()) {
+            log->error(tr("Invalid system name for %1: %2").arg(getBeanTypeHandled()).arg(ex.getMessage()));
+        }
+        throw ex;
+    }
 }
 
 //    /**

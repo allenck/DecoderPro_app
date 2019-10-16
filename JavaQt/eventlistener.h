@@ -7,7 +7,7 @@ class JAVAQTSHARED_EXPORT EventListener :public QObject
 {
  Q_OBJECT
 public:
- EventListener();
+ EventListener(QObject* parent = nullptr);
     
 };
 Q_DECLARE_INTERFACE(EventListener, "EventListener")

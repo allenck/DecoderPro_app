@@ -59,6 +59,6 @@ class  ReleaseUntilO7 : public ReleaseUntil
     int i;
 public:
     ReleaseUntilO7(int i, LnTurnoutTest* test) {this->i = i; this->test = test;}
-    bool ready() {return test->lnis->outbound.size()==i;}
+    bool ready() throw (Exception) {return test->lnis->outbound.size()==i;}
 };
 #endif // LNTURNOUTTEST_H

@@ -21,7 +21,6 @@ public:
  /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
  /*public*/ void readCV(int CV, ProgListener* p) throw (ProgrammerException);
  /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
- /*public*/ void programmingOpReply(int value, int status);
  // Access to full address space provided by this->
  /*public*/ bool getCanRead();
  /*public*/ bool getCanRead(QString addr);
@@ -31,6 +30,7 @@ public:
 signals:
 
 public slots:
+ /*public*/ void programmingOpReply(int value, int status);
 
 private:
  int top;

@@ -73,6 +73,7 @@
     // </editor-fold>
     QString info = tr("Assert at line %1 in %2:\n %3\n").arg(line).arg(file).arg(JUnitUtil::getTestClassName());
         //throw AssertionError("unknown error");
+    qDebug() << info;
     JOptionPane::showMessageDialog(nullptr, info + message, "unknown error",  JOptionPane::WARNING_MESSAGE);
     return;
 }

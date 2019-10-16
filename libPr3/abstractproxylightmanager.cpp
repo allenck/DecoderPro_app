@@ -375,20 +375,26 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
 
 /*public synchronized*/ void AbstractProxyLightManager::addPropertyChangeListener(PropertyChangeListener* l)
 {
+ if (!propertyListenerList.contains(l)) {
+     propertyListenerList.append(l);
+ }
  for (int i = 0; i<nMgrs(); i++)
  {
   Manager* mgr = getMgr(i);
   mgr->addPropertyChangeListener(l);
-  connect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 /*public synchronized*/ void AbstractProxyLightManager::removePropertyChangeListener(PropertyChangeListener* l)
 {
+ if (propertyListenerList.contains(l)) {
+     propertyListenerList.removeOne(l);
+ }
  for (int i = 0; i<nMgrs(); i++)
  {
   Manager* mgr = getMgr(i);
   //mgr->addPropertyChangeListener(l);
-  disconnect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+  //disconnect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 

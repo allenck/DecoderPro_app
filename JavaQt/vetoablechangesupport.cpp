@@ -81,16 +81,16 @@
         if (listener == nullptr) {
             return;
         }
-//        if (listener instanceof VetoableChangeListenerProxy) {
-//            VetoableChangeListenerProxy proxy =
-//                    (VetoableChangeListenerProxy)listener;
-//            // Call two argument add method.
-//            addVetoableChangeListener(proxy.getPropertyName(),
-//                                      proxy.getListener());
-//        } else {
-//            this.map.add(null, listener);
-//        }
-        connect(this, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), listener, SLOT(vetoableChange(PropertyChangeEvent*)));
+        if (qobject_cast<VetoableChangeListenerProxy*>(listener) != nullptr) {
+            VetoableChangeListenerProxy* proxy =
+                    (VetoableChangeListenerProxy*)listener;
+            // Call two argument add method.
+            addVetoableChangeListener(proxy->getPropertyName(),
+                                      proxy->getListener());
+        } else {
+            this->map->add("", listener);
+        }
+//        connect(this, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), listener, SLOT(vetoableChange(PropertyChangeEvent*)));
     }
 
     /**
@@ -108,16 +108,16 @@
         if (listener == nullptr) {
             return;
         }
-//        if (listener instanceof VetoableChangeListenerProxy) {
-//            VetoableChangeListenerProxy proxy =
-//                    (VetoableChangeListenerProxy)listener;
-//            // Call two argument remove method.
-//            removeVetoableChangeListener(proxy.getPropertyName(),
-//                                         proxy.getListener());
-//        } else {
-//            this.map.remove(null, listener);
-//        }
-        disconnect(this, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), listener, SLOT(vetoableChange(PropertyChangeEvent*)));
+        if (qobject_cast<VetoableChangeListenerProxy*>(listener) != nullptr) {
+            VetoableChangeListenerProxy* proxy =
+                    (VetoableChangeListenerProxy*)listener;
+            // Call two argument remove method.
+            removeVetoableChangeListener(proxy->getPropertyName(),
+                                         proxy->getListener());
+        } else {
+            this->map->remove("", listener);
+        }
+//        disconnect(this, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), listener, SLOT(vetoableChange(PropertyChangeEvent*)));
 
     }
 
@@ -153,7 +153,7 @@
      * @since 1.4
      */
     /*public*/ QVector<VetoableChangeListener*> VetoableChangeSupport::getVetoableChangeListeners(){
-        //return this->map->getListeners();
+        return this->map->getListeners();
     }
 
     /**
@@ -174,7 +174,7 @@
         if (listener == nullptr || propertyName == "") {
             return;
         }
-        //listener = this->map->extract(listener);
+        listener = this->map->extract(listener);
         if (listener != nullptr) {
             this->map->add(propertyName, listener);
         }
@@ -217,7 +217,7 @@
      * @since 1.4
      */
     /*public*/ QVector<VetoableChangeListener*> VetoableChangeSupport::getVetoableChangeListeners(QString propertyName) {
-#if 0
+#if 1
         return this->map->getListeners(propertyName);
 #else
  return QVector<VetoableChangeListener*>();

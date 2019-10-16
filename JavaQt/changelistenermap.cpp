@@ -1,9 +1,13 @@
 #include "changelistenermap.h"
+#include "eventlistenerproxy.h"
 
-//ChangeListenerMap<L>::ChangeListenerMap<L>(QObject *parent) :
-//    QObject(parent)
-//{
-//}
+template<class L>
+ChangeListenerMap<L>::ChangeListenerMap(QObject *parent) :
+    EventListener(parent)
+{
+ map = new QMap<QString, QVector<L>* >;
+ //map = NULL;
+}
 /**
  * This is an abstract class that provides base functionality
  * for the {@link PropertyChangeSupport PropertyChangeSupport} class
@@ -34,22 +38,26 @@
      * @param name      the name of the property to listen on
      * @param listener  the listener to process events
      */
-//    void ChangeListenerMap::add(QString name, L* listener) {
-//        if (this->map == NULL) {
-//            this->map = new QHash<QString, QList<L*>>;
-//        }
-//        QList<L> array = this->map->get(name);
-//        int size = (array != NULL)
-//                ? array.length
-//                : 0;
-
-//        QList<L> clone = newArray(size + 1);
-//        clone[size] = listener;
-//        if (array != NULL) {
-//            System.arraycopy(array, 0, clone, 0, size);
-//        }
-//        this->map->put(name, clone);
-//    }
+template<class L>
+    void ChangeListenerMap<L>::add(QString name, L listener) {
+     QMutexLocker locker(&mutex);
+     if (this->map == NULL)
+     {
+      this->map = new QMap<QString, QVector<L>* >;
+      QVector<L>* array = new QVector<L>();
+      array->append(listener);
+      this->map->insert(name, array);
+      return;
+     }
+     if(!this->map->contains(name))
+     {
+      QVector<L>* array = new QVector<L>();
+      array->append(listener);
+      this->map->insert(name, array);
+      return;
+     }
+      this->map->value(name)->append(listener);
+    }
 
     /**
      * Removes a listener from the list of listeners for the specified property.
@@ -59,31 +67,44 @@
      * @param name      the name of the property to listen on
      * @param listener  the listener to process events
      */
-//    /*public final synchronized */void ChangeListenerMap::remove(QString name, L* listener) {
-//        if (this->map != NULL) {
-//            QList<L*> array = this->map->get(name);
-//            if (array != NULL) {
-//                for (int i = 0; i < array.length; i++) {
-//                    if (listener == (array[i])) {
-//                        int size = array.length - 1;
-//                        if (size > 0) {
-//                            QList<L*> clone = newArray(size);
-//                            System.arraycopy(array, 0, clone, 0, i);
-//                            System.arraycopy(array, i + 1, clone, i, size - i);
-//                            this.map.put(name, clone);
-//                        }
-//                        else {
-//                            this.map.remove(name);
-//                            if (this.map.isEmpty()) {
-//                                this.map = NULL;
-//                            }
-//                        }
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//    }
+    template<class L>
+    /*public final synchronized */void ChangeListenerMap<L>::remove(QString name, L listener) {
+     QMutexLocker locker(&mutex);
+     if (this->map != NULL)
+     {
+      QVector<L>* array = this->map->value(name);
+      if (!array->isEmpty())
+      {
+       for (int i = 0; i < array->length(); i++)
+       {
+        if (listener == (array->at(i)))
+        {
+         int size = array->length() - 1;
+         if (size > 0)
+         {
+    //      QVector<L> clone; // = newArray(size);
+    //      //System.arraycopy(array, 0, clone, 0, i);
+    //      foreach(L val, array )
+    //       clone.append(val);
+    //      //System.arraycopy(array, i + 1, clone, i, size - i);
+    //      this->map->insert(name, clone);
+
+          this->map->value(name)->removeAt(i);
+         }
+         else
+         {
+          this->map->remove(name);
+          if (this->map->isEmpty())
+          {
+           this->map = NULL;
+          }
+         }
+         break;
+        }
+       }
+      }
+     }
+    }
 
     /**
      * Returns the list of listeners for the specified property.
@@ -91,11 +112,15 @@
      * @param name  the name of the property
      * @return      the corresponding list of listeners
      */
-//    /*public final synchronized*/ QList<L> ChangeListenerMap::get(QString name) {
-//        return (this->map != NULL)
-//                ? this->map.get(name)
-//                : NULL;
-//    }
+    template<class L>
+    /*public final synchronized*/ QVector<L> ChangeListenerMap<L>::get(QString name)
+     {
+      QMutexLocker locker(&mutex);
+
+      return (this->map != NULL && !this->map->isEmpty())
+                 ? (this->map->contains(name)? *this->map->value(name): QVector<L>())
+                 : QVector<L>();
+    }
 
     /**
      * Sets new list of listeners for the specified property.
@@ -103,48 +128,46 @@
      * @param name       the name of the property
      * @param listeners  new list of listeners
      */
-//    /*public final*/ void ChangeListenerMap::set(QString name, QList<L> listeners) {
-//        if (listeners != NULL) {
-//            if (this->map == NULL) {
-//                this->map = new QHash<QString, QList<L>>;
-//            }
-//            this->map->put(name, listeners);
-//        }
-//        else if (this->map != NULL) {
-//            this->map->remove(name);
-//            if (this->map.isEmpty()) {
-//                this->map = NULL;
-//            }
-//        }
-//    }
+     template<class L>
+    /*public final*/ void ChangeListenerMap<L>::set(QString name, QVector<L>* listeners) {
+      if (listeners != NULL)
+      {
+       if (this->map == NULL)
+       {
+        this->map = new QMap<QString, QVector<L>* >;
+       }
+       this->map->insert(name, listeners);
+      }
+      else if (this->map != NULL)
+      {
+       this->map->remove(name);
+       if (this->map->isEmpty())
+       {
+        this->map = NULL;
+       }
+      }    }
 
     /**
      * Returns all listeners in the map.
      *
      * @return an array of all listeners
      */
-//    /*public final synchronized*/ QList<L*> ChangeListenerMap::getListeners() {
-//        if (this->map == NULL) {
-//            return newArray(0);
-//        }
-//        QList<L*> list = new QList<L*>();
-
-//        QList<L*> listeners = this.map.get(NULL);
-//        if (listeners != NULL) {
-//            for (L listener : listeners) {
-//                list.add(listener);
-//            }
-//        }
-//        foreach(Entry<QString, QList<L*>> entry , this->map->entrySet()) {
-//            QString name = entry.getKey();
-//            if (name != NULL) {
-//                for (L listener : entry.getValue()) {
-//                    list.add(newProxy(name, listener));
-//                }
-//            }
-//        }
-//        return list.toArray(newArray(list.size()));
-//    }
+    template<class L>
+    /*public final synchronized*/ QVector<L> ChangeListenerMap<L>::getListeners()
+    {
+      QMutexLocker locker(&mutex);
+      QVector<L> listeners = QVector<L>();
+      if(map!= nullptr && !map->values().isEmpty)
+      {
+       foreach(QString key, map->values())
+       {
+        foreach(L listener, *map->value(key))
+         listeners.append(listener);
+       }
+       return QVector<L>(listeners);
+      }
+      return QVector<L>();
+    }
 
     /**
      * Returns listeners that have been associated with the named property.
@@ -152,15 +175,17 @@
      * @param name  the name of the property
      * @return an array of listeners for the named property
      */
-//    /*public final*/ QList<L*> ChangeListenerMap::getListeners(QString name) {
-//        if (name != NULL) {
-//            QList<L*> listeners = get(name);
-//            if (listeners != NULL) {
-//                return listeners.clone();
-//            }
-//        }
-//        return newArray(0);
-//    }
+    template<class L>/*public final*/ QVector<L> ChangeListenerMap<L>::getListeners(QString name)
+     {
+     if (!name.isNull()) {
+         QVector<L>* listeners = this->map->value(name);
+         if (!listeners->isEmpty()) {
+             //return listeners.clone();
+             return QVector<L>(*listeners);
+         }
+     }
+     return QVector<L>();
+    }
 
     /**
      * Indicates whether the map contains
@@ -170,13 +195,16 @@
      * @return      {@code true} if at least one listener exists or
      *              {@code false} otherwise
      */
-//    /*public final synchronized*/ bool ChangeListenerMap::hasListeners(QString name) {
-//        if (this->map == NULL) {
-//            return false;
-//        }
-//        QList<L*>* array = this->map.get(NULL);
-//        return (array != NULL) || ((name != NULL) && (NULL != this->map->get(name)));
-//    }
+    template<class L>
+    /*public final synchronized*/ bool ChangeListenerMap<L>::hasListeners(QString name) {
+     QMutexLocker locker(&mutex);
+     if (this->map == NULL)
+     {
+      return false;
+     }
+     QVector<L>* array = this->map->value(NULL);
+        return (!array ->isEmpty()) || ((!name.isEmpty()) && (this->map->value(name)->isEmpty()));
+    }
 #if 0
     /**
      * Returns a set of entries from the map.
@@ -191,3 +219,7 @@
                 : Collections.<Entry<QString, QList<L>>>emptySet();
     }
 #endif
+    template<class L>
+    /*public*/ L ChangeListenerMap<L>::extract(L listener)
+    {
+    }

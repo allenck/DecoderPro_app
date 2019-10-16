@@ -49,89 +49,94 @@
 }
 
 // take the CV string and configure the actions to take
-void MultiIndexProgrammerFacade::parseCV(QString cv) {
-    valuePI = -1;
-    valueSI = -1;
-    if (cv.contains("."))
-    {
-        if (cvFirst) {
-            QStringList splits = cv.split(QRegExp("\\."));
-            switch (splits.length()) {
-                case 2:
-                    if (hasAlternateAddress(splits[1])) {
-                        valuePI = getAlternateValue(splits[1]);
-                        indexPI = getAlternateAddress(splits[1]);
-                    } else {
-                        valuePI = splits.at(1).toInt();
-                        indexPI = defaultIndexPI;
-                    }
-                    _cv = splits[0];
-                    break;
-                case 3:
-                    if (hasAlternateAddress(splits[1])) {
-                        valuePI = getAlternateValue(splits[1]);
-                        indexPI = getAlternateAddress(splits[1]);
-                    } else {
-                        valuePI = splits.at(1).toInt();
-                        indexPI = defaultIndexPI;
-                    }
-                    if (hasAlternateAddress(splits[2])) {
-                        valueSI = getAlternateValue(splits[2]);
-                        indexSI = getAlternateAddress(splits[2]);
-                    } else {
-                        valueSI = splits.at(2).toInt();
-                        indexSI = defaultIndexSI;
-                    }
-                    _cv = splits[0];
-                    break;
-                default:
-                    log->error("Too many parts in CV name; taking 1st two " + cv);
-                    valuePI = splits.at(1).toInt();
-                    valueSI = splits.at(2).toInt();
-                    _cv = splits[0];
-                    break;
-            }
+void MultiIndexProgrammerFacade::parseCV(QString cv)
+{
+ valuePI = -1;
+ valueSI = -1;
+ if (cv.contains("."))
+ {
+  if (cvFirst)
+  {
+   QStringList splits = cv.split(QRegExp("\\."));
+   switch (splits.length())
+   {
+    case 2:
+        if (hasAlternateAddress(splits[1])) {
+            valuePI = getAlternateValue(splits[1]);
+            indexPI = getAlternateAddress(splits[1]);
         } else {
-            QStringList splits = cv.split(QRegExp("\\."));
-            switch (splits.length()) {
-                case 2:
-                    if (hasAlternateAddress(splits[0])) {
-                        valuePI = getAlternateValue(splits[0]);
-                        indexPI = getAlternateAddress(splits[0]);
-                    } else {
-                        valuePI = splits.at(0).toInt();
-                        indexPI = defaultIndexPI;
-                    }
-                    _cv = splits.at(1);
-                    break;
-                case 3:
-                    if (hasAlternateAddress(splits[0])) {
-                        valuePI = getAlternateValue(splits[0]);
-                        indexPI = getAlternateAddress(splits[0]);
-                    } else {
-                        valuePI = splits.at(0).toInt();
-                        indexPI = defaultIndexPI;
-                    }
-                    if (hasAlternateAddress(splits[1])) {
-                        valueSI = getAlternateValue(splits[1]);
-                        indexSI = getAlternateAddress(splits[1]);
-                    } else {
-                        valueSI = splits.at(1).toInt();
-                        indexSI = defaultIndexSI;
-                    }
-                    _cv = splits[2];
-                    break;
-                default:
-                    log->error("Too many parts in CV name; taking 1st two " + cv);
-                    valuePI = splits.at(0).toInt();
-                    valueSI = splits.at(1).toInt();
-                    _cv = splits[2];
-                    break;
-            }
+            valuePI = splits.at(1).toInt();
+            indexPI = defaultIndexPI;
         }
-    } else {
-        _cv = cv;
-    }
+        _cv = splits[0];
+        break;
+    case 3:
+        if (hasAlternateAddress(splits[1])) {
+            valuePI = getAlternateValue(splits[1]);
+            indexPI = getAlternateAddress(splits[1]);
+        } else {
+            valuePI = splits.at(1).toInt();
+            indexPI = defaultIndexPI;
+        }
+        if (hasAlternateAddress(splits[2])) {
+            valueSI = getAlternateValue(splits[2]);
+            indexSI = getAlternateAddress(splits[2]);
+        } else {
+            valueSI = splits.at(2).toInt();
+            indexSI = defaultIndexSI;
+        }
+        _cv = splits[0];
+        break;
+    default:
+        log->error("Too many parts in CV name; taking 1st two " + cv);
+        valuePI = splits.at(1).toInt();
+        valueSI = splits.at(2).toInt();
+        _cv = splits[0];
+        break;
+   }
+  }
+  else {
+   QStringList splits = cv.split(QRegExp("\\."));
+   switch (splits.length())
+   {
+    case 2:
+        if (hasAlternateAddress(splits[0])) {
+            valuePI = getAlternateValue(splits[0]);
+            indexPI = getAlternateAddress(splits[0]);
+        } else {
+            valuePI = splits.at(0).toInt();
+            indexPI = defaultIndexPI;
+        }
+        _cv = splits.at(1);
+        break;
+    case 3:
+        if (hasAlternateAddress(splits[0])) {
+            valuePI = getAlternateValue(splits[0]);
+            indexPI = getAlternateAddress(splits[0]);
+        } else {
+            valuePI = splits.at(0).toInt();
+            indexPI = defaultIndexPI;
+        }
+        if (hasAlternateAddress(splits[1])) {
+            valueSI = getAlternateValue(splits[1]);
+            indexSI = getAlternateAddress(splits[1]);
+        } else {
+            valueSI = splits.at(1).toInt();
+            indexSI = defaultIndexSI;
+        }
+        _cv = splits[2];
+        break;
+    default:
+        log->error("Too many parts in CV name; taking 1st two " + cv);
+        valuePI = splits.at(0).toInt();
+        valueSI = splits.at(1).toInt();
+        _cv = splits[2];
+        break;
+   }
+  }
+ } else {
+     _cv = cv;
+ }
 }
 
 

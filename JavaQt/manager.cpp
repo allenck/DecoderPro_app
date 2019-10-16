@@ -15,6 +15,24 @@
     else return -1;
 }
 
+
+/**
+ * Returns the user-readable name of the type of NamedBean handled by this
+ * manager.
+ * <p>
+ * For instance, in the code where we are dealing with just a bean and a
+ * message that needs to be passed to the user or in a log.
+ *
+ * @param plural true to return plural form of the type; false to return
+ *               singular form
+ *
+ * @return a string of the bean type that the manager handles, eg Turnout,
+ *         Sensor etc
+ */
+//@CheckReturnValue
+//@Nonnull
+/*public*/ QString Manager::getBeanTypeHandled(bool plural) { return "??";}
+
 /*static*/ /*public*/ int Manager::getSystemPrefixLength(/*@Nonnull*/ QString inputName) throw (NamedBean::BadSystemNameException)
 {
     if (inputName.isEmpty()) throw NamedBean::BadSystemNameException();
@@ -33,6 +51,63 @@
             break;
     }
     return i;
+}
+
+/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name) {
+        return makeSystemName(name, true);
+}
+
+
+/**
+ * Create a SystemName by prepending the system name prefix to the name if
+ * not already present.
+ * <p>
+ * The {@code logErrors} parameter is present to allow user interface input
+ * validation to use this method without logging system name validation
+ * errors as the user types.
+ * <p>
+ * <strong>Note:</strong> implementations <em>must</em> call
+ * {@link #validateSystemNameFormat(java.lang.String, java.util.Locale)} to ensure
+ * the returned name is valid.
+ *
+ * @param name      the item to make the system name for
+ * @param logErrors true to log errors; false to not log errors
+ * @return a valid system name
+ * @throws BadSystemNameException if a valid name can't be created
+ */
+//@Nonnull
+/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name, bool logErrors) {
+    return makeSystemName(name, logErrors, QLocale());
+}
+
+/**
+ * Create a SystemName by prepending the system name prefix to the name if
+ * not already present.
+ * <p>
+ * The {@code logErrors} parameter is present to allow user interface input
+ * validation to use this method without logging system name validation
+ * errors as the user types.
+ * <p>
+ * <strong>Note:</strong> implementations <em>must</em> call
+ * {@link #validateSystemNameFormat(java.lang.String, java.util.Locale)} to ensure
+ * the returned name is valid.
+ *
+ * @param name      the item to make the system name for
+ * @param logErrors true to log errors; false to not log errors
+ * @param locale    the locale for a localized exception; this is needed for
+ *                      the JMRI web server, which supports multiple locales
+ * @return a valid system name
+ * @throws BadSystemNameException if a valid name can't be created
+ */
+//@Nonnull
+/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name, bool /*logErrors*/, QLocale locale) {
+    QString prefix = getSystemNamePrefix();
+    // the one special case that is not caught by validation here
+    if (name.trimmed().isEmpty()) { // In Java 9+ use name.isBlank() instead
+        //throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameInvalidPrefix", prefix);
+     throw NamedBean::BadSystemNameException(locale, QString("System name must start with\"%21\".").arg(prefix), name, prefix);
+    }
+    return validateSystemNameFormat(name.startsWith(prefix) ? name : prefix + name, locale);
 }
 
 /**

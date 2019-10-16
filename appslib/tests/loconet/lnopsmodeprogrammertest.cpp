@@ -228,7 +228,7 @@ LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
     // No reply message, wait for timeout
     //JUnitUtil::waitFor(()->{return pl->getRcvdInvoked() == 1;},"programming reply not received");
     ReleaseUntil05* ro5 = new ReleaseUntil05(this);
-    JUnitUtil::waitFor(ro5, "programming reply not received");
+    JUnitUtil::waitFor(ro5, "programming reply not received", __FILE__, __LINE__);
     Assert::assertEquals("still one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("Reply status Not OK", ProgListener::FailedTimeout, pl->getRcvdStatus(), __FILE__, __LINE__);
     Assert::assertTrue("Correct thread", pl->wasRightThread(), __FILE__, __LINE__);
@@ -285,7 +285,7 @@ LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
     // No reply message, wait for timeout
     //jmri.util.JUnitUtil::waitFor(()->{return pl->getRcvdInvoked() == 1;},"programming reply not received");
     ReleaseUntil05* ro5 = new ReleaseUntil05(this);
-    JUnitUtil::waitFor(ro5, "programming reply not received");
+    JUnitUtil::waitFor(ro5, "programming reply not received", __FILE__, __LINE__);
     Assert::assertEquals("still one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("Reply status Not OK", ProgListener::FailedTimeout, pl->getRcvdStatus(), __FILE__, __LINE__);
     Assert::assertTrue("Correct thread", pl->wasRightThread(), __FILE__, __LINE__);
@@ -431,7 +431,7 @@ LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
     sm->message(m);
     //JUnitUtil::waitFor(()->{return pl->getRcvdInvoked() == 1;},"getRcvdInvoked not set");
     ReleaseUntil05* ro5 = new ReleaseUntil05(this);
-    JUnitUtil::waitFor(ro5, "programming reply not received");
+    JUnitUtil::waitFor(ro5, "programming reply not received", __FILE__, __LINE__);
     Assert::assertEquals("still one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("Reply status OK", 0, pl->getRcvdStatus(), __FILE__, __LINE__);
  }
@@ -468,7 +468,7 @@ LnOpsModeProgrammerTest::LnOpsModeProgrammerTest()
     sm->message(m);
     //JUnitUtil::waitFor(()->{return pl->getRcvdInvoked() == 1;},"getRcvdInvoked not set");
     ReleaseUntil05* ro5 = new ReleaseUntil05(this);
-    JUnitUtil::waitFor(ro5, "programming reply not received");
+    JUnitUtil::waitFor(ro5, "programming reply not received", __FILE__, __LINE__);
     Assert::assertEquals("still one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("Reply status OK", 0, pl->getRcvdStatus(), __FILE__, __LINE__);
 

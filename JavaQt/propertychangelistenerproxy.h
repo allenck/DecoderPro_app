@@ -5,7 +5,7 @@
 
 class PropertyChangeListenerProxy : public EventListenerProxy<PropertyChangeListener*>
 {
-    //Q_OBJECT
+    Q_OBJECT
 public:
     //explicit PropertyChangeListenerProxy(QObject *parent = 0);
     /**

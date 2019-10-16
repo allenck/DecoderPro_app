@@ -356,38 +356,47 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
  * @param name      name of condition being waited for; will appear in
  *                  Assert.fail if condition not true fast enough
  */
-/*static*/ /*public*/ void JUnitUtil::waitFor(ReleaseUntil* condition, QString name) {
+/*static*/ /*public*/ void JUnitUtil::waitFor(ReleaseUntil* condition, QString name,
+                                              QString file, int line)
+{
 //    if (javax.swing.SwingUtilities.isEventDispatchThread()) {
 //        log.error("Cannot use waitFor on Swing thread", new Exception());
 //        return;
 //    }
 
-    int delay = 0;
-    try {
-        while (delay < WAITFOR_MAX_DELAY) {
-            if (condition->ready()) {
-                return;
-            }
+ int delay = 0;
+ try
+ {
+  while (delay < WAITFOR_MAX_DELAY)
+  {
+   if (condition->ready())
+   {
+    log->debug(tr("returm delay = %1").arg(delay));
+    return;
+   }
 #if 0
-            int priority = Thread.currentThread().getPriority();
-            try {
-                Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-                Thread.sleep(WAITFOR_DELAY_STEP);
-                delay += WAITFOR_DELAY_STEP;
-            } catch (InterruptedException e) {
-                Assert.fail("failed due to InterruptedException");
-            } finally {
-                Thread.currentThread().setPriority(priority);
-            }
+         int priority = Thread.currentThread().getPriority();
+         try {
+             Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+             Thread.sleep(WAITFOR_DELAY_STEP);
+             delay += WAITFOR_DELAY_STEP;
+         } catch (InterruptedException e) {
+             Assert.fail("failed due to InterruptedException");
+         } finally {
+             Thread.currentThread().setPriority(priority);
+         }
 #endif
-            SleeperThread::msleep(WAITFOR_DELAY_STEP);
-            delay += WAITFOR_DELAY_STEP;
-        }
+   SleeperThread::msleep(WAITFOR_DELAY_STEP);
+   delay += WAITFOR_DELAY_STEP;
+   qApp->processEvents();
+  }
 
-        Assert::fail("\"" + name + "\" did not occur in time", __FILE__, __LINE__);
-    } catch (Exception ex) {
-        Assert::fail("Exception while waiting for \"" + name + "\" " + ex.getMessage(), __FILE__, __LINE__);
-    }
+  Assert::fail("\"" + name + "\" did not occur in time", file, line);
+ }
+ catch (Exception ex)
+ {
+  Assert::fail("Exception while waiting for \"" + name + "\" " + ex.getMessage(), file, line);
+ }
 }
 
 /**
@@ -403,7 +412,7 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
  * @return true if condition is met before WAITFOR_MAX_DELAY, false
  *         otherwise
  */
-/*static*/ /*public*/ bool JUnitUtil::waitFor(ReleaseUntil* condition) {
+/*static*/ /*public*/ bool JUnitUtil::waitFor(ReleaseUntil* condition, QString file, int line) {
 //    if (javax.swing.SwingUtilities.isEventDispatchThread()) {
 //        log.error("Cannot use waitFor on Swing thread", new Exception());
 //        return false;
@@ -439,11 +448,12 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
             }
             SleeperThread::msleep(WAITFOR_DELAY_STEP);
             delay += WAITFOR_DELAY_STEP;
+            qApp->processEvents();
         }
 
-        Assert::fail("did not occur in time", __FILE__, __LINE__);
+        Assert::fail("did not occur in time", file, line);
     } catch (Exception ex) {
-        Assert::fail("Exception while waiting for  " + ex.getMessage(), __FILE__, __LINE__);
+        Assert::fail("Exception while waiting for  " + ex.getMessage(), file, line);
     }
 
 }
@@ -463,27 +473,28 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 //        return;
 //    }
     int delay = 0;
-#if 0
+
     try {
         while (delay < time) {
-            int priority = Thread.currentThread().getPriority();
-            try {
-                Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-                Thread.sleep(WAITFOR_DELAY_STEP);
-                delay += WAITFOR_DELAY_STEP;
-            } catch (InterruptedException e) {
-                return;
-            } finally {
-                Thread.currentThread().setPriority(priority);
-            }
+//            int priority = Thread.currentThread().getPriority();
+//            try {
+//                Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+//                Thread.sleep(WAITFOR_DELAY_STEP);
+//                delay += WAITFOR_DELAY_STEP;
+//            } catch (InterruptedException e) {
+//                return;
+//            } finally {
+//                Thread.currentThread().setPriority(priority);
+//            }
+         SleeperThread::msleep(WAITFOR_DELAY_STEP);
+         delay += WAITFOR_DELAY_STEP;
+         qApp->processEvents();
         }
         return;
     } catch (Exception ex) {
-        log.error("Exception in waitFor condition.", ex);
+        log->error("Exception in waitFor condition.", ex);
         return;
     }
-#endif
-    SleeperThread::msleep(time);
 }
 #if 0
 /**
@@ -693,7 +704,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     }
 }
 
-/*public*/ /*static*/ void initReporterManager() {
+/*public*/ /*static*/ void JUnitUtil::initReporterManager() {
     ReporterManager* m = new InternalReporterManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
         ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::REPORTERS);

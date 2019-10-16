@@ -67,7 +67,7 @@ class  ReleaseUntilO8 : public ReleaseUntil
     int i;
 public:
     ReleaseUntilO8(AbstractSensorTestBase* test) {this->i = i; this->test = test;}
-    bool ready() {return test->t->getState() == test->t->getRawState();}
+    bool ready() throw (Exception) {return test->t->getState() == test->t->getRawState();}
 };
 
 class  ReleaseUntilO9 : public ReleaseUntil
@@ -81,7 +81,7 @@ public:
      this->i = i;
      this->test = test;
     }
-    bool ready() {return test->t->getState() == i;}
+    bool ready() throw (Exception) {return test->t->getState() == i;}
 };
 
 #endif // ABSTRACTSENSORTESTBASE_H

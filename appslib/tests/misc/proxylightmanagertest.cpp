@@ -63,7 +63,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
             l->provideLight("");
             Assert::fail("didn't throw", __FILE__, __LINE__);
         } catch (IllegalArgumentException ex) {
-            JUnitAppender::assertErrorMessage("Invalid system name for Light: System name must start with \"" + l->getSystemNamePrefix() + "\".");
+            JUnitAppender::assertErrorMessage("Invalid system name for Light: System name must start with \"" + l->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
             throw ex;
         }
     }

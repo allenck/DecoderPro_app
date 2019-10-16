@@ -547,7 +547,17 @@ SOURCES += appslib.cpp \
     tests/abstractprovidingreportermanagertestbase.cpp \
     tests/misc/proxyreportmanagertestaction.cpp \
     tests/misc/proxylightmanagertest.cpp \
-    tests/misc/proxylightmanagertestaction.cpp
+    tests/misc/proxylightmanagertestaction.cpp \
+    tests/misc/multiindexprogrammerfacadetest.cpp \
+    tests/misc/multiindexprogrammerfacadetestaction.cpp \
+    tests/misc/addressedhighcvprogranmmerfacadetest.cpp \
+    tests/misc/addressedhighcvprogranmmerfacadetestaction.cpp \
+    tests/misc/opsmodedelayedprogrammerfacadetest.cpp \
+    tests/misc/opsmodedelayedprogrammerfacadetestaction.cpp \
+    tests/misc/verifywriteprogrammerfacadetest.cpp \
+    tests/misc/verifywriteprogrammerfacadetestaction.cpp \
+    tests/misc/twoindextcsprogrammerfacadetest.cpp \
+    tests/misc/twoindextcsprogrammerfacadetestaction.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -1044,7 +1054,17 @@ HEADERS += appslib.h\
     tests/abstractprovidingreportermanagertestbase.h \
     tests/misc/proxyreportmanagertestaction.h \
     tests/misc/proxylightmanagertest.h \
-    tests/misc/proxylightmanagertestaction.h
+    tests/misc/proxylightmanagertestaction.h \
+    tests/misc/multiindexprogrammerfacadetest.h \
+    tests/misc/multiindexprogrammerfacadetestaction.h \
+    tests/misc/addressedhighcvprogranmmerfacadetest.h \
+    tests/misc/addressedhighcvprogranmmerfacadetestaction.h \
+    tests/misc/opsmodedelayedprogrammerfacadetest.h \
+    tests/misc/opsmodedelayedprogrammerfacadetestaction.h \
+    tests/misc/verifywriteprogrammerfacadetest.h \
+    tests/misc/verifywriteprogrammerfacadetestaction.h \
+    tests/misc/twoindextcsprogrammerfacadetest.h \
+    tests/misc/twoindextcsprogrammerfacadetestaction.h
 
 unix:!symbian {
     maemo5 {
@@ -1065,11 +1085,11 @@ else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
 INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
     $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json \
     $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal \
-    $$PWD/../libPr3/sprog
+    $$PWD/../libPr3/sprog $$PWD/../libPr3/loconet/HexFile
 DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
     $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json \
     $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal \
-    $$PWD/../libPr3/sprog
+    $$PWD/../libPr3/sprog $$PWD/../libPr3/loconet/HexFile
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref

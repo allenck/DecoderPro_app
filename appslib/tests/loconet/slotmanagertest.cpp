@@ -163,10 +163,9 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     ProgListener* p2 = nullptr;
     slotmanager->setMode(ProgrammingMode::PAGEMODE);
     slotmanager->readCV(CV1, p2);
-    // expecting "EF 0E 7C 23 00 00 00 00 00 0B 00 7F 7F 00"
     log->debug("msg = " + lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper());
     Assert::assertEquals("read message",
-            "EF 0E 7C 23 00 00 00 00 02 0B 7F 7F 7F 00",
+            "EF 0E 7C 23 00 00 00 00 00 0B 00 7F 7F 00",
             lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
 }
 
@@ -198,10 +197,9 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     startedShortTimer = false;
     startedLongTimer = false;
     slotmanager->message(new LocoNetMessage(QVector<int>() <<0xB4<< 0x6F<< 0x01<< 0x25));
-#if 1
     //JUnitUtil::waitFor(()->{return startedLongTimer;},"startedLongTimer not set");
     ReleaseUntil01* r01 = new ReleaseUntil01(this);
-    JUnitUtil::waitFor(r01, "startedLongTimer not set");
+    JUnitUtil::waitFor(r01, "startedLongTimer not set", __FILE__, __LINE__);
     Assert::assertEquals("post-LACK status", -999, status, __FILE__, __LINE__);
     Assert::assertTrue("started long timer", startedLongTimer, __FILE__, __LINE__);
     Assert::assertFalse("didn't start short timer", startedShortTimer, __FILE__, __LINE__);
@@ -212,11 +210,10 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     slotmanager->message(new LocoNetMessage(QVector<int>() <<0xE7<< 0x0E<< 0x7C<< 0x2B<< 0x00<< 0x00<< 0x02<< 0x47<< 0x00<< 0x1C<< 0x23<< 0x7F<< 0x7F<< 0x3B));
     //JUnitUtil::waitFor(()->{return value == 35;},"value == 35 not set");
     ReleaseUntil02* r02 = new ReleaseUntil02(this);
-    JUnitUtil::waitFor(r02, "startedLongTimer not set");
+    JUnitUtil::waitFor(r02, "value == 35 not set", __FILE__, __LINE__);
     log->debug("checking..");
     Assert::assertEquals("reply status", 0, status, __FILE__, __LINE__);
     Assert::assertEquals("reply value", 35, value, __FILE__, __LINE__);
-#endif
     log->debug(".... end testReadCVDirect ...");
 }
 
@@ -299,7 +296,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     slotmanager->message(new LocoNetMessage(QVector<int>() <<0xB4<< 0x6F<< 0x01<< 0x25));
     //JUnitUtil::waitFor(()->{return startedShortTimer;},"startedShortTimer not set");
     ReleaseUntil03* r03 = new ReleaseUntil03(this);
-    JUnitUtil::waitFor(r03, "startedShortTimer not set");
+    JUnitUtil::waitFor(r03, "startedShortTimer not set", __FILE__, __LINE__);
     Assert::assertEquals("post-LACK status", -999, status, __FILE__, __LINE__);
     Assert::assertTrue("started short timer", startedShortTimer, __FILE__, __LINE__);
     Assert::assertFalse("didn't start long timer", startedLongTimer, __FILE__, __LINE__);
@@ -311,7 +308,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("no immediate reply", -999, status, __FILE__, __LINE__);
     //JUnitUtil::waitFor(()->{return value == -1;},"value == -1 not set");
     ReleaseUntil04* r04 = new ReleaseUntil04(this);
-    JUnitUtil::waitFor(r04, "value == -1 not set");
+    JUnitUtil::waitFor(r04, "value == -1 not set", __FILE__, __LINE__);
     log->debug("checking..");
     Assert::assertEquals("reply status", 0, status, __FILE__, __LINE__);
     Assert::assertEquals("reply value", -1, value, __FILE__, __LINE__);
@@ -350,7 +347,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     slotmanager->message(new LocoNetMessage(QVector<int>() <<0xB4<< 0x6F<< 0x01<< 0x25));
     //JUnitUtil::waitFor(()->{return startedShortTimer;},"startedShortTimer not set");
     ReleaseUntil03* r03 = new ReleaseUntil03(this);
-    JUnitUtil::waitFor(r03, "startedShortTimer not set");
+    JUnitUtil::waitFor(r03, "startedShortTimer not set", __FILE__, __LINE__);
     Assert::assertEquals("post-LACK status", -999, status, __FILE__, __LINE__);
     Assert::assertTrue("started short timer", startedShortTimer, __FILE__, __LINE__);
     Assert::assertFalse("didn't start long timer", startedLongTimer, __FILE__, __LINE__);
@@ -368,6 +365,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("no immediate reply", -999, status, __FILE__, __LINE__);
     // not clear what to wait for here; content doesn't change
 //    JUnitUtil::releaseThread(this, releaseTestDelay);
+    JUnitUtil::waitFor(releaseTestDelay);
     log->debug("checking..");
     Assert::assertEquals("reply status", 0, status, __FILE__, __LINE__);
     Assert::assertEquals("reply value", -1, value, __FILE__, __LINE__);
@@ -444,7 +442,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     slotmanager->message(new LocoNetMessage(QVector<int>() <<0xB4<< 0x6F<< 0x01<< 0x25));
     //JUnitUtil::waitFor(()->{return startedShortTimer;},"startedShortTimer not set");
     ReleaseUntil03* r03 = new ReleaseUntil03(this);
-    JUnitUtil::waitFor(r03, "startedShortTimer not set");
+    JUnitUtil::waitFor(r03, "startedShortTimer not set", __FILE__, __LINE__);
     Assert::assertEquals("post-LACK status", -999, status, __FILE__, __LINE__);
     Assert::assertTrue("started short timer", startedShortTimer, __FILE__, __LINE__);
     Assert::assertFalse("didn't start long timer", startedLongTimer, __FILE__, __LINE__);
@@ -473,7 +471,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     slotmanager->message(new LocoNetMessage(QVector<int>() <<0xB4<< 0x6F<< 0x01<< 0x25));
     //JUnitUtil::waitFor(()->{return startedShortTimer;},"startedShortTimer not set");
     //ReleaseUntil03* r03 = new ReleaseUntil03(this);
-    JUnitUtil::waitFor(r03, "startedShortTimer not set");
+    JUnitUtil::waitFor(r03, "startedShortTimer not set", __FILE__, __LINE__);
     Assert::assertEquals("post-LACK status", -999, status, __FILE__, __LINE__);
     Assert::assertTrue("started short timer", startedShortTimer, __FILE__, __LINE__);
     Assert::assertFalse("didn't start long timer", startedLongTimer, __FILE__, __LINE__);
@@ -501,7 +499,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     slotmanager->message(new LocoNetMessage(QVector<int>() <<0xB4<< 0x6F<< 0x01<< 0x25));
     //JUnitUtil::waitFor(()->{return startedShortTimer;},"startedShortTimer not set");
     r03 = new ReleaseUntil03(this);
-    JUnitUtil::waitFor(r03, "startedShortTimer not set");
+    JUnitUtil::waitFor(r03, "startedShortTimer not set", __FILE__, __LINE__);
     Assert::assertEquals("post-LACK status", -999, status, __FILE__, __LINE__);
     Assert::assertTrue("started short timer", startedShortTimer, __FILE__, __LINE__);
     Assert::assertFalse("didn't start long timer", startedLongTimer, __FILE__, __LINE__);
@@ -870,6 +868,13 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
 //        }
 //    };
     lstn = new ProgListenerO1(this);
+}
+
+/*public*/ void ProgListenerO1::programmingOpReply(int val, int stat) {
+    smt->log->debug(tr("   reply val: %1 status: %2").arg(val).arg(stat));
+    smt->status = stat;
+    smt->value = val;
+
 }
 
 //@After

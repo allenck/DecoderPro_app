@@ -29,17 +29,14 @@ class PropertyChangeListenerO2 : public PropertyChangeListener {
 Q_OBJECT
     //@Override
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* /*evt*/) {
-        // do nothing
-    }
+    /*public*/ void propertyChange(PropertyChangeEvent* /*evt*/);
 };
+
 class VetoableChangeListenerO1 : public VetoableChangeListener
 {
  Q_OBJECT
 public:
       //@Override
-      /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/) throw (PropertyVetoException) {
-          // do nothing
-      }
+      /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/) throw (PropertyVetoException);
 };
 #endif // ABSTRACTMANAGERTESTBASE_H

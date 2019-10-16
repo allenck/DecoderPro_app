@@ -27,6 +27,13 @@
 #include "tests/misc/proxysensormanagertestaction.h"
 #include "tests/misc/proxyreportmanagertestaction.h"
 #include "tests/misc/proxylightmanagertestaction.h"
+#include "tests/misc/multiindexprogrammerfacadetestaction.h"
+#include "tests/misc/addressedhighcvprogranmmerfacadetestaction.h"
+#include "tests/misc/opsmodedelayedprogrammerfacadetestaction.h"
+#include "tests/misc/verifywriteprogrammerfacadetestaction.h"
+#include "tests/misc/twoindextcsprogrammerfacadetestaction.h"
+
+
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -79,4 +86,12 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     proxyMenu->addAction(new ProxySensorManagerTestAction(this));
     proxyMenu->addAction(new ProxyReporterManagerTestAction(this));
     proxyMenu->addAction(new ProxyLightManagerTestAction(this));
+    QMenu* miscMenu = new QMenu(tr("Misc ..."));
+    addMenu(miscMenu);
+    miscMenu->addAction(new AddressedHighCvProgranmmerFacadeTestAction(this));
+    miscMenu->addAction(new MultiIndexProgrammerFacadeTestAction(this));
+    miscMenu->addAction(new OpsModeDelayedProgrammerFacadeTestAction(this));
+    miscMenu->addAction(new TwoIndexTcsProgrammerFacadeTestAction(this));
+    miscMenu->addAction(new VerifyWriteProgrammerFacadeTestAction(this));
+
 }

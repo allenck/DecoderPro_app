@@ -896,7 +896,7 @@ if (_wrapper) {
 }
   return AbstractLightManager::getBeanByUserName(userName0);
 }
-QString  PythonQtShell_AbstractLightManager::getBeanTypeHandled()
+QString  PythonQtShell_AbstractLightManager::getBeanTypeHandled(bool  plural0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -904,10 +904,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getBeanTypeHandled");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      static const char* argumentList[] ={"QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       QString returnValue{};
-      void* args[1] = {NULL};
+      void* args[2] = {NULL, (void*)&plural0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -927,7 +927,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractLightManager::getBeanTypeHandled();
+  return AbstractLightManager::getBeanTypeHandled(plural0);
 }
 Light*  PythonQtShell_AbstractLightManager::getBySystemName(QString  name0)
 {
@@ -1391,7 +1391,7 @@ if (_wrapper) {
 }
   return AbstractLightManager::getXMLOrder();
 }
-QString  PythonQtShell_AbstractLightManager::makeSystemName(QString  s0)
+QString  PythonQtShell_AbstractLightManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1399,10 +1399,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("makeSystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QString" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      static const char* argumentList[] ={"QString" , "QString" , "bool" , "QLocale"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
       QString returnValue{};
-      void* args[2] = {NULL, (void*)&s0};
+      void* args[4] = {NULL, (void*)&s0, (void*)&logErrors1, (void*)&locale2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -1422,7 +1422,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractLightManager::makeSystemName(s0);
+  return AbstractLightManager::makeSystemName(s0, logErrors1, locale2);
 }
 Light*  PythonQtShell_AbstractLightManager::newLight(QString  systemName0, QString  userName1)
 {
@@ -1732,7 +1732,7 @@ if (_wrapper) {
 }
   return AbstractLightManager::validSystemNameConfig(arg__1);
 }
-Manager::NameValidity  PythonQtShell_AbstractLightManager::validSystemNameFormat(QString  arg__1)
+Manager::NameValidity  PythonQtShell_AbstractLightManager::validSystemNameFormat(QString  systemName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1743,7 +1743,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager::NameValidity" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager::NameValidity returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -1763,7 +1763,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractLightManager::validSystemNameFormat(arg__1);
+  return AbstractLightManager::validSystemNameFormat(systemName0);
 }
 void PythonQtShell_AbstractLightManager::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -2178,6 +2178,39 @@ if (_wrapper) {
 }
   return AbstractManager::getBeanTypeHandled();
 }
+QString  PythonQtShell_AbstractManager::getBeanTypeHandled(bool  plural0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBeanTypeHandled");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QString returnValue{};
+      void* args[2] = {NULL, (void*)&plural0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBeanTypeHandled", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractManager::getBeanTypeHandled(plural0);
+}
 QString  PythonQtShell_AbstractManager::getEntryToolTip()
 {
 if (_wrapper) {
@@ -2541,7 +2574,7 @@ if (_wrapper) {
 }
   return AbstractManager::getXMLOrder();
 }
-QString  PythonQtShell_AbstractManager::makeSystemName(QString  s0)
+QString  PythonQtShell_AbstractManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2549,10 +2582,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("makeSystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QString" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      static const char* argumentList[] ={"QString" , "QString" , "bool" , "QLocale"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
       QString returnValue{};
-      void* args[2] = {NULL, (void*)&s0};
+      void* args[4] = {NULL, (void*)&s0, (void*)&logErrors1, (void*)&locale2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -2572,7 +2605,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractManager::makeSystemName(s0);
+  return AbstractManager::makeSystemName(s0, logErrors1, locale2);
 }
 QString  PythonQtShell_AbstractManager::normalizeSystemName(QString  inputName0)
 {
@@ -6144,6 +6177,39 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getBeanTypeHandled();
 }
+QString  PythonQtShell_AbstractReporterManager::getBeanTypeHandled(bool  plural0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBeanTypeHandled");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QString returnValue{};
+      void* args[2] = {NULL, (void*)&plural0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBeanTypeHandled", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractReporterManager::getBeanTypeHandled(plural0);
+}
 QString  PythonQtShell_AbstractReporterManager::getEntryToolTip()
 {
 if (_wrapper) {
@@ -6540,7 +6606,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getXMLOrder();
 }
-QString  PythonQtShell_AbstractReporterManager::makeSystemName(QString  s0)
+QString  PythonQtShell_AbstractReporterManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6548,10 +6614,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("makeSystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QString" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      static const char* argumentList[] ={"QString" , "QString" , "bool" , "QLocale"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
       QString returnValue{};
-      void* args[2] = {NULL, (void*)&s0};
+      void* args[4] = {NULL, (void*)&s0, (void*)&logErrors1, (void*)&locale2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -6571,7 +6637,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractReporterManager::makeSystemName(s0);
+  return AbstractReporterManager::makeSystemName(s0, logErrors1, locale2);
 }
 QString  PythonQtShell_AbstractReporterManager::normalizeSystemName(QString  inputName0)
 {
@@ -8787,6 +8853,39 @@ if (_wrapper) {
 }
   return AbstractSensorManager::getBeanTypeHandled();
 }
+QString  PythonQtShell_AbstractSensorManager::getBeanTypeHandled(bool  plural0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBeanTypeHandled");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QString returnValue{};
+      void* args[2] = {NULL, (void*)&plural0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBeanTypeHandled", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractSensorManager::getBeanTypeHandled(plural0);
+}
 Sensor*  PythonQtShell_AbstractSensorManager::getBySystemName(QString  key0)
 {
 if (_wrapper) {
@@ -9381,7 +9480,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::isPullResistanceConfigurable();
 }
-QString  PythonQtShell_AbstractSensorManager::makeSystemName(QString  s0)
+QString  PythonQtShell_AbstractSensorManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9389,10 +9488,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("makeSystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QString" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      static const char* argumentList[] ={"QString" , "QString" , "bool" , "QLocale"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
       QString returnValue{};
-      void* args[2] = {NULL, (void*)&s0};
+      void* args[4] = {NULL, (void*)&s0, (void*)&logErrors1, (void*)&locale2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -9412,7 +9511,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractSensorManager::makeSystemName(s0);
+  return AbstractSensorManager::makeSystemName(s0, logErrors1, locale2);
 }
 Sensor*  PythonQtShell_AbstractSensorManager::newSensor(QString  sysName0, QString  userName1)
 {
@@ -14741,6 +14840,39 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getBeanTypeHandled();
 }
+QString  PythonQtShell_AbstractTurnoutManager::getBeanTypeHandled(bool  plural0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBeanTypeHandled");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QString returnValue{};
+      void* args[2] = {NULL, (void*)&plural0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBeanTypeHandled", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractTurnoutManager::getBeanTypeHandled(plural0);
+}
 Turnout*  PythonQtShell_AbstractTurnoutManager::getBySystemName(QString  name0)
 {
 if (_wrapper) {
@@ -15467,7 +15599,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::isNumControlBitsSupported(systemName0);
 }
-QString  PythonQtShell_AbstractTurnoutManager::makeSystemName(QString  s0)
+QString  PythonQtShell_AbstractTurnoutManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15475,10 +15607,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("makeSystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QString" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      static const char* argumentList[] ={"QString" , "QString" , "bool" , "QLocale"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
       QString returnValue{};
-      void* args[2] = {NULL, (void*)&s0};
+      void* args[4] = {NULL, (void*)&s0, (void*)&logErrors1, (void*)&locale2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -15498,7 +15630,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractTurnoutManager::makeSystemName(s0);
+  return AbstractTurnoutManager::makeSystemName(s0, logErrors1, locale2);
 }
 Turnout*  PythonQtShell_AbstractTurnoutManager::newTurnout(QString  systemName0, QString  userName1)
 {
@@ -20980,6 +21112,39 @@ if (_wrapper) {
 }
   return AudioManager::getBeanTypeHandled();
 }
+QString  PythonQtShell_AudioManager::getBeanTypeHandled(bool  plural0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBeanTypeHandled");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QString returnValue{};
+      void* args[2] = {NULL, (void*)&plural0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBeanTypeHandled", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AudioManager::getBeanTypeHandled(plural0);
+}
 Audio*  PythonQtShell_AudioManager::getBySystemName(QString  arg__1)
 {
 if (_wrapper) {
@@ -21497,7 +21662,7 @@ if (_wrapper) {
 }
   AudioManager::init();
 }
-QString  PythonQtShell_AudioManager::makeSystemName(QString  s0)
+QString  PythonQtShell_AudioManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21505,10 +21670,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("makeSystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QString" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      static const char* argumentList[] ={"QString" , "QString" , "bool" , "QLocale"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
       QString returnValue{};
-      void* args[2] = {NULL, (void*)&s0};
+      void* args[4] = {NULL, (void*)&s0, (void*)&logErrors1, (void*)&locale2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -21528,7 +21693,7 @@ if (_wrapper) {
     }
   }
 }
-  return AudioManager::makeSystemName(s0);
+  return AudioManager::makeSystemName(s0, logErrors1, locale2);
 }
 Audio*  PythonQtShell_AudioManager::newAudio(QString  arg__1, QString  arg__2)
 {
@@ -29456,6 +29621,39 @@ if (_wrapper) {
 }
   return BlockManager::getBeanTypeHandled();
 }
+QString  PythonQtShell_BlockManager::getBeanTypeHandled(bool  plural0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBeanTypeHandled");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QString returnValue{};
+      void* args[2] = {NULL, (void*)&plural0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBeanTypeHandled", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BlockManager::getBeanTypeHandled(plural0);
+}
 QString  PythonQtShell_BlockManager::getEntryToolTip()
 {
 if (_wrapper) {
@@ -29819,7 +30017,7 @@ if (_wrapper) {
 }
   return BlockManager::getXMLOrder();
 }
-QString  PythonQtShell_BlockManager::makeSystemName(QString  s0)
+QString  PythonQtShell_BlockManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -29827,10 +30025,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("makeSystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QString" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      static const char* argumentList[] ={"QString" , "QString" , "bool" , "QLocale"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
       QString returnValue{};
-      void* args[2] = {NULL, (void*)&s0};
+      void* args[4] = {NULL, (void*)&s0, (void*)&logErrors1, (void*)&locale2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -29850,7 +30048,7 @@ if (_wrapper) {
     }
   }
 }
-  return BlockManager::makeSystemName(s0);
+  return BlockManager::makeSystemName(s0, logErrors1, locale2);
 }
 QString  PythonQtShell_BlockManager::normalizeSystemName(QString  inputName0)
 {
@@ -36794,6 +36992,39 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getBeanTypeHandled();
 }
+QString  PythonQtShell_DefaultLogixManager::getBeanTypeHandled(bool  plural0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBeanTypeHandled");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QString returnValue{};
+      void* args[2] = {NULL, (void*)&plural0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBeanTypeHandled", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return DefaultLogixManager::getBeanTypeHandled(plural0);
+}
 QString  PythonQtShell_DefaultLogixManager::getEntryToolTip()
 {
 if (_wrapper) {
@@ -37190,7 +37421,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getXMLOrder();
 }
-QString  PythonQtShell_DefaultLogixManager::makeSystemName(QString  s0)
+QString  PythonQtShell_DefaultLogixManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -37198,10 +37429,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("makeSystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QString" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      static const char* argumentList[] ={"QString" , "QString" , "bool" , "QLocale"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
       QString returnValue{};
-      void* args[2] = {NULL, (void*)&s0};
+      void* args[4] = {NULL, (void*)&s0, (void*)&logErrors1, (void*)&locale2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -37221,7 +37452,7 @@ if (_wrapper) {
     }
   }
 }
-  return DefaultLogixManager::makeSystemName(s0);
+  return DefaultLogixManager::makeSystemName(s0, logErrors1, locale2);
 }
 QString  PythonQtShell_DefaultLogixManager::normalizeSystemName(QString  inputName0)
 {

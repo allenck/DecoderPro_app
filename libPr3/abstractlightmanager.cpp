@@ -1,5 +1,6 @@
 #include "abstractlightmanager.h"
 #include "systemconnectionmemo.h"
+#include "manager.h"
 
 AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *parent) :
     LightManager(memo, parent)
@@ -44,12 +45,9 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  */
 /*public*/ Light* AbstractLightManager::provideLight(QString name)
 {
-    Light* t = getLight(name);
-    if (t!=NULL) return t;
-    if (name.startsWith(getSystemPrefix()+typeLetter()))
-        return newLight(name, "");
-    else
-        return newLight(makeSystemName(name), NULL);
+    Light* light = getLight(name);
+    // makeSystemName checks for validity
+    return light == nullptr ? newLight(makeSystemName(name, true, QLocale()), "") : light;
 }
 
 /**
@@ -229,4 +227,23 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 **/
 /*public*/ bool AbstractLightManager::allowMultipleAdditions(QString /*systemName*/) { return false;  }
 
-    //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractLightManager.class.getName());
+/**
+ * Get bean type handled.
+ *
+ * @return a string for the type of object handled by this manager
+ */
+//@Override
+/*public*/ QString AbstractLightManager::getBeanTypeHandled(bool plural) {
+    return (plural ? tr("Lights") : ("Light"));
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+//@CheckForNull
+/*public*/ QString AbstractLightManager::getEntryToolTip() {
+    return "Enter a number from 1 to 9999"; // Basic number format help
+}
+
+//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractLightManager.class.getName());

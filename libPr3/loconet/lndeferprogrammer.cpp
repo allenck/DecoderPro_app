@@ -143,11 +143,12 @@
 /*public*/ void LnDeferProgrammer::notifyProgListenerEnd(ProgListener* p, int value, int status) {
     SlotManager* m = memo->getSlotManager();
     if (m!=nullptr) {
-//        m->notifyProgListenerEnd(p, value, status);
+        m->notifyProgListenerEnd(p, value, status);
     } else {
         log->warn("notifyProgListenerEnd called without a SlotManager");
     }
 }
+
 
 //@Override
 /*public*/ void LnDeferProgrammer::addPropertyChangeListener(PropertyChangeListener* p) {

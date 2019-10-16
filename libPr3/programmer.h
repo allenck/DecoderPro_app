@@ -287,44 +287,46 @@ QT_DEPRECATED virtual void confirmCV(int /*CV*/, int /*val*/, ProgListener* /*p*
  virtual /*public*/ bool getCanWrite(QString /*addr*/) {return false;}
 
  /**
-      * Learn about whether the programmer does any kind of verification of write
-      * operations
-      *
-      * @param addr A CV address to check (in case this varies with CV range) or
-      *             null for any
-      * @return The confirmation behavior that can be counted on (might be better
-      *         in some cases)
-      */
-      enum WriteConfirmMode {
-     /**
-      * No verification available, writes are blind
-      */
-     NotVerified,
-     /**
-      * Programmer signals error if there's no reply from the device
-      */
-     DecoderReply,
-     /**
-      * Programmer does a read after write to verify
-      */
-     ReadAfterWrite
-      };
-     //@Nonnull
-     /*public*/ virtual WriteConfirmMode getWriteConfirmMode(QString /*addr*/) {return NotVerified;}
-      /**
-       * wrapper to call {@link jmri.ProgListener#programmingOpReply} that verifies
-       * the specified progListener is not null.
-       *
-       * @param p listener to notify
-       * @param value result value
-       * @param status code from jmri.ProgListener
-       */
-      /*default*/ /*public*/ void notifyProgListenerEnd(ProgListener* p, int value, int status) {
-          if ( p != nullptr ) {
-             p->programmingOpReply(value, status);
-          }
-      }
-     virtual void addPropertyChangeListener(PropertyChangeListener* /*p*/) {}
+* Learn about whether the programmer does any kind of verification of write
+* operations
+*
+* @param addr A CV address to check (in case this varies with CV range) or
+*             null for any
+* @return The confirmation behavior that can be counted on (might be better
+*         in some cases)
+*/
+enum WriteConfirmMode {
+/**
+* No verification available, writes are blind
+*/
+NotVerified,
+/**
+* Programmer signals error if there's no reply from the device
+*/
+DecoderReply,
+/**
+* Programmer does a read after write to verify
+*/
+ReadAfterWrite
+};
+//@Nonnull
+/*public*/ virtual WriteConfirmMode getWriteConfirmMode(QString /*addr*/) {return NotVerified;}
+/**
+ * wrapper to call {@link jmri.ProgListener#programmingOpReply} that verifies
+ * the specified progListener is not null.
+ *
+ * @param p listener to notify
+ * @param value result value
+ * @param status code from jmri.ProgListener
+ */
+/*default*/ /*public*/ virtual void notifyProgListenerEnd(ProgListener* p, int value, int status)
+{
+ if ( p != nullptr ) {
+    p->programmingOpReply(value, status);
+ }
+}
+
+virtual void addPropertyChangeListener(PropertyChangeListener* /*p*/) {}
 virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) {}
 
 // error handling on request is via exceptions

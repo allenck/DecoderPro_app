@@ -69,9 +69,9 @@ protected:
    /*protected*/ void notifyPropertyChange(QString key, QVariant oldValue, QVariant value);
    // handle mode
    /*protected*/ ProgrammingMode* mode;// = DefaultProgrammerManager.PAGEMODE;
-   /*protected*/ void startShortTimer();
-   /*protected*/ void startLongTimer() ;
-   /*protected*/ /*synchronized*/ void stopTimer();
+   /*protected*/ virtual void startShortTimer();
+   /*protected*/ virtual void startLongTimer() ;
+   /*protected*/ virtual /*synchronized*/ void stopTimer();
    /*protected*/ /*synchronized*/ void restartTimer(int delay);
 friend class ProgServiceModeComboBox;
 };

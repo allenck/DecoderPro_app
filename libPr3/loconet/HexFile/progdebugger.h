@@ -104,6 +104,7 @@ private:
     static const bool IMMEDIATERETURN;// = false;
     static const int DELAY;// = 10;
     void sendReturn(Runnable* run);
+    Runnable* run;
 
 protected:
     // handle mode

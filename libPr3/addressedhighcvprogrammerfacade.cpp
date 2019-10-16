@@ -56,7 +56,7 @@ AbstractProgrammerFacade(prog, parent) {
 //@Override
 /*public*/ void AddressedHighCvProgrammerFacade::writeCV(int CV, int val, ProgListener* p) throw (ProgrammerException)
 {
-    writeCV("" + CV, val, p);
+    writeCV("" + QString::number(CV), val, p);
 }
 
 //@Override

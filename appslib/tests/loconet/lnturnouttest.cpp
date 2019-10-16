@@ -597,14 +597,14 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         Assert::assertEquals("check initial message element 2", 0x30, lnis->outbound.at(0)->getElement(2), __FILE__, __LINE__);
         //JUnitUtil.waitFor(()->{return lnis->outbound.size()==2;},"2nd message not received");
         ReleaseUntilO7* r07 = new ReleaseUntilO7(2, this);
-        JUnitUtil::waitFor(r07, "2nd message not received");
+        JUnitUtil::waitFor(r07, "2nd message not received", __FILE__, __LINE__);
         JUnitAppender::assertWarnMessage("Turnout 21 is using OPC_SWREQ off as confirmation, but is sending OFF commands itself anyway",__FILE__, __LINE__);
         Assert::assertEquals("check second message Opcode", 0xB0, lnis->outbound.at(1)->getOpCode(), __FILE__, __LINE__);
         Assert::assertEquals("check second message element 1", 20, lnis->outbound.at(1)->getElement(1), __FILE__, __LINE__);
         Assert::assertEquals("check second message element 2", 0x20, lnis->outbound.at(1)->getElement(2), __FILE__, __LINE__);
         //JUnitUtil.waitFor(()->{return lnis->outbound.size()==3;},"3rd message not received");
         r07 = new ReleaseUntilO7(3, this);
-        JUnitUtil::waitFor(r07, "2nd message not received");
+        JUnitUtil::waitFor(r07, "2nd message not received", __FILE__, __LINE__);
         // check for resend of original message
         Assert::assertEquals("check second message Opcode", 0xB0, lnis->outbound.at(2)->getOpCode(), __FILE__, __LINE__);
         Assert::assertEquals("check second message element 1", 20, lnis->outbound.at(2)->getElement(1), __FILE__, __LINE__);
@@ -627,7 +627,7 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         Assert::assertEquals("check known state got updated", Turnout::THROWN, t->getKnownState(), __FILE__, __LINE__);
         //JUnitUtil.waitFor(()->{return lnis->outbound.size()==2;},"2nd message not received (2)");
         ReleaseUntilO7* r07 = new ReleaseUntilO7(2, this);
-        JUnitUtil::waitFor(r07,"2nd message not received (2)");
+        JUnitUtil::waitFor(r07,"2nd message not received (2)", __FILE__, __LINE__);
         JUnitAppender::assertWarnMessage("Turnout 21 is using OPC_SWREQ off as confirmation, but is sending OFF commands itself anyway",__FILE__, __LINE__);
         Assert::assertEquals("check second message Opcode", 0xB0, lnis->outbound.at(1)->getOpCode(), __FILE__, __LINE__);
         Assert::assertEquals("check second message element 1", 20, lnis->outbound.at(1)->getElement(1), __FILE__, __LINE__);

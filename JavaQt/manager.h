@@ -126,7 +126,50 @@ public:
  /**
   * @return A system name from a user input, typically a number.
   */
- virtual QString makeSystemName(QString /*s*/)  {return "";}
+ /*public*/ /*default*/ virtual QString makeSystemName(/*@Nonnull*/ QString name);
+
+/**
+ * Create a SystemName by prepending the system name prefix to the name if
+ * not already present.
+ * <p>
+ * The {@code logErrors} parameter is present to allow user interface input
+ * validation to use this method without logging system name validation
+ * errors as the user types.
+ * <p>
+ * <strong>Note:</strong> implementations <em>must</em> call
+ * {@link #validateSystemNameFormat(java.lang.String, java.util.Locale)} to ensure
+ * the returned name is valid.
+ *
+ * @param name      the item to make the system name for
+ * @param logErrors true to log errors; false to not log errors
+ * @return a valid system name
+ * @throws BadSystemNameException if a valid name can't be created
+ */
+//@Nonnull
+/*public*/ /*default*/ virtual QString makeSystemName(/*@Nonnull*/ QString name, bool logErrors) ;
+
+/**
+ * Create a SystemName by prepending the system name prefix to the name if
+ * not already present.
+ * <p>
+ * The {@code logErrors} parameter is present to allow user interface input
+ * validation to use this method without logging system name validation
+ * errors as the user types.
+ * <p>
+ * <strong>Note:</strong> implementations <em>must</em> call
+ * {@link #validateSystemNameFormat(java.lang.String, java.util.Locale)} to ensure
+ * the returned name is valid.
+ *
+ * @param name      the item to make the system name for
+ * @param logErrors true to log errors; false to not log errors
+ * @param locale    the locale for a localized exception; this is needed for
+ *                      the JMRI web server, which supports multiple locales
+ * @return a valid system name
+ * @throws BadSystemNameException if a valid name can't be created
+ */
+//@Nonnull
+/*public*/ /*default*/ virtual QString makeSystemName(/*@Nonnull*/ QString name, bool /*logErrors*/, QLocale locale);
+
 
  /**
   * Test if parameter is a properly formatted system name.
@@ -391,6 +434,7 @@ public:
      //@CheckReturnValue
      //@Nonnull
      /*public*/ virtual QString getBeanTypeHandled() {return "";}
+     /*public*/ virtual /*default*/ QString getBeanTypeHandled(bool plural);
 
      /**
       * Enforces, and as a user convenience converts to, the standard form for a

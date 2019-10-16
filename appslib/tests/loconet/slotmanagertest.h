@@ -103,12 +103,9 @@ class ProgListenerO1 : public ProgListener
     SlotManagerTest* smt;
 public:
     ProgListenerO1(SlotManagerTest* smt) {this->smt = smt;}
+public slots:
     //@Override
-    /*public*/ void programmingOpReply(int val, int stat) {
-        smt->log->debug(tr("   reply val: %1 status: %2").arg(val).arg(stat));
-        smt->status = stat;
-        smt->value = val;
-    }
+    /*public*/ void programmingOpReply(int val, int stat);
 };
 
 class SlotListenerO1 : public SlotListener
@@ -117,6 +114,7 @@ class SlotListenerO1 : public SlotListener
     SlotManagerTest* smt;
 public:
     SlotListenerO1(SlotManagerTest* smt) {this->smt = smt;}
+public slots:
     //@Override
     /*public*/ void notifyChangedSlot(LocoNetSlot* l);
 };
@@ -127,23 +125,28 @@ class ReleaseUntil01 : public ReleaseUntil
     SlotManagerTest* smt;
 public:
     ReleaseUntil01(SlotManagerTest* smt) {this->smt = smt;}
-    bool ready() {return smt->startedLongTimer;}
+    bool ready() throw (Exception) {return smt->startedLongTimer;}
 };
+
 class ReleaseUntil02 : public ReleaseUntil
 {
     Q_OBJECT
     SlotManagerTest* smt;
 public:
     ReleaseUntil02(SlotManagerTest* smt) {this->smt = smt;}
-    bool ready() {return smt->value == 35;}
+    bool ready() throw (Exception)
+    {
+     return (smt->value == 35);
+    }
 };
+
 class ReleaseUntil03 : public ReleaseUntil
 {
     Q_OBJECT
     SlotManagerTest* smt;
 public:
     ReleaseUntil03(SlotManagerTest* smt) {this->smt = smt;}
-    bool ready() {return smt->startedShortTimer;}
+    bool ready() throw (Exception) {return smt->startedShortTimer;}
 };
 class ReleaseUntil04 : public ReleaseUntil
 {
@@ -151,7 +154,7 @@ class ReleaseUntil04 : public ReleaseUntil
     SlotManagerTest* smt;
 public:
     ReleaseUntil04(SlotManagerTest* smt) {this->smt = smt;}
-    bool ready() {return smt->value == -1;}
+    bool ready() throw (Exception) {return smt->value == -1;}
 };
 
 #endif // SLOTMANAGERTEST_H
