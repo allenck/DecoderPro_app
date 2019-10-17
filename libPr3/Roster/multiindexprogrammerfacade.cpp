@@ -39,13 +39,14 @@
     : AbstractProgrammerFacade(prog, parent)
 {
  //super(prog);
- this->indexPI = indexPI;
- this->indexSI = indexSI;
- this->cvFirst = cvFirst;
- this->skipDupIndexWrite = skipDupIndexWrite;
- _usingProgrammer = NULL;
+ _usingProgrammer = nullptr;
  state = NOTPROGRAMMING;
  log = new Logger("MultiIndexProgrammerFacade");
+
+ this->defaultIndexPI = indexPI;
+ this->defaultIndexSI = indexSI;
+ this->cvFirst = cvFirst;
+ this->skipDupIndexWrite = skipDupIndexWrite;
 }
 
 // take the CV string and configure the actions to take

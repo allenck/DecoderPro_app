@@ -870,6 +870,21 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     lstn = new ProgListenerO1(this);
 }
 
+/*protected*/ void SlotManagerO1::startLongTimer() {
+    SlotManager::startLongTimer();
+    smt->startedLongTimer = true;
+}
+//@Override
+/*protected*/ void SlotManagerO1::startShortTimer() {
+    SlotManager::startShortTimer();
+    smt->startedShortTimer = true;
+}
+//@Override
+/*protected*/ void SlotManagerO1::stopTimer() {
+    SlotManager::stopTimer();
+    smt->stoppedTimer = true;
+}
+
 /*public*/ void ProgListenerO1::programmingOpReply(int val, int stat) {
     smt->log->debug(tr("   reply val: %1 status: %2").arg(val).arg(stat));
     smt->status = stat;

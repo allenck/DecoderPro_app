@@ -42,57 +42,30 @@ AbstractProgrammerFacade(prog, parent) {
  state = NOTPROGRAMMING;
  _usingProgrammer = NULL;
 
-
  this->top = top.toInt();
- this->addrCVhigh = addrCVhigh.toInt();
-    this->addrCVlow = addrCVlow.toInt();
-    this->valueCV = valueCV.toInt();
-    this->modulo = modulo.toInt();
-    log->debug(tr("Created with ") + prog->metaObject()->className() + ", " + QString::number(this->top) + ", " + QString::number(this->addrCVhigh) + ", " + QString::number(this->addrCVlow) + ", " + QString::number(this->valueCV) + ", " + QString::number(this->modulo));
-}
-
-
-// programming interface
-//@Override
-/*public*/ void AddressedHighCvProgrammerFacade::writeCV(int CV, int val, ProgListener* p) throw (ProgrammerException)
-{
-    writeCV("" + QString::number(CV), val, p);
+ this->addrCVhigh = addrCVhigh;
+ this->addrCVlow = addrCVlow;
+ this->valueCV = valueCV;
+ this->modulo = modulo.toInt();
+ log->debug(tr("Created with ") + prog->metaObject()->className() + ", " + QString::number(this->top) + ", " + this->addrCVhigh + ", " + this->addrCVlow + ", " + this->valueCV + ", " + QString::number(this->modulo));
 }
 
 //@Override
 /*public*/ void AddressedHighCvProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
-    log->debug("start writeCV");
-    _cv = CV.toInt();
-    _val = val;
-    useProgrammer(p);
-    if (prog->getCanWrite(CV) || _cv <= top)
-    {
-        state = PROGRAMMING;
-        prog->writeCV(_cv, val, (ProgListener*)this);
-    } else {
-        // write index first
-        state = WRITELOWWRITE;
-        prog->writeCV(addrCVhigh, _cv / modulo, (ProgListener*)this);
-    }
-}
-
-//@Override
-/*public*/ void AddressedHighCvProgrammerFacade::confirmCV(int CV, int val, ProgListener* p) throw (ProgrammerException)
-{
-    confirmCV("" + CV, val, p);
-}
-
-//@Override
-/*public*/ void AddressedHighCvProgrammerFacade::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
-{
-    readCV(CV, p);
-}
-
-//@Override
-/*public*/ void AddressedHighCvProgrammerFacade::readCV(int CV, ProgListener* p) throw (ProgrammerException)
-{
-    readCV(QString::number(CV), p);
+ log->debug("start writeCV");
+ _cv = CV.toInt();
+ _val = val;
+ useProgrammer(p);
+ if (prog->getCanWrite(CV) || _cv <= top)
+ {
+  state = PROGRAMMING;
+  prog->writeCV(_cv, val, (ProgListener*)this);
+ } else {
+  // write index first
+  state = WRITELOWWRITE;
+  prog->writeCV(addrCVhigh, _cv / modulo, (ProgListener*)this);
+ }
 }
 
 //@Override
@@ -115,16 +88,16 @@ AbstractProgrammerFacade(prog, parent) {
 // internal method to remember who's using the programmer
 /*protected*/ void AddressedHighCvProgrammerFacade::useProgrammer(ProgListener* p) //throws ProgrammerException
 {
-    // test for only one!
-    if (_usingProgrammer != NULL && _usingProgrammer != p) {
-        if (log->isInfoEnabled()) {
-            log->info(tr("programmer already in use by ") + _usingProgrammer->metaObject()->className());
-        }
-        throw new ProgrammerException("programmer in use");
-    } else {
-        _usingProgrammer = p;
-        return;
-    }
+ // test for only one!
+ if (_usingProgrammer != NULL && _usingProgrammer != p) {
+     if (log->isInfoEnabled()) {
+         log->info(tr("programmer already in use by ") + _usingProgrammer->metaObject()->className());
+     }
+     throw ProgrammerException("programmer in use");
+ } else {
+     _usingProgrammer = p;
+     return;
+ }
 }
 
 
@@ -135,62 +108,75 @@ AbstractProgrammerFacade(prog, parent) {
         log->debug("notifyProgListenerEnd value " + QString::number(value) + " status " + QString::number(status));
     }
 
-    if (_usingProgrammer == NULL) {
-        log->error("No listener to notify");
+    if (status != ProgListener::OK)
+    {
+        // pass abort up
+        log->debug("Reset and pass abort up");
+        ProgListener* temp = _usingProgrammer;
+        _usingProgrammer = nullptr; // done
+        state = ProgState::NOTPROGRAMMING;
+        temp->programmingOpReply(value, status);
+        return;
+    }
+
+    if (_usingProgrammer == nullptr) {
+        log->error("No listener to notify, reset and ignore");
+        state = ProgState::NOTPROGRAMMING;
+        return;
     }
 
     switch (state) {
-        case PROGRAMMING:
+    case PROGRAMMING:
     {
-            // the programmingOpReply handler might send an immediate reply, so
-            // clear the current listener _first_
-            ProgListener* temp = _usingProgrammer;
-            _usingProgrammer = NULL; // done
-            state = NOTPROGRAMMING;
-            temp->programmingOpReply(value, status);
-            break;
+     // the programmingOpReply handler might send an immediate reply, so
+     // clear the current listener _first_
+     ProgListener* temp = _usingProgrammer;
+     _usingProgrammer = NULL; // done
+     state = NOTPROGRAMMING;
+     temp->programmingOpReply(value, status);
+     break;
     }
-        case WRITELOWREAD:
-            try {
-                state = FINISHREAD;
-                prog->writeCV(addrCVlow, _cv % modulo, (ProgListener*)this);
-            } catch (ProgrammerException e) {
-                log->error("Exception doing final read"/*, e*/);
-            }
-            break;
-        case WRITELOWWRITE:
+    case WRITELOWREAD:
+     try {
+         state = ProgState::FINISHREAD;
+         prog->writeCV(addrCVlow, _cv % modulo, (ProgListener*)this);
+     } catch (ProgrammerException e) {
+         log->error("Exception doing final read"/*, e*/);
+     }
+     break;
+    case WRITELOWWRITE:
     {
-            try {
-                state = FINISHWRITE;
-                prog->writeCV(addrCVlow, _cv % modulo,(ProgListener*) this);
-            } catch (ProgrammerException e) {
-                log->error("Exception doing final write"/*, e*/);
-            }
-            break;
+     try {
+         state = FINISHWRITE;
+         prog->writeCV(addrCVlow, _cv % modulo,(ProgListener*) this);
+     } catch (ProgrammerException e) {
+         log->error("Exception doing final write"/*, e*/);
+     }
+     break;
     }
-        case FINISHREAD:
+    case FINISHREAD:
     {
-            try {
-                state = PROGRAMMING;
-                prog->readCV(valueCV, (ProgListener*)this);
-            } catch (ProgrammerException e) {
-                log->error("Exception doing final read"/*, e*/);
-            }
-            break;
+     try {
+         state = PROGRAMMING;
+         prog->readCV(valueCV, (ProgListener*)this);
+     } catch (ProgrammerException e) {
+         log->error("Exception doing final read"/*, e*/);
+     }
+     break;
     }
-        case FINISHWRITE:
-            try {
-                state = PROGRAMMING;
-                prog->writeCV(valueCV, _val, (ProgListener*)this);
-            } catch (ProgrammerException e) {
-                log->error("Exception doing final write"/*, e*/);
-            }
-            break;
-        default:
-            log->error("Unexpected state on reply: " + state);
-            // clean up as much as possible
-            _usingProgrammer = NULL;
-            state = NOTPROGRAMMING;
+    case FINISHWRITE:
+        try {
+            state = PROGRAMMING;
+            prog->writeCV(valueCV, _val, (ProgListener*)this);
+        } catch (ProgrammerException e) {
+            log->error("Exception doing final write"/*, e*/);
+        }
+        break;
+    default:
+        log->error("Unexpected state on reply: " + state);
+        // clean up as much as possible
+        _usingProgrammer = nullptr;
+        state = NOTPROGRAMMING;
 
     }
 

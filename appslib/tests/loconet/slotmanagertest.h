@@ -81,20 +81,9 @@ public:
     SlotManagerO1(LocoNetInterfaceScaffold* lnis, SlotManagerTest* smt) : SlotManager((LnTrafficController*)lnis) {this->smt = smt;}
 protected:
     //@Override
-    /*protected*/ void startLongTimer() {
-        SlotManager::startLongTimer();
-        smt->startedLongTimer = true;
-    }
-    //@Override
-    /*protected*/ void startShortTimer() {
-        SlotManager::startShortTimer();
-        smt->startedShortTimer = true;
-    }
-    //@Override
-    /*protected*/ void stopTimer() {
-        SlotManager::stopTimer();
-        smt->stoppedTimer = true;
-    }
+    /*protected*/ void startLongTimer();
+    /*protected*/ void startShortTimer();
+    /*protected*/ void stopTimer();
 };
 
 class ProgListenerO1 : public ProgListener

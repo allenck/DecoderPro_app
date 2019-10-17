@@ -15,11 +15,7 @@ class LIBPR3_GLOBAL_H AddressedHighCvProgrammerFacade : public AbstractProgramme
 public:
  //explicit AddressedHighCvProgrammerFacade(QObject *parent = 0);
  /*public*/ AddressedHighCvProgrammerFacade(Programmer* prog, QString top, QString addrCVhigh, QString addrCVlow, QString valueCV, QString modulo, QObject *parent = 0);
- /*public*/ void writeCV(int CV, int val, ProgListener* p) throw (ProgrammerException);
  /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
- /*public*/ void confirmCV(int CV, int val, ProgListener* p) throw (ProgrammerException);
- /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
- /*public*/ void readCV(int CV, ProgListener* p) throw (ProgrammerException);
  /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
  // Access to full address space provided by this->
  /*public*/ bool getCanRead();
@@ -34,9 +30,9 @@ public slots:
 
 private:
  int top;
- int addrCVhigh;
- int addrCVlow;
- int valueCV;
+ QString addrCVhigh;
+ QString addrCVlow;
+ QString valueCV;
  int modulo;
 
  // members for handling the programmer interface

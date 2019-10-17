@@ -163,7 +163,7 @@ AddressedHighCvProgranmmerFacadeTest::AddressedHighCvProgranmmerFacadeTest(QObje
     while (!replied) {
         //wait(200);
      SleeperThread::msleep(200);
-
+     qApp->processEvents();
     }
     replied = false;
 }
