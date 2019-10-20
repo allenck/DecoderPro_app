@@ -13,6 +13,7 @@
 #include "propertychangesupport.h"
 #include "qualifieradder.h"
 
+class JPanel;
 class HardcopyWriter;
 class PaneContainer;
 class FnMapPanelESU;
@@ -36,7 +37,10 @@ class LIBPR3SHARED_EXPORT PaneProgPane : public QWidget //, public PaneContainer
     Q_OBJECT
 public:
     explicit PaneProgPane(QWidget *parent = 0);
-    /*public*/ PaneProgPane(PaneContainer* container, QString name, QDomElement pane, CvTableModel* cvModel, /*IndexedCvTableModel* icvModel,*/ VariableTableModel* varModel, QDomElement modelElem, RosterEntry* rosterEntry, QWidget *parent = 0);
+    /*public*/ PaneProgPane(PaneContainer* container, QString name, QDomElement pane,
+                            CvTableModel* cvModel, /*IndexedCvTableModel* icvModel,*/
+                            VariableTableModel* varModel, QDomElement modelElem, RosterEntry* rosterEntry, QWidget *parent = 0);
+    virtual ~PaneProgPane() {}
     /*public*/ QString getName();
     /*public*/ QString toString() ;
     void enableReadButtons();
@@ -66,9 +70,9 @@ public:
     /*public*/ void replyWhileProgrammingIndxCV();
     void restartProgramming();
     //@SuppressWarnings("unchecked")
-    /*public*/ QWidget* newColumn(QDomElement element, bool showStdName, QDomElement modelElem);
+    /*public*/ virtual QWidget *newColumn(QDomElement element, bool showStdName, QDomElement modelElem);
     /*public*/ QWidget* newRow(QDomElement element, bool showStdName, QDomElement modelElem);
-    /*public*/ void newVariable( QDomElement var, QWidget* col,
+    /*public*/ virtual void newVariable( QDomElement var, QWidget* col,
                              QGridLayout* g, GridBagConstraints* cs, bool showStdName);
     /*public*/ QWidget* getRepresentation(QString name, QDomElement var);
     QWidget* getRep(int i, QString format) ;
@@ -106,22 +110,28 @@ private:
   /*private*/ void prepGlassPane(JToggleButton* activeButton);
   bool justChanges;
   // reference to variable being programmed (or NULL if none)
-  VariableValue* _programmingVar;// = NULL;
-  CvValue* _programmingCV;//  = NULL;
-  VariableValue* _programmingIndexedCV;// = NULL;
-  bool _read;// = true;
+  VariableValue* _programmingVar = nullptr;
+  CvValue* _programmingCV = nullptr;
+  VariableValue* _programmingIndexedCV = nullptr;
+  bool _read = true;
 
   // busy during read, write operations
-  /*private*/ bool _busy ;//= false;
-  /*private*/ int retry;// = 0;
+  /*private*/ bool _busy = false;
+  /*private*/ int retry = 0;
   /*private*/ QWidget* addDccAddressPanel(QDomElement e);
-  bool print;// = false;
+  bool print = false;
   PropertyChangeSupport* changeSupport;
   QString LAST_GRIDX;
   QString LAST_GRIDY;
   void setCvListFromTable();
   QVector<Attribute*> getAttributeList(QDomElement e);
   bool isCvTablePane;// = false;
+  QDomElement pane;
+  QDomElement modelElem;
+
+private slots:
+  void ctorContinue();
+
 protected:
   /*protected*/ CvTableModel* _cvModel;
   /*protected*/ IndexedCvTableModel* _indexedCvModel;
@@ -189,6 +199,7 @@ protected:
 
  friend class PaneProgFrame;
  friend class ThisProgPane;
+ friend class PaneProgPaneTest;
 };
 class MyQualifierAdder : public QualifierAdder
 {
@@ -198,7 +209,7 @@ class MyQualifierAdder : public QualifierAdder
 public:
     MyQualifierAdder(QWidget* c, PaneProgPane* self);
     protected:
-      /*protected*/ Qualifier* createQualifier(VariableValue* var, QString relation, QString value);
-      /*protected*/ void addListener(PropertyChangeListener* qc) ;
+      /*protected*/ Qualifier* createQualifier(VariableValue* var, QString relation, QString value) override;
+      /*protected*/ void addListener(PropertyChangeListener* qc) override;
 };
 #endif // PANEPROGPANE_H

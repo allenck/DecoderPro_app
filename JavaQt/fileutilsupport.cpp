@@ -1343,10 +1343,10 @@ public URL getURL(URI uri) {
     QString resource = "";
     for (QString searchPath : searchPaths)
     {
-        QFileInfo info(getProgramPath() + searchPath + File::separator + path);
+        QFileInfo info(/*getProgramPath() +*/ searchPath + File::separator + path);
         if(info.exists())
         {
-            resource = this->findURI( getProgramPath() + searchPath + File::separator + path);
+            resource = this->findURI( /*getProgramPath() +*/ searchPath + File::separator + path);
             if (resource != "") {
                 return resource;
             }

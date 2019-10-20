@@ -40,7 +40,7 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     slotmanager->readCV(CV1, p2);
     Assert::assertEquals("read message",
             "EF 0E 7C 23 00 00 00 00 00 0B 00 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString(), __FILE__, __LINE__);
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
 }
 
 //@Test
@@ -51,7 +51,7 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     slotmanager->readCV(CV1, p2);
     Assert::assertEquals("read message",
             "EF 0E 7C 13 00 00 00 00 00 01 00 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString(), __FILE__, __LINE__);
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
 }
 
 //@Test
@@ -62,7 +62,7 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     slotmanager->readCV(CV1, lstn);
     Assert::assertEquals("read message",
             "EF 0E 7C 2B 00 00 00 00 00 1C 00 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString(), __FILE__, __LINE__);
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
     Assert::assertEquals("one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("initial status", -999, status, __FILE__, __LINE__);
 
@@ -73,6 +73,8 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
 
     slotmanager->message(new LocoNetMessage(QVector<int>()<<0xB4<< 0x6F<< 0x01<< 0x25));
 //    JUnitUtil.waitFor(()->{return startedLongTimer;},"startedLongTimer not set");
+    ReleaseUntilO12* r12 = new ReleaseUntilO12(this);
+    JUnitUtil::waitFor(r12, "startedLongTimer not set", __FILE__, __LINE__);
     Assert::assertEquals("post-LACK status", -999, status, __FILE__, __LINE__);
     Assert::assertTrue("started long timer", startedLongTimer, __FILE__, __LINE__);
     Assert::assertFalse("didn't start short timer", startedShortTimer, __FILE__, __LINE__);
@@ -82,6 +84,8 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     log->debug("send E7 reply back");
     slotmanager->message(new LocoNetMessage(QVector<int>()<<0xE7<< 0x0E<< 0x7C<< 0x2B<< 0x00<< 0x00<< 0x02<< 0x47<< 0x00<< 0x1C<< 0x23<< 0x7F<< 0x7F<< 0x3B));
 //    JUnitUtil.waitFor(()->{return value == 35;},"value == 35 not set");
+    ReleaseUntilO11* r11 = new ReleaseUntilO11(this);
+    JUnitUtil::waitFor(r11, "value == 35 not set", __FILE__, __LINE__);
     log->debug("checking..");
     Assert::assertEquals("reply status", 0, status, __FILE__, __LINE__);
     Assert::assertEquals("reply value", 35, value, __FILE__, __LINE__);
@@ -96,7 +100,7 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     slotmanager->readCVOpsMode(CV1, p2, 4 * 128 + 0x23, true);
     Assert::assertEquals("read message",
             "EF 0E 7C 2F 00 04 23 00 00 0B 00 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString(), __FILE__, __LINE__);
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
 }
 
 //@Test
@@ -106,7 +110,7 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     slotmanager->readCVOpsMode(CV1, p2, 22, false);
     Assert::assertEquals("read message",
             "EF 0E 7C 2F 00 00 16 00 00 0B 00 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString(), __FILE__, __LINE__);
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
 }
 
 //@Test
@@ -118,7 +122,7 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     slotmanager->writeCV(CV1, val2, p3);
     Assert::assertEquals("write message",
             "EF 0E 7C 63 00 00 00 00 00 0B 22 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString(), __FILE__, __LINE__);
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
 }
 
 //@Test
@@ -130,7 +134,7 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     slotmanager->writeCV(CV1, val2, p3);
     Assert::assertEquals("write message",
             "EF 0E 7C 63 00 00 00 00 00 0B 22 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString(), __FILE__, __LINE__);
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
 }
 
 //@Test
@@ -142,7 +146,7 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     slotmanager->writeCV(CV1, val2, p3);
     Assert::assertEquals("write message",
             "EF 0E 7C 53 00 00 00 00 00 01 22 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString(), __FILE__, __LINE__);
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
 }
 
 //@Test
@@ -154,7 +158,7 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     slotmanager->writeCV(CV1, val2, p3);
     Assert::assertEquals("write message",
             "EF 0E 7C 6B 00 00 00 00 00 0B 22 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString(), __FILE__, __LINE__);
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
 }
 
 //@Test
@@ -168,7 +172,7 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("initial status", -999, status, __FILE__, __LINE__);
     Assert::assertEquals("write message",
             "EF 0E 7C 6B 00 00 00 00 00 1E 10 7F 7F 00",
-            lnis->outbound.at(lnis->outbound.size() - 1)->toString(), __FILE__, __LINE__);
+            lnis->outbound.at(lnis->outbound.size() - 1)->toString().toUpper(), __FILE__, __LINE__);
     Assert::assertEquals("one message sent", 1, lnis->outbound.size(), __FILE__, __LINE__);
     Assert::assertEquals("initial status", -999, status, __FILE__, __LINE__);
 
@@ -178,6 +182,8 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     startedLongTimer = false;
     slotmanager->message(new LocoNetMessage(QVector<int>()<<0xB4<< 0x6F<< 0x01<< 0x25));
 //    JUnitUtil.waitFor(()->{return startedShortTimer;},"startedShortTimer not set");
+    ReleaseUntilO10* r10 = new ReleaseUntilO10(this);
+    JUnitUtil::waitFor(r10, "startedShortTimer not set", __FILE__, __LINE__);
     Assert::assertEquals("post-LACK status", -999, status, __FILE__, __LINE__);
     Assert::assertTrue("started short timer", startedShortTimer, __FILE__, __LINE__);
     Assert::assertFalse("didn't start long timer", startedLongTimer, __FILE__, __LINE__);
@@ -188,6 +194,8 @@ LnDeferProgrammerTest::LnDeferProgrammerTest(QObject *parent) : QObject(parent)
     slotmanager->message(new LocoNetMessage(QVector<int>()<<0xE7<< 0x0E<< 0x7C<< 0x6B<< 0x00<< 0x00<< 0x02<< 0x47<< 0x00<< 0x1E<< 0x10<< 0x7F<< 0x7F<< 0x4A));
     Assert::assertEquals("no immediate reply", -999, status, __FILE__, __LINE__);
 //    JUnitUtil.waitFor(()->{return value == -1;},"value == -1 not set");
+    ReleaseUntilO13* r13 = new ReleaseUntilO13(this);
+    JUnitUtil::waitFor(r13, "value == -1 not set", __FILE__, __LINE__);
     log->debug("checking..");
     Assert::assertEquals("reply status", 0, status, __FILE__, __LINE__);
     Assert::assertEquals("reply value", -1, value, __FILE__, __LINE__);

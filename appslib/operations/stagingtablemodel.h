@@ -12,6 +12,7 @@ namespace Operations
   StagingTableModel(QObject* parent = 0);
   /*public*/ void initTable(JTable* table, Location* location);
   /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
  public slots:
    /*public*/ void propertyChange(PropertyChangeEvent* e);
 

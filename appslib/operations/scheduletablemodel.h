@@ -28,6 +28,8 @@ namespace Operations
   /*public*/ void setMatchMode(bool mode);
   /*public*/ Track* getTrack();
   /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+  /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+  /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

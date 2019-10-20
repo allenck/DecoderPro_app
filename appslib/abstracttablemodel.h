@@ -30,6 +30,9 @@ public:
     /*public*/ virtual void fireTableRowsDeleted(int firstRow, int lastRow);
     /*public*/ virtual void fireTableCellUpdated(int row, int column);
     /*public*/ virtual void fireTableChanged(TableModelEvent* e = 0);
+ /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+ /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+
  void setTable(JTable*);
  void setPersistentButtons();
  JTable* table();

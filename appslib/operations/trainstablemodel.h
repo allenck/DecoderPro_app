@@ -63,6 +63,8 @@ namespace Operations
   void initTable(JTable* table, TrainsTableFrame* frame);
   /*public*/ void dispose();
   /*public*/ QColor getRowColor(int row) const;
+  /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+  /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
 
 public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

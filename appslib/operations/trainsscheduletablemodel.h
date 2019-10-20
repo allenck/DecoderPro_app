@@ -30,6 +30,7 @@ namespace Operations
   /*public*/ TrainSchedule* getSchedule(int col) const;
   void initTable(JTable* table, TrainsScheduleTableFrame* frame);
 
+
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);
 

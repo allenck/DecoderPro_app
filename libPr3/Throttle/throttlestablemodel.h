@@ -28,6 +28,8 @@ public slots:
     /*public*/ void notifyConsistAddressChosen(int newAddress, bool isLong);
     /*public*/ void notifyConsistAddressReleased(int address, bool isLong);
     /*public*/ void notifyConsistAddressThrottleFound(DccThrottle* throttle) ;
+ /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+ /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
 
 signals:
 

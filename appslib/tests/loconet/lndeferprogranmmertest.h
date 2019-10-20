@@ -5,6 +5,7 @@
 #include "exceptions.h"
 #include "slotmanager.h"
 #include "proglistener.h"
+#include "junitutil.h"
 
 class Logger;
 class LocoNetInterfaceScaffold;
@@ -47,6 +48,11 @@ private:
 
  friend class ProgListenerO4;
  friend class SlotManagerO3;
+ friend class ReleaseUntilO10;
+ friend class ReleaseUntilO11;
+ friend class ReleaseUntilO12;
+ friend class ReleaseUntilO13;
+
 };
 
 class SlotManagerO3 : public SlotManager {
@@ -86,6 +92,42 @@ public:
         test->status = stat;
         test->value = val;
     }
+};
+
+class ReleaseUntilO10 : public ReleaseUntil
+{
+    Q_OBJECT
+    LnDeferProgrammerTest* lompt;
+public:
+    ReleaseUntilO10(LnDeferProgrammerTest* lompt) {this->lompt = lompt;}
+    bool ready() throw (Exception) {return lompt->startedShortTimer;}
+};
+
+class ReleaseUntilO11 : public ReleaseUntil
+{
+    Q_OBJECT
+    LnDeferProgrammerTest* lompt;
+public:
+    ReleaseUntilO11(LnDeferProgrammerTest* lompt) {this->lompt = lompt;}
+    bool ready() throw (Exception) {return lompt->value == 35;}
+};
+
+class ReleaseUntilO12 : public ReleaseUntil
+{
+    Q_OBJECT
+    LnDeferProgrammerTest* lompt;
+public:
+    ReleaseUntilO12(LnDeferProgrammerTest* lompt) {this->lompt = lompt;}
+    bool ready() throw (Exception) {return lompt->startedLongTimer;}
+};
+
+class ReleaseUntilO13 : public ReleaseUntil
+{
+    Q_OBJECT
+    LnDeferProgrammerTest* lompt;
+public:
+    ReleaseUntilO13(LnDeferProgrammerTest* lompt) {this->lompt = lompt;}
+    bool ready() throw (Exception) {return (lompt->value == -1);}
 };
 
 #endif // LnDeferProgrammerTest_H

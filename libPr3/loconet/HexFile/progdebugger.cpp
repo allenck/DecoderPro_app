@@ -143,6 +143,8 @@ void ProgDebugger::PDRunnable1::run()
  {
    if(qobject_cast<AbstractProgrammerFacade*>(l))
     ((AbstractProgrammerFacade*)l)->programmingOpReply(-1, 0);
+   else    if(qobject_cast<CvValue*>(l))
+    ((CvValue*)l)->programmingOpReply(-1, 0);
    else
      l->programmingOpReply(-1, 0);   // 0 is OK status
  }
@@ -268,7 +270,12 @@ void ProgDebugger::PDRunnable3::run()
      ((AbstractProgrammerFacade*)l)->programmingOpReply(retval, 0);
     }
     else
-    l->programmingOpReply(retval, 0);   // 0 is OK status
+     if(qobject_cast<CvValue*>(l))
+     {
+      ((CvValue*)l)->programmingOpReply(retval, 0);
+     }
+    else
+     l->programmingOpReply(retval, 0);   // 0 is OK status
 }
 
 //@Override

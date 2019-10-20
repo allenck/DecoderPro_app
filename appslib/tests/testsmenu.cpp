@@ -32,8 +32,9 @@
 #include "tests/misc/opsmodedelayedprogrammerfacadetestaction.h"
 #include "tests/misc/verifywriteprogrammerfacadetestaction.h"
 #include "tests/misc/twoindextcsprogrammerfacadetestaction.h"
-
-
+#include "tests/misc/paneprogpanetestaction.h"
+#include "tests/misc/paneprogframetestaction.h"
+#include "tests/misc/decoderfiletestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -86,12 +87,17 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     proxyMenu->addAction(new ProxySensorManagerTestAction(this));
     proxyMenu->addAction(new ProxyReporterManagerTestAction(this));
     proxyMenu->addAction(new ProxyLightManagerTestAction(this));
-    QMenu* miscMenu = new QMenu(tr("Misc ..."));
-    addMenu(miscMenu);
-    miscMenu->addAction(new AddressedHighCvProgranmmerFacadeTestAction(this));
-    miscMenu->addAction(new MultiIndexProgrammerFacadeTestAction(this));
-    miscMenu->addAction(new OpsModeDelayedProgrammerFacadeTestAction(this));
-    miscMenu->addAction(new TwoIndexTcsProgrammerFacadeTestAction(this));
-    miscMenu->addAction(new VerifyWriteProgrammerFacadeTestAction(this));
+    QMenu* facadeMenu = new QMenu(tr("Programmer facades ..."));
+    addMenu(facadeMenu);
+    facadeMenu->addAction(new AddressedHighCvProgranmmerFacadeTestAction(this));
+    facadeMenu->addAction(new MultiIndexProgrammerFacadeTestAction(this));
+    facadeMenu->addAction(new OpsModeDelayedProgrammerFacadeTestAction(this));
+    facadeMenu->addAction(new TwoIndexTcsProgrammerFacadeTestAction(this));
+    facadeMenu->addAction(new VerifyWriteProgrammerFacadeTestAction(this));
+    QMenu* paneleMenu = new QMenu(tr("Panels ..."));
+    addMenu(paneleMenu);
+    paneleMenu->addAction(new PaneProgFrameTestAction(this));
+    paneleMenu->addAction(new PaneProgPaneTestAction(this));
+    paneleMenu->addAction(new DecoderFileTestAction(this));
 
 }

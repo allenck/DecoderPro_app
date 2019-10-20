@@ -12,9 +12,10 @@
  *
  * @author    Bob Jacobsen Copyright (C) 2010
  */
-/*public*/ /*interface*/ class LIBPR3SHARED_EXPORT PaneContainer : public QObject
+/*public*/ /*interface*/ class LIBPR3SHARED_EXPORT PaneContainer //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
+public:
     /*public*/ virtual bool isBusy() {return false;}
 
     /*public*/ virtual void paneFinished() {}
@@ -36,4 +37,5 @@
     friend class PaneProgPane;
     friend class ThisProgPane;
 };
+Q_DECLARE_INTERFACE(PaneContainer, "PaneContainer")
 #endif // PANECONTAINER_H

@@ -34,6 +34,8 @@ public:
  QVariant headerData(int section, Qt::Orientation orientation, int role) const;
  Qt::ItemFlags flags(const QModelIndex &index) const;
  QVariant data(const QModelIndex &index, int role) const;
+ /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+ /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
 
 };
 

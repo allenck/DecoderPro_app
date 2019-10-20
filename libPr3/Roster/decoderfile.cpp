@@ -3,6 +3,7 @@
 #include "resettablemodel.h"
 #include "fileutil.h"
 #include "xmlinclude.h"
+#include "loggerfactory.h"
 
 QString DecoderFile::fileLocation = tr("decoders")+QDir::separator();
 //QString DecoderFile::fileLocation = "/home/allen/NetBeansProjects/jmri/xml/decoders/";
@@ -32,7 +33,6 @@ DecoderFile::DecoderFile(QObject *parent) :
 
 /*public*/ DecoderFile::DecoderFile(QString mfg, QString mfgID, QString model, QString lowVersionID, QString highVersionID, QString family, QString filename, int numFns, int numOuts, QDomElement decoder, QObject *parent) : XmlFile(parent)
 {
- log = new Logger("DecoderFile");
  log->setDebugEnabled(true);
  _numFns  = -1;
  _numOuts  = -1;
@@ -357,104 +357,108 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
  {
   QDomElement e = list.at(i).toElement();
   log->debug(tr("processing variable CV=%1, item='%2' ").arg(e.attribute("CV")).arg(e.attribute("item")));
-        try {
-            // if its associated with an inconsistent number of functions,
-            // skip creating it
-            if (getNumFunctions() >= 0 && e.attribute("minFn") != NULL
-                && getNumFunctions() < (e.attribute("minFn")).toInt() )
-                continue;
-            // if its associated with an inconsistent number of outputs,
-            // skip creating it
-            if (getNumOutputs() >= 0 && e.attribute("minOut") != NULL
-                && getNumOutputs() < (e.attribute("minOut")).toInt() )
-                continue;
-            // if not correct productID, skip
-            if (!isProductIDok(e, extraInclude, extraExclude)) continue;
-        } catch (Exception ex) {
-            log->warn("Problem parsing minFn or minOut in decoder file, variable "
-                     +e.attribute("item")+" exception: "/*+ex*/);
-        }
-        // load each row
-        variableModel->setRow(index++, e);
-    }
-    // load constants to table
+  try
+  {
+   // if its associated with an inconsistent number of functions,
+   // skip creating it
+   if (getNumFunctions() >= 0 && e.attribute("minFn") != NULL
+       && getNumFunctions() < (e.attribute("minFn")).toInt() )
+       continue;
+   // if its associated with an inconsistent number of outputs,
+   // skip creating it
+   if (getNumOutputs() >= 0 && e.attribute("minOut") != NULL
+       && getNumOutputs() < (e.attribute("minOut")).toInt() )
+       continue;
+   // if not correct productID, skip
+   if (!isProductIDok(e, extraInclude, extraExclude)) continue;
+  } catch (Exception ex) {
+      log->warn("Problem parsing minFn or minOut in decoder file, variable "
+               +e.attribute("item")+" exception: "/*+ex*/);
+  }
+  // load each row
+  variableModel->setRow(index++, e);
+ }
+ // load constants to table
 //    iter = decoderElement.getChild("variables")
 //                                .getDescendants(new ElementFilter("constant"));
-    list = variablesElement.elementsByTagName("constant");
-    index = 0;
+ list = variablesElement.elementsByTagName("constant");
+ index = 0;
 //    while (iter.hasNext()) {
 //        QDomElement e = iter.next();
-    for(int i=0; i < list.size(); i++)
-    {
-     QDomElement e = list.at(i).toElement();
-        try {
-            // if its associated with an inconsistent number of functions,
-            // skip creating it
-      bool bOk;
-            if (getNumFunctions() >= 0 && e.attribute("minFn") != NULL
-                && getNumFunctions() < (e.attribute("minFn")).toInt(&bOk) )
-                continue;
-            if(!bOk) throw Exception();
-            // if its associated with an inconsistent number of outputs,
-            // skip creating it
-            if (getNumOutputs() >= 0 && e.attribute("minOut") != NULL
-                && getNumOutputs() < (e.attribute("minOut")).toInt(&bOk) )
-                continue;
-            if(!bOk) throw Exception();
-            // if not correct productID, skip
-            if (!isProductIDok(e, extraInclude, extraExclude)) continue;
-        } catch (Exception ex) {
-            log->warn("Problem parsing minFn or minOut in decoder file, variable "
-                     +e.attribute("item")+" exception: "+ex.getMessage());
-        }
-        // load each row
-        variableModel->setConstant(e);
-    }
+ for(int i=0; i < list.size(); i++)
+ {
+  QDomElement e = list.at(i).toElement();
+     try {
+         // if its associated with an inconsistent number of functions,
+         // skip creating it
+   bool bOk;
+         if (getNumFunctions() >= 0 && e.attribute("minFn") != NULL
+             && getNumFunctions() < (e.attribute("minFn")).toInt(&bOk) )
+             continue;
+         if(!bOk) throw Exception();
+         // if its associated with an inconsistent number of outputs,
+         // skip creating it
+         if (getNumOutputs() >= 0 && e.attribute("minOut") != NULL
+             && getNumOutputs() < (e.attribute("minOut")).toInt(&bOk) )
+             continue;
+         if(!bOk) throw Exception();
+         // if not correct productID, skip
+         if (!isProductIDok(e, extraInclude, extraExclude)) continue;
+     } catch (Exception ex) {
+         log->warn("Problem parsing minFn or minOut in decoder file, variable "
+                  +e.attribute("item")+" exception: "+ex.getMessage());
+     }
+     // load each row
+     variableModel->setConstant(e);
+ }
 //    iter = decoderElement.getChild("variables")
 //                                .getDescendants(new ElementFilter("ivariable"));
-    list = variablesElement.elementsByTagName("ivariable");
-    index = 0;
-    int row = 0;
+ list = variablesElement.elementsByTagName("ivariable");
+ index = 0;
+ int row = 0;
 //    while (iter.hasNext()) {
 //        QDomElement e = iter.next();
-    for(int i=0; i < list.count(); i++)
-    {
-        QDomElement e = list.at(i).toElement();
-        try {
-            if (log->isDebugEnabled()) log->debug("process iVar "+e.attribute("CVname"));
-            // if its associated with an inconsistent number of functions,
-            // skip creating it
-            bool bOk;
-            if (getNumFunctions() >= 0 && e.attribute("minFn") != NULL
-                && getNumFunctions() < (e.attribute("minFn")).toInt(&bOk) )
-            {
-                log->debug("skip due to num functions");
-                continue;
-            }
-            if(!bOk) throw Exception();
-            // if its associated with an inconsistent number of outputs,
-            // skip creating it
-            if (getNumOutputs() >= 0 && e.attribute("minOut") != NULL
-                && getNumOutputs() < (e.attribute("minOut")).toInt(&bOk) ) {
-                log->debug("skip due to num outputs");
-                continue;
-                if(!bOk) throw Exception();
-            }
-        } catch (Exception ex) {
-            log->warn("Problem parsing minFn or minOut in decoder file, variable "
-                     +e.attribute("item")+" exception: "+ex.getMessage());
-        }
-        // load each row
-        if (variableModel->setIndxRow(row, e, _productID) == row) {
-            // if this one existed, we will not update the row count.
-            row++;
-        }
-        else
-        {
-            if (log->isDebugEnabled())
-            {
-             log->debug("skipping entry for "+e.attribute("CVname"));
-            }
+ for(int i=0; i < list.count(); i++)
+ {
+  QDomElement e = list.at(i).toElement();
+  try
+  {
+   if (log->isDebugEnabled()) log->debug("process iVar "+e.attribute("CVname"));
+   // if its associated with an inconsistent number of functions,
+   // skip creating it
+   bool bOk = true;
+   if (getNumFunctions() >= 0 && e.attribute("minFn") != ""
+       && (getNumFunctions() < (e.attribute("minFn")).toInt(&bOk)) && bOk)
+   {
+    log->debug("skip due to num functions");
+    continue;
+   }
+   if(!bOk) throw Exception();
+   // if its associated with an inconsistent number of outputs,
+   // skip creating it
+   if (getNumOutputs() >= 0 && e.attribute("minOut") != NULL
+       && (getNumOutputs() < (e.attribute("minOut")).toInt(&bOk)) && bOk )
+   {
+       log->debug("skip due to num outputs");
+       continue;
+   }
+   if(!bOk) throw Exception();
+  }
+  catch (Exception ex) {
+   log->warn("Problem parsing minFn or minOut in decoder file, variable "
+            +e.attribute("item")+" exception: "+ex.getMessage());
+  }
+  // load each row
+  if (variableModel->setIndxRow(row, e, _productID) == row) {
+   // if this one existed, we will not update the row count.
+   row++;
+  }
+  else
+  {
+   if (log->isDebugEnabled())
+   {
+    log->debug("skipping entry for "+e.attribute("CVname"));
+   }
   }
  }
  //for (Element e : variablesElement.getChildren("variables")) {
@@ -503,3 +507,4 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
 }
 
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="MS_SHOULD_BE_FINAL") // script access
+/*private*/ /*final*/ /*static*/ Logger* DecoderFile::log = LoggerFactory::getLogger("DecoderFile");

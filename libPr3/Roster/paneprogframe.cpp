@@ -355,7 +355,7 @@ PaneProgFrame::~PaneProgFrame()
    decoderRoot = df->rootFromName(DecoderFile::fileLocation+df->getFileName());
   else
   {
-   QStringList slist = QStringList() << FileUtil::getUserFilesPath();
+   QStringList slist = QStringList() << FileUtil::getUserFilesPath() << FileUtil::getProgramPath()+ "xml";
    //decoderRoot = df->rootFromName(XmlFile::xmlDir()+DecoderFile::fileLocation+df->getFilename());
    decoderRoot = df->rootFromName(FileUtil::findURL(DecoderFile::fileLocation+ df->getFileName(),slist).path());
    }
@@ -372,7 +372,8 @@ PaneProgFrame::~PaneProgFrame()
    return;
   XInclude* xinclude = new XInclude();
   File* f;
-  QUrl url = QUrl(DecoderFile::fileLocation+df->getFileName());
+  QStringList slist = QStringList() << FileUtil::getUserFilesPath() << FileUtil::getProgramPath()+ "xml";
+  QUrl url = QUrl(FileUtil::findURL(DecoderFile::fileLocation+df->getFileName(),slist));
   if(ret == JOptionPane::YES_OPTION)
   {
    xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ DecoderFile::fileLocation+ df->getFileName()), this);
@@ -1187,7 +1188,7 @@ void PaneProgFrame::enableReadButtons()
  readAllButton->setToolTip(tr("Read highlighted values on all sheets from decoder. Warning: may take a long time!"));
  // check with CVTable programmer to see if read is possible
  if (cvModel!= NULL && cvModel->getProgrammer()!= NULL
-         && !(((SlotManager*)cvModel->getProgrammer())->getCanRead()))
+         && !(cvModel->getProgrammer()->getCanRead()))
  {
   // can't read, disable the button
   readChangesButton->setEnabled(false);

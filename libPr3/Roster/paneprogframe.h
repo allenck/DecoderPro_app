@@ -9,7 +9,7 @@
 #include <QMenu>
 //#include "panecontainer.h"
 #include "swingshutdowntask.h"
-
+#include "jpanel.h"
 
 namespace Ui {
 class PaneProgFrame;
@@ -34,10 +34,11 @@ class FileDirtyTask;
 class RosterEntryPane;
 class PaneProgPane;
 #include "libPr3_global.h"
-class LIBPR3SHARED_EXPORT PaneProgFrame : public JmriJFrame //, PaneContainer
+#include "panecontainer.h"
+class LIBPR3SHARED_EXPORT PaneProgFrame : public JmriJFrame, public PaneContainer
 {
     Q_OBJECT
-
+    Q_INTERFACES(PaneContainer)
 public:
     //explicit ProgramPanel(QWidget *parent = 0);
     PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntry, QString frameTitle, QString programmerFile, Programmer* pProg, bool opsMode, QWidget* parent = 0);
@@ -181,6 +182,7 @@ protected slots:
  friend class DecoderDirtyTask;
  friend class FileDirtyTask;
  friend class PaneServiceProgFrame;
+ friend class PaneProgFrameTest;
 };
 class DecoderDirtyTask : public SwingShutDownTask
 {

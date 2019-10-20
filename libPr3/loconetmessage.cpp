@@ -17,7 +17,6 @@ LocoNetMessage::LocoNetMessage(int len, QObject *parent) :
 }
 LocoNetMessage::~LocoNetMessage()
 {
- delete log;
 }
 /**
  * Create a message with specified contents

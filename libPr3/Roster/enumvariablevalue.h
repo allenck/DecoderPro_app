@@ -131,11 +131,6 @@ public:
  _var->addPropertyChangeListener((PropertyChangeListener*)this);
  connect(_var, SIGNAL(valueChanged(int)), this, SLOT(originalPropertyChanged()));
 }
-/*public*/ void propertyChange(PropertyChangeEvent* e)
- {
-  if (log->isDebugEnabled()) log->debug("VarComboBox saw property change: "+e->getPropertyName());
-  originalPropertyChanged(e);
- }
 
 
 /*public*/ void dispose() {
@@ -143,6 +138,13 @@ public:
     _l = NULL;
     _var = NULL;
 }
+public slots:
+/*public*/ void propertyChange(PropertyChangeEvent* e)
+ {
+  if (log->isDebugEnabled()) log->debug("VarComboBox saw property change: "+e->getPropertyName());
+  originalPropertyChanged(e);
+ }
+private:
 QColor getBackground()
 {
  //return getBackground();

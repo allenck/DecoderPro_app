@@ -42,6 +42,8 @@ namespace Operations {
   /*public*/ QVariant data(const QModelIndex &index, int role) const;
   /*public*/ void dispose();
   /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+  /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+  /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

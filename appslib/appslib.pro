@@ -557,7 +557,13 @@ SOURCES += appslib.cpp \
     tests/misc/verifywriteprogrammerfacadetest.cpp \
     tests/misc/verifywriteprogrammerfacadetestaction.cpp \
     tests/misc/twoindextcsprogrammerfacadetest.cpp \
-    tests/misc/twoindextcsprogrammerfacadetestaction.cpp
+    tests/misc/twoindextcsprogrammerfacadetestaction.cpp \
+    tests/misc/paneprogpanetest.cpp \
+    tests/misc/paneprogpanetestaction.cpp \
+    tests/misc/paneprogframetest.cpp \
+    tests/misc/decoderfiletest.cpp \
+    tests/misc/paneprogframetestaction.cpp \
+    tests/misc/decoderfiletestaction.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -1064,7 +1070,13 @@ HEADERS += appslib.h\
     tests/misc/verifywriteprogrammerfacadetest.h \
     tests/misc/verifywriteprogrammerfacadetestaction.h \
     tests/misc/twoindextcsprogrammerfacadetest.h \
-    tests/misc/twoindextcsprogrammerfacadetestaction.h
+    tests/misc/twoindextcsprogrammerfacadetestaction.h \
+    tests/misc/paneprogpanetest.h \
+    tests/misc/paneprogpanetestaction.h \
+    tests/misc/paneprogframetest.h \
+    tests/misc/decoderfiletest.h \
+    tests/misc/paneprogframetestaction.h \
+    tests/misc/decoderfiletestaction.h
 
 unix:!symbian {
     maemo5 {

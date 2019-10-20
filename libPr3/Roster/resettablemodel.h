@@ -24,6 +24,8 @@ public:
     /*public*/ void actionPerformed(ActionEvent* /*e*/);
     /*public*/ void indexedWrite() ;
     /*public*/ void dispose();
+    /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+    /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
 
 signals:
 

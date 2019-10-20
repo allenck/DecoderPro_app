@@ -21,6 +21,7 @@ namespace Operations
   /*public*/ QVariant data(const QModelIndex &index, int role) const;
   /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
   /*public*/ void dispose();
+
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) ;
  private:

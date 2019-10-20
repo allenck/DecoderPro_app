@@ -355,14 +355,20 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
 //@Override
 /*public*/ QList<ProgrammingMode*> LnOpsModeProgrammer::getSupportedModes()
 {
- QList<ProgrammingMode*> ret =  QList<ProgrammingMode*>();
+ QVector<ProgrammingMode*> ret =  QVector<ProgrammingMode*>();//  (4,nullptr);
+ // ACK Added these
+ ret.append(ProgrammingMode::DIRECTBYTEMODE);
+ ret.append(ProgrammingMode::PAGEMODE);
+ ret.append(ProgrammingMode::REGISTERMODE);
+ ret.append(ProgrammingMode::ADDRESSMODE);
+ //
  ret.append(ProgrammingMode::OPSBYTEMODE);
  ret.append(LnProgrammerManager::LOCONETOPSBOARD);
  ret.append(LnProgrammerManager::LOCONETSV1MODE);
  ret.append(LnProgrammerManager::LOCONETSV2MODE);
  ret.append(LnProgrammerManager::LOCONETBDOPSWMODE);
  ret.append(LnProgrammerManager::LOCONETCSOPSWMODE);
- return ret;
+ return ret.toList();
 }
 
 ///**

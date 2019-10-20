@@ -21,7 +21,7 @@ private:
     //ProgModeSelector*  modePane;
     Logger* log;
 protected:
-    /*protected*/ QWidget* getModePane();
+    /*protected*/ QWidget *getModePane() override;
  class MyProgServiceModeComboBox : public ProgServiceModeComboBox
  {
    PaneServiceProgFrame* frame;

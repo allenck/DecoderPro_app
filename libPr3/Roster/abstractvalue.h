@@ -61,10 +61,10 @@ public:
     /** Define color to denote DIFF state.  null means to use default for the component */
     static /*final*/ QColor COLOR_DIFF;// = Color.red.brighter();
 
-    /*public*/ void setToRead(bool state);
-    /*public*/ bool isToRead();
-    /*public*/ void setToWrite(bool state);
-    /*public*/ bool isToWrite();
+    /*public*/ virtual void setToRead(bool state);
+    /*public*/ virtual bool isToRead();
+    /*public*/ virtual void setToWrite(bool state);
+    /*public*/ virtual bool isToWrite();
 
     /*public*/ static QString stateNameFromValue(int val);
     /*public*/ void setAvailable(bool available);

@@ -66,6 +66,8 @@ namespace Operations
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);
   /*public*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/);
+  /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+  /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
 
  private:
   CarManager* manager;// = CarManager.instance(); // There is only one manager

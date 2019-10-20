@@ -11,9 +11,10 @@ class JmriJFrame;
 class RosterMediaPane;
 class FunctionLabelPane;
 class RosterEntry;
-class PrintRosterEntry : public PaneContainer
+class PrintRosterEntry : public QObject, PaneContainer
 {
     Q_OBJECT
+ Q_INTERFACES(PaneContainer)
 public:
     explicit PrintRosterEntry(QObject *parent = 0);
     /*public*/ PrintRosterEntry(RosterEntry* rosterEntry, JmriJFrame* parent, QString filename);

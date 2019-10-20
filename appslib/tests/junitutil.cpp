@@ -23,6 +23,7 @@
 #include "layoutblockmanager.h"
 #include <QApplication>
 #include "internalsensormanager.h"
+#include "joptionpane.h"
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
@@ -371,7 +372,7 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
   {
    if (condition->ready())
    {
-    log->debug(tr("returm delay = %1").arg(delay));
+    log->debug(tr("return delay = %1").arg(delay));
     return;
    }
 #if 0
@@ -1357,16 +1358,25 @@ static void checkThreads() {
 
 /*public*/ /*static*/ void JUnitUtil::runTests(QObject* test, QStringList testList)
 {
- foreach(QString testName, testList)
+ try
  {
-  testClassName = testName;
-  log->info(tr("begin '%1'").arg(testName));
-  if(!QMetaObject::invokeMethod(test, "setUp", Qt::DirectConnection))
-   throw Exception(tr("can't invoke 'setup' method when running test '%1").arg(testName));
-  QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
-  log->info(tr("end '%1'").arg(testName));
-  if(!QMetaObject::invokeMethod(test, "tearDown", Qt::DirectConnection))
-   throw Exception(tr("can't invoke 'tearDown' method when running test '%1").arg(testName));
+  foreach(QString testName, testList)
+  {
+   testClassName = testName;
+   log->info(tr("begin '%1'").arg(testName));
+   if(!QMetaObject::invokeMethod(test, "setUp", Qt::DirectConnection))
+    throw Exception(tr("can't invoke 'setup' method when running test '%1").arg(testName));
+   QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
+   log->info(tr("end '%1'").arg(testName));
+   if(!QMetaObject::invokeMethod(test, "tearDown", Qt::DirectConnection))
+    throw Exception(tr("can't invoke 'tearDown' method when running test '%1").arg(testName));
+  }
+  log->info(tr("Tests complete!"));
+ }
+ catch(Exception ex)
+ {
+  JOptionPane::showMessageDialog(nullptr, tr("Unhandled exception while running test '%1'\n%2")
+     .arg(testClassName).arg(ex.getMessage()), "Unhandled Exception",  JOptionPane::WARNING_MESSAGE);
  }
 }
 /*private*/ /*final*/ /*static*/ Logger* JUnitUtil::log = LoggerFactory::getLogger("JUnitUtil");

@@ -8,7 +8,6 @@ MultiIndexProgrammerFacadeTestAction::MultiIndexProgrammerFacadeTestAction(QObje
  : AbstractAction(tr("MultiIndexProgrammerFacade test"), parent)
 {
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
-
 }
 
 

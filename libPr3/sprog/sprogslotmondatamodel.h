@@ -31,6 +31,9 @@ namespace Sprog
   /*public*/ void configureTable(JTable* slotTable);
   /*public*/ void showAllSlots(bool val);
   /*public*/ void dispose();
+  /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+  /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+
 
  public slots:
   /*public*/ /*synchronized*/ void notifyChangedSlot(SprogSlot* s);

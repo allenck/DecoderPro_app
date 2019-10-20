@@ -28,6 +28,8 @@
 #include "jlabel.h"
 #include <QFont>
 #include "slotmanager.h"
+#include "jpanel.h"
+#include <QTimer>
 
 class Attribute
 {
@@ -96,6 +98,7 @@ PaneProgPane::PaneProgPane(QWidget *parent) :
  retry = 0;
  print = false;
  container = NULL;
+ log->setDebugEnabled(true);
 }
 /**
  * Provides the individual panes for the TabbedPaneProgrammer.
@@ -194,6 +197,14 @@ PaneProgPane::PaneProgPane(QWidget *parent) :
  _varModel = varModel;
  this->rosterEntry = rosterEntry;
 
+ this->pane = pane;
+ this->modelElem = modelElem;
+ QTimer::singleShot(1,this,SLOT(ctorContinue()));
+}
+
+void PaneProgPane::ctorContinue() // continue ctor after subclasses are built.
+{
+
  // when true a cv table with compare was loaded into pane
  _cvTable = false;
 
@@ -218,7 +229,7 @@ PaneProgPane::PaneProgPane(QWidget *parent) :
  QString nameFmt = pane.attribute("nameFmt");
  if (!nameFmt.isNull() && nameFmt==("item"))
  {
-  log->debug("Pane "+name+" will show items, not labels, from decoder file");
+  log->debug("Pane "+mName+" will show items, not labels, from decoder file");
   showItem = true;
  }
  // put the columns left to right in a panel
@@ -548,7 +559,7 @@ void PaneProgPane::enableConfirmButtons()
 
 /*private*/ void PaneProgPane::prepGlassPane(JToggleButton* activeButton)
 {
- ((PaneProgFrame*)container)->prepGlassPane(activeButton);
+ container->prepGlassPane(activeButton);
 }
 
 void PaneProgPane::enableButtons(bool stat)
@@ -610,9 +621,9 @@ void PaneProgPane::enableButtons(bool stat)
   readAllButton->setSelected(true);
   readAllButton->setEnabled(true);
  }
- if (((PaneProgFrame*)container)->isBusy() == false)
+ if (container->isBusy() == false)
  {
-  ((PaneProgFrame*)container)->enableButtons(false);
+  container->enableButtons(false);
  }
  setToRead(justChanges, true);
  varListIndex = 0;
@@ -647,7 +658,7 @@ void PaneProgPane::enableButtons(bool stat)
  */
 void PaneProgPane::setToRead(bool justChanges, bool startProcess)
 {
- if (!(((PaneProgFrame*)container)->isBusy()) ||  // the frame has already setToRead
+ if (!(container->isBusy()) ||  // the frame has already setToRead
        (!startProcess))
  {  // we want to setToRead false if the pane's process is being stopped
   for (int i = 0; i < varList->size(); i++)
@@ -719,8 +730,9 @@ void PaneProgPane::setToRead(bool justChanges, bool startProcess)
  */
 void PaneProgPane::setToWrite(bool justChanges, bool startProcess)
 {
- if (log->isDebugEnabled()) log->debug(QString("start setToWrite method with ")+(justChanges?"true":"false")+","+(startProcess?"true":"false"));
- if (/*!container->isBusy() ||*/  // the frame has already setToWrite
+ if (log->isDebugEnabled())
+  log->debug(QString("start setToWrite method with ")+(justChanges?"true":"false")+","+(startProcess?"true":"false"));
+ if (!container->isBusy() ||  // the frame has already setToWrite
   (!startProcess))
  {  // we want to setToRead false if the pane's process is being stopped
   log->debug("about to start setToWrite of varList");
@@ -793,7 +805,8 @@ void PaneProgPane::executeRead(VariableValue* var)
 {
  setBusy(true);
  // var->setToRead(false);  // variables set this themselves
- if (_programmingVar != NULL) log->error("listener already set at read start");
+ if (_programmingVar != NULL)
+  log->error("listener already set at read start");
  _programmingVar = var;
  _read = true;
  // get notified when that state changes so can repeat
@@ -873,7 +886,8 @@ bool PaneProgPane::nextRead()
   {  // always read UNKNOWN state
    if (log->isDebugEnabled()) log->debug("start read of cv "+cvNum);
    setBusy(true);
-   if (_programmingCV != NULL) log->error("listener already set at read start");
+   if (_programmingCV != NULL)
+    log->error("listener already set at read start");
    _programmingCV = _cvModel->getCvByRow(cvNum);
    _read = true;
    // get notified when that state changes so can repeat
@@ -903,7 +917,8 @@ bool PaneProgPane::nextRead()
         (_indexedCvModel->getCvByRow(indexedCvListIndex-1))->cvName();
    if (log->isDebugEnabled()) log->debug(sz);
    setBusy(true);
-   if (_programmingIndexedCV != NULL) log->error("listener already set at read start");
+   if (_programmingIndexedCV != NULL)
+    log->error("listener already set at read start");
    _programmingIndexedCV = _varModel->getVariable(indxVarNum);
    _read = true;
    // get notified when that state changes so can repeat
@@ -922,7 +937,7 @@ bool PaneProgPane::nextRead()
  readChangesButton->setSelected(false);
  readAllButton->setSelected(false);  // reset both, as that's final state we want
  setBusy(false);
- ((PaneProgFrame*)container)->paneFinished();
+ container->paneFinished();
  return false;
 }
 
@@ -997,7 +1012,7 @@ bool PaneProgPane::nextConfirm()
  confirmChangesButton->setSelected(false);
  confirmAllButton->setSelected(false);  // reset both, as that's final state we want
  setBusy(false);
- ((PaneProgFrame*)container)->paneFinished();
+ container->paneFinished();
  return false;
 }
 
@@ -1041,20 +1056,20 @@ bool PaneProgPane::nextConfirm()
  enableButtons(false);
  if (justChanges == true)
  {
-        writeChangesButton->setEnabled(true);
-        writeChangesButton->setSelected(true);
-    } else {
-        writeAllButton->setSelected(true);
-        writeAllButton->setEnabled(true);
-    }
-    if (((PaneProgFrame*)container)->isBusy() == false) {
-        ((PaneProgFrame*)container)->enableButtons(false);
-    }
-    setToWrite(justChanges, true);
-    varListIndex = 0;
-    cvListIndex = 0;
-    indexedCvListIndex = 0;
-    log->debug("end prepWritePane");
+     writeChangesButton->setEnabled(true);
+     writeChangesButton->setSelected(true);
+ } else {
+     writeAllButton->setSelected(true);
+     writeAllButton->setEnabled(true);
+ }
+ if (container->isBusy() == false) {
+     container->enableButtons(false);
+ }
+ setToWrite(justChanges, true);
+ varListIndex = 0;
+ cvListIndex = 0;
+ indexedCvListIndex = 0;
+ log->debug("end prepWritePane");
 }
 
 bool PaneProgPane::nextWrite()
@@ -1086,11 +1101,13 @@ bool PaneProgPane::nextWrite()
   CvValue* cv = _cvModel->getCvByRow( cvNum );
   if (log->isDebugEnabled()) log->debug("nextWrite cv index "+QString::number(cvNum)+" state "+QString::number(cv->getState()));
   cvListIndex++;
-  if (cv->isToWrite() || cv->getState()== CvValue::UNKNOWN)
+  if (cv->isToWrite() /*|| cv->getState()== CvValue::UNKNOWN*/)
   {
-   if (log->isDebugEnabled()) log->debug("start write of cv index "+cvNum);
+   if (log->isDebugEnabled())
+    log->debug("start write of cv index "+cvNum);
    setBusy(true);
-   if (_programmingCV != NULL) log->error("listener already set at write start");
+   if (_programmingCV != NULL)
+    log->error("listener already set at write start");
    _programmingCV = _cvModel->getCvByRow(cvNum);
    _read = false;
    // get notified when that state changes so can repeat
@@ -1119,8 +1136,8 @@ bool PaneProgPane::nextWrite()
    if (log->isDebugEnabled()) log->debug(sz);
 
    setBusy(true);
-   if (_programmingIndexedCV != NULL) log->error(
-        "listener already set at read start");
+   if (_programmingIndexedCV != NULL)
+    log->error("listener already set at read start");
    _programmingIndexedCV = _varModel->getVariable(indxVarNum);
    _read = true;
    // get notified when that state changes so can repeat
@@ -1167,9 +1184,9 @@ bool PaneProgPane::nextWrite()
   confirmAllButton->setSelected(true);
   confirmAllButton->setEnabled(true);
  }
- if (((PaneProgFrame*)container)->isBusy() == false)
+ if (container->isBusy() == false)
  {
-  ((PaneProgFrame*)container)->enableButtons(false);
+  container->enableButtons(false);
  }
  // we can use the read prep since confirm has to read first
  setToRead(justChanges, true);
@@ -1225,7 +1242,7 @@ bool PaneProgPane::nextWrite()
 {
  bool oldBusy = _busy;
  _busy = busy;
- if (!busy && !(((PaneProgFrame*)container)->isBusy()))
+ if (!busy && !(container->isBusy()))
  {
   enableButtons(true);
  }
@@ -1244,12 +1261,13 @@ bool PaneProgPane::nextWrite()
 {
  emit notifyPropertyChange(e);
  // check for the right event & condition
- if (_programmingVar == NULL && _programmingCV == NULL&& _programmingIndexedCV == NULL)
+ if (_programmingVar == NULL && _programmingCV == NULL && _programmingIndexedCV == NULL)
  {
   log->warn("unexpected propertyChange: "+e->getPropertyName());
   return;
  }
- else if (log->isDebugEnabled()) log->debug("property changed: \""+e->getPropertyName()
+ else if (log->isDebugEnabled())
+  log->debug("property changed: \""+e->getPropertyName()
                                                +"\" new value: "+e->getNewValue().toString());
 
  // find the right way to handle this
@@ -1366,7 +1384,7 @@ void PaneProgPane::restartProgramming()
   if (log->isDebugEnabled()) log->debug("No operation to restart");
   if (isBusy())
   {
-   ((PaneProgFrame*)container)->paneFinished();
+   container->paneFinished();
    setBusy(false);
   }
  }
@@ -1383,7 +1401,7 @@ void PaneProgPane::restartProgramming()
  indexedCvListIndex = indexedCvList->size();
  if (isBusy())
  {
-  ((PaneProgFrame*)container)->paneFinished();
+  container->paneFinished();
   setBusy(false);
  }
 // ((SlotManager*)_programmingCV->mProgrammer)->removeSlotListener((SlotListener*)_programmingCV);
@@ -1637,7 +1655,7 @@ void PaneProgPane::restartProgramming()
  * Create a single column from the JDOM column QDomElement
  */
 //@SuppressWarnings("unchecked")
-/*public*/ QWidget* PaneProgPane::newColumn(QDomElement  element, bool showStdName, QDomElement  modelElem)
+/*public*/ QWidget *PaneProgPane::newColumn(QDomElement  element, bool showStdName, QDomElement  modelElem)
 {
  // create a panel to add as a new column or row
  QWidget* c = new QWidget();
@@ -3386,11 +3404,11 @@ void PaneProgPane::On_readChangesButton_clicked() // SLOT[]
  if(readChangesButton->isSelected())
  {
   readChangesButton->setText(tr("Stop Read changes on sheet"));
-  if (((PaneProgFrame*)container)->isBusy() == false)
+  if (container->isBusy() == false)
   {
    prepReadPane(true);
    prepGlassPane(readChangesButton);
-   ((PaneProgFrame*)container)->getBusyGlassPane()->setVisible(true);
+   container->getBusyGlassPane()->setVisible(true);
    readPaneChanges();
   }
  }
@@ -3398,7 +3416,7 @@ void PaneProgPane::On_readChangesButton_clicked() // SLOT[]
  {
   stopProgramming();
   readChangesButton->setText(tr("Read changes on sheet"));
-  if (((PaneProgFrame*)container)->isBusy())
+  if (container->isBusy())
   {
    readChangesButton->setEnabled(false);
   }
@@ -3411,11 +3429,11 @@ void PaneProgPane::On_readAllButton_clicked() // SLOT[]
  if(readAllButton->isSelected())
  {
   readAllButton->setText(tr("Stop Read full sheet"));
-  if (((PaneProgFrame*)container)->isBusy() == false)
+  if (container->isBusy() == false)
   {
    prepReadPane(false);
    prepGlassPane(readAllButton);
-   ((PaneProgFrame*)container)->getBusyGlassPane()->setVisible(true);
+   container->getBusyGlassPane()->setVisible(true);
    readPaneAll();
   }
  }
@@ -3423,7 +3441,7 @@ void PaneProgPane::On_readAllButton_clicked() // SLOT[]
  {
   stopProgramming();
   readAllButton->setText(tr("Read full sheet"));
-  if (((PaneProgFrame*)container)->isBusy())
+  if (container->isBusy())
   {
    readAllButton->setEnabled(false);
   }
@@ -3435,12 +3453,12 @@ void PaneProgPane::On_writeChangesButton_clicked()
  if(writeChangesButton->isSelected())
  {
   writeChangesButton->setText(tr("Stop Write changes on sheet"));
-  if (((PaneProgFrame*)container)->isBusy() == false)
+  if (container->isBusy() == false)
   {
     prepWritePane(true);
     prepGlassPane(writeChangesButton);
-    if(((PaneProgFrame*)container)->getBusyGlassPane() != NULL)
-     ((PaneProgFrame*)container)->getBusyGlassPane()->setVisible(true);
+    if(container->getBusyGlassPane() != NULL)
+     container->getBusyGlassPane()->setVisible(true);
     writePaneChanges();
   }
  }
@@ -3448,7 +3466,7 @@ void PaneProgPane::On_writeChangesButton_clicked()
  {
   stopProgramming();
   writeChangesButton->setText(tr("Write changes on sheet"));
-  if (((PaneProgFrame*)container)->isBusy())
+  if (container->isBusy())
   {
    writeChangesButton->setEnabled(false);
   }
@@ -3457,14 +3475,15 @@ void PaneProgPane::On_writeChangesButton_clicked()
 void PaneProgPane::On_writeAllButton_clicked()
 {
  //if (e.getStateChange() == ItemEvent.SELECTED)
+ log->debug(tr("writeAll clicked"));
  if(writeAllButton->isSelected())
  {
   writeAllButton->setText(tr("Stop Write full sheet"));
-  if (((PaneProgFrame*)container)->isBusy() == false)
+  if (container->isBusy() == false)
   {
     prepWritePane(false);
     prepGlassPane(writeAllButton);
-    ((PaneProgFrame*)container)->getBusyGlassPane()->setVisible(true);
+    container->getBusyGlassPane()->setVisible(true);
     writePaneAll();
   }
  }
@@ -3472,7 +3491,7 @@ void PaneProgPane::On_writeAllButton_clicked()
  {
   stopProgramming();
   writeAllButton->setText(tr("Write full sheet"));
-  if (((PaneProgFrame*)container)->isBusy())
+  if (container->isBusy())
   {
    writeAllButton->setEnabled(false);
   }
@@ -3483,11 +3502,11 @@ void PaneProgPane::On_confirmChangesButtonClicked()
  if(confirmChangesButton->isSelected())
  {
   confirmChangesButton->setText(tr("Stop Compare changes on sheet"));
-  if (((PaneProgFrame*)container)->isBusy() == false)
+  if (container->isBusy() == false)
   {
     prepConfirmPane(true);
     prepGlassPane(confirmChangesButton);
-    ((PaneProgFrame*)container)->getBusyGlassPane()->setVisible(true);
+    container->getBusyGlassPane()->setVisible(true);
     confirmPaneChanges();
   }
  }
@@ -3495,7 +3514,7 @@ void PaneProgPane::On_confirmChangesButtonClicked()
  {
   stopProgramming();
   confirmChangesButton->setText(tr("Compare changes on sheet"));
-  if (((PaneProgFrame*)container)->isBusy())
+  if (container->isBusy())
   {
    confirmChangesButton->setEnabled(false);
   }
@@ -3506,12 +3525,12 @@ void PaneProgPane::On_confirmAllButtonClicked()
  if(confirmAllButton->isSelected())
  {
   confirmAllButton->setText(tr("Stop Compare full sheet"));
-  if (((PaneProgFrame*)container)->isBusy() == false)
+  if (container->isBusy() == false)
   {
     prepConfirmPane(false);
     prepGlassPane(confirmAllButton);
-    if(((PaneProgFrame*)container)->getBusyGlassPane()!= NULL)
-     ((PaneProgFrame*)container)->getBusyGlassPane()->setVisible(true);
+    if(container->getBusyGlassPane()!= NULL)
+     container->getBusyGlassPane()->setVisible(true);
     confirmPaneAll();
   }
  }
@@ -3519,7 +3538,7 @@ void PaneProgPane::On_confirmAllButtonClicked()
  {
   stopProgramming();
   confirmAllButton->setText(tr("Compare full sheet"));
-  if (((PaneProgFrame*)container)->isBusy())
+  if (container->isBusy())
   {
    confirmAllButton->setEnabled(false);
   }

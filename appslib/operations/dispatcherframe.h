@@ -257,6 +257,9 @@ public:
     /*public*/ int getPreferredWidth(int col);
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+ /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+ /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+
 };
 
 /**

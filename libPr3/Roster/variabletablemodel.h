@@ -74,6 +74,7 @@ public:
     /*public*/ void setProgrammer(Programmer* p) ;
     /*public*/ void resetStatus(int newStatus);
 
+
 signals:
 
 public slots:

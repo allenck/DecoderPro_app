@@ -20,7 +20,7 @@ private:
     QWidget* modePane;
     Logger* log;
 protected:
-    /*protected*/ QWidget* getModePane();
+    /*protected*/ QWidget *getModePane() override;
     /*protected*/ void pickProgrammerMode(/*@NonNull*/ QDomElement programming);
 
 };

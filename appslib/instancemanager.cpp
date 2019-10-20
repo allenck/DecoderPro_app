@@ -1047,7 +1047,7 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
   */
 //template<class T>
  /*public*/  void InstanceManager::clear(/*@Nonnull*/ /*Class<T>*/QString type) {
-     log->trace(tr("Clearing managers of %1").arg(type));
+//     log->trace(tr("Clearing managers of %1").arg(type));
      QObjectList* toClear = new QObjectList(*getInstances(type));
      //toClear.forEach((o) ->
      foreach(QObject* o, *toClear)

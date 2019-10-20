@@ -39,6 +39,9 @@ namespace Operations
   /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
   /*public*/ QVariant data(const QModelIndex &index, int role) const;
   /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+  /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+  /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);
 

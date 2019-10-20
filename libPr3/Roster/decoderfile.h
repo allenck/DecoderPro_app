@@ -73,7 +73,7 @@ public slots:
     QList<LocoAddress::Protocol>* protocols;// = null;
     /*private*/ void setSupportedProtocols();
     /*private*/ static bool isInList(QString include, QString productID);
-    Logger* log;
+    static Logger* log;
     int nextCvStoreIndex;// = 0;
     int nextICvStoreIndex;// = 0;
 

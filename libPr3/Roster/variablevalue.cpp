@@ -172,6 +172,7 @@ void VariableValue::updatedTextField() {
 /*public*/ VariableValue::VariableValue(QString label, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cvNum, QString mask, QMap<QString, CvValue*>* v, QLabel* status, QString item, QObject *parent)
  : AbstractValue(parent)
 {
+ logit->setDebugEnabled(true);
     _label = label;
     _comment = comment;
     _cvName = cvName;
@@ -257,7 +258,7 @@ void VariableValue::updatedTextField() {
  }
  if (_state != state /*|| _state == UNKNOWN*/)
  {
-  //prop->firePropertyChange("State", QVariant(_state), QVariant(state));
+  prop->firePropertyChange("State", QVariant(_state), QVariant(state));
   //emit propertyChange(new PropertyChangeEvent(this, "State", QVariant(_state), QVariant(state)));
  emit propertyChange(new PropertyChangeEvent(this, "State", QVariant(oldstate), QVariant(state)));}
 }

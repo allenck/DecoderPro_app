@@ -48,6 +48,8 @@ public:
 
     /*public*/ void setProgrammer(Programmer* p);
     /*public*/  QMap<QString, CvValue*>* allIndxCvMap();
+    /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+    /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
 
 signals:
 
