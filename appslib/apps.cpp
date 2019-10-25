@@ -152,13 +152,15 @@ bool Apps::configDeferredLoadOK = false;
 
  splash(false);
  splash(true, true);
-
+ log->trace("splash screens up, about to setButtonSpace");
  setButtonSpace();
 #ifdef SCRIPTING_ENABLED
     setJynstrumentSpace();
 #endif
 
+    log->trace("setLogo");
     Application::setLogo(logo());
+    log->trace("setURL");
     Application::setURL(line2());
 #if 0
     // Enable proper snapping of JSliders
@@ -167,31 +169,6 @@ bool Apps::configDeferredLoadOK = false;
     // Prepare font lists
     prepareFontLists();
 #endif
- // install shutdown manager
- //InstanceManager::instance()->setShutDownManager(new DefaultShutDownManager());
-
- // install shutdown manager
- InstanceManager::setDefault("ShutDownManager", new DefaultShutDownManager());
-
- // add the default shutdown task to save blocks
- // as a special case, register a ShutDownTask to write out blocks
- ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(new WriteBlocksShutdownTask("Writing Blocks") ); //->
-//            _register(new AbstractShutDownTask("Writing Blocks") {
-//                //@Override
-//                /*public*/ bool execute() {
-//                    // Save block values prior to exit, if necessary
-//                    log->debug("Start writing block info");
-//                    try {
-//                        new BlockValueFile().writeBlockValues();
-//                    } //catch (org.jdom2.JDOMException jde) { log->error("Exception writing blocks: {}", jde); }
-//                    catch (IOException ioe) {
-//                        log->error("Exception writing blocks: {}", ioe);
-//                    }
-
-//                    // continue shutdown
-//                    return true;
-//                }
-//            });
 
  // Get configuration profile
  // Needs to be done before loading a ConfigManager or UserPreferencesManager
@@ -251,30 +228,55 @@ bool Apps::configDeferredLoadOK = false;
 //            log->error(ex.getMessage());
 //  }
  }
-// try
-// {
+ try
+ {
   ProfileManagerDialog::getStartingProfile(sp);
   // Manually setting the configFilename property since calling
   // Apps.setConfigFilename() does not reset the system property
   configFilename = FileUtil::getProfilePath() +   /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml";
   System::setProperty("org.jmri.Apps.configFilename", /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml");
-  if(ProfileManager::getDefault()->getActiveProfile() != nullptr)
+  Profile* profile = ProfileManager::getDefault()->getActiveProfile();
+  if(profile != nullptr)
   {
    log->info(tr("Starting with profile %1").arg(  ProfileManager::defaultManager()->getActiveProfile()->getId()));
-//  }
-//  catch (IOException ex)
   }
-  else
-  {
+  else {
+   log->info("Starting without a profile");
+  }
+  // rapid language set; must follow up later with full setting as part of preferences
+  //apps.gui.GuiLafPreferencesManager.setLocaleMinimally(profile);
+
+ }
+ catch (IOException ex)
+ {
    log->info("Profiles not configurable. Using fallback per-application configuration. Error: {}"/*, ex.getMessage()*/);
-  }
-//  ConfigXmlManager* cm;
-  // Install configuration manager and Swing error handler
-//  if((cm =(ConfigXmlManager*)InstanceManager::configureManagerInstance()) == NULL)
-//  {
-//   ConfigXmlManager* cm = new ConfigXmlManager();
-//   InstanceManager::setConfigureManager(cm);
-//  }
+ }
+
+ // add the default shutdown task to save blocks
+ // as a special case, register a ShutDownTask to write out blocks
+ ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->
+         _register(new WriteBlocksShutdownTask("Writing Blocks"));
+
+// _register(new AbstractShutDownTask("Writing Blocks"));
+
+// {
+//             @Override
+//             public boolean execute() {
+//                 // Save block values prior to exit, if necessary
+//                 log.debug("Start writing block info");
+//                 try {
+//                     new BlockValueFile().writeBlockValues();
+//                 } //catch (org.jdom2.JDOMException jde) { log.error("Exception writing blocks: {}", jde); }
+//                 catch (IOException ioe) {
+//                     log.error("Exception writing blocks: {}", ioe.getMessage());
+//                 }
+
+//                 // continue shutdown
+//                 return true;
+//             }
+//         });
+
+ // Install configuration manager and Swing error handler
   ConfigureManager* cm = (ConfigureManager*)InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
 
   ConfigXmlManager::setErrorHandler(new DialogErrorHandler());

@@ -222,8 +222,13 @@ void AppsBase::init()
   {
    // Manually setting the configFilename property since calling
    // Apps.setConfigFilename() does not reset the system property
-//            System.setProperty("org.jmri.Apps.configFilename", Profile.CONFIG_FILENAME);
-   log->info(tr("Starting with profile %1").arg( ProfileManager::getDefault()->getActiveProfile()->getId()));
+   System::setProperty("org.jmri.Apps.configFilename", Profile::CONFIG_FILENAME);
+   Profile* profile = ProfileManager::getDefault()->getActiveProfile();
+   if (profile != nullptr) {
+       log->info(tr("Starting with profile %1").arg(profile->getId()));
+   } else {
+       log->info("Starting without a profile");
+   }
   }
   else
   {

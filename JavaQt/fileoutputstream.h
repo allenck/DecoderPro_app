@@ -1,11 +1,11 @@
 #ifndef FILEOUTPUTSTREAM_H
 #define FILEOUTPUTSTREAM_H
 #include "exceptions.h"
-#include <QDataStream>
+#include <QTextStream>
 
 class File;
 class QFile;
-class FileOutputStream : public QDataStream
+class FileOutputStream : public QTextStream
 {
 public:
  FileOutputStream();

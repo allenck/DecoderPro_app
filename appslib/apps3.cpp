@@ -22,6 +22,7 @@
 #include <QToolBar>
 #include "firsttimestartupwizard.h"
 #include "firsttimestartupwizardaction.h"
+#include "joptionpane.h"
 
 //Apps3::Apps3(QObject *parent) :
 //  AppsBase(parent)
@@ -330,6 +331,7 @@
     } else {
         profileFile = new File(profileFilename);
     }
+
     ProfileManager::defaultManager()->setConfigFile(profileFile);
     // See if the profile to use has been specified on the command line as
     // a system property jmri.profile as a profile id.
@@ -338,32 +340,33 @@
     }
     // @see jmri.profile.ProfileManager#migrateToProfiles JavaDoc for conditions handled here
     if (!ProfileManager::defaultManager()->getConfigFile()->exists()) { // no profile config for this app
-        try {
-            if (ProfileManager::defaultManager()->migrateToProfiles(getConfigFileName())) { // migration or first use
-                // notify user of change only if migration occured
-                // TODO: a real migration message
-//                JOptionPane.showMessageDialog(sp,
-//                        Bundle.getMessage("ConfigMigratedToProfile"),
-//                        jmri.Application.getApplicationName(),
-//                        JOptionPane.INFORMATION_MESSAGE);
-             QMessageBox::information(sp, QApplication::applicationName(), tr("Please ensure that the User Files location and Roster location are correct."));
-            }
-        } catch (IOException ex) {
-//            JOptionPane.showMessageDialog(sp,
-//                    ex.getLocalizedMessage(),
-//                    jmri.Application.getApplicationName(),
-//                    JOptionPane.ERROR_MESSAGE);
-      //QMessageBox::critical(sp, tr("Error"), tr(""));
-            log->error(ex.getMessage()/*, ex*/);
-        } catch (IllegalArgumentException ex) {
-//            JOptionPane.showMessageDialog(sp,
-//                    ex.getLocalizedMessage(),
-//                    jmri.Application.getApplicationName(),
-//                    JOptionPane.ERROR_MESSAGE);
-            log->error(ex.getMessage()/*, ex*/);
-        }
+     log->trace(tr("profileFile %1 doesn't exist").arg(profileFile->toString()));
+     try
+     {
+      if (ProfileManager::defaultManager()->migrateToProfiles(getConfigFileName())) { // migration or first use
+          // notify user of change only if migration occured
+          // TODO: a real migration message
+          JOptionPane::showMessageDialog(sp,
+                  tr("Please ensure that the User Files location and Roster location are correct."),
+                  QApplication::applicationName(),
+                  JOptionPane::INFORMATION_MESSAGE);
+         }
+     } catch (IOException ex) {
+         JOptionPane::showMessageDialog(sp,
+                 ex.getLocalizedMessage(),
+                 QApplication::applicationName(),
+                 JOptionPane::ERROR_MESSAGE);
+         log->error(ex.getMessage()/*, ex*/);
+     } catch (IllegalArgumentException ex) {
+         JOptionPane::showMessageDialog(sp,
+                 ex.getLocalizedMessage(),
+                 QApplication::applicationName(),
+                 JOptionPane::ERROR_MESSAGE);
+         log->error(ex.getMessage()/*, ex*/);
+     }
     }
-    try {
+    try
+    {
         ProfileManagerDialog::getStartingProfile(sp);
         // Manually setting the configFilename property since calling
         // Apps.setConfigFilename() does not reset the system property

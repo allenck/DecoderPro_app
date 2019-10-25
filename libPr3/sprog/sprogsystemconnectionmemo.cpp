@@ -213,27 +213,27 @@ void SprogSystemConnectionMemo::common(SprogConstants::SprogMode sm)
 
 //@Override
 //@SuppressWarnings("unchecked")
-/*public*/  QObject* SprogSystemConnectionMemo::get(QString t) {
+/*public*/  Manager *SprogSystemConnectionMemo::get(QString t) {
     if (getDisabled()) {
         return NULL;
     }
     if (t == ("GlobalProgrammerManager")) {
-        return (QObject*) getProgrammerManager();
+        return  (Manager*)getProgrammerManager();
     }
     if (t == ("AddressedProgrammerManager")) {
-        return (QObject*) getProgrammerManager();
+        return  (Manager*)getProgrammerManager();
     }
     if (t == ("PowerManager")) {
-        return (QObject*) getPowerManager();
+        return  (Manager*)getPowerManager();
     }
     if (t == ("ThrottleManager")) {
-        return (QObject*) getThrottleManager();
+        return  (Manager*)getThrottleManager();
     }
     if (t == ("TurnoutManager")) {
-        return (QObject*) getTurnoutManager();
+        return  getTurnoutManager();
     }
     if (t == ("CommandStation")) {
-        return (QObject*) getCommandStation();
+        return (Manager*) getCommandStation();
     }
     return SystemConnectionMemo::get(t);
 }

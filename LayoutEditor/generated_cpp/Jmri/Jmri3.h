@@ -6,6 +6,7 @@
 #include <dccthrottle.h>
 #include <listselectionmodel.h>
 #include <locoaddress.h>
+#include <manager.h>
 #include <namedbean.h>
 #include <propertychangeevent.h>
 #include <propertychangelistener.h>
@@ -1338,7 +1339,7 @@ virtual void customEvent(QEvent*  event);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual QObject*  get(QString  T);
+virtual Manager*  get(QString  T);
 virtual bool  getDisabled();
 virtual void notifyPropertyChangeListener(QString  property, QVariant  oldValue, QVariant  newValue);
 virtual bool  provides(QString  c);
@@ -1358,7 +1359,7 @@ inline void promoted_notifyPropertyChangeListener(QString  property, QVariant  o
 inline void promoted_removeFromActionList() { this->removeFromActionList(); }
 inline void py_q__register() { SystemConnectionMemo::_register(); }
 inline void py_q_dispose() { SystemConnectionMemo::dispose(); }
-inline QObject*  py_q_get(QString  T) { return SystemConnectionMemo::get(T); }
+inline Manager*  py_q_get(QString  T) { return SystemConnectionMemo::get(T); }
 inline bool  py_q_getDisabled() { return SystemConnectionMemo::getDisabled(); }
 inline void py_q_notifyPropertyChangeListener(QString  property, QVariant  oldValue, QVariant  newValue) { SystemConnectionMemo::notifyPropertyChangeListener(property, oldValue, newValue); }
 inline bool  py_q_provides(QString  c) { return SystemConnectionMemo::provides(c); }
@@ -1378,8 +1379,8 @@ void delete_SystemConnectionMemo(SystemConnectionMemo* obj) { delete obj; }
    void addToActionList(SystemConnectionMemo* theWrappedObject);
    void dispose(SystemConnectionMemo* theWrappedObject);
    void py_q_dispose(SystemConnectionMemo* theWrappedObject){  (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_dispose());}
-   QObject*  get(SystemConnectionMemo* theWrappedObject, QString  T);
-   QObject*  py_q_get(SystemConnectionMemo* theWrappedObject, QString  T){  return (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_get(T));}
+   Manager*  get(SystemConnectionMemo* theWrappedObject, QString  T);
+   Manager*  py_q_get(SystemConnectionMemo* theWrappedObject, QString  T){  return (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_get(T));}
    bool  getDisabled(SystemConnectionMemo* theWrappedObject);
    bool  py_q_getDisabled(SystemConnectionMemo* theWrappedObject){  return (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_getDisabled());}
    QString  getSystemPrefix(SystemConnectionMemo* theWrappedObject);

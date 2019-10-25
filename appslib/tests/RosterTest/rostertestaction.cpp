@@ -3,6 +3,7 @@
 #include "../assert1.h"
 #include "joptionpane.h"
 #include "loggerfactory.h"
+#include "junitutil.h"
 
 RosterTestAction::RosterTestAction( QObject* parent) : AbstractAction(tr("Roster Test"), parent)
 {
@@ -39,12 +40,7 @@ void RosterTestAction::actionPerformed()
              << "testProfileTwoPointReverse"
              << "testProfileTwoPointForwardGetThrottleSetting"
              << "testProfileTwoPointReverseGetThrottleSetting";
-        foreach(QString test, testList)
-        {
-         log->info(tr("begin '%1'").arg(test));
-         QMetaObject::invokeMethod(rt, test.toLocal8Bit(), Qt::DirectConnection);
-         log->info(tr("end '%1'").arg(test));
-        }
+        JUnitUtil::runTests(rt, testList);
     }
     catch (AssertionError er)
     {

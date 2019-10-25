@@ -182,8 +182,8 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
         return true;
  if (type == ("TurnoutManager"))
         return true;
-// if (type == ("LightManager"))
-//        return true;
+ if (type == ("LightManager"))
+        return true;
  if (type == ("ReporterManager"))
         return true;
  if (type == ("ConsistManager"))

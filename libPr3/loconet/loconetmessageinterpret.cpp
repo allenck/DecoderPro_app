@@ -662,8 +662,8 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
             default:
                 break;
         } // end switch over opcode type
-        return tr("Unable to parse LocoNet message.") +
-                tr("contents: %1").arg(l->toString());
+        return tr("Unable to parse LocoNet message.\n") +
+                tr("contents: %1").arg(l->toString().toUpper());
     }
 
 
@@ -1635,7 +1635,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
 
                  // get system and user names
                  QString reporterSystemName = reporterPrefix
-                         + ((l->getElement(5) & 0x1F) * 128 + l->getElement(6) + 1);
+                         + QString::number((l->getElement(5) & 0x1F) * 128 + l->getElement(6) + 1);
 
                  Reporter* reporter = ((ProxyReporterManager*) InstanceManager::getDefault("ReporterManager"))->provideReporter(reporterSystemName);
 
@@ -2104,7 +2104,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
          int type = l->getElement(1) & LnConstants::OPC_MULTI_SENSE_MSG;
 
          reporterSystemName = reporterPrefix
-                 + ((l->getElement(1) & 0x1F) * 128 + l->getElement(2) + 1);
+                 + QString::number((l->getElement(1) & 0x1F) * 128 + l->getElement(2) + 1);
 
                  Reporter* reporter = ((ProxyReporterManager*) InstanceManager::getDefault("ReporterManager"))->provideReporter(reporterSystemName);
          reporterUserName = "";

@@ -209,7 +209,7 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 
 //@SuppressWarnings("unchecked")
 //@Override
-/*public*/ QObject* InternalSystemConnectionMemo::get(/*Class<?>*/ QString className) {
+/*public*/ Manager *InternalSystemConnectionMemo::get(/*Class<?>*/ QString className) {
     if (getDisabled()) {
         return nullptr;
     }
@@ -217,20 +217,20 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
     if (!configured) configureManagers();
 
     if (className == ("ProgrammerManager")) {
-        return (ProgrammerManager*) getProgrammerManager();
+        return (Manager*)getProgrammerManager();
     }
     if (className== ("GlobalProgrammerManager")) {
-        return (GlobalProgrammerManager*) getProgrammerManager();
+        return (Manager*) getProgrammerManager();
     }
     if (className == ("AddressedProgrammerManager")) {
-        return (AddressedProgrammerManager*) getProgrammerManager();
+        return (Manager*) getProgrammerManager();
     }
 
     if (className == ("ThrottleManager")) {
-        return (ThrottleManager*) getThrottleManager();
+        return (Manager*) getThrottleManager();
     }
     if (className == ("PowerManager")) {
-        return (PowerManager*) getPowerManager();
+        return (Manager*) getPowerManager();
     }
     if (className == ("LightManager")) {
         return (LightManager*) getLightManager();
@@ -245,7 +245,7 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
         return (TurnoutManager*) getTurnoutManager();
     }
     if (className == ("ConsistManager")) {
-        return (ConsistManager*) getConsistManager();
+        return (Manager*) getConsistManager();
     }
 
     return nullptr; // nothing, by default

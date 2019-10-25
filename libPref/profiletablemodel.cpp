@@ -28,13 +28,13 @@
 }
 
 //@Override
-/*public*/ int ProfileTableModel::rowCount(const QModelIndex &parent) const
+/*public*/ int ProfileTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
  return ProfileManager::defaultManager()->getAllProfiles().size();
 }
 
 //@Override
-/*public*/ int ProfileTableModel::columnCount(const QModelIndex &parent) const
+/*public*/ int ProfileTableModel::columnCount(const QModelIndex &/*parent*/) const
 {
  return 3;
 }

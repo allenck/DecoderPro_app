@@ -49,7 +49,7 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
 
     // create test object with special implementation of the newColumn(String) operation
     colCount = 0;
-    PaneProgPaneO1* pane = new PaneProgPaneO1((PaneContainer*)pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr, this);
+    PaneProgPaneO1* pane = new PaneProgPaneO1(pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr, this);
 //    {
 //        @Override
 //        /*public*/ JPanel newColumn(QDomElement e, boolean a, QDomElement el) {
@@ -95,7 +95,7 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
 
     // create test object with special implementation of the newVariable(String) operation
     varCount = 0;
-    PaneProgPaneO2* pane = new PaneProgPaneO2((PaneContainer*)pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr, this, nullptr);
+    PaneProgPaneO2* pane = new PaneProgPaneO2(pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr, this, nullptr);
 //    {
 //        @Override
 //        /*public*/ void newVariable(QDomElement e, JComponent p, GridBagLayout g, GridBagConstraints c, boolean a) {
@@ -156,7 +156,7 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
     log->debug("Two elements loaded");
 
     // test by invoking
-    PaneProgPane* pane = new PaneProgPane((PaneContainer*)pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr);
+    PaneProgPane* pane = new PaneProgPane(pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr);
     qApp->processEvents();
     Assert::assertEquals("variable list length", 2, pane->varList->size(), __FILE__, __LINE__);
     Assert::assertEquals("1st variable index ", (1), pane->varList->at(0), __FILE__, __LINE__);
@@ -204,7 +204,7 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
     varModel->setRow(0, el0);
     varModel->setRow(1, el1);
 
-    PaneProgPane* progPane = new PaneProgPane((PaneContainer*)pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr);
+    PaneProgPane* progPane = new PaneProgPane(pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr);
     qApp->processEvents();
 
     p->resetCv(2, 20);
@@ -267,7 +267,7 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
     varModel->setRow(1, el1);
     log->debug("Two elements loaded");
 
-    PaneProgPane* progPane = new PaneProgPane((PaneContainer*)pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr);
+    PaneProgPane* progPane = new PaneProgPane(pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr);
     qApp->processEvents();
 
     p->resetCv(2, -1);

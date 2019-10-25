@@ -656,7 +656,7 @@ public slots:
      *
      * @param e encapsulates event information
      */
-    void contentsChanged(Manager::ManagerDataEvent/*<E>*/* e);
+    virtual void contentsChanged(Manager::ManagerDataEvent/*<E>*/* /*e*/) {}
 
     /**
      * Sent after the indices in the index0,index1 interval have been
@@ -664,7 +664,7 @@ public slots:
      *
      * @param e encapsulates the event information
      */
-    void intervalAdded(Manager::ManagerDataEvent/*<E>*/* e);
+     virtual void intervalAdded(Manager::ManagerDataEvent/*<E>*/* /*e*/) {}
 
     /**
      * Sent after the indices in the index0,index1 interval have been
@@ -672,6 +672,9 @@ public slots:
      *
      * @param e encapsulates the event information
      */
-    void intervalRemoved(Manager::ManagerDataEvent/*<E>*/* e);
+     virtual void intervalRemoved(Manager::ManagerDataEvent/*<E>*/* /*e*/) {}
+
+    // Providing Manager stuff
+
 };
 #endif // MANAGER_H

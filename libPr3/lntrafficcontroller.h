@@ -10,6 +10,8 @@ class LIBPR3SHARED_EXPORT LnTrafficController : public LocoNetInterface
  Q_OBJECT
 public:
  LnTrafficController(QObject* parent = nullptr);
+ /*public*/ LnTrafficController(LocoNetSystemConnectionMemo* memo, QObject *parent= nullptr);
+
  // Abstract methods for the LocoNetInterface
  /*public*/ void setSystemConnectionMemo(LocoNetSystemConnectionMemo* m);
  /*public*/ LocoNetSystemConnectionMemo* getSystemConnectionMemo();
@@ -87,7 +89,7 @@ signals:
 //    }
 private:
   static Logger* log;
-  LocoNetSystemConnectionMemo* memo;
+  LocoNetSystemConnectionMemo* memo = nullptr;
  protected:
   QVector<LocoNetListener*> listeners;
   int transmittedMsgCount;

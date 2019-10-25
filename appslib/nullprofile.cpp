@@ -1,9 +1,6 @@
 #include "nullprofile.h"
+#include "profilemanager.h"
 
-//NullProfile::NullProfile()
-//{
-
-//}
 /**
  * An empty JMRI application profile. Profiles allow a JMRI application to load
  * completely separate set of preferences at each launch without relying on host
@@ -66,8 +63,15 @@
     /*public*/ NullProfile::NullProfile(QString name, QString id, /*@Nonnull*/ File* path, QObject* parent) throw (IOException, IllegalArgumentException)
     : Profile(path, parent)
     {
-//        this(path, (null != id) ? id : ProfileManager.createUniqueId());
-//        this.setNameInConstructor(name);
+//      this(path, (null != id) ? id : ProfileManager.createUniqueId());
+      this->path = path;
+      if(id != "")
+      {
+       this->id = id;
+      }
+      else
+       this->id = ProfileManager::createUniqueId();
+      this->setNameInConstructor(name);
     }
 
     //@Override

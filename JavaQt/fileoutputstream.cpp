@@ -258,6 +258,7 @@ FileOutputStream::FileOutputStream()
         throw (FileNotFoundException)
     {
      qf = new QFile(name);
+     setDevice(qf);
      bool isOpen;
      if(append)
      {

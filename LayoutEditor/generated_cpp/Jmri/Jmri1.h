@@ -2961,7 +2961,6 @@ class PythonQtPublicPromoter_LnReporterManager : public LnReporterManager
 { public:
 inline void py_q_dispose() { LnReporterManager::dispose(); }
 inline QString  py_q_getEntryToolTip() { return LnReporterManager::getEntryToolTip(); }
-inline QString  py_q_getSystemPrefix() { return LnReporterManager::getSystemPrefix(); }
 inline Manager::NameValidity  py_q_validSystemNameFormat(QString  systemName) { return LnReporterManager::validSystemNameFormat(systemName); }
 };
 
@@ -2974,7 +2973,6 @@ void delete_LnReporterManager(LnReporterManager* obj) { delete obj; }
    void py_q_dispose(LnReporterManager* theWrappedObject){  (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_dispose());}
    int  getBitFromSystemName(LnReporterManager* theWrappedObject, QString  systemName);
    QString  py_q_getEntryToolTip(LnReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_getEntryToolTip());}
-   QString  py_q_getSystemPrefix(LnReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_getSystemPrefix());}
    Manager::NameValidity  py_q_validSystemNameFormat(LnReporterManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_validSystemNameFormat(systemName));}
    QString  validateSystemNameFormat(LnReporterManager* theWrappedObject, QString  systemName, QLocale  locale);
 };
@@ -3173,6 +3171,7 @@ void delete_LnSensorManager(LnSensorManager* obj) { delete obj; }
 class PythonQtShell_LnTrafficController : public LnTrafficController
 {
 public:
+    PythonQtShell_LnTrafficController(LocoNetSystemConnectionMemo*  memo, QObject*  parent = nullptr):LnTrafficController(memo, parent),_wrapper(NULL) {}
     PythonQtShell_LnTrafficController(QObject*  parent = nullptr):LnTrafficController(parent),_wrapper(NULL) {}
 
    ~PythonQtShell_LnTrafficController();
@@ -3206,6 +3205,7 @@ class PythonQtWrapper_LnTrafficController : public QObject
 { Q_OBJECT
 public:
 public slots:
+LnTrafficController* new_LnTrafficController(LocoNetSystemConnectionMemo*  memo, QObject*  parent = nullptr);
 LnTrafficController* new_LnTrafficController(QObject*  parent = nullptr);
 void delete_LnTrafficController(LnTrafficController* obj) { delete obj; } 
    int  getReceivedByteCount(LnTrafficController* theWrappedObject);

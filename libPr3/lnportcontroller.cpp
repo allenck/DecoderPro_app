@@ -10,7 +10,7 @@ LnPortController::LnPortController(LocoNetSystemConnectionMemo* connectionMemo, 
  mCanRead = true;
  mProgPowersOff = false;
  commandStationName = "<unknown>";
- commandStationType = NULL;
+ commandStationType = nullptr;
  mTurnoutNoRetry = false;
  mTurnoutExtraSpace = false;
 

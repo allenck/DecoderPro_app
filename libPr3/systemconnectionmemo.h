@@ -53,7 +53,7 @@ public:
  /**
   * Does this connection provide a manager of this type?
   */
- virtual QObject* get(QString T);
+ virtual Manager* get(QString T);
  virtual void dispose();
  virtual bool getDisabled();
  virtual void setDisabled(bool disabled);

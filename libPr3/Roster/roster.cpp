@@ -14,6 +14,7 @@
 #include "loggerfactory.h"
 #include "fileutilsupport.h"
 #include "userpreferencesmanager.h"
+#include "profilemanager.h"
 
 /** record the single instance of Roster **/
 //Roster* Roster::_instance = NULL;
@@ -188,28 +189,25 @@ Roster::Roster(QObject *parent) :
 }
 
 /**
- * Locate the single instance of Roster, loading it if need be.
+ * Get the roster for the profile returned by
+ * {@link ProfileManager#getActiveProfile()}.
  *
- * Calls {@link #getDefault() } to provide the single instance.
- *
- * @return The valid Roster object
+ * @return the roster for the active profile
  */
 /*public*/ /*static*/ /*synchronized*/ Roster* Roster::getDefault() {
-// return InstanceManager.getOptionalDefault(Roster.class).orElseGet(() -> {
-//            log.debug("Creating Roster default instance.");
-//            // Pass null to use defaults.
-//            return InstanceManager.setDefault(Roster.class, new Roster(null));
-//        });
- Roster* instance = static_cast<Roster*>(InstanceManager::getOptionalDefault("Roster"));
- if(instance != nullptr)
-   return instance;
-  else
- {
-  log->debug("Creating Roster default instance.");
-   return (Roster*)InstanceManager::setDefault("Roster", new Roster(""));
- }
+    return getRoster(ProfileManager::getDefault()->getActiveProfile());
 }
 
+/**
+ * Get the roster for the specified profile.
+ *
+ * @param profile the Profile to get the roster for
+ * @return the roster for the profile
+ */
+/*public*/ /*static*/ /*synchronized*/ /*@Nonnull*/
+Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
+    return ((RosterConfigManager*)InstanceManager::getDefault("RosterConfigManager"))->getRoster(profile);
+}
 
 /**
  * Provide a NULL (empty) roster instance

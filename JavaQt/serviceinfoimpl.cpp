@@ -65,17 +65,17 @@ QString ServiceInfoState::toString() {return "";}
         /*protected*/ void ServiceInfoState::setTask(DNSTask* task) {
             //super.setTask(task);
 #if 0
-            if ((this->_task == null) && _info.needTextAnnouncing()) {
+            if ((this->_task == nullptr) && _info->needTextAnnouncing()) {
                 this->lock();
                 try {
-                    if ((this->_task == null) && _info.needTextAnnouncing()) {
+                    if ((this->_task == nullptr) && _info->needTextAnnouncing()) {
                         if (this->_state.isAnnounced()) {
                             this->setState(DNSState.ANNOUNCING_1);
                             if (this->getDns() != null) {
                                 this->getDns().startAnnouncer();
                             }
                         }
-                        _info.setNeedTextAnnouncing(false);
+                        _info->setNeedTextAnnouncing(false);
                     }
                 } finally {
                     this->unlock();

@@ -20,7 +20,7 @@ public:
  /*public*/ RfidSensorManager* getSensorManager();
  /*public*/ RfidReporterManager* getReporterManager();
  /*public*/ bool provides(/*Class<?> */QString type);
- /*public*/ /*<T> */QObject* get(/*Class<?>*/QString T);
+ /*public*/ /*<T> */Manager* get(/*Class<?>*/QString T);
  /*public*/ void dispose();
 
 

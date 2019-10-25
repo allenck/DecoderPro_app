@@ -30754,6 +30754,10 @@ if (_wrapper) {
 }
   LnTrafficController::timerEvent(event0);
 }
+LnTrafficController* PythonQtWrapper_LnTrafficController::new_LnTrafficController(LocoNetSystemConnectionMemo*  memo, QObject*  parent)
+{ 
+return new PythonQtShell_LnTrafficController(memo, parent); }
+
 LnTrafficController* PythonQtWrapper_LnTrafficController::new_LnTrafficController(QObject*  parent)
 { 
 return new PythonQtShell_LnTrafficController(parent); }

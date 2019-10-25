@@ -177,6 +177,11 @@
 
 /*public*/ /*static*/ void Assert::assertEquals(QString message, QString expected, QString actual, QString file, int line)
 {
+ if(expected.endsWith("\n"))
+ {
+  if(expected.mid(0, expected.length()-1) == actual)
+   return;
+ }
  if(expected != actual)
      fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected).arg(actual), file, line);
 }
@@ -258,10 +263,15 @@ private static bool isEquals(Object expected, Object actual) {
 }
 #endif
 /*public*/ /*static*/ void Assert::assertEquals(QString actual, QString expected, QString file, int line) {
-if(expected != actual)
-{
-    fail(tr("Strings do not match: expected \"%1\" vs \"%2\"").arg(expected).arg(actual), file, line);
-}
+ if(expected.endsWith("\n"))
+ {
+  if(expected.mid(0, expected.length()-1) == actual)
+   return;
+ }
+ if(expected != actual)
+ {
+     fail(tr("Strings do not match: expected \"%1\" vs \"%2\"").arg(expected).arg(actual), file, line);
+ }
 }
 /*public*/ /*static*/ void Assert::assertEquals(bool expected, bool actual, QString file, int line) {
     if(expected != actual)

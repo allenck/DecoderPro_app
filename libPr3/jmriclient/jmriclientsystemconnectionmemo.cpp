@@ -192,7 +192,7 @@
 
 //@Override
 //@SuppressWarnings("unchecked")
-/*public*/  QObject *JMRIClientSystemConnectionMemo::get(QString T) {
+/*public*/  Manager *JMRIClientSystemConnectionMemo::get(QString T) {
     if (getDisabled()) {
         return nullptr;
     }

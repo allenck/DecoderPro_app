@@ -3,6 +3,8 @@
 #include "joptionpane.h"
 #include "assert1.h"
 #include "loggerfactory.h"
+#include "junitutil.h"
+
 
 RosterEntryTestAction::RosterEntryTestAction(QString text, QObject* parent) : AbstractAction(text, parent)
 {
@@ -38,12 +40,9 @@ void RosterEntryTestAction::actionPerformed()
         << "testAttributeList"
         << "testXmlAttributesLoadStore"
         << "testStoreAttribute";
-     foreach(QString test, testList)
-     {
-      log->info(tr("begin '%1'").arg(test));
-      QMetaObject::invokeMethod(ret, test.toLocal8Bit(), Qt::DirectConnection);
-      log->info(tr("end '%1'").arg(test));
-     }}
+
+    JUnitUtil::runTests(ret, testList);
+    }
     catch (AssertionError er)
     {
         JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);

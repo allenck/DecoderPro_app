@@ -23,6 +23,10 @@
 #include "vptr.h"
 #include "loggerfactory.h"
 #include "preferencespanel.h"
+#include "storexmluseraction.h"
+#include "jfilechooser.h"
+#include <QVector>
+#include "vptr.h"
 
 //JmriConfigurationManager::JmriConfigurationManager()
 //{
@@ -73,11 +77,10 @@
   InstanceManager::store(pp, "PreferencesManager");
  }
 #endif
-// if (ProfileManager::getDefault() == NULL)
-//  ProfileManagerHolder::manager = new ProfileManager();
-    if (ProfileManager::getDefault()->getActiveProfile() != NULL) {
-        this->legacy->setPrefsLocation(new File(ProfileManager::getDefault()->getActiveProfile()->getPath(), /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml"));
-    }
+ Profile* profile = ProfileManager::getDefault()->getActiveProfile();
+         if (profile != nullptr) {
+             this->legacy->setPrefsLocation(new File(profile->getPath(), Profile::CONFIG_FILENAME));
+         }
 #if 0
     if (!GraphicsEnvironment.isHeadless()) {
         ConfigXmlManager.setErrorHandler(new DialogErrorHandler());
@@ -254,76 +257,38 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
      } else if (this->initializationExceptions->value(provider) != NULL)
      {
          Exception *ex = this->initializationExceptions->value(provider);
-//         QString localizedMessage = ex->getLocalizedMessage();
-//         errors->append(localizedMessage);
+         QString localizedMessage = ex->getLocalizedMessage();
+         errors->append(localizedMessage);
      }
     } //);
-    JList* list = NULL;
-    if (errors->size() == 1) {
-//                        list = *errors->at(0);
-    } else {
-        list = new JList(*errors);
-    }
-    QStringList* errorList = errors;
+    QVariant list;
+        if (errors->size() == 1) {
+            list = errors->at(0);
+        } else {
+         QVector<QString> v = QVector<QString>(errors->size(),"");
+            list = VPtr<JList>::asQVariant(new JList(*errors));
+        }
 
-    if (isUnableToConnect)
-    {
-     if (errors->size() > 1)
-     {
-         errorList->insert(0, tr("The following errors occurred in the order listed:"));
-     }
-     errorList->append("");
-     errorList->append(tr("Please check the logs for more details.")); // NOI18N
+        if (isUnableToConnect/*.get()*/) {
+            handleConnectionError(errors, list);
+        }
+        else
+        {
+         QString msg;
+             //qobject_cast<JList*>(list) != nullptr ? tr("The following errors occurred in the order listed:") : ""  + "\n";
+           msg = tr("The following errors occurred in the order listed:");
+           foreach(QString str, *errors)
+              msg = msg + str + "\n";
+             msg = msg +"<html><br></html>"; // Add a visual break between list of errors and notes // NOI18N
+             msg = msg +tr("Please check the logs for more details.") + "\n"; // NOI18N
+             msg = msg +tr("The Preferences window will open so this can be fixed.");/* */// NOI18N
 
-     ErrorDialog* dialog = new ErrorDialog(*errorList);
-
-     switch (dialog->result)
-     {
-      case ErrorDialog::NEW_PROFILE:
-      {
-          AddProfileDialog* apd = new AddProfileDialog((QFrame*)nullptr, true, false);
-          apd->setLocationRelativeTo(nullptr);
-          apd->setVisible(true);
-          // Restart program
-          AppsBase::handleRestart();
-          break;
-      }
-      case ErrorDialog::EDIT_CONNECTIONS:
-         if (EditConnectionPreferencesDialog::showDialog()) {
-              // Restart program
-              AppsBase::handleRestart();
-              break;
-          } else {
-              // Quit program
-              AppsBase::handleQuit();
-              break;
-          }
-
-      case ErrorDialog::RESTART_PROGRAM:
-          // Restart program
-          AppsBase::handleRestart();
-          break;
-
-      case ErrorDialog::EXIT_PROGRAM:
-      default:
-          // Exit program
-             AppsBase::handleQuit();
-     }
-    }
-    QVariantList vl = QVariantList() << (list!=nullptr? tr("The following errors occurred in the order listed:"): "") << VPtr<JList>::asQVariant(list) << "<html><br></html>" << tr("Please check the logs for more details.") << tr("The Preferences window will open so this can be fixed.");
-    JOptionPane::showMessageDialog(nullptr,
-//         new Object[]{
-//             (list instanceof JList) ? tr("InitExMessageListHeader") : nullptr,
-//             list,
-//             "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
-//             tr("InitExMessageLogs"), // NOI18N
-//             tr("InitExMessagePrefs"), // NOI18N
-//         },
-         vl,
-         tr("Error initializing %1").arg(QApplication::applicationDisplayName()), // NOI18N
-         JOptionPane::ERROR_MESSAGE);
- (new TabbedPreferencesAction())->actionPerformed();
-
+         JOptionPane::showMessageDialog(nullptr, msg,
+           tr("Error initializing %1").arg(QApplication::applicationName()), // NOI18N
+           JOptionPane::ERROR_MESSAGE);
+         (new TabbedPreferencesAction())->actionPerformed();
+//        }
+       }
    }
    if (!file.isEmpty() && (File(file.toDisplayString())).getName() == ("ProfileConfig.xml"))
    { // NOI18N
@@ -338,8 +303,108 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
      log->error(tr("Unable to get File* for %1").arg(file.toDisplayString()));
      throw JmriException(ex.getMessage()+ex.getLocalizedMessage());
  }
+ // make this url the default "Store Panels..." file
+ JFileChooser* ufc = StoreXmlUserAction::getUserFileChooser();
+ ufc->setSelectedFile(new File(/*FileUtil::urlToURI(url)*/file.path()));
+
  return this->legacy->load(file, registerDeferred);
  // return true; // always return true once legacy support is dropped
+}
+
+/**
+ * Show a dialog with options Quit, Restart, Change profile, Edit connections
+ * @param errors the list of error messages
+ * @param list A JList or a String with error message(s)
+ */
+/*private*/ void JmriConfigurationManager::handleConnectionError(QList<QString>* errors, QVariant list) {
+    QList<QString>* errorList = errors;
+
+    errorList->append(" "); // blank line below errors
+    errorList->append(tr("Please check the logs for more details."));
+#if 0 // TODO:
+    Object[] options = new Object[] {
+        tr("Quit {0}", QApplication.applicationName()),
+        tr("Continue"),
+        tr("Edit connections")
+    };
+
+    if (list instanceof JList) {
+        JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem copyMenuItem = new JMenuItem(Bundle.getMessage("MenuItemCopy"));
+        TransferActionListener copyActionListener = new TransferActionListener();
+        copyMenuItem.setActionCommand((String) TransferHandler.getCopyAction().getValue(Action.NAME));
+        copyMenuItem.addActionListener(copyActionListener);
+        if (SystemType.isMacOSX()) {
+            copyMenuItem.setAccelerator(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.META_MASK));
+        } else {
+            copyMenuItem.setAccelerator(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+        }
+        copyMenuItem.setMnemonic(KeyEvent.VK_C);
+        copyMenuItem.setEnabled(((JList)list).getSelectedIndex() != -1);
+        popupMenu.add(copyMenuItem);
+
+        JMenuItem copyAllMenuItem = new JMenuItem(Bundle.getMessage("MenuItemCopyAll"));
+        ActionListener copyAllActionListener = (ActionEvent e) -> {
+            StringBuilder text = new StringBuilder();
+            for (int i=0; i < ((JList)list).getModel().getSize(); i++) {
+                text.append(((JList)list).getModel().getElementAt(i).toString());
+                text.append(System.getProperty("line.separator")); // NOI18N
+            }
+            Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            systemClipboard.setContents(new StringSelection(text.toString()), null);
+        };
+        copyAllMenuItem.setActionCommand("copyAll"); // NOI18N
+        copyAllMenuItem.addActionListener(copyAllActionListener);
+        popupMenu.add(copyAllMenuItem);
+
+        ((JList) list).setComponentPopupMenu(popupMenu);
+
+        ((JList) list).addListSelectionListener((ListSelectionEvent e) -> {
+            copyMenuItem.setEnabled(((JList)e.getSource()).getSelectedIndex() != -1);
+        });
+    }
+
+    JOptionPane pane = new JOptionPane(
+            new Object[] {
+                (list instanceof JList) ? Bundle.getMessage("InitExMessageListHeader") : null,
+                list,
+                "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
+                Bundle.getMessage("InitExMessageLogs"), // NOI18N
+                Bundle.getMessage("ErrorDialogConnectLayout"), // NOI18N
+            },
+            JOptionPane.ERROR_MESSAGE,
+            JOptionPane.DEFAULT_OPTION,
+            null,
+            options
+    );
+
+    JDialog dialog = pane.createDialog(null, Bundle.getMessage("InitExMessageTitle", Application.getApplicationName())); // NOI18N
+    dialog.setVisible(true);
+    Object selectedValue = pane.getValue();
+
+    if (Bundle.getMessage("ErrorDialogButtonQuitProgram", Application.getApplicationName()).equals(selectedValue)) {
+        // Exit program
+        AppsBase.handleQuit();
+
+    } else if (Bundle.getMessage("ErrorDialogButtonContinue").equals(selectedValue)) {
+        // Do nothing. Let the program continue
+
+    } else if (Bundle.getMessage("ErrorDialogButtonEditConnections").equals(selectedValue)) {
+       if (EditConnectionPreferencesDialog.showDialog()) {
+            // Restart program
+            AppsBase.handleRestart();
+        } else {
+            // Quit program
+            AppsBase.handleQuit();
+        }
+
+    } else {
+        // Exit program
+        AppsBase.handleQuit();
+    }
+#endif
 }
 
 //@Override

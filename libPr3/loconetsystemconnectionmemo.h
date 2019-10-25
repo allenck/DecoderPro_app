@@ -64,8 +64,8 @@ public:
  DefaultProgrammerManager* getProgrammerManager();
  void setProgrammerManager(DefaultProgrammerManager* p);
  /*public*/ bool provides(QString type);
- /*public*/ Manager*  get(QString T);
- virtual void configureManagers();
+ /*public*/ Manager*  get(QString T) override;
+ void configureManagers();
  LnPowerManager* getPowerManager();
 
  ThrottleManager* getThrottleManager();
@@ -101,7 +101,7 @@ protected:
  LnSensorManager* sensorManager;
  LnLightManager* lightManager;
  //ResourceBundle* getActionModelResourceBundle();
- /*protected*/ ResourceBundle* getActionModelResourceBundle();
+ /*protected*/ ResourceBundle* getActionModelResourceBundle() override;
  /*protected*/ DefaultProgrammerManager* programmerManager;
 
 };

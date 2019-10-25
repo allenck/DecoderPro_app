@@ -35,6 +35,9 @@
 #include "tests/misc/paneprogpanetestaction.h"
 #include "tests/misc/paneprogframetestaction.h"
 #include "tests/misc/decoderfiletestaction.h"
+#include "tests/loconet/loconetmessageinterprettestaction.h"
+#include "tests/loconet/lnreportermanagertestaction.h"
+#include "tests/loconet/loconetsystemconnectionmemotestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -55,6 +58,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     addMenu(loconetTestMenu);
     loconetTestMenu->addAction(new SlotManagerTestAction(this));
     loconetTestMenu->addAction(new LocoNetSlotTestAction(this));
+    loconetTestMenu->addAction(new LoconetSystemConnectionMemoTestAction(this));
     QMenu* loconetProgrammersMenu = new QMenu(tr("Programmers ..."));
     loconetTestMenu->addMenu(loconetProgrammersMenu);
     loconetProgrammersMenu->addAction(new LnOpsModeProgrammerTestAction(this));
@@ -70,13 +74,17 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* loconetSensorsMenu = new QMenu(tr("Sensors ..."));
     loconetTestMenu->addMenu(loconetSensorsMenu);
     loconetSensorsMenu->addAction(new LnSensorTestAction(this));
-    loconetTestMenu->addAction(new LnReporterTestAction(this));
+    QMenu* loconetReporterMenu = new QMenu(tr("Reporters"));
+    loconetTestMenu->addMenu(loconetReporterMenu);
+    loconetReporterMenu->addAction(new LnReporterTestAction(this));
+    loconetReporterMenu->addAction(new LnReporterManagerTestAction(this));
     loconetSensorsMenu->addAction(new LnSensorAddressTestAction(this));
     loconetSensorsMenu->addAction(new LnSensorManagerTestAction(this));
     QMenu* loconetTurnoutsMenu = new QMenu(tr("Turnouts ..."));
     loconetTestMenu->addMenu(loconetTurnoutsMenu);
     loconetTurnoutsMenu->addAction(new LnTurnoutTestAction(this));
     loconetTurnoutsMenu->addAction(new LnTurnoutManagerTestAction(this));
+    loconetTestMenu->addAction(new LocoNetMessageInterpretTestAction(this));
 
     QMenu* sprogTestMenu = new QMenu(tr("Sprog"));
     addMenu(sprogTestMenu);

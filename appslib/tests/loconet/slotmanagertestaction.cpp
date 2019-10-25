@@ -37,12 +37,6 @@ void SlotManagerTestAction::actionPerformed()
         << "testReadThroughFacadeFail"
         << "testGetProgrammingModes"
         << "testSendPacket";
-//      foreach(QString testName, testList)
-//      {
-//       log->info(tr("begin '%1'").arg(testName));
-//       QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
-//       log->info(tr("end '%1'").arg(testName));
-//      }
       JUnitUtil::runTests(test, testList);
     }
     catch (AssertionError er)

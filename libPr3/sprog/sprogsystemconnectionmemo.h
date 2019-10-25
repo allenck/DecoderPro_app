@@ -51,7 +51,7 @@ namespace Sprog
   /*public*/ TurnoutManager* getTurnoutManager();
   /*public*/ void dispose();
   /*public*/ SprogVersionQuery* getSprogVersionQuery();
-  /*public*/  QObject* get(QString t);
+  /*public*/  Manager* get(QString t);
 
  private:
   /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("SprogSystemConnectionMemo");

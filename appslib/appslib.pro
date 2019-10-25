@@ -563,7 +563,14 @@ SOURCES += appslib.cpp \
     tests/misc/paneprogframetest.cpp \
     tests/misc/decoderfiletest.cpp \
     tests/misc/paneprogframetestaction.cpp \
-    tests/misc/decoderfiletestaction.cpp
+    tests/misc/decoderfiletestaction.cpp \
+    tests/loconet/loconetmessageinterprettest.cpp \
+    tests/loconet/loconetmessageinterprettestaction.cpp \
+    tests/loconet/lnreportermanagertest.cpp \
+    tests/loconet/lnreportermanagertestaction.cpp \
+    tests/loconet/loconetsystemconnectionmemotest.cpp \
+    tests/systemconnectionmemotestbase.cpp \
+    tests/loconet/loconetsystemconnectionmemotestaction.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -1076,7 +1083,14 @@ HEADERS += appslib.h\
     tests/misc/paneprogframetest.h \
     tests/misc/decoderfiletest.h \
     tests/misc/paneprogframetestaction.h \
-    tests/misc/decoderfiletestaction.h
+    tests/misc/decoderfiletestaction.h \
+    tests/loconet/loconetmessageinterprettest.h \
+    tests/loconet/loconetmessageinterprettestaction.h \
+    tests/loconet/lnreportermanagertest.h \
+    tests/loconet/lnreportermanagertestaction.h \
+    tests/loconet/loconetsystemconnectionmemotest.h \
+    tests/systemconnectionmemotestbase.h \
+    tests/loconet/loconetsystemconnectionmemotestaction.h
 
 unix:!symbian {
     maemo5 {

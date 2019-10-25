@@ -54,6 +54,12 @@ void Logger::warn(QString s)
  LoggerBase::warn(name, s);
 }
 
+void Logger::warn(QString s, Throwable ex)
+{
+ LoggerBase::warn(name, s, ex);
+}
+
+
 void Logger::info(QString s)
 {
  LoggerBase::info(name, s);

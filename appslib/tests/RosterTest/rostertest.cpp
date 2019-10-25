@@ -177,16 +177,19 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         // empty comboBox has 1 item, and the first item is not a RosterEntry
         box = new RosterEntryComboBox(r, nullptr, "321", nullptr, nullptr, nullptr, nullptr, nullptr);
         Assert::assertEquals("search for zero matches", 1, box->getItemCount(),__FILE__, __LINE__);
+        delete box;
 
         box = new RosterEntryComboBox(r, "UP", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
         Assert::assertEquals("search for one match", 2, box->getItemCount(),__FILE__, __LINE__);
         Assert::assertEquals("search for one match", e3, box->getItemAt(1),__FILE__, __LINE__);
+        delete box;
 
         box = new RosterEntryComboBox(r, nullptr, "123", nullptr, nullptr, nullptr, nullptr, nullptr);
         Assert::assertEquals("search for three matches", 4, box->getItemCount(),__FILE__, __LINE__);
         Assert::assertEquals("search for three matches", e1, box->getItemAt(1),__FILE__, __LINE__);
         Assert::assertEquals("search for three matches", e2, box->getItemAt(2),__FILE__, __LINE__);
         Assert::assertEquals("search for three matches", e3, box->getItemAt(3),__FILE__, __LINE__);
+        delete box;
 
     }
 

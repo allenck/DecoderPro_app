@@ -2586,28 +2586,6 @@ if (_wrapper) {
 }
   LocoNetSystemConnectionMemo::childEvent(event0);
 }
-void PythonQtShell_LocoNetSystemConnectionMemo::configureManagers()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("configureManagers");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={""};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      void* args[1] = {NULL};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  LocoNetSystemConnectionMemo::configureManagers();
-}
 void PythonQtShell_LocoNetSystemConnectionMemo::customEvent(QEvent*  event0)
 {
 if (_wrapper) {

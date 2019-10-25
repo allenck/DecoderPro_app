@@ -49,6 +49,7 @@ private:
  /*private*/ /*final*/ ConfigXmlManager* legacy;// = new ConfigXmlManager();
  /*private*/ /*final*/ QHash<PreferencesManager*, InitializationException*>* initializationExceptions;// = new HashMap<>();
  /*private*/ /*final*/ QList<PreferencesManager*>* initialized;// = new ArrayList<>();
+ /*private*/ void handleConnectionError(QList<QString> *errors, QVariant list);
 
 };
 

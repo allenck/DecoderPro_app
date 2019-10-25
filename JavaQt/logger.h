@@ -16,6 +16,7 @@ public:
  static void error(QString s, QVariant ex = QVariant());
  static void error(QString s, Throwable ex);
  void warn(QString s);
+ void warn(QString s, Throwable ex);
  void info(QString s);
  void trace(QString s);
  bool isDebugEnabled();

@@ -20,15 +20,16 @@ private:
     static JFileChooser* allFileChooser;// = new JFileChooser(FileUtil::getUserFilesPath());
     static JFileChooser* configFileChooser;// = new JFileChooser(FileUtil::getUserFilesPath());
     static JFileChooser* userFileChooser;// = new JFileChooser(FileUtil::getUserFilesPath());
-    /*private*/ JFileChooser* getXmlFileChooser(QString path);
+    /*private*/ static JFileChooser* getXmlFileChooser(QString path);
 protected:
-    /*protected*/ JFileChooser* getAllFileChooser();
-    /*protected*/ JFileChooser* getConfigFileChooser() ;
-    /*protected*/ JFileChooser* getUserFileChooser();
+    /*protected*/ static JFileChooser* getAllFileChooser();
+    /*protected*/ static JFileChooser* getConfigFileChooser() ;
+    /*protected*/ static JFileChooser* getUserFileChooser();
 
 
     friend class StoreXmlConfigAction;
     friend class StoreXmlUserAction;
+    friend class JmriConfigurationManager;
 };
 
 #endif // LOADSTOREBASEACTION_H

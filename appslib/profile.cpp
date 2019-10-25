@@ -7,6 +7,7 @@
 #include "QTextStream"
 #include "profileproperties.h"
 #include "loggerfactory.h"
+#include "fileoutputstream.h"
 
 /**
  * A JMRI application profile. Profiles allow a JMRI application to load
@@ -56,7 +57,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
 /*public*/ Profile::Profile(File* path, QObject* parent) throw (IOException)
  : QObject(parent)
 {
- common(path, ProfileManager::createUniqueId(), true);
+ common(path,  true);
 }
 
 /**
@@ -74,7 +75,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
  * @throws IOException
  * @throws IllegalArgumentException
  */
-/*public*/ Profile::Profile(QString name, QString id, File* path, QObject *parent) :
+/*public*/ Profile::Profile(QString name, QString id, File* path, QObject *parent) throw (IOException, IllegalArgumentException) :
     QObject(parent)
 {
  File* pathWithExt; // path with extension
@@ -84,18 +85,18 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
      pathWithExt = new File(path->getParentFile(), path->getName() + EXTENSION);
  }
  if (pathWithExt->getName() != (id + EXTENSION)) {
-     throw IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
+     throw  IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
  }
  if (Profile::isProfile(path) || Profile::isProfile(pathWithExt)) {
-     throw IllegalArgumentException("A profile already exists at " + path->toString()); // NOI18N
+     throw  IllegalArgumentException("A profile already exists at " + path->toString()); // NOI18N
  }
  if (Profile::containsProfile(path) || Profile::containsProfile(pathWithExt)) {
-     throw IllegalArgumentException(path->toString() + " contains a profile in a subdirectory."); // NOI18N
+     throw  IllegalArgumentException(path->toString() + " contains a profile in a subdirectory."); // NOI18N
  }
  if (Profile::inProfile(path) || Profile::inProfile(pathWithExt)) {
-     if (Profile::inProfile(path)) log->warn(tr("Exception: Path %1 is within an existing profile.").arg(path->toString())/*, new Exception("traceback")*/); // NOI18N
-     if (Profile::inProfile(pathWithExt)) log->warn(tr("Exception: pathWithExt %1 is within an existing profile.").arg(pathWithExt->toString())/*, new Exception("traceback")*/); // NOI18N
-     throw IllegalArgumentException(path->toString() + " is within an existing profile."); // NOI18N
+     if (Profile::inProfile(path)) log->warn(tr("Exception: Path %1 is within an existing profile.").arg(path->toString()),  Exception("traceback")); // NOI18N
+     if (Profile::inProfile(pathWithExt)) log->warn(tr("Exception: pathWithExt %1 is within an existing profile.").arg(pathWithExt->toString()),  Exception("traceback")); // NOI18N
+     throw  IllegalArgumentException(path->toString() + " is within an existing profile."); // NOI18N
  }
  this->name = name;
  this->id = id + "." + ProfileManager::createUniqueId();
@@ -126,7 +127,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
 /*protected*/ Profile::Profile(File* path, bool isReadable, QObject *parent) :
     QObject(parent)
 {
- common(path, ProfileManager::createUniqueId(), isReadable);
+ common(path,  isReadable);
 }
 
 /**
@@ -142,23 +143,9 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
  *                   where this is not true.
  * @throws java.io.IOException If the profile's preferences cannot be read.
  */
-void Profile::common(File *path, QString id,bool isReadable)
+void Profile::common(File *path, bool isReadable)
 {
- File* pathWithExt; // path with extention
- if (path->getName().endsWith(*_EXTENSION)) {
-     pathWithExt = path;
- } else {
-     pathWithExt = new File(path->getParentFile(), path->getName() + *_EXTENSION);
- }
- // if path does not exist, but pathWithExt exists, use pathWithExt
- // to support a scenario where user adds .jmri extension to profile
- // directory outside of JMRI application
- if ((!path->exists() && pathWithExt->exists())) {
-     this->path = pathWithExt;
- } else {
-     this->path = path;
- }
- this->id = id;
+ this->path = path;
  if (isReadable) {
      this->readProfile();
  }
@@ -166,8 +153,7 @@ void Profile::common(File *path, QString id,bool isReadable)
 
 /*protected*/ Profile::Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent) throw (IOException) : QObject(parent)
 {
- common(path, id, isReadable);
-
+ common(path, isReadable);
 }
 
 /*protected*/ /*final*/ void Profile::save() throw (IOException)
@@ -175,8 +161,34 @@ void Profile::common(File *path, QString id,bool isReadable)
     ProfileProperties* p = new ProfileProperties(this);
     p->put(*_NAME, this->name, true);
     p->put(*_ID, this->id, true);
+    this->saveXml();
 }
 
+/*
+ * Remove when or after support for writing ProfileConfig.xml is removed.
+ */
+//@Deprecated
+/*protected*/ /*final*/ void Profile::saveXml() throw (IOException) {
+    Properties* p = new Properties();
+    File* f = new File(this->path, PROPERTIES);
+    FileOutputStream* os = nullptr;
+
+    p->setProperty(NAME, this->name);
+    p->setProperty(ID, this->id);
+    if (!f->exists() && !f->createNewFile()) {
+        throw  IOException("Unable to create file at " + f->getAbsolutePath()); // NOI18N
+    }
+    try {
+        os = new FileOutputStream(f);
+        p->storeToXML(os, "JMRI Profile"); // NOI18N
+        os->close();
+    } catch (IOException ex) {
+        if (os != nullptr) {
+            os->close();
+        }
+        throw ex;
+    }
+}
 
 /**
  * @return the name
@@ -189,6 +201,19 @@ void Profile::common(File *path, QString id,bool isReadable)
     QString oldName = this->name;
     this->name = name;
 ProfileManager::defaultManager()->profileNameChange(this, oldName);
+}
+
+/**
+ * Set the name for this profile while constructing the profile.
+ * <p>
+ * Overriding classing must use this method to set the name in a constructor
+ * since {@link #setName(java.lang.String)} passes this Profile object to an
+ * object expecting a completely constructed Profile.
+ *
+ * @param name the new name
+ */
+/*protected*/ /*final*/ void Profile::setNameInConstructor(QString name) {
+    this->name = name;
 }
 
 /**

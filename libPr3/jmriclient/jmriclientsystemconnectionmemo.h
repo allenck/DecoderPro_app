@@ -32,7 +32,7 @@ public:
  /*public*/ void setReporterManager(ReporterManager* t);
  /*public*/ void setTransmitPrefix(QString tPrefix);
  /*public*/ QString getTransmitPrefix();
- /*public*/  QObject* get(QString T);
+ /*public*/  Manager* get(QString T);
  /*public*/ bool provides(QString type);
 
 private:

@@ -251,12 +251,15 @@ void JUnitAppender::superappend(LoggingEvent* l) {
     if (list.isEmpty()) {
         return true;
     }
+    bool ret = true;
     while (!list.isEmpty()) { // should probably add a skip of lower levels?
         LoggingEvent* evt = list.at(0);
+        if(evt->getLevel() == LogLevel::ERROR || evt->getLevel() == LogLevel::WARN)
+         ret = false;
         list.removeAt(0);
         instance()->superappend(evt);
     }
-    return false;
+    return ret;
 }
 
 /**
@@ -537,8 +540,9 @@ void JUnitAppender::superappend(LoggingEvent* l) {
  *
  * @param msg the message to assert exists
  */
-/*public*/ /*static*/ void JUnitAppender::assertWarnMessage(QString msg,QString file, int line) {
-    if (list.isEmpty()) {
+/*public*/ /*static*/ void JUnitAppender::assertWarnMessage(QString msg,QString file, int line)
+{
+ if (list.isEmpty()) {
         Assert::fail("No message present: " + msg, file, line);
         return;
     }

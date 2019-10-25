@@ -137,6 +137,7 @@ public:
     ReleaseUntil03(SlotManagerTest* smt) {this->smt = smt;}
     bool ready() throw (Exception) {return smt->startedShortTimer;}
 };
+
 class ReleaseUntil04 : public ReleaseUntil
 {
     Q_OBJECT

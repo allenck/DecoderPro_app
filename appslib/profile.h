@@ -15,7 +15,7 @@ public:
  /*public*/ static /*final*/ QString EXTENSION;// = ".jmri"; // NOI18N
 
     Profile(File* path, QObject *parent = 0) throw (IOException);
-    /*public*/ Profile(QString name, QString id, File* path, QObject *parent = 0);
+    /*public*/ Profile(QString name, QString id, File* path, QObject *parent = 0) throw (IOException, IllegalArgumentException);
     /*public*/ QString getName();
     /*public*/ void setName(QString name);
     /*public*/ QString getId();
@@ -44,7 +44,7 @@ signals:
 public slots:
 private:
     /*private*/ static Logger* log;// = new LoggerFactory::getLogger("Profile");
-    void common(File* path, QString id, bool isReadable);
+    void common(File* path, bool isReadable);
     /*private*/ QString name;
     /*private*/ QString id;
     /*private*/ File* path;
@@ -58,6 +58,8 @@ protected:
     /*protected*/ static /*final*/ QString PATH;// = "path"; // NOI18N
     /*protected*/ Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent = 0) throw (IOException);
     /*protected*/ /*final*/ void save() throw (IOException);
+    QT_DEPRECATED /*protected*/ /*final*/ void saveXml() throw (IOException);
+    /*protected*/ /*final*/ void setNameInConstructor(QString name);
 
  friend class ProfileManager;
  friend class ProfileManagerDialog;
@@ -66,6 +68,7 @@ protected:
  friend class ProfileTest;
  friend class ProfileUtilsTest;
  friend class ProfileUtils;
+ friend class NullProfile;
 };
 
 #endif // PROFILE_H

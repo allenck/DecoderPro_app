@@ -183,24 +183,24 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
 
     m->setOpCode(0xe4);
     data = m->getPeerXfrData();
-    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong opcode 228",__FILE__, __LINE__);
+    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong opcode 0xe4",__FILE__, __LINE__);
 
     m->setOpCode(0xe5);
     m->setElement(1, 9);
     data = m->getPeerXfrData();
-    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong secondary code 9",__FILE__, __LINE__);
+    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong secondary code 0x9",__FILE__, __LINE__);
 
     m = new LocoNetMessage(QVector<int>()<<0xe5<< 0x10<< 0x42<< 0x40<< 0x00<< 0x00<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0);
     data = m->getPeerXfrData();
-    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 17",__FILE__, __LINE__);
+    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 0x11",__FILE__, __LINE__);
 
     m = new LocoNetMessage(QVector<int>()<<0xe5<< 0x10<< 0x42<< 0x40<< 0x00<< 0x00);
     data = m->getPeerXfrData();
-    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 6",__FILE__, __LINE__);
+    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 0x6",__FILE__, __LINE__);
 
     m = new LocoNetMessage(QVector<int>()<<0xe5<< 0x10<< 0x42<< 0x40<< 0x00);
     data = m->getPeerXfrData();
-    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 5",__FILE__, __LINE__);
+    JUnitAppender::assertErrorMessage("getPeerXfrData called with wrong length 0x5",__FILE__, __LINE__);
 
     for (int j = 0; j < 8; ++j) {
         test = QVector<int>()<<0x00<< 0x00<< 0x00<< 0x00<< 0x00<< 0x00<< 0x00<< 0x00;
@@ -227,7 +227,7 @@ LocoNetMessageTest::LocoNetMessageTest(QObject *parent) : QObject(parent)
     Assert::assertTrue(!(new LocoNetMessage(t1))->equals(new LocoNetMessage(t4)), __FILE__, __LINE__);
     Assert::assertTrue((new LocoNetMessage(t1))->equals(new LocoNetMessage(t5)), __FILE__, __LINE__);
     Assert::assertFalse((new LocoNetMessage(t1))->equals(nullptr), __FILE__, __LINE__);
-// TODO:    Assert::assertFalse((new LocoNetMessage(t1))->equals(QVector<int>()<<0x81<< 0x01<< 0x02<< 0x02), __FILE__, __LINE__);
+    Assert::assertFalse((new LocoNetMessage(t1))->equals(new LocoNetMessage(QVector<int>()<<0x81<< 0x01<< 0x02<< 0x02)), __FILE__, __LINE__);
 }
 
 //@Test

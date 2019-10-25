@@ -191,6 +191,7 @@ QDomDocument doc;
 
 //@Test
 /*public*/ void RosterEntryTest::testDateFormatHistoric() {
+
     RosterEntry* r = new RosterEntry("file here");
 
     r->setId("test Id");
@@ -230,6 +231,7 @@ QDomDocument doc;
 
 //@Test
 /*public*/ void RosterEntryTest::testDateFormatTraditional() throw (ParseException) {
+
     RosterEntry* r = new RosterEntry("file here");
 
     r->setId("test Id");

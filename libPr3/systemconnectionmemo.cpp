@@ -180,7 +180,7 @@ bool SystemConnectionMemo::provides(QString c) {
 /**
  * Does this connection provide a manager of this type?
  */
-QObject* SystemConnectionMemo::get(QString T) {
+Manager* SystemConnectionMemo::get(QString T) {
  Q_UNUSED(T)
     return NULL; // nothing, by default
 }

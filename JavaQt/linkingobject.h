@@ -34,11 +34,11 @@
 public:
     /*public*/ virtual QString getURL() {return "";}
 
-    /*public*/ virtual void setULRL(QString u) {}
+    /*public*/ virtual void setULRL(QString /*u*/) {}
 
     /*public*/ virtual void updateSize() {}
 
- /*public*/ virtual bool setLinkMenu(QMenu* popup) {return false;}
+ /*public*/ virtual bool setLinkMenu(QMenu* /*popup*/) {return false;}
 //    /*public*/ void doMouseClicked(MouseEvent event);
 };
 Q_DECLARE_INTERFACE(LinkingObject, "LinkingObject")

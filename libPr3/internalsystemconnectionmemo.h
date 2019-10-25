@@ -31,7 +31,7 @@ public:
  /*public*/ DefaultPowerManager* getPowerManager();
  /*public*/ DebugProgrammerManager* getProgrammerManager();
  /*public*/ bool provides(/*Class<?>*/QString type);
- /*public*/ QObject* get(/*Class<?>*/ QString className);
+ /*public*/ Manager* get(/*Class<?>*/ QString className);
  /*public*/ void dispose();
 
 private:

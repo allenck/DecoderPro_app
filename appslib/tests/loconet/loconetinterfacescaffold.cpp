@@ -19,7 +19,7 @@
 }
 
 /*public*/ LocoNetInterfaceScaffold::LocoNetInterfaceScaffold(LocoNetSystemConnectionMemo* adaptermemo)
-    : LnTrafficController()
+    : LnTrafficController(adaptermemo)
 {
     //super(adaptermemo);
     /**

@@ -362,7 +362,6 @@ public:
 
 virtual void _register();
 virtual void childEvent(QChildEvent*  event);
-virtual void configureManagers();
 virtual void customEvent(QEvent*  event);
 virtual void dispose();
 virtual bool  event(QEvent*  event);
@@ -382,7 +381,6 @@ virtual void timerEvent(QTimerEvent*  event);
 
 class PythonQtPublicPromoter_LocoNetSystemConnectionMemo : public LocoNetSystemConnectionMemo
 { public:
-inline void py_q_configureManagers() { LocoNetSystemConnectionMemo::configureManagers(); }
 inline void py_q_dispose() { LocoNetSystemConnectionMemo::dispose(); }
 inline Manager*  py_q_get(QString  T) { return LocoNetSystemConnectionMemo::get(T); }
 inline bool  py_q_provides(QString  type) { return LocoNetSystemConnectionMemo::provides(type); }
@@ -397,7 +395,6 @@ LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(QString  prefix, QS
 void delete_LocoNetSystemConnectionMemo(LocoNetSystemConnectionMemo* obj) { delete obj; } 
    void configureCommandStation(LocoNetSystemConnectionMemo* theWrappedObject, LnCommandStationType*  type, bool  mTurnoutNoRetry, bool  mTurnoutExtraSpace, bool  mTranspondingAvailable);
    void configureManagers(LocoNetSystemConnectionMemo* theWrappedObject);
-   void py_q_configureManagers(LocoNetSystemConnectionMemo* theWrappedObject){  (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_configureManagers());}
    void py_q_dispose(LocoNetSystemConnectionMemo* theWrappedObject){  (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_dispose());}
    Manager*  py_q_get(LocoNetSystemConnectionMemo* theWrappedObject, QString  T){  return (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_get(T));}
    LnClockControl*  getClockControl(LocoNetSystemConnectionMemo* theWrappedObject);

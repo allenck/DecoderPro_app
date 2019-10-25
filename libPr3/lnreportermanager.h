@@ -25,7 +25,6 @@ class LIBPR3SHARED_EXPORT LnReporterManager : public AbstractReporterManager
     Q_OBJECT
 public:
     explicit LnReporterManager(LocoNetSystemConnectionMemo *memo, QObject *parent = 0);
-    QString getSystemPrefix();
     void dispose();
     Reporter* createNewReporter(QString systemName, QString userName);
     /*public*/ int getBitFromSystemName(QString systemName);
@@ -41,7 +40,7 @@ signals:
 public slots:
 
 private:
- LnTrafficController* tc;
+ LnTrafficController* tc = nullptr;
  QString prefix;
  Logger log;
     

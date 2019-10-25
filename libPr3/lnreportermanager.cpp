@@ -47,9 +47,6 @@ LnReporterManager::LnReporterManager(LocoNetSystemConnectionMemo* memo, QObject 
 //            log.error("No layout connection, Reporter manager can't function");
 //    }
 
-
-QString LnReporterManager::getSystemPrefix() { return prefix; }
-
 void LnReporterManager::dispose()
 {
  if (tc != NULL)
@@ -61,8 +58,8 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
 {
  Reporter* t;
 //        int addr = Integer.valueOf(systemName.substring(prefix.length()+1)).intValue();
- int addr = QString(systemName.mid(prefix.length()+1)).toInt();
- t = (Reporter*)(new LnReporter(addr, tc, prefix, this));
+ int addr = QString(systemName.mid(getSystemPrefix().length()+1)).toInt();
+ t = (Reporter*)(new LnReporter(addr, tc, getSystemPrefix(), this));
  t->setUserName(userName);
  t->addPropertyChangeListener((PropertyChangeListener*)this);
  connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));

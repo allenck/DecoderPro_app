@@ -8,6 +8,7 @@
 #include <dccthrottle.h>
 #include <listselectionmodel.h>
 #include <locoaddress.h>
+#include <manager.h>
 #include <namedbean.h>
 #include <propertychangeevent.h>
 #include <propertychangelistener.h>
@@ -12700,7 +12701,7 @@ if (_wrapper) {
 }
   return SystemConnectionMemo::eventFilter(watched0, event1);
 }
-QObject*  PythonQtShell_SystemConnectionMemo::get(QString  T0)
+Manager*  PythonQtShell_SystemConnectionMemo::get(QString  T0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -12708,9 +12709,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("get");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QObject*" , "QString"};
+      static const char* argumentList[] ={"Manager*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      QObject* returnValue{};
+      Manager* returnValue{};
       void* args[2] = {NULL, (void*)&T0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -12719,7 +12720,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("get", methodInfo, result);
           } else {
-            returnValue = *((QObject**)args[0]);
+            returnValue = *((Manager**)args[0]);
           }
         }
       }
@@ -12934,7 +12935,7 @@ void PythonQtWrapper_SystemConnectionMemo::dispose(SystemConnectionMemo* theWrap
   ( theWrappedObject->dispose());
 }
 
-QObject*  PythonQtWrapper_SystemConnectionMemo::get(SystemConnectionMemo* theWrappedObject, QString  T)
+Manager*  PythonQtWrapper_SystemConnectionMemo::get(SystemConnectionMemo* theWrappedObject, QString  T)
 {
   return ( theWrappedObject->get(T));
 }

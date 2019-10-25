@@ -96,7 +96,7 @@
 
 //@Override
 //@SuppressWarnings("unchecked")
-/*public*/ /*<T> */QObject* RfidSystemConnectionMemo::get(/*Class<?>*/QString T) {
+/*public*/ /*<T> */Manager *RfidSystemConnectionMemo::get(/*Class<?>*/QString T) {
     if (getDisabled()) {
         return nullptr;
     }

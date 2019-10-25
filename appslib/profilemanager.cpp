@@ -665,14 +665,17 @@ Q_GLOBAL_STATIC(ProfileManager, manager)
   }
   foreach (File* pp, profilePaths)
   {
-//        try {
-   Profile* p = new Profile(pp);
-   this->addProfile(p);
-//        } catch (IOException ex) {
-//            log->error("Error attempting to read Profile at {}", pp, ex);
-//        }
+   try
+   {
+    Profile* p = new Profile(pp);
+    this->addProfile(p);
+   }
+   catch (IOException ex) {
+       log->error(tr("Error attempting to read Profile at %1").arg(pp->toString()), ex);
+   }
   }
 }
+
 bool ProfileManager::FileFilter1::accept(File* pathname)
 {
 // return (pathname->isDirectory() && pathname->list().contains(Profile::PROPERTIES));
@@ -825,7 +828,7 @@ QString ProfileManager::FileFilter1::getDescription()
   if (!appConfigFile->exists())
   { // no catalog and no profile config and no app config: new user
    this->setActiveProfile(this->createDefaultProfile());
-            this->saveActiveProfile();
+   this->saveActiveProfile();
   }
   else
   { // no catalog and no profile config, but an existing app config: migrate user who never used profiles before

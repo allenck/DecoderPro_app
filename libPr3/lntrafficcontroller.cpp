@@ -3,12 +3,25 @@
 #include "loconetsystemconnectionmemo.h"
 #include "loggerfactory.h"
 
-LnTrafficController::LnTrafficController(QObject *parent)
+LnTrafficController::LnTrafficController(QObject *parent) : LocoNetInterface(parent)
 {
  self = NULL;
  resetStatistics();
 // listeners.clear();
  setObjectName("LnTrafficController");
+}
+
+
+/**
+ * Constructor. Gets a reference to the LocoNetSystemConnectionMemo.
+ *
+ * @param memo connection's memo
+ */
+/*public*/ LnTrafficController::LnTrafficController(LocoNetSystemConnectionMemo* memo, QObject *parent)
+: LocoNetInterface(parent)
+{
+    //super();
+    this->memo = memo;
 }
 
 /**

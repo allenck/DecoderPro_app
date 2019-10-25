@@ -3,10 +3,12 @@
 #include "abstractmanager.h"
 #include "reporter.h"
 #include "libPr3_global.h"
+#include "providingmanager.h"
 
-class LIBPR3SHARED_EXPORT ReporterManager : public AbstractManager
+class LIBPR3SHARED_EXPORT ReporterManager : public AbstractManager, ProvidingManager
 {
     Q_OBJECT
+ Q_INTERFACES(ProvidingManager)
 public:
     //explicit ReporterManager(QObject *parent = 0);
     ReporterManager(SystemConnectionMemo* memo, QObject* parent =0) : AbstractManager(memo, parent) {}
@@ -64,6 +66,11 @@ public:
          * due to e.g. an illegal name or name that can't be parsed.
          */
         virtual Reporter* provideReporter(QString /*name*/) {return NULL;}
+
+        //@Override
+        /** {@inheritDoc} */
+        /*default*/ /*public*/ Reporter* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException)
+        { return provideReporter(name); }
 
         /**
          * Locate via user name, then system name if needed.
@@ -134,7 +141,7 @@ public:
         * where as if the address format is 1b23 this will return false.
         **/
 
- virtual bool allowMultipleAdditions(QString /*systemName*/) const {return false;}
+       virtual bool allowMultipleAdditions(QString /*systemName*/) const {return false;}
 
        /**
         * Determine if the address supplied is valid and free, if not then it shall

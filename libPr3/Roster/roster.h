@@ -10,6 +10,7 @@
 #include "xmlfile.h"
 #include "libPr3_global.h"
 
+class Profile;
 class RosterGroup;
 class RosterEntry;
 class LIBPR3SHARED_EXPORT Roster : public XmlFile
@@ -27,6 +28,7 @@ public:
      */
     QT_DEPRECATED /*public*/ static /*synchronized*/ Roster* instance();
     /*public*/ static /*synchronized*/ Roster* getDefault();
+    /*public*/ static /*synchronized*/ /*@Nonnull*/ Roster* getRoster(/*@CheckForNull*/ Profile* profile);
     /*public*/ void addEntry(RosterEntry* e);
     /*public*/ void removeEntry(RosterEntry* e);
     /*public*/ int numEntries();
