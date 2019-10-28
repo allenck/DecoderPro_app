@@ -38,6 +38,7 @@ public:
     /*public*/ void setFastClockUsed(bool fastClock);
     /*public*/ bool isFastClockUsed();
     /*public*/ QList<IdTag*>* getTagsForReporter(Reporter* reporter, long threshold);
+    /*public*/ IdTag* provide(QString name) throw (IllegalArgumentException);
 
 signals:
     void newIdTagCreated(IdTag* tag);

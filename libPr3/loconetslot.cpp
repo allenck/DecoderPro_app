@@ -17,7 +17,7 @@ LocoNetSlot::LocoNetSlot(int slotNum, QObject *parent) :
   * @throws LocoNetException if the slot does not have an easily-found
   * slot number
   */
- /*public*/ LocoNetSlot::LocoNetSlot(LocoNetMessage* l, QObject *parent) throw (LocoNetException) {
+ /*public*/ LocoNetSlot::LocoNetSlot(LocoNetMessage* l, QObject *parent) throw (LocoNetException) : QObject(parent){
  common(0);
      // TODO: Consider limiting the types of LocoNet message which can be
      // used to construct the object to only LocoNet slot write or slot

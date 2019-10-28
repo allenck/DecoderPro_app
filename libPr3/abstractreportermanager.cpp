@@ -51,6 +51,12 @@ Reporter* AbstractReporterManager::getByUserName(QString key) {
     return (Reporter*)_tuser->value(key);
 }
 
+/** {@inheritDoc} */
+//@Override
+/*public*/ QString AbstractReporterManager::getBeanTypeHandled(bool plural) {
+    return (plural ? tr("Reporters") : tr("Reporter"));
+}
+
 Reporter* AbstractReporterManager::getByDisplayName(QString key) {
 // First try to find it in the user list.
 // If that fails, look it up in the system list

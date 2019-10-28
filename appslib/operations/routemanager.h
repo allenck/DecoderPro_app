@@ -35,7 +35,7 @@ namespace Operations {
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ Route* copyRoute(Route* route, QString routeName, bool invert);
   Q_INVOKABLE /*public*/ void initialize();
-
+  virtual /*public*/ Route* provide(QString name) throw (IllegalArgumentException) = 0;
  signals:
  
  public slots:

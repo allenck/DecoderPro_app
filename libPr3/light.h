@@ -283,7 +283,7 @@ public:
          */
         virtual void clearLightControls() {}  // clears all Light Controls for this Light
         virtual void addLightControl(LightControl* /*c*/) {} // add a LightControl
-        virtual QList<LightControl*>* getLightControlList() {return NULL;} // return a list of all LightControls
+        virtual QList<LightControl*> getLightControlList(){return QList<LightControl*>();}// return a list of all LightControls
 
         /**
          * Set the Enabled property, which determines whether the control logic

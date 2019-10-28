@@ -280,7 +280,7 @@ void JUnitAppender::superappend(LoggingEvent* l) {
     list.removeAt(0);
 
     // next piece of code appears three times, should be refactored away during Log4J 2 migration
-    while ((evt->getLevel() == LogLevel::INFO) || (evt->getLevel() == LogLevel::DEBUG) || (evt->getLevel() == LogLevel::TRACE))
+    while ((evt->getLevel() == LogLevel::WARN) || (evt->getLevel() == LogLevel::INFO) || (evt->getLevel() == LogLevel::DEBUG) || (evt->getLevel() == LogLevel::TRACE))
     { // better in Log4J 2
         if (list.isEmpty()) {
             Assert::fail("Only debug/info messages present: " + msg,file, line);
@@ -288,7 +288,8 @@ void JUnitAppender::superappend(LoggingEvent* l) {
         }
         //evt = list.remove(0);
         evt = list.at(0);
-           list.removeAt(0);}
+           list.removeAt(0);
+    }
 
     // check the remaining message, if any
     if (evt->getLevel() != LogLevel::ERROR) {
@@ -304,7 +305,7 @@ void JUnitAppender::superappend(LoggingEvent* l) {
         Assert::fail("Looking for ERROR message \"" + msg + "\" got \"" + evt->getMessage() + "\"", file, line);
     }
 }
-#if 0
+#if 1
 /**
  * Check that the next queued message was of Error severity, and has a
  * specific message. White space is ignored.
@@ -313,21 +314,23 @@ void JUnitAppender::superappend(LoggingEvent* l) {
  *
  * @param msg the message to assert exists
  */
-/*public*/ static void assertErrorMessageStartsWith(String msg) {
+/*public*/ /*static*/ void JUnitAppender::assertErrorMessageStartsWith(QString msg, QString file, int line) {
     if (list.isEmpty()) {
-        Assert::fail("No message present: " + msg);
+        Assert::fail("No message present: " + msg, file, line);
         return;
     }
 
-    LoggingEvent evt = list.remove(0);
+    LoggingEvent* evt = list.at(0);
+    list.removeAt(0);
 
     // next piece of code appears three times, should be refactored away during Log4J 2 migration
     while ((evt->getLevel() == LogLevel::INFO) || (evt->getLevel() == LogLevel::DEBUG) || (evt->getLevel() == LogLevel::TRACE)) { // better in Log4J 2
         if (list.isEmpty()) {
-            Assert::fail("Only debug/info messages present: " + msg);
+            Assert::fail("Only debug/info messages present: " + msg, file, line);
             return;
         }
-        evt = list.remove(0);
+        evt = list.at(0);
+        list.removeAt(0);
     }
 
     // check the remaining message, if any
@@ -335,12 +338,12 @@ void JUnitAppender::superappend(LoggingEvent* l) {
         Assert::fail("Level mismatch when looking for ERROR message: \"" +
                 msg +
                 "\" found \"" +
-                (String) evt.getMessage() +
-                "\"");
+                evt->getMessage() +
+                "\"", file, line);
     }
 
     if (!compareStartsWith(evt, msg)) {
-        Assert::fail("Looking for ERROR message \"" + msg + "\" got \"" + evt.getMessage() + "\"");
+        Assert::fail("Looking for ERROR message \"" + msg + "\" got \"" + evt->getMessage() + "\"", file, line);
     }
 }
 #endif

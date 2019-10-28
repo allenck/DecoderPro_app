@@ -170,6 +170,11 @@ public:
       *
       */
      /*public*/ virtual bool allowMultipleAdditions(QString /*systemName*/) { return false;}
+     /** {@inheritDoc} */
+     //@Override
+     virtual/*default*/ /*public*/ Light* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException)
+     { return provideLight(name); }
+
 signals:
     
 public slots:

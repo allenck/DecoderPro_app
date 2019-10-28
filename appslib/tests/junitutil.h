@@ -103,7 +103,7 @@ class /*interface*/ ReleaseUntil : public QObject
 {
     Q_OBJECT
 public:
-    /*public*/ virtual bool ready() throw (Exception) {}
+    /*public*/ virtual bool ready() throw (Exception) =0;
 
 };
 #endif // JUNITUTIL_H

@@ -1,6 +1,7 @@
 #include "lightcontrol.h"
 #include "turnout.h"
 #include "timebase.h"
+#include "predicate.h"
 
 LightControl::LightControl(QObject *parent) :
     QObject(parent)
@@ -93,6 +94,62 @@ void LightControl::common()
 
 }
 
+/*
+ * Test if a LightControl is equal to this one
+ *
+ * @param o the LightControl object to be checked
+ * @return True if the LightControl is equal, else false
+ */
+//@Override
+/*public*/ bool LightControl::equals(QObject* o) {
+    if (o == nullptr) return false;
+    if (this == o) {
+        return true;
+    }
+    if (!(qobject_cast<LightControl*>(o))) {
+        return false;
+    }
+    LightControl* that = (LightControl*) o;
+    if (that->_controlType != this->_controlType) return false;
+
+    switch(_controlType) {
+        case Light::NO_CONTROL :
+            return true;
+        case Light::SENSOR_CONTROL :
+            if (that->_controlSensorName != (this->_controlSensorName)) return false;
+            if (that->_controlSensorSense != this->_controlSensorSense) return false;
+            return true;
+        case Light::FAST_CLOCK_CONTROL :
+            if (that->getFastClockOffCombined() != this->getFastClockOffCombined()) return false;
+            if (that->getFastClockOnCombined() != this->getFastClockOnCombined()) return false;
+            return true;
+        case Light::TURNOUT_STATUS_CONTROL :
+            if (that->_controlTurnoutName != (this->_controlTurnoutName)) return false;
+            if (that->_turnoutState != this->_turnoutState) return false;
+            return true;
+        case Light::TIMED_ON_CONTROL :
+            if (that->_timedSensorName != (this->_timedSensorName)) return false;
+            if (that->_timeOnDuration != this->_timeOnDuration) return false;
+            return true;
+        case Light::TWO_SENSOR_CONTROL :
+            if (that->_controlSensorName !=(this->_controlSensorName)) return false;
+            if (that->_controlSensorSense != this->_controlSensorSense) return false;
+            if (that->_controlSensor2Name !=(this->_controlSensor2Name)) return false;
+            return true;
+        default:
+            // unexpected _controlType value
+//            jmri.util.Log4JUtil.warnOnce(log, "Unexpected _controlType = {}", _controlType);
+     log->warn(tr("Unexpected _controlType = %1").arg(_controlType));
+            return true; // since _controlType matches
+    }
+}
+
+//@Override
+/*public*/ int LightControl::hashCode() {
+    // matches with equals() by contract
+    return _controlType;
+}
+
 /**
  * Accessor methods
  */
@@ -110,6 +167,24 @@ void LightControl::common()
 /*public*/ void LightControl::setControlSensorSense(int sense) {_controlSensorSense = sense;}
 /*public*/ int LightControl::getFastClockOnHour() {return _fastClockOnHour;}
 /*public*/ int LightControl::getFastClockOnMin() {return _fastClockOnMin;}
+/*
+ * Get the Fast Clock On Hours and Minutes Combined
+ * Convenience method of separate getFastClockOnHour() and getFastClockOnMin()
+ * @return  Total combined Minute value
+ */
+/*protected*/ int LightControl::getFastClockOnCombined() {
+    return _fastClockOnHour*60+_fastClockOnMin;
+}
+
+/*
+ * Get the Fast Clock Off Hours and Minutes Combined
+ * Convenience method of separate getFastClockOnHour() and getFastClockOnMin()
+ * @return  Total combined Minute value
+ */
+/*protected*/ int LightControl::getFastClockOffCombined() {
+    return _fastClockOffHour*60+_fastClockOffMin;
+}
+
 /*public*/ int LightControl::getFastClockOffHour() {return _fastClockOffHour;}
 /*public*/ int LightControl::getFastClockOffMin() {return _fastClockOffMin;}
 /*public*/ void LightControl::setFastClockControlSchedule(int onHour,int onMin,int offHour, int offMin) {
@@ -445,6 +520,118 @@ void LightControl::common()
                 _parentLight->setState(Light::OFF);
             }
         }
+    }
+}
+
+/**
+ * Internal routine for seeing if we have the latest time to control the FastClock Follower.
+ * <p>
+ * Takes previous day times
+ *
+ * @return True if we have the most recent time ( either on or off ), otherwise False.
+ */
+/*private*/ bool LightControl::isMasterFastClockFollower()
+{
+    QList<int> otherControlTimes= QList<int>();
+    QList<int> thisControlTimes= QList<int>();
+
+    // put all other times in a single List to compare
+    //_parentLight.getLightControlList().forEach((otherLc) -> {
+    foreach(LightControl* otherLc, _parentLight->getLightControlList())
+    {
+        if ((otherLc!=this )&& (otherLc->getControlType()==Light::FAST_CLOCK_CONTROL))
+        {
+            // by adding 1440 mins to the today times, we can check yesterday in the same list.
+            otherControlTimes.append( otherLc->getFastClockOnCombined() ); // yesterdayOnTime
+            otherControlTimes.append( otherLc->getFastClockOffCombined() ); // yesterdayOffTime
+            otherControlTimes.append( otherLc->getFastClockOnCombined()+1440 ); // todayOnTime
+            otherControlTimes.append( otherLc->getFastClockOffCombined()+1440 ); // todayOffTime
+        }
+    }//);
+    log->debug(tr("%1 other control times in list %2").arg(otherControlTimes.size()).arg("otherControlTimes"));
+
+    thisControlTimes.append( getFastClockOnCombined() ); // yesterdayOnTime
+    thisControlTimes.append( getFastClockOffCombined() ); // yesterdayOffTime
+    thisControlTimes.append( getFastClockOnCombined()+1440 ); // todayOnTime
+    thisControlTimes.append( getFastClockOffCombined()+1440 ); // todayOffTime
+
+    //otherControlTimes.removeIf( e -> ( e > ( _timeNow +1440 ) )); // remove future times
+    bool wrk = true;
+    while(wrk)
+    {
+     foreach (int e, otherControlTimes)
+     {
+      if(e>_timeNow +1440)
+      {
+       otherControlTimes.removeOne(e);
+       break;
+      }
+     }
+     wrk = false;
+    }
+    //thisControlTimes.removeIf( e -> ( e > ( _timeNow +1440 ) )); // remove future times
+    wrk = true;
+    while(wrk)
+    {
+     foreach (int e, thisControlTimes)
+     {
+      if(e>_timeNow +1440)
+      {
+       thisControlTimes.removeOne(e);
+       break;
+      }
+     }
+     wrk = false;
+    }
+
+    if (otherControlTimes.size()==0){
+        return true;
+    }
+#if 0 //TODO:
+    if (Collections.max(thisControlTimes) < Collections.max(otherControlTimes)){
+        return false;
+    }
+#endif
+    return true;
+}
+
+/**
+ * Check to see if we have the FastClock Follower has unique times for a single Light Control.
+ * <p>
+ * Hour / Minute combination must be unique for each Light to avoid flicker.
+ *
+ * @return true if the clock on time equals the off time, otherwise false.
+ */
+/*public*/ bool LightControl::onOffTimesFaulty() {
+    return (getFastClockOnCombined()==getFastClockOffCombined());
+}
+
+/**
+ * @param time Combined hours / mins to check against.
+ */
+/*private*/ Predicate<LightControl*> LightControl::isFastClockEqual(int time) {
+#if 0 // TODO:
+    return p -> ( (p!=this) && (
+        p.getFastClockOnCombined() == time || p.getFastClockOffCombined() == time ) );
+#endif
+}
+
+/**
+ * Check to see if we have the FastClock Follower has unique times for a single Light.
+ * <p>
+ * Hour / Minute combination must be unique for each Light to avoid flicker.
+ *
+ * @param compareList the ArrayList of other Light Controls to compare against
+ * @return true if there are multiple exact same times
+ */
+/*public*/ bool LightControl::areFollowerTimesFaulty( QList<LightControl*> compareList ) {
+    if (onOffTimesFaulty()){
+        return true;
+    }
+//    return (compareList.stream().anyMatch(isFastClockEqual(getFastClockOnCombined())) ||
+//        compareList.stream().anyMatch(isFastClockEqual(getFastClockOffCombined())));
+    foreach (LightControl* lc, compareList) {
+
     }
 }
 

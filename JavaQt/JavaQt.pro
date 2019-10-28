@@ -223,7 +223,8 @@ SOURCES += javaqt.cpp \
     bufferedwriter.cpp \
     outputstreamwriter.cpp \
     nmrapacket.cpp \
-    vetoablechangelistenerproxy.cpp
+    vetoablechangelistenerproxy.cpp \
+    predicate.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -485,7 +486,8 @@ HEADERS += javaqt.h\
     providingmanager.h \
     nmrapacket.h \
     vetoablechangelistenerproxy.h \
-    proxymanager.h
+    proxymanager.h \
+    predicate.h
 
 unix {
     target.path = /usr/lib

@@ -64,6 +64,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -212,6 +213,8 @@ virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  loc
 virtual Light*  newLight(QString  systemName, QString  userName);
 virtual QString  normalizeSystemName(QString  systemName);
 virtual void propertyChange(PropertyChangeEvent*  e);
+virtual Light*  provide(QString  name) throw (IllegalArgumentException)
+;
 virtual Light*  provideLight(QString  name);
 virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
@@ -297,7 +300,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
@@ -765,7 +767,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
@@ -798,6 +799,7 @@ virtual void vetoableChange(PropertyChangeEvent*  evt);
 class PythonQtPublicPromoter_AbstractReporterManager : public AbstractReporterManager
 { public:
 inline bool  py_q_allowMultipleAdditions(QString  systemName) { return AbstractReporterManager::allowMultipleAdditions(systemName); }
+inline QString  py_q_getBeanTypeHandled(bool  plural) { return AbstractReporterManager::getBeanTypeHandled(plural); }
 inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) const { return AbstractReporterManager::getNextValidAddress(curAddress, prefix); }
 inline int  py_q_getXMLOrder() { return AbstractReporterManager::getXMLOrder(); }
 inline char  py_q_typeLetter() { return AbstractReporterManager::typeLetter(); }
@@ -810,6 +812,7 @@ public slots:
 AbstractReporterManager* new_AbstractReporterManager(SystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_AbstractReporterManager(AbstractReporterManager* obj) { delete obj; } 
    bool  py_q_allowMultipleAdditions(AbstractReporterManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_allowMultipleAdditions(systemName));}
+   QString  py_q_getBeanTypeHandled(AbstractReporterManager* theWrappedObject, bool  plural){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
    QString  py_q_getNextValidAddress(AbstractReporterManager* theWrappedObject, QString  curAddress, QString  prefix) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}
    int  py_q_getXMLOrder(AbstractReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getXMLOrder());}
    char  py_q_typeLetter(AbstractReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_typeLetter());}
@@ -967,7 +970,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual Sensor*  getBySystemName(QString  key);
 virtual Sensor*  getByUserName(QString  key);
@@ -1491,7 +1493,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual Turnout*  getBySystemName(QString  name);
 virtual Turnout*  getByUserName(QString  key);
@@ -2009,7 +2010,6 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual Audio*  getAudio(QString  arg__1);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual Audio*  getBySystemName(QString  arg__1);
 virtual Audio*  getByUserName(QString  arg__1);
@@ -2888,7 +2888,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
@@ -2904,6 +2903,7 @@ virtual int  getXMLOrder();
 virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale());
 virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
+virtual Block*  provide(QString  name) throw (IllegalArgumentException);
 virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
@@ -2922,6 +2922,7 @@ class PythonQtPublicPromoter_BlockManager : public BlockManager
 inline QString  py_q_getSystemPrefix() { return BlockManager::getSystemPrefix(); }
 inline int  py_q_getXMLOrder() { return BlockManager::getXMLOrder(); }
 inline void py_q_propertyChange(PropertyChangeEvent*  e) { BlockManager::propertyChange(e); }
+inline Block*  py_q_provide(QString  name) throw (IllegalArgumentException) { return BlockManager::provide(name); }
 inline char  py_q_typeLetter() { return BlockManager::typeLetter(); }
 inline void py_q_vetoableChange(PropertyChangeEvent*  arg__1) { BlockManager::vetoableChange(arg__1); }
 };
@@ -2945,6 +2946,8 @@ void delete_BlockManager(BlockManager* obj) { delete obj; }
    int  py_q_getXMLOrder(BlockManager* theWrappedObject){  return (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_getXMLOrder());}
    BlockManager*  static_BlockManager_instance();
    void py_q_propertyChange(BlockManager* theWrappedObject, PropertyChangeEvent*  e){  (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_propertyChange(e));}
+   Block*  provide(BlockManager* theWrappedObject, QString  name) throw (IllegalArgumentException);
+   Block*  py_q_provide(BlockManager* theWrappedObject, QString  name) throw (IllegalArgumentException){  return (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_provide(name));}
    Block*  provideBlock(BlockManager* theWrappedObject, QString  name);
    bool  savePathInfo(BlockManager* theWrappedObject);
    void savePathInfo(BlockManager* theWrappedObject, bool  save);
@@ -3425,7 +3428,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual QString  getEntryToolTip();
 virtual bool  getLoadDisabled();

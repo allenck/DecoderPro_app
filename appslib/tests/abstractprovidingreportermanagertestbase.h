@@ -12,6 +12,7 @@ class AbstractProvidingReporterManagerTestBase : public AbstractManagerTestBase
  Q_OBJECT
 public:
  explicit AbstractProvidingReporterManagerTestBase(QObject *parent = nullptr);
+ virtual ~AbstractProvidingReporterManagerTestBase() {}
  /*public*/ void testRegisterDuplicateSystemName(ProxyReporterManager *m, QString s1, QString s2)
          throw (PropertyVetoException, /*NoSuchFieldException,
          NoSuchFieldException, */IllegalArgumentException, IllegalAccessException);

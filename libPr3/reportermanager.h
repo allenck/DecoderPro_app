@@ -3,12 +3,10 @@
 #include "abstractmanager.h"
 #include "reporter.h"
 #include "libPr3_global.h"
-#include "providingmanager.h"
 
-class LIBPR3SHARED_EXPORT ReporterManager : public AbstractManager, ProvidingManager
+class LIBPR3SHARED_EXPORT ReporterManager : public AbstractManager
 {
     Q_OBJECT
- Q_INTERFACES(ProvidingManager)
 public:
     //explicit ReporterManager(QObject *parent = 0);
     ReporterManager(SystemConnectionMemo* memo, QObject* parent =0) : AbstractManager(memo, parent) {}
@@ -69,7 +67,7 @@ public:
 
         //@Override
         /** {@inheritDoc} */
-        /*default*/ /*public*/ Reporter* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException)
+        virtual /*default*/ /*public*/ Reporter* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException)
         { return provideReporter(name); }
 
         /**

@@ -8,7 +8,8 @@ class QLocale;
 class GregorianCalendar : public Calendar
 {
 public:
-    /*public*/ GregorianCalendar(QTimeZone zone, QLocale aLocale);
+ /*public*/ GregorianCalendar();
+ /*public*/ GregorianCalendar(QTimeZone zone, QLocale aLocale);
 
 };
 

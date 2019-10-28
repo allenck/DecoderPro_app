@@ -161,7 +161,7 @@ class LTFrameActionListener : public ActionListener
   ActionJList* ajl;
  int index;
 public:
- LTFrameActionListener(int index, ActionJList* ajl)
+ LTFrameActionListener(int index, ActionJList* /*ajl*/)
  {
   this->index = index;
  }

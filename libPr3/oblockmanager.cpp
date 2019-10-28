@@ -102,6 +102,10 @@ OBlockManager::OBlockManager(QObject *parent) :
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
     return (OBlock*)_tuser->value(key);
 }
+//@Override
+/*public*/ OBlock* OBlockManager::provide(QString name) throw (IllegalArgumentException) {
+    return provideOBlock(name);
+}
 
 /*public*/ OBlock* OBlockManager::provideOBlock(QString name) {
     if (name==NULL || name.length()==0) { return NULL; }

@@ -17,13 +17,17 @@ public:
     /*public*/ Memory* getByUserName(QString key);
     /*public*/ Memory* newMemory(QString systemName, QString userName);
     /*public*/ Memory* newMemory(QString userName);
-    virtual Memory* createNewMemory(QString systemName, QString userName) =0;
+    /*public*/ QString getBeanTypeHandled(bool plural) ;
+    /*public*/ Memory* provide(QString name) throw (IllegalArgumentException);
+
 signals:
     void newMemoryCreated(Memory* m);
 public slots:
 private:
  Logger log;
- int lastAutoMemoryRef;// = 0;
+ int lastAutoMemoryRef = 0;
+protected:
+ /*abstract protected*/ virtual Memory* createNewMemory(QString systemName, QString userName) = 0;
 
 };
 

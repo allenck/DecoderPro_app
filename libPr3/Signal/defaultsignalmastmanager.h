@@ -33,6 +33,8 @@ public:
     /*public*/ QList<SignalMastRepeater*>* getRepeaterList();
     /*public*/ void initialiseRepeaters();
 #endif
+    /*public*/ SignalMast* provide(QString name) throw (IllegalArgumentException) override;
+
 signals:
     void newSignalMastCreated(AbstractSignalMast*);
     void propertyChange(PropertyChangeEvent *e);

@@ -23,6 +23,7 @@ class JAVAQTSHARED_EXPORT
 public:
     explicit Manager(QObject *parent = 0) : QObject(parent) {}
     Manager(SystemConnectionMemo* /*memo*/, QObject *parent = 0) : QObject(parent) {}
+    virtual ~Manager() {}
     /**
      * Basic interface for access to named, managed objects.
      * <P>
@@ -433,7 +434,7 @@ public:
       */
      //@CheckReturnValue
      //@Nonnull
-     /*public*/ virtual QString getBeanTypeHandled() {return "";}
+     /*public*/ QString getBeanTypeHandled() {return getBeanTypeHandled(false);}
      /*public*/ virtual /*default*/ QString getBeanTypeHandled(bool plural);
 
      /**

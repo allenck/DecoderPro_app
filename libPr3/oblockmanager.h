@@ -22,6 +22,7 @@ public:
     static OBlockManager* _instance;// = NULL;
     static /*public*/ OBlockManager* instance();
     /*public*/ bool isAssignableFromType() {return true;}
+    virtual /*public*/ OBlock *provide(QString name) throw (IllegalArgumentException);
 
 signals:
  void propertyChange(PropertyChangeEvent *e);

@@ -31,7 +31,7 @@ public:
     /*public*/ void deactivateLight();
     /*public*/ void clearLightControls();
     /*public*/ void addLightControl(LightControl* c);
-    /*public*/ QList<LightControl*>* getLightControlList();
+    /*public*/ QList<LightControl*> getLightControlList();
 
 signals:
     void propertyChange(QString propertyName, int oldState, int newState);

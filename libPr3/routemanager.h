@@ -78,6 +78,8 @@ public:
      */
     virtual void deleteRoute(Route* /*r*/) {}
 
+    virtual /*public*/ Route* provide(QString name) throw (IllegalArgumentException)=0;
+
 signals:
 
 public slots:

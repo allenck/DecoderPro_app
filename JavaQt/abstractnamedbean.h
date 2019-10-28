@@ -100,6 +100,7 @@ private:
   friend class LnReporter;
   friend class AbstractProvidingTurnoutManagerTestBase;
   friend class AbstractProvidingReporterManagerTestBase;
+  friend class AbstractProvidingMemoryManagerTestBase;
 };
 
 #endif // ABSTRACTNAMEDBEAN_H

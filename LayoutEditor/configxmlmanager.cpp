@@ -325,7 +325,7 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
  * one-liner in this class, it is a separate member to facilitate testing.
  */
 void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObject* /*o*/) {
-    log->error(ex.getMessage()+" could not load adapter class "+adapterName);
+    log->warn(ex.getMessage()+" could not load adapter class "+adapterName);
     //if (log->isDebugEnabled()) ex.printStackTrace();
 }
 

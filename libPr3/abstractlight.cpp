@@ -421,12 +421,12 @@ void AbstractLight::common()
 {
     lightControlList.append(c);
 }
-/*public*/ QList<LightControl*>* AbstractLight::getLightControlList()
+/*public*/ QList<LightControl*> AbstractLight::getLightControlList()
 {
- QList<LightControl*>* listCopy =  new  QList<LightControl*>();
+ QList<LightControl*> listCopy =  QList<LightControl*>();
  for (int i = 0; i<lightControlList.size() ; i++)
  {
-  listCopy->append(lightControlList.at(i));
+  listCopy.append(lightControlList.at(i));
  }
  return listCopy;
 }

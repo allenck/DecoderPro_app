@@ -67,7 +67,6 @@ SOURCES += appslib.cpp \
     apps.cpp \
     apps3.cpp \
     appsbase.cpp \
-    jlist.cpp \
     defaultinstanceinitializer.cpp \
     jmripreferencesprovider.cpp \
     nodeidentity.cpp \
@@ -78,6 +77,7 @@ SOURCES += appslib.cpp \
     createbuttonmodel.cpp \
     splashwindow.cpp \
     toolsmenu.cpp \
+    jlist.cpp \
     powerpanelaction.cpp \
     simpleturnoutctrlaction.cpp \
     simpleclockaction.cpp \
@@ -570,7 +570,13 @@ SOURCES += appslib.cpp \
     tests/loconet/lnreportermanagertestaction.cpp \
     tests/loconet/loconetsystemconnectionmemotest.cpp \
     tests/systemconnectionmemotestbase.cpp \
-    tests/loconet/loconetsystemconnectionmemotestaction.cpp
+    tests/loconet/loconetsystemconnectionmemotestaction.cpp \
+    tests/abstractprovidingmemorymanagertestbase.cpp \
+    tests/misc/defaultmemorymanagertest.cpp \
+    tests/misc/defaultmemorymanagertestaction.cpp \
+    jlisttablemodel.cpp \
+    tests/misc/lightcontroltest.cpp \
+    tests/misc/lightcontroltestaction.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -916,7 +922,6 @@ HEADERS += appslib.h\
     abstracttablemodel.h \
     dndjtable.h \
     defaulttablemodel.h \
-    jlist.h \
     jtablepersistencemanager.h \
     instancemanager.h \
     defaultinstanceinitializer.h \
@@ -1090,7 +1095,14 @@ HEADERS += appslib.h\
     tests/loconet/lnreportermanagertestaction.h \
     tests/loconet/loconetsystemconnectionmemotest.h \
     tests/systemconnectionmemotestbase.h \
-    tests/loconet/loconetsystemconnectionmemotestaction.h
+    tests/loconet/loconetsystemconnectionmemotestaction.h \
+    tests/abstractprovidingmemorymanagertestbase.h \
+    tests/misc/defaultmemorymanagertest.h \
+    tests/misc/defaultmemorymanagertestaction.h \
+    jlist.h \
+    jlisttablemodel.h \
+    tests/misc/lightcontroltest.h \
+    tests/misc/lightcontroltestaction.h
 
 unix:!symbian {
     maemo5 {

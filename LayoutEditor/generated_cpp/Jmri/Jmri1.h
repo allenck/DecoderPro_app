@@ -81,6 +81,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1596,7 +1597,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
@@ -2456,7 +2456,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual Light*  getBySystemName(QString  arg__1);
 virtual Light*  getByUserName(QString  arg__1);
@@ -2476,6 +2475,8 @@ virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  loc
 virtual Light*  newLight(QString  arg__1, QString  arg__2);
 virtual QString  normalizeSystemName(QString  arg__1);
 virtual void propertyChange(PropertyChangeEvent*  e);
+virtual Light*  provide(QString  name) throw (IllegalArgumentException)
+;
 virtual Light*  provideLight(QString  arg__1);
 virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
@@ -2503,6 +2504,8 @@ inline Light*  py_q_getByUserName(QString  arg__1) { return LightManager::getByU
 inline Light*  py_q_getLight(QString  arg__1) { return LightManager::getLight(arg__1); }
 inline Light*  py_q_newLight(QString  arg__1, QString  arg__2) { return LightManager::newLight(arg__1, arg__2); }
 inline QString  py_q_normalizeSystemName(QString  arg__1) { return LightManager::normalizeSystemName(arg__1); }
+inline Light*  py_q_provide(QString  name) throw (IllegalArgumentException)
+ { return LightManager::provide(name); }
 inline Light*  py_q_provideLight(QString  arg__1) { return LightManager::provideLight(arg__1); }
 inline bool  py_q_supportsVariableLights(QString  arg__1) { return LightManager::supportsVariableLights(arg__1); }
 inline bool  py_q_validSystemNameConfig(QString  arg__1) { return LightManager::validSystemNameConfig(arg__1); }
@@ -2530,6 +2533,10 @@ void delete_LightManager(LightManager* obj) { delete obj; }
    Light*  newLight(LightManager* theWrappedObject, QString  arg__1, QString  arg__2);
    Light*  py_q_newLight(LightManager* theWrappedObject, QString  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_newLight(arg__1, arg__2));}
    QString  py_q_normalizeSystemName(LightManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_normalizeSystemName(arg__1));}
+   Light*  provide(LightManager* theWrappedObject, QString  name) throw (IllegalArgumentException)
+;
+   Light*  py_q_provide(LightManager* theWrappedObject, QString  name) throw (IllegalArgumentException)
+{  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_provide(name));}
    Light*  provideLight(LightManager* theWrappedObject, QString  arg__1);
    Light*  py_q_provideLight(LightManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_provideLight(arg__1));}
    bool  supportsVariableLights(LightManager* theWrappedObject, QString  arg__1);
@@ -2927,7 +2934,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
@@ -3093,7 +3099,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual Sensor*  getBySystemName(QString  key);
 virtual Sensor*  getByUserName(QString  key);

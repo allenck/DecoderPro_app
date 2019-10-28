@@ -294,3 +294,8 @@ QCompleter* BlockManager::getCompleter(QString text)
 {
  AbstractManager::vetoableChange(evt);
 }
+
+//@Override
+/*public*/ Block* BlockManager::provide(QString name) throw (IllegalArgumentException) {
+    return provideBlock(name);
+}

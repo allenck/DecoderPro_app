@@ -618,6 +618,11 @@ void SimpleTimebase::updateMemory(double factor) {
     disconnect(this, SIGNAL(minuteTick()), l, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
+//@Override
+/*public*/ QList<PropertyChangeListener*>* SimpleTimebase::getMinuteChangeListeners() {
+    return getPropertyChangeListeners("minutes");
+}
+
 /*public*/ void SimpleTimebase::setState(int s) throw (JmriException){}
 /*public*/ int SimpleTimebase::getState(){ return 0; }
 

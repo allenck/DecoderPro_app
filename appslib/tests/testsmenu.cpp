@@ -38,6 +38,8 @@
 #include "tests/loconet/loconetmessageinterprettestaction.h"
 #include "tests/loconet/lnreportermanagertestaction.h"
 #include "tests/loconet/loconetsystemconnectionmemotestaction.h"
+#include "tests/misc/defaultmemorymanagertestaction.h"
+#include "tests/misc/lightcontroltestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -59,6 +61,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addAction(new SlotManagerTestAction(this));
     loconetTestMenu->addAction(new LocoNetSlotTestAction(this));
     loconetTestMenu->addAction(new LoconetSystemConnectionMemoTestAction(this));
+    loconetTestMenu->addAction(new DefaultMemoryManagerTestAction(this));
     QMenu* loconetProgrammersMenu = new QMenu(tr("Programmers ..."));
     loconetTestMenu->addMenu(loconetProgrammersMenu);
     loconetProgrammersMenu->addAction(new LnOpsModeProgrammerTestAction(this));
@@ -71,6 +74,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* loconetLightMenu = new QMenu(tr("Lights ..."));
     loconetTestMenu->addMenu(loconetLightMenu);
     loconetLightMenu->addAction(new LnLightTestAction(this));
+    loconetLightMenu->addAction(new LightControlTestAction(this));
     QMenu* loconetSensorsMenu = new QMenu(tr("Sensors ..."));
     loconetTestMenu->addMenu(loconetSensorsMenu);
     loconetSensorsMenu->addAction(new LnSensorTestAction(this));

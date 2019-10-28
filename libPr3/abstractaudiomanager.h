@@ -15,7 +15,7 @@ public:
  /*public*/ Audio* getBySystemName(QString key);
  /*public*/ Audio* getByUserName(QString key);
  /*public*/ Audio* newAudio(QString systemName, QString userName) /*throws AudioException */;
- /*public*/ QString getBeanTypeHandled();
+ /*public*/ QString getBeanTypeHandled(bool plural);
 
 signals:
 

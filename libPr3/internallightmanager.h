@@ -33,11 +33,11 @@ public:
     //protected void forwardCommandChangeToLayout(int s) {}
  protected:
     //@Override
-    /*protected*/ void sendIntensity(double intensity) {
+    /*protected*/ void sendIntensity(double /*intensity*/) {
     }
 
     //@Override
-    /*protected*/ void sendOnOffCommand(int newState) {
+    /*protected*/ void sendOnOffCommand(int /*newState*/) {
     }
 
     //@Override

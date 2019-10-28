@@ -157,6 +157,11 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
  }
  return result;
 }
+
+//@Override
+/*public*/ SignalMast* DefaultSignalMastManager::provide(QString name) throw (IllegalArgumentException) {
+    return provideSignalMast(name);
+}
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultSignalMastManager.class.getName());
 //}
 

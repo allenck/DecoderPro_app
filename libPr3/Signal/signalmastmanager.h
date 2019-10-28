@@ -63,10 +63,8 @@ public:
 
     /*public*/ virtual SignalMast* getBySystemName(QString /*s*/) {return NULL;}
     /*public*/ virtual SignalMast* getByUserName(QString /*s*/) {return NULL;}
-    /**
-     * Get a list of all SignalMast system names.
-     */
- ///*public*/ virtual QStringList getSystemNameList()  {return QStringList();}
+    virtual /*public*/ SignalMast* provide(QString name) throw (IllegalArgumentException)=0;
+
 friend class SignalMastIcon;
 friend class LayoutBlockManager;
 friend class MyLayoutEditpr;

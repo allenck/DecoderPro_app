@@ -79,11 +79,11 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
    elem.setAttribute("transitionTime", lgt->getTransitionTime());
 
    // save child lightcontrol entries
-   QList<LightControl*>* lcList = lgt->getLightControlList();
+   QList<LightControl*> lcList = lgt->getLightControlList();
    QDomElement lcElem = QDomElement();
-   for (int i=0; i<lcList->size(); i++)
+   for (int i=0; i<lcList.size(); i++)
    {
-    LightControl* lc = lcList->at(i);
+    LightControl* lc = lcList.at(i);
     if (lc!=NULL)
     {
      lcElem = doc.createElement("lightcontrol");

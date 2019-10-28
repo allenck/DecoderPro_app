@@ -156,6 +156,15 @@ virtual QDateTime getStartTime() {return QDateTime();}
      * Remove a request for call-back when the minutes place of the time changes.
      */
     virtual void removeMinuteChangeListener(PropertyChangeListener* /*l*/) {}
+    /**
+     * Get the list of minute change listeners. This is the same as calling
+     * {@link #getPropertyChangeListeners(String)} with the propertyName
+     * {@code minutes}.
+     *
+     * @return the list of listeners
+     */
+    //@Nonnull
+    virtual /*public*/ QList<PropertyChangeListener*>* getMinuteChangeListeners() =0;
 
     /**
      * Remove references to and from this object, so that it can

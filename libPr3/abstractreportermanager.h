@@ -17,6 +17,7 @@ public:
     Reporter* getReporter(QString name);
     Reporter* getBySystemName(QString name) const;
     Reporter* getByUserName(QString key);
+    /*public*/ QString getBeanTypeHandled(bool plural) override;
     Reporter* getByDisplayName(QString key);
     Reporter* newReporter(QString systemName, QString userName) throw(IllegalArgumentException);
     /**

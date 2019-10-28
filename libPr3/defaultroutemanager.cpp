@@ -123,5 +123,10 @@ int DefaultRouteManager::getLastAutoRouteRef()
  return (_instance);
 }
 
+//@Override
+/*public*/ Route* DefaultRouteManager::provide(QString name) throw (IllegalArgumentException) {
+    return provideRoute(name, "");
+}
+
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultRouteManager.class.getName());
 //}

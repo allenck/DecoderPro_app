@@ -1,9 +1,9 @@
 #include "gregoriancalendar.h"
 
-//GregorianCalendar::GregorianCalendar()
-//{
+GregorianCalendar::GregorianCalendar()
+{
 
-//}
+}
 /**
  * <code>GregorianCalendar</code> is a concrete subclass of
  * <code>Calendar</code> and provides the standard calendar system

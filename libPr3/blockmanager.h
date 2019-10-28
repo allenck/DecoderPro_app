@@ -40,6 +40,8 @@ public:
     /*public*/ void setDefaultSpeed(QString speed) throw (JmriException);
     /*public*/ QString getDefaultSpeed();
     QCompleter* getCompleter(QString text);
+    virtual /*public*/ Block* provide(QString name) throw (IllegalArgumentException);
+
 signals:
     void newBlockCreated(Block*);
     //void propertyChange(PropertyChangeEvent *e);

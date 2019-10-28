@@ -109,7 +109,7 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
  *  @param  columnIndex the column being queried
  *  @return false
  */
-/*public*/ bool AbstractTableModel::isCellEditable(int rowIndex, int columnIndex) const
+/*public*/ bool AbstractTableModel::isCellEditable(int /*rowIndex*/, int /*columnIndex*/) const
 {
     return false;
 }
@@ -128,7 +128,7 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
  *  @param  rowIndex   row of cell
  *  @param  columnIndex  column of cell
  */
-/*public*/ void AbstractTableModel::setValueAt(QVariant aValue, int rowIndex, int columnIndex) {
+/*public*/ void AbstractTableModel::setValueAt(QVariant /*aValue*/, int rowIndex, int /*columnIndex*/) {
 }
 
 /*private*/ bool AbstractTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -151,7 +151,7 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
  *
  * @param   l               the TableModelListener
  */
-/*public*/ void AbstractTableModel::addTableModelListener(TableModelListener* l) {
+/*public*/ void AbstractTableModel::addTableModelListener(TableModelListener* /*l*/) {
 //    listenerList.add(TableModelListener.class, l);
 }
 

@@ -79,9 +79,7 @@
        log->debug(tr("read CV \"%1\" addr:%2").arg(CV).arg(mAddress));
        parts = CV.split(QRegExp("\\."));
        int typeWord = parts.at(0).toInt();
-       int state =0; //= Integer.parseInt(parts[parts.length>1 ? 1 : 0]);
-       if(parts.size() > 0)
-        state = 1;
+       int state = parts.at(parts.length()>1 ? 1 : 0).toInt();
 
        // make message
        m = new LocoNetMessage(6);
@@ -356,12 +354,6 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
 /*public*/ QList<ProgrammingMode*> LnOpsModeProgrammer::getSupportedModes()
 {
  QVector<ProgrammingMode*> ret =  QVector<ProgrammingMode*>();//  (4,nullptr);
- // ACK Added these
- ret.append(ProgrammingMode::DIRECTBYTEMODE);
- ret.append(ProgrammingMode::PAGEMODE);
- ret.append(ProgrammingMode::REGISTERMODE);
- ret.append(ProgrammingMode::ADDRESSMODE);
- //
  ret.append(ProgrammingMode::OPSBYTEMODE);
  ret.append(LnProgrammerManager::LOCONETOPSBOARD);
  ret.append(LnProgrammerManager::LOCONETSV1MODE);

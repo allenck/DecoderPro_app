@@ -13,6 +13,7 @@ public:
     explicit NamedBean(QObject *parent = 0);
     NamedBean(QString name, QObject *parent = 0);
     NamedBean(const NamedBean&);
+    virtual ~NamedBean() {}
     /**
      * Parent class for a set of classes that describe if a user name or system
      * name is a bad name.

@@ -63,5 +63,5 @@ InternalLightManager::InternalLightManager(InternalSystemConnectionMemo* memo, Q
  */
 //@Override
 /*public*/ QString InternalLightManager::getEntryToolTip() {
-    return tr("abc123<br>(any string except $, :, \).");
+    return tr("abc123<br>(any string except $, :, \\).");
 }

@@ -65,7 +65,7 @@ private:
     QPushButton* cancel;
     QPushButton* addControl;
 
-    QList<LightControl*>* controlList;// = new ArrayList<LightControl>();
+    QList<LightControl*> controlList;// = new ArrayList<LightControl>();
     QString sensorControl;// = tr("LightSensorControl");
     QString fastClockControl;// = tr("LightFastClockControl");
     QString turnoutStatusControl;// = tr("LightTurnoutStatusControl");

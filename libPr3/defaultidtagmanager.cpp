@@ -97,6 +97,11 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 /*public*/ char DefaultIdTagManager::typeLetter() { return 'D'; }
 
 //@Override
+/*public*/ IdTag* DefaultIdTagManager::provide(QString name) throw (IllegalArgumentException) {
+    return provideIdTag(name);
+}
+
+//@Override
 /*public*/ QString DefaultIdTagManager::getSystemPrefix() { return "I"; }
 
 //@Override

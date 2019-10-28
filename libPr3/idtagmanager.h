@@ -175,6 +175,8 @@ public:
      * @return state of initialisation
      */
     /*public*/ virtual bool isInitialised() {return false;}
+    virtual /*public*/ IdTag* provide(QString name) throw (IllegalArgumentException) =0;
+
  friend class IdTagManagerXml;
 };
 //Q_DECLARE_INTERFACE(IdTagManager, "IdTagManager")

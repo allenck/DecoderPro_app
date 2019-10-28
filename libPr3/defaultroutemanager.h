@@ -39,6 +39,8 @@ public:
     /*public*/ Route* getByUserName(QString key);
     static /*public*/ DefaultRouteManager* instance();
     int getLastAutoRouteRef();
+    /*public*/ Route* provide(QString name) throw (IllegalArgumentException) override;
+
 
 signals:
  void newRouteCreated(Route*);

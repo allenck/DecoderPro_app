@@ -22,21 +22,21 @@ public:
 private:
  void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 };
-
+#if 0
 class JAVAQTSHARED_EXPORT JListTableModel : public AbstractTableModel
 {
  Q_OBJECT
  QList<QString> list;
 public:
  JListTableModel(QList<QString>);
- int rowCount(const QModelIndex &parent) const;
- int columnCount(const QModelIndex &parent) const;
- QVariant headerData(int section, Qt::Orientation orientation, int role) const;
- Qt::ItemFlags flags(const QModelIndex &index) const;
- QVariant data(const QModelIndex &index, int role) const;
+ int rowCount(const QModelIndex &parent) const override;
+ int columnCount(const QModelIndex &parent) const override;
+ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ Qt::ItemFlags flags(const QModelIndex &index) const override;
+ QVariant data(const QModelIndex &index, int role) const override;
  /*public*/ int getRowCount() {return rowCount(QModelIndex());}
  /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
 
 };
-
+#endif
 #endif // JLIST_H

@@ -10,6 +10,7 @@ class JAVAQTSHARED_EXPORT AbstractListModel : public ListModel
     Q_OBJECT
 public:
     explicit AbstractListModel(QObject *parent = 0);
+ virtual ~AbstractListModel() {}
     /*public*/ void addListDataListener(ListDataListener* l);
     /*public*/ void removeListDataListener(ListDataListener* l);
     /*public*/ QList<ListDataListener*>* getListDataListeners();

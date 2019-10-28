@@ -9,6 +9,7 @@
 #include "namedbeanhandle.h"
 #include "actionlistener.h"
 #include <QTimer>
+#include "predicate.h"
 
 class Timebase;
 class Light;
@@ -18,10 +19,13 @@ class LIBPR3SHARED_EXPORT LightControl : public QObject
 public:
     explicit LightControl(QObject *parent = 0);
     LightControl(Light *l, QObject *parent = 0);
+    Q_INVOKABLE /*public*/ bool equals(QObject* o);
+
     /**
      * Accessor methods
      */
     /*public*/ int getControlType();
+    /*public*/ int hashCode();
     /*public*/ void setControlType(int type);
     /*public*/ void setControlSensorName(QString sensorName);
     /*public*/ int getControlSensorSense() ;
@@ -55,6 +59,9 @@ public:
      *   for the control type.
      */
     /*public*/ void deactivateLightControl();
+    /*public*/ bool onOffTimesFaulty();
+    /*public*/ bool areFollowerTimesFaulty( QList<LightControl*> compareList );
+
 
 signals:
     
@@ -72,13 +79,22 @@ private:
     QString _timedSensorName;     // trigger Sensor if TIMED_ON_CONTROL
     QString _controlSensor2Name; // second controlling sensor if TWO_SENSOR_CONTROL
     // operational instance variables - not saved between runs
-    bool _active;
-    PropertyChangeListener* _sensorListener;
-    PropertyChangeListener* _sensor2Listener;
-    PropertyChangeListener* _timebaseListener;
-    PropertyChangeListener* _turnoutListener;
-    PropertyChangeListener* _timedSensorListener;
-    bool _lightOnTimerActive;
+    /*private*/ Light* _parentLight = nullptr;        // Light that is being controlled
+    bool _active = false;
+    /*private*/ NamedBeanHandle<Sensor*>* _namedControlSensor = nullptr;
+    PropertyChangeListener* _sensorListener = nullptr;
+    /*private*/ NamedBeanHandle<Sensor*>* _namedControlSensor2 = nullptr;
+    /*private*/ PropertyChangeListener* _timedSensorListener = nullptr;
+    /*private*/ QTimer* _timedControlTimer = nullptr;
+    /*private*/ ActionListener* _timedControlListener = nullptr;
+    /*private*/ int _timeNow = 0;
+    /*private*/ PropertyChangeListener* _parentLightListener = nullptr;
+    PropertyChangeListener* _sensor2Listener = nullptr;
+    PropertyChangeListener* _timebaseListener = nullptr;
+    PropertyChangeListener* _turnoutListener = nullptr;
+    bool _lightOnTimerActive = false;
+    Timebase* _clock = nullptr;
+
 
     NamedBeanHandleManager* nbhm;
     /**
@@ -89,22 +105,22 @@ private:
     /*private*/ void updateClockControlLight();
     void common();
 Logger* log;
-protected:
-    int _controlSensorSense;  // sense of Sensor for Light ON
-    int _timeOnDuration;          // duration (milliseconds) if TIMED_ON_CONTROL
-    // operational instance variables - not saved between runs
-    Light* _parentLight;        // Light that is being controlled
-    NamedBeanHandle<Sensor*>* _namedControlSensor;
-    NamedBeanHandle<Sensor*>* _namedControlSensor2;
-    Timebase* _clock;
-    int _timeOn;
-    int _timeOff;
-    Turnout* _controlTurnout;
-    NamedBeanHandle<Sensor*>* _namedTimedControlSensor;
-    QTimer* _timedControlTimer;
-    ActionListener* _timedControlListener;
-    /*protected*/ void twoSensorChanged(PropertyChangeEvent* e);
+    /*private*/ bool isMasterFastClockFollower();
+    /*private*/ Predicate<LightControl*> isFastClockEqual(int time);
 
+protected:
+    int _controlSensorSense = 0;  // sense of Sensor for Light ON
+    int _timeOnDuration =0;          // duration (milliseconds) if TIMED_ON_CONTROL
+    // operational instance variables - not saved between runs
+    int _timeOn=0;
+    int _timeOff=0;
+    Turnout* _controlTurnout= nullptr;
+    NamedBeanHandle<Sensor*>* _namedTimedControlSensor = nullptr;
+    /*protected*/ void twoSensorChanged(PropertyChangeEvent* e);
+    /*protected*/ int getFastClockOffCombined();
+    /*protected*/ int getFastClockOnCombined();
+
+    friend class LightControlTest;
 };
 
 #endif // LIGHTCONTROL_H

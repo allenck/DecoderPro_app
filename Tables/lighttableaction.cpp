@@ -94,7 +94,7 @@ void LightTableAction::common()
  cancel = nullptr;
  addControl = nullptr;
 
- controlList = new QList<LightControl*>();
+ controlList = QList<LightControl*>();
  sensorControl = tr("By Sensor");
  fastClockControl = tr("By Fast Clock");
  turnoutStatusControl = tr("By Turnout Status");
@@ -1150,8 +1150,8 @@ void LightTableAction::updatePressed(ActionEvent* /*e*/) {
         return;
     }
     g->clearLightControls();
-    for (int i = 0; i < controlList->size(); i++) {
-        LightControl* lc = controlList->at(i);
+    for (int i = 0; i < controlList.size(); i++) {
+        LightControl* lc = controlList.at(i);
         lc->setParentLight(g);
         g->addLightControl(lc);
     }
@@ -1194,8 +1194,8 @@ void LightTableAction::cancelPressed(ActionEvent* /*e*/) {
 }
 
 /*private*/ void LightTableAction::clearLightControls() {
-    for (int i = controlList->size(); i > 0; i--) {
-        controlList->removeAt(i - 1);
+    for (int i = controlList.size(); i > 0; i--) {
+        controlList.removeAt(i - 1);
     }
     lightControlTableModel->fireTableDataChanged();
 }
@@ -1488,7 +1488,7 @@ void LightTableAction::setUpControlType(QString ctype) {
     }
     lc = new LightControl();
     if (setControlInformation(lc)) {
-        controlList->append(lc);
+        controlList.append(lc);
         lightControlChanged = true;
         lightControlTableModel->fireTableDataChanged();
         cancelControlPressed(e);
@@ -1881,7 +1881,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
  * Responds to Edit button on row in the Light Control Table
  */
 /*protected*/ void LightTableAction::editControlAction(int row) {
-    lc = controlList->at(row);
+    lc = controlList.at(row);
     if (lc == NULL) {
          log->error("Invalid light control edit specified");
         return;
@@ -1957,7 +1957,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
  * Responds to Delete button on row in the Light Control Table
  */
 /*protected*/ void LightTableAction::deleteControlAction(int row) {
-    controlList->removeAt(row);
+    controlList.removeAt(row);
     lightControlTableModel->fireTableDataChanged();
     lightControlChanged = true;
 }
@@ -2011,7 +2011,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
 
     /*public*/ int LightControlTableModel::rowCount(const QModelIndex &parent) const
     {
-        return (lta->controlList->size());
+        return (lta->controlList.size());
     }
 
     /*public*/ Qt::ItemFlags LightControlTableModel::flags(const QModelIndex &index) const
@@ -2064,10 +2064,10 @@ QString LightTableAction::formatTime(int hour, int minute) {
       if(role == Qt::DisplayRole)
       {
         int rx = index.row();
-        if (rx > lta->controlList->size()) {
+        if (rx > lta->controlList.size()) {
             return QVariant();
         }
-        LightControl* lc = lta->controlList->at(rx);
+        LightControl* lc = lta->controlList.at(rx);
         int c = index.column();
         switch (c) {
             case TYPE_COLUMN:

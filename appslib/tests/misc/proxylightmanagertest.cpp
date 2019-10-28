@@ -28,7 +28,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
 //    protected class Listen implements PropertyChangeListener {
 
         //@Override
-        /*public*/ void ListenO7::propertyChange(PropertyChangeEvent* e) {
+        /*public*/ void ListenO7::propertyChange(PropertyChangeEvent* /*e*/) {
             this->test->listenerResult = true;
         }
 //    }

@@ -12,6 +12,7 @@ public:
     explicit JUnitAppender(QObject *parent = nullptr);
 
     /*public*/ static void assertErrorMessage(QString msg, QString file=__FILE__, int line=__LINE__);
+    /*public*/ static void assertErrorMessageStartsWith(QString msg, QString file, int line);
     /*public*/ static void assertWarnMessage(QString msg, QString file=__FILE__, int line=__LINE__);
     /*public*/ static void assertMessage(QString msg, QString file=__FILE__, int line=__LINE__);
     /*public*/ static LoggingEvent* checkForMessage(QString msg);

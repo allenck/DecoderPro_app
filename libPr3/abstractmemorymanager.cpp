@@ -27,9 +27,9 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
  Memory* t = getMemory(sName);
  if (t!=NULL) return t;
  if (sName.startsWith(getSystemPrefix()+typeLetter()))
-  return newMemory(sName, NULL);
+  return newMemory(sName, "");
  else
-  return newMemory(makeSystemName(sName), NULL);
+  return newMemory(makeSystemName(sName), "");
 }
 
 /*public*/ Memory* AbstractMemoryManager::getMemory(QString name) {
@@ -55,7 +55,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     if (systemName == NULL){
         log.error("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
-        throw new IllegalArgumentException("SystemName cannot be NULL. UserName was "
+        throw IllegalArgumentException("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
     }
     // return existing if there is one
@@ -77,7 +77,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     s = createNewMemory(systemName, userName);
 
     // if that failed, blame it on the input arguements
-    if (s == NULL) throw new IllegalArgumentException();
+    if (s == NULL) throw IllegalArgumentException();
 
     // save in the maps
     Register(s);
@@ -116,14 +116,26 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
 
 //DecimalFormat paddedNumber = new DecimalFormat("0000");
 
-int lastAutoMemoryRef = 0;
 
 /**
  * Internal method to invoke the factory, after all the
  * logic for returning an existing method has been invoked.
  * @return never NULL
  */
-/*abstract protected*/ Memory* createNewMemory(QString systemName, QString userName);
+// /*abstract protected*/ Memory* AbstractMemoryManager::createNewMemory(QString systemName, QString userName);
+
+/** {@inheritDoc} */
+//@Override
+//@Nonnull
+/*public*/ QString AbstractMemoryManager::getBeanTypeHandled(bool plural) {
+    return (plural ? tr("Memories") : tr("Memory"));
+}
+
+//@Override
+//@Nonnull
+/*public*/ Memory* AbstractMemoryManager::provide(QString name) throw (IllegalArgumentException) {
+    return provideMemory(name);
+}
 
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractMemoryManager.class.getName());
 //}

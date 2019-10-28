@@ -17,6 +17,7 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -579,7 +580,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual Route*  getBySystemName(QString  arg__1);
 virtual Route*  getByUserName(QString  arg__1);
@@ -599,6 +599,7 @@ virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  loc
 virtual Route*  newRoute(QString  arg__1);
 virtual QString  normalizeSystemName(QString  inputName);
 virtual void propertyChange(PropertyChangeEvent*  e);
+virtual Route*  provide(QString  name) throw (IllegalArgumentException);
 virtual Route*  provideRoute(QString  arg__1, QString  arg__2);
 virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
@@ -621,6 +622,7 @@ inline Route*  py_q_getBySystemName(QString  arg__1) { return RouteManager::getB
 inline Route*  py_q_getByUserName(QString  arg__1) { return RouteManager::getByUserName(arg__1); }
 inline Route*  py_q_getRoute(QString  arg__1) { return RouteManager::getRoute(arg__1); }
 inline Route*  py_q_newRoute(QString  arg__1) { return RouteManager::newRoute(arg__1); }
+inline Route*  py_q_provide(QString  name) throw (IllegalArgumentException) { return this->provide(name); }
 inline Route*  py_q_provideRoute(QString  arg__1, QString  arg__2) { return RouteManager::provideRoute(arg__1, arg__2); }
 };
 
@@ -641,6 +643,8 @@ void delete_RouteManager(RouteManager* obj) { delete obj; }
    Route*  py_q_getRoute(RouteManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getRoute(arg__1));}
    Route*  newRoute(RouteManager* theWrappedObject, QString  arg__1);
    Route*  py_q_newRoute(RouteManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_newRoute(arg__1));}
+   Route*  provide(RouteManager* theWrappedObject, QString  name) throw (IllegalArgumentException);
+   Route*  py_q_provide(RouteManager* theWrappedObject, QString  name) throw (IllegalArgumentException){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_provide(name));}
    Route*  provideRoute(RouteManager* theWrappedObject, QString  arg__1, QString  arg__2);
    Route*  py_q_provideRoute(RouteManager* theWrappedObject, QString  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_provideRoute(arg__1, arg__2));}
 };
@@ -815,7 +819,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual Sensor*  getBySystemName(QString  arg__1);
 virtual Sensor*  getByUserName(QString  arg__1);
@@ -2463,7 +2466,6 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled();
 virtual QString  getBeanTypeHandled(bool  plural);
 virtual Turnout*  getBySystemName(QString  arg__1);
 virtual Turnout*  getByUserName(QString  arg__1);

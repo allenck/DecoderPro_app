@@ -1,5 +1,5 @@
 #include "jlist.h"
-
+#include "jlisttablemodel.h"
 JList::JList(QWidget* parent) : QListView(parent)
 {
 
@@ -66,7 +66,7 @@ QModelIndexList JList::getSelectedValues()
   }
  }
 }
-
+#if 0
 JListTableModel::JListTableModel(QList<QString> list)
 {
  this->list = list;
@@ -99,7 +99,7 @@ QVariant JListTableModel::data(const QModelIndex &index, int role) const
   return list.at(index.row());
  return QVariant();
 }
-
+#endif
 QModelIndex JList::locationToIndex(QPoint p)
 {
  return indexAt(p);

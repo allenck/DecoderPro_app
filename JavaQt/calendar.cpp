@@ -1671,7 +1671,7 @@
             set(HOUR_OF_DAY, hourOfDay);
             set(MINUTE, minute);
         }
-#if 0
+
         /**
          * Sets the values for the fields <code>YEAR</code>, <code>MONTH</code>,
          * <code>DAY_OF_MONTH</code>, <code>HOUR_OF_DAY</code>, <code>MINUTE</code>, and
@@ -1690,7 +1690,7 @@
          * @see #set(int,int,int)
          * @see #set(int,int,int,int,int)
          */
-        /*public*/ /*final*/ void set(int year, int month, int date, int hourOfDay, int minute,
+        /*public*/ /*final*/ void Calendar::set(int year, int month, int date, int hourOfDay, int minute,
                               int second)
         {
             set(YEAR, year);
@@ -1700,7 +1700,7 @@
             set(MINUTE, minute);
             set(SECOND, second);
         }
-
+#if 0
         /**
          * Sets all the calendar field values and the time value
          * (millisecond offset from the <a href="#Epoch">Epoch</a>) of
