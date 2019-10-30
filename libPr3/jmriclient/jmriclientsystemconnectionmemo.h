@@ -16,6 +16,8 @@ public:
  JMRIClientSystemConnectionMemo();
  /*public*/ JMRIClientSystemConnectionMemo(JMRIClientTrafficController* jt);
  /*public*/ JMRIClientTrafficController* getJMRIClientTrafficController();
+ ~JMRIClientSystemConnectionMemo() {}
+ JMRIClientSystemConnectionMemo(const JMRIClientSystemConnectionMemo&) : SystemConnectionMemo() {}
  /*public*/ void setJMRIClientTrafficController(JMRIClientTrafficController* jt);
  /*public*/ void dispose();
  /*public*/ void configureManagers();
@@ -46,5 +48,5 @@ private:
  /*private*/ QString transmitPrefix;// = null;
 
 };
-
+Q_DECLARE_METATYPE(JMRIClientSystemConnectionMemo)
 #endif // JMRICLIENTSYSTEMCONNECTIONMEMO_H

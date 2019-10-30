@@ -10,6 +10,7 @@
 #include "actionlistener.h"
 #include <QTimer>
 #include "predicate.h"
+#include "propertychangelistener.h"
 
 class Timebase;
 class Light;
@@ -61,6 +62,7 @@ public:
     /*public*/ void deactivateLightControl();
     /*public*/ bool onOffTimesFaulty();
     /*public*/ bool areFollowerTimesFaulty( QList<LightControl*> compareList );
+    /*public*/ QString getDescriptionText(QString lightName);
 
 
 signals:
@@ -102,25 +104,108 @@ private:
      *   method is called every FastClock minute.
      */
     //@SuppressWarnings("deprecation")
-    /*private*/ void updateClockControlLight();
+    /*private*/ void updateClockControlLightFollower();
     void common();
-Logger* log;
+    static Logger* log;
+    /*private*/ void setTheTime();
     /*private*/ bool isMasterFastClockFollower();
-    /*private*/ Predicate<LightControl*> isFastClockEqual(int time);
+    /*private*/ bool isFastClockEqual(int time);
+    /*private*/ void oneSensorChanged(int newSensorState);
+    /*private*/ void oneTurnoutChanged(int newTurnoutState);
+    /*private*/ static QString getControlSensorSenseText(LightControl* lc);
+    /*private*/ static QString getControlTurnoutStateText(LightControl* lc);
 
 protected:
-    int _controlSensorSense = 0;  // sense of Sensor for Light ON
+    int _controlSensorSense = Sensor::ACTIVE;  // sense of Sensor for Light ON
     int _timeOnDuration =0;          // duration (milliseconds) if TIMED_ON_CONTROL
     // operational instance variables - not saved between runs
     int _timeOn=0;
     int _timeOff=0;
     Turnout* _controlTurnout= nullptr;
     NamedBeanHandle<Sensor*>* _namedTimedControlSensor = nullptr;
-    /*protected*/ void twoSensorChanged(PropertyChangeEvent* e);
+    /*protected*/ void twoSensorChanged();
     /*protected*/ int getFastClockOffCombined();
     /*protected*/ int getFastClockOnCombined();
 
     friend class LightControlTest;
+    friend class TimeLight;
+    friend class LC1PropertyChangeListener;
+    friend class LC2PropertyChangeListener;
+    friend class LC3PropertyChangeListener;
+    friend class LC4PropertyChangeListener;
+    friend class LC5PropertyChangeListener;
+    friend class LC6PropertyChangeListener;
+    friend class LightTableAction;
+};
+
+class LC1PropertyChangeListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ LightControl* lc;
+ public:
+ LC1PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+public slots:
+ void propertyChange(PropertyChangeEvent*);
+};
+
+class LC2PropertyChangeListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ LightControl* lc;
+ public:
+ LC2PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+public slots:
+ void propertyChange(PropertyChangeEvent*);
+};
+
+class LC3PropertyChangeListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ LightControl* lc;
+ public:
+ LC3PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+public slots:
+ void propertyChange(PropertyChangeEvent*);
+};
+
+class LC4PropertyChangeListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ LightControl* lc;
+ public:
+ LC4PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+public slots:
+ void propertyChange(PropertyChangeEvent*);
+};
+
+class LC5PropertyChangeListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ LightControl* lc;
+ public:
+ LC5PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+public slots:
+ void propertyChange(PropertyChangeEvent*);
+};
+
+class LC6PropertyChangeListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ LightControl* lc;
+ public:
+ LC6PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+public slots:
+ void propertyChange(PropertyChangeEvent*);
+};
+
+class TimeLight : public ActionListener
+{
+ Q_OBJECT
+ LightControl* lc;
+public:
+ TimeLight(LightControl* lc) {this->lc = lc;}
+ public slots:
+    /*public*/ void actionPerformed(/*ActionEvent* event*/);
 };
 
 #endif // LIGHTCONTROL_H

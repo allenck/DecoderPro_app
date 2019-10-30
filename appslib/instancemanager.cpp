@@ -325,7 +325,7 @@ void InstanceManager::deregister(QObject* item, QString type)
  if(o == nullptr)
  {
   QString msg = "Required nonnull default for " + type + " does not exist.";
-  log->error(msg);
+  log->warn(msg);
   //throw NullPointerException(msg);
  }
  else

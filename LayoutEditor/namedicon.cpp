@@ -208,7 +208,6 @@ void NamedIcon::init()
  }
 }
 
-/*
 /*public*/ QImage NamedIcon::getOriginalImage()
 {
  return mDefaultImage;
@@ -443,8 +442,6 @@ void debugDraw(QString op, Component c) {
   mDefaultImage = mDefaultImage.scaled(w,h);
   return;
  }
- int w = getIconWidth();
- int h = getIconHeight();
  if(flip==HORIZONTALFLIP)
  {
 //  _transformF = AffineTransform.getScaleInstance(-1, 1);
@@ -471,7 +468,6 @@ int NamedIcon::getIconHeight()
 {
  if(!mDefaultImage.isNull())
  {
-  int h = mDefaultImage.height();
   return mDefaultImage.height();
  }
  return 0;

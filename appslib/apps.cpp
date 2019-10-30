@@ -200,33 +200,33 @@ bool Apps::configDeferredLoadOK = false;
  // @see jmri.profile.ProfileManager#migrateToProfiles JavaDoc for conditions handled here
  if (!ProfileManager::defaultManager()->getConfigFile()->exists())
  { // no profile config for this app
-//  try
-//  {
- if (ProfileManager::defaultManager()->migrateToProfiles(configFilename))
- { // migration or first use
-   // notify user of change only if migration occured
-   // TODO: a real migration message
-//                JOptionPane.showMessageDialog(sp,
-//                        tr("ConfigMigratedToProfile"),
-//                        jmri.Application.getApplicationName(),
-//                        JOptionPane.INFORMATION_MESSAGE);
-  QMessageBox::information(sp, tr("Information"), tr("Please ensure that the User Files location and Roster location are correct."));
- }
-//  }
-//  catch (IOException ex)
-//  {
-//            JOptionPane.showMessageDialog(sp,
-//                    ex.getLocalizedMessage(),
-//                    jmri.Application.getApplicationName(),
-//                    JOptionPane.ERROR_MESSAGE);
-//            log->error(ex.getMessage());
-//  } catch (IllegalArgumentException ex) {
-//            JOptionPane.showMessageDialog(sp,
-//                    ex.getLocalizedMessage(),
-//                    jmri.Application.getApplicationName(),
-//                    JOptionPane.ERROR_MESSAGE);
-//            log->error(ex.getMessage());
-//  }
+  try
+  {
+   if (ProfileManager::defaultManager()->migrateToProfiles(configFilename))
+   { // migration or first use
+     // notify user of change only if migration occured
+     // TODO: a real migration message
+  //                JOptionPane.showMessageDialog(sp,
+  //                        tr("ConfigMigratedToProfile"),
+  //                        jmri.Application.getApplicationName(),
+  //                        JOptionPane.INFORMATION_MESSAGE);
+    QMessageBox::information(sp, tr("Information"), tr("Please ensure that the User Files location and Roster location are correct."));
+   }
+  }
+  catch (IOException ex)
+  {
+            JOptionPane::showMessageDialog(sp,
+                    ex.getLocalizedMessage(),
+                    QApplication::applicationName(),
+                    JOptionPane::ERROR_MESSAGE);
+            log->error(ex.getMessage());
+  } catch (IllegalArgumentException ex) {
+            JOptionPane::showMessageDialog(sp,
+                    ex.getLocalizedMessage(),
+                    QApplication::applicationName(),
+                    JOptionPane::ERROR_MESSAGE);
+            log->error(ex.getMessage());
+  }
  }
  try
  {

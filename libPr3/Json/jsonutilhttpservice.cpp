@@ -198,7 +198,7 @@ return QJsonObject();
  * @param locale the client's Locale.
  * @return the JSON networkServices message.
  */
-/*public*/ QJsonArray JsonUtilHttpService::getNetworkServices(QLocale locale) {
+/*public*/ QJsonArray JsonUtilHttpService::getNetworkServices(QLocale /*locale*/) {
     QJsonArray root = QJsonArray(); // mapper.createArrayNode();
 //        ZeroConfService.allServices().stream().forEach((service) -> {
 //            root.add(this->getNetworkService(service));

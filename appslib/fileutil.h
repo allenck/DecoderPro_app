@@ -9,6 +9,7 @@
 #include "javaqt_global.h"
 #include "file.h"
 
+class Profile;
 class QTextStream;
 class JAVAQTSHARED_EXPORT FileUtil : public QObject
 {
@@ -23,6 +24,10 @@ public:
     static /*public*/ File* getFile(QString path); //throw (FileNotFoundException);
     static /*public*/ QString getExternalFilename(QString pName);
     static /*public*/ QString getPortableFilename(File* file);
+    static /*public*/ QString getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ File* file);
+    static /*public*/ QString getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ File* file, bool ignoreUserFilesPath,
+            bool ignoreProfilePath);
+    static /*public*/ QString getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString filename);
     static /*public*/ QString getPortableFilename(QString filename);
     static /*public*/ QString getPortableFilename(File* file, bool ignoreUserFilesPath, bool ignoreProfilePath);
     static /*public*/ QString getPortableFilename(QString filename, bool ignoreUserFilesPath, bool ignoreProfilePath);
@@ -82,17 +87,20 @@ public:
     static /*public*/ QUrl fileToURL(QFile* file);
     static /*public*/ QUrl fileToURL(File* file);
     static /*public*/ QString getUserFilesPath();
+    static /*public*/ QString getUserFilesPath(Profile* profile);
     /**
      * Set the user's files directory.
      *
      * @see #getUserFilesPath()
      * @param path The path to the user's files directory
      */
-    static /*public*/ void setUserFilesPath(QString path);
+    static /*public*/ void setUserFilesPath(Profile *profile, QString path);
     static /*public*/ QString getProfilePath();
+    static /*public*/ QString getProfilePath(Profile *profile);
     static /*public*/ void setProfilePath(QString path);
     static /*public*/ QString getPreferencesPath();
     /*public*/ static QString getScriptsPath();
+    /*public*/ static QString getScriptsPath(/*@CheckForNull*/ Profile* profile);
     static /*public*/ QString getProgramPath();
     static /*public*/ void setProgramPath(QString path);
     static /*public*/ void setProgramPath(File* path);
@@ -106,7 +114,7 @@ public:
      *
      * @param path the scriptsPath to set
      */
-    /*public*/ static void setScriptsPath(QString path);
+    /*public*/ static void setScriptsPath(/*@CheckForNull*/ Profile* profile, /*@CheckForNull*/ QString path);
     /*public*/ static QString readFile(File* file); // throw (IOException);
     static /*public*/ QString getAbsoluteFilename(QString path);
     /*public*/ static QString readURL(QUrl url); // throw (IOException);
@@ -119,7 +127,38 @@ public:
     /*public*/ static QString sanitizeFilename(QString name);
     /*public*/ static QList<QString> *findProgramPath();
     /*public*/ static QString locateFile(QDir start, QString fileName);
+    /**
+     * PropertyChangeEvents for properties that are Profile-specific use a
+     * Property to enclose both the Profile and the value of the property.
+     */
+    /*public*/ /*static*/ class Property : public QHash<Profile*, QString> //implements Map.Entry
+    {
 
+        /*private*/ /*final*/ Profile* key;
+        /*private*/ /*final*/ QString value;
+
+        // package private
+        Property(Profile* key, QString value) {
+            this->key = key;
+            this->value = value;
+        }
+public:
+        //@Override
+        /*public*/ Profile* getKey() {
+            return key;
+        }
+
+        //@Override
+        /*public*/ QString getValue() {
+            return value;
+        }
+
+        //@Override
+        /*public*/ QVariant setValue(QVariant /*value*/) {
+            throw new UnsupportedOperationException("Immutable by design");
+        }
+     friend class FileUtilSupport;
+    };
 
 signals:
 

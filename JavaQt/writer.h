@@ -14,7 +14,7 @@ public:
     /*public*/ void write(QString str) throw (IOException);
     /*abstract*/ /*public*/ virtual void close() throw (IOException);
     /*public*/ void write(QByteArray cbuf) throw (IOException);
-    virtual /*public*/ void write(QByteArray cbuf, int off, int len) throw (IOException) {}
+    virtual /*public*/ void write(QByteArray /*cbuf*/, int /*off*/, int /*len*/) throw (IOException) {}
 
 private:
     /**

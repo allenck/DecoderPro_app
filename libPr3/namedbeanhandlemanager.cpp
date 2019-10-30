@@ -136,7 +136,7 @@ template<class T>
 
     if((userName.isEmpty()) || (userName==(""))){
         log.error("UserName is empty, can not update items to use UserName");
-        throw new JmriException("UserName is empty, can not update items to use UserName");
+        throw JmriException("UserName is empty, can not update items to use UserName");
     }
     renameBean(systemName, userName, bean);
 }
@@ -207,36 +207,36 @@ template<class T>
 //        @Override
 //template<class T>
 /*public*/ char NamedBeanHandleManager::systemLetter() {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
 /*public*/ QString NamedBeanHandleManager::getSystemPrefix() {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
 /*public*/ char NamedBeanHandleManager::typeLetter(){
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
 /*public*/ QString NamedBeanHandleManager::makeSystemName(QString /*s*/) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
 /*public*/ QStringList NamedBeanHandleManager::getSystemNameArray() {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
 /*public*/ QStringList NamedBeanHandleManager::getSystemNameList()
 {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
@@ -258,18 +258,18 @@ template<class T>
 //        @Override
 //template<class T>
 /*public*/ void NamedBeanHandleManager::Register(NamedBean* /*n*/) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
 /*public*/ void NamedBeanHandleManager::deregister(NamedBean* /*n*/) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
 /*public*/ int NamedBeanHandleManager::getXMLOrder(){
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw UnsupportedOperationException("Not supported yet.");
 }
 
 //        static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(NamedBeanHandleManager.class.getName());

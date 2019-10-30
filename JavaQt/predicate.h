@@ -8,6 +8,7 @@ class Predicate : public QVariant
 {
 public:
  Predicate();
+// /*default*/ Predicate<T> or(/*Predicate<? super*/ T other);
 };
 
 #endif // PREDICATE_H

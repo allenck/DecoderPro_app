@@ -28,7 +28,6 @@ SOURCES += javaqt.cpp \
     loggerfactory.cpp \
     loggerbase.cpp \
     logger.cpp \
-    fileutil.cpp \
     calendar.cpp \
     box.cpp \
     gridbaglayout.cpp \
@@ -68,7 +67,6 @@ SOURCES += javaqt.cpp \
     jdialog.cpp \
     imageicon.cpp \
     file.cpp \
-    namedicon.cpp \
     borderlayout.cpp \
     flowlayout.cpp \
     jfilechooser.cpp \
@@ -90,7 +88,6 @@ SOURCES += javaqt.cpp \
     defaultlistmodela.cpp \
     system.cpp \
     bean.cpp \
-    fileutilsupport.cpp \
     defaulttreemodel.cpp \
     catalogtreenode.cpp \
     treepath.cpp \
@@ -276,8 +273,6 @@ HEADERS += javaqt.h\
     file.h \
     filefilter.h \
     filenamefilter.h \
-    fileutil.h \
-    namedicon.h \
     borderlayout.h \
     flowlayout.h \
     jfilechooser.h \
@@ -303,7 +298,6 @@ HEADERS += javaqt.h\
     defaultlistmodela.h \
     system.h \
     bean.h \
-    fileutilsupport.h \
     treemodel.h \
     defaulttreemodel.h \
     mutabletreenode.h \
@@ -506,3 +500,10 @@ else:unix: LIBS += -L$$PROJ_DIR/QtZeroConf-master/ -lQtZeroConf
 INCLUDEPATH += $$PROJ_DIR/QtZeroConf-master
 DEPENDPATH += $$PROJ_DIR/QtZeroConf-master
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
+else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
+
+INCLUDEPATH += $$PWD/../appslib
+DEPENDPATH += $$PWD/../appslib

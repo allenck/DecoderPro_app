@@ -36,6 +36,9 @@
  */
 ///*public*/ class LightTableAction extends AbstractTableAction {
 
+/*public*/ /*static*/ QString LightTableAction::lightControlTitle =tr("Light Control");
+
+
 /**
  * Create an action with a specific title.
  * <P>
@@ -1837,31 +1840,31 @@ QString LightTableAction::formatTime(int hour, int minute) {
 /**
  * Returns text showing the type of Light Control
  */
-/*public*/ QString LightTableAction::getDescriptionText(LightControl* lc, int type) {
+/*public*/ /*static*/ QString LightTableAction::getDescriptionText(LightControl* lc, int type) {
     switch (type) {
         case Light::SENSOR_CONTROL:
             return tr("ON when %1 is $2.").arg(
-                   lc->getControlSensorName()).arg(getControlSensorSenseText(lc));
+                   lc->getControlSensorName()).arg(lc->getControlSensorSenseText(lc));
         case Light::FAST_CLOCK_CONTROL:
-            return tr("ON at %1, OFF at %2.").arg(formatTime(lc->getFastClockOnHour(), lc->getFastClockOnMin()).arg(
-                        formatTime(lc->getFastClockOffHour(), lc->getFastClockOffMin())));
+            return tr("ON at %1, OFF at %2.").arg(tr("%1:%2").arg(lc->getFastClockOnHour()).arg(lc->getFastClockOnMin()).arg(
+                        tr("%1:%2").arg(lc->getFastClockOffHour()).arg(lc->getFastClockOffMin())));
         case Light::TURNOUT_STATUS_CONTROL:
             return tr("ON when %1 is %2.").arg(
-                    lc->getControlTurnoutName()).arg(getControlTurnoutStateText(lc));
+                    lc->getControlTurnoutName()).arg(LightTableAction::getControlTurnoutStateText(lc));
         case Light::TIMED_ON_CONTROL:
             return tr("ON for %1 msec. when %2 goes %3.").arg(
                     "" + lc->getTimedOnDuration()).arg( lc->getControlTimedOnSensorName()).arg(
-                        getControlSensorSenseText(lc));
+                        LightTableAction::getControlSensorSenseText(lc));
         case Light::TWO_SENSOR_CONTROL:
             return tr("ON when either %1} or %2 is %3}.").arg(
                     lc->getControlSensorName()).arg(lc->getControlSensor2Name(),
-                        getControlSensorSenseText(lc));
+                        LightTableAction::getControlSensorSenseText(lc));
         default:
             return "";
     }
 }
 
-/*private*/ QString LightTableAction::getControlSensorSenseText(LightControl* lc) {
+/*private*/ /*static*/ QString LightTableAction::getControlSensorSenseText(LightControl* lc) {
     int s = lc->getControlSensorSense();
     if (s == Sensor::ACTIVE) {
         return tr("Active");
@@ -1869,7 +1872,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
     return tr("Inactive");
 }
 
-/*private*/ QString LightTableAction::getControlTurnoutStateText(LightControl* lc) {
+/*private*/ /*static*/ QString LightTableAction::getControlTurnoutStateText(LightControl* lc) {
     int s = lc->getControlTurnoutState();
     if (s == Turnout::CLOSED) {
         return InstanceManager::turnoutManagerInstance()->getClosedText();

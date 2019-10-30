@@ -474,7 +474,8 @@ SOURCES += \
     rpssystemconnectionmemo.cpp \
     rpscomponentfactory.cpp \
     rpssensormanager.cpp \
-    rpssensor.cpp
+    rpssensor.cpp \
+    namedicon.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -869,7 +870,8 @@ HEADERS += liblayouteditor_global.h \
     rpscomponentfactory.h \
     rpssensormanager.h \
     rpssensor.h \
-    measurementlistener.h
+    measurementlistener.h \
+    namedicon.h
 
 FORMS    += \
     edittracksegmentdlg.ui \

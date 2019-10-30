@@ -600,7 +600,7 @@ XmlFile::XmlFile(QObject *parent) :
  */
 /*static*/ /*public*/ void XmlFile::addDefaultInfo(QDomElement root) {
     QString content = tr("Written by JMRI version ") + /*jmri.Version.name()*/ "3.11"
-            + " on " + QDate::currentDate().toString();
+            + " on " + QDate::currentDate().toString()
             + " $Id: XmlFile.java 22548 2013-01-19 20:26:03Z rhwood $";
     //Comment comment = new Comment(content);
     QDomElement comment = doc.createElement("comment");

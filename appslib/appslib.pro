@@ -576,7 +576,9 @@ SOURCES += appslib.cpp \
     tests/misc/defaultmemorymanagertestaction.cpp \
     jlisttablemodel.cpp \
     tests/misc/lightcontroltest.cpp \
-    tests/misc/lightcontroltestaction.cpp
+    tests/misc/lightcontroltestaction.cpp \
+    fileutil.cpp \
+    fileutilsupport.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -1102,7 +1104,9 @@ HEADERS += appslib.h\
     jlist.h \
     jlisttablemodel.h \
     tests/misc/lightcontroltest.h \
-    tests/misc/lightcontroltestaction.h
+    tests/misc/lightcontroltestaction.h \
+    fileutil.h \
+    fileutilsupport.h
 
 unix:!symbian {
     maemo5 {

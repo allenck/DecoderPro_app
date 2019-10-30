@@ -64,7 +64,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -832,6 +831,7 @@ public:
    ~PythonQtShell_AbstractSensor();
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1) const;
+virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, QString  arg__3) const;
 virtual bool  canInvert();
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);

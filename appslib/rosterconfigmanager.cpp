@@ -6,6 +6,7 @@
 #include "roster.h"
 #include <QSet>
 #include "file.h"
+#include "vptr.h"
 
 //RosterConfigManager::RosterConfigManager()
 //{
@@ -32,6 +33,8 @@
  log = new Logger("RosterConfigManager");
  directory = FileUtil::PREFERENCES;
  defaultOwner = "";
+ directories = QHash<Profile*, QString>();
+ defaultOwners = QHash<Profile*, QString>();
  rosters = QHash<Profile*, Roster*>();
 
     log->debug(tr("Roster is %1").arg(this->directory));
@@ -46,9 +49,12 @@
 
 void RosterConfigManager::onPropertyChange(PropertyChangeEvent* evt)
 {
+ FileUtil::Property* oldValue =  VPtr<FileUtil::Property>::asPtr(evt->getOldValue());
+ FileUtil::Property* newValue =  VPtr<FileUtil::Property>::asPtr(evt->getNewValue());
+ Profile* project = oldValue->getKey();
  log->debug(tr("UserFiles changed from %1 to %2").arg(evt->getOldValue().toString()).arg( evt->getNewValue().toString()));
  if (this->getDirectory() == (evt->getOldValue().toString())) {
-     this->setDirectory(FileUtil::PREFERENCES);
+     this->setDirectory(project, FileUtil::PREFERENCES);
  }
 
 }
@@ -62,7 +68,7 @@ void RosterConfigManager::onPropertyChange(PropertyChangeEvent* evt)
   this->setDefaultOwner(preferences->get(DEFAULT_OWNER, this->getDefaultOwner()));
   try
   {
-   this->setDirectory(preferences->get(DIRECTORY, this->getDirectory()));
+   this->setDirectory(profile, preferences->get(DIRECTORY, this->getDirectory()));
   }
   catch (IllegalArgumentException ex)
   {
@@ -133,36 +139,34 @@ void RosterConfigManager::onPropertyChange(PropertyChangeEvent* evt)
 }
 
 /**
+ * Set the roster directory for the specified profile.
+ *
+ * @param profile   the profile to set the directory for
  * @param directory the directory to set
  */
-/*public*/ void RosterConfigManager::setDirectory(QString directory)
-{
- if (directory == "" || directory.isEmpty())
- {
-  directory = FileUtil::PREFERENCES;
- }
- QString oldDirectory = this->directory;
- try
- {
-  if (!FileUtil::getFile(directory)->isDirectory())
-  {
-   throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg( directory)); // NOI18N
-  }
- }
- catch (FileNotFoundException ex)
- { // thrown by getFile() if directory does not exist
-    throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg( directory)); // NOI18N
- }
- if (directory != (FileUtil::PREFERENCES)) {
-     directory = FileUtil::getAbsoluteFilename(directory);
-     if (!directory.endsWith(File::separator)) {
-         directory = directory + File::separator;
-     }
- }
- this->directory = directory;
- log->debug(tr("Roster changed from %1 to %2").arg(oldDirectory).arg(this->directory));
- firePropertyChange(DIRECTORY, oldDirectory, directory);
+/*public*/ void RosterConfigManager::setDirectory(/*@CheckForNull*/ Profile* profile, /*@CheckForNull*/ QString directory) {
+    if (directory == "" || directory.isEmpty()) {
+        directory = FileUtil::PREFERENCES;
+    }
+    QString oldDirectory = this->directories.value(profile);
+    try {
+        if (!FileUtil::getFile(directory)->isDirectory()) {
+            throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
+        }
+    } catch (FileNotFoundException ex) { // thrown by getFile() if directory does not exist
+     throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
+    }
+    if (directory != (FileUtil::PREFERENCES)) {
+        directory = FileUtil::getAbsoluteFilename(directory);
+        if (!directory.endsWith(File::separator)) {
+            directory = directory + File::separator;
+        }
+    }
+    this->directories.insert(profile, directory);
+    log->debug(tr("Roster changed from %1 to %2").arg(oldDirectory).arg(this->directories.value(profile)));
+    firePropertyChange(DIRECTORY, oldDirectory, directory);
 }
+
 /**
  * Get the roster for the profile.
  *

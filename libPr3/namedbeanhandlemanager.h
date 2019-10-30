@@ -14,6 +14,8 @@ class JAVAQTSHARED_EXPORT NamedBeanHandleManager:  public AbstractManager
 //Q_OBJECT
 public:
 explicit NamedBeanHandleManager(QObject *parent = 0);
+ ~NamedBeanHandleManager() {}
+ NamedBeanHandleManager(const NamedBeanHandleManager&) : AbstractManager() {}
 //template <typename T>
 template<class T>
 NamedBeanHandle<T>* getNamedBeanHandle(QString name, T bean)
@@ -98,5 +100,5 @@ protected:
 /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
 
 };
-
+Q_DECLARE_METATYPE(NamedBeanHandleManager)
 #endif // NAMEDBEANHANDLEMANAGER_H

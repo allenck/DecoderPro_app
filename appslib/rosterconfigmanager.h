@@ -2,6 +2,7 @@
 #define ROSTERCONFIGMANAGER_H
 #include "abstractpreferencesmanager.h"
 #include "propertychangeevent.h"
+#include <QHash>
 
 class Logger;
 class Roster;
@@ -20,7 +21,7 @@ public:
  /*public*/ QString getDefaultOwner();
  /*public*/ void setDefaultOwner(QString defaultOwner);
  /*public*/ QString getDirectory();
- /*public*/ void setDirectory(QString directory);
+ /*public*/ void setDirectory(/*@CheckForNull*/ Profile* profile, /*@CheckForNull*/ QString directory);
  /*public*/ Roster* getRoster(/*@CheckForNull*/ Profile* profile);
  /*public*/ Roster* setRoster(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ Roster* roster);
 
@@ -31,6 +32,8 @@ private:
  Logger* log;
  /*private*/ QString directory;// = FileUtil.PREFERENCES;
  /*private*/ QString defaultOwner;// = "";
+ /*private*/ /*final*/ QHash<Profile*, QString> directories;// = new HashMap<>();
+ /*private*/ /*final*/ QHash<Profile*, QString> defaultOwners;// = new HashMap<>();
  /*private*/ /*final*/ QHash<Profile*, Roster*> rosters;// = new HashMap<>();
 };
 Q_DECLARE_METATYPE(RosterConfigManager)

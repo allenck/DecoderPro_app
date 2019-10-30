@@ -114,6 +114,8 @@
  QString uniqueId = "-";
  try
  {
+  if(ProfileManager::getDefault()->getActiveProfile() == nullptr)
+   throw NullPointerException();
   uniqueId += ProfileManager::getDefault()->getActiveProfile()->getUniqueId();
  }
  catch (NullPointerException ex) {

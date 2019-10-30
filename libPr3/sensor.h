@@ -103,7 +103,8 @@ public:
         /**
          * Request a call-back when the bound KnownState property changes.
          */
-        virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/) const /*=0*/{}
+        void addPropertyChangeListener(PropertyChangeListener* /*l*/) const /*=0*/{}
+        void addPropertyChangeListener(PropertyChangeListener* /*l*/, QString, QString) const /*=0*/{}
 
         /**
          * Remove a request for a call-back when a bound property changes.

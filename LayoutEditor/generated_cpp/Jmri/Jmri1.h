@@ -81,7 +81,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -634,8 +633,6 @@ void delete_FileUtil(FileUtil* obj) { delete obj; }
    QString  static_FileUtil_sanitizeFilename(QString  name);
    void static_FileUtil_setProfilePath(QString  path);
    void static_FileUtil_setProgramPath(QString  path);
-   void static_FileUtil_setScriptsPath(QString  path);
-   void static_FileUtil_setUserFilesPath(QString  path);
 };
 
 
@@ -2996,6 +2993,7 @@ public:
    ~PythonQtShell_LnSensor();
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1) const;
+virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, QString  arg__3) const;
 virtual bool  canInvert();
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);

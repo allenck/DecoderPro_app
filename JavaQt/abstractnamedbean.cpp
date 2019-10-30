@@ -93,8 +93,8 @@ QString AbstractNamedBean::getDisplayName()
 //@Override
 /*public synchronized*/ void AbstractNamedBean::addPropertyChangeListener(PropertyChangeListener* l, const QString beanRef, QString listenerRef)
 {
- //pcs->addPropertyChangeListener(l);
- connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)));
+ pcs->addPropertyChangeListener(l);
+ //connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)));
  if(beanRef!=NULL)
      _Register->insert(l, beanRef);
  if(listenerRef!=NULL)

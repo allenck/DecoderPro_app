@@ -303,6 +303,7 @@
 #include "rawturnoutoperation.h"
 #include "proxyturnoutmanagerxml.h"
 #include "proxysensormanagerxml.h"
+#include "../libPr3/jmriclient/jmriclientsystemconnectionmemo.h"
 
 bool Metatypes::done = false;
 
@@ -620,6 +621,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SensorTurnoutOperation>("SensorTurnoutOperation");
  qRegisterMetaType<ProxyTurnoutManagerXml>("ProxyTurnoutManagerXml");
  qRegisterMetaType<ProxySensorManagerXml>("ProxySensorManagerXml");
+ qRegisterMetaType<NamedBeanHandleManager>("NamedBeanHandleManager");
+ qRegisterMetaType<JMRIClientSystemConnectionMemo>("JMRIClientSystemConnectionMemo");
 
  Metatypes::done = true;
 }

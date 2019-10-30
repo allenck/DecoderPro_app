@@ -30,12 +30,12 @@ FileLocationsPreferences::FileLocationsPreferences()
   {
    userFiles = perNode->get(USER_FILES, userFiles);
   }
-  FileUtil::setUserFilesPath(FileUtil::getAbsoluteFilename(userFiles));
+  FileUtil::setUserFilesPath(profile, FileUtil::getAbsoluteFilename(userFiles));
   QString scripts = shared->get(SCRIPTS, FileUtil::PROFILE);
   if (!scripts.startsWith(FileUtil::PROFILE) && !scripts.startsWith(FileUtil::PROGRAM)) {
       scripts = perNode->get(SCRIPTS, scripts);
   }
-  FileUtil::setScriptsPath(FileUtil::getAbsoluteFilename(scripts));
+  FileUtil::setScriptsPath(profile, FileUtil::getAbsoluteFilename(scripts));
   this->setInitialized(profile, true);
   try {
       if (!FileUtil::getFile(userFiles)->isDirectory())

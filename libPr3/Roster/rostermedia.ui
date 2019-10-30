@@ -56,7 +56,7 @@
     </widget>
    </item>
    <item row="3" column="3">
-    <widget class="DropJLabel" name="lblIconImage">
+    <widget class="QLabel" name="lblIconImage">
      <property name="acceptDrops">
       <bool>true</bool>
      </property>

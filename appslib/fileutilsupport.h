@@ -6,6 +6,7 @@
 #include <QDir>
 #include "fileutil.h"
 
+class Profile;
 class Logger;
 class File;
 class FileUtilSupport : public Bean
@@ -20,12 +21,46 @@ public:
  /*public*/ QString getPortableFilename(File* file, bool ignoreUserFilesPath, bool ignoreProfilePath);
  /*public*/ QString getPortableFilename(QString filename);
  /*public*/ QString getPortableFilename(QString filename, bool ignoreUserFilesPath, bool ignoreProfilePath);
+ /**
+  * Convert a File object's path to our preferred storage form.
+  * <p>
+  * This is the inverse of {@link #getFile(String pName)}. Deprecated forms
+  * are not created.
+  * <p>
+  * This method supports a specific use case concerning profiles and other
+  * portable paths that are stored within the User files directory, which
+  * will cause the {@link jmri.profile.ProfileManager} to write an incorrect
+  * path for the current profile or
+  * {@link apps.configurexml.FileLocationPaneXml} to write an incorrect path
+  * for the Users file directory. In most cases, the use of
+  * {@link #getPortableFilename(java.io.File)} is preferable.
+  *
+  * @param profile             Profile to use as base
+  * @param file                File at path to be represented
+  * @param ignoreUserFilesPath true if paths in the User files path should be
+  *                            stored as absolute paths, which is often not
+  *                            desirable.
+  * @param ignoreProfilePath   true if paths in the profile should be stored
+  *                            as absolute paths, which is often not
+  *                            desirable.
+  * @return Storage format representation
+  * @since 3.5.5
+  */
+ //@Nonnull
+ //@CheckReturnValue
+ /*public*/ QString getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ File* file);
+ /*public*/ QString getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ File* file, bool ignoreUserFilesPath, bool ignoreProfilePath);
+ /*public*/ QString getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString filename);
+ /*public*/ QString getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString filename, bool ignoreUserFilesPath,
+         bool ignoreProfilePath);
  /*public*/ bool isPortableFilename(QString filename);
  /*public*/ QString getHomePath();
  /*public*/ QString getUserFilesPath() ;
- /*public*/ void setUserFilesPath(QString path) ;
+ /*public*/ QString getUserFilesPath(/*@CheckForNull*/ Profile* profile);
+ /*public*/ void setUserFilesPath(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path);
+ /*public*/ QString getProfilePath(Profile*);
  /*public*/ QString getProfilePath();
- /*public*/ void setProfilePath(QString path);
+ QT_DEPRECATED/*public*/ void setProfilePath(QString path);
  /*public*/ QString getPreferencesPath();
  /*public*/ QString getProgramPath();
  /*public*/ void setProgramPath(QString path);
@@ -33,7 +68,8 @@ public:
  /*public*/ QString getUserResourcePath();
  /*public*/ void logFilePaths();
  /*public*/ QString getScriptsPath();
- /*public*/ void setScriptsPath(QString path);
+ /*public*/ QString getScriptsPath(/*@CheckForNull*/ Profile* profile);
+ /*public*/ void setScriptsPath(/*@CheckForNull*/ Profile* profile, /*@CheckForNull */ QString path);
 
  /*public*/ void backup(File* file); //throws IOException
  /*public*/ void rotate(/*@NonNULL*/ File* file, int max, QString extension);// //throws IOException
@@ -72,9 +108,11 @@ private:
  /* path to jmri.jar */
  /*private*/ QString jarPath;// = null;
  /* path to the jython scripts directory */
- /*private*/ QString scriptsPath;// = null;
+ /*private*/ QHash<Profile*, QString> scriptsPaths;// = null;
  /* path to the user's files directory */
- /*private*/ QString userFilesPath;// = null;
+ /*private*/ QHash<Profile*, QString> userFilesPaths;// = null;
+ /* path to profiles in use */
+ /*private*/ /*final*/ QHash<Profile*, QString> profilePaths;// = new HashMap<>();
  /* path to the current profile */
  /*private*/ QString profilePath;// = null;
  // initialize logging

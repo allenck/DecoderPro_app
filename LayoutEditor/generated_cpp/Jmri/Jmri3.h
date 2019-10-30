@@ -17,7 +17,6 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -663,6 +662,7 @@ public:
    ~PythonQtShell_Sensor();
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1) const;
+virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, QString  arg__3) const;
 virtual bool  canInvert();
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
@@ -722,6 +722,7 @@ virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoExcept
 class PythonQtPublicPromoter_Sensor : public Sensor
 { public:
 inline void py_q_addPropertyChangeListener(PropertyChangeListener*  arg__1) const { Sensor::addPropertyChangeListener(arg__1); }
+inline void py_q_addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, QString  arg__3) const { Sensor::addPropertyChangeListener(arg__1, arg__2, arg__3); }
 inline bool  py_q_canInvert() { return Sensor::canInvert(); }
 inline void py_q_dispose() const { Sensor::dispose(); }
 inline int  py_q_getCommandedState() { return Sensor::getCommandedState(); }
@@ -752,6 +753,7 @@ Sensor* new_Sensor(QString  sysName, QObject*  parent = 0);
 Sensor* new_Sensor(QString  sysName, QString  userName, QObject*  parent = 0);
 void delete_Sensor(Sensor* obj) { delete obj; } 
    void py_q_addPropertyChangeListener(Sensor* theWrappedObject, PropertyChangeListener*  arg__1) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_addPropertyChangeListener(arg__1));}
+   void py_q_addPropertyChangeListener(Sensor* theWrappedObject, PropertyChangeListener*  arg__1, QString  arg__2, QString  arg__3) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_addPropertyChangeListener(arg__1, arg__2, arg__3));}
    bool  canInvert(Sensor* theWrappedObject);
    bool  py_q_canInvert(Sensor* theWrappedObject){  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_canInvert());}
    void py_q_dispose(Sensor* theWrappedObject) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_dispose());}

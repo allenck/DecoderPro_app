@@ -19,6 +19,11 @@
 #include <QGlobalStatic>
 #include "file.h"
 #include "vptr.h"
+#include "instancemanager.h"
+#include "filelocationspreferences.h"
+#include "rosterconfigmanager.h"
+#include "fileoutputstream.h"
+#include "roster.h"
 
 //ProfileManager::ProfileManager(QObject *parent) :
 //    QObject(parent)
@@ -47,13 +52,13 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SEARCH_PATHS, ("searchPaths"))
 /*public*/ /*static*/ /*final*/ QString ProfileManager::SYSTEM_PROPERTY = "org.jmri.profile"; // NOI18N
  Q_GLOBAL_STATIC_WITH_ARGS(const char*, _DEFAULT_SEARCH_PATH, ("defaultSearchPath"))
 /*public*/ /*static*/ /*final*/ QString ProfileManager::DEFAULT_SEARCH_PATH = "defaultSearchPath"; // NOI18N
-
-ProfileManager* ProfileManager::instance = NULL;
+/*volatile*/ /*private*/ /*static*/ ProfileManager* ProfileManager::defaultInstance = nullptr;
+//ProfileManager* ProfileManager::instance = NULL;
 /**
  * Default instance of the ProfileManager
  */
-Q_GLOBAL_STATIC(ProfileManager, manager)
-/*public*/ /*static*/ ProfileManager* ProfileManagerHolder::manager = /*new ProfileManager()*/manager;
+//Q_GLOBAL_STATIC(ProfileManager, manager)
+///*public*/ /*static*/ ProfileManager* ProfileManagerHolder::manager = /*new ProfileManager()*/manager;
 
 /**
  * Manage JMRI configuration profiles.
@@ -128,9 +133,10 @@ Q_GLOBAL_STATIC(ProfileManager, manager)
  * @since 3.11.8
  */
 /*public*/ /*static*/ ProfileManager* ProfileManager::getDefault() {
-    ProfileManager* mgr = /*ProfileManagerHolder::*/manager;
-    Q_ASSERT(mgr);
-    return mgr;
+ if (defaultInstance == nullptr) {
+     defaultInstance = new ProfileManager();
+ }
+ return defaultInstance;
 }
 /**
  * Get the {@link Profile} that is currently in use.
@@ -148,27 +154,51 @@ Q_GLOBAL_STATIC(ProfileManager, manager)
  *
  * @param id
  */
-/*public*/ void ProfileManager::setActiveProfile(QString id)
+/*public*/ void ProfileManager::setActiveProfile(QString identifier)
 {
- if (id == NULL)
+ if (identifier == NULL)
  {
   Profile* old = activeProfile;
   activeProfile = NULL;
   FileUtil::setProfilePath(NULL);
-  //this->firePropertyChange(ProfileManager.ACTIVE_PROFILE, old, NULL);
+  this->firePropertyChange(ProfileManager::ACTIVE_PROFILE, VPtr<Profile>::asQVariant(old), QVariant());
   emit propertyChange(new PropertyChangeEvent(this, /*ProfileManager::ACTIVE_PROFILE*/*_ACTIVE_PROFILE, VPtr<Profile>::asQVariant(old), QVariant()));
   log->debug("Setting active profile to NULL");
   return;
  }
+ // handle profile path
+ File* profileFile = new File(identifier);
+ File* profileFileWithExt = new File(profileFile->getParent(), profileFile->getName() + Profile::EXTENSION);
+ if (Profile::isProfile(profileFileWithExt)) {
+     profileFile = profileFileWithExt;
+ }
+ log->debug(tr("profileFile exists(): %1").arg(profileFile->exists()?"true":"false"));
+ log->debug(tr("profileFile isDirectory(): %1").arg(profileFile->isDirectory()?"true":"false"));
+ if (profileFile->exists() && profileFile->isDirectory())
+ {
+  if (Profile::isProfile(profileFile)) {
+  try {
+      log->debug(tr("try setActiveProfile with new Profile(%1)").arg(profileFile->toString()));
+      this->setActiveProfile(new Profile(profileFile));
+      log->debug("  success");
+      return;
+  } catch (IOException ex) {
+      log->error(tr("Unable to use profile path %1 to set active profile.").arg(identifier), ex);
+  }
+  } else {
+      log->error(tr("%1 is not a profile folder.").arg(identifier));
+  }
+ }
  foreach (Profile* p, profiles)
  {
-  if (p->getId()== (id))
+  log->debug(tr("Looking for profile %1, found %2").arg(identifier).arg(p->getId()));
+  if (p->getId()== (identifier))
   {
    this->setActiveProfile(p);
    return;
   }
  }
- log->warn(tr("Unable to set active profile. No profile with id %1 could be found.").arg(id));
+ log->warn(tr("Unable to set active profile. No profile with id %1 could be found.").arg(identifier));
 }
 
 /**
@@ -186,14 +216,14 @@ Q_GLOBAL_STATIC(ProfileManager, manager)
  {
   activeProfile = NULL;
   FileUtil::setProfilePath(NULL);
-  //this->firePropertyChange(ProfileManager.ACTIVE_PROFILE, old, NULL);
+  this->firePropertyChange(ProfileManager::ACTIVE_PROFILE, VPtr<Profile>::asQVariant(old), QVariant());
   emit propertyChange(new PropertyChangeEvent(this, /*ProfileManager::ACTIVE_PROFILE*/*_ACTIVE_PROFILE, VPtr<Profile>::asQVariant(old), QVariant()));
   log->debug("Setting active profile to NULL");
   return;
  }
  activeProfile = profile;
  FileUtil::setProfilePath(profile->getPath()->toString());
- //this->firePropertyChange(ProfileManager::ACTIVE_PROFILE, old, profile);
+ this->firePropertyChange(ProfileManager::ACTIVE_PROFILE, VPtr<Profile>::asQVariant(old), VPtr<Profile>::asQVariant(profile));
  emit propertyChange(new PropertyChangeEvent(this, /*ProfileManager::ACTIVE_PROFILE*/*_ACTIVE_PROFILE, QVariant(), VPtr<Profile>::asQVariant(profile) ));
  log->debug("Setting active profile to "+ profile->getId());
 }
@@ -775,9 +805,10 @@ QString ProfileManager::FileFilter1::getDescription()
     return profile;
 }
 
+
 /**
  * Migrate a JMRI application to using {@link Profile}s.
- *
+ * <p>
  * Migration occurs when no profile configuration exists, but an application
  * configuration exists. This method also handles the situation where an
  * entirely new user is first starting JMRI, or where a user has deleted all
@@ -786,160 +817,161 @@ QString ProfileManager::FileFilter1::getDescription()
  * When a JMRI application is starting there are eight potential
  * Profile-related states requiring preparation to use profiles:
  * <table>
- * <tr><th>Profile Catalog</th><th>Profile Config</th><th>App
- * Config</th><th>Action</th></tr>
- * <tr><td>YES</td><td>YES</td><td>YES</td><td>No preparation required -
- * migration from earlier JMRI complete</td></tr>
- * <tr><td>YES</td><td>YES</td><td>NO</td><td>No preparation required - JMRI
- * installed after profiles feature introduced</td></tr>
- * <tr><td>YES</td><td>NO</td><td>YES</td><td>Migration required - other
- * JMRI applications migrated to profiles by this user, but not this
- * one</td></tr>
- * <tr><td>YES</td><td>NO</td><td>NO</td><td>No preparation required -
- * prompt user for desired profile if multiple profiles exist, use default
- * otherwise</td></tr>
- * <tr><td>NO</td><td>NO</td><td>NO</td><td>New user - create and use
- * default profile</td></tr>
- * <tr><td>NO</td><td>NO</td><td>YES</td><td>Migration required - need to
- * create first profile</td></tr>
- * <tr><td>NO</td><td>YES</td><td>YES</td><td>No preparation required -
- * catalog will be automatically regenerated</td></tr>
- * <tr><td>NO</td><td>YES</td><td>NO</td><td>No preparation required -
- * catalog will be automatically regenerated</td></tr>
+ * <caption>Matrix of states determining if migration required.</caption>
+ * <tr>
+ * <th>Profile Catalog</th>
+ * <th>Profile Config</th>
+ * <th>App Config</th>
+ * <th>Action</th>
+ * </tr>
+ * <tr>
+ * <td>YES</td>
+ * <td>YES</td>
+ * <td>YES</td>
+ * <td>No preparation required - migration from earlier JMRI complete</td>
+ * </tr>
+ * <tr>
+ * <td>YES</td>
+ * <td>YES</td>
+ * <td>NO</td>
+ * <td>No preparation required - JMRI installed after profiles feature
+ * introduced</td>
+ * </tr>
+ * <tr>
+ * <td>YES</td>
+ * <td>NO</td>
+ * <td>YES</td>
+ * <td>Migration required - other JMRI applications migrated to profiles by
+ * this user, but not this one</td>
+ * </tr>
+ * <tr>
+ * <td>YES</td>
+ * <td>NO</td>
+ * <td>NO</td>
+ * <td>No preparation required - prompt user for desired profile if multiple
+ * profiles exist, use default otherwise</td>
+ * </tr>
+ * <tr>
+ * <td>NO</td>
+ * <td>NO</td>
+ * <td>NO</td>
+ * <td>New user - create and use default profile</td>
+ * </tr>
+ * <tr>
+ * <td>NO</td>
+ * <td>NO</td>
+ * <td>YES</td>
+ * <td>Migration required - need to create first profile</td>
+ * </tr>
+ * <tr>
+ * <td>NO</td>
+ * <td>YES</td>
+ * <td>YES</td>
+ * <td>No preparation required - catalog will be automatically
+ * regenerated</td>
+ * </tr>
+ * <tr>
+ * <td>NO</td>
+ * <td>YES</td>
+ * <td>NO</td>
+ * <td>No preparation required - catalog will be automatically
+ * regenerated</td>
+ * </tr>
  * </table>
  * This method returns true if a migration occurred, and false in all other
  * circumstances.
  *
- * @param configFilename
+ * @param configFilename the name of the app config file
  * @return true if a user's existing config was migrated, false otherwise
- * @throws IllegalArgumentException
- * @throws IOException
+ * @throws java.io.IOException      if unable to to create a Profile
+ * @throws IllegalArgumentException if profile already exists for configFilename
  */
-/*public*/ bool ProfileManager::migrateToProfiles(QString configFilename) /*throws IllegalArgumentException, IOException*/
-{
- File* appConfigFile = new File(configFilename);
- bool didMigrate = false;
- if (!appConfigFile->isAbsolute())
- {
-  appConfigFile = new File(FileUtil::getPreferencesPath() + File::separator + configFilename);
- }
- if (this->getAllProfiles().isEmpty())
- { // no catalog and no profile config
-  if (!appConfigFile->exists())
-  { // no catalog and no profile config and no app config: new user
-   this->setActiveProfile(this->createDefaultProfile());
-   this->saveActiveProfile();
-  }
-  else
-  { // no catalog and no profile config, but an existing app config: migrate user who never used profiles before
-   this->setActiveProfile(this->migrateConfigToProfile(appConfigFile, QApplication::applicationName()));
-   this->saveActiveProfile();
-   didMigrate = true;
-  }
- }
- else if (appConfigFile->exists())
- { // catalog and existing app config, but no profile config: migrate user who used profile with other JMRI app
-  try
-  {
-   this->setActiveProfile(this->migrateConfigToProfile(appConfigFile, QApplication::applicationName()));
-  }
-  catch (IllegalArgumentException ex)
-  {
-   if (ex.getMessage().startsWith("A profile already exists at "))
-   {
-    // caused by attempt to migrate application with custom launcher
-    // strip ".xml" from configFilename name and use that to create profile
-    this->setActiveProfile(this->migrateConfigToProfile(appConfigFile, appConfigFile->getName().mid(0, appConfigFile->getName().length() - 4)));
-   }
-   else
-   {
-    // throw the exception so it can be dealt with, since other causes need user attention
-    // (most likely cause is a read-only settings directory)
-    throw ex;
-   }
-  }
-  this->saveActiveProfile();
-  didMigrate = true;
- } // all other cases need no prep
- return didMigrate;
-}
-#if 1
-/**
- * Export the {@link jmri.profile.Profile} to a JAR file.
- *
- * @param profile The profile to export
- * @param target The file to export the profile into
- * @param exportExternalUserFiles If the User Files are not within the
- * profile directory, should they be included?
- * @param exportExternalRoster It the roster is not within the profile
- * directory, should it be included?
- * @throws IOException
- * @throws org.jdom2.JDOMException
- */
-/*public*/ void ProfileManager::_export(Profile* profile, File* target, bool exportExternalUserFiles, bool exportExternalRoster) //throws IOException, JDOMException
-{
-    if (!target->exists())
-    {
-     target->createNewFile();
+/*public*/ bool ProfileManager::migrateToProfiles(/*@Nonnull*/ QString configFilename) throw (IllegalArgumentException, IOException) {
+    File* appConfigFile = new File(configFilename);
+    bool didMigrate = false;
+    if (!appConfigFile->isAbsolute()) {
+        appConfigFile = new File(FileUtil::getPreferencesPath() + configFilename);
     }
-    //QString tempDirPath = System::getProperty("java.io.tmpdir") + File::separator + "JMRI" + System::currentTimeMillis(); // NOI18N
-    QString tempDirPath = QTemporaryDir().path();
+    if (this->getAllProfiles().isEmpty()) { // no catalog and no profile config
+        if (!appConfigFile->exists()) { // no catalog and no profile config and no app config: new user
+            this->setActiveProfile(this->createDefaultProfile());
+            this->saveActiveProfile();
+        } else { // no catalog and no profile config, but an existing app config: migrate user who never used profiles before
+            this->setActiveProfile(this->migrateConfigToProfile(appConfigFile, QApplication::applicationName()));
+            this->saveActiveProfile();
+            didMigrate = true;
+        }
+    } else if (appConfigFile->exists()) { // catalog and existing app config, but no profile config: migrate user who used profile with other JMRI app
+        try {
+            this->setActiveProfile(this->migrateConfigToProfile(appConfigFile, QApplication::applicationName()));
+        } catch (IllegalArgumentException ex) {
+            if (ex.getMessage().startsWith("A profile already exists at ")) {
+                // caused by attempt to migrate application with custom launcher
+                // strip ".xml" from configFilename name and use that to create profile
+                this->setActiveProfile(this->migrateConfigToProfile(appConfigFile, appConfigFile->getName().mid(0, appConfigFile->getName().length() - 4)));
+            } else {
+                // throw the exception so it can be dealt with, since other causes need user attention
+                // (most likely cause is a read-only settings directory)
+                throw ex;
+            }
+        }
+        this->saveActiveProfile();
+        didMigrate = true;
+    } // all other cases need no prep
+    return didMigrate;
+}
+
+/**
+ * Export the {@link jmri.profile.Profile} to a zip file.
+ *
+ * @param profile                 The profile to export
+ * @param target                  The file to export the profile into
+ * @param exportExternalUserFiles If the User Files are not within the
+ *                                    profile directory, should they be
+ *                                    included?
+ * @param exportExternalRoster    It the roster is not within the profile
+ *                                    directory, should it be included?
+ * @throws java.io.IOException     if unable to write a file during the
+ *                                     export
+ * @throws org.jdom2.JDOMException if unable to create a new profile
+ *                                     configuration file in the exported
+ *                                     Profile
+ * @throws InitializationException if unable to read profile to export
+ */
+/*public*/ void ProfileManager::_export(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ File* target, bool exportExternalUserFiles,
+        bool exportExternalRoster) throw (IOException, JDOMException, InitializationException) {
+    if (!target->exists() && !target->createNewFile()) {
+        throw IOException("Unable to create file " + target->toString());
+    }
+    QString tempDirPath = System::getProperty("java.io.tmpdir") + File::separator + "JMRI" + System::currentTimeMillis(); // NOI18N
     FileUtil::createDirectory(tempDirPath);
     File* tempDir = new File(tempDirPath);
     File* tempProfilePath = new File(tempDir, profile->getPath()->getName());
     FileUtil::copy(profile->getPath(), tempProfilePath);
-    File* config = new File(tempProfilePath, "ProfileConfig.xml"); // NOI18N
-
-# if 1
-    //QDomDocument doc = (new SAXBuilder()).build(config);
-    XmlFile* xml = new XmlFile();
-    QDomDocument doc = xml->doc;
-    QDomElement root = xml->rootFromFile(config);
+    Profile* tempProfile = new Profile(tempProfilePath);
+    ((FileLocationsPreferences*)InstanceManager::getDefault("FileLocationsPreferences"))->initialize(profile);
+    ((FileLocationsPreferences*)InstanceManager::getDefault("FileLocationsPreferences"))->initialize(tempProfile);
+    ((RosterConfigManager*)InstanceManager::getDefault("RosterConfigManager"))->initialize(profile);
+    ((RosterConfigManager*)InstanceManager::getDefault("RosterConfigManager"))->initialize(tempProfile);
     if (exportExternalUserFiles) {
-        FileUtil::copy(new File(FileUtil::getUserFilesPath()), tempProfilePath);
-        QDomElement fileLocations = doc.documentElement().firstChildElement("fileLocations"); // NOI18N
-        //for (Object fl : fileLocations.getChildren()) {
-        QDomNodeList fll = fileLocations.childNodes();
-        for(int i = 0; i < fll.count(); i++)
-        {
-         QDomElement fl = fll.at(i).toElement();
-            if (fl.attribute("defaultUserLocation") != NULL)
-            { // NOI18N
-                fl.setAttribute("defaultUserLocation", "profile:"); // NOI18N
-            }
-        }
+        FileUtil::copy(new File(FileUtil::getUserFilesPath(profile)), tempProfilePath);
+        FileUtil::setUserFilesPath(tempProfile, FileUtil::getProfilePath(tempProfile));
+        ((FileLocationsPreferences*)InstanceManager::getDefault("FileLocationsPreferences"))->savePreferences(tempProfile);
     }
     if (exportExternalRoster) {
-     FileUtil::copy(new File(Roster::getDefault()->getRosterIndexPath()), new File(tempProfilePath, "roster.xml")); // NOI18N
-     FileUtil::copy(new File(Roster::getDefault()->getRosterLocation(), "roster"), new File(tempProfilePath, "roster")); // NOI18N
-        QDomElement roster = doc.documentElement().firstChildElement("roster"); // NOI18N
-        roster.removeAttribute("directory"); // NOI18N
+        FileUtil::copy(new File(Roster::getRoster(profile)->getRosterIndexPath()), new File(tempProfilePath, "roster.xml")); // NOI18N
+        FileUtil::copy(new File(Roster::getRoster(profile)->getRosterLocation(), "roster"), new File(tempProfilePath, "roster")); // NOI18N
+        ((RosterConfigManager*)InstanceManager::getDefault("RosterConfigManager"))->setDirectory(profile, FileUtil::getPortableFilename(profile, tempProfilePath));
+        ((RosterConfigManager*)InstanceManager::getDefault("RosterConfigManager"))->savePreferences(profile);
     }
-//    if (exportExternalUserFiles || exportExternalRoster) {
-//        FileWriter fw = new FileWriter(config);
-//        XMLOutputter fmt = new XMLOutputter();
-//        fmt.setFormat(Format.getPrettyFormat()
-//                            .setLineSeparator(System.getProperty("line.separator"))
-//                            .setTextMode(Format.TextMode.PRESERVE));
-//        fmt.output(doc, fw);
-//        fw.close();
-//    }
-    xml->writeXML(config, doc);
-# endif
-    //FileOutputStream out = new FileOutputStream(target);
-    //ZipOutputStream zip = new ZipOutputStream(out);
-    zip = new QuaZip(target->getAbsolutePath());
-    if(!zip->open(QuaZip::mdCreate))
-    {
-     log->error(tr("Can't create complete roster export file ") + target->getPath());
-     return;
+#if 0
+    try (FileOutputStream out = new FileOutputStream(target); ZipOutputStream zip = new ZipOutputStream(out)) {
+        this.exportDirectory(zip, tempProfilePath, tempProfilePath.getPath());
     }
-    QuaZipFile* outFile = new QuaZipFile(zip);
-    this->exportDirectory(outFile, tempProfilePath, tempDir->getAbsolutePath());
-    zip->close();
-    //out.close();
+#endif
     FileUtil::_delete(tempDir);
 }
+
 
 /*private*/ bool ProfileManager::exportDirectory(QuaZipFile* outFile, File* source, QString root) //throws IOException
 {
@@ -1001,7 +1033,7 @@ QString ProfileManager::FileFilter1::getDescription()
  inFile->close();
  return true;
 }
-#endif
+
 /*private*/ QString ProfileManager::relativeName(File* file, QString root)
     {
     QString path = file->getPath();

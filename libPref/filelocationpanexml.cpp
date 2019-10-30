@@ -3,6 +3,7 @@
 #include "fileutil.h"
 #include "configuremanager.h"
 #include "instancemanager.h"
+#include "profilemanager.h"
 
 FileLocationPaneXml::FileLocationPaneXml(QObject* parent) :
     AbstractXmlAdapter(parent)
@@ -65,7 +66,7 @@ FileLocationPaneXml::FileLocationPaneXml(QObject* parent) :
  * @return true if successful
  */
 //@Override
-/*public*/ bool FileLocationPaneXml::load(QDomElement e)  throw (Exception)
+/*public*/ bool FileLocationPaneXml::load(QDomElement shared, QDomElement perNode)  throw (Exception)
 {
  bool result = true;
     //Attribute scriptLocation = e.getAttribute("defaultScriptLocation");
@@ -74,20 +75,20 @@ FileLocationPaneXml::FileLocationPaneXml(QObject* parent) :
     /*Attribute userLocation = e.getAttribute("defaultUserLocation");
      if (userLocation!=null)
      FileUtil.setUserFilesPath(userLocation.getValue());*/
- QString value = loadUserLocations(e, "defaultProgramLocation");
+ QString value = loadUserLocations(shared, "defaultProgramLocation");
  if (value != "")
  {
   FileUtil::setProgramPath(value);
  }
- value = loadUserLocations(e, "defaultUserLocation");
+ value = loadUserLocations(shared, "defaultUserLocation");
  if (value != "")
  {
-  FileUtil::setUserFilesPath(value);
+  FileUtil::setUserFilesPath(ProfileManager::getDefault()->getActiveProfile(),value);
  }
- value = loadUserLocations(e, "defaultScriptLocation");
+ value = loadUserLocations(shared, "defaultScriptLocation");
  if (value != "")
  {
-  FileUtil::setScriptsPath(value);
+  FileUtil::setScriptsPath(ProfileManager::getDefault()->getActiveProfile(),value);
  }
  ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerPref(new FileLocationPane());
  return result;

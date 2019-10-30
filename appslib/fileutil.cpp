@@ -111,6 +111,72 @@ FileUtil::FileUtil(QObject *parent) :
 {
  return FileUtil::getPortableFilename(file, false, false);
 }
+/**
+ * Convert a File object's path to our preferred storage form.
+ * <p>
+ * This is the inverse of {@link #getFile(String pName)}. Deprecated forms
+ * are not created.
+ *
+ * @param profile Profile to use as a base
+ * @param file    File at path to be represented
+ * @return Filename for storage in a portable manner. This will include
+ *         portable, not system-specific, file separators.
+ * @since 4.17.3
+ */
+//@Nonnull
+//@CheckReturnValue
+/*static*/ /*public*/ QString FileUtil::getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ File* file) {
+    return FileUtilSupport::getDefault()->getPortableFilename(profile, file);
+}
+
+/**
+ * Convert a File object's path to our preferred storage form.
+ * <p>
+ * This is the inverse of {@link #getFile(String pName)}. Deprecated forms
+ * are not created.
+ * <p>
+ * This method supports a specific use case concerning profiles and other
+ * portable paths that are stored within the User files directory, which
+ * will cause the {@link jmri.profile.ProfileManager} to write an incorrect
+ * path for the current profile or
+ * {@link apps.configurexml.FileLocationPaneXml} to write an incorrect path
+ * for the Users file directory. In most cases, the use of
+ * {@link #getPortableFilename(java.io.File)} is preferable.
+ *
+ * @param profile             Profile to use as a base
+ * @param file                File at path to be represented
+ * @param ignoreUserFilesPath true if paths in the User files path should be
+ *                            stored as absolute paths, which is often not
+ *                            desirable.
+ * @param ignoreProfilePath   true if paths in the profile should be stored
+ *                            as absolute paths, which is often not
+ *                            desirable.
+ * @return Storage format representation
+ * @since 4.17.3
+ */
+//@Nonnull
+//@CheckReturnValue
+/*static*/ /*public*/ QString FileUtil::getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ File* file, bool ignoreUserFilesPath,
+        bool ignoreProfilePath) {
+    return FileUtilSupport::getDefault()->getPortableFilename(profile, file, ignoreUserFilesPath, ignoreProfilePath);
+}
+
+/**
+ * Convert a filename string to our preferred storage form.
+ * <p>
+ * This is the inverse of {@link #getExternalFilename(String pName)}.
+ * Deprecated forms are not created.
+ *
+ * @param profile  the Profile to use as a base
+ * @param filename Filename to be represented
+ * @return Filename for storage in a portable manner
+ * @since 4.17.3
+ */
+//@Nonnull
+//@CheckReturnValue
+/*static*/ /*public*/ QString FileUtil::getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString filename) {
+    return FileUtilSupport::getDefault()->getPortableFilename(profile, filename);
+}
 
 /**
  * Convert a filename string to our preferred storage form.
@@ -178,7 +244,6 @@ FileUtil::FileUtil(QObject *parent) :
 {
  return FileUtilSupport::getDefault()->getPortableFilename(filename, ignoreUserFilesPath, ignoreProfilePath);
 }
-
 /**
  * Test if the given filename is a portable filename.
  *
@@ -220,15 +285,33 @@ FileUtil::FileUtil(QObject *parent) :
  return FileUtilSupport::getDefault()->getUserFilesPath();
 }
 
+/*static*/ /*public*/ QString FileUtil::getUserFilesPath(Profile* profile)
+{
+ return FileUtilSupport::getDefault()->getUserFilesPath(profile);
+}
+
 /**
  * Set the user's files directory.
  *
  * @see #getUserFilesPath()
  * @param path The path to the user's files directory
  */
-/*static*/ /*public*/ void FileUtil::setUserFilesPath(QString path)
+/*static*/ /*public*/ void FileUtil::setUserFilesPath(Profile* profile,QString path)
 {
- FileUtilSupport::getDefault()->setUserFilesPath(path);
+ FileUtilSupport::getDefault()->setUserFilesPath(profile,path);
+}
+/**
+ * Get the profile directory. Uses the Profile returned by
+ * {@link ProfileManager#getActiveProfile()} as a base. If that is null,
+ * gets the preferences path.
+ *
+ * @see #getPreferencesPath()
+ * @return Profile directory
+ */
+//@Nonnull
+//@CheckReturnValue
+/*static*/ /*public*/ QString FileUtil::getProfilePath() {
+    return FileUtilSupport::getDefault()->getProfilePath();
 }
 /**
  * Get the profile directory. If not set, this is the same as the
@@ -237,9 +320,9 @@ FileUtil::FileUtil(QObject *parent) :
  * @see #getPreferencesPath()
  * @return Profile directory as a String
  */
-/*static*/ /*public*/ QString FileUtil::getProfilePath()
+/*static*/ /*public*/ QString FileUtil::getProfilePath(Profile* profile)
 {
- return FileUtilSupport::getDefault()->getProfilePath();
+ return FileUtilSupport::getDefault()->getProfilePath(profile);
 
 }
 /**
@@ -612,14 +695,26 @@ FileUtil::FileUtil(QObject *parent) :
 /*public*/ /*static*/ QString FileUtil::getScriptsPath() {
     return FileUtilSupport::getDefault()->getScriptsPath();
 }
+/**
+ * Get the path to the scripts directory.
+ *
+ * @param profile the Profile to use as the base
+ * @return the scriptsPath
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ /*static*/ QString FileUtil::getScriptsPath(/*@CheckForNull*/ Profile* profile) {
+    return FileUtilSupport::getDefault()->getScriptsPath(profile);
+}
 
 /**
  * Set the path to python scripts.
  *
- * @param path the scriptsPath to set
+ * @param profile the profile to set the path for
+ * @param path    the scriptsPath to set
  */
-/*public*/ /*static*/ void FileUtil::setScriptsPath(QString path) {
-     FileUtilSupport::getDefault()->setScriptsPath(path);
+/*public*/ /*static*/ void FileUtil::setScriptsPath(/*@CheckForNull*/ Profile* profile, /*@CheckForNull*/ QString path) {
+    FileUtilSupport::getDefault()->setScriptsPath(profile, path);
 }
 
 /**

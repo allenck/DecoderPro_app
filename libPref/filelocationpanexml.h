@@ -11,7 +11,7 @@ public:
     ~FileLocationPaneXml() {}
     FileLocationPaneXml(const FileLocationPaneXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);
-    /*public*/ bool load(QDomElement e)  throw (Exception);
+    /*public*/ bool load(QDomElement shared, QDomElement perNode)  throw (Exception);
     /*public*/ void load(QDomElement /*element*/, QObject* /*o*/) throw (Exception);
 
 signals:

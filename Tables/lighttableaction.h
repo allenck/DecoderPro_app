@@ -28,7 +28,8 @@ public:
     /*public*/ void setManager(Manager* man);
     Q_INVOKABLE /*public*/ QString getClassDescription();
     /*public*/ QString getControlTypeText(int type);
-    /*public*/ QString getDescriptionText(LightControl* lc, int type);
+    /*public*/ static QString getDescriptionText(LightControl* lc, int type);
+    /*public*/ static QString lightControlTitle;// = Bundle.getMessage("LightControlBorder");
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);
@@ -94,8 +95,8 @@ private:
     /*private*/ void setLightControlInformation(Light* g);
     /*private*/ void clearLightControls();
     QString formatTime(int hour, int minute);
-    /*private*/ QString getControlSensorSenseText(LightControl* lc);
-    /*private*/ QString getControlTurnoutStateText(LightControl* lc);
+    /*private*/ static QString getControlSensorSenseText(LightControl* lc);
+    /*private*/ static QString getControlTurnoutStateText(LightControl* lc);
 
     // items for add/edit Light Control window
     /*private*/ JmriJFrame* addControlFrame;// = NULL;

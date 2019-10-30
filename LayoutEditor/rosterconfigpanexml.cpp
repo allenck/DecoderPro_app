@@ -4,6 +4,7 @@
 #include "instancemanager.h"
 #include "rosterentry.h"
 #include "rosterconfigmanager.h"
+#include "profilemanager.h"
 
 RosterConfigPaneXml::RosterConfigPaneXml(QObject *parent) :
   AbstractXmlAdapter(parent)
@@ -61,9 +62,10 @@ RosterConfigPaneXml::RosterConfigPaneXml(QObject *parent) :
 /*public*/ bool RosterConfigPaneXml::load(QDomElement shared, QDomElement /*perNode*/)
 {
  bool result = true;
+ Profile* project = ProfileManager::getDefault()->getActiveProfile();
  if (shared.attribute("directory") != "")
  {
-  static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->setDirectory(shared.attribute("directory"));
+  static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->setDirectory(project, shared.attribute("directory"));
   if (log->isDebugEnabled()) {
       log->debug("set roster location (1): " + shared.attribute("directory"));
   }

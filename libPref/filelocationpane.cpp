@@ -10,6 +10,7 @@
 #include "file.h"
 #include <QComboBox>
 #include "fileutilsupport.h"
+#include "profilemanager.h"
 
 //FileLocationPane::FileLocationPane(QWidget *parent) :
 //    PreferencesPanel(parent)
@@ -206,12 +207,12 @@ void FileLocationPane::On_fileSelected(QString file)
 {
  if (FileUtil::getUserFilesPath()!=(this->userLocation->text()))
  {
-  FileUtil::setUserFilesPath(this->userLocation->text());
+  FileUtil::setUserFilesPath(ProfileManager::getDefault()->getActiveProfile(), this->userLocation->text());
   this->restartRequired = true;
  }
  if (FileUtil::getScriptsPath()!=(this->scriptLocation->text()))
  {
-  FileUtil::setScriptsPath(this->scriptLocation->text());
+  FileUtil::setScriptsPath(ProfileManager::getDefault()->getActiveProfile(),this->scriptLocation->text());
   this->restartRequired = true;
  }
  if (FileUtil::getProgramPath()!=(this->_programLocation->text()))

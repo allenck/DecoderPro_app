@@ -2,6 +2,8 @@
 #include "turnout.h"
 #include "timebase.h"
 #include "predicate.h"
+#include "lighttableaction.h"
+#include "loggerfactory.h"
 
 LightControl::LightControl(QObject *parent) :
     QObject(parent)
@@ -13,13 +15,13 @@ LightControl::LightControl(QObject *parent) :
  *    controls available for switching the Light ON/OFF in response to time or
  *	  events occurring on the layout.
  * <p>
- * Each LightControl holds the information for one control of the parent Light.
+ * Each LightControl holds the information for one control of the parent Light::
  *<p>
  * Each Light may have as many controls as desired by the user.  It is the
  *     user's responsibility to ensure that the various control mechanisms
  *     do not conflict with one another.
  *<p>
- * Available control types are those defined in the Light.java interface.
+ * Available control types are those defined in the Light::java interface.
  *   Control types:
  *    SENSOR_CONTROL
  *    FAST_CLOCK_CONTROL
@@ -59,10 +61,10 @@ LightControl::LightControl(Light* l, QObject* parent) : QObject(parent)
 
 void LightControl::common()
 {
-    log = new Logger("LightControl");
     // instance variables - saved with Light in configuration file
     _controlType = Light::NO_CONTROL;    // control type
     _controlSensorName = "";   // controlling Sensor if SENSOR_CONTROL
+    _controlSensorSense = Sensor::ACTIVE; // sense of Sensor for Light ON
     _fastClockOnHour = 0;         // on Hour if FAST_CLOCK_CONTROL
     _fastClockOnMin = 0;          // on Minute if FAST_CLOCK_CONTROL
     _fastClockOffHour = 0;        // off Hour if FAST_CLOCK_CONTROL
@@ -217,310 +219,258 @@ void LightControl::common()
 /*public*/ void LightControl::setControlSensor2Name(QString sensorName) {_controlSensor2Name = sensorName;}
 /*public*/ void LightControl::setParentLight(Light* l) {_parentLight = l;}
 
-
+/**
+ * Get a Textual Description
+ * eg. Light Control TestLight ON when TestSensor is Active
+ * eg. Light Control ON at 14:00, OFF at 15:00.
+ *
+ * @param lightName the Light Name, can be empty.
+ * @return An I18N full-text description of thiscontrol
+ */
+/*public*/ QString LightControl::getDescriptionText(QString lightName){
+    QString name = LightTableAction::lightControlTitle;
+    name.append(" ");
+    name.append(lightName);
+    name.append(" ");
+    name.append(LightTableAction::getDescriptionText(this, getControlType()));
+    return name/*.toString()*/;
+}
+/*private*/ /*static*/ QString LightControl::getControlSensorSenseText(LightControl* lc) {
+    if (lc->getControlSensorSense() == Sensor::ACTIVE) {
+        return tr("Active");
+    }
+    return tr("Inactive");
+}
+/*private*/ /*static*/ QString getControlTurnoutStateText(LightControl* lc) {
+    if (lc->getControlTurnoutState() == Turnout::CLOSED) {
+        return InstanceManager::turnoutManagerInstance()->getClosedText();
+    }
+    return InstanceManager::turnoutManagerInstance()->getThrownText();
+}
 /**
  * Activates a Light Control by control type.  This method tests the
  *   control type, and set up a control mechanism, appropriate
  *   for the control type.
  */
-/*public*/ void LightControl::activateLightControl() {
-    // skip if Light Control is already active
-    if (!_active) {
-        // activate according to control type
-        switch (_controlType) {
-            case Light::SENSOR_CONTROL:
-                _namedControlSensor = nullptr;
-                if (_controlSensorName.length()>0){
-                    Sensor* sen = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
-                                            provideSensor(_controlSensorName);
-                    _namedControlSensor = nbhm->getNamedBeanHandle(_controlSensorName, sen);
-                }
-                if (_namedControlSensor!=nullptr) {
-                    // if sensor state is currently known, set light accordingly
-                    int kState = _namedControlSensor->getBean()->getKnownState();
-                    if (kState==Sensor::ACTIVE) {
-                        if (_controlSensorSense==Sensor::ACTIVE) {
-                            // Turn light on
-                            _parentLight->setState(Light::ON);
-                        }
-                        else {
-                            // Turn light off
-                            _parentLight->setState(Light::OFF);
-                        }
-                    }
-                    else if (kState==Sensor::INACTIVE) {
-                        if (_controlSensorSense==Sensor::INACTIVE) {
-                            // Turn light on
-                            _parentLight->setState(Light::ON);
-                        }
-                        else {
-                            // Turn light off
-                            _parentLight->setState(Light::OFF);
-                        }
-                    }
+/*public*/ void LightControl::activateLightControl()
+ {
+  // skip if Light Control is already active
+  if (!_active)
+  {
 
-                    // listen for change in sensor state
-//                    _namedControlSensor->getBean().addPropertyChangeListener(_sensorListener =
-//                                            new PropertyChangeListener()
-//                    {
-//                            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-//                                if (!_parentLight->getEnabled()) return;  // ignore property change if user disabled Light
-//                                if (e.getPropertyName().equals("KnownState")) {
-//                                    int now = _namedControlSensor->getBean().getKnownState();
-//                                    if (now==Sensor.ACTIVE) {
-//                                        if (_controlSensorSense==Sensor.ACTIVE) {
-//                                            // Turn light on
-//                                            _parentLight->setState(Light.ON);
-//                                        }
-//                                        else {
-//                                            // Turn light off
-//                                            _parentLight->setState(Light.OFF);
-//                                        }
-//                                    }
-//                                    else if (now==Sensor.INACTIVE) {
-//                                        if (_controlSensorSense==Sensor.INACTIVE) {
-//                                            // Turn light on
-//                                            _parentLight->setState(Light.ON);
-//                                        }
-//                                        else {
-//                                            // Turn light off
-//                                            _parentLight->setState(Light.OFF);
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                    }, _controlSensorName, "Light Control " + _parentLight->getDisplayName());
-                    _active = true;
-                }
-                else {
-                    // control sensor does not exist
-                    log->error("Light "+_parentLight->getSystemName()+
-                            " is linked to a Sensor that does not exist: "+_controlSensorName);
-                    return;
-                }
-                break;
+   if (_parentLight == nullptr){
+       log->error("No Parent Light when activating LightControl");
+       return;
+   }
 
-            case Light::FAST_CLOCK_CONTROL:
-                if (_clock==nullptr) {
-                    _clock = (Timebase*)InstanceManager::getDefault("Timebase");
-                }
-                // set up time as minutes in a day
-                _timeOn = _fastClockOnHour * 60 + _fastClockOnMin;
-                _timeOff = _fastClockOffHour * 60 + _fastClockOffMin;
-                // initialize light based on current fast time
-                updateClockControlLight ();
-                // set up to listen for time changes on a minute basis
-//                _clock.addMinuteChangeListener( _timebaseListener =
-//                    new java.beans.PropertyChangeListener() {
-//                        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-//                            if (_parentLight->getEnabled()) {  // don't change light if not enabled
-//                                // update control if light is enabled
-//                                updateClockControlLight();
-//                            }
-//                        }
-//                    });
-                _active = true;
-                break;
-            case Light::TURNOUT_STATUS_CONTROL:
-                _controlTurnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
-                                        provideTurnout(_controlTurnoutName);
-                if (_controlTurnout!=nullptr) {
-                    // set light based on current turnout state if known
-                    int tState = _controlTurnout->getKnownState();
-                    if (tState==Turnout::CLOSED) {
-                        if (_turnoutState==Turnout::CLOSED) {
-                            // Turn light on
-                            _parentLight->setState(Light::ON);
-                        }
-                        else {
-                            // Turn light off
-                            _parentLight->setState(Light::OFF);
-                        }
-                    }
-                    else if (tState==Turnout::THROWN) {
-                        if (_turnoutState==Turnout::THROWN) {
-                            // Turn light on
-                            _parentLight->setState(Light::ON);
-                        }
-                        else {
-                            // Turn light off
-                            _parentLight->setState(Light::OFF);
-                        }
-                    }
+   // register LightControl with Parent Light to indicate Control
+   // in use if user attempts to delete light
+ //  _parentLight::addPropertyChangeListener(
+ //      _parentLightListener = new PropertyChangeListener() {
+ //          @Override
+ //          public void propertyChange(PropertyChangeEvent e) {
+ //          }
+ //      },_parentLight::toString(), getDescriptionText("") );
+   _parentLight->addPropertyChangeListener(new LC1PropertyChangeListener(this),_parentLight->getDisplayName(), getDescriptionText("") );
 
-                    // listen for change in turnout state
-//                    _controlTurnout.addPropertyChangeListener(_turnoutListener =
-//                                            new java.beans.PropertyChangeListener() {
-//                            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-//                                if (!_parentLight->getEnabled()) return;  // ignore property change if user disabled light
-//                                if (e.getPropertyName().equals("KnownState")) {
-//                                    int now = _controlTurnout.getKnownState();
-//                                    if (now==Turnout.CLOSED) {
-//                                        if (_turnoutState==Turnout.CLOSED) {
-//                                            // Turn light on
-//                                            _parentLight->setState(Light.ON);
-//                                        }
-//                                        else {
-//                                            // Turn light off
-//                                            _parentLight->setState(Light.OFF);
-//                                        }
-//                                    }
-//                                    else if (now==Turnout.THROWN) {
-//                                        if (_turnoutState==Turnout.THROWN) {
-//                                            // Turn light on
-//                                            _parentLight->setState(Light.ON);
-//                                        }
-//                                        else {
-//                                            // Turn light off
-//                                            _parentLight->setState(Light.OFF);
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                    });
-                    _active = true;
-                }
-                else {
-                    // control turnout does not exist
-                    log->error("Light "+_parentLight->getSystemName()+
-                            " is linked to a Turnout that does not exist: "+_controlSensorName);
-                    return;
-                }
-                break;
-            case Light::TIMED_ON_CONTROL:
-                if (_timedSensorName.length()>0){
-                    Sensor* sen = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
-                                        provideSensor(_timedSensorName);
-                    _namedTimedControlSensor = nbhm->getNamedBeanHandle(_timedSensorName, sen);
-                }
-                if (_namedTimedControlSensor!=nullptr) {
-                    // set initial state off
-                    _parentLight->setState(Light::OFF);
-                    // listen for change in timed control sensor state
-//                    _namedTimedControlSensor.getBean().addPropertyChangeListener(_timedSensorListener =
-//                                            new java.beans.PropertyChangeListener() {
-//                            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-//                                if (!_parentLight->getEnabled()) return;  // ignore property change if user disabled light
-//                                if (e.getPropertyName().equals("KnownState")) {
-//                                    int now = _namedTimedControlSensor.getBean().getKnownState();
-//                                    if (!_lightOnTimerActive) {
-//                                        if (now==Sensor.ACTIVE) {
-//                                            // Turn light on
-//                                            _parentLight->setState(Light.ON);
-//                                            // Create a timer if one does not exist
-//                                            if (_timedControlTimer==nullptr) {
-//                                                _timedControlListener = new TimeLight();
-//                                                _timedControlTimer = new Timer(_timeOnDuration,
-//                                                        _timedControlListener);
-//                                            }
-//                                            // Start the Timer to turn the light OFF
-//                                            _lightOnTimerActive = true;
-//                                            _timedControlTimer.start();
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                    }, _timedSensorName, "Light Control " + _parentLight->getDisplayName());
-                    _active = true;
-                }
-                else {
-                    // timed control sensor does not exist
-                    log->error("Light "+_parentLight->getSystemName()+
-                                " is linked to a Sensor that does not exist: "+_timedSensorName);
-                    return;
-                }
-                break;
-            case Light::TWO_SENSOR_CONTROL:
-                _namedControlSensor = nullptr;
-                _namedControlSensor2 = nullptr;
-                if (_controlSensorName.length()>0){
-                    Sensor* sen = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
-                                            provideSensor(_controlSensorName);
-                    _namedControlSensor = nbhm->getNamedBeanHandle(_controlSensorName, sen);
-                }
-                if (_controlSensor2Name.length()>0){
-                    Sensor* sen = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
-                                            provideSensor(_controlSensor2Name);
-                    _namedControlSensor2 = nbhm->getNamedBeanHandle(_controlSensor2Name, sen);
-                }
-                if ( (_namedControlSensor!=nullptr) && (_namedControlSensor2!=nullptr) ) {
-                    // if sensor state is currently known, set light accordingly
-                    int kState = _namedControlSensor->getBean()->getKnownState();
-                    int kState2 = _namedControlSensor2->getBean()->getKnownState();
-                    if (_controlSensorSense==Sensor::ACTIVE) {
-                        if ( (kState==Sensor::ACTIVE) || (kState2==Sensor::ACTIVE) ) {
-                            // Turn light on
-                            _parentLight->setState(Light::ON);
-                        }
-                        else {
-                            // Turn light off
-                            _parentLight->setState(Light::OFF);
-                        }
-                    }
-                    else if (_controlSensorSense==Sensor::INACTIVE) {
-                        if 	( (kState==Sensor::INACTIVE) || (kState2==Sensor::INACTIVE) ) {
-                            // Turn light on
-                            _parentLight->setState(Light::ON);
-                        }
-                        else {
-                            // Turn light off
-                            _parentLight->setState(Light::OFF);
-                        }
-                    }
+   // activate according to control type
+   switch (_controlType) {
+       case Light::SENSOR_CONTROL:
+           _namedControlSensor = nullptr;
+           if (!_controlSensorName.isEmpty()) {
+               Sensor* sen = ((SensorManager*)InstanceManager::sensorManagerInstance())->
+                       provideSensor(_controlSensorName);
+               _namedControlSensor = nbhm->getNamedBeanHandle(_controlSensorName, sen);
+           }
+           if (_namedControlSensor != nullptr) {
+               // if sensor state is currently known, set light accordingly
+               oneSensorChanged( _namedControlSensor->getBean()->getKnownState() );
+               // listen for change in sensor state
+ //              _namedControlSensor->getBean().addPropertyChangeListener(
+ //                  _sensorListener = new PropertyChangeListener() {
+ //                      @Override
+ //                      public void propertyChange(PropertyChangeEvent e) {
+ //                          if (e.getPropertyName().equals("KnownState")) {
+ //                              oneSensorChanged( (int) e.getNewValue() );
+ //                          }
+ //                      }
+ //                  }, _controlSensorName, getDescriptionText(_parentLight::getDisplayName()));
+                  _namedControlSensor->getBean()->addPropertyChangeListener(new LC2PropertyChangeListener(this), _controlSensorName,
+                                                                          getDescriptionText(_parentLight->getDisplayName()));
 
-                    // listen for change in sensor states
-//                    _namedControlSensor->getBean().addPropertyChangeListener(_sensorListener =
-//                                            new java.beans.PropertyChangeListener() {
-//                            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-//                                twoSensorChanged(e);
+               _active = true;
+           } else {
+               // control sensor does not exist
+               log->error(tr("Light %1 is linked to a Sensor that does not exist: %2").arg(
+                   _parentLight->getSystemName()).arg(_controlSensorName));
+               return;
+           }
+           break;
+       case Light::FAST_CLOCK_CONTROL:
+           if (areFollowerTimesFaulty(_parentLight->getLightControlList())){
+               log->error(tr("Light has multiple actions for the same time in %1").arg(
+                   getDescriptionText(_parentLight->getDisplayName())));
+           }
+           if (_clock == nullptr) {
+               _clock = (Timebase*)InstanceManager::getDefault("Timebase");
+           }
+           // initialize light based on current fast time
+           updateClockControlLightFollower();
+           // set up to listen for time changes on a minute basis
+//           _clock->addMinuteChangeListener(
+//               _timebaseListener = new PropertyChangeListener() {
+//                   @Override
+//                   public void propertyChange(PropertyChangeEvent e) {
+//                       updateClockControlLightFollower();
+//                   }
+//               });
+            _clock->addMinuteChangeListener(_timebaseListener = new LC3PropertyChangeListener(this));
+           _active = true;
+           break;
+       case Light::TURNOUT_STATUS_CONTROL:
+           try {
+               _controlTurnout = InstanceManager::turnoutManagerInstance()->
+                       provideTurnout(_controlTurnoutName);
+           } catch (IllegalArgumentException e) {
+               // control turnout does not exist
+               log->error("Light " + _parentLight->getSystemName()
+                       + " is linked to a Turnout that does not exist: " + _controlSensorName);
+               return;
+           }
+           // set light based on current turnout state if known
+           oneTurnoutChanged( _controlTurnout->getKnownState() );
+           // listen for change in turnout state
+//           _controlTurnout.addPropertyChangeListener(
+//               _turnoutListener = new PropertyChangeListener() {
+//                   @Override
+//                   public void propertyChange(PropertyChangeEvent e) {
+//                       if (e.getPropertyName().equals("KnownState")) {
+//                           oneTurnoutChanged( (int) e.getNewValue() );
+//                       }
+//                   }
+//               }, _controlTurnoutName, getDescriptionText(_parentLight::getDisplayName()));
+           _controlTurnout->addPropertyChangeListener( _turnoutListener = new LC4PropertyChangeListener(this),
+               _controlTurnoutName, getDescriptionText(_parentLight->getDisplayName()));
+           _active = true;
+           break;
+       case Light::TIMED_ON_CONTROL:
+           if (!_timedSensorName.isEmpty()) {
+               Sensor* sen = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
+                       provideSensor(_timedSensorName);
+               _namedTimedControlSensor = nbhm->getNamedBeanHandle(_timedSensorName, sen);
+           }
+           if (_namedTimedControlSensor != nullptr) {
+               if (_parentLight->getEnabled()) {
+                   // set initial state off
+                   _parentLight->setState(Light::OFF);
+               }
+               // listen for change in timed control sensor state
+//               _namedTimedControlSensor->getBean().addPropertyChangeListener(
+//                   _timedSensorListener = new PropertyChangeListener() {
+//                       @Override
+//                       public void propertyChange(PropertyChangeEvent e) {
+//                           if (e.getPropertyName().equals("KnownState")) {
+//                               if ((int) e.getNewValue() == Sensor.ACTIVE) {
+//                                   if (_timedControlTimer == null && _parentLight::getEnabled()) {
+//                                       // Turn light on
+//                                       _parentLight::setState(Light::ON);
+//                                       // Create a timer if one does not exist
+//                                       _timedControlListener = new TimeLight();
+//                                       _timedControlTimer = new Timer(_timeOnDuration,
+//                                           _timedControlListener);
+//                                       // Start the Timer to turn the light OFF
+//                                       _timedControlTimer.start();
+//                                   }
+//                               }
 //                           }
-//                    }, _controlSensorName, "Light Control " + _parentLight->getDisplayName());
-//                    _namedControlSensor2->getBean().addPropertyChangeListener(_sensor2Listener =
-//                                            new java.beans.PropertyChangeListener() {
-//                            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-//                                twoSensorChanged(e);
+//                       }
+//                   }, _timedSensorName, getDescriptionText(_parentLight::getDisplayName()));
+                  _namedTimedControlSensor->getBean()->addPropertyChangeListener(new LC5PropertyChangeListener(this),
+                     _timedSensorName, getDescriptionText(_parentLight->getDisplayName()));
+               _active = true;
+           } else {
+               // timed control sensor does not exist
+               log->error("Light " + _parentLight->getSystemName()
+                       + " is linked to a Sensor that does not exist: " + _timedSensorName);
+               return;
+           }
+           break;
+       case Light::TWO_SENSOR_CONTROL:
+           _namedControlSensor = nullptr;
+           _namedControlSensor2 = nullptr;
+           if (!_controlSensorName.isEmpty()) {
+               Sensor* sen = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
+                       provideSensor(_controlSensorName);
+               _namedControlSensor = nbhm->getNamedBeanHandle(_controlSensorName, sen);
+           }
+           if (!_controlSensor2Name.isEmpty()) {
+               Sensor* sen = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
+                       provideSensor(_controlSensor2Name);
+               _namedControlSensor2 = nbhm->getNamedBeanHandle(_controlSensor2Name, sen);
+           }
+           if ((_namedControlSensor != nullptr) && (_namedControlSensor2 != nullptr)) {
+             // if sensor state is currently known, set light accordingly
+               twoSensorChanged();
+               // listen for change in sensor states
+//               _namedControlSensor.getBean().addPropertyChangeListener(
+//                   _sensorListener = new PropertyChangeListener() {
+//                       @Override
+//                       public void propertyChange(PropertyChangeEvent e) {
+//                           if (e.getPropertyName().equals("KnownState")) {
+//                               twoSensorChanged();
 //                           }
-//                    }, _controlSensor2Name, "Light Control " + _parentLight->getDisplayName());
-                    _active = true;
-                }
-                else {
-                    // at least one control sensor does not exist
-                    log->error("Light "+_parentLight->getSystemName()+
-                            " is linked to a Sensor that does not exist: ");
-                    return;
-                }
-                break;
-            default:
-                log->warn("Unexpected control type when activating Light: "+_parentLight->getSystemName());
-        }
-    }
+//                       }
+//                   }, _controlSensorName, getDescriptionText(_parentLight::getDisplayName()));
+           _namedControlSensor->getBean()->addPropertyChangeListener(new LC6PropertyChangeListener(this),
+              _controlSensorName, getDescriptionText(_parentLight->getDisplayName()));
+//               _namedControlSensor2.getBean().addPropertyChangeListener(
+//                   _sensor2Listener = new PropertyChangeListener() {
+//                       @Override
+//                       public void propertyChange(PropertyChangeEvent e) {
+//                           if (e.getPropertyName().equals("KnownState")) {
+//                               twoSensorChanged();
+//                           }
+//                       }
+//                   }, _controlSensor2Name, getDescriptionText(_parentLight::getDisplayName()));
+           _namedControlSensor2->getBean()->addPropertyChangeListener(new LC6PropertyChangeListener(this),
+              _controlSensorName, getDescriptionText(_parentLight->getDisplayName()));
+               _active = true;
+           } else {
+               // at least one control sensor does not exist
+               log->error("Light " + _parentLight->getSystemName()
+                       + " with 2 Sensor Control is linked to a Sensor that does not exist.");
+               return;
+           }
+           break;
+       default:
+           log->error(tr("Unexpected control type when activating Light: %1").arg(_parentLight->getDisplayName()));
+   }
+  }
 }
-/*protected*/ void LightControl::twoSensorChanged(PropertyChangeEvent* e) {
-    if (!_parentLight->getEnabled()) return;  // ignore property change if user disabled Light
-    if (e->getPropertyName()==("KnownState")) {
-        int kState = _namedControlSensor->getBean()->getKnownState();
-        int kState2 = _namedControlSensor2->getBean()->getKnownState();
-        if (_controlSensorSense==Sensor::ACTIVE) {
-            if ( (kState==Sensor::ACTIVE) || (kState2==Sensor::ACTIVE) ) {
-                // Turn light on
-                _parentLight->setState(Light::ON);
-            }
-            else {
-                // Turn light off
-                _parentLight->setState(Light::OFF);
-            }
-        }
-        else if (_controlSensorSense==Sensor::INACTIVE) {
-            if 	( (kState==Sensor::INACTIVE) || (kState2==Sensor::INACTIVE) ) {
-                // Turn light on
-                _parentLight->setState(Light::ON);
-            }
-            else {
-                // Turn light off
-                _parentLight->setState(Light::OFF);
-            }
-        }
-    }
+
+/*protected*/ void LightControl::twoSensorChanged() {
+ if (!_parentLight->getEnabled()) {
+     return;  // ignore property change if user disabled Light
+ }
+ int kState = _namedControlSensor->getBean()->getKnownState();
+ int kState2 = _namedControlSensor2->getBean()->getKnownState();
+ if (_controlSensorSense == Sensor::ACTIVE) {
+     if ((kState == Sensor::ACTIVE) || (kState2 == Sensor::ACTIVE)) {
+         // Turn light on
+         _parentLight->setState(Light::ON);
+     } else {
+         // Turn light off
+         _parentLight->setState(Light::OFF);
+     }
+ } else if (_controlSensorSense == Sensor::INACTIVE) {
+     if ((kState == Sensor::INACTIVE) || (kState2 == Sensor::INACTIVE)) {
+         // Turn light on
+         _parentLight->setState(Light::ON);
+     } else {
+         // Turn light off
+         _parentLight->setState(Light::OFF);
+     }
+ }
 }
 
 /**
@@ -536,7 +486,7 @@ void LightControl::common()
     QList<int> thisControlTimes= QList<int>();
 
     // put all other times in a single List to compare
-    //_parentLight.getLightControlList().forEach((otherLc) -> {
+    //_parentLight::getLightControlList().forEach((otherLc) -> {
     foreach(LightControl* otherLc, _parentLight->getLightControlList())
     {
         if ((otherLc!=this )&& (otherLc->getControlType()==Light::FAST_CLOCK_CONTROL))
@@ -609,15 +559,16 @@ void LightControl::common()
 /**
  * @param time Combined hours / mins to check against.
  */
-/*private*/ Predicate<LightControl*> LightControl::isFastClockEqual(int time) {
+/*private*/ /*Predicate<LightControl*>*/bool LightControl::isFastClockEqual(int time) {
 #if 0 // TODO:
     return p -> ( (p!=this) && (
         p.getFastClockOnCombined() == time || p.getFastClockOffCombined() == time ) );
 #endif
+    return this->_timeNow != time && (this->getFastClockOnCombined() == time || this->getFastClockOffCombined()==time);
 }
 
 /**
- * Check to see if we have the FastClock Follower has unique times for a single Light.
+ * Check to see if we have the FastClock Follower has unique times for a single Light::
  * <p>
  * Hour / Minute combination must be unique for each Light to avoid flicker.
  *
@@ -630,41 +581,62 @@ void LightControl::common()
     }
 //    return (compareList.stream().anyMatch(isFastClockEqual(getFastClockOnCombined())) ||
 //        compareList.stream().anyMatch(isFastClockEqual(getFastClockOffCombined())));
-    foreach (LightControl* lc, compareList) {
-
+    foreach (LightControl* lc, compareList)
+    {
+     if(lc->isFastClockEqual(getFastClockOnCombined()) || (lc->isFastClockEqual(getFastClockOffCombined())))
+      return true;
     }
 }
 
 /**
- *  Updates the status of a Light under FAST_CLOCK_CONTROL.  This
- *   method is called every FastClock minute.
+ * Updates the local int of the FastClock Time
  */
 //@SuppressWarnings("deprecation")
-/*private*/ void LightControl::updateClockControlLight() {
-    if (_clock!=nullptr) {
-        QDateTime now = _clock->getTime();
-        int timeNow = now.time().hour() * 60 + now.time().minute();
-        int state = _parentLight->getState();
-        if (_timeOn <= _timeOff) {
-            // on and off the same day
-            if ( (timeNow<_timeOn) || (timeNow>=_timeOff) ) {
-                // Light should be OFF
-                if (state == Light::ON) _parentLight->setState(Light::OFF);
-            }
-            else {
-                // Light should be ON
-                if (state == Light::OFF) _parentLight->setState(Light::ON);
-            }
+/*private*/ void LightControl::setTheTime(){
+    QDateTime now = _clock->getTime();
+    _timeNow = now.time().hour() * 60 + now.time().minute();
+}
+
+/**
+ * Updates the status of a Light under FAST_CLOCK_CONTROL. This method is
+ * called every FastClock minute.
+ */
+/*private*/ void LightControl::updateClockControlLightFollower() {
+    if (!_parentLight->getEnabled()) {
+        return;  // ignore property change if user disabled Light
+    }
+    if (_clock != nullptr) {
+        setTheTime();
+        log->debug(tr("updateClockControl, now is %1 master %2").arg(_timeNow).arg(isMasterFastClockFollower()?"true":"false"));
+        if (!isMasterFastClockFollower()){
+            return;
         }
-        else {
-            // on and off - different days
-            if ( (timeNow>=_timeOn) || (timeNow<_timeOff) ) {
-                // Light should be ON
-                if (state == Light::OFF) _parentLight->setState(Light::ON);
-            }
-            else {
+        int state = _parentLight->getState();
+        if (getFastClockOnCombined() <= getFastClockOffCombined()) {
+            // on and off the same day
+            if ((_timeNow < getFastClockOnCombined()) || (_timeNow >= getFastClockOffCombined())) {
                 // Light should be OFF
-                if (state == Light::ON) _parentLight->setState(Light::OFF);
+                if (state == Light::ON) {
+                    _parentLight->setState(Light::OFF);
+                }
+            } else {
+                // Light should be ON
+                if (state == Light::OFF) {
+                    _parentLight->setState(Light::ON);
+                }
+            }
+        } else {
+            // on and off - different days
+            if ((_timeNow >= getFastClockOnCombined()) || (_timeNow < getFastClockOffCombined())) {
+                // Light should be ON
+                if (state == Light::OFF) {
+                    _parentLight->setState(Light::ON);
+                }
+            } else {
+                // Light should be OFF
+                if (state == Light::ON) {
+                    _parentLight->setState(Light::OFF);
+                }
             }
         }
     }
@@ -675,81 +647,178 @@ void LightControl::common()
  *   control type, and deactivates the control mechanism, appropriate
  *   for the control type.
  */
-/*public*/ void LightControl::deactivateLightControl() {
-    // skip if Light Control is not active
-    if (_active) {
-        // deactivate according to control type
-        switch (_controlType) {
-            case Light::SENSOR_CONTROL:
-                if (_sensorListener!=nullptr) {
-                    _namedControlSensor->getBean()->removePropertyChangeListener(_sensorListener);
-                    _sensorListener = nullptr;
-                }
-                break;
-            case Light::FAST_CLOCK_CONTROL:
-                if ( (_clock!=nullptr) && (_timebaseListener!=nullptr) ) {
-                    _clock->removeMinuteChangeListener(_timebaseListener);
-                    _timebaseListener = nullptr;
-                }
-                break;
-            case Light::TURNOUT_STATUS_CONTROL:
-                if (_turnoutListener!=nullptr) {
-                    _controlTurnout->removePropertyChangeListener(_turnoutListener);
-                    _turnoutListener = nullptr;
-                }
-                break;
-            case Light::TIMED_ON_CONTROL:
-                if (_timedSensorListener!=nullptr) {
-                    _namedTimedControlSensor->getBean()->removePropertyChangeListener(_timedSensorListener);
-                    _timedSensorListener = nullptr;
-                }
-                if (_lightOnTimerActive) {
-                    _timedControlTimer->stop();
-                    _lightOnTimerActive = false;
-                }
-                if (_timedControlTimer!=nullptr) {
-                    if (_timedControlListener!=nullptr) {
-//                        _timedControlTimer->removeActionListener(_timedControlListener);
-                        _timedControlListener = nullptr;
-                    }
-                    _timedControlTimer = nullptr;
-                }
-                break;
-            case Light::TWO_SENSOR_CONTROL:
-                if (_sensorListener!=nullptr) {
-                    _namedControlSensor->getBean()->removePropertyChangeListener(_sensorListener);
-                    _sensorListener = nullptr;
-                }
-                if (_sensor2Listener!=nullptr) {
-                    _namedControlSensor2->getBean()->removePropertyChangeListener(_sensor2Listener);
-                    _sensor2Listener = nullptr;
-                }
-                break;
-            default:
-                log->warn("Unexpected control type when activating Light: "+_parentLight->getSystemName());
-        }
-        _active = false;
+/*public*/ void LightControl::deactivateLightControl()
+{
+  // skip if Light Control is not active
+  if (_active) {
+      _parentLight->removePropertyChangeListener(_parentLightListener);
+      // deactivate according to control type
+      switch (_controlType) {
+          case Light::SENSOR_CONTROL:
+              if (_sensorListener != nullptr) {
+                  _namedControlSensor->getBean()->removePropertyChangeListener(_sensorListener);
+                  _sensorListener = nullptr;
+              }
+              break;
+          case Light::FAST_CLOCK_CONTROL:
+              if ((_clock != nullptr) && (_timebaseListener != nullptr)) {
+                  _clock->removeMinuteChangeListener(_timebaseListener);
+                  _timebaseListener = nullptr;
+              }
+              break;
+          case Light::TURNOUT_STATUS_CONTROL:
+              if (_turnoutListener != nullptr) {
+                  _controlTurnout->removePropertyChangeListener(_turnoutListener);
+                  _turnoutListener = nullptr;
+              }
+              break;
+          case Light::TIMED_ON_CONTROL:
+              if (_timedSensorListener != nullptr) {
+                  _namedTimedControlSensor->getBean()->removePropertyChangeListener(_timedSensorListener);
+                  _timedSensorListener = nullptr;
+              }
+              if (_timedControlTimer != nullptr) {
+                  _timedControlTimer->stop();
+                  if (_timedControlListener != nullptr) {
+                      //_timedControlTimer->removeActionListener(_timedControlListener);
+                   disconnect(_timedControlTimer, SIGNAL(timeout()), _timedControlListener, SLOT(timeout()));
+                      _timedControlListener = nullptr;
+                  }
+                  _timedControlTimer = nullptr;
+              }
+              break;
+          case Light::TWO_SENSOR_CONTROL:
+              if (_sensorListener != nullptr) {
+                  _namedControlSensor->getBean()->removePropertyChangeListener(_sensorListener);
+                  _sensorListener = nullptr;
+              }
+              if (_sensor2Listener != nullptr) {
+                  _namedControlSensor2->getBean()->removePropertyChangeListener(_sensor2Listener);
+                  _sensor2Listener = nullptr;
+              }
+              break;
+          default:
+              log->warn(tr("Unexpected control type when deactivating Light: %1").arg(_parentLight->getSystemName()));
+      }
+      _active = false;
+  }
+}
+
+/*public*/ void LC1PropertyChangeListener::propertyChange(PropertyChangeEvent *)
+{}
+
+/*public*/ void LC2PropertyChangeListener::propertyChange(PropertyChangeEvent *e)
+{
+ if (e->getPropertyName()==("KnownState"))
+ {
+  lc->oneSensorChanged( e->getNewValue().toInt() );
+ }
+}
+
+/*public*/ void LC3PropertyChangeListener::propertyChange(PropertyChangeEvent *)
+{
+ lc->updateClockControlLightFollower();
+}
+
+/*public*/ void LC4PropertyChangeListener::propertyChange(PropertyChangeEvent* e) {
+    if (e->getPropertyName() == ("KnownState")) {
+        lc->oneTurnoutChanged(  e->getNewValue().toInt() );
     }
 }
-#if 0 // TODO:
-/**
- *	Class for defining ActionListener for TIMED_ON_CONTROL
- */
-class TimeLight : public ActionListener
-{
- public:
-    /*public*/ void actionPerformed(ActionEvent* event)
-    {
-        // Turn Light OFF
-        _parentLight->setState(Light::OFF);
-        // Turn Timer OFF
-        _timedControlTimer.stop();
-        _lightOnTimerActive = false;
+/*public*/ void LC5PropertyChangeListener::propertyChange(PropertyChangeEvent* e) {
+    if (e->getPropertyName()==("KnownState")) {
+        if (e->getNewValue().toInt() == Sensor::ACTIVE) {
+            if (lc->_timedControlTimer == nullptr && lc->_parentLight->getEnabled()) {
+                // Turn light on
+                lc->_parentLight->setState(Light::ON);
+                // Create a timer if one does not exist
+                lc->_timedControlListener = new TimeLight(lc);
+                lc->_timedControlTimer = new QTimer();
+                lc->_timedControlTimer->setInterval(lc->_timeOnDuration);
+//                    _timedControlListener);
+                connect(lc->_timedControlTimer, SIGNAL(timeout()),lc->_timedControlListener, SLOT(actionPerformed()));
+                // Start the Timer to turn the light OFF
+                lc->_timedControlTimer->start();
+            }
+        }
+    }
+}
+/*public*/ void LC6PropertyChangeListener::propertyChange(PropertyChangeEvent* e) {
+    if (e->getPropertyName()==("KnownState")) {
+        lc->twoSensorChanged();
     }
 }
 
-#endif
-////static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LightControl.class.getName());
+/**
+ * Internal routine for handling sensor change or startup
+ * for the 1 Sensor Control Type
+ */
+/*private*/ void LightControl::oneSensorChanged(int newSensorState){
+    if (!_parentLight->getEnabled()) {
+        return;  // ignore property change if user disabled Light
+    }
+    if (newSensorState == Sensor::ACTIVE) {
+        if (_controlSensorSense == Sensor::ACTIVE) {
+            // Turn light on
+            _parentLight->setState(Light::ON);
+        } else {
+            // Turn light off
+            _parentLight->setState(Light::OFF);
+        }
+    } else if (newSensorState == Sensor::INACTIVE) {
+        if (_controlSensorSense == Sensor::INACTIVE) {
+            // Turn light on
+            _parentLight->setState(Light::ON);
+        } else {
+            // Turn light off
+            _parentLight->setState(Light::OFF);
+        }
+    }
+}
+/**
+ * Internal routine for handling Turnout change or startup
+ * for the TURNOUT_STATUS_CONTROL Control Type
+ */
+/*private*/ void LightControl::oneTurnoutChanged(int newTurnoutState){
+    if (!_parentLight->getEnabled()) {
+        return;  // ignore property change if user disabled light
+    }
+    if (newTurnoutState == Turnout::CLOSED) {
+        if (_turnoutState == Turnout::CLOSED) {
+            // Turn light on
+            _parentLight->setState(Light::ON);
+        } else {
+            // Turn light off
+            _parentLight->setState(Light::OFF);
+        }
+    } else if (newTurnoutState == Turnout::THROWN) {
+        if (_turnoutState == Turnout::THROWN) {
+            // Turn light on
+            _parentLight->setState(Light::ON);
+        } else {
+            // Turn light off
+            _parentLight->setState(Light::OFF);
+        }
+    }
+}
+/**
+ *	Class for defining ActionListener for TIMED_ON_CONTROL
+// */
+//class TimeLight : public ActionListener
+//{
+// public:
+    /*public*/ void TimeLight::actionPerformed(/*ActionEvent* event*/)
+    {
+        // Turn Light OFF
+        lc->_parentLight->setState(Light::OFF);
+        // Turn Timer OFF
+        lc->_timedControlTimer->stop();
+        lc->_lightOnTimerActive = false;
+    }
+//}
+
+
+/*static*/ Logger* LightControl::log = LoggerFactory::getLogger("LightControl");
 //}
 
 /* @(#)LightControl.java */

@@ -12,6 +12,8 @@
 #include <QLabel>
 #include <QBoxLayout>
 #include "vptr.h"
+#include "profile.h"
+#include "profilemanager.h"
 
 /**
  * Support the {@link jmri.util.FileUtil } static API while providing
@@ -34,8 +36,10 @@
 //programPath = QDir::homePath() + QDir::separator()+"NetBeansProjects"+QDir::separator()+"jmri"+ QDir::separator();
 #endif
  jarPath = "";
- scriptsPath = "";
- userFilesPath = "";
+ scriptsPaths = QHash<Profile*, QString>();
+ userFilesPaths = QHash<Profile*, QString>();
+ profilePaths = QHash<Profile*, QString>();
+
  profilePath = "";
 }
 
@@ -334,6 +338,181 @@ public URL getURL(URI uri) {
 }
 
 /**
+ * Convert a File object's path to our preferred storage form.
+ * <p>
+ * This is the inverse of {@link #getFile(String pName)}. Deprecated forms
+ * are not created.
+ *
+ * @param profile Profile to use as base
+ * @param file    File at path to be represented
+ * @return Filename for storage in a portable manner. This will include
+ *         portable, not system-specific, file separators.
+ * @since 4.17.3
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString FileUtilSupport::getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ File* file) {
+    return this->getPortableFilename(profile, file, false, false);
+}
+
+/**
+ * Convert a File object's path to our preferred storage form.
+ * <p>
+ * This is the inverse of {@link #getFile(String pName)}. Deprecated forms
+ * are not created.
+ * <p>
+ * This method supports a specific use case concerning profiles and other
+ * portable paths that are stored within the User files directory, which
+ * will cause the {@link jmri.profile.ProfileManager} to write an incorrect
+ * path for the current profile or
+ * {@link apps.configurexml.FileLocationPaneXml} to write an incorrect path
+ * for the Users file directory. In most cases, the use of
+ * {@link #getPortableFilename(java.io.File)} is preferable.
+ *
+ * @param profile             Profile to use as base
+ * @param file                File at path to be represented
+ * @param ignoreUserFilesPath true if paths in the User files path should be
+ *                            stored as absolute paths, which is often not
+ *                            desirable.
+ * @param ignoreProfilePath   true if paths in the profile should be stored
+ *                            as absolute paths, which is often not
+ *                            desirable.
+ * @return Storage format representation
+ * @since 3.5.5
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString FileUtilSupport::getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ File* file, bool ignoreUserFilesPath, bool ignoreProfilePath) {
+    // compare full path name to see if same as preferences
+    QString filename = file->getAbsolutePath();
+
+    // append separator if file is a directory
+    if (file->isDirectory()) {
+        filename = filename + File::separator;
+    }
+
+    if (filename == nullptr) {
+        throw IllegalArgumentException("File \"" + file->toString() + "\" has a null absolute path which is not allowed");
+    }
+
+    // compare full path name to see if same as preferences
+    if (!ignoreUserFilesPath) {
+        if (filename.startsWith(getUserFilesPath(profile))) {
+            return FileUtil::PREFERENCES
+                    + filename.mid(getUserFilesPath(profile).length(), filename.length()).replace(File::separatorChar,
+                            FileUtil::SEPARATOR);
+        }
+    }
+
+    if (!ignoreProfilePath) {
+        // compare full path name to see if same as profile
+        if (filename.startsWith(getProfilePath(profile))) {
+            return FileUtil::PROFILE
+                    + filename.mid(getProfilePath(profile).length(), filename.length()).replace(File::separatorChar,
+                            FileUtil::SEPARATOR);
+        }
+    }
+
+    // compare full path name to see if same as settings
+    if (filename.startsWith(getPreferencesPath())) {
+        return FileUtil::SETTINGS
+                + filename.mid(getPreferencesPath().length(), filename.length()).replace(File::separatorChar,
+                        FileUtil::SEPARATOR);
+    }
+
+    if (!ignoreUserFilesPath) {
+        /*
+         * The tests for any portatable path that could be within the
+         * UserFiles locations needs to be within this block. This prevents
+         * the UserFiles or Profile path from being set to another portable
+         * path that is user settable.
+         *
+         * Note that this test should be after the UserFiles, Profile, and
+         * Preferences tests.
+         */
+        // check for relative to scripts dir
+        if (filename.startsWith(getScriptsPath(profile)) && filename != (getScriptsPath(profile))) {
+            return FileUtil::SCRIPTS
+                    + filename.mid(getScriptsPath(profile).length(), filename.length()).replace(File::separatorChar,
+                            FileUtil::SEPARATOR);
+        }
+    }
+
+    // now check for relative to program dir
+    if (filename.startsWith(getProgramPath())) {
+        return FileUtil::PROGRAM
+                + filename.mid(getProgramPath().length(), filename.length()).replace(File::separatorChar,
+                        FileUtil::SEPARATOR);
+    }
+
+    // compare full path name to see if same as home directory
+    // do this last, in case preferences or program dir are in home directory
+    if (filename.startsWith(getHomePath())) {
+        return FileUtil::HOME
+                + filename.mid(getHomePath().length(), filename.length()).replace(File::separatorChar,
+                        FileUtil::SEPARATOR);
+    }
+
+    return filename.replace(File::separatorChar, FileUtil::SEPARATOR); // absolute, and doesn't match; not really portable...
+}
+
+/**
+ * Convert a filename string to our preferred storage form.
+ * <p>
+ * This is the inverse of {@link #getExternalFilename(String pName)}.
+ * Deprecated forms are not created.
+ *
+ * @param profile  Profile to use as base
+ * @param filename Filename to be represented
+ * @return Filename for storage in a portable manner
+ * @since 4.17.3
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString FileUtilSupport::getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString filename) {
+    return getPortableFilename(profile, filename, false, false);
+}
+
+/**
+ * Convert a filename string to our preferred storage form.
+ * <p>
+ * This is the inverse of {@link #getExternalFilename(String pName)}.
+ * Deprecated forms are not created.
+ * <p>
+ * This method supports a specific use case concerning profiles and other
+ * portable paths that are stored within the User files directory, which
+ * will cause the {@link jmri.profile.ProfileManager} to write an incorrect
+ * path for the current profile or
+ * {@link apps.configurexml.FileLocationPaneXml} to write an incorrect path
+ * for the Users file directory. In most cases, the use of
+ * {@link #getPortableFilename(java.io.File)} is preferable.
+ *
+ * @param profile             Profile to use as base
+ * @param filename            Filename to be represented
+ * @param ignoreUserFilesPath true if paths in the User files path should be
+ *                            stored as absolute paths, which is often not
+ *                            desirable.
+ * @param ignoreProfilePath   true if paths in the profile path should be
+ *                            stored as absolute paths, which is often not
+ *                            desirable.
+ * @return Storage format representation
+ * @since 4.17.3
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString FileUtilSupport::getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString filename, bool ignoreUserFilesPath,
+        bool ignoreProfilePath) {
+    if (isPortableFilename(filename)) {
+        // if this already contains prefix, run through conversion to normalize
+        return getPortableFilename(profile, getExternalFilename(filename), ignoreUserFilesPath, ignoreProfilePath);
+    } else {
+        // treat as pure filename
+        return getPortableFilename(profile, new File(filename), ignoreUserFilesPath, ignoreProfilePath);
+    }
+}
+
+
+/**
  * Test if the given filename is a portable filename.
  *
  * Note that this method may return a false positive if the filename is a
@@ -344,12 +523,12 @@ public URL getURL(URI uri) {
  */
 //@SuppressWarnings("deprecation")
 /*public*/ bool FileUtilSupport::isPortableFilename(QString filename) {
-    return (filename.startsWith(FileUtil::PROGRAM)
-            || filename.startsWith(FileUtil::HOME)
-            || filename.startsWith(FileUtil::PREFERENCES)
-            || filename.startsWith(FileUtil::SCRIPTS)
-            || filename.startsWith(FileUtil::PROFILE)
-            || filename.startsWith(FileUtil::SETTINGS));
+    return (filename.startsWith(/*FileUtil::PROGRAM*/"program:")
+            || filename.startsWith(/*FileUtil::HOME*/"home:")
+            || filename.startsWith(/*FileUtil::PREFERENCES*/"preference:")
+            || filename.startsWith(/*FileUtil::SCRIPTS*/"scripts:")
+            || filename.startsWith(/*FileUtil::PROFILE*/"profile:")
+            || filename.startsWith(/*FileUtil::SETTINGS*/"settings:"));
 }
 
 /**
@@ -358,7 +537,9 @@ public URL getURL(URI uri) {
  * @return User's home directory as a String
  */
 /*public*/ QString FileUtilSupport::getHomePath() {
-    return homePath;
+// homePath = QDir::homePath() + File::separator;
+//    return homePath;
+ return QDir::homePath() + File::separator;
 }
 
 /**
@@ -369,35 +550,79 @@ public URL getURL(URI uri) {
  * @return User's files directory as a String
  */
 /*public*/ QString FileUtilSupport::getUserFilesPath() {
-    return (this->userFilesPath != NULL) ? this->userFilesPath : this->getProfilePath();
+ return getUserFilesPath(ProfileManager::getDefault()->getActiveProfile());
+}
+/**
+ * Get the user's files directory. If not set by the user, this is the same
+ * as the profile path. Note that if the profile path has been set to null,
+ * that returns the preferences directory, see {@link #getProfilePath()}.
+ *
+ * @param profile the profile to use
+ * @see #getProfilePath()
+ * @return User's files directory
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString FileUtilSupport::getUserFilesPath(/*@CheckForNull*/ Profile* profile) {
+    QString path = userFilesPaths.value(profile);
+    return path != "" ? path : getProfilePath(profile);
 }
 
 /**
  * Set the user's files directory.
  *
  * @see #getUserFilesPath()
- * @param path The path to the user's files directory using system-specific separators
+ * @param profile the profile to set the user's files directory for
+ * @param path    The path to the user's files directory using
+ *                system-specific separators
  */
-/*public*/ void FileUtilSupport::setUserFilesPath(QString path) {
-    QString old = this->userFilesPath;
-    if (path != NULL && !path.endsWith(File::separator)) {
+/*public*/ void FileUtilSupport::setUserFilesPath(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path) {
+    QString old = userFilesPaths.value(profile);
+    if (!path.endsWith(File::separator)) {
         path = path + File::separator;
     }
-    this->userFilesPath = path;
-    if ((old != NULL && old != (path)) || (path != NULL && path != (old))) {
-        this->firePropertyChange(FileUtil::PREFERENCES, old, path);
+    userFilesPaths.insert(profile, path);
+    if ((old != nullptr && old!=(path)) || (path!=(old))) {
+        this->firePropertyChange(FileUtil::PREFERENCES, VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, old)), VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, path)));
     }
 }
 
 /**
- * Get the profile directory. If not set, this is the same as the
- * preferences path.
+ * Get the profile directory. If not set, provide the preferences path. Uses
+ * the Profile returned by {@link ProfileManager#getActiveProfile()} as a
+ * base.
  *
  * @see #getPreferencesPath()
- * @return Profile directory as a String using system-specific separators
+ * @return Profile directory using system-specific separators
  */
+//@Nonnull
+//@CheckReturnValue
 /*public*/ QString FileUtilSupport::getProfilePath() {
-    return (this->profilePath != NULL) ? this->profilePath : this->getPreferencesPath();
+    return getProfilePath(ProfileManager::getDefault()->getActiveProfile());
+}
+
+/**
+ * Get the profile directory. If not set, provide the preferences path.
+ *
+ * @param profile the Profile to use as a base
+ * @see #getPreferencesPath()
+ * @return Profile directory using system-specific separators
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString FileUtilSupport::getProfilePath(/*@CheckForNull*/ Profile* profile) {
+    QString path = profilePaths.value(profile);
+    if (path == "") {
+        File* f = profile != nullptr ? profile->getPath() : nullptr;
+        if (f != nullptr) {
+            path = f->getAbsolutePath();
+            if (!path.endsWith(File::separator)) {
+                path = path + File::separator;
+            }
+            profilePaths.insert(profile, path);
+        }
+    }
+    return (path != nullptr) ? path : this->getPreferencesPath();
 }
 
 /**
@@ -408,19 +633,7 @@ public URL getURL(URI uri) {
  */
 /*public*/ void FileUtilSupport::setProfilePath(QString path)
 {
-  QString old = this->profilePath;
-  if (path != NULL && !path.endsWith(File::separator))
-  {
-   path = path + File::separator;
-  }
-  this->profilePath = path;
-  if ((old != NULL && old != (path)) || (path != NULL && path != (old)))
-  {
-   //this->firePropertyChange(FileUtil::PROFILE, old, path);
-  }
-  // ACK fix to prevent roster entries with incorrect paths when saved.
-  if(userFilesPath == "")
-   userFilesPath = homePath + ".jmri" + File::separator;
+ // does nothing
 }
 
 /**
@@ -456,7 +669,7 @@ public URL getURL(URI uri) {
 #endif
 #ifdef Q_OS_LINUX || Q_OS_UNIX
             // Linux, so use an invisible file
-            result = this->getHomePath() + ".jmri" + File::separator; // NOI18N
+            result = /*this->getHomePath()*/QDir::homePath() + File::separator + ".jmri" + File::separator; // NOI18N
 #endif
 #if 0
             break;
@@ -488,7 +701,7 @@ public URL getURL(URI uri) {
     {
     //        this->setProgramPath("."); // NOI18N
      QByteArray env0 = qgetenv("JMRIPROJECT");
-     log->debug(tr("env JMRIPROJECT = %1").arg(env0.data()));
+//     log->debug(tr("env JMRIPROJECT = %1").arg(env0.data()));
 
      QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
      if(env.contains("JMRIPROJECT"))
@@ -598,15 +811,35 @@ public URL getURL(URI uri) {
 }
 
 /**
- * Get the path to the scripts directory.
+ * Get the path to the scripts directory. If not set previously with
+ * {@link #setScriptsPath}, this is the "jython" subdirectory in the program
+ * directory. Uses the Profile returned by
+ * {@link ProfileManager#getActiveProfile()} as the base.
  *
- * @return the scriptsPath using system-specific separators
+ * @return the scripts directory using system-specific separators
  */
+//@Nonnull
+//@CheckReturnValue
 /*public*/ QString FileUtilSupport::getScriptsPath() {
-    if (scriptsPath != NULL) {
-        return scriptsPath;
+    return getScriptsPath(ProfileManager::getDefault()->getActiveProfile());
+}
+
+/**
+ * Get the path to the scripts directory. If not set previously with
+ * {@link #setScriptsPath}, this is the "jython" subdirectory in the program
+ * directory.
+ *
+ * @param profile the Profile to use as the base
+ * @return the path to scripts directory using system-specific separators
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString FileUtilSupport::getScriptsPath(/*@CheckForNull*/ Profile* profile) {
+    QString path = scriptsPaths.value(profile);
+    if (path != "") {
+        return path;
     }
-    // scriptsPath not set by user, return default if it exists
+    // scripts directory not set by user, return default if it exists
     File* file = new File(this->getProgramPath() + File::separator + "jython" + File::separator); // NOI18N
     if (file->exists() && file->isDirectory()) {
         return file->getPath() + File::separator;
@@ -618,18 +851,21 @@ public URL getURL(URI uri) {
 /**
  * Set the path to python scripts.
  *
- * @param path the scriptsPath to set
+ * @param profile the profile to use as a base
+ * @param path    the scriptsPaths to set; null resets to the default,
+ *                defined in {@link #getScriptsPath()}
  */
-/*public*/ void FileUtilSupport::setScriptsPath(QString path) {
-    QString old = this->scriptsPath;
-    if (path != NULL && !path.endsWith(File::separator)) {
+/*public*/ void FileUtilSupport::setScriptsPath(/*@CheckForNull*/ Profile* profile, /*@CheckForNull */ QString path) {
+    QString old = scriptsPaths.value(profile);
+    if (path != "" && !path.endsWith(File::separator)) {
         path = path + File::separator;
     }
-    this->scriptsPath = path;
-    if ((old != NULL && old != (path)) || (path != NULL && path != (old))) {
-        this->firePropertyChange(FileUtil::SCRIPTS, old, path);
+    scriptsPaths.insert(profile, path);
+    if ((old != nullptr && old !=(path)) || (path != "" && path!=(old))) {
+        this->firePropertyChange(FileUtil::SCRIPTS, VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, old)), VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, path)));
     }
 }
+
 /**
  * Get the URL of a portable filename if it can be located using
  * {@link #findURI(java.lang.String)}
@@ -780,6 +1016,8 @@ public URL getURL(URI uri) {
 /*public*/ QString FileUtilSupport::pathFromPortablePath(/*@Nonnull*/ QString path)
 {
  QString path_save = path;
+ if(path.startsWith("/"))
+  return path;
  if(path.startsWith(":/"))
  {
   if(!QFileInfo(path).exists())
@@ -803,8 +1041,8 @@ public URL getURL(URI uri) {
    if(!QFileInfo(path).exists())
    {
     path = path_save.replace(FileUtil::PROGRAM, ":/");
-    if(path.startsWith(":/jython"))
-     path.replace(":/jython", userFilesPath+"../jython");
+//    if(path.startsWith(":/jython"))
+//     path.replace(":/jython", userFilesPaths+"../jython");
    }
    else
     if(!QFileInfo(path).exists())
@@ -1543,4 +1781,6 @@ public URL getURL(URI uri) {
 }
 
 // initialize logging
-    /*private*/ /*static*/ /*final*/ Logger* FileUtilSupport::log = LoggerFactory::getLogger("FileUtilSupport");
+
+
+/*private*/ /*static*/ /*final*/ Logger* FileUtilSupport::log = LoggerFactory::getLogger("FileUtilSupport");

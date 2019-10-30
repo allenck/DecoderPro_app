@@ -37,15 +37,13 @@ public:
     /*public*/ QList<Profile*> getAllProfiles();
     /*public*/ Profile* getProfiles(int index);
     /*public*/ void setProfiles(Profile* profile, int index);
-    /*public*/ bool migrateToProfiles(QString configFilename) /*throws IllegalArgumentException, IOException*/;
-    /*public*/ void _export(Profile* profile, File* target, bool exportExternalUserFiles, bool exportExternalRoster); //throws IOException, JDOMException
     /*public*/ void setAutoStartActiveProfile(bool autoStartActiveProfile);
     /*public*/ Profile* createDefaultProfile() /*throws IllegalArgumentException, IOException*/;
     /*public*/ Profile* migrateConfigToProfile(File* config, QString name) /*throws IllegalArgumentException, IOException*/;
-    /*public*/ static /*final*/ QString SEARCH_PATHS;// = "searchPaths"; // NOI18N
-    /*public*/ static /*final*/ QString SYSTEM_PROPERTY;// = "org.jmri.profile"; // NOI18N
     /*public*/ static /*final*/ QString ACTIVE_PROFILE;// = "activeProfile"; // NOI18N
     /*public*/ static /*final*/ QString NEXT_PROFILE;// = "nextProfile"; // NOI18N
+    /*public*/ static /*final*/ QString SEARCH_PATHS;// = "searchPaths"; // NOI18N
+    /*public*/ static /*final*/ QString SYSTEM_PROPERTY;// = "org.jmri.profile"; // NOI18N
     /*public*/ static /*final*/ QString PROFILES;// = "profiles"; // NOI18N
     /*public*/ static /*final*/ QString DEFAULT_SEARCH_PATH;// = "defaultSearchPath"; // NOI18N
     /*public*/ static /*final*/ QString DEFAULT;// = "default"; // NOI18N
@@ -54,8 +52,11 @@ public:
     /*public*/ File* getSearchPaths(int index);
     /*public*/ void setActiveProfile(QString id);
     /*public*/ void setActiveProfile(Profile* profile);
- /*public*/ int getAutoStartActiveProfileTimeout();
- /*public*/ void setAutoStartActiveProfileTimeout(int autoStartActiveProfileTimeout);
+    /*public*/ int getAutoStartActiveProfileTimeout();
+    /*public*/ void setAutoStartActiveProfileTimeout(int autoStartActiveProfileTimeout);
+    /*public*/ bool migrateToProfiles(/*@Nonnull*/ QString configFilename) throw (IllegalArgumentException, IOException);
+    /*public*/ void _export(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ File* target, bool exportExternalUserFiles,
+         bool exportExternalRoster) throw (IOException, JDOMException, InitializationException);
 
 
 signals:
@@ -68,11 +69,13 @@ private:
     /*private*/ Profile* activeProfile;// = NULL;
     /*private*/ Profile* nextActiveProfile;// = NULL;
     /*private*/ /*final*/ File* catalog;
-    /*private*/ File* configFile;// = NULL;
-    /*private*/ int autoStartActiveProfileTimeout;// = 10;
+    /*private*/ File* configFile = NULL;
+    /*private*/ File* defaultSearchPath;// = new File(FileUtil::getPreferencesPath());
+    /*private*/ int autoStartActiveProfileTimeout = 10;
+    /*volatile*/ /*private*/ static ProfileManager* defaultInstance;// = nullptr;
     /*private*/ bool readingProfiles;// = false;
     /*private*/ bool autoStartActiveProfile;// = false;
-    /*private*/ static ProfileManager* instance;// = NULL;
+//    /*private*/ static ProfileManager* instance;// = NULL;
     /*private*/ static /*final*/ QString AUTO_START;// = "autoStart"; // NOI18N
     /*private*/ static /*final*/ QString AUTO_START_TIMEOUT;// = "autoStartTimeout"; // NOI18N
     /*private*/ static /*final*/ QString CATALOG;// = "profiles.xml"; // NOI18N
@@ -90,6 +93,7 @@ private:
     /*private*/ QString relativeName(File* file, QString root);
     PropertyChangeSupport* pcs;
 
+
     class FileFilter1 : public FileFilter
     {
      File* pathname;
@@ -99,7 +103,7 @@ private:
 
      friend class ProfileManager;
     };
-    /*private*/ File* defaultSearchPath;// = new File(FileUtil.getPreferencesPath());
+
 protected:
     /*protected*/ void addProfile(Profile* profile);
     /*protected*/ void addSearchPath(File* path) /*throws IOException*/;
