@@ -124,7 +124,7 @@ OperationsXml::OperationsXml(QObject *parent) :
 }
 
 /*public*/ QString OperationsXml::getDefaultOperationsFilename() {
-    return getFileLocation() + getOperationsDirectoryName() + File::separator + getOperationsFileName();
+    return getFileLocation() + getOperationsDirectoryName() + /*File::separator*/ "/" + getOperationsFileName();
 }
 
 /*public*/ /*static*/ void OperationsXml::setOperationsDirectoryName(QString name) {

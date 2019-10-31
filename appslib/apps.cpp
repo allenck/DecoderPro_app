@@ -195,37 +195,38 @@ bool Apps::configDeferredLoadOK = false;
  // a system property jmri.profile as a profile id.
  if (System::getProperties()->containsKey(/*ProfileManager::SYSTEM_PROPERTY)*/"org.jmri.profile"))
  {
-  ProfileManager::defaultManager()->setActiveProfile(System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile"));
+  ProfileManager::getDefault()->setActiveProfile(System::getProperty(ProfileManager::SYSTEM_PROPERTY));
  }
+ log->trace("check if profile exists");
  // @see jmri.profile.ProfileManager#migrateToProfiles JavaDoc for conditions handled here
- if (!ProfileManager::defaultManager()->getConfigFile()->exists())
+ if (!profileFile->exists())
  { // no profile config for this app
+  log->trace(tr("profileFile %1 doesn't exist").arg(profileFile->toString()));
   try
   {
    if (ProfileManager::defaultManager()->migrateToProfiles(configFilename))
    { // migration or first use
-     // notify user of change only if migration occured
+     // notify user of change only if migration occurred
      // TODO: a real migration message
-  //                JOptionPane.showMessageDialog(sp,
-  //                        tr("ConfigMigratedToProfile"),
-  //                        jmri.Application.getApplicationName(),
-  //                        JOptionPane.INFORMATION_MESSAGE);
-    QMessageBox::information(sp, tr("Information"), tr("Please ensure that the User Files location and Roster location are correct."));
+     JOptionPane::showMessageDialog(sp,
+             tr("Please ensure that the User Files location and Roster location are correct."),
+             QApplication::applicationName(),
+             JOptionPane::INFORMATION_MESSAGE);
    }
   }
   catch (IOException ex)
   {
-            JOptionPane::showMessageDialog(sp,
-                    ex.getLocalizedMessage(),
-                    QApplication::applicationName(),
-                    JOptionPane::ERROR_MESSAGE);
-            log->error(ex.getMessage());
+   JOptionPane::showMessageDialog(sp,
+           ex.getLocalizedMessage(),
+           QApplication::applicationName(),
+           JOptionPane::ERROR_MESSAGE);
+   log->error(ex.getMessage());
   } catch (IllegalArgumentException ex) {
-            JOptionPane::showMessageDialog(sp,
-                    ex.getLocalizedMessage(),
-                    QApplication::applicationName(),
-                    JOptionPane::ERROR_MESSAGE);
-            log->error(ex.getMessage());
+  JOptionPane::showMessageDialog(sp,
+          ex.getLocalizedMessage(),
+          QApplication::applicationName(),
+          JOptionPane::ERROR_MESSAGE);
+  log->error(ex.getMessage());
   }
  }
  try

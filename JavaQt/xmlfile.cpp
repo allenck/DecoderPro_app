@@ -30,7 +30,7 @@ QDomDocument XmlFile::doc = QDomDocument();
 XmlFile::XmlFile(QObject *parent) :
     QObject(parent)
 {
- dtdLocation = defaultDtdLocation;
+ //dtdLocation = defaultDtdLocation;
  validate = defaultValidate;
 
 }
@@ -66,7 +66,7 @@ XmlFile::XmlFile(QObject *parent) :
  QFileInfo fi(name);
  if (fi.exists() && fi.isReadable())
  {
-  if (log->isDebugEnabled())
+  if (log && log->isDebugEnabled())
   {
    log->debug("readFile: " + name + " from " + fi.canonicalFilePath());
   }
@@ -112,7 +112,7 @@ XmlFile::XmlFile(QObject *parent) :
 /*public*/ QDomElement XmlFile::rootFromFile(QFile* file) throw (JDOMException)
 {
  QFileInfo info(file->fileName());
- if (log->isDebugEnabled())
+ if (log && log->isDebugEnabled())
  {
   log->debug("reading xml from file: " + info.canonicalFilePath());
  }

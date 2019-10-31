@@ -70,6 +70,7 @@ SOURCES += appslib.cpp \
     defaultinstanceinitializer.cpp \
     jmripreferencesprovider.cpp \
     nodeidentity.cpp \
+    properties.cpp \
     profilemanager.cpp \
     profile.cpp \
     myapplication.cpp \
@@ -1101,12 +1102,13 @@ HEADERS += appslib.h\
     tests/abstractprovidingmemorymanagertestbase.h \
     tests/misc/defaultmemorymanagertest.h \
     tests/misc/defaultmemorymanagertestaction.h \
-    jlist.h \
-    jlisttablemodel.h \
     tests/misc/lightcontroltest.h \
     tests/misc/lightcontroltestaction.h \
+    jlist.h \
+    jlisttablemodel.h \
     fileutil.h \
-    fileutilsupport.h
+    fileutilsupport.h \
+    properties.h
 
 unix:!symbian {
     maemo5 {

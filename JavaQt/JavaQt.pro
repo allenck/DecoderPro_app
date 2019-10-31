@@ -43,9 +43,9 @@ SOURCES += javaqt.cpp \
     jtogglebutton.cpp \
     dataflavor.cpp \
     exceptions.cpp \
+    xmlfile.cpp \
     tablecolumn.cpp \
     xtablecolumnmodel.cpp \
-    properties.cpp \
     propertychangeevent.cpp \
     propertychangelistener.cpp \
     propertychangelistenermap.cpp \
@@ -75,7 +75,6 @@ SOURCES += javaqt.cpp \
     mimetypeparameterlist.cpp \
     indexedpropertychangeevent.cpp \
     actionevent.cpp \
-    xmlfile.cpp \
     sleeperthread.cpp \
     level.cpp \
     quietshutdowntask.cpp \
@@ -247,7 +246,6 @@ HEADERS += javaqt.h\
     tablecolumn.h \
     tablecolumnmodel.h \
     xtablecolumnmodel.h \
-    properties.h \
     propertychangeevent.h \
     propertychangelistener.h \
     propertychangelistenermap.h \

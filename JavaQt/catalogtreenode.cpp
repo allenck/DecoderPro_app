@@ -1,5 +1,5 @@
 #include "catalogtreenode.h"
-#include "namedicon.h"
+#include "../LayoutEditor/namedicon.h"
 #include "catalogtreeleaf.h"
 #include "loggerfactory.h"
 

@@ -23,6 +23,7 @@ class APPSLIBSHARED_EXPORT ProfileManager : public Bean
     Q_OBJECT
 public:
     explicit ProfileManager(QObject *parent = 0);
+    ProfileManager(File * catalog, QObject *parent = 0);
     QT_DEPRECATED/*public*/  static ProfileManager* defaultManager();
     /*public*/ static ProfileManager* getDefault();
     /*public*/ File* getConfigFile();
@@ -64,6 +65,7 @@ signals:
     void propertyChange(PropertyChangeEvent*);
 public slots:
 private:
+    void common(File* catalog);
     /*private*/ /*final*/ QList<Profile*> profiles;// = new QList<Profile>();
     /*private*/ /*final*/ QList<File*> searchPaths;// = new QList<File>();
     /*private*/ Profile* activeProfile;// = NULL;

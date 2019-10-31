@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setApplicationName("DecoderPro3");
+    QCoreApplication::setApplicationName("InstallTest");
     QCoreApplication::setOrganizationName("ACK Software");
 
     MyApplication a(argc, argv);

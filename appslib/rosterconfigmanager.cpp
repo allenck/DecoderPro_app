@@ -44,13 +44,15 @@
 //            RosterConfigManager.this->setDirectory(FileUtil.PREFERENCES);
 //        }
 //    });
-    connect(FileUtilSupport::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
+    //connect(FileUtilSupport::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
+ FileUtilSupport::getDefault()->addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeListener*)this);
 }
 
 void RosterConfigManager::onPropertyChange(PropertyChangeEvent* evt)
 {
  FileUtil::Property* oldValue =  VPtr<FileUtil::Property>::asPtr(evt->getOldValue());
  FileUtil::Property* newValue =  VPtr<FileUtil::Property>::asPtr(evt->getNewValue());
+ if(oldValue == nullptr) return;
  Profile* project = oldValue->getKey();
  log->debug(tr("UserFiles changed from %1 to %2").arg(evt->getOldValue().toString()).arg( evt->getNewValue().toString()));
  if (this->getDirectory() == (evt->getOldValue().toString())) {

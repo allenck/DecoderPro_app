@@ -25,7 +25,7 @@
 ///*public*/ class FileUtilSupport extends Bean {
 
 /* User's home directory */
-/*private*/ /*static*/ /*final*/ QString FileUtilSupport::homePath = QDir::homePath() + File::separator;//System.getProperty("user.home") + File.separator; // NOI18N
+/*private*/ /*static*/ /*final*/ QString FileUtilSupport::homePath = QDir::homePath() + /*File::separator*/ "/";//System.getProperty("user.home") + File.separator; // NOI18N
 // default instance
 /*volatile*/ /*private*/ /*static*/ FileUtilSupport* FileUtilSupport::defaultInstance = NULL;
 
@@ -669,7 +669,7 @@ public URL getURL(URI uri) {
 #endif
 #ifdef Q_OS_LINUX || Q_OS_UNIX
             // Linux, so use an invisible file
-            result = /*this->getHomePath()*/QDir::homePath() + File::separator + ".jmri" + File::separator; // NOI18N
+            result = /*this->getHomePath()*/QDir::homePath() + /*File::separator*/ "/" + ".jmri" + /*File::separator*/ "/"; // NOI18N
 #endif
 #if 0
             break;

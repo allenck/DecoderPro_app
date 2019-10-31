@@ -1,5 +1,5 @@
 #include "jtogglebutton.h"
-#include "namedicon.h"
+#include "../LayoutEditor/namedicon.h"
 #include <QButtonGroup>
 
 const QString JToggleButton::uiClassID = "ToggleButtonUI";

@@ -20,15 +20,15 @@
   */
   propertyChangeSupport = new PropertyChangeSupport(this);
  }
-#if 0
+
 /**
  * Add a PropertyChangeListener to the listener list.
  *
  * @param listener The PropertyChangeListener to be added
  */
-@Override
-/*public*/ void addPropertyChangeListener(PropertyChangeListener listener) {
-    propertyChangeSupport.addPropertyChangeListener(listener);
+//@Override
+/*public*/ void Bean::addPropertyChangeListener(PropertyChangeListener* listener) {
+    propertyChangeSupport->addPropertyChangeListener(listener);
 }
 
 /**
@@ -37,9 +37,9 @@
  * @param propertyName The name of the property to listen on.
  * @param listener     The PropertyChangeListener to be added
  */
-@Override
-/*public*/ void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-    propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+//@Override
+/*public*/ void Bean::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    propertyChangeSupport->addPropertyChangeListener(propertyName, listener);
 }
 
 /**
@@ -47,10 +47,11 @@
  * {@link java.beans.PropertyChangeSupport#fireIndexedPropertyChange(java.lang.String, int, boolean, boolean)}
  * directly to fire this notification on another thread.
  */
-protected void fireIndexedPropertyChange(String propertyName, int index, boolean oldValue, boolean newValue) {
-    ThreadingUtil.runOnGUIEventually(() -> {
-        propertyChangeSupport.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
-    });
+/*protected*/ void Bean::fireIndexedPropertyChange(QString propertyName, int index, bool oldValue, bool newValue) {
+//    ThreadingUtil.runOnGUIEventually(() -> {
+//        propertyChangeSupport.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
+//    });
+ propertyChangeSupport->fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
 }
 
 /**
@@ -58,12 +59,13 @@ protected void fireIndexedPropertyChange(String propertyName, int index, boolean
  * {@link java.beans.PropertyChangeSupport#fireIndexedPropertyChange(java.lang.String, int, int, int)}
  * directly to fire this notification on another thread.
  */
-protected void fireIndexedPropertyChange(String propertyName, int index, int oldValue, int newValue) {
-    ThreadingUtil.runOnGUIEventually(() -> {
-        propertyChangeSupport.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
-    });
+/*protected*/ void Bean::fireIndexedPropertyChange(QString propertyName, int index, int oldValue, int newValue) {
+//    ThreadingUtil.runOnGUIEventually(() -> {
+//        propertyChangeSupport.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
+//    });
+ propertyChangeSupport->fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
 }
-#endif
+
 /**
  * Fire an indexed property change on the Event dispatch (Swing) thread. Use
  * {@link java.beans.PropertyChangeSupport#fireIndexedPropertyChange(java.lang.String, int, java.lang.Object, java.lang.Object)}
@@ -74,16 +76,16 @@ protected void fireIndexedPropertyChange(String propertyName, int index, int old
         propertyChangeSupport->fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
 //    });
 }
-#if 0
+
 /**
  * Fire an indexed property change on the Event dispatch (Swing) thread. Use
  * {@link java.beans.PropertyChangeSupport#firePropertyChange(java.lang.String, boolean, boolean)}
  * directly to fire this notification on another thread.
  */
-protected void firePropertyChange(String key, boolean oldValue, boolean value) {
-    ThreadingUtil.runOnGUIEventually(() -> {
-        propertyChangeSupport.firePropertyChange(key, oldValue, value);
-    });
+/*protected*/ void Bean::firePropertyChange(QString key, bool oldValue, bool value) {
+//    ThreadingUtil.runOnGUIEventually(() -> {
+        propertyChangeSupport->firePropertyChange(key, oldValue, value);
+//    });
 }
 
 /**
@@ -91,12 +93,12 @@ protected void firePropertyChange(String key, boolean oldValue, boolean value) {
  * {@link java.beans.PropertyChangeSupport#firePropertyChange(java.beans.PropertyChangeEvent)}
  * directly to fire this notification on another thread.
  */
-protected void firePropertyChange(PropertyChangeEvent evt) {
-    ThreadingUtil.runOnGUIEventually(() -> {
-        propertyChangeSupport.firePropertyChange(evt);
-    });
+/*protected*/ void Bean::firePropertyChange(PropertyChangeEvent* evt) {
+//    ThreadingUtil.runOnGUIEventually(() -> {
+        propertyChangeSupport->firePropertyChange(evt);
+//    });
 }
-#endif
+
 /**
  * Fire an indexed property change on the Event dispatch (Swing) thread. Use
  * {@link java.beans.PropertyChangeSupport#firePropertyChange(java.lang.String, int, int)}
@@ -105,9 +107,9 @@ protected void firePropertyChange(PropertyChangeEvent evt) {
  */
 /*protected*/ void Bean::firePropertyChange(QString key, int oldValue, int value) {
 //    ThreadingUtil.runOnGUIEventually(() -> {
-//        propertyChangeSupport.firePropertyChange(key, oldValue, value);
+        propertyChangeSupport->firePropertyChange(key, oldValue, value);
 //    });
- emit propertyChange(new PropertyChangeEvent(this, key, oldValue, value));
+// emit propertyChange(new PropertyChangeEvent(this, key, oldValue, value));
 }
 
 /**
@@ -118,28 +120,28 @@ protected void firePropertyChange(PropertyChangeEvent evt) {
  */
 /*protected*/ void Bean::firePropertyChange(QString key, QVariant oldValue, QVariant value) {
 //    ThreadingUtil.runOnGUIEventually(() -> {
-//        propertyChangeSupport.firePropertyChange(key, oldValue, value);
+        propertyChangeSupport->firePropertyChange(key, oldValue, value);
 //    });
- emit propertyChange(new PropertyChangeEvent(this, key, oldValue, value));
-}
-#if 0
-@Override
-/*public*/ PropertyChangeListener[] getPropertyChangeListeners() {
-    return propertyChangeSupport.getPropertyChangeListeners();
+// emit propertyChange(new PropertyChangeEvent(this, key, oldValue, value));
 }
 
-@Override
-/*public*/ PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
-    return propertyChangeSupport.getPropertyChangeListeners(propertyName);
+//@Override
+/*public*/ QVector<PropertyChangeListener*> Bean::getPropertyChangeListeners() {
+    return propertyChangeSupport->getPropertyChangeListeners();
 }
 
-@Override
-/*public*/ void removePropertyChangeListener(PropertyChangeListener listener) {
-    propertyChangeSupport.removePropertyChangeListener(listener);
+//@Override
+/*public*/ QVector<PropertyChangeListener*> Bean::getPropertyChangeListeners(QString propertyName) {
+    return propertyChangeSupport->getPropertyChangeListeners(propertyName);
 }
 
-@Override
-/*public*/ void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-    propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+//@Override
+/*public*/ void Bean::removePropertyChangeListener(PropertyChangeListener* listener) {
+    propertyChangeSupport->removePropertyChangeListener(listener);
 }
-#endif
+
+//@Override
+/*public*/ void Bean::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    propertyChangeSupport,removePropertyChangeListener(propertyName, listener);
+}
+

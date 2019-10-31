@@ -442,7 +442,7 @@ void WarrantPreferences::setScale(float s) {
 /*public*/ void WarrantPreferences::setLayoutScale(float scale) {
     float oldScale = this->_scale;
     _scale = scale;
-    this->firePropertyChange(LAYOUT_SCALE, oldScale, scale);
+    this->firePropertyChange(LAYOUT_SCALE, QVariant(oldScale), QVariant(scale));
 }
 
 /*public*/ float WarrantPreferences::getThrottleScale() {

@@ -227,7 +227,7 @@ int File::getPrefixLength() {
   Q_ASSERT (!parent->path.isNull());
   Q_ASSERT (parent->path != (""));
     //this->path = fs.resolve(parent.path, child);
-    this->path= QFileInfo(parent->path).absoluteFilePath() + File::separator + child;
+    this->path= QFileInfo(parent->path).absoluteFilePath() + /*File::separator*/ "/" + child;
     this->prefixLength = parent->prefixLength;
 }
 
@@ -363,7 +363,7 @@ int File::getPrefixLength() {
   {
    //this->path = fs.resolve(parent.path,
 //                                   fs.normalize(child));
-   this->path = parent->path + File::separator + /*QFileInfo(child).canonicalFilePath()*/child;
+   this->path = parent->path + /*File::separator*/ "/" + /*QFileInfo(child).canonicalFilePath()*/child;
   }
  }
  else

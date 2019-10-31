@@ -78,7 +78,16 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SEARCH_PATHS, ("searchPaths"))
  * {@link #defaultManager()} is preferred.
  */
 /*public*/ ProfileManager::ProfileManager(QObject *parent)
-    :  Bean(parent) \
+    :  Bean(parent)
+{
+ common(new File(FileUtil::getPreferencesPath() + *_CATALOG));
+}
+/*public*/ ProfileManager::ProfileManager(File *catalog, QObject *parent) : Bean(parent)
+{
+ common(catalog);
+}
+
+void ProfileManager::common(File* catalog)
 {
  log = new Logger("ProfileManager");
  profiles =  QList<Profile*>();
@@ -91,8 +100,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SEARCH_PATHS, ("searchPaths"))
  defaultSearchPath = new File(FileUtil::getPreferencesPath());
  autoStartActiveProfileTimeout = 10;
  pcs = new PropertyChangeSupport(this);
-
- this->catalog = new File(FileUtil::getPreferencesPath() + *_CATALOG);
+ this->catalog = catalog;
  try
  {
   this->readProfiles();
@@ -107,8 +115,8 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SEARCH_PATHS, ("searchPaths"))
  catch (FileNotFoundException ex) {
      log->error(ex.getLocalizedMessage() + ex.getMessage());
  }
-}
 
+}
 /**
  * Get the default {@link ProfileManager}.
  *
@@ -122,6 +130,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SEARCH_PATHS, ("searchPaths"))
 {
  return ProfileManager::getDefault();
 }
+
 /**
  * Get the default {@link ProfileManager}.
  *

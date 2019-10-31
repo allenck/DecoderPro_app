@@ -10,12 +10,11 @@
 //QHash<QString, QString> Properties::hash =  QHash<QString, QString>();
 QMap<QString, QVariant> Properties::_hashTable =  QMap<QString, QVariant>();
 
-
 Properties::Properties(QObject *parent) :
     QObject(parent)
 {
  defaults = NULL;
- _hashTable = QMap<QString, QVariant>();
+ //_hashTable = QMap<QString, QVariant>();
 }
 
 /**
