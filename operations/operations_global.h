@@ -1,0 +1,12 @@
+#ifndef OPERATIONS_GLOBAL_H
+#define OPERATIONS_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(OPERATIONS_LIBRARY)
+#  define OPERATIONSSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define OPERATIONSSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // OPERATIONS_GLOBAL_H

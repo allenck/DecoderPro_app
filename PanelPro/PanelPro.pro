@@ -122,3 +122,18 @@ TRANSLATIONS += \
     languages/panelpro_de.ts \
     languages/panelpro_en.ts
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/release/ -loperations
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/debug/ -loperations
+else:unix: LIBS += -L$$PWD/../operations/ -loperations
+
+INCLUDEPATH += $$PWD/../operations
+DEPENDPATH += $$PWD/../operations
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../tests/release/ -ltests
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../tests/debug/ -ltests
+else:unix: LIBS += -L$$PWD/../tests/ -ltests
+
+INCLUDEPATH += $$PWD/../tests
+DEPENDPATH += $$PWD/../tests

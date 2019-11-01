@@ -27,9 +27,8 @@ namespace Operations
  }
 
 
- TrainsScriptFrame* f = NULL;
 
- /*public*/ void TrainsScriptAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void TrainsScriptAction::actionPerformed(ActionEvent *e) {
      // create a train scripts frame
      if (f != NULL && f->isVisible()) {
          f->dispose();

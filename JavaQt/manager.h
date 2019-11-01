@@ -10,6 +10,7 @@
 #include "vetoablechangelistener.h"
 #include <QSet>
 #include "exceptions.h"
+#include <QVector>
 
 class SystemConnectionMemo;
 class QString;

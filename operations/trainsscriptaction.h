@@ -4,6 +4,7 @@
 
 namespace Operations
 {
+ class TrainsScriptFrame;
  class TrainsTableFrame;
  class TrainsScriptAction : public AbstractAction
  {
@@ -14,7 +15,7 @@ namespace Operations
   /*public*/ void actionPerformed(ActionEvent* e = 0);
  private:
   TrainsTableFrame* frame; // the parent frame that is launching the TrainScriptFrame.
-
+  TrainsScriptFrame* f = nullptr;
  };
 }
 #endif // TRAINSSCRIPTACTION_H
