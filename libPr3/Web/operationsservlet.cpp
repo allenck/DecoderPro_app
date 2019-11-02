@@ -11,14 +11,15 @@
 #include "jsonexception.h"
 #include "carmanager.h"
 #include "jsonutil.h"
-#include "engine.h"
+#include "../operations/engine.h"
 #include "htmlmanifest.h"
 #include "setup.h"
-#include "../../appslib/operations/route.h"
+#include "../operations/route.h"
 #include "jsonmanifest.h"
 #include "webserver.h"
 #include "htmlconductor.h"
 #include "stringescapeutils.h"
+#include "../operations/engine.h"
 
 OperationsServlet::OperationsServlet() : HttpServlet()
 {

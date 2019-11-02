@@ -2061,3 +2061,10 @@ message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 found)
 message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 not found)
 }
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/release/ -loperations
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/debug/ -loperations
+else:unix: LIBS += -L$$PWD/../operations/ -loperations
+
+INCLUDEPATH += $$PWD/../operations
+DEPENDPATH += $$PWD/../operations

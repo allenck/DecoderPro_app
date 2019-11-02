@@ -11,8 +11,8 @@
 #include "abstractsignalmast.h"
 #include <QMessageBox>
 #include "joptionpane.h"
-#include "activetrain.h"
-#include "dispatcherframe.h"
+#include "../operations/activetrain.h"
+#include "../operations/dispatcherframe.h"
 #include "layoutblock.h"
 #include "connectivityutil.h"
 #include <QPushButton>

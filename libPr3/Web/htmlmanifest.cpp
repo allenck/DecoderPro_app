@@ -3,7 +3,7 @@
 #include "setup.h"
 #include "jsonoperations.h"
 #include "trainschedulemanager.h"
-#include "../../appslib/operations/route.h"
+#include "../operations/route.h"
 #include "json.h"
 #include "routelocation.h"
 #include "jsonmanifest.h"

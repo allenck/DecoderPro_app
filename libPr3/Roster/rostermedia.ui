@@ -42,19 +42,6 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2" rowspan="2" colspan="2">
-    <widget class="DropJLabel" name="lblMainImage">
-     <property name="acceptDrops">
-      <bool>true</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image to be used for this locomotive,  drop any image file in the frame&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Image</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="3">
     <widget class="QLabel" name="lblIconImage">
      <property name="acceptDrops">
@@ -103,6 +90,19 @@
     <widget class="QLineEdit" name="edWebReference">
      <property name="toolTip">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;URL to any web page related to that locomotive&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" colspan="2">
+    <widget class="DropJLabel" name="lblMainImage">
+     <property name="acceptDrops">
+      <bool>true</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image to be used for this locomotive,  drop any image file in the frame&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Image</string>
      </property>
     </widget>
    </item>

@@ -78,7 +78,7 @@
 #include "metatypes.h"
 #include "activesystemsmenu.h"
 #include "operationsmenu.h"
-#include "operations/setup.h"
+#include "../operations/setup.h"
 #include "printdecoderlistaction.h"
 #include "system.h"
 #include "debugmenu.h"
