@@ -68,6 +68,8 @@ SOURCES += appslib.cpp \
     properties.cpp \
     profilemanager.cpp \
     profile.cpp \
+    fileutil.cpp \
+    fileutilsupport.cpp \
     myapplication.cpp \
     createbuttonmodel.cpp \
     splashwindow.cpp \
@@ -181,9 +183,7 @@ SOURCES += appslib.cpp \
     firsttimestartupwizardaction.cpp \
     profileconfiguration.cpp \
     nullprofile.cpp \
-    jlisttablemodel.cpp \
-    fileutil.cpp \
-    fileutilsupport.cpp
+    jlisttablemodel.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \

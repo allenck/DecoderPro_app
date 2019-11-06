@@ -50,6 +50,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -7910,7 +7911,7 @@ PythonQtShell_NamedBean::~PythonQtShell_NamedBean() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-void PythonQtShell_NamedBean::addPropertyChangeListener(PropertyChangeListener*  l0)
+void PythonQtShell_NamedBean::addPropertyChangeListener(PropertyChangeListener*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -7920,7 +7921,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeListener*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&l0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -7930,9 +7931,9 @@ if (_wrapper) {
     }
   }
 }
-  NamedBean::addPropertyChangeListener(l0);
+  NamedBean::addPropertyChangeListener(arg__1);
 }
-void PythonQtShell_NamedBean::addPropertyChangeListener(PropertyChangeListener*  l0, QString  name1, const QString  listenerRef2)
+void PythonQtShell_NamedBean::addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, const QString  arg__3)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -7942,7 +7943,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeListener*" , "QString" , "const QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
-      void* args[4] = {NULL, (void*)&l0, (void*)&name1, (void*)&listenerRef2};
+      void* args[4] = {NULL, (void*)&arg__1, (void*)&arg__2, (void*)&arg__3};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -7952,7 +7953,29 @@ if (_wrapper) {
     }
   }
 }
-  NamedBean::addPropertyChangeListener(l0, name1, listenerRef2);
+  NamedBean::addPropertyChangeListener(arg__1, arg__2, arg__3);
+}
+void PythonQtShell_NamedBean::addPropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("addPropertyChangeListener");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString" , "PropertyChangeListener*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  NamedBean::addPropertyChangeListener(arg__1, arg__2);
 }
 void PythonQtShell_NamedBean::childEvent(QChildEvent*  event0)
 {
@@ -8350,7 +8373,7 @@ if (_wrapper) {
 }
   return NamedBean::getFullyFormattedDisplayName();
 }
-QString  PythonQtShell_NamedBean::getListenerRef(PropertyChangeListener*  l0)
+QString  PythonQtShell_NamedBean::getListenerRef(PropertyChangeListener*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8361,7 +8384,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"QString" , "PropertyChangeListener*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       QString returnValue{};
-      void* args[2] = {NULL, (void*)&l0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -8381,7 +8404,7 @@ if (_wrapper) {
     }
   }
 }
-  return NamedBean::getListenerRef(l0);
+  return NamedBean::getListenerRef(arg__1);
 }
 QList<QString >*  PythonQtShell_NamedBean::getListenerRefs()
 {
@@ -8482,7 +8505,7 @@ if (_wrapper) {
 }
   return NamedBean::getProperty(key0);
 }
-QList<PropertyChangeListener* >*  PythonQtShell_NamedBean::getPropertyChangeListeners(QString  name0)
+QList<PropertyChangeListener* >*  PythonQtShell_NamedBean::getPropertyChangeListeners(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8493,7 +8516,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"QList<PropertyChangeListener* >*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       QList<PropertyChangeListener* >* returnValue{};
-      void* args[2] = {NULL, (void*)&name0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -8513,7 +8536,7 @@ if (_wrapper) {
     }
   }
 }
-  return NamedBean::getPropertyChangeListeners(name0);
+  return NamedBean::getPropertyChangeListeners(arg__1);
 }
 QSet<QString >  PythonQtShell_NamedBean::getPropertyKeys()
 {
@@ -8702,7 +8725,7 @@ if (_wrapper) {
 }
   NamedBean::removeProperty(arg__1);
 }
-void PythonQtShell_NamedBean::removePropertyChangeListener(PropertyChangeListener*  l0)
+void PythonQtShell_NamedBean::removePropertyChangeListener(PropertyChangeListener*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8712,7 +8735,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeListener*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&l0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -8722,9 +8745,31 @@ if (_wrapper) {
     }
   }
 }
-  NamedBean::removePropertyChangeListener(l0);
+  NamedBean::removePropertyChangeListener(arg__1);
 }
-void PythonQtShell_NamedBean::setComment(QString  comment0)
+void PythonQtShell_NamedBean::removePropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("removePropertyChangeListener");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString" , "PropertyChangeListener*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  
+}
+void PythonQtShell_NamedBean::setComment(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8734,7 +8779,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&comment0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -8744,9 +8789,9 @@ if (_wrapper) {
     }
   }
 }
-  NamedBean::setComment(comment0);
+  NamedBean::setComment(arg__1);
 }
-void PythonQtShell_NamedBean::setProperty(QString  key0, QVariant  value1)
+void PythonQtShell_NamedBean::setProperty(QString  key0, QVariant  arg__2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8756,7 +8801,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QString" , "QVariant"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      void* args[3] = {NULL, (void*)&key0, (void*)&value1};
+      void* args[3] = {NULL, (void*)&key0, (void*)&arg__2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -8766,7 +8811,7 @@ if (_wrapper) {
     }
   }
 }
-  NamedBean::setProperty(key0, value1);
+  NamedBean::setProperty(key0, arg__2);
 }
 void PythonQtShell_NamedBean::setState(int  arg__1)
 {
@@ -8834,7 +8879,7 @@ if (_wrapper) {
 }
   NamedBean::timerEvent(event0);
 }
-void PythonQtShell_NamedBean::updateListenerRef(PropertyChangeListener*  l0, QString  newName1)
+void PythonQtShell_NamedBean::updateListenerRef(PropertyChangeListener*  l0, QString  arg__2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8844,7 +8889,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeListener*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      void* args[3] = {NULL, (void*)&l0, (void*)&newName1};
+      void* args[3] = {NULL, (void*)&l0, (void*)&arg__2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -8854,7 +8899,7 @@ if (_wrapper) {
     }
   }
 }
-  NamedBean::updateListenerRef(l0, newName1);
+  NamedBean::updateListenerRef(l0, arg__2);
 }
 void PythonQtShell_NamedBean::vetoableChange(PropertyChangeEvent*  arg__1)
 {
@@ -8903,14 +8948,19 @@ int PythonQtShell_NamedBean::qt_metacall(QMetaObject::Call call, int id, void** 
   int result = NamedBean::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-void PythonQtWrapper_NamedBean::addPropertyChangeListener(NamedBean* theWrappedObject, PropertyChangeListener*  l)
+void PythonQtWrapper_NamedBean::addPropertyChangeListener(NamedBean* theWrappedObject, PropertyChangeListener*  arg__1)
 {
-  ( theWrappedObject->addPropertyChangeListener(l));
+  ( theWrappedObject->addPropertyChangeListener(arg__1));
 }
 
-void PythonQtWrapper_NamedBean::addPropertyChangeListener(NamedBean* theWrappedObject, PropertyChangeListener*  l, QString  name, const QString  listenerRef)
+void PythonQtWrapper_NamedBean::addPropertyChangeListener(NamedBean* theWrappedObject, PropertyChangeListener*  arg__1, QString  arg__2, const QString  arg__3)
 {
-  ( theWrappedObject->addPropertyChangeListener(l, name, listenerRef));
+  ( theWrappedObject->addPropertyChangeListener(arg__1, arg__2, arg__3));
+}
+
+void PythonQtWrapper_NamedBean::addPropertyChangeListener(NamedBean* theWrappedObject, QString  arg__1, PropertyChangeListener*  arg__2)
+{
+  ( theWrappedObject->addPropertyChangeListener(arg__1, arg__2));
 }
 
 int  PythonQtWrapper_NamedBean::compareSystemNameSuffix(NamedBean* theWrappedObject, QString  suffix1, QString  suffix2, NamedBean*  n2)
@@ -8958,9 +9008,9 @@ QString  PythonQtWrapper_NamedBean::getFullyFormattedDisplayName(NamedBean* theW
   return ( theWrappedObject->getFullyFormattedDisplayName());
 }
 
-QString  PythonQtWrapper_NamedBean::getListenerRef(NamedBean* theWrappedObject, PropertyChangeListener*  l)
+QString  PythonQtWrapper_NamedBean::getListenerRef(NamedBean* theWrappedObject, PropertyChangeListener*  arg__1)
 {
-  return ( theWrappedObject->getListenerRef(l));
+  return ( theWrappedObject->getListenerRef(arg__1));
 }
 
 QList<QString >*  PythonQtWrapper_NamedBean::getListenerRefs(NamedBean* theWrappedObject)
@@ -8978,9 +9028,9 @@ QVariant  PythonQtWrapper_NamedBean::getProperty(NamedBean* theWrappedObject, QS
   return ( theWrappedObject->getProperty(key));
 }
 
-QList<PropertyChangeListener* >*  PythonQtWrapper_NamedBean::getPropertyChangeListeners(NamedBean* theWrappedObject, QString  name)
+QList<PropertyChangeListener* >*  PythonQtWrapper_NamedBean::getPropertyChangeListeners(NamedBean* theWrappedObject, QString  arg__1)
 {
-  return ( theWrappedObject->getPropertyChangeListeners(name));
+  return ( theWrappedObject->getPropertyChangeListeners(arg__1));
 }
 
 QSet<QString >  PythonQtWrapper_NamedBean::getPropertyKeys(NamedBean* theWrappedObject)
@@ -9018,19 +9068,24 @@ void PythonQtWrapper_NamedBean::removeProperty(NamedBean* theWrappedObject, QStr
   ( theWrappedObject->removeProperty(arg__1));
 }
 
-void PythonQtWrapper_NamedBean::removePropertyChangeListener(NamedBean* theWrappedObject, PropertyChangeListener*  l)
+void PythonQtWrapper_NamedBean::removePropertyChangeListener(NamedBean* theWrappedObject, PropertyChangeListener*  arg__1)
 {
-  ( theWrappedObject->removePropertyChangeListener(l));
+  ( theWrappedObject->removePropertyChangeListener(arg__1));
 }
 
-void PythonQtWrapper_NamedBean::setComment(NamedBean* theWrappedObject, QString  comment)
+void PythonQtWrapper_NamedBean::removePropertyChangeListener(NamedBean* theWrappedObject, QString  arg__1, PropertyChangeListener*  arg__2)
 {
-  ( theWrappedObject->setComment(comment));
+  ( theWrappedObject->removePropertyChangeListener(arg__1, arg__2));
 }
 
-void PythonQtWrapper_NamedBean::setProperty(NamedBean* theWrappedObject, QString  key, QVariant  value)
+void PythonQtWrapper_NamedBean::setComment(NamedBean* theWrappedObject, QString  arg__1)
 {
-  ( theWrappedObject->setProperty(key, value));
+  ( theWrappedObject->setComment(arg__1));
+}
+
+void PythonQtWrapper_NamedBean::setProperty(NamedBean* theWrappedObject, QString  key, QVariant  arg__2)
+{
+  ( theWrappedObject->setProperty(key, arg__2));
 }
 
 void PythonQtWrapper_NamedBean::setState(NamedBean* theWrappedObject, int  arg__1)
@@ -9043,9 +9098,9 @@ void PythonQtWrapper_NamedBean::setUserName(NamedBean* theWrappedObject, QString
   ( theWrappedObject->setUserName(s));
 }
 
-void PythonQtWrapper_NamedBean::updateListenerRef(NamedBean* theWrappedObject, PropertyChangeListener*  l, QString  newName)
+void PythonQtWrapper_NamedBean::updateListenerRef(NamedBean* theWrappedObject, PropertyChangeListener*  l, QString  arg__2)
 {
-  ( theWrappedObject->updateListenerRef(l, newName));
+  ( theWrappedObject->updateListenerRef(l, arg__2));
 }
 
 void PythonQtWrapper_NamedBean::vetoableChange(NamedBean* theWrappedObject, PropertyChangeEvent*  arg__1)

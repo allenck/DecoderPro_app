@@ -40,6 +40,7 @@
 #include "loconet/loconetsystemconnectionmemotestaction.h"
 #include "misc/defaultmemorymanagertestaction.h"
 #include "misc/lightcontroltestaction.h"
+#include "NamedBeans/namedbeanusernamecomparatortestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -106,10 +107,12 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     facadeMenu->addAction(new OpsModeDelayedProgrammerFacadeTestAction(this));
     facadeMenu->addAction(new TwoIndexTcsProgrammerFacadeTestAction(this));
     facadeMenu->addAction(new VerifyWriteProgrammerFacadeTestAction(this));
-    QMenu* paneleMenu = new QMenu(tr("Panels ..."));
-    addMenu(paneleMenu);
-    paneleMenu->addAction(new PaneProgFrameTestAction(this));
-    paneleMenu->addAction(new PaneProgPaneTestAction(this));
-    paneleMenu->addAction(new DecoderFileTestAction(this));
-
+    QMenu* panelsMenu = new QMenu(tr("Panels ..."));
+    addMenu(panelsMenu);
+    panelsMenu->addAction(new PaneProgFrameTestAction(this));
+    panelsMenu->addAction(new PaneProgPaneTestAction(this));
+    panelsMenu->addAction(new DecoderFileTestAction(this));
+    QMenu* namedBeansMenu = new QMenu(tr("NamedBeans ..."));
+    addMenu(namedBeansMenu);
+    namedBeansMenu->addAction(new NamedBeanUserNameComparatorTestAction(this));
 }

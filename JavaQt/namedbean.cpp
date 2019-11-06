@@ -3,6 +3,7 @@
 #include <QSet>
 #include <QString>
 #include "manager.h"
+#include "alphanumcomparator.h"
 
 //const int NamedBean::UNKNOWN      = 0x01;
 //const int NamedBean::INCONSISTENT = 0x08;
@@ -27,14 +28,14 @@ NamedBean::NamedBean(QObject *parent) : QObject(parent)
 // _state = UNKNOWN;
 }
 
-NamedBean::NamedBean(QString name, QObject *parent) : QObject(parent)
+NamedBean::NamedBean(QString /*name*/, QObject *parent) : QObject(parent)
 {
 // _parent = parent;
 // _name = name;
 // _state = UNKNOWN;
 // _systemName = name;
 }
-NamedBean::NamedBean(const NamedBean & other): QObject()
+NamedBean::NamedBean(const NamedBean & /*other*/): QObject()
 {
 // this->_parent = other._parent;
 // this->_name = other._name;
@@ -44,7 +45,7 @@ NamedBean::NamedBean(const NamedBean & other): QObject()
 }
 
 QString NamedBean::getUserName() { return "";}
-void NamedBean::setUserName(QString s) {}
+void NamedBean::setUserName(QString /*s*/) {}
 
 /**
  * Get user name if it exists, otherwise return System name.
@@ -102,6 +103,14 @@ void NamedBean::addPropertyChangeListener(PropertyChangeListener */*l*/, QString
 {
 
 }
+/**
+* Add a {@link java.beans.PropertyChangeListener} for a specific property.
+*
+* @param propertyName The name of the property to listen on.
+* @param listener     The PropertyChangeListener to be added
+*/
+/*public*/ void addPropertyChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ PropertyChangeListener* /*listener*/) {}
+
 void NamedBean::removePropertyChangeListener(PropertyChangeListener */*l*/)
 {
 
@@ -145,10 +154,10 @@ int NamedBean::getState() { return _state;}
  * @return the state in localized form
  */
 //@CheckReturnValue
-/*public*/ QString NamedBean::describeState(int state) {return "";}
+/*public*/ QString NamedBean::describeState(int /*state*/) {return "";}
 
 QString NamedBean::getComment() { return "";}
-void NamedBean::setComment(QString comment) {}
+void NamedBean::setComment(QString /*comment*/) {}
 
 void NamedBean::setProperty(QString /*key*/, QVariant /*value*/)
 {
@@ -220,15 +229,14 @@ QVariant NamedBean::getProperty(QString /*key*/)
  */
 //@CheckReturnValue
 /*public*/ /*default*/ int NamedBean::compareTo(/*@Nonnull*/ NamedBean* n2) {
-    //jmri.util.AlphanumComparator ac = new jmri.util.AlphanumComparator();
+    AlphanumComparator ac = AlphanumComparator();
     QString o1 = this->getSystemName();
     QString o2 = n2->getSystemName();
 
     int p1len = Manager::getSystemPrefixLength(o1);
     int p2len = Manager::getSystemPrefixLength(o2);
 
-    //int comp = ac.compare(o1.substring(0, p1len), o2.substring(0, p2len));
-    int comp = QString::compare(o1.mid(0,p1len),o2.mid(0, p2len));
+    int comp = ac.compare(o1.mid(0, p1len), o2.mid(0, p2len));
     if (comp != 0) return comp;
 
     QChar c1 = o1.at(p1len);

@@ -617,6 +617,13 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  }
 }
 
+NamedBeanComparator<NamedBean*> comparator3 = NamedBeanComparator<NamedBean*>();
+
+bool sortLessThanconst3( NamedBean* s1,  NamedBean* s2)
+{
+ return comparator3.compare(s1, s2) < 0;
+}
+
 /** {@inheritDoc} */
 //@Override
 //@Nonnull
@@ -625,7 +632,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
     updateNamedBeanSet();
     //return Collections.unmodifiableSortedSet(namedBeanSet);
     QList<NamedBean*> list = namedBeanSet.toList();
-    qSort(list.begin(), list.end(), NamedBeanComparator::compare);
+    qSort(list.begin(), list.end(), sortLessThanconst3); //NamedBeanComparator<NamedBean*>::compare);
     return list.toSet();
 }
 

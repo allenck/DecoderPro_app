@@ -574,7 +574,7 @@ void ProfileManager::common(File* catalog)
    File* pp;
    try
    {
-    pp = FileUtil::getFile(path);
+    pp = FileUtil::getFile(nullptr, path);
     qDebug() << "read profile at: " <<  pp->toString();
     Profile* p = new Profile(pp);
     this->addProfile(p);
@@ -582,7 +582,7 @@ void ProfileManager::common(File* catalog)
    catch (FileNotFoundException ex)
    {
     File* fp = new File(path);
-    log->info(tr("Cataloged profile \"%1\" not in expected location\nSearching for it in %2").arg( e.attribute(Profile::ID)).arg(fp->getParentFile()->toString()));
+    log->info(tr("Cataloged profile \"%1\" not in expected location\nSearching for it in %2").arg( e.attribute(/*Profile::ID*/ "id")).arg(fp->getParentFile()->toString()));
     this->findProfiles(fp->getParentFile());
     reWrite = true;
    }
@@ -606,7 +606,7 @@ void ProfileManager::common(File* catalog)
   }
   if (searchPaths.isEmpty())
   {
-   this->addSearchPath(FileUtil::getFile(FileUtil::getPreferencesPath()));
+   this->addSearchPath(FileUtil::getFile(nullptr, FileUtil::getPreferencesPath()));
   }
   this->readingProfiles = false;
   if (reWrite)
@@ -699,7 +699,7 @@ void ProfileManager::common(File* catalog)
 //    });
   if (profilePaths.isEmpty())
   {
-      log->error(QString("ProfileManager::findProfiles: There was an error reading directory \"%1\". Filter: \"%2\"").arg(searchPath->getPath()).arg(filter1->getDescription()));
+   log->error(QString("ProfileManager::findProfiles: There was an error reading directory %1.").arg(searchPath->getPath()));
    return;
   }
   foreach (File* pp, profilePaths)

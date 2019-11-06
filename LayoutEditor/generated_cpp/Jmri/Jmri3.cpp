@@ -19,6 +19,7 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -1676,6 +1677,28 @@ if (_wrapper) {
   }
 }
   Route::addPropertyChangeListener(l0, beanRef1, listenerRef2);
+}
+void PythonQtShell_Route::addPropertyChangeListener(QString  propertyName0, PropertyChangeListener*  listener1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("addPropertyChangeListener");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString" , "PropertyChangeListener*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&propertyName0, (void*)&listener1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Route::addPropertyChangeListener(propertyName0, listener1);
 }
 bool  PythonQtShell_Route::addSensorToRoute(QString  arg__1, int  arg__2)
 {
@@ -3536,7 +3559,7 @@ if (_wrapper) {
 }
   Route::removeProperty(key0);
 }
-void PythonQtShell_Route::removePropertyChangeListener(PropertyChangeListener*  l0)
+void PythonQtShell_Route::removePropertyChangeListener(PropertyChangeListener*  listener0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3546,7 +3569,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeListener*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&l0};
+      void* args[2] = {NULL, (void*)&listener0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -3556,7 +3579,29 @@ if (_wrapper) {
     }
   }
 }
-  Route::removePropertyChangeListener(l0);
+  Route::removePropertyChangeListener(listener0);
+}
+void PythonQtShell_Route::removePropertyChangeListener(QString  propertyName0, PropertyChangeListener*  listener1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("removePropertyChangeListener");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString" , "PropertyChangeListener*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&propertyName0, (void*)&listener1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Route::removePropertyChangeListener(propertyName0, listener1);
 }
 void PythonQtShell_Route::setComment(QString  comment0)
 {
@@ -11172,6 +11217,28 @@ if (_wrapper) {
 }
   SignalHead::addPropertyChangeListener(l0, beanRef1, listenerRef2);
 }
+void PythonQtShell_SignalHead::addPropertyChangeListener(QString  propertyName0, PropertyChangeListener*  listener1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("addPropertyChangeListener");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString" , "PropertyChangeListener*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&propertyName0, (void*)&listener1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  SignalHead::addPropertyChangeListener(propertyName0, listener1);
+}
 void PythonQtShell_SignalHead::childEvent(QChildEvent*  event0)
 {
 if (_wrapper) {
@@ -12184,7 +12251,7 @@ if (_wrapper) {
 }
   SignalHead::removeProperty(key0);
 }
-void PythonQtShell_SignalHead::removePropertyChangeListener(PropertyChangeListener*  l0)
+void PythonQtShell_SignalHead::removePropertyChangeListener(PropertyChangeListener*  listener0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -12194,7 +12261,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeListener*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&l0};
+      void* args[2] = {NULL, (void*)&listener0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -12204,7 +12271,29 @@ if (_wrapper) {
     }
   }
 }
-  SignalHead::removePropertyChangeListener(l0);
+  SignalHead::removePropertyChangeListener(listener0);
+}
+void PythonQtShell_SignalHead::removePropertyChangeListener(QString  propertyName0, PropertyChangeListener*  listener1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("removePropertyChangeListener");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString" , "PropertyChangeListener*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&propertyName0, (void*)&listener1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  SignalHead::removePropertyChangeListener(propertyName0, listener1);
 }
 void PythonQtShell_SignalHead::setAppearance(int  arg__1)
 {
@@ -19023,6 +19112,28 @@ if (_wrapper) {
 }
   Turnout::addPropertyChangeListener(l0, beanRef1, listenerRef2);
 }
+void PythonQtShell_Turnout::addPropertyChangeListener(QString  propertyName0, PropertyChangeListener*  listener1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("addPropertyChangeListener");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString" , "PropertyChangeListener*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&propertyName0, (void*)&listener1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Turnout::addPropertyChangeListener(propertyName0, listener1);
+}
 bool  PythonQtShell_Turnout::canInvert() const
 {
 if (_wrapper) {
@@ -20695,7 +20806,7 @@ if (_wrapper) {
 }
   Turnout::removeProperty(key0);
 }
-void PythonQtShell_Turnout::removePropertyChangeListener(PropertyChangeListener*  l0)
+void PythonQtShell_Turnout::removePropertyChangeListener(PropertyChangeListener*  listener0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20705,7 +20816,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeListener*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&l0};
+      void* args[2] = {NULL, (void*)&listener0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -20715,7 +20826,29 @@ if (_wrapper) {
     }
   }
 }
-  Turnout::removePropertyChangeListener(l0);
+  Turnout::removePropertyChangeListener(listener0);
+}
+void PythonQtShell_Turnout::removePropertyChangeListener(QString  propertyName0, PropertyChangeListener*  listener1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("removePropertyChangeListener");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString" , "PropertyChangeListener*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&propertyName0, (void*)&listener1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Turnout::removePropertyChangeListener(propertyName0, listener1);
 }
 void PythonQtShell_Turnout::requestUpdateFromLayout()
 {

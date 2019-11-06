@@ -323,7 +323,7 @@ return this->getPanels(locale, JSON::XML);
 /*public*/ QJsonArray JsonUtilHttpService::getSystemConnections(QLocale /*locale*/) {
     QJsonArray root = QJsonArray();//mapper.createArrayNode();
     QStringList prefixes = QStringList();
-    foreach (ConnectionConfig* config, *((ConnectionConfigManager*) InstanceManager::getDefault("ConnectionConfigManager"))->getConnections()) {
+    foreach (ConnectionConfig* config, ((ConnectionConfigManager*) InstanceManager::getDefault("ConnectionConfigManager"))->getConnections()) {
         if (!config->getDisabled()) {
             QJsonObject connection = QJsonObject(); //mapper.createObjectNode().put(JSON::TYPE, JSON::SYSTEM_CONNECTION);
             connection.insert(JSON::TYPE, JSON::SYSTEM_CONNECTION);

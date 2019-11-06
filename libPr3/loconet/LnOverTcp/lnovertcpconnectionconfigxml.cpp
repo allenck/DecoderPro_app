@@ -42,7 +42,7 @@ LnOverTcpConnectionConfigXml::LnOverTcpConnectionConfigXml(QObject *parent) :
 {
  // begin dups fix to prevent connection from being duplicated.
   ConnectionConfigManager* ccm = (ConnectionConfigManager*)InstanceManager::getNullableDefault("ConnectionConfigManager");
-  foreach (ConnectionConfig* c, *ccm->getConnections())
+  foreach (ConnectionConfig* c, ccm->getConnections())
   {
    if(qobject_cast<LnOverTcpConnectionConfig*>(c) != NULL)
    {

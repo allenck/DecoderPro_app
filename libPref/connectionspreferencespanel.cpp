@@ -17,6 +17,9 @@
 #include "configuremanager.h"
 #include "loggerfactory.h"
 #include "jtabbedpane.h"
+#include "connectionconfigmanager.h"
+#include "indexedpropertychangeevent.h"
+#include "vptr.h"
 
 //ConnectionPreferencesPanel::ConnectionPreferencesPanel(QWidget *parent) :
 //    QTabWidget(parent)
@@ -60,6 +63,7 @@ setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
             deleteImageIcon->getIconWidth() + 2,
             deleteImageIcon->getIconHeight() + 2);
  addIcon =  QIcon(":/resources/icons/misc/gui3/Add16x16.png");
+#if 0
  if (this->preferences != NULL)
  {
   QObjectList connList = ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))
@@ -83,6 +87,56 @@ setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
    setCurrentIndex(0);
   }
   connect(this, SIGNAL(tabBarClicked(int)), this, SLOT(On_currentChanged(int)));
+ }
+#endif
+ ConnectionConfigManager* ccm = (ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager");
+ QVector<ConnectionConfig*> connections = ccm->getConnections();
+ if (connections.length() != 0) {
+     for (int i = 0; i < connections.length(); i++) {
+         addConnection(i, JmrixConfigPane::createPanel(i));
+     }
+ } else {
+     addConnection(0, JmrixConfigPane::createNewPanel());
+ }
+ ccm->addPropertyChangeListener(ConnectionConfigManager::CONNECTIONS, (PropertyChangeListener*)this); //(PropertyChangeEvent evt) -> {
+//     int i = ((IndexedPropertyChangeEvent) evt).getIndex();
+//     if (evt.getNewValue() == null
+//             && i < configPanes.size()
+//             && evt.getOldValue().equals(configPanes.get(i).getCurrentObject())) {
+//         removeTab(null, i);
+//     } else if (evt.getOldValue() == null) {
+//         for (JmrixConfigPane pane : this.configPanes) {
+//             if (pane.getCurrentObject() == null ) {
+//                 log.error("did not expect pane.getCurrentObject()==null here for {} {} {}", i, evt.getNewValue(), configPanes);
+//             } else if (pane.getCurrentObject().equals(evt.getNewValue())) {
+//                 return; // don't add the connection again
+//             }
+//         }
+//         addConnection(i, JmrixConfigPane.createPanel(i));
+//     }
+// });
+ //this->addChangeListener(addTabListener);
+ connect(this, SIGNAL(tabBarClicked(int)), this, SLOT(On_currentChanged(int)));
+ newConnectionTab();
+ this->setCurrentIndex(0);
+}
+
+void ConnectionsPreferencesPanel::propertyChange(PropertyChangeEvent* evt)
+{
+ int i = ((IndexedPropertyChangeEvent*) evt)->getIndex();
+ if (evt->getNewValue() == QVariant()
+         && i < configPanes.size()
+         && VPtr<QObject>::asPtr(evt->getOldValue()) == (configPanes.at(i)->getCurrentObject())) {
+     removeTab( i);
+ } else if (evt->getOldValue() == QVariant()) {
+     for (JmrixConfigPane* pane : this->configPanes) {
+         if (pane->getCurrentObject() == nullptr ) {
+             log->error(tr("did not expect pane.getCurrentObject()==null here for %1 %2 %3").arg(i).arg(VPtr<QObject>::asPtr(evt->getNewValue())->metaObject()->className()).arg(configPanes.size()));
+         } else if (pane->getCurrentObject() == VPtr<QObject>::asPtr(evt->getNewValue())) {
+             return; // don't add the connection again
+         }
+     }
+     addConnection(i, JmrixConfigPane::createPanel(i));
  }
 }
 

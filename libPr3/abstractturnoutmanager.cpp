@@ -97,6 +97,7 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
  QString pfx = getSystemPrefix();
  char tl = typeLetter();
 #endif
+ // is system name in correct format?
  if (!systemName.startsWith(getSystemPrefix() + typeLetter())
      || !(systemName.length() > (getSystemPrefix() + typeLetter()).length()))
  {
@@ -131,23 +132,31 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
   throw IllegalArgumentException(tr("Unable to create turnout from %1").arg(systemName));
  }
 
- emit newTurnoutCreated(this, s);
+ // Some implementations of createNewTurnout() register the new bean,
+ // some don't.
+ if (getBeanBySystemName(s->getSystemName()) == nullptr) {
+     // save in the maps if successful
+     Register(s);
+ }
 
- // save in the maps if successful
- Register(s);
-//    turnoutMap.insert(systemName, (LnTurnout*)s);
-//    try {
-        ((AbstractTurnout*)s)->setStraightSpeed("Global");
-//    } catch (JmriException *ex){
-//        log->error(ex->toString());
-//    }
+ try {
+     s->setStraightSpeed("Global");
+ } catch (JmriException ex) {
+     log->error(ex.toString());
+ }
 
-//    try {
-        ((AbstractTurnout*)s)->setDivergingSpeed("Global");
-//    } catch (JmriException *ex){
-//        log->error(ex->toString());
-//    }
+ try {
+     s->setDivergingSpeed("Global");
+ } catch (JmriException ex) {
+     log->error(ex.toString());
+ }
  return s;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ QString AbstractTurnoutManager::getBeanTypeHandled(bool plural) {
+    return plural ? tr("Turnouts") : tr("Turnout");
 }
 
 /*\\\\\\\\\\\ * Get text to be used for the Turnout.CLOSED state in user communication.

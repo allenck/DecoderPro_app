@@ -231,7 +231,7 @@ if (window() != NULL) {
 /*public*/ void RosterConfigPane::savePreferences() {
  Profile* project = ProfileManager::getDefault()->getActiveProfile();
  RosterConfigManager* manager = static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"));
- manager->setDefaultOwner(this->getDefaultOwner());
+ manager->setDefaultOwner(project, this->getDefaultOwner());
  manager->setDirectory(project, this->getSelectedItem());
  manager->savePreferences(ProfileManager::getDefault()->getActiveProfile());
 }

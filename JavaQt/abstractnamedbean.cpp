@@ -1,5 +1,7 @@
 #include "abstractnamedbean.h"
 #include "loggerfactory.h"
+#include "alphanumcomparator.h"
+
 AbstractNamedBean::AbstractNamedBean(QObject *parent) : NamedBean(parent)
 {
  common("", "", parent);
@@ -106,17 +108,34 @@ QString AbstractNamedBean::getDisplayName()
 //@OverridingMethodsMustInvokeSuper
 /*public synchronized*/ void AbstractNamedBean::addPropertyChangeListener(PropertyChangeListener* l)
 {
- //pcs->addPropertyChangeListener(l);
- connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)), Qt::DirectConnection);
+ pcs->addPropertyChangeListener(l);
+ //connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)), Qt::DirectConnection);
 }
 
-/*public synchronized*/ void AbstractNamedBean::removePropertyChangeListener(PropertyChangeListener* l)
-{
- //pcs->removePropertyChangeListener(l);
- disconnect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ /*synchronized*/ void AbstractNamedBean::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    pcs->addPropertyChangeListener(propertyName, listener);
+}
 
- _Register->remove(l);
- listenerRefs->remove(l);
+/*public synchronized*/ void AbstractNamedBean::removePropertyChangeListener(PropertyChangeListener* listener)
+{
+ pcs->removePropertyChangeListener(listener);
+ //disconnect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+ if (listener != nullptr /*&& !Beans.contains(pcs.getPropertyChangeListeners(), listener)*/) {
+ _Register->remove(listener);
+ listenerRefs->remove(listener);
+ }
+}
+
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ /*synchronized*/ void AbstractNamedBean::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+ pcs->removePropertyChangeListener(propertyName, listener);
+ if (listener != nullptr /*&& !Beans.contains(pcs->getPropertyChangeListeners(), listener)*/) {
+     _Register->remove(listener);
+     listenerRefs->remove(listener);
+ }
 }
 
 /*public synchronized*/ QList<PropertyChangeListener*>* AbstractNamedBean::getPropertyChangeListeners(QString name)
@@ -305,8 +324,8 @@ QString AbstractNamedBean::getDisplayName()
  */
 //@CheckReturnValue
 /*public*/ int AbstractNamedBean::compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* /*n*/) {
-    //jmri.util.AlphanumComparator ac = new jmri.util.AlphanumComparator();
-    return QString::compare(suffix1, suffix2);
+    AlphanumComparator ac = AlphanumComparator();
+    return ac.compare(suffix1, suffix2);
 }
 
 /*private*/ /*static*/ Logger* AbstractNamedBean::log = LoggerFactory::getLogger("AbstractNamedBean");

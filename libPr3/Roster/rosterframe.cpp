@@ -64,6 +64,7 @@
 #include "connectionconfigmanager.h"
 #include "addressedprogrammermanager.h"
 #include "abstractpowermanager.h"
+#include "programmerconfigmanager.h"
 
 QList<RosterFrame*> RosterFrame::frameInstances =  QList<RosterFrame*>();
 
@@ -722,6 +723,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
 // {
 //  programmer1 = ProgDefault::getDefaultProgFile();
 // }
+ this->getProgrammerConfigManager()->addPropertyChangeListener(new DefaultFilePropertyChangeListener(this));
 
  //QString lastProg = (QString) prefsMgr->getProperty(getWindowFrameRef(), "selectedProgrammer");
  QString lastProg =  cbProgrammers->currentText();
@@ -753,6 +755,12 @@ void RosterFrame::on_actionNew_Throttle_triggered()
  {
   firePropertyChange("closewindow", "setEnabled", false);
  }
+}
+void DefaultFilePropertyChangeListener::propertyChange(PropertyChangeEvent *evt)
+{
+ if (frame->getProgrammerConfigManager()->getDefaultFile() != "") {
+       frame->programmer1 = frame->getProgrammerConfigManager()->getDefaultFile();
+   }
 }
 
 /*protected*/ void RosterFrame::firePropertyChange(QString p, QVariant old, QVariant n)
@@ -786,8 +794,8 @@ void RosterFrame::on_actionNew_Throttle_triggered()
  {
   QString serviceModeProgrammerName = gpm->getUserName();
   log->debug(tr("GlobalProgrammerManager found of class %1 name %2 ").arg(gpm->metaObject()->className()).arg(serviceModeProgrammerName));
-  QList<ConnectionConfig*>* ccm = ((ConnectionConfigManager*)InstanceManager::getOptionalDefault("ConnectionConfigManager"))->getConnections();
-  foreach (ConnectionConfig* connection, *ccm)
+  QVector<ConnectionConfig*> ccm = ((ConnectionConfigManager*)InstanceManager::getOptionalDefault("ConnectionConfigManager"))->getConnections();
+  foreach (ConnectionConfig* connection, ccm)
   {
    log->debug(tr("Checking connection name %1").arg(connection->getConnectionName()));
    if (connection->getConnectionName() != NULL && connection->getConnectionName()==(serviceModeProgrammerName))
@@ -814,8 +822,8 @@ void RosterFrame::on_actionNew_Throttle_triggered()
   //InstanceManager.getOptionalDefault(ConnectionConfigManager.class).ifPresent((ccm) ->
   if(InstanceManager::getOptionalDefault("ConnectionConfigManager")!= NULL)
   {
-   QList<ConnectionConfig*>* ccm = ((ConnectionConfigManager*)InstanceManager::getOptionalDefault("ConnectionConfigManager"))->getConnections();
-   foreach (ConnectionConfig* connection, *ccm)
+   QVector<ConnectionConfig*> ccm = ((ConnectionConfigManager*)InstanceManager::getOptionalDefault("ConnectionConfigManager"))->getConnections();
+   foreach (ConnectionConfig* connection, ccm)
    {
     log->debug(tr("Checking connection name %1").arg(connection->getConnectionName()));
     if (connection->getConnectionName() != NULL && connection->getConnectionName() == (opsModeProgrammerName)) {
@@ -1611,6 +1619,11 @@ void RosterFrame::additionsToToolBar()
 //        log.error("Unexpected error creating help: " + e3);
 //    }
 }
+
+/*protected*/ ProgrammerConfigManager* RosterFrame::getProgrammerConfigManager() {
+    return (ProgrammerConfigManager*)InstanceManager::getDefault("ProgrammerConfigManager");
+}
+
 void RosterFrame::handleQuit(QCloseEvent* e)
 {
  if (e != NULL && frameInstances.size() == 1)

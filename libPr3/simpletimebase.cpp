@@ -67,9 +67,9 @@
 //    SimpleDateFormat timeStorageFormat = NULL;
 
  timer = NULL;
- pcMinutes = new PropertyChangeSupport(this);
+ //pcMinutes = new PropertyChangeSupport(this);
  oldMinutes = 0;
- pcs = new PropertyChangeSupport(this);
+ //pcs = new PropertyChangeSupport(this);
  // initialize time-containing memory
  try
  {
@@ -95,7 +95,8 @@
 //                     clockSensorChanged();
 //                 }
 //             });
-  connect(clockSensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
+  clockSensor->addPropertyChangeListener(new ClockSensorPropertChangeListener(this));
+  //connect(clockSensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
  }
  catch (JmriException e)
  {
@@ -117,9 +118,20 @@
  }
 }
 
+//@Override
+/*public*/ void ClockSensorPropertChangeListener::propertyChange(PropertyChangeEvent* e) {
+    stb->clockSensorChanged();
+}
+
+
 SimpleTimebase::~SimpleTimebase()
 {
  delete log;
+}
+
+//@Override
+/*public*/ QString SimpleTimebase::getBeanType() {
+    return tr("Time");
 }
 
 // methods for getting and setting the current Fast Clock time
@@ -133,6 +145,7 @@ SimpleTimebase::~SimpleTimebase()
  // return  QDateTime(nowMSec);
  return QDateTime::fromMSecsSinceEpoch(nowMSec);
 }
+
 /*public*/ void SimpleTimebase::setTime(QDateTime d)
 {
  startAtTime =  QDateTime::currentDateTime();	// set now in wall clock time
@@ -150,6 +163,17 @@ SimpleTimebase::~SimpleTimebase()
   pauseTime = setTimeValue;  // if stopped, continue stopped at new time
  handleAlarm();
 }
+#if 0 //TODO:
+/**
+ * Set the current time.
+ *
+ * @param i java.time.Instant
+ */
+//@Override
+/*public*/ void setTime(Instant i) {
+    setTime(Date.from(i));
+}
+#endif
 /*public*/ void SimpleTimebase::userSetTime(QDateTime d)
 {
  // this call only results from user changing fast clock time in Setup Fast Clock
@@ -191,7 +215,7 @@ SimpleTimebase::~SimpleTimebase()
   if (clockSensor!=NULL)
   {
    try {
-    ((AbstractSensor*)clockSensor)->setKnownState(Sensor::ACTIVE);
+    clockSensor->setKnownState(Sensor::ACTIVE);
    }
    catch (JmriException e)
    {
@@ -214,7 +238,7 @@ SimpleTimebase::~SimpleTimebase()
         }
         if (clockSensor!=NULL) {
             try {
-                ((AbstractSensor*)clockSensor)->setKnownState(Sensor::INACTIVE);
+                clockSensor->setKnownState(Sensor::INACTIVE);
             } catch (JmriException e) {
                 log->warn("Exception setting ISClockRunning sensor INACTIVE: "+e.getMessage());
             }
@@ -223,6 +247,7 @@ SimpleTimebase::~SimpleTimebase()
     firePropertyChange("run", QVariant(run), QVariant(!run));
     handleAlarm();
 }
+
 /*public*/ bool SimpleTimebase::getRun() { return pauseTime.isNull(); }
 
 // methods for setting and getting rate
@@ -479,11 +504,11 @@ SimpleTimebase::~SimpleTimebase()
 }
 /*public*/ bool SimpleTimebase::getIsInitialized() {return (!notInitialized);}
 
-/*protected*/ void SimpleTimebase::firePropertyChange(QString p, QVariant old, QVariant n)
-{
- pcs->firePropertyChange(p,old,n);
- emit(propertyChange(new PropertyChangeEvent(this,p, old,n)));
-}
+///*protected*/ void SimpleTimebase::firePropertyChange(QString p, QVariant old, QVariant n)
+//{
+// pcs->firePropertyChange(p,old,n);
+// //emit(propertyChange(new PropertyChangeEvent(this,p, old,n)));
+//}
 
 /**
  * Handle a change in the clock running sensor
@@ -510,16 +535,16 @@ SimpleTimebase::~SimpleTimebase()
  * Not yet implemented.
  */
 /*public*/ /*synchronized*/ void SimpleTimebase::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
+    AbstractNamedBean::addPropertyChangeListener(l);
+    startAlarm();
 }
 
-/**
- * Remove a request for a call-back when a bound property changes.
- * <P>
- * Not yet implemented.
- */
-/*public*/ /*synchronized*/ void SimpleTimebase::removePropertyChangeListener(PropertyChangeListener* l) {
-    pcs->removePropertyChangeListener(l);
+//@Override
+/*public*/ void SimpleTimebase::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+    AbstractNamedBean::addPropertyChangeListener(propertyName, listener);
+    if (propertyName != "" && (propertyName == ("minutes") || propertyName == ("time"))) {
+        startAlarm();
+    }
 }
 
 /**
@@ -576,7 +601,7 @@ void SimpleTimebase::handleAlarm()
   // update memory
   updateMemory(date);
   // notify listeners
-  pcMinutes->firePropertyChange("minutes", QVariant(oldMinutes),QVariant(minutes));
+  firePropertyChange("minutes", QVariant(oldMinutes),QVariant(minutes));
   emit minuteTick();
   //emit Timebase::minuteTick();
  }
@@ -605,17 +630,17 @@ void SimpleTimebase::updateMemory(double factor) {
  * Request a call-back when the minutes place of the time changes.
  */
 /*public*/ void SimpleTimebase::addMinuteChangeListener(PropertyChangeListener* l) {
-    pcMinutes->addPropertyChangeListener(l);
-    connect(this, SIGNAL(minuteTick()), l, SLOT(propertyChange(PropertyChangeEvent*)));
-    startAlarm();
+    addPropertyChangeListener("minutes", l);
+    //connect(this, SIGNAL(minuteTick()), l, SLOT(propertyChange(PropertyChangeEvent*)));
+    //startAlarm();
 }
 
 /**
  * Remove a request for call-back when the minutes place of the time changes.
  */
 /*public*/ void SimpleTimebase::removeMinuteChangeListener(PropertyChangeListener* l) {
-    pcMinutes->removePropertyChangeListener(l);
-    disconnect(this, SIGNAL(minuteTick()), l, SLOT(propertyChange(PropertyChangeEvent*)));
+    removePropertyChangeListener("minutes", l);
+    //disconnect(this, SIGNAL(minuteTick()), l, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 //@Override
@@ -626,7 +651,3 @@ void SimpleTimebase::updateMemory(double factor) {
 /*public*/ void SimpleTimebase::setState(int s) throw (JmriException){}
 /*public*/ int SimpleTimebase::getState(){ return 0; }
 
-/*public*/ void SimpleTimebase::onPropertyChange(PropertyChangeEvent* e)
-{
- clockSensorChanged();
-}

@@ -29,7 +29,7 @@ AboutServlet::AboutServlet(QObject* parent) : HttpServlet(parent)
     //retrieve the list of JMRI connections as a string
     QString connList;// = new StringBuilder("");
     QString comma = "";
-    for (ConnectionConfig* conn : *((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->getConnections()) {
+    for (ConnectionConfig* conn : ((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->getConnections()) {
         if (!conn->getDisabled()) {
             connList.append(comma).append(tr(/*request.getLocale(), */"%1: using %2 on %3").arg( conn->getConnectionName()).arg(conn->name()).arg(conn->getInfo()));
             comma = ", ";

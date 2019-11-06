@@ -36,29 +36,33 @@
 //            }
 //        }
 //    });
- connect(ProfileManager::getDefault(), SIGNAL(indexedPropertyChange(IndexedPropertyChangeEvent*)),this, SLOT(propertyChange(IndexedPropertyChangeEvent*)));
+ ProfileManager::defaultManager()->addPropertyChangeListener(ProfileManager::PROFILES, (PropertyChangeListener*)this);
+// connect(ProfileManager::getDefault(), SIGNAL(indexedPropertyChange(IndexedPropertyChangeEvent*)),this, SLOT(propertyChange(IndexedPropertyChangeEvent*)));
 }
 
-/*public*/ void ProfileListModel::propertyChange(IndexedPropertyChangeEvent* evt)
+/*public*/ void ProfileListModel::propertyChange(PropertyChangeEvent* evt)
 {
- //if (evt instanceof IndexedPropertyChangeEvent
- if(evt->getPropertyName() == ProfileManager::PROFILES)
+ if (qobject_cast<IndexedPropertyChangeEvent*>(evt) != nullptr)
  {
-  if(qobject_cast<IndexedPropertyChangeEvent*>(evt) != NULL
-             && evt->getSource()==(ProfileManager::getDefault()))
+  if(evt->getPropertyName() == ProfileManager::PROFILES)
   {
-   if (evt->getOldValue() == QVariant())
+   if(qobject_cast<IndexedPropertyChangeEvent*>(evt) != NULL
+              && evt->getSource()==(ProfileManager::getDefault()))
    {
-    fireIntervalAdded(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
+    if (evt->getOldValue() == QVariant())
+    {
+     fireIntervalAdded(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
+    }
+    else if (evt->getNewValue() == QVariant())
+    {
+     fireIntervalRemoved(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
+    }
+    fireContentsChanged(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
    }
-   else if (evt->getNewValue() == QVariant())
-   {
-    fireIntervalRemoved(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
-   }
-   fireContentsChanged(((IndexedPropertyChangeEvent*) evt)->getIndex(), ((IndexedPropertyChangeEvent*) evt)->getIndex());
   }
  }
 }
+
 //@Override
 /*public*/ int ProfileListModel::getSize() {
     return ProfileManager::defaultManager()->getProfiles().length();

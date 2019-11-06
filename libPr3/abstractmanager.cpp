@@ -256,7 +256,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
           //final AtomicReference<String> oldSysName = new AtomicReference<>();
        QSet<QString> oldSysName = QSet<QString>();
           //NamedBeanComparator<NamedBean*> c = new NamedBeanComparator<NamedBean*>();
-       NamedBeanComparator* c = new NamedBeanComparator();
+       NamedBeanComparator<NamedBean*>* c = new NamedBeanComparator<NamedBean*>();
 
           //_beans.forEach((NamedBean t) ->
           foreach (NamedBean* t, _beans)
@@ -444,13 +444,21 @@ QStringList AbstractManager::getSystemNameList()
         return new QList<NamedBean*>(_tsys->values());
 }
 
+NamedBeanComparator<NamedBean*> comparator = NamedBeanComparator<NamedBean*>();
+
+bool sortLessThanconst( NamedBean* s1,  NamedBean* s2)
+{
+  //NamedBeanComparator<NamedBean*> comparator = NamedBeanComparator<NamedBean*>();
+ return comparator.compare(s1, s2) < 0;
+}
 /** {@inheritDoc} */
 //@Override
 /*public*/ /*SortedSet<E>*/QSet<NamedBean*> AbstractManager::getNamedBeanSet() {
     //return Collections.unmodifiableSortedSet(_beans);
  //return QList<NamedBean*>(_tsys->values().toSet());
  QList<NamedBean*> list = QList<NamedBean*>(_tsys->values());
- qSort(list.begin(), list.end(), NamedBeanComparator::compare);
+ //NamedBeanComparator<NamedBean*> comparator = NamedBeanComparator<NamedBean*>();
+ qSort(list.begin(), list.end(), sortLessThanconst);
  return list.toSet();
 }
 

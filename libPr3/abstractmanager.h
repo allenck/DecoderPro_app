@@ -6,6 +6,7 @@
 //#include "propertychangesupport.h"
 #include "libPr3_global.h"
 #include "propertyvetoexception.h"
+#include "namedbeancomparator.h"
 
 /**
  * Abstract partial implementation for all Manager-type classes.
@@ -146,6 +147,7 @@ private:
     Logger* log;
     /*final*/ QList</*ManagerDataListener<E>>*/QObject*> listeners;// = new ArrayList<>();
     SystemConnectionMemo* memo = nullptr;
+
 
 friend class SectionTableDataModel;
 friend class ReporterPickModel;

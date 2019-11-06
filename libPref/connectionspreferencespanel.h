@@ -6,7 +6,7 @@
 #include "libpref_global.h"
 
 class QToolButton;
-//class MyTabWidget;
+class PropertyChangeEvent;
 class QPushButton;
 class QCheckBox;
 class TabbedPreferences;
@@ -48,6 +48,8 @@ signals:
 
 public slots:
     void On_currentChanged(int);
+    void propertyChange(PropertyChangeEvent*evt);
+
 private:
     //MyTabWidget* tabWidget;
     /*private*/ /*final*/ TabbedPreferences* preferences;

@@ -938,6 +938,7 @@ SOURCES += \
     proxysensormanagerxml.cpp \
     abstractproxysensormanager.cpp \
     abstractproxyidtagmanager.cpp \
+#    namedbeancombobox.cpp \
     abstractproxyreportermanager.cpp
 
 
@@ -1875,6 +1876,7 @@ HEADERS += \
     abstractproxysensormanager.h \
     abstractproxyidtagmanager.h \
     abstractproxyreportermanager.h \
+#    namedbeancombobox.h \
     abstractproxylightmanager.h
 
 

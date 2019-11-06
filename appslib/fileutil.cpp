@@ -7,6 +7,7 @@
 #include <QTextStream>
 #include "system.h"
 #include "fileutilsupport.h"
+#include "profilemanager.h"
 
 const QString FileUtil::PROGRAM = "program:"; // NOI18N
 const QString FileUtil::PREFERENCES = "preference:"; // NOI18N
@@ -64,6 +65,26 @@ FileUtil::FileUtil(QObject *parent) :
  return FileUtilSupport::getDefault()->getFile(path);
 }
 
+
+/**
+ * Get the {@link java.io.File} that path refers to. Throws a
+ * {@link java.io.FileNotFoundException} if the file cannot be found instead
+ * of returning null (as File would). Use {@link #getURI(java.lang.String) }
+ * or {@link #getURL(java.lang.String) } instead of this method if possible.
+ *
+ * @param profile the profile to use as a base
+ * @param path    the path to find
+ * @return {@link java.io.File} at path
+ * @throws java.io.FileNotFoundException if path cannot be found
+ * @see #getURI(java.lang.String)
+ * @see #getURL(java.lang.String)
+ */
+//@Nonnull
+//@CheckReturnValue
+/*static*/ /*public*/ File* FileUtil::getFile(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path) //throw (FileNotFoundException)
+{
+    return FileUtilSupport::getDefault()->getFile(profile, path);
+}
 /**
  * Get the resource file corresponding to a name. There are five cases: <UL>
  * <LI> Starts with "resource:", treat the rest as a pathname relative to
@@ -827,5 +848,5 @@ FileUtil::FileUtil(QObject *parent) :
 
 /*public*/ /*static*/ QString FileUtil::pathFromPortablePath(QString path)
 {
- return FileUtilSupport::getDefault()->pathFromPortablePath(path);
+ return FileUtilSupport::getDefault()->pathFromPortablePath(ProfileManager::getDefault()->getActiveProfile(), path);
 }

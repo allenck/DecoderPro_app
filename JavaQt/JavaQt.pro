@@ -182,7 +182,6 @@ SOURCES += javaqt.cpp \
     vetoablechangesupport.cpp \
     propertyvetoexception.cpp \
     nosuchmethoderror.cpp \
-    namedbeancomparator.cpp \
     runtimeexception.cpp \
     abstractinstanceinitializer.cpp \
     jtabbedpane.cpp \
@@ -308,6 +307,7 @@ HEADERS += javaqt.h\
     namedbean.h \
     namedbeanhandle.h \
     manager.h \
+    managert.h \
     treeselectionmodel.h \
     treeselectionevent.h \
     defaulttreeselectionmodel.h \
@@ -479,7 +479,9 @@ HEADERS += javaqt.h\
     nmrapacket.h \
     vetoablechangelistenerproxy.h \
     proxymanager.h \
-    predicate.h
+    predicate.h \
+    comparatort.h \
+    alphanumcomparator.h
 
 unix {
     target.path = /usr/lib

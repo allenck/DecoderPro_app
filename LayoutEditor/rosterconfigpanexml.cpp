@@ -72,7 +72,7 @@ RosterConfigPaneXml::RosterConfigPaneXml(QObject *parent) :
  }
  if (shared.attribute("ownerDefault") != "")
  {
-  static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->setDefaultOwner(shared.attribute("ownerDefault"));
+  static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->setDefaultOwner(project, shared.attribute("ownerDefault"));
 
  }
  static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(new RosterConfigPane());

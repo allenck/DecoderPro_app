@@ -8,6 +8,7 @@
 #include <QDir>
 #include "javaqt_global.h"
 #include "file.h"
+#include "exceptions.h"
 
 class Profile;
 class QTextStream;
@@ -22,6 +23,7 @@ public:
     };
  Q_ENUM(Location)
     static /*public*/ File* getFile(QString path); //throw (FileNotFoundException);
+    static /*public*/ File* getFile(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path);// throw (FileNotFoundException);
     static /*public*/ QString getExternalFilename(QString pName);
     static /*public*/ QString getPortableFilename(File* file);
     static /*public*/ QString getPortableFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ File* file);

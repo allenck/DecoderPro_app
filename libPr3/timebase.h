@@ -146,6 +146,8 @@ virtual QDateTime getStartTime() {return QDateTime();}
      * Remove a request for a call-back when a bound property changes.
      */
     virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/) {}
+    virtual void removePropertyChangeListener(QString /*propertyName*/, PropertyChangeListener* /*l*/) {}
+
 
     /**
      * Request a call-back when the minutes place of the time changes.

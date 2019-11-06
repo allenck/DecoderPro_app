@@ -15,6 +15,7 @@
 #include "fileutilsupport.h"
 #include "userpreferencesmanager.h"
 #include "profilemanager.h"
+#include "vptr.h"
 
 /** record the single instance of Roster **/
 //Roster* Roster::_instance = NULL;
@@ -94,13 +95,13 @@ Roster::Roster(QObject *parent) :
  rosterLocation = FileUtil::getUserFilesPath();
  rosterIndexFileName = Roster::DEFAULT_ROSTER_INDEX;
 
- // FileUtilSupport.getDefault().addPropertyChangeListener(FileUtil.PREFERENCES, (PropertyChangeEvent evt) -> {
+ FileUtilSupport::getDefault()->addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeListener*)this);//(PropertyChangeEvent evt) -> {
 //             if (Roster.this.getRosterLocation().equals(evt.getOldValue())) {
 //                 Roster.this.setRosterLocation((String) evt.getNewValue());
 //                 Roster.this.reloadRosterFile();
 //             }
 //         });
- connect(FileUtilSupport::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ //connect(FileUtilSupport::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 // InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((upm) -> {
 //             // During JUnit testing, preferences is often null
@@ -109,7 +110,7 @@ Roster::Roster(QObject *parent) :
  UserPreferencesManager* upm;
  if((upm = static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))) != nullptr)
  {
-  //this->setDefaultRosterGroup(upm->getProperty(Roster::get));
+  this->setDefaultRosterGroup( upm->getProperty(/*Roster.class.getCanonicalName()*/ "jmri.jmrit.roster.Roster", "defaultRosterGroup").toString()); // NOI18N
  }
 }
 
@@ -1359,7 +1360,10 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
 
 /*public*/ void Roster::propertyChange(PropertyChangeEvent *evt)
 {
- if (this->getRosterLocation() == (evt->getOldValue().toString())) {
+ FileUtil::Property* oldValue = VPtr<FileUtil::Property>::asPtr( evt->getOldValue());
+ FileUtil::Property* newValue = VPtr<FileUtil::Property>::asPtr( evt->getNewValue());
+ Profile* project = oldValue->getKey();
+ if (this->getRoster(project) && this->getRosterLocation() == (oldValue->getValue())) {
      this->setRosterLocation( evt->getNewValue().toString());
      this->reloadRosterFile();
  }

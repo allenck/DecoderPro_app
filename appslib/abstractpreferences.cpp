@@ -219,10 +219,10 @@ AbstractPreferences::AbstractPreferences()
  */
 /*public*/ QString AbstractPreferences::get(QString key, QString def) {
     if (key==NULL)
-        throw new NullPointerException("Null key");
+        throw NullPointerException("Null key");
 //    /*synchronized*/(lock) {
         if (removed)
-            throw new IllegalStateException("Node has been removed.");
+            throw IllegalStateException("Node has been removed.");
 
         QString result = NULL;
         try {
@@ -230,7 +230,9 @@ AbstractPreferences::AbstractPreferences()
         } catch (Exception e) {
             // Ignoring exception causes default to be returned
         }
-        return (result==NULL ? def : result);
+        if(result == "preference:")
+         result = "";
+        return (result=="" ? def : result);
 //    }
 }
 

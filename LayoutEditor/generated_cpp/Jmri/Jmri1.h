@@ -81,6 +81,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -2302,6 +2303,7 @@ public:
 virtual void activateLight();
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual void clearLightControls();
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
@@ -2338,7 +2340,8 @@ virtual bool  isIntensityVariable();
 virtual bool  isTransitionAvailable();
 virtual bool  isTransitioning();
 virtual void removeProperty(QString  key);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void setComment(QString  comment);
 virtual void setEnabled(bool  arg__1);
 virtual void setMaxIntensity(double  arg__1);
@@ -3237,6 +3240,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  canInvert();
 virtual bool  canLock(int  turnoutLockout);
 virtual void childEvent(QChildEvent*  event);
@@ -3291,7 +3295,8 @@ virtual bool  isConsistentState();
 virtual void provideFirstFeedbackSensor(QString  pName) throw(JmriException);
 virtual void provideSecondFeedbackSensor(QString  pName) throw(JmriException);
 virtual void removeProperty(QString  key);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void requestUpdateFromLayout();
 virtual void setBinaryOutput(bool  state);
 virtual void setCommandedState(int  s);

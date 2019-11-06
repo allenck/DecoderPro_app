@@ -19,6 +19,7 @@ public:
     Turnout* newTurnout(QString systemName, QString userName);
     Turnout* getBySystemName(QString name);
     Turnout* getByUserName(QString key);
+    /*public*/ QString getBeanTypeHandled(bool plural);
     QString getClosedText();
     /**
      * Get text to be used for the Turnout.THROWN state in user communication.

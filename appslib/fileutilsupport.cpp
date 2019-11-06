@@ -24,6 +24,21 @@
  */
 ///*public*/ class FileUtilSupport extends Bean {
 
+Q_GLOBAL_STATIC_WITH_ARGS(const char, _separator, ('/'))
+Q_GLOBAL_STATIC_WITH_ARGS(const char*, _preferences, ("preferences:"))
+Q_GLOBAL_STATIC_WITH_ARGS(const char*, _profile, ("profile:"))
+Q_GLOBAL_STATIC_WITH_ARGS(const char*, _program, ("program:"))
+Q_GLOBAL_STATIC_WITH_ARGS(const char*, _settings, ("settings:"))
+Q_GLOBAL_STATIC_WITH_ARGS(const char*, _home, ("home:"))
+Q_GLOBAL_STATIC_WITH_ARGS(const char*, _scripts, ("scripts:"))
+Q_GLOBAL_STATIC_WITH_ARGS(const char*, _resource, ("resource:"))
+Q_GLOBAL_STATIC_WITH_ARGS(const char*, _file, ("file:"))
+
+
+
+
+
+
 /* User's home directory */
 /*private*/ /*static*/ /*final*/ QString FileUtilSupport::homePath = QDir::homePath() + /*File::separator*/ "/";//System.getProperty("user.home") + File.separator; // NOI18N
 // default instance
@@ -55,12 +70,32 @@
  * @see #getURI(java.lang.String)
  * @see #getURL(java.lang.String)
  */
-/*public*/ File* FileUtilSupport::getFile(QString path) throw (FileNotFoundException)
+/*public*/ File* FileUtilSupport::getFile(/*@Nonnull*/ QString path) throw (FileNotFoundException)
+{
+ return getFile(ProfileManager::getDefault()->getActiveProfile(), path);
+}
+
+/**
+ * Get the {@link java.io.File} that path refers to. Throws a
+ * {@link java.io.FileNotFoundException} if the file cannot be found instead
+ * of returning null (as File would). Use {@link #getURI(java.lang.String) }
+ * or {@link #getURL(java.lang.String) } instead of this method if possible.
+ *
+ * @param profile the profile to use as a base
+ * @param path    the path to find
+ * @return {@link java.io.File} at path
+ * @throws java.io.FileNotFoundException if path cannot be found
+ * @see #getURI(java.lang.String)
+ * @see #getURL(java.lang.String)
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ File* FileUtilSupport::getFile(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path) throw (FileNotFoundException)
 {
  File* file;
  try
  {
-  QString realPath = pathFromPortablePath(path);
+  QString realPath = pathFromPortablePath(profile, path);
   QFileInfo info(realPath);
   if(!info.exists())
    throw FileNotFoundException(realPath);
@@ -173,18 +208,74 @@ public URL getURL(URI uri) {
  * @since 2.7.2
  */
 /*public*/ QString FileUtilSupport::getExternalFilename(QString pName) {
-    QString filename = this->pathFromPortablePath(pName);
-    return (filename != "") ? filename : pName.replace(FileUtil::SEPARATOR, File::separatorChar);
+ return getExternalFilename(ProfileManager::getDefault()->getActiveProfile(), pName);
+}
+
+/**
+* Get the resource file corresponding to a name. There are five cases:
+* <ul>
+* <li>Starts with "resource:", treat the rest as a pathname relative to the
+* program directory (deprecated; see "program:" below)</li>
+* <li>Starts with "program:", treat the rest as a relative pathname below
+* the program directory</li>
+* <li>Starts with "preference:", treat the rest as a relative path below
+* the user's files directory</li>
+* <li>Starts with "settings:", treat the rest as a relative path below the
+* JMRI system preferences directory</li>
+* <li>Starts with "home:", treat the rest as a relative path below the
+* user.home directory</li>
+* <li>Starts with "file:", treat the rest as a relative path below the
+* resource directory in the preferences directory (deprecated; see
+* "preference:" above)</li>
+* <li>Starts with "profile:", treat the rest as a relative path below the
+* profile directory as specified in the
+* active{@link jmri.profile.Profile}</li>
+* <li>Starts with "scripts:", treat the rest as a relative path below the
+* scripts directory</li>
+* <li>Otherwise, treat the name as a relative path below the program
+* directory</li>
+* </ul>
+* In any case, absolute pathnames will work.
+*
+* @param profile the Profile to use as a base
+* @param pName   the name, possibly starting with file:, home:, profile:,
+*                program:, preference:, scripts:, settings, or resource:
+* @return Absolute file name to use. This will include system-specific file
+*         separators.
+* @since 4.17.3
+*/
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString FileUtilSupport::getExternalFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString pName) {
+ QString filename = this->pathFromPortablePath(profile, pName);
+ return (filename != "") ? filename : pName.replace(*_separator, File::separatorChar);
+}
+
+
+/**
+ * Convert a portable filename into an absolute filename, using
+ * {@link jmri.profile.ProfileManager#getActiveProfile()} as the base.
+ *
+ * @param path the portable filename
+ * @return An absolute filename
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString FileUtilSupport::getAbsoluteFilename(/*@Nonnull*/ QString path) {
+    return this->getAbsoluteFilename(ProfileManager::getDefault()->getActiveProfile(), path);
 }
 
 /**
  * Convert a portable filename into an absolute filename.
  *
- * @param path the portable filename
+ * @param profile the profile to use as the base
+ * @param path    the portable filename
  * @return An absolute filename
  */
-/*public*/ QString FileUtilSupport::getAbsoluteFilename(QString path) {
-    return this->pathFromPortablePath(path);
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString FileUtilSupport::getAbsoluteFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path) {
+    return this->pathFromPortablePath(profile, path);
 }
 
 /**
@@ -239,20 +330,20 @@ public URL getURL(URI uri) {
     QString ufp = getUserFilesPath();
     if (!ignoreUserFilesPath) {
         if (filename.startsWith(getUserFilesPath())) {
-            return FileUtil::PREFERENCES + filename.mid(getUserFilesPath().length(), filename.length()).replace(File::separatorChar, FileUtil::SEPARATOR);
+            return *_preferences + filename.mid(getUserFilesPath().length(), filename.length()).replace(File::separatorChar, *_separator);
         }
     }
 
     if (!ignoreProfilePath) {
         // compare full path name to see if same as profile
         if (filename.startsWith(getProfilePath())) {
-            return FileUtil::PROFILE + filename.mid(getProfilePath().length(), filename.length()).replace(File::separatorChar, FileUtil::SEPARATOR);
+            return *_profile + filename.mid(getProfilePath().length(), filename.length()).replace(File::separatorChar, *_separator);
         }
     }
 
     // compare full path name to see if same as settings
     if (filename.startsWith(getPreferencesPath())) {
-        return FileUtil::SETTINGS + filename.mid(getPreferencesPath().length(), filename.length()).replace(File::separatorChar, FileUtil::SEPARATOR);
+        return *_settings + filename.mid(getPreferencesPath().length(), filename.length()).replace(File::separatorChar, *_separator);
     }
 
     if (!ignoreUserFilesPath) {
@@ -267,22 +358,22 @@ public URL getURL(URI uri) {
          */
         // check for relative to scripts dir
         if (filename.startsWith(getScriptsPath()) && filename !=(getScriptsPath())) {
-            return FileUtil::SCRIPTS + filename.mid(getScriptsPath().length(), filename.length()).replace(File::separatorChar, FileUtil::SEPARATOR);
+            return *_scripts + filename.mid(getScriptsPath().length(), filename.length()).replace(File::separatorChar, *_separator);
         }
     }
 
     // now check for relative to program dir
     if (filename.startsWith(getProgramPath())) {
-        return FileUtil::PROGRAM + filename.mid(getProgramPath().length(), filename.length()).replace(File::separatorChar, FileUtil::SEPARATOR);
+        return *_program + filename.mid(getProgramPath().length(), filename.length()).replace(File::separatorChar, *_separator);
     }
 
     // compare full path name to see if same as home directory
     // do this last, in case preferences or program dir are in home directory
     if (filename.startsWith(getHomePath())) {
-        return FileUtil::HOME + filename.mid(getHomePath().length(), filename.length()).replace(File::separatorChar, FileUtil::SEPARATOR);
+        return *_home + filename.mid(getHomePath().length(), filename.length()).replace(File::separatorChar, *_separator);
     }
 
-    return filename.replace(File::separatorChar, FileUtil::SEPARATOR);   // absolute, and doesn't match; not really portable...
+    return filename.replace(File::separatorChar, *_separator);   // absolute, and doesn't match; not really portable...
 }
 
 /**
@@ -398,26 +489,26 @@ public URL getURL(URI uri) {
     // compare full path name to see if same as preferences
     if (!ignoreUserFilesPath) {
         if (filename.startsWith(getUserFilesPath(profile))) {
-            return FileUtil::PREFERENCES
+            return *_preferences
                     + filename.mid(getUserFilesPath(profile).length(), filename.length()).replace(File::separatorChar,
-                            FileUtil::SEPARATOR);
+                            *_separator);
         }
     }
 
     if (!ignoreProfilePath) {
         // compare full path name to see if same as profile
         if (filename.startsWith(getProfilePath(profile))) {
-            return FileUtil::PROFILE
+            return *_profile
                     + filename.mid(getProfilePath(profile).length(), filename.length()).replace(File::separatorChar,
-                            FileUtil::SEPARATOR);
+                            *_separator);
         }
     }
 
     // compare full path name to see if same as settings
     if (filename.startsWith(getPreferencesPath())) {
-        return FileUtil::SETTINGS
+        return *_settings
                 + filename.mid(getPreferencesPath().length(), filename.length()).replace(File::separatorChar,
-                        FileUtil::SEPARATOR);
+                        *_separator);
     }
 
     if (!ignoreUserFilesPath) {
@@ -432,28 +523,28 @@ public URL getURL(URI uri) {
          */
         // check for relative to scripts dir
         if (filename.startsWith(getScriptsPath(profile)) && filename != (getScriptsPath(profile))) {
-            return FileUtil::SCRIPTS
+            return *_scripts
                     + filename.mid(getScriptsPath(profile).length(), filename.length()).replace(File::separatorChar,
-                            FileUtil::SEPARATOR);
+                            *_separator);
         }
     }
 
     // now check for relative to program dir
     if (filename.startsWith(getProgramPath())) {
-        return FileUtil::PROGRAM
+        return *_program
                 + filename.mid(getProgramPath().length(), filename.length()).replace(File::separatorChar,
-                        FileUtil::SEPARATOR);
+                        *_separator);
     }
 
     // compare full path name to see if same as home directory
     // do this last, in case preferences or program dir are in home directory
     if (filename.startsWith(getHomePath())) {
-        return FileUtil::HOME
+        return *_home
                 + filename.mid(getHomePath().length(), filename.length()).replace(File::separatorChar,
-                        FileUtil::SEPARATOR);
+                        *_separator);
     }
 
-    return filename.replace(File::separatorChar, FileUtil::SEPARATOR); // absolute, and doesn't match; not really portable...
+    return filename.replace(File::separatorChar, *_separator); // absolute, and doesn't match; not really portable...
 }
 
 /**
@@ -523,12 +614,12 @@ public URL getURL(URI uri) {
  */
 //@SuppressWarnings("deprecation")
 /*public*/ bool FileUtilSupport::isPortableFilename(QString filename) {
-    return (filename.startsWith(/*FileUtil::PROGRAM*/"program:")
-            || filename.startsWith(/*FileUtil::HOME*/"home:")
-            || filename.startsWith(/*FileUtil::PREFERENCES*/"preference:")
-            || filename.startsWith(/*FileUtil::SCRIPTS*/"scripts:")
-            || filename.startsWith(/*FileUtil::PROFILE*/"profile:")
-            || filename.startsWith(/*FileUtil::SETTINGS*/"settings:"));
+    return (filename.startsWith(/**_program*/"program:")
+            || filename.startsWith(/**_home*/"home:")
+            || filename.startsWith(/**_preferences*/"preference:")
+            || filename.startsWith(/**_scripts*/"scripts:")
+            || filename.startsWith(/**_profile*/"profile:")
+            || filename.startsWith(/**_settings*/"settings:"));
 }
 
 /**
@@ -583,7 +674,7 @@ public URL getURL(URI uri) {
     }
     userFilesPaths.insert(profile, path);
     if ((old != nullptr && old!=(path)) || (path!=(old))) {
-        this->firePropertyChange(FileUtil::PREFERENCES, VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, old)), VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, path)));
+        this->firePropertyChange(*_preferences, VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, old)), VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, path)));
     }
 }
 
@@ -785,7 +876,7 @@ public URL getURL(URI uri) {
  if ((old != NULL && old != (this->programPath))
          || (this->programPath != NULL && this->programPath !=(old)))
  {
-     this->firePropertyChange(FileUtil::PROGRAM, old, this->programPath);
+     this->firePropertyChange(*_program, old, this->programPath);
  }
 }
 
@@ -802,12 +893,12 @@ public URL getURL(URI uri) {
  * Log all paths at the INFO level.
  */
 /*public*/ void FileUtilSupport::logFilePaths() {
-    log->info(tr("File path %1 is %2").arg(FileUtil::PROGRAM).arg(this->getProgramPath()));
-    log->info(tr("File path %1 is %2").arg(FileUtil::PREFERENCES).arg(this->getUserFilesPath()));
-    log->info(tr("File path %1 is %2").arg(FileUtil::PROFILE).arg(this->getProfilePath()));
-    log->info(tr("File path %1 is %2").arg(FileUtil::SETTINGS).arg(this->getPreferencesPath()));
-    log->info(tr("File path %1 is %2").arg(FileUtil::HOME).arg(this->getHomePath()));
-    log->info(tr("File path %1 is %2").arg(FileUtil::SCRIPTS).arg(this->getScriptsPath()));
+    log->info(tr("File path %1 is %2").arg(*_program).arg(this->getProgramPath()));
+    log->info(tr("File path %1 is %2").arg(*_preferences).arg(this->getUserFilesPath()));
+    log->info(tr("File path %1 is %2").arg(*_profile).arg(this->getProfilePath()));
+    log->info(tr("File path %1 is %2").arg(*_settings).arg(this->getPreferencesPath()));
+    log->info(tr("File path %1 is %2").arg(*_home).arg(this->getHomePath()));
+    log->info(tr("File path %1 is %2").arg(*_scripts).arg(this->getScriptsPath()));
 }
 
 /**
@@ -862,7 +953,7 @@ public URL getURL(URI uri) {
     }
     scriptsPaths.insert(profile, path);
     if ((old != nullptr && old !=(path)) || (path != "" && path!=(old))) {
-        this->firePropertyChange(FileUtil::SCRIPTS, VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, old)), VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, path)));
+        this->firePropertyChange(*_scripts, VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, old)), VPtr<FileUtil::Property>::asQVariant(new FileUtil::Property(profile, path)));
     }
 }
 
@@ -884,14 +975,14 @@ public URL getURL(URI uri) {
   QString location = path.mid(0, index);
   path = path.mid(index);
   if(log->isDebugEnabled()) log->debug(tr("Finding %1 and %2").arg(location).arg(path));
-  if(location == FileUtil::PROGRAM)
+  if(location == *_program)
    return this->findURI(path, FileUtil::Location::INSTALLED);
-  if(location ==  FileUtil::PREFERENCES)
+  if(location ==  *_preferences)
    return this->findURI(path, FileUtil::Location::USER);
-  if(location == FileUtil::PROFILE ||
-      location == FileUtil::SETTINGS ||
-      location == FileUtil::SCRIPTS ||
-      location == FileUtil::HOME)
+  if(location == *_profile ||
+      location == *_settings ||
+      location == *_scripts ||
+      location == *_home)
    return this->findURI(this->getExternalFilename(location + path));
  }
  return this->findURI(path, FileUtil::Location::ALL);
@@ -1013,7 +1104,7 @@ public URL getURL(URI uri) {
  * @since 2.7.2
  */
 //@SuppressWarnings("deprecation")
-/*public*/ QString FileUtilSupport::pathFromPortablePath(/*@Nonnull*/ QString path)
+/*public*/ QString FileUtilSupport::pathFromPortablePath(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path)
 {
  QString path_save = path;
  if(path.startsWith("/"))
@@ -1029,18 +1120,18 @@ public URL getURL(URI uri) {
   return path;
 
  } else
- if (path.startsWith(FileUtil::PROGRAM))
+ if (path.startsWith(*_program))
  {
-  if ((new File(path.mid(FileUtil::PROGRAM.length())))->isAbsolute())
+  if ((new File(path.mid(QString(*_program).length())))->isAbsolute())
   {
-   path = path.mid(FileUtil::PROGRAM.length());
+   path = path.mid(QString(*_program).length());
   }
   else
   {
-   path = path_save.replace(FileUtil::PROGRAM, Matcher::quoteReplacement(this->getProgramPath()));
+   path = path_save.replace(*_program, Matcher::quoteReplacement(this->getProgramPath()));
    if(!QFileInfo(path).exists())
    {
-    path = path_save.replace(FileUtil::PROGRAM, ":/");
+    path = path_save.replace(*_program, ":/");
 //    if(path.startsWith(":/jython"))
 //     path.replace(":/jython", userFilesPaths+"../jython");
    }
@@ -1049,49 +1140,49 @@ public URL getURL(URI uri) {
     log->info(tr("unable to find %1 specified as %2").arg(path).arg(path_save));
   }
  }
- else if (path.startsWith(FileUtil::PREFERENCES))
+ else if (path.startsWith(*_preferences))
  {
-  if ((new File(path.mid(FileUtil::PREFERENCES.length())))->isAbsolute())
+  if ((new File(path.mid(QString(*_preferences).length())))->isAbsolute())
   {
-      path = path.mid(FileUtil::PREFERENCES.length());
+      path = path.mid(QString(*_preferences).length());
   }
   else
   {
-      path = path.replace(FileUtil::PREFERENCES, Matcher::quoteReplacement(this->getUserFilesPath()));
+      path = path.replace(*_preferences, Matcher::quoteReplacement(this->getUserFilesPath(profile)));
   }
  }
- else if (path.startsWith(FileUtil::PROFILE))
+ else if (path.startsWith(*_profile))
  {
-  if ((new File(path.mid(FileUtil::PROFILE.length())))->isAbsolute()) {
-      path = path.mid(FileUtil::PROFILE.length());
+  if ((new File(path.mid(QString(*_profile).length())))->isAbsolute()) {
+      path = path.mid(QString(*_profile).length());
   } else {
-      //path = path.replace(FileUtil::PROFILE, Matcher::quoteReplacement(this->getProfilePath()));
-  //path = path.replace(FileUtil::PROFILE, this->getProfilePath());
-      path = getProfilePath() + path.mid(8);
+      //path = path.replace(*_profile, Matcher::quoteReplacement(this->getProfilePath()));
+  //path = path.replace(*_profile, this->getProfilePath());
+      path = getProfilePath(profile) + path.mid(8);
   }
  }
- else if (path.startsWith(FileUtil::SCRIPTS))
+ else if (path.startsWith(*_scripts))
  {
-  if ((new File(path.mid(FileUtil::SCRIPTS.length())))->isAbsolute()) {
-      path = path.mid(FileUtil::SCRIPTS.length());
+  if ((new File(path.mid(QString(*_scripts).length())))->isAbsolute()) {
+      path = path.mid(QString(*_scripts).length());
   } else {
-      path = path.replace(FileUtil::SCRIPTS, Matcher::quoteReplacement(this->getScriptsPath()));
+      path = path.replace(*_scripts, Matcher::quoteReplacement(this->getScriptsPath(profile)));
   }
  }
- else if (path.startsWith(FileUtil::SETTINGS))
+ else if (path.startsWith(*_settings))
  {
-  if ((new File(path.mid(FileUtil::SETTINGS.length())))->isAbsolute()) {
-      path = path.mid(FileUtil::SETTINGS.length());
+  if ((new File(path.mid(QString(*_settings).length())))->isAbsolute()) {
+      path = path.mid(QString(*_settings).length());
   } else {
-      path = path.replace(FileUtil::SETTINGS, Matcher::quoteReplacement(this->getPreferencesPath()));
+      path = path.replace(*_settings, Matcher::quoteReplacement(this->getPreferencesPath()));
   }
  }
- else if (path.startsWith(FileUtil::HOME))
+ else if (path.startsWith(*_home))
  {
-  if ((new File(path.mid(FileUtil::HOME.length())))->isAbsolute()) {
-      path = path.mid(FileUtil::HOME.length());
+  if ((new File(path.mid(QString(*_home).length())))->isAbsolute()) {
+      path = path.mid(QString(*_home).length());
   } else {
-      path = path.replace(FileUtil::HOME, Matcher::quoteReplacement(this->getHomePath()));
+      path = path.replace(*_home, Matcher::quoteReplacement(this->getHomePath()));
   }
  }
  else if (!(new File(path))->isAbsolute()) {
@@ -1111,7 +1202,7 @@ public URL getURL(URI uri) {
       //throw NullPointerException(msg);  // throw IOException??
       throw IOException(msg);
      }
-     return (new File(path.replace(FileUtil::SEPARATOR, File::separatorChar)))->getCanonicalPath();
+     return (new File(path.replace(*_separator, File::separatorChar)))->getCanonicalPath();
  } catch (IOException ex) {
      //log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex.getMessage());
      return "";

@@ -7,6 +7,7 @@
 #include <QSet>
 #include "file.h"
 #include "vptr.h"
+#include "profilemanager.h"
 
 //RosterConfigManager::RosterConfigManager()
 //{
@@ -31,13 +32,13 @@
 /*public*/ RosterConfigManager::RosterConfigManager()
 {
  log = new Logger("RosterConfigManager");
- directory = FileUtil::PREFERENCES;
- defaultOwner = "";
+ //directory = FileUtil::PREFERENCES;
+ //defaultOwner = "";
  directories = QHash<Profile*, QString>();
  defaultOwners = QHash<Profile*, QString>();
  rosters = QHash<Profile*, Roster*>();
 
-    log->debug(tr("Roster is %1").arg(this->directory));
+//    log->debug(tr("Roster is %1").arg(this->directory));
 //    FileUtilSupport::getDefault()->addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeEvent evt) -> {
 //        log->debug(tr("UserFiles changed from {} to {}", evt.getOldValue(), evt.getNewValue());
 //        if (RosterConfigManager.this->getDirectory().equals(evt.getOldValue())) {
@@ -48,7 +49,7 @@
  FileUtilSupport::getDefault()->addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeListener*)this);
 }
 
-void RosterConfigManager::onPropertyChange(PropertyChangeEvent* evt)
+void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
 {
  FileUtil::Property* oldValue =  VPtr<FileUtil::Property>::asPtr(evt->getOldValue());
  FileUtil::Property* newValue =  VPtr<FileUtil::Property>::asPtr(evt->getNewValue());
@@ -67,7 +68,7 @@ void RosterConfigManager::onPropertyChange(PropertyChangeEvent* evt)
  if (!this->isInitialized(profile))
  {
   Preferences* preferences = ProfileUtils::getPreferences(profile, "jmri/jmrit/RosterConfigManager", true);
-  this->setDefaultOwner(preferences->get(DEFAULT_OWNER, this->getDefaultOwner()));
+  this->setDefaultOwner(profile, preferences->get(DEFAULT_OWNER, this->getDefaultOwner()));
   try
   {
    this->setDirectory(profile, preferences->get(DIRECTORY, this->getDirectory()));
@@ -97,6 +98,32 @@ void RosterConfigManager::onPropertyChange(PropertyChangeEvent* evt)
 //        log->error("Unable to save preferences", ex);
 //    }
 }
+/**
+ * Get the default owner for the active profile.
+ *
+ * @return the default owner
+ */
+//@Nonnull
+/*public*/ QString RosterConfigManager::getDefaultOwner() {
+    return getDefaultOwner(ProfileManager::getDefault()->getActiveProfile());
+}
+
+/**
+ * Get the default owner for the specified profile.
+ *
+ * @param profile the profile to get the default owner for
+ * @return the default owner
+ */
+//@Nonnull
+/*public*/ QString RosterConfigManager::getDefaultOwner(/*@CheckForNull*/ Profile* profile) {
+    QString owner = defaultOwners.value(profile);
+    // defaultOwner should never be null, but check anyway to ensure its not
+    if (owner == "") {
+        owner = ""; // NOI18N
+        defaultOwners.insert(profile, owner);
+    }
+    return owner;
+}
 
 //@Override
 /*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString>* RosterConfigManager::getRequires() {
@@ -107,37 +134,43 @@ void RosterConfigManager::onPropertyChange(PropertyChangeEvent* evt)
 }
 
 /**
- * @return the defaultOwner
+ * Get the roster directory for the active profile.
+ *
+ * @return the directory
  */
 //@Nonnull
-/*public*/ QString RosterConfigManager::getDefaultOwner() {
-    // defaultOwner should never be null, but check anyway to ensure its not
-    if (defaultOwner.isNull()) {
-        defaultOwner = "";
+/*public*/ QString RosterConfigManager::getDirectory() {
+    return getDirectory(ProfileManager::getDefault()->getActiveProfile());
+}
+
+/**
+ * Get the roster directory for the specified profile.
+ *
+ * @param profile the profile to get the directory for
+ * @return the directory
+ */
+//@Nonnull
+/*public*/ QString RosterConfigManager::getDirectory(/*@CheckForNull*/ Profile* profile) {
+    QString directory = directories.value(profile);
+    if (directory == "") {
+        directory = FileUtil::PREFERENCES;
     }
-    return defaultOwner;
+    if (FileUtil::PREFERENCES == (directory)) {
+        return FileUtil::getUserFilesPath();
+    }
+    return directory;
 }
 
 /**
  * @param defaultOwner the defaultOwner to set
  */
-/*public*/ void RosterConfigManager::setDefaultOwner(QString defaultOwner) {
+/*public*/ void RosterConfigManager::setDefaultOwner(/*@CheckForNull*/ Profile* profile, /*@CheckForNull*/ QString defaultOwner) {
     if (defaultOwner.isNull()) {
         defaultOwner = "";
     }
-    QString oldDefaultOwner = this->defaultOwner;
-    this->defaultOwner = defaultOwner;
+    QString oldDefaultOwner = this->defaultOwners.value(profile);
+    this->defaultOwners.insert(profile, defaultOwner);
     firePropertyChange(DEFAULT_OWNER, oldDefaultOwner, defaultOwner);
-}
-
-/**
- * @return the directory
- */
-/*public*/ QString RosterConfigManager::getDirectory() {
-    if (FileUtil::PREFERENCES == (this->directory)) {
-        return FileUtil::getUserFilesPath();
-    }
-    return this->directory;
 }
 
 /**

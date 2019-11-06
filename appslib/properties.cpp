@@ -8,13 +8,14 @@
 #include "reader.h"
 
 //QHash<QString, QString> Properties::hash =  QHash<QString, QString>();
-QMap<QString, QVariant> Properties::_hashTable =  QMap<QString, QVariant>();
+QMap<QString, QVariant>* Properties::_hashTable =  nullptr;//QMap<QString, QVariant>();
 
 Properties::Properties(QObject *parent) :
     QObject(parent)
 {
  defaults = NULL;
- //_hashTable = QMap<QString, QVariant>();
+ if(_hashTable == nullptr)
+  _hashTable = new QMap<QString, QVariant>();
 }
 
 /**
@@ -137,13 +138,13 @@ QObject(parent)
  */
 /*public*/ /*synchronized*/ void Properties::setProperty(QString key, QString value) {
      //hash.insert(key, value);
- _hashTable.insert(key, value);
+ _hashTable->insert(key, value);
 
 }
 /*public*/ bool Properties::containsKey(QString key)
 {
  //return hash.contains(key);
- return _hashTable.contains(key);
+ return _hashTable->contains(key);
 }
 
 #if 0
@@ -393,7 +394,7 @@ QByteArray convtBuf;
   QString key = loadConvert(lr->lineBuf, 0, keyLen, convtBuf);
   QString value = loadConvert(lr->lineBuf, valueStart, limit - valueStart, convtBuf);
   //hash.insert(key, value);
-  _hashTable.insert(key,value);
+  _hashTable->insert(key,value);
  }
  return;
 }
@@ -922,11 +923,11 @@ int LineReader::readLine() //throws IOException
  *bw << "\n";
 //    synchronized (this) {
 //        for (Enumeration<?> e = keys(); e.hasMoreElements();)
- QListIterator<QString> e(_hashTable.keys());
+ QListIterator<QString> e(_hashTable->keys());
  while(e.hasNext())
  {
    QString key = e.next();
-   QString val = _hashTable.value(key).toString();
+   QString val = _hashTable->value(key).toString();
    key = saveConvert(key, true, escUnicode);
    /* No need to escape embedded and trailing spaces for value, hence
     * pass false to flag.
@@ -1067,7 +1068,7 @@ throw (IOException)
 //    String sval = (oval instanceof String) ? (String)oval : NULL;
 //    return ((sval == NULL) && (defaults != NULL)) ? defaults.getProperty(key) : sval;
     //return hash.value(key);
- return _hashTable.value(key).toString();
+ return _hashTable->value(key).toString();
 }
 
 /**
@@ -1092,17 +1093,17 @@ throw (IOException)
 {
  if(key.toString()== "ThrottleManager" && value.toString() == "Internal")
   qDebug() << "test breakpoint";
- _hashTable.insert(key.toString(), value);
+ _hashTable->insert(key.toString(), value);
 }
 
 /*public*/ QVariant Properties::get(QVariant key)
 {
- return _hashTable.value(key.toString());
+ return _hashTable->value(key.toString());
 }
 
 /*public*/ void Properties::remove(QString key)
 {
- _hashTable.remove(key);
+ _hashTable->remove(key);
 }
 
 /**
@@ -1210,10 +1211,10 @@ throw (IOException)
         defaults->enumerate(h);
     }
     //for (Enumeration<?> e = keys() ; e.hasMoreElements() ;) {
-    foreach(QString key, _hashTable.keys())
+    foreach(QString key, _hashTable->keys())
     {
         //String key = (String)e.nextElement();
-        h->insert(key, _hashTable.value(key));
+        h->insert(key, _hashTable->value(key));
     }
 }
 #if 0
@@ -1251,7 +1252,7 @@ private static final char[] hexDigit = {
 QMap<QString, QVariant> Properties::getHash()
 {
  //return hash;
- return _hashTable;
+ return *_hashTable;
 }
 
 /**
@@ -1329,7 +1330,7 @@ private static XmlPropertiesProvider loadProvider() {
  QDomElement root = doc.documentElement();
  QDomNodeList list = root.childNodes();
 // Properties::hash.clear();
- Properties::_hashTable.clear();
+ Properties::_hashTable->clear();
  for(int i = 0; i < list.count(); i++)
  {
   QDomElement e = list.at(i).toElement();
@@ -1354,7 +1355,7 @@ private static XmlPropertiesProvider loadProvider() {
  cmt.appendChild(doc.createTextNode(comment));
  root.appendChild(cmt);
 // QHashIterator<QString, QString> iter(hash);
- QMapIterator<QString, QVariant> iter(_hashTable);
+ QMapIterator<QString, QVariant> iter(*_hashTable);
  while(iter.hasNext())
  {
   iter.next();

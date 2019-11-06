@@ -871,7 +871,8 @@ HEADERS += liblayouteditor_global.h \
     rpssensormanager.h \
     rpssensor.h \
     measurementlistener.h \
-    namedicon.h
+    namedicon.h \
+    namedbeanusernamecomparator.h
 
 FORMS    += \
     edittracksegmentdlg.ui \
@@ -940,8 +941,8 @@ win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lapps
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
 else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
 
-INCLUDEPATH += $$PWD/../appslib $$PWD/../appslib/operations
-DEPENDPATH += $$PWD/../appslib $$PWD/../appslib/operations
+INCLUDEPATH += $$PWD/../appslib
+DEPENDPATH += $$PWD/../appslib
 
 DISTFILES += \
     generated_cpp/test/test.pri
@@ -983,3 +984,10 @@ message(LayoutEditor: $$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1 not found)
 }
 
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/release/ -loperations
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/debug/ -loperations
+else:unix: LIBS += -L$$PWD/../operations/ -loperations
+
+INCLUDEPATH += $$PWD/../operations
+DEPENDPATH += $$PWD/../operations

@@ -262,33 +262,33 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
      }
     } //);
     QVariant list;
-        if (errors->size() == 1) {
-            list = errors->at(0);
-        } else {
-         QVector<QString> v = QVector<QString>(errors->size(),"");
-            list = VPtr<JList>::asQVariant(new JList(*errors));
-        }
+     if (errors->size() == 1) {
+         list = errors->at(0);
+     } else {
+      QVector<QString> v = QVector<QString>(errors->size(),"");
+         list = VPtr<JList>::asQVariant(new JList(*errors));
+     }
 
-        if (isUnableToConnect/*.get()*/) {
-            handleConnectionError(errors, list);
-        }
-        else
-        {
-         QString msg;
-             //qobject_cast<JList*>(list) != nullptr ? tr("The following errors occurred in the order listed:") : ""  + "\n";
-           msg = tr("The following errors occurred in the order listed:");
-           foreach(QString str, *errors)
-              msg = msg + str + "\n";
-             msg = msg +"<html><br></html>"; // Add a visual break between list of errors and notes // NOI18N
-             msg = msg +tr("Please check the logs for more details.") + "\n"; // NOI18N
-             msg = msg +tr("The Preferences window will open so this can be fixed.");/* */// NOI18N
+     if (isUnableToConnect/*.get()*/) {
+         handleConnectionError(errors, list);
+     }
+     else
+     {
+      QString msg;
+          //qobject_cast<JList*>(list) != nullptr ? tr("The following errors occurred in the order listed:") : ""  + "\n";
+        msg = tr("The following errors occurred in the order listed:");
+        foreach(QString str, *errors)
+           msg = msg + str + "\n";
+          msg = msg +"<html><br></html>"; // Add a visual break between list of errors and notes // NOI18N
+          msg = msg +tr("Please check the logs for more details.") + "\n"; // NOI18N
+          msg = msg +tr("The Preferences window will open so this can be fixed.");/* */// NOI18N
 
-         JOptionPane::showMessageDialog(nullptr, msg,
-           tr("Error initializing %1").arg(QApplication::applicationName()), // NOI18N
-           JOptionPane::ERROR_MESSAGE);
-         (new TabbedPreferencesAction())->actionPerformed();
+      JOptionPane::showMessageDialog(nullptr, msg,
+        tr("Error initializing %1").arg(QApplication::applicationName()), // NOI18N
+        JOptionPane::ERROR_MESSAGE);
+      (new TabbedPreferencesAction())->actionPerformed();
 //        }
-       }
+    }
    }
    if (!file.isEmpty() && (File(file.toDisplayString())).getName() == ("ProfileConfig.xml"))
    { // NOI18N
@@ -455,7 +455,10 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
    //            InitializationException put = this->initializationExceptions->putIfAbsent(provider, ex);
    bool bPut = this->initializationExceptions->contains(provider);
    if(!bPut)
-    this->initializationExceptions->insert((PreferencesManager*)provider, &ex);
+   {
+    InitializationException* newException = new InitializationException(ex.getMessage(), ex.getLocalizedMessage(), nullptr);
+    this->initializationExceptions->insert((PreferencesManager*)provider, newException);
+   }
    log->error(tr("Exception initializing %1: %2").arg(provider->metaObject()->className()).arg(ex.getMessage()));
    if (bPut)
    {

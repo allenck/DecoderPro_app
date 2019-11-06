@@ -20,6 +20,7 @@ class RosterFrame;
 }
 typedef void (*NoParm)();
 
+class ProgrammerConfigManager;
 class RosterTableModel;
 class RosterGroupSelector;
 class RosterGroupsPanel;
@@ -189,11 +190,14 @@ protected slots:
     /*protected*/ void hideRosterImage();
     virtual /*protected*/ /*final*/ void buildWindow();
     /*protected*/ void showPopup(QPoint pos);
+    /*protected*/ ProgrammerConfigManager* getProgrammerConfigManager();
+
 
  friend class PwrListener;
  friend class MyIdentifyLoco;
  friend class RosterEntryUpdateListener;
  friend class PropertyChangeSupport;
+ friend class DefaultFilePropertyChangeListener;
 };
 
 class  PwrListener : public PropertyChangeListener
@@ -325,5 +329,14 @@ public:
     /*protected*/ bool selectFrom() {
         return true;
     }
+};
+class DefaultFilePropertyChangeListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ RosterFrame* frame;
+public:
+ DefaultFilePropertyChangeListener(RosterFrame* frame) {this->frame = frame;}
+public slots:
+ void propertyChange(PropertyChangeEvent* evt);
 };
 #endif // ROSTERFRAME_H

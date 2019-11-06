@@ -17,6 +17,7 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -314,6 +315,7 @@ virtual bool  addOutputSensor(QString  arg__1, int  arg__2);
 virtual bool  addOutputTurnout(QString  arg__1, int  arg__2);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  addSensorToRoute(QString  arg__1, int  arg__2);
 virtual bool  canLock();
 virtual void childEvent(QChildEvent*  event);
@@ -373,7 +375,8 @@ virtual bool  hashCode();
 virtual bool  isOutputSensorIncluded(QString  arg__1);
 virtual bool  isOutputTurnoutIncluded(QString  arg__1);
 virtual void removeProperty(QString  key);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void setComment(QString  comment);
 virtual void setControlTurnout(QString  arg__1);
 virtual void setControlTurnoutState(int  arg__1);
@@ -1204,6 +1207,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
 virtual int  compareTo(NamedBean*  n2);
@@ -1236,7 +1240,8 @@ virtual QVector<QString >  getValidStateNames();
 virtual QVector<int >  getValidStates();
 virtual bool  hashCode();
 virtual void removeProperty(QString  key);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void setAppearance(int  arg__1);
 virtual void setComment(QString  comment);
 virtual void setHeld(bool  arg__1);
@@ -2210,6 +2215,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  canInvert() const;
 virtual bool  canLock(int  arg__1);
 virtual void childEvent(QChildEvent*  event);
@@ -2263,7 +2269,8 @@ virtual bool  isConsistentState();
 virtual void provideFirstFeedbackSensor(QString  arg__1) throw (JmriException) ;
 virtual void provideSecondFeedbackSensor(QString  arg__1) throw (JmriException) ;
 virtual void removeProperty(QString  key);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
+virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void requestUpdateFromLayout();
 virtual void setBinaryOutput(bool  arg__1);
 virtual void setCommandedState(int  arg__1);

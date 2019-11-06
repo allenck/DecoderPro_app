@@ -31,7 +31,7 @@
  */
 //@CheckReturnValue
 //@Nonnull
-/*public*/ QString Manager::getBeanTypeHandled(bool plural) { return "??";}
+/*public*/ QString Manager::getBeanTypeHandled(bool /*plural*/) { return "??";}
 
 /*static*/ /*public*/ int Manager::getSystemPrefixLength(/*@Nonnull*/ QString inputName) throw (NamedBean::BadSystemNameException)
 {
@@ -444,5 +444,5 @@
      *
      * @param muted true if notifications should be suppressed; false otherwise
      */
-    /*public*/ /*default*/ void Manager::setDataListenerMute(bool muted) {
+    /*public*/ /*default*/ void Manager::setDataListenerMute(bool /*muted*/) {
     }

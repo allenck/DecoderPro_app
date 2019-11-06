@@ -103,7 +103,7 @@ void BeanTableDataModel::setManager(Manager *) {}
    if (b!=NULL)
    {
     b->removePropertyChangeListener((PropertyChangeListener*)this);
-    disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//    disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
   }
  }
@@ -112,20 +112,13 @@ void BeanTableDataModel::setManager(Manager *) {}
  // and add them back in
  for (int i = 0; i< sysNameList.size(); i++)
  {
-  NamedBean* b;
-  //getBySystemName(sysNameList.at(i))->addPropertyChangeListener((PropertyChangeListener*)this, NULL, "Table View");
-  if(qobject_cast<TurnoutTableDataModel*>(this)!= NULL)
-  {
-   TurnoutTableDataModel* m = (TurnoutTableDataModel*)this;
-   b = m->getBySystemName(sysNameList.at(i));
+  // if object has been deleted, it's not here; ignore it
+  NamedBean* b = getBySystemName(sysNameList.at(i));
+  if (b != nullptr) {
+      b->addPropertyChangeListener((PropertyChangeListener*)this);
   }
-  else
-   b = getBySystemName(sysNameList.at(i));
-  AbstractNamedBean* anb = (AbstractNamedBean*)b;
-  connect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
-
 
 /*public*/ void BeanTableDataModel::propertyChange(PropertyChangeEvent* e)
 {

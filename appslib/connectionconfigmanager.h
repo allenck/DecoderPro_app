@@ -23,7 +23,7 @@ public:
  /*public*/ void savePreferences(Profile* profile);
  /*public*/ bool add(/*@Nonnull*/ ConnectionConfig* c) throw (NullPointerException);
  /*public*/ bool remove(/*@NonNULL*/ ConnectionConfig* c);
- /*public*/ QList<ConnectionConfig*>* getConnections();
+ /*public*/ QVector<ConnectionConfig*> getConnections();
  /*public*/ ConnectionConfig* getConnections(int index);
  /*public*/ QListIterator<ConnectionConfig*> iterator();
 

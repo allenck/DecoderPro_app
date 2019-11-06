@@ -267,9 +267,9 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  *         objects.
  */
 /*@NonNULL*/
-/*public*/ QList<ConnectionConfig*>* ConnectionConfigManager::getConnections() {
+/*public*/ QVector<ConnectionConfig*> ConnectionConfigManager::getConnections() {
     //return connections.toArray(new ConnectionConfig[connections.size()]);
- return connections;
+ return connections->toVector();
 }
 
 /**

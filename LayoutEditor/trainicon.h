@@ -1,7 +1,7 @@
 #ifndef TRAINICON_H
 #define TRAINICON_H
 #include "locoicon.h"
-#include "train.h"
+#include "../operations/train.h"
 #include "liblayouteditor_global.h"
 
 //class TrainTrain;

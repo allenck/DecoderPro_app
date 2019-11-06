@@ -5,7 +5,7 @@
 #include <QColor>
 #include "QMessageBox"
 #include "transitmanager.h"
-#include "dispatcherframe.h"
+#include "../operations/dispatcherframe.h"
 #include "loadxmlconfigaction.h"
 #include "joptionpane.h"
 #include "colorutil.h"

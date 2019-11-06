@@ -78,6 +78,7 @@ private:
    /*private*/ JmrixConfigPane(ConnectionConfig* original, QWidget* parent = 0);
    void selection();
 
+   friend class ConnectionsPreferencesPanel;
 };
 
 #endif // JMRIXCONFIGPANE_H

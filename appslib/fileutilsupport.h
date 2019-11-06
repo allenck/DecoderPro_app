@@ -14,9 +14,12 @@ class FileUtilSupport : public Bean
 public:
  FileUtilSupport();
  /*public*/ File* getFile(QString path) throw (FileNotFoundException);
+ /*public*/ File* getFile(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path) throw (FileNotFoundException);
  /*public*/ QUrl* getURL(QString path) throw (FileNotFoundException);
  /*public*/ QString getExternalFilename(QString pName);
+ /*public*/ QString getExternalFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString pName);
  /*public*/ QString getAbsoluteFilename(QString path);
+ /*public*/ QString getAbsoluteFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path);
  /*public*/ QString getPortableFilename(File* file);
  /*public*/ QString getPortableFilename(File* file, bool ignoreUserFilesPath, bool ignoreProfilePath);
  /*public*/ QString getPortableFilename(QString filename);
@@ -94,7 +97,7 @@ public:
  /*public*/ QUrl findURL(/*@Nonnull*/ QString path, FileUtil::Location locations);
  /*public*/ QUrl findURL(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
  /*public*/ QString locateFile(QDir start, QString fileName);
- /*public*/ QString pathFromPortablePath(/*@Nonnull*/ QString path);
+ /*public*/ QString pathFromPortablePath(Profile *profile, /*@Nonnull*/ QString path);
  /*public*/ QString selectProgramPath(QStringList *stringList);
  /*public*/ QStringList* getPaths();
 

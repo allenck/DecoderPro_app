@@ -39,7 +39,7 @@ signals:
 
 public slots:
 private:
-    static QMap<QString, QVariant> _hashTable;
+    static QMap<QString, QVariant>* _hashTable;
     /*private*/ /*synchronized*/ void enumerate(QMap<QString,QVariant>* h);
 
     /*private*/ /*static*/ class XmlSupport

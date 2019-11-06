@@ -362,7 +362,7 @@ Connect::Connect(FirstTimeStartUpWizard* wizard) { this->wizard = wizard;}
             }
         }
         Profile* project = ProfileManager::getDefault()->getActiveProfile();
-        static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->setDefaultOwner(wizard->owner->text());
+        static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->setDefaultOwner(project, wizard->owner->text());
         static_cast<GuiLafPreferencesManager*>(InstanceManager::getDefault("GuiLafPreferencesManager"))->setLocale(QLocale());
         static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->savePreferences(project);
         static_cast<GuiLafPreferencesManager*>(InstanceManager::getDefault("GuiLafPreferencesManager"))->savePreferences(project);

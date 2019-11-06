@@ -141,7 +141,9 @@ SOURCES += \
         misc/defaultmemorymanagertest.cpp \
         misc/defaultmemorymanagertestaction.cpp \
         misc/lightcontroltest.cpp \
-        misc/lightcontroltestaction.cpp
+        misc/lightcontroltestaction.cpp \
+    NamedBeans/namedbeanusernamecomparatortest.cpp \
+    NamedBeans/namedbeanusernamecomparatortestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -260,7 +262,9 @@ HEADERS += \
         misc/defaultmemorymanagertest.h \
         misc/defaultmemorymanagertestaction.h \
         misc/lightcontroltest.h \
-        misc/lightcontroltestaction.h
+        misc/lightcontroltestaction.h \
+    NamedBeans/namedbeanusernamecomparatortest.h \
+    NamedBeans/namedbeanusernamecomparatortestaction.h
 
 unix {
     target.path = /usr/lib
@@ -302,6 +306,7 @@ DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal \
  $$PWD/../Tables $$PWD/../libPr3/Throttle $$PWD/../libPr3/LocoIO $$PWD/../libPr3/loconet \
  $$PWD/../libPr3/rfid $$PWD/../libPr3/Json $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/sprog |
  $$PWD/../libPr3/loconet/HexFile
+
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -lLayoutEditor
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug/ -lLayoutEditor
 else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor

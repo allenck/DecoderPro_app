@@ -3,6 +3,7 @@
 #include "joptionpane.h"
 #include "assert1.h"
 #include "loggerfactory.h"
+#include "junitutil.h"
 
 SprogMessageTestAction::SprogMessageTestAction(QObject *parent) : AbstractAction(tr("SprogMessage test"), parent)
 {
@@ -18,17 +19,11 @@ void SprogMessageTestAction::actionPerformed()
          << "testCtor"
          << "testToString"
          << "testToMonitorString"
-
           << "testReadCv"
           << "testWriteCV"
           << "testReadCvLarge"
           << "testWriteCVLarge";
-     foreach(QString test, testList)
-     {
-      log->info(tr("begin '%1'").arg(test));
-      QMetaObject::invokeMethod(smt, test.toLocal8Bit(), Qt::DirectConnection);
-      log->info(tr("end '%1'").arg(test));
-     }
+     JUnitUtil::runTests(smt, testList);
 
     }
     catch (AssertionError er)

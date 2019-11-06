@@ -14,6 +14,7 @@ class LIBPR3SHARED_EXPORT SimpleTimebase : public Timebase
 public:
     explicit SimpleTimebase(QObject *parent = 0);
     ~SimpleTimebase();
+    /*public*/ QString getBeanType();
     /*public*/ virtual QDateTime getTime();
     /*public*/ virtual void setTime(QDateTime d);
     /*public*/ virtual void userSetTime(QDateTime d);
@@ -44,7 +45,6 @@ public:
     /*public*/ void initializeHardwareClock();
     /*public*/ bool getIsInitialized();
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
-    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
     /*public*/ void dispose();
     void startAlarm();
     //void handleAlarm(); // see slots
@@ -56,13 +56,14 @@ public:
     /*public*/ void setState(int s) throw (JmriException);
     /*public*/ int getState();
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
 
 signals:
     void minuteTick();
-    void propertyChange(PropertyChangeEvent *e);
+
 public slots:
     void handleAlarm();
-    /*public*/ void onPropertyChange(PropertyChangeEvent* e);
+
 private:
     /**
      * Timebase variables and options
@@ -94,13 +95,23 @@ private:
 //    SimpleDateFormat timeStorageFormat = NULL;
 
     QTimer* timer;// = NULL;
-    PropertyChangeSupport* pcMinutes;// = new PropertyChangeSupport(this);
+    //PropertyChangeSupport* pcMinutes;// = new PropertyChangeSupport(this);
     int oldMinutes;// = 0;
     /*private*/ void clockSensorChanged();
  Logger* log;
 protected:
-    /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
+//    /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
 
+  friend class ClockSensorPropertChangeListener;
 };
 
+class ClockSensorPropertChangeListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ SimpleTimebase* stb;
+public:
+ ClockSensorPropertChangeListener(SimpleTimebase* stb) {this->stb = stb;}
+public slots:
+ void propertyChange(PropertyChangeEvent*);
+};
 #endif // SIMPLETIMEBASE_H

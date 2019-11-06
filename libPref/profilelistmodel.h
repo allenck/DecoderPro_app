@@ -2,7 +2,8 @@
 #define PROFILELISTMODEL_H
 #include "abstractlistmodel.h"
 #include "libpref_global.h"
-class IndexedPropertyChangeEvent;
+
+class PropertyChangeEvent;
 class LIBPREFSHARED_EXPORT ProfileListModel : public AbstractListModel
 {
     Q_OBJECT
@@ -16,7 +17,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void propertyChange(IndexedPropertyChangeEvent* evt);
+    /*public*/ void propertyChange(PropertyChangeEvent *evt);
 private:
     /*private*/ void fireContentsChanged(int index0, int index1);
     /*private*/ void fireIntervalAdded(int index0, int index1);

@@ -31,7 +31,9 @@ public:
 
     /*public synchronized*/ virtual void addPropertyChangeListener(PropertyChangeListener* l, QString beanRef, const QString listenerRef);
     /*public synchronized*/ virtual void addPropertyChangeListener(PropertyChangeListener* l);
-    /*public synchronized*/ virtual void removePropertyChangeListener(PropertyChangeListener* l);
+    /*public synchronized*/ virtual void removePropertyChangeListener(PropertyChangeListener* listener);
+    /*public*/ /*synchronized*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/ /*synchronized*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
     /*public synchronized*/ virtual QList<PropertyChangeListener*>* getPropertyChangeListeners(QString name);
     /* This allows a meaning full list of places where the bean is in use!*/
     /*public synchronized*/ virtual QList<QString>* getListenerRefs();

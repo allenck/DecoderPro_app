@@ -281,20 +281,25 @@ public:
          * @param listenerRef - A textual reference for the listener, that can be
          *                      presented to the user when a delete is called
          */
-        virtual void addPropertyChangeListener(PropertyChangeListener* l, QString name, const QString listenerRef);
+        virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/, QString /*name*/, const QString /*listenerRef*/);
 
-        virtual void addPropertyChangeListener(PropertyChangeListener* l);
+        virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/);
+
+    virtual /*public*/ void addPropertyChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ PropertyChangeListener* /*listener*/) {}
+
         /**
          * Remove a request for a call-back when a bound property changes.
          */
-        virtual void removePropertyChangeListener(PropertyChangeListener* l);
+        virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/);
 
-        virtual void updateListenerRef(PropertyChangeListener* l, QString newName);
+        virtual void removePropertyChangeListener(QString /*propertyName*/, PropertyChangeListener */*l*/) {}
+
+        virtual void updateListenerRef(PropertyChangeListener* l, QString /*newName*/);
         /**
         * Get the textual reference for the specific listener
         *
         */
-        virtual QString getListenerRef(PropertyChangeListener* l);
+        virtual QString getListenerRef(PropertyChangeListener* /*l*/);
 
         /**
         * Returns a list of all the listerners references
@@ -313,7 +318,7 @@ public:
         * @param name  - The name (either system or user) that the listener has registered as
         *           referencing this namedBean
         */
-        virtual QList<PropertyChangeListener*>* getPropertyChangeListeners(QString name);
+        virtual QList<PropertyChangeListener*>* getPropertyChangeListeners(QString /*name*/);
 
         /**
          * Deactivate this object, so that it releases as many
@@ -370,7 +375,7 @@ public:
          * Comments can be any valid text.
          * @param comment Null means no comment associated.
          */
-        virtual void setComment(QString comment);
+        virtual void setComment(QString /*comment*/);
 
         /**
          * Attach a key/value pair to the
@@ -379,7 +384,7 @@ public:
          * and don't throw events on modification.
          * Key must not be null.
          */
-        virtual void setProperty(QString key, QVariant value);
+        virtual void setProperty(QString key, QVariant /*value*/);
 
         /**
          * Retrieve the value associated with a key.

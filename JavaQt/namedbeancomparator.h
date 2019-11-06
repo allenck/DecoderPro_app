@@ -1,13 +1,16 @@
 #ifndef NAMEDBEANCOMPARATOR_H
 #define NAMEDBEANCOMPARATOR_H
-#include "comparator.h"
+#include "comparatort.h"
 
 class NamedBean;
-class NamedBeanComparator : public Comparator
+template<class B>
+class NamedBeanComparator : public ComparatorT<B>
 {
 public:
- NamedBeanComparator();
- /*public*/ static int compare(NamedBean* n1, NamedBean* n2);
+ NamedBeanComparator() {}
+ /*public*/ /*static*/ int compare(B n1, B n2){
+  return n1->compareTo(n2);
+ }
 };
 
 #endif // NAMEDBEANCOMPARATOR_H
