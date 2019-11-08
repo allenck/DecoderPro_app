@@ -23,6 +23,7 @@ private:
     LnPortController* apc;
 
 };
+
 class LnPortControllerO2 : public LnPortController
 {
     Q_OBJECT
@@ -38,15 +39,15 @@ public:
     /*public*/ void configure(){
     }
 
-//    //@Override
-//    /*public*/ java.io.DataInputStream getInputStream(){
-//        return null;
-//    }
+    //@Override
+    /*public*/ QDataStream* getInputStream(){
+        return nullptr;
+    }
 
-//    //@Override
-//    /*public*/ java.io.DataOutputStream getOutputStream(){
-//        return null;
-//    }
+    //@Override
+    /*public*/ QDataStream* getOutputStream(){
+        return nullptr;
+    }
 
     //@Override
     /*public*/ QStringList validBaudRates(){
@@ -59,7 +60,7 @@ public:
      * underlying OS during startup so that it can show on status displays, etc
      */
     //@Override
-    /*public*/ QString openPort(QString portName, QString appName){
+    /*public*/ QString openPort(QString /*portName*/, QString /*appName*/){
        return "";
     }
 };

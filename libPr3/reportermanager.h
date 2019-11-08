@@ -84,14 +84,14 @@ public:
          * instance already exists.
          * @return requested Reporter object or null if none exists
          */
-        virtual Reporter* getBySystemName(QString /*systemName*/) const {return NULL;}
+        virtual Reporter* getBySystemName(QString /*systemName*/)  {return NULL;}
 
         /**
          * Locate an instance based on a user name.  Returns null if no
          * instance already exists.
          * @return requested Reporter object or null if none exists
          */
-        virtual Reporter* getByUserName(QString /*userName*/) const {return NULL;}
+        virtual Reporter* getByUserName(QString /*userName*/)  {return NULL;}
 
         /**
          * Locate an instance based on a user name, or if that fails,

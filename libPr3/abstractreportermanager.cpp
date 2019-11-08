@@ -1,13 +1,13 @@
 #include "abstractreportermanager.h"
 #include <QMessageBox>
 #include "reportermanager.h"
+#include "loggerfactory.h"
 
 AbstractReporterManager::AbstractReporterManager(SystemConnectionMemo* memo, QObject *parent) :
     ReporterManager(memo, parent)
 {
  setProperty("JavaClassName", "jmri.managers.AbstractReporterManager");
 
- log = new Logger("AbstractReporterManager");
  //registerSelf();
 }
 
@@ -42,7 +42,7 @@ Reporter* AbstractReporterManager::getReporter(QString name) {
     return getBySystemName(name);
 }
 
-Reporter* AbstractReporterManager::getBySystemName(QString name) const
+Reporter* AbstractReporterManager::getBySystemName(QString name)
 {
     return (Reporter*)_tsys->value(name);
 }
@@ -121,7 +121,7 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
 
 bool AbstractReporterManager::allowMultipleAdditions(QString systemName) { return false;  }
 
-QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString prefix) const
+QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString prefix)
 {
  //If the hardware address past does not already exist then this can
  //be considered the next valid address.
@@ -182,3 +182,4 @@ QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString
 //            int state = 0;
 //        };
 //}
+/*private*/ /*final*/ /*static*/ Logger* AbstractReporterManager::log = LoggerFactory::getLogger("AbstractReporterManager");

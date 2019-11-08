@@ -154,6 +154,11 @@ bool AbstractSensorManager::isNumber(QString s)
  return s;
 }
 
+/** {@inheritDoc} */
+//@Override
+/*public*/ QString AbstractSensorManager::getBeanTypeHandled(bool plural) {
+    return tr(plural ? "Sensors" : "Sensor");
+}
 
 /**
  * Requests status of all layout sensors under this Sensor Manager.

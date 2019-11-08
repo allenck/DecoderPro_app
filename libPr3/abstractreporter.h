@@ -33,6 +33,8 @@ public slots:
     QVariant _lastReport;
     QVariant _currentReport;
     int state;// = 0;
+
+    friend class TrackReporter;
 };
 
 #endif // ABSTRACTREPORTER_H

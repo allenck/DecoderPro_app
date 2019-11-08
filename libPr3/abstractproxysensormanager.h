@@ -178,6 +178,7 @@ protected:
     /*protected*/ virtual int match(QString systemname);
     /*protected*/ void updateOrderList();
     /*protected*/ void updateNamedBeanSet();
+    /*protected*/ void recomputeNamedBeanSet();
 
 
  friend class ProxyReporterManager;

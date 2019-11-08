@@ -67,7 +67,7 @@ ProxyTurnoutManagerTest::ProxyTurnoutManagerTest(QObject *parent) : QObject(pare
         Assert::fail("didn't throw", __FILE__, __LINE__);
     } catch (IllegalArgumentException ex) {
         //JUnitAppender::assertErrorMessage("Invalid system name for Turnout: System name must start with \"" + l->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
-        JUnitAppender::assertErrorMessage("Invalid system name for Turnout: JT needed JT", __FILE__, __LINE__);
+        JUnitAppender::assertErrorMessage("Invalid system name for Turnout: System name must start with JT", __FILE__, __LINE__);
      //throw ex;
     }
 }

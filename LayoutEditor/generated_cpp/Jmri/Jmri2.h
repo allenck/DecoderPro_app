@@ -60,7 +60,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -955,7 +954,7 @@ inline QString  py_q_getUserName() { return NamedBean::getUserName(); }
 inline bool  py_q_hashCode() { return NamedBean::hashCode(); }
 inline void py_q_removeProperty(QString  arg__1) { NamedBean::removeProperty(arg__1); }
 inline void py_q_removePropertyChangeListener(PropertyChangeListener*  arg__1) { NamedBean::removePropertyChangeListener(arg__1); }
-inline void py_q_removePropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2) { this->removePropertyChangeListener(arg__1, arg__2); }
+inline void py_q_removePropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2) { NamedBean::removePropertyChangeListener(arg__1, arg__2); }
 inline void py_q_setComment(QString  arg__1) { NamedBean::setComment(arg__1); }
 inline void py_q_setProperty(QString  key, QVariant  arg__2) { NamedBean::setProperty(key, arg__2); }
 inline void py_q_setState(int  arg__1) { NamedBean::setState(arg__1); }

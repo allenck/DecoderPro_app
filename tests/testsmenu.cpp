@@ -41,6 +41,7 @@
 #include "misc/defaultmemorymanagertestaction.h"
 #include "misc/lightcontroltestaction.h"
 #include "NamedBeans/namedbeanusernamecomparatortestaction.h"
+#include "loconet/loconetmessageexceptiontestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -63,6 +64,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addAction(new LocoNetSlotTestAction(this));
     loconetTestMenu->addAction(new LoconetSystemConnectionMemoTestAction(this));
     loconetTestMenu->addAction(new DefaultMemoryManagerTestAction(this));
+    loconetTestMenu->addAction(new LocoNetMessageExceptionTestAction(this));
     QMenu* loconetProgrammersMenu = new QMenu(tr("Programmers ..."));
     loconetTestMenu->addMenu(loconetProgrammersMenu);
     loconetProgrammersMenu->addAction(new LnOpsModeProgrammerTestAction(this));

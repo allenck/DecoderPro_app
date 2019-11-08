@@ -38,9 +38,11 @@ this->msg = msg;
 QString IIOException::getMessage() {return msg;}
 
 
-LocoNetMessageException::LocoNetMessageException()
+LocoNetMessageException::LocoNetMessageException(QString s)
 {
+ msg = s;
 }
+
 JmriException::JmriException(QString s)
 {
  msg = s;

@@ -38,6 +38,7 @@ public:
 
     /*public*/ QString createSystemName(QString curAddress, QString prefix) throw (JmriException);
     /*public*/ Sensor* newSensor(QString sysName, QString userName);
+    /*public*/ QString getBeanTypeHandled(bool plural);
     /*public*/ QString getNextValidAddress(QString curAddress, QString prefix);
     /*public*/ long getDefaultSensorDebounceGoingActive();
     /*public*/ long getDefaultSensorDebounceGoingInActive();

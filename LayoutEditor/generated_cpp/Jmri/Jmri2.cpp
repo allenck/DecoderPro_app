@@ -50,7 +50,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -8767,7 +8766,7 @@ if (_wrapper) {
     }
   }
 }
-  
+  NamedBean::removePropertyChangeListener(arg__1, arg__2);
 }
 void PythonQtShell_NamedBean::setComment(QString  arg__1)
 {

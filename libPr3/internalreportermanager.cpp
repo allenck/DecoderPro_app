@@ -1,6 +1,7 @@
 #include "internalreportermanager.h"
 #include "abstractreporter.h"
 #include "internalsystemconnectionmemo.h"
+#include "trackreporter.h"
 
 InternalReporterManager::InternalReporterManager(InternalSystemConnectionMemo* memo, QObject *parent) :
     AbstractReporterManager(memo, parent)
@@ -15,21 +16,14 @@ InternalReporterManager::InternalReporterManager(InternalSystemConnectionMemo* m
  */
 //public class InternalReporterManager extends AbstractReporterManager {
 
-    /**
-     * Create an internal (dummy) reporter object
-     * @return new null
-     */
-#if 1
-    /*protected*/ Reporter* InternalReporterManager::createNewReporter(QString systemName, QString userName)
+/**
+ * Create an internal (dummy) reporter object
+ * @return new null
+ */
+/*protected*/ Reporter* InternalReporterManager::createNewReporter(QString systemName, QString userName)
 {
- Reporter* reporter = (Reporter*)new AbstractReporter(systemName, userName);
- return reporter;
-//        {
-//            public int getState() { return state; }
-//            public void setState(int s) { state = s; }
-//            int state = 0;
-//        };
-    }
-#endif
-    /*public*/ QString InternalReporterManager::getSystemPrefix() { return "I"; }
+ return new TrackReporter(systemName, userName);
+}
+
+/*public*/ QString InternalReporterManager::getSystemPrefix() { return "I"; }
 

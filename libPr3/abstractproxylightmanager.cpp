@@ -136,12 +136,41 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  }
  mgrs.append(static_cast<AbstractManager*>(m));
 
- if (defaultManager == nullptr) defaultManager = m;  // 1st one is default
- AbstractManager* am = static_cast<AbstractManager*>(m);
- connect(am->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ //propertyVetoListenerList.stream().forEach((l) ->
+ foreach(VetoableChangeListener* l, propertyVetoListenerList)
+ {
+     m->addVetoableChangeListener(l);
+ }//);
+ //propertyListenerList.stream().forEach((l) ->
+ foreach(PropertyChangeListener* l, propertyListenerList)
+ {
+     m->addPropertyChangeListener(l);
+ }//);
+ //namedPropertyVetoListenerMap.entrySet().forEach((e) ->
+ QMapIterator<QString, QVector<VetoableChangeListener*>*> e(namedPropertyVetoListenerMap);
+ while(e.hasNext())
+ {
+  e.next();
+//     e.getValue().forEach((l) ->
+  foreach(VetoableChangeListener* l, *e.value())
+  {
+      m->addVetoableChangeListener(e.key(), l);
+  }//);
+ }//);
+ //namedPropertyListenerMap.entrySet().forEach((e) ->
+ QMapIterator<QString, QVector<PropertyChangeListener*>*> e1(namedPropertyListenerMap);
+ while(e1.hasNext())
+ {
+  e1.next();
+     //e.getValue().forEach((l) ->
+  foreach(PropertyChangeListener* l, *e1.value())
+     {
+         m->addPropertyChangeListener(e1.key(), l);
+     }//);
+ }//);
 
- updateOrderList();
- //updateNamedBeanSet();
+ m->addDataListener(this);
+ recomputeNamedBeanSet();
 
  if (log->isDebugEnabled())
  {
@@ -558,6 +587,13 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
     return tl;
 }
 
+/*protected*/ void AbstractProxyLightManager::recomputeNamedBeanSet() {
+    if (namedBeanSet.isEmpty()) return; // only maintain if requested
+    namedBeanSet.clear();
+    for (Manager/*<E>*/* m : mgrs) {
+        namedBeanSet.unite(m->getNamedBeanSet());
+    }
+}
 
 /*protected*/ void AbstractProxyLightManager::updateNamedBeanSet()
 {

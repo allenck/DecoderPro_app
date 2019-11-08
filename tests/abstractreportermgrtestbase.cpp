@@ -58,7 +58,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
         // Create
         Reporter* t = ((ReporterManager*)l)->provide("" + getNameToTest1());
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", t == ((AbstractReporterManager*)l)->getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", t->equals(((ProxyReporterManager*)l)->getBySystemName(getSystemName(getNameToTest1()))), __FILE__, __LINE__);
     }
 
     //@Test
@@ -150,7 +150,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
     //@Test
     /*public*/ void AbstractReporterMgrTestBase::testSingleObject() {
         // test that you always get the same representation
-        Reporter* t1 = ((AbstractReporterManager*)l)->newReporter(getSystemName(getNameToTest1()), "mine");
+        Reporter* t1 = ((ProxyReporterManager*)l)->newReporter(getSystemName(getNameToTest1()), "mine");
         Assert::assertTrue("t1 real object returned ", t1 != nullptr, __FILE__, __LINE__);
         Assert::assertTrue("same by user ", t1 == ((AbstractReporterManager*)l)->getByUserName("mine"), __FILE__, __LINE__);
         Assert::assertTrue("same by system ", t1 == ((AbstractReporterManager*)l)->getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
@@ -178,7 +178,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
     //@Test
     /*public*/ void AbstractReporterMgrTestBase::testRename() {
         // get reporter
-        Reporter* t1 = ((AbstractReporterManager*)l)->newReporter(getSystemName(getNameToTest1()), "before");
+        Reporter* t1 = ((ProxyReporterManager*)l)->newReporter(getSystemName(getNameToTest1()), "before");
         Assert::assertNotNull("t1 real object ", t1, __FILE__, __LINE__);
         t1->setUserName("after");
         Reporter* t2 = ((AbstractReporterManager*)l)->getByUserName("after");

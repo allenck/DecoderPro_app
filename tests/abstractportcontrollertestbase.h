@@ -11,8 +11,8 @@ class AbstractPortControllerTestBase : public QObject
     Q_OBJECT
 public:
     explicit AbstractPortControllerTestBase(QObject *parent = nullptr);
-    /*public*/ void setUp();
-    /*public*/ void tearDown();
+    virtual /*public*/ void setUp();
+    virtual /*public*/ void tearDown();
 public slots:
     /*public*/ void testisDirtyNotNPE();
 
@@ -20,7 +20,7 @@ public slots:
 signals:
 
 public slots:
-        private:
+private:
 protected:
     /*protected*/ AbstractPortController* apc;
 
@@ -65,7 +65,7 @@ public:
     }
 
     //@Override
-    /*public*/ void connect() {
+    /*public*/ void _connect() {
     }
 
     //@Override

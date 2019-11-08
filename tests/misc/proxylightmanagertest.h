@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "propertychangelistener.h"
-
+#include "exceptions.h"
 class LightManager;
 class ProxyLightManagerTest : public QObject
 {
@@ -20,7 +20,7 @@ public slots:
  /*public*/ void testDispose();
  /*public*/ void testLightPutGet();
  /*public*/ void testDefaultSystemName();
- /*public*/ void testProvideFailure();
+ /*public*/ void testProvideFailure() throw (IllegalAccessException);
  /*public*/ void testSingleObject();
  /*public*/ void testMisses();
  /*public*/ void testUpperLower();

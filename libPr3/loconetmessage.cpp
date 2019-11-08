@@ -246,7 +246,7 @@ bool LocoNetMessage::checkParity()
  if (getElement(1)!=0x10)
      log->error("getPeerXfrData called with wrong secondary code "+QString("0x%1").arg(getElement(1),0,16));
  if (getNumDataElements()!=16)
-     log->error("getPeerXfrData called with wrong length "+QString("%1").arg(getNumDataElements()));
+     log->error("getPeerXfrData called with wrong length "+QString("0x%1").arg(getNumDataElements(),0,16));
 
  //int[] data = new int[]{0,0,0,0,  0,0,0,0};
  QVector<int> data(8,0);

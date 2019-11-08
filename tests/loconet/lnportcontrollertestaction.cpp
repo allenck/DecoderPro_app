@@ -16,12 +16,6 @@ void LnPortControllerTestAction::actionPerformed()
     {
        QStringList testList = QStringList()
        << "testisDirtyNotNPE";
-//       foreach(QString test, testList)
-//       {
-//        log->info(tr("begin '%1'").arg(test));
-//        QMetaObject::invokeMethod(lnpct, test.toLocal8Bit(), Qt::DirectConnection);
-//        log->info(tr("end '%1'").arg(test));
-//       }
      JUnitUtil::runTests(lnpct, testList);
     }
     catch (AssertionError er)

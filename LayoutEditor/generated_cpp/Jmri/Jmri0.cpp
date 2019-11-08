@@ -48,7 +48,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -6355,7 +6354,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getNamedBeanSet();
 }
-QString  PythonQtShell_AbstractReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1) const
+QString  PythonQtShell_AbstractReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE

@@ -166,6 +166,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyLightManager :  public LightManager
     /*protected*/ virtual int match(QString systemname);
     /*protected*/ void updateOrderList();
     /*protected*/ void updateNamedBeanSet();
+    /*protected*/ void recomputeNamedBeanSet();
 
 
  friend class ProxyReporterManager;

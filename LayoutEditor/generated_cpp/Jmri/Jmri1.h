@@ -81,7 +81,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -2939,7 +2938,7 @@ virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
-virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) const;
+virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
 virtual int  getObjectCount();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);

@@ -24,6 +24,7 @@
 #include <QApplication>
 #include "internalsensormanager.h"
 #include "joptionpane.h"
+#include "jmriconfigurationmanager.h"
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
@@ -656,23 +657,23 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     // ensure the auto-default UserPreferencesManager is not created by installing a test one
     InstanceManager::setDefault("UserPreferencesManager", new TestUserPreferencesManager());
 }
-#if 0
-/*public*/ static void resetTurnoutOperationManager() {
-    InstanceManager::reset(TurnoutOperationManager.class);
-    InstanceManager::getDefault(TurnoutOperationManager.class); // force creation
+
+/*public*/ /*static*/ void JUnitUtil::resetTurnoutOperationManager() {
+    InstanceManager::reset("TurnoutOperationManager");
+    InstanceManager::getDefault("TurnoutOperationManager"); // force creation
 }
 
-/*public*/ static void initConfigureManager() {
-    InstanceManager::setDefault(ConfigureManager.class, new JmriConfigurationManager());
+/*public*/ /*static*/ void JUnitUtil::initConfigureManager() {
+    InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
 }
 
-/*public*/ static void initDefaultUserMessagePreferences() {
+/*public*/ /*static*/ void JUnitUtil::initDefaultUserMessagePreferences() {
     // remove the existing user preferences manager (if present)
-    InstanceManager::reset(UserPreferencesManager.class);
+    InstanceManager::reset("UserPreferencesManager");
     // create a test user preferences manager
-    InstanceManager::setDefault(UserPreferencesManager.class, new TestUserPreferencesManager());
+    InstanceManager::setDefault("UserPreferencesManager", new TestUserPreferencesManager());
 }
-#endif
+
 /*public*/ /*static*/ void JUnitUtil::initInternalTurnoutManager() {
     // now done automatically by InstanceManager's autoinit
     InstanceManager::turnoutManagerInstance();

@@ -116,7 +116,7 @@ QString getMessage();
 class JAVAQTSHARED_EXPORT LocoNetMessageException : public Exception
 {
 public:
-    LocoNetMessageException();
+    LocoNetMessageException(QString s = "");
     ~LocoNetMessageException() throw() {}
 };
 

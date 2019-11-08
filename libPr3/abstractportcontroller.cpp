@@ -222,7 +222,7 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
 //@Override
 /*public*/ void AbstractPortController::setSystemPrefix(QString systemPrefix) {
     if (!this->getSystemConnectionMemo()->setSystemPrefix(systemPrefix)) {
-        throw new IllegalArgumentException();
+        throw IllegalArgumentException();
     }
 }
 
@@ -234,7 +234,7 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
 //@Override
 /*public*/ void AbstractPortController::setUserName(QString userName) {
     if (!this->getSystemConnectionMemo()->setUserName(userName)) {
-        throw new IllegalArgumentException();
+        throw IllegalArgumentException();
     }
 }
 
@@ -330,7 +330,7 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
 {
  if (connectionMemo == NULL)
  {
-  throw new NullPointerException();
+  throw NullPointerException();
  }
  this->connectionMemo = connectionMemo;
 }

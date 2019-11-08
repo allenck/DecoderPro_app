@@ -15,7 +15,7 @@ public:
     virtual char typeLetter();
     Reporter* provideReporter(QString sName);
     Reporter* getReporter(QString name);
-    Reporter* getBySystemName(QString name) const;
+    Reporter* getBySystemName(QString name);
     Reporter* getByUserName(QString key);
     /*public*/ QString getBeanTypeHandled(bool plural) override;
     Reporter* getByDisplayName(QString key);
@@ -25,14 +25,14 @@ public:
     * of turnouts in numerical order eg 10 to 30
     **/
     bool allowMultipleAdditions(QString systemName);
-    QString getNextValidAddress(QString curAddress, QString prefix) const;
+    QString getNextValidAddress(QString curAddress, QString prefix);
 
 signals:
     void newReporterCreated(AbstractReporterManager*, Reporter*);
     
 public slots:
 private:
-    Logger* log;
+    static Logger* log;
 protected:
     virtual Reporter* createNewReporter(QString /*systemName*/, QString /*userName*/) {return NULL;}
  friend class ProxyReporterManager;

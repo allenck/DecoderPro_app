@@ -278,24 +278,15 @@ QString AbstractNamedBean::getDisplayName()
 //@Override
 /*public*/ bool AbstractNamedBean::equals(QObject* obj)
 {
- // test the obj == this
- bool result = NamedBean::equals(obj);
+ if (obj == this) return true;  // for efficiency
+ if (obj == nullptr) return false; // by contract
 
- //if (!result && (obj != NULL) && obj instanceof AbstractNamedBean)
- if(!result && (obj != NULL && qobject_cast<AbstractNamedBean*>(obj) != NULL))
- {
-  AbstractNamedBean* b = (AbstractNamedBean*) obj;
-  if (this->getSystemName() == (b->getSystemName()))
-  {
-   QString bUserName = b->getUserName();
-   if ((mUserName != NULL) && (bUserName != NULL)
-           && mUserName == (bUserName))
-   {
-       result = true;
-   }
-  }
+ if (qobject_cast<AbstractNamedBean*>(obj))
+ {  // NamedBeans are not equal to things of other types
+     AbstractNamedBean* b = (AbstractNamedBean*) obj;
+     return this->getSystemName() == (b->getSystemName());
  }
- return result;
+ return false;
 }
 
 /**

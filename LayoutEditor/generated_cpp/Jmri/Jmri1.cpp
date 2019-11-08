@@ -68,7 +68,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -26875,7 +26874,7 @@ if (_wrapper) {
 }
   return LnReporterManager::getNamedBeanSet();
 }
-QString  PythonQtShell_LnReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1) const
+QString  PythonQtShell_LnReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE

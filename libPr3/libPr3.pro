@@ -939,7 +939,9 @@ SOURCES += \
     abstractproxysensormanager.cpp \
     abstractproxyidtagmanager.cpp \
 #    namedbeancombobox.cpp \
-    abstractproxyreportermanager.cpp
+    abstractproxyreportermanager.cpp \
+    trackreporter.cpp \
+    loconet/bluetooth/loconetbluetoothadapter.cpp
 
 
  !contains(FTDI, 1) {
@@ -1877,7 +1879,9 @@ HEADERS += \
     abstractproxyidtagmanager.h \
     abstractproxyreportermanager.h \
 #    namedbeancombobox.h \
-    abstractproxylightmanager.h
+    abstractproxylightmanager.h \
+    trackreporter.h \
+    loconet/bluetooth/loconetbluetoothadapter.h
 
 
  !contains(FTDI, 1) {

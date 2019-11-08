@@ -64,7 +64,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -778,7 +777,7 @@ virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
 virtual QSet<NamedBean* >  getNamedBeanSet();
-virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) const;
+virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
 virtual int  getObjectCount();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
@@ -806,7 +805,7 @@ class PythonQtPublicPromoter_AbstractReporterManager : public AbstractReporterMa
 { public:
 inline bool  py_q_allowMultipleAdditions(QString  systemName) { return AbstractReporterManager::allowMultipleAdditions(systemName); }
 inline QString  py_q_getBeanTypeHandled(bool  plural) { return AbstractReporterManager::getBeanTypeHandled(plural); }
-inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) const { return AbstractReporterManager::getNextValidAddress(curAddress, prefix); }
+inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) { return AbstractReporterManager::getNextValidAddress(curAddress, prefix); }
 inline int  py_q_getXMLOrder() { return AbstractReporterManager::getXMLOrder(); }
 inline char  py_q_typeLetter() { return AbstractReporterManager::typeLetter(); }
 };
@@ -819,7 +818,7 @@ AbstractReporterManager* new_AbstractReporterManager(SystemConnectionMemo*  memo
 void delete_AbstractReporterManager(AbstractReporterManager* obj) { delete obj; } 
    bool  py_q_allowMultipleAdditions(AbstractReporterManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_allowMultipleAdditions(systemName));}
    QString  py_q_getBeanTypeHandled(AbstractReporterManager* theWrappedObject, bool  plural){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
-   QString  py_q_getNextValidAddress(AbstractReporterManager* theWrappedObject, QString  curAddress, QString  prefix) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}
+   QString  py_q_getNextValidAddress(AbstractReporterManager* theWrappedObject, QString  curAddress, QString  prefix){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}
    int  py_q_getXMLOrder(AbstractReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getXMLOrder());}
    char  py_q_typeLetter(AbstractReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_typeLetter());}
 };
@@ -1026,6 +1025,7 @@ inline QString  promoted_normalizeSystemName(QString  sysName) { return this->no
 inline bool  py_q_allowMultipleAdditions(QString  systemName) { return AbstractSensorManager::allowMultipleAdditions(systemName); }
 inline Sensor*  py_q_createNewSensor(QString  arg__1, QString  arg__2) { return AbstractSensorManager::createNewSensor(arg__1, arg__2); }
 inline QString  py_q_createSystemName(QString  curAddress, QString  prefix) throw (JmriException) { return AbstractSensorManager::createSystemName(curAddress, prefix); }
+inline QString  py_q_getBeanTypeHandled(bool  plural) { return AbstractSensorManager::getBeanTypeHandled(plural); }
 inline Sensor*  py_q_getBySystemName(QString  key) { return AbstractSensorManager::getBySystemName(key); }
 inline Sensor*  py_q_getByUserName(QString  key) { return AbstractSensorManager::getByUserName(key); }
 inline long  py_q_getDefaultSensorDebounceGoingActive() { return AbstractSensorManager::getDefaultSensorDebounceGoingActive(); }
@@ -1053,6 +1053,7 @@ void delete_AbstractSensorManager(AbstractSensorManager* obj) { delete obj; }
    Sensor*  createNewSensor(AbstractSensorManager* theWrappedObject, QString  arg__1, QString  arg__2);
    Sensor*  py_q_createNewSensor(AbstractSensorManager* theWrappedObject, QString  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_createNewSensor(arg__1, arg__2));}
    QString  py_q_createSystemName(AbstractSensorManager* theWrappedObject, QString  curAddress, QString  prefix) throw (JmriException){  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_createSystemName(curAddress, prefix));}
+   QString  py_q_getBeanTypeHandled(AbstractSensorManager* theWrappedObject, bool  plural){  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
    Sensor*  py_q_getBySystemName(AbstractSensorManager* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getBySystemName(key));}
    Sensor*  py_q_getByUserName(AbstractSensorManager* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getByUserName(key));}
    long  py_q_getDefaultSensorDebounceGoingActive(AbstractSensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getDefaultSensorDebounceGoingActive());}
@@ -1554,6 +1555,7 @@ inline int  py_q_askControlType(QString  systemName) { return AbstractTurnoutMan
 inline int  py_q_askNumControlBits(QString  systemName) { return AbstractTurnoutManager::askNumControlBits(systemName); }
 inline Turnout*  py_q_createNewTurnout(QString  systemName, QString  userName) { return this->createNewTurnout(systemName, userName); }
 inline QString  py_q_createSystemName(QString  curAddress, QString  prefix) { return AbstractTurnoutManager::createSystemName(curAddress, prefix); }
+inline QString  py_q_getBeanTypeHandled(bool  plural) { return AbstractTurnoutManager::getBeanTypeHandled(plural); }
 inline Turnout*  py_q_getBySystemName(QString  name) { return AbstractTurnoutManager::getBySystemName(name); }
 inline Turnout*  py_q_getByUserName(QString  key) { return AbstractTurnoutManager::getByUserName(key); }
 inline QString  py_q_getClosedText() { return AbstractTurnoutManager::getClosedText(); }
@@ -1586,6 +1588,7 @@ void delete_AbstractTurnoutManager(AbstractTurnoutManager* obj) { delete obj; }
    Turnout*  createNewTurnout(AbstractTurnoutManager* theWrappedObject, QString  systemName, QString  userName);
    Turnout*  py_q_createNewTurnout(AbstractTurnoutManager* theWrappedObject, QString  systemName, QString  userName){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_createNewTurnout(systemName, userName));}
    QString  py_q_createSystemName(AbstractTurnoutManager* theWrappedObject, QString  curAddress, QString  prefix){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_createSystemName(curAddress, prefix));}
+   QString  py_q_getBeanTypeHandled(AbstractTurnoutManager* theWrappedObject, bool  plural){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
    Turnout*  py_q_getBySystemName(AbstractTurnoutManager* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getBySystemName(name));}
    Turnout*  py_q_getByUserName(AbstractTurnoutManager* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getByUserName(key));}
    QString  py_q_getClosedText(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getClosedText());}

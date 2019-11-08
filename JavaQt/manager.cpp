@@ -105,7 +105,7 @@
     // the one special case that is not caught by validation here
     if (name.trimmed().isEmpty()) { // In Java 9+ use name.isBlank() instead
         //throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameInvalidPrefix", prefix);
-     throw NamedBean::BadSystemNameException(locale, QString("System name must start with\"%21\".").arg(prefix), name, prefix);
+     throw NamedBean::BadSystemNameException(locale, QString("System name must start with \"%21\".").arg(prefix), name, prefix);
     }
     return validateSystemNameFormat(name.startsWith(prefix) ? name : prefix + name, locale);
 }

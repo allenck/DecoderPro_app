@@ -38,7 +38,7 @@ class LIBPR3SHARED_EXPORT AbstractPortController : public NetworkPortAdapter
     Q_OBJECT
 public:
     ~AbstractPortController();
- /*public*/ void dispose();
+    /*public*/ void dispose();
     // returns the InputStream from the port
     /*public abstract*/ /*DataInputStream*/ virtual QDataStream* getInputStream() {return NULL;}
     // returns the outputStream to the port
@@ -86,14 +86,14 @@ public:
     /*public*/  QString getManufacturer();
     /*public*/  void setManufacturer(QString manufacturer);
     /*public*/  bool getDisabled();
- /*public*/ void setDisabled(bool disabled) ;
- /*public*/ QString getSystemPrefix();
- /*public*/ void setSystemPrefix(QString systemPrefix);
- /*public*/ QString getUserName() ;
- /*public*/ void setUserName(QString userName);
+    /*public*/ void setDisabled(bool disabled) ;
+    /*public*/ QString getSystemPrefix();
+    /*public*/ void setSystemPrefix(QString systemPrefix);
+    /*public*/ QString getUserName() ;
+    /*public*/ void setUserName(QString userName);
     /*abstract public*/ virtual void recover() {}
- /*public*/ bool isDirty();
- /*public*/ bool isRestartRequired();
+    /*public*/ bool isDirty() override;
+    /*public*/ bool isRestartRequired();
     /*public*/ void setSystemConnectionMemo(SystemConnectionMemo* connectionMemo);
     /*public*/ SystemConnectionMemo* getSystemConnectionMemo();
 
@@ -121,9 +121,9 @@ protected:
  /*protected*/ void setOpened();
  /*protected*/ void setClosed();
  /*protected*/ bool mDisabled;
- /*protected*/ bool allowConnectionRecovery;
- /*protected*/ int reconnectinterval;
- /*protected*/ int retryAttempts;
+ /*protected*/ bool allowConnectionRecovery = false;
+ /*protected*/ int reconnectinterval = 1000;
+ /*protected*/ int retryAttempts = 10;
  /*protected*/ static void safeSleep(long milliseconds, QString s);
  /*protected*/ QString manufacturerName;// = null;
  /*protected*/ void purgeStream(/*@Nonnull*/ QDataStream* serialStream);

@@ -219,7 +219,8 @@ SOURCES += javaqt.cpp \
     outputstreamwriter.cpp \
     nmrapacket.cpp \
     vetoablechangelistenerproxy.cpp \
-    predicate.cpp
+    predicate.cpp \
+    collection.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -481,7 +482,9 @@ HEADERS += javaqt.h\
     proxymanager.h \
     predicate.h \
     comparatort.h \
-    alphanumcomparator.h
+    alphanumcomparator.h \
+    collection.h \
+    discoverylistener.h
 
 unix {
     target.path = /usr/lib

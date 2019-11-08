@@ -143,7 +143,9 @@ SOURCES += \
         misc/lightcontroltest.cpp \
         misc/lightcontroltestaction.cpp \
     NamedBeans/namedbeanusernamecomparatortest.cpp \
-    NamedBeans/namedbeanusernamecomparatortestaction.cpp
+    NamedBeans/namedbeanusernamecomparatortestaction.cpp \
+    loconet/loconetmessageexceptiontest.cpp \
+    loconet/loconetmessageexceptiontestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -264,7 +266,9 @@ HEADERS += \
         misc/lightcontroltest.h \
         misc/lightcontroltestaction.h \
     NamedBeans/namedbeanusernamecomparatortest.h \
-    NamedBeans/namedbeanusernamecomparatortestaction.h
+    NamedBeans/namedbeanusernamecomparatortestaction.h \
+    loconet/loconetmessageexceptiontest.h \
+    loconet/loconetmessageexceptiontestaction.h
 
 unix {
     target.path = /usr/lib

@@ -26,6 +26,9 @@ public:
     /*public*/ static void runTests(QObject *test, QStringList testList);
     static QString getTestClassName();
     /*public*/ static void resetInstanceManager();
+    /*public*/ static void resetTurnoutOperationManager();
+    /*public*/ static void initConfigureManager();
+    /*public*/ static void initDefaultUserMessagePreferences();
     /*public*/ static void initInternalTurnoutManager();
     /*public*/ static void initInternalLightManager();
     /*public*/ static void initInternalSensorManager();
