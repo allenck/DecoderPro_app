@@ -704,49 +704,51 @@ LocoNetThrottleTest::LocoNetThrottleTest()
  */
 //@Test
 //@Overide
-/*public*/ void LocoNetThrottleTest::testSendFunctionGroup3() {
+/*public*/ void LocoNetThrottleTest::testSendFunctionGroup3()
+{
 
-    for (int i = 9; i <13; ++i ) {
-        instance->setF9(i==9);
-        instance->setF10(i==10);
-        instance->setF11(i==11);
-        instance->setF12(i==12);
-        lnis->outbound.clear();
-        lnis->resetStatistics();
-        ((LocoNetThrottle*)instance)->sendFunctionGroup3();
+ for (int i = 9; i <13; ++i )
+ {
+  instance->setF9(i==9);
+  instance->setF10(i==10);
+  instance->setF11(i==11);
+  instance->setF12(i==12);
+  lnis->outbound.clear();
+  lnis->resetStatistics();
+  ((LocoNetThrottle*)instance)->sendFunctionGroup3();
 
-        Assert::assertEquals("check send of function group 3 for F"+QString::number(i)+" (0)", 1, lnis->outbound.size(), __FILE__, __LINE__);
-        Assert::assertEquals("check opcode is OPC_IMM_PACKET for F"+QString::number(i)+"",LnConstants::OPC_IMM_PACKET, lnis->outbound.at(0)->getOpCode(), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 1 for F"+QString::number(i)+"{0}", 0x0b, lnis->outbound.at(0)->getElement(1), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 2 for F"+QString::number(i)+"{0}", 0x7f, lnis->outbound.at(0)->getElement(2), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 3 for F"+QString::number(i)+"{0}", 0x23, lnis->outbound.at(0)->getElement(3), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 4 for F"+QString::number(i)+"{0}", 0x02, lnis->outbound.at(0)->getElement(4), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 5 for F"+QString::number(i)+"{0}", 0x00, lnis->outbound.at(0)->getElement(5), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 6 for F"+QString::number(i)+"{0}", 0x20+(1<<(i-9)), lnis->outbound.at(0)->getElement(6), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 7 for F"+QString::number(i)+"{0}", 0x00, lnis->outbound.at(0)->getElement(7), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 8 for F"+QString::number(i)+"{0}", 0x00, lnis->outbound.at(0)->getElement(8), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 9 for F"+QString::number(i)+"{0}", 0x00, lnis->outbound.at(0)->getElement(9), __FILE__, __LINE__);
+  Assert::assertEquals("check send of function group 3 for F"+QString::number(i)+" (0)", 1, lnis->outbound.size(), __FILE__, __LINE__);
+  Assert::assertEquals("check opcode is OPC_IMM_PACKET for F"+QString::number(i)+"",LnConstants::OPC_IMM_PACKET, lnis->outbound.at(0)->getOpCode(), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 1 for F"+QString::number(i)+"{0}", 0x0b, lnis->outbound.at(0)->getElement(1), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 2 for F"+QString::number(i)+"{0}", 0x7f, lnis->outbound.at(0)->getElement(2), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 3 for F"+QString::number(i)+"{0}", 0x23, lnis->outbound.at(0)->getElement(3), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 4 for F"+QString::number(i)+"{0}", 0x02, lnis->outbound.at(0)->getElement(4), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 5 for F"+QString::number(i)+"{0}", 0x00, lnis->outbound.at(0)->getElement(5), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 6 for F"+QString::number(i)+"{0}", 0x20+(1<<(i-9)), lnis->outbound.at(0)->getElement(6), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 7 for F"+QString::number(i)+"{0}", 0x00, lnis->outbound.at(0)->getElement(7), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 8 for F"+QString::number(i)+"{0}", 0x00, lnis->outbound.at(0)->getElement(8), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 9 for F"+QString::number(i)+"{0}", 0x00, lnis->outbound.at(0)->getElement(9), __FILE__, __LINE__);
 
-        instance->setF9(!(i==9));
-        instance->setF10(!(i==10));
-        instance->setF11(!(i==11));
-        instance->setF12(!(i==12));
-        lnis->outbound.clear();
-        lnis->resetStatistics();
-        ((LocoNetThrottle*)instance)->sendFunctionGroup3();
+  instance->setF9(!(i==9));
+  instance->setF10(!(i==10));
+  instance->setF11(!(i==11));
+  instance->setF12(!(i==12));
+  lnis->outbound.clear();
+  lnis->resetStatistics();
+  ((LocoNetThrottle*)instance)->sendFunctionGroup3();
 
-        Assert::assertEquals("check send of function group 3 for !F"+QString::number(i)+"(1)", 1, lnis->outbound.size(), __FILE__, __LINE__);
-        Assert::assertEquals("check opcode is OPC_IMM_PACKET for !F"+QString::number(i)+"{1}",LnConstants::OPC_IMM_PACKET, lnis->outbound.at(0)->getOpCode(), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 1 for !F"+QString::number(i)+"{1}", 0x0b, lnis->outbound.at(0)->getElement(1), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 2 for !F"+QString::number(i)+"{1}", 0x7f, lnis->outbound.at(0)->getElement(2), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 3 for !F"+QString::number(i)+"{1}", 0x23, lnis->outbound.at(0)->getElement(3), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 4 for !F"+QString::number(i)+"{1}", 0x02, lnis->outbound.at(0)->getElement(4), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 5 for !F"+QString::number(i)+"{1}", 0x00, lnis->outbound.at(0)->getElement(5), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 6 for !F"+QString::number(i)+"{1}", 0x2F-(1<<(i-9)), lnis->outbound.at(0)->getElement(6), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 7 for !F"+QString::number(i)+"{1}", 0x00, lnis->outbound.at(0)->getElement(7), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 8 for !F"+QString::number(i)+"{1}", 0x00, lnis->outbound.at(0)->getElement(8), __FILE__, __LINE__);
-        Assert::assertEquals("check byte 9 for 1F"+QString::number(i)+"{1}", 0x00, lnis->outbound.at(0)->getElement(9), __FILE__, __LINE__);
-    }
+  Assert::assertEquals("check send of function group 3 for !F"+QString::number(i)+"(1)", 1, lnis->outbound.size(), __FILE__, __LINE__);
+  Assert::assertEquals("check opcode is OPC_IMM_PACKET for !F"+QString::number(i)+"{1}",LnConstants::OPC_IMM_PACKET, lnis->outbound.at(0)->getOpCode(), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 1 for !F"+QString::number(i)+"{1}", 0x0b, lnis->outbound.at(0)->getElement(1), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 2 for !F"+QString::number(i)+"{1}", 0x7f, lnis->outbound.at(0)->getElement(2), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 3 for !F"+QString::number(i)+"{1}", 0x23, lnis->outbound.at(0)->getElement(3), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 4 for !F"+QString::number(i)+"{1}", 0x02, lnis->outbound.at(0)->getElement(4), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 5 for !F"+QString::number(i)+"{1}", 0x00, lnis->outbound.at(0)->getElement(5), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 6 for !F"+QString::number(i)+"{1}", 0x2F-(1<<(i-9)), lnis->outbound.at(0)->getElement(6), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 7 for !F"+QString::number(i)+"{1}", 0x00, lnis->outbound.at(0)->getElement(7), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 8 for !F"+QString::number(i)+"{1}", 0x00, lnis->outbound.at(0)->getElement(8), __FILE__, __LINE__);
+  Assert::assertEquals("check byte 9 for 1F"+QString::number(i)+"{1}", 0x00, lnis->outbound.at(0)->getElement(9), __FILE__, __LINE__);
+ }
 }
 
 /**

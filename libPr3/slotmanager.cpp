@@ -96,11 +96,11 @@ void SlotManager::sendPacket(QByteArray packet, int sendCount)
  }
  if (packet.length() <= 1)
  {
-  log->error("Invalid DCC packet length: " + QString::number(packet.length())); // NOI18N
+  log->error(tr("Invalid DCC packet length: %1").arg(packet.length())); // NOI18N
  }
  if (packet.length() > 6)
  {
-  log->error("DCC packet length is too great: %1 bytes were passed; ignoring the request. " + QString::number(packet.length())); // NOI18N
+  log->error(tr("DCC packet length is too great: %1 bytes were passed; ignoring the request. ").arg(packet.length())); // NOI18N
     }
 
     LocoNetMessage* m = new LocoNetMessage(11);
@@ -113,11 +113,16 @@ void SlotManager::sendPacket(QByteArray packet, int sendCount)
     m->setElement(3, ((sendCount - 1) & 0x7) + 16 * (length & 0x7));
 
     int highBits = 0;
-    if (length>=1 && ((packet[0]&0x80) != 0)) highBits |= 0x01;
-    if (length>=2 && ((packet[1]&0x80) != 0)) highBits |= 0x02;
-    if (length>=3 && ((packet[2]&0x80) != 0)) highBits |= 0x04;
-    if (length>=4 && ((packet[3]&0x80) != 0)) highBits |= 0x08;
-    if (length>=5 && ((packet[4]&0x80) != 0)) highBits |= 0x10;
+    if (length>=1 && ((packet[0] & 0x80) != 0))
+     highBits |= 0x01;
+    if (length>=2 && ((packet[1] & 0x80) != 0))
+     highBits |= 0x02;
+    if (length>=3 && ((packet[2] & 0x80) != 0))
+     highBits |= 0x04;
+    if (length>=4 && ((packet[3] & 0x80) != 0))
+     highBits |= 0x08;
+    if (length>=5 && ((packet[4] & 0x80) != 0))
+     highBits |= 0x10;
     m->setElement(4,highBits);
 
     m->setElement(5,0);

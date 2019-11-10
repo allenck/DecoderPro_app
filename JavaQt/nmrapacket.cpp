@@ -336,7 +336,7 @@
 
      //QByteArray retVal = QByteArray(5];
      QByteArray retVal(5,0);
-     retVal.replace (0, (0x80 | lowAddr));
+     retVal[0] = (0x80 | lowAddr);
      retVal[1] = ((0x0C | (highAddr << 4 ) | highCVnum));
      retVal[2] = ((lowCVnum));
      retVal[3] = ((0xFF & data));
@@ -859,70 +859,6 @@ return accSignalDecoderPktCommon(lowAddr, boardAddr, aspect);
  }
  return retVal;
 }
-#if 0
-/**
- * From NMRA RP 9.2.1
-     * [A Crosland 05/02/12] There is an issue with this method in that it cannot
-     * create a 28 step speed packet for maximum speed. Input speed value in the
-     * range 0 - 28 is converted to speed steps, 0, estop, 1, 2, ..., 27.
-     *
-     * This method should probably be deprecated. It is used only by
-     * NceThrottle.java and EasyDccThrottle.java which themselves have issues
-     * in the way floating point speed values are converted to integer
-     * speed steps.
-     *
- * A speed and direction instruction is used send information to motors
- * connected to Multi Function Digital Decoders. Instruction "010" indicates
- * a Speed and Direction Instruction for reverse operation and instruction
- * "011" indicates a Speed and Direction Instruction for forward operation.
- * In these instructions the data is used to control speed with bits 0-3
- * being defined exactly as in S-9.2 Section B. If Bit 1 of CV#29 has a
- * value of one (1), then bit 4 is used as an intermediate speed step, as
- * defined in S-9.2, Section B. If Bit 1 of CV#29 has a value of zero (0),
- * then bit 4 shall 230 be used to control FL4. In this mode, Speed U0000 is
- * stop, speed U0001 is emergency stop, speed U0010 is the first speed step
- * and speed U1111 is full speed. This provides 14 discrete speed steps in
- * each direction.
- */
-/*public*/ static QByteArray speedStep28Packet(int address, bool longAddr, int speed, bool fwd ) {
-    if (log->isDebugEnabled()) log->debug("28 step packet "+address+" "+speed);
-
-    if (!addressCheck(address, longAddr)) {
-        return NULL;  // failed!
-    }
-
-    if (speed<0 || speed>28) {
-        Logger::error("invalid speed "+speed);
-        return NULL;
-    }
-    int speedC = (speed&0x1F) >> 1;
-    if (speed > 0)
-        speedC = speedC +1;
-    int c = (speed&0x01) << 4;	// intermediate speed step
-
-    speedC = speedC + c;
-
-    // end sanity checks, format output
-    QByteArray retVal;
-    int arg1 = (fwd ? 0x60 : 0x40)| speedC;
-
-    if (longAddr) {
-        // long address form
-        retVal = QByteArray(4];
-        retVal[0] = ((192+((address/256)&0x3F));
-        retVal[1] = ((address&0xFF);
-        retVal[2] = (arg1;
-        retVal[3] = ((retVal.replace(0]^retVal.replace(1]^retVal.replace(2]^retVal.replace(3]);
-    } else {
-        // short address form
-        retVal = QByteArray(3];
-        retVal[0] = ((address&0xFF);
-        retVal[1] = (arg1;
-        retVal[2] = ((retVal.replace(0]^retVal.replace(1]^retVal.replace(2]);
-    }
-    return retVal;
-}
-#endif
 /**
  * From NMRA RP 9.2.1 [A Crosland 05/02/12] There is an issue with this
  * method in that it cannot create a 28 step speed packet for maximum speed.
@@ -953,7 +889,7 @@ return accSignalDecoderPktCommon(lowAddr, boardAddr, aspect);
  * @return the instruction or null if address or speed is invalid
  */
 /*public*/ /*static*/ QByteArray NmraPacket::speedStep28Packet(int address, bool longAddr, int speed, bool fwd) {
-    log->debug(tr("28 step packet %1 {%2").arg(address).arg(speed));
+    log->debug(tr("28 step packet %1 %2").arg(address).arg(speed));
 
     if (!addressCheck(address, longAddr)) {
         return QByteArray();  // failed!
@@ -1130,12 +1066,11 @@ return accSignalDecoderPktCommon(lowAddr, boardAddr, aspect);
 /*public*/ /*static*/ QByteArray NmraPacket::function9Through12Packet(int address, bool longAddr,
                                          bool f9, bool f10, bool f11, bool f12 )
 {
- Logger* log = new Logger("NmraPacket");
- if (log->isDebugEnabled()) log->debug("f9 through f12 packet " + QString::number(address));
+ log->debug(tr("f9 through f12 packet %1").arg(address));
 
  if (!addressCheck(address, longAddr))
  {
- return NULL;  // failed!
+  return NULL;  // failed!
  }
 
  // end sanity check, format output
@@ -1148,22 +1083,21 @@ return accSignalDecoderPktCommon(lowAddr, boardAddr, aspect);
 
  if (longAddr)
  {
- // long address form
- //retVal = new QByteArray(4,0);
- QByteArray retVal(4,0);
- retVal[0] = ((192+((address/256)&0x3F)));
- retVal[1] = ((address & 0xFF));
- retVal[2] = (arg1);
- retVal[3] = ((retVal[0] ^ retVal[1] ^ retVal[2]));
+  // long address form
+  retVal = QByteArray(4,0);
+  retVal[0] = ((192 + ((address / 256) & 0x3F)));
+  retVal[1] = ((address & 0xFF));
+  retVal[2] = (arg1);
+  retVal[3] = (char)((retVal[0] ^ retVal[1]) ^ retVal[2]);
  }
  else
  {
- // short address form
- //retVal = new QByteArray(3,0);
- QByteArray retVal(3,0);
- retVal[0] = ((address & 0xFF));
- retVal[1] = (arg1);
- retVal[2] = ((retVal[0] ^ retVal[1]));
+  // short address form
+  //retVal = new QByteArray(3,0);
+  retVal = QByteArray(3,0);
+  retVal[0] = ((address & 0xFF));
+  retVal[1] = (arg1);
+  retVal[2] = ((retVal[0] ^ retVal[1]));
  }
  return retVal;
 }
