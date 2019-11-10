@@ -10,12 +10,14 @@ class AbstractThrottleTest : public QObject
     Q_OBJECT
 public:
     explicit AbstractThrottleTest(QObject *parent = nullptr);
-    /*public*/ void setUp() throw (Exception);
-    /*public*/ void tearDown() throw (Exception);
+    Q_INVOKABLE virtual /*public*/ void setUp() throw (Exception);
+    Q_INVOKABLE virtual /*public*/ void tearDown() throw (Exception);
+
+public slots:
     /*public*/ void testGetSpeedSetting();
     /*public*/ void testSetSpeedSettingAgain();
     /*public*/ void testSetSpeedSetting();
-    /*public*/ void testGetIsForward();
+    virtual /*public*/ void testGetIsForward();
     /*public*/ void testSetIsForward();
     /*public*/ void testGetF0();
     /*public*/ void testGetF1();
@@ -48,7 +50,7 @@ public:
     /*public*/ void testGetF28();
     /*public*/ void testGetF0Momentary();
     /*public*/ void testGetF1Momentary();
-    /*public*/ void testGetF2Momentary();
+    virtual /*public*/ void testGetF2Momentary();
     /*public*/ void testGetF3Momentary();
     /*public*/ void testGetF4Momentary();
     /*public*/ void testGetF5Momentary();
@@ -83,41 +85,41 @@ public:
     /*public*/ void testDispatch_ThrottleListener();
     /*public*/ void testRelease_ThrottleListener();
     /*public*/ void testThrottleDispose();
-    /*public*/ void testGetSpeedIncrement();
-    /*public*/ void testSetF0();
-    /*public*/ void testSetF1();
-    /*public*/ void testSetF2();
-    /*public*/ void testSetF3();
-    /*public*/ void testSetF4();
-    /*public*/ void testSetF5();
-    /*public*/ void testSetF6();
-    /*public*/ void testSetF7();
-    /*public*/ void testSetF8();
-    /*public*/ void testSetF9();
-    /*public*/ void testSetF10();
-    /*public*/ void testSetF11();
-    /*public*/ void testSetF12();
-    /*public*/ void testSetF13();
-    /*public*/ void testSetF14();
-    /*public*/ void testSetF15();
-    /*public*/ void testSetF16();
-    /*public*/ void testSetF17();
-    /*public*/ void testSetF18();
-    /*public*/ void testSetF19();
-    /*public*/ void testSetF20();
-    /*public*/ void testSetF21();
-    /*public*/ void testSetF22();
-    /*public*/ void testSetF23();
-    /*public*/ void testSetF24();
-    /*public*/ void testSetF25();
-    /*public*/ void testSetF26();
-    /*public*/ void testSetF27();
-    /*public*/ void testSetF28();
-    /*public*/ void testSendFunctionGroup1();
-    /*public*/ void testSendFunctionGroup2();
-    /*public*/ void testSendFunctionGroup3();
-    /*public*/ void testSendFunctionGroup4();
-    /*public*/ void testSendFunctionGroup5();
+    virtual /*public*/ void testGetSpeedIncrement();
+    virtual /*public*/ void testSetF0();
+    virtual /*public*/ void testSetF1();
+    virtual /*public*/ void testSetF2();
+    virtual /*public*/ void testSetF3();
+    virtual /*public*/ void testSetF4();
+    virtual /*public*/ void testSetF5();
+    virtual /*public*/ void testSetF6();
+    virtual /*public*/ void testSetF7();
+    virtual /*public*/ void testSetF8();
+    virtual /*public*/ void testSetF9();
+    virtual /*public*/ void testSetF10();
+    virtual /*public*/ void testSetF11();
+    virtual /*public*/ void testSetF12();
+    virtual /*public*/ void testSetF13();
+    virtual /*public*/ void testSetF14();
+    virtual /*public*/ void testSetF15();
+    virtual /*public*/ void testSetF16();
+    virtual /*public*/ void testSetF17();
+    virtual /*public*/ void testSetF18();
+    virtual /*public*/ void testSetF19();
+    virtual /*public*/ void testSetF20();
+    virtual /*public*/ void testSetF21();
+    virtual /*public*/ void testSetF22();
+    virtual /*public*/ void testSetF23();
+    virtual /*public*/ void testSetF24();
+    virtual /*public*/ void testSetF25();
+    virtual /*public*/ void testSetF26();
+    virtual /*public*/ void testSetF27();
+    virtual /*public*/ void testSetF28();
+    virtual /*public*/ void testSendFunctionGroup1();
+    virtual /*public*/ void testSendFunctionGroup2();
+    virtual /*public*/ void testSendFunctionGroup3();
+    virtual /*public*/ void testSendFunctionGroup4();
+    virtual /*public*/ void testSendFunctionGroup5();
     /*public*/ void testSetF0Momentary();
     /*public*/ void testSetF1Momentary();
     /*public*/ void testSetF2Momentary();
@@ -152,18 +154,16 @@ public:
     /*public*/ void testSendMomentaryFunctionGroup3();
     /*public*/ void testSendMomentaryFunctionGroup4();
     /*public*/ void testSendMomentaryFunctionGroup5();
-    /*public*/ void testSetSpeedStepMode();
-    /*public*/ void testGetSpeedStepMode();
+    virtual /*public*/ void testSetSpeedStepMode();
+    virtual /*public*/ void testGetSpeedStepMode();
     /*public*/ void testRecord();
     /*public*/ void testStartClock();
     /*public*/ void testStopClock();
     /*public*/ void testFinishRecord();
     /*public*/ void testSetRosterEntry();
     /*public*/ void testGetRosterEntry();
-    /*public*/ void testGetSpeed_float();
+    virtual /*public*/ void testGetSpeed_float();
     /*public*/ void testGetSpeed_float_int();
-
-
 
 signals:
 

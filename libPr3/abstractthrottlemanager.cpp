@@ -738,7 +738,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    }
    else if (item==("SpeedStepMode"))
    {
-    int i =  ln->getSpeedStepMode();
+    int i =  ln->getSpeedStepMode()->mode;
     return i;
    }
   }

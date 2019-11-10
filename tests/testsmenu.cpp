@@ -42,6 +42,9 @@
 #include "misc/lightcontroltestaction.h"
 #include "NamedBeans/namedbeanusernamecomparatortestaction.h"
 #include "loconet/loconetmessageexceptiontestaction.h"
+#include "loconet/loconetthrottletestaction.h"
+#include "misc/nmrapackettestaction.h"
+
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -117,4 +120,8 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* namedBeansMenu = new QMenu(tr("NamedBeans ..."));
     addMenu(namedBeansMenu);
     namedBeansMenu->addAction(new NamedBeanUserNameComparatorTestAction(this));
+    QMenu* loconetThrottleMenu = new QMenu(tr("Throttle test"));
+    loconetTestMenu->addMenu(loconetThrottleMenu);
+    loconetThrottleMenu->addAction(new LocoNetThrottleTestAction(this));
+    loconetThrottleMenu->addAction(new NmraPacketTestAction(this));
 }

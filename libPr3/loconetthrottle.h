@@ -5,6 +5,7 @@
 class LocoNetSlot;
 class LocoNetInterface;
 class LocoNetSystemConnectionMemo;
+class LnThrottleManager;
 class LIBPR3SHARED_EXPORT LocoNetThrottle : public AbstractThrottle
 {
     Q_OBJECT
@@ -12,11 +13,13 @@ public:
     //explicit LocoNetThrottle(QObject *parent = 0);
     /*public*/ LocoNetThrottle(LocoNetSystemConnectionMemo* memo, LocoNetSlot* slot, QObject *parent = 0);
     /*public*/ void setSpeedSetting(float speed);
+    /*public*/ void setSpeedSettingAgain(float speed);
+    /*public*/ void setSpeedSetting(float speed, bool allowDuplicates, bool allowDuplicatesOnStop);
     /*public*/ void setIsForward(bool forward);
     /*public*/ LocoNetSlot* getLocoNetSlot();
     /*public*/ QString toString();
     /*public*/ void notifyChangedSlot(LocoNetSlot* pSlot);
-    /*public*/ void setSpeedStepMode(SpeedStepMode::SSMODDES Mode);
+    /*public*/ void setSpeedStepMode(SpeedStepMode *Mode);
     /*public*/ LocoAddress* getLocoAddress();
     /*public*/ void setF0(bool f0);
     /*public*/ void setF1(bool f1);
@@ -36,23 +39,16 @@ public:
     /*public*/ void setF15(bool f15);
     /*public*/ void setF16(bool f16) ;
     /*public*/ void setF17(bool f17);
+ /*public*/ void dispatchThrottle(DccThrottle* t, ThrottleListener* l);
 
 signals:
 
 public slots:
+ /*public*/ void notifyRefused(int addr, QString s);
+
 private:
- Logger* log;
- /*private*/ LocoNetSlot* slot;
- /*private*/ LocoNetInterface* network;
- /*private*/ int address;
+ static Logger* log;
 
- // members to record the last known spd/dirf/snd bytes AS READ FROM THE LAYOUT!!
- /*private*/ int layout_spd;
- /*private*/ int layout_dirf;
- /*private*/ int layout_snd;
-
- // slot status to be warned if slot released or dispatched
- /*private*/ int slotStatus;
  QTimer* mRefreshTimer;
  QMutex mutex;
 private slots:
@@ -60,6 +56,23 @@ private slots:
 
 
 protected:
+ /*protected*/ LocoNetSlot* slot;
+ /*protected*/ LocoNetInterface* network;
+ /*protected*/ LnThrottleManager* throttleManager;
+ /*protected*/ int address;
+
+ // members to record the last known spd/dirf/snd bytes AS READ FROM THE LAYOUT!!
+ /*protected*/ int layout_spd;
+ /*protected*/ int layout_dirf;
+ /*protected*/ int layout_snd;
+ /*protected*/ int layout_stat1 = 0;
+
+ // slot status to be warned if slot released or dispatched
+ /*protected*/ int slotStatus;
+ /*protected*/ bool isDisposing = false;
+ // set isInitialized to false to enable setting the throttle ID.
+ /*protected*/ bool isInitialized = false;
+
  /*protected*/ float floatSpeed(int lSpeed);
  /*protected*/ int intSpeed(float fSpeed);
  /*protected*/ void sendFunctionGroup1();
@@ -72,6 +85,7 @@ protected:
 
  friend class ThrottleWindow;
  friend class LnThrottleManager;
+ friend class LocoNetThrottleTest;
 };
 
 #endif // LOCONETTHROTTLE_H

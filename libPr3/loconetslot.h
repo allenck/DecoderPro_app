@@ -15,64 +15,50 @@ public:
     explicit LocoNetSlot(int slot, QObject *parent = 0);
     // accessors to specific information
     int getSlot() { return slot;}  // cannot modify the slot number once created
+    /*public*/ int decoderType();
+    /*public*/ int slotStatus();
+    /*public*/ int ss2();
+    virtual /*public*/ int consistStatus();
+    /*public*/ bool isForward();
+    /*public*/ bool isF0();
+    /*public*/ bool isF1();
+    /*public*/ bool isF2();
+    /*public*/ bool isF3();
+    /*public*/ bool isF4();
+    /*public*/ bool isF5();
+    /*public*/ bool isF6();
+    /*public*/ bool isF7();
+    /*public*/ bool isF8();
+    /*public*/ bool isF9();
+    /*public*/ bool isF10();
+    /*public*/ bool isF11();
+    /*public*/ bool isF12();
+    /*public*/ bool isF13();
+    /*public*/ bool isF14();
+    /*public*/ bool isF15();
+    /*public*/ bool isF16();
+    /*public*/ bool isF17();
+    /*public*/ bool isF18();
+    /*public*/ bool isF19();
+    /*public*/ bool isF20();
+    /*public*/ bool isF21();
+    /*public*/ bool isF22();
+    /*public*/ bool isF23();
+    /*public*/ bool isF24();
+    /*public*/ bool isF25();
+    /*public*/ bool isF26();
+    /*public*/ bool isF27();
+    /*public*/ bool isF28();
+    /*public*/ int locoAddr();
+    virtual /*public*/ int speed();
+    /*public*/ int dirf();
+    /*public*/ int snd();
+    /*public*/ int id();
+    /*public*/ int pcmd();
+    /*public*/ int cvval();
 
-    // status accessors
-    // decoder mode
-    // possible values are  DEC_MODE_128A, DEC_MODE_28A, DEC_MODE_128,
-    //						DEC_MODE_14, DEC_MODE_28TRI, DEC_MODE_28
-    int decoderType() 	{ return stat&LnConstants::DEC_MODE_MASK;}
 
-    // slot status
-    // possible values are LOCO_IN_USE, LOCO_IDLE, LOCO_COMMON, LOCO_FREE
-    int slotStatus() 	{ return stat&LnConstants::LOCOSTAT_MASK; }
-    int ss2()            { return _ss2; }
 
-    // consist status
-    // possible values are CONSIST_MID, CONSIST_TOP, CONSIST_SUB, CONSIST_NO
-    int consistStatus() 	{ return stat&LnConstants::CONSIST_MASK; }
-
-    // direction and functions
-    bool isForward()	{ return 0==(_dirf&LnConstants::DIRF_DIR); }
-    bool isF0()	{ return 0!=(_dirf&LnConstants::DIRF_F0); }
-    bool isF1()	{ return 0!=(_dirf&LnConstants::DIRF_F1); }
-    bool isF2()	{ return 0!=(_dirf&LnConstants::DIRF_F2); }
-    bool isF3()	{ return 0!=(_dirf&LnConstants::DIRF_F3); }
-    bool isF4()	{ return 0!=(_dirf&LnConstants::DIRF_F4); }
-    bool isF5()	{ return 0!=(_snd&LnConstants::SND_F5); }
-    bool isF6()	{ return 0!=(_snd&LnConstants::SND_F6); }
-    bool isF7()	{ return 0!=(_snd&LnConstants::SND_F7); }
-    bool isF8()	{ return 0!=(_snd&LnConstants::SND_F8); }
-    bool isF9()	 { return localF9; }
-    bool isF10()	{ return localF10; }
-    bool isF11()	{ return localF11; }
-    bool isF12()	{ return localF12; }
-    bool isF13()	{ return localF13; }
-    bool isF14()	{ return localF14; }
-    bool isF15()	{ return localF15; }
-    bool isF16()	{ return localF16; }
-    bool isF17()	{ return localF17; }
-    bool isF18()	{ return localF18; }
-    bool isF19()	{ return localF19; }
-    bool isF20()	{ return localF20; }
-    bool isF21()	{ return localF21; }
-    bool isF22()	{ return localF22; }
-    bool isF23()	{ return localF23; }
-    bool isF24()	{ return localF24; }
-    bool isF25()	{ return localF25; }
-    bool isF26()	{ return localF26; }
-    bool isF27()	{ return localF27; }
-    bool isF28()	{ return localF28; }
-
-    // loco address, speed
-    int locoAddr()   	{ return addr; }
-    int speed()      	{ return spd; }
-    int dirf() 	    	{ return _dirf; }
-    int snd()  	    	{ return _snd; }
-    int id()		{ return _id; }
-
-    // programmer track special case accessors
-    int pcmd()          	{ return _pcmd; }
-    int cvval()          { return _snd+(_ss2&2)*64; }
     // global track status should be reference through SlotManager
 
     // create a specific slot
@@ -98,6 +84,7 @@ public:
      */
     LocoNetMessage* writeStatus(int status);
     LocoNetMessage* dispatchSlot();
+    /*public*/ LocoNetMessage* releaseSlot();
     LocoNetMessage* writeSlot();
     qint64 getLastUpdateTime() { return lastUpdateTime ; }
     /**

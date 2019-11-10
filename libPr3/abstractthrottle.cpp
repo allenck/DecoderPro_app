@@ -19,6 +19,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  re = nullptr;
  this->parent = parent;
  setObjectName("AbstractThrottle");
+ speedStepMode = new SpeedStepMode(SpeedStepMode::UNKNOWN);
 
  log = new Logger("AbstractThrottle");
  durationRunning = 0;
@@ -367,7 +368,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 }
 
 /*public*/ void AbstractThrottle::addPropertyChangeListener(PropertyChangeListener* l) {
-    log->debug("listeners added " + l->objectName());
+    log->debug(QString("listeners added ") + QString(l?l->objectName():"null"));
     // add only if not already registered
     if (!listeners->contains(l))
     {
@@ -465,7 +466,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  * always positive.
  */
 /*public*/ float AbstractThrottle::getSpeedIncrement() {
-    return speedIncrement;
+    return speedStepMode->increment;
 }
 
 // functions - note that we use the naming for DCC, though that's not the implication;
@@ -1101,11 +1102,11 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  * @param Mode - the current speed step mode - default should be 128
  *              speed step mode in most cases
  */
-/*public*/ void AbstractThrottle::setSpeedStepMode(SpeedStepMode::SSMODDES Mode) {
- log->debug(tr("Speed Step Mode Change from:%1 to Mode:%2").arg(this->speedStepMode).arg(Mode));
- if (speedStepMode != Mode) {
-     notifyPropertyChangeListener("SpeedSteps", this->speedStepMode,
-             this->speedStepMode = Mode);
+/*public*/ void AbstractThrottle::setSpeedStepMode(SpeedStepMode* newMode) {
+ log->debug(tr("Speed Step Mode Change from:%1 to Mode:%2").arg(this->speedStepMode->name).arg(newMode->name));
+ if (speedStepMode != newMode) {
+     notifyPropertyChangeListener("SpeedSteps", this->speedStepMode->mode, newMode->mode);
+     this->speedStepMode = newMode;
  }
 }
 
@@ -1113,7 +1114,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  * getSpeedStepMode - get the current speed step value.
  * <P>
  */
- /*public*/ SpeedStepMode::SSMODDES AbstractThrottle::getSpeedStepMode() {
+ /*public*/ SpeedStepMode* AbstractThrottle::getSpeedStepMode() {
     return speedStepMode;
  }
 

@@ -64,6 +64,642 @@ void LocoNetSlot::common(int slotNum)
   //     <ID1> and <ID2> normally identify the throttle controlling the loco
 
 }
+
+/**
+ * Get decoder mode.
+ *
+ * The decoder (operating) mode is taken from those bits in the slot's STAT
+ * byte which reflect the "speed steps" and "consisting" mode.  Note that
+ * the other bits from the STAT byte are not visible via this method.
+ * this
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, these bits
+ * may have other meanings.
+ * <p>
+ * Possible values are
+ * {@link LnConstants#DEC_MODE_128A},
+ * {@link LnConstants#DEC_MODE_28A},
+ * {@link LnConstants#DEC_MODE_128},
+ * {@link LnConstants#DEC_MODE_14},
+ * {@link LnConstants#DEC_MODE_28TRI},
+ * {@link LnConstants#DEC_MODE_28}
+ *
+ * @return the encoded decoder operating mode.
+ */
+/*public*/ int LocoNetSlot::decoderType() {
+    return stat & LnConstants::DEC_MODE_MASK;
+}
+
+/**
+ * Get slot status.
+ * <p>
+ * These bits are set based on the STAT byte as seen in LocoNet slot write and
+ * slot read messages.  These bits determine whether the command station is
+ * actively "refreshing" the loco's speed and direction information on the
+ * DCC track signal, and whether the slot is able to be re-assigned for use
+ * by another locomotive.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, these bits
+ * may have other meanings.
+ * <p>
+ * This returns only those bits of the slot's STAT byte which are related to
+ * the slot's "status".
+ * <p>
+ * Possible values are
+ * {@link LnConstants#LOCO_IN_USE},
+ * {@link LnConstants#LOCO_IDLE},
+ * {@link LnConstants#LOCO_COMMON},
+ * {@link LnConstants#LOCO_FREE}
+ * @return the slot status bits associated with the slot
+ */
+/*public*/ int LocoNetSlot::slotStatus() {
+    return stat & LnConstants::LOCOSTAT_MASK;
+}
+
+/**
+ * Get secondary slot status.
+ * <p>
+ * These bits are set based on the STAT2 byte as seen in LocoNet slot write and
+ * slot read messages.  These bits determine how the command station interprets
+ * the "address" field of the slot.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, these bits
+ * may have other meanings.
+ * <p>
+ * This returns only those bits of the slot's STAT2 byte which are related to
+ * the slot's "secondary status".
+ *
+ * @return the slot secondary status bits associated with the slot
+ */
+
+/*public*/ int LocoNetSlot::ss2() {
+    return _ss2;
+}
+
+/**
+ * Get consist status.
+ * <p>
+ * This returns only those bits of the slot's STAT byte which are related to
+ * the slot's "consisting status".
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, these bits
+ * may have other meanings.
+ * <p>
+ * Possible values are
+ * {@link LnConstants#CONSIST_NO},
+ * {@link LnConstants#CONSIST_TOP},
+ * {@link LnConstants#CONSIST_MID},
+ * {@link LnConstants#CONSIST_SUB}
+ * @return the slot "consist status", with unrelated bits zeroed
+ */
+/*public*/ int LocoNetSlot::consistStatus() {
+    return stat & LnConstants::CONSIST_MASK;
+}
+
+// direction and functions
+/**
+ * Returns the direction of loco movement which applies when the slot's speed
+ * is set for movement.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if slot is set for forward movement, else false
+ */
+/*public*/ bool LocoNetSlot::isForward() {
+    return 0 == (_dirf & LnConstants::DIRF_DIR);
+}
+
+/**
+ * Returns the slot's F0 state
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F0 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF0() {
+    // TODO: Consider throwing an exception (here and in similar methods)
+    // if the slot is one of the "special" slots where the slot is not
+    // storing mobile decoder funciton state in the associated bit.
+    return 0 != (_dirf & LnConstants::DIRF_F0);
+}
+
+/**
+ * Returns the slot's F1 state
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F1 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF1() {
+    return 0 != (_dirf & LnConstants::DIRF_F1);
+}
+
+/**
+ * Returns the slot's F2 state
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F2 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF2() {
+    return 0 != (_dirf & LnConstants::DIRF_F2);
+}
+
+/**
+ * Returns the slot's F3 state
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F3 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF3() {
+    return 0 != (_dirf & LnConstants::DIRF_F3);
+}
+
+/**
+ * Returns the slot's F4 state
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F4 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF4() {
+    return 0 != (_dirf & LnConstants::DIRF_F4);
+}
+
+/**
+ * Returns the slot's F5 state
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F5 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF5() {
+    return 0 != (_snd & LnConstants::SND_F5);
+}
+
+/**
+ * Returns the slot's F6 state
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F6 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF6() {
+    return 0 != (_snd & LnConstants::SND_F6);
+}
+
+/**
+ * Returns the slot's F7 state
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F7 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF7() {
+    return 0 != (_snd & LnConstants::SND_F7);
+}
+
+/**
+ * Returns the slot's F8 state
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F8 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF8() {
+    return 0 != (_snd & LnConstants::SND_F8);
+}
+
+/**
+ * Returns the slot's F9 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F9 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF9() {
+    return localF9;
+}
+
+/**
+ * Returns the slot's F10 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F10 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF10() {
+    return localF10;
+}
+
+/**
+ * Returns the slot's F11 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F11 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF11() {
+    return localF11;
+}
+
+/**
+ * Returns the slot's F12 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F12 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF12() {
+    return localF12;
+}
+
+/**
+ * Returns the slot's F13 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F13 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF13() {
+    return localF13;
+}
+
+/**
+ * Returns the slot's F14 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F14 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF14() {
+    return localF14;
+}
+
+/**
+ * Returns the slot's F15 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F15 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF15() {
+    return localF15;
+}
+
+/**
+ * Returns the slot's F16 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F16 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF16() {
+    return localF16;
+}
+
+/**
+ * Returns the slot's F17 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F17 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF17() {
+    return localF17;
+}
+
+/**
+ * Returns the slot's F1 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F1 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF18() {
+    return localF18;
+}
+
+/**
+ * Returns the slot's F19 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F19 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF19() {
+    return localF19;
+}
+
+/**
+ * Returns the slot's F20 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F20 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF20() {
+    return localF20;
+}
+
+/**
+ * Returns the slot's F21 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F21 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF21() {
+    return localF21;
+}
+
+/**
+ * Returns the slot's F22 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F22 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF22() {
+    return localF22;
+}
+
+/**
+ * Returns the slot's F23 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F23 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF23() {
+    return localF23;
+}
+
+/**
+ * Returns the slot's F24 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F24 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF24() {
+    return localF24;
+}
+
+/**
+ * Returns the slot's F25 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F25 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF25() {
+    return localF25;
+}
+
+/**
+ * Returns the slot's F26 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F26 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF26() {
+    return localF26;
+}
+
+/**
+ * Returns the slot's F27 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F27 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF27() {
+    return localF27;
+}
+
+/**
+ * Returns the slot's F28 state
+ * <p>
+ * Some command stations do not actively remember the state of this function.
+ * JMRI attempts to track the messages which control this function, but may not
+ * reliably do so in some cases.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, this bit
+ * may have other meanings.
+ *
+ * @return true if F28 is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isF28() {
+    return localF28;
+}
+
+// loco address, speed
+/**
+ * Returns the mobile decoder address associated with the slot.
+ * <p>
+ * Note that the returned address can encode a "short" address, a "long"
+ * address or an "alias".
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, these bits
+ * may have other meanings.
+ *
+ * @return the mobile decoder address
+ */
+/*public*/ int LocoNetSlot::locoAddr() {
+    return addr;
+}
+
+/**
+ * Returns the mobile decoder speed associated with the slot
+ * <p>
+ * If this slot object is consisted to another slot and is not the "top" of
+ * the consist, then the return value is the slot number to which this slot
+ * is consisted.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, these bits
+ * may have other meanings.
+ *
+ * @return the current speed step associated with the slot.
+ */
+/*public*/ int LocoNetSlot::speed() {
+    return spd;
+}
+
+/**
+ * Returns the mobile decoder direction and F0-F4 bits, as used in the DIRF bits
+ * of various LocoNet messages.
+ * <p>
+ * If this slot object is consisted to another slot and is not the "top" of
+ * the consist, then the "direction" bit reflects the relative direction of this
+ * loco with respect to the loco it is consisted to, where "Reverse" means it
+ * travels in the "reverse" direction with respect to the loco to which it is
+ * consisted.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, these bits
+ * may have other meanings.
+ *
+ * @return the &lt;DIRF&gt; byte value
+ */
+/*public*/ int LocoNetSlot::dirf() {
+    return _dirf;
+}
+
+/**
+ * Returns the mobile decoder F5-F8 bits, as used in the SND bits
+ * of various LocoNet messages.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, these bits
+ * may have other meanings.
+ *
+ * @return the &lt;SND&gt; byte value
+ */
+/*public*/ int LocoNetSlot::snd() {
+    return _snd;
+}
+
+/**
+ * Returns the "Throttle ID" associated with the slot.
+ * <p>
+ * The returned value is a 14-bit integer comprised of ID1 as the least-significant
+ * bits and ID2 as the most-significant bits.
+ * <p>
+ * For slot numbers not normally associated with mobile decoders, these bits
+ * may have other meanings.
+ *
+ * @return an integer representing the throttle ID number
+ */
+/*public*/ int LocoNetSlot::id() {
+    return _id;
+}
+
+// programmer track special case accessors
+/**
+ * Returns the programmer command associated with the slot.
+ * <p>
+ * The returned value is taken from the &lt;PCMD&gt; byte of programmer slot read
+ * and write LocoNet messages.
+ * <p>
+ * For slot numbers other than the programmer slot, these bits
+ * may have other meanings.
+ *
+ * @return the &lt;PCMD&gt; byte
+ */
+/*public*/ int LocoNetSlot::pcmd() {
+    return _pcmd;
+}
+
+/*public*/ int LocoNetSlot::cvval() {
+    return _snd + (_ss2 & 2) * 64;
+}
+
 // methods to interact with LocoNet
 //@SuppressWarnings("fallthrough")
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SF_SWITCH_FALLTHROUGH")
@@ -259,6 +895,22 @@ LocoNetMessage* LocoNetSlot::dispatchSlot()
     l->setElement(1, slot);
     l->setElement(2, 0);
     return l;
+}
+
+/**
+ * Create a LocoNet OPC_SLOT_STAT1 message which releases this slot to the
+ * "Common" state
+ *
+ * The invoking method must send the returned LocoNet message to LocoNet in
+ * order to have a useful effect.
+ *
+ * Upon receipt of the echo of the transmitted OPC_SLOT_STAT1 message, the
+ * LocoNetSlot object will notify its listeners.
+ *
+ * @return LocoNet message which "releases" the slot to the "Common" state
+*/
+/*public*/ LocoNetMessage* LocoNetSlot::releaseSlot() {
+    return writeStatus(LnConstants::LOCO_COMMON);
 }
 
 LocoNetMessage* LocoNetSlot::writeSlot() {

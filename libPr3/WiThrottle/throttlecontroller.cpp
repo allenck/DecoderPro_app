@@ -383,7 +383,7 @@ controllerListeners = NULL;
   else if(c == 'I')
    idle();
   else if(c == 's')     //v>=2.0
-   handleSpeedStepMode((SpeedStepMode::SSMODDES)inPackage.mid(1).toInt());
+   handleSpeedStepMode((SpeedStepMode::SSMODES)inPackage.mid(1).toInt());
    else if(c == 'm')      //v>=2.0
     handleMomentary(inPackage.mid(1));
    else if(c == 'q')      //v>=2.0
@@ -765,7 +765,7 @@ controllerListeners = NULL;
 #endif
 }
 
-/*protected*/ void ThrottleController::handleSpeedStepMode(SpeedStepMode::SSMODDES newMode) {
+/*protected*/ void ThrottleController::handleSpeedStepMode(SpeedStepMode::SSMODES newMode) {
     throttle->setSpeedStepMode(newMode);
 }
 

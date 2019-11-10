@@ -53,13 +53,13 @@ static const int SpeedStepMode28Mot = 16;
  * @param Mode - the current speed step mode - default should be 128
  *              speed step mode in most cases
  */
-void virtual setSpeedStepMode(SpeedStepMode::SSMODDES /*Mode*/) {}
+void virtual setSpeedStepMode(SpeedStepMode::SSMODES /*Mode*/) {}
 
 /*
  * getSpeedStepMode - get the current speed step value.
  * <P>
  */
-SpeedStepMode::SSMODDES virtual getSpeedStepMode() {return SpeedStepMode::UNKNOWN;}
+virtual SpeedStepMode* getSpeedStepMode() {return new SpeedStepMode(SpeedStepMode::UNKNOWN);}
 
 // information on consisting  (how do we set consisting?)
 

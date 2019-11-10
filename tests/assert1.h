@@ -66,6 +66,7 @@ public:
     /*public*/ static void assertNotNull(QString message, QString object, QString file, int line);
     /*public*/ static void assertNotNull(QString message, QVariant object, QString file, int line);
     /*public*/ static void assertNotNull(QString object, QString file, int line);
+    /*public*/ static void assertNull(QString message, QByteArray object, QString file, int line);
 
 
     /*public*/ static void assertNull(QString message, QObject* object, QString file, int line);
@@ -76,6 +77,9 @@ public:
     /*public*/ static void assertNull(QString message, QVariant object, QString file, int line);
 
     /*public*/ static void assertNotSame(QString message, int unexpected, int actual, QString file, int line);
+
+    /*public*/ static void assertArrayEquals(QString message, QVector<int> expecteds, QVector<int> actuals, QString file, int line); //throw (ArrayComparisonFailure)
+    /*public*/ static void assertArrayEquals(QVector<int> expecteds, QVector<int> actuals, QString file, int line);
 
 signals:
 

@@ -33,15 +33,73 @@ SpeedStepMode::SpeedStepMode(QObject *parent) : QObject(parent)
 //    MOTOROLA_28("motorola_28", 28), // Motorola 28 speed step mode.
 //    TMCC_32("tmcc_32", 32), // Lionel TMCC 32 speed step mode.
 //    INCREMENTAL("incremental", 1, 1.0f);
+SpeedStepMode::SpeedStepMode(SSMODES m, QObject* parent) : QObject(parent) {
+ switch(m)
+ {
+  //    UNKNOWN("unknown", 1, 0.0f),
+  case UNKNOWN:
+   this->name = "unknown";
+   this->numSteps = 1;
+   this->increment = 1.0f/numSteps;
+   break;
+  //    NMRA_DCC_128("128", 126), // Remember there are only 126 non-stop values in 128 speed.
+  case NMRA_DCC_128:
+   this->name = "128";
+   this->numSteps = 126;
+   this->increment = 1.0f/numSteps;
+   break;
+  //    NMRA_DCC_28("28", 28),
+  case NMRA_DCC_28:
+   this->name = "28";
+   this->numSteps = 28;
+   this->increment =1.0f/numSteps;
+   break;
+  //    NMRA_DCC_27("27", 27),
+  case NMRA_DCC_27:
+   this->name = "27";
+   this->numSteps = 27;
+   this->increment = 1.0f/numSteps;
+   break;
+  //    NMRA_DCC_14("14", 14),
+  case NMRA_DCC_14:
+   this->name = "14";
+   this->numSteps = 14;
+   this->increment = 1.0f/numSteps;
+   break;
+  //    MOTOROLA_28("motorola_28", 28), // Motorola 28 speed step mode.
+  case MOTOROLA_28:
+   this->name = "motorola_28";
+   this->numSteps = 28;
+   this->increment = 1.0f/numSteps;
+   break;
+  //    TMCC_32("tmcc_32", 32), // Lionel TMCC 32 speed step mode.
+  case TMCC_32:
+   this->name = "tmcc_32";
+   this->numSteps = 32;
+   this->increment = 1.0f/numSteps;
+   break;
+  //    INCREMENTAL("incremental", 1, 1.0f);
+  case INCREMENTAL:
+   this->name = "incremental";
+   this->numSteps = 1;
+   this->increment = 1.0f;
+   break;
+ default:
+  throw  IllegalArgumentException("Invalid speed step mode: " + QString::number(m));
+ }
+ this->mode = m;
+}
 
-    SpeedStepMode::SpeedStepMode(QString name, int numSteps, QObject *parent) : QObject(parent) {
-        common(name, numSteps, 1.0f / numSteps);
-    }
+SpeedStepMode::SpeedStepMode(QString name, int numSteps, QObject *parent) : QObject(parent)
+{
+ common(name, numSteps, 1.0f/numSteps);
+}
 
-    SpeedStepMode::SpeedStepMode(QString name, int numSteps, float increment, QObject *parent) : QObject(parent)
-    {
-     common(name, numSteps, increment);
-    }
+SpeedStepMode::SpeedStepMode(QString name, int numSteps, float increment, QObject *parent) : QObject(parent)
+{
+ common(name, numSteps,increment);
+}
+
 
     void SpeedStepMode::common(QString name, int numSteps, float increment){
         this->name = name;
@@ -57,7 +115,7 @@ SpeedStepMode::SpeedStepMode(QObject *parent) : QObject(parent)
      * @return matching SpeedStepMode
      * @throws IllegalArgumentException if name does not correspond to a valid speed step mode.
      */
-    /*static*/ /*public*/ SpeedStepMode::SSMODDES SpeedStepMode::getByName(QString name) {
+    /*static*/ /*public*/ SpeedStepMode::SSMODES SpeedStepMode::getByName(QString name) {
 //        for(SpeedStepMode s : SpeedStepMode.values()) {
 //            if(s.name.equals(name)) {
 //                return s;

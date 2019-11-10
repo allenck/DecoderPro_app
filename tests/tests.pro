@@ -145,7 +145,10 @@ SOURCES += \
     NamedBeans/namedbeanusernamecomparatortest.cpp \
     NamedBeans/namedbeanusernamecomparatortestaction.cpp \
     loconet/loconetmessageexceptiontest.cpp \
-    loconet/loconetmessageexceptiontestaction.cpp
+    loconet/loconetmessageexceptiontestaction.cpp \
+    loconet/loconetthrottletestaction.cpp \
+    misc/nmrapackettest.cpp \
+    misc/nmrapackettestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -268,7 +271,10 @@ HEADERS += \
     NamedBeans/namedbeanusernamecomparatortest.h \
     NamedBeans/namedbeanusernamecomparatortestaction.h \
     loconet/loconetmessageexceptiontest.h \
-    loconet/loconetmessageexceptiontestaction.h
+    loconet/loconetmessageexceptiontestaction.h \
+    loconet/loconetthrottletestaction.h \
+    misc/nmrapackettest.h \
+    misc/nmrapackettestaction.h
 
 unix {
     target.path = /usr/lib

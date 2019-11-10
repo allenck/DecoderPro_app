@@ -3,6 +3,7 @@
 #include "nmrapacket.h"
 #include "lnthrottlemanager.h"
 #include "lnpacketizer.h"
+#include "loggerfactory.h"
 
 //LocoNetThrottle::LocoNetThrottle(QObject *parent) :
 //    AbstractThrottle(parent)
@@ -26,19 +27,15 @@
  * Constructor
  * @param slot The LocoNetSlot this throttle will talk on.
  */
-/*public*/ LocoNetThrottle::LocoNetThrottle(LocoNetSystemConnectionMemo* memo, LocoNetSlot* slot, QObject *parent) : AbstractThrottle(memo, parent)
+/*public*/ LocoNetThrottle::LocoNetThrottle(LocoNetSystemConnectionMemo* memo, LocoNetSlot* slot, QObject *parent)
+ : AbstractThrottle(memo, parent)
 {
  //super(memo);
  this->slot = slot;
  setObjectName("LocoNetThrottle");
- log = new Logger("LocoNetThrottle");
  mRefreshTimer = NULL;
  network = memo->getLnTrafficController();
- LocoNetMessage* msg = new LocoNetMessage(4);
- msg->setOpCode(LnConstants::OPC_MOVE_SLOTS);
- msg->setElement(1, slot->getSlot());
- msg->setElement(2, slot->getSlot());
- ((LnPacketizer*)network)->sendLocoNetMessage(msg);
+ throttleManager = (LnThrottleManager*)memo->getThrottleManager();
 
  // save last known layout state for spd/dirf/snd so we can
  // avoid race condition if another LocoNet process queries
@@ -48,69 +45,82 @@
  layout_snd  = slot->snd();
 
 
-    // cache settings
-    this->speedSetting = floatSpeed(slot->speed());
-    this->f0           = slot->isF0();
-    this->f1           = slot->isF1();
-    this->f2           = slot->isF2();
-    this->f3           = slot->isF3();
-    this->f4           = slot->isF4();
-    this->f5           = slot->isF5();
-    this->f6           = slot->isF6();
-    this->f7           = slot->isF7();
-    this->f8           = slot->isF8();
+  // cache settings
+  this->speedSetting = floatSpeed(slot->speed());
+  this->f0           = slot->isF0();
+  this->f1           = slot->isF1();
+  this->f2           = slot->isF2();
+  this->f3           = slot->isF3();
+  this->f4           = slot->isF4();
+  this->f5           = slot->isF5();
+  this->f6           = slot->isF6();
+  this->f7           = slot->isF7();
+  this->f8           = slot->isF8();
 
-    // extended values
-    this->f8           = slot->isF8();
-    this->f9           = slot->isF9();
-    this->f10          = slot->isF10();
-    this->f11          = slot->isF11();
-    this->f12          = slot->isF12();
-    this->f13          = slot->isF13();
-    this->f14          = slot->isF14();
-    this->f15          = slot->isF15();
-    this->f16          = slot->isF16();
-    this->f17          = slot->isF17();
-    this->f18          = slot->isF18();
-    this->f19          = slot->isF19();
-    this->f20          = slot->isF20();
-    this->f21          = slot->isF21();
-    this->f22          = slot->isF22();
-    this->f23          = slot->isF23();
-    this->f24          = slot->isF24();
-    this->f25          = slot->isF25();
-    this->f26          = slot->isF26();
-    this->f27          = slot->isF27();
-    this->f28          = slot->isF28();
+  // extended values
+  this->f8           = slot->isF8();
+  this->f9           = slot->isF9();
+  this->f10          = slot->isF10();
+  this->f11          = slot->isF11();
+  this->f12          = slot->isF12();
+  this->f13          = slot->isF13();
+  this->f14          = slot->isF14();
+  this->f15          = slot->isF15();
+  this->f16          = slot->isF16();
+  this->f17          = slot->isF17();
+  this->f18          = slot->isF18();
+  this->f19          = slot->isF19();
+  this->f20          = slot->isF20();
+  this->f21          = slot->isF21();
+  this->f22          = slot->isF22();
+  this->f23          = slot->isF23();
+  this->f24          = slot->isF24();
+  this->f25          = slot->isF25();
+  this->f26          = slot->isF26();
+  this->f27          = slot->isF27();
+  this->f28          = slot->isF28();
 
-    this->address      = slot->locoAddr();
-    this->isForward    = slot->isForward();
-    this->slotStatus   = slot->slotStatus();
+  // for LocoNet throttles, the default is f2 momentary (for the horn)
+  // all other functions are continuos (as set in AbstractThrottle).
+  this->f2Momentary = true;
 
-    switch (slot->decoderType()) {
-             case LnConstants::DEC_MODE_128:
-             case LnConstants::DEC_MODE_128A:
-                 setSpeedStepMode(SpeedStepMode::NMRA_DCC_128);
-                 break;
-             case LnConstants::DEC_MODE_28:
-             case LnConstants::DEC_MODE_28A:
-             case LnConstants::DEC_MODE_28TRI:
-                 setSpeedStepMode(SpeedStepMode::NMRA_DCC_28);
-                 break;
-             case LnConstants::DEC_MODE_14:
-                 setSpeedStepMode(SpeedStepMode::NMRA_DCC_14);
-                 break;
-             default:
-                 log->warn(tr("Unhandled decoder type: %1").arg(slot->decoderType()));
-                 break;
-         }
+  this->address      = slot->locoAddr();
+  this->isForward    = slot->isForward();
+  this->slotStatus   = slot->slotStatus();
 
-    // listen for changesQVariant
-    slot->addSlotListener((SlotListener*)this);
+  switch (slot->decoderType())
+  {
+   case LnConstants::DEC_MODE_128:
+   case LnConstants::DEC_MODE_128A:
+       setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_128));
+       break;
+   case LnConstants::DEC_MODE_28:
+   case LnConstants::DEC_MODE_28A:
+   case LnConstants::DEC_MODE_28TRI:
+       setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_28));
+       break;
+   case LnConstants::DEC_MODE_14:
+       setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_14));
+       break;
+   default:
+       log->warn(tr("Unhandled decoder type: %1").arg(slot->decoderType()));
+       break;
+   }
 
-    // start periodically sending the speed, to keep this
-    // attached
-    startRefresh();
+   // listen for changesQVariant
+   slot->addSlotListener((SlotListener*)this);
+
+   // perform the null slot move
+   LocoNetMessage* msg = new LocoNetMessage(4);
+   msg->setOpCode(LnConstants::OPC_MOVE_SLOTS);
+   msg->setElement(1, slot->getSlot());
+   msg->setElement(2, slot->getSlot());
+   network->sendLocoNetMessage(msg);
+
+   // start periodically sending the speed, to keep this
+   // attached
+   startRefresh();
+   log->debug(tr("constructed a new throttle using slot %1 for loco address %2").arg(slot->getSlot()).arg(slot->locoAddr()));
 
 }
 
@@ -118,22 +128,53 @@
 /**
  * Convert a LocoNet speed integer to a float speed value
  */
-/*protected*/ float LocoNetThrottle::floatSpeed(int lSpeed) {
-    if (lSpeed == 0) return 0.f;
-    else if (lSpeed == 1) return -1.f;   // estop
-    else return ( (lSpeed-1)/126.f);
+/*protected*/ float LocoNetThrottle::floatSpeed(int lSpeed)
+{
+ log->debug(tr("speed (int) is %1").arg(lSpeed));
+ if (lSpeed == 0) {
+     return 0.f;
+ } else if (lSpeed == 1) {
+     return -1.f;   // estop
+ }
+ if (getSpeedStepMode()->mode == SpeedStepMode::NMRA_DCC_28) {
+     if (lSpeed <= 15) //Value less than 15 is in the stop/estop range bracket
+     {
+         return 0.f;
+     }
+     return (((lSpeed - 12) / 4.f) / 28.f);
+ } else if (getSpeedStepMode()->mode == SpeedStepMode::NMRA_DCC_14) {
+     if (lSpeed <= 15) //Value less than 15 is in the stop/estop range bracket
+     {
+         return 0.f;
+     }
+     return ((lSpeed - 8) / 8.0f) / 14.f;
+ } else {
+     return ((lSpeed - 1) / 126.f);
+ }
 }
 
 /**
  * Convert a float speed value to a LocoNet speed integer
  */
 /*protected*/ int LocoNetThrottle::intSpeed(float fSpeed) {
-  if (fSpeed == 0.f)
-    return 0;
-  else if (fSpeed < 0.f)
-    return 1;   // estop
-    // add the 0.5 to handle float to int round for positive numbers
-  return (int)(fSpeed * 126.f + 0.5) + 1 ;
+ log->debug(tr("intSpeed speed is %1").arg(fSpeed));
+ int speed = AbstractThrottle::intSpeed(fSpeed);
+ if (speed <= 1) {
+     return speed; // return idle and emergency stop
+ }
+ switch (this->getSpeedStepMode()->mode) {
+     case SpeedStepMode::NMRA_DCC_28:
+     case SpeedStepMode::MOTOROLA_28:
+         return (int) ((fSpeed * 28) * 4) + 12;
+     case SpeedStepMode::NMRA_DCC_14:
+         return (int) ((fSpeed * 14) * 8) + 8;
+     case SpeedStepMode::NMRA_DCC_128:
+         return speed;
+     default:
+         log->warn(tr("Unhandled speed step: %1").arg(this->getSpeedStepMode()->mode));
+         break;
+ }
+ return speed;
 }
 /*public*/ void LocoNetThrottle::setF0(bool f0) {
     bool old = this->f0;
@@ -289,14 +330,12 @@
                  (getF2() ? LnConstants::DIRF_F2 : 0) |
                  (getF3() ? LnConstants::DIRF_F3 : 0) |
                  (getF4() ? LnConstants::DIRF_F4 : 0));
- if (new_dirf != layout_dirf)
- {
-  LocoNetMessage* msg = new LocoNetMessage(4);
-  msg->setOpCode(LnConstants::OPC_LOCO_DIRF);
-  msg->setElement(1, slot->getSlot());
-  msg->setElement(2, new_dirf);
-  ((LnPacketizer*)network)->sendLocoNetMessage(msg);
- }
+ log->debug(tr("sendFunctionGroup1 sending %1 to LocoNet slot %2").arg(new_dirf).arg(slot->getSlot()));
+ LocoNetMessage* msg = new LocoNetMessage(4);
+ msg->setOpCode(LnConstants::OPC_LOCO_DIRF);
+ msg->setElement(1, slot->getSlot());
+ msg->setElement(2, new_dirf);
+ network->sendLocoNetMessage(msg);
 }
 
 /**
@@ -309,14 +348,12 @@
                    (getF7() ? LnConstants::SND_F7 : 0) |
                    (getF6() ? LnConstants::SND_F6 : 0) |
                    (getF5() ? LnConstants::SND_F5 : 0));
- if (new_snd != layout_snd)
- {
-  LocoNetMessage* msg = new LocoNetMessage(4);
-  msg->setOpCode(LnConstants::OPC_LOCO_SND);
-  msg->setElement(1, slot->getSlot());
-  msg->setElement(2, new_snd);
-  ((LnPacketizer*)network)->sendLocoNetMessage(msg);
- }
+ log->debug(tr("sendFunctionGroup2 sending %1 to LocoNet slot %2").arg(new_snd).arg(slot->getSlot()));
+ LocoNetMessage* msg = new LocoNetMessage(4);
+ msg->setOpCode(LnConstants::OPC_LOCO_SND);
+ msg->setElement(1, slot->getSlot());
+ msg->setElement(2, new_snd);
+ ((LnPacketizer*)network)->sendLocoNetMessage(msg);
 }
 
 /*protected*/ void LocoNetThrottle::sendFunctionGroup3()
@@ -361,49 +398,96 @@
 }
 
 /**
- * Set the speed.
- * <P>
- * This intentionally skips the emergency stop value of 1.
+ * Send a LocoNet message to set the loco speed speed.
+ *
+ * @param speed Number from 0 to 1; less than zero is "emergency stop"
+ */
+//@Override
+/*public*/ void LocoNetThrottle::setSpeedSetting(float speed) {
+    setSpeedSetting(speed, false, false);
+}
+
+/**
+ * Set the Speed, ensuring that a LocoNet message is sent to update the slot
+ * even if the new speed is effectively the same as the current speed. Note: this
+ * can cause an increase in LocoNet traffic.
+ *
  * @param speed Number from 0 to 1; less than zero is emergency stop
  */
-//@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="FE_FLOATING_POINT_EQUALITY") // OK to compare floating point, notify on any change
-/*public*/ void LocoNetThrottle::setSpeedSetting(float speed)
-{
- if( LnConstants::CONSIST_MID==slot->consistStatus()||
-    LnConstants::CONSIST_SUB==slot->consistStatus() )
- {
-    // Digitrax slots use the same memory location to store the
-    // speed AND the slot to which a locomotive is consisted.
-    // if the locomotive is either a CONSIST_MID or a CONSIST_SUB,
-    // we need to ignore the request to change the speed
-    if(log->isDebugEnabled()) log->debug(tr("Attempt to change speed on locomotive ") + ((DccLocoAddress*)getLocoAddress())->toString() + tr(" which is a ") + LnConstants::CONSIST_STAT(slot->consistStatus()));
-    return;
- }
- float oldSpeed = this->speedSetting;
- this->speedSetting = speed;
- if (speed<0) this->speedSetting = -1.f;
+//@Override
+/*public*/ void LocoNetThrottle::setSpeedSettingAgain(float speed) {
+    setSpeedSetting(speed, true, true);
+}
 
- int new_spd = intSpeed( speed );
- if (new_spd != layout_spd)
- {
-  LocoNetMessage* msg = new LocoNetMessage(4);
-  msg->setOpCode(LnConstants::OPC_LOCO_SPD);
-  msg->setElement(1, slot->getSlot());
-  log->debug( "setSpeedSetting: float speed: " + QString::number(speed) + " LocoNet speed: " + QString::number(new_spd ));
-  msg->setElement(2, new_spd);
-  ((LnPacketizer*)network)->sendLocoNetMessage(msg);
- }
+/**
+ * Set the speed. No LocoNet message is sent if the new speed would
+ * result in a 'duplicate' - ie. a speed setting no different to the one the slot
+ * currently has - unless the boolean paramters indicate it should be.
+ *
+ * @param speed Number from 0 to 1; less than zero is emergency stop
+ * @param allowDuplicates boolean - if true, send a LocoNet message no matter what
+ * @param allowDuplicatesOnStop boolean - if true, send a LocoNet message if the new speed is
+ *                              'idle' or 'emergency stop', even if that matches the
+ *                              existing speed.
+ *
+ */
+//@SuppressFBWarnings(value = "FE_FLOATING_POINT_EQUALITY") // OK to compare floating point, notify on any change
+//@Override
+/*public*/ void LocoNetThrottle::setSpeedSetting(float speed, bool allowDuplicates, bool allowDuplicatesOnStop) {
+    log->debug(tr("setSpeedSetting: called with speed %1 for LocoNet slot %2").arg(speed).arg(slot->getSlot()));
+    if (LnConstants::CONSIST_MID == slot->consistStatus()
+            || LnConstants::CONSIST_SUB == slot->consistStatus()) {
+        // Digitrax slots use the same memory location to store the
+        // speed AND the slot to which a locomotive is consisted.
+        // if the locomotive is either a CONSIST_MID or a CONSIST_SUB,
+        // we need to ignore the request to change the speed
+        log->debug(tr("Attempt to change speed on locomotive %1 which is a %2").arg(getLocoAddress()->toString()).arg(LnConstants::CONSIST_STAT(slot->consistStatus())));
+        return;
+    }
+    float oldSpeed = this->speedSetting;
+    this->speedSetting = speed;
+    if (speed < 0) {
+        this->speedSetting = -1.f;
+    }
 
- // reset timeout
- if (mRefreshTimer != NULL)
- { // got NullPointerException sometimes
-     mRefreshTimer->stop();
-     mRefreshTimer->setSingleShot(false);     // refresh until stopped by dispose
-     mRefreshTimer->start();
- }
- if (oldSpeed != this->speedSetting)
-     notifyPropertyChangeListener("SpeedSetting", oldSpeed, this->speedSetting );
- record(speed);
+    int new_spd = intSpeed(speed);
+
+    // decide whether to send a new LocoNet message
+    bool sendLoconetMessage = false;
+    if (new_spd != layout_spd) {
+        // the new speed is different - send a message
+        sendLoconetMessage = true;
+    } else if (allowDuplicates) {
+        // calling method wants a new mesage sent regardless
+        sendLoconetMessage = true;
+    } else if (allowDuplicatesOnStop && new_spd <= 1) {
+        // calling method wants a new message sent if the speed is idle or estop, which it is
+        sendLoconetMessage = true;
+    }
+
+    if (sendLoconetMessage) {
+        log->debug(tr("setSpeedSetting: sending speed %1 to LocoNet slot %2").arg(speed).arg(slot->getSlot()));
+        LocoNetMessage* msg = new LocoNetMessage(4);
+        msg->setOpCode(LnConstants::OPC_LOCO_SPD);
+        msg->setElement(1, slot->getSlot());
+        log->debug("setSpeedSetting: float speed: " + QString::number(speed) + " LocoNet speed: " + QString::number(new_spd));
+        msg->setElement(2, new_spd);
+        network->sendLocoNetMessage(msg);
+    } else {
+        log->debug(tr("setSpeedSetting: not sending LocoNet message to slot %1, new speed == old speed").arg(slot->getSlot()));
+    }
+
+    // reset timeout
+    if (mRefreshTimer != nullptr) {
+        mRefreshTimer->stop();
+        mRefreshTimer->setSingleShot(false);//setRepeats(true);     // refresh until stopped by dispose
+        mRefreshTimer->start();
+        log->debug(tr("Initially starting refresh timer for slot %1 address %2").arg(slot->getSlot()).arg(slot->locoAddr()));
+    }
+    if (oldSpeed != this->speedSetting) {
+        notifyPropertyChangeListener("SpeedSetting", oldSpeed, this->speedSetting); // NOI18N
+    }
+    record(speed);
 }
 
 /**
@@ -432,19 +516,37 @@
  * this Throttle object will result in a JmriException.
  */
 /*protected*/ void LocoNetThrottle::throttleDispose() {
-    // stop timeout
-    if (mRefreshTimer != NULL)
-        mRefreshTimer->stop();
+ if (isDisposing) return;
+ log->debug("throttleDispose - disposing of throttle (and setting slot = null)");
+ isDisposing = true;
 
-    // release connections
-    if (slot != NULL)
-        slot->removeSlotListener((SlotListener*)this);
+ // Release throttle connections
+ if (slot != nullptr)
+ {
+   if (slot->slotStatus() != LnConstants::LOCO_COMMON) {
+       // Digitrax throttles do not set the slot speed to zero, so do
+       // not do so here.
 
-    mRefreshTimer = NULL;
-    slot = NULL;
-    network = NULL;
+       // Make the slot common, after a little wait
+       log->debug(tr("dispatchThrottle is dispatching slot %1").arg(slot->getSlot()));
+       network->sendLocoNetMessage(slot->releaseSlot());
+   }
+   // Can remove the slot listener at any time; any further messages
+   // aren't needed.
+   slot->removeSlotListener((SlotListener*)this);
+   // Stop the throttle speed refresh timer
+   if (mRefreshTimer != nullptr) {
+       mRefreshTimer->stop();
+       log->debug(tr("Stopped refresh timer for slot %1 address %2 as part of throttleDispose").arg(slot->getSlot()).arg(slot->locoAddr()));
+   mRefreshTimer = nullptr;
+   }
 
-    finishRecord();
+   slot = nullptr;
+   network = nullptr;
+
+   finishRecord();
+   isDisposing = false;
+  }
  }
 
 
@@ -475,12 +577,33 @@
 }
 
 /**
+ * Get notified when underlying slot acquisition process fails.  Slot acquisition
+ * failure is handled by @link LnThrottleManager, so no code is required here.
+ *
+ * @param addr Locomotive address
+ * @param s reason the acquisition failed
+ */
+/*public*/ void LocoNetThrottle::notifyRefused(int addr, QString s) {
+    // don't do anything here; is handled by LnThrottleManager.
+}
+
+/**
  * Get notified when underlying slot information changes
  */
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="FE_FLOATING_POINT_EQUALITY") // OK to compare floating point, notify on any change
 /*public*/ void LocoNetThrottle::notifyChangedSlot(LocoNetSlot* pSlot)
 {
- if (slot!=pSlot) log->error("notified of change in different slot");
+ if (slot!=pSlot) {
+  log->error("notified of change in different slot");
+ }
+ log->debug(tr("notifyChangedSlot executing for slot %1, slotStatus 0x%2").arg(slot->getSlot()).arg(slot->slotStatus(),0,16));
+
+ if(!isInitialized && slot->slotStatus() == LnConstants::LOCO_IN_USE)
+ {
+    log->debug(tr("Attempting to update slot with this JMRI instance's throttle id (%1)").arg(throttleManager->getThrottleID()));
+    network->sendLocoNetMessage(slot->writeThrottleID(throttleManager->getThrottleID()));
+    isInitialized = true;
+ }
 
  // Save current layout state of spd/dirf/snd so we won't run amok
  // toggling values if another LocoNet entity accesses the slot while
@@ -490,12 +613,11 @@
  layout_snd  = slot->snd();
 
  // handle change in each state
- float newSpeed = ( floatSpeed(slot->speed() ) ) ;
- if (this->speedSetting != newSpeed)
- {
-  log->debug( "notifyChangedSlot: old speed: " + QString::number(this->speedSetting) + " new Speed: " + QString::number(newSpeed ));
-  notifyPropertyChangeListener("SpeedSetting", (this->speedSetting), newSpeed );
-  this->speedSetting = newSpeed ;
+ if (this->speedSetting != floatSpeed(slot->speed())) {
+     float newSpeed = (floatSpeed(slot->speed()));
+     log->debug("notifyChangedSlot: old speed: " + QString::number(this->speedSetting) + " new Speed: " + QString::number(newSpeed)); // NOI18N
+     notifyPropertyChangeListener("SpeedSetting", (this->speedSetting), newSpeed); // NOI18N
+     this->speedSetting = newSpeed/*.floatValue()*/;
  }
 
  bool temp;
@@ -516,6 +638,38 @@
   notifyPropertyChangeListener("ThrottleConnected", (slotStatus & LnConstants::LOCOSTAT_MASK) == LnConstants::LOCO_IN_USE,
                                                       ! ( (slotStatus & LnConstants::LOCOSTAT_MASK) == LnConstants::LOCO_IN_USE) );
   slotStatus = newStat;
+ }
+
+ // It is possible that the slot status change we are being notified of
+ // is the slot being set to status COMMON. In which case the slot just
+ // got set to null. No point in continuing. In fact to do so causes a NPE.
+ if (slot == nullptr) {
+     return;
+ }
+
+ switch (slot->decoderType())
+ {
+     case LnConstants::DEC_MODE_128:
+     case LnConstants::DEC_MODE_128A:
+         if(SpeedStepMode::NMRA_DCC_128 != getSpeedStepMode()->mode) {
+            setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_128));
+         }
+         break;
+     case LnConstants::DEC_MODE_28:
+     case LnConstants::DEC_MODE_28A:
+     case LnConstants::DEC_MODE_28TRI:
+         if(SpeedStepMode::NMRA_DCC_28 != getSpeedStepMode()->mode) {
+            setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_28));
+         }
+         break;
+     case LnConstants::DEC_MODE_14:
+         if(SpeedStepMode::NMRA_DCC_14 != getSpeedStepMode()->mode) {
+            setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_14));
+         }
+         break;
+     default:
+         log->warn(tr("Unhandled decoder type: %1").arg(slot->decoderType()));
+         break;
  }
 
  // Functions
@@ -678,51 +832,42 @@
  *              speed step mode in most cases
  */
 //@Override
-/*public*/ void LocoNetThrottle::setSpeedStepMode(SpeedStepMode::SSMODDES Mode)
+/*public*/ void LocoNetThrottle::setSpeedStepMode(SpeedStepMode* Mode)
 {
  int status=slot->slotStatus();
  if(log->isDebugEnabled())
  {
-  log->debug("Speed Step Mode Change to Mode: " + QString::number(Mode) +
-            " Current mode is: " + QString::number(this->speedStepMode));
+  log->debug("Speed Step Mode Change to Mode: " + Mode->name +
+            " Current mode is: " + this->speedStepMode->name);
   log->debug("Current Slot Mode: " +LnConstants::DEC_MODE(status));
  }
  if(speedStepMode!=Mode)
-   notifyPropertyChangeListener("SpeedSteps", this->speedStepMode,
-                                          this->speedStepMode=Mode );
- if(Mode==DccThrottle::SpeedStepMode14)
+   notifyPropertyChangeListener("SpeedSteps", this->speedStepMode->mode,
+                                          this->speedStepMode->mode );
+ speedStepMode=Mode;
+ if (Mode->mode == SpeedStepMode::NMRA_DCC_14)
  {
-  speedIncrement=SPEED_STEP_14_INCREMENT;
-  log->debug("14 speed step change");
-  status=status&((~LnConstants::DEC_MODE_MASK)|
-                            LnConstants::STAT1_SL_SPDEX)
-                         | LnConstants::DEC_MODE_14;
- }
- else if(Mode==DccThrottle::SpeedStepMode28Mot)
- {
-            speedIncrement=SPEED_STEP_28_INCREMENT;
-            log->debug("28-Tristate speed step change");
-            status=status&((~LnConstants::DEC_MODE_MASK)|
-                            LnConstants::STAT1_SL_SPDEX)
-                         | LnConstants::DEC_MODE_28TRI;
- }
- else if(Mode==DccThrottle::SpeedStepMode28)
- {
-            speedIncrement=SPEED_STEP_28_INCREMENT;
-            log->debug("28 speed step change");
-            status=status&((~LnConstants::DEC_MODE_MASK)|
-                            LnConstants::STAT1_SL_SPDEX)
-                         | LnConstants::DEC_MODE_28;         // DEC_MODE_28 has a zero value, here for documentation
-                                                            // but it unfortunately shows a INT_VACUOUS_BIT_OPERATION
-                                                            // in Findbugs
- }
- else
- { // default to 128 speed step mode
-            speedIncrement=SPEED_STEP_128_INCREMENT;
-            log->debug("128 speed step change");
-            status=status&((~LnConstants::DEC_MODE_MASK)|
-                            LnConstants::STAT1_SL_SPDEX)
-                         | LnConstants::DEC_MODE_128;
+     log->debug("14 speed step change"); // NOI18N
+     status = status & ((~LnConstants::DEC_MODE_MASK)
+             | LnConstants::STAT1_SL_SPDEX)
+             | LnConstants::DEC_MODE_14;
+ } else if (Mode->mode == SpeedStepMode::MOTOROLA_28) {
+     log->debug("28-Tristate speed step change");
+     status = status & ((~LnConstants::DEC_MODE_MASK)
+             | LnConstants::STAT1_SL_SPDEX)
+             | LnConstants::DEC_MODE_28TRI;
+ } else if (Mode->mode == SpeedStepMode::NMRA_DCC_28) {
+     log->debug("28 speed step change");
+     status = status & ((~LnConstants::DEC_MODE_MASK)
+             | LnConstants::STAT1_SL_SPDEX);
+     // | LnConstants.DEC_MODE_28;      // DEC_MODE_28 has a zero value, here for documentation
+     // it unfortunately shows a INT_VACUOUS_BIT_OPERATION in SpotBugs
+     // and I don't want to annote that around this entire long method
+ } else { // default to 128 speed step mode
+     log->debug("128 speed step change");
+     status = status & ((~LnConstants::DEC_MODE_MASK)
+             | LnConstants::STAT1_SL_SPDEX)
+             | LnConstants::DEC_MODE_128;
  }
  if(log->isDebugEnabled())
           log->debug("New Slot Mode: " +LnConstants::DEC_MODE(status));
@@ -736,10 +881,41 @@
 
 
 /*public*/ LocoAddress* LocoNetThrottle::getLocoAddress() {
-    return new DccLocoAddress(address, LnThrottleManager::isLongAddress(address));
+ if (slot != nullptr) {
+     if ((slot->slotStatus() == LnConstants::LOCO_IN_USE) ||
+         (slot->slotStatus() == LnConstants::LOCO_COMMON)) {
+         log->debug(tr("getLocoAddress replying address %1 for slot %2").arg(address).arg(slot->getSlot()));
+         return new DccLocoAddress(address, LnThrottleManager::isLongAddress(address));
+     }
+ }
+ log->debug(tr("getLocoAddress replying address %1 for slot not in-use or for sub-consisted slot or for null slot").arg(address));
+ return new DccLocoAddress(address, LnThrottleManager::isLongAddress(address));
 }
 
-//    // initialize logging
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LocoNetThrottle::class.getName());
+/**
+ * "Dispatch" a LocoNet throttle by setting the slot as "common" then performing
+ * a slot move to slot 0.
+ * <p>
+ * The throttle being dispatched no longer has control of the loco, but other
+ * throttles may continue to control the loco.
+ *
+ * @param t throttle being dispatched
+ * @param l throttle listener to remove
+ */
+/*public*/ void LocoNetThrottle::dispatchThrottle(DccThrottle* t, ThrottleListener* l) {
+    log->debug(tr("dispatchThrottle - throttle %1").arg(t->getLocoAddress()->toString()));
+    // set status to common & dispatch slot
+    // needs to be done one after another with no delay.
+    if (qobject_cast<LocoNetThrottle*>(t)){
+        LocoNetThrottle* lnt = (LocoNetThrottle*) t;
+        LocoNetSlot* tSlot = lnt->getLocoNetSlot();
+        if (tSlot->slotStatus() != LnConstants::LOCO_COMMON) {
+            network->sendLocoNetMessage(tSlot->writeStatus(LnConstants::LOCO_COMMON));
+        }
+        log->debug(tr("dispatchThrottle is dispatching slot %1").arg(tSlot->getSlot()));
+            network->sendLocoNetMessage(tSlot->dispatchSlot());
+    }
+}
 
-//}
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* LocoNetThrottle::log = LoggerFactory::getLogger("LocoNetThrottle");

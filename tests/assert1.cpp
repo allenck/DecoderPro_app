@@ -162,17 +162,16 @@
 /*public*/ /*static*/ void Assert::assertEquals(QString message, QVariant expected, QVariant actual, QString file, int line)
 {
 //if(actual != nullptr && expected != nullptr)
-    {
-        if(actual!=(expected))
-            fail(tr("%1 message Reporter not same %2 vs %3").arg(actual.toString()).arg(expected.toString()), file, line);
-    }
+ {
+  if(actual!=(expected))
+   fail(tr("%1 message Reporter not same %2 vs %3").arg(actual.toString()).arg(expected.toString()), file, line);
+ }
 }
 
 /*public*/ /*static*/ void Assert::assertEquals(QString message, bool expected, bool actual, QString file, int line)
 {
-    if(expected != actual)
-        fail(tr("%1 not equal expected '%2' vs '%3'").arg(message).arg(expected?"true":"false").arg(actual?"true":"false"), file, line);
-
+ if(expected != actual)
+  fail(tr("%1 not equal expected '%2' got '%3'").arg(message).arg(expected?"true":"false").arg(actual?"true":"false"), file, line);
 }
 
 /*public*/ /*static*/ void Assert::assertEquals(QString message, QString expected, QString actual, QString file, int line)
@@ -276,7 +275,7 @@ private static bool isEquals(Object expected, Object actual) {
 /*public*/ /*static*/ void Assert::assertEquals(bool expected, bool actual, QString file, int line) {
     if(expected != actual)
     {
-        fail(tr("Strings do not match: expected \"%1\" vs \"%2\"").arg(expected).arg(actual), file, line);
+        fail(tr("Boolean values do not match: expected \"%1\" vs \"%2\"").arg(expected?"true":"false").arg(actual?"true":"false"), file, line);
     }
 }
 
@@ -543,8 +542,9 @@ private static void failEquals(String message, Object actual) {
      *  */
     // </editor-fold>
 }
-
-/*public*/ static void assertArrayEquals(String message, byte[] expecteds, byte[] actuals) throws ArrayComparisonFailure {
+#endif
+/*public*/ /*static*/ void Assert::assertArrayEquals(QString message,QVector<int> expecteds, QVector<int> actuals, QString file, int line) //throw (ArrayComparisonFailure)
+{
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
      * 1: aload_1
@@ -555,7 +555,7 @@ private static void failEquals(String message, Object actual) {
     // </editor-fold>
 }
 
-/*public*/ static void assertArrayEquals(byte[] expecteds, byte[] actuals) {
+/*public*/ /*static*/ void Assert::assertArrayEquals(QVector<int> expecteds, QVector<int> actuals, QString file, int line) {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aconst_null
      * 1: aload_0
@@ -564,8 +564,9 @@ private static void failEquals(String message, Object actual) {
      * 6: return
      *  */
     // </editor-fold>
+ assertArrayEquals("", expecteds, actuals, file, line);
 }
-
+#if 0
 /*public*/ static void assertArrayEquals(String message, char[] expecteds, char[] actuals) throws ArrayComparisonFailure {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
@@ -1001,6 +1002,10 @@ if(!object.isNull())
 /*public*/ /*static*/ void Assert::assertNull(QString message, QVariant object, QString file, int line) {
 if(!object.isNull())
  fail(tr("%1, QVariant not null").arg(message), file, line);
+}
+/*public*/ /*static*/ void Assert::assertNull(QString message, QByteArray object, QString file, int line) {
+if(!object.isNull())
+ fail(tr("%1, QByteArray not null").arg(message), file, line);
 }
 
 #if 0

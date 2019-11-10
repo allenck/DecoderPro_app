@@ -39,7 +39,7 @@ Engineer::Engineer(Warrant* warrant, DccThrottle* throttle, QObject *parent) : Q
  _idxCurrentCommand = -1;
  _throttle = throttle;
  _syncIdx = 0;
- setSpeedStepMode(_throttle->getSpeedStepMode());
+ setSpeedStepMode(_throttle->getSpeedStepMode()->mode);
 }
 #if 0
     /*public*/ void run() {
