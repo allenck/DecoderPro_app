@@ -44,6 +44,7 @@
 #include "loconet/loconetmessageexceptiontestaction.h"
 #include "loconet/loconetthrottletestaction.h"
 #include "misc/nmrapackettestaction.h"
+#include "misc/accessoryopsmodeprogrammerfacadetestaction.h"
 
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -107,6 +108,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     proxyMenu->addAction(new ProxyLightManagerTestAction(this));
     QMenu* facadeMenu = new QMenu(tr("Programmer facades ..."));
     addMenu(facadeMenu);
+    facadeMenu->addAction(new AccessoryOpsModeProgrammerFacadeTestAction(this));
     facadeMenu->addAction(new AddressedHighCvProgranmmerFacadeTestAction(this));
     facadeMenu->addAction(new MultiIndexProgrammerFacadeTestAction(this));
     facadeMenu->addAction(new OpsModeDelayedProgrammerFacadeTestAction(this));

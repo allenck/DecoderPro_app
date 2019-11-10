@@ -148,7 +148,10 @@ SOURCES += \
     loconet/loconetmessageexceptiontestaction.cpp \
     loconet/loconetthrottletestaction.cpp \
     misc/nmrapackettest.cpp \
-    misc/nmrapackettestaction.cpp
+    misc/nmrapackettestaction.cpp \
+    misc/accessoryopsmodeprogrammerfacadetest.cpp \
+    mockcommandstation.cpp \
+    misc/accessoryopsmodeprogrammerfacadetestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -274,7 +277,10 @@ HEADERS += \
     loconet/loconetmessageexceptiontestaction.h \
     loconet/loconetthrottletestaction.h \
     misc/nmrapackettest.h \
-    misc/nmrapackettestaction.h
+    misc/nmrapackettestaction.h \
+    misc/accessoryopsmodeprogrammerfacadetest.h \
+    mockcommandstation.h \
+    misc/accessoryopsmodeprogrammerfacadetestaction.h
 
 unix {
     target.path = /usr/lib

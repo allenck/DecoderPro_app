@@ -4,11 +4,11 @@
 #include "proxyturnoutmanager.h"
 #include "abstractturnout.h"
 #include "nmrapacket.h"
+#include "loggerfactory.h"
 
 PushbuttonPacket::PushbuttonPacket(QObject *parent) :
     QObject(parent)
 {
- log = new Logger("PushbuttonPacket");
 }
 /**
  * Generates an NMRA packet containing the correct payload to enable or
@@ -67,7 +67,6 @@ PushbuttonPacket::PushbuttonPacket(QObject *parent) :
 
 /*public*/ /*static*/ QByteArray PushbuttonPacket::pushbuttonPkt(QString prefix, int turnoutNum, bool locked)
 {
- Logger log("PushbuttonPacket::pushbuttonPkt");
  AbstractTurnout* t = (AbstractTurnout*)((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getBySystemName(prefix + turnoutNum);
  QByteArray bl;
 
@@ -154,6 +153,4 @@ PushbuttonPacket::PushbuttonPacket(QObject *parent) :
     return CVdata;
 }
 
-//	static org.apache.log4j.Logger log = org.apache.log4j.Logger
-//	.getLogger(PushbuttonPacket.class.getName());
-//}
+/*private*/ /*final*/ /*static*/ Logger* PushbuttonPacket::log = LoggerFactory::getLogger("PushbuttonPacket");

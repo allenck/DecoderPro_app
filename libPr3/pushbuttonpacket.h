@@ -27,7 +27,7 @@ public slots:
    private:
     /*private*/ /*final*/ static QStringList VALIDDECODERNAMES;// = { unknown, NCEname, CVP_1Bname,
 //		CVP_2Bname };
-    Logger* log;
+    static Logger* log;
     /*private*/ static int CVPturnoutLockout(QString prefix, int turnoutNum);
 
 };
