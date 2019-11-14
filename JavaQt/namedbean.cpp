@@ -104,6 +104,25 @@ void NamedBean::addPropertyChangeListener(PropertyChangeListener */*l*/, QString
 
 }
 /**
+ * Request a call-back when a bound property changes. Bound properties are
+ * the known state, commanded state, user and system names.
+ *
+ * @param propertyName The name of the property to listen to
+ * @param listener     The listener. This may change in the future to be a
+ *                         subclass of NamedProprtyChangeListener that
+ *                         carries the name and listenerRef values
+ *                         internally
+ * @param name         The name (either system or user) that the listener
+ *                         uses for this namedBean, this parameter is used
+ *                         to help determine when which listeners should be
+ *                         moved when the username is moved from one bean to
+ *                         another
+ * @param listenerRef  A textual reference for the listener, that can be
+ *                         presented to the user when a delete is called
+ */
+/*public*/ void addPropertyChangeListener(/*@Nonnull*/ QString /*propertyName*/, /*@Nonnull*/ PropertyChangeListener* /*listener*/,
+                                                  QString /*name*/, QString /*listenerRef*/) {}
+/**
 * Add a {@link java.beans.PropertyChangeListener} for a specific property.
 *
 * @param propertyName The name of the property to listen on.

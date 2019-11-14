@@ -29,7 +29,7 @@ public:
      * Get all available aspect names
      */
 //    /*public*/ java.util.Enumeration<QString> getAspects() = 0;
-    virtual QStringList getAspects() = 0;
+    virtual QStringListIterator getAspects() = 0;
     
     /**
      * Get the associated signal system and the common information

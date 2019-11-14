@@ -546,6 +546,7 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 /*public*/ /*synchronized*/ void AbstractManager::removeVetoableChangeListener(VetoableChangeListener* l) {
     vcs->removeVetoableChangeListener(l);
 }
+
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper

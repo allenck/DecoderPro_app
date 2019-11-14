@@ -21,7 +21,7 @@ namespace Sprog
 
   /*public*/ void setSystemConnectionMemo(SprogSystemConnectionMemo* memo);
   /*public*/ QString getUserName();
-  /*public*/ void sendPacket(QByteArray packet, int repeats);
+  /*public*/ bool sendPacket(QByteArray packet, int repeats);
   /*public*/ SprogSlot* slot(const int i);
   /*public*/ int getInUseCount();
   /*public*/ bool isBusy();

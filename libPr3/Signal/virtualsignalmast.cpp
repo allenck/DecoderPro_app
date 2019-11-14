@@ -90,7 +90,16 @@ void VirtualSignalMast::configureFromName(QString systemName)
     AbstractSignalMast::setAspect(aspect);
 }
 
+/**
+ *
+ * @param newVal for ordinal of all VirtualSignalMasts in use
+ */
+/*protected*/ /*static*/ void VirtualSignalMast::setLastRef(int newVal) {
+    lastRef = newVal;
+}
 /*public*/ /*static*/ int VirtualSignalMast::getLastRef(){ return lastRef; }
+
+/*public*/ QString VirtualSignalMast::className() {return "jmri.implementation.VirtualSignalMast";}
 
 
 //static final protected org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(VirtualSignalMast.class.getName());

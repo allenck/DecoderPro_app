@@ -12,6 +12,7 @@ public:
     void configureFromName(QString systemName) ;
     /*public*/ void setAspect(QString aspect);
     /*public*/ static int getLastRef();
+    /*public*/ QString className();
 
 signals:
 
@@ -20,6 +21,9 @@ private:
     static  int lastRef;// = 0;
 
     Logger* log;
+protected:
+    /*protected*/ static void setLastRef(int newVal);
+
 };
 
 #endif // VIRTUALSIGNALMAST_H

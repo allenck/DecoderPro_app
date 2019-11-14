@@ -82,7 +82,7 @@ SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractPro
  * Send a DCC packet to the rails. This implements the CommandStation interface.
  * @param packet
  */
-void SlotManager::sendPacket(QByteArray packet, int sendCount)
+bool SlotManager::sendPacket(QByteArray packet, int sendCount)
 {
  if (sendCount > 8)
  {
@@ -136,6 +136,8 @@ void SlotManager::sendPacket(QByteArray packet, int sendCount)
         throttledTransmitter->sendLocoNetMessage(m);
     else
      tc->sendLocoNetMessage(m);
+
+    return true;
 }
 
 

@@ -7,6 +7,7 @@
 #include "progdebugger.h"
 #include "accessoryopsmodeprogrammerfacade.h"
 #include <qstringlist.h>
+#include "sleeperthread.h"
 
 AccessoryOpsModeProgrammerFacadeTest::AccessoryOpsModeProgrammerFacadeTest(QObject *parent) : QObject(parent)
 {
@@ -106,7 +107,7 @@ AccessoryOpsModeProgrammerFacadeTest::AccessoryOpsModeProgrammerFacadeTest(QObje
 
     void ProgListenerO10::programmingOpReply(int value, int status)
     {
-        test->log->debug("callback value=" + value + " status=" + status);
+        test->log->debug("callback value=" + QString::number(value) + " status=" + QString::number(status));
         test->replied = true;
         test->readValue = value;
     }
@@ -129,14 +130,14 @@ AccessoryOpsModeProgrammerFacadeTest::AccessoryOpsModeProgrammerFacadeTest(QObje
             sb.append("(\\D+)(\\d+)");
         }
         sb.append("(\\D*)$");
-        QString pat = sb.toString();
+        QString pat = sb/*.toString()*/;
         pattern = QRegularExpression(pat);//Pattern.compile(pat);
-        matcher = pattern.matcher(methodName);
+        matcher = pattern.match(methodName);
         log->debug(tr("Test: %1 pat=\"%2\").arg(groupCount=%3").arg(methodName).arg(pat).arg(matcher.lastCapturedIndex()));
         if (matcher.hasMatch()) {
             for (int j = 0; j <= matcher.lastCapturedIndex(); j++) {
                 retString.append(matcher.captured(j));
-                log->debug(tr("Adding item=%1, string=\"%2\"").arg(j).arg(matcher.group(j)));
+                log->debug(tr("Adding item=%1, string=\"%2\"").arg(j).arg(matcher.captured(j)));
             }
         } else {
             log->error(tr("method=\"%1\" did not match pattern=\"%2\"").arg(methodName).arg(pat));
@@ -147,7 +148,8 @@ AccessoryOpsModeProgrammerFacadeTest::AccessoryOpsModeProgrammerFacadeTest(QObje
 
     /*synchronized*/ void AccessoryOpsModeProgrammerFacadeTest::waitReply() throw (InterruptedException) {
         while (!replied) {
-            wait(200);
+            //wait(200);
+         SleeperThread::msleep(200);
         }
         replied = false;
     }

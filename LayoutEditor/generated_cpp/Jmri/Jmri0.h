@@ -64,6 +64,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -2995,7 +2996,7 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getSystemPrefix();
 virtual QString  getUserName();
-virtual void sendPacket(QByteArray  arg__1, int  arg__2);
+virtual bool  sendPacket(QByteArray  arg__1, int  arg__2);
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
@@ -3007,7 +3008,7 @@ class PythonQtPublicPromoter_CommandStation : public CommandStation
 { public:
 inline QString  py_q_getSystemPrefix() { return CommandStation::getSystemPrefix(); }
 inline QString  py_q_getUserName() { return CommandStation::getUserName(); }
-inline void py_q_sendPacket(QByteArray  arg__1, int  arg__2) { CommandStation::sendPacket(arg__1, arg__2); }
+inline bool  py_q_sendPacket(QByteArray  arg__1, int  arg__2) { return CommandStation::sendPacket(arg__1, arg__2); }
 };
 
 class PythonQtWrapper_CommandStation : public QObject
@@ -3020,8 +3021,8 @@ void delete_CommandStation(CommandStation* obj) { delete obj; }
    QString  py_q_getSystemPrefix(CommandStation* theWrappedObject){  return (((PythonQtPublicPromoter_CommandStation*)theWrappedObject)->py_q_getSystemPrefix());}
    QString  getUserName(CommandStation* theWrappedObject);
    QString  py_q_getUserName(CommandStation* theWrappedObject){  return (((PythonQtPublicPromoter_CommandStation*)theWrappedObject)->py_q_getUserName());}
-   void sendPacket(CommandStation* theWrappedObject, QByteArray  arg__1, int  arg__2);
-   void py_q_sendPacket(CommandStation* theWrappedObject, QByteArray  arg__1, int  arg__2){  (((PythonQtPublicPromoter_CommandStation*)theWrappedObject)->py_q_sendPacket(arg__1, arg__2));}
+   bool  sendPacket(CommandStation* theWrappedObject, QByteArray  arg__1, int  arg__2);
+   bool  py_q_sendPacket(CommandStation* theWrappedObject, QByteArray  arg__1, int  arg__2){  return (((PythonQtPublicPromoter_CommandStation*)theWrappedObject)->py_q_sendPacket(arg__1, arg__2));}
 };
 
 

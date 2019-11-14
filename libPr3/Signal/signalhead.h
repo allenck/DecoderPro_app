@@ -4,14 +4,15 @@
 #include "abstractnamedbean.h"
 #include "libPr3_global.h"
 #include <QVector>
+#include "../Signal/signals.h"
 
-class LIBPR3SHARED_EXPORT SignalHead /*: public NamedBean*/ : public AbstractNamedBean
+class LIBPR3SHARED_EXPORT SignalHead /*: public NamedBean*/ : public Signals
 {
  Q_OBJECT
 public:
- explicit SignalHead(QObject *parent = 0)  : AbstractNamedBean(parent) {}
-     SignalHead(QString systemName, QObject* parent) :AbstractNamedBean(systemName, parent) {}
-     SignalHead(QString systemName, QString userName, QObject* parent) : AbstractNamedBean(systemName, userName, parent) {}
+ explicit SignalHead(QObject *parent = 0)  : Signals(parent) {}
+     SignalHead(QString systemName, QObject* parent) : Signals(systemName, parent) {}
+     SignalHead(QString systemName, QString userName, QObject* parent) : Signals(systemName, userName, parent) {}
     /**
      * Represent a single signal head. (Try saying that ten times fast!)
      * A signal may have more than one of these

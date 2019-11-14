@@ -21,6 +21,7 @@ public:
    /*public*/ int getDccSignalMastAddress() ;
    /*public*/ CommandStation* getCommandStation();
    /*public*/ static QString isDCCAddressUsed(int addr);
+   /*public*/ QString className();
 
 signals:
 

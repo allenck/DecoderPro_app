@@ -7,14 +7,15 @@
 #include <QSet>
 #include "idtagmanager.h"
 #include "turnoutmanager.h"
+#include "proxymanager.h"
 
-// NOTE: This class is a repklacement for AbstractProxyManager that
+// NOTE: This class is a replacement for AbstractProxyManager that
 // implements TurnoutManager instead of AbstractManager
 
-class LIBPR3SHARED_EXPORT AbstractProxyTurnoutManager :  public TurnoutManager
+class LIBPR3SHARED_EXPORT AbstractProxyTurnoutManager :  public TurnoutManager, public ProxyManager
 {
     Q_OBJECT
-  //Q_INTERFACES(IdTagManager)
+    Q_INTERFACES(ProxyManager)
 public:
     explicit AbstractProxyTurnoutManager(QObject *parent = 0);
     /**

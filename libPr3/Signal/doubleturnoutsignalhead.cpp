@@ -1,7 +1,9 @@
 #include "doubleturnoutsignalhead.h"
 #include "turnout.h"
 #include "signalhead.h"
-
+#include "timer.h"
+#include "loggerfactory.h"
+#include "instancemanager.h"
 
 //DoubleTurnoutSignalHead::DoubleTurnoutSignalHead(QObject *parent) :
 //    DefaultSignalHead(parent)
@@ -27,18 +29,20 @@
  */
 ///*public*/ class DoubleTurnoutSignalHead extends DefaultSignalHead {
 
-/*public*/ DoubleTurnoutSignalHead::DoubleTurnoutSignalHead(QString sys, QString user, NamedBeanHandle<Turnout*>* green, NamedBeanHandle<Turnout*>* red, QObject *parent) : DefaultSignalHead(sys, user, parent){
+/*public*/ DoubleTurnoutSignalHead::DoubleTurnoutSignalHead(QString sys, QString user, NamedBeanHandle<Turnout*>* green, NamedBeanHandle<Turnout*>* red, QObject *parent)
+ : DefaultSignalHead(sys, user, parent){
    // super(sys, user);
-log = new Logger("DoubleTurnoutSignalHead");
-    mRed = red;
-    mGreen = green;
+ turnoutChangeListener = new TurnoutPropertyChangeListener(this);
+ setRed(red);
+ setGreen(green);
 }
 
-/*public*/ DoubleTurnoutSignalHead::DoubleTurnoutSignalHead(QString sys, NamedBeanHandle<Turnout*>* green, NamedBeanHandle<Turnout*>* red, QObject *parent) : DefaultSignalHead(sys, parent) {
+/*public*/ DoubleTurnoutSignalHead::DoubleTurnoutSignalHead(QString sys, NamedBeanHandle<Turnout*>* green, NamedBeanHandle<Turnout*>* red, QObject *parent)
+ : DefaultSignalHead(sys, parent) {
     //super(sys);
-log = new Logger("DoubleTurnoutSignalHead");
-    mRed = red;
-    mGreen = green;
+ turnoutChangeListener = new TurnoutPropertyChangeListener(this);
+ setRed(red);
+ setGreen(green);
 }
 
 //@SuppressWarnings("fallthrough")
@@ -46,61 +50,52 @@ log = new Logger("DoubleTurnoutSignalHead");
 /*protected*/ void DoubleTurnoutSignalHead::updateOutput()
 {
  // assumes that writing a turnout to an existing state is cheap!
- if (mLit == false)
- {
-  mRed->getBean()->setCommandedState(Turnout::CLOSED);
-  mGreen->getBean()->setCommandedState(Turnout::CLOSED);
-  return;
- }
- else if ( !mFlashOn &&
-     ( (mAppearance == SignalHead::FLASHGREEN) ||
-     (mAppearance == SignalHead::FLASHYELLOW) ||
-     (mAppearance == SignalHead::FLASHRED) ) )
- {
-  // flash says to make output dark
-  mRed->getBean()->setCommandedState(Turnout::CLOSED);
-  mGreen->getBean()->setCommandedState(Turnout::CLOSED);
-  return;
+ if (mLit == false) {
+     commandState(Turnout::CLOSED, Turnout::CLOSED);
+     return;
+ } else if (!mFlashOn
+         && ((mAppearance == FLASHGREEN)
+         || (mAppearance == FLASHYELLOW)
+         || (mAppearance == FLASHRED))) {
+     // flash says to make output dark
+     commandState(Turnout::CLOSED, Turnout::CLOSED);
+     return;
 
+ } else {
+     switch (mAppearance) {
+         case RED:
+         case FLASHRED:
+             commandState(Turnout::THROWN, Turnout::CLOSED);
+             break;
+         case YELLOW:
+         case FLASHYELLOW:
+             commandState(Turnout::THROWN, Turnout::THROWN);
+             break;
+         case GREEN:
+         case FLASHGREEN:
+             commandState(Turnout::CLOSED, Turnout::THROWN);
+             break;
+         default:
+             log->warn("Unexpected new appearance: " + QString::number(mAppearance));
+         // go dark by falling through
+         case DARK:
+             commandState(Turnout::CLOSED, Turnout::CLOSED);
+             break;
+     }
  }
- else
- {
-//        switch (mAppearance) {
-//            case RED:
-//            case FLASHRED:
-  if(mAppearance == SignalHead::FLASHRED || mAppearance == SignalHead::RED )
-  {
-   mRed->getBean()->setCommandedState(Turnout::THROWN);
-   mGreen->getBean()->setCommandedState(Turnout::CLOSED);
-  }
-//                break;
-//            case YELLOW:
-//            case FLASHYELLOW:
-  else if(mAppearance == SignalHead::FLASHYELLOW || mAppearance == SignalHead::YELLOW )
-  {
-   mRed->getBean()->setCommandedState(Turnout::THROWN);
-   mGreen->getBean()->setCommandedState(Turnout::THROWN);
-  }
-//                break;
-//            case GREEN:
-//            case FLASHGREEN:
-  else if(mAppearance == SignalHead::FLASHGREEN || mAppearance == SignalHead::GREEN )
-  {
-   mRed->getBean()->setCommandedState(Turnout::CLOSED);
-   mGreen->getBean()->setCommandedState(Turnout::THROWN);
-  }
-//                break;
-//            default:
-  else
-  {
-   log->warn("Unexpected new appearance: "+QString::number(mAppearance) + "(" + getAppearanceName(mAppearance)+ ")");
-  // go dark by falling through
-//            case DARK:
-   mRed->getBean()->setCommandedState(Turnout::CLOSED);
-   mGreen->getBean()->setCommandedState(Turnout::CLOSED);
-//                break;
-  }
- }
+
+}
+/**
+ * Sets the output turnouts' commanded state.
+ *
+ * @param red   state to set the mRed turnout
+ * @param green state to set the mGreen turnout.
+ */
+void DoubleTurnoutSignalHead::commandState(int red, int green) {
+    mRedCommanded = red;
+    mRed->getBean()->setCommandedState(red);
+    mGreenCommanded = green;
+    mGreen->getBean()->setCommandedState(green);
 }
 
 /**
@@ -108,9 +103,16 @@ log = new Logger("DoubleTurnoutSignalHead");
  * eventually be garbage-collected.
  */
 /*public*/ void DoubleTurnoutSignalHead::dispose() {
-    mRed = NULL;
-    mGreen = NULL;
-    DefaultSignalHead::dispose();
+ if (mRed != nullptr) {
+     mRed->getBean()->removePropertyChangeListener(turnoutChangeListener);
+ }
+ if (mGreen != nullptr) {
+     mGreen->getBean()->removePropertyChangeListener(turnoutChangeListener);
+ }
+ mRed = nullptr;
+ mGreen = nullptr;
+ InstanceManager::turnoutManagerInstance()->removeVetoableChangeListener((VetoableChangeListener*)this);
+ DefaultSignalHead::dispose();
 }
 
 /*public*/ NamedBeanHandle<Turnout*>* DoubleTurnoutSignalHead::getRed() {return mRed;}
@@ -119,20 +121,20 @@ log = new Logger("DoubleTurnoutSignalHead");
 /*public*/ void DoubleTurnoutSignalHead::setRed(NamedBeanHandle<Turnout*>* t)
 {
  if(mRed != nullptr)
-  disconnect(mRed->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  mRed->getBean()->removePropertyChangeListener(turnoutChangeListener);
  mRed=t;
  if(mRed != nullptr)
-  connect(mRed->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  mRed->getBean()->addPropertyChangeListener(turnoutChangeListener);
 }
 
 /*public*/ void DoubleTurnoutSignalHead::setGreen(NamedBeanHandle<Turnout*>* t)
 {
  if(mGreen != nullptr)
-  disconnect(mGreen->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  mGreen->getBean()->removePropertyChangeListener(turnoutChangeListener);
 
  mGreen=t;
  if(mGreen != nullptr)
-  connect(mGreen->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  mGreen->getBean()->addPropertyChangeListener(turnoutChangeListener);
 
 }
 
@@ -151,39 +153,42 @@ bool DoubleTurnoutSignalHead::isTurnoutUsed(Turnout* t)
 
 //private PropertyChangeListener turnoutChangeListener = new PropertyChangeListener() {
 //    @Override
-/*public*/ void DoubleTurnoutSignalHead::propertyChange(PropertyChangeEvent* propertyChangeEvent) {
+/*public*/ void TurnoutPropertyChangeListener::propertyChange(PropertyChangeEvent* propertyChangeEvent) {
     if (propertyChangeEvent->getPropertyName()==("KnownState")) {
-        if (propertyChangeEvent->getSource() == (mRed->getBean()) && propertyChangeEvent->getNewValue() == (mRedCommanded)) {
+        if (propertyChangeEvent->getSource() == (dtsh->mRed->getBean()) && propertyChangeEvent->getNewValue() == (dtsh->mRedCommanded)) {
             return; // ignore change that we commanded
         }
-        if (propertyChangeEvent->getSource() == (mGreen->getBean()) && propertyChangeEvent->getNewValue() == (mGreenCommanded)) {
+        if (propertyChangeEvent->getSource() == (dtsh->mGreen->getBean()) && propertyChangeEvent->getNewValue() == (dtsh->mGreenCommanded)) {
             return; // ignore change that we commanded
         }
-        if (readUpdateTimer == nullptr) {
-//            readUpdateTimer = new QTimer(200, (ActionEvent actionEvent) ->
+        if (dtsh->readUpdateTimer == nullptr) {
+//            readUpdateTimer = new Timer(200, (ActionEvent actionEvent) ->
 //                    readOutput());
-            //readUpdateTimer.setRepeats(false);
-         readUpdateTimer = new QTimer();
-         readUpdateTimer->setInterval(200);
-         readUpdateTimer->setSingleShot(true);
-         connect(readUpdateTimer, SIGNAL(timeout()), this, SLOT(readOutput()));
-            readUpdateTimer->start();
+         dtsh->readUpdateTimer = new Timer(200, new TimerActionListener(dtsh));
+         dtsh->readUpdateTimer->setRepeats(false);
+         dtsh->readUpdateTimer->start();
         } else {
-            readUpdateTimer->start(200);
+         dtsh->readUpdateTimer->reStart();
         }
     }
 }
 //};
+
+void TimerActionListener::actionPerformed()
+{
+ dtsh->readOutput();
+}
+
 
 /**
 * Checks if the turnouts' output state matches the commanded output state; if not, then
 * changes the appearance to match the output's current state.
 */
 void DoubleTurnoutSignalHead::readOutput() {
- if ((mAppearance == FLASHGREEN)
-         || (mAppearance == FLASHYELLOW)
-         || (mAppearance == FLASHRED)
-         || (mAppearance == FLASHLUNAR)) {
+ if ((mAppearance == DoubleTurnoutSignalHead::FLASHGREEN)
+         || (mAppearance == DoubleTurnoutSignalHead::FLASHYELLOW)
+         || (mAppearance == DoubleTurnoutSignalHead::FLASHRED)
+         || (mAppearance == DoubleTurnoutSignalHead::FLASHLUNAR)) {
      // If we are actively flashing right now, then we ignore external changes, since
      // those might be coming from ourselves and will be overwritten shortly.
      return;
@@ -196,13 +201,14 @@ void DoubleTurnoutSignalHead::readOutput() {
  // something very explicitly to make this happen, like manually clicking the turnout throw
  // button, or setting up an external signaling logic system.
  if (red == Turnout::CLOSED && green == Turnout::CLOSED) {
-     setAppearance(DARK);
+     setAppearance(DoubleTurnoutSignalHead::DARK);
  } else if (red == Turnout::THROWN && green == Turnout::CLOSED) {
-     setAppearance(RED);
+     setAppearance(DoubleTurnoutSignalHead::RED);
  } else if (red == Turnout::THROWN && green == Turnout::THROWN) {
-     setAppearance(YELLOW);
+     setAppearance(DoubleTurnoutSignalHead::YELLOW);
  } else if (red == Turnout::CLOSED && green == Turnout::THROWN) {
-     setAppearance(GREEN);
+     setAppearance(DoubleTurnoutSignalHead::GREEN);
  }
 }
 
+/*static*/ Logger* DoubleTurnoutSignalHead::log = LoggerFactory::getLogger("DoubleTurnoutSignalHead");

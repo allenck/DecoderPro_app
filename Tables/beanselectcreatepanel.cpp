@@ -31,12 +31,12 @@
 {
  systemSelectionCombo = "jmri.util.swing.BeanSelectCreatePanel.SystemSelected";
 
-
  _manager = manager;
  prefixBox = new QComboBox();
  hardwareAddress = new JTextField();
  QValidator* v = new QIntValidator(0,1027);
  hardwareAddress->setValidator(v);
+
  _defaultSelect = defaultSelect;
  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  existingItem = new QRadioButton(tr("Use Existing")/*, true*/);
@@ -77,7 +77,7 @@
 
  if ( qobject_cast<ProxyManager*>(_manager)!=NULL)
  {
-  QList<Manager*> managerList =  QList<Manager*>();
+  QList<Manager*> managerList;
   if(qobject_cast<ProxyTurnoutManager*>(_manager)!=NULL)
   {
    ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance();
@@ -98,6 +98,7 @@
    ProxyReporterManager* proxy = (ProxyReporterManager*) InstanceManager::reporterManagerInstance();
    managerList = proxy->getManagerList();
   }
+
   for(int x = 0; x < managerList.size(); x++)
   {
    QString manuName; /* = ConnectionNameFromSystemName.getConnectionName(managerList.at(x)->getSystemPrefix());*/
@@ -130,9 +131,9 @@
  hardwareAddress->setToolTip("Enter in the Hardware address");
  QVBoxLayout* vLayout;
  setLayout(/*new BoxLayout(this, BoxLayout.Y_AXIS)*/vLayout = new QVBoxLayout());
- layout()->addWidget(radio);
+ vLayout->addWidget(radio);
  //vLayout->addLayout(radioHLayout);
- layout()->addWidget(bean);
+ vLayout->addWidget(bean);
  //vLayout->addLayout(beanHLayout);
  update();
 }

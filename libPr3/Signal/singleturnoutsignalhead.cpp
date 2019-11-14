@@ -146,7 +146,7 @@
         validStates.replace(x, (mOnAppearance * 2));  // makes flashing
         x++;
     }
-    validStates.replace(x, mOnAppearance);
+    validStates.replace(x, mOffAppearance);
     x++;
     if (mOnAppearance == SignalHead::DARK){
         validStates.replace(x, (mOffAppearance * 2));  // makes flashing

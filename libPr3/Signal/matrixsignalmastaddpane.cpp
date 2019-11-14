@@ -34,7 +34,7 @@
 
 /*public*/ MatrixSignalMastAddPane::MatrixSignalMastAddPane(QWidget* parent) : SignalMastAddPane(parent)
 {
- resetPreviousState = new QCheckBox(tr("ResetPrevious"));
+ resetPreviousState = new QCheckBox(tr("Reset previous Aspect"));
  prefs = static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"));
  matrixBitNumSelectionCombo = QString("jmri.jmrit.beantable.MatrixSignalMastAddPane" )+ ".matrixBitNumSelected";
  allowUnLit = new QCheckBox();
@@ -53,7 +53,7 @@
 
  _matrixUnLitPanel = new QGroupBox();
  matrixUnLitPanelLayout = new QVBoxLayout(_matrixUnLitPanel);
-
+ setObjectName("MatrixSignalMastAddPane");
 
  /**
   * on = thrown, off = closed, no turnout states asked
@@ -100,12 +100,12 @@
     //matrixMastScroll ->setBorder(BorderFactory.createEmptyBorder());
 //    scrollBorder->layout()->addWidget(matrixMastScroll);
     thisLayout->addWidget(/*scrollBorder*/matrixMastScroll);
-    unlitCheck1 = new QCheckBox();
-    unlitCheck2 = new QCheckBox();
-    unlitCheck3 = new QCheckBox();
-    unlitCheck4 = new QCheckBox();
-    unlitCheck5 = new QCheckBox();
-    unlitCheck6 = new QCheckBox();
+//    unlitCheck1 = new QCheckBox();
+//    unlitCheck2 = new QCheckBox();
+//    unlitCheck3 = new QCheckBox();
+//    unlitCheck4 = new QCheckBox();
+//    unlitCheck5 = new QCheckBox();
+//    unlitCheck6 = new QCheckBox();
     // repeat in order to set MAXMATRIXBITS > 6
 
 }
@@ -167,7 +167,7 @@
     }
 
     if ((qobject_cast<MatrixSignalMast*>(mast)==nullptr) ) {
-        log->error(tr("mast was wrong type: %1 %2").arg(mast->getSystemName()).arg( mast->metaObject()->className()));
+        log->error(tr("mast was wrong type: %1 %2").arg(mast->getSystemName()).arg( mast->className()));
         return;
     }
 
@@ -424,6 +424,7 @@ void MatrixSignalMastAddPane::updateMatrixMastPanel()
  {
   QString aspect = aspects.next();
   MatrixAspectPanel* aspectpanel = new MatrixAspectPanel(aspect, this);
+  aspectpanel->setObjectName("MatrixAspectPanel");
   matrixAspect.insert(aspect, aspectpanel); // store in LinkedHashMap
   // values are filled in later
  }
@@ -431,14 +432,20 @@ void MatrixSignalMastAddPane::updateMatrixMastPanel()
  //matrixMastPanel.removeAll();
  QObjectList ol = matrixMastPanel->layout()->children();
  foreach (QObject* obj, ol) {
-  if(qobject_cast<QWidget*>(obj)!= nullptr)
+  if(qobject_cast<QWidget*>(obj)!= nullptr){
    matrixMastPanel->layout()->removeWidget(qobject_cast<QWidget*>(obj));
+   log->debug(tr("remove %1").arg(obj->objectName()));
+   delete qobject_cast<QWidget*>(obj);
+  }
+  if(qobject_cast<QLayout*>(obj)!= nullptr)
+   delete obj;
  }
- delete matrixMastPanel->layout();
- matrixMastPanel->setLayout(new QVBoxLayout());
+// delete matrixMastPanel->layout();
+// matrixMastPanel->setLayout(new QVBoxLayout());
 
  // sub panels (so we can hide all turnouts with Output Type drop down box later)
  QWidget* turnoutpanel = new QWidget();
+ turnoutpanel->setObjectName("turnoutpanel");
  QVBoxLayout* turnoutpanelLayout = new QVBoxLayout(turnoutpanel);
  // binary matrix outputs follow:
  QGroupBox* output1panel = new QGroupBox();
@@ -500,6 +507,7 @@ void MatrixSignalMastAddPane::updateMatrixMastPanel()
  // repeat in order to set MAXMATRIXBITS > 6
 
  QWidget* matrixHeader = new QWidget();
+ matrixHeader->setObjectName("matrixHeader");
  QHBoxLayout* matrixHeaderLayout = new QHBoxLayout(matrixHeader);
  QLabel* matrixHeaderLabel = new QLabel(tr("For each enabled Aspect, check a unique combination of Outputs 1 to %1:").arg(bitNum));/*, JLabel.CENTER)*/;
  matrixHeaderLayout->addWidget(matrixHeaderLabel, 0, Qt::AlignCenter);
@@ -546,9 +554,10 @@ void MatrixSignalMastAddPane::bitNumChanged(int newColNum) {
     updateMatrixMastPanel();
 
     update();
-    if (window() != nullptr) {
-        ((JmriJFrame*) window()) ->resize(((JmriJFrame*) window())->sizeHint());
-        ((JmriJFrame*) window())->pack();
+    QWidget* _window = window();
+    if (_window != nullptr && qobject_cast<JmriJFrame*>(_window)) {
+        ((JmriJFrame*) _window) ->resize(((JmriJFrame*) _window)->sizeHint());
+        ((JmriJFrame*) _window)->pack();
     }
     repaint();
 
@@ -1027,6 +1036,7 @@ QString MatrixSignalMastAddPane::stringValueOf(QByteArray ba)
  {
  if (panel == nullptr) {
      panel = new QGroupBox();
+     panel->setObjectName("panel_"+aspect);
      //panel ->setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
      QVBoxLayout* panelLayout = new QVBoxLayout(panel);
 

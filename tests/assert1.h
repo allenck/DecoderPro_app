@@ -50,6 +50,7 @@ public:
 //    /*public*/ static void assertEquals(QString message, ProgrammingMode* expected, ProgrammingMode* actual);
 //    /*public*/ static void assertEquals(QString message, Reporter* expected, Reporter* actual);
     /*public*/ static void assertEquals(QString message, QVariant expected, QVariant actual, QString file, int line);
+    /*public*/ static void assertEquals(QVariant expected, QVariant actual, QString file, int line);
     /*public*/ static void assertEquals(QString message, QChar expected, QChar actual, QString file, int line);
 
 
@@ -66,7 +67,7 @@ public:
     /*public*/ static void assertNotNull(QString message, QString object, QString file, int line);
     /*public*/ static void assertNotNull(QString message, QVariant object, QString file, int line);
     /*public*/ static void assertNotNull(QString object, QString file, int line);
-    /*public*/ static void assertNull(QString message, QByteArray object, QString file, int line);
+    /*public*/ static void assertNotNull(QString message, QByteArray object, QString file, int line);
 
 
     /*public*/ static void assertNull(QString message, QObject* object, QString file, int line);
@@ -75,6 +76,7 @@ public:
     /*public*/ static void assertNull(QDomElement object, QString file, int line);
     /*public*/ static void assertNull(QString message, QString object, QString file, int line);
     /*public*/ static void assertNull(QString message, QVariant object, QString file, int line);
+    /*public*/ static void assertNull(QString message, QByteArray object, QString file, int line);
 
     /*public*/ static void assertNotSame(QString message, int unexpected, int actual, QString file, int line);
 

@@ -10,6 +10,7 @@ class MatrixSignalMast : public AbstractSignalMast
 public:
  /*public*/ MatrixSignalMast(QString systemName, QString userName, QObject* parent = nullptr);
  /*public*/ MatrixSignalMast(QString systemName, QObject* parent = nullptr);
+ ~MatrixSignalMast() {dispose();}
  /*public*/ void setBitsForAspect(QString aspect, QByteArray bitArray);
  /*public*/ QByteArray getBitsForAspect(QString aspect);
  /*public*/ void setAspect(QString aspect);
@@ -35,6 +36,9 @@ public:
  /*public*/ int getBitNum();
  /*public*/ void setAspectDisabled(QString aspect);
  /*public*/ void dispose();
+ /*public*/ QString className();
+ /*public*/ void setMatrixMastCommandDelay(int delay);
+ /*public*/ int getMatrixMastCommandDelay();
 
 public slots:
  /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException
@@ -53,7 +57,7 @@ private:
  bool _resetPreviousStates = false;
  bool isTurnoutUsed(Turnout* t);
  static int lastRef;// = 0;
-
+ int mDelay = 0;
 
 protected:
  /**
@@ -64,7 +68,9 @@ protected:
  /*protected*/ int mastBitNum = 6;
  /*protected*/ void configureFromName(QString systemName);
  /*protected*/ QMap<QString, NamedBeanHandle<Turnout*>*> outputsToBeans;// = new QMap<QString, NamedBeanHandle<Turnout*>*>(/*6*/); // output# - bean pairs
+ /*protected*/ static void setLastRef(int newVal);
 
+ friend class MatrixSignalMastTest;
 };
 
 #endif // MATRIXSIGNALMAST_H

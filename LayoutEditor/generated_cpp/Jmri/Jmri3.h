@@ -17,6 +17,7 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -1204,53 +1205,16 @@ public:
 
    ~PythonQtShell_SignalHead();
 
-virtual void addPropertyChangeListener(PropertyChangeListener*  l);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void childEvent(QChildEvent*  event);
-virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
-virtual int  compareTo(NamedBean*  n2);
-virtual void customEvent(QEvent*  event);
-virtual QString  describeState(int  state);
-virtual void dispose();
-virtual bool  equals(QObject*  obj);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual int  getAppearance();
 virtual QString  getAppearanceName();
 virtual QString  getAppearanceName(int  arg__1);
-virtual QString  getBeanType();
-virtual QString  getComment();
-virtual QString  getDisplayName();
-virtual QString  getFullyFormattedDisplayName();
 virtual bool  getHeld();
-virtual QString  getListenerRef(PropertyChangeListener*  l);
-virtual QList<QString >*  getListenerRefs();
 virtual bool  getLit();
-virtual int  getNumPropertyChangeListeners();
-virtual QVariant  getProperty(QString  key);
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
-virtual QSet<QString >  getPropertyKeys();
-virtual int  getState();
-virtual QString  getSystemName();
-virtual QString  getUserName();
 virtual QVector<QString >  getValidStateNames();
 virtual QVector<int >  getValidStates();
-virtual bool  hashCode();
-virtual void removeProperty(QString  key);
-virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
-virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void setAppearance(int  arg__1);
-virtual void setComment(QString  comment);
 virtual void setHeld(bool  arg__1);
 virtual void setLit(bool  arg__1);
-virtual void setProperty(QString  key, QVariant  value);
-virtual void setState(int  arg__1);
-virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException);
-virtual void timerEvent(QTimerEvent*  event);
-virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
-virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);

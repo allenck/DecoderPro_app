@@ -10,11 +10,11 @@
  * @param <B> type of supported NamedBean
  */
 //template<class B>
-/*public*/ class  ProxyManager/*<B extends NamedBean>*/ : public Manager
+/*public*/ class  ProxyManager ///*<B extends NamedBean>*/ : public Manager
 {
-Q_OBJECT
+//Q_OBJECT
 public:
-    ProxyManager(QObject* parent) : Manager(parent){}
+//    ProxyManager(QObject* parent) : Manager(parent){}
     /**
      * Add a Manager to the collection of Managers.
      *
@@ -49,4 +49,5 @@ public:
      */
     /*public*/ virtual QList<Manager*> getDisplayOrderManagerList() {return QList<Manager*>();}
 };
+Q_DECLARE_INTERFACE(ProxyManager, "ProxyManager")
 #endif // PROXYMANAGER_H

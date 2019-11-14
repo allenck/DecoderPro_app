@@ -10,6 +10,8 @@ public:
  AccessoryOpsModeProgrammerFacadeTestAction(QObject* parent);
 public slots:
  void actionPerformed();
+private:
+ static Logger* log;
 };
 
 #endif // ACCESSORYOPSMODEPROGRAMMERFACADETESTACTION_H

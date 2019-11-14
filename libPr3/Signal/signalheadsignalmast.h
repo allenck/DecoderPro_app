@@ -18,6 +18,7 @@ class LIBPR3SHARED_EXPORT SignalHeadSignalMast : public AbstractSignalMast
 public:
     //explicit SignalHeadSignalMast(QObject *parent = 0);
     /*public*/ SignalHeadSignalMast(QString systemName, QString userName="", QObject *parent = 0);
+    ~SignalHeadSignalMast() {dispose();}
     void configureFromName(QString systemName);
     void configureHeads(QStringList parts, int start) ;
     /*public*/ void setAspect(QString aspect) ;
@@ -27,7 +28,7 @@ public:
     /*public*/ void setAppearances(QString aspect);
     /*public*/ static QList<SignalHead*>* getSignalHeadsUsed();
     /*public*/ static QString isHeadUsed(SignalHead* head);
-
+    /*public*/ QString className();
 signals:
 
 public slots:

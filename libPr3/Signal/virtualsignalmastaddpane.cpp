@@ -22,10 +22,12 @@
 /*public*/ VirtualSignalMastAddPane::VirtualSignalMastAddPane(QWidget *parent)
 {
  allowUnLit = new QCheckBox();
+ allowUnLit->setObjectName("allowUnLit");
  disabledAspects = QMap<QString, QCheckBox*>(/*NOTIONAL_ASPECT_COUNT*/);
  disabledAspectsPanel = new JPanel();
  disabledAspectsPanel->setLayout(new QVBoxLayout());
-
+ disabledAspectsPanel->setObjectName("disabledAspectsPanel");
+ setObjectName("VirtualSignalMastAddPane");
  currentMast = nullptr;
  paddedNumber = new DecimalFormat("0000");
 
@@ -79,6 +81,7 @@
     while (aspects.hasNext()) {
         QString aspect = aspects.next();
         QCheckBox* disabled = new QCheckBox(aspect);
+        disabled->setObjectName("disabled_"+aspect);
         disabledAspects.insert(aspect, disabled);
     }
     for (QString aspect : disabledAspects.keys()) {
@@ -106,8 +109,8 @@
         return;
     }
 
-    if (! (qobject_cast<VirtualSignalMast*>(mast) != nullptr) ) {
-        log->error(tr("mast was wrong type: %1 %1").arg(mast->getSystemName()).arg(mast->metaObject()->className()));
+    if (qobject_cast<VirtualSignalMast*>(mast) == nullptr ) {
+        log->error(tr("mast was wrong type: %1 %2").arg(mast->getSystemName()).arg(mast->className()));
         return;
     }
 
@@ -134,18 +137,18 @@
                 QString mastname, /*@Nonnull*/
                         QString username)
 {
-    log->trace(tr("createMast %1 %1 %1 start with currentMast: %1").arg(sigsysname).arg( mastname).arg(username).arg(currentMast->getDisplayName()));
+    log->trace(tr("createMast %1 %2 %3 start with currentMast: %4").arg(sigsysname).arg( mastname).arg(username).arg(currentMast?currentMast->getDisplayName():"null"));
     if (currentMast == nullptr) {
         // create a mast
         QString name = "IF$vsm:"
                 + sigsysname
-                + ":" + mastname.mid(11, mastname.length() - 4);
+                + ":" + mastname.mid(11, mastname.length() - 15);
         name += "($" + (paddedNumber->format(VirtualSignalMast::getLastRef() + 1)) + ")";
         currentMast = new VirtualSignalMast(name);
         if (username != ("")) {
             currentMast->setUserName(username);
         }
-        currentMast->setMastType(mastname.mid(11, mastname.length() - 4));
+        currentMast->setMastType(mastname.mid(11, mastname.length() - 15));
         static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->Register(currentMast);
     }
 

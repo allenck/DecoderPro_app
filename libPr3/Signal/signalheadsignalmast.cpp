@@ -320,5 +320,7 @@ QStringList SignalHeadSignalMast::splitParens(QString in) {
         }
         return result;
     }
+/*public*/ QString SignalHeadSignalMast::className() {return "jmri.implementation.SignalHeadSignalMast";}
+
 //static final protected org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SignalHeadSignalMast.class.getName());
 //}

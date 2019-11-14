@@ -25,6 +25,8 @@ public:
     /*public*/ void setTurnout(QString appearance, QString turn, int state);
     /*public*/ void resetPreviousStates(bool boo);
     /*public*/ bool resetPreviousStates();
+    /*public*/ QString className();
+
 
     /*static*/ class TurnoutAspect/* implements java.io.Serializable*/
     {

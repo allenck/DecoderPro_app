@@ -220,7 +220,9 @@ SOURCES += javaqt.cpp \
     nmrapacket.cpp \
     vetoablechangelistenerproxy.cpp \
     predicate.cpp \
-    collection.cpp
+    collection.cpp \
+    timer.cpp \
+    beans.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -484,7 +486,9 @@ HEADERS += javaqt.h\
     comparatort.h \
     alphanumcomparator.h \
     collection.h \
-    discoverylistener.h
+    discoverylistener.h \
+    timer.h \
+    beans.h
 
 unix {
     target.path = /usr/lib

@@ -6,6 +6,7 @@
 #include "junitutil.h"
 
 AccessoryOpsModeProgrammerFacadeTestAction::AccessoryOpsModeProgrammerFacadeTestAction(QObject* parent)
+ : AbstractAction(tr("AccessoryOpsModeProgrammerFacadeTest"), parent)
 {
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 

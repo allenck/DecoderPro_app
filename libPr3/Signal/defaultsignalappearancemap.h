@@ -24,7 +24,7 @@ public:
     /*public*/ void loadDefaults();
     /*public*/ bool checkAspect(QString aspect) ;
     /*public*/ void addAspect(QString aspect, QVector<int>* appearances);
-    /*public*/ QStringList getAspects();
+    /*public*/ QStringListIterator getAspects();
     /*public*/ QString getSpecificAppearance(int appearance);
     /*public*/ QVector<QString> getValidAspectsForAdvancedAspect(QString advancedAspect);
     /*public*/ SignalSystem* getSignalSystem();

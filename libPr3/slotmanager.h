@@ -66,7 +66,7 @@ public:
      * Send a DCC packet to the rails. This implements the CommandStation interface.
      * @param packet
      */
-    void sendPacket(QByteArray packet, int repeats);
+    bool sendPacket(QByteArray packet, int repeats);
     /**
      * Access the information in a specific slot.  Note that this is a
      * mutable access, so that the information in the LocoNetSlot object

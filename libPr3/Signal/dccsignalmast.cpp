@@ -203,3 +203,5 @@ void DccSignalMast::common()
  }
  return NULL;
 }
+
+/*public*/ QString DccSignalMast::className() {return "jmri.implementation.DccSignalMast";}

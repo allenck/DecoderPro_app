@@ -203,7 +203,7 @@ private:
     /*private*/ void validateText();
     void updateComboBox(QString select);
     void common(Manager* manager, NamedBean* nBean, int displayOrder);
-    PopupMenuListener* popupMenuListener;
+    PopupMenuListener* popupMenuListener = nullptr;
     QAbstractItemView* _view = nullptr;
     QAbstractItemModel* _model = nullptr;
     QColor enabledColor;

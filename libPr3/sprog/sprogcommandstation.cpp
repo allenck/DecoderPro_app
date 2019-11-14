@@ -88,7 +88,7 @@ using namespace Sprog;
  * @param repeats number of times to repeat the packet
  */
 //@Override
-/*public*/ void SprogCommandStation::sendPacket(QByteArray packet, int repeats) {
+/*public*/ bool SprogCommandStation::sendPacket(QByteArray packet, int repeats) {
     if (packet.length() <= 1) {
         log->error(tr("Invalid DCC packet length: %1").arg(packet.length()));
     }
@@ -97,6 +97,7 @@ using namespace Sprog;
     }
     /*final*/ SprogMessage* m = new SprogMessage(packet);
     sendMessage(m);
+    return true;
 }
 
 /**

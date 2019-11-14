@@ -14,7 +14,7 @@
 #include "namedbeancomparator.h"
 #include "vetoablechangesupport.h"
 
-// NOTE: This class is a repklacement for AbstractProxyManager that
+// NOTE: This class is a replacement for AbstractProxyManager that
 // implements SensorManager instead of AbstractManager
 
 AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)

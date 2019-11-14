@@ -45,6 +45,15 @@
 #include "loconet/loconetthrottletestaction.h"
 #include "misc/nmrapackettestaction.h"
 #include "misc/accessoryopsmodeprogrammerfacadetestaction.h"
+#include "signals/dccsignalheadtestaction.h"
+#include "signals/singleturnoutsignalheadtestaction.h"
+#include "signals/doubleturnoutsignalheadtestaction.h"
+#include "signals/virtualsignalheadtestaction.h"
+#include "signals/signalheadsignalmasttestaction.h"
+#include "signals/signalheadsignalmastaddpanetestaction.h"
+#include "signals/matrixsignalmasttestaction.h"
+#include "signals/matrixsignalmastaddpanetestaction.h"
+#include "signals/virtualsignalmastaddpanetestaction.h"
 
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -126,4 +135,16 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addMenu(loconetThrottleMenu);
     loconetThrottleMenu->addAction(new LocoNetThrottleTestAction(this));
     loconetThrottleMenu->addAction(new NmraPacketTestAction(this));
+    QMenu* signalMenu = new QMenu(tr("Signals ..."));
+    addMenu(signalMenu);
+    signalMenu->addAction(new DccSignalHeadTestAction(this));
+    signalMenu->addAction(new DoubleTurnoutSignalHeadTestAction(this));
+    signalMenu->addAction(new MatrixSignalMastTestAction(this));
+    signalMenu->addAction(new MatrixSignalMastAddPaneTestAction(this));
+    signalMenu->addAction(new SingleTurnoutSignalHeadTestAction(this));
+    signalMenu->addAction(new SignalHeadSignalMastTestAction(this));
+    signalMenu->addAction(new SignalHeadSignalMastAddPaneTestAction(this));
+    signalMenu->addAction(new VirtualSignalHeadTestAction(this));
+    signalMenu->addAction(new VirtualSignalMastAddPaneTestAction(this));
+
 }

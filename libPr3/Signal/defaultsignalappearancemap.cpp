@@ -349,9 +349,10 @@
     table->insert(aspect, appearances);
 }
 
-/*public*/ QStringList DefaultSignalAppearanceMap::getAspects()
+/*public*/ QStringListIterator DefaultSignalAppearanceMap::getAspects()
 {
- return table->keys();
+
+ return QStringListIterator(table->keys());
 }
 
 /*public*/ QString DefaultSignalAppearanceMap::getSpecificAppearance(int appearance)

@@ -7,14 +7,15 @@
 #include <QSet>
 #include "idtagmanager.h"
 #include "sensormanager.h"
+#include "proxymanager.h"
 
-// NOTE: This class is a repklacement for AbstractProxyManager that
+// NOTE: This class is a replacement for AbstractProxyManager that
 // implements SensorManager instead of AbstractManager
 
-class LIBPR3SHARED_EXPORT AbstractProxySensorManager :  public SensorManager
+class LIBPR3SHARED_EXPORT AbstractProxySensorManager :  public SensorManager, public ProxyManager
 {
     Q_OBJECT
-  //Q_INTERFACES(IdTagManager)
+    Q_INTERFACES(ProxyManager)
 public:
     explicit AbstractProxySensorManager(QObject *parent = 0);
     /**

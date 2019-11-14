@@ -4,6 +4,7 @@
 #include <QObject>
 #include "exceptions.h"
 #include "proglistener.h"
+#include "progdebugger.h"
 
 class Logger;
 class MockCommandStation;
@@ -18,20 +19,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void testCvLimit() {
-     ProgDebugger* dp = new ProgDebugger(true, 123);
-     dp->setTestReadLimit(1024);
-     dp->setTestWriteLimit(1024);
-
-     Programmer* p = new AccessoryOpsModeProgrammerFacade(dp, "", 0, dp);
-
-     Assert::assertTrue("CV limit read OK", p.getCanRead("1024"), __FILE__, __LINE__);
-     Assert::assertTrue("CV limit write OK", p.getCanWrite("1024"), __FILE__, __LINE__);
-     Assert::assertTrue("CV limit read fail", !p.getCanRead("1025"), __FILE__, __LINE__);
-     Assert::assertTrue("CV limit write fail", !p.getCanWrite("1025"), __FILE__, __LINE__);
- }
-
- //@Test
+ /*public*/ void testCvLimit();
  /*public*/ void testWriteAddr123long1cv234val14delay200signal() throw (ProgrammerException, InterruptedException) ;
  /*public*/ void testWriteAddr3long0cv12val0delay500accessory() throw (ProgrammerException, InterruptedException);
  /*public*/ void testWriteAddr511long1cv1024val255delay0decoder() throw (ProgrammerException, InterruptedException);
@@ -45,6 +33,7 @@ private:
  /*synchronized*/ QStringList itemsFromMethodName(int methodOffset, int groupReps);
  /*synchronized*/ void waitReply() throw (InterruptedException);
 
+ friend class ProgListenerO10;
 };
 
 class  ProgListenerO10 :  public  ProgListener

@@ -223,7 +223,7 @@
     beanManuNames = new QComboBox();
     if (qobject_cast<ProxyManager*>(getManager(beanTypeChar))!= nullptr)
     { // from abstractTableTabAction
-        ProxyManager* proxy = static_cast<ProxyManager*>(getManager(beanTypeChar));
+        ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager(beanTypeChar));
         QList<Manager*> managerList = proxy->getManagerList(); // picks up all managers to fetch
         for (int x = 0; x < managerList.size(); x++) {
             QString manuPrefix = managerList.value(x)->getSystemPrefix();

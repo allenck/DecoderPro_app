@@ -434,7 +434,13 @@ bool MatrixSignalMast::isTurnoutUsed(Turnout* t) {
 }
 
 /*static*/ int MatrixSignalMast::lastRef = 0;
-
+/**
+ *
+ * @param newVal for ordinal of all MatrixSignalMasts in use
+ */
+/*protected*/ /*static*/ void MatrixSignalMast::setLastRef(int newVal) {
+    lastRef = newVal;
+}
 //@Override
 /*public*/ void MatrixSignalMast::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
 {
@@ -485,11 +491,35 @@ bool MatrixSignalMast::isTurnoutUsed(Turnout* t) {
         firePropertyChange("aspectDisabled", QVariant(), aspect);
     }
 }
+/**
+ * Set the delay between issuing Matrix Output commands to the outputs on this specific mast.
+ * Delay be extended by a connection specific Output Delay set in the connection config.
+ *
+ * @see jmri.implementation.configurexml.MatrixSignalMastXml#load(org.jdom2.Element, org.jdom2.Element)
+ * @param delay the new delay in milliseconds
+ */
+/*public*/ void MatrixSignalMast::setMatrixMastCommandDelay(int delay) {
+    if (delay >= 0) {
+        mDelay = delay;
+    }
+}
 
+/**
+ * Get the delay between issuing Matrix Output commands to the outputs on this specific mast.
+ * Delay be extended by a connection specific Output Delay set in the connection config.
+ *
+ * @see jmri.implementation.configurexml.MatrixSignalMastXml#load(org.jdom2.Element, org.jdom2.Element)
+ * @return the delay in milliseconds
+ */
+/*public*/ int MatrixSignalMast::getMatrixMastCommandDelay() {
+    return mDelay;
+}
 //@Override
 /*public*/ void MatrixSignalMast::dispose() {
     AbstractSignalMast::dispose();
 }
+
+/*public*/ QString MatrixSignalMast::className(){return "jmri.implementation.MatrixSignalMast";}
 
 /*private*/ /*final*/ /*static*/ Logger* MatrixSignalMast::log = LoggerFactory::getLogger("MatrixSignalMast");
 

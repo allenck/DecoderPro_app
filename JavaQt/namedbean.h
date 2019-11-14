@@ -284,8 +284,10 @@ public:
         virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/, QString /*name*/, const QString /*listenerRef*/);
 
         virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/);
+        virtual /*public*/ void addPropertyChangeListener(/*@Nonnull*/ QString /*propertyName*/, /*@Nonnull*/ PropertyChangeListener* /*listener*/,
+                                                          QString /*name*/, QString /*listenerRef*/) {}
 
-    virtual /*public*/ void addPropertyChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ PropertyChangeListener* /*listener*/) {}
+        virtual /*public*/ void addPropertyChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ PropertyChangeListener* /*listener*/) {}
 
         /**
          * Remove a request for a call-back when a bound property changes.

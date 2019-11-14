@@ -30,6 +30,9 @@ public:
     /*public*/ QString getFullyFormattedDisplayName();
 
     /*public synchronized*/ virtual void addPropertyChangeListener(PropertyChangeListener* l, QString beanRef, const QString listenerRef);
+    /*public*/ /*synchronized*/ void addPropertyChangeListener(/*@Nonnull */QString propertyName,
+                                                       /*@Nonnull*/ PropertyChangeListener* l,
+                                                           QString beanRef, QString listenerRef) override;
     /*public synchronized*/ virtual void addPropertyChangeListener(PropertyChangeListener* l);
     /*public synchronized*/ virtual void removePropertyChangeListener(PropertyChangeListener* listener);
     /*public*/ /*synchronized*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;

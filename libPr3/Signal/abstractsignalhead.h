@@ -1,7 +1,7 @@
 #ifndef ABSTRACTSIGNALHEAD_H
 #define ABSTRACTSIGNALHEAD_H
 #include "abstractnamedbean.h"
-#include "signalhead.h"
+#include "../Signal/signalhead.h"
 #include <QVector>
 
 class Turnout;
@@ -15,6 +15,9 @@ public:
     /*public*/ QString getAppearanceName(int appearance);
     /*public*/ QString getAppearanceName();
     /*public*/ int getAppearance();
+    /*public*/ bool isCleared();
+    /*public*/ bool isShowingRestricting();
+    /*public*/ bool isAtStop();
     /*public*/ bool getLit();
     /*public*/ bool getHeld();
     /*public*/ void setState(int s);

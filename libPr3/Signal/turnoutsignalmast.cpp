@@ -192,6 +192,9 @@ void TurnoutSignalMast::configureFromName(QString systemName) {
     return  QList<NamedBeanHandle<Turnout*>* >();
 }
 
+
 /*public*/ /*static*/ int TurnoutSignalMast::getLastRef(){ return lastRef; }
 
+
+/*public*/ QString TurnoutSignalMast::className() {return "jmri.implementation.TurnoutSignalMast";}
 

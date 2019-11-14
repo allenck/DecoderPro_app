@@ -79,6 +79,32 @@ tr("Flashing Lunar");
 //						Object newValue)
 // _once_ if anything has changed state
 
+/**
+ * Determine whether this signal shows an aspect or appearance
+ * that allows travel past it, e.g. it's "been cleared".
+ * This might be a yellow or green appearance, or an Approach or Clear
+ * aspect
+ */
+//@Override
+/*public*/ bool AbstractSignalHead::isCleared() { return !isAtStop() && !isShowingRestricting() && getAppearance()!=DARK; }
+
+/**
+ * Determine whether this signal shows an aspect or appearance
+ * that allows travel past it only at restricted speed.
+ * This might be a flashing red appearance, or a
+ * Restricting aspect.
+ */
+//@Override
+/*public*/ bool AbstractSignalHead::isShowingRestricting() { return getAppearance() == FLASHRED || getAppearance() == LUNAR || getAppearance() == FLASHLUNAR; }
+
+/**
+ * Determine whether this signal shows an aspect or appearance
+ * that forbid travel past it.
+ * This might be a red appearance, or a
+ * Stop aspect. Stop-and-Proceed or Restricting would return false here.
+ */
+//@Override
+/*public*/ bool AbstractSignalHead::isAtStop()  { return getAppearance() == RED; }
 
 /**
  * Default behavior for "lit" parameter is

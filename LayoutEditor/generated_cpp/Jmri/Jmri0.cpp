@@ -48,6 +48,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -30753,7 +30754,7 @@ if (_wrapper) {
 }
   return CommandStation::getUserName();
 }
-void PythonQtShell_CommandStation::sendPacket(QByteArray  arg__1, int  arg__2)
+bool  PythonQtShell_CommandStation::sendPacket(QByteArray  arg__1, int  arg__2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30761,19 +30762,30 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("sendPacket");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "QByteArray" , "int"};
+      static const char* argumentList[] ={"bool" , "QByteArray" , "int"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      bool returnValue{};
       void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("sendPacket", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
-      return;
+      return returnValue;
     } else {
       PyErr_Clear();
     }
   }
 }
-  CommandStation::sendPacket(arg__1, arg__2);
+  return CommandStation::sendPacket(arg__1, arg__2);
 }
 void PythonQtShell_CommandStation::timerEvent(QTimerEvent*  event0)
 {
@@ -30824,9 +30836,9 @@ QString  PythonQtWrapper_CommandStation::getUserName(CommandStation* theWrappedO
   return ( theWrappedObject->getUserName());
 }
 
-void PythonQtWrapper_CommandStation::sendPacket(CommandStation* theWrappedObject, QByteArray  arg__1, int  arg__2)
+bool  PythonQtWrapper_CommandStation::sendPacket(CommandStation* theWrappedObject, QByteArray  arg__1, int  arg__2)
 {
-  ( theWrappedObject->sendPacket(arg__1, arg__2));
+  return ( theWrappedObject->sendPacket(arg__1, arg__2));
 }
 
 

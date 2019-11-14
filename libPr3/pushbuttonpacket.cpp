@@ -90,7 +90,7 @@ PushbuttonPacket::PushbuttonPacket(QObject *parent) :
    bl = NmraPacket::accDecoderPktOpsModeLegacy(turnoutNum, 514, CVdata);
         return bl;
     } else {
-        log.error("Invalid decoder name for turnout "+turnoutNum);
+        log->error("Invalid decoder name for turnout "+turnoutNum);
         return NULL;
     }
 }

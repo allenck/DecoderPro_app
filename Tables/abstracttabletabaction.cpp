@@ -63,7 +63,7 @@ AbstractTableTabAction::~AbstractTableTabAction()
  //if (getManager() instanceof jmri.managers.AbstractProxyManager)
  if(qobject_cast<ProxyManager*>(getManager())!= nullptr)
  {
-  ProxyManager* proxy = static_cast<ProxyManager*>(getManager());
+  ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager());
   QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
   AbstractTableAction* a = getNewTableAction("All");
   Q_UNUSED(a);

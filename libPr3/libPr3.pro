@@ -1881,7 +1881,8 @@ HEADERS += \
 #    namedbeancombobox.h \
     abstractproxylightmanager.h \
     trackreporter.h \
-    loconet/bluetooth/loconetbluetoothadapter.h
+    loconet/bluetooth/loconetbluetoothadapter.h \
+    Signal/signals.h
 
 
  !contains(FTDI, 1) {

@@ -4,14 +4,16 @@
 #include "libPr3_global.h"
 #include <QSet>
 #include "lightmanager.h"
+#include "proxymanager.h"
 
 // NOTE: This class is a replacement for AbstractProxyManager that
 // implements LightManager instead of AbstractManager
 
 
-class LIBPR3SHARED_EXPORT AbstractProxyLightManager :  public LightManager
+class LIBPR3SHARED_EXPORT AbstractProxyLightManager :  public LightManager, public ProxyManager
 {
   Q_OBJECT
+  Q_INTERFACES(ProxyManager)
  public:
     explicit AbstractProxyLightManager(QObject *parent = 0);
     /**

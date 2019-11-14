@@ -11,6 +11,7 @@ public:
     //explicit SingleTurnoutSignalHead(QObject *parent = 0);
     /*public*/ SingleTurnoutSignalHead(QString sys, QString user, NamedBeanHandle<Turnout*>* lit, int on, int off, QObject *parent = 0);
     /*public*/ SingleTurnoutSignalHead(QString sys, NamedBeanHandle<Turnout*>* lit, int on, int off, QObject *parent = 0);
+    ~SingleTurnoutSignalHead() {dispose();}
     /*public*/ void dispose() ;
     /*public*/ int getOnAppearance();
     /*public*/ int getOffAppearance();

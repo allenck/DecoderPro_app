@@ -151,7 +151,28 @@ SOURCES += \
     misc/nmrapackettestaction.cpp \
     misc/accessoryopsmodeprogrammerfacadetest.cpp \
     mockcommandstation.cpp \
-    misc/accessoryopsmodeprogrammerfacadetestaction.cpp
+    misc/accessoryopsmodeprogrammerfacadetestaction.cpp \
+    signals/dccsignalheadtest.cpp \
+    abstractsignalheadtestbase.cpp \
+    signals/dccsignalheadtestaction.cpp \
+    signals/singleturnoutsignalheadtest.cpp \
+    signals/singleturnoutsignalheadtestaction.cpp \
+    signals/doubleturnoutsignalheadtest.cpp \
+    propertychangelistenerscaffold.cpp \
+    signals/doubleturnoutsignalheadtestaction.cpp \
+    signals/virtualsignalheadtest.cpp \
+    signals/virtualsignalheadtestaction.cpp \
+    signals/signalheadsignalmasttest.cpp \
+    signals/signalheadsignalmasttestaction.cpp \
+    signals/signalheadsignalmastaddpanetest.cpp \
+    signals/abstractsignalmastaddpanetestbase.cpp \
+    signals/signalheadsignalmastaddpanetestaction.cpp \
+    signals/matrixsignalmasttest.cpp \
+    signals/matrixsignalmasttestaction.cpp \
+    signals/matrixsignalmastaddpanetest.cpp \
+    signals/virtualsignalmastaddpanetest.cpp \
+    signals/matrixsignalmastaddpanetestaction.cpp \
+    signals/virtualsignalmastaddpanetestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -280,7 +301,28 @@ HEADERS += \
     misc/nmrapackettestaction.h \
     misc/accessoryopsmodeprogrammerfacadetest.h \
     mockcommandstation.h \
-    misc/accessoryopsmodeprogrammerfacadetestaction.h
+    misc/accessoryopsmodeprogrammerfacadetestaction.h \
+    signals/dccsignalheadtest.h \
+    abstractsignalheadtestbase.h \
+    signals/dccsignalheadtestaction.h \
+    signals/singleturnoutsignalheadtest.h \
+    signals/singleturnoutsignalheadtestaction.h \
+    signals/doubleturnoutsignalheadtest.h \
+    propertychangelistenerscaffold.h \
+    signals/doubleturnoutsignalheadtestaction.h \
+    signals/virtualsignalheadtest.h \
+    signals/virtualsignalheadtestaction.h \
+    signals/signalheadsignalmasttest.h \
+    signals/signalheadsignalmasttestaction.h \
+    signals/signalheadsignalmastaddpanetest.h \
+    signals/abstractsignalmastaddpanetestbase.h \
+    signals/signalheadsignalmastaddpanetestaction.h \
+    signals/matrixsignalmasttest.h \
+    signals/matrixsignalmasttestaction.h \
+    signals/matrixsignalmastaddpanetest.h \
+    signals/virtualsignalmastaddpanetest.h \
+    signals/matrixsignalmastaddpanetestaction.h \
+    signals/virtualsignalmastaddpanetestaction.h
 
 unix {
     target.path = /usr/lib

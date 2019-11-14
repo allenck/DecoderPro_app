@@ -164,7 +164,15 @@
 //if(actual != nullptr && expected != nullptr)
  {
   if(actual!=(expected))
-   fail(tr("%1 message Reporter not same %2 vs %3").arg(actual.toString()).arg(expected.toString()), file, line);
+   fail(tr("%1 message QVariant not same %2 vs %3").arg(message).arg(actual.toString()).arg(expected.toString()), file, line);
+ }
+}
+/*public*/ /*static*/ void Assert::assertEquals(QVariant expected, QVariant actual, QString file, int line)
+{
+//if(actual != nullptr && expected != nullptr)
+ {
+  if(actual!=(expected))
+   fail(tr("QVariant not same %1 vs %2").arg(actual.toString()).arg(expected.toString()), file, line);
  }
 }
 
@@ -261,7 +269,7 @@ private static bool isEquals(Object expected, Object actual) {
     // </editor-fold>
 }
 #endif
-/*public*/ /*static*/ void Assert::assertEquals(QString actual, QString expected, QString file, int line) {
+/*public*/ /*static*/ void Assert::assertEquals(QString expected, QString actual, QString file, int line) {
  if(expected.endsWith("\n"))
  {
   if(expected.mid(0, expected.length()-1) == actual)
@@ -936,6 +944,12 @@ private static bool floatIsDifferent(float f1, float f2, float delta) {
  if(object.isNull())
   fail(tr("QVariant is null %1").arg(message), file, line);
 }
+/*public*/ /*static*/ void Assert::assertNotNull(QString message, QByteArray object, QString file, int line)
+{
+ if(object.isNull())
+  fail(tr("QByteArray is null %1").arg(message), file, line);
+}
+
 
 /*public*/ /*static*/ void Assert::assertNotNull(QObject* object, QString file, int line) {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">

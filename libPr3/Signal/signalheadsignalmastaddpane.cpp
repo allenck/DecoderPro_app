@@ -90,7 +90,7 @@
 
  map = (DefaultSignalAppearanceMap*)newMap;
 
- int count = /*map->getAspectSettings*/(map->getAspects()).length();
+ int count = map->getAspectSettings(map->getAspects().next())->length();
  log->trace(tr(" head count is %1").arg(count));
 
  QStringListIterator aspects = map->getAspects();
@@ -167,14 +167,14 @@
     }
 
     if (! (qobject_cast<SignalHeadSignalMast*>(mast) != nullptr) ) {
-        log->error(tr("mast was wrong type: %1 %2").arg(mast->getSystemName()).arg( mast->metaObject()->className()));
+        log->error(tr("mast was wrong type: %1 %2").arg(mast->getSystemName()).arg( mast->className()));
         return;
     }
 
     currentMast = (SignalHeadSignalMast*) mast;
 
     // can't actually edit the heads in this kind of mast
-    int count = /*map->getAspectSettings*/(map->getAspects()).length();
+    int count = map->getAspectSettings(map->getAspects().next())->length();
     log->trace(tr(" head count is %1").arg(count));
     //signalHeadPanel.removeAll();
     QObjectList ol = signalHeadPanel->layout()->children();

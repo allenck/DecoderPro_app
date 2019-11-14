@@ -119,6 +119,9 @@ public:
     /*public*/ virtual void setHeld(bool /*newHeld*/) {}
 
     /*public*/ virtual bool isAspectDisabled(QString /*aspect*/) {return false;}
+
+    /*public*/ virtual QString className() =0;
+
     friend class SignalMastIcon;
     friend class DefaultSignalMastLogic;
     friend class DestinationMast;
