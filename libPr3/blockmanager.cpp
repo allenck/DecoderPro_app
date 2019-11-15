@@ -111,7 +111,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->a
   {
    bool bOk=false;
    int autoNumber = /*Integer.parseInt(*/systemName.mid(8).toInt(&bOk);
-   if(!bOk) throw new NumberFormatException();
+   if(!bOk) throw  NumberFormatException();
    if (autoNumber > lastAutoBlockRef)
    {
     lastAutoBlockRef = autoNumber;

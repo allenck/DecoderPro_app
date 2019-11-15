@@ -52,39 +52,38 @@ void MatrixSignalMast::common()
  emptyBits =emptyChars.toLocal8Bit();
  aspectToOutput = QMap<QString, QByteArray>(/*16*/); // "Clear" - 01001 char[] pairs
  outputsToBeans = QMap<QString, NamedBeanHandle<Turnout*>*>(/*6*/); // output# - bean pairs
-
+ mastType = "IF$xsm";
 }
 
-/*protected*/ void MatrixSignalMast::configureFromName(QString systemName) {
+/*protected*/ void MatrixSignalMast::configureFromName(QString systemName)
+{
+ // split out the basic information
+ QStringList parts = systemName.split(":");
+ if (parts.length() < 3) {
+     log->error("SignalMast system name needs at least three parts: " + systemName);
+     throw IllegalArgumentException("System name needs at least three parts: " + systemName);
+ }
+ if (parts[0] != (mastType)) {
+     log->warn("SignalMast system name should start with " + mastType + " but is " + systemName);
+ }
+ QString system = parts[1];
+ QString mast = parts[2];
 
-    // split out the basic information
-    QStringList parts = systemName.split(":");
-    if (parts.length() < 3) {
-        log->error("SignalMast system name needs at least three parts: " + systemName);
-        throw new IllegalArgumentException("System name needs at least three parts: " + systemName);
-    }
-    if (parts[0] != (mastType)) {
-        log->warn("SignalMast system name should start with " + mastType + " but is " + systemName);
-    }
-    QString system = parts[1];
-    QString mast = parts[2];
+ mast = mast.mid(0, mast.indexOf("("));
+ setMastType(mast);
 
-    mast = mast.mid(0, mast.indexOf("("));
-    setMastType(mast);
+ QString tmp = parts[2].mid(parts[2].indexOf("($") + 2, parts[2].indexOf(")") - parts[2].indexOf("($")  -2);
+ bool bok;
+     int autoNumber = (tmp.toInt(&bok));
+     if (autoNumber > lastRef) {
+         lastRef = autoNumber;
+     }
+  if(!bok) {
+     log->warn("Auto generated SystemName " + systemName + " is not in the correct format");
+ }
 
-    QString tmp = parts[2].mid(parts[2].indexOf("($") + 2, parts[2].indexOf(")"));
-    bool bok;
-        int autoNumber = (tmp.toInt(&bok));
-        if (autoNumber > lastRef) {
-            lastRef = autoNumber;
-        }
-     if(!bok) {
-        log->warn("Auto generated SystemName " + systemName + " is not in the correct format");
-    }
-
-    configureSignalSystemDefinition(system); // (checks for system) in AbstractSignalMast
-    configureAspectTable(system, mast); // (create -default- appmapping in var "map") in AbstractSignalMast
-
+ configureSignalSystemDefinition(system); // (checks for system) in AbstractSignalMast
+ configureAspectTable(system, mast); // (create -default- appmapping in var "map") in AbstractSignalMast
 }
 
 

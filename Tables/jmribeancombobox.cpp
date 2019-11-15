@@ -240,12 +240,13 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
 * Get the display name of the selected namedBean
 * @return the display name of the selected bean or NULL if there is no selection
 */
-/*public*/ QString JmriBeanComboBox::getSelectedDisplayName(){
-    QString selectedName = currentText();
-    NamedBean* nBean = displayToBean->value(selectedName);
-    if(nBean!=NULL)
-        return nBean->getDisplayName();
-    return NULL;
+/*public*/ QString JmriBeanComboBox::getSelectedDisplayName()
+{
+  QString selectedName = currentText();
+  NamedBean* nBean = displayToBean->value(selectedName);
+  if(nBean!=NULL)
+      return nBean->getDisplayName();
+  return NULL;
 }
 
 /**

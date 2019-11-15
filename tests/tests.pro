@@ -172,7 +172,17 @@ SOURCES += \
     signals/matrixsignalmastaddpanetest.cpp \
     signals/virtualsignalmastaddpanetest.cpp \
     signals/matrixsignalmastaddpanetestaction.cpp \
-    signals/virtualsignalmastaddpanetestaction.cpp
+    signals/virtualsignalmastaddpanetestaction.cpp \
+    signals/tripleturnoutsignalheadtest.cpp \
+    signals/tripleoutputsignalheadtest.cpp \
+    signals/dccsignalmastaddpanetest.cpp \
+    signals/tripleoutputsignalheadtestaction.cpp \
+    signals/tripleturnoutsignalheadtestaction.cpp \
+    signals/dccsignalmastaddpanetestaction.cpp \
+    signals/turnoutsignalmastaddpanetest.cpp \
+    signals/turnoutsignalmastaddpanetestaction.cpp \
+    signals/turnoutsignalmasttest.cpp \
+    signals/turnoutsignalmasttestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -322,7 +332,17 @@ HEADERS += \
     signals/matrixsignalmastaddpanetest.h \
     signals/virtualsignalmastaddpanetest.h \
     signals/matrixsignalmastaddpanetestaction.h \
-    signals/virtualsignalmastaddpanetestaction.h
+    signals/virtualsignalmastaddpanetestaction.h \
+    signals/tripleturnoutsignalheadtest.h \
+    signals/tripleoutputsignalheadtest.h \
+    signals/dccsignalmastaddpanetest.h \
+    signals/tripleoutputsignalheadtestaction.h \
+    signals/tripleturnoutsignalheadtestaction.h \
+    signals/dccsignalmastaddpanetestaction.h \
+    signals/turnoutsignalmastaddpanetest.h \
+    signals/turnoutsignalmastaddpanetestaction.h \
+    signals/turnoutsignalmasttest.h \
+    signals/turnoutsignalmasttestaction.h
 
 unix {
     target.path = /usr/lib

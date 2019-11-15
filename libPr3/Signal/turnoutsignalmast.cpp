@@ -48,13 +48,13 @@ void TurnoutSignalMast::configureFromName(QString systemName) {
     mast = mast.mid(0, mast.indexOf("("));
     setMastType(mast);
 
-    QString tmp = parts.at(2).mid(parts.at(2).indexOf("($")+2, parts.at(2).indexOf(")"));
-    try {
-        int autoNumber = tmp.toInt();
+    QString tmp = parts.at(2).mid(parts.at(2).indexOf("($")+2, parts.at(2).indexOf(")")- parts.at(2).indexOf("($") -2);
+    bool bok;
+        int autoNumber = tmp.toInt(&bok);
         if (autoNumber > lastRef) {
             lastRef = autoNumber;
         }
-    } catch (NumberFormatException e){
+    if(!bok){
         log->warn("Auto generated SystemName "+ systemName + " is not in the correct format");
     }
 
@@ -101,13 +101,18 @@ void TurnoutSignalMast::configureFromName(QString systemName) {
        }
    }
   }
-  Turnout* turnToSet = turnouts.value(aspect)->getTurnout();
-  int stateToSet = turnouts.value(aspect)->getTurnoutState();
+  Turnout* turnToSet = nullptr;
+  int stateToSet;
+  if(turnouts.contains(aspect))
+  {
+   turnToSet= turnouts.value(aspect)->getTurnout();
+   stateToSet = turnouts.value(aspect)->getTurnoutState();
+  }
   //Set the new signal mast state
   if (turnToSet != nullptr) {
       turnToSet->setCommandedState(stateToSet);
   } else {
-      log->error("Trying to set a state " + aspect + " on signal mast " + getDisplayName() + " which has not been configured");
+      log->error("Trying to set \"" + aspect + "\" on signal mast \"" + getDisplayName() + "\" which has not been configured");
   }
  } else if (log->isDebugEnabled()) {
      log->debug("Mast set to unlit, will not send aspect change to hardware");

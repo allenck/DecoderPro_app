@@ -5,6 +5,7 @@
 class Logger;
 class MatrixSignalMastTestAction : public AbstractAction
 {
+ Q_OBJECT
 public:
  MatrixSignalMastTestAction(QObject *parent);
 public slots:

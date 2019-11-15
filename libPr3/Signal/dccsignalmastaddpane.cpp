@@ -146,7 +146,7 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/ void DccSignalMastAddPane::setMast(SignalMast* mast) {
-//    log->debug(tr("setMast(%1) start").arg(mast->normalizeUserName()));
+    log->debug(tr("setMast(%1) start").arg(mast?mast->getDisplayName():"null"));
     if (mast == nullptr) {
         currentMast = nullptr;
         log->debug("setMast() end early with null");
@@ -154,9 +154,9 @@
     }
 
     //if (! (mast instanceof DccSignalMast) )
-    if(qobject_cast<DccSignalMast*>(mast)!= nullptr)
+    if(qobject_cast<DccSignalMast*>(mast)== nullptr)
     {
-        log->error(tr("mast was wrong type: %1 %2").arg(mast->getSystemName()).arg( mast->metaObject()->className()));
+        log->error(tr("mast was wrong type: %1 %2").arg(mast->getSystemName()).arg( mast->className()));
         log->debug(tr("setMast(%1) end early: wrong type").arg(mast->getDisplayName()));
         return;
     }
@@ -258,7 +258,7 @@
 
         QString name = systemNameText
                 + sigsysname
-                + ":" + mastname.mid(11, mastname.length() - 4);
+                + ":" + mastname.mid(11, mastname.length() - 15);
         name += "(" + dccAspectAddressField->text() + ")";
         currentMast = constructMast(name);
         static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->Register(currentMast);

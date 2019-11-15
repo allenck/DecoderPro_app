@@ -99,7 +99,7 @@ Section* SectionManager::createNewSection(QString systemName, QString userName)
         try {
             bool bOk=false;
             int autoNumber = systemName.mid(8).toInt(&bOk);
-            if(!bOk )throw new NumberFormatException();
+            if(!bOk )throw NumberFormatException();
             if (autoNumber > lastAutoSectionRef) {
                 lastAutoSectionRef = autoNumber;
             }

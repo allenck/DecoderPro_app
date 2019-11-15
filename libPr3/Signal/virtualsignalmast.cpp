@@ -63,9 +63,12 @@ void VirtualSignalMast::configureFromName(QString systemName)
     // new style
     mast = mast.mid(0, mast.indexOf("("));
     setMastType(mast);
-    QString tmp = parts.at(2).mid(parts.at(2).indexOf("($")+2, parts.at(2).indexOf(")"));
+    QString tmp = parts.at(2).mid(parts.at(2).indexOf("($")+2, parts.at(2).indexOf(")") - parts.at(2).indexOf("($")-2);
     try {
-        int autoNumber = tmp.toInt();
+     bool bOk;
+        int autoNumber = tmp.toInt(&bOk);
+        if(!bOk)
+         throw NumberFormatException();
         if (autoNumber > lastRef) {
             lastRef = autoNumber;
         }

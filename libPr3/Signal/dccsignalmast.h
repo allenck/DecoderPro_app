@@ -22,6 +22,8 @@ public:
    /*public*/ CommandStation* getCommandStation();
    /*public*/ static QString isDCCAddressUsed(int addr);
    /*public*/ QString className();
+   /*public*/ void setDccSignalMastPacketSendCount(int count);
+   /*public*/ int getDccSignalMastPacketSendCount();
 
 signals:
 
@@ -68,9 +70,8 @@ protected:
   29. "Clear"
   30. "Cab-Speed"
   31. "Dark" */
- /*protected*/ int packetRepeatCount;// = 3;
  /*protected*/ CommandStation* c;
-
+ /*protected*/ int packetSendCount = 3;  // default 3
  /*protected*/ int dccSignalDecoderAddress;
 };
 

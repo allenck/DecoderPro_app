@@ -59,19 +59,31 @@
   * on = thrown, off = closed, no turnout states asked
   */
  turnoutBox1 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
+ turnoutBox1->setObjectName("turnoutBox1");
  turnoutBox2 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
+ turnoutBox2->setObjectName("turnoutBox2");
  turnoutBox3 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
+ turnoutBox3->setObjectName("turnoutBox3");
  turnoutBox4 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
+ turnoutBox4->setObjectName("turnoutBox4");
  turnoutBox5 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
+ turnoutBox5->setObjectName("turnoutBox5");
  turnoutBox6 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
+ turnoutBox6->setObjectName("turnoutBox6");
      // repeat in order to set MAXMATRIXBITS > 6
 
  unlitCheck1 = new QCheckBox();
+ unlitCheck1->setObjectName("unlitCheck1");
  unlitCheck2 = new QCheckBox();
+ unlitCheck2->setObjectName("unlitCheck2");
  unlitCheck3 = new QCheckBox();
+ unlitCheck3->setObjectName("unlitCheck3");
  unlitCheck4 = new QCheckBox();
+ unlitCheck4->setObjectName("unlitCheck4");
  unlitCheck5 = new QCheckBox();
+ unlitCheck5->setObjectName("unlitCheck5");
  unlitCheck6 = new QCheckBox();
+ unlitCheck6->setObjectName("unlitCheck6");
 
     //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
  QVBoxLayout* thisLayout = new QVBoxLayout(this);
@@ -100,12 +112,6 @@
     //matrixMastScroll ->setBorder(BorderFactory.createEmptyBorder());
 //    scrollBorder->layout()->addWidget(matrixMastScroll);
     thisLayout->addWidget(/*scrollBorder*/matrixMastScroll);
-//    unlitCheck1 = new QCheckBox();
-//    unlitCheck2 = new QCheckBox();
-//    unlitCheck3 = new QCheckBox();
-//    unlitCheck4 = new QCheckBox();
-//    unlitCheck5 = new QCheckBox();
-//    unlitCheck6 = new QCheckBox();
     // repeat in order to set MAXMATRIXBITS > 6
 
 }
@@ -159,92 +165,96 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void MatrixSignalMastAddPane::setMast(SignalMast* mast) {
-    log->debug(tr("setMast(%1)").arg((mast==nullptr)?"null":mast->getDisplayName()));
-    if (mast == nullptr) {
-        currentMast = nullptr;
-        return;
-    }
+/*public*/ void MatrixSignalMastAddPane::setMast(SignalMast* mast)
+{
+ log->debug(tr("setMast(%1)").arg((mast==nullptr)?"null":mast->getDisplayName()));
+ if (mast == nullptr) {
+     currentMast = nullptr;
+     return;
+ }
 
-    if ((qobject_cast<MatrixSignalMast*>(mast)==nullptr) ) {
-        log->error(tr("mast was wrong type: %1 %2").arg(mast->getSystemName()).arg( mast->className()));
-        return;
-    }
+ if ((qobject_cast<MatrixSignalMast*>(mast)==nullptr) ) {
+     log->error(tr("mast was wrong type: %1 %2").arg(mast->getSystemName()).arg( mast->className()));
+     return;
+ }
 
-    currentMast = (MatrixSignalMast*) mast;
+ currentMast = (MatrixSignalMast*) mast;
 
-    bitNum = currentMast->getBitNum(); // number of matrix columns = logic outputs = number of bits per Aspect
-    updateMatrixMastPanel(); // show only the correct amount of columns for existing matrixMast
-    // @see copyFromAnotherMatrixMastAspect(mast)
-    if (map != nullptr) {
-        QStringListIterator aspects = map->getAspects();
-        // in matrixPanel LinkedHashtable, fill in mast settings per aspect
-        while (aspects.hasNext()) {
-            QString key = aspects.next(); // for each aspect
-            MatrixAspectPanel* matrixPanel = matrixAspect.value(key); // load aspectpanel from hashmap
-            matrixPanel->setAspectDisabled(currentMast->isAspectDisabled(key)); // sets a disabled aspect
-            if ( ! currentMast->isAspectDisabled(key)) { // bits not saved in mast when disabled, so we should not load them back in
-                QByteArray mastBits = currentMast->getBitsForAspect(key); // same as loading an existing MatrixMast
-                QByteArray panelAspectBits;// = Arrays.copyOf(mastBits, MAXMATRIXBITS);
-                panelAspectBits = QByteArray(mastBits);// store as [6] character array in panel
-                panelAspectBits.chop(MAXMATRIXBITS);
-                matrixPanel->updateAspectBits(panelAspectBits);
-                matrixPanel->setAspectBoxes(panelAspectBits);
-                // sets boxes 1 - MAXMATRIXBITS on aspect sub panel from values in hashmap QByteArray like: 1001
-            }
-        }
-    }
+ bitNum = currentMast->getBitNum(); // number of matrix columns = logic outputs = number of bits per Aspect
+ updateMatrixMastPanel(); // show only the correct amount of columns for existing matrixMast
+ // @see copyFromAnotherMatrixMastAspect(mast)
+ if (map != nullptr)
+ {
+  QStringListIterator aspects = map->getAspects();
+  // in matrixPanel LinkedHashtable, fill in mast settings per aspect
+  while (aspects.hasNext())
+  {
+   QString key = aspects.next(); // for each aspect
+   MatrixAspectPanel* matrixPanel = matrixAspect.value(key); // load aspectpanel from hashmap
+   matrixPanel->setAspectDisabled(currentMast->isAspectDisabled(key)); // sets a disabled aspect
+   if ( ! currentMast->isAspectDisabled(key))
+   { // bits not saved in mast when disabled, so we should not load them back in
+    QByteArray mastBits = currentMast->getBitsForAspect(key); // same as loading an existing MatrixMast
+    QByteArray panelAspectBits;// = Arrays.copyOf(mastBits, MAXMATRIXBITS);
+    panelAspectBits = QByteArray(mastBits);// store as [6] character array in panel
+    panelAspectBits.chop(MAXMATRIXBITS);
+    matrixPanel->updateAspectBits(panelAspectBits);
+    matrixPanel->setAspectBoxes(panelAspectBits);
+    // sets boxes 1 - MAXMATRIXBITS on aspect sub panel from values in hashmap QByteArray like: 1001
+   }
+  }
+ }
 
-    columnChoice->setCurrentIndex(bitNum - 1); // index of items in list starts counting at 0 while "1" is displayed
-    columnChoice->setEnabled(false);
-    // fill in the names of the outputs from mast:
-    if ( currentMast->getOutputName(1)!=("")) {
-        turnoutBox1->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(1))); // load input into turnoutBox1
-    }
-    if (bitNum > 1 && (currentMast->getOutputName(2) != "")) {
-        turnoutBox2->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(2))); // load input into turnoutBox2
-    }
-    if (bitNum > 2 && (currentMast->getOutputName(3) != "")) {
-        turnoutBox3->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(3))); // load input into turnoutBox3
-    }
-    if (bitNum > 3 && (currentMast->getOutputName(4) != "")) {
-        turnoutBox4->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(4))); // load input into turnoutBox4
-    }
-    if (bitNum > 4 && (currentMast->getOutputName(5) != "")) {
-        turnoutBox5->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(5))); // load input into turnoutBox5
-    }
-    if (bitNum > 5 && (currentMast->getOutputName(6) == "")) {
-        turnoutBox6->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(6))); // load input into turnoutBox6
-    }
-    // repeat in order to set MAXMATRIXBITS > 6
-    if (currentMast->resetPreviousStates()) {
-        resetPreviousState->setChecked(true);
-    }
+ columnChoice->setCurrentIndex(bitNum - 1); // index of items in list starts counting at 0 while "1" is displayed
+ columnChoice->setEnabled(false);
+ // fill in the names of the outputs from mast:
+ if ( currentMast->getOutputName(1)!=("")) {
+     turnoutBox1->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(1))); // load input into turnoutBox1
+ }
+ if (bitNum > 1 && (currentMast->getOutputName(2) != "")) {
+     turnoutBox2->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(2))); // load input into turnoutBox2
+ }
+ if (bitNum > 2 && (currentMast->getOutputName(3) != "")) {
+     turnoutBox3->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(3))); // load input into turnoutBox3
+ }
+ if (bitNum > 3 && (currentMast->getOutputName(4) != "")) {
+     turnoutBox4->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(4))); // load input into turnoutBox4
+ }
+ if (bitNum > 4 && (currentMast->getOutputName(5) != "")) {
+     turnoutBox5->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(5))); // load input into turnoutBox5
+ }
+ if (bitNum > 5 && (currentMast->getOutputName(6) == "")) {
+     turnoutBox6->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(currentMast->getOutputName(6))); // load input into turnoutBox6
+ }
+ // repeat in order to set MAXMATRIXBITS > 6
+ if (currentMast->resetPreviousStates()) {
+     resetPreviousState->setChecked(true);
+ }
 
-    //unLitPanelBits = Arrays.copyOf(currentMast.getUnLitBits(), MAXMATRIXBITS); // store as MAXMATRIXBITS character array
-    unLitPanelBits  = QByteArray(currentMast->getUnLitBits());
-    unLitPanelBits.chop(MAXMATRIXBITS);
-    unlitCheck1 ->setChecked(unLitPanelBits[0] == '1'); // set checkboxes
-    if (bitNum > 1) {
-        unlitCheck2 ->setChecked(unLitPanelBits[1] == '1');
-    }
-    if (bitNum > 2) {
-        unlitCheck3 ->setChecked(unLitPanelBits[2] == '1');
-    }
-    if (bitNum > 3) {
-        unlitCheck4 ->setChecked(unLitPanelBits[3] == '1');
-    }
-    if (bitNum > 4) {
-        unlitCheck5 ->setChecked(unLitPanelBits[4] == '1');
-    }
-    if (bitNum > 5) {
-        unlitCheck6 ->setChecked(unLitPanelBits[5] == '1');
-    }
-    // repeat in order to set MAXMATRIXBITS > 6
+ //unLitPanelBits = Arrays.copyOf(currentMast.getUnLitBits(), MAXMATRIXBITS); // store as MAXMATRIXBITS character array
+ unLitPanelBits  = QByteArray(currentMast->getUnLitBits());
+ unLitPanelBits.chop(MAXMATRIXBITS);
+ unlitCheck1 ->setChecked(unLitPanelBits[0] == '1'); // set checkboxes
+ if (bitNum > 1) {
+     unlitCheck2 ->setChecked(unLitPanelBits[1] == '1');
+ }
+ if (bitNum > 2) {
+     unlitCheck3 ->setChecked(unLitPanelBits[2] == '1');
+ }
+ if (bitNum > 3) {
+     unlitCheck4 ->setChecked(unLitPanelBits[3] == '1');
+ }
+ if (bitNum > 4) {
+     unlitCheck5 ->setChecked(unLitPanelBits[4] == '1');
+ }
+ if (bitNum > 5) {
+     unlitCheck6 ->setChecked(unLitPanelBits[5] == '1');
+ }
+ // repeat in order to set MAXMATRIXBITS > 6
 
-    allowUnLit ->setChecked(currentMast->allowUnLit());
+ allowUnLit ->setChecked(currentMast->allowUnLit());
 
-    log->trace(tr("setMast %1 end").arg(mast->getDisplayName()));
+ log->trace(tr("setMast %1 end").arg(mast->getDisplayName()));
 }
 
 /** {@inheritDoc} */
@@ -262,7 +272,8 @@
     ) {
         // add extra OR in order to set MAXMATRIXBITS > 6
         // error dialog
-        JOptionPane::showMessageDialog(nullptr, tr("At least one of the Outputs has not been defined.\n Please set all Outputs for this mast %1 and press Create again.").arg( mastname),
+        JOptionPane::showMessageDialog(nullptr,
+                tr("At least one of the Outputs has not been defined.\n Please set all Outputs for this mast %1 and press Create again.").arg( mastname),
                 tr("Warning"),
                 JOptionPane::ERROR_MESSAGE);
         log->warn("Empty output on panel");
@@ -272,7 +283,8 @@
     // check if bit sets are identical
     if (identicalBits()) {
         // error dialog
-        JOptionPane::showMessageDialog(nullptr, tr("Matrix is incomplete or showing duplicates.\nHint: at least %1 outputs needed for %2 active Aspects.").arg((int) qSqrt(numberOfActiveAspects)).arg(numberOfActiveAspects),
+        JOptionPane::showMessageDialog(nullptr,
+                tr("Matrix is incomplete or showing duplicates.\nHint: at least %1 outputs needed for %2 active Aspects.").arg((int) qSqrt(numberOfActiveAspects)).arg(numberOfActiveAspects),
                 tr("Warning"),
                 JOptionPane::ERROR_MESSAGE);
         log->warn("Identical bits on panel");
@@ -284,7 +296,7 @@
         // create new MatrixMast with props from panel
         QString name = "IF$xsm:"
                 + sigsysname
-                + ":" + mastname.mid(11, mastname.length() - 4);
+                + ":" + mastname.mid(11, mastname.length() - 15);
         name += QString("($") + (paddedNumber->format(MatrixSignalMast::getLastRef() + 1));
         name += QString(")") + "-" + QString::number(bitNum )+ "t"; // for the number of t = "turnout-outputs", add option for direct packets
         currentMast = new MatrixSignalMast(name);
@@ -447,8 +459,10 @@ void MatrixSignalMastAddPane::updateMatrixMastPanel()
  QWidget* turnoutpanel = new QWidget();
  turnoutpanel->setObjectName("turnoutpanel");
  QVBoxLayout* turnoutpanelLayout = new QVBoxLayout(turnoutpanel);
+
  // binary matrix outputs follow:
  QGroupBox* output1panel = new QGroupBox();
+ output1panel->setObjectName("output1panel");
  QVBoxLayout* output1panelLayout = new QVBoxLayout(output1panel);
  output1panelLayout->addWidget(turnoutBox1);
 //    TitledBorder border1 = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black));
@@ -458,31 +472,35 @@ void MatrixSignalMastAddPane::updateMatrixMastPanel()
  turnoutpanelLayout->addWidget(output1panel);
 
  QGroupBox* output2panel = new QGroupBox();
+ output2panel->setObjectName("output2panel");
  QVBoxLayout* output2panelLayout = new QVBoxLayout(output2panel);
  output2panelLayout->addWidget(turnoutBox2);
  output2panel->setTitle(tr("Output %1 ").arg(2));
  turnoutpanelLayout->addWidget(output2panel);
 
  QGroupBox* output3panel = new QGroupBox();
+ output3panel->setObjectName("output3panel");
  QVBoxLayout* output3panelLayout = new QVBoxLayout(output3panel);
  output3panelLayout->addWidget(turnoutBox3);
  output3panel->setTitle(tr("Output %1 ").arg(3));
  turnoutpanelLayout->addWidget(output3panel);
 
-
  QGroupBox* output4panel = new QGroupBox();
+ output4panel->setObjectName("output4panel");
  QVBoxLayout* output4panelLayout = new QVBoxLayout(output4panel);
  output4panelLayout->addWidget(turnoutBox4);
  output4panel->setTitle(tr("Output %1 ").arg(4));
  turnoutpanelLayout->addWidget(output4panel);
 
  QGroupBox* output5panel = new QGroupBox();
+ output5panel->setObjectName("output5panel");
  QVBoxLayout* output5panelLayout = new QVBoxLayout(output5panel);
  output5panelLayout->addWidget(turnoutBox5);
  output5panel->setTitle(tr("Output %1 ").arg(5));
  turnoutpanelLayout->addWidget(output5panel);
 
  QGroupBox* output6panel = new QGroupBox();
+ output6panel->setObjectName("output6panel");
  QVBoxLayout* output6panelLayout = new QVBoxLayout(output6panel);
  output6panelLayout->addWidget(turnoutBox6);
  output6panel->setTitle(tr("Output %1 ").arg(6));
@@ -791,24 +809,30 @@ QComboBox* MatrixSignalMastAddPane::copyFromMastSelection() {
  * @return true if at least 1 duplicate row of bits is found
  */
 /*private*/ bool MatrixSignalMastAddPane::identicalBits() {
-    bool identical = false;
-    numberOfActiveAspects = 0;
-    QSet<QString> seenBits =  QSet<QString>(); // a fast access, no duplicates Collection of bit combinations
-    for (QString aspect : matrixAspect.keys()) {
-        // check per aspect
-        if (matrixAspect.value(aspect)->isAspectDisabled()) {
-            continue; // skip disabled aspects
-        } else if (seenBits.contains(stringValueOf(matrixAspect.value(aspect)->trimAspectBits()))) {
-            identical = true;
-            log->debug(tr("-found duplicate %1").arg( stringValueOf(matrixAspect.value(aspect)->trimAspectBits())));
-            // break; // don't break, so we can count number of enabled aspects for this mast
-        } else {
-            seenBits.insert(stringValueOf(matrixAspect.value(aspect)->trimAspectBits())); // convert back from QByteArray to String
+ bool identical = false;
+ numberOfActiveAspects = 0;
+ QSet<QString> seenBits =  QSet<QString>(); // a fast access, no duplicates Collection of bit combinations
+ for (QString aspect : matrixAspect.keys())
+ {
+  // check per aspect
+  if (matrixAspect.value(aspect)->isAspectDisabled())
+  {
+   continue; // skip disabled aspects
+  }
+  else if (seenBits.contains(stringValueOf(matrixAspect.value(aspect)->trimAspectBits())))
+  {
+   identical = true;
+   log->debug(tr("-found duplicate %1").arg( stringValueOf(matrixAspect.value(aspect)->trimAspectBits())));
+   // break; // don't break, so we can count number of enabled aspects for this mast
+  }
+  else
+  {
+   seenBits.insert(stringValueOf(matrixAspect.value(aspect)->trimAspectBits())); // convert back from QByteArray to String
 //            log->debug(tr("-added new %1; seenBits = %2").arg( stringValueOf(matrixAspect.value(aspect)->trimAspectBits()), seenBits.toString());
-        }
-        ++numberOfActiveAspects;
-    }
-    return identical;
+  }
+  ++numberOfActiveAspects;
+ }
+ return identical;
 }
 
 QString MatrixSignalMastAddPane::stringValueOf(QByteArray ba)
@@ -983,17 +1007,19 @@ QString MatrixSignalMastAddPane::stringValueOf(QByteArray ba)
   *         5 corresponding with the number of outputs for this mast
   * @see jmri.implementation.MatrixSignalMast
   */
- QByteArray MatrixAspectPanel::trimAspectBits() {
-     try {
+ QByteArray MatrixAspectPanel::trimAspectBits()
+ {
+  try
+  {
          //return aspectBits;
          //return Arrays.copyOf(aspectBits, bitNum); // copy to new QByteArray of length bitNum
    QByteArray rslt = QByteArray(aspectBits);
    rslt.chop(addPane->bitNum);
    return rslt;
-     } catch (Exception ex) {
-         addPane->log->error("failed to read and copy aspectBits");
-         return nullptr;
-     }
+  } catch (Exception ex) {
+      addPane->log->error("failed to read and copy aspectBits");
+      return nullptr;
+  }
  }
 
  /**

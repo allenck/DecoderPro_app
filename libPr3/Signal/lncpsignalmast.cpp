@@ -22,14 +22,14 @@
 
     /*public*/ LNCPSignalMast::LNCPSignalMast(QString sys, QString user, QObject* parent) : DccSignalMast(sys, user, "F$lncpsm", parent){
         //super(sys, user, "F$lncpsm"); // NOI18N
-        packetRepeatCount = 1;
+        packetSendCount = 1;
         configureFromName(sys);
         init();
     }
 
     /*public*/ LNCPSignalMast::LNCPSignalMast(QString sys, QObject* parent) : DccSignalMast(sys, nullptr, "F$lncpsm", parent){
         //super(sys, nullptr, "F$lncpsm"); // NOI18N
-        packetRepeatCount = 1;
+        packetSendCount = 1;
         configureFromName(sys);
         init();
     }
@@ -106,7 +106,7 @@
     //@Override
     /*public*/ void LNCPSignalMast::setAspect(QString aspect) {
         if (appearanceToOutput.contains(aspect) && appearanceToOutput.value(aspect) != -1) {
-            c->sendPacket(NmraPacket::altAccSignalDecoderPkt(dccSignalDecoderAddress, appearanceToOutput.value(aspect)), packetRepeatCount);
+            c->sendPacket(NmraPacket::altAccSignalDecoderPkt(dccSignalDecoderAddress, appearanceToOutput.value(aspect)), packetSendCount);
         } else {
             log->warn("Trying to set aspect (" + aspect + ") that has not been configured on mast " + getDisplayName());
         }

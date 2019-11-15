@@ -169,17 +169,22 @@ void BeanSelectCreatePanel::update(){
 * get the display name of the bean that has either been selected in the drop down list or
 * has been created
 */
-/*public*/ QString BeanSelectCreatePanel::getDisplayName(){
-    if(existingItem->isChecked()){
-        return existingCombo->getSelectedDisplayName();
-    } else {
-        try {
-            NamedBean* nBean = createBean();
-            return nBean->getDisplayName();
-        } catch (JmriException e){
-            return "";
-        }
-    }
+/*public*/ QString BeanSelectCreatePanel::getDisplayName()
+{
+ if(existingItem->isChecked()){
+     return existingCombo->getSelectedDisplayName();
+ }
+ else
+ {
+  try
+  {
+   NamedBean* nBean = createBean();
+   return nBean->getDisplayName();
+  }
+  catch (JmriException e){
+   return "";
+  }
+ }
 }
 
 /**

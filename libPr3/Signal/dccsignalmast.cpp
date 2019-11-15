@@ -67,7 +67,6 @@ void DccSignalMast::common()
  mastType = "F$dsm";
  appearanceToOutput =  QMap<QString, int>();
  log = new Logger("DccSignalMast");
- packetRepeatCount = 3;
  unLitId = 31;
  c = NULL;
 }
@@ -79,7 +78,7 @@ void DccSignalMast::common()
  QStringList parts = systemName.split(":");
  if (parts.length() < 3) {
      log->error("SignalMast system name needs at least three parts: " + systemName);
-     throw new IllegalArgumentException("System name needs at least three parts: " + systemName);
+     throw IllegalArgumentException("System name needs at least three parts: " + systemName);
  }
  if (!parts[0].endsWith(mastType))
  {
@@ -112,7 +111,8 @@ void DccSignalMast::common()
  mast = mast.mid(0, mast.indexOf("("));
  setMastType(mast);
 
- QString tmp = parts[2].mid(parts[2].indexOf("(") + 1, parts[2].indexOf(")"));
+ //QString tmp = parts[2].mid(parts[2].indexOf("(") + 1, parts[2].indexOf(")"));
+ QString tmp = parts[2].mid(parts[2].indexOf("(") + 1, parts[2].indexOf(")")-parts[2].indexOf("(")-1);
  //try {
  bool bok;
      dccSignalDecoderAddress = tmp.toInt(&bok);
@@ -150,7 +150,7 @@ void DccSignalMast::common()
 
  if (appearanceToOutput.contains(aspect) && appearanceToOutput.value(aspect) != -1)
  {
-     c->sendPacket(NmraPacket::altAccSignalDecoderPkt(dccSignalDecoderAddress, appearanceToOutput.value(aspect)), packetRepeatCount);
+     c->sendPacket(NmraPacket::altAccSignalDecoderPkt(dccSignalDecoderAddress, appearanceToOutput.value(aspect)), packetSendCount);
  } else {
      log->warn("Trying to set aspect (" + aspect + ") that has not been configured on mast " + getDisplayName());
  }
@@ -165,7 +165,7 @@ void DccSignalMast::common()
  if (newLit) {
      setAspect(getAspect());
  } else {
-     c->sendPacket(NmraPacket::altAccSignalDecoderPkt(dccSignalDecoderAddress, unLitId), packetRepeatCount);
+     c->sendPacket(NmraPacket::altAccSignalDecoderPkt(dccSignalDecoderAddress, unLitId), packetSendCount);
  }
  AbstractSignalMast::setLit(newLit);
 }
@@ -205,3 +205,23 @@ void DccSignalMast::common()
 }
 
 /*public*/ QString DccSignalMast::className() {return "jmri.implementation.DccSignalMast";}
+/**
+ * Set Number of times the packet should be sent.
+ * @param count - less than 1 is treated as 1.
+ */
+/*public*/ void DccSignalMast::setDccSignalMastPacketSendCount(int count) {
+    if (count >= 0) {
+        packetSendCount = count;
+    } else {
+        packetSendCount = 1;
+    }
+}
+
+/**
+ * get the number of times the packet should be sent to the track.
+ *
+ * @return the count.
+ */
+/*public*/ int DccSignalMast::getDccSignalMastPacketSendCount() {
+    return packetSendCount;
+}

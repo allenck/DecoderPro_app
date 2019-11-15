@@ -130,7 +130,7 @@
     }
 
     if (! (qobject_cast<TurnoutSignalMast*>(mast)!= nullptr) ) {
-        log->error(tr("mast was wrong type: %1 %1").arg(mast->getSystemName()).arg( mast->metaObject()->className()));
+        log->error(tr("mast was wrong type: %1 %2").arg(mast->getSystemName()).arg( mast->className()));
         return;
     }
 
@@ -175,7 +175,7 @@
     if (currentMast == nullptr) {
         name = "IF$tsm:"
                 + sigsysname
-                + ":" + mastname.mid(11, mastname.length() - 4);
+                + ":" + mastname.mid(11, mastname.length() - 15);
         name += "($" + (paddedNumber->format(TurnoutSignalMast::getLastRef() + 1)) + ")";
         currentMast = new TurnoutSignalMast(name);
 
@@ -241,10 +241,10 @@ TurnoutAspectPanel::TurnoutAspectPanel(QString turnoutName, int /*state*/, Turno
  this->pane = pane;
  setObjectName("TurnoutAspectPanel" + turnoutName);
  common();
-    if (turnoutName.isEmpty()) {
-        return;
-    }
-    beanBox->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(turnoutName));
+ if (turnoutName.isEmpty()) {
+     return;
+ }
+ beanBox->setDefaultNamedBean(InstanceManager::turnoutManagerInstance()->getTurnout(turnoutName));
 }
 void TurnoutAspectPanel::common()
 {

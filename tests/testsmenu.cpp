@@ -53,7 +53,12 @@
 #include "signals/signalheadsignalmastaddpanetestaction.h"
 #include "signals/matrixsignalmasttestaction.h"
 #include "signals/matrixsignalmastaddpanetestaction.h"
+#include "signals/dccsignalmastaddpanetestaction.h"
+#include "signals/tripleoutputsignalheadtestaction.h"
+#include "signals/tripleturnoutsignalheadtestaction.h"
 #include "signals/virtualsignalmastaddpanetestaction.h"
+#include "signals/turnoutsignalmastaddpanetestaction.h"
+#include "signals/turnoutsignalmasttestaction.h"
 
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -138,13 +143,17 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* signalMenu = new QMenu(tr("Signals ..."));
     addMenu(signalMenu);
     signalMenu->addAction(new DccSignalHeadTestAction(this));
+    signalMenu->addAction(new DccSignalMastAddPaneTestAction(this));
     signalMenu->addAction(new DoubleTurnoutSignalHeadTestAction(this));
     signalMenu->addAction(new MatrixSignalMastTestAction(this));
     signalMenu->addAction(new MatrixSignalMastAddPaneTestAction(this));
     signalMenu->addAction(new SingleTurnoutSignalHeadTestAction(this));
     signalMenu->addAction(new SignalHeadSignalMastTestAction(this));
     signalMenu->addAction(new SignalHeadSignalMastAddPaneTestAction(this));
+    signalMenu->addAction(new TripleOutputSignalHeadTestAction(this));
+    signalMenu->addAction(new TripleTurnoutSignalHeadTestAction(this));
+    signalMenu->addAction(new TurnoutSignalMastTestAction(this));
+    signalMenu->addAction(new TurnoutSignalMastAddPaneTestAction(this));
     signalMenu->addAction(new VirtualSignalHeadTestAction(this));
-    signalMenu->addAction(new VirtualSignalMastAddPaneTestAction(this));
 
 }
