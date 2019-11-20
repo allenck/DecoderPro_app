@@ -203,6 +203,7 @@ protected:
     /*protected*/ void makeHardwareDecision(LocoAddress* address, ThrottleListener::DecisionType question);
     /*protected*/ void notifyDecisionRequest(LocoAddress* address, ThrottleListener::DecisionType question);
     /*protected*/ bool requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions);
+    /*protected*/ void updateNumUsers( LocoAddress* la, int numUsers );
 
     friend class RetrySetup;
     friend class LnThrottleManager;

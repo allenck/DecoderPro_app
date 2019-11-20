@@ -55,13 +55,13 @@ private:
     /*private*/ int _option;// = Conditional::ACTION_OPTION_ON_CHANGE_TO_TRUE;
     /*private*/ int _type;// = Conditional::ACTION_NONE ;
     /*private*/ QString _deviceName;// = " ";
-    /*private*/ int _actionData;// = 0;
+    /*private*/ int _actionData = 0;
     /*private*/ QString _actionString;// = "";
     /*private*/ NamedBeanHandle<NamedBean*>* _namedBean = nullptr;
 
-    /*private*/ QTimer* _timer;// = null;
-    /*private*/ ActionListener* _listener;// = null;
-    /*private*/ bool _timerActive;// = false;
+    /*private*/ QTimer* _timer = nullptr;
+    /*private*/ ActionListener* _listener = nullptr;
+    /*private*/ bool _timerActive = false;
     /*private*/ bool _indirectAction = false;
     /*private*/ Sound* _sound = nullptr;
     void common();

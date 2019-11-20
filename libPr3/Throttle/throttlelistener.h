@@ -22,9 +22,9 @@ class DccLocoAddress;
  * <P>
  * @author Bob Jacobsen Copyright (C) 2007
  */
-/*public*/ /*interface*/class  ThrottleListener : public EventListener
+/*public*/ /*interface*/class  ThrottleListener //: public EventListener
 {
- Q_OBJECT
+ //Q_OBJECT
 public:
  /**
       * A decision type requested from ThrottleManager to ThrottleListener,
@@ -46,7 +46,7 @@ public:
           */
          STEAL_OR_SHARE
      };
- ThrottleListener() : EventListener() {}
+ //ThrottleListener() : EventListener() {}
 public slots:
     /**
      * Get notification that a throttle has been found as you requested.
@@ -62,13 +62,14 @@ public slots:
      * @param reason  The reason why the throttle request failed.
      */
     /*public*/ virtual void notifyFailedThrottleRequest(LocoAddress* /*address*/, QString /*reason*/) {}
- /**
+    /**
       * Get notification that a throttle request is in use by another
       * device, and a "steal", "share", or "steal/share" decision may be required.
       *
       * @param address The LocoAddress that needs the decision.
       * @param question The question being asked, steal / cancel, share / cancel, steal / share / cancel
       */
- /*public*/ virtual void notifyDecisionRequired(LocoAddress* /*address*/, DecisionType /*question*/){}
+    /*public*/ virtual void notifyDecisionRequired(LocoAddress* /*address*/, DecisionType /*question*/){}
 };
+Q_DECLARE_INTERFACE(ThrottleListener, "ThrottleListener")
 #endif // THROTTLELISTENER_H

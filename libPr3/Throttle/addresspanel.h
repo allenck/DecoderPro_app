@@ -5,6 +5,7 @@
 #include "logger.h"
 #include <QtXml>
 #include <QComboBox>
+#include "throttlelistener.h"
 
 namespace Ui {
 class AddressPanel;
@@ -19,10 +20,10 @@ class AddressListener;
 class DccLocoAddress;
 class DccLocoAddressSelector;
 class DccThrottle;
-class AddressPanel : public QDockWidget
+class AddressPanel : public QDockWidget, public ThrottleListener
 {
     Q_OBJECT
-
+    Q_INTERFACES(ThrottleListener)
 public:
     explicit AddressPanel(QWidget *parent = 0);
     ~AddressPanel();

@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT InternalReporterManagerXml : public AbstractR
 {
     Q_OBJECT
 public:
-    explicit InternalReporterManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit InternalReporterManagerXml(QObject *parent = 0);
  ~InternalReporterManagerXml() {}
  InternalReporterManagerXml(const InternalReporterManagerXml&) : AbstractReporterManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement sensors);

@@ -4,6 +4,7 @@
 #include <QObject>
 #include "jsonqt.h"
 #include "jsonexception.h"
+#include "throttlelistener.h"
 
 class DccThrottle;
 class PropertyChangeEvent;
@@ -13,9 +14,10 @@ class JsonThrottleSocketService;
 class Logger;
 class Throttle;
 class DccLocoAddress;
-class JsonThrottle : public QObject
+class JsonThrottle : public QObject, public ThrottleListener
 {
  Q_OBJECT
+ Q_INTERFACES(ThrottleListener)
 public:
  explicit JsonThrottle(QObject *parent = 0);
  /**

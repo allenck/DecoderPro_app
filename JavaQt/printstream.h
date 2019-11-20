@@ -9,7 +9,7 @@ class OutputStreamWriter;
 class PrintStream : public FilterOutputStream
 {
 public:
- /*public*/ PrintStream(QDataStream* out, QObject* parent);
+ /*public*/ PrintStream(QDataStream* out, QObject* parent = nullptr);
  /*public*/ PrintStream(QDataStream* out, bool autoFlush, QObject* parent= nullptr);
  /*public*/ void println();
  /*public*/ void println(QString x);

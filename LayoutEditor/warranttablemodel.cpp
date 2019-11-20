@@ -550,7 +550,7 @@ BeanTableDataModel(parent)
     }
     case ALLOCATE_COLUMN:
     {
-     msg = w->allocateRoute(NULL);
+     msg = w->allocateRoute(true, NULL);
      if (msg == NULL)
      {
       _frame->setStatusText(

@@ -8,7 +8,7 @@ class LIBPR3SHARED_EXPORT OBlockManager : public AbstractManager
 {
     Q_OBJECT
 public:
-    explicit OBlockManager(QObject *parent = 0);
+    Q_INVOKABLE explicit OBlockManager(QObject *parent = 0);
     ~OBlockManager(){}
     OBlockManager(const OBlockManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder();
@@ -25,7 +25,6 @@ public:
     virtual /*public*/ OBlock *provide(QString name) throw (IllegalArgumentException);
 
 signals:
- void propertyChange(PropertyChangeEvent *e);
 public slots:
 
 };

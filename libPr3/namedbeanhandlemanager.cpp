@@ -163,9 +163,9 @@ template<class T>
 */
 //template<class T>
 /*private*/ void NamedBeanHandleManager::updateListenerRef(QString oldName, QString newName, NamedBean* nBean){
-    QList<PropertyChangeListener*>* listeners = nBean->getPropertyChangeListeners(oldName);
-    for(int i = 0; i<listeners->size();i++){
-        nBean->updateListenerRef(listeners->at(i), newName);
+    QVector<PropertyChangeListener*> listeners = nBean->getPropertyChangeListenersByReference(oldName);
+    for(int i = 0; i<listeners.size();i++){
+        nBean->updateListenerRef(listeners.at(i), newName);
     }
 }
 
@@ -176,8 +176,8 @@ template<class T>
 //template<class T>
 /*private*/ void NamedBeanHandleManager::moveListener(NamedBean* oldBean, NamedBean* newBean, QString currentName)
 {
- QList<PropertyChangeListener*>* listeners = oldBean->getPropertyChangeListeners(currentName);
- foreach (PropertyChangeListener* l , *listeners )
+ QVector<PropertyChangeListener*> listeners = oldBean->getPropertyChangeListenersByReference(currentName);
+ foreach (PropertyChangeListener* l , listeners )
  {
   QString listenerRef = oldBean->getListenerRef(l);
   oldBean->removePropertyChangeListener(l);

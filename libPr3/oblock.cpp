@@ -183,10 +183,17 @@ return _statusNameMap.value(str);
  _portals = QList<Portal*>();
  _warrant = NULL;
 
- setState(DARK);
+ setState(UNDETECTED);
 }
 
-// override to determine if not DARK
+/**
+ * {@inheritDoc}
+ * <p>
+ * Override to only set an existing sensor and to amend state with not
+ * UNDETECTED return true if an existing Sensor is set or sensor is to be
+ * removed from block.
+ */
+//@Override
 /*public*/ bool OBlock::setSensor(QString pName)
 {
  bool ret = false;
@@ -196,9 +203,10 @@ return _statusNameMap.value(str);
  {
   oldName = sensor->getDisplayName();
  }
+ // save the non-sensor states
+ int saveState = getState() & ~(UNKNOWN | OCCUPIED | UNOCCUPIED | INCONSISTENT | UNDETECTED);
  if (pName == "" || pName.trimmed().length() == 0)
  {
-  setState(DARK);
   setNamedSensor(NULL);
   ret = true;
  }
@@ -211,7 +219,6 @@ return _statusNameMap.value(str);
   }
   if (sensor == NULL)
   {
-   setState(DARK);
    if (log->isDebugEnabled()) {
        log->debug("no sensor named \"" + pName + "\" exists.");
    }
@@ -220,10 +227,11 @@ return _statusNameMap.value(str);
   else
   {
    setNamedSensor(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, sensor));
-   setState(getSensor()->getState() & ~DARK);
    ret = true;
   }
  }
+ setState(getState() | saveState);
+
  firePropertyChange("OccupancySensorChange", oldName, pName);
  return ret;
 }
@@ -234,22 +242,19 @@ return _statusNameMap.value(str);
  Block::setNamedSensor(namedSensor);
  if(namedSensor!=NULL)
  {
-  setState(getSensor()->getState() & ~DARK);
+  setState(getSensor()->getState() & ~UNDETECTED);
  }
- if (log->isDebugEnabled()) log->debug("setSensor block \""+getDisplayName()+"\" state= "+ QString::number(getState()));
 }
 
 /*public*/ bool OBlock::setErrorSensor(QString pName)
 {
  if (getErrorSensor() != NULL)
  {
-  //getErrorSensor().removePropertyChangeListener(this);
-  AbstractSensor* s = (AbstractSensor*)getErrorSensor();
-  disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getErrorSensor()->removePropertyChangeListener((PropertyChangeListener*)this);
  }
-
  if (pName == "" || pName.trimmed().length() == 0)
  {
+  setState(getState() & ~TRACK_ERROR);
   _errNamedSensor = NULL;
   return true;
  }
@@ -260,8 +265,9 @@ return _statusNameMap.value(str);
  }
  if (sensor == NULL)
  {
+  setState(getState() & ~TRACK_ERROR);
   if (log->isDebugEnabled()) {
-      log->debug("no sensor named \"" + pName + "\" exists.");
+   log->debug(tr("no sensor named \"%1\" exists.").arg(pName));
   }
  }
 
@@ -269,8 +275,12 @@ return _statusNameMap.value(str);
  if (sensor != NULL)
  {
   _errNamedSensor = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, sensor);
-  ((AbstractNamedBean*)getErrorSensor())->addPropertyChangeListener((PropertyChangeListener*)this, _errNamedSensor->getName(), "OBlock Error Sensor " + getDisplayName());
-  connect(getErrorSensor()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getErrorSensor()->addPropertyChangeListener((PropertyChangeListener*)this, _errNamedSensor->getName(), "OBlock Error Sensor " + getDisplayName());
+  if (sensor->getState() == Sensor::ACTIVE) {
+      setState(getState() | TRACK_ERROR);
+  } else {
+      setState(getState() & ~TRACK_ERROR);
+  }
   return true;
  }
  return false;
@@ -467,6 +477,13 @@ return _statusNameMap.value(str);
 
 /*protected*/ Warrant* OBlock::getWarrant() { return _warrant; }
 
+/*public*/ bool OBlock::isAllocatedTo(Warrant* warrant) {
+    if (warrant == nullptr) {
+        return false;
+    }
+    return warrant->equals(_warrant);
+}
+
 /*public*/ QString OBlock::getAllocatedPathName() { return _pathName; }
 
 /*public*/ float OBlock::getLengthScaleFeet() {
@@ -614,6 +631,14 @@ return _statusNameMap.value(str);
     _pathName = pathName;
 //        setState(getState() | ALLOCATED);  DO NOT ALLOCATE
     return NULL;
+}
+
+/*public*/ QString OBlock::getAllocatingWarrantName() {
+    if (_warrant == nullptr) {
+        return ("no warrant");
+    } else {
+        return _warrant->getDisplayName();
+    }
 }
 
 /**
@@ -903,7 +928,15 @@ return _statusNameMap.value(str);
         setValue(QVariant());
         _warrant->goingInactive(this);
     }
-    setState((getState() & ~(OCCUPIED | RUNNING)) | UNOCCUPIED);
+    // preserve the non-sensor states
+    // non-UNOCCUPIED sensor states are removed (also cannot be RUNNING there if being UNOCCUPIED)
+    setState((getState() & ~(UNKNOWN | OCCUPIED | INCONSISTENT | RUNNING)) | UNOCCUPIED);
+    setValue(QVariant());
+    if (_warrant != nullptr) {
+//        ThreadingUtil.runOnLayout(() -> {
+            _warrant->goingInactive(this);
+//        });
+    }
 }
 
  /**
@@ -912,17 +945,33 @@ return _statusNameMap.value(str);
  */
 /*public*/ void OBlock::goingActive()
 {
- setState((getState() & ~UNOCCUPIED) | OCCUPIED);
+ if (log->isDebugEnabled()) {
+     log->debug(tr("OBlock \"%1\" going OCCUPIED with path \"%2\" from state= $3").arg(
+             getDisplayName()).arg(_pathName).arg(getState()));
+ }
+ // preserve the non-sensor states when being OCCUPIED and remove non-OCCUPIED sensor states
+ setState((getState() & ~(UNKNOWN | UNOCCUPIED | INCONSISTENT)) | OCCUPIED);
 //        if (log->isDebugEnabled()) log->debug("Allocated OBlock \""+getSystemName()+
 //                                            "\" goes OCCUPIED. state= "+getState());
  if (_warrant!=NULL) {
      _warrant->goingActive(this);
- } else if (_pathName!=NULL) {
-     // must be a manual path allocation.  unset unoccupied bit and set manual path detection
-     setState((getState() & ~UNOCCUPIED) | (OCCUPIED/* | RUNNING */));
  }
- if (log->isDebugEnabled()) log->debug("Block \""+getSystemName()+" went active, path= "+
-                                     _pathName+", state= "+QString::number(getState()));
+}
+
+//@Override
+/*public*/ void OBlock::goingUnknown() {
+    if (log->isDebugEnabled()) {
+        log->debug(tr("OBlock \"%1\" going UNKNOWN from state= %2").arg(getDisplayName()).arg(getState()));
+    }
+    setState((getState() & ~(UNOCCUPIED | OCCUPIED | INCONSISTENT)) | UNKNOWN);
+}
+
+//@Override
+/*public*/ void OBlock::goingInconsistent() {
+    if (log->isDebugEnabled()) {
+        log->debug(tr("OBlock \"%1\" going INCONSISTENT from state= %2").arg(getDisplayName()).arg(getState()));
+    }
+    setState((getState() & ~(UNKNOWN | UNOCCUPIED | OCCUPIED)) | INCONSISTENT);
 }
 
 /*public*/ void OBlock::dispose() {

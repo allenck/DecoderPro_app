@@ -35,6 +35,7 @@ public:
     /*public*/ NamedBean* getBean();
     /*public*/ QString getDataString();
     /*public*/ void setDataString(QString data);
+    /*public*/ NamedBean* getNamedBeanData();
     /*public*/ int getNum1();
     /*public*/ int getNum2();
     /*public*/ void setNum1(int num);
@@ -87,6 +88,8 @@ public slots:
     /*private*/ int _state;// = Conditional.UNKNOWN;        // tri-state
     /*private*/ int fixMidnight(int time);
     void common();
+    /*private*/ NamedBeanHandle<NamedBean*>* _namedBeanData = nullptr;
+
 protected:
     /*protected*/ NamedBeanHandleManager* nbhm;// = InstanceManager.getDefault(jmri.NamedBeanHandleManager.class);
 

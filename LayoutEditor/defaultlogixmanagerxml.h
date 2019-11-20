@@ -13,7 +13,7 @@ public:
     /*public*/ QDomElement store(QObject* o);
     /*public*/ void setStoreElementClass(QDomElement logixs);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
-    /*public*/ bool load(QDomElement logixs) throw (Exception);
+    /*public*/ bool load(QDomElement logixs, QDomElement perNodeLogix) throw (Exception);
     /*public*/ void loadLogixs(QDomElement logixs);
     /*public*/ int loadOrder();
 

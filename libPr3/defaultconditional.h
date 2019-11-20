@@ -60,7 +60,7 @@ private:
     static /*private*/ bool _skipErrorDialog;// = false;
     /*private*/ QString getDeviceName(ConditionalAction* action);
     /*private*/ QString getActionString(ConditionalAction* action);
-    /*private*/ Memory* getMemory(QString name);
+    static /*private*/ Memory* getMemory(QString name);
     int getIntegerValue(ConditionalAction* action);
 
     Logger* log;
@@ -106,14 +106,14 @@ public slots:
     /*public*/ void actionPerformed(ActionEvent* event = 0);
 
 };
+
 class ErrorDialog : public  JDialog
 {
  Q_OBJECT
-
     QCheckBox* rememberSession;
     DefaultConditional* cond;
 public:
-    ErrorDialog(QStringList* list, DefaultConditional* cond);
+    ErrorDialog(QStringList list, DefaultConditional* cond);
 public slots:
     void onCloseButton();
 };

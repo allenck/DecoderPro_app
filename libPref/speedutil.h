@@ -70,8 +70,8 @@ private:
  /*private*/ void setSpeed(RosterSpeedProfile* profile, float throttle, float measuredSpeed, bool isForward);
 
 protected:
- /*protected*/ SpeedUtil(QList<BlockOrder*>* orders, QObject* parent = nullptr);
- /*protected*/ void setOrders(QList<BlockOrder*>*orders);
+ /*protected*/ SpeedUtil(QList<BlockOrder *> *orders, QObject* parent = nullptr);
+ /*protected*/ void setOrders(QList<BlockOrder*>* orders);
  /*protected*/ RosterSpeedProfile* getSpeedProfile();
  /*protected*/ void setDccAddress(DccLocoAddress* dccAddr);
  /*protected*/ float getThrottleSpeedStepIncrement();
@@ -100,6 +100,7 @@ protected:
 friend class NXFrame;
 friend class Warrant;
 friend class WarrantFrame;
+friend class WarrantTest;
 };
 
 #endif // SPEEDUTIL_H

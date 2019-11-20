@@ -77,7 +77,6 @@ OBlockManager::OBlockManager(QObject *parent) :
     r = new OBlock(sName,userName);
     // save in the maps
     Register(r);
-    emit propertyChange(new PropertyChangeEvent(this, "length", QVariant(), QVariant(_tsys->count())));
     return r;
 }
 

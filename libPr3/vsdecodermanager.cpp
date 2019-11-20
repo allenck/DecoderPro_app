@@ -376,8 +376,8 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
         return;
     }
     // Make sure we aren't already registered.
-    QList<PropertyChangeListener*>* ll = r->getPropertyChangeListeners(h->getName());
-    if (ll->isEmpty()) {
+    QVector<PropertyChangeListener*> ll = r->getPropertyChangeListeners(h->getName());
+    if (ll.isEmpty()) {
         r->addPropertyChangeListener((PropertyChangeListener*)this, h->getName(), vsd_property_change_name);
     }
 }
@@ -394,8 +394,8 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
         return;
     }
     // Make sure we aren't already registered.
-    QList<PropertyChangeListener*>* ll = b->getPropertyChangeListeners(h->getName());
-    if (ll->isEmpty()) {
+    QVector<PropertyChangeListener*> ll = b->getPropertyChangeListenersByReference(h->getName());
+    if (ll.isEmpty()) {
         b->addPropertyChangeListener((PropertyChangeListener*)this, h->getName(), vsd_property_change_name);
         log->debug("Added listener to bean " + b->getDisplayName() + " type " + b->metaObject()->className());
     }

@@ -16,7 +16,7 @@
 DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
     ShutDownManager(parent)
 {
- tasks = new QVector<ShutDownTask*>();
+ _tasks =  QVector<ShutDownTask*>();
 
 }
 /**
@@ -55,11 +55,11 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
 //@Override
 /*public*/ void DefaultShutDownManager::_register(ShutDownTask* s)
 {
- if (!tasks->contains(s))
+ if (!_tasks.contains(s))
  {
   if(s->objectName() == "")
    s->setObjectName(QString(s->metaObject()->className()));
-  tasks->append(s);
+  _tasks.append(s);
  }
  else
  {
@@ -74,9 +74,9 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
 //@Override
 /*public*/ void DefaultShutDownManager::deregister(ShutDownTask* s)
 {
- if (tasks->contains(s))
+ if (_tasks.contains(s))
  {
-  tasks->remove(tasks->indexOf(s));
+  _tasks.remove(_tasks.indexOf(s));
  }
  else
  {
@@ -86,6 +86,14 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
  }
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QList<ShutDownTask*> DefaultShutDownManager::tasks() {
+    //return java.util.Collections.unmodifiableList(tasks);
+    return _tasks.toList();
+}
 /**
  * Run the shutdown tasks, and
  * then terminate the program with status 0 if not aborted.
@@ -207,7 +215,7 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
 
 /*private*/ bool DefaultShutDownManager::runShutDownTasks(bool isParallel) {
     // can't return out of a stream or forEach loop
-    foreach (ShutDownTask* task,  QVector<ShutDownTask*>(*tasks))
+    foreach (ShutDownTask* task,  QVector<ShutDownTask*>(_tasks))
     {
         if (task->isParallel() == isParallel) {
             log->debug(tr("Calling task \"%1\"").arg(task->getName()));

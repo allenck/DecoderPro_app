@@ -190,7 +190,7 @@ QDomElement WarrantManagerXml::storeCommand(ThrottleSetting* command, QString ty
         if (elem.attribute("userName") != "")
             userName = elem.attribute("userName");
 
-        Warrant* warrant = manager->createNewWarrant(sysName, userName);
+        Warrant* warrant = manager->createNewWarrant(sysName, userName, false, 0);
         if (warrant==NULL) {
             log->error("Warrant already exists with names: sysName= "+sysName+" userName= "+userName);
             continue;

@@ -22,6 +22,8 @@ signals:
 public slots:
 private:
  Logger* log;
+ /*private*/ QString attributes(QDomElement e);
+
 protected:
  /*protected*/ void replaceConditionalManager();
 

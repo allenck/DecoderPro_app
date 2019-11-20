@@ -25,6 +25,10 @@
 #include "internalsensormanager.h"
 #include "joptionpane.h"
 #include "jmriconfigurationmanager.h"
+#include "defaultlogixmanager.h"
+#include "defaultconditionalmanager.h"
+#include "debugthrottlemanager.h"
+#include "mockshutdownmanager.h"
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
@@ -781,12 +785,12 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 
     InstanceManager::store(cs, jmri.CommandStation.class);
 }
-
-/*public*/ static void initDebugThrottleManager() {
-    jmri.ThrottleManager m = new DebugThrottleManager();
-    InstanceManager::store(m, ThrottleManager.class);
+#endif
+/*public*/ /*static*/ void JUnitUtil::initDebugThrottleManager() {
+    ThrottleManager* m = new DebugThrottleManager();
+    InstanceManager::store(m, "ThrottleManager");
 }
-
+#if 0
 /*public*/ static void initDebugProgrammerManager() {
     DebugProgrammerManager m = new DebugProgrammerManager();
     InstanceManager::store(m, AddressedProgrammerManager.class);
@@ -806,21 +810,21 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     InstanceManager::reset(jmri.RailComManager.class);
     InstanceManager::store(new DefaultRailComManager(), jmri.RailComManager.class);
 }
-
-/*public*/ static void initLogixManager() {
-    LogixManager m = new DefaultLogixManager(InstanceManager::getDefault(InternalSystemConnectionMemo.class));
-    if (InstanceManager::getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager::getDefault(ConfigureManager.class).registerConfig(m, jmri.Manager.LOGIXS);
+#endif
+/*public*/ /*static*/ void JUnitUtil::initLogixManager() {
+    LogixManager* m = new DefaultLogixManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::LOGIXS);
     }
 }
 
-/*public*/ static void initConditionalManager() {
-    ConditionalManager m = new DefaultConditionalManager(InstanceManager::getDefault(InternalSystemConnectionMemo.class));
-    if (InstanceManager::getNullableDefault(ConfigureManager.class) != null) {
-        InstanceManager::getDefault(ConfigureManager.class).registerConfig(m, jmri.Manager.CONDITIONALS);
+/*public*/ /*static*/ void JUnitUtil::initConditionalManager() {
+    ConditionalManager* m = new DefaultConditionalManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::CONDITIONALS);
     }
 }
-
+#if 0
 /*public*/ static void initInternalTurnoutManagerThrowException() {
     InstanceManager::setDefault(TurnoutManager.class, new TurnoutManagerThrowExceptionScaffold());
 }
@@ -917,24 +921,26 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     }
 
 }
-
+#endif
 /**
  * Creates, if needed, a new ShutDownManager, clearing any existing
  * ShutDownManager, and ensuring the ShutDownManager is not in the state of
  * ShuttingDown if the ShutDownManager is a MockShutDownManager.
  */
-/*public*/ static void initShutDownManager() {
-    ShutDownManager manager = InstanceManager::getDefault(ShutDownManager.class);
-    List<ShutDownTask> tasks = manager.tasks();
+/*public*/ /*static*/ void JUnitUtil::initShutDownManager() {
+    ShutDownManager* manager = (ShutDownManager*)InstanceManager::getDefault("ShutDownManager");
+    QList<ShutDownTask*> tasks = manager->tasks();
     while (!tasks.isEmpty()) {
-        manager.deregister(tasks.get(0));
-        tasks = manager.tasks(); // avoid ConcurrentModificationException
+        manager->deregister(tasks.at(0));
+        tasks = manager->tasks(); // avoid ConcurrentModificationException
     }
-    if (manager instanceof MockShutDownManager) {
-        ((MockShutDownManager) manager).resetShuttingDown();
+    //if (manager instanceof MockShutDownManager)
+    if(static_cast<MockShutDownManager*>(manager))
+    {
+        ((MockShutDownManager*) manager)->resetShuttingDown();
     }
 }
-
+#if 0
 /*public*/ static void initStartupActionsManager() {
     InstanceManager::store(
             new apps.StartupActionsManager(),

@@ -190,13 +190,14 @@
   return ret;
 }
 
-/*public*/ void Block::setNamedSensor(NamedBeanHandle<Sensor*>* s) {
-  if (_namedSensor != nullptr) {
-      if (_sensorListener != nullptr) {
-          getSensor()->removePropertyChangeListener(_sensorListener);
-          disconnect(getSensor(), SIGNAL(propertyChange(PropertyChangeEvent*)), _sensorListener, SLOT(propertyChange(PropertyChangeEvent*)));
-          _sensorListener = nullptr;
-      }
+/*public*/ void Block::setNamedSensor(NamedBeanHandle<Sensor*>* s)
+{
+  if (_namedSensor != nullptr)
+  {
+   if (_sensorListener != nullptr) {
+       getSensor()->removePropertyChangeListener(_sensorListener);
+       _sensorListener = nullptr;
+   }
   }
   _namedSensor = s;
 
@@ -205,21 +206,22 @@
 //          handleSensorChange(e);
 //      }, s.getName(), "Block Sensor " + getDisplayName());
 //      _current = getSensor()->getState();
-   BlockSensorListener* _sensorListener = new BlockSensorListener(this);
-   getSensor()->addPropertyChangeListener(_sensorListener);
+   _sensorListener = new BlockSensorListener(this);
+   getSensor()->addPropertyChangeListener(_sensorListener, s->getName(), "Block Sensor " + getDisplayName());
    _current = getSensor()->getState();
   } else {
-      _current = UNDETECTED;
+   _current = UNDETECTED;
   }
 }
 void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
 {
  block->handleSensorChange(e);
 }
-/*public*/ Sensor* Block::getSensor() {
-    if (_namedSensor!=NULL)
-        return _namedSensor->getBean();
-    return NULL;
+/*public*/ Sensor* Block::getSensor()
+{
+ if (_namedSensor!=NULL)
+  return _namedSensor->getBean();
+ return NULL;
 }
 
 /*public*/ NamedBeanHandle <Sensor*>* Block::getNamedSensor() {
@@ -293,6 +295,7 @@ void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
 /*public*/ bool Block::isReportingCurrent() { return _reportingCurrent; }
 
 /*public*/ int Block::getState() {return _current;}
+
 QString Block::getStateString()
 {
  switch(_current)
@@ -347,7 +350,14 @@ QString Block::getStateString()
  int old = _current;
  _current = v;
  // notify
- firePropertyChange("state", /*Integer.valueOf*/(old), /*Integer.valueOf*/(_current));
+
+ // It is rather unpleasant that the following needs to be done in a try-catch, but exceptions have been observed
+ try {
+     firePropertyChange("state", old, _current);
+ } catch (Exception e) {
+     log->error(getDisplayName()+" got exception during fireProperTyChange("+old+","+QString::number(_current)+") in thread "+
+             /*Thread.currentThread().getName()+" "+Thread.currentThread().getId()+*/": ", e);
+ }
 }
 
 /**
@@ -588,17 +598,20 @@ void Block::handleSensorChange(PropertyChangeEvent* e)
  if (e->getPropertyName()==("KnownState"))
  {
   int state = getSensor()->getState();
-  if (state == Sensor::ACTIVE) goingActive(); // 0x02
-  else if (state == Sensor::INACTIVE) goingInactive(); // 0x04
-  else if (state == Sensor::UNKNOWN)
+  switch (state)
   {
-      setValue(QVariant());
-   setState(Sensor::UNKNOWN);
-  }
-  else
-  {
-      setValue(QVariant());
-   setState(INCONSISTENT);
+   case Sensor::ACTIVE:
+       goingActive();
+       break;
+   case Sensor::INACTIVE:
+       goingInactive();
+       break;
+   case Sensor::UNKNOWN:
+       goingUnknown();
+       break;
+   default:
+       goingInconsistent();
+       break;
   }
  }
 }
@@ -620,6 +633,16 @@ void Block::handleSensorChange(QString propertyName, int /*o*/, int /*n*/)
    setState(INCONSISTENT);
   }
  }
+}
+
+/*public*/ void Block::goingUnknown() {
+    setValue(QVariant());
+    setState(UNKNOWN);
+}
+
+/*public*/ void Block::goingInconsistent() {
+    setValue(QVariant());
+    setState(INCONSISTENT);
 }
 
 /**

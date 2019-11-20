@@ -76,14 +76,14 @@ void DefaultConditionalAction::common()
  _actionString = actionStr;
 
  NamedBean* bean = getIndirectBean(_deviceName);
-    if (bean == nullptr) {
-        bean = getActionBean(_deviceName);
-    }
-    if (bean != nullptr) {
-        _namedBean = nbhm->getNamedBeanHandle(_deviceName, bean);
-    } else {
-        _namedBean = nullptr;
-    }
+ if (bean == nullptr) {
+     bean = getActionBean(_deviceName);
+ }
+ if (bean != nullptr) {
+     _namedBean = nbhm->getNamedBeanHandle(_deviceName, bean);
+ } else {
+     _namedBean = nullptr;
+ }
 }
 
 //@Override
@@ -151,19 +151,22 @@ void DefaultConditionalAction::common()
  * If this is an indirect reference, return the Memory bean.
  *
  */
-/*private*/ Memory* DefaultConditionalAction::getIndirectBean(QString devName) {
-    if (devName != "" && devName.length() > 0 && devName.at(0) == '@') {
-        QString memName = devName.mid(1);
-        Memory* m = InstanceManager::memoryManagerInstance()->getMemory(memName);
-        if (m != nullptr) {
-            _indirectAction = true;
-            return m;
-        }
-        log->error(tr("\"%1\" invalid indirect memory name in action %2 of type %3").arg(devName).arg(_actionString).arg(_type));
-    } else {
-        _indirectAction = false;
-    }
-    return nullptr;
+/*private*/ Memory* DefaultConditionalAction::getIndirectBean(QString devName)
+{
+ if (devName != "" && devName.length() > 0 && devName.at(0) == '@')
+ {
+  QString memName = devName.mid(1);
+  Memory* m = InstanceManager::memoryManagerInstance()->getMemory(memName);
+  if (m != nullptr) {
+      _indirectAction = true;
+      return m;
+  }
+  log->error(tr("\"%1\" invalid indirect memory name in action %2 of type %3").arg(devName).arg(_actionString).arg(_type));
+ }
+ else {
+  _indirectAction = false;
+ }
+ return nullptr;
 }
 
 /**
@@ -192,7 +195,7 @@ void DefaultConditionalAction::common()
    }
    break;
   case Conditional::ITEM_TYPE_MEMORY:
-   bean = ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(devName);
+   bean = InstanceManager::memoryManagerInstance()->provideMemory(devName);
    if (bean == NULL)
    {
     log->error("invalid memory name= \""+_deviceName+"\" in conditional action");
@@ -255,13 +258,13 @@ default:
  {
             //Can be considered normal if the logixs are loaded prior to any other beans
  }
- if (bean!=NULL)
- {
-  _namedBean = nbhm->getNamedBeanHandle(_deviceName, bean);
- } else
- {
-  _namedBean = NULL;
- }
+// if (bean!=NULL)
+// {
+//  _namedBean = nbhm->getNamedBeanHandle(_deviceName, bean);
+// } else
+// {
+//  _namedBean = NULL;
+// }
  return bean;
 }
 
@@ -297,43 +300,33 @@ default:
     return _deviceName;
 }
 
-/*public*/ void DefaultConditionalAction::setDeviceName(QString deviceName) {
-    _deviceName = deviceName;
-    NamedBean* bean = NULL;
-    int itemType = Conditional::ACTION_TO_ITEM[_type];
-    try {
-        switch (itemType) {
-            case Conditional::ITEM_TYPE_SENSOR:
-            bean = (NamedBean*) ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(_deviceName);
-                break;
-            case Conditional::ITEM_TYPE_TURNOUT:
-                bean = (NamedBean*) ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(_deviceName);
-                break;
-            case Conditional::ITEM_TYPE_MEMORY:
-                bean = (NamedBean*) ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(_deviceName);
-                break;
-            case Conditional::ITEM_TYPE_LIGHT:
-                bean = (NamedBean*) ((ProxyLightManager*)InstanceManager::lightManagerInstance())->getLight(_deviceName);
-                break;
-            case Conditional::ITEM_TYPE_SIGNALMAST:
-                bean = (NamedBean*) static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(_deviceName);
-                break;
-            case Conditional::ITEM_TYPE_SIGNALHEAD:
-                bean = (NamedBean*) static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(_deviceName);
-                break;
-        }
-    } catch (NumberFormatException ex){
-        //Can be considered normal if the logixs are loaded prior to the sensors
-    }
-    if (bean!=NULL){
-        _namedBean = nbhm->getNamedBeanHandle(_deviceName, bean);
-    } else {
-        _namedBean = NULL;
-    }
+/*public*/ void DefaultConditionalAction::setDeviceName(QString deviceName)
+{
+ _deviceName = deviceName;
+ NamedBean* bean = getIndirectBean(_deviceName);
+ if (bean == nullptr) {
+     bean = getActionBean(_deviceName);
+ }
+ if (bean != nullptr) {
+     _namedBean = nbhm->getNamedBeanHandle(_deviceName, bean);
+ } else {
+     _namedBean = nullptr;
+ }
 }
 
 /*public*/ NamedBeanHandle<NamedBean*>* DefaultConditionalAction::getNamedBean(){
-    return _namedBean;
+ if (_indirectAction)
+ {
+  Memory* m = (Memory*) (_namedBean->getBean());
+  QString actionName =  m->getValue().toString();
+  NamedBean* bean = getActionBean(actionName);
+  if (bean != nullptr) {
+      return nbhm->getNamedBeanHandle(actionName, bean);
+  } else {
+      return nullptr;
+  }
+ }
+ return _namedBean;
 }
 
 /*public*/ NamedBean* DefaultConditionalAction::getBean(){
@@ -341,7 +334,7 @@ default:
         return (NamedBean*) _namedBean->getBean();
     }
     setDeviceName(_deviceName); //ReApply name as that will create namedBean, save replicating it here
-    if(_namedBean!=NULL)
+    if(_namedBean != NULL)
         return (NamedBean*) _namedBean->getBean();
     return NULL;
 }
@@ -474,7 +467,7 @@ default:
     return getActionDataString(_type, _actionData);
 }
 
-
+#if 0
 /**
  * Convert Variable Type to Text String
  */
@@ -624,7 +617,7 @@ default:
     log->warn("Unexpected parameter to getActionTypeString("+QString::number(t)+")");
     return ("");
 }
-
+#endif
 /**
  * Convert consequent option to String
  */

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "speedstepmode.h"
+#include "throttlelistener.h"
 
 class PropertyChangeEvent;
 class ConsistFunctionController;
@@ -12,9 +13,10 @@ class RosterEntry;
 class DccThrottle;
 class DccLocoAddress;
 class Logger;
-class ThrottleController : public QObject
+class ThrottleController : public QObject, public ThrottleListener
 {
  Q_OBJECT
+ Q_INTERFACES(ThrottleListener)
 public:
  explicit ThrottleController(QObject *parent = 0);
  /*public*/ ThrottleController(QChar whichThrottleChar, ThrottleControllerListener* tcl, ControllerInterface* cl, QObject *parent = 0);

@@ -1010,7 +1010,7 @@ if(!object.isNull())
 }
 
 /*public*/ /*static*/ void Assert::assertNull(QString message, QString object, QString file, int line) {
-if(!object.isNull())
+if(!object.isEmpty())
  fail(tr("%1, string not empty").arg(message), file, line);
 }
 /*public*/ /*static*/ void Assert::assertNull(QString message, QVariant object, QString file, int line) {

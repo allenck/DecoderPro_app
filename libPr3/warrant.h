@@ -4,6 +4,7 @@
 #include "exceptions.h"
 #include "engineer.h"
 #include "libPr3_global.h"
+#include "Throttle/throttlelistener.h"
 
 class SpeedUtil;
 class CommandDelay;
@@ -18,9 +19,10 @@ class LearnThrottleFrame;
 class DccLocoAddress;
 class ThrottleSetting;
 class BlockOrder;
-class LIBPR3SHARED_EXPORT Warrant : public AbstractNamedBean
+class LIBPR3SHARED_EXPORT Warrant : public AbstractNamedBean, public ThrottleListener
 {
     Q_OBJECT
+ Q_INTERFACES(ThrottleListener)
 public:
    //explicit Warrant(QObject *parent = 0);
     /*public*/ Warrant(QString sName, QString uName, QObject *parent = 0);
@@ -32,6 +34,7 @@ public:
      MODE_RUN 	= 2,	// Autorun (playback) command list
      MODE_MANUAL = 3	// block detection/reservation for manually run train
     };
+    Q_ENUM(MODES)
     static QString modeName(int i);
     // control states
     enum STATES
@@ -81,8 +84,8 @@ public:
     /*public*/ void setAvoidOrder(BlockOrder* order);
     /*public*/ BlockOrder* getCurrentBlockOrder();
     /*public*/ int getCurrentOrderIndex();
-    /*public*/ QList <ThrottleSetting*>* getThrottleCommands();
-    /*public*/ void setThrottleCommands(QList<ThrottleSetting*> list);
+    /*public*/ QList<ThrottleSetting *> *getThrottleCommands();
+    /*public*/ void setThrottleCommands(QList<ThrottleSetting *> *list);
     /*public*/ void addThrottleCommand(ThrottleSetting* ts);
     /*public*/ QString getTrainName();
     /*public*/ void setTrainName(QString name) ;
@@ -105,20 +108,22 @@ public:
     /*public*/ int getCurrentCommandIndex();
     /*public*/ QString setRunMode(int mode, DccLocoAddress* address,
                                  LearnThrottleFrame* student,
-                                 QList <ThrottleSetting*>* commands, bool runBlind);
+                                 QList<ThrottleSetting *> *commands, bool runBlind);
     /*public*/ bool controlRunTrain(int idx);
-    /*public*/ void notifyThrottleFound(DccThrottle* throttle);
-    /*public*/ void notifyFailedThrottleRequest(DccLocoAddress* address, QString reason);
-    /*public*/ QString allocateRoute(QList <BlockOrder*>* orders);
+    /*public*/ void notifyThrottleFound(DccThrottle* throttle) override;
+    /*public*/ void notifyFailedThrottleRequest(LocoAddress* address, QString reason) override;
+    /*public*/ QString allocateRoute(bool show, QList<BlockOrder *> *orders);
     /*public*/ void deAllocate();
-    /*public*/ QString setRoute(int delay, QList <BlockOrder*>* orders);
+//    /*public*/ QString setRoute(int delay, QList <BlockOrder*>* orders);
     /*public*/ QString checkRoute();
     /*public*/ QString checkForContinuation();
     /*public*/ QString checkStartBlock(int mode);
     /*public*/ void stopWarrant(bool abort);
     /*public*/ void setBlockOrders(QList<BlockOrder*>* orders);
-    /*public*/ QString setRoute(int delay, QList<BlockOrder*> orders);
+//    /*public*/ QString setRoute(int delay, QList<BlockOrder*> orders);
     /*public*/ QString getCurrentBlockName();
+    /*public*/ void runWarrant(int mode);
+    virtual /*public*/ QString setRoute(bool show, QList<BlockOrder*>* orders);
 
 signals:
 //    void propertyChange(PropertyChangeEvent*);
@@ -130,15 +135,15 @@ private:
     /*private*/ QList <BlockOrder*>* _savedOrders;// = new ArrayList <BlockOrder>();
     /*private*/ BlockOrder* _viaOrder;
     /*private*/ BlockOrder* _avoidOrder;
-    /*private*/ QList <ThrottleSetting*>* _throttleCommands;// = new ArrayList <ThrottleSetting>();
     /*private*/ QString _trainName;      // User train name for icon
     /*private*/ QString _trainId;        // Roster Id
     /*private*/ DccLocoAddress* _dccAddress;
     /*private*/ bool _runBlind;              // don't use block detection
     bool _debug;
-
+    /*private*/ bool _partialAllocate;// only allocate one block at a time for sharing route.
+    /*private*/ bool _noRamp; // do not ramp speed changes. make immediate speed change when entering approach block.
     // transient members
-    /*private*/ QList <BlockOrder*>* _orders;          // temp orders used in run mode
+    /*private*/ QList<BlockOrder*>* _orders;          // temp orders used in run mode
     /*private*/ LearnThrottleFrame* _student;        // need to callback learning throttle in learn mode
     /*private*/ bool _delayStart;				// allows start block unoccupied and wait for train
     /*private*/ int     _idxCurrentOrder;       // Index of block at head of train (if running)
@@ -162,7 +167,6 @@ private:
 
     /*private*/ static SignalSpeedMap* _speedMap;
     /*private*/ int getBlockStateAt(int idx);
-    /*private*/ QString acquireThrottle(DccLocoAddress* address);
     /*private*/ bool checkStoppingBlock();
     /*private*/ long getSpeedChangeWait(int index);
     /*private*/ QString getCurrentSpeedAt(int index);
@@ -188,6 +192,8 @@ private:
     /*private*/ OBlock* _myShareBlock;   // block belonging to this warrant
     /*private*/ OBlock* _otherShareBlock;   // block belonging to another warrant
 Logger* log;
+    /*private*/ QString allocateFromIndex(bool show, bool set, int index);
+
 protected:
     /*protected*/ bool _tempRunBlind;            // run mode flag
     /*protected*/ float _throttleFactor;// = 1.0f;
@@ -211,15 +217,18 @@ protected:
     /*protected*/ static /*final*/ QStringList RUN_STATE;// = {"HaltStart", "atHalt", "Resume", "Aborted", "Retry",
 //        "Running", "RestrictSpeed", "WaitingForClear", "WaitingForSensor", "RunningLate"};
     /*protected*/ void startTracker();
-/*protected*/ void setOrders(QList<BlockOrder*>* orders) ;
-/*protected*/ QList<BlockOrder*>* getOrders();
-///*protected*/ void setCalibrater(Calibrater* c);
-/*protected*/ RosterEntry* getRosterEntry();
-/*protected*/ DccThrottle* getThrottle();
-/*protected*/ bool isWaitingForSignal();
-/*protected*/ bool isWaitingForClear() ;
-/*protected*/ bool isWaitingForWarrant();
-/*protected*/ Warrant* getBlockingWarrant();
+    /*protected*/ void setOrders(QList<BlockOrder*>* orders) ;
+    /*protected*/ QList<BlockOrder*>* getOrders();
+    ///*protected*/ void setCalibrater(Calibrater* c);
+    /*protected*/ RosterEntry* getRosterEntry();
+    /*protected*/ DccThrottle* getThrottle();
+    /*protected*/ bool isWaitingForSignal();
+    /*protected*/ bool isWaitingForClear() ;
+    /*protected*/ bool isWaitingForWarrant();
+    /*protected*/ Warrant* getBlockingWarrant();
+    /*protected*/ Warrant* _self;// = this;
+    /*protected*/ void abortWarrant(QString msg);
+    /*protected*/ QString acquireThrottle();
 
 
 friend class OBlock;
@@ -234,7 +243,10 @@ friend class WarrantManagerXml;
 friend class CreateWarrantFrame;
 friend class NXFrame;
 friend class Calibrater;
-
+friend class SCWarrant;
+friend class ReleaseUntilWT1;
+friend class ReleaseUntilWT2;
+friend class WarrantTest;
 };
 
 class BlockSpeedInfo

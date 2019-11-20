@@ -1159,7 +1159,7 @@ void doAction(Object obj) {
  */
 /*private*/ QString WarrantFrame::setupRun() {
     QString msg = NULL;
-    msg = _warrant->allocateRoute(_orders);
+    msg = _warrant->allocateRoute(false,_orders);
     if (msg==NULL) {
         msg = _warrant->setRoute(0, _orders);
     }
@@ -1669,7 +1669,7 @@ endResetModel();
  _warrant->setViaOrder(getViaBlockOrder());
  _warrant->setAvoidOrder(getAvoidBlockOrder());
  _warrant->setBlockOrders(getOrders());
- _warrant->setThrottleCommands(*_throttleCommands);
+ _warrant->setThrottleCommands(_throttleCommands);
 
  if (log->isDebugEnabled()) log->debug("warrant saved _train "+getTrainId()+", name= "+getTrainName());
 

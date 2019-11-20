@@ -1150,7 +1150,7 @@ WarrantPickModel::WarrantPickModel (QObject *parent) : PickListModel(parent)
     return (NamedBean*) manager->provideWarrant(name);
 }
 /*public*/ NamedBean* WarrantPickModel::addBean(QString sysName, QString userName) {
-    return (NamedBean*)manager->createNewWarrant(sysName, userName);
+    return (NamedBean*)manager->createNewWarrant(sysName, userName,false, 0);
 }
 /*public*/ bool WarrantPickModel::canAddBean() {
     return false;

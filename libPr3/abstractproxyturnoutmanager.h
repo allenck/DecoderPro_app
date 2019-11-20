@@ -115,7 +115,7 @@ public:
 signals:
     //virtual void propertyChange(PropertyChangeEvent *e);
 public slots:
-    virtual void propertyChange(PropertyChangeEvent *e);
+//    virtual void propertyChange(PropertyChangeEvent *e);
 
 private:
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("AbstractProxyManager");

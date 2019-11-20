@@ -64,7 +64,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -433,6 +432,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
@@ -452,7 +452,8 @@ virtual QList<QString >*  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getState();
 virtual QString  getSystemName();
@@ -479,6 +480,7 @@ class PythonQtPublicPromoter_AbstractNamedBean : public AbstractNamedBean
 inline void promoted_firePropertyChange(QString  p, QVariant  old, QVariant  n) { this->firePropertyChange(p, old, n); }
 inline void py_q_addPropertyChangeListener(PropertyChangeListener*  l) { AbstractNamedBean::addPropertyChangeListener(l); }
 inline void py_q_addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef) { AbstractNamedBean::addPropertyChangeListener(l, beanRef, listenerRef); }
+inline void py_q_addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef) { AbstractNamedBean::addPropertyChangeListener(propertyName, l, beanRef, listenerRef); }
 inline void py_q_addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener) { AbstractNamedBean::addPropertyChangeListener(propertyName, listener); }
 inline int  py_q_compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n) { return AbstractNamedBean::compareSystemNameSuffix(suffix1, suffix2, n); }
 inline QString  py_q_describeState(int  state) { return AbstractNamedBean::describeState(state); }
@@ -492,7 +494,8 @@ inline QList<QString >*  py_q_getListenerRefs() { return AbstractNamedBean::getL
 inline int  py_q_getNumPropertyChangeListeners() { return AbstractNamedBean::getNumPropertyChangeListeners(); }
 inline QVariant  py_q_getProperty(QString  key) { return AbstractNamedBean::getProperty(key); }
 inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners() { return AbstractNamedBean::getPropertyChangeListeners(); }
-inline QList<PropertyChangeListener* >*  py_q_getPropertyChangeListeners(QString  name) { return AbstractNamedBean::getPropertyChangeListeners(name); }
+inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(QString  name) { return AbstractNamedBean::getPropertyChangeListeners(name); }
+inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByReference(QString  propertyName) { return AbstractNamedBean::getPropertyChangeListenersByReference(propertyName); }
 inline QSet<QString >  py_q_getPropertyKeys() { return AbstractNamedBean::getPropertyKeys(); }
 inline QString  py_q_getSystemName() { return AbstractNamedBean::getSystemName(); }
 inline QString  py_q_getUserName() { return AbstractNamedBean::getUserName(); }
@@ -516,6 +519,7 @@ AbstractNamedBean* new_AbstractNamedBean(QString  sys, QString  user, QObject*  
 void delete_AbstractNamedBean(AbstractNamedBean* obj) { delete obj; } 
    void py_q_addPropertyChangeListener(AbstractNamedBean* theWrappedObject, PropertyChangeListener*  l){  (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_addPropertyChangeListener(l));}
    void py_q_addPropertyChangeListener(AbstractNamedBean* theWrappedObject, PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef){  (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_addPropertyChangeListener(l, beanRef, listenerRef));}
+   void py_q_addPropertyChangeListener(AbstractNamedBean* theWrappedObject, QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef){  (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_addPropertyChangeListener(propertyName, l, beanRef, listenerRef));}
    void py_q_addPropertyChangeListener(AbstractNamedBean* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener){  (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_addPropertyChangeListener(propertyName, listener));}
    int  py_q_compareSystemNameSuffix(AbstractNamedBean* theWrappedObject, QString  suffix1, QString  suffix2, NamedBean*  n){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_compareSystemNameSuffix(suffix1, suffix2, n));}
    QString  py_q_describeState(AbstractNamedBean* theWrappedObject, int  state){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_describeState(state));}
@@ -531,7 +535,9 @@ void delete_AbstractNamedBean(AbstractNamedBean* obj) { delete obj; }
    QVariant  py_q_getProperty(AbstractNamedBean* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getProperty(key));}
    QVector<PropertyChangeListener* >  getPropertyChangeListeners(AbstractNamedBean* theWrappedObject);
    QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getPropertyChangeListeners());}
-   QList<PropertyChangeListener* >*  py_q_getPropertyChangeListeners(AbstractNamedBean* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getPropertyChangeListeners(name));}
+   QVector<PropertyChangeListener* >  getPropertyChangeListeners(AbstractNamedBean* theWrappedObject, QString  name);
+   QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(AbstractNamedBean* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getPropertyChangeListeners(name));}
+   QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByReference(AbstractNamedBean* theWrappedObject, QString  propertyName){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getPropertyChangeListenersByReference(propertyName));}
    QSet<QString >  py_q_getPropertyKeys(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getPropertyKeys());}
    QString  py_q_getSystemName(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getSystemName());}
    QString  py_q_getUserName(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getUserName());}
@@ -837,15 +843,17 @@ public:
 
    ~PythonQtShell_AbstractSensor();
 
-virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1) const;
-virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, QString  arg__3) const;
+virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  canInvert();
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
 virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
-virtual void dispose() const;
+virtual void dispose();
 virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
@@ -861,7 +869,8 @@ virtual QList<QString >*  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getRawState() const;
 virtual long  getSensorDebounceGoingActiveTimer() const;
@@ -872,7 +881,8 @@ virtual bool  getUseDefaultTimerSettings();
 virtual QString  getUserName();
 virtual bool  hashCode();
 virtual void removeProperty(QString  key);
-virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1) const;
+virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void requestUpdateFromLayout() const;
 virtual void setCommandedState(int  s);
 virtual void setComment(QString  comment);
@@ -1252,6 +1262,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  canInvert();
 virtual bool  canLock(int  turnoutLockout);
@@ -1290,7 +1301,8 @@ virtual int  getNumberOutputBits();
 virtual int  getPossibleLockModes();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual bool  getReportLocked();
 virtual Sensor*  getSecondSensor();
@@ -1674,6 +1686,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
@@ -1693,7 +1706,8 @@ virtual QList<QString >*  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getState();
 virtual QChar  getSubType();
@@ -1755,6 +1769,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
@@ -1779,7 +1794,8 @@ virtual QList<QString >*  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual long  getStartLoopPoint();
 virtual int  getState();
@@ -1884,6 +1900,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
@@ -1909,7 +1926,8 @@ virtual QVector3D  getOrientation(int  arg__1);
 virtual QVector3D  getPosition();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getState();
 virtual QChar  getSubType();
@@ -2120,6 +2138,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
@@ -2154,7 +2173,8 @@ virtual float  getPitch();
 virtual QVector3D  getPosition();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual float  getReferenceDistance();
 virtual float  getRollOffFactor();
@@ -2783,6 +2803,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
@@ -2802,13 +2823,16 @@ virtual QList<QString >*  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getState();
 virtual QString  getSystemName();
 virtual QString  getUserName();
 virtual void goingActive();
 virtual void goingInactive();
+virtual void goingInconsistent();
+virtual void goingUnknown();
 virtual bool  hashCode();
 virtual void removeProperty(QString  key);
 virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
@@ -2834,6 +2858,8 @@ inline bool  py_q_equals(QObject*  obj) { return Block::equals(obj); }
 inline int  py_q_getState() { return Block::getState(); }
 inline void py_q_goingActive() { Block::goingActive(); }
 inline void py_q_goingInactive() { Block::goingInactive(); }
+inline void py_q_goingInconsistent() { Block::goingInconsistent(); }
+inline void py_q_goingUnknown() { Block::goingUnknown(); }
 inline bool  py_q_setSensor(QString  pName) { return Block::setSensor(pName); }
 inline void py_q_setState(int  v) { Block::setState(v); }
 inline void py_q_setValue(QVariant  value) { Block::setValue(value); }
@@ -2866,6 +2892,10 @@ void delete_Block(Block* obj) { delete obj; }
    void py_q_goingActive(Block* theWrappedObject){  (((PythonQtPublicPromoter_Block*)theWrappedObject)->py_q_goingActive());}
    void goingInactive(Block* theWrappedObject);
    void py_q_goingInactive(Block* theWrappedObject){  (((PythonQtPublicPromoter_Block*)theWrappedObject)->py_q_goingInactive());}
+   void goingInconsistent(Block* theWrappedObject);
+   void py_q_goingInconsistent(Block* theWrappedObject){  (((PythonQtPublicPromoter_Block*)theWrappedObject)->py_q_goingInconsistent());}
+   void goingUnknown(Block* theWrappedObject);
+   void py_q_goingUnknown(Block* theWrappedObject){  (((PythonQtPublicPromoter_Block*)theWrappedObject)->py_q_goingUnknown());}
    bool  isBlockDenied(Block* theWrappedObject, Block*  deny);
    bool  isBlockDenied(Block* theWrappedObject, QString  deny);
    bool  isReportingCurrent(Block* theWrappedObject);

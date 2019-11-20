@@ -6,6 +6,7 @@
 #include "shutdowntask.h"
 #include "warrantshutdowntask.h"
 #include "loggerfactory.h"
+#include "scwarrant.h"
 
 WarrantManager::WarrantManager(QObject *parent) :
     AbstractManager(parent)
@@ -53,33 +54,43 @@ WarrantManager::WarrantManager(QObject *parent) :
 /*public*/ char WarrantManager::typeLetter() { return 'W'; }
 
 /**
- * Method to create a new Warrant if it does not exist
- *   Returns NULL if a Warrant with the same systemName or userName
- *       already exists, or if there is trouble creating a new Warrant.
+ * Method to create a new Warrant if it does not exist Returns null if a
+ * Warrant with the same systemName or userName already exists, or if there
+ * is trouble creating a new Warrant.
+ *
+ * @param systemName the system name
+ * @param userName   the user name
+ * @return an existing warrant if found or a new warrant
  */
-/*public*/ Warrant* WarrantManager::createNewWarrant(QString systemName, QString userName) {
+/*public*/ Warrant* WarrantManager::createNewWarrant(QString systemName, QString userName, bool SCWa, long TTP) {
+    log->debug("createNewWarrant " + systemName + " SCWa="+(SCWa?"true":false));
     // Check that Warrant does not already exist
     Warrant* r;
-    if (userName!= NULL && userName.trimmed().length() > 0) {
+    if (userName != "" && userName.trimmed().length() > 0) {
         r = getByUserName(userName);
-        if (r!=NULL) return NULL;
+        if (r == nullptr) {
+            r = getBySystemName(systemName);
+        }
+        if (r != nullptr) {
+            log->warn("Warrant " + r->getDisplayName() + "  exits.");
+            return nullptr;
+        }
     }
-    QString sName = systemName.toUpper();
-    if (!sName.startsWith("IW")) {
-        sName = "IW"+sName;
+    if (!systemName.startsWith("IW") || systemName.length() < 3) {
+        log->error("Warrant system name \"" + systemName + "\" must begin with \"IW\".");
+        return nullptr;
     }
-    if (sName.length() < 3) {
-        return NULL;
-    }
-    r = getBySystemName(sName);
-    if (r!=NULL) return NULL;
     // Warrant does not exist, create a new Warrant
-    r = new Warrant(sName,userName);
+    if (SCWa) {
+        r = new SCWarrant(systemName, userName, TTP);
+    } else {
+        r = new Warrant(systemName, userName);
+    }
     // save in the maps
     Register(r);
-    emit propertyChange(new PropertyChangeEvent(this, "length", QVariant(), QVariant(_tsys->count())));
     return r;
 }
+
 
 /**
  * Method to get an existing Warrant.  First looks up assuming that
@@ -110,7 +121,7 @@ WarrantManager::WarrantManager(QObject *parent) :
         w = getBySystemName(name);
     }
     if (w==NULL) {
-        w = createNewWarrant(name, NULL);
+        w = createNewWarrant(name, NULL, false, 0);
     }
     return w;
 }

@@ -29,17 +29,21 @@
 ///*public*/ class JmriTwoStatePropertyListener extends JmriSimplePropertyListener
 //{
 JmriTwoStatePropertyListener::JmriTwoStatePropertyListener(QString propName, int type, QString name, int varType,
-                          Conditional* client, QObject *parent) : JmriSimplePropertyListener(propName, type, name, varType, client, parent)
+                          Conditional* client, QObject *parent)
+ : JmriSimplePropertyListener(propName, type, name, varType, client, parent)
 {
     //super(propName, type, name, varType, client);
     log = new Logger("JmriTwoStatePropertyListener");
+    log->setDebugEnabled(true);
 }
 
 JmriTwoStatePropertyListener::JmriTwoStatePropertyListener(QString propName, int type, NamedBeanHandle<NamedBean*>* namedBean, int varType,
-                          Conditional* client,QObject *parent) : JmriSimplePropertyListener(propName, type, namedBean, varType, client, parent)
+                          Conditional* client,QObject *parent)
+ : JmriSimplePropertyListener(propName, type, namedBean, varType, client, parent)
 {
     //super(propName, type, namedBean, varType, client);
     log = new Logger("JmriTwoStatePropertyListener");
+    log->setDebugEnabled(true);
 }
 
 /*public*/ void JmriTwoStatePropertyListener::propertyChange(PropertyChangeEvent* evt) {

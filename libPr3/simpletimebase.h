@@ -52,7 +52,7 @@ public:
     void updateMemory(double factor) ;
     /*public*/ void addMinuteChangeListener(PropertyChangeListener* l);
     /*public*/ void removeMinuteChangeListener(PropertyChangeListener* l);
-    /*public*/ QList<PropertyChangeListener *> *getMinuteChangeListeners() override;
+    /*public*/ QVector<PropertyChangeListener *> getMinuteChangeListeners() override;
     /*public*/ void setState(int s) throw (JmriException);
     /*public*/ int getState();
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);

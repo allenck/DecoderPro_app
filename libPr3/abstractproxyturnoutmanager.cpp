@@ -651,9 +651,9 @@ bool sortLessThanconst2( NamedBean* s1,  NamedBean* s2)
  return arr;
 }
 
-void AbstractProxyTurnoutManager::propertyChange(PropertyChangeEvent */*e*/)
-{
- //emit this->propertyChange(e);
-}
+//void AbstractProxyTurnoutManager::propertyChange(PropertyChangeEvent */*e*/)
+//{
+// //emit this->propertyChange(e);
+//}
 // initialize logging
 /*private*/ /*final*/ /*static*/ Logger* AbstractProxyTurnoutManager::log = LoggerFactory::getLogger("AbstractProxyTurnoutManager");

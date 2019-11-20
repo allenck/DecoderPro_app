@@ -30,6 +30,8 @@ public:
 signals:
 
 public slots:
+ /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
+
 private:
     /**
      *  Persistant instance variables (saved between runs)

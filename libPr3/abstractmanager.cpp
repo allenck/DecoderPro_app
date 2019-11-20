@@ -379,23 +379,38 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  * intended to keep track of user name changes to individual NamedBeans.
  * It is not completely implemented yet. In particular, listeners
  * are not added to newly registered objects.
+ *
+ * @param e the event
  */
 /*public*/ void AbstractManager::propertyChange(PropertyChangeEvent* e)
 {
  if(e->getPropertyName() == "length")
   firePropertyChange(e->getPropertyName(), e->getOldValue(), e->getNewValue());
 
- if (e->getPropertyName()==("UserName"))
+ if (e->getPropertyName() == ("UserName"))
  {
-  QString old = e->getOldValue().toString();  // OldValue is actually system name
-  QString now = e->getNewValue().toString();
-  NamedBean* t = (NamedBean*)e->getSource();
-  //NamedBean* t = NULL;  // TODO: fix this
-  if (!old.isEmpty()) _tuser->remove(old);
-  if (!now.isEmpty()) _tuser->insert(now, t);
+     QString old = e->getOldValue().toString();  // previous user name
+     QString now = e->getNewValue().toString();  // current user name
+//     try { // really should always succeed
+         QObject* t = e->getSource();
+         if (old != nullptr) {
+             _tuser->remove(old); // remove old name for this bean
+         }
+         if (now != nullptr) {
+             // was there previously a bean with the new name?
+             if (_tuser->value(now) != nullptr && _tuser->value(now) != t) {
+                 // If so, clear. Note that this is not a "move" operation
+                 _tuser->value(now)->setUserName("");
+             }
 
-  //called DisplayListName, as DisplayName might get used at some point by a NamedBean
-  firePropertyChange("DisplayListName", old, now);
+             _tuser->insert(now, (NamedBean*)t); // put new name for this bean
+         }
+//     } catch (ClassCastException ex) {
+//         log.error("Received event of wrong type {}", e.getSource().getClass().getName(), ex);
+//     }
+
+     // called DisplayListName, as DisplayName might get used at some point by a NamedBean
+     firePropertyChange("DisplayListName", old, now); //IN18N
  }
 }
 

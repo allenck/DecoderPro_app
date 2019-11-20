@@ -81,7 +81,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -2303,6 +2302,7 @@ public:
 virtual void activateLight();
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual void clearLightControls();
@@ -2328,7 +2328,8 @@ virtual double  getMinIntensity();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getState();
 virtual QString  getSystemName();
@@ -2995,15 +2996,17 @@ public:
 
    ~PythonQtShell_LnSensor();
 
-virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1) const;
-virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, QString  arg__3) const;
+virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  canInvert();
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
 virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
-virtual void dispose() const;
+virtual void dispose();
 virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
@@ -3019,7 +3022,8 @@ virtual QList<QString >*  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getRawState() const;
 virtual long  getSensorDebounceGoingActiveTimer() const;
@@ -3030,7 +3034,8 @@ virtual bool  getUseDefaultTimerSettings();
 virtual QString  getUserName();
 virtual bool  hashCode();
 virtual void removeProperty(QString  key);
-virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1) const;
+virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void requestUpdateFromLayout() const;
 virtual void setCommandedState(int  s);
 virtual void setComment(QString  comment);
@@ -3055,7 +3060,7 @@ virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoExcept
 
 class PythonQtPublicPromoter_LnSensor : public LnSensor
 { public:
-inline void py_q_dispose() const { LnSensor::dispose(); }
+inline void py_q_dispose() { LnSensor::dispose(); }
 inline void py_q_requestUpdateFromLayout() const { LnSensor::requestUpdateFromLayout(); }
 inline void py_q_setKnownState(int  s) { LnSensor::setKnownState(s); }
 };
@@ -3067,7 +3072,7 @@ public slots:
 LnSensor* new_LnSensor(QString  systemName, LnTrafficController*  tc = NULL, QString  prefix = "L", QObject*  parent = 0);
 LnSensor* new_LnSensor(QString  systemName, QString  userName, LnTrafficController*  tc = NULL, QString  prefix = "L", QObject*  parent = 0);
 void delete_LnSensor(LnSensor* obj) { delete obj; } 
-   void py_q_dispose(LnSensor* theWrappedObject) const{  (((PythonQtPublicPromoter_LnSensor*)theWrappedObject)->py_q_dispose());}
+   void py_q_dispose(LnSensor* theWrappedObject){  (((PythonQtPublicPromoter_LnSensor*)theWrappedObject)->py_q_dispose());}
    void messageFromManager(LnSensor* theWrappedObject, LocoNetMessage*  l);
    void py_q_requestUpdateFromLayout(LnSensor* theWrappedObject) const{  (((PythonQtPublicPromoter_LnSensor*)theWrappedObject)->py_q_requestUpdateFromLayout());}
    void py_q_setKnownState(LnSensor* theWrappedObject, int  s){  (((PythonQtPublicPromoter_LnSensor*)theWrappedObject)->py_q_setKnownState(s));}
@@ -3240,6 +3245,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  canInvert();
 virtual bool  canLock(int  turnoutLockout);
@@ -3277,7 +3283,8 @@ virtual int  getNumberOutputBits();
 virtual int  getPossibleLockModes();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual bool  getReportLocked();
 virtual Sensor*  getSecondSensor();

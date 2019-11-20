@@ -176,11 +176,9 @@
  else
 #endif
  {
-     this->map->remove("", listener);
-  disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-
+  this->map->remove("", listener);
+  //disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
  }
-
 }
 
 /**
@@ -243,6 +241,7 @@
  if (listener != NULL)
  {
   this->map->add(propertyName, listener);
+  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -353,7 +352,7 @@
 {
  QVariant oldValue = event->getOldValue();
  QVariant newValue = event->getNewValue();
- if (oldValue == QVariant() || newValue == QVariant() || !(oldValue==newValue))
+ if (oldValue != QVariant() || newValue != QVariant() || !(oldValue==newValue))
  {
   QString name = event->getPropertyName();
 

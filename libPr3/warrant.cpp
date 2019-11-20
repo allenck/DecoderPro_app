@@ -15,6 +15,7 @@
 #include "trackertableaction.h"
 #include "sleeperthread.h"
 #include "speedutil.h"
+#include <QMetaEnum>
 
 //Warrant::Warrant(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -54,10 +55,9 @@
 {
  //super(sName.toUpperCase(), uName);
  log = new Logger("Warrant");
- _savedOrders = new QList <BlockOrder*>();
- _throttleCommands = new QList <ThrottleSetting*>();
+ _savedOrders = new QList<BlockOrder*>();
  _throttleFactor = 1.0;
-
+ _commands = new QList<ThrottleSetting*>();
  _idxCurrentOrder = 0;
 //        _idxTrailingOrder = -1;
  _orders = _savedOrders;
@@ -69,6 +69,8 @@
  _stoppingSignal = nullptr;
  _stoppingBlock = nullptr;
  _speedUtil = new SpeedUtil(_orders);
+ _self = this;
+
 
  _debug = log->isDebugEnabled();
 }
@@ -144,8 +146,11 @@
 * Return permanently saved Destination
 */
 /*public*/ BlockOrder* Warrant::getLastOrder() {
-    if (_orders->size()==0) { return nullptr; }
-    return new BlockOrder(_orders->at(_savedOrders->size()-1));
+ int size = _orders->size();
+ if (size < 2) {
+     return nullptr;
+ }
+ return new BlockOrder(_orders->at(size - 1));
 }
 
 /**
@@ -256,16 +261,16 @@
     return  OBlock::UNKNOWN;
 }
 
-/*public*/ QList <ThrottleSetting*>* Warrant::getThrottleCommands() {
-    return _throttleCommands;
+/*public*/ QList<ThrottleSetting *>* Warrant::getThrottleCommands() {
+    return _commands;
 }
 /*public*/ void Warrant::addThrottleCommand(ThrottleSetting* ts) {
-    _throttleCommands->append(ts);
+    _commands->append(ts);
 }
 
-/*public*/ void Warrant::setThrottleCommands(QList<ThrottleSetting*> list) {
-        _throttleCommands = &list;
-    }
+/*public*/ void Warrant::setThrottleCommands(QList<ThrottleSetting*>* list) {
+    _commands = list;
+}
 /*public*/ QString Warrant::getTrainName() { return _trainName; }
 /*public*/ void Warrant::setTrainName(QString name) {
     _trainName = name;
@@ -744,140 +749,114 @@
                              LearnThrottleFrame* student,
                              QList <ThrottleSetting*>* commands, bool runBlind)
 {
- if(_debug) log->debug("setRunMode("+QString::number(mode)+")  _runMode= "+QString::number(_runMode)+" for warrant= "+getDisplayName());
- QString msg = nullptr;
- int oldMode = _runMode;
- if (mode == MODE_NONE)
- {
-  _delayStart = false;
-  if (_stoppingSignal!=nullptr)
-  {
-   log->error("signal "+_stoppingSignal->getSystemName());
-   //_stoppingSignal.removePropertyChangeListener(this);
-   AbstractNamedBean* abstractStoppingSignal = (AbstractNamedBean*)_stoppingSignal;
-   disconnect(abstractStoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
-            _stoppingSignal = nullptr;
-  }
-  if (_stoppingBlock!=nullptr)
-  {
-   //_stoppingBlock->removePropertyChangeListener(this);
-   disconnect(_stoppingBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
-
-   _stoppingBlock = nullptr;
-  }
-  if (_student !=nullptr)
-  {
-   _student->dispose();
-            _student = nullptr;
-  }
-  if (_engineer!=nullptr && _engineer->getRunState() != Warrant::ABORT)
-  {
-            _engineer->abort();
-            _engineer = nullptr;
-        }
-        deAllocate();
-        _runMode = mode;
-        _idxCurrentOrder = 0;
-        _orders = _savedOrders;
-    } else if (_runMode!=MODE_NONE) {
-        QString modeDesc = nullptr;
-        switch (_runMode) {
-            case MODE_LEARN:
-                modeDesc = tr("Recording");
-                break;
-            case MODE_RUN:
-                modeDesc = tr("recording an AutoRun script");
-                break;
-            case MODE_MANUAL:
-                modeDesc = tr("train running under Manual control");
-                break;
-        }
-        //msg = java.text.MessageFormat.format(rb.getString("WarrantInUse"), modeDesc);
-        msg = tr("Warrant in use, currently %1.").arg(modeDesc);
-        log->error(msg);
-        return msg;
-    } else {
-        _delayStart = false;
-        if (!_routeSet && runBlind) {
-            //msg = java.text.MessageFormat.format(rb.getString("BlindRouteNotSet"),getDisplayName());
-            msg = tr("Warrant \"%1\" cannot run without block detection when the route is not completely set.").arg(getDisplayName());
-            return nullptr;
-        }
-        if (mode == MODE_LEARN) {
-            // start is OK if block 0 is occupied (or dark - in which case user is responsible)
-            if (!runBlind && (getBlockStateAt(0) & (OBlock::OCCUPIED|OBlock::DARK))==0) {
-                //msg = java.text.MessageFormat.format(rb.getString("badStart"),getDisplayName());
-                msg = tr("Train does not occupy the starting block of Warrant \"%1\".").arg(getDisplayName());
-                log->error("Block "+getBlockAt(0)->getDisplayName()+", state= "+getBlockStateAt(0)+" err="+msg);
-                return msg;
-            } else if (student == nullptr) {
-                //msg = java.text.MessageFormat.format(rb.getString("noLearnThrottle"), getDisplayName());
-                msg = tr("No learning throttle for \"{0}\" in learning mode.").arg(getDisplayName());
-                log->error(msg);
-                return msg;
-            }
-            _student = student;
-            _currentSpeed = "Normal";
-            _exitSpeed = "Normal";
-         } else if (mode == MODE_RUN) {
-             if (commands->isEmpty() || commands->size()== 0) {
-                 _commands = _throttleCommands;
-             } else {
-                 _commands = commands;
-
-             }
-             // start is OK if block 0 is occupied (or dark - in which case user is responsible)
-             if (!runBlind && (getBlockStateAt(0) & (OBlock::OCCUPIED|OBlock::DARK))==0) {
-                 // continuing with no occupation of starting block
-                 _stoppingBlock = getBlockAt(0);
-                 //_stoppingBlock->addPropertyChangeListener(this);
-                 connect(_stoppingBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
-                 _delayStart = true;
-                 log->info(tr("Abort the run if you cannot guarantee %1\nwill be the first train to occupy %2.").arg(_trainName).arg(_stoppingBlock->getDisplayName()));
-             }
+ if (log->isDebugEnabled()) {
+  QMetaEnum metaEnum = QMetaEnum::fromType<Warrant::MODES>();
+     log->debug(tr("setRunMode(%1) (%2) called with _runMode= %3. warrant= %4").arg(
+             mode).arg(QString(metaEnum.valueToKey(mode))).arg(QString(metaEnum.valueToKey(_runMode))).arg(getDisplayName()));
+ }
+ _message = "";
+ if (_runMode != MODE_NONE) {
+     _message = getRunModeMessage();
+     log->error(_message);
+     return _message;
+ }
+ _idxLastOrder = 0;
+ _delayStart = false;
+ _curSpeedType = Normal;
+ _waitForSignal = false;
+ _waitForBlock = false;
+ _waitForWarrant = false;
+ if (address != nullptr) {
+     _speedUtil->setDccAddress(address);
+ }
+ if (mode == MODE_LEARN) {
+     // Cannot record if block 0 is not occupied or not dark. If dark, user is responsible for occupation
+     if (student == nullptr) {
+         _message = tr("No learning throttle for \"%1\" in learning mode.").arg(getDisplayName());
+         log->error(_message);
+         return _message;
+     }
+     /*synchronized (this)*/ {
+         _student = student;
+     }
+     // set mode before notifyThrottleFound is called
+     _runMode = mode;
+     }
+     else if (mode == MODE_RUN || mode == MODE_MANUAL)
+     {
+      if ( commands != nullptr && commands->size() > _orders->size()) {
+          _commands = commands;
+      }
+      // set mode before setStoppingBlock and callback to notifyThrottleFound are called
+      _idxCurrentOrder = 0;
+      _runMode = mode;
+      // Delayed start is OK if block 0 is not occupied. Note can't delay start if block is dark
+      if (!runBlind) {
+          int state = getBlockStateAt(0);
+          if ((state & (OBlock::OCCUPIED | OBlock::UNDETECTED)) == 0) {
+              // continuing with no occupation of starting block
+              setStoppingBlock(getBlockAt(0));
+              _delayStart = true;
+          }
+      }
+     } else {
+         stopWarrant(true);
+     }
+     getBlockAt(0)->_entryTime = QDateTime::currentMSecsSinceEpoch();//System.currentTimeMillis();
+     if (_runBlind) {
+         _tempRunBlind = _runBlind;
+     } else {
+         _tempRunBlind = runBlind;
+     }
+     if (!_delayStart) {
+         if (mode != MODE_MANUAL) {
+             _message = acquireThrottle();
+         } else {
+             startupWarrant(); // assuming manual operator will go to start block
          }
-        _runMode = mode;	// set mode before callback to notifyThrottleFound is called
-        if (mode!=MODE_MANUAL) {
-             _tempRunBlind = runBlind;
-             if (!_delayStart) {
-                 if (address==nullptr) {
-                     address = _dccAddress;
-                 }
-                 msg = acquireThrottle(address);
-                 if (msg!=nullptr){
-                     return msg;
-                 }
-             }
+     }
+     fireRunStatus("runMode", MODE_NONE, _runMode);
+     if (log->isDebugEnabled()) {
+      QMetaEnum metaEnum = QMetaEnum::fromType<Warrant::MODES>();
+
+         log->debug(tr("Exit setRunMode()  _runMode= %1, msg= %2").arg(metaEnum.valueToKey( _runMode)).arg(_message));
+     }
+     return _message;
+} // end setRunMode
+
+/**
+ * @return error message if any
+ */
+/*protected*/ QString Warrant::acquireThrottle() {
+    QString msg = "";
+    DccLocoAddress* dccAddress = _speedUtil->getDccAddress();
+    if (log->isDebugEnabled()) {
+        log->debug(tr("acquireThrottle request at %1 for warrant %2").arg(
+                dccAddress->toString()).arg(getDisplayName()));
+    }
+    if (dccAddress == nullptr) {
+        msg = tr("Warrant \"%1\" has no train address.").arg(getDisplayName());
+    } else {
+        ThrottleManager* tm = (ThrottleManager*)InstanceManager::getNullableDefault("ThrottleManager");
+        if (tm == nullptr) {
+            msg = tr("Throttle Manager unavailable or cannot provide throttle. %1").arg(_speedUtil->getDccAddress()->getNumber());
+        } else {
+            if (!tm->requestThrottle(dccAddress, (ThrottleListener*)this, false)) {
+                return tr("Address invalid, (Address %1) or train in use on another throttle.").arg(dccAddress->getNumber());
+            }
         }
     }
-    _runMode = mode;
-    firePropertyChange("runMode", QVariant(oldMode), QVariant(_runMode));
-    if(_debug) log->debug("Exit setRunMode()  _runMode= "+QString::number(_runMode)+", msg= "+msg);
-    return msg;
+    if (msg != "") {
+        abortWarrant(msg);
+        fireRunStatus("throttleFail", "", msg);
+        return msg;
+    }
+    return "";
 }
 
-/*private*/ QString Warrant::acquireThrottle(DccLocoAddress* address) {
-    QString msg = nullptr;
-    if (address == nullptr)  {
-        //msg = java.text.MessageFormat.format(rb.getString("NoAddress"),getDisplayName());
-        msg = tr("Warrant \"%1\" has no train address.").arg(getDisplayName());
-        log->error(msg);
-        return msg;
-    }
-    if (InstanceManager::throttleManagerInstance()==nullptr) {
-        msg = tr("Throttle Manager not available.");
-        log->error(msg);
-        return msg;
-    }
-    if (!((LnThrottleManager*)InstanceManager::throttleManagerInstance())->
-        requestThrottle(address->getNumber(), address->isLongAddress(),(ThrottleListener*)this)) {
-        //msg = java.text.MessageFormat.format(rb.getString("trainInUse"), address.getNumber());
-        msg = tr("Address invalid, (Address %1) or train in use on another throttle.").arg(address->getNumber());
-        log->error(msg);
-        return msg;
-    }
-    _delayStart = false;	// script should start - no more delay
-    return msg;
+/*protected*/ void Warrant::abortWarrant(QString msg) {
+    log->error(tr("Abort warrant \"%1\" - %2 ").arg(getDisplayName()).arg(msg));
+    stopWarrant(true);
 }
 
 /**
@@ -941,7 +920,8 @@
         getSpeedMap();      // initialize speedMap for getPermissibleEntranceSpeed() calls
         _engineer = new Engineer(this, throttle);
         startupWarrant();
-        /*new*/ QThread(_engineer).start();
+        ///*new*/ QThread(_engineer).start();
+        _engineer->start();
     }
 }
 
@@ -958,67 +938,120 @@
     _engineer->rampSpeedTo(_currentSpeed, 0);
 }
 
-/*public*/ void Warrant::notifyFailedThrottleRequest(DccLocoAddress* address, QString reason) {
+/*public*/ void Warrant::notifyFailedThrottleRequest(LocoAddress *address, QString reason) {
     log->error("notifyFailedThrottleRequest address= " +address->toString()+" _runMode= "+QString::number(_runMode)+
             " due to "+reason);
 }
 
 /**
-* Allocate the current saved blocks of this warrant.
-* Installs listeners for the entire route.  Sets this warrant into
-* @return error message, if any
-*/
-/*public*/ QString Warrant::allocateRoute(QList <BlockOrder*>* orders) {
+ * Allocate as many blocks as possible from the start of the warrant.
+ * The first block must be allocated and all blocks of the route must
+ * be in service. Otherwise partial success is OK.
+ * Installs listeners for the entire route.
+ * If occupation by another train is detected, a message will be
+ * posted to the Warrant List Window. Note that warrants sharing their
+ * clearance only allocate and set paths one block in advance.
+ *
+ * @param orders list of block orders
+ * @param show (for use ONLY to display a temporary route) continues to
+ *  allocate skipping over blocks occupied or owned by another warrant.
+ * @return error message, if unable to allocate first block or if any block
+ *         is OUT_OF_SERVICE
+ */
+/*public*/ QString Warrant::allocateRoute(bool show, QList<BlockOrder*>* orders) {
     if (_totalAllocated) {
-        return nullptr;
+        return "";
     }
-    if (orders==nullptr) {
-        _orders = _savedOrders;
-    } else {
+    if (orders != nullptr) {
         _orders = orders;
     }
     _allocated = false;
-    _totalAllocated = true;
-    OBlock* block = nullptr;
-    QString msg = "";
-    // Check route is in usable
-    for (int i=0; i<_orders->size(); i++) {
-        BlockOrder* bo = _orders->at(i);
-        block = bo->getBlock();
-        if ((block->getState() & OBlock::OUT_OF_SERVICE) !=0) {
-            _orders->at(0)->getBlock()->deAllocate(this);
-//            msg = java.text.MessageFormat.format(rb.getString("UnableToAllocate"), getDisplayName()) +
-//                java.text.MessageFormat.format(rb.getString("BlockOutOfService"),block.getDisplayName());
-            msg = tr("Unable to allocate Warrant \"%1\" -").arg(getDisplayName()) + tr("Block \"%1\" is Out Of Service and canot be allocated.").arg(block->getDisplayName());
-            _totalAllocated = false;
-            break;
-        }
-    }
-    // allocate all possible, report unoccupied blocks - changed 9/30/12
-    // Only allocate up to occupied block (if any)
-    for (int i=0; i<_orders->size(); i++) {
-        BlockOrder* bo = _orders->at(i);
-        block = bo->getBlock();
-        int state = block->getState();
-        msg = block->allocate(this);
-        if (msg!=nullptr) {
-            _totalAllocated = false;
-            break;
-        } else {
-            _allocated = true;		// partial allocation
-        }
-        if ((state & OBlock::OCCUPIED) > 0 && this!=(block->getWarrant())) {
-//            msg = java.text.MessageFormat.format(rb.getString("BlockRougeOccupied"),
-//                    block.getWarrant().getDisplayName(), block.getDisplayName());
-            msg = tr("Warrant \"%1\" partially allocated but Block \"%2\" occupied by unknown train.").arg(block->getWarrant()->getDisplayName()).arg(block->getDisplayName());
-            _totalAllocated = false;
-            break;
-        }
+    OBlock* block = getBlockAt(0);
+    _message = block->allocate(this);
+    if (_message != "") {
+        return _message;
     }
 
-    if(_debug) log->debug("allocateRoute for warrant \""+getDisplayName()+"\"  _allocated= "+_allocated);
-    firePropertyChange("allocate", QVariant(false), QVariant(_allocated));
-   return msg;
+    _allocated = true; // start block allocated
+    QString msg = allocateFromIndex(show, false, 1);
+    if (msg != "") {
+        _message = msg;
+    } else if (_partialAllocate) {
+        _message = tr("Shared route (not fully allocated).");
+    }
+    if (show) {
+        return _message;
+    }
+    return "";
+}
+
+/*
+ * Allocate and set path
+ * Only return a message if allocation of first index block fails.
+ * @param show true when displaying a temporary route.  N.B. Allocates beyond clearance issues.
+ * when false does not allocate beyond a clearance issue.
+ * @param set only allocates and sets path in one block, the 'index' block
+ * show the entire route but do not set any turnouts in occupied blocks
+ */
+/*private*/ QString Warrant::allocateFromIndex(bool show, bool set, int index) {
+    int limit;
+    if (_partialAllocate || set) {
+        limit = qMin(index + 1, _orders->size());
+    } else {
+        limit = _orders->size();
+    }
+    OBlock* currentBlock = getBlockOrderAt(_idxCurrentOrder)->getBlock();
+    if (log->isDebugEnabled()) {
+        log->debug(tr("allocateFromIndex(%1) block= %2 _partialAllocate= %3 for warrant \"%4\".").arg(
+                index).arg(currentBlock->getDisplayName()).arg(_partialAllocate).arg(getDisplayName()));
+    }
+    _message = "";
+    bool passageDenied = false;  // cannot allocate beyond this point
+    for (int i = index; i < limit; i++) {
+        BlockOrder* bo = _orders->at(i);
+        OBlock* block = bo->getBlock();
+        QString msg = block->allocate(this);
+        if (msg != "" && _message == "") {
+            _message = msg;
+            if (!this->equals(block->getWarrant())) {
+                _waitForWarrant = true;
+            } else {
+                _waitForBlock = true;
+            }
+            passageDenied = true;
+        }
+        if (!passageDenied) {
+            // loop back routes may enter a block a second time
+            // Do not make current block a stopping block
+            if (!currentBlock->equals(block)) {
+                if ((block->getState() & OBlock::OCCUPIED) != 0) {  // (!block.isAllocatedTo(this) || ) removed 7/1/18
+                    if (_message == "") {
+                        _message = tr("Block \"%1\" occupied by unknown train.").arg(block->getDisplayName());
+                    }
+                    passageDenied = true;
+                }
+                if (!passageDenied && Warrant::Stop ==(getPermissibleSpeedAt(bo))) {
+                    if (_message == "") {
+                        _message = tr("Cannot set route beyond block \"%1\". Signal at Stop aspect.").arg(block->getDisplayName());
+                    }
+                    passageDenied = true;
+                }
+            }
+            if (!passageDenied && set) {
+                msg = bo->setPath(this);
+                if (msg != "") {
+                    if (_message == "") {
+                        _message = msg;
+                    }
+                    passageDenied = true;
+                }
+            }
+        }
+    }
+    if (!passageDenied && limit == _orders->size()) {
+        _totalAllocated = true;
+    }
+    return _message;
 }
 
 /**
@@ -1040,7 +1073,7 @@
 //    emit propertyChange(new PropertyChangeEvent(this, "deallocate", old, _allocated));
  firePropertyChange("deallocate", old, _allocated);
 }
-
+#if 0
 /**
 * Set the route paths and turnouts for the warrant.  Returns the name
 * of the first block that failed allocation to this warrant.  When running with
@@ -1128,6 +1161,80 @@
     }
     return nullptr;
 }   // setRoute
+#endif
+/**
+ * Convenience routine to use from Python to start a warrant.
+ *
+ * @param mode run mode
+ */
+/*public*/ void Warrant::runWarrant(int mode) {
+    if (_partialAllocate) {
+        deAllocate();   // allow route to be shared with another warrant
+    }
+    setRoute(false, nullptr);
+    setRunMode(mode, nullptr, nullptr, nullptr, false);
+}
+
+/**
+ * Set the route paths and turnouts for the warrant. Only the first block
+ * must be allocated and have its path set. Partial success is OK.
+ * A message of the first subsequent block that fails allocation
+ * or path setting is written to a field that is
+ * displayed in the Warrant List window. When running with block
+ * detection, occupation by another train or block 'not in use' or
+ * Signals denying movement are reasons
+ * for such a message, otherwise only allocation to another warrant
+ * prevents total success. Note that warrants sharing their clearance
+ * only allocate and set paths one block in advance.
+ *
+ * @param show  value==1 will ignore _partialAllocate (to show route only)
+ *            parm name delay of turnout steting deprecated
+ * @param orders  BlockOrder list of route. If null, use permanent warrant
+ *            copy.
+ * @return message if the first block fails allocation, otherwise null
+ */
+/*public*/ QString Warrant::setRoute(bool show, QList<BlockOrder *> *orders) {
+    // we assume our train is occupying the first block
+    _routeSet = false;
+    QString msg = allocateRoute(show, orders);
+    if (msg != "") {
+        _message = msg;
+        return _message;
+    }
+    _allocated = true;
+    BlockOrder* bo = _orders->at(0);
+    msg = bo->setPath(this);
+    if (msg != "") {
+        _message = msg;
+        return _message;
+    }
+    _routeSet = true;   // partially set OK
+    if (!_partialAllocate) {
+        for (int i = 1; i < _orders->size(); i++) {
+            bo = _orders->at(i);
+            OBlock* block = bo->getBlock();
+            if ((block->getState() & OBlock::OCCUPIED) != 0) {
+                if (_message != "") {
+                    _message = tr("Block \"%1\" occupied by unknown train.").arg(block->getDisplayName());
+                }
+                break; // OK. warning status is posted with _message
+            }
+            if (Warrant::Stop == (getPermissibleSpeedAt(bo))) {
+                if (_message != "") {
+                    _message = tr("Cannot set route beyond block \"%1\". Signal at Stop aspect.").arg(block->getDisplayName());
+                }
+                break; // OK. warning status is posted with _message
+            }
+            msg = bo->setPath(this);
+            if (msg != "" && _message == "") {
+                _message = msg;
+                break; // OK. warning status is posted with _message
+            }
+        }
+    }
+    _routeSet = true;
+    return "";
+} // setRoute
 
 /**
  * Check start block for occupied for start of run
@@ -1254,7 +1361,7 @@
                 Warrant* w = _stoppingBlock->getWarrant();
                 if (this==(w) || w==nullptr) {
                     if (checkStoppingBlock()) {
-                        msg = acquireThrottle(_dccAddress);
+                        msg = acquireThrottle();
                         if (msg!=nullptr){
                             log->error("Abort warrant \""+ getDisplayName()+"\" "+msg);
                             if (_engineer!=nullptr) {
@@ -1266,8 +1373,8 @@
                     // starting block allocated to another warrant for the same engine
                     // which has just arrived at the starting block for this warrant
                     // However, we must wait for the other warrant to finish
-                    //w->addPropertyChangeListener(this);
-                    connect(w,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
+                    w->addPropertyChangeListener((PropertyChangeListener*)this);
+                    //connect(w,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
                 }
             }
         } else if (((evt->getNewValue()).toInt() & OBlock::UNOCCUPIED) != 0) {
@@ -1284,7 +1391,7 @@
         //((Warrant*)evt->getSource()).removePropertyChangeListener(this);
         disconnect(w,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
         if (checkStoppingBlock()) {
-            msg = acquireThrottle(_dccAddress);
+            msg = acquireThrottle();
             if (msg!=nullptr) {
                 log->error("Abort warrant \""+ getDisplayName()+"\" "+msg);
                 if (_engineer!=nullptr) {
@@ -1327,8 +1434,8 @@
  else
  {
         // allocation failed, continue to wait
-        //_stoppingBlock->addPropertyChangeListener(this);
-  connect(_stoppingBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
+        _stoppingBlock->addPropertyChangeListener((PropertyChangeListener*)this);
+  //connect(_stoppingBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
  }
  return false;
 }
@@ -1956,8 +2063,8 @@
         // speed change from signals
         if (speed==("Stop")) {
             _stoppingSignal = bo->getSignal();
-            //_stoppingSignal.addPropertyChangeListener(this);
-            connect(_stoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
+            _stoppingSignal->addPropertyChangeListener((PropertyChangeListener*)this);
+            //connect(_stoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
         }
         if(_debug) log->debug("signal indicates \""+speed+"\" entrance speed and \""+exitSpeed+
                 "\" exit speed on Warrant \""+getDisplayName()+
@@ -1990,8 +2097,8 @@
     QString blockMsg = block->allocate(this);
     if ( blockMsg != nullptr || (block->getState() & OBlock::OCCUPIED)>0) {
         _stoppingBlock = block;
-        //_stoppingBlock->addPropertyChangeListener(this);
-        connect(_stoppingBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
+        _stoppingBlock->addPropertyChangeListener((PropertyChangeListener*)this);
+        //connect(_stoppingBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
         log->info((blockMsg!=nullptr ? blockMsg : (block->getDisplayName()+" Occupied."))+" Warrant \""+getDisplayName()+
                 "\" sets _stoppingBlock= \""+_stoppingBlock->getDisplayName()+"\"");
         return false;

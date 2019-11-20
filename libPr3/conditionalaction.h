@@ -12,6 +12,7 @@
  * @author Pete Cressman Copyright (C) 2009
  * @version   $Revision: 18090 $
  */
+class Sound;
 class QTimer;
 class NamedBean;
 class ActionListener;
@@ -109,7 +110,7 @@ public:
     /**
     * get Sound file
     */
-//    /*public*/ virtual Sound getSound() = 0;
+    /*public*/ virtual Sound* getSound() = 0;
 
     /*public*/ virtual NamedBeanHandle<NamedBean*>* getNamedBean() = 0;
     /*public*/ virtual NamedBean* getBean() {return nullptr;}

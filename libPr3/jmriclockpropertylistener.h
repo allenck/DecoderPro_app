@@ -11,11 +11,11 @@ public:
     JmriClockPropertyListener(QString propName, int type, QString name, int varType,
                               Conditional* client, int beginTime, int endTime, QObject *parent = 0);
     /*public*/ void setRange(int beginTime, int endTime);
-    /*public*/ void propertyChange(PropertyChangeEvent* evt);
 
 signals:
 
 public slots:
+    /*public*/ void propertyChange(PropertyChangeEvent* evt);
 private:
     static int SIZE;// = 10;
     int numRanges;// = 0;

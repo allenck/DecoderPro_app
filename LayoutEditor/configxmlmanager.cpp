@@ -21,6 +21,7 @@
 #include <QUrl>
 #include "class.h"
 #include "errorhandler.h"
+//#include "classmigrationmanager.h"
 
 /**
  * Define the current schema version string for the layout-config schema.
@@ -119,6 +120,19 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
        locateClassFailed(ex, adapter, o);
    }
  }
+}
+
+/**
+ * Handles ConfigureXml classes that have moved to a new package or been
+ * superceded.
+ *
+ * @param name name of the moved or superceded ConfigureXml class
+ * @return name of the ConfigureXml class in newer package or of superseding
+ *         class
+ */
+/*static*/ /*public*/ QString ConfigXmlManager::currentClassName(QString name) {
+    //return InstanceManager::getDefault("ClassMigrationManager").getClassName(name);
+ return name;
 }
 
 /**

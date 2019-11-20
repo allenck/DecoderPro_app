@@ -26,6 +26,7 @@ public:
     /*public*/ void registerConfig(QObject* o);
     /*public*/ void registerPref(QObject* o) ;
     void confirmAdapterAvailable(QObject* o);
+    static /*public*/ QString currentClassName(QString name);
     /*public*/ void removePrefItems();
     /*public*/ QObject* findInstance(/*Class<?> */QString c, int index) ;
     /*public*/ QObjectList getInstanceList(/*Class<?> */QString c);
@@ -52,7 +53,7 @@ public:
     /*public*/ bool loadDeferred(File* fi) throw (JmriConfigureXmlException);
     /*public*/ bool loadDeferred(QUrl url) throw (JmriConfigureXmlException);
     /*public*/ QUrl find(QString f);
-    void locateFileFailed(QString f);
+    virtual void locateFileFailed(QString f);
     static /*public*/ void creationErrorEncountered(
             XmlAdapter* adapter,
             QString operation,
@@ -107,6 +108,8 @@ protected:
 
 friend class Apps;
 friend class AppsBase;
+friend class ErrorHandlerO1;
+friend class ConfigXmlManagerTest;
 };
 
 #endif // CONFIGXMLMANAGER_H

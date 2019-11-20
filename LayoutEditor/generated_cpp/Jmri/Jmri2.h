@@ -60,7 +60,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -890,6 +889,7 @@ public:
 virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1);
 virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, const QString  arg__3);
 virtual void addPropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2);
+virtual void addPropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2, QString  arg__3, QString  arg__4);
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n2);
 virtual int  compareTo(NamedBean*  n2);
@@ -907,7 +907,7 @@ virtual QString  getListenerRef(PropertyChangeListener*  arg__1);
 virtual QList<QString >*  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  arg__1);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  name);
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getState();
 virtual QString  getSystemName();
@@ -934,6 +934,7 @@ class PythonQtPublicPromoter_NamedBean : public NamedBean
 inline void py_q_addPropertyChangeListener(PropertyChangeListener*  arg__1) { NamedBean::addPropertyChangeListener(arg__1); }
 inline void py_q_addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, const QString  arg__3) { NamedBean::addPropertyChangeListener(arg__1, arg__2, arg__3); }
 inline void py_q_addPropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2) { NamedBean::addPropertyChangeListener(arg__1, arg__2); }
+inline void py_q_addPropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2, QString  arg__3, QString  arg__4) { NamedBean::addPropertyChangeListener(arg__1, arg__2, arg__3, arg__4); }
 inline int  py_q_compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n2) { return NamedBean::compareSystemNameSuffix(suffix1, suffix2, n2); }
 inline int  py_q_compareTo(NamedBean*  n2) { return NamedBean::compareTo(n2); }
 inline QString  py_q_describeState(int  arg__1) { return NamedBean::describeState(arg__1); }
@@ -947,7 +948,7 @@ inline QString  py_q_getListenerRef(PropertyChangeListener*  arg__1) { return Na
 inline QList<QString >*  py_q_getListenerRefs() { return NamedBean::getListenerRefs(); }
 inline int  py_q_getNumPropertyChangeListeners() { return NamedBean::getNumPropertyChangeListeners(); }
 inline QVariant  py_q_getProperty(QString  key) { return NamedBean::getProperty(key); }
-inline QList<PropertyChangeListener* >*  py_q_getPropertyChangeListeners(QString  arg__1) { return NamedBean::getPropertyChangeListeners(arg__1); }
+inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByReference(QString  name) { return NamedBean::getPropertyChangeListenersByReference(name); }
 inline QSet<QString >  py_q_getPropertyKeys() { return NamedBean::getPropertyKeys(); }
 inline int  py_q_getState() { return NamedBean::getState(); }
 inline QString  py_q_getSystemName() { return NamedBean::getSystemName(); }
@@ -978,6 +979,8 @@ void delete_NamedBean(NamedBean* obj) { delete obj; }
    void py_q_addPropertyChangeListener(NamedBean* theWrappedObject, PropertyChangeListener*  arg__1, QString  arg__2, const QString  arg__3){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_addPropertyChangeListener(arg__1, arg__2, arg__3));}
    void addPropertyChangeListener(NamedBean* theWrappedObject, QString  arg__1, PropertyChangeListener*  arg__2);
    void py_q_addPropertyChangeListener(NamedBean* theWrappedObject, QString  arg__1, PropertyChangeListener*  arg__2){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_addPropertyChangeListener(arg__1, arg__2));}
+   void addPropertyChangeListener(NamedBean* theWrappedObject, QString  arg__1, PropertyChangeListener*  arg__2, QString  arg__3, QString  arg__4);
+   void py_q_addPropertyChangeListener(NamedBean* theWrappedObject, QString  arg__1, PropertyChangeListener*  arg__2, QString  arg__3, QString  arg__4){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_addPropertyChangeListener(arg__1, arg__2, arg__3, arg__4));}
    int  compareSystemNameSuffix(NamedBean* theWrappedObject, QString  suffix1, QString  suffix2, NamedBean*  n2);
    int  py_q_compareSystemNameSuffix(NamedBean* theWrappedObject, QString  suffix1, QString  suffix2, NamedBean*  n2){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_compareSystemNameSuffix(suffix1, suffix2, n2));}
    int  compareTo(NamedBean* theWrappedObject, NamedBean*  n2);
@@ -1004,8 +1007,8 @@ void delete_NamedBean(NamedBean* obj) { delete obj; }
    int  py_q_getNumPropertyChangeListeners(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getNumPropertyChangeListeners());}
    QVariant  getProperty(NamedBean* theWrappedObject, QString  key);
    QVariant  py_q_getProperty(NamedBean* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getProperty(key));}
-   QList<PropertyChangeListener* >*  getPropertyChangeListeners(NamedBean* theWrappedObject, QString  arg__1);
-   QList<PropertyChangeListener* >*  py_q_getPropertyChangeListeners(NamedBean* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getPropertyChangeListeners(arg__1));}
+   QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(NamedBean* theWrappedObject, QString  name);
+   QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByReference(NamedBean* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getPropertyChangeListenersByReference(name));}
    QSet<QString >  getPropertyKeys(NamedBean* theWrappedObject);
    QSet<QString >  py_q_getPropertyKeys(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getPropertyKeys());}
    int  getState(NamedBean* theWrappedObject);

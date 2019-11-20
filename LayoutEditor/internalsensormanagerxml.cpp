@@ -55,12 +55,12 @@ InternalSensorManagerXml::InternalSensorManagerXml(QObject *parent) :
  return AbstractSensorManagerConfigXML::store(o, sensors);
 }
 
-/*public*/ bool InternalSensorManagerXml::load(QDomElement sensors) throw (JmriConfigureXmlException) {
+/*public*/ bool InternalSensorManagerXml::load(QDomElement sharedSensors, QDomElement perNodeSensors) throw (JmriConfigureXmlException) {
  // load individual sensors
- if (sensors.firstChildElement("defaultInitialState") != QDomElement())
+ if (sharedSensors.firstChildElement("defaultInitialState") != QDomElement())
  {
   int defaultState = Sensor::UNKNOWN;
-  QString state = sensors.firstChildElement("defaultInitialState").text();
+  QString state = sharedSensors.firstChildElement("defaultInitialState").text();
   if (state==("active"))
   {
    defaultState = Sensor::ACTIVE;
@@ -75,5 +75,5 @@ InternalSensorManagerXml::InternalSensorManagerXml(QObject *parent) :
   }
   InternalSensorManager::setDefaultStateForNewSensors(defaultState);
  }
- return loadSensors(sensors);
+ return loadSensors(sharedSensors);
 }

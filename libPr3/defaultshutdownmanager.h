@@ -16,6 +16,7 @@ public:
     DefaultShutDownManager(const DefaultShutDownManager&) : ShutDownManager() {}
     /*public*/ void _register(ShutDownTask* s);
     /*public*/ void deregister(ShutDownTask* s);
+    /*public*/ QList<ShutDownTask*> tasks();
     /*public*/ bool shutdown();
     /*public*/ bool restart();
     /*public*/ bool isShuttingDown();
@@ -25,14 +26,14 @@ signals:
 public slots:
 private:
     static Logger* log;
-    QVector<ShutDownTask*>* tasks;// = new QVector<ShutDownTask*>();
+    QVector<ShutDownTask*> _tasks;// = new QVector<ShutDownTask*>();
     static bool shuttingDown;// = false;
     /*private*/ bool runShutDownTasks(bool isParallel);
     /*private*/ static void setShuttingDown(bool state);
 
 protected:
     /*protected*/ bool shutdown(int status, bool exit);
-
+friend class MockShutDownManager;
 };
 Q_DECLARE_METATYPE(DefaultShutDownManager)
 #endif // DEFAULTSHUTDOWNMANAGER_H

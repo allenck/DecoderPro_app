@@ -52,7 +52,7 @@ public:
   * recipient
   */
  /*public*/ QMap<QString, QString>* logixData;// = new HashMap<>();
-
+ /*public*/ static QString translateAntecedent(QString antecedent, bool isLocal);
 signals:
  void logixEventOccurred();
 
@@ -122,7 +122,9 @@ private:
  bool validateIntensity(int time);
  void showSaveReminder();
  bool checkConditionalUserName(QString uName, Logix* logix);
-
+ QString makeAntecedent(QList<ConditionalVariable*> variableList);
+ QString appendToAntecedent(Conditional::AntecedentOperator logicType, int varListSize, QString antecedent);
+ bool validateAntecedent(Conditional::AntecedentOperator logicType, QString antecedentText, QList<ConditionalVariable*> variableList, Conditional* curConditional);
 protected:
  /*protected*/ QString getClassName();
 

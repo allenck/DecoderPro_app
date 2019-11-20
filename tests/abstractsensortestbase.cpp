@@ -49,8 +49,7 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 {
   ListenO2* listen;
 
-  t->addPropertyChangeListener(listen =new ListenO2(this));
-  connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listen, SLOT(propertyChange(PropertyChangeEvent*)));
+  t->addPropertyChangeListener(listen = new ListenO2(this));
   listenerResult = false;
   t->setUserName("user id");
   Assert::assertTrue("listener invoked by setUserName", listenerResult, __FILE__, __LINE__);
@@ -63,9 +62,7 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 /*public*/ void AbstractSensorTestBase::testRemoveListener() {
     ListenO2* ln = new ListenO2(this);
     t->addPropertyChangeListener(ln);
-    connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), ln, SLOT(propertyChange(PropertyChangeEvent*)));
     t->removePropertyChangeListener(ln);
-    disconnect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), ln, SLOT(propertyChange(PropertyChangeEvent*)));
     listenerResult = false;
     t->setUserName("user id");
     Assert::assertFalse("listener should not have heard message after removeListener",

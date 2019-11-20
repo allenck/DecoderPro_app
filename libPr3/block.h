@@ -184,6 +184,8 @@ public:
      */
     /*public*/ PhysicalLocation* getPhysicalLocation(QString s);
     /*public*/ void setBlockSpeedName(QString s);
+    virtual /*public*/ void goingUnknown();
+    virtual /*public*/ void goingInconsistent();
 
 signals:
 

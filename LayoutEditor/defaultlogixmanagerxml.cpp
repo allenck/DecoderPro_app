@@ -101,11 +101,11 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
  * @param logixs Top level QDomElementto unpack.
  * @return true if successful
  */
-/*public*/ bool DefaultLogixManagerXml::load(QDomElement logixs) throw (Exception) {
+/*public*/ bool DefaultLogixManagerXml::load(QDomElement sharedLogixs, QDomElement perNodeLogix ) throw (Exception) {
     // create the master object
     replaceLogixManager();
     // load individual logixs
-    loadLogixs(logixs);
+    loadLogixs(sharedLogixs);
     return true;
 }
 
@@ -118,7 +118,8 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
 //@SuppressWarnings("unchecked")
 /*public*/ void DefaultLogixManagerXml::loadLogixs(QDomElement logixs) {
  QDomNodeList logixList = logixs.elementsByTagName("logix");
- if (log->isDebugEnabled()) log->debug("Found "+QString::number(logixList.size())+" logixs");
+ if (log->isDebugEnabled())
+  log->debug("Found "+QString::number(logixList.size())+" logixs");
  LogixManager* tm = (LogixManager*)InstanceManager::getDefault("LogixManager");
 
  for (int i=0; i<logixList.size(); i++)
@@ -141,16 +142,16 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
               + (userName == "" ? "<null>" : userName) + ")");  // NOI18N
   }
 
-  Logix* x = ((DefaultLogixManager*)tm)->createNewLogix(sysName, userName);
+  Logix* x = tm->createNewLogix(sysName, userName);
   if (x!=nullptr)
   {
    // load common part
    loadCommon(x, logixList.at(i).toElement());
 
    // set enabled/disabled if attribute was present
-   if ( (yesno!="")  ) {
-       if (yesno==("yes")) ((DefaultLogix*)x)->setEnabled(true);
-       else if (yesno==("no"))((DefaultLogix*)x)->setEnabled(false);
+   if ( (yesno != "")  ) {
+       if (yesno==("yes")) x->setEnabled(true);
+       else if (yesno==("no"))x->setEnabled(false);
    }
    // load conditionals, if there are any
    QDomNodeList logixConditionalList = logixList.at(i).toElement().elementsByTagName("logixConditional");
@@ -182,23 +183,25 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
  * one newly created during a load operation. This is skipped
  * if they are of the same absolute type.
  */
-/*protected*/ void DefaultLogixManagerXml::replaceLogixManager() {
-    LogixManager* instance = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"));
-    const char*  className = instance->metaObject()->className();
-    if (className == "DefaultLogixManager")
-        return;
-    // if old manager exists, remove it from configuration process
-    if (static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")) != NULL)
-        static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")) );
+/*protected*/ void DefaultLogixManagerXml::replaceLogixManager()
+{
+ if (QString(InstanceManager::getDefault("LogixManager")->metaObject()->className())
+                  == ("DefaultLogixManager"))
+ {
+     return;
+ }
+ // if old manager exists, remove it from configuration process
+ if (static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")) != NULL)
+     static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")) );
 
-    // register new one with InstanceManager
-    DefaultLogixManager* pManager = DefaultLogixManager::instance();
-    InstanceManager::store(pManager, "LogixManager");
-    // register new one for configuration
-    ConfigureManager* cmOD = static_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
-    if (cmOD != nullptr) {
-     cmOD->registerConfig(pManager, Manager::LOGIXS);
-    }
+ // register new one with InstanceManager
+ DefaultLogixManager* pManager = DefaultLogixManager::instance();
+ InstanceManager::store(pManager, "LogixManager");
+ // register new one for configuration
+ ConfigureManager* cmOD = static_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
+ if (cmOD != nullptr) {
+  cmOD->registerConfig(pManager, Manager::LOGIXS);
+ }
 }
 
 /*public*/ int DefaultLogixManagerXml::loadOrder(){

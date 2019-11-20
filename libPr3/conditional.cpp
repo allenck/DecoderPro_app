@@ -42,94 +42,97 @@
 //                     ITEM_TYPE_ENTRYEXIT        // TYPE_ENTRYEXIT_INACTIVE = 36
 //                     };
 //}
+
 /*static*/ QList<int> Conditional::TEST_TO_ITEM  = QList<int> ()
-        << TYPE_NONE    // TYPE_NONE                0
-        << ITEM_TYPE_SENSOR       // TYPE_SENSOR_ACTIVE       1
-        << ITEM_TYPE_SENSOR       // TYPE_SENSOR_INACTIVE     2
-        << ITEM_TYPE_TURNOUT      // TYPE_TURNOUT_THROWN      3
-        << ITEM_TYPE_TURNOUT      // TYPE_TURNOUT_ClOSED      4
-        << ITEM_TYPE_CONDITIONAL  // TYPE_CONDITIONAL_TRUE    5
-        << ITEM_TYPE_CONDITIONAL  // TYPE_CONDITIONAL_FALSE   6
-        << ITEM_TYPE_LIGHT        // TYPE_LIGHT_ON            7
-        << ITEM_TYPE_LIGHT        // TYPE_LIGHT_OFF           8
-        << ITEM_TYPE_MEMORY       // TYPE_MEMORY_EQUALS       9
-        << ITEM_TYPE_CLOCK        // TYPE_FAST_CLOCK_RANGE    10
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_RED     11
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_YELLOW  12
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_GREEN   13
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_DARK    14
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_FLASHRED 15
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_FLASHYELLOW
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_FLASHGREEN 17
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_LIT     18
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_HELD    19
-        << ITEM_TYPE_MEMORY       // TYPE_MEMORY_COMPARE      20
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_LUNAR   21
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_FLASHLUNAR 22
-        << ITEM_TYPE_MEMORY       // TYPE_MEMORY_EQUALS_INSENSITIVE 23
-        << ITEM_TYPE_MEMORY       // TYPE_MEMORY_COMPARE_INSENSITIVE
-        << ITEM_TYPE_WARRANT      // TYPE_ROUTE_FREE          25
-        << ITEM_TYPE_WARRANT      // TYPE_ROUTE_OCCUPIED      26
-        << ITEM_TYPE_WARRANT      // TYPE_ROUTE_ALLOCATED     27
-        << ITEM_TYPE_WARRANT      // TYPE_ROUTE_SET           28
-        << ITEM_TYPE_WARRANT      // TYPE_TRAIN_RUNNING       29
-        << ITEM_TYPE_SIGNALMAST   // TYPE_SIGNAL_MAST_ASPECT_EQUALS 30
-        << ITEM_TYPE_SIGNALMAST   // TYPE_SIGNAL_MAST_LIT = 31;
-        << ITEM_TYPE_SIGNALMAST   // TYPE_SIGNAL_MAST_HELD = 32
-        << ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_APPEARANCE_EQUALS = 33;
-        << ITEM_TYPE_OBLOCK        // TYPE_BLOCK_STATUS_EQUALS = 34
-        << ITEM_TYPE_ENTRYEXIT        // TYPE_ENTRYEXIT_ACTIVE = 35
-        << ITEM_TYPE_ENTRYEXIT;        // TYPE_ENTRYEXIT_INACTIVE = 36
-const /*static*/  QList<int> Conditional::ACTION_TO_ITEM = QList<int>() << TYPE_NONE <<
-                                    TYPE_NONE <<             // ACTION_NONE              1
-                                    ITEM_TYPE_TURNOUT <<      // ACTION_SET_TURNOUT       2
-                                    ITEM_TYPE_SIGNALHEAD <<   // ACTION_SET_SIGNAL_APPEARANCE
-                                    ITEM_TYPE_SIGNALHEAD <<   // ACTION_SET_SIGNAL_HELD   4
-                                    ITEM_TYPE_SIGNALHEAD <<   // ACTION_CLEAR_SIGNAL_HELD 5
-                                    ITEM_TYPE_SIGNALHEAD <<   // ACTION_SET_SIGNAL_DARK   6
-                                    ITEM_TYPE_SIGNALHEAD <<   // ACTION_SET_SIGNAL_LIT    7
-                                    ITEM_TYPE_OTHER <<        // ACTION_TRIGGER_ROUTE     8
-                                    ITEM_TYPE_SENSOR <<       // ACTION_SET_SENSOR        9
-                                    ITEM_TYPE_SENSOR <<       // ACTION_DELAYED_SENSOR    10
-                                    ITEM_TYPE_LIGHT <<        // ACTION_SET_LIGHT         11
-                                    ITEM_TYPE_MEMORY <<       // ACTION_SET_MEMORY        12
-                                    ITEM_TYPE_LOGIX <<        // ACTION_ENABLE_LOGIX      13
-                                    ITEM_TYPE_LOGIX <<        // ACTION_DISABLE_LOGIX     14
-                                    ITEM_TYPE_AUDIO <<        // ACTION_PLAY_SOUND        15
-                                    ITEM_TYPE_SCRIPT <<       // ACTION_RUN_SCRIPT        16
-                                    ITEM_TYPE_TURNOUT <<      // ACTION_DELAYED_TURNOUT   17
-                                    ITEM_TYPE_TURNOUT <<      // ACTION_LOCK_TURNOUT      18
-                                    ITEM_TYPE_SENSOR <<       // ACTION_RESET_DELAYED_SENSOR
-                                    ITEM_TYPE_SENSOR <<       // ACTION_CANCEL_SENSOR_TIMERS 20
-                                    ITEM_TYPE_TURNOUT <<      // ACTION_RESET_DELAYED_TURNOUT
-                                    ITEM_TYPE_TURNOUT <<      // ACTION_CANCEL_TURNOUT_TIMERS
-                                    ITEM_TYPE_CLOCK <<        // ACTION_SET_FAST_CLOCK_TIME 23
-                                    ITEM_TYPE_CLOCK <<        // ACTION_START_FAST_CLOCK  24
-                                    ITEM_TYPE_CLOCK <<        // ACTION_STOP_FAST_CLOCK   25
-                                    ITEM_TYPE_MEMORY <<       // ACTION_COPY_MEMORY       26
-                                    ITEM_TYPE_LIGHT <<        // ACTION_SET_LIGHT_INTENSITY 27
-                                    ITEM_TYPE_LIGHT <<        // ACTION_SET_LIGHT_TRANSITION_TIME
-                                    ITEM_TYPE_AUDIO <<        // ACTION_CONTROL_AUDIO     29
-                                    ITEM_TYPE_SCRIPT <<       // ACTION_JYTHON_COMMAND    30
-                                    ITEM_TYPE_WARRANT <<      // ACTION_ALLOCATE_WARRANT_ROUTE 31
-                                    ITEM_TYPE_WARRANT <<      // ACTION_DEALLOCATE_WARRANT_ROUTE
-                                    ITEM_TYPE_WARRANT <<      // ACTION_SET_ROUTE_TURNOUTS 33
-                                    ITEM_TYPE_WARRANT <<      // ACTION_AUTO_RUN_WARRANT       34
-                                    ITEM_TYPE_WARRANT <<      // ACTION_CONTROL_TRAIN     35
-                                    ITEM_TYPE_WARRANT <<      // ACTION_SET_TRAIN_ID      36
-                                    ITEM_TYPE_SIGNALMAST <<   // ACTION_SET_SIGNALMAST_ASPECT 37
-                                    ITEM_TYPE_WARRANT <<      // ACTION_THROTTLE_FACTOR   38
-                                    ITEM_TYPE_SIGNALMAST <<   // ACTION_SET_SIGNALMAST_HELD = 39;
-                                    ITEM_TYPE_SIGNALMAST <<   // ACTION_CLEAR_SIGNALMAST_HELD = 40
-                                    ITEM_TYPE_SIGNALMAST <<   // ACTION_SET_SIGNALMAST_DARK = 41
-                                    ITEM_TYPE_SIGNALMAST <<   // ACTION_SET_SIGNALMAST_LIT = 42
-                                    ITEM_TYPE_OBLOCK <<       // ACTION_ALLOCATE_BLOCK_PATH = 43;
-                                    ITEM_TYPE_OBLOCK <<       //  ACTION_SET_BLOCK_PATH_TURNOUTS = 44;
-                                    ITEM_TYPE_OBLOCK <<       //  ACTION_DEALLOCATE_BLOCK = 45;
-                                    ITEM_TYPE_OBLOCK <<       //  ACTION_SET_BLOCK_OUT_OF_SERVICE = 46;
-                                    ITEM_TYPE_OBLOCK <<       //  ACTION_SET_BLOCK_IN_SERVICE = 47;
-                                    ITEM_TYPE_WARRANT <<      // ACTION_MANUAL_RUN_WARRANT 48
-                                    ITEM_TYPE_WARRANT;       // ACTION_SET_TRAIN_NAME 49
+        << Conditional::TYPE_NONE    // TYPE_NONE                0
+        << Conditional::ITEM_TYPE_SENSOR       // TYPE_SENSOR_ACTIVE       1
+        << Conditional::ITEM_TYPE_SENSOR       // TYPE_SENSOR_INACTIVE     2
+        << Conditional::ITEM_TYPE_TURNOUT      // TYPE_TURNOUT_THROWN      3
+        << Conditional::ITEM_TYPE_TURNOUT      // TYPE_TURNOUT_ClOSED      4
+        << Conditional::ITEM_TYPE_CONDITIONAL  // TYPE_CONDITIONAL_TRUE    5
+        << Conditional::ITEM_TYPE_CONDITIONAL  // TYPE_CONDITIONAL_FALSE   6
+        << Conditional::ITEM_TYPE_LIGHT        // TYPE_LIGHT_ON            7
+        << Conditional::ITEM_TYPE_LIGHT        // TYPE_LIGHT_OFF           8
+        << Conditional::ITEM_TYPE_MEMORY       // TYPE_MEMORY_EQUALS       9
+        << Conditional::ITEM_TYPE_CLOCK        // TYPE_FAST_CLOCK_RANGE    10
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_RED     11
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_YELLOW  12
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_GREEN   13
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_DARK    14
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_FLASHRED 15
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_FLASHYELLOW
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_FLASHGREEN 17
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_LIT     18
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_HELD    19
+        << Conditional::ITEM_TYPE_MEMORY       // TYPE_MEMORY_COMPARE      20
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_LUNAR   21
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_FLASHLUNAR 22
+        << Conditional::ITEM_TYPE_MEMORY       // TYPE_MEMORY_EQUALS_INSENSITIVE 23
+        << Conditional::ITEM_TYPE_MEMORY       // TYPE_MEMORY_COMPARE_INSENSITIVE
+        << Conditional::ITEM_TYPE_WARRANT      // TYPE_ROUTE_FREE          25
+        << Conditional::ITEM_TYPE_WARRANT      // TYPE_ROUTE_OCCUPIED      26
+        << Conditional::ITEM_TYPE_WARRANT      // TYPE_ROUTE_ALLOCATED     27
+        << Conditional::ITEM_TYPE_WARRANT      // TYPE_ROUTE_SET           28
+        << Conditional::ITEM_TYPE_WARRANT      // TYPE_TRAIN_RUNNING       29
+        << Conditional::ITEM_TYPE_SIGNALMAST   // TYPE_SIGNAL_MAST_ASPECT_EQUALS 30
+        << Conditional::ITEM_TYPE_SIGNALMAST   // TYPE_SIGNAL_MAST_LIT = 31;
+        << Conditional::ITEM_TYPE_SIGNALMAST   // TYPE_SIGNAL_MAST_HELD = 32
+        << Conditional::ITEM_TYPE_SIGNALHEAD   // TYPE_SIGNAL_HEAD_APPEARANCE_EQUALS = 33;
+        << Conditional::ITEM_TYPE_OBLOCK        // TYPE_BLOCK_STATUS_EQUALS = 34
+        << Conditional::ITEM_TYPE_ENTRYEXIT        // TYPE_ENTRYEXIT_ACTIVE = 35
+        << Conditional::ITEM_TYPE_ENTRYEXIT;        // TYPE_ENTRYEXIT_INACTIVE = 36
+
+const /*static*/  QList<int> Conditional::ACTION_TO_ITEM = QList<int>() << Conditional::TYPE_NONE <<
+                                    Conditional::TYPE_NONE <<             // ACTION_NONE              1
+                                    Conditional::ITEM_TYPE_TURNOUT <<      // ACTION_SET_TURNOUT       2
+                                    Conditional::ITEM_TYPE_SIGNALHEAD <<   // ACTION_SET_SIGNAL_APPEARANCE
+                                    Conditional::ITEM_TYPE_SIGNALHEAD <<   // ACTION_SET_SIGNAL_HELD   4
+                                    Conditional::ITEM_TYPE_SIGNALHEAD <<   // ACTION_CLEAR_SIGNAL_HELD 5
+                                    Conditional::ITEM_TYPE_SIGNALHEAD <<   // ACTION_SET_SIGNAL_DARK   6
+                                    Conditional::ITEM_TYPE_SIGNALHEAD <<   // ACTION_SET_SIGNAL_LIT    7
+                                    Conditional::ITEM_TYPE_OTHER <<        // ACTION_TRIGGER_ROUTE     8
+                                    Conditional::ITEM_TYPE_SENSOR <<       // ACTION_SET_SENSOR        9
+                                    Conditional::ITEM_TYPE_SENSOR <<       // ACTION_DELAYED_SENSOR    10
+                                    Conditional::ITEM_TYPE_LIGHT <<        // ACTION_SET_LIGHT         11
+                                    Conditional::ITEM_TYPE_MEMORY <<       // ACTION_SET_MEMORY        12
+                                    Conditional::ITEM_TYPE_LOGIX <<        // ACTION_ENABLE_LOGIX      13
+                                    Conditional::ITEM_TYPE_LOGIX <<        // ACTION_DISABLE_LOGIX     14
+                                    Conditional::ITEM_TYPE_AUDIO <<        // ACTION_PLAY_SOUND        15
+                                    Conditional::ITEM_TYPE_SCRIPT <<       // ACTION_RUN_SCRIPT        16
+                                    Conditional::ITEM_TYPE_TURNOUT <<      // ACTION_DELAYED_TURNOUT   17
+                                    Conditional::ITEM_TYPE_TURNOUT <<      // ACTION_LOCK_TURNOUT      18
+                                    Conditional::ITEM_TYPE_SENSOR <<       // ACTION_RESET_DELAYED_SENSOR
+                                    Conditional::ITEM_TYPE_SENSOR <<       // ACTION_CANCEL_SENSOR_TIMERS 20
+                                    Conditional::ITEM_TYPE_TURNOUT <<      // ACTION_RESET_DELAYED_TURNOUT
+                                    Conditional::ITEM_TYPE_TURNOUT <<      // ACTION_CANCEL_TURNOUT_TIMERS
+                                    Conditional::ITEM_TYPE_CLOCK <<        // ACTION_SET_FAST_CLOCK_TIME 23
+                                    Conditional::ITEM_TYPE_CLOCK <<        // ACTION_START_FAST_CLOCK  24
+                                    Conditional::ITEM_TYPE_CLOCK <<        // ACTION_STOP_FAST_CLOCK   25
+                                    Conditional::ITEM_TYPE_MEMORY <<       // ACTION_COPY_MEMORY       26
+                                    Conditional::ITEM_TYPE_LIGHT <<        // ACTION_SET_LIGHT_INTENSITY 27
+                                    Conditional::ITEM_TYPE_LIGHT <<        // ACTION_SET_LIGHT_TRANSITION_TIME
+                                    Conditional::ITEM_TYPE_AUDIO <<        // ACTION_CONTROL_AUDIO     29
+                                    Conditional::ITEM_TYPE_SCRIPT <<       // ACTION_JYTHON_COMMAND    30
+                                    Conditional::ITEM_TYPE_WARRANT <<      // ACTION_ALLOCATE_WARRANT_ROUTE 31
+                                    Conditional::ITEM_TYPE_WARRANT <<      // ACTION_DEALLOCATE_WARRANT_ROUTE
+                                    Conditional::ITEM_TYPE_WARRANT <<      // ACTION_SET_ROUTE_TURNOUTS 33
+                                    Conditional::ITEM_TYPE_WARRANT <<      // ACTION_AUTO_RUN_WARRANT       34
+                                    Conditional::ITEM_TYPE_WARRANT <<      // ACTION_CONTROL_TRAIN     35
+                                    Conditional::ITEM_TYPE_WARRANT <<      // ACTION_SET_TRAIN_ID      36
+                                    Conditional::ITEM_TYPE_SIGNALMAST <<   // ACTION_SET_SIGNALMAST_ASPECT 37
+                                    Conditional::ITEM_TYPE_WARRANT <<      // ACTION_THROTTLE_FACTOR   38
+                                    Conditional::ITEM_TYPE_SIGNALMAST <<   // ACTION_SET_SIGNALMAST_HELD = 39;
+                                    Conditional::ITEM_TYPE_SIGNALMAST <<   // ACTION_CLEAR_SIGNALMAST_HELD = 40
+                                    Conditional::ITEM_TYPE_SIGNALMAST <<   // ACTION_SET_SIGNALMAST_DARK = 41
+                                    Conditional::ITEM_TYPE_SIGNALMAST <<   // ACTION_SET_SIGNALMAST_LIT = 42
+                                    Conditional::ITEM_TYPE_OBLOCK <<       // ACTION_ALLOCATE_BLOCK_PATH = 43;
+                                    Conditional::ITEM_TYPE_OBLOCK <<       //  ACTION_SET_BLOCK_PATH_TURNOUTS = 44;
+                                    Conditional::ITEM_TYPE_OBLOCK <<       //  ACTION_DEALLOCATE_BLOCK = 45;
+                                    Conditional::ITEM_TYPE_OBLOCK <<       //  ACTION_SET_BLOCK_OUT_OF_SERVICE = 46;
+                                    Conditional::ITEM_TYPE_OBLOCK <<       //  ACTION_SET_BLOCK_IN_SERVICE = 47;
+                                    Conditional::ITEM_TYPE_WARRANT <<      // ACTION_MANUAL_RUN_WARRANT 48
+                                    Conditional::ITEM_TYPE_WARRANT;       // ACTION_SET_TRAIN_NAME 49
+
 const /*static*/  QList<int> Conditional::ITEM_TO_MEMORY_ACTION =QList<int>() <<12 <<26;
 const /*static*/  QList<int> Conditional::ITEM_TO_LIGHT_ACTION = QList<int>() <<Conditional::ACTION_SET_LIGHT << Conditional::ACTION_SET_LIGHT_INTENSITY <<
                          Conditional::ACTION_SET_LIGHT_TRANSITION_TIME;

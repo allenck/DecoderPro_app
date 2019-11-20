@@ -166,7 +166,7 @@ virtual QDateTime getStartTime() {return QDateTime();}
      * @return the list of listeners
      */
     //@Nonnull
-    virtual /*public*/ QList<PropertyChangeListener*>* getMinuteChangeListeners() =0;
+    virtual /*public*/ QVector<PropertyChangeListener*> getMinuteChangeListeners() =0;
 
     /**
      * Remove references to and from this object, so that it can

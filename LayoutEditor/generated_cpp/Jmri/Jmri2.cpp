@@ -50,7 +50,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -7977,6 +7976,28 @@ if (_wrapper) {
 }
   NamedBean::addPropertyChangeListener(arg__1, arg__2);
 }
+void PythonQtShell_NamedBean::addPropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2, QString  arg__3, QString  arg__4)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("addPropertyChangeListener");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString" , "PropertyChangeListener*" , "QString" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(5, argumentList);
+      void* args[5] = {NULL, (void*)&arg__1, (void*)&arg__2, (void*)&arg__3, (void*)&arg__4};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  NamedBean::addPropertyChangeListener(arg__1, arg__2, arg__3, arg__4);
+}
 void PythonQtShell_NamedBean::childEvent(QChildEvent*  event0)
 {
 if (_wrapper) {
@@ -8505,26 +8526,26 @@ if (_wrapper) {
 }
   return NamedBean::getProperty(key0);
 }
-QList<PropertyChangeListener* >*  PythonQtShell_NamedBean::getPropertyChangeListeners(QString  arg__1)
+QVector<PropertyChangeListener* >  PythonQtShell_NamedBean::getPropertyChangeListenersByReference(QString  name0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
   if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getPropertyChangeListeners");
+    static PyObject* name = PyString_FromString("getPropertyChangeListenersByReference");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QList<PropertyChangeListener* >*" , "QString"};
+      static const char* argumentList[] ={"QVector<PropertyChangeListener* >" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      QList<PropertyChangeListener* >* returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      QVector<PropertyChangeListener* > returnValue{};
+      void* args[2] = {NULL, (void*)&name0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
         if (args[0]!=&returnValue) {
           if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getPropertyChangeListeners", methodInfo, result);
+            PythonQt::priv()->handleVirtualOverloadReturnError("getPropertyChangeListenersByReference", methodInfo, result);
           } else {
-            returnValue = *((QList<PropertyChangeListener* >**)args[0]);
+            returnValue = *((QVector<PropertyChangeListener* >*)args[0]);
           }
         }
       }
@@ -8536,7 +8557,7 @@ if (_wrapper) {
     }
   }
 }
-  return NamedBean::getPropertyChangeListeners(arg__1);
+  return NamedBean::getPropertyChangeListenersByReference(name0);
 }
 QSet<QString >  PythonQtShell_NamedBean::getPropertyKeys()
 {
@@ -8963,6 +8984,11 @@ void PythonQtWrapper_NamedBean::addPropertyChangeListener(NamedBean* theWrappedO
   ( theWrappedObject->addPropertyChangeListener(arg__1, arg__2));
 }
 
+void PythonQtWrapper_NamedBean::addPropertyChangeListener(NamedBean* theWrappedObject, QString  arg__1, PropertyChangeListener*  arg__2, QString  arg__3, QString  arg__4)
+{
+  ( theWrappedObject->addPropertyChangeListener(arg__1, arg__2, arg__3, arg__4));
+}
+
 int  PythonQtWrapper_NamedBean::compareSystemNameSuffix(NamedBean* theWrappedObject, QString  suffix1, QString  suffix2, NamedBean*  n2)
 {
   return ( theWrappedObject->compareSystemNameSuffix(suffix1, suffix2, n2));
@@ -9028,9 +9054,9 @@ QVariant  PythonQtWrapper_NamedBean::getProperty(NamedBean* theWrappedObject, QS
   return ( theWrappedObject->getProperty(key));
 }
 
-QList<PropertyChangeListener* >*  PythonQtWrapper_NamedBean::getPropertyChangeListeners(NamedBean* theWrappedObject, QString  arg__1)
+QVector<PropertyChangeListener* >  PythonQtWrapper_NamedBean::getPropertyChangeListenersByReference(NamedBean* theWrappedObject, QString  name)
 {
-  return ( theWrappedObject->getPropertyChangeListeners(arg__1));
+  return ( theWrappedObject->getPropertyChangeListenersByReference(name));
 }
 
 QSet<QString >  PythonQtWrapper_NamedBean::getPropertyKeys(NamedBean* theWrappedObject)

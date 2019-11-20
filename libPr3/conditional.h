@@ -16,6 +16,55 @@ public:
          AND,
          OR
  };
+ /*public*/ /*enum*/ class AntecedentOperator {
+//         ALL_AND(Conditional.ALL_AND, Bundle.getMessage("LogicAND")),
+//         ALL_OR(Conditional.ALL_OR, Bundle.getMessage("LogicOR")),
+//         MIXED(Conditional.MIXED, Bundle.getMessage("LogicMixed"));
+ public:
+  enum VALS
+  {
+   ALL_AND,
+   ALL_OR,
+   MIXED
+  };
+  AntecedentOperator(int val)
+  {
+   if(val < 0 || val >= values.count()) throw IllegalArgumentException("ItemType is unknown");
+
+   _value = val;
+   _string = values.at(val);
+  }
+
+  private:
+      /*private*/ /*final*/ int _value;
+      /*private*/ /*final*/ QString _string;
+  QStringList values = QStringList() << "AND" << "OR" << "Mixed";
+
+      /*private*/ AntecedentOperator(int value, QString string) {
+          _value = value;
+          _string = string;
+      }
+ public:
+      /*public*/ int getIntValue() {
+          return _value;
+      }
+
+      /*public*/ static AntecedentOperator getOperatorFromIntValue(int value) {
+//       if(value < 0 || value >= values.count()) throw IllegalArgumentException("ItemType is unknown");
+//          for (AntecedentOperator antecedentOperators : values()) {
+//              if (antecedentOperators.getIntValue() == value) {
+//                  return antecedentOperators;
+//              }
+           return AntecedentOperator(value);
+       }
+
+
+      //@Override
+      /*public*/ QString toString() {
+          return _string;
+      }
+  };
+
  explicit Conditional(QObject *parent = 0) :AbstractNamedBean(parent) {}
  Conditional(QString sysName, QString userName, QObject*parent = 0) : AbstractNamedBean(sysName, userName, parent) {}
     /**

@@ -34,7 +34,7 @@ public:
      * _once_ if anything has changed state (or set the commanded state directly)
      * @param l
      */
-    void dispose() const;
+    void dispose() ;
     /*public*/ void messageFromManager(LocoNetMessage* l);
 
 signals:

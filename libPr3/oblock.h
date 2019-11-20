@@ -80,6 +80,10 @@ public:
     /*public*/ QFont getMarkerFont();
     /*public*/ void setValue(QVariant o);
     /*public*/ void setError(bool set);
+    /*public*/ void goingUnknown() override;
+    /*public*/ void goingInconsistent() override;
+    /*public*/ QString getAllocatingWarrantName();
+    /*public*/ bool isAllocatedTo(Warrant* warrant);
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* evt);
@@ -124,6 +128,8 @@ friend class TableFrame;
 friend class WarrantFrame;
 friend class Calibrater;
 friend class SpeedUtil;
+friend class SCWarrant;
+friend class WarrantTest;
 };
 
 #endif // OBLOCK_H

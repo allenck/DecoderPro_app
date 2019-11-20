@@ -2,6 +2,7 @@
 #include "conditional.h"
 #include "namedbeanhandle.h"
 #include "defaultconditional.h"
+#include "loggerfactory.h"
 
 //JmriSimplePropertyListener::JmriSimplePropertyListener(QObject *parent) :
 //    PropertyChangeListener(parent)
@@ -43,6 +44,7 @@ JmriSimplePropertyListener::JmriSimplePropertyListener(QString propName, int typ
  _clients = new QList<Conditional*>();
  _clients->append(client);
  _enabled = true;
+ log->setDebugEnabled(true);
 }
 //template <class T>
 JmriSimplePropertyListener::JmriSimplePropertyListener(QString propName, int type, NamedBeanHandle<NamedBean*>* namedBean, int varType, Conditional* client, QObject *parent) : PropertyChangeListener()
@@ -54,10 +56,18 @@ JmriSimplePropertyListener::JmriSimplePropertyListener(QString propName, int typ
  _clients = new QList<Conditional*>();
  _clients->append(client);
  _enabled = true;
+ log->setDebugEnabled(true);
 }
 
 NamedBeanHandle<NamedBean*>* JmriSimplePropertyListener::getNamedBean(){
     return _namedBean;
+}
+
+/*public*/ NamedBean* JmriSimplePropertyListener::getBean() {
+ if (_namedBean != nullptr) {
+     return  _namedBean->getBean();
+ }
+ return nullptr;
 }
 
 /*public*/ int JmriSimplePropertyListener::getType() {
@@ -100,9 +110,10 @@ NamedBeanHandle<NamedBean*>* JmriSimplePropertyListener::getNamedBean(){
 */
 /*public*/ void JmriSimplePropertyListener::propertyChange(PropertyChangeEvent* evt)
 {
- //log.debug("\""+_varName+"\" sent PropertyChangeEvent "+evt.getPropertyName()+
- //    ", old value =\""+evt.getOldValue()+"\", new value =\""+evt.getNewValue()+
- //    ", enabled = "+_enabled);
+ if(log->isDebugEnabled())
+  log->debug("\""+_varName+"\" sent PropertyChangeEvent "+evt->getPropertyName()+
+     ", old value =\""+evt->getOldValue().toString()+"\", new value =\""+evt->getNewValue().toString()+
+     ", enabled = "+(_enabled?"true":"false"));
  QVariant newValue = evt->getNewValue();
  if (newValue!=QVariant() && newValue==(evt->getOldValue()))
  {
@@ -113,3 +124,4 @@ NamedBeanHandle<NamedBean*>* JmriSimplePropertyListener::getNamedBean(){
   ((DefaultConditional*) _clients->at(i))->calculate(_enabled, evt);
  }
 }
+Logger* JmriSimplePropertyListener::log = LoggerFactory::getLogger("JmriSimplePropertyListener");

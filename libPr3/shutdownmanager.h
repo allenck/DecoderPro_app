@@ -56,7 +56,18 @@ public:
          * @throws IllegalArgumentException if task object not currently registered
          */
         virtual void deregister(ShutDownTask* /*s*/) {}
-
+        /**
+         * Provide access to the current registered shutdown tasks.
+         * <p>
+         * Note that implementations are free to provide a copy of the list of
+         * registered tasks and do not need to provide modifiable live access to the
+         * internal list of registered tasks.
+         *
+         * @return the list of shutdown tasks or an empty list if no shutdown tasks
+         *         are registered
+         */
+        //@Nonnull
+        virtual /*public*/ QList<ShutDownTask*> tasks() = 0;
         /**
          * Run the shutdown tasks, and
          * then terminate the program with status 100 if not aborted.

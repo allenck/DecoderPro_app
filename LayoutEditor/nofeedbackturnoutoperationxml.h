@@ -9,13 +9,15 @@ class NoFeedbackTurnoutOperationXml : public CommonTurnoutOperationXml
 {
     Q_OBJECT
 public:
-    explicit NoFeedbackTurnoutOperationXml(QObject *parent = 0);
-    /*public*/ TurnoutOperation* loadOne(QDomElement e);
+   Q_INVOKABLE explicit NoFeedbackTurnoutOperationXml(QObject *parent = 0);
+   ~NoFeedbackTurnoutOperationXml() {}
+   NoFeedbackTurnoutOperationXml(const NoFeedbackTurnoutOperationXml&) : CommonTurnoutOperationXml() {}
+   /*public*/ TurnoutOperation* loadOne(QDomElement e);
 
 signals:
     
 public slots:
     
 };
-
+Q_DECLARE_METATYPE(CommonTurnoutOperationXml)
 #endif // NOFEEDBACKTURNOUTOPERATIONXML_H

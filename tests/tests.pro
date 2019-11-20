@@ -182,7 +182,13 @@ SOURCES += \
     signals/turnoutsignalmastaddpanetest.cpp \
     signals/turnoutsignalmastaddpanetestaction.cpp \
     signals/turnoutsignalmasttest.cpp \
-    signals/turnoutsignalmasttestaction.cpp
+    signals/turnoutsignalmasttestaction.cpp \
+    logix/logixactiontest.cpp \
+    logix/logixactiontestaction.cpp \
+    logix/configxmlmanagertest.cpp \
+    warrants/warranttest.cpp \
+    mockshutdownmanager.cpp \
+    warrants/warranttestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -342,7 +348,13 @@ HEADERS += \
     signals/turnoutsignalmastaddpanetest.h \
     signals/turnoutsignalmastaddpanetestaction.h \
     signals/turnoutsignalmasttest.h \
-    signals/turnoutsignalmasttestaction.h
+    signals/turnoutsignalmasttestaction.h \
+    logix/logixactiontest.h \
+    logix/logixactiontestaction.h \
+    logix/configxmlmanagertest.h \
+    warrants/warranttest.h \
+    mockshutdownmanager.h \
+    warrants/warranttestaction.h
 
 unix {
     target.path = /usr/lib

@@ -42,6 +42,10 @@ public:
     /*public*/ static void initSectionManager();
     /*public*/ static void initInternalSignalHeadManager();
     /*public*/ static void initDefaultSignalMastManager();
+    /*public*/ static void initDebugThrottleManager();
+    /*public*/ static void initLogixManager();
+    /*public*/ static void initConditionalManager();
+    /*public*/ static void initShutDownManager();
     /*public*/ static void resetWindows(bool warn, bool error);
     /*public*/ static void dispose(/*@Nonnull*/ QWidget* window);
 

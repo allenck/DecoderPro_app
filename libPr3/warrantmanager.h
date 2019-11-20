@@ -15,7 +15,7 @@ public:
     /*public*/ int getXMLOrder();
     /*public*/ QString getSystemPrefix();
     /*public*/ char typeLetter();
-    /*public*/ Warrant* createNewWarrant(QString systemName, QString userName);
+    /*public*/ Warrant* createNewWarrant(QString systemName, QString userName, bool SCWa, long TTP);
     /*public*/ Warrant* getWarrant(QString name);
     /*public*/ Warrant* getBySystemName(QString name);
     /*public*/ Warrant* getByUserName(QString key);

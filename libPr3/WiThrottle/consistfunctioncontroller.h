@@ -5,9 +5,10 @@
 class Logger;
 class RosterEntry;
 class ThrottleController;
-class ConsistFunctionController : public ThrottleListener
+class ConsistFunctionController : public QObject, public ThrottleListener
 {
  Q_OBJECT
+ Q_INTERFACES(ThrottleListener)
 public:
  /*public*/ ConsistFunctionController(ThrottleController* tc) ;
  /*public*/ ConsistFunctionController(ThrottleController* tc, RosterEntry* re);

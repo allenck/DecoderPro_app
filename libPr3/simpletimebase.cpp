@@ -644,7 +644,7 @@ void SimpleTimebase::updateMemory(double factor) {
 }
 
 //@Override
-/*public*/ QList<PropertyChangeListener*>* SimpleTimebase::getMinuteChangeListeners() {
+/*public*/ QVector<PropertyChangeListener*> SimpleTimebase::getMinuteChangeListeners() {
     return getPropertyChangeListeners("minutes");
 }
 

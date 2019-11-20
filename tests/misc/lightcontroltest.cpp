@@ -335,7 +335,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("OFF state by default", Light::OFF, l->getState(), __FILE__, __LINE__); // lights are OFF by default
     Assert::assertEquals("enabled by default", true, l->getEnabled(), __FILE__, __LINE__); // lights are enabled by default
 
-    int startListeners = timebase->getMinuteChangeListeners()->length();
+    int startListeners = timebase->getMinuteChangeListeners().length();
 
     lc = new LightControl();
     lc->setParentLight(l);
@@ -347,7 +347,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 
     l->addLightControl(lc);
     l->activateLight();
-    Assert::assertEquals("+1 listener", startListeners + 1, timebase->getMinuteChangeListeners()->length(), __FILE__, __LINE__);
+    Assert::assertEquals("+1 listener", startListeners + 1, timebase->getMinuteChangeListeners().length(), __FILE__, __LINE__);
     // JUnitUtil->waitFor(()->{return l->getState()==Light::OFF;},"Light goes OFF at 02:00");
     Assert::assertEquals("OFF at 02:00 when control 03:00 - 04:00", Light::OFF, l->getState(), __FILE__, __LINE__);
 
@@ -373,7 +373,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 
     l->deactivateLight();
 
-    Assert::assertEquals("listener removed", startListeners, timebase->getMinuteChangeListeners()->length(), __FILE__, __LINE__);
+    Assert::assertEquals("listener removed", startListeners, timebase->getMinuteChangeListeners().length(), __FILE__, __LINE__);
 
     l->dispose();
 }

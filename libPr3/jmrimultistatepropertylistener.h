@@ -11,11 +11,11 @@ public:
     JmriMultiStatePropertyListener(QString propName, int type, QString name, int varType,
                               Conditional* client, int state, QObject *parent = 0);
     /*public*/ void setState(int state);
-    /*public*/ void propertyChange(PropertyChangeEvent* evt);
 
 signals:
 
 public slots:
+    /*public*/ void propertyChange(PropertyChangeEvent* evt);
 private:
     QList<int>* _states;
     Logger* log;

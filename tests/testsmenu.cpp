@@ -59,7 +59,8 @@
 #include "signals/virtualsignalmastaddpanetestaction.h"
 #include "signals/turnoutsignalmastaddpanetestaction.h"
 #include "signals/turnoutsignalmasttestaction.h"
-
+#include "logix/logixactiontestaction.h"
+#include "warrants/warranttestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -155,5 +156,11 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     signalMenu->addAction(new TurnoutSignalMastTestAction(this));
     signalMenu->addAction(new TurnoutSignalMastAddPaneTestAction(this));
     signalMenu->addAction(new VirtualSignalHeadTestAction(this));
+    QMenu* logixMenu = new QMenu("Logix");
+    addMenu(logixMenu);
+    logixMenu->addAction(new LogixActionTestAction(this));
+    QMenu* warrantMenu = new QMenu("Warrants");
+    addMenu(warrantMenu);
+    warrantMenu->addAction(new WarrantTestAction(this));
 
 }

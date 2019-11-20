@@ -151,9 +151,9 @@ int NamedBean::getNumPropertyChangeListeners()
 {
     return 0;
 }
-QList<PropertyChangeListener*>* NamedBean::getPropertyChangeListeners(QString /*name*/)
+QVector<PropertyChangeListener *> NamedBean::getPropertyChangeListenersByReference(QString /*name*/)
 {
-    return NULL;
+    return QVector<PropertyChangeListener *>();
 }
 void NamedBean::dispose()
 {

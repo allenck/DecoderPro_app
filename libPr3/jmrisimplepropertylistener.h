@@ -5,7 +5,7 @@
 
 //class NamedBeanHandle;
 class Conditional;
-
+class Logger;
 class JmriSimplePropertyListener : public PropertyChangeListener
 {
     Q_OBJECT
@@ -15,6 +15,7 @@ public:
     //template <class T>
     JmriSimplePropertyListener(QString propName, int type, NamedBeanHandle<NamedBean*>* namedBean, int varType, Conditional* client, QObject *parent = 0);
      NamedBeanHandle<NamedBean*>* getNamedBean();
+     /*public*/ NamedBean* getBean();
     /*public*/ int getType();
     /*public*/ QString getPropertyName();
     /*public*/ int getVarType();
@@ -22,11 +23,13 @@ public:
     /*public*/ void addConditional(Conditional* client);
     /*public*/ void setEnabled(bool state);
     /*public*/ void calculateClient(int idx, PropertyChangeEvent* evt);
-    /*public*/ void propertyChange(PropertyChangeEvent* evt);
 signals:
 
 public slots:
+     /*public*/ void propertyChange(PropertyChangeEvent* evt);
+
 private:
+    static Logger* log;
     int _type;
     QString _varName;
     int _varType;

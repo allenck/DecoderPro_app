@@ -17,7 +17,6 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -315,6 +314,7 @@ virtual bool  addOutputSensor(QString  arg__1, int  arg__2);
 virtual bool  addOutputTurnout(QString  arg__1, int  arg__2);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  addSensorToRoute(QString  arg__1, int  arg__2);
 virtual bool  canLock();
@@ -360,7 +360,8 @@ virtual int  getOutputTurnoutSetState(QString  arg__1);
 virtual int  getOutputTurnoutState(int  k);
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getRouteCommandDelay();
 virtual Sensor*  getRouteSensor(int  arg__1);
@@ -664,15 +665,17 @@ public:
 
    ~PythonQtShell_Sensor();
 
-virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1) const;
-virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, QString  arg__3) const;
+virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  canInvert();
 virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
 virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
-virtual void dispose() const;
+virtual void dispose();
 virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
@@ -688,7 +691,8 @@ virtual QList<QString >*  getListenerRefs();
 virtual int  getNumPropertyChangeListeners();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getRawState() const;
 virtual long  getSensorDebounceGoingActiveTimer() const;
@@ -699,7 +703,8 @@ virtual bool  getUseDefaultTimerSettings();
 virtual QString  getUserName();
 virtual bool  hashCode();
 virtual void removeProperty(QString  key);
-virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1) const;
+virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void requestUpdateFromLayout() const;
 virtual void setCommandedState(int  s);
 virtual void setComment(QString  comment);
@@ -724,10 +729,7 @@ virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoExcept
 
 class PythonQtPublicPromoter_Sensor : public Sensor
 { public:
-inline void py_q_addPropertyChangeListener(PropertyChangeListener*  arg__1) const { Sensor::addPropertyChangeListener(arg__1); }
-inline void py_q_addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, QString  arg__3) const { Sensor::addPropertyChangeListener(arg__1, arg__2, arg__3); }
 inline bool  py_q_canInvert() { return Sensor::canInvert(); }
-inline void py_q_dispose() const { Sensor::dispose(); }
 inline int  py_q_getCommandedState() { return Sensor::getCommandedState(); }
 inline bool  py_q_getInverted() const { return Sensor::getInverted(); }
 inline int  py_q_getKnownState() const { return Sensor::getKnownState(); }
@@ -735,7 +737,6 @@ inline int  py_q_getRawState() const { return Sensor::getRawState(); }
 inline long  py_q_getSensorDebounceGoingActiveTimer() const { return Sensor::getSensorDebounceGoingActiveTimer(); }
 inline long  py_q_getSensorDebounceGoingInActiveTimer() const { return Sensor::getSensorDebounceGoingInActiveTimer(); }
 inline bool  py_q_getUseDefaultTimerSettings() { return this->getUseDefaultTimerSettings(); }
-inline void py_q_removePropertyChangeListener(PropertyChangeListener*  arg__1) const { Sensor::removePropertyChangeListener(arg__1); }
 inline void py_q_requestUpdateFromLayout() const { Sensor::requestUpdateFromLayout(); }
 inline void py_q_setCommandedState(int  s) { Sensor::setCommandedState(s); }
 inline void py_q_setInverted(bool  arg__1) { Sensor::setInverted(arg__1); }
@@ -755,11 +756,8 @@ Sensor* new_Sensor(QObject*  parent = 0);
 Sensor* new_Sensor(QString  sysName, QObject*  parent = 0);
 Sensor* new_Sensor(QString  sysName, QString  userName, QObject*  parent = 0);
 void delete_Sensor(Sensor* obj) { delete obj; } 
-   void py_q_addPropertyChangeListener(Sensor* theWrappedObject, PropertyChangeListener*  arg__1) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_addPropertyChangeListener(arg__1));}
-   void py_q_addPropertyChangeListener(Sensor* theWrappedObject, PropertyChangeListener*  arg__1, QString  arg__2, QString  arg__3) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_addPropertyChangeListener(arg__1, arg__2, arg__3));}
    bool  canInvert(Sensor* theWrappedObject);
    bool  py_q_canInvert(Sensor* theWrappedObject){  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_canInvert());}
-   void py_q_dispose(Sensor* theWrappedObject) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_dispose());}
    int  getCommandedState(Sensor* theWrappedObject);
    int  py_q_getCommandedState(Sensor* theWrappedObject){  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_getCommandedState());}
    bool  getInverted(Sensor* theWrappedObject) const;
@@ -774,7 +772,6 @@ void delete_Sensor(Sensor* obj) { delete obj; }
    long  py_q_getSensorDebounceGoingInActiveTimer(Sensor* theWrappedObject) const{  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_getSensorDebounceGoingInActiveTimer());}
    bool  getUseDefaultTimerSettings(Sensor* theWrappedObject);
    bool  py_q_getUseDefaultTimerSettings(Sensor* theWrappedObject){  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_getUseDefaultTimerSettings());}
-   void py_q_removePropertyChangeListener(Sensor* theWrappedObject, PropertyChangeListener*  arg__1) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_removePropertyChangeListener(arg__1));}
    void requestUpdateFromLayout(Sensor* theWrappedObject) const;
    void py_q_requestUpdateFromLayout(Sensor* theWrappedObject) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_requestUpdateFromLayout());}
    void setCommandedState(Sensor* theWrappedObject, int  s);
@@ -1052,6 +1049,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual bool  isShuttingDown();
 virtual bool  restart();
 virtual bool  shutdown();
+virtual QList<ShutDownTask* >  tasks();
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
@@ -1066,6 +1064,7 @@ inline void py_q_deregister(ShutDownTask*  arg__1) { ShutDownManager::deregister
 inline bool  py_q_isShuttingDown() { return ShutDownManager::isShuttingDown(); }
 inline bool  py_q_restart() { return this->restart(); }
 inline bool  py_q_shutdown() { return this->shutdown(); }
+inline QList<ShutDownTask* >  py_q_tasks() { return this->tasks(); }
 };
 
 class PythonQtWrapper_ShutDownManager : public QObject
@@ -1084,6 +1083,8 @@ void delete_ShutDownManager(ShutDownManager* obj) { delete obj; }
    bool  py_q_restart(ShutDownManager* theWrappedObject){  return (((PythonQtPublicPromoter_ShutDownManager*)theWrappedObject)->py_q_restart());}
    bool  shutdown(ShutDownManager* theWrappedObject);
    bool  py_q_shutdown(ShutDownManager* theWrappedObject){  return (((PythonQtPublicPromoter_ShutDownManager*)theWrappedObject)->py_q_shutdown());}
+   QList<ShutDownTask* >  tasks(ShutDownManager* theWrappedObject);
+   QList<ShutDownTask* >  py_q_tasks(ShutDownManager* theWrappedObject){  return (((PythonQtPublicPromoter_ShutDownManager*)theWrappedObject)->py_q_tasks());}
 };
 
 
@@ -2178,6 +2179,7 @@ public:
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  canInvert() const;
 virtual bool  canLock(int  arg__1);
@@ -2214,7 +2216,8 @@ virtual int  getNumberOutputBits();
 virtual int  getPossibleLockModes();
 virtual QVariant  getProperty(QString  key);
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QList<PropertyChangeListener* >*  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
 virtual QSet<QString >  getPropertyKeys();
 virtual bool  getReportLocked();
 virtual Sensor*  getSecondSensor();

@@ -10,10 +10,11 @@ win32:{
 QTSERIALPORT_PROJECT_ROOT =C:/Users/Allen/Projects/qt-qtserialport-stable/qt-qtserialport
 }
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT       += widgets gui serialport multimedia websockets testlib #webkitwidgets
+    QT       += core widgets gui serialport multimedia websockets testlib #webkitwidgets
 } else {
     include($$QTSERIALPORT_PROJECT_ROOT/src/serialport/qt4support/serialport.prf)
 }
+
 
 win32_msvc: {
  QMAKE_CXXFLAGS += /wd4290
@@ -941,7 +942,8 @@ SOURCES += \
 #    namedbeancombobox.cpp \
     abstractproxyreportermanager.cpp \
     trackreporter.cpp \
-    loconet/bluetooth/loconetbluetoothadapter.cpp
+    loconet/bluetooth/loconetbluetoothadapter.cpp \
+    scwarrant.cpp
 
 
  !contains(FTDI, 1) {
@@ -1882,7 +1884,8 @@ HEADERS += \
     abstractproxylightmanager.h \
     trackreporter.h \
     loconet/bluetooth/loconetbluetoothadapter.h \
-    Signal/signals.h
+    Signal/signals.h \
+    scwarrant.h
 
 
  !contains(FTDI, 1) {

@@ -61,8 +61,6 @@ public:
 
 
 signals:
-    void indexedPropertyChange(IndexedPropertyChangeEvent*);
-    void propertyChange(PropertyChangeEvent*);
 public slots:
 private:
     void common(File* catalog);

@@ -6,6 +6,11 @@
 #include "conditionalaction.h"
 #include "defaultconditionalaction.h"
 #include "defaultconditionalmanager.h"
+#include <QDomNode>
+#include <QDomNamedNodeMap>
+#include <QDomAttr>
+#include "logix.h"
+#include "conditionaleditbase.h"
 
 DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
     AbstractNamedBeanManagerConfigXML(parent)
@@ -168,223 +173,268 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
 /*public*/ void DefaultConditionalManagerXml::loadConditionals(QDomElement conditionals)
 {
  QDomNodeList conditionalList = conditionals.elementsByTagName("conditional");
- if (log->isDebugEnabled()) log->debug("Found "+QString::number(conditionalList.size())+" conditionals");
+ if (log->isDebugEnabled())
+  log->debug("Found "+QString::number(conditionalList.size())+" conditionals");
  ConditionalManager* tm = (ConditionalManager*)InstanceManager::getDefault("ConditionalManager");
 
  for (int i=0; i<conditionalList.size(); i++)
  {
-  QString sysName = getSystemName(conditionalList.at(i).toElement());
+  QDomElement condElem = conditionalList.at(i).toElement();
+  QString sysName = getSystemName(condElem);
   if (sysName == "")
   {
-   log->warn("unexpected NULL in systemName "+conditionalList.at(i).toElement().tagName());
+   log->warn("unexpected NULL in systemName "+condElem.tagName());
    break;
   }
 
-  QString userName = "";  // omitted username is treated as empty, not NULL
-  if (conditionalList.at(i).toElement().attribute("userName") != NULL)
-    userName = conditionalList.at(i).toElement().attribute("userName");
+  // omitted username is treated as empty, not null
+  QString userName = getUserName(condElem);
+  if (userName == "") {
+      userName = "";
+  }
 
   if (log->isDebugEnabled()) log->debug("create conditional: ("+sysName+")("+
                             (userName==""?"<NULL>":userName)+")");
   Conditional* c = ((DefaultConditionalManager*)tm)->createNewConditional(sysName, userName);
-  if (c!=NULL)
+  if (c==nullptr)
   {
-   // load common parts
-   loadCommon(c, conditionalList.at(i).toElement());
-
-   QString ant = "";
-   int logicType = Conditional::ALL_AND;
-   if (conditionalList.at(i).toElement().attribute("antecedent") != "")
-   {
-        ant = conditionalList.at(i).toElement().attribute("antecedent");
-   }
-   if (conditionalList.at(i).toElement().attribute("logicType") != "")
-   {
-        logicType =
-            conditionalList.at(i).toElement().attribute("logicType").toInt();
-   }
-   ((DefaultConditional*)c)->setLogicType(logicType, ant);
-
-   // load state variables, if there are any
-   QDomNodeList conditionalVarList = conditionalList.at(i).toElement().
-                                    elementsByTagName("conditionalStateVariable");
-
-   if (conditionalVarList.size() == 0) {
-        log->warn("No state variables found for conditional "+sysName);
-   }
-   QList <ConditionalVariable*>* variableList = new QList <ConditionalVariable*> ();
-   for (int n=0; n<conditionalVarList.size(); n++)
-   {
-     ConditionalVariable* variable = new ConditionalVariable();
-     if (conditionalVarList.at(n).toElement().attribute("operator") == "")
-     {
-      log->warn("unexpected NULL in operator "+conditionalVarList.at(n).toElement().tagName()+
-                " "+conditionalVarList.at(n).toElement().tagName());
-     }
-     else
-     {
-      int oper = conditionalVarList.at(n).toElement().attribute("operator").toInt();
-      if (oper == Conditional::OPERATOR_AND_NOT)
-      {
-       variable->setNegation(true);
-       oper = Conditional::OPERATOR_AND;
+      // Check for parent Logix
+      Logix* x = tm->getParentLogix(sysName);
+      if (x == nullptr) {
+          log->warn(tr("Conditional '%1' has no parent Logix").arg(sysName));  // NOI18N
+          continue;
       }
-      else if (oper == Conditional::OPERATOR_NOT)
-      {
-       variable->setNegation(true);
-       oper = Conditional::OPERATOR_NONE;
+
+      // Found a potential parent Logix, check the Logix index
+      bool inIndex = false;
+      for (int j = 0; j < x->getNumConditionals(); j++) {
+          QString cName = x->getConditionalByNumberOrder(j);
+          if (sysName == (cName)) {
+              inIndex = true;
+              break;
+          }
       }
-      variable->setOpern(oper);
-     }
-     if (conditionalVarList.at(n).toElement().attribute("negated") != "")
-     {
-      if ("yes"==(conditionalVarList.at(n).toElement().attribute("negated")))
-       variable->setNegation(true);
-      else
-       variable->setNegation(false);
-     }
-     variable->setType(conditionalVarList.at(n).toElement()
-                                        .attribute("type").toInt());
-     variable->setName(conditionalVarList.at(n).toElement()
-                                        .attribute("systemName"));
-     if (conditionalVarList.at(n).toElement().attribute("dataString") != "")
-     {
-       variable->setDataString(conditionalVarList.at(n).toElement()
-                                            .attribute("dataString"));
-     }
-     if (conditionalVarList.at(n).toElement().attribute("num1") != "")
-     {
-      variable->setNum1(conditionalVarList.at(n).toElement()
-                                            .attribute("num1").toInt());
-     }
-     if (conditionalVarList.at(n).toElement().attribute("num2") != NULL)
-     {
-      variable->setNum2(conditionalVarList.at(n).toElement()
-                                            .attribute("num2").toInt());
-     }
-     variable->setTriggerActions(true);
-     if (conditionalVarList.at(n).toElement().attribute("triggersCalc") != "")
-     {
-      if ("no"==(conditionalVarList.at(n).toElement()
-                                    .attribute("triggersCalc")))
-       variable->setTriggerActions(false);
-     }
-     variableList->append(variable);
-    }
-    ((DefaultConditional*)c)->setStateVariables(variableList);
+      if (!inIndex) {
+          log->warn(tr("Conditional '%1' is not in the Logix index").arg(sysName));  // NOI18N
+          continue;
+      }
 
-    // load actions - there better be some
-    QDomNodeList conditionalActionList = conditionalList.at(i).toElement().
-                                    elementsByTagName("conditionalAction");
+      // Create the condtional
+      c = tm->createNewConditional(sysName, userName);
+  }
 
-    // Really OK, since a user may use such conditionals to define a reusable
-    // expression of state variables.  These conditions are then used as a
-    // state variable in other conditionals.  (pwc)
-    //if (conditionalActionList.size() == 0) {
-    //    log->warn("No actions found for conditional "+sysName);
-    //}
-    QList <ConditionalAction*>* actionList = new QList <ConditionalAction*> ();
-    QString attr = "";
-    for (int n=0; n<conditionalActionList.size(); n++)
+  if (c == nullptr) {
+      // Should never get here
+      log->error(tr("Conditional '%1' cannot be created").arg(sysName));  // NOI18N
+      continue;
+  }
+
+  // load common parts
+  loadCommon(c, condElem);
+
+  QString ant = "";
+  int logicType = Conditional::ALL_AND;
+  if (condElem.attribute("antecedent") != "")
+  {
+   QString antTemp = condElem.attribute("antecedent");  // NOI18N
+   ant = ConditionalEditBase::translateAntecedent(antTemp, true);
+  }
+  if (condElem.attribute("logicType") != "")
+  {
+       logicType =
+           condElem.attribute("logicType").toInt();
+  }
+  ((DefaultConditional*)c)->setLogicType(logicType, ant);
+
+  // load state variables, if there are any
+  QDomNodeList conditionalVarList = conditionalList.at(i).toElement().
+                                   elementsByTagName("conditionalStateVariable");
+
+  if (conditionalVarList.size() == 0) {
+       log->warn("No state variables found for conditional "+sysName);
+  }
+  QList <ConditionalVariable*>* variableList = new QList <ConditionalVariable*> ();
+  for (int n=0; n<conditionalVarList.size(); n++)
+  {
+    ConditionalVariable* variable = new ConditionalVariable();
+    if (conditionalVarList.at(n).toElement().attribute("operator") == "")
     {
-     DefaultConditionalAction* action = new DefaultConditionalAction();
-     attr = conditionalActionList.at(n).toElement().attribute("option");
-     if ( attr != NULL)
-     {
-      action->setOption(attr.toInt());
-     }
-     else
-     {
-      log->warn("unexpected NULL in option "+conditionalActionList.at(n).toElement().tagName()+
-                " "+conditionalActionList.at(n).toElement().tagName());
-     }
-     // actionDelay is removed.  delay data is stored as a String to allow
-     // such data be referenced by internal memory.
-     // For backward compatibility, set delay "int" as a string
-     attr = conditionalActionList.at(n).toElement().attribute("delay");
-     if (attr != "")
-     {
-      action->setActionString(attr);
-     }
-     attr = conditionalActionList.at(n).toElement().attribute("type");
-     if ( attr != "")
-     {
-      action->setType(attr.toInt());
-     }
-     else
-     {
-      log->warn("unexpected NULL in type "+conditionalActionList.at(n).toElement().tagName()+
-                " "+conditionalActionList.at(n).toElement().tagName());
-     }
-     attr = conditionalActionList.at(n).toElement().attribute("systemName");
-     if ( attr != "")
-     {
-      action->setDeviceName(attr);
-     }
-     else
-     {
-      log->warn("unexpected NULL in systemName "+conditionalActionList.at(n).toElement().tagName()+
-                " "+conditionalActionList.at(n).toElement().tagName());
-     }
-     attr = conditionalActionList.at(n).toElement().attribute("data");
-     if ( attr != "")
-     {
-      action->setActionData(attr.toInt());
-     }
-     else
-     {
-      log->warn("unexpected NULL in action data "+conditionalActionList.at(n).toElement().tagName()+
-                " "+conditionalActionList.at(n).toElement().tagName());
-     }
-     attr = conditionalActionList.at(n).toElement().attribute("string");
-     if ( attr != "")
-     {
-      action->setActionString(attr);
-     }
-     else
-     {
-      log->warn("unexpected NULL in action string "+conditionalActionList.at(n).toElement().tagName()+
-                " "+conditionalActionList.at(n).toElement().tagName());
-     }
-     actionList->append(action);
-    }
-    ((DefaultConditional*)c)->setAction(actionList);
-
-    // 1/16/2011 - trigger for execution of the action list changed to execute each
-    // time state is computed.  Formerly execution of the action list was done only
-    // when state changes.  All conditionals are upgraded to this new policy.
-    // However, for conditionals with actions that toggle on change of state
-    // the old policy should be used.
-    bool triggerOnChange = false;
-    if (conditionalList.at(i).toElement().attribute("triggerOnChange") != "")
-    {
-     if ("yes"==(conditionalList.at(i).toElement().attribute("triggerOnChange")))
-     {
-      triggerOnChange = true;
-     }
+     log->warn("unexpected NULL in operator "+conditionalVarList.at(n).toElement().tagName()+
+               " "+conditionalVarList.at(n).toElement().tagName());
     }
     else
     {
-        /* Don't upgrade -Let old be as is
-        for (int k=0; k<actionList.size(); k++){
-            ConditionalAction action = actionList.get(k);
-            if (action.getOption()==Conditional::ACTION_OPTION_ON_CHANGE){
-                triggerOnChange = true;
-                break;
-            }
-        }
-        */
-    triggerOnChange = true;
+     int oper = conditionalVarList.at(n).toElement().attribute("operator").toInt();
+     if (oper == Conditional::OPERATOR_AND_NOT)
+     {
+      variable->setNegation(true);
+      oper = Conditional::OPERATOR_AND;
+     }
+     else if (oper == Conditional::OPERATOR_NOT)
+     {
+      variable->setNegation(true);
+      oper = Conditional::OPERATOR_NONE;
+     }
+     variable->setOpern(oper);
+    }
+    if (conditionalVarList.at(n).toElement().attribute("negated") != "")
+    {
+     if ("yes"==(conditionalVarList.at(n).toElement().attribute("negated")))
+      variable->setNegation(true);
+     else
+      variable->setNegation(false);
+    }
+    variable->setType(conditionalVarList.at(n).toElement()
+                                       .attribute("type").toInt());
+    variable->setName(conditionalVarList.at(n).toElement()
+                                       .attribute("systemName"));
+    if (conditionalVarList.at(n).toElement().attribute("dataString") != "")
+    {
+      variable->setDataString(conditionalVarList.at(n).toElement()
+                                           .attribute("dataString"));
+    }
+    if (conditionalVarList.at(n).toElement().attribute("num1") != "")
+    {
+     variable->setNum1(conditionalVarList.at(n).toElement()
+                                           .attribute("num1").toInt());
+    }
+    if (conditionalVarList.at(n).toElement().attribute("num2") != NULL)
+    {
+     variable->setNum2(conditionalVarList.at(n).toElement()
+                                           .attribute("num2").toInt());
+    }
+    variable->setTriggerActions(true);
+    if (conditionalVarList.at(n).toElement().attribute("triggersCalc") != "")
+    {
+     if ("no"==(conditionalVarList.at(n).toElement()
+                                   .attribute("triggersCalc")))
+      variable->setTriggerActions(false);
+    }
+    variableList->append(variable);
    }
-   ((DefaultConditional*)c)->setTriggerOnChange(triggerOnChange);
+   ((DefaultConditional*)c)->setStateVariables(variableList);
+
+   // load actions - there better be some
+   QDomNodeList conditionalActionList = conditionalList.at(i).toElement().
+                                   elementsByTagName("conditionalAction");
+
+   // Really OK, since a user may use such conditionals to define a reusable
+   // expression of state variables.  These conditions are then used as a
+   // state variable in other conditionals.  (pwc)
+   //if (conditionalActionList.size() == 0) {
+   //    log->warn("No actions found for conditional "+sysName);
+   //}
+   QList <ConditionalAction*>* actionList = new QList <ConditionalAction*> ();
+   QString attr = "";
+   for (int n=0; n<conditionalActionList.size(); n++)
+   {
+    DefaultConditionalAction* action = new DefaultConditionalAction();
+    QString str_attr = attributes(conditionalActionList.at(n).toElement());
+
+    attr = conditionalActionList.at(n).toElement().attribute("option");
+    if ( attr != NULL)
+    {
+     action->setOption(attr.toInt());
+    }
+    else
+    {
+     log->warn("unexpected NULL in option "+conditionalActionList.at(n).toElement().tagName()+
+               " "+ str_attr); //conditionalActionList.at(n).toElement().tagName());
+    }
+    // actionDelay is removed.  delay data is stored as a String to allow
+    // such data be referenced by internal memory.
+    // For backward compatibility, set delay "int" as a string
+    attr = conditionalActionList.at(n).toElement().attribute("delay");
+    if (attr != "")
+    {
+     action->setActionString(attr);
+    }
+    attr = conditionalActionList.at(n).toElement().attribute("type");
+    if ( attr != "")
+    {
+     action->setType(attr.toInt());
+    }
+    else
+    {
+     log->warn("unexpected NULL in type "+conditionalActionList.at(n).toElement().tagName()+
+               " "+ str_attr); //conditionalActionList.at(n).toElement().tagName());
+    }
+    attr = conditionalActionList.at(n).toElement().attribute("systemName");
+    if ( attr != "")
+    {
+     action->setDeviceName(attr);
+    }
+    else
+    {
+     log->warn("unexpected NULL in systemName "+conditionalActionList.at(n).toElement().tagName()+
+               " "+ str_attr); //conditionalActionList.at(n).toElement().tagName());
+    }
+    attr = conditionalActionList.at(n).toElement().attribute("data");
+    if ( attr != "")
+    {
+     action->setActionData(attr.toInt());
+    }
+    else
+    {
+     log->warn("unexpected NULL in action data "+conditionalActionList.at(n).toElement().tagName()+
+               " "+ str_attr); //conditionalActionList.at(n).toElement().tagName());
+    }
+    attr = conditionalActionList.at(n).toElement().attribute("string");
+    if ( attr != "")
+    {
+     action->setActionString(attr);
+    }
+    else
+    {
+     log->warn("unexpected NULL in action string "+conditionalActionList.at(n).toElement().tagName()+
+               " "+ str_attr);
+    }
+    actionList->append(action);
+   }
+   ((DefaultConditional*)c)->setAction(actionList);
+
+   // 1/16/2011 - trigger for execution of the action list changed to execute each
+   // time state is computed.  Formerly execution of the action list was done only
+   // when state changes.  All conditionals are upgraded to this new policy.
+   // However, for conditionals with actions that toggle on change of state
+   // the old policy should be used.
+   bool triggerOnChange = false;
+   if (conditionalList.at(i).toElement().attribute("triggerOnChange") != "")
+   {
+    if ("yes"==(conditionalList.at(i).toElement().attribute("triggerOnChange")))
+    {
+     triggerOnChange = true;
+    }
+   }
+   else
+   {
+       /* Don't upgrade -Let old be as is
+       for (int k=0; k<actionList.size(); k++){
+           ConditionalAction action = actionList.get(k);
+           if (action.getOption()==Conditional::ACTION_OPTION_ON_CHANGE){
+               triggerOnChange = true;
+               break;
+           }
+       }
+       */
+   triggerOnChange = true;
   }
-  else
-  {
-   log->error("createNewConditional failed for " + sysName + ", " +userName);
-  }
+  ((DefaultConditional*)c)->setTriggerOnChange(triggerOnChange);
  }
 }
 
+// helper routine to display contents of a QDomElement.
+/*private*/ QString DefaultConditionalManagerXml::attributes(QDomElement e)
+{
+ QString str;
+ QDomNamedNodeMap map = e.attributes();
+ for(int i=0; i < map.count(); i++)
+ {
+  QDomAttr a = map.item(i).toAttr();
+  str.append(" " + a.name() + "='" +a.value()+ "'\n");
+ }
+ return str;
+}
 /**
  * Replace the current ConditionalManager, if there is one, with
  * one newly created during a load operation. This is skipped

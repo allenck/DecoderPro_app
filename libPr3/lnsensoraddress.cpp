@@ -68,14 +68,14 @@
                 // DS54 addressing, Aux input
                 _as = 0x20;
                 //int n = Integer.parseInt(s.substring(prefix.length()+1, s.length()-1));
-                int n = s.mid(prefix.length()+1, s.length()-1).toInt();
+                int n = s.mid(prefix.length()+1, s.length()-prefix.length()-2).toInt();
                 _high = n/128;
                 _low = n&0x7F;
                 _valid = true;
             } else if (s.at(s.length()-1)=='S') {
                 // DS54 addressing, Switch input
                 _as = 0x00;
-                int n = s.mid(prefix.length()+1, s.length()-1).toInt();
+                int n = s.mid(prefix.length()+1, s.length()-prefix.length()-2).toInt();
                 _high = n/128;
                 _low = n&0x7F;
                 _valid = true;
@@ -91,7 +91,9 @@
                         case 'C': d = 2; break;
                         case 'D': d = 3; break;
                     }
-                    int n = s.mid(prefix.length()+1, s.length()-2).toInt()*16+d*4
+                    QString s1 = s.mid(prefix.length()+1, s.length()-prefix.length()-3);
+                    QString s2 = s.mid(s.length()-1, s.length());
+                    int n = s.mid(prefix.length()+1, s.length()-prefix.length()-3).toInt()*16+d*4
                             +s.mid(s.length()-1, s.length()).toInt();
                     _high = n/128;
                     _low = (n&0x7F)/2;

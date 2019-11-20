@@ -315,12 +315,16 @@ public:
         virtual int getNumPropertyChangeListeners();
 
         /**
-        * Get a list of all the property change listeners that are registered using
-        * a specific name
-        * @param name  - The name (either system or user) that the listener has registered as
-        *           referencing this namedBean
-        */
-        virtual QList<PropertyChangeListener*>* getPropertyChangeListeners(QString /*name*/);
+         * Get a list of all the property change listeners that are registered using
+         * a specific name
+         *
+         * @param name The name (either system or user) that the listener has
+         *                 registered as referencing this namedBean
+         * @return empty list if none
+         */
+        //@CheckReturnValue
+        //@Nonnull
+        virtual/*public*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name);
 
         /**
          * Deactivate this object, so that it releases as many

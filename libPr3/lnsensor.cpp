@@ -177,7 +177,7 @@ void LnSensor::message(LocoNetMessage* l)
  // reach here only in error
 }
 
-void LnSensor::dispose() const {
+void LnSensor::dispose() {
     tc->removeLocoNetListener(~0, (LocoNetListener*)this);
     disconnect(pcs, SIGNAL(propertyChange(PropertyChangeEvent*)));
     AbstractSensor::dispose();

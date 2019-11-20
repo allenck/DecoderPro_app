@@ -19,7 +19,7 @@ public:
     static /*public*/ /*final*/ const int minMaxTries = 1;
     static /*public*/ /*final*/ const int maxMaxTries = 10;
     /*public*/ CommonTurnoutOperation(QString n, int i, int mt, QObject *parent = 0);
-    /*public*/ /*abstract*/ TurnoutOperator* getOperator(AbstractTurnout* t);
+    /*public*/ /*abstract*/ virtual TurnoutOperator* getOperator(AbstractTurnout* t) {return nullptr;}
     /*public*/ int getInterval();
     /*public*/ int getMaxTries();
     /*public*/ /*abstract*/ virtual int getDefaultInterval() {return 100;}

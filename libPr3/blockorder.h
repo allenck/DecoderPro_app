@@ -59,6 +59,7 @@ friend class RouteTableModel;
 friend class NXFrame;
 friend class Calibrater;
 friend class SpeedUtil;
+friend class SCWarrant;
 };
 
 #endif // BLOCKORDER_H

@@ -6,6 +6,7 @@
 #include <QMap>
 #include <QMutex>
 #include <QVector>
+#include <QHash>
 
 template <class L>
 class ChangeListenerMap : public EventListener
@@ -16,7 +17,7 @@ public:
     ChangeListenerMap(QObject* parent = nullptr):
       EventListener(parent)
   {
-   map = new QMap<QString, QVector<L>* >;
+   map = QHash<QString, QVector<L>* >();
    //map = NULL;
   }
 
@@ -30,30 +31,30 @@ public:
 //    public final synchronized
 void add(QString name, L listener) {
  QMutexLocker locker(&mutex);
- if (this->map == NULL)
+ if (this->map.isEmpty())
  {
-  this->map = new QMap<QString, QVector<L>* >;
+  this->map =  QHash<QString, QVector<L>* >();
   QVector<L>* array = new QVector<L>();
   array->append(listener);
-  this->map->insert(name, array);
+  this->map.insert(name, array);
   return;
  }
- if(!this->map->contains(name))
+ if(!this->map.contains(name))
  {
   QVector<L>* array = new QVector<L>();
   array->append(listener);
-  this->map->insert(name, array);
+  this->map.insert(name, array);
   return;
  }
-  this->map->value(name)->append(listener);
+  this->map.value(name)->append(listener);
 }
 
 /*public final synchronized */
 void remove(QString name, L listener) {
  QMutexLocker locker(&mutex);
- if (this->map != NULL)
+ if (!this->map.isEmpty())
  {
-  QVector<L>* array = this->map->value(name);
+  QVector<L>* array = this->map.value(name);
   if (!array->isEmpty())
   {
    for (int i = 0; i < array->length(); i++)
@@ -70,14 +71,14 @@ void remove(QString name, L listener) {
 //      //System.arraycopy(array, i + 1, clone, i, size - i);
 //      this->map->insert(name, clone);
 
-      this->map->value(name)->removeAt(i);
+      this->map.value(name)->removeAt(i);
      }
      else
      {
-      this->map->remove(name);
-      if (this->map->isEmpty())
+      this->map.remove(name);
+      if (this->map.isEmpty())
       {
-       this->map = NULL;
+       this->map = QHash<QString, QVector<L>* >();
       }
      }
      break;
@@ -96,8 +97,8 @@ void remove(QString name, L listener) {
 QVector<L> get(QString name) {
  QMutexLocker locker(&mutex);
 
- return (this->map != NULL && !this->map->isEmpty())
-            ? (this->map->contains(name)? *this->map->value(name): QVector<L>())
+ return (!this->map.isEmpty())
+            ? (this->map.contains(name)? *this->map.value(name): QVector<L>())
             : QVector<L>();
 }
 
@@ -115,12 +116,12 @@ void set(QString name, QVector<L> *listeners) {
   {
    this->map = new QMap<QString, QVector<L>* >;
   }
-  this->map->insert(name, listeners);
+  this->map.insert(name, listeners);
  }
  else if (this->map != NULL)
  {
-  this->map->remove(name);
-  if (this->map->isEmpty())
+  this->map.remove(name);
+  if (this->map.isEmpty())
   {
    this->map = NULL;
   }
@@ -135,11 +136,11 @@ void set(QString name, QVector<L> *listeners) {
 QVector<L> getListeners(){
  QMutexLocker locker(&mutex);
  QVector<L> listeners = QVector<L>();
- if(map!= nullptr && !map->values().isEmpty())
+ if( !map.values().isEmpty())
  {
-  foreach(QString key, map->keys())
+  foreach(QString key, map.keys())
   {
-   foreach(L listener, *map->value(key))
+   foreach(L listener, *map.value(key))
     listeners.append(listener);
   }
   return QVector<L>(listeners);
@@ -156,7 +157,7 @@ QVector<L> getListeners(){
 /*public final*/
 QVector<L> getListeners(QString name){
  if (!name.isNull()) {
-     QVector<L>* listeners = this->map->value(name);
+     QVector<L>* listeners = this->map.value(name);
      if (!listeners->isEmpty()) {
          //return listeners.clone();
          return QVector<L>(*listeners);
@@ -175,12 +176,12 @@ QVector<L> getListeners(QString name){
 /*public final synchronized*/
 bool hasListeners(QString name){
  QMutexLocker locker(&mutex);
- if (this->map == NULL)
+ if (this->map.isEmpty())
  {
   return false;
  }
- QVector<L>* array = this->map->value(NULL);
-    return (!array ->isEmpty()) || ((!name.isEmpty()) && (this->map->value(name)->isEmpty()));
+ QVector<L>* array = this->map.value(NULL);
+    return (!array ->isEmpty()) || ((!name.isEmpty()) && (this->map.value(name)->isEmpty()));
 }
 #if 0
 /**
@@ -212,7 +213,7 @@ signals:
 
 public slots:
 private:
- QMap<QString, QVector<L>* >* map;
+ QHash<QString, QVector<L>* > map;
  QMutex mutex;
 protected:
 /**

@@ -45,7 +45,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
     }
 }
 
-/*protected*/ void SpeedUtil::setOrders(QList<BlockOrder*>*orders) {
+/*protected*/ void SpeedUtil::setOrders(QList<BlockOrder*>* orders) {
     if (orders !=nullptr) {
         _orders = orders;
     }

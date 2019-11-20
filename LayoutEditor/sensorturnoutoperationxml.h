@@ -8,6 +8,8 @@ class SensorTurnoutOperationXml : public CommonTurnoutOperationXml
     Q_OBJECT
 public:
     explicit SensorTurnoutOperationXml(QObject *parent = 0);
+    ~SensorTurnoutOperationXml() {}
+    SensorTurnoutOperationXml(const SensorTurnoutOperationXml&) : CommonTurnoutOperationXml() {}
     /*public*/ TurnoutOperation* loadOne(QDomElement e);
 
 signals:
@@ -16,5 +18,5 @@ public slots:
 private:
     Logger* log;
 };
-
+Q_DECLARE_METATYPE(SensorTurnoutOperationXml)
 #endif // SENSORTURNOUTOPERATIONXML_H

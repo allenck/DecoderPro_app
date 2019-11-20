@@ -6,7 +6,9 @@ class RawTurnoutOperationXml : public CommonTurnoutOperationXml
 {
     Q_OBJECT
 public:
-    explicit RawTurnoutOperationXml(QObject *parent = 0);
+    Q_INVOKABLE explicit RawTurnoutOperationXml(QObject *parent = 0);
+    ~RawTurnoutOperationXml() {}
+    RawTurnoutOperationXml(const RawTurnoutOperationXml&) : CommonTurnoutOperationXml() {}
     /*public*/ TurnoutOperation* loadOne(QDomElement e);
 
 signals:
@@ -14,5 +16,5 @@ signals:
 public slots:
 
 };
-
+Q_DECLARE_METATYPE(RawTurnoutOperationXml)
 #endif // RAWTURNOUTOPERATIONXML_H

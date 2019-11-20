@@ -27,6 +27,7 @@
 #include "abstractnamedbean.h"
 #include "destinationpoints.h"
 #include "conditionalaction.h"
+#include "vptr.h"
 
 //DefaultLogix::DefaultLogix(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -267,7 +268,7 @@
  for (int i=0; i<_conditionalSystemNames->size(); i++)
  {
   cName = _conditionalSystemNames->at(i);
-  c = ((DefaultConditionalManager*)((ConditionalManager*)InstanceManager::getDefault("ConditionalManager")))->getBySystemName(cName);
+  c = getConditional(cName);
   if (c==NULL)
   {
    log->error("Invalid conditional system name when calculating Logix - "+cName);
@@ -275,7 +276,7 @@
   else
   {
    // calculate without taking any action unless Logix is enabled
-   ((DefaultConditional*)c)->calculate(mEnabled, NULL);
+   c->calculate(mEnabled, NULL);
   }
  }
 }
@@ -1279,7 +1280,48 @@ ArrayList <String[]> loopGremlins = NULL;
     log->warn("Unexpected call to setState in DefaultLogix->");
     return;
 }
+//@Override
+/*public*/ void DefaultLogix::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
+{
+ if ("CanDelete" == (evt->getPropertyName()))
+ {   // NOI18N
+  NamedBean* nb =  VPtr<NamedBean>::asPtr(evt->getOldValue());
+  for (JmriSimplePropertyListener* listener : *_listeners)
+  {
+   if (nb->equals(listener->getBean())) {
+       PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
+       throw PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
+   }
+  }
 
+  QString cName = "";
+  Conditional* c = nullptr;
+  for (int i = 0; i < _conditionalSystemNames->size(); i++)
+  {
+   cName = _conditionalSystemNames->at(i);
+   c = ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getBySystemName(cName);
+   if (c != nullptr)
+   {
+    for (ConditionalAction* ca : *c->getCopyOfActions())
+    {
+     if (nb->equals(ca->getBean()))
+     {
+      PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
+      throw PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
+     }
+    }
+    for (ConditionalVariable* v : *c->getCopyOfStateVariables())
+    {
+     if (nb->equals(v->getBean()) || nb->equals(v->getNamedBeanData()))
+     {
+      PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
+      throw PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
+     }
+    }
+   }
+  }
+ }
+}
 //    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultLogix->class.getName());
 //}
 

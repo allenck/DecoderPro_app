@@ -171,64 +171,9 @@ void AbstractSensor::sensorDebounce()
 // that can
 void AbstractSensor::setKnownState(int s)// throws jmri.JmriException
 {
- if (_rawState != s)
- {
-  if(((s==Sensor::ACTIVE) && (sensorDebounceGoingActive>0)) ||
-            ((s==Sensor::INACTIVE) && (sensorDebounceGoingInActive>0)))
-  {
-   int oldRawState = _rawState;
-   _rawState = s;
-   if (thr!=NULL)
-   {
-    try
-    {
-//TODO:                        thr->interrupt();
-           thr->QThread::exit(0);
-    }
-    catch (Exception ie)
-    {
-     //Can be considered normal.
-    }
-   }
-   if((restartcount!=0) && (restartcount % 10 ==0))
-   {
-    log.warn("Sensor " + AbstractNamedBean::getDisplayName() + " state keeps flapping " + QString("%1").arg(restartcount));
-   }
-   firePropertyChange("RawState", QVariant((oldRawState)), QVariant(s));
-   //emit propertyChange("RawState", oldRawState, s);
-   //emit propertyChange(new PropertyChangeEvent(this, "RawState", oldRawState, s));
-
-   sensorDebounce();
-   return;
-  }
-  else
-  {
-   //we shall try to stop the thread as one of the state changes
-   //might start the thread, while the other may not.
-   if(thr!=NULL)
-   {
-    try
-    {
-//TODO:                        thr.interrupt();
-    }
-    catch (Exception ie)
-    {
-     //Can be considered normal.
-    }
-   }
-   _rawState=s;
-  }
- }
- if (_knownState != s)
- {
-  int oldState = _knownState;
-  //Q_ASSERT(s == Sensor::ACTIVE || s == Sensor::INACTIVE);
-  _knownState = s;
-   firePropertyChange("KnownState", QVariant(oldState), QVariant(_knownState));
-   //emit propertyChange("KnownState", oldState, _knownState);
-   //emit propertyChange(new PropertyChangeEvent(this, "KnownState", oldState, _knownState));
- }
+ setOwnState(s);
 }
+
 
 /**
  * Set our internal state information, and notify bean listeners.
@@ -237,12 +182,12 @@ void AbstractSensor::setOwnState(int s)
 {
  if (_rawState != s)
  {
-  if(((s==Sensor::ACTIVE) && (sensorDebounceGoingActive>0)) ||
-            ((s==Sensor::INACTIVE) && (sensorDebounceGoingInActive>0)))
+  if(((s==Sensor::ACTIVE) && (sensorDebounceGoingActive > 0)) ||
+            ((s==Sensor::INACTIVE) && (sensorDebounceGoingInActive > 0)))
   {
    int oldRawState = _rawState;
    _rawState = s;
-   if (thr!=NULL)
+   if (thr!=nullptr)
    {
     try {
 //TODO:                        thr.interrupt();
@@ -253,13 +198,11 @@ void AbstractSensor::setOwnState(int s)
     }
    }
 
-   if((restartcount!=0) && (restartcount % 10 ==0))
+   if((restartcount != 0) && (restartcount % 10 == 0))
    {
-    log.warn("Sensor " + AbstractNamedBean::getDisplayName() + " state keeps flapping " + restartcount);
+    log.warn(tr("Sensor \"%1\" state keeps flapping: %2").arg(getDisplayName()).arg(restartcount));
    }
    firePropertyChange("RawState", QVariant(oldRawState), QVariant(s));
-   //emit propertyChange("RawState", oldRawState, s);
-   //emit propertyChange(new PropertyChangeEvent(this, "RawState", QVariant(oldRawState), QVariant(s)));
    sensorDebounce();
    return;
   }
@@ -267,7 +210,7 @@ void AbstractSensor::setOwnState(int s)
   {
    //we shall try to stop the thread as one of the state changes
    //might start the thread, while the other may not.
-   if(thr!=NULL)
+   if(thr!=nullptr)
    {
     try
     {
@@ -284,9 +227,7 @@ void AbstractSensor::setOwnState(int s)
  {
   int oldState = _knownState;
   _knownState = s;
- firePropertyChange("KnownState", QVariant(oldState), QVariant(_knownState));
-  //emit propertyChange("KnownState", oldState, _knownState);
-  //emit propertyChange(new PropertyChangeEvent(this, "KnownState", oldState, _knownState));
+  firePropertyChange("KnownState", QVariant(oldState), QVariant(_knownState));
  }
 }
 

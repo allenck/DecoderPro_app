@@ -12,9 +12,11 @@ class TurnoutOperationXml : public AbstractXmlAdapter
 {
     Q_OBJECT
 public:
-    explicit TurnoutOperationXml(QObject *parent = 0);
+    Q_INVOKABLE explicit TurnoutOperationXml(QObject *parent = 0);
+    ~TurnoutOperationXml() {}
+    TurnoutOperationXml(const TurnoutOperationXml&): AbstractXmlAdapter() {}
     /*public*/ bool load(QDomElement e) throw (Exception);
-    /*public*/ /*abstract*/ virtual TurnoutOperation* loadOne(QDomElement e) = 0;
+    /*public*/ /*abstract*/ virtual TurnoutOperation* loadOne(QDomElement e) {return nullptr;}
     /*public*/ static TurnoutOperation* loadOperation(QDomElement e) ;
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
     /*public*/ QDomElement store(QDomDocument doc, QObject* o);
@@ -27,5 +29,4 @@ private:
  Logger log;
     
 };
-
 #endif // TURNOUTOPERATIONXML_H

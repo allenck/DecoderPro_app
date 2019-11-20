@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "runnable.h"
+#include "throttlelistener.h"
 
 class PropertyChangeEvent;
 class DccLocoAddress;
@@ -20,9 +21,10 @@ class ActiveTrain;
 class AutoTrainAction;
 class DccThrottle;
 class AllocatedSection;
-class AutoActiveTrain : public QObject
+class AutoActiveTrain : public QObject, public ThrottleListener
 {
  Q_OBJECT
+    Q_INTERFACES(ThrottleListener)
 public:
  explicit AutoActiveTrain(ActiveTrain* at,QObject *parent = 0);
 

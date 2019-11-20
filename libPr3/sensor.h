@@ -103,19 +103,19 @@ public:
         /**
          * Request a call-back when the bound KnownState property changes.
          */
-        void addPropertyChangeListener(PropertyChangeListener* /*l*/) const /*=0*/{}
-        void addPropertyChangeListener(PropertyChangeListener* /*l*/, QString, QString) const /*=0*/{}
+        //void addPropertyChangeListener(PropertyChangeListener* /*l*/) override /*=0*/{}
+        //void addPropertyChangeListener(PropertyChangeListener* /*l*/, QString, const QString) override /*=0*/{}
 
         /**
          * Remove a request for a call-back when a bound property changes.
          */
-        virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/) const /*=0*/ {}
+        //virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/) const /*=0*/ {}
 
         /**
          * Remove references to and from this object, so that it can
          * eventually be garbage-collected.
          */
-        virtual  void dispose() const /*=0*/ {}  // remove _all_ connections!
+        //virtual  void dispose() const /*=0*/ {}  // remove _all_ connections!
 
         /**
          * Used to return the Raw state of a sensor prior to the known state of a

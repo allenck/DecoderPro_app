@@ -13,6 +13,7 @@
 #include "signalheadmanager.h"
 #include "conditionalvariable.h"
 #include "proxylightmanager.h"
+#include "lroutetableaction.h"
 
 /**
  * This is the base class for the Conditional edit view classes. Contains shared
@@ -145,6 +146,141 @@ void ConditionalEditBase::fireLogixEvent() {
 //        l->logixEventOccurred();
 //    }
     emit logixEventOccurred();
+}
+
+// ------------ Antecedent Methods ------------
+
+/**
+ * Create an antecedent string based on the current variables
+ * <p>
+ * The antecedent consists of all of the variables "in order"
+ * combined with the current operator.
+ * @since 4.11.5
+ * @param variableList The current variable list
+ * @return the resulting antecedent string
+ */
+QString ConditionalEditBase::makeAntecedent(QList<ConditionalVariable*> variableList) {
+    QString antecedent;// = new StringBuilder(64);
+    if (variableList.size() != 0) {
+        QString row = "R"; //NOI18N
+        if (variableList.at(0)->isNegated()) {
+            antecedent.append("not ");
+        }
+        antecedent.append(row + "1");
+        for (int i = 1; i < variableList.size(); i++) {
+            ConditionalVariable* variable = variableList.at(i);
+            switch (variable->getOpern()) {
+                case Conditional::AND:
+                    antecedent.append(" and ");
+                    break;
+                case Conditional::OR:
+                    antecedent.append(" or ");
+                    break;
+                default:
+                    break;
+            }
+            if (variable->isNegated()) {
+                antecedent = antecedent.append("not ");
+            }
+            antecedent.append(row);
+            antecedent.append(i + 1);
+        }
+    }
+    return antecedent/*.toString()*/;
+}
+
+/**
+ * Add a variable R# entry to the antecedent string.
+ * If not the first one, include <strong>and</strong> or <strong>or</strong> depending on the logic type
+ * @since 4.11.5
+ * @param logicType The current logic type.
+ * @param varListSize The current size of the variable list.
+ * @param antecedent The current antecedent
+ * @return an extended antecedent
+ */
+QString ConditionalEditBase::appendToAntecedent(Conditional::AntecedentOperator logicType, int varListSize, QString antecedent) {
+    if (varListSize > 1) {
+        if (logicType.getIntValue() == Conditional::AntecedentOperator::ALL_OR) {
+            antecedent = antecedent + " or ";   // NOI18N
+        } else {
+            antecedent = antecedent + " and ";  // NOI18N
+        }
+    }
+    return antecedent + "R" + varListSize; // NOI18N
+}
+
+/**
+ * Check the antecedent and logic type.
+ * <p>
+ * The antecedent text is translated and verified.  A new one is created if necessary.
+ * @since 4.11.5
+ * @param logicType The current logic type.  Types other than Mixed are ignored.
+ * @param antecedentText The proposed antecedent string using the local language.
+ * @param variableList The current variable list.
+ * @param curConditional The current conditional.
+ * @return false if antecedent can't be validated
+ */
+bool ConditionalEditBase::validateAntecedent(Conditional::AntecedentOperator logicType, QString antecedentText, QList<ConditionalVariable*> variableList, Conditional* curConditional) {
+    if (logicType.getIntValue() != Conditional::AntecedentOperator::MIXED
+            || LRouteTableAction::LOGIX_INITIALIZER ==(_curLogix->getSystemName())
+            || antecedentText == ""
+            || antecedentText.trimmed().length() == 0) {
+        return true;
+    }
+
+    QString antecedent = translateAntecedent(antecedentText, true);
+    if (antecedent.length() > 0) {
+        QString message = curConditional->validateAntecedent(antecedent, variableList);
+        if (message != "") {
+            JOptionPane::showMessageDialog(nullptr,
+                    message + tr("\nIf the above message is 'String index out of range:', the following number is the position in the antecedent where the error occurred."), // NOI18N
+                    tr("Error"),            // NOI18N
+                    JOptionPane::ERROR_MESSAGE);
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * Translate an antecedent string between English and the current language
+ * as determined by the Bundle classes.
+ * <p>
+ * The property files have Logic??? keys for translating to the target language.
+ * @since 4.11.5
+ * @param antecedent The antecedent string which can either local or English
+ * @param isLocal True if the antecedent string has local words.
+ * @return the translated antecedent string.
+ */
+/*public*/ /*static*/ QString ConditionalEditBase::translateAntecedent(QString antecedent, bool isLocal) {
+    if (antecedent == "") {
+        return "";
+    }
+    QString oldAnd, oldOr, oldNot;
+    QString newAnd, newOr, newNot;
+    if (isLocal) {
+        // To English
+        oldAnd = tr("AND").toLower();  // NOI18N
+        oldOr = tr("OR").toLower();    // NOI18N
+        oldNot = tr("NOT").toLower();  // NOI18N
+        newAnd = "and";  // NOI18N
+        newOr = "or";    // NOI18N
+        newNot = "not";  // NOI18N
+    } else {
+        // From English
+        oldAnd = "and";  // NOI18N
+        oldOr = "or";    // NOI18N
+        oldNot = "not";  // NOI18N
+        newAnd = tr("AND").toLower();  // NOI18N
+        newOr = tr("OR").toLower();    // NOI18N
+        newNot = tr("NOT").toLower();  // NOI18N
+    }
+    log->debug(tr("translateAntecedent: before %1").arg(antecedent));
+    antecedent = antecedent.replace(oldAnd, newAnd);
+    antecedent = antecedent.replace(oldOr, newOr);
+    antecedent = antecedent.replace(oldNot, newNot);
+    log->debug(tr("translateAntecedent: after  %1").arg(antecedent));
+    return antecedent;
 }
 
 // ------------ Shared Conditional Methods ------------

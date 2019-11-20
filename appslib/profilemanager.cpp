@@ -171,7 +171,6 @@ void ProfileManager::common(File* catalog)
   activeProfile = NULL;
   FileUtil::setProfilePath(NULL);
   this->firePropertyChange(ProfileManager::ACTIVE_PROFILE, VPtr<Profile>::asQVariant(old), QVariant());
-  emit propertyChange(new PropertyChangeEvent(this, /*ProfileManager::ACTIVE_PROFILE*/*_ACTIVE_PROFILE, VPtr<Profile>::asQVariant(old), QVariant()));
   log->debug("Setting active profile to NULL");
   return;
  }
@@ -226,14 +225,12 @@ void ProfileManager::common(File* catalog)
   activeProfile = NULL;
   FileUtil::setProfilePath(NULL);
   this->firePropertyChange(ProfileManager::ACTIVE_PROFILE, VPtr<Profile>::asQVariant(old), QVariant());
-  emit propertyChange(new PropertyChangeEvent(this, /*ProfileManager::ACTIVE_PROFILE*/*_ACTIVE_PROFILE, VPtr<Profile>::asQVariant(old), QVariant()));
   log->debug("Setting active profile to NULL");
   return;
  }
  activeProfile = profile;
  FileUtil::setProfilePath(profile->getPath()->toString());
  this->firePropertyChange(ProfileManager::ACTIVE_PROFILE, VPtr<Profile>::asQVariant(old), VPtr<Profile>::asQVariant(profile));
- emit propertyChange(new PropertyChangeEvent(this, /*ProfileManager::ACTIVE_PROFILE*/*_ACTIVE_PROFILE, QVariant(), VPtr<Profile>::asQVariant(profile) ));
  log->debug("Setting active profile to "+ profile->getId());
 }
 
@@ -247,14 +244,12 @@ void ProfileManager::common(File* catalog)
  if (profile == NULL)
  {
   this->nextActiveProfile = NULL;
-  //this->firePropertyChange(ProfileManager::NEXT_PROFILE, VPtr<Profile>::asQVariant(old), QVariant());
-  emit propertyChange(new PropertyChangeEvent(this, /*ProfileManager::NEXT_PROFILE*/*_NEXT_PROFILE, VPtr<Profile>::asQVariant(old), QVariant()));
+  this->firePropertyChange(ProfileManager::NEXT_PROFILE, VPtr<Profile>::asQVariant(old), QVariant());
   log->debug("Setting next active profile to NULL");
   return;
  }
  this->nextActiveProfile = profile;
- //this->firePropertyChange(ProfileManager::NEXT_PROFILE, VPtr<Profile>::asQVariant(old), VPtr<Profile>::asQVariant(profile));
- emit propertyChange(new PropertyChangeEvent(this, /*ProfileManager::NEXT_PROFILE*/*_NEXT_PROFILE, VPtr<Profile>::asQVariant(old), VPtr<Profile>::asQVariant(profile)));
+ this->firePropertyChange(ProfileManager::NEXT_PROFILE, VPtr<Profile>::asQVariant(old), VPtr<Profile>::asQVariant(profile));
  log->debug("Setting next active profile to "+ profile->getId());
 }
 
@@ -386,8 +381,7 @@ void ProfileManager::common(File* catalog)
  if (!this->readingProfiles)
  {
   profiles.replace(index, profile);
-  //this->fireIndexedPropertyChange(PROFILES, index, oldProfile, profile);
-  emit indexedPropertyChange(new IndexedPropertyChangeEvent(this, *_PROFILES,  VPtr<Profile>::asQVariant(oldProfile), VPtr<Profile>::asQVariant(profile), index));
+  this->fireIndexedPropertyChange(PROFILES, index, oldProfile, profile);
  }
 }
 
@@ -442,8 +436,7 @@ void ProfileManager::common(File* catalog)
    if (profiles.contains(profile))
    {
     profiles.removeAt(profiles.indexOf(profile));
-    //this->fireIndexedPropertyChange(PROFILES, index, VPtr<Profile>::asQVariant(profile), QVariant());
-    emit indexedPropertyChange(new IndexedPropertyChangeEvent(this, *_PROFILES,  VPtr<Profile>::asQVariant(profile), QVariant(), index ));
+    this->fireIndexedPropertyChange(PROFILES, index, VPtr<Profile>::asQVariant(profile), QVariant());
     this->writeProfiles();
    }
    if (profile==(this->getNextActiveProfile()))
@@ -504,8 +497,7 @@ void ProfileManager::common(File* catalog)
   if (!this->readingProfiles)
   {
    int index = searchPaths.indexOf(path);
-//            this->fireIndexedPropertyChange(SEARCH_PATHS, index, NULL, path);
-   emit indexedPropertyChange(new IndexedPropertyChangeEvent(this, *_SEARCH_PATHS, QVariant(), VPtr<File>::asQVariant(path),index));
+   this->fireIndexedPropertyChange(SEARCH_PATHS, index, NULL, path);
    this->writeProfiles();
   }
   this->findProfiles(path);
@@ -518,8 +510,7 @@ void ProfileManager::common(File* catalog)
  {
   int index = searchPaths.indexOf(path);
   searchPaths.removeAt(searchPaths.indexOf(path));
-  //this->fireIndexedPropertyChange(SEARCH_PATHS, index, path, NULL);
-  emit indexedPropertyChange(new IndexedPropertyChangeEvent(this, *_SEARCH_PATHS,  VPtr<File>::asQVariant(path),QVariant(),index));
+  this->fireIndexedPropertyChange(SEARCH_PATHS, index, path, NULL);
   this->writeProfiles();
  }
 }
@@ -538,8 +529,7 @@ void ProfileManager::common(File* catalog)
  if (defaultSearchPath!=(this->defaultSearchPath)) {
      File* oldDefault = this->defaultSearchPath;
      this->defaultSearchPath = defaultSearchPath;
-     //this->propertyChangeSupport.firePropertyChange(DEFAULT_SEARCH_PATH, oldDefault, this->defaultSearchPath);
-     emit propertyChange(new PropertyChangeEvent(this, *_DEFAULT_SEARCH_PATH, oldDefault, this->defaultSearchPath));
+     this->propertyChangeSupport->firePropertyChange(DEFAULT_SEARCH_PATH, oldDefault, this->defaultSearchPath);
      this->writeProfiles();
  }
 }
@@ -1101,8 +1091,7 @@ QString ProfileManager::FileFilter1::getDescription()
 }
 
 void ProfileManager::profileNameChange(Profile* profile, QString oldName) {
-    //this->firePropertyChange(new PropertyChangeEvent(profile, Profile::NAME, oldName, profile->getName()));
-    emit propertyChange(new PropertyChangeEvent(profile, /*Profile::NAME*/"name", oldName, profile->getName()));
+    this->firePropertyChange(new PropertyChangeEvent(profile, Profile::NAME, oldName, profile->getName()));
 }
 /**
  * Seconds to display profile selector before automatically starting.

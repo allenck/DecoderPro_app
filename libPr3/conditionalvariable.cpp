@@ -330,7 +330,21 @@ void ConditionalVariable::common()
 }
 
 /*public*/ void ConditionalVariable::setDataString(QString data) {
-    _dataString = data;
+ _dataString = data;
+ if (data != ""
+         && Conditional::TEST_TO_ITEM[_type] == Conditional::ITEM_TYPE_MEMORY) {
+     NamedBean* bean = InstanceManager::memoryManagerInstance()->getMemory(data);
+     if (bean != nullptr) {
+         _namedBeanData = nbhm->getNamedBeanHandle(data, bean);
+     }
+ }
+}
+
+/*public*/ NamedBean* ConditionalVariable::getNamedBeanData() {
+    if (_namedBeanData != nullptr) {
+        return _namedBeanData->getBean();
+    }
+    return nullptr;
 }
 
 /*public*/ int ConditionalVariable::getNum1() {
