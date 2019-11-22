@@ -51,6 +51,9 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
     }
 }
 
+/*protected*/ void SpeedUtil::setIsForward(bool forward) {
+        _isForward = forward;
+    }
 /*public*/ RosterEntry* SpeedUtil::getRosterEntry() {
     if (_rosterEntry == nullptr) {
         _rosterEntry = Roster::getDefault()->entryFromTitle(_rosterId);
@@ -485,6 +488,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
     return throttleSpeed;
 }
 
+
 /**
  * Get the track speed in millimeters per millisecond (= meters/sec)
  * If SpeedProfile has no speed information an estimate is given using the WarrantPreferences
@@ -589,28 +593,24 @@ protected float timeOfRampDistance(float rampLen, bool isForward) {
 */
 
 /**
- * Get ramp length needed to change speed using the WarrantPreference deltas for
- * throttle increment and time increment.  This should only be used for ramping down.
- * @param curSetting current throttle setting
- * @param curSpeedType current speed type
- * @param toSpeedType Speed type change
- * @param isForward direction
- * @return distance in millimeters
- */
-/*protected*/ float SpeedUtil::rampLengthForRampDown(float curSetting, QString curSpeedType, QString toSpeedType,
-        bool isForward) {
-    if (curSpeedType == (toSpeedType)) {
-        return 0.0f;
-    }
-    float fromSpeed = modifySpeed(curSetting, curSpeedType);
-    float toSpeed = modifySpeed(curSetting, toSpeedType);
-    if (toSpeed > fromSpeed) {      // insure it is ramp down regardless of speedType order
-        float tmp = fromSpeed;
-        fromSpeed = toSpeed;
-        toSpeed = tmp;
-    }
-    return rampLengthForSpeedChange(fromSpeed, toSpeed, isForward);
-}
+  * Get ramp length needed to change speed using the WarrantPreference deltas for
+  * throttle increment and time increment.  This should only be used for ramping down
+  * when the warrant is interrupted for a signal or obstacle ahead.  The length is
+  * increased by 40 scale feet to allow a safety margin.
+  * @param curSetting current throttle setting
+  * @param curSpeedType current speed type
+  * @param toSpeedType Speed type change
+  * @return distance in millimeters
+  */
+ /*protected*/ float SpeedUtil::rampLengthForRampDown(float curSetting, QString curSpeedType, QString toSpeedType) {
+     if (curSpeedType == (toSpeedType)) {
+         return 0.0f;
+     }
+     float fromSpeed = modifySpeed(curSetting, curSpeedType);
+     float toSpeed = modifySpeed(curSetting, toSpeedType);
+     return getRampForSpeedChange(fromSpeed, toSpeed)->getRampLength()
+             + 12192 / WarrantPreferences::getDefault()->getLayoutScale();
+ }
 
 /**
  * Get the length of ramp for a speed change

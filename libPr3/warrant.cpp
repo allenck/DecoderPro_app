@@ -16,6 +16,8 @@
 #include "sleeperthread.h"
 #include "speedutil.h"
 #include <QMetaEnum>
+#include "signalhead.h"
+#include "signalmast.h"
 
 //Warrant::Warrant(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -46,6 +48,7 @@
 
 /*protected*/ /*static*/ /*final*/ QStringList Warrant::RUN_STATE = QStringList()<< tr("At start in block \"%1\"")<< tr("Halted in block \"%1\"")<< tr("Resume")<< tr("Script aborted in block \"%1\" at Cmd #%2.")<< tr("Move into next block") << tr("Running in block \"%1\"")<< tr("speed restricted in block \"%1\"")<< tr("Waiting in block \"%1\" for clearance ahead")<< tr("Waiting block \"%1\" for sensor")<< tr("In block \"%1\", running late to next block");
 
+/*public*/ /*static*/ /*final*/ QStringList Warrant::MODES = QStringList() << "none"<< "LearnMode"<< "RunAuto"<< "RunManual";
 
 /**
  * Create an object with no route defined.
@@ -71,7 +74,7 @@
  _speedUtil = new SpeedUtil(_orders);
  _self = this;
 
-
+ log->setDebugEnabled(true);
  _debug = log->isDebugEnabled();
 }
 /*public*/ /*final*/ /*static*/ SignalSpeedMap* Warrant::getSpeedMap() {
@@ -197,7 +200,22 @@
 */
 /*protected*/ int Warrant::getIndexOfBlock(OBlock* block, int startIdx) {
     for (int i=startIdx; i<_orders->size(); i++){
-        if (_orders->at(i)->getBlock()==(block)) {
+        if (_orders->at(i)->getBlock()->equals(block)) {
+            return i;
+        }
+    }
+    return -1;
+}
+/**
+ * Find block BEFORE endIdx.
+ *
+ * @param endIdx index of block order
+ * @param block used by the warrant
+ * @return index of block ahead of block order index, -1 if not found
+ */
+/*protected*/ int Warrant::getIndexOfBlockBefore(int endIdx, OBlock* block) {
+    for (int i = endIdx; i >= 0; i--) {
+        if (_orders->value(i)->getBlock()->equals(block)) {
             return i;
         }
     }
@@ -407,14 +425,6 @@
         return tr("Throttle adjustment factor must be a decimal number.");
     }
     return nullptr;
-}
-/*protected*/ DccThrottle* Warrant::getThrottle()
-{
- if (_engineer!=nullptr)
- {
-     return _engineer->getThrottle();
- }
- return nullptr;
 }
 ///*protected*/ void Warrant::setCalibrater(Calibrater* c) {
 //    _calibrater = c;
@@ -649,7 +659,7 @@
             } else {
                 for (int idx = _engineer.getCurrentCommandIndex(); idx >=0; idx--) {
                     ThrottleSetting ts = _commands.get(idx);
-                    if ("SPEED".equals(ts.getCommand().toUpperCase())) {
+                    if ("SPEED" == (ts.getCommand().toUpperCase())) {
                         speed = Float.parseFloat(ts.getValue());
                         break;
                     }
@@ -682,45 +692,45 @@
     TrackerTableAction::markNewTracker(getCurrentBlockOrder()->getBlock(), _trainName);
 }
 
-/*public*/ void Warrant::stopWarrant(bool abort)
-{
+/*synchronized*/ /*public*/ void Warrant::stopWarrant(bool abort) {
+    stopWarrant(abort, true);
+}
+/*synchronized*/ /*public*/ void Warrant::stopWarrant(bool abort, bool turnOffFunctions) {
     _delayStart = false;
-    if (_stoppingSignal != nullptr) {
-        log->error("signal " + _stoppingSignal->getSystemName());
-        //_stoppingSignal.removePropertyChangeListener(this);
-        AbstractNamedBean* ass = (AbstractNamedBean*)_stoppingSignal;
-        disconnect(ass->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-        _stoppingSignal = nullptr;
+    if (_protectSignal != nullptr) {
+        _protectSignal->removePropertyChangeListener((PropertyChangeListener*)this);
+        _protectSignal = nullptr;
+        _idxProtectSignal = -1;
     }
     if (_stoppingBlock != nullptr) {
-        //_stoppingBlock.removePropertyChangeListener(this);
-     disconnect(_stoppingBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        _stoppingBlock->removePropertyChangeListener((PropertyChangeListener*)this);
         _stoppingBlock = nullptr;
     }
-    if (_shareTOBlock != nullptr) {
-        //_shareTOBlock.removePropertyChangeListener(this);
-     disconnect(_shareTOBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-        _shareTOBlock = nullptr;
-    }
-    if (_student != nullptr) {
-        _student->dispose();     // releases throttle
-        _student = nullptr;
-    }
-//    _calibrater = nullptr;
-    if (_engineer != nullptr) {
-        if (abort) {
-            _engineer->abort();
-            log->info(getDisplayName() + " Aborted.");
-        }
-        _engineer->releaseThrottle();
-        _engineer = nullptr;
+    if (_otherShareBlock != nullptr) {
+        _otherShareBlock->removePropertyChangeListener((PropertyChangeListener*)this);
+        _otherShareBlock = nullptr;
+        _myShareBlock = nullptr;
     }
     deAllocate();
     int oldMode = _runMode;
     _runMode = MODE_NONE;
-    firePropertyChange("runMode", oldMode, _runMode);
-    if (_debug) {
-        log->debug("stopWarrant() " + getDisplayName() + ". prev mode= " + oldMode);
+
+    if (_student != nullptr) {
+        _student->dispose(); // releases throttle
+        _student = nullptr;
+    }
+    if (_engineer != nullptr) {
+        _speedUtil->stopRun(!abort); // don't write speed profile measurements
+        _engineer->stopRun(abort, turnOffFunctions); // release throttle
+        _engineer = nullptr;
+    }
+    if (abort) {
+        fireRunStatus("runMode", oldMode, MODE_ABORT);
+    } else {
+        fireRunStatus("runMode", oldMode, _runMode);
+    }
+    if (log->isDebugEnabled()) {
+        log->debug(tr("Warrant \"%1\" terminated %2.").arg(getDisplayName()).arg((abort == true ? "- aborted!" : "normally")));
     }
 }
 
@@ -738,7 +748,7 @@
 * <p>
 * Rule for (auto) MODE_RUN:
 * 1. At least the Origin block must be owned (allocated) by this warrant.
-* (block._warrant == this)  and path set for Run Mode
+* (block->_warrant == this)  and path set for Run Mode
 * Rule for (auto) LEARN_RUN:
 * 2. Entire Route must be allocated and Route Set for Learn Mode.
 * i.e. this warrant has listeners on all block sensors in the route.
@@ -750,7 +760,7 @@
                              QList <ThrottleSetting*>* commands, bool runBlind)
 {
  if (log->isDebugEnabled()) {
-  QMetaEnum metaEnum = QMetaEnum::fromType<Warrant::MODES>();
+  QMetaEnum metaEnum = QMetaEnum::fromType<Warrant::MODEVALS>();
      log->debug(tr("setRunMode(%1) (%2) called with _runMode= %3. warrant= %4").arg(
              mode).arg(QString(metaEnum.valueToKey(mode))).arg(QString(metaEnum.valueToKey(_runMode))).arg(getDisplayName()));
  }
@@ -817,7 +827,7 @@
      }
      fireRunStatus("runMode", MODE_NONE, _runMode);
      if (log->isDebugEnabled()) {
-      QMetaEnum metaEnum = QMetaEnum::fromType<Warrant::MODES>();
+      QMetaEnum metaEnum = QMetaEnum::fromType<Warrant::MODEVALS>();
 
          log->debug(tr("Exit setRunMode()  _runMode= %1, msg= %2").arg(metaEnum.valueToKey( _runMode)).arg(_message));
      }
@@ -854,52 +864,211 @@
     return "";
 }
 
-/*protected*/ void Warrant::abortWarrant(QString msg) {
-    log->error(tr("Abort warrant \"%1\" - %2 ").arg(getDisplayName()).arg(msg));
-    stopWarrant(true);
+/**
+ * Pause and resume auto-running train or abort any allocation state User
+ * issued overriding commands during run time of warrant _engineer.abort()
+ * calls setRunMode(MODE_NONE,...) which calls deallocate all.
+ *
+ * @param idx index of control command
+ * @return false if command cannot be given
+ */
+/*public*/ bool Warrant::controlRunTrain(int idx)
+{
+ if (idx < 0) {
+     return false;
+ }
+ bool ret = false;
+ if (_engineer == nullptr) {
+     if (log->isDebugEnabled()) {
+         log->debug(tr("controlRunTrain(%1)= \"%2\" for train %3 runMode= %4. warrant %5").arg(
+                 idx).arg(CNTRL_CMDS[idx]).arg(getTrainName()).arg(MODES[_runMode]).arg(getDisplayName()));
+     }
+     switch (idx) {
+         case HALT:
+         case RESUME:
+         case RETRY:
+         case RAMP_HALT:
+             fireRunStatus("SpeedChange", 0, idx);
+             break;
+         case STOP:
+         case ABORT:
+             if (_runMode == Warrant::MODE_LEARN) {
+                 // let WarrantFrame do the abort. (WarrantFrame listens for "abortLearn")
+                 fireRunStatus("abortLearn", -MODE_LEARN, _idxCurrentOrder);
+             } else {
+                 fireRunStatus("controlChange", MODE_RUN, ABORT);
+                 stopWarrant(true);
+             }
+             break;
+         case DEBUG:
+             ret = debugInfo();
+             fireRunStatus("SpeedChange", 0, idx);
+             break;
+         default:
+             break;
+     }
+     return ret;
+ }
+ int runState = _engineer->getRunState();
+ if (log->isDebugEnabled()) {
+     log->debug(tr("controlRunTrain(%1)= \"%2\" for train %3 runstate= %4, in block %5. warrant %6").arg(
+             idx).arg(CNTRL_CMDS[idx]).arg(getTrainName()).arg(RUN_STATE[runState]).arg(
+             getBlockAt(_idxCurrentOrder)->getDisplayName()).arg(getDisplayName()));
+ }
+ /*synchronized (_engineer)*/ {
+   BlockOrder* bo;
+   OBlock* block;
+     switch (idx) {
+         case RAMP_HALT:
+             cancelDelayRamp();
+             _engineer->rampSpeedTo(Warrant::Stop, 0, false);  // immediate ramp down
+             _engineer->setHalt(true);
+//                    setMovement(MID);
+             ret = true;
+             break;
+         case RESUME:
+             bo = getBlockOrderAt(_idxCurrentOrder);
+             block = bo->getBlock();
+             if ((block->getState() & (OBlock::OCCUPIED | OBlock::UNDETECTED)) != 0) {
+                 // we assume this occupation is this train. user should know
+                 if (runState == WAIT_FOR_CLEAR || runState == HALT) {
+                     // However user knows if condition may have cleared due to overrun.
+                     _message = allocateFromIndex(false, true, _idxCurrentOrder + 1);
+                     // This is user's decision to reset and override wait flags
+                     ThrottleRamp* ramp = _engineer->getRamp();
+                     if (ramp == nullptr || ramp->ready) {   // do not change flags when ramping
+                         // recheck flags
+                         if (_idxCurrentOrder < _orders->size() - 1 &&
+                           Stop == (getSpeedTypeForBlock(_idxCurrentOrder + 1))) {
+                          break;	// cannot overide flags
+                         }
+                      if (_idxCurrentOrder == 0) {
+                             _engineer->setHalt(false);
+                      }
+                         _waitForSignal = false;
+                         _waitForBlock = false;
+                         _waitForWarrant = false;
+//                                _engineer.setWaitforClear(false);
+                         // engineer will clear its flags when ramp completes
+                         _engineer->rampSpeedTo(_curSpeedType, 0, false);
+                     }
+                 } else if (runState == WAIT_FOR_TRAIN || runState == SPEED_RESTRICTED) {
+                     // user wants to increase throttle of stalled train slowly
+                     float speedSetting = _engineer->getSpeedSetting();
+                     _engineer->setSpeed(speedSetting + _speedUtil->getRampThrottleIncrement());
+                 } else {    // last resort from user to get on script
+                     _engineer->setSpeed(_speedUtil->modifySpeed(_engineer->getScriptSpeed(), _curSpeedType));
+                 }
+                 ret = true;
+             } else {    // train must be lost.
+                 // user wants to increase throttle of stalled train slowly
+                 float speedSetting = _engineer->getSpeedSetting();
+                 _engineer->setSpeed(speedSetting + _speedUtil->getRampThrottleIncrement());
+             }
+             break;
+         case RETRY: // Force move into next block, which was seen as rogue occupied
+             bo = getBlockOrderAt(_idxCurrentOrder + 1);
+             // if block belongs to this warrant, then move unconditionally into block
+             if (bo != nullptr) {
+                 block = bo->getBlock();
+                 if (block->allocate(this) == nullptr && (block->getState() & OBlock::OCCUPIED) != 0) {
+                     _idxCurrentOrder++;
+                     if (block->equals(_stoppingBlock)) {
+                         clearStoppingBlock();
+                     }
+                     QString msg = bo->setPath(this);
+                     if (msg != nullptr) {
+                         log->warn(tr("Cannot clear path for warrant \"%1\" at block \"%2\" - msg = %3").arg(
+                                 getDisplayName()).arg(block->getDisplayName()).arg(msg));
+                     }
+                     goingActive(block);
+                     ret = true;
+                 }
+             }
+             break;
+         case ABORT:
+             stopWarrant(true);
+             ret = true;
+             break;
+         case HALT:
+         case STOP:
+             cancelDelayRamp();
+             _engineer->setStop(false, true); // sets _halt
+             ret = true;
+             break;
+         case ESTOP:
+             cancelDelayRamp();
+             _engineer->setStop(true, true); // E-stop & halt
+             ret = true;
+             break;
+         case DEBUG:
+             ret = debugInfo();
+             fireRunStatus("SpeedChange", 0, idx);
+             return ret;
+         default:
+             return false;
+     }
+ }
+ int state = runState;
+ if ( state == Warrant::HALT) {
+  if (_waitForSignal || _waitForBlock || _waitForWarrant) {
+   state = WAIT_FOR_CLEAR;
+  }
+ }
+ if (ret) {
+     fireRunStatus("controlChange", state, idx);
+ } else {
+     fireRunStatus("controlFailed", state, idx);
+ }
+ return ret;
 }
 
-/**
-* Pause and resume auto-running train or abort any allocation state
-* _engineer->abort() calls setRunMode(MODE_NONE,...) which calls deallocate all.
-*/
-/*public*/ bool Warrant::controlRunTrain(int idx) {
-    if(_debug) log->debug("controlRunTrain= "+QString::number(idx)+" runMode= "+QString::number(_runMode)+" for warrant= "+getDisplayName());
-    bool ret = true;
-    int oldIndex = MODE_MANUAL;
-    if (_engineer == nullptr) {
-        switch (idx) {
-            case HALT:
-            case RESUME:
-                ret = false;
-                break;
-            case ABORT:
-                if (_runMode==Warrant::MODE_LEARN) {
-                    // let WarrantFrame do the abort
-                    firePropertyChange("abortLearn", QVariant(oldIndex), QVariant(_idxCurrentOrder));
-                } else {
-                    QString msg = setRunMode(Warrant::MODE_NONE, nullptr, nullptr, nullptr, false);
-                }
-                break;
+/*protected*/ bool Warrant::debugInfo() {
+    QString info;// = new StringBuffer("\nWarrant ");
+    info.append(getDisplayName()); info.append(", ");
+    info.append("Current BlockOrder idx= "); info.append(_idxCurrentOrder);
+    info.append(",  Block \""); info.append(getBlockAt(_idxCurrentOrder)->getDisplayName()); info.append("\"");
+    info.append("\n\tWarrant flags: _waitForSignal= ");
+    info.append(_waitForSignal); info.append(", _waitForBlock= ");
+    info.append(_waitForBlock); info.append(", _waitForWarrant= ");
+    info.append(_waitForWarrant); info.append("\n\t");
+    if (_engineer != nullptr) {
+        info.append("Engineer runstate= ");
+        info.append(RUN_STATE[_engineer->getRunState()]); info.append(", ");
+        info.append("speed setting= ");
+        info.append(QString::number(_engineer->getSpeedSetting())); info.append(", ");
+        info.append("scriptSpeed= ");
+        info.append(QString::number(_engineer->getScriptSpeed())); info.append("\n\t");
+        int cmdIdx = _engineer->getCurrentCommandIndex();
+        info.append("current Cmd Index #");
+        // Note: command indexes biased from 0 to 1 to match Warrant's 1-based display of commands.
+        info.append(cmdIdx + 1); info.append(", Command: ");
+        info.append(getThrottleCommands()->value(cmdIdx)->toString()); info.append("\n\t");
+        info.append(_engineer->getFlags()); info.append("\n\t\t");
+//            for (StackTraceElement elem :_engineer.getStackTrace()) {
+//                info.append(elem.getClassName()); info.append(".");
+//                info.append(elem.getMethodName()); info.append(", line ");
+//                info.append(elem.getLineNumber()); info.append("\n\t\t");
+//            }
+        info.append("\tEngineer Thread.State= ");
+//        info.append(QString::number(getState())); info.append("\n\t");
+        ThrottleRamp* ramp = _engineer->getRamp();
+        if (ramp != nullptr) {
+//            info.append("Ramp Thread.State= "); info.append(ramp->getState());
+            info.append(", ready= "); info.append(ramp->ready); info.append("\n\t\t");
+//                for (StackTraceElement elem : ramp.getStackTrace()) {
+//                    info.append(elem.getClassName()); info.append(".");
+//                    info.append(elem.getMethodName()); info.append(", line ");
+//                    info.append(elem.getLineNumber()); info.append("\n\t\t");
+//                }
+        } else {
+            info.append("No ramp");
         }
     } else {
-        /*synchronized(_engineer)*/ {
-            oldIndex = _engineer->getRunState();
-            switch (idx) {
-                case HALT:
-                    _engineer->setHalt(true);
-                    break;
-                case RESUME:
-                    _engineer->setHalt(false);
-                    break;
-                case ABORT:
-                    _engineer->abort();
-                    break;
-            }
-        }
+        info.append("No engineer");
     }
-    firePropertyChange("controlChange", QVariant(oldIndex), QVariant(idx));
-    return ret;
+    log->info(info/*.toString()*/);
+    return true;
 }
 
 /*public*/ void Warrant::notifyThrottleFound(DccThrottle* throttle)
@@ -919,30 +1088,57 @@
     } else {
         getSpeedMap();      // initialize speedMap for getPermissibleEntranceSpeed() calls
         _engineer = new Engineer(this, throttle);
+        QThread* thread = new QThread();
+        _engineer->moveToThread(thread);
+        connect(thread, SIGNAL(started()), _engineer, SLOT(process()));
+        connect(_engineer, SIGNAL(finished()),thread, SLOT(quit()));
+        connect(_engineer,SIGNAL(finished()), thread, SLOT(deleteLater()));
+        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
         startupWarrant();
         ///*new*/ QThread(_engineer).start();
-        _engineer->start();
+        thread->start();
     }
 }
 
 /*protected*/ void Warrant::startupWarrant() {
-    _idxCurrentOrder = 0;
-    // set block state to show our train occupies the block
-    BlockOrder* bo = getBlockOrderAt(0);
-    OBlock* b = bo->getBlock();
-    b->setValue(_trainName);
-    b->setState(b->getState() | OBlock::RUNNING);
-    // getNextSpeed() calls allocateNextBlock() who will set _stoppingBlock, if necessary
-    // do before starting throttle commands in engineer
-    _currentSpeed = getNextSpeed();		// will modify _currentSpeed, if necessary
-    _engineer->rampSpeedTo(_currentSpeed, 0);
+ _idxCurrentOrder = 0;
+ _idxLastOrder = 0;
+ _curSpeedType = Normal;
+ // set block state to show our train occupies the block
+ BlockOrder* bo = getBlockOrderAt(0);
+ OBlock* b = bo->getBlock();
+ b->setValue(_trainName);
+ b->setState(b->getState() | OBlock::RUNNING);
 }
 
 /*public*/ void Warrant::notifyFailedThrottleRequest(LocoAddress *address, QString reason) {
     log->error("notifyFailedThrottleRequest address= " +address->toString()+" _runMode= "+QString::number(_runMode)+
             " due to "+reason);
 }
+/**
+ * No steal or share decisions made locally
+ * <p>
+ * {@inheritDoc}
+ */
+//@Override
+///*public*/ void notifyDecisionRequired(LocoAddress* address, DecisionType question) {
+//}
 
+/*protected*/ void Warrant::releaseThrottle(DccThrottle* throttle) {
+    if (throttle != nullptr) {
+        ThrottleManager* tm =  (ThrottleManager*)InstanceManager::getNullableDefault("ThrottleManager");
+        if (tm != nullptr) {
+            tm->releaseThrottle(throttle, this);
+        } else {
+            log->error(tr("Throttle Manager unavailable or cannot provide throttle. %1").arg(throttle->getLocoAddress()->toString()));
+        }
+    }
+}
+
+/*protected*/ void Warrant::abortWarrant(QString msg) {
+    log->error(tr("Abort warrant \"%1\" - %2 ").arg(getDisplayName()).arg(msg));
+    stopWarrant(true);
+}
 /**
  * Allocate as many blocks as possible from the start of the warrant.
  * The first block must be allocated and all blocks of the route must
@@ -1024,7 +1220,7 @@
             // loop back routes may enter a block a second time
             // Do not make current block a stopping block
             if (!currentBlock->equals(block)) {
-                if ((block->getState() & OBlock::OCCUPIED) != 0) {  // (!block.isAllocatedTo(this) || ) removed 7/1/18
+                if ((block->getState() & OBlock::OCCUPIED) != 0) {  // (!block->isAllocatedTo(this) || ) removed 7/1/18
                     if (_message == "") {
                         _message = tr("Block \"%1\" occupied by unknown train.").arg(block->getDisplayName());
                     }
@@ -1095,7 +1291,7 @@
   if (i!=0 && (block->getState() & OBlock::OCCUPIED)>0 && startBlock!=(block))
   {
 //            msg = java.text.MessageFormat.format(rb.getString("BlockRougeOccupied"),
-//                            getDisplayName(), block.getDisplayName());
+//                            getDisplayName(), block->getDisplayName());
    msg = tr("Warrant \"%1\" partially allocated but Block \"%2\" occupied by unknown train.").arg(getDisplayName()).arg(block->getDisplayName());
    _routeSet = false;  // don't throw switches under a rouge train
    break;
@@ -1253,11 +1449,11 @@
     int state = block->getState();
     if ((state & OBlock::DARK) != 0) {
 //        msg = java.text.MessageFormat.format(rb.getString("BlockDark"),
-//                                            block.getDisplayName());
+//                                            block->getDisplayName());
         msg = tr("Block \"%1\" is dark, cannot guarantee route is set or clear.").arg(block->getDisplayName());
      } else if ((state & OBlock::OCCUPIED) == 0) {
 //        msg = java.text.MessageFormat.format(rb.getString("badStart"),
-//                                            block.getDisplayName());
+//                                            block->getDisplayName());
         msg = tr("Train does not occupy the starting block of Warrant \"%1\".").arg(block->getDisplayName());
     }
     return msg;
@@ -1306,7 +1502,7 @@
         OBlock* block = _orders->at(i)->getBlock();
         if ((block->getState() & OBlock::OCCUPIED)>0 && startBlock!=(block)) {
 //            msg = java.text.MessageFormat.format(rb.getString("BlockRougeOccupied"),
-//                    getDisplayName(), block.getDisplayName());
+//                    getDisplayName(), block->getDisplayName());
             msg= tr("\"%1\" partially allocated but Block \"%2\" occupied by unknown train.").arg(getDisplayName()).arg(block->getDisplayName());
             _totalAllocated = false;
         }
@@ -1324,87 +1520,304 @@
         return nullptr;
     }
     //return java.text.MessageFormat.format(rb.getString("OriginBlockNotSet"), w.getDisplayName());
-    return tr("Unable to allocate originating block.\n\"%1\".").arg(w->getDisplayName());
+    return tr("Unable to allocate originating block->\n\"%1\".").arg(w->getDisplayName());
 }
 
-/*public*/ void Warrant::propertyChange(PropertyChangeEvent* evt) {
-    //if (!(evt->getSource() instanceof NamedBean))
-    if(qobject_cast<NamedBean*>(evt->getSource())!= 0)
-    {
+/*public*/ void Warrant::propertyChange(PropertyChangeEvent* evt)
+{
+ if(qobject_cast<NamedBean*>(evt->getSource())!= 0)
+ {
 //            if (_debug) log->debug("propertyChange \""+evt.getPropertyName()+
 //                                                "\" old= "+evt.getOldValue()+" new= "+evt.getNewValue());
-        return;
-    }
-    QString property = evt->getPropertyName();
-    QString msg = nullptr;
-    if (_debug) log->debug("propertyChange \""+property+"\" new= "+evt->getNewValue().toString()+
-                                        " source= "+((NamedBean*)evt->getSource())->getDisplayName()
-                                        +" for warrant= "+getDisplayName());
-    if (_stoppingSignal != nullptr && _stoppingSignal==evt->getSource()) {
-        if (property==("Aspect") || property==("Appearance")) {
-            // signal blocking warrant has changed. Should (MUST) be the next block.
-            //_stoppingSignal.removePropertyChangeListener(this);
-            AbstractNamedBean* signal = (AbstractNamedBean*)_stoppingSignal;
-            disconnect(signal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-            _stoppingSignal = nullptr;
-            if (_engineer!=nullptr) {
-                _engineer->synchNotify(getBlockAt(_idxCurrentOrder)); // notify engineer of control point
-                _engineer->rampSpeedTo(getCurrentSpeedAt(_idxCurrentOrder) ,0);
-            }
-            return;
-        }
-    } else if (property==("state") && _stoppingBlock!=nullptr && _stoppingBlock==evt->getSource()) {
-        // starting block is allocated but not occupied
-        if (_delayStart) {	// wait for arrival of train to begin the run
-            if ( ((evt->getNewValue()).toInt() & OBlock::OCCUPIED) != 0 ) {
-                // train arrived at starting block
-                Warrant* w = _stoppingBlock->getWarrant();
-                if (this==(w) || w==nullptr) {
-                    if (checkStoppingBlock()) {
-                        msg = acquireThrottle();
-                        if (msg!=nullptr){
-                            log->error("Abort warrant \""+ getDisplayName()+"\" "+msg);
-                            if (_engineer!=nullptr) {
-                                _engineer->abort();
-                            }
-                        }
-                    }
-                } else {
-                    // starting block allocated to another warrant for the same engine
-                    // which has just arrived at the starting block for this warrant
-                    // However, we must wait for the other warrant to finish
-                    w->addPropertyChangeListener((PropertyChangeListener*)this);
-                    //connect(w,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
-                }
-            }
-        } else if (((evt->getNewValue()).toInt() & OBlock::UNOCCUPIED) != 0) {
-            // normal wait for a train underway but blocked ahead by occupation
-            //  blocking occupation has left the stopping block
-            if (checkStoppingBlock()) {
-            }
-        }
-    } else if (_delayStart && property==("runMode") &&
-                        (evt->getNewValue()).toInt()==MODE_NONE)  {
-        // Starting block was owned by another warrant for this engine
-        // Engine has arrived and Blocking Warrant has finished
-        Warrant* w = (Warrant*)evt->getSource();
-        //((Warrant*)evt->getSource()).removePropertyChangeListener(this);
-        disconnect(w,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
-        if (checkStoppingBlock()) {
-            msg = acquireThrottle();
-            if (msg!=nullptr) {
-                log->error("Abort warrant \""+ getDisplayName()+"\" "+msg);
-                if (_engineer!=nullptr) {
-                    _engineer->abort();
-                }
-            }
-        }
-    }
-    if (msg!=nullptr) {
-        log->error(msg);
-    }
+     return;
+ }
+ QString property = evt->getPropertyName();
+ if (log->isDebugEnabled())
+ {
+   log->debug(tr("propertyChange \"%1\" new= %2 source= %3 - warrant= %4").arg(
+           property).arg(evt->getNewValue().toString()).arg(((NamedBean*) evt->getSource())->getDisplayName()).arg(getDisplayName()));
  }
 
+  if (_protectSignal != nullptr && _protectSignal == evt->getSource()) {
+      if (property == ("Aspect") || property == ("Appearance")) {
+          // signal controlling warrant has changed.
+          readStoppingSignal();
+      }
+  } else if (property ==("state")) {
+      if (_stoppingBlock != nullptr && _stoppingBlock == (evt->getSource())) {
+          // starting block is allocated but not occupied
+          if (_delayStart) { // wait for arrival of train to begin the run
+              if ((( evt->getNewValue().toInt()) & OBlock::OCCUPIED) != 0) {
+                  // train arrived at starting block
+                  Warrant* w = _stoppingBlock->getWarrant();
+                  if (this == (w) || w == nullptr) {
+                      if (clearStoppingBlock()) {
+                          OBlock* block = getBlockAt(_idxCurrentOrder);
+                          if (_runMode == MODE_RUN) {
+                              acquireThrottle();
+                          } else if (_runMode == MODE_MANUAL) {
+                              fireRunStatus("ReadyToRun", -1, 0);   // ready to start msg
+                              _delayStart = false;
+                          } else {
+                              _delayStart = false;
+                              log->error(tr("StoppingBlock \"%1\" set with mode &2").arg(block->getDisplayName()).arg(
+                                      /*MODES[_runMode]*/_runMode));
+                          }
+                          block->_entryTime = QDateTime::currentMSecsSinceEpoch();//System.currentTimeMillis();
+                          block->setValue(_trainName);
+                          block->setState(block->getState() | OBlock::RUNNING);
+                      }
+                  }
+              }
+          } else if (( evt->getNewValue().toInt() & OBlock::UNOCCUPIED) != 0) {
+              // normal wait for a train underway but blocked ahead by occupation
+              //  blocking occupation has left the stopping block
+              int idx = getIndexOfBlock(_stoppingBlock, _idxLastOrder);
+              if (idx >= 0) {
+                  // Wait to allow departing rogue train to clear turnouts before re-allocation
+                  // of this warrant resets the path. Rogue may leave on a conflicting path
+                  // whose turnout control is shared with this path
+//                  ThreadingUtil.runOnGUIDelayed(() -> {
+                      clearStoppingBlock();
+//                  }, 7000);   // 7 seconds
+
+              }
+          }
+      } else if (_otherShareBlock != nullptr && _otherShareBlock == evt->getSource()) {
+          if ((( evt->getNewValue()).toInt() & OBlock::UNOCCUPIED) != 0) {
+              clearShareTOBlock();
+          }
+      }
+  } else if (_delayStart && property == ("runMode") && ( evt->getNewValue()).toInt() == MODE_NONE) {
+      // Starting block was owned by another warrant for this engine
+      // Engine has arrived and Blocking Warrant has finished
+      ((Warrant*) evt->getSource())->removePropertyChangeListener((PropertyChangeListener*)this);
+      if (clearStoppingBlock()) {
+          acquireThrottle();
+      }
+  }
+ }
+/*private*/ bool Warrant::readStoppingSignal() {
+    QString speedType;
+    if (qobject_cast<SignalHead*>(_protectSignal)) {
+        SignalHead* head = (SignalHead*) _protectSignal;
+        int appearance = head->getAppearance();
+        speedType = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))
+                ->getAppearanceSpeed(head->getAppearanceName(appearance));
+        if (log->isDebugEnabled()) {
+            log->debug(tr("SignalHead %1 sets appearance speed to %2 - warrant= %3").arg(
+                    _protectSignal->getDisplayName()).arg(speedType).arg(getDisplayName()));
+        }
+    } else {
+        SignalMast* mast = (SignalMast*) _protectSignal;
+        QString aspect = mast->getAspect();
+        speedType = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getAspectSpeed(aspect,
+                mast->getSignalSystem());
+        if (log->isDebugEnabled()) {
+            log->debug(tr("SignalMast %1 sets aspect speed to %2 - warrant= %3").arg(
+                    _protectSignal->getDisplayName()).arg(speedType).arg(getDisplayName()));
+        }
+    }
+    if (speedType == nullptr) {
+        return false; // dark or no specified speed
+    } else if (speedType == (Warrant::Stop)) {
+        _waitForSignal = true;
+        return true;
+    } else {
+        _curSpeedType = speedType;
+        _waitForSignal = false;
+        if (!_waitForBlock && !_waitForWarrant && _engineer != nullptr) {
+            allocateFromIndex(false, true, _idxCurrentOrder + 1);
+         // engineer will clear its flags when ramp completes
+            _engineer->rampSpeedTo(speedType, 0, false);
+//                setMovement(END);
+            return true;
+        }
+        fireRunStatus("SpeedChange", _idxCurrentOrder - 1, _idxCurrentOrder);
+        return false;
+    }
+}
+
+/*private*/ bool Warrant::doStoppingBlockClear() {
+    if (_stoppingBlock == nullptr) {
+        return true;
+    }
+    QString blockName = _stoppingBlock->getDisplayName();
+    _stoppingBlock->removePropertyChangeListener((PropertyChangeListener*)_self);
+    _stoppingBlock = nullptr;
+    if (log->isDebugEnabled())
+        log->debug(tr("Warrant \"%1\" Cleared _stoppingBlock= \"%2\".").arg(getDisplayName()).arg(blockName));
+    return restoreRunning();
+}
+
+/**
+ * Called when a rogue train has left a block-> Allows the warrant to continue to run.
+ * Also called from propertyChange() to allow warrant to acquire a throttle
+ * and launch an engineer. Also called by retry control command to help user
+ * work out of an error condition.
+ */
+/*private*/ bool Warrant::clearStoppingBlock() {
+    if (_stoppingBlock == nullptr) {
+        return false;
+    }
+    QString blockName = _stoppingBlock->getDisplayName();
+    if (log->isDebugEnabled())
+        log->debug(tr("Warrant \"%1\" clearing _stoppingBlock= \"%2\".").arg(
+            getDisplayName()).arg(blockName));
+
+    QString msg = allocateFromIndex(false, true, _idxCurrentOrder + 1);
+    if (msg == "" && doStoppingBlockClear()) {
+        return true;
+    }
+
+    if (log->isDebugEnabled())
+        log->debug(tr("Warrant \"%1\" allocation failed. %2. runState= %3").arg(
+            getDisplayName()).arg(msg).arg((_engineer!=nullptr?RUN_STATE[_engineer->getRunState()]:"NoEngineer")));
+    // If this warrant is waiting for the block that another
+    // warrant has occupied, and now the latter warrant leaves
+    // the block - there are notifications to each warrant "simultaneously".
+    // The latter warrant's deallocation may not have happened yet and
+    // this has prevented allocation to this warrant.  For this case,
+    // wait until leaving warrant's deallocation is seen and completed.
+    //@SuppressFBWarnings(value = "UW_UNCOND_WAIT", justification="false postive, guarded by while statement")
+#if 0 //TODO:
+    /*final*/ Runnable* allocateBlocks = new Runnable() {
+        @Override
+        public void run() {
+            long time = 0;
+            String msg = null;
+            try {
+                while (time < 200) {
+                    msg = allocateFromIndex(false, true, _idxCurrentOrder + 1);
+                    if (msg == null && doStoppingBlockClear()) {
+                        break;
+                    }
+                    synchronized (this) {
+                        wait(20);
+                        time += 20;
+                    }
+                }
+                if (msg != null) {
+                     log->warn("Warrant \"{}\" unable to clear StoppingBlock message= \"{}\" time= {}", getDisplayName(), msg, time);
+                }
+                _message = msg;
+            }
+            catch (InterruptedException ie) {
+                 log->warn("Warrant \"{}\" InterruptedException message= \"{}\" time= {}", getDisplayName(), ie.toString(), time);
+                Thread.currentThread().interrupt();
+            }
+            if ( log->isDebugEnabled())
+                 log->debug("Warrant \"{}\" waited {}ms for clearStoppingBlock to allocateFrom {}",
+                       getDisplayName(), time, getBlockAt(_idxCurrentOrder + 1).getDisplayName());
+        }
+    };
+#endif
+    AllocateBlocks* allocateBlocks = new AllocateBlocks(this);
+
+    /*synchronized (allocateBlocks)*/ {
+//        Thread doit = new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    javax.swing.SwingUtilities.invokeAndWait(allocateBlocks);
+//                }
+//                catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+     DoitThread* doit = new DoitThread(allocateBlocks);
+        doit->start();
+    }
+
+    return true;
+}
+/*public*/ void AllocateBlocks::process() {
+    long time = 0;
+    QString msg = nullptr;
+    try {
+        while (time < 200) {
+            msg = _warrant->allocateFromIndex(false, true, _warrant->_idxCurrentOrder + 1);
+            if (msg == "" && _warrant->doStoppingBlockClear()) {
+                break;
+            }
+            /*synchronized (this)*/ {
+               // wait(20);
+             SleeperThread::msleep(20);
+                time += 20;
+            }
+        }
+        if (msg != "") {
+             _warrant->log->warn(tr("Warrant \"%1\" unable to clear StoppingBlock message= \"%2\" time= %3").arg(_warrant->getDisplayName()).arg(msg).arg(time));
+        }
+        _warrant->_message = msg;
+    }
+    catch (InterruptedException ie) {
+         _warrant->log->warn(tr("Warrant \"%1\" InterruptedException message= \"%2\" time= %3").arg(_warrant->getDisplayName()).arg(ie.toString()).arg(time));
+        //Thread.currentThread().interrupt();
+         thread()->quit();
+    }
+    if ( _warrant->log->isDebugEnabled())
+         _warrant->log->debug(tr("Warrant \"%1\" waited %2ms for clearStoppingBlock to allocateFrom %3").arg(
+               _warrant->getDisplayName()).arg(time).arg(_warrant->getBlockAt(_warrant->_idxCurrentOrder + 1)->getDisplayName()));
+}
+
+/*public*/ void DoitThread::run() {
+    try {
+        //javax.swing.SwingUtilities.invokeAndWait(allocateBlocks);
+     QMetaObject::invokeMethod(allocateBlocks, "run", Qt::QueuedConnection);
+    }
+    catch (Exception e) {
+//        e.printStackTrace();
+    }
+}
+
+/*private*/ bool Warrant::restoreRunning() {
+    int runState = -1;
+    if (_engineer != nullptr) {
+        runState = _engineer->getRunState();
+        if (log->isDebugEnabled()) {
+            log->debug(tr("restoreRunning(): rampSpeedTo to \"%1\". runState= %2. warrant= %3").arg(
+                    _curSpeedType).arg(RUN_STATE[runState]).arg(getDisplayName()));
+        }
+        if (runState == HALT || runState == RAMP_HALT) {
+            _waitForBlock = true;
+        } else {
+            _waitForBlock = false;
+            _waitForWarrant = false;
+        }
+        if (!_waitForSignal && !_waitForBlock && !_waitForWarrant) {
+            getBlockOrderAt(_idxCurrentOrder)->setPath(this);
+            _engineer->rampSpeedTo(_curSpeedType, 0, false);
+            //setMovement(MID);
+        }
+        return true;
+    }
+    return false;
+}
+
+/**
+ * block (nextBlock) sharing a turnout with _shareTOBlock is already
+ * allocated.
+ */
+/*private*/ void Warrant::clearShareTOBlock() {
+    if (_otherShareBlock == nullptr) {
+        return;
+    }
+    _otherShareBlock->removePropertyChangeListener((PropertyChangeListener*)this);
+    QString msg = _orders->value(getIndexOfBlock(_myShareBlock, _idxCurrentOrder))->setPath(this);
+    if (log->isDebugEnabled()) {
+        log->debug(tr("_otherShareBlock= \"%1\" Cleared. %2").arg(
+                _otherShareBlock->getDisplayName()).arg(msg));
+    }
+    _otherShareBlock = nullptr;
+    _myShareBlock = nullptr;
+    if (_waitForWarrant) {
+        _waitForWarrant = false;
+        restoreRunning();
+    }
+}
+#if 0
 /*private*/ bool Warrant::checkStoppingBlock() {
     //_stoppingBlock->removePropertyChangeListener(this);
     disconnect(_stoppingBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
@@ -1439,27 +1852,27 @@
  }
  return false;
 }
-
+#endif
 /**
  * block (nextBlock) sharing a turnout with _shareTOBlock is already
  * allocated.
  */
 /*private*/ void Warrant::checkShareTOBlock()
 {
- _shareTOBlock->removePropertyChangeListener((PropertyChangeListener*)this);
-
- if (_debug) log->debug("_shareTOBlock= "+_shareTOBlock->getDisplayName()+" Cleared.");
- _shareTOBlock = nullptr;
- QString msg = _orders->at(_idxCurrentOrder+1)->setPath(this);
- if (msg=="")
- {
-  restart();
-  moveIntoNextBlock(END);
+ if (_otherShareBlock == nullptr) {
+     return;
  }
- else
- {
-  // another block is sharing a turnout. and is set by callback
-  log->info("Warrant \"" + getDisplayName() + "\" shares a turnout. " + msg);
+ _otherShareBlock->removePropertyChangeListener((PropertyChangeListener*)this);
+ QString msg = _orders->value(getIndexOfBlock(_myShareBlock, _idxCurrentOrder))->setPath(this);
+ if (log->isDebugEnabled()) {
+     log->debug(tr("_otherShareBlock= \"%1\" Cleared. %2").arg(
+             _otherShareBlock->getDisplayName()).arg((msg==nullptr?"":"msg")));
+ }
+ _otherShareBlock = nullptr;
+ _myShareBlock = nullptr;
+ if (_waitForWarrant) {
+     _waitForWarrant = false;
+     restoreRunning();
  }
 }
 
@@ -1501,486 +1914,314 @@
             + _stoppingBlock->getDisplayName() + "\"");
 }
 
-/**
-* Block in the route is going active.
-* check if this is the next block of the train moving under the warrant
-* Learn mode assumes route is set and clear
-*/
-/*protected*/ void Warrant::goingActive(OBlock* block) {
-    if (_runMode==MODE_NONE) {
-        return;
-    }
-    int oldIndex = _idxCurrentOrder;
-    int activeIdx = getIndexOfBlock(block, _idxCurrentOrder);
-    bool rougeEntry = false;
-    if (_debug) log->debug("Block "+block->getDisplayName()+" goingActive. activeIdx= "+
-                                        QString::number(activeIdx)+", _idxCurrentOrder= "+QString::number(_idxCurrentOrder)+
-                                        " _orders->size()= "+QString::number(_orders->size())
-                                        +" for warrant= "+getDisplayName());
-    if (activeIdx<=0) {
-        // Not found or starting block, in which case 0 is handled as the _stoppingBlock
-        return;
-    }
-    // skip over dark blocks
-    if ((getBlockAt(_idxCurrentOrder)->getState() & OBlock::DARK) > 0) {
-        firePropertyChange("blockChange", QVariant(_idxCurrentOrder), QVariant(_idxCurrentOrder+1));
-    }
-    if (activeIdx == _idxCurrentOrder+1) {
-        if (_engineer!=nullptr && _engineer->getRunState()==WAIT_FOR_CLEAR) {
-            // Ordinarily block just occupied would be this train, but train is stopped! - must be a rouge entry.
-            rougeEntry = true;
-            log->warn("Rouge entering next Block "+block->getDisplayName());
+/*private*/ void Warrant::setStoppingSignal(int idx) {
+    BlockOrder* blkOrder = getBlockOrderAt(idx);
+    NamedBean* signal = blkOrder->getSignal();
+
+    NamedBean* prevSignal = _protectSignal;
+    if (_protectSignal != nullptr) {
+        if (_protectSignal->equals(signal)) {
+            // Must be the route coming back to the same block
+            if (_idxProtectSignal < idx && idx >= 0) {
+                _idxProtectSignal = idx;
+            }
+            return;
         } else {
-            if (_debug) log->debug("Train entering Block "+block->getDisplayName()
-                                        +" for warrant= "+getDisplayName());
-            // we assume it is our train entering the block - cannot guarantee it, but what else?
-            _idxCurrentOrder = activeIdx;
-            // set block state to show our train occupies the block
-            block->setValue(_trainName);
-            block->setState(block->getState() | OBlock::RUNNING);
-        }
-    } else if (activeIdx > _idxCurrentOrder+1) {
-        // rouge train invaded route ahead.
-        rougeEntry = true;
-    } else if (_idxCurrentOrder > 0) {
-        log->error("activeIdx ("+QString::number(activeIdx)+") < _idxCurrentOrder ("+QString::number(_idxCurrentOrder)+")!");
-    }
-
-    if (rougeEntry) {
-        log->warn("Rouge train ahead at block \""+block->getDisplayName()+"\"!");
-    }
-
-    QString currentSpeed = "Stop";
-    if (_idxCurrentOrder == _orders->size()-1) {
-        // must be in destination block, No 'next block' for last BlockOrder
-        // If Auto running, let script finish according to recorded times.
-        // End of script will deallocate warrant.
-        currentSpeed = getCurrentSpeedAt(_idxCurrentOrder);
-        if (_engineer!=nullptr) {
-            _engineer->synchNotify(block); // notify engineer of control point
-            _engineer->rampSpeedTo(currentSpeed, 0);
-        }
-
-        if (_runMode==MODE_MANUAL) {
-            QString msg = setRunMode(Warrant::MODE_NONE, nullptr, nullptr, nullptr, false);
-            if (msg!=nullptr) {
-                deAllocate();
+            if (_idxProtectSignal <= _idxCurrentOrder && !_waitForSignal) {
+                _protectSignal->removePropertyChangeListener((PropertyChangeListener*)this);
+                _protectSignal = nullptr;
+                _idxProtectSignal = -1;
             }
         }
-    } else {
-        if (allocateNextBlock(getBlockAt(_idxCurrentOrder+1))) {
-            currentSpeed = getNextSpeed();
-        }
-        if (_engineer!=nullptr) {
-            _engineer->synchNotify(block); // notify engineer of control point
-            _engineer->rampSpeedTo(currentSpeed, 0);
-        }
-
-        if (_idxCurrentOrder==activeIdx && (_runMode==MODE_LEARN || _tempRunBlind)) {
-            // recording must done with signals and occupancy clear.
-            if (currentSpeed==("Stop")) {
-                firePropertyChange("abortLearn", QVariant(oldIndex), QVariant(_idxCurrentOrder));
-            }
-        }
-
-        // attempt to allocate remaining blocks in the route up to next occupation
-        for (int i=_idxCurrentOrder+2; i<_orders->size(); i++) {
-            BlockOrder* bo = _orders->at(i);
-            OBlock* b = bo->getBlock();
-            b->allocate(this);
-            bo->setPath(this);
-            if (i!=0 && (b->getState() & OBlock::OCCUPIED) > 0) {
-                 break;
-            }
-       }
     }
 
-    if (_idxCurrentOrder==activeIdx) {
-        // fire notification last so engineer's state can be documented in whatever GUI is listening.
-        firePropertyChange("blockChange", QVariant(oldIndex), QVariant(_idxCurrentOrder));
+    if (signal != nullptr) {
+        _protectSignal = signal;
+        _idxProtectSignal = idx;
+        _protectSignal->addPropertyChangeListener((PropertyChangeListener*)this);
+    }
+    if (log->isDebugEnabled()) {
+        if (signal == nullptr && prevSignal == nullptr) {
+            return;
+        }
+        QString msg = "Block \"%1\" Warrant \"%2\"";
+        if (signal != nullptr) {
+            msg = msg + " sets _protectSignal= \"" + _protectSignal->getDisplayName() + "\"";
+        }
+        if (prevSignal != nullptr) {
+            msg = msg + ", removes signal= \"" + prevSignal->getDisplayName() + "\"";
+        }
+        log->debug(QString(msg).arg(blkOrder->getBlock()->getDisplayName()).arg(getDisplayName()));
     }
 }
-
 /**
-* Block in the route is going Inactive
-*/
-/*protected*/ void Warrant::goingInactive(OBlock* block) {
-    if (_runMode==MODE_NONE)  { return; }
-
-    int idx = getIndexOfBlock(block, 0);  // if idx >= 0, it is in this warrant
-    if (_debug) log->debug("Block "+block->getDisplayName()+" goingInactive. idx= "+
-                                        QString::number(idx)+", _idxCurrentOrder= "+QString::number(_idxCurrentOrder)
-                                        +" for warrant= "+getDisplayName());
-    if (idx < _idxCurrentOrder) {
-        // block is behind train.  Assume we have left.
-        // block.deAllocate(this);
-        for (int i=idx; i>-1; i--) {
-            OBlock* prevBlock = getBlockAt(i);
-            if ((prevBlock->getState() & OBlock::DARK) > 0) {
-                prevBlock->deAllocate(this);
-            }
-        }
-    } else if (idx==_idxCurrentOrder) {
-        // Train not visible if current block goes inactive
-        // skip over dark blocks
-        OBlock* nextBlock = getBlockAt(_idxCurrentOrder+1);
-        while (_idxCurrentOrder+1 < _orders->size() && (nextBlock->getState() & OBlock::DARK) > 0) {
-            block->setValue(QVariant());
-            block->deAllocate(this);
-            int oldIndex = _idxCurrentOrder;
-            _idxCurrentOrder++;
-            firePropertyChange("blockChange", QVariant(oldIndex), QVariant(_idxCurrentOrder));
-            block = nextBlock;
-            nextBlock = getBlockAt(_idxCurrentOrder+1);
-        }
-        if (_runMode==MODE_RUN || _runMode==MODE_MANUAL) {
-            //  at last block
-            if (_engineer!=nullptr) {
-                block->setValue(_trainName);
-                block->setState(block->getState() | OBlock::RUNNING);
-                _engineer->synchNotify(block); // notify engineer of control point
-                _engineer->rampSpeedTo(getCurrentSpeedAt(_idxCurrentOrder), 0);
-            } else if (_idxCurrentOrder+1 == _orders->size()){
-                // this would be a very weird case
-                setRunMode(Warrant::MODE_NONE, nullptr, nullptr, nullptr, false);
-            }
-       }
-    } else if (idx==_idxCurrentOrder+1) {
-        // Assume Rouge train has left this block
-        // Since it is the next block ahead of the train, we can move.
-        // Presumably we have stopped at the exit of the current block.
-        if (_runMode==MODE_RUN) {
-            if (_engineer!=nullptr && allocateNextBlock(block)) {
-                _engineer->synchNotify(block); // notify engineer of control point
-                _engineer->rampSpeedTo(getCurrentSpeedAt(_idxCurrentOrder+1), 0);
-            }
-        }
-    } else {
-        // Assume Rouge train has left this block
-        block->allocate(this);
-    }
-}
-// called when stopping or signal listeners fire.  Also error condition restarts
-/*private*/ void Warrant::restart()
-{
- if (_engineer==nullptr)
- {
-     controlRunTrain(ABORT);
-     return;
- }
- BlockOrder* bo = getBlockOrderAt(_idxCurrentOrder);
-//        enterBlock(bo.getBlock().getState());
- if (_stoppingBlock==nullptr && _stoppingSignal==nullptr && _shareTOBlock==nullptr)
- {
-  if (_engineer!=nullptr)
-  {
-   _engineer->setWaitforClear(false);
-  }
- }
-
- // check signal
- QString nextSpeed = getPermissibleSpeedAt(bo);
- // does next block belong to us
- bo = getBlockOrderAt(_idxCurrentOrder+1);
- QString nextNextSpeed;
- if (bo!=nullptr)
- {
-  if (!allocateNextBlock(bo))
-  {
-   nextSpeed = Stop;
-  }
-  nextNextSpeed = getPermissibleSpeedAt(bo);
- } else {    // at last block
-     nextNextSpeed = _curSpeedType;
- }
- nextSpeed = _engineer->minSpeedType(nextSpeed, _curSpeedType);
- nextSpeed = _engineer->minSpeedType(nextSpeed, nextNextSpeed);
- if(_debug) log->debug("restart: at speed= "+nextSpeed+" CurrentSpeed= "+_curSpeedType);
- _engineer->rampSpeedTo(nextSpeed);
-}
-
-// utility for moveIntoNextBlock()
-/*private*/ float Warrant::getLength(BlockOrder* blkOrder) {
-    float len = blkOrder->getPath()->getLengthMm();
-    if (len <= 0) {
-        //a rampLen guess - half throttle for 7 sec.
-        len = _engineer->getDistanceTraveled(0.5f, Normal, 7000);
-    }
-    return len;
-}
-
-// utility for moveIntoNextBlock()
-/*private*/ QString Warrant::getMinSpeedType(BlockOrder* blkOrder, QString nextSpeedType)
-{
- QString speedType;
- if (!allocateNextBlock(blkOrder))
- {
-     // next block occupied. stop before entering
-     speedType = Stop;
- } else {
-     // speed type for entering next block
-     speedType = getPermissibleSpeedAt(blkOrder);
-     speedType = _engineer->minSpeedType(nextSpeedType, speedType);
- }
- if (speedType=="") {
-     speedType = _curSpeedType;
- }
- return speedType;
-}
-
-/**
- *  if next block is allocated, set the path. If there are no
- * occupation problems get the permitted speed from the signals and make
- * the speed change.  Call assumes train is capable of movement.
- * Called from goingActive() when train is confirmed as entering nextBlock
- * Called from controlRunTrain() from "resume" command
- * Looks ahead for a speed change.
- * Notifies Engineer of speed to run
- * Block is at the _idxCurrentOrder
- * @param position - estimate of train's position in block at _idxCurrentOrder
- * @return true if a speed change is requested
+ * Check if this is the next block of the train moving under the warrant
+ * Learn mode assumes route is set and clear. Run mode update conditions.
+ * <p>
+ * Must be called on Layout thread.
+ *
+ * @param block Block in the route is going active.
  */
-/*private*/ bool Warrant::moveIntoNextBlock(int position) {
-    if (_runMode != Warrant::MODE_RUN || _idxCurrentOrder==_orders->size()-1) {
-        return true;
+//@jmri.InvokeOnLayoutThread
+/*protected*/ void Warrant::goingActive(OBlock* block) {
+    // error if not on Layout thread
+//    if (!ThreadingUtil.isLayoutThread()) {
+//         log->error("invoked on wrong thread", new Exception("traceback"));
+//    }
+
+    if (_runMode == MODE_NONE) {
+        return;
     }
-    if (_engineer==nullptr) {
-        controlRunTrain(ABORT);
-        return false;
+    int activeIdx = getIndexOfBlock(block, _idxCurrentOrder);
+    if ( log->isDebugEnabled()) {
+         log->debug(tr("**Block \"%1\" goingActive. activeIdx= %2, _idxCurrentOrder= %3. warrant= %4").arg(
+                block->getDisplayName()).arg(activeIdx).arg(_idxCurrentOrder).arg(getDisplayName()));
     }
-    BlockOrder* blkOrder = getBlockOrderAt(_idxCurrentOrder);
-    OBlock* curBlock = blkOrder->getBlock();
-    // verify we occupy current block
-    if ((curBlock->getState() & (OBlock::OCCUPIED | OBlock::DARK))==0 && !_tempRunBlind)
-    {
-     _engineer->setHalt(true);        // immediate setspeed = 0
-     // should not happen, but...what if...
-     log->error("checkCurrentBlock, block \""+curBlock->getDisplayName()+"\" not occupied! warrant "+getDisplayName());
-     return true;
+    if (activeIdx <= 0) {
+        // Not found or starting block, in which case 0 is handled as the _stoppingBlock
+        if (activeIdx == 0 && _idxCurrentOrder == 0) {
+            getBlockOrderAt(activeIdx)->setPath(this);
+        }
+        return;
     }
-    // An estimate for how far to look ahead for a possible speed change
-    float availDist;
-    float curLen = getLength(blkOrder);
-    BlockSpeedInfo* blkSpeedInfo = _speedTimeMap.value(curBlock->getDisplayName());
-    float maxSpeed = blkSpeedInfo->getMaxSpeed();
-    switch (position) {
-        case BEG:      // entering a new block
-            availDist = curLen;
-//                enterBlock(curBlock.getState());
-            break;
-        case MID:      // halted or startup
-            availDist = curLen/2;
-            break;
-        case END:      // stopped for signal or occupancy
-            availDist = curLen/20;
-            break;
-        default:
-            availDist = 0.0f;
+    int runState = -1;
+    if (_engineer != nullptr) {
+        runState = _engineer->getRunState();
     }
-    // speed type for entering current block
-    QString nextSpeedType = getPermissibleSpeedAt(blkOrder);
-    // look ahead to next block. Get slowest type compared to current type
-    blkOrder = getBlockOrderAt(_idxCurrentOrder+1);
-    nextSpeedType = getMinSpeedType(blkOrder, nextSpeedType);
+    if (activeIdx == _idxCurrentOrder) {
+        // Unusual case of current block losing detection, then regaining it.  i.e. dirty track, derail etc.
+        // Also, can force train to move into occupied block with "Move into next Block" command.
+        // This is an unprotected move.
+        if (_engineer != nullptr && runState != WAIT_FOR_CLEAR && runState != HALT) {
+            // Ordinarily block just occupied would be this train, but train is stopped! - could be user's retry.
+             log->info(tr("Train %1 regained detection at Block= %2").arg(getTrainName()).arg(block->getDisplayName()));
+            _engineer->rampSpeedTo(_curSpeedType, 0, false); // maybe let setMovement() do this?
+        }
+    } else if (activeIdx == _idxCurrentOrder + 1) {
+        if (_delayStart || (runState == HALT && _engineer->getSpeedSetting() > 0.0f)) {
+             log->warn(tr("Rogue entered Block \"%1\" ahead of %2.").arg(block->getDisplayName()).arg(getTrainName()));
+            _message = tr("Block \"%1\" occupied by unknown train.").arg(block->getDisplayName());
+            return;
+        }
+        // be sure path is set for train in this block
+        QString msg = getBlockOrderAt(activeIdx)->setPath(this);
+        if (msg != "") {
+             log->error(tr("goingActive setPath fails: %1").arg(msg));
+        }
+        if (_engineer != nullptr && _engineer->getSpeedSetting() <= 0.0f) {
+            // Train can still be moving after throttle set to 0. Block
+            // boundaries can be crossed.  This is due to momentum 'gliding'
+            // for any nonE-Stop or by choosing ramping to a stop.
+            // spotbugs knows runState != HALT here
+            if (runState != WAIT_FOR_CLEAR && runState != STOP_PENDING && runState != RAMP_HALT) {
+                // Apparently NOT already stopped or just about to be.
+                // Therefore, assume a Rogue has just entered.
+                setStoppingBlock(block);
+                _engineer->setWaitforClear(true);
+                _engineer->setSpeedToType(Warrant::Stop);     // for safety
+                return;
+            }
+        }
+        // Since we are moving we assume it is our train entering the block
+        // continue on.
+        _idxLastOrder = _idxCurrentOrder;
+        _idxCurrentOrder = activeIdx;
+    } else if (activeIdx > _idxCurrentOrder + 1) {
+        if (_runMode == MODE_LEARN) {
+             log->error(tr("Block \"%1\" became occupied before block \"%2\". ABORT recording.").arg(
+                    block->getDisplayName()).arg(getBlockAt(_idxCurrentOrder + 1)->getDisplayName()));
+            fireRunStatus("abortLearn", activeIdx, _idxCurrentOrder);
+            return;
+        }
+        // if previous blocks are dark, this could be for our train
+        // check from current block to this just activated block
+        for (int idx = _idxCurrentOrder + 1; idx < activeIdx; idx++) {
+            OBlock* preBlock = getBlockAt(idx);
+            if ((preBlock->getState() & OBlock::UNDETECTED) == 0) {
+                // not dark, therefore not our train
+                setStoppingBlock(block);
+                if ( log->isDebugEnabled()) {
+                    OBlock* curBlock = getBlockAt(_idxCurrentOrder);
+                     log->debug(tr("Rogue train entered block \"%1\" ahead of train %2 currently in block \"%3\"!").arg(
+                            block->getDisplayName()).arg(_trainName).arg(curBlock->getDisplayName()));
+                }
+                return;
+            }
+            // we assume this is our train entering block
+        }
+        // previous blocks were checked as UNDETECTED above
+        // Indicate the previous dark block was entered
+        OBlock* prevBlock = getBlockAt(activeIdx - 1);
+        prevBlock->_entryTime = /*System.currentTimeMillis()*/QDateTime::currentMSecsSinceEpoch() - 500; // arbitrarily say
+        prevBlock->setValue(_trainName);
+        prevBlock->setState(prevBlock->getState() | OBlock::RUNNING);
+        if ( log->isDebugEnabled()) {
+             log->debug(tr("Train leaving UNDETECTED block \"%1\" now entering block\"%2\". warrant %3").arg(
+                    prevBlock->getDisplayName()).arg(block->getDisplayName()).arg(getDisplayName()));
+        }
+        // Since we are moving we assume it is our train entering the block
+        // continue on.
+    } else if (_idxCurrentOrder > activeIdx) {
+         log->error(tr("Mystifying ERROR goingActive: activeIdx = %1).arg( _idxCurrentOrder = %2!").arg(
+                activeIdx).arg(_idxCurrentOrder));
+        return;
+    }
+    setHeadOfTrain(block);
+    fireRunStatus("blockChange", VPtr<OBlock>::asQVariant(getBlockAt(activeIdx - 1)), VPtr<OBlock>::asQVariant(block));
+    if (_engineer != nullptr) {
+        _engineer->clearWaitForSync(); // Sync commands if train is faster than ET
+    }
+    // _idxCurrentOrder has been incremented. Warranted train has entered this block->
+    // Do signals, speed etc.
+    if (_idxCurrentOrder < _orders->size() - 1) {
+        allocateFromIndex(false, true, _idxCurrentOrder + 1);
+        if (_engineer != nullptr) {
+            BlockOrder* bo = _orders->value(_idxCurrentOrder + 1);
+            if ((bo->getBlock()->getState() & OBlock::UNDETECTED) != 0) {
+                // can't detect next block, use ET
+                _engineer->setRunOnET(true);
+            } else if (!_tempRunBlind) {
+                _engineer->setRunOnET(false);
+            }
+        }
+    } else { // train is in last block-> past all signals
+        if (_protectSignal != nullptr) {
+            _protectSignal->removePropertyChangeListener((PropertyChangeListener*)this);
+            _protectSignal = nullptr;
+            _idxProtectSignal = -1;
+        }
+        if (_runMode == MODE_MANUAL) { // no script, so terminate warrant run
+            stopWarrant(false);
+        }
+    }
+    if ( log->isTraceEnabled()) {
+         log->debug(tr("end of goingActive. leaving \"%1\" entered \"%2\". warrant %3").arg(
+                getBlockAt(activeIdx - 1)->getDisplayName()).arg(block->getDisplayName()).arg(getDisplayName()));
+    }
+    setMovement(BEG);
+} //end goingActive
 
-    if(_debug) log->debug("moveIntoNextBlock("+QString::number(position)+"): \""+curBlock->getDisplayName()+
-            "\" availDist= "+QString::number(availDist)+" _curSpeedType= "+_curSpeedType+". Change to speedType= "+nextSpeedType);
+/*private*/ void Warrant::setHeadOfTrain(OBlock* block ) {
+        block->setValue(_trainName);
+        block->setState(block->getState() | OBlock::RUNNING);
+        block->_entryTime = QDateTime::currentMSecsSinceEpoch();//System.currentTimeMillis();
+        if (_runMode == MODE_RUN) {
+            _speedUtil->enteredBlock(_idxLastOrder, _idxCurrentOrder);
+        }
+    }
+/**
+ * @param block Block in the route is going Inactive
+ */
+//@jmri.InvokeOnLayoutThread
+/*protected*/ void Warrant::goingInactive(OBlock* block) {
+    if (_runMode == MODE_NONE) {
+        return;
+    }
 
-    // need to know exit speed of previous block for an immediate speed change
-    // otherwise need to know some(?) speed of this block when speed is to be changed
+    // error if not on Layout thread
+//    if (!ThreadingUtil.isLayoutThread()) {
+//        log.error("invoked on wrong thread", new Exception("traceback"));
+//    }
 
-    if (_curSpeedType!=(nextSpeedType)) {
-
-        if (_engineer->secondGreaterThanFirst(_curSpeedType, nextSpeedType) || position==END) {
-            if(_debug) log->debug("Immediate Speed change from "+_curSpeedType+" to "+nextSpeedType+
-                    "in \""+curBlock->getDisplayName()+"\"");
-            _engineer->rampSpeedTo(nextSpeedType);   // should be increase speed
-            _idxSpeedChange = _idxCurrentOrder;
-            return true;
-        } else if (_idxSpeedChange < _idxCurrentOrder) {
-            // first estimate of distance needed for ramp
-            float distAdj =  blkOrder->getEntranceSpace();
-            float lookAheadLen = _engineer->rampLengthForSpeedChange(maxSpeed, _curSpeedType, nextSpeedType) + distAdj;
-            if(_debug) log->debug("Change speed for \""+blkOrder->getBlock()->getDisplayName()+
-                    "\" with maxSpeed= "+QString::number(maxSpeed)+",  available distance= "+QString::number(availDist)+", lookAheadLen= "+QString::number(lookAheadLen));
-
-            // Revise lookAheadLen estimate to get a more accurate waitTime, if possible
-            float speed = blkSpeedInfo->getEntranceSpeed();
-            float waitSpeed = _engineer->modifySpeed(speed, _curSpeedType);
-            float timeRatio;
-            if (_curSpeedType!=(Normal)) {
-                timeRatio = speed/waitSpeed;
+    int idx = getIndexOfBlockBefore(_idxCurrentOrder, block); // if idx >= 0, it is in this warrant
+    if (log->isDebugEnabled()) {
+        log->debug(tr("*Block \"%1\" goingInactive. idx= %2, _idxCurrentOrder= %3. warrant= %4").arg(
+                block->getDisplayName()).arg(idx).arg(_idxCurrentOrder).arg(getDisplayName()));
+    }
+    if (idx < _idxCurrentOrder) {
+        releaseBlock(block, idx);
+    } else if (idx == _idxCurrentOrder) {
+        // Train not visible if current block goes inactive
+        if (_idxCurrentOrder + 1 < _orders->size()) {
+            OBlock* nextBlock = getBlockAt(_idxCurrentOrder + 1);
+            if ((nextBlock->getState() & OBlock::UNDETECTED) != 0) {
+                if (_engineer != nullptr) {
+                    goingActive(nextBlock); // fake occupancy for dark block
+                    releaseBlock(block, idx);
+                } else {
+                    if (_runMode == MODE_LEARN) {
+                        _idxCurrentOrder++; // assume train has moved into the dark block
+                        fireRunStatus("blockChange", VPtr<OBlock>::asQVariant(block), VPtr<OBlock>::asQVariant(nextBlock));
+                    } else if (_runMode == MODE_RUN) {
+                        controlRunTrain(ABORT);
+                    }
+                }
             } else {
-                timeRatio = 1.0f;
+                if ((nextBlock->getState() & OBlock::OCCUPIED) != 0 && (_waitForBlock || _waitForWarrant)) {
+                    // assume train rolled into occupied ahead block.
+                    // Should _idxCurrentOrder & _idxLastOrder be incremented? Better to let user take control?
+                    releaseBlock(block, idx);
+                    setHeadOfTrain(nextBlock);
+                    fireRunStatus("blockChange", VPtr<OBlock>::asQVariant(block), VPtr<OBlock>::asQVariant(nextBlock));
+                    log->warn(tr("block \"%1\" goingInactive. train has entered rogue occupied block %2! warrant %3").arg(
+                            block->getDisplayName()).arg(nextBlock->getDisplayName()).arg(getDisplayName()));
+               } else {
+                   bool lost = true;
+                   if (_idxCurrentOrder > 0) {
+                       OBlock* prevBlock = getBlockAt(_idxCurrentOrder - 1);
+                       if ((prevBlock->getState() & OBlock::OCCUPIED) != 0 && this->equals(prevBlock->getWarrant())) {
+                           // assume nosed into block, then lost contact
+                           _idxCurrentOrder -= 1;  // set head to previous BlockOrder
+                           lost = false;
+                       }
+                   }
+                   if (lost) {
+                       log->warn(tr("block \"%1\" goingInactive. train is lost! warrant %2").arg(
+                                   block->getDisplayName()).arg(getDisplayName()));
+                       fireRunStatus("blockChange", VPtr<OBlock>::asQVariant( block), QVariant());
+                       if (_engineer != nullptr) {
+                           _engineer->setStop(false, true);   // halt and set 0 throttle
+                           if (_idxCurrentOrder == 0) {
+                               setStoppingBlock(block);
+                               _delayStart = true;
+                           }
+                       }
+                   }
+               }
             }
-            long waitTime = 0;
-            long speedTime = 0;     // time running at a given speed
-            bool hasSpeed = (speed>0.0001f);
-            float dist = availDist;
-            float rampLen = 0.0f;
-            int startIdx = blkSpeedInfo->getFirstIndex();
-            int endIdx = blkSpeedInfo->getLastIndex();
-            for (int i=startIdx; i<endIdx; i++) {
-                ThrottleSetting* ts = _commands->at(i);
-                QString cmd = ts->getCommand().toUpper();
-                if (hasSpeed) {
-                    speedTime += ts->getTime()*timeRatio;
-                } else if (dist>=rampLen && cmd!=("NOOP")) {
-                    waitTime += ts->getTime()*timeRatio;
-                }
-                if (cmd==("SPEED")) {
-                 float nextSpeed = (ts->getValue().toFloat());
-                    if (hasSpeed) { // get distance for previous speed
-                        // available distance left at this speed change point
-                        dist -= _engineer->getDistanceTraveled(speed, _curSpeedType, speedTime);
-                        rampLen = _engineer->rampLengthForSpeedChange(speed, _curSpeedType, nextSpeedType)+distAdj;
-                        if (dist>=rampLen) {
-                            lookAheadLen = rampLen;
-                            availDist = dist;
-                            waitSpeed = _engineer->modifySpeed(speed, _curSpeedType);
-                            waitTime += speedTime;
-                        }
-                    }
-                    speed = _engineer->modifySpeed(nextSpeed, _curSpeedType);
-                    if (_curSpeedType!=(Normal)) {
-                        timeRatio = nextSpeed/speed;
-                    } else {
-                        timeRatio = 1.0f;
-                    }
-                    speed = nextSpeed;
-                    hasSpeed = (speed>0.0001f);
-                    speedTime = 0;
-                }
-            }
-            waitTime += _engineer->getTimeForDistance(waitSpeed, availDist-lookAheadLen);
-
-            if(_debug) log->debug("waitSpeed= "+QString::number(waitSpeed)+", waitTime= "+QString::number(waitTime)+",  available distance= "+QString::number(availDist)+",lookAheadLen= "+QString::number(lookAheadLen));
-            if (availDist<=lookAheadLen) {
-                if(_debug) log->debug("!!Immediate Speed decrease!! from "+_curSpeedType+" to "+nextSpeedType+
-                        " in \""+curBlock->getDisplayName()+"\"");
-                _engineer->rampSpeedTo(nextSpeedType);
-                _engineer->setCurrentCommandIndex(blkSpeedInfo->getLastIndex());
-                _idxSpeedChange = _idxCurrentOrder;
-                return true;
-            }
-            CommandDelay* worker = new CommandDelay(nextSpeedType, waitTime, blkSpeedInfo->getLastIndex(), this);
-            //new Thread(thread).start();
-            QThread* thread = new QThread();
-            connect(thread, SIGNAL(started()), worker, SLOT(process()));
-            connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
-            connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
-            connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-            thread->start();
-            _idxSpeedChange = _idxCurrentOrder;
-            return true;
-        }
-    } else {
-        // do following blocks need help for their speed change
-        int index = _idxCurrentOrder+1;
-        float len = getLength(blkOrder);
-
-        blkSpeedInfo = _speedTimeMap.value(blkOrder->getBlock()->getDisplayName());
-        maxSpeed = blkSpeedInfo->getMaxSpeed();
-        nextSpeedType = getPermissibleSpeedAt(blkOrder);
-        BlockOrder* nextBlkOrder = getBlockOrderAt(index+1);
-        if (nextBlkOrder!=nullptr) {
-            nextSpeedType = getMinSpeedType(nextBlkOrder, nextSpeedType);
-
-            float distAdj =  nextBlkOrder->getEntranceSpace();
-            float lookAheadLen = _engineer->rampLengthForSpeedChange(maxSpeed, _curSpeedType, nextSpeedType)+distAdj;
-
-            if (len<lookAheadLen && _curSpeedType!=(nextSpeedType)) {
-                availDist += len;
-                if (_engineer->secondGreaterThanFirst(_curSpeedType, nextSpeedType)) {
-                    if(_debug) log->debug("Speed increase noted ahead from "+_curSpeedType+" to "+nextSpeedType+
-                            " in \""+blkOrder->getBlock()->getDisplayName()+"\" from "+curBlock->getDisplayName());
-                    return false;
-                } else if (_idxSpeedChange < _idxCurrentOrder) {
-                    // first estimate of distance needed for ramp
-                    if(_debug) log->debug("Change speed for \""+nextBlkOrder->getBlock()->getDisplayName()+
-                            "\" with maxSpeed= "+QString::number(maxSpeed)+",  available distance= "+QString::number(availDist)+", lookAheadLen= "+QString::number(lookAheadLen));
-
-                    BlockSpeedInfo* nextBlkSpeedInfo = _speedTimeMap.value(blkOrder->getBlock()->getDisplayName());
-                    // Revise lookAheadLen estimate to get a more accurate waitTime, if possible
-                    float speed = blkSpeedInfo->getEntranceSpeed();
-                    float waitSpeed = _engineer->modifySpeed(speed, _curSpeedType);
-                    float timeRatio;
-                    if (_curSpeedType!=(Normal)) {
-                        timeRatio = speed/waitSpeed;
-                    } else {
-                        timeRatio = 1.0f;
-                    }
-                    long waitTime = 0;
-                    long speedTime = 0;     // time running at a given speed
-                    bool hasSpeed = (speed>0.0001f);
-                    float dist = availDist;
-                    float rampLen = 0.0f;
-                    int startIdx = blkSpeedInfo->getFirstIndex();
-                    int endIdx = blkSpeedInfo->getLastIndex();
-                    for (int i=startIdx; i<endIdx; i++) {
-                        ThrottleSetting* ts = _commands->at(i);
-                        QString cmd = ts->getCommand().toUpper();
-                        if (hasSpeed) {
-                            speedTime += ts->getTime()*timeRatio;
-                        } else if (dist>=rampLen && cmd!=("NOOP")) {
-                            waitTime += ts->getTime()*timeRatio;
-                        }
-                        if (cmd==("SPEED"))
-                        {
-                            float nextSpeed = (ts->getValue().toFloat());
-                            if (hasSpeed) { // get distance for previous speed
-                                // available distance left at this speed change point
-                                dist -= _engineer->getDistanceTraveled(speed, _curSpeedType, speedTime);
-                                rampLen = _engineer->rampLengthForSpeedChange(speed, _curSpeedType, nextSpeedType)+distAdj;
-                                if (dist>=rampLen) {
-                                    lookAheadLen = rampLen;
-                                    availDist = dist;
-                                    waitSpeed = _engineer->modifySpeed(speed, _curSpeedType);
-                                    waitTime += speedTime;
-                                }
-                            }
-                            speed = _engineer->modifySpeed(nextSpeed, _curSpeedType);
-                            if (_curSpeedType!=(Normal)) {
-                                timeRatio = nextSpeed/speed;
-                            } else {
-                                timeRatio = 1.0f;
-                            }
-                            speed = nextSpeed;
-                            hasSpeed = (speed>0.0001f);
-                            speedTime = 0;
-                        }
-                    }
-                    waitTime += _engineer->getTimeForDistance(waitSpeed, availDist-lookAheadLen);
-
-                    if(_debug) log->debug("waitSpeed= "+QString::number(waitSpeed)+", waitTime= "+QString::number(waitTime)+",  available distance= "+QString::number(availDist)+",lookAheadLen= "+QString::number(lookAheadLen));
-                    if (availDist<=lookAheadLen) {
-                        if(_debug) log->debug("!!Immediate Speed decrease!! from "+_curSpeedType+" to "+nextSpeedType+
-                                " in \""+curBlock->getDisplayName()+"\"");
-                        _engineer->rampSpeedTo(nextSpeedType);
-                        _engineer->setCurrentCommandIndex(nextBlkSpeedInfo->getLastIndex());
-                        _idxSpeedChange = index;
-                        return true;
-                    }
-                    CommandDelay* worker = new CommandDelay(nextSpeedType, waitTime, nextBlkSpeedInfo->getLastIndex(),this);
-                    //new Thread(thread).start();
-                    QThread* thread = new QThread();
-                    connect(thread, SIGNAL(started()), worker, SLOT(process()));
-                    connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
-                    connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
-                    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-                    thread->start();
-                    _idxSpeedChange = index;
-                    return true;
+        } else {    // at last block
+             OBlock* prevBlock = getBlockAt(_idxCurrentOrder - 1);
+            if ((prevBlock->getState() & OBlock::OCCUPIED) != 0 && this->equals(prevBlock->getWarrant())) {
+                // assume nosed into block, then lost contact
+                _idxCurrentOrder -= 1;  // set head to previous BlockOrder
+            } else {
+                log->warn(tr("block \"%1\" Last Block goingInactive. train is lost! warrant %2").arg(
+                        block->getDisplayName()).arg(getDisplayName()));
+                if (_engineer != nullptr) {
+                    _engineer->setStop(false, false);   // set 0 throttle
                 }
             }
-
         }
     }
-    if(_debug) log->debug("moveIntoNextBlock with no speed change from block \""+
-            curBlock->getDisplayName()+"\" - Warrant "+getDisplayName());
+} // end goingInactive
 
-    return false;
+/**
+ * Deallocates all blocks prior to and including block
+ */
+/*private*/ void Warrant::releaseBlock(OBlock* block, int idx) {
+    /*
+     * Only deallocate block if train will not use the block again. Blocks
+     * ahead could loop back over blocks previously traversed. That is,
+     * don't disturb re-allocation of blocks ahead. Previous Dark blocks do
+     * need deallocation
+     */
+    for (int i = idx; i > -1; i--) {
+        bool dealloc = true;
+        OBlock* prevBlock = getBlockAt(i);
+        for (int j = i + 1; j < _orders->size(); j++) {
+            if (prevBlock->equals(getBlockAt(j))) {
+                dealloc = false;
+            }
+        }
+        if (dealloc && prevBlock->isAllocatedTo(this)) {
+            prevBlock->setValue(QVariant());
+            prevBlock->deAllocate(this);
+            _totalAllocated = false;
+            fireRunStatus("blockRelease", QVariant(), VPtr<OBlock>::asQVariant(block));
+        }
+    }
 }
+
 
 /**
  * build map of BlockSpeedInfo's for the route.
@@ -2086,7 +2327,7 @@
 }
 
 /**
- * If block cannot be allocated, will set a listener on the block.
+ * If block cannot be allocated, will set a listener on the block->
  * @param block is the next block from some current location
  * @return
  */
@@ -2106,7 +2347,7 @@
     return true;
 }
 /**
- *  Finds speed change in advance of move into the next block.
+ *  Finds speed change in advance of move into the next block->
  *  Called by:
  *      restart()
  *      moveIntoNextBlock() to get max speed permitted
@@ -2131,7 +2372,7 @@
         }
      }
     /*      or should we do alternate?
-    String blkSpeed = nextBlock.getBlockSpeed();
+    String blkSpeed = nextblock->getBlockSpeed();
     if (blkSpeed=="") {
         blkSpeed = nullptr;
     }
@@ -2141,8 +2382,27 @@
                             nextSpeed+" - warrant= "+getDisplayName());
     return nextSpeed;
 }
+/*synchronized*/ /*private*/ void Warrant::cancelDelayRamp() {
+        if (_delayCommand != nullptr) {
+            _delayCommand->quit = true;;
+            log->debug(tr("cancelDelayRamp called on warrant %1").arg(getDisplayName()));
+            _delayCommand = nullptr;
+        }
+    }
+
+/*synchronized*/ /*private*/ void Warrant::rampDelayDone() {
+    _delayCommand = nullptr;
+}
+
+//@Override
+/*public*/ void Warrant::dispose() {
+    stopWarrant(false);
+    AbstractNamedBean::dispose();
+}
+
+
 /**
- * If block cannot be allocated, will set a listener on the block.
+ * If block cannot be allocated, will set a listener on the block->
  * @param block is the next block from some current location
  * @return true if block is allocated to this warrant
  */
@@ -2246,38 +2506,590 @@
                             nextSpeed+"\" for warrant= "+getDisplayName());
     return nextSpeed;
 }
+//private class CommandDelay extends Thread {
+//String nextSpeedType;
+//        long _startTime = 0;
+//        long _waitTime = 0;
+//        boolean quit = false;
+//        int _endBlockIdx;
+//        boolean _useIndex;
 
-CommandDelay::CommandDelay(QString speedType, long startWait, int cmdIndex, Warrant* warrant)
-{
- log = new Logger("CommandDelay");
- this->warrant = warrant;
- nextSpeedType = speedType;
- if (startWait>0)
- {
-  _startWait = startWait;
- }
- else
-  _startWait = 0;
- _cmdIndex = cmdIndex;
- if(warrant->_debug) log->debug("CommandDelay: will wait "+QString::number(startWait)+" ms, then Ramp to "+speedType);
+CommandDelay::CommandDelay(QString speedType, long startWait, int endBlockIdx, bool useIndex, Warrant* _warrant) {
+ this->_warrant = _warrant;
+    nextSpeedType = speedType;
+    if (startWait > 0) {
+        _waitTime = startWait;
+    }
+    _endBlockIdx = endBlockIdx;
+    _useIndex = useIndex;
+    setObjectName("CommandDelay(" + _warrant->getTrainName() +")");
+    if (_warrant->log->isDebugEnabled()) {
+        _warrant->log->debug(tr("CommandDelay: will wait %1ms, then Ramp to %2 in block %3. warrant %4").arg(
+                startWait).arg(speedType).arg(_warrant->getBlockAt(endBlockIdx)->getDisplayName()).arg(_warrant->getDisplayName()));
+    }
 }
-/*public*/ void CommandDelay::process()
-{
-    /*synchronized(this)*/ {
-        if (_startWait>0.0) {
+
+// check if request for a duplicate CommandDelay can be cancelled
+bool CommandDelay::doNotCancel(QString speedType, long startWait, int endBlockIdx) {
+    if (endBlockIdx == _endBlockIdx && speedType==(nextSpeedType) &&
+            (_waitTime - (/*System.currentTimeMillis()*/QDateTime::currentMSecsSinceEpoch() - _startTime)) < startWait) {
+        return true;
+    }
+    return false;   // not a duplicate or shortens time wait.
+}
+
+//        @Override
+//        @SuppressFBWarnings(value = "WA_NOT_IN_LOOP", justification = "notify never called on this thread")
+/*public*/ void CommandDelay::process() {
+    _startTime = QDateTime::currentMSecsSinceEpoch();//System.currentTimeMillis();
+    /*synchronized (this)*/ {
+        if (_waitTime > 0.0) {
             try {
-#if QT_VERSION < 0x050000
-                wait(_startWait);
-#else
-                SleeperThread::sleep(_startWait);
-#endif
+                //wait(_waitTime);
+          SleeperThread::msleep(_waitTime);
             } catch (InterruptedException ie) {
-                log->error("InterruptedException "+ie.getMessage());
+                if (_warrant->log->isDebugEnabled()) {
+                    _warrant->log->debug(tr("CommandDelay interrupt.  Ramp to %1 not done. warrant %2").arg(
+                            nextSpeedType).arg(_warrant->getDisplayName()));
+                }
+                quit = true;
             }
         }
-        if(warrant->_debug) log->debug("CommandDelay: after wait of "+QString::number(_startWait)+" ms, did Ramp to "+nextSpeedType);
-        warrant->_engineer->rampSpeedTo(nextSpeedType);
-        warrant->_engineer->setCurrentCommandIndex(_cmdIndex);
+        if (!quit && _warrant->_engineer != nullptr) {
+            if (_warrant->log->isDebugEnabled()) {
+                _warrant->log->debug(tr("CommandDelay: after wait of %1ms, start Ramp to %2. warrant %3").arg(
+                        _waitTime).arg(nextSpeedType).arg(_warrant->getDisplayName()));
+            }
+            _warrant->_engineer->rampSpeedTo(nextSpeedType, _endBlockIdx, _useIndex);
+            // start ramp first
+            if (nextSpeedType == (_warrant->Stop) || nextSpeedType == (_warrant->EStop)) {
+                _warrant->_engineer->setWaitforClear(true);
+            } else {
+                _warrant->_curSpeedType = nextSpeedType;
+            }
+        }
     }
- emit finished();
+    _warrant->rampDelayDone();
+}
+
+ /**
+ * Orders are parsed to get any speed restrictions
+ * @param idxBlockOrder index of Orders
+ * @return Speed type name
+ */
+/*private*/ QString Warrant::getSpeedTypeForBlock(int idxBlockOrder) {
+    BlockOrder* blkOrder = getBlockOrderAt(idxBlockOrder);
+    OBlock* block = blkOrder->getBlock();
+
+    QString speedType = getPermissibleSpeedAt(blkOrder);
+    setStoppingSignal(idxBlockOrder);
+    if (speedType == nullptr) {
+        speedType = _curSpeedType;
+    } else {
+        if (speedType == (Warrant::Stop)) {
+            // block speed cannot be Stop, so OK to assume signal
+            _waitForSignal = true;
+            speedType = Warrant::Stop;
+        }
+    }
+
+    QString msg = block->allocate(this);
+    if (msg != nullptr) {
+        if (!this->equals(block->getWarrant())) {
+            _waitForWarrant = true;
+        } else {
+            _waitForBlock = true;
+        }
+        setStoppingBlock(block);
+        speedType = Warrant::Stop;
+    } else if ((block->getState() & OBlock::OCCUPIED) != 0) {
+        if (idxBlockOrder > _idxCurrentOrder) {
+            setStoppingBlock(block);
+            _waitForBlock = true;
+            speedType = Warrant::Stop;
+        }
+    } else {
+        msg = blkOrder->setPath(this);
+        if (msg != nullptr) {
+            // when setPath fails, it calls setShareTOBlock
+            _waitForWarrant = true;
+            speedType = Warrant::Stop;
+            _message = msg;
+            log->warn(msg);
+        }
+    }
+
+    if (log->isDebugEnabled()) {
+        if (_waitForSignal || _waitForBlock || _waitForWarrant) {
+            log->debug (tr("Found \"%1\" speed change of type \"%2\" needed to enter block \"%3\".").arg(
+                    (_waitForSignal?"Signal":(_waitForWarrant?"Warrant":"Block"))).arg(speedType).arg(block->getDisplayName()));
+        }
+    }
+    return speedType;
+}
+
+
+/*private*/ float Warrant::getPathLength(BlockOrder* bo) {
+    float len = bo->getPath()->getLengthMm();
+    if (len < 1.0f) {
+        log->warn(tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName()));
+        len = 100;
+    }
+    return len;
+}
+
+/*
+ * position only applies to current block otherwise full path length is available
+ */
+/*private*/ float Warrant::getAvailableDistance(int idxBlockOrder, int position) {
+    BlockOrder* blkOrder = getBlockOrderAt(idxBlockOrder);
+    float distAvail;
+    float pathLength = getPathLength(blkOrder);
+    distAvail = pathLength - _speedUtil->getDistanceTravelled();
+    if (log->isDebugEnabled()) {
+        log->debug(tr("getAvailableDistance(): from %1 in block \"%2\" distAvail= %3 warrant= %4").arg(
+                position).arg(blkOrder->getBlock()->getDisplayName()).arg(distAvail).arg(getDisplayName()));
+    }
+    return distAvail;
+}
+
+/**
+ * Get ramp length needed to change speed using the WarrantPreference deltas for
+ * throttle increment and time increment.  This should only be used for ramping down.
+ * @param idxBlockOrder index of BlockOrder
+ * @param toSpeedType Speed type change
+ * @return distance in millimeters
+ */
+/*private*/ float Warrant::rampLengthOfEntrance(int idxBlockOrder, QString toSpeedType) {
+/*        if (_curSpeedType.equals(toSpeedType)) {
+        return 0.0f;
+    }*/
+    BlockSpeedInfo* blkSpeedInfo = _speedInfo.at(idxBlockOrder);
+    float throttleSetting = blkSpeedInfo->getEntranceSpeed();
+    float rampLen = _speedUtil->rampLengthForRampDown(throttleSetting, _curSpeedType, toSpeedType);
+    if (_waitForBlock || _waitForWarrant) {    // occupied or foreign track ahead.
+        rampLen *= RAMP_ADJUST;    // provide more space to avoid collisions
+    } else if (_waitForSignal) {        // signal restricting speed
+        rampLen += getBlockOrderAt(idxBlockOrder)->getEntranceSpace(); // signal's adjustment
+    }
+    return rampLen;
+}
+
+/*private*/ /*static*/ float Warrant::RAMP_ADJUST = 1.05f;
+
+/**
+ * Called to set the correct speed for the train when the scripted speed
+ * must be modified due to a track condition (signaled speed or rogue
+ * occupation). Also called to return to the scripted speed after the
+ * condition is cleared. Assumes the train occupies the block of the current
+ * block order.
+ * <p>
+ * Looks for speed requirements of this block and takes immediate action if
+ * found. Otherwise looks ahead for future speed change needs. If speed
+ * restriction changes are required to begin in this block, but the change
+ * is not immediate, then determine the proper time delay to start the speed
+ * change.
+ *
+ * @param position estimated position of train inn the block
+ * @return false on errors
+ */
+/*private*/ bool Warrant::setMovement(int position) {
+    if (_runMode != Warrant::MODE_RUN || _idxCurrentOrder > _orders->size() - 1) {
+        return false;
+    }
+    if (_engineer == nullptr) {
+        controlRunTrain(ABORT);
+        return false;
+    }
+    int runState = _engineer->getRunState();
+    BlockOrder* blkOrder = getBlockOrderAt(_idxCurrentOrder);
+    OBlock* curBlock = blkOrder->getBlock();
+    if (log->isDebugEnabled()) {
+        log->debug(tr("!-setMovement(%1) Block\"%2\" runState= %3 current speedType= %4 %5 warrant %6.").arg(
+                position).arg(curBlock->getDisplayName()).arg(RUN_STATE[runState]).arg(_curSpeedType,
+                (_partialAllocate ? "ShareRoute" : "")).arg(getDisplayName()));
+    }
+
+    QString msg = blkOrder->setPath(this);
+    if (msg != "") {
+        log->error(tr("Train %1 in block \"%2\" but path cannot be set! msg= %3, warrant= %4").arg(
+                getTrainName()).arg(curBlock->getDisplayName()).arg(msg).arg(getDisplayName()));
+        _engineer->setStop(false, true);   // speed set to 0.0 (not E-top) User must restart
+        return false;
+    }
+
+    if ((curBlock->getState() & (OBlock::OCCUPIED | OBlock::UNDETECTED)) == 0) {
+        log->error(tr("Train %1 expected in block \"%2\" but block is unoccupied! warrant= %3").arg(
+                getTrainName()).arg(curBlock->getDisplayName()).arg(getDisplayName()));
+        _engineer->setStop(false, true); // user needs to see what happened and restart
+        return false;
+    }
+    // Error checking done.
+
+    // checking situation for the current block
+    // _curSpeedType is the speed type train is currently running
+    // currentType is the required speed limit for this block
+    QString currentType = getPermissibleSpeedAt(blkOrder);
+    if (currentType == "") {
+        currentType = _curSpeedType;
+    }
+
+    float speedSetting = _engineer->getSpeedSetting();
+    if (log->isDebugEnabled()) {
+        log->debug(tr("Stopping flags: _waitForBlock=%1, _waitForSignal=%2, _waitForWarrant=%3 runState= %4, speedSetting= %5, SpeedType= %6. warrant %7").arg(
+                _waitForBlock).arg(_waitForSignal).arg(_waitForWarrant).arg(RUN_STATE[runState]).arg(speedSetting).arg(currentType).arg(getDisplayName()));
+    }
+
+    if (_noRamp || _speedInfo.isEmpty()) {
+        if (_idxCurrentOrder < _orders->size() - 1) {
+            currentType = getSpeedTypeForBlock(_idxCurrentOrder + 1);
+            if (_speedUtil->secondGreaterThanFirst(currentType, _curSpeedType)) {
+                if (log->isDebugEnabled()) {
+                    log->debug(tr("No ramp speed change of \"%1\" from \"%2\" in block \"%3\" warrant= %4").arg(
+                            currentType).arg(_curSpeedType).arg(curBlock->getDisplayName()).arg(getDisplayName()));
+                }
+                _engineer->setSpeedToType(currentType);
+                if (currentType != (Stop) && currentType!=(EStop)) {
+                    _curSpeedType = currentType;
+                }
+            }
+        }
+        if (log->isDebugEnabled()) {
+            log->debug(tr("Exit setMovement due to no ramping. warrant= %1").arg(getDisplayName()));
+        }
+        return true;
+    }
+
+    if (currentType != (_curSpeedType)) {
+        if (_speedUtil->secondGreaterThanFirst(currentType, _curSpeedType)) {
+            // currentType Speed violation!
+            // Cancel any delayed speed changes currently in progress.
+            cancelDelayRamp();
+            NamedBean* signal = blkOrder->getSignal();
+            QString name;
+            if (signal != nullptr) {
+                name = signal->getDisplayName();
+            } else {
+                name = curBlock->getDisplayName();
+            }
+            if (currentType ==(Stop) || currentType==(EStop)) {
+                _engineer->setStop(currentType == (EStop), false);   // sets speed 0
+                log->info(tr("Train missed Stop signal %1 in block \"%2\". warrant= %3").arg(
+                            name).arg(curBlock->getDisplayName()).arg(getDisplayName()));
+                fireRunStatus("SpeedRestriction", name, currentType); // message of speed violation
+                return true; // don't do anything else until stopping condition cleared
+            } else {
+                _curSpeedType = currentType;
+                _engineer->setSpeedToType(currentType); // immediate decrease
+                if (log->isDebugEnabled()) {
+                    log->debug(tr(
+                    "Train %1 moved past required speed of \"%1\" at speed \"%1\" in block \"%1\"! Set speed to %1. warrant= %1").arg(
+                            getTrainName()).arg(currentType).arg(_curSpeedType).arg(curBlock->getDisplayName()).arg(currentType,
+                            getDisplayName()));
+                }
+                fireRunStatus("SpeedRestriction", name, currentType); // message of speed violation
+             }
+        } else {    // speed increases types currentType >_curSpeedType
+            // Cancel any delayed speed changes currently in progress.
+            cancelDelayRamp();
+            if (log->isTraceEnabled()) {
+                log->trace(tr("Increasing speed to \"%1\" from \"%2\" in block \"%3\" warrant= %4").arg(
+                        currentType).arg(_curSpeedType).arg(curBlock->getDisplayName()).arg(getDisplayName()));
+            }
+            _curSpeedType = currentType; // cannot be Stop or EStop
+            _engineer->rampSpeedTo(currentType, 0, false);
+        }
+        // continue, there may be blocks ahead that need a speed decrease to begin in this block
+    } else {
+        if (runState == WAIT_FOR_CLEAR || runState == HALT) {
+            // trust that STOP_PENDING or RAMP_HALT makes hard stop unnecessary
+            cancelDelayRamp();
+            _engineer->setStop(false, false);
+            if (log->isDebugEnabled()) {
+                log->debug(tr("Set Stop to hold train at block \"%1\" runState= %2, speedSetting= %3.warrant %4").arg(
+                        curBlock->getDisplayName()).arg(RUN_STATE[runState]).arg(speedSetting).arg(getDisplayName()));
+            }
+            fireRunStatus("SpeedChange", _idxCurrentOrder - 1, _idxCurrentOrder); // message reason for hold
+            return true;
+        } else if (runState == STOP_PENDING || runState == RAMP_HALT) {
+            if (log->isDebugEnabled()) {
+                log->debug(tr("Hold train at block \"%1\" runState= %2, speedSetting= %3.warrant %4").arg(
+                        curBlock->getDisplayName()).arg(RUN_STATE[runState]).arg(speedSetting).arg(getDisplayName()));
+            }
+            fireRunStatus("SpeedChange", _idxCurrentOrder - 1, _idxCurrentOrder); // message reason for hold
+            return true;
+        }
+        // Continue, look ahead for possible speed modification decrease.
+    }
+
+    //look ahead for a speed change slower than the current speed
+    // Note: blkOrder still is blkOrder = getBlockOrderAt(_idxCurrentOrder);
+    // Do while speedType >= currentType
+    int idxBlockOrder = _idxCurrentOrder;
+    QString speedType = _curSpeedType;
+    float availDist = getAvailableDistance(idxBlockOrder, position);
+    // getSpeedTypeForBlock() sets flags if speed change is detected
+    while (!_speedUtil->secondGreaterThanFirst(speedType, _curSpeedType) && idxBlockOrder < _orders->size() - 1) {
+        speedType = getSpeedTypeForBlock(++idxBlockOrder);  // speed for entry into next block
+        availDist += getPathLength(getBlockOrderAt(idxBlockOrder));
+    }
+
+    if (idxBlockOrder == _orders->size() - 1) {
+        // went through remaining BlockOrders,
+        if (!_speedUtil->secondGreaterThanFirst(speedType, _curSpeedType)) {
+            // found no speed decreases, except for possibly the last
+            float curSpeedRampLen = _speedUtil->rampLengthForRampDown(speedSetting, _curSpeedType, Stop);
+            if (log->isDebugEnabled()) {
+                if (_curSpeedType == (speedType)) {
+                    log->debug(tr("No speed modifications for runState= %1 from %2 found after block \"%3\". RampLen = %4 warrant %5").arg(
+                            RUN_STATE[runState]).arg(_curSpeedType).arg(curBlock->getDisplayName()).arg(curSpeedRampLen).arg(getDisplayName()));
+                }
+            }
+            if (curSpeedRampLen > availDist) {
+                log->info(tr("Throttle at %1 needs %2mm to ramp to Stop but only %2mm available. May Overrun. Warrant %2").arg(
+                        speedSetting).arg(curSpeedRampLen).arg(availDist).arg(getDisplayName()));
+                if (runState == STOP_PENDING || runState == RAMP_HALT) {
+                    // ramp to stop in progress - no need for further stop calls
+                     return true;
+                }
+            } // else {Space exceeded when ramping down over several blocks is not catastrophic - let it be}
+            _waitForBlock = false;
+            _waitForSignal = false;
+            _waitForWarrant = false;
+            return true;
+        }
+    }
+
+    // blkOrder.getBlock() is the block that must be entered at a speed modified by speedType.
+    blkOrder = getBlockOrderAt(idxBlockOrder);
+    if (log->isDebugEnabled()) {
+        log->debug(tr("Speed decrease to %1 from %2 needed before entering block \"%3\" warrant %4").arg(
+                speedType).arg(_curSpeedType).arg(blkOrder->getBlock()->getDisplayName()).arg(getDisplayName()));
+    }
+    // There is a speed decrease needed before entering the above block
+    // From this block, check if there is enough room to make the change
+    // using the exit speed of the block. Walk back using previous
+    // blocks, if necessary.
+    float rampLen = rampLengthOfEntrance(idxBlockOrder, speedType);
+    availDist = 0.0f;
+    int endBlockIdx = idxBlockOrder - 1;    // index of block where ramp ends
+
+    while (idxBlockOrder > _idxCurrentOrder && rampLen > availDist) {
+        // start at block before the block with slower speed type and walk
+        // back to current block. Get availDist to cover rampLen
+        idxBlockOrder--;
+        if (idxBlockOrder == 0) {
+            availDist += getAvailableDistance(0, MID);
+        } else {
+            availDist += getPathLength(getBlockOrderAt(idxBlockOrder));
+        }
+        rampLen = rampLengthOfEntrance(idxBlockOrder, speedType);
+    }
+    if (log->isDebugEnabled()) {
+        log->debug(tr("availDist= %1, at Block \"%2\" for rampLen= %3. warrant %4").arg(
+                availDist).arg(getBlockOrderAt(idxBlockOrder)->getBlock()->getDisplayName()).arg(rampLen).arg(getDisplayName()));
+    }
+
+    if (idxBlockOrder > _idxCurrentOrder && rampLen <= availDist) {
+        // sufficient ramp room was found before walking all the way back to current block
+        // therefore no speed change needed yet.
+        if (log->isDebugEnabled()) {
+            log->debug(tr("Will decrease speed for runState= %1 to %2 from %3 later at block \"%4\", warrant %5").arg(
+                    RUN_STATE[runState]).arg(speedType).arg(_curSpeedType).arg(blkOrder->getBlock()->getDisplayName(),
+                    getDisplayName()));
+        }
+        _waitForBlock = false;
+        _waitForWarrant = false;
+        _waitForSignal = false;
+        return true; // change speed later
+    }
+
+    // Need to start a ramp down in the block of _idxCurrentOrder
+    blkOrder = getBlockOrderAt(_idxCurrentOrder);
+    if (log->isDebugEnabled()) {
+        log->debug(tr("Schedule speed change to %1 in block \"%2\" availDist=%3, warrant= %4").arg(
+                speedType).arg(blkOrder->getBlock()->getDisplayName()).arg(availDist).arg(getDisplayName()));
+    }
+    float signalDistAdj = blkOrder->getEntranceSpace() + 50.f; // signal's adjustment plus ~2"
+    // find the time when ramp should start in this block, then use thread CommandDelay
+    // ramp length to change to modified speed from current speed.
+
+    runState = _engineer->getRunState();
+    if (runState == RAMPING_UP) {
+        // Interrupt ramp up with ramp down in time to reach 0 speed.
+        float endSpeed = _speedUtil->modifySpeed(_engineer->getScriptSpeed(), speedType);
+        speedSetting = _engineer->getSpeedSetting();
+        RampData* rampdata = _engineer->getRamp()->getRampData();
+        QListIterator<float> iter = rampdata->speedIterator(true);
+        while (iter.hasNext() && iter.next() < speedSetting) {}
+
+        int timeIncrement = rampdata->getRampTimeIncrement();
+        float topSpeed = speedSetting;
+        float rampUpDist = 0.0f;
+        // Get distances that match where speed changes
+        float rampDownDist = _speedUtil->getRampForSpeedChange(topSpeed, endSpeed)->getRampLength();
+        long time = 0;
+        // continue to ramp up while building the ramp down until distances exceed availDist
+        while ((rampDownDist + rampUpDist) <= availDist) {
+            time += timeIncrement;
+            if (iter.hasNext()) {
+                topSpeed = iter.next();
+            } else {
+                break;
+            }
+            rampUpDist = _speedUtil->getRampForSpeedChange(speedSetting, topSpeed)->getRampLength();
+            rampDownDist = _speedUtil->getRampForSpeedChange(topSpeed, endSpeed)->getRampLength();
+            if (_waitForSignal) {
+                rampDownDist += signalDistAdj; // signal's adjustment
+            }
+        }
+        if (log->isDebugEnabled()) {
+            log->debug(tr("rampDown delayTime= %1, availDist= %2 rampUpDist= %3, from= %4 to %5, rampDownDist= %6, down to %7").arg(
+                    time).arg(availDist).arg(rampUpDist).arg(speedSetting).arg(topSpeed).arg(rampDownDist).arg(endSpeed));
+        }
+        rampSpeedDelay(time, speedType, endBlockIdx);
+        fireRunStatus("SpeedChange", _idxCurrentOrder - 1, _idxCurrentOrder);
+        return true;
+   } else if (rampLen >= availDist) { // not enough room (shouldn't happen) so do ramp/stop immediately
+        log->warn(tr("No room for Train %1 ramp to speed \"%2\" in block \"%2\", warrant= %3").arg(
+                getTrainName()).arg(speedType).arg(curBlock->getDisplayName()).arg(getDisplayName()));
+        _engineer->setSpeedToType(speedType);
+        if (speedType!=(Stop) && speedType!=(EStop)) {
+            _curSpeedType = speedType;
+        }
+        fireRunStatus("SpeedChange", _idxCurrentOrder - 1, _idxCurrentOrder);
+        return true;
+    }
+
+    // otherwise, figure out time to ramp down from script
+    // waitSpeed is throttleSpeed when ramp is started. Start with it being at the entrance to the block.
+    float waitSpeed = 0;
+    long waitTime = 0; // time to wait after entering the block before starting ramp
+    // availDist - rampLen = waitDist == waitSpeed * waitTime
+    // currently rampLen is rampLengthOfEntrance and availDist is distance to block that has speedType requirement
+
+    // set throttleSpeed to what it is at the start of the block
+    bool hasSpeed = false;
+    BlockSpeedInfo* blkSpeedInfo = _speedInfo.value(_idxCurrentOrder);
+    float throttleSetting;
+    if (idxBlockOrder == 0) {
+        throttleSetting = 0.0f;
+    } else {
+        throttleSetting = blkSpeedInfo->getEntranceSpeed();
+        waitSpeed = _speedUtil->getTrackSpeed(_speedUtil->modifySpeed(throttleSetting, _curSpeedType));
+        waitTime = qRound((availDist - rampLen) / waitSpeed);
+        hasSpeed = true;
+    }
+    float timeRatio; // time adjustment for current speed type.
+    if (qAbs(throttleSetting - waitSpeed) > .0001f) {
+        timeRatio = throttleSetting / waitSpeed;
+    } else {
+        timeRatio = 1.0f;
+    }
+
+    long speedTime = 0; // time running at a given speed until next speed change
+    int startIdx = blkSpeedInfo->getFirstIndex();
+    int endIdx = blkSpeedInfo->getLastIndex();
+    for (int i = startIdx; i <= endIdx; i++) {
+        ThrottleSetting* ts = _commands->value(i);
+        if (hasSpeed) {
+            speedTime += ts->getTime() * timeRatio;
+            if (speedTime >= waitTime) {
+                break;
+            }
+        }
+        QString cmd = ts->getCommand().toUpper();
+        if (cmd == ("SPEED")) {
+            throttleSetting = (ts->getValue().toFloat()); // new speed
+            if (throttleSetting > .0001f) {
+                hasSpeed = true;
+                waitSpeed = _speedUtil->getTrackSpeed(_speedUtil->modifySpeed(throttleSetting, _curSpeedType));
+                rampLen = _speedUtil->rampLengthForRampDown(throttleSetting, _curSpeedType, speedType);
+                long nextWait = qRound((availDist - rampLen) / waitSpeed);
+                if (speedTime >= nextWait) {
+                    waitTime = nextWait;
+                    break;
+                }
+            } else {
+                hasSpeed = false;
+            }
+        }
+    }
+
+    if (log->isDebugEnabled()) {
+        log->debug(tr(" waitTime= %1, availDist= %2 waitSpeed= %3, rampLen= %4, ramp start speed= %5").arg(
+                waitTime).arg(availDist).arg(waitSpeed).arg(rampLen));
+    }
+    rampSpeedDelay(waitTime, speedType, endBlockIdx);
+    return true;
+}
+
+/*private*/ void Warrant::rampSpeedDelay (long waitTime, QString speedType, int endBlockIdx) {
+    /*synchronized(this)*/ {
+       if (_delayCommand != nullptr) {
+           if (_delayCommand->doNotCancel(speedType, waitTime, endBlockIdx)) {
+               return;
+           }
+           cancelDelayRamp();
+       }
+    }
+    if (waitTime <= 0) {
+        _engineer->rampSpeedTo(speedType, endBlockIdx, true);
+        if (speedType ==(Stop) || speedType ==(EStop)) {
+            _engineer->setWaitforClear(true);
+        } else {
+            _curSpeedType = speedType;
+        }
+    } else {    // cancelDelayRamp has been called
+        /*synchronized(this) */{
+            _delayCommand = new CommandDelay(speedType, waitTime, endBlockIdx, true, this);
+            QThread* thread = new QThread();
+            connect(thread, SIGNAL(started()), _delayCommand, SLOT(process()));
+            connect(_delayCommand, SIGNAL(finished()),thread, SLOT(quit()));
+            connect(_delayCommand, SIGNAL(finished()), thread, SLOT(deleteLater()));
+            connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+            _delayCommand->moveToThread(thread);
+            thread->start();
+        }
+    }
+}
+/**
+ * {@inheritDoc}
+ * <p>
+ * This implementation tests that
+ * {@link jmri.NamedBean#getSystemName()}
+ * is equal for this and obj.
+ * To allow a warrant to run with sections, DccLocoAddress is included to test equality
+ *
+ * @param obj the reference object with which to compare.
+ * @return {@code true} if this object is the same as the obj argument;
+ *         {@code false} otherwise.
+ */
+//@Override
+/*public*/ bool Warrant::equals(QObject* obj) {
+    if (obj == nullptr) return false; // by contract
+
+    if (qobject_cast< Warrant*>(obj)) {  // NamedBeans are not equal to things of other types
+        Warrant* b = (Warrant*) obj;
+        DccLocoAddress* addr = this->_speedUtil->getDccAddress();
+        if (addr == nullptr) {
+            if (b->_speedUtil->getDccAddress() != nullptr) {
+                return false;
+            }
+            return (this->getSystemName() == (b->getSystemName()));
+        }
+        return (this->getSystemName() == (b->getSystemName()) && addr == (b->_speedUtil->getDccAddress()));
+    }
+    return false;
+}
+
+/**
+ * {@inheritDoc}
+ *
+ * @return hash code value is based on the system name and DccLocoAddress.
+ */
+//@Override
+/*public*/ int Warrant::hashCode() {
+    //return (getSystemName().concat(_speedUtil->getDccAddress()->toString())).hashCode();
+ return -1;
 }

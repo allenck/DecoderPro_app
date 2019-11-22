@@ -912,7 +912,7 @@ virtual QSet<QString >  getPropertyKeys();
 virtual int  getState();
 virtual QString  getSystemName();
 virtual QString  getUserName();
-virtual bool  hashCode();
+virtual int  hashCode();
 virtual void removeProperty(QString  arg__1);
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
 virtual void removePropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2);
@@ -953,7 +953,7 @@ inline QSet<QString >  py_q_getPropertyKeys() { return NamedBean::getPropertyKey
 inline int  py_q_getState() { return NamedBean::getState(); }
 inline QString  py_q_getSystemName() { return NamedBean::getSystemName(); }
 inline QString  py_q_getUserName() { return NamedBean::getUserName(); }
-inline bool  py_q_hashCode() { return NamedBean::hashCode(); }
+inline int  py_q_hashCode() { return NamedBean::hashCode(); }
 inline void py_q_removeProperty(QString  arg__1) { NamedBean::removeProperty(arg__1); }
 inline void py_q_removePropertyChangeListener(PropertyChangeListener*  arg__1) { NamedBean::removePropertyChangeListener(arg__1); }
 inline void py_q_removePropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2) { NamedBean::removePropertyChangeListener(arg__1, arg__2); }
@@ -1017,8 +1017,8 @@ void delete_NamedBean(NamedBean* obj) { delete obj; }
    QString  py_q_getSystemName(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getSystemName());}
    QString  getUserName(NamedBean* theWrappedObject);
    QString  py_q_getUserName(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getUserName());}
-   bool  hashCode(NamedBean* theWrappedObject);
-   bool  py_q_hashCode(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_hashCode());}
+   int  hashCode(NamedBean* theWrappedObject);
+   int  py_q_hashCode(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_hashCode());}
    QString  static_NamedBean_normalizeUserName(QString  arg__1);
    void removeProperty(NamedBean* theWrappedObject, QString  arg__1);
    void py_q_removeProperty(NamedBean* theWrappedObject, QString  arg__1){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_removeProperty(arg__1));}

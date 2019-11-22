@@ -3492,7 +3492,7 @@ if (_wrapper) {
 }
   return Route::getUserName();
 }
-bool  PythonQtShell_Route::hashCode()
+int  PythonQtShell_Route::hashCode()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3500,9 +3500,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("hashCode");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"bool"};
+      static const char* argumentList[] ={"int"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      bool returnValue{};
+      int returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -3511,7 +3511,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
           } else {
-            returnValue = *((bool*)args[0]);
+            returnValue = *((int*)args[0]);
           }
         }
       }
@@ -6695,7 +6695,7 @@ if (_wrapper) {
 }
   return Sensor::getUserName();
 }
-bool  PythonQtShell_Sensor::hashCode()
+int  PythonQtShell_Sensor::hashCode()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6703,9 +6703,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("hashCode");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"bool"};
+      static const char* argumentList[] ={"int"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      bool returnValue{};
+      int returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -6714,7 +6714,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
           } else {
-            returnValue = *((bool*)args[0]);
+            returnValue = *((int*)args[0]);
           }
         }
       }
@@ -19875,7 +19875,7 @@ if (_wrapper) {
 }
   return Turnout::getValidFeedbackTypes();
 }
-bool  PythonQtShell_Turnout::hashCode()
+int  PythonQtShell_Turnout::hashCode()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -19883,9 +19883,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("hashCode");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"bool"};
+      static const char* argumentList[] ={"int"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      bool returnValue{};
+      int returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -19894,7 +19894,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
           } else {
-            returnValue = *((bool*)args[0]);
+            returnValue = *((int*)args[0]);
           }
         }
       }

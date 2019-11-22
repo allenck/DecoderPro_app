@@ -409,7 +409,7 @@ public:
     /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* /*evt*/) {}//throws java.beans.PropertyVetoException;
 
 
-    virtual bool hashCode() {return false;}
+    virtual int hashCode() {return 0;}
 
     /**
      * For instances in the code where we are dealing with just a bean and a

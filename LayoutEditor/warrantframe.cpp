@@ -1677,7 +1677,7 @@ endResetModel();
     InstanceManager::getDefault("WarrantManager"))->Register(_warrant);
   WarrantTableAction::updateWarrantMenu(this);
  }
- WarrantTableFrame::getInstance()->getModel()->fireTableDataChanged();
+ WarrantTableFrame::getDefault()->getModel()->fireTableDataChanged();
  return true;
 }
 

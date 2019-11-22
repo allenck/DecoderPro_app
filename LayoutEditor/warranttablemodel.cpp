@@ -592,7 +592,7 @@ BeanTableDataModel(parent)
     }
     case AUTO_RUN_COLUMN:
     {
-     msg = _frame->runTrain(w);
+     msg = _frame->runTrain(w, Warrant::MODE_RUN);
      break;
     }
     case MANUAL_RUN_COLUMN:

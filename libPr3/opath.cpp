@@ -34,6 +34,7 @@
  //super(owner, 0, 0);
  common();
  _name = name;
+ setObjectName(name);
 }
 /*public*/ OPath::OPath(Block* owner, int toBlockDirection, int fromBlockDirection, QObject *parent)
  : Path(owner, toBlockDirection, fromBlockDirection, parent)
@@ -54,6 +55,7 @@
  //super(owner, 0, 0);
  common();
  _name = name;
+ setObjectName(name);
  _fromPortal = entry;
  _toPortal = exit;
  if (!settings.isEmpty())
@@ -134,6 +136,7 @@ void OPath::common()
  }
  QString oldName = _name;
  _name = name;
+ setObjectName(name);
  OBlock* block = (OBlock*) getBlock();
  block->pseudoPropertyChange("pathName", oldName, _name);
  WarrantTableAction::pathNameChange(block, oldName, _name);

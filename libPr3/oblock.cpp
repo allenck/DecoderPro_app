@@ -653,8 +653,7 @@ return _statusNameMap.value(str);
             return "cannot deAllocate. warrant \""+_warrant->getDisplayName()+
                         "\" owns block \""+getDisplayName()+"\"!";
         }
-        //removePropertyChangeListener(_warrant);
-        disconnect(_warrant, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        removePropertyChangeListener((PropertyChangeListener*)_warrant);
     }
     if (_pathName!=NULL) {
         OPath* path = getPathByName(_pathName);
@@ -946,7 +945,7 @@ return _statusNameMap.value(str);
 /*public*/ void OBlock::goingActive()
 {
  if (log->isDebugEnabled()) {
-     log->debug(tr("OBlock \"%1\" going OCCUPIED with path \"%2\" from state= $3").arg(
+     log->debug(tr("OBlock \"%1\" going OCCUPIED with path \"%2\" from state= %3").arg(
              getDisplayName()).arg(_pathName).arg(getState()));
  }
  // preserve the non-sensor states when being OCCUPIED and remove non-OCCUPIED sensor states

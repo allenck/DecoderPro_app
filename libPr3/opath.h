@@ -39,33 +39,36 @@ signals:
 
 public slots:
 private:
-    /*private*/ Portal* _fromPortal;
-    /*private*/ Portal* _toPortal;
+    /*private*/ Portal* _fromPortal = nullptr;
+    /*private*/ Portal* _toPortal = nullptr;
     /*private*/ QString _name;
-    /*private*/ QTimer* _timer;
-    /*private*/ bool _timerActive;// = false;
-    /*private*/ OPTimeTurnout* _listener;
+    /*private*/ QTimer* _timer = nullptr;
+    /*private*/ bool _timerActive = false;
+    /*private*/ OPTimeTurnout* _listener = nullptr;
     Logger* log;
     void common();
 protected:
     /*protected*/ QString getOppositePortalName(QString name);
     /*protected*/ bool validatePortals();
+
     friend class OPTimeTurnout;
     friend class RouteFinder;
 };
+
 class OPTimeTurnout : public QObject
 {
      Q_OBJECT
-        /*private*/ QList<BeanSetting*> list;
-        /*private*/ int lockState;
-        bool set;
-        bool lock;
-        OPath* self;
+     /*private*/ QList<BeanSetting*> list;
+     /*private*/ int lockState;
+     bool set;
+     bool lock;
+     OPath* self;
 public:
-        /*public*/ OPTimeTurnout(OPath* self  );
-        void setList(QList<BeanSetting*> l);
-        void setParams(bool s, int ls, bool l);
+     /*public*/ OPTimeTurnout(OPath* self  );
+     void setList(QList<BeanSetting*> l);
+     void setParams(bool s, int ls, bool l);
+
 public slots:
-        /*public*/ void actionPerformed(ActionEvent* event = 0);
+     /*public*/ void actionPerformed(ActionEvent* event = 0);
 };
 #endif // OPATH_H

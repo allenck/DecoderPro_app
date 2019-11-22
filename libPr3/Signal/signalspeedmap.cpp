@@ -55,25 +55,40 @@ SignalSpeedMap::SignalSpeedMap(QObject *parent) :
 //         // ignore other properties
 //     }
 // };
-
+ this->warrantPreferencesListener = new WarrantPreferencesListener(this);
 }
 
-void SignalSpeedMap::warrantPreferences_PropertyChange(PropertyChangeEvent * evt)
+//@Override
+/*public*/ void SignalSpeedMap::initialize() {
+ WarrantPreferences* wp = (WarrantPreferences*)
+    InstanceManager::getOptionalDefault("WarrantPreferences");
+ if(wp)
+ {
+  wp->addPropertyChangeListener(this->warrantPreferencesListener);
+ }//);
+//    InstanceManager.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+//        if (evt.getPropertyName().equals(InstanceManager.getDefaultsPropertyName(WarrantPreferences.class))) {
+//            InstanceManager.getDefault(WarrantPreferences.class).addPropertyChangeListener(this.warrantPreferencesListener);
+//        }
+//    });
+    InstanceManager::addPropertyChangeListener((PropertyChangeListener*)this);
+}
+void WarrantPreferencesListener::propertyChange(PropertyChangeEvent * evt)
 {
      WarrantPreferences* preferences = WarrantPreferences::getDefault();
      //SignalSpeedMap map = SignalSpeedMap.this;
      QString propertyName = evt->getPropertyName();
      if(propertyName == WarrantPreferences::APPEARANCES)
-       setAppearances(preferences->getAppearances());
+       ssm->setAppearances(preferences->getAppearances());
      else if(propertyName ==  WarrantPreferences::LAYOUT_SCALE)
-       setLayoutScale(preferences->getLayoutScale());
+       ssm->setLayoutScale(preferences->getLayoutScale());
      else if(propertyName ==  WarrantPreferences::SPEED_NAMES || propertyName ==  WarrantPreferences::INTERPRETATION)
-      setAspects(preferences->getSpeedNames(), preferences->getInterpretation());
+      ssm->setAspects(preferences->getSpeedNames(), preferences->getInterpretation());
      else if(propertyName ==   WarrantPreferences::THROTTLE_SCALE)
-      setDefaultThrottleFactor(preferences->getThrottleScale());
+      ssm->setDefaultThrottleFactor(preferences->getThrottleScale());
       else if(propertyName ==  WarrantPreferences::TIME_INCREMENT ||
        propertyName ==  WarrantPreferences::RAMP_INCREMENT)
-      setRampParams(preferences->getThrottleIncrement(), preferences->getTimeIncrement());
+      ssm->setRampParams(preferences->getThrottleIncrement(), preferences->getTimeIncrement());
          // ignore other properties
 }
 
@@ -88,22 +103,6 @@ void SignalSpeedMap::warrantPreferences_PropertyChange(PropertyChangeEvent * evt
 ///*public*/ class SignalSpeedMap {
 
 
-//@Override
-/*public*/ void SignalSpeedMap::initialize()
-{
- WarrantPreferences* wp = static_cast<WarrantPreferences*>(   InstanceManager::getOptionalDefault("WarrantPreferences"));
- if(wp != nullptr)
- {
-  //wp.addPropertyChangeListener(this.warrantPreferencesListener);
-   connect(wp, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(warrantPreferences_PropertyChange(PropertyChangeEvent*)));
- }
-//    InstanceManager.addPropertyChangeListener((PropertyChangeEvent evt) -> {
-//        if (evt.getPropertyName().equals(InstanceManager.getDefaultsPropertyName(WarrantPreferences.class))) {
-//            InstanceManager.getDefault(WarrantPreferences.class).addPropertyChangeListener(this.warrantPreferencesListener);
-//        }
-//    });
-   connect(InstanceManager::getDefault()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-}
 void SignalSpeedMap::propertyChange(PropertyChangeEvent *evt)
 {
  if (evt->getPropertyName()==(InstanceManager::getDefaultsPropertyName("WarrantPreferences")))

@@ -27,14 +27,17 @@ public:
    //explicit Warrant(QObject *parent = 0);
     /*public*/ Warrant(QString sName, QString uName, QObject *parent = 0);
     // Throttle modes
-    enum MODES
+    enum MODEVALS
     {
      MODE_NONE 	= 0,
      MODE_LEARN 	= 1,	// Record command list
      MODE_RUN 	= 2,	// Autorun (playback) command list
-     MODE_MANUAL = 3	// block detection/reservation for manually run train
+     MODE_MANUAL = 3,	// block detection/reservation for manually run train
+     MODE_ABORT =4   // used to set status string in WarrantTableFrame
     };
-    Q_ENUM(MODES)
+    Q_ENUM(MODEVALS)
+    /*public*/ static /*final*/ QStringList MODES;// = {"none", "LearnMode", "RunAuto", "RunManual"};
+
     static QString modeName(int i);
     // control states
     enum STATES
@@ -119,11 +122,16 @@ public:
     /*public*/ QString checkForContinuation();
     /*public*/ QString checkStartBlock(int mode);
     /*public*/ void stopWarrant(bool abort);
+    /*synchronized*/ /*public*/ void stopWarrant(bool abort, bool turnOffFunctions);
     /*public*/ void setBlockOrders(QList<BlockOrder*>* orders);
 //    /*public*/ QString setRoute(int delay, QList<BlockOrder*> orders);
     /*public*/ QString getCurrentBlockName();
     /*public*/ void runWarrant(int mode);
     virtual /*public*/ QString setRoute(bool show, QList<BlockOrder*>* orders);
+    /*public*/ void dispose();
+    Q_INVOKABLE /*public*/ bool equals(QObject* obj);
+    /*public*/ int hashCode();
+
 
 signals:
 //    void propertyChange(PropertyChangeEvent*);
@@ -155,10 +163,12 @@ private:
 
     /*private*/ int     _runMode;
     /*private*/ Engineer* _engineer;         // thread that runs the train
+    /*private*/ CommandDelay* _delayCommand; // thread for delayed ramp down
     /*private*/ bool _allocated;         // initial Blocks of _orders have been allocated
     /*private*/ bool _totalAllocated;    // All Blocks of _orders have been allocated
     /*private*/ bool _routeSet;          // all allocated Blocks of _orders have paths set for route
-    /*private*/ OBlock*  _stoppingBlock;     // Block allocated to another warrant or a rouge train
+    /*private*/ NamedBean* _protectSignal; // Signal stopping train movement
+    /*private*/ int _idxProtectSignal;
     /*private*/ NamedBean* _stoppingSignal;  // Signal stopping train movement
     /*private*/ OBlock* _shareTOBlock;       // Block in another warrant that controls a turnout in this block
     /*private*/ QString _message;            // last message returned from an action
@@ -167,18 +177,16 @@ private:
 
     /*private*/ static SignalSpeedMap* _speedMap;
     /*private*/ int getBlockStateAt(int idx);
-    /*private*/ bool checkStoppingBlock();
+//    /*private*/ bool checkStoppingBlock();
     /*private*/ long getSpeedChangeWait(int index);
     /*private*/ QString getCurrentSpeedAt(int index);
     /*private*/ bool allocateNextBlock(OBlock* block);
     /*private*/ QString getNextSpeed();
     /*private*/ void checkShareTOBlock();
     /*private*/ void setStoppingBlock(OBlock* block);
-    /*private*/ void restart();
+//    /*private*/ void restart();
     /*private*/ void getBlockSpeedTimes();
-    /*private*/ float getLength(BlockOrder* blkOrder);
-    /*private*/ QString getMinSpeedType(BlockOrder* blkOrder, QString nextSpeedType) ;
-    /*private*/ bool moveIntoNextBlock(int position);
+//    /*private*/ bool moveIntoNextBlock(int position);
     /*private*/ QString getPermissibleSpeedAt(BlockOrder* bo);
     /*private*/ bool allocateNextBlock(BlockOrder* bo);
     SpeedUtil* _speedUtil;
@@ -193,6 +201,23 @@ private:
     /*private*/ OBlock* _otherShareBlock;   // block belonging to another warrant
 Logger* log;
     /*private*/ QString allocateFromIndex(bool show, bool set, int index);
+    /*synchronized*/ /*private*/ void cancelDelayRamp();
+    /*synchronized*/ /*private*/ void rampDelayDone();
+    /*private*/ bool readStoppingSignal();
+    /*private*/ bool clearStoppingBlock();
+    /*private*/ bool restoreRunning();
+    /*private*/ void clearShareTOBlock();
+    /*private*/ bool doStoppingBlockClear();
+    /*private*/ void releaseBlock(OBlock* block, int idx);
+    /*private*/ void setHeadOfTrain(OBlock* block );
+    /*private*/ QString getSpeedTypeForBlock(int idxBlockOrder);
+    /*private*/ void setStoppingSignal(int idx);
+    /*private*/ float getPathLength(BlockOrder* bo);
+    /*private*/ float getAvailableDistance(int idxBlockOrder, int position);
+    /*private*/ float rampLengthOfEntrance(int idxBlockOrder, QString toSpeedType);
+    /*private*/ static float RAMP_ADJUST;// = 1.05f;
+    /*private*/ bool setMovement(int position);
+    /*private*/ void rampSpeedDelay (long waitTime, QString speedType, int endBlockIdx);
 
 protected:
     /*protected*/ bool _tempRunBlind;            // run mode flag
@@ -202,6 +227,7 @@ protected:
     /*protected*/ QString _exitSpeed;			// name of speed to exit the "protected" block
     /*protected*/ QString getRoutePathInBlock(OBlock* block);
     /*protected*/ int getIndexOfBlock(OBlock* block, int startIdx);
+    /*protected*/ int getIndexOfBlockBefore(int endIdx, OBlock* block);
     /*protected*/ int getIndexOfBlock(QString name, int startIdx);
     /*protected*/ BlockOrder* getBlockOrderAt(int index);
     /*protected*/ OBlock* getBlockAt(int idx);
@@ -221,7 +247,6 @@ protected:
     /*protected*/ QList<BlockOrder*>* getOrders();
     ///*protected*/ void setCalibrater(Calibrater* c);
     /*protected*/ RosterEntry* getRosterEntry();
-    /*protected*/ DccThrottle* getThrottle();
     /*protected*/ bool isWaitingForSignal();
     /*protected*/ bool isWaitingForClear() ;
     /*protected*/ bool isWaitingForWarrant();
@@ -229,7 +254,10 @@ protected:
     /*protected*/ Warrant* _self;// = this;
     /*protected*/ void abortWarrant(QString msg);
     /*protected*/ QString acquireThrottle();
-
+    /*protected*/ bool debugInfo();
+    /*protected*/ OBlock*  _stoppingBlock;     // Block allocated to another warrant or a rouge train
+    /*protected*/ void releaseThrottle(DccThrottle* throttle);
+    /*protected*/ QList<BlockSpeedInfo*> _speedInfo; // map max speeds and occupation times of each block in route
 
 friend class OBlock;
 friend class Engineer;
@@ -247,6 +275,8 @@ friend class SCWarrant;
 friend class ReleaseUntilWT1;
 friend class ReleaseUntilWT2;
 friend class WarrantTest;
+friend class ThrottleRamp;
+friend class AllocateBlocks;
 };
 
 class BlockSpeedInfo
@@ -290,15 +320,39 @@ class CommandDelay : public QObject
 {
 Q_OBJECT
  QString nextSpeedType;
- long _startWait;// = 0;
- int _cmdIndex;
- Logger* log;
- Warrant* warrant;
+ long _startTime = 0;
+ long _waitTime = 0;
+ bool quit = false;
+ int _endBlockIdx;
+ bool _useIndex;
+ Warrant *_warrant;
 public:
- CommandDelay(QString speedType, long startWait, int cmdIndex, Warrant* warrant);
+ CommandDelay(QString speedType, long startWait, int endBlockIdx, bool useIndex, Warrant *_warrant);
+ bool doNotCancel(QString speedType, long startWait, int endBlockIdx);
 public slots:
  /*public*/ void process();
-signals:
- void finished();
+
+ friend class Warrant;
+};
+
+class AllocateBlocks : public QObject
+{
+ Q_OBJECT
+ Warrant* _warrant;
+public:
+ AllocateBlocks(Warrant* _warrant) {this->_warrant = _warrant;}
+public slots:
+     //@Override
+     Q_INVOKABLE /*public*/ void process();
+};
+
+class DoitThread : public QThread
+{
+ Q_OBJECT
+ AllocateBlocks* allocateBlocks;
+ public:
+ DoitThread(AllocateBlocks* allocateBlocks) { this->allocateBlocks = allocateBlocks;}
+public slots:
+ void run();
 };
 #endif // WARRANT_H

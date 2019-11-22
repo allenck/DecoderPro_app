@@ -602,6 +602,43 @@ template<class T>
   } //);
  return retval;
 }
+/**
+ * Remove notification on changes to specific types.
+ *
+ * @param l The listener to remove
+ */
+/*public*/ /*static*/ /*synchronized*/ void InstanceManager::removePropertyChangeListener(PropertyChangeListener* l) {
+    getDefault()->pcs->removePropertyChangeListener(l);
+}
+
+/**
+ * Remove notification on changes to specific types.
+ *
+ * @param propertyName the property being listened for
+ * @param l            The listener to remove
+ */
+/*public*/ /*static*/ /*synchronized*/ void InstanceManager::removePropertyChangeListener(QString propertyName, PropertyChangeListener* l) {
+    getDefault()->pcs->removePropertyChangeListener(propertyName, l);
+}
+
+/**
+ * Register for notification on changes to specific types.
+ *
+ * @param l The listener to add
+ */
+/*public*/ /*static*/ /*synchronized*/ void InstanceManager::addPropertyChangeListener(PropertyChangeListener* l) {
+    getDefault()->pcs->addPropertyChangeListener(l);
+}
+
+/**
+ * Register for notification on changes to specific types
+ *
+ * @param propertyName the property being listened for
+ * @param l            The listener to add
+ */
+/*public*/ /*static*/ /*synchronized*/ void InstanceManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* l) {
+    getDefault()->pcs->addPropertyChangeListener(propertyName, l);
+}
 
 PowerManager* InstanceManager::powerManagerInstance()
 {
@@ -901,15 +938,6 @@ void InstanceManager::setReporterManager(ReporterManager* p) {
 //    ((AbstractProxyManager*)instance()->reporterManager)->addManager(p);
 //}
 
-void InstanceManager::removePropertyChangeListener(PropertyChangeListener* l)
-{
-    QMutexLocker locker(&mutex);
-    if (listeners.contains(l))
-    {
-     int i = listeners.indexOf(l);
-     listeners.remove(i);
-    }
-}
 ///*public*/ /*static*/ /*synchronized*/ void InstanceManager::addPropertyChangeListener(PropertyChangeListener* l) {
 // //QMutex mutex;
 //    QMutexLocker locker(&mutex);

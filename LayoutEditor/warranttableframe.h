@@ -14,7 +14,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT WarrantTableFrame : public JmriJFrame
  Q_OBJECT
 public:
  /*public*/ static int _maxHistorySize;// = 30;
- /*public*/ static WarrantTableFrame* getInstance();
+ /*public*/ static WarrantTableFrame* getDefault();
  /*public*/ void showWarning(QString msg);
  /*public*/ void mouseClicked(QMouseEvent* event);
  /*public*/ void mousePressed(QMouseEvent* event);
@@ -26,10 +26,10 @@ public:
 signals:
 
 public slots:
- /*public*/ QString runTrain(Warrant* w);
+ /*public*/ QString runTrain(Warrant* w, int mode);
 
 private:
- Logger* log;
+ static Logger* log;
  /*private*/ JTextField*  _startWarrant;// = new JTextField(30);
  /*private*/ JTextField*  _endWarrant;// = new JTextField(30);
  /*private*/ JDialog*    _concatDialog;
@@ -71,7 +71,7 @@ friend class WTWindowListener;
 friend class WarrantTableModel;
 friend class WarrantFrame;
 friend class NXFrame;
-
+friend class Engineer;
 };
 
 class WTWindowListener : public WindowListener

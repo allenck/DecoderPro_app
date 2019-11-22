@@ -223,7 +223,7 @@ public slots:
  void actionPerformed(ActionEvent */*e*/ = 0)
  {
   WarrantTableAction::_log = OpSessionLog::getInstance();
-   if (!WarrantTableAction::_log->showFileChooser(WarrantTableFrame::getInstance()))
+   if (!WarrantTableAction::_log->showFileChooser(WarrantTableFrame::getDefault()))
    {
     WarrantTableAction::_log = NULL;
     return;

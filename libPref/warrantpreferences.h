@@ -99,6 +99,7 @@ friend class WarrantPreferencesPanel;
 friend class NXFrame;
 friend class SignalSpeedMap;
 friend class SpeedUtil;
+friend class WarrantPreferencesListener;
 };
 Q_DECLARE_METATYPE(WarrantPreferences)
 

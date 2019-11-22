@@ -205,6 +205,15 @@ void Path::common()
  _length = l;
 }  // l must be in millimeters
 
+/**
+ * Get actual stored length.
+ *
+ * @return length in millimeters or 0
+ */
+/*public*/ float Path::getLength() {
+    return _length;
+}
+
 /*public*/ float Path::getLengthMm() {
     if (_length <= 0.0f) {
         return _block->getLengthMm();

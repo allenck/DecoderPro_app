@@ -72,6 +72,7 @@ private:
 protected:
  /*protected*/ SpeedUtil(QList<BlockOrder *> *orders, QObject* parent = nullptr);
  /*protected*/ void setOrders(QList<BlockOrder*>* orders);
+ /*protected*/ void setIsForward(bool forward);
  /*protected*/ RosterSpeedProfile* getSpeedProfile();
  /*protected*/ void setDccAddress(DccLocoAddress* dccAddr);
  /*protected*/ float getThrottleSpeedStepIncrement();
@@ -84,8 +85,7 @@ protected:
  /*protected*/ float getThrottleSettingForSpeed(float trackSpeed, bool isForward);
  /*protected*/ float getDistanceTraveled(float speedSetting, QString speedtype, float time);
  /*protected*/ float getTimeForDistance(float throttleSetting, float distance);
- /*protected*/ float rampLengthForRampDown(float curSetting, QString curSpeedType, QString toSpeedType,
-         bool isForward);
+ /*protected*/ float rampLengthForRampDown(float curSetting, QString curSpeedType, QString toSpeedType);
  /*protected*/ float rampLengthForSpeedChange(float fSpeed, float toSpeed, bool isForward);
  /*protected*/ float getRampThrottleIncrement();
  /*protected*/ int getRampTimeIncrement();
@@ -101,6 +101,8 @@ friend class NXFrame;
 friend class Warrant;
 friend class WarrantFrame;
 friend class WarrantTest;
+friend class Engineer;
+friend class ThrottleRamp;
 };
 
 #endif // SPEEDUTIL_H

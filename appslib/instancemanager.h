@@ -188,6 +188,10 @@ static QObject* setDefault(QString type, QObject* val);
  * by type.
  */
 static QString contentsToString();
+/*public*/ static /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+/*public*/ static /*synchronized*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* l) ;
+/*public*/ static /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
+/*public*/ static /*synchronized*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* l);
 Q_DECL_DEPRECATED static PowerManager* powerManagerInstance();
 //Q_DECL_DEPRECATED static void setPowerManager(PowerManager* p);
 //Q_DECL_DEPRECATED static Timebase* timebaseInstance();
@@ -245,7 +249,6 @@ Q_DECL_DEPRECATED static void setSignalHeadManager(SignalHeadManager* p);
 QT_DEPRECATED static void setCommandStation(CommandStation* p);
 QT_DEPRECATED static /*public*/ void setAddressedProgrammerManager(AddressedProgrammerManager* p);
 static void setReporterManager(ReporterManager* p);
-static void removePropertyChangeListener(PropertyChangeListener* l);
 //template<class T>
 /*public*/ /*<T>*/ QObjectList* getInstances(/*@Nonnull Class<T>*/ QString type);
 /*public*/ void clearAll();

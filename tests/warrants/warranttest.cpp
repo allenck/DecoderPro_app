@@ -187,7 +187,7 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
 //        JUnitUtil::releaseThread(this, 100); // What should we specifically waitFor?
 
         // confirm one message logged
-        JUnitAppender::assertWarnMessage("Path NorthToWest in block North has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.");
+        JUnitAppender::assertWarnMessage("Path NorthToWest in block North has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.", __FILE__, __LINE__);
 
 //        jmri.util.ThreadingUtil.runOnLayout(() -> {
             try {

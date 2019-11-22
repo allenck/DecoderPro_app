@@ -8,7 +8,9 @@
 #include <QStringList>
 #include "libPr3_global.h"
 #include "bean.h"
+#include "propertychangelistener.h"
 
+class WarrantPreferencesListener;
 class QDomElement;
 class SignalSystem;
 class LIBPR3SHARED_EXPORT SignalSpeedMap : public Bean
@@ -58,7 +60,6 @@ public:
     signals:
 
     public slots:
-    void warrantPreferences_PropertyChange(PropertyChangeEvent*);
     void propertyChange(PropertyChangeEvent*);
 
     private:
@@ -72,9 +73,19 @@ public:
     /*private*/ float _stepIncrement;// = 0.04f;       // ramp step throttle increment
     /*private*/ float _throttleFactor;// = 0.75f;
     /*private*/ float _scale;
- private:
-  static Logger* log;
-
+    static Logger* log;
+    WarrantPreferencesListener* warrantPreferencesListener = nullptr;
+ friend class WarrantPreferencesListener;
 };
 Q_DECLARE_METATYPE(SignalSpeedMap)
+
+class WarrantPreferencesListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ SignalSpeedMap* ssm;
+public:
+ WarrantPreferencesListener(SignalSpeedMap* ssm) {this->ssm = ssm;}
+public slots:
+ void propertyChange(PropertyChangeEvent* evt);
+};
 #endif // SIGNALSPEEDMAP_H

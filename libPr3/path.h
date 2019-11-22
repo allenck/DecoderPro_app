@@ -132,6 +132,7 @@ public:
      */
     static /*public*/ QString decodeDirection(int d);
     /*public*/ void setLength(float l);
+    /*public*/ float getLength();
     /*public*/ float getLengthMm() ;
     /*public*/ float getLengthCm();
     /*public*/ float getLengthIn() ;
@@ -146,11 +147,11 @@ public slots:
     
 private:
     /*private*/ QVector<BeanSetting*>* _beans;// = new QVector<BeanSetting>();
-    /*private*/ Block* _block;
+    /*private*/ Block* _block = nullptr;
     /*private*/ int _toBlockDirection;
     /*private*/ int _fromBlockDirection;
     static /*private*/ void appendOne(QString b, QString t);
-    float _length;
+    float _length  = 0.0f;
     void common();
 };
 

@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include "pushbuttondelegate.h"
 #include <QSignalMapper>
+#include "loggerfactory.h"
 
 //WarrantTableFrame::WarrantTableFrame(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -64,24 +65,25 @@
 /*private*/ /*static*/ WarrantTableFrame* WarrantTableFrame::_instance = NULL;
 
 
-/*public*/ /*static*/ WarrantTableFrame* WarrantTableFrame::getInstance()
-{
- if (_instance==NULL) {
-     _instance = new WarrantTableFrame();
-     try {
-         _instance->initComponents();
-     } catch (Exception ex ) {/*bogus*/ }
- }
- _instance->setVisible(true);
- _instance->adjustSize();
- return _instance;
-}
-
-// for JUnit test
-/*protected*/ /*static*/ WarrantTableFrame* WarrantTableFrame::reset()
-{
-    _instance = NULL;
-    return getInstance();
+/**
+ * Get the default instance of a Warrant table window.
+ *
+ * @return the default instance; creating it if necessary
+ */
+/*public*/ /*static*/ WarrantTableFrame* WarrantTableFrame::getDefault() {
+    WarrantTableFrame* instance = (WarrantTableFrame*)InstanceManager::getOptionalDefault("WarrantTableFrame");
+    if(instance == nullptr)
+    {
+        WarrantTableFrame* newInstance = (WarrantTableFrame*)InstanceManager::setDefault("WarrantTableFrame", new WarrantTableFrame());
+        try {
+            newInstance->initComponents();
+        } catch (Exception ex) {
+            log->error("Unable to initilize Warrant Table Frame", ex);
+        }
+        return newInstance;
+    }//);
+    instance->setVisible(true);
+    return instance;
 }
 
 /*protected*/ WarrantTableModel* WarrantTableFrame::getModel() {
@@ -428,9 +430,9 @@ static /*public*/ class ComboBoxCellEditor extends DefaultCellEditor
  * @param w warrant
  * @return NULL if warrant is started
  */
-/*public*/ QString WarrantTableFrame::runTrain(Warrant* w) {
+/*public*/ QString WarrantTableFrame::runTrain(Warrant* w, int mode) {
     QString msg = NULL;
-    if (w->getRunMode() != Warrant::MODE_NONE) {
+    if (w->getRunMode() != mode) {
         msg = w->getRunModeMessage();
         setStatusText(msg, QColor(Qt::red), false);
         return msg;
@@ -492,3 +494,4 @@ void WarrantTableFrame::setStatusText(QString msg, QColor c, bool save)
 }
 /*static*/ QString WarrantTableFrame::BLANK = "                                                                                                 ";
 
+/*private*/ /*final*/ /*static*/ Logger* WarrantTableFrame::log = LoggerFactory::getLogger("WarrantTableFrame");

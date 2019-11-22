@@ -29,6 +29,8 @@ protected:
     /*protected*/ int getRampTimeIncrement();
 friend class NXFrame;
 friend class SpeedUtil;
+friend class ThrottleRamp;
+friend class Warrant;
 };
 
 #endif // RAMPDATA_H

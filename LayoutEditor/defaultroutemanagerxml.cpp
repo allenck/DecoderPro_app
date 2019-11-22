@@ -207,7 +207,7 @@ return routes;
  routes.setAttribute("class", "jmri.managers.configurexml.DefaultRouteManagerXml");
 }
 
-/*public*/ void DefaultRouteManagerXml::load(QDomElement element, QObject* o) throw (Exception)
+/*public*/ void DefaultRouteManagerXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception)
 {
  Logger::error("Invalid method called");
 }

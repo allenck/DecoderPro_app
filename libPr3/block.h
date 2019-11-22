@@ -207,23 +207,23 @@ private:
     Logger* log;
     // internal data members
     /*private*/ int _current;// = UNOCCUPIED; // state
-    /*private*/ Sensor* _sensor;// = NULL;
-    /*private*/ NamedBeanHandle<Sensor*>* _namedSensor;// = NULL;
-    /*private*/ PropertyChangeListener* _sensorListener;// = NULL;
+    /*private*/ Sensor* _sensor = nullptr;
+    /*private*/ NamedBeanHandle<Sensor*>* _namedSensor = nullptr;
+    /*private*/ PropertyChangeListener* _sensorListener = nullptr;
     /*private*/ QVariant _value;
     /*private*/ int _direction;
     /*private*/ int _curvature;// = NONE;
-    /*private*/ float _length;// = 0.0f;  // always stored in millimeters
-    /*private*/ Reporter* _reporter;// = NULL;
-    /*private*/ PropertyChangeListener* _reporterListener;// = NULL;
+    /*private*/ float _length = 0.0f;  // always stored in millimeters
+    /*private*/ Reporter* _reporter = nullptr;
+    /*private*/ PropertyChangeListener* _reporterListener = nullptr;
     /*private*/ bool _reportingCurrent;// = false;
     QVector<Path*>* paths;// = new QVector<Path*>();
     //Deny traffic entering from this block
     QVector<NamedBeanHandle<Block*>* >* blockDenyList;// = new QVector<NamedBeanHandle<Block*>>(1);
-    /*private*/ bool _permissiveWorking;//=false;
+    /*private*/ bool _permissiveWorking=false;
     /*private*/ QString _blockSpeed;// = "";
-    /*private*/ int maxInfoMessages;// = 5;
-    /*private*/ int infoMessageCount;// = 0;
+    /*private*/ int maxInfoMessages = 5;
+    /*private*/ int infoMessageCount = 0;
 
 };
 
