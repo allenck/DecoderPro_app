@@ -4,6 +4,7 @@
 
 class SCWarrant : public Warrant
 {
+ Q_OBJECT
 public:
  /*public*/ SCWarrant(QString sName, QString uName, long TTP, QObject *parent = nullptr);
  /*public*/ static /*final*/ float SPEED_STOP;// = 0.0f;

@@ -1,5 +1,6 @@
 #include "jlist.h"
 #include "jlisttablemodel.h"
+
 JList::JList(QWidget* parent) : QListView(parent)
 {
 
@@ -28,7 +29,7 @@ QModelIndexList JList::getSelectedValues()
  * @param shouldScroll  {@code true} if the list should scroll to display
  *                      the selected object, if one exists; otherwise {@code false}
  */
-/*public*/ void JList::setSelectedValue(QVariant anObject, bool shouldScroll)
+/*public*/ void JList::setSelectedValue(QString anObject, bool shouldScroll)
 {
 #if 0 // TODO:
     if(anObject == NULL)
@@ -48,7 +49,7 @@ QModelIndexList JList::getSelectedValues()
     }
     repaint(); /** FIX-ME setSelectedIndex does not redraw all the time with the basic l&f**/
 #endif
- if(anObject == QVariant())
+ if(anObject == nullptr)
   setCurrentIndex(QModelIndex());
  else
  {
@@ -56,7 +57,7 @@ QModelIndexList JList::getSelectedValues()
   for(int row=0; row < _model->rowCount();row++)
   {
    QModelIndex ix;
-   if(anObject == _model->data(ix = _model->index(row,0)))
+   if(anObject == _model->data(ix = _model->index(row,0)).toString())
    {
     setCurrentIndex(ix);
     if(shouldScroll)

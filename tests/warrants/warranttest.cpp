@@ -190,11 +190,11 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
         JUnitAppender::assertWarnMessage("Path NorthToWest in block North has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.", __FILE__, __LINE__);
 
 //        jmri.util.ThreadingUtil.runOnLayout(() -> {
-            try {
-                sWest->setState(Sensor::ACTIVE);
-            } catch (JmriException e) {
-                Assert::fail("Unexpected Exception: " + e.getMessage(), __FILE__, __LINE__);
-            }
+          try {
+              sWest->setState(Sensor::ACTIVE);
+          } catch (JmriException e) {
+              Assert::fail("Unexpected Exception: " + e.getMessage(), __FILE__, __LINE__);
+          }
 //        });
 //        jmri.util.JUnitUtil::releaseThread(this, 100); // What should we specifically waitFor?
 

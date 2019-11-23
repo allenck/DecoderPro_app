@@ -81,6 +81,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -739,6 +740,8 @@ public slots:
 InstanceManager* new_InstanceManager(QObject*  parent = 0);
 void delete_InstanceManager(InstanceManager* obj) { delete obj; } 
    AudioManager*  static_InstanceManager_AudioManagerInstance();
+   void static_InstanceManager_addPropertyChangeListener(PropertyChangeListener*  l);
+   void static_InstanceManager_addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l);
    BlockManager*  static_InstanceManager_blockManagerInstance();
    void clear(InstanceManager* theWrappedObject, QString  type);
    void clearAll(InstanceManager* theWrappedObject);
@@ -759,6 +762,7 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    ProgrammerManager*  static_InstanceManager_programmerManagerInstance();
    void remove(InstanceManager* theWrappedObject, QObject*  item, QString  type);
    void static_InstanceManager_removePropertyChangeListener(PropertyChangeListener*  l);
+   void static_InstanceManager_removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  l);
    ReporterManager*  static_InstanceManager_reporterManagerInstance();
    void static_InstanceManager_reset(QString  type);
    RouteManager*  static_InstanceManager_routeManagerInstance();
@@ -1128,7 +1132,7 @@ void delete_JList(JList* obj) { delete obj; }
    QList<QModelIndex >  getSelectedValues(JList* theWrappedObject);
    QModelIndex  locationToIndex(JList* theWrappedObject, QPoint  arg__1);
    void setSelectedIndex(JList* theWrappedObject, int  index);
-   void setSelectedValue(JList* theWrappedObject, QVariant  anObject, bool  shouldScroll);
+   void setSelectedValue(JList* theWrappedObject, QString  anObject, bool  shouldScroll);
 };
 
 

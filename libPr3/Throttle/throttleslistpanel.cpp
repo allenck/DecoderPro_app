@@ -58,7 +58,7 @@
 
  //JScrollPane scrollPane1 = new JScrollPane(throttleFrames);
  //setLayout(new BorderLayout());
- QVBoxLayout* thisLayout = new QVBoxLayout(this);
+ QVBoxLayout* thisLayout = new QVBoxLayout();
  setLayout(thisLayout);
 
  resize(QSize(320,200));

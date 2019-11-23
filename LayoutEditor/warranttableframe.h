@@ -48,7 +48,7 @@ private:
  static /*final*/ QString retry;// = tr("Retry");
  static /*final*/ QStringList controls;// = {halt, resume, retry, abort};
  /*explicit*/ WarrantTableFrame(QWidget *parent = 0);
- void setStatusText(QString msg, QColor c, bool save);
+ Q_INVOKABLE void setStatusText(QString msg, QColor c, bool save);
  QSignalMapper* setColumnMapper;
 private slots:
  /*private*/ void haltAllAction();

@@ -69,6 +69,7 @@ protected:
   /*protected*/ void haltAllTrains();
   /*protected*/ Warrant* getWarrant(QString name);
  friend class WarrantTableFrame;
+ friend class CheckForTermination;
  friend class Engineer;
 };
 

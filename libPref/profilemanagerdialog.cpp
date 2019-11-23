@@ -50,25 +50,22 @@
  log = new Logger("ProfileManagerDialog");
  // super(parent, modal);
  initComponents();
-#if 0
-ProfileManager::defaultManager()->addPropertyChangeListener(ProfileManager::ACTIVE_PROFILE, new PropertyChangeListener(); {
-        @Override
-        /*public*/ void propertyChange(PropertyChangeEvent* evt) {
-            profiles.setSelectedValue(ProfileManager::defaultManager().getActiveProfile(), true);
-            profiles.repaint();
-        }
-    });
-    ProfileManager::defaultManager()->addPropertyChangeListener(Profile::NAME, new PropertyChangeListener() {
 
-        @Override
-        /*public*/ void propertyChange(PropertyChangeEvent* evt) {
-            if (evt.getSource().getClass().equals(Profile.class) && evt.getPropertyName().equals(Profile.NAME)) {
-                profileNameChanged(((Profile) evt.getSource()));
-            }
-        }
-    });
+// ProfileManager::getDefault()->addPropertyChangeListener(ProfileManager::ACTIVE_PROFILE, (PropertyChangeEvent evt) -> {
+//             profiles.setSelectedValue(ProfileManager.getDefault().getActiveProfile(), true);
+//             profiles.ensureIndexIsVisible(profiles.getSelectedIndex());
+//             profiles.repaint();
+//         });
+#if 0 //TODO: must be done after construcor and sub-class are built!
+ ProfileManager::getDefault()->addPropertyChangeListener(ProfileManager::ACTIVE_PROFILE, new PMDPropertyChangeListener1(this));
+
+ //         ProfileManager.getDefault().addPropertyChangeListener(Profile.NAME, (PropertyChangeEvent evt) -> {
+//             if (evt.getSource().getClass().equals(Profile.class) && evt.getPropertyName().equals(Profile.NAME)) {
+//                 profileNameChanged(((Profile) evt.getSource()));
+//             }
+//         });
+ ProfileManager::getDefault()->addPropertyChangeListener(ProfileManager::ACTIVE_PROFILE, new PMDPropertyChangeListener2(this));
 #endif
-    connect(ProfileManager::defaultManager(), SIGNAL(indexedPropertyChange(IndexedPropertyChangeEvent*)), this, SLOT(propertyChange(IndexedPropertyChangeEvent*)));
 //    this.jScrollPane1.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
 
 //        @Override
@@ -76,6 +73,21 @@ ProfileManager::defaultManager()->addPropertyChangeListener(ProfileManager::ACTI
 //            profilesValueChanged(NULL);
 //        }
 //    });
+}
+
+void PMDPropertyChangeListener1::propertyChange(PropertyChangeEvent *evt)
+{
+ Profile* profile = ProfileManager::getDefault()->getActiveProfile();
+ dlg->profiles->setSelectedValue(profile->getName(), true);
+ dlg->profiles->ensureIndexIsVisible(dlg->profiles->currentIndex().row());
+ dlg->profiles->repaint();
+}
+
+void PMDPropertyChangeListener2::propertyChange(PropertyChangeEvent * evt)
+{
+ if (QString(evt->getSource()->metaObject()->className()) == ("Profile") && evt->getPropertyName() == (Profile::NAME)) {
+     dlg->profileNameChanged(((Profile*) evt->getSource()));
+ }
 }
 
 /**
@@ -399,12 +411,12 @@ void ProfileManagerDialog::timeout()
 //        System.exit(255);
  }
 }
-/*public*/ void ProfileManagerDialog::propertyChange(IndexedPropertyChangeEvent* evt) {
- // TODO: profiles->setSelectedValue(ProfileManager::defaultManager()->getActiveProfile(), true);
- //profiles.repaint();
- if (QString(evt->getSource()->metaObject()->className()) ==("Profile") && evt->getPropertyName()==(/*Profile::NAME*/"name"))
- {
-  profileNameChanged(((Profile*) evt->getSource()));
- }
-}
+///*public*/ void ProfileManagerDialog::propertyChange(IndexedPropertyChangeEvent* evt) {
+// // TODO: profiles->setSelectedValue(ProfileManager::defaultManager()->getActiveProfile(), true);
+// //profiles.repaint();
+// if (QString(evt->getSource()->metaObject()->className()) ==("Profile") && evt->getPropertyName()==(/*Profile::NAME*/"name"))
+// {
+//  profileNameChanged(((Profile*) evt->getSource()));
+// }
+//}
 

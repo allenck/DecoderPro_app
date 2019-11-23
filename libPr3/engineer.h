@@ -7,6 +7,7 @@
 #include "runnable.h"
 #include "../libPref/rampdata.h"
 #include <QWaitCondition>
+#include "warrant.h"
 
 class PropertyChangeEvent;
 class SpeedUtil;
@@ -84,7 +85,7 @@ private:
     static Logger* log;
     /*private*/ void setSpeed(float speed);
     /*private*/ void notify();
-    /*private*/ float getThrottleFactor(float speedStep);
+//    /*private*/ float getThrottleFactor(float speedStep);
     /*private*/ void cancelRamp(bool die);
     /*private*/ void setFunction(int cmdNum, bool isSet);
     /*private*/ void setLockFunction(int cmdNum, bool isTrue);
@@ -96,13 +97,12 @@ private:
     ThrottleRamp* getRamp();
     /*private*/ void advanceToCommandIndex(int idx);
     /*private*/ void rampDone(bool stop, QString type);
-    void notifyAll() {}
     /*private*/ bool setSpeedRatio(QString speedType);
 
 
 protected:
     /*protected*/ Sensor* getWaitSensor();
-    /*synchronized*/ /*protected*/ void setWaitforClear(bool set);
+    /*synchronized*/ /*protected*/ void setWaitforClear(bool stop);
 //    /*protected*/ QString minSpeedType(QString speed1, QString speed2);
     /*protected*/ void rampSpeedTo(QString endSpeedType, int endBlockIdx, bool useIndex);
 //    /*protected*/ float getDistanceTraveled(float speedSetting, QString speedtype, long time);
@@ -110,7 +110,7 @@ protected:
 //    /*protected*/ DccThrottle* getThrottle();
 //    /*protected*/ float rampLengthForSpeedChange(float curSpeed, QString curSpeedType, QString toSpeedType);
 //    /*protected*/ long getTimeForDistance(float speed, float distance);
-    /*synchronized*/ /*protected*/ void checkHalt();
+//    /*synchronized*/ /*protected*/ void checkHalt();
     /*protected*/ float getSpeedSetting();
     /*protected*/ float getScriptSpeed();
     /*protected*/ void setRunOnET(bool set);
@@ -121,6 +121,7 @@ protected:
 friend class Warrant;
 friend class CommandDelay;
 friend class ThrottleRamp;
+friend class CheckForTermination;
 };
 
 class ThrottleRamp : public QObject {
@@ -154,5 +155,22 @@ private:
 
  friend class Warrant;
  friend class Engineer;
+};
+
+/*static*/ /*private*/ class CheckForTermination : public QObject //extends Thread
+{
+ Q_OBJECT
+    Warrant* oldWarrant;
+    Warrant* newWarrant;
+    int num;
+    Engineer* engineer;
+public:
+    CheckForTermination(Warrant* oldWar, Warrant* newWar, int n, Engineer* engineer);
+ public slots:
+    //@Override
+    //@SuppressFBWarnings(value = "UW_UNCOND_WAIT", justification="false postive, guarded by while statement")
+    /*public*/ void process(); // run
+signals:
+    void finished();
 };
 #endif // ENGINEER_H

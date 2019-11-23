@@ -1,6 +1,5 @@
 ﻿#include "engineer.h"
 #include "dccthrottle.h"
-#include "warrant.h"
 #include "abstractsensor.h"
 #include "instancemanager.h"
 #include "oblock.h"
@@ -347,12 +346,12 @@ if (log->isTraceEnabled())
     log->debug(tr("advanceToCommandIndex to %1 - %2").arg(_idxSkipToSpeedCommand+1).arg(_commands->value(idx)->toString()));
     // Note: command indexes biased from 0 to 1 to match Warrant display of commands, which are 1-based.
 }
-
+#if 0
 /*private*/ void Engineer::setStep(int step) {
     setSpeedStepMode(step);
     _throttle->setSpeedStepMode((SpeedStepMode::SSMODES)step);
 }
-
+#endif
 /**
  * Cannot set _runOnET to true until current NOOP command completes
  * so there is the intermediate flag _setRunOnET
@@ -389,7 +388,8 @@ if (log->isTraceEnabled())
         if (ts->getCommand().toUpper() == ("NOOP") && ts->getBeanDisplayName() == (block->getDisplayName())) {
             if (log->isDebugEnabled())
                 log->debug("clearWaitForSync() calls notify()");
-            notifyAll();
+            //notifyAll();
+            waitForSync.wakeAll();
         }
     }
 }
@@ -468,7 +468,8 @@ if (log->isTraceEnabled())
      }
     if (!_atHalt && !_atClear) {
         /*synchronized (this)*/ {
-            notifyAll();  // let engineer run script
+            //notifyAll();  // let engineer run script
+      waitForClear.wakeAll();
             log->debug("rampDone called notify");
         }
         if (_currentCommand == ("NOOP")) {
@@ -476,6 +477,7 @@ if (log->isTraceEnabled())
         }
     }
 }
+#if 0
 /*private*/ void Engineer::setSpeedStepMode(int step) {
     switch (step) {
         case DccThrottle::SpeedStepMode14:
@@ -492,7 +494,7 @@ if (log->isTraceEnabled())
             break;
     }
 }
-
+#endif
 /*private*/ void Engineer::setSpeed(float speed) {
     _speed = speed;
     _throttle->setSpeedSetting(_speed);
@@ -574,22 +576,32 @@ if (log->isTraceEnabled())
      if (_atHalt) {
          if (log->isDebugEnabled())
              log->debug("setHalt calls notify()");
-         notifyAll();   // free wait at _atHalt
+         //notifyAll();   // free wait at _atHalt
+         waitForClear.wakeAll();
+
      }
  } else {
      _halt = true;
  }
 }
 
-/*synchronized*/ /*protected*/ void Engineer::setWaitforClear(bool set)
+/*synchronized*/ /*protected*/ void Engineer::setWaitforClear(bool stop)
 {
-    bool wasWaitforClear = _waitForClear;
-    _waitForClear = set;
-    checkHalt();
-    if (!_waitForClear && !_halt && wasWaitforClear) {
-        if (_debug) log->debug("setWaitforClear calls notify()");
-        this->notify();
-    }
+ if (log->isDebugEnabled())
+     log->debug(tr("setWaitforClear(%1): _atClear= %2 throttle speed= %3, _halt= %4, _waitForSync= %5, warrant %6").arg(
+         stop?"true":"false").arg(_atClear).arg( _throttle->getSpeedSetting()).arg(_halt?"true":"false").arg(_waitForSync?"true":"false").arg(_warrant->getDisplayName()));
+ if (!stop) {    // resume normal running
+     _waitForClear = false;
+     if (_atClear)
+     {
+      if (log->isDebugEnabled())
+          log->debug("setWaitforClear calls notify");
+      //notifyAll();   // free wait at _atClear
+      waitForClear.wakeAll();
+     }
+ } else {
+     _waitForClear = true;
+ }
 }
 
 QString Engineer::getFlags() {
@@ -670,6 +682,60 @@ ThrottleRamp* Engineer::getRamp() {
     }
 }
 
+/**
+ * Wait for Sensor state event
+ */
+/*private*/ void Engineer::getSensor(QString sensorName, QString act) {
+    QString action = act.toUpper();
+    if (_waitSensor != nullptr) {
+        _waitSensor->removePropertyChangeListener((PropertyChangeListener*)this);
+    }
+    _waitSensor = InstanceManager::sensorManagerInstance()->getSensor(sensorName);
+    if (_waitSensor != nullptr) {
+        if ("ACTIVE" == (action)) {
+            _sensorWaitState = Sensor::ACTIVE;
+        } else if ("INACTIVE" == (action)) {
+            _sensorWaitState = Sensor::INACTIVE;
+        } else {
+            log->error("Bad Sensor command \"" + action + "\"+ for sensor " + sensorName);
+            return;
+        }
+        int state = _waitSensor->getKnownState();
+        if (state == _sensorWaitState) {
+            log->info("Engineer: state of event sensor " + sensorName + " already at state " + action);
+            return;
+        }
+        _waitSensor->addPropertyChangeListener((PropertyChangeListener*)this);
+        if (log->isDebugEnabled())
+            log->debug(tr("Listen for propertyChange of %1, wait for State= %2").arg(_waitSensor->getDisplayName()).arg(_sensorWaitState));
+        // suspend commands until sensor changes state
+        /*synchronized (this)*/ {
+         mutex.lock();
+            _waitForSensor = true;
+            while (_waitForSensor) {
+                try {
+                    _warrant->fireRunStatus("SensorWaitCommand", act, _waitSensor->getDisplayName());
+                    //wait();
+                    waitForClear.notify_all();
+                    QString name =  _waitSensor->getDisplayName();    // save name, _waitSensor will be null 'eventually'
+                    _warrant->fireRunStatus("SensorWaitCommand", "", name);
+                } catch (InterruptedException ie) {
+                    log->error("Engineer interrupted at _waitForSensor " + ie.getMessage());
+                    _warrant->debugInfo();
+                    //Thread.currentThread().interrupt();
+                    thread()->quit();
+                }
+//                    finally {
+                    clearSensor();
+//                }
+            }
+            mutex.unlock();
+        }
+    } else {
+        log->warn("Sensor " + sensorName + " not found.");
+    }
+}
+
 /*private*/ void Engineer::clearSensor() {
     if (_waitSensor != nullptr) {
         _waitSensor->removePropertyChangeListener((PropertyChangeListener*)this);
@@ -692,7 +758,7 @@ ThrottleRamp* Engineer::getRamp() {
             && ( evt->getNewValue()).toInt() == _sensorWaitState)) {
         /*synchronized (this)*/ {
 //                if (!_halt && !_waitForClear) {
-                this->notifyAll();  // free sensor wait
+                //this->notifyAll();  // free sensor wait
       waitForClear.wakeAll();
 //                }
         }
@@ -722,10 +788,17 @@ ThrottleRamp* Engineer::getRamp() {
     if (msg == nullptr) {
         if (_warrant->getSpeedUtil()->getDccAddress()==(warrant->getSpeedUtil()->getDccAddress())) {
             cmdBlockIdx = 0;    // reset block command number
-#if 0
-            Thread checker = new CheckForTermination(_warrant, warrant, num);
-            checker.start();
-#endif
+
+//            Thread checker = new CheckForTermination(_warrant, warrant, num);
+//            checker.start();
+            CheckForTermination* checker = new CheckForTermination(_warrant, warrant, num, this);
+            QThread* thread = new QThread();
+            checker->moveToThread(thread);
+            connect(thread, SIGNAL(started()), checker, SLOT(process()));
+            connect(checker, SIGNAL(finished()), thread, SLOT(quit()));
+            connect(checker, SIGNAL(finished()), thread, SLOT(deleteLater()));
+            thread->start();
+
             if (log->isDebugEnabled()) log->debug("Exit runWarrant");
             return;
         } else {
@@ -751,6 +824,79 @@ ThrottleRamp* Engineer::getRamp() {
     if (log->isDebugEnabled()) log->debug("Exit runWarrant - " + msg);
 }
 
+//static private class CheckForTermination extends Thread {
+
+//    Warrant oldWarrant;
+//    Warrant newWarrant;
+//    int num;
+
+    CheckForTermination::CheckForTermination(Warrant* oldWar, Warrant* newWar, int n, Engineer* engineer) {
+     oldWarrant = oldWar;
+     newWarrant = newWar;
+     num = n;
+     this->engineer = engineer;
+     if (engineer->log->isDebugEnabled()) engineer->log->debug(tr("checkForTermination(%1, %2, %3)").arg(
+             oldWarrant->getDisplayName()).arg(newWarrant->getDisplayName()).arg(num));
+  }
+
+    //@Override
+    //@SuppressFBWarnings(value = "UW_UNCOND_WAIT", justification="false postive, guarded by while statement")
+    /*public*/ void CheckForTermination::process() {
+        OBlock* endBlock = oldWarrant->getLastOrder()->getBlock();
+        long time = 0;
+        QString msg = "";
+        try {
+            while (time < 10000) {
+                if (oldWarrant->getRunMode() == Warrant::MODE_NONE) {
+                    break;
+                }
+                /*synchronized (this)*/ {
+                    //wait(200);
+                 SleeperThread::msleep(200);
+                    time += 200;
+                }
+            }
+            if (time >= 10000) {
+                msg = tr("Cannot launch \"%1\". \"%2\" has not released its allocation of \"%3\".").arg(
+                        newWarrant->getDisplayName()).arg(oldWarrant->getDisplayName()).arg(endBlock->getDisplayName());
+            }
+        } catch (InterruptedException ie) {
+            engineer->log->warn(tr("Warrant \"%1\" InterruptedException message= \"%2\" time= %3").arg(
+                    oldWarrant->getDisplayName()).arg(ie.toString()).arg(time));
+            //Thread.currentThread().interrupt();
+            thread()->quit();
+        }
+        if (engineer->log->isDebugEnabled()) engineer->log->debug(tr("CheckForTermination waited %1ms. runMode=%2 ").arg(time).arg(oldWarrant->getRunMode()));
+
+        QColor color = QColor(Qt::red);
+        msg = newWarrant->setRoute(false, nullptr);
+        if (msg == "") {
+            msg = newWarrant->setRunMode(Warrant::MODE_RUN, nullptr, nullptr, nullptr, false);
+        }
+        if (msg != "") {
+            msg = tr("Cannot run warrant \"%1\". %2").arg(newWarrant->getDisplayName()).arg(msg);
+        } else {
+            if (oldWarrant->equals(newWarrant)) {
+                msg = tr("Warrant \"%1\" launched. %2 launches remaining.").arg(oldWarrant->getDisplayName()).arg((num<0 ? "unlimited" : QString::number(num)));
+            } else {
+                msg = tr("Launching warrant \"%1\" at block %4 from warrant \"%2\" at block %3.").arg(
+                        newWarrant->getDisplayName()).arg(oldWarrant->getDisplayName()).arg(
+                        newWarrant->getfirstOrder()->getBlock()->getDisplayName()).arg(
+                        endBlock->getDisplayName());
+            }
+            color = WarrantTableModel::myGreen;
+        }
+        QString m = msg;
+        QColor c = color;
+//        ThreadingUtil.runOnLayoutEventually(() -> { // delay until current warrant can complete
+            //WarrantTableFrame::getDefault()->setStatusText(m, c, true);
+        if(!QMetaObject::invokeMethod(WarrantTableFrame::getDefault(), "setStatusTest", Qt::QueuedConnection, Q_ARG(QString, m), Q_ARG(QColor, c), Q_ARG(bool, true)))
+         throw InvocationTargetException();
+//        });
+        emit finished();
+    }
+//}
+
 
 //class ThrottleRamp implements Runnable {
 //    String endSpeedType;
@@ -769,7 +915,8 @@ ThrottleRamp* Engineer::getRamp() {
       }
       /*synchronized (_ramp)*/ {
           _engineer->log->debug("ThrottleRamp.quit calls notify)");
-          _engineer->_ramp->notifyAll(); // free waits at ramp time interval
+          //_engineer->_ramp->notifyAll(); // free waits at ramp time interval
+          _engineer->_ramp->waitRampSpeedTo.wakeAll();
       }
     }
 
@@ -990,7 +1137,7 @@ ThrottleRamp* Engineer::getRamp() {
 //}
 
 
-
+#if 0
 /*private*/ float Engineer::getThrottleFactor(float speedStep)
 {
  if (_speedProfile != NULL)
@@ -1007,138 +1154,51 @@ ThrottleRamp* Engineer::getRamp() {
 // return speed2;
 //}
 /**
-    * If waiting to sync entrance to a block boundary with recorded wait time,
-    * or waiting for clearance ahead for rogue occupancy, stop aspect or sharing
-    *  of turnouts, this call will free the wait.
-    */
-    /*synchronized*/ /*protected*/ void Engineer::checkHalt() {
-        if (_waitForSync &&!_halt && !_waitForSensor && !_waitForClear) {
-            if (_debug) log->debug("checkHalt calls notify()");
-            //this->notify();
-            atHalt.notify_one();
-        }
-        if (_debug) log->debug(QString("checkHalt _waitForSync= ")+(_waitForSync?"true":"false"));
+ * If waiting to sync entrance to a block boundary with recorded wait time,
+ * or waiting for clearance ahead for rogue occupancy, stop aspect or sharing
+ *  of turnouts, this call will free the wait.
+ */
+/*synchronized*/ /*protected*/ void Engineer::checkHalt() {
+    if (_waitForSync &&!_halt && !_waitForSensor && !_waitForClear) {
+        if (_debug) log->debug("checkHalt calls notify()");
+        //this->notify();
+        waitForSync.notify_all();
     }
-#if 0
-/*protected*/ float Engineer::getDistanceTraveled(float speedSetting, QString speedtype, long time)
-{
- float speed =  modifySpeed(speedSetting, speedtype);
- float distance;
- bool isForward = _throttle->getIsForward();
- if (_speedProfile != NULL) {
-     distance = _speedProfile->getSpeed(speed, isForward)*time/1000;
- } else {
-     distance = (speed*time)/_speedMap->getDefaultThrottleFactor();
- }
- return distance;
-}
-// return a boolean so minSpeedType() can return a non-null String if possible
-/*protected*/ bool Engineer::secondGreaterThanFirst(QString speed1, QString speed2) {
- if (speed1=="") {
-        return false;
-    }
- if (speed2=="") {
-        return true;
-    }
-    float s1 = modifySpeed(1.0f, speed1);
-    float s2 = modifySpeed(1.0f, speed2);
-    return (s1<s2);
-}
-/*protected*/ DccThrottle* Engineer::getThrottle() {
-    return _throttle;
-}
-/*protected*/ float Engineer::rampLengthForSpeedChange(float curSpeed, QString curSpeedType, QString toSpeedType)
-{
-    if (curSpeedType==(toSpeedType)) {
-        return 0.0f;
-    }
-    float fromSpeed = modifySpeed(curSpeed, curSpeedType);
-    float toSpeed = modifySpeed(curSpeed, toSpeedType);
-    if (toSpeed>fromSpeed) {
-        float tmp = fromSpeed;
-        fromSpeed = toSpeed;
-        toSpeed = tmp;
-    }
-    float rampLength = 0.0f;
-    float delta = _speedMap->getStepIncrement();
-    if (delta<=0.007f) {
-        log->error("SignalSpeedMap StepIncrement is not set correctly.  Check Preferences->Warrants.");
-        return 1.0f;
-    }
-    float time = _speedMap->getStepDelay();
-    bool isForward = _throttle->getIsForward();
-    float speed = fromSpeed;
-    while (speed >= toSpeed) {
-        float dist;
-        if (_speedProfile != NULL) {
-            dist = _speedProfile->getSpeed((speed-delta/2), isForward)*time/1000;
-        } else {
-            dist = (speed-delta/2)*time/_speedMap->getDefaultThrottleFactor();
-        }
-        if (dist<=0.0f) {
-            break;
-        }
-        speed -= delta;
-        if (speed>=toSpeed) {
-            rampLength += dist;
-        } else {
-            rampLength += (delta-(speed-speed))*dist/delta;
-        }
-    }
-    if (_debug) log->debug("rampLengthForSpeedChange()= "+QString::number(rampLength)+
-            " for speed= "+QString::number(fromSpeed)+", "+curSpeedType+" to "+toSpeedType+", from "+
-            (_speedProfile!=NULL?"SpeedProfile":"Factor="+QString::number(getThrottleFactor(curSpeed))));
-    return rampLength;
-}
-/*protected*/ long Engineer::getTimeForDistance(float speed, float distance)
-{
-    bool isForward = _throttle->getIsForward();
-    float time;
-    if (_speedProfile != NULL) {
-        time = distance*1000/_speedProfile->getSpeed(speed, isForward);
-    } else {
-        time = distance*_speedMap->getDefaultThrottleFactor()/speed;
-    }
-    return (long)time;
+    if (_debug) log->debug(QString("checkHalt _waitForSync= ")+(_waitForSync?"true":"false"));
 }
 #endif
-/*private*/ void Engineer::notify()
-{
- // TODO:
-}
-
-    /*private*/ void Engineer::setFunction(int cmdNum, bool isSet) {
-        switch (cmdNum) {
-            case 0:
-                _throttle->setF0(isSet);
-                break;
-            case 1:
-                _throttle->setF1(isSet);
-                break;
-            case 2:
-                _throttle->setF2(isSet);
-                break;
-            case 3:
-                _throttle->setF3(isSet);
-                break;
-            case 4:
-                _throttle->setF4(isSet);
-                break;
-            case 5:
-                _throttle->setF5(isSet);
-                break;
-            case 6:
-                _throttle->setF6(isSet);
-                break;
-            case 7:
-                _throttle->setF7(isSet);
-                break;
-            case 8:
-                _throttle->setF8(isSet);
-                break;
-            case 9:
-                _throttle->setF9(isSet);
-                break;
+/*private*/ void Engineer::setFunction(int cmdNum, bool isSet) {
+    switch (cmdNum) {
+        case 0:
+            _throttle->setF0(isSet);
+            break;
+        case 1:
+            _throttle->setF1(isSet);
+            break;
+        case 2:
+            _throttle->setF2(isSet);
+            break;
+        case 3:
+            _throttle->setF3(isSet);
+            break;
+        case 4:
+            _throttle->setF4(isSet);
+            break;
+        case 5:
+            _throttle->setF5(isSet);
+            break;
+        case 6:
+            _throttle->setF6(isSet);
+            break;
+        case 7:
+            _throttle->setF7(isSet);
+            break;
+        case 8:
+            _throttle->setF8(isSet);
+            break;
+        case 9:
+            _throttle->setF9(isSet);
+            break;
        case 10:
             _throttle->setF10(isSet);
             break;

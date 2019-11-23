@@ -117,6 +117,8 @@ XmlFile::XmlFile(QObject *parent) :
   log->debug("reading xml from file: " + info.canonicalFilePath());
  }
  currFile = file->fileName();
+ if(!file->exists())
+  throw FileNotFoundException(tr("file %1 does not exist").arg(file->fileName()));
 
 //    FileInputStream fs = new FileInputStream(file);
 //    try {

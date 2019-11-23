@@ -18,6 +18,7 @@
 #include <QMetaEnum>
 #include "signalhead.h"
 #include "signalmast.h"
+#include "scwarrant.h"
 
 //Warrant::Warrant(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -46,8 +47,10 @@
 
 /*protected*/ /*static*/ /*final*/ QStringList Warrant::CNTRL_CMDS = QStringList() << tr("Stop")<< tr("Halt")<< tr("Resume")<< tr("Abort")<< tr("Retry");
 
-/*protected*/ /*static*/ /*final*/ QStringList Warrant::RUN_STATE = QStringList()<< tr("At start in block \"%1\"")<< tr("Halted in block \"%1\"")<< tr("Resume")<< tr("Script aborted in block \"%1\" at Cmd #%2.")<< tr("Move into next block") << tr("Running in block \"%1\"")<< tr("speed restricted in block \"%1\"")<< tr("Waiting in block \"%1\" for clearance ahead")<< tr("Waiting block \"%1\" for sensor")<< tr("In block \"%1\", running late to next block");
-
+/*protected*/ /*static*/ /*final*/ QStringList Warrant::RUN_STATE = QStringList()
+            << "HaltStart"<<"atHalt"<<"Resumed"<<"Aborts"<<"Retried"<<
+            "EStop"<<"Ramp"<<"Running"<<"RestrictSpeed"<<"WaitingForClear"<<"WaitingForSensor"<<
+            "RunningLate"<<"WaitingForStart"<<"RecordingScript"<<"StopPending"<<"RampingUp";
 /*public*/ /*static*/ /*final*/ QStringList Warrant::MODES = QStringList() << "none"<< "LearnMode"<< "RunAuto"<< "RunManual";
 
 /**
@@ -527,17 +530,22 @@
    {
     return tr("Blank Warrant");
    }
-   if (getDccAddress()==nullptr)
+   if (_speedUtil->getAddress() == nullptr)
    {
-    return tr("Locomotive not Assigned.");
+       return tr("Locomotive not Assigned.");
    }
-   if (getThrottleCommands()->size() == 0)
+   //if (!(this->instanceof SCWarrant) && _commands.size() <= _orders.size())
+   if(qobject_cast<SCWarrant*>(this) && _commands->size() <= _orders->size())
    {
-//                return java.text.MessageFormat.format(
-//                    WarrantTableAction.rb.getString("NoCommands"), getDisplayName());
-    return tr("Warrant \"%1\" has no throttle commands.").arg(getDisplayName());
+       return tr("Warrant \"%1\" has incomplete throttle commands.").arg(getDisplayName());
    }
-   return tr("Idle");
+   if (_message == "") {
+       return tr("Idle");
+   }
+   if (_idxCurrentOrder != 0 && _idxLastOrder == _idxCurrentOrder) {
+       return tr("Warrant aborted. Location of \"%1\" unknown. Not found at \"%2\". -").arg(_trainName).arg(getCurrentBlockName()) + _message;
+   }
+   return tr("Idle - %1").arg(_message);
   case Warrant::MODE_LEARN:
     return tr("Learn Mode in Blk %1.").arg(getCurrentBlockOrder()->getBlock()->getDisplayName());
   case Warrant::MODE_RUN:
@@ -1081,23 +1089,10 @@
     if(_debug) {
        log->debug("notifyThrottleFound address= " +((DccLocoAddress*)((LocoNetThrottle*)throttle)->getLocoAddress())->toString()+" _runMode= "+QString::number(_runMode));
     }
-    _idxCurrentOrder = 0;
-
-    if (_runMode == MODE_LEARN) {
-        _student->notifyThrottleFound(throttle);
-    } else {
-        getSpeedMap();      // initialize speedMap for getPermissibleEntranceSpeed() calls
-        _engineer = new Engineer(this, throttle);
-        QThread* thread = new QThread();
-        _engineer->moveToThread(thread);
-        connect(thread, SIGNAL(started()), _engineer, SLOT(process()));
-        connect(_engineer, SIGNAL(finished()),thread, SLOT(quit()));
-        connect(_engineer,SIGNAL(finished()), thread, SLOT(deleteLater()));
-        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-        startupWarrant();
-        ///*new*/ QThread(_engineer).start();
-        thread->start();
-    }
+    _speedUtil->setThrottle(throttle);
+    _speedUtil->setOrders(_orders);
+    startupWarrant();
+    runWarrant(throttle);
 }
 
 /*protected*/ void Warrant::startupWarrant() {
@@ -1109,6 +1104,43 @@
  OBlock* b = bo->getBlock();
  b->setValue(_trainName);
  b->setState(b->getState() | OBlock::RUNNING);
+}
+
+/*private*/ void Warrant::runWarrant(DccThrottle* throttle) {
+    if (_runMode == MODE_LEARN) {
+        /*synchronized (this)*/ {
+            _student->notifyThrottleFound(throttle);
+        }
+    } else {
+         _engineer = new Engineer(this, throttle);
+        if (_tempRunBlind) {
+            _engineer->setRunOnET(true);
+        }
+        if (_delayStart) {
+            _engineer->setHalt(true);    // throttle already at 0
+        }
+        // if there may be speed changes due to signals or rogue occupation.
+        if (_noRamp) { // make immediate speed changes
+            _speedInfo = QList<BlockSpeedInfo*>();
+        } else { // make smooth speed changes by ramping
+            getBlockSpeedTimes();
+        }
+        QThread* thread = new QThread();
+        _engineer->moveToThread(thread);
+        connect(thread, SIGNAL(started()), _engineer, SLOT(process()));
+        connect(_engineer, SIGNAL(finished()), thread, SLOT(quit()));
+        connect(_engineer, SIGNAL(finished()), thread, SLOT(deleteLater()));
+        thread->start();
+
+        if (_delayStart) {
+            // user must explicitly start train (resume) in a dark block
+            fireRunStatus("ReadyToRun", -1, 0);   // ready to start msg
+        }
+        if (_engineer->getRunState() == Warrant::RUNNING) {
+            setMovement(MID);
+        }
+        _delayStart = false; // script should start when user resumes - no more delay
+    }
 }
 
 /*public*/ void Warrant::notifyFailedThrottleRequest(LocoAddress *address, QString reason) {

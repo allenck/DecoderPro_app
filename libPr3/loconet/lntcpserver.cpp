@@ -60,7 +60,8 @@ LnTcpServer* LnTcpServer::self = nullptr;
 //             break;
 //     }
 // });
- connect(pm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ //connect(pm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ pm->addPropertyChangeListener((PropertyChangeListener*)this);
 }
 
 void LnTcpServer::propertyChange(PropertyChangeEvent * evt)

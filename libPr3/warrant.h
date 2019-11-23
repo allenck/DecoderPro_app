@@ -218,6 +218,7 @@ Logger* log;
     /*private*/ static float RAMP_ADJUST;// = 1.05f;
     /*private*/ bool setMovement(int position);
     /*private*/ void rampSpeedDelay (long waitTime, QString speedType, int endBlockIdx);
+    /*private*/ void runWarrant(DccThrottle* throttle);
 
 protected:
     /*protected*/ bool _tempRunBlind;            // run mode flag

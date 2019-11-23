@@ -69,6 +69,7 @@ protected:
  friend class ProfileUtilsTest;
  friend class ProfileUtils;
  friend class NullProfile;
+ friend class PMDPropertyChangeListener2;
 };
 
 #endif // PROFILE_H

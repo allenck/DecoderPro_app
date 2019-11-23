@@ -89,7 +89,7 @@ public:
      *
      * @return true if lit; false if dark
      */
-    virtual /*public*/ bool getLit() {}
+    virtual /*public*/ bool getLit() =0;
 
     virtual /*public*/ void setLit(bool /*newLit*/) {}
 

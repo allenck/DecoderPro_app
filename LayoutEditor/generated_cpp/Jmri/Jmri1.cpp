@@ -68,6 +68,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -4518,6 +4519,16 @@ AudioManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_AudioMana
   return (InstanceManager::AudioManagerInstance());
 }
 
+void PythonQtWrapper_InstanceManager::static_InstanceManager_addPropertyChangeListener(PropertyChangeListener*  l)
+{
+  (InstanceManager::addPropertyChangeListener(l));
+}
+
+void PythonQtWrapper_InstanceManager::static_InstanceManager_addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l)
+{
+  (InstanceManager::addPropertyChangeListener(propertyName, l));
+}
+
 BlockManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_blockManagerInstance()
 {
   return (InstanceManager::blockManagerInstance());
@@ -4616,6 +4627,11 @@ void PythonQtWrapper_InstanceManager::remove(InstanceManager* theWrappedObject, 
 void PythonQtWrapper_InstanceManager::static_InstanceManager_removePropertyChangeListener(PropertyChangeListener*  l)
 {
   (InstanceManager::removePropertyChangeListener(l));
+}
+
+void PythonQtWrapper_InstanceManager::static_InstanceManager_removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  l)
+{
+  (InstanceManager::removePropertyChangeListener(propertyName, l));
 }
 
 ReporterManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_reporterManagerInstance()
@@ -9676,7 +9692,7 @@ void PythonQtWrapper_JList::setSelectedIndex(JList* theWrappedObject, int  index
   ( theWrappedObject->setSelectedIndex(index));
 }
 
-void PythonQtWrapper_JList::setSelectedValue(JList* theWrappedObject, QVariant  anObject, bool  shouldScroll)
+void PythonQtWrapper_JList::setSelectedValue(JList* theWrappedObject, QString  anObject, bool  shouldScroll)
 {
   ( theWrappedObject->setSelectedValue(anObject, shouldScroll));
 }

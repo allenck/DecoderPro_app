@@ -62,16 +62,19 @@
 {
  QVBoxLayout* thisLayout;
     this->setLayout(thisLayout = new QVBoxLayout); //(this, BoxLayout.PAGE_AXIS));
- setMinimumSize(600,300);
- QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+ setMinimumSize(500,200);
+
+ QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
  sizePolicy.setHorizontalStretch(0);
  sizePolicy.setVerticalStretch(0);
  sizePolicy.setHeightForWidth(this->sizePolicy().hasHeightForWidth());
  this->setSizePolicy(sizePolicy);
  QScrollArea* scrollArea = new QScrollArea();
+ scrollArea->setSizePolicy(sizePolicy);
  scrollArea->setWidgetResizable(true);
  QWidget* scrollPane = new QWidget();
- QVBoxLayout* scrollPaneLayout = new QVBoxLayout(scrollPane);
+ QVBoxLayout* scrollPaneLayout = new QVBoxLayout(scrollPane);\
+ scrollPane->resize(610,310);
  QWidget* leftPanel = new QWidget();
  QVBoxLayout* leftPanelLayout;
  leftPanel->setLayout(leftPanelLayout = new QVBoxLayout); //(leftPanel, BoxLayout.PAGE_AXIS));
@@ -98,6 +101,7 @@
  scrollArea->setWidget(scrollPane);
  thisLayout->addWidget(scrollArea);
  //thisLayout->addWidget(applyPanel());
+ adjustSize();
 }
 #else
 /*private*/ void WarrantPreferencesPanel::initGUI()

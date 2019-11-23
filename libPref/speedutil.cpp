@@ -405,6 +405,11 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
 /*protected*/ void SpeedUtil::setThrottle( DccThrottle* throttle) {
     _throttle = throttle;
     getSpeedProfile();
+    // adjust user's setting to be throttle speed step settings
+    float stepIncrement = _throttle->getSpeedIncrement();
+    _rampThrottleIncrement = stepIncrement * qRound(getRampThrottleIncrement()/stepIncrement);
+    if (log->isTraceEnabled()) log->debug(tr("User's Ramp increment modified to %1 (%2 speed steps)").arg(
+            _rampThrottleIncrement).arg(qRound(_rampThrottleIncrement/stepIncrement)));
 }
 
 // return true if the speed named 'speed2' is strictly greater than that of 'speed1'

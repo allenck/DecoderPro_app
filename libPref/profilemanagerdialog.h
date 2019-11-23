@@ -27,7 +27,7 @@ public:
 signals:
 
 public slots:
- void propertyChange(IndexedPropertyChangeEvent* evt);
+ //void propertyChange(IndexedPropertyChangeEvent* evt);
 
 private:
     /*private*/ QTimer* timer;
@@ -39,7 +39,7 @@ private:
     /*private*/ QLabel* countDownLbl;
 //    /*private*/ QScrollArea* jScrollPane1;
     /*private*/ QLabel* listLabel;
-    /*private*/ JList* profiles;
+    /*private*/ JList* profiles = nullptr;
     // End of variables declaration
     /*private*/ void initComponents();
     Logger* log;
@@ -56,8 +56,29 @@ private slots:
     void closeEvent(QCloseEvent *);
     void showEvent(QShowEvent *);
     void timeout();
+    friend class PMDPropertyChangeListener1;
+    friend class PMDPropertyChangeListener2;
 };
 
+class PMDPropertyChangeListener1 : public PropertyChangeListener
+{
+ Q_OBJECT
+ ProfileManagerDialog* dlg;
+public:
+ PMDPropertyChangeListener1(ProfileManagerDialog* dlg) {this->dlg = dlg;}
+public slots:
+ void propertyChange(PropertyChangeEvent* evt);
+};
+
+class PMDPropertyChangeListener2 : public PropertyChangeListener
+{
+ Q_OBJECT
+ ProfileManagerDialog* dlg;
+public:
+ PMDPropertyChangeListener2(ProfileManagerDialog* dlg) {this->dlg = dlg;}
+public slots:
+ void propertyChange(PropertyChangeEvent*evt);
+};
 
 
 #endif // PROFILEMANAGERDIALOG_H

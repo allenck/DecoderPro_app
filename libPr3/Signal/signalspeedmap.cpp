@@ -108,12 +108,12 @@ void SignalSpeedMap::propertyChange(PropertyChangeEvent *evt)
  if (evt->getPropertyName()==(InstanceManager::getDefaultsPropertyName("WarrantPreferences")))
  {
   WarrantPreferences* wp = static_cast<WarrantPreferences*>(InstanceManager::getDefault("WarrantPreferences"));
-   connect(wp, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(warrantPreferences_PropertyChange(PropertyChangeEvent*)));
+wp->addPropertyChangeListener(warrantPreferencesListener);
  }
 }
 void SignalSpeedMap::loadMap()
 {
- QStringList list = QStringList() << "" << "xml/signals";
+ QStringList list = QStringList() << FileUtil::getProgramPath() + "" <<FileUtil::getProgramPath() + "xml/signals";
     QUrl path = FileUtil::findURL("signalSpeeds.xml", list);
     XmlFile* xf = new XmlFile();
     try {
