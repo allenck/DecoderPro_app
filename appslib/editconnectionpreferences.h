@@ -3,6 +3,7 @@
 #include "appconfigbase.h"
 #include <QtXml>
 #include <QTabWidget>
+#include "jpanel.h"
 #if 0
 /*static*/ class PreferencesCatItems_e  : QObject
 {//implements java.io.Serializable {

@@ -13,7 +13,7 @@
 #include "jseparator.h"
 #include "preferencessubpanel.h"
 #include "propertychangeevent.h"
-#include <QStackedWidget>
+//#include <QStackedWidget>
 #include <QMetaType>
 #include "connectionspreferencespanel.h"
 #include "programmerconfigpane.h"
@@ -115,8 +115,8 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
 {
  preferencesElements =  QList<QDomElement>();
  //preferencesPanels = QMap<QString, PreferencesPanel*>();
- detailpanel = new QStackedWidget();
- detailpanel->resize(300, 400);
+// detailpanel = new QStackedWidget();
+// detailpanel->resize(300, 400);
  preferencesArray = QList<PreferencesCatItems*>();
  initialisationState = UNINITIALISED;
  log->setDebugEnabled(true);
@@ -168,6 +168,7 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
 //    listScroller.setPreferredSize(new Dimension(100, 100, this));
 
  buttonpanel = new QWidget();
+ buttonpanel->setMaximumWidth(200);
  QVBoxLayout* buttonPanelLayout;
  buttonpanel->setLayout(buttonPanelLayout = new QVBoxLayout); //(buttonpanel, BoxLayout.Y_AXIS));
 //    buttonpanel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 3));
@@ -186,9 +187,10 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
 //        savePressed(invokeSaveOptions());
 //    });
  connect(save, SIGNAL(clicked()), this, SLOT(On_save_clicked()));
- QHBoxLayout* thisLayout;
+ //QHBoxLayout* thisLayout;
  setMinimumSize(400, 300);
- setLayout(thisLayout = new QHBoxLayout); //(this, BoxLayout.X_AXIS));
+ setStretchFactor(1,2);
+ //setLayout(thisLayout = new QHBoxLayout); //(this, BoxLayout.X_AXIS));
 
  // panels that are dependent upon another panel being added first
          QSet<PreferencesPanel*> delayed = QSet<PreferencesPanel*>();
@@ -216,18 +218,23 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
   ;
 
  // add preference panels registered with the Instance Manager
- for (QObject* panel : *InstanceManager::getList("PreferencesPanel")) {
-     if (qobject_cast<PreferencesSubPanel*>(panel)) {
-         QString parent = ((PreferencesSubPanel*) panel)->getParentClassName();
-         if (!this->getPreferencesPanels()->contains(parent)) {
-             delayed.insert((PreferencesPanel*)panel);
-         } else {
-             ((PreferencesSubPanel*) panel)->setParent(this->getPreferencesPanels()->value(parent));
-         }
-     }
-     if (!delayed.contains((PreferencesPanel*)panel)) {
-         this->addPreferencesPanel((PreferencesPanel*)panel);
-     }
+ for (QObject* panel : *InstanceManager::getList("PreferencesPanel"))
+ {
+  if (qobject_cast<PreferencesSubPanel*>(panel))
+  {
+   QString parent = ((PreferencesSubPanel*) panel)->getParentClassName();
+   if (!this->getPreferencesPanels()->contains(parent))
+   {
+    delayed.insert((PreferencesPanel*)panel);
+   }
+   else {
+       ((PreferencesSubPanel*) panel)->setParent(this->getPreferencesPanels()->value(parent));
+   }
+  }
+  if (!delayed.contains((PreferencesPanel*)panel))
+  {
+   this->addPreferencesPanel((PreferencesPanel*)panel);
+  }
  }
 
  foreach (QString className,classNames)
@@ -268,25 +275,32 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
 
  while (!delayed.isEmpty())
  {
-     QSet<PreferencesPanel*> iterated = QSet<PreferencesPanel*>(delayed);
-     //iterated.stream().filter((panel) -> (panel instanceof PreferencesSubPanel)).forEach((panel) ->
-     foreach(PreferencesPanel* panel, iterated)
-     {
-         QString parent = qobject_cast<PreferencesSubPanel*>((QObject*) panel)->getParentClassName();
-         if (this->getPreferencesPanels()->contains(parent)) {
-             qobject_cast<PreferencesSubPanel*>( (QObject*)panel)->setParent(this->getPreferencesPanels()->value(parent));
-             delayed.remove(panel);
-             this->addPreferencesPanel(panel);
-         }
-     }//);
+  QSet<PreferencesPanel*> iterated = QSet<PreferencesPanel*>(delayed);
+  //iterated.stream().filter((panel) -> (panel instanceof PreferencesSubPanel)).forEach((panel) ->
+  foreach(PreferencesPanel* panel, iterated)
+  {
+      QString parent = qobject_cast<PreferencesSubPanel*>((QObject*) panel)->getParentClassName();
+      if (this->getPreferencesPanels()->contains(parent)) {
+          qobject_cast<PreferencesSubPanel*>( (QObject*)panel)->setParent(this->getPreferencesPanels()->value(parent));
+          delayed.remove(panel);
+          this->addPreferencesPanel(panel);
+      }
+  }//);
  }
 
 //   } catch (Exception e) {
 //        log->error("Unable to parse PreferencePanels property", e);
 //    }
+ addWidget(buttonpanel);
  foreach (PreferencesCatItems* preferences, preferencesArray)
  {
-  detailpanel->addWidget(preferences->getPanel());
+//  detailpanel->setMinimumWidth(200);
+//  detailpanel->setMaximumWidth(600);
+//  detailpanel->addWidget(preferences->getPanel());
+//  detailpanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  addWidget(preferences->getPanel());
+  preferences->getPanel()->hide();
+  preferences->getPanel()->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   //detailpanel->addWidget(preferences->getPrefItem());
   //detailpanel->setWindowTitle(preferences->getPrefItem());
  }
@@ -298,9 +312,16 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
  qSort(preferencesArray.begin(), preferencesArray.end(), preferencesCompare);
 
  updateJList();
- thisLayout->addWidget(buttonpanel);
- thisLayout->addWidget(new JSeparator(JSeparator::VERTICAL));
- thisLayout->addWidget(detailpanel,2);
+// thisLayout->addWidget(buttonpanel);
+//addWidget(buttonpanel);
+// thisLayout->addWidget(new JSeparator(JSeparator::VERTICAL));
+// thisLayout->addWidget(detailpanel,2);
+QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+sizePolicy.setHorizontalStretch(1);
+sizePolicy.setVerticalStretch(1);
+sizePolicy.setHeightForWidth(false); //this->sizePolicy().hasHeightForWidth());
+this->setSizePolicy(sizePolicy);
+//addWidget(detailpanel);
 
  list->setCurrentRow(0);
 // selection(preferencesArray.get(0).getPrefItem());
@@ -414,15 +435,19 @@ bool TabbedPreferences::isDirty()
     }
 }
 #endif
-void TabbedPreferences::selection(QString View)
+void TabbedPreferences::selection(QString view)
 {
 //    CardLayout cl = (CardLayout) (detailpanel.getLayout());
 //    cl.show(detailpanel, View);
- for(int i=0; i < detailpanel->count(); i++)
+// for(int i=0; i < detailpanel->count(); i++)
+ for(int i=0; i < preferencesArray.count(); i++)
  {
-  if(preferencesArray.at(i)->getPrefItem() == View)
+  if(preferencesArray.at(i)->getPrefItem() == view)
   {
-   detailpanel->setCurrentIndex(i);
+   //detailpanel->setCurrentIndex(i);
+   widget(currSplitterWidget +1)->hide();
+   widget(i+1)->show();
+   currSplitterWidget = i;
    return;
   }
  }
@@ -835,33 +860,40 @@ PreferencesCatItems::PreferencesCatItems(QString pref, QString title, int sortOr
 
 void PreferencesCatItems::addPreferenceItem(QString title, QString labelkey, QWidget* item, QString tooltip, int sortOrder)
 {
- foreach (TabDetails* tabDetails, tabDetailsArray)
+ if(qobject_cast<QTabWidget*>(item))
  {
-  if (tabDetails->getTitle()==(title))
+  foreach (TabDetails* tabDetails, tabDetailsArray)
   {
-   // If we have a match then we do not need to add it back in.
-   return;
+   if (tabDetails->getTitle()==(title))
+   {
+    // If we have a match then we do not need to add it back in.
+    return;
+   }
+  }
+  TabDetails* tab = new TabDetails(labelkey, title, item, tooltip, sortOrder);
+  tabDetailsArray.append(tab);
+  qSort(tabDetailsArray.begin(), tabDetailsArray.end(), tabDetailsCompare);
+  QScrollArea* scroller = new QScrollArea(/*tab->getPanel()*/);
+  scroller->setWidget(tab->getPanel());
+  scroller->setWidgetResizable(true);
+  //scroller.setBorder(BorderFactory.createEmptyBorder());
+  //tabbedPane.addTab(tab.getTitle(), null, scroller, tab.getToolTip());
+  int iTab = tabbedPane->addTab(scroller, tab->getTitle());
+  tabbedPane->setTabToolTip(iTab, tab->getToolTip());
+
+  foreach (QString disableItem, disableItemsList)
+  {
+   if (QString(item->metaObject()->className()) == disableItem)
+   {
+       //tabbedPane->setEnabledAt(tabbedPane->indexOfTab(tab->getPanel()), false);
+    tabbedPane->setTabEnabled(tabbedPane->indexOf(tab->getPanel()),false);
+       return;
+   }
   }
  }
- TabDetails* tab = new TabDetails(labelkey, title, item, tooltip, sortOrder);
- tabDetailsArray.append(tab);
- qSort(tabDetailsArray.begin(), tabDetailsArray.end(), tabDetailsCompare);
- QScrollArea* scroller = new QScrollArea(/*tab->getPanel()*/);
- scroller->setWidget(tab->getPanel());
- scroller->setWidgetResizable(true);
- //scroller.setBorder(BorderFactory.createEmptyBorder());
- //tabbedPane.addTab(tab.getTitle(), null, scroller, tab.getToolTip());
- int iTab = tabbedPane->addTab(scroller, tab->getTitle());
- tabbedPane->setTabToolTip(iTab, tab->getToolTip());
-
- foreach (QString disableItem, disableItemsList)
+ else
  {
-  if (QString(item->metaObject()->className()) == disableItem)
-  {
-      //tabbedPane->setEnabledAt(tabbedPane->indexOfTab(tab->getPanel()), false);
-   tabbedPane->setTabEnabled(tabbedPane->indexOf(tab->getPanel()),false);
-      return;
-  }
+  nonTabbedPane = item;
  }
 }
 
@@ -886,11 +918,15 @@ QList<QString> PreferencesCatItems::getSubCategoriesList() {
 * or it returns a JTabbedFrame if there are multiple managedPreferences for the menu
 */
 QWidget* PreferencesCatItems::getPanel() {
- if (tabDetailsArray.size() == 1) {
-     return tabDetailsArray.at(0)->getPanel();
- } else {
-     return tabbedPane;
- }
+// if (tabDetailsArray.size() == 1) {
+//     return tabDetailsArray.at(0)->getPanel();
+// } else {
+//     return tabbedPane;
+// }
+ if(nonTabbedPane)
+  return nonTabbedPane;
+ else
+  return tabbedPane;
 }
 
 void PreferencesCatItems::gotoSubCategory(QString sub) {

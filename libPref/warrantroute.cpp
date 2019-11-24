@@ -1555,50 +1555,63 @@ if(role == Qt::EditRole)
  */
 /*static*/ /*protected*/ QWidget* WarrantRoute::makeTextBoxPanel(bool vertical, QWidget* comp, QString label, QString tooltip)
 {
-    QWidget* panel = new QWidget();
-    QLabel* l = new QLabel(label);
-    QBoxLayout* panelLayout;
-    if (vertical) {
-        //panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-      panelLayout = new QVBoxLayout(panel);
-        //l.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        //comp.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-//        panelLayout->addWidget(Box::createVerticalStrut(STRUT_SIZE));
-        panelLayout->addWidget(l, 0, Qt::AlignVCenter);
-    } else {
-        //panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-     panelLayout = new QHBoxLayout(panel);
+ QWidget* panel = new QWidget();
+ QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+ sizePolicy.setHorizontalStretch(1);
+ sizePolicy.setVerticalStretch(1);
+ sizePolicy.setHeightForWidth(false);
+ panel->setSizePolicy(sizePolicy);
+ int compAlign = 0;
+ QLabel* l = new QLabel(label);
+ QBoxLayout* panelLayout;
+ if (vertical)
+ {
+     //panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+  panelLayout = new QVBoxLayout(panel);
+     //l.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+     //comp.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+  compAlign = Qt::AlignLeft;
+  panelLayout->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+  panelLayout->addWidget(l, 0, Qt::AlignVCenter);
+ }
+ else
+ {
+     //panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+  panelLayout = new QHBoxLayout(panel);
 //        l.setAlignmentX(JComponent.LEFT_ALIGNMENT);
 //        comp.setAlignmentX(JComponent.RIGHT_ALIGNMENT);
-//        panel->layout()->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
-        panelLayout->addWidget(l, 0, Qt::AlignLeft);
-    }
-    //panelLayout.add(l);
-//    if (!vertical) {
-//        panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
-//    }
-    comp->setMaximumSize(QSize(300, comp->sizeHint().height()));
-    comp->setMinimumSize(QSize(30, comp->sizeHint().height()));
-    //panelLayout.add(comp);
-    if (vertical) {
-     panelLayout->addWidget(comp, 0, Qt::AlignVCenter);
-//        panelLayout->addWidget(Box::createVerticalStrut(STRUT_SIZE));
-    } else {
-     panelLayout->addWidget(comp, 0, Qt::AlignRight);
-//        panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
-    }
+  compAlign = Qt::AlignRight;
+  panel->layout()->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+  panelLayout->addWidget(l, 0, Qt::AlignLeft);
+ }
+ //panelLayout.add(l);
+ panelLayout->addWidget(l, 0, Qt::AlignLeft);
+ if (!vertical) {
+     panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+ }
+ comp->setMaximumSize(QSize(300, comp->sizeHint().height()));
+ comp->setMinimumSize(QSize(30, comp->sizeHint().height()));
+ //panelLayout.add(comp);
+ if (vertical) {
+  panelLayout->addWidget(comp, compAlign, Qt::AlignVCenter);
+  panelLayout->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+ } else {
+  panelLayout->addWidget(comp, compAlign, Qt::AlignRight);
+  panelLayout->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+ }
 //    if (comp instanceof JTextField || comp instanceof JComboBox) {
 //        comp.setBackground(Color.white);
 //    }
-    if (tooltip != "") {
-        QString tipText = (tooltip);
-        panel->setToolTip(tipText);
-        comp->setToolTip(tipText);
-        l->setToolTip(tipText);
-    }
-    panel->setMaximumSize(QSize(350, comp->sizeHint().height()));
-    panel->setMinimumSize(QSize(80, comp->sizeHint().height()));
-    return panel;
+ if (tooltip != "")
+ {
+  QString tipText = (tooltip);
+  panel->setToolTip(tipText);
+  comp->setToolTip(tipText);
+  l->setToolTip(tipText);
+ }
+// panel->setMaximumSize(QSize(350, comp->sizeHint().height()));
+// panel->setMinimumSize(QSize(80, comp->sizeHint().height()));
+ return panel;
 }
 
 /**

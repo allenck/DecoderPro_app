@@ -43,54 +43,75 @@
  _isDirty = false;
  _interpretation = SignalSpeedMap::PERCENT_NORMAL;
 
-// if (InstanceManager::getDefault("WarrantPreferences") == NULL)
-// {
-//  InstanceManager::store(new WarrantPreferences(FileUtil::getProfilePath() + "signal" + File::separator + "WarrantPreferences.xml"), "WarrantPreferences");
-// }
-// else
-// {
-//  ((WarrantPreferences*)InstanceManager::getDefault("WarrantPreferences"))->openFile(FileUtil::getProfilePath() + "signal" + File::separator + "WarrantPreferences.xml");
-// }
-// _preferences = (WarrantPreferences*)InstanceManager::getDefault("WarrantPreferences");
- //  set local prefs to match instance prefs
- //preferences.apply(WiThrottleManager.withrottlePreferencesInstance());
  initGUI();
-// setGUI();
 }
-#if 1
+
 /*private*/ void WarrantPreferencesPanel::initGUI()
 {
- QVBoxLayout* thisLayout;
-    this->setLayout(thisLayout = new QVBoxLayout); //(this, BoxLayout.PAGE_AXIS));
- setMinimumSize(500,200);
+ QVBoxLayout* thisVLayout;
+    this->setLayout(thisVLayout = new QVBoxLayout); //(this, BoxLayout.PAGE_AXIS));
+ QHBoxLayout* thisHLayout = new QHBoxLayout();
+ thisVLayout->addLayout(thisHLayout);
 
- QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
- sizePolicy.setHorizontalStretch(0);
- sizePolicy.setVerticalStretch(0);
- sizePolicy.setHeightForWidth(this->sizePolicy().hasHeightForWidth());
+ setMinimumSize(600,300);
+
+ QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+ sizePolicy.setHorizontalStretch(1);
+ sizePolicy.setVerticalStretch(1);
+ sizePolicy.setHeightForWidth(false); //this->sizePolicy().hasHeightForWidth());
  this->setSizePolicy(sizePolicy);
  QScrollArea* scrollArea = new QScrollArea();
- scrollArea->setSizePolicy(sizePolicy);
  scrollArea->setWidgetResizable(true);
  QWidget* scrollPane = new QWidget();
- QVBoxLayout* scrollPaneLayout = new QVBoxLayout(scrollPane);\
- scrollPane->resize(610,310);
+ QVBoxLayout* scrollPaneLayout = new QVBoxLayout(scrollPane);
  QWidget* leftPanel = new QWidget();
  QVBoxLayout* leftPanelLayout;
+ sizePolicy = QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+ sizePolicy.setHorizontalStretch(0);
+ sizePolicy.setVerticalStretch(0);
+ sizePolicy.setHeightForWidth(false);
+ leftPanel->setSizePolicy(sizePolicy);
  leftPanel->setLayout(leftPanelLayout = new QVBoxLayout); //(leftPanel, BoxLayout.PAGE_AXIS));
  QWidget* rightPanel = new QWidget();
  QVBoxLayout* rightPanelLayout;
  rightPanel->setLayout(rightPanelLayout = new QVBoxLayout) ; //(rightPanel, BoxLayout.PAGE_AXIS));
+ sizePolicy = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+ sizePolicy.setHorizontalStretch(1);
+ sizePolicy.setVerticalStretch(0);
+ sizePolicy.setHeightForWidth(false);
+ rightPanel->setSizePolicy(sizePolicy);
  leftPanelLayout->addWidget(layoutScalePanel());
  leftPanelLayout->addWidget(searchDepthPanel(true));
- leftPanelLayout->addWidget(timeIncrementPanel(true));
- leftPanelLayout->addWidget(throttleIncrementPanel(true));
+ _timeIncre =  new QSpinBox();
+ _timeIncre->setValue(750);
+ _timeIncre->setMinimum(200);
+ _timeIncre->setMaximum(10000);
+ leftPanelLayout->addWidget(timeIncrementPanel(true, _timeIncre));
+ _rampIncre =  new JTextField(6);
+ leftPanelLayout->addWidget(throttleIncrementPanel(true, _rampIncre));
  leftPanelLayout->addWidget(throttleScalePanel(true));
  rightPanelLayout->addWidget(speedNamesPanel());
  rightPanelLayout->addWidget(Box::createGlue());
  //rightPanelLayout->addWidget(interpretationPanel());
  //rightPanelLayout->addWidget(Box::createGlue());
  rightPanelLayout->addWidget(appearancePanel());
+ //    _rampIncre.addActionListener(new ActionListener() {
+ //        /*public*/ void actionPerformed(ActionEvent e) {
+ //            String text = _rampIncre.getText();
+ //            bool showdialog = false;
+ //            try {
+ //                float incr = float.parsefloat(text);
+ //                showdialog = (incr<0.002f || incr>0.2f);
+ //            } catch (NumberFormatException nfe) {
+ //                showdialog = true;
+ //            }
+ //            if (showdialog) {
+ //                JOptionPane.showMessageDialog(NULL, tr("rampIncrWarning", text),
+ //                        tr("WarningTitle"), JOptionPane.WARNING_MESSAGE);
+ //            }
+ //        }
+ //    });
+     connect(_rampIncre, SIGNAL(leaveField()), this, SLOT(on_rampIncre_leaveField()));
  QWidget* panel = new QWidget();
  QHBoxLayout* panelLayout;
  panel->setLayout(panelLayout = new QHBoxLayout); //(panel, BoxLayout.LINE_AXIS));
@@ -99,41 +120,20 @@
  //thisLayout->addWidget(panel);
  scrollPaneLayout->addWidget(panel);
  scrollArea->setWidget(scrollPane);
- thisLayout->addWidget(scrollArea);
- //thisLayout->addWidget(applyPanel());
- adjustSize();
+ thisHLayout->addWidget(scrollArea);
+ //adjustSize();
 }
-#else
-/*private*/ void WarrantPreferencesPanel::initGUI()
+
+QSize WarrantPreferencesPanel::minimumSizeHint()
 {
- QGridLayout* thisLayout;
-    this->setLayout(thisLayout = new QGridLayout); //(this, BoxLayout.PAGE_AXIS));
- setMinimumSize(600,300);
-// QWidget* leftPanel = new QWidget();
-// QVBoxLayout* leftPanelLayout;
-// leftPanel->setLayout(leftPanelLayout = new QVBoxLayout); //(leftPanel, BoxLayout.PAGE_AXIS));
-// QWidget* rightPanel = new QWidget();
-// QVBoxLayout* rightPanelLayout;
-// rightPanel->setLayout(rightPanelLayout = new QVBoxLayout) ; //(rightPanel, BoxLayout.PAGE_AXIS));
- thisLayout->addWidget(layoutScalePanel(),0,0);
- thisLayout->addWidget(searchDepthPanel(true),1,0);
- thisLayout->addWidget(timeIncrementPanel(true),2,0);
- thisLayout->addWidget(throttleIncrementPanel(true),3,0);
- thisLayout->addWidget(throttleScalePanel(true),4,0);
- thisLayout->addWidget(speedNamesPanel(),0,1);
- thisLayout->addWidget(Box::createGlue(),1,1);
- //rightPanelLayout->addWidget(interpretationPanel());
- //rightPanelLayout->addWidget(Box::createGlue());
- thisLayout->addWidget(appearancePanel(),2,1,4,1);
-// QWidget* panel = new QWidget();
-// QHBoxLayout* panelLayout;
-// panel->setLayout(panelLayout = new QHBoxLayout); //(panel, BoxLayout.LINE_AXIS));
-// panelLayout->addWidget(leftPanel);
-// panelLayout->addWidget(rightPanel);
-// thisLayout->addWidget(panel);
- //thisLayout->addWidget(applyPanel());
+ return QSize(600, 200);
 }
-#endif
+
+QSize WarrantPreferencesPanel::sizeHint()
+{
+ return QSize(600, 200);
+}
+
 ///*private*/ void WarrantPreferencesPanel::setGUI()
 //{
 // _preferences->apply();
@@ -144,17 +144,28 @@
     QWidget* panel = new QWidget();
     QVBoxLayout* panelLayout;
     panel->setLayout(panelLayout = new QVBoxLayout); //(panel, BoxLayout.PAGE_AXIS));
+    ScaleData* sd;
     _layoutScales = new QComboBox/*<ScaleData>*/();
-    _layoutScales->addItem("G", VPtr<ScaleData>::asQVariant(new ScaleData("G", 20.3)));
-    _layoutScales->addItem("L", VPtr<ScaleData>::asQVariant(new ScaleData("L", 38)));
-    _layoutScales->addItem("O", VPtr<ScaleData>::asQVariant(new ScaleData("O", 43)));
-    _layoutScales->addItem("S", VPtr<ScaleData>::asQVariant(new ScaleData("S", 64)));
-    _layoutScales->addItem("OO", VPtr<ScaleData>::asQVariant(new ScaleData("OO", 76.2)));
-    _layoutScales->addItem("HO", VPtr<ScaleData>::asQVariant(new ScaleData("HO", 87.1)));
-    _layoutScales->addItem("TT", VPtr<ScaleData>::asQVariant(new ScaleData("TT", 120)));
-    _layoutScales->addItem("N", VPtr<ScaleData>::asQVariant(new ScaleData("N", 160)));
-    _layoutScales->addItem("Z", VPtr<ScaleData>::asQVariant(new ScaleData("Z", 220)));
-    _layoutScales->addItem("T", VPtr<ScaleData>::asQVariant(new ScaleData("T", 480)));
+    sd = new ScaleData("G", 20.3);
+    _layoutScales->addItem(sd->toString(), VPtr<ScaleData>::asQVariant(sd));
+    sd = new ScaleData("L", 38);
+    _layoutScales->addItem(sd->toString(), VPtr<ScaleData>::asQVariant(sd));
+    sd =new ScaleData("O", 43);
+    _layoutScales->addItem(sd->toString(), VPtr<ScaleData>::asQVariant(sd));
+    sd = new ScaleData("S", 64);
+    _layoutScales->addItem(sd->toString(), VPtr<ScaleData>::asQVariant(sd));
+    sd = new ScaleData("OO", 76.2);
+    _layoutScales->addItem(sd->toString(), VPtr<ScaleData>::asQVariant(sd));
+    sd = new ScaleData("HO", 87.1);
+    _layoutScales->addItem(sd->toString(), VPtr<ScaleData>::asQVariant(sd));
+    sd = new ScaleData("TT", 120);
+    _layoutScales->addItem(sd->toString(), VPtr<ScaleData>::asQVariant(sd));
+    sd = new ScaleData("N", 160);
+    _layoutScales->addItem(sd->toString(), VPtr<ScaleData>::asQVariant(sd));
+    sd = new ScaleData("Z", 220);
+    _layoutScales->addItem(sd->toString(), VPtr<ScaleData>::asQVariant(sd));
+    sd = new ScaleData("T", 480);
+    _layoutScales->addItem(sd->toString(), VPtr<ScaleData>::asQVariant(sd));
     ScaleData* sc = makeCustomItem(WarrantPreferences::getDefault()->getScale());
     _layoutScales->addItem(sc->toString(), VPtr<ScaleData>::asQVariant(sc));
     if (_layoutScales->currentIndex()<0) {
@@ -322,6 +333,7 @@
 //            javax.swing.border.TitledBorder.CENTER,
 //            javax.swing.border.TitledBorder.TOP));
 //    panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+ panel->setTitle(tr("Aspect Speed Name to Value Mapping"));
 
  _speedNameMap =  QList<QPair<QString, float> >();
  QMapIterator<QString, float> it = WarrantPreferences::getDefault()->getSpeedNameEntryIterator();
@@ -382,6 +394,7 @@
 //            tr("LabelAppearanceTable"),
 //            javax.swing.border.TitledBorder.CENTER,
 //            javax.swing.border.TitledBorder.TOP));
+  panel->setTitle(tr("Head Appearance to Speed Name "));
   QVBoxLayout* panelLayout;
   panel->setLayout(panelLayout=new QVBoxLayout); //(panel, BoxLayout.PAGE_AXIS));
 
@@ -412,9 +425,9 @@
 /*static*/ /*private*/ QWidget* WarrantPreferencesPanel::tablePanel(JTable* table, QString toolTip, ActionListener* insertAction, ActionListener* removeAction)
  {
  QWidget* tablePanel = new QWidget();
- tablePanel->setContentsMargins(0,0, 0, 0);
- QVBoxLayout* tablePanelLayout;
- tablePanel->setLayout(tablePanelLayout =new QVBoxLayout);//(tablePanel, BoxLayout.LINE_AXIS));
+ //tablePanel->setContentsMargins(0,0, 0, 0);
+ QHBoxLayout* tablePanelLayout;
+ tablePanel->setLayout(tablePanelLayout =new QHBoxLayout);//(tablePanel, BoxLayout.LINE_AXIS));
  //JScrollPane scrollPane = new JScrollPane(table);
  int height = table->getRowHeight(0);
  QSize dim = table->sizeHint();
@@ -446,6 +459,7 @@
  tablePanelLayout->addWidget(buttonPanel);
  return tablePanel;
 }
+
 /*private*/ void WarrantPreferencesPanel::insertSpeedNameRow()
  {
   int row = _speedNameTable->currentIndex().row();
@@ -540,12 +554,9 @@ void ButtonActionListener::actionPerformed(ActionEvent *e)
  }
 }
 
-/*private*/ QWidget* WarrantPreferencesPanel::timeIncrementPanel(bool vertical)
+/*private*/ QWidget* WarrantPreferencesPanel::timeIncrementPanel(bool vertical, QSpinBox* _timeIncre)
 {
- _timeIncre =  new QSpinBox();
- _timeIncre->setValue(750);
- _timeIncre->setMinimum(200);
- _timeIncre->setMaximum(10000);
+
  _timeIncre->setValue(WarrantPreferences::getDefault()->getTimeIncrement());
  QWidget* p = new QWidget();
  QVBoxLayout* pLayout = new QVBoxLayout(p);
@@ -554,31 +565,18 @@ void ButtonActionListener::actionPerformed(ActionEvent *e)
  return p;
 }
 
-/*private*/ QWidget* WarrantPreferencesPanel::throttleIncrementPanel(bool vertical) {
-    _rampIncre =  new JTextField(5);
-    _rampIncre->setText(QString::number(WarrantPreferences::getDefault()->getThrottleIncrement()));
-    QWidget* p = new QWidget();
-    QVBoxLayout* pLayout = new QVBoxLayout(p);
-    pLayout->addWidget(WarrantFrame::makeTextBoxPanel(vertical, _rampIncre, tr("Ramp Step throttle increment"),"Throttle setting increment for each speed change when ramping speed"));
-    p->setToolTip(tr("Throttle setting increment for each speed change when ramping speed"));
-//    _rampIncre.addActionListener(new ActionListener() {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            String text = _rampIncre.getText();
-//            bool showdialog = false;
-//            try {
-//                float incr = float.parsefloat(text);
-//                showdialog = (incr<0.002f || incr>0.2f);
-//            } catch (NumberFormatException nfe) {
-//                showdialog = true;
-//            }
-//            if (showdialog) {
-//                JOptionPane.showMessageDialog(NULL, tr("rampIncrWarning", text),
-//                        tr("WarningTitle"), JOptionPane.WARNING_MESSAGE);
-//            }
-//        }
-//    });
-    connect(_rampIncre, SIGNAL(leaveField()), this, SLOT(on_rampIncre_leaveField()));
-    return p;
+/*private*/ QWidget* WarrantPreferencesPanel::throttleIncrementPanel(bool vertical, JTextField* _rampincre)
+{
+ _rampIncre->setText(QString::number(WarrantPreferences::getDefault()->getThrottleIncrement()));
+ QWidget* incrPanel = new QWidget();
+ QHBoxLayout* incrPanelLayout = new QHBoxLayout(incrPanel);
+ incrPanelLayout->addWidget(_rampIncre);
+ incrPanelLayout->addWidget(new QLabel(tr("Percent")));
+ QWidget* p = new QWidget();
+ QVBoxLayout* pLayout = new QVBoxLayout(p);
+ pLayout->addWidget(WarrantFrame::makeTextBoxPanel(vertical, incrPanel, tr("Ramp Step throttle increment"),"Throttle setting increment for each speed change when ramping speed"));
+ p->setToolTip(tr("Throttle setting increment for each speed change when ramping speed"));
+ return p;
 }
 
 void WarrantPreferencesPanel::on_rampIncre_leaveField()

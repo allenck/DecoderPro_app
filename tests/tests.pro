@@ -188,7 +188,9 @@ SOURCES += \
     logix/configxmlmanagertest.cpp \
     warrants/warranttest.cpp \
     mockshutdownmanager.cpp \
-    warrants/warranttestaction.cpp
+    warrants/warranttestaction.cpp \
+    warrants/warrantpreferencespaneltest.cpp \
+    warrants/warrantpreferencespaneltestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -354,7 +356,9 @@ HEADERS += \
     logix/configxmlmanagertest.h \
     warrants/warranttest.h \
     mockshutdownmanager.h \
-    warrants/warranttestaction.h
+    warrants/warranttestaction.h \
+    warrants/warrantpreferencespaneltest.h \
+    warrants/warrantpreferencespaneltestaction.h
 
 unix {
     target.path = /usr/lib

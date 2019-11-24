@@ -103,7 +103,7 @@ private:
     QList<QDomElement> preferencesElements;// = new ArrayList<>();
     //QMap<QString, PreferencesPanel*> preferencesPanels;// = QMap<QString, PreferencesPanel*>();
 
-    QStackedWidget* detailpanel;// = new JPanel();
+//    QStackedWidget* detailpanel;// = new JPanel();
 
     QList<PreferencesCatItems*> preferencesArray;// = QList<PreferencesCatItems*>();
     QWidget* buttonpanel;
@@ -111,10 +111,11 @@ private:
     QPushButton* save;
     //QScrollArea* listScroller;
     int initialisationState;// = 0x00;
+    int currSplitterWidget = 0;
     ///*private*/ static final long serialVersionUID = -6266891995866315885L;
     /*private*/ void setInitalisationState(int state);
     /*private*/ bool invokeSaveOptions();
-    void selection(QString View);
+    void selection(QString view);
     /*private*/ void addItem(QString prefItem, QString itemText, QString tabtitle, QString labelKey, PreferencesPanel* item, QString tooltip, int sortOrder);
     int getCategoryIndexFromString(QString category);
     void updateJList();
@@ -143,6 +144,7 @@ friend class EditConnectionPreferences;
     QString prefItem;
     int sortOrder;// = Integer.MAX_VALUE;
     QTabWidget* tabbedPane;// = new JTabbedPane();
+    QWidget* nonTabbedPane = nullptr;
     QList<QString> disableItemsList;// = new QList<>();
 
     QList<TabDetails*> tabDetailsArray;// = new ArrayList<>();

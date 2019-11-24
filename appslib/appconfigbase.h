@@ -1,17 +1,18 @@
 #ifndef APPCONFIGBASE_H
 #define APPCONFIGBASE_H
-#include "jmripanel.h"
+//#include "jmripanel.h"
 #include "logger.h"
 #include "appslib_global.h"
+#include <QSplitter>
 
 class PreferencesPanel;
-class APPSLIBSHARED_EXPORT AppConfigBase : public JmriPanel
+class APPSLIBSHARED_EXPORT AppConfigBase : public QSplitter//JmriPanel
 {
     Q_OBJECT
 public:
     explicit AppConfigBase(QWidget *parent = 0);
     ~AppConfigBase() {}
-    AppConfigBase(const AppConfigBase&) : JmriPanel() {}
+    AppConfigBase(const AppConfigBase&) : QSplitter() {}
     /*public*/ static QString getManufacturerName(int index) ;
     /*public*/ static QString getConnection(int index);
     /*public*/ static QString getPort(int index);

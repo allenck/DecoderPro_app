@@ -61,6 +61,8 @@
 #include "signals/turnoutsignalmasttestaction.h"
 #include "logix/logixactiontestaction.h"
 #include "warrants/warranttestaction.h"
+#include "warrants/warrantpreferencespaneltestaction.h"
+
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -162,5 +164,6 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* warrantMenu = new QMenu("Warrants");
     addMenu(warrantMenu);
     warrantMenu->addAction(new WarrantTestAction(this));
+    warrantMenu->addAction(new WarrantPreferencesPanelTestAction(this));
 
 }

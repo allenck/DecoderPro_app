@@ -26,7 +26,7 @@ class LIBPREFSHARED_EXPORT WarrantPreferencesPanel : public QWidget, public Pref
 public:
  Q_INVOKABLE explicit WarrantPreferencesPanel(QWidget *parent = 0);
  ~WarrantPreferencesPanel() {}
- WarrantPreferencesPanel(const WarrantPreferencesPanel&) : PreferencesPanel() {}
+ WarrantPreferencesPanel(const WarrantPreferencesPanel&) : QWidget() {}
  /*public*/ QString getPreferencesItem();
  /*public*/ QString getPreferencesItemText();
  /*public*/ QString getTabbedPreferencesTitle();
@@ -40,6 +40,8 @@ public:
  /*public*/ QString getPreferencesTooltip();
 
  /*public*/ QString className();
+ QSize sizeHint();
+ QSize minimumSizeHint();
 
 signals:
 
@@ -78,8 +80,8 @@ private:
  /*private*/ void insertSpeedNameRow();
  /*private*/ QWidget* interpretationPanel() ;
  /*private*/ void makeButton(FlowLayout* panelLayout, QButtonGroup* group, QString name, QString tooltip, int interp);
- /*private*/ QWidget* timeIncrementPanel(bool vertical) ;
- /*private*/ QWidget* throttleIncrementPanel(bool vertical);
+ /*private*/ QWidget* timeIncrementPanel(bool vertical, QSpinBox *_timeIncre) ;
+ /*private*/ QWidget* throttleIncrementPanel(bool vertical, JTextField *_rampincre);
  /*private*/ void setValues();
  // /*private*/ QWidget* applyPanel() ;
  /*private*/ void deleteSpeedNameRow();

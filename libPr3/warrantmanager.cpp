@@ -63,7 +63,7 @@ WarrantManager::WarrantManager(QObject *parent) :
  * @return an existing warrant if found or a new warrant
  */
 /*public*/ Warrant* WarrantManager::createNewWarrant(QString systemName, QString userName, bool SCWa, long TTP) {
-    log->debug("createNewWarrant " + systemName + " SCWa="+(SCWa?"true":false));
+    log->debug("createNewWarrant " + systemName + " SCWa="+(SCWa?"true":"false"));
     // Check that Warrant does not already exist
     Warrant* r;
     if (userName != "" && userName.trimmed().length() > 0) {
