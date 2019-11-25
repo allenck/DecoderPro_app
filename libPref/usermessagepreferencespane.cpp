@@ -34,7 +34,7 @@
 //    protected static final ResourceBundle rb = ResourceBundle.getBundle("apps.AppsConfigBundle");
 
 /*public*/UserMessagePreferencesPane::UserMessagePreferencesPane(QWidget *parent) :
-    QWidget(parent)
+    JmriPanel(parent)
 {
  if(objectName().isEmpty())
   setObjectName("UserMessagePreferencesPane");
@@ -53,9 +53,10 @@
 //            refreshOptions();
 //        }
 //    });
+  p->addPropertyChangeListener((PropertyChangeListener*)this);
 
   UserPreferencesManager* dp =(UserPreferencesManager*)p;
-  connect(dp, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(dp->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   QVBoxLayout* thisLayout;
   setLayout(thisLayout = new QVBoxLayout);//(this, BoxLayout.Y_AXIS));
 
@@ -79,19 +80,19 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
 
  p->setClassDescription("jmri.jmrit.beantable.LightTableAction");
  p->setClassDescription("jmri.jmrit.beantable.LogixTableAction");
- p->setClassDescription(LRouteTableAction::getName());
+ p->setClassDescription("jmri.jmrit.beantable.LRouteTableAction");
  p->setClassDescription("jmri.jmrit.beantable.MemoryTableAction");
 
  p->setClassDescription("jmri.jmrit.beantable.ReporterTableAction");
- p->setClassDescription(RouteTableAction::getName());
+ p->setClassDescription("jmri.jmrit.beantable.RouteTableAction");
 
- p->setClassDescription(SensorTableAction::getName());
+ p->setClassDescription("jmri.jmrit.beantable.SensorTableAction:");
  p->setClassDescription("jmri.jmrit.beantable.SignalGroupTableAction");
- p->setClassDescription(SignalHeadTableAction::getName());
+ p->setClassDescription("jmri.jmrit.beantable.SignalHeadTableAction");
  p->setClassDescription("jmri.jmrit.beantable.SignalMastTableAction");
 
  p->setClassDescription("jmri.jmrit.beantable.TransitTableAction");
- p->setClassDescription(TurnoutTableAction::getName());
+ p->setClassDescription("jmri.jmrit.beantable.TurnoutTableAction");
 
  p->setClassDescription(AppConfigBase::getName());
 

@@ -307,6 +307,7 @@
 #include "nofeedbackturnoutoperationxml.h"
 #include "rawturnoutoperationxml.h"
 #include "sensorturnoutoperationxml.h"
+#include "blocktableaction.h"
 
 bool Metatypes::done = false;
 
@@ -331,7 +332,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LnOverTcpConnectionConfig>("LnOverTcpConnectionConfig");
  qRegisterMetaType<LnOverTcpConnectionConfigXml>("LnOverTcpConnectionConfigXml");
  qRegisterMetaType<AudioTableAction>("AudioTableAction");
-// qRegisterMetaType<BlockTableAction>("BlockTableAction");
+ qRegisterMetaType<BlockTableAction>("BlockTableAction");
 // qRegisterMetaType<LightTableAction>("LightTableAction");
 // qRegisterMetaType<MemoryTableAction>("MemoryTableAction");
 // qRegisterMetaType<SignalMastTableAction>("SignalMastTableAction");

@@ -9,6 +9,8 @@
 #include <QVector>
 #include "xmlfile.h"
 #include "libPr3_global.h"
+#include "propertychangelistener.h"
+#include <QMutex>
 
 class Profile;
 class RosterGroup;
@@ -141,6 +143,8 @@ public:
     /*public*/ void addRosterGroup(RosterGroup* rg);
     /*public*/ void addRosterGroup(QString str);
     /*public*/ QString getRosterFilesLocation();
+    /*public*/ void addRosterGroups(QList<RosterGroup*> groups);
+    /*public*/ void removeRosterGroup(RosterGroup* rg);
 
 signals:
     //void propertyChange(QString text, QObject* o, QObject* n);
@@ -170,6 +174,8 @@ private:
   static QStringList getAllFileNames();
   /*private*/ /*final*/ QMap<QString, RosterGroup*> rosterGroups;// = new HashMap<>();
   QString rosterIndexFileName;
+  QMutex mutex;
+
 protected:
  /**
   * List of contained {@link RosterEntry} elements.
@@ -179,5 +185,14 @@ protected:
 
   friend class RosterTest;
 };
+class RosterPropertyChangeListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ Roster* roster;
+public:
+ RosterPropertyChangeListener(Roster* roster) { this->roster = roster;}
 
+public slots:
+ void propertyChange(PropertyChangeEvent*);
+};
 #endif // ROSTER_H

@@ -37,6 +37,7 @@
 #include "loggerfactory.h"
 #include "class.h"
 #include "instancemanager.h"
+#include "webserverpreferencespanel.h"
 
 //TabbedPreferences::TabbedPreferences(QObject *parent) :
 //    AppConfigBase(parent)
@@ -120,6 +121,7 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
  preferencesArray = QList<PreferencesCatItems*>();
  initialisationState = UNINITIALISED;
  log->setDebugEnabled(true);
+ widgetIndexes = QMap<QString, int>();
 
  /*
   * Adds the place holders for the menu items so that any items add by
@@ -143,6 +145,7 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
 
   preferencesArray.append(new PreferencesCatItems("WITHROTTLE",tr("WiThrottle"), 900, this));
   new Metatypes();
+  //init();  // can't do this here.
 }
 
 //@SuppressWarnings("rawtypes")
@@ -206,11 +209,11 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
 #endif
  QStringList classNames = QStringList()
   << QString("ConnectionsPreferencesPanel") << QString( "ManagerDefaultsConfigPane")
-  << QString( "FileLocationPane" ) /*<< QString( "PerformActionPanel")*/ /*<< QString("CreateButtonPanel")*/
+  << QString( "FileLocationPane" )
   << QString( "PerformFilePanel") << QString("GuiLafConfigPane")
   << QString("GuiLocalePreferencesPanel") << QString( "SystemConsoleConfigPanel")
   << QString("UserMessagePreferencesPane") << QString( "ProgrammerConfigPane")
-  << QString("RosterConfigPane") << QString("WebServerPreferencesPanel")
+  << QString("WebServerPreferencesPanel")<< QString("RosterConfigPane")
   << QString( "ThrottlesPreferencesPane") << QString("WiThrottlePrefsPanel")
   << QString( "ProfilePreferencesPanel") << QString("StartupActionsPreferencesPanel")
   << QString("LnTcpPreferencesPanel") << QString("JsonServerPreferencesPanel")
@@ -291,7 +294,8 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
 //   } catch (Exception e) {
 //        log->error("Unable to parse PreferencePanels property", e);
 //    }
- addWidget(buttonpanel);
+ addWidget(buttonpanel); //widgetIndex 0.
+ int widgetIndex = 1;
  foreach (PreferencesCatItems* preferences, preferencesArray)
  {
 //  detailpanel->setMinimumWidth(200);
@@ -299,6 +303,7 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
 //  detailpanel->addWidget(preferences->getPanel());
 //  detailpanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   addWidget(preferences->getPanel());
+  widgetIndexes.insert(preferences->getPrefItem(), widgetIndex++);
   preferences->getPanel()->hide();
   preferences->getPanel()->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   //detailpanel->addWidget(preferences->getPrefItem());
@@ -440,16 +445,22 @@ void TabbedPreferences::selection(QString view)
 //    CardLayout cl = (CardLayout) (detailpanel.getLayout());
 //    cl.show(detailpanel, View);
 // for(int i=0; i < detailpanel->count(); i++)
- for(int i=0; i < preferencesArray.count(); i++)
+// for(int i=0; i < preferencesArray.count(); i++)
+// {
+//  if(preferencesArray.at(i)->getPrefItem() == view)
+//  {
+//   //detailpanel->setCurrentIndex(i);
+//   widget(currSplitterWidget +1)->hide();
+//   widget(i+1)->show();
+//   currSplitterWidget = i;
+//   return;
+//  }
+// }
+ if(widgetIndexes.contains(view))
  {
-  if(preferencesArray.at(i)->getPrefItem() == view)
-  {
-   //detailpanel->setCurrentIndex(i);
-   widget(currSplitterWidget +1)->hide();
-   widget(i+1)->show();
-   currSplitterWidget = i;
-   return;
-  }
+     widget(currSplitterWidget)->hide();
+     currSplitterWidget = widgetIndexes.value(view);
+     widget(currSplitterWidget)->show();
  }
 }
 
@@ -480,7 +491,8 @@ void TabbedPreferences::selection(QString view)
  );
 }
 
-/*private*/ void TabbedPreferences::addItem(QString prefItem, QString itemText, QString tabtitle, QString labelKey, PreferencesPanel* item, QString tooltip, int sortOrder)
+/*private*/ void TabbedPreferences::addItem(QString prefItem, QString itemText, QString tabtitle, QString labelKey,
+                                            PreferencesPanel* item, QString tooltip, int sortOrder)
 {
  PreferencesCatItems* itemBeingAdded = NULL;
  foreach (PreferencesCatItems* preferences, preferencesArray)
@@ -860,7 +872,7 @@ PreferencesCatItems::PreferencesCatItems(QString pref, QString title, int sortOr
 
 void PreferencesCatItems::addPreferenceItem(QString title, QString labelkey, QWidget* item, QString tooltip, int sortOrder)
 {
- if(qobject_cast<QTabWidget*>(item))
+ if(qobject_cast<ConnectionsPreferencesPanel*>(item)==0 && qobject_cast<ProfilePreferencesPanel*>(item)==0)
  {
   foreach (TabDetails* tabDetails, tabDetailsArray)
   {
@@ -870,6 +882,12 @@ void PreferencesCatItems::addPreferenceItem(QString title, QString labelkey, QWi
     return;
    }
   }
+  if(qobject_cast<QTabWidget*>(item) == 0)
+  {
+   nonTabbedPane = item;
+   return;
+  }
+
   TabDetails* tab = new TabDetails(labelkey, title, item, tooltip, sortOrder);
   tabDetailsArray.append(tab);
   qSort(tabDetailsArray.begin(), tabDetailsArray.end(), tabDetailsCompare);

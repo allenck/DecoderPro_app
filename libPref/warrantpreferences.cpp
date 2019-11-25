@@ -345,28 +345,28 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
 
   rampPrefs = doc.createElement(APPEARANCE_PREFS);
   QDomElement step =  doc.createElement("SignalHeadStateRed");
-  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Red"))));
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("SignalHeadStateRed"))));
   rampPrefs.appendChild(step);
   step =  doc.createElement("SignalHeadStateFlashingRed");
-  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Flashing Red"))));
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("SignalHeadStateFlashingRed"))));
   rampPrefs.appendChild(step);
   step =  doc.createElement("SignalHeadStateGreen");
-  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Green"))));
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("SignalHeadStateGreen"))));
   rampPrefs.appendChild(step);
   step =  doc.createElement("SignalHeadStateFlashingGreen");
-  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Flashing Green"))));
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("SignalHeadStateFlashingGreen"))));
   rampPrefs.appendChild(step);
   step =  doc.createElement("SignalHeadStateYellow");
-  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Yellow"))));
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("SignalHeadStateYellow"))));
   rampPrefs.appendChild(step);
   step =  doc.createElement("SignalHeadStateFlashingYellow");
-  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Flashing Yellow"))));
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("SignalHeadStateFlashingYellow"))));
   rampPrefs.appendChild(step);
   step =  doc.createElement("SignalHeadStateLunar");
-  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Lunar"))));
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("SignalHeadStateLunar"))));
   rampPrefs.appendChild(step);
   step =  doc.createElement("SignalHeadStateFlashingLunar");
-  step.appendChild(doc.createTextNode(_headAppearances.value(tr("Flashing Lunar"))));
+  step.appendChild(doc.createTextNode(_headAppearances.value(tr("SignalHeadStateFlashingLunar"))));
   rampPrefs.appendChild(step);
   prefs.appendChild(rampPrefs);
  }

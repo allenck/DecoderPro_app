@@ -38,6 +38,7 @@ protected:
 friend class ManagerDefaultsConfigPane;
 friend class SATableModel;
 friend class ManagerDefaultSelector;
+friend class UserMessagePreferencesPane;
 };
 
 #endif // BEAN_H

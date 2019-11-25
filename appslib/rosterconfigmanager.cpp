@@ -92,11 +92,11 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
     Preferences* preferences = ProfileUtils::getPreferences(profile, "jmri/jmrit/RosterConfigManager", true);
     preferences->put(DIRECTORY, FileUtil::getPortableFilename(this->getDirectory()));
     preferences->put(DEFAULT_OWNER, this->getDefaultOwner());
-//    try {
+    try {
         preferences->sync();
-//    } catch (BackingStoreException ex) {
-//        log->error("Unable to save preferences", ex);
-//    }
+    } catch (BackingStoreException ex) {
+        log->error("Unable to save preferences", ex);
+    }
 }
 /**
  * Get the default owner for the active profile.
@@ -179,27 +179,33 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
  * @param profile   the profile to set the directory for
  * @param directory the directory to set
  */
-/*public*/ void RosterConfigManager::setDirectory(/*@CheckForNull*/ Profile* profile, /*@CheckForNull*/ QString directory) {
-    if (directory == "" || directory.isEmpty()) {
-        directory = FileUtil::PREFERENCES;
-    }
-    QString oldDirectory = this->directories.value(profile);
-    try {
-        if (!FileUtil::getFile(directory)->isDirectory()) {
-            throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
-        }
-    } catch (FileNotFoundException ex) { // thrown by getFile() if directory does not exist
-     throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
-    }
-    if (directory != (FileUtil::PREFERENCES)) {
-        directory = FileUtil::getAbsoluteFilename(directory);
-        if (!directory.endsWith(File::separator)) {
-            directory = directory + File::separator;
-        }
-    }
-    this->directories.insert(profile, directory);
-    log->debug(tr("Roster changed from %1 to %2").arg(oldDirectory).arg(this->directories.value(profile)));
-    firePropertyChange(DIRECTORY, oldDirectory, directory);
+/*public*/ void RosterConfigManager::setDirectory(/*@CheckForNull*/ Profile* profile, /*@CheckForNull*/ QString directory) 
+{
+ if (directory == "" || directory.isEmpty()) 
+ {
+  directory = FileUtil::PREFERENCES;
+ }
+ QString oldDirectory = this->directories.value(profile);
+ try 
+ {
+  if (!FileUtil::getFile(directory)->isDirectory()) 
+  {
+   throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
+  }
+ } 
+ catch (FileNotFoundException ex) 
+ { // thrown by getFile() if directory does not exist
+  throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
+ }
+ if (directory != (FileUtil::PREFERENCES)) {
+     directory = FileUtil::getAbsoluteFilename(directory);
+     if (!directory.endsWith(File::separator)) {
+         directory = directory + File::separator;
+     }
+ }
+ this->directories.insert(profile, directory);
+ log->debug(tr("Roster changed from %1 to %2").arg(oldDirectory).arg(this->directories.value(profile)));
+ firePropertyChange(DIRECTORY, oldDirectory, directory);
 }
 
 /**

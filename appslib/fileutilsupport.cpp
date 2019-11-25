@@ -25,7 +25,7 @@
 ///*public*/ class FileUtilSupport extends Bean {
 
 Q_GLOBAL_STATIC_WITH_ARGS(const char, _separator, ('/'))
-Q_GLOBAL_STATIC_WITH_ARGS(const char*, _preferences, ("preferences:"))
+Q_GLOBAL_STATIC_WITH_ARGS(const char*, _preferences, ("preference:"))
 Q_GLOBAL_STATIC_WITH_ARGS(const char*, _profile, ("profile:"))
 Q_GLOBAL_STATIC_WITH_ARGS(const char*, _program, ("program:"))
 Q_GLOBAL_STATIC_WITH_ARGS(const char*, _settings, ("settings:"))
@@ -92,26 +92,32 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _file, ("file:"))
 //@CheckReturnValue
 /*public*/ File* FileUtilSupport::getFile(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path) throw (FileNotFoundException)
 {
- File* file;
- try
- {
-  QString realPath = pathFromPortablePath(profile, path);
-  QFileInfo info(realPath);
-  if(!info.exists())
-   throw FileNotFoundException(realPath);
-  file = new File(realPath);
-  if(!file->exists())
-   throw FileNotFoundException(tr("File not found: %s").arg(file->getPath()));
- } 
- catch (NullPointerException ex) 
- {
-  throw  FileNotFoundException("Cannot find file at " + path);
+// File* file;
+// try
+// {
+//  QString realPath = pathFromPortablePath(profile, path);
+//  QFileInfo info(realPath);
+//  if(!info.exists())
+//   throw FileNotFoundException(realPath);
+//  file = new File(realPath);
+//  if(!file->exists())
+//   throw FileNotFoundException(tr("File not found: %s").arg(file->getPath()));
+// }
+// catch (NullPointerException ex)
+// {
+//  throw  FileNotFoundException("Cannot find file at " + path);
+// }
+// catch (IOException ex)
+// {
+//  throw  FileNotFoundException("Cannot find file at " + path);
+// }
+// return file;
+ try {
+     return new File(this->pathFromPortablePath(profile, path));
+ } catch (NullPointerException ex) {
+     throw  FileNotFoundException("Cannot find file at " + path);
  }
- catch (IOException ex)
- {
-  throw  FileNotFoundException("Cannot find file at " + path);
- }
- return file;
+
 }
 #if 0
 /**
@@ -876,7 +882,11 @@ public URL getURL(URI uri) {
  if ((old != NULL && old != (this->programPath))
          || (this->programPath != NULL && this->programPath !=(old)))
  {
-     this->firePropertyChange(*_program, old, this->programPath);
+  FileUtil::Property* oldProperty = new FileUtil::Property(ProfileManager::defaultManager()->getActiveProfile(), old);
+  FileUtil::Property* newProperty = new FileUtil::Property(ProfileManager::defaultManager()->getActiveProfile(), this->programPath);
+
+     //this->firePropertyChange(*_program, old, this->programPath);
+  this->firePropertyChange(*_program, VPtr<FileUtil::Property>::asQVariant(oldProperty), VPtr<FileUtil::Property>::asQVariant(newProperty));
  }
 }
 

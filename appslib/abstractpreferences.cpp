@@ -179,19 +179,23 @@ AbstractPreferences::AbstractPreferences()
  */
 /*public*/ void AbstractPreferences::put(QString key, QString value)
 {
- if (key.isEmpty() || value.isEmpty())
-     throw new NullPointerException();
- if (key.length() > MAX_KEY_LENGTH)
-     throw  IllegalArgumentException("Key too long: "+key);
- if (value.length() > MAX_VALUE_LENGTH)
-     throw  IllegalArgumentException("Value too long: "+value);
-
+// if (key.isEmpty() || value.isEmpty())
+//     throw NullPointerException();
+ if (key.length() > MAX_KEY_LENGTH
+    || value.length() > MAX_VALUE_LENGTH)
+  throw  IllegalArgumentException("key ("
+    + QString::number(key.length()) + ")"
+    + " or value ("
+    + QString::number(value.length()) + ")"
+    + " to large");
 //    /*synchronized*/(lock) {
  if (removed)
-     throw new IllegalStateException("Node has been removed.");
+     throw IllegalStateException("Node has been removed.");
 
  putSpi(key, value);
  enqueuePreferenceChangeEvent(key, value);
+// if (preferenceListeners != null)
+//   fire(new PreferenceChangeEvent(this, key, value));
 //    }
 }
 

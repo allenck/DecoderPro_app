@@ -5,11 +5,12 @@
 #include "propertychangeevent.h"
 #include <QTabWidget>
 #include <QComboBox>
+#include "jmripanel.h"
 
 class QComboBox;
 class QCheckBox;
 class UserPreferencesManager;
-class LIBPREFSHARED_EXPORT UserMessagePreferencesPane : public QWidget, public PreferencesPanel
+class LIBPREFSHARED_EXPORT UserMessagePreferencesPane : public JmriPanel, public PreferencesPanel
 {
     Q_OBJECT
  Q_INTERFACES(PreferencesPanel)
@@ -17,7 +18,7 @@ class LIBPREFSHARED_EXPORT UserMessagePreferencesPane : public QWidget, public P
 public:
     Q_INVOKABLE explicit UserMessagePreferencesPane(QWidget *parent = 0);
     ~UserMessagePreferencesPane() {}
-    UserMessagePreferencesPane(const UserMessagePreferencesPane&) : QWidget() {}
+    UserMessagePreferencesPane(const UserMessagePreferencesPane&) : JmriPanel() {}
     /*public*/ QString getPreferencesItem();
     /*public*/ QString getPreferencesItemText();
     /*public*/ QString getTabbedPreferencesTitle();

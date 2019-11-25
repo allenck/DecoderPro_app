@@ -111,7 +111,7 @@ private:
     QPushButton* save;
     //QScrollArea* listScroller;
     int initialisationState;// = 0x00;
-    int currSplitterWidget = 0;
+    int currSplitterWidget = 1;
     ///*private*/ static final long serialVersionUID = -6266891995866315885L;
     /*private*/ void setInitalisationState(int state);
     /*private*/ bool invokeSaveOptions();
@@ -121,6 +121,7 @@ private:
     void updateJList();
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("TabbedPreferences");
     bool isDirty();
+    QMap<QString, int> widgetIndexes;
 
 protected:
     /*protected*/ QStringList getChoices();

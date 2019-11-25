@@ -95,7 +95,7 @@ Roster::Roster(QObject *parent) :
  rosterLocation = FileUtil::getUserFilesPath();
  rosterIndexFileName = Roster::DEFAULT_ROSTER_INDEX;
 
- FileUtilSupport::getDefault()->addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeListener*)this);//(PropertyChangeEvent evt) -> {
+ FileUtilSupport::getDefault()->addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeListener*)new RosterPropertyChangeListener(this));//(PropertyChangeEvent evt) -> {
 //             if (Roster.this.getRosterLocation().equals(evt.getOldValue())) {
 //                 Roster.this.setRosterLocation((String) evt.getNewValue());
 //                 Roster.this.reloadRosterFile();
@@ -224,15 +224,20 @@ Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
  if(e == nullptr)
   throw (NullPointerException("Roster is null"));
  if (log->isDebugEnabled()) log->debug("Add entry "+e->getFileName());
- int i = _list->size()-1;// Last valid index
- while (i>=0)
- {
-  // compareToIgnoreCase not present in Java 1.1.8
-  if (e->getId().toUpper().compare(_list->at(i)->getId().toUpper()) > 0 )
-   break; // I can never remember whether I want break or continue here
+ /*synchronized (_list)*/ {
+  QMutexLocker locker(&mutex);
+  int i = _list->size()-1;// Last valid index
+  while (i>=0)
+  {
+   // compareToIgnoreCase not present in Java 1.1.8
+   if (e->getId().toUpper().compare(_list->at(i)->getId().toUpper()) > 0 )
+    break; // I can never remember whether I want break or continue here
   i--;
  }
  _list->insert(i+1, e);
+ }
+ e->addPropertyChangeListener((PropertyChangeListener*)this);
+ this->addRosterGroups(e->getGroups(this));
  setDirty(true);
  firePropertyChange(ADD, QVariant(), VPtr<RosterEntry>::asQVariant(e));
 }
@@ -1138,7 +1143,24 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
     }
     this->addRosterGroup(new RosterGroup(rg));
 }
+/**
+ * Add a list of {@link jmri.jmrit.roster.rostergroup.RosterGroup}.
+ * RosterGroups that are already known to the Roster are ignored.
+ *
+ * @param groups RosterGroups to add to the roster. RosterGroups already in
+ *               the roster will not be added again.
+ */
+/*public*/ void Roster::addRosterGroups(QList<RosterGroup*> groups) {
+    //groups.stream().forEach((rg) ->
+ foreach(RosterGroup* rg, groups)
+ {
+     this->addRosterGroup(rg);
+ }//);
+}
 
+/*public*/ void Roster::removeRosterGroup(RosterGroup* rg) {
+    this->delRosterGroupList(rg->getName());
+}
 /**
  * Delete a roster group, notifying all listeners of the change
  * <p>
@@ -1358,15 +1380,24 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
     this->firePropertyChange(Roster::ROSTER_GROUP_RENAMED, oldName, newName);
 }
 
-/*public*/ void Roster::propertyChange(PropertyChangeEvent *evt)
+/*public*/ void RosterPropertyChangeListener::propertyChange(PropertyChangeEvent *evt)
 {
  FileUtil::Property* oldValue = VPtr<FileUtil::Property>::asPtr( evt->getOldValue());
  FileUtil::Property* newValue = VPtr<FileUtil::Property>::asPtr( evt->getNewValue());
  Profile* project = oldValue->getKey();
- if (this->getRoster(project) && this->getRosterLocation() == (oldValue->getValue())) {
-     this->setRosterLocation( evt->getNewValue().toString());
-     this->reloadRosterFile();
+ if (roster->getRoster(project) && roster->getRosterLocation() == (oldValue->getValue())) {
+     roster->setRosterLocation( evt->getNewValue().toString());
+     roster->reloadRosterFile();
  }
+}
+
+//@Override
+/*public*/ void Roster::propertyChange(PropertyChangeEvent* evt) {
+    if ( qobject_cast<RosterEntry*>(evt->getSource())) {
+        if (evt->getPropertyName() == (RosterEntry::ID)) {
+            this->entryIdChanged((RosterEntry*) evt->getSource());
+        }
+    }
 }
 //    // initialize logging
 /*private*/ /*final*/ /*static*/ Logger* Roster::log = LoggerFactory::getLogger("Roster");
