@@ -126,7 +126,7 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
 //    actionsTbl.getTableHeader().setReorderingAllowed(false);
     //jScrollPane1.setViewportView(actionsTbl);
     actionsTbl->setColumnWidth(0, 200);
-    actionsTbl->horizontalHeader()->setStretchLastSection(true);
+    actionsTbl->horizontalHeader()->setStretchLastSection(false);
 //    actionsTbl.getColumnModel().getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 //    ResourceBundle bundle = ResourceBundle.getBundle("apps/startup/Bundle"); // NOI18N

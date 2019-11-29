@@ -29,7 +29,7 @@ class LIBTABLESSHARED_EXPORT SignalGroupTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    explicit SignalGroupTableAction(QObject *parent = 0);
+    Q_INVOKABLE explicit SignalGroupTableAction(QObject *parent = 0);
     Q_INVOKABLE /*public*/ SignalGroupTableAction(QString s, QObject *parent = 0);
     ~SignalGroupTableAction() {}
     SignalGroupTableAction(const SignalGroupTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}

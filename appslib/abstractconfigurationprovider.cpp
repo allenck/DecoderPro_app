@@ -41,14 +41,14 @@
   dir = new File(this->project->getPath(), /*Profile::PROFILE*/"profile");
   if (!shared)
   {
-   File* nodeDir = new File(dir, NodeIdentity::identity());
+   File* nodeDir = new File(dir, NodeIdentity::storageIdentity());
    if (!nodeDir->exists())
    {
     bool success = NodeIdentity::copyFormerIdentity(dir, nodeDir);
     if (! success)
      log->debug(tr("copyFormerIdentity(%1, %2) did not copy").arg(dir->toString()).arg(nodeDir->toString()));
    }
-   dir = new File(dir, NodeIdentity::identity());
+   dir = new File(dir, NodeIdentity::storageIdentity());
   }
  }
  FileUtil::createDirectory(dir);

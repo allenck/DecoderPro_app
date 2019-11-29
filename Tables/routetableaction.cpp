@@ -3069,13 +3069,13 @@ void RouteSensorModel::reset()
 /*public*/ void RouteTableAction::setMessagePreferencesDetails()
 {
 #if 1
- ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "remindSaveRoute", tr("Hide Save Message Reminder"));
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setPreferenceItemDetails(getClassName(), "remindSaveRoute", tr("Hide Save Message Reminder"));
  AbstractTableAction::setMessagePreferencesDetails();
- QMap< int,QString> options =  QMap< int,QString>();
- options.insert(0x00, tr("Always Ask"));
- options.insert(0x01, tr("Never Delete"));
- options.insert(0x02, tr("Delete Without Prompting"));
- ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->messageItemDetails(getClassName(), "deleteInUse", tr("When Deleting an item that is in use"), options, 0x00);
+ QMap< int,QString>* options = new QMap< int,QString>();
+ options->insert(0x00, tr("Always Ask"));
+ options->insert(0x01, tr("Never Delete"));
+ options->insert(0x02, tr("Delete Without Prompting"));
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMessageItemDetails(getClassName(), "deleteInUse", tr("When Deleting an item that is in use"), options, 0x00);
 #endif
 }
 

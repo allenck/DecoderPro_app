@@ -62,7 +62,7 @@
 #include "logix/logixactiontestaction.h"
 #include "warrants/warranttestaction.h"
 #include "warrants/warrantpreferencespaneltestaction.h"
-
+#include "misc/jmriuserpreferencesmanagertestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -165,5 +165,5 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     addMenu(warrantMenu);
     warrantMenu->addAction(new WarrantTestAction(this));
     warrantMenu->addAction(new WarrantPreferencesPanelTestAction(this));
-
+    warrantMenu->addAction(new JmriUserPreferencesManagerTestAction(this));
 }

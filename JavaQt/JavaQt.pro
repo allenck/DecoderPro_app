@@ -222,7 +222,8 @@ SOURCES += javaqt.cpp \
     predicate.cpp \
     collection.cpp \
     timer.cpp \
-    beans.cpp
+    beans.cpp \
+    systemnamevalidator.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -488,7 +489,8 @@ HEADERS += javaqt.h\
     collection.h \
     discoverylistener.h \
     timer.h \
-    beans.h
+    beans.h \
+    systemnamevalidator.h
 
 unix {
     target.path = /usr/lib

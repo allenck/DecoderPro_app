@@ -25,7 +25,7 @@ class ReporterTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    ReporterTableAction(QObject* parent = 0);
+    Q_INVOKABLE ReporterTableAction(QObject* parent = 0);
     Q_INVOKABLE /*public*/ ReporterTableAction(QString actionName, QObject* parent);
     ~ReporterTableAction() {}
     ReporterTableAction(const ReporterTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}

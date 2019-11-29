@@ -109,7 +109,7 @@
 //        data.insert(JSON::JSON, JSON::JSON_PROTOCOL_VERSION);
     data.insert(JSON::HEARTBEAT, qRound(heartbeat * 0.9f));
     data.insert(JSON::RAILROAD, WebServerPreferences::getDefault()->getRailroadName());
-    data.insert(JSON::NODE, NodeIdentity::identity());
+    data.insert(JSON::NODE, NodeIdentity::networkIdentity());
     data.insert(JSON::ACTIVE_PROFILE, ProfileManager::getDefault()->getActiveProfile()->getName());
     root.insert(JSON::DATA, data);
     return root;
@@ -218,7 +218,7 @@ return QJsonObject();
     QJsonObject root = QJsonObject(); //mapper.createObjectNode();
     root.insert(JSON::TYPE, JSON::NODE);
     QJsonObject data = QJsonObject();//root.putObject(JSON::DATA);
-    data.insert(JSON::NODE, NodeIdentity::identity());
+    data.insert(JSON::NODE, NodeIdentity::networkIdentity());
     //ArrayNode nodes = mapper.createArrayNode();
     QJsonArray nodes;
 //        NodeIdentity.formerIdentities().stream().forEach((node) -> {

@@ -68,6 +68,7 @@ public:
     /*public*/ static void assertNotNull(QString message, QVariant object, QString file, int line);
     /*public*/ static void assertNotNull(QString object, QString file, int line);
     /*public*/ static void assertNotNull(QString message, QByteArray object, QString file, int line);
+    /*public*/ static void assertNull(QVariant object, QString file, int line);
 
 
     /*public*/ static void assertNull(QString message, QObject* object, QString file, int line);

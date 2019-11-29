@@ -200,11 +200,12 @@ void ATABeanTableFrame::extras()
 
 /*public*/ void AbstractTableAction::setMessagePreferencesDetails()
 {
- QMap< int,QString> options =  QMap< int,QString>();
- options.insert(0x00, tr("Always Ask"));
- options.insert(0x01, tr("Never Delete"));
- options.insert(0x02, tr("Delete Without Prompting"));
- ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->messageItemDetails(getClassName(), "deleteInUse", tr("When Deleting an item that is in use"), options, 0x00);
+ QMap< int,QString>* options =  new QMap< int,QString>();
+ options->insert(0x00, tr("Always Ask"));
+ options->insert(0x01, tr("Never Delete"));
+ options->insert(0x02, tr("Delete Without Prompting"));
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMessageItemDetails(getClassName(), "deleteInUse", tr("When Deleting an iten that is in use"), options, 0x00);
+
 }
 
 /*protected*/ /*abstract*/ QString AbstractTableAction::getClassName() {return "";}

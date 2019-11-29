@@ -13,7 +13,7 @@ SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractPro
 {
  this->tc = tc;
  log = new Logger("SlotManager");
- log->setDebugEnabled(true);
+ log->setDebugEnabled(false);
  log->setInfoEnabled(true);
  // need a longer LONG_TIMEOUT for Fleischman command stations
  // change timeout values from AbstractProgrammer superclass

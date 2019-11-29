@@ -79,8 +79,12 @@
  classPreferenceList = new QHash<QString, ClassPreferences*>();
 
  // prevent attempts to write during construction
- this->allowSave = false;
+ //this->allowSave = false;
+ QMetaObject::invokeMethod((JmriUserPreferencesManager*)this, "initAfter", Qt::QueuedConnection);
+}
 
+/*private*/ void JmriUserPreferencesManager::initAfter() // finish up after subclassed constructor has run
+{
  //I18N in ManagersBundle.properties (this is a checkbox on prefs tab Messages|Misc items)
  this->setPreferenceItemDetails(getClassName(), "reminder", tr("Hide Reminder Location Message")); // NOI18N
  //I18N in ManagersBundle.properties (this is the title of prefs tab Messages|Misc items)
@@ -227,7 +231,7 @@
     if ( classPreferenceList->contains(strClass)) {
         return  classPreferenceList->value(strClass)->getPreferenceName(n);
     }
-    return "";
+    return QString();
 }
 
 //@Override
@@ -240,7 +244,7 @@
             }
         }
     }
-    return "";
+    return QString();
 
 }
 
@@ -399,7 +403,7 @@
 
 //@Override
 /*public*/ QString JmriUserPreferencesManager::getComboBoxLastSelection(QString comboBoxName) {
-    return this->comboBoxLastSelection->value(comboBoxName);
+    return this->comboBoxLastSelection->value(comboBoxName, "");
 }
 
 //@Override
@@ -576,7 +580,7 @@
     if ( classPreferenceList->contains(strClass)) {
         return  classPreferenceList->value(strClass)->getDescription();
     }
-    return "";
+    return QString();
 }
 
 //@Override
@@ -594,6 +598,7 @@
  * will invoke the methods, this will then trigger the class to send details
  * about its preferences back to this code.
  */
+#if 0
 //@Override
 /*public*/ void JmriUserPreferencesManager::setClassDescription(QString strClass)
 {
@@ -701,6 +706,101 @@
 //        log->error("unable to get a class name \"{}\"", strClass, ex);
 //    }
 }
+#else
+//@Override
+/*public*/ void JmriUserPreferencesManager::setClassDescription(QString strClass)
+{
+ try
+ {
+     Class* cl = Class::forName(strClass);
+     QObject* t;
+     try {
+         t = (QObject*)cl->newInstance();
+     }
+     //catch (IllegalArgumentException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException | java.lang.reflect.InvocationTargetException ex)
+     catch(InvocationTargetException ex)
+     {
+         log->error(tr("setClassDescription(%1) failed in newInstance").arg(strClass), ex);
+         //return;
+         t = (QObject*)cl;
+     }
+     bool classDesFound;
+     bool classSetFound;
+     QString desc = QString();
+     //Method method;
+     //look through declared methods first, then all methods
+     try
+     {
+         //method = cl.getDeclaredMethod("getClassDescription");
+         //desc = (String) method.invoke(t);
+         if(QMetaObject::invokeMethod(t, "getClassDescription", Qt::DirectConnection, Q_RETURN_ARG(QString, desc)))
+          classDesFound = true;
+         else
+          throw NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
+     }
+     //catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex)
+     catch(NoSuchMethodException ex)
+     {
+      if(log->isDebugEnabled())
+         log->debug(tr("Unable to call declared method \"getClassDescription\" with exception %1").arg(ex.toString()));
+      classDesFound = false;
+      return;
+     }
+#if 0
+     if (!classDesFound) {
+         try {
+             method = cl.getMethod("getClassDescription");
+             desc = (String) method.invoke(t);
+         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex) {
+             log.debug("Unable to call undeclared method \"getClassDescription\" with exception {}", ex.toString());
+             classDesFound = false;
+         }
+     }
+#endif
+     if (classDesFound) {
+         if (!classPreferenceList->contains(strClass)) {
+             classPreferenceList->insert(strClass, new ClassPreferences(desc));
+         } else {
+             classPreferenceList->value(strClass)->setDescription(desc);
+         }
+         this->savePreferencesState();
+     }
+
+     try {
+//         method = cl.getDeclaredMethod("setMessagePreferencesDetails");
+//         method.invoke(t);
+      if(QMetaObject::invokeMethod(t, "setMessagePreferencesDetails", Qt::DirectConnection))
+         classSetFound = true;
+      else
+       throw NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
+
+     }
+     //catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex)
+     catch(NoSuchMethodException ex)
+     {
+         // TableAction.setMessagePreferencesDetails() method is routinely not present in multiple classes
+         log->debug(tr("Unable to call declared method \"setMessagePreferencesDetails\" with exception %1").arg(ex.toString()));
+         classSetFound = false;
+     }
+#if 0
+     if (!classSetFound) {
+         try {
+             method = cl.getMethod("setMessagePreferencesDetails");
+             method.invoke(t);
+         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex) {
+             log.debug("Unable to call undeclared method \"setMessagePreferencesDetails\" with exception {}", ex.toString());
+         }
+     }
+ #endif
+ } catch (ClassNotFoundException ex) {
+     log->warn(tr("class name \"%1\" cannot be found, perhaps an expected plugin is missing?").arg(strClass));
+ } catch (IllegalAccessException ex) {
+     log->error(tr("unable to access class \"%1\"").arg(strClass), ex);
+ } catch (InstantiationException ex) {
+     log->error(tr("unable to get a class name \"%1\"").arg(strClass), ex);
+ }
+}
+#endif
 
 /**
  * Add descriptive details about a specific message box, so that if it needs
@@ -716,31 +816,31 @@
  * @param defaultOption The default option for the given item.
  */
 //@Override
-/*public*/ void JmriUserPreferencesManager::setMessageItemDetails(QString strClass, QString item, QString description, QMap<int, QString> options, int defaultOption) {
+/*public*/ void JmriUserPreferencesManager::setMessageItemDetails(QString strClass, QString item, QString description, QMap<int, QString>* options, int defaultOption) {
     if (! classPreferenceList->contains(strClass)) {
          classPreferenceList->insert(strClass, new ClassPreferences());
     }
-    QList<MultipleChoice*> a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
-    for (int i = 0; i < a.size(); i++) {
-        if (a.at(i)->getItem() == (item)) {
-            a.at(i)->setMessageItems(description, options, defaultOption);
+    QList<MultipleChoice*>* a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
+    for (int i = 0; i < a->size(); i++) {
+        if (a->at(i)->getItem() == (item)) {
+            a->at(i)->setMessageItems(description, options, defaultOption);
             return;
         }
     }
-    a.append(new MultipleChoice(description, item, options, defaultOption));
+    a->append(new MultipleChoice(description, item, options, defaultOption));
 }
 
 //@Override
-/*public*/ QMap<int, QString> JmriUserPreferencesManager::getChoiceOptions(QString strClass, QString item) {
+/*public*/ QMap<int, QString>* JmriUserPreferencesManager::getChoiceOptions(QString strClass, QString item) {
     if ( classPreferenceList->contains(strClass)) {
-        QList<MultipleChoice*> a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
-        for (int i = 0; i < a.size(); i++) {
-            if (a.at(i)->getItem() == (item)) {
-                return a.at(i)->getOptions();
+        QList<MultipleChoice*>* a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
+        for (int i = 0; i < a->size(); i++) {
+            if (a->at(i)->getItem() == (item)) {
+                return a->at(i)->getOptions();
             }
         }
     }
-    return QMap<int, QString>();
+    return new QMap<int, QString>();
 }
 
 //@Override
@@ -754,10 +854,10 @@
 //@Override
 /*public*/ QStringList JmriUserPreferencesManager::getMultipleChoiceList(QString strClass) {
     if ( classPreferenceList->contains(strClass)) {
-        QList<MultipleChoice*> a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
+        QList<MultipleChoice*>* a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
         QStringList list = QStringList();
-        for (int i = 0; i < a.size(); i++) {
-            list.append(a.at(i)->getItem());
+        for (int i = 0; i < a->size(); i++) {
+            list.append(a->at(i)->getItem());
         }
         return list;
     }
@@ -775,10 +875,10 @@
 //@Override
 /*public*/ QString JmriUserPreferencesManager::getChoiceDescription(QString strClass, QString item) {
     if ( classPreferenceList->contains(strClass)) {
-        QList<MultipleChoice*> a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
-        for (int i = 0; i < a.size(); i++) {
-            if (a.at(i)->getItem() == (item)) {
-                return a.at(i)->getOptionDescription();
+        QList<MultipleChoice*>* a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
+        for (int i = 0; i < a->size(); i++) {
+            if (a->at(i)->getItem() == (item)) {
+                return a->at(i)->getOptionDescription();
             }
         }
     }
@@ -788,10 +888,10 @@
 //@Override
 /*public*/ int JmriUserPreferencesManager::getMultipleChoiceOption(QString strClass, QString item) {
     if ( classPreferenceList->contains(strClass)) {
-        QList<MultipleChoice*> a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
-        for (int i = 0; i < a.size(); i++) {
-            if (a.at(i)->getItem() == (item)) {
-                return a.at(i)->getValue();
+        QList<MultipleChoice*>* a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
+        for (int i = 0; i < a->size(); i++) {
+            if (a->at(i)->getItem() == (item)) {
+                return a->at(i)->getValue();
             }
         }
     }
@@ -801,10 +901,10 @@
 //@Override
 /*public*/ int JmriUserPreferencesManager::getMultipleChoiceDefaultOption(QString strClass, QString choice) {
     if ( classPreferenceList->contains(strClass)) {
-        QList<MultipleChoice*> a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
-        for (int i = 0; i < a.size(); i++) {
-            if (a.at(i)->getItem() == (choice)) {
-                return a.at(i)->getDefaultValue();
+        QList<MultipleChoice*>* a =  classPreferenceList->value(strClass)->getMultipleChoiceList();
+        for (int i = 0; i < a->size(); i++) {
+            if (a->at(i)->getItem() == (choice)) {
+                return a->at(i)->getDefaultValue();
             }
         }
     }
@@ -812,7 +912,7 @@
 }
 
 //@Override
-/*public*/ void JmriUserPreferencesManager::setMultipleChoiceOption(QString strClass, QString choice, QString value) {
+/*public*/ void JmriUserPreferencesManager::setMultipleChoiceOption(QString strClass, QString /*choice*/, QString value) {
     if (! classPreferenceList->contains(strClass)) {
          classPreferenceList->insert(strClass, new ClassPreferences());
     }
@@ -820,7 +920,7 @@
 //            .filter((mc) -> (mc->getItem() == (choice))).forEachOrdered((mc) -> {
 //        mc.setValue(value);
 //    });
-    foreach(MultipleChoice* mc, classPreferenceList->value(strClass)->getMultipleChoiceList())
+    foreach(MultipleChoice* mc, *classPreferenceList->value(strClass)->getMultipleChoiceList())
     {
      mc->setValue(value);
     }
@@ -833,14 +933,14 @@
          classPreferenceList->insert(strClass, new ClassPreferences());
     }
     bool set = false;
-    foreach (MultipleChoice* mc,  classPreferenceList->value(strClass)->getMultipleChoiceList()) {
+    foreach (MultipleChoice* mc,  *classPreferenceList->value(strClass)->getMultipleChoiceList()) {
         if (mc->getItem() == (choice)) {
             mc->setValue(value);
             set = true;
         }
     }
     if (!set) {
-         classPreferenceList->value(strClass)->getMultipleChoiceList().append(new MultipleChoice(choice, value));
+         classPreferenceList->value(strClass)->getMultipleChoiceList()->append(new MultipleChoice(choice, value));
         setClassDescription(strClass);
     }
     displayRememberMsg();
@@ -933,7 +1033,7 @@
         }
     }
 #endif
-    return "";
+    return QString();
 }
 
 /**
@@ -980,11 +1080,12 @@
 
 /*public*/ /*final*/ void JmriUserPreferencesManager::readUserPreferences()
 {
+ log->trace("starting readUserPreferences");
  this->allowSave = false;
  this->loading = true;
  File* perNodeConfig = nullptr;
  try {
-     perNodeConfig = FileUtil::getFile(FileUtil::PROFILE + /*Profile::PROFILE*/"profile" + "/" + NodeIdentity::identity() + "/" + /*Profile::UI_CONFIG*/"user-interface.xml"); // NOI18N
+     perNodeConfig = FileUtil::getFile(FileUtil::PROFILE + /*Profile::PROFILE*/"profile" + "/" + NodeIdentity::storageIdentity() + "/" + /*Profile::UI_CONFIG*/"user-interface.xml"); // NOI18N
      if (!perNodeConfig->canRead()) {
          perNodeConfig = nullptr;
      }
@@ -1148,15 +1249,15 @@
   foreach(QString name, classPreferenceList->keys())
   {
    ClassPreferences* cp = this-> classPreferenceList->value(name);
-   if (!cp->multipleChoiceList.isEmpty() || !cp->preferenceList->isEmpty())
+   if (!cp->multipleChoiceList->isEmpty() || !cp->preferenceList->isEmpty())
    {
     QDomElement clazz = doc.createElement("preferences");
     clazz.setAttribute("class", name);
-    if (!cp->multipleChoiceList.isEmpty()) {
+    if (!cp->multipleChoiceList->isEmpty()) {
         QDomElement choices = doc.createElement("multipleChoice");
         // only save non-default values
         //cp.multipleChoiceList.stream().filter((mc) -> (mc.getDefaultValue() != mc.getValue())).forEach((mc) -> {
-        foreach(MultipleChoice* mc, cp->multipleChoiceList)
+        foreach(MultipleChoice* mc, *cp->multipleChoiceList)
         {
          QDomElement option;
             choices.appendChild(option = doc.createElement("option"));
@@ -1456,12 +1557,12 @@
 //    QList<PreferenceList*>* preferenceList = new ArrayList<>();
 //public:
     ClassPreferences::ClassPreferences() {
-     multipleChoiceList = QList<MultipleChoice*>();
+     multipleChoiceList = new QList<MultipleChoice*>();
      preferenceList = new QList<PreferenceList*>();
     }
 
     ClassPreferences::ClassPreferences(QString classDescription) {
-     multipleChoiceList = QList<MultipleChoice*>();
+     multipleChoiceList = new QList<MultipleChoice*>();
      preferenceList = new QList<PreferenceList*>();
         this->classDescription = classDescription;
     }
@@ -1482,31 +1583,33 @@
         return preferenceList->size();
     }
 
-    QList<MultipleChoice*> ClassPreferences::getMultipleChoiceList() {
+    QList<MultipleChoice *> *ClassPreferences::getMultipleChoiceList() {
         return multipleChoiceList;
     }
 
     int ClassPreferences::getPreferencesSize() {
-        return multipleChoiceList.size() + preferenceList->size();
+        return multipleChoiceList->size() + preferenceList->size();
     }
 
     /*public*/ QString ClassPreferences::getPreferenceName(int n) {
         try {
+         if(n >= preferenceList->size())
+          throw IndexOutOfBoundsException();
             return preferenceList->value(n)->getItem();
         } catch (IndexOutOfBoundsException ioob) {
-            return "";
+            return QString();
         }
     }
 
     int ClassPreferences::getMultipleChoiceListSize() {
-        return multipleChoiceList.size();
+        return multipleChoiceList->size();
     }
 
     /*public*/ QString ClassPreferences::getChoiceName(int n) {
         try {
-            return multipleChoiceList.value(n)->getItem();
+            return multipleChoiceList->value(n)->getItem();
         } catch (IndexOutOfBoundsException ioob) {
-            return "";
+            return QString();
         }
     }
 //};
@@ -1519,7 +1622,7 @@
 //    int value = -1;
 //    int defaultOption = -1;
 
-    MultipleChoice::MultipleChoice(QString description, QString item, QMap<int, QString> options, int defaultOption) {
+    MultipleChoice::MultipleChoice(QString description, QString item, QMap<int, QString> *options, int defaultOption) {
      value = -1;
      defaultOption = -1;
         this->item = item;
@@ -1531,6 +1634,7 @@
      defaultOption = -1;
         this->item = item;
         this->value = value;
+     options = new QMap<int, QString>();
 
     }
 
@@ -1542,14 +1646,14 @@
 //        options.keySet().stream().filter((o) -> (options.get(o) == (value))).forEachOrdered((o) -> {
 //            this->value = o;
 //        });
-     foreach(int o, options.keys())
+     foreach(int o, options->keys())
      {
-      if(options.value(o) == (value))
+      if(options->value(o) == (value))
        this->value = o;
      }
     }
 
-    void MultipleChoice::setMessageItems(QString description, QMap<int, QString> options, int defaultOption) {
+    void MultipleChoice::setMessageItems(QString description, QMap<int, QString> *options, int defaultOption) {
         optionDescription = description;
         this->options = options;
         this->defaultOption = defaultOption;
@@ -1574,7 +1678,7 @@
         return optionDescription;
     }
 
-    QMap<int, QString> MultipleChoice::getOptions() {
+    QMap<int, QString>* MultipleChoice::getOptions() {
         return options;
     }
 
@@ -1678,7 +1782,12 @@
     }
 
     void WindowLocations::setProperty(QString key, QVariant value) {
-        parameters.insert(key, value);
+     if (value == QVariant())
+     {
+         parameters.remove(key);
+     } else {
+         parameters.insert(key, value);
+     }
     }
 
     QVariant WindowLocations::getProperty(QString key) {

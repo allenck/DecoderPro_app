@@ -35,6 +35,8 @@
 #include "colorutil.h"
 #include "proxymanager.h"
 #include "proxylightmanager.h"
+#include "vptr.h"
+#include "systemconnectionmemomanager.h"
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)
@@ -116,7 +118,7 @@ void TurnoutTableAction::common()
  doAutomationBox = new QCheckBox("Automatic retry");
  connectionChoice = "";
 
- p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+ pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  // disable ourself if there is no primary turnout manager available
  if (turnManager==NULL) {
      setEnabled(false);
@@ -1032,23 +1034,32 @@ TableSorter sorter;
    QList<Manager*> managerList = proxy->getManagerList();
    for(int x = 0; x<managerList.size(); x++)
    {
-    QString manuName = ConnectionNameFromSystemName::getConnectionName(managerList.at(x)->getSystemPrefix());
-    bool addToPrefix = true;
-    //Simple test not to add a system with a duplicate System prefix
-    for (int i = 0; i<prefixBox->count(); i++)
-    {
-     if(prefixBox->itemText(i)==(manuName))
-      addToPrefix=false;
-    }
-    if (addToPrefix)
-     prefixBox->addItem(manuName);
+//    QString manuName = ConnectionNameFromSystemName::getConnectionName(managerList.at(x)->getSystemPrefix());
+//    bool addToPrefix = true;
+//    //Simple test not to add a system with a duplicate System prefix
+//    for (int i = 0; i<prefixBox->count(); i++)
+//    {
+//     if(prefixBox->itemText(i)==(manuName))
+//      addToPrefix=false;
+//    }
+//    if (addToPrefix)
+//     prefixBox->addItem(manuName);
+    TurnoutManager* turnManager = (TurnoutManager*)managerList.at(x);
+    prefixBox->addItem(ConnectionNameFromSystemName::getConnectionName(turnManager->getSystemPrefix()),
+                       VPtr<TurnoutManager>::asQVariant(turnManager));
    }
-   if(p->getComboBoxLastSelection(systemSelectionCombo)!=NULL)
-    prefixBox->setCurrentIndex(prefixBox->findText(p->getComboBoxLastSelection(systemSelectionCombo)));
+   if (!pref->getComboBoxLastSelection(systemSelectionCombo).isNull())
+   { // pick up user pref
+       SystemConnectionMemo* memo = ((SystemConnectionMemoManager*)InstanceManager
+               ::getDefault("SystemConnectionMemoManager"))
+               ->getSystemConnectionMemoForUserName(pref->getComboBoxLastSelection(systemSelectionCombo));
+       prefixBox->setCurrentIndex(prefixBox->findData(VPtr<TurnoutManager>::asQVariant( (TurnoutManager*)memo->get("TurnoutManager"))));
+   }
   }
   else
   {
-   prefixBox->addItem(ConnectionNameFromSystemName::getConnectionName(turnManager->getSystemPrefix()));
+   prefixBox->addItem(ConnectionNameFromSystemName::getConnectionName(turnManager->getSystemPrefix()),
+                      VPtr<TurnoutManager>::asQVariant(turnManager));
   }
   hardwareAddressTextField->setName("sysName");
   userNameTextField->setName("userName");
@@ -1521,7 +1532,7 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 //                showFeedbackChanged();
 //            }
 //        });
- showFeedbackBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showFeedback"));
+ showFeedbackBox->setChecked(pref->getSimplePreferenceState(this->getClassName()+".showFeedback"));
  showFeedbackChanged();
  connect(showFeedbackBox, SIGNAL(toggled(bool)), this, SLOT(showFeedbackChanged()));
  f->addToBottomBox(showLockBox, /*this.getClass().getName()*/metaObject()->className());
@@ -1531,7 +1542,7 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 //                showLockChanged();
 //            }
 //        });
- showLockBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showLockBox"));
+ showLockBox->setChecked(pref->getSimplePreferenceState(this->getClassName()+".showLockBox"));
  showLockChanged();
  connect(showLockBox, SIGNAL(toggled(bool)), this, SLOT(showLockChanged()));
  showLockBox->setChecked(false);
@@ -1543,7 +1554,7 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 //                TurnoutOperationManager.getInstance().setDoOperations(doAutomationBox.isSelected());
 //        }
 //        });
- doAutomationBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".doAutomation"));
+ doAutomationBox->setChecked(pref->getSimplePreferenceState(this->getClassName()+".doAutomation"));
  On_doAutomationBox_toggled(doAutomationBox->isChecked());
  connect(doAutomationBox, SIGNAL(toggled(bool)), this, SLOT(On_doAutomationBox_toggled(bool)));
  //doAutomationBox->setChecked(false);
@@ -1554,7 +1565,7 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 //                showTurnoutSpeedChanged();
 //            }
 //        });
- showTurnoutSpeedBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showTurnoutSpeed"));
+ showTurnoutSpeedBox->setChecked(pref->getSimplePreferenceState(this->getClassName()+".showTurnoutSpeed"));
     connect(showTurnoutSpeedBox, SIGNAL(toggled(bool)), this, SLOT(showTurnoutSpeedChanged()));
     showTurnoutSpeedBox->setChecked(false);
 }
@@ -1573,7 +1584,7 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 //                showFeedbackChanged();
 //            }
 //        });
- showFeedbackBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showFeedback"));
+ showFeedbackBox->setChecked(pref->getSimplePreferenceState(this->getClassName()+".showFeedback"));
  showFeedbackChanged();
  connect(showFeedbackBox, SIGNAL(toggled(bool)), this, SLOT(showFeedbackChanged()));
  f->addToBottomBox(showLockBox, systemPrefix);
@@ -1583,7 +1594,7 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
  //                showLockChanged();
  //            }
  //        });
- showLockBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showLockBox"));
+ showLockBox->setChecked(pref->getSimplePreferenceState(this->getClassName()+".showLockBox"));
  showLockChanged();
  connect(showLockBox, SIGNAL(toggled(bool)), this, SLOT(showLockChanged()));
  f->addToBottomBox(doAutomationBox, systemPrefix);
@@ -1593,7 +1604,7 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 //                TurnoutOperationManager.getInstance().setDoOperations(doAutomationBox.isSelected());
 //        }
 //    });
- doAutomationBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".doAutomation"));
+ doAutomationBox->setChecked(pref->getSimplePreferenceState(this->getClassName()+".doAutomation"));
  On_doAutomationBox_toggled(doAutomationBox->isChecked());
  connect(doAutomationBox, SIGNAL(toggled(bool)), this, SLOT(On_doAutomationBox_toggled(bool)));
  f->addToBottomBox(showTurnoutSpeedBox, systemPrefix);
@@ -1603,7 +1614,7 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 //                showTurnoutSpeedChanged();
 //            }
 //        });
- showTurnoutSpeedBox->setChecked(p->getSimplePreferenceState(this->getClassName()+".showTurnoutSpeed"));
+ showTurnoutSpeedBox->setChecked(pref->getSimplePreferenceState(this->getClassName()+".showTurnoutSpeed"));
    showTurnoutSpeedChanged();
  connect(showTurnoutSpeedBox, SIGNAL(toggled(bool)), this, SLOT(showTurnoutSpeedChanged()));
 }
@@ -1611,7 +1622,7 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 void TurnoutTableAction::On_doAutomationBox_toggled(bool b)
 {
  TurnoutOperationManager::getInstance()->setDoOperations(doAutomationBox->isChecked());
- p->setSimplePreferenceState(this->getClassName()+".doAutomation", b);
+ pref->setSimplePreferenceState(this->getClassName()+".doAutomation", b);
 }
 
 void TurnoutTableAction::showFeedbackChanged()
@@ -1635,7 +1646,7 @@ void TurnoutTableAction::showFeedbackChanged()
 //    column  = columnModel->getColumnByModelIndex(OPSEDITCOL);
  table->setColumnHidden(TurnoutTableDataModel::OPSEDITCOL, !showFeedback);
 //    columnModel->setColumnVisible(column, showFeedback);
- p->setSimplePreferenceState(this->getClassName()+".showFeedback", showFeedback);
+ pref->setSimplePreferenceState(this->getClassName()+".showFeedback", showFeedback);
 
 }
 
@@ -1649,7 +1660,7 @@ void TurnoutTableAction::showLockChanged()
 //    column  = columnModel->getColumnByModelIndex(LOCKOPRCOL);
     table->setColumnHidden(TurnoutTableDataModel::LOCKOPRCOL, !showLock);
 //    columnModel->setColumnVisible(column, showLock);
-    p->setSimplePreferenceState(this->getClassName()+".showLockBox", showLock);
+    pref->setSimplePreferenceState(this->getClassName()+".showLockBox", showLock);
 }
 
 //bool showTurnoutSpeed = false;
@@ -1663,7 +1674,7 @@ void TurnoutTableAction::showLockChanged()
 //    column  = columnModel->getColumnByModelIndex(DIVERGCOL);
     table->setColumnHidden(TurnoutTableDataModel::DIVERGCOL, !showTurnoutSpeed);
 //    columnModel->setColumnVisible(column, showTurnoutSpeed);
-    p->setSimplePreferenceState(this->getClassName()+".showTurnoutSpeed", showTurnoutSpeed);
+    pref->setSimplePreferenceState(this->getClassName()+".showTurnoutSpeed", showTurnoutSpeed);
 }
 
 //@Override
@@ -1792,6 +1803,11 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
   addButton->setEnabled(true);
  }
 
+ QString uName = userNameTextField->text();
+ if (uName.isEmpty()) {
+     uName = QString();
+ }
+
  // Add some entry pattern checking, before assembling sName and handing it to the turnoutManager
  QString statusMessage = tr("New %1(s) added:").arg(tr("Turnout"));
  QString errorMessage = "";
@@ -1896,7 +1912,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
    Turnout* t;
    try
    {
-    t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(sName);
+    t = ((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->provideTurnout(sName);
    }
    catch (IllegalArgumentException ex)
    {
@@ -1911,17 +1927,21 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
 
    if (t != NULL)
    {
-    QString user = userNameTextField->text();
-    if ((x!=0) && user != NULL && user!=(""))
-     user = user+":"+x;
-    if (user != NULL && user!=("") && (((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getByUserName(user)==NULL)) t->setUserName(user);
-
-    else if (((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getByUserName(user)!=NULL && !p->getPreferenceState(getClassName(), "duplicateUserName"))
+    if ((!uName.isNull()) && !uName.isEmpty())
     {
-     ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
-     showErrorMessage("Duplicate UserName","The username " + user + " specified is already in use and therefore will not be set", getClassName(), "duplicateUserName", false, true);
-     //p.showErrorMessage("Duplicate UserName", "The username " + user + " specified is already in use and therefore will not be set", userNameError, "", false, true);
+     if (((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getByUserName(uName) == nullptr)
+     {
+      t->setUserName(uName);
+     }
+     else if (!pref->getPreferenceState(getClassName(), "duplicateUserName"))
+     {
+         ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
+                 showErrorMessage(tr("Error"),
+                         tr("The specified user name \"%1\" is already in use and therefore will not be set.").arg(uName),
+                         getClassName(), "duplicateUserName", false, true);
+     }
     }
+
     t->setNumberOutputBits(iNum);
     // Ask about the type of turnout control if appropriate
     if(!useLastType)
@@ -1954,7 +1974,9 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
   statusBar->setText(errorMessage);
      // statusBar.setForeground(Color.red); // handled when errorMassage is set, to differentiate in urgency
  }
- p->addComboBoxLastSelection(systemSelectionCombo,  prefixBox->currentText());
+ //p->addComboBoxLastSelection(systemSelectionCombo,  prefixBox->currentText());
+ pref->setComboBoxLastSelection(systemSelectionCombo, VPtr<TurnoutManager>::asPtr(
+                                prefixBox->currentData())->getMemo()->getUserName()); // store user pref
  addFrame->setVisible(false);
  addFrame->dispose();
  addFrame = nullptr;
@@ -2015,7 +2037,7 @@ void TurnoutTableAction::handleCreateException(QString sysName)
 //@Override
 /*public*/ void TurnoutTableAction::setMessagePreferencesDetails()
 {
-    ((UserPreferencesManager*)   InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "duplicateUserName", tr("Hide Duplicate User Name Warning Message"));
+    ((UserPreferencesManager*)   InstanceManager::getDefault("UserPreferencesManager"))->setPreferenceItemDetails(getClassName(), "duplicateUserName", tr("Hide Duplicate User Name Warning Message"));
     AbstractTableAction::setMessagePreferencesDetails();
 }
 

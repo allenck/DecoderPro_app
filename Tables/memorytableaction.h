@@ -11,11 +11,12 @@ class MemoryTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    MemoryTableAction(QObject* parent = 0);
+    Q_INVOKABLE MemoryTableAction(QObject* parent = 0);
     Q_INVOKABLE/*public*/ MemoryTableAction(QString actionName, QObject* parent);
     ~MemoryTableAction() {}
     MemoryTableAction(const MemoryTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
     Q_INVOKABLE /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
 
 private:
     void common();

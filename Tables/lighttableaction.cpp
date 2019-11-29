@@ -484,7 +484,32 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         hardwareAddressTextField->setToolTip(tr("Enter an integer as the hardware address for the (first) new Light, e.g. '13'"));
         hardwareAddressTextField->setName("hwAddressTextField"); // for GUI test NOI18N
         hardwareAddressTextField->setBackground(QColor(Qt::yellow)); // reset after possible error notificationpanel1aLayout->addWidget(labelNumToAdd);
+#if 0
         connect(hardwareAddressTextField, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT());
+        hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, prefixBox.getSelectedItem(), true);
+                    hardwareAddressTextField.setInputVerifier(hardwareAddressValidator);
+                    prefixBox.addActionListener((evt) -> {
+                        hardwareAddressValidator.setManager(prefixBox.getSelectedItem());
+                    });
+                    hardwareAddressValidator.addPropertyChangeListener("validation", (evt) -> { // NOI18N
+                        Validation validation = hardwareAddressValidator.getValidation();
+                        Validation.Type type = validation.getType();
+                        create.setEnabled(type != Validation.Type.WARNING && type != Validation.Type.DANGER);
+                        String message = validation.getMessage();
+                        if (message == null) {
+                            status1.setText("");
+                        } else {
+                            message = message.trim();
+                            if (message.startsWith("<html>") && message.contains("<br>")) {
+                                message = message.substring(0, message.indexOf("<br>"));
+                                if (!message.endsWith("</html>")) {
+                                    message = message + "</html>";
+                                }
+                            }
+                            status1.setText(message);
+                        }
+                    });
+#endif
         panel1aLayout->addWidget(fieldNumToAdd);
         fieldNumToAdd->setToolTip(tr("Set the number of sequential address Lights to add (Max. 50)"));
         contentPane->layout()->addWidget(panel1a);
@@ -2164,3 +2189,7 @@ void LTAValidator::prefixBoxChanged(QString txt)
  prefix = ConnectionNameFromSystemName::getPrefixFromName(txt);
 }
 
+/*public*/ void LightTableAction::setMessagePreferencesDetails()
+{
+ AbstractTableAction::setMessagePreferencesDetails();
+}

@@ -29,6 +29,7 @@
 #include "defaultconditionalmanager.h"
 #include "debugthrottlemanager.h"
 #include "mockshutdownmanager.h"
+#include "jmriuserinterfaceconfigurationprovider.h"
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
@@ -1052,15 +1053,16 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ /*static*/ void JUnitUtil::resetProfileManager(Profile* profile) {
     ProfileManager::getDefault()->setActiveProfile(profile);
 }
-#if 0
+
 /**
  * PreferencesProviders retain per-profile objects; reset them to force that
  * information to be dumped.
  */
-/*public*/ static void resetPreferencesProviders() {
+/*public*/ /*static*/ void JUnitUtil::resetPreferencesProviders() {
+#if 0
     try {
         // reset UI provider
-        Field providers = JmriUserInterfaceConfigurationProvider.class.getDeclaredField("PROVIDERS");
+        Field providers = JmriUserInterfaceConfigurationProvider::getDeclaredField("PROVIDERS");
         providers.setAccessible(true);
         ((HashMap<?, ?>) providers.get(null)).clear();
         // reset XML storage provider
@@ -1077,8 +1079,9 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
         log.error("Unable to reset preferences providers", ex);
     }
+#endif
 }
-
+#if 0
 /**
  * Silences the outputs from the Jemmy GUI Test framework.
  */

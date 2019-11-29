@@ -7,13 +7,15 @@
 #include "jmripreferencesprovider.h"
 #include "profilemanager.h"
 #include "fileutil.h"
-
+#include "nodeidentity.h"
+#include "loggerfactory.h"
 /**
  * Utility methods to get information about {@link jmri.profile.Profile}s.
  *
  * @author Randall Wood 2015
  */
 ///*public*/ class ProfileUtils {
+/*private*/ /*final*/ /*static*/ Logger* ProfileUtils::log = LoggerFactory::getLogger("ProfileUtils");
 
 /**
  * Get the XMl configuration container for a given configuration profile.
@@ -49,7 +51,7 @@
 /*public*/ /*static*/ AuxiliaryConfiguration* ProfileUtils::getUserInterfaceConfiguration(Profile* project) {
     return JmriUserInterfaceConfigurationProvider::getConfiguration(project);
 }
-#if 1
+
 /**
  * Copy one profile's configuration to another profile.
  *
@@ -81,4 +83,42 @@
     }
     destination->save();
 }
-#endif
+/**
+ * Copy the most recently modified former identity, if any, for the current computer
+ * in the given profile to the current storage identity of the current computer for
+ * the given profile.
+ *
+ * @param profile the profile containing identities to copy
+ * @return true if an existing identity is copied, false otherwise
+ * @throws IOException if unable to a copy an existing identity
+ */
+/*public*/ /*static*/ bool ProfileUtils::copyPrivateContentToCurrentIdentity(/*@Nonnull*/ Profile* profile) throw (IOException) {
+    QString uniqueId = "-" + profile->getUniqueId();
+    File* newPath = new File(new File(profile->getPath(), Profile::PROFILE), NodeIdentity::storageIdentity(profile));
+    if (!newPath->exists()) {
+        File* oldPath = nullptr;
+        for (QString identity : NodeIdentity::formerIdentities()) {
+            if (oldPath == nullptr) {
+                File* path = new File(new File(profile->getPath(), Profile::PROFILE), identity + uniqueId);
+                if (path->exists()) {
+                    oldPath = path;
+                }
+            } else {
+                File* path = new File(new File(profile->getPath(), Profile::PROFILE), identity + uniqueId);
+                if (path->exists() && path->lastModified() > oldPath->lastModified()) {
+                    oldPath = path;
+                }
+            }
+        }
+        if (oldPath != nullptr && oldPath->exists()) {
+            try {
+                log->info(tr("Copying from old node \"%1\" to new node \"%2\"").arg(oldPath->toString()).arg(newPath->toString()));
+                FileUtil::copy(oldPath, newPath);
+                return true;
+            } catch (IOException ex) {
+                log->warn(tr("Failed copying \"%1\" to \"%2\"").arg(oldPath->toString()).arg(newPath->toString()));
+            }
+        }
+    }
+    return false;
+}

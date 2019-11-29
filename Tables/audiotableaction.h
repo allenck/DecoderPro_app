@@ -20,7 +20,7 @@ class LIBTABLESSHARED_EXPORT AudioTableAction : public AbstractTableAction
 {
  Q_OBJECT
 public:
- explicit AudioTableAction(QObject *parent = 0);
+ Q_INVOKABLE explicit AudioTableAction(QObject *parent = 0);
  ~AudioTableAction() {}
  AudioTableAction(const AudioTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
  Q_INVOKABLE /*public*/ AudioTableAction(QString actionName,QObject *parent);

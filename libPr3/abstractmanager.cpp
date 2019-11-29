@@ -499,7 +499,7 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
 /*public synchronized */void AbstractManager::addPropertyChangeListener(PropertyChangeListener* l)
 {
  pcs->addPropertyChangeListener(l);
- connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ //connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public synchronized */void AbstractManager::removePropertyChangeListener(PropertyChangeListener* l) {

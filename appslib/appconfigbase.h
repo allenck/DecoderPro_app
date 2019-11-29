@@ -10,7 +10,7 @@ class APPSLIBSHARED_EXPORT AppConfigBase : public QSplitter//JmriPanel
 {
     Q_OBJECT
 public:
-    explicit AppConfigBase(QWidget *parent = 0);
+    Q_INVOKABLE explicit AppConfigBase(QWidget *parent = 0);
     ~AppConfigBase() {}
     AppConfigBase(const AppConfigBase&) : QSplitter() {}
     /*public*/ static QString getManufacturerName(int index) ;
@@ -22,8 +22,8 @@ public:
     /*public*/ void saveContents();
     /*public*/ void savePressed(bool restartRequired);
     Q_INVOKABLE virtual /*public*/ QString getClassDescription();
-    Q_INVOKABLE virtual /*public*/ void setMessagePreferencesDetails() ;
-    /*virtual*/ /*public*/ QString getClassName() ;
+//    Q_INVOKABLE virtual /*public*/ void setMessagePreferencesDetails() ;
+    /*virtual*/ static /*public*/ QString getClassName() ;
     /*public*/ QMap<QString, PreferencesPanel*>* getPreferencesPanels();
 
     static QString getName();

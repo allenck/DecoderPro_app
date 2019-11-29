@@ -352,8 +352,8 @@
 {
  QVariant oldValue = event->getOldValue();
  QVariant newValue = event->getNewValue();
- if (oldValue != QVariant() || newValue != QVariant() || !(oldValue==newValue))
- {
+ if (oldValue != QVariant() && oldValue ==(newValue))
+   return;
   QString name = event->getPropertyName();
 
   QVector<PropertyChangeListener*> common = this->map->get(NULL);
@@ -362,7 +362,7 @@
 //  fire(common, event);
 //  fire(named, event);
   emit propertyChange(event);
- }
+
 }
 
 /*private static*/ void PropertyChangeSupport::fire(QVector<PropertyChangeListener*> listeners, PropertyChangeEvent* event)

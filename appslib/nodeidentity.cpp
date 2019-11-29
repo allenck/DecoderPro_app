@@ -6,11 +6,8 @@
 #include "profile.h"
 #include <QNetworkInterface>
 #include "loggerfactory.h"
+#include "xmlfile.h"
 
-//NodeIdentity::NodeIdentity(QObject *parent) : QObject(parent)
-//{
-
-//}
 /**
  * Provide a unique network identity for JMRI. If a stored identity does not
  * exist, the identity is created by taking the MAC address of the first
@@ -36,16 +33,29 @@
 /*private*/ /*final*/ /*static*/ Logger* NodeIdentity::log = LoggerFactory::getLogger("NodeIdentity");
 
 /*private*/ /*final*/ /*static*/ QString NodeIdentity::ROOT_ELEMENT = "nodeIdentityConfig"; // NOI18N
-/*private*/ /*static*/ /*final*/ QString NodeIdentity::UUID = "uuid"; // NOI18N
+/*private*/ /*static*/ /*final*/ QString NodeIdentity::UUID_ELEMENT = "uuid"; // NOI18N
 /*private*/ /*final*/ /*static*/ QString NodeIdentity::NODE_IDENTITY = "nodeIdentity"; // NOI18N
+/*private*/ /*static*/ /*final*/ QString NodeIdentity::STORAGE_IDENTITY = "storageIdentity"; // NOI18N
 /*private*/ /*final*/ /*static*/ QString NodeIdentity::FORMER_IDENTITIES = "formerIdentities"; // NOI18N
 /*private*/ /*static*/ /*final*/ QString NodeIdentity::IDENTITY_PREFIX = "jmri-";
 
+/**
+ * A string of 64 URL compatible characters.
+ * <p>
+ * Used by {@link #uuidToCompactString uuidToCompactString} and
+ * {@link #uuidFromCompactString uuidFromCompactString}.
+ */
+/*protected*/ /*static*/ /*final*/ QString NodeIdentity::URL_SAFE_CHARACTERS =
+        "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789"; // NOI18N
 
-/*private*/ NodeIdentity::NodeIdentity() {
- _formerIdentities = new QStringList();
+/*private*/ NodeIdentity::NodeIdentity(QObject* parent) : QObject(parent)
+{
+ _formerIdentities = QStringList();
  _identity = "";
  uuid = "";
+ /*private*/ /*final*/
+ profileStorageIdentities = QMap<Profile*, QString>();
+
 
  init(); // init as a method so the init can be /*synchronized*/.
 }
@@ -57,6 +67,8 @@
  {
   try
   {
+   bool save = false;
+   this->_formerIdentities.clear();
    QDomDocument doc;// = (new SAXBuilder()).build(identityFile);
    QFile* f = new QFile(identityFile->getPath());
    if(f->open(QIODevice::ReadOnly))
@@ -64,45 +76,283 @@
     doc.setContent(f);
    }
    else throw IOException(identityFile->getPath());
-   QDomElement uu = doc.documentElement().firstChildElement(UUID);
-   if (!uu.isNull()) {
-       this->uuid = uu.attribute(UUID);
-   } else {
-       this->uuid = "";
-       this->getIdentity(true);
+   QDomElement ue = doc.documentElement().firstChildElement(UUID_ELEMENT);
+   if (!ue.isNull())
+   {
+    try
+    {
+     QString attr = ue.attribute(UUID_ELEMENT);
+     this->uuid = uuidFromCompactString( attr);
+     this->_storageIdentity = this->uuid.toString(QUuid::WithoutBraces); // backwards compatible, see class docs
+     this->_formerIdentities.append(this->_storageIdentity);
+     this->_formerIdentities.append(IDENTITY_PREFIX + attr);
+    }
+    catch (IllegalArgumentException ex){
+     // do nothing
+    }
    }
-   QString id = doc.documentElement().firstChildElement(NODE_IDENTITY).attribute(NODE_IDENTITY);
-   this->_formerIdentities->clear();
+   QDomElement si = doc.documentElement().firstChildElement(STORAGE_IDENTITY);
+   if (!si.isNull())
+   {
+    try
+    {
+     this->_storageIdentity = si.attribute(STORAGE_IDENTITY);
+     if (this->uuid.isNull() || this->_storageIdentity != (this->uuid.toString(QUuid::WithoutBraces))) {
+         this->uuid = QUuid::fromString(this->_storageIdentity);
+         save = true; // updated UUID
+     }
+    } catch (IllegalArgumentException ex) {
+        save = true; // save if attribute not available
+    }
+   } else {
+       save = true; // element missing, need to save
+   }
+   if (this->_storageIdentity.isNull()) {
+       save = true;
+       this->getStorageIdentity(false);
+   }
+   QString id = QString();
+   try
+   {
+    id = doc.documentElement().firstChildElement(NODE_IDENTITY).attribute(NODE_IDENTITY);
   //            doc.getRootElement().getChild(FORMER_IDENTITIES).getChildren().stream().forEach((e) -> {
   //                this->formerIdentities.add(e.getAttributeValue(NODE_IDENTITY));
   //            });
-   QDomNodeList nl = doc.documentElement().firstChildElement(FORMER_IDENTITIES).childNodes();
-   for(int i = 0; i < nl.size(); i++)
-   {
+    QDomNodeList nl = doc.documentElement().firstChildElement(FORMER_IDENTITIES).childNodes();
+    for(int i = 0; i < nl.size(); i++)
+    {
     QDomElement e = nl.at(i).toElement();
-    this->_formerIdentities->append(e.attribute(NODE_IDENTITY));
-   }
-   if (!this->validateIdentity(id))
+    this->_formerIdentities.append(e.attribute(NODE_IDENTITY));
+    }
+   } catch (NullPointerException ex)
    {
-    log->debug(tr("Node identity %1 is invalid. Generating new node identity.").arg(id));
-    this->_formerIdentities->append(id);
-    this->getIdentity(true);
+    // do nothing -- if id was not set, it will be generated
+   }
+
+   if (!this->validateNetworkIdentity(id))
+   {
+    log->warn(tr("Node identity %1 is invalid. Generating new node identity.").arg(id));
+    save = true;
+    this->getNetworkIdentity(false);
    }
    else
    {
-    this->getIdentity(true);
+    this->_networkIdentity = id;
+   }
+   // save if new identities were created or expected attribute did not exist
+   if (save)
+   {
+    this->saveIdentity();
    }
   }
   catch (/*JDOMException |*/ IOException ex) {
       log->error(tr("Unable to read node identities: %1").arg( ex.getLocalizedMessage()));
-      this->getIdentity(true);
+      this->getNetworkIdentity(true);
   }
- } else {
-  this->uuid = "";
-  this->getIdentity(true);
+ }
+ else {
+  this->getNetworkIdentity(true);
  }
 }
 
+/**
+ * Return the node's current network identity. For historical purposes, the
+ * network identity is also referred to as the {@literal node} or
+ * {@literal node identity}.
+ *
+ * @return A network identity. If this identity is not in the form
+ *         {@code jmri-MACADDRESS-profileId}, or if {@code MACADDRESS} is a
+ *         multicast MAC address, this identity should be considered
+ *         unreliable and subject to change across JMRI restarts. Note that
+ *         if the identity is in the form {@code jmri-MACADDRESS} the JMRI
+ *         instance has not loaded a configuration profile, and the network
+ *         identity will change once that a configuration profile is loaded.
+ */
+/*public*/ /*static*/ /*synchronized*/ QString NodeIdentity::networkIdentity() {
+    QString uniqueId = "";
+    Profile* profile = ProfileManager::getDefault()->getActiveProfile();
+    if (profile != nullptr) {
+        uniqueId = "-" + profile->getUniqueId();
+    }
+    if (instance == nullptr) {
+        instance = new NodeIdentity();
+        log->info(tr("Using %1 as the JMRI Node identity").arg(instance->getNetworkIdentity() + uniqueId));
+    }
+    return instance->getNetworkIdentity() + uniqueId;
+}
+
+/**
+ * Return the node's current storage identity for the active profile. This
+ * is a convenience method that calls {@link #storageIdentity(Profile)} with
+ * the result of {@link jmri.profile.ProfileManager#getActiveProfile()}.
+ *
+ * @return A storage identity.
+ * @see #storageIdentity(Profile)
+ */
+/*public*/ /*static*/ /*synchronized*/ QString NodeIdentity::storageIdentity() {
+    return storageIdentity(ProfileManager::getDefault()->getActiveProfile());
+}
+
+/**
+ * Return the node's current storage identity. This can be used in networked
+ * file systems to ensure per-computer storage is available.
+ * <p>
+ * <strong>Note</strong> this only ensure uniqueness if the preferences path
+ * is not shared between multiple computers as documented in
+ * {@link jmri.util.FileUtil#getPreferencesPath()} (the most common cause of
+ * this would be sharing a user's home directory in its entirety between two
+ * computers with similar operating systems as noted in
+ * getPreferencesPath()).
+ *
+ * @param profile The profile to get the identity for. This is only needed
+ *                    to check that the identity should not be in an older
+ *                    format.
+ *
+ * @return A storage identity. If this identity is not in the form of a UUID
+ *         or {@code jmri-UUID-profileId}, this identity should be
+ *         considered unreliable and subject to change across JMRI restarts.
+ *         When generating a new storage ID, the form is always a UUID and
+ *         other forms are used only to ensure continuity where other forms
+ *         may have been used in the past.
+ */
+/*public*/ /*static*/ /*synchronized*/ QString NodeIdentity::storageIdentity(Profile* profile) {
+    if (instance == nullptr) {
+        instance = new NodeIdentity();
+    }
+    QString id = instance->getStorageIdentity();
+    // this entire check is so that a JMRI 4.14 style identity string can be built
+    // and checked against the given profile to determine if that should be used
+    // instead of just returning the non-profile-specific machine identity
+    if (profile != nullptr) {
+        // using a map to store profile-specific identities allows for the possibility
+        // that, although there is only one active profile at a time, other profiles
+        // may be manipulated by JMRI while that profile is active (this happens to a
+        // limited extent already in the profile configuration UI)
+        // (a map also allows for ensuring the info message is displayed once per profile)
+        if (!instance->profileStorageIdentities.contains(profile)) {
+            QString oldId = IDENTITY_PREFIX + uuidToCompactString(instance->uuid) + "-" + profile->getUniqueId();
+            File* local = new File(new File(profile->getPath(), Profile::PROFILE), oldId);
+            if (local->exists() && local->isDirectory()) {
+                id = oldId;
+            }
+            instance->profileStorageIdentities.insert(profile, id);
+            log->info(tr("Using %1 as the JMRI storage identity for profile id %2").arg(id).arg(profile->getUniqueId()));
+        }
+        id = instance->profileStorageIdentities.value(profile);
+    }
+    return id;
+}
+/**
+ * If network hardware on a node was replaced, the identity will change.
+ *
+ * @return A list of other identities this node may have had in the past.
+ */
+/*synchronized*/ /*public*/ /*static*/ QList<QString> NodeIdentity::formerIdentities() {
+    if (_instance == NULL) {
+        _instance = new NodeIdentity();
+        log->info(tr("Using %1 as the JMRI Node identity").arg(_instance->getNetworkIdentity()));
+    }
+    return _instance->getFormerIdentities();
+}
+
+/**
+ * Verify that the current identity is a valid identity for this hardware.
+ *
+ * @param identity the identity to validate; may be null
+ * @return true if the identity is based on this hardware; false otherwise
+ */
+/*private*/ /*synchronized*/ bool NodeIdentity::validateNetworkIdentity(QString identity) {
+//    try {
+//        Enumeration<NetworkInterface> enumeration = NetworkInterface.getNetworkInterfaces();
+//        while (enumeration.hasMoreElements()) {
+//            NetworkInterface nic = enumeration.nextElement();
+//            if (!nic.isVirtual() && !nic.isLoopback()) {
+//                String nicIdentity = this.createNetworkIdentity(nic.getHardwareAddress());
+//                if (nicIdentity != null && nicIdentity.equals(identity)) {
+//                    return true;
+//                }
+//            }
+//        }
+//    } catch (SocketException ex) {
+//        log.error("Error accessing interface: {}", ex.getLocalizedMessage(), ex);
+//    }
+  QList<QNetworkInterface> addresses = QNetworkInterface::allInterfaces();
+  foreach(QNetworkInterface nic, addresses)
+  {
+   if (!nic.isValid() && !nic.IsLoopBack)
+   {
+    QString nicIdentity = this->createNetworkIdentity(nic.hardwareAddress().toLocal8Bit());
+    if (nicIdentity != "" && nicIdentity==(identity)) {
+        return true;
+    }
+   }
+  }
+    return false;
+}
+
+/**
+ * Get a node identity from the current hardware.
+ *
+ * @param save whether to save this identity or not
+ */
+/*private*/ /*synchronized*/ void NodeIdentity::getNetworkIdentity(bool save) {
+//    try {
+//        try {
+//            try {
+ this->_networkIdentity = this->createIdentity(QNetworkInterface::interfaceFromIndex(QHostAddress::LocalHost).hardwareAddress().toLocal8Bit());
+//            } catch (NullPointerException ex) {
+//                // NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress() failed
+//                // this can be due to multiple reasons, most likely getLocalHost() failing on certain platforms.
+//                // Only set this.identity = null, since the following null checks address all potential problems
+//                // with getLocalHost() including some expected conditions (such as InetAddress.getLocalHost()
+//                // returning the loopback interface).
+//                this.networkIdentity = null;
+//            }
+            if (this->_networkIdentity == "") {
+//                Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
+//                while (nics.hasMoreElements()) {
+//                    NetworkInterface nic = nics.nextElement();
+//                    if (!nic.isLoopback() && !nic.isVirtual() && (nic.getHardwareAddress() != null)) {
+//                        this.networkIdentity = this.createNetworkIdentity(nic.getHardwareAddress());
+//                        if (this.networkIdentity != null) {
+//                            break;
+//                        }
+//                    }
+//                }
+             QList<QNetworkInterface> addresses = QNetworkInterface::allInterfaces();
+             foreach(QNetworkInterface nic, addresses)
+             {
+              if(!nic.IsLoopBack && nic.isValid() )
+              {
+               this->_networkIdentity = this->createIdentity(nic.hardwareAddress().toLocal8Bit());
+               if(this->_networkIdentity !="")
+                break;
+              }
+             }
+            }
+//        } catch (SocketException ex) {
+//            this.networkIdentity = null;
+//        }
+//    } catch (UnknownHostException ex) {
+//        this.networkIdentity = null;
+//    }
+    if (this->_networkIdentity == "") {
+//        log.info("No MAC addresses found, generating a random multicast MAC address as per RFC 4122.");
+//        byte[] randBytes = new byte[6];
+//        Random randGen = new Random();
+//        randGen.nextBytes(randBytes);
+//        randBytes[0] = (byte) (randBytes[0] | 0x01); // set multicast bit in first octet
+//        this.networkIdentity = this.createNetworkIdentity(randBytes);
+     this->_networkIdentity = /*InetAddress.getLocalHost().getHostName()*/ QHostAddress(QHostAddress::LocalHost).toString();
+
+    }
+//    this.formerIdentities.add(this.networkIdentity);
+    if (save) {
+        this->saveIdentity();
+    }
+}
+/*private*/ /*static*/ NodeIdentity* NodeIdentity::instance = nullptr;
+#if 0
 /**
  * Return the node's current identity.
  *
@@ -129,18 +379,6 @@
  return _instance->getIdentity() + uniqueId;
 }
 
-/**
- * If network hardware on a node was replaced, the identity will change.
- *
- * @return A list of other identities this node may have had in the past.
- */
-/*synchronized*/ /*public*/ /*static*/ QList<QString> NodeIdentity::formerIdentities() {
-    if (_instance == NULL) {
-        _instance = new NodeIdentity();
-        log->info(tr("Using %1 as the JMRI Node identity").arg(_instance->getIdentity()));
-    }
-    return _instance->getFormerIdentities();
-}
 
 /**
  * Verify that the current identity is a valid identity for this hardware.
@@ -216,7 +454,26 @@
         this->saveIdentity();
     }
 }
-
+#endif
+/**
+ * Get a node identity from the current hardware.
+ *
+ * @param save whether to save this identity or not
+ */
+/*private*/ /*synchronized*/ void NodeIdentity::getStorageIdentity(bool save) {
+    if (this->_storageIdentity.isNull()) {
+        // also generate UUID to protect against case where user
+        // migrates from JMRI < 4.14 to JMRI > 4.14 back to JMRI = 4.14
+        if (this->uuid == "" ) {
+            this->uuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
+        }
+        this->_storageIdentity = this->uuid.toString(QUuid::WithoutBraces);
+        this->_formerIdentities.append(this->_storageIdentity);
+    }
+    if (save) {
+        this->saveIdentity();
+    }
+}
 /**
  * Save the current node identity and all former identities to file.
  */
@@ -227,43 +484,50 @@
  doc.appendChild(xmlProcessingInstruction);
  QDomElement root;
     doc.appendChild(root = doc.createElement(ROOT_ELEMENT));
-    QDomElement identityElement = doc.createElement(NODE_IDENTITY);
+    QDomElement networkIdentityElement = doc.createElement(NODE_IDENTITY);
+    QDomElement storageIdentityElement = doc.createElement(STORAGE_IDENTITY);
     QDomElement formerIdentitiesElement = doc.createElement(FORMER_IDENTITIES);
-    if (this->_identity == "") {
-        this->getIdentity(false);
+    QDomElement uuidElement = doc.createElement(UUID_ELEMENT);
+    if (this->_networkIdentity.isNull()) {
+        this->getNetworkIdentity(false);
     }
-    identityElement.setAttribute(NODE_IDENTITY, this->_identity);
-   // this->formerIdentities.stream().forEach((formerIdentity) -> {
-    QString oldIdentity;
-    foreach(QString formerIdentity, *this->_formerIdentities)
-    {
-     if(oldIdentity == formerIdentity)
-      continue;
+    if (this->_storageIdentity.isNull()) {
+        this->getStorageIdentity(false);
+    }
+    // ensure formerIdentities contains current identities as well
+ this->_formerIdentities.append(this->_networkIdentity);
+ this->_formerIdentities.append(this->_storageIdentity);
+ if (!this->uuid.isNull()) {
+     this->_formerIdentities.append(IDENTITY_PREFIX + uuidToCompactString(this->uuid));
+ }
+ networkIdentityElement.setAttribute(NODE_IDENTITY, this->_networkIdentity);
+ storageIdentityElement.setAttribute(STORAGE_IDENTITY, this->_storageIdentity);
+ //this->_formerIdentities.stream().forEach((formerIdentity) ->
+ foreach(QString formerIdentity, this->_formerIdentities)
+ {
      log->debug(tr("Retaining former node identity %1").arg(formerIdentity));
      QDomElement e = doc.createElement(NODE_IDENTITY);
      e.setAttribute(NODE_IDENTITY, formerIdentity);
      formerIdentitiesElement.appendChild(e);
-     oldIdentity = formerIdentity;
-    } //);
-    root.appendChild(identityElement);
-    root.appendChild(formerIdentitiesElement);
-
-//    try (Writer w = new OutputStreamWriter(new FileOutputStream(this->identityFile()), "UTF-8")) { // NOI18N
-//        XMLOutputter fmt = new XMLOutputter();
-//        fmt.setFormat(Format.getPrettyFormat()
-//                .setLineSeparator(System.getProperty("line.separator"))
-//                .setTextMode(Format.TextMode.PRESERVE));
-//        fmt.output(doc, w);
-    QFile* f = new QFile(this->identityFile()->getPath());
-    if(f->open(QIODevice::WriteOnly))
-    {
-     QTextStream* s = new QTextStream(f);
-     s->setCodec("UTF-8");
-     doc.save(*s,2);
-    }
-//    } catch (IOException ex) {
-//        log->error("Unable to store node identities: {}", ex.getLocalizedMessage());
-//    }
+ }//);
+ doc.documentElement().appendChild(networkIdentityElement);
+ doc.documentElement().appendChild(storageIdentityElement);
+ if (!this->uuid.isNull()) {
+     uuidElement.setAttribute(UUID_ELEMENT, uuidToCompactString(this->uuid));
+     doc.documentElement().appendChild(uuidElement);
+ }
+ doc.documentElement().appendChild(formerIdentitiesElement);
+// try (Writer w = new OutputStreamWriter(new FileOutputStream(this.identityFile()), "UTF-8")) { // NOI18N
+//     XMLOutputter fmt = new XMLOutputter();
+//     fmt.setFormat(Format.getPrettyFormat()
+//             .setLineSeparator(System.getProperty("line.separator"))
+//             .setTextMode(Format.TextMode.PRESERVE));
+//     fmt.output(doc, w);
+// } catch (IOException ex) {
+//     log.error("Unable to store node identities: {}", ex.getLocalizedMessage());
+// }
+ XmlFile* xmlFile = new XmlFile();
+ xmlFile->writeXML(this->identityFile(), doc);
 }
 
 /**
@@ -286,10 +550,82 @@
     return sb/*.toString()*/;
 }
 
+/**
+ * Create an identity string given a MAC address.
+ *
+ * @param mac a byte array representing a MAC address.
+ * @return An identity or null if input is null.
+ */
+/*private*/ QString NodeIdentity::createNetworkIdentity(QByteArray mac) {
+    QString sb = QString(IDENTITY_PREFIX); // NOI18N
+//    try {
+        for (int i = 0; i < mac.length(); i++) {
+//            sb.append(String.format("%02X", mac[i])); // NOI18N
+         if(mac[i] != ':')
+          sb.append(tr("%02").arg(mac[i]));
+        }
+//    } catch (NullPointerException ex) {
+//        return null;
+//    }
+    return sb/*.toString()*/;
+}
+
 /*private*/ File* NodeIdentity::identityFile() {
     return new File(FileUtil::getPreferencesPath() + "nodeIdentity.xml"); // NOI18N
 }
 
+/**
+ * @return the network identity
+ */
+/*private*/ /*synchronized*/ QString NodeIdentity::getNetworkIdentity() {
+    if (this->_networkIdentity == "") {
+        this->getNetworkIdentity(false);
+    }
+    return this->_networkIdentity;
+}
+
+/**
+ * @return the storage identity
+ */
+/*private*/ /*synchronized*/ QString NodeIdentity::getStorageIdentity() {
+    if (this->_storageIdentity == QString()) {
+        this->getStorageIdentity(false);
+    }
+    return this->_storageIdentity;
+}
+/**
+ * Encodes a UUID into a 22 character URL compatible string. This is used to
+ * store the UUID in a manner compatible with JMRI 4.14.
+ * <p>
+ * From an example by <a href="https://stackoverflow.com/">Tom Lobato</a>.
+ *
+ * @param uuid the UUID to encode
+ * @return the 22 character string
+ */
+/*protected*/ /*static*/ QString NodeIdentity::uuidToCompactString(QUuid uuid) {
+//    char[] c = new char[22];
+//    long buffer = 0;
+//    int val6;
+//    QString sb;// = new StringBuilder();
+
+//    for (int i = 1; i <= 22; i++) {
+//        switch (i) {
+//            case 1:
+//                buffer = uuid.getLeastSignificantBits();
+//                break;
+//            case 12:
+//                buffer = uuid.getMostSignificantBits();
+//                break;
+//            default:
+//                break;
+//        }
+//        val6 = (int) (buffer & 0x3F);
+//        c[22 - i] = URL_SAFE_CHARACTERS.charAt(val6);
+//        buffer = buffer >>> 6;
+//    }
+//    return sb.append(c).toString();
+ return uuid.toString(QUuid::WithoutBraces);
+}
 /**
  * Creates a copy of the last-used old node identity for use with the new
  * identity.
@@ -333,7 +669,7 @@
     }
     return false;
 }
-
+#if 0
 /**
  * @return the identity
  */
@@ -343,11 +679,48 @@
     }
     return this->_identity;
 }
+#endif
+/**
+ * Decodes the original UUID from a 22 character string generated by
+ * {@link #uuidToCompactString uuidToCompactString}. This is used to store
+ * the UUID in a manner compatible with JMRI 4.14.
+ *
+ * @param compact the 22 character string
+ * @return the original UUID
+ */
+/*protected*/ /*static*/ QUuid NodeIdentity::uuidFromCompactString(QString compact) {
+#if 0
+    long mostSigBits = 0;
+    long leastSigBits = 0;
+    long buffer = 0;
+    int val6;
 
+    for (int i = 0; i <= 21; i++) {
+        switch (i) {
+            case 0:
+                buffer = 0;
+                break;
+            case 11:
+                mostSigBits = buffer;
+                buffer = 0;
+                break;
+            default:
+                buffer = buffer << 6;
+                break;
+        }
+        val6 = URL_SAFE_CHARACTERS.indexOf(compact.charAt(i));
+        buffer = buffer | (val6 & 0x3F);
+    }
+    leastSigBits = buffer;
+    return QUuid(mostSigBits, leastSigBits);
+#else
+ return QUuid::fromString(compact);
+#endif
+}
 /**
  * @return the formerIdentities
  */
 /*public*/ QStringList NodeIdentity::getFormerIdentities() {
-    return QStringList(*this->_formerIdentities);
+    return QStringList(this->_formerIdentities);
 }
 

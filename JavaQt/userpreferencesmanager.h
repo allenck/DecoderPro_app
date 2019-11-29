@@ -27,6 +27,8 @@ class PropertyChangeListener;
 /*public interface*/ class JAVAQTSHARED_EXPORT UserPreferencesManager : public Bean
 {
  Q_OBJECT
+private slots:
+ virtual void initAfter() {}
 public:
     UserPreferencesManager(QObject* parent = nullptr) : Bean(parent) {}
     ~UserPreferencesManager() {}
@@ -92,16 +94,6 @@ public:
     * Returns the state of a given item registered against a specific class or item.
     */
     /*public*/ virtual bool getPreferenceState(QString /*strClass*/, QString /*item*/) {return false;}
-
-    /**
-    * Register details about a perticular preference, so that it can be displayed
-    * in the GUI and provide a meaning full description when presented to the user.
-    * @param strClass A string form of the class that the preference is stored or grouped with
-    * @param item The specific item that is being stored.
-    * @param description A meaningful decription of the item that the user will understand.
-    */
-    //@Deprecated
-    QT_DEPRECATED /*public*/ virtual void preferenceItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/) {}
 
     /**
      * Register details about a particular preference, so that it can be
@@ -256,9 +248,9 @@ public:
     QT_DEPRECATED /*public*/ virtual void allowSave() {}
     QT_DEPRECATED /*public*/ virtual void disallowSave() {}
 
-    /*public*/ virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/) {}
+    ///*public*/ virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/) {}
 
-    /*public*/ virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/) {}
+    ///*public*/ virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/) {}
 
     /**
     * Returns the description of a class/group registered with the preferences.
@@ -282,30 +274,21 @@ public:
      */
     /*public*/ virtual void setClassDescription(QString /*strClass*/) {}
 
-    /**
-    * Add descriptive details about a specific message box, so that if it needs
-    * to be reset in the preferences, then it is easily identifiable.
-    * displayed to the user in the preferences GUI.
-    * @param strClass QString value of the calling class/group
-    * @param item QString value of the specific item this is used for.
-    * @param description A meaningful description that can be used in a label to describe the item
-    * @param msgOption Description of each option valid option.
-    * @param msgNumber The references number against which the Description is refering too.
-    * @param defaultOption The default option for the given item.
-    */
-    QT_DEPRECATED /*public*/ virtual void messageItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/, QStringList /*msgOption*/, QList<int> /*msgNumber*/, int /*defaultOption*/) {}
 
     /**
-    * Add descriptive details about a specific message box, so that if it needs
-    * to be reset in the preferences, then it is easily identifiable.
-    * displayed to the user in the preferences GUI.
-    * @param strClass QString value of the calling class/group
-    * @param item QString value of the specific item this is used for.
-    * @param description A meaningful description that can be used in a label to describe the item
-    * @param options A map of the integer value of the option against a meaningful description.
-    * @param defaultOption The default option for the given item.
-    */
-    QT_DEPRECATED /*public*/ virtual void messageItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/, QMap<int, QString> /*options*/, int /*defaultOption*/) {}
+     * Add descriptive details about a specific message box, so that if it needs
+     * to be reset in the preferences, then it is easily identifiable. displayed
+     * to the user in the preferences GUI.
+     *
+     * @param strClass      String value of the calling class/group
+     * @param item          String value of the specific item this is used for.
+     * @param description   A meaningful description that can be used in a label
+     *                      to describe the item
+     * @param options       A map of the integer value of the option against a
+     *                      meaningful description.
+     * @param defaultOption The default option for the given item.
+     */
+    /*public*/ virtual void setMessageItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/, QMap<int, QString>* /*options*/, int /*defaultOption*/) {}
 
     /**
     * Returns a map of the value against description of the different items in a
@@ -313,7 +296,7 @@ public:
     * @param strClass Class or group of the given item
     * @param item the item which we wish to return the details about.
     */
-    /*public*/ virtual QMap<int, QString> getChoiceOptions(QString /*strClass*/, QString /*item*/) {return QMap<int, QString>();}
+    /*public*/ virtual QMap<int, QString>* getChoiceOptions(QString /*strClass*/, QString /*item*/) {return nullptr;}
 
     /**
     * Returns the number of Mulitple Choice items registered with a given class.

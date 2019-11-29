@@ -190,7 +190,9 @@ SOURCES += \
     mockshutdownmanager.cpp \
     warrants/warranttestaction.cpp \
     warrants/warrantpreferencespaneltest.cpp \
-    warrants/warrantpreferencespaneltestaction.cpp
+    warrants/warrantpreferencespaneltestaction.cpp \
+    misc/jmriuserpreferencesmanagertest.cpp \
+    misc/jmriuserpreferencesmanagertestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -358,7 +360,9 @@ HEADERS += \
     mockshutdownmanager.h \
     warrants/warranttestaction.h \
     warrants/warrantpreferencespaneltest.h \
-    warrants/warrantpreferencespaneltestaction.h
+    warrants/warrantpreferencespaneltestaction.h \
+    misc/jmriuserpreferencesmanagertest.h \
+    misc/jmriuserpreferencesmanagertestaction.h
 
 unix {
     target.path = /usr/lib

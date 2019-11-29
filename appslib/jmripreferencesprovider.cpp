@@ -7,6 +7,7 @@
 #include "orderedproperties.h"
 #include "version.h"
 #include "loggerfactory.h"
+#include "profileutils.h"
 
 //JmriPreferencesProvider::JmriPreferencesProvider(QObject *parent) : QObject(parent)
 //{
@@ -258,15 +259,31 @@ File* JmriPreferencesProvider::getPreferencesFile()
 /*private*/ File* JmriPreferencesProvider::getPreferencesDirectory()
 {
  File* dir;
- if (this->path == NULL)
- {
-  dir = new File(FileUtil::getPreferencesPath(), "preferences");
+ if (this->path  == nullptr) {
+     dir = new File(FileUtil::getPreferencesPath(), "preferences");
  }
  else
  {
-  dir = new File(this->path, /*Profile::PROFILE*/"profile");
-  if (!this->shared) {
-      dir = new File(dir, NodeIdentity::identity());
+  dir = new File(this->path, Profile::PROFILE);
+  if (!this->shared)
+  {
+   if (Profile::isProfile(this->path))
+   { // protect against testing a new profile
+    try
+    {
+     Profile* profile = new Profile(this->path);
+     File* nodeDir = new File(dir, NodeIdentity::storageIdentity(profile));
+     if (!nodeDir->exists())
+     {
+      if (!ProfileUtils::copyPrivateContentToCurrentIdentity(profile)) {
+          log->debug("Starting profile with new private preferences.");
+      }
+     }
+    } catch (IOException ex) {
+        log->debug("Copying existing private configuration failed.");
+    }
+   }
+   dir = new File(dir, NodeIdentity::storageIdentity());
   }
  }
  FileUtil::createDirectory(dir);

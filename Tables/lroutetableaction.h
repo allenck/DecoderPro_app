@@ -35,7 +35,7 @@ class LIBTABLESSHARED_EXPORT LRouteTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    explicit LRouteTableAction(QObject *parent = 0);
+    Q_INVOKABLE explicit LRouteTableAction(QObject *parent = 0);
     Q_INVOKABLE /*public*/ LRouteTableAction(QString s, QObject *parent = 0);
     ~LRouteTableAction() {}
     LRouteTableAction(const LRouteTableAction&);

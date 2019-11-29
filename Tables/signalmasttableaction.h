@@ -8,7 +8,7 @@ class SignalMastTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    SignalMastTableAction(QObject* parent = 0);
+    Q_INVOKABLE SignalMastTableAction(QObject* parent = 0);
     Q_INVOKABLE /*public*/ SignalMastTableAction(QString actionName, QObject* parent);
     ~SignalMastTableAction() {}
     SignalMastTableAction(const SignalMastTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}

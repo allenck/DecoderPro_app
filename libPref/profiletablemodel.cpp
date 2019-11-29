@@ -22,9 +22,9 @@
 /*public*/ ProfileTableModel::ProfileTableModel(QObject *parent) :
     AbstractTableModel(parent)
 {
- //ProfileManager::defaultManager()->addPropertyChangeListener(this);
+ ProfileManager::defaultManager()->addPropertyChangeListener((PropertyChangeListener*)this);
  ProfileManager* mgr = ProfileManager::defaultManager();
- connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ //connect(mgr->p, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 //@Override

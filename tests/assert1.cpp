@@ -74,7 +74,7 @@
     QString info = tr("Assert at line %1 in %2:\n %3\n").arg(line).arg(file).arg(JUnitUtil::getTestClassName());
         //throw AssertionError("unknown error");
     qDebug() << info;
-    JOptionPane::showMessageDialog(nullptr, info + message, "unknown error",  JOptionPane::WARNING_MESSAGE);
+    JOptionPane::showMessageDialog(nullptr, info + message, "Assert error",  JOptionPane::WARNING_MESSAGE);
     return;
 }
 
@@ -963,7 +963,7 @@ private static bool floatIsDifferent(float f1, float f2, float delta) {
      fail(tr("object is null"), file, line);
 }
 /*public*/ /*static*/ void Assert::assertNotNull(QString object, QString file, int line) {
-    if(object.isEmpty())
+    if(object.isNull())
      fail(tr("string is null"), file, line);
 }
 /*public*/ /*static*/ void Assert::assertNotNull(QDomElement object, QString file, int line)
@@ -1001,8 +1001,8 @@ if(object.isNull())
 
 }
 /*public*/ /*static*/ void Assert::assertNull(QString object, QString file, int line) {
-if(!object.isEmpty())
- fail("string not empty", file, line);
+if(!object.isNull())
+ fail(tr("string not Null: '%1'").arg(object), file, line);
 }
 /*public*/ /*static*/ void Assert::assertNull(QDomElement object, QString file, int line) {
 if(!object.isNull())
@@ -1010,8 +1010,8 @@ if(!object.isNull())
 }
 
 /*public*/ /*static*/ void Assert::assertNull(QString message, QString object, QString file, int line) {
-if(!object.isEmpty())
- fail(tr("%1, string not empty").arg(message), file, line);
+if(!object.isNull())
+ fail(tr("%1, string not null: '%2'").arg(message).arg(object), file, line);
 }
 /*public*/ /*static*/ void Assert::assertNull(QString message, QVariant object, QString file, int line) {
 if(!object.isNull())
@@ -1020,6 +1020,11 @@ if(!object.isNull())
 /*public*/ /*static*/ void Assert::assertNull(QString message, QByteArray object, QString file, int line) {
 if(!object.isNull())
  fail(tr("%1, QByteArray not null").arg(message), file, line);
+}
+
+/*public*/ /*static*/ void Assert::assertNull(QVariant object, QString file, int line) {
+if(!object.isNull())
+ fail("QVariant not null", file, line);
 }
 
 #if 0

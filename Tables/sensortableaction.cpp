@@ -598,7 +598,7 @@ void SensorTableAction::showDebounceChanged(bool bChecked)
 }
 
 /*public*/ void SensorTableAction::setMessagePreferencesDetails(){
-    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "duplicateUserName",  tr("Hide Duplicate User Name Warning Message"));
+    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setPreferenceItemDetails(getClassName(), "duplicateUserName",  tr("Hide Duplicate User Name Warning Message"));
 AbstractTableAction::setMessagePreferencesDetails();
 }
 

@@ -31,7 +31,7 @@ public:
     virtual /*public*/ QWidget* getPanel();
     virtual /*public*/ void dispose();
     virtual /*public*/ QString getClassDescription();
-    virtual /*public*/ void setMessagePreferencesDetails();
+    Q_INVOKABLE virtual /*public*/ void setMessagePreferencesDetails();
     virtual/*public*/ bool includeAddButton();
     virtual/*public*/ void print(JTable::PrintMode mode, QString headerFormat, QString footerFormat);
     virtual /*public*/ void addToPanel(AbstractTableTabAction* f);

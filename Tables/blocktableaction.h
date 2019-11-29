@@ -16,7 +16,7 @@ class LIBTABLESSHARED_EXPORT BlockTableAction : public AbstractTableAction
 {
  Q_OBJECT
 public:
- explicit BlockTableAction(QObject *parent = NULL);
+ Q_INVOKABLE explicit BlockTableAction(QObject *parent = NULL);
  ~BlockTableAction() {}
  BlockTableAction(const BlockTableAction& other) : AbstractTableAction(other.text(), other.parent()) {}
  Q_INVOKABLE/*public*/ BlockTableAction(QString actionName, QObject *parent);
@@ -24,7 +24,7 @@ public:
 /*public*/ void setMenuBar(BeanTableFrame* f);
  /*public*/ void dispose();
  Q_INVOKABLE /*public*/ QString getClassDescription();
-
+ Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
 signals:
 
 public slots:

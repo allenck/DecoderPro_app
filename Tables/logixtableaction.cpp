@@ -1483,12 +1483,12 @@ void LogixTableAction::showSaveReminder() {
 
 /*public*/ void LogixTableAction::setMessagePreferencesDetails()
 {
- QMap<int,QString> options = QMap< int,QString>(/*3*/);
- options.insert(0x00, tr("Always Ask"));
- options.insert(0x01, tr("Never Delete"));
- options.insert(0x02, tr("Delete Without Prompting"));
- ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->messageItemDetails(getClassName(), "delete", tr("When Deleting the logix"), options, 0x00);
- ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "remindSaveLogix", tr("Suppress Save Reminders"));
+ QMap<int,QString>* options = new QMap< int,QString>(/*3*/);
+ options->insert(0x00, tr("Always Ask"));
+ options->insert(0x01, tr("Never Delete"));
+ options->insert(0x02, tr("Delete Without Prompting"));
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMessageItemDetails(getClassName(), "delete", tr("When Deleting the logix"), options, 0x00);
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setPreferenceItemDetails(getClassName(), "remindSaveLogix", tr("Suppress Save Reminders"));
  AbstractTableAction::setMessagePreferencesDetails();
 }
 

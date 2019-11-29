@@ -116,7 +116,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
   QVBoxLayout* classholderLayout;
   classholder->setLayout(classholderLayout = new QVBoxLayout());
 
-  QMap<int, QString> options;
+  QMap<int, QString>* options;
   bool add = false;
   bool addtoindependant = false;
   if (p->getPreferencesSize(strClass) > 1)
@@ -131,22 +131,22 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
   {
    QString itemName = p->getChoiceName(strClass, j);
    options = p->getChoiceOptions(strClass, itemName);
-   if (!options.isEmpty())
+   if (!options->isEmpty())
    {
     QComboBox* optionBox = new QComboBox();
     ListItems* li = new ListItems(strClass, itemName);
     _comboBoxes.insert(optionBox, li);
     li->isIncluded(addtoindependant);
     optionBox->clear();
-    foreach (QString value, options.values())
+    foreach (QString value, options->values())
     {
      optionBox->addItem(value);
     }
     int current = p->getMultipleChoiceOption(strClass, itemName);
 
-    if (options.contains(current))
+    if (options->contains(current))
     {
-     optionBox->setCurrentIndex(optionBox->findText(options.value(current)));
+     optionBox->setCurrentIndex(optionBox->findText(options->value(current)));
     }
     if (addtoindependant)
     {
@@ -384,7 +384,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
     {
         QString strClass = _comboBoxes.value(key)->getClassName();
         QString strItem = _comboBoxes.value(key)->getItem();
-        if (p->getChoiceOptions(strClass, strItem).value(p->getMultipleChoiceOption(strClass, strItem))!=(key->currentText())) {
+        if (p->getChoiceOptions(strClass, strItem)->value(p->getMultipleChoiceOption(strClass, strItem))!=(key->currentText())) {
             return true;
         }
     }

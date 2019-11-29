@@ -3345,7 +3345,7 @@ void LAlignElement::setAlignType(QString state) {
 
 /*public*/ void LRouteTableAction::setMessagePreferencesDetails()
 {
- ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->preferenceItemDetails(getClassName(), "remindSaveRoute", tr("Hide Save Message Reminder"));
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setPreferenceItemDetails(getClassName(), "remindSaveRoute", tr("Hide Save Message Reminder"));
 AbstractTableAction::setMessagePreferencesDetails();
 }
 

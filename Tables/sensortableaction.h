@@ -32,7 +32,7 @@ class LIBTABLESSHARED_EXPORT SensorTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    explicit SensorTableAction(QObject *parent = 0);
+    Q_INVOKABLE explicit SensorTableAction(QObject *parent = 0);
     /*public*/ SensorTableAction(QString actionName, QObject *parent);
     ~SensorTableAction() {}
     SensorTableAction(const SensorTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}

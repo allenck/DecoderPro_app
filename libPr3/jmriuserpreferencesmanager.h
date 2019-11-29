@@ -66,8 +66,8 @@ public:
  /*public*/ QString getClassDescription(QString strClass);
  /*public*/ QStringList getPreferencesClasses();
  /*public*/ void setClassDescription(QString strClass);
- /*public*/ void setMessageItemDetails(QString strClass, QString item, QString description, QMap<int, QString> options, int defaultOption);
- /*public*/ QMap<int, QString> getChoiceOptions(QString strClass, QString item);
+ /*public*/ void setMessageItemDetails(QString strClass, QString item, QString description, QMap<int, QString> *options, int defaultOption) override;
+ /*public*/ QMap<int, QString> *getChoiceOptions(QString strClass, QString item);
  /*public*/ int getMultipleChoiceSize(QString strClass);
  /*public*/ QStringList getMultipleChoiceList(QString strClass);
  /*public*/ QString getChoiceName(QString strClass, int n);
@@ -112,9 +112,9 @@ private:
  /*private*/ /*final*/ static QString SETTINGS_ELEMENT; // = "settings"; // NOI18N
  /*private*/ /*final*/ static QString WINDOWS_NAMESPACE; // = "http://jmri.org/xml/schema/auxiliary-configuration/window-details-4-3-5.xsd"; // NOI18N
  /*private*/ /*final*/ static QString WINDOWS_ELEMENT; // = "windowDetails"; // NOI18N
- /*private*/ bool dirty;// = false;
- /*private*/ bool loading;// = false;
- /*private*/ bool allowSave;
+ /*private*/ bool dirty = false;
+ /*private*/ bool loading = false;
+ /*private*/ bool allowSave = true;
  /*private*/ QStringList* simplePreferenceList;// = new QStringList();
  //sessionList is used for messages to be suppressed for the current JMRI session only
  /*private*/ QStringList* sessionPreferenceList;// = new QStringList();
@@ -123,14 +123,18 @@ private:
  /*private*/ File* file;
  QDomDocument doc;
  Logger* log;
+
+private slots:
+ void /*private*/ initAfter();
+
 protected:
  /*protected*/ /*final*/ QHash<QString, QString>* comboBoxLastSelection;// = new QHash<QString, QString>();
  virtual /*protected*/ void showMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember, int type);
- /*protected*/ bool isLoading();
- /*protected*/ /*final*/ QString getClassName() ;
+ virtual /*protected*/ bool isLoading();
+ virtual /*protected*/ /*final*/ QString getClassName() ;
  /*protected*/ /*final*/ ClassPreferences* getClassPreferences(QString strClass) ;
 
-
+ friend class JmriUserPreferencesManagerTest;
 };
 /**
  * Holds details about the specific class.
@@ -140,7 +144,7 @@ protected:
 private:
     QString classDescription;
 
-    QList<MultipleChoice*> multipleChoiceList;// = new ArrayList<>();
+    QList<MultipleChoice*>* multipleChoiceList;// = new ArrayList<>();
     QList<PreferenceList*>* preferenceList;// = new ArrayList<>();
 public:
     ClassPreferences();
@@ -149,7 +153,7 @@ public:
     void setDescription(QString description);
     QList<PreferenceList*>* getPreferenceList();
     int getPreferenceListSize();
-    QList<MultipleChoice*> getMultipleChoiceList() ;
+    QList<MultipleChoice*>* getMultipleChoiceList() ;
     int getPreferencesSize();
     /*public*/ QString getPreferenceName(int n);
     int getMultipleChoiceListSize();
@@ -160,22 +164,22 @@ public:
 /*protected*/ /*final*/ /*static*/ class MultipleChoice
 {
 private:
-    QMap<int, QString> options;
+    QMap<int, QString>* options;
     QString optionDescription;
     QString item;
     int value;// = -1;
     int defaultOption;// = -1;
 public:
-    MultipleChoice(QString description, QString item, QMap<int, QString> options, int defaultOption);
+    MultipleChoice(QString description, QString item, QMap<int, QString>* options, int defaultOption);
     MultipleChoice(QString item, int value);
     void setValue(int value) ;
     void setValue(QString value);
-    void setMessageItems(QString description, QMap<int, QString> options, int defaultOption);
+    void setMessageItems(QString description, QMap<int, QString>* options, int defaultOption);
     int getValue();
     int getDefaultValue();
     QString getItem() ;
     QString getOptionDescription();
-    QMap<int, QString> getOptions();
+    QMap<int, QString> *getOptions();
 };
 
 /*protected*/ /*final*/ /*static*/ class PreferenceList

@@ -46,7 +46,7 @@ class LIBTABLESSHARED_EXPORT RouteTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    explicit RouteTableAction(QObject *parent = 0);
+    Q_INVOKABLE explicit RouteTableAction(QObject *parent = 0);
     Q_INVOKABLE/*public*/ RouteTableAction(QString s, QObject *parent);
     ~RouteTableAction() {}
     RouteTableAction(const RouteTableAction&);

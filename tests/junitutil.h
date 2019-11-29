@@ -18,6 +18,7 @@ public:
     /*public*/ static void setUp();
     /*public*/ static void tearDown();
     /*public*/ static void resetProfileManager();
+    /*public*/ static void resetPreferencesProviders();
     /*public*/ static void initRosterConfigManager();
     /*public*/ static void resetProfileManager(Profile* profile);
     static /*public*/ void waitFor(ReleaseUntil *condition, QString name, QString file = __FILE__, int line = __LINE__);

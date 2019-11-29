@@ -837,9 +837,10 @@ int File::getPrefixLength() {
   if(dir.exists())
    return true;
  QFileInfo info(path);
- if(info.isDir())
-  return true;
- if(info.isFile())
+// if(info.isDir())
+//  return true;
+ //if(info.isFile())
+ if(!info.isDir())
  {
   bool b = info.exists();
   return b;

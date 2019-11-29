@@ -137,7 +137,7 @@
         // tight space constraints in terms of the number of bytes that properties
         // can use, and there are some unconstrained properties that we would like to use.
         properties.insert("jmri", Version::getCanonicalVersion());
-        properties.insert("node", NodeIdentity::identity());
+        properties.insert("node", NodeIdentity::networkIdentity());
         s = new ZeroConfService( ServiceInfo::create(type, name, port, weight, priority, properties));
         log->debug(tr("Creating new ZeroConfService %1 with properties %2").arg(s->key()).arg(properties.keys().at(0)));
 

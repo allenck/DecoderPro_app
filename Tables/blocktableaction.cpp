@@ -79,7 +79,7 @@ void BlockTableAction::common()
 
  numberToAdd = new JTextField(10);
  range = new QCheckBox(tr("Number to Add"));
- _autoSystemName = new QCheckBox(tr("LabelAutoSysName"));
+ _autoSystemName = new QCheckBox(tr("Auto SysName"));
 
  speeds = new QComboBox();
  systemNameAuto = QString(getClassName()) + ".AutoSystemName";
@@ -1122,3 +1122,7 @@ void BlockTableAction::deletePaths(JmriJFrame* f) {
  return "jmri.jmrit.beantable.BlockTableAction";
 }
 
+/*public*/ void BlockTableAction::setMessagePreferencesDetails()
+{
+ AbstractTableAction::setMessagePreferencesDetails();
+}

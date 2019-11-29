@@ -27,7 +27,7 @@ class LIBTABLESSHARED_EXPORT TurnoutTableAction : public AbstractTableAction
 {
     Q_OBJECT
 public:
-    explicit TurnoutTableAction(QObject *parent = 0);
+    Q_INVOKABLE explicit TurnoutTableAction(QObject *parent = 0);
     /*public*/ Q_INVOKABLE TurnoutTableAction(QString actionName, QObject *parent);
     ~TurnoutTableAction() {}
     Q_INVOKABLE TurnoutTableAction(const TurnoutTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
@@ -81,7 +81,7 @@ private:
     QString systemSelectionCombo;// = this.getClass().getName()+".SystemSelected";
     QPushButton* addButton;
     QString userNameError;// = this.getName()+".DuplicateUserName";
-    UserPreferencesManager* p;
+    UserPreferencesManager* pref;
     Logger* log;
     void editButton(Turnout* t, QModelIndex index);
     QCheckBox* showFeedbackBox;// = new JCheckBox("Show feedback information");

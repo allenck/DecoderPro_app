@@ -322,3 +322,7 @@ void MemoryTableAction::handleCreateException(QString sysName) {
     return "jmri.jmrit.beantable.MemoryTableAction";
 }
 
+/*public*/ void MemoryTableAction::setMessagePreferencesDetails()
+{
+ AbstractTableAction::setMessagePreferencesDetails();
+}

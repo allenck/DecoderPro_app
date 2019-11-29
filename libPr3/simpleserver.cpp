@@ -267,7 +267,7 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
 #if 1
  newSocket->write(QString("JMRI " + Version::name() + " \n").toLocal8Bit());
  newSocket->write(QString("RAILROAD " + static_cast<WebServerPreferences*>(InstanceManager::getDefault("WebServerPreferences"))->getRailroadName() + " \n").toLocal8Bit());
- newSocket->write(QString("NODE " + NodeIdentity::identity() + " \n").toLocal8Bit());
+ newSocket->write(QString("NODE " + NodeIdentity::networkIdentity() + " \n").toLocal8Bit());
 #endif
 
 }

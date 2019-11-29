@@ -20,8 +20,8 @@
 /*public*/ SearchPathsListModel::SearchPathsListModel(QObject *parent) :
     AbstractListModel(parent)
 {
- //ProfileManager::defaultManager()->addPropertyChangeListener(ProfileManager::SEARCH_PATHS, new PropertyChangeListener());
-    connect(ProfileManager::defaultManager(), SIGNAL(indexedPropertyChange(IndexedPropertyChangeEvent*)), this, SLOT(propertyChange(IndexedPropertyChangeEvent*)));
+ ProfileManager::defaultManager()->addPropertyChangeListener(ProfileManager::SEARCH_PATHS, new PropertyChangeListener());
+    //connect(ProfileManager::defaultManager(), SIGNAL(indexedPropertyChange(IndexedPropertyChangeEvent*)), this, SLOT(propertyChange(IndexedPropertyChangeEvent*)));
 
 }
 //    @Override
