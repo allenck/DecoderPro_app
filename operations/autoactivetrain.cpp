@@ -14,6 +14,7 @@
 #include "signalmastlogic.h"
 #include "signalspeedmap.h"
 #include "allocatedsection.h"
+#include "scale.h"
 
 //AutoActiveTrain::AutoActiveTrain(QObject *parent) : QObject(parent)
 //{
@@ -1171,9 +1172,10 @@ protected synchronized void executeStopTasks(int task) {
     if (b == NULL) {
         return (0);
     }
-    float fLength = b->getLengthMm() / (float) (Scale::getScaleFactor(DispatcherFrame::instance()->getScale()));
-    if (DispatcherFrame::instance()->getUseScaleMeters()) {
+    float fLength = b->getLengthMm() / (float) ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getScale()->getScaleFactor();
+    if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getUseScaleMeters()) {
         return (int) (fLength * 0.001f);
+
     }
     return (int) (fLength * 0.00328084f);
 }

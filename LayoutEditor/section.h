@@ -11,7 +11,7 @@
 #include "memory.h"
 #include "liblayouteditor_global.h"
 
-
+class Scale;
 class JmriJFrame;
 class SignalHead;
 class TrackNode;
@@ -121,8 +121,8 @@ public:
      *    If meters = false, units of returned length is scale feet
      *	  scale = layout scale according to definitions in jmri.Scale.java
      */
-    /*public*/ float getLengthF(bool meters, int scale);
-    /*public*/ int getLengthI(bool meters, int scale);
+    /*public*/ float getLengthF(bool meters, Scale *scale);
+    /*public*/ int getLengthI(bool meters, Scale *scale);
     /*public*/ int getActualLength();
 
     /**

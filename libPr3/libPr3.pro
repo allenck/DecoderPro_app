@@ -155,7 +155,6 @@ SOURCES += \
     internalturnoutmanager.cpp \
     abstractmemory.cpp \
     physicallocation.cpp \
-    scale.cpp \
     defaultmemorymanager.cpp \
     abstractmemorymanager.cpp \
     defaultmemory.cpp \
@@ -180,7 +179,6 @@ SOURCES += \
     rfid/rfidsensor.cpp \
     sensor.cpp \
     rfid/rfidreportermanager.cpp \
-    basicrosterentry.cpp \
     abstractthrottle.cpp \
     commandstation.cpp \
     dccconsist.cpp \
@@ -1024,7 +1022,6 @@ HEADERS += \
     physicallocationreporter.h \
     physicallocation.h \
     initializer.h \
-    scale.h \
     defaultmemorymanager.h \
     abstractmemorymanager.h \
     defaultmemory.h \
@@ -1441,7 +1438,6 @@ HEADERS += \
     Roster/recreaterosteraction.h \
     Roster/rostergroup.h \
     Roster/rosterobject.h \
-    beaninterface.h \
     Roster/paneprogdp3action.h \
     Roster/printrosteraction.h \
     light.h \

@@ -13,7 +13,7 @@
  */
 ///*public*/ abstract class Bean extends UnboundBean implements PropertyChangeProvider {
 
-/*public*/ Bean::Bean(QObject *parent) : QObject(parent)
+/*public*/ Bean::Bean(QObject *parent) : UnboundBean(parent)
 {
  /**
   * Provide a {@link java.beans.PropertyChangeSupport} helper.
@@ -145,3 +145,7 @@
     propertyChangeSupport,removePropertyChangeListener(propertyName, listener);
 }
 
+/*public*/ QString Bean::getClass()
+{
+ return metaObject()->className();
+}

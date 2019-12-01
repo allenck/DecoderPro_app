@@ -1206,7 +1206,7 @@ void LightTableAction::cancelPressed(ActionEvent* /*e*/) {
     // remind to save, if Light was created or edited
     if (lightCreatedOrUpdated) {
         ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
-                showInfoMessage(tr("ReminderTitle"), tr("ReminderSaveString %1").arg( tr("Light Table")),
+                showInfoMessage(tr("Reminder"), tr("<html>Remember to save your %1 information in your Configuration.<br>(choose Store &gt; Store Configuration... from the File menu)</html> ").arg( tr("Light Table")),
                         getClassName(),
                         "remindSaveLight"); // NOI18N
     }

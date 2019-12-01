@@ -11,13 +11,15 @@
 #include "libPr3_global.h"
 #include "propertychangelistener.h"
 #include <QMutex>
+#include "propertychangeprovider.h"
 
 class Profile;
 class RosterGroup;
 class RosterEntry;
-class LIBPR3SHARED_EXPORT Roster : public XmlFile
+class LIBPR3SHARED_EXPORT Roster : public XmlFile, public PropertyChangeProvider
 {
     Q_OBJECT
+ Q_INTERFACES(PropertyChangeProvider)
 public:
     explicit Roster(QObject *parent = 0);
     /** record the single instance of Roster **/

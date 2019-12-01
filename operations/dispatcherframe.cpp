@@ -32,6 +32,9 @@
 #include "transitmanager.h"
 #include "joptionpane.h"
 #include "optionsmenu.h"
+#include "scale.h"
+#include "scalemanager.h"
+#include "optionsfile.h"
 
 //DispatcherFrame::DispatcherFrame()
 //{
@@ -92,7 +95,7 @@
  _ExtraColorForAllocated = true;
  _NameInAllocatedBlock = false;
  _UseScaleMeters = false;  // "true" if scale meters, "false" for scale feet
- _LayoutScale = Scale::HO;
+ _LayoutScale = ScaleManager::getScale("HO");
  _SupportVSDecoder = false;
  _MinThrottleInterval = 100; //default time (in ms) between consecutive throttle commands
  _FullRampTime = 10000; //default time (in ms) for RAMP_FAST to go from 0% to 100%
@@ -288,14 +291,14 @@ void DispatcherFrame::initializeOptions() {
     if (optionsRead) {
         return;
     }
-#if 0
+#if 1
     optionsRead = true;
     try {
-        OptionsFile.instance().readDispatcherOptions(this);
-    } catch (org.jdom2.JDOMException jde) {
-        log->error("JDOM Exception when retreiving dispatcher options " + jde);
-    } catch (java.io.IOException ioe) {
-        log->error("I/O Exception when retreiving dispatcher options " + ioe);
+        ((OptionsFile*)InstanceManager::getDefault("OptionsFile"))->readDispatcherOptions(this);
+    } catch (JDOMException jde) {
+        log->error("JDOM Exception when retreiving dispatcher options " + jde.getMessage());
+    } catch (IOException ioe) {
+        log->error("I/O Exception when retreiving dispatcher options " + ioe.getMessage());
     }
 #endif
 }
@@ -2215,6 +2218,14 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
     return _SignalType;
 }
 
+/*protected*/ void DispatcherFrame::setStoppingSpeedName(QString speedName) {
+    _StoppingSpeedName = speedName;
+}
+
+/*protected*/ QString DispatcherFrame::getStoppingSpeedName() {
+    return _StoppingSpeedName;
+}
+
 /*protected*/  bool DispatcherFrame::getTrainsFromRoster() {
     return _TrainsFromRoster;
 }
@@ -2350,10 +2361,10 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
     _NameInAllocatedBlock = set;
 }
 
-/*protected*/ int DispatcherFrame::getScale() {
+/*protected*/ Scale* DispatcherFrame::getScale() {
     return _LayoutScale;
 }
-/*protected*/ void DispatcherFrame::setScale(int sc) {
+/*protected*/ void DispatcherFrame::setScale(Scale* sc) {
     _LayoutScale = sc;
 }
 #if 1

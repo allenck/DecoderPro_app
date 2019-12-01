@@ -50,7 +50,7 @@ QString RosterEntry::_defaultOwner = "";
     /*public*/ /*final*/ /*static*/ int RosterEntry::MAXSOUNDNUM = 32;
 
 RosterEntry::RosterEntry(QObject *parent) :
-    BasicRosterEntry(parent)
+    ArbitraryBean(parent)
 {
  init();
 }
@@ -137,14 +137,14 @@ void RosterEntry::init()
 //    _owner = _defaultOwner;
 //}
 
-/*public*/ RosterEntry::RosterEntry(QString fileName, QObject *parent) : BasicRosterEntry(parent){
+/*public*/ RosterEntry::RosterEntry(QString fileName, QObject *parent) : ArbitraryBean(parent){
     //this();
     init();
     _fileName = fileName;
 }
 
 // copy constructor
-/*public*/ RosterEntry::RosterEntry(RosterEntry* pEntry, QString pID, QObject *parent) : BasicRosterEntry(parent)
+/*public*/ RosterEntry::RosterEntry(RosterEntry* pEntry, QString pID, QObject *parent) : ArbitraryBean(parent)
 {
     //this();
     init();
@@ -1434,7 +1434,7 @@ if (!(_decoderFamily==("")))
 *
 * @param e  Locomotive XML element
 */
-/*public*/ RosterEntry::RosterEntry(QDomElement e, QObject *parent) : BasicRosterEntry(parent)
+/*public*/ RosterEntry::RosterEntry(QDomElement e, QObject *parent) : ArbitraryBean(parent)
 {
  init();
  if (log->isDebugEnabled()) log->debug("ctor from element "+e.tagName());

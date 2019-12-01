@@ -27,7 +27,8 @@ PythonQt::priv()->registerClass(&AudioBuffer::staticMetaObject, "Jmri", PythonQt
 PythonQt::priv()->registerClass(&AudioListener::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_AudioListener>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_AudioListener>, module, 0);
 PythonQt::priv()->registerClass(&AudioManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_AudioManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_AudioManager>, module, 0);
 PythonQt::priv()->registerClass(&AudioSource::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_AudioSource>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_AudioSource>, module, 0);
-PythonQt::priv()->registerClass(&BasicRosterEntry::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_BasicRosterEntry>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_BasicRosterEntry>, module, 0);
+PythonQt::priv()->registerCPPClass("BasicRosterEntry", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_BasicRosterEntry>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_BasicRosterEntry>, module, 0);
+PythonQt::priv()->registerCPPClass("BeanInterface", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_BeanInterface>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_BeanInterface>, module, 0);
 PythonQt::priv()->registerClass(&BeanTableDataModel::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_BeanTableDataModel>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_BeanTableDataModel>, module, 0);
 PythonQt::priv()->registerClass(&BeanTableFrame::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_BeanTableFrame>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_BeanTableFrame>, module, 0);
 PythonQt::priv()->registerClass(&BeanTableModel::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_BeanTableModel>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_BeanTableModel>, module, 0);
@@ -100,6 +101,7 @@ PythonQt::priv()->registerClass(&ReporterManager::staticMetaObject, "Jmri", Pyth
 PythonQt::priv()->registerClass(&RfidSensorManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_RfidSensorManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_RfidSensorManager>, module, 0);
 PythonQt::priv()->registerClass(&Roster::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Roster>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Roster>, module, 0);
 PythonQt::priv()->registerClass(&RosterEntry::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_RosterEntry>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_RosterEntry>, module, 0);
+PythonQt::priv()->registerCPPClass("RosterObject", "BeanInterface", "Jmri", PythonQtCreateObject<PythonQtWrapper_RosterObject>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_RosterObject>, module, 0);
 PythonQt::priv()->registerClass(&Route::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Route>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Route>, module, 0);
 PythonQt::priv()->registerClass(&RouteManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_RouteManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_RouteManager>, module, 0);
 PythonQt::priv()->registerClass(&Sensor::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Sensor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Sensor>, module, 0);

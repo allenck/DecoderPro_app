@@ -308,6 +308,8 @@
 #include "rawturnoutoperationxml.h"
 #include "sensorturnoutoperationxml.h"
 #include "blocktableaction.h"
+#include "dispatcherframe.h"
+#include "optionsfile.h"
 
 bool Metatypes::done = false;
 
@@ -630,6 +632,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<NoFeedbackTurnoutOperationXml>("NoFeedbackTurnoutOperationXml");
  qRegisterMetaType<RawTurnoutOperationXml>("RawTurnoutOperationXml");
  qRegisterMetaType<SensorTurnoutOperationXml>("SensorTurnoutOperationXml");
+ qRegisterMetaType<DispatcherFrame>("DispatcherFrame");
+ qRegisterMetaType<OptionsFile>("OptionsFile");
 
  Metatypes::done = true;
 }

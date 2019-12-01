@@ -25,7 +25,7 @@
  * @param name
  */
 /*public*/ RosterGroup::RosterGroup(QString name, QObject *parent) :
-    RosterObject(parent) {
+    Bean(parent) {
     this->name = name;
 }
 

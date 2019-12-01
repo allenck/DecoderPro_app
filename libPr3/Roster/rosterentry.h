@@ -14,6 +14,8 @@
 #include "Roster/locofile.h"
 #include "Roster/indexedcvtablemodel.h"
 #include "basicrosterentry.h"
+#include "arbitrarybean.h"
+#include "rosterobject.h"
 
 class Roster;
 class RosterGroup;
@@ -23,9 +25,10 @@ class PropertyChangeEvent;
 class CvTableModel;
 class IndexedCvTableModel;
 class VariableTableModel;
-class LIBPR3SHARED_EXPORT RosterEntry : public BasicRosterEntry
+class LIBPR3SHARED_EXPORT RosterEntry : public ArbitraryBean, public BasicRosterEntry, public RosterObject
 {
-    Q_OBJECT
+ Q_OBJECT
+ Q_INTERFACES(BasicRosterEntry RosterObject)
 public:
  /*public*/ static /*final*/ QString ID;// = "id"; // NOI18N
      /*public*/ static /*final*/ QString FILENAME;// = "filename"; // NOI18N
@@ -57,7 +60,7 @@ public:
      /*public*/ /*final*/ static int MAXSOUNDNUM;// = 32;
     explicit RosterEntry(QObject *parent = 0);
     ~RosterEntry() {}
-    RosterEntry(const RosterEntry& /*e*/, QObject* parent = 0 ) : BasicRosterEntry(parent) {}
+    RosterEntry(const RosterEntry& /*e*/, QObject* parent = 0 ) : ArbitraryBean(parent) {}
     /*final*/const static int MAXFNNUM = 28;
     /*public*/ int getMAXFNNUM() { return MAXFNNUM; }
     /**

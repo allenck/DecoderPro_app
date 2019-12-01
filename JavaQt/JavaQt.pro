@@ -223,7 +223,14 @@ SOURCES += javaqt.cpp \
     collection.cpp \
     timer.cpp \
     beans.cpp \
-    systemnamevalidator.cpp
+    systemnamevalidator.cpp \
+    scalemanager.cpp \
+    scale.cpp \
+    scaleconfigxml.cpp \
+    constrainedbean.cpp \
+    unboundbean.cpp \
+    arbitrarybean.cpp \
+    arbitrarypropertysupport.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -490,7 +497,15 @@ HEADERS += javaqt.h\
     discoverylistener.h \
     timer.h \
     beans.h \
-    systemnamevalidator.h
+    systemnamevalidator.h \
+    scalemanager.h \
+    scale.h \
+    scaleconfigxml.h \
+    constrainedbean.h \
+    unboundbean.h \
+    beaninterface.h \
+    arbitrarybean.h \
+    arbitrarypropertysupport.h
 
 unix {
     target.path = /usr/lib

@@ -35,7 +35,10 @@ class DispatcherFrame : public JmriJFrame
 {
  Q_OBJECT
 public:
+ Q_INVOKABLE DispatcherFrame(QWidget* parent = 0);
  static DispatcherFrame* _instance;// = NULL;
+ ~DispatcherFrame() {}
+ DispatcherFrame(const DispatcherFrame&) :JmriJFrame() {}
 
  static /*public*/ DispatcherFrame* instance();
  enum SIGNALS
@@ -67,7 +70,6 @@ public:
 
 private:
  Logger* log;
- DispatcherFrame(QWidget* parent = 0);
  // Dispatcher options (saved to disk if user requests, and restored if present)
  /*private*/ LayoutEditor* _LE;// = NULL;
  /*private*/ int _SignalType;// = SIGNALHEAD;
@@ -85,7 +87,7 @@ private:
  /*private*/ bool _ExtraColorForAllocated;// = true;
  /*private*/ bool _NameInAllocatedBlock;// = false;
  /*private*/ bool _UseScaleMeters;// = false;  // "true" if scale meters, "false" for scale feet
- /*private*/ int _LayoutScale;// = Scale::HO;
+ /*private*/ Scale* _LayoutScale;// = Scale::HO;
  /*private*/ bool _SupportVSDecoder;// = false;
  /*private*/ int _MinThrottleInterval;// = 100; //default time (in ms) between consecutive throttle commands
  /*private*/ int _FullRampTime;// = 10000; //default time (in ms) for RAMP_FAST to go from 0% to 100%
@@ -144,6 +146,7 @@ private:
  /*private*/ void initializeATComboBox();
  /*private*/ void initializeExtraComboBox();
  /*private*/ bool connected(Section* s1, Section* s2);
+ QString _StoppingSpeedName;
 
 private slots:
  void on_addTrainButton();
@@ -159,6 +162,8 @@ private slots:
 
 protected:
  /*protected*/ int getSignalType();
+ /*protected*/ void setStoppingSpeedName(QString speedName);
+ /*protected*/ QString getStoppingSpeedName();
  /*protected*/ bool requestAllocation(ActiveTrain* activeTrain, Section* section, int direction, int seqNumber, bool showErrorMessages, JmriJFrame* frame);
  /*protected*/ AllocationRequest* findAllocationRequestInQueue(Section* s, int seq, int dir, ActiveTrain* at);
  /*protected*/ void addDelayedTrain(ActiveTrain* at);
@@ -182,8 +187,8 @@ protected:
  /*protected*/ void setExtraColorForAllocated( bool set);
  /*protected*/  bool getNameInAllocatedBlock();
  /*protected*/ void setNameInAllocatedBlock( bool set);
- /*protected*/ int getScale();
- /*protected*/ void setScale(int sc);
+ /*protected*/ Scale *getScale();
+ /*protected*/ void setScale(Scale* sc);
  /*protected*/ void removeDelayedTrain(ActiveTrain* at);
  /*protected*/  bool getTrainsFromRoster();
  /*protected*/ void setTrainsFromRoster( bool set);
@@ -222,6 +227,8 @@ protected:
  friend class AutoEngineer;
  friend class AllocatedSection;
  friend class OptionsMenu;
+ friend class OptionsFile;
+ friend class OptionsMenuTest;
 };
 
 /**
@@ -335,5 +342,5 @@ public:
     ActiveTrain* getActiveTrain() ;
     SignalMast* getMast();
 };
-
+Q_DECLARE_METATYPE(DispatcherFrame)
 #endif // DISPATCHERFRAME_H

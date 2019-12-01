@@ -205,9 +205,16 @@ class ThrottleCyclingKeyListener extends KeyAdapter	{
  throttlesListPanel = new ThrottlesListPanel();
  throttlesListFrame->setContentPane(throttlesListPanel);
  throttlesListFrame->adjustSize();
- throttlesListFrame->setVisible(false);
+ QTimer::singleShot(10000, this, SLOT(initFrame()));
 }
 
+/*private*/ void ThrottleFrameManager::initFrame()
+{
+ JmriJFrame* jFrame = static_cast<JmriJFrame*>(throttlesListFrame);
+ jFrame->setWindowState((jFrame->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+ throttlesListFrame->setVisible(false);
+
+}
 /*public*/ void ThrottleFrameManager::showThrottlesList()
 {
  if (throttlesListFrame == NULL)

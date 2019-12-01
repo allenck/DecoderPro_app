@@ -1,11 +1,13 @@
 #ifndef ROSTERGROUP_H
 #define ROSTERGROUP_H
 #include "rosterobject.h"
+#include "bean.h"
 
 class RosterEntry;
-class RosterGroup : public RosterObject
+class RosterGroup : public Bean, public RosterObject
 {
  Q_OBJECT
+ Q_INTERFACES(RosterObject)
 public:
 //explicit RosterGroup(QObject *parent = 0);
  /*public*/ RosterGroup(QString name, QObject *parent = 0);

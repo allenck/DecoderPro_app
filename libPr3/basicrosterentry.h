@@ -8,11 +8,11 @@
 #include <QtXml>
 #include "libPr3_global.h"
 
-class LIBPR3SHARED_EXPORT BasicRosterEntry : public QObject
+class LIBPR3SHARED_EXPORT BasicRosterEntry //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
-    explicit BasicRosterEntry(QObject *parent = 0);
+    //explicit BasicRosterEntry(QObject *parent = 0);
     /**
      * RosterEntry represents a single element in a locomotive roster, including
      * information on how to locate it from decoder information.
@@ -79,5 +79,5 @@ signals:
 public slots:
     
 };
-
+Q_DECLARE_INTERFACE(BasicRosterEntry, "BasicRosterEntry")
 #endif // BASICROSTERENTRY_H

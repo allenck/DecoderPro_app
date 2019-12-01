@@ -126,6 +126,8 @@ public:
     /*public*/ static void copy(File* source, File* dest) /*throws IOException*/;
     /*public*/ static void appendTextToFile(File* file, QString text);// throw (IOException);
     /*public*/ static void backup(File* file);// //throws IOException
+    /*public*/ static void rotate(/*@Nonnull*/ File* file, int max, /*@CheckForNull*/ QString extension);// throw (IOException);
+
     /*public*/ static QString sanitizeFilename(QString name);
     /*public*/ static QList<QString> *findProgramPath();
     /*public*/ static QString locateFile(QDir start, QString fileName);

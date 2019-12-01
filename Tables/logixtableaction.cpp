@@ -1475,7 +1475,7 @@ void LogixTableAction::editPressed(QString sName) {
 void LogixTableAction::showSaveReminder() {
     if (_showReminder) {
         if (InstanceManager::getNullableDefault("UserPreferencesManager") != NULL) {
-            ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage(tr("ReminderTitle"), tr("ReminderSaveString"), tr("MenuItemLogixTable %1").arg(getClassName()),
+            ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage(tr("Reminder"), tr("<html>Remember to save your %1 information in your Configuration.<br>(choose Store &gt; Store Configuration... from the File menu)</html>").arg("Logix"),(getClassName()),
                             "remindSaveLogix"); // NOI18N
         }
     }

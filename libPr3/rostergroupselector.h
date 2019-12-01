@@ -23,7 +23,7 @@ public:
 
 
 signals:
- void propertyChange(PropertyChangeEvent*);
+ //void propertyChange(PropertyChangeEvent*);
 
 public slots:
 };

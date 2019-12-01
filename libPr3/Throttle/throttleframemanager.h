@@ -58,6 +58,9 @@ private:
     /*private*/ void buildThrottlePreferencesFrame();
     /*private*/ void buildThrottleListFrame();
 
+private slots:
+    /*private*/ void initFrame();
+
 };
 Q_DECLARE_METATYPE(ThrottleFrameManager)
 #endif // THROTTLEFRAMEMANAGER_H

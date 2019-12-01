@@ -342,7 +342,8 @@ SOURCES += \
         optionsmenu.cpp \
         yardmasterbytrackpanel.cpp \
         yardmasterbytrackframe.cpp \
-        yardmasterbytrackaction.cpp
+        yardmasterbytrackaction.cpp \
+    optionsfile.cpp
 
 HEADERS += \
         operations.h \
@@ -620,7 +621,8 @@ HEADERS += \
         traininfofile.h \
         traininfo.h \
         allocationplan.h \
-        autotrainsframe.h
+        autotrainsframe.h \
+    optionsfile.h
 
 unix {
     target.path = /usr/lib

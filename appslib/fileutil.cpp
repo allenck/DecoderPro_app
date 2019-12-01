@@ -835,7 +835,24 @@ FileUtil::FileUtil(QObject *parent) :
 {
   FileUtilSupport::getDefault()->backup(file);
 }
-
+/**
+ * Rotate a file and its backups, retaining only a set number of backups.
+ *
+ * @param file      the file to rotate
+ * @param max       maximum number of backups to retain
+ * @param extension The extension to use for the rotations. If null or an
+ *                  empty string, the rotation number is used as the
+ *                  extension.
+ * @throws java.io.IOException      if a backup cannot be created
+ * @throws IllegalArgumentException if max is less than one
+ * @see jmri.util.FileUtilSupport#rotate(java.io.File, int,
+ * java.lang.String)
+ * @see jmri.util.FileUtilSupport#backup(java.io.File)
+ */
+/*public*/ /*static*/ void FileUtil::rotate(/*@Nonnull*/ File* file, int max, /*@CheckForNull*/ QString extension) //throw (IOException)
+    {
+    FileUtilSupport::getDefault()->rotate(file, max, extension);
+}
 /*public*/ /*static*/ QList<QString>* FileUtil::findProgramPath()
 {
  return FileUtilSupport::getDefault()->findProgramPath();

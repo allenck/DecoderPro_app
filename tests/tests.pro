@@ -192,7 +192,9 @@ SOURCES += \
     warrants/warrantpreferencespaneltest.cpp \
     warrants/warrantpreferencespaneltestaction.cpp \
     misc/jmriuserpreferencesmanagertest.cpp \
-    misc/jmriuserpreferencesmanagertestaction.cpp
+    misc/jmriuserpreferencesmanagertestaction.cpp \
+    operations/optionsmenutest.cpp \
+    operations/optionmenutestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -362,7 +364,9 @@ HEADERS += \
     warrants/warrantpreferencespaneltest.h \
     warrants/warrantpreferencespaneltestaction.h \
     misc/jmriuserpreferencesmanagertest.h \
-    misc/jmriuserpreferencesmanagertestaction.h
+    misc/jmriuserpreferencesmanagertestaction.h \
+    operations/optionsmenutest.h \
+    operations/optionsmenutestaction.h
 
 unix {
     target.path = /usr/lib

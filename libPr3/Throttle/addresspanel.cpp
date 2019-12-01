@@ -217,7 +217,6 @@ AddressPanel::~AddressPanel()
   if (l.size()>0)
   {
    rosterEntry = l.at(0);
-   throttle->setRosterEntry(rosterEntry);
   }
  }
 
@@ -231,9 +230,11 @@ AddressPanel::~AddressPanel()
  // enable program button if programmer available
  // for ops-mode programming
  if ((rosterEntry!=NULL) && (ProgDefault::getDefaultProgFile() != "")
-            && (InstanceManager::programmerManagerInstance()!=NULL) && (InstanceManager::programmerManagerInstance()->isAddressedModePossible()))
+     && (InstanceManager::getNullableDefault("AddressedProgrammerManager") != nullptr)
+     && (((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->isAddressedModePossible()))
+ {
   ui->progButton->setEnabled(true);
-
+ }
  // send notification of new address
  for (int i = 0; i < listeners->size(); i++)
  {
@@ -518,7 +519,13 @@ void AddressPanel::OnSetButton_clicked()
  }
 
  log->debug("Requesting new slot for address "+currentAddress->toString());
- bool requestOK = InstanceManager::throttleManagerInstance()->requestThrottle(getCurrentAddress(), rosterEntry, (ThrottleListener*)this);
+ bool requestOK;
+ if (rosterEntry == nullptr) {
+     requestOK = InstanceManager::throttleManagerInstance()->requestThrottle(currentAddress, this, true);
+ }
+ else {
+     requestOK = InstanceManager::throttleManagerInstance()->requestThrottle(rosterEntry, this, true);
+ }
  if (!requestOK)
   JOptionPane::showMessageDialog(mainPanel, tr("Address in use by another throttle."));
 }

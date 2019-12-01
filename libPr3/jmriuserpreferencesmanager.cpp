@@ -20,6 +20,8 @@
 #include "metatypes.h"
 #include "class.h"
 #include "configuremanager.h"
+#include "joptionpane.h"
+#include "vptr.h"
 
 //JmriUserPreferencesManager::JmriUserPreferencesManager()
 //{
@@ -356,7 +358,7 @@
     this->showMessage(title, message, strClass, item, sessionOnly, alwaysRemember, /*JOptionPane.WARNING_MESSAGE*/2);
 }
 
-/*protected*/ void JmriUserPreferencesManager::showMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember, int /*type*/) {
+/*protected*/ void JmriUserPreferencesManager::showMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember, int type) {
     /*final*/ QString preference = strClass + "." + item;
 
     if (this->getSessionPreferenceState(preference)) {
@@ -385,12 +387,12 @@
             remember->setFont(f);
             containerLayout->addWidget(remember);
         }
-//        JOptionPane.showMessageDialog(NULL, // center over parent component
-//                container,
-//                title,
-//                type);
+        JOptionPane::showMessageDialog(NULL, // center over parent component
+                VPtr<QWidget>::asQVariant(container),
+                title,
+                type);
 // TODO:
-        QMessageBox::information(nullptr, title, "message");  // need to add container
+//        QMessageBox::information(nullptr, title, "message");  // need to add container
         if (remember->isChecked()) {
             this->setPreferenceState(strClass, item, true);
         }

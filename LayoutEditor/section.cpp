@@ -574,17 +574,17 @@ void Section::handleBlockChange(PropertyChangeEvent* e)
  *    If meters = false, units of returned length is scale feet
  *	  scale = layout scale according to definitions in jmri.Scale.java
  */
-/*public*/ float Section::getLengthF(bool meters, int scale) {
+/*public*/ float Section::getLengthF(bool meters, Scale* scale) {
     if (initializationNeeded) initializeBlocks();
     float length = 0.0f;
     for (int i = 0; i<mBlockEntries->size(); i++) {
         length = length + mBlockEntries->at(i)->getLengthMm();
     }
-    length = length/(float)(Scale::getScaleFactor(scale));
+    length = length/(float)(scale->getScaleFactor());
     if (meters) return (length*0.001f);
     return (length*0.00328084f);
 }
-/*public*/ int Section::getLengthI(bool meters, int scale) {
+/*public*/ int Section::getLengthI(bool meters, Scale* scale) {
     return ((int)((getLengthF(meters,scale)+0.5f)));
 }
 

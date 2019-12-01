@@ -1,8 +1,8 @@
 #ifndef BEANINTERFACE_H
 #define BEANINTERFACE_H
 #include <QObject>
+#include <QVariant>
 #include <QSet>
-#include "libPr3_global.h"
 
 /**
  * Simple interface for basic methods that implement JMRI Bean handling methods.
@@ -22,10 +22,8 @@
  * @see Beans
  * @see Bean
  */
-/*public*/ class LIBPR3SHARED_EXPORT BeanInterface : public QObject
-{
+/*public*/ /*interface*/ class BeanInterface {
 public:
- BeanInterface(QObject* parent) : QObject(parent) {}
     /**
      * Set the value of an element in an indexed property.
      * <p>
@@ -38,7 +36,7 @@ public:
      * @param index index of the property element to change
      * @param value the value to set the property to
      */
-    /*public*/ virtual  void setIndexedProperty(QString /*key*/, int /*index*/, QObject* /*value*/) {}
+ /*public*/ virtual void setIndexedProperty(/*@Nonnull*/ QString /*key*/, int /*index*/, /*@CheckForNull*/ QVariant /*value*/){}
 
     /**
      * Get the value of an element in an indexed property.
@@ -52,7 +50,8 @@ public:
      * @param index index of the property element to change
      * @return value of the property or null
      */
-    /*public*/ virtual  QObject* getIndexedProperty(QString /*key*/, int /*index*/) {return NULL;}
+    //@CheckForNull
+ /*public*/ virtual QVariant getIndexedProperty(/*@Nonnull*/ QString /*key*/, int /*index*/) {return QVariant();}
 
     /**
      * Set the value of a property.
@@ -65,7 +64,7 @@ public:
      * @param key   name of the property
      * @param value the value to set the property to
      */
-    /*public*/ virtual  void setProperty(QString /*key*/, QObject* /*value*/) {}
+ /*public*/ virtual void setProperty(/*@Nonnull*/ QString /*key*/, /*@CheckForNull*/ QVariant /*value*/) {}
 
     /**
      * Get the value of a property.
@@ -78,7 +77,8 @@ public:
      * @param key name of the property
      * @return The value of the property or null
      */
-    /*public*/ virtual  QObject* getProperty(QString /*key*/) {return NULL;}
+    //@CheckForNull
+    /*public*/ virtual QVariant getProperty(/*@Nonnull*/ QString /*key*/) {return QVariant();}
 
     /**
      * Test that a property exists.
@@ -91,7 +91,7 @@ public:
      * @param key name of the property
      * @return true is property <i>key</i> exists
      */
-    /*public*/ virtual  bool hasProperty(QString /*key*/) {return false;}
+ /*public*/ virtual bool hasProperty(/*@Nonnull*/ QString /*key*/) {return false;}
 
     /**
      * Test that a property exists and is indexed.
@@ -104,7 +104,7 @@ public:
      * @param key name of the property
      * @return true is property <i>key</i> exists and is indexed
      */
-    /*public*/ virtual  bool hasIndexedProperty(QString /*key*/) {return false;}
+    /*public*/ virtual bool hasIndexedProperty(/*@Nonnull*/ QString /*key*/) {return false;}
 
     /**
      * List all property names or keys.
@@ -118,7 +118,8 @@ public:
      *
      * @return property names or an empty Set.
      */
- /*public*/ virtual  QSet<QString> getPropertyNames() {return QSet<QString>();}
-
+    //@Nonnull
+ /*public*/ virtual QSet<QString> getPropertyNames() {return QSet<QString>();}
 };
+Q_DECLARE_INTERFACE(BeanInterface, "BeanInterface")
 #endif // BEANINTERFACE_H

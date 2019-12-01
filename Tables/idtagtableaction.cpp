@@ -290,7 +290,7 @@ void IdTagBeanTableDataModel::configureTable(JTable *table)
         addFrame = new JmriJFrame(tr("Add Id Tag"), false, true);
         addFrame->addHelpMenu("package.jmri.jmrit.beantable.IdTagAddEdit", true);
         QVBoxLayout* thisLayout;
-        addFrame->getContentPane()->setLayout(thisLayout = new QVBoxLayout(addFrame->getContentPane())); //, BoxLayout.Y_AXIS));
+        addFrame->getContentPane()->setLayout(thisLayout = new QVBoxLayout()); //, BoxLayout.Y_AXIS));
 
 //        ActionListener okListener = (ActionEvent ev) -> {
 //            okPressed(ev);

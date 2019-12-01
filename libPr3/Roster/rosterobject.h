@@ -11,7 +11,7 @@
 /*public*/ /*interface*/class RosterObject : public BeanInterface
 {
 public:
- RosterObject(QObject* parent) : BeanInterface(parent) {}
+ //RosterObject(QObject* parent) : BeanInterface(parent) {}
     /**
      * Get the formatted single-line String for displaying the object.
      *
@@ -19,5 +19,5 @@ public:
      */
  /*abstract*/ /*public*/ virtual QString getDisplayName() { return "";}
 };
-
+Q_DECLARE_INTERFACE(RosterObject, "RosterObject")
 #endif // ROSTEROBJECT_H

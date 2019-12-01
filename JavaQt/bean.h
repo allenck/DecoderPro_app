@@ -1,14 +1,17 @@
 #ifndef BEAN_H
 #define BEAN_H
 
-#include <QObject>
+#include "unboundbean.h"
+#include "propertychangeprovider.h"
 
 class PropertyChangeListener;
 class PropertyChangeEvent;
 class PropertyChangeSupport;
-class Bean : public QObject
+
+class Bean : public UnboundBean, public PropertyChangeProvider
 {
  Q_OBJECT
+ Q_INTERFACES(PropertyChangeProvider)
 public:
  explicit Bean(QObject *parent = 0);
  virtual /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
@@ -17,6 +20,7 @@ public:
  virtual /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName);
  virtual /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
  virtual /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
+ virtual /*public*/ QString getClass();
 
 signals:
 // void propertyChange(PropertyChangeEvent*);
