@@ -18,7 +18,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT AutomatSummary : public QObject
 public:
     //explicit AutomatSummary(QObject *parent = 0);
     static /*public*/ AutomatSummary* instance();
-//    /*public*/ void addPropertyChangeListener(PropertyChangeListener* p) ;
+    /*public*/ void addPropertyChangeListener(PropertyChangeListener* p) ;
     /*public*/ void _register(AbstractAutomaton* a);
     /*public*/ void remove(AbstractAutomaton* a);
     /*public*/ int length();
@@ -26,7 +26,7 @@ public:
     /*public*/ AbstractAutomaton* get(QString name);
     /*public*/ int indexOf(AbstractAutomaton* a);
     /*public*/ void loop(AbstractAutomaton* a);
-//    /*public*/ void removePropertyChangeListener(PropertyChangeListener* p);
+    /*public*/ void removePropertyChangeListener(PropertyChangeListener* p);
 
 signals:
     //void notify(QString property, QVariant arg1, QVariant arg2);

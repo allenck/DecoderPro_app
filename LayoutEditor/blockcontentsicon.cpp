@@ -105,13 +105,13 @@ void BlockContentsIcon::common()
  */
 /*public*/ void BlockContentsIcon::setBlock(NamedBeanHandle<Block*>* m) {
     if (namedBlock != NULL) {
-        //getBlock()->removePropertyChangeListener(this);
-     disconnect(getBlock(), SIGNAL(propertyChange(PropertyChangeEvent*)));
+        getBlock()->removePropertyChangeListener((PropertyChangeListener*)this);
+     //disconnect(getBlock(), SIGNAL(propertyChange(PropertyChangeEvent*)));
     }
     namedBlock = m;
     if (namedBlock != NULL) {
-        //getBlock()->addPropertyChangeListener(this, namedBlock.getName(), "Block Icon");
-     connect(getBlock(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT());
+        getBlock()->addPropertyChangeListener((PropertyChangeListener*)this, namedBlock->getName(), "Block Icon");
+     //connect(getBlock(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT());
         displayState();
         setName(namedBlock->getName());
     }
@@ -324,7 +324,7 @@ void BlockContentsIcon::on_newTrain_triggered()
 //@Override
 /*public*/ bool BlockContentsIcon::setEditIconMenu(QMenu* popup)
 {
-    QString txt = tr("Edit %1 Icon...").arg(tr("BeanNameBlock"));
+    QString txt = tr("Edit %1 Icon...").arg(tr("Block"));
     QAction* editIcon;
     popup->addAction(editIcon = new AbstractAction(txt, this));
 //    {
@@ -368,8 +368,8 @@ void BlockContentsIcon::editBlock() {
 /*public*/ void BlockContentsIcon::dispose()
 {
     if (getBlock() != NULL) {
-        //getBlock()->removePropertyChangeListener(this);
-     disconnect(getBlock(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        getBlock()->removePropertyChangeListener((PropertyChangeListener*)this);
+     //disconnect(getBlock(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     namedBlock = NULL;
     if (re != NULL) {

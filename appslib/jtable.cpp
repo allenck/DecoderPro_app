@@ -23,6 +23,7 @@
 #include "defaulttablecolumnmodel.h"
 #include "mysortfilterproxymodel.h"
 #include "tablerowsorter.h"
+#include "qsortfilterproxymodel.h"
 
 //JTable::JTable(QWidget *parent) :
 //  QTableView(parent)
@@ -376,14 +377,14 @@
  * @see #createDefaultColumnModel
  * @see #createDefaultSelectionModel
  */
-/*public*/ JTable::JTable(TableModel* dm, TableColumnModel* cm, ListSelectionModel* sm, QWidget *parent) :
+/*public*/ JTable::JTable(TableModel* dm, TableColumnModel* cm, DefaultListSelectionModel* sm, QWidget *parent) :
   QTableView(parent)
 {
  //super();
  common( dm,  cm,  sm);
 }
 
-/*private*/void  JTable::common(QAbstractItemModel* dm, TableColumnModel* cm, ListSelectionModel* sm)
+/*private*/void  JTable::common(QAbstractItemModel* dm, TableColumnModel* cm, DefaultListSelectionModel* sm)
 {
  log = new Logger("JTable");
  editorRemover = NULL;
@@ -401,6 +402,13 @@
  }
  setColumnModel(cm);
 
+ if (dm == NULL)
+ {
+  dm = createDefaultDataModel();
+ }
+ setModel(dm);
+ dataModel = dm;
+
  if (sm == NULL)
  {
   sm = createDefaultSelectionModel();
@@ -409,12 +417,9 @@
 
 // Set the model last, that way if the autoCreatColumnsFromModel has
 // been set above, we will automatically populate an empty columnModel
-// with suitable columns for the new model.
- if (dm == NULL)
- {
-  dm = createDefaultDataModel();
- }
- setModel(dm);
+// with suitable columns for the new model. WARNING! QT requires that data model
+// be set before selection model can be.
+
 
  rowSorter = NULL;
  sortManager = NULL;
@@ -691,17 +696,17 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
         firePropertyChange("tableHeader", old, tableHeader);
     }
 }
-
+#endif
 /**
  * Returns the <code>tableHeader</code> used by this <code>JTable</code>.
  *
  * @return  the <code>tableHeader</code> used by this table
  * @see     #setTableHeader
  */
-/*public*/ JTableHeader getTableHeader() {
-    return tableHeader;
+/*public*/ QHeaderView* JTable::getTableHeader() {
+    return horizontalHeader();
 }
-#endif
+
 /**
  * Sets the height, in pixels, of all cells to <code>rowHeight</code>,
  * revalidates, and repaints.
@@ -1752,7 +1757,7 @@ Object setDropLocation(TransferHandler.DropLocation location,
 /*public*/ RowSorter<? extends TableModel> getRowSorter() {
     return (sortManager != NULL) ? sortManager.sorter : NULL;
 }
-
+#endif
 //
 // Selection methods
 //
@@ -1782,12 +1787,13 @@ Object setDropLocation(TransferHandler.DropLocation location,
  *              SINGLE_INTERVAL_SELECTION   ListSelectionModel.SINGLE_INTERVAL_SELECTION
  *              MULTIPLE_INTERVAL_SELECTION ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
  */
-/*public*/ void setSelectionMode(int selectionMode) {
-    clearSelection();
-    getSelectionModel().setSelectionMode(selectionMode);
-    getColumnModel().getSelectionModel().setSelectionMode(selectionMode);
+/*public*/ void JTable::setSelectionMode(int selectionMode) {
+//    clearSelection();
+//    getSelectionModel().setSelectionMode(selectionMode);
+//    getColumnModel().getSelectionModel().setSelectionMode(selectionMode);
+ QTableView::setSelectionMode((QAbstractItemView::SelectionMode)selectionMode)   ;
 }
-
+#if 0
 /**
  * Sets whether the rows in this model can be selected.
  *
@@ -1940,12 +1946,12 @@ Object setDropLocation(TransferHandler.DropLocation location,
 
     clearSelection();
 
-    selectionModel->setAnchorSelectionIndex(-1);
-    selectionModel->setLeadSelectionIndex(-1);
+     selectionModel->setAnchorSelectionIndex(-1);
+     selectionModel->setLeadSelectionIndex(-1);
     columnModel->getSelectionModel()->setAnchorSelectionIndex(-1);
     columnModel->getSelectionModel()->setLeadSelectionIndex(-1);
 
-    selectionModel->setValueIsAdjusting(false);
+     selectionModel->setValueIsAdjusting(false);
     columnModel->getSelectionModel()->setValueIsAdjusting(false);
 }
 #if 0
@@ -3625,14 +3631,14 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
  *      bound: true
  *      description: The selection model for rows.
  */
-/*public*/ void JTable::setSelectionModel(ListSelectionModel* newModel)
+/*public*/ void JTable::setSelectionModel(DefaultListSelectionModel* newModel)
 {
  if (newModel == NULL)
  {
-  throw new IllegalArgumentException("Cannot set a NULL SelectionModel");
+  throw  IllegalArgumentException("Cannot set a NULL SelectionModel");
  }
 
- ListSelectionModel* oldModel = selectionModel;
+ DefaultListSelectionModel* oldModel = selectionModel;
 
  if (newModel != oldModel)
  {
@@ -3642,9 +3648,10 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
   }
 
   selectionModel = newModel;
+  newModel->setItemSelectionModel(QTableView::selectionModel());
 //    newModel.addListSelectionListener(this);
 
-  firePropertyChange("selectionModel", VPtr<ListSelectionModel>::asQVariant(oldModel), VPtr<ListSelectionModel>::asQVariant(newModel));
+  firePropertyChange("selectionModel", VPtr<DefaultListSelectionModel>::asQVariant(oldModel), VPtr<DefaultListSelectionModel>::asQVariant(newModel));
   update();
  }
 }
@@ -3657,7 +3664,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
  *          if row selection is not allowed
  * @see     #setSelectionModel
  */
-/*public*/ ListSelectionModel* JTable::getSelectionModel() {
+/*public*/ DefaultListSelectionModel *JTable::getSelectionModel() {
     return selectionModel;
 }
 #if 0
@@ -3785,8 +3792,8 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
         // the selection even if rows are filtered out.
         if (modelSelection == NULL &&
                 sorter->getViewRowCount() != jt->getModel()->rowCount()) {
-            modelSelection = new DefaultListSelectionModel();
-            ListSelectionModel* viewSelection = jt->getSelectionModel();
+            modelSelection = new DefaultListSelectionModel((AbstractTableModel*)jt->getModel());
+            DefaultListSelectionModel* viewSelection = (DefaultListSelectionModel*)jt->getSelectionModel();
             int min = viewSelection->getMinSelectionIndex();
             int max = viewSelection->getMaxSelectionIndex();
             int modelIndex;
@@ -3836,7 +3843,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
  /*private*/ void SortManager::cacheModelSelection(RowSorterEvent* sortEvent) {
      lastModelSelection = jt->convertSelectionToModel(sortEvent);
      modelLeadIndex = jt->convertRowIndexToModel(sortEvent,
-                 jt->selectionModel->getLeadSelectionIndex());
+                 ((DefaultListSelectionModel*)jt->selectionModel)->getLeadSelectionIndex());
  }
 
  /**
@@ -3896,7 +3903,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
                                  modelLeadIndex, change);
          lastModelSelection = NULL;
      } else if (modelSelection != NULL) {
-         ListSelectionModel* viewSelection = jt->getSelectionModel();
+         DefaultListSelectionModel* viewSelection = (DefaultListSelectionModel*)jt->getSelectionModel();
          viewSelection->setValueIsAdjusting(true);
          viewSelection->clearSelection();
          int min = modelSelection->getMinSelectionIndex();
@@ -4565,7 +4572,7 @@ private int limit(int i, int a, int b) {
  * @param e   the event received
  * @see ListSelectionListener
  */
-/*public*/ void valueChanged(ListSelectionEvent e) {
+/*public*/ void valueChanged(ListSelectionEvent* e) {
     if (sortManager != NULL) {
         sortManager.viewSelectionChanged(e);
     }
@@ -5463,7 +5470,7 @@ static class BooleanEditor extends DefaultCellEditor {
  * @see javax.swing.table.DefaultTableColumnModel
  */
 /*protected*/ TableColumnModel* JTable::createDefaultColumnModel() {
- return new DefaultTableColumnModel();
+ return new DefaultTableColumnModel((AbstractTableModel*)model());
 }
 
 /**
@@ -5474,8 +5481,20 @@ static class BooleanEditor extends DefaultCellEditor {
  * @return the default selection model object
  * @see javax.swing.DefaultListSelectionModel
  */
-/*protected*/ ListSelectionModel* JTable::createDefaultSelectionModel() {
-    return new DefaultListSelectionModel();
+/*protected*/ DefaultListSelectionModel* JTable::createDefaultSelectionModel() {
+ DefaultListSelectionModel* m = new DefaultListSelectionModel((AbstractTableModel*)model());
+ QItemSelectionModel* itemSelectionModel;
+ QAbstractItemModel* _model = dataModel;
+// if(qobject_cast<QSortFilterProxyModel*>(_model))
+//  itemSelectionModel = new QItemSelectionModel(((QSortFilterProxyModel*)_model)->sourceModel());
+// else
+  itemSelectionModel = new QItemSelectionModel(_model);
+ QTableView::setSelectionModel(itemSelectionModel);
+ QItemSelectionModel* rslt = QAbstractItemView::selectionModel();
+ if(rslt != itemSelectionModel)
+  log->error(tr("setting selection mdel failed"));
+ m->setItemSelectionModel(itemSelectionModel);
+ return m;
 }
 #if 0
 /**

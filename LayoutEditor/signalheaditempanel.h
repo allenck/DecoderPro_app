@@ -36,7 +36,7 @@ friend class SignalHeadIconDialog;
     SignalHeadItemPanel* self;
  public:
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
-    QString mimeData();
+    QByteArray mimeData();
     /*public*/ SHIconDragJLabel(DataFlavor* flavor, QMap <QString, NamedIcon*>* map, SignalHeadItemPanel* self);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
 

@@ -106,7 +106,7 @@ void AnalogClock2Display::common()
 // _iconMap = new QMap <QString, NamedIcon*>();
 
     // request callback to update time
-//    clock->addMinuteChangeListener(new PropertyChangeListener()
+    clock->addMinuteChangeListener((PropertyChangeListener*)this);//new PropertyChangeListener()
 //    {
 //        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //            update();
@@ -114,13 +114,13 @@ void AnalogClock2Display::common()
 //    });
 //    connect(clock, SIGNAL(minuteTick()), this, SLOT(update()));
     // request callback to update changes in properties
-//    clock->addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+    clock->addPropertyChangeListener((PropertyChangeListener*)this);// new java.beans.PropertyChangeListener() {
 //        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //            update();
 //        }
 //    });
- SimpleTimebase* t = (SimpleTimebase*)clock;
- connect(t, SIGNAL(minuteTick()), this, SLOT(update()));
+// SimpleTimebase* t = (SimpleTimebase*)clock;
+// connect(t, SIGNAL(minuteTick()), this, SLOT(update()));
  setSize(clockIcon->getIconHeight()); // set to default size
 }
 

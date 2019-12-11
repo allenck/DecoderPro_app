@@ -194,7 +194,13 @@ SOURCES += \
     misc/jmriuserpreferencesmanagertest.cpp \
     misc/jmriuserpreferencesmanagertestaction.cpp \
     operations/optionsmenutest.cpp \
-    operations/optionmenutestaction.cpp
+    operations/optionsmenutestaction.cpp \
+    positionables/signalmasticontest.cpp \
+    positionables/positionableicontest.cpp \
+    positionables/positionabletestbase.cpp \
+    positionables/editorscaffold.cpp \
+    positionables/editorframeoperator.cpp \
+    positionables/signalmasticontestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -366,7 +372,13 @@ HEADERS += \
     misc/jmriuserpreferencesmanagertest.h \
     misc/jmriuserpreferencesmanagertestaction.h \
     operations/optionsmenutest.h \
-    operations/optionsmenutestaction.h
+    operations/optionsmenutestaction.h \
+    positionables/signalmasticontest.h \
+    positionables/positionableicontest.h \
+    positionables/positionabletestbase.h \
+    positionables/editorscaffold.h \
+    positionables/editorframeoperator.h \
+    positionables/signalmasticontestaction.h
 
 unix {
     target.path = /usr/lib

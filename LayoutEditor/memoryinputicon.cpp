@@ -105,7 +105,7 @@ void MemoryInputIcon::textChanged(QString text)
     pos->setMemory(namedMemory->getName());
     return PositionableJPanel::finishClone(pos);
 }
-/*public*/ QWidget* MemoryInputIcon::getTextComponent() {
+/*public*/ QWidget *MemoryInputIcon::getTextComponent() {
     return _textBox;
 }
 
@@ -114,7 +114,7 @@ void MemoryInputIcon::textChanged(QString text)
     PositionableJPanel::mouseExited(e);
 }
 
-/*public*/ void MemoryInputIcon::mousePressed(QGraphicsSceneMouseEvent* e) {
+/*public*/ void MemoryInputIcon::doMousePressed(QGraphicsSceneMouseEvent* e) {
     updateMemory();
     PositionableJPanel::mousePressed(e);
 }
@@ -153,16 +153,16 @@ void MemoryInputIcon::textChanged(QString text)
 {
  if (namedMemory != NULL)
  {
-  //getMemory()->removePropertyChangeListener(this);
-  AbstractMemory* old = (AbstractMemory*)getMemory();
-  disconnect(old, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
+//  AbstractMemory* old = (AbstractMemory*)getMemory();
+//  disconnect(old, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  namedMemory = m;
  if (namedMemory != NULL)
  {
-  //getMemory()->addPropertyChangeListener(this, namedMemory.getName(), "Memory Input Icon");
-  AbstractMemory* m = (AbstractMemory*)namedMemory->getBean();
-  connect(m->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getMemory()->addPropertyChangeListener((PropertyChangeListener*)this, namedMemory->getName(), "Memory Input Icon");
+//  AbstractMemory* m = (AbstractMemory*)namedMemory->getBean();
+//  connect(m->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //  connect(m->pcs, SIGNAL(propertyChange(QString,QVariant,QVariant)), this, SLOT(on_propertyChange(QString,QVariant,QVariant)));
 
   displayState();
@@ -348,9 +348,9 @@ void MemoryInputIcon::editMemory()
 void MemoryInputIcon::cleanup()
 {
  if (namedMemory!=NULL) {
-     //getMemory().removePropertyChangeListener(this);
-     AbstractMemory* m = (AbstractMemory*)getMemory();
-     disconnect(m, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
+//     AbstractMemory* m = (AbstractMemory*)getMemory();
+//     disconnect(m, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  }
  if (_textBox!=NULL) {

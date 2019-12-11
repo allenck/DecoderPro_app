@@ -44,9 +44,10 @@ SignalMastIcon::SignalMastIcon(QWidget* parent) :
     _useIconSet = "default";
     clickMode = 0;
     litMode = false;
-    mMast = nullptr;
     namedMast = nullptr;
     _displayLevel = Editor::SIGNALS;
+
+    _control = true;
 }
 
 
@@ -76,22 +77,15 @@ SignalMastIcon::SignalMastIcon(QWidget* parent) :
  */
 /*public*/ void SignalMastIcon::setSignalMast(NamedBeanHandle<SignalMast*>* sh)
 {
- if (mMast != NULL)
+ if (namedMast != nullptr)
  {
-  //mMast->removePropertyChangeListener((PropertyChangeListener*)this);
-  AbstractSignalMast* aMast =  (AbstractSignalMast*)mMast;
-  disconnect(aMast->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getSignalMast()->removePropertyChangeListener((PropertyChangeListener*)this);
  }
- mMast = sh->getBean();
- if (mMast != NULL)
- {
-  getIcons();
-  displayState(mastState());
-  //mMast->addPropertyChangeListener((PropertyChangeListener*)this);
-  AbstractSignalMast* aMast =  (AbstractSignalMast*)mMast;
-  connect(aMast->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  namedMast = sh;
-pName=sh->getName();
+ namedMast = sh;
+ if (namedMast != nullptr) {
+     getIcons();
+     displayState(mastState());
+     getSignalMast()->addPropertyChangeListener((PropertyChangeListener*)this, namedMast->getName(), "SignalMast Icon");
  }
 }
 
@@ -102,15 +96,15 @@ pName=sh->getName();
  */
 /*public*/ void SignalMastIcon::setSignalMast(QString pName) {
     this->pName = pName;
-    mMast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(pName);
+    SignalMast* mMast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(pName);
     if (mMast == NULL) log->warn("did not find a SignalMast named "+pName);
     else {
         namedMast = new NamedBeanHandle<SignalMast*>(pName, mMast);
         getIcons();
         displayState(mastState());
-        //mMast->addPropertyChangeListener((PropertyChangeListener*)this);
-        AbstractSignalMast* aMast =  (AbstractSignalMast*)mMast;
-        connect(aMast, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        mMast->addPropertyChangeListener((PropertyChangeListener*)this);
+//        AbstractSignalMast* aMast =  (AbstractSignalMast*)mMast;
+//        connect(aMast, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     }
 }
@@ -119,7 +113,7 @@ pName=sh->getName();
 /*private*/ void SignalMastIcon::getIcons() {
     _iconMap = new QMap<QString, NamedIcon*>();
 #if 1
-    QListIterator<QString> e(((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getAspects());
+    QListIterator<QString> e(getSignalMast()->getAppearanceMap()->getAspects());
     bool error = false;
     while (e.hasNext()) {
         QString aspect = e.next();
@@ -140,7 +134,7 @@ pName=sh->getName();
 
 /*private*/ bool SignalMastIcon::loadIcons(QString aspect)
 {
- QString s =((DefaultSignalAppearanceMap*) ((AbstractSignalMast*)mMast)->getAppearanceMap())->getImageLink(aspect, _useIconSet);
+ QString s =((DefaultSignalAppearanceMap*) getSignalMast()->getAppearanceMap())->getImageLink(aspect, _useIconSet);
  if(s==(""))
  {
   if(aspect.startsWith("$"))
@@ -199,8 +193,8 @@ pName=sh->getName();
  * @return An aspect from the SignalMast
  */
 /*public*/ QString SignalMastIcon::mastState() {
-    if (mMast==nullptr) return "<empty>";
-    else return ((AbstractSignalMast*)mMast)->getAspect();
+    if (getSignalMast()==nullptr) return "<empty>";
+    else return getSignalMast()->getAspect();
 }
 
 // update icon as state of turnout changes
@@ -214,13 +208,13 @@ pName=sh->getName();
 /*public*/ QString SignalMastIcon::getPName() { return pName; }
 
 /*public*/ QString SignalMastIcon::getNameString() {
-    QString name;
-    if (mMast == nullptr) name = tr("<Not connected>");
-    else if (mMast->getUserName() == nullptr)
-        name = mMast->getSystemName();
-    else
-        name = mMast->getUserName()+" ("+mMast->getSystemName()+")";
-    return name;
+ QString name;
+ if (getSignalMast() == nullptr) {
+     name = tr("<Not connected>");
+ } else {
+     name = getSignalMast()->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
+ }
+ return name;
 }
 
 /**
@@ -309,9 +303,9 @@ pName=sh->getName();
   litMenu->addAction(r);
   popup->addMenu(litMenu);
 
-  if(mMast->getSignalSystem()!=nullptr)
+  if(getSignalMast()->getSignalSystem()!=nullptr)
   {
-   QStringListIterator en  (mMast->getSignalSystem()->getImageTypeList());
+   QStringListIterator en  (getSignalMast()->getSignalSystem()->getImageTypeList());
    if(en.hasNext())
    {
     QMenu* iconSetMenu = new QMenu(tr("Use SignalMast Icon Set"));
@@ -325,9 +319,9 @@ pName=sh->getName();
     connect(iconTypeGroup, SIGNAL(mapped(QString)), this, SLOT(useIconSet(QString)));
    }
   }
-  popup->addAction(new SignallingSourceAction(tr("Signal Mast Logic"), mMast));
+  popup->addAction(new SignallingSourceAction(tr("Signal Mast Logic"), getSignalMast()));
   QMenu* aspect = new QMenu(tr("Change Aspect"));
-  QVector <QString> aspects = mMast->getValidAspects();
+  QVector <QString> aspects = getSignalMast()->getValidAspects();
   QSignalMapper* mapper = new QSignalMapper();
   for (int i=0; i<aspects.size(); i++)
   {
@@ -348,7 +342,7 @@ pName=sh->getName();
  else
  {
   QMenu* aspect = new QMenu(tr("Change Aspect"));
-  /*final*/ QVector <QString> aspects = mMast->getValidAspects();
+  /*final*/ QVector <QString> aspects = getSignalMast()->getValidAspects();
   QSignalMapper* mapper = new QSignalMapper();
   for (int i=0; i<aspects.size(); i++)
   {
@@ -371,8 +365,8 @@ pName=sh->getName();
 }
 void SignalMastIcon::setAspect(int i)
 {
- QVector <QString> aspects = mMast->getValidAspects();
- mMast->setAspect(aspects.at(i));
+ QVector <QString> aspects = getSignalMast()->getValidAspects();
+ getSignalMast()->setAspect(aspects.at(i));
 }
 void SignalMastIcon::setClickMode0()
 {
@@ -484,18 +478,18 @@ void SignalMastIcon::updateItem() {
  {
   case 0 :
   {
-   QVector <QString> aspects = ((AbstractSignalMast*)mMast)->getValidAspects();
+   QVector <QString> aspects = ((AbstractSignalMast*)getSignalMast())->getValidAspects();
    if(aspects.count() <1)
    {
     log->warn(tr("no valid aspects for mast %1").arg(getSignalMast()->getDisplayName()));
     return;
    }
-   int idx = aspects.indexOf(((AbstractSignalMast*)mMast)->getAspect()) + 1;
+   int idx = aspects.indexOf(((AbstractSignalMast*)getSignalMast())->getAspect()) + 1;
    if (idx >= aspects.size())
    {
     idx = 0;
    }
-   ((AbstractSignalMast*)mMast)->setAspect(aspects.at(idx));
+   getSignalMast()->setAspect(aspects.at(idx));
    displayState(mastState());
   }
   return;
@@ -544,18 +538,18 @@ void SignalMastIcon::updateItem() {
  updateSize();
  if (debug)
  {
-  if (mMast == nullptr)
+  if (getSignalMast() == nullptr)
   {
    log->debug("Display state "+state+", disconnected");
   }
   else
   {
-   log->debug("Display state "+state+" for "+mMast->getSystemName());
+   log->debug("Display state "+state+" for "+getSignalMast()->getSystemName());
   }
  }
  if (isText())
  {
-  if (((AbstractSignalMast*)mMast)->getHeld()) {
+  if (((AbstractSignalMast*)getSignalMast())->getHeld()) {
       if (isText()) PositionableIcon::setText(tr("<held>"));
       return;
   }
@@ -567,16 +561,16 @@ void SignalMastIcon::updateItem() {
  }
  if (isIcon())
  {
-  if ((state !="" ) && (mMast!=nullptr))
+  if ((state !="" ) && (getSignalMast()!=nullptr))
   {
-   QString s = ((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getImageLink(state, _useIconSet);
-   if ((((AbstractSignalMast*)mMast)->getHeld()) && (((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getSpecificAppearance(SignalAppearanceMap::HELD)!=nullptr))
+   QString s = getSignalMast()->getAppearanceMap()->getImageLink(state, _useIconSet);
+   if (getSignalMast()->getHeld() && (getSignalMast()->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::HELD)!=nullptr))
    {
-    s = ((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getImageLink("$held", _useIconSet);
+    s = getSignalMast()->getAppearanceMap()->getImageLink("$held", _useIconSet);
    }
-   else if((((AbstractSignalMast*)mMast)->getLit()) && (((DefaultSignalAppearanceMap*)((AbstractSignalMast*)mMast)->getAppearanceMap())->getSpecificAppearance(SignalAppearanceMap::DARK)!=nullptr))
+   else if((getSignalMast()->getLit()) && (getSignalMast()->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DARK)!=nullptr))
    {
-    s = ((AbstractSignalMast*)mMast)->getAppearanceMap()->getImageLink("$dark", _useIconSet);
+    s = getSignalMast()->getAppearanceMap()->getImageLink("$dark", _useIconSet);
    }
    if(s==(""))
    {
@@ -593,7 +587,7 @@ void SignalMastIcon::updateItem() {
    if (_iconMap==nullptr) getIcons();
    NamedIcon* n = _iconMap->value(state);
    PositionableIcon::setIcon(n);
-   _editor->addToTarget((Positionable*)this);
+   _editor->addToTarget(this);
    updateSize();
    setSize(n->getIconWidth(), n->getIconHeight());
   }
@@ -618,14 +612,14 @@ void SignalMastIcon::updateItem() {
 
 /*public*/ void SignalMastIcon::rotate(int deg){
     PositionableIcon::rotate(deg);
-    if (mMast!=nullptr) {
+    if (getSignalMast()!=nullptr) {
         displayState(mastState());
     }
 }
 
 /*public*/ void SignalMastIcon::setScale(double s) {
     PositionableIcon::setScale(s);
-    if (mMast!=nullptr) {
+    if (getSignalMast()!=nullptr) {
         displayState(mastState());
     }
 }
@@ -656,9 +650,9 @@ void SignalMastIcon::updateItem() {
 }
 
 /*public*/ void SignalMastIcon::dispose() {
-    //mMast->removePropertyChangeListener((PropertyChangeListener*)this);
-    AbstractSignalMast* aMast =  (AbstractSignalMast*)mMast;
-    disconnect(aMast, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    getSignalMast()->removePropertyChangeListener((PropertyChangeListener*)this);
+//    AbstractSignalMast* aMast =  (AbstractSignalMast*)mMast;
+//    disconnect(aMast, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     PositionableIcon::dispose();
 }
 
@@ -689,7 +683,7 @@ void SignalMastIcon::updateItem() {
  else
   item = new QGraphicsPixmapItem(pixmap,_itemGroup);
  //item->setPos(getX(), getY());
- if(showTooltip()) item->setToolTip(getTooltip());
+ if(showTooltip()) item->setToolTip(getToolTip());
  //_itemGroup->addToGroup(item);
  _itemGroup->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
  //if(showTooltip()) _itemGroup->setToolTip(getTooltip());

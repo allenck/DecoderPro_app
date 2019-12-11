@@ -122,7 +122,7 @@
 //  comboEd = new ComboBoxCellEditor(new QComboBox*());
 // }
  // Use XTableColumnModel so we can control which columns are visible
- XTableColumnModel* tcm = new XTableColumnModel();
+ XTableColumnModel* tcm = new XTableColumnModel(_model);
  table->setColumnModel(tcm);
 // table->getTableHeader().setReorderingAllowed(true);
  table->createDefaultColumnsFromModel();

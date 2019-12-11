@@ -154,7 +154,7 @@ public void setErrSensor(QString name) {
 //        t.setLevel(Editor::TURNOUTS);
 //        return t;
     }
-QString IndicatorDragJLabel::mimeData()
+QByteArray IndicatorDragJLabel::mimeData()
 {
   IndicatorTrackIcon* icon;
  _dataFlavor = new DataFlavor(icon = new IndicatorTrackIcon(NULL), "IndicatorTrackIcon");
@@ -179,10 +179,9 @@ QString IndicatorDragJLabel::mimeData()
  IndicatorTrackIconXml* xml = new IndicatorTrackIconXml();
  QDomElement e = xml->store((QObject*)icon);
  xml->doc.appendChild(e);
- QString xmldata = xml->doc.toString();
- _dataFlavor->setMimeTypeParameter("xml", QString(QUrl::toPercentEncoding(xmldata)));
-
- return _dataFlavor->toString();
+ QByteArray xmldata;
+ xmldata.append(xml->doc.toString());
+ return xmldata;
 }
 
 //};

@@ -186,7 +186,7 @@ if(_displayLevel < 0 || _displayLevel > Editor::NUM_LEVELS)
  return Editor::TEMP;
 return _displayLevel; }
 
-/*public*/ void PositionableLabel::setShowTooltip(bool set)
+/*public*/ void PositionableLabel::setShowToolTip(bool set)
 {
  _showTooltip = set;
 }
@@ -194,12 +194,12 @@ return _displayLevel; }
 {
  return _showTooltip;
 }
-/*public*/ void PositionableLabel::setTooltip(QString tip)
+/*public*/ void PositionableLabel::setToolTip(QString tip)
 {
  _tooltip = tip;
  //setToolTip(tip);
 }
-/*public*/ QString PositionableLabel::getTooltip()
+/*public*/ QString PositionableLabel::getToolTip()
 {
  return _tooltip;
 }
@@ -247,7 +247,7 @@ return _displayLevel; }
  pos->_hidden = _hidden;
  pos->_positionable = _positionable;
  pos->_showTooltip =_showTooltip;
- pos->setTooltip(getTooltip());
+ pos->setToolTip(getToolTip());
  pos->_editable = _editable;
  if (pos->getPopupUtility()==NULL)
  {
@@ -1192,7 +1192,7 @@ bool PositionableLabel::updateScene() // TODO: this function not in Java
    item = new QGraphicsPixmapItem(pixmap,_itemGroup);
   item->setScale(getScale());
   //item->setPos(getX(), getY());
-  if(showTooltip()) item->setToolTip(getTooltip());
+  if(showTooltip()) item->setToolTip(getToolTip());
   //_itemGroup->addToGroup(item);
   _itemGroup->setPos(getX(), getY());
   if(_itemGroup->name() == "")
@@ -1217,7 +1217,7 @@ bool PositionableLabel::updateScene() // TODO: this function not in Java
   //itemText->setPos(getX(), getY());
   itemText->setFont(getFont());
   itemText->setDefaultTextColor(getForeground());
-  if(showTooltip()) itemText->setToolTip(getTooltip());
+  if(showTooltip()) itemText->setToolTip(getToolTip());
 
   QRectF ir = itemText->boundingRect();
   int margin = getPopupUtility()->getMargin();

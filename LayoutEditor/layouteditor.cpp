@@ -81,6 +81,7 @@ LayoutEditor::LayoutEditor(QString name, QWidget *parent) :
 {
  init();
  layoutName = name;
+ setObjectName(name);
 }
 
 //LayoutEditor::LayoutEditor(LocoNetSystemConnectionMemo* memo, QString name,  bool bTest, QWidget *parent) :
@@ -1543,7 +1544,7 @@ double LayoutEditor::getPaintScale()
 //   if(static_cast<SignalHeadIcon*>(selections.at(0))!=  nullptr)
 //    ((SignalHeadIcon*)selections.at(0))->doMousePressed(event);
 //   else
-//   if(qobject_cast<SensorIcon*>((QObject*)selections.at(0))!=  nullptr)
+//   if(qobject_cast<SensorIcon*>(selection->self()s.at(0))!=  nullptr)
 //    ((SensorIcon*)selections.at(0))->doMousePressed(event);
 //   else
     selections.at(0)->doMousePressed(event);
@@ -1807,7 +1808,8 @@ double LayoutEditor::getPaintScale()
 //   if(qobject_cast<SensorIcon*>(selections.at(0))!= nullptr)
 //    ((SensorIcon*)selections.at(0))->doMouseClicked(event);
 //   else
-   ((PositionableLabel*)selections.at(0))->doMouseClicked(event);
+   //((PositionableLabel*)selections.at(0))->doMouseClicked(event);
+   selections.at(0)->doMouseClicked(event);
   }
  }
  else if ( (event->buttons()&Qt::RightButton/*==Qt::RightButton*/ ) /*&& whenReleased != event.getWhen()*/)
@@ -3190,7 +3192,7 @@ double LayoutEditor::getPaintScale()
    }
   }
   else
-  if(static_cast<LayoutTurnout*>((QObject*)selection) != nullptr)
+  if(selection != nullptr && qobject_cast<LayoutTurnout*>(selection->self()) != nullptr)
   {
    LayoutTurnout* t = (LayoutTurnout*)selection;
    QGraphicsRectItem* item = new QGraphicsRectItem(t->item->boundingRect());
@@ -6078,503 +6080,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 //    l->item->setRotation(l->item->rotation()+ l->getDegrees());
 // }
 }
-#if 0
-/*private*/ void LayoutEditor::drawDashedTrack(EditScene* g2, bool mainline)
-{
- for (TrackSegment* t : getTrackSegments()) {
 
-  if ( (!t->getHidden()) && t->getDashed() && (mainline == t->getMainline()) )
-  {
-   t->invalidate(g2);
-   t->drawDashedTrack(this, g2, mainline);
-  }
- }
-}
-
-/* draw all track segments which are not hidden, not dashed, and that match the isMainline parm */
-/*private*/ void LayoutEditor::drawSolidTrack(EditScene* g2, bool isMainline)
-{
-  for (int i = 0; i<getTrackSegments().size();i++)
-  {
-   setTrackStrokeWidth(isMainline);
-   TrackSegment* t = getTrackSegments().at(i);
-   if ( (!t->getHidden()) && (!t->getDashed()) && (isMainline == t->getMainline()) )
-   {
-    t->invalidate(g2);
-    t->drawSolidTrack(this, g2, isMainline);
-   }
-  }
-}
-
-
-/*
-* Draws a square at the circles centre, that then allows the user to dynamically change
-* the angle by dragging the mouse.
-*/
-/*private*/ void LayoutEditor::drawTrackCircleCentre(EditScene* g2)
-{
-  // loop over all defined turnouts
- for (TrackSegment* t : getTrackSegments()) {
-   if (t->getCircle())
-   {
-    t->drawTrackCircleCentre(this,g2);
-   }
-  }
-}
-
-/*private*/ void LayoutEditor::drawTrackInProgress(EditScene* g2)
-{
- // check for segment in progress
-
- if ( isEditable() && (beginObject!=nullptr) && ui->trackButton->isChecked() )
- {
-//      g2.setColor(defaultTrackColor);
-//      setTrackStrokeWidth(g2,false);
-//      g2.draw(new Line2D.Double(beginLocation,currentLocation));
-  if(trackInProgress != nullptr && trackInProgress->scene()!=0)
-  {
-   g2->removeItem(trackInProgress);
-  }
-   //g2->addLine(QLineF(beginLocation,currentLocation),QPen(QColor(defaultTrackColor),1));
-   QGraphicsLineItem* item  = new QGraphicsLineItem(QLineF(beginLocation,currentLocation));
-   item->setPen(QPen(QColor(defaultTrackColor),1));
-   trackInProgress = item;
-   if(trackInProgress && trackInProgress->scene())
-    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
-   g2->addItem(trackInProgress);
-  }
-}
-/*private*/ void LayoutEditor::drawTrackOvals(EditScene* g2)
-{
-  // loop over all defined track segments
- for (TrackSegment* t : getTrackSegments()) {
-
-   t->drawTrackOvals(this, g2);
-  }
-}
-
-/*private*/ void LayoutEditor::drawPoints(EditScene* g2)
-{
-  if(!isEditable())
-   return;
-//  for (int i = 0; i<pointList->size();i++)
-//  {
-//   PositionablePoint* p = pointList->at(i);
-//   p->invalidate( g2);
-//   p->draw( g2);
-//  }
-}
-#endif
-#if 0
-
-/*private*/ void LayoutEditor::drawSelectionRect(EditScene* editScene)
-{
-  if ( selectionActive && (selectionWidth!=0.0) && (selectionHeight!=0.0) )
-  {
-//      g2.setColor(defaultTrackColor);
-//      g2.setStroke(new BasicStroke(1.0F,BasicStroke.CAP_BUTT,BasicStroke.JOIN_ROUND));
-//      g2.draw(new QRectF.Double (selectionX, selectionY, selectionWidth, selectionHeight));
-   if(rectItem != nullptr)
-   {
-    Q_ASSERT(rectItem->scene()!=0);
-    editScene->removeItem(rectItem);
-   }
-   rectItem = new QGraphicsRectItem(QRect(selectionX, selectionY, selectionWidth, selectionHeight),0);
-   rectItem->setPen(QPen(defaultTrackColor, 3, Qt::SolidLine));
-   if(rectItem && rectItem->scene())
-    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
-   editScene->addItem(rectItem);
-  }
-}
-#endif
-#if 0
-/*private*/ void LayoutEditor::drawMemoryRects(EditScene* g2)
-{
- QColor color;
-  if (memoryLabelList->size()<=0) return;
-  color =(defaultTrackColor);
-//  g2.setStroke(new BasicStroke(1.0F,BasicStroke.CAP_BUTT,BasicStroke.JOIN_ROUND));
-  for (int i = 0;i<memoryLabelList->size();i++)
-  {
-   MemoryIcon* l = memoryLabelList->at(i);
-   if(l->_itemGroup != nullptr && l->_itemGroup->scene() != 0)
-   {
-    Q_ASSERT(l->_itemGroup->scene()!=0);
-    g2->removeItem(l->_itemGroup);
-    l->_itemGroup = nullptr;
-   }
-   l->_itemGroup = new MyGraphicsItemGroup();
-   l->_itemGroup->setName("drawMemoryRects");
-   //g2.draw(new QRectF.Double (l.x(), l.y(), l.getSize().width, l.getSize().height));
-   //g2->addRect(QRectF(l->getX(), l->getY(), l->getSize().width(), l->getSize().height()),QPen(color, 1));
-   QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(((Positionable*)l)->getX(), ((Positionable*)l)->getY(), l->getSize().width(), l->getSize().height()));
-   item->setPen(QPen(color, 1));
-   l->_itemGroup->addToGroup(item);
-   if(l->_itemGroup && l->_itemGroup->scene())
-    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
-   g2->addItem(l->_itemGroup);
-  }
-}
-#endif
-#if 0
-/*private*/ bool LayoutEditor::checkSelect(QPointF loc, bool requireUnconnected) {
-    return checkSelect(loc, requireUnconnected, nullptr);
-}
-
-/*private*/ bool LayoutEditor::checkSelect(QPointF loc, bool requireUnconnected, QObject* avoid)
-{
-
- // check positionable points, if any
- for (int i = 0; i<pointList->size();i++)
- {
-  PositionablePoint* p = pointList->at(i);
-  if(p != avoid)
-  {
-   if ( (p!=selectedObject) && !requireUnconnected ||
-               (p->getConnect1()==nullptr) ||
-               ((p->getType()!=PositionablePoint::END_BUMPER) &&
-                                           (p->getConnect2()==nullptr)) )
-   {
-    QPointF pt = p->getCoords();
-    QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-    if (r.contains(loc))
-    {
-     // mouse was pressed on this connection point
-     foundLocation = pt;
-     foundObject = p;
-     foundPointType = POS_POINT;
-     foundNeedsConnect = ((p->getConnect1()==nullptr)||(p->getConnect2()==nullptr));
-     return true;
-    }
-   }
-  }
- }
- // check turnouts, if any
- for (int i = 0; i<turnoutList->size();i++)
- {
-  LayoutTurnout* t = turnoutList->at(i);
-  if (t!=selectedObject)
-  {
-   if (!requireUnconnected)
-   {
-    // check the center point
-    QPointF pt = t->getCoordsCenter();
-    QRectF r =  QRectF(pt.x() - SIZE2,pt.y() - SIZE2,SIZE2+SIZE2,SIZE2+SIZE2);
-    if (r.contains(loc))
-    {
-     // mouse was pressed on this connection point
-     foundLocation = pt;
-     foundObject = t;
-     foundNeedsConnect = false;
-     foundPointType = TURNOUT_CENTER;
-     return true;
-    }
-   }
-   if (!requireUnconnected || (t->getConnectA()==nullptr))
-   {
-    // check the A connection point
-    QPointF pt = t->getCoordsA();
-    QRectF r =  QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-    if (r.contains(loc))
-    {
-     // mouse was pressed on this connection point
-     foundLocation = pt;
-     foundObject = t;
-     foundPointType = TURNOUT_A;
-     foundNeedsConnect = (t->getConnectA()==nullptr);
-     return true;
-    }
-   }
-   if (!requireUnconnected || (t->getConnectB()==nullptr))
-   {
-    // check the B connection point
-    QPointF pt = t->getCoordsB();
-    QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-    if (r.contains(loc))
-    {
-     // mouse was pressed on this connection point
-     foundLocation = pt;
-     foundObject = t;
-     foundPointType = TURNOUT_B;
-     foundNeedsConnect = (t->getConnectB()==nullptr);
-     return true;
-    }
-   }
-   if (!requireUnconnected || (t->getConnectC()==nullptr))
-   {
-    // check the C connection point
-    QPointF pt = t->getCoordsC();
-    QRectF r =  QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-    if (r.contains(loc))
-    {
-     // mouse was pressed on this connection point
-     foundLocation = pt;
-     foundObject = t;
-     foundPointType = TURNOUT_C;
-     foundNeedsConnect = (t->getConnectC()==nullptr);
-     return true;
-    }
-   }
-   if (( (t->getTurnoutType()==LayoutTurnout::DOUBLE_XOVER) ||
-          (t->getTurnoutType()==LayoutTurnout::RH_XOVER) ||
-          (t->getTurnoutType()==LayoutTurnout::LH_XOVER) ) && (
-          !requireUnconnected || (t->getConnectD()==nullptr)))
-   {
-    // check the D connection point, double crossover turnouts only
-    QPointF pt = t->getCoordsD();
-    QRectF r =  QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-      if (r.contains(loc))
-    {
-     // mouse was pressed on this connection point
-     foundLocation = pt;
-     foundObject = t;
-     foundPointType = TURNOUT_D;
-     foundNeedsConnect = (t->getConnectD()==nullptr);
-     return true;
-    }
-   }
-  }
-  }
-
-  // check level Xings, if any
-  for (int i = 0; i<xingList->size();i++)
-  {
-   LevelXing* x = xingList->at(i);
-   if (x!=selectedObject)
-   {
-    if (!requireUnconnected)
-    {
-     // check the center point
-     QPointF pt = x->getCoordsCenter();
-     QRectF r = QRectF(pt.x() - SIZE2,pt.y() - SIZE2,SIZE2+SIZE2,SIZE2+SIZE2);
-     if (r.contains(loc))
-     {
-      // mouse was pressed on this connection point
-      foundLocation = pt;
-      foundObject = x;
-      foundPointType = LEVEL_XING_CENTER;
-      foundNeedsConnect = false;
-      return true;
-     }
-    }
-    if (!requireUnconnected || (x->getConnectA()==nullptr))
-    {
-     // check the A connection point
-     QPointF pt = x->getCoordsA();
-     QRectF r = QRectF(pt.x() - SIZE2,pt.y() - SIZE2,SIZE2+SIZE2,SIZE2+SIZE2);
-     if (r.contains(loc))
-     {
-      // mouse was pressed on this connection point
-      foundLocation = pt;
-      foundObject = x;
-      foundPointType = LEVEL_XING_A;
-      foundNeedsConnect = (x->getConnectA()==nullptr);
-      return true;
-     }
-    }
-    if (!requireUnconnected || (x->getConnectB()==nullptr))
-    {
-     // check the B connection point
-     QPointF pt = x->getCoordsB();
-     QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-     if (r.contains(loc))
-     {
-      // mouse was pressed on this connection point
-      foundLocation = pt;
-      foundObject = x;
-      foundPointType = LEVEL_XING_B;
-      foundNeedsConnect = (x->getConnectB()==nullptr);
-      return true;
-     }
-    }
-    if (!requireUnconnected || (x->getConnectC()==nullptr))
-    {
-     // check the C connection point
-     QPointF pt = x->getCoordsC();
-     QRectF r =  QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-     if (r.contains(loc))
-     {
-      // mouse was pressed on this connection point
-      foundLocation = pt;
-      foundObject = x;
-      foundPointType = LEVEL_XING_C;
-      foundNeedsConnect = (x->getConnectC()==nullptr);
-      return true;
-     }
-    }
-    if (!requireUnconnected || (x->getConnectD()==nullptr))
-    {
-     // check the D connection point
-     QPointF pt = x->getCoordsD();
-     QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-     if (r.contains(loc))
-     {
-      // mouse was pressed on this connection point
-      foundLocation = pt;
-      foundObject = x;
-      foundPointType = LEVEL_XING_D;
-      foundNeedsConnect = (x->getConnectD()==nullptr);
-      return true;
-     }
-    }
-   }
-  }
-  // check level Xings, if any
-  for(int i=0; i < slipList->count(); i++)
-  {
-   LayoutSlip* x = slipList->at(i);
-   if (x!=selectedObject)
-   {
-    LayoutSlip* x = slipList->at(i);
-    if (!requireUnconnected)
-    {
-      // check the center point
-      QPointF pt = x->getCoordsCenter();
-      QRectF r = QRectF(pt.x() - SIZE2,pt.y() - SIZE2,SIZE2+SIZE2,SIZE2+SIZE2);
-      if (r.contains(loc))
-      {
-          // mouse was pressed on this connection point
-          foundLocation = pt;
-          foundObject = x;
-          foundPointType = SLIP_CENTER;
-          foundNeedsConnect = false;
-          return true;
-      }
-     }
-     if (!requireUnconnected || (x->getConnectA()==nullptr))
-     {
-          // check the A connection point
-          QPointF pt = x->getCoordsA();
-          QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-          if (r.contains(loc))
-          {
-              // mouse was pressed on this connection point
-              foundLocation = pt;
-              foundObject = x;
-              foundPointType = SLIP_A;
-              foundNeedsConnect = (x->getConnectA()==nullptr);
-              return true;
-          }
-      }
-      if (!requireUnconnected || (x->getConnectB()==nullptr)) {
-          // check the B connection point
-          QPointF pt = x->getCoordsB();
-          QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-          if (r.contains(loc))
-          {
-              // mouse was pressed on this connection point
-              foundLocation = pt;
-              foundObject = x;
-              foundPointType = SLIP_B;
-              foundNeedsConnect = (x->getConnectB()==nullptr);
-              return true;
-          }
-      }
-      if (!requireUnconnected || (x->getConnectC()==nullptr))
-      {
-          // check the C connection point
-          QPointF pt = x->getCoordsC();
-          QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-          if (r.contains(loc))
-          {
-              // mouse was pressed on this connection point
-              foundLocation = pt;
-              foundObject = x;
-              foundPointType = SLIP_C;
-              foundNeedsConnect = (x->getConnectC()==nullptr);
-              return true;
-          }
-      }
-      if (!requireUnconnected || (x->getConnectD()==nullptr))
-      {
-          // check the D connection point
-          QPointF pt = x->getCoordsD();
-          QRectF r = QRectF(pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-          if (r.contains(loc))
-          {
-              // mouse was pressed on this connection point
-              foundLocation = pt;
-              foundObject = x;
-              foundPointType = SLIP_D;
-              foundNeedsConnect = (x->getConnectD()==nullptr);
-              return true;
-          }
-      }
-    }
-  }
-  #if 1
-  // check turntables, if any
-  for (int i = 0; i<turntableList->size();i++) {
-      LayoutTurntable* x = turntableList->at(i);
-      if (x!=selectedObject) {
-          if (!requireUnconnected) {
-              // check the center point
-              QPointF pt = x->getCoordsCenter();
-              QRectF r = QRectF(
-                      pt.x() - SIZE2,pt.y() - SIZE2,SIZE2+SIZE2,SIZE2+SIZE2);
-              if (r.contains(loc)) {
-                  // mouse was pressed on this center point
-                  foundLocation = pt;
-                  foundObject = x;
-                  foundPointType = TURNTABLE_CENTER;
-                  foundNeedsConnect = false;
-                  return true;
-              }
-          }
-          for (int k = 0; k<x->getNumberRays(); k++) {
-              if (!requireUnconnected || (x->getRayConnectOrdered(k)==nullptr)) {
-                  QPointF pt = x->getRayCoordsOrdered(k);
-                  QRectF r = QRectF(
-                          pt.x() - SIZE,pt.y() - SIZE,SIZE2,SIZE2);
-                  if (r.contains(loc)) {
-                      // mouse was pressed on this connection point
-                      foundLocation = pt;
-                      foundObject = x;
-                      foundPointType = TURNTABLE_RAY_OFFSET+x->getRayIndex(k);
-                      foundNeedsConnect = (x->getRayConnectOrdered(k)==nullptr);
-                      return true;
-                  }
-              }
-          }
-      }
-  }
-#endif
-  for (TrackSegment* t : getTrackSegments()) {
-  if (t->getCircle())
-  {
-   QPointF pt = t->getCoordsCenterCircle();
-   QRectF r = QRectF(pt.x() - SIZE2,pt.y() - SIZE2,SIZE2+SIZE2,SIZE2+SIZE2);
-   if (r.contains(loc))
-   {
-    // mouse was pressed on this connection point
-    foundLocation = pt;
-    foundObject = t;
-    foundPointType = TRACK_CIRCLE_CENTRE;
-    foundNeedsConnect = false;
-    return true;
-   }
-  }
- }
- for(int i=0; i < _labelImage->size(); i++)
- {
-  PositionableLabel* l = _labelImage->at(i);
-  if(l->getItem() != nullptr)
-  {
-   QPointF pt = l->getItem()->mapFromParent(loc);
-   if(l->getItem()->contains(pt))
-   {
-    foundLocation = loc;
-    foundObject = l;
-    foundPointType = LAYOUT_POS_LABEL;
-    return true;
-   }
-  }
- }
- // no connection point found
- foundObject = nullptr;
- return false;
-}
-#endif
 /*private*/ void LayoutEditor::amendSelectionGroup(Positionable* p)
 {
  if (_positionableSelection==nullptr)
@@ -8086,7 +7592,7 @@ void LayoutEditor::addSensor()
    sensorName = s->getName();
   ui->sensorComboBox->setText(sensorName);
   if(l->getNamedBean() != nullptr)
-   l->setTooltip(l->getNamedBean()->getSystemName());
+   l->setToolTip(l->getNamedBean()->getSystemName());
   setNextLocation(l);
   setDirty(true);
   putItem((Positionable*)l);
@@ -8175,7 +7681,7 @@ void LayoutEditor::On_removeMenuAction_triggered()
 {
  Positionable* comp = currComp;
  //comp->remove();
- SensorIcon* si = qobject_cast<SensorIcon*>((QObject*)comp);
+ SensorIcon* si = qobject_cast<SensorIcon*>(comp->self());
  if(si != nullptr)
  {
   Q_ASSERT(si->_itemGroup->scene()!=0);
@@ -8183,7 +7689,7 @@ void LayoutEditor::On_removeMenuAction_triggered()
   si->_itemGroup = nullptr;
   si->remove();
  }
- LocoIcon* li = qobject_cast<LocoIcon*>((QObject*)comp);
+ LocoIcon* li = qobject_cast<LocoIcon*>(comp->self());
  if(li != nullptr)
  {
   Q_ASSERT(li->_itemGroup->scene()!=0);
@@ -8191,7 +7697,7 @@ void LayoutEditor::On_removeMenuAction_triggered()
   li->_itemGroup = nullptr;
   li->remove();
  }
- MemoryIcon* mi = qobject_cast<MemoryIcon*>((QObject*)comp);
+ MemoryIcon* mi = qobject_cast<MemoryIcon*>(comp->self());
  if(mi != nullptr)
  {
   Q_ASSERT(mi->_itemGroup->scene()!=0);
@@ -8284,7 +7790,7 @@ void LayoutEditor::on_actionAdd_loco_triggered()
 /*public*/ LocoIcon* LayoutEditor::addLocoIcon (QString name)
 {
   LocoIcon* l = new LocoIcon(this);
-  l->setTooltip(name);
+  l->setToolTip(name);
   putLocoIcon(l, name);
   l->setPositionable(true);
   return l;
@@ -8633,23 +8139,23 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
    for(int i=0; i<_positionableSelection->count(); i++)
    {
     Positionable* comp = _positionableSelection->at(i);
-    if(qobject_cast<SensorIcon*>((QObject*)comp) != nullptr)
+    if(qobject_cast<SensorIcon*>(comp->self()) != nullptr)
     {
-     SensorIcon* si = qobject_cast<SensorIcon*>((QObject*)comp);
+     SensorIcon* si = qobject_cast<SensorIcon*>(comp->self());
      Q_ASSERT(si->_itemGroup->scene()!=0);
      editScene->removeItem(si->_itemGroup);
      remove(si);
     }
-    else if(qobject_cast<LocoIcon*>((QObject*)comp) != nullptr)
+    else if(qobject_cast<LocoIcon*>(comp->self()) != nullptr)
     {
-     LocoIcon* li = qobject_cast<LocoIcon*>((QObject*)comp);
+     LocoIcon* li = qobject_cast<LocoIcon*>(comp->self());
      Q_ASSERT(li->_itemGroup->scene()!=0);
      editScene->removeItem(li->_itemGroup);
      remove(li);
     }
-    else if(qobject_cast<MemoryIcon*>((QObject*)comp) != nullptr)
+    else if(qobject_cast<MemoryIcon*>(comp->self()) != nullptr)
     {
-     MemoryIcon*mi = qobject_cast<MemoryIcon*>((QObject*)comp);
+     MemoryIcon*mi = qobject_cast<MemoryIcon*>(comp->self());
      Q_ASSERT(mi->_itemGroup->scene()!=0);
      editScene->removeItem(mi->_itemGroup);
      remove(mi);
@@ -8955,7 +8461,7 @@ void LayoutEditor::On_actionHidden_toggled(bool bState)
 }
 /*protected*/ void LayoutEditor::setSelectionsHidden(bool enabled, Positionable* p)
 {
- PositionableLabel* pl = qobject_cast<PositionableLabel*>((QObject*)p);
+ PositionableLabel* pl = qobject_cast<PositionableLabel*>(p->self());
  Q_ASSERT(pl != nullptr);
  if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
  {

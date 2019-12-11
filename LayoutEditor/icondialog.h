@@ -14,19 +14,20 @@ class IconDialog : public ItemDialog
 public:
     //explicit IconDialog(QWidget *parent = 0);
     /*public*/ IconDialog(QString type, QString family, FamilyItemPanel *parent, QMap <QString, NamedIcon*>* iconMap );
-    /*public*/ void dispose();
 signals:
 
 public slots:
     void doneAction();
     void addFamilyButtonAction();
     void deleteButtonAction();
-    /*protected*/ void renameFamily();
+    /*public*/ void dispose();
+
 
 private:
     /*private*/ bool		_newIconSet;// = false;
     Logger* log;
     /*private*/ CatalogPanel* makeCatalog();
+    void checkIconSizes();
 
 protected:
     /*protected*/ QMap <QString, NamedIcon*>*  _iconMap;
@@ -46,10 +47,13 @@ protected:
     /*protected*/ virtual void makeDoneButtonPanel(QWidget* buttonPanel, QMap<QString, NamedIcon *> *iconMap);
     /*protected*/ void makeDoneButtonPanel(QWidget* buttonPanel, QString text);
     /*protected*/ void makeIconPanel(QMap<QString, NamedIcon*>* iconMap, ImagePanel* iconPanel);
-    void checkIconSizes();
     /*protected*/ QMap<QString, NamedIcon *> *clone(QMap<QString, NamedIcon *> *map);
     /*protected*/ ImagePanel* getIconEditPanel() ;
     /*protected*/ ImagePanel* getCatalogPreviewPanel();
+
+protected slots:
+    /*protected*/ void renameFamily();
+
     friend class FamilyItemPanel;
 };
 

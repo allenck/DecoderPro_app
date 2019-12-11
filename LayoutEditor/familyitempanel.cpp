@@ -52,7 +52,7 @@
  _updateButton = new QPushButton(tr("Update Panel"));
  setObjectName("FamilyItemPanel");
  gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-
+ log->setDebugEnabled(true);
 }
 
 /**
@@ -168,7 +168,7 @@ void FamilyItemPanel::on_showIconsButton()
 /*protected*/ JPanel* FamilyItemPanel::makeItemButtonPanel()
 {
     _bottom1Panel = new JPanel();
-    _bottom1Panel->setObjectName("BottomPanel");
+    _bottom1Panel->setObjectName("Bottom1Panel");
     QHBoxLayout *_bottom1PanelLayout = new QHBoxLayout(_bottom1Panel);
     addShowButtonToBottom();
     _editIconsButton = new QPushButton(tr("Edit Icons"));
@@ -370,32 +370,37 @@ void FamilyItemPanel::on_editIconsButton()
      log->debug(tr("initIconFamiliesPanel for= %1, %2").arg(_itemType).arg(_family));
  }
  QMap<QString, QMap<QString, NamedIcon*>*>* families = ItemPalette::getFamilyMaps(_itemType);
- if (families != nullptr && families->size() > 0) {
-     if (_iconFamilyPanel == nullptr) {
-         _iconFamilyPanel = new JPanel();
-         _iconFamilyPanel->setLayout(new QVBoxLayout()); //_iconFamilyPanel, BoxLayout.Y_AXIS));
-     }
-     _familyButtonPanel = makeFamilyButtons(families->keys());
-     _currentIconMap = nullptr;
-
-     if (_currentIconMap == nullptr)
-     {
-      if(_family == "unNamed")
-       _family = families->keys().at(0);
-         _currentIconMap = families->value(_family);
-         if (_currentIconMap == nullptr) {
-             _isUnstoredMap = true;
-             _currentIconMap = _unstoredMap;
-         }
-     }
-     // make _iconPanel & _dragIconPanel before calls to add icons
-     addFamilyPanels(_familyButtonPanel);
-     if (_currentIconMap == nullptr) {
-         log->error("currentIconMap is null in initIconFamiliesPanel");
-     } else {
-         addIconsToPanel(_currentIconMap, _iconPanel, false); // need to have family iconMap identified before calling
-         makeDndIconPanel(_currentIconMap, "BeanStateUnknown");
-     }
+ if (families != nullptr && families->size() > 0)
+ {
+  if (_iconFamilyPanel == nullptr) {
+      _iconFamilyPanel = new JPanel();
+      _iconFamilyPanel->setLayout(new QVBoxLayout()); //_iconFamilyPanel, BoxLayout.Y_AXIS));
+  }
+  _familyButtonPanel = makeFamilyButtons(families->keys());
+  if (_currentIconMap == nullptr)
+  {
+   _currentIconMap = families->value(_family);
+   if (_currentIconMap == nullptr) {
+       _isUnstoredMap = true;
+       _currentIconMap = _unstoredMap;
+   }
+   else
+   {
+    log->debug(tr("families icon map contains:"));
+    for(int i=0; i <  _currentIconMap->keys().size(); i++) {
+     QString name = _currentIconMap->keys().at(i);
+     log->debug(tr("  %1").arg(name));
+    }
+   }
+  }
+  // make _iconPanel & _dragIconPanel before calls to add icons
+  addFamilyPanels(_familyButtonPanel);
+  if (_currentIconMap == nullptr) {
+      log->error("currentIconMap is null in initIconFamiliesPanel");
+  } else {
+      addIconsToPanel(_currentIconMap, _iconPanel, false); // need to have family iconMap identified before calling
+      makeDndIconPanel(_currentIconMap, "BeanStateUnknown");
+  }
  } else {
      familiesMissing();
  }
@@ -403,43 +408,52 @@ void FamilyItemPanel::on_editIconsButton()
      log->debug(tr("initIconFamiliesPanel update=%1, family=%2").arg(_update).arg(_family));
  }
 }
+// override to update icons in panel
+/*public*/ void FamilyItemPanel::updateFamilyIcons() {}
 
-/*protected*/ void FamilyItemPanel::updateFamiliesPanel() {
-    if (log->isDebugEnabled()) log->debug("updateFamiliesPanel for "+_itemType);
-    if (_iconFamilyPanel != nullptr)
-    {
-        if (_iconPanel != nullptr)
-        {
+/*protected*/ void FamilyItemPanel::updateFamiliesPanel()
+{
+ if (log->isDebugEnabled()) log->debug("updateFamiliesPanel for "+_itemType);
+ if (_iconFamilyPanel != nullptr)
+ {
+  if (_iconPanel != nullptr)
+  {
 //                   _iconPanel.removeAll();
-         QList<QWidget*> widgets = _iconPanel->findChildren<QWidget*>();
-         foreach(QWidget* widget, widgets)
-         {
-          _iconPanel->layout()->removeWidget(widget);
-          widget->deleteLater();
-         }
-        }
-        if (_dragIconPanel != nullptr) {
-            //_dragIconPanel.removeAll();
-         QList<QWidget*> widgets = _dragIconPanel->findChildren<QWidget*>();
-         foreach(QWidget* widget, widgets)
-         {
-          _dragIconPanel->layout()->removeWidget(widget);
-          widget->deleteLater();
-         }
-        }
-        if (_familyButtonPanel != nullptr) {
-            _iconFamilyPanel->layout()->removeWidget(_familyButtonPanel);
-        }
-    }
-    initIconFamiliesPanel();
-    thisLayout->addWidget(_iconFamilyPanel);
-    hideIcons();
+   QList<QWidget*> widgets = _iconPanel->findChildren<QWidget*>();
+   foreach(QWidget* widget, widgets)
+   {
+    _iconPanel->layout()->removeWidget(widget);
+    widget->deleteLater();
+   }
+  }
+  if (_dragIconPanel != nullptr) {
+      //_dragIconPanel.removeAll();
+   QList<QWidget*> widgets = _dragIconPanel->findChildren<QWidget*>();
+   foreach(QWidget* widget, widgets)
+   {
+    _dragIconPanel->layout()->removeWidget(widget);
+    widget->deleteLater();
+   }
+  }
+  if (_familyButtonPanel != nullptr) {
+   QList<QWidget*> widgets = _familyButtonPanel->findChildren<QWidget*>();
+   foreach(QWidget* widget, widgets)
+   {
+    _familyButtonPanel->layout()->removeWidget(widget);
+    widget->deleteLater();
+   }
+   _iconFamilyPanel->layout()->removeWidget(_familyButtonPanel);
+  }
+ }
+ initIconFamiliesPanel();
+ thisLayout->insertWidget(_buttonPosition, _iconFamilyPanel);
+ hideIcons();
 //    _iconFamilyPanel.invalidate();
 //    invalidate();
-    reset();
+ reset();
 }
 
-/*protected*/ JPanel* FamilyItemPanel::makeFamilyButtons (QStringList keySet/*, bool setDefault*/)
+/*protected*/ JPanel* FamilyItemPanel::makeFamilyButtons (QStringList keySet)
 {
  QListIterator<QString> iter(keySet);
  if (log->isDebugEnabled())
@@ -561,12 +575,13 @@ void FamilyItemPanel::on_editIconsButton()
             }
         }.init(family));
 #endif
-        ButtonListener* buttonListener = new ButtonListener();
-        buttonListener->init(family,this);
-        connect(button, SIGNAL(clicked(bool)), buttonListener, SLOT(actionPerformed()));
+    ButtonListener* buttonListener = new ButtonListener();
+    buttonListener->init(family,this);
+    connect(button, SIGNAL(clicked(bool)), buttonListener, SLOT(actionPerformed()));
 
-        _familyButtonGroup->addButton(button);
-    }
+    _familyButtonGroup->addButton(button);
+}
+
 /*public*/ void ButtonListener::actionPerformed() {
     self->setFamily(family);
 }
@@ -637,7 +652,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
         //_dragIconPanel.setOpaque(true); // to show background color/squares
         FlowLayout* _dragIconPanelLayout;
         _dragIconPanel->
-           setLayout(_dragIconPanelLayout = new FlowLayout());
+        setLayout(_dragIconPanelLayout = new FlowLayout());
         _dragIconPanelLayout->setObjectName("FlowLayout");
         //_dragIconPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         _dragIconPanel->setStyleSheet(gbStyleSheet);
@@ -694,7 +709,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
  }
  QGridLayout* gridbag = new QGridLayout();
  gridbag->setObjectName("gridbag");
- iconPanel->setLayout(gridbag);
+ iconPanel->setLayout(gridbag); // QWidget::setLayout: Attempting to set QLayout "gridbag" on ImagePanel "ImagePanel", which already has a layout
 
  int numCol = 4;
  GridBagConstraints* c = new GridBagConstraints();
@@ -777,23 +792,23 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
 
 /*protected*/ void FamilyItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* iconMap, QString displayKey)
 {
- if (_update)
+ if (_suppressDragging)
  {
   return;
  }
  _dragIconPanel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
- if (iconMap!=NULL)
+ if (iconMap!=nullptr)
  {
-  if (iconMap->value(displayKey)==NULL)
+  if (iconMap->value(displayKey)== nullptr)
   {
-   displayKey = (QString)iconMap->keys().at(0);
+   displayKey = iconMap->keys().at(0);
   }
   NamedIcon* ic = iconMap->value(displayKey);
   if (ic!=NULL)
   {
    NamedIcon* icon = new NamedIcon(ic);
    QGroupBox*  panel = new QGroupBox(/*new FlowLayout()*/);
-   panel ->setLayout(new QHBoxLayout);
+   panel ->setLayout(new QHBoxLayout());
    QString borderName = tr("Drag to Panel");
 //  panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),
 //                                                    borderName));
@@ -804,22 +819,24 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
    try
    {
     label = getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR), iconMap, icon);
+    if (label != nullptr)
+    {
+     label->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
+     // label.setIcon(icon);
+     label->setName(displayKey);
+     label->setOpaque(false);
+     //label->setIcon(icon);
+     label->setPixmap(QPixmap::fromImage(icon->getImage()));
+
+     label->setObjectName(borderName);
+     label->setAlignment(Qt::AlignCenter);
+     label->setMargin(6);
+     ((QBoxLayout*)panel->layout())->addWidget(label, 0, Qt::AlignHCenter);
+    }
    } catch (ClassNotFoundException cnfe)
    {
-       //cnfe.printStackTrace();
-       label = new DragJLabel(new DataFlavor(Editor::POSITIONABLE_FLAVOR));
-
+    log->warn(tr("no DndIconPanel %1 created").arg(borderName), cnfe);
    }
-   label->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
-
-   //label->setIcon(icon);
-   label->setPixmap(QPixmap::fromImage(icon->getImage()));
-
-   label->setObjectName(borderName);
-   label->setAlignment(Qt::AlignCenter);
-   label->setMargin(6);
-
-   ((QBoxLayout*)panel->layout())->addWidget(label, 0, Qt::AlignCenter);
    int width = qMax(100, panel->minimumSize().width());
    panel->setMinimumSize( QSize(width, panel->minimumSize().height()));
    panel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
@@ -828,6 +845,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
 //    _dragIconPanel->setLayout(new QHBoxLayout);
 //   ((QVBoxLayout*)_dragIconPanel->layout())->addWidget(panel,0, Qt::AlignCenter);
   l->addWidget(panel); return;
+  delete ic;
   }
  }
  else
@@ -1125,7 +1143,8 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
 /*protected*/ void FamilyItemPanel::setFamily(QString family)
 {
  _family = family;
- if (log->isDebugEnabled()) log->debug("setFamily: for type \""+_itemType+"\", family \""+family+"\"");
+ if (log->isDebugEnabled())
+   log->debug(tr("setFamily: for type \"%1\", family \"%2\"").arg(_itemType).arg(family));
  if(_iconPanel == nullptr)
  {
   _iconPanel = new ImagePanel();
@@ -1141,7 +1160,6 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
    _iconPanel->layout()->removeWidget(widget);
    widget->deleteLater();
   }
-
  }
  QMap<QString, NamedIcon*>* map = ItemPalette::getIconMap(_itemType, _family);
  if (map == nullptr) {

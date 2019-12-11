@@ -144,8 +144,8 @@ void SensorIcon::common()
   {
    setSensor(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, sensor));
    //   if(!connect(((LnSensor*)sensor), SIGNAL(propertyChange(QString,int,int)), this, SLOT(propertyChange(QString,int,int))))
-   if(!connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*))))
-       qDebug()<< "connect failed!";
+//   if(!connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*))))
+//       qDebug()<< "connect failed!";
   }
   else
   {
@@ -165,7 +165,7 @@ void SensorIcon::common()
 {
  if (namedSensor != NULL)
  {
-  //getSensor()->removePropertyChangeListener(this);
+  getSensor()->removePropertyChangeListener((PropertyChangeListener*)this);
  }
 
  namedSensor = s;
@@ -177,7 +177,7 @@ void SensorIcon::common()
   }
   displayState(sensorState());
   qDebug() << QString("Sensor state = %1").arg(sensorState());
-  //getSensor()->addPropertyChangeListener((PropertyChangeListener*)this, s->getName(), "SensorIcon on Panel " /*+ _editor->getName()*/);
+  getSensor()->addPropertyChangeListener((PropertyChangeListener*)this, s->getName(), "SensorIcon on Panel " /*+ _editor->getName()*/);
   setName(namedSensor->getName());  // Swing name for e.g. tests
  }
  setAttributes();
@@ -1332,7 +1332,7 @@ void SensorIcon::on_setSensorTextAction()
  else
   item = new QGraphicsPixmapItem(pixmap,_itemGroup);
  //item->setPos(getX(), getY());
- if(showTooltip()) item->setToolTip(getTooltip());
+ if(showTooltip()) item->setToolTip(getToolTip());
  //_itemGroup->addToGroup(item);
  _itemGroup->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
  //if(showTooltip()) _itemGroup->setToolTip(getTooltip());

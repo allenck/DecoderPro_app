@@ -34,7 +34,7 @@ TurnoutSignalMastXml::TurnoutSignalMastXml(QObject *parent) :
  e.setAttribute("class", "jmri.implementation.configurexml.TurnoutSignalMastXml");
  QDomElement sysName = doc.createElement("systemName");
  sysName.appendChild(doc.createTextNode(p->getSystemName()));
- e.setAttribute("systemName",p->getSystemName());
+ //e.setAttribute("systemName",p->getSystemName());
  e.appendChild(sysName);
 
  storeCommon(p, e);

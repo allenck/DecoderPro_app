@@ -12,7 +12,7 @@ public:
     /*public*/ DragJComponent(DataFlavor* flavor, QSize dim, QWidget *parent);
     void mousePressEvent(QMouseEvent *);
     //void mouseMoveEvent(QMouseEvent *);
-    virtual QString mimeData() { return "";}
+    virtual QByteArray mimeData() { QByteArray();}
     /*public*/ QList<DataFlavor*> getTransferDataFlavors();
     /*public*/ bool isDataFlavorSupported(DataFlavor* flavor);
 

@@ -32,6 +32,7 @@ public:
     /*protected*/ void spinnerUpdated();
     /*public*/ QString getValue();
     void cleanup();
+    /*public*/ MyGraphicsProxyWidget* getWidget() {return widget;}
 
 signals:
 

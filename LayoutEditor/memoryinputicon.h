@@ -21,7 +21,7 @@ public:
     /*public*/ MemoryInputIcon(int nCols, Editor* editor, QWidget *parent = 0);
     /*public*/ Positionable* deepClone();
     /*public*/ Positionable* finishClone(MemoryInputIcon *pos);
-    /*public*/ QWidget* getTextComponent();
+    /*public*/ QWidget *getTextComponent();
     /*public*/ void mouseExited(QGraphicsSceneMouseEvent* e);
      /*public*/ void setMemory(QString pName);
     /*public*/ void setMemory(NamedBeanHandle<Memory*>* m);
@@ -34,8 +34,8 @@ public:
     void editMemory();
     /*public*/ void displayState();
     void cleanup();
-    void mousePressed(QGraphicsSceneMouseEvent*);
-
+    void doMousePressed(QGraphicsSceneMouseEvent*);
+    /*public*/ MyGraphicsProxyWidget* getWidget() {return widget;}
 
 signals:
 

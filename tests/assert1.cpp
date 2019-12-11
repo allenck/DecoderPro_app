@@ -208,7 +208,7 @@
 /*public*/ /*static*/ void Assert::assertEquals(QString message, int expected, int actual, QString file, int line)
 {
  if(expected != actual)
-     fail(tr("%1 not equal expected '0x%2 (%4)' vs '0x%3' (%5)").arg(message).arg(expected,0,16).arg(actual,0,16).arg(expected).arg(actual), file, line);
+     fail(tr("%1 not equal expected '0x%2 (%4)' got '0x%3' (%5)").arg(message).arg(expected,0,16).arg(actual,0,16).arg(expected).arg(actual), file, line);
 }
 
 /*public*/ /*static*/ void Assert::assertEquals(QString message, long expected, long actual, QString file, int line)
@@ -228,6 +228,10 @@
  if(expected != actual)
   fail(tr("%1 not equal expected '0x%2' vs '0x%3'").arg(message).arg(expected,0,16).arg(actual,0,16), file, line);
 }
+/*public*/ /*static*/ void Assert::assertEquals(QString message, double expected, double actual, double delta, QString file, int line) {
+ if(! MathUtil::equals(expected, actual))
+     fail(tr("%3 Not equal, expected %1 vs actual: %2").arg(expected).arg(actual).arg(message), file, line);
+    }
 
 #if 0
 private static bool equalsRegardingNull(Object expected, Object actual) {

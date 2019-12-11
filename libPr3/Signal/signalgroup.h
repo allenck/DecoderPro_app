@@ -76,32 +76,32 @@
     /*public*/ virtual SignalMast* getSignalMast() = 0;
 
     /**
-     *  Clear the list of SignalMast Appearances that trigger the group
+     *  Clear the list of SignalMast Aspects that trigger the group
      */
-    /*public*/ virtual void clearSignalMastAppearance() {}
+    /*public*/ virtual void clearSignalMastAspect() {}
 
      /**
      *  Add an appearance that can trigger the group activation
      */
-    /*public*/ void virtual addSignalMastAppearance(QString /*sppearance*/) {}
+    /*public*/ void virtual addSignalMastAspect(QString /*sppearance*/) {}
 
-    /*public*/ virtual int getNumSignalMastAppearances() = 0;
+    /*public*/ virtual int getNumSignalMastAspects() = 0;
 
     /**
      * Method to get a SignalMast Appearance by Index
      *  Returns null if there are no Appearances with that index
      */
-    /*public*/ virtual QString getSignalMastAppearanceByIndex(int x) = 0;
+    /*public*/ virtual QString getSignalMastAspectByIndex(int x) = 0;
 
     /**
      * Inquire if a SignalMast Appearance is included.
      */
-    /*public*/ virtual bool isSignalMastAppearanceIncluded(QString appearance) = 0;
+    /*public*/ virtual bool isSignalMastAspectIncluded(QString appearance) = 0;
 
     /**
     * Remove a SignalMast Appearance from the set of triggers.
     */
-    /*public*/ virtual void deleteSignalMastAppearance(QString appearance) = 0;
+    /*public*/ virtual void deleteSignalMastAspect(QString appearance) = 0;
 
      /**
      * Add a Signal Head to the Group

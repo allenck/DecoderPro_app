@@ -156,16 +156,17 @@
  return r;
 }
 
-/*public*/ QString RIconDragJComponent::mimeData()
+/*public*/ QByteArray RIconDragJComponent::mimeData()
 {
+ QByteArray itemData;
  if(self->_table->currentIndex().isValid())
  {
   QModelIndex index = self->_table->model()->index( self->_table->currentIndex().row(), 0);
   QString name = index.data(Qt::DisplayRole).toString();
   _dataFlavor->setMimeTypeParameter("reporter", name);
-  return _dataFlavor->toString();
+  itemData.append(_dataFlavor->toString());
  }
- return "";
+ return itemData;
 }
 
 //};

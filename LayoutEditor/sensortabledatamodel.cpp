@@ -48,13 +48,13 @@ void SensorTableDataModel::common()
  {
   proxy = (ProxySensorManager*)(senManager);
   proxy->removePropertyChangeListener((PropertyChangeListener*) this);
-  disconnect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //disconnect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else
  {
   mgr = static_cast<AbstractSensorManager*>(senManager);
   mgr->removePropertyChangeListener((PropertyChangeListener*) this);
-  disconnect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //disconnect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
 // getManager()->removePropertyChangeListener((PropertyChangeListener*)this);
@@ -70,7 +70,7 @@ void SensorTableDataModel::common()
    {
     b->removePropertyChangeListener((PropertyChangeListener*)this);
     AbstractNamedBean* anb = (AbstractNamedBean*)b;
-    disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//    disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
   }
  }
@@ -81,12 +81,12 @@ void SensorTableDataModel::common()
  if(proxy != nullptr)
  {
   proxy->addPropertyChangeListener((PropertyChangeListener*) this);
-  connect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  if(mgr != nullptr)
  {
   mgr->addPropertyChangeListener((PropertyChangeListener*) this);
-  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //connect(aMgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
@@ -124,14 +124,14 @@ void SensorTableDataModel::common()
    {
     b->removePropertyChangeListener((PropertyChangeListener*)this);
     AbstractNamedBean* anb = (AbstractNamedBean*)b;
-    disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//    disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
   }
  }
  senManager = (SensorManager*)manager;
  getManager()->addPropertyChangeListener((PropertyChangeListener*)this);
  //ProxySensorManager* mgr = (ProxySensorManager*)getManager();
- connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ //connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  updateNameList();
 }
 /*protected*/ Manager* SensorTableDataModel::getManager()

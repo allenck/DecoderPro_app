@@ -68,9 +68,9 @@ public:
 /*public*/ void setLevel(int l);
 /*public*/ void setDisplayLevel(int l);
 /*public*/ int getDisplayLevel();
-/*public*/ void setShowTooltip(bool set);
+/*public*/ void setShowToolTip(bool set);
 /*public*/ bool showTooltip();
-/*public*/ void setTooltip(QString tip);
+/*public*/ void setToolTip(QString tip);
 ///*public*/ ToolTip getTooltip();
 //QString getTooltip();
 /*public*/ QString getNameString();
@@ -159,7 +159,7 @@ public:
  /*public*/ virtual bool setRotateMenu(QMenu* popup);
  /*public*/ virtual bool setScaleMenu(QMenu* popup);
  /*public*/ virtual bool setTextEditMenu(QMenu* popup);
- /*public*/ QString getTooltip();
+ /*public*/ QString getToolTip();
  /*public*/ virtual bool setDisableControlMenu(QMenu* popup);
  /*public*/ QRectF getBounds(QRectF = QRectF());
  /*public*/ virtual void setBackground(QColor bg);

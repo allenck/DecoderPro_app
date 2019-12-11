@@ -100,8 +100,8 @@ void PowerPane::setStatus()
 }
 
 void PowerPane::managerChanged() {
-    //if (listening!=NULL) listening->removePropertyChangeListener(this);
-    if(listening) disconnect(listening, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    if (listening!=NULL) listening->removePropertyChangeListener((PropertyChangeListener*)this);
+//    if(listening) disconnect(listening, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     listening = NULL;
     setStatus();
@@ -119,9 +119,9 @@ void PowerPane::managerChanged() {
   }
   else
   {
-   //listening.addPropertyChangeListener(this);
-   AbstractPowerManager* mgr = (AbstractPowerManager*)listening;
-   connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   listening->addPropertyChangeListener((PropertyChangeListener*)this);
+//   AbstractPowerManager* mgr = (AbstractPowerManager*)listening;
+//   connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
  }
  return true;
@@ -166,7 +166,7 @@ void PowerPane::managerChanged() {
 }
 
 /*public*/ void PowerPane::dispose() {
-    //if (listening!=NULL) listening.removePropertyChangeListener(this);
-    if (listening != NULL) disconnect(listening, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    if (listening!=NULL) listening->removePropertyChangeListener((PropertyChangeListener*)this);
+    //if (listening != NULL) disconnect(listening, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 }

@@ -10,6 +10,7 @@
 #include "changelistener.h"
 #include "jpanel.h"
 
+class DragDecoratorLabel;
 class ChangeListener;
 class FontPanel;
 class ImagePanel;
@@ -87,6 +88,8 @@ signals:
 public slots:
     void AJRadioButton_toggled(bool);
     void currentColorChanged(QColor);
+    /*public*/ void AJRBListener();
+
 private:
     /*private*/ FontPanel* _fontPanel;
     AJComboBox* _fontSizeBox;
@@ -108,7 +111,8 @@ private:
     /*private*/ AJRadioButton* _fontButton;
     /*private*/ AJRadioButton* _borderButton;
     /*private*/ AJRadioButton* _backgroundButton;
-
+    AJRadioButton* button;
+    QString bundleCaption;
 
     QColorDialog* _chooser;
     /*private*/ QWidget* makeBgButtonPanel(/*@Nonnull*/ ImagePanel* preview1, ImagePanel* preview2, QVector<BufferedImage*>* imgArray);
@@ -123,8 +127,8 @@ private:
     Editor* _editor;
     /*private*/ QWidget* makeBoxPanel(QString caption, AJComboBox* box);
     /*private*/ static JPanel *makeSpinPanel(QString caption, AJSpinner* spin, ChangeListener *listener);
-    /*private*/ QWidget* makeTextPanel(QString caption, PositionableLabel* sample, int state);
-    /*private*/ AJRadioButton* makeButton(AJRadioButton* button);
+    /*private*/ QWidget* makeTextPanel(QString state, JLabel* sample, bool addTextField);
+//    /*private*/ AJRadioButton* makeButton(AJRadioButton* button);
     /*private*/ void updateSamples();
     QString text;
     QVector<BufferedImage*>* imgArray;
@@ -137,6 +141,7 @@ private:
     /*private*/ void finishInit(bool addBgCombo);
     /*private*/ void doPopupUtility(QString type, PositionableLabel* sample, bool editText);
     /*private*/ void makeFontPanels();
+    /*private*/ AJRadioButton* makeColorRadioButton(QString caption, int which, QString state);
 
     private slots:
     void on_bgColorBox();
@@ -147,8 +152,9 @@ protected:
     /*protected*/ DisplayFrame* _paletteFrame;
     /*protected*/ QVector<BufferedImage*>* getBackgrounds();
     /*protected*/ void setBackgrounds(QVector<BufferedImage*>*  imgArray);
+    /*protected*/ void initDecoratorPanel(DragDecoratorLabel* sample);
 
-    friend class AJRBActionListener;
+//    friend class AJRBActionListener;
     friend class TextFieldListener;
     friend class TextItemPanel;
     friend class ColorDialog;
@@ -170,14 +176,19 @@ public:
     friend class DecoratorPanel;
     friend class ColorDialog;
 };
+
 /*static*/ class AJRadioButton : public QRadioButton {
     Q_OBJECT
-int which;
+int _which;
+QString _state;
+
 public:
- AJRadioButton(QString text, int w);
+ AJRadioButton(QString text, int w, QString state);
+ QString getState();
  friend class DecoratorPanel;
  friend class AJRBActionListener;
 };
+#if 0
 class AJRBActionListener : public QObject
 {
  Q_OBJECT
@@ -189,6 +200,7 @@ public slots:
  /*public*/ void actionPerformed();
 
 };
+#endif
 //class ChangeEvent : public QObject
 //{
 // Q_OBJECT

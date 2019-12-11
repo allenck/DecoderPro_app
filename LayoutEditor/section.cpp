@@ -479,14 +479,14 @@ Section::Section(QObject *parent) :
             setOccupancy(OCCUPIED);
         }
     }
-    //b->addPropertyChangeListener(listener = new PropertyChangeListener());// {
+    b->addPropertyChangeListener(listener = (PropertyChangeListener*)this);// {
 //#if 0
 //// TODO::
 //            public void propertyChange(PropertyChangeEvent* e)
 //                { handleBlockChange(e); }
 //        });
 //#endif
-connect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockChange(PropertyChangeEvent*)));
+//connect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     mBlockListeners->append(listener);
     return true;
 }
@@ -511,7 +511,7 @@ connect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockC
       mBlockEntries->append(b);
       mLastBlock = b;
       PropertyChangeListener* listener = nullptr;
-      //b->addPropertyChangeListener(listener = new PropertyChangeListener() );//{
+      b->addPropertyChangeListener(listener = (PropertyChangeListener*)this );//{
 //#if 0
 //                    // TODO::
 
@@ -519,7 +519,7 @@ connect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockC
 //                        { handleBlockChange(e); }
 //                });
 //#endif
-   connect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockChange(PropertyChangeEvent*)));
+   //connect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    mBlockListeners->append(listener);
   }
  }
@@ -528,7 +528,7 @@ connect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockC
 /**
  * Handle change in occupancy of a Block in the Section
  */
-void Section::handleBlockChange(PropertyChangeEvent* e)
+void Section::propertyChange(PropertyChangeEvent* e)
 {
  Q_UNUSED(e);
 

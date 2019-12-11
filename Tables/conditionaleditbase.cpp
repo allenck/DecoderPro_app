@@ -14,7 +14,7 @@
 #include "conditionalvariable.h"
 #include "proxylightmanager.h"
 #include "lroutetableaction.h"
-
+#include "defaultlistselectionmodel.h"
 /**
  * This is the base class for the Conditional edit view classes. Contains shared
  * variables and methods.

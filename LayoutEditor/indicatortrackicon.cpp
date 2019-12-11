@@ -98,7 +98,7 @@
  {
   AbstractSensor* sensor = (AbstractSensor*)getOccSensor();
   sensor->removePropertyChangeListener((PropertyChangeListener*)this);
-  disconnect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //disconnect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  namedOccSensor = senHandle;
  if (namedOccSensor != NULL)
@@ -108,8 +108,8 @@
   _iconMap = new QMap<QString, NamedIcon*>();
   }
   AbstractSensor* sensor = (AbstractSensor*)getOccSensor();
-//         sensor->addPropertyChangeListener(this, namedOccSensor->getName(), "Indicator Track");
-  connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  sensor->addPropertyChangeListener((PropertyChangeListener*)this, namedOccSensor->getName(), "Indicator Track");
+  //connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    _status = _pathUtil->setStatus(sensor->getKnownState());
    displayState(_status);
   }
@@ -144,7 +144,7 @@
  if (namedOccBlock != NULL)
  {
   getOccBlock()->removePropertyChangeListener((PropertyChangeListener*)this);
-  disconnect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //disconnect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  namedOccBlock = blockHandle;
  if (namedOccBlock != NULL)
@@ -155,7 +155,7 @@
   }
   block = getOccBlock();
   block->addPropertyChangeListener((PropertyChangeListener*)this, namedOccBlock->getName(), "Indicator Track");
-  connect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   setStatus(block, block->getState());
   displayState(_status);

@@ -108,18 +108,18 @@
     return _signalMast->getName();
 }
 
-/*public*/ void DefaultSignalGroup::addSignalMastAppearance(QString appearance){
-    if(isSignalMastAppearanceIncluded(appearance)){
+/*public*/ void DefaultSignalGroup::addSignalMastAspect(QString aspect){
+    if(isSignalMastAspectIncluded(aspect)){
         return;
     }
-    _signalMastAppearances.append(appearance);
+    _signalMastAppearances.append(aspect);
 }
 
-/*public*/ bool DefaultSignalGroup::isSignalMastAppearanceIncluded(QString appearance)
+/*public*/ bool DefaultSignalGroup::isSignalMastAspectIncluded(QString aspect)
 {
  for (int i=0; i<_signalMastAppearances.size(); i++)
  {
-  if ( _signalMastAppearances.at(i)==(appearance) )
+  if ( _signalMastAppearances.at(i)==(aspect) )
   {
    // Found Appearance
    return true;
@@ -128,15 +128,15 @@
  return false;
 }
 
-/*public*/ void DefaultSignalGroup::deleteSignalMastAppearance(QString appearance){
-    _signalMastAppearances.removeOne(appearance);
+/*public*/ void DefaultSignalGroup::deleteSignalMastAspect(QString aspect){
+    _signalMastAppearances.removeOne(aspect);
 }
 
-/*public*/ int DefaultSignalGroup::getNumSignalMastAppearances() {
+/*public*/ int DefaultSignalGroup::getNumSignalMastAspects() {
     return _signalMastAppearances.size();
 }
 
-/*public*/ QString DefaultSignalGroup::getSignalMastAppearanceByIndex(int x){
+/*public*/ QString DefaultSignalGroup::getSignalMastAspectByIndex(int x){
     try {
         return _signalMastAppearances.at(x);
     } catch (IndexOutOfBoundsException ioob) {
@@ -144,7 +144,7 @@
     }
 }
 
-/*public*/ void DefaultSignalGroup::clearSignalMastAppearance(){
+/*public*/ void DefaultSignalGroup::clearSignalMastAspect(){
     _signalMastAppearances = QStringList();
 }
 
@@ -737,7 +737,7 @@ bool SignalHeadItem::isSensorIncluded(Sensor* pSensor)
  if (e->getPropertyName()==("Aspect"))
  {
   QString now = ( e->getNewValue().toString());
-  if (isSignalMastAppearanceIncluded(now))
+  if (isSignalMastAspectIncluded(now))
   {
    setHead();
   }

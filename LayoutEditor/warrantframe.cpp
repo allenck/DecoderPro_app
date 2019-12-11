@@ -36,6 +36,7 @@
 #include "defaulttablecolumnmodel.h"
 #include "speedutil.h"
 #include "decimalformat.h"
+#include "learnthrottleframe.h"
 
 #include <QSizePolicy>
 //WarrantFrame::WarrantFrame(QWidget *parent) :
@@ -659,7 +660,7 @@ void WarrantFrame::on_runButtonClicked()
 /*private*/ QWidget* WarrantFrame::makeThrottleTablePanel()
 {
  _commandTable = new JTable(_commandModel);
- _commandTable->setColumnModel(new DefaultTableColumnModel());
+ _commandTable->setColumnModel(new DefaultTableColumnModel(_commandModel));
  //_commandTable.setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
  for (int i = 0; i < _commandModel->columnCount(QModelIndex()); i++)
  {
@@ -1106,8 +1107,8 @@ void doAction(Object obj) {
  if (_warrant != NULL) {
      _warrant->deAllocate();
      _warrant->stopWarrant(false);
-     //_warrant->removePropertyChangeListener(this);
-     disconnect(_warrant->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     _warrant->removePropertyChangeListener((PropertyChangeListener*)this);
+     //disconnect(_warrant->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
 }
@@ -1248,8 +1249,8 @@ void doAction(Object obj) {
     if (trainName!=NULL && trainName.length()>0) {
         _warrant->setTrainName(trainName);
     }
-    //_warrant->addPropertyChangeListener(this);
-    connect(_warrant->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
+    _warrant->addPropertyChangeListener((PropertyChangeListener*)this);
+    //connect(_warrant->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
     msg = _warrant->setRunMode(Warrant::MODE_RUN, _locoAddress, NULL,_throttleCommands, _runBlind->isChecked());
     if (msg!=NULL) {
         _statusBox->setText(msg);
@@ -1265,16 +1266,15 @@ void doAction(Object obj) {
 /*protected*/ void WarrantFrame::stopRunTrain() {
     _warrant->deAllocate();
     QString msg = _warrant->setRunMode(Warrant::MODE_NONE, NULL, NULL, NULL, false);
-    //_warrant->removePropertyChangeListener(this);
-    disconnect(_warrant->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
-#if 0 // TODO:
+    _warrant->removePropertyChangeListener((PropertyChangeListener*)this);
+    //disconnect(_warrant->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
+
     if (_learnThrottle!=NULL) {
         _learnThrottle->setSpeedSetting(-0.5F);
         _learnThrottle->setSpeedSetting(0.0F);
         _learnThrottle->dispose();
         _learnThrottle = NULL;
     }
-#endif
 }
 /**
  * Property names from Warrant: "runMode" - from setRunMode "controlChange"
@@ -1301,8 +1301,8 @@ void doAction(Object obj) {
   {
    case Warrant::MODE_NONE:
    {
-       //_warrant->removePropertyChangeListener(this);
-    disconnect(_warrant->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    _warrant->removePropertyChangeListener((PropertyChangeListener*)this);
+    //disconnect(_warrant->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     int oldMode =  e->getOldValue().toInt();
     int newMode =  e->getNewValue().toInt();
     if (oldMode != Warrant::MODE_NONE)

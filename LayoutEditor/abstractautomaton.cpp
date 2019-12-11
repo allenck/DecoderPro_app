@@ -354,7 +354,19 @@ void AbstractAutomaton::defaultName() {
  if (promptOnWait) debuggingWait();
 }
 
+class SensorListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ AbstractAutomaton* aa;
+public:
+ SensorListener(AbstractAutomaton* aa) {this->aa = aa;}
+public slots:
+ void propertyChange(PropertyChangeEvent* evt)
+ {
+  aa->sensorChange(evt);
+ }
 
+};
 /**
  * Wait for a sensor to change state.
  * <P>
@@ -376,10 +388,10 @@ void AbstractAutomaton::defaultName() {
  if (log->isDebugEnabled()) log->debug("waitSensorChange starts: "+mSensor->getSystemName());
  // register a listener
  //PropertyChangeListener* l;
-//    SensorListener* l= new SensorListener(this);
-//    mSensor->addPropertyChangeListener((PropertyChangeListener*)l );
- AbstractSensor* sensor = (AbstractSensor*)mSensor;
- connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(sensorChange(PropertyChangeEvent*)));
+    SensorListener* l= new SensorListener(this);
+    mSensor->addPropertyChangeListener(l );
+// AbstractSensor* sensor = (AbstractSensor*)mSensor;
+// connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(sensorChange(PropertyChangeEvent*)));
 //    {
 //        /*public*/ void propertyChange(PropertyChangeEvent* e) {
 //            synchronized (self) {
@@ -389,14 +401,14 @@ void AbstractAutomaton::defaultName() {
 //    });
 
  int now;
- while (mState == (now = ((AbstractSensor*)mSensor)->getKnownState()))
+ while (mState == (now = mSensor->getKnownState()))
  {
   wait(-1);
  }
 
  // remove the listener & report new state
- //mSensor->removePropertyChangeListener((PropertyChangeListener*)l);
- disconnect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(sensorChange(PropertyChangeEvent*)));
+ mSensor->removePropertyChangeListener(l);
+ //disconnect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(sensorChange(PropertyChangeEvent*)));
 
  return now;
 }
@@ -445,10 +457,10 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  if (((AbstractSensor*)mSensor)->getKnownState() == state) return;
  if (log->isDebugEnabled()) log->debug("waitSensorState starts: "+mSensor->getSystemName()+" "+QString::number(state));
  // register a listener
-//    SensorListener* l = new SensorListener(this);
-//    mSensor->addPropertyChangeListener((PropertyChangeListener*)l);
- AbstractSensor* sensor = (AbstractSensor*)mSensor;
- connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(sensorChange(PropertyChangeEvent*)));
+    SensorListener* l = new SensorListener(this);
+    mSensor->addPropertyChangeListener((PropertyChangeListener*)l);
+// AbstractSensor* sensor = (AbstractSensor*)mSensor;
+// connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(sensorChange(PropertyChangeEvent*)));
 //    {
 //        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e)
 //        {
@@ -464,8 +476,8 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  }
 
  // remove the listener & report new state
- //((AbstractSensor*)mSensor)->removePropertyChangeListener((PropertyChangeListener*)l);
- disconnect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(sensorChange(PropertyChangeEvent*)));
+ mSensor->removePropertyChangeListener((PropertyChangeListener*)l);
+// disconnect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(sensorChange(PropertyChangeEvent*)));
 
  return;
 }
@@ -517,9 +529,9 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  for (i=0; i<mSensors.length(); i++)
  {
   listeners->replace(i, (PropertyChangeListener*)this);
-  //mSensors.at(i)->addPropertyChangeListener((PropertyChangeListener*)this);
-  AbstractSensor* sensor = (AbstractSensor*)mSensors.at(i);
-  connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(sensorChange(PropertyChangeEvent*)));
+  mSensors.at(i)->addPropertyChangeListener((PropertyChangeListener*)this);
+//  AbstractSensor* sensor = (AbstractSensor*)mSensors.at(i);
+//  connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(sensorChange(PropertyChangeEvent*)));
 
 //     {
 //      /*public*/ void propertyChange(PropertyChangeEvent* e)
@@ -581,7 +593,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
   PropertyChangeListener* l = (PropertyChangeListener*)this;
   listeners->replace(i, l);
   mTurnouts.at(i)->addPropertyChangeListener(l);
-  connect(mTurnouts.at(i)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//  connect(mTurnouts.at(i)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        {
 //            /*public*/ void propertyChange(PropertyChangeEvent* e) {
 //                synchronized (self) {
@@ -607,7 +619,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
 
  return;
 }
-/*public*/ void AbstractAutomaton::propertyChange(PropertyChangeEvent* e)
+/*public*/ void AbstractAutomaton::propertyChange(PropertyChangeEvent* /*e*/)
 {
  /*synchronized (self)*/
  {

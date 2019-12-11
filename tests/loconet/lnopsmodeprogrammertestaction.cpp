@@ -48,7 +48,7 @@ void LnOpsModeProgrammerTestAction::actionPerformed()
 //  foreach(QString test, testList)
 //  {
 //   log->info(tr("begin '%1'").arg(test));
-//   QMetaObject::invokeMethod(lomp, test.toLocal8Bit(), Qt::DirectConnection);
+//   QMetaObject::invokeMethod(lomp, test.toLocal8Bit(), Qt::AutoConnection);
 //   log->info(tr("end '%1'").arg(test));
 //  }
   JUnitUtil::runTests(lomp, testList);

@@ -75,10 +75,10 @@
  if (reporter != NULL)
  {
   displayState();
-  //reporter->addPropertyChangeListener(this);
-  AbstractReporter* ar = (AbstractReporter*)r;
+  reporter->addPropertyChangeListener((PropertyChangeListener*)this);
+  //AbstractReporter* ar = (AbstractReporter*)r;
 //  connect(ar, SIGNAL(propertyChange(AbstractReporter*,QString,QObject*,QObject*)), this, SLOT(on_propertyChange(AbstractReporter*,QString,QObject*,QObject*)));
-  connect(ar->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+//  connect(ar->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
  }
 }
 

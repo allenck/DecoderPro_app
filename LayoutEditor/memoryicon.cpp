@@ -484,13 +484,13 @@ void MemoryIcon::on_updateBlockItemAction_toggled(bool bState)
  if (namedMemory != NULL)
  {
   getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
-  disconnect(getMemory()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //disconnect(getMemory()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  namedMemory = m;
  if (namedMemory != NULL)
  {
   getMemory()->addPropertyChangeListener((PropertyChangeListener*)this, namedMemory->getName(), "Memory Icon");
-  connect(getMemory()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(getMemory()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   displayState();
   setName(namedMemory->getName());

@@ -118,17 +118,17 @@ void RosterFrame::common()
  connect(ui->rtable, SIGNAL(customContextMenuRequested(QPoint)),
  SLOT(showPopup(QPoint)));
  connect(ui->rtable, SIGNAL(clicked(QModelIndex)), this, SLOT(on_tableClicked(QModelIndex)));
- rosterGroupSource = new RosterGroupSelector();
- if (this->rosterGroupSource != NULL)
- {
-     //this.rosterGroupSource.removePropertyChangeListener(SELECTED_ROSTER_GROUP, dataModel);
-  disconnect(rosterGroupSource, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- }
- this->rosterGroupSource = rosterGroupSource;
- if (this->rosterGroupSource != NULL) {
-     //this.rosterGroupSource.addPropertyChangeListener(SELECTED_ROSTER_GROUP, dataModel);
-  connect(rosterGroupSource, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- }
+// rosterGroupSource = new RosterGroupSelector();
+// if (this->rosterGroupSource != NULL)
+// {
+//  this->rosterGroupSource->removePropertyChangeListener(SELECTED_ROSTER_GROUP, dataModel);
+//  //disconnect(rosterGroupSource, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+// }
+// this->rosterGroupSource = rosterGroupSource;
+// if (this->rosterGroupSource != NULL) {
+//     this->rosterGroupSource->addPropertyChangeListener(SELECTED_ROSTER_GROUP, dataModel);
+//  //connect(rosterGroupSource, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+// }
  ui->rtable->setItemDelegateForColumn(RosterTableModel::ICONCOL, new ImageDelegate(this));
 
  progFrame = NULL;

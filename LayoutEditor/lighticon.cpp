@@ -92,16 +92,16 @@
 {
  if (light != NULL)
  {
-//  light->removePropertyChangeListener((PropertyChangeListener*)this);
-  AbstractLight* l = (AbstractLight*)light;
-  disconnect(l->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  light->removePropertyChangeListener((PropertyChangeListener*)this);
+//  AbstractLight* l = (AbstractLight*)light;
+//  disconnect(l->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  light = to;
  if (light != NULL)
  {
   displayState(lightState());
-//  light->addPropertyChangeListener((PropertyChangeListener*)this);
-  connect(light->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  light->addPropertyChangeListener((PropertyChangeListener*)this);
+  //connect(light->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -354,9 +354,9 @@ NamedIcon* LightIcon::getIcon(QString sState)
 {
  if (light != NULL)
  {
-  //((AbstractLight*)light)->removePropertyChangeListener((PropertyChangeListener*)this);
-  AbstractLight* l = (AbstractLight*)light;
-  disconnect(l, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  light->removePropertyChangeListener((PropertyChangeListener*)this);
+//  AbstractLight* l = (AbstractLight*)light;
+//  disconnect(l, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  light = NULL;
 
@@ -394,7 +394,7 @@ NamedIcon* LightIcon::getIcon(QString sState)
   //_itemGroup->addToGroup(item);
   //item->setPos(getX(),getY());
   _itemGroup->setPos(((Positionable*)this)->getX(),((Positionable*)this)->getY());
-  if(showTooltip()) _itemGroup->setToolTip(getTooltip());
+  if(showTooltip()) _itemGroup->setToolTip(getToolTip());
   if(pixmap.isNull())
    qDebug() << "No pixmap";
   if(getDegrees() != 0)

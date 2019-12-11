@@ -1,53 +1,9 @@
 #include "propertychangesupport.h"
 #include "indexedpropertychangeevent.h"
 #include "exceptions.h"
-//#include "defaultmemorymanager.h"
-//#include "blockmanager.h"
 #include <QDebug>
-//#include "lnsensormanager.h"
-//include "internalturnoutmanager.h"
-//#include "internalsensormanager.h"
-//#include "defaultidtagmanager.h"
-//#include "rfidreportermanager.h"
-//#include "defaultroutemanager.h"
-//#include "internallightmanager.h"
-//#include "../LayoutEditor/turnouticon.h"
-//#include "../LayoutEditor/lighticon.h"
-//#include "Throttle/throttlewindow.h"
-//#include "Throttle/listthrottles.h"
-//#include "../Tables/slotmonitor.h"
-//#include "../libPr3/Roster/decvariablevalue.h"
-//#include "../libPr3/Roster/splitvariablevalue.h"
-//#include "../libPr3/Roster/enumvariablevalue.h"
-//#include "../libPr3/Roster/longaddrvariablevalue.h"
-//#include "../libPr3/Roster/speedtablevarvalue.h"
-//#include "../libPr3/Roster/decvarslider.h"
-//#include "../libPr3/Roster/dccaddresspanel.h"
-//#include "../libPr3/Roster/paneprogpane.h"
-//#include "../libPr3/Roster/rosterframe.h"
-//#include "../libPr3/Signal/defaultsignalmastmanager.h"
-//#include "../LayoutEditor/signalheadicon.h"
-//#include "../LayoutEditor/signalmasticon.h"
-//#include "../libPr3/Signal/virtualsignalhead.h"
-//#include "../libPr3/Signal/doubleturnoutsignalhead.h"
-//#include "../libPr3/Signal/singleturnoutsignalhead.h"
-//#include "../Tables/signalmastwidget.h"
-//#include "../LayoutEditor/blockbosslogic.h"
-//#include "../Tables/jmribeancombobox.h"
-//#include "../Tables/lroutetableaction.h"
-//#include "../Tables/logixtableaction.h"
-//#include "../libPr3/Signal/abstractsignalheadmanager.h"
-//#include "defaultlogixmanager.h"
-//#include "defaultconditionalmanager.h"
-//#include "../LayoutEditor/memoryicon.h"
-//#include "lnturnoutmanager.h"
 #include "propertychangelistenerproxy.h"
 
-//PropertyChangeSupport::PropertyChangeSupport(QObject *parent) :
-//    QObject(parent)
-//{
-//    map = new PropertyChangeListenerMap();
-//}
 /**
  * This is a utility class that can be used by beans that support bound
  * properties.  It manages a list of listeners and dispatches
@@ -102,7 +58,8 @@
  *
  * @param sourceBean  The bean to be given as the source for any events.
  */
-/*public*/ PropertyChangeSupport::PropertyChangeSupport(QObject* sourceBean, QObject *parent) 
+/*public*/ PropertyChangeSupport::PropertyChangeSupport(QObject* sourceBean, QObject *parent)
+ : QObject(parent)
 {
  this->parent = parent;
  if (sourceBean == NULL) 
@@ -130,7 +87,7 @@
   return;
  }
  // add to catch bad listener pointers: qDebug()<< tr("add listener ") + listener->metaObject()->className();
-#if 1
+
  if (qobject_cast<PropertyChangeListenerProxy*>(listener) != nullptr)
  {
   PropertyChangeListenerProxy* proxy =
@@ -140,7 +97,6 @@
                                       proxy->getListener());
  }
  else
-#endif
  {
   this->map->add("", listener);
   connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -177,7 +133,7 @@
 #endif
  {
   this->map->remove("", listener);
-  //disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -359,8 +315,8 @@
   QVector<PropertyChangeListener*> common = this->map->get(NULL);
   QVector<PropertyChangeListener*> named = !name.isEmpty() ? this->map->get(name): QVector<PropertyChangeListener*>();
 
-//  fire(common, event);
-//  fire(named, event);
+  //fire(common, event);
+  //fire(named, event);
   emit propertyChange(event);
 
 }
@@ -368,7 +324,7 @@
 /*private static*/ void PropertyChangeSupport::fire(QVector<PropertyChangeListener*> listeners, PropertyChangeEvent* event)
 {
  Logger* log = new Logger("PropertyChangeSupport");
-
+#if 1
  if (!listeners.isEmpty())
  {
   foreach(PropertyChangeListener* listener, listeners)
@@ -376,7 +332,14 @@
    if(listener != NULL)
    {
     if(qobject_cast<PropertyChangeListener*>(listener) != NULL)
-     ((PropertyChangeListener*)listener)->propertyChange(event);
+    {
+     //((PropertyChangeListener*)listener)->propertyChange(event);
+     if(!QMetaObject::invokeMethod(listener, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
+     {
+         log->error(tr("invoke method 'propertyChange' failed for %1").arg(listener->metaObject()->className()));
+         return;
+     }
+    }
     else
     {
      log->error(tr("not implemented %1").arg(listener->metaObject()->className()));
@@ -386,6 +349,7 @@
    }
   }
  }
+#endif
 }
 
 /**

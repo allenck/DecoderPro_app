@@ -76,10 +76,15 @@
         ProgListener* temp = _usingProgrammer;
         _usingProgrammer = NULL; // done
         state = ProgState::NOTPROGRAMMING;
-        connect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-        //temp->programmingOpReply(value, status);
-        emit do_programmingOpReply(value, status);
-        disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+//        connect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+//        //temp->programmingOpReply(value, status);
+//        emit do_programmingOpReply(value, status);
+//        disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+        if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+        {
+            log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+            return;
+        }
 
         return;
     }
@@ -90,6 +95,7 @@
         return;
     }
 
+    ProgListener* temp = _usingProgrammer;
 
     switch (state) {
         case FINISHWRITE:
@@ -103,10 +109,15 @@
                     _usingProgrammer = NULL; // done
                     state = ProgState::NOTPROGRAMMING;
                     //temp->programmingOpReply(value, ProgListener::ConfirmFailed);
-                connect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-                //temp->programmingOpReply(value, status);
-                emit do_programmingOpReply(value, status);
-                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+//                connect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+//                //temp->programmingOpReply(value, status);
+//                emit do_programmingOpReply(value, status);
+//                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+                    if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+                    {
+                        log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                        return;
+                    }
                     return;
                 }
                 break;
@@ -119,10 +130,15 @@
             // clear the current listener _first_
             _usingProgrammer = NULL; // done
             state = ProgState::NOTPROGRAMMING;
-            connect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-            //temp->programmingOpReply(value, status);
-            emit do_programmingOpReply(value, status);
-            disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+//            connect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+//            //temp->programmingOpReply(value, status);
+//            emit do_programmingOpReply(value, status);
+//            disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+            if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+            {
+                log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                return;
+            }
             break;
 
         case FINISHREAD:
@@ -132,17 +148,27 @@
             if (value == _val) {
                 // ok, reply OK
                 //temp.programmingOpReply(value, status);
-                connect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-                //temp->programmingOpReply(value, status);
-                emit do_programmingOpReply(value, status);
-                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+//                connect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+//                //temp->programmingOpReply(value, status);
+//                emit do_programmingOpReply(value, status);
+//                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+             if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+             {
+                 log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                 return;
+             }
             } else {
                 // error, reply error
                 //temp.programmingOpReply(value, ProgListener.ConfirmFailed);
-                connect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-                //temp->programmingOpReply(value, status);
-                emit do_programmingOpReply(value, status);
-                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+//                connect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+//                //temp->programmingOpReply(value, status);
+//                emit do_programmingOpReply(value, status);
+//                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+             if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+             {
+                 log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                 return;
+             }
             }
             break;
 

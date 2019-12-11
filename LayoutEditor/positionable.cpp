@@ -28,13 +28,13 @@ void Positionable::setItem(QGraphicsTextItem* item)
  _itemGroup->addToGroup(item);
 }
 
-QString Positionable::getTooltip()
+QString Positionable::getToolTip()
 {
  if(_itemGroup)
   return _itemGroup->toolTip();
 }
 
-void Positionable::setTooltip(QString tip)
+void Positionable::setToolTip(QString tip)
 {
  if(_itemGroup != nullptr)
   _itemGroup->setToolTip(tip);

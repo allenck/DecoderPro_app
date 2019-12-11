@@ -230,7 +230,8 @@ SOURCES += javaqt.cpp \
     constrainedbean.cpp \
     unboundbean.cpp \
     arbitrarybean.cpp \
-    arbitrarypropertysupport.cpp
+    arbitrarypropertysupport.cpp \
+    mydefaultlistselectionmodel.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -505,7 +506,8 @@ HEADERS += javaqt.h\
     unboundbean.h \
     beaninterface.h \
     arbitrarybean.h \
-    arbitrarypropertysupport.h
+    arbitrarypropertysupport.h \
+    mydefaultlistselectionmodel.h
 
 unix {
     target.path = /usr/lib

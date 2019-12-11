@@ -39,17 +39,17 @@ public:
     /*public*/ void setLevel(int l);
     /*public*/ void setDisplayLevel(int l);
     /*public*/ int getDisplayLevel();
-    /*public*/ void setShowTooltip(bool set) ;
+    /*public*/ void setShowToolTip(bool set) ;
     /*public*/ bool showTooltip();
-    /*public*/ void setTooltip(QString tip);
-    /*public*/ QString getTooltip();
+    /*public*/ void setToolTip(QString tip);
+    /*public*/ QString getToolTip();
     /*public*/ void setScale(double s);
     /*public*/ double getScale();
     // no subclasses support rotations (yet)
     /*public*/ void rotate(int deg) ;
     /*public*/ int getDegrees();
     /*public*/ bool getSaveOpaque();
-    /*public*/ JComponent *getTextComponent();
+    /*public*/ QWidget *getTextComponent();
     /*public*/ QString getNameString();
     /*public*/ Editor* getEditor();
     /*public*/ void setEditor(Editor* ed);
@@ -102,7 +102,7 @@ public:
     QRectF getBounds(QRectF);
     /*public*/ bool updateScene();
     QObject* self() {return (QObject*)this;}
-
+    /*public*/ virtual MyGraphicsProxyWidget* getWidget() {return nullptr;}
 signals:
 
 public slots:

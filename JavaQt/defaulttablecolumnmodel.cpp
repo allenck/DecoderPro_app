@@ -67,11 +67,11 @@ TableColumnModel(parent)
 {
  if (aColumn == NULL)
  {
-  throw new IllegalArgumentException("Object is NULL");
+  throw IllegalArgumentException("Object is NULL");
  }
 
  tableColumns.append(aColumn);
-// aColumn->addPropertyChangeListener(this);
+ //aColumn->addPropertyChangeListener((PropertyChangeListener*)this);
  connect(aColumn, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
  invalidateWidthCache();
 

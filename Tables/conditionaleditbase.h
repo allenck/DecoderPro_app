@@ -148,6 +148,7 @@ public slots:
 };
 
 class PickSingleListener : public ListSelectionListener {
+ Q_OBJECT
  JTextField* saveTextField;
  int saveItemType;          // Current table type
  ConditionalEditBase* base;

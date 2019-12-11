@@ -34,6 +34,7 @@ public:
     /*public*/ void displayState();
     /*public*/ void mouseExited(QGraphicsSceneMouseEvent* e);
     void cleanup();
+    /*public*/ MyGraphicsProxyWidget* getWidget() {return widget;}
 
 signals:
 

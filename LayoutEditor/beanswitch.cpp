@@ -296,24 +296,24 @@
      _control = true;
      if(beanTypeChar ==  'T')
      {
-// TODO:               getTurnout().addPropertyChangeListener(this, _label, "Switchboard Editor Turnout Switch");
-      connect(getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      getTurnout()->addPropertyChangeListener((PropertyChangeListener*)this, _label, "Switchboard Editor Turnout Switch");
+      //connect(getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
        if (getTurnout()->canInvert()) {
            this->setInverted(getTurnout()->getInverted()); // only add and set when suppported by object/connection
        }
      }
      else if(beanTypeChar ==  'S')
      {
-// TODO:               getSensor().addPropertyChangeListener(this, _label, "Switchboard Editor Sensor Switch");
-      connect(getSensor()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      getSensor()->addPropertyChangeListener((PropertyChangeListener*)this, _label, "Switchboard Editor Sensor Switch");
+      //connect(getSensor()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
        if (getSensor()->canInvert()) {
            this->setInverted(getSensor()->getInverted()); // only add and set when suppported by object/connection
        }
      }
      else
      {// light
-// TODO:              getLight().addPropertyChangeListener(this, _label, "Switchboard Editor Light Switch");
-      connect(getLight()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      getLight()->addPropertyChangeListener((PropertyChangeListener*)this, _label, "Switchboard Editor Light Switch");
+      //connect(getLight()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
          // Lights do not support Invert
      }
@@ -632,8 +632,8 @@ int BeanSwitch::turnoutState() {
 
 void BeanSwitch::cleanup() {
     if (namedBean != nullptr) {
-        //getTurnout().removePropertyChangeListener(this);
-     disconnect(getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     getTurnout()->removePropertyChangeListener((PropertyChangeListener*)this);
+     //disconnect(getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     namedBean = nullptr;
 }

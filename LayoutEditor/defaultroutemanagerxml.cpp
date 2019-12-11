@@ -60,7 +60,7 @@ DefaultRouteManagerXml::DefaultRouteManagerXml(QObject *parent) :
       QString cLockTurnout = r->getLockControlTurnout();
 
       QDomElement elem = doc.createElement("route");
-              elem.setAttribute("systemName", sname);
+//              elem.setAttribute("systemName", sname);
       elem.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sname)));
 
       // store common parts

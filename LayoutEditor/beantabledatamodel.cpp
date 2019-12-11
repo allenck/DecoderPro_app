@@ -59,16 +59,17 @@
  _table = NULL;
  // propertyColumns = new ArrayList<>(getManager().getKnownBeanProperties());
  propertyColumns = new QList<NamedBeanPropertyDescriptor*>();
+  // init() can ony be run after sub-classes' constructors are complete!
 }
 //template<class T>
-void /*public*/ BeanTableDataModel::init()
+void /*public*/ BeanTableDataModel::init() // SLOT
 {
  AbstractManager* manager = (AbstractManager*)getManager();
  if(manager != NULL)
  {
   manager->addPropertyChangeListener((PropertyChangeListener*)this);
   updateNameList();
-  connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
@@ -810,7 +811,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 //    table->setRowSorter(sorter);
     table->horizontalHeader()->sectionsMovable();
     //table->getTableHeader().setReorderingAllowed(true);
-    table->setColumnModel(new XTableColumnModel());
+    table->setColumnModel(new XTableColumnModel(this));
     //table->createDefaultColumnsFromModel();
     //table->resizeColumnsToContents();
     //table->horizontalHeader()->setStretchLastSection(true);
@@ -836,7 +837,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 // };
 // table.getTableHeader().setReorderingAllowed(true);
  table->resizeRowsToContents();
- table->setColumnModel(new XTableColumnModel());
+ table->setColumnModel(new XTableColumnModel(this));
  table->createDefaultColumnsFromModel();
 
 // addMouseListenerToHeader(table);

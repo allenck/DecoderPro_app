@@ -5,6 +5,7 @@
 #include "tablemodel.h"
 #include "javaqt_global.h"
 
+class DefaultListSelectionModel;
 class ModelChange;
 class RowSorterEvent;
 class ListSelectionEvent;
@@ -77,7 +78,7 @@ public:
  /*public*/ JTable(TableModel* dm, QWidget *parent = 0);
  /*public*/ JTable(QAbstractItemModel* ,QWidget *parent = 0);
  /*public*/ JTable(TableModel* dm, TableColumnModel* cm, QWidget *parent = 0);
- /*public*/ JTable(TableModel* dm, TableColumnModel* cm, ListSelectionModel* sm, QWidget *parent);
+ /*public*/ JTable(TableModel* dm, TableColumnModel* cm, DefaultListSelectionModel *sm, QWidget *parent);
 // /*public*/ JTable(int numRows, int numColumns, QObject* parent);
  /*public*/ void setAutoCreateColumnsFromModel(bool autoCreateColumnsFromModel);
  /*public*/ bool getAutoCreateColumnsFromModel();
@@ -86,8 +87,8 @@ public:
  /*public*/ void setModel(QAbstractItemModel* dataModel);
  /*public*/ QAbstractItemModel* getModel();
  /*public*/ void setColumnModel(TableColumnModel* columnModel);
- /*public*/ void setSelectionModel(ListSelectionModel* newModel);
- /*public*/ ListSelectionModel* getSelectionModel();
+ /*public*/ void setSelectionModel(DefaultListSelectionModel *newModel);
+ /*public*/ DefaultListSelectionModel* getSelectionModel();
  /*public*/ void addColumn(TableColumn* aColumn);
  /*public*/ void removeColumn(TableColumn* aColumn) ;
  /*public*/ void moveColumn(int column, int targetColumn);
@@ -138,6 +139,9 @@ public:
  /*public*/ void setRowHeight(int row, int rowHeight);
  /*public*/ QVariant getValueAt(int row, int column);
  /*public*/ int rowHeight();
+ /*public*/ QHeaderView* getTableHeader();
+ /*public*/ void setSelectionMode(int selectionMode);
+
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -220,7 +224,7 @@ private:
   * The drop location.
   */
  /*private*/ /*transient*/ DropLocation* dropLocation;
- void common(QAbstractItemModel* dm, TableColumnModel* cm, ListSelectionModel* sm);
+ void common(QAbstractItemModel* dm, TableColumnModel* cm, DefaultListSelectionModel *sm);
  void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
  /*private*/ void clearSelectionAndLeadAnchor();
  Logger * log;
@@ -252,7 +256,7 @@ protected:
  /*protected*/ TableColumnModel*  columnModel;
 
  /** The <code>ListSelectionModel</code> of the table, used to keep track of row selections. */
- /*protected*/ ListSelectionModel* selectionModel;
+ /*protected*/ DefaultListSelectionModel* selectionModel;
 
  /** The <code>TableHeader</code> working with the table. */
  /*protected*/ QHeaderView*      tableHeader;
@@ -341,7 +345,7 @@ protected:
  /** The background color of selected cells. */
  /*protected*/ QColor selectionBackground;
  /*protected*/ TableColumnModel* createDefaultColumnModel();
- /*protected*/ ListSelectionModel* createDefaultSelectionModel();
+ /*protected*/ DefaultListSelectionModel* createDefaultSelectionModel();
  /*protected*/ TableModel* createDefaultDataModel();
  /*protected*/ void resizeAndRepaint();
 

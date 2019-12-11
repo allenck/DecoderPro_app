@@ -536,10 +536,11 @@ void IndicatorTOItemPanel::createNewFamily(QString family)
 
 ///*protected*/ class IconDragJLabel extends DragJLabel {
 
-/*public*/ ITOIconDragJLabel::ITOIconDragJLabel(DataFlavor* flavor, IndicatorTOItemPanel* parent) : DragJLabel(flavor, parent) {
-        //super(flavor);
-    this->parent = parent;
-    }
+/*public*/ ITOIconDragJLabel::ITOIconDragJLabel(DataFlavor* flavor, IndicatorTOItemPanel* parent)
+ : DragJLabel(flavor, parent) {
+    //super(flavor);
+ this->parent = parent;
+}
 /*public*/ bool ITOIconDragJLabel::isDataFlavorSupported(DataFlavor* flavor)
 {
  return DragJLabel::isDataFlavorSupported(flavor);
@@ -589,7 +590,7 @@ void IndicatorTOItemPanel::createNewFamily(QString family)
  return t;
 }
 //};
-QString ITOIconDragJLabel::mimeData()
+QByteArray ITOIconDragJLabel::mimeData()
 {
  NamedBean* bean = parent-> getTableSelection();
  if(bean == NULL)
@@ -630,9 +631,8 @@ QString ITOIconDragJLabel::mimeData()
  IndicatorTurnoutIconXml* xml = new IndicatorTurnoutIconXml();
  QDomElement e = xml->store((QObject*)icon);
  xml->doc.appendChild(e);
- QString xmldata = xml->doc.toString();
- _dataFlavor->setMimeTypeParameter("xml", QString(QUrl::toPercentEncoding(xmldata)));
-
- return _dataFlavor->toString();
+ QByteArray xmldata;
+ xmldata.append(xml->doc.toString());
+ return xmldata;
 
 }

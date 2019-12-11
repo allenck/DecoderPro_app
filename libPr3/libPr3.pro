@@ -582,7 +582,6 @@ SOURCES += \
     entrypoint.cpp \
     reportcontext.cpp \
     rostertablemodel.cpp \
-    rostergroupselector.cpp \
     Roster/imagedelegate.cpp \
     Throttle/functionbuttonpropertyeditor.cpp \
     internalsystemconnectionmemo.cpp \
@@ -941,7 +940,9 @@ SOURCES += \
     abstractproxyreportermanager.cpp \
     trackreporter.cpp \
     loconet/bluetooth/loconetbluetoothadapter.cpp \
-    scwarrant.cpp
+    scwarrant.cpp \
+    Roster/rosterframestartupactionfactory.cpp \
+    rostergroupselector.cpp
 
 
  !contains(FTDI, 1) {
@@ -1881,7 +1882,8 @@ HEADERS += \
     trackreporter.h \
     loconet/bluetooth/loconetbluetoothadapter.h \
     Signal/signals.h \
-    scwarrant.h
+    scwarrant.h \
+    Roster/rosterframestartupactionfactory.h
 
 
  !contains(FTDI, 1) {

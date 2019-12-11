@@ -688,8 +688,8 @@ void BlockBossLogic::turnoutChange(PropertyChangeEvent */*e*/)
     // manually and having it instantly recomputed & changed back
     DefaultSignalHead* head = (DefaultSignalHead*)driveSignal->getBean();
     if(head == NULL) return;
-    connect(head->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//    driveSignal->getBean()->addPropertyChangeListener( (PropertyChangeListener*)this);
+//    connect(head->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    driveSignal->getBean()->addPropertyChangeListener( (PropertyChangeListener*)this);
 //    {
 //            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //                if (e.getPropertyName()==(tr("Held")))

@@ -30,9 +30,9 @@ PositionableRoundRectXml::PositionableRoundRectXml(QObject *parent) :
     if (!p->isActive()) return QDomElement();  // if flagged as inactive, don't store
 
     QDomElement element = doc.createElement("positionableRoundRect");
-    element.setAttribute("width", p->getWidth());
-    element.setAttribute("height", p->getHeight());
-    element.setAttribute("cornerRadius", p->getCornerRadius());
+//    element.setAttribute("width", p->getWidth());
+//    element.setAttribute("height", p->getHeight());
+//    element.setAttribute("cornerRadius", p->getCornerRadius());
     storeCommonAttributes(p, element);
 
     QDomElement elem = doc.createElement("size");

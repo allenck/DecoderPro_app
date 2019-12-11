@@ -80,8 +80,8 @@
  aspect =  (4.5*24.)/32.;
 
  // listen for changes to the timebase parameters
-// ((SimpleTimebase*)clock)->addPropertyChangeListener((PropertyChangeListener*)this);
- connect(clock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ ((SimpleTimebase*)clock)->addPropertyChangeListener((PropertyChangeListener*)this);
+// connect(clock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  connect(clock, SIGNAL(minuteTick()), this, SLOT(update()));
 
 

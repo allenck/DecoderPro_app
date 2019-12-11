@@ -107,9 +107,10 @@ private:
 
 protected:
     /*protected*/ void rotateOrthogonal();
-    /*protected*/ void editItem();
 protected slots:
     /*protected*/ void edit();
+    /*protected*/ void editItem();
+
 friend class MultiSensorIconWidget;
 friend class MultiSensorIconAdder;
 };

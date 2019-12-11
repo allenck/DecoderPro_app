@@ -34,7 +34,7 @@ Q_OBJECT
 public:
     /*public*/ RIconDragJComponent(DataFlavor* flavor, QSize dim, ReporterItemPanel* self);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
-    QString mimeData();
+    QByteArray mimeData();
 };
 
 #endif // REPORTERITEMPANEL_H

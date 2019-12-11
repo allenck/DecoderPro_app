@@ -138,8 +138,8 @@ BeanTableDataModel(parent)
         Warrant* w = _manager->getBySystemName(iter.next());
         if (!_warList.contains(w))
         { // new warrant
-//            w->addPropertyChangeListener(this);
-            connect(w->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            w->addPropertyChangeListener((PropertyChangeListener*)this);
+            //connect(w->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         } else {
             _warList.removeOne(w);
         }
@@ -150,8 +150,8 @@ BeanTableDataModel(parent)
         Warrant* w = _warList.at(i);
         if (!_warNX.contains(w))
         { // don't touch current running NXWarrant
-            //w->removePropertyChangeListener(this);
-            disconnect(w->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            w->removePropertyChangeListener((PropertyChangeListener*)this);
+//            disconnect(w->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
         }
     }
@@ -179,8 +179,8 @@ BeanTableDataModel(parent)
 /*public*/ void WarrantTableModel::addNXWarrant(Warrant* w) {
     _warList.append(w);
     _warNX.append(w);
-    //w->addPropertyChangeListener(this);
-    connect(w->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    w->addPropertyChangeListener((PropertyChangeListener*)this);
+    //connect(w->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     fireTableDataChanged();
 }
@@ -192,8 +192,8 @@ BeanTableDataModel(parent)
  */
 /*public*/ void WarrantTableModel::removeNXWarrant(Warrant* w)
 {
- //w->removePropertyChangeListener(this);
- disconnect(w->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ w->removePropertyChangeListener((PropertyChangeListener*)this);
+ //disconnect(w->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     _warList.removeOne(w);
     _warNX.removeOne(w);

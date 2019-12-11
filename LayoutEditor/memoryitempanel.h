@@ -54,7 +54,7 @@ friend class MemoryIconDragJComponent;
 public:
     /*public*/ MemoryIconDragJComponent(DataFlavor* flavor, MemoryItemPanel::Type type, QSize dim, QWidget* parent = 0);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
-    QString mimeData();
+    QByteArray mimeData();
 };
 
 #endif // MEMORYITEMPANEL_H

@@ -145,15 +145,15 @@ class ComboModel extends DefaultComboBoxModel {
  */
 /*public*/ void MemoryComboIcon::setMemory(NamedBeanHandle<Memory*>* m) {
     if (namedMemory != NULL) {
-        //getMemory().removePropertyChangeListener(this);
-        AbstractMemory* m = (AbstractMemory*)getMemory();
-        disconnect(m, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
+//        AbstractMemory* m = (AbstractMemory*)getMemory();
+//        disconnect(m, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     namedMemory = m;
     if (namedMemory != NULL) {
-        //getMemory().addPropertyChangeListener(this, namedMemory.getName(), "Memory Input Icon");
-        AbstractMemory* m = (AbstractMemory*)getMemory();
-        connect(m->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        getMemory()->addPropertyChangeListener((PropertyChangeListener*)this, namedMemory->getName(), "Memory Input Icon");
+//        AbstractMemory* m = (AbstractMemory*)getMemory();
+//        connect(m->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         displayState();
         setName(namedMemory->getName());
     }
@@ -411,9 +411,9 @@ void MemoryComboIcon::editMemory() {
 
 void MemoryComboIcon::cleanup() {
     if (namedMemory!=NULL) {
-        //getMemory().removePropertyChangeListener(this);
-        AbstractMemory* m = (AbstractMemory*)getMemory();
-        disconnect(m, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
+//        AbstractMemory* m = (AbstractMemory*)getMemory();
+//        disconnect(m, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     if (_comboBox!=NULL) {
 //            _comboBox.removeMouseMotionListener(this);

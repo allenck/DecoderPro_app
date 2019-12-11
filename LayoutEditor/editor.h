@@ -364,7 +364,7 @@ private:
     EditScene* editScene;
     QGraphicsItemGroup* _selectRectItemGroup;
     QString name;
-    Logger* log;
+    static Logger* log;
     bool saveSize;
     bool savePosition;
     bool _showCoordinates;
@@ -624,6 +624,7 @@ protected slots:
   friend class ItemPanel;
   friend class BackgroundItemPanel;
   friend class ColorDialog;
+  friend class DecoratorPanel;
 
 public:
   class AddRightTOActionListener : public ActionListener

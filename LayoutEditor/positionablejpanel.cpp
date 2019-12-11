@@ -101,16 +101,16 @@
 }
 /*public*/ int PositionableJPanel::getDisplayLevel() { return _displayLevel; }
 
-/*public*/ void PositionableJPanel::setShowTooltip(bool set) {
+/*public*/ void PositionableJPanel::setShowToolTip(bool set) {
     _showTooltip = set;
 }
 /*public*/ bool PositionableJPanel::showTooltip() {
     return _showTooltip;
 }
-/*public*/ void PositionableJPanel::setTooltip(QString tip) {
+/*public*/ void PositionableJPanel::setToolTip(QString tip) {
     _tooltip = tip;
 }
-/*public*/ QString PositionableJPanel::getTooltip() {
+/*public*/ QString PositionableJPanel::getToolTip() {
     return _tooltip;
 }
 /*public*/ void PositionableJPanel::setScale(double s) {
@@ -129,8 +129,8 @@
 /*public*/ bool PositionableJPanel::getSaveOpaque() {
     return isOpaque();
 }
-/*public*/ JComponent* PositionableJPanel::getTextComponent() {
-    return (JComponent*)this;
+/*public*/ QWidget *PositionableJPanel::getTextComponent() {
+    return (QWidget*)this;
 }
 
 /*public*/ QString PositionableJPanel::getNameString() {

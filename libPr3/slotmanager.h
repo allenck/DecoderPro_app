@@ -255,6 +255,7 @@ private:
  LnTrafficController* tc;
  Logger* log;
  QVector<LocoNetSlot*> _slots;
+ QMutex mutex;
  /**
   * Provide a mapping between locomotive addresses and the
   * SlotListener that's interested in them

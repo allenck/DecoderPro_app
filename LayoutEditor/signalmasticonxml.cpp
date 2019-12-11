@@ -165,6 +165,7 @@ SignalMastIconXml::SignalMastIconXml(QObject *parent) :
  // load individual item's option settings after editor has set its global settings
  loadCommonAttributes((Positionable*)l, Editor::SIGNALS, element);
 
+ l->setDisplayLevel(Editor::SIGNALS);
  ed->putItem((Positionable*)l);
 }
 

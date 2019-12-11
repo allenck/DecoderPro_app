@@ -2511,12 +2511,12 @@ public:
    ~PythonQtShell_BeanInterface();
 
 virtual QVariant  getIndexedProperty(QString  arg__1, int  arg__2);
-virtual QVariant  getProperty(QString  key);
+virtual QVariant  getProperty(QString  arg__1);
 virtual QSet<QString >  getPropertyNames();
-virtual bool  hasIndexedProperty(QString  key);
-virtual bool  hasProperty(QString  key);
-virtual void setIndexedProperty(QString  key, int  index, QVariant  value);
-virtual void setProperty(QString  key, QVariant  value);
+virtual bool  hasIndexedProperty(QString  arg__1);
+virtual bool  hasProperty(QString  arg__1);
+virtual void setIndexedProperty(QString  arg__1, int  arg__2, QVariant  arg__3);
+virtual void setProperty(QString  arg__1, QVariant  arg__2);
 
   PythonQtInstanceWrapper* _wrapper; 
 };
@@ -2524,12 +2524,12 @@ virtual void setProperty(QString  key, QVariant  value);
 class PythonQtPublicPromoter_BeanInterface : public BeanInterface
 { public:
 inline QVariant  py_q_getIndexedProperty(QString  arg__1, int  arg__2) { return BeanInterface::getIndexedProperty(arg__1, arg__2); }
-inline QVariant  py_q_getProperty(QString  key) { return BeanInterface::getProperty(key); }
+inline QVariant  py_q_getProperty(QString  arg__1) { return BeanInterface::getProperty(arg__1); }
 inline QSet<QString >  py_q_getPropertyNames() { return BeanInterface::getPropertyNames(); }
-inline bool  py_q_hasIndexedProperty(QString  key) { return BeanInterface::hasIndexedProperty(key); }
-inline bool  py_q_hasProperty(QString  key) { return BeanInterface::hasProperty(key); }
-inline void py_q_setIndexedProperty(QString  key, int  index, QVariant  value) { BeanInterface::setIndexedProperty(key, index, value); }
-inline void py_q_setProperty(QString  key, QVariant  value) { BeanInterface::setProperty(key, value); }
+inline bool  py_q_hasIndexedProperty(QString  arg__1) { return BeanInterface::hasIndexedProperty(arg__1); }
+inline bool  py_q_hasProperty(QString  arg__1) { return BeanInterface::hasProperty(arg__1); }
+inline void py_q_setIndexedProperty(QString  arg__1, int  arg__2, QVariant  arg__3) { BeanInterface::setIndexedProperty(arg__1, arg__2, arg__3); }
+inline void py_q_setProperty(QString  arg__1, QVariant  arg__2) { BeanInterface::setProperty(arg__1, arg__2); }
 };
 
 class PythonQtWrapper_BeanInterface : public QObject
@@ -2540,18 +2540,18 @@ BeanInterface* new_BeanInterface();
 void delete_BeanInterface(BeanInterface* obj) { delete obj; } 
    QVariant  getIndexedProperty(BeanInterface* theWrappedObject, QString  arg__1, int  arg__2);
    QVariant  py_q_getIndexedProperty(BeanInterface* theWrappedObject, QString  arg__1, int  arg__2){  return (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_getIndexedProperty(arg__1, arg__2));}
-   QVariant  getProperty(BeanInterface* theWrappedObject, QString  key);
-   QVariant  py_q_getProperty(BeanInterface* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_getProperty(key));}
+   QVariant  getProperty(BeanInterface* theWrappedObject, QString  arg__1);
+   QVariant  py_q_getProperty(BeanInterface* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_getProperty(arg__1));}
    QSet<QString >  getPropertyNames(BeanInterface* theWrappedObject);
    QSet<QString >  py_q_getPropertyNames(BeanInterface* theWrappedObject){  return (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_getPropertyNames());}
-   bool  hasIndexedProperty(BeanInterface* theWrappedObject, QString  key);
-   bool  py_q_hasIndexedProperty(BeanInterface* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_hasIndexedProperty(key));}
-   bool  hasProperty(BeanInterface* theWrappedObject, QString  key);
-   bool  py_q_hasProperty(BeanInterface* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_hasProperty(key));}
-   void setIndexedProperty(BeanInterface* theWrappedObject, QString  key, int  index, QVariant  value);
-   void py_q_setIndexedProperty(BeanInterface* theWrappedObject, QString  key, int  index, QVariant  value){  (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_setIndexedProperty(key, index, value));}
-   void setProperty(BeanInterface* theWrappedObject, QString  key, QVariant  value);
-   void py_q_setProperty(BeanInterface* theWrappedObject, QString  key, QVariant  value){  (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_setProperty(key, value));}
+   bool  hasIndexedProperty(BeanInterface* theWrappedObject, QString  arg__1);
+   bool  py_q_hasIndexedProperty(BeanInterface* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_hasIndexedProperty(arg__1));}
+   bool  hasProperty(BeanInterface* theWrappedObject, QString  arg__1);
+   bool  py_q_hasProperty(BeanInterface* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_hasProperty(arg__1));}
+   void setIndexedProperty(BeanInterface* theWrappedObject, QString  arg__1, int  arg__2, QVariant  arg__3);
+   void py_q_setIndexedProperty(BeanInterface* theWrappedObject, QString  arg__1, int  arg__2, QVariant  arg__3){  (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_setIndexedProperty(arg__1, arg__2, arg__3));}
+   void setProperty(BeanInterface* theWrappedObject, QString  arg__1, QVariant  arg__2);
+   void py_q_setProperty(BeanInterface* theWrappedObject, QString  arg__1, QVariant  arg__2){  (((PythonQtPublicPromoter_BeanInterface*)theWrappedObject)->py_q_setProperty(arg__1, arg__2));}
 };
 
 
@@ -2579,6 +2579,7 @@ virtual Manager*  getManager();
 virtual QString  getMasterClassName();
 virtual int  getPreferredWidth(int  col);
 virtual QString  getValue(QString  systemName) const;
+virtual void init();
 virtual bool  matchPropertyName(PropertyChangeEvent*  e);
 virtual void propertyChange(PropertyChangeEvent*  e);
 virtual void setManager(Manager*  arg__1);
@@ -2625,6 +2626,7 @@ inline Manager*  py_q_getManager() { return BeanTableDataModel::getManager(); }
 inline QString  py_q_getMasterClassName() { return BeanTableDataModel::getMasterClassName(); }
 inline int  py_q_getPreferredWidth(int  col) { return BeanTableDataModel::getPreferredWidth(col); }
 inline QString  py_q_getValue(QString  systemName) const { return BeanTableDataModel::getValue(systemName); }
+inline void py_q_init() { BeanTableDataModel::init(); }
 inline bool  py_q_matchPropertyName(PropertyChangeEvent*  e) { return BeanTableDataModel::matchPropertyName(e); }
 inline void py_q_propertyChange(PropertyChangeEvent*  e) { BeanTableDataModel::propertyChange(e); }
 inline void py_q_setManager(Manager*  arg__1) { BeanTableDataModel::setManager(arg__1); }
@@ -2674,7 +2676,7 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    QString  getValue(BeanTableDataModel* theWrappedObject, QString  systemName) const;
    QString  py_q_getValue(BeanTableDataModel* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_getValue(systemName));}
    QVariant  headerData(BeanTableDataModel* theWrappedObject, int  section, Qt::Orientation  orientation, int  role) const;
-   void init(BeanTableDataModel* theWrappedObject);
+   void py_q_init(BeanTableDataModel* theWrappedObject){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_init());}
    void loadTableColumnDetails(BeanTableDataModel* theWrappedObject, JTable*  table);
    void loadTableColumnDetails(BeanTableDataModel* theWrappedObject, JTable*  table, QString  beantableref);
    bool  matchPropertyName(BeanTableDataModel* theWrappedObject, PropertyChangeEvent*  e);

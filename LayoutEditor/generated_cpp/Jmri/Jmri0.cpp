@@ -26056,7 +26056,7 @@ if (_wrapper) {
 }
   return BeanInterface::getIndexedProperty(arg__1, arg__2);
 }
-QVariant  PythonQtShell_BeanInterface::getProperty(QString  key0)
+QVariant  PythonQtShell_BeanInterface::getProperty(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -26067,7 +26067,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"QVariant" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       QVariant returnValue{};
-      void* args[2] = {NULL, (void*)&key0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -26087,7 +26087,7 @@ if (_wrapper) {
     }
   }
 }
-  return BeanInterface::getProperty(key0);
+  return BeanInterface::getProperty(arg__1);
 }
 QSet<QString >  PythonQtShell_BeanInterface::getPropertyNames()
 {
@@ -26122,7 +26122,7 @@ if (_wrapper) {
 }
   return BeanInterface::getPropertyNames();
 }
-bool  PythonQtShell_BeanInterface::hasIndexedProperty(QString  key0)
+bool  PythonQtShell_BeanInterface::hasIndexedProperty(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -26133,7 +26133,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"bool" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
-      void* args[2] = {NULL, (void*)&key0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -26153,9 +26153,9 @@ if (_wrapper) {
     }
   }
 }
-  return BeanInterface::hasIndexedProperty(key0);
+  return BeanInterface::hasIndexedProperty(arg__1);
 }
-bool  PythonQtShell_BeanInterface::hasProperty(QString  key0)
+bool  PythonQtShell_BeanInterface::hasProperty(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -26166,7 +26166,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"bool" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
-      void* args[2] = {NULL, (void*)&key0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -26186,9 +26186,9 @@ if (_wrapper) {
     }
   }
 }
-  return BeanInterface::hasProperty(key0);
+  return BeanInterface::hasProperty(arg__1);
 }
-void PythonQtShell_BeanInterface::setIndexedProperty(QString  key0, int  index1, QVariant  value2)
+void PythonQtShell_BeanInterface::setIndexedProperty(QString  arg__1, int  arg__2, QVariant  arg__3)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -26198,7 +26198,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QString" , "int" , "QVariant"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
-      void* args[4] = {NULL, (void*)&key0, (void*)&index1, (void*)&value2};
+      void* args[4] = {NULL, (void*)&arg__1, (void*)&arg__2, (void*)&arg__3};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -26208,9 +26208,9 @@ if (_wrapper) {
     }
   }
 }
-  BeanInterface::setIndexedProperty(key0, index1, value2);
+  BeanInterface::setIndexedProperty(arg__1, arg__2, arg__3);
 }
-void PythonQtShell_BeanInterface::setProperty(QString  key0, QVariant  value1)
+void PythonQtShell_BeanInterface::setProperty(QString  arg__1, QVariant  arg__2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -26220,7 +26220,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QString" , "QVariant"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      void* args[3] = {NULL, (void*)&key0, (void*)&value1};
+      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -26230,7 +26230,7 @@ if (_wrapper) {
     }
   }
 }
-  BeanInterface::setProperty(key0, value1);
+  BeanInterface::setProperty(arg__1, arg__2);
 }
 BeanInterface* PythonQtWrapper_BeanInterface::new_BeanInterface()
 { 
@@ -26241,9 +26241,9 @@ QVariant  PythonQtWrapper_BeanInterface::getIndexedProperty(BeanInterface* theWr
   return ( theWrappedObject->getIndexedProperty(arg__1, arg__2));
 }
 
-QVariant  PythonQtWrapper_BeanInterface::getProperty(BeanInterface* theWrappedObject, QString  key)
+QVariant  PythonQtWrapper_BeanInterface::getProperty(BeanInterface* theWrappedObject, QString  arg__1)
 {
-  return ( theWrappedObject->getProperty(key));
+  return ( theWrappedObject->getProperty(arg__1));
 }
 
 QSet<QString >  PythonQtWrapper_BeanInterface::getPropertyNames(BeanInterface* theWrappedObject)
@@ -26251,24 +26251,24 @@ QSet<QString >  PythonQtWrapper_BeanInterface::getPropertyNames(BeanInterface* t
   return ( theWrappedObject->getPropertyNames());
 }
 
-bool  PythonQtWrapper_BeanInterface::hasIndexedProperty(BeanInterface* theWrappedObject, QString  key)
+bool  PythonQtWrapper_BeanInterface::hasIndexedProperty(BeanInterface* theWrappedObject, QString  arg__1)
 {
-  return ( theWrappedObject->hasIndexedProperty(key));
+  return ( theWrappedObject->hasIndexedProperty(arg__1));
 }
 
-bool  PythonQtWrapper_BeanInterface::hasProperty(BeanInterface* theWrappedObject, QString  key)
+bool  PythonQtWrapper_BeanInterface::hasProperty(BeanInterface* theWrappedObject, QString  arg__1)
 {
-  return ( theWrappedObject->hasProperty(key));
+  return ( theWrappedObject->hasProperty(arg__1));
 }
 
-void PythonQtWrapper_BeanInterface::setIndexedProperty(BeanInterface* theWrappedObject, QString  key, int  index, QVariant  value)
+void PythonQtWrapper_BeanInterface::setIndexedProperty(BeanInterface* theWrappedObject, QString  arg__1, int  arg__2, QVariant  arg__3)
 {
-  ( theWrappedObject->setIndexedProperty(key, index, value));
+  ( theWrappedObject->setIndexedProperty(arg__1, arg__2, arg__3));
 }
 
-void PythonQtWrapper_BeanInterface::setProperty(BeanInterface* theWrappedObject, QString  key, QVariant  value)
+void PythonQtWrapper_BeanInterface::setProperty(BeanInterface* theWrappedObject, QString  arg__1, QVariant  arg__2)
 {
-  ( theWrappedObject->setProperty(key, value));
+  ( theWrappedObject->setProperty(arg__1, arg__2));
 }
 
 
@@ -26684,6 +26684,28 @@ if (_wrapper) {
 }
   return BeanTableDataModel::getValue(systemName0);
 }
+void PythonQtShell_BeanTableDataModel::init()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("init");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  BeanTableDataModel::init();
+}
 bool  PythonQtShell_BeanTableDataModel::matchPropertyName(PropertyChangeEvent*  e0)
 {
 if (_wrapper) {
@@ -26913,11 +26935,6 @@ QString  PythonQtWrapper_BeanTableDataModel::getValue(BeanTableDataModel* theWra
 QVariant  PythonQtWrapper_BeanTableDataModel::headerData(BeanTableDataModel* theWrappedObject, int  section, Qt::Orientation  orientation, int  role) const
 {
   return ( theWrappedObject->headerData(section, orientation, role));
-}
-
-void PythonQtWrapper_BeanTableDataModel::init(BeanTableDataModel* theWrappedObject)
-{
-  ( theWrappedObject->init());
 }
 
 void PythonQtWrapper_BeanTableDataModel::loadTableColumnDetails(BeanTableDataModel* theWrappedObject, JTable*  table)

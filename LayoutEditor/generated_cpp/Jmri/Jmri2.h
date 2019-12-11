@@ -1720,6 +1720,7 @@ virtual bool  doViemMenu();
 virtual Positionable*  finishClone(Positionable*  arg__1);
 virtual QColor  getBackground();
 virtual QRectF  getBounds(QRectF  arg__1);
+virtual QString  getClass();
 virtual int  getDegrees();
 virtual int  getDisplayLevel();
 virtual Editor*  getEditor();
@@ -1732,7 +1733,8 @@ virtual QString  getNameString();
 virtual NamedBean*  getNamedBean();
 virtual bool  getSaveOpaque();
 virtual double  getScale();
-virtual QString  getTooltip();
+virtual QWidget*  getTextComponent();
+virtual QString  getToolTip();
 virtual bool  getViewCoordinates();
 virtual int  getWidth();
 virtual int  getX();
@@ -1770,10 +1772,10 @@ virtual bool  setRotateMenu(QMenu*  arg__1);
 virtual bool  setRotateOrthogonalMenu(QMenu*  arg__1);
 virtual void setScale(double  arg__1);
 virtual bool  setScaleMenu(QMenu*  arg__1);
-virtual void setShowTooltip(bool  arg__1);
+virtual void setShowToolTip(bool  arg__1);
 virtual void setSize(int  arg__1, int  arg__2);
 virtual bool  setTextEditMenu(QMenu*  arg__1);
-virtual void setTooltip(QString  tip);
+virtual void setToolTip(QString  tip);
 virtual void setViewCoordinates(bool  arg__1);
 virtual void setVisible(bool  b);
 virtual void showHidden();
@@ -1801,6 +1803,7 @@ inline bool  py_q_doViemMenu() { return Positionable::doViemMenu(); }
 inline Positionable*  py_q_finishClone(Positionable*  arg__1) { return Positionable::finishClone(arg__1); }
 inline QColor  py_q_getBackground() { return Positionable::getBackground(); }
 inline QRectF  py_q_getBounds(QRectF  arg__1) { return Positionable::getBounds(arg__1); }
+inline QString  py_q_getClass() { return Positionable::getClass(); }
 inline int  py_q_getDegrees() { return Positionable::getDegrees(); }
 inline int  py_q_getDisplayLevel() { return Positionable::getDisplayLevel(); }
 inline Editor*  py_q_getEditor() { return Positionable::getEditor(); }
@@ -1813,7 +1816,8 @@ inline QString  py_q_getNameString() { return Positionable::getNameString(); }
 inline NamedBean*  py_q_getNamedBean() { return Positionable::getNamedBean(); }
 inline bool  py_q_getSaveOpaque() { return Positionable::getSaveOpaque(); }
 inline double  py_q_getScale() { return Positionable::getScale(); }
-inline QString  py_q_getTooltip() { return Positionable::getTooltip(); }
+inline QWidget*  py_q_getTextComponent() { return Positionable::getTextComponent(); }
+inline QString  py_q_getToolTip() { return Positionable::getToolTip(); }
 inline bool  py_q_getViewCoordinates() { return Positionable::getViewCoordinates(); }
 inline int  py_q_getWidth() { return Positionable::getWidth(); }
 inline int  py_q_getX() { return this->getX(); }
@@ -1851,10 +1855,10 @@ inline bool  py_q_setRotateMenu(QMenu*  arg__1) { return Positionable::setRotate
 inline bool  py_q_setRotateOrthogonalMenu(QMenu*  arg__1) { return Positionable::setRotateOrthogonalMenu(arg__1); }
 inline void py_q_setScale(double  arg__1) { Positionable::setScale(arg__1); }
 inline bool  py_q_setScaleMenu(QMenu*  arg__1) { return Positionable::setScaleMenu(arg__1); }
-inline void py_q_setShowTooltip(bool  arg__1) { Positionable::setShowTooltip(arg__1); }
+inline void py_q_setShowToolTip(bool  arg__1) { Positionable::setShowToolTip(arg__1); }
 inline void py_q_setSize(int  arg__1, int  arg__2) { Positionable::setSize(arg__1, arg__2); }
 inline bool  py_q_setTextEditMenu(QMenu*  arg__1) { return Positionable::setTextEditMenu(arg__1); }
-inline void py_q_setTooltip(QString  tip) { Positionable::setTooltip(tip); }
+inline void py_q_setToolTip(QString  tip) { Positionable::setToolTip(tip); }
 inline void py_q_setViewCoordinates(bool  arg__1) { Positionable::setViewCoordinates(arg__1); }
 inline void py_q_setVisible(bool  b) { Positionable::setVisible(b); }
 inline void py_q_showHidden() { Positionable::showHidden(); }
@@ -1897,6 +1901,8 @@ void delete_Positionable(Positionable* obj) { delete obj; }
    QColor  py_q_getBackground(Positionable* theWrappedObject){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_getBackground());}
    QRectF  getBounds(Positionable* theWrappedObject, QRectF  arg__1);
    QRectF  py_q_getBounds(Positionable* theWrappedObject, QRectF  arg__1){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_getBounds(arg__1));}
+   QString  getClass(Positionable* theWrappedObject);
+   QString  py_q_getClass(Positionable* theWrappedObject){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_getClass());}
    int  getDegrees(Positionable* theWrappedObject);
    int  py_q_getDegrees(Positionable* theWrappedObject){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_getDegrees());}
    int  getDisplayLevel(Positionable* theWrappedObject);
@@ -1922,8 +1928,10 @@ void delete_Positionable(Positionable* obj) { delete obj; }
    bool  py_q_getSaveOpaque(Positionable* theWrappedObject){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_getSaveOpaque());}
    double  getScale(Positionable* theWrappedObject);
    double  py_q_getScale(Positionable* theWrappedObject){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_getScale());}
-   QString  getTooltip(Positionable* theWrappedObject);
-   QString  py_q_getTooltip(Positionable* theWrappedObject){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_getTooltip());}
+   QWidget*  getTextComponent(Positionable* theWrappedObject);
+   QWidget*  py_q_getTextComponent(Positionable* theWrappedObject){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_getTextComponent());}
+   QString  getToolTip(Positionable* theWrappedObject);
+   QString  py_q_getToolTip(Positionable* theWrappedObject){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_getToolTip());}
    bool  getViewCoordinates(Positionable* theWrappedObject);
    bool  py_q_getViewCoordinates(Positionable* theWrappedObject){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_getViewCoordinates());}
    int  getWidth(Positionable* theWrappedObject);
@@ -1999,14 +2007,14 @@ void delete_Positionable(Positionable* obj) { delete obj; }
    void py_q_setScale(Positionable* theWrappedObject, double  arg__1){  (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_setScale(arg__1));}
    bool  setScaleMenu(Positionable* theWrappedObject, QMenu*  arg__1);
    bool  py_q_setScaleMenu(Positionable* theWrappedObject, QMenu*  arg__1){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_setScaleMenu(arg__1));}
-   void setShowTooltip(Positionable* theWrappedObject, bool  arg__1);
-   void py_q_setShowTooltip(Positionable* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_setShowTooltip(arg__1));}
+   void setShowToolTip(Positionable* theWrappedObject, bool  arg__1);
+   void py_q_setShowToolTip(Positionable* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_setShowToolTip(arg__1));}
    void setSize(Positionable* theWrappedObject, int  arg__1, int  arg__2);
    void py_q_setSize(Positionable* theWrappedObject, int  arg__1, int  arg__2){  (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_setSize(arg__1, arg__2));}
    bool  setTextEditMenu(Positionable* theWrappedObject, QMenu*  arg__1);
    bool  py_q_setTextEditMenu(Positionable* theWrappedObject, QMenu*  arg__1){  return (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_setTextEditMenu(arg__1));}
-   void setTooltip(Positionable* theWrappedObject, QString  tip);
-   void py_q_setTooltip(Positionable* theWrappedObject, QString  tip){  (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_setTooltip(tip));}
+   void setToolTip(Positionable* theWrappedObject, QString  tip);
+   void py_q_setToolTip(Positionable* theWrappedObject, QString  tip){  (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_setToolTip(tip));}
    void setViewCoordinates(Positionable* theWrappedObject, bool  arg__1);
    void py_q_setViewCoordinates(Positionable* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Positionable*)theWrappedObject)->py_q_setViewCoordinates(arg__1));}
    void setVisible(Positionable* theWrappedObject, bool  b);
@@ -2148,7 +2156,7 @@ void delete_PositionableLabel(PositionableLabel* obj) { delete obj; }
    bool  getSaveOpaque(PositionableLabel* theWrappedObject);
    double  getScale(PositionableLabel* theWrappedObject);
    QSize  getSize(PositionableLabel* theWrappedObject);
-   QString  getTooltip(PositionableLabel* theWrappedObject);
+   QString  getToolTip(PositionableLabel* theWrappedObject);
    QString  getUnRotatedText(PositionableLabel* theWrappedObject);
    bool  getViewCoordinates(PositionableLabel* theWrappedObject);
    int  getWidth(PositionableLabel* theWrappedObject);
@@ -2205,14 +2213,14 @@ void delete_PositionableLabel(PositionableLabel* obj) { delete obj; }
    void py_q_setScale(PositionableLabel* theWrappedObject, double  s){  (((PythonQtPublicPromoter_PositionableLabel*)theWrappedObject)->py_q_setScale(s));}
    bool  setScaleMenu(PositionableLabel* theWrappedObject, QMenu*  popup);
    bool  py_q_setScaleMenu(PositionableLabel* theWrappedObject, QMenu*  popup){  return (((PythonQtPublicPromoter_PositionableLabel*)theWrappedObject)->py_q_setScaleMenu(popup));}
-   void setShowTooltip(PositionableLabel* theWrappedObject, bool  set);
+   void setShowToolTip(PositionableLabel* theWrappedObject, bool  set);
    void setSize(PositionableLabel* theWrappedObject, int  x, int  y);
    void setStyleSheet(PositionableLabel* theWrappedObject);
    void setSuperText(PositionableLabel* theWrappedObject, QString  text);
    void setText(PositionableLabel* theWrappedObject, QString  text);
    bool  setTextEditMenu(PositionableLabel* theWrappedObject, QMenu*  popup);
    bool  py_q_setTextEditMenu(PositionableLabel* theWrappedObject, QMenu*  popup){  return (((PythonQtPublicPromoter_PositionableLabel*)theWrappedObject)->py_q_setTextEditMenu(popup));}
-   void setTooltip(PositionableLabel* theWrappedObject, QString  tip);
+   void setToolTip(PositionableLabel* theWrappedObject, QString  tip);
    void setViewCoordinates(PositionableLabel* theWrappedObject, bool  enabled);
    void setVisible(PositionableLabel* theWrappedObject, bool  b);
    void showHidden(PositionableLabel* theWrappedObject);

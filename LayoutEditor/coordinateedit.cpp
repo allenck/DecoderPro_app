@@ -291,7 +291,7 @@ void RotateAction::on_rotateAction_triggered()
 //            }
 //        };
  ScaleEditAction* scaleEditAction = new ScaleEditAction(pos, tr("Scale (percentage)"), parent);
- connect(scaleEditAction, SIGNAL(triggered()), parent, SLOT(on_getScaleEditAction_triggered()));
+ connect(scaleEditAction, SIGNAL(triggered()), scaleEditAction, SLOT(on_getScaleEditAction_triggered()));
  return scaleEditAction;
 }
 ScaleEditAction::ScaleEditAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)

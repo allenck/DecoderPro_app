@@ -455,6 +455,7 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
     slotmanager->message(new LocoNetMessage(QVector<int>() <<0xE7<< 0x0E<< 0x7C<< 0x6B<< 0x00<< 0x00<< 0x02<< 0x47<< 0x00<< 0x1E<< 0x10<< 0x7F<< 0x7F<< 0x4A));
     Assert::assertEquals("no immediate reply", -999, status, __FILE__, __LINE__);
 //    util.JUnitUtil::releaseThread(this, releaseTestDelay);
+    JUnitUtil::waitFor(releaseTestDelay);
     Assert::assertEquals("initial status", -999, status, __FILE__, __LINE__);
 
     // check that SI write happened

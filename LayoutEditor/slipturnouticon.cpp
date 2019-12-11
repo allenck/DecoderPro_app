@@ -137,68 +137,68 @@
   case WEST:
    if (namedTurnoutWest != nullptr)
    {
-     //getTurnout(WEST)->removePropertyChangeListener(this);
-    AbstractTurnout* to = (AbstractTurnout*)getTurnout(WEST);
-    disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     getTurnout(WEST)->removePropertyChangeListener((PropertyChangeListener*)this);
+//    AbstractTurnout* to = (AbstractTurnout*)getTurnout(WEST);
+//    disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
    namedTurnoutWest = to;
    if (namedTurnoutWest != nullptr)
    {
     displayState(turnoutState());
-    //getTurnout(WEST)->addPropertyChangeListener(this, namedTurnoutWest->getName(), "Panel Editor Turnout");
-    AbstractTurnout* to = (AbstractTurnout*)getTurnout(WEST);
-   connect(to->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    getTurnout(WEST)->addPropertyChangeListener((PropertyChangeListener*)this, namedTurnoutWest->getName(), "Panel Editor Turnout");
+//    AbstractTurnout* to = (AbstractTurnout*)getTurnout(WEST);
+//   connect(to->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
    break;
   case EAST:
    if (namedTurnoutEast != nullptr)
    {
-    //getTurnout(EAST)->removePropertyChangeListener(this);
-    AbstractTurnout* to = (AbstractTurnout*)getTurnout(EAST);
-    disconnect(to->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    getTurnout(EAST)->removePropertyChangeListener((PropertyChangeListener*)this);
+//    AbstractTurnout* to = (AbstractTurnout*)getTurnout(EAST);
+//    disconnect(to->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
    }
    namedTurnoutEast = to;
    if (namedTurnoutEast != nullptr)
    {
     displayState(turnoutState());
-    //getTurnout(EAST)->addPropertyChangeListener(this, namedTurnoutEast->getName(), "Panel Editor Turnout");
-    AbstractTurnout* to = (AbstractTurnout*)getTurnout(EAST);
-    connect(to->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    getTurnout(EAST)->addPropertyChangeListener((PropertyChangeListener*)this, namedTurnoutEast->getName(), "Panel Editor Turnout");
+//    AbstractTurnout* to = (AbstractTurnout*)getTurnout(EAST);
+//    connect(to->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
    }
    break;
   case LOWERWEST:
    if (namedTurnoutWestLower != nullptr)
    {
-    //getTurnout(LOWERWEST)->removePropertyChangeListener(this);
-    AbstractTurnout* to = (AbstractTurnout*)getTurnout(LOWERWEST);
-    disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    getTurnout(LOWERWEST)->removePropertyChangeListener((PropertyChangeListener*)this);
+//    AbstractTurnout* to = (AbstractTurnout*)getTurnout(LOWERWEST);
+//    disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
    namedTurnoutWestLower = to;
    if (namedTurnoutWestLower != nullptr)
    {
     displayState(turnoutState());
-    //getTurnout(LOWERWEST)->addPropertyChangeListener(this, namedTurnoutWestLower->getName(), "Panel Editor Turnout");
-    AbstractTurnout* to = (AbstractTurnout*)getTurnout(LOWERWEST);
-    connect(to->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    getTurnout(LOWERWEST)->addPropertyChangeListener((PropertyChangeListener*)this, namedTurnoutWestLower->getName(), "Panel Editor Turnout");
+//    AbstractTurnout* to = (AbstractTurnout*)getTurnout(LOWERWEST);
+//    connect(to->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
    }
    break;
   case LOWEREAST:
    if (namedTurnoutEastLower != nullptr)
    {
-    //getTurnout(LOWEREAST)->removePropertyChangeListener(this);
-    AbstractTurnout* to = (AbstractTurnout*)getTurnout(LOWEREAST);
-    disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    getTurnout(LOWEREAST)->removePropertyChangeListener((PropertyChangeListener*)this);
+//    AbstractTurnout* to = (AbstractTurnout*)getTurnout(LOWEREAST);
+//    disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
    namedTurnoutEastLower = to;
    if (namedTurnoutEastLower != nullptr)
    {
     //displayState(turnoutState());
-    //getTurnout(LOWEREAST)->addPropertyChangeListener(this, namedTurnoutEastLower->getName(), "Panel Editor Turnout");
-    AbstractTurnout* to = (AbstractTurnout*)getTurnout(LOWEREAST);
-    connect(to->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    getTurnout(LOWEREAST)->addPropertyChangeListener((PropertyChangeListener*)this, namedTurnoutEastLower->getName(), "Panel Editor Turnout");
+//    AbstractTurnout* to = (AbstractTurnout*)getTurnout(LOWEREAST);
+//    connect(to->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
    break;
  }
@@ -1178,28 +1178,28 @@ void SlipTurnoutIcon::on_slipTurnoutTextEdit()
 
 /*public*/ void SlipTurnoutIcon::dispose() {
     if (namedTurnoutWest != nullptr) {
-     //getTurnout(WEST).removePropertyChangeListener(this);
-     AbstractTurnout* to = (AbstractTurnout*)getTurnout(WEST);
-     disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     getTurnout(WEST)->removePropertyChangeListener((PropertyChangeListener*)this);
+//     AbstractTurnout* to = (AbstractTurnout*)getTurnout(WEST);
+//     disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     namedTurnoutWest = nullptr;
     if (namedTurnoutEast != nullptr) {
-       // getTurnout(EAST).removePropertyChangeListener(this);
-        AbstractTurnout* to = (AbstractTurnout*)getTurnout(EAST);
-        disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        getTurnout(EAST)->removePropertyChangeListener((PropertyChangeListener*)this);
+//        AbstractTurnout* to = (AbstractTurnout*)getTurnout(EAST);
+//        disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     }
     namedTurnoutEast = nullptr;
     if (namedTurnoutWestLower != nullptr) {
-        //getTurnout(WEST).removePropertyChangeListener(this);
-        AbstractTurnout* to = (AbstractTurnout*)getTurnout(WEST);
-        disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        getTurnout(WEST)->removePropertyChangeListener((PropertyChangeListener*)this);
+//        AbstractTurnout* to = (AbstractTurnout*)getTurnout(WEST);
+//        disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     namedTurnoutWestLower = nullptr;
     if (namedTurnoutEastLower != nullptr) {
-        //getTurnout(EAST).removePropertyChangeListener(this);
-        AbstractTurnout* to = (AbstractTurnout*)getTurnout(EAST);
-        disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        getTurnout(EAST)->removePropertyChangeListener((PropertyChangeListener*)this);
+//        AbstractTurnout* to = (AbstractTurnout*)getTurnout(EAST);
+//        disconnect(to, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     namedTurnoutEastLower = nullptr;
     lowerWestToUpperEast = nullptr;

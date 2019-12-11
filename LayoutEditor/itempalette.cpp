@@ -535,7 +535,9 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     _tabPane->setObjectName(QString::fromUtf8("_tabPane"));
     _tabIndex = new QMap<QString, ItemPanel*>();
 
-    ItemPanel* itemPanel = new TableItemPanel(palette, "Turnout", NULL, PickListModel::turnoutPickModelInstance(), editor, palette);
+    ItemPanel* itemPanel;
+#if 1
+    itemPanel = new TableItemPanel(palette, "Turnout", NULL, PickListModel::turnoutPickModelInstance(), editor, palette);
     addItemTab(itemPanel, "Turnout", tr("Turnout"));
     itemPanel->init();  // show panel on start
 
@@ -562,11 +564,11 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     itemPanel = new TableItemPanel(palette, "Light", NULL, PickListModel::lightPickModelInstance(), editor, palette);
     addItemTab(itemPanel, "Light", tr("Light"));
     itemPanel->init();
-
+#endif
     itemPanel = new MultiSensorItemPanel(palette, "MultiSensor", NULL, PickListModel::multiSensorPickModelInstance(), editor,palette);
     addItemTab(itemPanel, "MultiSensor", tr("MultiSensor"));
-    itemPanel->init();
-
+    temPanel->init();
+#if 1
     itemPanel = new IconItemPanel(palette, "Icon", editor,palette);
     addItemTab(itemPanel, "Icon", tr("Icon"));
     itemPanel->init();
@@ -579,11 +581,10 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     addItemTab(itemPanel, "Text", tr("Text"));
     itemPanel->init();
 
-#if 1 //TODO:
     itemPanel = new RPSItemPanel(palette, "RPSReporter", NULL, editor);
     addItemTab(itemPanel, "RPSReporter", tr("RPSReporter"));
     itemPanel->init();
-#endif
+
     itemPanel = new ClockItemPanel(palette, "FastClock", editor,palette);
     addItemTab(itemPanel, "FastClock", tr("FastClock"));
     itemPanel->init();
@@ -599,7 +600,7 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     itemPanel = new PortalItemPanel(palette, "Portal", NULL, editor);
     addItemTab(itemPanel, tr("Portal"), tr("Portal"));
     itemPanel->init();
-
+#endif
     //_tabPane->addChangeListener(this);
     connect(_tabPane, SIGNAL(currentChanged(int)), palette, SLOT(tabPaneChanged(int)));
 }
@@ -867,6 +868,9 @@ void IPEditItemActionListener::actionPerformed()
 //            cName = name;
 //        }
 //    }
+
+// NOTE: See java class DisplayBundle.properties for more
+
     if(name == "LargeJewel")
         return tr("Large Jewel");
     if(name == "Small Jewel")
@@ -923,6 +927,14 @@ void IPEditItemActionListener::actionPerformed()
         return tr("Flashing Yellow");
     if(name == "SignalHeadStateFlashingLunar")
         return tr("Flashing Lunar");
+    if(name == "RightCrossOver")
+       return tr("RH X-over");
+    if(name == "LeftCrossOver")
+       return tr("LH X-over");
+    if(name == "RightTurnout")
+       return tr("Right Hand Turnout");
+    if(name == "LeftTurnout")
+       return tr("Left Hand Turnout");
 
 
     return cName;

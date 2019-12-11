@@ -23,6 +23,7 @@ public:
     /*public*/ void init(ActionListener* doneAction);
     /*public*/ virtual QMap<QString, NamedIcon *> *getIconMap();
     /*public*/ QString getFamilyName();
+    virtual /*public*/ void updateFamilyIcons();
 
 signals:
 
@@ -77,7 +78,7 @@ protected:
     /*protected*/ virtual void setFamily(QString family) ;
     /*protected*/ virtual void openDialog(QString type, QString family, QMap<QString, NamedIcon *> *iconMap);
     /*protected*/ void closeDialogs();
-    /*protected*/ bool _suppressDragging;
+    /*protected*/ bool _suppressDragging= false;
     /*protected*/ QString getValidFamilyName(QString family);
     /*protected*/ void addUpdateButtonToBottom(ActionListener* doneAction);
     /*protected*/ JPanel* makeItemButtonPanel();

@@ -11,6 +11,7 @@
 #include <QLabel>
 #include <QGraphicsItemGroup>
 #include "exceptions.h"
+#include "jcomponent.h"
 
 class Border;
 class MyGraphicsItemGroup : public QGraphicsItemGroup
@@ -74,12 +75,12 @@ public:
         /*public*/ virtual void setEditable(bool /*enabled*/) {}
         /*public*/ virtual bool isEditable()  {return false;}
 
-        /*public*/ virtual void setShowTooltip(bool /*set*/) {}
+        /*public*/ virtual void setShowToolTip(bool /*set*/) {}
         /*public*/ virtual bool showToolTip() {return false;}
 //        /*public*/ virtual void setTooltip(ToolTip tip);
-        /*public*/ virtual void setTooltip(QString tip);
+        /*public*/ virtual void setToolTip(QString tip);
 
-        /*public*/ virtual QString getTooltip();
+        /*public*/ virtual QString getToolTip();
 
         /*public*/ virtual void setViewCoordinates(bool /*enabled*/) {}
         /*public*/ virtual bool getViewCoordinates() {return false;}
@@ -140,7 +141,7 @@ public:
         /*public*/ virtual void rotate(int /*deg*/) {}
         /*public*/ virtual int getDegrees() {return 0;}
         /*public*/ virtual bool getSaveOpaque() {return 0;}		// for rotated text
-//        /*public*/ virtual JComponent getTextComponent();
+        /*public*/ virtual QWidget* getTextComponent() {return nullptr;}
 
         /*public*/ virtual void remove() {}
 
@@ -208,7 +209,7 @@ public:
     MyGraphicsItemGroup* _handleGroup = nullptr;
     virtual QString getGroupName() { return "Positionable";}
     virtual QObject* self() = 0;
-
+    virtual QString getClass() {return "";}
 #if QT_VERSION >= 0x050000
     virtual void languageChange() {}
 #endif

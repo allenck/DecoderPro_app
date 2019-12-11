@@ -3246,7 +3246,7 @@ if (roads.length() == 0) {
  if (_trainIcon !=NULL&& _trainIcon->isActive())
  {
      setTrainIconColor();
-     _trainIcon->setShowTooltip(true);
+     _trainIcon->setShowToolTip(true);
      QString txt = NULL;
      if (getCurrentLocationName()==(NONE))
      {

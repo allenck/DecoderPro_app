@@ -22,6 +22,7 @@
 #include "sensoriconxml.h"
 #include "turnouticonxml.h"
 #include "lighticonxml.h"
+#include "defaultlistselectionmodel.h"
 
 //TableItemPanel::TableItemPanel(QWidget *parent) :
 //    FamilyItemPanel(parent)
@@ -59,7 +60,7 @@
  if (!_initialized)
  {
   FamilyItemPanel::init();
-  thisLayout->addWidget(/*0,*/initTablePanel(_model, _editor));
+  thisLayout->addWidget(/*0,*/initTablePanel(_model, _editor), 0, Qt::AlignTop);
   _buttonPosition = 1;
  }
 }
@@ -78,16 +79,21 @@
 /**
 *  top Panel
 */
-/*protected*/ QWidget* TableItemPanel::initTablePanel(PickListModel* model, Editor* editor)
+/*protected*/ QWidget* TableItemPanel::initTablePanel(PickListModel* model, Editor* /*editor*/)
 {
  _table = model->makePickTable();
- //_table->setMinimumHeight(100);
+ _table->setMinimumWidth(300);
  _table->setSelectionBehavior(QAbstractItemView::SelectRows);
  _table->setSelectionMode(QAbstractItemView::SingleSelection);
+ QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+ sizePolicy.setHorizontalStretch(2);
+ sizePolicy.setVerticalStretch(0);
+ sizePolicy.setHeightForWidth(_table->sizePolicy().hasHeightForWidth());
+ _table->setSizePolicy(sizePolicy);
  QFont font = _table->font();
  font.setPointSize(8);
  _table->setFont(font);
-//    _table->getSelectionModel().addListSelectionListener(this);
+ _table->getSelectionModel()->addListSelectionListener((ListSelectionListener*)this);
  ROW_HEIGHT = _table->getRowHeight();
  QWidget* topPanel = new QWidget();
  QVBoxLayout* topPanelLayout;
@@ -96,7 +102,7 @@
 // _scrollPane = new JScrollPane(_table);
 // int cnt = Math.min(8, _table.getRowCount()) + 2;
 // _scrollPane.setPreferredSize(new Dimension(_scrollPane.getPreferredSize().width, cnt*ROW_HEIGHT));
- topPanelLayout->addWidget(/*_scrollPane*/_table,0, Qt::AlignCenter);// BorderLayout.CENTER);
+ topPanelLayout->addWidget(/*_scrollPane*/_table,1, Qt::AlignCenter);// BorderLayout.CENTER);
  topPanel->setToolTip(tr("Drag a row from the table to add a label of the item to the Panel"));
 
  QWidget* panel = new QWidget();
@@ -145,7 +151,6 @@ void AddTableActionListener::actionPerformed(ActionEvent *e)
 //                addToTable();
 //            }
 //        };
-#if 1
     AddTableActionListener* listener = new AddTableActionListener(this);
     AtCancelListener* cancelListener = new AtCancelListener(this);
 
@@ -158,7 +163,6 @@ void AddTableActionListener::actionPerformed(ActionEvent *e)
 //    _addTableDialog->setLocationRelativeTo(_paletteFrame);
     _addTableDialog->toFront();
     _addTableDialog->setVisible(true);
-#endif
 }
 
 AtCancelListener::AtCancelListener(TableItemPanel *self)
@@ -244,14 +248,14 @@ void TableItemPanel::cancelPressed(/*ActionEvent e*/) {
  }
  else
  {
-  valueChanged(/*NULL*/);
+  valueChanged(new ListSelectionEvent(this, row,row, false));
  }
 }
 
 /**
 *  ListSelectionListener action
 */
-/*public*/ void TableItemPanel::valueChanged(/*ListSelectionEvent e*/)
+/*public*/ void TableItemPanel::valueChanged(ListSelectionEvent* e)
 {
  if (_table == NULL || _updateButton==NULL)
  {
@@ -375,7 +379,8 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
  }
  return NULL;
 }
-QString TIconDragJLabel::mimeData()
+
+QByteArray TIconDragJLabel::mimeData()
 {
  NamedBean* bean = self-> getTableSelection();
  if(bean == NULL)
@@ -384,10 +389,9 @@ QString TIconDragJLabel::mimeData()
      return "";
  }
  //DataFlavor* flavor;
- QString xmldata;
+ QByteArray xmldata;
  if(self->_itemType == "Turnout")
  {
-     //return bean->getSystemName()+ ";TurnoutIcon";
   TurnoutIcon* icon;
   _dataFlavor = new DataFlavor(icon = new TurnoutIcon(NULL),"TurnoutIcon");
   icon->setTurnout(bean->getSystemName());
@@ -403,7 +407,8 @@ QString TIconDragJLabel::mimeData()
   TurnoutIconXml* xml = new TurnoutIconXml();
   QDomElement e = xml->store((QObject*)icon);
   xml->doc.appendChild(e);
-  xmldata = xml->doc.toString();
+  xmldata.append(xml->doc.toString());
+  delete icon;
  }
  else  if(self->_itemType == "Sensor")
  {
@@ -422,7 +427,7 @@ QString TIconDragJLabel::mimeData()
   SensorIconXml* xml = new SensorIconXml();
   QDomElement e = xml->store((QObject*)icon);
   xml->doc.appendChild(e);
-  xmldata = xml->doc.toString();
+  xmldata.append(xml->doc.toString());
  }
  else  if(self->_itemType == "Light")
  {
@@ -441,10 +446,10 @@ QString TIconDragJLabel::mimeData()
   LightIconXml* xml = new LightIconXml();
   QDomElement e = xml->store((QObject*)icon);
   xml->doc.appendChild(e);
-  xmldata = xml->doc.toString();
+  xmldata.append(xml->doc.toString());
  }
- _dataFlavor->setMimeTypeParameter("xml", QString(QUrl::toPercentEncoding(xmldata)));
- return _dataFlavor->toString();
+ delete _dataFlavor;
+return xmldata;
 }
 
 //};

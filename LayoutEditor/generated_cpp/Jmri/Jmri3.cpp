@@ -2593,7 +2593,7 @@ if (_wrapper) {
 }
   return RosterObject::getIndexedProperty(arg__1, arg__2);
 }
-QVariant  PythonQtShell_RosterObject::getProperty(QString  key0)
+QVariant  PythonQtShell_RosterObject::getProperty(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2604,7 +2604,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"QVariant" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       QVariant returnValue{};
-      void* args[2] = {NULL, (void*)&key0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -2624,7 +2624,7 @@ if (_wrapper) {
     }
   }
 }
-  return RosterObject::getProperty(key0);
+  return RosterObject::getProperty(arg__1);
 }
 QSet<QString >  PythonQtShell_RosterObject::getPropertyNames()
 {
@@ -2659,7 +2659,7 @@ if (_wrapper) {
 }
   return RosterObject::getPropertyNames();
 }
-bool  PythonQtShell_RosterObject::hasIndexedProperty(QString  key0)
+bool  PythonQtShell_RosterObject::hasIndexedProperty(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2670,7 +2670,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"bool" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
-      void* args[2] = {NULL, (void*)&key0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -2690,9 +2690,9 @@ if (_wrapper) {
     }
   }
 }
-  return RosterObject::hasIndexedProperty(key0);
+  return RosterObject::hasIndexedProperty(arg__1);
 }
-bool  PythonQtShell_RosterObject::hasProperty(QString  key0)
+bool  PythonQtShell_RosterObject::hasProperty(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2703,7 +2703,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"bool" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
-      void* args[2] = {NULL, (void*)&key0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -2723,9 +2723,9 @@ if (_wrapper) {
     }
   }
 }
-  return RosterObject::hasProperty(key0);
+  return RosterObject::hasProperty(arg__1);
 }
-void PythonQtShell_RosterObject::setIndexedProperty(QString  key0, int  index1, QVariant  value2)
+void PythonQtShell_RosterObject::setIndexedProperty(QString  arg__1, int  arg__2, QVariant  arg__3)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2735,7 +2735,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QString" , "int" , "QVariant"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
-      void* args[4] = {NULL, (void*)&key0, (void*)&index1, (void*)&value2};
+      void* args[4] = {NULL, (void*)&arg__1, (void*)&arg__2, (void*)&arg__3};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -2745,9 +2745,9 @@ if (_wrapper) {
     }
   }
 }
-  RosterObject::setIndexedProperty(key0, index1, value2);
+  RosterObject::setIndexedProperty(arg__1, arg__2, arg__3);
 }
-void PythonQtShell_RosterObject::setProperty(QString  key0, QVariant  value1)
+void PythonQtShell_RosterObject::setProperty(QString  arg__1, QVariant  arg__2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2757,7 +2757,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QString" , "QVariant"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      void* args[3] = {NULL, (void*)&key0, (void*)&value1};
+      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -2767,7 +2767,7 @@ if (_wrapper) {
     }
   }
 }
-  RosterObject::setProperty(key0, value1);
+  RosterObject::setProperty(arg__1, arg__2);
 }
 RosterObject* PythonQtWrapper_RosterObject::new_RosterObject()
 { 

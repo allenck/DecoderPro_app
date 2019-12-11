@@ -442,6 +442,12 @@ void JFrame::addWindowListener(WindowListener* l)
 {
  listeners->append(l);
 }
+
+QVector<WindowListener*> JFrame::getWindowListeners()
+{
+ return QVector<WindowListener*>(listeners->toVector());
+}
+
 /**
  * Removes the specified window listener so that it no longer
  * receives window events from this window.

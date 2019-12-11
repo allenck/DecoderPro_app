@@ -124,14 +124,15 @@
  this->preview1 = preview1;
  this->preview2 = preview2;
 
-    if (_bgColorBox == nullptr) {
-        _bgColorBox = new QComboBox();
-        _bgColorBox->addItem(tr("Panel Color")); // PanelColor key is specific for CPE, but too long for combo
-        _bgColorBox->addItem(tr("White"));
-        _bgColorBox->addItem(tr("LightGray"));
-        _bgColorBox->addItem(tr("DarkGray"));
-        _bgColorBox->addItem(tr("Checkers"));
-        _bgColorBox->setCurrentIndex(_paletteFrame->getPreviewBg()); // Global field, starts as 0 = panel   bg color
+ if (_bgColorBox == nullptr)
+ {
+     _bgColorBox = new QComboBox();
+     _bgColorBox->addItem(tr("Panel Color")); // PanelColor key is specific for CPE, but too long for combo
+     _bgColorBox->addItem(tr("White"));
+     _bgColorBox->addItem(tr("LightGray"));
+     _bgColorBox->addItem(tr("DarkGray"));
+     _bgColorBox->addItem(tr("Checkers"));
+     _bgColorBox->setCurrentIndex(_paletteFrame->getPreviewBg()); // Global field, starts as 0 = panel   bg color
 //        _bgColorBox.addActionListener((ActionEvent e) -> {
 //            if (_backgrounds != null) {
 //                int previewBgSet = _bgColorBox.getSelectedIndex();
@@ -151,7 +152,7 @@
 //                log.debug("imgArray is empty");
 //            }
 //        });
-        connect(_bgColorBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_bgColorBox()));
+     connect(_bgColorBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_bgColorBox()));
     }
     QWidget* backgroundPanel = new QWidget(); //new FlowLayout(FlowLayout.CENTER));
     FlowLayout* backgroundPanelLayout = new FlowLayout(backgroundPanel);

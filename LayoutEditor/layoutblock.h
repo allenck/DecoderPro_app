@@ -747,6 +747,7 @@ class HandleBlockChangeListener : public PropertyChangeListener
     {
      this->parent = parent;
     }
+public slots:
     void propertyChange(PropertyChangeEvent *e)
     {
      this->parent->handleBlockChange(e);

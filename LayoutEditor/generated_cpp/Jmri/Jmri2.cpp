@@ -17974,6 +17974,39 @@ if (_wrapper) {
 }
   return Positionable::getBounds(arg__1);
 }
+QString  PythonQtShell_Positionable::getClass()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getClass");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getClass", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return Positionable::getClass();
+}
 int  PythonQtShell_Positionable::getDegrees()
 {
 if (_wrapper) {
@@ -18370,12 +18403,45 @@ if (_wrapper) {
 }
   return Positionable::getScale();
 }
-QString  PythonQtShell_Positionable::getTooltip()
+QWidget*  PythonQtShell_Positionable::getTextComponent()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
   if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getTooltip");
+    static PyObject* name = PyString_FromString("getTextComponent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QWidget*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QWidget* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getTextComponent", methodInfo, result);
+          } else {
+            returnValue = *((QWidget**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return Positionable::getTextComponent();
+}
+QString  PythonQtShell_Positionable::getToolTip()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getToolTip");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
       static const char* argumentList[] ={"QString"};
@@ -18387,7 +18453,7 @@ if (_wrapper) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
         if (args[0]!=&returnValue) {
           if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getTooltip", methodInfo, result);
+            PythonQt::priv()->handleVirtualOverloadReturnError("getToolTip", methodInfo, result);
           } else {
             returnValue = *((QString*)args[0]);
           }
@@ -18401,7 +18467,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::getTooltip();
+  return Positionable::getToolTip();
 }
 bool  PythonQtShell_Positionable::getViewCoordinates()
 {
@@ -19437,12 +19503,12 @@ if (_wrapper) {
 }
   return Positionable::setScaleMenu(arg__1);
 }
-void PythonQtShell_Positionable::setShowTooltip(bool  arg__1)
+void PythonQtShell_Positionable::setShowToolTip(bool  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
   if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("setShowTooltip");
+    static PyObject* name = PyString_FromString("setShowToolTip");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
       static const char* argumentList[] ={"" , "bool"};
@@ -19457,7 +19523,7 @@ if (_wrapper) {
     }
   }
 }
-  Positionable::setShowTooltip(arg__1);
+  Positionable::setShowToolTip(arg__1);
 }
 void PythonQtShell_Positionable::setSize(int  arg__1, int  arg__2)
 {
@@ -19514,12 +19580,12 @@ if (_wrapper) {
 }
   return Positionable::setTextEditMenu(arg__1);
 }
-void PythonQtShell_Positionable::setTooltip(QString  tip0)
+void PythonQtShell_Positionable::setToolTip(QString  tip0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
   if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("setTooltip");
+    static PyObject* name = PyString_FromString("setToolTip");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
       static const char* argumentList[] ={"" , "QString"};
@@ -19534,7 +19600,7 @@ if (_wrapper) {
     }
   }
 }
-  Positionable::setTooltip(tip0);
+  Positionable::setToolTip(tip0);
 }
 void PythonQtShell_Positionable::setViewCoordinates(bool  arg__1)
 {
@@ -19825,6 +19891,11 @@ QRectF  PythonQtWrapper_Positionable::getBounds(Positionable* theWrappedObject, 
   return ( theWrappedObject->getBounds(arg__1));
 }
 
+QString  PythonQtWrapper_Positionable::getClass(Positionable* theWrappedObject)
+{
+  return ( theWrappedObject->getClass());
+}
+
 int  PythonQtWrapper_Positionable::getDegrees(Positionable* theWrappedObject)
 {
   return ( theWrappedObject->getDegrees());
@@ -19890,9 +19961,14 @@ double  PythonQtWrapper_Positionable::getScale(Positionable* theWrappedObject)
   return ( theWrappedObject->getScale());
 }
 
-QString  PythonQtWrapper_Positionable::getTooltip(Positionable* theWrappedObject)
+QWidget*  PythonQtWrapper_Positionable::getTextComponent(Positionable* theWrappedObject)
 {
-  return ( theWrappedObject->getTooltip());
+  return ( theWrappedObject->getTextComponent());
+}
+
+QString  PythonQtWrapper_Positionable::getToolTip(Positionable* theWrappedObject)
+{
+  return ( theWrappedObject->getToolTip());
 }
 
 bool  PythonQtWrapper_Positionable::getViewCoordinates(Positionable* theWrappedObject)
@@ -20085,9 +20161,9 @@ bool  PythonQtWrapper_Positionable::setScaleMenu(Positionable* theWrappedObject,
   return ( theWrappedObject->setScaleMenu(arg__1));
 }
 
-void PythonQtWrapper_Positionable::setShowTooltip(Positionable* theWrappedObject, bool  arg__1)
+void PythonQtWrapper_Positionable::setShowToolTip(Positionable* theWrappedObject, bool  arg__1)
 {
-  ( theWrappedObject->setShowTooltip(arg__1));
+  ( theWrappedObject->setShowToolTip(arg__1));
 }
 
 void PythonQtWrapper_Positionable::setSize(Positionable* theWrappedObject, int  arg__1, int  arg__2)
@@ -20100,9 +20176,9 @@ bool  PythonQtWrapper_Positionable::setTextEditMenu(Positionable* theWrappedObje
   return ( theWrappedObject->setTextEditMenu(arg__1));
 }
 
-void PythonQtWrapper_Positionable::setTooltip(Positionable* theWrappedObject, QString  tip)
+void PythonQtWrapper_Positionable::setToolTip(Positionable* theWrappedObject, QString  tip)
 {
-  ( theWrappedObject->setTooltip(tip));
+  ( theWrappedObject->setToolTip(tip));
 }
 
 void PythonQtWrapper_Positionable::setViewCoordinates(Positionable* theWrappedObject, bool  arg__1)
@@ -21011,9 +21087,9 @@ QSize  PythonQtWrapper_PositionableLabel::getSize(PositionableLabel* theWrappedO
   return ( theWrappedObject->getSize());
 }
 
-QString  PythonQtWrapper_PositionableLabel::getTooltip(PositionableLabel* theWrappedObject)
+QString  PythonQtWrapper_PositionableLabel::getToolTip(PositionableLabel* theWrappedObject)
 {
-  return ( theWrappedObject->getTooltip());
+  return ( theWrappedObject->getToolTip());
 }
 
 QString  PythonQtWrapper_PositionableLabel::getUnRotatedText(PositionableLabel* theWrappedObject)
@@ -21246,9 +21322,9 @@ bool  PythonQtWrapper_PositionableLabel::setScaleMenu(PositionableLabel* theWrap
   return ( theWrappedObject->setScaleMenu(popup));
 }
 
-void PythonQtWrapper_PositionableLabel::setShowTooltip(PositionableLabel* theWrappedObject, bool  set)
+void PythonQtWrapper_PositionableLabel::setShowToolTip(PositionableLabel* theWrappedObject, bool  set)
 {
-  ( theWrappedObject->setShowTooltip(set));
+  ( theWrappedObject->setShowToolTip(set));
 }
 
 void PythonQtWrapper_PositionableLabel::setSize(PositionableLabel* theWrappedObject, int  x, int  y)
@@ -21276,9 +21352,9 @@ bool  PythonQtWrapper_PositionableLabel::setTextEditMenu(PositionableLabel* theW
   return ( theWrappedObject->setTextEditMenu(popup));
 }
 
-void PythonQtWrapper_PositionableLabel::setTooltip(PositionableLabel* theWrappedObject, QString  tip)
+void PythonQtWrapper_PositionableLabel::setToolTip(PositionableLabel* theWrappedObject, QString  tip)
 {
-  ( theWrappedObject->setTooltip(tip));
+  ( theWrappedObject->setToolTip(tip));
 }
 
 void PythonQtWrapper_PositionableLabel::setViewCoordinates(PositionableLabel* theWrappedObject, bool  enabled)

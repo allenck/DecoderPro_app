@@ -133,27 +133,27 @@ private:
     /*private*/ /*static*/ class SignalMastAspect
     {
     public:
-        SignalMastAspect(QString appearance);
+        SignalMastAspect(QString aspect);
         void setIncluded(bool include);
         bool isIncluded();
-        void setAppearance(QString app);
-        QString getAppearance();
+        void setAspect(QString app);
+        QString getAspect();
     private:
         bool _include;
-        QString _appearance;
+        QString _aspect;
 
     };
     /*private*/ QList <SignalGroupSignal*> _signalList;        // array of all Sensorsy
     /*private*/ QList <SignalGroupSignal*> _includedSignalList;
 
     /*private*/ QList <SignalMastAspect*> _mastAppearancesList;        // array of all Sensorsy
-    /*private*/ QList <SignalMastAspect*> _includedMastAppearancesList;
+    /*private*/ QList <SignalMastAspect*> _includedMastAspectsList;
  //SGBeanTableDataModel* m;
  void setColumnToHoldButton(JTable* table, int column, QPushButton* sample);
  void initializeIncludedList();
  bool checkNewNamesOK();
- void setMastAppearanceInformation(SignalGroup* g);
- void setValidSignalAppearances();
+ void setMastAspectInformation(SignalGroup* g);
+ void setValidSignalAspects();
  bool checkValidSignalMast();
  SignalGroup* checkNamesOK();
  void finishUpdate();

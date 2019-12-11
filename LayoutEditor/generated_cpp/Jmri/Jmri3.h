@@ -368,12 +368,12 @@ public:
 
 virtual QString  getDisplayName();
 virtual QVariant  getIndexedProperty(QString  arg__1, int  arg__2);
-virtual QVariant  getProperty(QString  key);
+virtual QVariant  getProperty(QString  arg__1);
 virtual QSet<QString >  getPropertyNames();
-virtual bool  hasIndexedProperty(QString  key);
-virtual bool  hasProperty(QString  key);
-virtual void setIndexedProperty(QString  key, int  index, QVariant  value);
-virtual void setProperty(QString  key, QVariant  value);
+virtual bool  hasIndexedProperty(QString  arg__1);
+virtual bool  hasProperty(QString  arg__1);
+virtual void setIndexedProperty(QString  arg__1, int  arg__2, QVariant  arg__3);
+virtual void setProperty(QString  arg__1, QVariant  arg__2);
 
   PythonQtInstanceWrapper* _wrapper; 
 };

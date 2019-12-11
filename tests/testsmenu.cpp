@@ -64,6 +64,7 @@
 #include "warrants/warrantpreferencespaneltestaction.h"
 #include "misc/jmriuserpreferencesmanagertestaction.h"
 #include "operations/optionsmenutestaction.h"
+#include "positionables/signalmasticontestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -170,5 +171,8 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     warrantMenu->addAction(new WarrantTestAction(this));
     warrantMenu->addAction(new WarrantPreferencesPanelTestAction(this));
     warrantMenu->addAction(new JmriUserPreferencesManagerTestAction(this));
+    QMenu* positionablesMenu = new QMenu(tr("Positionables ..."));
+    addMenu(positionablesMenu);
+    positionablesMenu->addAction(new SignalMastIconTestAction(this));
 
 }

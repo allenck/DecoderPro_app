@@ -49,14 +49,14 @@ PositionableJComponent::PositionableJComponent(QWidget *parent) :
     pos->setControlling(isControlling());
     pos->setHidden(isHidden());
     pos->setPositionable(isPositionable());
-    pos->setShowTooltip(showTooltip());
+    pos->setShowToolTip(showTooltip());
     //pos->setTooltip(getTooltip());
     pos->setEditable(isEditable());
     pos->updateSize();
     return pos;
 }
-/*public*/ QObject* PositionableJComponent::getTextComponent() {
-    return (QObject*)this;
+/*public*/ JComponent *PositionableJComponent::getTextComponent() {
+    return (JComponent*)this;
 }
 
 /***************** Positionable methods **********************/
@@ -102,16 +102,16 @@ PositionableJComponent::PositionableJComponent(QWidget *parent) :
 }
 /*public*/ int PositionableJComponent::getDisplayLevel() { return _displayLevel; }
 
-/*public*/ void PositionableJComponent::setShowTooltip(bool set) {
+/*public*/ void PositionableJComponent::setShowToolTip(bool set) {
     _showTooltip = set;
 }
 /*public*/ bool PositionableJComponent::showTooltip() {
     return _showTooltip;
 }
-/*public*/ void PositionableJComponent::setTooltip(QString tip) {
+/*public*/ void PositionableJComponent::setToolTip(QString tip) {
     _tooltip = tip;
 }
-/*public*/ QString PositionableJComponent::getTooltip() {
+/*public*/ QString PositionableJComponent::getToolTip() {
     return _tooltip;
 }
 /*public*/ void PositionableJComponent::setScale(double s) {

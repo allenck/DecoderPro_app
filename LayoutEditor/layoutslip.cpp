@@ -305,6 +305,19 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
      getTurnoutB()->setCommandedState(ts->getTurnoutBState());
 }
 
+//class MSlipTurnoutListener : public PropertyChangeListener
+//{
+// Q_OBJECT
+// LayoutSlip* layoutSlip;
+//public:
+// MSlipTurnoutListener(LayoutSlip* layoutSlip) {this->layoutSlip = layoutSlip;}
+//public slots:
+ void MSlipTurnoutListener::propertyChange(PropertyChangeEvent*)
+ {
+  layoutSlip->updateState();
+ }
+//};
+
 /**
  * Activate/Deactivate turnout to redraw when turnout state changes
  */
@@ -319,8 +332,9 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 //                updateState();
 //            }
 //        }, namedTurnoutgetName(), "Layout Editor Slip");
-     AbstractTurnout* t = (AbstractTurnout* )namedTurnout->getBean();
-     connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(updateState()));
+  namedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener = new MSlipTurnoutListener(this), namedTurnout->getName(), "Layout Editor Slip");
+//     AbstractTurnout* t = (AbstractTurnout* )namedTurnout->getBean();
+//     connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(updateState()));
     }
     if (namedTurnoutB!=nullptr)
     {
@@ -331,8 +345,9 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 //                updateState();
 //            }
 //        }, namedTurnoutB.getName(), "Layout Editor Slip");
-        AbstractTurnout* t = (AbstractTurnout*)namedTurnoutB->getBean();
-        connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(updateState()));
+     namedTurnoutB->getBean()->addPropertyChangeListener(mTurnoutListener =  new MSlipTurnoutListener(this), namedTurnoutB->getName(), "Layout Editor Slip");
+//        AbstractTurnout* t = (AbstractTurnout*)namedTurnoutB->getBean();
+//        connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(updateState()));
 
     }
 }

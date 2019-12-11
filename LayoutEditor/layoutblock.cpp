@@ -190,7 +190,7 @@ long LayoutBlock::time=0;
 //                }
 //            });
 //  connect(mBlockListener, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockChange(PropertyChangeEvent*)));
-   connect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockChange(PropertyChangeEvent*)));
+//   connect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockChange(PropertyChangeEvent*)));
   if (occupancyNamedSensor!=NULL)
   {
    block->setNamedSensor(occupancyNamedSensor);
@@ -1545,15 +1545,15 @@ neighbours->append(adj);
    if (workingDirection==RXTX || workingDirection==RXONLY)
    {
     blk->addPropertyChangeListener((PropertyChangeListener*)this);
-    connect(blk->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-    connect(blk, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//    connect(blk->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//    connect(blk, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     //log->info("From " + this->getDisplayName() + " add property change " + blk->getDisplayName());
    }
    else
    {
     blk->removePropertyChangeListener((PropertyChangeListener*)this);
-    disconnect(blk->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    //disconnect(blk->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
    int neighwork = blk->getAdjacencyPacketFlow(this->getBlock());
    if (enableAddRouteLogging)
@@ -1681,12 +1681,12 @@ bool LayoutBlock::informNeighbourOfAttachment(LayoutBlock* lBlock, Block* block,
             log->info("From " + this->getDisplayName() + " We were not a mutual adjacency with " + lBlock->getDisplayName() + " but now are");
         if (newPacketFlow==RXTX || newPacketFlow==RXONLY){
             lBlock->addPropertyChangeListener((PropertyChangeListener*)this);
-            connect(lBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-            connect(lBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//            connect(lBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//            connect(lBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
         } else {
             lBlock->removePropertyChangeListener((PropertyChangeListener*)this);
-            disconnect(lBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//            disconnect(lBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         }
 
         if(newPacketFlow==TXONLY)
@@ -2033,7 +2033,7 @@ void LayoutBlock::updateNeighbourPacketFlow(Block* neighbour, int flow){
  {
   neighBlock->addBlockDenyList(this->block);
   neighLBlock->removePropertyChangeListener((PropertyChangeListener*)this);
-  disconnect(neighLBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //disconnect(neighLBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //This should remove routes learned from our neighbour
   QVector<Routes*>* tmpBlock = removeRouteRecievedFromNeighbour(neighBlock);
 
@@ -2057,7 +2057,7 @@ void LayoutBlock::updateNeighbourPacketFlow(Block* neighbour, int flow){
  else if (flow==RXONLY)
  {
   neighLBlock->addPropertyChangeListener((PropertyChangeListener*)this);
-  connect(neighLBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(neighLBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   neighBlock->removeBlockDenyList(this->block);
   this->block->addBlockDenyList(neighBlock);
 
@@ -2081,7 +2081,7 @@ void LayoutBlock::updateNeighbourPacketFlow(Block* neighbour, int flow){
   neighBlock->removeBlockDenyList(this->block);
   this->block->removeBlockDenyList(neighBlock);
   neighLBlock->addPropertyChangeListener((PropertyChangeListener*)this);
-  connect(neighLBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(neighLBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //Might need to rebuild through paths.
   if(oldPacketFlow==TXONLY)
   {
@@ -3842,8 +3842,8 @@ int LayoutBlock::getRouteIndex(Routes* r){
  validCurrentRoute = block->checkIsRouteOnValidThroughPath(this);
  firePropertyChange("length", QVariant(), QVariant());
 //    destBlock->addPropertyChangeListener(this);
- connect(destBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
- connect(destBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+// connect(destBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+// connect(destBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 
 }
 
@@ -3994,8 +3994,8 @@ void ThroughPaths::setTurnoutList(QList<LayoutTrackExpectedState<LayoutTurnout*>
  if (!_turnouts.isEmpty()) {
      QSet<Turnout*> en = _turnouts.keys().toSet();
      for (Turnout* listTurnout : en) {
-         //listTurnout.removePropertyChangeListener(this);
-      disconnect(listTurnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         listTurnout->removePropertyChangeListener((PropertyChangeListener*)this);
+      //disconnect(listTurnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
  }
 
@@ -4013,19 +4013,19 @@ void ThroughPaths::setTurnoutList(QList<LayoutTrackExpectedState<LayoutTurnout*>
          LayoutSlip* ls = (LayoutSlip*) turnouts.at(i)->getObject();
          int taState = ls->getTurnoutState(slipState);
          _turnouts.insert(ls->getTurnout(), taState);
-         //ls->getTurnout().addPropertyChangeListener(this, ls.getTurnoutName(), "Layout Block Routing");
-         connect(ls->getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         ls->getTurnout()->addPropertyChangeListener((PropertyChangeListener*)this, ls->getTurnoutName(), "Layout Block Routing");
+         //connect(ls->getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
          int tbState = ls->getTurnoutBState(slipState);
          _turnouts.insert(ls->getTurnoutB(), tbState);
-         //ls->getTurnoutB().addPropertyChangeListener(this, ls.getTurnoutBName(), "Layout Block Routing");
-         connect(ls->getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         ls->getTurnoutB()->addPropertyChangeListener((PropertyChangeListener*)this, ls->getTurnoutBName(), "Layout Block Routing");
+         //connect(ls->getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      } else {
          LayoutTurnout* lt = turnouts.at(i)->getObject();
          if (lt->getTurnout() != nullptr) {
              _turnouts.insert(lt->getTurnout(), turnouts.at(i)->getExpectedState());
-             //lt->getTurnout().addPropertyChangeListener(this, lt.getTurnoutName(), "Layout Block Routing");
-             connect(lt->getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             lt->getTurnout()->addPropertyChangeListener((PropertyChangeListener*)this, lt->getTurnoutName(), "Layout Block Routing");
+             //connect(lt->getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          } else {
              log->error(tr("%1 has no physical turnout allocated, block = %2").arg(lt->getName()).arg(parent->block->getDisplayName()));
          }

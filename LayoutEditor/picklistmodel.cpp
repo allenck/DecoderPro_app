@@ -31,6 +31,7 @@
 #include "block.h"
 #include "blockmanager.h"
 #include "logixmanager.h"
+#include "defaultlistselectionmodel.h"
 
 //PickListModel::PickListModel(QObject *parent) :
 //    QAbstractTableModel(parent)
@@ -181,13 +182,18 @@ bool systemNameComparator(QString o1, QString o2)
  _listMap = new QMap<QString,int>();
  //_tableModel = new PickListModel;
  _pickList = NULL;
+ init();
 }
 
 /**
-* Subclasses MUST call this method at creation
-*/
+ * No longer needed. Now done in BeanTableDataModel.
+ *
+ * @deprecated since Jan 1, 2014, marked as such May 1, 2017
+ */
+//@Deprecated
 /*public*/ void PickListModel::init()
 {
+
     //log->debug("manager "+getManager());
   //getManager()->addPropertyChangeListener(this);   // for adds and deletes
  Manager* m = getManager();
@@ -196,62 +202,62 @@ bool systemNameComparator(QString o1, QString o2)
 //    if(qobject_cast<AbstractManager*>(m) != NULL)
 //    {
   AbstractManager* mgr = (AbstractManager*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //    }
  if(qobject_cast<ProxyTurnoutManager*>(m) != NULL)
  {
   ProxyTurnoutManager* mgr = (ProxyTurnoutManager*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else if(qobject_cast<ProxySensorManager*>(m) != NULL)
  {
   ProxySensorManager* mgr = (ProxySensorManager*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else if(qobject_cast<AbstractSignalHeadManager*>(m) != NULL)
  {
   AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else if(qobject_cast<DefaultSignalMastManager*>(m) != NULL)
  {
   DefaultSignalMastManager* mgr = (DefaultSignalMastManager*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else if(qobject_cast<DefaultMemoryManager*>(m) != NULL)
  {
   DefaultMemoryManager* mgr = (DefaultMemoryManager*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else if(qobject_cast<ProxyReporterManager*>(m) != NULL)
  {
   ProxyReporterManager* mgr = (ProxyReporterManager*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else if(qobject_cast<ProxyLightManager*>(m) != NULL)
  {
   ProxyLightManager* mgr = (ProxyLightManager*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else if(qobject_cast<DefaultConditionalManager*>(m) != NULL)
  {
   DefaultConditionalManager* mgr = (DefaultConditionalManager*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else if(qobject_cast<WarrantManager*>(m) != NULL)
  {
   WarrantManager* mgr = (WarrantManager*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else if(qobject_cast<OBlockManager*>(m) != NULL)
  {
   OBlockManager* mgr = (OBlockManager*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else if(qobject_cast<EntryExitPairs*>(m) != NULL)
  {
   EntryExitPairs* mgr = (EntryExitPairs*)m;
-  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else
  {
@@ -259,6 +265,8 @@ bool systemNameComparator(QString o1, QString o2)
   Q_ASSERT(false);
  }
  makePickList();
+
+
 }
 
 /**
@@ -306,7 +314,7 @@ bool systemNameComparator(QString o1, QString o2)
  {
   for (int i=0; i<_pickList->size(); i++)
   {
-//            _pickList->value(i)->removePropertyChangeListener(this);
+   _pickList->value(i)->removePropertyChangeListener((PropertyChangeListener*)this);
   }
  }
  QList <QString> systemNameList = getManager()->getSystemNameList();
@@ -351,9 +359,9 @@ bool systemNameComparator(QString o1, QString o2)
  }
  // add name change listeners
  for (int i=0; i<_pickList->size(); i++) {
-//        _pickList->at(i).addPropertyChangeListener(this);
+  _pickList->at(i)->addPropertyChangeListener((PropertyChangeListener*)this);
   AbstractNamedBean* b = (AbstractNamedBean*)_pickList->at(i);
-  connect(b->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(b->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  if (log->isDebugEnabled()) log->debug("_pickList has "+QString::number(_pickList->size())+" beans");
 }
@@ -392,6 +400,10 @@ bool systemNameComparator(QString o1, QString o2)
   {
    return tr("User Name");
   }
+  else if(section == POSITION_COL)
+  {
+   return tr("Position");
+  }
  }
  return QVariant();
 }
@@ -409,6 +421,7 @@ bool systemNameComparator(QString o1, QString o2)
 {
  return _pickList->size();
 }
+
 /*public*/ QVariant PickListModel::data(const QModelIndex &index, int role) const
 {
  if(role == Qt::DisplayRole || role == Qt::EditRole)
@@ -506,9 +519,9 @@ bool systemNameComparator(QString o1, QString o2)
     fireTableDataChanged();
 
 //    _table.setRowSelectionAllowed(true);
-//    _table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    _table->setSelectionMode(DefaultListSelectionModel::SINGLE_SELECTION);
     _table->setSelectionBehavior(QAbstractItemView::SelectRows);
-    _table->setSelectionMode(QAbstractItemView::SingleSelection);
+    //_table->setSelectionMode(QAbstractItemView::SingleSelection);
 //    _table.setPreferredScrollableViewportSize(new java.awt.Dimension(250,_table.getRowHeight()*7));
     _table->setDragEnabled(true);
 //    _table.setTransferHandler(new jmri.util.DnDTableExportHandler());
@@ -715,14 +728,15 @@ TurnoutPickModel::TurnoutPickModel (QObject *parent) : PickListModel(parent)
 {
  manager = InstanceManager::turnoutManagerInstance();
  _name = tr("Turnout Table");
- QList<Manager*> list = ((ProxyTurnoutManager*)manager)->getManagerList();
- foreach(Manager*m, list)
- {
-  AbstractTurnoutManager* mgr = (AbstractTurnoutManager*)m;
-  connect(mgr, SIGNAL(newTurnoutCreated(AbstractTurnoutManager*,Turnout*)), this, SLOT(newTurnoutCreated(AbstractTurnoutManager*,Turnout*)));
- }
+// QList<Manager*> list = ((ProxyTurnoutManager*)manager)->getManagerList();
+// foreach(Manager*m, list)
+// {
+//  AbstractTurnoutManager* mgr = (AbstractTurnoutManager*)m;
+//  connect(mgr, SIGNAL(newTurnoutCreated(AbstractTurnoutManager*,Turnout*)), this, SLOT(newTurnoutCreated(AbstractTurnoutManager*,Turnout*)));
+// }
 }
 /*public*/ Manager* TurnoutPickModel::getManager() {
+ manager = InstanceManager::turnoutManagerInstance();
     return manager;
 }
 /*public*/ NamedBean* TurnoutPickModel::getBySystemName(QString name) {
@@ -761,12 +775,12 @@ SensorPickModel::SensorPickModel (QObject *parent) : PickListModel(parent)
 {
  manager = InstanceManager::sensorManagerInstance();
  _name = tr("Sensor Table");
- QList<Manager*> list = ((ProxySensorManager*)manager)->getManagerList();
- foreach(Manager*m, list)
- {
-  AbstractSensorManager* mgr = (AbstractSensorManager*)m;
-  connect(mgr, SIGNAL(beanCreated(NamedBean*)), this, SLOT(newSensorCreated(NamedBean*)));
- }
+// QList<Manager*> list = ((ProxySensorManager*)manager)->getManagerList();
+// foreach(Manager*m, list)
+// {
+//  AbstractSensorManager* mgr = (AbstractSensorManager*)m;
+//  connect(mgr, SIGNAL(beanCreated(NamedBean*)), this, SLOT(newSensorCreated(NamedBean*)));
+// }
 }
 /*public*/ Manager* SensorPickModel::getManager() {
     return manager;
@@ -823,7 +837,7 @@ _position = new QMap <int, QString> ();
  }
  return QVariant();
 }
-/*public*/ bool  MultiSensorPickModel::setData(const QModelIndex &index, const QVariant &value, int role) const
+/*public*/ bool  MultiSensorPickModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
  if(role == Qt::EditRole)
  {

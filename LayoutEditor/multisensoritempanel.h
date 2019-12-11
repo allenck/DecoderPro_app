@@ -13,11 +13,13 @@ public:
     /*public*/ MultiSensorItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
     /*public*/ static /*final*/ QStringList POSITION;//= {"first", "second", "third", "fourth", "fifth",
 //                                         "sixth", "seventh", "eighth", "nineth", "tenth" };
-    /*public*/ QList<NamedBean*>* getTableSelections();
-    /*public*/ QList<int> getPositions();
+    /*public*/ QVector<NamedBean *> getTableSelections();
+    /*public*/ QVector<int> getPositions();
     /*public*/ bool getUpDown();
     /*public*/ void setSelection(NamedBean* bean);
     /*public*/ void setUpDown(bool upDown);
+    /*public*/ bool oktoUpdate();
+    /*public*/ void updateFamilyIcons();
 
 signals:
 
@@ -33,10 +35,10 @@ private:
     /*private*/ void makeMultiSensorPanel();
 
 protected:
-    /*protected*/ QWidget* initTablePanel(PickListModel* model, Editor* editor);
-    /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
-    /*protected*/ void initIconFamiliesPanel();
-    /*protected*/ void setFamily(QString family);
+    /*protected*/ QWidget* initTablePanel(PickListModel* model, Editor* editor) override;
+    /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey) override;
+    /*protected*/ void initIconFamiliesPanel() override;
+    /*protected*/ void setFamily(QString family) override;
     /*protected*/ void setSelections();
     /*protected*/ void openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
     /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon);
@@ -49,8 +51,8 @@ friend class MultiSensorIconDialog;
 {
     Q_OBJECT
 
-    QList<NamedBean*>* _selections;
-    QList<int> _positions;
+    QVector<NamedBean*> _selections;
+    QVector<int> _positions;
     int _nextPosition;
     PickListModel* _tableModel;
     MultiSensorItemPanel* self;
@@ -64,23 +66,29 @@ public:
 private:
     Logger* log;
 protected:
-    /*protected*/ QList<NamedBean*>* getSelections();
-    /*protected*/ QList<int> getPositions();
+    /*protected*/ QVector<NamedBean *> getSelections();
+    /*protected*/ QVector<int> getPositions();
     /*protected*/ int getNextPosition() ;
     /*protected*/ void setPositionRange(int size);
 friend class MultiSensorItemPanel;
 friend class MSIconDragJLabel;
 };
+
 /*protected*/ class MSIconDragJLabel : public DragJLabel
 {
  Q_OBJECT
   QMap <QString, NamedIcon*>* iconMap;
   MultiSensorItemPanel* self;
  public:
-        //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
-        /*public*/ MSIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, MultiSensorItemPanel* self);
-        /*public*/ bool isDataFlavorSupported(DataFlavor* flavor);
+  //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
+  /*public*/ MSIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, NamedIcon* icon, MultiSensorItemPanel* self);
+  /*public*/ bool isDataFlavorSupported(DataFlavor* flavor);
   /*public*/ QObject* getTransferData(DataFlavor* flavor)throw (UnsupportedFlavorException,IOException);
+  QByteArray mimeData();
+
+protected:
+  /*protected*/ bool okToDrag();
+
 };
 
 #endif // MULTISENSORITEMPANEL_H

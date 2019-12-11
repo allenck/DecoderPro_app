@@ -38,8 +38,8 @@
     //super();
  summary = AutomatSummary::instance();
  // listen for new/gone/changed Automat instances
- //summary.addPropertyChangeListener(this);
- connect(summary, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ summary->addPropertyChangeListener((PropertyChangeListener*)this);
+ //connect(summary, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  log = new Logger("AutomatTableDataModel");
 }
 
@@ -219,6 +219,6 @@ void AutomatTableDataModel::setColumnToHoldButton(JTable* table, int column, QPu
 }
 
 /*synchronized*/ /*public*/ void AutomatTableDataModel::dispose() {
-    //AutomatSummary::instance()->removePropertyChangeListener(this);
- disconnect(AutomatSummary::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    AutomatSummary::instance()->removePropertyChangeListener((PropertyChangeListener*)this);
+ //disconnect(AutomatSummary::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }

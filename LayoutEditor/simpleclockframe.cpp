@@ -393,9 +393,9 @@ SimpleClockFrame::~SimpleClockFrame()
  pack();
 
  // listen for changes to the timebase parameters
- // clock->addPropertyChangeListener(this);
- if(!connect(clock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*))))
-     qDebug() << "connect failed";
+ clock->addPropertyChangeListener((PropertyChangeListener*)this);
+// if(!connect(clock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*))))
+//     qDebug() << "connect failed";
 
  // request callback to update time
 //    clock.addMinuteChangeListener( new java.beans.PropertyChangeListener() {

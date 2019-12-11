@@ -49,7 +49,7 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
     element.setAttribute("positionable", p->isPositionable()?"true":"false");
     element.setAttribute("showtooltip", p->showTooltip()?"true":"false");
     element.setAttribute("editable", p->isEditable()?"true":"false");
-    QString tip = p->getTooltip();
+    QString tip = p->getToolTip();
     QString txt = tip;
     if (txt!="") {
         QDomElement elem = doc.createElement("toolTip");
@@ -74,7 +74,7 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
         element.setAttribute("controlSensor", handle->getName());
     }
     element.setAttribute("hideOnSensor", p->isHideOnSensor() ? "true" : "false");
-    element.setAttribute("changeLevelOnSensor", (p->getChangeLevel()?"true":"false"));
+    element.setAttribute("changeLevelOnSensor", p->getChangeLevel());
 }
 
 /*public*/ QDomElement PositionableShapeXml::storeColor(QString name, QColor c) {
@@ -135,9 +135,9 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
 
  a = element.attribute("showtooltip");
  if ( (a!="") && a==("true"))
-     ps->setShowTooltip(true);
+     ps->setShowToolTip(true);
  else
-     ps->setShowTooltip(false);
+     ps->setShowToolTip(false);
 
  a = element.attribute("editable");
  if ( (a!="") && a==("true"))
@@ -147,7 +147,7 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
 
  QDomElement elem = element.firstChildElement("toolTip");
  if (!elem.isNull()) {
-     QString tip = ps->getTooltip();
+     QString tip = ps->getToolTip();
      if (tip!="") {
          tip=(elem.text());
      }

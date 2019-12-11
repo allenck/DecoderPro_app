@@ -45,7 +45,7 @@ friend class SMIconDragJLabel;
         public:
         /*public*/ SMIconDragJLabel(DataFlavor* flavor, SignalMastItemPanel* self);
      /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
-     QString mimeData();
+     QByteArray mimeData();
 private:
      Logger* log;
 };

@@ -240,11 +240,11 @@ ControlPanelEditor::~ControlPanelEditor()
 //                _itemPalette.setVisible(true);
 //            }
 //        });
+    _iconMenu->addAction(mi);
     connect(mi, SIGNAL(triggered()), this, SLOT(on_itemPallette()));
     _iconMenu->addAction(new OBlockTableAction(tr("OBlock Table"),this));
 
 //    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
-    _iconMenu->addAction(mi);
     _iconMenu->addAction(new ListedTableAction(tr("Item Table List"),this));
 //    mi = (JMenuItem)_iconMenu.getMenuComponent(1);
 //    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
@@ -1174,7 +1174,7 @@ void ControlPanelEditor::selectAllAction()
     while (iter.hasNext())
     {
      Positionable* pos = iter.next();
-     if (qobject_cast<NamedBean*>((QObject*)pos)) {
+     if (qobject_cast<NamedBean*>(pos->self())) {
          selects.replace(i++, ((NamedBean*) pos)->getDisplayName());
      } else {
          selects.replace(i++,pos->getNameString());
@@ -1193,7 +1193,7 @@ void ControlPanelEditor::selectAllAction()
      {
       Positionable* pos = iter.next();
       QString name;
-      if (qobject_cast<NamedBean*>((QObject*)pos)) {
+      if (qobject_cast<NamedBean*>(pos->self())) {
           name = ((NamedBean*) pos)->getDisplayName();
       } else {
           name = pos->getNameString();
@@ -1265,6 +1265,11 @@ void ControlPanelEditor::selectAllAction()
  if (_selectionGroup==nullptr) {
      return;
  }
+ log->debug(tr("key pressed, _currentSelection is %1").arg(_currentSelection?_lastSelection->self()->metaObject()->className():"null"));
+ if(_lastSelection!= nullptr && qobject_cast<PositionableJPanel*>(_lastSelection->self()))
+ {
+  ((PositionableJPanel*)_lastSelection)->getWidget()->keyPressEvent(e);
+ }
  int x = 0;
  int y = 0;
  switch (e->key())
@@ -1309,7 +1314,14 @@ void ControlPanelEditor::selectAllAction()
  repaint();
 }
 
-/*public*/ void ControlPanelEditor::keyReleaseEvent(QKeyEvent* ) {}
+/*public*/ void ControlPanelEditor::keyReleaseEvent(QKeyEvent* e)
+{
+ if(_lastSelection!= nullptr && qobject_cast<PositionableJPanel*>(_lastSelection->self()))
+ {
+  ((PositionableJPanel*)_lastSelection)->getWidget()->keyPressEvent(e);
+ }
+
+}
 
 /*********** Mouse ***************/
 
@@ -1329,10 +1341,16 @@ void ControlPanelEditor::selectAllAction()
  _lastY = _anchorY;
 
  _currentSelection = getCurrentSelection(event);
+ if(_currentSelection == nullptr)
+  return;
+ _lastSelection = _currentSelection;
 
- if(qobject_cast<MemoryInputIcon*>((QObject*)_currentSelection) != nullptr ||qobject_cast<MemorySpinnerIcon*>((QObject*)_currentSelection) != nullptr|| qobject_cast<MemoryComboIcon*>((QObject*)_currentSelection)!= nullptr)
+ if((qobject_cast<MemoryInputIcon*>(_currentSelection->self()) != nullptr)
+    || (qobject_cast<MemorySpinnerIcon*>(_currentSelection->self()) != nullptr)
+    || (qobject_cast<MemoryComboIcon*>(_currentSelection->self())!= nullptr))
  {
-  ((MemoryInputIcon*)_currentSelection)->mousePressed(event);
+  //((MemoryInputIcon*)_currentSelection)->mousePressed(event);
+  ((PositionableJPanel*)_currentSelection)->getWidget()->mousePressEvent(event);
   return;
  }
 
@@ -1404,16 +1422,16 @@ void ControlPanelEditor::selectAllAction()
   if (selection!=nullptr)
   {
    _highlightcomponent = QRectF();
-   if(qobject_cast<MemoryInputIcon*>((QObject*)selection) != nullptr ||qobject_cast<MemorySpinnerIcon*>((QObject*)selection) != nullptr|| qobject_cast<MemoryComboIcon*>((QObject*)selection)!= nullptr )
+   if(qobject_cast<MemoryInputIcon*>(selection->self()) != nullptr ||qobject_cast<MemorySpinnerIcon*>(selection->self()) != nullptr|| qobject_cast<MemoryComboIcon*>(selection->self())!= nullptr )
    {
     _highlightcomponent = selection->getBounds(QRectF());
     //((PositionableLabel*)selection)->_itemGroup->setFocus();
-    ((PositionableLabel*)selection)->widget->mouseReleaseEvent(event);
+    ((PositionableJPanel*)selection)->getWidget()->mouseReleaseEvent(event);
 //    if(_highlightcomponent.width() > 1000)
 //     qDebug() << tr("_highlightcomponent width = %1").arg(_highlightcomponent.width());
 //   }
 //   else
-    if(qobject_cast<PositionableJPanel*>((QObject*)selection)!=nullptr)
+    if(qobject_cast<PositionableJPanel*>(selection->self())!=nullptr)
     {
      _highlightcomponent = selection->getBounds(QRectF());
 //     if(_highlightcomponent.width() > 1000)
@@ -1538,7 +1556,7 @@ void ControlPanelEditor::selectAllAction()
    {
     selection->doMouseClicked(event);
    }
-   if (qobject_cast<IndicatorTrack*>((QObject*)selection))
+   if (qobject_cast<IndicatorTrack*>(selection->self()))
    {
     WarrantTableAction::mouseClickedOnBlock(((IndicatorTrack*) selection)->getOccBlock());
    }
@@ -1563,10 +1581,10 @@ void ControlPanelEditor::selectAllAction()
      return;
  }
  //if (!event.isPopupTrigger() && !event.isMetaDown() && !event.isAltDown() && (isEditable() || _currentSelection instanceof LocoIcon))
- if(!(event->buttons()& Qt::RightButton)  && !(event->modifiers()& Qt::MetaModifier) && !(event->modifiers()& Qt::AltModifier) && !_shapeDrawer->doMouseDragged(event) && (isEditable() || qobject_cast<LocoIcon*>((QObject*)_currentSelection)!=0))
+ if(!(event->buttons()& Qt::RightButton)  && !(event->modifiers()& Qt::MetaModifier) && !(event->modifiers()& Qt::AltModifier) && !_shapeDrawer->doMouseDragged(event) && (isEditable() || qobject_cast<LocoIcon*>(_currentSelection->self())!=0))
  {
   moveIt:
-  if (_currentSelection!=nullptr && getFlag(OPTION_POSITION, ((PositionableLabel*)_currentSelection)->isPositionable()))
+  if (_currentSelection!=nullptr && qobject_cast<PositionableLabel*>(_currentSelection->self()) && getFlag(OPTION_POSITION, ((PositionableLabel*)_currentSelection)->isPositionable()))
   {
    int deltaX = event->scenePos().x() - _lastX;
    int deltaY = event->scenePos().y() - _lastY;
@@ -1609,7 +1627,7 @@ void ControlPanelEditor::selectAllAction()
     }
     else
     {
-     if(qobject_cast<PositionablePolygon*>((QObject*)_currentSelection))
+     if(qobject_cast<PositionablePolygon*>(_currentSelection->self()))
      {
 
      }
@@ -1803,7 +1821,7 @@ void ControlPanelEditor::pasteItems() {
         for (int i=0; i<_selectionGroup->size(); i++) {
             Positionable* pos = _selectionGroup->at(i);
             //if (pos instanceof PositionableIcon)
-            if(qobject_cast<PositionableIcon*>((QObject*)pos)!=nullptr)
+            if(qobject_cast<PositionableIcon*>(pos->self())!=nullptr)
             {
                 NamedBean* bean = ((PositionableIcon*)pos)->getNamedBean();
                 if (bean!=nullptr) {
@@ -1920,7 +1938,7 @@ void ControlPanelEditor::abortPasteItems() {
       popup->addSeparator();
       popupSet = false;
   }
-  if (qobject_cast<PositionableLabel*>((QObject*)p)) {
+  if (qobject_cast<PositionableLabel*>(p->self())) {
       PositionableLabel* pl = (PositionableLabel*) p;
       if (!pl->isIcon())
       {
@@ -1931,7 +1949,7 @@ void ControlPanelEditor::abortPasteItems() {
 //                    popupSet |= p.setTextEditMenu(popup);
        popupSet |= setTextAttributes(p, popup);
       }
-      else if (qobject_cast<SensorIcon*>((QObject*)p))
+      else if (qobject_cast<SensorIcon*>(p->self()))
       {
        popup->addAction(CoordinateEdit::getTextEditAction(p, "OverlayText", this));
        if (pl->isText()) {
@@ -1940,14 +1958,14 @@ void ControlPanelEditor::abortPasteItems() {
 //                        popupSet |= pl.setEditTextMenu(popup);
        }
       }
-  } else if (qobject_cast<PositionableJPanel*>((QObject*)p)) {
+  } else if (qobject_cast<PositionableJPanel*>(p->self())) {
       setColorMenu(popup, (Positionable*) p, ColorDialog::BORDER);
       setColorMenu(popup, (Positionable*) p, ColorDialog::MARGIN);
       setColorMenu(popup, (Positionable*) p, ColorDialog::FONT);
       popupSet |= setTextAttributes(p, popup);
   }
 
-  if (qobject_cast<LinkingObject*>((QObject*)p)) {
+  if (qobject_cast<LinkingObject*>(p->self())) {
       ((LinkingObject*) p)->setLinkMenu(popup);
   }
 
@@ -1967,7 +1985,7 @@ void ControlPanelEditor::abortPasteItems() {
       setRemoveMenu(p, popup);
   }
  } else {
-  if (qobject_cast<LocoIcon*>((QObject*)p)) {
+  if (qobject_cast<LocoIcon*>(p->self())) {
       setCopyMenu(p, popup);
   }
   p->showPopUp(popup);
@@ -2110,7 +2128,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
  {
   Positionable* pos = it.next();
   //f (pos instanceof PortalIcon)
-  if(qobject_cast<PortalIcon*>((QObject*)pos) != nullptr)
+  if(qobject_cast<PortalIcon*>(pos->self()) != nullptr)
   {
    ((PortalIcon*) pos)->initMap();
   }
@@ -2156,7 +2174,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
             DataFlavor[] flavors = tr.getTransferDataFlavors();
             String flavor = "";
             for (int i=0; i<flavors.length; i++) {
-                flavor += flavors[i].getRepresentationClass().getName()+", ";
+                flavor += flavors[i].getrepresentativeClass().getName()+", ";
             }
             log.debug("Editor Drop: flavor classes= "+flavor);
         }
@@ -2273,55 +2291,48 @@ void ControlPanelEditor::dragMoveEvent(QDragMoveEvent *de)
 }
 void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
- const QMimeData* m = event->mimeData();
- QString text = m->text();
- if(text.startsWith("DataFlavor["))
+ if(event->mimeData()->hasFormat("object/x-myApplication-object"))
  {
-  qDebug() << text;
-  QString mimeText = text.mid(11+9, text.length()-12 -9);
-  DataFlavor* flavor = new DataFlavor(mimeText);
-  QString xmlData = flavor->getParameter("xml");
-  QString decoded = QUrl::fromEncoded(xmlData.toLocal8Bit()).toString();
-  log->debug(decoded);
-
-  if(flavor->getRepresentationClass() == "ReporterIcon")
+  QByteArray objectData = event->mimeData()->data("object/x-myApplication-object");
+  QDomDocument doc("myDocument");
+  doc.setContent(objectData, true);
+  QString representativeClass;
+  QDomNodeList list = doc.childNodes();
+  QDomElement e = list.at(0).toElement();
+  representativeClass= e.tagName();
+  if(representativeClass == "reportericon")
   {
-//   ReporterIcon* pos = new ReporterIcon(this);
-//   QString reporterName = flavor->getParameter("reporter");
-//   Reporter* r = ((ProxyReporterManager*)InstanceManager::reporterManagerInstance())->provideReporter(reporterName);
-//   pos->setReporter(r);
-//   pos->setLocation(event->pos().x(),event->pos().y());
-//   pos->setDisplayLevel(REPORTERS);
-//   pos->setVisible(true);
-//   pos->setSize(pos->getPreferredSize().width(), pos->getPreferredSize().height());
-//   putItem(pos);
-   ReporterIconXml* xml = new ReporterIconXml;
-   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
-   QDomNodeList list = xml->doc.childNodes();
-   QDomElement e = list.at(0).toElement();
+   ReporterIconXml* xml = new ReporterIconXml();
+   //xml->doc.setContent(objectData,true);
+   xml->doc = doc;
+//   QDomNodeList list = xml->doc.childNodes();
+//   QDomElement e = list.at(0).toElement();
    xml->load(e,this);
    ReporterIcon* l = xml->getIcon();
    ((Positionable*)l)->setLocation(event->scenePos().x(), event->scenePos().y());
    addToTarget(l);
   }
-  else  if(flavor->getRepresentationClass()=="TurnoutIcon")
+  else  if(representativeClass=="turnouticon")
   {
    TurnoutIconXml* xml = new TurnoutIconXml;
-   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
-   QDomNodeList list = xml->doc.childNodes();
-   QDomElement e = list.at(0).toElement();
+   xml->doc = doc;
+   log->debug(tr("drop xml data: %1").arg(xml->doc.toString()));
+//   QDomNodeList list = xml->doc.childNodes();
+//   QDomElement e = list.at(0).toElement();
+
    xml->load(e,this);
    TurnoutIcon* l = xml->getIcon();
    ((Positionable*)l)->setLocation(event->scenePos().x(), event->scenePos().y());
    l->setLevel(Editor::TURNOUTS);
    addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="SensorIcon")
+  else if(representativeClass=="sensoricon")
   {
    SensorIconXml* xml = new SensorIconXml;
-   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
-   QDomNodeList list = xml->doc.childNodes();
-   QDomElement e = list.at(0).toElement();
+   //xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   xml->doc = doc;
+//   QDomNodeList list = xml->doc.childNodes();
+//   QDomElement e = list.at(0).toElement();
    xml->load(e,this);
    SensorIcon* l = xml->getIcon();
    ((Positionable*)l)->setLocation(event->scenePos().x(), event->scenePos().y());
@@ -2329,22 +2340,24 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
    l->setEditor(this);
    addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="LightIcon")
+  else if(representativeClass=="LightIcon")
   {
    LightIconXml* xml = new LightIconXml;
-   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
-   QDomNodeList list = xml->doc.childNodes();
-   QDomElement e = list.at(0).toElement();
+   //xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   xml->doc = doc;
+//   QDomNodeList list = xml->doc.childNodes();
+//   QDomElement e = list.at(0).toElement();
    xml->load(e,this);
    LightIcon* l = xml->getIcon();
    ((Positionable*)l)->setLocation(event->scenePos().x(), event->scenePos().y());
    l->setLevel(Editor::LIGHTS);
    addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="IndicatorTrackIcon")
+  else if(representativeClass=="indicatortrackicon")
   {
    IndicatorTrackIconXml* xml = new IndicatorTrackIconXml;
-   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   //xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   xml->doc = doc;
    QDomNodeList list = xml->doc.childNodes();
    QDomElement e = list.at(0).toElement();
    xml->load(e,this);
@@ -2353,10 +2366,11 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
    l->setLevel(Editor::TURNOUTS);
    addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="IndicatorTurnoutIcon")
+  else if(representativeClass=="indicatorturnouticon")
   {
    IndicatorTurnoutIconXml* xml = new IndicatorTurnoutIconXml;
-   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   //xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   xml->doc = doc;
    QDomNodeList list = xml->doc.childNodes();
    QDomElement e = list.at(0).toElement();
    QGraphicsScene* scene = getTargetPanel();
@@ -2367,34 +2381,36 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
    l->setLevel(Editor::TURNOUTS);
    addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="SignalHeadIcon")
+  else if(representativeClass=="signalheadicon")
   {
    SignalHeadIconXml* xml = new SignalHeadIconXml;
-   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
-   QDomNodeList list = xml->doc.childNodes();
-   QDomElement e = list.at(0).toElement();
+   //xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   xml->doc = doc;
+//   QDomNodeList list = xml->doc.childNodes();
+//   QDomElement e = list.at(0).toElement();
    xml->load(e,this);
    SignalHeadIcon* l = xml->getIcon();
    ((Positionable*)l)->setLocation(event->scenePos().x(), event->scenePos().y());
    l->setLevel(Editor::SIGNALS);
    addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="SignalMastIcon")
+  else if(representativeClass=="signalmasticon")
   {
    SignalMastIconXml* xml = new SignalMastIconXml;
-   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
-   QDomNodeList list = xml->doc.childNodes();
-   QDomElement e = list.at(0).toElement();
+   //xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   xml->doc = doc;
+   //   QDomNodeList list = xml->doc.childNodes();
+   //   QDomElement e = list.at(0).toElement();
    xml->load(e,this);
    SignalMastIcon* l = xml->getIcon();
    ((Positionable*)l)->setLocation(event->scenePos().x(), event->scenePos().y());
    l->setLevel(Editor::SIGNALS);
    addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="MemoryIcon")
+  else if(representativeClass=="memoryicon")
   {
       MemoryIconXml* xml = new MemoryIconXml;
-      xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+      xml->doc = doc;
       QDomNodeList list = xml->doc.childNodes();
       QDomElement e = list.at(0).toElement();
       xml->load(e,this);
@@ -2403,10 +2419,10 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
       l->setLevel(Editor::MEMORIES);
       addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="MemoryInputIcon")
+  else if(representativeClass=="MemoryInputIcon")
   {
       MemoryInputIconXml* xml = new MemoryInputIconXml;
-      xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+      xml->doc = doc;
       QDomNodeList list = xml->doc.childNodes();
       QDomElement e = list.at(0).toElement();
       xml->load(e,this);
@@ -2415,10 +2431,10 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
       l->setLevel(Editor::MEMORIES);
       addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="MemoryComboIcon")
+  else if(representativeClass=="memoryComboIcon")
   {
       MemoryComboIconXml* xml = new MemoryComboIconXml;
-      xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+      xml->doc = doc;
       QDomNodeList list = xml->doc.childNodes();
       QDomElement e = list.at(0).toElement();
       xml->load(e,this);
@@ -2427,10 +2443,10 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
       l->setLevel(Editor::MEMORIES);
       addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="MemorySpinnerIcon")
+  else if(representativeClass=="MemorySpinnerIcon")
   {
       MemorySpinnerIconXml* xml = new MemorySpinnerIconXml;
-      xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+      xml->doc = doc;
       QDomNodeList list = xml->doc.childNodes();
       QDomElement e = list.at(0).toElement();
       xml->load(e,this);
@@ -2439,10 +2455,10 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
       l->setLevel(Editor::MEMORIES);
       addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="PositionableLabel")
+  else if(representativeClass=="positionablelabel")
   {
    PositionableLabelXml* xml = new PositionableLabelXml;
-   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   xml->doc = doc;
    QDomNodeList list = xml->doc.childNodes();
    QDomElement e = list.at(0).toElement();
    xml->load(e,this);
@@ -2451,10 +2467,10 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
    l->setLevel(Editor::LABELS);
    addToTarget(l);
   }
-  else if(flavor->getRepresentationClass()=="MultiSensorIcon")
+  else if(representativeClass=="multisensoricon")
   {
    MultiSensorIconXml* xml = new MultiSensorIconXml;
-   xml->doc.setContent(QUrl::fromEncoded(xmlData.toLocal8Bit()).toString());
+   xml->doc = doc;
    QDomNodeList list = xml->doc.childNodes();
    QDomElement e = list.at(0).toElement();
    xml->load(e,this);
@@ -2462,7 +2478,10 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
    ((Positionable*)l)->setLocation(event->scenePos().x(), event->scenePos().y());
    addToTarget(l);
   }
+  else
+   log->warn(tr("representativeClass '%1' not found").arg(representativeClass));
  }
+#if 0
  else if(text.contains(";"))
  {
      QString name = text.mid(0, text.indexOf(";"));
@@ -2576,6 +2595,7 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
       putItem((Positionable*)l);
      }
  }
+#endif
 }
 void ControlPanelEditor::sceneChanged(QList<QRectF> /*rect*/)
 {
@@ -2633,7 +2653,7 @@ void ControlPanelEditor::sceneChanged(QList<QRectF> /*rect*/)
   foreach (Positionable* p, *_secondSelectionGroup)
   {
       //if (!(p instanceof jmri.jmrit.display.controlPanelEditor.shape.PositionableShape)) {
-   if(qobject_cast<PositionableShape*>((QObject*)p) == NULL)
+   if(qobject_cast<PositionableShape*>(p->self()) == NULL)
    {
     QGraphicsRectItem* item = new QGraphicsRectItem(p->getX(), p->getY(), p->maxWidth(), p->maxHeight());
     item->setPen(QPen(QColor(150, 150, 255),2));

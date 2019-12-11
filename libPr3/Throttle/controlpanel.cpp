@@ -1499,7 +1499,7 @@ void ControlPanel::on_menu_requested()
 
 //            bool state = (Boolean) getter.invoke(throttle, (Object[]) null);
    bool state;
-   if(QMetaObject::invokeMethod(_throttle, member, Qt::DirectConnection, Q_RETURN_ARG(bool, state)))
+   if(QMetaObject::invokeMethod(_throttle, member, Qt::AutoConnection, Q_RETURN_ARG(bool, state)))
    {
     if (state) {
         setSpeedController(SLIDERDISPLAYCONTINUOUS);

@@ -3,6 +3,7 @@
 #include "familyitempanel.h"
 #include "dragjlabel.h"
 
+class ListSelectionEvent;
 class DisplayFrame;
 class JDialog;
 class QItemSelection;
@@ -22,13 +23,13 @@ public:
     /*public*/ void init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap);
     /*public*/ NamedBean* getTableSelection();
     /*public*/ void setSelection(NamedBean* bean) ;
-    /*public*/ void valueChanged(/*ListSelectionEvent* e*/);
 
 signals:
 
 public slots:
     void OnSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected );
     void cancelPressed(/*ActionEvent e*/);
+    /*public*/ void valueChanged(ListSelectionEvent *e);
 
 private:
     int ROW_HEIGHT;
@@ -59,6 +60,7 @@ friend class MSIconDragJLabel;
 friend class ITOIconDragJLabel;
 friend class AddTableActionListener;
 };
+
 /*protected*/ class TIconDragJLabel :public DragJLabel
 {
  Q_OBJECT
@@ -68,8 +70,9 @@ public:
  /*public*/ TIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, NamedIcon *icon, TableItemPanel* self);
  /*public*/ bool isDataFlavorSupported(DataFlavor* flavor) ;
  /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException) ;
- QString mimeData();
+ QByteArray mimeData();
 };
+
 class AddTableActionListener : public ActionListener
 {
     Q_OBJECT
@@ -78,6 +81,7 @@ public:
     AddTableActionListener(TableItemPanel* parent);
     void actionPerformed(ActionEvent *e = 0);
 };
+
 class AtCancelListener : public ActionListener
 {
   TableItemPanel* self;

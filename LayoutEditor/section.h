@@ -261,7 +261,7 @@ public slots:
     /**
      * Handle change in occupancy of a Block in the Section
      */
-    void handleBlockChange(PropertyChangeEvent* e);
+    void propertyChange(PropertyChangeEvent* e);
 
 private:
  Logger log;

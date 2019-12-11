@@ -1681,12 +1681,40 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
     dispC = pt;
 }
 
+//class MTurnoutListener : public PropertyChangeListener
+//{
+// Q_OBJECT
+// LayoutTurnout* layoutTurnout;
+//public:
+// MTurnoutListener(LayoutTurnout* layoutTurnout) {this->layoutTurnout = layoutTurnout;}
+//public slots:
+ void MTurnoutListener::propertyChange(PropertyChangeEvent* e)
+ {
+  if (layoutTurnout->secondNamedTurnout != nullptr) {
+      int new2ndState = layoutTurnout->secondNamedTurnout->getBean()->getState();
+      if (e->getSource() == (layoutTurnout->secondNamedTurnout->getBean())
+      && e->getNewValue().toInt() == (new2ndState)) {
+          int old1stState = layoutTurnout->namedTurnout->getBean()->getState();
+          int new1stState = new2ndState;
+          if (layoutTurnout->secondTurnoutInverted) {
+              new1stState = Turnout::invertTurnoutState(new1stState);
+          }
+          if (old1stState != new1stState) {
+              layoutTurnout->namedTurnout->getBean()->setCommandedState(new1stState);
+          }
+      }
+  }
+  layoutTurnout->layoutEditor->redrawPanel();
+
+ }
+//};
+
 /**
  * Activate/Deactivate turnout to redraw when turnout state changes
  */
 /*private*/ void LayoutTurnout::activateTurnout()
 {
-#if 1
+#if 0
  if (namedTurnout!=nullptr)
  {
   //namedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener =
@@ -1695,41 +1723,43 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
 //            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //                layoutEditor.redrawPanel();
 //            }
-//        }, namedTurnout::getName(), "Layout Editor Turnout");
-  AbstractTurnout* t = (AbstractTurnout*)namedTurnout->getBean();
-  connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(redrawPanel()));
+//        }, namedTurnout.getName(), "Layout Editor Turnout");
+  namedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener = new MTurnoutListener(this), namedTurnout->getName(), "Layout Editor Turnout");
+//  AbstractTurnout* t = (AbstractTurnout*)namedTurnout->getBean();
+//  connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(redrawPanel()));
  }
  if (secondNamedTurnout!=nullptr)
  {
   secondNamedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener, secondNamedTurnout->getName(), "Layout Editor Turnout");
-  connect(secondNamedTurnout->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(redrawPanel()));
+//  connect(secondNamedTurnout->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(redrawPanel()));
  }
 #else
  if (namedTurnout != nullptr)
  {
-     namedTurnout.getBean().addPropertyChangeListener(
-             mTurnoutListener = (java.beans.PropertyChangeEvent e) -> {
-                 if (secondNamedTurnout != null) {
-                     int new2ndState = secondNamedTurnout.getBean().getState();
-                     if (e.getSource().equals(secondNamedTurnout.getBean())
-                     && e.getNewValue().equals(new2ndState)) {
-                         int old1stState = namedTurnout.getBean().getState();
-                         int new1stState = new2ndState;
-                         if (secondTurnoutInverted) {
-                             new1stState = Turnout.invertTurnoutState(new1stState);
-                         }
-                         if (old1stState != new1stState) {
-                             namedTurnout.getBean().setCommandedState(new1stState);
-                         }
-                     }
-                 }
-                 layoutEditor.redrawPanel();
-             },
-             namedTurnout.getName(),
-             "Layout Editor Turnout"
-     );
+//     namedTurnout.getBean().addPropertyChangeListener(
+//             mTurnoutListener = (java.beans.PropertyChangeEvent e) -> {
+//                 if (secondNamedTurnout != null) {
+//                     int new2ndState = secondNamedTurnout.getBean().getState();
+//                     if (e.getSource().equals(secondNamedTurnout.getBean())
+//                     && e.getNewValue().equals(new2ndState)) {
+//                         int old1stState = namedTurnout.getBean().getState();
+//                         int new1stState = new2ndState;
+//                         if (secondTurnoutInverted) {
+//                             new1stState = Turnout.invertTurnoutState(new1stState);
+//                         }
+//                         if (old1stState != new1stState) {
+//                             namedTurnout.getBean().setCommandedState(new1stState);
+//                         }
+//                     }
+//                 }
+//                 layoutEditor.redrawPanel();
+//             },
+//             namedTurnout.getName(),
+//             "Layout Editor Turnout"
+//     );
+  namedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener = new MTurnoutListener(this), namedTurnout->getName(),  "Layout Editor Turnout");
  }
- if (secondNamedTurnout != null) {
+ if (secondNamedTurnout != nullptr) {
      secondNamedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener, secondNamedTurnout->getName(), "Layout Editor Turnout");
  }
 #endif

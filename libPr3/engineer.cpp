@@ -890,7 +890,7 @@ ThrottleRamp* Engineer::getRamp() {
         QColor c = color;
 //        ThreadingUtil.runOnLayoutEventually(() -> { // delay until current warrant can complete
             //WarrantTableFrame::getDefault()->setStatusText(m, c, true);
-        if(!QMetaObject::invokeMethod(WarrantTableFrame::getDefault(), "setStatusTest", Qt::QueuedConnection, Q_ARG(QString, m), Q_ARG(QColor, c), Q_ARG(bool, true)))
+        if(!QMetaObject::invokeMethod(WarrantTableFrame::getDefault(), "setStatusTest", Qt::AutoConnection, Q_ARG(QString, m), Q_ARG(QColor, c), Q_ARG(bool, true)))
          throw InvocationTargetException();
 //        });
         emit finished();

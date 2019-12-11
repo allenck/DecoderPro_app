@@ -737,12 +737,12 @@ void SignalGroupTableAction::setColumnToHoldButton(JTable* /*table*/, int /*colu
  */
 void SignalGroupTableAction::initializeIncludedList()
 {
- _includedMastAppearancesList =  QList<SignalMastAspect*>();
+ _includedMastAspectsList =  QList<SignalMastAspect*>();
  for (int i=0; i<_mastAppearancesList.size();i++)
  {
   if (_mastAppearancesList.at(i)->isIncluded())
   {
-   _includedMastAppearancesList.append(_mastAppearancesList.at(i));
+   _includedMastAspectsList.append(_mastAppearancesList.at(i));
   }
 
  }
@@ -850,10 +850,10 @@ int SignalGroupTableAction::setSignalInformation(SignalGroup* g) {
     return _includedSignalList.size();
 }
 
-void SignalGroupTableAction::setMastAppearanceInformation(SignalGroup* g) {
-    ((DefaultSignalGroup*)g)->clearSignalMastAppearance();
-    for (int x = 0; x<_includedMastAppearancesList.size(); x++) {
-        ((DefaultSignalGroup*)g)->addSignalMastAppearance(_includedMastAppearancesList.at(x)->getAppearance());
+void SignalGroupTableAction::setMastAspectInformation(SignalGroup* g) {
+    ((DefaultSignalGroup*)g)->clearSignalMastAspect();
+    for (int x = 0; x<_includedMastAspectsList.size(); x++) {
+        ((DefaultSignalGroup*)g)->addSignalMastAspect(_includedMastAspectsList.at(x)->getAspect());
     }
 }
 
@@ -872,7 +872,7 @@ void SignalGroupTableAction::setMastAppearanceInformation(SignalGroup* g) {
     }
 }*/
 
-void SignalGroupTableAction::setValidSignalAppearances()
+void SignalGroupTableAction::setValidSignalAspects()
 {
  SignalMast* sh = (SignalMast*) mainSignal->getSelectedBean();
  if (sh==NULL)
@@ -944,8 +944,8 @@ void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
 
     for (int i=0; i<_mastAppearancesList.size(); i++){
         SignalMastAspect* appearance = _mastAppearancesList.at(i);
-        QString app = appearance->getAppearance();
-        if (g->isSignalMastAppearanceIncluded(app)){
+        QString app = appearance->getAspect();
+        if (g->isSignalMastAspectIncluded(app)){
             appearance->setIncluded(true);
             setRow = i;
         } else {
@@ -999,7 +999,7 @@ void SignalGroupTableAction::updatePressed(ActionEvent* /*e*/, bool newSignalGro
  g->setUserName(uName);
     initializeIncludedList();
     setSignalInformation(g);
-    setMastAppearanceInformation(g);
+    setMastAspectInformation(g);
 
     ((DefaultSignalGroup*)g)->setSignalMast((SignalMast*)mainSignal->getSelectedBean(), mainSignal->getSelectedDisplayName());
     if(close)
@@ -1087,7 +1087,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
         if (act->showAll)
             return act->_mastAppearancesList.size();
         else
-            return act->_includedMastAppearancesList.size();
+            return act->_includedMastAspectsList.size();
     }
 
 /*public*/ QVariant  ATSignalMastAppearanceModel::data (const QModelIndex &index, int role) const
@@ -1103,7 +1103,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
   }
   else
   {
-   appearList = act->_includedMastAppearancesList;
+   appearList = act->_includedMastAspectsList;
   }
   // some error checking
   if (r >= appearList.size())
@@ -1116,7 +1116,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
 //            case INCLUDE_COLUMN:
 //                return Boolean.valueOf(appearList.get(r).isIncluded());
    case APPEAR_COLUMN:  // slot number
-     return appearList.at(r)->getAppearance();
+     return appearList.at(r)->getAspect();
     default:
       return QVariant();
   }
@@ -1130,7 +1130,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
   }
   else
   {
-   appearList = act->_includedMastAppearancesList;
+   appearList = act->_includedMastAspectsList;
   }
   if(c == INCLUDE_COLUMN)
   {
@@ -1155,7 +1155,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
   }
   else
   {
-   appearList = act->_includedMastAppearancesList;
+   appearList = act->_includedMastAspectsList;
   }
   switch (c)
   {
@@ -1169,7 +1169,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
    case APPEAR_COLUMN:
     if(role == Qt::EditRole)
     {
-     appearList.at(r)->setAppearance(value.toString());
+     appearList.at(r)->setAspect(value.toString());
     break;
    default: break;
   }
@@ -1591,8 +1591,8 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
 
 ///*private*/ /*static*/ class SignalMastAppearances
 //    {
-     SignalGroupTableAction::SignalMastAspect::SignalMastAspect(QString appearance){
-        _appearance=appearance;
+     SignalGroupTableAction::SignalMastAspect::SignalMastAspect(QString aspect){
+        _aspect=aspect;
     }
 
     void SignalGroupTableAction::SignalMastAspect::setIncluded(bool include) {
@@ -1603,12 +1603,12 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
         return _include;
     }
 
-    void SignalGroupTableAction::SignalMastAspect::setAppearance(QString app){
-        _appearance = app;
+    void SignalGroupTableAction::SignalMastAspect::setAspect(QString app){
+        _aspect = app;
     }
 
-    QString SignalGroupTableAction::SignalMastAspect::getAppearance(){
-        return _appearance;
+    QString SignalGroupTableAction::SignalMastAspect::getAspect(){
+        return _aspect;
     }
 
 //};
@@ -1644,7 +1644,7 @@ SGBeanTableDataModel* SignalGroupTableAction::model() {return (SGBeanTableDataMo
 void SignalGroupTableAction::On_mainSignal_currentIndexChanged()
 {
  if(curSignalGroup==NULL)
-   setValidSignalAppearances();
+   setValidSignalAspects();
  else if (mainSignal->getSelectedBean()!=curSignalGroup->getSignalMast())
-   setValidSignalAppearances();
+   setValidSignalAspects();
 }

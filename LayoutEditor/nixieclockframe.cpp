@@ -99,8 +99,8 @@
  pack();
 
  // request callback to update time
- //((SimpleTimebase*) clock)->addMinuteChangeListener( new PropertyChangeListener());
- connect(clock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ clock->addMinuteChangeListener( new PropertyChangeListener());
+ //connect(clock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //    {
 //     /*public*/ void propertyChange(PropertyChangeEvent* e)
 //     {

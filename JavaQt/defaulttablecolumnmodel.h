@@ -5,6 +5,7 @@
 #include <tablecolumn.h>
 #include "javaqt_global.h"
 
+class AbstractTableModel;
 class TableColumnModelEvent;
 class PropertyChangeEvent;
 class JAVAQTSHARED_EXPORT DefaultTableColumnModel : public TableColumnModel

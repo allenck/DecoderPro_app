@@ -12,7 +12,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT TrainIcon : public LocoIcon
 public:
  //explicit TrainIcon(QWidget *parent = 0);
  /*public*/ TrainIcon(Editor* editor, QWidget* parent = 0);
- /*public*/ void setShowTooltip(bool set);
+ /*public*/ void setShowToolTip(bool set);
  /*public*/ void setTrain(Operations::Train* train);
  /*public*/ Operations::Train* getTrain();
  /*public*/ void setConsistNumber(int cN);

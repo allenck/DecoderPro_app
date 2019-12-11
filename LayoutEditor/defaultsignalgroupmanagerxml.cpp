@@ -46,15 +46,15 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
  {
   QDomElement e = doc.createElement("signalgroup");
   SignalGroup* p = m->getSignalGroup(names.at(i));
-  e.setAttribute("systemName", p->getSystemName()); // deprecated for 2.9.* series
+  //e.setAttribute("systemName", p->getSystemName()); // deprecated for 2.9.* series
   e.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->getSystemName())));
-  e.setAttribute("userName", p->getUserName());
+  //e.setAttribute("userName", p->getUserName());
   //storeCommon(p, e);
   element.appendChild(e);
-  for (int x=0; x < p->getNumSignalMastAppearances(); x++)
+  for (int x=0; x < p->getNumSignalMastAspects(); x++)
   {
-   QDomElement app = doc.createElement("appearance");
-   app.setAttribute("valid", p->getSignalMastAppearanceByIndex(x));
+   QDomElement app = doc.createElement("aspect");
+   app.setAttribute("valid", p->getSignalMastAspectByIndex(x));
    e.appendChild(app);
   }
   e.setAttribute("signalMast", p->getSignalMastName());
@@ -168,7 +168,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
   for(int y = 0; y<appList.size(); y++)
   {
    QString value = appList.at(y).toElement().attribute("valid");
-   m->addSignalMastAppearance(value);
+   m->addSignalMastAspect(value);
   }
   //loadCommon(m, e);
   QDomNodeList signalHeadList = list.at(i).toElement().elementsByTagName("signalHead");

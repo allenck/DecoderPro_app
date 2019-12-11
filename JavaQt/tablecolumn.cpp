@@ -687,7 +687,7 @@ void TableColumn::common()
         changeSupport = new PropertyChangeSupport(this);
     }
     changeSupport->addPropertyChangeListener(listener);
-    connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+    //connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /**
@@ -703,7 +703,7 @@ void TableColumn::common()
                             PropertyChangeListener* listener) {
     if (changeSupport != NULL) {
         changeSupport->removePropertyChangeListener(listener);
-        disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+        //disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
 
     }
 }

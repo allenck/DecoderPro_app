@@ -534,15 +534,15 @@ void PositionableShape::OnCancel_clicked()
 
 /*public*/ void PositionableShape::setControlSensorHandle(NamedBeanHandle<Sensor*>* senHandle) {
     if (_controlSensor != NULL) {
-        //getControlSensor().removePropertyChangeListener(this);
-     disconnect(getControlSensor()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     getControlSensor()->removePropertyChangeListener((PropertyChangeListener*)this);
+     //disconnect(getControlSensor()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         setDisplayLevel(_saveLevel);
         ((Positionable*)this)->setVisible(true);
     }
     _controlSensor = senHandle;
     if (_controlSensor != NULL) {
-        //getControlSensor().addPropertyChangeListener(this, _controlSensor.getName(), "PositionalShape");
-     connect(getControlSensor()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     getControlSensor()->addPropertyChangeListener((PropertyChangeListener*)this, _controlSensor->getName(), "PositionalShape");
+     //connect(getControlSensor()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
 }
 
@@ -582,8 +582,8 @@ void PositionableShape::OnCancel_clicked()
 /*public*/ void PositionableShape::dispose()
 {
  if (_controlSensor != NULL) {
-     //getControlSensor().removePropertyChangeListener(this);
-  disconnect(getControlSensor()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getControlSensor()->removePropertyChangeListener((PropertyChangeListener*)this);
+  //disconnect(getControlSensor()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  _controlSensor = NULL;
 }

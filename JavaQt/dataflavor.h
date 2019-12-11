@@ -22,6 +22,7 @@ public:
  /*public*/ DataFlavor(QObject* representationClass, QString humanPresentableName, QObject *parent = 0);
  /*public*/ DataFlavor(QString mimeType, QString humanPresentableName, QObject *parent = 0);
  /*public*/ DataFlavor(QString mimeType, QObject *parent = 0 ) throw (ClassNotFoundException);
+ ~DataFlavor();
  /*public*/ QString toString();
  /*public*/ static /*final*/ DataFlavor* getTextPlainUnicodeFlavor();
  /*public*/ static /*final*/ DataFlavor* selectBestTextFlavor( QList<DataFlavor*>* availableFlavors);
@@ -59,7 +60,8 @@ private:
 
     /** Java class of objects this DataFlavor represents **/
 
-    /*private*/ QObject*       representationClass;
+//    /*private*/ QObject*       representationClass;
+    QString representationClassName;
     static /*private*/ DataFlavor* createConstant(QObject* rc, QString prn);
     static /*private*/ DataFlavor* createConstant(QString mt, QString prn);
     /*private*/ DataFlavor(QString primaryType, QString subType, MimeTypeParameterList* params, QObject* representationClass, QString humanPresentableName, QObject *parent = 0);

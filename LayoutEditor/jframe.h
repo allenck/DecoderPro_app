@@ -68,6 +68,7 @@ public:
     void setMenuBar(QMenuBar *menubar);
     void addWindowListener(WindowListener* l);
     /*public*/ /*synchronized*/ void removeWindowListener(WindowListener* l);
+    QVector<WindowListener*> getWindowListeners();
 
     void setAlwaysOnTop(bool checked);
 #if QT_VERSION >= 0x050000

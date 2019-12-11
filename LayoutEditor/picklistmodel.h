@@ -53,7 +53,7 @@ enum Columns
  POSITION_COL = 2
 };
 static /*public*/ int getNumInstances(QString type);
-/*public*/ void init() ;
+QT_DEPRECATED /*public*/ void init() ;
 /*public*/ NamedBean* getBeanAt(int index);
 /*public*/ int getIndexOf(NamedBean* bean) ;
 /*public*/ QList <NamedBean*>* getBeanList();
@@ -157,8 +157,9 @@ class MultiSensorPickModel : public SensorPickModel
 public:
     /*private*/ QMap <int, QString>* _position;// = new QMap <int, QString> ();
     MultiSensorPickModel(QObject *parent = 0) ;
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) const;
+    /*public*/ int columnCount(const QModelIndex &/*parent*/) const override{return 3;}
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     void tableClicked(QModelIndex index);
 };
 

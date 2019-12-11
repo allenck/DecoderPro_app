@@ -33,7 +33,7 @@
 }
 
 // train icon tool tips are always enabled
-/*public*/ void TrainIcon::setShowTooltip(bool set) {
+/*public*/ void TrainIcon::setShowToolTip(bool set) {
     _showTooltip = true;
 }
 #if 0

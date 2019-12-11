@@ -6,6 +6,7 @@
 #include <QDrag>
 #include <QMimeData>
 #include "rosterentry.h" // for Vptr
+#include <QVBoxLayout>
 
 //DragJLabel::DragJLabel(QWidget *parent) :
 //    JLabel(parent)
@@ -34,21 +35,57 @@
  *
  */
 // /*public*/ class DragJLabel extends JLabel implements DragGestureListener, DragSourceListener, Transferable {
-
-/*public*/ DragJLabel::DragJLabel(DataFlavor* flavor, QWidget *parent) : QLabel(parent)
+/*public*/ DragJLabel::DragJLabel(DataFlavor* flavor, QWidget *parent) : QGroupBox(parent)
 {
      //super();
 //     DragSource dragSource = DragSource.getDefaultDragSource();
 //     dragSource.createDefaultDragGestureRecognizer(this,
 //                 DnDConstants.ACTION_COPY, this);
- log = new Logger("DragJLabel");
+ common();
  _dataFlavor = flavor;
  icon = NULL;
 }
+
+/*public*/ DragJLabel::DragJLabel(DataFlavor* flavor, NamedIcon *icon, QWidget *parent) : QGroupBox(parent)
+{
+     //super();
+//     DragSource dragSource = DragSource.getDefaultDragSource();
+//     dragSource.createDefaultDragGestureRecognizer(this,
+//                 DnDConstants.ACTION_COPY, this);
+ common();
+ _dataFlavor = flavor;
+ this->icon = icon;
+ setPixmap(QPixmap::fromImage(icon->getImage()));
+}
+
 DragJLabel::~DragJLabel()
 {
  delete log;
 }
+
+void DragJLabel::common()
+{
+ log = new Logger("DragJLabel");
+ setAttribute(Qt::WA_DeleteOnClose);
+ setLayout(new QVBoxLayout());
+ this->layout()->addWidget(internalLabel = new QLabel);
+}
+
+/*public*/ void DragJLabel::setPixmap(QPixmap pixmap)
+{
+ internalLabel->setPixmap(pixmap);
+}
+
+/**
+ * Source can override to prohibit dragging if data is incomplete
+ * when dragGestureRecognized() is called.
+ *
+ * @return Source's choice to allow drag
+ */
+/*protected*/ bool DragJLabel::okToDrag() {
+    return true;
+}
+
  /**************** DragGestureListener ***************/
 // /*public*/ void dragGestureRecognized(DragGestureEvent e) {
 //     if (log.isDebugEnabled()) log.debug("DragJLabel.dragGestureRecognized ");
@@ -73,17 +110,14 @@ void DragJLabel::mousePressEvent(QMouseEvent *e)
 {
  if(e->button()&Qt::LeftButton)
  {
-  QDrag *dr = new QDrag(this);
+  dr = new QDrag(this);
   QMimeData *data = new QMimeData;
-  QString s_mimeData = mimeData();
-  if(!s_mimeData.isEmpty())
-   data->setText(s_mimeData);
-  else
-   data->setText(_dataFlavor->toString());
-  //data->setText(mimeData());
+  QByteArray s_mimeData = mimeData();
+  log->debug(tr("xmldata: %1").arg(s_mimeData.data()));
+  data->setData("object/x-myApplication-object", s_mimeData);
   // Assign ownership of the QMimeData object to the QDrag object.
   dr->setMimeData(data);
-  dr->start();
+  dr->exec();
  }
  if(e->button() & Qt::RightButton)
  {
@@ -128,8 +162,8 @@ void DragJLabel::mousePressEvent(QMouseEvent *e)
      return QVariant();
  }
 
-QString DragJLabel::mimeData()
-{ return _dataFlavor->toString();}
+QByteArray DragJLabel::mimeData()
+{ return QByteArray();}
 
 void DragJLabel::setIcon(NamedIcon *icon)
 {
@@ -143,4 +177,26 @@ NamedIcon* DragJLabel::getIcon() { return icon;}
 void DragJLabel::setName(QString name)
 {
  this->name = name;
+ setTitle(name);
+}
+
+/**
+ * Source can override to prohibit dragging if data is incomplete
+ * when dragGestureRecognized() is called.
+ *
+ * @return Source's choice to allow drag
+ */
+/*protected*/ bool okToDrag() {
+    return true;
+}
+
+/*public*/ void DragJLabel::setMargin(int i)
+{
+ internalLabel->setMargin(i);
+}
+
+
+/*public*/ void DragJLabel::setText(QString txt)
+{
+ internalLabel->setText(txt);
 }

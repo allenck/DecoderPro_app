@@ -31,7 +31,8 @@
 /**
 * Constructor for existing family to change icons, add/delete icons, or to delete the family
 */
-/*public*/ IconDialog::IconDialog(QString type, QString family, FamilyItemPanel* parent, QMap<QString, NamedIcon *> *iconMap ) : ItemDialog(type, family,                                                                                                                          tr("Show Icons for %1").arg(type), parent, true)
+/*public*/ IconDialog::IconDialog(QString type, QString family, FamilyItemPanel* parent, QMap<QString, NamedIcon *> *iconMap )
+ : ItemDialog(type, family, tr("Show Icons for %1").arg(type), parent, true)
 {
 //    super(type, family,
  QVBoxLayout* thisLayout = new QVBoxLayout(this);

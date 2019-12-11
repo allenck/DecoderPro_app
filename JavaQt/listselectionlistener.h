@@ -14,10 +14,15 @@
 
 /*public*/ class ListSelectionListener : public EventListener
 {
-  /**
-   * Called whenever the value of the selection changes.
-   * @param e the event that characterizes the change.
-   */
+ Q_OBJECT
+public:
+ ListSelectionListener(QObject* parent = 0) {}
+public slots:
+/**
+ * Called whenever the value of the selection changes.
+ * @param e the event that characterizes the change.
+ */
  virtual void valueChanged(ListSelectionEvent* /*e*/) {}
 };
+Q_DECLARE_INTERFACE(ListSelectionListener, "ListSelectionListener")
 #endif // LISTSELECTIONLISTENER_H

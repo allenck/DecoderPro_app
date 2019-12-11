@@ -4,9 +4,10 @@
 #include "rostergroupselector.h"
 #include "roster.h"
 
-class LIBPR3SHARED_EXPORT RosterGroupComboBox : public RosterGroupSelector
+class LIBPR3SHARED_EXPORT RosterGroupComboBox : public QComboBox, public RosterGroupSelector
 {
     Q_OBJECT
+ Q_INTERFACES(RosterGroupSelector)
 public:
     //explicit RosterGroupComboBox(QObject *parent = 0);
     /*public*/ RosterGroupComboBox(Roster* roster, QWidget *parent = 0);

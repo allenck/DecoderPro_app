@@ -66,7 +66,6 @@ public slots:
     void onShowDarkIcon();
 
 private:
-    /*private*/ SignalMast* mMast;
     /*private*/ NamedBeanHandle<SignalMast*>* namedMast;
     /*private*/ bool debug;
     Logger* log;

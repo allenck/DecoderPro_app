@@ -81,9 +81,9 @@
 {
  if (namedHead != NULL)
  {
-  //getSignalHead()->removePropertyChangeListener((PropertyChangeListener*)this);
-  AbstractSignalHead* sh = (AbstractSignalHead*)getSignalHead();
-  disconnect(sh, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getSignalHead()->removePropertyChangeListener((PropertyChangeListener*)this);
+//  AbstractSignalHead* sh = (AbstractSignalHead*)getSignalHead();
+//  disconnect(sh, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  namedHead = sh;
  if (namedHead != NULL)
@@ -103,9 +103,9 @@
    _validKey = getSignalHead()->getValidStateNames();
 
   displayState(headState());
-  //getSignalHead()->addPropertyChangeListener((PropertyChangeListener*)this);
+  getSignalHead()->addPropertyChangeListener((PropertyChangeListener*)this);
   DefaultSignalHead* head = (DefaultSignalHead*)getSignalHead();
-  connect(head->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//  connect(head->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //connect(head, SIGNAL(propertyChange(QString,QVariant,QVariant)), this, SLOT(propertyChange(QString,QVariant,QVariant)));
   setToolTip(head->getDisplayName());
  }
@@ -735,9 +735,9 @@ void SignalHeadIcon::updateSignal()
 {
  if (getSignalHead()!=NULL)
  {
-//        getSignalHead()->removePropertyChangeListener((PropertyChangeListener*)this);
-  DefaultSignalHead* head = (DefaultSignalHead*)getSignalHead();
-  disconnect(head, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getSignalHead()->removePropertyChangeListener((PropertyChangeListener*)this);
+//  DefaultSignalHead* head = (DefaultSignalHead*)getSignalHead();
+//  disconnect(head, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  namedHead = NULL;
  _iconMap = NULL;

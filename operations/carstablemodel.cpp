@@ -328,7 +328,7 @@ namespace Operations
 
  void CarsTableModel::initTable() {
      // Use XTableColumnModel so we can control which columns are visible
-     XTableColumnModel* tcm = new XTableColumnModel();
+     XTableColumnModel* tcm = new XTableColumnModel((AbstractTableModel*)_table->model());
      _table->setColumnModel(tcm);
      _table->createDefaultColumnsFromModel();
 #if 0 // TODO:

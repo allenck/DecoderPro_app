@@ -39,7 +39,7 @@ public:
 private:
 
 };
-
+Q_DECLARE_INTERFACE(RosterEntrySelector, "RosterEntrySelector")
 ///*final*/ QString RosterEntrySelector::SELECTED_ROSTER_ENTRIES = "selectedRosterEntries";
 
 #endif // ROSTERENTRYSELECTOR_H

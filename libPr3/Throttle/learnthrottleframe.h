@@ -2,6 +2,11 @@
 #define LEARNTHROTTLEFRAME_H
 #include "../LayoutEditor/jmrijframe.h"
 
+class QPushButton;
+class PowerPane;
+class ControlPanel;
+class FunctionPanel;
+class ButtonFrame;
 class PowerManager;
 class WarrantFrame;
 class DccThrottle;
@@ -29,19 +34,15 @@ public:
 
 signals:
 private:
-#if 0
-    /*private*/ ControlPanel _controlPanel;
-    /*private*/ FunctionPanel _functionPanel;
-    /*private*/ ButtonFrame _buttonPanel;
-#endif
+    /*private*/ ControlPanel* _controlPanel;
+    /*private*/ FunctionPanel* _functionPanel;
+    /*private*/ ButtonFrame* _buttonPanel;
     /*private*/ WarrantFrame* _warrantFrame;
     /*private*/ DccThrottle* _throttle;
+    PowerPane* powerControl;//  = new PowerPane();
+    PowerManager* powerMgr = nullptr;
+    QPushButton* powerLight = nullptr;
 #if 0
-    PowerPane powerControl  = new PowerPane();
-#endif
-    PowerManager* powerMgr;// = null;
-#if 0
-    JButton powerLight;
     // Load the power lights as icons to be placed in an invisible JButton so the light
     // can be clicked to change the power status
     NamedIcon powerOnIcon = new NamedIcon("resources/GreenPowerLED.gif", "resources/GreenPowerLED.gif");
@@ -53,7 +54,10 @@ private:
 #endif
     Logger* log;
 public slots:
-
+protected:
+    /*protected*/ void setSpeedSetting(float speed);
+    /*protected*/ void setSpeedStepMode(int speedStep);
+friend class WarrantFrame;
 };
 
 #endif // LEARNTHROTTLEFRAME_H

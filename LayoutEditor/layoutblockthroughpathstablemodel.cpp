@@ -34,8 +34,8 @@ LayoutBlockThroughPathsTableModel::
  log = new Logger("LayoutBlockThroughPathsTableModel");
  this->editable = editable;
  this->lBlock = lBlock;
- //lBlock.addPropertyChangeListener(this);
- connect(lBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ lBlock->addPropertyChangeListener((PropertyChangeListener*)this);
+ //connect(lBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ int LayoutBlockThroughPathsTableModel::rowCount(const QModelIndex &/*parent*/) const

@@ -493,7 +493,7 @@ void TableFrames::on_openSignal_triggered()
 //        log->error("makeBlockFrame: Unexpected error: " + e);
 //    }
  // Use XTableColumnModel so we can control which columns are visible
- XTableColumnModel* tcm = new XTableColumnModel();
+ XTableColumnModel* tcm = new XTableColumnModel(_oBlockModel);
  _oBlockTable->setColumnModel(tcm);
  //_oBlockTable->getTableHeader().setReorderingAllowed(true);
  _oBlockTable->createDefaultColumnsFromModel();

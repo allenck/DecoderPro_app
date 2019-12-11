@@ -40,7 +40,7 @@ public:
     /*public*/ IndicatorDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map,IndicatorItemPanel* self) ;
     /*public*/ bool isDataFlavorSupported(DataFlavor* flavor);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException) ;
-  QString mimeData();
+  QByteArray mimeData();
 };
 
 #endif // INDICATORITEMPANEL_H

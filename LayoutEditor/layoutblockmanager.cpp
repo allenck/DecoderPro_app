@@ -2218,6 +2218,7 @@ void LayoutBlockManager::setLastRoutingChange()
 //        }
 //      }
 //    };
+ // TODO: why is this here?
  connect(r, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(passPropertyChange(PropertyChangeEvent*)));
  thr = new QThread(r);
  thr->start();

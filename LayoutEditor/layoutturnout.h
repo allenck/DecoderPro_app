@@ -19,6 +19,7 @@
 #include "windowlistener.h"
 #include "exceptions.h"
 
+//class MTurnoutListener;
 class SignalHead;
 class QGraphicsEllipseItem;
 class QCloseEvent;
@@ -517,6 +518,7 @@ protected:
  friend class ConnectivityUtil;
  friend class LayoutEditorAuxTools;
  friend class LayoutTrackEditors;
+ friend class MTurnoutListener;
 };
 
 class ETWindowListener : public WindowListener
@@ -527,4 +529,15 @@ class ETWindowListener : public WindowListener
  ETWindowListener(LayoutTurnout* parent);
  void windowClosing(QCloseEvent *e);
 };
+
+class MTurnoutListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ LayoutTurnout* layoutTurnout;
+public:
+ MTurnoutListener(LayoutTurnout* layoutTurnout) {this->layoutTurnout = layoutTurnout;}
+public slots:
+ void propertyChange(PropertyChangeEvent* e);
+};
+
 #endif // LAYOUTTURNOUT_H

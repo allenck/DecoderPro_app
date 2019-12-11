@@ -35,8 +35,8 @@
  log = new Logger("LayoutBlockNeighbourTableModel");
  this->editable = editable;
  this->lBlock = lBlock;
- //lBlock.addPropertyChangeListener(this);
- connect(this->lBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ lBlock->addPropertyChangeListener((PropertyChangeListener*)this);
+ //connect(this->lBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*private*/ int LayoutBlockNeighbourTableModel::rowCount(const QModelIndex &/*parent*/) const

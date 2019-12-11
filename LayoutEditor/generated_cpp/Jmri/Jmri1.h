@@ -958,6 +958,7 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    QString  getTitle(JFrame* theWrappedObject);
    QString  py_q_getTitle(JFrame* theWrappedObject){  return (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_getTitle());}
    QWidget*  getTopLevelAncestor(JFrame* theWrappedObject);
+   QVector<WindowListener* >  getWindowListeners(JFrame* theWrappedObject);
    void languageChange(JFrame* theWrappedObject);
    void py_q_languageChange(JFrame* theWrappedObject){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_languageChange());}
    void pack(JFrame* theWrappedObject);
@@ -1288,6 +1289,7 @@ virtual QItemSelectionModel::SelectionFlags  selectionCommand(const QModelIndex&
 virtual void setModel(QAbstractItemModel*  dataModel);
 virtual void setRootIndex(const QModelIndex&  index);
 virtual void setSelection(const QRect&  rect, QItemSelectionModel::SelectionFlags  command);
+virtual void setSelectionModel(DefaultListSelectionModel *selectionModel);
 virtual void setVisible(bool  visible);
 virtual void setupViewport(QWidget*  viewport);
 virtual QPainter*  sharedPainter() const;
@@ -1319,7 +1321,6 @@ virtual void wheelEvent(QWheelEvent*  arg__1);
 class PythonQtPublicPromoter_JTable : public JTable
 { public:
 inline TableColumnModel*  promoted_createDefaultColumnModel() { return this->createDefaultColumnModel(); }
-inline ListSelectionModel*  promoted_createDefaultSelectionModel() { return this->createDefaultSelectionModel(); }
 inline void promoted_resizeAndRepaint() { this->resizeAndRepaint(); }
 inline void py_q_setModel(QAbstractItemModel*  dataModel) { JTable::setModel(dataModel); }
 };
@@ -1338,7 +1339,6 @@ void delete_JTable(JTable* obj) { delete obj; }
    int  convertRowIndexToView(JTable* theWrappedObject, int  modelRowIndex);
    TableColumnModel*  createDefaultColumnModel(JTable* theWrappedObject);
    void createDefaultColumnsFromModel(JTable* theWrappedObject);
-   ListSelectionModel*  createDefaultSelectionModel(JTable* theWrappedObject);
    bool  getAutoCreateColumnsFromModel(JTable* theWrappedObject);
    int  getColumnCount(JTable* theWrappedObject);
    TableColumnModel*  getColumnModel(JTable* theWrappedObject);
@@ -1352,7 +1352,7 @@ void delete_JTable(JTable* obj) { delete obj; }
    int  getSelectedColumn(JTable* theWrappedObject);
    int  getSelectedRow(JTable* theWrappedObject);
    QVector<int >*  getSelectedRows(JTable* theWrappedObject);
-   ListSelectionModel*  getSelectionModel(JTable* theWrappedObject);
+   QHeaderView*  getTableHeader(JTable* theWrappedObject);
    bool  getUpdateSelectionOnSort(JTable* theWrappedObject);
    QVariant  getValueAt(JTable* theWrappedObject, int  row, int  column);
    void moveColumn(JTable* theWrappedObject, int  column, int  targetColumn);
@@ -1371,7 +1371,7 @@ void delete_JTable(JTable* obj) { delete obj; }
    void setRowHeight(JTable* theWrappedObject, int  rowHeight);
    void setRowMargin(JTable* theWrappedObject, int  rowMargin);
    void setRowSelectionInterval(JTable* theWrappedObject, int  index0, int  index1);
-   void setSelectionModel(JTable* theWrappedObject, ListSelectionModel*  newModel);
+   void setSelectionMode(JTable* theWrappedObject, int  selectionMode);
    void setUpdateSelectionOnSort(JTable* theWrappedObject, bool  update);
 };
 
@@ -2639,11 +2639,7 @@ public:
    ~PythonQtShell_ListSelectionModel();
 
 virtual void addSelectionInterval(int  index0, int  index1);
-virtual void childEvent(QChildEvent*  event);
 virtual void clearSelection();
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual int  getAnchorSelectionIndex();
 virtual int  getLeadSelectionIndex();
 virtual int  getMaxSelectionIndex();
@@ -2660,10 +2656,7 @@ virtual void setLeadSelectionIndex(int  arg__1);
 virtual void setSelectionInterval(int  index0, int  index1);
 virtual void setSelectionMode(int  arg__1);
 virtual void setValueIsAdjusting(bool  arg__1);
-virtual void timerEvent(QTimerEvent*  event);
 
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
@@ -2692,6 +2685,9 @@ inline void py_q_setValueIsAdjusting(bool  arg__1) { ListSelectionModel::setValu
 class PythonQtWrapper_ListSelectionModel : public QObject
 { Q_OBJECT
 public:
+Q_ENUMS(SELECTIONS )
+enum SELECTIONS{
+  SINGLE_SELECTION = ListSelectionModel::SINGLE_SELECTION,   SINGLE_INTERVAL_SELECTION = ListSelectionModel::SINGLE_INTERVAL_SELECTION,   MULTIPLE_INTERVAL_SELECTION = ListSelectionModel::MULTIPLE_INTERVAL_SELECTION};
 public slots:
 ListSelectionModel* new_ListSelectionModel();
 void delete_ListSelectionModel(ListSelectionModel* obj) { delete obj; } 

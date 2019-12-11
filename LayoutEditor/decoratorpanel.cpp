@@ -26,6 +26,7 @@
 #include "memoryinputicon.h"
 #include "memorycomboicon.h"
 #include "memoryspinnericon.h"
+#include "textitempanel.h"
 
 //DecoratorPanel::DecoratorPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -106,10 +107,16 @@ AJSpinner::AJSpinner(SpinnerModel* model, int which)
 //static class AJRadioButton extends JRadioButton {
 //int which;
 
-AJRadioButton::AJRadioButton(QString text, int w) : QRadioButton(text)
+AJRadioButton::AJRadioButton(QString text, int w, QString state) : QRadioButton(text)
 {
  //super(text);
- which = w;
+ _which = w;
+ _state = state;
+}
+
+
+QString AJRadioButton::getState() {
+    return _state;
 }
 //};
 
@@ -123,15 +130,36 @@ AJRadioButton::AJRadioButton(QString text, int w) : QRadioButton(text)
     return panel;
 }
 
+/* Called by Palette's TextItemPanel i.e. make a new panel item to drag */
+/*protected*/ void DecoratorPanel::initDecoratorPanel(DragDecoratorLabel* sample) {
+    sample->setDisplayLevel(Editor::LABELS);
+    //sample->setBackground(_editor->getTargetPanel()->getBackground());
+    QColor c;
+    QBrush b = _editor->editPanel->backgroundBrush();
+    if(b == Qt::NoBrush)
+     c = QColor(Qt::white);
+    c = b.color();
+    sample->setBackground(c);
+    _util = sample->getPopupUtility();
+    _samples->insert("Text", sample);
+    _selectedState = "Text";
+    _isPositionableLabel = true;
+    makeFontPanels();
+    this->layout()->addWidget(makeTextPanel("Text", sample, true));
+    _samplePanel->layout()->addWidget(sample);
+//    log->debug(tr("DragDecoratorLabel size %1 | panel size %2").arg(sample->sizeHint()).arg(_samplePanel->sizeHint()));
+    finishInit(true);
+}
+
 /*public*/ void DecoratorPanel::initDecoratorPanel(Positionable* pos)
 {
  Positionable* item = pos->deepClone(); // need copy of PositionableJPanel in PopupUtility
  _util = item->getPopupUtility();
  item->remove();      // don't need copy any more. Removes ghost image of PositionableJPanels
- _isPositionableLabel = (qobject_cast<PositionableLabel*>((QObject*)pos));
+ _isPositionableLabel = (qobject_cast<PositionableLabel*>(pos->self()));
  makeFontPanels();
 
- if (qobject_cast<SensorIcon*>((QObject*)pos) && !((SensorIcon*)pos)->isIcon()) {
+ if (qobject_cast<SensorIcon*>(pos->self()) && !((SensorIcon*)pos->self())->isIcon()) {
      SensorIcon* si = (SensorIcon*) pos;
      if (!si->isIcon() && si->isText()) {
          PositionableLabel* sample = new PositionableLabel(si->getActiveText(), _editor);
@@ -161,9 +189,9 @@ AJRadioButton::AJRadioButton(QString text, int w) : QRadioButton(text)
      PositionablePopupUtil* util = sample->getPopupUtility();
      util->setHasBackground(_util->hasBackground());
      bool addtextField;
-     if (qobject_cast<PositionableLabel*>((QObject*)pos)) {
-         sample->setText(((PositionableLabel*)pos)->getUnRotatedText());
-         if (qobject_cast<MemoryIcon*>((QObject*)pos)) {
+     if (qobject_cast<PositionableLabel*>(pos->self())) {
+         sample->setText(((PositionableLabel*)pos->self())->getUnRotatedText());
+         if (qobject_cast<MemoryIcon*>(pos->self())) {
              addtextField = false;
          } else {
              addtextField = true;
@@ -172,21 +200,21 @@ AJRadioButton::AJRadioButton(QString text, int w) : QRadioButton(text)
          // To display PositionableJPanel types as PositionableLabels, set fixed sizes.
          util->setFixedWidth(pos->getWidth() - 2*_util->getBorderSize());
          util->setFixedHeight(pos->getHeight() - 2*_util->getBorderSize());
-         if (qobject_cast<MemoryInputIcon*>((QObject*)pos)) {
+         if (qobject_cast<MemoryInputIcon*>(pos->self())) {
              JTextField* field = (JTextField*)((MemoryInputIcon*)pos)->getTextComponent();
              sample->setText(field->text());
              addtextField = false;
-         } else if (qobject_cast<MemoryComboIcon*>((QObject*)pos)) {
-             QComboBox* box = (QComboBox*)((MemoryComboIcon*)pos)->getTextComponent();
+         } else if (qobject_cast<MemoryComboIcon*>(pos->self())) {
+             QComboBox* box = (QComboBox*)((MemoryComboIcon*)pos->self())->getTextComponent();
              sample->setText(box->currentText());
              addtextField = false;
-         } else if (qobject_cast<MemorySpinnerIcon*>((QObject*)pos)) {
+         } else if (qobject_cast<MemorySpinnerIcon*>(pos->self())) {
              JTextField* field = (JTextField*)((MemorySpinnerIcon*)pos)->getTextComponent();
              sample->setText(field->text());
              addtextField = false;
          } else {
              addtextField = true;
-             log->error(tr("Unknown Postionable Type %1").arg(((QObject*)pos)->metaObject()->className()));
+             log->error(tr("Unknown Postionable Type %1").arg((pos->self())->metaObject()->className()));
          }
      }
      doPopupUtility("Text", sample, addtextField);
@@ -296,48 +324,73 @@ void DecoratorPanel::AJRadioButton_toggled(bool b)
  }
 }
 
-/*private*/ QWidget* DecoratorPanel::makeTextPanel(QString caption, PositionableLabel* sample, int state) {
+/*private*/ QWidget* DecoratorPanel::makeTextPanel(QString state, JLabel* sample, bool addTextField) {
     QGroupBox* panel = new QGroupBox();
-//    panel->setBorder(BorderFactory.createTitledBorder(ItemPalette.rbp.getString(caption)));
-    QVBoxLayout* panelLayout;
-    panel->setLayout(panelLayout = new QVBoxLayout(/*panel, BoxLayout.Y_AXIS*/));
-//    QWidget* p = new QWidget();
-//    p->setLayout(new FlowLayout);
-    FlowLayout* pLayout = new FlowLayout;
-    JTextField* textField = new JTextField(sample->getText(), 25);
+    // use NamedBeanBundle property for basic beans like "Turnout" I18N
+    if ("Active" == (state)) {
+        bundleCaption = tr("Active"); // "SensorStateActive"
+    } else if ("InActive" == (state)) {
+        bundleCaption = "Inactive"; // "SensorStateInactive"
+    } else if ("Unknown" == (state)) {
+        bundleCaption = "Unknown"; // "BeanStateUnknown"
+    } else if ("Inconsistent" == (state)) {
+        bundleCaption = "Inconsistent"; // "BeanStateInconsistent"
+    } else {
+        bundleCaption = state;
+    }
+    //panel.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage(bundleCaption)));
+    panel->setTitle(bundleCaption);
+    panel->setLayout(new QVBoxLayout()); //panel, BoxLayout.Y_AXIS));
+    QWidget* p = new QWidget();
+    p->setLayout(new FlowLayout());
+    if (addTextField) {
+        JTextField* textField = new JTextField(sample->getText(), 25);
 #if 0
-    textField->addKeyListener(new KeyListener() {
-        JLabel sample;
-        KeyListener init(JLabel s) {
-            sample = s;
-            return this;
-        }
-        /*public*/ void keyTyped(KeyEvent E) { }
-        /*public*/ void keyPressed(KeyEvent E){ }
-        /*public*/ void keyReleased(KeyEvent E) {
-          JTextField tmp = (JTextField) E.getSource();
-          sample->setText(tmp.getText());
-        }
-      }.init(sample));
+        textField.addKeyListener(new KeyListener() {
+            JLabel sample;
+
+            KeyListener init(JLabel s) {
+                sample = s;
+                return this;
+            }
+
+            @Override
+            public void keyTyped(KeyEvent evt) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent evt) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent evt) {
+                JTextField tmp = (JTextField) evt.getSource();
+                sample.setText(tmp.getText());
+                updateSamples();
+            }
+        }.init(sample));
 #endif
-    TextFieldListener* keylistener = new TextFieldListener();
-    keylistener->init(textField, sample, this);
-    connect(textField, SIGNAL(textEdited(QString)), keylistener, SLOT(actionPerformed()));
+        p->layout()->addWidget(textField);
+    }
 
-    pLayout->addWidget(textField);
-    panelLayout->addLayout(pLayout);
+    panel->layout()->addWidget(p);
 
-    //p = new QWidget();
-    //p->setLayout(new FlowLayout);
- pLayout = new FlowLayout;
- AJRadioButton* b;
- pLayout->addWidget(b = makeButton(new AJRadioButton(tr("Font Color"), state)));
- b->setChecked(true);
- _selectedButton = TEXT_FONT;
- pLayout->addWidget(makeButton(new AJRadioButton(tr("Background Color"), state+10)));
- panelLayout->addLayout(pLayout);
+    p = new QWidget();
+    p->setLayout(new FlowLayout());
+    _fontButton = makeColorRadioButton("FontColor", FOREGROUND_BUTTON, state);
+    p->layout()->addWidget(_fontButton);
 
- return panel;
+    _backgroundButton = makeColorRadioButton("FontBackgroundColor", BACKGROUND_BUTTON, state);
+    p->layout()->addWidget(_backgroundButton);
+
+    AJRadioButton* button = makeColorRadioButton("transparentBack", TRANSPARENT_BUTTON, state);
+    p->layout()->addWidget(button);
+
+    _borderButton = makeColorRadioButton("borderColor", BORDERCOLOR_BUTTON, state);
+    p->layout()->addWidget(_borderButton);
+
+    panel->layout()->addWidget(p);
+    return panel;
 }
 
 TextFieldListener* TextFieldListener::init(JTextField* textField, JLabel *sample, DecoratorPanel *panel)
@@ -353,7 +406,7 @@ void TextFieldListener::actionPerformed(ActionEvent *e)
  panel->text = textField->text();
 }
 
-
+#if 0
 /*private*/ AJRadioButton* DecoratorPanel::makeButton(AJRadioButton* button)
 {
 // button->layout()->addWidgetActionListener(new ActionListener() {
@@ -374,6 +427,7 @@ void TextFieldListener::actionPerformed(ActionEvent *e)
  _buttonGroup->addButton(button);
  return button;
 }
+
 /*public*/ void AJRBActionListener::actionPerformed(/*ActionEvent a*/)
 {
  if (button->isChecked())
@@ -444,10 +498,89 @@ void TextFieldListener::actionPerformed(ActionEvent *e)
   }
  }
 }
+
 AJRBActionListener* AJRBActionListener::init(AJRadioButton* b, DecoratorPanel* self) {
     this->self = self;
     button = b;
     return this;
+}
+#endif
+
+/*private*/ AJRadioButton* DecoratorPanel::makeColorRadioButton(QString caption, int which, QString state) {
+    button = new AJRadioButton((caption), which, state);
+//    button.addActionListener(new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent a) {
+//            if (button.isSelected()) {
+//                _selectedButton =button._which;
+//                _selectedState = button._state;
+//                PositionableLabel pos =_samples.get(_selectedState);
+//                PositionablePopupUtil util = pos.getPopupUtility();
+//                switch (button._which) {
+//                    case FOREGROUND_BUTTON:
+//                        _chooser.setColor(util.getForeground());
+//                        break;
+//                    case BACKGROUND_BUTTON:
+//                        if (util.hasBackground()) {
+//                            _chooser.setColor(util.getBackground());
+//                        }
+//                        util.setHasBackground(true);
+//                        pos.setOpaque(true);
+//                        break;
+//                    case BORDERCOLOR_BUTTON:
+//                        _chooser.setColor(util.getBorderColor());
+//                        break;
+//                    case TRANSPARENT_BUTTON:
+//                        util.setHasBackground(false);
+//                        _util.setHasBackground(false);
+//                        pos.setOpaque(false);
+//                        break;
+//                    default:    // TRANSPARENT_BUTTON
+//               }
+//                log.debug("Button actionPerformed Colors opaque= {} _state= {} _which= {}",
+//                        pos.isOpaque(), button._state, button._which);
+//                updateSamples();
+//            }
+//        }
+//    });
+    connect(button, SIGNAL(clicked(bool)), this, SLOT(AJRBListener()));
+    _buttonGroup->addButton(button);
+    return button;
+}
+/*public*/ void DecoratorPanel::AJRBListener()
+{
+//public void actionPerformed(ActionEvent a) {
+    if (button->isChecked()) {
+        _selectedButton =button->_which;
+        _selectedState = button->_state;
+        PositionableLabel* pos =_samples->value(_selectedState);
+        PositionablePopupUtil* util = pos->getPopupUtility();
+        switch (button->_which) {
+            case FOREGROUND_BUTTON:
+                _chooser->setCurrentColor(util->getForeground());
+                break;
+            case BACKGROUND_BUTTON:
+                if (util->hasBackground()) {
+                    _chooser->setCurrentColor(util->getBackground());
+                }
+                util->setHasBackground(true);
+                pos->setOpaque(true);
+                break;
+            case BORDERCOLOR_BUTTON:
+                _chooser->setCurrentColor(util->getBorderColor());
+                break;
+            case TRANSPARENT_BUTTON:
+                util->setHasBackground(false);
+                _util->setHasBackground(false);
+                pos->setOpaque(false);
+                break;
+            default:    // TRANSPARENT_BUTTON
+                break;
+       }
+        log->debug(tr("Button actionPerformed Colors opaque= %1 _state= %2 _which= %3").arg(
+                pos->isOpaque()?"true":"false").arg(button->_state).arg(button->_which));
+        updateSamples();
+    }
 }
 
 /*private*/ void DecoratorPanel::updateSamples()
@@ -684,7 +817,7 @@ void DecoratorPanel::on_bgColorBox()
 /*public*/ void DecoratorPanel::getText(Positionable* pos)
 {
  //if (pos instanceof SensorIcon && ((SensorIcon)pos).isText())
- if((qobject_cast<SensorIcon*>((QObject*)pos)!=NULL) &&(((SensorIcon*)pos)->isText()) )
+ if((qobject_cast<SensorIcon*>(pos->self())!=NULL) &&(((SensorIcon*)pos)->isText()) )
  {
     SensorIcon* icon = (SensorIcon*)pos;
     PositionableLabel* sample = _samples->value("Active");
@@ -713,7 +846,7 @@ void DecoratorPanel::on_bgColorBox()
     ((PositionableLabel*)pos)->setBackground(sample->getBackground());
     ((PositionableLabel*)pos)->setForeground(sample->getForeground());
     //if (pos instanceof PositionableLabel)
-    if(qobject_cast<PositionableLabel*>((QObject*)pos)!= NULL)
+    if(qobject_cast<PositionableLabel*>(pos->self())!= NULL)
     {
      ((PositionableLabel*)pos)->setText(_samples->value("Text")->getText());
     }
@@ -905,7 +1038,7 @@ void DecoratorPanel::currentColorChanged(QColor)
  stateChanged(new ChangeEvent(_chooser));
 }
 /*public*/ void DecoratorPanel::setAttributes(Positionable* pos) {
-        if (qobject_cast<SensorIcon*>((QObject*)pos)  && !((SensorIcon*)pos)->isIcon()) {
+        if (qobject_cast<SensorIcon*>(pos->self())  && !((SensorIcon*)pos)->isIcon()) {
             SensorIcon* icon = (SensorIcon*) pos;
             PositionableLabel* sample = _samples->value("Active");
             if (sample->isOpaque()) {
@@ -945,8 +1078,8 @@ void DecoratorPanel::currentColorChanged(QColor)
         } else {
             PositionableLabel* sample = _samples->value("Text");
             pos->setForeground(sample->getForeground());
-            if ( qobject_cast<PositionableLabel*>((QObject*)pos) &&
-                !(qobject_cast<MemoryIcon*>((QObject*)pos)== nullptr)) {
+            if ( qobject_cast<PositionableLabel*>(pos->self()) &&
+                !(qobject_cast<MemoryIcon*>(pos->self())== nullptr)) {
                 ((PositionableLabel*) pos)->setText(sample->getText());
             }
             PositionablePopupUtil* util = pos->getPopupUtility();

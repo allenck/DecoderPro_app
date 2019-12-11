@@ -5,6 +5,7 @@
 #include "instancemanager.h"
 #include "powermanager.h"
 #include "rosterentry.h"
+#include "powerpane.h"
 
 //LearnThrottleFrame::LearnThrottleFrame(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -36,6 +37,8 @@
     {
         //super(false, false);
         _warrantFrame = warrantFrame;
+        powerControl  = new PowerPane();
+
         powerMgr = (PowerManager*)InstanceManager::getDefault("PowerManager");
         if (powerMgr == NULL) {
             log->info("No power manager instance found, panel not active");
@@ -236,18 +239,19 @@
         }
     }
 
-
+#endif
     /**
     *  Record throttle commands that have been sent to the throttle.
     */
     /* from ControlPanel */
-    protected void setSpeedSetting(float speed) {
-        _warrantFrame.setThrottleCommand("Speed", Float.toString(speed));
+    /*protected*/ void LearnThrottleFrame::setSpeedSetting(float speed) {
+        _warrantFrame->setThrottleCommand("Speed", QString::number(speed));
     }
     /* from ControlPanel */
-    protected void setSpeedStepMode(int speedStep) {
-        _warrantFrame.setThrottleCommand("SpeedStep", Integer.toString(speedStep));
+    /*protected*/ void LearnThrottleFrame::setSpeedStepMode(int speedStep) {
+        _warrantFrame->setThrottleCommand("SpeedStep", QString::number(speedStep));
     }
+#if 0
     /* from FunctionPanel */
     protected void setFunctionState(int num, boolean isSet) {
         _warrantFrame.setThrottleCommand("F"+num, Boolean.toString(isSet));

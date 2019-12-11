@@ -39,8 +39,8 @@
  log = new Logger("LayoutBlockRouteTableModel");
     this->editable = editable;
     this->lBlock = lBlock;
-    //lBlock.addPropertyChangeListener(this);
- connect(this->lBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    lBlock->addPropertyChangeListener((PropertyChangeListener*)this);
+ //connect(this->lBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ int LayoutBlockRouteTableModel::rowCount(const QModelIndex &/*parent*/) const{

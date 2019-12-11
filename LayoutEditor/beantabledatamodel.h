@@ -56,7 +56,6 @@ public:
  virtual /*public*/ QPushButton* configureButton();
  /*public*/ void saveTableColumnDetails(JTable* table);
  QT_DEPRECATED/*public*/ void saveTableColumnDetails(JTable* table, QString beantableref);
- void /*public*/ init();
  /*public*/ void persistTable(/*@Nonnull*/ JTable* table);// throws NullPointerException
  /*public*/ void stopPersistingTable(/*@Nonnull*/ JTable* table); //throws NullPointerException  QT_DEPRECATED
  /*public*/ void loadTableColumnDetails(JTable* table);
@@ -85,6 +84,7 @@ public slots:
  void On_removeName_triggered();
  void On_moveBean_triggered();
  void On_deleteBean_triggered();
+ virtual void /*public*/ init();
 
 private:
  Logger* log;

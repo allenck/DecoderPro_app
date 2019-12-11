@@ -37,7 +37,7 @@ const QString LocoIcon::YELLOW = "Yellow";
  //super(new NamedIcon("resources/icons/markers/loco-white.gif",
 //                        "resources/icons/markers/loco-white.gif"), editor);
  setDisplayLevel(LayoutEditor::MARKERS);
- setShowTooltip(false);
+ setShowToolTip(false);
  //setEditable(false);
  _text = true;	//Markers are an icon with text
  setPopupUtility(new PositionablePopupUtil((Positionable*)this, (JComponent*)this));
@@ -93,7 +93,7 @@ _locoColor = QColor(Qt::white);
 }
 
 // Marker tool tips are always disabled
-/*public*/ void LocoIcon::setShowTooltip(bool /*set*/){PositionableLabel::setShowTooltip(false);}
+/*public*/ void LocoIcon::setShowToolTip(bool /*set*/){PositionableLabel::setShowToolTip(false);}
 
 // Markers are always positionable
 /*public*/ void LocoIcon::setPositionable(bool /*enabled*/) {PositionableLabel::setPositionable(true);}
@@ -412,7 +412,7 @@ DockMenuListener* DockMenuListener::init(Editor* e, LocoIcon* l)
    item = new QGraphicsPixmapItem(pixmap, _itemGroup);
   setSize(pixmap.width(),pixmap.height());
   item->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
-  if(showTooltip()) item->setToolTip(getTooltip());
+  if(showTooltip()) item->setToolTip(getToolTip());
   //_itemGroup->addToGroup(item);
   //_itemGroup->setPos(getX(), getY());
   currRotation = getIcon()->getRotation()*90;
@@ -439,7 +439,7 @@ DockMenuListener* DockMenuListener::init(Editor* e, LocoIcon* l)
 
   QGraphicsTextItem* item = new QGraphicsTextItem(getUnRotatedText(),_itemGroup);
   //item->setPos(getX(), getY());
-  if(showTooltip()) item->setToolTip(getTooltip());
+  if(showTooltip()) item->setToolTip(getToolTip());
   _itemGroup->addToGroup(item);
   _itemGroup->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
   if(getDegrees() != 0)

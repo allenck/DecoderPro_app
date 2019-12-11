@@ -20,9 +20,9 @@
  */
 
 class ListSelectionListener;
-/*public*/ /*interface*/class JAVAQTSHARED_EXPORT ListSelectionModel : public QObject
+/*public*/ /*interface*/class JAVAQTSHARED_EXPORT ListSelectionModel //: public QObject
 {
- Q_OBJECT
+ //Q_OBJECT
  public:
     enum SELECTIONS
     {
@@ -48,9 +48,10 @@ class ListSelectionListener;
      *
      * @see #setSelectionMode
      */
-     MULTIPLE_INTERVAL_SELECTION = QAbstractItemView::ContiguousSelection
+     MULTIPLE_INTERVAL_SELECTION = QAbstractItemView::ContiguousSelection,
+
     };
-    Q_ENUM(SELECTIONS)
+    //Q_ENUM(SELECTIONS)
     /**
      * Changes the selection to be between {@code index0} and {@code index1}
      * inclusive. {@code index0} doesn't have to be less than or equal to
@@ -291,4 +292,5 @@ class ListSelectionListener;
      */
     virtual void removeListSelectionListener(ListSelectionListener* /*x*/) {}
 };
+Q_DECLARE_INTERFACE(ListSelectionModel, "ListSelectionModel")
 #endif // LISTSELECTIONMODEL_H

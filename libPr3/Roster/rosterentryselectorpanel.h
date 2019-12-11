@@ -6,9 +6,10 @@
 #include "rostergroupcombobox.h"
 #include <QFormLayout>
 
-class LIBPR3SHARED_EXPORT RosterEntrySelectorPanel : public QFrame
+class LIBPR3SHARED_EXPORT RosterEntrySelectorPanel : public QFrame, public RosterEntrySelector, public RosterGroupSelector
 {
     Q_OBJECT
+    Q_INTERFACES(RosterEntrySelector RosterGroupSelector)
 public:
     //explicit RosterEntrySelectorPanel(QWidget *parent = 0);
     /*public*/ RosterEntrySelectorPanel(QWidget *parent = 0);

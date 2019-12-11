@@ -49,7 +49,7 @@ void EditScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 void EditScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
  emit sceneContextMenu(event);
-    QGraphicsScene::contextMenuEvent(event);
+ QGraphicsScene::contextMenuEvent(event);
 }
 void EditScene::keyPressEvent(QKeyEvent *event)
 {

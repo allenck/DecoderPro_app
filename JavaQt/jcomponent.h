@@ -8,6 +8,7 @@ class JComponent : public QWidget
  Q_OBJECT
 public:
  explicit JComponent(QWidget *parent = nullptr);
+ virtual void dispose() {}
  bool isOpaque();
  QColor getBackground();
  void setBackground(QColor);

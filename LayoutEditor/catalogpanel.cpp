@@ -463,6 +463,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
  previewPanel->setObjectName("previewPanel");
  QVBoxLayout* previewPanelLayout;
  previewPanel->setLayout(previewPanelLayout = new QVBoxLayout(previewPanel/*, BoxLayout.Y_AXIS*/));
+ previewPanelLayout->setObjectName("previewPanelLayout");
  //previewPanelLayout->setMargin(0);
  //previewPanel->setContentsMargins(0,0,0,0);
 // QWidget* p = new QWidget();

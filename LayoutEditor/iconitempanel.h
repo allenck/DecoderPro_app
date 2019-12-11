@@ -88,7 +88,7 @@ friend class IconDisplayPanel;
 private:
     /*private*/ void accept(/*DropTarget*/QDropEvent* e, NamedIcon* newIcon);
     Logger* log;
-    QString mimeData();
+    QByteArray mimeData();
     IconItemPanel* parent;
 };
 

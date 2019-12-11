@@ -425,7 +425,7 @@ void SignalMastItemPanel::_showIconsButton_clicked()
  return sm;
 }
 
-QString SMIconDragJLabel::mimeData()
+QByteArray SMIconDragJLabel::mimeData()
 {
  NamedBean* bean = self->getDeviceNamedBean();
  if (bean==NULL)
@@ -441,9 +441,8 @@ QString SMIconDragJLabel::mimeData()
  SignalMastIconXml* xml = new SignalMastIconXml();
  QDomElement e = xml->store((QObject*)icon);
  xml->doc.appendChild(e);
- QString xmldata = xml->doc.toString();
- _dataFlavor->setMimeTypeParameter("xml", QString(QUrl::toPercentEncoding(xmldata)));
-
- return _dataFlavor->toString();
+ QByteArray xmldata;
+ xmldata.append(xml->doc.toString());
+ return xmldata;
 }
 //};

@@ -273,7 +273,7 @@ JmriJFrame(parent)
      {
          // we're changing the light we're watching
          light->removePropertyChangeListener((PropertyChangeListener*)this);
-         disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         //disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      light = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->provideLight(
              adrTextField->text());
@@ -282,7 +282,7 @@ JmriJFrame(parent)
          log->error(tr("Light name invalid: ") + adrTextField->text());
      } else {
          light->addPropertyChangeListener((PropertyChangeListener*)this);
-         connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         //connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          if (log->isDebugEnabled()) {
              log->debug("about to command CLOSED");
          }
@@ -304,7 +304,7 @@ JmriJFrame(parent)
   {
    // we're changing the light we're watching
    light->removePropertyChangeListener((PropertyChangeListener*)this);
-   disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//   disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
   light = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->provideLight(
           adrTextField->text());
@@ -316,7 +316,7 @@ JmriJFrame(parent)
   else
   {
    light->addPropertyChangeListener((PropertyChangeListener*)this);
-   connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//   connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    if (log->isDebugEnabled())
    {
     log->debug("about to command ON");
@@ -341,7 +341,7 @@ JmriJFrame(parent)
   {
       // we're changing the light we're watching
    light->removePropertyChangeListener((PropertyChangeListener*)this);
-   disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//   disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
   light = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->provideLight(
           adrTextField->text());
@@ -352,7 +352,7 @@ JmriJFrame(parent)
   else
   {
    light->addPropertyChangeListener((PropertyChangeListener*)this);
-   connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//   connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    if (log->isDebugEnabled()) {
        log->debug("about to command DIM");
    }
@@ -376,7 +376,7 @@ JmriJFrame(parent)
         if (light != NULL) {
             // we're changing the light we're watching
          light->removePropertyChangeListener((PropertyChangeListener*)this);
-         disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//         disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         }
         light = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->provideLight(adrTextField->text());
 
@@ -414,7 +414,7 @@ JmriJFrame(parent)
   {
    // we're changing the light we're watching
    light->removePropertyChangeListener((PropertyChangeListener*)this);
-   disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//   disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
   light = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->provideLight(adrTextField->text());
 

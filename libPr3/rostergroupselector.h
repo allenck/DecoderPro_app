@@ -4,11 +4,11 @@
 #include <QComboBox>
 #include "propertychangeevent.h"
 
-class RosterGroupSelector : public QComboBox
+class RosterGroupSelector //: public QComboBox
 {
- Q_OBJECT
+ //Q_OBJECT
 public:
- explicit RosterGroupSelector(QWidget* parent = 0);
+ //explicit RosterGroupSelector(QWidget* parent = 0);
  /*public*/ /*final*/ static QString SELECTED_ROSTER_GROUP; //= "selectedRosterGroup";
 
  virtual /*public*/ QString getSelectedRosterGroup() {return "";}
@@ -27,5 +27,5 @@ signals:
 
 public slots:
 };
-
+Q_DECLARE_INTERFACE(RosterGroupSelector, "RosterGroupSelector")
 #endif // ROSTERGROUPSELECTOR_H

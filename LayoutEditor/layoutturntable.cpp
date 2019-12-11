@@ -1451,18 +1451,21 @@ void LayoutTurntable::remove() {
 //            };
 //        }
 //        connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    if (mTurnoutListener == NULL) {
+     mTurnoutListener= (PropertyChangeListener*)this;
+    }
     if (turnoutName != NULL) {
         turnout = InstanceManager::turnoutManagerInstance()->
                 getTurnout(turnoutName);
     }
     if (namedTurnout != NULL && namedTurnout->getBean() != turnout) {
-        //namedTurnout->getBean().removePropertyChangeListener(mTurnoutListener);
-     disconnect(namedTurnout->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     namedTurnout->getBean()->removePropertyChangeListener(mTurnoutListener);
+     //disconnect(namedTurnout->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     if (turnout != NULL && (namedTurnout == NULL || namedTurnout->getBean() != turnout)) {
         namedTurnout = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(turnoutName, turnout);
-        //turnout.addPropertyChangeListener(mTurnoutListener, turnoutName, "Layout Editor Turntable");
-        connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        turnout->addPropertyChangeListener(mTurnoutListener, turnoutName, "Layout Editor Turntable");
+        //connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
         lt->needsRedraw = true;
     }
@@ -1638,8 +1641,8 @@ void RayTrack::dispose()
 {
  if (getTurnout() != NULL)
  {
-     //getTurnout().removePropertyChangeListener(mTurnoutListener);
-  disconnect(getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getTurnout()->removePropertyChangeListener(mTurnoutListener);
+  //disconnect(getTurnout()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  if (lt->lastKnownIndex == connectionIndex) {
      lt->lastKnownIndex = -1;

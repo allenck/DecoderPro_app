@@ -305,7 +305,7 @@ void OBlockManagerXml::loadBlock(QDomElement elem)
   log->error("Null block!! sysName= " + sysName + ", userName= " + userName);
   return;
  }
- connect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), _manager, SLOT(propertyChange(PropertyChangeEvent*)));
+ //connect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), _manager, SLOT(propertyChange(PropertyChangeEvent*)));
  block->setUserName(userName);
  QString c = elem.firstChildElement("comment").text();
  if (c != NULL)

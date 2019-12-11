@@ -132,7 +132,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  element.setAttribute("editable", (p->isEditable()?"true":"false"));
 // ToolTip tip = p.getTooltip();
 // QString txt = tip.getText();
- QString txt = p->getTooltip();
+ QString txt = p->getToolTip();
  if (txt!=NULL)
  {
   QDomElement elem = doc.createElement("toolTip");
@@ -501,9 +501,9 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
 
  a = element.attribute("showtooltip");
  if ( (a!="") && a==("true"))
-  l->setShowTooltip(true);
+  l->setShowToolTip(true);
  else
-  l->setShowTooltip(false);
+  l->setShowToolTip(false);
 
  a = element.attribute("editable");
  if ( (a!="") && a==("true"))
@@ -519,7 +519,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
 //  {
 //   tip.setText(elem.getText());
 //  l->setToolTip(elem.text()); // (QWidget tooltip)
-  l->setTooltip(elem.text()); // (PositionableLabel)
+  l->setToolTip(elem.text()); // (PositionableLabel)
 //  }
   if(l->_itemGroup != NULL)
    l->_itemGroup->setToolTip(elem.text());

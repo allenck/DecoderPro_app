@@ -22,12 +22,12 @@ public:
     /*public*/ void setSignalMast(SignalMast* mMast, QString pName);
     /*public*/ SignalMast* getSignalMast();
     /*public*/ QString getSignalMastName();
-    /*public*/ void addSignalMastAppearance(QString appearance);
-    /*public*/ bool isSignalMastAppearanceIncluded(QString appearance);
-    /*public*/ void deleteSignalMastAppearance(QString appearance);
-    /*public*/ int getNumSignalMastAppearances() ;
-    /*public*/ QString getSignalMastAppearanceByIndex(int x);
-    /*public*/ void clearSignalMastAppearance();
+    /*public*/ void addSignalMastAspect(QString aspect);
+    /*public*/ bool isSignalMastAspectIncluded(QString aspect);
+    /*public*/ void deleteSignalMastAspect(QString aspect);
+    /*public*/ int getNumSignalMastAspects() ;
+    /*public*/ QString getSignalMastAspectByIndex(int x);
+    /*public*/ void clearSignalMastAspect();
     /*public*/ void addSignalHead(NamedBeanHandle<SignalHead*>* sh);
     /*public*/ void addSignalHead(QString pName);
     /*public*/ void addSignalHead(SignalHead* mHead);

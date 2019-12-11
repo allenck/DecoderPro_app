@@ -23,7 +23,7 @@ public:
     void common();
     /*public*/ Positionable* deepClone() ;
     /*public*/ Positionable* finishClone(Positionable* p);
-    /*public*/ void setShowTooltip(bool set);
+    /*public*/ void setShowToolTip(bool set);
     /*public*/ void setPositionable(bool enabled);
     /*public*/ bool doViemMenu();
     /*public*/ bool showPopUp(QMenu* popup);

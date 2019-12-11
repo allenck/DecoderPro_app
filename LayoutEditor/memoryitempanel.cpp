@@ -345,10 +345,10 @@
  }
  return NULL;
 }
-QString MemoryIconDragJComponent::mimeData()
+QByteArray MemoryIconDragJComponent::mimeData()
 {
  NamedBean* bean = self->getTableSelection();
- QString xmldata;
+ QByteArray xmldata;
  if(bean != NULL)
  {
   switch(_memType)
@@ -363,7 +363,7 @@ QString MemoryIconDragJComponent::mimeData()
       MemoryIconXml* xml = new MemoryIconXml();
       QDomElement e = xml->store((QObject*)m);
       xml->doc.appendChild(e);
-      xmldata = xml->doc.toString();
+      xmldata.append(xml->doc.toString());
       break;
    }
    case MemoryItemPanel::READWRITE:
@@ -386,7 +386,7 @@ QString MemoryIconDragJComponent::mimeData()
       MemoryIconXml* xml = new MemoryIconXml();
       QDomElement e = xml->store((QObject*)mi);
       xml->doc.appendChild(e);
-      xmldata = xml->doc.toString();
+      xmldata.append(xml->doc.toString());
       break;
    }
    case MemoryItemPanel::COMBO:
@@ -399,7 +399,7 @@ QString MemoryIconDragJComponent::mimeData()
     MemoryComboIconXml* xml = new MemoryComboIconXml();
     QDomElement e = xml->store((QObject*)mc);
     xml->doc.appendChild(e);
-    xmldata = xml->doc.toString();
+    xmldata.append(xml->doc.toString());
     break;
    }
    case MemoryItemPanel::SPINNER:
@@ -412,13 +412,13 @@ QString MemoryIconDragJComponent::mimeData()
       MemoryIconXml* xml = new MemoryIconXml();
       QDomElement e = xml->store((QObject*)ms);
       xml->doc.appendChild(e);
-      xmldata = xml->doc.toString();
+      xmldata.append(xml->doc.toString());
       break;
    }
   }
-  _dataFlavor->setMimeTypeParameter("xml", QString(QUrl::toPercentEncoding(xmldata)));
-  return _dataFlavor->toString();
-
+//  _dataFlavor->setMimeTypeParameter("xml", QString(QUrl::toPercentEncoding(xmldata)));
+//  return _dataFlavor->toString();
+  return xmldata;
  }
  else
      return "";

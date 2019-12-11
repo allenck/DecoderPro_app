@@ -83,6 +83,7 @@ public slots:
  bool disabled = false;
  bool disableWhenOccupied = false;
  /*private*/ bool isOccupied();
+ PropertyChangeListener* mTurnoutListener = nullptr;
 
  friend class LayoutTurntable;
 };
@@ -188,6 +189,7 @@ private:
   QGraphicsItemGroup* item = nullptr;
   QGraphicsItemGroup* rects = nullptr;
   QGraphicsItemGroup* circles = nullptr;
+  PropertyChangeListener* mTurnoutListener = nullptr;
 
 private slots:
   void turntableEditDonePressed(ActionEvent* a = 0);

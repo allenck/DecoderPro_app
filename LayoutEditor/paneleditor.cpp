@@ -710,7 +710,7 @@ protected void paintTargetPanel(Graphics g) {
 {
  PositionableLabel* p = NULL;
  //PositionableJComponent* pj = NULL;
- if(qobject_cast<PositionableLabel*>((QObject*)pc)!= NULL)
+ if(qobject_cast<PositionableLabel*>(pc->self())!= NULL)
  {
   p = (PositionableLabel*)pc;
   if (!p->isVisible())
@@ -739,34 +739,34 @@ protected void paintTargetPanel(Graphics g) {
   // items for all Positionables
   if (p->doViemMenu())
   {
-   if(qobject_cast<SensorIcon*>((QObject*)pc)!= NULL)
+   if(qobject_cast<SensorIcon*>(pc->self())!= NULL)
     popup->addAction(new QAction(((SensorIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<LightIcon*>((QObject*)pc)!= NULL)
+   if(qobject_cast<LightIcon*>(pc->self())!= NULL)
     popup->addAction(new QAction(((LightIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<TurnoutIcon*>((QObject*)pc)!= NULL)
+   if(qobject_cast<TurnoutIcon*>(pc->self())!= NULL)
     popup->addAction(new QAction(((TurnoutIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<ReporterIcon*>((QObject*)pc)!= NULL)
+   if(qobject_cast<ReporterIcon*>(pc->self())!= NULL)
     popup->addAction(new QAction(((ReporterIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<AnalogClock2Display*>((QObject*)pc)!= NULL)
+   if(qobject_cast<AnalogClock2Display*>(pc->self())!= NULL)
     popup->addAction(new QAction(((AnalogClock2Display*)p)->getNameString(),this));
    else
-   if(qobject_cast<SignalHeadIcon*>((QObject*)pc)!= NULL)
+   if(qobject_cast<SignalHeadIcon*>(pc->self())!= NULL)
     popup->addAction(new QAction(((SignalHeadIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<SignalMastIcon*>((QObject*)pc)!= NULL)
+   if(qobject_cast<SignalMastIcon*>(pc->self())!= NULL)
     popup->addAction(new QAction(((SignalMastIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<MultiSensorIcon*>((QObject*)pc)!= NULL)
+   if(qobject_cast<MultiSensorIcon*>(pc->self())!= NULL)
     popup->addAction(new QAction(((MultiSensorIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<SlipTurnoutIcon*>((QObject*)pc)!= NULL)
+   if(qobject_cast<SlipTurnoutIcon*>(pc->self())!= NULL)
     popup->addAction(new QAction(((SlipTurnoutIcon*)p)->getNameString(),this));
    else
-   if(qobject_cast<PositionableLabel*>((QObject*)pc)!= NULL)
+   if(qobject_cast<PositionableLabel*>(pc->self())!= NULL)
     popup->addAction(new QAction(((PositionableLabel*)p)->getNameString(),this));
 // TODO: add more types
    else
@@ -921,22 +921,22 @@ protected void paintTargetPanel(Graphics g) {
   else if (!bCtrl)
   {
    //_currentSelection->doMousePressed(event);
-   if(qobject_cast<AnalogClock2Display*>((QObject*)_currentSelection)!=NULL)
+   if(dynamic_cast<AnalogClock2Display*>(_currentSelection->self())!=NULL)
     ((PositionableIcon*)_currentSelection)->doMousePressed(event);
    else
-   if(qobject_cast<SensorIcon*>((QObject*)_currentSelection)!=NULL)
+   if(dynamic_cast<SensorIcon*>(_currentSelection->self())!=NULL)
     ((SensorIcon*)_currentSelection)->doMousePressed(event);
    else
-   if(qobject_cast<LightIcon*>((QObject*)_currentSelection)!=NULL)
+   if(dynamic_cast<LightIcon*>(_currentSelection->self())!=NULL)
     ((LightIcon*)_currentSelection)->doMousePressed(event);
    else
-   if(qobject_cast<SignalHeadIcon*>((QObject*)_currentSelection)!=NULL)
+   if(dynamic_cast<SignalHeadIcon*>(_currentSelection->self())!=NULL)
     ((SignalHeadIcon*)_currentSelection)->doMousePressed(event);
    else
-   if(qobject_cast<SignalMastIcon*>((QObject*)_currentSelection)!=NULL)
+   if(dynamic_cast<SignalMastIcon*>(_currentSelection->self())!=NULL)
     ((SignalMastIcon*)_currentSelection)->doMousePressed(event);
    else
-   if(qobject_cast<MultiSensorIcon*>((QObject*)_currentSelection)!=NULL)
+   if(dynamic_cast<MultiSensorIcon*>(_currentSelection->self())!=NULL)
     ((MultiSensorIcon*)_currentSelection)->doMousePressed(event);
    else
     ((PositionableLabel*)_currentSelection)->doMousePressed(event);if (_multiItemCopyGroup!=NULL && !_multiItemCopyGroup->contains(_currentSelection))
@@ -1073,10 +1073,10 @@ protected void paintTargetPanel(Graphics g) {
  {
   if (_currentSelection != NULL && !_dragging && !bCtrl)
   {
-   if(qobject_cast<SensorIcon*>((QObject*)_currentSelection)!=NULL)
+   if(qobject_cast<SensorIcon*>(_currentSelection->self())!=NULL)
     ((SensorIcon*)_currentSelection)->doMouseReleased(event);
    else
-   if(qobject_cast<PositionableJComponent*>((QObject*)_currentSelection)!=NULL)
+   if(qobject_cast<PositionableJComponent*>(_currentSelection->self())!=NULL)
     ((PositionableJComponent*)_currentSelection)->doMouseReleased(event);
    else
    ((PositionableLabel*)_currentSelection)->doMouseReleased(event);
@@ -1168,13 +1168,13 @@ protected void paintTargetPanel(Graphics g) {
   else
   {
    moveItem(_currentSelection, deltaX, deltaY);
-   if(qobject_cast<LightIcon*>((QObject*)_currentSelection)!=NULL)
+   if(qobject_cast<LightIcon*>(_currentSelection->self())!=NULL)
    {
     _highlightcomponent =  QRectF(_currentSelection->getX(), _currentSelection->getY(),((LightIcon*)_currentSelection)->maxWidth(), ((LightIcon*)_currentSelection)->maxHeight());
 
    }
    else
-   if(qobject_cast<PositionableLabel*>((QObject*)_currentSelection)!=NULL)
+   if(qobject_cast<PositionableLabel*>(_currentSelection->self())!=NULL)
    {
     //_highlightcomponent =  QRect(((PositionableLabel*)_currentSelection)->getX(),((PositionableLabel*) _currentSelection)->getY(),((PositionableLabel*)_currentSelection)->maxWidth(), ((PositionableLabel*)_currentSelection)->maxHeight());
     _highlightcomponent = ((PositionableLabel*) _currentSelection)->getBounds();
@@ -1236,7 +1236,7 @@ protected void paintTargetPanel(Graphics g) {
    selection = selections->at(0);
   }
  }
- if (isEditable() && selection!=NULL && ((PositionableLabel*)selection)->getDisplayLevel()>BKG)
+ if (isEditable() && selection!=NULL && qobject_cast<PositionableLabel*>(selection->self()) && ((PositionableLabel*)selection)->getDisplayLevel()>BKG)
  {
   //_highlightcomponent = QRectF(((PositionableLabel*)selection)->getX(), ((PositionableLabel*)selection)->getY(), ((PositionableLabel*)selection)->maxWidth(), ((PositionableLabel*)selection)->maxHeight());
   _highlightcomponent = ((PositionableLabel*)selection)->getBounds();
@@ -1316,13 +1316,13 @@ protected void paintTargetPanel(Graphics g) {
  {
   if (_currentSelection != NULL && !_dragging && !bCtrl)
   {
-   if(qobject_cast<AnalogClock2Display*>((QObject*)_currentSelection)!=NULL)
+   if(qobject_cast<AnalogClock2Display*>(_currentSelection->self())!=NULL)
     (_currentSelection)->doMouseClicked(event);
    else
-   if(qobject_cast<LightIcon*>((QObject*)_currentSelection)!=NULL)
+   if(qobject_cast<LightIcon*>(_currentSelection->self())!=NULL)
     ((LightIcon*)_currentSelection)->doMouseClicked(event);
    else
-   if(qobject_cast<SensorIcon*>((QObject*)_currentSelection)!=NULL)
+   if(qobject_cast<SensorIcon*>(_currentSelection->self())!=NULL)
     ((SensorIcon*)_currentSelection)->doMouseClicked(event);
    else
    ((PositionableLabel*)_currentSelection)->doMouseClicked(event);
@@ -1600,11 +1600,11 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
             y = yOrig+yoffset;
             if (x<0) x=1;
             if (y<0) y=1;
-            className=ConfigXmlManager::adapterName((QObject*)copied);
+            className=ConfigXmlManager::adapterName(copied->self());
             copied->setLocation(x, y);
             try{
                 adapter = (XmlAdapter*)Class::forName(className)->newInstance();
-                QDomElement el = adapter->store((QObject*)copied);
+                QDomElement el = adapter->store(copied->self());
                 adapter->load(el, this);
             } catch (Exception ex) {
                 log->debug(ex.getMessage());

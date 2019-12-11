@@ -39,7 +39,7 @@
   spinner->setMinimum(_min);
   spinner->setMaximum(_max);
   spinner->setSingleStep(1);
-  spinner->setValue(0);
+  spinner->setValue(50);
   setLevel(Editor::LABELS);
   selectable = false;
   log = new Logger("MemorySpinnerIcon");
@@ -126,15 +126,15 @@
  */
 /*public*/ void MemorySpinnerIcon::setMemory(NamedBeanHandle<Memory*>* m) {
     if (namedMemory != NULL) {
-        //getMemory().removePropertyChangeListener(this);
-        AbstractMemory* m = (AbstractMemory*)getMemory();
-        disconnect(m, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
+//        AbstractMemory* m = (AbstractMemory*)getMemory();
+//        disconnect(m, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     namedMemory = m;
     if (namedMemory != NULL) {
-        //getMemory().addPropertyChangeListener(this, namedMemory.getName(), "Memory Spinner Icon");
-        AbstractMemory* m = (AbstractMemory*)getMemory();
-        connect(m->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        getMemory()->addPropertyChangeListener((PropertyChangeListener*)this, namedMemory->getName(), "Memory Spinner Icon");
+//        AbstractMemory* m = (AbstractMemory*)getMemory();
+//        connect(m->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         displayState();
         setName(namedMemory->getName());
     }
@@ -280,9 +280,9 @@ MSIActionListener::MSIActionListener(MemorySpinnerIcon *parent)
 
 void MemorySpinnerIcon::cleanup() {
     if (namedMemory!=NULL) {
-        //getMemory().removePropertyChangeListener(this);
-        AbstractMemory* m = (AbstractMemory*)getMemory();
-        disconnect(m, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
+//        AbstractMemory* m = (AbstractMemory*)getMemory();
+//        disconnect(m, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     }
     if (spinner!=NULL) {

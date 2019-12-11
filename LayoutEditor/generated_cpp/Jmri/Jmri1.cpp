@@ -20,7 +20,6 @@
 #include <layoutturnout.h>
 #include <light.h>
 #include <lightmanager.h>
-#include <listselectionmodel.h>
 #include <lncommandstationtype.h>
 #include <lnportcontroller.h>
 #include <lntrafficcontroller.h>
@@ -7165,6 +7164,11 @@ QWidget*  PythonQtWrapper_JFrame::getTopLevelAncestor(JFrame* theWrappedObject)
   return ( theWrappedObject->getTopLevelAncestor());
 }
 
+QVector<WindowListener* >  PythonQtWrapper_JFrame::getWindowListeners(JFrame* theWrappedObject)
+{
+  return ( theWrappedObject->getWindowListeners());
+}
+
 void PythonQtWrapper_JFrame::languageChange(JFrame* theWrappedObject)
 {
   ( theWrappedObject->languageChange());
@@ -12413,6 +12417,28 @@ if (_wrapper) {
 }
   JTable::setSelection(rect0, command1);
 }
+void PythonQtShell_JTable::setSelectionModel(DefaultListSelectionModel*  selectionModel0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSelectionModel");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QItemSelectionModel*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&selectionModel0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  JTable::setSelectionModel(selectionModel0);
+}
 void PythonQtShell_JTable::setVisible(bool  visible0)
 {
 if (_wrapper) {
@@ -13063,11 +13089,6 @@ void PythonQtWrapper_JTable::createDefaultColumnsFromModel(JTable* theWrappedObj
   ( theWrappedObject->createDefaultColumnsFromModel());
 }
 
-ListSelectionModel*  PythonQtWrapper_JTable::createDefaultSelectionModel(JTable* theWrappedObject)
-{
-  return ( ((PythonQtPublicPromoter_JTable*)theWrappedObject)->promoted_createDefaultSelectionModel());
-}
-
 bool  PythonQtWrapper_JTable::getAutoCreateColumnsFromModel(JTable* theWrappedObject)
 {
   return ( theWrappedObject->getAutoCreateColumnsFromModel());
@@ -13133,9 +13154,9 @@ QVector<int >*  PythonQtWrapper_JTable::getSelectedRows(JTable* theWrappedObject
   return ( theWrappedObject->getSelectedRows());
 }
 
-ListSelectionModel*  PythonQtWrapper_JTable::getSelectionModel(JTable* theWrappedObject)
+QHeaderView*  PythonQtWrapper_JTable::getTableHeader(JTable* theWrappedObject)
 {
-  return ( theWrappedObject->getSelectionModel());
+  return ( theWrappedObject->getTableHeader());
 }
 
 bool  PythonQtWrapper_JTable::getUpdateSelectionOnSort(JTable* theWrappedObject)
@@ -13223,9 +13244,9 @@ void PythonQtWrapper_JTable::setRowSelectionInterval(JTable* theWrappedObject, i
   ( theWrappedObject->setRowSelectionInterval(index0, index1));
 }
 
-void PythonQtWrapper_JTable::setSelectionModel(JTable* theWrappedObject, ListSelectionModel*  newModel)
+void PythonQtWrapper_JTable::setSelectionMode(JTable* theWrappedObject, int  selectionMode)
 {
-  ( theWrappedObject->setSelectionModel(newModel));
+  ( theWrappedObject->setSelectionMode(selectionMode));
 }
 
 void PythonQtWrapper_JTable::setUpdateSelectionOnSort(JTable* theWrappedObject, bool  update)
@@ -24213,28 +24234,6 @@ if (_wrapper) {
 }
   
 }
-void PythonQtShell_ListSelectionModel::childEvent(QChildEvent*  event0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("childEvent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QChildEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  ListSelectionModel::childEvent(event0);
-}
 void PythonQtShell_ListSelectionModel::clearSelection()
 {
 if (_wrapper) {
@@ -24256,94 +24255,6 @@ if (_wrapper) {
   }
 }
   ListSelectionModel::clearSelection();
-}
-void PythonQtShell_ListSelectionModel::customEvent(QEvent*  event0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("customEvent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  ListSelectionModel::customEvent(event0);
-}
-bool  PythonQtShell_ListSelectionModel::event(QEvent*  event0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("event");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"bool" , "QEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      bool returnValue{};
-      void* args[2] = {NULL, (void*)&event0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("event", methodInfo, result);
-          } else {
-            returnValue = *((bool*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return ListSelectionModel::event(event0);
-}
-bool  PythonQtShell_ListSelectionModel::eventFilter(QObject*  watched0, QEvent*  event1)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("eventFilter");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"bool" , "QObject*" , "QEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      bool returnValue{};
-      void* args[3] = {NULL, (void*)&watched0, (void*)&event1};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("eventFilter", methodInfo, result);
-          } else {
-            returnValue = *((bool*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return ListSelectionModel::eventFilter(watched0, event1);
 }
 int  PythonQtShell_ListSelectionModel::getAnchorSelectionIndex()
 {
@@ -24785,45 +24696,10 @@ if (_wrapper) {
 }
   ListSelectionModel::setValueIsAdjusting(arg__1);
 }
-void PythonQtShell_ListSelectionModel::timerEvent(QTimerEvent*  event0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("timerEvent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QTimerEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  ListSelectionModel::timerEvent(event0);
-}
 ListSelectionModel* PythonQtWrapper_ListSelectionModel::new_ListSelectionModel()
 { 
 return new PythonQtShell_ListSelectionModel(); }
 
-const QMetaObject* PythonQtShell_ListSelectionModel::metaObject() const {
-  if (QObject::d_ptr->metaObject) {
-    return QObject::d_ptr->dynamicMetaObject();
-  } else if (_wrapper) {
-    return PythonQt::priv()->getDynamicMetaObject(_wrapper, &ListSelectionModel::staticMetaObject);
-  } else {
-    return &ListSelectionModel::staticMetaObject;
-  }
-}
-int PythonQtShell_ListSelectionModel::qt_metacall(QMetaObject::Call call, int id, void** args) {
-  int result = ListSelectionModel::qt_metacall(call, id, args);
-  return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
-}
 void PythonQtWrapper_ListSelectionModel::addSelectionInterval(ListSelectionModel* theWrappedObject, int  index0, int  index1)
 {
   ( theWrappedObject->addSelectionInterval(index0, index1));

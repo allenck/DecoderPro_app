@@ -1,8 +1,10 @@
 #include "defaultlistselectionmodel.h"
 #include "bitset.h"
+#include "listselectionevent.h"
+#include <QSortFilterProxyModel>
 
 DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
-    ListSelectionModel()
+    QObject(parent)
 {
  selectionMode = MULTIPLE_INTERVAL_SELECTION;
  minIndex = MAX;
@@ -17,6 +19,7 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
  lastChangedIndex = MIN;
  value = new BitSet(32);
  leadAnchorNotificationEnabled = true;
+ listenerList = QVector<ListSelectionListener*>();
 }
 /**
  * Default data model for list selections.
@@ -63,7 +66,7 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
             this->selectionMode = selectionMode;
             break;
         default:
-            throw new IllegalArgumentException("invalid selectionMode");
+            throw  IllegalArgumentException("invalid selectionMode");
         }
     }
 
@@ -78,14 +81,17 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
     }
 
     /** {@inheritDoc} */
-//    /*public*/ void addListSelectionListener(ListSelectionListener l) {
-//        listenerList.add(ListSelectionListener.class, l);
-//    }
+    /*public*/ void DefaultListSelectionModel::addListSelectionListener(ListSelectionListener* l) {
+        //listenerList.append("ListSelectionListener", l);
+     listenerList.append(l);
+     connect(this, SIGNAL(listSelectionChanged(ListSelectionEvent*)), l, SLOT(valueChanged(ListSelectionEvent*)));
+    }
 
-//    /** {@inheritDoc} */
-//    /*public*/ void removeListSelectionListener(ListSelectionListener l) {
-//        listenerList.remove(ListSelectionListener.class, l);
-//    }
+    /** {@inheritDoc} */
+    /*public*/ void DefaultListSelectionModel::removeListSelectionListener(ListSelectionListener* l) {
+        //listenerList.remove(ListSelectionListener.class, l);
+     listenerList.removeOne(l);
+    }
 
     /**
      * Returns an array of all the list selection listeners
@@ -100,9 +106,10 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
      *
      * @since 1.4
      */
-//    /*public*/ ListSelectionListener[] getListSelectionListeners() {
-//        return listenerList.getListeners(ListSelectionListener.class);
-//    }
+    /*public*/ QVector<ListSelectionListener*> DefaultListSelectionModel::getListSelectionListeners() {
+        //return listenerList.getListeners(ListSelectionListener.class);
+     return listenerList;
+    }
 
     /**
      * Notifies listeners that we have ended a series of adjustments.
@@ -120,6 +127,7 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
         firstChangedIndex = MAX;
         lastChangedIndex = MIN;
         fireValueChanged(oldFirstChangedIndex, oldLastChangedIndex, isAdjusting);
+        emit listSelectionChanged(new ListSelectionEvent(this, firstChangedIndex, lastChangedIndex, isAdjusting ));
     }
 
 
@@ -141,18 +149,19 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
      */
     /*protected*/ void DefaultListSelectionModel::fireValueChanged(int firstIndex, int lastIndex, bool isAdjusting)
     {
-#if 0
-        Object[] listeners = listenerList.getListenerList();
-        ListSelectionEvent e = null;
+#if 1
+        //Object[] listeners = listenerList.getListenerList();
+        ListSelectionEvent* e = nullptr;
 
-        for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] == ListSelectionListener.class) {
-                if (e == null) {
+        for (int i = listenerList.length() - 2; i >= 0; i -= 2) {
+//            if (listeners[i] == ListSelectionListener.class) {
+//                if (e == null) {
                     e = new ListSelectionEvent(this, firstIndex, lastIndex, isAdjusting);
-                }
-                ((ListSelectionListener)listeners[i+1]).valueChanged(e);
-            }
+//                }
+                //((ListSelectionListener)listeners[i+1]).valueChanged(e);
+//            }
         }
+        emit listSelectionChanged(e);
 #endif
     }
 
@@ -419,7 +428,7 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
         if (getSelectionMode() == SINGLE_SELECTION) {
             index0 = index1;
         }
-
+        //select(itemSelectionModel-> model()->index(index0, 0),QItemSelectionModel::Select);
         updateLeadAnchorIndices(index0, index1);
 
         int clearMin = minIndex;
@@ -820,3 +829,44 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
             changeSelection(newMin, newMax, oldMin, oldMax, false);
         }
     }
+
+void DefaultListSelectionModel::onSelectionChanged(QItemSelection selected, QItemSelection deselected)
+{
+
+ int min = MAX;
+ int max = MIN;
+ int minNew = MAX;
+ int maxNew = MIN;
+ foreach (QModelIndex ix, mapSelections(deselected).indexes()) {
+  min = qMin(ix.row(), min);
+  max = qMax(ix.row(), max);
+ }
+ foreach (QModelIndex ix, mapSelections(selected).indexes()) {
+  minNew = qMin(ix.row(), minNew);
+  maxNew = qMax(ix.row(), maxNew);
+ }
+ //changeSelection(min, max, minNew, maxNew);
+
+ setSelectionInterval(minNew, maxNew);
+}
+
+// if table model is a sort, we need to re-map the model indexes.
+/*private*/ QItemSelection DefaultListSelectionModel::mapSelections(QItemSelection selections)
+{
+ if(qobject_cast<QSortFilterProxyModel*>(itemSelectionModel->model()))
+ {
+  return ((QSortFilterProxyModel*)itemSelectionModel->model())->mapSelectionToSource(selections);
+ }
+ else
+  return selections;
+}
+/*public*/ QItemSelectionModel* DefaultListSelectionModel::getItemSelectionModel()
+{
+ return itemSelectionModel;
+}
+
+/*public*/ void DefaultListSelectionModel::setItemSelectionModel(QItemSelectionModel *itemSelectionModel)
+{
+ this->itemSelectionModel = itemSelectionModel;
+ connect(itemSelectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(onSelectionChanged(QItemSelection,QItemSelection)));
+}

@@ -122,11 +122,14 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
 //    actionsTbl.setDefaultRenderer(StartupModel.class, new StartupModelCellRenderer());
 //    actionsTbl.setDefaultEditor(StartupModel.class, new StartupModelCellEditor());
     actionsTbl->setModel(new SATableModel((StartupActionsManager*) InstanceManager::getDefault("StartupActionsManager")));
-    actionsTbl->setSelectionMode(QAbstractItemView::SingleSelection);
+    actionsTbl->setSelectionMode(ListSelectionModel::SINGLE_SELECTION);
 //    actionsTbl.getTableHeader().setReorderingAllowed(false);
+    actionsTbl->getTableHeader()->setSectionsMovable(true);
     //jScrollPane1.setViewportView(actionsTbl);
     actionsTbl->setColumnWidth(0, 200);
-    actionsTbl->horizontalHeader()->setStretchLastSection(false);
+    actionsTbl->setColumnWidth(1, 200);
+    actionsTbl->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    //actionsTbl->horizontalHeader()->setStretchLastSection(true);
 //    actionsTbl.getColumnModel().getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 //    ResourceBundle bundle = ResourceBundle.getBundle("apps/startup/Bundle"); // NOI18N

@@ -5,6 +5,7 @@
 class Logger;
 class VerifyWriteProgrammerFacadeTestAction : public AbstractAction
 {
+ Q_OBJECT
 public:
  VerifyWriteProgrammerFacadeTestAction(QObject *parent);
 

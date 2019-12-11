@@ -52,6 +52,7 @@ public:
     /*public*/ static void assertEquals(QString message, QVariant expected, QVariant actual, QString file, int line);
     /*public*/ static void assertEquals(QVariant expected, QVariant actual, QString file, int line);
     /*public*/ static void assertEquals(QString message, QChar expected, QChar actual, QString file, int line);
+    /*public*/ static void assertEquals(QString message, double expected, double actual, double delta, QString file, int line);
 
 
     /*public*/ static void assertNotEquals(QString message, QObject* unexpected, QObject* actual, QString file, int line);

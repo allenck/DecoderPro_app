@@ -109,6 +109,7 @@ private:
  DataFlavor* _namedIconDataFlavor;
  /*private*/ qint64 _mouseDownTime = 0;
  /*private*/ bool _manualSelection = false;
+ Positionable* _lastSelection;
 
 private slots:
  /*private*/ void zoomRestore(); // SLOT

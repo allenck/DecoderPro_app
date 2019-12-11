@@ -124,29 +124,20 @@ updateBlockValue = false;
 }
 
 /**
- * Attached a named Memory to this display item
+ * Attach a named Memory to this display item
   * @param pName Used as a system/user name to lookup the Memory object
  */
 /*public*/ void DisplayMemoryIcon::setMemory(QString pName)
 {
- if (InstanceManager::memoryManagerInstance()!=NULL)
- {
-  MemoryManager* manager = InstanceManager::memoryManagerInstance();
-  Memory* memory = ((DefaultMemoryManager*)manager)->provideMemory(pName);
-  if (memory != NULL)
-  {
-   setMemory(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, memory));
-   AbstractMemory* mm = (AbstractMemory*)memory;
-   connect(mm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  }
-  else
-  {
-   log->error("Memory '"+pName+"' not available, icon won't see changes");
-  }
- }
- else
- {
-  log->error("No MemoryManager for this protocol, icon won't see changes");
+ if (InstanceManager::getNullableDefault("MemoryManager") != nullptr) {
+     try {
+         Memory* memory = InstanceManager::memoryManagerInstance()->provideMemory(pName);
+         setMemory(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, memory));
+     } catch (IllegalArgumentException e) {
+         log->error(tr("Memory '#1' not available, icon won't see changes").arg(pName));
+     }
+ } else {
+     log->error("No MemoryManager for this protocol, icon won't see changes");
  }
  updateSize();
 }
@@ -172,14 +163,14 @@ void DisplayMemoryIcon::on_propertyChange(QString sType, QVariant /*sOld*/, QVar
 {
  if (namedMemory != NULL)
  {
-  ((AbstractNamedBean*)getMemory())->removePropertyChangeListener((PropertyChangeListener*)this);
+  getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
  }
  namedMemory = m;
  if (namedMemory != NULL)
  {
-  ((AbstractNamedBean*)getMemory())->addPropertyChangeListener((PropertyChangeListener*)this, namedMemory->getName(), "Memory Icon");
-  AbstractNamedBean* bean = (AbstractNamedBean*)getMemory();
-  connect(bean->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getMemory()->addPropertyChangeListener((PropertyChangeListener*)this, namedMemory->getName(), "Memory Icon");
+//  AbstractNamedBean* bean = (AbstractNamedBean*)getMemory();
+  //connect(bean->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   displayState();
   setName(namedMemory->getName());
  }
@@ -692,9 +683,9 @@ void DisplayMemoryIcon::AddIconActionListener::actionPerformed(ActionEvent */*e*
 }
 
 /*public*/ void DisplayMemoryIcon::dispose() {
-    //getMemory()->removePropertyChangeListener(this);
-    AbstractNamedBean* bean = (AbstractNamedBean*)getMemory();
-    disconnect(bean, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
+//    AbstractNamedBean* bean = (AbstractNamedBean*)getMemory();
+//    disconnect(bean, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     namedMemory = NULL;
     if(re!=NULL){
         InstanceManager::throttleManagerInstance()->removeListener(re->getDccLocoAddress(), (PropertyChangeListener*)this);

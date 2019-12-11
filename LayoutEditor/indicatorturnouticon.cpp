@@ -148,9 +148,9 @@ QMap<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::cloneMaps(Indicato
  if (namedOccSensor != NULL)
  {
   Sensor* sensor = getOccSensor();
-  AbstractSensor* abstractSensor = (AbstractSensor*)sensor;
-  ((AbstractNamedBean*)abstractSensor)->addPropertyChangeListener((PropertyChangeListener*)this, namedOccSensor->getName(), "Indicator Turnout Icon");
-  connect(abstractSensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //AbstractSensor* abstractSensor = (AbstractSensor*)sensor;
+  sensor->addPropertyChangeListener((PropertyChangeListener*)this, namedOccSensor->getName(), "Indicator Turnout Icon");
+  //connect(abstractSensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   _status = _pathUtil->setStatus(sensor->getKnownState());
   if (_iconMaps!=NULL)
@@ -199,20 +199,20 @@ QMap<QString, QHash<int, NamedIcon*>*>* IndicatorTurnoutIcon::cloneMaps(Indicato
  {
      OBlock* block = getOccBlock();
   getOccBlock()->removePropertyChangeListener((PropertyChangeListener*)this);
-  disconnect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //disconnect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  namedOccBlock = blockHandle;
  if (namedOccBlock != NULL)
  {
   OBlock* block = getOccBlock();
   block->addPropertyChangeListener((PropertyChangeListener*)this, namedOccBlock->getName(), "Indicator Turnout Icon");
-  connect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   setStatus(block, block->getState());
   if (_iconMaps!=NULL)
   {
    displayState(turnoutState());
   }
-  setTooltip((block->getDescription()/*, 0, 0*/));
+  setToolTip((block->getDescription()/*, 0, 0*/));
  }
 }
 /*public*/ OBlock* IndicatorTurnoutIcon::getOccBlock()

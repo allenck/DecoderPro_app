@@ -193,7 +193,7 @@ public:
 
 /************************* Throttle Table ******************************/
 
-class ThrottleTableModel : public QAbstractTableModel
+class ThrottleTableModel : public AbstractTableModel
 {
     Q_OBJECT
 private:

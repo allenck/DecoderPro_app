@@ -195,8 +195,8 @@ JmriJFrame(parent)
  // load address from switchAddrTextField
  try {
  if (turnout != NULL)
-  //turnout.removePropertyChangeListener(this);
-     disconnect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  turnout->removePropertyChangeListener((PropertyChangeListener*)this);
+//     disconnect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  turnout = (AbstractTurnout*)((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(adrTextField->text());
 
  if (turnout == NULL)
@@ -206,8 +206,8 @@ JmriJFrame(parent)
  }
  else
  {
-  //turnout.addPropertyChangeListener(this);
-  connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  turnout->addPropertyChangeListener((PropertyChangeListener*)this);
+//  connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   updateTurnoutStatusFields();
   if (turnout->getCommandedState() == Turnout::CLOSED)
@@ -232,8 +232,8 @@ JmriJFrame(parent)
     // load address from switchAddrTextField
     try {
         if (turnout != NULL)
-            //turnout.removePropertyChangeListener(this);
-            disconnect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            turnout->removePropertyChangeListener((PropertyChangeListener*)this);
+//            disconnect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
         turnout = (AbstractTurnout*)((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(
                 adrTextField->text());
@@ -242,8 +242,8 @@ JmriJFrame(parent)
             log->error("Turnout " + adrTextField->text()
                     + " is not available");
         } else {
-            //turnout.addPropertyChangeListener(this);
-            connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            turnout->addPropertyChangeListener((PropertyChangeListener*)this);
+//            connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
             updateTurnoutStatusFields();
             if (turnout->getCommandedState() == Turnout::THROWN) {
@@ -267,8 +267,8 @@ JmriJFrame(parent)
     // load address from switchAddrTextField
     try {
         if (turnout != NULL)
-            //turnout.removePropertyChangeListener(this);
-            disconnect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            turnout->removePropertyChangeListener((PropertyChangeListener*)this);
+//            disconnect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
         turnout = (AbstractTurnout*)((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(
                 adrTextField->text());
@@ -277,8 +277,8 @@ JmriJFrame(parent)
             log->error("Turnout " + adrTextField->text()
                     + " is not available");
         } else {
-            //turnout.addPropertyChangeListener(this);
-            connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            turnout->addPropertyChangeListener((PropertyChangeListener*)this);
+//            connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
             updateTurnoutStatusFields();
 
@@ -301,8 +301,8 @@ JmriJFrame(parent)
     // load address from switchAddrTextField
     try {
         if (turnout != NULL)
-            //turnout.removePropertyChangeListener(this);
-            disconnect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            turnout->removePropertyChangeListener((PropertyChangeListener*)this);
+//            disconnect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
         turnout = (AbstractTurnout*)((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(
                 adrTextField->text());
@@ -311,8 +311,8 @@ JmriJFrame(parent)
             log->error("Turnout " + adrTextField->text()
                     + " is not available");
         } else {
-            //turnout.addPropertyChangeListener(this);
-            connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            turnout->addPropertyChangeListener((PropertyChangeListener*)this);
+//            connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
             updateTurnoutStatusFields();
 

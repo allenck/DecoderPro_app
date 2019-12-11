@@ -110,9 +110,9 @@
     Q_ASSERT(to != NULL);
  if (namedTurnout != NULL)
  {
-//  ((AbstractTurnout*)getTurnout())->removePropertyChangeListener((PropertyChangeListener*)this);
-     AbstractTurnout* t = (AbstractTurnout*)getTurnout();
-     disconnect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getTurnout()->removePropertyChangeListener((PropertyChangeListener*)this);
+//     AbstractTurnout* t = (AbstractTurnout*)getTurnout();
+//     disconnect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  }
  namedTurnout = to;
@@ -130,9 +130,9 @@
   _state2nameMap->insert((Turnout::CLOSED), "TurnoutStateClosed");
   _state2nameMap->insert((Turnout::THROWN), "TurnoutStateThrown");
   displayState(turnoutState());
-//  ((AbstractTurnout*)getTurnout())->addPropertyChangeListener((PropertyChangeListener*)this, namedTurnout->getName(), "Panel Editor Turnout Icon");
-  AbstractTurnout* t = (AbstractTurnout*)getTurnout();
-  connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getTurnout()->addPropertyChangeListener((PropertyChangeListener*)this, namedTurnout->getName(), "Panel Editor Turnout Icon");
+//  AbstractTurnout* t = (AbstractTurnout*)getTurnout();
+//  connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -628,9 +628,9 @@ void TurnoutIcon::alternateOnClick()
 {
  if (namedTurnout != NULL)
  {
-  //getTurnout().removePropertyChangeListener(this);
-  AbstractTurnout* t = (AbstractTurnout*)getTurnout();
-  disconnect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  getTurnout()->removePropertyChangeListener((PropertyChangeListener*)this);
+//  AbstractTurnout* t = (AbstractTurnout*)getTurnout();
+//  disconnect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  }
  namedTurnout = NULL;

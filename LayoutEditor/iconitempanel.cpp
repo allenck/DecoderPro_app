@@ -507,8 +507,9 @@ void IconItemPanel::showCatalog() {
         l->setLevel(level);
         return l;
     }
-/*public*/ QString IconDragJLabel::mimeData()
+/*public*/ QByteArray IconDragJLabel::mimeData()
 {
+ QByteArray xmldata;
  QString url = ((NamedIcon*)getIcon())->getURL();
  PositionableLabel* l = new PositionableLabel(NamedIcon::getIconByName(url), /*_editor*/(Editor*)parent->_editor);
  l->setPopupUtility(NULL);        // no text
@@ -518,9 +519,8 @@ void IconItemPanel::showCatalog() {
  PositionableLabelXml* xml = new PositionableLabelXml();
  QDomElement e = xml->store((QObject*)l);
  xml->doc.appendChild(e);
- QString xmldata = xml->doc.toString();
- _dataFlavor->setMimeTypeParameter("xml", QString(QUrl::toPercentEncoding(xmldata)));
- return _dataFlavor->toString();
+ xmldata.append(xml->doc.toString());
+ return xmldata;
 }
 
 //    /*public*/ void dragExit(DropTargetEvent dte) {

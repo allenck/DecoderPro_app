@@ -1,9 +1,9 @@
 #include "rostergroupselector.h"
 
-RosterGroupSelector::RosterGroupSelector(QWidget* parent) : QComboBox(parent)
-{
+//RosterGroupSelector::RosterGroupSelector(QWidget* parent) : QComboBox(parent)
+//{
 
-}
+//}
 /**
  * The getter method for a roster group selection.
  * <p>

@@ -94,6 +94,7 @@ class InstanceManager;
 
 };
 
+class MSlipTurnoutListener;
 class LIBLAYOUTEDITORSHARED_EXPORT LayoutSlip : public LayoutTurnout
 {
     Q_OBJECT
@@ -231,6 +232,16 @@ protected:
 friend class LoadXml;
 friend class LayoutEditor;
 friend class LayoutTrackEditors;
+friend class MSlipTurnoutListener;
+};
+class MSlipTurnoutListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ LayoutSlip* layoutSlip;
+public:
+ MSlipTurnoutListener(LayoutSlip* layoutSlip) {this->layoutSlip = layoutSlip;}
+public slots:
+ void propertyChange(PropertyChangeEvent*);
 };
 
 #endif // LAYOUTSLIP_H

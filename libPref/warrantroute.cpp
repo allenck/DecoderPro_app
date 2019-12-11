@@ -1281,7 +1281,7 @@ return true;
  JTable* routeTable = new JTable(_routeModel);
  //  routeTable.setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
  //routeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
- routeTable->setColumnModel(new DefaultTableColumnModel());
+ routeTable->setColumnModel(new DefaultTableColumnModel(_routeModel));
  for (int i=0; i<_routeModel->columnCount(QModelIndex()); i++)
  {
   int width = _routeModel->getPreferredWidth(i);

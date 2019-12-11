@@ -80,7 +80,8 @@
 //        }
 //    });
  TurnoutOperationManager* mgr = TurnoutOperationManager::getInstance();
- connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ TurnoutOperationManager::getInstance()->addPropertyChangeListener((PropertyChangeListener*)this);
+ //connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  if (tabPane->count()>0)
  {
   setVisible(true);

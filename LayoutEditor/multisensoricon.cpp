@@ -79,22 +79,17 @@ MultiSensorIconEntry::MultiSensorIconEntry(NamedIcon *icon, NamedBeanHandle<Sens
 }
 
 /*public*/ void MultiSensorIcon::addEntry(NamedBeanHandle<Sensor*>* sensor, NamedIcon* icon) {
-//    if (sensor != NULL) {
+    if (sensor != NULL) {
         if (log->isDebugEnabled()) log->debug("addEntry: sensor= "+sensor->getName());
         /*MultiSensorIcon::*/Entry* e = new /*MultiSensorIcon::*/Entry(icon,sensor);
-        //sensor->getBean().addPropertyChangeListener(this, sensor.getName(), "MultiSensor Icon");
-        if(sensor != NULL)
-        {
-         AbstractSensor* s = (AbstractSensor*)sensor->getBean();
-         connect(s->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-        }
-//        e->namedSensor = sensor;
-//        e->icon = icon;
+        sensor->getBean()->addPropertyChangeListener((PropertyChangeListener*)this, sensor->getName(), "MultiSensor Icon");
+        e->namedSensor = sensor;
+        e->icon = icon;
         entries->append(e);
         displayState();
-//    } else {
-//        log->error("Sensor not available, icon won't see changes");
-//    }
+    } else {
+        log->error("Sensor not available, icon won't see changes");
+    }
 }
 
 /*public*/ void MultiSensorIcon::addEntry(QString pName, NamedIcon* icon)
@@ -226,7 +221,7 @@ MultiSensorIconEntry::MultiSensorIconEntry(NamedIcon *icon, NamedBeanHandle<Sens
 /*public*/ bool MultiSensorIcon::setEditItemMenu(QMenu* popup) // Called by ControlPanelEditor
 {
     //QString txt = java.text.MessageFormat.format(Bundle.getMessage("EditItem"), Bundle.getMessage("MultiSensor"));
- QString txt = tr("Edit %1 Icon"),arg(tr("MultiSensor"));
+ QString txt = tr("Edit %1 Icon").arg(tr("MultiSensor"));
 //    popup.add(new javax.swing.AbstractAction(txt) {
 //            /*public*/ void actionPerformed(ActionEvent e) {
 //                editItem();
@@ -277,9 +272,9 @@ void MultiSensorIcon::updateItem()
 {
 #if 1
  QMap <QString, NamedIcon*>* iconMap = _itemPanel->getIconMap();
- QList<NamedBean*>* selections = _itemPanel->getTableSelections();
- QList<int> positions = _itemPanel->getPositions();
- if (selections==NULL) {
+ QVector<NamedBean*> selections = _itemPanel->getTableSelections();
+ QVector<int> positions = _itemPanel->getPositions();
+ if (selections.isEmpty()) {
 //        JOptionPane.showMessageDialog(_paletteFrame,
 //                java.text.MessageFormat.format(
 //                    ItemPalette.rbp.getString("NeedPosition"), positions.length),
@@ -298,9 +293,9 @@ void MultiSensorIcon::updateItem()
   return;
  }
  entries = new QList<Entry*>();//selections->size());
- for (int i=0; i<selections->size(); i++)
+ for (int i=0; i<selections.size(); i++)
  {
-  addEntry(selections->at(i)->getDisplayName(), new NamedIcon(iconMap->value(MultiSensorItemPanel::POSITION.at(i))));
+  addEntry(selections.at(i)->getDisplayName(), new NamedIcon(iconMap->value(MultiSensorItemPanel::POSITION.at(i))));
  }
  _iconFamily = _itemPanel->getFamilyName();
  _itemPanel->clearSelections();

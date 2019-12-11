@@ -364,7 +364,7 @@ void PositionablePopupUtil::onSetTeaxtFontColor()
     }
     if (!_hasBackground) {
         _parent->setOpaque(false);
-        ((PositionableJPanel*)_textComponent)->setOpaque(false);
+        _textComponent->setOpaque(false);
     }
 }
 /*public*/ void PositionablePopupUtil::setSuppressRecentColor(bool b) {

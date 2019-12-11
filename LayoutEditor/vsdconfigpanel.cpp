@@ -254,7 +254,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout();
 //                rosterItemSelectAction(NULL);
 //            }
 //        });
-    connect(rosterSelector, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+    rosterSelector->addPropertyChangeListener("selectedRosterEntries",(PropertyChangeListener*)this);
+    //connect(rosterSelector, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
     rosterPanelLayout->addWidget(rosterSelector);
     rosterLabel = new QLabel();
     rosterLabel->setText("Roster");

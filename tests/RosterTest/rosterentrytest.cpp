@@ -432,7 +432,7 @@ void RosterEntryO1::warnShortLong(QString s) {
 /*public*/ void RosterEntryTest::testNullAttributeValue() {
     RosterEntry* r = new RosterEntry();
     r->putAttribute("foo", "bar");
-    r->putAttribute("foo", "");
+    r->putAttribute("foo", QString());
     Assert::assertNull(r->getAttribute("foo"),__FILE__, __LINE__);
 }
 

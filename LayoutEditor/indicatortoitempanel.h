@@ -72,7 +72,7 @@ public:
     /*public*/ ITOIconDragJLabel(DataFlavor* flavor,IndicatorTOItemPanel* parent);
     /*public*/ bool isDataFlavorSupported(DataFlavor* flavor);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
-    QString mimeData();
+    QByteArray mimeData();
 };
 
 class EditIconActionListener : public ActionListener

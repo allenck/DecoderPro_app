@@ -5,9 +5,15 @@
 #include "bitset.h"
 #include "exceptions.h"
 #include "javaqt_global.h"
-class JAVAQTSHARED_EXPORT DefaultListSelectionModel : public ListSelectionModel
+#include "abstracttablemodel.h"
+#include <QVector>
+#include "listselectionlistener.h"
+
+class ListSelectionEvent;
+class JAVAQTSHARED_EXPORT DefaultListSelectionModel : public QObject, public ListSelectionModel
 {
     Q_OBJECT
+ Q_INTERFACES(ListSelectionModel)
 public:
     explicit DefaultListSelectionModel(QObject *parent = 0);
     /*public*/ int getMinSelectionIndex();
@@ -17,9 +23,9 @@ public:
     /*public*/ void setSelectionMode(int selectionMode);
     /*public*/ bool isSelectedIndex(int index);
     /*public*/ bool isSelectionEmpty();
-//    /*public*/ void addListSelectionListener(ListSelectionListener l);
-//    /*public*/ void removeListSelectionListener(ListSelectionListener l);
-//    /*public*/ ListSelectionListener[] getListSelectionListeners();
+    /*public*/ void addListSelectionListener(ListSelectionListener* l);
+    /*public*/ void removeListSelectionListener(ListSelectionListener* l);
+    /*public*/ QVector<ListSelectionListener*> getListSelectionListeners();
 //    /*public*/ <T extends EventListener> T[] getListeners(Class<T> listenerType);
     /*public*/ void setLeadAnchorNotificationEnabled(bool flag);
     /*public*/ bool isLeadAnchorNotificationEnabled();
@@ -37,10 +43,15 @@ public:
     /*public*/ void setAnchorSelectionIndex(int anchorIndex);
     /*public*/ void moveLeadSelectionIndex(int leadIndex);
     /*public*/ void setLeadSelectionIndex(int leadIndex);
+    /*public*/ QItemSelectionModel* getItemSelectionModel();
+    /*public*/ void setItemSelectionModel(QItemSelectionModel* itemSelectionModel);
 
 signals:
+    void listSelectionChanged(ListSelectionEvent*);
 
 public slots:
+    void onSelectionChanged(QItemSelection selected, QItemSelection deselected);
+
 private:
     /*private*/ static const int MIN = -1;
     /*private*/ static const int MAX = INT_MAX;
@@ -69,6 +80,9 @@ private:
     /*private*/ void changeSelection(int clearMin, int clearMax,
                                  int setMin, int setMax, bool clearFirst);
     /*private*/ void changeSelection(int clearMin, int clearMax, int setMin, int setMax);
+    QItemSelectionModel* itemSelectionModel = nullptr;
+    QVector<ListSelectionListener*> listenerList;
+    /*private*/ QItemSelection mapSelections(QItemSelection selections);
 
 protected:
 //    /*protected*/ EventListenerList listenerList = new EventListenerList();

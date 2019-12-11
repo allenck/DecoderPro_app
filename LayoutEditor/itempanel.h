@@ -44,7 +44,7 @@ public:
     static /*final*/ QStringList PORTAL;// = {PortalIcon.HIDDEN, PortalIcon.VISIBLE, PortalIcon.PATH,
 //                PortalIcon.TO_ARROW, PortalIcon.FROM_ARROW};
     static QString redX;// = "resources/icons/misc/X-red.gif";
-    /*public*/ bool oktoUpdate();
+    virtual /*public*/ bool oktoUpdate();
     QVBoxLayout* thisLayout;
 
 signals:
@@ -80,7 +80,7 @@ protected:
     /*protected*/ void reset();
     /*protected*/ /*final*/ bool isUpdate();
     static /*protected*/ QMap<QString, NamedIcon*>* makeNewIconMap(QString type);
-    /*protected*/ void setEditor(Editor* ed);
+    virtual /*protected*/ void setEditor(Editor* ed);
     /*abstract*/ /*protected*/ virtual void setPreviewBg(int index);
     /*abstract*/ /*protected*/ virtual void updateBackground0(BufferedImage* im);
     /*protected*/ void initLinkPanel();

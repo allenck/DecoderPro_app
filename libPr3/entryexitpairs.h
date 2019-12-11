@@ -263,6 +263,7 @@ protected:
     /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n) ;
 
  friend class DeletePair;
+ friend class PickListModel;
 };
 Q_DECLARE_METATYPE(EntryExitPairs)
 

@@ -34,7 +34,7 @@ void PositionablePropertiesUtil::display()
 Positionable* p = _parent;
 // ui->fontComboBox->setCurrentFont(((PositionableLabel*)pop->_parent)->getFont());
  QFont f = font();
- if(qobject_cast<PositionableLabel*>((QObject*)p))
+ if(qobject_cast<PositionableLabel*>(p->self()))
  {
   f = ((PositionableLabel*)p)->getFont();
   ui->fontComboBox->setCurrentFont(((PositionableLabel*)pop->_parent)->getFont());
@@ -172,7 +172,7 @@ void PositionablePropertiesUtil::fontApply()
 //      }
 
     //if (_parent instanceof SensorIcon) {
- if(qobject_cast<SensorIcon*>((QObject*)pop->_parent) != NULL)
+ if(qobject_cast<SensorIcon*>(pop->_parent->self()) != NULL)
  {
   SensorIcon* si = (SensorIcon*) pop->_parent;
   if (si->isIcon())
@@ -228,7 +228,7 @@ void PositionablePropertiesUtil::fontApply()
   case 2 :    pop->setJustification(0x04);
                     break;
  }
- if(qobject_cast<MemoryIcon*>((QObject*)pop->_parent))
+ if(qobject_cast<MemoryIcon*>(pop->_parent->self()))
  {
   MemoryIcon* pm = (MemoryIcon*) _parent;
 //  xPos = pm->getOriginalX();
@@ -249,7 +249,7 @@ void PositionablePropertiesUtil::fontApply()
  if(pop == nullptr)
   return;
  //if (_parent instanceof SensorIcon) {
- if(qobject_cast<SensorIcon*>((QObject*)pop->_parent)!= NULL)
+ if(qobject_cast<SensorIcon*>(pop->_parent->self())!= NULL)
  {
   SensorIcon* si = (SensorIcon*) pop->_parent;
   if (si->isIcon())
@@ -294,7 +294,7 @@ void PositionablePropertiesUtil::fontApply()
  pop->setFontSize(fontSize);
  pop->setBorderColor(defaultBorderColor);
  //((PositionableLabel*)pop->_parent)->setLocation(xPos, yPos);
- if(qobject_cast<MemoryIcon*>((QObject*)pop->_parent))
+ if(qobject_cast<MemoryIcon*>(pop->_parent->self()))
  {
   MemoryIcon* pm = (MemoryIcon*) pop->_parent;
 //  xPos = pm->getOriginalX();
