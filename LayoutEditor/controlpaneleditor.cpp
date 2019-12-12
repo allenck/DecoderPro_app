@@ -1262,13 +1262,13 @@ void ControlPanelEditor::selectAllAction()
 #endif
 /*public*/ void ControlPanelEditor::keyPressEvent(QKeyEvent* e)
 {
- if (_selectionGroup==nullptr) {
-     return;
- }
+// if (_selectionGroup==nullptr) {
+//     return;
+// }
  log->debug(tr("key pressed, _currentSelection is %1").arg(_currentSelection?_lastSelection->self()->metaObject()->className():"null"));
  if(_lastSelection!= nullptr && qobject_cast<PositionableJPanel*>(_lastSelection->self()))
  {
-  ((PositionableJPanel*)_lastSelection)->getWidget()->keyPressEvent(e);
+  ((PositionableJPanel*)_lastSelection->self())->getWidget()->keyPressEvent(e);
  }
  int x = 0;
  int y = 0;
@@ -1318,7 +1318,7 @@ void ControlPanelEditor::selectAllAction()
 {
  if(_lastSelection!= nullptr && qobject_cast<PositionableJPanel*>(_lastSelection->self()))
  {
-  ((PositionableJPanel*)_lastSelection)->getWidget()->keyPressEvent(e);
+  ((PositionableJPanel*)_lastSelection->self())->getWidget()->keyPressEvent(e);
  }
 
 }
@@ -1350,7 +1350,7 @@ void ControlPanelEditor::selectAllAction()
     || (qobject_cast<MemoryComboIcon*>(_currentSelection->self())!= nullptr))
  {
   //((MemoryInputIcon*)_currentSelection)->mousePressed(event);
-  ((PositionableJPanel*)_currentSelection)->getWidget()->mousePressEvent(event);
+  ((PositionableJPanel*)_currentSelection->self())->getWidget()->mousePressEvent(event);
   return;
  }
 
@@ -1426,7 +1426,7 @@ void ControlPanelEditor::selectAllAction()
    {
     _highlightcomponent = selection->getBounds(QRectF());
     //((PositionableLabel*)selection)->_itemGroup->setFocus();
-    ((PositionableJPanel*)selection)->getWidget()->mouseReleaseEvent(event);
+    ((PositionableJPanel*)selection->self())->getWidget()->mouseReleaseEvent(event);
 //    if(_highlightcomponent.width() > 1000)
 //     qDebug() << tr("_highlightcomponent width = %1").arg(_highlightcomponent.width());
 //   }
@@ -1465,6 +1465,14 @@ void ControlPanelEditor::selectAllAction()
    if(!(event->modifiers()&Qt::ControlModifier) && !(event->modifiers()& Qt::ShiftModifier))
    {
     selection->doMouseReleased(event);
+   }
+   if((qobject_cast<MemoryInputIcon*>(selection->self()) != nullptr)
+      || (qobject_cast<MemorySpinnerIcon*>(selection->self()) != nullptr)
+      || (qobject_cast<MemoryComboIcon*>(selection->self())!= nullptr))
+   {
+    //((MemoryInputIcon*)_currentSelection)->mousePressed(event);
+    ((PositionableJPanel*)selection->self())->getWidget()->mouseReleaseEvent(event);
+    //return;
    }
   }
   // when dragging, don't change selection group
@@ -2419,7 +2427,7 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
       l->setLevel(Editor::MEMORIES);
       addToTarget(l);
   }
-  else if(representativeClass=="MemoryInputIcon")
+  else if(representativeClass=="memoryInputIcon")
   {
       MemoryInputIconXml* xml = new MemoryInputIconXml;
       xml->doc = doc;

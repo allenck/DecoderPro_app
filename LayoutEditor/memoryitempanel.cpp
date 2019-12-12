@@ -30,6 +30,7 @@
 #include "gridbagconstraints.h"
 #include "gridbaglayout.h"
 #include "imagepanel.h"
+#include <QComboBox>
 
 //MemoryItemPanel::MemoryItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -115,7 +116,7 @@
  log->debug("initIconFamiliesPanel done");
 }
 
-/*protected*/ void MemoryItemPanel::makeDndIconPanel(QHash<QString, NamedIcon*>* /*iconMap*/, QString /*displayKey*/)
+/*protected*/ void MemoryItemPanel::makeDndIconPanel(QMap<QString, NamedIcon *> * /*iconMap*/, QString /*displayKey*/)
 {
  if (_update)
  {
@@ -133,7 +134,7 @@
   c.anchor = GridBagConstraints::CENTER;
   c.weightx = 1.0;
 
-  QLabel* label = new QLabel(tr("Input Box Memory"));
+  QLabel* label = new QLabel(tr("Input Box Memory")); // "ReadWriteMemory"
   //label.setOpaque(false);
   panelLayout->addWidget(label, c);
   c.gridy = 1;
@@ -156,18 +157,18 @@
 
   c.gridy = 3;
   c.anchor = GridBagConstraints::NORTH;
-  label = new QLabel(tr("NumColsLabel"));
+  label = new QLabel(tr("Col Width"));
   //label.setOpaque(false);
   panelLayout->addWidget(label, c);
 
   c.gridx = 1;
   c.gridy = 0;
   c.anchor = GridBagConstraints::CENTER;
-  label = new QLabel(tr("ReadMemory"));
+  label = new QLabel(tr("Display Memory"));
   //label.setOpaque(false);
   panelLayout->addWidget(label, c);
   c.gridy = 1;
-  _readMem = new MemoryIcon(NamedIcon::getIconByName("resources/icons/misc/X-red.gif"), _editor);
+  _readMem = new MemoryIcon(NamedIcon::getIconByName(":/resources/icons/misc/X-red.gif"), _editor);
   panelLayout->addWidget(makeDragIcon(_readMem, Type::READONLY), c);
 
   c.gridx = 2;
@@ -186,7 +187,9 @@
 //  label->setOpaque(false);
   panelLayout->addWidget(label, c);
   c.gridy = 3;
-  _comboMem = new MemoryComboIcon(_editor, QStringList());
+  QStringList sample = QStringList();
+  _comboMem = new MemoryComboIcon(_editor, sample);
+  sample << "selection 1" << "selection 2";
   panelLayout->addWidget(makeDragIcon(_comboMem, Type::COMBO), c);
 
   _dragIconPanel->layout()->addWidget(panel);
@@ -195,26 +198,34 @@
 
 /*private*/ QWidget* MemoryItemPanel::makeDragIcon(QWidget* mem, Type type)
 {
- QGroupBox*  panel = new QGroupBox(/*new FlowLayout()*/);
- QHBoxLayout* panelLayout;
- panel->setLayout(panelLayout = new QHBoxLayout);
- QString borderName = tr("Drag to Panel");
-  //  panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),
-  //                                                    borderName));
- QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
- panel->setTitle(borderName);
- panel->setStyleSheet(gbStyleSheet);
+ QWidget*  panel = new QWidget(/*new FlowLayout()*/);
+ QVBoxLayout* panelLayout;
+ panel->setLayout(panelLayout = new QVBoxLayout);
+ //panel->setOpaque(false);
  QWidget* comp = NULL;
     try {
-        comp = this->getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR), type, QSize(80,60));
+        comp = this->getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR), type, mem);
         comp->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
-    } catch (ClassNotFoundException cnfe) {
+    }
+    catch (ClassNotFoundException cnfe) {
         //cnfe.printStackTrace();
         comp = new QWidget();
     }
- FlowLayout * compLayout;
- comp->setLayout(compLayout = new FlowLayout);
- compLayout->addWidget(mem);
+ switch (type)
+ {
+ case READONLY:
+  comp->layout()->addWidget(new QLabel("text"));
+  break;
+ case SPINNER:
+  comp->layout()->addWidget(new QSpinBox());
+  break;
+ case COMBO:
+  comp->layout()->addWidget(new QComboBox());
+  break;
+default:
+  comp->layout()->addWidget(mem);
+  break;
+ }
  panelLayout->addWidget(comp);
 //    panel.validate();
  return panel;
@@ -269,17 +280,16 @@
 }
 
 
-/*protected*/ MemoryIconDragJComponent* MemoryItemPanel::getDragger(DataFlavor* flavor, MemoryItemPanel::Type type, QSize dim )
+/*protected*/ MemoryIconDragJComponent* MemoryItemPanel::getDragger(DataFlavor* flavor, MemoryItemPanel::Type type, QWidget* comp )
 {
- MemoryIconDragJComponent* comp = new MemoryIconDragJComponent(flavor, type, dim,this);
- return comp;
+ return new MemoryIconDragJComponent(flavor, type, comp,this);
 }
 
 ///*protected*/ class IconDragJComponent :public  DragJComponent {
 //    Type _memType;
 
-/*public*/ MemoryIconDragJComponent::MemoryIconDragJComponent(DataFlavor* flavor, MemoryItemPanel::Type type, QSize dim, QWidget* parent)
-    : DragJComponent(flavor, dim, parent)
+/*public*/ MemoryIconDragJComponent::MemoryIconDragJComponent(DataFlavor* flavor, MemoryItemPanel::Type type, QWidget* comp, QWidget* parent)
+    : DragJComponent(flavor, comp, parent)
 {
  //super(flavor, dim);
  _memType = type;
@@ -355,7 +365,7 @@ QByteArray MemoryIconDragJComponent::mimeData()
   {
    case MemoryItemPanel::READONLY:
    {
-      MemoryIcon* m = new MemoryIcon("", self->_editor);
+      MemoryIcon* m = new MemoryIcon("??", self->_editor);
       m->setMemory(bean->getDisplayName());
       m->setSize(m->size().width(), m->size().height());
       m->setLevel(Editor::MEMORIES);
@@ -383,7 +393,7 @@ QByteArray MemoryIconDragJComponent::mimeData()
       mi->setSize(mi->size().width(), mi->size().height());
       mi->setLevel(Editor::MEMORIES);
       _dataFlavor = new DataFlavor(mi,"MemoryInputIcon");
-      MemoryIconXml* xml = new MemoryIconXml();
+      MemoryInputIconXml* xml = new MemoryInputIconXml();
       QDomElement e = xml->store((QObject*)mi);
       xml->doc.appendChild(e);
       xmldata.append(xml->doc.toString());

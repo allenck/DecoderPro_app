@@ -3,6 +3,7 @@
 #include <QDrag>
 #include <QMimeData>
 #include "dataflavor.h"
+#include <QVBoxLayout>
 
 //DragJComponent::DragJComponent(QWidget *parent) :
 //    QWidget(parent)
@@ -31,11 +32,15 @@
  */
 // /*public*/ abstract class DragJComponent extends JPanel implements DragGestureListener, DragSourceListener, Transferable {
 
- /*public*/ DragJComponent::DragJComponent(DataFlavor* flavor, QSize dim, QWidget *parent) : QWidget(parent){
+ /*public*/ DragJComponent::DragJComponent(DataFlavor* flavor, QWidget *comp, QWidget *parent) : QGroupBox(parent){
      //super();
      QString borderName = tr("Drag to Panel");
 //     setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),
 //                                                      borderName));
+     setTitle(borderName);
+     setLayout(new QVBoxLayout());
+     QSize dim = comp->sizeHint();
+     this->layout()->addWidget(comp);
      // guestimate border is about 5 pixels thick. plus some margin
      int width = qMax(100, dim.width()+20);
      int height = qMax(65, dim.height()+20);

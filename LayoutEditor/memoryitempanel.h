@@ -18,7 +18,7 @@ public:
     //explicit MemoryItemPanel(QWidget *parent = 0);
     enum Type { READONLY, READWRITE, SPINNER, COMBO };
     /*public*/ MemoryItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
-    /*public*/ void init();
+    /*public*/ void init() override;
 
 signals:
 
@@ -41,18 +41,19 @@ private:
 
 protected:
     /*protected*/ QWidget* instructions();
-    /*protected*/ void initIconFamiliesPanel();
-    /*protected*/ void makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey);
-    /*protected*/ MemoryIconDragJComponent* getDragger(DataFlavor* flavor, Type type, QSize dim );
+    /*protected*/ void initIconFamiliesPanel() override;
+    /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon*>* iconMap, QString displayKey) override;
+    /*protected*/ MemoryIconDragJComponent* getDragger(DataFlavor* flavor, Type type, QWidget *comp );
 friend class MemoryIconDragJComponent;
 };
+
 /*protected*/ class MemoryIconDragJComponent :public DragJComponent
 {
     Q_OBJECT
     MemoryItemPanel::Type _memType;
     MemoryItemPanel* self;
 public:
-    /*public*/ MemoryIconDragJComponent(DataFlavor* flavor, MemoryItemPanel::Type type, QSize dim, QWidget* parent = 0);
+    /*public*/ MemoryIconDragJComponent(DataFlavor* flavor, MemoryItemPanel::Type type, QWidget *comp, QWidget* parent = 0);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
     QByteArray mimeData();
 };

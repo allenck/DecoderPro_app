@@ -71,7 +71,7 @@ protected:
     /*protected*/ /*final*/ static QObject* tryToLoadClass(QString className,
                                                    ClassLoader* fallback = NULL)
     throw (ClassNotFoundException);
-    Logger* log;
+    static Logger* log;
 };
 
 #endif // DATAFLAVOR_H

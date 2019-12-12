@@ -567,7 +567,7 @@ void IPWindowListener::windowClosing(QCloseEvent *)
 #endif
     itemPanel = new MultiSensorItemPanel(palette, "MultiSensor", NULL, PickListModel::multiSensorPickModelInstance(), editor,palette);
     addItemTab(itemPanel, "MultiSensor", tr("MultiSensor"));
-    temPanel->init();
+    itemPanel->init();
 #if 1
     itemPanel = new IconItemPanel(palette, "Icon", editor,palette);
     addItemTab(itemPanel, "Icon", tr("Icon"));

@@ -2486,42 +2486,43 @@ void Editor::putBackground() {
  }
  if (editor != nullptr)
  {
-     QWidget* p = new QWidget();
-     p->setLayout(new QVBoxLayout()); //(p, BoxLayout.Y_AXIS));
-     if (add) {
-         txt = tr("To add a %1 to the Panel,").arg(BundleName);
-     } else {
-         txt = tr("To edit a %1 in the Panel,").arg(BundleName);
-     }
-     p->layout()->addWidget(new QLabel(txt));
-     if (table)
-     {
-         txt = tr("select a %1 from the table, then press [%2].").arg(BundleName).arg(
-                 (add ? tr("Add to Panel") : tr("Update Panel")));
-     } else
-     {
-         if ("MultiSensor" == (name)) {
-             txt = tr("Drag Sensors from the table into the red boxes, then press [%1]").arg(
-                     (add ? tr("Add to Panel") : tr("Update Panel")));
-         } else {
-             txt = tr("select a %1 image, then press [%2].").arg(BundleName).arg(
-                     (add ? tr("ButtonAddIcon") : tr("ButtonUpdateIcon")));
-         }
-     }
-     p->layout()->addWidget(new QLabel(txt));
-     p->layout()->addWidget(new QLabel("    ")); // add a bit of space on pane above icons
-     QWidget* contentPane = frame->getContentPane();
-     QVBoxLayout* contentPaneLayout = (QVBoxLayout*)contentPane->layout();
-     if(contentPaneLayout == nullptr)
-      contentPaneLayout = new QVBoxLayout(contentPane);
-     contentPaneLayout->addWidget(p, 0, Qt::AlignTop); //BorderLayout.NORTH);
-     contentPaneLayout->addWidget(editor);
+  QWidget* p = new QWidget();
+  p->setLayout(new QVBoxLayout()); //(p, BoxLayout.Y_AXIS));
+  if (add) {
+      txt = tr("To add a %1 to the Panel,").arg(BundleName);
+  } else {
+      txt = tr("To edit a %1 in the Panel,").arg(BundleName);
+  }
+  p->layout()->addWidget(new QLabel(txt));
+  if (table)
+  {
+   txt = tr("select a %1 from the table, then press [%2].").arg(BundleName).arg(
+              (add ? tr("Add to Panel") : tr("Update Panel")));
+  }
+  else
+  {
+   if ("MultiSensor" == (name)) {
+       txt = tr("Drag Sensors from the table into the red boxes, then press [%1]").arg(
+               (add ? tr("Add to Panel") : tr("Update Panel")));
+   } else {
+       txt = tr("select a %1 image, then press [%2].").arg(BundleName).arg(
+               (add ? tr("ButtonAddIcon") : tr("ButtonUpdateIcon")));
+   }
+  }
+  p->layout()->addWidget(new QLabel(txt));
+  p->layout()->addWidget(new QLabel("    ")); // add a bit of space on pane above icons
+  QWidget* contentPane = frame->getContentPane();
+  QVBoxLayout* contentPaneLayout = (QVBoxLayout*)contentPane->layout();
+  if(contentPaneLayout == nullptr)
+   contentPaneLayout = new QVBoxLayout(contentPane);
+  contentPaneLayout->addWidget(p, 0, Qt::AlignTop); //BorderLayout.NORTH);
+  contentPaneLayout->addWidget(editor);
 
-     QMenuBar* menuBar = new QMenuBar();
-     QMenu* findIcon = new QMenu(tr("Find Icons"));
-     menuBar->addMenu(findIcon);
+  QMenuBar* menuBar = new QMenuBar();
+  QMenu* findIcon = new QMenu(tr("Find Icons"));
+  menuBar->addMenu(findIcon);
 
-     QAction* editItem = new QAction(tr("Create/Edit Image Index..."), this);
+  QAction* editItem = new QAction(tr("Create/Edit Image Index..."), this);
 //     editItem.addActionListener(new ActionListener() {
 //         @Override
 //         public void actionPerformed(ActionEvent e) {
@@ -2530,12 +2531,12 @@ void Editor::putBackground() {
 //             ii.setVisible(true);
 //         }
 //     });
-     EditItemActionListener* editItemActionListener = new EditItemActionListener();
-     connect(editItem, SIGNAL(triggered(bool)), editItemActionListener, SLOT(actionPerformed()));
-     findIcon->addAction(editItem);
-     findIcon->addSeparator();
+  EditItemActionListener* editItemActionListener = new EditItemActionListener();
+  connect(editItem, SIGNAL(triggered(bool)), editItemActionListener, SLOT(actionPerformed()));
+  findIcon->addAction(editItem);
+  findIcon->addSeparator();
 
-     QAction* searchItem = new QAction(tr("Search File System for Icons..."),this);
+  QAction* searchItem = new QAction(tr("Search File System for Icons..."),this);
 //     searchItem.addActionListener(new ActionListener() {
 //         IconAdder ea;
 
@@ -2550,15 +2551,15 @@ void Editor::putBackground() {
 //             return this;
 //         }
 //     }.init(editor));
-     SearchItemActionListener* searchItemActionListener  = new SearchItemActionListener();
-     searchItemActionListener->init(editor);
-     connect(searchItem, SIGNAL(toggled(bool)), searchItemActionListener, SLOT(actionPerformed()));
+  SearchItemActionListener* searchItemActionListener  = new SearchItemActionListener();
+  searchItemActionListener->init(editor);
+  connect(searchItem, SIGNAL(toggled(bool)), searchItemActionListener, SLOT(actionPerformed()));
 
-     findIcon->addAction(searchItem);
-     frame->setMenuBar(menuBar);
-     editor->setParent(frame);
-     // when this window closes, check for saving
-     if (add) {
+  findIcon->addAction(searchItem);
+  frame->setMenuBar(menuBar);
+  editor->setParent(frame);
+  // when this window closes, check for saving
+  if (add) {
 //         frame.addWindowListener(new WindowAdapter() {
 //             @Override
 //             public void windowClosing(WindowEvent e) {
@@ -2568,8 +2569,8 @@ void Editor::putBackground() {
 //                 }
 //             }
 //         });
-      frame->addWindowListener(new AddIconFrameWindowListener(this));
-     }
+   frame->addWindowListener(new AddIconFrameWindowListener(this));
+  }
  } else {
      log->error(tr("No icon editor specified for %1").arg(name)); //NOI18N
  }
@@ -3138,7 +3139,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 
 /*protected*/ bool Editor::setTextAttributes(Positionable* p, QMenu* popup)
 {
- if (((PositionableLabel*)p)->getPopupUtility()==nullptr)
+ if (((PositionableLabel*)p->self())->getPopupUtility()==nullptr)
  {
   return false;
  }

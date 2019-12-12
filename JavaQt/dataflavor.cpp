@@ -1,6 +1,7 @@
 #include "dataflavor.h"
 #include "mimetypeparameterlist.h"
 #include "mimetype.h"
+#include "loggerfactory.h"
 
 //#include "reportericon.h"
 
@@ -473,7 +474,6 @@ DataFlavor::~DataFlavor()
 */
 /*private*/ void DataFlavor::initialize(QString mimeType, QString humanPresentableName, ClassLoader* classLoader) throw (MimeTypeParseException, ClassNotFoundException)
 {
- log = new Logger("DataFlavor");
  if (mimeType == "")
  {
   throw  NullPointerException("mimeType");
@@ -1439,3 +1439,4 @@ void DataFlavor::setMimeTypeParameter(QString k, QString v)
 }
 
 //} // class DataFlavor
+/*private*/ /*static*/ Logger* DataFlavor::log = LoggerFactory::getLogger("DataFlavor");

@@ -224,6 +224,10 @@ void TableItemPanel::cancelPressed(/*ActionEvent e*/) {
 {
  //int row = _table->getSelectedRow();
  int row = _table->currentIndex().row();
+ if(qobject_cast<QSortFilterProxyModel*>( _table->model()))
+ {
+  row = ((QSortFilterProxyModel*)_table->model())->mapToSource(_table->currentIndex()).row();
+ }
  if (row >= 0)
  {
   NamedBean* b = _model->getBeanAt(row);

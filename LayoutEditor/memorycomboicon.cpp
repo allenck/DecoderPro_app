@@ -221,7 +221,7 @@ class ComboModel extends DefaultComboBoxModel {
 /*protected*/ void MemoryComboIcon::edit() {
 #if 1
     _iconEditor = new MCIIconAdder("Memory", this);
-#if 0
+#if 0 // done
     {
         JList list;
         JButton bDel = new JButton(Bundle.getMessage("deleteSelection"));

@@ -1,15 +1,15 @@
 #ifndef DRAGJCOMPONENT_H
 #define DRAGJCOMPONENT_H
 
-#include <QWidget>
+#include <QGroupBox>
 
 class DataFlavor;
-class DragJComponent : public QWidget
+class DragJComponent : public QGroupBox
 {
     Q_OBJECT
 public:
     //explicit DragJComponent(QWidget *parent = 0);
-    /*public*/ DragJComponent(DataFlavor* flavor, QSize dim, QWidget *parent);
+    /*public*/ DragJComponent(DataFlavor* flavor, QWidget* comp, QWidget *parent);
     void mousePressEvent(QMouseEvent *);
     //void mouseMoveEvent(QMouseEvent *);
     virtual QByteArray mimeData() { QByteArray();}

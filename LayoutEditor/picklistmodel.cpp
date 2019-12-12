@@ -514,6 +514,7 @@ bool systemNameComparator(QString o1, QString o2)
  _sorter = new QSortFilterProxyModel();
  _sorter->setSourceModel(this);
  _table = new JTable(_sorter);
+ _table->setSortingEnabled(true);
     _table->horizontalHeader()->setStretchLastSection(true);
 //    connect(_table, SIGNAL(clicked(QModelIndex)), this, SLOT(tableClicked(QModelIndex)));
     fireTableDataChanged();

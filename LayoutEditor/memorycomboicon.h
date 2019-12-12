@@ -50,6 +50,7 @@ private:
     // the associated Memory object
     /*private*/ NamedBeanHandle<Memory*>* namedMemory;
  Logger* log;
+
 protected slots:
     /*protected*/ void edit() ;
  friend class Editor;

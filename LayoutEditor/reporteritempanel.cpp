@@ -129,12 +129,13 @@
 
 /*protected*/ RIconDragJComponent* ReporterItemPanel::getDragger(DataFlavor* flavor)
 {
- return new RIconDragJComponent(flavor, _reporter->getPreferredSize(), this);
+ return new RIconDragJComponent(flavor, _reporter, this);
 }
 
 ///*protected*/ class RIconDragJComponent extends DragJComponent {
 
-/*public*/ RIconDragJComponent::RIconDragJComponent(DataFlavor* flavor, QSize dim, ReporterItemPanel* self) :DragJComponent(flavor, dim,self){
+/*public*/ RIconDragJComponent::RIconDragJComponent(DataFlavor* flavor, QWidget* comp, ReporterItemPanel* self)
+ : DragJComponent(flavor, comp,self){
         //super(flavor, dim);
     this->self = self;
     }

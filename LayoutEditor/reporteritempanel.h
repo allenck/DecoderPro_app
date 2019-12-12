@@ -32,7 +32,7 @@ protected:
 Q_OBJECT
     ReporterItemPanel* self;
 public:
-    /*public*/ RIconDragJComponent(DataFlavor* flavor, QSize dim, ReporterItemPanel* self);
+    /*public*/ RIconDragJComponent(DataFlavor* flavor, QWidget *comp, ReporterItemPanel* self);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
     QByteArray mimeData();
 };
