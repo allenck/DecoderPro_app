@@ -375,15 +375,15 @@ return _displayLevel; }
 
 /*public*/ int PositionableLabel::maxWidthTrue()
 {
- int max = 0;
+ int result = 0;
  if (_popupUtil!=NULL && _popupUtil->getFixedWidth()!=0)
  {
-  max = _popupUtil->getFixedWidth();
-  max += _popupUtil->getBorderSize()*2;
-  if (max < PositionablePopupUtil::MIN_SIZE)
+  result = _popupUtil->getFixedWidth();
+  result += _popupUtil->getBorderSize()*2;
+  if (result < PositionablePopupUtil::MIN_SIZE)
   {  // don't let item disappear
    _popupUtil->setFixedWidth(PositionablePopupUtil::MIN_SIZE);
-   max = PositionablePopupUtil::MIN_SIZE;
+   result = PositionablePopupUtil::MIN_SIZE;
   }
  }
  else
@@ -397,31 +397,31 @@ return _displayLevel; }
     {
 
      //max = getFontMetrics(getFont()).stringWidth("0");
-     max = QFontMetrics(getFont()).width("0");
+     result = QFontMetrics(getFont()).width("0");
     }
    }
    else
    {
     //max = getFontMetrics(getFont()).stringWidth(getText());
-    max = QFontMetrics(getFont()).width(getText());
+    result = QFontMetrics(getFont()).width(getText());
    }
   }
   if(_icon && _namedIcon!=NULL)
   {
-   max = qMax(_namedIcon->getIconWidth(), max);
+   result = qMax(_namedIcon->getIconWidth(), result);
   }
   if (_text && _popupUtil!=NULL)
   {
-   max += _popupUtil->getMargin()*2;
-   max += _popupUtil->getBorderSize()*2;
+   result += _popupUtil->getMargin()*2;
+   result += _popupUtil->getBorderSize()*2;
   }
-  if (max < PositionablePopupUtil::MIN_SIZE)
+  if (result < PositionablePopupUtil::MIN_SIZE)
   {  // don't let item disappear
-    max = PositionablePopupUtil::MIN_SIZE;
+    result = PositionablePopupUtil::MIN_SIZE;
   }
  }
 // if (debug) log->debug("maxWidth= "+QString("%1").arg(max)+" preferred width= "+QString("%1").arg(getPreferredSize().width()));
-  return max;
+  return result;
 }
 
 /*public*/ int PositionableLabel::maxHeightTrue()

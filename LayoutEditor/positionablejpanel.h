@@ -137,6 +137,7 @@ protected:
     //QGraphicsItemGroup* _itemGroup;
 friend class MemoryComboIcon;
 friend class MemorySpinnerIcon;
+friend class MemoryInputIcon;
 };
 
 #endif // POSITIONABLEJPANEL_H

@@ -1,5 +1,5 @@
 #include "memoryiconxml.h"
-#include "memoryicon.h"
+#include "lememoryicon.h"
 #include "positionablepopuputil.h"
 #include "instancemanager.h"
 #include "editor.h"
@@ -9,7 +9,7 @@
 MemoryIconXml::MemoryIconXml(QObject *parent) :
     PositionableLabelXml(parent)
 {
- log = new Logger("MemoryIconXml");
+ log = new Logger("DisplayMemoryIconXml");
 }
 /**
  * Handle configuration for display.MemoryIcon objects.
@@ -103,7 +103,7 @@ MemoryIconXml::MemoryIconXml(QObject *parent) :
  //if (o instanceof LayoutEditor)
  if(qobject_cast<LayoutEditor*>(o)!= NULL)
  {
-  ed = (Editor*) o;
+  ed = (LayoutEditor*) o;
   l = new MemoryIcon(QString("   "), ed);
  }
  else

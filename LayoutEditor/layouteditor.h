@@ -12,7 +12,7 @@
 #include "layouteditorauxtools.h"
 #include "layoutblockmanager.h"
 #include "blockmanager.h"
-#include "memoryicon.h"
+#include "lememoryicon.h"
 #include "loconetsystemconnectionmemo.h"
 #include "sensoricon.h"
 #include "multiiconeditor.h"
@@ -34,6 +34,7 @@ namespace Ui {
 class LayoutEditor;
 }
 
+class LEBlockContentsIcon;
 class LayoutEditorChecks;
 class LayoutTrackEditors;
 class LayoutTrackDrawingOptions;
@@ -203,8 +204,8 @@ public:
     * Returns an array list of track segments matching the block name.
     */
     /*public*/ QVector<TrackSegment*>* findTrackSegmentByBlock(QString name);
-    /*public*/ QVector<MemoryIcon*>* memoryLabelList;// = new QVector<MemoryIcon*>(); // Memory Label List
-    /*public*/ /*transient*/ QVector<BlockContentsIcon*>* blockContentsLabelList;// = new ArrayList<>(); //BlockContentsIcon Label List
+    /*public*/ QVector<LEMemoryIcon*>* memoryLabelList;// = new QVector<MemoryIcon*>(); // Memory Label List
+    /*public*/ /*transient*/ QVector<LEBlockContentsIcon*>* blockContentsLabelList;// = new ArrayList<>(); //BlockContentsIcon Label List
 
     void repaint();
     /**
@@ -271,7 +272,7 @@ public:
     * Add a memory label to the Draw Panel
     */
     void addMemory() ;
-    MemoryIcon* addMemory(QString text);
+    LEMemoryIcon* addMemory(QString text);
 
     /**
     * Add an icon to the target
@@ -648,7 +649,7 @@ private:
  bool noWarnTurntable;// = false;
  QString _defaultToolTip;
  Positionable* currComp;
- MemoryIcon* checkMemoryMarkerIcons(QPointF loc);
+ LEMemoryIcon* checkMemoryMarkerIcons(QPointF loc);
  // /*private*/ int getNextBackgroundLeft();
  JFileChooser* inputFileChooser;
  //void setScale(double scaleX, double scaleY);

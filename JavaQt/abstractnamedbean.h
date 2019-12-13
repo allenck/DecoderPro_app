@@ -85,7 +85,7 @@ private:
  // since we can't do a "super(this)" in the ctor to inherit from PropertyChangeSupport, we'll
  // reflect to it
  //PropertyChangeSupport* pcs;
- QHash<PropertyChangeListener*, QString>* _Register;
+ QHash<PropertyChangeListener*, QString>* _register;
  QHash<PropertyChangeListener*, QString>* listenerRefs;
  QObject* parent;
  

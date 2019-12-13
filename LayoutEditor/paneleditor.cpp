@@ -8,7 +8,7 @@
 #include <QDebug>
 #include "abstractsensor.h"
 #include "locoicon.h"
-#include "memoryicon.h"
+#include "lememoryicon.h"
 #include "light.h"
 #include "abstractlight.h"
 #include "xmladapter.h"

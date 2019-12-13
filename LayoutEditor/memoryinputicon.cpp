@@ -43,8 +43,8 @@
  _textBox->setVisible(true);
 
  _nCols = nCols;
- _itemGroup = new MyGraphicsItemGroup();
- //_itemGroup = NULL;
+ //_itemGroup = new MyGraphicsItemGroup();
+ _itemGroup = NULL;
  widget = new MyGraphicsProxyWidget();
  widget->setWidget(_textBox);
  widget->setFlag(QGraphicsItem::ItemIsFocusable,true) ;
@@ -91,6 +91,7 @@
  QSize size = QSize(width, qMax(80, _textBox->height()));
  setMaximumSize(size);
 }
+
 void MemoryInputIcon::textChanged(QString text)
 {
  _textBox->setText(text);

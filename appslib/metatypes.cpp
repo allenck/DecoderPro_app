@@ -192,7 +192,7 @@
 #include "doubleturnoutsignalheadxml.h"
 #include "singleturnoutsignalheadxml.h"
 #include "virtualsignalmastxml.h"
-#include "memoryiconxml.h"
+#include "lememoryiconxml.h"
 #include "analogclock2displayxml.h"
 #include "lighticonxml.h"
 #include "slipturnouticonxml.h"
@@ -518,7 +518,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<DoubleTurnoutSignalHeadXml>("DoubleTurnoutSignalHeadXml");
  qRegisterMetaType<SingleTurnoutSignalHeadXml>("SingleTurnoutSignalHeadXml");
  qRegisterMetaType<VirtualSignalMastXml>("VirtualSignalMastXml");
- qRegisterMetaType<MemoryIconXml>("MemoryIconXml");
+ qRegisterMetaType<LEMemoryIconXml>("MemoryIconXml");
  qRegisterMetaType<AnalogClock2DisplayXml>("AnalogClock2DisplayXml");
  qRegisterMetaType<LightIconXml>("LightIconXml");
  qRegisterMetaType<TurnoutIconXml>("TurnoutIconXml");

@@ -1,4 +1,4 @@
-#include "blockcontentsicon.h"
+#include "leblockcontentsicon.h"
 #include "loggerfactory.h"
 #include "positionablepopuputil.h"
 #include "transferhandler.h"
@@ -16,6 +16,7 @@
 #include "throttlewindow.h"
 #include "addresspanel.h"
 #include "activatetrainframe.h"
+#include "rostericonfactory.h"
 
 /**
  * An icon to display the value contained within a Block.<P>
@@ -320,7 +321,31 @@ void BlockContentsIcon::on_newTrain_triggered()
     QVariant key = getBlock()->getValue();
     MemoryIcon::displayState(key);
 }
+/*protected*/ QVariant BlockContentsIcon::updateIconFromRosterVal(RosterEntry* roster) {
+        re = roster;
+        ImageIcon* icon = ((RosterIconFactory*)InstanceManager::getDefault("RosterIconFactory"))->getIcon(roster);
+        if (icon == nullptr || icon->getIconWidth() == -1 || icon->getIconHeight() == -1) {
+            //the IconPath is still at default so no icon set
+            return roster->titleString();
+        } else {
+            NamedIcon* rosterIcon = new NamedIcon(roster->getIconPath(), roster->getIconPath());
+            _text = false;
+            _icon = true;
+            updateIcon(rosterIcon);
 
+            if (flipRosterIcon) {
+                flipIcon(NamedIcon::HORIZONTALFLIP);
+            }
+            InstanceManager::throttleManagerInstance()->attachListener(re->getDccLocoAddress(), (PropertyChangeListener*)this);
+            QVariant isForward = InstanceManager::throttleManagerInstance()->getThrottleInfo(re->getDccLocoAddress(), "IsForward");
+            if (isForward != QVariant()) {
+                if (! isForward.toBool()) {
+                    flipIcon(NamedIcon::HORIZONTALFLIP);
+                }
+            }
+            return QVariant();
+        }
+    }
 //@Override
 /*public*/ bool BlockContentsIcon::setEditIconMenu(QMenu* popup)
 {

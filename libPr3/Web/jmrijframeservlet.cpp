@@ -9,7 +9,7 @@
 #include <QStringList>
 #include "lighticon.h"
 #include "locoicon.h"
-#include "memoryicon.h"
+#include "lememoryicon.h"
 #include "reportericon.h"
 #include "rpspositionicon.h"
 #include "slipturnouticon.h"

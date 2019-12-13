@@ -61,7 +61,7 @@
 #include <limits>
 #include "layouttrackeditors.h"
 #include "layouteditorchecks.h"
-#include "blockcontentsicon.h"
+#include "leblockcontentsicon.h"
 #include "layouttrackdrawingoptions.h"
 #include "layouttrackdrawingoptionsdialog.h"
 #include <QPointF>
@@ -71,6 +71,7 @@
 #include "activatetrainframe.h"
 #include "mathutil.h"
 #include <QActionGroup>
+#include "leblockcontentsicon.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -250,7 +251,7 @@ _contents = new QVector<Positionable*>();
  ui->actionShow_grid_in_edit_mode->setChecked(drawGrid);
  antialiasingOn = false;
  noWarnPositionablePoint= false;
- memoryLabelList = new QVector<MemoryIcon*>(); // Memory Label List
+ memoryLabelList = new QVector<LEMemoryIcon*>(); // Memory Label List
 
 //makeBackgroundColorMenu(ui->menuSet_Background_color);
  signalIconEditor = nullptr;
@@ -259,7 +260,7 @@ _contents = new QVector<Positionable*>();
  multiSensors = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
  backgroundImage = new QVector<PositionableLabel*>();  // background images
  labelImage = new QList<PositionableLabel*>();         //positionable label images
- blockContentsLabelList = new QVector<BlockContentsIcon*>(); //BlockContentsIcon Label List
+ blockContentsLabelList = new QVector<LEBlockContentsIcon*>(); //BlockContentsIcon Label List
  zoomMenu = new QMenu(tr("Zoom"));
  zoom025Item = new QAction("x 0.25");
  zoom025Item->setCheckable(true);
@@ -1449,9 +1450,9 @@ double LayoutEditor::getPaintScale()
       //startDel.setLocation((((PositionableLabel*)selectedObject)->getX()-dLoc.getX()),                     (((PositionableLabel*)selectedObject)->getY()-dLoc.getY()));
       startDel = QPointF((((Positionable*)selectedObject)->getX()-dLoc.x()),(((Positionable*)selectedObject)->getY()-dLoc.y()));
       //if (selectedObject instanceof MemoryIcon)
-      if(qobject_cast<MemoryIcon*>(selectedObject)!= nullptr)
+      if(qobject_cast<LEMemoryIcon*>(selectedObject)!= nullptr)
       {
-       MemoryIcon* pm = (MemoryIcon*) selectedObject;
+       LEMemoryIcon* pm = (LEMemoryIcon*) selectedObject;
        if (pm->getPopupUtility()->getFixedWidth()==0)
        {
         //startDel.setLocation((pm->getOriginalX()-dLoc.getX()),                                (pm->getOriginalY()-dLoc.getY()));
@@ -2944,8 +2945,8 @@ double LayoutEditor::getPaintScale()
        QPointF newPoint;
 
        for (Positionable* c : *_positionableSelection) {
-           if ((qobject_cast< MemoryIcon*>(c->self())) && (c->getPopupUtility()->getFixedWidth() == 0)) {
-               MemoryIcon* pm = (MemoryIcon*) c->self();
+           if ((qobject_cast< LEMemoryIcon*>(c->self())) && (c->getPopupUtility()->getFixedWidth() == 0)) {
+               LEMemoryIcon* pm = (LEMemoryIcon*) c->self();
                newPoint = QPointF(pm->getOriginalX(), pm->getOriginalY());
            } else {
                newPoint = c->getLocation();
@@ -3977,12 +3978,12 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    QGraphicsRectItem* item;
    SensorIcon* si;
    LocoIcon* li;
-   MemoryIcon* mi;
+   LEMemoryIcon* mi;
    if((si = static_cast<SensorIcon*>(c))!=nullptr)
     item = new QGraphicsRectItem(QRectF(si->getX(), si->getY(), si->maxWidth(), si->maxHeight()));
    else if((li = static_cast<LocoIcon*>(c))!=nullptr)
     item = new QGraphicsRectItem(QRectF(li->getX(), li->getY(), li->maxWidth(), li->maxHeight()));
-   else if((mi = static_cast<MemoryIcon*>(c))!=nullptr)
+   else if((mi = static_cast<LEMemoryIcon*>(c))!=nullptr)
     item = new QGraphicsRectItem(QRectF(mi->getX(), mi->getY(), mi->maxWidth(), mi->maxHeight()));
 
    item->setPen(pen);
@@ -5343,7 +5344,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //    g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
  QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
 
-    for (MemoryIcon* l : *memoryLabelList) {
+    for (LEMemoryIcon* l : *memoryLabelList) {
         //g2.draw(new Rectangle2D.Double(l.getX(), l.getY(), l.getSize().width, l.getSize().height));
      QGraphicsRectItem* r = new QGraphicsRectItem(QRectF(l->x(), l->y(), l->getSize().width(), l->getSize().height()));
      r->setPen(stroke);
@@ -5357,7 +5358,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //    g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
  QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
 
-    for (BlockContentsIcon* l : *blockContentsLabelList) {
+    for (LEBlockContentsIcon* l : *blockContentsLabelList) {
         //g2.draw(new Rectangle2D.Double(l.getX(), l.getY(), l.getSize().width, l.getSize().height));
      QGraphicsRectItem* r = new QGraphicsRectItem(QRectF(l->x(), l->y(), l->getSize().width(), l->getSize().height()));
      r->setPen(stroke);
@@ -7030,14 +7031,15 @@ QGraphicsView* LayoutEditor::panel()
          }
      }
      return nullptr;
- }
-MemoryIcon* LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
+}
+
+LEMemoryIcon *LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 {
- MemoryIcon* l =nullptr;
+ LEMemoryIcon* l =nullptr;
  int level = 0;
  for (int i=memoryLabelList->size()-1; i>=0; i--)
  {
-  MemoryIcon* s = memoryLabelList->at(i);
+  LEMemoryIcon* s = memoryLabelList->at(i);
   double x = ((Positionable*)s)->getX();
   double y = ((Positionable*)s)->getY();
   double w = 10.0;
@@ -7264,9 +7266,9 @@ void LayoutEditor::addLabel()
  }
  else
   //if (l instanceof MemoryIcon*)
- if(static_cast<MemoryIcon*>(l)!= nullptr)
+ if(static_cast<LEMemoryIcon*>(l)!= nullptr)
  {
-  memoryLabelList->append((MemoryIcon*)l);
+  memoryLabelList->append((LEMemoryIcon*)l);
  }
  else if (static_cast<AnalogClock2Display*>(l)!=nullptr)
  {
@@ -7697,7 +7699,7 @@ void LayoutEditor::On_removeMenuAction_triggered()
   li->_itemGroup = nullptr;
   li->remove();
  }
- MemoryIcon* mi = qobject_cast<MemoryIcon*>(comp->self());
+ LEMemoryIcon* mi = qobject_cast<LEMemoryIcon*>(comp->self());
  if(mi != nullptr)
  {
   Q_ASSERT(mi->_itemGroup->scene()!=0);
@@ -8022,7 +8024,7 @@ void LayoutEditor::addMemory()
                      tr("Error"), JOptionPane::ERROR_MESSAGE);
              return;
          }
-         MemoryIcon* l = new MemoryIcon(" ", this);
+         LEMemoryIcon* l = new LEMemoryIcon(" ", this);
          l->setMemory(memoryName);
          Memory* xMemory = l->getMemory();
 
@@ -8153,9 +8155,9 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
      editScene->removeItem(li->_itemGroup);
      remove(li);
     }
-    else if(qobject_cast<MemoryIcon*>(comp->self()) != nullptr)
+    else if(qobject_cast<LEMemoryIcon*>(comp->self()) != nullptr)
     {
-     MemoryIcon*mi = qobject_cast<MemoryIcon*>(comp->self());
+     LEMemoryIcon*mi = qobject_cast<LEMemoryIcon*>(comp->self());
      Q_ASSERT(mi->_itemGroup->scene()!=0);
      editScene->removeItem(mi->_itemGroup);
      remove(mi);
@@ -9211,7 +9213,7 @@ void LayoutEditor::on_actionAdd_loco_from_roster_triggered()
  //if (nb instanceof Memory)
  if(qobject_cast<Memory*>(nb)!=nullptr)
  {
-  foreach(MemoryIcon* si, *memoryLabelList)
+  foreach(LEMemoryIcon* si, *memoryLabelList)
   {
    if(si->getNamedBean()==nb && si->getPopupUtility()!=nullptr)
    {

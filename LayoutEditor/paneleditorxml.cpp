@@ -7,7 +7,7 @@
 #include "positionablelabelxml.h"
 #include "locoiconxml.h"
 #include "abstractlightmanagerconfigxml.h"
-#include "memoryiconxml.h"
+#include "lememoryiconxml.h"
 #include "sensoriconxml.h"
 #include "lighticonxml.h"
 #include "analogclock2displayxml.h"

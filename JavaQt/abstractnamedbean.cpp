@@ -14,7 +14,7 @@ void AbstractNamedBean::common(QString sys, QString user, QObject *parent)
  this->mSystemName = sys;
  this->mUserName = user;
  parameters = NULL;
- _Register = new QHash<PropertyChangeListener*, QString>();
+ _register = new QHash<PropertyChangeListener*, QString>();
  listenerRefs = new QHash<PropertyChangeListener*, QString>();
  pcs = new PropertyChangeSupport((QObject*)this);
 }
@@ -101,7 +101,7 @@ QString AbstractNamedBean::getDisplayName()
  pcs->addPropertyChangeListener(l);
  //connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)));
  if(beanRef!=NULL)
-     _Register->insert(l, beanRef);
+     _register->insert(l, beanRef);
  if(listenerRef!=NULL)
      listenerRefs->insert(l, listenerRef);
  //connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -114,7 +114,7 @@ QString AbstractNamedBean::getDisplayName()
                                                        QString beanRef, QString listenerRef) {
     pcs->addPropertyChangeListener(propertyName, l);
     if (beanRef != "") {
-        _Register->insert(l, beanRef);
+        _register->insert(l, beanRef);
     }
     if (listenerRef != "") {
         listenerRefs->insert(l, listenerRef);
@@ -147,7 +147,7 @@ QString AbstractNamedBean::getDisplayName()
  pcs->removePropertyChangeListener(listener);
  //disconnect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
  if (listener != nullptr && !Beans::contains(pcs->getPropertyChangeListeners(), listener)) {
- _Register->remove(listener);
+ _register->remove(listener);
  listenerRefs->remove(listener);
  }
 }
@@ -157,7 +157,7 @@ QString AbstractNamedBean::getDisplayName()
 /*public*/ /*synchronized*/ void AbstractNamedBean::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
  pcs->removePropertyChangeListener(propertyName, listener);
  if (listener != nullptr && !Beans::contains(pcs->getPropertyChangeListeners(), listener)) {
-     _Register->remove(listener);
+     _register->remove(listener);
      listenerRefs->remove(listener);
  }
 }
@@ -166,7 +166,7 @@ QString AbstractNamedBean::getDisplayName()
 /*public*/ /*synchronized*/ QVector<PropertyChangeListener*> AbstractNamedBean::getPropertyChangeListenersByReference(/*@Nonnull*/ QString name) {
     QList<PropertyChangeListener*> list = QList<PropertyChangeListener*>();
     //register.entrySet().forEach((entry) ->
-    QHashIterator<PropertyChangeListener*, QString> entry(*_Register);
+    QHashIterator<PropertyChangeListener*, QString> entry(*_register);
     while(entry.hasNext())
     {
      entry.next();
@@ -182,11 +182,11 @@ QString AbstractNamedBean::getDisplayName()
 {
  QVector<PropertyChangeListener*> list =  QVector<PropertyChangeListener*>();
  //Enumeration<PropertyChangeListener> en = register.keys();
- QHashIterator<PropertyChangeListener*, QString> en(*_Register);
+ QHashIterator<PropertyChangeListener*, QString> en(*_register);
  while (en.hasNext())
  {
   PropertyChangeListener* l = en.key();
-  if(_Register->value(l) == (name))
+  if(_register->value(l) == (name))
   {
    list.append(l);
   }

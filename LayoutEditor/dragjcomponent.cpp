@@ -93,7 +93,7 @@ void DragJComponent::mousePressEvent(QMouseEvent *e)
   if(e->button()&Qt::LeftButton)
   {
    QDrag *dr = new QDrag(this);
-   QMimeData *data = new QMimeData;
+   QMimeData *data = new QMimeData();
    //data->setText(_dataFlavor->toString());
    data->setData("object/x-myApplication-object", text);
    // Assign ownership of the QMimeData object to the QDrag object.

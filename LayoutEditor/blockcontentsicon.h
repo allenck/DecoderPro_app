@@ -1,6 +1,6 @@
 #ifndef BLOCKCONTENTICON_H
 #define BLOCKCONTENTICON_H
-#include "memoryicon.h"
+#include "lememoryicon.h"
 #include "block.h"
 
 class AddBCIconActionListener;
@@ -14,7 +14,7 @@ public:
  /*public*/ BlockContentsIcon(NamedIcon* s, Editor* editor, QObject* parent = 0);
  /*public*/ Positionable* deepClone();
  /*public*/ void resetDefaultIcon();
- /*public*/ void setBlock(QString pName);
+ virtual/*public*/ void setBlock(QString pName);
  /*public*/ void setBlock(NamedBeanHandle<Block*>* m);
  /*public*/ NamedBeanHandle<Block*>* getNamedBlock();
  /*public*/ Block* getBlock();
@@ -51,6 +51,7 @@ private slots:
 protected:
  /*protected*/ Positionable* finishClone(BlockContentsIcon* pos);
  /*protected*/ QVariant getValue();
+ /*protected*/ QVariant updateIconFromRosterVal(RosterEntry* roster);
 
 protected slots:
  /*protected*/ void setValue(QVariant val);
@@ -69,4 +70,4 @@ public:
 public slots:
  void actionPerformed();
 };
-#endif // BLOCKCONTENTICON_H
+#endif // DISPLAYBLOCKCONTENTICON_H

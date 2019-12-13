@@ -16,14 +16,14 @@
 #include "memoryspinnericon.h"
 #include "memorycomboicon.h"
 #include <QTableView>
-#include "memoryicon.h"
+#include "lememoryicon.h"
 #include "namedbean.h"
 #include "editor.h"
 #include "flowlayout.h"
 #include <QGroupBox>
 #include <QWidget>
 #include "picklistmodel.h"
-#include "memoryiconxml.h"
+#include "lememoryiconxml.h"
 #include "memorycomboiconxml.h"
 #include "memoryinputiconxml.h"
 #include "memoryspinnericonxml.h"
@@ -374,6 +374,7 @@ QByteArray MemoryIconDragJComponent::mimeData()
       QDomElement e = xml->store((QObject*)m);
       xml->doc.appendChild(e);
       xmldata.append(xml->doc.toString());
+      delete m;
       break;
    }
    case MemoryItemPanel::READWRITE:
@@ -397,6 +398,7 @@ QByteArray MemoryIconDragJComponent::mimeData()
       QDomElement e = xml->store((QObject*)mi);
       xml->doc.appendChild(e);
       xmldata.append(xml->doc.toString());
+      delete mi;
       break;
    }
    case MemoryItemPanel::COMBO:
@@ -410,6 +412,7 @@ QByteArray MemoryIconDragJComponent::mimeData()
     QDomElement e = xml->store((QObject*)mc);
     xml->doc.appendChild(e);
     xmldata.append(xml->doc.toString());
+    delete mc;
     break;
    }
    case MemoryItemPanel::SPINNER:
@@ -419,10 +422,11 @@ QByteArray MemoryIconDragJComponent::mimeData()
       ms->setSize(ms->size().width(), ms->size().height());
       ms->setLevel(Editor::MEMORIES);
       _dataFlavor = new DataFlavor(ms,"MemorySpinnerIcon");
-      MemoryIconXml* xml = new MemoryIconXml();
+      MemorySpinnerIconXml* xml = new MemorySpinnerIconXml();
       QDomElement e = xml->store((QObject*)ms);
       xml->doc.appendChild(e);
       xmldata.append(xml->doc.toString());
+      delete ms;
       break;
    }
   }

@@ -15,7 +15,7 @@
 #include "positionablepopuputil.h"
 #include <QRectF>
 #include "locoicon.h"
-#include "memoryicon.h"
+#include "lememoryicon.h"
 #include "analogclock2display.h"
 //#include "../Tables/libtables.h"
 #include "indicatortrackicon.h"
@@ -54,7 +54,7 @@
 #include "signalheadicon.h"
 #include "signalheadiconxml.h"
 #include "signalmasticonxml.h"
-#include "memoryiconxml.h"
+#include "lememoryiconxml.h"
 #include "memorycomboiconxml.h"
 #include "memoryinputiconxml.h"
 #include "memoryspinnericonxml.h"
@@ -1345,15 +1345,6 @@ void ControlPanelEditor::selectAllAction()
   return;
  _lastSelection = _currentSelection;
 
- if((qobject_cast<MemoryInputIcon*>(_currentSelection->self()) != nullptr)
-    || (qobject_cast<MemorySpinnerIcon*>(_currentSelection->self()) != nullptr)
-    || (qobject_cast<MemoryComboIcon*>(_currentSelection->self())!= nullptr))
- {
-  //((MemoryInputIcon*)_currentSelection)->mousePressed(event);
-  ((PositionableJPanel*)_currentSelection->self())->getWidget()->mousePressEvent(event);
-  return;
- }
-
  // if (!event.isPopupTrigger() && !event.isMetaDown() && !event.isAltDown() && !circuitBuilder) {
  if (!(event->buttons()&Qt::RightButton) && !(event->modifiers()&Qt::MetaModifier) && !(event->modifiers()&Qt::AltModifier) && !circuitBuilder)
  {
@@ -1363,7 +1354,7 @@ void ControlPanelEditor::selectAllAction()
    _currentSelection->doMousePressed(event);
    if (isEditable())
    {
-    if (!event->modifiers()&Qt::ControlModifier
+    if (!(event->modifiers()&Qt::ControlModifier)
             && (_selectionGroup != nullptr && !_selectionGroup->contains(_currentSelection)))
     {
      if (_pastePending)
@@ -1388,6 +1379,14 @@ void ControlPanelEditor::selectAllAction()
  {
   deselectSelectionGroup();
  }
+
+// if(qobject_cast<PositionableJPanel*>(_currentSelection->self()) != nullptr)
+// {
+//  //((MemoryInputIcon*)_currentSelection)->mousePressed(event);
+//  ((PositionableJPanel*)_currentSelection->self())->getWidget()->mousePressEvent(event);
+//  return;
+// }
+
  _circuitBuilder->doMousePressed(event, _currentSelection);
 
  if(_targetPanel != nullptr)
@@ -1589,10 +1588,18 @@ void ControlPanelEditor::selectAllAction()
      return;
  }
  //if (!event.isPopupTrigger() && !event.isMetaDown() && !event.isAltDown() && (isEditable() || _currentSelection instanceof LocoIcon))
- if(!(event->buttons()& Qt::RightButton)  && !(event->modifiers()& Qt::MetaModifier) && !(event->modifiers()& Qt::AltModifier) && !_shapeDrawer->doMouseDragged(event) && (isEditable() || qobject_cast<LocoIcon*>(_currentSelection->self())!=0))
+ if(!(event->buttons()& Qt::RightButton)
+    && !(event->modifiers()& Qt::MetaModifier)
+    && !(event->modifiers()& Qt::AltModifier)
+    && !_shapeDrawer->doMouseDragged(event)
+    && (isEditable() || qobject_cast<LocoIcon*>(_currentSelection->self())!=0))
  {
   moveIt:
-  if (_currentSelection!=nullptr && qobject_cast<PositionableLabel*>(_currentSelection->self()) && getFlag(OPTION_POSITION, ((PositionableLabel*)_currentSelection)->isPositionable()))
+  if (_currentSelection!=nullptr
+//      && qobject_cast<PositionableLabel*>(_currentSelection->self())
+//      && getFlag(OPTION_POSITION, ((PositionableLabel*)_currentSelection)->isPositionable())
+      && _currentSelection->isPositionable()
+      )
   {
    int deltaX = event->scenePos().x() - _lastX;
    int deltaY = event->scenePos().y() - _lastY;
@@ -1683,19 +1690,25 @@ void ControlPanelEditor::selectAllAction()
     //if (_debug) log.debug("mouseMoved at ("+event.getX()+","+event.getY()+")");
     //if (_dragging || event.isPopupTrigger() || event.isMetaDown() || event.isAltDown())
  dLoc = event->scenePos();
- if(/*_dragging*/ (event->buttons()&Qt::LeftButton)|| (event->buttons()& Qt::RightButton) || (event->modifiers()& Qt::MetaModifier) || (event->modifiers()&Qt::AltModifier))
+ if(_dragging || (event->buttons()&Qt::LeftButton)
+    || (event->buttons()& Qt::RightButton)
+    || (event->modifiers()& Qt::MetaModifier)
+    || (event->modifiers()&Qt::AltModifier))
  {
   mouseDragged(event);
   return;
  }
 
  //if (!(event.isShiftDown() && event.isControlDown()) && !_shapeDrawer.doMouseMoved(event))
- if(!((event->modifiers()&Qt::ShiftModifier) && (event->modifiers()&Qt::ControlModifier)) &&!(_shapeDrawer->doMouseMoved(event)))
+ if(!((event->modifiers()&Qt::ShiftModifier)
+    && (event->modifiers()&Qt::ControlModifier))
+    &&!(_shapeDrawer->doMouseMoved(event)))
  {
   Positionable* selection = getCurrentSelection(event);
-  if (selection != nullptr && selection->getDisplayLevel() > BKG && selection->showToolTip()) {
+  if (selection != nullptr && selection->getDisplayLevel() > BKG
+      && selection->showToolTip()) {
       //showToolTip(selection, event);
-      //selection.highlightlabel(true);
+      //selection->highlightlabel(true);
   } else {
      // setToolTip("");
   }

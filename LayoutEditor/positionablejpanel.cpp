@@ -412,7 +412,11 @@ QRectF PositionableJPanel::getBounds(QRectF r)
 bool PositionableJPanel::updateScene() // TODO: this function not in Java
 {
  MyGraphicsProxyWidget* item = NULL;
- if(widget == NULL) return false;
+ if(widget == NULL)
+ {
+  log->error(tr("PositionableJPanel %1 QGraphicsWidget is NULL!").arg(metaObject()->className()));
+  return false;
+ }
  if(_itemGroup != NULL)
  {
   QList<QGraphicsItem*> itemList = _itemGroup->childItems();

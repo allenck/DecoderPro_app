@@ -1,5 +1,5 @@
-#ifndef MEMORYICONXML_H
-#define MEMORYICONXML_H
+#ifndef DISPLAYMEMORYICONXML_H
+#define DISPLAYMEMORYICONXML_H
 #include "positionablelabelxml.h"
 
 class MemoryIcon;
@@ -22,4 +22,4 @@ private:
  MemoryIcon* l;
 };
 Q_DECLARE_METATYPE(MemoryIconXml)
-#endif // MEMORYICONXML_H
+#endif // DISPLAYMEMORYICONXML_H

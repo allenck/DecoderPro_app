@@ -1,6 +1,6 @@
 #include "blockcontentsiconxml.h"
 #include "loggerfactory.h"
-#include "blockcontentsicon.h"
+#include "leblockcontentsicon.h"
 #include "positionablepopuputil.h"
 #include "editor.h"
 #include "instancemanager.h"

@@ -131,8 +131,6 @@ SOURCES += \
     turnoutoperationxml.cpp \
     commonturnoutoperationxml.cpp \
     commonturnoutoperation.cpp \
-    displaymemoryicon.cpp \
-    memoryicon.cpp \
     abstractlightmanagerconfigxml.cpp \
     abstractnamedbeanmanagerconfigxml.cpp \
     abstractxmladapter.cpp \
@@ -145,7 +143,6 @@ SOURCES += \
     paneleditor.cpp \
     paneleditorxml.cpp \
     panelmenu.cpp \
-    memoryiconxml.cpp \
     sensoriconxml.cpp \
     lighticonxml.cpp \
     lighticon.cpp \
@@ -445,7 +442,6 @@ SOURCES += \
     transmitter.cpp \
     receiver.cpp \
     rpsmenu.cpp \
-    blockcontentsicon.cpp \
     blockcontentsiconxml.cpp \
     abstractmonframe.cpp \
     multisensoricondialog.cpp \
@@ -475,7 +471,14 @@ SOURCES += \
     rpscomponentfactory.cpp \
     rpssensormanager.cpp \
     rpssensor.cpp \
-    namedicon.cpp
+    namedicon.cpp \
+    lememoryicon.cpp \
+    memoryicon.cpp \
+    lememoryiconxml.cpp \
+    memoryiconxml.cpp \
+    leblockcontentsicon.cpp \
+    blockcontentsicon.cpp \
+    leblockcontentsiconxml.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -518,8 +521,6 @@ HEADERS += liblayouteditor_global.h \
     turnoutoperationxml.h \
     commonturnoutoperationxml.h \
     commonturnoutoperation.h \
-    displaymemoryicon.h \
-    memoryicon.h \
     abstractlightmanagerconfigxml.h \
     abstractnamedbeanmanagerconfigxml.h \
     abstractxmladapter.h \
@@ -533,7 +534,6 @@ HEADERS += liblayouteditor_global.h \
     paneleditor.h \
     paneleditorxml.h \
     panelmenu.h \
-    memoryiconxml.h \
     sensoriconxml.h \
     lighticonxml.h \
     lighticon.h \
@@ -840,7 +840,6 @@ HEADERS += liblayouteditor_global.h \
     receiver.h \
     calculator.h \
     rpsmenu.h \
-    blockcontentsicon.h \
     blockcontentsiconxml.h \
     abstractmonframe.h \
     multisensoricondialog.h \
@@ -872,7 +871,14 @@ HEADERS += liblayouteditor_global.h \
     rpssensor.h \
     measurementlistener.h \
     namedicon.h \
-    namedbeanusernamecomparator.h
+    namedbeanusernamecomparator.h \
+    lememoryicon.h \
+    memoryicon.h \
+    lememoryiconxml.h \
+    memoryiconxml.h \
+    leblockcontentsicon.h \
+    blockcontentsicon.h \
+    leblockcontentsiconxml.h
 
 FORMS    += \
     edittracksegmentdlg.ui \

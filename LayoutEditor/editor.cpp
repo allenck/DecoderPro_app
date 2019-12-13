@@ -1,7 +1,7 @@
 #include "editor.h"
 #include <QMessageBox>
 #include "positionablelabel.h"
-#include "memoryicon.h"
+#include "lememoryicon.h"
 #include "memoryiconcoordinateedit.h"
 #include "rosterentry.h"
 #include "locoicon.h"
@@ -60,7 +60,7 @@
 #include "controlpaneleditor.h"
 #include "paneleditor.h"
 #include "rpspositionicon.h"
-#include "blockcontentsicon.h"
+#include "leblockcontentsicon.h"
 #include "box.h"
 #include "catalogpanel.h"
 #include "border.h"
@@ -1558,8 +1558,8 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
     bAdded = l->updateScene();
     if(l->_itemGroup != nullptr && l->_itemGroup->parentObject() != nullptr)
      log->debug(tr("Item already has a parent %1 ").arg(l->getNameString()));
-    if(l->_itemGroup && l->_itemGroup->scene())
-     log->warn("item already has been added ");
+//    if(l->_itemGroup && l->_itemGroup->scene())
+//     log->warn("item already has been added ");
     if(l->_itemGroup && l->_itemGroup->scene())
      log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
     editScene->addItem(l->_itemGroup);
@@ -1571,6 +1571,8 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 
   if(!bAdded)
       log->error("add failed " + QString(l->self()->metaObject()->className()));
+  else
+      log->info("add successful " + QString(l->self()->metaObject()->className()));
 //  QRectF r = ((PositionableLabel*)l)->getBounds();
 //  editScene->invalidate(r,QGraphicsScene::ItemLayer);
 // }
@@ -2808,16 +2810,14 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 /*protected*/ void Editor::moveItem(Positionable* p, int deltaX, int deltaY)
 {
     //if (_debug) log->debug("moveItem at ("+p.getX()+","+p.getY()+") delta ("+deltaX+", "+deltaY+")");
- if (getFlag(OPTION_POSITION, ((PositionableLabel*)p)->isPositionable()))
+ if (getFlag(OPTION_POSITION, p->isPositionable()))
  {
   int xObj = getItemX( p, deltaX);
   int yObj = getItemY( p, deltaY);
   // don't allow negative placement, icon can become unreachable
   if (xObj < 0) xObj = 0;
   if (yObj < 0) yObj = 0;
-  if(qobject_cast<Positionable*>(p->self()) != nullptr)
-   ((Positionable*)p)->setLocation(xObj, yObj);
-  else p->setLocation((double)xObj, (double)yObj);
+  p->setLocation((double)xObj, (double)yObj);
   // and show!
  }
  //addToTarget(p);
@@ -3051,7 +3051,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
  {
   _selectionGroup = new QList<Positionable*>();
  }
- //QRect test =  QRect();
+ QRect test =  QRect();
  QList <Positionable*> list = getContents();
  if (event->modifiers()&Qt::ShiftModifier)
  {
@@ -3062,7 +3062,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 //   {
 //    continue;
 //   }
-   if (_selectRect.intersects(((PositionableLabel*)comp)->getBounds(/*test*/)) &&
+   if (_selectRect.intersects(comp->getBounds(test)) &&
                             (event->modifiers()&Qt::ControlModifier || ((PositionableLabel*)comp)->getDisplayLevel()>BKG))
    {
      _selectionGroup->append(comp);

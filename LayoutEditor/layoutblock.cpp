@@ -8,6 +8,7 @@
 #include "connectivityutil.h"
 #include "createeditblock.h"
 #include "path.h"
+#include "memoryicon.h"
 
 QVector<int>* LayoutBlock::updateReferences = new QVector<int>();
 long LayoutBlock::time=0;
@@ -388,7 +389,7 @@ long LayoutBlock::time=0;
    bool found = false;
    foreach(LayoutEditor* panel, *panels)
    {
-    foreach(MemoryIcon* memIcon, *panel->memoryLabelList)
+    foreach(LEMemoryIcon* memIcon, *panel->memoryLabelList)
     {
      if(memIcon->getLayoutBlock()==this)
      {

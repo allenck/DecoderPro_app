@@ -1,6 +1,6 @@
 #ifndef MEMORYICONCOORDINATEEDIT_H
 #define MEMORYICONCOORDINATEEDIT_H
-#include "memoryicon.h"
+#include "lememoryicon.h"
 #include "coordinateedit.h"
 #include <QAction>
 

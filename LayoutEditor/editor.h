@@ -592,7 +592,7 @@ protected slots:
   friend class LayoutEditor;
   friend class LoadXml;
   friend class PanelEditor;
-  friend class DisplayMemoryIcon;
+  friend class MemoryIcon;
   friend class SensorIcon;
   friend class TurnoutIcon;
   friend class PositionableLabel;

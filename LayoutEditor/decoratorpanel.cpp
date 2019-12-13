@@ -22,7 +22,7 @@
 #include "box.h"
 #include "itempanel.h"
 #include "colorutil.h"
-#include "memoryicon.h"
+#include "lememoryicon.h"
 #include "memoryinputicon.h"
 #include "memorycomboicon.h"
 #include "memoryspinnericon.h"

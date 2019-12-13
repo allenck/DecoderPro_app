@@ -1,321 +1,255 @@
 #include "memoryicon.h"
-#include "instancemanager.h"
-#include <QAction>
-#include <QMenu>
 #include "layouteditor.h"
-#include <QMessageBox>
-#include "imageicon.h"
+#include "defaultprogrammermanager.h"
+#include "inputdialog.h"
 #include "abstractmemory.h"
-#include <QSignalMapper>
-#include "rostericonfactory.h"
-#include "path.h"
+#include <QMessageBox>
+#include <QColor>
+#include "imageicon.h"
+#include "lnthrottlemanager.h"
+#include "picklistmodel.h"
+#include "iconadder.h"
 
-//MemoryIcon::MemoryIcon(QObject *parent) :
-//    DisplayMemoryIcon(parent)
+//MemoryIcon::MemoryIcon(QObject *parent) //:
+//    //PositionalbleLabel(parent)
 //{
 //}
-// This is the same name as display.MemoryIcon, but a very
-// separate class. That's not good. Unfortunately, it's too
-// hard to disentangle that now because it's resident in the
-// panel file that have been written out, so we just annote
-// the fact.
-//@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
-//public class MemoryIcon extends jmri.jmrit.display.MemoryIcon {
+/**
+ * An icon to display a status of a Memory.<P>
+ * <P>
+ * The value of the memory can't be changed with this icon.
+ *<P>
+ * @author Bob Jacobsen  Copyright (c) 2004
+ * @version $Revision: 22320 $
+ */
+
+// NOTE:
+// the original Java class for this class is named "jmri.jmrit.display.MemoryIcon" which
+// duplicates "jmri.jmrit.layouteditor.MemoryIcon" which would result in two classes
+// with the same name, so this one is renamed "DisplayMemoryIcon" ACK
+
+///*public*/ class MemoryIcon extends PositionableLabel implements java.beans.PropertyChangeListener/*, DropTargetListener*/ {
 
 
-/*public*/ MemoryIcon::MemoryIcon(QString s, Editor* panel, QObject* parent)
- : DisplayMemoryIcon(s, panel, parent)
+/*public*/ MemoryIcon::MemoryIcon(QString s, Editor* editor, QObject *parent)
+ :    PositionableLabel(s, editor, (Positionable*)parent)
 {
- //super(s, panel);
- QString instring = s;
- log = new Logger("MemoryIcon");
-
- log->debug(tr("MemoryIcon ctor= ") + this->metaObject()->className());
- lBlock = NULL;
- setBackground(panel->getBackgroundColor());
-
-}
-/*public*/ MemoryIcon::MemoryIcon(NamedIcon* s, Editor* editor, QObject* parent): DisplayMemoryIcon(s,editor,parent)
-{
- //super(s, editor);
- log = new Logger("MemoryIcon");
- lBlock = NULL;
-
- //setDisplayLevel(Editor::LABELS);
- _displayLevel = Editor::LABELS;
- defaultIcon = s;
- //updateSize();
- _popupUtil->setJustification(LEFT);
- log->debug("MemoryIcon ctor= MemoryIcon");
+    //super(s, editor);
+ log = new Logger("DisplayMemoryIcon");
+ defaultIcon = NULL;
+ map = NULL;
+ namedMemory = NULL;
+ _itemGroup = NULL;
+ memory = NULL;
+ _icon = false;
+ selectable = false;
+ re = NULL;
+ flipRosterIcon = false;
+ updateBlockValue = false;
+    resetDefaultIcon();
+    //setIcon(defaultIcon);
+    _namedIcon=defaultIcon;
+    //updateSize();
+    //By default all memory is left justified
+    _popupUtil->setJustification(LEFT);
 //    this.setTransferHandler(new TransferHandler());
 }
 
-/*public*/ void MemoryIcon::setText(QString text)
+/*public*/ MemoryIcon::MemoryIcon(NamedIcon* s, Editor* editor, QObject *parent):
+    PositionableLabel(s,editor,(Positionable*)parent)
 {
- if (text==NULL || text.length()==0)
+ //super(s, editor);
+ log = new Logger("DisplayMemoryIcon");
+ defaultIcon = NULL;
+ map = NULL;
+ namedMemory = NULL;
+ _itemGroup = NULL;
+ memory = NULL;
+ _icon = true;
+ selectable = false;
+ re= NULL;
+ flipRosterIcon = false;
+ updateBlockValue = false;
+    //setDisplayLevel(Editor::LABELS);
+ _displayLevel = Editor::LABELS;
+ defaultIcon = s;
+    //updateSize();
+    _popupUtil->setJustification(LEFT);
+//    log->debug("MemoryIcon ctor= "+MemoryIcon.class.getName());
+//    this.setTransferHandler(new TransferHandler());
+}
+
+/*public*/ Positionable* MemoryIcon::deepClone()
+{
+ MemoryIcon* pos = new MemoryIcon("", _editor);
+ return finishClone((Positionable*)pos);
+}
+
+/*public*/ Positionable* MemoryIcon::finishClone(Positionable* p)
+{
+ MemoryIcon* pos = (MemoryIcon*)p;
+ pos->setMemory(namedMemory->getName());
+ pos->setOriginalLocation(getOriginalX(), getOriginalY());
+ if (map!=NULL)
  {
-  DisplayMemoryIcon::setText(defaultText);
- }
- else
- {
-  DisplayMemoryIcon::setText(text);
- }
-}
-
-
-/*public*/ LayoutBlock* MemoryIcon::getLayoutBlock(){
-    return lBlock;
-}
-
-/*public*/ void MemoryIcon::setLayoutBlock(LayoutBlock* lb)
-{
- lBlock = lb;
-}
-
-/*public*/ void MemoryIcon::displayState()
-{
- if(log->isDebugEnabled()) log->debug("displayState()");
-
- if (namedMemory == NULL) {  // use default if not connected yet
-     setIcon(defaultIcon);
-     updateSize();
-     return;
- }
- if (re != NULL) {
-     InstanceManager::throttleManagerInstance()->removeListener(re->getDccLocoAddress(), (PropertyChangeListener*)this);
-     re = NULL;
- }
- QVariant key = getMemory()->getValue();
- displayState(key);
-}
-
-/*protected*/ void MemoryIcon::displayState(QVariant key)
-{
- if(log->isDebugEnabled()) log->debug(tr("displayState(%1)").arg(key.toString()));
-if (key != QVariant()) {
-    if (map == NULL) {
-        QVariant val = key;
-        // no map, attempt to show object directly
-        //if (val instanceof jmri.jmrit.roster.RosterEntry)
-        if(VPtr<RosterEntry>::asPtr(val)!= NULL)
-        {
-            RosterEntry* roster = VPtr<RosterEntry>::asPtr(val);
-            val = updateIconFromRosterVal(roster);
-            flipRosterIcon = false;
-            if (val == QVariant()) {
-                return;
-            }
-        }
-        //if (val instanceof String)
-        if(val.toString() != "")        {
-            QString str = val.toString();
-            _icon = false;
-            _text = true;
-            setText(str);
-            updateIcon(NULL);
-            if (log->isDebugEnabled()) {
-                log->debug("String str= \"" + str + "\" str.trim().length()= " + str.trimmed().length());
-                log->debug("  maxWidth()= " + QString::number(maxWidth()) + ", maxHeight()= " + QString::number(maxHeight()));
-                log->debug(tr("  getBackground(): %1").arg(ColorUtil::colorToColorName(getBackground())));
-                log->debug(tr("  _editor.getTargetPanel().getBackground(): %1").arg(ColorUtil::colorToColorName( _editor->getTargetPanel()->backgroundBrush().color())));
-//                log->debug(tr("  setAttributes to getPopupUtility(%1) with").arg(getPopupUtility()));
-//                log->debug(tr("     hasBackground() %1").arg(getPopupUtility()->hasBackground()));
-//                log->debug(tr("     getBackground() ^1").arg(ColorUtil::colorToColorName(getPopupUtility()->getBackground())));
-//                log->debug(tr("    on editor %1").arg(_editor));
-            }
-//            _editor->setAttributes(getPopupUtility(), this, true);
-        }
-        //else if (val instanceof javax.swing.ImageIcon)
-        else if(VPtr<ImageIcon>::asPtr(val) != NULL)
-        {
-            _icon = true;
-            _text = false;
-            setIcon(VPtr<NamedIcon>::asPtr(val));
-            setText(NULL);
-        }
-//        else if (val instanceof Number) { // see string
-//            _icon = false;
-//            _text = true;
-//            setText(val.toString());
-//            setIcon(NULL);
-//        }
-        else {
-            log->warn("can't display current value of " + getNameString()
-                    + ", val= " + val.toString() + " of Class " + /*val.getClass().getName()*/val.typeName());
-        }
-    } else {
-        // map exists, use it
-        NamedIcon* newicon = map->value(key.toString());
-        if (newicon != NULL) {
-
-            setText(NULL);
-            DisplayMemoryIcon::setIcon(newicon);
-        } else {
-            // no match, use default
-            _icon = true;
-            _text = false;
-            setIcon(defaultIcon);
-            setText(NULL);
-        }
-    }
- }
- else
- {
-  if (log->isDebugEnabled()) {
-      log->debug("object NULL");
+  //java.util.Iterator<QString> iterator = map.keySet().iterator();
+  QMapIterator<QString, NamedIcon*> iterator(*map);
+  while (iterator.hasNext())
+  {
+   iterator.next();
+   QString key = iterator.key();
+   QString url = iterator.value()->getName();
+   pos->addKeyAndIcon(NamedIcon::getIconByName(url), key);
   }
-  _icon = true;
-  _text = false;
-  setIcon(defaultIcon);
-  setText(NULL);
  }
-updateSize();
+ //return super.finishClone(pos);
+ return PositionableLabel::finishClone((Positionable*)pos);
 }
 
-
-//@Override
-/*public*/ void MemoryIcon::updateSize() {
-    if (_popupUtil->getFixedWidth() == 0) {
-        //setSize(maxWidth(), maxHeight());
-        switch (_popupUtil->getJustification()) {
-            case LEFT:
-                DisplayMemoryIcon::setLocation(getOriginalX(), getOriginalY());
-                break;
-            case RIGHT:
-                DisplayMemoryIcon::setLocation(getOriginalX() - maxWidth(), getOriginalY());
-                break;
-            case CENTRE:
-                DisplayMemoryIcon::setLocation(getOriginalX() - (maxWidth() / 2), getOriginalY());
-                break;
-            default:
-                log->warn(tr("Unhandled justification code: %1").arg(_popupUtil->getJustification()));
-                break;
-        }
-        setSize(maxWidth(), maxHeight());
-    } else {
-        DisplayMemoryIcon::updateSize();
-        if (_icon && _namedIcon != nullptr) {
-            _namedIcon->reduceTo(maxWidthTrue(), maxHeightTrue(), 0.2);
-        }
-    }
+/*public*/ void MemoryIcon::resetDefaultIcon() {
+    defaultIcon = new NamedIcon(":/resources/icons/misc/X-red.gif",
+                        "resources/icons/misc/X-red.gif");
 }
 
-
-/*public*/ void MemoryIcon::setOriginalLocation(int x, int y) {
-    originalX = x;
-    originalY = y;
-    updateSize();
+/*public*/ void MemoryIcon::setDefaultIcon(NamedIcon* n) {
+    defaultIcon = n;
 }
 
-/*public*/ int MemoryIcon::getOriginalX() {
-    return originalX;
+/*public*/ NamedIcon* MemoryIcon::getDefaultIcon() {
+    return defaultIcon;
 }
 
-/*public*/ int MemoryIcon::getOriginalY() {
-    return originalY;
-}
-
-//@Override
-/*public*/ void MemoryIcon::setLocation(int x, int y) {
-    if (_popupUtil->getFixedWidth() == 0) {
-        setOriginalLocation(x, y);
-    } else {
-        DisplayMemoryIcon::setLocation(x, y);
-    }
-}
-
-//@Override
-/*public*/ bool MemoryIcon::setEditIconMenu(QMenu* popup) {
-    QString txt = tr("Edit %1 Icon...").arg(tr("Memory"));
-    AbstractAction* act;
-    popup->addAction(act = new AbstractAction(txt, this));//
-//    {
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            edit();
-//        }
-//    });
-//    return true;
-      connect(act, SIGNAL(triggered(bool)), this, SLOT(edit()));
-}
-
-//@Override
-/*protected*/ void MemoryIcon::edit() {
-    makeIconEditorFrame(this, "Memory", true, nullptr);
-    _iconEditor->setPickList(PickListModel::memoryPickModelInstance());
-//    ActionListener addIconAction = (ActionEvent a) -> {
-//        editMemory();
-//    };
-    MIActionListener* addIconAction = new MIActionListener(this);
-    _iconEditor->complete(addIconAction, false, true, true);
-    _iconEditor->setSelection(getMemory());
-}
-
-void MemoryIcon::editMemory() {
-    setMemory(_iconEditor->getTableSelection()->getDisplayName());
-    updateSize();
-    _iconEditorFrame->dispose();
-    _iconEditorFrame = nullptr;
-    _iconEditor = nullptr;
-    update();
-}
-
-/*protected*/ QVariant MemoryIcon::updateIconFromRosterVal(RosterEntry* roster)
+/*private*/ void MemoryIcon::setMap()
 {
-    re = roster;
-    ImageIcon* icon = ((RosterIconFactory*)InstanceManager::getDefault("RosterIconFactory"))->getIcon(roster);
-    if (icon == NULL || icon->getIconWidth() == -1 || icon->getIconHeight() == -1) {
-        //the IconPath is still at default so no icon set
-        return roster->titleString();
-    } else {
-        NamedIcon* rosterIcon = new NamedIcon(roster->getIconPath(), roster->getIconPath());
-        _text = false;
-        _icon = true;
-        updateIcon(rosterIcon);
-
-        if (flipRosterIcon) {
-            flipIcon(NamedIcon::HORIZONTALFLIP);
-        }
-        InstanceManager::throttleManagerInstance()->attachListener(re->getDccLocoAddress(), (PropertyChangeListener*)this);
-        QVariant isForward = InstanceManager::throttleManagerInstance()->getThrottleInfo(re->getDccLocoAddress(), "IsForward");
-        if (isForward != QVariant()) {
-            if (! isForward.toBool()) {
-                flipIcon(NamedIcon::HORIZONTALFLIP);
-            }
-        }
-    }
-    return QVariant();
+ if (map==NULL) map = new QMap<QString, NamedIcon*>();
 }
 
-//JCheckBoxMenuItem  updateBlockItem = new JCheckBoxMenuItem("Update Block Details");
-
-#if 1
-//@Override
-/*public*/ bool MemoryIcon::showPopUp(QMenu* popup)
+/**
+ * Attach a named Memory to this display item
+  * @param pName Used as a system/user name to lookup the Memory object
+ */
+/*public*/ void MemoryIcon::setMemory(QString pName)
 {
- if (isEditable())
+ if (InstanceManager::getNullableDefault("MemoryManager") != nullptr) {
+     try {
+         Memory* memory = InstanceManager::memoryManagerInstance()->provideMemory(pName);
+         setMemory(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, memory));
+     } catch (IllegalArgumentException e) {
+         log->error(tr("Memory '#1' not available, icon won't see changes").arg(pName));
+     }
+ } else {
+     log->error("No MemoryManager for this protocol, icon won't see changes");
+ }
+ updateSize();
+}
+
+void MemoryIcon::on_propertyChange(QString sType, QVariant /*sOld*/, QVariant sNew)
+{
+ if(sType == "value" && sNew.type() == QVariant::DateTime)
  {
-  QAction* updateBlockItemAction = new QAction("Update Block Details", this);
-  updateBlockItemAction->setCheckable(true);
-  popup->addAction(updateBlockItemAction);
-  updateBlockItemAction->setChecked(updateBlockValueOnChange());
-//        updateBlockItemAction.addActionListener(new ActionListener(){
-//            public void actionPerformed(java.awt.event.ActionEvent e) {
-//                updateBlockValueOnChange(updateBlockItem.isSelected());
-//            }
-//        });
-  connect(updateBlockItemAction, SIGNAL(toggled(bool)), this, SLOT(on_updateBlockItemAction_toggled(bool)));
- }  // end of selectable
- return DisplayMemoryIcon::showPopUp(popup);
+  //qDebug() <<tr("property change %1 %2 %3").arg(sType).arg(sOld.toString()).arg(sNew.toString());
+  QString text = sNew.toDateTime().toString("hh:mm AP");
+  setText(text);
+  _editor->addToTarget((Positionable*)this);
+ }
+ else
+  log->debug("unhandled property change " + getNameString() + "type=" + sNew.typeName());
 }
-#else
+
+/**
+ * Attached a named Memory to this display item
+ * @param m The Memory object
+ */
+/*public*/ void MemoryIcon::setMemory(NamedBeanHandle<Memory*>* m)
+{
+ if (namedMemory != NULL)
+ {
+  getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
+ }
+ namedMemory = m;
+ if (namedMemory != NULL)
+ {
+  getMemory()->addPropertyChangeListener((PropertyChangeListener*)this, namedMemory->getName(), "Memory Icon");
+//  AbstractNamedBean* bean = (AbstractNamedBean*)getMemory();
+  //connect(bean->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  displayState();
+  setName(namedMemory->getName());
+ }
+}
+
+/*public*/ NamedBeanHandle<Memory*>* MemoryIcon::getNamedMemory()
+{ return namedMemory; }
+
+/*public*/ Memory* MemoryIcon::getMemory()
+{
+ if (namedMemory==NULL)
+ {
+  return NULL;
+ }
+ return namedMemory->getBean();
+}
+
+/*public*/ NamedBean* MemoryIcon::getNamedBean(){
+    return getMemory();
+}
+
+/*public*/ QMap<QString, NamedIcon*>* MemoryIcon::getMap() { return map; }
+// display icons
+
+/*public*/ void MemoryIcon::addKeyAndIcon(NamedIcon* icon, QString keyValue)
+{
+ if (map == NULL) setMap(); // initialize if needed
+  map->insert(keyValue, icon);
+    // drop size cache
+    //height = -1;
+    //width = -1;
+ displayState(); // in case changed
+}
+
+// update icon as state of Memory changes
+/*public*/ void MemoryIcon::propertyChange(PropertyChangeEvent* e)
+{
+ if (log->isDebugEnabled()) log->debug("property change: "
+                                     +e->getPropertyName()
+                                     +" is now "+e->getNewValue().toString());
+ if (e->getPropertyName()==("value"))
+ {
+  displayState();
+ }
+ //if(e->getSource() instanceof jmri.Throttle)
+ if(qobject_cast<Throttle*>(e->getSource())!= NULL)
+ {
+  if(e->getPropertyName()==("IsForward")){
+      bool boo = e->getNewValue().toBool();
+      if(boo)
+          flipIcon(NamedIcon::NOFLIP);
+      else
+          flipIcon(NamedIcon::HORIZONTALFLIP);
+  }
+ }
+ on_propertyChange(e->getPropertyName(), e->getOldValue(), e->getNewValue());
+}
+
+/*public*/ QString MemoryIcon::getNameString() {
+    QString name;
+    if (namedMemory == NULL) name = tr("Not Connected");
+    else if (getMemory()->getUserName()!=NULL)
+        name = getMemory()->getUserName()+" ("+getMemory()->getSystemName()+")";
+    else
+        name = getMemory()->getSystemName();
+    return name;
+}
+
+/*public*/ void MemoryIcon::setSelectable(bool b) {selectable = b;}
+/*public*/ bool MemoryIcon::isSelectable() { return selectable;}
+
 /*public*/ bool MemoryIcon::showPopUp(QMenu* popup)
 {
  if (isEditable() && selectable)
  {
   popup->addSeparator();
 
-  QSignalMapper mapper;
+  QSignalMapper* mapper = new QSignalMapper();
   QListIterator<QString> iterator( map->keys());
   while (iterator.hasNext())
   {
@@ -323,8 +257,8 @@ void MemoryIcon::editMemory() {
    //String value = ((NamedIcon)map.get(key)).getName();
    AbstractAction* act;
    popup->addAction(act =new AbstractAction(key,this));
-   mapper.setMapping(act, key);
-   connect(act, SIGNAL(triggered()), &mapper, SLOT(map()));
+   mapper->setMapping(act, key);
+   connect(act, SIGNAL(triggered()), mapper, SLOT(map()));
 //   {
 //       /**
 //        *
@@ -337,7 +271,7 @@ void MemoryIcon::editMemory() {
 //       }
 //   });
   }
-  connect(&mapper, SIGNAL(mapped(QString)), this, SLOT(on_act_triggered(QString)));
+  connect(mapper, SIGNAL(mapped(QString)), this, SLOT(on_act_triggered(QString)));
   return true;
  }  // end of selectable
  if (re != NULL)
@@ -360,7 +294,7 @@ void MemoryIcon::editMemory() {
      if ((InstanceManager::sectionManagerInstance()->getSystemNameList().size()) > 0 && ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getBlockWithMemoryAssigned(getMemory()) != NULL)
      {
    DispatcherFrame df = InstanceManager::getDefault("DispatcherFrame");
-         if (df != NULL) {
+         if (df != null) {
              ActiveTrain* at = df.getActiveTrainForRoster(re);
              if (at != NULL) {
                  popup->addAction(new AbstractAction(tr("MenuTerminateTrain")));
@@ -431,306 +365,448 @@ void MemoryIcon::editMemory() {
 #endif
  }
  return false;
+    return false;
 }
-#endif
 
-void MemoryIcon::on_updateBlockItemAction_toggled(bool bState)
+void MemoryIcon::on_act_triggered(QString key)
 {
- updateBlockValueOnChange(bState);
+ setValue(key);
 }
 
-///*public*/ void MemoryIcon::setMemory(QString pName)
-//{
-// DisplayMemoryIcon::setMemory(pName);
-// //lBlock = InstanceManager::layoutBlockManagerInstance().getBlockWithMemoryAssigned(getMemory());
-// LayoutEditor* LayoutEditor = qobject_cast<LayoutEditor*>(DisplayMemoryIcon::getEditor());
-// if(myLayoutEditor != NULL)
-// lBlock = myLayoutEditor->layoutBlockManager->getBlockWithMemoryAssigned(getMemory());
-//}
 /**
- * Attached a named Memory to this display item
- *
- * @param pName Used as a system/user name to lookup the Memory object
- */
-/*public*/ void MemoryIcon::setMemory(QString pName)
+* Text edits cannot be done to Memory text - override
+*/
+/*public*/ bool MemoryIcon::setTextEditMenu(QMenu* popup)
 {
- if (InstanceManager::memoryManagerInstance() != NULL)
+//    popup.add(new AbstractAction(Bundle.getMessage("EditMemoryValue")) {
+//        /*public*/ void actionPerformed(ActionEvent e) {
+//            editMemoryValue();
+//        }
+//    });
+
+ QAction* editMemoryValueAction = new QAction(tr("Edit Memory Value"),this);
+ popup->addAction(editMemoryValueAction);
+ connect(editMemoryValueAction, SIGNAL(triggered()), this, SLOT(on_editMemoryValueAction_triggered()));
+ return true;
+}
+void MemoryIcon::on_editMemoryValueAction_triggered()
+{
+ QVariant pVal = ((AbstractMemory*)getMemory())->getValue();
+ InputDialog dlg(tr("Edit Current Memory Value"), pVal.toString(), NULL, this);
+ if(dlg.exec() == QDialog::Accepted)
  {
-  Memory* memory = InstanceManager::memoryManagerInstance()->
-             provideMemory(pName);
-  if (memory != NULL)
+  QString rslt = dlg.value();
+  ((AbstractMemory*)getMemory())->setValue(QVariant::fromValue(rslt));
+ }
+}
+
+/*protected*/ void MemoryIcon::flipIcon(int flip)
+{
+ _namedIcon->flip(flip/*, this*/);
+ updateSize();
+ repaint(); // ??
+}
+
+/**
+ * Drive the current state of the display from the state of the
+ * Memory.
+ */
+/*public*/ void MemoryIcon::displayState()
+{
+ if (log->isDebugEnabled()) log->debug("displayState");
+ if (namedMemory == NULL)
+ {  // use default if not connected yet
+  setIcon(defaultIcon);
+  updateSize();
+  return;
+ }
+
+ if(re!=NULL)
+ {
+  InstanceManager::throttleManagerInstance()->removeListener(re->getDccLocoAddress(), (PropertyChangeListener*)this);
+  re=NULL;
+ }
+ QVariant key = ((AbstractMemory*)getMemory())->getValue();
+ displayState(key);
+}
+/*protected*/ void MemoryIcon::displayState(QVariant key)
+{
+ if (key != QVariant())
+ {
+  if (map == NULL)
   {
-   setMemory(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, memory));
+   QVariant val = key;
+   // no map, attempt to show object directly
+   //if (val instanceof jmri.jmrit.roster.RosterEntry)
+   //if(qobject_cast<RosterEntry*>(val)!=NULL)
+   RosterEntry* roster = VPtr<RosterEntry>::asPtr( val);
+   if(roster != NULL)
+   {
+    val = updateIconFromRosterVal(roster);
+    flipRosterIcon = false;
+    if(val.isNull())
+     return;
+   }
+   //if (val instanceof QString)
+//   if(qobject_cast<QString*>(val)!=NULL)
+//   {
+//    QString str = *(QString*)val;
+//    setText(str);
+//    if (log->isDebugEnabled()) log->debug("QString str= \""+str+"\" str.trim().length()= "+str.trimmed().length()+
+//                                                    ", maxWidth()= "+maxWidth()+", maxHeight()= "+maxHeight());
+//                /*  MemoryIconTest says empty strings should show blank */
+//    if (str.trimmed().length()==0)
+//    {
+//     if (getBackground() == (_editor->getScene()->backgroundBrush().color()))
+//     {
+//      _saveColor = getPopupUtility()->getBackground();
+//      if(_editor->getScene()->backgroundBrush().color() == (QColor(Qt::white)))
+//      {
+//       getPopupUtility()->setBackgroundColor(QColor(Qt::gray));
+//      }
+//      else
+//      {
+//       getPopupUtility()->setBackgroundColor(QColor(Qt::white));
+//      }
+//     }
+//    }
+//    else
+//    {
+//     if (_saveColor.isValid())
+//     {
+//      getPopupUtility()->setBackgroundColor(_saveColor);
+//      _saveColor = QColor();
+//     }
+//    }
+//    setIcon(NULL);
+//    _icon = false;
+//    _text = true;
+//   }
+   ImageIcon* icon = VPtr<ImageIcon>::asPtr(val);
+
+   if(val.canConvert<QString>())
+   {
+    QString str = val.toString();
+    setText(str);
+   }
+   else
+   {
+    //if (val instanceof javax.swing.ImageIcon)
+    //if(qobject_cast<ImageIcon*>(val) != NULL)
+    if(icon != NULL)
+    {
+     setIcon((NamedIcon*)icon);
+     setText(NULL);
+     _icon = true;
+     _text = false;
+    }
+
+//   else
+//   if (val instanceof Number)
+//   {
+//    setText(val.toString());
+//    setIcon(NULL);
+//    _icon = false;
+//    _text = true;
+//   }
+   else log->warn("can't display current value of "+namedMemory->getName()+ ", val= "+val.toString()+" of Class "+val.typeName());
+   }
   }
   else
   {
-   log->error("Memory '" + pName + "' not available, icon won't see changes");
+   // map exists, use it
+   QString sKey = key.toString();
+   NamedIcon* newicon = map->value(sKey);
+   if (newicon!=NULL)
+   {
+    setText(NULL);
+    PositionableLabel::setIcon(newicon);
+   }
+   else
+   {
+    // no match, use default
+    setIcon(defaultIcon);
+    setText(NULL);
+    _icon = true;
+    _text = false;
+   }
   }
  }
  else
  {
-  log->error("No MemoryManager for this protocol, icon won't see changes");
+  if (log->isDebugEnabled()) log->debug("memory NULL");
+  setIcon(defaultIcon);
+  setText(NULL);
+  _icon = true;
+  _text = false;
  }
  updateSize();
 }
 
-/**
- * Attached a named Memory to this display item
- *
- * @param m The Memory object
- */
-/*public*/ void MemoryIcon::setMemory(NamedBeanHandle<Memory*>* m)
+/*protected*/ QVariant MemoryIcon::updateIconFromRosterVal(RosterEntry* roster)
 {
- if (namedMemory != NULL)
+ re=roster;
+// ImageIcon icon = InstanceManager::rosterIconFactoryInstance().getIcon(roster);
+// if(icon.getIconWidth()==-1 || icon.getIconHeight()==-1)
+// {
+//  //the IconPath is still at default so no icon set
+//  return roster->titleQString();
+// }
+// else
  {
-  getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
-  //disconnect(getMemory()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- }
- namedMemory = m;
- if (namedMemory != NULL)
- {
-  getMemory()->addPropertyChangeListener((PropertyChangeListener*)this, namedMemory->getName(), "Memory Icon");
-  //connect(getMemory()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  NamedIcon* rosterIcon = new NamedIcon(roster->getIconPath(), roster->getIconPath());
+  _text = false;
+  _icon = true;
+  updateIcon(rosterIcon);
 
-  displayState();
-  setName(namedMemory->getName());
- }
-}
-
-/*public*/ NamedBeanHandle<Memory*>* MemoryIcon::getNamedMemory() {
-    return namedMemory;
-}
-
-/*public*/ Memory* MemoryIcon::getMemory()
-{
- if (namedMemory == NULL) {
-     return NULL;
- }
- return namedMemory->getBean();
-}
-
-/*public*/ NamedBean* MemoryIcon::getNamedBean()
-{
- return getMemory();
-}
-
-/*public*/ QString MemoryIcon::getNameString()
-{
- QString name;
- if (namedMemory == NULL)
- {
-  name = tr("Not Connected");
- } else if (getMemory()->getUserName() != NULL)
- {
-  name = getMemory()->getUserName() + " (" + getMemory()->getSystemName() + ")";
- }
- else
- {
-  name = getMemory()->getSystemName();
- }
- return name;
-}
-
-//@Override
-/*protected*/ void MemoryIcon::setValue(QVariant obj)
-{
- if(updateBlockValue && lBlock!=NULL)
- {
-   lBlock->getBlock()->setValue(obj);
- }
- else
- {
-  getMemory()->setValue(obj);
-  updateSize();
- }
-}
-
-/*protected*/ void MemoryIcon::addRosterToMemory(RosterEntry* roster)
-{
- //if(!jmri.InstanceManager.layoutBlockManagerInstance().isAdvancedRoutingEnabled() || lBlock==NULL){
- LayoutEditor* myLayoutEditor = qobject_cast<LayoutEditor*>(DisplayMemoryIcon::getEditor());
-
- if(myLayoutEditor->layoutBlockManager->isAdvancedRoutingEnabled() || lBlock==NULL)
- {
-  DisplayMemoryIcon::addRosterToMemory(roster);
-  return;
- }
-
- int paths = lBlock->getNumberOfThroughPaths();
- Block* srcBlock=NULL;
- Block* desBlock=NULL;
- for(int i = 0; i<paths; i++)
- {
-  if(lBlock->isThroughPathActive(i))
+  if(flipRosterIcon)
   {
-   srcBlock = lBlock->getThroughPathSource(i);
-   desBlock = lBlock->getThroughPathDestination(i);
-   break;
+   flipIcon(NamedIcon::HORIZONTALFLIP);
+  }
+  InstanceManager::throttleManagerInstance()->attachListener(re->getDccLocoAddress(), (PropertyChangeListener*)this);
+  QVariant isForward = ((LnThrottleManager*) InstanceManager::throttleManagerInstance())->getThrottleInfo(re->getDccLocoAddress(), "IsForward");
+  if(isForward.isValid())
+  {
+   if(!isForward.toBool())
+    flipIcon(NamedIcon::HORIZONTALFLIP);
+  }
+  return QVariant();
+ }
+}
+
+/*public*/ void MemoryIcon::updateSize()
+{
+ if (_popupUtil->getFixedWidth()==0)
+ {
+  //setSize(maxWidth(), maxHeight());
+  switch (_popupUtil->getJustification())
+  {
+    case LEFT :     Positionable::setLocation(getOriginalX(), getOriginalY());
+                    break;
+    case RIGHT :    Positionable::setLocation(getOriginalX()-maxWidth(), getOriginalY());
+                    break;
+    case CENTRE :   Positionable::setLocation(getOriginalX()-(maxWidth()/2), getOriginalY());
+                    break;
+  }
+  setSize(maxWidth(), maxHeight());
+ }
+ else
+ {
+  PositionableLabel::updateSize();
+  if(_icon)
+  {
+   _namedIcon->reduceTo(maxWidthTrue(), maxHeightTrue(), 0.2);
   }
  }
- int dirA;
- int dirB;
- if(srcBlock!=NULL && desBlock!=NULL)
- {
-  dirA = lBlock->getNeighbourDirection(srcBlock);
-  dirB = lBlock->getNeighbourDirection(desBlock);
- }
- else
- {
-  dirA = Path::EAST;
-  dirB = Path::WEST;
- }
-
-// QList<QObject*> options;
-// options << "Facing "+Path::decodeDirection(dirB) << "Facing "+Path::decodeDirection(dirA) << "Do Not Add";
-// int n = JOptionPane.showOptionDialog(this,
-//        "Would you like to assign loco "
-//        +  roster.titleString() + " to this location",
-//        "Assign Loco",
-//        JOptionPane.YES_NO_CANCEL_OPTION,
-//        JOptionPane.QUESTION_MESSAGE,
-//        NULL,
-//        options,
-//        options[2]);
- int n = QMessageBox::question(DisplayMemoryIcon::getEditor(), tr("Assign Loco"), tr("Would you like to assign loco ")
-                                 +  roster->titleString() + tr(" to this location"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
- if(n==QMessageBox::Cancel)
-        return;
- if(n==QMessageBox::Yes)
- {
-  flipRosterIcon = true;
-  if(updateBlockValue)
-   lBlock->getBlock()->setDirection(dirB);
- }
- else
- {
-  flipRosterIcon = false;
-  if(updateBlockValue)
-    lBlock->getBlock()->setDirection(dirA);
- }
- if(getMemory()->getValue()==VPtr<RosterEntry>::asQVariant(roster))
- {
-  //No change in the loco but a change in direction facing might have occured
-  updateMemoryFromRosterVal(roster);
- }
- else
- {
-  setValue(VPtr<RosterEntry>::asQVariant(roster));
- }
+ //_editor->addToTarget((Positionable*)this);
+ updateScene();
+ if(getGroupName() != "")
+  _itemGroup->setName(getGroupName());
 }
 
-// update icon as state of Memory changes
- /*public*/ void MemoryIcon::propertyChange(PropertyChangeEvent* e)
-{
-  if (log->isDebugEnabled())
-  {
-   log->debug("property change: "
-           + e->getPropertyName()
-           + " is now " + e->getNewValue().toString());
-  }
-  if (e->getPropertyName()==("value"))
-  {
-   displayState();
-  }
-  //if (e->getSource() instanceof jmri.Throttle)
-  if(qobject_cast<Throttle*>(e->getSource()) != NULL)
-  {
-   if (e->getPropertyName()==("IsForward"))
-   {
-    bool boo =  e->getNewValue().toBool();
-    if (boo)
-    {
-     flipIcon(NamedIcon::NOFLIP);
-    } else
-    {
-     flipIcon(NamedIcon::HORIZONTALFLIP);
-    }
-   }
-  }
- }
-#if 0
-/*public*/ bool MemoryIcon::updateScene()
-{
- QGraphicsPixmapItem* item = NULL;
- QGraphicsTextItem* itemText = NULL;
- QGraphicsRectItem* rItem = NULL;
- if(_itemGroup != NULL)
- {
-  QList<QGraphicsItem*> l = _itemGroup->childItems();
-  foreach(QGraphicsItem* it, l)
-  {
-   if(qgraphicsitem_cast<QGraphicsPixmapItem*>(it) != NULL)
-    item = qgraphicsitem_cast<QGraphicsPixmapItem*>(it);
-   if(qgraphicsitem_cast<QGraphicsTextItem*>(it) != NULL)
-    itemText = qgraphicsitem_cast<QGraphicsTextItem*>(it);
-   if(qgraphicsitem_cast<QGraphicsRectItem*>(it) != NULL)
-    rItem = qgraphicsitem_cast<QGraphicsRectItem*>(it);
 
-   //_itemGroup->removeFromGroup(item);
-  }
- }
- else
-   _itemGroup = new QGraphicsItemGroup;
+/*public*/ void MemoryIcon::setOriginalLocation(int x, int y)
+{
+ originalX=x;
+ originalY=y;
+ //updateSize();
+}
 
- if(isIcon())
+/*public*/ int MemoryIcon::getOriginalX()
+{
+ return originalX;
+}
+
+/*public*/ int MemoryIcon::getOriginalY()
+{
+ return originalY;
+}
+
+/*public*/ void MemoryIcon::setLocation(int x, int y)
+{
+ if(_popupUtil->getFixedWidth()==0)
  {
-  QPixmap pixmap = QPixmap::fromImage(getIcon()->getImage());
-  //QGraphicsPixmapItem* item = g2->addPixmap(pixmap);
-  if(item != NULL)
-   item->setPixmap(pixmap);
-  else
-   item = new QGraphicsPixmapItem(pixmap, _itemGroup);
-  item->setPos(getX(), getY());
-  if(pixmap.isNull())
-   qDebug() << "No pixmap";
-  //_itemGroup->addToGroup(item);
+  setOriginalLocation(x,y);
  }
  else
  {
-  if(itemText != NULL)
-   itemText->setPlainText(getText());
-  else
-   itemText = new QGraphicsTextItem(getText());
-  itemText->setFont(getFont());
-  itemText->setDefaultTextColor(getForeground());
-  //itemText->setPos(getX(), getY());
-//  if(isOpaque())
-  {
-   QRectF ir = itemText->boundingRect();
-   int margin = getPopupUtility()->getMargin();
-   QRectF r = QRectF(ir.x()-margin,ir.y()-margin,ir.right()+margin*2,ir.bottom()+margin*2);
-   if(rItem != NULL)
-    rItem->setRect(r);
-   else
-    rItem = new QGraphicsRectItem(r,_itemGroup);
-   //rItem->setPos(getX(), getY());
-   if(isOpaque())
-    rItem->setBrush( QBrush(getBackground()));
-   if(getPopupUtility()->getBorderSize() == 0)
-    rItem->setPen(Qt::NoPen);
-   else
-    rItem->setPen(QPen(QBrush(getPopupUtility()->getBorderColor()), getPopupUtility()->getBorderSize()));
-  }
-
-  _itemGroup->addToGroup(itemText);
-  _itemGroup->setPos(getX(), getY());
+  Positionable::setLocation(x,y);
  }
+ //JLabel::setLocation(x,y);
+ updateScene();
+}
+#if 1
+/*public*/ bool MemoryIcon::setEditIconMenu(QMenu* popup)
+{
+ QString txt = tr("Edit %1 Item").arg("Memory");
 
- //_itemGroup->setPos(getX(), getY());
- if(showTooltip()) _itemGroup->setToolTip(getTooltip());
- if(getDegrees() != 0)
- {
-  //m->item->rotate(l->getDegrees());
-  QPointF center = itemText->boundingRect().center();
-  _itemGroup->setTransformOriginPoint(center);
-  _itemGroup->setRotation( getDegrees());
- }
- _itemGroup->setZValue(getDisplayLevel());
- _itemGroup->update();
+//        popup.add(new AbstractAction(txt) {
+//                /*public*/ void actionPerformed(ActionEvent e) {
+//                    edit();
+//                }
+//            });
+ QAction* editAction = new QAction(txt, this);
+ connect(editAction, SIGNAL(triggered()), this, SLOT(edit()));
+ popup->addAction(editAction);
  return true;
 }
+
+/*protected*/ void MemoryIcon::edit()
+{
+ makeIconEditorFrame(this, "Memory", true, NULL);
+ _iconEditor->setPickList(PickListModel::memoryPickModelInstance());
+//    ActionListener addIconAction = new ActionListener() {
+//        /*public*/ void actionPerformed(ActionEvent a) {
+//            editMemory();
+//        }
+//    };
+ AddIconActionListener*  addIconAction = new AddIconActionListener(this);
+ _iconEditor->complete(addIconAction, false, true, true);
+ _iconEditor->setSelection(getMemory());
+}
+void MemoryIcon::editMemory() {
+ setMemory(_iconEditor->getTableSelection()->getDisplayName());
+ updateSize();
+//    _iconEditorFrame->dispose();
+ _iconEditorFrame = NULL;
+ _iconEditor = NULL;
+ //invalidate();
+ update();
+}
+
+MemoryIcon::AddIconActionListener::AddIconActionListener(MemoryIcon *parent)
+{
+ this->parent = parent;
+}
+
+void MemoryIcon::AddIconActionListener::actionPerformed(ActionEvent */*e*/)
+{
+ parent->editMemory();
+}
+
+/*public*/ void MemoryIcon::dispose() {
+    getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);
+//    AbstractNamedBean* bean = (AbstractNamedBean*)getMemory();
+//    disconnect(bean, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    namedMemory = NULL;
+    if(re!=NULL){
+        InstanceManager::throttleManagerInstance()->removeListener(re->getDccLocoAddress(), (PropertyChangeListener*)this);
+        re=NULL;
+    }
+    PositionableLabel::dispose();
+}
+
+///*public*/ void doMouseClicked(MouseEvent e) {
+//    if (e.getClickCount() == 2) { // double click?
+//        editMemoryValue();
+//    }
+//}
+
+/*protected*/ void MemoryIcon::editMemoryValue(){
+//    JTextField* newMemory = new JTextField(20);
+//    if (getMemory()->getValue()!=NULL)
+//        newMemory->setText(getMemory()->getValue().toString());
+//    Object[] options = {"Cancel", "OK", newMemory};
+//    int retval = JOptionPane.showOptionDialog(this,
+//                                              "Edit Current Memory Value", namedMemory.getName(),
+//                                              0, JOptionPane.INFORMATION_MESSAGE, NULL,
+//                                              options, options[2] );
+    InputDialog* dlg = new InputDialog(tr("Edit Current Memory Value"),getMemory()->getValue().toString(), NULL);
+//    if (retval != 1) return;
+//    setValue(newMemory.getText());
+    if(dlg->exec() == QDialog::Accepted)
+    {
+     setValue(dlg->value());
+    }
+    updateSize();
+}
+
 #endif
+/*public*/ void MemoryIcon::updateBlockValueOnChange(bool boo){
+    updateBlockValue = boo;
+}
+
+/*public*/ bool MemoryIcon::updateBlockValueOnChange()
+{
+    return updateBlockValue;
+}
+
+
+/*protected*/ void MemoryIcon::addRosterToIcon(RosterEntry* roster)
+{
+
+//     Object[] options = {"Facing West",
+//                    "Facing East",
+//                    "Do Not Add"};
+//     QList<QObject> options;
+//     options << (QObject)"Facing West" << "Facing East" << "Do Not Add";
+//        int n = JOptionPane.showOptionDialog(this,
+//            "Would you like to assign loco "
+//            +  roster.titleQString() + " to this location",
+//            "Assign Loco",
+//            JOptionPane.YES_NO_CANCEL_OPTION,
+//            JOptionPane.QUESTION_MESSAGE,
+//            NULL,
+//            options,
+//            options[2]);
+ int n = QMessageBox::question(getEditor(), tr("Assign Loco"), tr("Would you like to assign loco ")
+                                               +  roster->titleString() + tr(" to this location"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        if(n==QMessageBox::Cancel)
+            return;
+        flipRosterIcon = false;
+        if(n==QMessageBox::No)
+        {
+            flipRosterIcon = true;
+        }
+        RosterEntry* re = VPtr<RosterEntry>::asPtr(getMemory()->getValue());
+        if(re == roster)
+        {
+            //No change in the loco but a change in direction facing might have occured
+             updateIconFromRosterVal(roster);
+        } else {
+            setValue(VPtr<RosterEntry>::asQVariant(roster));
+        }
+    }
+
+    /*protected*/ void MemoryIcon::setValue(QVariant val)
+    {
+        getMemory()->setValue(val);
+    }
+
 /*public*/ QString MemoryIcon::getGroupName()
 {
- return "MemoryIcon";
+ return "DisplayMemoryIcon";
 }
+
+#if 0
+    class TransferHandler extends javax.swing.TransferHandler {
+
+        //@Override
+        /*public*/ boolean canImport(JComponent c, DataFlavor[] transferFlavors) {
+            for (DataFlavor flavor : transferFlavors) {
+                if (RosterEntrySelection.rosterEntryFlavor.equals(flavor)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //@Override
+        /*public*/ boolean importData(JComponent c, Transferable t) {
+            try {
+                ArrayList<RosterEntry> REs = RosterEntrySelection.getRosterEntries(t);
+                for (RosterEntry roster : REs) {
+                    addRosterToMemory(roster);
+                }
+            } catch(java.awt.datatransfer.UnsupportedFlavorException e){
+                log->error(e);
+            } catch (java.io.IOException e){
+                log->error(e);
+            }
+            return true;
+        }
+
+    }
+#endif
+//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(MemoryIcon.class.getName());
+//}

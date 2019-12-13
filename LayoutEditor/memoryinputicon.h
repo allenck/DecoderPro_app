@@ -53,7 +53,7 @@ private:
     SpinnerNumberModel* _spinModel;// = new SpinnerNumberModel(3,1,100,1);
     Logger* log;
     MyIconAdder* _iconEditor;
-    MyGraphicsProxyWidget* widget;
+    //MyGraphicsProxyWidget* widget;
 
 private slots:
     /*private*/ void updateMemory();

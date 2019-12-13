@@ -119,10 +119,10 @@ public slots:
 private:
  /*private*/ bool debug;// = false;
  void init();
- /*private*/ int fixedWidth;//=0;
- /*private*/ int fixedHeight;//=0;
- /*private*/ int margin;//=0;
- /*private*/ int borderSize;//=0;
+ /*private*/ int fixedWidth = 0;
+ /*private*/ int fixedHeight = 0;
+ /*private*/ int margin = 0;
+ /*private*/ int borderSize = 0;
  /*private*/ QColor borderColor;//=null;
  /*private*/ Border* borderMargin;// = BorderFactory.createEmptyBorder(0, 0, 0, 0);
  /*private*/ Border* outlineBorder;// = BorderFactory.createEmptyBorder(0, 0, 0, 0);

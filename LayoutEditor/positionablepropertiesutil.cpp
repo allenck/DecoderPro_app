@@ -1,7 +1,7 @@
 #include "positionablepropertiesutil.h"
 #include "ui_positionablepropertiesutil.h"
 #include "sensoricon.h"
-#include "memoryicon.h"
+#include "lememoryicon.h"
 #include <QPainter>
 #include <QImage>
 #include <QDir>
