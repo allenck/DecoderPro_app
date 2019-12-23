@@ -138,11 +138,13 @@ friend class EditLogixFrameWindowListener;
 friend class ConditionalTreeEdit;
 };
 
-/*public*/ class LogixEventListener : public EventListener {
+/*public*/ class LogixEventListener : public QObject,public EventListener {
  Q_OBJECT
+ Q_INTERFACES(EventListener)
  ConditionalEditBase* ceb;
 public:
 LogixEventListener(ConditionalEditBase* ceb);
+QObject* self() {return (QObject*)this;}
 public slots:
     virtual void logixEventOccurred();
 };
@@ -153,6 +155,7 @@ class PickSingleListener : public ListSelectionListener {
  int saveItemType;          // Current table type
  ConditionalEditBase* base;
 public:
+ QObject* self() {return (QObject*)this;}
     /**
      * @param textField The target field object when an entry is selected
      * @param itemType  The current selected table type number

@@ -4,16 +4,23 @@
 #include "actionlistener.h"
 #include <QVector>
 #include "component.h"
+#include "propertychangesupport.h"
+#include "jdialog.h"
+#include "jcomponent.h"
+#include "propertychangesupport.h"
 
+class ChangeEvent;
+class QTabWidget;
 class ColorChooserDialog;
 class ColorChooserUI;
 class ColorTracker;
 class JDialog;
 class AbstractColorChooserPanel;
 class ColorSelectionModel;
-class JColorChooser : public QWidget
+class JColorChooser : public QWidget//, public JComponent
 {
  Q_OBJECT
+ //Q_INTERFACES(JComponent)
 public:
  /*public*/ static ColorChooserDialog *createDialog(Component *c, QString title, bool modal,
      JColorChooser* chooserPane, ActionListener* okListener,
@@ -40,15 +47,20 @@ public:
  /*public*/ QWidget* getPreviewPanel();
  /*public*/ void addChooserPanel( AbstractColorChooserPanel* panel );
  /*public*/ AbstractColorChooserPanel* removeChooserPanel( AbstractColorChooserPanel* panel );
- /*public*/ void setChooserPanels( QVector<AbstractColorChooserPanel*> panels);
- /*public*/ QVector<AbstractColorChooserPanel*> getChooserPanels();
+ /*public*/ void setChooserPanels(QVector<AbstractColorChooserPanel *> *panels);
+ /*public*/ QVector<AbstractColorChooserPanel*>* getChooserPanels();
  /*public*/ ColorSelectionModel* getSelectionModel();
  /*public*/ void setSelectionModel(ColorSelectionModel* newModel );
+
+ void addPropertyChangeListener(QString s, PropertyChangeListener* l);
+ void removePropertyChangeListener(QString s, PropertyChangeListener* l);
+ PropertyChangeSupport* pcs;
 
 
 signals:
 
 public slots:
+ void stateChanged(ChangeEvent* evt);
 
 private:
     /*private*/ void common(ColorSelectionModel* model);
@@ -58,16 +70,20 @@ private:
   */
  /*private*/ static /*final*/ QString uiClassID;// = "ColorChooserUI";
 
- /*private*/ ColorSelectionModel* selectionModel;
+ /*private*/ ColorSelectionModel* selectionModel = nullptr;
 
  /*private*/ QWidget* previewPanel;// = ColorChooserComponentFactory.getPreviewPanel();
 
- /*private*/ QVector<AbstractColorChooserPanel*> chooserPanels;// = new AbstractColorChooserPanel[0];
+ /*private*/ QVector<AbstractColorChooserPanel*>* chooserPanels;// = new AbstractColorChooserPanel[0];
 
  /*private*/ bool dragEnabled;
+ QTabWidget* tabWidget;
+ void firePropertyChange(QString propertyName, QVariant old, QVariant newP );
+
+protected:
+ /*protected*/ QString paramString();
 
 };
-
 
 
 class ColorTracker : public ActionListener/*, Serializable*/

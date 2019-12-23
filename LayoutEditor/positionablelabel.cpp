@@ -52,11 +52,12 @@ PositionableLabel::PositionableLabel(QWidget *parent) :
  if (debug) log->debug("PositionableLabel ctor (text) "+s);
  setHorizontalAlignment(JLabel::CENTER);
  setVerticalAlignment(JLabel::CENTER);
- setPopupUtility(new PositionablePopupUtil((Positionable*)this, (JComponent*)this));
- setToolTip("Positionable Label");
+// setPopupUtility(new PositionablePopupUtil(this, this));
+// setToolTip("Positionable Label");
+ QTimer::singleShot(100,  this, SLOT(initAfter()));
  setObjectName("positionableLabel");
-
 }
+
 /*public*/ PositionableLabel::PositionableLabel(NamedIcon* s, Editor* editor, Positionable *parent)
  : JLabel(s,editor)
 {
@@ -71,8 +72,9 @@ PositionableLabel::PositionableLabel(QWidget *parent) :
  debug = log->isDebugEnabled();
 //    if (debug) log->debug(tr("PositionableLabel ctor (icon) ")+s->name());
 
- setPopupUtility(new PositionablePopupUtil((Positionable*)this->parent, (JComponent*)this));
- setToolTip("Positionable Label");
+// setPopupUtility(new PositionablePopupUtil((Positionable*)this->parent, (JComponent*)this));
+// setToolTip("Positionable Label");
+ QTimer::singleShot(100,  this, SLOT(initAfter()));
 }
 
 void PositionableLabel::common(Positionable* parent)
@@ -114,6 +116,13 @@ void PositionableLabel::common(Positionable* parent)
  IS_OPAQUE = false;
  needsRotate = false;
  _degrees = 0;
+}
+
+/*public*/ void PositionableLabel::initAfter()
+{
+ if(!_popupUtil)
+  setPopupUtility(new PositionablePopupUtil(this, this));
+ setToolTip("Positionable Label");
 }
 
 /*public*/ /*final*/ bool PositionableLabel::isIcon() { return _icon; }
@@ -219,7 +228,7 @@ return _displayLevel; }
   NamedIcon* icon = new NamedIcon((NamedIcon*)getIcon());
      pos = new PositionableLabel(icon, _editor);
  } else {
-     pos = new PositionableLabel(_unRotatedText, _editor);
+     pos = new PositionableLabel(getText(), _editor);
  }
  return finishClone(pos);
 }
@@ -232,16 +241,16 @@ return _displayLevel; }
 /*public*/ QString PositionableLabel::getUnRotatedText() {
     return _unRotatedText;
 }
-#if 1
+
 /*public*/ Positionable* PositionableLabel::finishClone(Positionable* p)
 {
  PositionableLabel* pos = (PositionableLabel*)p;
  pos->_text = _text;
  pos->_icon = _icon;
  pos->_control = _control;
- pos->_rotateText = _rotateText;
+ //pos->_rotateText = _rotateText;
  pos->_unRotatedText = _unRotatedText;
- ((Positionable*)pos)->setLocation(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
+ pos->setLocation(getX(), getY());
  pos->_displayLevel = _displayLevel;
  pos->_controlling = _controlling;
  pos->_hidden = _hidden;
@@ -253,20 +262,22 @@ return _displayLevel; }
  {
     pos->setPopupUtility(NULL);
  } else {
-    pos->setPopupUtility(getPopupUtility()->clone((Positionable*)pos,   pos->getTextComponent()));
+    pos->setPopupUtility(getPopupUtility()->clone(pos,   (JComponent*)pos->getTextComponent()));
  }
  pos->setOpaque(isOpaque());
  pos->_saveOpaque = _saveOpaque;
- if (_icon && _namedIcon!=NULL) {
-    pos->_namedIcon = cloneIcon(_namedIcon, pos);
-    pos->setIcon(_namedIcon);
+ if ( _namedIcon!=NULL) {
+  pos->_namedIcon = cloneIcon(_namedIcon, pos);
+  pos->_namedIcon = cloneIcon(_namedIcon, pos);
+  pos->setIcon(_namedIcon);
  }
  pos->updateSize();
- return (Positionable*) pos;
+ return pos;
 }
-/*public*/ JComponent* PositionableLabel::getTextComponent()
+
+/*public*/ QWidget* PositionableLabel::getTextComponent()
 {
- return (JComponent*)this;
+ return (QWidget*)this;
 }
 
 /*protected*/ NamedIcon* PositionableLabel::cloneIcon(NamedIcon* icon, PositionableLabel* pos)
@@ -302,13 +313,15 @@ return _displayLevel; }
 
 /**************** end Positionable methods **********************/
 /****************************************************************/
-#endif
+
 /*public*/ void PositionableLabel::setPopupUtility(PositionablePopupUtil* tu)
 {
  _popupUtil = tu;
 }
 /*public*/ PositionablePopupUtil* PositionableLabel::getPopupUtility()
 {
+ if(!_popupUtil)
+  initAfter();
  return _popupUtil;
 }
 /**

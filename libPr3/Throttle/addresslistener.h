@@ -11,11 +11,13 @@
  */
 class DccThrottle;
 class LocoAddress;
-/*public*/ /*interface*/class  AddressListener : public EventListener
+/*public*/ /*interface*/class  AddressListener : public QObject, public EventListener
 {
     Q_OBJECT
+ Q_INTERFACES(EventListener)
 public:
     AddressListener(QObject* parent = 0) : EventListener(/*parent*/) {}
+    QObject* self() {return (QObject*)this;}
 
 public slots:
     /**

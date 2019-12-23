@@ -82,8 +82,8 @@
     Editor* ed = NULL;
     BlockContentsIcon* l;
     if (qobject_cast<LayoutEditor*>(o) != NULL) {
-        ed = (Editor*) o;
-        l = new BlockContentsIcon("   ", (Editor*) ed);
+        ed = (LayoutEditor*) o;
+        l = new LEBlockContentsIcon("   ", (LayoutEditor*) ed);
     } else if (qobject_cast<Editor*>(o) != NULL) {
         ed = (Editor*) o;
         l = new BlockContentsIcon("", ed);

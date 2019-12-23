@@ -786,7 +786,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
         return ItemPalette::convertText(key);
 }
 
-/*protected*/ DragJLabel* FamilyItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon) {
+/*protected*/ DragJLabel* FamilyItemPanel::getDragger(DataFlavor* /*flavor*/, QMap<QString, NamedIcon*>* /*map*/, NamedIcon* /*icon*/) {
     return nullptr;
 }
 
@@ -844,126 +844,26 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
 //   if(l == NULL)
 //    _dragIconPanel->setLayout(new QHBoxLayout);
 //   ((QVBoxLayout*)_dragIconPanel->layout())->addWidget(panel,0, Qt::AlignCenter);
-  l->addWidget(panel); return;
-  delete ic;
+  l->addWidget(panel);
+  return;
   }
  }
  else
  {
-//  JOptionPane.showMessageDialog(_paletteFrame,
-//        java.text.MessageFormat.format(ItemPalette.rbp.getString("FamilyNotFound"),
-//                                       ItemPalette.rbp.getString(_itemType), _family),
-//         ItemPalette.rb.getString("warnTitle"), JOptionPane.WARNING_MESSAGE);
+  JOptionPane::showMessageDialog(_paletteFrame,
+        tr("Icon Set \"%2\" not found in type \"%1\".").arg(_itemType).arg(_family),
+         tr("Warning"), JOptionPane::WARNING_MESSAGE);
   log->warn(tr("Icon Set \"%2\" not found in type \"%1\".").arg(_itemType).arg(_family));
-  QMessageBox::warning(_paletteFrame, tr("Warning"), tr("Icon Set \"%2\" not found in type \"%1\".").arg(_itemType).arg(_family));
-
  }
 }
 
-///*protected*/ QWidget*  FamilyItemPanel::makeBottom1Panel()
-//{
-// QWidget*  bottomPanel = new QWidget();
-// QHBoxLayout* bottomPanelLayout;
-// bottomPanel->setLayout(bottomPanelLayout = new QHBoxLayout);
-// _showIconsButton = new QPushButton(tr("Show Icons"));
-////    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-////    sizePolicy.setHorizontalStretch(0);
-////    sizePolicy.setVerticalStretch(0);
-////    sizePolicy.setHeightForWidth(_showIconsButton->sizePolicy().hasHeightForWidth());
-////    _showIconsButton->setSizePolicy(sizePolicy);
-////    _showIconsButton.addActionListener(new ActionListener() {
-////            /*public*/ void actionPerformed(ActionEvent a) {
-////                if (_iconPanel.isVisible()) {
-////                    hideIcons();
-////                } else {
-////                    showIcons();
-////                }
-////            }
-////    });
-// connect(_showIconsButton, SIGNAL(clicked()), this, SLOT(on_showIconsButton_clicked()));
-// _showIconsButton->setToolTip(tr("Press to display the icons for the current icon set"));
-// bottomPanelLayout->addWidget(_showIconsButton);
 
-// QPushButton* editIconsButton = new QPushButton(tr("Edit Icons"));
-//    //editIconsButton->setSizePolicy(sizePolicy);
-////    editIconsButton.addActionListener(new ActionListener() {
-////            /*public*/ void actionPerformed(ActionEvent a) {
-////                openEditDialog();
-////            }
-////    });
-// connect(editIconsButton, SIGNAL(clicked()), this, SLOT(openEditDialog()));
-// editIconsButton->setToolTip(tr("Press to change the icons of the current icon set or to add and delete icon sets"));
-// bottomPanelLayout->addWidget(editIconsButton);
-// return bottomPanel;
-//}
-
-//void FamilyItemPanel::on_showIconsButton_clicked()
-//{
-// if (_iconPanel->isVisible())
-// {
-//  hideIcons();
-// }
-// else
-// {
-//  showIcons();
-// }
-//}
-
-///**
-//*  Replacement panel for _bottom1Panel when no icon families exist for _itemType
-//*/
-///*protected*/ QWidget*  FamilyItemPanel::makeBottom2Panel() {
-//    QWidget*  panel = new QWidget();
-//    FlowLayout* panelLayout;
-//    panel->setLayout(panelLayout = new FlowLayout);
-//    QPushButton* newFamilyButton = new QPushButton(tr("Create Icon Set"));
-////    newFamilyButton.addActionListener(new ActionListener() {
-////            /*public*/ void actionPerformed(ActionEvent a) {
-////                createNewFamilySet(_itemType);
-////            }
-////    });
-//    connect(newFamilyButton, SIGNAL(clicked()), this, SLOT(on_newFamilyButton_clicked()));
-//    newFamilyButton->setToolTip(tr("Create an additonal set of icons for this device"));
-//    panelLayout->addWidget(newFamilyButton);
-
-//    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
-////    cancelButton.addActionListener(new ActionListener() {
-////            /*public*/ void actionPerformed(ActionEvent a) {
-////                updateFamiliesPanel();
-////             }
-////    });
-//    connect(cancelButton, SIGNAL(clicked()), this, SLOT(updateFamiliesPanel()));
-//    panelLayout->addWidget(cancelButton);
-//    return panel;
-//}
 
 void FamilyItemPanel::on_newFamilyButton_clicked()
 {
  newFamilyDialog();
 }
 
-//// add update buttons to  bottom1Panel
-///*protected*/ QWidget* FamilyItemPanel::makeBottom3Panel(ActionListener* doneAction, QWidget* bottom1Panel)
-//{
-// QWidget* bottomPanel = new QWidget(/*new FlowLayout()*/);
-// QHBoxLayout* bottomPanelLayout;
-// bottomPanel->setLayout(bottomPanelLayout = new QHBoxLayout);
-// bottomPanelLayout->addWidget(bottom1Panel);
-// QWidget*  updatePanel = new QWidget(/*new FlowLayout()*/);
-// FlowLayout* updatePanelLayout;
-// updatePanel->setLayout(updatePanelLayout = new FlowLayout);
-// _updateButton = new QPushButton(tr("Update Panel"));
-////    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-////     sizePolicy.setHorizontalStretch(0);
-////     sizePolicy.setVerticalStretch(0);
-////     sizePolicy.setHeightForWidth(_updateButton->sizePolicy().hasHeightForWidth());
-////     _updateButton->setSizePolicy(sizePolicy);//    _updateButton.addActionListener(doneAction);
-// _updateButton->setToolTip(tr("Select an item from the table and an icon set to update the panel"));
-// connect(_updateButton, SIGNAL(clicked()), doneAction, SLOT(actionPerformed()));
-// updatePanelLayout->addWidget(_updateButton);
-// bottomPanelLayout->addWidget(updatePanel,0,Qt::AlignCenter);
-// return bottomPanel;
-//}
 
 /*protected*/ void FamilyItemPanel::hideIcons()
 {

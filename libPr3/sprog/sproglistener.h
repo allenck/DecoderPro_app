@@ -5,11 +5,13 @@
 namespace Sprog {
  class SprogMessage;
  class SprogReply;
- class SprogListener : public EventListener
+ class SprogListener : public QObject, public EventListener
  {
   Q_OBJECT
+  Q_INTERFACES(EventListener)
  public:
   SprogListener(QObject* parent = 0);
+  QObject* self() {return (QObject*)this;}
 
  public slots:
   virtual /*public*/ void notifyMessage(SprogMessage* /*m*/) {}

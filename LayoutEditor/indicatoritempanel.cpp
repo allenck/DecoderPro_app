@@ -112,7 +112,7 @@ public void setErrSensor(QString name) {
 
 /*******************************************************/
 
-/*protected*/ DragJLabel* IndicatorItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon *icon) {
+/*protected*/ DragJLabel* IndicatorItemPanel::getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon */*icon*/) {
     return new IndicatorDragJLabel(flavor, map, this);
 }
 
@@ -130,15 +130,16 @@ public void setErrSensor(QString name) {
 {
  return DragJLabel::isDataFlavorSupported(flavor);
 }
-/*public*/ QObject* IndicatorDragJLabel::getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException) {
-        if (!isDataFlavorSupported(flavor)) {
-            return NULL;
-        }
-        if (iconMap==NULL) {
-            self->log->error("IconDragJLabel.getTransferData: iconMap is NULL!");
-            return NULL;
-        }
-        if (self->log->isDebugEnabled()) self->log->debug("IndicatorDragJLabel.getTransferData");
+/*public*/ QObject* IndicatorDragJLabel::getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException)
+{
+    if (!isDataFlavorSupported(flavor)) {
+        return NULL;
+    }
+    if (iconMap==NULL) {
+        self->log->error("IconDragJLabel.getTransferData: iconMap is NULL!");
+        return NULL;
+    }
+    if (self->log->isDebugEnabled()) self->log->debug("IndicatorDragJLabel.getTransferData");
 //        IndicatorTrackIcon* t = new IndicatorTrackIcon(_editor);
 
 //        t.setOccBlock(_detectPanel->getOccBlock());
@@ -153,7 +154,9 @@ public void setErrSensor(QString name) {
 //        }
 //        t.setLevel(Editor::TURNOUTS);
 //        return t;
-    }
+    return nullptr;
+}
+
 QByteArray IndicatorDragJLabel::mimeData()
 {
   IndicatorTrackIcon* icon;

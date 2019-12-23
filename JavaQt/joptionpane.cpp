@@ -1209,7 +1209,7 @@ if(options.count() >0)
  */
 /*public*/ /*static*/ int JOptionPane::showInternalOptionDialog(Component* parentComponent,
                                    QVariant message,
-                                   QString title, int optionType,
+                                   QString title, int /*optionType*/,
                                    int messageType, QIcon icon,
                                    QVariantList options, QVariant initialValue)
 {
@@ -1303,6 +1303,7 @@ if(options.count() >0)
     dialog->layout()->addWidget(p);
     dialog->show();
 #endif
+    return dialog->result();
 }
 #if 0
 /**

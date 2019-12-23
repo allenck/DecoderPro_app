@@ -11,6 +11,7 @@
 #include "iconadder.h"
 #include <QGraphicsProxyWidget>
 #include "positionablepopuputil.h"
+#include "jspinner.h"
 
 //MemorySpinnerIcon::MemorySpinnerIcon(QWidget *parent) :
 //    PositionableJPanel(parent)
@@ -35,11 +36,7 @@
  //super(editor);
  _min = 0;
  _max = 100;
-  spinner = new QSpinBox();//JSpinner(new SpinnerNumberModel(0,_min,_max,1));
-  spinner->setMinimum(_min);
-  spinner->setMaximum(_max);
-  spinner->setSingleStep(1);
-  spinner->setValue(50);
+  spinner = new JSpinner(new SpinnerNumberModel(0,_min,_max,1));
   setLevel(Editor::LABELS);
   selectable = false;
   log = new Logger("MemorySpinnerIcon");

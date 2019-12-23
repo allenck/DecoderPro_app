@@ -2,6 +2,8 @@
 #include "defaultboundedrangemodel.h"
 #include "exceptions.h"
 #include <QDebug>
+#include "changelistener.h"
+#include "changeevent.h"
 
 JSlider::JSlider(QWidget *parent) :
     QSlider(Qt::Horizontal, parent)
@@ -11,6 +13,7 @@ JSlider::JSlider(QWidget *parent) :
     setMaximum(100);
     connect(this, SIGNAL(valueChanged(int)), this, SLOT(On_valueChanged(int)));
     setValue(0);
+    listeners = QVector<ChangeListener*>();
 }
 
 /**
@@ -50,6 +53,8 @@ JSlider::JSlider(QWidget *parent) :
     setMinimum(min);
     setMaximum(max);
     setValue(value);
+    listeners = QVector<ChangeListener*>();
+
 }
 
 /*private*/ void JSlider::checkOrientation(int orientation)
@@ -159,19 +164,34 @@ JSlider::JSlider(QWidget *parent) :
 void JSlider::On_valueChanged(int value)
 {
  sliderModel->setValue(value);
+ foreach (ChangeListener* l, listeners) {
+  l->stateChanged(new ChangeEvent(this));
+ }
 }
+
 void JSlider::setMinimum(int i)
 {
  sliderModel->setMinimum(i);
  QSlider::setMinimum(i);
 }
+
 void JSlider::setMaximum(int i)
 {
  sliderModel->setMaximum(i);
  QSlider::setMaximum(i);
 }
+int JSlider::getValue() {return QSlider::value();}
 void JSlider::setValue(int i)
 {
  sliderModel->setValue(i);
  QSlider::setValue(i);
+}
+
+/*public*/ void JSlider::addChangeListener(ChangeListener* l)
+{
+ listeners.append(l);
+}
+/*public*/ void JSlider::removeChangeListener(ChangeListener* l)
+{
+ listeners.removeOne(l);
 }

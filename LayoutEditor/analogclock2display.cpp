@@ -518,3 +518,8 @@ void AnalogClock2Display::propertyChange(PropertyChangeEvent *)
  update();
  return true;
 }
+
+/*public*/ void AnalogClock2Display::setFont(QFont)
+{
+
+}

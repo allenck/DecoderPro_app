@@ -440,10 +440,10 @@ DefaultTreeModel::DefaultTreeModel(QObject *parent) :
  */
 /*public*/ QList<TreeModelListener*> DefaultTreeModel::getTreeModelListeners() {
     //return listenerList->getListeners("TreeModelListener");
- QVector<QObject*> list =  listenerList->getListenerList();
+ QVector<EventListener*> list =  listenerList->getListenerList();
  QList<TreeModelListener*> listenerList = QList<TreeModelListener*>();
- foreach (QObject* listener, list) {
-  if(listener->objectName() == "TreeModelListener")
+ foreach (EventListener* listener, list) {
+  if(listener->self()->objectName() == "TreeModelListener")
    listenerList.append((TreeModelListener*)listener);
  }
  return listenerList;
@@ -606,7 +606,7 @@ DefaultTreeModel::DefaultTreeModel(QObject *parent) :
 /*private*/ void DefaultTreeModel::fireTreeStructureChanged(QObject* source, TreePath* path) {
 #if 1
     // Guaranteed to return a non-NULL array
-    QVector<QObject*> listeners = listenerList->getListenerList();
+    QVector<EventListener*> listeners = listenerList->getListenerList();
     TreeModelEvent* e = NULL;
     // Process the listeners last to first, notifying
     // those that are interested in this event

@@ -414,6 +414,8 @@
   sm = createDefaultSelectionModel();
  }
  setSelectionModel(sm);
+ connect(sm, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), sm, SLOT(onSelectionChanged(QItemSelection,QItemSelection)));
+
 
 // Set the model last, that way if the autoCreatColumnsFromModel has
 // been set above, we will automatically populate an empty columnModel
@@ -1941,17 +1943,17 @@ Object setDropLocation(TransferHandler.DropLocation location,
 }
 #endif
 /*private*/ void JTable::clearSelectionAndLeadAnchor() {
-    selectionModel->setValueIsAdjusting(true);
+    _selectionModel->setValueIsAdjusting(true);
     columnModel->getSelectionModel()->setValueIsAdjusting(true);
 
     clearSelection();
 
-     selectionModel->setAnchorSelectionIndex(-1);
-     selectionModel->setLeadSelectionIndex(-1);
+     _selectionModel->setAnchorSelectionIndex(-1);
+     _selectionModel->setLeadSelectionIndex(-1);
     columnModel->getSelectionModel()->setAnchorSelectionIndex(-1);
     columnModel->getSelectionModel()->setLeadSelectionIndex(-1);
 
-     selectionModel->setValueIsAdjusting(false);
+     _selectionModel->setValueIsAdjusting(false);
     columnModel->getSelectionModel()->setValueIsAdjusting(false);
 }
 #if 0
@@ -3638,7 +3640,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
   throw  IllegalArgumentException("Cannot set a NULL SelectionModel");
  }
 
- DefaultListSelectionModel* oldModel = selectionModel;
+ DefaultListSelectionModel* oldModel = _selectionModel;
 
  if (newModel != oldModel)
  {
@@ -3647,8 +3649,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
 //    oldModel.removeListSelectionListener(this);
   }
 
-  selectionModel = newModel;
-  newModel->setItemSelectionModel(QTableView::selectionModel());
+  _selectionModel = newModel;
 //    newModel.addListSelectionListener(this);
 
   firePropertyChange("selectionModel", VPtr<DefaultListSelectionModel>::asQVariant(oldModel), VPtr<DefaultListSelectionModel>::asQVariant(newModel));
@@ -3665,7 +3666,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
  * @see     #setSelectionModel
  */
 /*public*/ DefaultListSelectionModel *JTable::getSelectionModel() {
-    return selectionModel;
+    return _selectionModel;
 }
 #if 0
 //
@@ -3843,7 +3844,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
  /*private*/ void SortManager::cacheModelSelection(RowSorterEvent* sortEvent) {
      lastModelSelection = jt->convertSelectionToModel(sortEvent);
      modelLeadIndex = jt->convertRowIndexToModel(sortEvent,
-                 ((DefaultListSelectionModel*)jt->selectionModel)->getLeadSelectionIndex());
+                 ((DefaultListSelectionModel*)jt->_selectionModel)->getLeadSelectionIndex());
  }
 
  /**
@@ -4085,17 +4086,17 @@ private void repaintSortedRows(ModelChange change) {
     }
 
     // And apply the new selection
-    selectionModel->setValueIsAdjusting(true);
-    selectionModel->clearSelection();
+    _selectionModel->setValueIsAdjusting(true);
+    _selectionModel->clearSelection();
     for (int i = selection->length() - 1; i >= 0; i--) {
         if (selection->at(i) != -1) {
-            selectionModel->addSelectionInterval(selection->at(i),
+            _selectionModel->addSelectionInterval(selection->at(i),
                                                 selection->at(i));
         }
     }
 //    SwingUtilities2.setLeadAnchorWithoutSelection(
 //            selectionModel, lead, lead);
-    selectionModel->setValueIsAdjusting(false);
+    _selectionModel->setValueIsAdjusting(false);
 }
 
 /**
@@ -5493,7 +5494,6 @@ static class BooleanEditor extends DefaultCellEditor {
  QItemSelectionModel* rslt = QAbstractItemView::selectionModel();
  if(rslt != itemSelectionModel)
   log->error(tr("setting selection mdel failed"));
- m->setItemSelectionModel(itemSelectionModel);
  return m;
 }
 #if 0

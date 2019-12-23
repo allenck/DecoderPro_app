@@ -70,7 +70,7 @@
 #include "signalmastmanager.h"
 #include "joptionpane.h"
 #include "loggerfactory.h"
-
+#include "positionable.h"
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
 //{
@@ -2698,7 +2698,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 #if 1
 /****************** Mouse Methods ***********************/
 
-/*public*/ void Editor::showToolTip(Positionable* selection, QGraphicsSceneMouseEvent* event) {
+/*public*/ void Editor::showToolTip(Positionable* selection, QGraphicsSceneMouseEvent* /*event*/) {
 #if 1
     QString tip = selection->getToolTip();
     QString txt = tip/*.getText()*/;
@@ -3182,7 +3182,7 @@ TextAttrDialog::TextAttrDialog(Positionable* p, QWidget* _targetFrame) : JDialog
  QWidget* panel = new QWidget();
  QVBoxLayout* panelLayout;
  panel->setLayout(panelLayout = new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
- _decorator = new DecoratorPanel(((PositionableLabel*)_pos)->getEditor(), nullptr);
+ _decorator = new DecoratorPanel(((PositionableLabel*)_pos->self())->getEditor(), nullptr);
  _decorator->initDecoratorPanel(_pos);
  panelLayout->addWidget(_decorator);
  panelLayout->addWidget(makeDoneButtonPanel());
@@ -3250,58 +3250,62 @@ void TextAttrDialog::doneButton_clicked()
  * @param p
  * @param isOpaque
  */
-/*protected*/ void Editor::setAttributes(PositionablePopupUtil* newUtil, Positionable* p, bool isOpaque) {
-    ((PositionableLabel*)p)->setPopupUtility(newUtil->clone(p, ((PositionableLabel*)p)->getTextComponent()));
-   ((PositionableLabel*)p)->setOpaque(isOpaque);
-    //if (p instanceof PositionableLabel)
-    if(qobject_cast<PositionableLabel*>(p->self())!= nullptr)
-    {
-        PositionableLabel* pos = (PositionableLabel*)p;
-        if (!pos->isText() || (pos->isText() && pos->isIcon())) {
-            return;
-        } else {
-            int deg = pos->getDegrees();
-            if (deg!=0) {
-                pos->setOpaque(false);
-                pos->saveOpaque(isOpaque);
-                pos->rotate(0);
-                int mar = newUtil->getMargin();
-                int bor = newUtil->getBorderSize();
+/*protected*/ void Editor::setAttributes(PositionablePopupUtil* newUtil, Positionable* p, bool isOpaque)
+{
+ p->setPopupUtility(newUtil->clone(p, (JComponent*)p->getTextComponent()));
+ p->setOpaque(isOpaque);
+ //if (p instanceof PositionableLabel)
+ if(qobject_cast<PositionableLabel*>(p->self())!= nullptr)
+ {
+  PositionableLabel* pos = (PositionableLabel*)p;
+  if (!pos->isText() || (pos->isText() && pos->isIcon())) {
+      return;
+  }
+  else
+  {
+   int deg = pos->getDegrees();
+   if (deg!=0)
+   {
+    pos->setOpaque(false);
+    pos->saveOpaque(isOpaque);
+    pos->rotate(0);
+    int mar = newUtil->getMargin();
+    int bor = newUtil->getBorderSize();
 
-                Border* outlineBorder;
-                if (bor==0) {
-                    outlineBorder = BorderFactory::createEmptyBorder(0, 0, 0, 0);
-                }else {
-                    outlineBorder = new LineBorder(newUtil->getBorderColor(), bor);
-                }
-                Border* borderMargin;
-                if (isOpaque){
-                    borderMargin = new LineBorder(pos->getBackground(), mar);
-                } else{
-                    borderMargin = BorderFactory::createEmptyBorder(mar, mar, mar, mar);
-                }
-                pos->setBorder(new CompoundBorder(outlineBorder, borderMargin));
-                pos->setOpaque(isOpaque);
-                pos->rotate(deg);
-                if(pos->_itemGroup != nullptr)
-                {
-//                 getTargetPanel()->invalidate(pos->_itemGroup->boundingRect());
-                 addToTarget(pos);
-                }
-            }
-        }
+    Border* outlineBorder;
+    if (bor==0) {
+        outlineBorder = BorderFactory::createEmptyBorder(0, 0, 0, 0);
+    }else {
+        outlineBorder = new LineBorder(newUtil->getBorderColor(), bor);
     }
-    ((Positionable*)p)->updateSize();
-    //((Positionable*)p)->repaint();
-    p->updateScene();
-    //if (p instanceof PositionableIcon)
-    if(qobject_cast<PositionableIcon*>(p->self())!=nullptr)
+    Border* borderMargin;
+    if (isOpaque){
+        borderMargin = new LineBorder(pos->getBackground(), mar);
+    } else{
+        borderMargin = BorderFactory::createEmptyBorder(mar, mar, mar, mar);
+    }
+    pos->setBorder(new CompoundBorder(outlineBorder, borderMargin));
+    pos->setOpaque(isOpaque);
+    pos->rotate(deg);
+    if(pos->_itemGroup != nullptr)
     {
-     NamedBean* bean = ((PositionableIcon*)p)->getNamedBean();
-        if (bean!=nullptr) {
-            ((PositionableIcon*)p)->displayState(bean->getState());
-        }
+//                 getTargetPanel()->invalidate(pos->_itemGroup->boundingRect());
+     addToTarget(pos);
     }
+   }
+  }
+ }
+ ((Positionable*)p)->updateSize();
+ //((Positionable*)p)->repaint();
+ p->updateScene();
+ //if (p instanceof PositionableIcon)
+ if(qobject_cast<PositionableIcon*>(p->self())!=nullptr)
+ {
+  NamedBean* bean = ((PositionableIcon*)p)->getNamedBean();
+     if (bean!=nullptr) {
+         ((PositionableIcon*)p)->displayState(bean->getState());
+     }
+ }
 }
 
 /*protected*/ void Editor::setSelectionsAttributes(PositionablePopupUtil* util, Positionable* pos, bool isOpaque) {

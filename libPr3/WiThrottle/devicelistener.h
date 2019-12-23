@@ -12,9 +12,11 @@
  */
 
 
-/*public*/ /*interface*/ class DeviceListener : public  EventListener {
+/*public*/ /*interface*/ class DeviceListener : public QObject, public  EventListener {
  Q_OBJECT
-
+ Q_INTERFACES(EventListener)
+public:
+ QObject* self() {return (QObject*)this;}
 public slots:
     /**
      * A new device has connected.

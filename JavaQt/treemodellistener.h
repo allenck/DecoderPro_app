@@ -14,11 +14,12 @@
  * @author Rob Davis
  * @author Ray Ryan
  */
-/*public*/ /*interface*/ class TreeModelListener : public EventListener
+/*public*/ /*interface*/ class TreeModelListener : public QObject, public EventListener
 {
-
+ Q_OBJECT
+ Q_INTERFACES(EventListener)
 public:
- TreeModelListener() : EventListener()
+ TreeModelListener() : QObject()
  {
   setObjectName("TreeModelListener");
  }

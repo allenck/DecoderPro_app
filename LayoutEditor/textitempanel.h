@@ -11,8 +11,10 @@ class TextItemPanel : public ItemPanel
     Q_OBJECT
 public:
     //explicit TextItemPanel(QWidget *parent = 0);
-    /*public*/ TextItemPanel(ItemPalette* parentFrame, QString  type, Editor* editor, QWidget *parent);
+    /*public*/ TextItemPanel(ItemPalette* parentFrame, QString  type, Editor* editor, QWidget *parent = 0);
     /*public*/ void init();
+    /*public*/ void init(ActionListener* doneAction, Positionable* pos);
+    /*public*/ void init(ActionListener* doneAction);
     /*public*/ void updateAttributes(PositionableLabel* l);
     /*public*/ void closeDialogs();
 
@@ -28,7 +30,7 @@ protected:
     /*protected*/ QWidget *makeDoneButtonPanel(ActionListener* doneAction);
     /*protected*/ void setEditor(Editor* ed);
 
-
+friend class DragDecoratorLabel;
 };
 /**
  * Export a Positionable item from panel.
@@ -41,6 +43,21 @@ class DragDecoratorLabel : public PositionableLabel // implements DragGestureLis
 public:
     /*public*/ DragDecoratorLabel(QString s, Editor* editor,TextItemPanel* textItemPanel);
 //    /*public*/ void dragGestureRecognized(DragGestureEvent e);
+    void mousePressEvent(QMouseEvent *e);
+    void setBackground(QColor bg);
+    void setMargin(int);
+    void setFixedWidth(int);
+    void setFixedHeight(int);
+    void setBorderColor(QColor);
+    void setBorderSize(int);
+    void setForeground(QColor);
+    /*public*/ void setAttributes();
+
+public slots:
+    void setFontSize(int);
+    void setFontFamily(QString family);
+    void setFontStyle(int);
+
 #if 0
     /*public*/ void dragDropEnd(QDropEvent e) ;
     /*public*/ void dragEnter(QDragEnterEvent e);
@@ -51,6 +68,15 @@ public:
     /*public*/ bool isDataFlavorSupported(DataFlavor* flavor);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException, IOException) ;
 #endif
+private:
+    QDrag* dr;
+    QByteArray mimeData();
+    QColor fg;
+    QColor bg;
+    QColor borderColor;
+    QFont f;
+    int borderSize = 0;
+    int margin = 0;
 };
 
 #endif // TEXTITEMPANEL_H

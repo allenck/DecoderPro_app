@@ -751,6 +751,7 @@ class TextAttributesActionListener : public QObject
  TextAttributesActionListener* init(Positionable* pos);
 
 };
+
 class TextAttrDialog : public JDialog {
     Q_OBJECT
     Positionable* _pos;

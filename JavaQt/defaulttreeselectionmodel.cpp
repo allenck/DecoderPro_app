@@ -153,6 +153,8 @@
  */
 /*public*/ void DefaultTreeSelectionModel::setSelectionPaths(QVector<TreePath*> pPaths) {
     int            newCount, newCounter, oldCount, oldCounter;
+    Q_UNUSED(newCounter);
+    Q_UNUSED(oldCounter);
     QVector<TreePath*>     paths = pPaths;
 
     if(paths.isEmpty())
@@ -185,6 +187,7 @@
         }
 
         TreePath*         beginLeadPath = leadPath;
+        Q_UNUSED(beginLeadPath);
 #if 0
         Vector<PathPlaceHolder> cPaths = new Vector<PathPlaceHolder>(newCount + oldCount);
         List<TreePath> newSelectionAsList =
@@ -467,6 +470,7 @@
 /*public*/ QVector<TreePath*> DefaultTreeSelectionModel::getSelectionPaths() {
     if(!selection.isEmpty()) {
         int                 pathSize = selection.length();
+        Q_UNUSED(pathSize);
         QVector<TreePath*>   result =  QVector<TreePath*>();
 
         //System.arraycopy(selection, 0, result, 0, pathSize);
@@ -541,7 +545,7 @@
   *
   * @param x the listener to remove
   */
-/*public*/ void DefaultTreeSelectionModel::removeTreeSelectionListener(TreeSelectionListener* x) {
+/*public*/ void DefaultTreeSelectionModel::removeTreeSelectionListener(TreeSelectionListener* /*x*/) {
 //    listenerList->remove("TreeSelectionListener", x);
 }
 
@@ -561,10 +565,10 @@
 /*public*/ QVector<TreeSelectionListener*> DefaultTreeSelectionModel::getTreeSelectionListeners() {
     //return listenerList->getListeners(QString("TreeSelectionListener"));
  QVector<TreeSelectionListener*> rslt = QVector<TreeSelectionListener*>();
- QVector<QObject*> olist = listenerList->getListenerList();
- foreach (QObject* obj, olist) {
-  if(qobject_cast<TreeSelectionListener*>(obj) != nullptr)
-    rslt.append((TreeSelectionListener*)obj);
+ QVector<EventListener*> olist = listenerList->getListenerList();
+ foreach (EventListener* el, olist) {
+  if(qobject_cast<TreeSelectionListener*>(el->self()) != nullptr)
+    rslt.append((TreeSelectionListener*)el);
  }
  return rslt;
 }
@@ -577,13 +581,13 @@
  */
 /*protected*/ void DefaultTreeSelectionModel::fireValueChanged(TreeSelectionEvent* e) {
     // Guaranteed to return a non-NULL array
-    QVector<QObject*> listeners = listenerList->getListenerList();
+    QVector<EventListener*> listeners = listenerList->getListenerList();
     // TreeSelectionEvent e = NULL;
     // Process the listeners last to first, notifying
     // those that are interested in this event
     for (int i = listeners.length()-2; i>=0; i-=2) {
         //if (listeners.at(i)=="TreeSelectionListener")
-     if(qobject_cast<TreeSelectionListener*>(listeners.at(i)) != nullptr)
+     if(qobject_cast<TreeSelectionListener*>(listeners.at(i)->self()) != nullptr)
         {
             // Lazily create the event:
             // if (e == NULL)
@@ -986,7 +990,7 @@
         BitSet*               bitSet =  new BitSet();
         int                  counter;
         int                  pathCount = paths.length();
-        int                  anIndex;
+//        int                  anIndex;
         int                  min = -1;
         int                  validCount = 0;
         QVector<TreePath*>           tempPath =  QVector<TreePath*>(1);
@@ -1000,7 +1004,7 @@
             }
         }
         for(counter = selection.length() - 1; counter >= 0; counter--) {
-            if(lastPaths->value(selection[counter]) == NULL) {
+            if(lastPaths->value(selection[counter]) == 0) {
                 tempPath.replace(0, selection.at(counter));
                 rows = rowMapper->getRowsForPaths(tempPath);
                 if(!rows.isEmpty() && rows.at(0) != -1 && !bitSet->get(rows.at(0))) {

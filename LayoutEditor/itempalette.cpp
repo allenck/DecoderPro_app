@@ -442,25 +442,25 @@ void ItemPalette::changeEvent(QEvent * e)
 //        if (GraphicsEnvironment.isHeadless()) {
 //            return null;
 //        }
-        ItemPalette* instance = static_cast<ItemPalette*>( InstanceManager::getOptionalDefault("ItemPalette"));//.orElseGet(() -> {
-          if(instance == nullptr)
-            return (ItemPalette*)InstanceManager::setDefault("ItemPalette", new ItemPalette(title, ed));
+    ItemPalette* instance = static_cast<ItemPalette*>( InstanceManager::getOptionalDefault("ItemPalette"));//.orElseGet(() -> {
+      if(instance == nullptr)
+        return (ItemPalette*)InstanceManager::setDefault("ItemPalette", new ItemPalette(title, ed));
 //        });
-        QListIterator<ItemPanel*> iter(_tabIndex->values());
-        while (iter.hasNext()) {
-            iter.next()->setEditor(ed);
-        }
-        QString name = ed->getName();
-        if (name == "" || name == ("")) {
-            name = tr("Untitled");
-        }
-        instance->setTitle(tr("Item Palette") + " - " + name);
-        // pack before setLocation
-        instance->pack();
-        instance->move(PlaceWindow::nextTo(ed, nullptr, instance));
-        instance->setVisible(true);
-        return instance;
+    QListIterator<ItemPanel*> iter(_tabIndex->values());
+    while (iter.hasNext()) {
+        iter.next()->setEditor(ed);
     }
+    QString name = ed->getName();
+    if (name == "" || name == ("")) {
+        name = tr("Untitled");
+    }
+    instance->setTitle(tr("Item Palette") + " - " + name);
+    // pack before setLocation
+    instance->pack();
+    instance->move(PlaceWindow::nextTo(ed, nullptr, instance));
+    instance->setVisible(true);
+    return instance;
+}
 
 /*public*/ ItemPalette::ItemPalette(QWidget* parent) : DisplayFrame(true, true, parent)
 {
@@ -536,7 +536,7 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     _tabIndex = new QMap<QString, ItemPanel*>();
 
     ItemPanel* itemPanel;
-#if 1
+#if 0
     itemPanel = new TableItemPanel(palette, "Turnout", NULL, PickListModel::turnoutPickModelInstance(), editor, palette);
     addItemTab(itemPanel, "Turnout", tr("Turnout"));
     itemPanel->init();  // show panel on start
@@ -564,11 +564,11 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     itemPanel = new TableItemPanel(palette, "Light", NULL, PickListModel::lightPickModelInstance(), editor, palette);
     addItemTab(itemPanel, "Light", tr("Light"));
     itemPanel->init();
-#endif
+
     itemPanel = new MultiSensorItemPanel(palette, "MultiSensor", NULL, PickListModel::multiSensorPickModelInstance(), editor,palette);
     addItemTab(itemPanel, "MultiSensor", tr("MultiSensor"));
     itemPanel->init();
-#if 1
+
     itemPanel = new IconItemPanel(palette, "Icon", editor,palette);
     addItemTab(itemPanel, "Icon", tr("Icon"));
     itemPanel->init();
@@ -576,11 +576,11 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     itemPanel = new BackgroundItemPanel(palette, "Background", editor, palette);
     addItemTab(itemPanel, "Background", tr("Background"));
     itemPanel->init();
-
-    itemPanel = new TextItemPanel(palette, "Text", editor,palette);
+#endif
+    itemPanel = new TextItemPanel(palette, "Text", editor);
     addItemTab(itemPanel, "Text", tr("Text"));
     itemPanel->init();
-
+#if 1
     itemPanel = new RPSItemPanel(palette, "RPSReporter", NULL, editor);
     addItemTab(itemPanel, "RPSReporter", tr("RPSReporter"));
     itemPanel->init();

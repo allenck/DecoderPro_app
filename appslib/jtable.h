@@ -256,7 +256,7 @@ protected:
  /*protected*/ TableColumnModel*  columnModel;
 
  /** The <code>ListSelectionModel</code> of the table, used to keep track of row selections. */
- /*protected*/ DefaultListSelectionModel* selectionModel;
+ /*protected*/ DefaultListSelectionModel* _selectionModel;
 
  /** The <code>TableHeader</code> working with the table. */
  /*protected*/ QHeaderView*      tableHeader;
@@ -353,6 +353,7 @@ friend class TableFrames;
 friend class WarrantPreferencesPanel;
 friend class SortManager;
 friend class LocationsTableModel;
+friend class MultiSensorItemPanel;
 };
 
 /**
@@ -425,5 +426,6 @@ public:
     ModelChange(TableModelEvent* e, JTable* jt);
     friend class JTable;
     friend class SortManager;
+
 };
 #endif // JTABLE_H

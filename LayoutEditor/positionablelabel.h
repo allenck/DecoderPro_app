@@ -76,7 +76,7 @@ public:
 /*public*/ QString getNameString();
 /*public*/ Positionable* deepClone();
 /*public*/ Positionable* finishClone(Positionable* p);
-/*public*/ JComponent* getTextComponent();
+/*public*/ QWidget *getTextComponent();
 /**
  * When text is rotated or in an icon mode, the return of getText() may be
  * null or some other value
@@ -174,7 +174,10 @@ public:
 
 signals:
  void propertyChange(PropertyChangeEvent*);
+
 public slots:
+ void initAfter();
+
 private:
 /*private*/ int _degrees;
 //QFont _font;
@@ -188,7 +191,7 @@ bool active;// = true;
 bool IS_OPAQUE;
 bool OPAQUE_SET;
 /*private*/ bool _saveOpaque;
-PositionablePopupUtil* _popupUtil;
+PositionablePopupUtil* _popupUtil = nullptr;
 /************ Methods for Item Popups in Panel editor *************************/
 JFrameItem* _iconEditorFrame;
 //AddPanelIconDialog* _iconEditor;
@@ -205,6 +208,7 @@ int _x;
 int _y;
 
 friend class LinkingLabel;
+friend class DragDecoratorLabel;
 
 class AddIconActionListener : public ActionListener
 {

@@ -8,6 +8,7 @@
 #include "changeevent.h"
 #include "jcomponent.h"
 
+class QFontDialog;
 class CDWindowListener;
 class CDActionListener;
 class PositionablePopupUtil;
@@ -45,7 +46,8 @@ public slots:
 private:
  static Logger* log;
  JColorChooser* _chooser;
- JComponent* _target;
+ JComponent* _target = nullptr;
+ JComponent* _compTarget = nullptr;
  int _type;
  QColor _saveColor;
  bool _saveOpaque;
@@ -58,6 +60,8 @@ private:
  JPanel* makeTextSpinnerPanel();
  JPanel* makeTextPanel();
  /*private*/ void update();
+ QFontDialog* fontPanel = nullptr;
+ bool _done = false;
 
 protected:
  /*protected*/ JPanel* makeDoneButtonPanel();
@@ -82,6 +86,9 @@ class CDWindowListener : public WindowListener
  ColorDialog* colorDialog;
 public:
  CDWindowListener(ColorDialog* colorDialog) {this->colorDialog = colorDialog;}
- void windowClosing(QCloseEvent *) {colorDialog->cancel(); }
+ void windowClosing(QCloseEvent *) {
+  if(!colorDialog->_done)
+  colorDialog->cancel();
+ }
 };
 #endif // COLORDIALOG_H

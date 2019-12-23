@@ -148,7 +148,7 @@ protected:
  /*protected*/ JComponent* _textComponent;    // closest ancestor for JLabel and JTextField
  /*protected*/ int _textType;                // JComponent does not have text, used for casting
  /*protected*/ Positionable* _parent;
- /*protevted*/ PositionablePopupUtil* _self;
+ /*protected*/ PositionablePopupUtil* _self;
  /*protected*/ PositionablePropertiesUtil* _propertiesUtil;
  /*private*/ QColor defaultForeground;
  /*private*/ QColor defaultBackground;

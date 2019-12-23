@@ -3,6 +3,7 @@
 #include "exceptions.h"
 #include <QDebug>
 #include "propertychangelistenerproxy.h"
+#include <QPointer>
 
 /**
  * This is a utility class that can be used by beans that support bound
@@ -88,17 +89,18 @@
  }
  // add to catch bad listener pointers: qDebug()<< tr("add listener ") + listener->metaObject()->className();
 
- if (qobject_cast<PropertyChangeListenerProxy*>(listener) != nullptr)
+// if (qobject_cast<PropertyChangeListenerProxy*>(listener) != nullptr)
+// {
+//  PropertyChangeListenerProxy* proxy =
+//                   (PropertyChangeListenerProxy*)listener;
+//  // Call two argument add method.
+//  addPropertyChangeListener(proxy->getPropertyName(),
+//                                      proxy->getListener());
+// }
+// else
  {
-  PropertyChangeListenerProxy* proxy =
-                   (PropertyChangeListenerProxy*)listener;
-  // Call two argument add method.
-  addPropertyChangeListener(proxy->getPropertyName(),
-                                      proxy->getListener());
- }
- else
- {
-  this->map->add("", listener);
+  QPointer<PropertyChangeListener> l = listener;
+  this->map->add("", l);
   connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }

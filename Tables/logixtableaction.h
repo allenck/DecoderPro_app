@@ -482,6 +482,7 @@ class LTALogixEventListener : public LogixEventListener
 public:
  /*public*/ LTALogixEventListener(QString sName, LogixTableAction* lta);
  /*public*/ void logixEventOccurred();
+ QObject* self() {return (QObject*)this;}
 };
 
 class LTALogixEventListener1 : public LogixEventListener
@@ -492,6 +493,7 @@ class LTALogixEventListener1 : public LogixEventListener
 public:
  /*public*/ LTALogixEventListener1(QString sName, LogixTableAction* lta);
  /*public*/ void logixEventOccurred();
+ QObject* self() {return (QObject*)this;}
 };
 
 class LTAEditActionFrameWindowListener : public WindowListener

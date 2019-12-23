@@ -1,7 +1,7 @@
 #ifndef SPINNERMODEL_H
 #define SPINNERMODEL_H
 #include "QObject"
-#include "liblayouteditor_global.h"
+#include "javaqt_global.h"
 
 class ChangeListener;
 
@@ -42,7 +42,7 @@ class ChangeListener;
  * @author Hans Muller
  * @since 1.4
  */
-/*public*/ class LIBLAYOUTEDITORSHARED_EXPORT SpinnerModel : public QObject
+/*public*/ class JAVAQTSHARED_EXPORT SpinnerModel : public QObject
 {
     /**
      * The <i>current element</i> of the sequence.  This element is usually

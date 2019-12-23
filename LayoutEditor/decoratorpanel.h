@@ -9,7 +9,11 @@
 #include "changeevent.h"
 #include "changelistener.h"
 #include "jpanel.h"
+#include "jspinner.h"
 
+class DPChangeListener;
+class QGroupBox;
+class QSignalMapper;
 class DragDecoratorLabel;
 class ChangeListener;
 class FontPanel;
@@ -23,13 +27,13 @@ class AJRadioButton;
 class ChangeEvent;
 class ItemEvent;
 class Positionable;
-class QColorDialog;
+class JColorChooser;
 class QButtonGroup;
 class PositionableLabel;
 class PositionablePopupUtil;
 class Editor;
 class AJSpinner;
-class AJComboBox;
+class AJSpinner;
 class DecoratorPanel : public QWidget
 {
     Q_OBJECT
@@ -75,11 +79,10 @@ enum VALUES
 };
     /*public*/ DecoratorPanel(Editor* editor, DisplayFrame* paletteFrame, QWidget *parent = 0);
     /*public*/ void initDecoratorPanel(Positionable* pos);
-    /*public*/ void stateChanged(ChangeEvent* e);
     /*public*/ PositionablePopupUtil* getPositionablePopupUtil();
     /*public*/ void getText(Positionable* pos);
     /*public*/ bool isOpaque();
-    /*public*/ void itemStateChanged(ItemEvent* e);
+//    /*public*/ void itemStateChanged(ItemEvent* e);
     /*public*/ void setSuppressRecentColor(bool b);
     /*public*/ void setAttributes(Positionable* pos);
 
@@ -88,13 +91,15 @@ signals:
 public slots:
     void AJRadioButton_toggled(bool);
     void currentColorChanged(QColor);
-    /*public*/ void AJRBListener();
+    ///*public*/ void AJRBListener();
+    void mappedButton(QWidget*);
+    /*public*/ void stateChanged(ChangeEvent* e);
 
 private:
     /*private*/ FontPanel* _fontPanel;
-    AJComboBox* _fontSizeBox;
-    AJComboBox* _fontStyleBox;
-    AJComboBox* _fontJustBox;
+    AJSpinner* _fontSizeBox;
+    AJSpinner* _fontStyleBox;
+    AJSpinner* _fontJustBox;
 
     AJSpinner* _borderSpin;
     AJSpinner* _marginSpin;
@@ -113,19 +118,20 @@ private:
     /*private*/ AJRadioButton* _backgroundButton;
     AJRadioButton* button;
     QString bundleCaption;
+    QSignalMapper* _mapper;
 
-    QColorDialog* _chooser;
+    JColorChooser* _chooser;
     /*private*/ QWidget* makeBgButtonPanel(/*@Nonnull*/ ImagePanel* preview1, ImagePanel* preview2, QVector<BufferedImage*>* imgArray);
 
     /*private*/ PositionablePopupUtil* _util;
     bool _isOpaque;			// transfer opaqueness from decorator label here to panel label being edited
     /*private*/ QButtonGroup* _buttonGroup;
-    /*private*/ int _selectedButton;
+    /*private*/ int _selectedButton = -1;
     /*private*/ QString _selectedState;
     /*private*/ QMap<QString, PositionableLabel*>* _samples = nullptr;
 
     Editor* _editor;
-    /*private*/ QWidget* makeBoxPanel(QString caption, AJComboBox* box);
+//    /*private*/ QWidget* makeBoxPanel(QString caption, AJSpinner* box);
     /*private*/ static JPanel *makeSpinPanel(QString caption, AJSpinner* spin, ChangeListener *listener);
     /*private*/ QWidget* makeTextPanel(QString state, JLabel* sample, bool addTextField);
 //    /*private*/ AJRadioButton* makeButton(AJRadioButton* button);
@@ -142,9 +148,13 @@ private:
     /*private*/ void doPopupUtility(QString type, PositionableLabel* sample, bool editText);
     /*private*/ void makeFontPanels();
     /*private*/ AJRadioButton* makeColorRadioButton(QString caption, int which, QString state);
+    DragDecoratorLabel* sample;
+    DPChangeListener* listener;
+    /*private*/ void colorChange();
 
-    private slots:
+private slots:
     void on_bgColorBox();
+    void propertyChange(PropertyChangeEvent* evt);
 
 protected:
     /*protected*/ QVector<BufferedImage*>* _backgrounds; // array of Image backgrounds
@@ -158,16 +168,11 @@ protected:
     friend class TextFieldListener;
     friend class TextItemPanel;
     friend class ColorDialog;
+    friend class FontActionListener;
+    friend class DPChangeListener;
 };
-/*static*/ class AJComboBox : public QComboBox
-{
- Q_OBJECT
- int _which;
-public:
- AJComboBox(QStringList items, int which);
- friend class DecoratorPanel;
-};
-/*static*/ class AJSpinner : public  QSpinBox
+
+/*static*/ class AJSpinner : public  JSpinner
 {
     Q_OBJECT
     int _which;
@@ -217,7 +222,7 @@ public:
  ItemEvent(QObject* source) {this->source = source;}
  QObject* getSource() { return source;}
 };
-
+#if 0
 class AJListener : public QObject
 {
  Q_OBJECT
@@ -231,7 +236,7 @@ public slots:
   self->itemStateChanged(new ItemEvent((QObject*)obj));
  }
 };
-#if 1
+#endif
 class DPDragDecoratorLabel : public PositionableLabel //implements DragGestureListener, DragSourceListener, Transferable
 {
     Q_OBJECT
@@ -254,7 +259,7 @@ public:
  void mousePressEvent(QMouseEvent *e);
 
 }; // end DragDecoratorLabel
-#endif
+
 class TextFieldListener : public ActionListener
 {
  Q_OBJECT
@@ -262,10 +267,34 @@ class TextFieldListener : public ActionListener
  JLabel* sample;
  JTextField* textField;
 public:
- TextFieldListener* init(JTextField* textField, JLabel* sample, DecoratorPanel* panel);
+ TextFieldListener(JTextField* textField, JLabel* sample, DecoratorPanel* panel);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void textFieldChanged(QString txt);
 
 };
 
+class FontActionListener : public ActionListener
+{
+ DecoratorPanel* dc;
+ Q_OBJECT
+public:
+ FontActionListener(DecoratorPanel* dc) {this->dc = dc;}
+public slots:
+ void actionPerformed()
+ {
+  dc->fontChange();
+ }
+};
+class DPChangeListener :public ChangeListener
+{
+ Q_OBJECT
+ DecoratorPanel* panel;
+public:
+ DPChangeListener(DecoratorPanel* panel) {this->panel = panel;}
+public slots:
+ void stateChanged(ChangeEvent* evt)
+ {
+  panel->stateChanged(evt);
+ }
+};
 #endif // DECORATORPANEL_H

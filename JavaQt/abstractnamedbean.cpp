@@ -2,6 +2,7 @@
 #include "loggerfactory.h"
 #include "alphanumcomparator.h"
 #include "beans.h"
+#include <QPointer>
 
 AbstractNamedBean::AbstractNamedBean(QObject *parent) : NamedBean(parent)
 {
@@ -111,8 +112,10 @@ QString AbstractNamedBean::getDisplayName()
 //@OverridingMethodsMustInvokeSuper
 /*public*/ /*synchronized*/ void AbstractNamedBean::addPropertyChangeListener(/*@Nonnull */QString propertyName,
                                                    /*@Nonnull*/ PropertyChangeListener* l,
-                                                       QString beanRef, QString listenerRef) {
-    pcs->addPropertyChangeListener(propertyName, l);
+                                                       QString beanRef, QString listenerRef)
+{
+ QPointer<PropertyChangeListener> listener = l;
+    pcs->addPropertyChangeListener(propertyName, listener);
     if (beanRef != "") {
         _register->insert(l, beanRef);
     }
@@ -146,8 +149,10 @@ QString AbstractNamedBean::getDisplayName()
 {
  pcs->removePropertyChangeListener(listener);
  //disconnect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
- if (listener != nullptr && !Beans::contains(pcs->getPropertyChangeListeners(), listener)) {
- _register->remove(listener);
+ //if (listener != nullptr && !Beans::contains(pcs->getPropertyChangeListeners(), listener))
+ if(listener != nullptr && !pcs->getPropertyChangeListeners().contains(listener))
+ {
+  _register->remove(listener);
  listenerRefs->remove(listener);
  }
 }

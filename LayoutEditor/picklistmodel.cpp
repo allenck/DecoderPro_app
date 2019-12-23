@@ -838,6 +838,7 @@ _position = new QMap <int, QString> ();
  }
  return QVariant();
 }
+
 /*public*/ bool  MultiSensorPickModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
  if(role == Qt::EditRole)
@@ -850,6 +851,7 @@ _position = new QMap <int, QString> ();
  }
  return true;
 }
+
 void MultiSensorPickModel::tableClicked(QModelIndex index)
 {
  QString name = index.data().toString();

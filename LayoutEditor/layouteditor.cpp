@@ -1448,7 +1448,7 @@ double LayoutEditor::getPaintScale()
      {
       selectedPointType = LAYOUT_POS_LABEL;
       //startDel.setLocation((((PositionableLabel*)selectedObject)->getX()-dLoc.getX()),                     (((PositionableLabel*)selectedObject)->getY()-dLoc.getY()));
-      startDel = QPointF((((Positionable*)selectedObject)->getX()-dLoc.x()),(((Positionable*)selectedObject)->getY()-dLoc.y()));
+      startDel = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),(((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
       //if (selectedObject instanceof MemoryIcon)
       if(qobject_cast<LEMemoryIcon*>(selectedObject)!= nullptr)
       {
@@ -1468,8 +1468,8 @@ double LayoutEditor::getPaintScale()
       {
        selectedPointType = LAYOUT_POS_LABEL;
        //startDel.setLocation((((PositionableLabel)selectedObject).getX()-dLoc.x()),                            (((PositionableLabel)selectedObject).getY()-dLoc.y()));
-       startDel = QPointF((((Positionable*)selectedObject)->getX()-dLoc.x()),
-                          (((Positionable*)selectedObject)->getY()-dLoc.y()));
+       startDel = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),
+                          (((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
       selectedNeedsConnect = false;
       }
      }
@@ -1526,12 +1526,12 @@ double LayoutEditor::getPaintScale()
   if (selectedObject!=nullptr)
   {
    selectedPointType = MARKER;
-   startDel= QPointF((((Positionable*)selectedObject)->getX()-dLoc.x()),
-                                            (((Positionable*)selectedObject)->getY()-dLoc.y()));
+   startDel= QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),
+                                            (((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
    //selectedNeedsConnect = false;
   }
  }
- else if ( /*event.isPopupTrigger() && */(!/*event.isShiftDown()*/event->modifiers()&Qt::ShiftModifier) )
+ else if ( /*event.isPopupTrigger() && */!/*event.isShiftDown()*/(event->modifiers()&Qt::ShiftModifier) )
  {
   // not in edit mode - check if a marker popup menu is being requested
   LocoIcon* lo = checkMarkers(dLoc);

@@ -7,6 +7,11 @@
 #include "bufferedimage.h"
 #include <QPushButton>
 #include <QtMath>
+#include "colorutil.h"
+#include <QSignalMapper>
+#include <QGroupBox>
+#include "colorselectionmodel.h"
+#include <QButtonGroup>
 
 JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorChooserPanel(parent)
 {
@@ -14,8 +19,11 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
     QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red)<< QColor(255,233,236) << QColor(255,170,0)<<
     QColor(Qt::yellow)<< QColor(Qt::green)<< QColor(Qt::blue)<< QColor(Qt::magenta)<< QColor(Qt::cyan)<<
     ColorUtil::BROWN;
-
+ recentPanel = new QGroupBox();
+ recentPanel->setLayout(recentPanelLayout = new GridBagLayout());
+ //buildChooser();
 }
+
 /**
  * Create a custom color chooser panel.
  * The panel contains two button grids.
@@ -43,39 +51,49 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
         for (QColor recent : colors) {
             c.gridx = idx % cols;
             c.gridy = idx / cols;
-            ((GridBagLayout*)recentPanel->layout())->addWidget(createColorButton(recent, false), c);
+            recentPanelLayout->addWidget(createColorButton(recent, false), c);
             idx++;
         }
     }
 
     //@Override
     /*protected*/ void JmriColorChooserPanel::buildChooser(){
-        setLayout(new QHBoxLayout()); //this, BoxLayout.X_AXIS));
-#if 0
-        JPanel* stdColors = new JPanel(new GridBagLayout());
-        stdColors.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("StandardColorLabel")));  // NOI18N
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = java.awt.GridBagConstraints.WEST;
-        for (int i = 0; i < numColors; i++) {
-            c.gridx = i % 2;
-            c.gridy = i / 2;
-            stdColors.add(createColorButton(colors[i], true), c);
-        }
-        add(stdColors);
-        stdColors.setVisible(true);
+     QHBoxLayout* thisLayout;
+     setLayout(thisLayout = new QHBoxLayout()); //this, BoxLayout.X_AXIS));
+     signalMapper = new QSignalMapper(this);
+#if 1
+     QGroupBox* stdColors = new QGroupBox();
+     GridBagLayout* stdColorsLayout = new GridBagLayout();
+     QButtonGroup* buttonGroup = new QButtonGroup();
+     //stdColors.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("StandardColorLabel")));  // NOI18N
+     stdColors->setLayout(stdColorsLayout);
+     stdColors->setTitle(tr("Standard Colors"));
+     GridBagConstraints c = GridBagConstraints();
+     c.anchor = GridBagConstraints::WEST;
+     for (int i = 0; i < numColors; i++) {
+         c.gridx = i % 2;
+         c.gridy = i / 2;
+         QPushButton* button;
+         stdColorsLayout->addWidget(button = createColorButton(colors[i], true), c);
+         buttonGroup->addButton(button);
+     }
+     thisLayout->addWidget(stdColors);
+     stdColors->setVisible(true);
 
-        recentPanel.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("RecentColorLabel")));  // NOI18N
-        ArrayList<Color> colors = JmriColorChooser.getRecentColors();
-        int cols = Math.max(3, (int) Math.ceil((double)colors.size() / 7));
-        int idx = 0;
-        for (Color recent : colors) {
-            c.gridx = idx % cols;
-            c.gridy = idx / cols;
-            recentPanel.add(createColorButton(recent, false), c);
-            idx++;
-        }
-        add(recentPanel);
-        recentPanel.setVisible(true);
+     //recentPanel.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("RecentColorLabel")));  // NOI18N
+     recentPanel->setTitle(tr("Recent Colors"));
+     QList<QColor> colors = JmriColorChooser::getRecentColors();
+     int cols = qMax(3, (int)qCeil((double)colors.size() / 7));
+     int idx = 0;
+     for (QColor recent : colors) {
+         c.gridx = idx % cols;
+         c.gridy = idx / cols;
+         recentPanelLayout->addWidget(createColorButton(recent, false), c);
+         idx++;
+     }
+     thisLayout->addWidget(recentPanel);
+     recentPanel->setVisible(true);
+     connect(signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onColorButton(QWidget*)));
 #endif
     }
 
@@ -105,19 +123,48 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
         if (stdcolor) {
             colorName = jmri.util.ColorUtil.colorToLocalizedName(color);
         }
-        String colorTip = String.format("r=%d, g=%d, b=%d, a=%d",
-                color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-
-        JButton colorButton = new JButton(colorName, icon);
-        colorButton.setToolTipText(colorTip);
-        colorButton.addActionListener((ActionEvent e) -> {
-            getColorSelectionModel().setSelectedColor(color);
-        });
-
-        return colorButton;
 #endif
-        return new QPushButton();
+        QString colorTip = ColorUtil::colorToString(color);
+
+        QPushButton* colorButton = new QPushButton(getColorIcon(color), ColorUtil::colorToColorName(color));
+        colorButton->setToolTip(colorTip);
+        colorButton->setCheckable(true);
+//        colorButton.addActionListener((ActionEvent e) -> {
+//            getColorSelectionModel().setSelectedColor(color);
+//        });
+        signalMapper->setMapping(colorButton, colorButton);
+        connect(colorButton, SIGNAL(clicked(bool)), signalMapper, SLOT(map()));
+        return colorButton;
     }
+
+    void JmriColorChooserPanel::onColorButton(QWidget *b)
+    {
+     QPushButton* button = (QPushButton*)b;
+     getColorSelectionModel()->setSelectedColor(ColorUtil::stringToColor(button->text()));
+    }
+
+    const QIcon JmriColorChooserPanel::getColorIcon(QColor color)
+    {
+     Q_ASSERT(color.isValid());
+     int ICON_DIMENSION = 10;
+     // BufferedImage image = new BufferedImage(ICON_DIMENSION,  ICON_DIMENSION,
+     // BufferedImage.TYPE_INT_RGB);
+     QImage resultImage =  QImage(ICON_DIMENSION,ICON_DIMENSION,QImage::Format_ARGB32_Premultiplied);
+
+     // Graphics g = image.getGraphics();
+     QPainter painter(&resultImage);
+    //   // set completely transparent
+    // g.setColor(color);
+    // g.fillRect(0,0, ICON_DIMENSION,ICON_DIMENSION);
+    QBrush brBkgnd = QBrush(QColor(color), Qt::SolidPattern);
+    //eRect.adjust(0, -3.0, 0, 0);
+    painter.fillRect(resultImage.rect(), brBkgnd);
+    painter.end();
+    // ImageIcon icon = new ImageIcon(image);
+    QIcon icon =  QIcon(QPixmap::fromImage(resultImage));
+    return icon;
+    }
+
 
     //@Override
     /*public*/ QString JmriColorChooserPanel::getDisplayName() {
@@ -133,3 +180,5 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
     /*public*/ QIcon JmriColorChooserPanel::getLargeDisplayIcon(){
        return QIcon();
     }
+
+    /*public*/ QString JmriColorChooserPanel::getTitle() {return "JMRI";}

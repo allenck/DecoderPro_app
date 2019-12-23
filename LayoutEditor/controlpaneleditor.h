@@ -69,8 +69,8 @@ private:
  /*private*/ QMenu* _warrantMenu;
  /*private*/ QMenu* _circuitMenu;
  /*private*/ QMenu* _drawMenu;
- /*private*/ CircuitBuilder* _circuitBuilder;
- /*private*/ QList<Positionable*>* _secondSelectionGroup;
+ /*private*/ CircuitBuilder* _circuitBuilder = nullptr;
+ /*private*/ QList<Positionable*>* _secondSelectionGroup = nullptr;
  /*private*/ ShapeDrawer* _shapeDrawer;
  /*private*/ ItemPalette* _itemPalette = nullptr;
  /*private*/ bool _disableShapeSelection;
@@ -206,6 +206,6 @@ public:
   this->edit = edit;
  }
 public slots:
- void actionPerformed() { new ColorDialog(edit, (JComponent*)pos, type, nullptr);}
+ void actionPerformed() { new ColorDialog(edit, qobject_cast<JComponent*>(pos->self()), type, nullptr);}
 };
 #endif // CONTROLPANELEDITOR_H

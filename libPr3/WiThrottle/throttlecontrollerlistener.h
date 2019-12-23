@@ -6,8 +6,11 @@
  * @author Brett
  */
 class ThrottleController;
-/*public*/ /*interface*/ class ThrottleControllerListener : public EventListener {
+/*public*/ /*interface*/ class ThrottleControllerListener : public QObject, public EventListener {
  Q_OBJECT
+ Q_INTERFACES(EventListener)
+public:
+ QObject* self() {return (QObject*)this;}
 public slots:
 
     /*public*/ virtual void notifyControllerAddressFound(ThrottleController* TC) {}

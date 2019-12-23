@@ -352,7 +352,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void AbstractThrottleManager::responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision) {
+/*public*/ void AbstractThrottleManager::responseThrottleDecision(LocoAddress* address, ThrottleListener* /*l*/, ThrottleListener::DecisionType /*decision*/) {
     log->debug("Received response from ThrottleListener, this method should be overridden by a hardware type");
 }
 /**
@@ -465,7 +465,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  * @param address The LocoAddress the steal / share question relates to
  * @param question The Question to be put to the ThrottleListener
  */
-/*protected*/ void AbstractThrottleManager::makeHardwareDecision(LocoAddress* address, ThrottleListener::DecisionType question){
+/*protected*/ void AbstractThrottleManager::makeHardwareDecision(LocoAddress* address, ThrottleListener::DecisionType /*question*/){
     responseThrottleDecision(address, nullptr, ThrottleListener::DecisionType::STEAL );
 }
 

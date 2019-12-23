@@ -1,5 +1,5 @@
 #include "memorycomboicon.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "namedbeanhandlemanager.h"
 #include "instancemanager.h"
 #include <QGridLayout>
@@ -43,7 +43,7 @@
 //    }
  log = new Logger("MemoryComboIcon");
  namedMemory = NULL;
- _comboBox = new QComboBox(/*_model*/);
+ _comboBox = new JComboBox(/*_model*/);
  _comboBox->addItems(list);
  _model = list;
 

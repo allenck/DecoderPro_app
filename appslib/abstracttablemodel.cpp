@@ -128,7 +128,8 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
  *  @param  rowIndex   row of cell
  *  @param  columnIndex  column of cell
  */
-/*public*/ void AbstractTableModel::setValueAt(QVariant /*aValue*/, int rowIndex, int /*columnIndex*/) {
+/*public*/ void AbstractTableModel::setValueAt(QVariant aValue, int rowIndex, int columnIndex) {
+ setData(index(rowIndex, columnIndex), aValue, Qt::EditRole);
 }
 
 /*private*/ bool AbstractTableModel::setData(const QModelIndex &index, const QVariant &value, int role)

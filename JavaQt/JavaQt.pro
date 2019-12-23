@@ -200,7 +200,6 @@ SOURCES += javaqt.cpp \
     urisyntaxexception.cpp \
     unsupportedaudiofileexception.cpp \
     scriptexception.cpp \
-    jcomponent.cpp \
     jcolorchooser.cpp \
     colorchooserdialog.cpp \
     abstractcolorchooserpanel.cpp \
@@ -231,7 +230,18 @@ SOURCES += javaqt.cpp \
     unboundbean.cpp \
     arbitrarybean.cpp \
     arbitrarypropertysupport.cpp \
-    mydefaultlistselectionmodel.cpp
+    mydefaultlistselectionmodel.cpp \
+    jcombobox.cpp \
+    jspinner.cpp \
+    abstractspinnermodel.cpp \
+    spinnernumbermodel.cpp \
+    defaultcolorselectionmodel.cpp \
+    colorchooserpanel.cpp \
+    colormodel.cpp \
+    colorpanel.cpp \
+    slidingspinner.cpp \
+    diagramcomponent.cpp \
+    defaultswatchchooserpanel.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -507,7 +517,19 @@ HEADERS += javaqt.h\
     beaninterface.h \
     arbitrarybean.h \
     arbitrarypropertysupport.h \
-    mydefaultlistselectionmodel.h
+    mydefaultlistselectionmodel.h \
+    jcombobox.h \
+    jspinner.h \
+    spinnermodel.h \
+    abstractspinnermodel.h \
+    spinnernumbermodel.h \
+    defaultcolorselectionmodel.h \
+    colorchooserpanel.h \
+    colormodel.h \
+    colorpanel.h \
+    slidingspinner.h \
+    diagramcomponent.h \
+    defaultswatchchooserpanel.h
 
 unix {
     target.path = /usr/lib

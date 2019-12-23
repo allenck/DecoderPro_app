@@ -4,6 +4,8 @@
 #include <QApplication>
 #include <QScreen>
 #include <QGuiApplication>
+#include "jcomponent.h"
+
 /**
  * Position a Window relative to a component in another window so as
  * to not obscure a component in that window. Typically, the Component
@@ -110,7 +112,7 @@ static /*private*/ QSize getScreenSizeOf(int screenNum) {
  *  edit the component
  * @return the location Point to open the target window.
  */
-/*public*/ /*static*/ QPoint PlaceWindow::nextTo(QWidget* parent, QWidget* comp, QWidget* target) {
+/*public*/ /*static*/ QPoint PlaceWindow::nextTo(QWidget* parent, JComponent* comp, QWidget* target) {
     if (target == nullptr || parent == nullptr) {
         return QPoint(0, 0);
     }
@@ -128,8 +130,8 @@ static /*private*/ QSize getScreenSizeOf(int screenNum) {
     QPoint compLoc;
     QSize compDim;
     if (comp != nullptr) {
-        compLoc = QPoint(comp->pos().x() + parentLoc.x(), comp->pos().y() + parentLoc.y());
-        compDim = comp->size();
+        compLoc = QPoint(((QWidget*)comp->jself())->pos().x() + parentLoc.x(), ((QWidget*)comp->jself())->pos().y() + parentLoc.y());
+        compDim = ((QWidget*)comp->jself())->size();
     } else {
         compLoc = QPoint(parentLoc.x() + parentDim.width()/2, parentLoc.y() + parentDim.height()/2);
         compDim = QSize(0, 0);

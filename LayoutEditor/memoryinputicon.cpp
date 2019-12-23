@@ -106,8 +106,8 @@ void MemoryInputIcon::textChanged(QString text)
     pos->setMemory(namedMemory->getName());
     return PositionableJPanel::finishClone(pos);
 }
-/*public*/ QWidget *MemoryInputIcon::getTextComponent() {
-    return _textBox;
+/*public*/ QWidget* MemoryInputIcon::getTextComponent() {
+    return (QWidget*)_textBox;
 }
 
 /*public*/ void MemoryInputIcon::mouseExited(QGraphicsSceneMouseEvent* e) {

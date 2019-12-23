@@ -5,6 +5,11 @@
 #include "colorselectionmodel.h"
 #include "jcomponent.h"
 #include "abstractcolorchooserpanel.h"
+#include "defaultcolorselectionmodel.h"
+#include <QBoxLayout>
+#include <QTabWidget>
+#include "vptr.h"
+#include "jmricolorchooserpanel.h"
 
 /**
  * <code>JColorChooser</code> provides a pane of controls designed to allow
@@ -151,7 +156,7 @@
  */
 /*public*/ JColorChooser::JColorChooser(QWidget* parent) : QWidget(parent) {
     //this(Color.white);
- common(new ColorSelectionModel/*(QColor(Qt::white)*/);
+ common(new DefaultColorSelectionModel());
 }
 
 /**
@@ -161,7 +166,7 @@
  */
 /*public*/ JColorChooser::JColorChooser(QColor initialColor, QWidget* parent) : QWidget(parent){
     //this( new DefaultColorSelectionModel(initialColor) );
- common(new ColorSelectionModel(/*initialColor*/));
+ common(new DefaultColorSelectionModel(initialColor));
 }
 
 /**
@@ -178,11 +183,21 @@ void JColorChooser::common(ColorSelectionModel* model)
 {
  previewPanel = nullptr; // ColorChooserComponentFactory::getPreviewPanel();
 
- chooserPanels = QVector<AbstractColorChooserPanel*>();
+ chooserPanels = new QVector<AbstractColorChooserPanel*>();
  selectionModel = model;
 // updateUI();
  dragEnabled = false;
+ pcs = new PropertyChangeSupport(this);
 
+ setLayout(new QVBoxLayout());
+
+// QColorDialog* dlg;
+// layout()->addWidget(dlg = new QColorDialog());
+// dlg->setOption(QColorDialog::NoButtons);
+ tabWidget = new QTabWidget();
+ layout()->addWidget(tabWidget);
+ if(getPreviewPanel())
+   layout()->addWidget(getPreviewPanel());
 }
 /**
  * Returns the L&amp;F object that renders this component.
@@ -254,7 +269,6 @@ void JColorChooser::common(ColorSelectionModel* model)
  */
 /*public*/ void JColorChooser::setColor(QColor color) {
     selectionModel->setSelectedColor(color);
-
 }
 
 /**
@@ -360,7 +374,7 @@ void JColorChooser::common(ColorSelectionModel* model)
     if (previewPanel != preview) {
         QWidget* oldPreview = previewPanel;
         previewPanel = preview;
-//        firePropertyChange(JColorChooser::PREVIEW_PANEL_PROPERTY, oldPreview, preview);
+     firePropertyChange(JColorChooser::PREVIEW_PANEL_PROPERTY, VPtr<QWidget>::asQVariant(oldPreview), VPtr<QWidget>::asQVariant(preview));
     }
 }
 
@@ -379,14 +393,20 @@ void JColorChooser::common(ColorSelectionModel* model)
  * @param panel the <code>AbstractColorChooserPanel</code> to be added
  */
 /*public*/ void JColorChooser::addChooserPanel( AbstractColorChooserPanel* panel ) {
-    QVector<AbstractColorChooserPanel*> oldPanels = getChooserPanels();
-    QVector<AbstractColorChooserPanel*> newPanels = QVector<AbstractColorChooserPanel*>(oldPanels.length()+1);
+    QVector<AbstractColorChooserPanel*>* oldPanels = getChooserPanels();
+    QVector<AbstractColorChooserPanel*>* newPanels = new QVector<AbstractColorChooserPanel*>(oldPanels->length()+1);
     //System.arraycopy(oldPanels, 0, newPanels, 0, oldPanels.length);
-    qCopy(oldPanels.begin(), oldPanels.end(),newPanels.begin());
-    newPanels.replace(newPanels.length()-1, panel);
+    qCopy(oldPanels->begin(), oldPanels->end(),newPanels->begin());
+    newPanels->replace(newPanels->length()-1, panel);
     setChooserPanels(newPanels);
+    panel->getColorSelectionModel()->addChangeListener((ChangeListener*)this);
 }
 
+void JColorChooser::stateChanged(ChangeEvent* evt)
+{
+ JmriColorChooserPanel* o = (JmriColorChooserPanel*)evt->getSource();
+ firePropertyChange("colorChange", QVariant(), qvariant_cast<QColor>(o->getColorSelectionModel()->getSelectedColor()));
+}
 /**
  * Removes the Color Panel specified.
  *
@@ -400,32 +420,32 @@ void JColorChooser::common(ColorSelectionModel* model)
 
     int containedAt = -1;
 
-    for (int i = 0; i < chooserPanels.length(); i++) {
-        if (chooserPanels[i] == panel) {
+    for (int i = 0; i < chooserPanels->length(); i++) {
+        if (chooserPanels->at(i) == panel) {
             containedAt = i;
             break;
         }
     }
     if (containedAt == -1) {
-        throw new IllegalArgumentException("chooser panel not in this chooser");
+        throw IllegalArgumentException("chooser panel not in this chooser");
     }
 
-    QVector<AbstractColorChooserPanel*> newArray = QVector<AbstractColorChooserPanel*>(chooserPanels.length()-1);
+    QVector<AbstractColorChooserPanel*>* newArray = new QVector<AbstractColorChooserPanel*>(chooserPanels->length()-1);
 
-    if (containedAt == chooserPanels.length()-1) {  // at end
+    if (containedAt == chooserPanels->length()-1) {  // at end
         //System.arraycopy(chooserPanels, 0, newArray, 0, newArray.length);
-     qCopy(newArray.begin(), newArray.end(), chooserPanels.begin());
+     qCopy(newArray->begin(), newArray->end(), chooserPanels->begin());
     }
     else if (containedAt == 0) {  // at start
 //        System.arraycopy(chooserPanels, 1, newArray, 0, newArray.length);
-     qCopy(newArray.begin()+1, newArray.end(), chooserPanels.begin());
+     qCopy(newArray->begin()+1, newArray->end(), chooserPanels->begin());
     }
     else {  // in middle
         //System.arraycopy(chooserPanels, 0, newArray, 0, containedAt);
-     qCopy(newArray.begin(), newArray.end(), chooserPanels.begin());
+     qCopy(newArray->begin(), newArray->end(), chooserPanels->begin());
 //        System.arraycopy(chooserPanels, containedAt+1,
 //                         newArray, containedAt, (chooserPanels.length - containedAt - 1));
-     qCopy(newArray.begin()+containedAt, newArray.end(), chooserPanels.begin()+(chooserPanels.length() - containedAt - 1));
+     qCopy(newArray->begin()+containedAt, newArray->end(), chooserPanels->begin()+(chooserPanels->length() - containedAt - 1));
     }
 
 
@@ -446,10 +466,18 @@ void JColorChooser::common(ColorSelectionModel* model)
  *      hidden: true
  * description: An array of different chooser types.
  */
-/*public*/ void JColorChooser::setChooserPanels( QVector<AbstractColorChooserPanel*> panels) {
-    QVector<AbstractColorChooserPanel*> oldValue = chooserPanels;
+/*public*/ void JColorChooser::setChooserPanels( QVector<AbstractColorChooserPanel*>* panels) {
+    QVector<AbstractColorChooserPanel*>* oldValue = chooserPanels;
     chooserPanels = panels;
-//    firePropertyChange(CHOOSER_PANELS_PROPERTY, oldValue, panels);
+    firePropertyChange(CHOOSER_PANELS_PROPERTY, VPtr<QVector<AbstractColorChooserPanel*> >::asQVariant(oldValue),
+                       VPtr<QVector<AbstractColorChooserPanel*> >::asQVariant(panels));
+    tabWidget->clear();
+    foreach(AbstractColorChooserPanel* panel, *chooserPanels)
+    {
+     if(panel == nullptr)
+      continue;
+     tabWidget->addTab(panel, panel->getTitle());
+    }
 }
 
 /**
@@ -457,7 +485,7 @@ void JColorChooser::common(ColorSelectionModel* model)
  *
  * @return an array of <code>AbstractColorChooserPanel</code> objects
  */
-/*public*/ QVector<AbstractColorChooserPanel*> JColorChooser::getChooserPanels() {
+/*public*/ QVector<AbstractColorChooserPanel*>* JColorChooser::getChooserPanels() {
     return chooserPanels;
 }
 
@@ -484,7 +512,7 @@ void JColorChooser::common(ColorSelectionModel* model)
 /*public*/ void JColorChooser::setSelectionModel(ColorSelectionModel* newModel ) {
     ColorSelectionModel* oldModel = selectionModel;
     selectionModel = newModel;
-//    firePropertyChange(JColorChooser::SELECTION_MODEL_PROPERTY, oldModel, newModel);
+    firePropertyChange(JColorChooser::SELECTION_MODEL_PROPERTY, VPtr<ColorSelectionModel>::asQVariant(oldModel), VPtr<ColorSelectionModel>::asQVariant(newModel));
 }
 
 #if 0
@@ -503,7 +531,7 @@ private void writeObject(ObjectOutputStream s) throws IOException {
         }
     }
 }
-
+#endif
 
 /**
  * Returns a string representation of this <code>JColorChooser</code>.
@@ -515,20 +543,20 @@ private void writeObject(ObjectOutputStream s) throws IOException {
  *
  * @return  a string representation of this <code>JColorChooser</code>
  */
-protected String paramString() {
-    StringBuffer chooserPanelsString = new StringBuffer("");
-    for (int i=0; i<chooserPanels.length; i++) {
-        chooserPanelsString.append("[" + chooserPanels[i].toString()
+/*protected*/ QString JColorChooser::paramString() {
+    QString chooserPanelsString;// = new StringBuffer("");
+    for (int i=0; i<chooserPanels->length(); i++) {
+        chooserPanelsString.append("[" + chooserPanels->at(i)->toString()
                                    + "]");
     }
-    String previewPanelString = (previewPanel != null ?
-                                 previewPanel.toString() : "");
+    QString previewPanelString = (previewPanel != nullptr ?
+                                 previewPanel->objectName() : "");
 
-    return super.paramString() +
-    ",chooserPanels=" + chooserPanelsString.toString() +
+    return /*super.paramString() +*/
+    ",chooserPanels=" + chooserPanelsString/*.toString()*/ +
     ",previewPanel=" + previewPanelString;
 }
-
+#if 0
 /////////////////
 // Accessibility support
 ////////////////
@@ -736,3 +764,18 @@ static class DisposeOnClose extends ComponentAdapter implements Serializable{
 //        return color;
 //    }
 //}
+
+void JColorChooser::addPropertyChangeListener(QString propertyName, PropertyChangeListener *listener)
+{
+ pcs->addPropertyChangeListener(propertyName, listener);
+}
+
+void JColorChooser::removePropertyChangeListener(QString propertyName, PropertyChangeListener *listener)
+{
+ pcs->removePropertyChangeListener(propertyName, listener);
+}
+
+void JColorChooser::firePropertyChange(QString propertyName, QVariant oldVal, QVariant newVal )
+{
+ pcs->firePropertyChange(propertyName, oldVal, newVal);
+}

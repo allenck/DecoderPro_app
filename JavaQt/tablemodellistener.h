@@ -6,16 +6,17 @@
 #include "javaqt_global.h"
 
 class TableModelEvent;
-class JAVAQTSHARED_EXPORT TableModelListener : public EventListener
+class JAVAQTSHARED_EXPORT TableModelListener : public QObject, public EventListener
 {
  Q_OBJECT
-
+ Q_INTERFACES(EventListener)
 public:
     /**
      * This fine grain notification tells listeners the exact range
      * of cells, rows, or columns that changed.
      */
     /*public*/ virtual void tableChanged(TableModelEvent* /*e*/ = 0) {}
+    QObject* self() {return (QObject*)this;}
 };
 
 #endif // TABLEMODELLISTENER_H

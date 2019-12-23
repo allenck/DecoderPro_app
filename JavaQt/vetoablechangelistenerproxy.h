@@ -22,6 +22,7 @@
     */
    /*final*/ QString propertyName;
   public:
+   QObject* self() {return (QObject*)this;}
    /**
     * Create a new proxy which filters property change events and only passes
     * changes to the named property on to the delegate.

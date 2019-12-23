@@ -7129,9 +7129,19 @@ void PythonQtWrapper_JFrame::frameInit(JFrame* theWrappedObject)
   ( ((PythonQtPublicPromoter_JFrame*)theWrappedObject)->promoted_frameInit());
 }
 
+QColor  PythonQtWrapper_JFrame::getBackground(JFrame* theWrappedObject)
+{
+  return ( theWrappedObject->getBackground());
+}
+
 QWidget*  PythonQtWrapper_JFrame::getContentPane(JFrame* theWrappedObject, bool  addLayout)
 {
   return ( theWrappedObject->getContentPane(addLayout));
+}
+
+QFont  PythonQtWrapper_JFrame::getFont(JFrame* theWrappedObject)
+{
+  return ( theWrappedObject->getFont());
 }
 
 QPoint  PythonQtWrapper_JFrame::getLocation(JFrame* theWrappedObject)
@@ -7169,6 +7179,16 @@ QVector<WindowListener* >  PythonQtWrapper_JFrame::getWindowListeners(JFrame* th
   return ( theWrappedObject->getWindowListeners());
 }
 
+bool  PythonQtWrapper_JFrame::isOpaque(JFrame* theWrappedObject)
+{
+  return ( theWrappedObject->isOpaque());
+}
+
+QObject*  PythonQtWrapper_JFrame::jself(JFrame* theWrappedObject)
+{
+  return ( theWrappedObject->jself());
+}
+
 void PythonQtWrapper_JFrame::languageChange(JFrame* theWrappedObject)
 {
   ( theWrappedObject->languageChange());
@@ -7194,9 +7214,19 @@ void PythonQtWrapper_JFrame::setAlwaysOnTop(JFrame* theWrappedObject, bool  chec
   ( theWrappedObject->setAlwaysOnTop(checked));
 }
 
+void PythonQtWrapper_JFrame::setBackground(JFrame* theWrappedObject, QColor  arg__1)
+{
+  ( theWrappedObject->setBackground(arg__1));
+}
+
 void PythonQtWrapper_JFrame::setDefaultCloseOperation(JFrame* theWrappedObject, int  operation)
 {
   ( theWrappedObject->setDefaultCloseOperation(operation));
+}
+
+void PythonQtWrapper_JFrame::setFont(JFrame* theWrappedObject, QFont  arg__1)
+{
+  ( theWrappedObject->setFont(arg__1));
 }
 
 void PythonQtWrapper_JFrame::setLocation(JFrame* theWrappedObject, QPoint  p)
@@ -7212,6 +7242,11 @@ void PythonQtWrapper_JFrame::setLocation(JFrame* theWrappedObject, int  x, int  
 void PythonQtWrapper_JFrame::setMenuBar(JFrame* theWrappedObject, QMenuBar*  menubar)
 {
   ( theWrappedObject->setMenuBar(menubar));
+}
+
+void PythonQtWrapper_JFrame::setOpaque(JFrame* theWrappedObject, bool  arg__1)
+{
+  ( theWrappedObject->setOpaque(arg__1));
 }
 
 void PythonQtWrapper_JFrame::setTitle(JFrame* theWrappedObject, QString  _title)
@@ -8422,9 +8457,19 @@ int  PythonQtWrapper_JLabel::checkVerticalKey(JLabel* theWrappedObject, int  key
   return ( ((PythonQtPublicPromoter_JLabel*)theWrappedObject)->promoted_checkVerticalKey(key, message));
 }
 
+QColor  PythonQtWrapper_JLabel::getBackground(JLabel* theWrappedObject)
+{
+  return ( theWrappedObject->getBackground());
+}
+
 int  PythonQtWrapper_JLabel::getDisplayedMnemonic(JLabel* theWrappedObject)
 {
   return ( theWrappedObject->getDisplayedMnemonic());
+}
+
+QFont  PythonQtWrapper_JLabel::getFont(JLabel* theWrappedObject)
+{
+  return ( theWrappedObject->getFont());
 }
 
 int  PythonQtWrapper_JLabel::getHorizontalAlignment(JLabel* theWrappedObject)
@@ -8457,9 +8502,24 @@ int  PythonQtWrapper_JLabel::getVerticalAlignment(JLabel* theWrappedObject)
   return ( theWrappedObject->getVerticalAlignment());
 }
 
+bool  PythonQtWrapper_JLabel::isOpaque(JLabel* theWrappedObject)
+{
+  return ( theWrappedObject->isOpaque());
+}
+
+QObject*  PythonQtWrapper_JLabel::jself(JLabel* theWrappedObject)
+{
+  return ( theWrappedObject->jself());
+}
+
 void PythonQtWrapper_JLabel::setAlignmentX(JLabel* theWrappedObject, float  alignmentX)
 {
   ( theWrappedObject->setAlignmentX(alignmentX));
+}
+
+void PythonQtWrapper_JLabel::setBackground(JLabel* theWrappedObject, QColor  arg__1)
+{
+  ( theWrappedObject->setBackground(arg__1));
 }
 
 void PythonQtWrapper_JLabel::setBounds(JLabel* theWrappedObject, int  x, int  y, int  w, int  h)
@@ -8475,6 +8535,11 @@ void PythonQtWrapper_JLabel::setDisplayedMnemonic(JLabel* theWrappedObject, char
 void PythonQtWrapper_JLabel::setDisplayedMnemonic(JLabel* theWrappedObject, int  key)
 {
   ( theWrappedObject->setDisplayedMnemonic(key));
+}
+
+void PythonQtWrapper_JLabel::setFont(JLabel* theWrappedObject, QFont  arg__1)
+{
+  ( theWrappedObject->setFont(arg__1));
 }
 
 void PythonQtWrapper_JLabel::setHorizontalAlignment(JLabel* theWrappedObject, int  alignment)
@@ -8500,6 +8565,11 @@ void PythonQtWrapper_JLabel::setLocation(JLabel* theWrappedObject, int  x, int  
 void PythonQtWrapper_JLabel::setName(JLabel* theWrappedObject, QString  name)
 {
   ( theWrappedObject->setName(name));
+}
+
+void PythonQtWrapper_JLabel::setOpaque(JLabel* theWrappedObject, bool  arg__1)
+{
+  ( theWrappedObject->setOpaque(arg__1));
 }
 
 void PythonQtWrapper_JLabel::setSize(JLabel* theWrappedObject, double  x, double  y)
@@ -12417,7 +12487,7 @@ if (_wrapper) {
 }
   JTable::setSelection(rect0, command1);
 }
-void PythonQtShell_JTable::setSelectionModel(DefaultListSelectionModel*  selectionModel0)
+void PythonQtShell_JTable::setSelectionModel(QItemSelectionModel*  selectionModel0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -12437,7 +12507,7 @@ if (_wrapper) {
     }
   }
 }
-  JTable::setSelectionModel(selectionModel0);
+  JTable::setSelectionModel((DefaultListSelectionModel*)selectionModel0);
 }
 void PythonQtShell_JTable::setVisible(bool  visible0)
 {

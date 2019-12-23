@@ -46,6 +46,7 @@ private:
     /*private*/ static /*final*/ QVector<VetoableChangeListener*> EMPTY;// = {};
 public:
  /*public*/ /*final*/ VetoableChangeListener* extract(VetoableChangeListener* listener);
+ QObject* self() {return (QObject*)this;}
 
 protected:
     /*protected*/ QVector<VetoableChangeListener*> newArray(int length);

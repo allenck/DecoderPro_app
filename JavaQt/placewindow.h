@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+class JComponent;
 class Logger;
 class PlaceWindow : public QObject
 {
@@ -10,7 +11,7 @@ class PlaceWindow : public QObject
 public:
  //explicit PlaceWindow(QObject *parent = nullptr);
 // /*public*/ static int getScreen(QWidget parent, QWidget target);
- /*public*/ static QPoint nextTo(QWidget* parent, QWidget* comp, QWidget* target);
+ /*public*/ static QPoint nextTo(QWidget* parent, JComponent* comp, QWidget* target);
 
 signals:
 

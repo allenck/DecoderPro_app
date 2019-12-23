@@ -42,7 +42,7 @@ public:
     /**
      * Attached a named Memory to this display item
      * @param m The Memory object
-     */;
+     */
     /*public*/ void setMemory(NamedBeanHandle<Memory*>* m);
     /*public*/ NamedBeanHandle<Memory*>* getNamedMemory();
     /*public*/ Memory* getMemory();

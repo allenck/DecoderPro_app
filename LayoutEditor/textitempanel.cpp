@@ -8,6 +8,8 @@
 #include <QPushButton>
 #include "editor.h"
 #include "positionablepopuputil.h"
+#include "positionablelabelxml.h"
+#include <QDrag>
 
 //TextItemPanel::TextItemPanel(QWidget *parent) :
 //    ItemPanel(parent)
@@ -32,7 +34,7 @@
         QWidget* panel = new QWidget();
         panel->setLayout(new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
         panel->layout()->addWidget(new JLabel(tr("Enter text and choose attributes for the label in the Preview panel.  Then")));
-        panel->layout()->addWidget(new JLabel(tr("Drag the label from the Preview panel to add it to the control panel")));
+        panel->layout()->addWidget(new JLabel(tr("drag the label from the Preview panel to add it to the control panel")));
         QWidget* p = new QWidget();
         p->setLayout(new FlowLayout);
         p->layout()->addWidget(panel);
@@ -45,17 +47,28 @@
         ItemPanel::init();
     }
     log->debug(tr("init panel '%1', layout %2 contains %3 items, objectName = %4").arg("TextItemPanel").arg(thisLayout == nullptr?"null layout": thisLayout->metaObject()->className()).arg(thisLayout->children().size()).arg(thisLayout->objectName()));
+    if (_decorator != nullptr) {
+        _decorator->_bgColorBox->setCurrentIndex(_paletteFrame->getPreviewBg());
+    }
+}
+/*public*/ void TextItemPanel::init(ActionListener* /*doneAction*/, Positionable* pos) {
+    _decorator = new DecoratorPanel(_editor, _paletteFrame);
+    _decorator->initDecoratorPanel(pos);
 }
 
 //@Override
-/*protected*/ void TextItemPanel::updateBackground0(BufferedImage* im) {
+/*public*/ void TextItemPanel::init(ActionListener* /*doneAction*/) {
+}
+
+//@Override
+/*protected*/ void TextItemPanel::updateBackground0(BufferedImage* /*im*/) {
     if (_decorator != nullptr) {
         _decorator->_bgColorBox->setCurrentIndex(_paletteFrame->getPreviewBg());
     }
 }
 
 //@Override
-/*protected*/ void TextItemPanel::setPreviewBg(int index) {
+/*protected*/ void TextItemPanel::setPreviewBg(int /*index*/) {
     if (_decorator != nullptr) {
         _decorator->_bgColorBox->setCurrentIndex(_paletteFrame->getPreviewBg());
     }
@@ -95,14 +108,15 @@
     }
 }
 
-/*public*/ void TextItemPanel::updateAttributes(PositionableLabel* l) {
-    _decorator->setAttributes(l);
-    PositionablePopupUtil* util = _decorator->getPositionablePopupUtil();
-    l->setPopupUtility(util->clone(l, l->getTextComponent()));
+/*public*/ void TextItemPanel::updateAttributes(PositionableLabel* l)
+{
+ _decorator->setAttributes(l);
+ PositionablePopupUtil* util = _decorator->getPositionablePopupUtil();
+ l->setPopupUtility(util->clone(l, (JComponent*)l->getTextComponent()));
 //    l->setFont(util->getFont().deriveFont(util.getFontStyle()));
-    if (util->hasBackground()) { // unrotated
-        l->setOpaque(true);
-    }
+ if (util->hasBackground()) { // unrotated
+     l->setOpaque(true);
+ }
 }
 
 //@Override
@@ -120,20 +134,177 @@
 
 //    DataFlavor dataFlavor;
 
-    /*public*/DragDecoratorLabel::DragDecoratorLabel(QString s, Editor* editor, TextItemPanel* textItemPanel) : PositionableLabel(s, editor){
-        //super(s, editor);
- this->textItemPanel = textItemPanel;
+/*public*/DragDecoratorLabel::DragDecoratorLabel(QString s, Editor* editor, TextItemPanel* textItemPanel)
+ : PositionableLabel(s, editor){
+    //super(s, editor);
+this->textItemPanel = textItemPanel;
+ QLabel::setVisible(true);
+ QLabel::setAutoFillBackground(true);
+ QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+ sizePolicy.setHorizontalStretch(1);
+ sizePolicy.setVerticalStretch(0);
+ sizePolicy.setHeightForWidth(QLabel::hasHeightForWidth());
+ setSizePolicy(sizePolicy);
+ fg = getForeground();
+ bg = getBackground();
+ f = getFont();
+
 #if 0
-        DragSource dragSource = DragSource.getDefaultDragSource();
-        dragSource.createDefaultDragGestureRecognizer(this,
-                DnDConstants.ACTION_COPY, this);
-        try {
-            dataFlavor = new DataFlavor(Editor.POSITIONABLE_FLAVOR);
-        } catch (ClassNotFoundException cnfe) {
-            log.error("Unable to find class supporting {}", Editor.POSITIONABLE_FLAVOR, cnfe);
-        }
-#endif
+    DragSource dragSource = DragSource.getDefaultDragSource();
+    dragSource.createDefaultDragGestureRecognizer(this,
+            DnDConstants.ACTION_COPY, this);
+    try {
+        dataFlavor = new DataFlavor(Editor.POSITIONABLE_FLAVOR);
+    } catch (ClassNotFoundException cnfe) {
+        log.error("Unable to find class supporting {}", Editor.POSITIONABLE_FLAVOR, cnfe);
     }
+#endif
+}
+void DragDecoratorLabel::setBackground(QColor bg)
+{
+ PositionableLabel::setBackground(bg);
+ this->bg = bg;
+ setAttributes();
+}
+
+void DragDecoratorLabel::setForeground(QColor fg)
+{
+ PositionableLabel::setForeground(fg);
+ this->fg = fg;
+ setAttributes();
+}
+
+void DragDecoratorLabel::setBorderColor(QColor borderColor)
+{
+ this->borderColor = borderColor;
+ setAttributes();
+}
+
+void  DragDecoratorLabel::setBorderSize(int w)
+{
+ this->borderSize = w;
+ setAttributes();
+}
+
+void  DragDecoratorLabel::setMargin(int w)
+{
+ this->margin = w;
+ setAttributes();
+}
+
+void  DragDecoratorLabel::setFixedWidth(int w)
+{
+ if(w > 0)
+  QLabel::setStyleSheet(tr("QLabel {width: %1px;}").arg(w));
+}
+void  DragDecoratorLabel::setFixedHeight(int h)
+{
+ if(h > 0)
+  QLabel::setStyleSheet(tr("QLabel {height: %1px;}").arg(h));
+}
+
+void DragDecoratorLabel::setFontSize(int s)
+{
+ f.setPointSize(s);
+ QLabel::setFont(f);
+ setAttributes();
+}
+
+void DragDecoratorLabel::setFontFamily(QString family)
+{
+ f.setFamily(family);
+ setAttributes();
+}
+
+void DragDecoratorLabel::setFontStyle(int style)
+{
+ // plain. bold, italic, bold/italic
+ //QFont f = QLabel::font();
+ switch (style)
+ {
+  case 0: // plain
+   f.setWeight(QFont::Weight::Normal);
+   f.setStyle(QFont::Style::StyleNormal);
+   break;
+ case 1: // Bold
+  f.setWeight(QFont::Weight::Bold);
+  f.setStyle(QFont::Style::StyleNormal);
+  break;
+ case 2: // Italic
+  f.setWeight(QFont::Weight::Normal);
+  f.setStyle(QFont::Style::StyleItalic);
+  break;
+ case 3: // bold/italic
+  f.setWeight(QFont::Weight::Bold);
+  f.setStyle(QFont::Style::StyleItalic);
+  break;
+ }
+ setAttributes();
+}
+/*public*/ void DragDecoratorLabel::setAttributes()
+{
+#if 1
+ QString styleSheet = "QLabel {";
+ styleSheet.append(QString("background-color: rgb(%1,%2,%3); color: rgb(%4,%5,%6);").arg(bg.red()).arg(bg.green()).arg(bg.blue()).arg(fg.red()).arg(fg.green()).arg(fg.blue()));
+ if(borderSize)
+ {
+  styleSheet.append(QString("border-style: outset; border-width: %1px;").arg(borderSize));
+  styleSheet.append(QString("border-color: rgb(%1,%2,%3);").arg(borderColor.red()).arg(borderColor.green()).arg(borderColor.blue()));
+ }
+ else
+  styleSheet.append(QString("border-style: outset; border-width: %1px;").arg(borderSize));
+
+ styleSheet.append(QString("margin: %1px;").arg(margin));
+
+ styleSheet.append("}");
+ QLabel::setFont(f);
+ QLabel::setStyleSheet(styleSheet);
+#else
+ QPalette pal = QLabel::palette();
+ pal.setColor(QPalette::WindowText, fg);
+ pal.setColor(QPalette::Window, bg);
+ QLabel::setPalette(pal);
+ QLabel::setStyleSheet(QString("border-style: outset; border-width: %1px;").arg(borderSize) + QString("border-color: rgb(%1,%2,%3);").arg(borderColor.red()).arg(borderColor.green()).arg(borderColor.blue()));
+#endif
+ QLabel::repaint();
+ QLabel::update();
+}
+
+void DragDecoratorLabel::mousePressEvent(QMouseEvent *e)
+{
+ if(e->button()&Qt::LeftButton)
+ {
+  dr = new QDrag(this);
+  QMimeData *data = new QMimeData;
+  QByteArray s_mimeData = mimeData();
+  textItemPanel->log->debug(tr("xmldata: %1").arg(s_mimeData.data()));
+  data->setData("object/x-myApplication-object", s_mimeData);
+  // Assign ownership of the QMimeData object to the QDrag object.
+  dr->setMimeData(data);
+  dr->exec();
+ }
+ if(e->button() & Qt::RightButton)
+ {
+//  emit showPopUp(getIcon());
+ }
+}
+/*public*/ QByteArray DragDecoratorLabel::mimeData()
+{
+ QByteArray xmldata;
+ //QString url = ((NamedIcon*)getIcon())->getURL();
+ //PositionableLabel* l = new PositionableLabel(NamedIcon::getIconByName(url), /*_editor*/textItemPanel->_editor);
+ PositionableLabel* l = new PositionableLabel(_unRotatedText, /*_editor*/textItemPanel->_editor);
+ l->setPopupUtility(NULL);        // no text
+ l->setLevel(Editor::LABELS);
+ //_dataFlavor = new DataFlavor(l, "PositionableLabel");
+// _dataFlavor->setMimeTypeParameter("family", parent->_family);
+ PositionableLabelXml* xml = new PositionableLabelXml();
+ QDomElement e = xml->store((QObject*)l);
+ xml->doc.appendChild(e);
+ xmldata.append(xml->doc.toString());
+ return xmldata;
+}
+
 #if 0
     /**
      * ************** DragGestureListener **************

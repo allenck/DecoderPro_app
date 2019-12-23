@@ -1524,6 +1524,7 @@ void ControlPanelEditor::selectAllAction()
 {
  bool bControlDown = event->modifiers() & Qt::ControlModifier;
  bool bShiftDown = event->modifiers() & Qt::ShiftModifier;
+ bool bRightButton = event->buttons() & Qt::RightButton;
 
  //if (jmri.util.swing.SwingSettings.getNonStandardMouseEvent())
  {
@@ -2436,9 +2437,9 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
       QDomElement e = list.at(0).toElement();
       xml->load(e,this);
       MemoryIcon* l = xml->getIcon();
-      l->setLocation(event->scenePos().x(), event->scenePos().y());
       l->setLevel(Editor::MEMORIES);
-      addToTarget(l);
+      l->setLocation(event->scenePos().x(), event->scenePos().y());
+      //addToTarget(l); // load adds it
   }
   else if(representativeClass=="memoryInputIcon")
   {

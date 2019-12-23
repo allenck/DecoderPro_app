@@ -14,9 +14,10 @@
   * @author Scott Violet
   */
 
-/*public*/ /*interface*/class TreeExpansionListener : public EventListener
+/*public*/ /*interface*/class TreeExpansionListener : public QObject, public EventListener
 {
  Q_OBJECT
+ Q_INTERFACES(EventListener)
 public:
  TreeExpansionListener() : EventListener()
  {

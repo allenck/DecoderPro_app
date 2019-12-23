@@ -117,7 +117,7 @@ QT_DEPRECATED virtual bool  requestThrottle(DccLocoAddress* /*address*/, Throttl
  *         be made; false may be returned if a the throttle is already in
  *         use
  */
-virtual /*public*/ bool requestThrottle(LocoAddress* address, ThrottleListener* l, bool canHandleDecisions) {return false;}
+virtual /*public*/ bool requestThrottle(LocoAddress* /*address*/, ThrottleListener* /*l*/, bool /*canHandleDecisions*/) {return false;}
 /**
  * Request a throttle, given a decoder address or a RosterEntry. When the decoder address
  * is located, the ThrottleListener gets a callback via the ThrottleListener.notifyThrottleFound
@@ -145,7 +145,7 @@ QT_DEPRECATED virtual bool  requestThrottle(DccLocoAddress* /*address*/, BasicRo
  *         be made; false may be returned if a the throttle is already in
  *         use
  */
-/*public*/ virtual bool requestThrottle(BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions) {return false;}
+/*public*/ virtual bool requestThrottle(BasicRosterEntry* /*re*/, ThrottleListener* /*l*/, bool /*canHandleDecisions*/) {return false;}
 /**
  * Cancel a request for a throttle.
  * <P>

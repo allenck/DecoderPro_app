@@ -4,7 +4,7 @@
 
 
 PositionableJComponent::PositionableJComponent(QWidget *parent) :
-    JComponent(parent)
+    QWidget(parent)
 {
 }
 /**
@@ -16,7 +16,7 @@ PositionableJComponent::PositionableJComponent(QWidget *parent) :
 ///*public*/ class PositionableJComponent extends JComponent implements Positionable {
 
 
-/*public*/ PositionableJComponent::PositionableJComponent(Editor* editor, QObject* parent) :  JComponent((QWidget*)parent)
+/*public*/ PositionableJComponent::PositionableJComponent(Editor* editor, QObject* parent) :  QWidget((QWidget*)parent)
 {
  _editor = NULL;
  debug = false;
@@ -55,8 +55,8 @@ PositionableJComponent::PositionableJComponent(QWidget *parent) :
     pos->updateSize();
     return pos;
 }
-/*public*/ JComponent *PositionableJComponent::getTextComponent() {
-    return (JComponent*)this;
+/*public*/ QWidget* PositionableJComponent::getTextComponent() {
+    return (QWidget*)this;
 }
 
 /***************** Positionable methods **********************/
@@ -341,3 +341,7 @@ bool PositionableJComponent::requestFocusInWindow()
  return false;
 }
 
+/*public*/ void PositionableJComponent::setFont(QFont)
+{
+
+}

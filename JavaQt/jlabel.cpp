@@ -1,10 +1,10 @@
 #include "jlabel.h"
 #include "exceptions.h"
-#include "imageicon.h".h"
+#include "imageicon.h"
 #include <QGraphicsItemGroup>
 
-//JLabel::JLabel(QObject *parent) :
-//    QObject(parent)
+//JLabel::JLabel(QWidget *parent) :
+//    QLabel(parent)
 //{
 //}
 QString JLabel::uiClassID = "LabelUI";
@@ -218,23 +218,23 @@ float JLabel::LEFT_ALIGNMENT = 0.0f;
 void JLabel::init()
 {
  mutex = new QMutex();
-mnemonic = '\0';
-mnemonicIndex = -1;
+ mnemonic = '\0';
+ mnemonicIndex = -1;
 
-text = "";         // "" rather than NULL, for BeanBox
-defaultIcon = NULL;
-disabledIcon = NULL;
-disabledIconSet = false;
-isAlignmentXSet = false;
+ text = "";         // "" rather than NULL, for BeanBox
+ defaultIcon = NULL;
+ disabledIcon = NULL;
+ disabledIconSet = false;
+ isAlignmentXSet = false;
 
-verticalAlignment = CENTER;
-horizontalAlignment = LEADING;
-verticalTextPosition = CENTER;
-horizontalTextPosition = TRAILING;
-iconTextGap = 4;
-setVisible(true);
-_x = 0;
-_y = 0;
+ verticalAlignment = CENTER;
+ horizontalAlignment = LEADING;
+ verticalTextPosition = CENTER;
+ horizontalTextPosition = TRAILING;
+ iconTextGap = 4;
+ setVisible(true);
+ _x = 0;
+ _y = 0;
 
 }
 #if 0 // TODO:
@@ -506,7 +506,7 @@ _y = 0;
  * @param aChar  a char specifying the mnemonic to display
  * @see #setDisplayedMnemonic(int)
  */
-/*public*/ void JLabel::setDisplayedMnemonic(char aChar) {
+/*public*/ void JLabel::setDisplayedMnemonic(char /*aChar*/) {
 //    int vk = java.awt.event.KeyEvent.getExtendedKeyCodeForChar(aChar);
 //    if (vk != java.awt.event.KeyEvent.VK_UNDEFINED) {
 //        setDisplayedMnemonic(vk);
@@ -765,7 +765,7 @@ _y = 0;
  */
 /*public*/ void JLabel::setHorizontalAlignment(int alignment) {
     if (alignment == horizontalAlignment) return;
-    int oldValue = horizontalAlignment;
+//    int oldValue = horizontalAlignment;
     horizontalAlignment = checkHorizontalKey(alignment,
                                              "horizontalAlignment");
 //    firePropertyChange("horizontalAlignment",
@@ -1690,4 +1690,27 @@ QString JLabel::getName()
 /*public*/ void JLabel::setBounds(int x, int y, int w, int h)
 {
  setGeometry(x, y, w, h);
+}
+
+/*public*/ bool  JLabel::isOpaque() {return _opaque;}
+
+/*public*/ QColor JLabel::getBackground()
+{
+ return palette().color(QWidget::backgroundRole());
+}
+/*public*/ void JLabel::setBackground(QColor c){
+ setStyleSheet(tr("QWidget{background-color: rgb(%1,%2,%3)").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+/*public*/ QFont JLabel::getFont()
+{
+ return font();
+}
+/*public*/ void JLabel::setOpaque(bool b)
+{
+ _opaque = b;
+}
+
+/*public*/ void JLabel::setFont(QFont f)
+{
+ QLabel::setFont(f);
 }

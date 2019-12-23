@@ -8,8 +8,11 @@
  *
  * @author rhwood
  */
-/*public*/ /*interface*/class ZeroConfServiceListener : public EventListener {
+/*public*/ /*interface*/class ZeroConfServiceListener : public QObject, public EventListener {
 Q_OBJECT
+ Q_INTERFACES(EventListener)
+public:
+ QObject* self() {return (QObject*)this;}
 public slots:
  /*public*/ virtual void serviceQueued(ZeroConfServiceEvent* /*se*/) {}
 

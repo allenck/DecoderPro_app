@@ -43,7 +43,8 @@ public:
     /*public*/ void setULRL(QString u);
     /*public*/ bool setLinkMenu(QMenu* popup);
     /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* event);
-
+    /*public*/ void setFont(QFont);
+    QObject* jself() {return (QObject*)this;}
 signals:
 
 public slots:

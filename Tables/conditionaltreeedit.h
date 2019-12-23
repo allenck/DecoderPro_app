@@ -435,6 +435,7 @@ class CDLTreeExpansionListener : public TreeExpansionListener
  ConditionalTreeEdit* cte;
 public:
  CDLTreeExpansionListener(ConditionalTreeEdit* cte);
+ QObject* self() {return (QObject*)this;}
 public slots:
  /*public*/ void treeExpanded(TreeExpansionEvent* e);
 

@@ -8,6 +8,8 @@ class BufferedImage : public QImage
 public:
  BufferedImage();
  BufferedImage(int w, int h, QImage::Format format);
+ /*public*/ void setRGB(int startX, int startY, int w, int h,
+                     QVector<int> rgbArray, int offset, int scansize);
 
  /**
   * Image Type Constants

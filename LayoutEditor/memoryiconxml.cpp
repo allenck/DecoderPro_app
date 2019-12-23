@@ -38,7 +38,7 @@ MemoryIconXml::MemoryIconXml(QObject *parent) :
  // include attributes
  element.setAttribute("memory", p->getNamedMemory()->getName());
  storeCommonAttributes((Positionable*)p, element);
- storeTextInfo((Positionable*)p, element);
+ storeTextInfo(p, element);
 
  //If the fixed width option is not set and the justification is not left
  //Then we need to replace the x, y values with the original ones.
@@ -104,7 +104,7 @@ MemoryIconXml::MemoryIconXml(QObject *parent) :
  if(qobject_cast<LayoutEditor*>(o)!= NULL)
  {
   ed = (LayoutEditor*) o;
-  l = new MemoryIcon(QString("   "), ed);
+  l = new LEMemoryIcon(QString("   "), (LayoutEditor*)ed);
  }
  else
  //if (o instanceof jmri.jmrit.display.Editor)

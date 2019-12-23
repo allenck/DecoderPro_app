@@ -770,7 +770,7 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
     /*public*/ synchronized void setRGB(int x, int y, int rgb) {
         raster.setDataElements(x, y, colorModel.getDataElements(rgb, null));
     }
-
+#endif
     /**
      * Sets an array of integer pixels in the default RGB color model
      * (TYPE_INT_ARGB) and default sRGB color space,
@@ -801,10 +801,11 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
      * @see #getRGB(int, int)
      * @see #getRGB(int, int, int, int, int[], int, int)
      */
-    /*public*/ void setRGB(int startX, int startY, int w, int h,
-                        int[] rgbArray, int offset, int scansize) {
+    /*public*/ void BufferedImage::setRGB(int startX, int startY, int w, int h,
+                        QVector<int> rgbArray, int offset, int scansize) {
         int yoff  = offset;
         int off;
+#if 0
         Object pixel = null;
 
         for (int y = startY; y < startY+h; y++, yoff+=scansize) {
@@ -814,9 +815,10 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
                 raster.setDataElements(x, y, pixel);
             }
         }
+#endif
     }
 
-
+#if 0
     /**
      * Returns the width of the <code>BufferedImage</code>.
      * @return the width of this <code>BufferedImage</code>

@@ -19,14 +19,16 @@ public:
  /*public*/ void installChooserPanel(JColorChooser* enclosingChooser);
  /*public*/ void uninstallChooserPanel(JColorChooser* enclosingChooser);
  /*public*/ ColorSelectionModel* getColorSelectionModel();
-
+ /*public*/ void setColorTransparencySelectionEnabled(bool b);
+ /*public*/ bool isColorTransparencySelectionEnabled();
+ /*public*/ QString toString();
 
 private:
- /*private*/ /*final*/ PropertyChangeListener* enabledListener;
- /*private*/ JColorChooser* chooser;
- void setSelectedColor(QColor arg0);
+ /*private*/ /*final*/ PropertyChangeListener* enabledListener = nullptr;
+ /*private*/ JColorChooser* chooser = nullptr;
+ void setSelectedColor(QColor color);
  ///*public*/ void paint(Graphics g);
- int getInt(QObject* arg0, int arg1);
+ int getInt(QVariant key, int defaultValue);
 
 protected:
  /*protected*/ /*abstract*/ virtual void buildChooser();

@@ -4,7 +4,7 @@
 #include <QSortFilterProxyModel>
 
 DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
-    QObject(parent)
+    QItemSelectionModel()
 {
  selectionMode = MULTIPLE_INTERVAL_SELECTION;
  minIndex = MAX;
@@ -20,6 +20,8 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
  value = new BitSet(32);
  leadAnchorNotificationEnabled = true;
  listenerList = QVector<ListSelectionListener*>();
+ connect(this, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(onSelectionChanged(QItemSelection,QItemSelection)));
+
 }
 /**
  * Default data model for list selections.
@@ -832,7 +834,6 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
 
 void DefaultListSelectionModel::onSelectionChanged(QItemSelection selected, QItemSelection deselected)
 {
-
  int min = MAX;
  int max = MIN;
  int minNew = MAX;
@@ -853,13 +854,17 @@ void DefaultListSelectionModel::onSelectionChanged(QItemSelection selected, QIte
 // if table model is a sort, we need to re-map the model indexes.
 /*private*/ QItemSelection DefaultListSelectionModel::mapSelections(QItemSelection selections)
 {
- if(qobject_cast<QSortFilterProxyModel*>(itemSelectionModel->model()))
+ if(selections.count()== 0)
+  return selections;
+ const QAbstractItemModel* m = selections.at(0).model();
+ if((QSortFilterProxyModel*)(m))
  {
-  return ((QSortFilterProxyModel*)itemSelectionModel->model())->mapSelectionToSource(selections);
+  return ((QSortFilterProxyModel*)m)->mapSelectionToSource(selections);
  }
  else
   return selections;
 }
+#if 0
 /*public*/ QItemSelectionModel* DefaultListSelectionModel::getItemSelectionModel()
 {
  return itemSelectionModel;
@@ -870,3 +875,4 @@ void DefaultListSelectionModel::onSelectionChanged(QItemSelection selected, QIte
  this->itemSelectionModel = itemSelectionModel;
  connect(itemSelectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(onSelectionChanged(QItemSelection,QItemSelection)));
 }
+#endif

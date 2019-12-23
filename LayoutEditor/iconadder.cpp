@@ -891,7 +891,7 @@ void IconAdder::dispose()
  }
  if(_catalog != NULL)
  {
-  delete _catalog;
+   _catalog->close();
   _catalog = NULL;
  }
  if(_buttonPanel != NULL)

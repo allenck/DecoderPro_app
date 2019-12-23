@@ -9,13 +9,13 @@
 #include <QHash>
 
 template <class L>
-class ChangeListenerMap : public EventListener
+class ChangeListenerMap : public QObject, public EventListener
 {
-
-    //Q_OBJECT
+ //Q_OBJECT
+ Q_INTERFACES(EventListener)
 public:
     ChangeListenerMap(QObject* parent = nullptr):
-      EventListener(parent)
+      QObject(parent)
   {
    map = QHash<QString, QVector<L>* >();
    //map = NULL;

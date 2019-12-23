@@ -16,13 +16,15 @@
  *
  * @author Scott Violet
  */
-/*public*/ class TreeSelectionListener  : public EventListener //extends EventListener
+/*public*/ class TreeSelectionListener  : public QObject, public EventListener //extends EventListener
 {
  Q_OBJECT
+ Q_INTERFACES(EventListener)
 public:
- TreeSelectionListener() : EventListener() {}
+ TreeSelectionListener() : QObject() {}
  ~TreeSelectionListener() {}
- TreeSelectionListener(const TreeSelectionListener&): EventListener() {}
+ TreeSelectionListener(const TreeSelectionListener&) : QObject(), EventListener() {}
+ QObject* self() {return (QObject*)this;}
 public slots:
     /**
       * Called whenever the value of the selection changes.

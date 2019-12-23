@@ -529,3 +529,28 @@ void JFrame::setVisible(bool visible)
 {
  QMainWindow::setVisible(visible);
 }
+/*public*/ bool JFrame::isOpaque()
+{
+ return _opaque;
+}
+/*public*/ QColor JFrame::getBackground()
+{
+ return palette().color(QWidget::backgroundRole());
+}
+/*public*/ void JFrame::setBackground(QColor c)
+{
+ setStyleSheet(tr("QMainWindow{background-color: rgb(%1,%2,%3)").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+/*public*/ void JFrame::setOpaque(bool b)
+{
+ _opaque = b;
+}
+/*public*/ QFont JFrame::getFont()
+{
+ return font();
+}
+
+/*public*/ void JFrame::setFont(QFont f)
+{
+ QMainWindow::setFont(f);
+}

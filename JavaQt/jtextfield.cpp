@@ -1089,3 +1089,20 @@ Document* JTextField::getDocument()
 {
  return doc;
 }
+/*public*/ bool JTextField::isOpaque()
+{
+ //Returns true if this component is completely opaque.
+
+ //An opaque component paints every pixel within its rectangular bounds.
+ //A non-opaque component paints only a subset of its pixels or none at all,
+ //allowing the pixels underneath it to "show through". Therefore, a component
+ //that does not fully paint its pixels provides a degree of transparency.
+
+ return false;
+}
+
+/*public*/ QFont JTextField::getFont()
+{
+ return font();
+}
+

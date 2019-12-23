@@ -51,6 +51,7 @@
     _namedIcon=defaultIcon;
     //updateSize();
     //By default all memory is left justified
+    initAfter();
     _popupUtil->setJustification(LEFT);
 //    this.setTransferHandler(new TransferHandler());
 }
@@ -74,7 +75,9 @@
  _displayLevel = Editor::LABELS;
  defaultIcon = s;
     //updateSize();
-    _popupUtil->setJustification(LEFT);
+ if(_popupUtil == nullptr)
+  initAfter();
+ _popupUtil->setJustification(LEFT);
 //    log->debug("MemoryIcon ctor= "+MemoryIcon.class.getName());
 //    this.setTransferHandler(new TransferHandler());
 }
@@ -170,8 +173,6 @@ void MemoryIcon::on_propertyChange(QString sType, QVariant /*sOld*/, QVariant sN
  if (namedMemory != NULL)
  {
   getMemory()->addPropertyChangeListener((PropertyChangeListener*)this, namedMemory->getName(), "Memory Icon");
-//  AbstractNamedBean* bean = (AbstractNamedBean*)getMemory();
-  //connect(bean->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   displayState();
   setName(namedMemory->getName());
  }

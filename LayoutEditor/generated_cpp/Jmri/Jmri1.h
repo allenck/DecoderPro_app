@@ -949,8 +949,10 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    void dispose(JFrame* theWrappedObject);
    void py_q_dispose(JFrame* theWrappedObject){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_dispose());}
    void frameInit(JFrame* theWrappedObject);
+   QColor  getBackground(JFrame* theWrappedObject);
    QWidget*  getContentPane(JFrame* theWrappedObject, bool  addLayout = true);
    QWidget*  py_q_getContentPane(JFrame* theWrappedObject, bool  addLayout = true){  return (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_getContentPane(addLayout));}
+   QFont  getFont(JFrame* theWrappedObject);
    QPoint  getLocation(JFrame* theWrappedObject);
    QPoint  getLocationOnScreen(JFrame* theWrappedObject);
    QSize  getMaximumSize(JFrame* theWrappedObject);
@@ -959,6 +961,8 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    QString  py_q_getTitle(JFrame* theWrappedObject){  return (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_getTitle());}
    QWidget*  getTopLevelAncestor(JFrame* theWrappedObject);
    QVector<WindowListener* >  getWindowListeners(JFrame* theWrappedObject);
+   bool  isOpaque(JFrame* theWrappedObject);
+   QObject*  jself(JFrame* theWrappedObject);
    void languageChange(JFrame* theWrappedObject);
    void py_q_languageChange(JFrame* theWrappedObject){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_languageChange());}
    void pack(JFrame* theWrappedObject);
@@ -966,10 +970,13 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    void reSizeToFitOnScreen(JFrame* theWrappedObject);
    void removeWindowListener(JFrame* theWrappedObject, WindowListener*  l);
    void setAlwaysOnTop(JFrame* theWrappedObject, bool  checked);
+   void setBackground(JFrame* theWrappedObject, QColor  arg__1);
    void setDefaultCloseOperation(JFrame* theWrappedObject, int  operation);
+   void setFont(JFrame* theWrappedObject, QFont  arg__1);
    void setLocation(JFrame* theWrappedObject, QPoint  p);
    void setLocation(JFrame* theWrappedObject, int  x, int  y);
    void setMenuBar(JFrame* theWrappedObject, QMenuBar*  menubar);
+   void setOpaque(JFrame* theWrappedObject, bool  arg__1);
    void setTitle(JFrame* theWrappedObject, QString  _title);
    void py_q_setTitle(JFrame* theWrappedObject, QString  _title){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_setTitle(_title));}
    void py_q_setVisible(JFrame* theWrappedObject, bool  visible){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_setVisible(visible));}
@@ -1070,22 +1077,29 @@ JLabel* new_JLabel(QWidget*  parent = 0);
 void delete_JLabel(JLabel* obj) { delete obj; } 
    int  checkHorizontalKey(JLabel* theWrappedObject, int  key, QString  message);
    int  checkVerticalKey(JLabel* theWrappedObject, int  key, QString  message);
+   QColor  getBackground(JLabel* theWrappedObject);
    int  getDisplayedMnemonic(JLabel* theWrappedObject);
+   QFont  getFont(JLabel* theWrappedObject);
    int  getHorizontalAlignment(JLabel* theWrappedObject);
    int  getHorizontalTextPosition(JLabel* theWrappedObject);
    QPointF  getLocation(JLabel* theWrappedObject);
    QString  getName(JLabel* theWrappedObject);
    QString  getText(JLabel* theWrappedObject);
    int  getVerticalAlignment(JLabel* theWrappedObject);
+   bool  isOpaque(JLabel* theWrappedObject);
+   QObject*  jself(JLabel* theWrappedObject);
    void setAlignmentX(JLabel* theWrappedObject, float  alignmentX);
+   void setBackground(JLabel* theWrappedObject, QColor  arg__1);
    void setBounds(JLabel* theWrappedObject, int  x, int  y, int  w, int  h);
    void setDisplayedMnemonic(JLabel* theWrappedObject, char  aChar);
    void setDisplayedMnemonic(JLabel* theWrappedObject, int  key);
+   void setFont(JLabel* theWrappedObject, QFont  arg__1);
    void setHorizontalAlignment(JLabel* theWrappedObject, int  alignment);
    void setHorizontalTextPosition(JLabel* theWrappedObject, int  textPosition);
    void setLocation(JLabel* theWrappedObject, double  x, double  y);
    void setLocation(JLabel* theWrappedObject, int  x, int  y);
    void setName(JLabel* theWrappedObject, QString  name);
+   void setOpaque(JLabel* theWrappedObject, bool  arg__1);
    void setSize(JLabel* theWrappedObject, double  x, double  y);
    void setText(JLabel* theWrappedObject, QString  text);
    void setVerticalAlignment(JLabel* theWrappedObject, int  alignment);
@@ -1289,7 +1303,7 @@ virtual QItemSelectionModel::SelectionFlags  selectionCommand(const QModelIndex&
 virtual void setModel(QAbstractItemModel*  dataModel);
 virtual void setRootIndex(const QModelIndex&  index);
 virtual void setSelection(const QRect&  rect, QItemSelectionModel::SelectionFlags  command);
-virtual void setSelectionModel(DefaultListSelectionModel *selectionModel);
+virtual void setSelectionModel(QItemSelectionModel*  selectionModel);
 virtual void setVisible(bool  visible);
 virtual void setupViewport(QWidget*  viewport);
 virtual QPainter*  sharedPainter() const;

@@ -2156,6 +2156,7 @@ void delete_PositionableLabel(PositionableLabel* obj) { delete obj; }
    bool  getSaveOpaque(PositionableLabel* theWrappedObject);
    double  getScale(PositionableLabel* theWrappedObject);
    QSize  getSize(PositionableLabel* theWrappedObject);
+   QWidget*  getTextComponent(PositionableLabel* theWrappedObject);
    QString  getToolTip(PositionableLabel* theWrappedObject);
    QString  getUnRotatedText(PositionableLabel* theWrappedObject);
    bool  getViewCoordinates(PositionableLabel* theWrappedObject);

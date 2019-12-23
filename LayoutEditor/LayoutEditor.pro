@@ -225,7 +225,6 @@ SOURCES += \
     turnoutlineedit.cpp \
     decoratorpanel.cpp \
     abstractspinnermodel.cpp \
-    spinnernumbermodel.cpp \
     controlpaneleditor.cpp \
     itempalette.cpp \
     portalicon.cpp \
@@ -478,7 +477,8 @@ SOURCES += \
     memoryiconxml.cpp \
     leblockcontentsicon.cpp \
     blockcontentsicon.cpp \
-    leblockcontentsiconxml.cpp
+    leblockcontentsiconxml.cpp \
+    fontpanel.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -616,9 +616,7 @@ HEADERS += liblayouteditor_global.h \
     sensorlineedit.h \
     turnoutlineedit.h \
     decoratorpanel.h \
-    spinnermodel.h \
     abstractspinnermodel.h \
-    spinnernumbermodel.h \
     controlpaneleditor.h \
     itempalette.h \
     itempanel.h \
@@ -878,7 +876,8 @@ HEADERS += liblayouteditor_global.h \
     memoryiconxml.h \
     leblockcontentsicon.h \
     blockcontentsicon.h \
-    leblockcontentsiconxml.h
+    leblockcontentsiconxml.h \
+    fontpanel.h
 
 FORMS    += \
     edittracksegmentdlg.ui \

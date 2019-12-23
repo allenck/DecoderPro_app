@@ -5,17 +5,18 @@
 #include <QIcon>
 #include <QMutex>
 #include <QLabel>
-//#include "positionable.h"
+#include "jcomponent.h"
 
 class ImageIcon;
-class JLabel : public QLabel
+class JLabel : public QLabel, public JComponent
 {
-    Q_OBJECT
+   Q_OBJECT
+   Q_INTERFACES(JComponent)
 public:
-//explicit JLabel(QObject *parent = 0);
-/*public*/ static const int CENTER  = 0;
-/*public*/ static /*final*/ float LEFT_ALIGNMENT;// = 0.0f;
-/* Identifies the leading edge of text for use with left-to-right
+   //explicit JLabel(QWidget *parent = 0);
+   /*public*/ static const int CENTER  = 0;
+   /*public*/ static /*final*/ float LEFT_ALIGNMENT;// = 0.0f;
+   /* Identifies the leading edge of text for use with left-to-right
     * and right-to-left languages. Used by buttons and labels.
     */
    /*public*/ static const int LEADING  = 10;
@@ -316,6 +317,14 @@ public:
     void setName(QString name);
     QString getName();
     /*public*/ void setBounds(int x, int y, int w, int h);
+    /*public*/ QObject* jself() {return (QObject*)this;}
+    /*public*/ bool isOpaque();
+    /*public*/ QColor getBackground();
+    /*public*/ void setBackground(QColor);
+    /*public*/ QFont getFont();
+    /*public*/ void setOpaque(bool);
+    /*public*/ void setFont(QFont);
+    /*public*/ void setLabelFor(QWidget* c) {} // TODO:
 
 signals:
     
@@ -344,6 +353,8 @@ private:
 static /*final*/ QString LABELED_BY_PROPERTY;// = "labeledBy";
  double _x, _y;
  double _w, _h;
+ bool _opaque = false;
+
 protected:
 /*protected*/ int checkHorizontalKey(int key, QString message);
 /**

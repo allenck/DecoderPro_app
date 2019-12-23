@@ -11,7 +11,7 @@ class DefaultListModel;
 class QListView;
 class JTextField;
 class QPushButton;
-class QComboBox;
+class JComboBox;
 class MemoryComboIcon : public PositionableJPanel
 {
     Q_OBJECT
@@ -43,7 +43,7 @@ public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 
 private:
-    QComboBox*	_comboBox;
+    JComboBox*	_comboBox;
 //    ComboModel	_model;
     QStringList  _model;
 

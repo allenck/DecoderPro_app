@@ -4,9 +4,10 @@
 //#include "comparable.h"
 //#include "number.h"
 #include <QVariant>
-#include "liblayouteditor_global.h"
+#include "javaqt_global.h"
 
-class LIBLAYOUTEDITORSHARED_EXPORT SpinnerNumberModel : public AbstractSpinnerModel
+
+class JAVAQTSHARED_EXPORT SpinnerNumberModel : public AbstractSpinnerModel
 {
     Q_OBJECT
 public:

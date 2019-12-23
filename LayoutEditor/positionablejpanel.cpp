@@ -129,7 +129,7 @@
 /*public*/ bool PositionableJPanel::getSaveOpaque() {
     return isOpaque();
 }
-/*public*/ QWidget *PositionableJPanel::getTextComponent() {
+/*public*/ QWidget* PositionableJPanel::getTextComponent() {
     return (QWidget*)this;
 }
 

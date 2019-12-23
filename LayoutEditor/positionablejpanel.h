@@ -102,6 +102,7 @@ public:
     QRectF getBounds(QRectF);
     /*public*/ bool updateScene();
     QObject* self() {return (QObject*)this;}
+
     /*public*/ virtual MyGraphicsProxyWidget* getWidget() {return nullptr;}
 signals:
 

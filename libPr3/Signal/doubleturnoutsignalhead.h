@@ -37,7 +37,7 @@ private:
     bool isTurnoutUsed(Turnout* t);
     int mRedCommanded;
     int mGreenCommanded;
-    /*private*/ PropertyChangeListener* turnoutChangeListener;
+    /*private*/ PropertyChangeListener* turnoutChangeListener = nullptr;
     void commandState(int red, int green);
 
 protected:

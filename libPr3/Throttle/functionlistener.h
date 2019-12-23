@@ -2,13 +2,15 @@
 #define FUNCTIONLISTENER_H
 #include "eventlistener.h"
 
-class FunctionListener : public EventListener
+class FunctionListener : public QObject, public EventListener
 {
     Q_OBJECT
+ Q_INTERFACES(EventListener)
 public:
     explicit FunctionListener() : EventListener() {}
 public slots:
     /*public*/ virtual void notifyFunctionStateChanged(int /*functionNumber*/, bool /*isOn*/) {}
+    QObject* self() {return (QObject*)this;}
 
     /**
      * Get notification that a function's lockable status has changed.

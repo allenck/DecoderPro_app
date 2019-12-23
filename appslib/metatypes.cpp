@@ -310,6 +310,8 @@
 #include "blocktableaction.h"
 #include "dispatcherframe.h"
 #include "optionsfile.h"
+#include "leblockcontentsiconxml.h"
+#include "lememoryiconxml.h"
 
 bool Metatypes::done = false;
 
@@ -634,6 +636,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SensorTurnoutOperationXml>("SensorTurnoutOperationXml");
  qRegisterMetaType<DispatcherFrame>("DispatcherFrame");
  qRegisterMetaType<OptionsFile>("OptionsFile");
+ qRegisterMetaType<LEBlockContentsIconXml>("LEBlockContentsIconXml");
+ qRegisterMetaType<LEMemoryIconXml>("LEMemoryIconXml");
 
  Metatypes::done = true;
 }

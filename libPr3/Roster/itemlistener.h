@@ -4,10 +4,12 @@
 #include "libPr3_global.h"
 
 class ItemEvent;
-class LIBPR3SHARED_EXPORT ItemListener : public EventListener
+class LIBPR3SHARED_EXPORT ItemListener : public QObject, public EventListener
 {
     Q_OBJECT
+ Q_INTERFACES(EventListener)
 public:
+ QObject* self() {return (QObject*)this;}
     /**
      * The listener interface for receiving item events.
      * The class that is interested in processing an item event

@@ -4,12 +4,14 @@
 #include <QMainWindow>
 #include "logger.h"
 #include "javaqt_global.h"
+#include "jcomponent.h"
 
 class WindowListener;
 class PropertyChangeEvent;
-class JAVAQTSHARED_EXPORT JFrame : public QMainWindow
+class JAVAQTSHARED_EXPORT JFrame : public QMainWindow, public JComponent
 {
-    Q_OBJECT
+ Q_OBJECT
+ Q_INTERFACES(JComponent)
 public:
  enum ACTIONS
  {
@@ -69,6 +71,13 @@ public:
     void addWindowListener(WindowListener* l);
     /*public*/ /*synchronized*/ void removeWindowListener(WindowListener* l);
     QVector<WindowListener*> getWindowListeners();
+    bool isOpaque();
+    QColor getBackground();
+    void setBackground(QColor);
+    void setOpaque(bool);
+    QFont getFont();
+    void setFont(QFont);
+    QObject* jself() {return (QObject*)this;}
 
     void setAlwaysOnTop(bool checked);
 #if QT_VERSION >= 0x050000

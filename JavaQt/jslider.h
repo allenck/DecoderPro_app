@@ -4,6 +4,8 @@
 #include <QSlider>
 #include "propertychangeevent.h"
 #include "javaqt_global.h"
+
+class ChangeListener;
 class BoundedRangeModel;
 class JAVAQTSHARED_EXPORT JSlider : public QSlider
 {
@@ -18,7 +20,11 @@ public:
     /*public*/ BoundedRangeModel* getModel();
     void setMinimum(int);
     void setMaximum(int);
+    int getValue();
     void setValue(int);
+    /*public*/ void addChangeListener(ChangeListener*);
+    /*public*/ void removeChangeListener(ChangeListener*);
+
 signals:
 
 public slots:
@@ -26,6 +32,7 @@ public slots:
 private:
     /*private*/ void checkOrientation(int orientation);
     int orientation;
+    QVector<ChangeListener*> listeners;
 protected:
     /**
      * The data model that handles the numeric maximum value,

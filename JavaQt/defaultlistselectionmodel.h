@@ -10,9 +10,9 @@
 #include "listselectionlistener.h"
 
 class ListSelectionEvent;
-class JAVAQTSHARED_EXPORT DefaultListSelectionModel : public QObject, public ListSelectionModel
+class JAVAQTSHARED_EXPORT DefaultListSelectionModel : public QItemSelectionModel,  public ListSelectionModel
 {
-    Q_OBJECT
+ Q_OBJECT
  Q_INTERFACES(ListSelectionModel)
 public:
     explicit DefaultListSelectionModel(QObject *parent = 0);
@@ -43,8 +43,8 @@ public:
     /*public*/ void setAnchorSelectionIndex(int anchorIndex);
     /*public*/ void moveLeadSelectionIndex(int leadIndex);
     /*public*/ void setLeadSelectionIndex(int leadIndex);
-    /*public*/ QItemSelectionModel* getItemSelectionModel();
-    /*public*/ void setItemSelectionModel(QItemSelectionModel* itemSelectionModel);
+//    /*public*/ QItemSelectionModel* getItemSelectionModel();
+    ///*public*/ void setItemSelectionModel(QItemSelectionModel* itemSelectionModel);
 
 signals:
     void listSelectionChanged(ListSelectionEvent*);
@@ -80,7 +80,7 @@ private:
     /*private*/ void changeSelection(int clearMin, int clearMax,
                                  int setMin, int setMax, bool clearFirst);
     /*private*/ void changeSelection(int clearMin, int clearMax, int setMin, int setMax);
-    QItemSelectionModel* itemSelectionModel = nullptr;
+//    QItemSelectionModel* itemSelectionModel = nullptr;
     QVector<ListSelectionListener*> listenerList;
     /*private*/ QItemSelection mapSelections(QItemSelection selections);
 

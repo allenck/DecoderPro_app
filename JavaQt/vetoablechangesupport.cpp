@@ -108,7 +108,7 @@
         if (listener == nullptr) {
             return;
         }
-        if (qobject_cast<VetoableChangeListenerProxy*>(listener) != nullptr) {
+        if (qobject_cast<VetoableChangeListenerProxy*>(listener->self()) != nullptr) {
             VetoableChangeListenerProxy* proxy =
                     (VetoableChangeListenerProxy*)listener;
             // Call two argument remove method.
@@ -511,7 +511,7 @@
          */
         /*public*/ /*final*/ VetoableChangeListener* VetoableChangeListenerMap::extract(VetoableChangeListener* listener) {
             //while (listener instanceof VetoableChangeListenerProxy)
-            while(qobject_cast<VetoableChangeListenerProxy*>(listener) != nullptr)
+            while(qobject_cast<VetoableChangeListenerProxy*>(listener->self()) != nullptr)
             {
 #if 0
                 listener = ((VetoableChangeListenerProxy*) listener)->getListener();

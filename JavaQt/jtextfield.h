@@ -5,6 +5,7 @@
 #include <QtXml>
 #include "logger.h"
 #include "javaqt_global.h"
+#include "jcomponent.h"
 
 class PropertyChangeEvent;
 class InputVerifier;
@@ -12,9 +13,10 @@ class Document;
 class Action;
 class PropertyChangeListener;
 class ActionListener;
-class JAVAQTSHARED_EXPORT JTextField : public /*JTextComponent*/QLineEdit
+class JAVAQTSHARED_EXPORT JTextField : public /*JTextComponent*/QLineEdit, public JComponent
 {
     Q_OBJECT
+    Q_INTERFACES(JComponent)
 public:
     explicit JTextField(QWidget *parent = 0);
     /*public*/ JTextField(QString text, QWidget *parent = 0);
@@ -35,7 +37,9 @@ public:
     /*public*/ void setName(QString name);
     /*public*/ Document* getDocument();
     /*public*/ void setInputVerifier(InputVerifier* inputVerifier);
-
+    /*public*/ QObject* jself() {return (QObject*)this;}
+    /*public*/ bool isOpaque();
+    /*public*/ QFont getFont();
 
 signals:
  void enterField();

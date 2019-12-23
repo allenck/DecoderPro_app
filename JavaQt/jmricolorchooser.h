@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QWidget>
+#include "actionlistener.h"
+#include "jcolorchooser.h"
 
 class JColorChooser;
 class JmriColorChooser : public QObject
@@ -22,7 +24,26 @@ private:
  static /*private*/ QList<QColor> recentColors;//= new ArrayList<>();
  static /*final*/ int COLOR_TAB_COUNT;// = 6;
  static QColor color;
+ friend class JmriColorChooser;
+};
+#if 0
+class JCCActionListener : public ActionListener
+{
+ Q_OBJECT
+ JmriColorChooser* jmriColorChooser;
+ JColorChooser* chooser;
+public:
+ JCCActionListener(JColorChooser* chooser, JmriColorChooser* jmriColorChooser)
+ {
+  this->jmriColorChooser = jmriColorChooser;
+  this->chooser = chooser;
+ }
+public slots:
+ void actionPerformed()
+ {
+  jmriColorChooser->color = chooser->getColor();
+ }
 
 };
-
+#endif
 #endif // JMRICOLORCHOOSER_H

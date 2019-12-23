@@ -21087,6 +21087,11 @@ QSize  PythonQtWrapper_PositionableLabel::getSize(PositionableLabel* theWrappedO
   return ( theWrappedObject->getSize());
 }
 
+QWidget*  PythonQtWrapper_PositionableLabel::getTextComponent(PositionableLabel* theWrappedObject)
+{
+  return ( theWrappedObject->getTextComponent());
+}
+
 QString  PythonQtWrapper_PositionableLabel::getToolTip(PositionableLabel* theWrappedObject)
 {
   return ( theWrappedObject->getToolTip());

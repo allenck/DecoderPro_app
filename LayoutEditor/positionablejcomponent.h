@@ -10,16 +10,16 @@
 class MyGraphicsProxyWidget;
 class Editor;
 class Positionable;
-class PositionableJComponent : public JComponent, public Positionable
+class PositionableJComponent : public QWidget, public JComponent, public Positionable
 {
     Q_OBJECT
- Q_INTERFACES(Positionable)
+    Q_INTERFACES(Positionable JComponent)
 public:
     explicit PositionableJComponent(QWidget *parent = 0);
     /*public*/ PositionableJComponent(Editor* editor,QObject *parent = 0);
     /*public*/ Positionable* deepClone();
     /*public*/ Positionable* finishClone(Positionable* pos);
-    /*public*/ JComponent* getTextComponent();
+    /*public*/ QWidget* getTextComponent();
     /*public*/ void setPositionable(bool enabled);
     /*public*/ bool isPositionable();
     /*public*/ void setEditable(bool enabled);
@@ -103,6 +103,9 @@ public:
     void repaint();
     bool requestFocusInWindow();
     QObject* self() {return (QObject*)this;}
+    QObject* jself() {return (QObject*)this;}
+    /*public*/ void setFont(QFont );
+
 
 signals:
 

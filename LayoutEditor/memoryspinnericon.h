@@ -7,7 +7,7 @@
 #include "actionlistener.h"
 
 class ActionEvent;
-class QSpinBox;
+class JSpinner;
 class MemorySpinnerIcon : public PositionableJPanel
 {
     Q_OBJECT
@@ -43,7 +43,7 @@ public slots:
 private:
     int _min;// = 0;
     int _max;// = 100;
-    QSpinBox* spinner;// = new JSpinner(new SpinnerNumberModel(0,_min,_max,1));
+    JSpinner* spinner;// = new JSpinner(new SpinnerNumberModel(0,_min,_max,1));
     // the associated Memory object
     //Memory memory = null;
     /*private*/ NamedBeanHandle<Memory*>* namedMemory;

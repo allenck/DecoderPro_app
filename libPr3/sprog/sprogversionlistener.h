@@ -10,11 +10,13 @@ namespace Sprog
   * @author	Andrew Crosland Copyright (C) 2012
   *
   */
- /*public*/ /*interface*/class SprogVersionListener : public EventListener
+ /*public*/ /*interface*/class SprogVersionListener : public QObject, public EventListener
  {
   Q_OBJECT
+  Q_INTERFACES(EventListener)
   public:
    SprogVersionListener();
+   QObject* self() {return (QObject*)this;}
   public slots:
    virtual /*public*/ void notifyVersion(SprogVersion* /*v*/) {}
  };

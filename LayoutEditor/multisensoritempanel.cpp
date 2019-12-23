@@ -28,6 +28,7 @@
   _upDown = false;
   setToolTip(tr("Drag the sensor selections from the table to add the multisensor to the panel"));
   setObjectName("MultiSensorItemPanel");
+  log->setDebugEnabled(true);
 }
 
 /*protected*/ QWidget* MultiSensorItemPanel::initTablePanel(PickListModel* model, Editor* /*editor*/) {
@@ -39,6 +40,7 @@
     _selectionModel = new MultiSensorSelectionModel(model, this);
     _table->setSelectionModel(_selectionModel);
     _table->getSelectionModel()->setSelectionMode(ListSelectionModel::SINGLE_SELECTION);
+    connect(_table->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), _selectionModel, SLOT(onSelectionChanged(QItemSelection,QItemSelection)));
 
     QWidget* topPanel = new QWidget();
     QVBoxLayout* topPanelLayout;
@@ -66,7 +68,7 @@
         size = map->size();
     }
     _selectionModel->setPositionRange(size-3);
-    QPushButton* clearSelectionButton = new QPushButton(tr("Clear Selection"));
+    QPushButton* clearSelectionButton = new QPushButton(tr("Clear Table Selections"));
 //    clearSelectionButton.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent a) {
 //                clearSelections();
@@ -85,15 +87,17 @@
     return topPanel;
 }
 
-/*public*/ void MultiSensorItemPanel::clearSelections() {
+/*public*/ void MultiSensorItemPanel::clearSelections()
+{
     _selectionModel->clearSelection();
     int size = 6;
 //        if (_family!=NULL) {
 //            Hashtable<String, NamedIcon> map = ItemPalette.getIconMap(_itemType, _family);
 //            size = map.size();
 //        }
-    if (_currentIconMap!=NULL) {
-        size = _currentIconMap->size();
+    QMap<QString, NamedIcon*>* map = getIconMap();
+    if (map != nullptr) {
+        size = map->size();
     }
     _selectionModel->setPositionRange(size-3);
 }
@@ -298,7 +302,7 @@ MultiSensorSelectionModel::MultiSensorSelectionModel(PickListModel* tableModel, 
  {
   if (_positions[i] >= 0)
   {
-   _tableModel->setValueAt(QVariant(), _positions.at(i), PickListModel::POSITION_COL);
+   _tableModel->setValueAt("", _positions.at(i), PickListModel::POSITION_COL);
    DefaultListSelectionModel::setSelectionInterval(_positions[i], _positions.at(i));
    DefaultListSelectionModel::clearSelection();
    _positions.replace(i, -1);
@@ -323,8 +327,11 @@ MultiSensorSelectionModel::MultiSensorSelectionModel(PickListModel* tableModel, 
     tr("Warning"), JOptionPane::WARNING_MESSAGE);
   return;
  }
- if (log->isDebugEnabled()) log->debug("setSelectionInterval("+QString::number(row)+", "+QString::number(index1)+")");
+ if (log->isDebugEnabled())
+  log->debug("setSelectionInterval("+QString::number(row)+", "+QString::number(index1)+")");
  NamedBean* bean = _tableModel->getBeanAt(row);
+ if(log->isDebugEnabled())
+  log->debug(tr("bean selected: %1").arg(bean->getDisplayName()));
  //QString position = _tableModel->getValueAt(row, PickListModel::POSITION_COL);
  QString position = _tableModel->data(_tableModel->index(row, PickListModel::POSITION_COL),Qt::DisplayRole).toString();
  if (position!=NULL && position.length()>0)

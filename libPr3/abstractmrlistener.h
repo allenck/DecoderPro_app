@@ -11,9 +11,12 @@
  * @author		Bob Jacobsen  Copyright (C) 2003
  * @version             $Revision: 17977 $
  */
-/*public interface*/ class LIBPR3SHARED_EXPORT AbstractMRListener : public EventListener
+/*public interface*/ class LIBPR3SHARED_EXPORT AbstractMRListener : public QObject, public EventListener
 {
  Q_OBJECT
+ Q_INTERFACES(EventListener)
+public:
+ QObject* self() {return (QObject*)this;}
 public slots:
  /*public*/ virtual void message(AbstractMRMessage* /*m*/) {}
 

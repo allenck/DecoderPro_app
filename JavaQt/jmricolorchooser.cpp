@@ -1,6 +1,9 @@
 #include "jmricolorchooser.h"
 #include <QColorDialog>
 #include "jcolorchooser.h"
+#include "jmricolorchooserpanel.h"
+#include "colorchooserdialog.h"
+#include "colorchooserpanel.h"
 
 /**
  * Display the Java color chooser that includes a custom JMRI panel.
@@ -63,41 +66,40 @@
     /*static*/ /*public*/ QColor JmriColorChooser::showDialog(QWidget* comp, QString dialogTitle, QColor currentColor) {
         color = currentColor == QColor() ? QColor(Qt::white) : currentColor;
         QString title = dialogTitle == "" ? "" : dialogTitle;
-//        JColorChooser* chooser = extendColorChooser(new JColorChooser(color));
-//        JDialog d = JColorChooser.createDialog(null, title, true, chooser,
+        JColorChooser* chooser = extendColorChooser(new JColorChooser(color));
+        //JCCActionListener* listener = new JCCActionListener(chooser, this);
+        ColorChooserDialog* d = JColorChooser::createDialog(nullptr, title, true, chooser, nullptr,nullptr);
 //            ((ActionEvent e) -> {
 //                color = chooser.getColor();
 //            }),
 //            null);
-//        d.setVisible(true);
-        QColorDialog* chooser = new QColorDialog(color);
+        d->setVisible(true);
 
         //_chooser->setOption(QColorDialog::NoButtons);
         color = chooser->getColor();
         return color;
     }
-#if 1
+
     /**
      * Add or replace the JMRI custom panel at the beginning of the chooser tabs
      * @param chooser The chooser object to be updated.
      * @return the updated chooser object
      */
      /*static*/ /*public*/ JColorChooser* JmriColorChooser::extendColorChooser(JColorChooser* chooser) {
-        QVector<AbstractColorChooserPanel*> currPanels = chooser->getChooserPanels();
-        QVector<AbstractColorChooserPanel*> newPanels = QVector<AbstractColorChooserPanel*>(COLOR_TAB_COUNT);
-#if 0 // TODO:
-        newPanels.replace(0,JmriColorChooserPanel());
+        QVector<AbstractColorChooserPanel*>* currPanels = chooser->getChooserPanels();
+        QVector<AbstractColorChooserPanel*>* newPanels = new QVector<AbstractColorChooserPanel*>(COLOR_TAB_COUNT);
+
+        newPanels->replace(0, new JmriColorChooserPanel());
+        newPanels->at(0)->installChooserPanel(chooser);
         int idx = 1;
-        for (int i = 0; i < currPanels.length; i++) {
-            if (!currPanels[i].getDisplayName().equals("JMRI")) {  // NOI18N
+        for (int i = 0; i < currPanels->length(); i++) {
+            if (currPanels->at(i)->getDisplayName() != ("JMRI")) {  // NOI18N
                 // Copy non JMRI panels
-                newPanels[idx] = currPanels[i];
+                newPanels->replace(idx, currPanels->at(i));
                 idx++;
             }
         }
-#endif
+
         chooser->setChooserPanels(newPanels);
         return chooser;
     }
-
-#endif
