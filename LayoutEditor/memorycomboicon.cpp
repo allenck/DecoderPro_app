@@ -71,7 +71,7 @@
 //            component.addMouseMotionListener(this);
 //        }
 //    }
- setPopupUtility(new PositionablePopupUtil((Positionable*)this, (JComponent*)_comboBox));
+ setPopupUtility(new PositionablePopupUtil((Positionable*)this, _comboBox));
  int width = qMax(100, _comboBox->width()+ 20);
  QSize size = QSize(width, qMax(80, _comboBox->height()));
  setMaximumSize(size);

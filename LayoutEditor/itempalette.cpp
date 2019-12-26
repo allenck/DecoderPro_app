@@ -443,12 +443,14 @@ void ItemPalette::changeEvent(QEvent * e)
 //            return null;
 //        }
     ItemPalette* instance = static_cast<ItemPalette*>( InstanceManager::getOptionalDefault("ItemPalette"));//.orElseGet(() -> {
-      if(instance == nullptr)
-        return (ItemPalette*)InstanceManager::setDefault("ItemPalette", new ItemPalette(title, ed));
-//        });
+    if(instance == nullptr)
+     return (ItemPalette*)InstanceManager::setDefault("ItemPalette", new ItemPalette(title, ed));
+
     QListIterator<ItemPanel*> iter(_tabIndex->values());
-    while (iter.hasNext()) {
-        iter.next()->setEditor(ed);
+    while (iter.hasNext())
+    {
+     ItemPanel* panel =  iter.next();
+     panel->setEditor(ed);
     }
     QString name = ed->getName();
     if (name == "" || name == ("")) {
@@ -536,7 +538,7 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     _tabIndex = new QMap<QString, ItemPanel*>();
 
     ItemPanel* itemPanel;
-#if 0
+
     itemPanel = new TableItemPanel(palette, "Turnout", NULL, PickListModel::turnoutPickModelInstance(), editor, palette);
     addItemTab(itemPanel, "Turnout", tr("Turnout"));
     itemPanel->init();  // show panel on start
@@ -550,15 +552,15 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     itemPanel->init();
 
     itemPanel = new SignalMastItemPanel(palette, "SignalMast", NULL, PickListModel::signalMastPickModelInstance(), editor,palette);
-    addItemTab(itemPanel, ("SignalMast"), tr("SignalMast"));
+    addItemTab(itemPanel, ("SignalMast"), tr("Signal Mast"));
     itemPanel->init();
 
     itemPanel = new MemoryItemPanel(palette, "Memory", NULL,PickListModel::memoryPickModelInstance(), editor, palette);
     addItemTab(itemPanel, "Memory", tr("Memory"));
     itemPanel->init();
 
-     itemPanel = new ReporterItemPanel(palette, "Reporter", NULL, PickListModel::reporterPickModelInstance(), editor, palette);
-     addItemTab(itemPanel, "Reporter", tr("Reporter"));
+    itemPanel = new ReporterItemPanel(palette, "Reporter", NULL, PickListModel::reporterPickModelInstance(), editor, palette);
+    addItemTab(itemPanel, "Reporter", tr("Reporter"));
     itemPanel->init();
 
     itemPanel = new TableItemPanel(palette, "Light", NULL, PickListModel::lightPickModelInstance(), editor, palette);
@@ -576,14 +578,15 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     itemPanel = new BackgroundItemPanel(palette, "Background", editor, palette);
     addItemTab(itemPanel, "Background", tr("Background"));
     itemPanel->init();
-#endif
+
     itemPanel = new TextItemPanel(palette, "Text", editor);
     addItemTab(itemPanel, "Text", tr("Text"));
     itemPanel->init();
-#if 1
+
     itemPanel = new RPSItemPanel(palette, "RPSReporter", NULL, editor);
     addItemTab(itemPanel, "RPSReporter", tr("RPSReporter"));
     itemPanel->init();
+
 
     itemPanel = new ClockItemPanel(palette, "FastClock", editor,palette);
     addItemTab(itemPanel, "FastClock", tr("FastClock"));
@@ -600,7 +603,7 @@ void IPWindowListener::windowClosing(QCloseEvent *)
     itemPanel = new PortalItemPanel(palette, "Portal", NULL, editor);
     addItemTab(itemPanel, tr("Portal"), tr("Portal"));
     itemPanel->init();
-#endif
+
     //_tabPane->addChangeListener(this);
     connect(_tabPane, SIGNAL(currentChanged(int)), palette, SLOT(tabPaneChanged(int)));
 }
@@ -689,7 +692,8 @@ void IPEditItemActionListener::actionPerformed()
 /*public*/ void ItemPalette::closePanels(/*java.awt.event.WindowEvent e*/) {
     //java.awt.Component[] comps = _tabPane.getComponents();
     QObjectList comps = _tabPane->children();
-    if (log->isDebugEnabled()) log->debug("closePanels: tab count= "+_tabPane->count());
+    if (log->isDebugEnabled())
+     log->debug("closePanels: tab count= "+_tabPane->count());
     for (int i=0; i<comps.length(); i++)
     {
      //if (comps[i] instanceof ItemPanel)

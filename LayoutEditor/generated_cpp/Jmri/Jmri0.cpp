@@ -33514,7 +33514,7 @@ void PythonQtWrapper_ControlPanelEditor::resetEditor(ControlPanelEditor* theWrap
   ( theWrappedObject->resetEditor());
 }
 
-void PythonQtWrapper_ControlPanelEditor::setColorMenu(ControlPanelEditor* theWrappedObject, QMenu*  popup, Positionable*  pos, int  type)
+void PythonQtWrapper_ControlPanelEditor::setColorMenu(ControlPanelEditor* theWrappedObject, QMenu*  popup, QWidget*  pos, int  type)
 {
   ( theWrappedObject->setColorMenu(popup, pos, type));
 }

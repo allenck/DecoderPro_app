@@ -22,7 +22,7 @@ LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel(parent)
 {
     //super(s, editor);
     this->url = url;
-    setPopupUtility(new PositionablePopupUtil(this, (JComponent*)this));
+    setPopupUtility(new PositionablePopupUtil(this, this));
 }
 
 /*public*/ LinkingLabel::LinkingLabel(NamedIcon* s, /*@Nonnull*/ Editor* editor, /*@Nonnull*/ QString url, QWidget *parent)
@@ -30,7 +30,7 @@ LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel(parent)
 {
     //super(s, editor);
     this->url = url;
-    setPopupUtility(new PositionablePopupUtil(this, (JComponent*)this));
+    setPopupUtility(new PositionablePopupUtil(this, this));
 }
 
 //@Override

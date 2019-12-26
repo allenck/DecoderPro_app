@@ -240,8 +240,11 @@ ControlPanelEditor::~ControlPanelEditor()
 //                _itemPalette.setVisible(true);
 //            }
 //        });
+    CPEActionListener* actionListener = new CPEActionListener(this);
+    actionListener->init(this);
+
     _iconMenu->addAction(mi);
-    connect(mi, SIGNAL(triggered()), this, SLOT(on_itemPallette()));
+    connect(mi, SIGNAL(triggered()), actionListener, SLOT(actionPerformed()));
     _iconMenu->addAction(new OBlockTableAction(tr("OBlock Table"),this));
 
 //    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
@@ -250,10 +253,11 @@ ControlPanelEditor::~ControlPanelEditor()
 //    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
 //    connect(lt, SIGNAL(triggered()), this, SLOT(onItemTableList()));
 }
-void ControlPanelEditor::on_itemPallette()
+
+void CPEActionListener::actionPerformed()
 {
- _itemPalette = ItemPalette::getDefault(tr("Item Palette"), this);
- _itemPalette->setVisible(true);
+ cpe->_itemPalette = ItemPalette::getDefault(tr("Item Palette"), editor);
+ cpe->_itemPalette->setVisible(true);
 }
 
 //void ControlPanelEditor::onItemTableList()
@@ -1227,7 +1231,7 @@ void ControlPanelEditor::selectAllAction()
   }
  } else {
   if (bControlDown && (bPopupTrigger || bMetaDown || bAltDown)) {
-      new ColorDialog(this, (JComponent*)getTargetPanel()->views().at(0)->window(), ColorDialog::ONLY, nullptr);
+      new ColorDialog(this, getTargetPanel()->views().at(0)->window(), ColorDialog::ONLY, nullptr);
   }
  }
  if (!isEditable() && selection != nullptr && selection->isHidden()) {
@@ -1975,15 +1979,15 @@ void ControlPanelEditor::abortPasteItems() {
       {
        popup->addAction(CoordinateEdit::getTextEditAction(p, "OverlayText", this));
        if (pl->isText()) {
-           setColorMenu(popup, (Positionable*) p, ColorDialog::BORDER);
+           setColorMenu(popup, (QWidget*) p, ColorDialog::BORDER);
            popupSet |= setTextAttributes(p, popup);
 //                        popupSet |= pl.setEditTextMenu(popup);
        }
       }
   } else if (qobject_cast<PositionableJPanel*>(p->self())) {
-      setColorMenu(popup, (Positionable*) p, ColorDialog::BORDER);
-      setColorMenu(popup, (Positionable*) p, ColorDialog::MARGIN);
-      setColorMenu(popup, (Positionable*) p, ColorDialog::FONT);
+      setColorMenu(popup, (QWidget*) p, ColorDialog::BORDER);
+      setColorMenu(popup, (QWidget*) p, ColorDialog::MARGIN);
+      setColorMenu(popup, (QWidget*) p, ColorDialog::FONT);
       popupSet |= setTextAttributes(p, popup);
   }
 
@@ -2022,7 +2026,7 @@ void ControlPanelEditor::abortPasteItems() {
  _currentSelection = nullptr;
 }
 
-/*public*/ void ControlPanelEditor::setColorMenu(QMenu* popup, /*JComponent*/Positionable* pos, int type) {
+/*public*/ void ControlPanelEditor::setColorMenu(QMenu* popup, /*JComponent*/QWidget* pos, int type) {
     QString title;
     switch (type ) {
         case ColorDialog::BORDER:
@@ -2691,3 +2695,4 @@ void ControlPanelEditor::sceneChanged(QList<QRectF> /*rect*/)
  }
 #endif
 }
+

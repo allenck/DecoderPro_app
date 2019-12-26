@@ -52,7 +52,7 @@ PositionableLabel::PositionableLabel(QWidget *parent) :
  if (debug) log->debug("PositionableLabel ctor (text) "+s);
  setHorizontalAlignment(JLabel::CENTER);
  setVerticalAlignment(JLabel::CENTER);
-// setPopupUtility(new PositionablePopupUtil(this, this));
+ //setPopupUtility(new PositionablePopupUtil(this, this));
 // setToolTip("Positionable Label");
  QTimer::singleShot(100,  this, SLOT(initAfter()));
  setObjectName("positionableLabel");
@@ -262,7 +262,7 @@ return _displayLevel; }
  {
     pos->setPopupUtility(NULL);
  } else {
-    pos->setPopupUtility(getPopupUtility()->clone(pos,   (JComponent*)pos->getTextComponent()));
+    pos->setPopupUtility(getPopupUtility()->clone(pos,   pos->getTextComponent()));
  }
  pos->setOpaque(isOpaque());
  pos->_saveOpaque = _saveOpaque;
@@ -318,6 +318,7 @@ return _displayLevel; }
 {
  _popupUtil = tu;
 }
+
 /*public*/ PositionablePopupUtil* PositionableLabel::getPopupUtility()
 {
  if(!_popupUtil)

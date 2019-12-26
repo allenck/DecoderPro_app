@@ -36,7 +36,7 @@
     // super ctor call to make sure this is an icon label
     setIcon("none", new NamedIcon(":/resources/icons/smallschematics/tracksegments/circuit-error.gif",
                         ":/resources/icons/smallschematics/tracksegments/circuit-error.gif"));
-    setPopupUtility(new SensorPopupUtil((Positionable*)this, (JComponent*)this));
+    setPopupUtility(new SensorPopupUtil((Positionable*)this, this));
 
 }
 
@@ -50,7 +50,7 @@
     this->editor = editor;
     _control = true;
     debug = log->isDebugEnabled();
-    setPopupUtility(new SensorPopupUtil((Positionable*)this, (JComponent*)this));
+    setPopupUtility(new SensorPopupUtil((Positionable*)this, this));
     //_namedIcon = s;
     setIcon("none",s);
 }
@@ -63,7 +63,7 @@
     _control = true;
     debug = log->isDebugEnabled();
     displayState(sensorState());
-    setPopupUtility(new SensorPopupUtil((Positionable*)this, (JComponent*)this));
+    setPopupUtility(new SensorPopupUtil((Positionable*)this, this));
 }
 void SensorIcon::common()
 {

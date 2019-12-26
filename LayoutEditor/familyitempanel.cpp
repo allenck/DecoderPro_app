@@ -487,7 +487,7 @@ void FamilyItemPanel::on_editIconsButton()
  }
  QString txt = tr("Icon Sets for %1:").arg(thisType);
  JPanel* p = new JPanel();
- FlowLayout* pLayout = new FlowLayout();
+ FlowLayout* pLayout = new FlowLayout(p);
  pLayout->addWidget(new JLabel(txt));
  //pLayout.setOpaque(false);
  familyPanel->layout()->addWidget(p);

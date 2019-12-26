@@ -3252,7 +3252,7 @@ void TextAttrDialog::doneButton_clicked()
  */
 /*protected*/ void Editor::setAttributes(PositionablePopupUtil* newUtil, Positionable* p, bool isOpaque)
 {
- p->setPopupUtility(newUtil->clone(p, (JComponent*)p->getTextComponent()));
+ p->setPopupUtility(newUtil->clone(p, p->getTextComponent()));
  p->setOpaque(isOpaque);
  //if (p instanceof PositionableLabel)
  if(qobject_cast<PositionableLabel*>(p->self())!= nullptr)

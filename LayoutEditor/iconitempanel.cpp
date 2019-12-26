@@ -187,6 +187,14 @@
     }
 }
 
+//@Override
+/*protected*/ void IconItemPanel::setEditor(Editor* ed) {
+    ItemPanel::setEditor(ed);
+    if (_initialized) {
+        addIconsToPanel(_iconMap);
+    }
+}
+
 /*protected*/ void IconItemPanel::updateFamiliesPanel() {
     if (log->isDebugEnabled()) log->debug("updateFamiliesPanel for "+_itemType);
     removeIconFamiliesPanel();

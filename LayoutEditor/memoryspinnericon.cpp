@@ -64,7 +64,7 @@
 //  JTextField textBox = ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField();
 //  textBox.addMouseMotionListener(this);
 //  textBox.addMouseListener(this);
-  setPopupUtility(new PositionablePopupUtil(this, (JComponent*)spinner));
+  setPopupUtility(new PositionablePopupUtil(this, spinner));
   int width = qMin(100, spinner->width()+ 20);
   QSize size = QSize(width, qMin(80, spinner->height()));
   setFixedSize(size);

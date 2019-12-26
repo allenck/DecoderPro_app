@@ -3273,7 +3273,7 @@ void delete_ControlPanelEditor(ControlPanelEditor* obj) { delete obj; }
    void py_q_paintTargetPanel(ControlPanelEditor* theWrappedObject, QGraphicsScene*  g){  (((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->py_q_paintTargetPanel(g));}
    void resetEditor(ControlPanelEditor* theWrappedObject);
    void py_q_setAllEditable(ControlPanelEditor* theWrappedObject, bool  edit){  (((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->py_q_setAllEditable(edit));}
-   void setColorMenu(ControlPanelEditor* theWrappedObject, QMenu*  popup, Positionable*  pos, int  type);
+   void setColorMenu(ControlPanelEditor* theWrappedObject, QMenu*  popup, QWidget *pos, int  type);
    void setCopyMenu(ControlPanelEditor* theWrappedObject, Positionable*  p, QMenu*  popup);
    void py_q_setNextLocation(ControlPanelEditor* theWrappedObject, Positionable*  obj){  (((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->py_q_setNextLocation(obj));}
    void setSecondSelectionGroup(ControlPanelEditor* theWrappedObject, QList<Positionable* >*  list);

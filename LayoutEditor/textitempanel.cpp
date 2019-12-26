@@ -112,7 +112,7 @@
 {
  _decorator->setAttributes(l);
  PositionablePopupUtil* util = _decorator->getPositionablePopupUtil();
- l->setPopupUtility(util->clone(l, (JComponent*)l->getTextComponent()));
+ l->setPopupUtility(util->clone(l, l->getTextComponent()));
 //    l->setFont(util->getFont().deriveFont(util.getFontStyle()));
  if (util->hasBackground()) { // unrotated
      l->setOpaque(true);
@@ -138,8 +138,9 @@
  : PositionableLabel(s, editor){
     //super(s, editor);
 this->textItemPanel = textItemPanel;
- QLabel::setVisible(true);
+ QLabel::setVisible(false);
  QLabel::setAutoFillBackground(true);
+ _foreground = QColor(Qt::black);
  QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
  sizePolicy.setHorizontalStretch(1);
  sizePolicy.setVerticalStretch(0);
@@ -148,6 +149,7 @@ this->textItemPanel = textItemPanel;
  fg = getForeground();
  bg = getBackground();
  f = getFont();
+ this->pointsize = f.pointSize();
 
 #if 0
     DragSource dragSource = DragSource.getDefaultDragSource();
@@ -205,8 +207,9 @@ void  DragDecoratorLabel::setFixedHeight(int h)
 
 void DragDecoratorLabel::setFontSize(int s)
 {
+ this->pointsize = s;
  f.setPointSize(s);
- QLabel::setFont(f);
+ JLabel::setFont(f);
  setAttributes();
 }
 
@@ -220,24 +223,25 @@ void DragDecoratorLabel::setFontStyle(int style)
 {
  // plain. bold, italic, bold/italic
  //QFont f = QLabel::font();
+ this->style = style;
  switch (style)
  {
   case 0: // plain
    f.setWeight(QFont::Weight::Normal);
    f.setStyle(QFont::Style::StyleNormal);
    break;
- case 1: // Bold
-  f.setWeight(QFont::Weight::Bold);
-  f.setStyle(QFont::Style::StyleNormal);
-  break;
- case 2: // Italic
-  f.setWeight(QFont::Weight::Normal);
-  f.setStyle(QFont::Style::StyleItalic);
-  break;
- case 3: // bold/italic
-  f.setWeight(QFont::Weight::Bold);
-  f.setStyle(QFont::Style::StyleItalic);
-  break;
+  case 1: // Bold
+   f.setWeight(QFont::Weight::Bold);
+   f.setStyle(QFont::Style::StyleNormal);
+   break;
+  case 2: // Italic
+   f.setWeight(QFont::Weight::Normal);
+   f.setStyle(QFont::Style::StyleItalic);
+   break;
+  case 3: // bold/italic
+   f.setWeight(QFont::Weight::Bold);
+   f.setStyle(QFont::Style::StyleItalic);
+   break;
  }
  setAttributes();
 }
@@ -252,13 +256,18 @@ void DragDecoratorLabel::setFontStyle(int style)
   styleSheet.append(QString("border-color: rgb(%1,%2,%3);").arg(borderColor.red()).arg(borderColor.green()).arg(borderColor.blue()));
  }
  else
-  styleSheet.append(QString("border-style: outset; border-width: %1px;").arg(borderSize));
+  styleSheet.append("border: none;");
+ QStringList styles = QStringList() << "plain" << "bold" <<  "Italic" << "Bold/Italic";
+ styleSheet.append(QString("font-size: %1pt;").arg(pointsize));
 
  styleSheet.append(QString("margin: %1px;").arg(margin));
 
  styleSheet.append("}");
- QLabel::setFont(f);
- QLabel::setStyleSheet(styleSheet);
+// f.setPointSize(f.pointSize()+1);
+// JLabel:: setFont(f);
+// f.setPointSize(f.pointSize()-1);
+ JLabel::setFont(f);
+ JLabel::setStyleSheet(styleSheet);
 #else
  QPalette pal = QLabel::palette();
  pal.setColor(QPalette::WindowText, fg);
@@ -268,6 +277,7 @@ void DragDecoratorLabel::setFontStyle(int style)
 #endif
  QLabel::repaint();
  QLabel::update();
+
 }
 
 void DragDecoratorLabel::mousePressEvent(QMouseEvent *e)
@@ -291,17 +301,11 @@ void DragDecoratorLabel::mousePressEvent(QMouseEvent *e)
 /*public*/ QByteArray DragDecoratorLabel::mimeData()
 {
  QByteArray xmldata;
- //QString url = ((NamedIcon*)getIcon())->getURL();
- //PositionableLabel* l = new PositionableLabel(NamedIcon::getIconByName(url), /*_editor*/textItemPanel->_editor);
- PositionableLabel* l = new PositionableLabel(_unRotatedText, /*_editor*/textItemPanel->_editor);
- l->setPopupUtility(NULL);        // no text
- l->setLevel(Editor::LABELS);
- //_dataFlavor = new DataFlavor(l, "PositionableLabel");
-// _dataFlavor->setMimeTypeParameter("family", parent->_family);
  PositionableLabelXml* xml = new PositionableLabelXml();
- QDomElement e = xml->store((QObject*)l);
+ QDomElement e = xml->store((QObject*)this);
  xml->doc.appendChild(e);
  xmldata.append(xml->doc.toString());
+ log->info(tr("xml data: %1").arg(xml->doc.toString()));
  return xmldata;
 }
 

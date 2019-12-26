@@ -86,7 +86,7 @@
 //    _textBox->addMouseMotionListener(this);
 //    _textBox->addMouseListener(this);
 
- setPopupUtility(new PositionablePopupUtil((Positionable*)this, (JComponent*)_textBox));
+ setPopupUtility(new PositionablePopupUtil((Positionable*)this, _textBox));
  int width = qMax(100, _textBox->width()+ 20);
  QSize size = QSize(width, qMax(80, _textBox->height()));
  setMaximumSize(size);

@@ -34,6 +34,9 @@
 #include "colorchooserpanel.h"
 #include "colormodel.h"
 #include "defaultswatchchooserpanel.h"
+#include <QGraphicsItem>
+#include <QGraphicsSceneMouseEvent>
+#include <QPointF>
 
 //DecoratorPanel::DecoratorPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -80,6 +83,52 @@
   _samplePanelLayout->addWidget(Box::createHorizontalStrut(STRUT));
   //_samplePanel.setOpaque(false);
   listener = new DPChangeListener(this);
+
+  _scene = new PreviewScene(this);
+  _scene->setSceneRect(-10, -10, 200, 100);
+  _sampleView = new QGraphicsView(_scene);
+  _sampleView->setMinimumHeight(80);
+  _sampleView->setMaximumWidth(200);
+  QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  _sampleView->setSizePolicy(sizePolicy);
+}
+
+/*public*/ void PreviewScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+ QList<QGraphicsItem*> itemList = items(/*QPointF(event->pos().x(), event->pos().y())*/);
+ if(!itemList.isEmpty())
+ {
+  item = itemList.at(2);
+  if(item && event->buttons() != 0)
+  {
+    if(panel->_samples->size() > 0)
+    {
+     PositionableLabel* pos = panel->_samples->values().at(0);
+     ((DragDecoratorLabel*)pos)->mousePressEvent(convertMouseEvent( event));
+    }
+  }
+ }
+ else
+  item = nullptr;
+}
+
+/*public*/ void PreviewScene::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+{
+ if(item)
+ {
+  if(panel->_samples->size() > 0)
+  {
+   PositionableLabel* pos = panel->_samples->values().at(0);
+//   pos->mouseMoveEvent(event);
+  }
+ }
+}
+
+/*private*/ QMouseEvent* PreviewScene::convertMouseEvent(QGraphicsSceneMouseEvent *evt)
+{
+ QPointF scenePos = evt->pos();
+ QPointF screenPos = evt->screenPos();
+ return new QMouseEvent(evt->type(), screenPos, evt->button(), evt->buttons(), evt->modifiers());
 }
 
 //static class AJSpinner extends JSpinner {
@@ -142,7 +191,11 @@ QString AJRadioButton::getState() {
     _isPositionableLabel = true;
     makeFontPanels();
     this->layout()->addWidget(makeTextPanel("Text", sample, true));
-    _samplePanel->layout()->addWidget(sample);
+
+//    _samplePanel->layout()->addWidget(sample);
+    _samplePanel->setVisible(false);
+    _scene->addItem(sample->getItem());
+
 //    log->debug(tr("DragDecoratorLabel size %1 | panel size %2").arg(sample->sizeHint()).arg(_samplePanel->sizeHint()));
     finishInit(true);
 }
@@ -250,7 +303,7 @@ QString AJRadioButton::getState() {
     _chooser->setPreviewPanel(new JPanel());
     layout()->addWidget(_chooser);
     ((QVBoxLayout*)_previewPanel->layout())->addWidget(_samplePanel, 0, Qt::AlignCenter);// BorderLayout.CENTER);
-
+    ((QVBoxLayout*)_previewPanel->layout())->addWidget(_sampleView, 0, Qt::AlignCenter);
     // add a SetBackground combo
     if (addBgCombo)
     {
@@ -607,6 +660,43 @@ void DecoratorPanel::mappedButton(QWidget* b)
  }
 }
 
+#if 0
+/*public*/ void DecoratorPanel::AJRBListener()
+{
+//public void actionPerformed(ActionEvent a) {
+    if (button->isChecked()) {
+        _selectedButton =button->_which;
+        _selectedState = button->_state;
+        PositionableLabel* pos =_samples->value(_selectedState);
+        PositionablePopupUtil* util = pos->getPopupUtility();
+        switch (button->_which) {
+            case FOREGROUND_BUTTON:
+                _chooser->setColor(util->getForeground());
+                break;
+            case BACKGROUND_BUTTON:
+                if (util->hasBackground()) {
+                    _chooser->setColor(util->getBackground());
+                }
+                util->setHasBackground(true);
+                pos->setOpaque(true);
+                break;
+            case BORDERCOLOR_BUTTON:
+                _chooser->setColor(util->getBorderColor());
+                break;
+            case TRANSPARENT_BUTTON:
+                util->setHasBackground(false);
+                _util->setHasBackground(false);
+                pos->setOpaque(false);
+                break;
+            default:    // TRANSPARENT_BUTTON
+                break;
+       }
+        log->debug(tr("Button actionPerformed Colors opaque= %1 _state= %2 _which= %3").arg(
+                pos->isOpaque()?"true":"false").arg(button->_state).arg(button->_which));
+        updateSamples();
+    }
+}
+#endif
 /*private*/ void DecoratorPanel::updateSamples()
 {
  PositionablePopupUtil* util = getPositionablePopupUtil();
@@ -1083,7 +1173,7 @@ void DecoratorPanel::on_bgColorBox()
 //        }
 //        return _sample->value("Text").deepClone();
 //    }
-void DPDragDecoratorLabel::mousePressEvent(QMouseEvent *e)
+void DPDragDecoratorLabel::mousePressEvent(QGraphicsSceneMouseEvent *e)
 {
  QString text = mimeData();
  if(text != "")

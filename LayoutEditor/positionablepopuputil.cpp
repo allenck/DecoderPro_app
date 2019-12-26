@@ -36,12 +36,12 @@
  */
 ///*public*/ class PositionablePopupUtil {
 
-/*public*/ PositionablePopupUtil::PositionablePopupUtil(Positionable* parent, JComponent* textComp)
+/*public*/ PositionablePopupUtil::PositionablePopupUtil(Positionable* parent, QWidget* textComp)
 {
  init();
  _parent = parent;
  //if (textComp instanceof JLabel)
- if(qobject_cast<JLabel*>(textComp->jself())!= NULL)
+ if(qobject_cast<JLabel*>(textComp)!= NULL)
  {
   _textType = LABEL;
  }
@@ -60,9 +60,9 @@ _self= this;\
  if(_textComponent != NULL)
  {
 //  defaultForeground = ((PositionableLabel*)_textComponent)->getForeground();
-  //defaultBackground = ((JTextField*)_textComponent->jself())->getBackground();
+  //defaultBackground = ((JTextField*)_textComponent)->getBackground();
   //defaultBackground = ((PositionableLabel*)_textComponent)->getBackground();
-//  defaultBackground = ((PositionableIcon*)_textComponent->jself())->getBackground();
+//  defaultBackground = ((PositionableIcon*)_textComponent)->getBackground();
  }
  if(_parent != NULL)
   defaultBorderColor = (_parent)->getBackground();
@@ -71,7 +71,7 @@ _self= this;\
  _propertiesUtil = new PositionablePropertiesUtil(_parent);
 }
 
-/*public*/ PositionablePopupUtil* PositionablePopupUtil::clone(Positionable* parent, JComponent* textComp)
+/*public*/ PositionablePopupUtil* PositionablePopupUtil::clone(Positionable* parent, QWidget* textComp)
 {
  PositionablePopupUtil* util = new PositionablePopupUtil(parent, textComp);
  util->setJustification(getJustification());
@@ -173,7 +173,7 @@ void PositionablePopupUtil::display()
 
 void PositionablePopupUtil::onSetBackgroundColor()
 {
- QColor desiredColor = JmriColorChooser::showDialog((QWidget*)_textComponent->jself(),
+ QColor desiredColor = JmriColorChooser::showDialog((QWidget*)_textComponent,
                       tr("Font BackgroundColor"),
                       getBackground());
  if (desiredColor.isValid() ) {
@@ -193,7 +193,7 @@ void PositionablePopupUtil::onSetBackgroundColor()
 }
 void PositionablePopupUtil::onSetBorderColor()
 {
- QColor desiredColor = JmriColorChooser::showDialog((QWidget*)_textComponent->jself(),
+ QColor desiredColor = JmriColorChooser::showDialog((QWidget*)_textComponent,
                       tr("Border Color "),
                       defaultBorderColor);
  if (desiredColor.isValid() ) {
@@ -213,7 +213,7 @@ void PositionablePopupUtil::onSetBorderColor()
 
 void PositionablePopupUtil::onSetTeaxtFontColor()
 {
- QColor desiredColor = JmriColorChooser::showDialog((QWidget*)_textComponent->jself(),
+ QColor desiredColor = JmriColorChooser::showDialog((QWidget*)_textComponent,
                       tr("Border Color"),
                       defaultBorderColor);
  if (desiredColor.isValid()) {
@@ -311,19 +311,19 @@ void PositionablePopupUtil::onSetTeaxtFontColor()
 {
     if(_textComponent == NULL ) return;
    //((PositionableLabel*) _textComponent)->setForeground(c);
-    if(qobject_cast<JLabel*>(_textComponent->jself())!= NULL)
-     ((PositionableLabel*)_textComponent->jself())->setForeground(c);
+    if(qobject_cast<JLabel*>(_textComponent)!= NULL)
+     ((PositionableLabel*)_textComponent)->setForeground(c);
     else
-     if(qobject_cast<JTextField*>(_textComponent->jself())!= NULL)
-         ((JTextField*)_textComponent->jself())->setForeground(c);
+     if(qobject_cast<JTextField*>(_textComponent)!= NULL)
+         ((JTextField*)_textComponent)->setForeground(c);
 
     _parent->updateSize();
 }
 
 /*public*/ QColor PositionablePopupUtil::getForeground() {
     if(_textComponent == NULL ) return QColor();
-    if(qobject_cast<JLabel*>(_textComponent->jself())!= NULL)
-     return ((PositionableLabel*)_textComponent->jself())->getForeground();
+    if(qobject_cast<JLabel*>(_textComponent)!= NULL)
+     return ((PositionableLabel*)_textComponent)->getForeground();
 //    if(qobject_cast<JTextField*>(_textComponent)!= NULL)
 //        return ((JTextField*)_textComponent)->getForeground();
     return QColor();
@@ -334,29 +334,29 @@ void PositionablePopupUtil::onSetTeaxtFontColor()
  if(_textComponent == NULL ) return;
  if(!color.isValid())
  {
-  if(qobject_cast<PositionableLabel*>(_textComponent->jself())!=NULL)
+  if(qobject_cast<PositionableLabel*>(_textComponent)!=NULL)
   {
-   ((PositionableLabel*)_textComponent->jself())->setOpaque(false);
-   if(qobject_cast<JLabel*>(_textComponent->jself())!= NULL)
-    ((PositionableLabel*)_textComponent->jself())->setBackgroundColor(color);
+   ((PositionableLabel*)_textComponent)->setOpaque(false);
+   if(qobject_cast<JLabel*>(_textComponent)!= NULL)
+    ((PositionableLabel*)_textComponent)->setBackgroundColor(color);
    else
-    if(qobject_cast<JTextField*>(_textComponent->jself())!= NULL)
-        ((JTextField*)_textComponent->jself())->setBackground(color);
+    if(qobject_cast<JTextField*>(_textComponent)!= NULL)
+        ((JTextField*)_textComponent)->setBackground(color);
 
   }
   _parent->setOpaque(false);
  }
  else
  {
-  if(qobject_cast<PositionableLabel*>(_textComponent->jself())!= NULL)
+  if(qobject_cast<PositionableLabel*>(_textComponent)!= NULL)
   {
-   ((PositionableLabel*)_textComponent->jself())->setOpaque(true);
-   //((PositionableLabel*)_textComponent->jself())->setBackgroundColor(color);
-   if(qobject_cast<JLabel*>(_textComponent->jself())!= NULL)
-    ((JLabel*)_textComponent->jself())->setBackground(color);
+   ((PositionableLabel*)_textComponent)->setOpaque(true);
+   //((PositionableLabel*)_textComponent)->setBackgroundColor(color);
+   if(qobject_cast<JLabel*>(_textComponent)!= NULL)
+    ((JLabel*)_textComponent)->setBackground(color);
    else
-    if(qobject_cast<JTextField*>(_textComponent->jself())!= NULL)
-        ((JTextField*)_textComponent->jself())->setBackground(color);
+    if(qobject_cast<JTextField*>(_textComponent)!= NULL)
+        ((JTextField*)_textComponent)->setBackground(color);
 
   }
          //     ((JTextField*)_textComponent)->setOpaque(true);
@@ -372,13 +372,13 @@ void PositionablePopupUtil::onSetTeaxtFontColor()
 /*public*/ void PositionablePopupUtil::setHasBackground(bool set) {
     _hasBackground = set;
     //if (_textComponent instanceof PositionableJPanel)
-    if(qobject_cast<PositionableJPanel*>(_textComponent->jself()) != NULL)
+    if(qobject_cast<PositionableJPanel*>(_textComponent) != NULL)
     {
-        ((PositionableJPanel*)_textComponent->jself())->setOpaque(_hasBackground);
+        ((PositionableJPanel*)_textComponent)->setOpaque(_hasBackground);
     }
     if (!_hasBackground) {
         _parent->setOpaque(false);
-        _textComponent->setOpaque(false);
+        ((Positionable*)_textComponent)->setOpaque(false);
     }
 }
 /*public*/ void PositionablePopupUtil::setSuppressRecentColor(bool b) {
@@ -391,7 +391,7 @@ void PositionablePopupUtil::onSetTeaxtFontColor()
 /*public*/ QColor PositionablePopupUtil::getBackground()
 {
  QColor c;
-// QPalette p = (QWidget*)(_textComponent->jself())->palette();
+// QPalette p = (QWidget*)(_textComponent)->palette();
 // c= p.background().color();
 // if(!c.isValid())
 //  c = QColor(Qt::white);
@@ -399,8 +399,8 @@ void PositionablePopupUtil::onSetTeaxtFontColor()
 //     // make sure the alpha value is set to 0
 //     c = ColorUtil::setAlpha(c,0);
 // }
- if(qobject_cast<PositionableLabel*>(_textComponent->jself()))
-  c = ((PositionableLabel*)_textComponent->jself())->getBackground();
+ if(qobject_cast<PositionableLabel*>(_textComponent))
+  c = ((PositionableLabel*)_textComponent)->getBackground();
  return c;
 }
 
@@ -445,7 +445,7 @@ void PositionablePopupUtil::addFontMenuEntry(QMenu* menu, QActionGroup* fontButt
 //    menu.add(r);
  QAction* act = new QAction(QString("%1").arg(size),this);
  act->setCheckable(true);
- if(_textComponent->getFont().pointSize() == size)
+ if(((Positionable*)_textComponent)->getFont().pointSize() == size)
   act->setChecked(true);
  act->setData(size);
  menu->addAction(act);
@@ -461,13 +461,20 @@ void PositionablePopupUtil::addFontMenuEntry(QMenu* menu, QActionGroup* fontButt
 /*public*/ QFont PositionablePopupUtil::getFont()
 {
  if(_textComponent == NULL) return QFont();
- return _textComponent->getFont();
+ if(qobject_cast<PositionableLabel*> (_textComponent))
+  return ((PositionableLabel*)_textComponent)->getFont();
+ //return ((Positionable*)_textComponent)->getFont();
+ return _textComponent->font();
 }
 
 /*public*/ void PositionablePopupUtil::setFontSize(float newSize)
 {
  //_textComponent.setFont(jmri.util.FontUtil.deriveFont(getFont(), newSize));
- QFont f = _textComponent->getFont();
+ QFont f;
+ if(qobject_cast<JTextField*>(_textComponent) || qobject_cast<QLabel*>(_textComponent))
+  f = _textComponent->font();
+ else
+  f = ((PositionableLabel*)_textComponent)->getFont();
  f.setPointSizeF(newSize);
  _textComponent->setFont(f);
  _parent->updateSize();
@@ -477,8 +484,9 @@ void PositionablePopupUtil::addFontMenuEntry(QMenu* menu, QActionGroup* fontButt
 /*public*/ int PositionablePopupUtil::getFontSize()
 {
  if(_textComponent == NULL) return 0;
-
- return _textComponent->getFont().pointSize();
+   if(qobject_cast<PositionableLabel*>(_textComponent))
+    return((PositionableLabel*)_textComponent)->getFont().pointSize();
+ return (_textComponent)->font().pointSize();
 }
 
 void PositionablePopupUtil::setItalic()
@@ -593,7 +601,7 @@ void PositionablePopupUtil::setFontWeight(int weight)
   break;
  }
 
- if(qobject_cast<PositionableLabel*>(_textComponent->jself()) != NULL)
+ if(qobject_cast<PositionableLabel*>(_textComponent) != NULL)
   ((PositionableLabel*)_textComponent)->setFont(f);
     //setSize(getPreferredSize().width, getPreferredSize().height);
  _parent->updateSize();

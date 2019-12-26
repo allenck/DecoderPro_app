@@ -57,7 +57,7 @@
     if (getPopupUtility()==NULL) {
         pos->setPopupUtility(NULL);
     } else {
-        pos->setPopupUtility(getPopupUtility()->clone((Positionable*)pos, (JComponent*)pos->getTextComponent()));
+        pos->setPopupUtility(getPopupUtility()->clone((Positionable*)pos, pos->getTextComponent()));
     }
     pos->updateSize();
     return (Positionable*)pos;

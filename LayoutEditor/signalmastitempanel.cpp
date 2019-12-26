@@ -25,7 +25,8 @@
 ///*public*/ class SignalMastItemPanel extends TableItemPanel implements ListSelectionListener {
 
 
-/*public*/ SignalMastItemPanel::SignalMastItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent) : TableItemPanel(parentFrame, type, family, model, editor,parent)
+/*public*/ SignalMastItemPanel::SignalMastItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent)
+ : TableItemPanel(parentFrame, type, family, model, editor,parent)
 {
  //super(parentFrame, type, family, model, editor);
  _mast = NULL;

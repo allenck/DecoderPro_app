@@ -40,7 +40,7 @@ const QString LocoIcon::YELLOW = "Yellow";
  setShowToolTip(false);
  //setEditable(false);
  _text = true;	//Markers are an icon with text
- setPopupUtility(new PositionablePopupUtil((Positionable*)this, (JComponent*)this));
+ setPopupUtility(new PositionablePopupUtil((Positionable*)this, this));
 // {       // need this class for Font Edit
 //        /*public*/ void setFixedTextMenu(JPopupMenu popup) {}
 //        /*public*/ void setTextMarginMenu(JPopupMenu popup) {}

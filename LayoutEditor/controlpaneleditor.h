@@ -44,7 +44,7 @@ public:
  /*public*/ void keyPressEvent(QKeyEvent* e);
  /*public*/ void keyReleaseEvent(QKeyEvent* e);
  /*public*/ void setNextLocation(Positionable* obj);
- /*public*/ void setColorMenu(QMenu* popup, /*JComponent*/Positionable *pos, int type);
+ /*public*/ void setColorMenu(QMenu* popup, /*JComponent*/QWidget *pos, int type);
 
 
 signals:
@@ -169,6 +169,7 @@ friend class EditCircuitFrame;
 friend class DuplicateActionListener;
 friend class EditPortalDirection;
 friend class EditPortalFrame;
+friend class CPEActionListener;
 };
 Q_DECLARE_METATYPE(ControlPanelEditor)
 
@@ -197,15 +198,31 @@ class CPEEditListener : public ActionListener
   Q_OBJECT
  ControlPanelEditor* edit;
  int type;
- Positionable* pos;
+ QWidget* pos;
 public:
- CPEEditListener(int type, Positionable* pos, ControlPanelEditor* edit)
+ CPEEditListener(int type, QWidget* pos, ControlPanelEditor* edit)
  {
   this->type = type;
   this->pos = pos;
   this->edit = edit;
  }
 public slots:
- void actionPerformed() { new ColorDialog(edit, qobject_cast<JComponent*>(pos->self()), type, nullptr);}
+ void actionPerformed() { new ColorDialog(edit, pos, type, nullptr);}
+};
+
+class CPEActionListener : public ActionListener
+{
+ Q_OBJECT
+ Editor* editor;
+ ControlPanelEditor* cpe;
+public:
+ CPEActionListener(ControlPanelEditor* cpe) : ActionListener() {this->cpe = cpe;}
+ CPEActionListener* init(Editor* ed)
+ {
+  editor = ed;
+  return this;
+ }
+public slots:
+ void actionPerformed();
 };
 #endif // CONTROLPANELEDITOR_H

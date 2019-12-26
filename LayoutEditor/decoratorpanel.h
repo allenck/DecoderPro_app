@@ -10,7 +10,10 @@
 #include "changelistener.h"
 #include "jpanel.h"
 #include "jspinner.h"
+#include <QGraphicsView>
+#include "editscene.h"
 
+class PreviewScene;
 class DPChangeListener;
 class QGroupBox;
 class QSignalMapper;
@@ -142,6 +145,8 @@ private:
     ImagePanel* preview1;
     ImagePanel* _previewPanel;
     /*private*/ /*final*/ QWidget* _samplePanel;
+    /*private*/ QGraphicsView* _sampleView;
+    /*private*/ PreviewScene* _scene;
     /*private*/ bool _isPositionableLabel;
     /*protected*/ void fontChange();
     /*private*/ void finishInit(bool addBgCombo);
@@ -170,6 +175,7 @@ protected:
     friend class ColorDialog;
     friend class FontActionListener;
     friend class DPChangeListener;
+    friend class PreviewScene;
 };
 
 /*static*/ class AJSpinner : public  JSpinner
@@ -256,7 +262,7 @@ public:
     /*public*/ bool isDataFlavorSupported(DataFlavor* flavor);
 //    /*public*/ QObject* getTransferData(DataFlavor flavor) throw (UnsupportedFlavorException,IOException) ;
  QString mimeData();
- void mousePressEvent(QMouseEvent *e);
+ void mousePressEvent(QGraphicsSceneMouseEvent *e);
 
 }; // end DragDecoratorLabel
 
@@ -297,4 +303,26 @@ public slots:
   panel->stateChanged(evt);
  }
 };
+
+class PreviewScene : public QGraphicsScene
+{
+ Q_OBJECT
+ DecoratorPanel* panel;
+ QGraphicsItem* item;
+
+public:
+ PreviewScene(DecoratorPanel* panel) : QGraphicsScene() {this->panel = panel;}
+ void mousePressEvent(QGraphicsSceneMouseEvent* evt);
+ void mouseMoveEvent(QGraphicsSceneMouseEvent*event);
+
+private:
+ QMouseEvent* convertMouseEvent(QGraphicsSceneMouseEvent* evt);
+};
+
+//class MyMouseEvent : public QMouseEvent
+//{
+// Q_OBJECT
+// MyMouseEvent(QEvent::Type type, const QPointF &localPos, const QPointF &screenPos, Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers keyboardModifiers)
+//  : QMouseEvent(type, localPos, screenPos, button, buttons, keyboardModifiers) {}
+//};
 #endif // DECORATORPANEL_H

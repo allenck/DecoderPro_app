@@ -7,7 +7,9 @@
 #include "windowlistener.h"
 #include "changeevent.h"
 #include "jcomponent.h"
+#include "changelistener.h"
 
+class CDChangeListener;
 class QFontDialog;
 class CDWindowListener;
 class CDActionListener;
@@ -20,7 +22,7 @@ class ColorDialog : public JDialog
  Q_OBJECT
 public:
  explicit ColorDialog(QWidget *parent = nullptr);
- /*public*/ ColorDialog(QWidget* client, JComponent *t, int type, ActionListener* ca);
+ /*public*/ ColorDialog(QWidget* client, QWidget *t, int type, ActionListener* ca);
 
  /*public*/ static /*final*/ int STRUT;// = 6;
 
@@ -46,8 +48,8 @@ public slots:
 private:
  static Logger* log;
  JColorChooser* _chooser;
- JComponent* _target = nullptr;
- JComponent* _compTarget = nullptr;
+ QWidget* _target = nullptr;
+ QWidget* _compTarget = nullptr;
  int _type;
  QColor _saveColor;
  bool _saveOpaque;
@@ -62,12 +64,14 @@ private:
  /*private*/ void update();
  QFontDialog* fontPanel = nullptr;
  bool _done = false;
+ CDChangeListener* changeListener;
 
 protected:
  /*protected*/ JPanel* makeDoneButtonPanel();
 
 friend class CDActionListener;
 friend class CDWindowListener;
+friend class CDChangeListener;
 };
 
 class CDActionListener : public ActionListener
@@ -89,6 +93,19 @@ public:
  void windowClosing(QCloseEvent *) {
   if(!colorDialog->_done)
   colorDialog->cancel();
+ }
+};
+
+class CDChangeListener : public ChangeListener
+{
+ Q_OBJECT
+ ColorDialog* colorDialog;
+public:
+ CDChangeListener(ColorDialog* colorDialog) {this->colorDialog = colorDialog;}
+public slots:
+ void stateChanged(ChangeEvent* evt)
+ {
+  colorDialog->stateChanged(evt);
  }
 };
 #endif // COLORDIALOG_H

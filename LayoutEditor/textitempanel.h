@@ -77,6 +77,8 @@ private:
     QFont f;
     int borderSize = 0;
     int margin = 0;
+    int style = 0;
+    int pointsize;
 };
 
 #endif // TEXTITEMPANEL_H

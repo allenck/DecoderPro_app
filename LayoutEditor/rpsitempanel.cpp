@@ -31,10 +31,10 @@
 //    HashMap<String, NamedIcon> iconMap;
 
     /*public*/ RPSIconDragJLabel::RPSIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon, RPSItemPanel* rpsItemPanel) : DragJLabel(flavor)
-{
+    {
         //super(flavor, icon);
- this->rpsItemPanel = rpsItemPanel;
-        iconMap = new QMap<QString, NamedIcon*>(*map);
+     this->rpsItemPanel = rpsItemPanel;
+     iconMap = new QMap<QString, NamedIcon*>(*map);
     }
 
     //@Override

@@ -44,100 +44,104 @@ ColorDialog::ColorDialog(QWidget *parent) : JDialog(parent)
  * @param ca callback to tell client the component's color was changed.
  * May be null if client doesen't care.
  */
-/*public*/ ColorDialog::ColorDialog(QWidget *client, JComponent *t, int type, ActionListener* ca)
- : JDialog(client, true){
-    //super(client, true);
-    _target = t;
-    _compTarget = (t);
-    _type = type;
-    if (qobject_cast<PositionableLabel*>(t->jself())) {
-        PositionableLabel* pos = (PositionableLabel*)t;
-        _util = pos->getPopupUtility();
-        if (_util != nullptr) {
-            _util->setSuppressRecentColor(true);
-//            Positionable* p = pos->deepClone();
-//            _saveUtil = p->getPopupUtility();
-//            p->remove();
-            _saveUtil = _util;
-        }
-   } else {
-        _util = nullptr;
-    }
-    _saveOpaque = ((JComponent*)t)->isOpaque();
-    _colorAction = ca;
+/*public*/ ColorDialog::ColorDialog(QWidget *client, QWidget *t, int type, ActionListener* ca)
+ : JDialog(client, true)
+{
+ //super(client, true);
+ _target = t;
+ _compTarget = (t);
+ _type = type;
+ changeListener = new CDChangeListener(this);
+ if (qobject_cast<PositionableLabel*>(t))
+ {
+  PositionableLabel* pos = (PositionableLabel*)t;
+  _util = pos->getPopupUtility();
+  if (_util != nullptr)
+  {
+   _util->setSuppressRecentColor(true);
+   Positionable* p = pos->deepClone();
+   _saveUtil = p->getPopupUtility();
+   p->remove();
+   _saveUtil = _util;
+  }
+ } else {
+     _util = nullptr;
+ }
+ _saveOpaque = ((JComponent*)t)->isOpaque();
+ _colorAction = ca;
 
-    //JPanel* panel = new JPanel();
-    QWidget* panel = this;
-    panel->setLayout(new QVBoxLayout());//(panel, BoxLayout.Y_AXIS));
-    panel->layout()->addWidget(Box::createVerticalGlue());
-    panel->resize(400, 600);
+ //JPanel* panel = new JPanel();
+ QWidget* panel = this;
+ panel->setLayout(new QVBoxLayout());//(panel, BoxLayout.Y_AXIS));
+ panel->layout()->addWidget(Box::createVerticalGlue());
+ panel->resize(400, 600);
 
-    QString title;
-    switch (type) {
-        case ONLY:
-            title = tr("Control Panel Color");
-            _saveColor = ((JComponent*)t)->getBackground();
-            break;
-        case BORDER:
-        {
-            title = tr("Edit Border settings (onpanel)");
-            _saveColor = _util->getBorderColor();
-            SpinnerNumberModel* model = new SpinnerNumberModel(_util->getBorderSize(), 0, 100, 1);
-            JPanel* p = makePanel(DecoratorPanel::makeSpinPanel(tr("Border Size"), new AJSpinner(model, BORDER),nullptr));
-            panel->layout()->addWidget(p);
-        }
-            break;
-        case MARGIN:
-        {
-            title = tr("Edit Margin settings (onpanel)");
-            _saveColor = _util->getBackground();
-            SpinnerNumberModel* model = new SpinnerNumberModel(_util->getMargin(), 0, 100, 1);
-            JPanel* p = makePanel(DecoratorPanel::makeSpinPanel(tr("Margin Size"), new AJSpinner(model, MARGIN),nullptr));
-            panel->layout()->addWidget(p);
-        }
-            break;
-        case FONT:
-        {
-            title = tr("Edit Font settings (onpanel)");
-            _saveColor = _util->getForeground();
+ QString title;
+ switch (type) {
+     case ONLY:
+         title = tr("Control Panel Color");
+         _saveColor = ((JComponent*)t)->getBackground();
+         break;
+     case BORDER:
+     {
+         title = tr("Edit Border settings (onpanel)");
+         _saveColor = _util->getBorderColor();
+         SpinnerNumberModel* model = new SpinnerNumberModel(_util->getBorderSize(), 0, 100, 1);
+         JPanel* p = makePanel(DecoratorPanel::makeSpinPanel(tr("Border Size"), new AJSpinner(model, BORDER),nullptr));
+         panel->layout()->addWidget(p);
+     }
+         break;
+     case MARGIN:
+     {
+         title = tr("Edit Margin settings (onpanel)");
+         _saveColor = _util->getBackground();
+         SpinnerNumberModel* model = new SpinnerNumberModel(_util->getMargin(), 0, 100, 1);
+         JPanel* p = makePanel(DecoratorPanel::makeSpinPanel(tr("Margin Size"), new AJSpinner(model, MARGIN),nullptr));
+         panel->layout()->addWidget(p);
+     }
+         break;
+     case FONT:
+     {
+         title = tr("Edit Font settings (onpanel)");
+         _saveColor = _util->getForeground();
 //            ActionListener* fontAction = ((ActionEvent event) -> {
 //                update(); // callback
 //            });
-            CDActionListener* fontAction = new CDActionListener(this);
+         CDActionListener* fontAction = new CDActionListener(this);
 #if 0
-            FontPanel* fontPanel = new FontPanel(_util, fontAction);
-            panel->layout()->addWidget(fontPanel);
-            fontPanel->setFontSelections();
+         FontPanel* fontPanel = new FontPanel(_util, fontAction);
+         panel->layout()->addWidget(fontPanel);
+         fontPanel->setFontSelections();
 #else
-      fontPanel = new QFontDialog(((QWidget*)_target->jself())->font());
-      fontPanel->setOptions(QFontDialog::NoButtons);
-      panel->layout()->addWidget(fontPanel);
+   fontPanel = new QFontDialog(((QWidget*)_target)->font());
+   fontPanel->setOptions(QFontDialog::NoButtons);
+   panel->layout()->addWidget(fontPanel);
 #endif
-        }
-            break;
-        case TEXT:
-            title = tr("Edit Text Content & settings");
-            _saveColor = _util->getBackground();
-            _saveText = ((PositionableLabel*)t)->getUnRotatedText();
-            panel->layout()->addWidget(makePanel(makeTextSpinnerPanel()));
-            panel->layout()->addWidget(Box::createVerticalGlue());
-            panel->layout()->addWidget(makePanel(makeTextPanel()));
-            break;
-        default:
-            title = tr("Background Color Chooser");
-            _saveColor = ((JComponent*)t)->getBackground();
-    }
-    panel->layout()->addWidget(Box::createVerticalStrut(STRUT));
-    setTitle(/*Bundle.getMessage*/(title));
+     }
+         break;
+     case TEXT:
+         title = tr("Edit Text Content & settings");
+         _saveColor = _util->getBackground();
+         _saveText = ((PositionableLabel*)t)->getUnRotatedText();
+         panel->layout()->addWidget(makePanel(makeTextSpinnerPanel()));
+         panel->layout()->addWidget(Box::createVerticalGlue());
+         panel->layout()->addWidget(makePanel(makeTextPanel()));
+         break;
+     default:
+         title = tr("Background Color Chooser");
+         _saveColor = ((JComponent*)t)->getBackground();
+ }
+ panel->layout()->addWidget(Box::createVerticalStrut(STRUT));
+ setTitle(/*Bundle.getMessage*/(title));
 
-    _chooser = JmriColorChooser::extendColorChooser(new JColorChooser(_saveColor));
-    _chooser->getSelectionModel()->addChangeListener((ChangeListener*)this);
-    _chooser->setPreviewPanel(new JPanel());
-    panel->layout()->addWidget(_chooser);
-    panel->layout()->addWidget(Box::createVerticalStrut(STRUT));
+ _chooser = JmriColorChooser::extendColorChooser(new JColorChooser(_saveColor));
+ _chooser->getSelectionModel()->addChangeListener(changeListener);
+ _chooser->setPreviewPanel(new JPanel());
+ panel->layout()->addWidget(_chooser);
+ panel->layout()->addWidget(Box::createVerticalStrut(STRUT));
 
-    panel->layout()->addWidget(makeDoneButtonPanel());
-    panel->layout()->addWidget(Box::createVerticalGlue());
+ panel->layout()->addWidget(makeDoneButtonPanel());
+ panel->layout()->addWidget(Box::createVerticalGlue());
 
 //    super.addWindowListener(new java.awt.event.WindowAdapter() {
 //        @Override
@@ -145,13 +149,13 @@ ColorDialog::ColorDialog(QWidget *parent) : JDialog(parent)
 //            cancel();
 //        }
 //    });
-    JDialog::addWindowListener(new CDWindowListener(this));
+ JDialog::addWindowListener(new CDWindowListener(this));
 
-    //setContentPane(panel);
-    setLocation(PlaceWindow::nextTo(client, (JComponent*)t, this));
+ //setContentPane(panel);
+ setLocation(PlaceWindow::nextTo(client, (JComponent*)t, this));
 
-    pack();
-    setVisible(true);
+ pack();
+ setVisible(true);
 }
 
 JPanel* ColorDialog::makePanel(JPanel* p) {
@@ -241,7 +245,7 @@ void ColorDialog::onDoneButton()
 }
 void ColorDialog::cancel() {
     if (_util != nullptr) {
-        PositionableLabel* pl = (PositionableLabel*)_target->jself();
+        PositionableLabel* pl = (PositionableLabel*)_target;
         pl->getEditor()->setAttributes(_saveUtil, (Positionable*)pl);
         _util->setSuppressRecentColor(false);
         pl->updateSize();
@@ -308,8 +312,8 @@ void ColorDialog::cancel() {
      break;
    }
   } else {
-      _compTarget->setOpaque(true);
-      _compTarget->setBackground(_chooser->getColor());
+      ((Positionable*)_compTarget)->setOpaque(true);
+      ((Positionable*)_compTarget)->setBackground(_chooser->getColor());
   }
  }
  update();

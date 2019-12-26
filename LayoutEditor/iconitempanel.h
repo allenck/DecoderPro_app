@@ -61,6 +61,8 @@ protected:
     /*protected*/ void removeIconFamiliesPanel();
     /*protected*/ void updateFamiliesPanel();
     /*protected*/ QString setIconName(QString name);
+    /*protected*/ void setEditor(Editor* ed);
+
 protected slots:
     /*protected*/ void addNewIcon();
     /*protected*/ void setSelection(IconDisplayPanel* panel);

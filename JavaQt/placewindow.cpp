@@ -130,8 +130,8 @@ static /*private*/ QSize getScreenSizeOf(int screenNum) {
     QPoint compLoc;
     QSize compDim;
     if (comp != nullptr) {
-        compLoc = QPoint(((QWidget*)comp->jself())->pos().x() + parentLoc.x(), ((QWidget*)comp->jself())->pos().y() + parentLoc.y());
-        compDim = ((QWidget*)comp->jself())->size();
+        compLoc = QPoint(((QWidget*)comp)->pos().x() + parentLoc.x(), ((QWidget*)comp)->pos().y() + parentLoc.y());
+        compDim = ((QWidget*)comp)->size();
     } else {
         compLoc = QPoint(parentLoc.x() + parentDim.width()/2, parentLoc.y() + parentDim.height()/2);
         compDim = QSize(0, 0);
