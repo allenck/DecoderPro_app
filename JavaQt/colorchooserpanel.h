@@ -40,6 +40,7 @@ private:
 protected:
  /*protected*/ void buildChooser();
 
+ friend class ColorChooserPanelTest;
 };
 
 #endif // COLORCHOOSERPANEL_H

@@ -23,7 +23,7 @@ JComboBox::JComboBox(QStringList list, QWidget* parent) : QComboBox(parent)
 }
 /*public*/ void JComboBox::setBackground(QColor c)
 {
- setStyleSheet(tr("QWidget{background-color: rgb(%1,%2,%3)").arg(c.red()).arg(c.green()).arg(c.blue()));
+ setStyleSheet(tr("QWidget{background-color: rgb(%1,%2,%3);").arg(c.red()).arg(c.green()).arg(c.blue()));
 }
 /*public*/ void JComboBox::setOpaque(bool b)
 {

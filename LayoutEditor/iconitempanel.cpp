@@ -93,6 +93,24 @@
     return catalog;
 }
 
+//@Override
+/*protected*/ void IconItemPanel::setPreviewBg(int index) {
+    if (_catalog != nullptr) {
+        ImagePanel* iconPanel = _catalog->getPreviewPanel();
+        if (iconPanel != nullptr) {
+            iconPanel->setImage(_backgrounds->at(index));
+        }
+    }
+    if (_iconPanel != nullptr) {
+        _iconPanel->setImage(_backgrounds->at(index));
+    }
+}
+
+//@Override
+/*protected*/ void IconItemPanel::updateBackground0(BufferedImage* im) {
+    _backgrounds->replace(0, im);
+}
+
 /**
 * Plain icons have only one family, usually named "set"
 * Override for plain icon & background and put all icons here

@@ -60,7 +60,7 @@
   _paletteFrame = paletteFrame;
   setLayout(new QVBoxLayout());//this, BoxLayout.Y_AXIS));
   QColor panelBackground;// = _editor->getTargetPanel()->getBackground(); // start using Panel background color
-  QBrush br = _editor->getTargetPanel()->backgroundBrush();
+  QBrush br = _editor->getTargetPanel()->views().at(0)->backgroundBrush();
   panelBackground = br.color();
   // create array of backgrounds, _currentBackground already set and used
   _backgrounds = ItemPanel::makeBackgrounds(nullptr,  panelBackground);
@@ -88,8 +88,11 @@
   _scene->setSceneRect(-10, -10, 200, 100);
   _sampleView = new QGraphicsView(_scene);
   _sampleView->setMinimumHeight(80);
-  _sampleView->setMaximumWidth(200);
-  QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  _sampleView->setMinimumWidth(200);
+  _sampleView->setBackgroundBrush(panelBackground);
+  QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Maximum, QSizePolicy::MinimumExpanding);
+  sizePolicy.setHorizontalStretch(1);
+  sizePolicy.setVerticalStretch(1);
   _sampleView->setSizePolicy(sizePolicy);
 }
 
@@ -131,9 +134,23 @@
  return new QMouseEvent(evt->type(), screenPos, evt->button(), evt->buttons(), evt->modifiers());
 }
 
+/*public*/ void PreviewScene::setImage(QImage* img) {
+    back = (BufferedImage*) img;
+//    repaint();
+    bkgnd = QPixmap::fromImage(*back);
+    QRectF rect = this->sceneRect();
+
+    bkgnd = bkgnd.scaled(QSize(rect.width(), rect.height()), Qt::KeepAspectRatioByExpanding);
+//    QPalette palette;
+//    palette.setBrush(QPalette::Background, bkgnd);
+//    this->setPalette(palette);
+    views().at(0)->setBackgroundBrush(QBrush(bkgnd));
+    update();
+}
+
 //static class AJSpinner extends JSpinner {
 //    int _which;
-AJSpinner::AJSpinner(SpinnerModel* items, int which)
+AJSpinner::AJSpinner(SpinnerModel* items, int which) : JSpinner(items)
 {
  _which = which;
 }
@@ -303,13 +320,15 @@ QString AJRadioButton::getState() {
     _chooser->setPreviewPanel(new JPanel());
     layout()->addWidget(_chooser);
     ((QVBoxLayout*)_previewPanel->layout())->addWidget(_samplePanel, 0, Qt::AlignCenter);// BorderLayout.CENTER);
-    ((QVBoxLayout*)_previewPanel->layout())->addWidget(_sampleView, 0, Qt::AlignCenter);
+//    ((QVBoxLayout*)_previewPanel->layout())->addWidget(_sampleView, 0, Qt::AlignCenter);
     // add a SetBackground combo
     if (addBgCombo)
     {
      layout()->addWidget(makeBgButtonPanel(_previewPanel, nullptr, _backgrounds)); // no listener on this variant
     }
     layout()->addWidget(_previewPanel);
+    _previewPanel->hide();
+    ((QVBoxLayout*)layout())->addWidget(_sampleView, 1, Qt::AlignHCenter);
     _previewPanel->setImage(_backgrounds->at(0));
     _previewPanel->update();        // force redraw
     // after everything created, set selections
@@ -349,38 +368,42 @@ QString AJRadioButton::getState() {
     _samplePanel->layout()->addWidget(Box::createHorizontalStrut(STRUT));
 }
 
-/*private*/ void DecoratorPanel::makeFontPanels() {
+/*private*/ void DecoratorPanel::makeFontPanels()
+{
 //    ActionListener fontAction = ((ActionEvent event) -> {
 //        fontChange(); // callback
 //    });
  FontActionListener* fontAction = new FontActionListener(this);
 
-    _fontPanel = new FontPanel(_util, fontAction);
-    this->layout()->addWidget(_fontPanel);
+ _fontPanel = new FontPanel(_util, fontAction);
+ this->layout()->addWidget(_fontPanel);
+ if(sample)
+ {
     connect(_fontPanel, SIGNAL(fontSizeChanged(int)), sample, SLOT(setFontSize(int)));
     connect(_fontPanel, SIGNAL(fontFaceChanged(QString)), sample, SLOT(setFontFamily(QString)));
     connect(_fontPanel, SIGNAL(fontStyleChanged(int)), sample, SLOT(setFontStyle(int)));
-    connect(_chooser->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ }
+ connect(_chooser->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
-    JPanel* sizePanel = new JPanel();
-    FlowLayout* sizePanelLayout = new FlowLayout(sizePanel);
-    SpinnerNumberModel* model = new SpinnerNumberModel(_util->getBorderSize(), 0, 100, 1);
-    _borderSpin = new AJSpinner(model, BORDER);
-    sizePanelLayout->addWidget(makeSpinPanel(tr("Border Size"), _borderSpin, listener));
-    model = new SpinnerNumberModel(_util->getMargin(), 0, 100, 1);
-    _marginSpin = new AJSpinner(model, MARGIN);
-    sizePanelLayout->addWidget(makeSpinPanel(tr("Margin Size"), _marginSpin, listener));
-    if (_isPositionableLabel)
-    {
-     _util->setFixedWidth(sample->width());
-      model = new SpinnerNumberModel(_util->getFixedWidth(), 0, 1000, 1);
-      _widthSpin = new AJSpinner(model, FWIDTH);
-      sizePanelLayout->addWidget(makeSpinPanel(tr("Fixed Width"), _widthSpin, listener));
-      model = new SpinnerNumberModel(_util->getFixedHeight(), 0, 1000, 1);
-      _heightSpin = new AJSpinner(model, FHEIGHT);
-      sizePanelLayout->addWidget(makeSpinPanel(tr("Fixed Height"), _heightSpin, listener));
-    }
-    this->layout()->addWidget(sizePanel);
+ JPanel* sizePanel = new JPanel();
+ FlowLayout* sizePanelLayout = new FlowLayout(sizePanel);
+ SpinnerNumberModel* model = new SpinnerNumberModel(_util->getBorderSize(), 0, 100, 1);
+ _borderSpin = new AJSpinner(model, BORDER);
+ sizePanelLayout->addWidget(makeSpinPanel(tr("Border Size"), _borderSpin, listener));
+ model = new SpinnerNumberModel(_util->getMargin(), 0, 100, 1);
+ _marginSpin = new AJSpinner(model, MARGIN);
+ sizePanelLayout->addWidget(makeSpinPanel(tr("Margin Size"), _marginSpin, listener));
+ if (_isPositionableLabel)
+ {
+  //_util->setFixedWidth(sample->width());
+   model = new SpinnerNumberModel(_util->getFixedWidth(), 0, 1000, 1);
+   _widthSpin = new AJSpinner(model, FWIDTH);
+   sizePanelLayout->addWidget(makeSpinPanel(tr("Fixed Width"), _widthSpin, listener));
+   model = new SpinnerNumberModel(_util->getFixedHeight(), 0, 1000, 1);
+   _heightSpin = new AJSpinner(model, FHEIGHT);
+   sizePanelLayout->addWidget(makeSpinPanel(tr("Fixed Height"), _heightSpin, listener));
+ }
+ this->layout()->addWidget(sizePanel);
 }
 
 void DecoratorPanel::AJRadioButton_toggled(bool b)
@@ -820,6 +843,8 @@ void DecoratorPanel::on_bgColorBox()
      preview1->setImage(imgArray->at(previewBgSet));
      // preview.setOpaque(false); // needed?
      preview1->update();        // force redraw
+     _scene->setImage(imgArray->at(previewBgSet));
+     _scene->update();
  } else {
      log->debug("imgArray is empty");
  }

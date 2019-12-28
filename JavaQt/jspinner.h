@@ -25,6 +25,7 @@ public:
  /*public*/ QObject* jself() {return (QObject*)this;}
  /*public*/ void addChangeListener(ChangeListener*);
  /*public*/ void removeChangeListener(ChangeListener*);
+ /*public*/ void setVisible(bool b);
 
 public slots:
  void onValueChanged(int);

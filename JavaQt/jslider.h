@@ -24,6 +24,7 @@ public:
     void setValue(int);
     /*public*/ void addChangeListener(ChangeListener*);
     /*public*/ void removeChangeListener(ChangeListener*);
+    /*public*/ void setVisible(bool b);
 
 signals:
 

@@ -39,9 +39,8 @@ class DragDecoratorLabel : public PositionableLabel // implements DragGestureLis
 {
  Q_OBJECT
     DataFlavor* dataFlavor;
-    TextItemPanel* textItemPanel;
 public:
-    /*public*/ DragDecoratorLabel(QString s, Editor* editor,TextItemPanel* textItemPanel);
+    /*public*/ DragDecoratorLabel(QString s, Editor* editor);
 //    /*public*/ void dragGestureRecognized(DragGestureEvent e);
     void mousePressEvent(QMouseEvent *e);
     void setBackground(QColor bg);
@@ -79,6 +78,7 @@ private:
     int margin = 0;
     int style = 0;
     int pointsize;
+    static Logger* log;
 };
 
 #endif // TEXTITEMPANEL_H

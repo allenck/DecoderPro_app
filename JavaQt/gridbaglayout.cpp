@@ -7,8 +7,18 @@ GridBagLayout::GridBagLayout(QWidget* parent) : QGridLayout(parent)
 }
 void GridBagLayout::addWidget(QWidget *widget, GridBagConstraints gb)
 {
+ int x;
+ int y;
+ if(gb.gridy ==  GridBagConstraints::_RELATIVE)
+  y = ++lastY;
+ else
+  y = gb.gridy;
+ if(gb.gridx ==  GridBagConstraints::_RELATIVE)
+  x = ++lastX;
+ else
+  x = gb.gridx;
 
- QGridLayout::addWidget(widget, gb.gridy, gb.gridx, gb.rowSpan(), gb.colSpan(), gb.align());
+ QGridLayout::addWidget(widget, y, x, gb.rowSpan(), gb.colSpan(), gb.align());
 }
 
 void GridBagLayout::columnWidths(QList<int> columns)

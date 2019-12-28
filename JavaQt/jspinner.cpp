@@ -10,7 +10,7 @@ JSpinner::JSpinner(QWidget *parent) : QSpinBox(parent)
 
 }
 
-JSpinner::JSpinner(SpinnerModel* model, QWidget* parent)
+JSpinner::JSpinner(SpinnerModel* model, QWidget* parent) : QSpinBox(parent)
 {
  setModel(model);
  connect(this, SIGNAL(valueChanged(int)), this, SLOT(onValueChanged(int)));
@@ -42,14 +42,17 @@ JSpinner::JSpinner(SpinnerModel* model, QWidget* parent)
 {
  return _opaque;
 }
+
 /*public*/ QColor JSpinner::getBackground()
 {
  return palette().color(QWidget::backgroundRole());
 }
+
 /*public*/ void JSpinner::setBackground(QColor c)
 {
  setStyleSheet(tr("QWidget{background-color: rgb(%1,%2,%3)").arg(c.red()).arg(c.green()).arg(c.blue()));
 }
+
 /*public*/ void JSpinner::setOpaque(bool b)
 {
  _opaque = b;
@@ -82,4 +85,8 @@ JSpinner::JSpinner(SpinnerModel* model, QWidget* parent)
 {
  listeners.removeOne(l);
 
+}
+/*public*/ void JSpinner::setVisible(bool b)
+{
+ QWidget::setVisible(b);
 }

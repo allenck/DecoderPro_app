@@ -71,6 +71,7 @@
 #include "joptionpane.h"
 #include "loggerfactory.h"
 #include "positionable.h"
+#include "textitempanel.h" // for DragDecoratorLabel
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
 //{
@@ -3182,17 +3183,37 @@ TextAttrDialog::TextAttrDialog(Positionable* p, QWidget* _targetFrame) : JDialog
  QWidget* panel = new QWidget();
  QVBoxLayout* panelLayout;
  panel->setLayout(panelLayout = new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
- _decorator = new DecoratorPanel(((PositionableLabel*)_pos->self())->getEditor(), nullptr);
- _decorator->initDecoratorPanel(_pos);
+ DragDecoratorLabel* sample = new DragDecoratorLabel(tr("sample"), _pos->getEditor());
+ PositionableLabel* pl = (PositionableLabel*)_pos;
+ sample->setText(pl->getText());
+ sample->setForeground(pl->getForeground());
+ sample->setBackground(pl->getPopupUtility()->getBackground());
+ PositionablePopupUtil* util = pl->getPopupUtility();
+ sample->setBorderColor(util->getBorderColor());
+ sample->setBorderSize(util->getBorderSize());
+ sample->setFont(util->getFont());
+ sample->setMargin(util->getMargin());
+ sample->setVisible(true);
+ sample->setLevel(Editor::LABELS);
+
+ _decorator = new DecoratorPanel(_pos->getEditor(), nullptr);
+ _decorator->initDecoratorPanel(sample);
  panelLayout->addWidget(_decorator);
  panelLayout->addWidget(makeDoneButtonPanel());
     //setContentPane(panel);
  setLayout(thisLayout = new QVBoxLayout);
- setMinimumSize(600,600);
+ QSize dim = panel->sizeHint();
+ dim = QSize(dim.width()+10, dim.height()+10 );
+ resize(dim);
  //thisLayout->addLayout(panelLayout);
  QScrollArea* scrollArea;
  thisLayout->addWidget(scrollArea = new QScrollArea);
+ scrollArea->setWidgetResizable(true);
  scrollArea->setWidget(panel);
+// QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+// sizePolicy.setHorizontalStretch(1);
+// sizePolicy.setVerticalStretch(0);
+// scrollArea->setSizePolicy(sizePolicy);
  pack();
 //    setLocationRelativeTo((Component)_pos);
  setVisible(true);

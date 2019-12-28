@@ -16,7 +16,9 @@
 /*private*/ /*static*/ /*final*/ int ColorChooserPanel::MASK = 0xFF000000;
 
 
-ColorChooserPanel::ColorChooserPanel(ColorModel* model) {
+ColorChooserPanel::ColorChooserPanel(ColorModel* model)
+ : AbstractColorChooserPanel()
+{
     this->model = model;
     this->panel = new ColorPanel(this->model);
     this->slider = new DiagramComponent(this->panel, false);
@@ -56,72 +58,73 @@ ColorChooserPanel::ColorChooserPanel(ColorModel* model) {
 }
 
 //@Override
-/*protected*/ void ColorChooserPanel::buildChooser() {
+/*protected*/ void ColorChooserPanel::buildChooser()
+{
 //    if (0 == getComponentCount())
-    {
-     GridBagLayout* g;
-        setLayout(g = new GridBagLayout());
+ {
+  GridBagLayout* g;
+  setLayout(g = new GridBagLayout());
 
-        GridBagConstraints gbc = GridBagConstraints();
+  GridBagConstraints gbc = GridBagConstraints();
 
-        gbc.gridx = 3;
-        gbc.gridwidth = 2;
-        gbc.weighty = 1.0;
-        gbc.anchor = GridBagConstraints::NORTH;
-        gbc.fill = GridBagConstraints::HORIZONTAL;
-        gbc.insets->top = 10;
-        gbc.insets->right = 10;
-        g->addWidget(this->panel, gbc);
+  gbc.gridx = 3;
+  gbc.gridwidth = 2;
+  gbc.weighty = 1.0;
+  gbc.anchor = GridBagConstraints::NORTH;
+  gbc.fill = GridBagConstraints::HORIZONTAL;
+  gbc.insets->top = 10;
+  gbc.insets->right = 10;
+  g->addWidget(this->panel, gbc);
 
-        gbc.gridwidth = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.0;
-        gbc.anchor = GridBagConstraints::CENTER;
-        gbc.insets->right = 5;
-        gbc.insets->bottom = 10;
-        g->addWidget(this->label, gbc);
+  gbc.gridwidth = 1;
+  gbc.weightx = 1.0;
+  gbc.weighty = 0.0;
+  gbc.anchor = GridBagConstraints::CENTER;
+  gbc.insets->right = 5;
+  gbc.insets->bottom = 10;
+  g->addWidget(this->label, gbc);
 
-        gbc.gridx = 4;
-        gbc.weightx = 0.0;
-        gbc.insets->right = 10;
-        g->addWidget(this->text, gbc);
+  gbc.gridx = 4;
+  gbc.weightx = 0.0;
+  gbc.insets->right = 10;
+  g->addWidget(this->text, gbc);
 
-        gbc.gridx = 2;
-        gbc.gridheight = 2;
-        gbc.anchor = GridBagConstraints::NORTH;
-        gbc.ipadx = this->text->sizeHint().height();
-        gbc.ipady = sizeHint().height();
-        g->addWidget(this->slider, gbc);
+  gbc.gridx = 2;
+  gbc.gridheight = 2;
+  gbc.anchor = GridBagConstraints::NORTH;
+  gbc.ipadx = this->text->sizeHint().height();
+  gbc.ipady = sizeHint().height();
+  g->addWidget(this->slider, gbc);
 
-        gbc.gridx = 1;
-        gbc.insets->left = 10;
-        gbc.ipadx = gbc.ipady;
-        g->addWidget(this->diagram, gbc);
+  gbc.gridx = 1;
+  gbc.insets->left = 10;
+  gbc.ipadx = gbc.ipady;
+  g->addWidget(this->diagram, gbc);
 
-        this->label->setLabelFor(this->text);
+  this->label->setLabelFor(this->text);
 //        this->text->addPropertyChangeListener("value", this); // NON-NLS: the property name
 //        this->slider.setBorder(this->text.getBorder());
 //        this->diagram.setBorder(this->text.getBorder());
 
-        setInheritsPopupMenu((JComponent*)this, true); // CR:4966112
-    }
-    QString label = this->model->getText((Component*)this, "HexCode"); // NON-NLS: suffix
-    bool visible = label != "";
+  setInheritsPopupMenu((JComponent*)this, true); // CR:4966112
+ }
+ QString label = this->model->getText((Component*)this, "HexCode"); // NON-NLS: suffix
+ bool visible = label != "";
 //    this->text->setVisible(visible);
 //    this->text.getAccessibleContext().setAccessibleDescription(label);
 //    this->label->setVisible(visible);
-    if (visible) {
+ if (visible) {
 //        this->label->setText(label);
-        int mnemonic = this->model->getInteger((Component*)this, "HexCodeMnemonic"); // NON-NLS: suffix
-        if (mnemonic > 0) {
-            this->label->setDisplayedMnemonic(mnemonic);
-            mnemonic = this->model->getInteger((Component*)this, "HexCodeMnemonicIndex"); // NON-NLS: suffix
-            if (mnemonic >= 0) {
+     int mnemonic = this->model->getInteger((Component*)this, "HexCodeMnemonic"); // NON-NLS: suffix
+     if (mnemonic > 0) {
+         this->label->setDisplayedMnemonic(mnemonic);
+         mnemonic = this->model->getInteger((Component*)this, "HexCodeMnemonicIndex"); // NON-NLS: suffix
+         if (mnemonic >= 0) {
 //                this->label->setDisplayedMnemonicIndex(mnemonic);
-            }
-        }
-    }
-    this->panel->buildPanel();
+         }
+     }
+ }
+ this->panel->buildPanel();
 }
 
 //@Override

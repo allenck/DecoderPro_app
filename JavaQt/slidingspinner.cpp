@@ -47,9 +47,9 @@ SlidingSpinner::SlidingSpinner(QObject *parent) : ChangeListener()
 ///*final*/ class SlidingSpinner implements ChangeListener {
 
 
-SlidingSpinner::SlidingSpinner(ColorPanel* panel, JComponent* label, QObject *parent)
+SlidingSpinner::SlidingSpinner(ColorPanel* panel, QWidget* label, QObject *parent)
  : ChangeListener() {
-  model = new SpinnerNumberModel();
+ model = new SpinnerNumberModel();
  slider = new JSlider();
  spinner = new JSpinner(this->model);
 
@@ -63,7 +63,7 @@ SlidingSpinner::SlidingSpinner(ColorPanel* panel, JComponent* label, QObject *pa
 //    this->spinner.setFocusable(false);
 }
 
-JComponent* SlidingSpinner::getLabel() {
+QWidget *SlidingSpinner::getLabel() {
     return this->label;
 }
 
@@ -100,8 +100,8 @@ void SlidingSpinner::setRange(int min, int max) {
 
 void SlidingSpinner::setVisible(bool visible) {
 //    ((QWidget*)this->label)->setVisible(visible);
-    this->slider->setVisible(visible);
-    this->spinner->setVisible(visible);
+    slider->setVisible(visible);
+    spinner->setVisible(visible);
 }
 
 bool SlidingSpinner::isVisible() {

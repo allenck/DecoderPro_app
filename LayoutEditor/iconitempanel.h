@@ -66,6 +66,8 @@ protected:
 protected slots:
     /*protected*/ void addNewIcon();
     /*protected*/ void setSelection(IconDisplayPanel* panel);
+    /*protected*/ void setPreviewBg(int index);
+    /*protected*/ void updateBackground0(BufferedImage* im);
 
 
 friend class ClockItemPanel;

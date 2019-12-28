@@ -195,3 +195,7 @@ void JSlider::setValue(int i)
 {
  listeners.removeOne(l);
 }
+/*public*/ void JSlider::setVisible(bool b)
+{
+ QWidget::setVisible(b);
+}

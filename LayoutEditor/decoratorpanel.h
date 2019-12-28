@@ -153,8 +153,8 @@ private:
     /*private*/ void doPopupUtility(QString type, PositionableLabel* sample, bool editText);
     /*private*/ void makeFontPanels();
     /*private*/ AJRadioButton* makeColorRadioButton(QString caption, int which, QString state);
-    DragDecoratorLabel* sample;
-    DPChangeListener* listener;
+    DragDecoratorLabel* sample = nullptr;
+    DPChangeListener* listener = nullptr;
     /*private*/ void colorChange();
 
 private slots:
@@ -176,6 +176,7 @@ protected:
     friend class FontActionListener;
     friend class DPChangeListener;
     friend class PreviewScene;
+    friend class TextAttrDialog;
 };
 
 /*static*/ class AJSpinner : public  JSpinner
@@ -190,14 +191,14 @@ public:
 
 /*static*/ class AJRadioButton : public QRadioButton {
     Q_OBJECT
-int _which;
-QString _state;
+    int _which;
+    QString _state;
 
 public:
- AJRadioButton(QString text, int w, QString state);
- QString getState();
- friend class DecoratorPanel;
- friend class AJRBActionListener;
+    AJRadioButton(QString text, int w, QString state);
+    QString getState();
+    friend class DecoratorPanel;
+    friend class AJRBActionListener;
 };
 #if 0
 class AJRBActionListener : public QObject
@@ -314,9 +315,12 @@ public:
  PreviewScene(DecoratorPanel* panel) : QGraphicsScene() {this->panel = panel;}
  void mousePressEvent(QGraphicsSceneMouseEvent* evt);
  void mouseMoveEvent(QGraphicsSceneMouseEvent*event);
+ /*public*/ void setImage(QImage* img);
 
 private:
  QMouseEvent* convertMouseEvent(QGraphicsSceneMouseEvent* evt);
+ /*private*/ BufferedImage* back;// = null;
+ /*private*/  QPixmap bkgnd;
 };
 
 //class MyMouseEvent : public QMouseEvent

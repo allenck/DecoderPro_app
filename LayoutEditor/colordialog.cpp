@@ -202,7 +202,8 @@ JPanel* ColorDialog::makeTextPanel() {
 
 /*protected*/ JPanel* ColorDialog::makeDoneButtonPanel() {
     JPanel* panel = new JPanel();
-    panel->setLayout(new FlowLayout());
+    FlowLayout* panelLayout;
+    panel->setLayout(panelLayout = new FlowLayout());
     QPushButton* doneButton = new QPushButton(tr("Done"));
 //    doneButton.addActionListener((ActionEvent event) -> {
 //            log.debug("Done button: color= {}", _chooser.getColor());
@@ -216,7 +217,7 @@ JPanel* ColorDialog::makeTextPanel() {
 //            dispose();
 //    });
     connect(doneButton, SIGNAL(clicked(bool)), this, SLOT(onDoneButton()));
-    panel->layout()->addWidget(doneButton);
+    panelLayout->addWidget(doneButton);
 
     QPushButton* cancelButton = new QPushButton(tr("Cancel"));
 //    cancelButton.addActionListener((ActionEvent event) -> {
@@ -224,7 +225,7 @@ JPanel* ColorDialog::makeTextPanel() {
 //        });
     connect(cancelButton,SIGNAL(clicked(bool)), this, SLOT(cancel()));
 
-    panel->layout()->addWidget(cancelButton);
+    panelLayout->addWidget(cancelButton);
 
     return panel;
 }

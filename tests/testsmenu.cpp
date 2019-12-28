@@ -65,6 +65,8 @@
 #include "misc/jmriuserpreferencesmanagertestaction.h"
 #include "operations/optionsmenutestaction.h"
 #include "positionables/signalmasticontestaction.h"
+#include "misc/colorchooserpaneltestaction.h"
+
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -174,5 +176,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* positionablesMenu = new QMenu(tr("Positionables ..."));
     addMenu(positionablesMenu);
     positionablesMenu->addAction(new SignalMastIconTestAction(this));
-
+    QMenu* miscMenu = new QMenu("misc");
+    addMenu(miscMenu);
+    miscMenu->addAction(new ColorChooserPanelTestAction(this));
 }

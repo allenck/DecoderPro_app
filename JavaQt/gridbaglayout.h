@@ -16,6 +16,8 @@ class JAVAQTSHARED_EXPORT GridBagLayout : public QGridLayout
 
 private:
     GridBagConstraints gbc;
+    int lastX = -1;
+    int lastY = -1;
 };
 
 #endif // GRIDBAGLAYOUT_H

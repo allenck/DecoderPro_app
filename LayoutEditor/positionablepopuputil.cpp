@@ -18,6 +18,7 @@
 #include "compoundborder.h"
 #include "borderfactory.h"
 #include "jmricolorchooser.h"
+#include "textitempanel.h"
 
 //PositionablePopupUtil::PositionablePopupUtil(QObject *parent) :
 //    QObject(parent)
@@ -332,6 +333,7 @@ void PositionablePopupUtil::onSetTeaxtFontColor()
 /*public*/ void PositionablePopupUtil::setBackgroundColor(QColor color)
 {
  if(_textComponent == NULL ) return;
+ //if(qobject_cast<DragDecoratorLabel*>(_textComponent)!=NULL) return;
  if(!color.isValid())
  {
   if(qobject_cast<PositionableLabel*>(_textComponent)!=NULL)

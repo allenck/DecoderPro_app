@@ -15,7 +15,7 @@ class SlidingSpinner : public ChangeListener
 
 public:
  explicit SlidingSpinner(QObject *parent = nullptr);
- SlidingSpinner(ColorPanel* panel, JComponent* label, QObject *parent = nullptr);
+ SlidingSpinner(ColorPanel* panel, QWidget *label, QObject *parent = nullptr);
 
 signals:
 
@@ -24,13 +24,13 @@ public slots:
 
 private:
  /*private*/ /*final*/ ColorPanel* panel;
- /*private*/ /*final*/ JComponent* label;
+ /*private*/ /*final*/ QWidget* label;
  /*private*/ /*final*/ SpinnerNumberModel* model;// = new SpinnerNumberModel();
  /*private*/ /*final*/ JSlider* slider;// = new JSlider();
  /*private*/ /*final*/ JSpinner* spinner;// = new JSpinner(this->model);
  /*private*/ float value;
  /*private*/ bool internal;
- JComponent* getLabel();
+ QWidget* getLabel();
  JSlider* getSlider();
  JSpinner* getSpinner();
  float getValue() ;

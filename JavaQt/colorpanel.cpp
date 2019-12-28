@@ -51,7 +51,8 @@
 ///*final*/ class ColorPanel extends JPanel implements ActionListener {
 
 
-ColorPanel::ColorPanel(ColorModel* model) {
+ColorPanel::ColorPanel(ColorModel* model) : JPanel()
+{
     //super(new GridBagLayout());
  GridBagLayout* g = new GridBagLayout(this);
  spinners = QVector<SlidingSpinner*>(5);
@@ -78,7 +79,7 @@ ColorPanel::ColorPanel(ColorModel* model) {
 //            button.setActionCommand(Integer.toString(i));
 //            button.addActionListener(this);
             connect(button, SIGNAL(clicked()), this, SLOT(actionPerformed()));
-            this->spinners[i] = new SlidingSpinner(this, (JComponent*)button);
+            this->spinners[i] = new SlidingSpinner(this, button);
         }
         else {
             JLabel* label = new JLabel();
@@ -121,23 +122,25 @@ ColorPanel::ColorPanel(ColorModel* model) {
 //    }
 }
 
-void ColorPanel::buildPanel() {
-    int count = this->model->getCount();
-    this->spinners[4]->setVisible(count > 4);
-    for (int i = 0; i < count; i++) {
-        QString text = this->model->getLabel((Component*)this, i);
-        JComponent* object = this->spinners[i]->getLabel();
-        if (qobject_cast<QRadioButton*>(object->jself())) {
-            QRadioButton* button = (QRadioButton*) object;
-            button->setText(text);
+void ColorPanel::buildPanel()
+{
+ int count = this->model->getCount();
+ this->spinners[4]->setVisible(count > 4);
+ for (int i = 0; i < count; i++)
+ {
+  QString text = this->model->getLabel((Component*)this, i);
+  QWidget* object = this->spinners[i]->getLabel();
+  if (qobject_cast<QRadioButton*>(object)) {
+      QRadioButton* button = (QRadioButton*) object;
+      button->setText(text);
 //            button.getAccessibleContext().setAccessibleDescription(text);
-        }
-        else if (qobject_cast<JLabel*>(object->jself())) {
-            JLabel* label = (JLabel*) object;
-            label->setText(text);
-        }
-        this->spinners[i]->setRange(this->model->getMinimum(i), this->model->getMaximum(i));
-        this->spinners[i]->setValue(this->values[i]);
+  }
+  else if (qobject_cast<JLabel*>(object)) {
+      QLabel* label = (QLabel*) object;
+//      label->setText(text);
+  }
+  this->spinners[i]->setRange(this->model->getMinimum(i), this->model->getMaximum(i));
+  this->spinners[i]->setValue(this->values[i]);
 //        this->spinners[i]->getSlider().getAccessibleContext().setAccessibleName(text);
 //        this->spinners[i].getSpinner().getAccessibleContext().setAccessibleName(text);
 //        DefaultEditor editor = (DefaultEditor) this->spinners[i].getSpinner().getEditor();
@@ -145,7 +148,7 @@ void ColorPanel::buildPanel() {
 //        this->spinners[i].getSlider().getAccessibleContext().setAccessibleDescription(text);
 //        this->spinners[i].getSpinner().getAccessibleContext().setAccessibleDescription(text);
 //        editor.getTextField().getAccessibleContext().setAccessibleDescription(text);
-    }
+ }
 }
 
 void ColorPanel::colorChanged() {

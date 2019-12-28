@@ -200,7 +200,9 @@ SOURCES += \
     positionables/positionabletestbase.cpp \
     positionables/editorscaffold.cpp \
     positionables/editorframeoperator.cpp \
-    positionables/signalmasticontestaction.cpp
+    positionables/signalmasticontestaction.cpp \
+    misc/colorchooserpaneltest.cpp \
+    misc/colorchooserpaneltestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -378,7 +380,9 @@ HEADERS += \
     positionables/positionabletestbase.h \
     positionables/editorscaffold.h \
     positionables/editorframeoperator.h \
-    positionables/signalmasticontestaction.h
+    positionables/signalmasticontestaction.h \
+    misc/colorchooserpaneltest.h \
+    misc/colorchooserpaneltestaction.h
 
 unix {
     target.path = /usr/lib

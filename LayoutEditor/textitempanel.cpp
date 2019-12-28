@@ -39,7 +39,7 @@
         p->setLayout(new FlowLayout);
         p->layout()->addWidget(panel);
         thisLayout->addWidget(p);
-        DragDecoratorLabel* sample = new DragDecoratorLabel(tr("sample"), _editor, this);
+        DragDecoratorLabel* sample = new DragDecoratorLabel(tr("sample"), _editor);
         _decorator = new DecoratorPanel(_editor, _paletteFrame);
         _decorator->initDecoratorPanel(sample);
         thisLayout->addWidget(_decorator);
@@ -134,12 +134,12 @@
 
 //    DataFlavor dataFlavor;
 
-/*public*/DragDecoratorLabel::DragDecoratorLabel(QString s, Editor* editor, TextItemPanel* textItemPanel)
+/*public*/DragDecoratorLabel::DragDecoratorLabel(QString s, Editor* editor)
  : PositionableLabel(s, editor){
     //super(s, editor);
-this->textItemPanel = textItemPanel;
  QLabel::setVisible(false);
  QLabel::setAutoFillBackground(true);
+ setLevel(Editor::LABELS);
  _foreground = QColor(Qt::black);
  QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
  sizePolicy.setHorizontalStretch(1);
@@ -165,8 +165,13 @@ this->textItemPanel = textItemPanel;
 void DragDecoratorLabel::setBackground(QColor bg)
 {
  PositionableLabel::setBackground(bg);
+ PositionablePopupUtil* util = getPopupUtility();
+ //util->setBackgroundColor(bg);
+
  this->bg = bg;
  setAttributes();
+ updateScene();
+
 }
 
 void DragDecoratorLabel::setForeground(QColor fg)
@@ -179,18 +184,24 @@ void DragDecoratorLabel::setForeground(QColor fg)
 void DragDecoratorLabel::setBorderColor(QColor borderColor)
 {
  this->borderColor = borderColor;
+ PositionablePopupUtil* util = getPopupUtility();
+ util->setBorderColor(borderColor);
  setAttributes();
 }
 
 void  DragDecoratorLabel::setBorderSize(int w)
 {
  this->borderSize = w;
+ PositionablePopupUtil* util = getPopupUtility();
+ util->setBorderSize(w);
  setAttributes();
 }
 
 void  DragDecoratorLabel::setMargin(int w)
 {
  this->margin = w;
+ PositionablePopupUtil* util = getPopupUtility();
+ util->setMargin(w);
  setAttributes();
 }
 
@@ -277,7 +288,7 @@ void DragDecoratorLabel::setFontStyle(int style)
 #endif
  QLabel::repaint();
  QLabel::update();
-
+ updateScene();
 }
 
 void DragDecoratorLabel::mousePressEvent(QMouseEvent *e)
@@ -287,7 +298,7 @@ void DragDecoratorLabel::mousePressEvent(QMouseEvent *e)
   dr = new QDrag(this);
   QMimeData *data = new QMimeData;
   QByteArray s_mimeData = mimeData();
-  textItemPanel->log->debug(tr("xmldata: %1").arg(s_mimeData.data()));
+  log->debug(tr("xmldata: %1").arg(s_mimeData.data()));
   data->setData("object/x-myApplication-object", s_mimeData);
   // Assign ownership of the QMimeData object to the QDrag object.
   dr->setMimeData(data);
@@ -379,3 +390,4 @@ void DragDecoratorLabel::mousePressEvent(QMouseEvent *e)
 }
 #endif
 /*private*/ /*final*/ /*static*/ Logger* TextItemPanel::log = LoggerFactory::getLogger("TextItemPanel");
+/*private*/ /*final*/ /*static*/ Logger* DragDecoratorLabel::log = LoggerFactory::getLogger("DragDecoratorLabel");

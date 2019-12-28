@@ -1305,7 +1305,7 @@ void PositionableLabel::setSize(int w, int h)
  IS_OPAQUE= isOpaque;
 //        setFlag(OPAQUE_SET, true);
  OPAQUE_SET = true;
- emit propertyChange(new PropertyChangeEvent(this, "opaque", oldValue, isOpaque));
+// emit propertyChange(new PropertyChangeEvent(this, "opaque", oldValue, isOpaque));
 // if(_itemGroup != NULL)
 //  _itemGroup->update();
 // _editor->addToTarget(this);
@@ -1320,10 +1320,10 @@ void PositionableLabel::setBackgroundColor(QColor color)
 {
   // TODO:
  _background = color;
- QPalette pal = palette();
- pal.setColor(QPalette::Window, color);
- setPalette(pal);
- repaint();
+// QPalette pal = QLabel::palette();
+// pal.setColor(QPalette::Window, color);
+// setPalette(pal);
+// repaint();
 }
 QColor PositionableLabel::getBackground()
 {

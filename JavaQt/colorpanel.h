@@ -41,6 +41,7 @@ private:
  friend class ColorChooserPanel;
  friend class SlidingSpinner;
  friend class DiagramComponent;
+ friend class ColorChooserPanelTest;
 };
 
 #endif // COLORPANEL_H
