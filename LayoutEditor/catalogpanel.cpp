@@ -23,7 +23,7 @@
 #include "dataflavor.h"
 #include <QDropEvent>
 #include <QMimeData>
-#include <QGridLayout>
+#include "gridbaglayout.h"
 #include <QTableWidget>
 #include <QHeaderView>
 #include "catalogtreeleaf.h"
@@ -474,13 +474,16 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
  previewPanelLayout->addLayout(pLayout);
  _preview = new ImagePanel();
  _preview->setObjectName("preview");
+ gridbag = new GridBagLayout();
+ _preview->setLayout(gridbag);
  QScrollArea* js = new QScrollArea;
- _preview->setMinimumSize(300,200);
+ js->setMinimumHeight(220);
+ //_preview->setMinimumSize(300,200);
  QSizePolicy spPreview(QSizePolicy::Expanding, QSizePolicy::Expanding);
  spPreview.setHorizontalStretch(1);
  spPreview.setVerticalStretch(1);
  spPreview.setHeightForWidth(_preview->sizePolicy().hasHeightForWidth());
- _preview->setSizePolicy(spPreview);
+ js->setSizePolicy(spPreview);
 
  js->setToolTip(tr("Drag an icon from the Preview to replace an icon in the item group"));
  js->setBackgroundRole(QPalette::Dark);
@@ -490,16 +493,16 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 // previewPanel->layout()->addWidget(_preview);
 // _preview->setMinimumSize( QSize(250, 200));
  QRadioButton* whiteButton = new QRadioButton(tr("White")/*,false*/);
- QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
- sizePolicy.setHorizontalStretch(0);
- sizePolicy.setVerticalStretch(0);
- sizePolicy.setHeightForWidth(whiteButton->sizePolicy().hasHeightForWidth());
- whiteButton->setSizePolicy(sizePolicy);
+// QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+// sizePolicy.setHorizontalStretch(0);
+// sizePolicy.setVerticalStretch(0);
+// sizePolicy.setHeightForWidth(whiteButton->sizePolicy().hasHeightForWidth());
+// whiteButton->setSizePolicy(sizePolicy);
  QRadioButton* grayButton = new QRadioButton(tr("Light Gray")/*,true*/);
  grayButton->setChecked(true);
- grayButton->setSizePolicy(sizePolicy);
+// grayButton->setSizePolicy(sizePolicy);
  QRadioButton* darkButton = new QRadioButton(tr("Dark Gray")/*,false*/);
- darkButton->setSizePolicy(sizePolicy);
+// darkButton->setSizePolicy(sizePolicy);
 //    whiteButton.addActionListener(new ActionListener(){
 //            /*public*/ void actionPerformed(ActionEvent e) {
 //                _currentBackground = Color.white;
@@ -734,9 +737,14 @@ void CatalogPanel::onBgColorBox(int index)
  // VM launches another thread to run ImageFetcher.
  // This handler will catch memory exceptions from that thread
  //Thread.setDefaultUncaughtExceptionHandler(new MemoryExceptionHandler());
- QGridLayout* gridbag = new QGridLayout();
- gridbag->setMargin(0);
+ gridbag = new GridBagLayout();
+ //gridbag->setMargin(0);
  _preview->setLayout(gridbag);
+ //_preview->setMinimumHeight(150);
+ QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+ sizePolicy.setHorizontalStretch(0);
+ sizePolicy.setVerticalStretch(1);
+ _preview->setSizePolicy(sizePolicy);
 //_preview->setLayout(new QVBoxLayout);
  GridBagConstraints c;// = GridBagConstraints();
  c.fill = GridBagConstraints::NONE;
@@ -789,7 +797,7 @@ void CatalogPanel::onBgColorBox(int index)
 //   maxRowHeight = 0;
   }
   c.insets = new Insets(5, 5, 0, 0);
-
+#if 1
 //            JLabel image = NULL;
   DragJLabel* nameLabel = nullptr;
   if (_noDrag)
@@ -836,36 +844,24 @@ void CatalogPanel::onBgColorBox(int index)
   pl->addWidget(label,0,Qt::AlignBottom);
   p->setMinimumHeight(h+60 + label->sizeHint().height());
   p->setMinimumWidth(label->sizeHint().width());
-//    if (_noDrag) {
-//     p.addMouseListener(this);
-//    }
-  //gridbag.setConstraints(p, c);
-  gridbag->addWidget(p, c.gridy, c.gridx, 1,1);
-//  int hRow = gridbag->rowMinimumHeight(c.gridy);
-//  if(h+20 > hRow)
-//  maxRowHeight = qMax(maxRowHeight, h);
-//  if(h+20 > maxRowHeight)
-//   gridbag->setRowMinimumHeight(c.gridy, /*h+20*/h+60 + label->sizeHint().height());
+  gridbag->setRowMinimumHeight(c.gridy, h+60 + label->sizeHint().height());
+#else
+  JPanel* p = new CPIconDisplayPanel(leaf->getName(), icon, this);
+#endif
+  gridbag->addWidget(p, c);
+
   if (_noMemory)
   {
    continue;
   }
-  //_preview->layout()->addWidget(p);
-//  if (log->isDebugEnabled())
-//  {
-//   log->debug(nameLabel->getName()+" inserted at ("+QString::number(c.gridx)+", "+QString::number(c.gridy)+
-//                          ") w= "+QString::number(icon->getIconWidth())+", h= "+QString::number(icon->getIconHeight()));
-//  }
  }
- c.gridy++;
- c.gridx++;
- QLabel* bottom = new QLabel();
- bottom->setLayout(new QHBoxLayout);
- gridbag->addWidget(bottom, c.gridy, c.gridx,1,1);
- //_preview->layout()->addWidget(bottom);
-    //_preview->layout()->addWidget(bottom);
+// c.gridy++;
+// c.gridx++;
+// QLabel* bottom = new QLabel();
+// bottom->setLayout(new QHBoxLayout);
+// gridbag->addWidget(bottom, c);
 
-    //Thread.setDefaultUncaughtExceptionHandler(new jmri.util.exceptionhandler.UncaughtExceptionHandler());
+ //Thread.setDefaultUncaughtExceptionHandler(new jmri.util.exceptionhandler.UncaughtExceptionHandler());
  packParentFrame(this);
  return tr("Node \"%1\" has %2 image files.").arg(node->getUserObject().toString()).arg(leaves->size());
 }
@@ -1219,88 +1215,88 @@ void CatalogPanel::on_tree_clicked(QModelIndex index)
 //        String _name;
 //        NamedIcon _icon;
 
-        /*public*/ CPIconDisplayPanel::CPIconDisplayPanel(QString leafName, NamedIcon* icon, CatalogPanel* catalogPanel) : JPanel()
+/*public*/ CPIconDisplayPanel::CPIconDisplayPanel(QString leafName, NamedIcon* icon, CatalogPanel* catalogPanel) : JPanel()
 {
-            //super();
-            _name = leafName;
-            _icon = icon;
-            this->catalogPanel = catalogPanel;
-            // setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-            setLayout(new BorderLayout());
+    //super();
+    _name = leafName;
+    _icon = icon;
+    this->catalogPanel = catalogPanel;
+    // setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    setLayout(new BorderLayout());
 //            setOpaque(false);
-            if (_name != "") {
-                setBorderAndIcon(icon);
-            }
+    if (_name != "") {
+        setBorderAndIcon(icon);
+    }
 //            addMouseListener(new IconListener());
-        }
+}
 
-        NamedIcon* CPIconDisplayPanel::getIcon() {
-            return _icon;
-        }
+NamedIcon* CPIconDisplayPanel::getIcon() {
+    return _icon;
+}
 
-        void CPIconDisplayPanel::setBorderAndIcon(NamedIcon* icon) {
-            if (icon == nullptr) {
-                catalogPanel->log->error(tr("IconDisplayPanel: No icon for \"%1\"").arg(_name));
-                return;
-            }
-            try {
-                JLabel* image;
-                if (catalogPanel->_dragIcons) {
-                    image = (JLabel*)new DragJLabel(new DataFlavor(ImageIndexEditor::IconDataFlavorMime));
-                } else {
-                    image = new JLabel();
-                }
+void CPIconDisplayPanel::setBorderAndIcon(NamedIcon* icon) {
+    if (icon == nullptr) {
+        catalogPanel->log->error(tr("IconDisplayPanel: No icon for \"%1\"").arg(_name));
+        return;
+    }
+    try {
+        JLabel* image;
+        if (catalogPanel->_dragIcons) {
+            image = (JLabel*)new DragJLabel(new DataFlavor(ImageIndexEditor::IconDataFlavorMime));
+        } else {
+            image = new JLabel();
+        }
 //                image.setOpaque(false);
-                image->setName(_name);
-                image->setToolTip(icon->getName());
-                double scale;
-                if (icon->getIconWidth() < 1 || icon->getIconHeight() < 1) {
-                    image->setText(tr("invisible Icon"));
+        image->setName(_name);
+        image->setToolTip(icon->getName());
+        double scale;
+        if (icon->getIconWidth() < 1 || icon->getIconHeight() < 1) {
+            image->setText(tr("invisible Icon"));
 //   TODO:                 image->setForeground(QColor(Qt::lightGray));
-                    scale = 0;
-                } else {
-                    scale = icon->reduceTo(catalogPanel->ICON_WIDTH, catalogPanel->ICON_HEIGHT, catalogPanel->ICON_SCALE);
-                }
-                image->setIcon(icon);
+            scale = 0;
+        } else {
+            scale = icon->reduceTo(catalogPanel->ICON_WIDTH, catalogPanel->ICON_HEIGHT, catalogPanel->ICON_SCALE);
+        }
+        image->setIcon(icon);
 //                image.setHorizontalAlignment(JLabel.CENTER);
 //                image.addMouseListener(new IconListener());
-                ((QVBoxLayout*)layout())->addWidget(image, 0, Qt::AlignTop); //BorderLayout.NORTH);
+        ((QVBoxLayout*)layout())->addWidget(image, 0, Qt::AlignTop); //BorderLayout.NORTH);
 
-                QString scaleMessage = tr("scale %1").arg(CatalogPanel::printDbl(scale, 2));
-                JLabel* label = new JLabel(scaleMessage);
+        QString scaleMessage = tr("scale %1").arg(CatalogPanel::printDbl(scale, 2));
+        JLabel* label = new JLabel(scaleMessage);
 //                label.setOpaque(false);
 //                label.setHorizontalAlignment(JLabel.CENTER);
-                ((QVBoxLayout*)layout())->addWidget(label, 0, Qt::AlignCenter); // BorderLayout.CENTER);
-                label = new JLabel(_name);
+        ((QVBoxLayout*)layout())->addWidget(label, 0, Qt::AlignCenter); // BorderLayout.CENTER);
+        label = new JLabel(_name);
 //                label.setOpaque(false);
 //                label.setHorizontalAlignment(JLabel.CENTER);
 //                label.addMouseListener(new IconListener());
-                ((QVBoxLayout*)layout())->addWidget(label, 0, Qt::AlignBottom); //BorderLayout.SOUTH);
+        ((QVBoxLayout*)layout())->addWidget(label, 0, Qt::AlignBottom); //BorderLayout.SOUTH);
 //                setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-            } catch (ClassNotFoundException cnfe) {
-                catalogPanel->log->error(tr("Unable to find class supporting %1").arg( /*Editor.POSITIONABLE_FLAVOR),*/ cnfe.getMessage()));
-            }
-        }
+    } catch (ClassNotFoundException cnfe) {
+        catalogPanel->log->error(tr("Unable to find class supporting %1").arg( /*Editor.POSITIONABLE_FLAVOR),*/ cnfe.getMessage()));
+    }
+}
 
-        /*public*/ QString CPIconDisplayPanel::getIconName() {
-            return _name;
-        }
-        //@Override
-        /*public*/ void CPIconDisplayPanel::mouseClicked(QMouseEvent* event) {
+/*public*/ QString CPIconDisplayPanel::getIconName() {
+    return _name;
+}
+//@Override
+/*public*/ void CPIconDisplayPanel::mouseClicked(QMouseEvent* event) {
 //            if (event.getSource() instanceof JLabel ) {
 //                setSelection(this);
 //            }
-        }
-        //@Override
-        /*public*/ void mousePressed(QMouseEvent* event) {
-        }
-        //@Override
-        /*public*/ void mouseReleased(QMouseEvent* event) {
-        }
-        //@Override
-        /*public*/ void mouseEntered(QMouseEvent* event) {
-        }
-        //@Override
-        /*public*/ void mouseExited(QMouseEvent* event) {
-        }
+}
+//@Override
+/*public*/ void mousePressed(QMouseEvent* event) {
+}
+//@Override
+/*public*/ void mouseReleased(QMouseEvent* event) {
+}
+//@Override
+/*public*/ void mouseEntered(QMouseEvent* event) {
+}
+//@Override
+/*public*/ void mouseExited(QMouseEvent* event) {
+}
     //}

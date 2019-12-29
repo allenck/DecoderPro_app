@@ -240,6 +240,7 @@
 // });
  _catalogButton->setToolTip(tr("Open the Icon Catalog and drag icons from there to the Panel"));
  bottomPanel->layout()->addWidget(_catalogButton);
+ connect(_catalogButton, SIGNAL(clicked(bool)), this, SLOT(on_catalogButton_clicked()));
 
  if (doneAction == nullptr) {
      QPushButton* renameButton = new QPushButton(tr("Rename Icon"));

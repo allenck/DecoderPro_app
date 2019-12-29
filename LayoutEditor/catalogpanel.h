@@ -7,6 +7,7 @@
 #include "logger.h"
 #include "jpanel.h"
 
+class GridBagLayout;
 class CPIconDisplayPanel;
 class IconItemPanel;
 class BufferedImage;
@@ -84,6 +85,8 @@ private:
     /*private*/ void addTreeBranch(CatalogTreeNode* node);
     /*private*/ QWidget* makeButtonPanel();
 /*private*/ IconItemPanel* _parent;      // IconItemPanel could implement an interface if other classes use deselectIcon()
+    GridBagLayout* gridbag;
+
 private slots:
     /*private*/ void showPopUp(NamedIcon*);
     void rename(NamedIcon* obj);
@@ -111,29 +114,27 @@ class CPLTreeSelectionListener : public TreeSelectionListener
  Q_OBJECT
  CatalogPanel* cp;
 public:
-
  CPLTreeSelectionListener(CatalogPanel* cp);
+
 public slots:
  void valueChanged(TreeSelectionEvent* /*e*/);
-public:
-
 };
 
 /*public*/ class CPIconDisplayPanel : public  JPanel //implements MouseListener
 {
  Q_OBJECT
-        QString _name;
-        NamedIcon* _icon;
-        CatalogPanel* catalogPanel;
+ QString _name;
+ NamedIcon* _icon;
+ CatalogPanel* catalogPanel;
 public:
-        /*public*/ CPIconDisplayPanel(QString leafName, NamedIcon* icon, CatalogPanel* catalogPanel) ;
-        NamedIcon* getIcon();
-        void setBorderAndIcon(NamedIcon* icon);
-        /*public*/ QString getIconName();
-        /*public*/ void mouseClicked(QMouseEvent* event);
-        /*public*/ void mousePressed(QMouseEvent* event);
-        /*public*/ void mouseReleased(QMouseEvent* event);
-        /*public*/ void mouseEntered(QMouseEvent* event);
-        /*public*/ void mouseExited(QMouseEvent* event) ;
-    };
+    /*public*/ CPIconDisplayPanel(QString leafName, NamedIcon* icon, CatalogPanel* catalogPanel) ;
+    NamedIcon* getIcon();
+    void setBorderAndIcon(NamedIcon* icon);
+    /*public*/ QString getIconName();
+    /*public*/ void mouseClicked(QMouseEvent* event);
+    /*public*/ void mousePressed(QMouseEvent* event);
+    /*public*/ void mouseReleased(QMouseEvent* event);
+    /*public*/ void mouseEntered(QMouseEvent* event);
+    /*public*/ void mouseExited(QMouseEvent* event) ;
+};
 #endif // CATALOGPANEL_H

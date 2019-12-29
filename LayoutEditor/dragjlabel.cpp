@@ -7,6 +7,7 @@
 #include <QMimeData>
 #include "rosterentry.h" // for Vptr
 #include <QVBoxLayout>
+#include "positionablelabelxml.h"
 
 //DragJLabel::DragJLabel(QWidget *parent) :
 //    JLabel(parent)
@@ -162,8 +163,19 @@ void DragJLabel::mousePressEvent(QMouseEvent *e)
      return QVariant();
  }
 
-QByteArray DragJLabel::mimeData()
-{ return QByteArray();}
+//QByteArray DragJLabel::mimeData()
+//{ return QByteArray();}
+/*public*/ QByteArray DragJLabel::mimeData()
+{
+ QByteArray xmldata;
+ PositionableLabelXml* xml = new PositionableLabelXml();
+ PositionableLabel* label = new PositionableLabel(getIcon(),nullptr);
+ QDomElement e = xml->store((QObject*)label);
+ xml->doc.appendChild(e);
+ xmldata.append(xml->doc.toString());
+ log->info(tr("xml data: %1").arg(xml->doc.toString()));
+ return xmldata;
+}
 
 void DragJLabel::setIcon(NamedIcon *icon)
 {
