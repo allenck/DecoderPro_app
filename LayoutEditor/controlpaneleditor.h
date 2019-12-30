@@ -115,7 +115,7 @@ private slots:
  /*private*/ void zoomRestore(); // SLOT
  /*private*/ void zoomToFit();
  void dropEvent(QGraphicsSceneDragDropEvent* e);
-void on_itemPallette();
+//void on_itemPallette();
 /*private*/ void copyToClipboard();
 /*private*/ void pasteFromClipboard();
 void selectAllAction();
