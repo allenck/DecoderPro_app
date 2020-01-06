@@ -1329,6 +1329,7 @@ QColor PositionableLabel::getBackground()
 {
  return _background;
 }
+
 /*public*/ QRectF PositionableLabel::getBounds(QRectF r)
 {
  if(r.isNull())

@@ -17,6 +17,7 @@
 #include <QFontDialog>
 #include "changelistener.h"
 #include "colorselectionmodel.h"
+#include "defaultswatchchooserpanel.h"
 
 ColorDialog::ColorDialog(QWidget *parent) : JDialog(parent)
 {
@@ -312,7 +313,9 @@ void ColorDialog::cancel() {
     default:
      break;
    }
-  } else {
+  }
+  else
+  {
       ((Positionable*)_compTarget)->setOpaque(true);
       ((Positionable*)_compTarget)->setBackground(_chooser->getColor());
   }

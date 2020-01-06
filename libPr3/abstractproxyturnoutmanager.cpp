@@ -230,7 +230,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
     log->debug("normalizeSystemName did not find manager for name " + inputName + ", defer to default");
     return getMgr(0)->normalizeSystemName(inputName);
 }
-
+#if 1
 /**
  * Locate via user name, then system name if needed.
  * If that fails, create a new NamedBean: If the name
@@ -249,14 +249,43 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  if (t!=nullptr) return t;
  // Doesn't exist. If the systemName was specified, find that system
  int index = matchTentative(name);
- if (index >= 0) return makeBean(index, name, "");
+ if (index >= 0)
+  return makeBean(index, name, "");
  log->debug("Did not find manager for name "+name+", defer to default");
 //    int iI = nMgrs()-1;
 //    return makeBean(iI,getMgr(iI)->makeSystemName(name), "");
  QString newSysName = getMgr(0)->makeSystemName(name);
  return makeBean(0,newSysName,"");
 }
+#else
+/**
+ * Locate via user name, then system name if needed. If that fails, create a
+ * new NamedBean: If the name is a valid system name, it will be used for
+ * the new NamedBean. Otherwise, the makeSystemName method will attempt to
+ * turn it into a valid system name. Subclasses use this to create provider methods such as
+ * getSensor or getTurnout via casts.
+ *
+ * @param name the user name or system name of the bean
+ * @return an existing or new NamedBean
+ * @throws IllegalArgumentException if name is not usable in a bean
+ */
+/*protected*/ NamedBean* AbstractProxyTurnoutManager::provideNamedBean(QString name) throw IllegalArgumentException {
+    // make sure internal present
+    initInternal();
 
+    NamedBean* t = getNamedBean(name);
+    if (t != nullptr) {
+        return t;
+    }
+    // Doesn't exist. If the systemName was specified, find that system
+    int index = matchTentative(name);
+    if (index >= 0) {
+        return makeBean(index, name, "");
+    }
+    log->debug(tr("provideNamedBean did not find manager for name %1, defer to default").arg(name)); // NOI18N
+    return makeBean(mgrs.entryIndex(getDefaultManager()), getDefaultManager()->makeSystemName(name), null);
+}
+#endif
 /**
  * Defer creation of the proper type to the subclass
  * @param index Which manager to invoke

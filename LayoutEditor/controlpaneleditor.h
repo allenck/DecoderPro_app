@@ -115,21 +115,20 @@ private slots:
  /*private*/ void zoomRestore(); // SLOT
  /*private*/ void zoomToFit();
  void dropEvent(QGraphicsSceneDragDropEvent* e);
-//void on_itemPallette();
-/*private*/ void copyToClipboard();
-/*private*/ void pasteFromClipboard();
-void selectAllAction();
-void storeImageIndexAction();
-void changePEViewAction();
-void deleteAction();
-void closeEditor();
-void sceneChanged(QList<QRectF>);
-void on_disableShapeSelect(bool);
-void on_makeCircuitMenu();
-void on_scrollBoth_triggered();
-void on_scrollNone_triggered();
-void on_scrollHorizontal_triggered();
-void on_scrollVertical_triggered();
+ /*private*/ void copyToClipboard();
+ /*private*/ void pasteFromClipboard();
+ void selectAllAction();
+ void storeImageIndexAction();
+ void changePEViewAction();
+ void deleteAction();
+ void closeEditor();
+ void sceneChanged(QList<QRectF>);
+ void on_disableShapeSelect(bool);
+ void on_makeCircuitMenu();
+ void on_scrollBoth_triggered();
+ void on_scrollNone_triggered();
+ void on_scrollHorizontal_triggered();
+ void on_scrollVertical_triggered();
 
 protected:
  /*protected*/ QMenuBar* _menuBar;

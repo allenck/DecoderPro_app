@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "propertychangesupport.h"
 #include "appslib_global.h"
+#include <QColor>
 
 class QDomDocument;
 class QDomElement;
@@ -47,7 +48,12 @@ namespace Operations
   /*public*/ int getSequenceId();
   /*public*/ void setSequenceId(int sequence) ;
   /*public*/ void setComment(QString comment);
-  /*public*/ QString getComment() ;
+  /*public*/ QString getComment();
+  /*public*/ void setCommentColor(QColor color);
+  /*public*/ QColor getCommentColor();
+  /*public*/ QString getFormatedColorComment();
+  /*public*/ void setCommentTextColor(QString color);
+  /*public*/ QString getCommentTextColor();
   /*public*/ void setTrainDirection(int direction);
   /*public*/ int getTrainDirection() ;
   /*public*/ QString getTrainDirectionString();
@@ -96,6 +102,7 @@ namespace Operations
   Logger* log;
   /*private*/ QString getNameId();
   void common();
+  QColor _commentColor;
 
  protected:
   /*protected*/ QString _id; //=NONE;

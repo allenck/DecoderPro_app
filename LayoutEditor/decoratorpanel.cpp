@@ -65,6 +65,10 @@
   // create array of backgrounds, _currentBackground already set and used
   _backgrounds = ItemPanel::makeBackgrounds(nullptr,  panelBackground);
   _chooser = new JColorChooser(panelBackground);
+  DefaultSwatchChooserPanel* p = new DefaultSwatchChooserPanel();
+  //p->installChooserPanel(_chooser);
+  _chooser->addChooserPanel(p);
+
   _samples = new QMap<QString, PositionableLabel*>();
   _buttonGroup = new QButtonGroup(this);
 
@@ -150,9 +154,15 @@
 
 //static class AJSpinner extends JSpinner {
 //    int _which;
-AJSpinner::AJSpinner(SpinnerModel* items, int which) : JSpinner(items)
+AJSpinner::AJSpinner(SpinnerModel* items, int which, QWidget* parent)
+ : QSpinBox(/*items,*/ parent)
 {
  _which = which;
+ SpinnerNumberModel* nm = (SpinnerNumberModel*)items;
+ setValue(nm->getValue().toInt());
+ setMinimum(nm->getMinimum().toInt());
+ setMaximum(nm->getMaximum().toInt());
+ setSingleStep(nm->getStepSize().toInt());
 }
 //};
 //static class AJSpinner extends JSpinner {
@@ -186,7 +196,7 @@ QString AJRadioButton::getState() {
     panel->setLayout(new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
     panel->layout()->addWidget(new QLabel((caption)));
     //spin->addChangeListener(this);
-    connect(spin, SIGNAL(stateChange(ChangeEvent*)), listener, SLOT(stateChanged(ChangeEvent*)));
+    connect(spin, SIGNAL(stateChanged(ChangeEvent*)), listener, SLOT(stateChanged(ChangeEvent*)));
     panel->layout()->addWidget(spin);
     return panel;
 }
@@ -196,12 +206,12 @@ QString AJRadioButton::getState() {
  this->sample = sample;
     sample->setDisplayLevel(Editor::LABELS);
     //sample->setBackground(_editor->getTargetPanel()->getBackground());
-    QColor c;
-    QBrush b = _editor->editPanel->backgroundBrush();
-    if(b == Qt::NoBrush)
-     c = QColor(Qt::white);
-    c = b.color();
-    sample->setBackground(c);
+//    QColor c;
+//    QBrush b = _editor->editPanel->backgroundBrush();
+//    if(b == Qt::NoBrush)
+//     c = QColor(Qt::white);
+//    c = b.color();
+//    sample->setBackground(c);
     _util = sample->getPopupUtility();
     _samples->insert("Text", sample);
     _selectedState = "Text";

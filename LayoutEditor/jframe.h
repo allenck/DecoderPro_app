@@ -86,6 +86,9 @@ public:
     void reSizeToFitOnScreen();
     /*public*/ virtual void pack();
     void setVisible(bool visible);
+    /*public*/ void setBorder(Border* border) override {this->_border = border;}
+    /*public*/ Border* getBorder() {return _border;}
+
 
 
 signals:
@@ -104,6 +107,7 @@ private:
  //void moveEvent(QMoveEvent*);
  /*public*/ virtual void componentMoved(QMoveEvent* ) {}
  /*public*/ virtual void componentResized(QResizeEvent* ) {}
+ Border* _border = nullptr;
 
 
 protected:

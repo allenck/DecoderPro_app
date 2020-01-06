@@ -4,6 +4,7 @@
 #include <QObject>
 #include "changelistener.h"
 
+class Border;
 class JSpinner;
 class JSlider;
 class ColorPanel;
@@ -37,7 +38,8 @@ private:
  void setValue(float value);
  void setRange(int min, int max);
  void setVisible(bool visible);
- bool isVisible();
+ bool isVisible(); Border* _border = nullptr;
+
 
  friend class ColorPanel;
 };

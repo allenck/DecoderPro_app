@@ -61,7 +61,7 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
      QHBoxLayout* thisLayout;
      setLayout(thisLayout = new QHBoxLayout()); //this, BoxLayout.X_AXIS));
      signalMapper = new QSignalMapper(this);
-#if 1
+
      QGroupBox* stdColors = new QGroupBox();
      GridBagLayout* stdColorsLayout = new GridBagLayout();
      QButtonGroup* buttonGroup = new QButtonGroup();
@@ -94,7 +94,6 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
      thisLayout->addWidget(recentPanel);
      recentPanel->setVisible(true);
      connect(signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onColorButton(QWidget*)));
-#endif
     }
 
     /**
@@ -164,7 +163,6 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
     QIcon icon =  QIcon(QPixmap::fromImage(resultImage));
     return icon;
     }
-
 
     //@Override
     /*public*/ QString JmriColorChooserPanel::getDisplayName() {

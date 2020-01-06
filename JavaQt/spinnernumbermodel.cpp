@@ -2,9 +2,13 @@
 #include "exceptions.h"
 #include <QVariant>
 
-SpinnerNumberModel::SpinnerNumberModel(QObject *parent) :
-    AbstractSpinnerModel(parent)
+SpinnerNumberModel::SpinnerNumberModel(QObject *parent)
+ : AbstractSpinnerModel(parent)
 {
+ this->value = 0;
+ this->minimum = 0;
+ this->maximum = 100;
+ this->stepSize = 1;
 }
 /**
  * A <code>SpinnerModel</code> for sequences of numbers.
@@ -90,7 +94,9 @@ SpinnerNumberModel::SpinnerNumberModel(QObject *parent) :
      *     <code>null</code> or if the following expression is false:
      *     <code>minimum &lt;= value &lt;= maximum</code>
      */
-    /*public*/ SpinnerNumberModel::SpinnerNumberModel(QVariant value, QVariant minimum, QVariant maximum, QVariant stepSize) {
+    /*public*/ SpinnerNumberModel::SpinnerNumberModel(QVariant value, QVariant minimum, QVariant maximum, QVariant stepSize, QObject *parent)
+     : AbstractSpinnerModel(parent)
+    {
     if ((value == QVariant()) || (stepSize == QVariant())) {
             throw  IllegalArgumentException("value and stepSize must be non-null");
         }
@@ -104,7 +110,7 @@ SpinnerNumberModel::SpinnerNumberModel(QObject *parent) :
         this->stepSize = stepSize;
     }
 
-#if 0
+
     /**
      * Constructs a <code>SpinnerNumberModel</code> with the specified
      * <code>value</code>, <code>minimum</code>/<code>maximum</code> bounds,
@@ -117,15 +123,17 @@ SpinnerNumberModel::SpinnerNumberModel(QObject *parent) :
      * @throws IllegalArgumentException if the following expression is false:
      *     <code>minimum &lt;= value &lt;= maximum</code>
      */
-    /*public*/ SpinnerNumberModel::SpinnerNumberModel(int value, int minimum, int maximum, int stepSize) {
+    /*public*/ SpinnerNumberModel::SpinnerNumberModel(int value, int minimum, int maximum, int stepSize, QObject* parent)
+    : AbstractSpinnerModel(parent)
+    {
         //this(Integer.valueOf(value), Integer.valueOf(minimum), Integer.valueOf(maximum), Integer.valueOf(stepSize));
-    this->value = value;
-    this->minimum = minimum;
-    this->maximum = maximum;
-    this->stepSize = stepSize;
+     this->value = value;
+     this->minimum = minimum;
+     this->maximum = maximum;
+     this->stepSize = stepSize;
     }
 
-
+#if 0
     /**
      * Constructs a <code>SpinnerNumberModel</code> with the specified
      * <code>value</code>, <code>minimum</code>/<code>maximum</code> bounds,

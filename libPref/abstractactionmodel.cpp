@@ -136,7 +136,7 @@
  try
  {
   Action* action = (Action*) Class::forName(className)/*->newInstance()*/;
-  if(className == "LocoNetMenuStartupAction")
+  if(className == "LocoNetMenuStartupAction" || className.endsWith( "LocoNetMenuStartupAction"))
    ((LocoNetMenuStartupAction*)action)->setTitle(text);
   //if (SystemConnectionAction.class.isAssignableFrom(action->getClass()))
   if(((Class*)action)->isAssignableFrom("SystemConnectionAction"))

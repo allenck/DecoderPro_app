@@ -5,6 +5,8 @@
 #include "routemanagerxml.h"
 #include "locationmanager.h"
 #include "control.h"
+#include "colorutil.h"
+#include "traincommon.h"
 
 //RouteLocation::RouteLocation(QObject *parent) :
 //  QObject(parent)
@@ -131,6 +133,30 @@ QObject(parent)
 
  /*public*/ QString RouteLocation::getComment() {
      return _comment;
+ }
+
+ /*public*/ void RouteLocation::setCommentColor(QColor color) {
+    QColor old = _commentColor;
+    _commentColor = color;
+    if (old!= (_commentColor)) {
+        setDirtyAndFirePropertyChange("RouteLocationCommentColor", old, color); // NOI18N
+    }
+ }
+
+ /*public*/ QColor RouteLocation::getCommentColor() {
+     return _commentColor;
+ }
+
+ /*public*/ QString RouteLocation::getFormatedColorComment() {
+     return TrainCommon::formatColorString(getComment(), getCommentColor());
+ }
+
+ /*public*/ void RouteLocation::setCommentTextColor(QString color) {
+     setCommentColor(ColorUtil::stringToColor(color));
+ }
+
+ /*public*/ QString RouteLocation::getCommentTextColor() {
+     return ColorUtil::colorToColorName(getCommentColor());
  }
 
  /*public*/ void RouteLocation::setTrainDirection(int direction) {

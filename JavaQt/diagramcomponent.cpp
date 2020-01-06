@@ -52,7 +52,7 @@
 //        addMouseMotionListener(this);
     }
 
-    /*public*/ void DiagramComponent::paintEvent(QPaintEvent *event)
+    /*public*/ void DiagramComponent::paintEvent(QPaintEvent */*event*/)
     {
      QPainter* painter = new QPainter(this);
      paintComponent(painter);
@@ -60,7 +60,7 @@
 
 
     //@Override
-    /*protected*/ void DiagramComponent::paintComponent(QPainter* painter) {
+    /*protected*/ void DiagramComponent::paintComponent(QPainter* /*painter*/) {
         getInsets(this->insets);
         this->width = getWidth() - this->insets->left - this->insets->right;
         this->height = getHeight() - this->insets->top - this->insets->bottom;
@@ -123,19 +123,19 @@
         mouseDragged(event);
     }
 
-    /*public*/ void DiagramComponent::mouseReleaseEvent(QMouseEvent* event) {
+    /*public*/ void DiagramComponent::mouseReleaseEvent(QMouseEvent* /*event*/) {
     }
 
-    /*public*/ void DiagramComponent::mouseClicked(QMouseEvent* event) {
+    /*public*/ void DiagramComponent::mouseClicked(QMouseEvent* /*event*/) {
     }
 
-    /*public*/ void DiagramComponent::mouseEntered(QMouseEvent* event) {
+    /*public*/ void DiagramComponent::mouseEntered(QMouseEvent* /*event*/) {
     }
 
-    /*public*/ void DiagramComponent::mouseExited(QMouseEvent* event) {
+    /*public*/ void DiagramComponent::mouseExited(QMouseEvent* /*event*/) {
     }
 
-    /*public*/ void DiagramComponent::mouseMoveEvent(QMouseEvent* event) {
+    /*public*/ void DiagramComponent::mouseMoveEvent(QMouseEvent* /*event*/) {
     }
 
     /*public*/ void DiagramComponent::mouseDragged(QMouseEvent* event) {

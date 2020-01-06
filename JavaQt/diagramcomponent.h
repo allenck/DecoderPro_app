@@ -27,6 +27,9 @@ public:
  /*public*/ void setOpaque(bool b);
  /*public*/ void setFont(QFont f);
  QObject* jself(){return (QObject*)this;}
+ /*public*/ void setBorder(Border* border) override {this->_border = border;}
+ /*public*/ Border* getBorder() {return _border;}
+
 
 private:
  /*private*/ /*final*/ ColorPanel* panel;
@@ -42,6 +45,7 @@ private:
  /*private*/ static int getValue(float value, int min, int max);
  /*private*/ static float getValue(int value, int min, int max);
  /*public*/ void paintEvent(QPaintEvent *event);
+ Border* _border = nullptr;
 
 protected:
  /*protected*/ void paintComponent(QPainter *painter);

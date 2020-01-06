@@ -179,12 +179,12 @@ protected:
     friend class TextAttrDialog;
 };
 
-/*static*/ class AJSpinner : public  JSpinner
+/*static*/ class AJSpinner : public  QSpinBox
 {
     Q_OBJECT
     int _which;
 public:
-    AJSpinner(SpinnerModel* model, int which);
+    AJSpinner(SpinnerModel* model, int which, QWidget *parent = nullptr);
     friend class DecoratorPanel;
     friend class ColorDialog;
 };

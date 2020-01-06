@@ -4,12 +4,15 @@
 #include <QObject>
 #include "actionevent.h"
 #include "javaqt_global.h"
+#include "eventlistener.h"
 
-class JAVAQTSHARED_EXPORT ActionListener : public QObject
+class JAVAQTSHARED_EXPORT ActionListener : public QObject,  public EventListener
 {
     Q_OBJECT
+ Q_INTERFACES(EventListener)
 public:
-    //explicit ActionListener(QObject *parent = 0);
+ explicit ActionListener(QObject *parent = 0) : QObject(parent){}
+    QObject* self() {return (QObject*)this;}
     /**
      * The listener interface for receiving action events.
      * The class that is interested in processing an action event

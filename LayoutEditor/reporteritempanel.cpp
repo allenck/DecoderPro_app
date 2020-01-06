@@ -136,9 +136,10 @@
 
 /*public*/ RIconDragJComponent::RIconDragJComponent(DataFlavor* flavor, QWidget* comp, ReporterItemPanel* self)
  : DragJComponent(flavor, comp,self){
-        //super(flavor, dim);
-    this->self = self;
-    }
+    //super(flavor, dim);
+this->self = self;
+}
+
 /*public*/ QObject* RIconDragJComponent::getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException) {
  if (!isDataFlavorSupported(flavor))
  {

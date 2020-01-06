@@ -317,3 +317,7 @@ void JButton::setAction(Action*)
     }
 } // inner class AccessibleJButton
 #endif
+///*public*/ void JButton::setIcon(const QIcon &icon)
+//{
+// QPushButton::setIcon(icon);
+//}

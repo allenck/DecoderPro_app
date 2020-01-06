@@ -6,6 +6,7 @@
 #include <QMutex>
 #include <QLabel>
 #include "jcomponent.h"
+#include "border.h"
 
 class ImageIcon;
 class JLabel : public QLabel, public JComponent
@@ -321,10 +322,15 @@ public:
     /*public*/ bool isOpaque();
     /*public*/ QColor getBackground();
     /*public*/ void setBackground(QColor);
+    /*public*/ void setForeground(QColor);
+
     /*public*/ QFont getFont();
     /*public*/ void setOpaque(bool);
     /*public*/ void setFont(QFont);
-    /*public*/ void setLabelFor(QWidget* c) {} // TODO:
+    /*public*/ void setLabelFor(QWidget* /*c*/) {} // TODO:
+    /*public*/ QFontMetrics getFontMetrics();
+    /*public*/ void setBorder(Border* border) override {this->_border = border;}
+    /*public*/ Border* getBorder() {return _border;}
 
 signals:
     
@@ -336,7 +342,7 @@ private:
  /*private*/ int mnemonic;// = '\0';
  /*private*/ int mnemonicIndex;// = -1;
 
- /*private*/ QString text;// = "";         // "" rather than null,  for BeanBox
+ /*private*/ QString _text;// = "";         // "" rather than null,  for BeanBox
 /*private*/ ImageIcon* defaultIcon;// = NULL;
 /*private*/ ImageIcon* disabledIcon;// = null;
 /*private*/ bool disabledIconSet;// = false;
@@ -354,6 +360,8 @@ static /*final*/ QString LABELED_BY_PROPERTY;// = "labeledBy";
  double _x, _y;
  double _w, _h;
  bool _opaque = false;
+ QColor bc;
+ Border* _border = nullptr;
 
 protected:
 /*protected*/ int checkHorizontalKey(int key, QString message);

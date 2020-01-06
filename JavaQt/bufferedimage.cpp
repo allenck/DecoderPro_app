@@ -1,4 +1,5 @@
 #include "bufferedimage.h"
+#include <QPainter>
 
 BufferedImage::BufferedImage()
 {
@@ -32,7 +33,7 @@ BufferedImage::BufferedImage()
 
 BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, format)
 {
-
+ imageType = (int)format;
 }
 
 #if 0
@@ -575,7 +576,7 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
         };
         return AccessController.doPrivileged(checkClassLoadersAction);
     }
-
+#endif
     /**
      * Returns the image type.  If it is not one of the known types,
      * TYPE_CUSTOM is returned.
@@ -595,10 +596,10 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
      * @see #TYPE_USHORT_555_RGB
      * @see #TYPE_CUSTOM
      */
-    /*public*/ int getType() {
+    /*public*/ int BufferedImage::getType() {
         return imageType;
     }
-
+#if 0
     /**
      * Returns the <code>ColorModel</code>.
      * @return the <code>ColorModel</code> of this
@@ -642,7 +643,7 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
     /*public*/ WritableRaster getAlphaRaster() {
         return colorModel.getAlphaRaster(raster);
     }
-
+#endif
     /**
      * Returns an integer pixel in the default RGB color model
      * (TYPE_INT_ARGB) and default sRGB colorspace.  Color
@@ -668,10 +669,11 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
      * @see #setRGB(int, int, int)
      * @see #setRGB(int, int, int, int, int[], int, int)
      */
-    /*public*/ int getRGB(int x, int y) {
-        return colorModel.getRGB(raster.getDataElements(x, y, null));
+    /*public*/ unsigned int BufferedImage::getRGB(int x, int y) {
+//        return colorModel.getRGB(raster.getDataElements(x, y, null))
+     return pixel(x,y);
     }
-
+#if 0
     /**
      * Returns an array of integer pixels in the default RGB color model
      * (TYPE_INT_ARGB) and default sRGB color space,
@@ -747,7 +749,7 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
         return rgbArray;
     }
 
-
+#endif
     /**
      * Sets a pixel in this <code>BufferedImage</code> to the specified
      * RGB value. The pixel is assumed to be in the default RGB color
@@ -767,10 +769,11 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
      * @see #getRGB(int, int)
      * @see #getRGB(int, int, int, int, int[], int, int)
      */
-    /*public*/ synchronized void setRGB(int x, int y, int rgb) {
-        raster.setDataElements(x, y, colorModel.getDataElements(rgb, null));
+    /*public*/ /*synchronized*/ void BufferedImage::setRGB(int x, int y, unsigned int rgb) {
+       // raster.setDataElements(x, y, colorModel.getDataElements(rgb, null));
+     this->setPixel(x,y,rgb);
     }
-#endif
+
     /**
      * Sets an array of integer pixels in the default RGB color model
      * (TYPE_INT_ARGB) and default sRGB color space,
@@ -914,7 +917,7 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
         }
         return o;
     }
-
+#endif
     /**
      * This method returns a {@link Graphics2D}, but is here
      * for backwards compatibility.  {@link #createGraphics() createGraphics} is more
@@ -923,8 +926,9 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
      * @return a <code>Graphics2D</code>, which can be used to draw into
      *          this image.
      */
-    /*public*/ java.awt.Graphics getGraphics() {
-        return createGraphics();
+    /*public*/ QPainter* BufferedImage::getGraphics() {
+        //return createGraphics();
+     return new QPainter(this);
     }
 
     /**
@@ -933,12 +937,13 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
      * @return a <code>Graphics2D</code>, used for drawing into this
      *          image.
      */
-    /*public*/ Graphics2D createGraphics() {
-        GraphicsEnvironment env =
-            GraphicsEnvironment.getLocalGraphicsEnvironment();
-        return env.createGraphics(this);
+    /*public*/ QPainter* BufferedImage::createGraphics() {
+//        GraphicsEnvironment env =
+//            GraphicsEnvironment.getLocalGraphicsEnvironment();
+//        return env.createGraphics(this);
+     return new QPainter(this);
     }
-
+#if 0
     /**
      * Returns a subimage defined by a specified rectangular region.
      * The returned <code>BufferedImage</code> shares the same

@@ -224,7 +224,6 @@ SOURCES += \
     sensorlineedit.cpp \
     turnoutlineedit.cpp \
     decoratorpanel.cpp \
-    abstractspinnermodel.cpp \
     controlpaneleditor.cpp \
     itempalette.cpp \
     portalicon.cpp \
@@ -616,7 +615,6 @@ HEADERS += liblayouteditor_global.h \
     sensorlineedit.h \
     turnoutlineedit.h \
     decoratorpanel.h \
-    abstractspinnermodel.h \
     controlpaneleditor.h \
     itempalette.h \
     itempanel.h \

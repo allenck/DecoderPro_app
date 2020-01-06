@@ -8,6 +8,7 @@
 #include <QGroupBox>
 #include "jlabel.h"
 #include "jcolorchooser.h"
+#include <QTimer>
 
 /*
  * Copyright (c) 1998, 2013, Oracle and/or its affiliates. All rights reserved.
@@ -74,6 +75,8 @@
     //return UIManager.getString("ColorChooser.swatchesNameText", getLocale());
  return "Swatches";
 }
+
+/*public*/ QString DefaultSwatchChooserPanel::getTitle() {return "Swatches";}
 
 /**
  * Provides a hint to the look and feel as to the
@@ -155,12 +158,12 @@ return -1;
  JPanel* superHolder = new JPanel();
  superHolder->setLayout(gb);
 
- swatchPanel =  new MainSwatchPanel();
+ swatchPanel =  new MainSwatchPanel(this);
 //    swatchPanel.putClientProperty(AccessibleContext.ACCESSIBLE_NAME_PROPERTY,
 //                                  getDisplayName());
 //    swatchPanel->setInheritsPopupMenu(true);
 
- recentSwatchPanel = new RecentSwatchPanel();
+ recentSwatchPanel = new RecentSwatchPanel(this);
 //    recentSwatchPanel->putClientProperty(AccessibleContext.ACCESSIBLE_NAME_PROPERTY,
 //                                        recentStr);
 
@@ -185,11 +188,13 @@ return -1;
  gbc.gridheight = 2;
  Insets* oldInsets = gbc.insets;
  gbc.insets = new Insets(0, 0, 0, 10);
+ gbc.gridy = 0;
+ gbc.gridx = 0;
  gb->addWidget(mainHolder, gbc);
  gbc.insets = oldInsets;
 
 //    recentSwatchPanel.setInheritsPopupMenu(true);
- JPanel* recentHolder = new JPanel( /*new BorderLayout() */);
+ QGroupBox* recentHolder = new QGroupBox( /*new BorderLayout() */);
  QVBoxLayout* recentHolderLayout = new QVBoxLayout(recentHolder);
 //    recentHolder.setBorder(border);
 //    recentHolder.setInheritsPopupMenu(true);
@@ -201,11 +206,13 @@ return -1;
  gbc.gridwidth = GridBagConstraints::REMAINDER;
  gbc.gridheight = 1;
  gbc.weighty = 1.0;
+ gbc.gridx = 1;
  gb->addWidget(l, gbc);
 
  gbc.weighty = 0;
  gbc.gridheight = GridBagConstraints::REMAINDER;
  gbc.insets = new Insets(0, 0, 0, 2);
+ gbc.gridy = 1;
  gb->addWidget(recentHolder, gbc);
 //    superHolder.setInheritsPopupMenu(true);
 
@@ -290,9 +297,19 @@ class MainSwatchListener extends MouseAdapter implements Serializable {
 ///*private*/ int selRow;
 ///*private*/ int selCol;
 
-/*public*/ SwatchPanel::SwatchPanel() {
+/*public*/ SwatchPanel::SwatchPanel(DefaultSwatchChooserPanel *dscp) : JPanel() {
+ this->dscp = dscp;
+ setLayout(new QVBoxLayout());
+ QTimer::singleShot(100, this, SLOT(init()));
+}
+
+void SwatchPanel::init()
+{
     initValues();
     initColors();
+    setMinimumWidth(numSwatches.width()*(swatchSize.width()+ gap.width()));
+    setMinimumHeight(numSwatches.height()*(swatchSize.height()+ gap.height()));
+
     setToolTip(""); // register for events
 //    setOpaque(true);
     setBackground(QColor(Qt::white));
@@ -372,6 +389,7 @@ class MainSwatchListener extends MouseAdapter implements Serializable {
 /*public*/ void SwatchPanel::paintEvent(QPaintEvent* evt)
 {
  QPainter g(this);
+ QRect rect = evt->rect();
  //g->setColor(getBackground());
  g.fillRect(0,0,width(), height(), QColor(Qt::lightGray));
  for (int row = 0; row < numSwatches.height(); row++)
@@ -417,10 +435,7 @@ class MainSwatchListener extends MouseAdapter implements Serializable {
     return QSize( x, y );
 }
 
-/*protected*/ void SwatchPanel::initColors() {
-
-
-}
+/*protected*/ void SwatchPanel::initColors() {}
 
 /*public*/ QString SwatchPanel::getToolTipText(QMouseEvent* e) {
     QColor color = getColorForLocation(e->pos().x(), e->pos().y());
@@ -452,27 +467,24 @@ class MainSwatchListener extends MouseAdapter implements Serializable {
     return colors[ (row * numSwatches.width()) + column ]; // (STEVE) - change data orientation here
 }
 
-
-
-
 //}
 
 //class RecentSwatchPanel extends SwatchPanel {
 /*protected*/ void RecentSwatchPanel::initValues() {
-    swatchSize = QSize(5,5); //UIManager.getDimension("ColorChooser.swatchesRecentSwatchSize", getLocale());
+    swatchSize = QSize(10,10); //UIManager.getDimension("ColorChooser.swatchesRecentSwatchSize", getLocale());
     numSwatches = QSize( 5, 7 );
-    gap = QSize(1, 1);
+    gap = QSize(2, 2);
 }
 
-
 /*protected*/ void RecentSwatchPanel::initColors() {
-    QColor defaultRecentColor = QColor(Qt::black);//UIManager.getColor("ColorChooser.swatchesDefaultRecentColor", getLocale());
+    QColor defaultRecentColor = QColor(Qt::white);//UIManager.getColor("ColorChooser.swatchesDefaultRecentColor", getLocale());
     int numColors = numSwatches.width() * numSwatches.height();
 
     colors = QVector<QColor>(numColors);
     for (int i = 0; i < numColors ; i++) {
         colors[i] = defaultRecentColor;
     }
+    repaint();
 }
 
 /*public*/ void RecentSwatchPanel::setMostRecentColor(QColor c) {
@@ -488,9 +500,9 @@ class MainSwatchListener extends MouseAdapter implements Serializable {
 
 
 /*protected*/ void MainSwatchPanel::initValues() {
-    swatchSize = QSize(5,5);//UIManager.getDimension("ColorChooser.swatchesSwatchSize", getLocale());
+    swatchSize = QSize(10,10);//UIManager.getDimension("ColorChooser.swatchesSwatchSize", getLocale());
     numSwatches = QSize( 31, 9 );
-    gap = QSize(1, 1);
+    gap = QSize(2, 2);
 }
 
 /*protected*/ void MainSwatchPanel::initColors() {
@@ -500,6 +512,23 @@ class MainSwatchListener extends MouseAdapter implements Serializable {
     colors = QVector<QColor>(numColors);
     for (int i = 0; i < numColors ; i++) {
         colors[i] = QColor( rawValues[(i*3)], rawValues[(i*3)+1], rawValues[(i*3)+2] );
+    }
+    repaint();
+}
+/*protected*/ void SwatchPanel::mousePressEvent(QMouseEvent *e)
+{
+ mousePressed(e);
+}
+
+/*public*/ void SwatchPanel::mousePressed(QMouseEvent* e) {
+    if (isEnabled()) {
+        QColor color = SwatchPanel::getColorForLocation(e->pos().x(), e->pos().y());
+        QObject* p = parent();
+        dscp->setSelectedColor(color);
+        dscp->swatchPanel->setSelectedColorFromLocation(e->pos().x(), e->pos().y());
+        dscp->recentSwatchPanel->setMostRecentColor(color);
+//        dscp->swatchPanel->requestFocusInWindow();
+
     }
 }
 

@@ -7,7 +7,9 @@
 // /*public*/ /*abstract*/ class AbstractColorChooserPanel extends JPanel {
 
 
-/*public*/ AbstractColorChooserPanel::AbstractColorChooserPanel(QWidget *parent) {
+/*public*/ AbstractColorChooserPanel::AbstractColorChooserPanel(QWidget *parent)
+ : JPanel(parent)
+{
     // compiled code
 }
 
@@ -123,16 +125,16 @@
  */
 /*protected*/ QColor AbstractColorChooserPanel::getColorFromModel() {
  ColorSelectionModel* model = getColorSelectionModel();
-         return (model != nullptr)
-                 ? model->getSelectedColor()
-                 : nullptr;
+ return (model != nullptr)
+         ? model->getSelectedColor()
+         : nullptr;
 }
 
 void AbstractColorChooserPanel::setSelectedColor(QColor color) {
  ColorSelectionModel* model = getColorSelectionModel();
-         if (model != nullptr) {
-             model->setSelectedColor(color);
-         }
+ if (model != nullptr) {
+     model->setSelectedColor(color);
+ }
 }
 /**
  * Sets whether color chooser panel allows to select the transparency

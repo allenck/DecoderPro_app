@@ -241,7 +241,12 @@ SOURCES += javaqt.cpp \
     colorpanel.cpp \
     slidingspinner.cpp \
     diagramcomponent.cpp \
-    defaultswatchchooserpanel.cpp
+    defaultswatchchooserpanel.cpp \
+    defaultpreviewpanel.cpp \
+    colorchoosercomponentfactory.cpp \
+    splitbuttoncolorchooserpanel.cpp \
+    jsplitbutton.cpp \
+    colorlistpopupmenu.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -529,7 +534,13 @@ HEADERS += javaqt.h\
     colorpanel.h \
     slidingspinner.h \
     diagramcomponent.h \
-    defaultswatchchooserpanel.h
+    defaultswatchchooserpanel.h \
+    defaultpreviewpanel.h \
+    colorchoosercomponentfactory.h \
+    splitbuttoncolorchooserpanel.h \
+    jsplitbutton.h \
+    colorlistpopupmenu.h \
+    splitbuttonactionlistener.h
 
 unix {
     target.path = /usr/lib

@@ -69,24 +69,26 @@ JSpinner::JSpinner(SpinnerModel* model, QWidget* parent) : QSpinBox(parent)
 
 /*public*/ void JSpinner::onValueChanged(int)
 {
- emit stateChange(new ChangeEvent(this));
- foreach (ChangeListener* l, listeners) {
-  l->stateChanged(new ChangeEvent(this));
- }
+ emit stateChanged(new ChangeEvent(this));
+// foreach (ChangeListener* l, listeners) {
+//  l->stateChanged(new ChangeEvent(this));
+// }
 
 }
 
 /*public*/ void JSpinner::addChangeListener(ChangeListener* l)
 {
- listeners.append(l);
+ //listeners.append(l);
+ connect(this, SIGNAL(valueChanged(int)), l, SLOT(stateChanged(ChangeEvent*)));
 
 }
 /*public*/ void JSpinner::removeChangeListener(ChangeListener* l)
 {
- listeners.removeOne(l);
+ //listeners.removeOne(l);
+ disconnect(this, SIGNAL(valueChanged(int)), l, SLOT(stateChanged(ChangeEvent*)));
+}
 
-}
-/*public*/ void JSpinner::setVisible(bool b)
-{
- QWidget::setVisible(b);
-}
+///*public*/ void JSpinner::setVisible(bool b)
+//{
+// //QSpinBox::setVisible(b);
+//}

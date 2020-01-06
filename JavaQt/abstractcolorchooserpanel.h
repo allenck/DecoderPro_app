@@ -34,6 +34,8 @@ protected:
  /*protected*/ /*abstract*/ virtual void buildChooser();
  /*protected*/ QColor getColorFromModel();
 
+ friend class SwatchPanel;
+ friend class JColorChooser;
 };
 
 #endif // ABSTRACTCOLORCHOOSERPANEL_H

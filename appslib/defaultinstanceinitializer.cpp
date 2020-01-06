@@ -71,7 +71,6 @@
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
- log = new Logger("DefaultInstanceInitializer");
 }
 /**
  * Provide the usual default implementations for
@@ -542,3 +541,4 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  return nullptr;
 }
 
+/*static*/ Logger* DefaultInstanceInitializer::log = LoggerFactory::getLogger("DefaultInstanceInitializer");

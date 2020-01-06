@@ -40,6 +40,10 @@ public:
     /*public*/ QObject* jself() {return (QObject*)this;}
     /*public*/ bool isOpaque();
     /*public*/ QFont getFont();
+    /*public*/ void setBorder(Border* border) override {this->_border = border;}
+    /*public*/ Border* getBorder() {return _border;}
+    /*public*/ void setData(QVariant v) {_data = v;}
+    /*public*/ QVariant getDatat() {return _data;}
 
 signals:
  void enterField();
@@ -62,6 +66,8 @@ private:
  Logger* log;
  bool nameExplicitlySet;
  InputVerifier* inputVerifier;
+ Border* _border = nullptr;
+ QVariant _data;
 
 private slots:
  void updateShare();

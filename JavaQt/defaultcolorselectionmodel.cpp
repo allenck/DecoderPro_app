@@ -74,7 +74,8 @@
      * @param l the <code>ChangeListener</code> to be added
      */
     /*public*/ void DefaultColorSelectionModel::addChangeListener(ChangeListener* l) {
-        listenerList->add("ChangeListener", l);
+//        listenerList->add("ChangeListener", l);
+     connect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
     }
 
     /**
@@ -82,7 +83,8 @@
      * @param l the <code>ChangeListener</code> to be removed
      */
     /*public*/ void DefaultColorSelectionModel::removeChangeListener(ChangeListener* l) {
-        listenerList->remove("ChangeListener", l);
+//        listenerList->remove("ChangeListener", l);
+     disconnect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
     }
 
     /**
@@ -107,16 +109,20 @@
      */
     /*protected*/ void DefaultColorSelectionModel::fireStateChanged()
     {
-        QVector<EventListener*> listeners = listenerList->getListenerList();
-//        for (int i = listeners.length() - 2; i >= 0; i -=2 ) {
-        for(int i= 0; i < listeners.length(); i ++)
-        {
-            if (qobject_cast<EventListener*>(listeners[i]->self())) {
-                if (changeEvent == nullptr) {
-                    changeEvent = new ChangeEvent(this);
-                }
-                ((ChangeListener*)listeners[i])->stateChanged(changeEvent);
-            }
-        }
+//        QVector<EventListener*> listeners = listenerList->getListenerList();
+////        for (int i = listeners.length() - 2; i >= 0; i -=2 ) {
+//        for(int i= 0; i < listeners.length(); i ++)
+//        {
+//            if (qobject_cast<EventListener*>(listeners[i]->self())) {
+//                if (changeEvent == nullptr) {
+//                    changeEvent = new ChangeEvent(this);
+//                }
+//                ((ChangeListener*)listeners[i])->stateChanged(changeEvent);
+//            }
+//        }
+    if (changeEvent == nullptr) {
+         changeEvent = new ChangeEvent(this);
+     }
+     emit stateChanged(changeEvent);
     }
 

@@ -221,7 +221,7 @@ void JLabel::init()
  mnemonic = '\0';
  mnemonicIndex = -1;
 
- text = "";         // "" rather than NULL, for BeanBox
+ _text = "";         // "" rather than NULL, for BeanBox
  defaultIcon = NULL;
  disabledIcon = NULL;
  disabledIconSet = false;
@@ -236,6 +236,7 @@ void JLabel::init()
  _x = 0;
  _y = 0;
 
+ bc = getBackground();
 }
 #if 0 // TODO:
 /**
@@ -299,7 +300,7 @@ void JLabel::init()
  * @see #setText
  */
 /*public*/ QString JLabel::getText() {
-    return text;
+    return _text;
 }
 
 
@@ -327,8 +328,8 @@ void JLabel::init()
 //        oldAccessibleName = accessibleContext.getAccessibleName();
 //    }
 
-    QString oldValue = this->text;
-    this->text = text;
+    QString oldValue = this->_text;
+    this->_text = text;
     QLabel::setText(text);
 //    firePropertyChange("text", oldValue, text);
 
@@ -608,7 +609,7 @@ void JLabel::init()
         return key;
     }
     else {
-        throw new IllegalArgumentException(message);
+        throw IllegalArgumentException(message);
     }
 }
 
@@ -768,10 +769,25 @@ void JLabel::init()
 //    int oldValue = horizontalAlignment;
     horizontalAlignment = checkHorizontalKey(alignment,
                                              "horizontalAlignment");
+   Qt::AlignmentFlag flag = Qt::AlignLeft;
+   switch(alignment)
+   {
+    case LEFT:
+     flag = Qt::AlignLeft;
+     break;
+    case RIGHT:
+     flag = Qt::AlignRight;
+     break;
+    case CENTER:
+     flag = Qt::AlignCenter;
+     break;
+   }
+    QLabel::setAlignment(flag);
 //    firePropertyChange("horizontalAlignment",
 //                       oldValue, horizontalAlignment);
-//    repaint();
+    repaint();
 }
+
 void JLabel::setLocation(double x, double y)
 {
  _x = x;
@@ -1699,7 +1715,10 @@ QString JLabel::getName()
  return palette().color(QWidget::backgroundRole());
 }
 /*public*/ void JLabel::setBackground(QColor c){
- setStyleSheet(tr("QWidget{background-color: rgb(%1,%2,%3)").arg(c.red()).arg(c.green()).arg(c.blue()));
+ setStyleSheet(tr("QLabel{background-color: rgb(%1,%2,%3);}").arg(c.red()).arg(c.green()).arg(c.blue()));
+}
+/*public*/ void JLabel::setForeground(QColor c){
+ setStyleSheet(tr("QLabel{color: rgb(%1,%2,%3);}").arg(c.red()).arg(c.green()).arg(c.blue()));
 }
 /*public*/ QFont JLabel::getFont()
 {
@@ -1713,4 +1732,9 @@ QString JLabel::getName()
 /*public*/ void JLabel::setFont(QFont f)
 {
  QLabel::setFont(f);
+}
+
+/*public*/ QFontMetrics JLabel::getFontMetrics()
+{
+ return QFontMetrics(font());
 }

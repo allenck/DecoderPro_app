@@ -75,6 +75,7 @@ public:
     /*public*/ bool isActive();
     /*public*/ NamedBean* getNamedBean();
 
+
     // JComponent stuff
     ///*public*/ QRect getBounds();
     QRectF getBounds(QRectF r = QRectF());
@@ -105,6 +106,8 @@ public:
     QObject* self() {return (QObject*)this;}
     QObject* jself() {return (QObject*)this;}
     /*public*/ void setFont(QFont );
+    /*public*/ void setBorder(Border* border) override {this->_border = border;}
+    /*public*/ Border* getBorder() {return _border;}
 
 
 signals:
@@ -137,6 +140,8 @@ private:
   bool _bOpaque;
   QColor _background, _foreground;
   QFont _font;
+  Border* _border = nullptr;
+
   friend class AnalogClock2Display;
   friend class PositionableShape;
   friend class PositionableRectangle;

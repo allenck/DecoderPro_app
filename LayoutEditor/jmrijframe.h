@@ -74,6 +74,9 @@ public:
     QMenu* windowMenu;
     /*public*/ QWidget* getGlassPane();
     /*public*/ void setGlassPane(QWidget* glassPane);
+    /*public*/ void setBorder(Border* border) override {this->_border = border;}
+    /*public*/ Border* getBorder() {return _border;}
+
 
 signals:
 
@@ -95,6 +98,7 @@ private:
  /*private*/ void saveWindowSize(UserPreferencesManager* p);
  /*private*/ bool mShown;// = false;
  QWidget* glassPane = nullptr;
+ Border* _border = nullptr;
 
 protected:
     /*protected*/ bool allowInFrameServlet;// = true;

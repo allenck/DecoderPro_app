@@ -10,6 +10,8 @@
 #include <QTabWidget>
 #include "vptr.h"
 #include "jmricolorchooserpanel.h"
+#include "defaultswatchchooserpanel.h"
+#include "colorchoosercomponentfactory.h"
 
 /**
  * <code>JColorChooser</code> provides a pane of controls designed to allow
@@ -181,7 +183,7 @@
 
 void JColorChooser::common(ColorSelectionModel* model)
 {
- previewPanel = nullptr; // ColorChooserComponentFactory::getPreviewPanel();
+ previewPanel = ColorChooserComponentFactory::getPreviewPanel();
 
  chooserPanels = new QVector<AbstractColorChooserPanel*>();
  selectionModel = model;
@@ -392,14 +394,20 @@ void JColorChooser::common(ColorSelectionModel* model)
  *
  * @param panel the <code>AbstractColorChooserPanel</code> to be added
  */
-/*public*/ void JColorChooser::addChooserPanel( AbstractColorChooserPanel* panel ) {
-    QVector<AbstractColorChooserPanel*>* oldPanels = getChooserPanels();
-    QVector<AbstractColorChooserPanel*>* newPanels = new QVector<AbstractColorChooserPanel*>(oldPanels->length()+1);
+/*public*/ void JColorChooser::addChooserPanel( AbstractColorChooserPanel* panel )
+{
+ if(panel == nullptr)
+  return;
+
+  QVector<AbstractColorChooserPanel*>* old = chooserPanels;
+  QVector<AbstractColorChooserPanel*>* newPanels = new QVector<AbstractColorChooserPanel*>(old->length()+1);
     //System.arraycopy(oldPanels, 0, newPanels, 0, oldPanels.length);
-    qCopy(oldPanels->begin(), oldPanels->end(),newPanels->begin());
-    newPanels->replace(newPanels->length()-1, panel);
-    setChooserPanels(newPanels);
-    panel->getColorSelectionModel()->addChangeListener((ChangeListener*)this);
+  if(old)
+    qCopy(old->begin(), old->end(),newPanels->begin());
+  newPanels->replace(newPanels->length()-1, panel);
+  chooserPanels = newPanels;
+  panel->installChooserPanel(this);
+//  firePropertyChange(CHOOSER_PANELS_PROPERTY, old, newPanels);
 }
 
 void JColorChooser::stateChanged(ChangeEvent* evt)
@@ -407,6 +415,7 @@ void JColorChooser::stateChanged(ChangeEvent* evt)
  JmriColorChooserPanel* o = (JmriColorChooserPanel*)evt->getSource();
  firePropertyChange("colorChange", QVariant(), qvariant_cast<QColor>(o->getColorSelectionModel()->getSelectedColor()));
 }
+
 /**
  * Removes the Color Panel specified.
  *
@@ -476,7 +485,10 @@ void JColorChooser::stateChanged(ChangeEvent* evt)
     {
      if(panel == nullptr)
       continue;
+     panel->installChooserPanel(this);
+
      tabWidget->addTab(panel, panel->getTitle());
+
     }
 }
 

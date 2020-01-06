@@ -15,6 +15,10 @@
 #include <QPushButton>
 #include "htmltextedit.h"
 #include "pushbuttondelegate.h"
+#include <QGroupBox>
+#include "jcolorchooser.h"
+#include "jpanel.h"
+#include "splitbuttoncolorchooserpanel.h"
 
 namespace Operations
 {
@@ -646,9 +650,22 @@ namespace Operations
   dialog->layout()->addWidget( commentTextArea); //commentScroller, BorderLayout.CENTER);
   commentTextArea->setText(rl->getComment());
 
+
   QWidget* buttonPane = new QWidget();
   buttonPane->setLayout(new FlowLayout()); //FlowLayout::CENTER));
   ((QVBoxLayout*)dialog->layout())->addWidget(buttonPane, /*BorderLayout.SOUTH*/0, Qt::AlignBottom);
+
+  // text color chooser
+  QGroupBox* pTextColor = new QGroupBox();
+  pTextColor->setLayout(new QVBoxLayout());
+  //pTextColor.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("TextColor")));
+  pTextColor->setTitle(tr("Text color"));
+  JColorChooser* commentColorChooser = new JColorChooser(rl->getCommentColor());
+  QVector<AbstractColorChooserPanel*> commentColorPanels = QVector<AbstractColorChooserPanel*>() << (AbstractColorChooserPanel*)new SplitButtonColorChooserPanel();
+  commentColorChooser->setChooserPanels(&commentColorPanels);
+  commentColorChooser->setPreviewPanel(new JPanel());
+  pTextColor->layout()->addWidget(commentColorChooser);
+  buttonPane->layout()->addWidget(pTextColor);
 
   QPushButton* okayButton = new QPushButton(tr("Okay"));
 //     okayButton.addActionListener(new ActionListener() {

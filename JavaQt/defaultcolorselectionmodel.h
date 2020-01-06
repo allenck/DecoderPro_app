@@ -21,6 +21,7 @@ public:
 
 
 signals:
+ void stateChanged(ChangeEvent*);
 
 public slots:
 private:

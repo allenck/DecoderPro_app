@@ -53,10 +53,10 @@ SlidingSpinner::SlidingSpinner(ColorPanel* panel, QWidget* label, QObject *paren
  slider = new JSlider();
  spinner = new JSpinner(this->model);
 
-    this->panel = panel;
-    this->label = label;
-    this->slider->addChangeListener(this);
-    this->spinner->addChangeListener(this);
+ this->panel = panel;
+ this->label = label;
+ this->slider->addChangeListener(this);
+ this->spinner->addChangeListener(this);
 //    DefaultEditor editor = (DefaultEditor) this->spinner.getEditor();
 //    ValueFormatter.init(3, false, editor.getTextField());
 //    editor.setFocusable(false);
@@ -110,22 +110,24 @@ bool SlidingSpinner::isVisible() {
 
 /*public*/ void SlidingSpinner::stateChanged(ChangeEvent* event)
 {
- if (!this->internal) {
-    if (this->spinner == event->getSource()) {
-        /*Object*/int value = this->spinner->getValue();
-        //if (value instanceof Integer) {
-            this->internal = true;
-            this->slider->setValue( value);
-            this->internal = false;
-        }
-    }
-    int value = this->slider->getValue();
-    this->internal = true;
-    this->spinner->setValue((value));
-    this->internal = false;
-    int min = this->slider->minimum();
-    int max = this->slider->maximum();
-    this->value = (float) (value - min) / (float) (max - min);
-    this->panel->colorChanged();
+ if (!this->internal)
+ {
+ if (this->spinner == event->getSource())
+ {
+  /*Object*/int value = this->spinner->getValue();
+  //if (value instanceof Integer) {
+      this->internal = true;
+      this->slider->setValue( value);
+      this->internal = false;
+  }
+ }
+ int value = this->slider->getValue();
+ this->internal = true;
+ this->spinner->setValue((value));
+ this->internal = false;
+ int min = this->slider->minimum();
+ int max = this->slider->maximum();
+ this->value = (float) (value - min) / (float) (max - min);
+ this->panel->colorChanged();
 }
 

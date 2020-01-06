@@ -43,7 +43,7 @@ public:
     /*public*/ DragDecoratorLabel(QString s, Editor* editor);
 //    /*public*/ void dragGestureRecognized(DragGestureEvent e);
     void mousePressEvent(QMouseEvent *e);
-    void setBackground(QColor bg);
+//    void setBackground(QColor bg);
     void setMargin(int);
     void setFixedWidth(int);
     void setFixedHeight(int);

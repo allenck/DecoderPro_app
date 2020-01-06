@@ -25,7 +25,7 @@ public:
 signals:
 
 public slots:
-private:
+
     /**
      * The shift modifier. An indicator that the shift key was held
      * down during the event.
@@ -66,6 +66,7 @@ private:
      */
     /*public*/ static /*final*/ const int ACTION_PERFORMED    = ACTION_FIRST; //Event.ACTION_EVENT
 
+private:
     /**
      * The nonlocalized string that gives more details
      * of what actually caused the event.
@@ -103,6 +104,7 @@ private:
      */
     /*private*/ static /*final*/ const long serialVersionUID = -7671078796273832149L;
     QObject* source;
+
 };
 //Q_DECLARE_METATYPE(ActionEvent*)
 #endif // ACTIONEVENT_H

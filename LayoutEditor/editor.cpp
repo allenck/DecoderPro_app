@@ -3140,6 +3140,15 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 
 /*protected*/ bool Editor::setTextAttributes(Positionable* p, QMenu* popup)
 {
+ if(qobject_cast<PositionableJPanel*>(p->self()))
+ {
+  if (((PositionableJPanel*)p->self())->getPopupUtility()==nullptr)
+  {
+   return false;
+  }
+
+ }
+ else
  if (((PositionableLabel*)p->self())->getPopupUtility()==nullptr)
  {
   return false;
@@ -3160,6 +3169,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
  connect(textAttributesAction, SIGNAL(triggered()), this, SLOT(On_textAttributesAction_triggered()));
     return true;
 }
+
 void Editor::On_textAttributesAction_triggered() // SLOT[]
 {
  TextAttrDialog* dlg = new TextAttrDialog(saveP, this);
@@ -3187,7 +3197,7 @@ TextAttrDialog::TextAttrDialog(Positionable* p, QWidget* _targetFrame) : JDialog
  PositionableLabel* pl = (PositionableLabel*)_pos;
  sample->setText(pl->getText());
  sample->setForeground(pl->getForeground());
- sample->setBackground(pl->getPopupUtility()->getBackground());
+ sample->setBackground(pl->getBackground());
  PositionablePopupUtil* util = pl->getPopupUtility();
  sample->setBorderColor(util->getBorderColor());
  sample->setBorderSize(util->getBorderSize());
@@ -3195,7 +3205,8 @@ TextAttrDialog::TextAttrDialog(Positionable* p, QWidget* _targetFrame) : JDialog
  sample->setMargin(util->getMargin());
  sample->setVisible(true);
  sample->setLevel(Editor::LABELS);
-
+ PositionablePopupUtil* util2 = sample->getPopupUtility();
+ util2->setBackgroundColor(pl->getBackground());
  _decorator = new DecoratorPanel(_pos->getEditor(), nullptr);
  _decorator->initDecoratorPanel(sample);
  panelLayout->addWidget(_decorator);
@@ -3218,6 +3229,7 @@ TextAttrDialog::TextAttrDialog(Positionable* p, QWidget* _targetFrame) : JDialog
 //    setLocationRelativeTo((Component)_pos);
  setVisible(true);
 }
+
 /*protected*/ QWidget* TextAttrDialog::makeDoneButtonPanel() {
     QWidget* panel0 = new QWidget();
     panel0->setLayout(new /*FlowLayout()*/QHBoxLayout());
@@ -3305,7 +3317,7 @@ void TextAttrDialog::doneButton_clicked()
     } else{
         borderMargin = BorderFactory::createEmptyBorder(mar, mar, mar, mar);
     }
-    pos->setBorder(new CompoundBorder(outlineBorder, borderMargin));
+//    pos->setBorder(new CompoundBorder(outlineBorder, borderMargin));
     pos->setOpaque(isOpaque);
     pos->rotate(deg);
     if(pos->_itemGroup != nullptr)

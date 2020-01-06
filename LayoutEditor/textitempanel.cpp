@@ -151,6 +151,7 @@
  f = getFont();
  this->pointsize = f.pointSize();
 
+
 #if 0
     DragSource dragSource = DragSource.getDefaultDragSource();
     dragSource.createDefaultDragGestureRecognizer(this,
@@ -162,18 +163,20 @@
     }
 #endif
 }
+#if 0
 void DragDecoratorLabel::setBackground(QColor bg)
 {
- PositionableLabel::setBackground(bg);
+ JLabel::setBackground(bg);
  PositionablePopupUtil* util = getPopupUtility();
- //util->setBackgroundColor(bg);
+ //util->_textComponent = nullptr;
+ util->setBackgroundColor(bg);
 
  this->bg = bg;
  setAttributes();
  updateScene();
 
 }
-
+#endif
 void DragDecoratorLabel::setForeground(QColor fg)
 {
  PositionableLabel::setForeground(fg);

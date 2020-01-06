@@ -45,6 +45,9 @@ public:
     /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* event);
     /*public*/ void setFont(QFont);
     QObject* jself() {return (QObject*)this;}
+    /*public*/ void setBorder(Border* border) override {this->_border = border;}
+    /*public*/ Border* getBorder() {return _border;}
+
 signals:
 
 public slots:
@@ -52,6 +55,7 @@ public slots:
     void actActivated();
     void rateChange(int);
     void propertyChange(PropertyChangeEvent*);
+
 private:
     Timebase* clock;
     double rate;
@@ -104,6 +108,7 @@ private:
     int centreY;
 
     QString _url;
+    Border* _border = nullptr;
 
  Logger* log;
  void common();

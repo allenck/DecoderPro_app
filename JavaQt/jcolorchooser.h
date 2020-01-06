@@ -17,10 +17,10 @@ class ColorTracker;
 class JDialog;
 class AbstractColorChooserPanel;
 class ColorSelectionModel;
-class JColorChooser : public QWidget//, public JComponent
+class JColorChooser : public QWidget, public JComponent
 {
  Q_OBJECT
- //Q_INTERFACES(JComponent)
+ Q_INTERFACES(JComponent)
 public:
  /*public*/ static ColorChooserDialog *createDialog(Component *c, QString title, bool modal,
      JColorChooser* chooserPane, ActionListener* okListener,
@@ -55,7 +55,16 @@ public:
  void addPropertyChangeListener(QString s, PropertyChangeListener* l);
  void removePropertyChangeListener(QString s, PropertyChangeListener* l);
  PropertyChangeSupport* pcs;
+ /*public*/ QObject* jself() {return (QObject*)this;}
 
+ /*public*/ bool isOpaque() {return true;}
+ /*public*/ QColor getBackground() {return QColor();}
+ /*public*/ void setBackground(QColor) {}
+ /*public*/ void setOpaque(bool) {}
+ /*public*/ QFont getFont() {return QFont();}
+ /*public*/ void setFont(QFont) {}
+ /*public*/ void setBorder(Border* border) override {this->_border = border;}
+ /*public*/ Border* getBorder() {return _border;}
 
 signals:
 
@@ -79,6 +88,7 @@ private:
  /*private*/ bool dragEnabled;
  QTabWidget* tabWidget;
  void firePropertyChange(QString propertyName, QVariant old, QVariant newP );
+ Border* _border = nullptr;
 
 protected:
  /*protected*/ QString paramString();

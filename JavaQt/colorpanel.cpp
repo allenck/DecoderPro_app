@@ -58,57 +58,60 @@ ColorPanel::ColorPanel(ColorModel* model) : JPanel()
  spinners = QVector<SlidingSpinner*>(5);
  values = QVector<float>(this->spinners.length());
 
-    GridBagConstraints gbc = GridBagConstraints();
-    gbc.fill = GridBagConstraints::HORIZONTAL;
+ GridBagConstraints gbc = GridBagConstraints();
+ gbc.fill = GridBagConstraints::HORIZONTAL;
 
-    gbc.gridx = 1;
-    group = new QButtonGroup();
+ gbc.gridx = 1;
+ group = new QButtonGroup();
 //    EmptyBorder border = null;
-    for (int i = 0; i < this->spinners.length(); i++) {
-        if (i < 3) {
-            QRadioButton* button = new QRadioButton();
-            if (i == 0) {
+ for (int i = 0; i < this->spinners.length(); i++)
+ {
+  if (i < 3)
+  {
+   QRadioButton* button = new QRadioButton();
+   if (i == 0)
+   {
 //                Insets insets = button.getInsets();
 //                insets.left = button.getPreferredSize().width;
 //                border = new EmptyBorder(insets);
-                button->setChecked(true);
+       button->setChecked(true);
 //                gbc.insets.top = 5;
-            }
-            g->addWidget(button, gbc);
-            group->addButton(button,i);
+   }
+   g->addWidget(button, gbc);
+   group->addButton(button,i);
 //            button.setActionCommand(Integer.toString(i));
 //            button.addActionListener(this);
-            connect(button, SIGNAL(clicked()), this, SLOT(actionPerformed()));
-            this->spinners[i] = new SlidingSpinner(this, button);
-        }
-        else {
-            JLabel* label = new JLabel();
-            g->addWidget(label, gbc);
+   connect(button, SIGNAL(clicked()), this, SLOT(actionPerformed()));
+   this->spinners[i] = new SlidingSpinner(this, button);
+  }
+  else {
+   JLabel* label = new JLabel();
+   g->addWidget(label, gbc);
 //            label->setBorder(border);
 //            label.setFocusable(false);
-            this->spinners[i] = new SlidingSpinner(this, label);
-        }
-    }
-    gbc.gridx = 2;
-    gbc.weightx = 1.0;
-    gbc.insets->top = 0;
-    gbc.insets->left = 5;
-    for (SlidingSpinner* spinner : this->spinners) {
-        g->addWidget((QWidget*)spinner->getSlider(), gbc);
-        gbc.insets->top = 5;
-    }
-    gbc.gridx = 3;
-    gbc.weightx = 0.0;
-    gbc.insets->top = 0;
-    for (SlidingSpinner* spinner : this->spinners) {
-        g->addWidget((QWidget*)spinner->getSpinner(), gbc);
-        gbc.insets->top = 5;
-    }
+   this->spinners[i] = new SlidingSpinner(this, label);
+  }
+ }
+ gbc.gridx = 2;
+ gbc.weightx = 1.0;
+ gbc.insets->top = 0;
+ gbc.insets->left = 5;
+ for (SlidingSpinner* spinner : this->spinners) {
+     g->addWidget((QWidget*)spinner->getSlider(), gbc);
+     gbc.insets->top = 5;
+ }
+ gbc.gridx = 3;
+ gbc.weightx = 0.0;
+ gbc.insets->top = 0;
+ for (SlidingSpinner* spinner : this->spinners) {
+     g->addWidget((QWidget*)spinner->getSpinner(), gbc);
+     gbc.insets->top = 5;
+ }
 //    setFocusTraversalPolicy(new ContainerOrderFocusTraversalPolicy());
 //    setFocusTraversalPolicyProvider(true);
 //    setFocusable(false);
 
-    this->model = model;
+ this->model = model;
 }
 
 /*public*/ void ColorPanel::actionPerformed(/*ActionEvent* event*/) {
@@ -137,7 +140,7 @@ void ColorPanel::buildPanel()
   }
   else if (qobject_cast<JLabel*>(object)) {
       QLabel* label = (QLabel*) object;
-//      label->setText(text);
+      label->setText(text);
   }
   this->spinners[i]->setRange(this->model->getMinimum(i), this->model->getMaximum(i));
   this->spinners[i]->setValue(this->values[i]);

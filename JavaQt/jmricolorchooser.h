@@ -16,7 +16,6 @@ public:
  static /*public*/ QList<QColor> getRecentColors();
  static /*public*/ QColor showDialog(QWidget* comp, QString dialogTitle, QColor currentColor);
  static /*public*/ JColorChooser* extendColorChooser(JColorChooser* chooser);
-
 signals:
 
 public slots:
@@ -24,7 +23,7 @@ private:
  static /*private*/ QList<QColor> recentColors;//= new ArrayList<>();
  static /*final*/ int COLOR_TAB_COUNT;// = 6;
  static QColor color;
- friend class JmriColorChooser;
+
 };
 #if 0
 class JCCActionListener : public ActionListener

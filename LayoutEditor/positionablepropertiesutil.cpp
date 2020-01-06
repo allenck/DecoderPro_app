@@ -1,130 +1,251 @@
 #include "positionablepropertiesutil.h"
-#include "ui_positionablepropertiesutil.h"
-#include "sensoricon.h"
-#include "lememoryicon.h"
-#include <QPainter>
-#include <QImage>
-#include <QDir>
-#include <QCloseEvent>
-#include "editor.h"
-#include "jtabbedpane.h"
+#include "jframe.h"
 #include "jpanel.h"
+#include "jtabbedpane.h"
+#include "sensoricon.h"
+#include "jtextfield.h"
+#include <QGroupBox>
+#include <QBoxLayout>
+#include "jbutton.h"
+#include "flowlayout.h"
+#include "jlist.h"
+#include "jcombobox.h"
+#include "splitbuttoncolorchooserpanel.h"
+#include "jspinner.h"
+#include "loggerfactory.h"
+#include "spinnernumbermodel.h"
+#include "memoryicon.h"
+#include <QCheckBox>
+#include "colorselectionmodel.h"
+#include "borderfactory.h"
+#include "lineborder.h"
+#include "compoundborder.h"
+#include "defaultswatchchooserpanel.h"
 
-//PositionalPropertiesUtil::PositionalPropertiesUtil(QObject *parent) :
-//    QObject(parent)
-//{
-//}
+/**
+ * Creates the UI to set the properties of a range of Positionable Icons on
+ * (Control) Panels.
+ */
 //public class PositionablePropertiesUtil {
 
-//    Frame mFrame = null;
-//    JPanel detailpanel = new JPanel();
-//    JTabbedPane propertiesPanel;
 
-PositionablePropertiesUtil::PositionablePropertiesUtil(Positionable* p, QWidget* parent):
-    QDialog(parent),
-    ui(new Ui::PositionablePropertiesUtil)
-{
- ui->setupUi(this);
- _parent  = p;
+PositionablePropertiesUtil::PositionablePropertiesUtil(Positionable* p, QWidget* parent) {
+ detailpanel = new JPanel();
+ _justification = QStringList() << tr("left") << tr("right") << tr("center");
+ txtList = QList<TextDetails*>();
+ defaultForeground = QColor(Qt::black);
+ defaultBorderColor = QColor(Qt::black);
+ italic = new QCheckBox(tr("Italic")/*, false*/);
+ bold = new QCheckBox(tr("Bold")/*, false*/);
+ fontSizes = QStringList() << "6" << "8" << "10" << "11" << "12" << "14" << "16" <<
+      "20" << "24" << "28" << "32" << "36";
+ previewChangeListener = new PreviewChangeListener(this);
+
+ _parent = p;
 }
-void PositionablePropertiesUtil::display()
+
+/*public*/ void PositionablePropertiesUtil::display() {
+    propertiesPanel = new JTabbedPane();
+    getCurrentValues();
+    JPanel* exampleHolder = new JPanel();
+    QVBoxLayout* exampleHolderLayout = new QVBoxLayout(exampleHolder);
+    //example = new JLabel(text);
+
+    for (int i = 0; i < txtList.size(); i++) {
+        QGroupBox* p = new QGroupBox();
+        QVBoxLayout* pLayout = new QVBoxLayout(p);
+        //p.setBorder(BorderFactory.createTitledBorder(txtList.at(i).getDescription()));
+        p->setTitle(txtList.at(i)->getDescription());
+        pLayout->addWidget(txtList.at(i)->getLabel()); // add a visual example for each
+        exampleHolderLayout->addWidget(p);
+    }
+    //exampleHolder.add(example);
+    JPanel* tmp = new JPanel();
+    QVBoxLayout* tmpLayout;
+    tmp->setLayout(tmpLayout = new QVBoxLayout()); //tmp, BoxLayout.Y_AXIS));
+    tmpLayout->addWidget(propertiesPanel);
+    tmpLayout->addWidget(detailpanel);
+    tmpLayout->addWidget(exampleHolder);
+    textPanel();
+    editText();
+    borderPanel();
+    sizePosition();
+
+    JPanel* _buttonArea = new JPanel();
+    FlowLayout* _buttonAreaLayout = new FlowLayout(_buttonArea);
+    JButton* cancel = new JButton(tr("Cancel"));
+    _buttonAreaLayout->addWidget(cancel);
+//    cancel.addActionListener((ActionEvent e) -> {
+//        undoChanges();
+//        mFrame.dispose();
+//    });
+    connect(cancel, SIGNAL(clicked(bool)), this, SLOT(on_cancel_clicked()));
+
+    JButton* applyButton = new JButton(tr("Apply"));
+    _buttonAreaLayout->addWidget(applyButton);
+//    applyButton.addActionListener((ActionEvent e) -> {
+//        fontApply();
+//    });
+    connect(applyButton, SIGNAL(clicked(bool)), this, SLOT(fontApply()));
+
+    JButton* okButton = new JButton(tr("OK"));
+    _buttonAreaLayout->addWidget(okButton);
+//    okButton.addActionListener((ActionEvent e) -> {
+//        fontApply();
+//        mFrame.dispose();
+//    });
+    connect(okButton, SIGNAL(clicked(bool)), this, SLOT(on_okButton_clicked()));
+    tmpLayout->addWidget(_buttonArea);
+
+// TODO:    exampleHolder->setBackground(((PositionableLabel*)_parent)->parent()->getBackground());
+    mFrame = new JFrame(_parent->getNameString());
+    //mFrameL.add(tmp);
+    mFrame->setCentralWidget(tmp);
+    mFrame->pack();
+    mFrame->setVisible(true);
+    preview();
+}
+
+
+/**
+ * Create and fill in the Font (Decoration) tab of the UI.
+ */
+void PositionablePropertiesUtil::textPanel()
 {
- getCurrentValues();
- //this->_parent = (Positionable*)parent;
-Positionable* p = _parent;
-// ui->fontComboBox->setCurrentFont(((PositionableLabel*)pop->_parent)->getFont());
- QFont f = font();
- if(qobject_cast<PositionableLabel*>(p->self()))
- {
-  f = ((PositionableLabel*)p)->getFont();
-  ui->fontComboBox->setCurrentFont(((PositionableLabel*)pop->_parent)->getFont());
-  fontSize = f.pointSize();
- }
- _fontcolors << "Black"<<"Dark Gray"<<"Gray"<<"Light Gray"<<"White"<<"Red"<<"Orange"<<"Yellow"<<"Green"<<"Blue"<<"Magenta";
- _colors << QColor(Qt::black) << QColor(Qt::darkGray) << QColor(Qt::gray) << QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red) << QColor(255, 170, 0) << QColor(Qt::yellow ) << QColor(Qt::green) <<QColor(Qt::blue) <<QColor(Qt::magenta)<<QColor();
- _justification << "Left" << "Right" << "Center";
- ui->fontColor->clear();
- ui->backgroundColor->clear();
- ui->borderColorCombo->clear();
- QColor desiredColor = QColor(Qt::black);
- QList<QIcon> images;
- QIcon icon;
- int backCurrentColor = _colors.length()-1; // note: "None" will be added
- int fontCurrentColor = _fontcolors.length()-1;
- int borderColor = _bordercolors.length()-1;
- for(int i=0; i < _fontcolors.size(); i++)
- {
-  desiredColor = _colors.at(i);
-  images.append(icon = *getColourIcon(desiredColor));
-  ui->fontColor->addItem(icon,_fontcolors.at(i), _colors.at(i));
-  ui->backgroundColor->addItem(icon, _fontcolors.at(i), _colors.at(i));
-  _backgroundcolors << _fontcolors.at(i);
-  ui->borderColorCombo->addItem(icon, _fontcolors.at(i), _colors.at(i));
-  _bordercolors << _fontcolors.at(i);
-  if(desiredColor == defaultBackground)
-   backCurrentColor = i;
-  if(desiredColor == defaultForeground)
-   fontCurrentColor = i;
-  if(desiredColor == defaultBorderColor)
-   borderColor = i;
- }
- //ui->backgroundColor->addItem(tr("None"), QColor());
- ui->backgroundColor->setCurrentIndex(backCurrentColor);
- ui->fontColor->setCurrentIndex(fontCurrentColor);
- ui->borderColorCombo->setCurrentIndex(borderColor);
+ _textPanel = new JPanel();
+ QVBoxLayout* _textPanelLayout;
+ _textPanel->setLayout(_textPanelLayout =new QVBoxLayout()); //_textPanel, BoxLayout.Y_AXIS));
+ JPanel* fontColorPanel = new JPanel();
+ FlowLayout* fontColorPanelLayout = new FlowLayout(fontColorPanel);
+ fontColorPanelLayout->addWidget(new JLabel(tr("Font Color") + ": "));
 
- fontSizes<< "6"<< "8"<< "10"<< "11"<< "12"<< "14"<< "16"<<
-  "20"<< "24"<< "28"<< "32"<< "36";
+ JPanel* fontSizePanel = new JPanel();
+ QVBoxLayout* fontSizePanelLayout;
+ fontSizePanel->setLayout(fontSizePanelLayout = new QVBoxLayout());//fontSizePanel, BoxLayout.Y_AXIS));
+ fontSizeChoice = new JList(fontSizes);
 
- fontSizeChoice = QStringList();
- int currentFontSize=0;
- for (int i = 0; i < fontSizes.length(); i++)
- {
-  ui->fontSizeField->addItem(fontSizes.at(i));
-  fontSizeChoice.append(fontSizes.at(i));
-  if (fontSizes.at(i) == QString("%1").arg(fontSize))
-  {
-   currentFontSize=i;
-   //ui->fontSizeField->setEditText(fontSizes.at(i));
+ fontSizeChoice->setSelectedValue("" + fontSize, true);
+ fontSizeChoice->setSelectionMode(QAbstractItemView::SingleSelection/*ListSelectionModel::SINGLE_SELECTION*/);
+//    JScrollPane listScroller = new JScrollPane(fontSizeChoice);
+//    listScroller.setPreferredSize(new Dimension(60, 80));
+
+ JPanel* FontPanel = new JPanel();
+ QVBoxLayout* FontPanelLayout = new QVBoxLayout(FontPanel);
+ fontSizeField = new JTextField("" + QString::number(fontSize), fontSizeChoice->width());
+//    fontSizeField.addKeyListener(previewKeyActionListener);
+ connect(fontSizeField, SIGNAL(textChanged(QString)), this, SLOT(on_fontSizeField(QString)));
+ fontSizePanelLayout->addWidget(fontSizeField);
+ fontSizePanelLayout->addWidget(/*listScroller*/fontSizeChoice);
+ FontPanelLayout->addWidget(fontSizePanel);
+
+ JPanel* Style = new JPanel();
+ QVBoxLayout* StyleLayout;
+ Style->setLayout(StyleLayout = new QVBoxLayout());//Style, BoxLayout.Y_AXIS));
+ bold = new QCheckBox(tr("Bold"));
+ italic = new QCheckBox(tr("Italic"));
+ StyleLayout->addWidget(bold);
+ StyleLayout->addWidget(italic);
+ FontPanelLayout->addWidget(Style);
+ _textPanelLayout->addWidget(FontPanel);
+
+ JPanel* justificationPanel = new JPanel();
+ QHBoxLayout* justificationPanelLayout = new QHBoxLayout(justificationPanel);
+ _justificationCombo = new JComboBox(_justification);
+ switch (justification) {
+     case 0x00:
+         _justificationCombo->setCurrentIndex(0);
+         break;
+     case 0x02:
+         _justificationCombo->setCurrentIndex(1);
+         break;
+     default:
+         _justificationCombo->setCurrentIndex(2);
+         break;
+ }
+ justificationPanelLayout->addWidget(new JLabel(tr("Justification") + ": "));
+ justificationPanelLayout->addWidget(_justificationCombo);
+ _textPanelLayout->addWidget(justificationPanel);
+
+ //_justificationCombo.addActionListener(previewActionListener);
+ connect(_justificationCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(preview()));
+ //bold.addActionListener(previewActionListener);
+ connect(bold, SIGNAL(clicked(bool)), this, SLOT(preview()));
+ //italic.addActionListener(previewActionListener);
+ connect(italic, SIGNAL(clicked(bool)), this, SLOT(preview()));
+ //fontSizeChoice.addActionListener(previewActionListener);
+ connect(fontSizeChoice, SIGNAL(clicked(QModelIndex)), this, SLOT(on_FontSizeChoice(QModelIndex)));
+//    fontSizeChoice.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+//        fontSizeField.setText(fontSizeChoice.getSelectedValue());
+//        preview();
+//    });
+
+
+ for (int i = 0; i <  txtList.size(); i++)
+ { // repeat 4 times for sensor icons, or just once
+     /*final*/ int x = i;
+  QGroupBox* txtPanel = new QGroupBox();
+  FlowLayout* txtPanelLayout = new FlowLayout(txtPanel);
+  defaultForeground = _parent->getForeground();
+  JColorChooser* txtColorChooser = new JColorChooser(defaultForeground);
+  txtColorChooser->setPreviewPanel(new JPanel()); // remove the preview panel
+  QVector<AbstractColorChooserPanel*> txtColorPanels = QVector<AbstractColorChooserPanel*>() << (AbstractColorChooserPanel*) (new SplitButtonColorChooserPanel());
+  txtColorChooser->setChooserPanels(&txtColorPanels);
+  txtColorChooser->getSelectionModel()->addChangeListener(previewChangeListener);
+  txtPanelLayout->addWidget(txtColorChooser);
+//        txtColorChooser->getSelectionModel()->addChangeListener((ChangeEvent ce) -> {
+//            txtList.at(x).setForeground(txtColorChooser->getColor());
+//        });
+  txtColorChooser->getSelectionModel()->addChangeListener(new TCChangeListener(x, txtColorChooser, this));
+
+  JPanel* p = new JPanel();
+  QVBoxLayout* pLayout = new QVBoxLayout(p);
+  pLayout->addWidget(new JLabel(tr("Font Color") + ": "));
+  pLayout->addWidget(txtColorChooser);
+
+  txtPanelLayout->addWidget(p);
+
+  defaultBackground = _parent->getBackground();
+  JColorChooser* txtBackColorChooser = new JColorChooser(defaultBackground);
+  txtBackColorChooser->setPreviewPanel(new JPanel()); // remove the preview panel
+  QVector<AbstractColorChooserPanel*> txtBackColorPanels = QVector<AbstractColorChooserPanel*>() <<  (AbstractColorChooserPanel*)(new SplitButtonColorChooserPanel());
+  txtBackColorChooser->setChooserPanels(&txtBackColorPanels);
+  txtBackColorChooser->getSelectionModel()->addChangeListener(previewChangeListener);
+  txtPanelLayout->addWidget(txtBackColorChooser);
+//        txtBackColorChooser->getSelectionModel()->addChangeListener((ChangeEvent ce) -> {
+//            txtList.at(x).setBackground(txtBackColorChooser.getColor());
+//        });
+  txtBackColorChooser->getSelectionModel()->addChangeListener(new TCBChangeListener(x, txtBackColorChooser, this));
+  p = new JPanel();
+  pLayout = new QVBoxLayout(p);
+  pLayout->addWidget(new JLabel(tr("Background color") + ": "));
+  pLayout->addWidget(txtBackColorChooser);
+
+  QString _borderTitle =  txtList.at(i)->getDescription();
+  if (_borderTitle == (tr("Example"))) {
+      _borderTitle = tr("Text Decoration"); // replace default label by an appropriate one for text decoration box on Font tab
   }
+  //txtPanel.setBorder(BorderFactory.createTitledBorder(_borderTitle));
+  txtPanel->setTitle(_borderTitle);
+  txtPanelLayout->addWidget(p);
+
+  _textPanelLayout->addWidget(txtPanel);
+
  }
- ui->fontSizeField->setCurrentIndex(currentFontSize);
- ui->bold->setChecked(f.weight() >= QFont::Bold);
- ui->italic->setChecked(f.style() == QFont::StyleItalic);
-
- //fontSizeChoice.select(currentFontSize);
-
- if(justification==0x00)
-  ui->_justificationCombo->setCurrentIndex(0);  // LEFT
- else if (justification ==0x02)
-  ui->_justificationCombo->setCurrentIndex(1);  // RIGHT
- else
-  ui->_justificationCombo->setCurrentIndex(2);  // CENTER
- //txtList = new QList<TextDetails>();
-
- fixedWidth=0;
- fixedHeight=0;
- marginSize=0;
- borderSize=0;
- ui->xPosition->setValue(xPos);
- ui->yPosition->setValue(yPos);
- ui->width->setValue(fixedWidth);
- ui->height->setValue(fixedHeight);
-
- connect(ui->fontComboBox, SIGNAL(currentFontChanged(QFont)), this, SLOT(preview()));
- connect(ui->fontSizeField, SIGNAL(editTextChanged(QString)), this, SLOT(preview()));
- connect(ui->fontSizeField, SIGNAL(currentIndexChanged(int)), this, SLOT(preview()));
- connect(ui->bold, SIGNAL(toggled(bool)), this, SLOT(preview()));
- connect(ui->italic, SIGNAL(toggled(bool)), this, SLOT(preview()));
- connect(ui->_justificationCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(preview()));
- connect (ui->fontColor, SIGNAL(currentIndexChanged(int)), this, SLOT(preview()));
- connect (ui->backgroundColor, SIGNAL(currentIndexChanged(int)), this, SLOT(preview()));
- connect(ui->textField, SIGNAL(textEdited(QString)), this, SLOT(preview()));
- connect(ui->borderColorCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(preview()));
- connect(ui->borderSize, SIGNAL(valueChanged(int)), this, SLOT(preview()));
- connect(ui->marginSize, SIGNAL(valueChanged(int)), this, SLOT(preview()));
-
+ propertiesPanel->addTab(tr("Font"), QIcon(), _textPanel, tr("Set Font Size & Decoration"));
 }
+
+void PositionablePropertiesUtil::on_FontSizeChoice(QModelIndex index)
+{
+ fontSizeField->setText(index.data().toString());
+ preview();
+}
+
+void PositionablePropertiesUtil::on_fontSizeField(QString str)
+{
+ if(str != "")
+  preview();
+}
+
 void PositionablePropertiesUtil::closeEvent(QCloseEvent *e)
 {
  e->accept();
@@ -148,100 +269,358 @@ void PositionablePropertiesUtil::on_okButton_clicked()
  accept();
  //close();
  //setVisible(false);
+
 }
+
+
+/**
+ * Create and fill in the Border tab of the UI.
+ */
+void PositionablePropertiesUtil::borderPanel() {
+    JPanel* borderPanel = new JPanel();
+
+    borderColorChooser = new JColorChooser(defaultBorderColor);
+    QVector<AbstractColorChooserPanel*> borderColorPanels = QVector<AbstractColorChooserPanel*>() <<(AbstractColorChooserPanel*) (new SplitButtonColorChooserPanel());
+    borderColorChooser->setChooserPanels(&borderColorPanels);
+    borderColorChooser->setPreviewPanel(new JPanel()); // remove the preview panel
+
+    previewChangeListener = new PreviewChangeListener(this);
+    borderColorChooser->getSelectionModel()->addChangeListener(previewChangeListener);
+
+    JPanel* borderColorPanel = new JPanel();
+    QHBoxLayout* borderColorPanelLayout = new QHBoxLayout(borderColorPanel);
+    borderColorPanelLayout->addWidget(new JLabel(tr("Border Color") + ": "));
+    borderColorPanelLayout->addWidget(borderColorChooser);
+
+    JPanel* borderSizePanel = new JPanel();
+    FlowLayout* borderSizePanelLayout = new FlowLayout(borderSizePanel);
+    borderSizeTextSpin = getSpinner(borderSize, tr("Border Size"));
+    //borderSizeTextSpin.addChangeListener(spinnerChangeListener);
+    connect(borderSizeTextSpin, SIGNAL(valueChanged(int)), this, SLOT(preview()));
+    borderSizePanelLayout->addWidget(new JLabel(tr("Border Size") + ": "));
+    borderSizePanelLayout->addWidget(borderSizeTextSpin);
+
+    JPanel* marginSizePanel = new JPanel();
+    FlowLayout* marginSizePanelLayout = new FlowLayout(marginSizePanel);
+    marginSizeTextSpin = getSpinner(marginSize, tr("Margin Size"));
+    //marginSizeTextSpin.addChangeListener(spinnerChangeListener);
+    connect(marginSizeTextSpin, SIGNAL(valueChanged(int)), this, SLOT(preview()));
+
+    marginSizePanelLayout->addWidget(new JLabel(tr("Margin Size") + ": "));
+    marginSizePanelLayout->addWidget(marginSizeTextSpin);
+
+    QVBoxLayout* borderPanelLayout;
+    borderPanel->setLayout(borderPanelLayout = new QVBoxLayout());//borderPanel, BoxLayout.Y_AXIS));
+    borderPanelLayout->addWidget(borderColorPanel);
+    borderPanelLayout->addWidget(borderSizePanel);
+    borderPanelLayout->addWidget(marginSizePanel);
+
+    propertiesPanel->addTab(tr("Border"), QIcon(), borderPanel, tr("Set Border & Margin"));
+
+}
+
+/**
+ * Create and fill in the Contents tab of the UI (Text Label objects).
+ */
+void PositionablePropertiesUtil::editText() {
+    JPanel* editText = new JPanel();
+    QVBoxLayout* editTextLayout;
+    editText->setLayout(editTextLayout = new QVBoxLayout());//editText, BoxLayout.Y_AXIS));
+    QSignalMapper* mapper = new QSignalMapper(this);
+    for (int i = 0; i < txtList.size(); i++) {
+        /*final*/ int x = i;
+        QGroupBox* p = new QGroupBox();
+        QVBoxLayout* pLayout = new QVBoxLayout(p);
+        QString _borderTitle = txtList.at(i)->getDescription();
+        if (_borderTitle==(tr("Example"))) {
+            _borderTitle = tr("Values"); // replace label provided by Ctor by an appropriate one for text string box on Contents tab
+        }
+        //p.setBorder(BorderFactory.createTitledBorder(_borderTitle));
+        p->setTitle(_borderTitle);
+
+        JLabel* txt = new JLabel(tr("Text to display") + ": ");
+        JTextField* textField = new JTextField(txtList.at(i)->getText(), 20);
+#if 0 // TODO:
+        textField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent E) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent E) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent E) {
+                JTextField tmp = (JTextField) E.getSource();
+                txtList.at(x).setText(tmp.getText());
+                preview();
+            }
+        });
+#endif
+        textField->setData(x);
+        mapper->setMapping(textField,textField);
+        connect(textField, SIGNAL(textChanged(QString)), mapper, SLOT(map()));
+        pLayout->addWidget(txt);
+        pLayout->addWidget(textField);
+        editTextLayout->addWidget(p);
+    }
+    connect(mapper, SIGNAL(mapped(QWidget*)), this, SLOT(on_textChanged(QWidget*)) );
+    propertiesPanel->addTab(tr("Contents"), QIcon(), editText, tr("Edit Text Contents"));
+}
+
+/*private*/ void PositionablePropertiesUtil::on_textChanged(QWidget * w)
+{
+ JTextField* txtField = (JTextField*)w;
+ int x = txtField->getDatat().toInt();
+ txtList.at(x)->setText(txtField->text());
+ preview();
+}
+
+/**
+ * Create and fill in the Size &amp; Position tab of the UI.
+ */
+void PositionablePropertiesUtil::sizePosition() {
+ JPanel* posPanel = new JPanel();
+ QVBoxLayout* posPanelLayout = new QVBoxLayout(posPanel);
+
+ JPanel* xyPanel = new JPanel();
+ QVBoxLayout* xyPanelLayout;
+ xyPanel->setLayout(xyPanelLayout = new QVBoxLayout());//xyPanel, BoxLayout.Y_AXIS));
+ JPanel* xPanel = new JPanel();
+ QHBoxLayout* xPanelLayout = new QHBoxLayout(xPanel);
+ JLabel* txt = new JLabel(" X: ");
+ xPositionTextSpin = getSpinner(xPos, "x position");
+ //xPositionTextSpin.addChangeListener(spinnerChangeListener);
+ connect(xPositionTextSpin, SIGNAL(valueChanged(int)), this, SLOT(preview()));
+ xPanelLayout->addWidget(txt);
+ xPanelLayout->addWidget(xPositionTextSpin);
+
+ JPanel* yPanel = new JPanel();
+ QHBoxLayout* yPanelLayout = new QHBoxLayout(yPanel);
+ txt = new JLabel(" Y: ");
+ yPositionTextSpin = getSpinner(yPos, "y position");
+ //yPositionTextSpin.addChangeListener(spinnerChangeListener);
+ connect(yPositionTextSpin, SIGNAL(valueChanged(int)), this, SLOT(preview()));
+ yPanelLayout->addWidget(txt);
+ yPanelLayout->addWidget(yPositionTextSpin);
+
+ xyPanelLayout->addWidget(xPanel);
+ xyPanelLayout->addWidget(yPanel);
+
+ JPanel* sizePanel = new JPanel();
+ QVBoxLayout* sizePanelLayout;
+ sizePanel->setLayout(sizePanelLayout = new QVBoxLayout());//sizePanel, BoxLayout.Y_AXIS));
+ JPanel* widthPanel = new JPanel();
+ FlowLayout* widthPanelLayout = new FlowLayout(widthPanel);
+ widthSizeTextSpin = getSpinner(fixedWidth, tr("Width"));
+ //widthSizeTextSpin.addChangeListener(spinnerChangeListener);
+ connect(widthSizeTextSpin, SIGNAL(valueChanged(int)), this, SLOT(preview()));
+ /*widthSizeText = new JTextField(""+fixedWidth, 10);
+  widthSizeText.addKeyListener(previewKeyActionListener);*/
+ txt = new JLabel(tr("Width") + ": ");
+ widthPanelLayout->addWidget(txt);
+ widthPanelLayout->addWidget(widthSizeTextSpin);
+
+ JPanel* heightPanel = new JPanel();
+ FlowLayout* heightPanelLayout = new FlowLayout(heightPanel);
+ /*heightSizeText = new JTextField(""+fixedHeight, 10);
+  heightSizeText.addKeyListener(previewKeyActionListener);*/
+ heightSizeTextSpin = getSpinner(fixedHeight, tr("Height"));
+ //heightSizeTextSpin.addChangeListener(spinnerChangeListener);
+ connect(heightSizeTextSpin, SIGNAL(valueChanged(int)), this, SLOT(preview()));
+ txt = new JLabel(tr("Height") + ": ");
+ heightPanelLayout->addWidget(txt);
+ heightPanelLayout->addWidget(heightSizeTextSpin);
+
+ sizePanelLayout->addWidget(widthPanel);
+ sizePanelLayout->addWidget(heightPanel);
+
+ posPanelLayout->addWidget(xyPanel);
+ posPanelLayout->addWidget(sizePanel);
+ //posPanel.setLayout(new BoxLayout(posPanel, BoxLayout.Y_AXIS));
+
+ propertiesPanel->addTab(tr("Size & Position"), QIcon(), posPanel,tr("Set Size & Position"));
+}
+
 void PositionablePropertiesUtil::fontApply()
 {
- pop->setFont(ui->fontComboBox->font());
- pop->setFontSize(ui->fontSizeField->currentText().toInt());
- if (ui->bold->isChecked()) pop->setFontWeight(QFont::Bold);
- else pop->setFontStyle(QFont::Normal);
- if (ui->italic->isChecked()) pop->setFontStyle(QFont::StyleItalic);
- else pop->setFontStyle(QFont::StyleNormal);
- QColor desiredColor = QColor(Qt::black);
-//    try {
- QString selectedColor = _fontcolors[ui->fontColor->currentIndex()];
-            //Field f = Color.class.getField(((selectedColor).toUpperCase()).replaceAll(" ", "_"));
- desiredColor = _colors.at(ui->fontColor->currentIndex());
-//      }
-//      catch (NoSuchFieldException ce) {
-//        desiredColor = Color.black;
-//      } catch (SecurityException ce) {
-//        desiredColor = Color.black;
-//      } catch (IllegalAccessException ce) {
-//        desiredColor = Color.black;
-//      }
-
-    //if (_parent instanceof SensorIcon) {
- if(qobject_cast<SensorIcon*>(pop->_parent->self()) != NULL)
- {
-  SensorIcon* si = (SensorIcon*) pop->_parent;
-  if (si->isIcon())
-  {
-   PositionableLabel* pp = (PositionableLabel*)pop->_parent;
-   pp->setText(txtList->at(0).getText());
-   pop->setForeground(txtList->at(0).getForeground());
-   pop->setBackgroundColor(txtList->at(0).getBackground());
+ pop->setFontSize(fontSizeField->text().toInt());
+  if (bold->isChecked()) {
+      pop->setFontStyle(/*Font::BOLD*/QFont::Bold, 0);
+  } else {
+      pop->setFontStyle(0, /*Font.BOLD*/QFont::Bold);
   }
+  if (italic->isChecked()) {
+      pop->setFontStyle(/*Font.ITALIC*/QFont::StyleItalic, 0);
+  } else {
+      pop->setFontStyle(0, /*Font.ITALIC*/QFont::StyleItalic);
+  }
+
+  QColor desiredColor;
+  //if (_parent instanceof SensorIcon)
+  if(qobject_cast<SensorIcon*>(_parent->self()))
+  {
+      SensorIcon* si = (SensorIcon*) _parent->self();
+      if (si->isIcon()) {
+          PositionableLabel* pp = (PositionableLabel*) _parent->self();
+          pp->setText(txtList.at(0)->getText());
+          pop->setForeground(txtList.at(0)->getForeground());
+          pop->setBackgroundColor(txtList.at(0)->getBackground());
+      } else {
+          si->setActiveText(txtList.at(0)->getText());
+          si->setTextActive(txtList.at(0)->getForeground());
+          si->setBackgroundActive(txtList.at(0)->getBackground());
+
+          si->setInactiveText(txtList.at(1)->getText());
+          si->setTextInActive(txtList.at(1)->getForeground());
+          si->setBackgroundInActive(txtList.at(1)->getBackground());
+
+          si->setUnknownText(txtList.at(2)->getText());
+          si->setTextUnknown(txtList.at(2)->getForeground());
+          si->setBackgroundUnknown(txtList.at(2)->getBackground());
+
+          si->setInconsistentText(txtList.at(3)->getText());
+          si->setTextInconsistent(txtList.at(3)->getForeground());
+          si->setBackgroundInconsistent(txtList.at(3)->getBackground());
+      }
+  } else {
+      PositionableLabel* pp = (PositionableLabel*) _parent->self();
+      pp->setText(txtList.at(0)->getText());
+      pop->setForeground(txtList.at(0)->getForeground());
+      pop->setBackgroundColor(txtList.at(0)->getBackground());
+  }
+
+  int deg = _parent->getDegrees();
+  if (deg != 0) {
+      _parent->rotate(0);
+  }
+  desiredColor = borderColorChooser->getColor();
+  pop->setBorderColor(desiredColor);
+
+  pop->setBorderSize(( borderSizeTextSpin->value()));
+
+  pop->setMargin( marginSizeTextSpin->value());
+  _parent->setLocation( xPositionTextSpin->value(),  yPositionTextSpin->value());
+  pop->setFixedWidth(widthSizeTextSpin->value());
+  pop->setFixedHeight( heightSizeTextSpin->value());
+  switch (_justificationCombo->currentIndex()) {
+      case 0:
+          pop->setJustification(0x00);
+          break;
+      case 1:
+          pop->setJustification(0x02);
+          break;
+      case 2:
+          pop->setJustification(0x04);
+          break;
+      default:
+          log->warn(tr("Unhandled combo index: %1").arg(_justificationCombo->currentIndex()));
+          break;
+  }
+  _parent->rotate(deg);
+
+  _parent->updateScene();
+}
+
+void PositionablePropertiesUtil::preview()
+{
+ int weight = QFont::Normal;
+ bool _italic =false;
+ if (bold->isChecked()) {
+     weight =/* Font.BOLD*/QFont::Bold;
+ }
+ if (italic->isChecked()) {
+   _italic = true;
+ }
+
+ QFont newFont = QFont(_parent->getFont().family(), fontSizeField->text().toInt(), weight, _italic);
+
+ QColor desiredColor;
+
+ desiredColor = borderColorChooser->getColor();
+ Border* borderMargin;
+ int margin = ( marginSizeTextSpin->value());
+ Border* outlineBorder;
+ if (!desiredColor.isValid()) {
+     outlineBorder = new LineBorder(desiredColor,  borderSizeTextSpin->value());
+ } else {
+     outlineBorder = BorderFactory::createEmptyBorder(0, 0, 0, 0);
+ }
+ int hoz = 0;
+ switch (_justificationCombo->currentIndex()) {
+     case 0:
+         hoz = (0x02); // left
+         break;
+     case 1:
+         hoz = (0x04); // right
+         break;
+     case 2:
+         hoz = (0x00);  // center
+         break;
+     default:
+         log->warn(tr("Unhandled combo index: %1").arg(_justificationCombo->currentIndex()));
+         break;
+ }
+
+ for (int i = 0; i < txtList.size(); i++)
+ {
+  JLabel* tmp = txtList.at(i)->getLabel();
+  if (tmp->isOpaque()) {
+      borderMargin = new LineBorder(tmp->getBackground(), margin);
+  } else {
+      borderMargin = BorderFactory::createEmptyBorder(margin, margin, margin, margin);
+  }
+  tmp->setFont(newFont);
+  txtList.at(i)->setFont(newFont);
+  tmp->setHorizontalAlignment(hoz);
+  tmp->setBorder(new CompoundBorder(outlineBorder, borderMargin));
+  txtList.at(i)->setBorderSize(margin);
+  if(borderSizeTextSpin->value())
+   tmp->setStyleSheet(tr("QLabel{border-width: %1px; border-style: solid; border-color: rgb(%2,%3,%4);}").arg(borderSizeTextSpin->value())
+                 .arg(desiredColor.red()).arg(desiredColor.green()).arg(desiredColor.blue()));
   else
-  {
-   si->setActiveText(txtList->at(0).getText());
-   si->setTextActive(txtList->at(0).getForeground());
-   si->setBackgroundActive(txtList->at(0).getBackground());
-
-   si->setInactiveText(txtList->at(1).getText());
-   si->setTextInActive(txtList->at(1).getForeground());
-   si->setBackgroundInActive(txtList->at(1).getBackground());
-
-   si->setUnknownText(txtList->at(2).getText());
-   si->setTextUnknown(txtList->at(2).getForeground());
-   si->setBackgroundUnknown(txtList->at(2).getBackground());
-
-   si->setInconsistentText(txtList->at(3).getText());
-   si->setTextInconsistent(txtList->at(3).getForeground());
-   si->setBackgroundInconsistent(txtList->at(3).getBackground());
-  }
+   tmp->setStyleSheet(tr("QLabel{border: none;}"));
+  tmp->setSize(maxWidth(tmp), maxHeight(tmp));
+  tmp->resize(QSize(maxWidth(tmp), maxHeight(tmp)));
+  txtList.at(i)->setAttributes();
  }
- else
- {
-  PositionableLabel* pp = (PositionableLabel*)pop->_parent;
-  pp->setText(txtList->at(0).getText());
-  pop->setForeground(txtList->at(0).getForeground());
-  pop->setBackgroundColor(txtList->at(0).getBackground());
+ mFrame->pack();
+}
+
+int PositionablePropertiesUtil::maxWidth(JLabel* tmp) {
+ int max = 0;
+ if ( widthSizeTextSpin->value() != 0) {
+     max =  widthSizeTextSpin->value();
+     max += borderSizeTextSpin->value() * 2;
+ } else {
+     if (tmp->text().trimmed().length() > 0) {
+         max = tmp->getFontMetrics().width(tmp->text());  //tmp.getFont()).stringWidth(tmp.getText());
+     }
+     if (pop != nullptr) {
+         max += marginSizeTextSpin->value() * 2;
+         max += borderSizeTextSpin->value() * 2;
+     }
+ }
+ return max;
+}
+
+/*public*/ int PositionablePropertiesUtil::maxHeight(JLabel* tmp) {
+ int max = 0;
+ if ( heightSizeTextSpin->value() != 0) {
+     max = heightSizeTextSpin->value();
+     max += borderSizeTextSpin->value() * 2;
+ } else {
+     if (tmp->text().trimmed().length() > 0) {
+         max = tmp->getFontMetrics().height();
+     }
+     if (pop != nullptr) {
+         max += marginSizeTextSpin->value() * 2;
+         max += borderSizeTextSpin->value() * 2;
+     }
  }
 
- desiredColor = //colorFromComboBox(borderColorCombo, NULL);
-         _colors.at(ui->borderColorCombo->currentIndex());
- pop->setBorderColor(desiredColor);
-
- pop->setBorderSize(ui->borderSize->value());
-
- pop->setMargin(ui->marginSize->value());
- ((Positionable*)((SensorIcon*)pop->_parent))->setLocation(ui->xPosition->value(), ui->yPosition->value());
- pop->setFixedWidth(ui->width->value());
- pop->setFixedHeight(ui->height->value());
- switch(ui->_justificationCombo->currentIndex())
- {
-  case 0 :    pop->setJustification(0x00);
-                    break;
-  case 1 :    pop->setJustification(0x02);
-                    break;
-  case 2 :    pop->setJustification(0x04);
-                    break;
- }
- if(qobject_cast<MemoryIcon*>(pop->_parent->self()))
- {
-  MemoryIcon* pm = (MemoryIcon*) _parent;
-//  xPos = pm->getOriginalX();
-//  yPos = pm->getOriginalY();
-  pm->setOriginalLocation(ui->xPosition->value(),ui->yPosition->value());
- }
- else
- {
-//  xPos = ((PositionableLabel*)pop->_parent)->getX();
-//  yPos = ((PositionableLabel*)pop->_parent)->getY();
-  ((Positionable*)pop->_parent)->setLocation(ui->xPosition->value(),ui->yPosition->value());
- }
- ((PositionableLabel*)pop->_parent)->_editor->addToTarget((Positionable*)pop->_parent);
+ return max;
 }
 
 /*private*/ void PositionablePropertiesUtil::undoChanges()
@@ -255,35 +634,35 @@ void PositionablePropertiesUtil::fontApply()
   if (si->isIcon())
   {
    PositionableLabel* pp = (PositionableLabel*)pop->_parent;
-   pp->setText(txtList->at(0).getOrigText());
-   pop->setForeground(txtList->at(0).getOrigForeground());
-   pop->setBackgroundColor(txtList->at(0).getOrigBackground());
+   pp->setText( txtList.at(0)->getOrigText());
+   pop->setForeground( txtList.at(0)->getOrigForeground());
+   pop->setBackgroundColor( txtList.at(0)->getOrigBackground());
   }
   else
   {
-   si->setActiveText(txtList->at(0).getOrigText());
-   si->setTextActive(txtList->at(0).getOrigForeground());
-   si->setBackgroundActive(txtList->at(0).getOrigBackground());
+   si->setActiveText(txtList.at(0)->getOrigText());
+   si->setTextActive(txtList.at(0)->getOrigForeground());
+   si->setBackgroundActive(txtList.at(0)->getOrigBackground());
 
-   si->setInactiveText(txtList->at(1).getOrigText());
-   si->setTextInActive(txtList->at(1).getOrigForeground());
-   si->setBackgroundInActive(txtList->at(1).getOrigBackground());
+   si->setInactiveText(txtList.at(1)->getOrigText());
+   si->setTextInActive(txtList.at(1)->getOrigForeground());
+   si->setBackgroundInActive( txtList.at(1)->getOrigBackground());
 
-   si->setUnknownText(txtList->at(2).getOrigText());
-   si->setTextUnknown(txtList->at(2).getOrigForeground());
-   si->setBackgroundUnknown(txtList->at(2).getOrigBackground());
+   si->setUnknownText( txtList.at(2)->getOrigText());
+   si->setTextUnknown( txtList.at(2)->getOrigForeground());
+   si->setBackgroundUnknown( txtList.at(2)->getOrigBackground());
 
-   si->setInconsistentText(txtList->at(3).getOrigText());
-   si->setTextInconsistent(txtList->at(3).getOrigForeground());
-   si->setBackgroundInconsistent(txtList->at(3).getOrigBackground());
+   si->setInconsistentText( txtList.at(3)->getOrigText());
+   si->setTextInconsistent( txtList.at(3)->getOrigForeground());
+   si->setBackgroundInconsistent( txtList.at(3)->getOrigBackground());
   }
  }
  else
  {
   PositionableLabel* pp = (PositionableLabel*)pop->_parent;
-  pp->setText(txtList->at(0).getOrigText());
-  pop->setForeground(txtList->at(0).getOrigForeground());
-  pop->setBackgroundColor(txtList->at(0).getOrigBackground());
+  pp->setText( txtList.at(0)->getOrigText());
+  pop->setForeground( txtList.at(0)->getOrigForeground());
+  pop->setBackgroundColor( txtList.at(0)->getOrigBackground());
  }
  pop->setJustification(justification);
  pop->setFixedWidth(fixedWidth);
@@ -312,27 +691,27 @@ void PositionablePropertiesUtil::fontApply()
 /*private*/ void PositionablePropertiesUtil::getCurrentValues()
 {
  pop = ((Positionable*)_parent)->getPopupUtility();
- txtList = new QList<TextDetails>();
+ txtList = QList<TextDetails*>();
 
  //if (_parent instanceof SensorIcon) {
- if(dynamic_cast<SensorIcon*>(_parent)!= NULL)
+ if(qobject_cast<SensorIcon*>(_parent->self())!= NULL)
  {
   SensorIcon* si = (SensorIcon*) _parent;
   if (si->isIcon())
   {
-   txtList->append( TextDetails("Text", pop->getText(), pop->getForeground(), si->getBackground()));
+    txtList.append(new TextDetails("Text", pop->getText(), pop->getForeground(), si->getBackground()));
   }
   else
   {
-   txtList->append( TextDetails("Active", si->getActiveText(), si->getTextActive(), si->getBackgroundActive()));
-   txtList->append( TextDetails("InActive", si->getInactiveText(), si->getTextInActive(), si->getBackgroundInActive()));
-   txtList->append( TextDetails("Unknown", si->getUnknownText(), si->getTextUnknown(), si->getBackgroundUnknown()));
-   txtList->append( TextDetails("Inconsistent", si->getInconsistentText(), si->getTextInconsistent(), si->getBackgroundInconsistent()));
+    txtList.append(new TextDetails("Active", si->getActiveText(), si->getTextActive(), si->getBackgroundActive()));
+    txtList.append(new TextDetails("InActive", si->getInactiveText(), si->getTextInActive(), si->getBackgroundInActive()));
+    txtList.append(new TextDetails("Unknown", si->getUnknownText(), si->getTextUnknown(), si->getBackgroundUnknown()));
+    txtList.append(new TextDetails("Inconsistent", si->getInconsistentText(), si->getTextInconsistent(), si->getBackgroundInconsistent()));
   }
  }
  else
  {
-  txtList->append( TextDetails("Text", pop->getText(), pop->getForeground(), ((PositionableLabel*)pop->_parent)->getBackground()));
+   txtList.append(new TextDetails("Text", pop->getText(), pop->getForeground(), ((PositionableLabel*)pop->_parent)->getBackground()));
  }
 
  fixedWidth = pop->getFixedWidth();
@@ -342,14 +721,14 @@ void PositionablePropertiesUtil::fontApply()
  justification = pop->getJustification();
  fontStyle = pop->getFontStyle();
  fontSize = pop->getFontSize();
- if ( (QFont::Bold & fontStyle) == QFont::Bold ) ui->bold->setChecked(true);
- if ( (QFont::StyleItalic & fontStyle) == QFont::StyleItalic ) ui->italic->setChecked(true);
+ if ( (QFont::Bold & fontStyle) == QFont::Bold ) bold->setChecked(true);
+ if ( (QFont::StyleItalic & fontStyle) == QFont::StyleItalic ) italic->setChecked(true);
  if (((SensorIcon*)pop->_parent)->isOpaque())
         defaultBackground = ((SensorIcon*)pop->_parent)->getBackground();
  defaultForeground = pop->getForeground();
  defaultBorderColor = pop->getBorderColor();
  //if (_parent instanceof MemoryIcon){
- if(qobject_cast<MemoryIcon*>((QObject*)_parent)!= NULL)
+ if(qobject_cast<MemoryIcon*>(_parent->self())!= NULL)
  {
   MemoryIcon* pm = (MemoryIcon*) pop->_parent;
   xPos = pm->getOriginalX();
@@ -361,7 +740,7 @@ void PositionablePropertiesUtil::fontApply()
   yPos = pop->_parent->getY();
  }
 }
-
+#if 0
 const QIcon* PositionablePropertiesUtil::getColourIcon(QColor color)
 {
  Q_ASSERT(color.isValid());
@@ -383,71 +762,8 @@ const QIcon* PositionablePropertiesUtil::getColourIcon(QColor color)
  QIcon* icon = new QIcon(QPixmap::fromImage(resultImage));
  return icon;
 }
-void PositionablePropertiesUtil::preview()
-{
- QBrush brBkgnd;
- int i = ui->backgroundColor->currentIndex();
- if(i < 0) return;
- if(_colors.at(i).isValid())
-   brBkgnd = QBrush(_colors.at(ui->backgroundColor->currentIndex()),Qt::SolidPattern);
- else
-   brBkgnd = QBrush(Qt::transparent, Qt::SolidPattern);
- int pointSize = ui->fontSizeField->currentText().toInt();
- int style = QFont::StyleNormal;
- //if(ui->italic->isChecked()) style = QFont::StyleItalic;
- if(ui->bold->isChecked()) style = QFont::Bold;
- QFont f = QFont(ui->fontComboBox->currentFont().family(),pointSize,style,ui->italic->isChecked());
- // Start with a minimal rectangle.
- QSize resultSize = QSize(1,1);
- QImage* resultImage = new QImage(resultSize,QImage::Format_ARGB32_Premultiplied);
- QRect r = QRect(resultImage->rect());
 
- QPainter painter(resultImage);
- painter.setFont(f);
 
- QRect eRect =painter.boundingRect(r, Qt::AlignCenter, ui->textField->text());
- painter.end();
-
- // create a new rect of the size required by the text + borders and margins.
- QRect newRect = QRect(0,0, eRect.width()+ ui->borderSize->value()*2 + ui->marginSize->value()*2, eRect.height()+ui->borderSize->value()*2 + ui->marginSize->value()*2);
-
- resultImage = new QImage(newRect.width(), newRect.height(),QImage::Format_ARGB32_Premultiplied);
- QPainter painter2(resultImage);
- painter2.setFont(f);
- painter2.fillRect(newRect, brBkgnd);
- //QRectF bRect = painter2.boundingRect(newRect, Qt::AlignCenter, ui->textField->text()); // bounding rectangle of text
-    //bRect.adjust(0, -3.0, 0, 0);
- QRect bRect = QRect(0,0, newRect.width()-ui->borderSize->value()+1, newRect.height()-ui->borderSize->value()+1);
- //painter2.fillRect(bRect, brBkgnd);
- painter2.setPen(_colors.at(ui->fontColor->currentIndex()));
- int align;
- switch(ui->_justificationCombo->currentIndex())
- {
-  case 0:
-   align = Qt::AlignLeft | Qt::AlignVCenter;
-   break;
-  case 1:
-   align = Qt::AlignRight | Qt::AlignVCenter;
-   break;
-  case 2:
-  default:
-   align = Qt::AlignCenter;
- }
- painter2.drawText(newRect, align, ui->textField->text());
- if(ui->borderColorCombo->currentText() != "None" && ui->borderSize->value() > 0)
- {
-  QBrush borderBrush(_colors.at(ui->borderColorCombo->currentIndex()));
-  QPen borderPen(borderBrush, ui->borderSize->value());
-  painter2.setPen(borderPen);
-  painter2.drawRect(bRect);
- }
- painter2.end();
- QIcon icon = QIcon(QPixmap::fromImage(*resultImage));
- ui->tmp->setPixmap(QPixmap::fromImage(*resultImage));
-
- //resultImage->save(QDir::homePath()+ "/testtext.png","PNG");
-
-}
 void PositionablePropertiesUtil::setCurrentValues()
 {
  getCurrentValues();
@@ -494,8 +810,9 @@ void PositionablePropertiesUtil::setCurrentValues()
  ui->marginSize->setValue(marginSize);
  ui->width->setValue(fixedWidth);
  ui->height->setValue(fixedHeight);
- ui->textField->setText(txtList->at(0).getText());
+ ui->textField->setText( txtList.at(0).getText());
 }
+
 QColor PositionablePropertiesUtil::colorStringToColor(QString sColor)
 {
  QColor color(Qt::transparent);
@@ -508,828 +825,15 @@ QColor PositionablePropertiesUtil::colorStringToColor(QString sColor)
  }
  return color;
 }
-
-#if 0 // TODO
-/*public*/ void PositionablePropertiesUtil::display(){
-
-    propertiesPanel = new JTabbedPane();
-    getCurrentValues();
-    JPanel* exampleHolder = new JPanel();
-    //example = new JLabel(text);
-
-    for(int i = 0; i<txtList->size(); i++){
-        JPanel* p = new JPanel();
-        p.setBorder(BorderFactory.createTitledBorder(txtList.get(i).getDescription()));
-        p.add(txtList.get(i).getLabel());
-        exampleHolder.add(p);
-    }
-    //exampleHolder.add(example);
-    JPanel* tmp = new JPanel();
-
-    JButton cancel = new JButton("Cancel");
-    cancel.addActionListener( new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                undoChanges();
-                mFrame.dispose();
-            }
-        });
-
-    tmp.setLayout(new BoxLayout(tmp, BoxLayout.Y_AXIS));
-    tmp.add(propertiesPanel);
-    tmp.add(detailpanel);
-    tmp.add(exampleHolder);
-    textPanel();
-    editText();
-    borderPanel();
-    sizePosition();
-    JPanel* _buttonArea = new JPanel();
-    _buttonArea.add(cancel);
-
-    JButton applyButton = new JButton("Apply");
-    _buttonArea.add(applyButton);
-    applyButton.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-        fontApply();
-    }
-    });
-    JButton okButton = new JButton("Okay");
-    _buttonArea.add(okButton);
-    okButton.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-        fontApply();
-        mFrame.dispose();
-    }
-    });
-    tmp.add(_buttonArea);
-    exampleHolder.setBackground(_parent.getParent().getBackground());
-    mFrame = new JFrame(_parent.getNameString());
-    mFrame.add(tmp);
-    mFrame.pack();
-    mFrame.setVisible(true);
-    preview();
-}
-
-JComponent _textPanel;
-//JLabel example;
-
-ImageIcon[] images;
-String[] _fontcolors = {"Black", "Dark Gray", "Gray", "Light Gray", "White", "Red", "Orange", "Yellow", "Green", "Blue", "Magenta"};
-String[] _backgroundcolors;
-JComboBox fontColor;
-JComboBox backgroundColor;
-JTextField fontSizeField;
-
-String[] _justification = {"Left", "Right", "Center"};
-JComboBox _justificationCombo;
-
-void textPanel(){
-    _textPanel = new JPanel();
-    _textPanel.setLayout(new BoxLayout(_textPanel, BoxLayout.Y_AXIS));
-    JPanel* fontColorPanel = new JPanel();
-    fontColorPanel.add(new JLabel("Font Color"));
-
-    JPanel* backgroundColorPanel = new JPanel();
-    backgroundColorPanel.add(new JLabel("Background Color"));
-    Color defaultLabelBackground=backgroundColorPanel.getBackground();
-    _backgroundcolors = new String[_fontcolors.length + 1];
-    for (int i = 0;i < _fontcolors.length; i++){
-        _backgroundcolors[i] = _fontcolors[i];
-    }
-    _backgroundcolors[_backgroundcolors.length-1] = "None";
-
-    Integer[] intArray = new Integer[_backgroundcolors.length];
-    images = new ImageIcon[_backgroundcolors.length];
-    Color desiredColor = Color.black;
-    int backCurrentColor = _backgroundcolors.length-1;
-    for (int i = 0; i < _backgroundcolors.length; i++) {
-        intArray[i] = Integer.valueOf(i);
-          try {
-            // try to get a color by name using reflection
-            Field f = Color.class.getField((_backgroundcolors[i].toUpperCase()).replaceAll(" ", "_"));
-            desiredColor = (Color) f.get(null);
-          } catch (NoSuchFieldException ce) {
-            //Can be considered normal if background is set None
-            desiredColor = null;
-          } catch (SecurityException ce) {
-            //Can be considered normal if background is set None
-            desiredColor = null;
-          } catch (IllegalAccessException ce) {
-            //Can be considered normal if background is set None
-            desiredColor = null;
-          }
-        if (desiredColor!=null){
-            images[i] = getColourIcon(desiredColor);
-            if (desiredColor.equals(defaultBackground))
-                backCurrentColor = i;
-        }
-        else{
-            images[i] = getColourIcon(defaultLabelBackground);
-            images[i].setDescription(_backgroundcolors[i]);
-        }
-        if (images[i] != null) {
-            images[i].setDescription(_backgroundcolors[i]);
-        }
-    }
-    backgroundColor = new JComboBox(intArray);
-    backgroundColor.setRenderer(new ColorComboBoxRenderer());
-    backgroundColor.setMaximumRowCount(5);
-    backgroundColor.setSelectedIndex(backCurrentColor);
-    backgroundColor.addActionListener(PreviewActionListener);
-    backgroundColorPanel.add(backgroundColor);
-    int fontCurrentColor = 0;
-    for (int i = 0; i < _fontcolors.length; i++) {
-
-        intArray[i] = Integer.valueOf(i);
-        try {
-            Field f = Color.class.getField((_fontcolors[i].toUpperCase()).replaceAll(" ", "_"));
-            desiredColor = (Color) f.get(null);
-        } catch (Exception ce) {
-            log.error("Unable to get font colour from field " + ce);
-        }
-        if (desiredColor!=null && desiredColor.equals(defaultForeground))
-            fontCurrentColor = i;
-    }
-
-    fontColor = new JComboBox(intArray);
-    fontColor.setRenderer(new ColorComboBoxRenderer());
-    fontColor.setMaximumRowCount(5);
-    fontColor.setSelectedIndex(fontCurrentColor);
-    fontColor.addActionListener(PreviewActionListener);
-    fontColorPanel.add(fontColor);
-
-    JPanel* fontSizePanel = new JPanel();
-    fontSizePanel.setLayout(new BoxLayout(fontSizePanel, BoxLayout.Y_AXIS));
-    fontSizeChoice = new List(6);
-    int currentFontSize=0;
-    for (int i = 0; i < fontSizes.length; i++){
-       fontSizeChoice.add(fontSizes[i]);
-       if (fontSizes[i].equals(""+fontSize)){
-        currentFontSize=i;
-       }
-    }
-
-    fontSizeChoice.select(currentFontSize);
-
-    JPanel* FontPanel = new JPanel();
-    fontSizeField= new JTextField(""+fontSize, fontSizeChoice.getWidth());
-    fontSizeField.addKeyListener(PreviewKeyActionListener);
-    fontSizePanel.add(fontSizeField);
-    fontSizePanel.add(fontSizeChoice);
-    FontPanel.add(fontSizePanel);
-
-    JPanel* Style = new JPanel();
-    Style.setLayout(new BoxLayout(Style, BoxLayout.Y_AXIS));
-    Style.add(bold);
-    Style.add(italic);
-    FontPanel.add(Style);
-    _textPanel.add(FontPanel);
-
-    JPanel* ColorPanel = new JPanel();
-    ColorPanel.setLayout(new BoxLayout(ColorPanel, BoxLayout.Y_AXIS));
-    //ColorPanel.add(fontColorPanel);
-    //ColorPanel.add(backgroundColorPanel);
-    _textPanel.add(ColorPanel);
-
-    JPanel* justificationPanel = new JPanel();
-    _justificationCombo = new JComboBox(_justification);
-
-    justificationPanel.add(new JLabel("Justification"));
-    justificationPanel.add(_justificationCombo);
-    _textPanel.add(justificationPanel);
-
-    _justificationCombo.addActionListener(PreviewActionListener);
-    bold.addActionListener(PreviewActionListener);
-    italic.addActionListener(PreviewActionListener);
-    //fontSizeChoice.addActionListener(PreviewActionListener);
-    fontSizeChoice.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent actionEvent) {
-            fontSizeField.setText(fontSizeChoice.getSelectedItem());
-            preview();
-        }
-    });
-
-    for(int i = 0; i<txtList.size(); i++){
-        final int x = i;
-
-        int fontcolor=0;
-        int backcolor=_backgroundcolors.length-1;
-        for (int j = 0; j < _backgroundcolors.length; j++) {
-            try {
-            // try to get a color by name using reflection
-                Field f = Color.class.getField((_backgroundcolors[j].toUpperCase()).replaceAll(" ", "_"));
-                desiredColor = (Color) f.get(null);
-              } catch (NoSuchFieldException ce) {
-                desiredColor = null;
-              } catch (IllegalAccessException ce) {
-                desiredColor = null;
-              }
-            if (desiredColor!=null){
-                if (desiredColor.equals(txtList.get(i).getBackground()))
-                    backcolor = j;
-                if (desiredColor.equals(txtList.get(i).getForeground()))
-                    fontcolor = j;
-            }
-        }
-
-        final JComboBox txtColor = new JComboBox(intArray);
-        JPanel* txtPanel = new JPanel();
-        //txtPanel.setLayout(new BoxLayout(txtPanel, BoxLayout.Y_AXIS));
-        JPanel* p = new JPanel();
-        txtColor.setRenderer(new ColorComboBoxRenderer());
-        txtColor.setMaximumRowCount(5);
-
-        txtColor.setSelectedIndex(fontcolor);
-        txtColor.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent actionEvent) {
-            txtList.get(x).setForeground(colorFromComboBox(txtColor, Color.black));
-        }
-        });
-        p.add(new JLabel("Font Color"));
-        p.add(txtColor);
-        txtPanel.add(p);
-        final JComboBox txtBackColor = new JComboBox(intArray);
-        txtBackColor.setRenderer(new ColorComboBoxRenderer());
-        txtBackColor.setMaximumRowCount(5);
-        txtBackColor.setSelectedIndex(backcolor);
-        txtBackColor.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent actionEvent) {
-            txtList.get(x).setBackground(colorFromComboBox(txtBackColor, null));
-            }
-        });
-        p = new JPanel();
-        p.add(new JLabel("Background Color"));
-        p.add(txtBackColor);
-        txtPanel.setBorder(BorderFactory.createTitledBorder(txtList.get(i).getDescription()));
-        txtPanel.add(p);
-
-        _textPanel.add(txtPanel);
-
-    }
-    propertiesPanel.addTab("Font", null, _textPanel, "Font");
-}
-ActionListener PreviewActionListener = new ActionListener() {
-  public void actionPerformed(ActionEvent actionEvent) {
-    preview();
-  }
-};
-
-ChangeListener SpinnerChangeListener = new ChangeListener() {
-  public void stateChanged(ChangeEvent actionEvent) {
-    preview();
-  }
-};
-
-FocusListener textFieldFocus = new FocusListener(){
-    public void focusGained(FocusEvent e) { }
-
-    public void focusLost(FocusEvent e) {
-        JTextField tmp = (JTextField) e.getSource();
-        if(tmp.getText().equals("")){
-            tmp.setText("0");
-            preview();
-        }
-    }
-};
-
-KeyListener PreviewKeyActionListener = new KeyListener() {
-  public void keyTyped(KeyEvent E) { }
-  public void keyPressed(KeyEvent E){ }
-  public void keyReleased(KeyEvent E) {
-    JTextField tmp = (JTextField) E.getSource();
-    if(!tmp.getText().equals("")){
-        preview();
-    }
-  }
-};
-
-JComboBox borderColorCombo;
-javax.swing.JSpinner borderSizeTextSpin;
-javax.swing.JSpinner marginSizeTextSpin;
-
-void borderPanel(){
-    Color desiredColor =null;
-    JPanel* borderPanel = new JPanel();
-
-    Integer[] intArray = new Integer[_backgroundcolors.length];
-    int borderCurrentColor =_backgroundcolors.length-1;
-    for (int i = 0; i < (_backgroundcolors.length-1); i++) {
-        intArray[i] = Integer.valueOf(i);
-        try {
-            Field f = Color.class.getField((_fontcolors[i].toUpperCase()).replaceAll(" ", "_"));
-            desiredColor = (Color) f.get(null);
-        } catch (Exception ce) {
-            log.error("Unable to convert the selected font color to a color " + ce);
-        }
-        if (desiredColor!=null && desiredColor.equals(defaultBorderColor)){
-            borderCurrentColor = i;
-        }
-    }
-    //Last colour on the background is none.
-    intArray[_backgroundcolors.length-1] = Integer.valueOf(_backgroundcolors.length-1);
-    borderColorCombo = new JComboBox(intArray);
-    borderColorCombo.setRenderer(new ColorComboBoxRenderer());
-    borderColorCombo.setMaximumRowCount(5);
-    borderColorCombo.setSelectedIndex(borderCurrentColor);
-    borderColorCombo.addActionListener(PreviewActionListener);
-
-    JPanel* borderColorPanel = new JPanel();
-    borderColorPanel.add(new JLabel("Border Color"));
-    borderColorPanel.add(borderColorCombo);
-
-    JPanel* borderSizePanel = new JPanel();
-    borderSizeTextSpin = getSpinner(borderSize, "Border Size");
-    borderSizeTextSpin.addChangeListener(SpinnerChangeListener);
-    borderSizePanel.add(new JLabel("Border Size"));
-    borderSizePanel.add(borderSizeTextSpin);
-
-    JPanel* marginSizePanel = new JPanel();
-    marginSizeTextSpin = getSpinner(marginSize, "Margin Size");
-    marginSizeTextSpin.addChangeListener(SpinnerChangeListener);
-
-    marginSizePanel.add(new JLabel("Margin Size"));
-    marginSizePanel.add(marginSizeTextSpin);
-
-    borderPanel.setLayout(new BoxLayout(borderPanel, BoxLayout.Y_AXIS));
-    borderPanel.add(borderColorPanel);
-    borderPanel.add(borderSizePanel);
-    borderPanel.add(marginSizePanel);
-
-    propertiesPanel.addTab("Border", null, borderPanel, "Border");
-
-}
-
-javax.swing.JSpinner xPositionTextSpin;
-javax.swing.JSpinner yPositionTextSpin;
-javax.swing.JSpinner widthSizeTextSpin;
-javax.swing.JSpinner heightSizeTextSpin;
-JCheckBox autoWidth;
-
-void editText(){
-    JPanel* editText = new JPanel();
-    editText.setLayout(new BoxLayout(editText, BoxLayout.Y_AXIS));
-    for(int i = 0; i<txtList.size(); i++){
-        final int x = i;
-        JPanel* p = new JPanel();
-        p.setBorder(BorderFactory.createTitledBorder(txtList.get(i).getDescription()));
-        JLabel txt = new JLabel("Text Value ");
-        JTextField textField = new JTextField(txtList.get(i).getText(), 20);
-        textField.addKeyListener(new KeyListener() {
-              public void keyTyped(KeyEvent E) { }
-              public void keyPressed(KeyEvent E){ }
-              public void keyReleased(KeyEvent E) {
-                JTextField tmp = (JTextField) E.getSource();
-                txtList.get(x).setText(tmp.getText());
-                preview();
-              }
-            });
-        p.add(txt);
-        p.add(textField);
-        editText.add(p);
-    }
-    propertiesPanel.addTab("Edit Text", null, editText, "Text");
-}
-
-void sizePosition(){
-
-    JPanel* posPanel = new JPanel();
-
-    JPanel* xyPanel = new JPanel();
-    xyPanel.setLayout(new BoxLayout(xyPanel, BoxLayout.Y_AXIS));
-    JPanel* xPanel = new JPanel();
-    JLabel txt = new JLabel("x = ");
-    xPositionTextSpin = getSpinner(xPos, "x position");
-    xPositionTextSpin.addChangeListener(SpinnerChangeListener);
-    xPanel.add(txt);
-    xPanel.add(xPositionTextSpin);
-
-    JPanel* yPanel = new JPanel();
-    txt = new JLabel("y = ");
-    yPositionTextSpin = getSpinner(yPos, "y position");
-    yPositionTextSpin.addChangeListener(SpinnerChangeListener);
-    yPanel.add(txt);
-    yPanel.add(yPositionTextSpin);
-
-
-    xyPanel.add(xPanel);
-    xyPanel.add(yPanel);
-
-    JPanel* sizePanel = new JPanel();
-    sizePanel.setLayout(new BoxLayout(sizePanel, BoxLayout.Y_AXIS));
-    JPanel* widthPanel = new JPanel();
-    widthSizeTextSpin = getSpinner(fixedWidth, "width");
-    widthSizeTextSpin.addChangeListener(SpinnerChangeListener);
-    /*widthSizeText = new JTextField(""+fixedWidth, 10);
-    widthSizeText.addKeyListener(PreviewKeyActionListener);*/
-    txt = new JLabel("Width = ");
-    widthPanel.add(txt);
-    widthPanel.add(widthSizeTextSpin);
-
-    JPanel* heightPanel = new JPanel();
-    /*heightSizeText = new JTextField(""+fixedHeight, 10);
-    heightSizeText.addKeyListener(PreviewKeyActionListener);*/
-    heightSizeTextSpin = getSpinner(fixedHeight, "height");
-    heightSizeTextSpin.addChangeListener(SpinnerChangeListener);
-    txt = new JLabel("Height = ");
-    heightPanel.add(txt);
-    heightPanel.add(heightSizeTextSpin);
-
-    sizePanel.add(widthPanel);
-    sizePanel.add(heightPanel);
-
-
-    posPanel.add(xyPanel);
-    posPanel.add(sizePanel);
-    posPanel.setLayout(new BoxLayout(posPanel, BoxLayout.Y_AXIS));
-
-    propertiesPanel.addTab("Size & Position", null, posPanel, "Size");
-}
-void fontApply(){
-    pop.setFontSize(Integer.parseInt(fontSizeField.getText()));
-    if (bold.isSelected()) pop.setFontStyle(Font.BOLD, 0);
-    else pop.setFontStyle(0, Font.BOLD);
-    if (italic.isSelected()) pop.setFontStyle(Font.ITALIC, 0);
-    else pop.setFontStyle(0, Font.ITALIC);
-    Color desiredColor = Color.black;
-    try {
-            String selectedColor = _fontcolors[fontColor.getSelectedIndex()];
-            Field f = Color.class.getField(((selectedColor).toUpperCase()).replaceAll(" ", "_"));
-            desiredColor = (Color) f.get(null);
-      } catch (NoSuchFieldException ce) {
-        desiredColor = Color.black;
-      } catch (SecurityException ce) {
-        desiredColor = Color.black;
-      } catch (IllegalAccessException ce) {
-        desiredColor = Color.black;
-      }
-
-    if (_parent instanceof SensorIcon) {
-        SensorIcon si = (SensorIcon) _parent;
-        if (si.isIcon()){
-            PositionableLabel pp = (PositionableLabel)_parent;
-            pp.setText(txtList.get(0).getText());
-            pop.setForeground(txtList.get(0).getForeground());
-            pop.setBackgroundColor(txtList.get(0).getBackground());
-        } else {
-            si.setActiveText(txtList.get(0).getText());
-            si.setTextActive(txtList.get(0).getForeground());
-            si.setBackgroundActive(txtList.get(0).getBackground());
-
-            si.setInactiveText(txtList.get(1).getText());
-            si.setTextInActive(txtList.get(1).getForeground());
-            si.setBackgroundInActive(txtList.get(1).getBackground());
-
-            si.setUnknownText(txtList.get(2).getText());
-            si.setTextUnknown(txtList.get(2).getForeground());
-            si.setBackgroundUnknown(txtList.get(2).getBackground());
-
-            si.setInconsistentText(txtList.get(3).getText());
-            si.setTextInconsistent(txtList.get(3).getForeground());
-            si.setBackgroundInconsistent(txtList.get(3).getBackground());
-        }
-    } else {
-        PositionableLabel pp = (PositionableLabel)_parent;
-        pp.setText(txtList.get(0).getText());
-        pop.setForeground(txtList.get(0).getForeground());
-        pop.setBackgroundColor(txtList.get(0).getBackground());
-    }
-
-    desiredColor = colorFromComboBox(borderColorCombo, null);
-    pop.setBorderColor(desiredColor);
-
-    pop.setBorderSize(((Number)borderSizeTextSpin.getValue()).intValue());
-
-    pop.setMargin(((Number)marginSizeTextSpin.getValue()).intValue());
-    _parent.setLocation(((Number)xPositionTextSpin.getValue()).intValue(), ((Number)yPositionTextSpin.getValue()).intValue());
-    pop.setFixedWidth(((Number)widthSizeTextSpin.getValue()).intValue());
-    pop.setFixedHeight(((Number)heightSizeTextSpin.getValue()).intValue());
-    switch(_justificationCombo.getSelectedIndex()){
-        case 0 :    pop.setJustification(0x00);
-                    break;
-        case 1 :    pop.setJustification(0x02);
-                    break;
-        case 2 :    pop.setJustification(0x04);
-                    break;
-    }
-}
-
-void cancelButton(){
-    mFrame.dispose();
-}
-
-
-void preview(){
-    int attrs = Font.PLAIN;
-    if (bold.isSelected())
-        attrs = Font.BOLD;
-    if (italic.isSelected())
-        attrs |= Font.ITALIC;
-
-    Font newFont = new Font(_parent.getFont().getName(), attrs,  Integer.parseInt(fontSizeField.getText()));
-
-    Color desiredColor;
-
-    desiredColor = colorFromComboBox(borderColorCombo, null);
-    Border borderMargin = BorderFactory.createEmptyBorder(0, 0, 0, 0);
-    int margin = ((Number)marginSizeTextSpin.getValue()).intValue();
-    Border outlineBorder = BorderFactory.createEmptyBorder(0, 0, 0, 0);
-    if(desiredColor!=null) {
-        outlineBorder = new LineBorder(desiredColor, ((Number)borderSizeTextSpin.getValue()).intValue());
-    } else {
-        outlineBorder = BorderFactory.createEmptyBorder(0, 0, 0, 0);
-    }
-    int hoz=0;
-    switch(_justificationCombo.getSelectedIndex()){
-        case 0 :    hoz = (0x02);
-                    break;
-        case 1 :    hoz = (0x04);
-                    break;
-        case 2 :    hoz = (0x00);
-                    break;
-    }
-
-    for(int i = 0; i<txtList.size(); i++){
-        JLabel tmp = txtList.get(i).getLabel();
-        if (tmp.isOpaque()){
-            borderMargin = new LineBorder(tmp.getBackground(), margin);
-        } else{
-            borderMargin = BorderFactory.createEmptyBorder(margin, margin, margin, margin);
-        }
-        tmp.setFont(newFont);
-        tmp.setHorizontalAlignment(hoz);
-        tmp.setBorder(new CompoundBorder(outlineBorder, borderMargin));
-        tmp.setSize(new Dimension(maxWidth(tmp), maxHeight(tmp)));
-        tmp.setPreferredSize(new Dimension(maxWidth(tmp), maxHeight(tmp)));
-
-    }
-    mFrame.pack();
-}
-
-int maxWidth(JLabel tmp) {
-    int max = 0;
-    if (((Number)widthSizeTextSpin.getValue()).intValue()!=0) {
-        max = ((Number)widthSizeTextSpin.getValue()).intValue();
-        max += ((Number)borderSizeTextSpin.getValue()).intValue()*2;
-    } else {
-        if(tmp.getText().trim().length()>0 ) {
-            max = tmp.getFontMetrics(tmp.getFont()).stringWidth(tmp.getText());
-        }
-        if (pop!=null) {
-            max += ((Number)marginSizeTextSpin.getValue()).intValue()*2;
-            max += ((Number)borderSizeTextSpin.getValue()).intValue()*2;
-        }
-    }
-    return max;
-}
-
-public int maxHeight(JLabel tmp) {
-    int max = 0;
-    if (((Number)heightSizeTextSpin.getValue()).intValue()!=0) {
-        max = ((Number)heightSizeTextSpin.getValue()).intValue();
-        max += ((Number)borderSizeTextSpin.getValue()).intValue()*2;
-    } else {
-        if(tmp.getText().trim().length()>0 ) {
-            max = tmp.getFontMetrics(tmp.getFont()).getHeight();
-        }
-        if (pop!=null) {
-            max += ((Number)marginSizeTextSpin.getValue()).intValue()*2;
-            max += ((Number)borderSizeTextSpin.getValue()).intValue()*2;
-        }
-    }
-
-    return max;
-}
-PositionablePopupUtil pop;
-
-private void undoChanges(){
-    if (_parent instanceof SensorIcon) {
-        SensorIcon si = (SensorIcon) _parent;
-        if (si.isIcon()){
-            PositionableLabel pp = (PositionableLabel)_parent;
-            pp.setText(txtList.get(0).getOrigText());
-            pop.setForeground(txtList.get(0).getOrigForeground());
-            pop.setBackgroundColor(txtList.get(0).getOrigBackground());
-        } else {
-            si.setActiveText(txtList.get(0).getOrigText());
-            si.setTextActive(txtList.get(0).getOrigForeground());
-            si.setBackgroundActive(txtList.get(0).getOrigBackground());
-
-            si.setInactiveText(txtList.get(1).getOrigText());
-            si.setTextInActive(txtList.get(1).getOrigForeground());
-            si.setBackgroundInActive(txtList.get(1).getOrigBackground());
-
-            si.setUnknownText(txtList.get(2).getOrigText());
-            si.setTextUnknown(txtList.get(2).getOrigForeground());
-            si.setBackgroundUnknown(txtList.get(2).getOrigBackground());
-
-            si.setInconsistentText(txtList.get(3).getOrigText());
-            si.setTextInconsistent(txtList.get(3).getOrigForeground());
-            si.setBackgroundInconsistent(txtList.get(3).getOrigBackground());
-        }
-    } else {
-        PositionableLabel pp = (PositionableLabel)_parent;
-        pp.setText(txtList.get(0).getOrigText());
-        pop.setForeground(txtList.get(0).getOrigForeground());
-        pop.setBackgroundColor(txtList.get(0).getOrigBackground());
-    }
-    pop.setJustification(justification);
-    pop.setFixedWidth(fixedWidth);
-    pop.setFixedHeight(fixedHeight);
-    pop.setMargin(marginSize);
-    pop.setBorderSize(borderSize);
-    pop.setFontStyle(0, fontStyle);
-    pop.setFontSize(fontSize);
-    pop.setBorderColor(defaultBorderColor);
-    _parent.setLocation(xPos, yPos);
-}
-
-private void getCurrentValues(){
-    pop = _parent.getPopupUtility();
-    txtList = new ArrayList<eetails>();
-
-    if (_parent instanceof SensorIcon) {
-        SensorIcon si = (SensorIcon) _parent;
-        if (si.isIcon()){
-            txtList.add(new TextDetails("Text", pop.getText(), pop.getForeground(), _parent.getBackground()));
-        } else {
-            txtList.add(new TextDetails("Active", si.getActiveText(), si.getTextActive(), si.getBackgroundActive()));
-            txtList.add(new TextDetails("InActive", si.getInactiveText(), si.getTextInActive(), si.getBackgroundInActive()));
-            txtList.add(new TextDetails("Unknown", si.getUnknownText(), si.getTextUnknown(), si.getBackgroundUnknown()));
-            txtList.add(new TextDetails("Inconsistent", si.getInconsistentText(), si.getTextInconsistent(), si.getBackgroundInconsistent()));
-        }
-    } else {
-        txtList.add(new TextDetails("Text", pop.getText(), pop.getForeground(), _parent.getBackground()));
-    }
-
-    fixedWidth = pop.getFixedWidth();
-    fixedHeight = pop.getFixedHeight();
-    marginSize = pop.getMargin();
-    borderSize = pop.getBorderSize();
-    justification = pop.getJustification();
-    fontStyle = pop.getFontStyle();
-    fontSize = pop.getFontSize();
-    if ( (Font.BOLD & fontStyle) == Font.BOLD ) bold.setSelected(true);
-    if ( (Font.ITALIC & fontStyle) == Font.ITALIC ) italic.setSelected(true);
-    if (_parent.isOpaque())
-        defaultBackground = _parent.getBackground();
-    defaultForeground = pop.getForeground();
-    defaultBorderColor = pop.getBorderColor();
-    if (_parent instanceof MemoryIcon){
-        MemoryIcon pm = (MemoryIcon) _parent;
-        xPos = pm.getOriginalX();
-        yPos = pm.getOriginalY();
-    } else {
-        xPos = _parent.getX();
-        yPos = _parent.getY();
-    }
-}
-private int fontStyle;
-private Color defaultForeground;
-private Color defaultBackground;
-private Color defaultBorderColor;
-private int fixedWidth=0;
-private int fixedHeight=0;
-private int marginSize=0;
-private int borderSize=0;
-private int justification;
-private int fontSize;
-private int xPos;
-private int yPos;
-
-private ArrayList <TextDetails> txtList = null;
-
-private JCheckBox italic = new JCheckBox("Italic", false);
-private JCheckBox bold = new JCheckBox("Bold", false);
-
-protected List fontSizeChoice;
-
-protected String fontSizes[] = { "6", "8", "10", "11", "12", "14", "16",
-"20", "24", "28", "32", "36"};
-
-Color colorFromComboBox(JComboBox select, Color defaultColor){
-    Color desiredColor = defaultColor;
-    try {
-            // try to get a color by name using reflection
-            String selectedColor = _backgroundcolors[select.getSelectedIndex()];
-            Field f = Color.class.getField((selectedColor.toUpperCase()).replaceAll(" ", "_"));
-            desiredColor = (Color) f.get(null);
-    } catch (NoSuchFieldException ce) {
-        desiredColor = defaultColor;
-    } catch (SecurityException ce) {
-        desiredColor = defaultColor;
-    } catch (IllegalAccessException ce) {
-        desiredColor = defaultColor;
-    }
-    return desiredColor;
-}
-
-ImageIcon getColourIcon(Color color){
-
-    int ICON_DIMENSION = 10;
-     BufferedImage image = new BufferedImage(ICON_DIMENSION, ICON_DIMENSION,
-      BufferedImage.TYPE_INT_RGB);
-
-    Graphics g = image.getGraphics();
-   // set completely transparent
-    g.setColor(color);
-    g.fillRect(0,0, ICON_DIMENSION,ICON_DIMENSION);
-
-    ImageIcon icon = new ImageIcon(image);
-    return icon;
-
-}
-
-javax.swing.JSpinner getSpinner(int value, String tooltip){
-    SpinnerNumberModel model = new SpinnerNumberModel(0,0,1000,1);
-    javax.swing.JSpinner spinX = new javax.swing.JSpinner(model);
-    spinX.setValue(value);
-    spinX.setToolTipText(tooltip);
-    spinX.setMaximumSize(new Dimension(
-            spinX.getMaximumSize().width, spinX.getPreferredSize().height));
-    return spinX;
-}
-
-class ColorComboBoxRenderer extends JLabel
-                       implements ListCellRenderer {
-
-    public ColorComboBoxRenderer() {
-        setOpaque(true);
-        setHorizontalAlignment(LEFT);
-        setVerticalAlignment(CENTER);
-    }
-
-    public Component getListCellRendererComponent(JList list, Object value, int index,
-        boolean isSelected, boolean cellHasFocus) {
-        if (value==null) return this;
-        int selectedIndex = ((Integer)value).intValue();
-        ImageIcon icon = images[selectedIndex];
-        String colorString = _backgroundcolors[selectedIndex];
-
-        setIcon(icon);
-        setText(colorString);
-        return this;
-    }
-}
-
-static class TextDetails {
-    TextDetails(String desc, String txt, Color fore, Color back){
-        if (txt == null)
-            text = "";
-        else
-            text = txt;
-        description = desc;
-        example = new JLabel(text);
-        setForeground(fore);
-        setBackground(back);
-        origForeground = fore;
-        origBackground = back;
-        origText = txt;
-    }
-
-    Color foreground;
-    Color background;
-    Color origForeground;
-    Color origBackground;
-    String origText;
-    String text;
-    JLabel example;
-    String description;
-
-    Color getForeground(){ return foreground; }
-
-    Color getBackground() { return background; }
-
-    String getText() { return text; }
-
-    Color getOrigForeground(){ return origForeground; }
-
-    Color getOrigBackground() { return origBackground; }
-
-    String getOrigText() { return origText; }
-
-
-    String getDescription() { return description; }
-    void setForeground(Color fore) {
-        foreground = fore;
-        example.setForeground(fore);
-    }
-
-    void setBackground(Color back) {
-        background = back;
-        if (back!=null) {
-            example.setOpaque(true);
-            example.setBackground(back);
-        } else
-            example.setOpaque(false);
-    }
-
-    void setText(String txt) {
-        text=txt;
-        example.setText(txt);
-    }
-
-    JLabel* getLabel() { return example; }
-
-}
 #endif
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PositionablePropertiesUtil.class.getName());
+JSpinner* PositionablePropertiesUtil::getSpinner(int value, QString tooltip) {
+        SpinnerNumberModel* model = new SpinnerNumberModel(0, 0, 1000, 1);
+        JSpinner* spinX = new JSpinner(model);
+        spinX->setValue(value);
+        spinX->setToolTip(tooltip);
+        spinX->setMaximumSize(QSize(
+                spinX->maximumWidth(), spinX->sizeHint().height()));
+        return spinX;
+    }
+/*static*/ Logger* PositionablePropertiesUtil::log = LoggerFactory::getLogger("PositionablePropertiesUtil");
 //}

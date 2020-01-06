@@ -9,7 +9,7 @@
 public:
  /*public*/ virtual QColor getSelectedColor() {return QColor();}
 
- /*public*/ virtual void setSelectedColor(QColor color) {}
+ /*public*/ virtual void setSelectedColor(QColor /*color*/) {}
 
  /*public*/ virtual void addChangeListener(ChangeListener* listener) =0;
 

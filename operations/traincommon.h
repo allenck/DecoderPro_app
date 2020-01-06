@@ -63,6 +63,9 @@ namespace Operations
   /*public*/ QString setoutUtilityCars(QList<Car*>* carList, Car* car, bool isLocal, bool isManifest);
   /*public*/ int countSetoutUtilityCars(QList<Car*>* carList, Car* car, bool isLocal, bool isManifest);
   /*public*/ static QString getISO8601Date(bool isModelYear);
+  /*public*/ static QString formatColorString(QString text, QColor color);
+  /*public*/ static QString getTextColorString(QString string);
+  /*public*/ static QColor getTextColor(QString string);
 
  signals:
 
@@ -115,6 +118,8 @@ protected:
   /*protected*/ static /*final*/ QString BLANK_LINE;//= " ";
   /*protected*/ static /*final*/ QString HORIZONTAL_LINE_CHAR;//= "-";
   /*protected*/ static /*final*/ QString VERTICAL_LINE_CHAR;//= "|";
+  /*protected*/ static /*final*/ QString TEXT_COLOR_START;// = "<FONT color=\"";
+  /*protected*/ static /*final*/ QString TEXT_COLOR_END;// = "</FONT>";
   // /*protected*/ static /*final*/ String ARROW = ">";
 
   /*protected*/ static /*final*/ bool PICKUP;//= true;

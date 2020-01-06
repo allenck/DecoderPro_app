@@ -69,7 +69,7 @@
      if(mgr != NULL && profileManager != NULL)
       mgr->initialize(profileManager->getActiveProfile());
      else
-      log->error(tr("Class %1 does not have default initializer. "));
+      log->error(tr("Class %1 does not have default initializer. ").arg(clazz));
     }
     // Now do the JsonServiceFactory classes
     lst << "JsonThrottleServiceFactory" << "JsonSensorServiceFactory" <<
@@ -83,7 +83,7 @@
     {
      JsonServiceFactory* mgr = (JsonServiceFactory*)InstanceManager::getDefault(clazz);
      if(mgr == NULL)
-      log->error(tr("Class %s does not have default initializer. "));
+      log->error(tr("Class %1 does not have default initializer. ").arg(clazz));
     }
 # endif
 #endif
@@ -240,7 +240,7 @@ void StartupActionsManager::loadPreferencesmanagers()
    mgr->initialize(profileManager->getActiveProfile());
   }
   else
-   log->error(tr("Class %1 does not have default initializer. "));
+   log->error(tr("Class %1 does not have default initializer. ").arg(clazz));
  }
  // Now do the JsonServiceFactory classes
  lst <<  "JsonThrottleServiceFactory" <<  "JsonSensorServiceFactory"

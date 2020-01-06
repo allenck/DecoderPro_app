@@ -75,7 +75,7 @@ ColorChooserPanel::ColorChooserPanel(ColorModel* model)
   gbc.insets->top = 10;
   gbc.insets->right = 10;
   g->addWidget(this->panel, gbc);
-
+#if 0
   gbc.gridwidth = 1;
   gbc.weightx = 1.0;
   gbc.weighty = 0.0;
@@ -107,7 +107,9 @@ ColorChooserPanel::ColorChooserPanel(ColorModel* model)
 //        this->diagram.setBorder(this->text.getBorder());
 
   setInheritsPopupMenu((JComponent*)this, true); // CR:4966112
+#endif
  }
+
  QString label = this->model->getText((Component*)this, "HexCode"); // NON-NLS: suffix
  bool visible = label != "";
 //    this->text->setVisible(visible);
@@ -124,6 +126,7 @@ ColorChooserPanel::ColorChooserPanel(ColorModel* model)
          }
      }
  }
+
  this->panel->buildPanel();
 }
 

@@ -30,6 +30,7 @@
 #include "route.h"
 #include "calendar.h"
 #include "instancemanager.h"
+#include "colorutil.h"
 
 //TrainCommon::TrainCommon(QObject *parent) :
 //  QObject(parent)
@@ -51,6 +52,8 @@ namespace Operations {
  /*protected*/ /*static*/ /*final*/ QString TrainCommon::BLANK_LINE = " ";
  /*protected*/ /*static*/ /*final*/ QString TrainCommon::HORIZONTAL_LINE_CHAR = "-";
  /*protected*/ /*static*/ /*final*/ QString TrainCommon::VERTICAL_LINE_CHAR = "|";
+ /*protected*/ /*static*/ /*final*/ QString TrainCommon::TEXT_COLOR_START = "<FONT color=\"";
+ /*protected*/ /*static*/ /*final*/ QString TrainCommon::TEXT_COLOR_END = "</FONT>";
  // /*protected*/ static /*final*/ String ARROW = ">";
 
  /*protected*/ /*static*/ /*final*/ bool TrainCommon::PICKUP = true;
@@ -2074,5 +2077,48 @@ namespace Operations {
      }
      return sbuf/*.toString()*/;
  }
+ /**
+  * Adds HTML like color text control characters around a string. Note that
+  * black is the standard text color, and if black is requested no control
+  * characters are added.
+  *
+  * @param text  the text to be modified
+  * @param color the color the text is to be printed
+  * @return formated text with color modifiers
+  */
+ /*public*/ /*static*/ QString TrainCommon::formatColorString(QString text, QColor color) {
+     QString s = text;
+     if (color!= QColor(Qt::black)) {
+         s = TEXT_COLOR_START + ColorUtil::colorToColorName(color) + "\">" + text + TEXT_COLOR_END;
+     }
+     return s;
+ }
 
+ /**
+  * Removes the color text control characters around the desired string
+  *
+  * @param string the string with control characters
+  * @return pure text
+  */
+ /*public*/ /*static*/ QString TrainCommon::getTextColorString(QString string) {
+     QString text = string;
+     if (string.contains(TEXT_COLOR_START)) {
+         text = string.mid(0, string.indexOf(TEXT_COLOR_START)) + string.mid(string.indexOf(">") + 1);
+     }
+     if (text.contains(TEXT_COLOR_END)) {
+         text = text.mid(0, text.indexOf(TEXT_COLOR_END)) +
+                 string.mid(string.indexOf(TEXT_COLOR_END) + TEXT_COLOR_END.length());
+     }
+     return text;
+ }
+
+ /*public*/ /*static*/ QColor TrainCommon::getTextColor(QString string) {
+     QColor color = QColor(Qt::black);
+     if (string.contains(TEXT_COLOR_START)) {
+         QString c = string.mid(string.indexOf("\"") + 1);
+         c = c.mid(0, c.indexOf("\""));
+         color = ColorUtil::stringToColor(c);
+     }
+     return color;
+ }
 }

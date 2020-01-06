@@ -12,7 +12,8 @@ class JAVAQTSHARED_EXPORT SpinnerNumberModel : public AbstractSpinnerModel
     Q_OBJECT
 public:
     explicit SpinnerNumberModel(QObject *parent = 0);
-/*public*/ SpinnerNumberModel(QVariant value, QVariant minimum, QVariant maximum, QVariant stepSize);
+/*public*/ SpinnerNumberModel(QVariant value, QVariant minimum, QVariant maximum, QVariant stepSize, QObject *parent = 0);
+/*public*/ SpinnerNumberModel(int value, int minimum, int maximum, int stepSize, QObject *parent = 0);
 /*public*/ void setMinimum(QVariant minimum);
 /*public*/ QVariant getMinimum();
 /*public*/ void setMaximum(QVariant maximum);

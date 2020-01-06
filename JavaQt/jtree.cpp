@@ -301,7 +301,7 @@ void JTree::setExpandsSelectedPaths(bool newValue )
 /*public*/ void JTree::addTreeSelectionListener(TreeSelectionListener* tsl)
 {
  //_TSL = tsl;
- listenerList->add("TreeSelectionListener",tsl);
+ //listenerList->add("TreeSelectionListener",tsl);
  connect(this, SIGNAL(treeSelected(TreeSelectionEvent*)), tsl, SLOT(valueChanged(TreeSelectionEvent*)));
 }
 

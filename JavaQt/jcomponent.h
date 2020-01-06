@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "insets.h"
 
+class Border;
 class JComponent // : public QWidget
 {
  //Q_OBJECT
@@ -24,9 +25,12 @@ public:
      /*public*/ bool getInheritsPopupMenu() {
          return inheritsPopupMenu;
      }
- int getWidth() {((QWidget*)jself())->width();}
- int getHeight() {((QWidget*)jself())->height();}
+ int getWidth() {return ((QWidget*)jself())->width();}
+ int getHeight() {return ((QWidget*)jself())->height();}
  Insets* getInsets(Insets* insets) {return insets;}
+ virtual void setBorder(Border*) =0;
+ virtual Border* getBorder() =0;
+
 signals:
 
 public slots:

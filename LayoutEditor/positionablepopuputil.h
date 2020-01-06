@@ -142,7 +142,7 @@ private:
 private slots:
  void on_italicAction_triggered();
  void on_boldAction_triggered();
- void display();
+ void on_propertiesAction();
 
 protected:
  /*protected*/ QWidget* _textComponent;    // closest ancestor for JLabel and JTextField
@@ -161,6 +161,7 @@ protected:
  /*protected*/ QAction* newStyleMenuItem(QAction* a, int mask);
 
  friend class PositionablePropertiesUtil;
+ friend class DragDecoratorLabel;
 };
 
 #endif // POSITIONABLEPOPUPUTIL_H

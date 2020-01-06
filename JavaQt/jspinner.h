@@ -10,8 +10,8 @@ class JSpinner : public QSpinBox, public JComponent
  Q_OBJECT
  Q_INTERFACES(JComponent)
 public:
- JSpinner(QWidget* parent = nullptr);
  JSpinner(SpinnerModel* model, QWidget* parent = nullptr);
+ JSpinner(QWidget* parent = nullptr);
  SpinnerModel* getModel();
  void setModel(SpinnerModel* model);
  bool isOpaque();
@@ -25,18 +25,22 @@ public:
  /*public*/ QObject* jself() {return (QObject*)this;}
  /*public*/ void addChangeListener(ChangeListener*);
  /*public*/ void removeChangeListener(ChangeListener*);
- /*public*/ void setVisible(bool b);
+// /*public*/ void setVisible(bool b);
+ /*public*/ void setBorder(Border* border) override {this->_border = border;}
+ /*public*/ Border* getBorder() {return _border;}
 
 public slots:
  void onValueChanged(int);
 
 signals:
- void stateChange(ChangeEvent*);
+ void stateChanged(ChangeEvent*);
 
 private:
  SpinnerModel* model = nullptr;
  bool _opaque = false;
  QVector<ChangeListener*> listeners;
+ Border* _border = nullptr;
+
 };
 
 #endif // JSPINNER_H

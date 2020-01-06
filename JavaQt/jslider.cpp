@@ -197,5 +197,5 @@ void JSlider::setValue(int i)
 }
 /*public*/ void JSlider::setVisible(bool b)
 {
- QWidget::setVisible(b);
+// QSlider::setVisible(b);
 }

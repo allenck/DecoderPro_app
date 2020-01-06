@@ -14,7 +14,7 @@ RestartStartupActionFactory::RestartStartupActionFactory(QObject* parent) : Abst
 //@Override
 /*public*/ QString RestartStartupActionFactory::getTitle(/*Class<?> */QString clazz, QLocale /*locale*/) throw (IllegalArgumentException) {
     if (clazz != ("RestartAction")) {
-        throw new IllegalArgumentException();
+        throw IllegalArgumentException();
     }
     return tr(/*locale, */"RestartAction"); // NOI18N
 }

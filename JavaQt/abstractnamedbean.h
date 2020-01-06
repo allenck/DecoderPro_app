@@ -59,7 +59,7 @@ public:
     /*public*/ QVariant getProperty(QString key) override;
 
     /*public java.util.*/QSet<QString> getPropertyKeys() override;
-    PropertyChangeSupport* pcs;
+    PropertyChangeSupport* pcs = nullptr;
     /*public*/ void removeProperty(QString key);
     /*public*/ QString describeState(int state);
     Q_INVOKABLE /*public*/ bool equals(QObject* obj);

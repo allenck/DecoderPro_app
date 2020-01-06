@@ -10,6 +10,11 @@ public:
  BufferedImage(int w, int h, QImage::Format format);
  /*public*/ void setRGB(int startX, int startY, int w, int h,
                      QVector<int> rgbArray, int offset, int scansize);
+ /*public*/ QPainter* getGraphics();
+ /*public*/ QPainter* createGraphics();
+ /*public*/ int getType();
+ /*public*/ unsigned int getRGB(int x, int y);
+ /*public*/ /*synchronized*/ void setRGB(int x, int y, unsigned int rgb);
 
  /**
   * Image Type Constants
