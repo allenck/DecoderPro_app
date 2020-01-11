@@ -41,7 +41,7 @@ private:
  void common();
  NamedIcon* defaultIcon;// = NULL;
  QMap<QString, NamedIcon*>* map;// = NULL;
- /*private*/ NamedBeanHandle<Block*>* namedBlock;
+ /*private*/ NamedBeanHandle<Block*>* namedBlock = nullptr;
  void editBlock();
  DispatcherFrame* df;
  ActiveTrain* at;

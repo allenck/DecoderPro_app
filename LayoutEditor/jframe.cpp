@@ -337,7 +337,7 @@ QString JFrame::title() { return _title;}
         operation != HIDE_ON_CLOSE &&
         operation != DISPOSE_ON_CLOSE &&
         operation != EXIT_ON_CLOSE) {
-        throw new IllegalArgumentException("defaultCloseOperation must be one of: DO_NOTHING_ON_CLOSE, HIDE_ON_CLOSE, DISPOSE_ON_CLOSE, or EXIT_ON_CLOSE");
+        throw IllegalArgumentException("defaultCloseOperation must be one of: DO_NOTHING_ON_CLOSE, HIDE_ON_CLOSE, DISPOSE_ON_CLOSE, or EXIT_ON_CLOSE");
     }
     if (this->defaultCloseOperation != operation) {
 //        if (operation == EXIT_ON_CLOSE) {
@@ -401,7 +401,7 @@ void JFrame::closeEvent(QCloseEvent* e)
  }
  switch (defaultCloseOperation) {
   case HIDE_ON_CLOSE:
-      setVisible(false);
+      hide();
       break;
   case DISPOSE_ON_CLOSE:
       dispose();
@@ -414,7 +414,7 @@ void JFrame::closeEvent(QCloseEvent* e)
   case DO_NOTHING_ON_CLOSE:
   default:
   break;
-}
+ }
 
 }
 

@@ -72,6 +72,8 @@
 #include "loggerfactory.h"
 #include "positionable.h"
 #include "textitempanel.h" // for DragDecoratorLabel
+#include <QPointer>
+
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
 //{
@@ -1589,7 +1591,8 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 */
 /*public*/ JFrameItem* Editor::getIconFrame(QString name) {
     JFrameItem* frame = _iconEditorFrame->value(name);
-    if (frame==nullptr) {
+//    if (frame==nullptr)
+    {
         if ("Sensor"==(name)) {
             addSensorEditor();
         } else if ("RightTurnout"==(name)) {
@@ -1616,6 +1619,8 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
             addIconEditor();
         } else if ("Text"==(name)) {
             addTextEditor();
+        } else if ("BlockLabel" == (name)) {
+            addBlockContentsEditor();
         } else {
 //                log->error("No such Icon Editor \""+name+"\"");
             return NULL;
@@ -1631,7 +1636,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
         frameLocationX += DELTA;
         frameLocationY += DELTA;
     }
-    frame->setVisible(true);
+    frame->show();
     return frame;
 }
 #endif
@@ -1977,6 +1982,24 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
  IconAdder::valueChanged(e);
  bSpin->setEnabled(addIconIsEnabled());
 }
+
+/*protected*/ void Editor::addBlockContentsEditor()
+{
+    IconAdder* editor = new IconAdder("Block Contents");
+//    ActionListener addIconAction = new ActionListener() {
+//        @Override
+//        public void actionPerformed(ActionEvent a) {
+//            putBlockContents();
+//        }
+//    };
+    JFrameItem* frame = makeAddIconFrame("BlockLabel", true, true, editor);
+    _iconEditorFrame->insert("BlockLabel", QPointer<JFrameItem>(frame));
+    editor->setPickList(PickListModel::blockPickModelInstance());
+    editor->makeIconPanel(true);
+    editor->complete(new AddBlockActionListener(this), false, true, false);
+    frame->addHelpMenu("package.jmri.jmrit.display.IconAdder", true);
+}
+
 /*protected*/ void Editor::addReporterEditor()
 {
  IconAdder* editor = new IconAdder("Reporter");
@@ -2469,9 +2492,9 @@ void Editor::putBackground() {
  frame->setMinimumSize(300, 600);
  // use NamedBeanBundle property for basic beans like "Turnout" I18N
  if ("Sensor" == (name)) {
-     BundleName = tr("Sensor");
+     BundleName = tr("Sensor"); // "BeanNameSensor"
  } else if ("SignalHead" == (name)) {
-     BundleName = tr("SignalHead");
+     BundleName = tr("SignalHead"); //
  } else if ("SignalMast" == (name)) {
      BundleName = tr("SignalMast");
  } else if ("Memory" == (name)) {
@@ -2481,9 +2504,11 @@ void Editor::putBackground() {
  } else if ("Light" == (name)) {
      BundleName = tr("Light");
  } else if ("Turnout" == (name)) {
-     BundleName = tr("Turnout"); // called by RightTurnout and LeftTurnout objects in TurnoutIcon.java edit() method
+     BundleName = tr("Turnout"); // ("BeanNameTurnout") called by RightTurnout and LeftTurnout objects in TurnoutIcon.java edit() method
  } else if ("Block" == (name)) {
-     BundleName = tr("Block");
+     BundleName = tr("Block"); // "BeanNameBlock"
+ } else if("BlockLabel" == (name)) {
+     BundleName = tr("Block Contents Label");
  } else {
      BundleName = name;
  }
@@ -2593,10 +2618,11 @@ AddIconFrameWindowListener::AddIconFrameWindowListener(Editor *editor)
  this->editor = editor;
 }
 
-/*public*/ void AddIconFrameWindowListener::windowClosing(QCloseEvent*)
+/*public*/ void AddIconFrameWindowListener::windowClosing(QCloseEvent* evt)
 {
     ImageIndexEditor::checkImageIndex();
     editor->setDefaultCloseOperation(JmriJFrame::HIDE_ON_CLOSE);
+    evt->ignore();
     if (editor->log->isDebugEnabled()) editor->log->debug("windowClosing: HIDE "+editor->title());
 }
 
@@ -3741,7 +3767,7 @@ void Editor::repaint()
 JFrameItem::JFrameItem (QString name, IconAdder* editor, QWidget* parent): JmriJFrame(name, parent)
 {
  //super(name);
- _editor = editor;
+ _editor = QPointer<IconAdder>(editor);
  //setName(name);
  setContentsMargins(0,0,0,0);
 }

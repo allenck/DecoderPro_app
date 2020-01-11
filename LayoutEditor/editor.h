@@ -17,6 +17,7 @@
 #include "spinnernumbermodel.h"
 #include "flowlayout.h"
 #include "jlayeredpane.h"
+#include <QPointer>
 
 #if 0
 class UrlErrorDialog : QDialog {
@@ -586,6 +587,7 @@ protected slots:
   /*protected*/ bool setSelectionsPositionable(bool enabled, Positionable* p);
   virtual /*abstract*/ /*protected*/ void paintTargetPanel(QGraphicsScene* g);
   /*protected*/ void deselectSelectionGroup();
+  /*protected*/ void addBlockContentsEditor();
 
 
   friend class CoordinateEdit;
@@ -742,6 +744,7 @@ public:
  };
  friend class AddIconFrameWindowListener;
  friend class SwitchboardEditor;
+ friend class AddBlockActionListener;
 };
 class TextAttributesActionListener : public QObject
 {
@@ -772,12 +775,13 @@ protected:
 /*public*/ /*static*/ class JFrameItem : public JmriJFrame
 {
  Q_OBJECT
-    IconAdder* _editor;
+    QPointer<IconAdder> _editor = nullptr;
 public:
     JFrameItem (QString name, IconAdder* editor, QWidget* parent = 0);
     /*public*/ IconAdder* getEditor();
     /*public*/ QString toString();
 };
+
 class SearchItemActionListener : public ActionListener
 {
     Q_OBJECT
@@ -1017,4 +1021,18 @@ protected:
   friend class SwitchboardEditor;
   friend class Editor;
  };
+
+  class AddBlockActionListener : public ActionListener
+  {
+    Q_OBJECT
+    Editor* editor;
+   public:
+    AddBlockActionListener(Editor* editor) {this->editor = editor;}
+   public slots:
+      //@Override
+      /*public*/ void actionPerformed(ActionEvent*  a = 0) {
+          editor->putBlockContents();
+      }
+  };
+
 #endif // EDITOR_H

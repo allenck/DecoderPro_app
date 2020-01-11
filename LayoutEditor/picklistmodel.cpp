@@ -259,6 +259,11 @@ bool systemNameComparator(QString o1, QString o2)
   EntryExitPairs* mgr = (EntryExitPairs*)m;
   connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
+ else if(qobject_cast<BlockManager*>(m) != NULL)
+ {
+  BlockManager* mgr = (BlockManager*)m;
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ }
  else
  {
   log->error(tr("no PickListModel manager for %1").arg(m->metaObject()->className()));
@@ -347,6 +352,8 @@ bool systemNameComparator(QString o1, QString o2)
    ts->append((NamedBean*)((OBlockManager*)manager)->getBySystemName(iter.next()));
   else if(qobject_cast<WarrantManager*>(manager)!= NULL)
    ts->append((NamedBean*)((WarrantManager*)manager)->getBySystemName(iter.next()));
+  else if(qobject_cast<BlockManager*>(manager)!= NULL)
+   ts->append((NamedBean*)((BlockManager*)manager)->getBySystemName(iter.next()));
   else Q_ASSERT(false);
  }
  _pickList = new QList <NamedBean*> ();//systemNameList.size());

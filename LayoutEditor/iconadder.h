@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "jtogglebutton.h"
 #include "liblayouteditor_global.h"
+#include <QPointer>
 
 //namespace Ui {
 //class IconAdder;
@@ -103,7 +104,7 @@ private:
     QPushButton*      _addTableButton;
     QPushButton*      _changeButton;
     QPushButton*      _closeButton;
-    CatalogPanel*     _catalog;
+    QPointer<CatalogPanel>     _catalog;
     JFrame*           _parent = nullptr;
     bool              _allowDeletes;
     bool			  _update;				// updating existing icon from popup

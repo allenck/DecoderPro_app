@@ -3122,8 +3122,8 @@ void TrackSegment::remove() {
   QPointF ep2 = LayoutEditor::getCoords(getConnect2(), getType2());
 
   if (isCircle()) {
-      //result = center; //new QPointF(centreX, centreY);
-      result =  QPointF(centreX, centreY);
+    result = center; //new QPointF(centreX, centreY);
+//      result =  QPointF(centreX, centreY);
   }
   else if (isArc())
   {
@@ -3891,23 +3891,26 @@ double TrackSegment::degToRad(double degrees)
  */
 //@Override
 /*public*/ QRectF TrackSegment::getBounds() {
-//    QRectF result;
+    QRectF result;
 
-//    QPointF ep1 = center, ep2 = center;
-//    if (getConnect1() != null) {
-//        ep1 = LayoutEditor::getCoords(getConnect1(), getType1());
-//    }
-//    if (getConnect2() != null) {
-//        ep2 = LayoutEditor::getCoords(getConnect2(), getType2());
-//    }
+    QPointF ep1 = center, ep2 = center;
+    if (getConnect1() != nullptr) {
+        ep1 = LayoutEditor::getCoords(getConnect1(), getType1());
+    }
+    if (getConnect2() != nullptr) {
+        ep2 = LayoutEditor::getCoords(getConnect2(), getType2());
+    }
 
 //    result = QRectF(ep1.x(), ep1.y(), 0, 0);
-//    result.add(ep2);
+//    //result.add(ep2);
+//    result.setWidth(qAbs(ep1.x() - ep2.x()));
+//    result.setHeight(qAbs(ep1.y() - ep2.y()));
+    result = QRectF(QPointF(qMin(ep1.x(), ep2.x()),qMin(ep1.y(), ep2.y())), QPointF(qMax(ep1.x(), ep2.x()),qMax(ep1.y(), ep2.y())));
 
-//    return result;
- if(itemMain == nullptr)
-  return QRectF();
- return itemMain->boundingRect();
+    return result;
+// if(itemMain == nullptr)
+//  return QRectF();
+// return itemMain->boundingRect();
 }
 /*======================*\
 |* decoration accessors *|

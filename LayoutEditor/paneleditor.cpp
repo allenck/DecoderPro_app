@@ -238,8 +238,8 @@ PanelEditor::~PanelEditor()
  }
  // Selection of the type of entity for the icon to represent is done from a combobox
  _addIconBox = new QComboBox();
- _addIconBox->setMinimumSize(QSize(75, 75));
- _addIconBox->setMaximumSize(QSize(200, 200));
+// _addIconBox->setMinimumSize(QSize(75, 75));
+// _addIconBox->setMaximumSize(QSize(200, 200));
  _addIconBox->addItem(tr("Right Hand Turnout"), "RightTurnout");//new ComboBoxItem("RightTurnout"));
  _addIconBox->addItem(tr("Left Hand Turnout"), "LeftTurnout");//new ComboBoxItem("LeftTurnout"));
  _addIconBox->addItem(tr("Slip/3-Way Turnout/Scissor"), "SlipTOEditor");//new ComboBoxItem("SlipTOEditor"));
