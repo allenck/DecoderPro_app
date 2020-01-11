@@ -362,8 +362,8 @@ void PositionableShape::init()
 {
  if (getDisplayLevel() > Editor::BKG)
  {
-  CoordinateEdit* coordinateEdit = new CoordinateEdit();
-  popup->addAction(CoordinateEdit::getRotateEditAction(this,coordinateEdit));
+  //CoordinateEdit* coordinateEdit = new CoordinateEdit();
+  popup->addAction(CoordinateEdit::getRotateEditAction(this,this));
   return true;
  }
  return false;

@@ -4,6 +4,7 @@
 #include <QObject>
 #include "changelistener.h"
 
+class QLabel;
 class Border;
 class JSpinner;
 class JSlider;
@@ -31,7 +32,7 @@ private:
  /*private*/ /*final*/ JSpinner* spinner;// = new JSpinner(this->model);
  /*private*/ float value;
  /*private*/ bool internal;
- QWidget* getLabel();
+ QWidget *getLabel();
  JSlider* getSlider();
  JSpinner* getSpinner();
  float getValue() ;

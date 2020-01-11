@@ -68,6 +68,15 @@ DefaultPreviewPanel::DefaultPreviewPanel(QWidget *parent)
 /*private*/ JColorChooser* DefaultPreviewPanel::getColorChooser() {
 //        return (JColorChooser)SwingUtilities.getAncestorOfClass(
 //                                   JColorChooser.class, this);
+ QObject* obj = this;
+ while(true)
+ {
+  obj = obj->parent();
+  if(obj== nullptr)
+   return nullptr;
+  if(qobject_cast<JColorChooser*>(obj))
+   return (JColorChooser*)obj;
+ }
  return (JColorChooser*) metaObject()->superClass();
 }
 
@@ -92,13 +101,13 @@ DefaultPreviewPanel::DefaultPreviewPanel(QWidget *parent)
 // /*public*/ void paintComponent(Graphics g)
 /*public*/ void DefaultPreviewPanel::paintEvent(QPaintEvent* evt)
 {
- QPainter* g = new QPainter(this);
+ QPainter g(this);
  QRect rect = evt->rect();
     if (!oldColor.isValid())
         oldColor = getForeground();
 
 //    g.setColor(getBackground());
-    g->fillRect(0,0,width(), height(), /*getBackground()*/QColor(Qt::lightGray));
+    g.fillRect(0,0,width(), height(), /*getBackground()*/QColor(Qt::lightGray));
 
 //    if (this.getComponentOrientation().isLeftToRight()) {
 //        int squareWidth = paintSquares(g, 0);
@@ -106,14 +115,14 @@ DefaultPreviewPanel::DefaultPreviewPanel(QWidget *parent)
 //        paintSwatch(g, squareWidth + textWidth);
 //    } else
     {
-        int swatchWidth = paintSwatch(g, 0);
-        int textWidth = paintText(g, swatchWidth);
-        paintSquares(g , swatchWidth + textWidth);
+        int swatchWidth = paintSwatch(&g, 0);
+        int textWidth = paintText(&g, swatchWidth);
+        paintSquares(&g , swatchWidth + textWidth);
 
     }
 }
 
-/*private*/ int DefaultPreviewPanel::paintSwatch(QPainter* g, int offsetX) {
+/*private*/ int DefaultPreviewPanel::paintSwatch(QPainter *g, int offsetX) {
     int swatchX = offsetX;
     //g.setColor(oldColor);
     g->fillRect(swatchX, 0, swatchWidth, (squareSize) + (squareGap/2), oldColor);

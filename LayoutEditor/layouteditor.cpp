@@ -4460,7 +4460,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 {
  // check if this Layout Block already exists
 //  LayoutBlock* blk = InstanceManager::layoutBlockManagerInstance().getByUserName(blockID);
- LayoutBlock* blk = layoutBlockManager->getByUserName(blockID);
+ LayoutBlock* blk = (LayoutBlock*)layoutBlockManager->getByUserName(blockID);
  if (blk==nullptr)
  {
   log->error("LayoutBlock '"+blockID+"' not found when panel loaded");
@@ -4591,7 +4591,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  {
   // check if this Layout Block already exists
   //blk = InstanceManager::layoutBlockManagerInstance().getByUserName(s);
-  blk = layoutBlockManager->getByUserName(s);
+  blk = (LayoutBlock*)layoutBlockManager->getByUserName(s);
   if (blk == nullptr)
   {
    //blk = InstanceManager::layoutBlockManagerInstance().createNewLayoutBlock(nullptr,s);
@@ -7429,7 +7429,7 @@ void LayoutEditor::addLabel()
         sb.append("Signal Mast");
         sb.append(" is linked to the following items<br> do you want to remove those references");
         if (InstanceManager::signalMastLogicManagerInstance()->isSignalMastUsed((SignalMast*) sm)) {
-            SignalMastLogic* sml = static_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic((SignalMast*) sm);
+            SignalMastLogic* sml = qobject_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic((SignalMast*) sm);
             //jmri.SignalMastLogic sml = InstanceManager.signalMastLogicManagerInstance().getSignalMastLogic((SignalMast)sm);
             if (sml != nullptr && sml->useLayoutEditor(sml->getDestinationList().at(0))) {
                 sb.append(" and any SignalMast Logic associated with it");
@@ -7995,7 +7995,7 @@ void LayoutEditor::onNewTrain()
  */
 /*protected*/ void LayoutEditor::assignBlockToSelection() {
     QString newName = ui->blockIDComboBox->currentText();
-    LayoutBlock* b = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(newName);
+    LayoutBlock* b = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(newName);
     for (LayoutTrack* lt : _layoutTrackSelection) {
         lt->setAllLayoutBlocks(b);
     }

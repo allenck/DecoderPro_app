@@ -86,7 +86,7 @@ float ColorModel::getDefault(int index) {
 
 /*final*/ QString ColorModel::getText(Component* component, QString suffix) {
 //    return UIManager.getString(this->prefix + suffix + "Text", component->getLocale()); // NON-NLS: default postfix
- return "?";
+ return prefix + suffix + "Text";
 }
 
 /*final*/ int ColorModel::getInteger(Component* component, QString suffix) {

@@ -75,7 +75,7 @@ ColorPanel::ColorPanel(ColorModel* model) : JPanel()
 //                insets.left = button.getPreferredSize().width;
 //                border = new EmptyBorder(insets);
        button->setChecked(true);
-//                gbc.insets.top = 5;
+                gbc.insets->top = 5;
    }
    g->addWidget(button, gbc);
    group->addButton(button,i);
@@ -128,7 +128,7 @@ ColorPanel::ColorPanel(ColorModel* model) : JPanel()
 void ColorPanel::buildPanel()
 {
  int count = this->model->getCount();
- this->spinners[4]->setVisible(count > 4);
+ //this->spinners[4]->setVisible(count > 4);
  for (int i = 0; i < count; i++)
  {
   QString text = this->model->getLabel((Component*)this, i);
@@ -138,7 +138,7 @@ void ColorPanel::buildPanel()
       button->setText(text);
 //            button.getAccessibleContext().setAccessibleDescription(text);
   }
-  else if (qobject_cast<JLabel*>(object)) {
+  else if (qobject_cast<QLabel*>(object)) {
       QLabel* label = (QLabel*) object;
       label->setText(text);
   }

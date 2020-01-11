@@ -561,7 +561,7 @@ void CircuitBuilder::editCircuitPaths_triggered()
  if (editingOK())
  {
   PortalManager* portalMgr = (PortalManager*)InstanceManager::getDefault("PortalManager");
-  Portal* portal = portalMgr->getByUserName(portalName);
+  Portal* portal = (Portal*)portalMgr->getByUserName(portalName);
   if (portal == NULL)
   {
 //      JOptionPane.showMessageDialog(_editor, Bundle.getMessage("noSuchPortal", portalName),
@@ -1127,7 +1127,7 @@ void CircuitBuilder::showDoneButton_clicked()
   {
    PortalIcon* pIcon = (PortalIcon*) pos;
    QString name = pIcon->getName();
-   Portal* portal = portalMgr->getByUserName(name);
+   Portal* portal = (Portal*)portalMgr->getByUserName(name);
    if (portal == NULL)
    {
     log->error("No Portal for PortalIcon called \"" + name + "\". Discarding icon.");

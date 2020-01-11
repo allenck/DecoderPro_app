@@ -105,6 +105,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 /*public*/ Sensor* ProxySensorManager::newSensor(QString systemName, QString userName) {
     return (Sensor*) newNamedBean(systemName, userName);
 }
+
 ///*public*/ NamedBean* ProxySensorManager::newNamedBean(QString systemName, QString userName) {
 //    // if the systemName is specified, find that system
 //    int i = matchTentative(systemName);

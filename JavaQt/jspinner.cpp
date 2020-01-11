@@ -79,13 +79,13 @@ JSpinner::JSpinner(SpinnerModel* model, QWidget* parent) : QSpinBox(parent)
 /*public*/ void JSpinner::addChangeListener(ChangeListener* l)
 {
  //listeners.append(l);
- connect(this, SIGNAL(valueChanged(int)), l, SLOT(stateChanged(ChangeEvent*)));
+ connect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
 
 }
 /*public*/ void JSpinner::removeChangeListener(ChangeListener* l)
 {
  //listeners.removeOne(l);
- disconnect(this, SIGNAL(valueChanged(int)), l, SLOT(stateChanged(ChangeEvent*)));
+ disconnect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
 }
 
 ///*public*/ void JSpinner::setVisible(bool b)

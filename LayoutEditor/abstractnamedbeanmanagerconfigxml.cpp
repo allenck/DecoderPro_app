@@ -1,4 +1,5 @@
 #include "abstractnamedbeanmanagerconfigxml.h"
+#include "manager.h"
 
 AbstractNamedBeanManagerConfigXML::AbstractNamedBeanManagerConfigXML(QObject *parent) :
     AbstractXmlAdapter(parent)
@@ -146,7 +147,41 @@ void AbstractNamedBeanManagerConfigXML::storeUserName(NamedBean* t, QDomElement 
  {
   return elem.attribute("systemName");
  }
- return "";
+ return QString();
+}
+/**
+ * Common service routine to check for and report on normalization (errors)
+ * in the incoming NamedBean's name(s)
+ * <p>
+ * If NamedBeam.normalizeUserName changes, this may want to be updated.
+ * <p>
+ * Right now, this just logs. Someday, perhaps it should notify upward of
+ * found issues by throwing an exception.
+ * <p>
+ * Package-level access to allow testing
+ *
+ * @param rawSystemName The proposed system name string, before
+ *                      normalization
+ * @param rawUserName   The proposed user name string, before normalization
+ * @param manager       The NamedBeanManager that will be storing this
+ */
+void AbstractNamedBeanManagerConfigXML::checkNameNormalization(/*@Nonnull*/ QString rawSystemName, QString rawUserName, /*@Nonnull*/ Manager* manager) {
+    // just check and log
+    if (!rawUserName.isNull()) {
+        QString normalizedUserName = NamedBean::normalizeUserName(rawUserName);
+        if (rawUserName != (normalizedUserName)) {
+            log->warn(tr("Requested user name \"%1\" for system name \"%2\" was normalized to \"%3\"").arg(
+                    rawUserName).arg(rawSystemName).arg(normalizedUserName));
+        }
+        if (!normalizedUserName.isNull()) {
+            NamedBean* bean = manager->getByUserName(normalizedUserName);
+            if (bean != nullptr && bean->getSystemName() != (rawSystemName)) {
+                log->warn(tr("User name \"%1\" already exists as system name \"%2\"").arg(normalizedUserName).arg(bean->getSystemName()));
+            }
+        } else {
+            log->warn(tr("User name \"%1\" was normalized into null").arg(rawUserName));
+        }
+    }
 }
 
 /**

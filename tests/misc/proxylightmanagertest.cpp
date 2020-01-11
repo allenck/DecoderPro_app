@@ -102,7 +102,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         Light* t1 = l->newLight(getSystemName(getNumToTest1()), "before");
         Assert::assertNotNull("t1 real object ", t1, __FILE__, __LINE__);
         t1->setUserName("after");
-        Light* t2 = l->getByUserName("after");
+        Light* t2 = (Light*)l->getByUserName("after");
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
         Assert::assertEquals("no old object", nullptr, l->getByUserName("before"), __FILE__, __LINE__);
     }

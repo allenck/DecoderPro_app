@@ -137,7 +137,8 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
 {
  bool result = true;
  QDomNodeList sensorList = sensors.elementsByTagName("sensor");
- if (log->isDebugEnabled()) log->debug("Found "+QString::number(sensorList.size())+" sensors");
+ if (log->isDebugEnabled())
+  log->debug("Found "+QString::number(sensorList.size())+" sensors");
  SensorManager* tm = InstanceManager::sensorManagerInstance();
  tm->setDataListenerMute(true);
  long goingActive = 0L;
@@ -177,7 +178,8 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
 
  for (int i=0; i<sensorList.size(); i++)
  {
-  QString sysName = getSystemName(sensorList.at(i).toElement());
+  QDomElement sen = sensorList.at(i).toElement();
+  QString sysName = getSystemName(sen);
   if (sysName == NULL)
   {
    handleException("Unexpected missing system name while loading sensors",
@@ -187,10 +189,12 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   }
   bool inverted = false;
 
-  QString userName = getUserName(sensorList.at(i).toElement());
+  QString userName = getUserName(sen);
 
-  if (sensorList.at(i).toElement().attribute("inverted") != NULL)
-  if (sensorList.at(i).toElement().attribute("inverted")==("true"))
+  checkNameNormalization(sysName, userName, tm);
+
+  if (sen.attribute("inverted") != NULL)
+  if (sen.attribute("inverted")==("true"))
    inverted = true;
 
   if (log->isDebugEnabled())
@@ -207,11 +211,11 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   }
 
   // load common parts
-  loadCommon(s, sensorList.at(i).toElement());
+  loadCommon(s, sen);
 
-  if(!sensorList.at(i).toElement().firstChildElement("debounceTimers").isNull())
+  if(!sen.firstChildElement("debounceTimers").isNull())
   {
-   QDomElement timer = sensorList.at(i).toElement().firstChildElement("debounceTimers");
+   QDomElement timer = sen.firstChildElement("debounceTimers");
    try
    {
     if(!timer.firstChildElement("goingActive").isNull())
@@ -239,9 +243,9 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
    }
   }
 
-  if (!sensorList.at(i).toElement().firstChildElement("useGlobalDebounceTimer").isNull())
+  if (!sen.firstChildElement("useGlobalDebounceTimer").isNull())
   {
-   if(sensorList.at(i).toElement().firstChildElement("useGlobalDebounceTimer").text()==("yes"))
+   if(sen.firstChildElement("useGlobalDebounceTimer").text()==("yes"))
    {
     s->useDefaultTimerSettings(true);
    }

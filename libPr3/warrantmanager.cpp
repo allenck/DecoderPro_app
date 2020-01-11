@@ -67,7 +67,7 @@ WarrantManager::WarrantManager(QObject *parent) :
     // Check that Warrant does not already exist
     Warrant* r;
     if (userName != "" && userName.trimmed().length() > 0) {
-        r = getByUserName(userName);
+        r = (Warrant*)getByUserName(userName);
         if (r == nullptr) {
             r = getBySystemName(systemName);
         }
@@ -98,7 +98,7 @@ WarrantManager::WarrantManager(QObject *parent) :
  *      that name is a System Name.  If both fail, returns NULL.
  */
 /*public*/ Warrant* WarrantManager::getWarrant(QString name) {
-    Warrant* r = getByUserName(name);
+    Warrant* r = (Warrant*)getByUserName(name);
     if (r!=NULL) return r;
     return getBySystemName(name);
 }
@@ -109,14 +109,14 @@ WarrantManager::WarrantManager(QObject *parent) :
     return (Warrant*)_tsys->value(key);
 }
 
-/*public*/ Warrant* WarrantManager::getByUserName(QString key) {
+/*public*/ NamedBean *WarrantManager::getByUserName(QString key) {
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
     return (Warrant*)_tuser->value(key);
 }
 
 /*public*/ Warrant* WarrantManager::provideWarrant(QString name) {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
-    Warrant* w = getByUserName(name);
+    Warrant* w = (Warrant*)getByUserName(name);
     if (w==NULL) {
         w = getBySystemName(name);
     }

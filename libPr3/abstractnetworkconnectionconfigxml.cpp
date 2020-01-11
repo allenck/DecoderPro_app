@@ -51,6 +51,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
  // many of the following are required by the DTD; failing to include
  // them makes the XML file unreadable, but at least the next
  // invocation of the program can then continue.
+ e.setAttribute("xmlns", "");
 
  storeCommon(e, adapter);
 

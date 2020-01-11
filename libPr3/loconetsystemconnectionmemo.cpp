@@ -29,8 +29,8 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt
  common();
  this->lt = lt;
  this->sm = sm; // doesn't full register, but fine for this purpose.
- _register(); // registers general type
- InstanceManager::store(this, "LocoNetSystemConnectionMemo"); // also register as specific type
+
+ // self-registration is deferred until the command station type is set below
 
  // create and register the LnComponentFactory
  InstanceManager::store(cf = new LnComponentFactory(this),
@@ -46,8 +46,8 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(QObject* parent)
 
  //setSlotManager(sm);
  this->sm = NULL;
- _register(); // registers general type
- InstanceManager::store(this, "LocoNetSystemConnectionMemo"); // also register as specific type
+
+ // self-registration is deferred until the command station type is set below
 
  // create and register the LnComponentFactory
  InstanceManager::store(cf = new LnComponentFactory(this),
@@ -89,6 +89,29 @@ LocoNetSystemConnectionMemo::~LocoNetSystemConnectionMemo()
 }
 
 /**
+ * Do both the default parent
+ * {@link SystemConnectionMemo} registration,
+ * and register this specific type.
+ */
+//@Override
+/*public*/ void LocoNetSystemConnectionMemo::_register() {
+    SystemConnectionMemo::_register(); // registers general type
+    InstanceManager::store(this, "LocoNetSystemConnectionMemo"); // also register as specific type
+}
+
+/**
+ * Provide access to the SlotManager for this particular connection.
+ *
+ * @return the slot manager or null if no valid slot manager is available
+ */
+/*public*/ SlotManager* LocoNetSystemConnectionMemo::getSlotManager() {
+    if (sm == nullptr) {
+        log->debug("slot manager is null, but there should always be a valid SlotManager",  Exception("Traceback"));
+    }
+    return sm;
+}
+
+/**
  * Provides access to the TrafficController for this
  * particular connection.
  */
@@ -111,7 +134,8 @@ void LocoNetSystemConnectionMemo::setLnTrafficController(LnTrafficController* lt
  * @param mTurnoutNoRetry Is the user configuration set for no turnout operation retries?
  * @param mTurnoutExtraSpace Is the user configuration set for extra time between turnout operations?
  */
-/*public*/ void LocoNetSystemConnectionMemo::configureCommandStation(LnCommandStationType* type, bool mTurnoutNoRetry, bool mTurnoutExtraSpace, bool mTranspondingAvailable) {
+/*public*/ void LocoNetSystemConnectionMemo::configureCommandStation(LnCommandStationType* type, bool mTurnoutNoRetry,
+                                                                     bool mTurnoutExtraSpace, bool mTranspondingAvailable) {
     // store arguments
     this->mTurnoutNoRetry = mTurnoutNoRetry;
     this->mTurnoutExtraSpace = mTurnoutExtraSpace;
@@ -119,16 +143,20 @@ void LocoNetSystemConnectionMemo::setLnTrafficController(LnTrafficController* lt
     // create and install SlotManager
     if (sm !=NULL) log->error("Installing SlotManager twice"/*, new Exception("TraceBack")*/);
     sm = type->getSlotManager(lt);
-    if (sm != NULL) sm->setThrottledTransmitter(tm, mTurnoutNoRetry);
+    if (sm != NULL)
+    {
+     sm->setThrottledTransmitter(tm, mTurnoutNoRetry);
 
-    sm->setCommandStationType(type);
-    sm->setSystemConnectionMemo(this);
-    sm->setTranspondingAvailable(mTranspondingAvailable);
+     sm->setCommandStationType(type);
+     sm->setSystemConnectionMemo(this);
+     sm->setTranspondingAvailable(mTranspondingAvailable);
 
-    // store as CommandStation object
-    InstanceManager::setCommandStation((CommandStation*)sm);
-
+     // store as CommandStation object
+     InstanceManager::setCommandStation((CommandStation*)sm);
+    }
+    _register();
 }
+
 /**
  * Provides access to the SlotManager for this
  * particular connection.

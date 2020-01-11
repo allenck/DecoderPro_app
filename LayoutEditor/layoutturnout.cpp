@@ -3887,7 +3887,7 @@ void LayoutTurnout::removeSML(SignalMast* signalMast){
     if(signalMast==nullptr)
         return;
     if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")
-            )->isAdvancedRoutingEnabled() && static_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"
+            )->isAdvancedRoutingEnabled() && qobject_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"
             ))->isSignalMastUsed(signalMast)) {
                 SignallingGuiTools::removeSignalMastLogic(nullptr, signalMast);
             }

@@ -82,7 +82,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     // Check that Logix does not already exist
     Logix* x;
     if (userName!= "" ) {
-        x = getByUserName(userName);
+        x = (Logix*)getByUserName(userName);
         if (x!=nullptr) return nullptr;
     }
     x = getBySystemName(systemName);
@@ -191,7 +191,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  *      that name is a System Name.  If both fail, returns nullptr.
  */
 /*public*/ Logix* DefaultLogixManager::getLogix(QString name) {
-    Logix* x = getByUserName(name);
+    Logix* x = (Logix*)getByUserName(name);
     if (x!=nullptr) return x;
     return getBySystemName(name);
 }
@@ -200,8 +200,8 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     return (Logix*)_tsys->value(name);
 }
 
-/*public*/ Logix* DefaultLogixManager::getByUserName(QString key) {
-    return (Logix*)_tuser->value(key);
+/*public*/ NamedBean *DefaultLogixManager::getByUserName(QString key) {
+    return _tuser->value(key);
 }
 
 /**

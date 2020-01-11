@@ -22,7 +22,7 @@ private:
  /*private*/ QColor color;
  /*private*/ int x = 1;
  /*private*/ int y = 2;
- /*private*/ int z;
+ /*private*/ int z = 0;
  void buildPanel();
  void colorChanged();
  float getValueX();

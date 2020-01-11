@@ -108,7 +108,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
      if (currBlock != nullptr) {
          currUserName = currBlock->getUserName();
          if ((currUserName != "") && !currUserName.isEmpty()) {
-             currLayoutBlock = layoutBlockManager->getByUserName(currUserName);
+             currLayoutBlock = (LayoutBlock*)layoutBlockManager->getByUserName(currUserName);
          }
      }
 
@@ -116,7 +116,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
      if (prevBlock != nullptr) {
          QString prevUserName = prevBlock->getUserName();
          if ((prevUserName != "") && !prevUserName.isEmpty()) {
-             prevLayoutBlock = layoutBlockManager->getByUserName(prevUserName);
+             prevLayoutBlock = (LayoutBlock*)layoutBlockManager->getByUserName(prevUserName);
          }
      }
 
@@ -124,7 +124,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
      if (nextBlock != nullptr) {
          QString nextUserName = nextBlock->getUserName();
          if ((nextUserName != "") && !nextUserName.isEmpty()) {
-             nextLayoutBlock = layoutBlockManager->getByUserName(nextUserName);
+             nextLayoutBlock = (LayoutBlock*)layoutBlockManager->getByUserName(nextUserName);
          }
      }
 
@@ -523,7 +523,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
 /*public*/ QVector<PositionablePoint*>* ConnectivityUtil::getAnchorBoundariesThisBlock(Block* block)
 {
  QVector<PositionablePoint*>* list = new QVector<PositionablePoint*>();
- LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
+ LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(block->getUserName());
  for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
         if ((p->getConnect2()!=nullptr) && (p->getConnect1()!=nullptr))
         {
@@ -545,7 +545,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  */
 /*public*/ QVector<LevelXing*>* ConnectivityUtil::getLevelCrossingsThisBlock(Block* block) {
     QVector<LevelXing*>* list = new QVector<LevelXing*>();
-    LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
+    LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(block->getUserName());
     for (LevelXing* x : layoutEditor->getLevelXings()) {
         bool found = false;
         if ( (x->getLayoutBlockAC()==lBlock) || (x->getLayoutBlockBD()==lBlock) ) found = true;
@@ -579,7 +579,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  */
 /*public*/ QVector<LayoutTurnout*>* ConnectivityUtil::getLayoutTurnoutsThisBlock(Block* block) {
     QVector<LayoutTurnout*>* list = new QVector<LayoutTurnout*>();
-    LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
+    LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(block->getUserName());
     QString lBlockName = block->getUserName();
     for (LayoutTurnout* t : layoutEditor->getLayoutTurnouts()) {
         if ( (t->getBlockName()==(lBlockName)) || (t->getBlockBName()==(lBlockName)) ||
@@ -695,7 +695,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
   log.error("nullptr arguments in call to getSignalHeadAtAnchor");
   return nullptr;
  }
- LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
+ LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(block->getUserName());
 #if 1
  if (((p->getConnect1())->getLayoutBlock()==lBlock) && ((p->getConnect2())->getLayoutBlock()!=lBlock))
  {
@@ -731,7 +731,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
   log.error("nullptr arguments in call to getSignalHeadAtAnchor");
   return nullptr;
  }
- LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
+ LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(block->getUserName());
  if (((p->getConnect1())->getLayoutBlock()==lBlock) && ((p->getConnect2())->getLayoutBlock()!=lBlock))
  {
   if ( (leTools->isAtWestEndOfAnchor(p->getConnect2(), p) && facing) || ((!leTools->isAtWestEndOfAnchor(p->getConnect2(), p)) && (!facing)) )
@@ -781,7 +781,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
   log.error("nullptr arguments in call to getSignalHeadAtLevelXing");
   return nullptr;
  }
- LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
+ LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(block->getUserName());
  if ( (x->getConnectA()==nullptr) || (x->getConnectB()==nullptr) ||
                                         (x->getConnectC()==nullptr) || (x->getConnectD()==nullptr) )
  {
@@ -826,7 +826,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  */
 /*public*/ bool ConnectivityUtil::blockInternalToLevelXing(LevelXing* x, Block* block) {
     if ( (x==nullptr) || (block==nullptr) ) return false;
-    LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
+    LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(block->getUserName());
     if (lBlock==nullptr) return false;
     if ( (x->getConnectA()==nullptr) || (x->getConnectB()==nullptr) ||
                     (x->getConnectC()==nullptr) || (x->getConnectD()==nullptr) ) return false;
@@ -872,7 +872,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  *		generated and 'false' is returned.
  */
 /*public*/ bool ConnectivityUtil::isInternalLevelXingAC(LevelXing* x, Block* block) {
-    LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
+    LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(block->getUserName());
     if ( (((TrackSegment*)x->getConnectA())->getLayoutBlock()==lBlock) &&
             (((TrackSegment*)x->getConnectC())->getLayoutBlock()==lBlock) ) {
         if (x->getLayoutBlockAC()==lBlock) {
@@ -897,7 +897,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  *		generated and 'false' is returned.
  */
 /*public*/ bool ConnectivityUtil::isInternalLevelXingBD(LevelXing* x, Block* block) {
-    LayoutBlock* lBlock = layoutBlockManager->getByUserName(block->getUserName());
+    LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(block->getUserName());
     if ( (((TrackSegment*)x->getConnectB())->getLayoutBlock()==lBlock) &&
             (((TrackSegment*)x->getConnectD())->getLayoutBlock()==lBlock) ) {
         if (x->getLayoutBlockBD()==lBlock) {

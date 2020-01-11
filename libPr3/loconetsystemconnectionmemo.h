@@ -45,6 +45,8 @@ public:
  LocoNetSystemConnectionMemo(QObject* parent=0);
  /*public*/ LocoNetSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name);
  ~LocoNetSystemConnectionMemo();
+ /*public*/ void _register();
+
  /**
   * Provides access to the TrafficController for this
   * particular connection.
@@ -58,7 +60,7 @@ public:
   * Provides access to the SlotManager for this
   * particular connection.
   */
- SlotManager* getSlotManager() { return sm; }
+ SlotManager* getSlotManager();
  void setSlotManager(SlotManager* sm);
  LnMessageManager* getLnMessageManager();
  DefaultProgrammerManager* getProgrammerManager();

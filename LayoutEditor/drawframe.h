@@ -14,7 +14,7 @@ class PositionableShape;
 class QColor;
 class QSlider;
 class QRadioButton;
-class QColorDialog;
+class JColorChooser;
 class QSize;
 class QPoint;
 class ShapeDrawer;
@@ -30,7 +30,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void stateChanged(/*ChangeEvent* e = 0*/QColor);
+    /*public*/ void stateChanged(/*ChangeEvent* e = 0*/ChangeEvent *e);
     //void onSelectionRect(QRectF, QGraphicsSceneMouseEvent*);
     void onLineColor();
     void onFillColor();
@@ -47,7 +47,7 @@ private:
     QColor 	_fillColor;
     int 	_alpha;
 //	Stroke 	_stroke;
-    QColorDialog* _chooser;
+    JColorChooser* _chooser;
     QRadioButton* _lineColorButton;
     QRadioButton* _fillColorButton;
     QSlider* 	_lineSlider;
@@ -62,9 +62,10 @@ private:
     // these 2 methods update the JTextfields when mouse moves handles
     virtual void setDisplayWidth(int w);
     virtual void setDisplayHeight(int h);
+    /*private*/ void colorChange();
     /*private*/ void alphaChange();
     DFWindowListener* listener;
-
+    static Logger* log;
 private slots:
     void On_sensorName_editingFinished();
     void On_doneButton();
@@ -76,10 +77,7 @@ private slots:
 protected:
     /*protected*/ PositionableShape* _shape;       // for use while editing
     /*protected*/ ShapeDrawer* _parent;
-    ///*protected*/ bool _editing;
-    /*protected*/ QWidget* makePanel();
-    ///*protected*/ virtual void setPositionableParams(PositionableShape* ps);
-    /*protected*/ void setDrawParams();
+    /*protected*/ QWidget* makeEditPanel();
     /*protected*/ virtual void closingEvent(bool);
     /*abstract*/ /*protected*/ virtual bool makeFigure(QGraphicsSceneMouseEvent*) {return false;}
     /*abstract*/ /*protected*/ virtual void updateFigure(PositionableShape* /*pos*/) {}

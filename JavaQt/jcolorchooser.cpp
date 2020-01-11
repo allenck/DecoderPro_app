@@ -12,6 +12,11 @@
 #include "jmricolorchooserpanel.h"
 #include "defaultswatchchooserpanel.h"
 #include "colorchoosercomponentfactory.h"
+#include "exceptions.h"
+#include <QMainWindow>
+#include "flowlayout.h"
+#include <QPushButton>
+#include <QTabBar>
 
 /**
  * <code>JColorChooser</code> provides a pane of controls designed to allow
@@ -81,77 +86,105 @@
 /*private*/ /*static*/ /*final*/ QString JColorChooser::uiClassID = "ColorChooserUI";
 
 /**
- * Shows a modal color-chooser dialog and blocks until the
- * dialog is hidden.  If the user presses the "OK" button, then
- * this method hides/disposes the dialog and returns the selected color.
- * If the user presses the "Cancel" button or closes the dialog without
- * pressing "OK", then this method hides/disposes the dialog and returns
- * <code>null</code>.
+ * This method shows a JColorChooser inside a JDialog. The JDialog will
+ * block until it is hidden. The JDialog comes with three buttons: OK,
+ * Cancel, and Reset. Pressing OK or Cancel hide the JDialog. Pressing
+ * Reset will reset the JColorChooser to its initial value.
  *
- * @param component    the parent <code>Component</code> for the dialog
- * @param title        the String containing the dialog's title
- * @param initialColor the initial Color set when the color-chooser is shown
- * @return the selected color or <code>null</code> if the user opted out
- * @exception HeadlessException if GraphicsEnvironment.isHeadless()
- * returns true.
- * @see java.awt.GraphicsEnvironment#isHeadless
+ * @param component The Component that parents the JDialog.
+ * @param title The title displayed in the JDialog.
+ * @param initial The initial color.
+ *
+ * @return The selected color.
  */
-/*public*/ /*static*/ QColor JColorChooser::showDialog(Component* component,
-    QString title, QColor initialColor)/* throws HeadlessException*/ {
+/*public*/ /*static*/ QColor JColorChooser::showDialog(Component* component, QString title,
+                               QColor initial)
+{
+  JColorChooser* choose = new JColorChooser(initial);
 
-    /*final*/ JColorChooser* pane = new JColorChooser(initialColor != QColor()?
-                                           initialColor : QColor(Qt::white));
+  JDialog* dialog = createDialog(component, title, true, choose, nullptr, nullptr);
 
-    ColorTracker* ok = new ColorTracker(pane);
-    ColorChooserDialog* dialog = createDialog(component, title, true, pane, ok, nullptr);
+  dialog->layout()->addWidget(choose);
+  dialog->adjustSize();
+  dialog->show();
 
-//    dialog->addComponentListener(new ColorChooserDialog::DisposeOnClose());
-
-    dialog->show(); // blocks until user brings dialog down...
-
-    return ok->getColor();
-}
-
+  return choose->getColor();
+} // showDialog()
 
 /**
- * Creates and returns a new dialog containing the specified
- * <code>ColorChooser</code> pane along with "OK", "Cancel", and "Reset"
- * buttons. If the "OK" or "Cancel" buttons are pressed, the dialog is
- * automatically hidden (but not disposed).  If the "Reset"
- * button is pressed, the color-chooser's color will be reset to the
- * color which was set the last time <code>show</code> was invoked on the
- * dialog and the dialog will remain showing.
+ * This method will take the given JColorChooser and place it in a JDialog
+ * with the given modal property. Three buttons are displayed in the
+ * JDialog: OK, Cancel and Reset. If OK or Cancel are pressed, the JDialog
+ * is hidden. If Reset is pressed, then the JColorChooser will take on its
+ * default color value. The given okListener will be registered to the OK
+ * button and the cancelListener will be registered to the Cancel button.
+ * If the modal property is set, then the JDialog will block until it is
+ * hidden.
  *
- * @param c              the parent component for the dialog
- * @param title          the title for the dialog
- * @param modal          a boolean. When true, the remainder of the program
- *                       is inactive until the dialog is closed.
- * @param chooserPane    the color-chooser to be placed inside the dialog
- * @param okListener     the ActionListener invoked when "OK" is pressed
- * @param cancelListener the ActionListener invoked when "Cancel" is pressed
- * @return a new dialog containing the color-chooser pane
- * @exception HeadlessException if GraphicsEnvironment.isHeadless()
- * returns true.
- * @see java.awt.GraphicsEnvironment#isHeadless
+ * @param component The Component that will parent the JDialog.
+ * @param title The title displayed in the JDialog.
+ * @param modal The modal property.
+ * @param chooserPane The JColorChooser to place in the JDialog.
+ * @param okListener The ActionListener to register to the OK button.
+ * @param cancelListener The ActionListener to register to the Cancel
+ *        button.
+ *
+ * @return A JDialog with the JColorChooser inside of it.
+ *
+ * @throws AWTError If the component is not a suitable parent.
  */
-/*public*/ /*static*/ ColorChooserDialog* JColorChooser::createDialog(Component* c, QString title, bool modal,
-    JColorChooser* chooserPane, ActionListener* okListener,
-    ActionListener* cancelListener) /*throw HeadlessException*/ {
+/*public*/ /*static*/ JDialog* JColorChooser::createDialog(Component* component, QString title,
+                                   bool modal, JColorChooser* chooserPane,
+                                   ActionListener* okListener,
+                                   ActionListener* cancelListener)
+{
+  QObject* parent = /*findParent*/component->parent();
+  if (parent == nullptr)
+    throw /*AWTError*/Exception("No suitable parent found for Component.");
 
-    QWidget* window = JOptionPane::getWindowForComponent(c);
-    ColorChooserDialog* dialog;
-//    if (window instanceof Frame) {
-//        dialog = new ColorChooserDialog((Frame)window, title, modal, c, chooserPane,
-//                                        okListener, cancelListener);
-//    } else {
-//        dialog = new ColorChooserDialog((Dialog)window, title, modal, c, chooserPane,
-//                                        okListener, cancelListener);
-//    }
-//    dialog.getAccessibleContext().setAccessibleDescription(title);
-    dialog = new ColorChooserDialog((QDialog*)window, title, modal, c, chooserPane,
-                                            okListener, cancelListener);
-    return dialog;
-}
+  JDialog* dialog;
+  //if (parent instanceof Frame)
+  if(qobject_cast<QMainWindow*>(parent))
+    dialog = new JDialog((QMainWindow*) parent, title, true);
+  else
+    dialog = new JDialog((QDialog*) parent, title, true);
+
+  QVBoxLayout* thisLayout;
+  dialog->setLayout(thisLayout = new QVBoxLayout());
+
+  JPanel* panel = new JPanel();
+  FlowLayout* panelLayout;
+  panel->setLayout(panelLayout = new FlowLayout());
+
+  ActionListener* al = new DefaultOKCancelListener(dialog);
+
+  QPushButton* ok = new QPushButton("OK");
+//  ok.addActionListener(okListener);
+  connect(ok, SIGNAL(clicked(bool)), okListener, SLOT(actionPerformed()));
+//  ok.addActionListener(al);
+  connect(ok, SIGNAL(clicked(bool)), al, SLOT(actionPerformed()));
+
+  QPushButton* cancel = new QPushButton("Cancel");
+//  cancel.addActionListener(cancelListener);
+  connect(cancel, SIGNAL(clicked(bool)), cancelListener, SLOT(actionPerformed()));
+//  cancel.addActionListener(al);
+
+  QPushButton* reset = new QPushButton("Reset");
+//  reset.addActionListener(new DefaultResetListener(chooserPane));
+  DefaultResetListener* resetListener = new DefaultResetListener(chooserPane);
+  connect(reset, SIGNAL(clicked(bool)), resetListener, SLOT(actionPerformed()));
+
+  thisLayout->addWidget(chooserPane, 0, Qt::AlignTop);//BorderLayout.NORTH);
+
+  panelLayout->addWidget(ok);
+  panelLayout->addWidget(cancel);
+  panelLayout->addWidget(reset);
+
+  thisLayout->addWidget(panel, 0, Qt::AlignBottom);//BorderLayout.SOUTH);
+
+  return dialog;
+} // createDialog()
+
 
 /**
  * Creates a color chooser pane with an initial color of white.
@@ -270,7 +303,9 @@ void JColorChooser::common(ColorSelectionModel* model)
  * description: The current color the chooser is to display.
  */
 /*public*/ void JColorChooser::setColor(QColor color) {
+ QColor oldC = selectionModel->getSelectedColor();
     selectionModel->setSelectedColor(color);
+    firePropertyChange("colorChange", qvariant_cast<QColor>(oldC), qvariant_cast<QColor>(color));
 }
 
 /**
@@ -481,15 +516,27 @@ void JColorChooser::stateChanged(ChangeEvent* evt)
     firePropertyChange(CHOOSER_PANELS_PROPERTY, VPtr<QVector<AbstractColorChooserPanel*> >::asQVariant(oldValue),
                        VPtr<QVector<AbstractColorChooserPanel*> >::asQVariant(panels));
     tabWidget->clear();
-    foreach(AbstractColorChooserPanel* panel, *chooserPanels)
+//    if(chooserPanels->size() > 1)
     {
-     if(panel == nullptr)
-      continue;
-     panel->installChooserPanel(this);
+     foreach(AbstractColorChooserPanel* panel, *chooserPanels)
+     {
+      if(panel == nullptr)
+       continue;
+      panel->installChooserPanel(this);
 
-     tabWidget->addTab(panel, panel->getTitle());
+      tabWidget->addTab(panel, panel->getTitle());
 
+     }
     }
+    if(chooserPanels->size() == 1)
+     tabWidget->tabBar()->hide();
+//    else
+//    {
+//     layout()->removeWidget(tabWidget);
+//     layout()->addWidget(chooserPanels->at(0));
+//     chooserPanels->at(0)->adjustSize();
+//    }
+
 }
 
 /**

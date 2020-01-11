@@ -8,7 +8,7 @@ class PR3SystemConnectionMemo : public LocoNetSystemConnectionMemo
 {
     Q_OBJECT
 public:
-//    PR3SystemConnectionMemo(LnTrafficController lt,     SlotManager sm);
+ PR3SystemConnectionMemo(LnTrafficController *lt,     SlotManager *sm, QObject *parent = 0);
  explicit PR3SystemConnectionMemo(QObject *parent = 0);
  void configureManagersPR2();
  /**

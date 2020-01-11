@@ -417,7 +417,7 @@ Portal* OBlockManagerXml::loadPortal(QDomElement elem)
  QString fromBlockName = NULL;
  QString toBlockName = NULL;
  // Portals must have user names.
- Portal* portal = _portalMgr->getByUserName(userName);
+ Portal* portal = (Portal*)_portalMgr->getByUserName(userName);
  if (portal != NULL)
  {
   fromBlockName = portal->getFromBlock()->getSystemName();

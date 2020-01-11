@@ -25,6 +25,17 @@
 LnNetworkPortController(new LocoNetSystemConnectionMemo(), parent)
 {
  //super(new LocoNetSystemConnectionMemo());
+ common();
+
+}
+/*public*/ LnTcpDriverAdapter::LnTcpDriverAdapter(LocoNetSystemConnectionMemo* m, QObject *parent)
+ : LnNetworkPortController(m, parent)
+{
+ common();
+}
+
+void LnTcpDriverAdapter::common()
+{
  setObjectName("LnTcpDriverAdapter");
  log = new Logger("LnTcpDriverAdapter");
  opened = false;

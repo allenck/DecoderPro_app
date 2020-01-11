@@ -778,7 +778,7 @@ SectionManager* InstanceManager::sectionManagerInstance()
      SignalMastLogicManager* r = (SignalMastLogicManager*)getDefault("SignalMastLogicManager");
     if (r != nullptr) return r;
     r = (SignalMastLogicManager*)initializer->getDefault("SignalMastLogicManager");
-    store(r, "SignalMastLogicManager");
+    store((QObject*)r, "SignalMastLogicManager");
     return r;
 }
 

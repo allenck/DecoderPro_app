@@ -5998,6 +5998,39 @@ if (_wrapper) {
 }
   return LogixManager::getBeanTypeHandled(plural0);
 }
+NamedBean*  PythonQtShell_LogixManager::getByUserName(QString  userName0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getByUserName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&userName0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LogixManager::getByUserName(userName0);
+}
 QString  PythonQtShell_LogixManager::getEntryToolTip()
 {
 if (_wrapper) {
@@ -7081,6 +7114,39 @@ if (_wrapper) {
 }
   return Manager::getBeanTypeHandled(plural0);
 }
+NamedBean*  PythonQtShell_Manager::getByUserName(QString  userName0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getByUserName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&userName0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return 0;
+}
 QString  PythonQtShell_Manager::getEntryToolTip()
 {
 if (_wrapper) {
@@ -7806,6 +7872,11 @@ QString  PythonQtWrapper_Manager::getBeanTypeHandled(Manager* theWrappedObject, 
   return ( theWrappedObject->getBeanTypeHandled(plural));
 }
 
+NamedBean*  PythonQtWrapper_Manager::getByUserName(Manager* theWrappedObject, QString  userName)
+{
+  return ( theWrappedObject->getByUserName(userName));
+}
+
 QString  PythonQtWrapper_Manager::getEntryToolTip(Manager* theWrappedObject)
 {
   return ( theWrappedObject->getEntryToolTip());
@@ -8334,6 +8405,39 @@ if (_wrapper) {
   }
 }
   return MemoryManager::getBeanTypeHandled(plural0);
+}
+NamedBean*  PythonQtShell_MemoryManager::getByUserName(QString  userName0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getByUserName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&userName0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return MemoryManager::getByUserName(userName0);
 }
 QString  PythonQtShell_MemoryManager::getEntryToolTip()
 {
@@ -23101,7 +23205,7 @@ Light*  PythonQtWrapper_ProxyLightManager::getBySystemName(ProxyLightManager* th
   return ( theWrappedObject->getBySystemName(systemName));
 }
 
-Light*  PythonQtWrapper_ProxyLightManager::getByUserName(ProxyLightManager* theWrappedObject, QString  userName)
+NamedBean*  PythonQtWrapper_ProxyLightManager::getByUserName(ProxyLightManager* theWrappedObject, QString  userName)
 {
   return ( theWrappedObject->getByUserName(userName));
 }
@@ -23935,6 +24039,39 @@ if (_wrapper) {
   }
 }
   return ReporterManager::getBeanTypeHandled(plural0);
+}
+NamedBean*  PythonQtShell_ReporterManager::getByUserName(QString  userName0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getByUserName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&userName0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return ReporterManager::getByUserName(userName0);
 }
 QString  PythonQtShell_ReporterManager::getEntryToolTip()
 {

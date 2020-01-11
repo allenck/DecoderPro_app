@@ -68,7 +68,7 @@
         QString title = dialogTitle == "" ? "" : dialogTitle;
         JColorChooser* chooser = extendColorChooser(new JColorChooser(color));
         //JCCActionListener* listener = new JCCActionListener(chooser, this);
-        ColorChooserDialog* d = JColorChooser::createDialog(nullptr, title, true, chooser, nullptr,nullptr);
+        JDialog* d = JColorChooser::createDialog(nullptr, title, true, chooser, nullptr,nullptr);
 //            ((ActionEvent e) -> {
 //                color = chooser.getColor();
 //            }),

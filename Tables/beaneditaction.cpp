@@ -20,6 +20,11 @@
 #include "beanedititem.h"
 #include <QLabel>
 //#include "jtextpane.h"
+#include "gridbaglayout.h"
+#include <QComboBox>
+#include <QRadioButton>
+#include "jcolorchooser.h"
+#include <QCheckBox>
 
 BeanEditAction::BeanEditAction(QObject *parent) :
   QAction("Bean Edit", parent)
@@ -360,7 +365,7 @@ void BeanEditAction::On_okBut_clicked()
  */
 /*protected*/ void BeanEditAction::addToPanel(QWidget* panel, QList<BeanEditItem*> items)
 {
- QGridLayout* gbLayout = new QGridLayout();
+ GridBagLayout* gbLayout = new GridBagLayout();
  GridBagConstraints cL =  GridBagConstraints();
  GridBagConstraints cD =  GridBagConstraints();
  GridBagConstraints cR =  GridBagConstraints();
@@ -390,14 +395,25 @@ void BeanEditAction::On_okBut_clicked()
 
    //gbLayout.setConstraints(decript, cL);
    p->setLayout(gbLayout);
-   gbLayout->addWidget(decript, cL.gridy, cL.gridx);
+   gbLayout->addWidget(decript, cL);
 
    cD.gridx = 1;
    cD.gridy = y;
 
-   //gbLayout.setConstraints(it->getComponent(), cD);
-
-   gbLayout->addWidget(it->getComponent(), cD.gridx, cD.gridy);
+   QWidget* thing = it->getComponent();
+   //log.debug("descript: '" + it.getDescription() + "', thing: " + thing.getClass().getName());
+   if (qobject_cast<QComboBox*>(thing)
+           || qobject_cast<JTextField*>(thing)
+           || qobject_cast<QCheckBox*>(thing)
+           || qobject_cast<QRadioButton*>(thing)) {
+       cD.insets = new Insets(0, 0, 0, 0); // put a little higher than a JLabel
+   } else if (qobject_cast<JColorChooser*>(thing)) {
+       cD.insets = new Insets(-6, 0, 0, 0); // move it up
+   } else {
+       cD.insets = new Insets(4, 0, 0, 0); // reset
+   }
+   gbLayout->setConstraints(cD);
+   gbLayout->addWidget(thing, cD);
 
    cR.gridx = 2;
    cR.gridwidth = 1;
@@ -417,7 +433,7 @@ void BeanEditAction::On_okBut_clicked()
    help->setText(it->getHelp());
    //gbLayout.setConstraints(help, cR);
    formatTextAreaAsLabel(help);
-   gbLayout->addWidget(help, cR.gridy, cR.gridx);
+   gbLayout->addWidget(help, cR);
   }
   y++;
  }

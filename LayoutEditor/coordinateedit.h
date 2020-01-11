@@ -24,13 +24,13 @@ class LIBLAYOUTEDITORSHARED_EXPORT CoordinateEdit : public JmriJFrame
 public:
     explicit CoordinateEdit(QWidget* parent = 0);
     /*public*/ static QAction* getTextEditAction(/*const*/ Positionable* pos, const QString title, QObject* parent);
-    /*public*/ static QAction* getLevelEditAction(/*final*/ Positionable* pos, QObject* parent);
+    /*public*/ static QAction* getLevelEditAction(/*final*/ Positionable* pos, QObject *parent);
     /*public*/ static QAction* getCoordinateEditAction(/*final*/ Positionable* pos, QObject *parent);
     /*public*/ void init(QString title, Positionable* pos, bool showName);
     /*public*/ void initSetXY();
     /*public*/ void initSetLevel();
     /*public*/ void initText();
-    /*public*/ static QAction* getRotateEditAction(/*final*/ Positionable* pos, CoordinateEdit* parent);
+    /*public*/ static QAction* getRotateEditAction(/*final*/ Positionable* pos, QObject *parent);
     /*public*/ static QAction* getScaleEditAction(/*final*/ Positionable* pos, CoordinateEdit* parent);
     /*public*/ void initRotate();
     /*public*/ void initScale();
@@ -39,14 +39,14 @@ public:
     /*public*/ void initMargin();
     /*public*/ void initFixedSize();
     //static Positionable* pos;
-    /*public*/ static QAction* getBorderEditAction(/*final*/ Positionable* pos, QObject* parent);
+    /*public*/ static QAction* getBorderEditAction(/*final*/ Positionable* pos, QObject *parent);
     /*public*/ void initBorder();
     /*public*/ /*static*/ QAction* getNameEditAction(/*final*/ Positionable* pos);
     /*public*/ void  initSetName();
-    /*public*/ static AbstractAction* getTooltipEditAction(/*final*/ Positionable* pos, QObject* parent);
+    /*public*/ static AbstractAction* getTooltipEditAction(/*final*/ Positionable* pos, QObject *parent);
     /*public*/ void initSetTip();
  /*public*/ static AbstractAction* getLinkEditAction(/*final*/ Positionable* pos, /*final*/ QString title, QObject* parent);
- /*public*/ static AbstractAction* getZoomEditAction(/*final*/ Positionable* pos, QObject* parent);
+ /*public*/ static AbstractAction* getZoomEditAction(/*final*/ Positionable* pos, QObject *parent);
  /*public*/ void initZoom();
  /*public*/ void initLink();
 
@@ -135,8 +135,9 @@ class SetBorderSizeActionListener : public ActionListener
 {
  Q_OBJECT
     Positionable* pos;
+    QObject* parent;
 public:
-    SetBorderSizeActionListener(Positionable* pos);
+    SetBorderSizeActionListener(Positionable* pos, QObject* parent);
  public slots:
     void actionPerformed(ActionEvent *e = 0);
 };
@@ -177,10 +178,10 @@ public slots:
 class ScaleEditAction : public AbstractAction
 {
  Q_OBJECT
- QObject* parent;
+ CoordinateEdit* parent;
  Positionable* pos;
 public:
- ScaleEditAction(Positionable* pos, QString name, QObject* parent);
+ ScaleEditAction(Positionable* pos, QString name, CoordinateEdit* parent);
 public slots:
  void on_getScaleEditAction_triggered();
 };
@@ -188,10 +189,10 @@ public slots:
 class GetNameEditAction : public AbstractAction
 {
  Q_OBJECT
- QObject* parent;
+ CoordinateEdit* parent;
  Positionable* pos;
 public:
- GetNameEditAction(Positionable* pos, QString name, QObject* parent);
+ GetNameEditAction(Positionable* pos, QString name, CoordinateEdit* parent);
 public slots:
  void renamePanelMenu();
 };
@@ -199,10 +200,10 @@ public slots:
 class ActionFixedSizeEdit : public AbstractAction
 {
  Q_OBJECT
- QObject* parent;
+ PositionablePopupUtil* parent;
  Positionable* pos;
 public:
- ActionFixedSizeEdit(Positionable* pos, QString name, QObject* parent);
+ ActionFixedSizeEdit(Positionable* pos, QString name, PositionablePopupUtil* parent);
 public slots:
  void on_actionGetFixedSizeEdit_triggered();
 };
@@ -212,7 +213,7 @@ class RotateAction : public AbstractAction
  QObject* parent;
  Positionable* pos;
 public:
- RotateAction(Positionable* pos, QString name, QObject* parent);
+ RotateAction(Positionable* pos, QString name, QObject *parent);
 public slots:
  void on_rotateAction_triggered();
 };

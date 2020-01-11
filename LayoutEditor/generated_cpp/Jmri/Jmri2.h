@@ -510,6 +510,7 @@ virtual void timerEvent(QTimerEvent*  event);
 
 class PythonQtPublicPromoter_LocoNetSystemConnectionMemo : public LocoNetSystemConnectionMemo
 { public:
+inline void py_q__register() { LocoNetSystemConnectionMemo::_register(); }
 inline void py_q_dispose() { LocoNetSystemConnectionMemo::dispose(); }
 inline Manager*  py_q_get(QString  T) { return LocoNetSystemConnectionMemo::get(T); }
 inline bool  py_q_provides(QString  type) { return LocoNetSystemConnectionMemo::provides(type); }
@@ -522,6 +523,7 @@ public slots:
 LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(QObject*  parent = 0);
 LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(QString  prefix, QString  name);
 void delete_LocoNetSystemConnectionMemo(LocoNetSystemConnectionMemo* obj) { delete obj; } 
+   void py_q__register(LocoNetSystemConnectionMemo* theWrappedObject){  (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q__register());}
    void configureCommandStation(LocoNetSystemConnectionMemo* theWrappedObject, LnCommandStationType*  type, bool  mTurnoutNoRetry, bool  mTurnoutExtraSpace, bool  mTranspondingAvailable);
    void configureManagers(LocoNetSystemConnectionMemo* theWrappedObject);
    void py_q_dispose(LocoNetSystemConnectionMemo* theWrappedObject){  (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_dispose());}
@@ -611,6 +613,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled(bool  plural);
+virtual NamedBean*  getByUserName(QString  userName);
 virtual QString  getEntryToolTip();
 virtual bool  getLoadDisabled();
 virtual SystemConnectionMemo*  getMemo();
@@ -687,6 +690,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  arg__1);
 virtual NamedBean*  getBeanByUserName(QString  arg__1);
 virtual QString  getBeanTypeHandled(bool  plural);
+virtual NamedBean*  getByUserName(QString  userName);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  arg__1);
@@ -726,6 +730,7 @@ inline void py_q_dispose() { Manager::dispose(); }
 inline NamedBean*  py_q_getBeanBySystemName(QString  arg__1) { return Manager::getBeanBySystemName(arg__1); }
 inline NamedBean*  py_q_getBeanByUserName(QString  arg__1) { return Manager::getBeanByUserName(arg__1); }
 inline QString  py_q_getBeanTypeHandled(bool  plural) { return Manager::getBeanTypeHandled(plural); }
+inline NamedBean*  py_q_getByUserName(QString  userName) { return this->getByUserName(userName); }
 inline QString  py_q_getEntryToolTip() { return Manager::getEntryToolTip(); }
 inline SystemConnectionMemo*  py_q_getMemo() { return Manager::getMemo(); }
 inline NamedBean*  py_q_getNamedBean(QString  arg__1) { return Manager::getNamedBean(arg__1); }
@@ -776,6 +781,8 @@ void delete_Manager(Manager* obj) { delete obj; }
    QString  getBeanTypeHandled(Manager* theWrappedObject);
    QString  getBeanTypeHandled(Manager* theWrappedObject, bool  plural);
    QString  py_q_getBeanTypeHandled(Manager* theWrappedObject, bool  plural){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
+   NamedBean*  getByUserName(Manager* theWrappedObject, QString  userName);
+   NamedBean*  py_q_getByUserName(Manager* theWrappedObject, QString  userName){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getByUserName(userName));}
    QString  getEntryToolTip(Manager* theWrappedObject);
    QString  py_q_getEntryToolTip(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getEntryToolTip());}
    SystemConnectionMemo*  getMemo(Manager* theWrappedObject);
@@ -855,6 +862,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled(bool  plural);
+virtual NamedBean*  getByUserName(QString  userName);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
@@ -2566,7 +2574,7 @@ void delete_ProxyLightManager(ProxyLightManager* obj) { delete obj; }
    QString  convertSystemNameToAlternate(ProxyLightManager* theWrappedObject, QString  systemName);
    QString  getBeanTypeHandled(ProxyLightManager* theWrappedObject, bool  plural);
    Light*  getBySystemName(ProxyLightManager* theWrappedObject, QString  systemName);
-   Light*  getByUserName(ProxyLightManager* theWrappedObject, QString  userName);
+   NamedBean*  getByUserName(ProxyLightManager* theWrappedObject, QString  userName);
    QString  getEntryToolTip(ProxyLightManager* theWrappedObject);
    Light*  getLight(ProxyLightManager* theWrappedObject, QString  name);
    int  getXMLOrder(ProxyLightManager* theWrappedObject);
@@ -2719,6 +2727,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled(bool  plural);
+virtual NamedBean*  getByUserName(QString  userName);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);

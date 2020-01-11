@@ -1,6 +1,6 @@
 #ifndef SIGNALMASTLOGICMANAGER_H
 #define SIGNALMASTLOGICMANAGER_H
-#include "manager.h"
+#include "abstractmanager.h"
 #include "exceptions.h"
 #include "libPr3_global.h"
 #include "propertychangesupport.h"
@@ -27,9 +27,11 @@
 class SignalMast;
 class LayoutEditor;
 class SignalMastLogic;
-/*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalMastLogicManager : public Manager {
+/*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalMastLogicManager : public AbstractManager
+{
+ Q_OBJECT
 public:
- SignalMastLogicManager(QObject* parent=0) : Manager(parent) {}
+ SignalMastLogicManager(QObject* parent=0) : AbstractManager(parent) {}
     /*public void addDestinationMastToLogic(SignalMastLogic src, SignalMast destination) = 0;*/
 
     /**
@@ -114,7 +116,7 @@ public:
     /*public*/ virtual bool isSignalMastUsed(SignalMast* mast) = 0;
 
     /*public*/ virtual void setSignalLogicDelay(long l) = 0;
-    PropertyChangeSupport* pcs;
+    //PropertyChangeSupport* pcs;
  friend class RunnableThis;
  friend class DestinationMast;
  friend class LevelXing;
@@ -125,5 +127,4 @@ public:
  friend class LayoutTurnout;
  friend class LayoutSlip;
 };
-
 #endif // SIGNALMASTLOGICMANAGER_H

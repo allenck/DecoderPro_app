@@ -59,7 +59,7 @@ public:
          * instance already exists.
          * @return requested CatalogTree object or null if none exists
          */
-        virtual CatalogTree* getByUserName(QString userName);
+        virtual NamedBean* getByUserName(QString userName);
 
         /**
          * Return an instance with the specified system and user names.

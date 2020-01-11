@@ -61,7 +61,7 @@ public:
          */
         virtual Logix* getLogix(QString /*name*/) {return NULL;}
 
-        virtual Logix* getByUserName(QString /*s*/) {return NULL;}
+        //virtual Logix* getByUserName(QString /*s*/) {return NULL;}
         virtual Logix* getBySystemName(QString /*s*/) {return NULL;}
 
         /**

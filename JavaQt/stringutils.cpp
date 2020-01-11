@@ -5514,7 +5514,7 @@ public class StringUtils {
         }
         return true;
     }
-
+#endif
     /**
      * <p>Checks if the String contains only unicode digits.
      * A decimal point is not a unicode digit and returns false.</p>
@@ -5536,19 +5536,21 @@ public class StringUtils {
      * @param str  the String to check, may be NULL
      * @return <code>true</code> if only contains digits, and is non-NULL
      */
-    public static boolean isNumeric(String str) {
+    /*public*/ /*static*/ bool StringUtils::isNumeric(QString str) {
         if (str == NULL) {
             return false;
         }
         int sz = str.length();
         for (int i = 0; i < sz; i++) {
-            if (Character.isDigit(str.charAt(i)) == false) {
-                return false;
-            }
+            //if (Character.isDigit(str.charAt(i)) == false)
+         if(!str.at(i).isDigit())
+         {
+             return false;
+         }
         }
         return true;
     }
-
+#if 0
     /**
      * <p>Checks if the String contains only unicode digits or space
      * (<code>' '</code>).

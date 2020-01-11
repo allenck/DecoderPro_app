@@ -36,7 +36,7 @@ Reporter* AbstractReporterManager::provideReporter(QString sName) {
 }
 
 Reporter* AbstractReporterManager::getReporter(QString name) {
-    Reporter* t = getByUserName(name);
+    Reporter* t = (Reporter*)getByUserName(name);
     if (t!=nullptr) return t;
 
     return getBySystemName(name);
@@ -47,7 +47,7 @@ Reporter* AbstractReporterManager::getBySystemName(QString name)
     return (Reporter*)_tsys->value(name);
 }
 
-Reporter* AbstractReporterManager::getByUserName(QString key) {
+NamedBean *AbstractReporterManager::getByUserName(QString key) {
     return (Reporter*)_tuser->value(key);
 }
 
@@ -60,7 +60,7 @@ Reporter* AbstractReporterManager::getByUserName(QString key) {
 Reporter* AbstractReporterManager::getByDisplayName(QString key) {
 // First try to find it in the user list.
 // If that fails, look it up in the system list
-Reporter* retv = this->getByUserName(key);
+Reporter* retv = (Reporter*)this->getByUserName(key);
 if (retv == nullptr) {
     retv = this->getBySystemName(key);
 }
@@ -80,7 +80,7 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
     }
     // return existing if there is one
     Reporter* r;
-    if ( (userName!=NULL) && ((r = getByUserName(userName)) != NULL)) {
+    if ( (userName!=NULL) && ((r = (Reporter*)getByUserName(userName)) != NULL)) {
         if (getBySystemName(systemName)!=r)
             log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+r->getSystemName()+")");
         return r;

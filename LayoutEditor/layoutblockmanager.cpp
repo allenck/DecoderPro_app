@@ -77,7 +77,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   log.error("Attempt to create a LayoutBlock with no user name");
   return NULL;
  }
- block = getByUserName(userName);
+ block = (LayoutBlock*)getByUserName(userName);
  if (block!=NULL) return NULL;
  // here if not found under user name
  QString sName = "";
@@ -139,7 +139,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  *      that name is a System Name.  If both fail, returns NULL.
  */
 /*public*/ LayoutBlock* LayoutBlockManager::getLayoutBlock(QString name) {
-    LayoutBlock* block = getByUserName(name);
+    LayoutBlock* block = (LayoutBlock*)getByUserName(name);
     if (block!=NULL) return block;
     return getBySystemName(name);
 }
@@ -169,7 +169,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     return (LayoutBlock*)_tsys->value(key);
 }
 
-/*public*/ LayoutBlock* LayoutBlockManager::getByUserName(QString key) {
+/*public*/ NamedBean *LayoutBlockManager::getByUserName(QString key) {
     return (LayoutBlock*)_tuser->value(key);
 }
 /*static*/ /*public*/ LayoutBlockManager* LayoutBlockManager::instance() {
@@ -308,8 +308,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         return NULL;
     }
     // non-NULL - check if input corresponds to Blocks in a Layout Editor panel.
-    LayoutBlock* fLayoutBlock = getByUserName(facingBlock->getUserName());
-    LayoutBlock* pLayoutBlock = getByUserName(protectedBlock->getUserName());
+    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName());
+    LayoutBlock* pLayoutBlock = (LayoutBlock*)getByUserName(protectedBlock->getUserName());
     if ( (fLayoutBlock==NULL) || (pLayoutBlock==NULL) ) {
         if (fLayoutBlock==NULL) log.error("Block "+facingBlock->getSystemName()+"is not on a Layout Editor panel.");
         if (pLayoutBlock==NULL) log.error("Block "+protectedBlock->getSystemName()+"is not on a Layout Editor panel.");
@@ -1159,7 +1159,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         log.error ("NULL block in call to getFacingSignalMast");
         return NULL;
     }
-    LayoutBlock* fLayoutBlock = getByUserName(facingBlock->getUserName());
+    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName());
     if (fLayoutBlock==NULL){
         log.error("Block "+facingBlock->getSystemName()+"is not on a Layout Editor panel.");
         return NULL;
@@ -1205,7 +1205,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   log.error ("NULL block in call to getFacingSensor");
   return NULL;
  }
- LayoutBlock* fLayoutBlock = getByUserName(facingBlock->getUserName());
+ LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName());
  if (fLayoutBlock==NULL)
  {
   log.error("Block "+facingBlock->getSystemName()+"is not on a Layout Editor panel.");
@@ -1278,8 +1278,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         return NULL;
     }
     // non-NULL - check if input corresponds to Blocks in a Layout Editor panel.
-    LayoutBlock* fLayoutBlock = getByUserName(facingBlock->getUserName());
-    LayoutBlock* pLayoutBlock = getByUserName(protectedBlock->getUserName());
+    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName());
+    LayoutBlock* pLayoutBlock = (LayoutBlock*)getByUserName(protectedBlock->getUserName());
     if ( (fLayoutBlock==NULL) || (pLayoutBlock==NULL) ) {
         if (fLayoutBlock==NULL) log.error("Block "+facingBlock->getSystemName()+" is not on a Layout Editor panel.");
         if (pLayoutBlock==NULL) log.error("Block "+protectedBlock->getSystemName()+" is not on a Layout Editor panel.");
@@ -1459,8 +1459,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         return NULL;
     }
     // non-NULL - check if input corresponds to Blocks in a Layout Editor panel.
-    LayoutBlock* fLayoutBlock = getByUserName(facingBlock->getUserName());
-    LayoutBlock* pLayoutBlock = getByUserName(protectedBlock->getUserName());
+    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName());
+    LayoutBlock* pLayoutBlock = (LayoutBlock*)getByUserName(protectedBlock->getUserName());
     if ( (fLayoutBlock==NULL) || (pLayoutBlock==NULL) ) {
         if (fLayoutBlock==NULL) log.error("Block "+facingBlock->getSystemName()+"is not on a Layout Editor panel.");
         if (pLayoutBlock==NULL) log.error("Block "+protectedBlock->getSystemName()+"is not on a Layout Editor panel.");

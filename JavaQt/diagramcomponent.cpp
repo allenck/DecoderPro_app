@@ -3,6 +3,7 @@
 #include "colorpanel.h"
 #include "insets.h"
 #include <QMouseEvent>
+#include <QImage>
 
 /*
  * Copyright (c) 2008, Oracle and/or its affiliates. All rights reserved.
@@ -43,67 +44,89 @@
 // /*final*/ class DiagramComponent extends JComponent implements MouseListener, MouseMotionListener {
 
 
-    DiagramComponent::DiagramComponent(ColorPanel* panel, bool diagram) {
+    DiagramComponent::DiagramComponent(ColorPanel* panel, bool diagram, QWidget *parent)
+      : QFrame(parent)
+    {
      insets = new Insets(0, 0, 0, 0);;
 
-        this->panel = panel;
-        this->diagram = diagram;
+     this->panel = panel;
+     this->diagram = diagram;
 //        addMouseListener(this);
 //        addMouseMotionListener(this);
     }
 
     /*public*/ void DiagramComponent::paintEvent(QPaintEvent */*event*/)
     {
-     QPainter* painter = new QPainter(this);
-     paintComponent(painter);
+     //QPainter* painter = new QPainter(this);
+     paintComponent();
     }
 
 
     //@Override
-    /*protected*/ void DiagramComponent::paintComponent(QPainter* /*painter*/) {
-        getInsets(this->insets);
-        this->width = getWidth() - this->insets->left - this->insets->right;
-        this->height = getHeight() - this->insets->top - this->insets->bottom;
+    /*protected*/ void DiagramComponent::paintComponent()
+    {
+     getInsets(this->insets);
+     this->width = getWidth() - this->insets->left - this->insets->right;
+     this->height = getHeight() - this->insets->top - this->insets->bottom;
 
-        bool update = (this->image == nullptr)
-                || (this->width != this->image->width())
-                || (this->height != this->image->height());
-        if (update) {
-            int size = this->width * this->height;
-            if ((this->array.isEmpty()) || (this->array.length() < size)) {
-                this->array = QVector<int>(size);
-            }
-            this->image = new BufferedImage(this->width, this->height, /*BufferedImage::TYPE_INT_RGB*/QImage::Format_RGB16);
-        }
-        {
-            float dx = 1.0f / (float) (this->width - 1);
-            float dy = 1.0f / (float) (this->height - 1);
+     bool update = (this->image == nullptr)
+             || (this->width != this->image->width())
+             || (this->height != this->image->height());
+     if (update) {
+         int size = this->width * this->height;
+         if ((this->array.isEmpty()) || (this->array.length() < size)) {
+             this->array = QVector<int>(size);
+         }
+         this->image = new BufferedImage(this->width, this->height, /*BufferedImage::TYPE_INT_RGB*/QImage::Format_ARGB32_Premultiplied);
+     }
+     {
+         float dx = 1.0f / (float) (this->width - 1);
+         float dy = 1.0f / (float) (this->height - 1);
 
-            int offset = 0;
-            float y = 0.0f;
-            for (int h = 0; h < this->height; h++, y += dy) {
-                if (this->diagram) {
-                    float x = 0.0f;
-                    for (int w = 0; w < this->width; w++, x += dx, offset++) {
-                        this->array[offset] = this->panel->getColor(x, y);
-                    }
-                }
-                else {
-                    int color = this->panel->getColor(y);
-                    for (int w = 0; w < this->width; w++, offset++) {
-                        this->array[offset] = color;
-                    }
-                }
-            }
-        }
-        this->image->setRGB(0, 0, this->width, this->height, this->array, 0, this->width);
-#if 0
-        painter.drawImage(this->image, this->insets->left, this->insets->top, this->width, this->height, this);
+         int offset = 0;
+         float y = 0.0f;
+         for (int h = 0; h < this->height; h++, y += dy) {
+             if (this->diagram) {
+                 float x = 0.0f;
+                 for (int w = 0; w < this->width; w++, x += dx, offset++) {
+                     this->array[offset] = this->panel->getColor(x, y);
+                 }
+             }
+             else {
+                 int color = this->panel->getColor(y);
+                 for (int w = 0; w < this->width; w++, offset++) {
+                     this->array[offset] = color;
+                 }
+             }
+         }
+     }
+//     this->image->setRGB(0, 0, this->width, this->height, this->array, 0, this->width);
+     QPainter painter(this);
+
+     //painter.drawImage(this->image, this->insets->left, this->insets->top, this->width, this->height, this);
+//     painter.drawImage(QRect( this->insets->left, this->insets->top, this->width, this->height), *image);
+     QLinearGradient colorGradient = QLinearGradient(0, 0, this->width, 0);
+     colorGradient.setSpread(QGradient::RepeatSpread);
+     colorGradient.setColorAt(0, QColor(255,255,255));
+     colorGradient.setColorAt(1, this->panel->getColor(0));
+
+     QLinearGradient blackGradient = QLinearGradient(0, 0, 0, height);
+     blackGradient.setSpread(QGradient::RepeatSpread);
+     blackGradient.setColorAt(0, QColor(0,0,0,0));
+     blackGradient.setColorAt(1, QColor(0,0,0,255));
+
+
+     QBrush colorGradiantBrush = QBrush(colorGradient);
+     QBrush blackGradiantBrush = QBrush(blackGradient);
+     painter.setBackground(colorGradiantBrush);
+     painter.fillRect(QRect( this->insets->left, this->insets->top, this->width, this->height), blackGradiantBrush);
+#if 1
         if (isEnabled()) {
             this->width--;
             this->height--;
-            painter.setXORMode(Color.WHITE);
-            painter.setColor(Color.BLACK);
+            //painter.setXORMode(Color.WHITE);
+         painter.setCompositionMode(QPainter::CompositionMode_Xor);
+         painter.setPen(QColor(Qt::black));
             if (this->diagram) {
                 int x = getValue(this->panel->getValueX(), this->insets->left, this->width);
                 int y = getValue(this->panel->getValueY(), this->insets->top, this->height);
@@ -111,10 +134,10 @@
                 painter.drawLine(x, y - 8, x, y + 8);
             }
             else {
-                int z = getValue(this->panel->getValueZ(), this->insets.top, this->height);
+                int z = getValue(this->panel->getValueZ(), this->insets->top, this->height);
                 painter.drawLine(this->insets->left, z, this->insets->left + this->width, z);
             }
-            painter.setPaintMode();
+//            painter.setPaintMode();
         }
 #endif
     }

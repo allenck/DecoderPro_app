@@ -109,7 +109,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
         t->setUserName("Fred");
 
         // Try a successful one
-        t = ((AbstractReporterManager*)l)->getByUserName("Fred");
+        t = (Reporter*)((AbstractReporterManager*)l)->getByUserName("Fred");
         Assert::assertTrue("get retrieved existing object ", t != nullptr, __FILE__, __LINE__);
 
         // Try a nonexistant one. Should return null
@@ -181,7 +181,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
         Reporter* t1 = ((ProxyReporterManager*)l)->newReporter(getSystemName(getNameToTest1()), "before");
         Assert::assertNotNull("t1 real object ", t1, __FILE__, __LINE__);
         t1->setUserName("after");
-        Reporter* t2 = ((AbstractReporterManager*)l)->getByUserName("after");
+        Reporter* t2 =(Reporter*) ((AbstractReporterManager*)l)->getByUserName("after");
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
         Assert::assertEquals("no old object", nullptr, ((AbstractReporterManager*)l)->getByUserName("before"), __FILE__, __LINE__);
     }

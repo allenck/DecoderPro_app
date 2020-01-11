@@ -222,7 +222,7 @@ void SignallingSourcePanel::discoverPressed(/*ActionEvent e*/)
 /*private*/ void SignallingSourcePanel::updateDetails()
 {
  SignalMastLogic* old = sml;
- sml = static_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(sourceMast);
+ sml = qobject_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(sourceMast);
  if (sml!=NULL)
  {
   _signalMastList = sml->getDestinationList();

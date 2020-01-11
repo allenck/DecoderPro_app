@@ -63,10 +63,10 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
      signalMapper = new QSignalMapper(this);
 
      QGroupBox* stdColors = new QGroupBox();
-     GridBagLayout* stdColorsLayout = new GridBagLayout();
+     GridBagLayout* stdColorsLayout = new GridBagLayout(stdColors);
      QButtonGroup* buttonGroup = new QButtonGroup();
      //stdColors.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("StandardColorLabel")));  // NOI18N
-     stdColors->setLayout(stdColorsLayout);
+     //stdColors->setLayout(stdColorsLayout);
      stdColors->setTitle(tr("Standard Colors"));
      GridBagConstraints c = GridBagConstraints();
      c.anchor = GridBagConstraints::WEST;

@@ -20,7 +20,7 @@ public:
     /*public*/ void activateAllLogixs();
     /*public*/ Logix* getLogix(QString name);
     /*public*/ Logix* getBySystemName(QString name);
-    /*public*/ Logix* getByUserName(QString key);
+    /*public*/ NamedBean* getByUserName(QString key);
     /*public*/ void setLoadDisabled(bool s);
     /*public*/ bool getLoadDisabled();
     static DefaultLogixManager* _instance;// = NULL;

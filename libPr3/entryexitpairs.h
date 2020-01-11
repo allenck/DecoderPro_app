@@ -256,6 +256,7 @@ private:
     /*final*/ QVector<ManagerDataListener*> listeners;// = new QVector<ManagerDataListener</*DestinationPoints*/NamedBean*>*>();
     static QList<PointDetails*>* pointDetails;// = new ArrayList<PointDetails>();
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    NamedBean* getByUserName(QString userName);
 
 private slots:
     /*synchronized*/ void checkRoute();

@@ -54,7 +54,7 @@ public:
     /*public*/ void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) throw (JmriException);
     /*public*/ void automaticallyDiscoverSignallingPairs() throw (JmriException);
     /*public*/ void generateSection();
-
+    QObject* self() {return (QObject*)this;}
 
 signals:
     void on_newSignalMastLogicCreated(SignalMastLogic*);

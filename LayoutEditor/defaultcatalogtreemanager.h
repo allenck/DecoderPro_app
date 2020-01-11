@@ -20,7 +20,7 @@ public:
     /*public*/ char typeLetter() ;
     /*public*/ CatalogTree* getCatalogTree(QString name) ;
     /*public*/ CatalogTree* getBySystemName(QString key);
-    /*public*/ CatalogTree* getByUserName(QString key);
+    /*public*/ NamedBean* getByUserName(QString key);
     /*public*/ CatalogTree* newCatalogTree(QString sysName, QString userName);
     /*public*/ static DefaultCatalogTreeManager* instance();
     /*public*/  QStringList getSystemNameList();

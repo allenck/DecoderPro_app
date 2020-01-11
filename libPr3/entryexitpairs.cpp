@@ -219,6 +219,17 @@ return (settingRouteColor == QColor() ? false : true);
     }
     return NULL;
 }
+/** {@inheritDoc} */
+//@Override
+/*public*/ /*DestinationPoints*/NamedBean* EntryExitPairs::getByUserName(/*@Nonnull*/ QString userName) {
+    for (Source* e : nxpair.values()) {
+        DestinationPoints* pd = (DestinationPoints*)e->getByUserName(userName);
+        if (pd != nullptr) {
+            return pd;
+        }
+    }
+    return nullptr;
+}
 
 /*public*/ NamedBean* EntryExitPairs::getBeanBySystemName(QString systemName){
     return getBySystemName(systemName);

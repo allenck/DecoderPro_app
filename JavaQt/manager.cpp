@@ -1,5 +1,7 @@
-#include "manager.h"
+﻿#include "manager.h"
 #include "nmrapacket.h"
+#include "loggerfactory.h"
+#include "namedbeanpropertydescriptor.h"
 
 /*static*/ QStringList Manager::legacyPrefixes = QStringList() << "DX" << "DCCPP" << "DP" << "MR" << "MC" << "PI" << "TM";
 
@@ -211,7 +213,7 @@
     QString prefix = getSystemNamePrefix();
     QString suffix = name.mid(prefix.length());
     if (suffix !=(suffix.trimmed())) {
-        throw NamedBean::BadSystemNameException(locale, tr("System name \"%1}\" contains trailing white space characters, but should not.").arg(name),name, prefix);
+        throw NamedBean::BadSystemNameException(locale, tr("System name \"%1\" contains trailing white space characters, but should not.").arg(name),name, prefix);
     }
     return name;
 }
@@ -297,6 +299,41 @@
     /*public*/ /*default*/ QString Manager::validateNmraAccessorySystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) {
         return this->validateIntegerSystemNameFormat(name, NmraPacket::accIdLowLimit, NmraPacket::accIdHighLimit, locale);
     }
+
+// needed for deprecationWarning call above
+/*static*/ /*final*/ Logger* Manager::deprecatedManagerLogger = LoggerFactory::getLogger("Manager");
+
+/**
+ * Locate an existing instance based on a system name.
+ *
+ * @param systemName System Name of the required NamedBean
+ * @return requested NamedBean object or null if none exists
+ * @throws IllegalArgumentException if provided name is invalid
+ */
+//@CheckReturnValue
+//@CheckForNull
+// /*public*/ NamedBean* Manager::getBySystemName(/*@Nonnull*/ QString systemName)  {return nullptr;}
+
+/**
+ * Locate an existing instance based on a user name.
+ *
+ * @param userName System Name of the required NamedBean
+ * @return requested NamedBean object or null if none exists
+ */
+//@CheckReturnValue
+//@CheckForNull
+// /*public*/ NamedBean* Manager::getByUserName(/*@Nonnull*/ QString userName {return nullptr;}
+
+/**
+ * Return the descriptors for the system-specific properties of the
+ * NamedBeans that are kept in this manager.
+ *
+ * @return list of known properties, or empty list if there are none
+ */
+//@Nonnull
+/*default*/ /*public*/ QList<NamedBeanPropertyDescriptor*> Manager::getKnownBeanProperties() {
+    return QList<NamedBeanPropertyDescriptor*>();
+}
 
 /**
   * Defines an event that encapsulates changes to a list.

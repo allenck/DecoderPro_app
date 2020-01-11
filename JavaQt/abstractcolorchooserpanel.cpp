@@ -88,7 +88,8 @@
  */
 /*public*/ void AbstractColorChooserPanel::installChooserPanel(JColorChooser* enclosingChooser) {
  if (chooser != nullptr) {
-     throw /*RuntimeException*/ Exception("This chooser panel is already installed");
+//     throw /*RuntimeException*/ Exception("This chooser panel is already installed");
+  return;
  }
  chooser = enclosingChooser;
  chooser->addPropertyChangeListener("enabled", enabledListener);

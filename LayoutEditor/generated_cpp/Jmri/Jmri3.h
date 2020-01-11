@@ -735,7 +735,6 @@ void delete_RouteManager(RouteManager* obj) { delete obj; }
    void py_q_dispose(RouteManager* theWrappedObject){  (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_dispose());}
    Route*  getBySystemName(RouteManager* theWrappedObject, QString  arg__1);
    Route*  py_q_getBySystemName(RouteManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
-   Route*  getByUserName(RouteManager* theWrappedObject, QString  arg__1);
    Route*  py_q_getByUserName(RouteManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    Route*  getRoute(RouteManager* theWrappedObject, QString  arg__1);
    Route*  py_q_getRoute(RouteManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getRoute(arg__1));}
@@ -993,7 +992,6 @@ void delete_SensorManager(SensorManager* obj) { delete obj; }
    void py_q_dispose(SensorManager* theWrappedObject) const{  (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_dispose());}
    Sensor*  getBySystemName(SensorManager* theWrappedObject, QString  arg__1);
    Sensor*  py_q_getBySystemName(SensorManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
-   Sensor*  getByUserName(SensorManager* theWrappedObject, QString  arg__1);
    Sensor*  py_q_getByUserName(SensorManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    long  getDefaultSensorDebounceGoingActive(SensorManager* theWrappedObject);
    long  py_q_getDefaultSensorDebounceGoingActive(SensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getDefaultSensorDebounceGoingActive());}
@@ -2620,7 +2618,6 @@ void delete_TurnoutManager(TurnoutManager* obj) { delete obj; }
    QString  py_q_createSystemName(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_createSystemName(arg__1, arg__2));}
    Turnout*  getBySystemName(TurnoutManager* theWrappedObject, QString  arg__1);
    Turnout*  py_q_getBySystemName(TurnoutManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
-   Turnout*  getByUserName(TurnoutManager* theWrappedObject, QString  arg__1);
    Turnout*  py_q_getByUserName(TurnoutManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    QString  getClosedText(TurnoutManager* theWrappedObject);
    QString  py_q_getClosedText(TurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_getClosedText());}

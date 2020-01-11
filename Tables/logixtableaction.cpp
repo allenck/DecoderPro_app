@@ -1181,7 +1181,7 @@ bool LogixTableAction::checkLogixUserName(QString uName)
  // check if a Logix with the same user name exists
  if (uName!=NULL && uName.trimmed().length() > 0)
  {
-  Logix* x = ((DefaultLogixManager*)_logixManager)->getByUserName(uName);
+  Logix* x = (Logix*)((DefaultLogixManager*)_logixManager)->getByUserName(uName);
   if (x != NULL)
   {
 //            // Logix with this user name already exists

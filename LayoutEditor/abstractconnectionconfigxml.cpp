@@ -2,6 +2,10 @@
 #include "portadapter.h"
 #include "systemconnectionmemo.h"
 #include "connectionconfig.h"
+#include "stringutils.h"
+#include "loggerfactory.h"
+#include "joptionpane.h"
+#include <QLabel>
 
 AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : AbstractXmlAdapter(parent)
 {
@@ -29,14 +33,6 @@ AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : Abs
  c->_register();
 }
 
-#if 0
-/**
- * Default implementation for storing the static contents of the serial port implementation
- * @param o Object to store, of type PositionableLabel
- * @return QDomElement containing the complete info
- */
-/*abstract*/ /*public*/ QDomElement AbstractConnectionConfigXml::store(QObject* o) {}
-#endif
 
 //@Override
 /*public*/ QDomElement AbstractConnectionConfigXml::store(QObject* o, bool shared)
@@ -48,6 +44,7 @@ AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : Abs
 
 /*protected*/ void AbstractConnectionConfigXml::storeCommon(QDomElement e,  PortAdapter* adapter)
 {
+ e.setAttribute("xmlns", "");
  if (adapter->getSystemConnectionMemo()!=NULL)
  {
   e.setAttribute("userName", adapter->getSystemConnectionMemo()->getUserName());
@@ -104,14 +101,17 @@ AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : Abs
 
     }
 
-    if (adapter->getSystemConnectionMemo() != NULL) {
-        if (shared.attribute("userName") != "") {
-            adapter->getSystemConnectionMemo()->setUserName(shared.attribute("userName"));
-        }
+    if (adapter->getSystemConnectionMemo() != NULL)
+    {
+     if (shared.attribute("userName") != "") {
+         adapter->getSystemConnectionMemo()->setUserName(shared.attribute("userName"));
+     }
 
-        if (shared.attribute("systemPrefix") != NULL) {
-            adapter->getSystemConnectionMemo()->setSystemPrefix(shared.attribute("systemPrefix"));
-        }
+     if (shared.attribute("systemPrefix") != NULL) {
+         adapter->getSystemConnectionMemo()->setSystemPrefix(shared.attribute("systemPrefix"));
+         checkAndWarnPrefix(shared.attribute("systemPrefix")); // for removal after #4670 resolved
+
+     }
     }
 
     if (shared.attribute("disabled") != "") {
@@ -125,6 +125,47 @@ AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : Abs
         }
     }
 
+}
+/**
+ * Check for a deprecated system prefix and warn if found
+ * @deprecated 4.15.3  part of #4670 migration to parsable prefixes
+ */
+//@Deprecated // part of #4670 migration to parsable prefixes
+/*protected*/ void AbstractConnectionConfigXml::checkAndWarnPrefix(QString prefix) {
+    if (prefix.length() == 1 && ! StringUtils::isNumeric(prefix) ) return;
+    if (prefix.length() > 1
+            && ! StringUtils::isNumeric(prefix.mid(0,1))
+            && StringUtils::isNumeric(prefix.mid(1)) ) return;
+
+    // No longer checking jmri.Manager.isLegacySystemPrefix(prefix)) as this is more rigorous
+
+
+    // unparsable, so warn
+    log->warn(tr("Connection is using a prefix that needs to be migrated: %1").arg(prefix));
+    log->warn("See http://jmri.org/help/en/html/setup/MigrateSystemPrefixes.shtml for more information");
+
+    // and show clickable dialog
+//    if (!java.awt.GraphicsEnvironment.isHeadless())
+    {
+        QLabel* message = new QLabel("<html><body>You have a connection with prefix \""
+                                                    +prefix+"\" that needs to migrated.<br>"
+                                                    +"See <a href=\"http://jmri.org/help/en/html/setup/MigrateSystemPrefixes.shtml\">"
+                                                        +"http://jmri.org/help/en/html/setup/MigrateSystemPrefixes.shtml</a>"
+                                                    +"<br>for more information.</body></html>"
+            );
+//        message.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+//        message.addMouseListener(new java.awt.event.MouseAdapter() {
+//            @Override
+//            public void mouseClicked(java.awt.event.MouseEvent e) {
+//                try {
+//                    java.awt.Desktop.getDesktop().browse(new java.net.URI("http://jmri.org/help/en/html/setup/MigrateSystemPrefixes.shtml"));
+//                } catch (java.net.URISyntaxException | java.io.IOException ex) {
+//                    log.error("couldn't open JMRI web site", ex);
+//                }
+//            }
+//         });
+        JOptionPane::showMessageDialog(nullptr, message->text(), "Migration Required", JOptionPane::WARNING_MESSAGE);
+    }
 }
 
 /*protected*/ void AbstractConnectionConfigXml::saveOptions(QDomElement e, PortAdapter* adapter)
@@ -182,5 +223,8 @@ AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : Abs
   */
 /*public*/ void AbstractConnectionConfigXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception)
 {
- Logger::error("method with two args invoked");
+ log->error("method with two args invoked");
 }
+
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* AbstractConnectionConfigXml::log = LoggerFactory::getLogger("AbstractConnectionConfigXml");

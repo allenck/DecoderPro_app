@@ -17,7 +17,7 @@ public:
     /*public*/ OBlock* createNewOBlock(QString systemName, QString userName);
     /*public*/ OBlock* getOBlock(QString name);
     /*public*/ OBlock* getBySystemName(QString name);
-    /*public*/ OBlock* getByUserName(QString key);
+    /*public*/ NamedBean* getByUserName(QString key);
     /*public*/ OBlock* provideOBlock(QString name);
     static OBlockManager* _instance;// = NULL;
     static /*public*/ OBlockManager* instance();

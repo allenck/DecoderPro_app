@@ -9,18 +9,23 @@
 #include "defaultswatchchooserpanel.h"
 #include "splitbuttoncolorchooserpanel.h"
 #include "jcolorchooser.h"
-
+#include "defaultcolorselectionmodel.h"
 ColorChooserPanelTest::ColorChooserPanelTest(QObject *parent) : QObject(parent)
 {
 
 }
 /*public*/ void ColorChooserPanelTest::testCtor()
 {
-// JColorChooser* p = new JColorChooser(QColor(Qt::red));
-// QVector<AbstractColorChooserPanel*> txtColorPanels = QVector<AbstractColorChooserPanel*>() << (new SplitButtonColorChooserPanel()) << (new DefaultSwatchChooserPanel());
-// p->setChooserPanels(&txtColorPanels);
- ColorPanel* p = new ColorPanel(new ColorModel());
- p->buildPanel();
+ JColorChooser* p = new JColorChooser(QColor(Qt::red));
+ QVector<AbstractColorChooserPanel*> txtColorPanels = QVector<AbstractColorChooserPanel*>()
+   << (new SplitButtonColorChooserPanel())
+   << (new DefaultSwatchChooserPanel())
+   << (new ColorChooserPanel());
+ p->setChooserPanels(&txtColorPanels);
+// ColorPanel* p = new ColorPanel(new ColorModel());
+// p->buildPanel();
+// ColorChooserPanel* p = new ColorChooserPanel(/*new ColorModel()*/);
+// p->buildChooser();
  JmriJFrame* f = new JmriJFrame("ColorChooserPanelTest");
  QWidget* centralWidget = f->getContentPane(false);
  QVBoxLayout* l = new QVBoxLayout();

@@ -69,12 +69,13 @@ class TextDetails
   void setFont(QFont f) {this->f = f;}
   void setBorderSize(int w) {borderSize = w;}
   void setBorderColor(QColor c) {this->borderColor = c;}
+  void setMargin(int margin) {this->margin = margin;}
   QColor getForeground() const {return foreground;}
   QColor getBackground() const {return background;}
   QColor getOrigForeground() const {return origForeground;}
   QColor getOrigBackground()const  {return origBackground;}
   JLabel* getLabel() const {return example;}
-
+  int getMargin() {return margin;}
 
 private:
   QString text;
@@ -98,6 +99,7 @@ private:
    {
     styleSheet.append(QString("border-style: outset; border-width: %1px;").arg(borderSize));
     styleSheet.append(QString("border-color: rgb(%1,%2,%3);").arg(borderColor.red()).arg(borderColor.green()).arg(borderColor.blue()));
+    styleSheet.append(QString("pad: %1px;").arg(margin));
    }
    else
     styleSheet.append("border: none;");

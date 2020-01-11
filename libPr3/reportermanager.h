@@ -91,7 +91,7 @@ public:
          * instance already exists.
          * @return requested Reporter object or null if none exists
          */
-        virtual Reporter* getByUserName(QString /*userName*/)  {return NULL;}
+        virtual NamedBean* getByUserName(QString /*userName*/)  {return NULL;}
 
         /**
          * Locate an instance based on a user name, or if that fails,

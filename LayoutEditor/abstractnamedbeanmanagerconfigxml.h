@@ -4,18 +4,21 @@
 #include "namedbean.h"
 #include "liblayouteditor_global.h"
 
+class Manager;
 class LIBLAYOUTEDITORSHARED_EXPORT AbstractNamedBeanManagerConfigXML : public AbstractXmlAdapter
 {
     Q_OBJECT
 public:
     explicit AbstractNamedBeanManagerConfigXML(QObject *parent = 0);
     ~AbstractNamedBeanManagerConfigXML();
+ void checkNameNormalization(/*@Nonnull*/ QString rawSystemName, QString rawUserName, /*@Nonnull*/ Manager* manager);
 
 signals:
 
 public slots:
 private:
  Logger* log;
+
 protected:
  /*protected*/ void storeCommon(NamedBean* t, QDomElement elem);
  /*protected*/ void loadCommon(NamedBean* t, QDomElement elem);

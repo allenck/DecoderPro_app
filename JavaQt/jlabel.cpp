@@ -110,7 +110,8 @@ float JLabel::LEFT_ALIGNMENT = 0.0f;
  init();
 
  setText(text);
- setIcon(icon);
+ if(icon)
+  setIcon(icon);
  setHorizontalAlignment(horizontalAlignment);
  //updateUI();
  setAlignmentX(/*LEFT_ALIGNMENT*/LEFT);
@@ -232,7 +233,7 @@ void JLabel::init()
  verticalTextPosition = CENTER;
  horizontalTextPosition = TRAILING;
  iconTextGap = 4;
- setVisible(true);
+ //setVisible(true);
  _x = 0;
  _y = 0;
 

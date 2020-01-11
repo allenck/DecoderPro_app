@@ -82,7 +82,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * instance already exists.
  * @return requested Turnout object or null if none exists
  */
-/*public*/ Light *ProxyLightManager::getByUserName(QString userName) {
+/*public*/ NamedBean *ProxyLightManager::getByUserName(QString userName) {
     return (Light*) AbstractProxyLightManager::getBeanByUserName(userName);
 }
 

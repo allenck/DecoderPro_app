@@ -52,6 +52,8 @@ public:
      * @return requested NamedBean object or NULL if none exists
      */
     /*public*/  NamedBean* getBeanByUserName(QString userName);
+    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName);
+
     /**
      * Locate an instance based on a name.  Returns NULL if no
      * instance already exists.

@@ -1305,11 +1305,16 @@ void PositionableLabel::setSize(int w, int h)
  IS_OPAQUE= isOpaque;
 //        setFlag(OPAQUE_SET, true);
  OPAQUE_SET = true;
+ QColor c = getBackground();
+ setBackground(QColor(c.red(), c.green(), c.blue(),0));
+ //setStyleSheet(tr("background-color: rgba(%1,%2,%3,%4);").arg(c.red()).arg(c.green()).arg(c.blue()).arg(0));
+
 // emit propertyChange(new PropertyChangeEvent(this, "opaque", oldValue, isOpaque));
 // if(_itemGroup != NULL)
 //  _itemGroup->update();
 // _editor->addToTarget(this);
 }
+
 /*public*/ bool PositionableLabel::isOpaque()
 { return IS_OPAQUE;}
 QColor PositionableLabel::getForeground()

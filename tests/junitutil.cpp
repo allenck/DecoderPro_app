@@ -735,7 +735,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ /*static*/ void JUnitUtil::initSignalMastLogicManager() {
     SignalMastLogicManager* w = new DefaultSignalMastLogicManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(w, Manager::SIGNALMASTLOGICS);
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)w, Manager::SIGNALMASTLOGICS);
     }
 }
 

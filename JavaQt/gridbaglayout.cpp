@@ -9,6 +9,10 @@ void GridBagLayout::addWidget(QWidget *widget, GridBagConstraints gb)
 {
  int x;
  int y;
+ if(gb.insets->top == 0)
+  lastY = -1;
+ if(gb.insets->left == 0)
+  lastX = -1;
  if(gb.gridy ==  GridBagConstraints::_RELATIVE /*&& (gb.gridwidth != GridBagConstraints::REMAINDER) */)
   y = ++lastY;
  else
@@ -17,7 +21,6 @@ void GridBagLayout::addWidget(QWidget *widget, GridBagConstraints gb)
   x = ++lastX;
  else
   x = gb.gridx;
-
  QGridLayout::addWidget(widget, y, x, gb.rowSpan(), gb.colSpan(), gb.align());
 }
 

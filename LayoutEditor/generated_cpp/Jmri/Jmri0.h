@@ -300,6 +300,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled(bool  plural);
+virtual NamedBean*  getByUserName(QString  userName);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
@@ -347,6 +348,7 @@ inline void py_q_deregister(NamedBean*  s) { AbstractManager::deregister(s); }
 inline void py_q_dispose() { AbstractManager::dispose(); }
 inline NamedBean*  py_q_getBeanBySystemName(QString  systemName) { return AbstractManager::getBeanBySystemName(systemName); }
 inline NamedBean*  py_q_getBeanByUserName(QString  userName) { return AbstractManager::getBeanByUserName(userName); }
+inline NamedBean*  py_q_getByUserName(QString  userName) { return AbstractManager::getByUserName(userName); }
 inline SystemConnectionMemo*  py_q_getMemo() { return AbstractManager::getMemo(); }
 inline NamedBean*  py_q_getNamedBean(QString  name) { return AbstractManager::getNamedBean(name); }
 inline QSet<NamedBean* >  py_q_getNamedBeanSet() { return AbstractManager::getNamedBeanSet(); }
@@ -386,6 +388,7 @@ void delete_AbstractManager(AbstractManager* obj) { delete obj; }
    void fireVetoableChange(AbstractManager* theWrappedObject, QString  p, QVariant  old, QVariant  n);
    NamedBean*  py_q_getBeanBySystemName(AbstractManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_getBeanBySystemName(systemName));}
    NamedBean*  py_q_getBeanByUserName(AbstractManager* theWrappedObject, QString  userName){  return (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_getBeanByUserName(userName));}
+   NamedBean*  py_q_getByUserName(AbstractManager* theWrappedObject, QString  userName){  return (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_getByUserName(userName));}
    QObject*  getInstanceBySystemName(AbstractManager* theWrappedObject, QString  systemName);
    QObject*  getInstanceByUserName(AbstractManager* theWrappedObject, QString  userName);
    SystemConnectionMemo*  py_q_getMemo(AbstractManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_getMemo());}
@@ -780,6 +783,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled(bool  plural);
+virtual NamedBean*  getByUserName(QString  key);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
@@ -812,6 +816,7 @@ class PythonQtPublicPromoter_AbstractReporterManager : public AbstractReporterMa
 { public:
 inline bool  py_q_allowMultipleAdditions(QString  systemName) { return AbstractReporterManager::allowMultipleAdditions(systemName); }
 inline QString  py_q_getBeanTypeHandled(bool  plural) { return AbstractReporterManager::getBeanTypeHandled(plural); }
+inline NamedBean*  py_q_getByUserName(QString  key) { return AbstractReporterManager::getByUserName(key); }
 inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) { return AbstractReporterManager::getNextValidAddress(curAddress, prefix); }
 inline int  py_q_getXMLOrder() { return AbstractReporterManager::getXMLOrder(); }
 inline char  py_q_typeLetter() { return AbstractReporterManager::typeLetter(); }
@@ -825,6 +830,7 @@ AbstractReporterManager* new_AbstractReporterManager(SystemConnectionMemo*  memo
 void delete_AbstractReporterManager(AbstractReporterManager* obj) { delete obj; } 
    bool  py_q_allowMultipleAdditions(AbstractReporterManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_allowMultipleAdditions(systemName));}
    QString  py_q_getBeanTypeHandled(AbstractReporterManager* theWrappedObject, bool  plural){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
+   NamedBean*  py_q_getByUserName(AbstractReporterManager* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getByUserName(key));}
    QString  py_q_getNextValidAddress(AbstractReporterManager* theWrappedObject, QString  curAddress, QString  prefix){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}
    int  py_q_getXMLOrder(AbstractReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getXMLOrder());}
    char  py_q_typeLetter(AbstractReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_typeLetter());}
@@ -2108,7 +2114,6 @@ void delete_AudioManager(AudioManager* obj) { delete obj; }
    Audio*  py_q_getAudio(AudioManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getAudio(arg__1));}
    Audio*  getBySystemName(AudioManager* theWrappedObject, QString  arg__1);
    Audio*  py_q_getBySystemName(AudioManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
-   Audio*  getByUserName(AudioManager* theWrappedObject, QString  arg__1);
    Audio*  py_q_getByUserName(AudioManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    QStringList  py_q_getSystemNameList(AudioManager* theWrappedObject){  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getSystemNameList());}
    QStringList  getSystemNameList(AudioManager* theWrappedObject, QChar  arg__1);
@@ -2992,6 +2997,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled(bool  plural);
+virtual Block*  getByUserName(QString  key);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
@@ -3022,6 +3028,7 @@ virtual void vetoableChange(PropertyChangeEvent*  arg__1);
 
 class PythonQtPublicPromoter_BlockManager : public BlockManager
 { public:
+inline Block*  py_q_getByUserName(QString  key) { return BlockManager::getByUserName(key); }
 inline QString  py_q_getSystemPrefix() { return BlockManager::getSystemPrefix(); }
 inline int  py_q_getXMLOrder() { return BlockManager::getXMLOrder(); }
 inline void py_q_propertyChange(PropertyChangeEvent*  e) { BlockManager::propertyChange(e); }
@@ -3042,7 +3049,7 @@ void delete_BlockManager(BlockManager* obj) { delete obj; }
    Block*  getBlock(BlockManager* theWrappedObject, QString  name);
    Block*  getByDisplayName(BlockManager* theWrappedObject, QString  key);
    Block*  getBySystemName(BlockManager* theWrappedObject, QString  name);
-   Block*  getByUserName(BlockManager* theWrappedObject, QString  key);
+   Block*  py_q_getByUserName(BlockManager* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_getByUserName(key));}
    QCompleter*  getCompleter(BlockManager* theWrappedObject, QString  text);
    QString  getDefaultSpeed(BlockManager* theWrappedObject);
    QString  py_q_getSystemPrefix(BlockManager* theWrappedObject){  return (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_getSystemPrefix());}
@@ -3273,7 +3280,7 @@ void delete_ControlPanelEditor(ControlPanelEditor* obj) { delete obj; }
    void py_q_paintTargetPanel(ControlPanelEditor* theWrappedObject, QGraphicsScene*  g){  (((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->py_q_paintTargetPanel(g));}
    void resetEditor(ControlPanelEditor* theWrappedObject);
    void py_q_setAllEditable(ControlPanelEditor* theWrappedObject, bool  edit){  (((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->py_q_setAllEditable(edit));}
-   void setColorMenu(ControlPanelEditor* theWrappedObject, QMenu*  popup, QWidget *pos, int  type);
+   void setColorMenu(ControlPanelEditor* theWrappedObject, QMenu*  popup, QWidget*  pos, int  type);
    void setCopyMenu(ControlPanelEditor* theWrappedObject, Positionable*  p, QMenu*  popup);
    void py_q_setNextLocation(ControlPanelEditor* theWrappedObject, Positionable*  obj){  (((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->py_q_setNextLocation(obj));}
    void setSecondSelectionGroup(ControlPanelEditor* theWrappedObject, QList<Positionable* >*  list);

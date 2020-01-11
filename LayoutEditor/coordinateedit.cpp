@@ -8,6 +8,7 @@
 #include <QSpinBox>
 #include "gridbaglayout.h"
 #include "linkingobject.h"
+#include "positionablejcomponent.h"
 
 //Positionable* CoordinateEdit::pos = NULL;
 //QString CoordinateEdit::title = "";
@@ -64,10 +65,11 @@
 SetXYAction::SetXYAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
 {
  this->pos = pos;
+ this->parent = parent;
 }
 void SetXYAction::on_setXYAction_triggered()
 {
- CoordinateEdit* f = new CoordinateEdit();
+ CoordinateEdit* f = new CoordinateEdit;
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
  f->init(tr("Set x & y%1").arg(""), pos, true);
  f->initSetXY();
@@ -96,6 +98,7 @@ void SetXYAction::on_setXYAction_triggered()
 LevelEditAction::LevelEditAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
 {
  this->pos = pos;
+ this->parent = parent;
 }
 void LevelEditAction::on_levelEditAction_triggered()
 {
@@ -143,7 +146,7 @@ void TooltipEditAction::actionPerformed(ActionEvent *)
 //////////////////////////////////////////////////////////////
 /*public*/ /*static*/ QAction* CoordinateEdit::getBorderEditAction(/*final*/ Positionable* pos, QObject* parent)
 {
- SetBorderSizeActionListener* actionListener = new SetBorderSizeActionListener(pos);
+ SetBorderSizeActionListener* actionListener = new SetBorderSizeActionListener(pos, parent);
  QAction* act = new QAction(tr("Set Border Size"),parent);
  connect(act, SIGNAL(triggered()), actionListener, SLOT(actionPerformed()));
 //    {
@@ -161,9 +164,10 @@ void TooltipEditAction::actionPerformed(ActionEvent *)
 //  connect(setBorderSizeAction, SIGNAL(triggered()), pos, SLOT(on_setBorderSizeAction_triggered()));
    return act;
 }
-SetBorderSizeActionListener::SetBorderSizeActionListener(Positionable *pos)
+SetBorderSizeActionListener::SetBorderSizeActionListener(Positionable *pos, QObject *parent)
 {
  this->pos = pos;
+ this->parent = parent;
 }
 
 void SetBorderSizeActionListener::actionPerformed(ActionEvent */*e*/)
@@ -197,6 +201,7 @@ void SetBorderSizeActionListener::actionPerformed(ActionEvent */*e*/)
 ActionMarginEdit::ActionMarginEdit(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
 {
  this->pos = pos;
+ this->parent = parent;
 }
 void ActionMarginEdit::on_actionMarginEdit_triggered()
 {
@@ -224,14 +229,15 @@ void ActionMarginEdit::on_actionMarginEdit_triggered()
 //                f.setLocationRelativeTo((Component)pos);
 //            }
 //        };
-  ActionFixedSizeEdit* actionGetFixedSizeEdit = new ActionFixedSizeEdit(pos, tr("Set Fixed Size"),parent);
+  ActionFixedSizeEdit* actionGetFixedSizeEdit = new ActionFixedSizeEdit(pos, tr("Set Fixed Size"), parent);
   connect(actionGetFixedSizeEdit, SIGNAL(triggered()), actionGetFixedSizeEdit, SLOT(on_actionGetFixedSizeEdit_triggered())); // TODO:
   return actionGetFixedSizeEdit;
 }
 
-ActionFixedSizeEdit::ActionFixedSizeEdit(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
+ActionFixedSizeEdit::ActionFixedSizeEdit(Positionable *pos, QString name, PositionablePopupUtil *parent) : AbstractAction(name, parent)
 {
  this->pos = pos;
+ this->parent = parent;
 }
 void ActionFixedSizeEdit::on_actionGetFixedSizeEdit_triggered()
 {
@@ -245,7 +251,7 @@ void ActionFixedSizeEdit::on_actionGetFixedSizeEdit_triggered()
 
 //////////////////////////////////////////////////////////////
 
-/*public*/ /*static*/ QAction* CoordinateEdit::getRotateEditAction(/*final*/ Positionable* pos, CoordinateEdit* parent)
+/*public*/ /*static*/ QAction* CoordinateEdit::getRotateEditAction(/*final*/ Positionable* pos, QObject* parent)
 {
 //    return new AbstractAction(Bundle.getMessage("rotate")) {
 //            /*public*/ void actionPerformed(ActionEvent e) {
@@ -264,10 +270,11 @@ void ActionFixedSizeEdit::on_actionGetFixedSizeEdit_triggered()
 RotateAction::RotateAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
 {
  this->pos = pos;
+ this->parent = parent;
 }
 void RotateAction::on_rotateAction_triggered()
 {
-    CoordinateEdit* f = new CoordinateEdit();
+    CoordinateEdit* f = new CoordinateEdit();//new CoordinateEdit();
     f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
     f->init(tr("rotate"), pos, true);
     f->initRotate();
@@ -294,9 +301,10 @@ void RotateAction::on_rotateAction_triggered()
  connect(scaleEditAction, SIGNAL(triggered()), scaleEditAction, SLOT(on_getScaleEditAction_triggered()));
  return scaleEditAction;
 }
-ScaleEditAction::ScaleEditAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
+ScaleEditAction::ScaleEditAction(Positionable *pos, QString name, CoordinateEdit *parent) : AbstractAction(name, parent)
 {
  this->pos = pos;
+ this->parent = parent;
 }
 void ScaleEditAction::on_getScaleEditAction_triggered()
 {
@@ -332,6 +340,7 @@ TextEditAction::TextEditAction(Positionable *pos, QString title, QObject *parent
 {
  this->pos = pos;
  this->title = title;
+ this->parent = parent;
  AbstractAction::setText(title);
 }
 
@@ -398,6 +407,7 @@ GetZoomEditAction::GetZoomEditAction(Positionable *pos, QString name, QObject *p
  : AbstractAction(name, parent)
 {
  this->pos = pos;
+ this->parent = parent;
  connect(this, SIGNAL(triggered(bool)), this, SLOT(on_getZoomEditAction_triggered()));
 }
 
@@ -418,12 +428,13 @@ void GetZoomEditAction::on_getZoomEditAction_triggered()
   connect(act, SIGNAL(triggered()), act, SLOT(renamePanelMenu()));
   return act;
 }
-GetNameEditAction::GetNameEditAction(Positionable *pos, QString name, QObject *parent) : AbstractAction(name, parent)
+GetNameEditAction::GetNameEditAction(Positionable *pos, QString name, CoordinateEdit *parent) : AbstractAction(name, parent)
 {
  this->pos = pos;
+ this->parent = parent;
 }
 /*public*/ void GetNameEditAction::renamePanelMenu(/*ActionEvent e*/) {
- CoordinateEdit* f = new CoordinateEdit();
+ CoordinateEdit* f = parent;
 //    f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
  f->init(tr("Rename Panel Menu"), pos, false);
  f->initSetName();
@@ -453,7 +464,10 @@ CoordinateEdit::CoordinateEdit(QWidget *parent) : JmriJFrame("<CoordinateEdit>",
  if (showName)
  {
   //nameText->setText(/*java.text.MessageFormat.format(Bundle.getMessage("namelabel"),*/ ((PositionableLabel*)pos)->getNameString());
-  nameText->setText(QString("Name: %1").arg(((PositionableLabel *)pos)->getNameString()));
+  if(qobject_cast<PositionableJComponent*>(pos->self()))
+   nameText->setText(QString("Name: %1").arg(((PositionableJComponent *)pos->self())->getNameString()));
+  else
+   nameText->setText(QString("Name: %1").arg(((PositionableLabel *)pos->self())->getNameString()));
   nameText->setVisible(true);
  }
  okButton->setText(tr("Set"));
@@ -793,13 +807,12 @@ void CoordinateEdit::initMargin()
 
  //getContentPane().setLayout(new GridBagLayout());
  QVBoxLayout *centralWidgetLayout;
- if(getContentPane() == NULL)
+ QWidget* centralWidget = getContentPane();
+ centralWidgetLayout = (QVBoxLayout*)centralWidget->layout();
+ if(centralWidgetLayout == NULL)
  {
-  QWidget* centralWidget = getContentPane();
   centralWidget->setLayout( centralWidgetLayout = new QVBoxLayout);
  }
- else
-  centralWidgetLayout = (QVBoxLayout*)getContentPane()->layout();
 
  gridLayout = new QGridLayout();
  centralWidgetLayout->addLayout(gridLayout);

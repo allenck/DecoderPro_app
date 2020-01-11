@@ -61,7 +61,7 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
 /*public*/ char DefaultCatalogTreeManager::typeLetter() { return '0'; }
 
 /*public*/ CatalogTree* DefaultCatalogTreeManager::getCatalogTree(QString name) {
-    CatalogTree* t = getByUserName(name);
+    CatalogTree* t = (CatalogTree*)getByUserName(name);
     if (t!=NULL) return t;
 
     return getBySystemName(name);
@@ -84,8 +84,8 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
  return (CatalogTree*)_tsys->value(name);
 }
 
-/*public*/ CatalogTree* DefaultCatalogTreeManager::getByUserName(QString key) {
-    return (CatalogTree*)_tuser->value(key);
+/*public*/ NamedBean *DefaultCatalogTreeManager::getByUserName(QString key) {
+    return (NamedBean *)_tuser->value(key);
 }
 
 /*public*/ CatalogTree*  DefaultCatalogTreeManager::newCatalogTree(QString sysName, QString userName)
@@ -100,7 +100,7 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
 
  // return existing if there is one
  CatalogTree* s;
- if ( (userName!="") && ((s = getByUserName(userName)) != NULL))
+ if ( (userName!="") && ((s = (CatalogTree*)getByUserName(userName)) != NULL))
  {
      if (getBySystemName(systemName)!=s)
          log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");

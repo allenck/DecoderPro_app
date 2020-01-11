@@ -4,6 +4,7 @@
 #include "route.h"
 #include "fileutil.h"
 #include "defaultroutemanager.h"
+#include "joptionpane.h"
 
 DefaultRouteManagerXml::DefaultRouteManagerXml(QObject *parent) :
   AbstractNamedBeanManagerConfigXML(parent)
@@ -236,22 +237,38 @@ return routes;
 */
 /*public*/ void DefaultRouteManagerXml::loadRoutes(QDomElement routes)
 {
-QDomNodeList routeList = routes.elementsByTagName("route");
-if (log->isDebugEnabled()) {
+ QDomNodeList routeList = routes.elementsByTagName("route");
+ if (log->isDebugEnabled()) {
   log->debug("Found " + QString::number(routeList.size()) + " routes");
-}
-RouteManager* tm = InstanceManager::routeManagerInstance();
+ }
+ RouteManager* tm = InstanceManager::routeManagerInstance();
+ int namesChanged = 0;
 
-for (int i = 0; i < routeList.size(); i++)
-{
-  QString sysName = getSystemName(routeList.at(i).toElement());
+ for (int i = 0; i < routeList.size(); i++)
+ {
+  QDomElement el = routeList.at(i).toElement();
+  QString sysName = getSystemName(el);
   if (sysName == NULL)
   {
-   log->warn("unexpected NULL in systemName " + routeList.at(i).toElement().tagName());
+   log->warn("unexpected NULL in systemName " + el.tagName());
       break;
   }
+  // convert typeLetter from R to tm.typeLetter()
+  if (sysName.startsWith(tm->getSystemPrefix() + 'R')) {
+      QString old = sysName;
+      sysName = tm->getSystemNamePrefix() + sysName.mid(tm->getSystemNamePrefix().length());
+      log->warn(tr("Converting route system name %1 to %2").arg(old).arg(sysName));
+      namesChanged++;
+  }
+  // prepend systemNamePrefix if missing
+  if (!sysName.startsWith(tm->getSystemNamePrefix())) {
+      QString old = sysName;
+      sysName = tm->getSystemNamePrefix() + sysName;
+      log->warn(tr("Converting route system name %1 to %2").arg(old).arg(sysName));
+      namesChanged++;
+  }
 
-  QString userName = NULL;
+  QString userName = getUserName(el);
   QString cTurnout = NULL;
   QString cTurnoutState = NULL;
   QString addedDelayTxt = NULL;
@@ -259,40 +276,46 @@ for (int i = 0; i < routeList.size(); i++)
   QString cLockTurnout = NULL;
   QString cLockTurnoutState = NULL;
   int addedDelay = 0;
-  if (routeList.at(i).toElement().attribute("userName") != NULL) {
-      userName = routeList.at(i).toElement().attribute("userName");
+  if (el.attribute("userName") != NULL) {
+      userName = el.attribute("userName");
   }
 
-  if (routeList.at(i).toElement().attribute("controlTurnout") != NULL) {
-      cTurnout = routeList.at(i).toElement().attribute("controlTurnout");
+  if (el.attribute("controlTurnout") != NULL) {
+      cTurnout = el.attribute("controlTurnout");
   }
-  if (routeList.at(i).toElement().attribute("controlTurnoutState") != NULL) {
-      cTurnoutState = routeList.at(i).toElement().attribute("controlTurnoutState");
+  if (el.attribute("controlTurnoutState") != NULL) {
+      cTurnoutState = el.attribute("controlTurnoutState");
   }
-  if (routeList.at(i).toElement().attribute("controlLockTurnout") != NULL) {
-      cLockTurnout = routeList.at(i).toElement().attribute("controlLockTurnout");
+  if (el.attribute("controlLockTurnout") != NULL) {
+      cLockTurnout = el.attribute("controlLockTurnout");
   }
-  if (routeList.at(i).toElement().attribute("controlLockTurnoutState") != NULL) {
-      cLockTurnoutState = routeList.at(i).toElement().attribute("controlLockTurnoutState");
+  if (el.attribute("controlLockTurnoutState") != NULL) {
+      cLockTurnoutState = el.attribute("controlLockTurnoutState");
   }
-  if (routeList.at(i).toElement().attribute("addedDelay") != NULL) {
-      addedDelayTxt = routeList.at(i).toElement().attribute("addedDelay");
+  if (el.attribute("addedDelay") != NULL) {
+      addedDelayTxt = el.attribute("addedDelay");
       if (addedDelayTxt != NULL) {
           addedDelay =addedDelayTxt.toInt();
       }
   }
-  if (routeList.at(i).toElement().attribute("routeLocked") != NULL) {
-      routeLockedTxt = routeList.at(i).toElement().attribute("routeLocked");
+  if (el.attribute("routeLocked") != NULL) {
+      routeLockedTxt = el.attribute("routeLocked");
   }
 
   if (log->isDebugEnabled()) {
       log->debug("create route: (" + sysName + ")("
               + (userName == NULL ? "<NULL>" : userName) + ")");
   }
-  Route* r = tm->provideRoute(sysName, userName);
-
+  Route* r;
+  try
+  {
+   r = tm->provideRoute(sysName, userName);
+  } catch (IllegalArgumentException ex) {
+      log->error(tr("failed to create Route: %1").arg(sysName));
+      return;
+  }
   // load common parts
-  loadCommon(r, routeList.at(i).toElement());
+  loadCommon(r, el);
 
   if (r != NULL)
   {
@@ -348,7 +371,7 @@ for (int i = 0; i < routeList.size(); i++)
    }
 
    // load output turnouts if there are any - old format first (1.7.6 and before)
-   QDomNodeList routeTurnoutList = routeList.at(i).toElement().elementsByTagName("routeTurnout");
+   QDomNodeList routeTurnoutList = el.elementsByTagName("routeTurnout");
    if (routeTurnoutList.size() > 0) {
        // This route has turnouts
        for (int k = 0; k < routeTurnoutList.size(); k++) {
@@ -372,7 +395,7 @@ for (int i = 0; i < routeList.size(); i++)
        }
    }
    // load output turnouts if there are any - new format
-   routeTurnoutList = routeList.at(i).toElement().elementsByTagName("routeOutputTurnout");
+   routeTurnoutList = el.elementsByTagName("routeOutputTurnout");
    if (routeTurnoutList.size() > 0) {
        // This route has turnouts
        for (int k = 0; k < routeTurnoutList.size(); k++) {
@@ -407,7 +430,7 @@ for (int i = 0; i < routeList.size(); i++)
        }
    }
    // load output sensors if there are any - new format
-   routeTurnoutList = routeList.at(i).toElement().elementsByTagName("routeOutputSensor");
+   routeTurnoutList = el.elementsByTagName("routeOutputSensor");
    if (routeTurnoutList.size() > 0) {
        // This route has turnouts
        for (int k = 0; k < routeTurnoutList.size(); k++) {
@@ -436,14 +459,14 @@ for (int i = 0; i < routeList.size(); i++)
        }
    }
    // load sound, script files if present
-   QDomElement fileElement = routeList.at(i).toElement().firstChildElement("routeSoundFile");
+   QDomElement fileElement = el.firstChildElement("routeSoundFile");
    if (!fileElement.isNull()) {
        // convert to absolute path name
        r->setOutputSoundName(
                FileUtil::getExternalFilename(fileElement.attribute("name"))
        );
    }
-   fileElement = routeList.at(i).toElement().firstChildElement("routeScriptFile");
+   fileElement = el.firstChildElement("routeScriptFile");
    if (!fileElement.isNull())
    {
        r->setOutputScriptName(
@@ -451,13 +474,13 @@ for (int i = 0; i < routeList.size(); i++)
        );
    }
    // load turnouts aligned sensor if there is one
-   fileElement = routeList.at(i).toElement().firstChildElement("turnoutsAlignedSensor");
+   fileElement = el.firstChildElement("turnoutsAlignedSensor");
    if (!fileElement.isNull()) {
        r->setTurnoutsAlignedSensor(fileElement.attribute("name"));
    }
 
    // load route control sensors, if there are any
-   QDomNodeList routeSensorList = routeList.at(i).toElement().elementsByTagName("routeSensor");
+   QDomNodeList routeSensorList = el.elementsByTagName("routeSensor");
    if (routeSensorList.size() > 0) {
        // This route has sensors
        for (int k = 0; k < routeSensorList.size(); k++) {
@@ -493,8 +516,19 @@ for (int i = 0; i < routeList.size(); i++)
    // and start it working
    r->activateRoute();
 
-  } else {
-      Logger::error("failed to create Route: " + sysName);
+  }
+  if (namesChanged > 0) {
+   // TODO: replace the System property check with an in-application mechanism
+   // for notifying users of multiple changes that can be silenced as part of
+   // normal operations
+//   if (!GraphicsEnvironment.isHeadless() && !Boolean.getBoolean("jmri.test.no-dialogs"))
+   {
+    JOptionPane::showMessageDialog(nullptr,
+       namesChanged > 1 ? tr("<html>The System Name of %1 routes were changed.<br><br>Please verify that references to these routes still work.<br>Review the logs to which routes were renamed.</html>").arg(namesChanged) : tr("<html>The System Name of %1 route was changed.<br><br>Please verify that references to this route still work.<br>Review the logs to see how the route was renamed.</html>").arg(namesChanged),
+       tr("Changed System Name of %1 %2").arg(namesChanged).arg(tm->getBeanTypeHandled(namesChanged )),
+       JOptionPane::WARNING_MESSAGE);
+   }
+   log->warn(tr("System names for %1 Routes changed; this may have operational impacts.").arg(namesChanged));
   }
  }
 }

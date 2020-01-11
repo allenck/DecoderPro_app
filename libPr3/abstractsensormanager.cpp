@@ -107,7 +107,7 @@ bool AbstractSensorManager::isNumber(QString s)
 
 /*public*/ Sensor* AbstractSensorManager::newSensor(QString sysName, QString userName)
 {
- QString systemName = normalizeSystemName(sysName);
+ QString systemName = sysName; //normalizeSystemName(sysName);
  if (log->isDebugEnabled()) log->debug("newSensor:"
                                      +( (systemName=="") ? "NULL" : systemName)
                                      +";"+( (userName=="") ? "NULL" : userName));
@@ -118,7 +118,7 @@ bool AbstractSensorManager::isNumber(QString s)
   throw IllegalArgumentException(QString("SystemName cannot be NULL. UserName was %1").arg(( (userName=="") ? "NULL" : userName)));
  }
 
- sysName = validateSystemNameFormat(sysName);
+ systemName = validateSystemNameFormat(sysName);
  // return existing if there is one
   Sensor* s = nullptr;
   if ((userName != "") && ((s = getByUserName(userName)) != nullptr))
@@ -127,7 +127,7 @@ bool AbstractSensorManager::isNumber(QString s)
          log->error(tr("inconsistent user (%1) and system name (%2) results; userName related to (%3)").arg(userName).arg(sysName).arg(s->getSystemName()));
      }
      return s;
- }
+  }
   if ((s = getBySystemName(sysName)) != nullptr)
   {
       if ((s->getUserName() == "") && (userName != "")) {
@@ -149,7 +149,7 @@ bool AbstractSensorManager::isNumber(QString s)
 
  // save in the maps
  Register(s);
- emit propertyChange(new PropertyChangeEvent((QObject*)this, "length", QVariant(), QVariant(_tsys->size())));
+ emit propertyChange(new PropertyChangeEvent((QObject*)this, "length", QVariant(), QVariant(_tsys->size()))); // is this necessary here?
  //emit newSensorCreated(this, s);
  return s;
 }

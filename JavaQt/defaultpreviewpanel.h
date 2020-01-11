@@ -28,8 +28,8 @@ private:
  /*private*/ QColor oldColor;// = null;
  /*private*/ JColorChooser* getColorChooser();
  /*private*/ QString getSampleText();
- /*private*/ int paintSwatch(QPainter *g, int offsetX);
- /*private*/ int paintText(QPainter* g, int offsetX);
+ /*private*/ int paintSwatch(QPainter* g, int offsetX);
+ /*private*/ int paintText(QPainter *g, int offsetX);
  /*private*/ int paintSquares(QPainter* g, int offsetX);
  QColor fg;
 };

@@ -763,7 +763,7 @@ bool ConditionalEditBase::validateIntensityReference(int actionType, QString int
         intRef = validateMemoryReference(intRef);
         if (intRef != NULL) // memory named 'intReference' exists
         {
-            Memory* m = InstanceManager::memoryManagerInstance()->getByUserName(intRef);
+            Memory* m = (Memory*)InstanceManager::memoryManagerInstance()->getByUserName(intRef);
             if (m == NULL) {
                 m = InstanceManager::memoryManagerInstance()->getBySystemName(intRef);
             }
@@ -947,7 +947,7 @@ QString ConditionalEditBase::validateMemoryReference(QString name) {
     Memory* m = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            m = InstanceManager::memoryManagerInstance()->getByUserName(name);
+            m = (Memory*)InstanceManager::memoryManagerInstance()->getByUserName(name);
             if (m != NULL) {
                 return name;
             }
@@ -1079,7 +1079,7 @@ QString ConditionalEditBase::validateWarrantReference(QString name) {
     Warrant* w = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            w = ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getByUserName(name);
+            w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getByUserName(name);
             if (w != NULL) {
                 return name;
             }
@@ -1106,7 +1106,7 @@ QString ConditionalEditBase::validateOBlockReference(QString name) {
     OBlock* b = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            b = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getByUserName(name);
+            b = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getByUserName(name);
             if (b != NULL) {
                 return name;
             }
@@ -1160,7 +1160,7 @@ QString ConditionalEditBase::validateLightReference(QString name) {
     Light* l = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            l = InstanceManager::lightManagerInstance()->getByUserName(name);
+            l = (Light*)InstanceManager::lightManagerInstance()->getByUserName(name);
             if (l != NULL) {
                 return name;
             }
@@ -1214,7 +1214,7 @@ QString ConditionalEditBase::validateLogixReference(QString name) {
     Logix* l = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            l = _logixManager->getByUserName(name);
+            l = (Logix*)_logixManager->getByUserName(name);
             if (l != NULL) {
                 return name;
             }
@@ -1319,7 +1319,7 @@ Light* ConditionalEditBase::getLight(QString name) {
     }
     Light* l = NULL;
     if (name.length() > 0) {
-        l = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->getByUserName(name);
+        l = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getByUserName(name);
         if (l != NULL) {
             return l;
         }

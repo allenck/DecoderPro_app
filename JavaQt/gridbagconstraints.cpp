@@ -115,14 +115,14 @@ bool GridBagConstraints::isVerticallyResizable() {
 int GridBagConstraints::rowSpan()
 {
     if((fill == BOTH || fill == VERTICAL) && gridheight == REMAINDER)
-     return -1;
+     return 0;//-1;
     if(gridheight <=0) return 1;
     return gridheight;
 }
 int GridBagConstraints::colSpan()
 {
     if((fill == BOTH || fill == HORIZONTAL) && gridwidth == REMAINDER)
-     return -1;
+     return 0;//-1;
     if(gridwidth <=0) return 1;
     return gridwidth;
 }

@@ -1706,7 +1706,7 @@ Logix* LRouteTableAction::checkNamesOK()
  QString uName = _userName->text();
  if (uName.length()!=0)
  {
-  logix = ((DefaultLogixManager*)_logixManager)->getByUserName(uName);
+  logix = (Logix*)((DefaultLogixManager*)_logixManager)->getByUserName(uName);
   if (logix != NULL)
   {
    return logix;

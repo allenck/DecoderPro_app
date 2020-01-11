@@ -809,7 +809,8 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
         int yoff  = offset;
         int off;
 #if 0
-        Object pixel = null;
+        //Object pixel = null;
+        uint pixel = 0;
 
         for (int y = startY; y < startY+h; y++, yoff+=scansize) {
             off = yoff;

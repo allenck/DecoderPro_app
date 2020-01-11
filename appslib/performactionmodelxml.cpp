@@ -28,7 +28,7 @@
 
     element.setAttribute("name", g->getClassName());
     element.setAttribute("type", "Action");
-    element.setAttribute("class", "apps.PerformActionModelXml");
+    element.setAttribute("class", "apps.configurexml.PerformActionModelXml");
     element.setAttribute("title", g->getTitle());
     QDomElement property = doc.createElement("property"); // NOI18N
     property.setAttribute("name", "systemPrefix"); // NOI18N

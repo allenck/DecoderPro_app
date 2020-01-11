@@ -22,9 +22,10 @@ class JColorChooser : public QWidget, public JComponent
  Q_OBJECT
  Q_INTERFACES(JComponent)
 public:
- /*public*/ static ColorChooserDialog *createDialog(Component *c, QString title, bool modal,
-     JColorChooser* chooserPane, ActionListener* okListener,
-     ActionListener* cancelListener);
+ /*public*/ static JDialog* createDialog(Component* component, QString title,
+                                    bool modal, JColorChooser* chooserPane,
+                                    ActionListener* okListener,
+                                    ActionListener* cancelListener);
  /*public*/ static /*final*/ QString      SELECTION_MODEL_PROPERTY;// = "selectionModel";
  /*public*/ static /*final*/ QString      PREVIEW_PANEL_PROPERTY;// = "previewPanel";
  /*public*/ static /*final*/ QString      CHOOSER_PANELS_PROPERTY;// = "chooserPanels";
@@ -71,6 +72,7 @@ signals:
 public slots:
  void stateChanged(ChangeEvent* evt);
 
+
 private:
     /*private*/ void common(ColorSelectionModel* model);
  /**
@@ -89,6 +91,7 @@ private:
  QTabWidget* tabWidget;
  void firePropertyChange(QString propertyName, QVariant old, QVariant newP );
  Border* _border = nullptr;
+
 
 protected:
  /*protected*/ QString paramString();
@@ -113,4 +116,71 @@ public:
         return color;
     }
 };
+
+/**
+ * This method resets the JColorChooser color to the initial color when the
+ * action is performed.
+ */
+ /*static*/ class DefaultResetListener : public ActionListener
+ {
+ Q_OBJECT
+  /** The JColorChooser to reset. */
+  /*private*/ JColorChooser* chooser;
+
+  /** The initial color. */
+  /*private*/ QColor init;
+public:
+  /**
+   * Creates a new DefaultResetListener with the given JColorChooser.
+   *
+   * @param chooser The JColorChooser to reset.
+   */
+   /*public*/ DefaultResetListener(JColorChooser* chooser)
+   {
+    //super();
+    this->chooser = chooser;
+    init = chooser->getColor();
+   }
+
+   /**
+    * This method resets the JColorChooser to its initial color.
+    *
+    * @param e The ActionEvent.
+    */
+    /*public*/ void actionPerformed(/*ActionEvent e*/)
+    {
+     chooser->setColor(init);
+    }
+   };
+
+/**
+ * A helper class that hides a JDialog when the action is performed.
+ */
+ /*static*/ class DefaultOKCancelListener : public ActionListener
+ {
+ Q_OBJECT
+  /** The JDialog to hide. */
+  /*private*/ JDialog* dialog;
+public:
+  /**
+   * Creates a new DefaultOKCancelListener with the given JDialog to hide.
+   *
+   * @param dialog The JDialog to hide.
+   */
+   /*public*/ DefaultOKCancelListener(JDialog* dialog)
+   {
+     //super();
+     this->dialog = dialog;
+   }
+  public slots:
+   /**
+    * This method hides the JDialog when called.
+    *
+    * @param e The ActionEvent.
+    */
+    /*public*/ void actionPerformed(/*ActionEvent e*/)
+    {
+     dialog->hide();
+    }
+   };
 #endif // JCOLORCHOOSER_H

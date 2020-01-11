@@ -179,7 +179,7 @@ protected:
     friend class TextAttrDialog;
 };
 
-/*static*/ class AJSpinner : public  QSpinBox
+/*static*/ class AJSpinner : public  JSpinner
 {
     Q_OBJECT
     int _which;

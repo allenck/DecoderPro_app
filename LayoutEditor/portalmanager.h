@@ -19,7 +19,7 @@ public:
  /*public*/ QString generateSystemName();
  /*public*/ Portal* getPortal(QString name);
  /*public*/ Portal* getBySystemName(QString name);
- /*public*/ Portal* getByUserName(QString key) ;
+ /*public*/ NamedBean* getByUserName(QString key) ;
  /*public*/ Portal* providePortal(QString name);
  static /*public*/ PortalManager* instance();
  /*public*/ QString getBeanTypeHandled();

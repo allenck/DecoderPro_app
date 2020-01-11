@@ -9,6 +9,7 @@
 #include "defaultsignalmastmanager.h"
 #include "defaultsignalmastlogic.h"
 #include "defaultsignalmastlogicmanager.h"
+#include "signalmastlogicmanager.h"
 
 DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *parent) :
     AbstractNamedBeanManagerConfigXML(parent)
@@ -426,6 +427,7 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
  ((DefaultSignalMastLogicManager*)sml)->initialise();
 }
 
-/*public*/ int DefaultSignalMastLogicManagerXml::loadOrder(){
-    return InstanceManager::signalMastLogicManagerInstance()->getXMLOrder();
+/*public*/ int DefaultSignalMastLogicManagerXml::loadOrder()
+{
+    return ((DefaultSignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getXMLOrder();
 }

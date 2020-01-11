@@ -48,7 +48,7 @@ public:
 /*public*/ LayoutBlock* getFacingBlock(QString signalName, LayoutEditor* panel);
 /*public*/ NamedBean* getNamedBeanAtEndBumper(Block* facingBlock, LayoutEditor* panel);
 /*public*/ SignalMast* getSignalMastAtEndBumper(Block* facingBlock, LayoutEditor* panel);
-/*public*/ LayoutBlock* getByUserName(QString key);
+/*public*/ NamedBean* getByUserName(QString key);
 //static LayoutBlockManager* _instance;// = NULL;
 static /*public*/ LayoutBlockManager* instance();
 /*public*/ LayoutBlock* getFacingBlockByMast(SignalMast *signalMast, LayoutEditor* panel);

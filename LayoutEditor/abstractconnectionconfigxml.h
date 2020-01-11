@@ -18,6 +18,9 @@ public:
 signals:
 
 public slots:
+private:
+ static Logger* log;
+
 protected:
     /*abstract*/ /*protected*/ virtual void getInstance();
     /*abstract*/ /*protected*/ void virtual _register();
@@ -29,6 +32,7 @@ protected:
     ///*protected*/ void unpackElement(QDomElement e, );
  /*protected*/ void unpackElement(QDomElement shared, QDomElement perNode);
  /*protected*/ void _register(ConnectionConfig* c);
+ QT_DEPRECATED /*protected*/ void checkAndWarnPrefix(QString prefix);
 
 };
 

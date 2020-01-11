@@ -12,7 +12,7 @@ public:
  /*public*/ Light* getLight(QString name);
  /*public*/ Light* provideLight(QString name);
  /*public*/ Light* getBySystemName(QString systemName);
- /*public*/ Light* getByUserName(QString userName);
+ /*public*/ NamedBean* getByUserName(QString userName);
  /*public*/ Light* newLight(QString systemName, QString userName);
 // /*public*/ NameValidity validSystemNameFormat(QString systemName);
  /*public*/ bool validSystemNameConfig(QString systemName);

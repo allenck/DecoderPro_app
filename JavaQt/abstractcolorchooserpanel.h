@@ -16,8 +16,8 @@ public:
  /*public*/ int getDisplayedMnemonicIndex();
  /*public*/ /*abstract*/ virtual QIcon getSmallDisplayIcon();
  /*public*/ /*abstract*/ virtual QIcon getLargeDisplayIcon();
- /*public*/ void installChooserPanel(JColorChooser* enclosingChooser);
- /*public*/ void uninstallChooserPanel(JColorChooser* enclosingChooser);
+ virtual /*public*/ void installChooserPanel(JColorChooser* enclosingChooser);
+ virtual /*public*/ void uninstallChooserPanel(JColorChooser* enclosingChooser);
  /*public*/ ColorSelectionModel* getColorSelectionModel();
  /*public*/ void setColorTransparencySelectionEnabled(bool b);
  /*public*/ bool isColorTransparencySelectionEnabled();
@@ -36,6 +36,7 @@ protected:
 
  friend class SwatchPanel;
  friend class JColorChooser;
+ friend class ColorChooserPanel;
 };
 
 #endif // ABSTRACTCOLORCHOOSERPANEL_H

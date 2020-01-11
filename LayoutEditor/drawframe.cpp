@@ -1,5 +1,4 @@
 #include "drawframe.h"
-#include <QColorDialog>
 #include <QSlider>
 #include "borderlayout.h"
 #include <QLabel>
@@ -14,7 +13,9 @@
 #include <QRadioButton>
 #include <QComboBox>
 #include "box.h"
-
+#include "jcolorchooser.h"
+#include "colorselectionmodel.h"
+#include "loggerfactory.h"
 
 DrawFrame::DrawFrame(QWidget *parent) :
     JmriJFrame(parent)
@@ -97,7 +98,7 @@ DrawFrame::DrawFrame(QWidget *parent) :
  ppLayout->addWidget(p);
  panelLayout->addWidget(pp);
 
- panelLayout->addWidget(makePanel());
+ panelLayout->addWidget(makeEditPanel());
  // PositionableShape adds buttons at the bottom
  //panelLayout->addStrut(STRUT_SIZE);
  panelLayout->addWidget(makeSensorPanel());
@@ -137,7 +138,7 @@ void DFWindowListener::windowClosing(QCloseEvent *e)
 // //editor->resetEditor();
 //}
 
-/*protected*/ QWidget* DrawFrame::makePanel()
+/*protected*/ QWidget* DrawFrame::makeEditPanel()
 {
  QWidget* panel = new QWidget();
  QVBoxLayout* panelLayout;
@@ -171,14 +172,10 @@ void DFWindowListener::windowClosing(QCloseEvent *e)
  connect(_lineColorButton, SIGNAL(clicked()), this, SLOT(onLineColor()));
  connect(_fillColorButton, SIGNAL(clicked()), this, SLOT(onFillColor()));
  panelLayout->addWidget(p);
-//	       _chooser = new JColorChooser(_parent.getEditor().getTargetPanel().getBackground());
- _chooser = new QColorDialog(QColor(Qt::lightGray));
-//    _chooser->setColor(QColor(Qt::green));
-//    _chooser.getSelectionModel().addChangeListener(this);
-//    _chooser->setPreviewPanel(new QWidget());
- _chooser->setWindowFlags(Qt::SubWindow);
- _chooser->setOptions( QColorDialog::DontUseNativeDialog /*| QColorDialog::ShowAlphaChannel */| QColorDialog::NoButtons );
-
+ _chooser = new JColorChooser(_parent->getEditor()->getTargetPanel()->backgroundBrush().color());
+ _chooser->setColor(QColor(Qt::green));
+ _chooser->getSelectionModel()->addChangeListener((ChangeListener*)this);
+ _chooser->setPreviewPanel(new QWidget());
  connect(_chooser, SIGNAL(currentColorChanged(QColor)), this, SLOT(stateChanged(QColor)));
  panelLayout->addWidget(_chooser);
  panelLayout->addStrut(STRUT_SIZE);
@@ -430,6 +427,24 @@ void DrawFrame::On_cancelButton()
     panel0Layout->addWidget(cancelButton);
     return panel0;
 }
+/*private*/ void DrawFrame::colorChange() {
+        QColor c = _chooser->getColor();
+        int alpha =  c.alpha();
+        log->debug(tr("colorChange: color= %1, alpha= %2 ").arg(c.name()).arg(alpha));
+        _alphaSlider->setValue(c.alpha());
+        if (_lineColorButton->isChecked()) {
+            _lineColor = QColor(c.red(), c.green(), c.blue(), alpha);
+            if (_shape != nullptr) {
+                _shape->setLineColor(_lineColor);
+            }
+        } else {
+            _fillColor = QColor(c.red(), c.green(), c.blue(), alpha);
+            if (_shape != nullptr) {
+                _shape->setFillColor(_fillColor);
+            }
+        }
+        updateShape();
+    }
 
 /*private*/ void DrawFrame::alphaChange()
 {
@@ -445,15 +460,6 @@ void DrawFrame::On_cancelButton()
         _shape->setFillColor(_fillColor);
     }
     updateShape();
-}
-
-/*protected*/ void DrawFrame::setDrawParams() {
-#if 0
-    TargetPane targetPane = (TargetPane)_parent.getEditor().getTargetPanel();
-    Stroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10f);
-    targetPane.setSelectRectStroke(stroke);
-    targetPane.setSelectRectColor(Color.green);
-#endif
 }
 
 /*protected*/ void DrawFrame::closingEvent(bool cancel)
@@ -479,39 +485,9 @@ void DrawFrame::On_cancelButton()
  dispose();
 }
 
-/*public*/ void DrawFrame::stateChanged(/*ChangeEvent* e*/QColor color)
+/*public*/ void DrawFrame::stateChanged(ChangeEvent* e)
 {
- QColor c = color;
- c.setAlpha(_alphaSlider->value());
- if (_lineColorButton->isChecked())
- {
-  _lineColor = c;
- }
- else if (_fillColorButton->isChecked())
- {
-  _fillColor = c;
- }
-
- if (_shape==NULL)
- {
-     return;
- }
- if (_lineColorButton->isChecked()) {
-     //Color c = _chooser.getColor();
-     _lineColor = QColor(c.red(), c.green(), c.blue(), _alphaSlider->value());
-     _shape->setLineColor(_lineColor);
- } else {
-    // Color c = _chooser.getColor();
-     int alpha;
-     if (!_fillColor.isValid()) {
-         alpha = _fillColor.alpha();
-     } else {
-         alpha = _alphaSlider->value();
-     }
-     _fillColor =QColor(c.red(), c.green(), c.blue(), alpha);
-     _shape->setFillColor(_fillColor);
- }
- updateShape();
+ colorChange();
 }
 
 // /*abstract*/ /*protected*/ void DrawFrame::makeFigure(){}
@@ -576,12 +552,12 @@ void DrawFrame::On_cancelButton()
 void DrawFrame::onLineColor()
 {
  if(_lineColorButton->isChecked())
-  _chooser->setCurrentColor(_lineColor);
+  _chooser->setColor(_lineColor);
 }
 void DrawFrame::onFillColor()
 {
  if(_fillColorButton->isChecked())
-  _chooser->setCurrentColor(_fillColor);
+  _chooser->setColor(_fillColor);
 }
 
 /*protected*/ void DrawFrame::updateShape() {
@@ -600,3 +576,5 @@ void DrawFrame::setDisplayWidth(int w) {
 
 void DrawFrame::setDisplayHeight(int h) {
 }
+
+/*private*/ /*static*/ Logger* DrawFrame::log = LoggerFactory::getLogger("DrawFrame");

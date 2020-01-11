@@ -13,6 +13,7 @@ public:
  /*public*/ static QString removeEnd(QString str, QString remove);
  /*public*/ static bool isEmpty(QString str);
  /*public*/ static QString deleteWhitespace(QString str);
+ /*public*/ static bool isNumeric(QString str);
 
 private:
  StringUtils();

@@ -73,7 +73,7 @@ PortalManager::PortalManager(QObject *parent) :
     // Check that Portal does not already exist
     Portal* portal;
     if (userName != NULL && userName.trimmed().length() > 0) {
-        portal = getByUserName(userName);
+        portal = (Portal*)getByUserName(userName);
         if (portal != NULL) {
             return NULL;
         }
@@ -114,7 +114,7 @@ PortalManager::PortalManager(QObject *parent) :
  * both fail, returns NULL.
  */
 /*public*/ Portal* PortalManager::getPortal(QString name) {
-    Portal* portal = getByUserName(name);
+    Portal* portal = (Portal*)getByUserName(name);
     if (portal != NULL) {
         return portal;
     }
@@ -128,7 +128,7 @@ PortalManager::PortalManager(QObject *parent) :
     return (Portal*) _tsys->value(name);
 }
 
-/*public*/ Portal* PortalManager::getByUserName(QString key) {
+/*public*/ NamedBean *PortalManager::getByUserName(QString key) {
     if (key == NULL || key.trimmed().length() == 0) {
         return NULL;
     }
@@ -139,7 +139,7 @@ PortalManager::PortalManager(QObject *parent) :
     if (name == NULL || name.trimmed().length() == 0) {
         return NULL;
     }
-    Portal* portal = getByUserName(name);
+    Portal* portal = (Portal*)getByUserName(name);
     if (portal == NULL) {
         portal = createNewPortal(NULL, name);
     }

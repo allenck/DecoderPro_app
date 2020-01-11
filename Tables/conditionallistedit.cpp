@@ -378,7 +378,7 @@ bool ConditionalListEdit::validateTimeReference(int actionType, QString ref) {
         memRef = validateMemoryReference(memRef);
         if (memRef != NULL) // memory named 'intReference' exists
         {
-            Memory* m = InstanceManager::memoryManagerInstance()->getByUserName(memRef);
+            Memory* m = (Memory*)InstanceManager::memoryManagerInstance()->getByUserName(memRef);
             if (m == NULL) {
                 m = InstanceManager::memoryManagerInstance()->getBySystemName(memRef);
             }
@@ -528,7 +528,7 @@ void ConditionalListEdit::donePressed(ActionEvent* /*e*/) {
     if (!(uName  == (_curLogix->getUserName()))) {
         // user name has changed - check if already in use
         if (uName.length() > 0) {
-            Logix* p = _logixManager->getByUserName(uName);
+            Logix* p = (Logix*)_logixManager->getByUserName(uName);
             if (p !=  NULL) {
                 // Logix with this user name already exists
                 log->error("Failure to update Logix with Duplicate User Name: " // NOI18N

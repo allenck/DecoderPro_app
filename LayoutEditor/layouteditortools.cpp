@@ -2821,7 +2821,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
         QMessageBox::critical(0, tr("Error"), tr("Error - Block name was not entered. Please\nenter the name of a block on the panel."));
         return NULL;
     }
-    LayoutBlock* block = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->
+    LayoutBlock* block = (LayoutBlock*)qobject_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->
                                                     getByUserName(str);
     if (block==nullptr)
     {

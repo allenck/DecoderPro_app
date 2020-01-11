@@ -425,7 +425,7 @@
   if (!(uName ==  (_curLogix->getUserName()))) {
       // user name has changed - check if already in use
       if (uName.length() > 0) {
-          Logix* p = _logixManager->getByUserName(uName);
+          Logix* p = (Logix*)_logixManager->getByUserName(uName);
           if (p !=  NULL) {
               // Logix with this user name already exists
               log->error("Failure to update Logix with Duplicate User Name: " // NOI18N

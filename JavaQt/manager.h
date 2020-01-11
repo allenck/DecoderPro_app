@@ -12,6 +12,8 @@
 #include "exceptions.h"
 #include <QVector>
 
+class NamedBeanPropertyDescriptor;
+class Logger;
 class SystemConnectionMemo;
 class QString;
 class QStringList;
@@ -249,7 +251,7 @@ public:
       * @param userName System Name of the required NamedBean
       * @return requested NamedBean object or null if none exists
       */
-     virtual NamedBean* getBeanByUserName(QString /*userName*/)  {return NULL;}
+     QT_DEPRECATED virtual NamedBean* getBeanByUserName(QString /*userName*/)  {return NULL;}
 
      /**
       * Locate an instance based on a name.  Returns null if no
@@ -379,6 +381,12 @@ public:
       *                                          above).
       */
       virtual /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* /*n*/, /*@Nonnull*/ QString /*property*/) throw (PropertyVetoException) {}
+ static /*final*/ Logger* deprecatedManagerLogger;// = LoggerFactory::getLogger("Manager");
+
+// virtual /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) =0;
+ virtual /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) =0;
+ virtual /*default*/ /*public*/ QList<NamedBeanPropertyDescriptor*> getKnownBeanProperties();
+
 
      /**
       * Remember a NamedBean Object created outside the manager.

@@ -504,6 +504,39 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getBeanTypeHandled(plural0);
 }
+NamedBean*  PythonQtShell_DefaultLogixManager::getByUserName(QString  key0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getByUserName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&key0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return DefaultLogixManager::getByUserName(key0);
+}
 QString  PythonQtShell_DefaultLogixManager::getEntryToolTip()
 {
 if (_wrapper) {
@@ -8472,6 +8505,11 @@ QFont  PythonQtWrapper_JLabel::getFont(JLabel* theWrappedObject)
   return ( theWrappedObject->getFont());
 }
 
+QFontMetrics  PythonQtWrapper_JLabel::getFontMetrics(JLabel* theWrappedObject)
+{
+  return ( theWrappedObject->getFontMetrics());
+}
+
 int  PythonQtWrapper_JLabel::getHorizontalAlignment(JLabel* theWrappedObject)
 {
   return ( theWrappedObject->getHorizontalAlignment());
@@ -8542,6 +8580,11 @@ void PythonQtWrapper_JLabel::setFont(JLabel* theWrappedObject, QFont  arg__1)
   ( theWrappedObject->setFont(arg__1));
 }
 
+void PythonQtWrapper_JLabel::setForeground(JLabel* theWrappedObject, QColor  arg__1)
+{
+  ( theWrappedObject->setForeground(arg__1));
+}
+
 void PythonQtWrapper_JLabel::setHorizontalAlignment(JLabel* theWrappedObject, int  alignment)
 {
   ( theWrappedObject->setHorizontalAlignment(alignment));
@@ -8550,6 +8593,11 @@ void PythonQtWrapper_JLabel::setHorizontalAlignment(JLabel* theWrappedObject, in
 void PythonQtWrapper_JLabel::setHorizontalTextPosition(JLabel* theWrappedObject, int  textPosition)
 {
   ( theWrappedObject->setHorizontalTextPosition(textPosition));
+}
+
+void PythonQtWrapper_JLabel::setLabelFor(JLabel* theWrappedObject, QWidget*  arg__1)
+{
+  ( theWrappedObject->setLabelFor(arg__1));
 }
 
 void PythonQtWrapper_JLabel::setLocation(JLabel* theWrappedObject, double  x, double  y)
@@ -16922,6 +16970,39 @@ if (_wrapper) {
 }
   return LayoutBlockManager::getBeanTypeHandled(plural0);
 }
+NamedBean*  PythonQtShell_LayoutBlockManager::getByUserName(QString  key0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getByUserName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&key0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutBlockManager::getByUserName(key0);
+}
 QString  PythonQtShell_LayoutBlockManager::getEntryToolTip()
 {
 if (_wrapper) {
@@ -23344,7 +23425,7 @@ if (_wrapper) {
 }
   return LightManager::getBySystemName(arg__1);
 }
-Light*  PythonQtShell_LightManager::getByUserName(QString  arg__1)
+NamedBean*  PythonQtShell_LightManager::getByUserName(QString  userName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23352,10 +23433,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getByUserName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"Light*" , "QString"};
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      Light* returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&userName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -23363,7 +23444,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
           } else {
-            returnValue = *((Light**)args[0]);
+            returnValue = *((NamedBean**)args[0]);
           }
         }
       }
@@ -23375,7 +23456,7 @@ if (_wrapper) {
     }
   }
 }
-  return LightManager::getByUserName(arg__1);
+  return LightManager::getByUserName(userName0);
 }
 QString  PythonQtShell_LightManager::getEntryToolTip()
 {
@@ -24238,11 +24319,6 @@ QString  PythonQtWrapper_LightManager::convertSystemNameToAlternate(LightManager
 Light*  PythonQtWrapper_LightManager::getBySystemName(LightManager* theWrappedObject, QString  arg__1)
 {
   return ( theWrappedObject->getBySystemName(arg__1));
-}
-
-Light*  PythonQtWrapper_LightManager::getByUserName(LightManager* theWrappedObject, QString  arg__1)
-{
-  return ( theWrappedObject->getByUserName(arg__1));
 }
 
 Light*  PythonQtWrapper_LightManager::getLight(LightManager* theWrappedObject, QString  arg__1)
@@ -27851,6 +27927,39 @@ if (_wrapper) {
   }
 }
   return LnReporterManager::getBeanTypeHandled(plural0);
+}
+NamedBean*  PythonQtShell_LnReporterManager::getByUserName(QString  key0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getByUserName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&key0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LnReporterManager::getByUserName(key0);
 }
 QString  PythonQtShell_LnReporterManager::getEntryToolTip()
 {

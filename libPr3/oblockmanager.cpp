@@ -61,7 +61,7 @@ OBlockManager::OBlockManager(QObject *parent) :
     // Check that OBlock does not already exist
     OBlock* r;
     if (userName!= NULL && userName!=("")) {
-        r = getByUserName(userName);
+        r = (OBlock*)getByUserName(userName);
         if (r!=NULL) return NULL;
     }
     QString sName = systemName.toUpper();
@@ -86,7 +86,7 @@ OBlockManager::OBlockManager(QObject *parent) :
  *      that name is a System Name.  If both fail, returns NULL.
  */
 /*public*/ OBlock* OBlockManager::getOBlock(QString name) {
-    OBlock* r = getByUserName(name);
+    OBlock* r = (OBlock*)getByUserName(name);
     if (r!=NULL) return r;
     return getBySystemName(name);
 }
@@ -97,9 +97,9 @@ OBlockManager::OBlockManager(QObject *parent) :
     return (OBlock*)_tsys->value(key);
 }
 
-/*public*/ OBlock* OBlockManager::getByUserName(QString key) {
+/*public*/ NamedBean *OBlockManager::getByUserName(QString key) {
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
-    return (OBlock*)_tuser->value(key);
+    return _tuser->value(key);
 }
 //@Override
 /*public*/ OBlock* OBlockManager::provide(QString name) throw (IllegalArgumentException) {
@@ -108,7 +108,7 @@ OBlockManager::OBlockManager(QObject *parent) :
 
 /*public*/ OBlock* OBlockManager::provideOBlock(QString name) {
     if (name==NULL || name.length()==0) { return NULL; }
-    OBlock* ob = getByUserName(name);
+    OBlock* ob = (OBlock*)getByUserName(name);
     if (ob==NULL) {
         ob = getBySystemName(name);
     }

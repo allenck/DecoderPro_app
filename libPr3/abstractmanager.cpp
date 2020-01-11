@@ -183,6 +183,13 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
         return _tuser->value(userName);
     }
 
+    /** {@inheritDoc} */
+//    @Override
+//    @CheckForNull
+    /*public*/ NamedBean* AbstractManager::getByUserName(/*@Nonnull*/ QString userName) {
+        QString normalizedUserName = NamedBean::normalizeUserName(userName);
+        return !normalizedUserName.isNull() ? _tuser->value(normalizedUserName) : nullptr;
+    }
     /**
      * Locate an instance based on a name.  Returns NULL if no
      * instance already exists.

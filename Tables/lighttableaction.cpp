@@ -879,7 +879,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     }
     // check if a Light with the same user name exists
     if (uName != NULL && uName != ("")) {
-        g = mgr->getByUserName(uName);
+        g = (Light*)mgr->getByUserName(uName);
         if (g != NULL) {
             // Light with this user name already exists
             status1->setText(tr("Error: an element with this User Name already exists."));
@@ -1145,7 +1145,7 @@ void LightTableAction::updatePressed(ActionEvent* /*e*/) {
     QString prevUName = g->getUserName();
     if ((uName != NULL) && !(uName == (prevUName))) {
         // user name has changed - check if already in use
-        Light* p = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->getByUserName(uName);
+        Light* p = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getByUserName(uName);
         if (p != NULL) {
             // Light with this user name already exists
             status1->setText(tr("Error: an element with this User Name already exists."));

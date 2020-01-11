@@ -750,7 +750,7 @@ void CreateWarrantFrame::makeWarrant()
   }
   else
   {
-   w = ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getByUserName(userName);
+   w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getByUserName(userName);
   if (w != NULL)
   {
    failed = true;

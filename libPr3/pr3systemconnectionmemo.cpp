@@ -2,6 +2,17 @@
 #include "instancemanager.h"
 #include "loconetthrottledtransmitter.h"
 
+PR3SystemConnectionMemo::PR3SystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject *parent) :
+    LocoNetSystemConnectionMemo(lt, sm, parent)
+{
+ PR3MODE = 0x00;
+ MS100MODE = 0x01;
+
+ mode = PR3MODE;
+ log = new Logger("PR3SystemConnectionMemo");
+ restoreToLocoNetInterfaceModeTask = nullptr;
+}
+
 PR3SystemConnectionMemo::PR3SystemConnectionMemo(QObject *parent) :
     LocoNetSystemConnectionMemo(parent)
 {
@@ -11,8 +22,8 @@ PR3SystemConnectionMemo::PR3SystemConnectionMemo(QObject *parent) :
  mode = PR3MODE;
  log = new Logger("PR3SystemConnectionMemo");
  restoreToLocoNetInterfaceModeTask = nullptr;
-
 }
+
 void PR3SystemConnectionMemo::configureManagersPR2()
 {
  mode = PR3MODE;

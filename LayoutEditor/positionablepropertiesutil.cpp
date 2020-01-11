@@ -100,6 +100,7 @@ PositionablePropertiesUtil::PositionablePropertiesUtil(Positionable* p, QWidget*
 // TODO:    exampleHolder->setBackground(((PositionableLabel*)_parent)->parent()->getBackground());
     mFrame = new JFrame(_parent->getNameString());
     //mFrameL.add(tmp);
+    mFrame->setMinimumSize(400, 600);
     mFrame->setCentralWidget(tmp);
     mFrame->pack();
     mFrame->setVisible(true);
@@ -130,13 +131,13 @@ void PositionablePropertiesUtil::textPanel()
 //    listScroller.setPreferredSize(new Dimension(60, 80));
 
  JPanel* FontPanel = new JPanel();
- QVBoxLayout* FontPanelLayout = new QVBoxLayout(FontPanel);
+ QGridLayout* FontPanelLayout = new QGridLayout(FontPanel);
  fontSizeField = new JTextField("" + QString::number(fontSize), fontSizeChoice->width());
 //    fontSizeField.addKeyListener(previewKeyActionListener);
  connect(fontSizeField, SIGNAL(textChanged(QString)), this, SLOT(on_fontSizeField(QString)));
  fontSizePanelLayout->addWidget(fontSizeField);
  fontSizePanelLayout->addWidget(/*listScroller*/fontSizeChoice);
- FontPanelLayout->addWidget(fontSizePanel);
+ FontPanelLayout->addWidget(fontSizePanel, 0,0);
 
  JPanel* Style = new JPanel();
  QVBoxLayout* StyleLayout;
@@ -145,7 +146,7 @@ void PositionablePropertiesUtil::textPanel()
  italic = new QCheckBox(tr("Italic"));
  StyleLayout->addWidget(bold);
  StyleLayout->addWidget(italic);
- FontPanelLayout->addWidget(Style);
+ FontPanelLayout->addWidget(Style,0,1);
  _textPanelLayout->addWidget(FontPanel);
 
  JPanel* justificationPanel = new JPanel();
@@ -164,7 +165,7 @@ void PositionablePropertiesUtil::textPanel()
  }
  justificationPanelLayout->addWidget(new JLabel(tr("Justification") + ": "));
  justificationPanelLayout->addWidget(_justificationCombo);
- _textPanelLayout->addWidget(justificationPanel);
+ _textPanelLayout->addWidget(justificationPanel,0, Qt::AlignHCenter);
 
  //_justificationCombo.addActionListener(previewActionListener);
  connect(_justificationCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(preview()));
@@ -575,10 +576,12 @@ void PositionablePropertiesUtil::preview()
   txtList.at(i)->setFont(newFont);
   tmp->setHorizontalAlignment(hoz);
   tmp->setBorder(new CompoundBorder(outlineBorder, borderMargin));
-  txtList.at(i)->setBorderSize(margin);
+  txtList.at(i)->setBorderSize(borderSizeTextSpin->value());
+  txtList.at(i)->setBorderColor(desiredColor);
+  txtList.at(i)->setMargin(margin);
   if(borderSizeTextSpin->value())
-   tmp->setStyleSheet(tr("QLabel{border-width: %1px; border-style: solid; border-color: rgb(%2,%3,%4);}").arg(borderSizeTextSpin->value())
-                 .arg(desiredColor.red()).arg(desiredColor.green()).arg(desiredColor.blue()));
+   tmp->setStyleSheet(tr("QLabel{border-width: %1px; border-style: solid; border-color: rgb(%2,%3,%4); pad: %5px}").arg(borderSizeTextSpin->value())
+                 .arg(desiredColor.red()).arg(desiredColor.green()).arg(desiredColor.blue()).arg(margin));
   else
    tmp->setStyleSheet(tr("QLabel{border: none;}"));
   tmp->setSize(maxWidth(tmp), maxHeight(tmp));

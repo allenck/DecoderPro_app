@@ -155,7 +155,7 @@
 //static class AJSpinner extends JSpinner {
 //    int _which;
 AJSpinner::AJSpinner(SpinnerModel* items, int which, QWidget* parent)
- : QSpinBox(/*items,*/ parent)
+ : JSpinner(/*items,*/ parent)
 {
  _which = which;
  SpinnerNumberModel* nm = (SpinnerNumberModel*)items;
@@ -222,6 +222,7 @@ QString AJRadioButton::getState() {
 //    _samplePanel->layout()->addWidget(sample);
     _samplePanel->setVisible(false);
     _scene->addItem(sample->getItem());
+    _scene->update();
 
 //    log->debug(tr("DragDecoratorLabel size %1 | panel size %2").arg(sample->sizeHint()).arg(_samplePanel->sizeHint()));
     finishInit(true);
@@ -438,7 +439,11 @@ void DecoratorPanel::AJRadioButton_toggled(bool b)
     } else if ("Inconsistent" == (state)) {
         bundleCaption = "Inconsistent"; // "BeanStateInconsistent"
     } else {
-        bundleCaption = state;
+        //bundleCaption = state;
+     if(state == "Text")
+      bundleCaption = "Text Decoration";
+     else
+      bundleCaption = state;
     }
     //panel.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage(bundleCaption)));
     panel->setTitle(bundleCaption);
@@ -918,73 +923,19 @@ void DecoratorPanel::on_bgColorBox()
             _chooser->setColor(c);
         }
         break;
+  default:
+      log->warn(tr("Unexpected _which %1  in stateChanged").arg(((AJSpinner*) obj)->_which));
+      break;
   }
+  updateSamples();
+
  }
  else
  {
-//  switch (_selectedButton)
-//  {
-//   case TEXT_FONT:
-//    _samples->value("Text")->setForeground(_chooser->getColor());
-//    util->setForeground(_chooser->getColor());
-//    break;
-//   case ACTIVE_FONT:
-//    _samples->value("Active")->setForeground(_chooser->getColor());
-//    break;
-//   case INACTIVE_FONT:
-//    _samples->value("InActive")->setForeground(_chooser->getColor());
-//    break;
-//   case UNKOWN_FONT:
-//    _samples->value("Unknown")->setForeground(_chooser->getColor());
-//    break;
-//   case INCONSISTENT_FONT:
-//    _samples->value("Inconsistent")->setForeground(_chooser->getColor());
-//    break;
-//   case TEXT_BACKGROUND:
-//    _samples->value("Text")->setBackground(_chooser->getColor());
-//    _util->setBackgroundColor(_chooser->getColor());
-//    _isOpaque = true;
-//    break;
-//   case ACTIVE_BACKGROUND:
-//    _samples->value("Active")->setBackground(_chooser->getColor());
-//    _samples->value("Active")->setOpaque(true);
-//    util->setBackgroundColor(_chooser->getColor());
-//    _isOpaque = true;
-//    break;
-//   case INACTIVE_BACKGROUND:
-//    _samples->value("InActive")->setBackground(_chooser->getColor());
-//    _samples->value("InActive")->setOpaque(true);
-//    util->setBackgroundColor(_chooser->getColor());
-//    _isOpaque = true;
-//    break;
-//   case UNKOWN_BACKGROUND:
-//    _samples->value("Unknown")->setBackground(_chooser->getColor());
-//    _samples->value("Unknown")->setOpaque(true);
-//    util->setBackgroundColor(_chooser->getColor());
-//    _isOpaque = true;
-//    break;
-//   case INCONSISTENT_BACKGROUND:
-//    _samples->value("Inconsistent")->setBackground(_chooser->getColor());
-//    _samples->value("Inconsistent")->setOpaque(true);
-//    util->setBackgroundColor(_chooser->getColor());
-//    _isOpaque = true;
-//    break;
-//   case TRANSPARENT_COLOR:
-//    util->setBackgroundColor(QColor());
-//    _samples->value("Text")->setOpaque(false);
-//    _isOpaque = false;
-//    break;
-//   case BORDER_COLOR:
-//    util->setBorderColor(_chooser->getColor());
-//    sample->setBorderColor(_chooser->getColor());
-//    break;
-//    }
   log->debug(tr("stateChanged colors _selectedState= %1 _selectedButton= %2").arg(
           _selectedState).arg(_selectedButton));
   colorChange();
-
-}
- updateSamples();
+ }
 }
 
 /*private*/ void DecoratorPanel::colorChange()
