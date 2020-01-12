@@ -4,8 +4,9 @@
 
 class ProxyTurnoutManagerXml : public AbstractXmlAdapter
 {
+ Q_OBJECT
 public:
- ProxyTurnoutManagerXml(QObject* parent = nullptr);
+ Q_INVOKABLE ProxyTurnoutManagerXml(QObject* parent = nullptr);
  ~ProxyTurnoutManagerXml() {}
  ProxyTurnoutManagerXml(const ProxyTurnoutManagerXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);

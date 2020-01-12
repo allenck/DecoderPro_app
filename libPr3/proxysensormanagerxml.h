@@ -4,8 +4,9 @@
 
 class ProxySensorManagerXml : public AbstractXmlAdapter
 {
+ Q_OBJECT
 public:
- ProxySensorManagerXml(QObject* parent = nullptr);
+ Q_INVOKABLE ProxySensorManagerXml(QObject* parent = nullptr);
  ~ProxySensorManagerXml() {}
  ProxySensorManagerXml(const ProxySensorManagerXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);
