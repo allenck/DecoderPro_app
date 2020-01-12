@@ -6,7 +6,7 @@
 //#include "functionlabelsmediadlg.h"
 #include "../LayoutEditor/panelmenu.h"
 #include "../LayoutEditor/editor.h"
-#include "paneprogframe.h"
+
 #include "decoderfile.h"
 #include <QDir>
 #include "fileutil.h"
@@ -262,9 +262,9 @@ void RosterFrame::common()
 //  rows.append(re);
 //  updateRow(row, re);
 // }
- ui->btnLabelsMedia->setEnabled(false);
- ui->btnThrottle->setEnabled(false);
- ui->btnProgram->setEnabled(false);
+ ui->btnRosterMedia->setEnabled(false);
+ ui->throttleLaunch->setEnabled(false);
+ ui->prog1Button->setEnabled(false);
  ui->lblID->setText("");
  ui->lblRoadName->setText("");
  ui->lblRoadNumber->setText("");
@@ -276,13 +276,13 @@ void RosterFrame::common()
  ui->lblDecoderModel->setText("");
  ui->lblFileName->setText("");
 
- ui->btnLabelsMedia->setEnabled(true);
- ui->btnThrottle->setEnabled(true);
+ ui->btnRosterMedia->setEnabled(false);
+ ui->throttleLaunch->setEnabled(false);
 
 #if 1
 // PanelMenu::instance()->addEditorPanel((Editor*)this);
 // connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
- connect(ui->actionProgram, SIGNAL(triggered()), this, SLOT(on_btnProgram_clicked()));
+ connect(ui->actionProgram, SIGNAL(triggered()), this, SLOT(on_prog1Button_clicked()));
  QTimer::singleShot(10, this, SLOT(buildWindow()));
 #endif
 // ConnectionStatus::instance().addPropertyChangeListener(new PropertyChangeListener()
@@ -389,7 +389,7 @@ void RosterFrame::on_tableWidget_cellClicked(int row, int /*col*/)
  updateInfo();
 }
 #endif
-void RosterFrame::updateInfo()
+void RosterFrame::updateDetails()
 {
  if(rosterEntry == nullptr)
   return;
@@ -404,8 +404,10 @@ void RosterFrame::updateInfo()
  ui->lblDecoderModel->setText(rosterEntry->getDecoderModel());
  ui->lblFileName->setText(rosterEntry->getFileName());
 
- ui->btnLabelsMedia->setEnabled(true);
- ui->btnProgram->setEnabled(true);
+ ui->btnRosterMedia->setEnabled(true);
+ ui->prog1Button->setEnabled(true);
+ ui->throttleLaunch->setEnabled(true);
+
 
  if(QFileInfo(rosterEntry->getImagePath()).exists())
  {
@@ -416,20 +418,14 @@ void RosterFrame::updateInfo()
   ui->locoImage->clear();
 
 }
-void RosterFrame::on_btnLabelsMedia_clicked()
+void RosterFrame::on_btnRosterMedia_clicked()
 {
-#if 0
- if(rosterEntry == NULL) return;
- FunctionLabelsMediaDlg* dlg = new FunctionLabelsMediaDlg(rosterEntry);
- dlg->show();
-#else
  log->debug("Open programmer pressed");
  ui->edit->setChecked(true);
  startProgrammer(nullptr, rosterEntry, "dp3" + File::separator + "MediaPane");
-#endif
 }
 
-void RosterFrame::on_btnThrottle_clicked()
+void RosterFrame::on_throttleLaunch_clicked()
 {
  QList<Editor*>* list = PanelMenu::instance()->getEditorPanelList();
  //int row = 0;
@@ -458,7 +454,7 @@ void RosterFrame::on_btnThrottle_clicked()
 // ui->menuWindow->clear();
 // PanelMenu::instance()->updatePanelMenu(ui->menuWindow);
 //}
-void RosterFrame::on_btnProgram_clicked()
+void RosterFrame::on_prog1Button_clicked()
 {
  if (inStartProgrammer)
  {
@@ -507,7 +503,7 @@ void RosterFrame::On_cbProgrammers_currentIndexChanged(QString /*text*/)
   progFrame->close();
   delete progFrame;
   progFrame = NULL;
-  on_btnProgram_clicked();
+  on_prog1Button_clicked();
  }
 }
 
@@ -547,11 +543,11 @@ void RosterFrame::on_actionEdit_Only_triggered()
 }
 void RosterFrame::on_actionLabels_and_Media_triggered()
 {
- on_btnLabelsMedia_clicked();
+ on_btnRosterMedia_clicked();
 }
 void RosterFrame::on_actionNew_Throttle_triggered()
 {
- on_btnThrottle_clicked();
+ on_throttleLaunch_clicked();
 }
 //void RosterFrame::propertyChange(PropertyChangeEvent *e)
 //{
@@ -1098,7 +1094,7 @@ void RosterFrame::updateProgMode() // SLOT
 //  rosterEntry->addPropertyChangeListener(rosterEntryUpdateListener);
 //  connect(rosterEntry, SIGNAL(propertyChange(PropertyChangeEvent*)), rosterEntryUpdateListener,SLOT(propertyChange(PropertyChangeEvent*)));
 //  connect(rosterEntry->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), rosterEntryUpdateListener, SLOT(propertyChange(PropertyChangeEvent*)));
-  updateInfo();
+  updateDetails();
   //rtable.moveTableViewToSelected();
   int row = Roster::getDefault()->getGroupIndex(model->getRosterGroup(), rosterEntry);
   QModelIndex index = model->index(row, 0, QModelIndex());
@@ -1397,7 +1393,7 @@ void RosterFrame::on_tableClicked(QModelIndex index)
  QModelIndex ix = sorter->mapToSource(index);
  int row = ix.row();
  rosterEntry = Roster::getDefault()->getGroupEntry(model->getRosterGroup(), row);
- updateInfo();
+ updateDetails();
 }
 
 void RosterFrame::On_newLoco_clicked()
@@ -2021,7 +2017,7 @@ bool RosterFrame::checkIfEntrySelected()
   JFrame* progFrame = NULL;
   if (ui->edit->isChecked())
   {
-   progFrame = new PaneProgFrame(decoderFile, re, title, FileUtil::getProgramPath()+ File::separator+ "xml" + File::separator + "programmers" + File::separator + filename + ".xml", NULL, false);
+   progFrame = new PaneProgFrameO1(decoderFile, re, title, FileUtil::getProgramPath()+ File::separator+ "xml" + File::separator + "programmers" + File::separator + filename + ".xml", NULL, false);
 //         {
 //             /**
 //              *
@@ -2161,6 +2157,31 @@ void RosterFrame::on_currentMapped(QAction *act) //SLOT[]
     firePropertyChange("deletegroup", "setEnabled", enable);
 }
 
+/**
+ * Simple method to change over the programmer buttons.
+ * <p>
+ * TODO This should be implemented with the buttons in their own class etc.
+ * but this will work for now.
+ *
+ * @param buttonId   1 or 2; use 1 for basic programmer; 2 for comprehensive
+ *                   programmer
+ * @param programmer name of programmer
+ * @param buttonText button title
+ */
+/*public*/ void RosterFrame::setProgrammerLaunch(int buttonId, QString programmer, QString buttonText) {
+    if (buttonId == 1) {
+        programmer1 = programmer;
+        ui->prog1Button->setText(buttonText);
+    } else if (buttonId == 2) {
+        programmer2 = programmer;
+        prog2Button->setText(buttonText);
+    }
+}
+
+/*public*/ void RosterFrame::setSelectedRosterGroup(QString rosterGroup) {
+    groups->setSelectedRosterGroup(rosterGroup);
+}
+
 /*protected*/ void RosterFrame::showPopup(QPoint pos)
 {
  QModelIndex index=ui->rtable->indexAt(pos);
@@ -2189,7 +2210,7 @@ void RosterFrame::on_currentMapped(QAction *act) //SLOT[]
   QModelIndex ix = sorter->mapToSource(sorter->index(row,0));
   int row = ix.row();
   rosterEntry = Roster::getDefault()->getGroupEntry(model->getRosterGroup(), row);
-  updateInfo();
+  updateDetails();
 }
      QMenu* popupMenu = new QMenu();
      QAction* menuItem = new QAction("Program", this);

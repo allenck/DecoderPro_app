@@ -4030,7 +4030,8 @@ void LayoutTurnout::remove()
      }
  }
 
- log->debug(tr("draw1 turnout %1 isMain = %2, state = %3").arg(getTurnoutName()).arg(isMain?"true":"false").arg(getTurnoutStateString(getState())));
+ if(log->isDebugEnabled())
+  log->debug(tr("draw1 turnout %1 isMain = %2, state = %3").arg(getTurnoutName()).arg(isMain?"true":"false").arg(getTurnoutStateString(getState())));
 
  int toType = getTurnoutType();
  QGraphicsItemGroup* itemGroup = selectItemGroup(type, isMain, isBlock);

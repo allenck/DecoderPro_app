@@ -258,7 +258,6 @@ SOURCES += \
     Roster/identifyloco.cpp \
     Roster/dcclocoaddressselector.cpp \
     Roster/factoryresetaction.cpp \
-    Roster/rostermedia.cpp \
     Roster/optionsdialog.cpp \
     Signal/defaultsignalhead.cpp \
     Signal/abstractsignalhead.cpp \
@@ -942,7 +941,8 @@ SOURCES += \
     loconet/bluetooth/loconetbluetoothadapter.cpp \
     scwarrant.cpp \
     Roster/rosterframestartupactionfactory.cpp \
-    rostergroupselector.cpp
+    rostergroupselector.cpp \
+    Roster/rostermediapane.cpp
 
 
  !contains(FTDI, 1) {
@@ -1146,7 +1146,6 @@ HEADERS += \
     Roster/identifyloco.h \
     Roster/factoryresetaction.h \
     Roster/dcclocoaddressselector.h \
-    Roster/rostermedia.h \
     Roster/optionsdialog.h \
     Signal/signalheadmanager.h \
     Signal/signalmast.h \
@@ -1883,7 +1882,8 @@ HEADERS += \
     loconet/bluetooth/loconetbluetoothadapter.h \
     Signal/signals.h \
     scwarrant.h \
-    Roster/rosterframestartupactionfactory.h
+    Roster/rosterframestartupactionfactory.h \
+    Roster/rostermediapane.h
 
 
  !contains(FTDI, 1) {
@@ -1952,12 +1952,12 @@ FORMS += \
     Roster/paneprogframe.ui \
     Roster/rosterframe.ui \
     Roster/factoryresetaction.ui \
-    Roster/rostermedia.ui \
     Roster/optionsdialog.ui \
     Throttle/addresspanel.ui \
     Throttle/functionpanel.ui \
     loconet/loconetmsgdialog.ui \
-    loconet/querycvdialog.ui
+    loconet/querycvdialog.ui \
+    Roster/rostermediapane.ui
 
 
 OTHER_FILES += \

@@ -6,7 +6,7 @@ class BlockContentsIconXml : public PositionableLabelXml
 {
  Q_OBJECT
 public:
- BlockContentsIconXml(QObject* parent = 0);
+ Q_INVOKABLE BlockContentsIconXml(QObject* parent = 0);
  ~BlockContentsIconXml() {}
  BlockContentsIconXml(const BlockContentsIconXml&) : PositionableLabelXml() {}
  /*public*/ QDomElement store(QObject* o);

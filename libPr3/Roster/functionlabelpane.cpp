@@ -83,7 +83,7 @@
     cL.gridy = 1;
     for (int i = 0; i <= maxfunction; i++) {
         // label the row
-        gbLayout->addWidget(new QLabel("" + i), cL);
+        gbLayout->addWidget(new QLabel("" + QString::number(i)), cL);
         cL.gridx++;
 
         // gbLayout->addWidget the label
@@ -105,8 +105,8 @@
         _imageFilePath[i]->setDropFolder(LocoFile::getFileLocation());
         _imageFilePath[i]->setBackground(QColor(0, 0, 0, 0));
         _imageFilePath[i]->setToolTip(tr("Image for function button"));
-// TODO:           _imageFilePath[i].setBorder(BorderFactory.createLineBorder(java.awt.Color.blue));
-        _imageFilePath[i]->setStyleSheet("QLineEdit{border: 1px solid blue}");
+//            _imageFilePath[i].setBorder(BorderFactory.createLineBorder(java.awt.Color.blue));
+        _imageFilePath[i]->setStyleSheet("QWidget{border: 1px solid blue;}");
         gbLayout->addWidget(_imageFilePath[i], cL);
         cL.gridx++;
 
@@ -114,8 +114,8 @@
         _imagePressedFilePath[i]->setDropFolder(LocoFile::getFileLocation());
         _imagePressedFilePath[i]->setBackground(QColor(0, 0, 0, 0));
         _imagePressedFilePath[i]->setToolTip(tr("Image for activated function button"));
-// TODO:           _imagePressedFilePath[i].setBorder(BorderFactory.createLineBorder(java.awt.Color.blue));
-        _imagePressedFilePath[i]->setStyleSheet("QLineEdit{border: 1px solid blue}");
+//            _imagePressedFilePath[i].setBorder(BorderFactory.createLineBorder(java.awt.Color.blue));
+        _imagePressedFilePath[i]->setStyleSheet("QWidget{border: 1px solid blue;}");
         gbLayout->addWidget(_imagePressedFilePath[i], cL);
         cL.gridx++;
 

@@ -14,6 +14,7 @@
 #include "exportrosteritemaction.h"
 #include "copyrosteritemaction.h"
 //#include "twopanetbwindow.h"
+#include "paneprogframe.h"
 
 namespace Ui {
 class RosterFrame;
@@ -60,6 +61,8 @@ public:
     /*public*/ QList<RosterEntry*>* getSelectedRosterEntries();
     /*public*/ void setTitle(QString title) ;
     /*public*/ QVariant getProperty(QString key);
+    /*public*/ void setProgrammerLaunch(int buttonId, QString programmer, QString buttonText);
+    /*public*/ void setSelectedRosterGroup(QString rosterGroup);
 
 
 public slots:
@@ -91,6 +94,7 @@ private:
     QString programmer1; // "Comprehensive
     QString programmer2; // "Basic"
     QVector<RosterEntry*> rows;
+    QPushButton* prog2Button;
 
  Logger* log;
  bool inStartProgrammer;// = false;
@@ -98,7 +102,7 @@ private:
 // void updateRow(int row, RosterEntry* re);
 // void updateDetails();
  bool bUpdating;
- void updateInfo();
+ void updateDetails();
  ConnectionConfig* serModeProCon;// = null;
  ConnectionConfig* opsModeProCon;// = null;
 // JRadioButtonMenuItem contextEdit = new JRadioButtonMenuItem(Bundle.getMessage("Edit"));
@@ -127,10 +131,10 @@ private:
 
 private slots:
 //    void on_tableWidget_cellClicked(int row, int col);
-    void on_btnLabelsMedia_clicked();
-    void on_btnThrottle_clicked();
+    void on_btnRosterMedia_clicked();
+    void on_throttleLaunch_clicked();
 //    void on_menuWindow_aboutToShow();
-    void on_btnProgram_clicked();
+    void on_prog1Button_clicked();
     void on_actionHide_Show_Summary_Panel_triggered();
     void on_actionHide_Show_Roster_Image_triggered();
     void On_actionPreferences_triggered();
@@ -330,6 +334,7 @@ public:
         return true;
     }
 };
+
 class DefaultFilePropertyChangeListener : public PropertyChangeListener
 {
  Q_OBJECT
@@ -338,5 +343,18 @@ public:
  DefaultFilePropertyChangeListener(RosterFrame* frame) {this->frame = frame;}
 public slots:
  void propertyChange(PropertyChangeEvent* evt);
+};
+
+class PaneProgFrameO1 : public PaneProgFrame
+{
+ Q_OBJECT
+public:
+ PaneProgFrameO1(DecoderFile* pDecoderFile, RosterEntry* pRosterEntry, QString frameTitle, QString programmerFile, Programmer* pProg, bool opsMode, QWidget* parent=nullptr)
+  : PaneProgFrame(pDecoderFile, pRosterEntry, frameTitle, programmerFile, pProg, opsMode, parent){}
+protected:
+ QWidget* getModePane()
+ {
+  return nullptr;
+ }
 };
 #endif // ROSTERFRAME_H

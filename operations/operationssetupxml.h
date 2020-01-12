@@ -15,7 +15,7 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  explicit OperationsSetupXml(QObject *parent = 0);
+  Q_INVOKABLE explicit OperationsSetupXml(QObject *parent = 0);
   ~OperationsSetupXml() {}
   OperationsSetupXml(const OperationsSetupXml&) : OperationsXml() {}
   QT_DEPRECATED /*public*/ static /*synchronized*/ OperationsSetupXml* instance();

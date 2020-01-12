@@ -7,7 +7,7 @@ class SensorTurnoutOperationXml : public CommonTurnoutOperationXml
 {
     Q_OBJECT
 public:
-    explicit SensorTurnoutOperationXml(QObject *parent = 0);
+    Q_INVOKABLE explicit SensorTurnoutOperationXml(QObject *parent = 0);
     ~SensorTurnoutOperationXml() {}
     SensorTurnoutOperationXml(const SensorTurnoutOperationXml&) : CommonTurnoutOperationXml() {}
     /*public*/ TurnoutOperation* loadOne(QDomElement e);

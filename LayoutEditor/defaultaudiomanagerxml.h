@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT DefaultAudioManagerXml : public AbstractAudio
 {
  Q_OBJECT
 public:
- explicit DefaultAudioManagerXml(QObject *parent = 0);
+ Q_INVOKABLE explicit DefaultAudioManagerXml(QObject *parent = 0);
  ~DefaultAudioManagerXml() {}
  DefaultAudioManagerXml(const DefaultAudioManagerXml&) : AbstractAudioManagerConfigXML() {}
  /*public*/ void setStoreElementClass(QDomElement audio);

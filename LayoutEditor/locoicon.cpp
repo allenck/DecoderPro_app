@@ -165,7 +165,7 @@ void LocoIcon::on_throttleAction()
  {
   addLocoMenuEntry(iconMenu, colors.at(i));
  }
- connect(locoButtonGroup, SIGNAL(selected(QAction*)), this, SLOT(on_locoColor_selected(QAction*)));
+ connect(locoButtonGroup, SIGNAL(triggered(QAction*)), this, SLOT(on_locoColor_selected(QAction*)));
  return iconMenu;
 }
 

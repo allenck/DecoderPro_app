@@ -124,6 +124,7 @@
  * "Destructor"
  */
 /*public*/ ControlPanel::~ControlPanel() {
+#if 0
     if (addressPanel != NULL) {
         addressPanel->removeAddressListener((AddressListener*)this);
     }
@@ -132,6 +133,7 @@
      disconnect(_throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         _throttle = NULL;
     }
+#endif
 }
 
 //@Override
@@ -1044,7 +1046,7 @@
  QAction* propertiesItem = new QAction(tr("Properties"), this);
 
  //propertiesItem.addActionListener(this);
- connect(propertiesItem, SIGNAL(triggered(bool)), this, SLOT());
+ connect(propertiesItem, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  propertiesPopup->addAction(propertiesItem);
  QAction* edit = new QAction(tr("Edit properties ..."), this);
  propertiesPopup->addAction(edit);
@@ -1117,6 +1119,28 @@ void ControlPanel::idleButtonClicked()
   speedSliderContinuous->setValue((0));
  }
  internalAdjust = false;
+}
+
+/**
+ * The user has resized the Frame. Possibly change from Horizontal to
+ * Vertical layout.
+ */
+/*private*/ void ControlPanel::changeOrientation() {
+    if (mainPanel->width() > mainPanel->height()) {
+        speedSlider->setOrientation(/*JSlider.HORIZONTAL*/Qt::Horizontal);
+        if (speedSliderContinuous != nullptr) {
+            speedSliderContinuous->setOrientation(/*JSlider.HORIZONTAL*/Qt::Horizontal);
+        }
+        mainPanel->layout()->removeWidget(buttonPanel);
+        ((QHBoxLayout*)mainPanel->layout())->addWidget(buttonPanel, 0, Qt::AlignRight);//BorderLayout.EAST);
+    } else {
+        speedSlider->setOrientation(/*JSlider.VERTICAL*/Qt::Vertical);
+        if (speedSliderContinuous != nullptr) {
+            speedSliderContinuous->setOrientation(/*JSlider.VERTICAL*/Qt::Vertical);
+        }
+        mainPanel->layout()->removeWidget(buttonPanel);
+        ((QVBoxLayout*)mainPanel->layout())->addWidget(buttonPanel, 0, Qt::AlignBottom); //BorderLayout.SOUTH);
+    }
 }
 
 /*public*/ void ControlPanel::accelerate1()
@@ -1337,7 +1361,17 @@ else if (speedSpinner!=NULL && speedSpinner->isEnabled())
  if(speedSpinner!=NULL)
      speedSpinner->setValue(newSliderSetting);
 }
-
+/**
+ * Handle the selection from the popup menu.
+ *
+ * @param e The ActionEvent causing the action.
+ */
+//@Override
+/*public*/ void ControlPanel::actionPerformed(/*ActionEvent e*/) {
+    ControlPanelPropertyEditor* editor
+            = new ControlPanelPropertyEditor(this);
+    editor->setVisible(true);
+}
 /**
  * Configure the active Speed Step modes based on what is supported by
  * the DCC system

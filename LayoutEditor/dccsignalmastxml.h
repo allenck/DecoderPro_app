@@ -8,7 +8,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT DccSignalMastXml : public AbstractNamedBeanMa
 {
  Q_OBJECT
 public:
- explicit DccSignalMastXml(QObject *parent = 0);
+ Q_INVOKABLE explicit DccSignalMastXml(QObject *parent = 0);
  ~DccSignalMastXml() {}
  DccSignalMastXml(const DccSignalMastXml&) : AbstractNamedBeanManagerConfigXML() {}
  /*public*/  QDomElement store(QObject* o);

@@ -16,7 +16,7 @@
 #include "shutdowntask.h"
 #include "paneprogpane.h"
 #include <QDesktopWidget>
-#include "rostermedia.h"
+#include "rostermediapane.h"
 #include "functionlabelpane.h"
 #include "busyglasspane.h"
 #include "shortaddrvariablevalue.h"

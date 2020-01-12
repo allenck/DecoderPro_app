@@ -23,7 +23,7 @@ void ResizableImagePanel::common()
   log = new Logger("ResizableImagePanel");
   pcs = new PropertyChangeSupport(this);
 
-  setLayout(new QVBoxLayout);
+  //setLayout(new QVBoxLayout);
 }
 
 /**

@@ -17,7 +17,7 @@
 #include "functionlabelpane.h"
 #include <QList>
 #include "flowlayout.h"
-#include "rostermedia.h"
+#include "rostermediapane.h"
 #include "hardcopywriter.h"
 #include "imageicon.h"
 #include <QImage>

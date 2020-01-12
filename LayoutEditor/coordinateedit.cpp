@@ -668,7 +668,7 @@ void CoordinateEdit::on_setLevelCancelButton_clicked()
  textX->setVisible(true);
 
  xTextField = new JTextField(15);
- //xTextField->setText(pl->toolTip());
+ xTextField->setText(pl->getToolTip());
  xTextField->setToolTip("Enter Tooltip");
 //		xTextField.setMaximumSize(new Dimension(
 //				xTextField.getMaximumSize().width+100, xTextField.getPreferredSize().height));
@@ -701,10 +701,10 @@ void CoordinateEdit::on_setLevelCancelButton_clicked()
 #endif
 void CoordinateEdit::on_okSetTip_clicked()
 {
- //pl->getTooltip().setText(xTextField.getText());
- //pl->setToolTip(xTextField->text());
+ pl->setToolTip(xTextField->text());
  pl->updateScene();
  dispose();
+ close();
 }
 
 void CoordinateEdit::on_cancel()
@@ -712,6 +712,7 @@ void CoordinateEdit::on_cancel()
  //pl->setToolTip(oldStr);
  pl->updateScene();
  dispose();
+ close();
 }
 
 /*public*/ void CoordinateEdit::initBorder()

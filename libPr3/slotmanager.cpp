@@ -569,10 +569,10 @@ void SlotManager::respondToAddrRequest(LocoNetMessage* m, int i)
       mLocoAddrHash.remove((addr));
       // and send the notification
       log->debug("notify listener"); // NOI18N
-//         connect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
-      l->notifyChangedSlot(_slots[i]);
-//         emit notifyChangedSlot(_slots[i]);
-//         disconnect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+         connect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+      //l->notifyChangedSlot(_slots[i]);
+         emit notifyChangedSlot(_slots[i]);
+         disconnect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
   } else {
       log->debug(tr("no request for addr %1").arg(addr)); // NOI18N
   }

@@ -140,8 +140,6 @@
  */
 /*public*/ void PanelMenu::addEditorPanel(/*final*/ Editor* panel)
 {
- if(qobject_cast<Editor*>(panel) == nullptr)
-  throw InvalidDnDOperationException(tr("Panel %1 is not an Editor panel").arg(QString(panel->metaObject()->className())));
  // If this is the first panel, remove the 'No Panels' menu item
  if (panelsList->size()==0) {
         panelsSubMenu->removeAction(noPanelsItem);

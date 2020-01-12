@@ -8,8 +8,8 @@ class LIBLAYOUTEDITORSHARED_EXPORT EntryExitPairsXml : public AbstractXmlAdapter
     Q_OBJECT
 public:
     Q_INVOKABLE explicit EntryExitPairsXml(QObject *parent = 0);
- ~EntryExitPairsXml() {}
- EntryExitPairsXml(const EntryExitPairsXml&) : AbstractXmlAdapter() {}
+    ~EntryExitPairsXml() {}
+    EntryExitPairsXml(const EntryExitPairsXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);
     /*public*/ void setStoreElementClass(QDomElement messages);
     /*public*/ void load(QDomElement element, QObject* o)  throw (Exception);

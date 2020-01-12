@@ -1,4 +1,4 @@
-#include "rostermedia.h"
+#include "rostermediapane.h"
 #include "ui_rostermedia.h"
 #include "rosterentry.h"
 #include <QMenu>
@@ -48,7 +48,7 @@ RosterMediaPane::RosterMediaPane(RosterEntry* re, QWidget *parent) :
   QImage img(re->getImagePath());
   ui->lblIconImage->setPixmap(QPixmap::fromImage(img).scaledToHeight(45));
  }
- connect(ui->lblIconImage, SIGNAL(fileNameChanged(QString)), this, SLOT(dropIcon(QString)));
+ //connect(ui->lblIconImage, SIGNAL(fileNameChanged(QString)), this, SLOT(dropIcon(QString)));
 
  connect(ui->lblMainImage, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(on_customContexMenuRequest(QPoint)));
 

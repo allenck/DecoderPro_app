@@ -35,6 +35,7 @@ public:
 //    /*public*/ void setSpeedSteps(int steps);
     QT_DEPRECATED /*public*/ void setSpeedController(int displaySlider);
     /*public*/ void setSpeedValues(int speedIncrement, int speed);
+    /*private*/ void changeOrientation();
     /*public*/ void accelerate1();
     /*public*/ void accelerate10();
     /*public*/ void decelerate1();
@@ -67,6 +68,7 @@ public slots:
  /*public*/ void notifyConsistAddressChosen(int newAddress, bool isLong);
  /*public*/ void notifyConsistAddressReleased(int address, bool isLong);
  /*public*/ void notifyConsistAddressThrottleFound(DccThrottle* throttle);
+ /*public*/ void actionPerformed(/*ActionEvent e*/);
 
 private:
     /*private*/ LearnThrottleFrame* _throttleFrame;
