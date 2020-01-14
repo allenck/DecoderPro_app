@@ -10,7 +10,8 @@ public:
     explicit DccLocoAddress(int number, bool isLong, QObject *parent = 0);
     DccLocoAddress(int number, Protocol protocol, QObject *parent = 0);
     DccLocoAddress(const DccLocoAddress& l , QObject* parent = 0);
-    bool operator==(DccLocoAddress* a);
+    bool operator==(LocoAddress* a);
+    /*public*/ bool equals(QObject* a);
     int hashCode();
     QString toString();
     bool isLongAddress();

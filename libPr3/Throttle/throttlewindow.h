@@ -7,6 +7,7 @@
 #include "abstractthrottlemanager.h"
 #include "libPr3_global.h"
 #include "speedpanel.h"
+#include "addresslistener.h"
 
 namespace Ui {
 class ThrottleWindow;
@@ -18,10 +19,10 @@ class PowerManager;
 class ThrottleManager;
 class ListThrottles;
 class RosterEntry;
-class LIBPR3SHARED_EXPORT ThrottleWindow : public JmriJFrame
+class LIBPR3SHARED_EXPORT ThrottleWindow : public JmriJFrame, public AddressListener
 {
     Q_OBJECT
-
+    Q_INTERFACES(AddressListener)
 public:
     explicit ThrottleWindow(/*LocoNetSystemConnectionMemo* memo = 0,*/ QWidget *parent = 0);
     ~ThrottleWindow();
@@ -63,6 +64,7 @@ public:
     /*public*/ static void setTransparentBackground(QObjectList comps);
     /*public*/ static void setTransparent(QWidget* jcomp);
     /*public*/ static void setTransparent(QObject* jcomp, bool transparency);
+    QObject* self() {return (QObject*)this;}
 
 public slots:
     /*public*/ void saveThrottle();

@@ -2,11 +2,14 @@
 #define LOCONETCONSIST_H
 #include "dccconsist.h"
 #include "slotmanager.h"
+#include "slotlistener.h"
+
 
 class LocoNetThrottle;
-class LocoNetConsist : public DccConsist
+class LocoNetConsist : public DccConsist, public SlotListener
 {
  Q_OBJECT
+ Q_INTERFACES(SlotListener)
 public:
  /*public*/ LocoNetConsist(int address, LocoNetSystemConnectionMemo* lm, QObject* parent = nullptr);
  /*public*/ LocoNetConsist(DccLocoAddress* address, LocoNetSystemConnectionMemo* l, QObject* parent = nullptr);
@@ -20,6 +23,7 @@ public:
  /*public*/ /*synchronized*/ void restore(DccLocoAddress* LocoAddress, bool directionNormal) ;
  /*public*/ /*synchronized*/ void remove(DccLocoAddress* LocoAddress)  ;
  /*public*/ /*synchronized*/ void removeFromCSConsist(DccLocoAddress* LocoAddress);
+ QObject* self() {return (QObject*)this;}
 
 public slots:
  /*public*/ void notifyFailedThrottleRequest(LocoAddress* address, QString reason);

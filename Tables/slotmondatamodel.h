@@ -5,13 +5,15 @@
 #include "logger.h"
 #include "runnable.h"
 #include "libtables_global.h"
+#include "slotlistener.h"
 
 class LocoNetSlot;
 class JTable;
 class LocoNetSystemConnectionMemo;
-class LIBTABLESSHARED_EXPORT SlotMonDataModel : public AbstractTableModel
+class LIBTABLESSHARED_EXPORT SlotMonDataModel : public AbstractTableModel, public SlotListener
 {
     Q_OBJECT
+ Q_INTERFACES(SlotListener)
 public:
     //explicit SlotMonDataModel(QObject *parent = 0);
  SlotMonDataModel(int, int, LocoNetSystemConnectionMemo* memo, QObject *parent = nullptr);
@@ -52,6 +54,7 @@ void setColumnToHoldButton(JTable* slotTable, int column);
 /*public*/ void showAllSlots(bool val);
 /*public*/ void showSystemSlots(bool val);
 /*public*/ void dispose();
+QObject* self() {return (QObject*)this;}
 
 signals:
 

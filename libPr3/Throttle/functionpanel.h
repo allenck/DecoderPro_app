@@ -3,7 +3,7 @@
 
 #include <QDockWidget>
 #include "logger.h"
-
+#include "addresslistener.h"
 namespace Ui {
 class FunctionPanel;
 }
@@ -16,10 +16,10 @@ class DccThrottle;
 class FunctionButton;
 class AddressPanel;
 class JToggleButton;
-class FunctionPanel : public QDockWidget
+class FunctionPanel : public QDockWidget, public AddressListener
 {
     Q_OBJECT
-
+    Q_INTERFACES(AddressListener)
 public:
     explicit FunctionPanel(QWidget *parent = 0);
     ~FunctionPanel();
@@ -36,6 +36,7 @@ public:
     /*public*/ void keyReleaseEvent(QKeyEvent* e);
     /*public*/ QDomElement getXml();
     /*public*/ void setXml(QDomElement e);
+    QObject* self() {return (QObject*)this;}
 
 public slots:
     /*public*/ void notifyFunctionStateChanged(int functionNumber, bool isSet);

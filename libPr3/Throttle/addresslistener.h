@@ -11,13 +11,13 @@
  */
 class DccThrottle;
 class LocoAddress;
-/*public*/ /*interface*/class  AddressListener : public QObject, public EventListener
+/*public*/ /*interface*/class  AddressListener :  public EventListener
 {
-    Q_OBJECT
- Q_INTERFACES(EventListener)
+//    Q_OBJECT
+// Q_INTERFACES(EventListener)
 public:
     AddressListener(QObject* parent = 0) : EventListener(/*parent*/) {}
-    QObject* self() {return (QObject*)this;}
+    //QObject* self() {return (QObject*)this;}
 
 public slots:
     /**
@@ -57,4 +57,5 @@ public slots:
      */
     /*public*/ virtual void notifyConsistAddressThrottleFound(DccThrottle* /*throttle*/) {}
 };
+Q_DECLARE_INTERFACE(AddressListener, "AddressListener")
 #endif // ADDRESSLISTENER_H

@@ -3,13 +3,15 @@
 #include "lnpanel.h"
 #include "logger.h"
 #include "libPr3_global.h"
+#include "slotlistener.h"
 
 class LocoNetSlot;
 class JTextField;
 class QPushButton;
-class LIBPR3SHARED_EXPORT ClockMonPane : public LnPanel
+class LIBPR3SHARED_EXPORT ClockMonPane : public LnPanel, public SlotListener
 {
  Q_OBJECT
+ Q_INTERFACES(SlotListener)
 public:
  explicit ClockMonPane(QWidget *parent = 0);
  ~ClockMonPane() {}
@@ -19,6 +21,8 @@ public:
 
  /*public*/ void initComponents(/*final*/ LocoNetSystemConnectionMemo* memo);
  /*public*/ void dispose();
+ QObject* self() {return (QObject*)this;}
+
 signals:
 
 public slots:

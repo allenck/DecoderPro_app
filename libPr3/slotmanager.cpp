@@ -210,7 +210,7 @@ void SlotManager::addSlotListener(SlotListener* l) {
     // add only if not already registered
     if (!slotListeners.contains(l)) {
         slotListeners.append(l);
-        connect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+//        connect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
     }
 }
 
@@ -218,7 +218,7 @@ void SlotManager::removeSlotListener(SlotListener* l) {
     if (slotListeners.contains(l)) {
         int i = slotListeners.indexOf(l);
         slotListeners.remove(i);
-        disconnect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+//        disconnect(this, SIGNAL(changedSlot(LocoNetSlot*)), l, SLOT(notifyChangedSlot(LocoNetSlot*)));
 
     }
 }
@@ -247,9 +247,9 @@ void SlotManager::notify(LocoNetSlot* s)
  for (int i = 0; i < cnt; i++) {
      SlotListener* client = v.at(i);
      //client->notifyChangedSlot(s);
-     if(!QMetaObject::invokeMethod(client, "notifyChangedSlot", Qt::AutoConnection, Q_ARG(LocoNetSlot*, s)))
+     if(!QMetaObject::invokeMethod(client->self(), "notifyChangedSlot", Qt::AutoConnection, Q_ARG(LocoNetSlot*, s)))
      {
-         log->error(tr("invoke method 'notifyChangedSlot' failed for %1").arg(client->metaObject()->className()));
+         log->error(tr("invoke method 'notifyChangedSlot' failed for %1").arg(client->self()->metaObject()->className()));
          return;
      }
 
@@ -569,10 +569,10 @@ void SlotManager::respondToAddrRequest(LocoNetMessage* m, int i)
       mLocoAddrHash.remove((addr));
       // and send the notification
       log->debug("notify listener"); // NOI18N
-         connect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
-      //l->notifyChangedSlot(_slots[i]);
-         emit notifyChangedSlot(_slots[i]);
-         disconnect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+//         connect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
+      l->notifyChangedSlot(_slots[i]);
+//         emit notifyChangedSlot(_slots[i]);
+//         disconnect(this, SIGNAL(notifyChangedSlot(LocoNetSlot*)), (SlotListener*)l, SLOT(notifyChangedSlot(LocoNetSlot*)));
   } else {
       log->debug(tr("no request for addr %1").arg(addr)); // NOI18N
   }

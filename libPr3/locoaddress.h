@@ -191,7 +191,36 @@ static Protocol getByPeopleName(QString pName) {
 
 //        }
     virtual Protocol getProtocol() {return DCC;}
-virtual QString toString() { return "";}
+    virtual QString toString() { return "";}
+    virtual
+    bool operator==(LocoAddress* a)
+    {
+     if (a==NULL) return false;
+     try
+     {
+      LocoAddress* other = (LocoAddress *) a;
+      if (this->getNumber() != other->getNumber()) return false;
+      if (this->getProtocol() != other->getProtocol()) return false;
+       return true;
+     }
+     catch (std::exception e)
+     { return false; }
+    }
+
+    virtual
+    bool equals(LocoAddress* a)
+    {
+     if (a==NULL) return false;
+     try
+     {
+      LocoAddress* other = (LocoAddress *) a;
+      if (this->getNumber() != other->getNumber()) return false;
+      if (this->getProtocol() != other->getProtocol()) return false;
+       return true;
+     }
+     catch (std::exception e)
+     { return false; }
+    }
 
 signals:
     

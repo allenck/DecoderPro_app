@@ -1,6 +1,7 @@
 #ifndef THROTTLESTABLEMODEL_H
 #define THROTTLESTABLEMODEL_H
 #include "abstracttablemodel.h"
+#include "addresslistener.h"
 
 // Note: ThrottleWindow replaces ThrottleWindow
 class PropertyChangeEvent;
@@ -9,7 +10,7 @@ class DccLocoAddress;
 class LocoAddress;
 class DccLocoAddress;
 class ThrottleWindow;
-class ThrottlesTableModel : public AbstractTableModel
+class ThrottlesTableModel : public AbstractTableModel, public AddressListener
 {
     Q_OBJECT
 public:
@@ -20,6 +21,8 @@ public:
     /*public*/ QListIterator<ThrottleWindow*> iterator();
     /*public*/ void addThrottleFrame(ThrottleWindow* tf);
     /*public*/ void removeThrottleFrame(ThrottleWindow* tf, DccLocoAddress* la);
+    QObject* self() {return (QObject*)this;}
+
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     /*public*/ void notifyAddressChosen(LocoAddress* la) ;
@@ -28,8 +31,8 @@ public slots:
     /*public*/ void notifyConsistAddressChosen(int newAddress, bool isLong);
     /*public*/ void notifyConsistAddressReleased(int address, bool isLong);
     /*public*/ void notifyConsistAddressThrottleFound(DccThrottle* throttle) ;
- /*public*/ int getRowCount() {return rowCount(QModelIndex());}
- /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+    /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+    /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
 
 signals:
 

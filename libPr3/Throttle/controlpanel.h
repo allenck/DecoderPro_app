@@ -7,6 +7,7 @@
 #include <QtXml>
 #include <QMenu>
 #include <QFrame>
+#include "addresslistener.h"
 
 class MySlider;
 class AddressPanel;
@@ -22,9 +23,10 @@ class QSlider;
 class QSpinBox;
 class QRadioButton;
 class DccThrottle;
-class ControlPanel : public QDockWidget
+class ControlPanel : public QDockWidget, public AddressListener
 {
     Q_OBJECT
+ Q_INTERFACES(AddressListener)
 public:
     //explicit ControlPanel(QWidget *parent = 0);
     /*public*/ ControlPanel(LearnThrottleFrame* ltf, QWidget *parent);
@@ -57,6 +59,7 @@ public:
  /*public*/ int getDisplaySlider();
  /*public*/ void setTrackSlider(bool track);
  /*public*/ bool getTrackSlider();
+ QObject* self() {return (QObject*)this;}
 
 signals:
 

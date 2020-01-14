@@ -64,6 +64,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -3315,6 +3316,7 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual int  getNumber();
 virtual LocoAddress::Protocol  getProtocol();
+virtual bool  __eq__(LocoAddress*  a);
 virtual void timerEvent(QTimerEvent*  event);
 virtual QString  toString();
 
@@ -3327,6 +3329,7 @@ class PythonQtPublicPromoter_DccLocoAddress : public DccLocoAddress
 { public:
 inline int  py_q_getNumber() { return DccLocoAddress::getNumber(); }
 inline LocoAddress::Protocol  py_q_getProtocol() { return DccLocoAddress::getProtocol(); }
+inline bool  py_q___eq__(LocoAddress*  a) { return DccLocoAddress::operator==(a); }
 inline QString  py_q_toString() { return DccLocoAddress::toString(); }
 };
 
@@ -3338,11 +3341,12 @@ DccLocoAddress* new_DccLocoAddress(const DccLocoAddress&  l, QObject*  parent = 
 DccLocoAddress* new_DccLocoAddress(int  number, LocoAddress::Protocol  protocol, QObject*  parent = 0);
 DccLocoAddress* new_DccLocoAddress(int  number, bool  isLong, QObject*  parent = 0);
 void delete_DccLocoAddress(DccLocoAddress* obj) { delete obj; } 
+   bool  equals(DccLocoAddress* theWrappedObject, QObject*  a);
    int  py_q_getNumber(DccLocoAddress* theWrappedObject){  return (((PythonQtPublicPromoter_DccLocoAddress*)theWrappedObject)->py_q_getNumber());}
    LocoAddress::Protocol  py_q_getProtocol(DccLocoAddress* theWrappedObject){  return (((PythonQtPublicPromoter_DccLocoAddress*)theWrappedObject)->py_q_getProtocol());}
    int  hashCode(DccLocoAddress* theWrappedObject);
    bool  isLongAddress(DccLocoAddress* theWrappedObject);
-   bool  __eq__(DccLocoAddress* theWrappedObject, DccLocoAddress*  a);
+   //bool  py_q___eq__(DccLocoAddress* theWrappedObject, LocoAddress*  a){  return (((PythonQtPublicPromoter_DccLocoAddress*)theWrappedObject)->py_q_operator==(a));}
    QString  py_q_toString(DccLocoAddress* theWrappedObject){  return (((PythonQtPublicPromoter_DccLocoAddress*)theWrappedObject)->py_q_toString());}
     QString py_toString(DccLocoAddress*);
 };

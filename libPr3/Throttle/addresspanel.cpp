@@ -241,15 +241,15 @@ AddressPanel::~AddressPanel()
   AddressListener* l = listeners->at(i);
   if (log->isDebugEnabled())
   {
-   log->debug("Notify address listener of throttle acquired " + QString(l->metaObject()->className()));
+   log->debug("Notify address listener of throttle acquired " + QString(l->self()->metaObject()->className()));
   }
   if (currentAddress != NULL)
   {
 //   ((ThrottleWindow*)l)->notifyAddressThrottleFound((DccThrottle*)throttle);
-   connect(this, SIGNAL(notifyAddressThrottleFound(DccThrottle*)), l, SLOT(notifyAddressThrottleFound(DccThrottle*)));
-   emit notifyAddressThrottleFound(throttle);
-   disconnect(this, SIGNAL(notifyAddressThrottleFound(DccThrottle*)), l, SLOT(notifyAddressThrottleFound(DccThrottle*)));
-
+//   connect(this, SIGNAL(notifyAddressThrottleFound(DccThrottle*)), l, SLOT(notifyAddressThrottleFound(DccThrottle*)));
+//   emit notifyAddressThrottleFound(throttle);
+//   disconnect(this, SIGNAL(notifyAddressThrottleFound(DccThrottle*)), l, SLOT(notifyAddressThrottleFound(DccThrottle*)));
+   l->notifyAddressThrottleFound(throttle);
   }
  }
 }
@@ -278,11 +278,11 @@ void AddressPanel::OnSetButton_clicked()
   {
    AddressListener* l = listeners->at(i);
    if (log->isDebugEnabled())
-    log->debug("Notify address listener of address change " + QString(l->metaObject()->className()));
-  //l->notifyConsistAddressThrottleFound(t);
-   connect(this, SIGNAL(notifyConsistAddressThrottleFound(DccThrottle*)), l, SLOT(notifyConsistAddressThrottleFound(DccThrottle*)));
-   emit notifyConsistAddressThrottleFound(t);
-   disconnect(this, SIGNAL(notifyConsistAddressThrottleFound(DccThrottle*)), l, SLOT(notifyConsistAddressThrottleFound(DccThrottle*)));
+    log->debug("Notify address listener of address change " + QString(l->self()->metaObject()->className()));
+  l->notifyConsistAddressThrottleFound(t);
+//   connect(this, SIGNAL(notifyConsistAddressThrottleFound(DccThrottle*)), l, SLOT(notifyConsistAddressThrottleFound(DccThrottle*)));
+//   emit notifyConsistAddressThrottleFound(t);
+//   disconnect(this, SIGNAL(notifyConsistAddressThrottleFound(DccThrottle*)), l, SLOT(notifyConsistAddressThrottleFound(DccThrottle*)));
 
  }
 }
@@ -512,10 +512,11 @@ void AddressPanel::OnSetButton_clicked()
  {
   AddressListener* l = listeners->at(i);
   if (log->isDebugEnabled())
-   log->debug("Notify address listener of address change " + QString(l->metaObject()->className()));
-  connect(this, SIGNAL(notifyAddressChosen(LocoAddress*)), l, SLOT(notifyAddressChosen(LocoAddress*)));
-  emit notifyAddressChosen(currentAddress);
-  disconnect(this, SIGNAL(notifyAddressChosen(LocoAddress*)), l, SLOT(notifyAddressChosen(LocoAddress*)));
+   log->debug("Notify address listener of address change " + QString(l->self()->metaObject()->className()));
+  //connect(this, SIGNAL(notifyAddressChosen(LocoAddress*)), l, SLOT(notifyAddressChosen(LocoAddress*)));
+  //emit notifyAddressChosen(currentAddress);
+  //disconnect(this, SIGNAL(notifyAddressChosen(LocoAddress*)), l, SLOT(notifyAddressChosen(LocoAddress*)));
+  l->notifyAddressChosen(currentAddress);
  }
 
  log->debug("Requesting new slot for address "+currentAddress->toString());
@@ -539,11 +540,12 @@ void AddressPanel::OnSetButton_clicked()
  {
   AddressListener* l = listeners->at(i);
   if (log->isDebugEnabled())
-      log->debug("Notify address listener of address change " + QString(l->metaObject()->className()));
+      log->debug("Notify address listener of address change " + QString(l->self()->metaObject()->className()));
   //l->notifyConsistAddressChosen(consistAddress->getNumber(), consistAddress->isLongAddress());
-  connect(this, SIGNAL(notifyConsistAddressChosen(DccLocoAddress*)), l, SLOT(notifyConsistAddressChosen(int,bool)));
-  emit notifyConsistAddressChosen(consistAddress->getNumber(), consistAddress->isLongAddress());
-  disconnect(this, SIGNAL(notifyConsistAddressChosen(DccLocoAddress*)), l, SLOT(notifyConsistAddressChosen(int,bool)));
+//  connect(this, SIGNAL(notifyConsistAddressChosen(DccLocoAddress*)), l, SLOT(notifyConsistAddressChosen(int,bool)));
+//  emit notifyConsistAddressChosen(consistAddress->getNumber(), consistAddress->isLongAddress());
+//  disconnect(this, SIGNAL(notifyConsistAddressChosen(DccLocoAddress*)), l, SLOT(notifyConsistAddressChosen(int,bool)));
+  l->notifyConsistAddressChosen(consistAddress->getNumber(), consistAddress->isLongAddress());
  }
 
  bool requestOK =
@@ -612,12 +614,12 @@ void AddressPanel::OnSetButton_clicked()
   {
    AddressListener* l = listeners->at(i);
    if (log->isDebugEnabled()) {
-       log->debug("Notify address listener of release " + QString(l->metaObject()->className()));
+       log->debug("Notify address listener of release " + QString(l->self()->metaObject()->className()));
    }
-   connect(this, SIGNAL(notifyAddressReleased(LocoAddress*)), l, SLOT(notifyAddressReleased(LocoAddress*)));
-   emit notifyAddressReleased(currentAddress);
-   //l->notifyAddressReleased(currentAddress);
-   disconnect(this, SIGNAL(notifyAddressReleased(LocoAddress*)), l, SLOT(notifyAddressReleased(LocoAddress*)));
+//   connect(this, SIGNAL(notifyAddressReleased(LocoAddress*)), l, SLOT(notifyAddressReleased(LocoAddress*)));
+//   emit notifyAddressReleased(currentAddress);
+   l->notifyAddressReleased(currentAddress);
+//   disconnect(this, SIGNAL(notifyAddressReleased(LocoAddress*)), l, SLOT(notifyAddressReleased(LocoAddress*)));
 
   }
  }

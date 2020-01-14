@@ -2,9 +2,12 @@
 #define BACKGROUNDPANEL_H
 #include "resizableimagepanel.h"
 #include "addresspanel.h"
+#include "addresslistener.h"
 
-class BackgroundPanel : public ResizableImagePanel
+class BackgroundPanel : public ResizableImagePanel, public AddressListener
 {
+ Q_OBJECT
+ Q_INTERFACES(AddressListener)
 public:
  BackgroundPanel(QWidget* parent = nullptr);
  /*public*/ void setAddressPanel(AddressPanel* addressPanel);

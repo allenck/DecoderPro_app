@@ -3,12 +3,14 @@
 #include <QDockWidget>
 #include "dccthrottle.h"
 #include "addresspanel.h"
+#include "addresslistener.h"
 
 class QLabel;
 class Logger;
-class SpeedPanel : public QDockWidget
+class SpeedPanel : public QDockWidget, public AddressListener
 {
  Q_OBJECT
+ Q_INTERFACES(AddressListener)
 public:
  SpeedPanel(QWidget* parent = 0);
  /*public*/ void setAddressPanel(AddressPanel* addressPanel);
@@ -24,6 +26,7 @@ public slots:
  /*public*/ void notifyConsistAddressChosen(int newAddress, bool isLong);
  /*public*/ void notifyConsistAddressReleased(int address, bool isLong);
  /*public*/ void notifyConsistAddressThrottleFound(DccThrottle* throttle);
+ QObject* self() {return (QObject*)this;}
 
 
 private:

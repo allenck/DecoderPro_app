@@ -1,14 +1,16 @@
 #ifndef LOCONETTHROTTLE_H
 #define LOCONETTHROTTLE_H
 #include "abstractthrottle.h"
+#include "slotlistener.h"
 
 class LocoNetSlot;
 class LocoNetInterface;
 class LocoNetSystemConnectionMemo;
 class LnThrottleManager;
-class LIBPR3SHARED_EXPORT LocoNetThrottle : public AbstractThrottle
+class LIBPR3SHARED_EXPORT LocoNetThrottle : public AbstractThrottle, SlotListener
 {
     Q_OBJECT
+ Q_INTERFACES(SlotListener)
 public:
     //explicit LocoNetThrottle(QObject *parent = 0);
     /*public*/ LocoNetThrottle(LocoNetSystemConnectionMemo* memo, LocoNetSlot* slot, QObject *parent = 0);
@@ -39,7 +41,8 @@ public:
     /*public*/ void setF15(bool f15);
     /*public*/ void setF16(bool f16) ;
     /*public*/ void setF17(bool f17);
- /*public*/ void dispatchThrottle(DccThrottle* t, ThrottleListener* l);
+    /*public*/ void dispatchThrottle(DccThrottle* t, ThrottleListener* l);
+    QObject* self() {return (QObject*)this;}
 
 signals:
 

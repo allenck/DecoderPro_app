@@ -17,6 +17,7 @@
 #include <lnsensormanager.h>
 #include <lntrafficcontroller.h>
 #include <lnturnoutmanager.h>
+#include <locoaddress.h>
 #include <loconetinterface.h>
 #include <loconetmessage.h>
 #include <loconetsystemconnectionmemo.h>
@@ -50,6 +51,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -4382,6 +4384,39 @@ if (_wrapper) {
 }
   return LocoAddress::getProtocol();
 }
+bool  PythonQtShell_LocoAddress::__eq__(LocoAddress*  a0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("__eq__");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "LocoAddress*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&a0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("__eq__", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LocoAddress::operator==(a0);
+}
 void PythonQtShell_LocoAddress::timerEvent(QTimerEvent*  event0)
 {
 if (_wrapper) {
@@ -4482,6 +4517,11 @@ LocoAddress::Protocol  PythonQtWrapper_LocoAddress::getProtocol(LocoAddress* the
 QString  PythonQtWrapper_LocoAddress::static_LocoAddress_getShortName(LocoAddress::Protocol  p)
 {
   return (LocoAddress::getShortName(p));
+}
+
+bool  PythonQtWrapper_LocoAddress::__eq__(LocoAddress* theWrappedObject, LocoAddress*  a)
+{
+  return ( (*theWrappedObject)== a);
 }
 
 QString  PythonQtWrapper_LocoAddress::toString(LocoAddress* theWrappedObject)
@@ -8406,7 +8446,7 @@ if (_wrapper) {
 }
   return MemoryManager::getBeanTypeHandled(plural0);
 }
-NamedBean*  PythonQtShell_MemoryManager::getByUserName(QString  userName0)
+NamedBean*  PythonQtShell_MemoryManager::getByUserName(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8417,7 +8457,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -8437,7 +8477,7 @@ if (_wrapper) {
     }
   }
 }
-  return MemoryManager::getByUserName(userName0);
+  return MemoryManager::getByUserName(arg__1);
 }
 QString  PythonQtShell_MemoryManager::getEntryToolTip()
 {
@@ -24040,7 +24080,7 @@ if (_wrapper) {
 }
   return ReporterManager::getBeanTypeHandled(plural0);
 }
-NamedBean*  PythonQtShell_ReporterManager::getByUserName(QString  userName0)
+NamedBean*  PythonQtShell_ReporterManager::getByUserName(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24051,7 +24091,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -24071,7 +24111,7 @@ if (_wrapper) {
     }
   }
 }
-  return ReporterManager::getByUserName(userName0);
+  return ReporterManager::getByUserName(arg__1);
 }
 QString  PythonQtShell_ReporterManager::getEntryToolTip()
 {

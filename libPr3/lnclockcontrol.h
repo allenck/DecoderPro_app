@@ -5,6 +5,7 @@
 #include "lntrafficcontroller.h"
 #include "instancemanager.h"
 #include "propertychangelistener.h"
+#include "slotlistener.h"
 
 /**
  * LnClockControl.java
@@ -47,9 +48,10 @@
  * @version     $Revision: 17977 $
  */
 class SlotManager;
-class LIBPR3SHARED_EXPORT LnClockControl : public DefaultClockControl
+class LIBPR3SHARED_EXPORT LnClockControl : public DefaultClockControl, public SlotListener
 {
     Q_OBJECT
+ Q_INTERFACES(SlotListener)
 public:
  /*public*/ LnClockControl(LocoNetSystemConnectionMemo* scm, QObject *parent = 0);
 
@@ -83,6 +85,7 @@ public:
      */
     //@SuppressWarnings("deprecation")
     /*public*/ void dispose();
+    QObject* self() {return (QObject*)this;}
 
 signals:
     

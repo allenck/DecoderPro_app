@@ -149,15 +149,37 @@ bool LnThrottleManager::singleUse() { return false; }
 }
 
 /**
- * SlotListener contract. Get notification that an address has changed slot.
- * This method creates a throttle for all ThrottleListeners of that address
- * and notifies them via the ThrottleListener.notifyThrottleFound method.
+ * Get notification that an address has changed slot. This method creates a
+ * throttle for all ThrottleListeners of that address and notifies them via
+ * the ThrottleListener.notifyThrottleFound method.
+ *
+ * @param s LocoNet slot which has been changed
  */
-/*public*/ void  LnThrottleManager::notifyChangedSlot(LocoNetSlot* s)
-{
- DccThrottle* throttle = (DccThrottle*)new LocoNetThrottle((LocoNetSystemConnectionMemo*)adapterMemo, s);
- notifyThrottleKnown(throttle, new DccLocoAddress(s->locoAddr(),isLongAddress(s->locoAddr()) ) );
+//@Override
+/*public*/ void LnThrottleManager::notifyChangedSlot(LocoNetSlot* s) {
+    log->debug(tr("notifyChangedSlot - slot %1, slotStatus %2").arg(s->getSlot()).arg(QString::number(s->slotStatus(),16)));
+    // This is invoked only if the SlotManager knows that the LnThrottleManager is
+    // interested in the address associated with this slot.
+
+    // need to check to see if the slot is in a suitable state for creating a throttle.
+    if (s->slotStatus() == LnConstants::LOCO_IN_USE) {
+        // loco is already in-use
+        log->warn(tr("slot %1 address %2 is already in-use.").arg(
+                s->getSlot()).arg(s->locoAddr()));
+        // is the throttle ID the same as for this JMRI instance?  If not, do not accept the slot.
+        if ((s->id() != 0) && s->id() != throttleID) {
+            // notify the LnThrottleManager about failure of acquisition.
+            // NEED TO TRIGGER THE NEW "STEAL REQUIRED" FUNCITONALITY HERE
+            //note: throttle listener expects to have "callback" method notifyDecisionRequired
+            //invoked if a "steal" is required.  Make that happen as part of the "acquisition" process
+            slotForAddress.insert(s->locoAddr(),s);
+            notifyStealRequest(s->locoAddr());
+            return;
+        }
+    }
+    commitToAcquireThrottle(s);
 }
+
 /**
  * Making progress in the process of acquiring a throttle.
  *
@@ -171,7 +193,7 @@ bool LnThrottleManager::singleUse() { return false; }
     //end the waiting thread since we got a response
     if (waitingForNotification.contains(s->locoAddr())) {
         log->debug(tr("LnThrottleManager.notifyChangedSlot() - removing throttle acquisition notification flagging for address %1").arg(s->locoAddr() ));
-//        waitingForNotification.value(s->locoAddr())->interrupt();
+        waitingForNotification.value(s->locoAddr())->exit();
         waitingForNotification.remove(s->locoAddr());
     }
     else {

@@ -33,8 +33,8 @@ public:
  ThrottleListener* getListener();
  BasicRosterEntry* getRosterEntry();
  bool canHandleDecisions() {
-             return _canHandleDecisions;
-         }
+  return _canHandleDecisions;
+ }
 };
 
 /*protected*/ /*static*/ class LIBPR3SHARED_EXPORT Addresses : public QObject

@@ -3633,7 +3633,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
  *      bound: true
  *      description: The selection model for rows.
  */
-/*public*/ void JTable::setSelectionModel(DefaultListSelectionModel* newModel)
+/*public*/ void JTable::setSelectionModel(DefaultListSelectionModel* newModel) // QItemSelectionModel
 {
  if (newModel == NULL)
  {

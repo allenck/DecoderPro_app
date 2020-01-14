@@ -1522,7 +1522,6 @@ void ControlPanel::on_menu_requested()
  }
  if ((_throttle != NULL) && (_displaySlider != STEPDISPLAY))
  { // Update UI depending on function state
-#if 1
   try
   {
 //            java.lang.reflect.Method getter = throttle.getClass().getMethod("get" + switchSliderFunction, (Class[]) null);
@@ -1545,9 +1544,8 @@ void ControlPanel::on_menu_requested()
   }
   catch (Exception ex)
   {
-         log->debug("Exception in setSwitchSliderFunction: " + ex.getMessage() + " while looking for function " + switchSliderFunction);
+   log->debug("Exception in setSwitchSliderFunction: " + ex.getMessage() + " while looking for function " + switchSliderFunction);
   }
-#endif
  }
 }
 void ControlPanel::resizeEvent(QResizeEvent *evt)

@@ -97,13 +97,14 @@ public slots:
     /*public*/ void programmingOpReply(int val, int stat);
 };
 
-class SlotListenerO1 : public SlotListener
+class SlotListenerO1 : public QObject, public SlotListener
 {
     Q_OBJECT
+    Q_INTERFACES(SlotListener)
     SlotManagerTest* smt;
 public:
     SlotListenerO1(SlotManagerTest* smt) {this->smt = smt;}
-public slots:
+public:
     //@Override
     /*public*/ void notifyChangedSlot(LocoNetSlot* l);
 };

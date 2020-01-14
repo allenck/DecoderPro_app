@@ -3,11 +3,12 @@
 
 #include <QObject>
 #include "javaqt_global.h"
+
 class JAVAQTSHARED_EXPORT EventListener //:public QObject
 {
  //Q_OBJECT
 public:
- EventListener(QObject* parent = nullptr);
+ //EventListener(QObject* parent = nullptr);
  virtual QObject* self() = 0;
     
 };

@@ -37,7 +37,6 @@ SOURCES += javaqt.cpp \
     gridbagconstraints.cpp \
     insets.cpp \
     jtextfield.cpp \
-    eventlistener.cpp \
     jtextcomponent.cpp \
     jslider.cpp \
     jtogglebutton.cpp \

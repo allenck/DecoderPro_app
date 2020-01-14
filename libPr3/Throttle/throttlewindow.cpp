@@ -7,8 +7,8 @@
 #include "../Roster/rosterentry.h"
 #include <QSettings>
 //#include "listthrottles.h"
-#include "../LayoutEditor/panelmenu.h"
-#include "../LayoutEditor/editor.h"
+#include "panelmenu.h"
+#include "editor.h"
 #include "instancemanager.h"
 #include "lnpowermanager.h"
 #include "throttleframemanager.h"
@@ -23,7 +23,7 @@
 #include "smallpowermanagerbutton.h"
 #include "controlpanel.h"
 #include "learnthrottleframe.h"
-#include "../../LayoutEditor/warrantframe.h"
+#include "warrantframe.h"
 #include "functionpanel.h"
 #include "loconetsystemconnectionmemo.h"
 #include "throttleslistpanel.h"
@@ -130,7 +130,7 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  addressPanel->addAddressListener((AddressListener*)functionPanel);
  addressPanel->addAddressListener((AddressListener*)speedPanel);
  addressPanel->addAddressListener((AddressListener*)this);
- addressPanel->addAddressListener((AddressListener*)((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesListPanel()->getTableModel());
+ //addressPanel->addAddressListener((AddressListener*)((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesListPanel()->getTableModel());
  functionPanel->setAddressPanel(addressPanel);
  controlPanel->setAddressPanel(addressPanel);
  speedPanel->setAddressPanel(addressPanel);
@@ -613,62 +613,73 @@ void ThrottleWindow::OnFileMenuLoad()
  //            getCurrentThrottleFrame().loadThrottle(NULL);
  loadThrottle(NULL);
 }
-/*public*/ void ThrottleWindow::loadThrottle(QString sfile) {
-#if 1 // TODO:
-    if (sfile == "") {
-           JFileChooser* fileChooser = XmlFile::userFileChooser(tr("Xml files"), "xml");
-           fileChooser->setCurrentDirectory(new File(getDefaultThrottleFolder()));
-       fileChooser->setDialogType(JFileChooser::OPEN_DIALOG);
-           File* file = LoadXmlConfigAction::getFile(fileChooser);
-           if (file == NULL) return;
-           sfile = file->getAbsolutePath();
-           if (sfile == NULL) return;
-       }
+/*public*/ void ThrottleWindow::loadThrottle(QString sfile)
+{
+ if (sfile == "")
+ {
+  JFileChooser* fileChooser = XmlFile::userFileChooser(tr("Xml files"), "xml");
+  fileChooser->setCurrentDirectory(new File(getDefaultThrottleFolder()));
+  fileChooser->setDialogType(JFileChooser::OPEN_DIALOG);
+  File* file = LoadXmlConfigAction::getFile(fileChooser);
+  if (file == NULL) return;
+  sfile = file->getAbsolutePath();
+  if (sfile == NULL) return;
+ }
 
-       bool switchAfter = false;
-       if (! isEditMode) {
-           switchMode();
-           switchAfter = true;
-       }
+ bool switchAfter = false;
+ if (! isEditMode) {
+     switchMode();
+     switchAfter = true;
+ }
+ XmlFile* xf = new XmlFile();   // odd syntax is due to XmlFile being abstract
+ File* f=new File(sfile);
 
-       try {
-           XmlFile* xf = new XmlFile();   // odd syntax is due to XmlFile being abstract
-           File* f=new File(sfile);
-           QDomElement root = xf->rootFromFile(f);
-           QDomElement conf = root.firstChildElement("ThrottleFrame");
-           // File looks ok
-           setLastUsedSaveFile(sfile);
-           // close all existing Jynstruments
+ try
+ {
+  if(f->exists())
+  {
+     QDomElement root = xf->rootFromFile(f);
+     QDomElement conf = root.firstChildElement("ThrottleFrame");
+     // File looks ok
+     setLastUsedSaveFile(sfile);
+     // close all existing Jynstruments
 #if 0
-           Component[] cmps = getComponents();
-           for (int i=0; i<cmps.length; i++) {
-               try {
-                   if (cmps[i] instanceof JInternalFrame) {
-                       JInternalFrame jyf = (JInternalFrame) cmps[i];
-                       Component[] cmps2 = jyf.getContentPane().getComponents();
-                       for (int j=0; j<cmps2.length; j++) {
-                           if (cmps2[j] instanceof Jynstrument) {
-                               ((Jynstrument)cmps2[j]).exit();
-                               jyf.dispose();
-                           }
-                       }
-                   }
-               } catch (Exception ex) {
-                   log.debug("Got exception (no panic) "+ex);
-               }
-           }
+     Component[] cmps = getComponents();
+     for (int i=0; i<cmps.length; i++) {
+         try {
+             if (cmps[i] instanceof JInternalFrame) {
+                 JInternalFrame jyf = (JInternalFrame) cmps[i];
+                 Component[] cmps2 = jyf.getContentPane().getComponents();
+                 for (int j=0; j<cmps2.length; j++) {
+                     if (cmps2[j] instanceof Jynstrument) {
+                         ((Jynstrument)cmps2[j]).exit();
+                         jyf.dispose();
+                     }
+                 }
+             }
+         } catch (Exception ex) {
+             log.debug("Got exception (no panic) "+ex);
+         }
+     }
 #endif
-           // and finally load all preferences
-           setXml(conf);
-       } catch (Exception ex) {
-           if (log->isDebugEnabled())
-               log->debug("Loading throttle exception: " + ex.getMessage());
-       }
+     // and finally load all preferences
+     setXml(conf);
+  }
+ }
+ catch (FileNotFoundException ex)
+ {
+//           if (log->isDebugEnabled())
+  log->debug("Loading throttle exception: " + ex.getMessage());
+ }
+ catch (Exception ex) {
+     if (log->isDebugEnabled())
+         log->debug("Loading throttle exception: " + ex.getMessage());
+ }
+
 //    	checkPosition();
-       if (switchAfter) {
-           switchMode();
-       }
-#endif
+ if (switchAfter) {
+     switchMode();
+ }
  return ;
 }
 

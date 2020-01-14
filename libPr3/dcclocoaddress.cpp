@@ -1,5 +1,5 @@
 #include "dcclocoaddress.h"
-
+#include "exceptions.h"
 /**
  * Encapsulate information for a DCC Locomotive Decoder Address.
  *
@@ -34,7 +34,7 @@ DccLocoAddress::DccLocoAddress(const DccLocoAddress& l , QObject* parent)
  this->protocol = l.protocol;
 }
 
-bool DccLocoAddress::operator==(DccLocoAddress* a)
+bool DccLocoAddress::operator==(LocoAddress* a)
 {
  if (a==NULL) return false;
  try
@@ -48,15 +48,34 @@ bool DccLocoAddress::operator==(DccLocoAddress* a)
  { return false; }
 }
 
+//@Override
+/*public*/ bool DccLocoAddress::equals(QObject* a) {
+    if (a != nullptr && a->metaObject()->className() == (this->metaObject()->className())) {
+        try {
+            DccLocoAddress* other = (DccLocoAddress*) a;
+            if (this->number != other->number) {
+                return false;
+            }
+            if (this->protocol != other->protocol) {
+                return false;
+            }
+            return true;
+        } catch (/*RuntimeException*/Exception e) {
+            return false;
+        }
+    }
+    return false;
+}
+
 int DccLocoAddress::hashCode() {
     switch(protocol){
         case DCC_SHORT :    return (int)(number&0xFFFFFFFF);
-        case DCC_LONG :     return (int)(20000+number&0xFFFFFFFF);
-        case SELECTRIX:     return (int)(30000+number&0xFFFFFFFF);
-        case MOTOROLA:      return (int)(40000+number&0xFFFFFFFF);
-        case MFX:           return (int)(50000+number&0xFFFFFFFF);
-        case M4:            return (int)(60000+number&0xFFFFFFFF);
-        case OPENLCB:       return (int)(70000+number&0xFFFFFFFF);
+        case DCC_LONG :     return (int)(20000+(number&0xFFFFFFFF));
+        case SELECTRIX:     return (int)(30000+(number&0xFFFFFFFF));
+        case MOTOROLA:      return (int)(40000+(number&0xFFFFFFFF));
+        case MFX:           return (int)(50000+(number&0xFFFFFFFF));
+        case M4:            return (int)(60000+(number&0xFFFFFFFF));
+        case OPENLCB:       return (int)(70000+(number&0xFFFFFFFF));
         default:            return (int)(number&0xFFFFFFFF);
     }
 }

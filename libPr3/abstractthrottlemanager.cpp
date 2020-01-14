@@ -416,6 +416,17 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      addressThrottles->value(addr)->setThrottle(throttle);
  }
  QList<WaitingThrottle*>* a = throttleListeners->value(addr);
+ if(a == nullptr)
+ {
+  foreach(LocoAddress* adr, throttleListeners->keys())
+  {
+   if(adr->equals( addr))
+   {
+    a = throttleListeners->value(adr);
+    break;
+   }
+  }
+ }
  if (a == nullptr)
  {
   log->debug(tr("notifyThrottleKnown with zero-length listeners: %1").arg(addr->toString()));

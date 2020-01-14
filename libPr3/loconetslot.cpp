@@ -964,15 +964,15 @@ void LocoNetSlot::notifySlotListeners()
  for (int i=0; i < cnt; i++)
  {
   SlotListener* client = v->at(i);
-  if(qobject_cast<ThrottleWindow*>(client)!= NULL)
+  if(qobject_cast<ThrottleWindow*>(client->self())!= NULL)
    ((ThrottleWindow*)client)->notifyChangedSlot(this);
   else
-  if(qobject_cast<LocoNetThrottle*>(client)!= NULL)
+  if(qobject_cast<LocoNetThrottle*>(client->self())!= NULL)
    ((LocoNetThrottle*)client)->notifyChangedSlot(this);
   else
   {
    client->notifyChangedSlot(this);
-   log->debug(tr("Unhandled SlotListener '%1'").arg(client->metaObject()->className()));
+   log->debug(tr("Unhandled SlotListener '%1'").arg(client->self()->metaObject()->className()));
   }
  }
 }

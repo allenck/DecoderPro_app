@@ -5,10 +5,9 @@
 #include "loconetslot.h"
 
 class LocoNetSlot;
-class SlotListener : public QObject
+class SlotListener //: public QObject
 {
-    Q_OBJECT
-public slots:
+    //Q_OBJECT
     //explicit SlotListener(QObject *parent = 0);
     /**
      * Interface for objects that want to be notified when a
@@ -18,11 +17,13 @@ public slots:
      * @version	$Revision: 17977 $
      */
     //public interface SlotListener extends java.util.EventListener{
+public:
+ virtual QObject* self() {return (QObject*)this;}
 signals:
     
-public slots:
+public:
  virtual void notifyChangedSlot(LocoNetSlot* /*s*/) {}
 
 };
-
+Q_DECLARE_INTERFACE(SlotListener, "SlotListener")
 #endif // SLOTLISTENER_H

@@ -61,6 +61,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -326,6 +327,7 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual int  getNumber();
 virtual LocoAddress::Protocol  getProtocol();
+virtual bool  __eq__(LocoAddress*  a);
 virtual void timerEvent(QTimerEvent*  event);
 virtual QString  toString();
 
@@ -338,6 +340,7 @@ class PythonQtPublicPromoter_LocoAddress : public LocoAddress
 { public:
 inline int  py_q_getNumber() { return LocoAddress::getNumber(); }
 inline LocoAddress::Protocol  py_q_getProtocol() { return LocoAddress::getProtocol(); }
+inline bool  py_q___eq__(LocoAddress*  a) { return LocoAddress::operator==(a); }
 inline QString  py_q_toString() { return LocoAddress::toString(); }
 };
 
@@ -355,6 +358,8 @@ void delete_LocoAddress(LocoAddress* obj) { delete obj; }
    LocoAddress::Protocol  getProtocol(LocoAddress* theWrappedObject);
    LocoAddress::Protocol  py_q_getProtocol(LocoAddress* theWrappedObject){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_getProtocol());}
    QString  static_LocoAddress_getShortName(LocoAddress::Protocol  p);
+   bool  __eq__(LocoAddress* theWrappedObject, LocoAddress*  a);
+//   bool  py_q___eq__(LocoAddress* theWrappedObject, LocoAddress*  a){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_operator==(a));}
    QString  toString(LocoAddress* theWrappedObject);
    QString  py_q_toString(LocoAddress* theWrappedObject){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_toString());}
     QString py_toString(LocoAddress*);
@@ -862,7 +867,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled(bool  plural);
-virtual NamedBean*  getByUserName(QString  userName);
+virtual NamedBean*  getByUserName(QString  arg__1);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
@@ -890,12 +895,18 @@ virtual void vetoableChange(PropertyChangeEvent*  evt);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
+class PythonQtPublicPromoter_MemoryManager : public MemoryManager
+{ public:
+inline NamedBean*  py_q_getByUserName(QString  arg__1) { return MemoryManager::getByUserName(arg__1); }
+};
+
 class PythonQtWrapper_MemoryManager : public QObject
 { Q_OBJECT
 public:
 public slots:
 MemoryManager* new_MemoryManager(QObject*  parent = 0);
 void delete_MemoryManager(MemoryManager* obj) { delete obj; } 
+   NamedBean*  py_q_getByUserName(MemoryManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_MemoryManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
 };
 
 
@@ -2727,7 +2738,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled(bool  plural);
-virtual NamedBean*  getByUserName(QString  userName);
+virtual NamedBean*  getByUserName(QString  arg__1);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name);
@@ -2759,6 +2770,7 @@ virtual void vetoableChange(PropertyChangeEvent*  evt);
 class PythonQtPublicPromoter_ReporterManager : public ReporterManager
 { public:
 inline bool  py_q_allowMultipleAdditions(QString  arg__1) const { return ReporterManager::allowMultipleAdditions(arg__1); }
+inline NamedBean*  py_q_getByUserName(QString  arg__1) { return ReporterManager::getByUserName(arg__1); }
 inline QString  py_q_getNextValidAddress(QString  arg__1, QString  arg__2) const { return ReporterManager::getNextValidAddress(arg__1, arg__2); }
 inline QStringList  py_q_getSystemNameList() const { return ReporterManager::getSystemNameList(); }
 };
@@ -2771,6 +2783,7 @@ ReporterManager* new_ReporterManager(SystemConnectionMemo*  memo, QObject*  pare
 void delete_ReporterManager(ReporterManager* obj) { delete obj; } 
    bool  allowMultipleAdditions(ReporterManager* theWrappedObject, QString  arg__1) const;
    bool  py_q_allowMultipleAdditions(ReporterManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_allowMultipleAdditions(arg__1));}
+   NamedBean*  py_q_getByUserName(ReporterManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    QString  getNextValidAddress(ReporterManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
    QString  py_q_getNextValidAddress(ReporterManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getNextValidAddress(arg__1, arg__2));}
    QStringList  py_q_getSystemNameList(ReporterManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getSystemNameList());}

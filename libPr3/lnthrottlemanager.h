@@ -2,6 +2,8 @@
 #define LNTHROTTLEMANAGER_H
 #include "abstractthrottlemanager.h"
 #include "slotmanager.h"
+#include "slotlistener.h"
+
 /**
  * LocoNet implementation of a ThrottleManager.
  * <P>
@@ -13,9 +15,10 @@
  * @version 		$Revision: 20637 $
  */
 class ThrottleRequest;
-class LIBPR3SHARED_EXPORT LnThrottleManager : public AbstractThrottleManager
+class LIBPR3SHARED_EXPORT LnThrottleManager : public AbstractThrottleManager, public SlotListener
 {
     Q_OBJECT
+ Q_INTERFACES(SlotListener)
 public:
     explicit LnThrottleManager(LocoNetSystemConnectionMemo* memo, QObject *parent = 0);
     /**
@@ -59,6 +62,7 @@ public:
     /*public*/ int getThrottleID();
     /*public*/ void notifyStealRequest(int locoAddr);
     /*public*/ void responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision);
+    QObject* self() {return (QObject*)this;}
 
 signals:
     
@@ -80,7 +84,7 @@ private:
  /*private*/ void commitToAcquireThrottle(LocoNetSlot* s);
  /*private*/ void processThrottleSetupRequest(LocoAddress* address, bool control);
 
- QThread* retrySetupThread;
+ QThread* retrySetupThread = nullptr;
  static Logger* log;
  DccThrottle* createThrottle(LocoNetSystemConnectionMemo* memo, LocoNetSlot* s);
 

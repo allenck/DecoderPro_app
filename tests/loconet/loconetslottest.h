@@ -72,14 +72,15 @@ public slots:
   private:
     LocoNetInterfaceScaffold* lnis;
 };
-class SlotListenerO2 : public SlotListener
+
+class SlotListenerO2 : public QObject, public SlotListener
 {
     Q_OBJECT
+ Q_INTERFACES(SlotListener)
     LocoNetSlotTest* smt;
 public:
     SlotListenerO2(LocoNetSlotTest* smt) {this->smt = smt;}
     //@Override
-public slots:
     /*public*/ void notifyChangedSlot(LocoNetSlot* l) {
     }
 };

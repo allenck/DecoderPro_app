@@ -80,6 +80,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -411,6 +412,7 @@ virtual void windowClosing(QCloseEvent*  e);
 class PythonQtPublicPromoter_Editor : public Editor
 { public:
 inline void promoted_addBackgroundEditor() { this->addBackgroundEditor(); }
+inline void promoted_addBlockContentsEditor() { this->addBlockContentsEditor(); }
 inline void promoted_addClock() { this->addClock(); }
 inline void promoted_addIconEditor() { this->addIconEditor(); }
 inline PositionableLabel*  promoted_addLabel(QString  text) { return this->addLabel(text); }

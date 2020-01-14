@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QtXml>
 
+class DccLocoAddress;
 class JTable;
 class ThrottlesTableModel;
 class ThrottlesListPanel : public QWidget
