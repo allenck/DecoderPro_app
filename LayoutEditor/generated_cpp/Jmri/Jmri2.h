@@ -61,7 +61,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -317,17 +316,18 @@ void delete_LnTurnoutManager(LnTurnoutManager* obj) { delete obj; }
 class PythonQtShell_LocoAddress : public LocoAddress
 {
 public:
-    PythonQtShell_LocoAddress():LocoAddress(),_wrapper(NULL) {}
+    PythonQtShell_LocoAddress(QObject*  parent = 0):LocoAddress(parent),_wrapper(NULL) {}
 
    ~PythonQtShell_LocoAddress();
 
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
+virtual bool  equals(QObject*  a);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual int  getNumber();
-virtual LocoAddress::Protocol  getProtocol();
-virtual bool  __eq__(LocoAddress*  a);
+virtual int  getNumber() const;
+virtual LocoAddress::Protocol  getProtocol() const;
+virtual bool  __eq__(const LocoAddress&  a);
 virtual void timerEvent(QTimerEvent*  event);
 virtual QString  toString();
 
@@ -338,9 +338,10 @@ virtual QString  toString();
 
 class PythonQtPublicPromoter_LocoAddress : public LocoAddress
 { public:
-inline int  py_q_getNumber() { return LocoAddress::getNumber(); }
-inline LocoAddress::Protocol  py_q_getProtocol() { return LocoAddress::getProtocol(); }
-inline bool  py_q___eq__(LocoAddress*  a) { return LocoAddress::operator==(a); }
+inline bool  py_q_equals(QObject*  a) { return LocoAddress::equals(a); }
+inline int  py_q_getNumber() const { return LocoAddress::getNumber(); }
+inline LocoAddress::Protocol  py_q_getProtocol() const { return LocoAddress::getProtocol(); }
+inline bool  py_q___eq__(const LocoAddress&  a) { return LocoAddress::operator==(a); }
 inline QString  py_q_toString() { return LocoAddress::toString(); }
 };
 
@@ -348,18 +349,20 @@ class PythonQtWrapper_LocoAddress : public QObject
 { Q_OBJECT
 public:
 public slots:
-LocoAddress* new_LocoAddress();
+LocoAddress* new_LocoAddress(QObject*  parent = 0);
 void delete_LocoAddress(LocoAddress* obj) { delete obj; } 
+   bool  equals(LocoAddress* theWrappedObject, QObject*  a);
+   bool  py_q_equals(LocoAddress* theWrappedObject, QObject*  a){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_equals(a));}
    LocoAddress::Protocol  static_LocoAddress_getByPeopleName(QString  pName);
    LocoAddress::Protocol  static_LocoAddress_getByShortName(QString  shName);
-   int  getNumber(LocoAddress* theWrappedObject);
-   int  py_q_getNumber(LocoAddress* theWrappedObject){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_getNumber());}
+   int  getNumber(LocoAddress* theWrappedObject) const;
+   int  py_q_getNumber(LocoAddress* theWrappedObject) const{  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_getNumber());}
    QString  static_LocoAddress_getPeopleName(LocoAddress::Protocol  p);
-   LocoAddress::Protocol  getProtocol(LocoAddress* theWrappedObject);
-   LocoAddress::Protocol  py_q_getProtocol(LocoAddress* theWrappedObject){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_getProtocol());}
+   LocoAddress::Protocol  getProtocol(LocoAddress* theWrappedObject) const;
+   LocoAddress::Protocol  py_q_getProtocol(LocoAddress* theWrappedObject) const{  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_getProtocol());}
    QString  static_LocoAddress_getShortName(LocoAddress::Protocol  p);
-   bool  __eq__(LocoAddress* theWrappedObject, LocoAddress*  a);
-//   bool  py_q___eq__(LocoAddress* theWrappedObject, LocoAddress*  a){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_operator==(a));}
+   bool  __eq__(LocoAddress* theWrappedObject, const LocoAddress&  a);
+   //bool  py_q___eq__(LocoAddress* theWrappedObject, const LocoAddress&  a){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_operator==(a));}
    QString  toString(LocoAddress* theWrappedObject);
    QString  py_q_toString(LocoAddress* theWrappedObject){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_toString());}
     QString py_toString(LocoAddress*);

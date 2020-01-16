@@ -31,7 +31,7 @@ public slots:
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("ControlPanel");
- /*private*/ DccThrottle* throttle;
+ /*private*/ DccThrottle* throttle = nullptr;
  /*private*/ QWidget* mainPanel;
  /*private*/ QWidget* speedDisplayPanel;
  /*private*/ QLabel* scaleSpeedLabel;// = new JLabel("", JLabel.CENTER);

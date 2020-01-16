@@ -636,6 +636,8 @@ void ThrottleWindow::OnFileMenuLoad()
 
  try
  {
+  if(!f->exists())
+   throw  FileNotFoundException(tr("file %1 not found").arg(sfile));
   if(f->exists())
   {
      QDomElement root = xf->rootFromFile(f);

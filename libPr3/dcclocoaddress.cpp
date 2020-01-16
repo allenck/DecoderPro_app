@@ -34,14 +34,14 @@ DccLocoAddress::DccLocoAddress(const DccLocoAddress& l , QObject* parent)
  this->protocol = l.protocol;
 }
 
-bool DccLocoAddress::operator==(LocoAddress* a)
+bool DccLocoAddress::operator==(const LocoAddress &a)
 {
- if (a==NULL) return false;
+ //if (a==NULL) return false;
  try
  {
-  DccLocoAddress* other = (DccLocoAddress *) a;
-  if (this->number != other->number) return false;
-  if (this->protocol != other->protocol) return false;
+  //DccLocoAddress other = (DccLocoAddress ) a;
+  if (this->number != a.getNumber()) return false;
+  if (this->protocol != a.getProtocol()) return false;
    return true;
  }
  catch (std::exception e)
@@ -99,9 +99,9 @@ bool DccLocoAddress::isLongAddress() {
     return true;
 }
 
-LocoAddress::Protocol DccLocoAddress::getProtocol() {
+LocoAddress::Protocol DccLocoAddress::getProtocol() const {
     return protocol;
 }
 
-int DccLocoAddress::getNumber() { return (int)number; }
+int DccLocoAddress::getNumber() const { return (int)number; }
 

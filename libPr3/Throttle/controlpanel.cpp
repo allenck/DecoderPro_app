@@ -27,6 +27,7 @@
 #include "myslider.h"
 #include <QSize>
 #include "controlpanelpropertyeditor.h"
+#include "windowpreferences.h"
 
 //ControlPanel::ControlPanel(QWidget *parent) :
 //    QDockWidget(parent)

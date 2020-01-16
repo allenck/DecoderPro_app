@@ -70,6 +70,7 @@ public slots:
       * @param question The question being asked, steal / cancel, share / cancel, steal / share / cancel
       */
     /*public*/ virtual void notifyDecisionRequired(LocoAddress* /*address*/, DecisionType /*question*/){}
+     /*public*/ virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(ThrottleListener, "ThrottleListener")
 #endif // THROTTLELISTENER_H

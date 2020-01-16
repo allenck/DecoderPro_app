@@ -194,7 +194,9 @@ AddressPanel::~AddressPanel()
   bool requestOK =
             InstanceManager::throttleManagerInstance()->requestThrottle(currentAddress->getNumber(), currentAddress->isLongAddress(), (ThrottleListener*)this);
   if (!requestOK)
+  {
    JOptionPane::showMessageDialog(mainPanel, tr("Address in use by another throttle."));
+  }
   return;
  }
 

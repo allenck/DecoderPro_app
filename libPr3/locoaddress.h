@@ -32,7 +32,7 @@ public:
                 LGB
     };
     Q_ENUM(Protocol)
-    //explicit LocoAddress(QObject *parent = 0);
+    explicit LocoAddress(QObject *parent = 0) : QObject(parent) {}
     /**
      * Interface for generic Locomotive Address.
      *
@@ -58,7 +58,7 @@ public:
 
 //    virtual interface LocoAddress {
 
-        virtual int getNumber() {return 0;}
+        virtual int getNumber() const {return 0;}
 
 //        enum Protocol {
 //            DCC_SHORT(  "dcc_short","ProtocolDCC_Short"), // NOI18N
@@ -190,27 +190,29 @@ static Protocol getByPeopleName(QString pName) {
 }
 
 //        }
-    virtual Protocol getProtocol() {return DCC;}
+    virtual Protocol getProtocol() const {return DCC;}
     virtual QString toString() { return "";}
-    virtual
-    bool operator==(LocoAddress* a)
+    virtual bool operator ==(const LocoAddress &a)
     {
-     if (a==NULL) return false;
+     //if (a==NULL) return false;
+//     if(dynamic_cast<LocoAddress*>(a)== nullptr) return false;
+     if(this->metaObject()->className() != a.metaObject()->className()) return false;
      try
      {
-      LocoAddress* other = (LocoAddress *) a;
-      if (this->getNumber() != other->getNumber()) return false;
-      if (this->getProtocol() != other->getProtocol()) return false;
+      //LocoAddress &other = (LocoAddress ) a;
+      if (this->getNumber() != a.getNumber()) return false;
+      if (this->getProtocol() != a.getProtocol()) return false;
        return true;
      }
      catch (std::exception e)
      { return false; }
     }
 
-    virtual
-    bool equals(LocoAddress* a)
+    virtual bool equals(QObject* a)
     {
      if (a==NULL) return false;
+     if(qobject_cast<LocoAddress*>(a)== nullptr) return false;
+     if(this->metaObject()->className() != a->metaObject()->className()) return false;
      try
      {
       LocoAddress* other = (LocoAddress *) a;

@@ -509,7 +509,7 @@
     QVariant message) //throws HeadlessException
 {
     showMessageDialog(parentComponent, message, /*UIManager.getString*/QString(
-                "OptionPane.messageDialogTitle"/*, parentComponent*/),
+                "Information"/*, parentComponent*/),
                 INFORMATION_MESSAGE);
 }
 
@@ -774,7 +774,7 @@
  JDialog* dialog = pane->createDialog(parentComponent, title, style);
 
  pane->selectInitialValue();
- dialog->show();
+ //dialog->show();
  int rslt = dialog->exec();
  //dialog->/*dispose*/close();
 if(options.count() >0)

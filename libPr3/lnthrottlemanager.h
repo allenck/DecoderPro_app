@@ -135,21 +135,22 @@ protected:
 friend class LnThrottleManager;
 };
 
-class RetrySetup : public Runnable
+class RetrySetup : public QObject//Runnable
 {  //setup for retries and failure check
 Q_OBJECT
     DccLocoAddress* address;
-    SlotListener* list;
-    LnThrottleManager* lnThrottleManager;
+    //SlotListener* list;
+    LnThrottleManager* list;
 public:
-    RetrySetup(DccLocoAddress* address, SlotListener* list, LnThrottleManager* lnThrottleManager) {
-        this->address = address;
-        this->list = list;
-     this->lnThrottleManager = lnThrottleManager;
+    RetrySetup(DccLocoAddress* address, LnThrottleManager* list) {
+     this->address = address;
+     this->list = list;
+     //this->lnThrottleManager = lnThrottleManager;
     }
-
-    //@Override
-    /*public*/ void run() {
+public slots:
+        //@Override
+    /*public*/ void process()  // run
+    {
         int attempts = 1; // already tried once above
         int maxAttempts = 10;
         while (attempts <= maxAttempts) {
@@ -161,17 +162,23 @@ public:
             }
             QString msg = tr("No response to slot request for %1, attempt %2").arg(address->toString()).arg(attempts); // NOI18N
             if (attempts < maxAttempts) {
-                lnThrottleManager->slotManager->slotFromLocoAddress(address->getNumber(), list);
+                list->slotManager->slotFromLocoAddress(address->getNumber(), (SlotListener*)list);
                 msg += ", trying again."; // NOI18N
             }
-            lnThrottleManager->log->debug(msg);
+            list->log->debug(msg);
             attempts++;
         }
-        lnThrottleManager->log->error(tr("No response to slot request for %1 after %2 attempts.").arg(address->toString()).arg(attempts - 1)); // NOI18N
-        lnThrottleManager->failedThrottleRequest(address, "Failed to get response from command station");
-        lnThrottleManager->requestOutstanding = false;
-        lnThrottleManager->processQueuedThrottleSetupRequest();
+        list->log->error(tr("No response to slot request for %1 after %2 attempts.").arg(address->toString()).arg(attempts - 1)); // NOI18N
+        list->failedThrottleRequest(address, "Failed to get response from command station");
+        list->requestOutstanding = false;
+        list->processQueuedThrottleSetupRequest();
     }
+    void interrupted()
+    {
+     throw InterruptedException();
+    }
+signals:
+    void finished();
 };
 class InformRejection : public Runnable {
  Q_OBJECT

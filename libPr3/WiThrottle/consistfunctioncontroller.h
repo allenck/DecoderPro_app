@@ -14,6 +14,7 @@ public:
  /*public*/ ConsistFunctionController(ThrottleController* tc, RosterEntry* re);
  /*public*/ void dispose();
  /*public*/ DccThrottle* getThrottle();
+ /*public*/QObject* self() {return (QObject*)this;}
 
 public slots:
  /*public*/ void notifyThrottleFound(DccThrottle* t);

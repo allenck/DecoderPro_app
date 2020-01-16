@@ -10,9 +10,10 @@ MyApplication::MyApplication(int &argc, char *argv[]):
 }
 bool MyApplication::notify(QObject *receiver_, QEvent *event_)
 {
+ bool done = true;
  try
  {
-  return QApplication::notify( receiver_, event_ );
+  done = QApplication::notify( receiver_, event_ );
  }
  //catch ( std::exception& e )
  catch (Exception& e)
@@ -23,5 +24,5 @@ bool MyApplication::notify(QObject *receiver_, QEvent *event_)
 
    //qDebug() << e.getMessage();
  }
- return false;
+ return done;
 }

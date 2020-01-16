@@ -40,6 +40,7 @@ public:
  /*public*/ DccLocoAddress* getCurrentAddress();
  /*public*/ QString getCurrentAddressString();
  /*public*/ void sendAddress();
+ /*public*/QObject* self() {return (QObject*)this;}
 
 
 signals:

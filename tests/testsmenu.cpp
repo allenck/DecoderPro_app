@@ -66,7 +66,7 @@
 #include "operations/optionsmenutestaction.h"
 #include "positionables/signalmasticontestaction.h"
 #include "misc/colorchooserpaneltestaction.h"
-
+#include "misc/dcclocoaddresstestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -179,4 +179,5 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* miscMenu = new QMenu("misc");
     addMenu(miscMenu);
     miscMenu->addAction(new ColorChooserPanelTestAction(this));
+    miscMenu->addAction(new DccLocoAddressTestAction(this));
 }

@@ -173,6 +173,8 @@ private:
      * throttle setup process.
      */
     /*private*/ QHash<LocoAddress*,QList<WaitingThrottle*>* >* throttleListeners;// = new QHash<DccLocoAddress,QList<WaitingThrottle>>(5);
+    /*private*/ QList<WaitingThrottle*>* getWaiting(LocoAddress* addr);
+
     /**
      * listenerOnly is indexed by the address, and
      * contains as elements an ArrayList of propertyChangeListeners

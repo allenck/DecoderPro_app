@@ -47,7 +47,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -33684,6 +33683,39 @@ if (_wrapper) {
 }
   DccLocoAddress::customEvent(event0);
 }
+bool  PythonQtShell_DccLocoAddress::equals(QObject*  a0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("equals");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "QObject*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&a0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("equals", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return DccLocoAddress::equals(a0);
+}
 bool  PythonQtShell_DccLocoAddress::event(QEvent*  event0)
 {
 if (_wrapper) {
@@ -33750,7 +33782,7 @@ if (_wrapper) {
 }
   return DccLocoAddress::eventFilter(watched0, event1);
 }
-int  PythonQtShell_DccLocoAddress::getNumber()
+int  PythonQtShell_DccLocoAddress::getNumber() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -33783,7 +33815,7 @@ if (_wrapper) {
 }
   return DccLocoAddress::getNumber();
 }
-LocoAddress::Protocol  PythonQtShell_DccLocoAddress::getProtocol()
+LocoAddress::Protocol  PythonQtShell_DccLocoAddress::getProtocol() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -33816,7 +33848,7 @@ if (_wrapper) {
 }
   return DccLocoAddress::getProtocol();
 }
-bool  PythonQtShell_DccLocoAddress::__eq__(LocoAddress*  a0)
+bool  PythonQtShell_DccLocoAddress::__eq__(const LocoAddress&  a0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -33824,7 +33856,7 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("__eq__");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"bool" , "LocoAddress*"};
+      static const char* argumentList[] ={"bool" , "const LocoAddress&"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
       void* args[2] = {NULL, (void*)&a0};
@@ -33929,11 +33961,6 @@ int PythonQtShell_DccLocoAddress::qt_metacall(QMetaObject::Call call, int id, vo
   int result = DccLocoAddress::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-bool  PythonQtWrapper_DccLocoAddress::equals(DccLocoAddress* theWrappedObject, QObject*  a)
-{
-  return ( theWrappedObject->equals(a));
-}
-
 int  PythonQtWrapper_DccLocoAddress::hashCode(DccLocoAddress* theWrappedObject)
 {
   return ( theWrappedObject->hashCode());

@@ -88,6 +88,7 @@ public:
  /*public*/ void setMaxTrainLength(float length);
  /*public*/ static int getRampRateFromName(QString rampRate);
  /*public*/ bool initialize();
+ /*public*/QObject* self() {return (QObject*)this;}
 
 signals:
 

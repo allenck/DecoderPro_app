@@ -131,6 +131,7 @@ public:
     /*public*/ void dispose();
     Q_INVOKABLE /*public*/ bool equals(QObject* obj);
     /*public*/ int hashCode();
+    /*public*/QObject* self() {return (QObject*)this;}
 
 
 signals:

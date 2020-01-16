@@ -75,6 +75,7 @@ public:
  /*public*/ void sendMessage(QJsonObject data, JsonThrottleSocketService* server);
  /*public*/ void notifyFailedThrottleRequest(DccLocoAddress* address, QString reason);
  /*private*/ QJsonObject getStatus();
+ /*public*/QObject* self() {return (QObject*)this;}
 
 signals:
 

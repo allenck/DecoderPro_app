@@ -65,6 +65,7 @@ public slots:
     /*public*/ void notifyFailedThrottleRequest(DccLocoAddress* address, QString reason);
     /*public*/ void notifyConsistThrottleFound(DccThrottle* t);
     /*public*/ void notifyThrottleDisposed();
+    /*public*/QObject* self() {return (QObject*)this;}
 
 signals:
     void notifyAddressReleased(LocoAddress* currentAddress);
@@ -82,7 +83,7 @@ private:
     /*private*/ DccLocoAddress* consistAddress;
     /*private*/ QList<AddressListener*>* listeners;
 
-    /*private*/ QWidget* mainPanel;
+    /*private*/ QWidget* mainPanel = nullptr;
 
 //	/*private*/ JButton releaseButton;
 //	/*private*/ JButton dispatchButton;

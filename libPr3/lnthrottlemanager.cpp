@@ -22,7 +22,7 @@ LnThrottleManager::LnThrottleManager(LocoNetSystemConnectionMemo* memo, QObject 
 {
     setObjectName("LnThrottleManager");
     waitingForNotification = QHash<int, QThread*>();
-    waitingForNotification.insert(0, nullptr);
+    //waitingForNotification.insert(0, nullptr);
 
     //super(memo);
     this->slotManager = memo->getSlotManager();//slotManager;
@@ -83,8 +83,9 @@ bool LnThrottleManager::singleUse() { return false; }
  * @param address Loco address
  * @param control whether the throttle object wants to control the loco
  */
-/*private*/ void LnThrottleManager::processThrottleSetupRequest(LocoAddress* address, bool control) {
-    slotManager->slotFromLocoAddress(address->getNumber(), (SlotListener*)this);  //first try
+/*private*/ void LnThrottleManager::processThrottleSetupRequest(LocoAddress* address, bool control)
+{
+ slotManager->slotFromLocoAddress(address->getNumber(), (SlotListener*)this);  //first try
 
 //    class RetrySetup implements Runnable {  //setup for retries and failure check
 
@@ -120,11 +121,15 @@ bool LnThrottleManager::singleUse() { return false; }
 //            processQueuedThrottleSetupRequest();
 //        }
 //    }
-#if 0
-    retrySetupThread = new QThread(
-            new RetrySetup(new DccLocoAddress(address->getNumber(),
-                    isLongAddress(address->getNumber())), this));
+#if 1
+    retrySetupThread = new QThread();
+    RetrySetup* retrySetup = new RetrySetup(new DccLocoAddress(address->getNumber(),
+                    isLongAddress(address->getNumber())), this);
     retrySetupThread->setObjectName("LnThrottleManager RetrySetup "+address->toString());
+    connect(retrySetupThread, SIGNAL(started()), retrySetup, SLOT(process()));
+    connect(retrySetup, SIGNAL(finished()), retrySetupThread, SLOT(quit()));
+    connect(retrySetup, SIGNAL(finished()), retrySetupThread, SLOT(deleteLater()));
+    retrySetup->moveToThread(retrySetupThread);
     retrySetupThread->start();
     waitingForNotification.insert(address->getNumber(), retrySetupThread);
 #endif
@@ -397,11 +402,11 @@ DccThrottle* LnThrottleManager::createThrottle(LocoNetSystemConnectionMemo* memo
  * Dispose of this manager, typically for testing.
  */
 void LnThrottleManager::dispose() {
-#if 0
+#if 1
     if (retrySetupThread != nullptr) {
         try {
-            retrySetupThread.interrupt();
-            retrySetupThread.join();
+            retrySetupThread->exit();
+//            retrySetupThread->join();
         } catch (InterruptedException ex) {
             log->warn("dispose interrupted");
         }
@@ -429,7 +434,7 @@ void LnThrottleManager::dispose() {
     // send that "throttleListener" a notification that the command station needs
     // permission to "steal" the loco address.
     if (waitingForNotification.contains(locoAddr)) {
-//        waitingForNotification.value(locoAddr).interrupt();
+        waitingForNotification.value(locoAddr)->quit();
         waitingForNotification.remove(locoAddr);
 
         notifyDecisionRequest(new DccLocoAddress(locoAddr, isLongAddress(locoAddr)),ThrottleListener::DecisionType::STEAL);

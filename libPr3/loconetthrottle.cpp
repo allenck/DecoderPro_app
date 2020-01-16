@@ -880,13 +880,16 @@
 
 
 
-/*public*/ LocoAddress* LocoNetThrottle::getLocoAddress() {
- if (slot != nullptr) {
-     if ((slot->slotStatus() == LnConstants::LOCO_IN_USE) ||
-         (slot->slotStatus() == LnConstants::LOCO_COMMON)) {
-         log->debug(tr("getLocoAddress replying address %1 for slot %2").arg(address).arg(slot->getSlot()));
-         return new DccLocoAddress(address, LnThrottleManager::isLongAddress(address));
-     }
+/*public*/ LocoAddress* LocoNetThrottle::getLocoAddress()
+{
+ if (slot != nullptr)
+ {
+  if ((slot->slotStatus() == LnConstants::LOCO_IN_USE) ||
+      (slot->slotStatus() == LnConstants::LOCO_COMMON))
+  {
+   log->debug(tr("getLocoAddress replying address %1 for slot %2").arg(address).arg(slot->getSlot()));
+   return new DccLocoAddress(address, LnThrottleManager::isLongAddress(address));
+  }
  }
  log->debug(tr("getLocoAddress replying address %1 for slot not in-use or for sub-consisted slot or for null slot").arg(address));
  return new DccLocoAddress(address, LnThrottleManager::isLongAddress(address));

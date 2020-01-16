@@ -202,7 +202,9 @@ SOURCES += \
     positionables/editorframeoperator.cpp \
     positionables/signalmasticontestaction.cpp \
     misc/colorchooserpaneltest.cpp \
-    misc/colorchooserpaneltestaction.cpp
+    misc/colorchooserpaneltestaction.cpp \
+    misc/dcclocoaddresstest.cpp \
+    misc/dcclocoaddresstestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -382,7 +384,9 @@ HEADERS += \
     positionables/editorframeoperator.h \
     positionables/signalmasticontestaction.h \
     misc/colorchooserpaneltest.h \
-    misc/colorchooserpaneltestaction.h
+    misc/colorchooserpaneltestaction.h \
+    misc/dcclocoaddresstest.h \
+    misc/dcclocoaddresstestaction.h
 
 unix {
     target.path = /usr/lib
