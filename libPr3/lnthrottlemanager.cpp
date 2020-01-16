@@ -27,6 +27,9 @@ LnThrottleManager::LnThrottleManager(LocoNetSystemConnectionMemo* memo, QObject 
     //super(memo);
     this->slotManager = memo->getSlotManager();//slotManager;
     this->tc = memo->getLnTrafficController();
+    requestList = QLinkedList<ThrottleRequest*>();
+    slotForAddress = QHash<int, LocoNetSlot*>();
+
 }
 
 //public class LnThrottleManager extends AbstractThrottleManager implements ThrottleManager, SlotListener {
@@ -47,14 +50,35 @@ bool LnThrottleManager::singleUse() { return false; }
 
 
 /**
- * Start creating a Throttle object.
- *
- * This returns directly, having arranged for the Throttle
- * object to be delivered via callback
- */
-/*public*/ void LnThrottleManager::requestThrottleSetup(LocoAddress* address, bool /*control*/)
-{
- slotManager->slotFromLocoAddress(address->getNumber(), (SlotListener*)this);
+* Start creating a Throttle object.
+*
+* This returns directly, having arranged for the Throttle object to be
+* delivered via callback since there are situations where the command
+* station does not respond, (slots full, command station powered off,
+* others?) this code will retry and then fail the request if no response
+* occurs.
+*
+* @param address locomotive address to be controlled
+* @param control true if throttle wishes to control the speed and direction
+* of the loco.
+*/
+//@Override
+/*public*/ void LnThrottleManager::requestThrottleSetup(LocoAddress* address, bool control) {
+   log->debug(tr("requestThrottleSetup: address %1, control %2").arg(address->toString()).arg(control?"true":"false"));
+   if(requestOutstanding) {
+      try {
+         // queue this request for later.
+         requestList.append(new ThrottleRequest(address,control));
+      } catch(InterruptedException ie){
+         log->error("Interrupted while trying to store throttle request");
+         requestOutstanding = false;
+         return;
+      }
+   } else {
+      // handle this now
+      requestOutstanding = true;
+      processThrottleSetupRequest(address, control);
+   }
 }
 
 /**

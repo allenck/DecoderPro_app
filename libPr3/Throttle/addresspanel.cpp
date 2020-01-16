@@ -36,13 +36,15 @@ AddressPanel::AddressPanel(QWidget *parent) :
  consistAddress = NULL;
  listeners = NULL;
  rosterEntry = NULL;
+ log = new Logger("AddressPanel");
+ log->setDebugEnabled(true);
 
 // rosterBox = new RosterEntrySelectorPanel();
 // ui->rosterBoxLayout->removeWidget(ui->conRosterBox);
 // ui->rosterBoxLayout->removeWidget(ui->cbRoster);
 // ui->verticalLayout->removeItem(ui->rosterBoxLayout);
 // ui->verticalLayout->addWidget(rosterBox);
- log = new Logger("AddressPanel");
+
  connect(ui->setButton, SIGNAL(clicked()), this, SLOT(OnSetButton_clicked()));
  connect(ui->rosterBox, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(rosterItemSelected()));
  //connect(ui->conRosterBox, SIGNAL(currentIndexChanged(int)), this, SLOT(consistRosterSelected()));
@@ -329,8 +331,11 @@ void AddressPanel::OnSetButton_clicked()
   return;
  getRosterEntrySelector()->setSelectedRosterEntry(entry);
  addrSelector->setAddress(entry->getDccLocoAddress());
- rosterEntry = entry;
- changeOfAddress();
+ if(entry != rosterEntry)
+ {
+  rosterEntry = entry;
+  changeOfAddress();
+ }
 }
 #if 0
 /**

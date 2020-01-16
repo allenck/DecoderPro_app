@@ -446,6 +446,7 @@ void RosterFrame::on_throttleLaunch_clicked()
  }
  // Throttle window not found; create a new one.
  ThrottleWindow* tw = new ThrottleWindow(/*memo,*/this);
+ log->debug("throttleLaunch clicked");
  tw->getAddressPanel()->setRosterEntry(rosterEntry);
  tw->show();
 }
