@@ -40,6 +40,7 @@ public:
      /*public*/ bool accept(File* f);
      /*public*/ QString getDescription() ;
     /*public*/ QString className();
+    /*public*/ QObject* self() {return (QObject*)this;}
 
 signals:
 

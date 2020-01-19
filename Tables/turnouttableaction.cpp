@@ -37,6 +37,7 @@
 #include "proxylightmanager.h"
 #include "vptr.h"
 #include "systemconnectionmemomanager.h"
+#include "guilafpreferencesmanager.h"
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)
@@ -179,6 +180,10 @@ void TurnoutTableAction::common()
   closedText = turnManager->getClosedText();
   thrownText = turnManager->getThrownText();
  }
+ // load graphic state column display preference
+ // from apps/GuiLafConfigPane.java
+ _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
+
  // create the data model object that drives the table;
  // note that this is a class creation, and very long
  m = new TurnoutTableDataModel(this);

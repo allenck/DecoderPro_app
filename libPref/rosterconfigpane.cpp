@@ -253,7 +253,7 @@ if (window() != NULL) {
             : Roster::getDefault()->getRosterLocation()!=(this->getSelectedItem());
 }
 
-/*public*/ QString RosterConfigPane::className() {return "RosterConfigPane";}
+/*public*/ QString RosterConfigPane::className() {return "jmri.jmrit.roster.RosterConfigPane";}
 
 
 #endif

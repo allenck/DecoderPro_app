@@ -41,6 +41,8 @@ public:
     /*public*/ bool isRestartRequired();
 
     /*public*/ QString className();
+    /*public*/ QObject* self() {return (QObject*)this;}
+
 signals:
 
 public slots:

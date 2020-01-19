@@ -5,6 +5,7 @@
 #include "beantabledatamodel.h"
 #include "windowlistener.h"
 
+class BufferedImage;
 class LTAValidator;
 class QGroupBox;
 class LightControlTableModel;
@@ -151,6 +152,8 @@ protected:
     /*protected*/ QString helpTarget();
     ///*protected*/ BeanTableDataModel* m;
     /*protected*/ QString getClassName();
+    // for icon state col
+    /*protected*/ bool _graphicState = false; // updated from prefs
 
 protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
@@ -162,7 +165,6 @@ protected slots:
     /*protected*/ void addRangeChanged();
     /*protected*/ void prefixChanged();
     /*protected*/ void addControlPressed(ActionEvent* e = 0);
-
 
  friend class LTBeanTableDataModel;
  friend class LightControlTableModel;
@@ -199,14 +201,28 @@ public:
     /*public*/ QPushButton* configureButton();
     /*public*/ void configureTable(JTable *table);
 
+private:
+    static Logger* log;
 
 protected:
-  /*protected*/ QString enabledString;// = tr("Enabled");
-  /*protected*/ QString intensityString;// = tr("Intensity");
+    /*protected*/ QString enabledString;// = tr("Enabled");
+    /*protected*/ QString intensityString;// = tr("Intensity");
 
     /*protected*/ QString getBeanType() ;
     /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
     /*protected*/ QString getMasterClassName();
+protected:
+    /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+    /*protected*/ char beanTypeChar = 'L'; // for Light
+    /*protected*/ QString onIconPath = rootPath + beanTypeChar + "-on-s.png";
+    /*protected*/ QString offIconPath = rootPath + beanTypeChar + "-off-s.png";
+    BufferedImage* onImage;
+    BufferedImage* offImage;
+    /*protected*/ QPixmap onIcon;
+    /*protected*/ QPixmap offIcon;
+    /*protected*/ int iconHeight = -1;
+    /*protected*/ void loadIcons();
+
  friend class LTAValidator;
 };
 

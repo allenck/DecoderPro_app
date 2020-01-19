@@ -31,6 +31,7 @@ public:
  /*public*/ bool isRestartRequired();
  /*public*/ bool isPreferencesValid();
  /*public*/ QString className();
+ /*public*/ QObject* self() {return (QObject*)this;}
 
   public slots:
 

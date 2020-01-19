@@ -1403,3 +1403,6 @@ BufferedImage::BufferedImage(int w, int h, QImage::Format format) : QImage(w,h, 
     }
 }
 #endif
+    /*public*/ QImage BufferedImage::getScaledInstance(int width, int height, int hints=0) {
+            return scaled(QSize(width, height));
+        }

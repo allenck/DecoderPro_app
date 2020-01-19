@@ -11,6 +11,8 @@
 #include "colorutil.h"
 #include "layoutturntable.h"
 #include <QMenuBar>
+#include "guilafpreferencesmanager.h"
+#include "userpreferencesmanager.h"
 
 LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   AbstractXmlAdapter(parent)
@@ -46,15 +48,22 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 
  panel.setAttribute("class", "jmri.jmrit.display.layoutEditor.configurexml.LayoutEditorXml");
  panel.setAttribute("name", p->getLayoutName());
- panel.setAttribute("x", p->getUpperLeftX());
- panel.setAttribute("y", p->getUpperLeftY());
- // From this version onwards separate sizes for window and panel are stored the
- // following two statements allow files written here to be read in 2.2 and before
- panel.setAttribute("height", p->getLayoutHeight());
- panel.setAttribute("width", p->getLayoutWidth());
- // From this version onwards separate sizes for window and panel are stored
- panel.setAttribute("windowheight", p->getWindowHeight());
- panel.setAttribute("windowwidth", p->getWindowWidth());
+ if (((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize())
+ {
+   panel.setAttribute("x", "" + p->getUpperLeftX());
+   panel.setAttribute("y", "" + p->getUpperLeftY());
+   panel.setAttribute("windowheight", "" + p->getWindowHeight());
+   panel.setAttribute("windowwidth", "" + p->getWindowWidth());
+ } else {
+   // Use real location and size
+   QPoint loc = p->getLocation();
+   panel.setAttribute("x", "" + loc.x());
+   panel.setAttribute("y", "" + loc.y());
+
+   QSize size = p->size();
+   panel.setAttribute("windowheight", "" + size.height());
+   panel.setAttribute("windowwidth", "" + size.width());
+ }
  panel.setAttribute("panelheight", p->getLayoutHeight());
  panel.setAttribute("panelwidth", p->getLayoutWidth());
  panel.setAttribute("sliders", (p->getScroll() ? "yes" : "no")); // deprecated
@@ -314,6 +323,27 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
          return false;
      }
  }
+
+ // If available, override location and size with machine dependent values
+ if (!((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize()) {
+     UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getNullableDefault("UserPreferencesManager");
+     if (prefsMgr != nullptr) {
+         QString windowFrameRef = "jmri.jmrit.display.layoutEditor.LayoutEditor:" + name;
+
+         QPoint prefsWindowLocation = prefsMgr->getWindowLocation(windowFrameRef);
+         if (!prefsWindowLocation.isNull()) {
+             x = (int) prefsWindowLocation.x();
+             y = (int) prefsWindowLocation.y();
+         }
+
+         QSize prefsWindowSize = prefsMgr->getWindowSize(windowFrameRef);
+         if (!prefsWindowSize.isNull() && prefsWindowSize.height() != 0 && prefsWindowSize.width() != 0) {
+             windowHeight = (int) prefsWindowSize.height();
+             windowWidth = (int) prefsWindowSize.width();
+         }
+     }
+ }
+
  LayoutEditor* panel = new LayoutEditor(name);
  panel->setLayoutName(name);
  static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->addEditorPanel(panel);

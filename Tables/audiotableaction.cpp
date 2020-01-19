@@ -433,7 +433,7 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
  {
   //getBySystemName(sysNameList.at(i))->addPropertyChangeListener(this);
   Audio* a = (Audio*)getBySystemName(sysNameList.at(i));
-  connect(a, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(a->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  fireTableRowsUpdated(0, sysNameList.size()-1);
 }

@@ -67,13 +67,13 @@
 {
  detailpanel = new QWidget();
  preferencesArray = QList<PreferencesCatItems*>();
-    this->dialog = dialog;
+ this->dialog = dialog;
 
-    /*
-     * Adds the place holders for the menu managedPreferences so that any managedPreferences add by
-     * third party code is added to the end
-     */
-    preferencesArray.append(new PreferencesCatItems(QString("CONNECTIONS"), tr("Connections"), 100, nullptr));
+ /*
+  * Adds the place holders for the menu managedPreferences so that any managedPreferences add by
+  * third party code is added to the end
+  */
+ preferencesArray.append(new PreferencesCatItems(QString("CONNECTIONS"), tr("Connections"), 100, nullptr));
 }
 
 /*public*/ void EditConnectionPreferences::init() {
@@ -200,30 +200,34 @@ void EditConnectionPreferences::selection(QString view) {
 }
 
 /*private*/ void EditConnectionPreferences::addItem(QString prefItem, QString itemText, QString tabTitle,
-        QString labelKey, PreferencesPanel* item, QString tooltip, int sortOrder) {
-    PreferencesCatItems* itemBeingAdded = nullptr;
-    for (PreferencesCatItems* preferences : preferencesArray) {
-        if (preferences->getPrefItem() == (prefItem)) {
-            itemBeingAdded = preferences;
-            // the lowest sort order of any panel sets the sort order for
-            // the preferences category
-            if (sortOrder < preferences->sortOrder) {
-                preferences->sortOrder = sortOrder;
-            }
-            break;
-        }
-    }
-    if (itemBeingAdded == nullptr) {
-        itemBeingAdded = new PreferencesCatItems(prefItem, itemText, sortOrder, nullptr);
-        preferencesArray.append(itemBeingAdded);
-        // As this is a new item in the selection list, we need to update
-        // the JList.
-        updateJList();
-    }
-    if (tabTitle == nullptr) {
-        tabTitle = itemText;
-    }
-    itemBeingAdded->addPreferenceItem(tabTitle, labelKey, item->getPreferencesComponent(), tooltip, sortOrder);
+        QString labelKey, PreferencesPanel* item, QString tooltip, int sortOrder)
+{
+ PreferencesCatItems* itemBeingAdded = nullptr;
+ for (PreferencesCatItems* preferences : preferencesArray)
+ {
+  if (preferences->getPrefItem() == (prefItem))
+  {
+   itemBeingAdded = preferences;
+   // the lowest sort order of any panel sets the sort order for
+   // the preferences category
+   if (sortOrder < preferences->sortOrder) {
+       preferences->sortOrder = sortOrder;
+   }
+   break;
+  }
+ }
+ if (itemBeingAdded == nullptr)
+ {
+  itemBeingAdded = new PreferencesCatItems(prefItem, itemText, sortOrder, nullptr);
+  preferencesArray.append(itemBeingAdded);
+  // As this is a new item in the selection list, we need to update
+  // the JList.
+  updateJList();
+ }
+ if (tabTitle == nullptr) {
+     tabTitle = itemText;
+ }
+ itemBeingAdded->addPreferenceItem(tabTitle, labelKey, item->getPreferencesComponent(), tooltip, sortOrder, "");
 }
 
 /* Method allows for the preference to goto a specific list item */

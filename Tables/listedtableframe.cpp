@@ -20,6 +20,7 @@
 #include "mysortfilterproxymodel.h"
 #include "namedbeanpropertydescriptor.h"
 #include <QCheckBox>
+#include "flowlayout.h"
 
 //ListedTableFrame::ListedTableFrame()
 //{
@@ -206,6 +207,7 @@ void ListedTableFrame::splitterMoved(int pos, int /*index*/)
 QWidget* ListedTableFrame::errorPanel(QString text)
 {
     QWidget* error = new QWidget();
+    error->setLayout(new FlowLayout());
     error->layout()->addWidget(new QLabel(tr("Sorry, an Error occurred and we are unable to display table for %1").arg( text)));
     return error;
 }

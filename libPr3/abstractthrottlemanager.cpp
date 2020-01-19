@@ -237,6 +237,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
          if(a->equals(la))
          {
           f = true;
+          a= la;
           break;
          }
         }
@@ -420,7 +421,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  }
  throttleListeners->remove(address);
  QList<WaitingThrottle*>* p = listenerOnly->value(address);
- if (p->isEmpty())
+ if (p == nullptr || p->isEmpty())
  {
   log->debug("notifyThrottleKnown with zero-length PropertyChange listeners: "+address->toString());
  }
@@ -452,6 +453,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
   if(a->equals(addr))
   {
    f = true;
+   addr = a;
    break;
   }
  }

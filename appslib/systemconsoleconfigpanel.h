@@ -25,6 +25,8 @@ public:
  /*public*/  bool isDirty();
  /*public*/  bool isRestartRequired();
  /*public*/  bool isPreferencesValid();
+ /*punlic*/ QString className();
+ /*public*/ QObject* self() {return (QObject*)this;}
 
 signals:
 

@@ -142,7 +142,7 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
  */
 /*public*/ void ConfigXmlManager::removePrefItems()
 {
- if (log->isDebugEnabled()) log->debug("removePrefItems dropped "+plist.size());
+ if (log->isDebugEnabled()) log->debug("removePrefItems dropped "+ QString::number(plist.size()));
  plist.clear();
 }
 

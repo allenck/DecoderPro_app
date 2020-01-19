@@ -92,47 +92,47 @@ void ThrottlesPreferencesPane::common()
  gridBagConstraints10->insets = new Insets(2, 43, 2, 2);
  gridBagConstraints10->gridy = 6;
  gridBagConstraints10->anchor = GridBagConstraints::WEST;
-    gridBagConstraints10->gridx = 0;
-    GridBagConstraints* gridBagConstraints5 = new GridBagConstraints();
-    gridBagConstraints5->insets = new Insets(2, 23, 2, 2);
-    gridBagConstraints5->gridy = 4;
-    gridBagConstraints5->anchor = GridBagConstraints::WEST;
-    gridBagConstraints5->gridx = 0;
-    GridBagConstraints* gridBagConstraints4 = new GridBagConstraints();
-    gridBagConstraints4->insets = new Insets(2, 43, 2, 2);
-    gridBagConstraints4->gridy = 3;
-    gridBagConstraints4->anchor = GridBagConstraints::WEST;
-    gridBagConstraints4->gridx = 0;
-    GridBagConstraints* gridBagConstraints3 = new GridBagConstraints();
-    gridBagConstraints3->insets = new Insets(2, 23, 2, 2);
-    gridBagConstraints3->gridy = 2;
-    gridBagConstraints3->anchor = GridBagConstraints::WEST;
-    gridBagConstraints3->gridx = 0;
-    GridBagConstraints* gridBagConstraints2 = new  GridBagConstraints();
-    gridBagConstraints2->insets = new Insets(2, 23, 2, 2);
-    gridBagConstraints2->gridy = 1;
-    gridBagConstraints2->anchor = GridBagConstraints::WEST;
-    gridBagConstraints2->gridx = 0;
-    GridBagConstraints* gridBagConstraints1 = new GridBagConstraints();
-    gridBagConstraints1->insets = new Insets(8, 5, 2, 2);
-    gridBagConstraints1->gridy = 0;
-    gridBagConstraints1->anchor = GridBagConstraints::WEST;
-    gridBagConstraints1->gridx = 0;
+ gridBagConstraints10->gridx = 0;
+ GridBagConstraints* gridBagConstraints5 = new GridBagConstraints();
+ gridBagConstraints5->insets = new Insets(2, 23, 2, 2);
+ gridBagConstraints5->gridy = 4;
+ gridBagConstraints5->anchor = GridBagConstraints::WEST;
+ gridBagConstraints5->gridx = 0;
+ GridBagConstraints* gridBagConstraints4 = new GridBagConstraints();
+ gridBagConstraints4->insets = new Insets(2, 43, 2, 2);
+ gridBagConstraints4->gridy = 3;
+ gridBagConstraints4->anchor = GridBagConstraints::WEST;
+ gridBagConstraints4->gridx = 0;
+ GridBagConstraints* gridBagConstraints3 = new GridBagConstraints();
+ gridBagConstraints3->insets = new Insets(2, 23, 2, 2);
+ gridBagConstraints3->gridy = 2;
+ gridBagConstraints3->anchor = GridBagConstraints::WEST;
+ gridBagConstraints3->gridx = 0;
+ GridBagConstraints* gridBagConstraints2 = new  GridBagConstraints();
+ gridBagConstraints2->insets = new Insets(2, 23, 2, 2);
+ gridBagConstraints2->gridy = 1;
+ gridBagConstraints2->anchor = GridBagConstraints::WEST;
+ gridBagConstraints2->gridx = 0;
+ GridBagConstraints* gridBagConstraints1 = new GridBagConstraints();
+ gridBagConstraints1->insets = new Insets(8, 5, 2, 2);
+ gridBagConstraints1->gridy = 0;
+ gridBagConstraints1->anchor = GridBagConstraints::WEST;
+ gridBagConstraints1->gridx = 0;
 
-    // last line: buttons
-    GridBagConstraints* gridBagConstraints9 = new  GridBagConstraints();
-    gridBagConstraints9->insets = new Insets(5, 3, 5, 5);
-    gridBagConstraints9->gridy = 100;
-    gridBagConstraints9->gridx = 1;
-    GridBagConstraints* gridBagConstraints8 = new  GridBagConstraints();
-    gridBagConstraints8->insets = new Insets(5, 3, 5, 2);
-    gridBagConstraints8->gridy = 100;
-    gridBagConstraints8->anchor = GridBagConstraints::WEST;
-    gridBagConstraints8->gridx = 0;
-    GridBagConstraints* gridBagConstraints7 = new GridBagConstraints();
-    gridBagConstraints7->insets = new Insets(5, 3, 5, 2);
-    gridBagConstraints7->gridy = 100;
-    gridBagConstraints7->gridx = 8;
+ // last line: buttons
+ GridBagConstraints* gridBagConstraints9 = new  GridBagConstraints();
+ gridBagConstraints9->insets = new Insets(5, 3, 5, 5);
+ gridBagConstraints9->gridy = 100;
+ gridBagConstraints9->gridx = 1;
+ GridBagConstraints* gridBagConstraints8 = new  GridBagConstraints();
+ gridBagConstraints8->insets = new Insets(5, 3, 5, 2);
+ gridBagConstraints8->gridy = 100;
+ gridBagConstraints8->anchor = GridBagConstraints::WEST;
+ gridBagConstraints8->gridx = 0;
+ GridBagConstraints* gridBagConstraints7 = new GridBagConstraints();
+ gridBagConstraints7->insets = new Insets(5, 3, 5, 2);
+ gridBagConstraints7->gridy = 100;
+ gridBagConstraints7->gridx = 8;
 
  jbCancel = new QPushButton();
  jbSave = new QPushButton();
@@ -375,6 +375,6 @@ void ThrottlesPreferencesPane::common()
     return false;
 }
 
-/*public*/ QString ThrottlesPreferencesPane::className() {return "ThrottlesPreferencesPane";}
+/*public*/ QString ThrottlesPreferencesPane::className() {return "jmri.jmrit.throttle.ThrottlesPreferencesPane";}
 //}
 #endif

@@ -42,6 +42,7 @@ public:
  /*public*/ QString className();
  QSize sizeHint();
  QSize minimumSizeHint();
+ /*public*/ QObject* self() {return (QObject*)this;}
 
 signals:
 

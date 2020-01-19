@@ -1,4 +1,4 @@
-﻿#include "webserverpreferencespanel.h"
+#include "webserverpreferencespanel.h"
 #include "webserverpreferences.h"
 #include "instancemanager.h"
 #include <QLabel>
@@ -227,4 +227,4 @@ void WebServerPreferencesPanel::on_readonlyPower_checked(bool b)
  return ret;
 }
 
-/*public*/ QString WebServerPreferencesPanel::className() {return "WebServerPreferencesPanel";}
+/*public*/ QString WebServerPreferencesPanel::className() {return "jmri.web.server.WebServerPreferencesPanel";}

@@ -215,3 +215,8 @@ void JTabbedPane::setTabButton(int iTab, QToolButton * button)
 /*public*/ void JTabbedPane::setSelectedIndex(int index) {
  setCurrentIndex(index);
 }
+
+/*public*/ void JTabbedPane::setEnabledAt(int tabIndex, bool enabled)
+{
+ QTabWidget::setTabEnabled(tabIndex, enabled);
+}

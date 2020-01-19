@@ -5,6 +5,8 @@
 #include "panelmenu.h"
 #include "configxmlmanager.h"
 #include "class.h"
+#include "guilafpreferencesmanager.h"
+#include "userpreferencesmanager.h"
 
 /**
  * Handle configuration for {@link SwitchboardEditor} panes.
@@ -120,6 +122,26 @@
         log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
         result = false;
     }
+
+    // If available, override location and size with machine dependent values
+    if (!((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize()) {
+        UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getNullableDefault("UserPreferencesManager");
+        if (prefsMgr != nullptr) {
+
+            QPoint prefsWindowLocation = prefsMgr->getWindowLocation(name);
+            if (!prefsWindowLocation.isNull()) {
+                x = (int) prefsWindowLocation.x();
+                y = (int) prefsWindowLocation.y();
+            }
+
+            QSize prefsWindowSize = prefsMgr->getWindowSize(name);
+            if (!prefsWindowSize.isNull() && prefsWindowSize.height() != 0 && prefsWindowSize.width() != 0) {
+                height = (int) prefsWindowSize.height();
+                width = (int) prefsWindowSize.width();
+            }
+        }
+    }
+
     SwitchboardEditor* panel = new SwitchboardEditor(name);
     // panel->makeFrame(name);
     static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->addEditorPanel(panel);

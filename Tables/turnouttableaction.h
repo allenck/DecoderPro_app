@@ -104,7 +104,8 @@ protected:
     /*protected*/ void setTurnoutOperation(Turnout* t, /*QComboBox* cb*/QString val);
     /*protected*/ void editTurnoutOperation(Turnout* t, QString val);
     /*protected*/ void setDefaultSpeeds(JFrame* _who);
-
+    // for icon state col
+    /*protected*/ bool _graphicState = false; // updated from prefs
 protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
     /*protected*/ /*QComboBox**/QVector<QString> makeAutomationBox(Turnout* t, QModelIndex index);

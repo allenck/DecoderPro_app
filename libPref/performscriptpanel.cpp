@@ -36,7 +36,7 @@
 /*public*/ PerformScriptPanel::PerformScriptPanel(QWidget *parent) :
   QWidget(parent)
 {
- self = this;
+ _self = this;
  dirty = false;
 
  fc = XmlFile::userFileChooser("Python script files (*.py *.pyq);; All files (*.*)", "py");

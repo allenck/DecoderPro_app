@@ -31,6 +31,7 @@ public:
  /*public*/ bool isPreferencesValid();
  /*public*/ int getSortOrder();
  /*public*/ QString className();
+ /*public*/ QObject* self() {return (QObject*)this;}
 
 
 public slots:

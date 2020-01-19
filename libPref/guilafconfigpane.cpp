@@ -1,5 +1,5 @@
 #include "guilafconfigpane.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QCheckBox>
 #include <QLocale>
 #include <QBoxLayout>
@@ -8,6 +8,12 @@
 #include "flowlayout.h"
 #include <QLabel>
 #include "QRadioButton"
+#include "jpanel.h"
+#include "instancemanager.h"
+#include "guilafpreferencesmanager.h"
+#include "jspinner.h"
+#include "spinnernumbermodel.h"
+#include "profilemanager.h"
 
 //GuiLafConfigPane::GuiLafConfigPane(QWidget *parent) :
 //    PreferencesPanel(parent)
@@ -31,15 +37,26 @@
 
     //private static final long serialVersionUID = -3846942336860819413L;
     //static final ResourceBundle rb = ResourceBundle.getBundle("apps.AppsConfigBundle");
-
+    /*public*/ /*static*/ /*final*/ int GuiLafConfigPane::MAX_TOOLTIP_TIME = 3600;
+    /*public*/ /*static*/ /*final*/ int GuiLafConfigPane::MIN_TOOLTIP_TIME = 1;
+    /**
+     * Smallest font size shown to a user ({@value}).
+     *
+     * @see apps.gui.GuiLafPreferencesManager#MIN_FONT_SIZE
+     */
+    /*public*/ /*static*/ /*final*/ int GuiLafConfigPane::MIN_DISPLAYED_FONT_SIZE = GuiLafPreferencesManager::MIN_FONT_SIZE;
+    /**
+     * Largest font size shown to a user ({@value}).
+     *
+     * @see apps.gui.GuiLafPreferencesManager#MAX_FONT_SIZE
+     */
+    /*public*/ /*static*/ /*final*/ int GuiLafConfigPane::MAX_DISPLAYED_FONT_SIZE = 20;
 
 /*public*/ GuiLafConfigPane::GuiLafConfigPane(QWidget *parent)
     : QWidget(parent)
 {
  setObjectName("GuiLafConfigPane");
- localeBox = new QComboBox();
- fontSizeComboBox = new QComboBox(/*fontSizes*/);
- fontSizeComboBox->addItems(fontSizes);
+ localeBox = new JComboBox();
 //    Locale.getDefault().getDisplayName(),
 //    "(Please Wait)"});
  locale =  QMap<QString, QLocale*>();
@@ -47,14 +64,19 @@
  dirty = false;
  QVBoxLayout* thisLayout;
  setLayout(thisLayout = new QVBoxLayout); //(this, BoxLayout.Y_AXIS));
- QWidget* p;
- doLAF(p = new QWidget());
+ JPanel* p;
+ doLAF(p = new JPanel());
  thisLayout->addWidget(p);
- doFontSize(p = new QWidget());
+ doFontSize(p = new JPanel());
  thisLayout->addWidget(p);
- doClickSelection(p = new QWidget());
+ doClickSelection(p = new JPanel());
  thisLayout->addWidget(p);
-}
+ doGraphicState(p = new JPanel());
+ thisLayout->addWidget(p);
+ doEditorUseOldLocSize(p = new JPanel());
+ thisLayout->addWidget(p);
+ doToolTipDismissDelay(p = new JPanel());
+ thisLayout->addWidget(p);}
 
 void GuiLafConfigPane::doClickSelection(QWidget* panel)
 {
@@ -63,6 +85,39 @@ void GuiLafConfigPane::doClickSelection(QWidget* panel)
     mouseEvent = new QCheckBox("Use non-standard release event for mouse click?");
 //    mouseEvent->setChecked(SwingSettings.getNonStandardMouseEvent());
  panelLayout->addWidget(mouseEvent);
+}
+
+void GuiLafConfigPane::doGraphicState(JPanel* panel) {
+    panel->setLayout(new FlowLayout());
+    graphicStateDisplay = new QCheckBox(tr("Use icons to show state in tables"));
+    graphicStateDisplay->setChecked(((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState());
+//    graphicStateDisplay->addItemListener((ItemEvent e) -> {
+//        InstanceManager.getDefault(GuiLafPreferencesManager.class).setGraphicTableState(graphicStateDisplay.isSelected());
+//    });
+    connect(graphicStateDisplay, SIGNAL(clicked(bool)), this, SLOT(on_graphicStateDisplay_clicked(bool)));
+    panel->layout()->addWidget(graphicStateDisplay);
+}
+
+void GuiLafConfigPane::on_graphicStateDisplay_clicked(bool b)
+{
+ ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setGraphicTableState(b);
+}
+
+void GuiLafConfigPane::doEditorUseOldLocSize(JPanel* panel)
+{
+    panel->setLayout(new FlowLayout());
+    editorUseOldLocSizeDisplay = new QCheckBox(tr("Use old location and size logic for editor panels"));
+    editorUseOldLocSizeDisplay->setChecked(((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize());
+//    editorUseOldLocSizeDisplay.addItemListener((ItemEvent e) -> {
+//        InstanceManager.getDefault(GuiLafPreferencesManager.class).setEditorUseOldLocSize(editorUseOldLocSizeDisplay.isSelected());
+//    });
+    connect(editorUseOldLocSizeDisplay, SIGNAL(clicked(bool)), this, SLOT(on_editorUseOldLocSizeDisplay_clicked(bool)));
+    panel->layout()->addWidget(editorUseOldLocSizeDisplay);
+}
+
+void GuiLafConfigPane::on_editorUseOldLocSizeDisplay_clicked(bool b)
+{
+ ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setEditorUseOldLocSize(b);
 }
 
 void GuiLafConfigPane::doLAF(QWidget* panel)
@@ -190,7 +245,7 @@ void GuiLafConfigPane::doLAF(QWidget* panel)
     return getFontSize();
 }
 
-/*private*/ /*static*/ /*final*/ QStringList GuiLafConfigPane::fontSizes = QStringList() <<                                                                       "9" <<                                                                                 "10" <<                                                                                 "11" <<                                                                                                                                                        "12" <<                                                                                                                                                      "13" <<                                                                                                                                                        "14" <<                                                                                                                                                        "15" <<                                                                                                                                                        "16" <<                                                                                                                                                        "17" <<                                                                                                                                                        "18";
+// /*private*/ /*static*/ /*final*/ QStringList GuiLafConfigPane::fontSizes = QStringList() <<  "9" << "10" << "11" << "12" <<  "14" << "15" << "16" << "17" << "18";
 
 // /*static*/ QComboBox* GuiLafConfigPane::fontSizeComboBox = new QComboBox(/*fontSizes*/);
 //GuiLafConfigPane::fontSizeComboBox->addItems(GuiLafConfigPane::fontSizes);
@@ -201,9 +256,17 @@ void GuiLafConfigPane::doLAF(QWidget* panel)
     FlowLayout* panelLayout;
     panel->setLayout(panelLayout =new FlowLayout());
 
- QLabel* fontSizeLabel = new QLabel(tr("Select font size"));
+    GuiLafPreferencesManager* manager = (GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager");
+            QVector<QString> sizes =QVector<QString>(MAX_DISPLAYED_FONT_SIZE - MIN_DISPLAYED_FONT_SIZE + 1);
+            for (int i = 0; i < sizes.length(); i++) {
+                sizes[i] = QString::number(i + MIN_DISPLAYED_FONT_SIZE);
+            }
+            fontSizeComboBox = new JComboBox(sizes.toList());
+            fontSizeComboBox->setEditable(true); // allow users to set font sizes not listedQLabel* fontSizeLabel = new QLabel(tr("Select font size"));
     //fontSizeComboBox.removeActionListener(listener);
     fontSizeComboBox->setCurrentIndex(fontSizeComboBox->findText(QString::number(getDefaultFontSize())));
+    QLabel* fontSizeLabel = new QLabel(tr("Font size"));
+    fontSizeComboBox->setCurrentText(QString::number(manager->getFontSize()));
     QLabel* fontSizeUoM = new QLabel(tr("points"));
 
     panelLayout->addWidget(fontSizeLabel);
@@ -220,6 +283,32 @@ void GuiLafConfigPane::On_fontSizeConboBox_currentIndexChanged(QString txt)
 {
  setFontSize(txt.toInt());
  this->dirty = true;
+}
+
+/*public*/ void GuiLafConfigPane::doToolTipDismissDelay(JPanel* panel) {
+ panel->setLayout(new FlowLayout());
+    GuiLafPreferencesManager* manager = (GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager");
+    QLabel* toolTipDismissDelayLabel = new QLabel(tr("Tool tip display time"));
+    toolTipDismissDelaySpinner = new JSpinner(new SpinnerNumberModel(manager->getToolTipDismissDelay() / 1000, MIN_TOOLTIP_TIME, MAX_TOOLTIP_TIME, 1));
+//    this->toolTipDismissDelaySpinner->addChangeListener((ChangeEvent e) -> {
+//        manager->setToolTipDismissDelay(toolTipDismissDelaySpinner->value() * 1000); // convert to milliseconds from seconds
+//    });
+    connect(toolTipDismissDelaySpinner, SIGNAL(valueChanged(int)), this, SLOT(on_toolTipDismissDelaySpinner(int)));
+
+    this->toolTipDismissDelaySpinner->setToolTip(tr("<html>The number of seconds tool tips will be displayed.<br>The time must be between %1 and %3 seconds.</html>").arg(MIN_TOOLTIP_TIME).arg(MAX_TOOLTIP_TIME));
+    toolTipDismissDelayLabel->setToolTip(this->toolTipDismissDelaySpinner->toolTip());
+    QLabel* toolTipDismissDelayUoM = new QLabel(tr("seconds"));
+    toolTipDismissDelayUoM->setToolTip(this->toolTipDismissDelaySpinner->toolTip());
+    panel->layout()->addWidget(toolTipDismissDelayLabel);
+    panel->layout()->addWidget(toolTipDismissDelaySpinner);
+    panel->layout()->addWidget(toolTipDismissDelayUoM);
+}
+
+void GuiLafConfigPane::on_toolTipDismissDelaySpinner(int value)
+{
+ GuiLafPreferencesManager* manager = (GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager");
+
+ manager->setToolTipDismissDelay(value* 1000); // convert to milliseconds from seconds
 }
 
 /*public*/ QString GuiLafConfigPane::getClassName()
@@ -266,7 +355,10 @@ void GuiLafConfigPane::On_fontSizeConboBox_currentIndexChanged(QString txt)
 
 //@Override
 /*public*/ void GuiLafConfigPane::savePreferences() {
-    // do nothing - the persistant manager will take care of this
+ Profile* profile = ProfileManager::getDefault()->getActiveProfile();
+ if (profile != nullptr) {
+     ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->savePreferences(profile);
+ }
 }
 
 //@Override
@@ -282,4 +374,4 @@ void GuiLafConfigPane::On_fontSizeConboBox_currentIndexChanged(QString txt)
     return this->isDirty(); // all changes require a restart
 }
 
-/*public*/ QString GuiLafConfigPane::className() {return "GuiLafConfigPane";}
+/*public*/ QString GuiLafConfigPane::className() {return "apps.GuiLafConfigPane";}

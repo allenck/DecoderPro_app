@@ -35,27 +35,27 @@
 /*private*/ /*static*/ /*final*/ Logger* ConnectionsPreferencesPanel::log = LoggerFactory::getLogger("ConnectionsPreferencesPanel");
 
 
-/*public*/ ConnectionsPreferencesPanel::ConnectionsPreferencesPanel(TabbedPreferences* preferences, QWidget* parent)
- : ManagingPreferencesPanel(parent)
-{
- //super();
- common(preferences);
-}
+///*public*/ ConnectionsPreferencesPanel::ConnectionsPreferencesPanel(TabbedPreferences* preferences, QWidget* parent)
+// : ManagingPreferencesPanel(parent)
+//{
+// //super();
+// common(preferences);
+//}
 
-void ConnectionsPreferencesPanel::common(TabbedPreferences* preferences)
+void ConnectionsPreferencesPanel::common(/*TabbedPreferences* preferences*/)
 {
  setObjectName("ConnectionsPreferencesPanel");
  resize(400,400);
  //setContentsMargins(0,0,0,0);
  //setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-// tabWidget->setMinimumSize(400,400);
-setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+ // tabWidget->setMinimumSize(400,400);
+ setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
  restartRequired = false;
   bDeleteFlag= false;
 
  configPanes = QList<JmrixConfigPane*>();
 
- this->preferences = preferences;
+ //this->preferences = preferences;
  deleteIconRollOver =  QIcon(":/resources/icons/misc/gui3/Delete16x16.png");
  deleteIcon =  QIcon(":/resources/icons/misc/gui3/Delete-bw16x16.png");
  ImageIcon* deleteImageIcon = new ImageIcon(QImage(":/resources/icons/misc/gui3/Delete-bw16x16.png"));
@@ -143,7 +143,7 @@ void ConnectionsPreferencesPanel::propertyChange(PropertyChangeEvent* evt)
 /*public*/ ConnectionsPreferencesPanel::ConnectionsPreferencesPanel(QWidget *parent)
     : ManagingPreferencesPanel(parent)
 {
- common((TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences"));
+ common(/*(TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences")*/);
 }
 
 ///*transient*/ ChangeListener* addTabListener = (ChangeEvent evt) {
@@ -175,7 +175,7 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
 
 /*public*/ ConnectionsPreferencesPanel::ConnectionsPreferencesPanel(const ConnectionsPreferencesPanel & other)
 {
- this->preferences = other.preferences;
+ //this->preferences = other.preferences;
 }
 
 /*private*/ void ConnectionsPreferencesPanel::activeTab()

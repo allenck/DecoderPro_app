@@ -253,7 +253,7 @@ ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::get
     }
 //};
 
-/*public*/ QString ManagerDefaultsConfigPane::className() {return "ManagerDefaultsConfigPane";}
+/*public*/ QString ManagerDefaultsConfigPane::className() {return "apps.ManagerDefaultsConfigPane";}
 
 /*private*/ /*final*/ /*static*/ Logger* ManagerDefaultsConfigPane::log = LoggerFactory::getLogger("ManagerDefaultsConfigPane");
 

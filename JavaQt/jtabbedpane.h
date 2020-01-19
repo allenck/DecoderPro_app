@@ -19,6 +19,7 @@ public:
  /*public*/ QWidget* getComponentAt(int index);
  /*public*/ void setSelectedIndex(int index);
  /*public*/ int indexOfTab(QString title);
+ /*public*/ void setEnabledAt(int tabIndex, bool enabled);
 
 };
 

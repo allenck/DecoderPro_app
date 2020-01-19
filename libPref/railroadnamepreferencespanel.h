@@ -31,6 +31,7 @@ public:
     /*public*/ bool isRestartRequired();
     /*public*/ QWidget* getTopLevelAncestor();
     /*public*/ QString className();
+    /*public*/ QObject* self() {return (QObject*)this;}
 
 signals:
 

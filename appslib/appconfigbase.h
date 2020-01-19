@@ -3,16 +3,16 @@
 //#include "jmripanel.h"
 #include "logger.h"
 #include "appslib_global.h"
-#include <QSplitter>
+#include "jmripanel.h"
 
 class PreferencesPanel;
-class APPSLIBSHARED_EXPORT AppConfigBase : public QSplitter//JmriPanel
+class APPSLIBSHARED_EXPORT AppConfigBase : public JmriPanel
 {
     Q_OBJECT
 public:
     Q_INVOKABLE explicit AppConfigBase(QWidget *parent = 0);
     ~AppConfigBase() {}
-    AppConfigBase(const AppConfigBase&) : QSplitter() {}
+    AppConfigBase(const AppConfigBase&) : JmriPanel() {}
     /*public*/ static QString getManufacturerName(int index) ;
     /*public*/ static QString getConnection(int index);
     /*public*/ static QString getPort(int index);

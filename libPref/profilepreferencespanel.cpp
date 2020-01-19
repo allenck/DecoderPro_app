@@ -787,4 +787,4 @@
  }
  }
  */
-/*public*/ QString ProfilePreferencesPanel::className() {return "ProfilePreferencesPanel";}
+/*public*/ QString ProfilePreferencesPanel::className() {return "jmri.profile.ProfilePreferencesPanel";}

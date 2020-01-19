@@ -2,7 +2,14 @@
 #define SENSORTABLEDATAMODEL_H
 #include "beantabledatamodel.h"
 #include "liblayouteditor_global.h"
+#include <QPixmap>
 
+class ImageIconRenderer;
+class Component;
+class QLabel;
+class BufferedImage;
+class QImage;
+class QPixmap;
 class QSignalMapper;
 class SensorManager;
 class AbstractSensorManager;
@@ -55,6 +62,9 @@ protected:
  /*protected*/ QString getBeanType();
  /*protected*/ QString getClassName();
 // /*protected*/ /*synchronized*/ void updateNameList();
+ // for icon state col
+ /*protected*/ bool _graphicState = false; // updated from prefs
+ ImageIconRenderer* renderer = nullptr;
 
 protected slots:
  /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
@@ -62,4 +72,41 @@ friend class SensorTableAction;
 friend class SensorTableWidget;
 };
 Q_DECLARE_METATYPE(SensorTableDataModel)
+
+class ImageIconRenderer : public QObject //extends AbstractCellEditor implements TableCellEditor, TableCellRenderer {
+{
+ Q_OBJECT
+ static Logger* log;
+protected:
+    /*protected*/ QLabel* label;
+    /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+    /*protected*/ char beanTypeChar;// = 'S'; // for Sensor
+    /*protected*/ QString onIconPath;// = rootPath + beanTypeChar + "-on-s.png";
+    /*protected*/ QString offIconPath;// = rootPath + beanTypeChar + "-off-s.png";
+    /*protected*/ BufferedImage* onImage;
+    /*protected*/ BufferedImage* offImage;
+    /*protected*/ QPixmap onIcon;
+    /*protected*/ QPixmap offIcon;
+    /*protected*/ int iconHeight = -1;
+public:
+ /*public*/ ImageIconRenderer();
+#if 0
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/ Component* getTableCellRendererComponent(
+            JTable* table, QVariant value, bool isSelected,
+            bool hasFocus, int row, int column);
+    /*public*/ Component* getTableCellEditorComponent(
+            JTable* table, QVariant value, bool isSelected,
+            int row, int column);
+    /*public*/ QLabel* updateLabel(QString value, int row);
+    /*public*/ QVariant getCellEditorValue();
+#endif
+protected:
+    /*protected*/ void loadIcons();
+ friend class SensorTableDataModel;
+}; // end of ImageIconRenderer class
+
 #endif // SENSORTABLEDATAMODEL_H

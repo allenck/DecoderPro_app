@@ -72,6 +72,7 @@
 #include "mathutil.h"
 #include <QActionGroup>
 #include "leblockcontentsicon.h"
+#include "guilafpreferencesmanager.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -117,6 +118,8 @@ LayoutEditor::~LayoutEditor()
 
 void LayoutEditor::init()
 {
+ editorUseOldLocSize = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize();
+
  ui->setupUi(this);
  setObjectName("LayoutEditor");
  JmriJFrame::initComponents();
@@ -11350,16 +11353,20 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     addTextColorMenuEntry(textColorMenu,  tr("Cyan"),      QColor(Qt::cyan));
     optionMenu->addMenu(textColorMenu);
 
-    //
-    //  save location and size
-    //
-    QAction* locationItem = new QAction(tr("Set Location"), this);
-    optionMenu->addAction(locationItem);
-//    locationItem.addActionListener((ActionEvent event) -> {
-//        setCurrentPositionAndSize();
-//        log.debug("Bounds:{}, {}, {}, {}, {}, {}", upperLeftX, upperLeftY, windowWidth, windowHeight, panelWidth, panelHeight);
-//    });
-    connect(locationItem, SIGNAL(triggered(bool)), this, SLOT());
+    if (editorUseOldLocSize)
+    {
+     //
+     //  save location and size
+     //
+     QAction* locationItem = new QAction(tr("Set Location"), this);
+     optionMenu->addAction(locationItem);
+ //    locationItem.addActionListener((ActionEvent event) -> {
+ //        setCurrentPositionAndSize();
+ //        log.debug("Bounds:{}, {}, {}, {}, {}, {}", upperLeftX, upperLeftY, windowWidth, windowHeight, panelWidth, panelHeight);
+ //    });
+     connect(locationItem, SIGNAL(triggered(bool)), this, SLOT(on_locationItem()));
+    }
+
     //
     // Add Options
     //
@@ -11738,6 +11745,12 @@ void LayoutEditor::onTooltipNotInEditMenuItem()
  tooltipsInEditMode = false;
  tooltipsWithoutEditMode = true;
  setAllShowToolTip(!isEditable());
+}
+
+void LayoutEditor::on_locationItem()
+{
+ setCurrentPositionAndSize();
+ log->debug(tr("Bounds:%1, %2, %3, %4, %5, %6").arg(upperLeftX).arg(upperLeftY).arg(windowWidth).arg(windowHeight).arg(panelWidth).arg(panelHeight));
 }
 
 /*============================================*\

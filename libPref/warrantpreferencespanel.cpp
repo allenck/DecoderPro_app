@@ -1286,6 +1286,6 @@ return Qt::ItemIsEditable | Qt::ItemIsEnabled;
  return false;
 }
 
-/*public*/ QString WarrantPreferencesPanel::className() {return "WarrantPreferencesPanel";}
+/*public*/ QString WarrantPreferencesPanel::className() {return "jmri.jmrit.logix.WarrantPreferencesPanel";}
 
 //}

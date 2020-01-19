@@ -203,4 +203,4 @@ void LnTcpPreferencesPanel::on_startup_clicked()
     return this->preferences->isPreferencesValid();
 }
 
-/*public*/ QString LnTcpPreferencesPanel::className() {return "LnTcpPreferencesPanel";}
+/*public*/ QString LnTcpPreferencesPanel::className() {return "jmri.jmrix.loconet.LnTcpPreferencesPanel";}

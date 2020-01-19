@@ -429,7 +429,7 @@ public:
 
 public slots:
     /*public*/ void setIncludedTurnoutSkipped(bool boo);
-
+    void on_locationItem();
 
 private:
  Ui::LayoutEditor *ui;
@@ -899,6 +899,8 @@ private:
  /*private*/ /*transient*/ bool turnoutDrawUnselectedLeg = true;
  /*private*/ /*transient*/ bool autoAssignBlocks = false;
  /*private*/ float toolBarFontSize = 12.0;
+ /*private*/ /*transient*/ bool editorUseOldLocSize;
+
  /*private*/ /*enum*/class ToolBarSide {
  public:
   enum TOOLBARSIDES
@@ -910,9 +912,9 @@ private:
      eFLOAT //("float");
   };
 
-     /*private*/ /*transient*/ QString name;
-//     /*private*/ /*transient*/ static /*final*/ QMap<QString, ToolBarSide> ENUM_MAP;
-public:
+  /*private*/ /*transient*/ QString name;
+
+ public:
      ToolBarSide(QString name) {
          this->name = name;
      }

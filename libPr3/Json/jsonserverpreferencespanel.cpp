@@ -186,5 +186,5 @@
     return true; // no validity checking performed
 }
 
-/*public*/ QString JsonServerPreferencesPanel::className() {return "JsonServerPreferencesPanel";}
+/*public*/ QString JsonServerPreferencesPanel::className() {return "jmri.server.json.JsonServerPreferencesPanel";}
 

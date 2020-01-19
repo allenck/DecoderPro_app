@@ -165,7 +165,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
          QHash<SignalMastLogic*, SignalMast*>* hash = new QHash<SignalMastLogic*, SignalMast*>(/*1*/);
          hash->insert(source.at(i), destList.at(j));
          //destList.a(j).addPropertyChangeListener(this);
-         connect(destList.at(i), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         connect(destList.at(j), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          act->signalMastLogicList->append(hash);
      }
   }

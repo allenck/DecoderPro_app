@@ -14,3 +14,8 @@ ManagingPreferencesPanel::ManagingPreferencesPanel(QWidget* parent) :
 
 /*public*/ /*abstract*/ QList<PreferencesPanel*>* ManagingPreferencesPanel::getPreferencesPanels() {return NULL;}
 //}
+
+/*public*/ QString ManagingPreferencesPanel::className()
+{
+ return "swing.ManagingPreferencesPanel";
+}

@@ -290,3 +290,9 @@ void SystemConsoleConfigPanel::On_wrapStyle(int i)
 /*public*/  bool SystemConsoleConfigPanel::isPreferencesValid() {
     return true; // no validity checking performed
 }
+
+//@Override
+/*public*/ QString SystemConsoleConfigPanel::className()
+{
+ return "apps.SystemConsoleConfigPanel";
+}

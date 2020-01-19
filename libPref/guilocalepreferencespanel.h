@@ -26,13 +26,14 @@ public:
     /*public*/ void savePreferences();
     /*public*/ bool isDirty();
     /*public*/ bool isRestartRequired();
+    /*public*/ bool isPreferencesValid();
     /*public*/ QString className();
-
+    /*public*/ QObject* self() {return (QObject*)this;}
 signals:
 
 public slots:
 private:
-    GuiLafConfigPane* parent;// = NULL;
+    GuiLafConfigPane* parent = nullptr;
 };
 
 #endif // GUILOCALEPREFERENCESPANEL_H

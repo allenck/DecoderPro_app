@@ -18,6 +18,8 @@
 #include "signalmasticonxml.h"
 #include "portalicon.h"
 #include "class.h"
+#include "guilafpreferencesmanager.h"
+#include "userpreferencesmanager.h"
 
 ControlPanelEditorXml::ControlPanelEditorXml(QObject* parent) :
     AbstractXmlAdapter(parent)
@@ -158,6 +160,26 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  if(PanelMenu::instance()->isPanelNameUsed(name)){
      log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
      result = false;
+ }
+
+ // If available, override location and size with machine dependent values
+ if (!((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize()) {
+     UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getNullableDefault("UserPreferencesManager");
+     if (prefsMgr != nullptr) {
+         QString windowFrameRef = "jmri.jmrit.display.controlPanelEditor.ControlPanelEditor:" + name;
+
+         QPoint prefsWindowLocation = prefsMgr->getWindowLocation(windowFrameRef);
+         if (!prefsWindowLocation.isNull()) {
+             x = (int) prefsWindowLocation.x();
+             y = (int) prefsWindowLocation.y();
+         }
+
+         QSize prefsWindowSize = prefsMgr->getWindowSize(windowFrameRef);
+         if (!prefsWindowSize.isNull() && prefsWindowSize.height() != 0 && prefsWindowSize.width() != 0) {
+             height = (int) prefsWindowSize.height();
+             width = (int) prefsWindowSize.width();
+         }
+     }
  }
 
  ControlPanelEditor* panel = new ControlPanelEditor(name);

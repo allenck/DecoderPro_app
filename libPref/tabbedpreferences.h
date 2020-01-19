@@ -4,9 +4,11 @@
 #include <QtXml>
 #include "libpref_global.h"
 #include "preferencessubpanel.h"
+#include "jtabbedpane.h"
 
+class QSplitter;
 class TabDetails;
-class QStackedWidget;
+//class QStackedWidget;
 class PropertyChangeEvent;
 class QListWidget;
 class QTabWidget;
@@ -109,14 +111,14 @@ private:
     QWidget* buttonpanel;
     QListWidget* list;
     QPushButton* save;
-    //QScrollArea* listScroller;
+    QSplitter* splitter;
     int initialisationState;// = 0x00;
     int currSplitterWidget = 1;
     ///*private*/ static final long serialVersionUID = -6266891995866315885L;
     /*private*/ void setInitalisationState(int state);
     /*private*/ bool invokeSaveOptions();
     void selection(QString view);
-    /*private*/ void addItem(QString prefItem, QString itemText, QString tabtitle, QString labelKey, PreferencesPanel* item, QString tooltip, int sortOrder);
+    /*private*/ void addItem(QString prefItem, QString itemText, QString tabtitle, QString labelKey, PreferencesPanel* item, QString tooltip, int sortOrder, QString className);
     int getCategoryIndexFromString(QString category);
     void updateJList();
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("TabbedPreferences");
@@ -144,17 +146,18 @@ friend class EditConnectionPreferences;
     QString itemText;
     QString prefItem;
     int sortOrder;// = Integer.MAX_VALUE;
-    QTabWidget* tabbedPane;// = new JTabbedPane();
-    QWidget* nonTabbedPane = nullptr;
+    JTabbedPane* tabbedPane;// = new JTabbedPane();
+    //QWidget* nonTabbedPane = nullptr;
     QList<QString> disableItemsList;// = new QList<>();
 
     QList<TabDetails*> tabDetailsArray;// = new ArrayList<>();
     TabbedPreferences* tabbedPreferences;
+
 public:
 
     PreferencesCatItems(QString pref, QString title, int sortOrder, TabbedPreferences* tabbedPreferences);
     void addPreferenceItem(QString title, QString labelkey, QWidget* item,
-            QString tooltip, int sortOrder) ;
+            QString tooltip, int sortOrder, QString className) ;
     QString getPrefItem();
     QString getItemString();
     QList<QString> getSubCategoriesList();
@@ -181,14 +184,16 @@ Q_OBJECT
     QWidget* tabPanel;// = new JPanel();
     //boolean store;
     int sortOrder = 0;
+    QString _className;
 public:
     TabDetails(QString labelkey, QString tabTit, QWidget* item,
-            QString tooltip, int sortOrder) ;
+            QString tooltip, int sortOrder, QString className) ;
     QString getToolTip();
     QString getTitle();
     QWidget* getPanel();
     QWidget* getItem() ;
     void setSortOrder(int sortOrder);
     int getSortOrder();
+    QString className();
 };
 #endif // TABBEDPREFERENCES_H

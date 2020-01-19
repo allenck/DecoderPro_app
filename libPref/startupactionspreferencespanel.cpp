@@ -431,6 +431,6 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
  }
 }
 
-/*public*/ QString StartupActionsPreferencesPanel::className() {return "StartupActionsPreferencesPanel";}
+/*public*/ QString StartupActionsPreferencesPanel::className() {return "apps.startup.StartupActionsPreferencesPanel";}
 
 //}

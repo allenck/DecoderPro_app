@@ -4,10 +4,12 @@
 #include <QMap>
 #include "libpref_global.h"
 
+class JSpinner;
+class JPanel;
 class ActionListener;
 class QCheckBox;
 class QButtonGroup;
-class QComboBox;
+class JComboBox;
 class QLocale;
 class LIBPREFSHARED_EXPORT GuiLafConfigPane : public QWidget, public PreferencesPanel
 {
@@ -15,6 +17,10 @@ class LIBPREFSHARED_EXPORT GuiLafConfigPane : public QWidget, public Preferences
     Q_INTERFACES(PreferencesPanel)
 
 public:
+    /*public*/ static /*final*/ int MAX_TOOLTIP_TIME;// = 3600;
+    /*public*/ static /*final*/ int MIN_TOOLTIP_TIME;// = 1;
+    /*public*/ static /*final*/ int MIN_DISPLAYED_FONT_SIZE;// = MIN_FONT_SIZE;
+    /*public*/ static /*final*/ int MAX_DISPLAYED_FONT_SIZE;// = 20;
     Q_INVOKABLE explicit GuiLafConfigPane(QWidget *parent = 0);
     ~GuiLafConfigPane() {}
     GuiLafConfigPane(const GuiLafConfigPane&) : QWidget() {}
@@ -25,7 +31,7 @@ public:
     static int fontSize;// = 0;
     /*public*/ static void setFontSize(int size);
     /*public*/ static int getFontSize();
-    /*static*/ QComboBox* fontSizeComboBox;// = new JComboBox<>(fontSizes);
+    /*static*/ JComboBox* fontSizeComboBox;// = new JComboBox<>(fontSizes);
     //static ActionListener* listener;
     /*public*/ void doFontSize(QWidget* panel);
     /*public*/ QString getClassName() ;
@@ -51,12 +57,23 @@ public:
     /*public*/ bool isRestartRequired();
 
     /*public*/ QString className();
+    void doGraphicState(JPanel* panel);
+    void doEditorUseOldLocSize(JPanel* panel);
+    /*public*/ QCheckBox* graphicStateDisplay;
+    /*public*/ QCheckBox* editorUseOldLocSizeDisplay;
+    /*public*/ void doToolTipDismissDelay(JPanel* panel);
+    /*public*/ QObject* self() {return (QObject*)this;}
+
 signals:
 
 public slots:
     void On_fontSizeConboBox_currentIndexChanged(QString);
+    void on_toolTipDismissDelaySpinner(int);
+    void on_graphicStateDisplay_clicked(bool b);
+    void on_editorUseOldLocSizeDisplay_clicked(bool);
+
 private:
-    /*private*/ /*final*/ QComboBox* localeBox;// = new JComboBox<>(new String[]{
+    /*private*/ /*final*/ JComboBox* localeBox;// = new JComboBox<>(new String[]{
 //    Locale.getDefault().getDisplayName(),
 //        "(Please Wait)"});
     /*private*/ /*final*/ QMap<QString, QLocale*> locale;// = new HashMap<>();
@@ -66,7 +83,9 @@ private:
     void doClickSelection(QWidget* panel);
     void doLAF(QWidget* panel);
     /*private*/ int getDefaultFontSize();
-    /*private*/ static /*final*/ QStringList fontSizes;
+//    /*private*/ static /*final*/ QStringList fontSizes;
+    /*private*/ JSpinner* toolTipDismissDelaySpinner;
+
  friend class GuiLafConfigPaneXml;
 };
 

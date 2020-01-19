@@ -3,6 +3,7 @@
 #include <QCheckBox>
 #include "instancemanager.h"
 #include "tabbedpreferences.h"
+#include "guilafpreferencesmanager.h"
 
 GuiLafConfigPaneXml::GuiLafConfigPaneXml(QObject *parent) :
     AbstractXmlAdapter(parent)
@@ -52,6 +53,8 @@ GuiLafConfigPaneXml::GuiLafConfigPaneXml(QObject *parent) :
 
     e.setAttribute("nonStandardMouseEvent",
             (g->mouseEvent->isChecked() ?"yes":"no"));
+    e.setAttribute("graphicTableState",
+                    (g->graphicStateDisplay->isChecked() ? "yes" : "no"));
     return e;
 }
 
@@ -97,6 +100,12 @@ GuiLafConfigPaneXml::GuiLafConfigPaneXml(QObject *parent) :
     QString clickAttr = e.attribute("nonStandardMouseEvent");
 //    if (clickAttr != "")
 //        SwingSettings.setNonStandardMouseEvent(clickAttr==("yes"));
+    QString graphicAttr = e.attribute("graphicTableState");
+    if (!graphicAttr.isNull())
+    {
+     bool graphicTableState = graphicAttr == ("yes");
+     ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setGraphicTableState(graphicTableState);
+    }
     GuiLafConfigPane* g = new GuiLafConfigPane();
     ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerPref(g);
 

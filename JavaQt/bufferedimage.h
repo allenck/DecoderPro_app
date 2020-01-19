@@ -15,6 +15,7 @@ public:
  /*public*/ int getType();
  /*public*/ unsigned int getRGB(int x, int y);
  /*public*/ /*synchronized*/ void setRGB(int x, int y, unsigned int rgb);
+ /*public*/ QImage getScaledInstance(int width, int height, int hints);
 
  /**
   * Image Type Constants

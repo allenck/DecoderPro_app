@@ -13,6 +13,8 @@ public:
     /*public*/ /*abstract*/ virtual void setParent(PreferencesPanel* /*parent*/) {}
 
     /*public*/ /*abstract*/ virtual PreferencesPanel* getParent() {return NULL;}
+
+    /*public*/ virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(PreferencesSubPanel, "PreferencesSubPanel")
 #endif // PREFERENCESSUBPANEL_H

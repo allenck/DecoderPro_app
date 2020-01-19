@@ -14,8 +14,10 @@ public:
  /*public*/ static /*final*/ QString LOCALE;// = "locale";
  /*public*/ static /*final*/ QString LOOK_AND_FEEL;// = "lookAndFeel";
  /*public*/ static /*final*/ QString NONSTANDARD_MOUSE_EVENT;// = "nonstandardMouseEvent";
+ /*public*/ static /*final*/ QString GRAPHICTABLESTATE;// = "graphicTableState";
  /*public*/ static /*final*/ QString VERTICAL_TOOLBAR;// = "verticalToolBar";
  /*public*/ /*final*/ static QString SHOW_TOOL_TIP_TIME;// = "showToolTipDismissDelay";
+ /*public*/ /*final*/ static QString EDITOR_USE_OLD_LOC_SIZE;//= "editorUseOldLocSize";
  /*public*/ static /*final*/ int MIN_FONT_SIZE;// = 9;
  /*public*/ static /*final*/ int MAX_FONT_SIZE;// = 36;
  /*public*/ static /*final*/ QString PROP_DIRTY;// = "dirty";
@@ -44,6 +46,11 @@ public:
  /*public*/ QList<Exception*>* getInitializationExceptions(Profile* profile);
  /*public*/ bool isDirty();
  /*public*/ bool isAssignableFromType() {return true;}
+ /*public*/ bool isGraphicTableState();
+ /*public*/ void setGraphicTableState(bool graphicTableState);
+ /*public*/ bool isEditorUseOldLocSize();
+ /*public*/ void setEditorUseOldLocSize(bool editorUseOldLocSize);
+
 private:
  Logger* log;
  // preferences with default values
@@ -52,6 +59,8 @@ private:
  /*private*/ int defaultFontSize;// = 0;
  /*private*/ bool nonStandardMouseEvent;// = false;
  /*private*/ bool verticalToolBar;// = false;
+ /*private*/ bool graphicTableState = false;
+ /*private*/ bool editorUseOldLocSize = false;
  /*private*/ QString lookAndFeel;// = UIManager.getLookAndFeel().getClass().getName();
  /*private*/ int toolTipDismissDelay;// = ToolTipManager.sharedInstance().getDismissDelay();
  /*private*/ bool dirty;// = false;
@@ -61,7 +70,7 @@ private:
   * Unlike most PreferencesProviders, the GUI Look & Feel preferences should
   * be per-application instead of per-profile.
   */
- /*private*/ bool initialized;// = false;
+ /*private*/ bool initialized = false;
  /*private*/ /*final*/ QList<Exception*>* exceptions;// = new ArrayList<>();
  /*private*/ void applyFontSize();
  /*private*/ int getCalcFontSize(int oldSize);

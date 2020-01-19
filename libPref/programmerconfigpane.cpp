@@ -136,4 +136,4 @@ void /*private*/ ProgrammerConfigPane::common()
     return this->isDirty();
 }
 
-/*public*/ QString ProgrammerConfigPane::className() {return "ProgrammerConfigPane";}
+/*public*/ QString ProgrammerConfigPane::className() {return "jmri.jmrit.symbolicprog.ProgrammerConfigPane";}

@@ -14,6 +14,9 @@ public:
  ~ManagingPreferencesPanel() {}
  ManagingPreferencesPanel(const ManagingPreferencesPanel&) : JTabbedPane() {}
  /*public*/ /*abstract*/virtual  QList<PreferencesPanel*>* getPreferencesPanels();
+ /*public*/ QString className();
+ /*public*/ QObject* self() {return (QObject*)this;}
+
 signals:
 
 public slots:

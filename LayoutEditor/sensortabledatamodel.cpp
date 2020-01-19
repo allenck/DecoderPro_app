@@ -8,6 +8,11 @@
 #include "../Tables/logixtableaction.h" // for PushButtonItemDelegate
 #include <QSignalMapper>
 #include "systemnamecomparator.h"
+#include "guilafpreferencesmanager.h"
+#include "imageio.h"
+#include "bufferedimage.h"
+#include <QIcon>
+#include "file.h"
 
 SensorTableDataModel::SensorTableDataModel(QObject *parent) :
     BeanTableDataModel(parent)
@@ -34,6 +39,10 @@ void SensorTableDataModel::common()
  log = new Logger("SensorDataModel");
  deleteMapper = new QSignalMapper();
  table = nullptr;
+ // load graphic state column display preference
+ _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
+ if(_graphicState)
+  renderer = new ImageIconRenderer();
  init();
 }
 
@@ -264,8 +273,32 @@ void SensorTableDataModel::common()
   {
    return (int)s->getSensorDebounceGoingInActiveTimer();
   }
+  else if(col == VALUECOL)
+  {
+   if(_graphicState)
+    return QVariant();
+   else
+    return BeanTableDataModel::data(index, role);
+  }
   else if (col == INVERTCOL || col == USEGLOBALDELAY)
    return "";
+ }
+ if(_graphicState && role == Qt::DecorationRole)
+ {
+  int col = index.column();
+
+  if(col == VALUECOL)
+  {
+   switch (s->getState()) {
+   case Sensor::ACTIVE:
+    return renderer->onIcon;
+    break;
+   case Sensor::INACTIVE:
+    return renderer->offIcon;
+   default:
+    break;
+   }
+  }
  }
  return BeanTableDataModel::data(index, role);
 }
@@ -322,6 +355,16 @@ void SensorTableDataModel::common()
    s->setSensorDebounceGoingInActiveTimer(value.toInt());
    return true;
   }
+  else if(col == VALUECOL)
+  {
+   if (_graphicState)
+   { // respond to clicking on ImageIconRenderer CellEditor
+       clickOn(s);
+       fireTableRowsUpdated(row, row);
+   } else {
+       BeanTableDataModel::setData(index, value, role);
+   }
+  }
  }
  return BeanTableDataModel::setData(index, value, role);
 }
@@ -340,6 +383,159 @@ void SensorTableDataModel::common()
  }
  else return BeanTableDataModel::matchPropertyName(e);
 }
+#if 0
+/**
+ * Customize the sensor table Value (State) column to show an appropriate
+ * graphic for the sensor state if _graphicState = true, or (default) just
+ * show the localized state text when the TableDataModel is being called
+ * from ListedTableAction.
+ *
+ * @param table a JTable of Sensors
+ */
+//@Override
+/*protected*/ void configValueColumn(JTable* table) {
+    // have the value column hold a JPanel (icon)
+    //setColumnToHoldButton(table, VALUECOL, new JLabel("1234")); // for small round icon, but cannot be converted to JButton
+    // add extras, override BeanTableDataModel
+    log.debug("Sensor configValueColumn (I am {})", this);
+    if (_graphicState) { // load icons, only once
+        table.setDefaultEditor(JLabel.class, new ImageIconRenderer()); // editor
+        table.setDefaultRenderer(JLabel.class, new ImageIconRenderer()); // item class copied from SwitchboardEditor panel
+    } else {
+        super.configValueColumn(table); // classic text style state indication
+    }
+}
+#endif
+/**
+ * Visualize state in table as a graphic, customized for Sensors (2 states).
+ * Renderer and Editor are identical, as the cell contents are not actually
+ * edited, only used to toggle state using {@link #clickOn}.
+ */
+//class ImageIconRenderer extends AbstractCellEditor implements TableCellEditor, TableCellRenderer {
+
+//    /*protected*/ QLabel* label;
+//    /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+//    /*protected*/ char beanTypeChar = 'S'; // for Sensor
+//    /*protected*/ QString onIconPath = rootPath + beanTypeChar + "-on-s.png";
+//    /*protected*/ QString offIconPath = rootPath + beanTypeChar + "-off-s.png";
+//    /*protected*/ BufferedImage* onImage;
+//    /*protected*/ BufferedImage* offImage;
+//    /*protected*/ ImageIcon* onIcon;
+//    /*protected*/ ImageIcon* offIcon;
+//    /*protected*/ int iconHeight = -1;
+#if 0
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/ Component* getTableCellRendererComponent(
+            JTable table, Object value, boolean isSelected,
+            boolean hasFocus, int row, int column) {
+        log.debug("Renderer Item = {}, State = {}", row, value);
+        if (iconHeight < 0) { // load resources only first time, either for renderer or editor
+            loadIcons();
+            log.debug("icons loaded");
+        }
+        return updateLabel((String) value, row);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/ Component* getTableCellEditorComponent(
+            JTable table, Object value, boolean isSelected,
+            int row, int column) {
+        log.debug("Renderer Item = {}, State = {}", row, value);
+        if (iconHeight < 0) { // load resources only first time, either for renderer or editor
+            loadIcons();
+            log.debug("icons loaded");
+        }
+        return updateLabel((String) value, row);
+    }
+
+    /*public*/ JLabel* updateLabel(QString value, int row) {
+        if (iconHeight > 0) { // if necessary, increase row height;
+            table.setRowHeight(row, Math.max(table.getRowHeight(), iconHeight - 5)); // adjust table row height for Sensor icon
+        }
+        if (value.equals(Bundle.getMessage("SensorStateInactive")) && offIcon != null) {
+            label = new JLabel(offIcon);
+            label.setVerticalAlignment(JLabel.BOTTOM);
+            log.debug("offIcon set");
+        } else if (value.equals(Bundle.getMessage("SensorStateActive")) && onIcon != null) {
+            label = new JLabel(onIcon);
+            label.setVerticalAlignment(JLabel.BOTTOM);
+            log.debug("onIcon set");
+        } else if (value.equals(Bundle.getMessage("BeanStateInconsistent"))) {
+            label = new JLabel("X", JLabel.CENTER); // centered text alignment
+            label.setForeground(Color.red);
+            log.debug("Sensor state inconsistent");
+            iconHeight = 0;
+        } else if (value.equals(Bundle.getMessage("BeanStateUnknown"))) {
+            label = new JLabel("?", JLabel.CENTER); // centered text alignment
+            log.debug("Sensor state unknown");
+            iconHeight = 0;
+        } else { // failed to load icon
+            label = new JLabel(value, JLabel.CENTER); // centered text alignment
+            log.warn("Error reading icons for SensorTable");
+            iconHeight = 0;
+        }
+        label.setToolTipText(value);
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public final void mousePressed(MouseEvent evt) {
+                log.debug("Clicked on icon in row {}", row);
+                stopCellEditing();
+            }
+        });
+        return label;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/ QVariant getCellEditorValue() {
+        log.debug("getCellEditorValue, me = {})", this);
+        return this.toString();
+    }
+#endif
+    /*public*/ ImageIconRenderer::ImageIconRenderer()
+    {
+      rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+      beanTypeChar = 'S'; // for Sensor
+      onIconPath = rootPath + beanTypeChar + "-on-s.png";
+      offIconPath = rootPath + beanTypeChar + "-off-s.png";
+      loadIcons();
+    }
+    /**
+     * Read and buffer graphics. Only called once for this table.
+     *
+     * @see #getTableCellEditorComponent(JTable, Object, boolean, int, int)
+     */
+    /*protected*/ void ImageIconRenderer::loadIcons() {
+        try {
+            onImage = ImageIO::read(new File(onIconPath));
+            offImage = ImageIO::read(new File(offIconPath));
+        } catch (IOException ex) {
+            log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
+        }
+        log->debug("Success reading images");
+        int imageWidth = onImage->width();
+        int imageHeight = onImage->height();
+        // scale icons 50% to fit in table rows
+        QImage smallOnImage = onImage->getScaledInstance(imageWidth / 2, imageHeight / 2,0/*, Image.SCALE_DEFAULT*/);
+        QImage smallOffImage = offImage->getScaledInstance(imageWidth / 2, imageHeight / 2, 0/*, Image.SCALE_DEFAULT*/);
+//        onIcon = new ImageIcon(smallOnImage);
+        onIcon = QPixmap::fromImage(smallOnImage);
+//        offIcon = new ImageIcon(smallOffImage);
+        offIcon = QPixmap::fromImage(smallOffImage);
+        iconHeight = onIcon.height();
+    }
+
+//} // end of ImageIconRenderer class
+
+/*private*/ /*static*/ Logger* ImageIconRenderer::log = LoggerFactory::getLogger("ImageIconRenderer");
 
 //@Override
 /*public*/ void SensorTableDataModel::configureTable(JTable* table)

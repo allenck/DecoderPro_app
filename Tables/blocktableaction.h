@@ -76,6 +76,9 @@ private:
  void deletePaths(JmriJFrame* f);
  JmriJFrame* finalF;
 
+ // for icon state col
+ bool _graphicState = false; // updated from prefs
+
 protected:
  /*protected*/ void createModel();
  /*protected*/ void setTitle();

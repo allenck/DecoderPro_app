@@ -460,6 +460,6 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
  }
  newMessageTab();
 }
-/*public*/ QString UserMessagePreferencesPane::className() { return "UserMessagePreferencesPane";}
+/*public*/ QString UserMessagePreferencesPane::className() { return "jmri.jmrit.beantable.usermessagepreferences.UserMessagePreferencesPane";}
 //}
 #endif

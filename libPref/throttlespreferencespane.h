@@ -31,6 +31,7 @@ public:
     /*public*/ bool isDirty();
     /*public*/ bool isRestartRequired();
     /*public*/ QString className();
+    /*public*/ QObject* self() {return (QObject*)this;}
 
 signals:
 

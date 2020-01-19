@@ -13,7 +13,7 @@
 #include "jtabbedpane.h"
 
 AppConfigBase::AppConfigBase(QWidget *parent) :
-    QSplitter(parent) //JmriPanel(parent)
+    JmriPanel(parent) //JmriPanel(parent)
 {
  preferencesPanels = new QMap<QString, PreferencesPanel*>();
  log = new Logger("AppConfigBase");

@@ -258,5 +258,5 @@ void FileLocationPane::On_fileSelected(QString file)
     }
 }
 
-    /*public*/ QString FileLocationPane::className() {return "FileLocationPane";}
+    /*public*/ QString FileLocationPane::className() {return "apps.FileLocationPane";}
 //}

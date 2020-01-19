@@ -17,7 +17,7 @@ class LIBPREFSHARED_EXPORT ConnectionsPreferencesPanel : public ManagingPreferen
     Q_OBJECT
 public:
     Q_INVOKABLE explicit ConnectionsPreferencesPanel(QWidget *parent = 0);
-    /*public*/ ConnectionsPreferencesPanel(TabbedPreferences* preference, QWidget* parent=0);
+//    /*public*/ ConnectionsPreferencesPanel(TabbedPreferences* preference, QWidget* parent=0);
     ~ConnectionsPreferencesPanel() {}
     ConnectionsPreferencesPanel(const ConnectionsPreferencesPanel &); //: PreferencesPanel(parent)
     virtual
@@ -52,7 +52,7 @@ public slots:
 
 private:
     //MyTabWidget* tabWidget;
-    /*private*/ /*final*/ TabbedPreferences* preferences;
+//    /*private*/ /*final*/ TabbedPreferences* preferences;
     /*private*/ /*final*/ QIcon deleteIcon;
     /*private*/ /*final*/ QIcon deleteIconRollOver;
     /*private*/ /*final*/ QSize deleteButtonSize;
@@ -60,7 +60,7 @@ private:
     /*private*/ bool restartRequired;// = false;
 
     /*private*/ QList<JmrixConfigPane*> configPanes;// = QList<JmrixConfigPane*>();
-    void common(TabbedPreferences* preferences);
+    void common();
     /*private*/ void activeTab();
     /*private*/ void addConnection(int tabPosition, /*final*/ JmrixConfigPane* configPane);
     void addConnectionTab();

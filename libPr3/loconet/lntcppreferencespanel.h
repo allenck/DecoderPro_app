@@ -29,6 +29,7 @@ public:
  /*public*/ bool isRestartRequired() ;
  /*public*/ virtual bool isPreferencesValid();
  /*public*/ QString className();
+ /*public*/ QObject* self() {return (QObject*)this;}
 
 
 public slots:

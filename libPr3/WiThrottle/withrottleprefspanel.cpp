@@ -310,4 +310,4 @@ void WiThrottlePrefsPanel::common()
         return false;
 }
 
-/*public*/ QString WiThrottlePrefsPanel::className() {return "WiThrottlePrefsPanel";}
+/*public*/ QString WiThrottlePrefsPanel::className() {return "jmri.jmrit.throttle.WiThrottlePrefsPanel";}

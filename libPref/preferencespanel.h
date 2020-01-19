@@ -147,7 +147,9 @@ public:
  /*public*/ /*default*/ virtual int getSortOrder() {
      return INT_MAX;
  }
- virtual QString className() {return "???";}
+ virtual QString className() =0;
+
+ virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(PreferencesPanel, "PreferencesPanel")
 #endif // PREFERENCESPANEL_H

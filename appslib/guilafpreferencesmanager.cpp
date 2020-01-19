@@ -39,8 +39,11 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::LOCALE = "locale";
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::LOOK_AND_FEEL = "lookAndFeel";
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::NONSTANDARD_MOUSE_EVENT = "nonstandardMouseEvent";
+/*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::GRAPHICTABLESTATE = "graphicTableState";
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::VERTICAL_TOOLBAR = "verticalToolBar";
 /*public*/ /*final*/ /*static*/ QString GuiLafPreferencesManager::SHOW_TOOL_TIP_TIME = "showToolTipDismissDelay";
+/*public*/ /*final*/ /*static*/ QString GuiLafPreferencesManager::EDITOR_USE_OLD_LOC_SIZE= "editorUseOldLocSize";
+
 /**
  * Smallest font size a user can set the font size to other than zero
  * ({@value}). A font size of 0 indicates that the system default font size
@@ -62,7 +65,7 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 /*public*/ void GuiLafPreferencesManager::initialize(Profile* profile) throw (InitializationException)
 {
     if (!this->initialized) {
-        Preferences* preferences = ProfileUtils::getPreferences(profile, "apps/gui/GuiLafPreferencesManager", true);
+        Preferences* preferences = ProfileUtils::getPreferences(profile, "apps.gui.GuiLafPreferencesManager", true);
 //        this->setLocale(Locale.forLanguageTag(preferences->get(LOCALE, this->getLocale().toLanguageTag())));
         this->setLookAndFeel(preferences->get(LOOK_AND_FEEL, this->getLookAndFeel()));
         this->setDefaultFontSize(); // before we change anything
@@ -71,8 +74,11 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
             this->setFontSize(this->getDefaultFontSize());
         }
         this->setNonStandardMouseEvent(preferences->getBoolean(NONSTANDARD_MOUSE_EVENT, this->isNonStandardMouseEvent()));
+        this->setGraphicTableState(preferences->getBoolean(GRAPHICTABLESTATE, this->isGraphicTableState()));
+        this->setEditorUseOldLocSize(preferences->getBoolean(EDITOR_USE_OLD_LOC_SIZE, this->isEditorUseOldLocSize()));
         this->setToolTipDismissDelay(preferences->getInt(SHOW_TOOL_TIP_TIME, this->getToolTipDismissDelay()));
 //        Locale.setDefault(this->getLocale());
+
         this->applyLookAndFeel();
         this->applyFontSize();
 //        SwingSettings.setNonStandardMouseEvent(this->isNonStandardMouseEvent());
@@ -103,7 +109,7 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 //@Override
 /*public*/ void GuiLafPreferencesManager::savePreferences(Profile* profile)
 {
- Preferences* preferences = ProfileUtils::getPreferences(profile, "apps/gui/GuiLafPreferencesManager", true);
+ Preferences* preferences = ProfileUtils::getPreferences(profile, "apps.gui.GuiLafPreferencesManager", true);
 //    preferences->put(LOCALE, /*this->getLocale().toLanguageTag()*/this->getLocale().language().});
  preferences->put(LOOK_AND_FEEL, this->getLookAndFeel());
  int temp = this->getFontSize();
@@ -114,6 +120,8 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
      preferences->putInt(FONT_SIZE, temp);
  }
  preferences->putBoolean(NONSTANDARD_MOUSE_EVENT, this->isNonStandardMouseEvent());
+ preferences->putBoolean(GRAPHICTABLESTATE, this->isGraphicTableState()); // use graphic icons in bean table state column
+ preferences->putBoolean(EDITOR_USE_OLD_LOC_SIZE, this->isEditorUseOldLocSize());
  preferences->putInt(SHOW_TOOL_TIP_TIME, this->getToolTipDismissDelay());
  try {
      preferences->sync();
@@ -257,6 +265,42 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
     this->setDirty(true);
     this->setRestartRequired(true);
     firePropertyChange(NONSTANDARD_MOUSE_EVENT, oldNonStandardMouseEvent, nonStandardMouseEvent);
+}
+
+/**
+ * @return the graphicTableState
+ */
+/*public*/ bool GuiLafPreferencesManager::isGraphicTableState() {
+    return graphicTableState;
+}
+
+/**
+ * @param graphicTableState the graphicTableState to set
+ */
+/*public*/ void GuiLafPreferencesManager::setGraphicTableState(bool graphicTableState) {
+    bool oldGraphicTableState = this->graphicTableState;
+    this->graphicTableState = graphicTableState;
+    this->setDirty(true);
+    this->setRestartRequired(true);
+    firePropertyChange(GRAPHICTABLESTATE, oldGraphicTableState, graphicTableState);
+}
+
+/**
+ * @return the editorUseOldLocSize value
+ */
+/*public*/ bool GuiLafPreferencesManager::isEditorUseOldLocSize() {
+    return editorUseOldLocSize;
+}
+
+/**
+ * @param editorUseOldLocSize the editorUseOldLocSize value to set
+ */
+/*public*/ void GuiLafPreferencesManager::setEditorUseOldLocSize(bool editorUseOldLocSize) {
+    bool oldEditorUseOldLocSize = this->editorUseOldLocSize;
+    this->editorUseOldLocSize = editorUseOldLocSize;
+    this->setDirty(true);
+    this->setRestartRequired(false);
+    firePropertyChange(EDITOR_USE_OLD_LOC_SIZE, oldEditorUseOldLocSize, editorUseOldLocSize);
 }
 
 /**

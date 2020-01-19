@@ -30,13 +30,14 @@ public:
  /*public*/ bool isRestartRequired();
  /*public*/virtual bool isPreferencesValid();
  /*public*/ QString className();
+ /*public*/ QObject* self() {return (QObject*)this;}
 
 signals:
 
 public slots:
 private:
  /*private*/ bool dirty;// = false;
- QWidget* self;  // used for synchronization
+ QWidget* _self;  // used for synchronization
 
  JFileChooser* fc;// = XmlFile::userFileChooser("Python script files", "py");
  QVBoxLayout* thisLayout;

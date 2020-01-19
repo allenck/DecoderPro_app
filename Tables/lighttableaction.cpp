@@ -22,6 +22,12 @@
 #include "colorutil.h"
 #include "joptionpane.h"
 #include "proxylightmanager.h"
+#include "guilafpreferencesmanager.h"
+#include "imageio.h"
+#include "bufferedimage.h"
+#include "loggerfactory.h"
+#include "file.h"
+
 
 //LightTableAction::LightTableAction()
 //{
@@ -147,6 +153,9 @@ void LightTableAction::common()
  */
 /*protected*/ void LightTableAction::createModel()
 {
+ // load graphic state column display preference
+ _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
+
  m = new LTBeanTableDataModel(this);
 }
 
@@ -157,6 +166,12 @@ LTBeanTableDataModel::LTBeanTableDataModel(LightTableAction* lta)
  setObjectName("LTBeanTableDataModel");
  enabledString = tr("Enabled");
  intensityString = tr("Intensity");
+ rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+ beanTypeChar = 'L'; // for Light
+ onIconPath = rootPath + beanTypeChar + "-on-s.png";
+ offIconPath = rootPath + beanTypeChar + "-off-s.png";
+ loadIcons();
+
  init();
 }
 //    m = new BeanTableDataModel() {
@@ -285,6 +300,14 @@ LTBeanTableDataModel::LTBeanTableDataModel(LightTableAction* lta)
         //return Boolean.valueOf(((Light) getBySystemName((String) getValueAt(row, SYSNAMECOL))).getEnabled());
       return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled()? Qt::Checked : Qt::Unchecked;
     }
+ }
+ if(lta->_graphicState && role == Qt::DecorationRole )
+ {
+  if(mindex.column() == ENABLECOL)
+  {
+   return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled()? onIcon : offIcon;
+
+  }
  }
  return BeanTableDataModel::data(mindex, role);
 }
@@ -2005,8 +2028,8 @@ QString LightTableAction::formatTime(int hour, int minute) {
                 : AbstractTableModel(parent)
     {
         //super();
-    this->lta = lta;
-    setObjectName("LightControlTableModel");
+     this->lta = lta;
+     setObjectName("LightControlTableModel");
     }
 
     /*public*/ void LightControlTableModel::propertyChange(PropertyChangeEvent* e) {
@@ -2110,6 +2133,11 @@ QString LightTableAction::formatTime(int hour, int minute) {
                 break;
         }
       }
+      if(lta->_graphicState &&  role == Qt::DecorationRole)
+      {
+       int c = index.column();
+
+      }
       return QVariant();
     }
 
@@ -2149,6 +2177,34 @@ QString LightTableAction::formatTime(int hour, int minute) {
 /*protected*/ QString LightTableAction::getClassName() {
     return "jmri.jmrit.beantable.LightTableAction";
 }
+
+/**
+* Read and buffer graphics. Only called once for this table.
+*
+* @see #getTableCellEditorComponent(JTable, Object, boolean,
+* int, int)
+*/
+/*protected*/ void LTBeanTableDataModel::loadIcons() {
+ try
+ {
+  onImage = ImageIO::read(new File(onIconPath));
+  offImage = ImageIO::read(new File(offIconPath));
+ } catch (IOException ex) {
+     log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
+ }
+ log->debug("Success reading images");
+ int imageWidth = onImage->width();
+ int imageHeight = onImage->height();
+ // scale icons 50% to fit in table rows
+ QImage smallOnImage = onImage->getScaledInstance(imageWidth / 2, imageHeight / 2, 0); //, Image.SCALE_DEFAULT);
+ QImage smallOffImage = offImage->getScaledInstance(imageWidth / 2, imageHeight / 2, 0); //, Image.SCALE_DEFAULT);
+ onIcon = QPixmap::fromImage(smallOnImage);
+ offIcon =  QPixmap::fromImage(smallOffImage);
+ iconHeight = onIcon.height();
+}
+
+Logger* LTBeanTableDataModel::log = LoggerFactory::getLogger("LTBeanTableDataModel");
+
 LTAValidator::LTAValidator(JTextField *fld, LightTableAction *act)
 {
  this->fld = fld;

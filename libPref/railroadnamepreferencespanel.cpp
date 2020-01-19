@@ -196,4 +196,4 @@
  return NULL;
 }
 
-/*public*/ QString RailroadNamePreferencesPanel::className() {return "RailroadNamePreferencesPanel";}
+/*public*/ QString RailroadNamePreferencesPanel::className() {return "jmri.web.server.RailroadNamePreferencesPanel";}
