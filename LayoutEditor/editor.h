@@ -323,6 +323,7 @@ public:
      * settings.
      */
     /*abstract*/ /*public*/ virtual void initView() {}
+    virtual void redrawPanel();
 
 signals:
     

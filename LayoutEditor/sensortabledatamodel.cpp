@@ -1,4 +1,4 @@
-#include "sensortabledatamodel.h"
+﻿#include "sensortabledatamodel.h"
 #include "proxysensormanager.h"
 #include "instancemanager.h"
 #include "abstractsensor.h"
@@ -90,12 +90,12 @@ void SensorTableDataModel::common()
  if(proxy != nullptr)
  {
   proxy->addPropertyChangeListener((PropertyChangeListener*) this);
-  //connect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  if(mgr != nullptr)
  {
   mgr->addPropertyChangeListener((PropertyChangeListener*) this);
-  //connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //connect(aMgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
@@ -292,7 +292,6 @@ void SensorTableDataModel::common()
    switch (s->getState()) {
    case Sensor::ACTIVE:
     return renderer->onIcon;
-    break;
    case Sensor::INACTIVE:
     return renderer->offIcon;
    default:

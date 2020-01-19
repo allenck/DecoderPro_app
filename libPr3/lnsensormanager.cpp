@@ -101,6 +101,7 @@ LnSensorManager::LnSensorManager(LnTrafficController* tc, QString prefix, QObjec
     // until files have been read, but starts automatically
     // since 2.9.5 for multi-system support.
     updateAll();
+    registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
 }
 //public class LnSensorManager extends jmri.managers.AbstractSensorManager implements LocoNetListener {
 

@@ -8,8 +8,8 @@ class LIBLAYOUTEDITORSHARED_EXPORT LnSensorManagerXml : public AbstractSensorMan
     Q_OBJECT
 public:
     Q_INVOKABLE explicit LnSensorManagerXml(QObject *parent = 0);
- ~LnSensorManagerXml() {}
- LnSensorManagerXml(const LnSensorManagerXml&) :AbstractSensorManagerConfigXML() {}
+    ~LnSensorManagerXml() {}
+    LnSensorManagerXml(const LnSensorManagerXml&) :AbstractSensorManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement sensors);
     /*public*/ void load(QDomElement element, QObject* o) throw (JmriConfigureXmlException) ;
     /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException);

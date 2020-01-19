@@ -7,7 +7,7 @@ CatalogTreeManager::CatalogTreeManager(QObject *parent) :
  setObjectName("CatalogTreeManager");
  setProperty("JavaClassName", "jmri.CatalogTreeManager");
 
- //registerSelf();
+ registerSelf();
 }
 
 /**

@@ -5,6 +5,7 @@
 #include "actionlistener.h"
 #include "libtables_global.h"
 
+class BufferedImage;
 class Block;
 class UserPreferencesManager;
 class QComboBox;
@@ -145,10 +146,20 @@ private:
 
   protected:
   /*protected*/ QString getMasterClassName() ;
+ /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+ /*protected*/ char beanTypeChar;// = 'S'; // for Sensor
+ /*protected*/ QString onIconPath;// = rootPath + beanTypeChar + "-on-s.png";
+ /*protected*/ QString offIconPath;// = rootPath + beanTypeChar + "-off-s.png";
+ /*protected*/ BufferedImage* onImage;
+ /*protected*/ BufferedImage* offImage;
+ /*protected*/ QPixmap onIcon;
+ /*protected*/ QPixmap offIcon;
+ /*protected*/ int iconHeight = -1;
+ /*protected*/ void loadIcons();
+
  /*protected*/ QString getBeanType();
   protected slots:
  /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
-
 };
 class BTActionListener : public ActionListener
 {

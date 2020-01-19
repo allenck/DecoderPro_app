@@ -38,6 +38,10 @@
 #include "vptr.h"
 #include "systemconnectionmemomanager.h"
 #include "guilafpreferencesmanager.h"
+#include "bufferedimage.h"
+#include "imageio.h"
+#include <QPixmap>
+#include "file.h"
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)
@@ -198,6 +202,11 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 {
  this->self = self;
  log = new Logger("TTBeanTableDataModel");
+ rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+ beanTypeChar = 'T'; // for Turnout
+ onIconPath = rootPath + beanTypeChar + "-on-s.png";
+ offIconPath = rootPath + beanTypeChar + "-off-s.png";
+ loadIcons();
  init();
 }
 
@@ -522,6 +531,23 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
    return "Query";
    default:
    {
+    break;
+   }
+  }
+ }
+ if(self->_graphicState && role == Qt::DecorationRole)
+ {
+  int col = index.column();
+
+  if(col == VALUECOL)
+  {
+   switch (t->getState()) {
+   case Turnout::THROWN:
+    return onIcon;
+    break;
+   case Turnout::CLOSED:
+    return offIcon;
+   default:
     break;
    }
   }
@@ -974,6 +1000,30 @@ TableSorter sorter;
     return table;
 }
 #endif
+/**
+ * Read and buffer graphics. Only called once for this table.
+ *
+ * @see #getTableCellEditorComponent(JTable, Object, boolean, int, int)
+ */
+/*protected*/ void TurnoutTableDataModel::loadIcons() {
+    try {
+        onImage = ImageIO::read(new File(onIconPath));
+        offImage = ImageIO::read(new File(offIconPath));
+    } catch (IOException ex) {
+        log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
+    }
+    log->debug("Success reading images");
+    int imageWidth = onImage->width();
+    int imageHeight = onImage->height();
+    // scale icons 50% to fit in table rows
+    QImage smallOnImage = onImage->getScaledInstance(imageWidth / 2, imageHeight / 2,0/*, Image.SCALE_DEFAULT*/);
+    QImage smallOffImage = offImage->getScaledInstance(imageWidth / 2, imageHeight / 2, 0/*, Image.SCALE_DEFAULT*/);
+//        onIcon = new ImageIcon(smallOnImage);
+    onIcon = QPixmap::fromImage(smallOnImage);
+//        offIcon = new ImageIcon(smallOffImage);
+    offIcon = QPixmap::fromImage(smallOffImage);
+    iconHeight = onIcon.height();
+}
 //};  // end of custom data model
 //}
 

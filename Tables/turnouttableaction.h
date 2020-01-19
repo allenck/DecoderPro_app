@@ -6,6 +6,7 @@
 #include "jdialog.h"
 #include "libtables_global.h"
 
+class BufferedImage;
 class TTAValidator;
 class QSpinBox;
 class JTable;
@@ -214,6 +215,17 @@ public slots:
     /*protected*/ QString getMasterClassName();
     /*protected*/ QString getBeanType();
     /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
+    /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+    /*protected*/ char beanTypeChar;// = 'S'; // for Sensor
+    /*protected*/ QString onIconPath;// = rootPath + beanTypeChar + "-on-s.png";
+    /*protected*/ QString offIconPath;// = rootPath + beanTypeChar + "-off-s.png";
+    /*protected*/ BufferedImage* onImage;
+    /*protected*/ BufferedImage* offImage;
+    /*protected*/ QPixmap onIcon;
+    /*protected*/ QPixmap offIcon;
+    /*protected*/ int iconHeight = -1;
+    /*protected*/ void loadIcons();
+
  protected slots:
 
 };  // end of custom data model

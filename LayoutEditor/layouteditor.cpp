@@ -119,6 +119,7 @@ LayoutEditor::~LayoutEditor()
 void LayoutEditor::init()
 {
  editorUseOldLocSize = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize();
+ setSaveSize(true);
 
  ui->setupUi(this);
  setObjectName("LayoutEditor");

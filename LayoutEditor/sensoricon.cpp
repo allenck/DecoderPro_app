@@ -510,7 +510,9 @@ JCheckBoxMenuItem  momentaryItem = new JCheckBoxMenuItem(Bundle.getMessage("Mome
   }
 
   updateSize();
+  editor->redrawPanel(); // to update track occupancy displayed.
 }
+
 /*public*/ bool SensorIcon::setEditItemMenu(QMenu* popup)
 {
  //QString txt = java.text.MessageFormat.format(Bundle.getMessage("EditItem"), Bundle.getMessage("Sensor"));

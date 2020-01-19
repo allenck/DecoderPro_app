@@ -615,6 +615,7 @@ void Block::handleSensorChange(PropertyChangeEvent* e)
   }
  }
 }
+
 void Block::handleSensorChange(QString propertyName, int /*o*/, int /*n*/)
 {
  if (propertyName==("KnownState"))

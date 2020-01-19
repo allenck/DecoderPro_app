@@ -3760,6 +3760,7 @@ void Editor::repaint()
 {
  // TODO:
 }
+void Editor::redrawPanel() {}
 /*********************** Icon Editors utils ****************************/
 
 ///*public*/ static class JFrameItem : public JmriJFrame {

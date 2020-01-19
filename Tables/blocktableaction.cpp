@@ -20,6 +20,9 @@
 #include "systemnamecomparator.h"
 #include "path.h"
 #include "guilafpreferencesmanager.h"
+#include "bufferedimage.h"
+#include "imageio.h"
+#include "file.h"
 
 BlockTableAction::BlockTableAction(QObject *parent) :
   AbstractTableAction(tr("Block Table"), parent)
@@ -135,7 +138,11 @@ void BlockTableAction::common()
  this->inchBox = inchBox;
  connect(inchBox, SIGNAL(toggled(bool)), this, SLOT(fireTableDataChanged()));
  twoDigit = new DecimalFormat("0.00");
-
+ rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+ beanTypeChar = 'S'; // for Sensor
+ onIconPath = rootPath + beanTypeChar + "-on-s.png";
+ offIconPath = rootPath + beanTypeChar + "-off-s.png";
+ loadIcons();
  updateNameList();
 }
 
@@ -309,14 +316,36 @@ void BlockTableAction::common()
       Reporter* r = b->getReporter();
       return (r != NULL) ? r->getDisplayName() : NULL;
   }
-//  else if (col == CURRENTREPCOL)
-//  {
-//      return (b->isReportingCurrent());
-//  }
+  else if (col == CURRENTREPCOL)
+  {
+      return (b->isReportingCurrent());
+  }
   else if (col == EDITCOL) {  //
       return tr("Edit");
-  } else {
+  }
+  else {
    return BeanTableDataModel::data(index, role);
+  }
+ } // end DisplayRole
+
+ if(blockTableAction->_graphicState && role == Qt::DecorationRole)
+ {
+  int col = index.column();
+
+  if(col == STATECOL)
+  {
+   switch (b->getState())
+   {
+   case Block::OCCUPIED:
+    return onIcon;
+   case Block::UNOCCUPIED:
+    return offIcon;
+   case Block::UNKNOWN:
+   case Block::INCONSISTENT:
+    return QColor(Qt::red);
+   default:
+    break;
+   }
   }
  }
  return QVariant();
@@ -759,6 +788,30 @@ void BlockTableDataModel::editButton(Block* b)
  this->sensorList = sensorList.toList();
 }
 
+/**
+ * Read and buffer graphics. Only called once for this table.
+ *
+ * @see #getTableCellEditorComponent(JTable, Object, boolean, int, int)
+ */
+/*protected*/ void BlockTableDataModel::loadIcons() {
+    try {
+        onImage = ImageIO::read(new File(onIconPath));
+        offImage = ImageIO::read(new File(offIconPath));
+    } catch (IOException ex) {
+        log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
+    }
+    log->debug("Success reading images");
+    int imageWidth = onImage->width();
+    int imageHeight = onImage->height();
+    // scale icons 50% to fit in table rows
+    QImage smallOnImage = onImage->getScaledInstance(imageWidth / 2, imageHeight / 2,0/*, Image.SCALE_DEFAULT*/);
+    QImage smallOffImage = offImage->getScaledInstance(imageWidth / 2, imageHeight / 2, 0/*, Image.SCALE_DEFAULT*/);
+//        onIcon = new ImageIcon(smallOnImage);
+    onIcon = QPixmap::fromImage(smallOnImage);
+//        offIcon = new ImageIcon(smallOffImage);
+    offIcon = QPixmap::fromImage(smallOffImage);
+    iconHeight = onIcon.height();
+}
 
 /*private*/ void BlockTableAction::updateSpeedList() {
     speedList.remove(speedList.indexOf(defaultBlockSpeedText));
