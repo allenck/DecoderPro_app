@@ -14,6 +14,26 @@ class LIBPR3SHARED_EXPORT LnCommandStationType : public QObject
 {
     Q_OBJECT
 public:
+    /*protected*/ enum ReadsFromServiceModeTrack {
+        NO_SVC_MODE_READS, CAN_READ_ON_SVC_TRACK
+    };
+
+    /*protected*/ enum ProgDepowersTrack {
+        TRACK_OFF_WHEN_PROGRAMMING, TRACK_ALIVE_WHEN_PROGRAMMING
+    };
+
+    /*protected*/ enum IdleSupport {
+        NO_OPC_IDLE_SUPPORT, SUPPORTS_OPC_IDLE
+    };
+
+    /*protected*/ enum MultiMeterSupport {
+        NO_MULTIMETER_SUPPORT, SUPPORTS_MULTIMETER_FUNCTION
+    };
+
+    /*protected*/ enum LocoResetSupport {
+        NO_LOCO_RESET_SUPPORT, SUPPORTS_LOCO_RESET_FUNCTION
+    };
+public:
     enum LnCommandStationTypes
     {
      COMMAND_STATION_UNKNOWN = -1,
@@ -23,6 +43,7 @@ public:
      COMMAND_STATION_DCS210, //      ("DCS210 (Evolution Command Station)", true, false, "LnThrottleManager", "SlotManager", true, true), // NOI18N
      COMMAND_STATION_DCS050,//      ("DCS50 (Zephyr)",              true,   false,  "LnThrottleManager",    "SlotManager"),  // NOI18N
      COMMAND_STATION_DCS051,//      ("DCS51 (Zephyr Xtra)",         true,   false,  "LnThrottleManager",    "SlotManager"),  // NOI18N
+     COMMAND_STATION_DCS052,
      COMMAND_STATION_DB150,//       ("DB150 (Empire Builder)",      false,  true,   "LnThrottleManager",    "SlotManager"),  // NOI18N
      COMMAND_STATION_LBPS,//        ("LocoBuffer (PS)",             true,   false,  "LnThrottleManager",    "SlotManager"),  // NOI18N
      COMMAND_STATION_MM,//          ("Mix-Master",                  false,  true,   "LnThrottleManager",    "SlotManager"),  // NOI18N
@@ -32,10 +53,17 @@ public:
 
      COMMAND_STATION_PR3_ALONE,//   ("PR3 standalone programmer",   true,   false,  "LnThrottleManager",    "SlotManager"),  // NOI18N
      COMMAND_STATION_PR2_ALONE, //"PR2 standalone programmer", true, false, "LnThrottleManager", "SlotManager"), // NOI18N
-     COMMAND_STATION_STANDALONE  //("Stand-alone LocoNet",         false,  false,  "LnThrottleManager",    "SlotManager");  // NOI18N
+     COMMAND_STATION_STANDALONE,  //("Stand-alone LocoNet",         false,  false,  "LnThrottleManager",    "SlotManager");  // NOI18N
+     COMMAND_STATION_PR4_ALONE,    //("PR4 standalone programmer,
+     COMMAND_STATION_USB_DCS240_ALONE,
+     COMMAND_STATION_USB_DCS52_ALONE
     };
     //explicit LnCommandStationType(QObject *parent = 0);
-    LnCommandStationType(QString name, bool canRead, bool progEndOp, bool supportsIdle, bool supportsMultiMeter, QString throttleClassName, QString slotManagerClassName, LnCommandStationTypes type = COMMAND_STATION_UNKNOWN, QObject *parent = 0);
+    LnCommandStationType(LnCommandStationTypes type, QString name, ReadsFromServiceModeTrack canRead,
+            ProgDepowersTrack progEndOp,
+            QString throttleClassName, QString slotManagerClassName,
+            IdleSupport supportsIdle, MultiMeterSupport supportMultiMeter,
+            LocoResetSupport supportsLocoReset);
     /*public*/ QString getName();
     /*public*/ bool getCanRead();
     /*public*/ QString toString();
@@ -48,6 +76,15 @@ public:
     /*public*/ bool getImplementsIdle();
     /*public*/ bool getSupportsMultimeter();
     /*public*/ LnCommandStationTypes getType();
+    /**
+     * Returns whether CS supports a Loco Reset feature.
+     *
+     * For this purpose "supports" means that the command station will send
+     * OPC_RE_LOCO_RESET when it clears all slots.
+     *
+     * @return true if command station supports OPC_RE_LOCO_RESET message
+     */
+    /*public*/ bool getSupportsLocoReset();
 
 signals:
 
@@ -63,7 +100,9 @@ private:
     Logger* log;
     LnCommandStationTypes type;
     static QList<LnCommandStationType*> values;
-
+    LocoResetSupport supportsLocoReset;
+    friend class HexFileServer;
+    friend class LoconetSystemConnectionMemoTest;
 };
 
 #endif // LNCOMMANDSTATIONTYPE_H

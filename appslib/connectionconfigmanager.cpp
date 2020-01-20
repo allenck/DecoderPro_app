@@ -118,6 +118,8 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
        prefix = "Sprog";
       else if(sl.at(3) == "sprogCS")
        prefix = "SprogCS";
+      else if(sl.at(3) == "pr3")
+       prefix = "PR4";
       newClassName = prefix+"ConnectionConfigXml";
       if(!prefix.isEmpty())
         className = className.replace("ConnectionConfigXml", newClassName);

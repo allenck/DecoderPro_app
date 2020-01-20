@@ -64,6 +64,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -1156,7 +1157,7 @@ virtual void setSystemPrefix(QString  systemPrefix);
 virtual void setUserName(QString  userName);
 virtual bool  status();
 virtual void timerEvent(QTimerEvent*  event);
-virtual QVector<int >  validBaudNumber();
+virtual QVector<int >  validBaudNumbers();
 virtual QStringList  validBaudRates();
 
   const QMetaObject* metaObject() const;
@@ -1181,7 +1182,7 @@ inline void py_q_recover() { AbstractSerialPortController::recover(); }
 inline void py_q_resetupConnection() { AbstractSerialPortController::resetupConnection(); }
 inline void py_q_setDisabled(bool  disabled) { AbstractSerialPortController::setDisabled(disabled); }
 inline void py_q_setPort(QString  port) { AbstractSerialPortController::setPort(port); }
-inline QVector<int >  py_q_validBaudNumber() { return AbstractSerialPortController::validBaudNumber(); }
+inline QVector<int >  py_q_validBaudNumbers() { return AbstractSerialPortController::validBaudNumbers(); }
 inline QStringList  py_q_validBaudRates() { return AbstractSerialPortController::validBaudRates(); }
 };
 
@@ -1208,8 +1209,8 @@ void delete_AbstractSerialPortController(AbstractSerialPortController* obj) { de
    void py_q_resetupConnection(AbstractSerialPortController* theWrappedObject){  (((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->py_q_resetupConnection());}
    void py_q_setDisabled(AbstractSerialPortController* theWrappedObject, bool  disabled){  (((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->py_q_setDisabled(disabled));}
    void py_q_setPort(AbstractSerialPortController* theWrappedObject, QString  port){  (((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->py_q_setPort(port));}
-   QVector<int >  validBaudNumber(AbstractSerialPortController* theWrappedObject);
-   QVector<int >  py_q_validBaudNumber(AbstractSerialPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->py_q_validBaudNumber());}
+   QVector<int >  validBaudNumbers(AbstractSerialPortController* theWrappedObject);
+   QVector<int >  py_q_validBaudNumbers(AbstractSerialPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->py_q_validBaudNumbers());}
    QStringList  py_q_validBaudRates(AbstractSerialPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->py_q_validBaudRates());}
 };
 
@@ -3176,6 +3177,7 @@ virtual void paintEvent(QPaintEvent*  event);
 virtual void paintTargetPanel(QGraphicsScene*  g);
 virtual void putItem(Positionable*  l);
 virtual QPaintDevice*  redirected(QPoint*  offset) const;
+virtual void redrawPanel();
 virtual void repaint();
 virtual void resizeEvent(QResizeEvent*  e);
 virtual void setAllEditable(bool  edit);
@@ -3303,6 +3305,7 @@ bool  py_get__debug(ControlPanelEditor* theWrappedObject){ return theWrappedObje
 class PythonQtShell_DccLocoAddress : public DccLocoAddress
 {
 public:
+    PythonQtShell_DccLocoAddress(QObject*  parent = 0):DccLocoAddress(parent),_wrapper(NULL) {}
     PythonQtShell_DccLocoAddress(const DccLocoAddress&  l, QObject*  parent = 0):DccLocoAddress(l, parent),_wrapper(NULL) {}
     PythonQtShell_DccLocoAddress(int  number, LocoAddress::Protocol  protocol, QObject*  parent = 0):DccLocoAddress(number, protocol, parent),_wrapper(NULL) {}
     PythonQtShell_DccLocoAddress(int  number, bool  isLong, QObject*  parent = 0):DccLocoAddress(number, isLong, parent),_wrapper(NULL) {}
@@ -3338,6 +3341,7 @@ class PythonQtWrapper_DccLocoAddress : public QObject
 { Q_OBJECT
 public:
 public slots:
+DccLocoAddress* new_DccLocoAddress(QObject*  parent = 0);
 DccLocoAddress* new_DccLocoAddress(const DccLocoAddress&  l, QObject*  parent = 0);
 DccLocoAddress* new_DccLocoAddress(int  number, LocoAddress::Protocol  protocol, QObject*  parent = 0);
 DccLocoAddress* new_DccLocoAddress(int  number, bool  isLong, QObject*  parent = 0);

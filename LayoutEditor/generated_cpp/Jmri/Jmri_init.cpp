@@ -60,7 +60,7 @@ PythonQt::priv()->registerClass(&LayoutTurnout::staticMetaObject, "Jmri", Python
 PythonQt::priv()->registerClass(&Light::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Light>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Light>, module, 0);
 PythonQt::priv()->registerClass(&LightManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LightManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LightManager>, module, 0);
 PythonQt::priv()->registerCPPClass("ListSelectionModel", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_ListSelectionModel>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_ListSelectionModel>, module, 0);
-PythonQt::priv()->registerClass(&LnCommandStationType::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LnCommandStationType>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LnCommandStationType>, module, 0);
+PythonQt::priv()->registerClass(&LnCommandStationType::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LnCommandStationType>, NULL, module, 0);
 PythonQt::priv()->registerClass(&LnPacketizer::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LnPacketizer>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LnPacketizer>, module, 0);
 PythonQt::priv()->registerClass(&LnPortController::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LnPortController>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LnPortController>, module, 0);
 PythonQt::priv()->registerClass(&LnPowerManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LnPowerManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LnPowerManager>, module, 0);

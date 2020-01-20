@@ -61,6 +61,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -1384,6 +1385,7 @@ virtual void paintEvent(QPaintEvent*  event);
 virtual void paintTargetPanel(QGraphicsScene*  g);
 virtual void putItem(Positionable*  l);
 virtual QPaintDevice*  redirected(QPoint*  offset) const;
+virtual void redrawPanel();
 virtual void repaint();
 virtual void resizeEvent(QResizeEvent*  e);
 virtual void setAllEditable(bool  state);

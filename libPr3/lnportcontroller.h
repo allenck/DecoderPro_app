@@ -45,6 +45,7 @@ public:
  void setCommandStationType(LnCommandStationType* value);
  /*public*/ void setTurnoutHandling(QString value) ;
  /*public*/  void setDisabled(bool disabled) ;
+ /*public*/ void setTranspondingAvailable(QString value);
 
 signals:
     

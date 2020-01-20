@@ -47,6 +47,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -11745,12 +11746,12 @@ if (_wrapper) {
 }
   AbstractSerialPortController::timerEvent(event0);
 }
-QVector<int >  PythonQtShell_AbstractSerialPortController::validBaudNumber()
+QVector<int >  PythonQtShell_AbstractSerialPortController::validBaudNumbers()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
   if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("validBaudNumber");
+    static PyObject* name = PyString_FromString("validBaudNumbers");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
       static const char* argumentList[] ={"QVector<int >"};
@@ -11762,7 +11763,7 @@ if (_wrapper) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
         if (args[0]!=&returnValue) {
           if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("validBaudNumber", methodInfo, result);
+            PythonQt::priv()->handleVirtualOverloadReturnError("validBaudNumbers", methodInfo, result);
           } else {
             returnValue = *((QVector<int >*)args[0]);
           }
@@ -11776,7 +11777,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractSerialPortController::validBaudNumber();
+  return AbstractSerialPortController::validBaudNumbers();
 }
 QStringList  PythonQtShell_AbstractSerialPortController::validBaudRates()
 {
@@ -11848,9 +11849,9 @@ void PythonQtWrapper_AbstractSerialPortController::resetupConnection(AbstractSer
   ( ((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->promoted_resetupConnection());
 }
 
-QVector<int >  PythonQtWrapper_AbstractSerialPortController::validBaudNumber(AbstractSerialPortController* theWrappedObject)
+QVector<int >  PythonQtWrapper_AbstractSerialPortController::validBaudNumbers(AbstractSerialPortController* theWrappedObject)
 {
-  return ( theWrappedObject->validBaudNumber());
+  return ( theWrappedObject->validBaudNumbers());
 }
 
 
@@ -32912,6 +32913,28 @@ if (_wrapper) {
 }
   return ControlPanelEditor::redirected(offset0);
 }
+void PythonQtShell_ControlPanelEditor::redrawPanel()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("redrawPanel");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::redrawPanel();
+}
 void PythonQtShell_ControlPanelEditor::repaint()
 {
 if (_wrapper) {
@@ -33936,6 +33959,10 @@ if (_wrapper) {
 }
   return DccLocoAddress::toString();
 }
+DccLocoAddress* PythonQtWrapper_DccLocoAddress::new_DccLocoAddress(QObject*  parent)
+{ 
+return new PythonQtShell_DccLocoAddress(parent); }
+
 DccLocoAddress* PythonQtWrapper_DccLocoAddress::new_DccLocoAddress(const DccLocoAddress&  l, QObject*  parent)
 { 
 return new PythonQtShell_DccLocoAddress(l, parent); }

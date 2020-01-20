@@ -45,7 +45,7 @@ public:
   * This method need not be reimplemented unless the subclass is using
   * currentBaudNumber, which requires it.
   */
-    /*public*/ virtual QVector<int> validBaudNumber();
+    /*public*/ virtual QVector<int> validBaudNumbers();
  /**
   * Convert a baud rate string to a number.
   *

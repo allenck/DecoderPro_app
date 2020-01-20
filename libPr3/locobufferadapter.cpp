@@ -401,9 +401,14 @@ QSerialPort* LocoBufferAdapter::getSerialPort()
  * to change the arrays of speeds.
  */
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP") // OK to expose array instead of copy until Java 1.6
-/*public*/ QVector<int> LocoBufferAdapter::validBaudNumber()
+/*public*/ QVector<int> LocoBufferAdapter::validBaudNumbers()
 {
  return validSpeedValues;
+}
+
+//@Override
+/*public*/ int LocoBufferAdapter::defaultBaudIndex() {
+    return 0;
 }
 
 /*public*/ void LocoBufferAdapter::dispose()

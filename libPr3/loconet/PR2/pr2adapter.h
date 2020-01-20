@@ -8,7 +8,7 @@ public:
  PR2Adapter(QObject* parent = nullptr);
  /*public*/ void configure();
  /*public*/ QStringList validBaudRates();
- /*public*/ QVector<int> validBaudNumber();
+ /*public*/ QVector<int> validBaudNumbers();
  /*public*/ QStringList commandStationOptions();
 
 private:

@@ -271,7 +271,7 @@ QString AbstractSerialPortController::getOptionState(QString option)
 QStringList AbstractSerialPortController::validBaudRates()
 {
  QStringList list;
- foreach(int rate, validBaudNumber())
+ foreach(int rate, validBaudNumbers())
   list.append(QString("%1").arg(rate));
  return list;
 }
@@ -283,7 +283,7 @@ QStringList AbstractSerialPortController::validBaudRates()
  * This method need not be reimplemented unless the subclass is using
  * currentBaudNumber, which requires it.
  */
-/*public*/ QVector<int> AbstractSerialPortController::validBaudNumber() {
+/*public*/ QVector<int> AbstractSerialPortController::validBaudNumbers() {
     log->error("default validBaudNumber implementation should not be used");
 //TODO:    new Exception().printStackTrace();
     return QVector<int>();
@@ -297,7 +297,7 @@ QStringList AbstractSerialPortController::validBaudRates()
  */
 /*public*/ int AbstractSerialPortController::currentBaudNumber(QString currentBaudRate) {
     QStringList rates = validBaudRates();
-    QVector<int> numbers = validBaudNumber();
+    QVector<int> numbers = validBaudNumbers();
 
     // return if arrays invalid
     if (numbers.isEmpty()) {

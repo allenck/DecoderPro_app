@@ -15,17 +15,20 @@ LnPortController::LnPortController(LocoNetSystemConnectionMemo* connectionMemo, 
  mTurnoutExtraSpace = false;
 
  commandStationNames << "DCS100 (Chief)"<<
-                        "DCS200"<<
+                        "DCS200"<<  "DCS210" << "DCS240"
                         "DCS50 (Zephyr)"<<
-                        "DCS51 (Zephyr Xtra)"<<
+                        "DCS51 (Zephyr Xtra)"<< "DCS52 (Zephyr Xpress)"<<
                         "DB150 (Empire Builder)"<<
                         "Intellibox"<<
                         "LocoBuffer (PS)"<<
                         "Mix-Master";
  commandStationTypes .append(LnCommandStationType::getByType( LnCommandStationType::COMMAND_STATION_DCS100));
  commandStationTypes .append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS200));
+ commandStationTypes .append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS210));
+ commandStationTypes .append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS240));
  commandStationTypes .append(LnCommandStationType::getByType( LnCommandStationType::COMMAND_STATION_DCS050));
  commandStationTypes .append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS051));
+ commandStationTypes .append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS052));
  commandStationTypes .append(LnCommandStationType::getByType( LnCommandStationType::COMMAND_STATION_DB150));
  commandStationTypes .append(LnCommandStationType::getByType( LnCommandStationType::COMMAND_STATION_IBX_TYPE_1));
  commandStationTypes .append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_IBX_TYPE_2));
@@ -105,6 +108,13 @@ bool LnPortController::okToSend()
   return true;
 
  }
+
+/*public*/ void LnPortController::setTranspondingAvailable(QString value) {
+    // default (most common state) is off, so just check for Yes
+    mTranspondingAvailable = (value ==("Yes") || value==(tr("Yes")));
+    log->debug(tr("transponding available: %1").arg(mTranspondingAvailable?"true":"false")); // NOI18N
+}
+
  //@Override
  /*public*/ SystemConnectionMemo* LnPortController::getSystemConnectionMemo()
  {

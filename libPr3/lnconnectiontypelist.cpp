@@ -32,6 +32,6 @@ LNConnectionTypeList::LNConnectionTypeList(QObject *parent) :
      QStringList list;
      list << "Pr3ConnectionConfig" << "LocobufferConnectionConfig"
           << "LocobufferUsbConnectionConfig" << "HexFileConnectionConfig"
-          << "LnOverTcpConnectionConfig" << "Pr2ConnectionConfig";
+          << "LnOverTcpConnectionConfig" << "Pr2ConnectionConfig" << "PR4ConnectionConfig";
      return list;
     }

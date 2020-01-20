@@ -224,7 +224,7 @@
  * {@inheritDoc}
  */
 //@Overide
-/*public*/ QVector<int> validBaudNumbers() {
+/*public*/ QVector<int> LocoNetBluetoothAdapter::validBaudNumbers() {
     return QVector<int>();
 }
 

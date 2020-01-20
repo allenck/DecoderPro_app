@@ -6,6 +6,7 @@
 #include "activeflag.h"
 #include "debugprogrammermanager.h"
 #include "debugthrottlemanager.h"
+#include "lncommandstationtype.h"
 
 //HexFileServer::HexFileServer(QObject *parent) :
 //    QObject(parent)
@@ -51,7 +52,14 @@
     ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->setLnTrafficController(packets);
 
     // do the common manager config
-    LnCommandStationType* type = new LnCommandStationType("DCS100 (Chief)",true, false, true, false, "LnThrottleManager",    "SlotManager", LnCommandStationType::COMMAND_STATION_DCS100);
+    //LnCommandStationType* type = new LnCommandStationType("DCS100 (Chief)",true, false, true, false, "LnThrottleManager",    "SlotManager", LnCommandStationType::COMMAND_STATION_DCS100);
+    LnCommandStationType* type = new LnCommandStationType(LnCommandStationType::COMMAND_STATION_DCS100,"DCS100 (Chief)",  // NOI18N
+                                                          LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+                                                          LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+                                                          "LnThrottleManager", "SlotManager",  // NOI18N
+                                                          LnCommandStationType::IdleSupport::SUPPORTS_OPC_IDLE,
+                                                          LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+                                                          LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT);
     ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->configureCommandStation(type,   // full featured by default
             false, false, false);
     ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->configureManagers();

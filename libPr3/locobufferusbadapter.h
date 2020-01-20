@@ -20,7 +20,7 @@ public:
      * Get an array of valid baud rates as integers. This allows subclasses
      * to change the arrays of speeds.
      */
-    /*public*/ QVector<int> validBaudNumber();
+    /*public*/ QVector<int> validBaudNumbers();
   /*public*/ void  dispose();
 
 signals:

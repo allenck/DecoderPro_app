@@ -56,7 +56,7 @@ void LocoBufferUsbAdapter::configure()
  * Get an array of valid baud rates as integers. This allows subclasses
  * to change the arrays of speeds.
  */
-/*public*/ QVector<int> LocoBufferUsbAdapter::validBaudNumber() {
+/*public*/ QVector<int> LocoBufferUsbAdapter::validBaudNumbers() {
     //return new int[]{57600};
  QVector<int> list;
  list << 57600;

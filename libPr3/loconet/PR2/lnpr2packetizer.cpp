@@ -11,7 +11,8 @@
 
 //@SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", // NOI18N
 //        justification = "Only used during system initialization") // NOI18N
-/*public*/ LnPr2Packetizer::LnPr2Packetizer(QObject* parent) : LnPacketizer(new LocoNetSystemConnectionMemo(), parent) {
+/*public*/ LnPr2Packetizer::LnPr2Packetizer(QObject* parent)
+ : LnPacketizer(new LocoNetSystemConnectionMemo(), parent) {
     //super();
     //self = this;
     echo = true;

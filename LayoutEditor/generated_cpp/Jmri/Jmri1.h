@@ -80,6 +80,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -377,6 +378,7 @@ virtual void paintEvent(QPaintEvent*  event);
 virtual void paintTargetPanel(QGraphicsScene*  g);
 virtual void putItem(Positionable*  l);
 virtual QPaintDevice*  redirected(QPoint*  offset) const;
+virtual void redrawPanel();
 virtual void repaint();
 virtual void resizeEvent(QResizeEvent*  e);
 virtual void setAllEditable(bool  state);
@@ -477,6 +479,7 @@ inline void py_q_newPanelDefaults() { Editor::newPanelDefaults(); }
 inline void py_q_paint(QGraphicsScene*  g) { Editor::paint(g); }
 inline void py_q_paintTargetPanel(QGraphicsScene*  g) { Editor::paintTargetPanel(g); }
 inline void py_q_putItem(Positionable*  l) { Editor::putItem(l); }
+inline void py_q_redrawPanel() { Editor::redrawPanel(); }
 inline void py_q_repaint() { Editor::repaint(); }
 inline void py_q_setAllEditable(bool  state) { Editor::setAllEditable(state); }
 inline void py_q_setAllPositionable(bool  state) { Editor::setAllPositionable(state); }
@@ -557,6 +560,8 @@ void delete_Editor(Editor* obj) { delete obj; }
    void py_q_paintTargetPanel(Editor* theWrappedObject, QGraphicsScene*  g){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_paintTargetPanel(g));}
    void putItem(Editor* theWrappedObject, Positionable*  l);
    void py_q_putItem(Editor* theWrappedObject, Positionable*  l){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_putItem(l));}
+   void redrawPanel(Editor* theWrappedObject);
+   void py_q_redrawPanel(Editor* theWrappedObject){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_redrawPanel());}
    bool  removeFromContents(Editor* theWrappedObject, Positionable*  l);
    void removeFromTarget(Editor* theWrappedObject, Positionable*  l);
    void removeSelections(Editor* theWrappedObject, Positionable*  p);
@@ -1832,6 +1837,7 @@ virtual QPaintEngine*  paintEngine() const;
 virtual void paintEvent(QPaintEvent*  event);
 virtual void putItem(Positionable*  l);
 virtual QPaintDevice*  redirected(QPoint*  offset) const;
+virtual void redrawPanel();
 virtual void repaint();
 virtual void resizeEvent(QResizeEvent*  e);
 virtual void setAllEditable(bool  state);
@@ -1913,6 +1919,7 @@ inline void py_q_dispose() { LayoutEditor::dispose(); }
 inline QString  py_q_getClassName() { return LayoutEditor::getClassName(); }
 inline void py_q_newPanelDefaults() { LayoutEditor::newPanelDefaults(); }
 inline void py_q_putItem(Positionable*  l) { LayoutEditor::putItem(l); }
+inline void py_q_redrawPanel() { LayoutEditor::redrawPanel(); }
 inline void py_q_repaint() { LayoutEditor::repaint(); }
 inline void py_q_setAllEditable(bool  state) { LayoutEditor::setAllEditable(state); }
 inline void py_q_setAllPositionable(bool  state) { LayoutEditor::setAllPositionable(state); }
@@ -2027,7 +2034,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void paintTargetPanel(LayoutEditor* theWrappedObject, EditScene*  g2);
    QGraphicsView*  panel(LayoutEditor* theWrappedObject);
    void py_q_putItem(LayoutEditor* theWrappedObject, Positionable*  l){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_putItem(l));}
-   void redrawPanel(LayoutEditor* theWrappedObject);
+   void py_q_redrawPanel(LayoutEditor* theWrappedObject){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_redrawPanel());}
    bool  remove(LayoutEditor* theWrappedObject, QObject*  s);
    void removeBackground(LayoutEditor* theWrappedObject, PositionableLabel*  b);
    bool  removeFromContents(LayoutEditor* theWrappedObject, Positionable*  l);
@@ -2754,32 +2761,13 @@ void delete_ListSelectionModel(ListSelectionModel* obj) { delete obj; }
 
 
 
-class PythonQtShell_LnCommandStationType : public LnCommandStationType
-{
-public:
-    PythonQtShell_LnCommandStationType(QString  name, bool  canRead, bool  progEndOp, bool  supportsIdle, bool  supportsMultiMeter, QString  throttleClassName, QString  slotManagerClassName, LnCommandStationType::LnCommandStationTypes  type = LnCommandStationType::COMMAND_STATION_UNKNOWN, QObject*  parent = 0):LnCommandStationType(name, canRead, progEndOp, supportsIdle, supportsMultiMeter, throttleClassName, slotManagerClassName, type, parent),_wrapper(NULL) {}
-
-   ~PythonQtShell_LnCommandStationType();
-
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual void timerEvent(QTimerEvent*  event);
-
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
 class PythonQtWrapper_LnCommandStationType : public QObject
 { Q_OBJECT
 public:
 Q_ENUMS(LnCommandStationTypes )
 enum LnCommandStationTypes{
-  COMMAND_STATION_UNKNOWN = LnCommandStationType::COMMAND_STATION_UNKNOWN,   COMMAND_STATION_DCS100 = LnCommandStationType::COMMAND_STATION_DCS100,   COMMAND_STATION_DCS200 = LnCommandStationType::COMMAND_STATION_DCS200,   COMMAND_STATION_DCS240 = LnCommandStationType::COMMAND_STATION_DCS240,   COMMAND_STATION_DCS210 = LnCommandStationType::COMMAND_STATION_DCS210,   COMMAND_STATION_DCS050 = LnCommandStationType::COMMAND_STATION_DCS050,   COMMAND_STATION_DCS051 = LnCommandStationType::COMMAND_STATION_DCS051,   COMMAND_STATION_DB150 = LnCommandStationType::COMMAND_STATION_DB150,   COMMAND_STATION_LBPS = LnCommandStationType::COMMAND_STATION_LBPS,   COMMAND_STATION_MM = LnCommandStationType::COMMAND_STATION_MM,   COMMAND_STATION_IBX_TYPE_1 = LnCommandStationType::COMMAND_STATION_IBX_TYPE_1,   COMMAND_STATION_IBX_TYPE_2 = LnCommandStationType::COMMAND_STATION_IBX_TYPE_2,   COMMAND_STATION_LOCOCENTRAL = LnCommandStationType::COMMAND_STATION_LOCOCENTRAL,   COMMAND_STATION_PR3_ALONE = LnCommandStationType::COMMAND_STATION_PR3_ALONE,   COMMAND_STATION_PR2_ALONE = LnCommandStationType::COMMAND_STATION_PR2_ALONE,   COMMAND_STATION_STANDALONE = LnCommandStationType::COMMAND_STATION_STANDALONE};
+  COMMAND_STATION_UNKNOWN = LnCommandStationType::COMMAND_STATION_UNKNOWN,   COMMAND_STATION_DCS100 = LnCommandStationType::COMMAND_STATION_DCS100,   COMMAND_STATION_DCS200 = LnCommandStationType::COMMAND_STATION_DCS200,   COMMAND_STATION_DCS240 = LnCommandStationType::COMMAND_STATION_DCS240,   COMMAND_STATION_DCS210 = LnCommandStationType::COMMAND_STATION_DCS210,   COMMAND_STATION_DCS050 = LnCommandStationType::COMMAND_STATION_DCS050,   COMMAND_STATION_DCS051 = LnCommandStationType::COMMAND_STATION_DCS051,   COMMAND_STATION_DCS052 = LnCommandStationType::COMMAND_STATION_DCS052,   COMMAND_STATION_DB150 = LnCommandStationType::COMMAND_STATION_DB150,   COMMAND_STATION_LBPS = LnCommandStationType::COMMAND_STATION_LBPS,   COMMAND_STATION_MM = LnCommandStationType::COMMAND_STATION_MM,   COMMAND_STATION_IBX_TYPE_1 = LnCommandStationType::COMMAND_STATION_IBX_TYPE_1,   COMMAND_STATION_IBX_TYPE_2 = LnCommandStationType::COMMAND_STATION_IBX_TYPE_2,   COMMAND_STATION_LOCOCENTRAL = LnCommandStationType::COMMAND_STATION_LOCOCENTRAL,   COMMAND_STATION_PR3_ALONE = LnCommandStationType::COMMAND_STATION_PR3_ALONE,   COMMAND_STATION_PR2_ALONE = LnCommandStationType::COMMAND_STATION_PR2_ALONE,   COMMAND_STATION_STANDALONE = LnCommandStationType::COMMAND_STATION_STANDALONE,   COMMAND_STATION_PR4_ALONE = LnCommandStationType::COMMAND_STATION_PR4_ALONE,   COMMAND_STATION_USB_DCS240_ALONE = LnCommandStationType::COMMAND_STATION_USB_DCS240_ALONE,   COMMAND_STATION_USB_DCS52_ALONE = LnCommandStationType::COMMAND_STATION_USB_DCS52_ALONE};
 public slots:
-LnCommandStationType* new_LnCommandStationType(QString  name, bool  canRead, bool  progEndOp, bool  supportsIdle, bool  supportsMultiMeter, QString  throttleClassName, QString  slotManagerClassName, LnCommandStationType::LnCommandStationTypes  type = LnCommandStationType::COMMAND_STATION_UNKNOWN, QObject*  parent = 0);
 void delete_LnCommandStationType(LnCommandStationType* obj) { delete obj; } 
    QStringList  static_LnCommandStationType_commandStationNames();
    LnCommandStationType*  static_LnCommandStationType_getByName(QString  name);
@@ -2788,6 +2776,7 @@ void delete_LnCommandStationType(LnCommandStationType* obj) { delete obj; }
    bool  getImplementsIdle(LnCommandStationType* theWrappedObject);
    QString  getName(LnCommandStationType* theWrappedObject);
    bool  getProgPowersOff(LnCommandStationType* theWrappedObject);
+   bool  getSupportsLocoReset(LnCommandStationType* theWrappedObject);
    bool  getSupportsMultimeter(LnCommandStationType* theWrappedObject);
    ThrottleManager*  getThrottleManager(LnCommandStationType* theWrappedObject, LocoNetSystemConnectionMemo*  memo);
    LnCommandStationType::LnCommandStationTypes  getType(LnCommandStationType* theWrappedObject);
@@ -2922,7 +2911,7 @@ virtual void setSystemPrefix(QString  systemPrefix);
 virtual void setUserName(QString  userName);
 virtual bool  status();
 virtual void timerEvent(QTimerEvent*  event);
-virtual QVector<int >  validBaudNumber();
+virtual QVector<int >  validBaudNumbers();
 virtual QStringList  validBaudRates();
 
   const QMetaObject* metaObject() const;
@@ -2952,6 +2941,7 @@ void delete_LnPortController(LnPortController* obj) { delete obj; }
    void setCommandStationType(LnPortController* theWrappedObject, LnCommandStationType*  value);
    void setCommandStationType(LnPortController* theWrappedObject, QString  name);
    void py_q_setDisabled(LnPortController* theWrappedObject, bool  disabled){  (((PythonQtPublicPromoter_LnPortController*)theWrappedObject)->py_q_setDisabled(disabled));}
+   void setTranspondingAvailable(LnPortController* theWrappedObject, QString  value);
    void setTurnoutHandling(LnPortController* theWrappedObject, QString  value);
    bool  py_q_status(LnPortController* theWrappedObject){  return (((PythonQtPublicPromoter_LnPortController*)theWrappedObject)->py_q_status());}
 };

@@ -48,14 +48,16 @@ public:
      * to change the arrays of speeds.
      */
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP") // OK to expose array instead of copy until Java 1.6
-    /*public*/  QVector<int> validBaudNumber();
-    /*public*/ SystemConnectionMemo* getSystemConnectionMemo() { return adaptermemo; }
+    /*public*/  QVector<int> validBaudNumbers();
+    ///*public*/ SystemConnectionMemo* getSystemConnectionMemo() { return adaptermemo; }
 
     /*public*/  void dispose();
     SerialPort* activeSerialPort;
      LnPacketizer* packetizer();
     LnPacketizer* packets;
     void sendLocoNetMessage(LocoNetMessage* m);
+    virtual /*public*/ int defaultBaudIndex();
+
 
 public slots:
     void dataReady();

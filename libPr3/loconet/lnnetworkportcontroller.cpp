@@ -28,16 +28,21 @@ AbstractNetworkPortController((SystemConnectionMemo*)connectionMemo, parent)
  commandStationType = NULL;
  mTurnoutNoRetry = false;
  mTurnoutExtraSpace = false;
+
  commandStationTypes = QList<LnCommandStationType*>();
  commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS100));
+ commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS240));
+ commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS210));
  commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS200));
  commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS050));
  commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS051));
+ commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DCS052));
  commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_DB150));
  commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_IBX_TYPE_1));
  commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_IBX_TYPE_2));
  commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_LBPS));
  commandStationTypes.append(LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_MM));
+
  setManufacturer(DCCManufacturerList::DIGITRAX);
  commandStationNames =  QStringList();
  int i = 0;

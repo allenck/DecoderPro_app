@@ -23,6 +23,7 @@
 #include "bufferedimage.h"
 #include "imageio.h"
 #include "file.h"
+#include <QPointer>
 
 BlockTableAction::BlockTableAction(QObject *parent) :
   AbstractTableAction(tr("Block Table"), parent)
@@ -708,8 +709,8 @@ void BlockTableAction::common()
  setColumnToHoldButton(table, EDITCOL);
  setColumnToHoldButton(table, DELETECOL);
 
- //InstanceManager::sensorManagerInstance().addPropertyChangeListener(this);
- connect(InstanceManager::sensorManagerInstance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ InstanceManager::sensorManagerInstance()->addPropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
+ //connect(InstanceManager::sensorManagerInstance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  BeanTableDataModel::configureTable(table);
 }
 

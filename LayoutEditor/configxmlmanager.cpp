@@ -53,6 +53,7 @@ ConfigXmlManager::ConfigXmlManager(QObject *parent) :
  configXmlMap.insert("jmri.jmrix.loconet.locobuffer.configurexml.ConnectionConfigXml", "LocobufferConnectionConfigXml");
  configXmlMap.insert("jmri.jmrix.loconet.pr3.configurexml.ConnectionConfigXml", "ConnectionConfigXml");
  configXmlMap.insert("jmri.jmrix.loconet.loconetovertcp.configurexml.ConnectionConfigXml", "LnOverTcpConnectionConfig");
+ configXmlMap.insert("jmri.jmrix.loconet.pr4.configurexml.ConnectionConfigXml", "PR4ConnectionConfigXml");
 
  //qRegisterMetaType<DefaultUserMessagePreferences>("DefaultUserMessagePreferences");
  prefsFile = new File("~/.jmri/defaultConfig.xml");
@@ -868,6 +869,8 @@ File userPrefsFile;*/
     prefix = "SprogCS";
    else if(sl.at(3) == "pr2")
     prefix = "Pr2";
+   else if(sl.at(3) == "pr4")
+    prefix = "PR4";
    else if(sl.at(3) == "networkdriver")
     prefix = "JMRIClient";
 
@@ -915,6 +918,8 @@ File userPrefsFile;*/
       prefix = "SprogCS";
       else if(sl.at(3) == "networkdriver")
       prefix = "JMRIClient";
+     else if(sl.at(3) == "pr4")
+      prefix = "PR4";
       QString newClassName = prefix+"ConnectionConfigXml";
       if(!prefix.isEmpty())
        classname = newClassName;

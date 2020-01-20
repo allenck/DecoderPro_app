@@ -21,9 +21,9 @@ void PR3Adapter::setSerialPort(SerialPort* activeSerialPort) throw(UnsupportedCo
 {
  // find the baud rate value, configure comm options
  int baud = 57600;  // default, but also defaulted in the initial value of selectedSpeed
- for (int i = 0; i<validBaudNumber().size(); i++ )
+ for (int i = 0; i<validBaudNumbers().size(); i++ )
   if (validBaudRates()[i]==(mBaudRate))
-   baud = validBaudNumber()[i];
+   baud = validBaudNumbers()[i];
   activeSerialPort->setSerialPortParams(baud, SerialPort::DATABITS_8, SerialPort::STOPBITS_1, SerialPort::PARITY_NONE);
 
   // set RTS high, DTR high - done early, so flow control can be configured after
@@ -51,7 +51,7 @@ void PR3Adapter::configure()
   // PR3 standalone case
   // connect to a packetizing traffic controller
   // that does echoing
-  packets = new LnPr2Packetizer();
+  packets = new LnPr2Packetizer((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo());
   packets->connectPort(this);
 
   // create memo
@@ -128,7 +128,7 @@ void PR3Adapter::configure()
  * Get an array of valid baud rates as integers. This allows subclasses
  * to change the arrays of speeds.
  */
-/*public*/ QVector<int> PR3Adapter::validBaudNumber() {
+/*public*/ QVector<int> PR3Adapter::validBaudNumbers() {
     QVector<int> l;
     l << 57600;
     return l;

@@ -312,6 +312,8 @@
 #include "optionsfile.h"
 #include "leblockcontentsiconxml.h"
 #include "lememoryiconxml.h"
+#include "Pr4/pr4connectionconfig.h"
+#include "Pr4/pr4connectionconfigxml.h"
 
 bool Metatypes::done = false;
 
@@ -638,6 +640,9 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<OptionsFile>("OptionsFile");
  qRegisterMetaType<LEBlockContentsIconXml>("LEBlockContentsIconXml");
  qRegisterMetaType<LEMemoryIconXml>("LEMemoryIconXml");
+ qRegisterMetaType<PR4ConnectionConfig>("PR4ConnectionConfig");
+ qRegisterMetaType<PR4ConnectionConfigXml>("PR4ConnectionConfigXml");
+
 
  Metatypes::done = true;
 }

@@ -942,7 +942,12 @@ SOURCES += \
     scwarrant.cpp \
     Roster/rosterframestartupactionfactory.cpp \
     rostergroupselector.cpp \
-    Roster/rostermediapane.cpp
+    Roster/rostermediapane.cpp \
+    loconet/Pr4/pr4adapter.cpp \
+    loconet/Pr4/pr4systemconnectionmemo.cpp \
+    loconet/Pr4/pr4selectpane.cpp \
+    loconet/Pr4/pr4connectionconfig.cpp \
+    loconet/Pr4/pr4connectionconfigxml.cpp
 
 
  !contains(FTDI, 1) {
@@ -1883,7 +1888,12 @@ HEADERS += \
     Signal/signals.h \
     scwarrant.h \
     Roster/rosterframestartupactionfactory.h \
-    Roster/rostermediapane.h
+    Roster/rostermediapane.h \
+    loconet/Pr4/pr4adapter.h \
+    loconet/Pr4/pr4systemconnectionmemo.h \
+    loconet/Pr4/pr4selectpane.h \
+    loconet/Pr4/pr4connectionconfig.h \
+    loconet/Pr4/pr4connectionconfigxml.h
 
 
  !contains(FTDI, 1) {
