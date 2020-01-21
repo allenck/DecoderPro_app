@@ -79,6 +79,8 @@ namespace Operations
 public:
   /*public*/ LocationPrintOptionFrame(PrintLocationsAction* pla);
   /*public*/ void initComponents();
+  /*public*/ QString getClassName();
+
 public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);
  };

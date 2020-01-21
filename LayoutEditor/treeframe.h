@@ -10,6 +10,7 @@ public:
  ~TreeFrame() {}
  TreeFrame(const TreeFrame&): JmriJFrame() {}
  /*public*/ void initComponents(); //throws Exception
+ /*public*/ QString getClassName();
 
 };
 Q_DECLARE_METATYPE(TreeFrame)

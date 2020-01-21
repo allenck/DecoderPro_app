@@ -17,6 +17,8 @@ public:
  /*public*/ void message(JMRIClientMessage* m);
  /*public*/ void reply(JMRIClientReply* r);
  /*public*/ void _connect(JMRIClientTrafficController* t);
+ /*public*/ QString getClassName();
+
 
 public slots:
  void sendButtonActionPerformed();

@@ -32,7 +32,11 @@ TreeFrame::TreeFrame(QWidget* parent) : JmriJFrame(parent)
     // add help menu
     addHelpMenu("package.jmri.jmrix.jinput.treecontrol.TreeFrame", true);
 
-    // pack for display
+    // pack for displaytree
     pack();
 }
 
+/*public*/ QString TreeFrame::getClassName()
+{
+ return "jmri.jmrix.jinput.treecontrol.TreeFrame";
+}

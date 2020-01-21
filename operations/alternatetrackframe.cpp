@@ -79,4 +79,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          }
      }
  }
+
+ /*public*/ QString AlternateTrackFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.tools.AlternateTrackFrame";
+ }
+
 }

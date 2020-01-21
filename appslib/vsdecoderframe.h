@@ -12,6 +12,7 @@ public:
  /*public*/ void initGUI();
  /*public*/ void windowClosing(QCloseEvent* e);
  /*public*/ QList<QMenu*> getMenus();
+ /*public*/ QString getClassName();
 
 signals:
 

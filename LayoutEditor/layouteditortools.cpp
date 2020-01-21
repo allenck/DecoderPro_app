@@ -615,7 +615,7 @@
  // Initialize if needed
  if (setSignalsFrame == nullptr)
  {
-  setSignalsFrame = new JmriJFrame(tr("Signals At Turnout"), false, true);
+  setSignalsFrame = new JmriJFrameX(tr("Signals At Turnout"), false, true);
   setSignalsFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtTurnout", true);
   setSignalsFrame->setLocation(70,30);
   //Container theContentPane = setSignalsFrame.getContentPane();
@@ -2412,7 +2412,7 @@ else if (throatDivergingHead==nullptr)
  // Initialize if needed
  if (setSignalsAtBoundaryFrame == nullptr)
  {
-  setSignalsAtBoundaryFrame = new JmriJFrame(tr("Set Signals at Block Boundary"), false, true );
+  setSignalsAtBoundaryFrame = new JmriJFrameX(tr("Set Signals at Block Boundary"), false, true );
   //setSignalsAtBoundaryFrame->layout()->addWidgetHelpMenu("package.jmri.jmrit.display.SetSignalsAtBoundary", true);
   //setSignalsAtBoundaryFrame->setLocation(70,30);
   QWidget* theContentPane = new QWidget(setSignalsAtBoundaryFrame);
@@ -3023,7 +3023,7 @@ void LayoutEditorTools::changeSignalAtBoundaryIcon_clicked() // SLOT[]
  // Initialize if needed
  if (setSignalsAtXoverFrame == nullptr)
  {
-  setSignalsAtXoverFrame = new JmriJFrame(tr("Set Signals at Crossover"), false, true);
+  setSignalsAtXoverFrame = new JmriJFrameX(tr("Set Signals at Crossover"), false, true);
 //        setSignalsAtXoverFrame->layout()->addWidgetHelpMenu("package.jmri.jmrit.display.SetSignalsAtXoverTurnout", true);
 //        setSignalsAtXoverFrame->setLocation(70,30);
   QFont font;
@@ -4205,7 +4205,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
     // Initialize if needed
     if (setSignalsAtXingFrame == nullptr)
     {
-        setSignalsAtXingFrame = new JmriJFrame( tr("SignalsAtLevelXing"), false, true );
+        setSignalsAtXingFrame = new JmriJFrameX( tr("SignalsAtLevelXing"), false, true );
         setSignalsAtXingFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtLevelXing", true);
         setSignalsAtXingFrame->setLocation(70,30);
 //        Container theContentPane = setSignalsAtXingFrame.getContentPane();
@@ -5036,7 +5036,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
  // Initialize if needed
  if (setSignalsAtTToTFrame == nullptr)
  {
-     setSignalsAtTToTFrame = new JmriJFrame( tr("SignalsAtTToTTurnout"), false, true );
+     setSignalsAtTToTFrame = new JmriJFrameX( tr("SignalsAtTToTTurnout"), false, true );
      setSignalsAtTToTFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtTToTTurnout", true);
      setSignalsAtTToTFrame->setLocation(70,30);
      QWidget* theContentPane = setSignalsAtTToTFrame->getContentPane();
@@ -6636,7 +6636,7 @@ signalFrame->setVisible(true);
     }
     // Initialize if needed
     if (setSignalsAt3WayFrame == nullptr) {
-        setSignalsAt3WayFrame = new JmriJFrame( tr("SignalsAt3WayTurnout"), false, true );
+        setSignalsAt3WayFrame = new JmriJFrameX( tr("SignalsAt3WayTurnout"), false, true );
         setSignalsAt3WayFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAt3WayTurnout", true);
         setSignalsAt3WayFrame->setLocation(70,30);
         QWidget* theContentPane = setSignalsAt3WayFrame->getContentPane();
@@ -7953,7 +7953,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
   westBoundSensor = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
   eastBoundSensor = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
 
-  setSensorsAtBoundaryFrame = new JmriJFrame( tr("Set Sensors at Block Boundary"), false, true );
+  setSensorsAtBoundaryFrame = new JmriJFrameX( tr("Set Sensors at Block Boundary"), false, true );
   setSensorsAtBoundaryFrame->addHelpMenu("package.jmri.jmrit.display.SetSensorsAtBoundary", true);
   setSensorsAtBoundaryFrame->setLocation(70,30);
 //  if(setSensorsAtBoundaryFrame->centralWidget() == nullptr)
@@ -8547,7 +8547,7 @@ void LayoutEditorTools::setBoundarySensor(Sensor* newSensor, Sensor* currSensor,
  {
   eastSignalMast = new BeanDetails("Signal Mast", (Manager*)InstanceManager::getDefault("SignalMastManager"));
   westSignalMast = new BeanDetails("Signal Mast", (Manager*)InstanceManager::getDefault("SignalMastManager"));
-  setSignalMastsAtBoundaryFrame = new JmriJFrame( tr("Set Signal Masts at Block Boundary"), false, true );
+  setSignalMastsAtBoundaryFrame = new JmriJFrameX( tr("Set Signal Masts at Block Boundary"), false, true );
   setSignalMastsAtBoundaryFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalMastsAtBoundary", true);
   setSignalMastsAtBoundaryFrame->setLocation(70,30);
   //QWidget* theContentPane = setSignalMastsAtBoundaryFrame->getContentPane();
@@ -9779,7 +9779,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
     }
     // Initialize if needed
     if (signalMastsJmriFrame == nullptr) {
-        signalMastsJmriFrame = new JmriJFrame(tr("Set Signal Masts at Turnout"), false, true);
+        signalMastsJmriFrame = new JmriJFrameX(tr("Set Signal Masts at Turnout"), false, true);
         signalMastsJmriFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalMastsAtTurnout", true);
 //        signalMastsJmriFrame->setLocation(70,30);
         QWidget* theContentPane = new QWidget();
@@ -10383,7 +10383,7 @@ return;
   slipSignalMastC = new BeanDetails("Signal Mast",(Manager*) InstanceManager::getDefault("SignalMastManager"));
   slipSignalMastD = new BeanDetails("Signal Mast", (Manager*) InstanceManager::getDefault("SignalMastManager"));
 
-  signalMastsAtSlipFrame = new JmriJFrame( tr("Set Signal Masts at a Slip"), false, true );
+  signalMastsAtSlipFrame = new JmriJFrameX( tr("Set Signal Masts at a Slip"), false, true );
   signalMastsAtSlipFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtLayoutSlip", true);
   signalMastsAtSlipFrame->setLocation(70,30);
   //QWidget* theContentPane = signalMastsAtSlipFrame->getContentPane();
@@ -10897,7 +10897,7 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
   xingSignalMastC = new BeanDetails("Signal Mast",(Manager*) InstanceManager::getDefault("SignalMastManager"));
   xingSignalMastD = new BeanDetails("Signal Mast",(Manager*) InstanceManager::getDefault("SignalMastManager"));
 
-  signalMastsAtXingFrame = new JmriJFrame( tr("SignalMastsAtLevelXing"), false, true );
+  signalMastsAtXingFrame = new JmriJFrameX( tr("SignalMastsAtLevelXing"), false, true );
   signalMastsAtXingFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtLevelXing", true);
   signalMastsAtXingFrame->setLocation(70,30);
   QWidget* theContentPane = new QWidget;
@@ -11533,7 +11533,7 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
     }
     // Initialize if needed
     if (setSensorsFrame == nullptr) {
-        setSensorsFrame = new JmriJFrame(tr("Set Sensors at Turnout") ,false,true);
+        setSensorsFrame = new JmriJFrameX(tr("Set Sensors at Turnout") ,false,true);
 //        setSensorsFrame->layout()->addWidgetHelpMenu("package.jmri.jmrit.display.SetSensorsAtTurnout", true);
 //        setSensorsFrame->setLocation(70,30);
         QWidget* theContentPane = new QWidget();
@@ -12068,7 +12068,7 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
  }
  // Initialize if needed
  if (sensorsAtXingFrame == nullptr)
-  sensorsAtXingFrame = new JmriJFrame( tr("Set Sensors at Level Crossing"), false, true );
+  sensorsAtXingFrame = new JmriJFrameX( tr("Set Sensors at Level Crossing"), false, true );
 
   sensorsAtXingFrame->addHelpMenu("package.jmri.jmrit.display.SetSensorsAtLevelXing", true);
   sensorsAtXingFrame->setLocation(70,30);
@@ -12680,7 +12680,7 @@ return true;
  // Initialize if needed
  if (sensorsAtSlipFrame == nullptr)
  {
-  sensorsAtSlipFrame = new JmriJFrame( tr("Set Sensors at a Slip"), false, true );
+  sensorsAtSlipFrame = new JmriJFrameX( tr("Set Sensors at a Slip"), false, true );
   sensorsAtSlipFrame->addHelpMenu("package.jmri.jmrit.display.SetSensorsAtLevelSlip", true);
   sensorsAtSlipFrame->setLocation(70,30);
 //     Container theContentPane = sensorsAtSlipFrame.getContentPane();
@@ -13345,7 +13345,7 @@ QWidget* BeanDetails::addIconPanel()
  // Initialize if needed
  if (setSignalsAtSlipFrame == nullptr)
  {
-  setSignalsAtSlipFrame = new JmriJFrame( tr("Set Signals at a Slip"), false, true );
+  setSignalsAtSlipFrame = new JmriJFrameX( tr("Set Signals at a Slip"), false, true );
   setSignalsAtSlipFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtSlip", true);
   setSignalsAtSlipFrame->setLocation(70,30);
 //        Container theContentPane = setSignalsAtSlipFrame.getContentPane();

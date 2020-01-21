@@ -1431,8 +1431,8 @@
     entry.next();
     QDomElement window = doc.createElement("window");
     window.setAttribute("class", entry.key());
-    if(entry.key() == "LocoMonPane" && entry.value()->getLocation().x() ==0)
-     log->debug("x=0");
+//    if(entry.key() == "LocoMonPane" && entry.value()->getLocation().x() ==0)
+//     log->debug("x=0");
     if (entry.value()->saveLocation)
     {
      try

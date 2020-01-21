@@ -40,6 +40,7 @@ friend class WarrantTableAction;
 friend class TableFrame;
 friend class TrackerTableModel;
 };
+
 class TableFrame : public JmriJFrame
 {
  Q_OBJECT
@@ -57,34 +58,37 @@ class TableFrame : public JmriJFrame
 
 public:
 TableFrame();
-/*public*/ Tracker* addTracker(OBlock* block, QString name) ;
-void openPickList() ;
+ /*public*/ Tracker* addTracker(OBlock* block, QString name) ;
+ void openPickList() ;
 
-/*public*/ void mouseClicked(QMouseEvent* event) ;
-/*public*/ void mousePressed(QMouseEvent* event) ;
-/*public*/ void mouseEntered(QMouseEvent* event);
-/*public*/ void mouseExited(QMouseEvent* event);
-/*public*/ void mouseReleased(QMouseEvent* event);
-/*private*/ void setStatus(QString msg) ;
+ /*public*/ void mouseClicked(QMouseEvent* event) ;
+ /*public*/ void mousePressed(QMouseEvent* event) ;
+ /*public*/ void mouseEntered(QMouseEvent* event);
+ /*public*/ void mouseExited(QMouseEvent* event);
+ /*public*/ void mouseReleased(QMouseEvent* event);
+ /*public*/ QString getClassName();
+
 
 public slots:
-void on_doneButton_clicked();
-void on_refreshClicked();
-/*public*/ void propertyChange(PropertyChangeEvent* evt);
+ void on_doneButton_clicked();
+ void on_refreshClicked();
+ /*public*/ void propertyChange(PropertyChangeEvent* evt);
 
 private:
-/*private*/ void newTrackerDialog();
-/*private*/ QWidget* makeTrackerNamePanel();
-/*private*/ QWidget* makeDoneButtonPanel() ;
-/*private*/ bool doDoneAction() ;
-static bool nameInuse(QString name) ;
-/*private*/ void addBlockListeners(Tracker* tracker) ;
-/*private*/ void addBlockListener(OBlock* block, Tracker* tracker);
-/*private*/ void adjustBlockListeners(QList<OBlock*> oldRange, QList<OBlock*> newRange, Tracker* tracker) ;
-/*private*/ void removeBlockListeners(QList<OBlock*> range, Tracker* tracker);
-/*private*/ void removeBlockListener(OBlock* b, Tracker* tracker);
-/*private*/ void processTrackerStateChange(Tracker* tracker, OBlock* block, int state) ;
+ /*private*/ void newTrackerDialog();
+ /*private*/ QWidget* makeTrackerNamePanel();
+ /*private*/ QWidget* makeDoneButtonPanel() ;
+ /*private*/ bool doDoneAction() ;
+ static bool nameInuse(QString name) ;
+ /*private*/ void addBlockListeners(Tracker* tracker) ;
+ /*private*/ void addBlockListener(OBlock* block, Tracker* tracker);
+ /*private*/ void adjustBlockListeners(QList<OBlock*> oldRange, QList<OBlock*> newRange, Tracker* tracker) ;
+ /*private*/ void removeBlockListeners(QList<OBlock*> range, Tracker* tracker);
+ /*private*/ void removeBlockListener(OBlock* b, Tracker* tracker);
+ /*private*/ void processTrackerStateChange(Tracker* tracker, OBlock* block, int state) ;
  Logger* log;
+ /*private*/ void setStatus(QString msg) ;
+
 protected:
 /*protected*/ bool mouseClickedOnBlock(OBlock* block) ;
 static /*protected*/ QString blockInUse(OBlock* b) ;

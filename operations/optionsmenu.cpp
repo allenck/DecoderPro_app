@@ -118,7 +118,7 @@
 
 /*private*/ void OptionsMenu::optionWindowRequested() {
     if (optionsFrame == nullptr) {
-        optionsFrame = new JmriJFrame(tr("Dispatcher Options"), false, true);
+        optionsFrame = new JmriJFrameX(tr("Dispatcher Options"), false, true);
         optionsFrame->addHelpMenu("package.jmri.jmrit.dispatcher->Options", true);
         optionsPane = optionsFrame->getContentPane();
         QVBoxLayout* optionsPaneLayout;

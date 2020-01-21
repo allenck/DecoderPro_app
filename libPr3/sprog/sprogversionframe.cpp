@@ -44,5 +44,9 @@ using namespace Sprog;
     setVisible(false);
     dispose();
 }
+/*public*/ QString SprogVersionFrame::getClassName()
+{
+ return "jmri.jmrix.sprog.update.SprogVersionFrame";
+}
 
 /*private*/ /*final*/ /*static*/ Logger* SprogVersionFrame::log = LoggerFactory::getLogger("SprogVersionFrame");

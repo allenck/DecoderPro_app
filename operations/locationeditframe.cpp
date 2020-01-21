@@ -860,4 +860,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          updateCheckboxes();
      }
  }
+ /*public*/ QString LocationEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.LocationEditFrame";
+ }
+
 }

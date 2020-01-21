@@ -18,6 +18,8 @@ namespace Sprog
   QT_DEPRECATED static /*public*/ /*final*/ SprogSlotMonFrame* instance();
   /*public*/ void update();
   /*public*/ void updateStatus(QString a);
+  /*public*/ QString getClassName();
+
  public slots:
   /*public*/ void notifyMessage(SprogMessage* m);
   /*public*/ void notifyReply(SprogReply* m);

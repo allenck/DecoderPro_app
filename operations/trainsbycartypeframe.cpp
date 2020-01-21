@@ -1,4 +1,4 @@
-#include "trainsbycartypeframe.h"
+﻿#include "trainsbycartypeframe.h"
 #include "trainmanager.h"
 #include <QCheckBox>
 #include <QComboBox>
@@ -281,5 +281,11 @@ namespace Operations
          updateComboBox();
      }
  }
+
+ /*public*/ QString TrainsByCarTypeFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.trains.tools.TrainsByCarTypeFrame";
+ }
+
 }
 

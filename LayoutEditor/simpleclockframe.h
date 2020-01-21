@@ -19,6 +19,7 @@ public:
     explicit SimpleClockFrame(QWidget *parent = 0);
     ~SimpleClockFrame();
     /*public*/ void initComponents() throw (Exception);
+    /*public*/ QString getClassName();
 
 signals:
 

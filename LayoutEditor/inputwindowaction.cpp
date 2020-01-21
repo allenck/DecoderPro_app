@@ -65,7 +65,7 @@ void InputWindowAction::common()
 
 //    java.util.ResourceBundle rb = java.util.ResourceBundle.getBundle("jmri.jmrit.jython.JythonBundle");
 
- f = new JmriJFrame(tr("Script Entry"));
+ f = new JmriJFrameX(tr("Script Entry"));
  //f.getContentPane().setLayout(new javax.swing.BoxLayout(f.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
  QWidget* centralWidget = new QWidget;
  QBoxLayout* centralWidgetLayout = new QVBoxLayout();

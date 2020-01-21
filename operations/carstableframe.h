@@ -26,6 +26,7 @@ class RollingStock;
   /*public*/ CarsTableFrame(bool showAllCars, QString locationName, QString trackName, QWidget* parent= 0);
   /*public*/ QList<RollingStock*>* getSortByList();
   /*public*/ void radioButtonActionPerformed(QWidget* ae);
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);

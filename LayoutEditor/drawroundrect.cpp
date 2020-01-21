@@ -104,3 +104,7 @@
    setPositionableParams(pos);
 //	   pos.makeShape();
 }
+/*public*/ QString DrawRoundRect::getClassName()
+{
+ return "jmri.jmrit.display.controlPanelEditor.shape.DrawRoundRect";
+}

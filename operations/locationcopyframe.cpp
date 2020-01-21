@@ -264,4 +264,9 @@ namespace Operations
      }
  }
 
+ /*public*/ QString LocationCopyFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.tools.LocationCopyFrame";
+ }
+
 }

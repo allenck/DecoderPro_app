@@ -18,6 +18,7 @@ namespace Operations
   /*public*/ void initComponents(QString type, QString select);
   /*public*/ void toggleShowQuanity();
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

@@ -645,7 +645,7 @@ void LayoutTurntable::on_remove_triggered()
  // Initialize if needed
  if (editTurntableFrame == NULL)
  {
-  editTurntableFrame = new JmriJFrame(tr("Edit Turntable"), false, true);
+  editTurntableFrame = new JmriJFrameX(tr("Edit Turntable"), false, true);
   editTurntableFrame->addHelpMenu("package.jmri.jmrit.display.EditTurntable", true);
   editTurntableFrame->move(50, 30);
   QWidget* contentPane = editTurntableFrame->getContentPane();

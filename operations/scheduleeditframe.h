@@ -22,6 +22,7 @@ namespace Operations
   /*public*/ static /*final*/ QString NAME;//= Bundle.getMessage("Name");
   /*public*/ static /*final*/ QString DISPOSE;//= "dispose"; // NOI18N
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

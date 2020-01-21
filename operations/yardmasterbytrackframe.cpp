@@ -28,3 +28,7 @@ using namespace Operations;
 
     initMinimumSize(QSize(Control::panelWidth500, Control::panelHeight500));
 }
+/*public*/ QString YardmasterByTrackFrame::getClassName()
+{
+ return "jmri.jmrit.operations.locations.YardmasterByTrackFrame";
+}

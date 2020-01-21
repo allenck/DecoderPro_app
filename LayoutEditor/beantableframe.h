@@ -14,6 +14,7 @@ public:
     /*public*/ BeanTableFrame(QString s, QWidget *parent = 0);
     /*public*/ BeanTableFrame(BeanTableDataModel* model, QString helpTarget, JTable* dataTab, QWidget *parent = 0);
     /*public*/ void dispose();
+    /*public*/ QString getClassName();
 
 signals:
 

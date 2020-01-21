@@ -938,7 +938,7 @@ void BlockTableAction::on_defaultSpeeds()
  pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  if (addFrame == NULL)
  {
-  addFrame = new JmriJFrame(tr("TitleAddBlock"), false, true);
+  addFrame = new JmriJFrameX(tr("TitleAddBlock"), false, true);
   addFrame->addHelpMenu("package.jmrit.beantable.BlockAddEdit", true); //IN18N
 //        addFrame.getContentPane().setLayout(new BoxLayout(addFrame.getContentPane(), BoxLayout.Y_AXIS));
   QWidget* centralWidget = new QWidget;

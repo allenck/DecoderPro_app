@@ -71,3 +71,8 @@ void PaneOpsProgFrame::addHelp()
  //super.dispose();
  PaneProgFrame::dispose();
 }
+
+/*public*/ QString PaneOpsProgFrame::getClassName()
+{
+ return "jmri.jmrit.symbolicprog.tabbedframe.PaneOpsProgFrame";
+}

@@ -10,6 +10,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT PowerPanelFrame : public JmriJFrame
 public:
     explicit PowerPanelFrame(QWidget *parent = 0);
     /*public*/ void dispose();
+    /*public*/ QString getClassName();
 
 signals:
 

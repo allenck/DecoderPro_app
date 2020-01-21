@@ -195,7 +195,7 @@ void WarrantRoute::onButton()
  if (_pickListFrame !=nullptr) {
      _pickListFrame->dispose();
  }
- _pickListFrame = new JmriJFrame();
+ _pickListFrame = new JmriJFrameX("Pick");
  PickListModel* model = PickListModel::oBlockPickModelInstance();
  QScrollArea* sa;
  _pickListFrame->setCentralWidget(sa =new QScrollArea(/*model.makePickTable()*/));

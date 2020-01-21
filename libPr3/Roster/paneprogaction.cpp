@@ -12,6 +12,7 @@
 #include "progservicemodecombobox.h"
 #include "lnprogrammermanager.h"
 #include "jseparator.h"
+#include "printdecoderlistaction.h"
 
 //PaneProgAction::PaneProgAction(QObject *parent) :
 //    QAction("DecoderPro service programmer", parent)
@@ -69,7 +70,7 @@
  if (log->isDebugEnabled()) log->debug("Pane programmer requested");
 
  // create the initial frame that steers
- /*final*/  f = new JmriJFrame(tr("Service Mode (Programming Track) Programmer Setup"));
+ /*final*/  f = new JmriJFrameX(tr("Service Mode (Programming Track) Programmer Setup"));
  //f.getContentPane().setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
  QWidget* contentPane = new QWidget;
  QVBoxLayout* layout = new QVBoxLayout;
@@ -89,8 +90,8 @@
  QMenuBar* menuBar = new QMenuBar();
  // menuBar.setBorder(new BevelBorder(BevelBorder.RAISED));
  QMenu* j = new QMenu(tr("File"));
-//    j.add(new jmri.jmrit.decoderdefn.PrintDecoderListAction(rbt.getString("MenuPrintDecoderDefinitions"), f, false));
-//    j.add(new jmri.jmrit.decoderdefn.PrintDecoderListAction(rbt.getString("MenuPrintPreviewDecoderDefinitions"), f, true));
+ j->addAction(new PrintDecoderListAction(tr("Print Decoder Definitions"), f, false, this));
+ j->addAction(new PrintDecoderListAction(tr("Print Preview Decoder Definitions"), f, true, this));
  menuBar->addMenu(j);
  menuBar->addMenu(new RosterMenu(tr("Roster"), RosterMenu::MAINMENU, f));
  f->setMenuBar(menuBar);

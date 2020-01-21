@@ -70,4 +70,10 @@ SetupExcelProgramManifestFrame::SetupExcelProgramManifestFrame(QWidget* parent) 
   }
  }
 }
+
+/*public*/ QString SetupExcelProgramManifestFrame::getClassName()
+{
+ return "jmri.jmrit.operations.trains.excel.SetupExcelProgramManifestFrame";
+}
+
 /*private*/ /*final*/ /*static*/ Logger* SetupExcelProgramManifestFrame::log = LoggerFactory::getLogger("SetupExcelProgramManifestFrame");

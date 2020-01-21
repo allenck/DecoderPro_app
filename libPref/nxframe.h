@@ -28,6 +28,7 @@ public:
  /*public*/ void updatePanel(int interp);
  /*public*/ void selectedRoute(QList<BlockOrder*> orders);
  /*public*/ static float INCRE_RATE;// = 1.08f;  // multiplier to increase throttle increments
+ /*public*/ QString getClassName();
 
 signals:
 

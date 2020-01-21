@@ -17,6 +17,8 @@ public:
     /*public*/ /*final*/ static QString logixUserName;// = "System Logix";
     /*public*/ /*final*/ static QString ConditionalSystemPrefix;// = logixSysName+"_SGC_";
  /*public*/ void initComponents();
+ /*public*/ QString getClassName();
+
 private:
 
  SensorTableModel* _sensorModel;

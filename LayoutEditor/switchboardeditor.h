@@ -57,6 +57,7 @@ public:
  /*public*/ void keyPressEvent(QKeyEvent *event);
 // /*public*/ void windowClosing(QCloseEvent* e);
 // /*public*/ void showEvent(QShowEvent *event);
+ /*public*/ QString getClassName();
 
 public slots:
  /*public*/ void updatePressed();

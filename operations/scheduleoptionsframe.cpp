@@ -122,5 +122,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          }
      }
  }
+/*public*/ QString ScheduleOptionsFrame::getClassName()
+{
+ return "jmri.jmrit.operations.locations.schedules.ScheduleOptionsFrame";
+}
 
 }

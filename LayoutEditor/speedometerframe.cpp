@@ -1085,3 +1085,7 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
     /*public*/ /*static*/ QString SpeedometerXml::fileLocation = FileUtil::getUserFilesPath();
 
 //};
+/*public*/ QString SpeedometerFrame::getClassName()
+{
+ return "jmri.jmrit.speedometer.SpeedometerFrame";
+}

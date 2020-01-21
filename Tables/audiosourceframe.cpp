@@ -485,3 +485,7 @@ void AudioSourceFrame::okPressed(ActionEvent* /*e*/)
 QMessageBox::critical(NULL, tr("Error creating Audio object"), ex.getMessage());
  }
 }
+/*public*/ QString AudioSourceFrame::getClassName()
+{
+ return "jmri.jmrit.auio.swing.AudioSourceFrame";
+}

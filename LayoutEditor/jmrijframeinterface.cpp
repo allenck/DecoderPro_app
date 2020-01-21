@@ -39,7 +39,7 @@ JmriJFrameInterface::JmriJFrameInterface(QWidget *parent) :   WindowInterface(pa
  }
 
  // create frame
- frame = new JmriJFrame("<JmriJFrameInterface>");
+ frame = new JmriJFrameX("<JmriJFrameInterface>");
  frame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
 
  // cache if single instance

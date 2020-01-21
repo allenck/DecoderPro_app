@@ -17,6 +17,7 @@ public:
  /*public*/ void setInitEventListener(InitEventListener* listener);
  /*public*/ void updateBackground0(BufferedImage* im);
  /*public*/ void reSize(QWidget*container, QSize deltaDim, QSize newDim, Editor* ed);
+ /*public*/ QString getClassName();
 
 
 private:

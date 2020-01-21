@@ -52,3 +52,7 @@
         sigMastPanel->refresh();
     }
 }
+/*public*/ QString AddSignalMastJFrame::getClassName()
+{
+ return "jmri.jmrit.beantable.signalmast.AddSignalMastJFrame";
+}

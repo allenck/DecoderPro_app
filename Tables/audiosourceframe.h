@@ -19,6 +19,7 @@ public:
  /*public*/ void populateFrame(Audio* a);
  /*public*/ void updateBufferList();
  /*public*/ void layoutFrame();
+ /*public*/ QString getClassName();
 
 signals:
 

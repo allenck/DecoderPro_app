@@ -249,3 +249,7 @@ void NixieClockFrame::update()
 //    }
 //}
 
+/*public*/ QString NixieClockFrame::getClassName()
+{
+ return "jmri.jmrit.analogclock.NixieClockFrame";
+}

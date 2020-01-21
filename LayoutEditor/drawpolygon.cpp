@@ -428,4 +428,10 @@ void DrawPolygon::setDisplayHeight(int h) {
     }
 }
 
+/*public*/ QString DrawPolygon::getClassName()
+{
+ return "jmri.jmrit.display.controlPanelEditor.shape.DrawPolygon";
+}
+
+
  /*private*/ /*final*/ /*static*/ Logger* DrawPolygon::log = LoggerFactory::getLogger("DrawPolygon");

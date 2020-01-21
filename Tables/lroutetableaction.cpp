@@ -1079,7 +1079,7 @@ void LRouteTableAction::makeEditWindow()
  if (_addFrame==NULL)
  {
    buildLists();
-    _addFrame = new JmriJFrame(tr("Add/Edit LRoute"), false, false);
+    _addFrame = new JmriJFrameX(tr("Add/Edit LRoute"), false, false);
     _addFrame->addHelpMenu("package.jmri.jmrit.beantable.LRouteAddEdit", true);
     _addFrame->setLocation(100,30);
 

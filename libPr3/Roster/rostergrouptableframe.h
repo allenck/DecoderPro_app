@@ -12,6 +12,7 @@ class RosterGroupTableFrame : public JmriJFrame
 public:
  /*public*/ RosterGroupTableFrame(RosterGroupTableModel* model, QString helpTarget, QWidget* parent = 0);
  /*public*/ void dispose();
+ /*public*/ QString getClassName();
 
 
 private:

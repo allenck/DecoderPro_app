@@ -104,4 +104,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      }
      return QString::number(hour);
  }
+/*public*/ QString ChangeDepartureTimesFrame::getClassName()
+{
+ return "jmri.jmrit.operations.trains.tools.ChangeDepartureTimesFrame";
+}
+
 }

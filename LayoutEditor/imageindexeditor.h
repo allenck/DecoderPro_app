@@ -18,6 +18,7 @@ public:
     /*public*/ static bool isIndexChanged();
     /*public*/ static bool checkImageIndex();
     /*public*/ static /*final*/ QString IconDataFlavorMime;// = DataFlavor.javaJVMLocalObjectMimeType +
+    /*public*/ QString getClassName();
 
 signals:
 

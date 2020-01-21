@@ -9,6 +9,7 @@ class DrawCircle : public DrawFrame
 public:
     //explicit DrawCircle(QWidget *parent = 0);
     /*public*/ DrawCircle(QString which, QString _title, ShapeDrawer* parent);
+ /*public*/ QString getClassName();
 
 signals:
 

@@ -9364,7 +9364,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
 
     //Initialize if needed
     if (moveSelectionFrame == nullptr) {
-        moveSelectionFrame = new JmriJFrame(tr("Translate Selection"));
+        moveSelectionFrame = new JmriJFrameX(tr("Translate Selection"));
         moveSelectionFrame->addHelpMenu("package.jmri.jmrit.display.TranslateSelection", true);
         moveSelectionFrame->setLocation(70, 30);
         QWidget* theContentPane = moveSelectionFrame->getContentPane(false);
@@ -9948,7 +9948,7 @@ void LayoutEditor::undoMoveSelection() {
 
     //Initialize if needed
     if (enterTrackWidthFrame == nullptr) {
-        enterTrackWidthFrame = new JmriJFrame(tr("Set Track Line Width"));
+        enterTrackWidthFrame = new JmriJFrameX(tr("Set Track Line Width"));
         enterTrackWidthFrame->addHelpMenu("package.jmri.jmrit.display.EnterTrackWidth", true);
         enterTrackWidthFrame->setLocation(70, 30);
         QWidget* theContentPane = enterTrackWidthFrame->getContentPane();
@@ -10116,7 +10116,7 @@ void LayoutEditor::trackWidthCancelPressed(/*ActionEvent event*/) {
     }
     //Initialize if needed
     if (enterGridSizesFrame == nullptr) {
-        enterGridSizesFrame = new JmriJFrame(tr("SetGridSizes"));
+        enterGridSizesFrame = new JmriJFrameX(tr("SetGridSizes"));
         enterGridSizesFrame->addHelpMenu("package.jmri.jmrit.display.EnterGridSizes", true);
         enterGridSizesFrame->setLocation(70, 30);
         QWidget* theContentPane = enterGridSizesFrame->getContentPane();

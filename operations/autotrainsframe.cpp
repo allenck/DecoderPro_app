@@ -608,3 +608,8 @@
    // autoTrainsFrame->setAutoRequestFocus(false);
     autoTrainsFrame->setVisible(true);
 }
+
+/*public*/ QString AutoTrainsFrame::getClassName()
+{
+ return "jmri.jmrit.dispatcher.AutoTrainsFrame";
+}

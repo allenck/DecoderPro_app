@@ -570,7 +570,7 @@ void SignalHeadTableAction::setUkSignalType(QComboBox* box, QString val){
   to5 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
   to6 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
   to7 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
-  addFrame = new JmriJFrame(tr("Add New Signal"), false, true);
+  addFrame = new JmriJFrameX(tr("Add New Signal"), false, true);
   QFont font = QFont();
   font.setPointSize(8);
   addFrame->setFont(font);
@@ -1542,8 +1542,8 @@ void SignalHeadTableAction::makeEditSignalWindow()
   eto6 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
   eto7 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
   // set up a new edit window
-  editFrame = new JmriJFrame();
-  editFrame->setWindowTitle(tr("Edit Signal"));
+  editFrame = new JmriJFrameX("Edit Signal");
+  //editFrame->setWindowTitle(tr("Edit Signal"));
   QWidget* centralWidget = new QWidget();
   editFrame->setCentralWidget(centralWidget);
   centralWidget->setLayout(new QVBoxLayout());

@@ -641,7 +641,7 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
 // allocate an extra Section to an Active Train
 /*private*/ void DispatcherFrame::allocateExtraSection(/*ActionEvent* e*/) {
     if (extraFrame == NULL) {
-        extraFrame = new JmriJFrame(tr("Allocate Extra"));
+        extraFrame = new JmriJFrameX(tr("Allocate Extra"));
         extraFrame->addHelpMenu("package.jmri.jmrit.dispatcher.AllocateExtra", true);
         extraPane = extraFrame->getContentPane();
         QVBoxLayout* extraPaneLayout;
@@ -2946,4 +2946,8 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
      return false;
     }
 //}
+    /*public*/ QString DispatcherFrame::getClassName()
+    {
+     return "jmri.jmrit.dispatcher.DispatcherFrame";
+    }
 

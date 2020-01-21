@@ -1317,3 +1317,9 @@ void ThrottleWindow::on_address_released(LocoAddress *)
         }
     }
 }
+
+/*public*/ QString ThrottleWindow::getClassName()
+{
+ // return name of Java's ThrottleFrame instead of 'ThrottleWindow'
+ return "jmri.jmrit.throttle.ThrottleFrame";
+}

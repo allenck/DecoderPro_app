@@ -967,7 +967,7 @@ void BeanSwitch::alternateOnClick() {
     userName->setText("");
     // provide etc.
     if (addFrame == nullptr) {
-        addFrame = new JmriJFrame(tr("ConnectNewMenu", ""), false, true);
+        addFrame = new JmriJFrameX(tr("ConnectNewMenu", ""), false, true);
         addFrame->addHelpMenu("package.jmri.jmrit.display.switchboardEditor.SwitchboardEditor", true);
         QVBoxLayout* addFrameLayout;
         addFrame->getContentPane()->setLayout(addFrameLayout = new QVBoxLayout()); //addFrame->getContentPane(), BoxLayout.Y_AXIS));

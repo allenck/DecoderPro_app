@@ -1,4 +1,4 @@
-#include "controllerfilterframe.h"
+﻿#include "controllerfilterframe.h"
 #include "loggerfactory.h"
 #include <QTabWidget>
 #include "instancemanager.h"
@@ -219,219 +219,257 @@ void ControllerFilterFrame::on_save()
     }
     this->setModifiedFlag(true);
 }
-#if 0
-/*public*/ abstract class AbstractFilterModel extends AbstractTableModel implements PropertyChangeListener {
+#if 1
+// /*public*/ abstract class AbstractFilterModel extends AbstractTableModel implements PropertyChangeListener {
 
-    List<String> sysNameList = NULL;
-    boolean isDirty;
+//    List<String> sysNameList = NULL;
+//    boolean isDirty;
+
+//    //@Override
+//    /*public*/ Class<?> getColumnClass(int c) {
+//        if (c == INCLUDECOL) {
+//            return Boolean.class;
+//        } else {
+//            return String.class;
+//        }
+//    }
 
     //@Override
-    /*public*/ Class<?> getColumnClass(int c) {
-        if (c == INCLUDECOL) {
-            return Boolean.class;
-        } else {
-            return String.class;
-        }
-    }
-
-    //@Override
-    /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-        if (e.getPropertyName().equals("length")) {
+    /*public*/ void AbstractFilterModel::propertyChange(PropertyChangeEvent* e) {
+        if (e->getPropertyName() == ("length")) {
             fireTableDataChanged();
         }
     }
 
-    /*public*/ void dispose() {
-        InstanceManager.turnoutManagerInstance().removePropertyChangeListener(this);
-        InstanceManager.getDefault(jmri.RouteManager.class).removePropertyChangeListener(this);
+    /*public*/ void AbstractFilterModel::dispose() {
+        InstanceManager::turnoutManagerInstance()->removePropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
+        ((RouteManager*)InstanceManager::getDefault("RouteManager"))->removePropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
     }
 
     //@Override
-    /*public*/ String getColumnName(int c) {
-        return COLUMN_NAMES[c];
+    /*public*/ QVariant AbstractFilterModel::headerData(int section, Qt::Orientation orientation, int role) const
+    {
+        if(orientation == Qt::Horizontal)
+        {
+         switch(section)
+         {
+         case INCLUDECOL:
+          return "Include";
+         default:
+          break;
+         }
+        }
+        return QVariant();
     }
 
     //@Override
-    /*public*/ int getColumnCount() {
+    /*public*/ int AbstractFilterModel::columnCount(const QModelIndex &parent) const
+    {
         return 3;
     }
 
     //@Override
-    /*public*/ int getRowCount() {
+    /*public*/ int AbstractFilterModel::rowCount(const QModelIndex &parent) const
+    {
         return sysNameList.size();
     }
 
     //@Override
-    /*public*/ boolean isCellEditable(int r, int c) {
-        return (c == INCLUDECOL);
+    /*public*/ Qt::ItemFlags AbstractFilterModel::flags(const QModelIndex &index) const
+    {
+      if(index.column() == INCLUDECOL)
+        return Qt::ItemIsEditable | Qt::ItemIsEnabled;
+      else
+       return  Qt::ItemIsEnabled;
     }
 
-    abstract void setIncludeColToValue(boolean value);
+    //abstract void setIncludeColToValue(boolean value);
 
-    abstract void SetIncludeToUserNamed();
+    //abstract void SetIncludeToUserNamed();
 
-    /*public*/ static /*final*/ int SNAMECOL = 0;
-    /*public*/ static /*final*/ int UNAMECOL = 1;
-    /*public*/ static /*final*/ int INCLUDECOL = 2;
-};
+//    /*public*/ /*static*/ /*final*/ int SNAMECOL = 0;
+//    /*public*/ static /*final*/ int UNAMECOL = 1;
+//    /*public*/ static /*final*/ int INCLUDECOL = 2;
+//};
+#endif
+#if 0
+//class TurnoutFilterModel extends AbstractFilterModel {
 
-class TurnoutFilterModel extends AbstractFilterModel {
+//    TurnoutManager mgr = InstanceManager.turnoutManagerInstance();
 
-    TurnoutManager mgr = InstanceManager.turnoutManagerInstance();
-
-    TurnoutFilterModel() {
-
-        sysNameList = mgr.getSystemNameList();
-        mgr.addPropertyChangeListener(this);
+    TurnoutFilterModel::TurnoutFilterModel()
+    {
+     TurnoutManager* mgr = InstanceManager::turnoutManagerInstance();
+        sysNameList = mgr->getSystemNameList();
+        mgr->addPropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
     }
 
     //@Override
-    /*public*/ Object getValueAt(int r, int c) {
-
+    /*public*/ QVariant TurnoutFilterModel::data(const QModelIndex &index, int role) const
+    {
+     if(role == Qt::DisplayRole)
+     {
         // some error checking
         if (r >= sysNameList.size()) {
             log->debug("row is greater than turnout list size");
-            return NULL;
+            return QVariant();
         }
-        switch (c) {
+        switch (index.column()) {
             case INCLUDECOL:
-                Object o = mgr.getBySystemName(sysNameList.get(r)).getProperty("WifiControllable");
-                if ((o != NULL) && (o.toString().equalsIgnoreCase("false"))) {
-                    return Boolean.valueOf(false);
+                QVariant o = mgr->getBySystemName(sysNameList.at(r))->getProperty("WifiControllable");
+                if ((o.isNull()) && (o.toString().toLower() == "false")) {
+                    return false;
                 }
-                return Boolean.valueOf(true);
+                return true;
             case SNAMECOL:
-                return sysNameList.get(r);
+                return sysNameList.at(r);
             case UNAMECOL:
-                return mgr.getBySystemName(sysNameList.get(r)).getUserName();
+                return mgr->getBySystemName(sysNameList.at(r))->getUserName();
             default:
-                return NULL;
+                return QVariant();
         }
+     }
+     return AbstractFilterModel::data(index, role);
     }
 
     //@Override
-    /*public*/ void setValueAt(Object type, int r, int c) {
-
-        switch (c) {
+    /*public*/ bool TurnoutFilterModel::setData(const QModelIndex &index, const QVariant &value, int role)
+    {
+     if(role == Qt::EditRole)
+     {
+        switch (index.column()) {
             case INCLUDECOL:
-                mgr.getBySystemName(sysNameList.get(r)).setProperty("WifiControllable", type);
+                mgr->getBySystemName(sysNameList.get(r)).setProperty("WifiControllable", type);
                 if (!isDirty) {
-                    this.fireTableChanged(new TableModelEvent(this));
+                    this->fireTableChanged(new TableModelEvent(this));
                     isDirty = true;
                 }
                 break;
         }
+     }
     }
 
     //@Override
-    /*public*/ void setIncludeColToValue(boolean value) {
-        for (String sysName : sysNameList) {
-            mgr.getBySystemName(sysName).setProperty("WifiControllable", value);
+    /*public*/ void TurnoutFilterModel::setIncludeColToValue(bool value) {
+        for (QString sysName : sysNameList) {
+            mgr->getBySystemName(sysName)->setProperty("WifiControllable", value);
         }
         fireTableDataChanged();
     }
 
-    //@Override
-    /*public*/ void SetIncludeToUserNamed() {
-        for (String sysName : sysNameList) {
-            NamedBean bean = mgr.getBySystemName(sysName);
-            String uname = bean.getUserName();
-            if ((uname != NULL) && (uname.length() > 0)) {
-                bean.setProperty("WifiControllable", true);
+    //@OverrideTurnoutFilterModel::
+    /*public*/ void TurnoutFilterModel::SetIncludeToUserNamed() {
+        for (QString sysName : sysNameList) {
+            NamedBean *bean = mgr->getBySystemName(sysName);
+            QString uname = bean->getUserName();
+            if ((uname != "") && (uname.length() > 0)) {
+                bean->setProperty("WifiControllable", true);
             } else {
-                bean.setProperty("WifiControllable", false);
+                bean->setProperty("WifiControllable", false);
             }
         }
         fireTableDataChanged();
     }
-};
+//};
 
-class RouteFilterModel extends AbstractFilterModel {
+//class RouteFilterModel extends AbstractFilterModel {
 
-    RouteManager mgr = InstanceManager.getDefault(jmri.RouteManager.class);
+//    RouteManager mgr = InstanceManager.getDefault(jmri.RouteManager.class);
 
-    RouteFilterModel() {
+    RouteFilterModel::RouteFilterModel() {
 
-        sysNameList = mgr.getSystemNameList();
-        mgr.addPropertyChangeListener(this);
+        sysNameList = mgr->getSystemNameList();
+        mgr->addPropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
     }
 
     //@Override
-    /*public*/ Object getValueAt(int r, int c) {
-
+    /*public*/ QVariant RouteFilterModel::data(const QModelIndex &index, int role) const
+    {
+     if(role == Qt::DisplayRole)
+     {
         // some error checking
         if (r >= sysNameList.size()) {
-            log->debug("row is greater than turnout list size");
-            return NULL;
+//            log->debug("row is greater than turnout list size");
+            return QVariant();
         }
-        Route rt = mgr.getBySystemName(sysNameList.get(r));
-        switch (c) {
+        Route* rt = mgr->getBySystemName(sysNameList.get(r));
+        switch (index.column()) {
             case INCLUDECOL:
-                if (rt == NULL) {
-                    return NULL;
+                if (rt == nullptr) {
+                    return QVariant();
                 }
-                Object o = rt.getProperty("WifiControllable");
-                if ((o != NULL) && (o.toString().equalsIgnoreCase("false"))) {
-                    return Boolean.valueOf(false);
+                QVariant o = rt->getProperty("WifiControllable");
+                if ((o != NULL) && (o.toString().toLower()=="false")) {
+                    return (false);
                 }
-                return Boolean.valueOf(true);
+                return (true);
             case SNAMECOL:
-                return sysNameList.get(r);
+                return sysNameList.at(r);
             case UNAMECOL:
-                if (rt == NULL) {
-                    return NULL;
+                if (rt == "") {
+                    return QVariant();
                 }
-                return rt.getUserName();
+                return rt->getUserName();
             default:
-                return NULL;
+                return QVariant();
         }
+     }
+     return AbstractFilterModel::data(index, role);
     }
 
     //@Override
-    /*public*/ void setValueAt(Object type, int r, int c) {
-
-        switch (c) {
+    /*public*/ bool RouteFilterModel::setData(const QModelIndex &index, const QVariant &value, int role)
+    {
+     if(role == Qt::EditRole)
+     {
+        switch (index.column()) {
             case INCLUDECOL:
-                Route rt = mgr.getBySystemName(sysNameList.get(r));
+                Route* rt = mgr->getBySystemName(sysNameList.get(r));
                 if (rt != NULL) {
-                    rt.setProperty("WifiControllable", type);
+                    rt->setProperty("WifiControllable", type);
                     if (!isDirty) {
-                        this.fireTableChanged(new TableModelEvent(this));
+                        this->fireTableChanged(new TableModelEvent(this));
                         isDirty = true;
                     }
                 }
                 break;
         }
+     }
+     return AbstractFilterModel::setData(index,value, role);
     }
 
     //@Override
-    /*public*/ void setIncludeColToValue(boolean value) {
-        for (String sysName : sysNameList) {
-            Route rt = mgr.getBySystemName(sysName);
-            if (rt != NULL) {
-                rt.setProperty("WifiControllable", value);
+    /*public*/ void RouteFilterModel::setIncludeColToValue(bool value) {
+        for (QString sysName : sysNameList) {
+            Route* rt = mgr->getBySystemName(sysName);
+            if (rt != nullptr) {
+                rt->setProperty("WifiControllable", value);
             }
         }
         fireTableDataChanged();
     }
 
     //@Override
-    /*public*/ void SetIncludeToUserNamed() {
-        for (String sysName : sysNameList) {
-            NamedBean bean = mgr.getBySystemName(sysName);
-            if (bean != NULL) {
-                String uname = bean.getUserName();
+    /*public*/ void RouteFilterModel::SetIncludeToUserNamed() {
+        for (QString sysName : sysNameList) {
+            NamedBean* bean = mgr->getBySystemName(sysName);
+            if (bean != nullptr) {
+                QString uname = bean->getUserName();
                 if ((uname != NULL) && (uname.length() > 0)) {
-                    bean.setProperty("WifiControllable", true);
+                    bean->setProperty("WifiControllable", true);
                 } else {
-                    bean.setProperty("WifiControllable", false);
+//                    bean.setProperty("WifiControllable", false);
                 }
             } else {
-                log->error("Failed to get bean from getBySystemName {}", sysName);
+//                log->error("Failed to get bean from getBySystemName {}", sysName);
             }
         }
         fireTableDataChanged();
     }
-};
+//};
 #endif
+/*public*/ QString ControllerFilterFrame::getClassName(){
+ return "jmri.jmrit.withrottle.ControllerFilterFrame";
+}
+
 /*private*/ /*final*/ /*static*/ Logger* ControllerFilterFrame::log = LoggerFactory::getLogger("ControllerFilterFrame");

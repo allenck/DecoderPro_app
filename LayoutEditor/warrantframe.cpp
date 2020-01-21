@@ -2069,6 +2069,10 @@ void ThrottleTableModel::fireTableDataChanged()
  beginResetModel();
  endResetModel();
 }
+/*public*/ QString WarrantFrame::getClassName()
+{
+ return "jmri.jmrit.logix.WarrantFrame";
+}
 
 //};
 

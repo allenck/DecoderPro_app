@@ -21,6 +21,8 @@ namespace Operations
   /*public*/ static /*final*/ QString DISPOSE;// = "dispose"; // NOI18N
   /*public*/ void initComponents(QString comboboxName);
   /*public*/ void initComponents(QString comboboxName, QString select);
+  /*public*/ QString getClassName();
+
 public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);
   /*public*/ void deleteUnusedAttribures();

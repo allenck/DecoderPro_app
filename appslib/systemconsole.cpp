@@ -197,7 +197,7 @@ void SystemConsole::On_appendText(QString text)
 /*private*/ void SystemConsole::createFrame()
 {
  // Use a JmriJFrame to ensure that we fit on the screen
- frame = new JmriJFrame(tr("JMRI System console"));
+ frame = new JmriJFrameX(tr("JMRI System console"));
  QWidget* centralWidget = new QWidget;
  QVBoxLayout* centralWidgetLayout = new QVBoxLayout(centralWidget);
  frame->setCentralWidget(centralWidget);

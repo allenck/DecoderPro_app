@@ -17,6 +17,7 @@ namespace Operations
   TrackEditCommentsFrame(Track* track, QWidget* parent =0);
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);
+  /*public*/ QString getClassName();
 
  private:
   JTextArea* commentBothTextArea;// = new JTextArea(5, 100);

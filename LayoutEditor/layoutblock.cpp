@@ -893,7 +893,7 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
  // Initialize if needed
  if (editLayoutBlockFrame == NULL)
  {
-  editLayoutBlockFrame = new JmriJFrame( tr("Create/Edit Block"), false, false);
+  editLayoutBlockFrame = new JmriJFrameX( tr("Create/Edit Block"), false, false);
   editLayoutBlockFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutBlock", true);
 //  editLayoutBlockFrame->setLocation(80,40);
 //  QWidget* contentPane = editLayoutBlockFrame->getContentPane();

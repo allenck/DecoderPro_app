@@ -163,3 +163,7 @@ void RosterGroupTableFrame::extras()
     //dataScroll = NULL;
     JmriJFrame::dispose();
 }
+/*public*/ QString RosterGroupTableFrame::getClassName()
+{
+ return "jmri.jmrit.roster.swing.rostergroup.RosterGroupTableFrame";
+}

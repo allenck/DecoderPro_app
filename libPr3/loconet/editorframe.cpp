@@ -57,3 +57,8 @@
  pane->dispose();
  JmriJFrame::dispose();
 }
+
+/*public*/ QString EditorFrame::getClassName()
+{
+ return "jmri.jmrix.loconet.sdfeditor.EditorFrame";
+}

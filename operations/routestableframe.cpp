@@ -146,4 +146,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      OperationsFrame::dispose();
  }
 
+ /*public*/ QString RoutesTableFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.routes.RoutesTableFrame";
+ }
 }

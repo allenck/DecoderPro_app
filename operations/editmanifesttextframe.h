@@ -10,6 +10,8 @@ namespace Operations
  public:
   EditManifestTextFrame(QWidget* parent = 0);
   /*public*/ void initComponents();
+  /*public*/ QString getClassName();
+
  public slots:
 
  };

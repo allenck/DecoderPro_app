@@ -100,3 +100,7 @@
  }
  return tpc;
 }
+/*public*/ QString TabbedPreferencesFrame::getClassName()
+{
+ return "apps.gui.tabbedpreferences.TabbedPreferencesFrame";
+}

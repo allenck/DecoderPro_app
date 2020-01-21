@@ -100,7 +100,7 @@ MultiSensorIconFrame::MultiSensorIconFrame(LayoutEditor* p, QWidget *parent) : J
  defaultIcons->complete();
  //defaultIcons->catalog()->model->setFilter(QDir::AllDirs | QDir::Files);
 
- defaultsFrame = new JmriJFrame("", false, true);
+ defaultsFrame = new JmriJFrameX("", false, true);
  if(defaultsFrame->centralWidget() == NULL)
  {
   QWidget* cw = new QWidget();
@@ -210,7 +210,7 @@ Entry::Entry(QWidget* self, JmriJFrame* frame, QString name)
 {
  sensor = new JTextField(5);
  ed = new MultiIconEditor(1);
- edf = new JmriJFrame("", false, true);
+ edf = new JmriJFrameX("", false, true);
  if(edf->centralWidget() == NULL)
  {
   QWidget* cw = new QWidget();
@@ -293,3 +293,7 @@ Entry::~Entry()
 }
 
 //}
+/*public*/ QString MultiSensorIconFrame::getClassName()
+{
+ return "jmri.jmrit.display.layouEditor.MultiSensorIconFrame";
+}

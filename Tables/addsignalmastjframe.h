@@ -10,6 +10,7 @@ public:
     AddSignalMastJFrame(QWidget*parent = 0);
     /*public*/ AddSignalMastJFrame(SignalMast* mast, QWidget* parent = 0);
     /*public*/ void refresh();
+    /*public*/ QString getClassName();
 
 private:
     AddSignalMastPanel* sigMastPanel = nullptr;

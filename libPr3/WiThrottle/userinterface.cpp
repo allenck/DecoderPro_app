@@ -602,3 +602,7 @@ bool UIShutdownTask::execute()
             log->error(tr("IOException in FacelessServer.servicePublished(): %1").arg(ex.getLocalizedMessage()));
         }
     }
+    /*public*/ QString UserInterface::getClassName()
+    {
+     return "jmri.jmrit.withrottle.UserInterface";
+    }

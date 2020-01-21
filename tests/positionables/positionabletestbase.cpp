@@ -207,7 +207,7 @@ PositionableTestBase::PositionableTestBase(QObject *parent) : QObject(parent)
 /*public*/ void PositionableTestBase::testShow() {
     //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
-    JFrame* jf = new JmriJFrame("Positionable Target Panel");
+    JFrame* jf = new JmriJFrameX("Positionable Target Panel");
     JPanel* panel = new JPanel();
     jf->getContentPane(true)->layout()->addWidget(panel);
     jf->pack();

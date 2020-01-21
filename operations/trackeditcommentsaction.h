@@ -13,6 +13,7 @@ class TrackEditFrame;
   Q_OBJECT
  public:
   TrackEditCommentsAction(TrackEditFrame* tef);
+
  public slots:
   /*public*/ void actionPerformed(ActionEvent* e = 0);
   private:

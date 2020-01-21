@@ -442,4 +442,9 @@ namespace Operations
      }
  }
 
+ /*public*/ QString RouteEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.trains.RouteEditFrame";
+ }
+
 }

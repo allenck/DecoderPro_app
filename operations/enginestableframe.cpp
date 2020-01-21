@@ -374,4 +374,10 @@ namespace Operations
         }
     }
 
+    /*public*/ QString EnginesTableFrame::getClassName()
+    {
+     return "jmri.jmrit.operations.rollingstock.engines.EnginesTableFrame";
+    }
+
+
 }

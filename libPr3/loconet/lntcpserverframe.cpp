@@ -230,3 +230,7 @@ void LnTcpServerFrame::on_stopButton_clicked()
     clientStatus->setText("   Client Count: " + QString::number(clients));
 }
 
+/*public*/ QString LnTcpServerFrame::getClassName()
+{
+ return "jmri.jmrix.loconet.loconetovertcp.LnTcpServerFrame";
+}

@@ -973,3 +973,8 @@ void EditCircuitPaths::on_doneClicked()
     return _block;
 }
 #endif
+
+/*public*/ QString EditCircuitPaths::getClassName()
+{
+ return "jmri.jmrit.display.controlPanelEditor.EditCircuitPaths";
+}

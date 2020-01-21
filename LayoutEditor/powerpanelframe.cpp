@@ -40,3 +40,9 @@
     pane->dispose();
     JmriJFrame::dispose();
 }
+
+/*public*/ QString PowerPanelFrame::getClassName()
+{
+ return "jmri.jmrit.powerpanel.PowerPanelFrame";
+}
+

@@ -15,6 +15,7 @@ class LIBPR3SHARED_EXPORT SimpleProgFrame : public JmriJFrame
     Q_OBJECT
 public:
     explicit SimpleProgFrame(QWidget *parent = 0);
+ /*public*/ QString getClassName();
 
 signals:
 

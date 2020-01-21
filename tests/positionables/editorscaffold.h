@@ -17,6 +17,8 @@ public:
  /*public*/ void mouseEntered(QGraphicsSceneMouseEvent* event);
  /*public*/ void mouseExited(QGraphicsSceneMouseEvent* event);
  /*public*/ void initView();
+ /*public*/ QString getClassName() {}
+
 protected:
  /*protected*/ void init(QString name);
  /*protected*/ void targetWindowClosingEvent(QCloseEvent* e);

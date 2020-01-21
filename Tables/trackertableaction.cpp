@@ -411,7 +411,7 @@ void TableFrame::on_doneButton_clicked()
 }
 
 void TableFrame::openPickList() {
-    _pickFrame = new JmriJFrame();
+    _pickFrame = new JmriJFrameX("Pick");
     QWidget* content = new QWidget();
     //content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
     QVBoxLayout* contentLayout = new QVBoxLayout(content);
@@ -856,3 +856,7 @@ void TableFrame::openPickList() {
 //}; // end TrackerTableModel
 //    static Logger log = LoggerFactory.getLogger(TrackerTableAction.class.getName());
 //}
+/*public*/ QString TableFrame::getClassName()
+{
+ return "jmri.jmrit.logix.TableFrame";
+}

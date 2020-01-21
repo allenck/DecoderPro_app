@@ -781,6 +781,8 @@ public:
     JFrameItem (QString name, IconAdder* editor, QWidget* parent = 0);
     /*public*/ IconAdder* getEditor();
     /*public*/ QString toString();
+    /*public*/ QString getClassName();
+
 };
 
 class SearchItemActionListener : public ActionListener

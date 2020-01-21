@@ -24,6 +24,9 @@ public:
     static QSize _dim;// = null;
     /*public*/ static /*final*/ QString TEST_PATH;// = "TEST_PATH";
     /*public*/ EditCircuitPaths(QString _title, CircuitBuilder* builder, OBlock* block, QWidget *parent = 0);
+    /*public*/ QString getClassName();
+
+
 public slots:
     /*public*/ void valueChanged(ListSelectionEvent* e = 0);
 

@@ -11,6 +11,7 @@ namespace Operations
  public:
   InterchangeEditFrame(QWidget* parent=0);
   /*public*/ void initComponents(Location* location, Track* track);
+  /*public*/ QString getClassName();
 
  };
 }

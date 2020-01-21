@@ -148,7 +148,7 @@ void ConditionalListEdit::makeEditLogixWindow()
      _inEditMode = true;
      if (_editLogixFrame == NULL)
      {
-      _editLogixFrame = new JmriJFrame(tr("Edit Logix"), false, false);
+      _editLogixFrame = new JmriJFrameX(tr("Edit Logix"), false, false);
       _editLogixFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
 
       _editLogixFrame->addHelpMenu(
@@ -726,7 +726,7 @@ void ConditionalListEdit::makeEditConditionalWindow()
  _conditionalUserName->setText(_curConditional->getUserName());
  if (_editConditionalFrame == NULL)
  {
-  _editConditionalFrame = new JmriJFrame(tr("Edit Conditional"), false, false);
+  _editConditionalFrame = new JmriJFrameX(tr("Edit Conditional"), false, false);
   _editConditionalFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
   _editConditionalFrame->addHelpMenu(
         "package.jmri.jmrit.conditional.ConditionalListEditor", true);
@@ -1763,7 +1763,7 @@ void ConditionalListEdit::makeEditVariableWindow(int row)
  }
  _curVariableRowNumber = row;
  _curVariable = _variableList->at(row);
- _editVariableFrame = new JmriJFrame(tr("Edit Variable"), true, true);
+ _editVariableFrame = new JmriJFrameX(tr("Edit Variable"), true, true);
  _editVariableFrame->setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
  QWidget* topPanel = makeTopPanel(_editVariableFrame, tr("Antecedent Variable"), 500, 120);
  _editVariableFrame->setAcceptDrops(true);
@@ -2896,7 +2896,7 @@ void ConditionalListEdit::makeEditActionWindow(int row)
     }
     _curActionRowNumber = row;
     _curAction = _actionList->at(row);
-    _editActionFrame = new JmriJFrame(tr("Edit Action"), true, true);
+    _editActionFrame = new JmriJFrameX(tr("Edit Action"), true, true);
     _editActionFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
 #if 1
 //        _editActionFrame->setLocation(10, 300);

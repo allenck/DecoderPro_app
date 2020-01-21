@@ -22,6 +22,7 @@ public:
  /*public*/ void createServerThread();
  /*public*/ void listen();
  /*public*/ QString getSelectedRosterGroup();
+ /*public*/ QString getClassName();
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger(UserInterface.class.getName());

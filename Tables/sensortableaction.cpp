@@ -122,7 +122,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 
  if (addFrame==nullptr)
  {
-  addFrame = new JmriJFrame(tr("Add Sensor"),false, true);
+  addFrame = new JmriJFrameX(tr("Add Sensor"),false, true);
   addFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
   //addFrame.addHelpMenu("package.jmri.jmrit.beantable.SensorAddEdit", true);
   QVBoxLayout* addFrameLayout = (QVBoxLayout*)addFrame->getContentPane()->layout();

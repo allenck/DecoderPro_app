@@ -169,5 +169,9 @@ namespace Operations
          updateComboBoxes();
      }
  }
+ /*public*/ QString ScheduleCopyFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.schedules.ScheduleCopyFrame";
+ }
 
 }

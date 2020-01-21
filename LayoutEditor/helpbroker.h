@@ -84,6 +84,8 @@ public:
 #if 0
      /*public*/ virtual void enableHelpOnButton(QObject* o, QString string, HelpSet hs, QString string1, QString string2) throw (IllegalArgumentException);
 #endif
+ /*public*/ QString getClassName();
+
 signals:
 
 public slots:

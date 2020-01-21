@@ -115,5 +115,9 @@ namespace Operations
      }
      trainScheduleManager->updateComboBox(comboBox);
  }
+/*public*/ QString TrainsScheduleEditFrame::getClassName()
+{
+ return "jmri.jmrit.operations.trains.schedules.TrainsScheduleEditFrame";
+}
 
 }

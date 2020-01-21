@@ -23,6 +23,7 @@ namespace Operations
   /*public*/ void buttonActionPerformed(QWidget* ae);
 
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
 
  private:
   LocationsTableModel* locationsModel;// = new LocationsTableModel();

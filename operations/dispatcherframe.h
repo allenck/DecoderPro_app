@@ -66,6 +66,7 @@ public:
  /*public*/ ActiveTrain* getActiveTrainForRoster(RosterEntry* re);
  /*public*/ void allocateExtraSection(ActionEvent* e, ActiveTrain* at);
  /*public*/ QString getSectionName(Section* sec);
+ /*public*/ QString getClassName();
 
 
 private:

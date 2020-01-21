@@ -597,11 +597,11 @@ void RouteTableAction::setTurnoutModeBox(int mode, QComboBox* box) {
   cLockTurnout = new JmriBeanComboBox((Manager*)InstanceManager::turnoutManagerInstance());
   cLockTurnout->setFirstItemBlank(true);
 
-  addFrame = new JmriJFrame("Add/Edit Route", false, true);
+  addFrame = new JmriJFrameX("Add/Edit Route", false, true);
   addFrame->setMinimumHeight(500);
 
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.RouteAddEdit", true);
- #if 0
+ #if 0 // TODO:
 //  addFrame.setLocation(100,30);
   //addFrame.getContentPane().setLayout(new BoxLayout(addFrame.getContentPane(), BoxLayout.Y_AXIS));
   addFrame->resize(461,721);

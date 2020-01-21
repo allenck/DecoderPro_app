@@ -357,7 +357,7 @@ void SectionTableAction::addEditPressed()
  pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  if (addFrame==NULL)
  {
-  addFrame = new JmriJFrame(tr("Add Section"));
+  addFrame = new JmriJFrameX(tr("Add Section"));
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.SectionAddEdit", true);
   addFrame->resize(650,800);
   //addFrame.getContentPane().setLayout(new BoxLayout(addFrame.getContentPane(), BoxLayout.Y_AXIS));

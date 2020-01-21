@@ -13,6 +13,7 @@ namespace Operations
   IgnoreUsedTrackFrame(TrackEditFrame* tef);
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);
+  /*public*/ QString getClassName();
 
  private:
   QRadioButton* zeroPercent;//= new JRadioButton(Bundle.getMessage("Disabled"));

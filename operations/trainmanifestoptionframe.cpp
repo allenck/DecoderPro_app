@@ -217,5 +217,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
       }
   }
 
+ }
+/*public*/ QString TrainManifestOptionFrame::getClassName()
+{
+ return "jmri.jmrit.operations.trains.tools.TrainManifestOptionFrame";
 }
+
 }

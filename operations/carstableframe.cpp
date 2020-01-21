@@ -449,5 +449,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      QString showNumber = QString::number(getSortByList()->size());
      numCars->setText(showNumber + "/" + totalNumber);
  }
+/*public*/ QString CarsTableFrame::getClassName()
+{
+ return "jmri.jmrit.operations.rollingstock.cars.CarsTableFrame";
+}
 
 }

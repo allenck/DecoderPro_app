@@ -51,7 +51,7 @@ void PaneEditAction::init()
  if (log->isDebugEnabled()) log->debug("Pane programmer requested");
 
  // create the initial frame that steers
- JmriJFrame* f = new JmriJFrame(tr("Edit Roster Entry Setup"));
+ JmriJFrameX* f = new JmriJFrameX(tr("Edit Roster Entry Setup"));
 //    f.getContentPane().setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
  QWidget* centralWidget = new QWidget;
  f->setCentralWidget(centralWidget);

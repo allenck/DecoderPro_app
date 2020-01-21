@@ -252,7 +252,7 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 /*protected*/ void ReporterTableAction::addPressed(ActionEvent* /*e*/) {
     pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     if (addFrame == NULL) {
-        addFrame = new JmriJFrame(tr("Add Reporter"), false, true);
+        addFrame = new JmriJFrameX(tr("Add Reporter"), false, true);
         addFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
         QWidget* centralWidget = new QWidget(addFrame);
         addFrameLayout = new QVBoxLayout(centralWidget);

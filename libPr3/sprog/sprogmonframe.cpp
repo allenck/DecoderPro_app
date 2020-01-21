@@ -46,4 +46,9 @@ using namespace Sprog;
     log->debug("reply heard");
 }
 
+/*public*/ QString SprogMonFrame::getClassName()
+{
+ return "jmri.jmrix.sprog.sprogmon.SprogMonFrame";
+}
+
 /*private*/ /*final*/ /*static*/ Logger* SprogMonFrame::log = LoggerFactory::getLogger("SprogMonFrame");

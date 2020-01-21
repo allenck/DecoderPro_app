@@ -1099,5 +1099,9 @@ while ( ( item = engine1caboose->layout()->takeAt( 0 ) ) != NULL )
       updateTrainRequires2Option();
   }
  }
+/*public*/ QString TrainEditBuildOptionsFrame::getClassName()
+{
+ return "jmri.jmrit.operations.trains.TrainEditBuildOptionsFrame";
+}
 
 }

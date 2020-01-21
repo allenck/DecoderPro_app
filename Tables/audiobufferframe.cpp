@@ -356,3 +356,7 @@ void AudioBufferFrame::okPressed(ActionEvent* /*e*/)
 //   JOptionPane.showMessageDialog(NULL, ex.getMessage(), rb.getString("AudioCreateErrorTitle"), JOptionPane.ERROR_MESSAGE);
  }
 }
+/*public*/ QString AudioBufferFrame::getClassName()
+{
+ return "jmri.jmrit.audio.swing.AudioBufferFrame";
+}

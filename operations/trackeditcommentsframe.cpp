@@ -99,4 +99,8 @@ namespace Operations
      }
  }
 
+ /*public*/ QString TrackEditCommentsFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.tools.TrackEditCommentsFrame";
+ }
 }

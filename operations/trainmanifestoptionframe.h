@@ -17,6 +17,8 @@ namespace Operations
  public:
   TrainManifestOptionFrame(QWidget* parent = 0);
   /*public*/ void initComponents(TrainEditFrame* parent);
+  /*public*/ QString getClassName();
+
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);
 

@@ -713,4 +713,10 @@ namespace Operations
          editActive = false;
      }
  }
+
+ /*public*/ QString CarSetFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.rollingstock.cars.CarSetFrame";
+ }
+
 }

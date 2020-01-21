@@ -67,3 +67,7 @@
     JmriJFrame::dispose();
 }
 
+/*public*/ QString AutomatTableFrame::getClassName()
+{
+ return "jmri.jmrit.operation.automation.AutomatTableFrame";
+}

@@ -118,7 +118,7 @@
  init(saveSize, savePosition);
 
  setTitle(name);
-#if 1
+#if 0
  generateWindowRef();
  if (QString(metaObject()->className())==("JmriJFrame")){
      if ((this->windowTitle()==nullptr) || (this->windowTitle()==("")))
@@ -194,6 +194,22 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
 //     generateWindowRef();
 //     setFrameLocation();
 // }
+ QTimer::singleShot(100, this, SLOT(setupWindowRef()));
+}
+
+// process after sub-class's ctor has completed.
+void JmriJFrame::setupWindowRef()
+{
+  windowFrameRef = getClassName(); //metaObject()->className();
+  log->debug(tr("windowFrameRef = '%1'").arg(windowFrameRef));
+  if (QString(metaObject()->className())!=("JmriJFrame"))
+  {
+      generateWindowRef();
+      setFrameLocation();
+  }
+  QPointer<JmriJFrame> frame = this;
+  if(!frameList->contains(frame))
+   frameList->append(frame);
 }
 
 /*

@@ -622,6 +622,10 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     timer->setSingleShot(true);
     timer->start(delay);
 }
+/*public*/ QString SprogConsoleFrame::getClassName()
+{
+ return "jmri.jmrix.sprog.console.SprogConsoleFrame";
+}
 
 /*private*/ /*final*/ /*static*/ Logger* SprogConsoleFrame::log = LoggerFactory::getLogger("SprogConsoleFrame");
 

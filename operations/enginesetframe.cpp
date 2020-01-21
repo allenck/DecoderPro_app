@@ -94,4 +94,9 @@ namespace Operations
   return true;
  }
 
+ /*public*/ QString EngineSetFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.rollingstock.engines.EngineSetFrame";
+ }
+
 }

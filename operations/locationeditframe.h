@@ -31,6 +31,8 @@ namespace Operations
   /*public*/ static /*final*/ int MAX_NAME_LENGTH;// = Control.max_len_string_location_name;
   /*public*/ static /*final*/ QString DISPOSE;// = "dispose"; // NOI18N
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
+
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

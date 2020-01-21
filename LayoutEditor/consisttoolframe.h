@@ -19,6 +19,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT ConsistToolFrame : public JmriJFrame
  Q_OBJECT
 public:
  explicit ConsistToolFrame(QWidget *parent = 0);
+ /*public*/ QString getClassName();
 
 signals:
 

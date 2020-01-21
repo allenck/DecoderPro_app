@@ -479,5 +479,10 @@ namespace Operations
          printPage->setChecked(false);
      }
  }
- //};
+
+ /*public*/ QString CarPrintOptionFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.rollingstock.cars.tools.CarPrintOptionFrame";
+ }
+
 }

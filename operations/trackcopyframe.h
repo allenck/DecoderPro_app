@@ -14,6 +14,7 @@ namespace Operations
  public:
   TrackCopyFrame(LocationEditFrame* lef);
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

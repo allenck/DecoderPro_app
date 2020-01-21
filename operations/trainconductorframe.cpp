@@ -45,4 +45,11 @@ namespace Operations
 
   initMinimumSize(QSize(Control::panelWidth500, Control::panelHeight500));
  }
+
+ /*public*/ QString TrainConductorFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.trains.TrainConductorFrame";
+ }
+
+
 }

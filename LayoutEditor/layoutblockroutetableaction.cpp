@@ -45,7 +45,7 @@ void LayoutBlockRouteTableAction::createModel()
  createModel();
 
  // create the frame
- f = new JmriJFrame();
+ f = new JmriJFrameX("LayoutBlockRoute");
  //f->add(m);
  f->setCentralWidget(m);
  setTitle();

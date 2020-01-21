@@ -1135,3 +1135,8 @@ void BlockBossFrame::on_fNextSensorField2Alt_textChanged(QString s)
 {
  fNextSensorField2Alt->setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
 }
+
+/*public*/ QString BlockBossFrame::getClassName()
+{
+ return "jmri.jmrit.blockboss.BlockBossFrame";
+}

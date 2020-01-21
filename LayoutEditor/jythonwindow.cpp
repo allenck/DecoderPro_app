@@ -79,7 +79,7 @@ void JythonWindow::common()
 
 //    java.util.ResourceBundle rb = java.util.ResourceBundle.getBundle("jmri.jmrit.jython.JythonBundle");
 
- f = new JmriJFrame(tr("Script Output"));
+ f = new JmriJFrameX(tr("Script Output"));
  f->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
  QWidget* centralWidget = new QWidget;
  QVBoxLayout* centralWidgetLayout = new QVBoxLayout(centralWidget);

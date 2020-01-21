@@ -606,3 +606,7 @@ protected QWidget* makeDndIconPanel() {
     }
 }
 #endif
+/*public*/ QString EditPortalFrame::getClassName()
+{
+ return "jmri.jmrit.display.controlPanelEditor.EditPortalFrame";
+}

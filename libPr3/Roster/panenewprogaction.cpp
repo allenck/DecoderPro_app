@@ -52,7 +52,7 @@ void PaneNewProgAction::init()
  if (log->isDebugEnabled()) log->debug("New roster entry programmer requested");
 
  // create the initial frame that steers
- JmriJFrame* f = new JmriJFrame(tr("New Roster Entry Setup"));
+ JmriJFrameX* f = new JmriJFrameX(tr("New Roster Entry Setup"));
 //    f->getContentPane().setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
 // QWidget* centralWidget = new QWidget;
 // QVBoxLayout* centralWidgetLayout = new QVBoxLayout;

@@ -27,6 +27,7 @@ public:
  /*public*/ static /*final*/ QMap<PropertyChangeID, QString> PCIDMap;
  /*public*/ void addHelpMenu(QString ref, bool direct);
  /*public*/ void windowClosing(QCloseEvent e);
+ /*public*/ QString getClassName();
 
 signals:
  void notifyPropertyChange(PropertyChangeEvent *event);

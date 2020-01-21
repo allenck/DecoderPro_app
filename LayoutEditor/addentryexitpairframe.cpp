@@ -63,3 +63,7 @@ void AddEntryExitPairFrame::on_options()
 {
  nxPanel->optionWindow();
 }
+/*public*/ QString AddEntryExitPairFrame::getClassName()
+{
+ return "jmri.jmrit.entryexit.AddEntryExitPairFrame";
+}

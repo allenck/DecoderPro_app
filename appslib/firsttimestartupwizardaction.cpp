@@ -46,7 +46,7 @@ void FirstTimeStartUpWizardAction::common()
     // create the JTable model, with changes for specific NamedBean
     // create the frame
     if (f == nullptr) {
-        f = new JmriJFrame("Decoder Pro Wizard", false, false);
+        f = new JmriJFrameX("Decoder Pro Wizard", false, false);
         // Update the GUI Look and Feel
         // This is needed as certain controls are instantiated
         // prior to the setup of the Look and Feel

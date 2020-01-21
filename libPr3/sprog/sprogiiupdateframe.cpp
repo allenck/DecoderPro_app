@@ -389,5 +389,10 @@ using namespace Sprog;
     startLongTimer();
 }
 
+/*public*/ QString SprogIIUpdateFrame::getClassName()
+{
+ return "jmri.jmrix.sprog.SprogIIUpdateFrame";
+}
+
 /*private*/ /*final*/ /*static*/ Logger* SprogIIUpdateFrame::log = LoggerFactory
         ::getLogger("SprogIIUpdateFrame");

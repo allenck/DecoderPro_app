@@ -13,6 +13,8 @@ namespace Operations
   Q_OBJECT
  public:
   ScheduleOptionsFrame(ScheduleEditFrame* parent = 0);
+  /*public*/ QString getClassName();
+
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);
 

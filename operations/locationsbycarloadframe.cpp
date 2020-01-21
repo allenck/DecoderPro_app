@@ -493,5 +493,9 @@ namespace Operations
          updateLoadComboBox();
      }
  }
+/*public*/ QString LocationsByCarLoadFrame::getClassName()
+{
+ return "jmri.jmrit.operations.locations.tools.LocationsByCarLoadFrame";
+}
 
 }

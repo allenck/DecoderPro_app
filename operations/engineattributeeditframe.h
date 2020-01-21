@@ -20,6 +20,7 @@ namespace Operations
   /*public*/ void initComponents(QString comboboxName, QString select);
   /*public*/ void dispose();
   PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+  /*public*/ QString getClassName();
 
  signals:
 

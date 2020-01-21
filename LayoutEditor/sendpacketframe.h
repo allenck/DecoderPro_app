@@ -17,6 +17,7 @@ public:
  explicit SendPacketFrame(QWidget *parent = 0);
  /*public*/ void initComponents() /*throws Exception*/;
  /*public*/ void dispose();
+ /*public*/ QString getClassName();
 
 signals:
 

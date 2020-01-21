@@ -2010,3 +2010,8 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
  }
  return NULL;
 }
+
+/*public*/ QString ConvertFrame::getClassName()
+{
+ return "jmri.jmrit.display.controlPanelEditor.ConvertFrame";
+}

@@ -4,7 +4,10 @@
 #include <QObject>
 #include <QMap>
 #include "libPr3_global.h"
+#include "jmrijframe.h"
 
+class ThrottlePreferencesFrame;
+class ThrottlesListFrame;
 class ThrottlesListPanel;
 class QMainWindow;
 //class ThrottlesListPanel;
@@ -49,8 +52,8 @@ private:
     /*private*/ QList<ThrottleWindow*>* throttleWindows;
 
     /*private*/ ThrottlesPreferences* throttlesPref;
-    /*private*/ JmriJFrame* throttlePreferencesFrame;
-    /*private*/ JmriJFrame* throttlesListFrame;
+    /*private*/ ThrottlePreferencesFrame* throttlePreferencesFrame;
+    /*private*/ ThrottlesListFrame* throttlesListFrame;
     /*private*/ ThrottlesListPanel* throttlesListPanel;
     /*private*/ void destroyThrottleWindow(ThrottleWindow* window);
     /*private*/ void requestFocusForNextFrame();
@@ -63,4 +66,20 @@ private slots:
 
 };
 Q_DECLARE_METATYPE(ThrottleFrameManager)
+
+class ThrottlesListFrame : public  JmriJFrame
+{
+ Q_OBJECT
+public:
+ /*public*/ ThrottlesListFrame(QString name) : JmriJFrame(name) {}
+ /*public*/ QString getClassName() {return "jmri.jmrit.throttle.ThrottleFrameManager:ThrottlesListFrame";}
+};
+class ThrottlePreferencesFrame : public  JmriJFrame
+{
+ Q_OBJECT
+public:
+ /*public*/ ThrottlePreferencesFrame(QString name) : JmriJFrame(name) {}
+ /*public*/ QString getClassName() {return "jmri.jmrit.throttle.ThrottleFrameManager:ThrottlePreferencesFrame";}
+};
+
 #endif // THROTTLEFRAMEMANAGER_H

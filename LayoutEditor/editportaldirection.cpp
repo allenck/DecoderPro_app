@@ -265,3 +265,8 @@
 /*protected*/ OBlock* EditPortalDirection::getHomeBlock() {
     return _homeBlock;
 }
+
+/*public*/ QString EditPortalDirection::getClassName()
+{
+ return "jmri.jmrit.display.controlPanelEditor.EditPortalDirection";
+}

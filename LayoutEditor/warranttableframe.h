@@ -21,6 +21,7 @@ public:
  /*public*/ void mouseEntered(QMouseEvent* event);
  /*public*/ void mouseExited(QMouseEvent* event);
  /*public*/ void mouseReleased(QMouseEvent* event);
+ /*public*/ QString getClassName();
 
 
 signals:

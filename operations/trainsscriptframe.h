@@ -13,6 +13,7 @@ namespace Operations
   TrainsScriptFrame(QWidget* parent =0);
   /*public*/ void initComponents();
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae) ;

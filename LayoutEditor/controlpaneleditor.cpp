@@ -2696,3 +2696,6 @@ void ControlPanelEditor::sceneChanged(QList<QRectF> /*rect*/)
 #endif
 }
 
+/*public*/ QString ControlPanelEditor::getClassName(){
+ return "jmri.jmrit.display.controlpaneleditor.ControlPanelEditor";
+}

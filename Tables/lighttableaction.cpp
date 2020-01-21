@@ -463,7 +463,7 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         cancelPressed(nullptr);
     }
     if (addFrame == nullptr) {
-        addFrame = new JmriJFrame(tr("Add Light"), false, true);
+        addFrame = new JmriJFrameX(tr("Add Light"), false, true);
         addFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
         addFrame->addHelpMenu("package.jmri.jmrit.beantable.LightAddEdit", true);
         addFrame->setLocation(100, 30);
@@ -1281,7 +1281,7 @@ void LightTableAction::cancelPressed(ActionEvent* /*e*/) {
 /*private*/ void LightTableAction::addEditControlWindow() {
 #if 1
     if (addControlFrame == NULL) {
-        addControlFrame = new JmriJFrame(tr("Add Light Control"), false, true);
+        addControlFrame = new JmriJFrameX(tr("Add Light Control"), false, true);
         addControlFrame->addHelpMenu("package.jmri.jmrit.beantable.LightAddEdit", true);
         addControlFrame->setLocation(120, 40);
         QWidget* contentPane = addControlFrame->getContentPane();

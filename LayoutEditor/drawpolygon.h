@@ -14,6 +14,7 @@ class DrawPolygon : public DrawFrame
   DrawPolygon();
   /*public*/ DrawPolygon(QString which, QString title, ShapeDrawer* parent);
   /*public*/ void paint(QGraphicsScene* g);
+  /*public*/ QString getClassName();
 
  private:
   static Logger* log;

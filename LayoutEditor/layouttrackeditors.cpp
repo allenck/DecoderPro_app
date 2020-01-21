@@ -178,7 +178,7 @@ void LayoutTrackEditors::showSensorMessage() {
     if (editTrackSegmentOpen) {
         editTrackSegmentFrame->setVisible(true);
     } else if (editTrackSegmentFrame ==  nullptr) { // Initialize if needed
-        editTrackSegmentFrame = new JmriJFrame(tr("EditTrackSegment"), false, true); // key moved to DisplayBundle to be found by CircuitBuilder.java   // NOI18N
+        editTrackSegmentFrame = new JmriJFrameX(tr("EditTrackSegment"), false, true); // key moved to DisplayBundle to be found by CircuitBuilder.java   // NOI18N
         editTrackSegmentFrame->addHelpMenu("package.jmri.jmrit.display.EditTrackSegment", true);  // NOI18N
         editTrackSegmentFrame->setLocation(50, 30);
         QWidget* contentPane = editTrackSegmentFrame->getContentPane(true);
@@ -427,7 +427,7 @@ void LayoutTrackEditors::showSensorMessage() {
     if (editLayoutTurnoutOpen) {
         editLayoutTurnoutFrame->setVisible(true);
     } else if (editLayoutTurnoutFrame ==  nullptr) { // Initialize if needed
-        editLayoutTurnoutFrame = new JmriJFrame(tr("EditTurnout"), false, true);  // NOI18N
+        editLayoutTurnoutFrame = new JmriJFrameX(tr("EditTurnout"), false, true);  // NOI18N
         editLayoutTurnoutFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutTurnout", true);  // NOI18N
         editLayoutTurnoutFrame->setLocation(50, 30);
         QWidget* contentPane = editLayoutTurnoutFrame->getContentPane(true);
@@ -1013,7 +1013,7 @@ void LayoutTrackEditors::showSensorMessage() {
  }
  else if (editLayoutSlipFrame ==  nullptr)
  {   // Initialize if needed
-    editLayoutSlipFrame = new JmriJFrame(tr("Edit Slip"), false, true);  // NOI18N
+    editLayoutSlipFrame = new JmriJFrameX(tr("Edit Slip"), false, true);  // NOI18N
     editLayoutSlipFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutSlip", true);  // NOI18N
     editLayoutSlipFrame->setLocation(50, 30);
 
@@ -1542,7 +1542,7 @@ if (editLayoutSlipNeedsRedraw) {
      editLevelXingFrame->setVisible(true);
  } else // Initialize if needed
  if (editLevelXingFrame ==  nullptr) {
-    editLevelXingFrame = new JmriJFrame(tr("EditXing"), false, true);  // NOI18N
+    editLevelXingFrame = new JmriJFrameX(tr("EditXing"), false, true);  // NOI18N
     editLevelXingFrame->addHelpMenu("package.jmri.jmrit.display.EditLevelXing", true);  // NOI18N
     editLevelXingFrame->setLocation(50, 30);
     QWidget* contentPane = editLevelXingFrame->getContentPane();
@@ -1806,7 +1806,7 @@ if (editLayoutTurntableOpen) {
     editLayoutTurntableFrame->setVisible(true);
 } else // Initialize if needed
 if (editLayoutTurntableFrame ==  nullptr) {
-    editLayoutTurntableFrame = new JmriJFrame(tr("EditTurntable"), false, true);  // NOI18N
+    editLayoutTurntableFrame = new JmriJFrameX(tr("EditTurntable"), false, true);  // NOI18N
     editLayoutTurntableFrame->addHelpMenu("package.jmri.jmrit.display.EditTurntable", true);  // NOI18N
     editLayoutTurntableFrame->setLocation(50, 30);
 

@@ -19,6 +19,7 @@ public:
     /*public*/ void setAdapter(LnHexFilePort* adapter);
     /*public*/ LnHexFilePort* getAdapter();
     /*public*/ void dispose();
+    /*public*/ QString getClassName();
 
 signals:
 

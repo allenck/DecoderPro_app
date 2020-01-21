@@ -288,7 +288,7 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
  }
  if (f == NULL)
  {
-  f = new JmriJFrame("Edit " + getBeanType() + " " + bean->getDisplayName(), false, false);
+  f = new JmriJFrameX("Edit " + getBeanType() + " " + bean->getDisplayName(), false, false);
   f->addHelpMenu(helpTarget(), true);
   //java.awt.Container containerPanel = f.getContentPane();
   QWidget* containerPanel = new QWidget;

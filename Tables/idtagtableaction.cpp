@@ -287,7 +287,7 @@ void IdTagBeanTableDataModel::configureTable(JTable *table)
 //@Override
 /*protected*/ void IdTagTableAction::addPressed(ActionEvent* /*e*/) {
     if (addFrame == NULL) {
-        addFrame = new JmriJFrame(tr("Add Id Tag"), false, true);
+        addFrame = new JmriJFrameX(tr("Add Id Tag"), false, true);
         addFrame->addHelpMenu("package.jmri.jmrit.beantable.IdTagAddEdit", true);
         QVBoxLayout* thisLayout;
         addFrame->getContentPane()->setLayout(thisLayout = new QVBoxLayout()); //, BoxLayout.Y_AXIS));

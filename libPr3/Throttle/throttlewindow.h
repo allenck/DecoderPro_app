@@ -65,6 +65,7 @@ public:
     /*public*/ static void setTransparent(QWidget* jcomp);
     /*public*/ static void setTransparent(QObject* jcomp, bool transparency);
     QObject* self() {return (QObject*)this;}
+    QString getClassName();
 
 public slots:
     /*public*/ void saveThrottle();

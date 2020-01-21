@@ -87,6 +87,7 @@ public:
     /*public*/ static bool getCanCacheDefault();
     /*public*/ static void setDoConfirmRead(bool yes);
     /*public*/ static bool getDoConfirmRead();
+    /*public*/ QString getClassName();
 
 public slots:
     void on_btnReadChangesAllSheets_clicked();

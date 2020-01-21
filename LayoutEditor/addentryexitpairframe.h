@@ -12,6 +12,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT AddEntryExitPairFrame : public JmriJFrame
 public:
  explicit AddEntryExitPairFrame(QWidget *parent = 0);
  /*public*/ void initComponents(LayoutEditor* panel); //throws Exception
+ /*public*/ QString getClassName();
 
 signals:
 

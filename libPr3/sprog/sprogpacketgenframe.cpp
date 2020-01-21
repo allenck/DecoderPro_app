@@ -66,3 +66,8 @@ using namespace Sprog;
     SprogMessage* m = new SprogMessage(packetTextField->text());
     _memo->getSprogTrafficController()->sendSprogMessage(m);
 }
+
+/*public*/ QString SprogPacketGenFrame::getClassName()
+{
+ return "jmri.tmrix.sprog.packetgen.SprogPacketGenFrame";
+}

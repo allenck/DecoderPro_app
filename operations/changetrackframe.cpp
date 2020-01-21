@@ -1,4 +1,4 @@
-#include "changetrackframe.h"
+﻿#include "changetrackframe.h"
 #include "operationsxml.h"
 #include <QBoxLayout>
 #include "control.h"
@@ -108,5 +108,9 @@ namespace Operations
      _tef->dispose();
      dispose();
  }
+/*public*/ QString ChangeTrackFrame::getClassName()
+{
+ return "jmri.jmrit.operations.locations.tools.ChangeTrackFrame";
+}
 
 }

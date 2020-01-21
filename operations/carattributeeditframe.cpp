@@ -589,4 +589,9 @@ namespace Operations
      pcs->firePropertyChange(p, old, n);
  }
 
+ /*public*/ QString CarAttributeEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.rollingstock.cars.CarAttributeEditFrame";
+ }
+
 }

@@ -10,6 +10,8 @@ namespace Operations
  public:
   PrintMoreOptionFrame(QWidget* parent = 0);
   /*public*/ void initComponents();
+  /*public*/ QString getClassName();
+
  };
 }
 #endif // PRINTMOREOPTIONFRAME_H

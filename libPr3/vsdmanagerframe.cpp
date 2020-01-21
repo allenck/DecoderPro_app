@@ -506,3 +506,8 @@ void VSDManagerFrame::firePropertyChange(PropertyChangeEvent* evt)
     log->debug("property change name " + event->getPropertyName() + " old " + event->getOldValue().toString() + " new " + event->getNewValue().toString());
     vsdControlPropertyChange(event);
 }
+
+/*public*/ QString VSDManagerFrame::getClassName()
+{
+ return "jmri.jmrit.vsdecoder.swing.VSDManagerFrame";
+}

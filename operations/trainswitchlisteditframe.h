@@ -17,6 +17,8 @@ namespace Operations
   TrainSwitchListEditFrame(QWidget* parent = 0);
   /*public*/ void initComponents();
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
+
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);
@@ -95,6 +97,9 @@ namespace Operations
   Logger* log;
   /*private*/ TrainSwitchListCommentFrame(Location* location);
   /*private*/ void initComponents(Location* location);
+ public:
+  /*public*/ QString getClassName();
+
   // Buttons
  public slots:
 

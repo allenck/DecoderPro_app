@@ -52,7 +52,7 @@ void ReportContextAction::common()
 /*public*/ void ReportContextAction::actionPerformed(ActionEvent* )
 {
 
-    frame = new JmriJFrame(tr("Context"));  // JmriJFrame to ensure fits on screen
+    frame = new JmriJFrameX(tr("Context"));  // JmriJFrame to ensure fits on screen
     QVBoxLayout* frameLayout = (QVBoxLayout*)frame->getContentPane()->layout();
     ///*final*/ Clipboard clipboard = frame.getToolkit().getSystemClipboard();
 

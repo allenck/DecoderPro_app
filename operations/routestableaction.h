@@ -13,6 +13,7 @@ namespace Operations
   public:
    RoutesTableAction(QObject* parent);
    /*public*/ RoutesTableAction(QString s, QObject* parent);
+
  public slots:
    /*public*/ void actionPerformed(ActionEvent* e = 0);
 

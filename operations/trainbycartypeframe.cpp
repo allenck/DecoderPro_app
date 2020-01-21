@@ -468,4 +468,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          addLocationAndTrackPropertyChange();
      }
  }
+/*public*/ QString TrainByCarTypeFrame::getClassName()
+{
+ return "jmri.jmrit.operations.trains.tools.TrainByCarTypeFrame";
+}
+
 }

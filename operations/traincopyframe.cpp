@@ -153,5 +153,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  /*public*/ void TrainCopyFrame::dispose() {
      OperationsFrame::dispose();
  }
+/*public*/ QString TrainCopyFrame::getClassName()
+{
+ return "jmri.jmrit.operations.trains.tools.TrainCopyFrame";
+}
 
 }

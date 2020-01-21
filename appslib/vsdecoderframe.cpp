@@ -109,3 +109,8 @@
 /*public*/ QList<QMenu*> VSDecoderFrame::getMenus() {
     return menuList;
 }
+
+/*public*/ QString VSDecoderFrame::getClassName()
+{
+ return "jmri.jmrit.vsdecoder.VSDecoderFrame";
+}

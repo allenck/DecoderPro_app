@@ -131,3 +131,7 @@ PaneServiceProgFrame::MyProgServiceModeComboBox::MyProgServiceModeComboBox(PaneS
 {
  return QList<GlobalProgrammerManager*>();
 }
+/*public*/ QString PaneServiceProgFrame::getClassName()
+{
+ return "jmri.jmrit.symbolicprog.tabbedframe.PaneServiceProgFrame";
+}

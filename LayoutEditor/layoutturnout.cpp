@@ -2861,7 +2861,7 @@ boundaryBetween = QVector<QString>(4);
  // Initialize if needed
  if (editLayoutTurnoutFrame == nullptr)
  {
-  editLayoutTurnoutFrame = new JmriJFrame( tr("Edit Turnout"), false, true );
+  editLayoutTurnoutFrame = new JmriJFrameX( tr("Edit Turnout"), false, true );
   editLayoutTurnoutFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutTurnout", true);
   editLayoutTurnoutFrame->setLocation(50,30);
 //     Container contentPane = editLayoutTurnoutFrame.getContentPane();

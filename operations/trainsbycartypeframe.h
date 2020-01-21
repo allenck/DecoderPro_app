@@ -14,6 +14,7 @@ namespace Operations
   TrainsByCarTypeFrame(QWidget* parent = 0);
   /*public*/ void initComponents(QString carType);
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

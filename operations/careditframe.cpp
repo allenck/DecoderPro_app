@@ -1128,4 +1128,9 @@ namespace Operations
 
  }
 
+ /*public*/ QString CarEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.rollingstock.cars.CarEditFrame";
+ }
+
 }

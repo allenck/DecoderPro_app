@@ -11,6 +11,7 @@ public:
  //explicit EditorFrame(QWidget *parent = 0);
  /*public*/ EditorFrame(SdfBuffer* buff,QWidget *parent = 0);
  /*public*/ void dispose();
+ /*public*/ QString getClassName();
 
 signals:
 

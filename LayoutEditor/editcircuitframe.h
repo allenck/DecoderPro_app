@@ -19,6 +19,7 @@ public:
     static bool _firstInstance;// = true;
     static QPoint _loc;// = null;
     static QSize _dim;// = null;
+    /*public*/ QString getClassName();
 
 signals:
 

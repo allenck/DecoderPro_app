@@ -9,6 +9,7 @@ class DrawEllipse : public DrawFrame
 public:
     //explicit DrawEllipse(QWidget *parent = 0);
     /*public*/ DrawEllipse(QString which, QString _title, ShapeDrawer* parent);
+ /*public*/ QString getClassName();
 
 signals:
 

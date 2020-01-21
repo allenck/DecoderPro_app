@@ -18,6 +18,7 @@ namespace Operations
   /*public*/ void initComponents();
   /*public*/ void setDestinationEnabled(bool enable);
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void comboBoxActionPerformed(QWidget* ae);

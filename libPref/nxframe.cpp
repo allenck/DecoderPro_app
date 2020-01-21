@@ -1265,4 +1265,8 @@ void NXFrame::onDestUnits()
  }
  return true;
 }
+/*public*/ QString NXFrame::getClassName()
+{
+ return "jmri.jmrit.nixieclock.NXFrame";
+}
 

@@ -1426,4 +1426,10 @@ if (!anyDrops->isChecked())
       updateDestinationOption();
   }
  }
+
+ /*public*/ QString TrackEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.TrackEditFrame";
+ }
+
 }

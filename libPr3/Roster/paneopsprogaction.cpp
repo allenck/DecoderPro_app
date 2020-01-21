@@ -66,7 +66,7 @@
  if (log->isDebugEnabled()) log->debug("Pane programmer requested");
 
  // create the initial frame that steers
- /*final*/ JmriJFrame* f = new JmriJFrame(tr("Operations Mode (Main Track) Programmer Setup"));
+ /*final*/ JmriJFrame* f = new JmriJFrameX(tr("Operations Mode (Main Track) Programmer Setup"));
  //f.getContentPane().setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
  QWidget* contentPane = new QWidget;
  QVBoxLayout* layout = new QVBoxLayout;

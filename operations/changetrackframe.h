@@ -12,6 +12,8 @@ namespace Operations
   Q_OBJECT
  public:
   ChangeTrackFrame(TrackEditFrame* tef);
+  /*public*/ QString getClassName();
+
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);
 

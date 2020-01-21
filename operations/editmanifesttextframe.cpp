@@ -29,5 +29,9 @@ namespace Operations
 
      initMinimumSize();
  }
+/*public*/ QString EditManifestTextFrame::getClassName()
+{
+ return "jmri.jmrit.operations.setup.EditManifestTextFrame";
+}
 
 }

@@ -57,7 +57,7 @@
 
 /*public*/ void RemoveRosterEntryToGroupAction::actionPerformed(ActionEvent* /*event*/)
 {
- frame = new JmriJFrame("Remove Loco from Group");
+ frame = new JmriJFrameX("Remove Loco from Group");
  rosterBox = new RosterEntrySelectorPanel();
  rosterBox->getRosterGroupComboBox()->setAllEntriesEnabled(false);
 //    frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));

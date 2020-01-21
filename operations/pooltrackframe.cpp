@@ -326,5 +326,9 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
          updatePoolStatus();
      }
  }
+ /*public*/ QString PoolTrackFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.tools.PoolTrackFrame";
+ }
 
 }

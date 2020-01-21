@@ -39,3 +39,7 @@ SignallingSourceFrame::SignallingSourceFrame(QWidget *parent) :
  // pack for display
  pack();
 }
+/*public*/ QString SignallingSourceFrame::getClassName()
+{
+ return "jmri.jmrit.signalling.SignallingSourceFrame";
+}

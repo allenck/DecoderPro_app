@@ -259,3 +259,8 @@ InstanceManager::setThrottleManager(
 
 /*public*/ void HexFileFrame::setAdapter(LnHexFilePort* adapter) { port = adapter; }
 /*public*/ LnHexFilePort* HexFileFrame::getAdapter() { return port; }
+
+/*public*/ QString HexFileFrame::getClassName()
+{
+ return "jmri.jmrix.loconet.hexfile.HexFileFrame";
+}

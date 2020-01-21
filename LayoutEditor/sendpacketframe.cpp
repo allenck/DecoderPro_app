@@ -262,4 +262,8 @@ QByteArray SendPacketFrame::createPacket(QString s) {
     mRunButton->setChecked(false);
     JmriJFrame::dispose();
 }
+/*public*/ QString SendPacketFrame::getClassName()
+{
+ return "jmri.jmrit.sendpacket.SendPacketFrame";
+}
 

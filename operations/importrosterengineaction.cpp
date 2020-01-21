@@ -40,7 +40,7 @@ namespace Operations
      // create a status frame
      QWidget* ps = new QWidget();
      ps->setLayout(new QHBoxLayout);
-     fstatus = new JmriJFrame(tr("TitleImportEngines"));
+     fstatus = new JmriJFrameX(tr("TitleImportEngines"));
      //fstatus.setLocationRelativeTo(NULL);
      fstatus->resize(200, 100);
 

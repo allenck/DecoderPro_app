@@ -40,3 +40,8 @@
     // pack for display
     pack();
 }
+
+/*public*/ QString SignallingFrame::getClassName()
+{
+ return "jmri.jmrit.signalling.SignallingFrame";
+}

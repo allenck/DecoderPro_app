@@ -1248,4 +1248,9 @@ namespace Operations
      }
  }
 
+ /*public*/ QString TrainEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.trains.TrainEditFrame";
+ }
+
 }

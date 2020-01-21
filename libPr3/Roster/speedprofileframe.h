@@ -10,6 +10,7 @@ class SpeedProfileFrame : public JmriJFrame
 public:
  explicit SpeedProfileFrame(QWidget *parent = 0);
  /*public*/ void initComponents() /*throws Exception*/;
+ /*public*/ QString getClassName();
 
 signals:
 

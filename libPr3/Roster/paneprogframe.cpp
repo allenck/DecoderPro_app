@@ -1955,3 +1955,8 @@ void PaneProgFrame::setProgrammingGui(QWidget* pane)
                 ? true
                 : ((ProgrammerConfigManager*)InstanceManager::getDefault("ProgrammerConfigManager"))->isDoConfirmRead();
     }
+
+/*public*/ QString PaneProgFrame::getClassName()
+{
+ return "jmri.jmrit.symbolicprog.tabbedframe.PaneProgFrame";
+}

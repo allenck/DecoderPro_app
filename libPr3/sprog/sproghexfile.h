@@ -25,6 +25,7 @@ namespace Sprog
   /*public*/ char getAddressH();
   /*public*/ char getAddressU();
   /*public*/ QVector<int> getData();
+  /*public*/ QString getClassName();
 
 
  private:

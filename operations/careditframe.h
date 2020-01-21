@@ -35,6 +35,7 @@ namespace Operations
   /*public*/ void dispose();
   /*public*/ void checkBoxActionPerformed(QWidget* ae);
   /*public*/ void loadCar(Car* car);
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

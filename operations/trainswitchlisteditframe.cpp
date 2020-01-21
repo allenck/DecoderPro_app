@@ -639,5 +639,14 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          }
      }
 
+     /*public*/ QString TrainSwitchListEditFrame::getClassName()
+     {
+      return "jmri.jmrit.operations.trains.TrainSwitchListEditFrame";
+     }
+
+     /*public*/ QString TrainSwitchListCommentFrame::getClassName()
+     {
+      return "jmri.jmrit.operations.trains.TrainSwitchListCommentFrame";
+     }
 
 }

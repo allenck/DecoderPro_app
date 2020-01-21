@@ -17,6 +17,7 @@ public:
     /*public*/ void scaleImage();
 //    void paint(QGraphicsScene* g);
     /*public*/ void dispose();
+ /*public*/ QString getClassName();
 
 signals:
 

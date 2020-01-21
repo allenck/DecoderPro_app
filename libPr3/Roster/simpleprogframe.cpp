@@ -299,3 +299,8 @@ void SimpleProgFrame::On_write_programmerException(QString txt)
     modePane->dispose();
     JmriJFrame::dispose();
 }
+
+/*public*/ QString SimpleProgFrame::getClassName()
+{
+ return "jmri.jmrit.simpleprog.SimpleProgFrame";
+}

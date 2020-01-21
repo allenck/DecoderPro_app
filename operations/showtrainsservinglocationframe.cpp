@@ -294,4 +294,10 @@ namespace Operations
          addPropertyChangeAllTrains();
      }
  }
+/*public*/ QString ShowTrainsServingLocationFrame::getClassName()
+{
+ return "jmri.jmrit.operations.locations.tools.ShowTrainsServingLocationFrame";
+}
+
+
 }

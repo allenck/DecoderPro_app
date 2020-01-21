@@ -273,5 +273,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          updateLocations();
      }
  }
+/*public*/ QString SchedulesByLoadFrame::getClassName()
+{
+ return "jmri.jmrit.operations.locations.schedules.SchedulesByLoadFrame";
+}
 
 }

@@ -282,3 +282,7 @@
 }
 /*static*/ QWidget* AppsLaunchFrame::_buttonSpace = NULL;
 
+/*public*/ QString AppsLaunchFrame::getClassName()
+{
+ return "apps.AppsLaunchFrame";
+}

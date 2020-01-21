@@ -502,4 +502,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          updateSwitchListButton();
      }
  }
+/*public*/ QString TrainsScheduleTableFrame::getClassName()
+{
+ return "jmri.jmrit.operations.operations.trains.schedules.TrainsScheduleTableFrame";
+}
+
 }

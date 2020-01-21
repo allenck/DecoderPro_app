@@ -11,6 +11,7 @@ namespace Operations {
   //explicit OperationsSetupFrame(QWidget *parent = 0);
  /*public*/ OperationsSetupFrame(QWidget *parent = 0);
   /*public*/ void initComponents();
+  /*public*/ QString getClassName();
 
  signals:
 

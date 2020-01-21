@@ -425,3 +425,7 @@ void ImageIndexEditor::deleteNode() {
  return cnt;
 }
 
+/*public*/ QString ImageIndexEditor::getClassName()
+{
+ return "jmri.jmrit.catalog.ImageIndexEditor";
+}

@@ -171,4 +171,9 @@ namespace Operations
      OperationsFrame::dispose();
  }
 
+ /*public*/ QString LocationsTableFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.LocationsTableFrame";
+ }
+
 }

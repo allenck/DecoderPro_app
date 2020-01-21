@@ -11,6 +11,7 @@ namespace Operations
  public:
   EditManifestHeaderTextFrame(QWidget* parent = 0);
   /*public*/ void initComponents();
+  /*public*/ QString getClassName();
 
  };
 }

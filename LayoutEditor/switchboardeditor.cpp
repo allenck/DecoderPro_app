@@ -1383,7 +1383,7 @@ void SwitchboardEditor::onOpenEditor()
  * @param name title for the Switchboard
  */
 /*public*/ JmriJFrame* SwitchboardEditor::makeFrame(QString name) {
-    JmriJFrame* targetFrame = new JmriJFrame(name, nullptr);
+    JmriJFrame* targetFrame = new JmriJFrameX(name/*, nullptr*/);
     targetFrame->setVisible(true);
     targetFrame->setFrameRef("Switchboard");
     targetFrame->setFrameLocation();
@@ -1536,6 +1536,10 @@ void SwitchboardEditor::onAddAction()
             break;
     }
     _scrollState = state;
+}
+/*public*/ QString SwitchboardEditor::getClassName()
+{
+ return "jmri.jmrit.display.switchboardEditor.SwitchboardEditor";
 }
 
 

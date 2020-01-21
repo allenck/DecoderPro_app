@@ -199,4 +199,10 @@ namespace Operations
          TrackEditFrame::checkBoxActionPerformed(ae);
      }
  }
+
+ /*public*/ QString StagingEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.StagingEditFrame";
+ }
+
 }

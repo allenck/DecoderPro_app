@@ -15,6 +15,7 @@ namespace Sprog
  public:
   SprogPacketGenFrame(SprogSystemConnectionMemo*, QWidget* parent = 0);
   /*public*/ void initComponents();
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void sendButtonActionPerformed(/*ActionEvent* e*/);

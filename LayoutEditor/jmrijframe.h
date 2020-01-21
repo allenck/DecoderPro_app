@@ -68,7 +68,7 @@ public:
     virtual /*public*/ QVariant getProperty(QString key);
     /*public*/ void makePrivateWindow();
     virtual /*public*/ void windowClosing(QCloseEvent* e);
-    /*public*/ virtual QString getClassName();
+    /*public*/ virtual QString getClassName() = 0;
     /*public*/ void addNotify();
     /*public*/ void setFrameLocation();
     QMenu* windowMenu;
@@ -82,6 +82,8 @@ signals:
 
 public slots:
 //    void on_menuWindow_aboutToShow();
+    void setupWindowRef();
+
 private:
     static /*volatile*/ QList<JmriJFrame*>* frameList;// = new QList<JmriJFrame*>();
     void reSizeToFitOnScreen();
@@ -151,6 +153,17 @@ class JmriJFrameWindowListener : public WindowListener
 public:
  JmriJFrameWindowListener(JmriJFrame* frame);
  void windowClosing(QCloseEvent*);
+};
+
+// overload that won't provide class name
+class JmriJFrameX : public  JmriJFrame
+{
+ Q_OBJECT
+public:
+ /*public*/ JmriJFrameX(QString name) : JmriJFrame(name) {}
+ /*public*/ JmriJFrameX(QString name, bool b1, bool b2) : JmriJFrame(name, b1,b2) {}
+
+ /*public*/ QString getClassName() {return JmriJFrame::getClassName();}
 };
 
 #endif // JMRIJFRAME_H

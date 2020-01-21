@@ -298,4 +298,9 @@ namespace Operations
      }
  }
 
+ /*public*/ QString TrackCopyFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.tools.TrackCopyFrame";
+ }
+
 }

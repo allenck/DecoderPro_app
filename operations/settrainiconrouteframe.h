@@ -16,6 +16,7 @@ namespace Operations
   Q_OBJECT
  public:
   SetTrainIconRouteFrame(QString routeName, QWidget* parent = 0);
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

@@ -442,7 +442,7 @@ void ConditionalEditBase::createSinglePanelPickList(int itemType, PickSingleList
     }
 
     // Create the JFrame
-    _pickSingleFrame = new JmriJFrame(("Single Pick List"));  // NOI18N
+    _pickSingleFrame = new JmriJFrameX(("Single Pick List"));  // NOI18N
     _pickSingleFrame->setCentralWidget(_pickSingle);
     _pickSingleFrame->pack();
     _pickSingleFrame->setVisible(true);

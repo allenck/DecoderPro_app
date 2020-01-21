@@ -442,4 +442,9 @@ namespace Operations
          loadTypeComboBox();
      }
  }
+/*public*/ QString ScheduleEditFrame::getClassName()
+{
+ return "jmri.jmrit.operations.locations.schedules.ScheduleEditFrame";
+}
+
 }

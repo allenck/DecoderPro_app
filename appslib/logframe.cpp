@@ -28,3 +28,7 @@
 
     adjustSize();
 }
+/*public*/ QString LogFrame::getClassName()
+{
+ return "jmri.jmrit.frame.LogFrame";
+}

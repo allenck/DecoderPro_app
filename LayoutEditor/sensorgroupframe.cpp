@@ -415,3 +415,7 @@ void SensorGroupFrame::undoGroupPressed() {
     clear();
 }
 
+/*public*/ QString SensorGroupFrame::getClassName()
+{
+ return "jmri.jmrit.sensorgroup.SensorGroupFrame";
+}

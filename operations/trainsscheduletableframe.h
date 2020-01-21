@@ -21,6 +21,8 @@ namespace Operations
   /*public*/ static /*final*/ QString NAME;// = Bundle.getMessage("Name"); // Sort by choices
   /*public*/ static /*final*/ QString TIME;// = Bundle.getMessage("Time");
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
+
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);
   /*public*/ void radioButtonActionPerformed(QWidget* ae);

@@ -9,6 +9,7 @@ class DrawRectangle : public DrawFrame
 public:
     //explicit DrawRectangle(QWidget *parent = 0);
     /*public*/ DrawRectangle(QString which, QString _title, ShapeDrawer* parent);
+    /*public*/ QString getClassName();
 
 signals:
 

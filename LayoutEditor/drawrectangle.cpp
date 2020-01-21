@@ -149,4 +149,8 @@ void DrawRectangle::heightEdited(QString t)
 //    setPositionableParams(pos);
 ////		pos.makeShape();
 //}
+/*public*/ QString DrawRectangle::getClassName()
+{
+ return "jmri.jmrit.display.controlPanelEditor.shape.DrawRectangle";
+}
 

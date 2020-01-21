@@ -213,7 +213,7 @@ _turnoutList =  QList <SignalGroupTurnout*> (/*systemNameList.size()*/);
 // Set up window
 if (addFrame==NULL)
 {
- addFrame = new JmriJFrame("Add/Edit SignalGroup", false, true);
+ addFrame = new JmriJFrameX("Add/Edit SignalGroup", false, true);
  addFrame->addHelpMenu("package.jmri.jmrit.beantable.SignalGroupAddEdit", true);
  addFrame->setLocation(100,30);
  addFrame->resize(300,800);

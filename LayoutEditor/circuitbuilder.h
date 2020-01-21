@@ -39,6 +39,7 @@ public:
  /*public*/ bool doMouseDragged(Positionable* selection, QGraphicsSceneMouseEvent* event);
  /*public*/ bool dragPortal();
  /*public*/ bool doMouseReleased(Positionable* selection, QGraphicsSceneMouseEvent* event);
+ /*public*/ QString getClassName();
 
 signals:
 
@@ -212,6 +213,8 @@ Q_OBJECT
 public:
     ConvertFrame(QString title, PositionableLabel* pos,CircuitBuilder* circuitBuilder) ;
     /*public*/ void dispose();
+    /*public*/ QString getClassName();
+
     friend class CircuitBuilder;
 };
 

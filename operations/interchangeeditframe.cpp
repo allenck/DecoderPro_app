@@ -56,4 +56,10 @@ namespace Operations
      adjustSize();
      setVisible(true);
  }
+
+ /*public*/ QString InterchangeEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.InterchangeEditFrame";
+ }
+
 }

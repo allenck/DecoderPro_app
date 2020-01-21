@@ -22,6 +22,7 @@ public:
  /*public*/ JTextField* stopSensor2; // newJTextField(5);
  /*public*/ void enableConfiguration(bool enable);
  /*public*/ int verifyInputs(bool warn);
+ /*public*/ QString getClassName();
 
 public slots:
  void on_clearButton_clicked();

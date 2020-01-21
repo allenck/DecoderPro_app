@@ -263,4 +263,10 @@ using namespace Sprog;
     }
 }
 
+/*public*/ QString SprogSlotMonFrame::getClassName()
+{
+ return "jmri.jmrix.sprog.sprogslotmon.SprogSlotMonFrame";
+}
+
+
 /*private*/ /*final*/ /*static*/ Logger* SprogSlotMonFrame::log = LoggerFactory::getLogger("SprogSlotMonFrame");

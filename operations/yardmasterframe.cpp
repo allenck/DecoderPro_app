@@ -57,4 +57,9 @@ namespace Operations
 
   initMinimumSize(QSize(Control::panelWidth500, Control::panelHeight500));
  }
+ /*public*/ QString YardmasterFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.YardmasterFrame";
+ }
+
 }

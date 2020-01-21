@@ -967,5 +967,9 @@ namespace Operations
          pla->printLocations();
      }
 // }:
+ /*public*/ QString LocationPrintOptionFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.tools.LocationPrintOptionFrame";
+ }
 
 }

@@ -16,6 +16,7 @@ public:
     /*public*/ BlockBossFrame(QString frameName = tr("Simple Signal Logic"),QWidget *parent = 0);
 
     /*public*/ void setSignal(QString name);
+    /*public*/ QString getClassName();
 
 signals:
 

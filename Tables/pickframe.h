@@ -8,6 +8,7 @@ class PickFrame : public JmriJFrame
 public:
     //explicit PickFrame(QWidget *parent = 0);
     /*public*/ PickFrame(QString _title, QWidget *parent= 0);
+ /*public*/ QString getClassName();
 
 signals:
 

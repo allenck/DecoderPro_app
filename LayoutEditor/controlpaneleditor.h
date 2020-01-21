@@ -45,6 +45,7 @@ public:
  /*public*/ void keyReleaseEvent(QKeyEvent* e);
  /*public*/ void setNextLocation(Positionable* obj);
  /*public*/ void setColorMenu(QMenu* popup, /*JComponent*/QWidget *pos, int type);
+ /*public*/ QString getClassName();
 
 
 signals:

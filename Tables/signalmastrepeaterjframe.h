@@ -9,6 +9,8 @@ class SignalMastRepeaterJFrame : public JmriJFrame
 
 public:
     SignalMastRepeaterJFrame(QWidget* parent = 0);
+    /*public*/ QString getClassName();
+
 private:
     SignalMastRepeaterPanel* sigMastPanel;// = null;
 };

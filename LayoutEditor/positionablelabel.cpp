@@ -705,8 +705,8 @@ void IEFWindowListener::windowClosing(QCloseEvent */*e*/)
 {
  if (isText())
  {
-  CoordinateEdit edit;
-  popup->addAction(CoordinateEdit::getTextEditAction((Positionable*)this, "EditText", &edit));
+  CoordinateEdit* edit=nullptr;
+  popup->addAction(CoordinateEdit::getTextEditAction((Positionable*)this, "EditText", edit));
   return true;
  }
  return false;

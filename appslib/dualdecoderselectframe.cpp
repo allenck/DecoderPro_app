@@ -37,3 +37,7 @@
 
  adjustSize();
 }
+/*public*/ QString DualDecoderSelectFrame::getClassName()
+{
+ return "jmri.jmrit.dualdecoder.DualDecoderSelectFrame";
+}

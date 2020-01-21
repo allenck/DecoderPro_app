@@ -17,6 +17,7 @@ public:
  /*public*/ void dispose();
  QT_DEPRECATED static /*public*/ /*synchronized*/ LnTcpServerFrame* getInstance();
  static /*public*/ /*synchronized*/ LnTcpServerFrame* getDefault();
+ /*public*/ QString getClassName();
 
 signals:
 

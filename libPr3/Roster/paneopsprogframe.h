@@ -12,6 +12,7 @@ public:
                             QString name, QString file, Programmer* p, QWidget *parent = 0);
     void addHelp();
     /*public*/ void dispose();
+    /*public*/ QString getClassName();
 
 signals:
 

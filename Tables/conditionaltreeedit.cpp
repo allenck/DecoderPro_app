@@ -147,7 +147,7 @@
   */
  void ConditionalTreeEdit::makeEditLogixWindow()
  {
-  _editLogixFrame = new JmriJFrame(tr("Edit Logix"));  // NOI18N
+  _editLogixFrame = new JmriJFrameX(tr("Edit Logix"));  // NOI18N
   _editLogixFrame->addHelpMenu(
           "package.jmri.jmrit.conditional.ConditionalTreeEditor", true);  // NOI18N
   QWidget* contentPane = _editLogixFrame->getContentPane();

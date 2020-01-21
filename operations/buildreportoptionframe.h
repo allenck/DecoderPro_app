@@ -10,6 +10,8 @@ namespace Operations
  public:
   BuildReportOptionFrame(QWidget* parent = 0);
   /*public*/ void initComponents();
+  /*public*/ QString getClassName();
+
  };
 }
 #endif // BUILDREPORTOPTIONFRAME_H

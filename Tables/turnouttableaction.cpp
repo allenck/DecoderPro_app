@@ -1056,7 +1056,7 @@ TableSorter sorter;
 
  if (addFrame==NULL)
  {
-  addFrame = new JmriJFrame(tr("Add Turnout"), false, true);
+  addFrame = new JmriJFrameX(tr("Add Turnout"), false, true);
   addFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.TurnoutAddEdit", true);
   QWidget* centralWidget = new QWidget;

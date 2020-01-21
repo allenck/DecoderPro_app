@@ -394,5 +394,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          updateTypeComboBoxes();
      }
  }
+/*public*/ QString TrainLoadOptionsFrame::getClassName()
+{
+ return "jmri.jmrit.operations.trains.TrainLoadOptionsFrame";
+}
 
 }

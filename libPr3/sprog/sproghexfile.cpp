@@ -423,6 +423,10 @@ using namespace Sprog;
     } catch (IOException e) {
     }
 }
+/*public*/ QString SprogHexFile::getClassName()
+{
+ return "jmri.jmrix.sprog.update.SprogHexFile";
+}
 
 /*private*/ /*final*/ /*static*/ Logger* SprogHexFile::log = LoggerFactory
         ::getLogger("SprogHexFile");

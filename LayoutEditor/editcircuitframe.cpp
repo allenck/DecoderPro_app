@@ -199,7 +199,7 @@ void EditCircuitFrame::openPickListButton_clicked()
 }
 
 void EditCircuitFrame::openPickList() {
-    _pickFrame = new JmriJFrame();
+    _pickFrame = new JmriJFrameX("EditCircuit");
     QWidget* content = new QWidget();
     content->setLayout(new QVBoxLayout(content/*, BoxLayout.Y_AXIS*/));
 
@@ -495,3 +495,7 @@ void EditCircuitFrame::closePickList() {
     _numTurnouts->setText(QString::number(turnouts));
 }
 
+/*public*/ QString EditCircuitFrame::getClassName()
+{
+ return "jmri.jmrit.display.controlPanelEditor.EditCircuitFrame";
+}

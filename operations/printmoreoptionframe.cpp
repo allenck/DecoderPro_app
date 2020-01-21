@@ -33,5 +33,9 @@ namespace Operations
 
       initMinimumSize(QSize(Control::panelWidth300, Control::panelHeight400));
   }
+/*public*/ QString PrintMoreOptionFrame::getClassName()
+{
+ return "jmri.jmrit.operations.setup.PrintMoreOptionFrame";
+}
 
 }

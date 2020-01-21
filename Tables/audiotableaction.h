@@ -29,6 +29,7 @@ public:
  /*public*/ void setMenuBar(BeanTableFrame* f);
  Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
  Q_INVOKABLE /*public*/ QString getClassDescription();
+
 signals:
 
 public slots:

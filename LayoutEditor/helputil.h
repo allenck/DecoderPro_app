@@ -91,6 +91,8 @@ private slots:
   public:
   HelpFrame(QString ref);
   void setUrl(QString ref);
+  /*public*/ QString getClassName();
+
  public slots:
   void loadFinished(bool);
   void statusBarMessage(QString);

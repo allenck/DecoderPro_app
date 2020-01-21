@@ -870,7 +870,7 @@ void LogixTableAction::enableAll(bool enable) {
 */
 QWidget* LogixTableAction::makeAddLogixFrame(QString titleId, QString messageId1,QString messageId2)
 {
- addLogixFrame = new JmriJFrame(titleId,true,true);
+ addLogixFrame = new JmriJFrameX(titleId,true,true);
  addLogixFrame->addHelpMenu(
             "package.jmri.jmrit.beantable.LogixAddEdit", true);
  addLogixFrame->setLocation(50, 30);
@@ -1958,7 +1958,7 @@ QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QMode
  */
 void LogixTableAction::makeWhereUsedWindow() {
 
-    JmriJFrame* referenceListFrame = new JmriJFrame(tr("Conditional Variable References"), false, true);    // NOI18N
+    JmriJFrame* referenceListFrame = new JmriJFrameX(tr("Conditional Variable References"), false, true);    // NOI18N
     QWidget* contentPane = referenceListFrame->getContentPane();
     QVBoxLayout* contentPaneLayout;
     contentPane->setLayout(contentPaneLayout = new QVBoxLayout()); //(contentPane, BoxLayout.Y_AXIS));
@@ -2032,7 +2032,7 @@ void LogixTableAction::browserPressed(QString sName) {
  * creates and initializes the conditionals browser window
  */
 void LogixTableAction::makeBrowserWindow() {
-    condBrowserFrame = new JmriJFrame(tr("Conditional Browser"), false, true);   // NOI18N
+    condBrowserFrame = new JmriJFrameX(tr("Conditional Browser"), false, true);   // NOI18N
     condBrowserFrame->addHelpMenu("package.jmri.jmrit.beantable.LogixAddEdit", true);            // NOI18N
 
     QWidget* contentPane = condBrowserFrame->getContentPane();

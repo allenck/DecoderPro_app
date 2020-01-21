@@ -120,3 +120,7 @@ void DrawCircle::setDisplayWidth(int w) {
 void DrawCircle::setDisplayHeight(int h) {
     _diameterText->setText(QString::number(h));
 }
+/*public*/ QString DrawCircle::getClassName()
+{
+ return "jmri.jmrit.display.controlPanelEditor.shape.DrawCircle";
+}

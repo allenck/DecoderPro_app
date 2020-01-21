@@ -539,3 +539,7 @@ void MyWebView::addHistory(const QUrl & url)
 /*private*/ /*final*/ /*static*/ Logger* HelpUtil::log = LoggerFactory::getLogger("HelpUtil");
 /*private*/ /*final*/ /*static*/ Logger* HelpFrame::log = LoggerFactory::getLogger("HelpUtil");
 /*private*/ /*final*/ /*static*/ Logger* MyWebView::log = LoggerFactory::getLogger("HelpUtil");
+/*public*/ QString HelpFrame::getClassName()
+{
+ return "jmri.help.HelpFrame";
+}

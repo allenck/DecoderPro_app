@@ -42,3 +42,7 @@
  // pack for display
  pack();
 }
+/*public*/ QString SpeedProfileFrame::getClassName()
+{
+ return "jmri.jmrit.roster.swing.speedprofile.SpeedProfileFrame";
+}

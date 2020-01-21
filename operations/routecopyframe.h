@@ -15,6 +15,7 @@ namespace Operations
   RouteCopyFrame(QWidget* parent = 0);
   /*public*/ void setRouteName(QString routeName);
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);

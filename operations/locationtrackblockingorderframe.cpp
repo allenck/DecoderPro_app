@@ -147,5 +147,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
          ->getNewValue().toString()));
  }
+/*public*/ QString LocationTrackBlockingOrderFrame::getClassName()
+{
+ return "jmri.jmrit.operations.locations.tools.LocationTrackBlockingOrderFrame";
+}
+
 }
 

@@ -456,3 +456,8 @@ void SimpleTurnoutCtrlFrame::on_adrTextField_textEdited(QString text)
  if(completer!= NULL)
   adrTextField->setCompleter(completer);
 }
+
+/*public*/ QString SimpleTurnoutCtrlFrame::getClassName()
+{
+ return "jmri.jmrit.simpleturnoutctrl.SimpleTurnoutCtrlFrame";
+}

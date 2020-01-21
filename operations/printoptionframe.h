@@ -11,6 +11,8 @@ namespace Operations
  public:
   PrintOptionFrame(QWidget* parent = 0);
   /*public*/ void initComponents();
+  /*public*/ QString getClassName();
+
  };
 }
 #endif // PRINTOPTIONFRAME_H

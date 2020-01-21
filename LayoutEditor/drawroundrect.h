@@ -9,6 +9,7 @@ class DrawRoundRect : public DrawRectangle
 public:
    // explicit DrawRoundRect(QWidget *parent = 0);
     /*public*/ DrawRoundRect(QString which, QString _title, ShapeDrawer* parent);
+    /*public*/ QString getClassName();
 
 signals:
 

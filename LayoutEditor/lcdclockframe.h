@@ -17,6 +17,7 @@ public:
     ~LcdClockFrame();
     /*public*/ void scaleImage();
     /*public*/ void dispose();
+ /*public*/ QString getClassName();
 
 signals:
 

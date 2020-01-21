@@ -35,6 +35,7 @@ namespace Operations
   /*public*/ void initComponents();
   /*public*/ void dispose();
   /*public*/ void loadEngine(Engine* engine);
+  /*public*/ QString getClassName();
 
   signals:
 

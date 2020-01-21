@@ -1341,3 +1341,7 @@ void CoordinateEdit::on_cancelSetName_clicked()
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(CoordinateEdit.class.getName());
 //}
 #endif
+/*public*/ QString CoordinateEdit::getClassName()
+{
+ return "jmri.jmrit.display.CoordinateEdit";
+}

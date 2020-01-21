@@ -9,6 +9,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT AnalogClockFrame : public JmriJFrame
     Q_OBJECT
 public:
     explicit AnalogClockFrame(QWidget *parent = 0);
+ /*public*/ QString getClassName();
 
 signals:
 

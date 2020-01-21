@@ -30,5 +30,9 @@ namespace Operations
 
      initMinimumSize();
  }
+/*public*/ QString EditSwitchListTextFrame::getClassName()
+{
+ return "jmri.jmrit.operations.setup.EditSwitchListTextFrame";
+}
 
 }

@@ -30,4 +30,9 @@ namespace Operations
 
      initMinimumSize();
  }
+/*public*/ QString EditManifestHeaderTextFrame::getClassName()
+{
+ return "jmri.jmrit.operations.setup.EditManifestHeaderTextFrame";
+}
+
 }

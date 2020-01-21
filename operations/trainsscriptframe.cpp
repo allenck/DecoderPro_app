@@ -279,5 +279,9 @@ namespace Operations
  /*public*/ void TrainsScriptFrame::dispose() {
      OperationsFrame::dispose();
  }
+/*public*/ QString TrainsScriptFrame::getClassName()
+{
+ return "jmri.jmrit.operations.trains.tools.TrainsScriptFrame";
+}
 
 }

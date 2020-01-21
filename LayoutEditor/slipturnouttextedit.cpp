@@ -230,3 +230,7 @@ void SlipTurnoutTextEdit::on_cancelButton()
  dispose();
 }
 
+/*public*/ QString SlipTurnoutTextEdit::getClassName()
+{
+ return "jmri.jmrit.display.SlipTurnoutTextEdit";
+}

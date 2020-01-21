@@ -139,4 +139,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      schedulesModel->dispose();
      OperationsFrame::dispose();
  }
+
+ /*public*/ QString SchedulesTableFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.schedules.SchedulesTableFrame";
+ }
+
 }

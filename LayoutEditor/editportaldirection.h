@@ -14,6 +14,7 @@ class EditPortalDirection : public JmriJFrame
 public:
  //explicit EditPortalDirection(QWidget *parent = 0);
  /*public*/ EditPortalDirection(QString title, CircuitBuilder* parent, OBlock* block);
+ /*public*/ QString getClassName();
 
 signals:
 

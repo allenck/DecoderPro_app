@@ -612,7 +612,7 @@ void NewPanelEditor::onRename()
  *
  */
 /*public*/ JmriJFrame* NewPanelEditor::makeFrame(QString name) {
-    JmriJFrame* targetFrame = new JmriJFrame(name);
+    JmriJFrame* targetFrame = new JmriJFrameX(name);
     targetFrame->setVisible(false);
 
     QMenuBar* menuBar = new QMenuBar();

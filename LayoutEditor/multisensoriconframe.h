@@ -15,6 +15,7 @@ public:
     //explicit MultiSensorIconFrame(QWidget *parent = 0);
     MultiSensorIconFrame(LayoutEditor* p, QWidget *parent = 0);
     /*public*/ void initComponents();
+    /*public*/ QString getClassName();
 
 signals:
 

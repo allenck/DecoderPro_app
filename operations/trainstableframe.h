@@ -29,6 +29,7 @@ namespace Operations
   /*public*/ static /*final*/ QString CONDUCTOR;//= Bundle.getMessage("Conductor");
   /*public*/ QList<Train*> getSortByList();
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

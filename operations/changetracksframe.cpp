@@ -118,4 +118,9 @@ QPushButton* source = (QPushButton*)ae;
      dispose();
  }
 
+ /*public*/ QString ChangeTracksFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.tools.ChangeTracksFrame";
+ }
+
 }

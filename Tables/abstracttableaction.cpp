@@ -143,6 +143,11 @@ void ATABeanTableFrame::extras()
   connect(addButton, SIGNAL(clicked()),act, SLOT(addPressed()));
  }
 }
+/*public*/ QString ATABeanTableFrame::getClassName()
+{
+ return "jmri.jmrit.beantable.BeanTableFrame";
+}
+
 
 /*public*/ BeanTableDataModel* AbstractTableAction::getTableDataModel()
 {

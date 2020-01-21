@@ -11,6 +11,7 @@ namespace Sprog
  public:
   /*public*/ SprogVersionFrame(SprogSystemConnectionMemo* memo, QWidget* parent = 0);
   /*synchronized*/ /*public*/ void initComponents();
+  /*public*/ QString getClassName();
 
  public slots:
   /*synchronized*/ /*public*/ void notifyVersion(SprogVersion* v);

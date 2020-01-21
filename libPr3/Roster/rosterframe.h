@@ -351,6 +351,8 @@ class PaneProgFrameO1 : public PaneProgFrame
 public:
  PaneProgFrameO1(DecoderFile* pDecoderFile, RosterEntry* pRosterEntry, QString frameTitle, QString programmerFile, Programmer* pProg, bool opsMode, QWidget* parent=nullptr)
   : PaneProgFrame(pDecoderFile, pRosterEntry, frameTitle, programmerFile, pProg, opsMode, parent){}
+ /*public*/ QString getClassName() {}
+
 protected:
  QWidget* getModePane()
  {

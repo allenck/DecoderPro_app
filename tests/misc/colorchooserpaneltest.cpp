@@ -26,7 +26,7 @@ ColorChooserPanelTest::ColorChooserPanelTest(QObject *parent) : QObject(parent)
 // p->buildPanel();
 // ColorChooserPanel* p = new ColorChooserPanel(/*new ColorModel()*/);
 // p->buildChooser();
- JmriJFrame* f = new JmriJFrame("ColorChooserPanelTest");
+ JmriJFrame* f = new JmriJFrameX("ColorChooserPanelTest");
  QWidget* centralWidget = f->getContentPane(false);
  QVBoxLayout* l = new QVBoxLayout();
  centralWidget->setLayout(l);

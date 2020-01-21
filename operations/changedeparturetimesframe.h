@@ -11,6 +11,7 @@ namespace Operations
   ChangeDepartureTimesFrame(QWidget* parent = 0);
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);
+  /*public*/ QString getClassName();
 
  private:
   QPushButton* changeButton;// = new javax.swing.JButton(Bundle.getMessage("Change"));

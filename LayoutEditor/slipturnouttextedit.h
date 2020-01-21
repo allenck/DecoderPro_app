@@ -13,6 +13,7 @@ public:
     explicit SlipTurnoutTextEdit(QWidget *parent = 0);
     /*public*/ void initComponents(SlipTurnoutIcon* l, QString name); //throw (Exception);
     /*public*/ void closeEvent(QCloseEvent* e);
+    /*public*/ QString getClassName();
 
 signals:
 

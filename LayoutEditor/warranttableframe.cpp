@@ -492,6 +492,11 @@ void WarrantTableFrame::setStatusText(QString msg, QColor c, bool save)
     }
 
 }
-/*static*/ QString WarrantTableFrame::BLANK = "                                                                                                 ";
+/*static*/ QString WarrantTableFrame::BLANK = "        "
+                                              "                                                                                         ";
+/*public*/ QString WarrantTableFrame::getClassName()
+{
+ return "jmri.jmrit.logix.WarrantTableFrame";
+}
 
 /*private*/ /*final*/ /*static*/ Logger* WarrantTableFrame::log = LoggerFactory::getLogger("WarrantTableFrame");

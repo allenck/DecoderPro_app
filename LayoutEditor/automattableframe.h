@@ -13,6 +13,7 @@ public:
  //explicit AutomatTableFrame(QWidget *parent = 0);
  /*public*/ AutomatTableFrame(AutomatTableDataModel* model, QWidget *parent = 0);
  /*public*/ void dispose();
+ /*public*/ QString getClassName();
 
 signals:
 

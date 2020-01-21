@@ -3778,6 +3778,11 @@ JFrameItem::JFrameItem (QString name, IconAdder* editor, QWidget* parent): JmriJ
 /*public*/ QString JFrameItem::toString() {
     return this->title();
 }
+/*public*/ QString JFrameItem::getClassName()
+{
+ return "jmri.jmrit.display.JFrameItem";
+}
+
 //};
 /*public*/ QRectF Editor::getSelectRect() {
     return _selectRect;

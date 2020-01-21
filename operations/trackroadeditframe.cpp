@@ -357,4 +357,10 @@ namespace Operations
          updateRoadNames();
      }
  }
+
+ /*public*/ QString TrackRoadEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.tools.TrackRoadEditFrame";
+ }
+
 }

@@ -183,7 +183,7 @@ void AddEntryExitPairPanel::on_selectPanel_currentIndexChanged(QString)
    QMessageBox::information(NULL, tr("Information"), tr("Layout Block routing has been enabled."));
   }
  }
- entryExitFrame = new JmriJFrame(tr("Discover Entry Exit Pairs"), false, false);
+ entryExitFrame = new JmriJFrameX(tr("Discover Entry Exit Pairs"), false, false);
  entryExitFrame->setMinimumSize(QSize());
  QWidget* centralWidget = new QWidget;
  QVBoxLayout* centralWidgetLayout = new QVBoxLayout(centralWidget);
@@ -743,7 +743,7 @@ QString AEPTableModel::isPairActive(int row) const
 {
  if (optionsFrame == NULL)
  {
-  optionsFrame = new JmriJFrame(tr("Entry Exit Options"), false, true);
+  optionsFrame = new JmriJFrameX(tr("Entry Exit Options"), false, true);
   //optionsFrame.addHelpMenu("package.jmri.jmrit.dispatcher.Options", true);
 //  optionsPane = optionsFrame.getContentPane();
 //  optionsPane.setLayout(new BoxLayout(optionsFrame.getContentPane(), BoxLayout.Y_AXIS));

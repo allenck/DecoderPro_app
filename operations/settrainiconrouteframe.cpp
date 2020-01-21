@@ -338,4 +338,9 @@ namespace Operations
      }
  }
 
+ /*public*/ QString SetTrainIconRouteFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.routes.tools.SetTrainIconRouteFrame";
+ }
+
 }

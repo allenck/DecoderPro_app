@@ -15,6 +15,7 @@ public:
  //explicit AppsLaunchFrame(QWidget *parent = 0);
  /*public*/ AppsLaunchFrame(AppsLaunchPane* containedPane, QString name,QWidget *parent = 0);
  static /*public*/ QWidget* buttonSpace();
+ /*public*/ QString getClassName();
 
 signals:
 

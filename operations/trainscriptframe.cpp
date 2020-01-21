@@ -511,5 +511,9 @@ namespace Operations
      addTerminationScriptButton->setEnabled(enabled);
      saveTrainButton->setEnabled(enabled);
  }
+/*public*/ QString TrainScriptFrame::getClassName()
+{
+ return "jmri.jmrit.operations.trains.tools.TrainScriptFrame";
+}
 
 }

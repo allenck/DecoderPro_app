@@ -16,6 +16,7 @@ namespace Operations
  public slots:
   /*public*/ void radioButtonActionPerformed(QWidget* ae);
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
 
  private:
   SchedulesTableModel* schedulesModel;//= new SchedulesTableModel();

@@ -751,3 +751,7 @@ void SimpleClockFrame::closeEvent(QCloseEvent * e
  setVisible(false);
  JmriJFrame::windowClosing(e);
 }
+/*public*/ QString SimpleClockFrame::getClassName()
+{
+ return "jmri.jmrit.simpleclock.SimpleClockFrame";
+}

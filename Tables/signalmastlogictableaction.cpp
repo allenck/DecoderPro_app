@@ -546,7 +546,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
              return;
          }
      }
-     signalMastLogicFrame = new JmriJFrame(tr("DiscoverSignalMastPairs"), false, false);
+     signalMastLogicFrame = new JmriJFrameX(tr("DiscoverSignalMastPairs"), false, false);
      //signalMastLogicFrame->resize(NULL);
      QWidget* panel1 = new QWidget();
      QVBoxLayout* panel1Layout = new QVBoxLayout(panel1);

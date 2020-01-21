@@ -334,7 +334,7 @@ void EditorTableDataModel::viewSdfButtonPressed(QVariant value, int row, int col
 {
  SdfBuffer* buff = new SdfBuffer(file->getHeader(row + 1)->getByteArray());
  QString content = buff->toString();
- JFrame* frame = new JmriJFrame(tr("Sdf View"));
+ JFrame* frame = new JmriJFrameX(tr("Sdf View"));
  JTextArea* text = new JTextArea(/*content*/);
  text->setEditable(false);
  text->setPlainText(content);

@@ -15,6 +15,7 @@ namespace Operations
   EngineSetFrame(QObject* parent =0);
   /*public*/ void initComponents();
   /*public*/ void loadEngine(Engine* engine);
+  /*public*/ QString getClassName();
 
  private:
   EngineManager* manager;// = EngineManager.instance();

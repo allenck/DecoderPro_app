@@ -48,5 +48,6 @@ namespace Operations
   f->setVisible(true);	// this also brings the frame into focus
 
  }
+
 }
 

@@ -25,6 +25,8 @@ namespace Operations
   /*public*/ void initComponents(Route* route, Train* train);
   /*public*/ void initComponents(Route* route);
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
+
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

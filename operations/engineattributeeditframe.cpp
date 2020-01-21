@@ -446,4 +446,10 @@ namespace Operations
      log->debug(tr("EngineAttribute firePropertyChange %1").arg(p));
      pcs->firePropertyChange(p, old, n);
  }
+
+ /*public*/ QString EngineAttributeEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.rollingstock.engines.tools.EngineAttributeEditFrame";
+ }
+
 }

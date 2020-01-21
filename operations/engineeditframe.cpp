@@ -900,4 +900,10 @@ namespace Operations
          editActive = false;
      }
  }
+
+ /*public*/ QString EngineEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.rollingstock.engines.EngineEditFrame";
+ }
+
 }

@@ -54,7 +54,7 @@
 
 /*public*/ void VSDPreferencesAction::actionPerformed(ActionEvent* /*e*/)
 {
-    JmriJFrame* f = new JmriJFrame(tr("Virtual Sound Decoder preferences"), false, false);
+    JmriJFrame* f = new JmriJFrameX(tr("Virtual Sound Decoder preferences"), false, false);
     VSDecoderPreferencesPane* tpP = new VSDecoderPreferencesPane(VSDecoderManager::instance()->getVSDecoderPreferences());
 //    f->add(tpP);
 //    tpP.setContainer(f);

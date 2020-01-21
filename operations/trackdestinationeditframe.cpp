@@ -573,4 +573,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          updateDestinations();
      }
  }
+ /*public*/ QString TrackDestinationEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.tools.TrackDestinationEditFrame";
+ }
+
 }

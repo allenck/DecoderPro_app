@@ -164,7 +164,7 @@ void SignallingSourcePanel::discoverPressed(/*ActionEvent e*/)
      }
  }
 
- signalMastLogicFrame = new JmriJFrame("Discover Signal Mast Pairs", false, false,0);
+ signalMastLogicFrame = new JmriJFrameX("Discover Signal Mast Pairs", false, false);
  signalMastLogicFrame->setMinimumSize(QSize());
  QWidget* panel1 = new QWidget();
  panel1->setLayout(new QHBoxLayout());

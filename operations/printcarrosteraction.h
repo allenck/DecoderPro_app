@@ -56,6 +56,8 @@ namespace Operations
 public:
      /*public*/ CarPrintOptionFrame(PrintCarRosterAction* pcr);
      /*public*/ void initComponents();
+     /*public*/ QString getClassName();
+
  public slots:
      /*public*/ void buttonActionPerformed(QWidget* ae) ;
      /*public*/ void comboBoxActionPerformed(QWidget* ae);

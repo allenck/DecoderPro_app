@@ -70,4 +70,9 @@ namespace Operations
 
      initMinimumSize(QSize(Control::panelWidth700, Control::panelHeight500 +40));
  }
+/*public*/ QString OperationsSetupFrame::getClassName()
+{
+ return "jmri.jmrit.operations.setup.OperationsSetupFrame";
+}
+
 }

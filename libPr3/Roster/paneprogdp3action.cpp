@@ -129,7 +129,7 @@ void PaneProgDp3Action::init()
  {
   log->debug("found f==NULL");
   // create the initial frame that steers
-  f = new JmriJFrame(tr("Create New Loco")); // NOI18N
+  f = new JmriJFrameX(tr("Create New Loco")); // NOI18N
   //f.getContentPane().setLayout(new BorderLayout());
   QWidget* centralWidget = new QWidget;
   QVBoxLayout* centralwidgetLayout = new QVBoxLayout;

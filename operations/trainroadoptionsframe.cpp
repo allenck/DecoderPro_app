@@ -342,4 +342,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          updateRoadNames();
      }
  }
+
+ /*public*/ QString TrainRoadOptionsFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.trains.TrainRoadOptionsFrame";
+ }
+
 }

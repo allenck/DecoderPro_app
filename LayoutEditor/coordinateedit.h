@@ -49,6 +49,7 @@ public:
  /*public*/ static AbstractAction* getZoomEditAction(/*final*/ Positionable* pos, QObject *parent);
  /*public*/ void initZoom();
  /*public*/ void initLink();
+ /*public*/ QString getClassName();
 
 signals:
     

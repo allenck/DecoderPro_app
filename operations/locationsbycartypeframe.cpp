@@ -406,5 +406,10 @@ namespace Operations
          updateComboBox();
      }
  }
+/*public*/ QString LocationsByCarTypeFrame::getClassName()
+{
+ return "jmri.jmrit.operations.locations.tools.LocationsByCarTypeFrame";
+}
+
 
 }

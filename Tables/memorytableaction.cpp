@@ -184,7 +184,7 @@ return "package.jmri.jmrit.beantable.MemoryTable";
 /*protected*/ void MemoryTableAction::addPressed(ActionEvent* /*e*/) {
     p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     if (addFrame == NULL) {
-        addFrame = new JmriJFrame(tr("Add Memory"), false, true);
+        addFrame = new JmriJFrameX(tr("Add Memory"), false, true);
         addFrame->addHelpMenu("package.jmri.jmrit.beantable.MemoryAddEdit", true);
         addFrame->getContentPane()->setLayout(new QVBoxLayout(addFrame->getContentPane()));//, BoxLayout.Y_AXIS));
 

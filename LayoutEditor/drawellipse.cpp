@@ -131,3 +131,7 @@
     setPositionableParams(pos);
 //		pos.makeShape();
 }
+/*public*/ QString DrawEllipse::getClassName()
+{
+ return "jmri.jmrit.display.controlPanelEditor.shape.DrawEllipse";
+}

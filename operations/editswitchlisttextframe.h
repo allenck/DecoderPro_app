@@ -10,6 +10,7 @@ namespace Operations
  public:
   EditSwitchListTextFrame(QWidget* parent = 0);
   /*public*/ void initComponents();
+  /*public*/ QString getClassName();
 
  };
 }

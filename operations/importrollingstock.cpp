@@ -64,7 +64,7 @@ namespace Operations
  /*protected*/ void ImportRollingStock::createStatusFrame(QString title) {
      QWidget* ps = new QWidget();
      ps->setLayout(new QVBoxLayout);//(ps, BoxLayout.Y_AXIS));
-     fstatus = new JmriJFrame(title);
+     fstatus = new JmriJFrameX(title);
      fstatus->move(10, 10);
      fstatus->resize(Control::panelWidth700, 100);
 

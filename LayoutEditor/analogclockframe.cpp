@@ -310,3 +310,7 @@ private class ButtonListener implements ActionListener {
     }
 }
 #endif
+/*public*/ QString AnalogClockFrame::getClassName()
+{
+ return "jmri.jmrit.analogclock.AnalogClockFrame";
+}

@@ -32,4 +32,8 @@
     pack();
 }
 
+/*public*/ QString SignalMastRepeaterJFrame::getClassName()
+{
+ return "jmri.jmrit.beantable.signalmast.SignalMastRepeaterJFrame";
+}
 

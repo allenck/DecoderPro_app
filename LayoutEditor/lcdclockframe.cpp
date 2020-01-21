@@ -217,3 +217,7 @@ void LcdClockFrame::update()
 //    }
 //}
 
+/*public*/ QString LcdClockFrame::getClassName()
+{
+ return "jmri.jmrit.lcdclock.LcdClockFrame";
+}

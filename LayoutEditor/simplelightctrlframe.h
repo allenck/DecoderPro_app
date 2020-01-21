@@ -15,6 +15,7 @@ class SimpleLightCtrlFrame : public JmriJFrame
  Q_OBJECT
 public:
  explicit SimpleLightCtrlFrame(QWidget *parent = 0);
+ /*public*/ QString getClassName();
 
 signals:
 

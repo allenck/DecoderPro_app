@@ -46,4 +46,9 @@ namespace Operations
      initMinimumSize();
  }
 
+ /*public*/ QString PrintOptionFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.setup.PrintOptionFrame";
+ }
+
 }

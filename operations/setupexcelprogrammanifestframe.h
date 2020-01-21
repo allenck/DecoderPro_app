@@ -9,6 +9,7 @@ namespace Operations
  public:
   SetupExcelProgramManifestFrame(QWidget* parent = 0);
   /*public*/ void initComponents();
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);

@@ -215,4 +215,10 @@ log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyNam
 
      TrackEditFrame::propertyChange(e);
  }
+
+ /*public*/ QString SpurEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.SpurEditFrame";
+ }
+
 }

@@ -23,6 +23,7 @@ namespace Operations
  public:
   explicit EnginesTableFrame(QWidget *parent = 0);
   /*public*/ QList<RollingStock*>* getSortByList();
+  /*public*/ QString getClassName();
 
  signals:
 

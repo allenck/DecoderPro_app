@@ -94,4 +94,8 @@
     /*public*/ void PacketGenFrame::_connect(JMRIClientTrafficController* t) {
         tc = t;
     }
+/*public*/ QString PacketGenFrame::getClassName()
+{
+ return "jmri.jmrix.jmriclient.swing.packetgen.PacketGenFrame";
+}
 

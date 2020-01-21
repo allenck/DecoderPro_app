@@ -152,5 +152,9 @@ jmri.util.swing.ImagePanel -- preview
     log->debug("listener attached");
     this->listener = listener;
 }
+/*public*/ QString DisplayFrame::getClassName()
+{
+ return "jmri.jmrit.display.DisplayFrame";
+}
 
 /*private*/ /*final*/ /*static*/ Logger* DisplayFrame::log = LoggerFactory::getLogger("DisplayFrame");

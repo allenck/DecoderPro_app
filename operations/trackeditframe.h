@@ -27,6 +27,8 @@ namespace Operations
   /*public*/ static /*final*/ int MAX_NAME_LENGTH;// = Control.max_len_string_track_name;
   /*public*/ virtual void initComponents(Location* location, Track* track);
   QString     gbStyleSheet;
+  /*public*/ QString getClassName();
+
  public slots:
   /*public*/ virtual void propertyChange(PropertyChangeEvent* e);
   /*public*/ void radioButtonActionPerformed(QWidget* ae);

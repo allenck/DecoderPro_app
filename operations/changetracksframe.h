@@ -13,6 +13,8 @@ namespace Operations
   Q_OBJECT
  public:
   ChangeTracksFrame(LocationEditFrame* lef);
+  /*public*/ QString getClassName();
+
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);
 

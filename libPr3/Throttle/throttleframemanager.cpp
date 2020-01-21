@@ -189,7 +189,7 @@ class ThrottleCyclingKeyListener extends KeyAdapter	{
 /*private*/ void ThrottleFrameManager::buildThrottlePreferencesFrame()
 {
 #if 1
- throttlePreferencesFrame = new JmriJFrame(tr("Throttles preferences"));
+ throttlePreferencesFrame = new ThrottlePreferencesFrame(tr("Throttles preferences"));
  ThrottlesPreferencesPane* tpP = new ThrottlesPreferencesPane();
  QVBoxLayout* tpPLayout = new QVBoxLayout(tpP);
  tpPLayout->addWidget(tpP);
@@ -201,7 +201,7 @@ class ThrottleCyclingKeyListener extends KeyAdapter	{
 }
 
 /*private*/ void ThrottleFrameManager::buildThrottleListFrame() {
- throttlesListFrame = new JmriJFrame(tr("Local JMRI throttles"));
+ throttlesListFrame = new ThrottlesListFrame(tr("Local JMRI throttles"));
  throttlesListPanel = new ThrottlesListPanel();
  throttlesListFrame->setContentPane(throttlesListPanel);
  throttlesListFrame->adjustSize();

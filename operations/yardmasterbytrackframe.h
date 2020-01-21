@@ -9,6 +9,7 @@ namespace Operations
   Q_OBJECT
  public:
   YardmasterByTrackFrame(Location* location, QWidget* parent = nullptr);
+  /*public*/ QString getClassName();
 
  private:
   /*private*/ void initComponents(Location* location);

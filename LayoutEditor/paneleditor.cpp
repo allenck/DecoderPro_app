@@ -140,7 +140,7 @@ PanelEditor::~PanelEditor()
  nextX = new JTextField(tr("Default X"),9);
  nextY = new JTextField(tr("Default Y"),9);
 
- JmriJFrame* frame = new JmriJFrame(name + " " + (tr("Editor")));
+ JmriJFrame* frame = new JmriJFrameX(name + " " + (tr("Editor")));
  QWidget* contentPane = frame->getContentPane();
  QVBoxLayout* contentPaneLayout = new QVBoxLayout(contentPane);
  QWidget* common = new QWidget();
@@ -2250,3 +2250,7 @@ void PanelEditor::on_actionOpenEditor_triggered()
  changeView("ControlPanelEditor");
 }
 
+/*public*/ QString PanelEditor::getClassName()
+{
+ return "jmri.jmrit.display.panelEditor.PanelEditor";
+}

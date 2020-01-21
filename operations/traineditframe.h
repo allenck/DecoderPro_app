@@ -23,6 +23,8 @@ namespace Operations
   /*public*/ static /*final*/ QString DISPOSE;// = "dispose"; // NOI18N
   /*public*/ void setChildFrame(JmriJFrame* frame);
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
+
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

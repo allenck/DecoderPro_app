@@ -4,7 +4,7 @@ ConsistToolFrame::ConsistToolFrame(QWidget *parent) :
   JmriJFrame(parent)
 {
 }
-#if 0
+#if 0  //TODO:
 /**
  * Frame object for manipulating consists.
  *
@@ -662,3 +662,8 @@ private boolean _readConsistFile = true;
     initializeConsistBox();
 }
 #endif
+
+/*public*/ QString ConsistToolFrame::getClassName()
+{
+ return "jmri.jmrit.consisttool.ConsistToolFrame";
+}

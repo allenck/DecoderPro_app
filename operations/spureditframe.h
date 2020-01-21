@@ -12,6 +12,7 @@ namespace Operations {
  public:
   SpurEditFrame(QWidget* parent =0);
   /*public*/ void initComponents(Location* location, Track* track);
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae);

@@ -53,3 +53,7 @@
 // initialize logging
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PickFrame.class.getName());
 //}
+/*public*/ QString PickFrame::getClassName()
+{
+ return "jmri.jmrit.picker.PickFrame";
+}

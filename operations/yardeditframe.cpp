@@ -51,4 +51,8 @@ namespace Operations
      adjustSize();
      setVisible(true);
  }
+ /*public*/ QString YardEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.YardEditFrame";
+ }
 }

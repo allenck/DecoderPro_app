@@ -32,4 +32,9 @@ namespace Operations
 
      initMinimumSize(QSize(Control::panelWidth500, Control::panelHeight500));
  }
+/*public*/ QString BuildReportOptionFrame::getClassName()
+{
+ return "jmri.jmrit.operations.setup.BuildReportOptionFrame";
+}
+
 }

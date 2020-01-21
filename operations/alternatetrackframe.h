@@ -12,6 +12,8 @@ namespace Operations
   Q_OBJECT
  public:
   AlternateTrackFrame(TrackEditFrame* tef, QWidget* parent = 0);
+  /*public*/ QString getClassName();
+
  public slots:
   /*public*/ void buttonActionPerformed(ActionEvent* ae = 0);
  private:

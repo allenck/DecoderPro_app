@@ -20,6 +20,7 @@ namespace Sprog
   /*public*/ bool isZTCModePossible();
   /*public*/ void dispose();
   /*public*/ void initComponents() throw (Exception);
+  /*public*/ QString getClassName();
 
  public slots:
   //void enterButtonActionPerformed(ActionEvent* e = 0);

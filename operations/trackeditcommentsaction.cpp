@@ -27,4 +27,5 @@ namespace Operations
  /*public*/ void TrackEditCommentsAction::actionPerformed(ActionEvent* /*e*/) {
      new TrackEditCommentsFrame(_tef->_track);
  }
+
 }

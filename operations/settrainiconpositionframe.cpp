@@ -478,5 +478,9 @@ namespace Operations
      removeIcons();
      OperationsFrame::dispose();
  }
+/*public*/ QString SetTrainIconPositionFrame::getClassName()
+{
+ return "jmri.jmrit.operations.routes.tools.SetTrainIconPositionFrame";
+}
 
 }

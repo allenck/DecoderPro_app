@@ -664,4 +664,10 @@ namespace Operations
          numTrains->setText(QString::number((trainManager->getNumEntries())));
      }
  }
+
+ /*public*/ QString TrainsTableFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.trains.schedules.TrainsTableFrame";
+ }
+
 }

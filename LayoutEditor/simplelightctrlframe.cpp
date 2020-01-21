@@ -531,3 +531,7 @@ JmriJFrame(parent)
  }
 }
 
+/*public*/ QString SimpleLightCtrlFrame::getClassName()
+{
+ return "jmri.jmrit.simplelight.ctrl.SimpleLightCtrlFrame";
+}

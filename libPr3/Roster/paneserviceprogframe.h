@@ -13,6 +13,7 @@ public:
     //explicit PaneServiceProgFrame(QWidget *parent = 0);
     /*public*/ PaneServiceProgFrame(DecoderFile* decoderFile, RosterEntry* r, QString name, QString file, Programmer* pProg, QWidget *parent = 0);
     /*public*/ void dispose();
+ /*public*/ QString getClassName();
 
 signals:
 

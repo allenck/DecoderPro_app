@@ -13,6 +13,7 @@ namespace Operations
   Q_OBJECT
  public:
   YardmasterFrame(Location *location, QWidget* parent = 0);
+  /*public*/ QString getClassName();
 
  private:
   /*private*/ void initComponents(Location* location);

@@ -16,6 +16,7 @@ namespace Operations
   /*public*/ static /*final*/ QString DISPOSE;// = "dispose"; // NOI18N
   /*public*/ void initComponents(Track* track);
   /*public*/ void dispose();
+  /*public*/ QString getClassName();
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

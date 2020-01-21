@@ -222,5 +222,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  disconnect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      OperationsFrame::dispose();
  }
+/*public*/ QString TrainsTableSetColorFrame::getClassName()
+{
+ return "jmri.jmrit.operations.trains.tools.TrainsTableSetColorFrame";
+}
 
 }

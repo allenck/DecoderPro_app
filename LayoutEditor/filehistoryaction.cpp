@@ -41,7 +41,7 @@ void FileHistoryAction::common()
 
 /*public*/ void FileHistoryAction::actionPerformed(ActionEvent* /*e*/)
 {
- JFrame* frame = new JmriJFrame();
+ JFrame* frame = new JmriJFrameX("FileHistory");
 //    {
 
 //        /**

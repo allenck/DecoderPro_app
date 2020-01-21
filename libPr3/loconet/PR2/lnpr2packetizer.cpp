@@ -18,6 +18,13 @@
     echo = true;
 }
 
+/*public*/ LnPr2Packetizer::LnPr2Packetizer(LocoNetSystemConnectionMemo* memo, QObject* parent)
+ : LnPacketizer(memo, parent)
+{
+ echo = true;
+}
+
+
 //    private final static Logger log = LoggerFactory.getLogger(LnPr2Packetizer.class);
 
 

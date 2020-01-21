@@ -31,4 +31,10 @@ namespace Operations
 
      initMinimumSize();
  }
+
+ /*public*/ QString OptionFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.setup.OptionFrame";
+ }
+
 }

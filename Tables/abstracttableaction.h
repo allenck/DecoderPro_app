@@ -70,6 +70,7 @@ public:
  ATABeanTableFrame(AbstractTableAction* act);
  ATABeanTableFrame(BeanTableDataModel* m, QString helpTarget, JTable* table, AbstractTableAction* act);
  void extras();
+ /*public*/ QString getClassName();
 
 };
 

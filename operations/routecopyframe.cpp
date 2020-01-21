@@ -161,4 +161,9 @@ namespace Operations
  /*public*/ void RouteCopyFrame::dispose() {
      OperationsFrame::dispose();
  }
+ /*public*/ QString RouteCopyFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.routes.tools.RouteCopyFrame";
+ }
+
 }

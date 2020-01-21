@@ -48,8 +48,8 @@
         configName = profile + configName;
     }
 
-    JFrame* frame = new JmriJFrame();  // to ensure fits
-    frame->setTitle(tr("Locations"));
+    JFrame* frame = new JmriJFrameX("Locations");  // to ensure fits
+    //frame->setTitle(tr("Locations"));
 
     QWidget* pane = new QWidget();
     pane->setLayout(new QVBoxLayout); //(pane, BoxLayout.Y_AXIS));

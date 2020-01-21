@@ -29,6 +29,7 @@ public:
     /*public*/ bool _debug;
  /*public*/ void initView();
  /*public*/ void setRemoveMenu(Positionable* p, QMenu* popup);
+ /*public*/ QString getClassName();
 
 public slots:
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event);

@@ -338,5 +338,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          update();
      }
  }
+ /*public*/ QString ShowCarsInTrainFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.trains.tools.ShowCarsInTrainFrame";
+ }
 
 }

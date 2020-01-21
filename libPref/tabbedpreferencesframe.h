@@ -13,6 +13,7 @@ public:
     /*public*/ QString getTitle();
     /*public*/ bool isMultipleInstances() ;
     /*public*/ void windowClosing(QCloseEvent *e);
+ /*public*/ QString getClassName();
 
 
 public slots:

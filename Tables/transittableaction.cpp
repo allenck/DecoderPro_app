@@ -443,7 +443,7 @@ void TransitTableAction::addEditPressed()
 
  if (addFrame == NULL)
  {
-  addFrame = new JmriJFrame(tr("Add Transit"));
+  addFrame = new JmriJFrameX(tr("Add Transit"));
     addFrame->addHelpMenu("package.jmri.jmrit.beantable.TransitAddEdit", true);
     addFrame->setMinimumWidth(700);
     QVBoxLayout* contentPaneLayout;
@@ -1563,7 +1563,7 @@ void TransitTableAction::updatePressed(ActionEvent* /*e*/) {
         actionTableModel->fireTableStructureChanged();
     }
     if (actionTableFrame == NULL) {
-        actionTableFrame = new JmriJFrame(tr("ViewA ctions"));
+        actionTableFrame = new JmriJFrameX(tr("ViewA ctions"));
         actionTableFrame->addHelpMenu(
                 "package.jmri.jmrit.beantable.ViewSpecialActions", true);
         actionTableFrame->setLocation(50, 60);
@@ -1714,7 +1714,7 @@ ATWindowListener::ATWindowListener(TransitTableAction* act)
  if (addEditActionFrame == NULL)
  {
     // set up add/edit action window
-    addEditActionFrame = new JmriJFrame(tr("Add/Edit Action"));
+    addEditActionFrame = new JmriJFrameX(tr("Add/Edit Action"));
     addEditActionFrame->addHelpMenu(
             "package.jmri.jmrit.beantable.TransitSectionAddEditAction", true);
     addEditActionFrame->setLocation(120, 80);

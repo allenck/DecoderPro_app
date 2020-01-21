@@ -183,3 +183,7 @@ void BeanTableFrame::extras() {}
     JmriJFrame::dispose();
     //close();
 }
+/*public*/ QString BeanTableFrame::getClassName()
+{
+ return "jmri.jmrit.beantable.BeanTableFrame";
+}

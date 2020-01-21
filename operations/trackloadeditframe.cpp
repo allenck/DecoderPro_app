@@ -612,4 +612,9 @@ namespace Operations
      }
  }
 
+ /*public*/ QString TrackLoadEditFrame::getClassName()
+ {
+  return "jmri.jmrit.operations.locations.tools.TrackLoadEditFrame";
+ }
+
 }

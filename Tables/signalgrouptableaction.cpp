@@ -424,7 +424,7 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
  {
   mainSignal = new JmriBeanComboBox((Manager*)InstanceManager::getDefault("SignalMastManager"), NULL, JmriBeanComboBox::DISPLAYNAME);
   mainSignal->setFirstItemBlank(true);
-  addFrame = new JmriJFrame("Add/Edit SignalGroup", false, true);
+  addFrame = new JmriJFrameX("Add/Edit SignalGroup", false, true);
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.SignalGroupAddEdit", true);
   addFrame->setLocation(100,30);
   addFrame->resize(400,700);

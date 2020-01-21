@@ -12,6 +12,7 @@ class SignallingFrame : public JmriJFrame
 public:
     explicit SignallingFrame(QWidget *parent = 0);
     /*public*/ void initComponents(SignalMast* source, SignalMast* dest) throw (Exception);
+ /*public*/ QString getClassName();
 
 signals:
 
