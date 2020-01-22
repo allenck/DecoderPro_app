@@ -98,7 +98,7 @@ PanelEditor::~PanelEditor()
 //    /*public*/ PanelEditor() {}
 
 /*public*/ PanelEditor::PanelEditor(QString name, QWidget *parent) :
-        Editor(name, false, true, parent),
+        Editor(name, /*false*/true, true, parent),
         ui(new Ui::PanelEditor)
 {
  //super(name, false, true);

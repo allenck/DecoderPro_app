@@ -267,17 +267,24 @@ void JmriJFrame::setupWindowRef()
 /*public*/ void JmriJFrame::setFrameLocation()
 {
  UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
- if ((prefsMgr != nullptr) && (prefsMgr->isWindowPositionSaved(windowFrameRef)))
+ if ((prefsMgr != nullptr) && (prefsMgr->hasProperties(windowFrameRef)))
  {
+  // Track the computed size and position of this window
+  QRect window = QRect(this->x(),this->y(),this->getWidth(), this->getHeight());
+  bool isVisible = false;
+  log->debug(tr("Initial window location & size: x=%1,y=%2, w-%3, h=%4").arg(window.x()).arg(window.y()).arg(window.width()).arg(window.height()));
+
   //QSize screen = getToolkit().getScreenSize();
   QDesktopWidget* desktop = QApplication::desktop();
   QSize screen = desktop->screen()->size();
-  if ((reuseFrameSavedPosition) && (!((prefsMgr->getWindowLocation(windowFrameRef).x()>=screen.width()) ||
-            (prefsMgr->getWindowLocation(windowFrameRef).y()>=screen.height()))))
+  log->debug(tr("Detected %1 screens.").arg(desktop->screenCount()));
+  log->debug(windowFrameRef);
+  if (reuseFrameSavedPosition)
   {
-   if (log->isDebugEnabled()) log->debug("setFrameLocation 1st clause sets location to "+QString::number(prefsMgr->getWindowLocation(windowFrameRef).x()) + ","+QString::number(prefsMgr->getWindowLocation(windowFrameRef).y()));
-            this->move(prefsMgr->getWindowLocation(windowFrameRef));
+   log->debug(tr("setFrameLocation 1st clause sets \"%1\" location to %2,%3").arg(getTitle()).arg(prefsMgr->getWindowLocation(windowFrameRef).x()).arg(prefsMgr->getWindowLocation(windowFrameRef).y()));
+   window.setTopLeft(prefsMgr->getWindowLocation(windowFrameRef));
   }
+
   /* Simple case that if either height or width are zero, then we should
         not set them */
   if ((reuseFrameSavedSized) &&(!((prefsMgr->getWindowSize(windowFrameRef).width()==0.0) ||

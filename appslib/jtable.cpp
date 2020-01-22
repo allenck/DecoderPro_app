@@ -24,6 +24,7 @@
 #include "mysortfilterproxymodel.h"
 #include "tablerowsorter.h"
 #include "qsortfilterproxymodel.h"
+#include <QPen>
 
 //JTable::JTable(QWidget *parent) :
 //  QTableView(parent)
@@ -317,6 +318,7 @@
 {
  common(NULL, NULL, NULL);
 }
+
 ///*public*/ JTable::JTable(TableModel* dm, QWidget *parent) :
 //  QTableView(parent)
 //{
@@ -338,11 +340,6 @@
  common(dm, NULL, NULL);
 }
 
-/*public*/ JTable::JTable(QAbstractItemModel* dm, QWidget *parent) :
-  QTableView(parent)
-{
- common(dm, NULL, NULL);
-}
 
 /**
  * Constructs a <code>JTable</code> that is initialized with
@@ -384,7 +381,7 @@
  common( dm,  cm,  sm);
 }
 
-/*private*/void  JTable::common(QAbstractItemModel* dm, TableColumnModel* cm, DefaultListSelectionModel* sm)
+/*private*/void  JTable::common(QAbstractItemModel *dm, TableColumnModel* cm, DefaultListSelectionModel* sm)
 {
  log = new Logger("JTable");
  editorRemover = NULL;
@@ -858,7 +855,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
 /*public*/ Dimension getIntercellSpacing() {
     return new Dimension(getColumnModel().getColumnMargin(), rowMargin);
 }
-
+#endif
 /**
  * Sets the color used to draw grid lines to <code>gridColor</code> and redisplays.
  * The default color is look and feel dependent.
@@ -870,12 +867,14 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  *  bound: true
  *  description: The grid color.
  */
-/*public*/ void setGridColor(Color gridColor) {
-    if (gridColor == NULL) {
-        throw new IllegalArgumentException("New color is NULL");
+/*public*/ void JTable::setGridColor(QColor gridColor) {
+    if (!gridColor.isValid()) {
+        throw  IllegalArgumentException("New color is NULL");
     }
-    Color old = this->gridColor;
+    QColor old = this->gridColor;
     this->gridColor = gridColor;
+    QTableView::setGridStyle(Qt::SolidLine);
+    setStyleSheet(tr("QTableView{gridline-color: rgb(%1, %2, %3);}").arg(gridColor.red()).arg(gridColor.green()).arg(gridColor.blue()));
     firePropertyChange("gridColor", old, gridColor);
     // Redraw
     repaint();
@@ -888,7 +887,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  * @return  the color used to draw grid lines
  * @see     #setGridColor
  */
-/*public*/ Color getGridColor() {
+/*public*/ QColor JTable::getGridColor() {
     return gridColor;
 }
 
@@ -906,9 +905,10 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  * @beaninfo
  *  description: The color used to draw the grid lines.
  */
-/*public*/ void setShowGrid(bool showGrid) {
+/*public*/ void JTable::setShowGrid(bool showGrid) {
     setShowHorizontalLines(showGrid);
     setShowVerticalLines(showGrid);
+    QTableView::setShowGrid(showGrid);
 
     // Redraw
     repaint();
@@ -926,7 +926,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  *  bound: true
  *  description: Whether horizontal lines should be drawn in between the cells.
  */
-/*public*/ void setShowHorizontalLines(bool showHorizontalLines) {
+/*public*/ void JTable::setShowHorizontalLines(bool showHorizontalLines) {
     bool old = this->showHorizontalLines;
     this->showHorizontalLines = showHorizontalLines;
     firePropertyChange("showHorizontalLines", old, showHorizontalLines);
@@ -947,7 +947,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  *  bound: true
  *  description: Whether vertical lines should be drawn in between the cells.
  */
-/*public*/ void setShowVerticalLines(bool showVerticalLines) {
+/*public*/ void JTable::setShowVerticalLines(bool showVerticalLines) {
     bool old = this->showVerticalLines;
     this->showVerticalLines = showVerticalLines;
     firePropertyChange("showVerticalLines", old, showVerticalLines);
@@ -963,7 +963,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  *          doesn't
  * @see     #setShowHorizontalLines
  */
-/*public*/ bool getShowHorizontalLines() {
+/*public*/ bool JTable::getShowHorizontalLines() {
     return showHorizontalLines;
 }
 
@@ -975,10 +975,10 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  *          doesn't
  * @see     #setShowVerticalLines
  */
-/*public*/ bool getShowVerticalLines() {
+/*public*/ bool JTable::getShowVerticalLines() {
     return showVerticalLines;
 }
-#endif
+
 /**
  * Sets the table's auto resize mode when the table is resized.  For further
  * information on how the different resize modes work, see
@@ -1795,7 +1795,7 @@ Object setDropLocation(TransferHandler.DropLocation location,
 //    getColumnModel().getSelectionModel().setSelectionMode(selectionMode);
  QTableView::setSelectionMode((QAbstractItemView::SelectionMode)selectionMode)   ;
 }
-#if 0
+
 /**
  * Sets whether the rows in this model can be selected.
  *
@@ -1806,9 +1806,10 @@ Object setDropLocation(TransferHandler.DropLocation location,
  *    attribute: visualUpdate true
  *  description: If true, an entire row is selected for each selected cell.
  */
-/*public*/ void setRowSelectionAllowed(bool rowSelectionAllowed) {
+/*public*/ void JTable::setRowSelectionAllowed(bool rowSelectionAllowed) {
     bool old = this->rowSelectionAllowed;
     this->rowSelectionAllowed = rowSelectionAllowed;
+    setSelectionBehavior(rowSelectionAllowed?QAbstractItemView::SelectRows:QAbstractItemView::SelectItems);
     if (old != rowSelectionAllowed) {
         repaint();
     }
@@ -1821,10 +1822,10 @@ Object setDropLocation(TransferHandler.DropLocation location,
  * @return true if rows can be selected, otherwise false
  * @see #setRowSelectionAllowed
  */
-/*public*/ bool getRowSelectionAllowed() {
+/*public*/ bool JTable::getRowSelectionAllowed() {
     return rowSelectionAllowed;
 }
-
+#if 0
 /**
  * Sets whether the columns in this model can be selected.
  *
@@ -3523,7 +3524,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
 {
  if (dataModel == NULL)
  {
-  throw new IllegalArgumentException("Cannot set a NULL TableModel");
+  throw IllegalArgumentException("Cannot set a NULL TableModel");
  }
  if (this->dataModel != dataModel)
  {
@@ -9557,6 +9558,7 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
 /*public*/ void JTable::setRowSelectionInterval(int /*index0*/, int index1) {
    // selectionModel.setSelectionInterval(boundRow(index0), boundRow(index1));
 }
+
 
 /*public*/ void JTable::onPropertyChange(PropertyChangeEvent* evt)
 {

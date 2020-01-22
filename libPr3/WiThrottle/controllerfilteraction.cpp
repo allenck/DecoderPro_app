@@ -30,7 +30,7 @@
 }
 
 //@Override
-/*public*/ void ControllerFilterAction::actionPerformed(ActionEvent* ae) {
+/*public*/ void ControllerFilterAction::actionPerformed(ActionEvent* /*ae*/) {
     JmriJFrame* frame = new ControllerFilterFrame();
     try {
         frame->initComponents();

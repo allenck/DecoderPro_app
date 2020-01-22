@@ -10,7 +10,10 @@
 #include "box.h"
 #include <QPushButton>
 #include "storexmluseraction.h"
-
+#include "tablemodelevent.h"
+#include "abstracttablemodel.h"
+#include "tablecolumnmodel.h"
+#include "tablecolumn.h"
 /**
  * @author Brett Hoffman Copyright (C) 2010
  */
@@ -27,7 +30,8 @@
 }
 
 ////@Override
-/*public*/ void ControllerFilterFrame::initComponents() throw (Exception) {
+/*public*/ void ControllerFilterFrame::initComponents() throw (Exception)
+{
     QTabWidget* tabbedPane = new QTabWidget();
     if (InstanceManager::getNullableDefault("TurnoutManager") != NULL) {
 
@@ -65,9 +69,9 @@
     label->setAlignment(Qt::AlignCenter);
     tPanelLayout->addWidget(label, 0, Qt::AlignTop); //BorderLayout.NORTH);
     tPanelLayout->addWidget(addCancelSavePanel(), 0, Qt::AlignLeft); //BorderLayout.WEST);
-#if 0
-    /*final*/ TurnoutFilterModel filterModel = new TurnoutFilterModel();
-    JTable table = new JTable(filterModel);
+#if 1
+    /*final*/ TurnoutFilterModel* filterModel = new TurnoutFilterModel();
+    JTable* table = new JTable(filterModel);
     buildTable(table);
 
     //JScrollPane scrollPane = new JScrollPane(table);
@@ -86,8 +90,8 @@
     label->setAlignment(Qt::AlignCenter);
     tPanelLayout->addWidget(label, 0, Qt::AlignTop); //BorderLayout.NORTH);
     tPanelLayout->addWidget(addCancelSavePanel(), 0, Qt::AlignLeft); //BorderLayout.WEST);
-#if 0
-    /*final*/ RouteFilterModel filterModel = new RouteFilterModel();
+#if 1
+    /*final*/ RouteFilterModel* filterModel = new RouteFilterModel();
     JTable* table = new JTable(filterModel);
     buildTable(table);
 
@@ -100,72 +104,92 @@
 }
 
 /*private*/ void ControllerFilterFrame::buildTable(JTable* table) {
-#if 0
-    table.getModel().addTableModelListener(this);
+#if 1
+    ((TableModel*)table->getModel())->addTableModelListener((TableModelListener*)this);
 
-    table.setRowSelectionAllowed(false);
-    table.setPreferredScrollableViewportSize(new java.awt.Dimension(580, 240));
+    table->setRowSelectionAllowed(false);
+    //table->setPreferredScrollableViewportSize(new java.awt.Dimension(580, 240));
 
     //table.getTableHeader().setBackground(Color.lightGray);
-    table.setShowGrid(false);
-    table.setShowHorizontalLines(true);
-    table.setGridColor(Color.gray);
-    table.setRowHeight(30);
+    table->setShowGrid(false);
+    table->setShowHorizontalLines(true);
+    table->setGridColor(QColor(Qt::gray));
+    table->setRowHeight(30);
 
-    TableColumnModel columnModel = table.getColumnModel();
+    TableColumnModel* columnModel = table->getColumnModel();
 
-    TableColumn include = columnModel.getColumn(AbstractFilterModel.INCLUDECOL);
-    include.setResizable(false);
-    include.setMinWidth(60);
-    include.setMaxWidth(70);
+    TableColumn* include = columnModel->getColumn(AbstractFilterModel::INCLUDECOL);
+    include->setResizable(false);
+    include->setMinWidth(60);
+    include->setMaxWidth(70);
 
-    TableColumn sName = columnModel.getColumn(AbstractFilterModel.SNAMECOL);
-    sName.setResizable(true);
-    sName.setMinWidth(80);
-    sName.setPreferredWidth(80);
-    sName.setMaxWidth(340);
+    TableColumn* sName = columnModel->getColumn(AbstractFilterModel::SNAMECOL);
+    sName->setResizable(true);
+    sName->setMinWidth(80);
+    sName->setPreferredWidth(80);
+    sName->setMaxWidth(340);
 
-    TableColumn uName = columnModel.getColumn(AbstractFilterModel.UNAMECOL);
-    uName.setResizable(true);
-    uName.setMinWidth(180);
-    uName.setPreferredWidth(300);
-    uName.setMaxWidth(440);
+    TableColumn* uName = columnModel->getColumn(AbstractFilterModel::UNAMECOL);
+    uName->setResizable(true);
+    uName->setMinWidth(180);
+    uName->setPreferredWidth(300);
+    uName->setMaxWidth(440);
 #endif
 }
-#if 0
-/*private*/ QWidget* getIncludeButtonsPanel(/*final*/ AbstractFilterModel fm) {
+#if 1
+/*private*/ QWidget* ControllerFilterFrame::getIncludeButtonsPanel(/*final*/ AbstractFilterModel* fm) {
+ this->fm =fm;
     QWidget* pane = new QWidget();
-    pane.setLayout(new BoxLayout(pane, BoxLayout.X_AXIS));
-    pane.add(Box.createHorizontalGlue());
+    pane->setLayout(new QHBoxLayout());//pane, BoxLayout.X_AXIS));
+    pane->layout()->addWidget(Box::createHorizontalGlue());
 
-    JButton selectAllButton = new JButton(tr("ButtonSelectAll"));
-    selectAllButton.addActionListener(new ActionListener() {
-        //@Override
-        /*public*/ void actionPerformed(ActionEvent event) {
-            fm.setIncludeColToValue(true);
-        }
-    });
-    pane.add(selectAllButton);
+    QPushButton* selectAllButton = new QPushButton(tr("Select All"));
+//    selectAllButton.addActionListener(new ActionListener() {
+//        //@Override
+//        /*public*/ void actionPerformed(ActionEvent event) {
+//            fm.setIncludeColToValue(true);
+//        }
+//    });
+    connect(selectAllButton, SIGNAL(clicked(bool)), this, SLOT(on_selectAllButton()));
+    pane->layout()->addWidget(selectAllButton);
 
-    JButton deselectAllButton = new JButton(tr("ButtonDeselectAll"));
-    deselectAllButton.addActionListener(new ActionListener() {
-        //@Override
-        /*public*/ void actionPerformed(ActionEvent event) {
-            fm.setIncludeColToValue(false);
-        }
-    });
-    pane.add(deselectAllButton);
+    QPushButton* deselectAllButton = new QPushButton(tr("Deselect All"));
+//    deselectAllButton.addActionListener(new ActionListener() {
+//        //@Override
+//        /*public*/ void actionPerformed(ActionEvent event) {
+//            fm.setIncludeColToValue(false);
+//        }
+//    });
+    connect(deselectAllButton, SIGNAL(clicked(bool)), this, SLOT(on_deselectAllButton()));
 
-    JButton selectUserNamedButton = new JButton(tr("ButtonSelectByUserName"));
-    selectUserNamedButton.addActionListener(new ActionListener() {
-        //@Override
-        /*public*/ void actionPerformed(ActionEvent event) {
-            fm.SetIncludeToUserNamed();
-        }
-    });
-    pane.add(selectUserNamedButton);
+    pane->layout()->addWidget(deselectAllButton);
+
+    QPushButton* selectUserNamedButton = new QPushButton(tr("Select By UserName"));
+//    selectUserNamedButton.addActionListener(new ActionListener() {
+//        //@Override
+//        /*public*/ void actionPerformed(ActionEvent event) {
+//            fm.SetIncludeToUserNamed();
+//        }
+//    });
+    connect(selectUserNamedButton, SIGNAL(clicked(bool)), this, SLOT(on_selectUserNamedButton()));
+
+    pane->layout()->addWidget(selectUserNamedButton);
 
     return pane;
+}
+
+void ControllerFilterFrame::on_selectAllButton()
+{
+ fm->setIncludeColToValue(true);
+}
+
+void ControllerFilterFrame::on_deselectAllButton()
+{
+ fm->setIncludeColToValue(false);
+}
+void ControllerFilterFrame::on_selectUserNamedButton()
+{
+ fm->SetIncludeToUserNamed();
 }
 #endif
 /*private*/ QWidget* ControllerFilterFrame::addCancelSavePanel() {
@@ -213,7 +237,7 @@ void ControllerFilterFrame::on_save()
 }
 
 //@Override
-/*public*/ void ControllerFilterFrame::tableChanged(TableModelEvent* e) {
+/*public*/ void ControllerFilterFrame::tableChanged(TableModelEvent* /*e*/) {
     if (log->isDebugEnabled()) {
         log->debug("Set mod flag true for: " + getTitle());
     }
@@ -249,10 +273,14 @@ void ControllerFilterFrame::on_save()
     //@Override
     /*public*/ QVariant AbstractFilterModel::headerData(int section, Qt::Orientation orientation, int role) const
     {
-        if(orientation == Qt::Horizontal)
+        if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
         {
          switch(section)
          {
+         case SNAMECOL:
+          return "System Name";
+         case UNAMECOL:
+          return "User Name";
          case INCLUDECOL:
           return "Include";
          default:
@@ -278,7 +306,7 @@ void ControllerFilterFrame::on_save()
     /*public*/ Qt::ItemFlags AbstractFilterModel::flags(const QModelIndex &index) const
     {
       if(index.column() == INCLUDECOL)
-        return Qt::ItemIsEditable | Qt::ItemIsEnabled;
+        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
       else
        return  Qt::ItemIsEnabled;
     }
@@ -292,61 +320,80 @@ void ControllerFilterFrame::on_save()
 //    /*public*/ static /*final*/ int INCLUDECOL = 2;
 //};
 #endif
-#if 0
+#if 1
 //class TurnoutFilterModel extends AbstractFilterModel {
 
 //    TurnoutManager mgr = InstanceManager.turnoutManagerInstance();
 
     TurnoutFilterModel::TurnoutFilterModel()
     {
-     TurnoutManager* mgr = InstanceManager::turnoutManagerInstance();
-        sysNameList = mgr->getSystemNameList();
-        mgr->addPropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
+     mgr = InstanceManager::turnoutManagerInstance();
+     sysNameList = mgr->getSystemNameList();
+     mgr->addPropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
     }
 
     //@Override
     /*public*/ QVariant TurnoutFilterModel::data(const QModelIndex &index, int role) const
     {
-     if(role == Qt::DisplayRole)
+     // some error checking
+     if (index.row() >= sysNameList.size()) {
+         log->debug("row is greater than turnout list size");
+         return QVariant();
+     }
+
+     Turnout* t = mgr->getBySystemName(sysNameList.at(index.row()));
+     if(role == Qt::CheckStateRole)
      {
-        // some error checking
-        if (r >= sysNameList.size()) {
-            log->debug("row is greater than turnout list size");
-            return QVariant();
-        }
-        switch (index.column()) {
-            case INCLUDECOL:
-                QVariant o = mgr->getBySystemName(sysNameList.at(r))->getProperty("WifiControllable");
-                if ((o.isNull()) && (o.toString().toLower() == "false")) {
-                    return false;
-                }
-                return true;
-            case SNAMECOL:
-                return sysNameList.at(r);
-            case UNAMECOL:
-                return mgr->getBySystemName(sysNameList.at(r))->getUserName();
-            default:
-                return QVariant();
+        switch (index.column())
+        {
+         case INCLUDECOL:
+         {
+          if(t!= nullptr)
+          {
+            QVariant o =t->getProperty("WifiControllable");
+            if ((!o.isNull()) && (o.toString().toLower() == "false")) {
+                return Qt::CheckState::Unchecked;
+            }
+          }
+          return Qt::CheckState::Checked;
+         }
+        default:
+         break;
         }
      }
-     return AbstractFilterModel::data(index, role);
+     if(role == Qt::DisplayRole)
+     {
+      switch (index.column())
+      {
+         case SNAMECOL:
+             return sysNameList.at(index.row());
+         case UNAMECOL:
+             return t != nullptr ? t->getUserName() : "";
+         default:
+             break;
+        }
+     }
+     return QVariant();
     }
 
     //@Override
-    /*public*/ bool TurnoutFilterModel::setData(const QModelIndex &index, const QVariant &value, int role)
+    /*public*/ bool TurnoutFilterModel::setData(const QModelIndex &index, const QVariant &type, int role)
     {
      if(role == Qt::EditRole)
      {
-        switch (index.column()) {
+        switch (index.column())
+        {
             case INCLUDECOL:
-                mgr->getBySystemName(sysNameList.get(r)).setProperty("WifiControllable", type);
+                mgr->getBySystemName(sysNameList.at(index.row()))->setProperty("WifiControllable", type);
                 if (!isDirty) {
                     this->fireTableChanged(new TableModelEvent(this));
                     isDirty = true;
                 }
-                break;
+         return true;
+
         }
      }
+     return false;
     }
 
     //@Override
@@ -376,55 +423,68 @@ void ControllerFilterFrame::on_save()
 
 //    RouteManager mgr = InstanceManager.getDefault(jmri.RouteManager.class);
 
-    RouteFilterModel::RouteFilterModel() {
-
-        sysNameList = mgr->getSystemNameList();
-        mgr->addPropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
+    RouteFilterModel::RouteFilterModel()
+    {
+     mgr = (RouteManager*)InstanceManager::getDefault("RouteManager");
+     sysNameList = mgr->getSystemNameList();
+     mgr->addPropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
     }
 
     //@Override
     /*public*/ QVariant RouteFilterModel::data(const QModelIndex &index, int role) const
     {
-     if(role == Qt::DisplayRole)
-     {
-        // some error checking
-        if (r >= sysNameList.size()) {
+     // some error checking
+     if (index.row() >= sysNameList.size()) {
 //            log->debug("row is greater than turnout list size");
-            return QVariant();
-        }
-        Route* rt = mgr->getBySystemName(sysNameList.get(r));
-        switch (index.column()) {
-            case INCLUDECOL:
-                if (rt == nullptr) {
-                    return QVariant();
-                }
-                QVariant o = rt->getProperty("WifiControllable");
-                if ((o != NULL) && (o.toString().toLower()=="false")) {
-                    return (false);
-                }
-                return (true);
-            case SNAMECOL:
-                return sysNameList.at(r);
-            case UNAMECOL:
-                if (rt == "") {
-                    return QVariant();
-                }
-                return rt->getUserName();
-            default:
-                return QVariant();
-        }
+         return QVariant();
      }
-     return AbstractFilterModel::data(index, role);
-    }
+     Route* rt = mgr->getBySystemName(sysNameList.at(index.row()));
 
+     if(role == Qt::CheckStateRole)
+     {
+      switch (index.column())
+      {
+        case INCLUDECOL:
+        {
+         if (rt == nullptr) {
+             return QVariant();
+         }
+         QVariant o = rt->getProperty("WifiControllable");
+         if ((!o.isNull()) && (o.toString().toLower()=="false")) {
+             return Qt::CheckState::Unchecked;
+         }
+         return Qt::CheckState::Checked;
+        }
+        default:
+         break;
+     }
+    }
+    if(role == Qt::DisplayRole)
+    {
+      switch (index.column())
+      {
+
+         case SNAMECOL:
+             return sysNameList.at(index.row());
+         case UNAMECOL:
+             if (rt!=nullptr) {
+                 return QVariant();
+             }
+             return rt->getUserName();
+         default:
+             break;
+      }
+     return QVariant();
+    }
+}
     //@Override
-    /*public*/ bool RouteFilterModel::setData(const QModelIndex &index, const QVariant &value, int role)
+    /*public*/ bool RouteFilterModel::setData(const QModelIndex &index, const QVariant &type, int role)
     {
      if(role == Qt::EditRole)
      {
         switch (index.column()) {
             case INCLUDECOL:
-                Route* rt = mgr->getBySystemName(sysNameList.get(r));
+                Route* rt = mgr->getBySystemName(sysNameList.at(index.row()));
                 if (rt != NULL) {
                     rt->setProperty("WifiControllable", type);
                     if (!isDirty) {
@@ -435,7 +495,7 @@ void ControllerFilterFrame::on_save()
                 break;
         }
      }
-     return AbstractFilterModel::setData(index,value, role);
+     return AbstractFilterModel::setData(index,type, role);
     }
 
     //@Override
@@ -471,5 +531,6 @@ void ControllerFilterFrame::on_save()
 /*public*/ QString ControllerFilterFrame::getClassName(){
  return "jmri.jmrit.withrottle.ControllerFilterFrame";
 }
+/*private*/ /*final*/ /*static*/ Logger* TurnoutFilterModel::log = LoggerFactory::getLogger("TurnoutFilterModel");
 
 /*private*/ /*final*/ /*static*/ Logger* ControllerFilterFrame::log = LoggerFactory::getLogger("ControllerFilterFrame");

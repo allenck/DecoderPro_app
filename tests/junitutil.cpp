@@ -1376,7 +1376,8 @@ static void checkThreads() {
    log->info(tr("begin '%1'").arg(testName));
    if(!QMetaObject::invokeMethod(test, "setUp", Qt::DirectConnection))
     throw Exception(tr("can't invoke 'setup' method when running test '%1").arg(testName));
-   QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
+   if(!QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection))
+    throw Exception(tr("can't invoke '%1' method when running test ").arg(testName));
    log->info(tr("end '%1'").arg(testName));
    if(!QMetaObject::invokeMethod(test, "tearDown", Qt::DirectConnection))
     throw Exception(tr("can't invoke 'tearDown' method when running test '%1").arg(testName));

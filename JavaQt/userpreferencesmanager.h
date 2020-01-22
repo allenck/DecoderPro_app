@@ -351,7 +351,7 @@ public:
      * @param strClass This is a unique identifier for window location being saved
      * @param location The x,y location of the window given in a Point
      */
-    /*public*/ virtual void setWindowLocation(QString /*strClass*/, QPoint /*location*/) {}
+    /*public*/ virtual void setWindowLocation(QString /*strClass*/, QPoint /*location*/) =0;
 
     /**
      * Saves the last size of a given component on the screen
@@ -361,7 +361,7 @@ public:
      * @param strClass This is a unique identifier for window size being saved
      * @param dim The width, height size of the window given in a Dimension
      */
-    /*public*/ virtual void setWindowSize(QString /*strClass*/, QSize /*dim*/) {}
+    /*public*/ virtual void setWindowSize(QString /*strClass*/, QSize /*dim*/) =0;
 
     /**
     * Returns the x,y location of a given Window
@@ -609,5 +609,5 @@ public:
      */
     virtual /*public*/ void setSaveAllowed(bool /*saveAllowed*/) {}
 };
-Q_DECLARE_METATYPE(UserPreferencesManager)
+//Q_DECLARE_METATYPE(UserPreferencesManager)
 #endif // USERPREFERENCESMANAGER_H

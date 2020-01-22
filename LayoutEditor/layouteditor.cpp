@@ -1034,126 +1034,7 @@ void LayoutEditor::blockContentsComboBoxChanged()
  log->debug("Frame size now w=" + QString::number(w) + ", h=" + QString::number(h));
  Editor::resize(w, h);
 }
-#if 0
-/*public*/ QMenu* LayoutEditor::setupTurnoutSubMenu()
-{
- //turnout options submenu
- QMenu* turnoutOptionsMenu = new QMenu(tr("Turnout Options"));
- //optionMenu.add(turnoutOptionsMenu);
 
- // circle on Turnouts
- turnoutCirclesOnItem = new QAction(tr("Show Turnout Circles"),this);
- turnoutCirclesOnItem->setCheckable(true);
- turnoutOptionsMenu->addAction(turnoutCirclesOnItem);
-// turnoutCirclesOnItem.addActionListener(new ActionListener() {
-//     public void actionPerformed(ActionEvent event) {
-//         turnoutCirclesWithoutEditMode = turnoutCirclesOnItem->isChecked();
-//         repaint();
-//     }
-// });
- connect(turnoutCirclesOnItem, SIGNAL(triggered(bool)), this, SLOT(On_turnoutCirclesOnItem_triggered(bool)));
- turnoutCirclesOnItem->setChecked(turnoutCirclesWithoutEditMode);
-
- // select turnout circle color
- QMenu* turnoutCircleColorMenu = new QMenu(tr("Set Turnout Circle Color"));
- turnoutCircleColorButtonGroup = new QActionGroup(this);
- turnoutCircleColorButtonMapper = new QSignalMapper(this);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Use Default Track Color"), defaultTrackColor);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Black"), Qt::black);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Dark Gray"), Qt::darkGray);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Gray"), Qt::gray);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Light Gray"), Qt::lightGray);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("White"), Qt::white);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Red"), Qt::red);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Pink"), QColor(255,192,203));
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Orange"), QColor(255, 165, 0));
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Yellow"), Qt::yellow);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Green"), Qt::green);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Blue"), Qt::blue);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Magenta"), Qt::magenta);
- addTurnoutCircleColorMenuEntry(turnoutCircleColorMenu, tr("Cyan"), Qt::cyan);
- turnoutOptionsMenu->addMenu(turnoutCircleColorMenu);
- connect(turnoutCircleColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(On_turnoutCircleColorButtonMapper_triggered(int)));
-
- // select turnout circle size
-#if 0
- QMenu* turnoutCircleSizeMenu = new QMenu(tr("Turnout Circle Size"));
- turnoutCircleSizeButtonGroup = new QActionGroup(this);
- turnoutCircleSizeButtonMapper = new QSignalMapper(this);
- addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "1", 1);
- addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "2", 2);
- addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "3", 3);
- addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "4", 4);
- addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "5", 5);
- addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "6", 6);
- addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "7", 7);
- addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "8", 8);
- turnoutOptionsMenu->addMenu(turnoutCircleSizeMenu);
- connect(turnoutCircleSizeButtonMapper, SIGNAL(mapped(int)), this, SLOT(On_turnoutCircleSizeButtonMapper_triggered(int)));
-#endif
- // enable drawing of unselected leg (helps when diverging angle is small)
- turnoutDrawUnselectedLegItem = new QAction(tr("Draw Unselected Turnout Leg"),this);
- turnoutDrawUnselectedLegItem->setCheckable(true);
- turnoutOptionsMenu->addAction(turnoutDrawUnselectedLegItem);
-// turnoutDrawUnselectedLegItem.addActionListener(new ActionListener() {
-//     public void actionPerformed(ActionEvent event) {
-//         turnoutDrawUnselectedLeg = turnoutDrawUnselectedLegItem->isChecked();
-//         repaint();
-//     }
-// });
- connect(turnoutDrawUnselectedLegItem, SIGNAL(triggered(bool)), this, SLOT(On_turnoutDrawUnselectedLegItem_triggered(bool)));
- turnoutDrawUnselectedLegItem->setChecked(turnoutDrawUnselectedLeg);
-
- //add show grid menu item
-  autoAssignBlocksItem = new QAction(tr("Automatically Assign Blocks to Track"), this);
-  autoAssignBlocksItem->setCheckable(true);
-  turnoutOptionsMenu->addAction(autoAssignBlocksItem);
-//  autoAssignBlocksItem.addActionListener((ActionEvent event) -> {
-//      autoAssignBlocks = autoAssignBlocksItem->isChecked();
-//  });
-  connect(autoAssignBlocksItem, SIGNAL(triggered(bool)), this, SLOT(on_autoAssignBlocksItem_triggered(bool)));
-  autoAssignBlocksItem->setChecked(autoAssignBlocks);
-
-  //
-  //add hideTrackSegmentConstructionLines menu item
-  //
-  hideTrackSegmentConstructionLines = new QAction(tr("Hide Track Construction Lines"), this);
-  hideTrackSegmentConstructionLines->setCheckable(true);
-  ui->menuOptions->addAction(hideTrackSegmentConstructionLines);
- // hideTrackSegmentConstructionLines.addActionListener((ActionEvent event) -> {
-//      int show = TrackSegment.SHOWCON;
-
-//      if (hideTrackSegmentConstructionLines->isChecked()) {
-//          show = TrackSegment.HIDECONALL;
-//      }
-
-//      for (TrackSegment t : trackList) {
-//          t.hideConstructionLines(show);
-//      }
-//      repaint();
-//  });
-  connect(hideTrackSegmentConstructionLines, SIGNAL(toggled(bool)), this, SLOT(on_hideTrackSegmentConstructionLines_toggled(bool)));
-  hideTrackSegmentConstructionLines->setChecked(autoAssignBlocks);
-
-  //
-  //add "use direct turnout control" menu item
-  //
-  useDirectTurnoutControlItem = new QAction(tr("Use Direct Turnout Control"), this);   //IN18N
-  useDirectTurnoutControlItem->setCheckable(true);
-  turnoutOptionsMenu->addAction(useDirectTurnoutControlItem);
-//  useDirectTurnoutControlItem.addActionListener((ActionEvent event) -> {
-//      useDirectTurnoutControl = false;
-
-//      if (useDirectTurnoutControlItem->isChecked()) {
-//          useDirectTurnoutControl = true;
-//      }
-//  });
-  connect(useDirectTurnoutControlItem, SIGNAL(triggered(bool)), this, SLOT(on_useDirectTurnoutControlItem_triggered(bool)));
-  useDirectTurnoutControlItem->setChecked(useDirectTurnoutControl);
-
- return turnoutOptionsMenu;
-}
-#endif
 void LayoutEditor::On_turnoutCirclesOnItem_triggered(bool)
 {
  turnoutCirclesWithoutEditMode = turnoutCirclesOnItem->isChecked();
@@ -9576,7 +9457,7 @@ void LayoutEditor::undoMoveSelection() {
  QPoint pt = getLocationOnScreen();
  upperLeftX = pt.x();
  upperLeftY = pt.y();
-
+#if 0
  UserPreferencesManager* prefsMgr =(UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
  if(prefsMgr != nullptr)
  {
@@ -9611,9 +9492,9 @@ void LayoutEditor::undoMoveSelection() {
    log->info(tr("testing prefsProp: ") + prefsProp.toString());
   }
  } //);
-
+#endif
  log->debug("setCurrentPositionAndSize Position - " + QString::number(upperLeftX) + "," + QString::number(upperLeftY) + " WindowSize - " + QString::number(windowWidth) + "," + QString::number(windowHeight) + " PanelSize - " + QString::number(panelWidth) + "," + QString::number(panelHeight));
- setDirty();
+ setDirty(true);
 }
 
 /*public*/ void LayoutEditor::setDirectTurnoutControl(bool boo) {

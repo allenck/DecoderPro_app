@@ -56,7 +56,7 @@ public:
  /*public*/ bool getSaveWindowLocation(QString strClass);
  /*public*/ void setSaveWindowSize(QString strClass, bool b);
  /*public*/ void setSaveWindowLocation(QString strClass, bool b) ;
- /*public*/ void setWindowLocation(QString strClass, QPoint location);
+ /*public*/ void setWindowLocation(QString strClass, QPoint location) override;
  /*public*/ void setWindowSize(QString strClass, QSize dim) ;
  /*public*/ QStringList getWindowList();
  /*public*/ void setProperty(QString strClass, QString key, QVariant value);

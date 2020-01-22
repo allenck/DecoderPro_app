@@ -3,6 +3,7 @@
 #include "jmrijframe.h"
 #include "abstracttablemodel.h"
 
+class AbstractFilterModel;
 class RouteManager;
 class TurnoutManager;
 class TableModelEvent;
@@ -20,7 +21,9 @@ public:
 public slots:
  void dispose();
  void on_save();
-
+ void on_selectAllButton();
+ void on_deselectAllButton();
+ void on_selectUserNamedButton();
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger(ControllerFilterFrame.class.getName());
  /*private*/ static QStringList COLUMN_NAMES;// = {Bundle.getMessage("ColumnSystemName"),
@@ -29,8 +32,9 @@ private:
  /*private*/ QWidget* addTurnoutPanel();
  /*private*/ QWidget* addRoutePanel();
  /*private*/ void buildTable(JTable* table);
-// /*private*/ QWidget* getIncludeButtonsPanel(/*final*/ AbstractFilterModel fm);
+ /*private*/ QWidget* getIncludeButtonsPanel(/*final*/ AbstractFilterModel* fm);
  /*private*/ QWidget* addCancelSavePanel();
+ AbstractFilterModel* fm;
 
 protected:
  /*protected*/ void storeValues();
@@ -64,7 +68,7 @@ friend class TurnoutFilterModel;
 friend class RouteFilterModel;
 };
 #endif
-#if 0
+#if 1
 class TurnoutFilterModel : public AbstractFilterModel {
 Q_OBJECT
 
@@ -72,14 +76,14 @@ Q_OBJECT
 public:
     TurnoutFilterModel();
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &type, int role);
     /*public*/ void setIncludeColToValue(bool value);
     /*public*/ void SetIncludeToUserNamed();
 private:
     static Logger* log;
 };
 #endif
-#if 0
+#if 1
 class RouteFilterModel : public AbstractFilterModel {
 Q_OBJECT
     RouteManager* mgr;// = InstanceManager.getDefault(jmri.RouteManager.class);
@@ -87,7 +91,7 @@ public:
     RouteFilterModel();
 
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &type, int role);
     /*public*/ void setIncludeColToValue(bool value);
     /*public*/ void SetIncludeToUserNamed();
 };

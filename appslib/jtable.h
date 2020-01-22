@@ -5,6 +5,7 @@
 #include "tablemodel.h"
 #include "javaqt_global.h"
 
+class AbstractTableModel;
 class DefaultListSelectionModel;
 class ModelChange;
 class RowSorterEvent;
@@ -84,8 +85,8 @@ public:
  /*public*/ bool getAutoCreateColumnsFromModel();
  /*public*/ void createDefaultColumnsFromModel();
  /*public*/ TableColumnModel* getColumnModel();
- /*public*/ void setModel(QAbstractItemModel* dataModel);
- /*public*/ QAbstractItemModel* getModel();
+ /*public*/ void setModel(QAbstractItemModel *dataModel);
+ /*public*/ QAbstractItemModel *getModel();
  /*public*/ void setColumnModel(TableColumnModel* columnModel);
  /*public*/ void setSelectionModel(DefaultListSelectionModel *newModel);
  /*public*/ DefaultListSelectionModel* getSelectionModel();
@@ -141,7 +142,15 @@ public:
  /*public*/ int rowHeight();
  /*public*/ QHeaderView* getTableHeader();
  /*public*/ void setSelectionMode(int selectionMode);
-
+ /*public*/ void setRowSelectionAllowed(bool);
+ /*public*/ bool getRowSelectionAllowed();
+ /*public*/ void setGridColor(QColor gridColor);
+ /*public*/ QColor getGridColor();
+ /*public*/ void setShowGrid(bool showGrid);
+ /*public*/ void setShowHorizontalLines(bool showHorizontalLines) ;
+ /*public*/ void setShowVerticalLines(bool showVerticalLines);
+ /*public*/ bool getShowHorizontalLines();
+ /*public*/ bool getShowVerticalLines();
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -224,7 +233,7 @@ private:
   * The drop location.
   */
  /*private*/ /*transient*/ DropLocation* dropLocation;
- void common(QAbstractItemModel* dm, TableColumnModel* cm, DefaultListSelectionModel *sm);
+ void common(QAbstractItemModel *dm, TableColumnModel* cm, DefaultListSelectionModel *sm);
  void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
  /*private*/ void clearSelectionAndLeadAnchor();
  Logger * log;

@@ -426,3 +426,4 @@ void AbstractTableModel::setTable(JTable * t)
 }
 
 JTable* AbstractTableModel::table() { return _table;}
+

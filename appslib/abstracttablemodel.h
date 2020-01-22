@@ -67,6 +67,8 @@ protected:
     friend class LightTableAction;
     friend class SignalMastTableAction;
     friend class SignallingPanel;
+    friend class RouteFilterModel;
+    friend class JTable;
 };
 
 #endif // ABSTRACTTABLEMODEL_H

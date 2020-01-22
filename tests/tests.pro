@@ -204,7 +204,10 @@ SOURCES += \
     misc/colorchooserpaneltest.cpp \
     misc/colorchooserpaneltestaction.cpp \
     misc/dcclocoaddresstest.cpp \
-    misc/dcclocoaddresstestaction.cpp
+    misc/dcclocoaddresstestaction.cpp \
+    jmrijframetestbase.cpp \
+    misc/controllerfilterframetest.cpp \
+    misc/controllerfilterframetestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -386,7 +389,10 @@ HEADERS += \
     misc/colorchooserpaneltest.h \
     misc/colorchooserpaneltestaction.h \
     misc/dcclocoaddresstest.h \
-    misc/dcclocoaddresstestaction.h
+    misc/dcclocoaddresstestaction.h \
+    jmrijframetestbase.h \
+    misc/controllerfilterframetest.h \
+    misc/controllerfilterframetestaction.h
 
 unix {
     target.path = /usr/lib

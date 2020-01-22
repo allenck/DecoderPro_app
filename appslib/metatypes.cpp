@@ -172,8 +172,6 @@
 #include "trainmanifesttext.h"
 #include "layoutturntablexml.h"
 #include "filehistory.h"
-#include "jmriuserpreferencesmanager.h"
-//#include "listedtableframe.h"
 #include "lighttabletabaction.h"
 #include "signalmasttableaction.h"
 #include "../libPr3/Signal/signalgroupmanager.h"

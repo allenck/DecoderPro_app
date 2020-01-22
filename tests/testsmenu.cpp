@@ -22,6 +22,7 @@
 #include "loconet/lnsensormanagertestaction.h"
 #include "loconet/lndeferprogrammertestaction.h"
 #include "loconet/lnturnoutmanagertestaction.h"
+#include "loconet/loconetconsisttestaction.h"
 #include "misc/proxyturnoutmanagertestaction.h"
 #include "loconet/lnlighttestaction.h"
 #include "misc/proxysensormanagertestaction.h"
@@ -67,6 +68,7 @@
 #include "positionables/signalmasticontestaction.h"
 #include "misc/colorchooserpaneltestaction.h"
 #include "misc/dcclocoaddresstestaction.h"
+#include "misc/controllerfilterframetestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -117,6 +119,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTurnoutsMenu->addAction(new LnTurnoutTestAction(this));
     loconetTurnoutsMenu->addAction(new LnTurnoutManagerTestAction(this));
     loconetTestMenu->addAction(new LocoNetMessageInterpretTestAction(this));
+    loconetTestMenu->addAction(new LocoNetConsistTestAction(this));
 
     QMenu* sprogTestMenu = new QMenu(tr("Sprog"));
     addMenu(sprogTestMenu);
@@ -180,4 +183,5 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     addMenu(miscMenu);
     miscMenu->addAction(new ColorChooserPanelTestAction(this));
     miscMenu->addAction(new DccLocoAddressTestAction(this));
+    miscMenu->addAction(new ControllerFilterFrameTestAction(this));
 }

@@ -195,7 +195,8 @@ void Editor::commonInit()
 
 }
 
-/*public*/ Editor::Editor(QString name, bool saveSize, bool savePosition, QWidget* parent) : JmriJFrame("<Editor>", parent)
+/*public*/ Editor::Editor(QString name, bool saveSize, bool savePosition, QWidget* parent)
+ : JmriJFrame(name, saveSize, savePosition)
 {
  //super(name, saveSize, savePosition);
  //setName(name);

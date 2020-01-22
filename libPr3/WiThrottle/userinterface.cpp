@@ -183,7 +183,7 @@ UserInterface::UserInterface(QWidget* parent) : JmriJFrame(false, false, parent)
 
 //  Add a list of connected devices and the address they are set to.
     withrottlesListModel = new WiThrottlesListModel(deviceList);
-    withrottlesList = new JTable(withrottlesListModel);
+    withrottlesList = new JTable((TableModel*)withrottlesListModel);
 //    withrottlesList->setPreferredScrollableViewportSize(QSize(300, 80));
 
     withrottlesList->setRowHeight(20);

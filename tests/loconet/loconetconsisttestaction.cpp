@@ -17,6 +17,21 @@ void LocoNetConsistTestAction::actionPerformed()
     {
 
      QStringList testList = QStringList()
+       // AbstractConsistTestBase
+       << "testCtor"
+       << "checkDisposeMethod"
+       << "testGetConsistType"
+       << "testSetConsistTypeAdvanced"
+       << "testSetConsistTypeCS"
+       << "checkAddressAllowedGood"
+       << "checkAddressAllowedBad"
+       << "checkSizeLimitAdvanced"
+       << "checkContainsAdvanced"
+       << "checkGetLocoDirectionAdvanced"
+       << "checkGetSetLocoRosterIDAdvanced"
+       << "checkRemoveWithGetRosterIDAdvanced"
+       << "checkAddRemoveWithRosterUpdateAdvanced"
+       // LoconetConsistTest
      << "testCtor2"
      << "testGetConsistType"
      << "testSetConsistTypeCS"
