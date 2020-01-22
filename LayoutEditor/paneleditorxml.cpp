@@ -149,13 +149,13 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
         UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getNullableDefault("UserPreferencesManager");
         if (prefsMgr != nullptr) {
 
-            QPoint prefsWindowLocation = prefsMgr->getWindowLocation(name);
+            QPoint prefsWindowLocation = prefsMgr->getWindowLocation("PanelEditor:"+name);
             if (!prefsWindowLocation.isNull()) {
                 x = (int) prefsWindowLocation.x();
                 y = (int) prefsWindowLocation.y();
             }
 
-            QSize prefsWindowSize = prefsMgr->getWindowSize(name);
+            QSize prefsWindowSize = prefsMgr->getWindowSize("PanelEditor:"+name);
             if (!prefsWindowSize.isNull() && prefsWindowSize.height() != 0 && prefsWindowSize.width() != 0) {
                 height = (int) prefsWindowSize.height();
                 width = (int) prefsWindowSize.height();
