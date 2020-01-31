@@ -1378,7 +1378,7 @@ int File::getPrefixLength() {
 //    }
 //    return fs.createDirectory(this);
     QDir d = QDir();
-    return d.mkdir(path);
+    return d.mkpath(path);
 }
 
 /**

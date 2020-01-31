@@ -3,14 +3,19 @@
 
 #include <QObject>
 #include "dcclocoaddress.h"
-#include "./consist.h"
+#include "./dccconsist.h"
 #include "consistlistlistener.h"
+#include "dcclocoaddress.h"
+#include <QMap>
+#include "exceptions.h"
+#include "consisttable.h"
 
-class ConsistManager : public QObject
+class ConsistAddrList;
+class ConsistManager //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
- explicit ConsistManager(QObject *parent = 0) : QObject(parent) {}
+ //explicit ConsistManager(QObject *parent = 0) : QObject(parent) {}
 
     /**
      * Interface for Consist Manager objects, which provide access to
@@ -38,7 +43,7 @@ public:
          *    Find a Consist with this consist address, and return it.
              *    if the Consist doesn't exit, create it.
          **/
-        virtual Consist* getConsist(DccLocoAddress* /*address*/) {return NULL;}
+        virtual DccConsist* getConsist(DccLocoAddress* /*address*/) {return NULL;}
 
         /**
          *    Remove an old Consist
@@ -53,13 +58,14 @@ public:
         /**
          *    Does a CS consist require a seperate consist address?
          */
-        virtual bool csConsistNeedsSeperateAddress()  = 0;
+        virtual bool csConsistNeedsSeparateAddress()  = 0;
 
         /**
          *    Get an ArrayList object containning the string representation
          *    of the consist addresses we know about.
          */
-        virtual QList<DccLocoAddress*>* getConsistList()  = 0;
+        //virtual QList<DccLocoAddress*> getConsistList()  = 0;
+        virtual ConsistAddrList* getConsistList()  = 0;
 
         /**
          *   Translate Error Codes recieved by a consistListener into
@@ -92,9 +98,11 @@ signals:
          */
          void consistListChanged();
 
+         virtual QObject* self() =0;
     
 public slots:
     
 };
 Q_DECLARE_INTERFACE(ConsistManager, "Consist manager")
+
 #endif // CONSISTMANAGER_H

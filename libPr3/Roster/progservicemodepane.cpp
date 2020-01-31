@@ -201,7 +201,7 @@ void ProgServiceModePane::init()
    //if (mode->toString()==(e->getActionCommand()))
    if(iter.value()->isChecked())
    {
-    log->debug("      set mode {} on {}"+iter.key()->toString() + getProgrammer()->metaObject()->className());
+    log->debug("      set mode {} on {}"+iter.key()->toString() + getProgrammer()->self()->metaObject()->className());
     getProgrammer()->setMode(iter.key());
     return; // 1st match
    }
@@ -213,7 +213,7 @@ void ProgServiceModePane::init()
   */
  /*public*/ void ProgServiceModePane::propertyChange(PropertyChangeEvent* e)
  {
-  if ("Mode"==(e->getPropertyName()) && getProgrammer()==(e->getSource()))
+  if ("Mode"==(e->getPropertyName()) && getProgrammer()->self()==(e->getSource()))
   {
    // mode changed in programmer, change GUI here if needed
    log->debug(QString("Mode propertyChange with {}")+ (isSelected()?"true":"false"));

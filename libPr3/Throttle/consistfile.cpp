@@ -4,7 +4,7 @@
 #include "roster.h"
 #include "fileutil.h"
 #include "loggerfactory.h"
-
+#include "rosterconfigmanager.h"
 /**
  * Handle saving/restoring consist information to XML files. This class
  * manipulates files conforming to the consist-roster-config DTD.
@@ -18,11 +18,11 @@
     //super();
     consistMan = NULL;
 
-    consistMan = (ConsistManager*)InstanceManager::getDefault("ConsistManager");
+    consistMan = qobject_cast<AbstractConsistManager*>(InstanceManager::getDefault("ConsistManager"));
     // set the location to a subdirectory of the defined roster
     // directory
     setFileLocation(Roster::getDefault()->getRosterLocation() + "roster" + File::separator + "consist");
-}
+    Roster::getDefault()->addPropertyChangeListener((PropertyChangeListener*)this);}
 #if 0
 /**
  * Load a Consist from the consist elements in the file.
@@ -155,7 +155,7 @@
  * @param consist a Consist object to write to the file
  * @return an QDomElement representing the consist->
  */
-/*private*/ QDomElement ConsistFile::consistToXml(Consist* consist) {
+/*private*/ QDomElement ConsistFile::consistToXml(DccConsist* consist) {
     QDomElement e = doc.createElement("consist");
     e.setAttribute("id", consist->getConsistID());
     e.setAttribute("consistNumber", "" + consist->getConsistAddress()
@@ -238,7 +238,7 @@
  * Write all consists to the default file name
  *
  */
-/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress*>* consistList) throw (IOException) {
+/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *> consistList) throw (IOException) {
     writeFile(consistList, defaultConsistFilename());
 }
 
@@ -248,9 +248,11 @@
  * @param consistList an ArrayList of consists to write
  * @param fileName    - with location and file type
  */
-/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress*>* consistList, QString fileName) throw (IOException) {
+/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *> consistList, QString fileName) throw (IOException) {
     // create root element
 #if 1
+ if(consistList.isEmpty())
+  throw IOException("consist list is empty!");
  QDomDocument doc = QDomDocument();
     QDomElement root = doc.createElement("consist-roster-config");
     //QDomDocument doc = newDocument(root, dtdLocation + "consist-roster-config.dtd");
@@ -270,8 +272,8 @@
 
     QDomElement roster = doc.createElement("roster");
 
-    for (int i = 0; i < consistList->size(); i++) {
-        Consist* newConsist = consistMan->getConsist(consistList->value(i));
+    for (int i = 0; i < consistList.size(); i++) {
+        DccConsist* newConsist = consistMan->getConsist(consistList.value(i));
         roster.appendChild(consistToXml(newConsist));
     }
     root.appendChild(roster);
@@ -282,11 +284,11 @@
             File* parentDir = file->getParentFile();
             if (!parentDir->exists()) {
                 if (!parentDir->mkdir()) {
-                    throw (new IOException());
+                    throw (IOException());
                 }
             }
             if (!file->createNewFile()) {
-                throw (new IOException());
+                throw (IOException());
             }
         }
         writeXML(findFile(fileName), doc);
@@ -321,5 +323,19 @@
     return getFileLocation() + "consist->xml";
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void ConsistFile::propertyChange(PropertyChangeEvent* evt) {
+    if (qobject_cast<Roster*>(evt->getSource()) &&
+        evt->getPropertyName()== (RosterConfigManager::DIRECTORY)) {
+        try {
+            this->writeFile(consistMan->getConsistList()->toList());
+        } catch (IOException ioe) {
+            log->error("Unable to write consist information to new consist folder");
+        }
+    }
+}
 // initialize logging
 /*private*/ /*final*/ /*static*/ Logger* ConsistFile::log = LoggerFactory::getLogger("ConsistFile");

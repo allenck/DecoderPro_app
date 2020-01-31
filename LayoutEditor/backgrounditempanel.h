@@ -10,6 +10,7 @@
 class ActionListener;
 class ChangeEvent;
 class QColorDialog;
+//class BGIPColorDialog;
 class LIBLAYOUTEDITORSHARED_EXPORT BackgroundItemPanel : public IconItemPanel
 {
     Q_OBJECT
@@ -22,15 +23,17 @@ signals:
 
 public slots:
     void backgroundButton_clicked();
-    void colorChanged(QColor);
+    //void colorChanged(QColor);
 private:
+private slots:
+    void colorChanged();
 
 protected:
     /*protected*/ QWidget* instructions();
     /*protected*/ QWidget* makeBgButtonPanel(ImagePanel*, ImagePanel*);
-
+ friend class BGIPActionListener;
 };
-
+#if 0
 class BGIPColorDialog : public JDialog //implements ChangeListener
 {
  Q_OBJECT
@@ -57,5 +60,14 @@ public:
 public slots:
     /*public*/ void actionPerformed(ActionEvent* e =0);
 };
-
+#endif
+class BGIPActionListener : public ActionListener
+{
+ Q_OBJECT
+ BackgroundItemPanel* panel;
+public:
+ BGIPActionListener(BackgroundItemPanel* panel) {this->panel = panel;}
+public slots:
+ void actionPerformed() { panel->colorChanged();}
+};
 #endif // BACKGROUNDITEMPANEL_H

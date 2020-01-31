@@ -1,8 +1,9 @@
 #include "defaultprogrammermanager.h"
 #include "programmingmode.h"
 #include "programmer.h"
+#include "loggerfactory.h"
 
-DefaultProgrammerManager::DefaultProgrammerManager(QObject* parent) :ProgrammerManager(parent)
+DefaultProgrammerManager::DefaultProgrammerManager(QObject* parent) :QObject(parent)
 {
  setObjectName("DefaultProgrammerManager");
  mProgrammer = NULL;
@@ -87,14 +88,14 @@ DefaultProgrammerManager::DefaultProgrammerManager(QObject* parent) :ProgrammerM
 /*public*/ /*static*/ /*final*/ ProgrammingMode* DefaultProgrammerManager::DIRECTBITMODE =  new ProgrammingMode("DIRECTBITMODE");
 
 /*public*/ DefaultProgrammerManager::DefaultProgrammerManager(Programmer* pProgrammer, QObject* parent)
-    : ProgrammerManager(parent)
+    : QObject(parent)
 {
  mProgrammer = pProgrammer;
  userName = "Internal";
 }
 
 /*public*/ DefaultProgrammerManager::DefaultProgrammerManager(Programmer* pProgrammer, SystemConnectionMemo* memo, QObject* parent)
-    : ProgrammerManager(parent)
+    : QObject(parent)
 {
  //this(pProgrammer);
  mProgrammer = pProgrammer;
@@ -104,11 +105,14 @@ DefaultProgrammerManager::DefaultProgrammerManager(QObject* parent) :ProgrammerM
 }
 
 
-/*public*/ QString DefaultProgrammerManager::getUserName() { return userName; }
+/*public*/ QString DefaultProgrammerManager::getUserName()
+{
+ return userName;
+}
 
 /*public*/ Programmer* DefaultProgrammerManager::getGlobalProgrammer()
 {
- if (log.isDebugEnabled()) log.debug(tr("return default service-mode programmer of type %1").arg(mProgrammer != NULL ? mProgrammer->metaObject()->className() : "(null)"));
+ if (log->isDebugEnabled()) log->debug(tr("return default service-mode programmer of type %1").arg(mProgrammer->self() != NULL ? mProgrammer->self()->metaObject()->className() : "(null)"));
   return mProgrammer;
 }
 /*public*/ AddressedProgrammer* DefaultProgrammerManager::getAddressedProgrammer(bool pLongAddress, int pAddress) {
@@ -130,7 +134,7 @@ Q_UNUSED(pLongAddress)
 return NULL;
 }
 
-/*public*/ void DefaultProgrammerManager::releaseAddressedProgrammer(Programmer* p) {
+/*public*/ void DefaultProgrammerManager::releaseAddressedProgrammer(AddressedProgrammer* p) {
 Q_UNUSED(p)
 }
 
@@ -146,4 +150,19 @@ Q_UNUSED(p)
  */
 /*public*/ bool DefaultProgrammerManager::isGlobalProgrammerAvailable() {return true;}
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultProgrammerManager.class.getName());
+/**
+ * {@inheritDoc}
+ *
+ * @return a default list of programming modes that most
+ *         {@link jmri.AddressedProgrammer}s make available
+ */
+//@Override
+/*public*/ QList<ProgrammingMode*> DefaultProgrammerManager::getDefaultModes() {
+    QList<ProgrammingMode*> retval = QList<ProgrammingMode*>();
+    retval.append(ProgrammingMode::OPSBYTEMODE);
+    return retval;
+}
+
+/*public*/ QString DefaultProgrammerManager::toString() {return "DefaultProgrammerManager";}
+
+/*private*/ /*static*/ Logger* DefaultProgrammerManager::log = LoggerFactory::getLogger("DefaultProgrammerManager");

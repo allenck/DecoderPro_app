@@ -354,7 +354,7 @@ QWidget* SignallingPanel::buildBlocksPanel()
  QVBoxLayout* blockPanelLayout;
  blockPanel->setLayout(blockPanelLayout = new QVBoxLayout(blockPanel/*, BoxLayout.Y_AXIS*/));
 
- BlockManager* bm = InstanceManager::blockManagerInstance();
+ BlockManager* bm = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
  QStringList systemNameList = bm->getSystemNameList();
  _manualBlockList =  QList<ManualBlockList*> (); //systemNameList.size());
  QStringListIterator iter(systemNameList);
@@ -1062,7 +1062,7 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
  QHash<Block*, int> hashBlocks =  QHash<Block*, int>();
  for(int i = 0; i<_includedManualBlockList.size(); i++)
  {
-   Block* blk = InstanceManager::blockManagerInstance()->getBlock(_includedManualBlockList.at(i)->getSysName());
+   Block* blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(_includedManualBlockList.at(i)->getSysName());
         hashBlocks.insert(blk, _includedManualBlockList.at(i)->getState());
  }
  ((DefaultSignalMastLogic*)sml)->setBlocks(hashBlocks, destMast);

@@ -3,20 +3,29 @@
 #include "consistmanager.h"
 #include <QHash>
 #include "libPr3_global.h"
+#include "dcclocoaddress.h"
+#include <QMap>
+#include "exceptions.h"
 
-class LIBPR3SHARED_EXPORT AbstractConsistManager : public ConsistManager
+class ConsistTable;
+class ConsistAddrList;
+class DccConsist;
+class LIBPR3SHARED_EXPORT AbstractConsistManager : public QObject, public ConsistManager
 {
     Q_OBJECT
+ Q_INTERFACES(ConsistManager)
 public:
     explicit AbstractConsistManager(QObject *parent = 0);
     /**
     *    Find a Consist with this consist address, and return it.
     **/
-    /*public*/ virtual Consist* getConsist(DccLocoAddress* address);
+    /*public*/ virtual DccConsist *getConsist(DccLocoAddress* address);
+
     /**
     *     Add a new Consist with the given address to the consistTable/consistList
     **/
-    /*abstract public*/ virtual Consist* addConsist(DccLocoAddress* /*address*/) {return NULL;}
+    /*abstract public*/ virtual DccConsist* addConsist(DccLocoAddress* /*address*/) {return NULL;}
+
     // remove the old Consist
     /*public*/ virtual void delConsist(DccLocoAddress* address);
     /**
@@ -27,11 +36,13 @@ public:
      *    Does a CS consist require a seperate consist address?
     *    (or is the lead loco to be used for the consist address)
      **/
-    /*abstract public*/ virtual bool csConsistNeedsSeperateAddress() {return false;}
+    /*abstract public*/ virtual bool csConsistNeedsSeparateAddress() {return false;}
     /**
     *  Return the list of consists we know about.
     **/
-    /*public*/ virtual QList<DccLocoAddress*>* getConsistList();
+    ///*public*/ virtual QList<DccLocoAddress *> getConsistList();
+    /*public*/ virtual ConsistAddrList* getConsistList();
+
     /*public*/ virtual QString decodeErrorCode(int ErrorCode);
     /* request an update from the layout, loading
     * Consists from the command station.
@@ -54,18 +65,21 @@ public:
      * Consist List has changed.
      */
 
+     /*public*/ QObject* self() {return (QObject*)this;}
+
 signals:
 
 public slots:
     /*public*/ virtual void notifyConsistListChanged();
 private:
-    /*private*/ QList<ConsistListListener*>* changeListeners ;
+    /*private*/ QList<ConsistListListener*>* changeListeners =nullptr;
 
 protected:
-    /*protected*/ QHash<DccLocoAddress*,Consist*>* consistTable;
+    ///*protected*/ QHash<DccLocoAddress*,Consist*>* consistTable;
+    ConsistTable* consistTable;
 
-    /*protected*/ QList<DccLocoAddress*>* consistList ;
-
+friend class DccConsistManager;
 };
+
 
 #endif // ABSTRACTCONSISTMANAGER_H

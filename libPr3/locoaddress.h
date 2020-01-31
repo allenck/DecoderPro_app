@@ -14,7 +14,7 @@
 //            OPENLCB
 //};
 class AbstractThrottleManager;
-class LIBPR3SHARED_EXPORT LocoAddress : public QObject
+class LIBPR3SHARED_EXPORT locoAddress : public QObject
 {
     Q_OBJECT
     //Q_ENUMS(Protocol)
@@ -32,7 +32,7 @@ public:
                 LGB
     };
     Q_ENUM(Protocol)
-    explicit LocoAddress(QObject *parent = 0) : QObject(parent) {}
+    explicit locoAddress(QObject *parent = 0) : QObject(parent) {}
     /**
      * Interface for generic Locomotive Address.
      *
@@ -192,30 +192,30 @@ static Protocol getByPeopleName(QString pName) {
 //        }
     virtual Protocol getProtocol() const {return DCC;}
     virtual QString toString() { return "";}
-    virtual bool operator ==(const LocoAddress &a)
-    {
-     //if (a==NULL) return false;
-//     if(dynamic_cast<LocoAddress*>(a)== nullptr) return false;
-     if(this->metaObject()->className() != a.metaObject()->className()) return false;
-     try
-     {
-      //LocoAddress &other = (LocoAddress ) a;
-      if (this->getNumber() != a.getNumber()) return false;
-      if (this->getProtocol() != a.getProtocol()) return false;
-       return true;
-     }
-     catch (std::exception e)
-     { return false; }
-    }
+//    virtual bool operator ==(const LocoAddress &a)
+//    {
+//     //if (a==NULL) return false;
+////     if(dynamic_cast<LocoAddress*>(a)== nullptr) return false;
+//     if(this->metaObject()->className() != a.metaObject()->className()) return false;
+//     try
+//     {
+//      //LocoAddress &other = (LocoAddress ) a;
+//      if (this->getNumber() != a.getNumber()) return false;
+//      if (this->getProtocol() != a.getProtocol()) return false;
+//       return true;
+//     }
+//     catch (std::exception e)
+//     { return false; }
+//    }
 
     virtual bool equals(QObject* a)
     {
      if (a==NULL) return false;
-     if(qobject_cast<LocoAddress*>(a)== nullptr) return false;
+     if(qobject_cast<locoAddress*>(a)== nullptr) return false;
      if(this->metaObject()->className() != a->metaObject()->className()) return false;
      try
      {
-      LocoAddress* other = (LocoAddress *) a;
+      locoAddress* other = (locoAddress *) a;
       if (this->getNumber() != other->getNumber()) return false;
       if (this->getProtocol() != other->getProtocol()) return false;
        return true;

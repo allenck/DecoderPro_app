@@ -56,7 +56,8 @@
  */
 //@SuppressFBWarnings(value = "DM_CONVERT_CASE",
 //        justification = "parameter value is never localised")  // NOI18N
-/*public*/ AccessoryOpsModeProgrammerFacade::AccessoryOpsModeProgrammerFacade(Programmer* prog, /*@NonNULL */QString addrType, int delay, AddressedProgrammer* baseProg, QObject *parent) :AbstractProgrammerFacade(prog)
+/*public*/ AccessoryOpsModeProgrammerFacade::AccessoryOpsModeProgrammerFacade(Programmer* prog, /*@NonNULL */QString addrType, int delay, AddressedProgrammer* baseProg, QObject *parent)
+ : AbstractProgrammerFacade(prog)
 {
    // super(prog);
     log->debug("Constructing AccessoryOpsModeProgrammerFacade");

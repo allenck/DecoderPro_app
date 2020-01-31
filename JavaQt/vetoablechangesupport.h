@@ -30,6 +30,7 @@ public:
  /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
  /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName);
  /*public*/ /*final*/ VetoableChangeListener* extract(VetoableChangeListener* listener) ;
+ /*public*/ bool hasListeners(QString propertyName);
 
 signals:
  void vetoablePropertyChange(PropertyChangeEvent*);

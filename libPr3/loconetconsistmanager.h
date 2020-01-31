@@ -17,12 +17,12 @@ public:
     /**
      *    Does a CS consist require a seperate consist address?
      **/
-    /*public*/ virtual bool csConsistNeedsSeperateAddress();
+    /*public*/ virtual bool csConsistNeedsSeparateAddress();
     /**
      *    Add a new LocoNetConsist with the given address to
      *    consistTable/consistList
      */
-    /*public*/ Consist* addConsist(DccLocoAddress* address);
+    /*public*/ DccConsist *addConsist(DccLocoAddress* address);
     /* request an update from the layout, loading
      * Consists from the command station.
      *

@@ -47,14 +47,14 @@
  */
 /*public*/ class LIBPR3SHARED_EXPORT AddressedProgrammer : public  Programmer
 {
- Q_OBJECT
+ //Q_OBJECT
 public:
-    AddressedProgrammer(QObject* parent) : Programmer(parent) {}
-/*public*/ virtual bool getLongAddress() {return false;}
+    //AddressedProgrammer(QObject* parent) : Programmer(parent) {}
+/*public*/ virtual bool getLongAddress() =0;
 
-/*public*/ virtual int getAddressNumber() {return 0;}
+/*public*/ virtual int getAddressNumber() =0;
 
-/*public*/ virtual QString getAddress() {return "";}
+/*public*/ virtual QString getAddress() =0;
 };
-
+Q_DECLARE_INTERFACE(AddressedProgrammer, "AddressedProgrammer")
 #endif // ADDRESSEDPROGRAMMER_H

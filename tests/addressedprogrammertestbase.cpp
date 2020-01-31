@@ -22,7 +22,7 @@ AddressedProgrammerTestBase::AddressedProgrammerTestBase()
     //@Test
     //@Override
     /*public*/ void AddressedProgrammerTestBase::testDefault() {
-        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer) != nullptr);
+        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer->self()) != nullptr);
         Assert::assertEquals("Check Default", ProgrammingMode::OPSBYTEMODE,
                 programmer->getMode(), __FILE__, __LINE__);
     }
@@ -30,14 +30,14 @@ AddressedProgrammerTestBase::AddressedProgrammerTestBase()
     //@Test
     //@Override
     /*public*/ void AddressedProgrammerTestBase::testGetCanRead() {
-        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer) != nullptr);
+        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer->self()) != nullptr);
         Assert::assertFalse("can read", programmer->getCanRead(), __FILE__, __LINE__);
     }
 
     //@Test(expected=java.lang.IllegalArgumentException.class)
     //@Override
     /*public*/ void AddressedProgrammerTestBase::testSetGetMode() {
-        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer) != nullptr);
+        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer->self()) != nullptr);
         programmer->setMode(ProgrammingMode::REGISTERMODE);
         Assert::assertEquals("Check mode matches set", ProgrammingMode::REGISTERMODE,
                 programmer->getMode(), __FILE__, __LINE__);
@@ -45,19 +45,19 @@ AddressedProgrammerTestBase::AddressedProgrammerTestBase()
 
     //@Test
     /*public*/ void AddressedProgrammerTestBase::testGetLongAddress(){
-        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer) != nullptr);
+        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer->self()) != nullptr);
         Assert::assertNotNull("long/short address boolean",((AddressedProgrammer*)programmer)->getLongAddress(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AddressedProgrammerTestBase::testGetAddressNumber(){
-        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer) != nullptr);
+        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer->self()) != nullptr);
         Assert::assertNotNull("Numeric Address",((AddressedProgrammer*)programmer)->getAddressNumber(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AddressedProgrammerTestBase::testGetAddress(){
-        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer) != nullptr);
+        Assume::assumeTrue(/*programmer instanceof AddressedProgrammer*/ qobject_cast<AddressedProgrammer*>(programmer->self()) != nullptr);
         Assert::assertNotNull("String Address",((AddressedProgrammer*)programmer)->getAddress(), __FILE__, __LINE__);
     }
 

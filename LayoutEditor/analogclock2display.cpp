@@ -5,6 +5,7 @@
 #include "QPolygonF"
 #include "coordinateedit.h"
 #include "simpletimebase.h"
+#include "externallinkcontentviewerui.h"
 
 //AnalogClock2Display::AnalogClock2Display(QWidget *parent) :
 //    PositionableJComponent(parent)
@@ -490,9 +491,9 @@ void AnalogClock2Display::cleanup() {
 //                }
 //            });
         }
-#if 0        // TODO:
+#if 1
         else {
-            jmri.util.ExternalLinkContentViewerUI.activateURL(new java.net.URL(_url));
+            ExternalLinkContentViewerUI::activateURL(QUrl(_url));
         }
 #endif
     } catch (IOException t) {

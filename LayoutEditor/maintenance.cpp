@@ -170,7 +170,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
  }
 
-    iter = QStringListIterator(InstanceManager::sectionManagerInstance()->getSystemNameList());
+    iter = QStringListIterator(((SectionManager*)InstanceManager::getDefault("SectionManager"))->getSystemNameList());
     while (iter.hasNext()) {
         QString name = iter.next();
         if (!search(name, NULL)) {
@@ -179,7 +179,7 @@ Maintenance::Maintenance(QObject *parent) :
         }
     }
 
- iter = QStringListIterator(((BlockManager*)InstanceManager::blockManagerInstance())->getSystemNameList());
+ iter = QStringListIterator(((BlockManager*)InstanceManager::getDefault("BlockManager"))->getSystemNameList());
  while (iter.hasNext())
  {
   QString name = iter.next();
@@ -567,7 +567,7 @@ Maintenance::Maintenance(QObject *parent) :
   return l;
  }
 
- BlockManager* blockManager = InstanceManager::blockManagerInstance();
+ BlockManager* blockManager = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
  Block* b = blockManager->getBySystemName(sysName);
  if ( b!=NULL )
  {
@@ -601,7 +601,7 @@ Maintenance::Maintenance(QObject *parent) :
    return list;
   }
 
-    SectionManager* sectionManager = InstanceManager::sectionManagerInstance();
+    SectionManager* sectionManager = ((SectionManager*)InstanceManager::getDefault("SectionManager"));
     Section* sec = sectionManager->getBySystemName(sysName);
     if ( sec!=NULL ) {
         userName = sec->getUserName();
@@ -1005,7 +1005,7 @@ Maintenance::Maintenance(QObject *parent) :
     tempText = QString();
     found = false;
     empty = true;
-    SectionManager* sectionManager = InstanceManager::sectionManagerInstance();
+    SectionManager* sectionManager = ((SectionManager*)InstanceManager::getDefault("SectionManager"));
     QStringList sysNameList = sectionManager->getSystemNameList();
 
     transitManager = (TransitManager*)InstanceManager::getNullableDefault("TransitManager");
@@ -1100,10 +1100,10 @@ Maintenance::Maintenance(QObject *parent) :
     tempText = QString();
     found = false;
     empty = true;
-    BlockManager* blockManager = InstanceManager::blockManagerInstance();
+    BlockManager* blockManager = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
     sysNameList = blockManager->getSystemNameList();
 
-    sectionManager = InstanceManager::sectionManagerInstance();
+    sectionManager = ((SectionManager*)InstanceManager::getDefault("SectionManager"));
     iter1 = QStringListIterator(sectionManager->getSystemNameList());
     while (iter1.hasNext()) {
         QString sName = iter1.next();

@@ -5,6 +5,7 @@
 #include "profile.h"
 #include "nodeidentity.h"
 #include "loggerfactory.h"
+#include "profileutils.h"
 
 /**
  *
@@ -44,9 +45,13 @@
    File* nodeDir = new File(dir, NodeIdentity::storageIdentity());
    if (!nodeDir->exists())
    {
-    bool success = NodeIdentity::copyFormerIdentity(dir, nodeDir);
-    if (! success)
-     log->debug(tr("copyFormerIdentity(%1, %2) did not copy").arg(dir->toString()).arg(nodeDir->toString()));
+    try {
+        if (!ProfileUtils::copyPrivateContentToCurrentIdentity(project)) {
+            log->debug("Starting profile with new private configuration.");
+        }
+    } catch (IOException ex) {
+        log->debug("Copying existing private configuration failed.");
+    }
    }
    dir = new File(dir, NodeIdentity::storageIdentity());
   }

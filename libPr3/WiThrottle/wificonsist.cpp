@@ -10,7 +10,7 @@
  */
 ///*public*/ class WiFiConsist extends DccConsist {
 
-/*public*/WiFiConsist:: WiFiConsist(DccLocoAddress* address, QObject* parent) : DccConsist(address, parent) {
+/*public*/WiFiConsist:: WiFiConsist(DccLocoAddress* address, QObject* parent) : DccConsist(address) {
     //super(address);
 }
 

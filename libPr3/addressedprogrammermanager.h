@@ -3,6 +3,7 @@
 
 #include "libPr3_global.h"
 #include "globalprogrammermanager.h"
+#include "dcclocoaddress.h"
 
 /**
  * Get access to available {@link Programmer} objects.
@@ -40,20 +41,30 @@
  */
 class ProgrammingMode;
 class AddressedProgrammer;
-/*public*/ class LIBPR3SHARED_EXPORT AddressedProgrammerManager  : public GlobalProgrammerManager
+/*public*/ class LIBPR3SHARED_EXPORT AddressedProgrammerManager  //: public GlobalProgrammerManager
 {
-    Q_OBJECT
-public:
-    AddressedProgrammerManager(QObject* parent= 0) : GlobalProgrammerManager(parent) {}
+    //Q_OBJECT
 
+public:
+    //AddressedProgrammerManager(QObject* parent= 0) : GlobalProgrammerManager(parent) {}
     /**
      * Gain access to a Addressed Mode Programmer without reservation.
      * @param pLongAddress true if this is a long (14 bit) address, else false
      * @param pAddress Specific decoder address to use.
      * @return null only if there isn't an Ops Mode Programmer in the system
      */
-    /*public*/ virtual AddressedProgrammer* getAddressedProgrammer(bool /*pLongAddress*/, int /*pAddress*/) {return NULL;}
+    /*public*/ virtual AddressedProgrammer* getAddressedProgrammer(bool /*pLongAddress*/, int /*pAddress*/) =0;
 
+    /**
+      * Gain access to a Addressed Mode Programmer without reservation.
+      *
+      * @param address specific decoder address to use
+      * @return null only if there isn't an Ops Mode Programmer in the system
+      */
+     //@CheckForNull
+     /*public*/ virtual /*default*/ AddressedProgrammer* getAddressedProgrammer(/*@Nonnull*/ DccLocoAddress* address) {
+         return this->getAddressedProgrammer(address->isLongAddress(), address->getNumber());
+     }
     /**
      * Gain access to a (the) Addressed Mode Programmer, in the process
      * reserving it for yourself.
@@ -61,20 +72,20 @@ public:
      * @param pAddress Specific decoder address to use.
      * @return null if the address is in use by a reserved programmer
      */
-    /*public*/ virtual AddressedProgrammer* reserveAddressedProgrammer(bool /*pLongAddress*/, int /*pAddress*/) {return NULL;}
+    /*public*/ virtual AddressedProgrammer* reserveAddressedProgrammer(bool /*pLongAddress*/, int /*pAddress*/) =0;
 
     /**
      * Return access to an Addressed Mode Programmer, so that it can
      * be used elsewhere.
      */
-    /*public*/ virtual void releaseAddressedProgrammer(AddressedProgrammer* /*p*/) {}
+    /*public*/ virtual void releaseAddressedProgrammer(AddressedProgrammer* /*p*/) =0;
 
     /**
      * Convenience method to check whether you'll be able to get
      * an Addressed Mode programmer.
      * @return false if there's no chance of getting one
      */
-    /*public*/ virtual bool isAddressedModePossible() {return false;}
+    /*public*/ virtual bool isAddressedModePossible() =0;
 
     /**
      * Get the list of {@link ProgrammingMode} (generally) supported by
@@ -85,14 +96,14 @@ public:
      *<p>
      * If the order is significant, earlier modes are better.
      */
-    /*public*/ virtual QList<ProgrammingMode*> getDefaultModes() {return QList<ProgrammingMode*>();}
+    /*public*/ virtual QList<ProgrammingMode*> getDefaultModes() =0;
     /**
      * Provides the human-readable
      * representation for including ProgrammerManagers
      * directly in e.g. JComboBoxes, so it should return a
      * user-provided name for this particular one.
      */
-    /*public*/ virtual QString getUserName() {return "";}
+    /*public*/ virtual QString getUserName() =0;
 
     /**
      * toString() provides the human-readable
@@ -100,6 +111,9 @@ public:
      * directly in e.g. JComboBoxes, so it should return a
      * user-provided name for this particular one.
      */
-    /*public*/ virtual QString toString() {return "";}
+    /*public*/ virtual QString toString() =0;
+
+    virtual QObject* self() =0;
 };
+Q_DECLARE_INTERFACE(AddressedProgrammerManager, "AddressedProgrammerManager")
 #endif // ADDRESSEDPROGRAMMERMANAGER_H

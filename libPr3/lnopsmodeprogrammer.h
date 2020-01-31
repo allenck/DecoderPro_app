@@ -8,9 +8,10 @@ class LocoNetSystemConnectionMemo;
 class Logger;
 class ProgrammingMode;
 class SlotManager;
-class LnOpsModeProgrammer : public AddressedProgrammer
+class LnOpsModeProgrammer : public QObject, public AddressedProgrammer
 {
     Q_OBJECT
+ Q_INTERFACES(AddressedProgrammer)
 public:
  enum WriteConfirmMode {
    /**
@@ -49,6 +50,7 @@ public:
     /*public*/ QString getAddress();
     /*public*/ Programmer::WriteConfirmMode getWriteConfirmMode(QString addr);
     /*default*/ /*public*/ void notifyProgListenerEnd(ProgListener* p, int value, int status);
+    /*public*/ QObject* self() {return (QObject*)this;}
 
 signals:
     void propertyChange(PropertyChangeEvent*);

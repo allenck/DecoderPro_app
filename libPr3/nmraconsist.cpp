@@ -1,6 +1,7 @@
 #include "nmraconsist.h"
 #include "nmrapacket.h"
 #include "instancemanager.h"
+#include "commandstation.h"
 
 //NmraConsist::NmraConsist(QObject *parent) :
 //    DccConsist(parent)
@@ -19,19 +20,29 @@
 
 // Initialize a consist for the specific address.
 /*public*/ NmraConsist::NmraConsist(int address, QObject *parent)
-    :    DccConsist(address, parent)
+    :    DccConsist(address)
 {
     //uper(address);
     log = new Logger("NmraConsist");
     log->debug("Nmra Consist created for address: "+ QString::number(address));
+    commandStation = ((CommandStation*)InstanceManager::getDefault("CommanStation()"));
 }
 
-/*public*/ NmraConsist::NmraConsist(DccLocoAddress* address, QObject *parent)
-    :    DccConsist(address, parent)
+/*public*/ NmraConsist::NmraConsist(DccLocoAddress* address, QObject *parent) : DccConsist(address){
+        //this(address,InstanceManager.getDefault(CommandStation.class));
+     log = new Logger("NmraConsist");
+     log->debug("Nmra Consist created for address: "+ (address->toString()));
+     commandStation = ((CommandStation*)InstanceManager::getDefault("CommanStation()"));
+    }
+
+
+/*public*/ NmraConsist::NmraConsist(DccLocoAddress* address, CommandStation *cs, QObject *parent)
+    :    DccConsist(address)
 {
     //super(address);
     log = new Logger("NmraConsist");
     log->debug("Nmra Consist created for address: "+ QString::number(address->number));
+    commandStation = cs;
 }
 
 /*
@@ -53,7 +64,7 @@
             locoAddress->isLongAddress(),
             consistAddress->getNumber(),
             directionNormal);
-    static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"))->sendPacket(contents, 4);
+    qobject_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"))->sendPacket(contents, 4);
     notifyConsistListeners(locoAddress, ConsistListener::OPERATION_SUCCESS);
 
 }
@@ -74,6 +85,6 @@
             locoAddress->isLongAddress(),
             0, //set to 0 to remove
             true);//always normal direction
-    static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"))->sendPacket(contents, 4);
+    qobject_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"))->sendPacket(contents, 4);
     notifyConsistListeners(locoAddress, ConsistListener::OPERATION_SUCCESS);
 }

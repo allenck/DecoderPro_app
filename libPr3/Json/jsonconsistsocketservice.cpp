@@ -77,7 +77,7 @@ JsonConsistListener::JsonConsistListener(JsonConsistSocketService* jcss) {this->
             jcss->consists.remove(locoaddress);
         }
         try {
-            (new ConsistFile())->writeFile(jcss->service->manager->getConsistList());
+            (new ConsistFile())->writeFile(jcss->service->manager->getConsistList()->toList());
         } catch (IOException ex) {
             // this IO execption caused by unable to write file
             jcss->log->error(tr("Unable to write consist file \"%1\": %2").arg( ConsistFile::defaultConsistFilename()).arg(ex.getMessage()));
@@ -101,7 +101,7 @@ JsonConsistListListener::JsonConsistListListener(JsonConsistSocketService* jcss)
             jcss->service->manager->removeConsistListListener(this);
         }
         try {
-            (new ConsistFile())->writeFile(jcss->service->manager->getConsistList());
+            (new ConsistFile())->writeFile(jcss->service->manager->getConsistList()->toList());
         } catch (IOException ex) {
             // this IO execption caused by unable to write file
             jcss->log->error(tr("Unable to write consist file \"%1\": %2").arg( ConsistFile::defaultConsistFilename()).arg(ex.getMessage()));

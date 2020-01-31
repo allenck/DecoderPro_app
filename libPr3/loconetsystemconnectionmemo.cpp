@@ -4,7 +4,6 @@
 #include "instancemanager.h"
 #include "lntrafficcontroller.h"
 #include "slotmanager.h"
-#include "programmermanager.h"
 #include "lnpowermanager.h"
 #include "throttlemanager.h"
 #include "lnturnoutmanager.h"
@@ -152,7 +151,7 @@ void LocoNetSystemConnectionMemo::setLnTrafficController(LnTrafficController* lt
      sm->setTranspondingAvailable(mTranspondingAvailable);
 
      // store as CommandStation object
-     InstanceManager::setCommandStation((CommandStation*)sm);
+     InstanceManager::store(sm, "CommandStation");
     }
     _register();
 }
@@ -179,10 +178,11 @@ LnMessageManager* LocoNetSystemConnectionMemo::getLnMessageManager()
 DefaultProgrammerManager* LocoNetSystemConnectionMemo::getProgrammerManager() {
     if (programmerManager == NULL)
     {
-        programmerManager = new LnProgrammerManager(getSlotManager(), this);
+        programmerManager = new LnProgrammerManager( this);
     }
     return programmerManager;
 }
+
 void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager* p) {
     programmerManager = p;
 }
@@ -284,7 +284,7 @@ void LocoNetSystemConnectionMemo::configureManagers()
 
  if (getProgrammerManager()->isAddressedModePossible())
  {
-  InstanceManager::setAddressedProgrammerManager(getProgrammerManager());
+  InstanceManager::store(getProgrammerManager(), "AddressedProgrammerManager");
  }
  if (getProgrammerManager()->isGlobalProgrammerAvailable())
  {
@@ -414,7 +414,7 @@ void  LocoNetSystemConnectionMemo::dispose()
    InstanceManager::deregister(((DebugThrottleManager*)throttleManager), "DebugThrottleManager");
  }
  if (consistManager != NULL)
-  InstanceManager::deregister(consistManager, "LocoNetConsistManager");
+  InstanceManager::deregister(consistManager->self(), "LocoNetConsistManager");
  if (clockControl != NULL)
   InstanceManager::deregister(clockControl, "LnClockControl");
  SystemConnectionMemo::dispose();

@@ -11,6 +11,7 @@ public:
  /*public*/ /*synchronized*/ void writeCV(QString cv, int val, ProgListener* p) throw (ProgrammerException);
  /*public*/ /*synchronized*/ void readCV(QString cv, ProgListener* p) throw (ProgrammerException) ;
  /*public*/ /*synchronized*/ void confirmCV(QString cv, int val, ProgListener* p) throw (ProgrammerException);
+ /*public*/ QObject* self() {return (QObject*)this;}
 
 public slots:
  /*public*/ /*synchronized*/ void programmingOpReply(int value, int status);

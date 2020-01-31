@@ -7,7 +7,7 @@
 #include "coordinateedit.h"
 #include "inputdialog.h"
 #include "settrackwidthdlg.h"
-#include "addreporterdlg.h"
+#include "enterreporterdialog.h"
 #include <QFileDialog>
 #include <QColor>
 #include "memoryiconcoordinateedit.h"
@@ -7904,33 +7904,34 @@ void LayoutEditor::addMemory()
 {
  QString memoryName = ui->textMemoryComboBox->getDisplayName();
 
-         if (memoryName.isEmpty()) {
-             JOptionPane::showMessageDialog(this, tr("Error - Cannot create a memory label because no memory variable is entered in the\nMemory text field. Please enter the name of a memory variable and try again."),
-                     tr("Error"), JOptionPane::ERROR_MESSAGE);
-             return;
-         }
-         LEMemoryIcon* l = new LEMemoryIcon(" ", this);
-         l->setMemory(memoryName);
-         Memory* xMemory = l->getMemory();
+    if (memoryName.isEmpty()) {
+        JOptionPane::showMessageDialog(this, tr("Error - Cannot create a memory label because no memory variable is entered in the\nMemory text field. Please enter the name of a memory variable and try again."),
+                tr("Error"), JOptionPane::ERROR_MESSAGE);
+        return;
+    }
+    LEMemoryIcon* l = new LEMemoryIcon(" ", this);
+    l->setMemory(memoryName);
+    Memory* xMemory = l->getMemory();
 
-         if (xMemory != nullptr) {
-             QString uname = xMemory->getDisplayName();
-             if (uname != (memoryName)) {
-                 //put the system name in the memory field
-                 ui->textMemoryComboBox->setText(xMemory->getSystemName());
-             }
-         }
-         setNextLocation(l);
-         l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
-         l->setDisplayLevel(Editor::LABELS);
-         l->setForeground(defaultTextColor);
-         unionToPanelBounds(l->getBounds());
-         putItem(l); // note: this calls unionToPanelBounds & setDirty()
-     } //addMemory
+    if (xMemory != nullptr) {
+        QString uname = xMemory->getDisplayName();
+        if (uname != (memoryName)) {
+            //put the system name in the memory field
+            ui->textMemoryComboBox->setText(xMemory->getSystemName());
+        }
+    }
+    setNextLocation(l);
+    l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
+    l->setDisplayLevel(Editor::LABELS);
+    l->setForeground(defaultTextColor);
+    unionToPanelBounds(l->getBounds());
+    putItem(l); // note: this calls unionToPanelBounds & setDirty()
+} //addMemory
+
 /**
 * Add a Reporter Icon to the panel
 */
-void LayoutEditor::addReporter(QString textReporter,int xx,int yy) {
+void LayoutEditor::addReporter(Reporter* textReporter,int xx,int yy) {
   ReporterIcon* l = new ReporterIcon(this);
   l->setReporter(textReporter);
   ((Positionable*)l)->setLocation(xx,yy);
@@ -8648,13 +8649,15 @@ void LayoutEditor::on_colorBackgroundMenuItemSelected(int i)
 
 void LayoutEditor::on_actionAdd_reporter_label_triggered()
 {
- AddReporterDlg* dlg = new AddReporterDlg(this);
- if(dlg->exec() == QDialog::Accepted)
- {
-   QString rName = dlg->getName();
-   QPoint loc = dlg->getLoc();
-   addReporter(rName,loc.x(),loc.y());
+ QPointF pt = windowCenter();
+ if (selectionActive) {
+     pt = MathUtil::midPoint(getSelectionRect());
  }
+ EnterReporterDialog* d = new EnterReporterDialog(this);
+ d->enterReporter((int) pt.x(), (int) pt.y());
+ //note: panel resized in enterReporter
+ setDirty();
+ redrawPanel();
 }
 
 void LayoutEditor::on_actionAdd_background_image_2_triggered()

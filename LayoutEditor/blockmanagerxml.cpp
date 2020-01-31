@@ -231,7 +231,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
    QString speed = blocks.firstChildElement("defaultspeed").text();
    if (speed!="")
    {
-    InstanceManager::blockManagerInstance()->setDefaultSpeed(speed);
+    ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setDefaultSpeed(speed);
    }
   }
  }
@@ -385,7 +385,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
     Block* toBlock = NULL;
     if (!element.attribute("block").isNull()) {
         QString name = element.attribute("block");
-        toBlock = InstanceManager::blockManagerInstance()->getBlock(name);
+        toBlock = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(name);
     }
     Path* path = new Path(toBlock, toDir, fromDir);
 
@@ -422,5 +422,5 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
 }
 
 /*public*/ int BlockManagerXml::loadOrder(){
-    return InstanceManager::blockManagerInstance()->getXMLOrder();
+    return ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getXMLOrder();
 }

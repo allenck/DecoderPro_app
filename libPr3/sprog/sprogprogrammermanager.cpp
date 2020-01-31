@@ -65,3 +65,7 @@ using namespace Sprog;
     return NULL;
 }
 
+/*public*/ QString SprogProgrammerManager::toString()
+{
+ return "SprogProgrammerManager";
+}

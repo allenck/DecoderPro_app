@@ -17,7 +17,8 @@ class SprogSystemConnectionMemo;
   /*public*/ bool isGlobalProgrammerAvailable();
   /*public*/ AddressedProgrammer* getAddressedProgrammer(bool pLongAddress, int pAddress);
   /*public*/ AddressedProgrammer* reserveAddressedProgrammer(bool pLongAddress, int pAddress);
-
+  /*public*/ QObject* self() {return (QObject*)this;}
+  /*public*/ QString toString();
 
  private:
   /*private*/ SprogConstants::SprogMode mode;

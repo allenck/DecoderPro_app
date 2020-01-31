@@ -91,7 +91,7 @@ void BlockTableAction::common()
 
 
  // disable ourself if there is no primary Block manager available
- if (InstanceManager::blockManagerInstance() == NULL)
+ if (((BlockManager*)InstanceManager::getDefault("BlockManager")) == NULL)
  {
   setEnabled(false);
  }
@@ -104,7 +104,7 @@ void BlockTableAction::common()
   centimeterBox->setChecked(true);
  }
 
- defaultBlockSpeedText = ("Use Global " + ((BlockManager*)InstanceManager::blockManagerInstance())->getDefaultSpeed());
+ defaultBlockSpeedText = ("Use Global " + ((BlockManager*)((BlockManager*)InstanceManager::getDefault("BlockManager")))->getDefaultSpeed());
  speedList.append(defaultBlockSpeedText);
  QVector<QString> _speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames();
  for (int i = 0; i < _speedMap.size(); i++) {
@@ -154,7 +154,7 @@ void BlockTableAction::common()
   log->warn("requested getValue(NULL)");
   return "(no name)";
  }
- Block* b = InstanceManager::blockManagerInstance()->getBySystemName(name);
+ Block* b = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(name);
  if (b == NULL)
  {
   log->debug("requested getValue(\"" + name + "\"), Block doesn't exist");
@@ -173,17 +173,17 @@ void BlockTableAction::common()
 
 /*public*/ Manager* BlockTableDataModel::getManager()
 {
- return InstanceManager::blockManagerInstance();
+ return ((BlockManager*)InstanceManager::getDefault("BlockManager"));
 }
 
 /*public*/ NamedBean* BlockTableDataModel::getBySystemName(QString name) const
 {
- return InstanceManager::blockManagerInstance()->getBySystemName(name);
+ return ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(name);
 }
 
 /*public*/ NamedBean* BlockTableDataModel::getByUserName(QString name)
 {
- return InstanceManager::blockManagerInstance()->getByUserName(name);
+ return ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(name);
 }
 
 /*protected*/ QString BlockTableDataModel::getMasterClassName()
@@ -670,7 +670,7 @@ void BlockTableAction::common()
  table->setItemDelegateForColumn(CURVECOL, new OBSComboBoxDelegate(this, curveOptions.values() ));
  buttonMap.append(CURVECOL);
 
- QString defaultBlockSpeedText = ("Use Global " + ((BlockManager*)InstanceManager::blockManagerInstance())->getDefaultSpeed());
+ QString defaultBlockSpeedText = ("Use Global " + ((BlockManager*)((BlockManager*)InstanceManager::getDefault("BlockManager")))->getDefaultSpeed());
  speedList.append(defaultBlockSpeedText);
  QVector<QString> _speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames();
  for (int i = 0; i < _speedMap.size(); i++) {
@@ -816,7 +816,7 @@ void BlockTableDataModel::editButton(Block* b)
 
 /*private*/ void BlockTableAction::updateSpeedList() {
     speedList.remove(speedList.indexOf(defaultBlockSpeedText));
-    defaultBlockSpeedText = ("Use Global " + InstanceManager::blockManagerInstance()->getDefaultSpeed());
+    defaultBlockSpeedText = ("Use Global " + ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getDefaultSpeed());
     speedList.insert(0, defaultBlockSpeedText);
     m->fireTableDataChanged();
 }
@@ -896,7 +896,7 @@ void BlockTableAction::on_defaultSpeeds()
 
  blockSpeedCombo->removeItem(blockSpeedCombo->findText(defaultBlockSpeedText));
 
- blockSpeedCombo->setCurrentIndex(blockSpeedCombo->findText(InstanceManager::blockManagerInstance()->getDefaultSpeed()));
+ blockSpeedCombo->setCurrentIndex(blockSpeedCombo->findText(((BlockManager*)InstanceManager::getDefault("BlockManager"))->getDefaultSpeed()));
 
 // int retval = JOptionPane.showOptionDialog(_who,
 //         "Select the default values for the speeds through the blocks\n", "Block Speeds",
@@ -911,7 +911,7 @@ void BlockTableAction::on_defaultSpeeds()
  QString speedValue =  blockSpeedCombo->currentText();
  //We will allow the turnout manager to handle checking if the values have changed
  //try {
-     InstanceManager::blockManagerInstance()->setDefaultSpeed(speedValue);
+     ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setDefaultSpeed(speedValue);
 // } catch (JmriException ex) {
 //     JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speedValue);
 //     return;
@@ -1095,9 +1095,9 @@ void BlockTableAction::okPressed(ActionEvent* /*e*/)
      Block* blk;
      try {
          if (_autoSystemName->isChecked()) {
-             blk = InstanceManager::blockManagerInstance()->createNewBlock(user);
+             blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(user);
          } else {
-             blk = InstanceManager::blockManagerInstance()->createNewBlock(sName, user);
+             blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(sName, user);
          }
      } catch (IllegalArgumentException ex) {
          // user input no good
@@ -1131,7 +1131,7 @@ void BlockTableAction::okPressed(ActionEvent* /*e*/)
      }
  }
  pref->setSimplePreferenceState(systemNameAuto, _autoSystemName->isChecked());
- // InstanceManager::blockManagerInstance().createNewBlock(sName, user);
+ // ((BlockManager*)InstanceManager::getDefault("BlockManager")).createNewBlock(sName, user);
 }
 
 void BlockTableAction::handleCreateException(QString sysName) {
@@ -1156,10 +1156,10 @@ void BlockTableAction::deletePaths(JmriJFrame* f) {
 //            JOptionPane.QUESTION_MESSAGE, NULL, options, options[1]);
     int retval = QMessageBox::question(f, tr("Save Block Path Information"), tr("Any path information will not be saved, and will be\nrebuilt by the Layout Editor when the panel is re-opened"), QMessageBox::Yes | QMessageBox::No);
     if (retval != QMessageBox::No) {
-        InstanceManager::blockManagerInstance()->savePathInfo(true);
+        ((BlockManager*)InstanceManager::getDefault("BlockManager"))->savePathInfo(true);
         log->info("Requested to save path information via Block Menu.");
     } else {
-        InstanceManager::blockManagerInstance()->savePathInfo(false);
+        ((BlockManager*)InstanceManager::getDefault("BlockManager"))->savePathInfo(false);
         log->info("Requested not to save path information via Block Menu.");
     }
 }

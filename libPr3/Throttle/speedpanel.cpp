@@ -115,11 +115,11 @@
 }
 
 //@Override
-/*public*/ void SpeedPanel::notifyAddressChosen(LocoAddress* l) {
+/*public*/ void SpeedPanel::notifyAddressChosen(locoAddress* l) {
 }
 
 //@Override
-/*public*/ void SpeedPanel::notifyAddressReleased(LocoAddress* la) {
+/*public*/ void SpeedPanel::notifyAddressReleased(locoAddress* la) {
     this->setEnabled(false);
     if (throttle != NULL) {
         //throttle.removePropertyChangeListener(this);

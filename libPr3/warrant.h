@@ -114,7 +114,7 @@ public:
                                  QList<ThrottleSetting *> *commands, bool runBlind);
     /*public*/ bool controlRunTrain(int idx);
     /*public*/ void notifyThrottleFound(DccThrottle* throttle) override;
-    /*public*/ void notifyFailedThrottleRequest(LocoAddress* address, QString reason) override;
+    /*public*/ void notifyFailedThrottleRequest(locoAddress* address, QString reason) override;
     /*public*/ QString allocateRoute(bool show, QList<BlockOrder *> *orders);
     /*public*/ void deAllocate();
 //    /*public*/ QString setRoute(int delay, QList <BlockOrder*>* orders);

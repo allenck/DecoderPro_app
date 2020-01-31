@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
  QCoreApplication::setOrganizationName("ACK Software");
 
  //qInstallMsgHandler(myMessageOutput);
+ QApplication::setStyle("GTK+");
 
  MyApplication a(argc, argv);
 #ifdef SCRIPTING_ENABLED

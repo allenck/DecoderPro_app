@@ -82,7 +82,7 @@ void TransitSection::common()
         log->error("Null Section Name when initializing a TransitSection");
     }
     else {                
-        mSection = InstanceManager::sectionManagerInstance()->getSection(tSectionName);
+        mSection = ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getSection(tSectionName);
         if (mSection==NULL)
             log->error("Missing Section - "+tSectionName+" - when initializing a TransitSection");
     }

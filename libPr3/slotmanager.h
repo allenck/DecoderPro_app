@@ -57,9 +57,10 @@ class CsOpSwAccess;
 class LnCommandStationType;
 class LocoNetSystemConnectionMemo;
 class Logger;
-class LIBPR3SHARED_EXPORT SlotManager : public  AbstractProgrammer
+class LIBPR3SHARED_EXPORT SlotManager : public  AbstractProgrammer, public LocoNetListener, public CommandStation
 {
  Q_OBJECT
+ Q_INTERFACES(LocoNetListener CommandStation)
 public:
     SlotManager(LnTrafficController* tc, QObject *parent = nullptr);
     /**
@@ -239,6 +240,7 @@ public:
     /*public*/ bool getTranspondingAvailable();
 
     /*default*/ /*public*/ void notifyProgListenerEnd(ProgListener* p, int value, int status);
+    /*public*/ QObject* self() {return (QObject*)this;}
 
 signals:
     void changedSlot(LocoNetSlot* s);

@@ -25,11 +25,11 @@
  */
 //public interface ConsistListListener extends java.util.EventListener{
 
-class ConsistListListener : public QObject
+class ConsistListListener //: public QObject
 {
- Q_OBJECT
+ //Q_OBJECT
 public:
- explicit ConsistListListener(QObject *parent = 0);
+ //explicit ConsistListListener(QObject *parent = 0);
 
 signals:
     
@@ -37,8 +37,10 @@ public slots:
  /** Receive notification that the consist manager has
       * changed its consist list.
   */
- /*public*/ virtual void notifyConsistListChanged();
+ /*public*/ virtual void notifyConsistListChanged()=0;
+
+ virtual QObject* self() =0;
 
 };
-
+Q_DECLARE_INTERFACE(ConsistListListener, "ConsistListListener")
 #endif // CONSISTLISTLISTENER_H

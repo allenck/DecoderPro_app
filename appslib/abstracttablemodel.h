@@ -30,8 +30,10 @@ public:
     /*public*/ virtual void fireTableRowsDeleted(int firstRow, int lastRow);
     /*public*/ virtual void fireTableCellUpdated(int row, int column);
     /*public*/ virtual void fireTableChanged(TableModelEvent* e = 0);
-    /*public*/ int getRowCount() {return rowCount(QModelIndex());}
-    /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+    virtual /*public*/ int getRowCount() const {return 0;}
+    virtual /*public*/ int getColumnCount() const {return 0;}
+    virtual /*public*/ QVariant getValueAt(int row, int col) const;
+
 
  void setTable(JTable*);
  void setPersistentButtons();
@@ -46,8 +48,9 @@ private:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
-//    int rowCount(const QModelIndex &parent) const;
-//    int columnCount(const QModelIndex &parent) const;
+    int rowCount(const QModelIndex &parent) const;
+    int columnCount(const QModelIndex &parent) const;
+    QVariant data(const QModelIndex &index, int role) const;
     JTable* _table;
     QList<int> buttonMap;
 

@@ -23,6 +23,7 @@ public:
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* p);
  /*public*/ void removePropertyChangeListener(PropertyChangeListener* p);
  /*public*/ QString decodeErrorCode(int i);
+ /*public*/ QObject* self() {return (QObject*) this;}
 
 private:
  LocoNetSystemConnectionMemo* memo;

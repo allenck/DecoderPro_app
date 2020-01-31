@@ -111,7 +111,7 @@ void ProgOpsModePane::init()
      log->debug("ops programmer for address " + QString::number(address)
              + ", long address " + longAddr);
      programmer = pm->getAddressedProgrammer(longAddr, address);
-     log->debug(tr("   programmer: %1").arg(programmer->metaObject()->className()));
+     log->debug(tr("   programmer: %1").arg(programmer->self()->metaObject()->className()));
 
      // whole point is to get mode...
      setProgrammerFromGui(programmer);
@@ -354,7 +354,7 @@ void ProgOpsModePane::setProgrammerFromGui(Programmer* programmer) {
 * Listen to programmer for mode changes
 */
 /*public*/ void ProgOpsModePane::propertyChange(PropertyChangeEvent* e) {
-  if ("Mode"==(e->getPropertyName()) && getProgrammer()==(e->getSource())) {
+  if ("Mode"==(e->getPropertyName()) && getProgrammer()->self()==(e->getSource())) {
        // mode changed in programmer, change GUI here if needed
        if (isSelected()) {  // only change mode if we have a selected mode, in case some other selector with shared group has the selection
            setGuiFromProgrammer();

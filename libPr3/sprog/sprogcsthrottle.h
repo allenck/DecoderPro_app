@@ -9,8 +9,8 @@ namespace Sprog
  class SprogCSThrottle : public AbstractThrottle
  {
  public:
-  /*public*/ SprogCSThrottle(SprogSystemConnectionMemo* memo, LocoAddress* address, QObject* parent = 0);
-  /*public*/ LocoAddress* getLocoAddress();
+  /*public*/ SprogCSThrottle(SprogSystemConnectionMemo* memo, locoAddress* address, QObject* parent = 0);
+  /*public*/ locoAddress* getLocoAddress();
   /*public*/ void setSpeedSetting(float speed);
   /*public*/ void setIsForward(bool forward);
 

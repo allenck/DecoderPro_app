@@ -18,7 +18,7 @@ ProgrammerTestBase::ProgrammerTestBase(QObject *parent) : QObject(parent)
 
     //@Test
     /*public*/ void ProgrammerTestBase::testCtor() {
-        Assert::assertNotNull(programmer, __FILE__, __LINE__);
+        Assert::assertNotNull(programmer->self(), __FILE__, __LINE__);
     }
 
     //@Test

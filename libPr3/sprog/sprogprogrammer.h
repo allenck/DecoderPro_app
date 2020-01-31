@@ -17,6 +17,7 @@ namespace Sprog
   /*synchronized*/ /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
   /*synchronized*/ /*public*/ void readCV(int CV, ProgListener* p) throw (ProgrammerException);
   /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
+  /*public*/ QObject* self() {return (QObject*)this;}
 
  public slots:
   /*public*/ void notifyMessage(SprogMessage* m);

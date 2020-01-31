@@ -14,7 +14,7 @@
 
 /*private*/ /*final*/ /*static*/ Logger* JsonConsistManager::log = LoggerFactory::getLogger("JsonConsistManager");
 
-/*public*/ JsonConsistManager::JsonConsistManager(QObject* parent)  : ConsistManager(parent)
+/*public*/ JsonConsistManager::JsonConsistManager(QObject* parent)  : Bean(parent)
 {
     //super();
 //    InstanceManager.addPropertyChangeListener((PropertyChangeEvent evt) -> {
@@ -52,7 +52,7 @@
 }
 
 //@Override
-/*public*/ Consist* JsonConsistManager::getConsist(DccLocoAddress* address) {
+/*public*/ DccConsist *JsonConsistManager::getConsist(DccLocoAddress* address) {
     if (this->manager != NULL) {
         return this->manager->getConsist(address);
     }
@@ -75,19 +75,19 @@
 }
 
 //@Override
-/*public*/ bool JsonConsistManager::csConsistNeedsSeperateAddress() {
+/*public*/ bool JsonConsistManager::csConsistNeedsSeparateAddress() {
     if (this->manager != NULL) {
-        return this->manager->csConsistNeedsSeperateAddress();
+        return this->manager->csConsistNeedsSeparateAddress();
     }
     return false;
 }
 
 //@Override
-/*public*/ QList<DccLocoAddress*>* JsonConsistManager::getConsistList() {
+/*public*/ ConsistAddrList *JsonConsistManager::getConsistList() {
     if (this->manager != NULL) {
         return this->manager->getConsistList();
     }
-    return new QList<DccLocoAddress*>();
+    return new ConsistAddrList();
 }
 
 //@Override
@@ -107,14 +107,14 @@
 
 //@Override
 /*public*/ void JsonConsistManager::addConsistListListener(ConsistListListener* listener) {
-    //this->listeners.add(listener);
- connect((AbstractConsistManager*)this->manager, SIGNAL(consistListChanged()), listener, SLOT(notifyConsistListChanged()));
+    this->listeners->insert(listener);
+ //connect((AbstractConsistManager*)this->manager, SIGNAL(consistListChanged()), listener, SLOT(notifyConsistListChanged()));
 }
 
 //@Override
 /*public*/ void JsonConsistManager::removeConsistListListener(ConsistListListener* listener) {
-    //this->listeners.remove(listener);
- connect(this, SIGNAL(), listener, SLOT());
+    this->listeners->remove(listener);
+ //connect(this, SIGNAL(), listener, SLOT());
 }
 
 //@Override
@@ -140,7 +140,7 @@ void JsonConsistManager::propertyChange(PropertyChangeEvent* evt)
 //  this->manager.addConsistListListener(() -> {
 //      this->notifyConsistListChanged();
 //  });
-  connect(this->manager, SIGNAL(notifyConsistListChanged()), this, SLOT(notifyConsistListChanged()));
+  connect(this->manager->self(), SIGNAL(notifyConsistListChanged()), this, SLOT(notifyConsistListChanged()));
   this->manager->requestUpdateFromLayout();
   try {
       (new ConsistFile())->readFile();

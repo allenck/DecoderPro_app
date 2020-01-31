@@ -880,7 +880,7 @@
 
 
 
-/*public*/ LocoAddress* LocoNetThrottle::getLocoAddress()
+/*public*/ locoAddress* LocoNetThrottle::getLocoAddress()
 {
  if (slot != nullptr)
  {

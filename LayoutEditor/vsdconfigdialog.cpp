@@ -10,6 +10,7 @@
 #include "propertychangeevent.h"
 #include <QMessageBox>
 #include "instancemanager.h"
+#include "globalprogrammermanager.h"
 
 //VSDConfigDialog::VSDConfigDialog(QWidget *parent) :
 //  JDialog(parent)
@@ -527,7 +528,7 @@
     log->debug("storeFile starts");
     // We need to create a programmer, a cvTableModel, an iCvTableModel, and a variableTableModel.
     // Doesn't matter which, so we'll use the LocoNet programmer.
-    Programmer* p = InstanceManager::programmerManagerInstance()->getGlobalProgrammer();
+    Programmer* p = (Programmer*)((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
     CvTableModel* cvModel = new CvTableModel(NULL, p);
     //IndexedCvTableModel* iCvModel = new IndexedCvTableModel(NULL, p);
     QStringList items = QStringList() << "Name" << "Value";

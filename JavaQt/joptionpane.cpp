@@ -509,7 +509,7 @@
     QVariant message) //throws HeadlessException
 {
     showMessageDialog(parentComponent, message, /*UIManager.getString*/QString(
-                "Information"/*, parentComponent*/),
+                "Message"/*, parentComponent*/),
                 INFORMATION_MESSAGE);
 }
 
@@ -774,12 +774,13 @@
  JDialog* dialog = pane->createDialog(parentComponent, title, style);
 
  pane->selectInitialValue();
+#if 1
  //dialog->show();
  int rslt = dialog->exec();
  //dialog->/*dispose*/close();
 if(options.count() >0)
  return rslt;
- QVariant        selectedValue = pane->getValue();
+ QVariant selectedValue = pane->getValue();
 
  if(selectedValue == QVariant())
      return CLOSED_OPTION;
@@ -798,6 +799,15 @@ if(options.count() >0)
          return counter;
  }
  return CLOSED_OPTION;
+#else
+ dialog->show();
+
+// if (pane->getValue() instanceof Integer)
+//   return ((Integer) pane.getValue()).intValue();
+ if(pane->getValue().canConvert(QMetaType::Int))
+    return pane->getValue().toInt();
+ return -1;
+#endif
 }
 #if 0
 /**

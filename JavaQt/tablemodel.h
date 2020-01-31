@@ -22,7 +22,7 @@ class JAVAQTSHARED_EXPORT TableModel : public QAbstractTableModel
       * @return the number of rows in the model
       * @see #getColumnCount
       */
-     /*public*/ virtual int getRowCount() = 0;
+     /*public*/ virtual int getRowCount() const = 0;
 
      /**
       * Returns the number of columns in the model. A
@@ -32,7 +32,7 @@ class JAVAQTSHARED_EXPORT TableModel : public QAbstractTableModel
       * @return the number of columns in the model
       * @see #getRowCount
       */
-     /*public*/ virtual int getColumnCount() = 0;
+     /*public*/ virtual int getColumnCount() const = 0;
 
      /**
       * Returns the name of the column at <code>columnIndex</code>.  This is used

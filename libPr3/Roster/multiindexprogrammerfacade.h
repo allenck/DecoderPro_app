@@ -13,6 +13,8 @@ public:
     /*synchronized*/ /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException) ;
     /*synchronized*/ /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*synchronized*/ /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException) ;
+    /*public*/ QObject* self() {return (QObject*)this;}
+protected:
     // internal method to remember who's using the programmer
     /*protected*/ void useProgrammer(ProgListener* p) throw (ProgrammerException);
 public slots:

@@ -54,13 +54,13 @@
  statusLabel = new QLabel(tr("idle"));
 
  // disable ourself if programming is not possible
- if (InstanceManager::getNullableDefault("ProgrammerManager") == NULL
-                 || !((ProgrammerManager*)InstanceManager::getDefault("ProgrammerManager"))->isGlobalProgrammerAvailable())
- {
-  setEnabled(false);
-  // This needs to return, so we don't start the xmlThread
-  return;
- }
+// if (InstanceManager::getNullableDefault("ProgrammerManager") == NULL
+//                 || !((ProgrammerManager*)InstanceManager::getDefault("ProgrammerManager"))->isGlobalProgrammerAvailable())
+// {
+//  setEnabled(false);
+//  // This needs to return, so we don't start the xmlThread
+//  return;
+// }
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 

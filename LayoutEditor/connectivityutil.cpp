@@ -495,16 +495,6 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  */
 /*public*/ QVector<Block*>* ConnectivityUtil::getConnectedBlocks(Block* block) {
  QVector<Block*>* result = new QVector<Block*>();
- //
- //TODO: Dead-code strip (after 4.9.x)
- // dissusion: lBlock could be used to match against getBlock1 & 2...
- //              instead of matching against block == getBlock()
- //
- //String userName = block.getUserName();
- //LayoutBlock lBlock = null;
- //if ((userName != null) && !userName.isEmpty()) {
- //    lBlock = layoutBlockManager.getByUserName(userName);
- //}
  QVector<LayoutConnectivity*>* cList = auxTools->getConnectivityList(currLayoutBlock);
  for (int i = 0; i < cList->size(); i++) {
      LayoutConnectivity* lc = cList->at(i);
@@ -1729,7 +1719,6 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
     prevConnectObject = lt;
     int setting = Turnout::THROWN;
     int tType = lt->getTurnoutType();
-#if 1 //TODO
     if(qobject_cast<LayoutSlip*>(lt))
     {
      setting = LayoutSlip::UNKNOWN;
@@ -1949,8 +1938,6 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
         }
     }
     else
-#endif
-
     {
         switch (cType) {
             case LayoutEditor::TURNOUT_A:
@@ -2399,7 +2386,6 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                     }
                 }
             }
-#if 1 // TODO:
             else if(conType>=LayoutEditor::SLIP_A && conType<=LayoutEditor::SLIP_D){
                 LayoutSlip* ls = (LayoutSlip*)conObj;
                 int tType = ls->getTurnoutType();
@@ -2503,8 +2489,6 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                     }
                 }
             }
-#endif
-
         }
         else curTS = nullptr;
 

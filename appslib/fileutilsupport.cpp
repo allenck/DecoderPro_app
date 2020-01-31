@@ -1464,6 +1464,7 @@ public URL getURL(URI uri) {
   throw IOException(tr("error copying %1 to %2").arg(srcPath).arg(dstPath));
  }
 }
+
 /*private*/ bool FileUtilSupport::copyRecursively(const QString &srcFilePath,
                                  const QString &tgtFilePath)
 {

@@ -4,12 +4,12 @@
 #include <QObject>
 #include "dcclocoaddress.h"
 
-class ConsistListener : public QObject
+class ConsistListener //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
-    explicit ConsistListener(QObject *parent = 0);
-    ~ConsistListener() {}
+    //explicit ConsistListener(QObject *parent = 0);
+    //~ConsistListener() {}
     /** Receive notification at the end of a consisting operation.
      *
      * @param locoaddress  Address of specific locomotive involved, if
@@ -18,7 +18,7 @@ public:
      *                    bitwise combination of the various status coded defined
      *                    in this interface.
      */
-    virtual /*public*/ void consistReply(DccLocoAddress* locoaddress, int status);
+    virtual /*public*/ void consistReply(DccLocoAddress* locoaddress, int status) =0;
     /** Constant denoting that the request completed correctly. Note this
      *  is a specific value; all others are bitwise combinations
      */
@@ -91,10 +91,11 @@ public:
       */
     static const int STACK_FULL = 0x400;
 
+    virtual QObject* self() =0;
 signals:
     
 public slots:
     
 };
-
+Q_DECLARE_INTERFACE(ConsistListener, "ConsistListener")
 #endif // CONSISTLISTENER_H

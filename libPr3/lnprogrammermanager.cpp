@@ -1,13 +1,14 @@
 #include "lnprogrammermanager.h"
 #include "lnopsmodeprogrammer.h"
 #include "programmingmode.h"
+#include "lndeferprogrammer.h"
 
-LnProgrammerManager::LnProgrammerManager(SlotManager* pSlotManager, LocoNetSystemConnectionMemo* memo):
-    DefaultProgrammerManager(pSlotManager, memo)
+LnProgrammerManager::LnProgrammerManager(LocoNetSystemConnectionMemo* memo):
+    DefaultProgrammerManager(new LnDeferProgrammer(memo), memo)
 {
  setObjectName("LnProgrammerManager");
- //super(pSlotManager, memo);
- mSlotManager = pSlotManager;
+ //super(new LnDeferProgrammer(memo), memo)
+ //mSlotManager = pSlotManager;
  this->memo = memo;
 }
 /**
@@ -65,3 +66,5 @@ LnProgrammerManager::LnProgrammerManager(SlotManager* pSlotManager, LocoNetSyste
  ret.append(LOCONETSV1MODE); // the show in interface in order listed here
  return ret;
 }
+
+/*public*/ QString LnProgrammerManager::toString() {return "LnProgrammerManager";}

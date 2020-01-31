@@ -72,7 +72,7 @@ SectionTableAction::SectionTableAction(QObject *parent) :
  blockTableModel = NULL;
  entryPointTableModel = NULL;
     sectionManager = NULL;
-    blockManager = InstanceManager::blockManagerInstance();
+    blockManager = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
     editMode = false;
     curSection = NULL;
     addCreateActive = true;
@@ -116,7 +116,7 @@ SectionTableAction::SectionTableAction(QObject *parent) :
  systemNameAuto = "SectionTableAction.AutoSystemName";
 
  // set manager - no need to use InstanceManager here
- sectionManager = InstanceManager::sectionManagerInstance();
+ sectionManager = ((SectionManager*)InstanceManager::getDefault("SectionManager"));
  // disable ourself if there is no Section manager available
  if (sectionManager==NULL)
  {
@@ -155,13 +155,13 @@ SectionTableDataModel::SectionTableDataModel(SectionTableAction *act)
 {
     return "";
 }
-/*public*/ Manager* SectionTableDataModel::getManager() { return InstanceManager::sectionManagerInstance(); }
+/*public*/ Manager* SectionTableDataModel::getManager() { return ((SectionManager*)InstanceManager::getDefault("SectionManager")); }
 /*public*/ NamedBean* SectionTableDataModel::getBySystemName(QString name) const
 {
-    return InstanceManager::sectionManagerInstance()->getBySystemName(name);
+    return ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getBySystemName(name);
 }
 /*public*/ NamedBean* SectionTableDataModel::getByUserName(QString name) {
-    return InstanceManager::sectionManagerInstance()->getByUserName(name);
+    return ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getByUserName(name);
 }
 
 /*public int getDisplayDeleteMsg() { return InstanceManager::getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
@@ -1093,7 +1093,7 @@ void SectionTableAction::addBlockPressed() {
 /*private*/ void SectionTableAction::deleteSectionPressed(QString sName)
 {
 #if 1
- /*final*/ Section* s = InstanceManager::sectionManagerInstance()->getBySystemName(sName);
+ /*final*/ Section* s = ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getBySystemName(sName);
  QString fullName = sName;
  if (s->getUserName().length()>0)
  {
@@ -1175,7 +1175,7 @@ void SectionTableAction::addBlockPressed() {
 
 //    yesButton.addActionListener(new ActionListener(){
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            jmri.InstanceManager::sectionManagerInstance().deregister(s);
+//            jmri.((SectionManager*)InstanceManager::getDefault("SectionManager")).deregister(s);
 //            s.dispose();
 //            dialog.dispose();
 //        }

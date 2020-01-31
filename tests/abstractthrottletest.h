@@ -182,7 +182,7 @@ class AbstractThrottleManagerO1 : public AbstractThrottleManager
     Q_OBJECT
 public:
     //@Override
-    /*public*/ void requestThrottleSetup(LocoAddress* /*a*/, bool /*control*/) {
+    /*public*/ void requestThrottleSetup(DccLocoAddress* /*a*/, bool /*control*/) {
     }
 
     //@Override
@@ -203,23 +203,23 @@ public:
 /*public*/ /*final*/ class AbstractThrottleImpl /*extends*/ : public AbstractThrottle
 {
 Q_OBJECT
-    /*private*/ LocoAddress* locoAddress;
+    /*private*/ DccLocoAddress* locoAddress;
 private:
     /*public*/ AbstractThrottleImpl() : AbstractThrottle(nullptr){
         //super(null);
-        this->setLocoAddress(new DccLocoAddress(3, LocoAddress::Protocol::DCC_SHORT));
+        this->setLocoAddress(new DccLocoAddress(3, DccLocoAddress::Protocol::DCC_SHORT));
     }
 
     //@Override
     /*public*/ void throttleDispose() {
     }
 
-    /*public*/ void setLocoAddress(LocoAddress* locoAddress) {
+    /*public*/ void setLocoAddress(DccLocoAddress* locoAddress) {
         this->locoAddress = locoAddress;
     }
 
     //@Override
-    /*public*/ LocoAddress* getLocoAddress() {
+    /*public*/ DccLocoAddress* getLocoAddress() {
         return this->locoAddress;
     }
     friend class AbstractThrottleTest;

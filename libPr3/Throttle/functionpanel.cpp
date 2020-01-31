@@ -727,10 +727,10 @@ FunctionPanel::~FunctionPanel()
  AbstractThrottle* at = (AbstractThrottle*)t;
  connect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  setFnButtons();
- connect(addressPanel, SIGNAL(notifyAddressReleased(LocoAddress*)), this, SLOT(notifyAddressReleased(LocoAddress*)));
+ connect(addressPanel, SIGNAL(notifyAddressReleased(locoAddress*)), this, SLOT(notifyAddressReleased(locoAddress*)));
 }
 
-/*public*/ void FunctionPanel::notifyAddressReleased(LocoAddress* la)
+/*public*/ void FunctionPanel::notifyAddressReleased(locoAddress* la)
 {
  if (log->isDebugEnabled()) log->debug("Throttle released");
  setEnabled(false);
@@ -744,7 +744,7 @@ FunctionPanel::~FunctionPanel()
  mThrottle = NULL;
 }
 
-/*public*/ void FunctionPanel::notifyAddressChosen(LocoAddress* l) {
+/*public*/ void FunctionPanel::notifyAddressChosen(locoAddress* l) {
 }
 
 /*public*/ void FunctionPanel::notifyConsistAddressChosen(int newAddress, bool isLong) {

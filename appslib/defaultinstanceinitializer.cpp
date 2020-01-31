@@ -276,7 +276,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   InstanceManager::store(pm,type);
   return pm;
  }
-
+#if 0
  if (type == "ProgrammerManager")
  {
   DeferringProgrammerManager* dpm = new DeferringProgrammerManager();
@@ -284,6 +284,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return dpm;
  }
 
+ if (type == "AddressedProgrammerManager")
+ {
+  LnProgrammerManager* lnpm = new lnProgrammerManager();
+  InstanceManager::store(lnpm,type);
+  return lnpm;
+ }
+#endif
 
  if (type == "RosterIconFactory") {
      return RosterIconFactory::instance();
@@ -534,6 +541,14 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   InstanceManager::store(pitm,type);
   return pitm;
  }
+
+// if(type == "ConsistManager")
+// {
+//  LocoNetConsistManager* lncm = new LocoNetConsistManager();
+//  InstanceManager::store(lncm,type);
+//  return pitm;
+// }
+
 
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);

@@ -124,7 +124,7 @@
     connect(mRunButton, SIGNAL(), this, SLOT(runButtonActionPerformed()));
 
     // get the CommandStation reference
-    cs = static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"));
+    cs = qobject_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"));
     if (cs == nullptr) {
         log->error("No CommandStation object available");
     }

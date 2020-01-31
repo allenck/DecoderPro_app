@@ -119,7 +119,7 @@ ProgrammerFacadeSelector::ProgrammerFacadeSelector(QObject *parent) :
   {
    //if ("AddressedProgrammer".isAssignableFrom(baseProg.getClass()))
    Class* clazz = Class::forName("AddressedProgrammer");
-   if(clazz->isAssignableFrom(baseProg->metaObject()->className()))
+   if(clazz->isAssignableFrom(baseProg->self()->metaObject()->className()))
    {  // create if relevant to current mode, otherwise silently ignore
     QString addrType = "decoder";
     int delay = 500;
@@ -140,7 +140,7 @@ ProgrammerFacadeSelector::ProgrammerFacadeSelector(QObject *parent) :
       log->error(tr("Unknown parameter \"%1\" for \"%2\"").arg(fname).arg(x.text()));
      }
     }
-    log->debug(tr("\"%1\": addrType=\"%2\", delay=\"%3\", baseProg=\"%4\"").arg(fname).arg(addrType).arg(delay).arg(baseProg->metaObject()->className()));
+    log->debug(tr("\"%1\": addrType=\"%2\", delay=\"%3\", baseProg=\"%4\"").arg(fname).arg(addrType).arg(delay).arg(baseProg->self()->metaObject()->className()));
 
     AccessoryOpsModeProgrammerFacade* pf
             = new AccessoryOpsModeProgrammerFacade(programmer, addrType, delay, (AddressedProgrammer*) baseProg);
@@ -152,7 +152,7 @@ ProgrammerFacadeSelector::ProgrammerFacadeSelector(QObject *parent) :
   {
    Class* clazz = Class::forName("AddressedProgrammer");
 //   if (AddressedProgrammer.class.isAssignableFrom(baseProg.getClass())) {  // create if relevant to current mode, otherwise silently ignore
-   if(clazz->isAssignableFrom(baseProg->metaObject()->className()))
+   if(clazz->isAssignableFrom(baseProg->self()->metaObject()->className()))
    {
     int delay = 500;
     for(int i=0; i < parameters.size(); i++)

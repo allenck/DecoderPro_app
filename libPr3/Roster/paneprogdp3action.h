@@ -123,7 +123,7 @@ protected:
     /*protected*/ QWidget* layoutDecoderSelection();
     /*protected*/ void selectDecoder(int mfgID, int modelID, int productID);
     /*protected*/ QWidget* createProgrammerSelection();
-    /*protected*/ void readCV(int cv);
+    /*protected*/ void readCV(QString cv);
  friend class ThisProgPane;
  friend class PPD3CombinedLocoSelTreePane;
  friend class PPD3DccAddressVarHandler;

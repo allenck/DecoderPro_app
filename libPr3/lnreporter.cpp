@@ -229,7 +229,7 @@ int LnReporter::getNumber() { return _number; }
 #endif
     // Parses out a (possibly old) LnReporter-generated report string to extract the address from the front.
     // Assumes the LocoReporter format is "NNNN [enter|exit]"
-    LocoAddress* LnReporter::getLocoAddress(QString rep) {
+    locoAddress* LnReporter::getLocoAddress(QString rep) {
      // Extract the number from the head of the report string
      log.debug("report string: " + rep);
 //     Matcher* m = this.parseReport(rep);
@@ -243,7 +243,7 @@ int LnReporter::getNumber() { return _number; }
       log.debug("Parsed address: " + match.captured(1));
       //return(new DccLocoAddress(Integer.parseInt(m.group(1)), LocoAddress.Protocol.DCC));
       bool bok;
-      DccLocoAddress* addr = new DccLocoAddress(match.captured(1).toInt(&bok), LocoAddress::DCC);
+      DccLocoAddress* addr = new DccLocoAddress(match.captured(1).toInt(&bok), locoAddress::DCC);
       if(bok)
        return addr;
       else

@@ -101,7 +101,7 @@ void DccSignalMast::common()
      }
      if (c == NULL)
      {
-      c = static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"));
+      c = qobject_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"));
       log->error("No match against the command station for " + parts[0] + ", so will use the default");
      }
  }

@@ -28,21 +28,28 @@ friend class JsonConsistListListener;
 friend class JsonConsistListener;
 };
 
-/*private*/ class JsonConsistListener : public ConsistListener {
+/*private*/ class JsonConsistListener : public QObject,  public ConsistListener {
 Q_OBJECT
+ Q_INTERFACES(ConsistListener)
  JsonConsistSocketService* jcss;
     //@Override
 public:
  JsonConsistListener(JsonConsistSocketService* jcss);
     /*public*/ void consistReply(DccLocoAddress* locoaddress, int status);
+ /*public*/ QObject* self() {return (QObject*)this;}
+
 };
 
-/*private*/ class JsonConsistListListener : public ConsistListListener {
-Q_OBJECT
+/*private*/ class JsonConsistListListener : public QObject, public ConsistListListener
+{
+ Q_OBJECT
+ Q_INTERFACES(ConsistListListener)
  JsonConsistSocketService* jcss;
  public:
  JsonConsistListListener(JsonConsistSocketService* jcss);
     //@Override
     /*public*/ void notifyConsistListChanged() ;
+    /*public*/ QObject* self() {return (QObject*)this;}
+
 };
 #endif // JSONCONSISTSOCKETSERVICE_H

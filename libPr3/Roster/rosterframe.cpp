@@ -18,7 +18,7 @@
 #include "optionsdialog.h"
 #include <QComboBox>
 #include "defaultprogrammermanager.h"
-#include "programmermanager.h"
+//#include "programmermanager.h"
 #include "Throttle/throttlewindow.h"
 #include "paneserviceprogframe.h"
 #include "progmodeselector.h"
@@ -472,7 +472,7 @@ void RosterFrame::on_prog1Button_clicked()
  QString frameTitle = rosterEntry->getId();
  QString filename = cbProgrammers->currentText();
  QString pProgrammerFile = tr("programmers") + QDir::separator() + filename + ".xml";
- ProgrammerManager* mgr = (ProgrammerManager*)InstanceManager::getDefault("ProgrammerManager");
+// ProgrammerManager* mgr = (ProgrammerManager*)InstanceManager::getDefault("ProgrammerManager");
 // Programmer* programmer = ((DefaultProgrammerManager*)mgr)->getGlobalProgrammer();
 // Q_UNUSED(programmer);
 
@@ -488,7 +488,7 @@ void RosterFrame::on_prog1Button_clicked()
  {
   int address = rosterEntry->getDccAddress().toInt();
   bool longAddr = rosterEntry->isLongAddress();
-  Programmer* pProg = ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(longAddr, address);
+  Programmer* pProg = (Programmer*)((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(longAddr, address);
   progFrame = new PaneOpsProgFrame(pDecoderFile,rosterEntry, frameTitle, pProgrammerFile, pProg, this);
  }
  if(progFrame == NULL) return;
@@ -790,7 +790,7 @@ void DefaultFilePropertyChangeListener::propertyChange(PropertyChangeEvent *evt)
  if (gpm!=NULL)
  {
   QString serviceModeProgrammerName = gpm->getUserName();
-  log->debug(tr("GlobalProgrammerManager found of class %1 name %2 ").arg(gpm->metaObject()->className()).arg(serviceModeProgrammerName));
+  log->debug(tr("GlobalProgrammerManager found of class %1 name %2 ").arg(gpm->toString()).arg(serviceModeProgrammerName));
   QVector<ConnectionConfig*> ccm = ((ConnectionConfigManager*)InstanceManager::getOptionalDefault("ConnectionConfigManager"))->getConnections();
   foreach (ConnectionConfig* connection, ccm)
   {
@@ -815,7 +815,7 @@ void DefaultFilePropertyChangeListener::propertyChange(PropertyChangeEvent *evt)
  if (apm!=NULL)
  {
   QString opsModeProgrammerName = apm->getUserName();
-  log->debug(tr("AddressedProgrammerManager found of class %1 name %2 ").arg(apm->metaObject()->className()).arg(opsModeProgrammerName));
+  log->debug(tr("AddressedProgrammerManager found of class %1 name %2 ").arg(apm->self()->metaObject()->className()).arg(opsModeProgrammerName));
   //InstanceManager.getOptionalDefault(ConnectionConfigManager.class).ifPresent((ccm) ->
   if(InstanceManager::getOptionalDefault("ConnectionConfigManager")!= NULL)
   {
@@ -970,7 +970,7 @@ void RosterFrame::updateProgMode() // SLOT
   if (gpm != NULL)
   {
    programmer = gpm->getGlobalProgrammer();
-   log->warn(tr("Selector did not provide a programmer, attempt to use GlobalProgrammerManager default: %1").arg(programmer->metaObject()->className()));
+   log->warn(tr("Selector did not provide a programmer, attempt to use GlobalProgrammerManager default: %1").arg(programmer->self()->metaObject()->className()));
 } else {
    log->warn("Selector did not provide a programmer, and no ProgramManager found in InstanceManager");
   }
@@ -2046,7 +2046,7 @@ bool RosterFrame::checkIfEntrySelected()
   {
    int address = re->getDccAddress().toInt();
    bool longAddr = re->isLongAddress();
-   Programmer* pProg = ((AddressedProgrammerManager*) InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(longAddr, address);
+   Programmer* pProg = (Programmer*)((AddressedProgrammerManager*) InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(longAddr, address);
    progFrame = new PaneOpsProgFrame(decoderFile, re, title, "programmers" + File::separator + filename + ".xml", pProg);
   }
   if (progFrame == NULL)

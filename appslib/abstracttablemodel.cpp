@@ -142,6 +142,15 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
  return false;
 }
 
+int AbstractTableModel::rowCount(const QModelIndex &parent) const
+{
+ return this->getRowCount();
+}
+int AbstractTableModel::columnCount(const QModelIndex &parent) const
+{
+ return this->getColumnCount();
+}
+
 //
 //  Managing Listeners
 //
@@ -427,3 +436,16 @@ void AbstractTableModel::setTable(JTable * t)
 
 JTable* AbstractTableModel::table() { return _table;}
 
+/*public*/ QVariant AbstractTableModel::getValueAt(int row, int col) const
+{
+ //return data(index(row, col), Qt::DisplayRole);
+}
+
+QVariant AbstractTableModel::data(const QModelIndex &index, int role) const
+{
+ if(role == Qt::DisplayRole)
+ {
+  return getValueAt(index.row(), index.column());
+ }
+ return QVariant();
+}

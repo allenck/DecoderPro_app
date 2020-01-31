@@ -421,7 +421,7 @@
 
 /*public*/ void DefaultSignalMastLogicManager::generateSection()
 {
-    SectionManager* sm = InstanceManager::sectionManagerInstance();
+    SectionManager* sm = (SectionManager*)InstanceManager::getDefault("SectionManager");
     foreach (NamedBean* nb, *sm->getNamedBeanList()) {
         if (((Section*) nb)->getSectionType() == Section::SIGNALMASTLOGIC) {
             nb->removeProperty("intermediateSection");

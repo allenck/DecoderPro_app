@@ -391,7 +391,7 @@ void VSDecoder::common()
 // DCC-specific. Deprecate this->
 //@Deprecated
 /*public*/ void VSDecoder::setAddress(int number, bool isLong) {
- this->setAddress((LocoAddress*)new DccLocoAddress(number, isLong));
+ this->setAddress((locoAddress*)new DccLocoAddress(number, isLong));
 }
 
 /**
@@ -402,7 +402,7 @@ void VSDecoder::common()
  *
  * @param l (LocoAddress) LocoAddress to be followed
  */
-/*public*/ void VSDecoder::setAddress(LocoAddress* l) {
+/*public*/ void VSDecoder::setAddress(locoAddress* l) {
     // Hack for ThrottleManager Dcc dependency
     config->setLocoAddress(l);
     // DccLocoAddress dl = new DccLocoAddress(l.getNumber(), l.getProtocol());
@@ -427,7 +427,7 @@ void VSDecoder::common()
  *
  * @return the currently assigned LocoAddress
  */
-/*public*/ LocoAddress* VSDecoder::getAddress() {
+/*public*/ locoAddress* VSDecoder::getAddress() {
     return (config->getLocoAddress());
 }
 
@@ -578,7 +578,7 @@ void VSDecoder::common()
         } else if (property==(VSDecoderPane::PCIDMap.value(VSDecoderPane::ADDRESS_CHANGE))) {
             // OLD GUI Address Change
             log->debug("Decoder set address = " +  (evt->getNewValue().toString()));
-            this->setAddress(VPtr<LocoAddress>::asPtr(evt->getNewValue().toString()));
+            this->setAddress(VPtr<locoAddress>::asPtr(evt->getNewValue().toString()));
             this->enable();
 
         }

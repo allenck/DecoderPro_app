@@ -169,14 +169,14 @@ void DualDecoderSelectPane::select(int number) {
 }
 
 void DualDecoderSelectPane::writeCV15(int value) {
-    writeCV(15, value);
+    writeCV("15", value);
 }
 
 void DualDecoderSelectPane::writeCV16(int value) {
-    writeCV(16, value);
+    writeCV("16", value);
 }
 
-void DualDecoderSelectPane::writeCV(int cv, int value) {
+void DualDecoderSelectPane::writeCV(QString cv, int value) {
     Programmer* p = modePane->getProgrammer();
     if (p == NULL) {
         state = IDLE;
@@ -201,7 +201,7 @@ void DualDecoderSelectPane::readCV16() {
         try {
             status->setText("reading...");
             state = READCV16;
-            p->readCV(16, (ProgListener*)this);
+            p->readCV("16", (ProgListener*)this);
         } catch (ProgrammerException ex) {
             state = IDLE;
             status->setText("" + ex.getMessage());

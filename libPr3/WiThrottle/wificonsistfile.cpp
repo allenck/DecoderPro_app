@@ -7,7 +7,7 @@
  */
 // /*public*/ class WiFiConsistFile extends ConsistFile {
 
-/*public*/ WiFiConsistFile::WiFiConsistFile(ConsistManager* cm) {
+/*public*/ WiFiConsistFile::WiFiConsistFile(AbstractConsistManager* cm) {
     //super();
     consistMan = cm;
     loadStoredConsistFile("wifiConsist.xml");

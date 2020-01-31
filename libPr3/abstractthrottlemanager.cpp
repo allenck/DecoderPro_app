@@ -25,9 +25,9 @@ AbstractThrottleManager::AbstractThrottleManager(QObject *parent)
 {
     this->parent = parent;
     log->setDebugEnabled(true);
-    throttleListeners = new QHash<LocoAddress*,  QList<WaitingThrottle*>* >();
-    listenerOnly = new QHash<LocoAddress*,QList<WaitingThrottle*>* >();
-    addressThrottles = new QHash<LocoAddress*,Addresses*>();
+    throttleListeners = new QHash<locoAddress*,  QList<WaitingThrottle*>* >();
+    listenerOnly = new QHash<locoAddress*,QList<WaitingThrottle*>* >();
+    addressThrottles = new QHash<locoAddress*,Addresses*>();
     userName = "Internal";
 }
 //abstract public class AbstractThrottleManager implements ThrottleManager {
@@ -42,9 +42,9 @@ AbstractThrottleManager::AbstractThrottleManager(QObject *parent)
     log->setDebugEnabled(true);
     adapterMemo = memo;
     userName = "Internal";
-    throttleListeners = new QHash<LocoAddress*,QList<WaitingThrottle*>* >();
-    listenerOnly = new QHash<LocoAddress*,QList<WaitingThrottle*>* >();
-    addressThrottles = new QHash<LocoAddress*,Addresses*>();
+    throttleListeners = new QHash<locoAddress*,QList<WaitingThrottle*>* >();
+    listenerOnly = new QHash<locoAddress*,QList<WaitingThrottle*>* >();
+    addressThrottles = new QHash<locoAddress*,Addresses*>();
 }
 
 
@@ -66,44 +66,44 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 /**
  * By default, only DCC in this implementation
  */
-/*public*/ QString AbstractThrottleManager::getAddressTypeString(LocoAddress::Protocol prot){
-    return LocoAddress::getPeopleName(prot);
+/*public*/ QString AbstractThrottleManager::getAddressTypeString(locoAddress::Protocol prot){
+    return locoAddress::getPeopleName(prot);
 }
 
-/*public*/ QList<LocoAddress::Protocol> AbstractThrottleManager::getAddressProtocolTypes(){
-    QList<LocoAddress::Protocol> list;
-    list << LocoAddress::DCC<< LocoAddress::DCC_SHORT<< LocoAddress::DCC_LONG;
+/*public*/ QList<locoAddress::Protocol> AbstractThrottleManager::getAddressProtocolTypes(){
+    QList<locoAddress::Protocol> list;
+    list << locoAddress::DCC<< locoAddress::DCC_SHORT<< locoAddress::DCC_LONG;
     return list;
 }
 
-/*public*/ LocoAddress* AbstractThrottleManager::getAddress(QString value, LocoAddress::Protocol protocol)
+/*public*/ locoAddress* AbstractThrottleManager::getAddress(QString value, locoAddress::Protocol protocol)
 {
  if (value == NULL) return NULL;
  //if (protocol == NULL) return NULL;
  int num = value.toInt();
 
  // if DCC long and can't be, or short and can't be, fix
- if ((LocoAddress::DCC == protocol || LocoAddress::DCC_SHORT == protocol) && !canBeShortAddress(num))
-  protocol = LocoAddress::DCC_LONG;
- if ((LocoAddress::DCC == protocol || LocoAddress::DCC_LONG == protocol) && !canBeLongAddress(num))
-  protocol = LocoAddress::DCC_SHORT;
+ if ((locoAddress::DCC == protocol || locoAddress::DCC_SHORT == protocol) && !canBeShortAddress(num))
+  protocol = locoAddress::DCC_LONG;
+ if ((locoAddress::DCC == protocol || locoAddress::DCC_LONG == protocol) && !canBeLongAddress(num))
+  protocol = locoAddress::DCC_SHORT;
 
  // if still ambiguous, prefer short
- if (protocol == LocoAddress::DCC)
-  protocol = LocoAddress::DCC_SHORT;
+ if (protocol == locoAddress::DCC)
+  protocol = locoAddress::DCC_SHORT;
 
  return new DccLocoAddress(num,protocol);
 }
-/*public*/ LocoAddress* AbstractThrottleManager::getAddress(QString value, QString protocol) {
+/*public*/ locoAddress* AbstractThrottleManager::getAddress(QString value, QString protocol) {
     if (value == NULL) return NULL;
     if (protocol == NULL) return NULL;
-    LocoAddress::Protocol p = getProtocolFromString(protocol);
+    locoAddress::Protocol p = getProtocolFromString(protocol);
 
     return getAddress(value, p);
 }
 
-/*public*/ LocoAddress::Protocol AbstractThrottleManager::getProtocolFromString(QString selection){
-    return  LocoAddress::getByPeopleName(selection);
+/*public*/ locoAddress::Protocol AbstractThrottleManager::getProtocolFromString(QString selection){
+    return  locoAddress::getByPeopleName(selection);
 }
 
 /**
@@ -139,7 +139,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      */
     //@Deprecated
     //@Override
-    /*public*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* la, ThrottleListener* l) {
+    /*public*/ bool AbstractThrottleManager::requestThrottle(locoAddress* la, ThrottleListener* l) {
         return requestThrottle(la, l, false);
     }
 
@@ -164,7 +164,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* la, ThrottleListener* l, bool canHandleDecisions) {
+    /*public*/ bool AbstractThrottleManager::requestThrottle(locoAddress* la, ThrottleListener* l, bool canHandleDecisions) {
         return requestThrottle(la, nullptr, l, canHandleDecisions);
     }
 
@@ -174,7 +174,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      */
     //@Deprecated
     //@Override
-    /*public*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* /*la*/, BasicRosterEntry* re, ThrottleListener* l) {
+    /*public*/ bool AbstractThrottleManager::requestThrottle(locoAddress* /*la*/, BasicRosterEntry* re, ThrottleListener* l) {
         return requestThrottle(re, l, false);
     }
 
@@ -190,7 +190,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      *         be made. False may be returned if a the throttle is already in
      *         use.
      */
-    /*protected*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions)
+    /*protected*/ bool AbstractThrottleManager::requestThrottle(locoAddress* la, BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions)
     {
         bool throttleFree = true;
 
@@ -202,7 +202,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
         // put the list in if not present
         //if (!throttleListeners->contains(la))
         bool f = false;
-        foreach (LocoAddress* a, throttleListeners->keys()) {
+        foreach (locoAddress* a, throttleListeners->keys()) {
          if(a->equals(la))
          {
           f = true;
@@ -218,7 +218,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
         QList<WaitingThrottle*>* a = getWaiting(la);
         if(a == nullptr)
         {
-         foreach(LocoAddress* adr, throttleListeners->keys())
+         foreach(locoAddress* adr, throttleListeners->keys())
          {
           if(qobject_cast<DccLocoAddress*>(adr))
           {
@@ -233,7 +233,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 
         //if (addressThrottles->contains(la))
         f = false;
-        foreach (LocoAddress* a, addressThrottles->keys()) {
+        foreach (locoAddress* a, addressThrottles->keys()) {
          if(a->equals(la))
          {
           f = true;
@@ -243,10 +243,10 @@ list << "dcc" <<"dcc_short" << "dcc_long";
         }
         if(f)
         {
-            log->debug(tr("A throttle to address %1 already exists, so will return that throttle").arg(la->getNumber()));
-            a->append(new WaitingThrottle(l, re, canHandleDecisions));
-            notifyThrottleKnown(addressThrottles->value(la)->getThrottle(), la);
-            return throttleFree;
+         log->debug(tr("A throttle to address %1 already exists, so will return that throttle").arg(la->getNumber()));
+         a->append(new WaitingThrottle(l, re, canHandleDecisions));
+         notifyThrottleKnown(addressThrottles->value(la)->getThrottle(), la);
+         return throttleFree;
         } else {
             log->debug(tr("%1 has not been created before").arg(la->getNumber() ));
         }
@@ -320,7 +320,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  * Abstract member to actually do the work of configuring a new throttle,
  * usually via interaction with the DCC system
  */
-/*public*/ void AbstractThrottleManager::requestThrottleSetup(LocoAddress* a)
+/*public*/ void AbstractThrottleManager::requestThrottleSetup(locoAddress* a)
 {
  requestThrottleSetup(a, true);
 }
@@ -347,7 +347,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
     }
 }
 
-/*private*/ void AbstractThrottleManager::cancelThrottleRequest(LocoAddress* la, ThrottleListener* l)
+/*private*/ void AbstractThrottleManager::cancelThrottleRequest(locoAddress* la, ThrottleListener* l)
 {
  if (throttleListeners != NULL)
  {
@@ -390,7 +390,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void AbstractThrottleManager::responseThrottleDecision(LocoAddress* address, ThrottleListener* /*l*/, ThrottleListener::DecisionType /*decision*/) {
+/*public*/ void AbstractThrottleManager::responseThrottleDecision(locoAddress* address, ThrottleListener* /*l*/, ThrottleListener::DecisionType /*decision*/) {
     log->debug("Received response from ThrottleListener, this method should be overridden by a hardware type");
 }
 /**
@@ -403,7 +403,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  * @param address The DCC Loco Address that the request failed on.
  * @param reason A text string passed by the ThrottleManae as to why
  */
-/*public*/ void AbstractThrottleManager::failedThrottleRequest(LocoAddress* address, QString reason)
+/*public*/ void AbstractThrottleManager::failedThrottleRequest(locoAddress* address, QString reason)
 {
  //QList<WaitingThrottle*>* a = throttleListeners->value(address);
  QList<WaitingThrottle*>* a = getWaiting(address);
@@ -430,7 +430,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
   for (int i = 0; i<p->size(); i++)
   {
    PropertyChangeListener* l = p->value(i)->getPropertyChangeListener();
-   l->propertyChange(new PropertyChangeEvent(this, "attachFailed", VPtr<LocoAddress>::asQVariant(address), QVariant()));
+   l->propertyChange(new PropertyChangeEvent(this, "attachFailed", VPtr<locoAddress>::asQVariant(address), QVariant()));
   }
  }
  listenerOnly->remove(address);
@@ -443,13 +443,13 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  * This method creates a throttle for all ThrottleListeners of that address
  * and notifies them via the ThrottleListener.notifyThrottleFound method.
  */
-/*public*/ void AbstractThrottleManager::notifyThrottleKnown(DccThrottle* throttle, LocoAddress* addr)
+/*public*/ void AbstractThrottleManager::notifyThrottleKnown(DccThrottle* throttle, locoAddress* addr)
 {
  log->debug(tr("notifyThrottleKnown for %1").arg(addr->toString()));
  Addresses* ads = nullptr;
  //if (!addressThrottles->contains(addr))
  bool f = false;
- foreach (LocoAddress* a, addressThrottles->keys()) {
+ foreach (locoAddress* a, addressThrottles->keys()) {
   if(a->equals(addr))
   {
    f = true;
@@ -469,7 +469,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  QList<WaitingThrottle*>* a = getWaiting(addr);
  if(a == nullptr)
  {
-  foreach(LocoAddress* adr, throttleListeners->keys())
+  foreach(locoAddress* adr, throttleListeners->keys())
   {
    if(qobject_cast<DccLocoAddress*>(adr))
    {
@@ -503,7 +503,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
   //foreach(LocoAddress* a, throttleListeners->keys())
   for(int i= throttleListeners->keys().size()-1; i >=0; i--)
   {
-   LocoAddress* a = throttleListeners->keys().at(i);
+   locoAddress* a = throttleListeners->keys().at(i);
    if(a->equals(addr))
     throttleListeners->remove(a);
   }
@@ -515,7 +515,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      for (int i = 0; i < p->size(); i++) {
          PropertyChangeListener* l = p->at(i)->getPropertyChangeListener();
          log->debug("Notify propertyChangeListener");
-         l->propertyChange(new PropertyChangeEvent(this, "throttleAssigned", 0, VPtr<LocoAddress>::asQVariant(addr)));
+         l->propertyChange(new PropertyChangeEvent(this, "throttleAssigned", 0, VPtr<locoAddress>::asQVariant(addr)));
          if (ads != nullptr && p->value(i)->getRosterEntry() != nullptr && throttle->getRosterEntry() == nullptr) {
              throttle->setRosterEntry(p->at(i)->getRosterEntry());
          }
@@ -524,17 +524,17 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      //listenerOnly->remove(addr);
      for(int i= listenerOnly->keys().size()-1; i >=0; i--)
      {
-      LocoAddress* a = listenerOnly->keys().at(i);
+      locoAddress* a = listenerOnly->keys().at(i);
       if(a->equals(addr))
        listenerOnly->remove(a);
      }
  }
 }
 
-/*private*/ QList<WaitingThrottle*>* AbstractThrottleManager::getWaiting(LocoAddress* addr)
+/*private*/ QList<WaitingThrottle*>* AbstractThrottleManager::getWaiting(locoAddress* addr)
 {
  QList<WaitingThrottle*>* a = nullptr;
- foreach(LocoAddress* adr, throttleListeners->keys())
+ foreach(locoAddress* adr, throttleListeners->keys())
  {
    if(adr->equals( addr))
    {
@@ -558,7 +558,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  * @param address The LocoAddress the steal / share question relates to
  * @param question The Question to be put to the ThrottleListener
  */
-/*protected*/ void AbstractThrottleManager::makeHardwareDecision(LocoAddress* address, ThrottleListener::DecisionType /*question*/){
+/*protected*/ void AbstractThrottleManager::makeHardwareDecision(locoAddress* address, ThrottleListener::DecisionType /*question*/){
     responseThrottleDecision(address, nullptr, ThrottleListener::DecisionType::STEAL );
 }
 
@@ -573,7 +573,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  * @param question The Question to be put to the ThrottleListener
  * This applies only to those systems where "stealing" applies, such as LocoNet.
  */
-/*protected*/ void AbstractThrottleManager::notifyDecisionRequest(LocoAddress* address, ThrottleListener::DecisionType question) {
+/*protected*/ void AbstractThrottleManager::notifyDecisionRequest(locoAddress* address, ThrottleListener::DecisionType question) {
 
     if (throttleListeners != nullptr) {
         //QList<WaitingThrottle*>* a = throttleListeners->value(address);
@@ -627,7 +627,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 
  //if (addressThrottles->contains(la))
  bool f = false;
- foreach (LocoAddress* a, addressThrottles->keys()) {
+ foreach (locoAddress* a, addressThrottles->keys()) {
   if(a->equals(la))
   {
    f = true;
@@ -644,7 +644,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  {
   //if (!listenerOnly->contains(la))
   bool f = false;
-  foreach (LocoAddress* a, listenerOnly->keys()) {
+  foreach (locoAddress* a, listenerOnly->keys()) {
    if(a->equals(la))
    {
     f = true;
@@ -660,7 +660,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
   //Only request that the throttle is set up if it hasn't already been
   //requested.
   f = false;
-  foreach (LocoAddress* a, throttleListeners->keys()) {
+  foreach (locoAddress* a, throttleListeners->keys()) {
    if(a->equals(la))
    {
     f = true;
@@ -681,7 +681,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 #if 1 // TODO:
  //if (addressThrottles->contains(la))
  bool f = false;
- foreach (LocoAddress* a, addressThrottles->keys()) {
+ foreach (locoAddress* a, addressThrottles->keys()) {
   if(a->equals(la))
   {
    f = true;
@@ -703,7 +703,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 #if 1 // TODO:
  //if (addressThrottles->contains(la))
  bool f = false;
- foreach (LocoAddress* a, addressThrottles->keys()) {
+ foreach (locoAddress* a, addressThrottles->keys()) {
   if(a->equals(la))
   {
    f = true;
@@ -745,7 +745,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  }
  //if (addressThrottles->contains(la))
  bool f = false;
- foreach (LocoAddress* a, addressThrottles->keys()) {
+ foreach (locoAddress* a, addressThrottles->keys()) {
   if(a->equals(la))
   {
    f = true;
@@ -757,7 +757,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
   //addressThrottles->remove(la);
   for(int i= addressThrottles->keys().size()-1; i >=0; i--)
   {
-   LocoAddress* a = addressThrottles->keys().at(i);
+   locoAddress* a = addressThrottles->keys().at(i);
    if(a->equals(la))
     addressThrottles->remove(a);
   }
@@ -779,7 +779,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 {
  //if (addressThrottles->contains(la))
  bool f = false;
- foreach (LocoAddress* a, addressThrottles->keys()) {
+ foreach (locoAddress* a, addressThrottles->keys()) {
   if(a->equals(la))
   {
    f = true;
@@ -804,7 +804,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  }
  //if (addressThrottles->contains(la))
  f = false;
- foreach (LocoAddress* a, addressThrottles->keys()) {
+ foreach (locoAddress* a, addressThrottles->keys()) {
   if(a->equals(la))
   {
    f = true;
@@ -828,7 +828,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  *
  * @param la the Loco Address which has been updated
  */
-/*protected*/ void AbstractThrottleManager::updateNumUsers( LocoAddress* la, int numUsers ){
+/*protected*/ void AbstractThrottleManager::updateNumUsers( locoAddress* la, int numUsers ){
     log->debug(tr("Throttle %1 now has %2 users").arg(la->toString()).arg(numUsers));
 }
 
@@ -838,7 +838,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  LocoNetThrottle* ln;
  //if (addressThrottles->contains(la))
  bool f = false;
- foreach (LocoAddress* a, addressThrottles->keys()) {
+ foreach (locoAddress* a, addressThrottles->keys()) {
   if(a->equals(la))
   {
    f = true;

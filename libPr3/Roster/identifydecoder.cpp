@@ -52,7 +52,7 @@ IdentifyDecoder::IdentifyDecoder(Programmer* programmer, QObject *parent) :
     modelID = value;
     if (mfgID == 113) {  // QSI
         statusUpdate("Set PI for Read Product ID High Byte");
-        writeCV(49, 254);
+        writeCV("49", 254);
         return false;
     } else if (mfgID == 153) {  // TCS
         statusUpdate("Read decoder ID CV 249");
@@ -69,7 +69,7 @@ IdentifyDecoder::IdentifyDecoder(Programmer* programmer, QObject *parent) :
 /*public*/ bool IdentifyDecoder::test4(int value) {
     if (mfgID == 113) {
         statusUpdate("Set SI for Read Product ID High Byte");
-        writeCV(50, 4);
+        writeCV("50", 4);
         return false;
     } else if (mfgID == 153) {
         productID = value;
@@ -96,7 +96,7 @@ IdentifyDecoder::IdentifyDecoder(Programmer* programmer, QObject *parent) :
     if (mfgID == 113) {
         productIDhigh = value;
         statusUpdate("Set SI for Read Product ID Low Byte");
-        writeCV(50, 5);
+        writeCV("50", 5);
         return false;
     }
     log->error("unexpected step 6 reached with value: "+value);

@@ -263,7 +263,7 @@ void BeanSelectCreatePanel::update(){
         }
         else if (qobject_cast<BlockManager*>(_manager)!=NULL) {
             try {
-                nBean = InstanceManager::blockManagerInstance()->provideBlock(sName);
+                nBean = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->provideBlock(sName);
             } catch (IllegalArgumentException ex) {
                 // user input no good
                 throw new JmriException("ErrorBlockAddFailed");

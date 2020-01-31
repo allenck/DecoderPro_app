@@ -179,16 +179,16 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
     if (getDoConfirmRead())
     {
      pf = new VerifyWriteProgrammerFacade(pf);
-     log->debug(tr("adding VerifyWriteProgrammerFacade, new programmer is %1").arg(pf->metaObject()->className()));
+     log->debug(tr("adding VerifyWriteProgrammerFacade, new programmer is %1").arg(pf->self()->metaObject()->className()));
     }
     // add any facades defined in the decoder file
     pf = ProgrammerFacadeSelector::loadFacadeElements(programming, pf, getCanCacheDefault(), pProg);
-    log->debug("new programmer "+QString(pf->metaObject()->className()));
+    log->debug("new programmer "+QString(pf->self()->metaObject()->className()));
     mProgrammer = pf;
     cvModel->setProgrammer(pf);
     iCvModel->setProgrammer(pf);
     resetModel->setProgrammer(pf);
-    log->debug("Found programmers: "+QString(cvModel->getProgrammer()->metaObject()->className())+" "+QString(iCvModel->getProgrammer()->metaObject()->className()));
+    log->debug("Found programmers: "+QString(cvModel->getProgrammer()->self()->metaObject()->className())+" "+QString(iCvModel->getProgrammer()->self()->metaObject()->className()));
    }
 
    if (!programming.isNull()) pickProgrammerMode(programming);

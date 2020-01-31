@@ -76,18 +76,18 @@ QString AbstractProgrammer::decodeErrorCode(int code)
  //emit propertyChange(new PropertyChangeEvent(this, key, oldValue, value));
 }
 
-/*public*/ void AbstractProgrammer::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
-{
- Programmer::writeCV(CV.toInt(), val, p);
-}
-/*public*/ void AbstractProgrammer::readCV(QString CV, ProgListener* p) throw (ProgrammerException)
-{
- readCV(CV, p);
-}
-/*public*/ void AbstractProgrammer::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
-{
- Programmer::confirmCV(CV.toInt(), val, p);
-}
+///*public*/ void AbstractProgrammer::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
+//{
+// Programmer::writeCV(CV.toInt(), val, p);
+//}
+///*public*/ void AbstractProgrammer::readCV(QString CV, ProgListener* p) throw (ProgrammerException)
+//{
+// readCV(CV, p);
+//}
+///*public*/ void AbstractProgrammer::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
+//{
+// Programmer::confirmCV(CV.toInt(), val, p);
+//}
 
 /**
  * Basic implementation.

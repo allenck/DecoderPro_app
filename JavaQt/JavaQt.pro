@@ -245,7 +245,8 @@ SOURCES += javaqt.cpp \
     colorchoosercomponentfactory.cpp \
     splitbuttoncolorchooserpanel.cpp \
     jsplitbutton.cpp \
-    colorlistpopupmenu.cpp
+    colorlistpopupmenu.cpp \
+    externallinkcontentviewerui.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -539,7 +540,8 @@ HEADERS += javaqt.h\
     splitbuttoncolorchooserpanel.h \
     jsplitbutton.h \
     colorlistpopupmenu.h \
-    splitbuttonactionlistener.h
+    splitbuttonactionlistener.h \
+    externallinkcontentviewerui.h
 
 unix {
     target.path = /usr/lib

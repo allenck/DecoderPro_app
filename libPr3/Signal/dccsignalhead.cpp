@@ -65,7 +65,7 @@ void DccSignalHead::configureHead(QString sys) {
         QObjectList* connList = (InstanceManager::getList("CommandStation"));
 
         for (int x = 0; x < connList->size(); x++) {
-            CommandStation* station = static_cast<CommandStation*>(connList->at(x));
+            CommandStation* station = qobject_cast<CommandStation*>(connList->at(x));
             if (station->getSystemPrefix() == (commandStationPrefix)) {
                 c = station;
                 break;
@@ -73,11 +73,11 @@ void DccSignalHead::configureHead(QString sys) {
         }
 
         if (c == nullptr) {
-            c = static_cast<CommandStation*>(InstanceManager::getNullableDefault("CommandStation"));
+            c = qobject_cast<CommandStation*>(InstanceManager::getNullableDefault("CommandStation"));
             log->error("No match against the command station for " + sys + ", so will use the default");
         }
     } else {
-        c = static_cast<CommandStation*>(InstanceManager::getNullableDefault("CommandStation"));
+        c = qobject_cast<CommandStation*>(InstanceManager::getNullableDefault("CommandStation"));
         if ((sys.length() > 2) && ((sys.at(1) == 'H') || (sys.at(1) == 'h'))) {
             dccSignalDecoderAddress = (sys.mid(2, sys.length())).toInt();
         } else {

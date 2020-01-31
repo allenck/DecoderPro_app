@@ -118,7 +118,11 @@ XmlFile::XmlFile(QObject *parent) :
  }
  currFile = file->fileName();
  if(!file->exists())
-  throw FileNotFoundException(tr("file %1 does not exist").arg(file->fileName()));
+ {
+  //throw FileNotFoundException(tr("file %1 does not exist").arg(file->fileName()));
+  log->error(tr("file %1 does not exist").arg(file->fileName()));
+  return QDomElement();
+ }
 
 //    FileInputStream fs = new FileInputStream(file);
 //    try {

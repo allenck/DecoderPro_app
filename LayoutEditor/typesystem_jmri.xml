@@ -75,7 +75,7 @@
  <object-type name="Route" />
  <object-type name="RouteManager" />
  <object-type name="PowerManager" />
- <object-type name="ProgrammerManager" />
+ <!--object-type name="ProgrammerManager" /-->
  <object-type name="ShutDownManager" />
  <object-type name="AudioManager" />
  <object-type name="BlockManager" />
@@ -118,7 +118,7 @@
  <object-type name="WindowListener" />
  <object-type name="AbstractSerialPortController" />
  <object-type name="Sound" />
- <object-type name="AddressedProgrammerManager" />
+ <!--object-type name="AddressedProgrammerManager" /-->
  <object-type name="JOptionPanel" />
  <object-type name="JTextArea" />
  <object-type name="ScriptOutput" />
@@ -130,7 +130,7 @@
  <object-type name="JfileChooser" />
  <object-type name="Block" />
  <object-type name="GlobalProgrammer" />
- <object-type name="GlobalProgrammerManager" />
+ <!--object-type name="GlobalProgrammerManager" /-->
  <object-type name="SerialPortAdapter" />
  <object-type name="Logger" />
  <object-type name="XmlFile" />

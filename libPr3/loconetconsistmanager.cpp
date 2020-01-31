@@ -46,20 +46,19 @@ LocoNetConsistManager::LocoNetConsistManager(LocoNetSystemConnectionMemo* lm, QO
 /**
  *    Does a CS consist require a seperate consist address?
  **/
-/*public*/ bool LocoNetConsistManager::csConsistNeedsSeperateAddress() { return false; }
+/*public*/ bool LocoNetConsistManager::csConsistNeedsSeparateAddress() { return false; }
 
 /**
  *    Add a new LocoNetConsist with the given address to
  *    consistTable/consistList
  */
-/*public*/ Consist* LocoNetConsistManager::addConsist(DccLocoAddress* address){
-    if(consistList->contains(address)) // no duplicates allowed.
+/*public*/ DccConsist* LocoNetConsistManager::addConsist(DccLocoAddress* address){
+    if(consistTable->contains(address)) // no duplicates allowed.
        return consistTable->value(address);
 
     LocoNetConsist* consist;
     consist = new LocoNetConsist(address,memo);
     consistTable->insert(address,consist);
-    consistList->append(address);
     return consist;
 }
 
@@ -91,7 +90,7 @@ LocoNetConsistManager::LocoNetConsistManager(LocoNetSystemConnectionMemo* lm, QO
 {
          // this is a consist top, add it to the list, if it is not there
          // already.
-         if(!consistList->contains(address)){
+         if(!consistTable->contains(address)){
             if(log.isDebugEnabled()) log.debug("Adding Consist with Address " + address->toString() + " due to command station read");
             addConsist(address);
             getConsist(address)->add(address,true); // add the address to the consist.
@@ -100,7 +99,7 @@ LocoNetConsistManager::LocoNetConsistManager(LocoNetSystemConnectionMemo* lm, QO
          // this is not a consist top, so remove it from the list, if it
          // is currently there.
             if(log.isDebugEnabled()) log.debug("Removing Consist with Address " + address->toString() + " due to command station read");
-            consistList->removeOne(address);
+            consistTable->remove(address);
       }
    }
 

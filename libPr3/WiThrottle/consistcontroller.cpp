@@ -7,6 +7,8 @@
 #include "wificonsistmanager.h"
 #include "wificonsistfile.h"
 #include "controllerinterface.h"
+#include "addressedprogrammer.h"
+#include "addressedprogrammermanager.h"
 
 /**
  * @author Brett Hoffman Copyright (C) 2010
@@ -18,10 +20,10 @@
     //  writeFile needs to be separate method
     if (WiThrottleManager::withrottlePreferencesInstance()->isUseWiFiConsist()) {
         manager = new WiFiConsistManager();
-        InstanceManager::store(manager,"ConsistManager");
+        InstanceManager::store((QObject*)manager,"ConsistManager");
         log->debug("Using WiFiConsisting");
     } else {
-        manager = (ConsistManager*)InstanceManager::getNullableDefault("ConsistManager");
+        manager = qobject_cast<AbstractConsistManager*>(InstanceManager::getNullableDefault("ConsistManager"));
         log->debug("Using JMRIConsisting");
     }
 
@@ -72,7 +74,7 @@
 
 /*public*/ void ConsistController::sendAllConsistData() {
     // Loop thru JMRI consists and send consist detail for each
-    foreach (DccLocoAddress* conAddr, *manager->getConsistList()) {
+    foreach (DccLocoAddress* conAddr, manager->getConsistList()->toList()) {
         sendDataForConsist(manager->getConsist(conAddr));
     }
 
@@ -372,12 +374,12 @@ void ConsistController::handleMessage(QString message) {
 }
 
 /*private*/ void ConsistController::writeFile() {
-#if 0
+#if 1
     try {
         if (WiThrottleManager::withrottlePreferencesInstance()->isUseWiFiConsist()) {
-            file->writeFile(manager->getConsistList(), WiFiConsistFile::getFileLocation() + "wifiConsist.xml");
+            file->writeFile(manager->getConsistList()->toList(), WiFiConsistFile::getFileLocation() + "wifiConsist.xml");
         } else {
-            file->writeFile(manager.getConsistList());
+            file->writeFile(manager->getConsistList()->toList());
         }
     } catch (IOException e) {
         log->warn("Consist file could not be written!");
@@ -413,25 +415,23 @@ void ConsistController::handleMessage(QString message) {
 
         return;
     }
-    AddressedProgrammer* pom = ((ProgrammerManager*)InstanceManager::getDefault("ProgrammerManager"))
-            ->getAddressedProgrammer(loco->isLongAddress(), loco->getNumber());
+    AddressedProgrammer* pom = ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(loco);
 
     // loco done, now get CVs
     for (int i = 1; i < headerAndCVs.size(); i++) {
         QStringList CVData = (headerAndCVs.at(i).split("<;>"));
 
         try {
-            int CVNum = CVData.at(0).toInt();
             int CVValue = CVData.at(1).toInt();
             try {
-                pom->writeCV(CVNum, CVValue, (ProgListener*)this);
+                pom->writeCV(CVData.at(0), CVValue, (ProgListener*)this);
             } catch (ProgrammerException e) {
             }
         } catch (NumberFormatException nfe) {
             log->warn("Error in setting CVs: " + nfe.getMessage());
         }
     }
-    ((ProgrammerManager*)InstanceManager::getDefault("ProgrammerManager"))->releaseAddressedProgrammer(pom);
+    ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->releaseAddressedProgrammer(pom);
 
 }
 

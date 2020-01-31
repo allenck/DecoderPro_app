@@ -43,7 +43,7 @@
 }
 
 //@Override
-/*public*/ Consist* WiFiConsistManager::addConsist(DccLocoAddress* address) {
+/*public*/ DccConsist* WiFiConsistManager::addConsist(DccLocoAddress* address) {
     WiFiConsist* consist;
     consist = new WiFiConsist(address);
     consistTable->insert(address, consist);
@@ -56,7 +56,7 @@
 }
 
 //@Override
-/*public*/ bool WiFiConsistManager::csConsistNeedsSeperateAddress() {
+/*public*/ bool WiFiConsistManager::csConsistNeedsSeparateAddress() {
     return false;
 }
 

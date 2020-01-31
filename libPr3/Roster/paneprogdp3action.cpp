@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include "panecontainer.h"
 #include <QTreeView>
+#include "globalprogrammermanager.h"
 
 PaneProgDp3Action::PaneProgDp3Action()
  : JmriAbstractAction("New Loco", (WindowInterface*)NULL)
@@ -209,7 +210,7 @@ throw new IllegalArgumentException("Should not be invoked"); // NOI18N
 /*synchronized*/ void PaneProgDp3Action::findDecoderAddress()
 {
  teststatus = 1;
- readCV(29);
+ readCV("29");
 }
 
 /*synchronized*/ /*public*/ void PaneProgDp3Action::programmingOpReply(int value, int status) {
@@ -217,19 +218,19 @@ switch(teststatus){
     case 1 :
              teststatus = 2;
              cv29=value;
-             readCV(1);
+             readCV("1");
              break;
     case 2 : teststatus = 3;
              cv1=value;
-             readCV(17);
+             readCV("17");
              break;
     case 3 : teststatus = 4;
              cv17 = value;
-             readCV(18);
+             readCV("18");
              break;
     case 4 : teststatus = 5;
              cv18 = value;
-             readCV(19);
+             readCV("19");
              break;
     case 5 : cv19 = value;
              finishRead();
@@ -256,8 +257,8 @@ if(progPane!=NULL){
 }
 }
 
-/*protected*/ void PaneProgDp3Action::readCV(int cv) {
-Programmer* p = InstanceManager::programmerManagerInstance()->getGlobalProgrammer();
+/*protected*/ void PaneProgDp3Action::readCV(QString cv) {
+Programmer* p = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
 if (p == NULL) {
     //statusUpdate("No programmer connected");
 } else {
@@ -315,9 +316,9 @@ if (p == NULL) {
   f->update();
   f->adjustSize();
  }
- if (InstanceManager::programmerManagerInstance() != NULL &&
-    InstanceManager::programmerManagerInstance()->isGlobalProgrammerAvailable()){
-    this->mProgrammer = InstanceManager::programmerManagerInstance()->getGlobalProgrammer();
+ if (((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager")) != NULL &&
+    ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable()){
+    this->mProgrammer = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
  }
 
  cvModel       = new CvTableModel(statusLabel, mProgrammer);
@@ -834,8 +835,8 @@ void ThisProgPane::On_readAllButton_clicked(bool bSelected)
    progModePaneLayout->addWidget(pane->editModeProg);
    pane->serviceModeProg->setChecked(true);
 
-   if (InstanceManager::programmerManagerInstance()==NULL ||
-       !InstanceManager::programmerManagerInstance()->isGlobalProgrammerAvailable())
+   if (InstanceManager::getDefault("GlobalProgrammerManager")==NULL ||
+       !((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable())
    {
     pane->editModeProg->setChecked(true);
     pane->serviceModeProg->setEnabled(false);

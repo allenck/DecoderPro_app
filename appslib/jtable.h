@@ -77,7 +77,7 @@ public:
  };
  Q_ENUM(PrintMode)
  /*public*/ JTable(TableModel* dm, QWidget *parent = 0);
- /*public*/ JTable(QAbstractItemModel* ,QWidget *parent = 0);
+ /*public*/ JTable(QAbstractItemModel* dm, QWidget *parent = 0);
  /*public*/ JTable(TableModel* dm, TableColumnModel* cm, QWidget *parent = 0);
  /*public*/ JTable(TableModel* dm, TableColumnModel* cm, DefaultListSelectionModel *sm, QWidget *parent);
 // /*public*/ JTable(int numRows, int numColumns, QObject* parent);

@@ -46,15 +46,15 @@ private:
     /*private*/ static int NEXT_THROTTLE_KEY;// = KeyEvent.VK_RIGHT;
     /*private*/ static int PREV_THROTTLE_KEY;// = KeyEvent.VK_LEFT;
 
-    /*private*/ int activeFrame;
-    /*private*/ ThrottleCyclingKeyListener* throttleCycler;
+    /*private*/ int activeFrame = -1;
+    /*private*/ ThrottleCyclingKeyListener* throttleCycler = nullptr;
 
-    /*private*/ QList<ThrottleWindow*>* throttleWindows;
+    /*private*/ QList<ThrottleWindow*>* throttleWindows = nullptr;
 
-    /*private*/ ThrottlesPreferences* throttlesPref;
-    /*private*/ ThrottlePreferencesFrame* throttlePreferencesFrame;
-    /*private*/ ThrottlesListFrame* throttlesListFrame;
-    /*private*/ ThrottlesListPanel* throttlesListPanel;
+    /*private*/ ThrottlesPreferences* throttlesPref = nullptr;
+    /*private*/ ThrottlePreferencesFrame* throttlePreferencesFrame = nullptr;
+    /*private*/ ThrottlesListFrame* throttlesListFrame = nullptr;
+    /*private*/ ThrottlesListPanel* throttlesListPanel = nullptr;
     /*private*/ void destroyThrottleWindow(ThrottleWindow* window);
     /*private*/ void requestFocusForNextFrame();
     /*private*/ void requestFocusForPreviousFrame();

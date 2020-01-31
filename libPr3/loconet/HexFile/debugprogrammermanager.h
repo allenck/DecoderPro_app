@@ -13,7 +13,8 @@ public:
     /*public*/ AddressedProgrammer* getAddressedProgrammer(bool pLongAddress, int pAddress);
     /*public*/ AddressedProgrammer* reserveAddressedProgrammer(bool pLongAddress, int pAddress);
     /*public*/ bool isAddressedModePossible();
-
+ /*public*/ QObject* self() {return (QObject*)this;}
+ /*public*/ QString toString();
 signals:
 
 public slots:

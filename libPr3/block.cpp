@@ -398,7 +398,7 @@ QString Block::getStateString()
 */
 /*public*/ void Block::addBlockDenyList(QString pName)
 {
- Block* blk = InstanceManager::blockManagerInstance()->getBlock(pName);
+ Block* blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(pName);
  NamedBeanHandle<Block*>* namedBlock = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, blk);
  Q_ASSERT(namedBlock != NULL);
  if(!blockDenyList->contains(namedBlock))
@@ -482,7 +482,7 @@ QString Block::getStateString()
  QString speed = _blockSpeed;
  if(_blockSpeed==("Global"))
  {
-  speed = InstanceManager::blockManagerInstance()->getDefaultSpeed();
+  speed = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getDefaultSpeed();
  }
 
  try
@@ -507,7 +507,7 @@ QString Block::getStateString()
 /*public*/ QString Block::getBlockSpeed()
 {
  if(_blockSpeed==("Global"))
-  return ("Use Global " + InstanceManager::blockManagerInstance()->getDefaultSpeed());
+  return ("Use Global " + ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getDefaultSpeed());
  return _blockSpeed;
 }
 
@@ -881,7 +881,7 @@ return(next);
  *         with a Reporter, or is associated with a Reporter that is not also a
  *         PhysicalLocationReporter
  */
-/*public*/ LocoAddress* Block::getLocoAddress(QString rep)
+/*public*/ locoAddress* Block::getLocoAddress(QString rep)
 {
  // Defer parsing to our associated Reporter if we can.
  if (rep == NULL)
@@ -910,7 +910,7 @@ return(next);
    //log->debug("Parsed address: " + m.group(1));
       log->debug("Parsed address: " + sl.at(1));
    //return(new DccLocoAddress(Integer.parseInt(m.group(1)), LocoAddress.Protocol.DCC));
-   return new DccLocoAddress(sl.at(0).toInt(), LocoAddress::DCC);
+   return new DccLocoAddress(sl.at(0).toInt(), locoAddress::DCC);
   }
    else
    {

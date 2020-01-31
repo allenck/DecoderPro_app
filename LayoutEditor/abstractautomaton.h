@@ -55,9 +55,9 @@ public:
     /*public*/ /*synchronized*/ void waitSensorChange(QList<Sensor*> mSensors);
     /*public*/ DccThrottle* getThrottle(int address, bool longAddress);
     /*public*/ DccThrottle* getThrottle(BasicRosterEntry* re);
-    /*public*/ bool writeServiceModeCV(int CV, int value);
-    /*public*/ int readServiceModeCV(int CV);
-    /*public*/ bool writeOpsModeCV(int CV, int value, bool longAddress, int loco);
+    /*public*/ bool writeServiceModeCV(QString CV, int value);
+    /*public*/ int readServiceModeCV(QString CV);
+    /*public*/ bool writeOpsModeCV(QString CV, int value, bool longAddress, int loco);
     void notifyAll();
     /*public*/ void notifyThrottleFound(DccThrottle* t);
     /*public*/ void notifyFailedThrottleRequest(DccLocoAddress* address, QString reason);

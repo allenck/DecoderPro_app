@@ -30,6 +30,7 @@
 #include "debugthrottlemanager.h"
 #include "mockshutdownmanager.h"
 #include "jmriuserinterfaceconfigurationprovider.h"
+#include "debugprogrammermanager.h"
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
@@ -791,13 +792,15 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     ThrottleManager* m = new DebugThrottleManager();
     InstanceManager::store(m, "ThrottleManager");
 }
-#if 0
-/*public*/ static void initDebugProgrammerManager() {
-    DebugProgrammerManager m = new DebugProgrammerManager();
-    InstanceManager::store(m, AddressedProgrammerManager.class);
-    InstanceManager::store(m, GlobalProgrammerManager.class);
-}
 
+/*public*/ /*static*/ void JUnitUtil::initDebugProgrammerManager() {
+    DebugProgrammerManager* m = new DebugProgrammerManager();
+    InstanceManager::store(m, "AddressedProgrammerManager");
+    InstanceManager::store(m, "GlobalProgrammerManager");
+    InstanceManager::store(m, "ProgrammerManager"); // added ACK
+
+}
+#if 0
 /*public*/ static void initDebugPowerManager() {
     InstanceManager::setDefault(PowerManager.class, new PowerManagerScaffold());
 }
@@ -1142,6 +1145,8 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     // close any open remaining windows from earlier tests
     for (QWidget* frame : QApplication::topLevelWidgets())
     {
+      if(frame->windowTitle() == "PanelPro")
+       continue; // don't close this app!
 //        if (frame.isDisplayable()) {
 //            if (frame.getClass().getName().equals("javax.swing.SwingUtilities$SharedOwnerFrame")) {
 //                String message = "Cleaning up nameless invisible frame created by creating a dialog with a null parent in {}.";

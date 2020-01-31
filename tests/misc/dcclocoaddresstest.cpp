@@ -43,17 +43,17 @@ DccLocoAddressTest::DccLocoAddressTest(QObject *parent) : QObject(parent)
 
     //@Test
     /*public*/ void DccLocoAddressTest::testEquals1() {
-        DccLocoAddress l1 = DccLocoAddress(121, true);
-        DccLocoAddress l2 = DccLocoAddress(121, true);
+        DccLocoAddress* l1 = new DccLocoAddress(121, true);
+        DccLocoAddress* l2 = new DccLocoAddress(121, true);
 
-        Assert::assertTrue("equate ", l1 == (l2), __FILE__,  __LINE__);
+        Assert::assertTrue("equate ", l1 ->equals (l2), __FILE__,  __LINE__);
 
-        Assert::assertTrue("reflexive 1 ", l1 == (l1), __FILE__,  __LINE__);
-        Assert::assertTrue("reflexive 2 ", l2 ==(l2), __FILE__,  __LINE__);
+        Assert::assertTrue("reflexive 1 ", l1->equals(l1), __FILE__,  __LINE__);
+        Assert::assertTrue("reflexive 2 ", l2->equals(l2), __FILE__,  __LINE__);
 
 //        Assert::assertTrue("null 1 ", !l1 == (null), __FILE__,  __LINE__);
 //        Assert::assertTrue("null 2 ", !l2 == (null), __FILE__,  __LINE__);
-        Assert::assertTrue("transitive ", (l2 == (l1)) == ((l1 ==(l2))), __FILE__,  __LINE__);
+        Assert::assertTrue("transitive ", (l2->equals(l1)) == ((l1 ==(l2))), __FILE__,  __LINE__);
 
         QList<TestAddr> tlist = QList<TestAddr>();
         TestAddr ta = TestAddr();
@@ -67,7 +67,7 @@ DccLocoAddressTest::DccLocoAddressTest(QObject *parent) : QObject(parent)
         DccLocoAddress* l3 =  new DccLocoAddress(121, true);
         DccLocoAddress* l4 =  new DccLocoAddress(121, true);
 
-        Assert::assertTrue("equate ", *l3 == *(l4), __FILE__,  __LINE__);
+        Assert::assertTrue("equate ", l3->equals(l4), __FILE__,  __LINE__);
 
     }
 
@@ -76,14 +76,14 @@ DccLocoAddressTest::DccLocoAddressTest(QObject *parent) : QObject(parent)
         DccLocoAddress l1 = DccLocoAddress(4321, true);
         DccLocoAddress l2 = DccLocoAddress(121, true);
 
-        Assert::assertTrue("equate ", !(l1 == (l2)), __FILE__,  __LINE__);
+        Assert::assertTrue("equate ", !(l1.equals(&l2)), __FILE__,  __LINE__);
 
-        Assert::assertTrue("reflexive 1 ", l1 == (l1), __FILE__,  __LINE__);
-        Assert::assertTrue("reflexive 2 ", l2 == (l2), __FILE__,  __LINE__);
+        Assert::assertTrue("reflexive 1 ", l1.equals(&l1), __FILE__,  __LINE__);
+        Assert::assertTrue("reflexive 2 ", l2.equals(&l2), __FILE__,  __LINE__);
 
 //        Assert::assertTrue("null 1 ", !l1 == (null), __FILE__,  __LINE__);
 //        Assert::assertTrue("null 2 ", !l2 == (null), __FILE__,  __LINE__);
-        Assert::assertTrue("transitive ", (l2 == (l1)) == ((l1 == (l2))), __FILE__,  __LINE__);
+        Assert::assertTrue("transitive ", (l2.equals(&l1)) == ((l1.equals(&l2))), __FILE__,  __LINE__);
 
     }
 
@@ -92,14 +92,14 @@ DccLocoAddressTest::DccLocoAddressTest(QObject *parent) : QObject(parent)
         DccLocoAddress l1 = DccLocoAddress(121, false);
         DccLocoAddress l2 = DccLocoAddress(121, true);
 
-        Assert::assertTrue("equate ", !(l1 == (l2)), __FILE__,  __LINE__);
+        Assert::assertTrue("equate ", !(l1.equals(&l2)), __FILE__,  __LINE__);
 
-        Assert::assertTrue("reflexive 1 ", l1 == (l1), __FILE__,  __LINE__);
-        Assert::assertTrue("reflexive 2 ", l2 == (l2), __FILE__,  __LINE__);
+        Assert::assertTrue("reflexive 1 ", l1.equals(&l1), __FILE__,  __LINE__);
+        Assert::assertTrue("reflexive 2 ", l2.equals(&l2), __FILE__,  __LINE__);
 
 //        Assert::assertTrue("null 1 ", !l1 == (null), __FILE__,  __LINE__);
 //        Assert::assertTrue("null 2 ", !l2 == (null), __FILE__,  __LINE__);
-        Assert::assertTrue("transitive ", (l2 == (l1)) == ((l1 == (l2))), __FILE__,  __LINE__);
+        Assert::assertTrue("transitive ", (l2.equals(&l1)) == ((l1.equals(&l2))), __FILE__,  __LINE__);
 
     }
 
@@ -108,14 +108,14 @@ DccLocoAddressTest::DccLocoAddressTest(QObject *parent) : QObject(parent)
         DccLocoAddress l1 = DccLocoAddress(4321, true);
         DccLocoAddress l2 = DccLocoAddress(121, false);
 
-        Assert::assertTrue("equate ", !(l1 == (l2)), __FILE__,  __LINE__);
+        Assert::assertTrue("equate ", !(l1.equals(&l2)), __FILE__,  __LINE__);
 
-        Assert::assertTrue("reflexive 1 ", l1 == (l1), __FILE__,  __LINE__);
-        Assert::assertTrue("reflexive 2 ", l2 == (l2), __FILE__,  __LINE__);
+        Assert::assertTrue("reflexive 1 ", l1.equals(&l1), __FILE__,  __LINE__);
+        Assert::assertTrue("reflexive 2 ", l2 .equals(&l2), __FILE__,  __LINE__);
 
 //        Assert::assertTrue("null 1 ", !(l1 == (null)), __FILE__,  __LINE__);
 //        Assert::assertTrue("null 2 ", l2 != (null), __FILE__,  __LINE__);
-        Assert::assertTrue("transitive ", (l2 == (l1)) == ((l1 == (l2))), __FILE__,  __LINE__);
+        Assert::assertTrue("transitive ", (l2.equals(&l1)) == ((l1.equals(&l2))), __FILE__,  __LINE__);
 
     }
 

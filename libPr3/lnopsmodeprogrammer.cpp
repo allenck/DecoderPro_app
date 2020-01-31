@@ -21,7 +21,7 @@
  */
 // /*public*/ class LnOpsModeProgrammer implements AddressedProgrammer  {
 /*public*/ LnOpsModeProgrammer::LnOpsModeProgrammer(LocoNetSystemConnectionMemo* memo,
-            int pAddress, bool pLongAddr, QObject *parent) : AddressedProgrammer(parent)
+            int pAddress, bool pLongAddr, QObject *parent) : QObject(parent)
 {
     this->memo = memo;
     mode = DefaultProgrammerManager::OPSBYTEMODE;
@@ -33,7 +33,7 @@
 }
 
 /*public*/ LnOpsModeProgrammer::LnOpsModeProgrammer(SlotManager* pSlotMgr, LocoNetSystemConnectionMemo* memo, int pAddress, bool pLongAddr, QObject *parent)
-    : AddressedProgrammer(parent)
+    : QObject(parent)
 {
     mSlotMgr = pSlotMgr;
     this->memo = memo;

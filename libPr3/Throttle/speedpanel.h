@@ -20,8 +20,8 @@ public:
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e);
- /*public*/ void notifyAddressChosen(LocoAddress* l);
- /*public*/ void notifyAddressReleased(LocoAddress* la);
+ /*public*/ void notifyAddressChosen(locoAddress* l);
+ /*public*/ void notifyAddressReleased(locoAddress* la);
  /*public*/ void notifyAddressThrottleFound(DccThrottle* t);
  /*public*/ void notifyConsistAddressChosen(int newAddress, bool isLong);
  /*public*/ void notifyConsistAddressReleased(int address, bool isLong);

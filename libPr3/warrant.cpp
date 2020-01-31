@@ -1143,7 +1143,7 @@
     }
 }
 
-/*public*/ void Warrant::notifyFailedThrottleRequest(LocoAddress *address, QString reason) {
+/*public*/ void Warrant::notifyFailedThrottleRequest(locoAddress *address, QString reason) {
     log->error("notifyFailedThrottleRequest address= " +address->toString()+" _runMode= "+QString::number(_runMode)+
             " due to "+reason);
 }

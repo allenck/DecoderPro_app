@@ -47,20 +47,19 @@ AbstractProgrammerFacade(prog, parent) {
  this->addrCVlow = addrCVlow;
  this->valueCV = valueCV;
  this->modulo = modulo.toInt();
- log->debug(tr("Created with ") + prog->metaObject()->className() + ", " + QString::number(this->top) + ", " + this->addrCVhigh + ", " + this->addrCVlow + ", " + this->valueCV + ", " + QString::number(this->modulo));
+ log->debug(tr("Created with ") + prog->self()->metaObject()->className() + ", " + QString::number(this->top) + ", " + this->addrCVhigh + ", " + this->addrCVlow + ", " + this->valueCV + ", " + QString::number(this->modulo));
 }
 
 //@Override
 /*public*/ void AddressedHighCvProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
  log->debug("start writeCV");
- _cv = CV.toInt();
  _val = val;
  useProgrammer(p);
  if (prog->getCanWrite(CV) || _cv <= top)
  {
   state = PROGRAMMING;
-  prog->writeCV(_cv, val, (ProgListener*)this);
+  prog->writeCV(CV, val, (ProgListener*)this);
  } else {
   // write index first
   state = WRITELOWWRITE;
@@ -72,11 +71,10 @@ AbstractProgrammerFacade(prog, parent) {
 /*public*/ void AddressedHighCvProgrammerFacade::readCV(QString CV, ProgListener* p) throw (ProgrammerException)
 {
     log->debug("start readCV");
-    _cv = CV.toInt();
     useProgrammer(p);
     if (prog->getCanRead(CV) || _cv <= top) {
         state = PROGRAMMING;
-        prog->readCV(_cv, (ProgListener*)this);
+        prog->readCV(CV, (ProgListener*)this);
     } else {
         // write index first
         state = WRITELOWREAD;

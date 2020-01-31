@@ -64,7 +64,7 @@ DccSignalMastAddPaneTest::DccSignalMastAddPaneTest()
 
         JUnitUtil::initInternalTurnoutManager();
 
-        CommandStation* c = new CommandStationO2(this);
+        CommandStationO2* c = new CommandStationO2(this);
 //        {
 //            @Override
 //            /*public*/ boolean sendPacket(byte[] packet, int repeats) {

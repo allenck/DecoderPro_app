@@ -7,7 +7,7 @@ class Logger;
 class WiFiConsistFile : public ConsistFile
 {
 public:
- WiFiConsistFile(ConsistManager* cm);
+ WiFiConsistFile(AbstractConsistManager *cm);
 
 private:
      /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("WiFiConsistFile");

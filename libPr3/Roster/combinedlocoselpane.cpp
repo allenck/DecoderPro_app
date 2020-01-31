@@ -11,6 +11,7 @@
 #include "progdefault.h"
 #include "rosterentry.h"
 #include "decoderfile.h"
+#include "globalprogrammermanager.h"
 
 CombinedLocoSelPane::CombinedLocoSelPane(QWidget *parent) :
     LocoSelPane(parent)
@@ -210,13 +211,15 @@ bool CombinedLocoSelPane::isDecoderSelected() {
  connect(locoBox, SIGNAL(currentIndexChanged(int)), this, SLOT(On_locoBoxPropertyChange()));
  idloco = new JToggleButton(tr("Ident"));
  idloco->setToolTip(tr("Read the locomotive's address and attempt to select the right settings"));
- if (InstanceManager::programmerManagerInstance() != NULL &&
-     InstanceManager::programmerManagerInstance()->getGlobalProgrammer()!= NULL
-     && !InstanceManager::programmerManagerInstance()->getGlobalProgrammer()->getCanRead())
+ if (InstanceManager::getNullableDefault("GlobalProgrammerManager") != nullptr)
  {
-  // can't read, disable the button
-  idloco->setEnabled(false);
-  idloco->setToolTip(tr("Button disabled because configured command station can't read CVs"));
+  Programmer* p = (Programmer*)((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+  if (p != nullptr && !p->getCanRead())
+  {
+      // can't read, disable the button
+      idloco->setEnabled(false);
+      idloco->setToolTip(tr("Button disabled because configured command station can't read CVs"));
+  }
  }
 //    idloco.addActionListener( new ActionListener() {
 //            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
@@ -333,7 +336,7 @@ void CombinedLocoSelPane::On_go2_clicked()
     }
     if (p == NULL) {
         log->warn("Selector did not provide a programmer, use default");
-        p = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+        p = ((GlobalProgrammerManager*) InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
     }
     CLSIdentifyLoco* id = new CLSIdentifyLoco(p, this);
 //    {

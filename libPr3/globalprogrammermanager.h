@@ -37,37 +37,37 @@
  */
 #include <QObject>
 
-/*public*/ class GlobalProgrammerManager : public QObject
+/*public*/ class GlobalProgrammerManager //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
-    GlobalProgrammerManager(QObject* parent = 0) : QObject(parent) {}
+    //GlobalProgrammerManager(QObject* parent = 0) : QObject(parent) {}
     /**
      * Gain access to the Global Mode Programmer without reservation.
      * @return null only if there isn't a Global Mode Programmer available
      * via this Manager.
      */
-    /*public*/ virtual Programmer* getGlobalProgrammer() {return NULL;}
+    /*public*/ virtual Programmer* getGlobalProgrammer() =0;
 
     /**
      * Gain access to the Global Mode Programmer, in the process reserving it
      * for yourself.
      * @return null if the existing Global Mode programmer is in use
      */
-    /*public*/ virtual Programmer* reserveGlobalProgrammer() {return NULL;}
+    /*public*/ virtual Programmer* reserveGlobalProgrammer() =0;
 
     /**
      * Return access to the Global Mode Programmer, so that it can
      * be used elsewhere.
      */
-    /*public*/ virtual void releaseGlobalProgrammer(Programmer* /*p*/) {}
+    /*public*/ virtual void releaseGlobalProgrammer(Programmer* /*p*/) =0;
 
     /**
      * Convenience method to check whether you'll be able to get
      * a Global Mode programmer.
      * @return false if there's no chance of getting one
      */
-    /*public*/ virtual bool isGlobalProgrammerAvailable() {return false;}
+    /*public*/ virtual bool isGlobalProgrammerAvailable() =0;
 
     /**
      * Provides the human-readable
@@ -75,7 +75,7 @@ public:
      * directly in e.g. JComboBoxes, so it should return a
      * user-provided name for this particular one.
      */
-    /*public*/ virtual QString getUserName() {return "";}
+    /*public*/ virtual QString getUserName() =0;
 
     /**
      * toString() provides the human-readable
@@ -83,6 +83,10 @@ public:
      * directly in e.g. JComboBoxes, so it should return a
      * user-provided name for this particular one.
      */
-    /*public*/ virtual QString toString() {return "???";}
+    /*public*/ virtual QString toString() =0;
+
+    virtual QObject* self() =0;
+
 };
+Q_DECLARE_INTERFACE(GlobalProgrammerManager, "GlobalProgrammerManager")
 #endif // GLOBALPROGRAMMERMANAGER_H

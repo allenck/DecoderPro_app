@@ -1,6 +1,7 @@
 #include "scale.h"
 #include "scalemanager.h"
 #include "loggerfactory.h"
+#include "scaleconfigxml.h"
 
 /**
  * Define the characteristics of a layout scale.  A scale has four properties.
@@ -80,18 +81,18 @@
 
         QString oldName = _userName;
         _userName = newName;
-#if 0
+#if 1
         try {
             fireVetoableChange("ScaleUserName", oldName, newName);  // NOI18N
         } catch (PropertyVetoException ex) {
             // Roll back change
-            log.warn("The user name change for {} scale to {} was rejected: Reason: {}",  // NOI18N
-                     _name, _userName, ex.getMessage());
+            log->warn(tr("The user name change for %1 scale to %2 was rejected: Reason: %3").arg(  // NOI18N
+                     _name).arg(_userName).arg(ex.getMessage()));
             _userName = oldName;
             throw ex;  // Notify caller
         }
- // TODO:       jmri.configurexml.ScaleConfigXML.doStore();
 #endif
+     ScaleConfigXML::doStore();
     }
 
     /**

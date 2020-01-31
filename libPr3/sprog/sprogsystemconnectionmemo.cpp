@@ -145,7 +145,7 @@ void SprogSystemConnectionMemo::common(SprogConstants::SprogMode sm)
  log->debug("start command station queuing thread");
  commandStation = new SprogCommandStation(st);
  commandStation->setSystemConnectionMemo(this);
- InstanceManager::setCommandStation(commandStation);
+ InstanceManager::store(commandStation, "CommandStation");
  switch (sprogMode)
  {
   case SprogConstants::OPS:

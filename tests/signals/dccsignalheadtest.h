@@ -31,8 +31,10 @@ private:
 friend class CommandStationO1;
 };
 
-class CommandStationO1 : public CommandStation {
+class CommandStationO1 : public QObject, public CommandStation
+{
  Q_OBJECT
+ Q_INTERFACES(CommandStation)
  DccSignalHeadTest* test;
  public:
  CommandStationO1(DccSignalHeadTest* test) {this->test = test;}

@@ -2,6 +2,7 @@
 #include "abstractturnout.h"
 #include "instancemanager.h"
 #include "nmrapacket.h"
+#include "commandstation.h"
 
 /**
  * Concrete subclass of TurnoutOperator for a turnout that has no feedback.
@@ -42,7 +43,7 @@
  }
  if(c==NULL)
  {
-  c = static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"));
+  c = qobject_cast<CommandStation*>(InstanceManager::getDefault("CommandStation"));
   log->error("No match against the command station for " + sysName + ", so will use the default");
  }
  interval = i;

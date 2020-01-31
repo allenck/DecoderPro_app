@@ -45,6 +45,10 @@ AnalogClock2DisplayXml::~AnalogClock2DisplayXml()
  element.setAttribute("x", p->getX());
  element.setAttribute("y", p->getY());
  element.setAttribute("scale",  p->getScale());
+ QString link = p->getURL();
+ if (link != "" && link.trimmed().length() > 0) {
+  element.setAttribute("link", link);
+}
 
  element.setAttribute("class",
         "jmri.jmrit.display.configurexml.AnalogClock2DisplayXml");
@@ -89,6 +93,9 @@ AnalogClock2DisplayXml::~AnalogClock2DisplayXml()
  if(!bOk)
  {
   log->error("failed to convert positional attribute");
+ }
+ if (element.attribute("link") != "") {
+     l->setULRL(element.attribute("link"));
  }
  l->setOpaque(false);
  l->update();

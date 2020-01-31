@@ -115,7 +115,7 @@ void RpsReporter::notifyArriving(int id) {
  * extract the address from the front. Assumes the RpsReporter format is
  * "NNNN"
  */
-/*public*/ LocoAddress* RpsReporter::getLocoAddress(QString rep) {
+/*public*/ locoAddress* RpsReporter::getLocoAddress(QString rep) {
     // The report is a string, that is the ID of the locomotive (I think)
     log->debug("Parsed ID: " + rep);
     // I have no idea what kind of loco address an RPS reporter uses,

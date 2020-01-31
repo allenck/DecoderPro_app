@@ -20,7 +20,8 @@
 // Initialize a consist for the specific address
 // the Default consist type for loconet is a Command
 // Station Consist.
-/*public*/ LocoNetConsist::LocoNetConsist(int address, LocoNetSystemConnectionMemo* lm, QObject* parent) : DccConsist(address, parent)
+/*public*/ LocoNetConsist::LocoNetConsist(int address, LocoNetSystemConnectionMemo* lm, QObject* parent)
+ : DccConsist(address)
 {
    // super(address);
  common();
@@ -36,20 +37,22 @@
 // Initialize a consist for the specific address
 // the Default consist type for loconet is a Command
 // Station Consist.
-/*public*/ LocoNetConsist::LocoNetConsist(DccLocoAddress* address, LocoNetSystemConnectionMemo* lm, QObject* parent) : DccConsist(address, parent)
+/*public*/ LocoNetConsist::LocoNetConsist(DccLocoAddress* address, LocoNetSystemConnectionMemo* lm, QObject* parent)
+ : DccConsist(address)
 {
  common();
-    this->slotManager = lm->getSlotManager();
-    this->trafficController = lm->getLnTrafficController();
-    this->throttleManager = (AbstractThrottleManager*) lm->getThrottleManager();
-    consistRequestState = LEADREQUESTSTATE;
-    consistType = Consist::CS_CONSIST;
-    needToWrite = QList<DccLocoAddress*>();
-    throttleManager->requestThrottle(consistAddress, (ThrottleListener*)this);
+ this->slotManager = lm->getSlotManager();
+ this->trafficController = lm->getLnTrafficController();
+ this->throttleManager = (AbstractThrottleManager*) lm->getThrottleManager();
+ consistRequestState = LEADREQUESTSTATE;
+ consistType = Consist::CS_CONSIST;
+ needToWrite = QList<DccLocoAddress*>();
+ throttleManager->requestThrottle(consistAddress, (ThrottleListener*)this);
 }
 
 void LocoNetConsist::common()
 {
+ setObjectName("LocoNetConsist");
  slotManager = NULL;
  trafficController = NULL;
  throttleManager = NULL;
@@ -494,7 +497,7 @@ void LocoNetConsist::common()
 }
 
 //@Override
-/*public*/ void LocoNetConsist::notifyFailedThrottleRequest(LocoAddress* address, QString reason) {
+/*public*/ void LocoNetConsist::notifyFailedThrottleRequest(locoAddress* address, QString reason) {
     //if (! (address instanceof DccLocoAddress))
     if(qobject_cast<DccLocoAddress*>(address) == NULL)
     {
@@ -507,7 +510,7 @@ void LocoNetConsist::common()
 }
 
 //@Override
-/*public*/ void LocoNetConsist::notifyStealThrottleRequired(LocoAddress* address){
+/*public*/ void LocoNetConsist::notifyStealThrottleRequired(locoAddress* address){
     // this is an automatically stealing impelementation.
     throttleManager->stealThrottleRequest(address, (ThrottleListener*)this, true);
 }

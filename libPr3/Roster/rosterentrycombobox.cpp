@@ -373,7 +373,7 @@ RosterEntryComboBox::RosterEntryComboBox(QWidget *parent) : QComboBox(parent)
                 id);
 
        //_roster->addPropertyChangeListener(new PropertyChangeListener());
-        connect(_roster, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        connect(_roster->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        {
 //            /*public*/ void propertyChange(PropertyChangeEvent pce) {
 //                if (pce.getPropertyName().equals("add")

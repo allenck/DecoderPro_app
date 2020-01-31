@@ -25,8 +25,9 @@ private:
     static int count;// = 0;
 friend class LocoNetListenerO1;
 };
-class LocoNetListenerO1 : public LocoNetListener {
+class LocoNetListenerO1 : public QObject, public LocoNetListener {
     Q_OBJECT
+ Q_INTERFACES(LocoNetListener)
     LnTrafficRouterTest* ltrt;
 public:
     LocoNetListenerO1(LnTrafficRouterTest* ltrt) {this->ltrt = ltrt;}

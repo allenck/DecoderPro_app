@@ -5,12 +5,40 @@
 #include "borderlayout.h"
 #include "exceptions.h"
 #include "windowlistener.h"
+#include <QPointer>
 
 JDialog::JDialog(QWidget *parent) :
     QDialog(parent)
 {
  dialogInit();
 }
+
+/*public*/ JDialog::~JDialog()
+{
+ if(dialogList.contains(this))
+  dialogList.removeOne(this);
+}
+
+/*static*/ QList<JDialog*> JDialog::dialogList = QList<JDialog*>();
+
+/*static*/ /*public*/ JDialog* JDialog::findDialog(QString title)
+{
+ for(int i= dialogList.size()-1; i >= 0; i--)
+ {
+
+  if(dialogList.at(i) == nullptr)
+  {
+   dialogList.removeAt(i);
+   continue;
+  }
+  if(dialogList.at(i)->windowTitle() == title)
+  {
+   return dialogList.at(i);
+  }
+ }
+ return nullptr;
+}
+
 /**
  * The main class for creating a dialog window. You can use this class
  * to create a custom dialog, or invoke the many class methods
@@ -660,6 +688,7 @@ JDialog::JDialog(QWidget *parent) :
 //        }
 //    }
 //    sun.awt.SunToolkit.checkAndSetPolicy(this);
+ dialogList.append(QPointer<JDialog>(this));
 }
 #if 0
 /**
@@ -1507,4 +1536,8 @@ void JDialog::closeEvent(QCloseEvent* e)
  }
 }
 
-void JDialog::dispose() {close();}
+void JDialog::dispose()
+{
+ dialogList.removeOne(this);
+ close();
+}

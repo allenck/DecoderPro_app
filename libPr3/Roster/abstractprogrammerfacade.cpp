@@ -15,7 +15,7 @@
 
 
 /*public*/ AbstractProgrammerFacade::AbstractProgrammerFacade(Programmer* prog, QObject *parent) :
-    Programmer(parent)
+    QObject(parent)
 {
     this->prog = prog;
 }
@@ -38,30 +38,16 @@
 }
 
 //@Override
-/*public*/ void AbstractProgrammerFacade::writeCV(int CV, int val, ProgListener*p) throw (ProgrammerException)
-{
-    prog->writeCV(CV, val, p);
-}
-//@Override
 /*public*/ void AbstractProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {
     prog->writeCV(CV, val, p);
-}
-//@Override
-/*public*/ void AbstractProgrammerFacade::readCV(int CV, ProgListener* p) throw (ProgrammerException)
-{
-    prog->readCV(CV, p);
 }
 //@Override
 /*public*/ void AbstractProgrammerFacade::readCV(QString CV, ProgListener* p) throw (ProgrammerException)
 {
     prog->readCV(CV, p);
 }
-//@Override
-/*public*/ void AbstractProgrammerFacade::confirmCV(int CV, int val, ProgListener* p) throw (ProgrammerException)
-{
-    prog->confirmCV(CV, val, p);
-}
+
 //@Override
 /*public*/ void AbstractProgrammerFacade::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
 {

@@ -13,7 +13,7 @@ class PhysicalLocationReporter : public QObject
    UNKNOWN, ENTER, EXIT
   };
   //PhysicalLocationReporter() {}
-  /*public*/ virtual LocoAddress* getLocoAddress(QString s) =0;
+  /*public*/ virtual locoAddress* getLocoAddress(QString s) =0;
   /*public*/ virtual Direction getDirection(QString s) =0;
   /*public*/ virtual PhysicalLocation* getPhysicalLocation()=0;
   /*public*/ virtual PhysicalLocation* getPhysicalLocation(QString s) =0;

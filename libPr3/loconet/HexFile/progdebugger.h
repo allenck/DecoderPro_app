@@ -6,9 +6,10 @@
 #include "libPr3_global.h"
 
 class PropertyChangeSupport;
-class LIBPR3SHARED_EXPORT ProgDebugger : public AddressedProgrammer
+class LIBPR3SHARED_EXPORT ProgDebugger : public QObject, public AddressedProgrammer
 {
     Q_OBJECT
+ Q_INTERFACES(AddressedProgrammer)
 public:
     explicit ProgDebugger(QObject *parent = 0);
     /*public*/ ProgDebugger(bool pLongAddress, int pAddress, QObject *parent = 0);
@@ -105,6 +106,7 @@ private:
     static const int DELAY;// = 10;
     void sendReturn(Runnable* run);
     Runnable* run;
+    /*public*/ QObject* self() {return (QObject*)this;}
 
 protected:
     // handle mode

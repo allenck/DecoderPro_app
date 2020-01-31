@@ -211,13 +211,13 @@ void EditLevelXingDlg::on_xingEditCancel_clicked()
 }
 void EditLevelXingDlg::on_block1Name_editingFinished(QString text)
 {
- QCompleter* completer = InstanceManager::blockManagerInstance()->getCompleter(text);
+ QCompleter* completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text);
  if(completer)
   ui->block1Name->setCompleter(completer);
 }
 void EditLevelXingDlg::on_block2Name_editingFinished(QString text)
 {
- QCompleter* completer = InstanceManager::blockManagerInstance()->getCompleter(text);
+ QCompleter* completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text);
  if(completer)
   ui->block2Name->setCompleter(completer);
 }

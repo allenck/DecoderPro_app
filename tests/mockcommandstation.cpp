@@ -9,8 +9,8 @@
 
 // /*public*/ class MockCommandStation : public CommandStation {
 
-    /*public*/ MockCommandStation::MockCommandStation(QObject* parent) : CommandStation(parent) {}
-    /*public*/ MockCommandStation::MockCommandStation(QString name, QObject* parent) : CommandStation(parent)
+    /*public*/ MockCommandStation::MockCommandStation(QObject* parent) : QObject(parent) {}
+    /*public*/ MockCommandStation::MockCommandStation(QString name, QObject* parent) : QObject(parent)
 {this->name = name;}
 
     //@Override

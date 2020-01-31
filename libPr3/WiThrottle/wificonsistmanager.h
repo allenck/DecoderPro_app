@@ -6,13 +6,14 @@ class ControllerInterface;
 class Logger;
 class WiFiConsistManager : public AbstractConsistManager
 {
+ Q_OBJECT
 public:
  WiFiConsistManager();
  /*public*/ DccLocoAddress* stringToDcc(QString s);
  /*public*/ bool checkForBroadcastAddress(DccLocoAddress* addr);
- /*public*/ Consist* addConsist(DccLocoAddress* address);
+ /*public*/ DccConsist *addConsist(DccLocoAddress* address);
  /*public*/ bool isCommandStationConsistPossible();
- /*public*/ bool csConsistNeedsSeperateAddress();
+ /*public*/ bool csConsistNeedsSeparateAddress();
  /*public*/ void addControllerListener(ControllerInterface* listener);
  /*public*/ void removeControllerListener(ControllerInterface* listener);
 

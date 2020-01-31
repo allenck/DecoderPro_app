@@ -22,6 +22,7 @@ public:
  /*public*/ bool getCanRead(QString addr);
  /*public*/ bool getCanWrite();
  /*public*/ bool getCanWrite(QString addr);
+ /*public*/ QObject* self() {return (QObject*)this;}
 
 signals:
 

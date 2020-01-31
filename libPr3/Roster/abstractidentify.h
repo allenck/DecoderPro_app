@@ -48,7 +48,7 @@ private:
 protected:
     /*protected*/ void identifyDone();
     /*protected*/ void readCV(int cv);
-    /*protected*/ void writeCV(int cv, int value);
+    /*protected*/ void writeCV(QString cv, int value);
 /*abstract*/ /*protected*/ virtual void statusUpdate(QString status) = 0;
     /*abstract*/ /*protected*/ virtual void error() = 0;
 

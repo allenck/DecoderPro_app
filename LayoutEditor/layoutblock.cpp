@@ -165,7 +165,7 @@ long LayoutBlock::time=0;
 /*protected*/ void  LayoutBlock::initializeLayoutBlock()
 {
  // get/create a jmri.Block object corresponding to this LayoutBlock
- block = InstanceManager::blockManagerInstance()->getByUserName(blockName);
+ block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(blockName);
  if (block==NULL)
  {
   // not found, create a new jmri.Block
@@ -176,10 +176,10 @@ long LayoutBlock::time=0;
   {
    s = "IB"+QString("%1").arg(jmriblknum);
    jmriblknum ++;
-   block = InstanceManager::blockManagerInstance()->getBySystemName(s);
+   block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(s);
    if (block == NULL) found = false;
   }
-  block = InstanceManager::blockManagerInstance()->createNewBlock(s,blockName);
+  block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(s,blockName);
   if (block==NULL) log->error(QString("Failure to get/create Block: ")+s+","+blockName);
  }
  if (block!=NULL)

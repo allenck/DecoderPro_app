@@ -213,7 +213,7 @@ default:
  }
 }
 
-/*protected*/ void AbstractIdentify::writeCV(int cv, int value)
+/*protected*/ void AbstractIdentify::writeCV(QString cv, int value)
 {
  if (programmer == NULL)
  {

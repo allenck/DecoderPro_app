@@ -10,7 +10,7 @@
 #include "logger.h"
 #include "powermanager.h"
 #include "sensormanager.h"
-#include "programmermanager.h"
+//#include "programmermanager.h"
 #include "turnoutmanager.h"
 #include "reportermanager.h"
 #include "sectionmanager.h"
@@ -198,7 +198,7 @@ Q_DECL_DEPRECATED static PowerManager* powerManagerInstance();
 //Q_DECL_DEPRECATED static ConfigureManager* configureManagerInstance();
 //Q_DECL_DEPRECATED static void setConfigureManager(ConfigureManager* p);
 
-Q_DECL_DEPRECATED static ProgrammerManager* programmerManagerInstance();
+//Q_DECL_DEPRECATED static ProgrammerManager* programmerManagerInstance();
 //static void setProgrammerManager(ProgrammerManager* p);
 static ThrottleManager* throttleManagerInstance();
 static void setTurnoutManager(TurnoutManager* p);
@@ -211,9 +211,9 @@ static void setTurnoutManager(TurnoutManager* p);
 //Q_DECL_DEPRECATED static SignalGroupManager* signalGroupManagerInstance() ;
 //static void setSignalGroupManager(SignalGroupManager* p);
 //Q_DECL_DEPRECATED static ConsistManager* consistManagerInstance();
-static void setConsistManager(ConsistManager* p);
-Q_DECL_DEPRECATED static BlockManager* blockManagerInstance();
-Q_DECL_DEPRECATED static SectionManager* sectionManagerInstance();
+Q_DECL_DEPRECATED static void setConsistManager(ConsistManager* p);
+//Q_DECL_DEPRECATED static BlockManager* blockManagerInstance();
+//Q_DECL_DEPRECATED static SectionManager* sectionManagerInstance();
 //static SensorManager* sensorManager;
 //static InstanceManager* instance();
 static SignalMastLogicManager* signalMastLogicManagerInstance();
@@ -246,8 +246,8 @@ Q_DECL_DEPRECATED static void setSignalHeadManager(SignalHeadManager* p);
 //static void setLogixManager(LogixManager* p);
 //Q_DECL_DEPRECATED static void setShutDownManager(ShutDownManager* p);
 //static void setTabbedPreferences(TabbedPreferences* p);
-QT_DEPRECATED static void setCommandStation(CommandStation* p);
-QT_DEPRECATED static /*public*/ void setAddressedProgrammerManager(AddressedProgrammerManager* p);
+//QT_DEPRECATED static void setCommandStation(CommandStation* p);
+//QT_DEPRECATED static /*public*/ void setAddressedProgrammerManager(AddressedProgrammerManager* p);
 static void setReporterManager(ReporterManager* p);
 //template<class T>
 /*public*/ /*<T>*/ QObjectList* getInstances(/*@Nonnull Class<T>*/ QString type);

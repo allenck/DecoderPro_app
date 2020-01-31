@@ -1,5 +1,6 @@
 #include "abstractnamedbeanmanagerconfigxml.h"
 #include "manager.h"
+#include "class.h"
 
 AbstractNamedBeanManagerConfigXML::AbstractNamedBeanManagerConfigXML(QObject *parent) :
     AbstractXmlAdapter(parent)
@@ -325,12 +326,12 @@ void AbstractNamedBeanManagerConfigXML::loadProperties(NamedBean* t, QDomElement
 #if 0 // TODO:
   try
   {
-   Class<?> cl;
-    Constructor<?> ctor;
+   Class* cl;
+    QObject* ctor;
     // create key object
-    cl = Class.forName(e.getChild("key").getAttributeValue("class"));
+    cl = Class::forName(e.firstChildElement("key").attribute("class"));
     ctor = cl.getConstructor(new Class<?>[] {String.class});
-    Object key = ctor.newInstance(new Object[] {e.getChild("key").getText()});
+    Object key = ctor->newInstance(new Object[] {e.firstChildElement("key").text()});
 
     // create value object
     Object value = NULL;

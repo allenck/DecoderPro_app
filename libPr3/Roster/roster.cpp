@@ -336,7 +336,16 @@ Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
   throw IndexOutOfBoundsException(tr("index %1 out of range").arg(i));
  return _list->at(i);
 }
-
+/**
+ * Get all roster entries.
+ *
+ * @return a list of roster entries; the list is empty if the roster is
+ *         empty
+ */
+//@Nonnull
+/*public*/ QList<RosterEntry*> Roster::getAllEntries() {
+    return this->getEntriesInGroup("");
+}
 
 /**
  * Get the Nth RosterEntry in the group

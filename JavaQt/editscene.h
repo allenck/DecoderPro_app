@@ -14,6 +14,7 @@ public:
     explicit EditScene(QObject *parent = 0);
     EditScene(QRectF, QObject* parent = 0);
     void repaint();
+    QColor getBackground();
 
 signals:
  void sceneMouseMove(QGraphicsSceneMouseEvent* e);

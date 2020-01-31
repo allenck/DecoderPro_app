@@ -3,6 +3,7 @@
 #include "assume.h"
 #include "jmrijframe.h"
 #include "junitutil.h"
+#include "jframeoperator.h"
 
 JmriJFrameTestBase::JmriJFrameTestBase(QObject *parent) : QObject(parent)
 {
@@ -29,10 +30,10 @@ JmriJFrameTestBase::JmriJFrameTestBase(QObject *parent) : QObject(parent)
         //jmri.util.ThreadingUtil.runOnLayout(() -> {
             frame->setVisible(true);
         //});
-//        JFrameOperator fo = new JFrameOperator(frame);
+        JFrameOperator* fo = new JFrameOperator(frame);
 //        // It's up at this point, and can be manipulated
 //        // Ask to close window
-//        fo.requestClose();
+        fo->requestClose();
     }
 
     //@Before

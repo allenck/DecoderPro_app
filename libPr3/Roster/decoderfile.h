@@ -3,7 +3,7 @@
 #include "xmlfile.h"
 #include "locoaddress.h"
 
-class LocoAddress;
+class locoAddress;
 class VariableTableModel;
 class ResetTableModel;
 class LIBPR3SHARED_EXPORT DecoderFile : public XmlFile
@@ -36,7 +36,7 @@ public:
     /*public*/ QString getFamilyComment();
     /*public*/ QString getProductID();
     /*public*/ QDomElement getModelElement();
-    /*public*/ QList<LocoAddress::Protocol>* getSupportedProtocols();
+    /*public*/ QList<locoAddress::Protocol>* getSupportedProtocols();
     bool isProductIDok(QDomElement e, QString extraInclude, QString extraExclude);
     /*public*/ static bool isIncluded(QDomElement e, QString productID, QString modelID, QString familyID, QString extraInclude, QString extraExclude);
     // static service methods - extract info from a given Element
@@ -70,7 +70,7 @@ public slots:
     int _numFns;//  = -1;
     int _numOuts;//  = -1;
     QDomElement _element;// = null;
-    QList<LocoAddress::Protocol>* protocols;// = null;
+    QList<locoAddress::Protocol>* protocols;// = null;
     /*private*/ void setSupportedProtocols();
     /*private*/ static bool isInList(QString include, QString productID);
     static Logger* log;

@@ -21,7 +21,7 @@
  */
 //@Override
 /*public*/ QDomElement LocoAddressXml::store(QObject* o) {
-    LocoAddress* p = (LocoAddress*) o;
+    locoAddress* p = (locoAddress*) o;
 
     QDomElement element = doc.createElement("locoaddress");
 
@@ -51,7 +51,7 @@
     return false;
 }
 
-/*public*/ LocoAddress* LocoAddressXml::getAddress(QDomElement element) {
+/*public*/ locoAddress* LocoAddressXml::getAddress(QDomElement element) {
     if (element.firstChildElement("number") == QDomElement()) {
         DccLocoAddressXml* adapter = new DccLocoAddressXml();
         return adapter->getAddress(element.firstChildElement("dcclocoaddress"));
@@ -65,7 +65,7 @@
         return NULL;
     }
     QString protocol = element.firstChildElement("protocol").text();
-    LocoAddress::Protocol prot = LocoAddress::getByShortName(protocol);
+    locoAddress::Protocol prot = locoAddress::getByShortName(protocol);
     return new DccLocoAddress(addr, prot);
 }
 

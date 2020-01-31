@@ -46,12 +46,12 @@
  */
 
 class ProgrammingMode;
-class Programmer : public CommandStation
+class Programmer //: public CommandStation
 {
- Q_OBJECT
+ //Q_OBJECT
 // Q_ENUMS(programmerMode)
 public:
- explicit Programmer(QObject *parent = 0) : CommandStation(parent) {}
+ //explicit Programmer(QObject *parent = 0) : CommandStation(parent) {}
 // enum programmerMode
 // {
 //  // mode e.g. register, direct, paged
@@ -128,30 +128,6 @@ public:
   * Perform a CV write in the system-specific manner, and using the specified
   * programming mode.
   * <P>
-  * Handles the legacy DCC case of a single-number address space.
-  * <P>
-  * Note that this returns before the write is complete; you have to provide
-  * a ProgListener to hear about completion. For simplicity, expect the return to be on the
-  * <a href="http://jmri.org/help/en/html/doc/Technical/Threads.shtml">GUI thread</a>.
-  * <p>
-  * Exceptions will only be
-  * thrown at the start, not during the actual programming sequence. A
-  * typical exception would be due to an invalid mode (though that should be
-  * prevented earlier)
-  *
-  * @param CV  the CV to write
-  * @param val the value to write
-  * @param p   the listener that will be notified of the write
-  * @throws jmri.ProgrammerException if unable to communicate
-  * @deprecated As of 4.1.1, use #writeCV(java.lang.String, int,
-  * jmri.ProgListener)
-  */
- //@Deprecated
- QT_DEPRECATED virtual void writeCV(int /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) {}
- /**
-  * Perform a CV write in the system-specific manner, and using the specified
-  * programming mode.
-  * <P>
   * Handles a general address space through a String address. Each programmer
   * defines the acceptable formats.
   * <P>
@@ -169,31 +145,7 @@ public:
   * @param p   the listener that will be notified of the write
   * @throws jmri.ProgrammerException if unable to communicate
   */
- virtual /*public*/ void writeCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) {}
- /**
-  * Perform a CV read in the system-specific manner, and using the specified
-  * programming mode.
-  * <P>
-  * Handles the legacy DCC case of a single-number address space.
-  * <P>
-  * Note that this returns before the write is complete; you have to provide
-  * a ProgListener to hear about completion. For simplicity, expect the return to be on the
-  * <a href="http://jmri.org/help/en/html/doc/Technical/Threads.shtml">GUI thread</a>.
-  * <p>
-  * Exceptions will only be
-  * thrown at the start, not during the actual programming sequence. A
-  * typical exception would be due to an invalid mode (though that should be
-  * prevented earlier)
-  *
-  * @param CV the CV to read
-  * @param p  the listener that will be notified of the read
-  * @throws jmri.ProgrammerException if unable to communicate
-  * @deprecated As of 4.1.1, use #readCV(java.lang.String, int,
-  * jmri.ProgListener)
-  */
- //@Deprecated
-QT_DEPRECATED virtual void readCV(int /*CV*/, ProgListener* /*p*/)  throw (ProgrammerException)
- {}
+ virtual /*public*/ void writeCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) =0;
  /**
       * Perform a CV read in the system-specific manner, and using the specified
   * programming mode.
@@ -214,31 +166,7 @@ QT_DEPRECATED virtual void readCV(int /*CV*/, ProgListener* /*p*/)  throw (Progr
   * @param p  the listener that will be notified of the read
   * @throws jmri.ProgrammerException if unable to communicate
   */
- virtual /*public*/ void readCV(QString /*CV*/, ProgListener* /*p*/) throw (ProgrammerException) {}
- /**
-  * Confirm the value of a CV using the specified programming mode. On some
-  * systems, this is faster than a read.
-  * <P>
-  * Handles the legacy DCC case of a single-number address space.
-  * <P>
-  * Note that this returns before the write is complete; you have to provide
-  * a ProgListener to hear about completion. For simplicity, expect the return to be on the
-  * <a href="http://jmri.org/help/en/html/doc/Technical/Threads.shtml">GUI thread</a>.
-  * <p>
-  * Exceptions will only be
-  * thrown at the start, not during the actual programming sequence. A
-  * typical exception would be due to an invalid mode (though that should be
-  * prevented earlier)
-  *
-  * @param CV  the CV to confirm
-  * @param val the value to confirm
-  * @param p   the listener that will be notified of the confirmation
-  * @throws jmri.ProgrammerException if unable to communicate
-  * @deprecated As of 4.1.1, use #confirmCV(java.lang.String, int,
-  * jmri.ProgListener)
-  */
- //@Deprecated
-QT_DEPRECATED virtual void confirmCV(int /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) {}
+ virtual /*public*/ void readCV(QString /*CV*/, ProgListener* /*p*/) throw (ProgrammerException) =0;
  /**
   * Confirm the value of a CV using the specified programming mode. On some
   * systems, this is faster than a read.
@@ -260,31 +188,31 @@ QT_DEPRECATED virtual void confirmCV(int /*CV*/, int /*val*/, ProgListener* /*p*
   * @param p   the listener that will be notified of the confirmation
   * @throws jmri.ProgrammerException if unable to communicate
   */
-  virtual /*public*/ void confirmCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) {}
+  virtual /*public*/ void confirmCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) =0;
 /**
  * Get the list of {@link ProgrammingMode} supported by this
  * Programmer. If the order is significant, earlier modes are better.
  */
     /*public*/ virtual QList<ProgrammingMode*> getSupportedModes() {return QList<ProgrammingMode*>();}
-  virtual void setMode(ProgrammingMode* /*mode*/) {}
-  virtual ProgrammingMode*  getMode() {return NULL;}
+  virtual void setMode(ProgrammingMode* /*mode*/) =0;
+  virtual ProgrammingMode*  getMode() =0;
 //virtual bool hasMode(int mode) {return false;}
-  virtual bool getCanRead() {return false;}
+  virtual bool getCanRead() =0;
 /**
  * Checks the general read capability, regardless of mode,
  * for a specific address
  */
-  virtual /*public*/ bool getCanRead(QString /*addr*/) {return false;}
+  virtual /*public*/ bool getCanRead(QString /*addr*/) =0;
 
 /**
  * Checks the general write capability, regardless of mode
  */
- virtual /*public*/ bool getCanWrite() {return false;}
+ virtual /*public*/ bool getCanWrite() =0;
 /**
  * Checks the general write capability, regardless of mode,
  * for a specific address
  */
- virtual /*public*/ bool getCanWrite(QString /*addr*/) {return false;}
+ virtual /*public*/ bool getCanWrite(QString /*addr*/) =0;
 
  /**
 * Learn about whether the programmer does any kind of verification of write
@@ -326,18 +254,18 @@ ReadAfterWrite
  }
 }
 
-virtual void addPropertyChangeListener(PropertyChangeListener* /*p*/) {}
-virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) {}
+virtual void addPropertyChangeListener(PropertyChangeListener* /*p*/) =0;
+virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) =0;
 
 // error handling on request is via exceptions
 // results are returned via the ProgListener callback
 
- virtual QString decodeErrorCode(int /*i*/) {return "";}
-
+ virtual QString decodeErrorCode(int /*i*/) =0;
+ virtual QObject* self() =0;
 signals:
     
 public slots:
     
 };
-Q_DECLARE_INTERFACE(Programmer, "Programmer interface")
+Q_DECLARE_INTERFACE(Programmer, "Programmer")
 #endif // PROGRAMMER_H

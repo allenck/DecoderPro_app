@@ -71,9 +71,9 @@ public slots:
     /*public*/ void saveThrottle();
     /*public*/ void saveThrottleAs();
     void notifyAddressThrottleFound(DccThrottle*t);
-    /*public*/ virtual void notifyAddressReleased(LocoAddress* la);
+    /*public*/ virtual void notifyAddressReleased(locoAddress* la);
     void notifyThrottleFound(DccThrottle* t);
-    /*public*/ virtual void notifyAddressChosen(LocoAddress* l);
+    /*public*/ virtual void notifyAddressChosen(locoAddress* l);
 
 
 signals:
@@ -98,7 +98,7 @@ private slots:
     void notifyChangedSlot(LocoNetSlot*);
     void removeThrottleFrame();
     void OnFileMenuLoad();
-    void on_address_released(LocoAddress*);
+    void on_address_released(locoAddress*);
     void on_actionSpeed_Panel_toggled(bool);
 
     private:
@@ -179,6 +179,7 @@ friend class LocoNetSlot;
 friend class AbstractThrottle;
 friend class SlotManager;
 friend class ThrottleCreationAction;
+friend class ThrottleOperator;
 };
 
 #endif // THROTTLEWINDOW_H

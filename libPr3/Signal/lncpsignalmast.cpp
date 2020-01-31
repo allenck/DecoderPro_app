@@ -36,7 +36,7 @@
 
     void LNCPSignalMast::init() {
 
-        if ((qobject_cast<SlotManager*>(c)) && (((SlotManager*) c)->getSystemConnectionMemo() != nullptr)) {
+        if ((static_cast<SlotManager*>(c)) && (((SlotManager*) c)->getSystemConnectionMemo() != nullptr)) {
             tc = ((SlotManager*) c)->getSystemConnectionMemo()->getLnTrafficController();
         } else {
             tc = static_cast<LnTrafficController*>(InstanceManager::getDefault("LnTrafficController"));

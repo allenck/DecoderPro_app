@@ -312,7 +312,7 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
   className = o->property("JavaClassName").toString();
  }
  int lastDot = className.lastIndexOf(".");
-#if 1 // TODO: determine what Java classname shold be; probably set a property
+#if 1 // determine what Java classname shold be; probably set a property
  if (lastDot > 0) {
    // found package-class boundary OK
    QString result = className.mid(0, lastDot)

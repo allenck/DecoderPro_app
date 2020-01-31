@@ -843,9 +843,9 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  * @param value
  * @return true if completed OK
  */
-/*public*/ bool AbstractAutomaton::writeServiceModeCV(int CV, int value) {
+/*public*/ bool AbstractAutomaton::writeServiceModeCV(QString CV, int value) {
     // get service mode programmer
-    SlotManager* programmer = (SlotManager*)InstanceManager::programmerManagerInstance()->getGlobalProgrammer();
+    Programmer* programmer = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
 #if 1
     // do the write, response will wake the thread
     try {
@@ -875,15 +875,15 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  * @param CV Number 1 through 512
  * @return -1 if error, else value
  */
-/*public*/ int AbstractAutomaton::readServiceModeCV(int CV) {
+/*public*/ int AbstractAutomaton::readServiceModeCV(QString CV) {
     // get service mode programmer
-    SlotManager* programmer = (SlotManager*)InstanceManager::programmerManagerInstance()
+    Programmer* programmer = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager*"))
                     ->getGlobalProgrammer();
 #if 1
     // do the write, response will wake the thread
     cvReturnValue = -1;
     try {
-         programmer->readCV(QString::number(CV), new ProgListener2(this));
+         programmer->readCV(CV, new ProgListener2(this));
 //         {
 //            /*public*/ void programmingOpReply(int value, int status) {
 //                cvReturnValue = value;
@@ -911,9 +911,9 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  * @param longAddress true is the locomotive is using a long address
  * @return true if completed OK
  */
-/*public*/ bool AbstractAutomaton::writeOpsModeCV(int CV, int value, bool longAddress, int loco) {
+/*public*/ bool AbstractAutomaton::writeOpsModeCV(QString CV, int value, bool longAddress, int loco) {
     // get service mode programmer
-    Programmer* programmer = ((AddressedProgrammerManager*)InstanceManager::programmerManagerInstance())->                    getAddressedProgrammer(longAddress, loco);
+    Programmer* programmer = (Programmer*)((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager*"))->                    getAddressedProgrammer(longAddress, loco);
 #if 1
     // do the write, response will wake the thread
     try {

@@ -59,6 +59,8 @@ public:
     /*public*/ static void assertNotEquals(QString expected, QString actual, QString file, int line);
     /*public*/ static void assertNotEquals(QObject* unexpected, QObject* actual, QString file, int line);
     /*public*/ static void assertNotEquals(QString message, QString unexpected, QString actual, QString file, int line);
+    /*public*/ static void assertNotEquals(QString message, int unexpected, int actual, QString file, int line);
+
 
     /*public*/ static void assertNotNull(QString message, QObject* object, QString file, int line);
     /*public*/ static void assertNotNull(QString message, QDomElement object, QString file, int line);

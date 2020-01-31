@@ -32,7 +32,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ bool InternalConsistManager::csConsistNeedsSeperateAddress(){
+/*public*/ bool InternalConsistManager::csConsistNeedsSeparateAddress(){
   return false;
 }
 
@@ -40,7 +40,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ Consist* InternalConsistManager::addConsist(LocoAddress* address) {
+/*public*/ DccConsist* InternalConsistManager::addConsist(locoAddress* address) {
     //if (! (address instanceof DccLocoAddress))
     if(qobject_cast<DccLocoAddress*>(address)== NULL)
     {
@@ -49,7 +49,7 @@
     if (consistTable->contains((DccLocoAddress*)address)) {
         return (consistTable->value((DccLocoAddress*)address));
     }
-    Consist* consist = nullptr;
+    DccConsist* consist = nullptr;
     if (InstanceManager::getNullableDefault("CommandStation") != nullptr ) {
        consist = new NmraConsist((DccLocoAddress*) address);
     }

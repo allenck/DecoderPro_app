@@ -78,7 +78,7 @@ void TransitTableAction::common()
  editMode = false;
  duplicateMode = false;
  transitManager = NULL;
- sectionManager = InstanceManager::sectionManagerInstance();
+ sectionManager = ((SectionManager*)InstanceManager::getDefault("SectionManager"));
  curTransit = NULL;
  sectionTableModel = NULL;
  sectionList = new QList<Section*>();

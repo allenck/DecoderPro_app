@@ -44,7 +44,7 @@
 }
 
 
-/*public*/ LocoAddress* DebugThrottle::getLocoAddress() { return address; }
+/*public*/ locoAddress* DebugThrottle::getLocoAddress() { return address; }
 
 /*public*/ QString DebugThrottle::toString() {
     return QString::number(getLocoAddress()->getNumber());

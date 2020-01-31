@@ -12,6 +12,7 @@
 #include "namedicon.h"
 #include "displayframe.h"
 #include "drawsquares.h"
+#include "colordialog.h"
 
 //BackgroundItemPanel::BackgroundItemPanel(QWidget *parent) :
 //    IconItemPanel(parent)
@@ -57,18 +58,23 @@ void BackgroundItemPanel::backgroundButton_clicked()
 {
  hideCatalog();
  // TODO: replace with ColorDialog
- BGIPColorDialog dlg(_editor, this);
- dlg.exec();
+// BGIPColorDialog dlg(_editor, this);
+// dlg.exec();
+// ActionListener colorAction = ((ActionEvent event) -> {
+// colorChanged(); // callback
+//});
+ BGIPActionListener* colorAction = new BGIPActionListener(this);
+ new ColorDialog(_editor, (QWidget*)_editor->getTargetPanel(), ColorDialog::ONLY, colorAction);
+
 }
 
 //@Override
 /*protected*/ QWidget* BackgroundItemPanel::makeBgButtonPanel(ImagePanel* /*preview1*/, ImagePanel* /*preview2*/) {
         return NULL; // no button to set Preview Bg on BackgroundItemPanel
     }
-void BackgroundItemPanel::colorChanged(QColor)
+void BackgroundItemPanel::colorChanged()
 {
- //QColor c = _editor->getTargetPanel()->getBackground();
- QColor c;
+ QColor c = _editor->getTargetPanel()->getBackground();
  QBrush b = _editor->editPanel->backgroundBrush();
  if(b == Qt::NoBrush)
   c = QColor(Qt::white);
@@ -84,7 +90,7 @@ void BackgroundItemPanel::colorChanged(QColor)
 //        JColorChooser _chooser;
 //        Editor        _editor;
 //        JPanel        _preview;
-
+#if 0
 BGIPColorDialog::BGIPColorDialog(Editor* editor, BackgroundItemPanel* parent) : JDialog(parent)
 {
     //super(_paletteFrame, ItemPalette.rbp.getString("ColorChooser"), true);
@@ -187,6 +193,6 @@ BGIPCDActionListener* BGIPCDActionListener::init(BGIPColorDialog* d) {
     dialog = d;
     return this;
 }
-
+#endif
 //};
 

@@ -372,7 +372,7 @@
 #endif
         }
     }
-#if 0
+
     /**
      * Check if there are any listeners for a specific property, including
      * those registered on all properties.  If <code>propertyName</code>
@@ -381,10 +381,10 @@
      * @param propertyName  the property name.
      * @return true if there are one or more listeners for the given property
      */
-    /*public*/ boolean hasListeners(String propertyName) {
-        return this.map.hasListeners(propertyName);
+    /*public*/ bool VetoableChangeSupport::hasListeners(QString propertyName) {
+        return this->map->hasListeners(propertyName);
     }
-
+#if 0
     /**
      * @serialData Null terminated list of <code>VetoableChangeListeners</code>.
      * <p>

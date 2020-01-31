@@ -16,10 +16,10 @@
  * @author			Bob Jacobsen  Copyright (C) 2001
  * @version			$Revision: 17977 $
  */
-class LIBPR3SHARED_EXPORT LocoNetListener : public QObject
+class LIBPR3SHARED_EXPORT LocoNetListener //: public QObject
 {
 public:
- explicit LocoNetListener(QObject *parent = 0) : QObject(parent) {}
+ //explicit LocoNetListener(QObject *parent = 0) : QObject(parent) {}
 /**
  * Member function that will be invoked by a LocoNetInterface implementation
  * to forward a LocoNet message from the layout.
@@ -35,5 +35,5 @@ signals:
 public slots:
     
 };
-
+Q_DECLARE_INTERFACE(LocoNetListener, "LocoNetListener")
 #endif // LOCONETLISTENER_H

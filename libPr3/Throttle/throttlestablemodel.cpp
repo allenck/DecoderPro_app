@@ -61,10 +61,10 @@ ThrottlesTableModel::ThrottlesTableModel(QObject *parent) :
         ((AbstractThrottleManager*)InstanceManager::throttleManagerInstance())->removeListener(la, (PropertyChangeListener*)this);
 }
 
-/*public*/ void ThrottlesTableModel::notifyAddressChosen(LocoAddress* la) {
+/*public*/ void ThrottlesTableModel::notifyAddressChosen(locoAddress* la) {
 }
 
-/*public*/ void ThrottlesTableModel::notifyAddressReleased(LocoAddress* addr) {
+/*public*/ void ThrottlesTableModel::notifyAddressReleased(locoAddress* addr) {
     DccLocoAddress* la = (DccLocoAddress*)addr;
     fireTableDataChanged();
     ((AbstractThrottleManager*)InstanceManager::throttleManagerInstance())->removeListener(la, (PropertyChangeListener*)this);

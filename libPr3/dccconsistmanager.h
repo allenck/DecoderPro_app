@@ -8,29 +8,32 @@ class DccConsistManager : public AbstractConsistManager
 {
     Q_OBJECT
 public:
-    explicit DccConsistManager(QObject *parent = 0);
-    /*public*/ Consist* getConsist(DccLocoAddress* address);
-    /*public*/ void delConsist(DccLocoAddress* address);
+    explicit DccConsistManager(AddressedProgrammerManager* apm, QObject *parent = 0);
+//    /*public*/ Consist* getConsist(DccLocoAddress* address);
+//    /*public*/ void delConsist(DccLocoAddress* address);
     /*public*/ bool isCommandStationConsistPossible();
-    /*public*/ bool csConsistNeedsSeperateAddress();
-    /*public*/ QList<DccLocoAddress*>* getConsistList();
-    /*public*/ QString decodeErrorCode(int ErrorCode);
-    /*public*/ void requestUpdateFromLayout();
-    /*public*/ void addConsistListListener(ConsistListListener* l);
-    /*public*/ void removeConsistListListener(ConsistListListener* l);
-    /*public*/ void notifyConsistListChanged();
+    /*public*/ bool csConsistNeedsSeparateAddress();
+//    /*public*/ QList<DccLocoAddress*>* getConsistList();
+//    /*public*/ QString decodeErrorCode(int ErrorCode);
+//    /*public*/ void requestUpdateFromLayout();
+//    /*public*/ void addConsistListListener(ConsistListListener* l);
+//    /*public*/ void removeConsistListListener(ConsistListListener* l);
+//    /*public*/ void notifyConsistListChanged();
+    /*public*/ DccConsist *addConsist(DccLocoAddress* address) override;
+
 
 signals:
 
 public slots:
 private:
- /*private*/ QHash<DccLocoAddress*, DccConsist*>* ConsistTable;// = NULL;
+// /*private*/ QHash<DccLocoAddress*, DccConsist*>* consistTable;// = NULL;
 
- /*private*/ QList<DccLocoAddress*>* ConsistList;// = NULL;
+// /*private*/ QList<DccLocoAddress*>* consistList;// = NULL;
 
- /*private*/ QList<ConsistListListener*>* changeListeners;// = NULL;
+// /*private*/ QList<ConsistListListener*>* changeListeners;// = NULL;
 
-    
+ /*private*/ AddressedProgrammerManager* opsProgManager = nullptr;
+
 };
 
 #endif // DCCCONSISTMANAGER_H

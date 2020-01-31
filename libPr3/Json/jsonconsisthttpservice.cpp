@@ -103,7 +103,7 @@
         }//);
     }
     try {
-        (new ConsistFile())->writeFile(this->manager->getConsistList());
+        (new ConsistFile())->writeFile(this->manager->getConsistList()->toList());
     } catch (IOException ex) {
         throw JsonException(500, ex.getLocalizedMessage());
     }
@@ -142,7 +142,7 @@
         throw JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
     }
     QJsonArray root = QJsonArray();//mapper.createArrayNode();
-    for (DccLocoAddress* address : *this->manager->getConsistList()) {
+    for (DccLocoAddress* address : this->manager->getConsistList()->toList()) {
         root.append(getConsist(locale, address));
     }
     return root;

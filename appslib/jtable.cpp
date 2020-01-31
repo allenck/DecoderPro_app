@@ -340,6 +340,11 @@
  common(dm, NULL, NULL);
 }
 
+/*public*/ JTable::JTable(QAbstractItemModel* dm,QWidget *parent)
+{
+ common(dm, NULL, NULL);
+}
+
 
 /**
  * Constructs a <code>JTable</code> that is initialized with

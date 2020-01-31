@@ -62,7 +62,7 @@
 //        java.lang.reflect.Method set
 //                = interp.getClass().getMethod("set", new Class[]{String.class, Object.class});
 //        set.invoke(interp, new Object[]{"dcc", InstanceManager.commandStationInstance()});
- interp.addObject("dcc", static_cast<CommandStation*>(InstanceManager::getDefault("CommandStation")));
+ interp.addObject("dcc", InstanceManager::getDefault("CommandStation"));
 //        set.invoke(interp, new Object[]{"self", this});
  if(bHasError)
      throw Exception("error setting CommandStation");

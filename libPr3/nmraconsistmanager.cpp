@@ -3,9 +3,10 @@
 #include "dcclocoaddress.h"
 #include "nmraconsist.h"
 
-NmraConsistManager::NmraConsistManager(QObject *parent) :
-    DccConsistManager(parent)
+NmraConsistManager::NmraConsistManager(CommandStation* cs, QObject *parent) :
+    AbstractConsistManager()
 {
+ commandStation = cs;
 }
 /**
  * NmraConsistManager.java
@@ -30,12 +31,12 @@ NmraConsistManager::NmraConsistManager(QObject *parent) :
 //}
 
 //@Override
-/*public*/ Consist* NmraConsistManager::addConsist(DccLocoAddress* address) {
+/*public*/ DccConsist* NmraConsistManager::addConsist(DccLocoAddress* address) {
     if (consistTable->contains(address)) {
         return (consistTable->value(address));
     }
     NmraConsist* consist;
-    consist = new NmraConsist(address);
+    consist = new NmraConsist(address, commandStation);
     consistTable->insert(address, consist);
     return (consist);
 }

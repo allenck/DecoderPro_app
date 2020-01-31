@@ -175,7 +175,7 @@ void JmriJFrame::init(bool saveSize, bool savePosition)
 #endif
  /*synchronized (list)*/ {
   QPointer<JmriJFrame> frame = this;
-     frameList->append(frame);
+     frameList->append(QPointer<JmriJFrame>(frame));
   if(frameList->size() >= 78)
   {
    qDebug() << tr("frameList size = %1").arg(frameList->size());
@@ -971,7 +971,7 @@ bool MyAbstractShutDownTask::execute()
  }
  if (task != nullptr)
  {
-  static_cast<ShutDownManager*>(InstanceManager::getDefault("SutDownManager"))->deregister(task);
+  static_cast<ShutDownManager*>(InstanceManager::getDefault("ShutDownManager"))->deregister(task);
   task = nullptr;
  }
 

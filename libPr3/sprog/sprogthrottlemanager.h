@@ -10,7 +10,7 @@ namespace Sprog
  public:
   SprogThrottleManager(SprogSystemConnectionMemo* memo, QObject* parent = 0);
   QT_DEPRECATED static /*public*/ SprogThrottleManager* instance();
-  /*public*/ void requestThrottleSetup(LocoAddress* a, bool control);
+  /*public*/ void requestThrottleSetup(locoAddress* a, bool control);
   /*public*/ int supportedSpeedModes();
   /*public*/ bool canBeLongAddress(int address);
   /*public*/ bool canBeShortAddress(int address);

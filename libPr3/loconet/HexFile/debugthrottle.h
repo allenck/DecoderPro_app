@@ -9,7 +9,7 @@ class LIBPR3SHARED_EXPORT DebugThrottle : public AbstractThrottle
 public:
     //explicit DebugThrottle(QObject *parent = 0);
     /*public*/ DebugThrottle(DccLocoAddress* address, SystemConnectionMemo* memo,QObject *parent = 0);
-    /*public*/ LocoAddress* getLocoAddress();
+    /*public*/ locoAddress* getLocoAddress();
     /*public*/ QString toString();
     /*public*/ void setSpeedSetting(float speed);
     /*public*/ void setIsForward(bool forward);

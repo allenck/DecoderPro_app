@@ -1,4 +1,5 @@
 #include "editscene.h"
+#include <QGraphicsView>
 
 EditScene::EditScene(QObject *parent) :
     QGraphicsScene(parent)
@@ -11,13 +12,13 @@ EditScene::EditScene(QRectF rect, QObject *parent) : QGraphicsScene(rect, parent
 
 void EditScene::mouseMoveEvent(QGraphicsSceneMouseEvent *e)
 {
-    emit sceneMouseMove(e);
+ emit sceneMouseMove(e);
  QGraphicsScene::mouseMoveEvent(e);
  QPointF pos = e->scenePos();
 }
 void EditScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *e)
 {
-    emit sceneMouseRelease(e);
+ emit sceneMouseRelease(e);
  QGraphicsScene::mouseReleaseEvent(e);
 }
 void EditScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -65,4 +66,12 @@ void EditScene::keyReleaseEvent(QKeyEvent *event)
 void EditScene::repaint()
 {
  update();
+}
+
+QColor EditScene::getBackground()
+{
+ QBrush b = views().at(0)->backgroundBrush();
+ if(b == Qt::NoBrush)
+  return QColor(Qt::white);
+ return b.color();
 }

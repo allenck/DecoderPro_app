@@ -34,6 +34,7 @@
 
 void DebugProgrammerManager::common()
 {
+ setObjectName("DebugProgrammerManager");
  opsProgrammers =  QHash<int,ProgDebugger*>();
  log = new Logger("DebugProgrammerManager");
 }
@@ -64,3 +65,5 @@ void DebugProgrammerManager::common()
  * @return true
  */
 /*public*/ bool DebugProgrammerManager::isAddressedModePossible() {return true;}
+
+/*public*/ QString DebugProgrammerManager::toString() {return "DebugProgrammerManager";}

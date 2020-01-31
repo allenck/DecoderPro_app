@@ -6,7 +6,7 @@
 class DccLocoAddress;
 class Consist;
 class Logger;
-class ConsistManager;
+class AbstractConsistManager;
 class ConsistFile;
 class ConsistController : public AbstractController
 {
@@ -27,7 +27,7 @@ public slots:
  void handleMessage(QString message);
 
 private:
- /*private*/ ConsistManager* manager;
+ /*private*/ AbstractConsistManager* manager;
  /*private*/ ConsistFile* file;
  /*private*/ bool isConsistAllowed;
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger(ConsistController.class.getName());

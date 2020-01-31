@@ -9,7 +9,8 @@
 ///*public*/ class CsOpSwAccess implements LocoNetListener {
 
 
-/*public*/ CsOpSwAccess::CsOpSwAccess(/*@NonNULL*/ LocoNetSystemConnectionMemo* memo, /*@NonNULL */ProgListener* p, QObject* parent) {
+/*public*/ CsOpSwAccess::CsOpSwAccess(/*@NonNULL*/ LocoNetSystemConnectionMemo* memo, /*@NonNULL */ProgListener* p, QObject* parent)
+{
     this->memo = memo;
     this->p = p;
     // listen to the LocoNet

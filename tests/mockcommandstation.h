@@ -2,9 +2,10 @@
 #define MOCKCOMMANDSTATION_H
 #include "commandstation.h"
 
-class MockCommandStation : public CommandStation
+class MockCommandStation : public QObject, public CommandStation
 {
  Q_OBJECT
+ Q_INTERFACES(CommandStation)
 public:
  MockCommandStation(QObject *parent = nullptr);
  /*public*/ MockCommandStation(QString name, QObject *parent = nullptr);

@@ -6,7 +6,6 @@
 #include "xmlfile.h"
 #include <QBoxLayout>
 #include "lnhexfileport.h"
-#include "programmermanager.h"
 #include "throttlemanager.h"
 #include <QValidator>
 #include <QThread>
@@ -211,7 +210,7 @@ HexFileFrame::HexFileFrame(QWidget *parent) :
  ((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->setProgrammerManager(
          new DebugProgrammerManager(port->getSystemConnectionMemo()));
  if (((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager()->isAddressedModePossible()) {
-     InstanceManager::setAddressedProgrammerManager(((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager());
+     InstanceManager::store(((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager(), "addressedProgrammerManager");
  }
  if (((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager()->isGlobalProgrammerAvailable()) {
      InstanceManager::store(((LocoNetSystemConnectionMemo*)port->getSystemConnectionMemo())->getProgrammerManager(), "GlobalProgrammerManager");

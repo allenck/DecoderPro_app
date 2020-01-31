@@ -132,7 +132,7 @@ void RosterEntryPane::updateGUI(RosterEntry* re)
 /*public*/ void RosterEntryPane::setDccAddress(QString a)
 {
  DccLocoAddress* addr = addrSel->getAddress();
- LocoAddress::Protocol protocol = addr->getProtocol();
+ locoAddress::Protocol protocol = addr->getProtocol();
  addrSel->setAddress(new DccLocoAddress(a.toInt(), protocol));
 }
 /*public*/ void RosterEntryPane::setDccAddressLong(bool m)
@@ -142,9 +142,9 @@ void RosterEntryPane::updateGUI(RosterEntry* re)
  if(addr!=NULL)
  {
   //If the protocol is already set to something other than DCC, then do not try to configure it as DCC long or short.
-  if(addr->getProtocol() != LocoAddress::DCC_LONG
-                   && addr->getProtocol() != LocoAddress::DCC_SHORT
-                   && addr->getProtocol() != LocoAddress::DCC )
+  if(addr->getProtocol() != locoAddress::DCC_LONG
+                   && addr->getProtocol() != locoAddress::DCC_SHORT
+                   && addr->getProtocol() != locoAddress::DCC )
    return;
   n = addr->getNumber();
  }

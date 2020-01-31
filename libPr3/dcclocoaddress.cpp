@@ -19,9 +19,9 @@
 DccLocoAddress::DccLocoAddress(int number, bool isLong, QObject *parent)
 {
     this->number = number;
-    protocol = LocoAddress::DCC_SHORT;
+    protocol = locoAddress::DCC_SHORT;
     if(isLong)
-        protocol = LocoAddress::DCC_LONG;
+        protocol = locoAddress::DCC_LONG;
 }
 DccLocoAddress::DccLocoAddress(int number, Protocol protocol, QObject* parent)
 {
@@ -34,19 +34,19 @@ DccLocoAddress::DccLocoAddress(const DccLocoAddress& l , QObject* parent)
  this->protocol = l.protocol;
 }
 
-bool DccLocoAddress::operator==(const LocoAddress &a)
-{
- //if (a==NULL) return false;
- try
- {
-  //DccLocoAddress other = (DccLocoAddress ) a;
-  if (this->number != a.getNumber()) return false;
-  if (this->protocol != a.getProtocol()) return false;
-   return true;
- }
- catch (std::exception e)
- { return false; }
-}
+//bool DccLocoAddress::operator==(const LocoAddress &a)
+//{
+// //if (a==NULL) return false;
+// try
+// {
+//  //DccLocoAddress other = (DccLocoAddress ) a;
+//  if (this->number != a.getNumber()) return false;
+//  if (this->protocol != a.getProtocol()) return false;
+//   return true;
+// }
+// catch (std::exception e)
+// { return false; }
+//}
 
 //@Override
 /*public*/ bool DccLocoAddress::equals(QObject* a) {
@@ -99,7 +99,7 @@ bool DccLocoAddress::isLongAddress() {
     return true;
 }
 
-LocoAddress::Protocol DccLocoAddress::getProtocol() const {
+locoAddress::Protocol DccLocoAddress::getProtocol() const {
     return protocol;
 }
 

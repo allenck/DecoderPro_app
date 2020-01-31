@@ -619,7 +619,7 @@ void BeanTableDataModel::On_itemClicked(QModelIndex index)
  * @param sample Typical button, used for size
  */
 /*protected*/ void BeanTableDataModel::setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/)
-{ // TODO:
+{ //
  // install a button renderer & editor
 //    ButtonRenderer buttonRenderer = new ButtonRenderer();
 //    table.setDefaultRenderer(JButton.class,buttonRenderer);

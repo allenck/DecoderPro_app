@@ -652,10 +652,10 @@ PowerManager* InstanceManager::powerManagerInstance()
 //    store(p,"PowerManager");
 //}
 
-ProgrammerManager* InstanceManager::programmerManagerInstance()
-{
- return (ProgrammerManager*)getDefault("ProgrammerManager");
-}
+//ProgrammerManager* InstanceManager::programmerManagerInstance()
+//{
+// return (ProgrammerManager*)getDefault("ProgrammerManager");
+//}
 
 SensorManager* InstanceManager::sensorManagerInstance()
 {
@@ -761,19 +761,19 @@ ThrottleManager* InstanceManager::throttleManagerInstance()  {
 //    store(p, "SignalGroupManager");
 //}
 
-BlockManager* InstanceManager::blockManagerInstance()
-{
- BlockManager* o = (BlockManager*)getDefault("BlockManager");
- if (o != nullptr) return o;
- o = (BlockManager*)initializer->getDefault("BlockManager");
- store(o, "BlockManager");
- return o;
-}
+//BlockManager* InstanceManager::blockManagerInstance()
+//{
+// BlockManager* o = (BlockManager*)getDefault("BlockManager");
+// if (o != nullptr) return o;
+// o = (BlockManager*)initializer->getDefault("BlockManager");
+// store(o, "BlockManager");
+// return o;
+//}
 
-SectionManager* InstanceManager::sectionManagerInstance()
-{
- return (SectionManager*)getDefault("SectionManager");
-}
+//SectionManager* InstanceManager::sectionManagerInstance()
+//{
+// return (SectionManager*)getDefault("SectionManager");
+//}
 
  SignalMastLogicManager* InstanceManager::signalMastLogicManagerInstance()  {
      SignalMastLogicManager* r = (SignalMastLogicManager*)getDefault("SignalMastLogicManager");
@@ -904,7 +904,7 @@ void InstanceManager::setSignalHeadManager(SignalHeadManager* p) {
 }
 
 void InstanceManager::setConsistManager(ConsistManager* p) {
-    store(p, "ConsistManager");
+    store(p->self(), "ConsistManager");
     //instance()->notifyPropertyChangeListener("consistmanager", QVariant(), QVariant());
 }
 
@@ -914,10 +914,10 @@ void InstanceManager::setConsistManager(ConsistManager* p) {
 // new service, before this can be deprecated.
 //
 //@Deprecated
-/*static*/ /*public*/ void InstanceManager::setCommandStation(CommandStation* p)
-{
- store(p, "CommandStation");
-}
+///*static*/ /*public*/ void InstanceManager::setCommandStation(CommandStation* p)
+//{
+// store(p, "CommandStation");
+//}
 
 /**
  * @param p CommandStation to make default
@@ -925,9 +925,9 @@ void InstanceManager::setConsistManager(ConsistManager* p) {
  * {@link #store(java.lang.Object,java.lang.Class)} directly.
  */
 //@Deprecated
-/*static*/ /*public*/ void InstanceManager::setAddressedProgrammerManager(AddressedProgrammerManager* p) {
-    store(p, "AddressedProgrammerManager");
-}
+///*static*/ /*public*/ void InstanceManager::setAddressedProgrammerManager(AddressedProgrammerManager* p) {
+//    store(p, "AddressedProgrammerManager");
+//}
 
 void InstanceManager::setReporterManager(ReporterManager* p) {
  log->debug(" setReporterManager");

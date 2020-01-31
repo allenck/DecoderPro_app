@@ -49,20 +49,20 @@ public:
             const static int POSITION_TRAIL = 0xFF;
 
         // A method for cleaning up the consist
-        virtual void dispose() const {}
+        virtual void dispose() =0;
 
         // Set the Consist Type
-        virtual void setConsistType(int /*consist_type*/)  {}
+        virtual void setConsistType(int /*consist_type*/)  =0;
 
         // get the Consist Type
-        virtual int getConsistType() const {return 0;}
+        virtual int getConsistType()  =0;
 
         // get the Consist Address
-        virtual DccLocoAddress* getConsistAddress() const {return NULL;}
+        virtual DccLocoAddress* getConsistAddress()  =0;
 
         // is the specific address allowed? (needed for system specific
         // restrictions)
-        virtual bool isAddressAllowed(DccLocoAddress* /*address*/) const {return false;}
+        virtual bool isAddressAllowed(DccLocoAddress* /*address*/) =0;
 
         /**
          * is there a size limit for this type of consist?
@@ -71,17 +71,17 @@ public:
          * returns the total number of useable spaces if the consist has a
              * limit (do not subtract used spaces).
          */
-        virtual int sizeLimit() const {return 0;}
+        virtual int sizeLimit()  =0;
 
         // get a list of the locomotives in the consist
-            virtual QList<DccLocoAddress*> getConsistList() const { return  QList<DccLocoAddress*>();}
+        virtual QList<DccLocoAddress*> getConsistList() =0;
 
         // does the consist contain the specified locomotive address?
-        virtual bool contains(DccLocoAddress* /*address*/)  {return false;}
+        virtual bool contains(DccLocoAddress* /*address*/)  =0;
 
         // get the relative direction setting for a specific
         // locomotive in the consist
-        virtual bool getLocoDirection(DccLocoAddress* /*address*/)  {return false;}
+        virtual bool getLocoDirection(DccLocoAddress* /*address*/)  =0;
 
             /*
          * Add a Locomotive to a Consist
@@ -89,7 +89,7 @@ public:
          * @param directionNormal is True if the locomotive is traveling
              *        the same direction as the consist, or false otherwise.
              */
-        virtual void add(DccLocoAddress* /*LocoAddress*/, bool  /*directionNormal*/) const {}
+        virtual void add(DccLocoAddress* /*LocoAddress*/, bool  /*directionNormal*/) =0;
 
             /*
          *  Restore a Locomotive to a Consist, but don't write to the command
@@ -99,13 +99,13 @@ public:
          *  @param directionNormal is True if the locomotive is traveling
              *        the same direction as the consist, or false otherwise.
              */
-        virtual void restore(DccLocoAddress* /*LocoAddress*/, bool  /*directionNormal*/) const {}
+        virtual void restore(DccLocoAddress* /*LocoAddress*/, bool  /*directionNormal*/) =0;
 
             /*
          *  Remove a Locomotive from this Consist
          *  @param address is the Locomotive address to add to the locomotive
              */
-        virtual void remove(DccLocoAddress* /*LocoAddress*/) const {}
+        virtual void remove(DccLocoAddress* /*LocoAddress*/) =0;
 
             /*
              *  Set the position of a locomotive within the consist
@@ -113,7 +113,7 @@ public:
              *  @param position is a constant representing the position within
              *         the consist.
              */
-            virtual void setPosition(DccLocoAddress* /*address*/,int /*position*/) const {}
+            virtual void setPosition(DccLocoAddress* /*address*/,int /*position*/) =0;
 
             /*
              * Get the position of a locomotive within the consist
@@ -124,14 +124,14 @@ public:
              *                                      designated trailing locomotive.
              *                between 1 and 254 for other locomotives in the consist
              */
-            virtual int getPosition(DccLocoAddress* /*address*/) const {return 0;}
+            virtual int getPosition(DccLocoAddress* /*address*/) =0;
         /**
          * Set the roster entry of a locomotive within the consist
          *
          * @param address  is the Locomotive address
          * @param rosterId is the roster Identifer of the associated roster entry.
          */
-            /*public*/ virtual void setRosterId(DccLocoAddress* /*address*/, QString /*rosterId*/) {}
+            /*public*/ virtual void setRosterId(DccLocoAddress* /*address*/, QString /*rosterId*/) =0;
 
         /**
          * Get the rosterId of a locomotive within the consist
@@ -141,25 +141,25 @@ public:
          *         in the consist.  Returns null if no roster entry is associated
          *         with this entry.
          */
-        /*public*/ virtual QString getRosterId(DccLocoAddress* /*address*/) {return "";}
+        /*public*/ virtual QString getRosterId(DccLocoAddress* /*address*/) =0;
 /*
          * Add a Listener for consist events
          * @param Listener is a consistListener object
              */
-        virtual void addConsistListener(ConsistListener* /*Listener*/) const {}
+        virtual void addConsistListener(ConsistListener* /*Listener*/) =0;
 
         /*
          * Remove a Listener for consist events
          * @param Listener is a consistListener object
              */
-        virtual void removeConsistListener(ConsistListener* /*Listener*/) const {}
+        virtual void removeConsistListener(ConsistListener* /*Listener*/) =0;
 
 
         /*
          * Set the text ID associated with the consist
              * @param String is a string identifier for the consist
              */
-        virtual void setConsistID(QString /*ID*/) const {}
+        virtual void setConsistID(QString /*ID*/) =0;
 
         /*
          * Get the text ID associated with the consist
@@ -167,14 +167,20 @@ public:
              * 	   default value is the string Identifier for the
          *	   consist address.
              */
-            virtual QString getConsistID() const {return "";}
+            virtual QString getConsistID()  =0;
 
         /*
              * Reverse the order of the consist and the direction
          * the locomotives are traveling
          */
-        virtual void reverse() const {}
+        virtual void reverse()  =0;
 
+        /**
+         * restore the consist to the command station.
+         */
+        virtual /*public*/ void restore() =0;
+
+        virtual /*public*/ QObject* self() = 0;
 signals:
     
 public slots:

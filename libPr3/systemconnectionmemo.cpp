@@ -316,9 +316,9 @@ void SystemConnectionMemo::removeFromActionList()
     if (consistManager == nullptr) {
         // a consist manager doesn't exist, so we can create it.
         if (provides("CommandStation")) {
-            setConsistManager(new NmraConsistManager(get("CommandStation")));
+            setConsistManager(new NmraConsistManager((CommandStation*)get("CommandStation")));
         } else if (provides("AddressedProgrammerManager")) {
-            setConsistManager(new DccConsistManager(get("AddressedProgrammerManager")));
+            setConsistManager(new DccConsistManager((AddressedProgrammerManager*)get("AddressedProgrammerManager")));
         }
     }
     return consistManager;
@@ -326,7 +326,7 @@ void SystemConnectionMemo::removeFromActionList()
 
 /*public*/ void SystemConnectionMemo::setConsistManager(ConsistManager* c) {
     consistManager = c;
-    InstanceManager::store(consistManager, "ConsistManager");
+    InstanceManager::store(consistManager->self(), "ConsistManager");
 }
 
 

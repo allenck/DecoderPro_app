@@ -121,7 +121,6 @@ SOURCES += \
     locoicon.cpp \
     inputangledlg.cpp \
     settrackwidthdlg.cpp \
-    addreporterdlg.cpp \
     reportericon.cpp \
     layoutblockconnectivitytools.cpp \
     editlevelxingdlg.cpp \
@@ -477,7 +476,9 @@ SOURCES += \
     leblockcontentsicon.cpp \
     blockcontentsicon.cpp \
     leblockcontentsiconxml.cpp \
-    fontpanel.cpp
+    fontpanel.cpp \
+    consistdatamodel.cpp \
+    enterreporterdialog.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -509,12 +510,10 @@ HEADERS += liblayouteditor_global.h \
     locoicon.h \
     inputangledlg.h \
     settrackwidthdlg.h \
-    addreporterdlg.h \
     reportericon.h \
     layoutblockconnectivitytools.h \
     editlevelxingdlg.h \
     layoutslip.h \
-    addreporterdlg.h \
     memoryiconcoordinateedit.h \
     turnoutoperationmanagerxml.h \
     turnoutoperationxml.h \
@@ -875,7 +874,9 @@ HEADERS += liblayouteditor_global.h \
     leblockcontentsicon.h \
     blockcontentsicon.h \
     leblockcontentsiconxml.h \
-    fontpanel.h
+    fontpanel.h \
+    consistdatamodel.h \
+    enterreporterdialog.h
 
 FORMS    += \
     edittracksegmentdlg.ui \
@@ -888,7 +889,6 @@ FORMS    += \
     inputangledlg.ui \
     positionablepropertiesutil.ui \
     settrackwidthdlg.ui \
-    addreporterdlg.ui \
     editlevelxingdlg.ui \
     paneleditor.ui \
     addpaneleditordialog.ui \

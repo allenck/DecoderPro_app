@@ -19,17 +19,17 @@ public:
  /*public*/ int sizeLimit() const;
  /*public*/ bool contains(DccLocoAddress* address) ;
  /*public*/ bool getLocoDirection(DccLocoAddress* address) ;
- /*public*/ /*synchronized*/ void add(DccLocoAddress* LocoAddress, bool directionNormal) ;
- /*public*/ /*synchronized*/ void restore(DccLocoAddress* LocoAddress, bool directionNormal) ;
- /*public*/ /*synchronized*/ void remove(DccLocoAddress* LocoAddress)  ;
- /*public*/ /*synchronized*/ void removeFromCSConsist(DccLocoAddress* LocoAddress);
+ /*public*/ /*synchronized*/ void add(DccLocoAddress* locoAddress, bool directionNormal) ;
+ /*public*/ /*synchronized*/ void restore(DccLocoAddress* locoAddress, bool directionNormal) ;
+ /*public*/ /*synchronized*/ void remove(DccLocoAddress* locoAddress)  ;
+ /*public*/ /*synchronized*/ void removeFromCSConsist(DccLocoAddress* locoAddress);
  QObject* self() {return (QObject*)this;}
 
 public slots:
- /*public*/ void notifyFailedThrottleRequest(LocoAddress* address, QString reason);
+ /*public*/ void notifyFailedThrottleRequest(locoAddress* address, QString reason);
  /*public*/ void notifyChangedSlot(LocoNetSlot* s);
  /*public*/ void notifyThrottleFound(DccThrottle* t);
- /*public*/ void notifyStealThrottleRequired(LocoAddress* address);
+ /*public*/ void notifyStealThrottleRequired(locoAddress* address);
 
 private:
  /*private*/ SlotManager* slotManager;// = null;
@@ -50,18 +50,18 @@ private:
  /*private*/ int consistRequestState;// = IDLESTATE;
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("LocoNetConsist");
  void common();
- /*private*/ /*synchronized*/ void addToConsistList(DccLocoAddress* LocoAddress, bool directionNormal);
- /*private*/ /*synchronized*/ void removeFromConsistList(DccLocoAddress* LocoAddress);
+ /*private*/ /*synchronized*/ void addToConsistList(DccLocoAddress* locoAddress, bool directionNormal);
+ /*private*/ /*synchronized*/ void removeFromConsistList(DccLocoAddress* locoAddress);
  /*private*/ /*synchronized*/ void delayedAdd();
- /*private*/ /*synchronized*/ void addToCSConsist(DccLocoAddress* LocoAddress, bool directionNormal);
+ /*private*/ /*synchronized*/ void addToCSConsist(DccLocoAddress* locoAddress, bool directionNormal);
  /*private*/ void linkSlots(LocoNetSlot* lead, LocoNetSlot* follow);
  /*private*/ void unlinkSlots(LocoNetSlot* lead, LocoNetSlot* follow);
  /*private*/ void setDirection(LocoNetThrottle* t);
  /*private*/ void setSlotModeAdvanced(LocoNetSlot* s);
 
 protected:
- /*protected*/ /*synchronized*/ void addToAdvancedConsist(DccLocoAddress* LocoAddress, bool directionNormal);
- /*protected*/ /*synchronized*/ void removeFromAdvancedConsist(DccLocoAddress* LocoAddress);
+ /*protected*/ /*synchronized*/ void addToAdvancedConsist(DccLocoAddress* locoAddress, bool directionNormal);
+ /*protected*/ /*synchronized*/ void removeFromAdvancedConsist(DccLocoAddress* locoAddress);
 
 };
 

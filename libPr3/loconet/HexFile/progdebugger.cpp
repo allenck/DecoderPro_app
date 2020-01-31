@@ -24,13 +24,13 @@
 //*public*/ class ProgDebugger implements AddressedProgrammer  {
 
 /*public*/ ProgDebugger::ProgDebugger(QObject *parent) :
-    AddressedProgrammer(parent) {
+    QObject(parent) {
     common();
     mode = ProgrammingMode::PAGEMODE;
 }
 
 /*public*/ ProgDebugger::ProgDebugger(bool pLongAddress, int pAddress, QObject *parent) :
-    AddressedProgrammer(parent)
+    QObject(parent)
 {
     common();
     longAddr = pLongAddress;

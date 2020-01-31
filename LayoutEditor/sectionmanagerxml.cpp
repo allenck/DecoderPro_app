@@ -156,7 +156,7 @@ SectionManagerXml::SectionManagerXml(QObject *parent) :
 /*public*/ void SectionManagerXml::loadSections(QDomElement sections) {
     QDomNodeList  sectionList = sections.toElement().elementsByTagName("section");
     if (log->isDebugEnabled()) log->debug("Found "+QString::number(sectionList.size())+" sections");
-    SectionManager* tm = InstanceManager::sectionManagerInstance();
+    SectionManager* tm = ((SectionManager*)InstanceManager::getDefault("SectionManager"));
 
     for (int i=0; i<sectionList.size(); i++) {
         if (sectionList.at(i).toElement().toElement().attribute("systemName") == NULL) {
@@ -227,5 +227,5 @@ SectionManagerXml::SectionManagerXml(QObject *parent) :
 }
 
 /*public*/ int SectionManagerXml::loadOrder(){
-    return InstanceManager::sectionManagerInstance()->getXMLOrder();
+    return ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getXMLOrder();
 }

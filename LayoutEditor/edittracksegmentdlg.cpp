@@ -32,7 +32,7 @@ EditTrackSegmentDlg::~EditTrackSegmentDlg()
 void EditTrackSegmentDlg::on_edBlockName_textChanged(QString text)
 {
  ui->pbEditBlock->setEnabled(!ui->edBlockName->text().isEmpty());
- QCompleter* completer = InstanceManager::blockManagerInstance()->getCompleter(text);
+ QCompleter* completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text);
  if(completer!= NULL)
    ui->edBlockName->setCompleter(completer);
 }

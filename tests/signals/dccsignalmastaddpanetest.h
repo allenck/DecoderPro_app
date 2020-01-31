@@ -26,8 +26,9 @@ protected:
 
  friend class CommandStationO2;
 };
-class CommandStationO2 : public CommandStation {
+class CommandStationO2 : public QObject, public CommandStation {
  Q_OBJECT
+ Q_INTERFACES(CommandStation)
  DccSignalMastAddPaneTest* test;
  public:
  CommandStationO2(DccSignalMastAddPaneTest* test) {this->test = test;}

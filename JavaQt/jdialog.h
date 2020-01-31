@@ -13,6 +13,9 @@ public:
     explicit JDialog(QWidget *parent = 0);
     /*public*/ JDialog(QWidget* owner, bool modal);
     /*public*/ JDialog(QWidget* owner, QString title, bool modal);
+    /*public*/ ~JDialog();
+
+    static /*public*/ JDialog* findDialog(QString title);
     /**
      * The do-nothing default window close operation.
      */
@@ -97,6 +100,8 @@ protected:
     /*protected*/ void dialogInit();
  QList<WindowListener*>* _listeners;
  virtual void handleModified() {}
+
+ static QList<JDialog*> dialogList;
 
 };
 

@@ -2,18 +2,22 @@
 #define NMRACONSISTMANAGER_H
 #include "dccconsistmanager.h"
 
+class CommandStation;
 class Consist;
 class DccLocoAddress;
-class NmraConsistManager : public DccConsistManager
+class NmraConsistManager : public AbstractConsistManager
 {
     Q_OBJECT
 public:
-    explicit NmraConsistManager(QObject *parent = 0);
-    /*public*/ Consist* addConsist(DccLocoAddress* address);
+    explicit NmraConsistManager(CommandStation *cs, QObject *parent = 0);
+    /*public*/ DccConsist *addConsist(DccLocoAddress* address);
 
 signals:
 
 public slots:
+
+private:
+ CommandStation* commandStation = nullptr;
 
 };
 

@@ -12,7 +12,7 @@ class AddressPanel;
 }
 
 class BackgroundPanel;
-class LocoAddress;
+class locoAddress;
 class PropertyChangeEvent;
 class RosterEntrySelectorPanel;
 class RosterEntry;
@@ -68,9 +68,9 @@ public slots:
     /*public*/QObject* self() {return (QObject*)this;}
 
 signals:
-    void notifyAddressReleased(LocoAddress* currentAddress);
+    void notifyAddressReleased(locoAddress* currentAddress);
     void notifyAddressThrottleFound(DccThrottle* throttle);
-    void notifyAddressChosen(LocoAddress* currentAddress);
+    void notifyAddressChosen(locoAddress* currentAddress);
     void notifyConsistAddressChosen(int, bool);
     void notifyConsistAddressThrottleFound(DccThrottle* throttle);
 private:

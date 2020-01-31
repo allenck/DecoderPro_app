@@ -6,9 +6,10 @@
 #include "loconetsystemconnectionmemo.h"
 #include "proglistener.h"
 
-class CsOpSwAccess : public LocoNetListener
+class CsOpSwAccess : public QObject,  public LocoNetListener
 {
  Q_OBJECT
+ Q_INTERFACES(LocoNetListener)
 public:
  enum CmdStnOpSwStateType {
      IDLE,

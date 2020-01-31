@@ -69,6 +69,7 @@
 #include "misc/colorchooserpaneltestaction.h"
 #include "misc/dcclocoaddresstestaction.h"
 #include "misc/controllerfilterframetestaction.h"
+#include "consisttoolframetestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -184,4 +185,5 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     miscMenu->addAction(new ColorChooserPanelTestAction(this));
     miscMenu->addAction(new DccLocoAddressTestAction(this));
     miscMenu->addAction(new ControllerFilterFrameTestAction(this));
+    miscMenu->addAction(new ConsistToolFrameTestAction(this));
 }

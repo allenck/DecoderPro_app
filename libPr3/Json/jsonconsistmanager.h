@@ -4,21 +4,23 @@
 #include "consistmanager.h"
 
 class Logger;
-class JsonConsistManager : public ConsistManager
+class JsonConsistManager : public Bean, public ConsistManager
 {
  Q_OBJECT
+ Q_INTERFACES(ConsistManager)
 public:
  JsonConsistManager(QObject* parent = 0);
- /*public*/ Consist* getConsist(DccLocoAddress* address);
+ /*public*/ DccConsist* getConsist(DccLocoAddress* address);
  /*public*/ void delConsist(DccLocoAddress* address);
  /*public*/ bool isCommandStationConsistPossible();
- /*public*/ bool csConsistNeedsSeperateAddress();
- /*public*/ QList<DccLocoAddress*>* getConsistList();
+ /*public*/ bool csConsistNeedsSeparateAddress();
+ /*public*/ ConsistAddrList* getConsistList();
  /*public*/ QString decodeErrorCode(int errorCode);
  /*public*/ void requestUpdateFromLayout();
  /*public*/ void addConsistListListener(ConsistListListener* listener);
  /*public*/ void removeConsistListListener(ConsistListListener* listener);
  /*public*/ bool isConsistManager();
+ /*public*/ QObject* self() {return (QObject*)this;}
 
 public slots:
  void propertyChange(PropertyChangeEvent* evt);

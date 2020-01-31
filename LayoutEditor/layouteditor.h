@@ -287,7 +287,7 @@ public:
     /**
      * Add a Reporter Icon to the panel
      */
-    void addReporter(QString textReporter,int xx,int yy);
+    void addReporter(Reporter *textReporter, int xx, int yy);
 //    /*public*/ PositionableLabel* setUpBackground(QString name);
     QT_DEPRECATED void setDefaultTextColor(QString sColor);
     void setDefaultTextColor(QColor sColor);

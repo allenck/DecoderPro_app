@@ -9,7 +9,7 @@
 #include "defaultcomboboxmodel.h"
 #include "rosterentry.h"
 #include "programmingmode.h"
-#include "defaultprogrammermanager.h"
+#include "lnprogrammermanager.h"
 
 //ProgServiceModeComboBox::ProgServiceModeComboBox(QWidget *parent) :
 //    ProgModeSelector(parent)
@@ -75,7 +75,8 @@
  QObjectList* objectList = InstanceManager::getList("GlobalProgrammerManager");
  foreach(QObject* o, *objectList)
  {
-  GlobalProgrammerManager* globalProgrammerManager = (GlobalProgrammerManager*)o;
+  GlobalProgrammerManager* globalProgrammerManager = qobject_cast<GlobalProgrammerManager*>(o);
+  QObject* so = globalProgrammerManager->self();
   list.append(globalProgrammerManager);
  }
  return list;
@@ -108,7 +109,7 @@
    if (pm != NULL && pm->getGlobalProgrammer() != NULL)
    {
     v.append(pm);
-    progBox->addItem(pm->getUserName(), VPtr<GlobalProgrammerManager>::asQVariant(pm));
+    progBox->addItem(((DefaultProgrammerManager*)pm)->getUserName());//, VPtr<LnProgrammerManager>::asQVariant((LnProgrammerManager*)pm->self()));
     // listen for changes
     // TODO : pm.getGlobalProgrammer().addPropertyChangeListener(this);
     AbstractProgrammer* pgmr = (AbstractProgrammer*) ((DefaultProgrammerManager*)pm)->getGlobalProgrammer();
@@ -189,7 +190,7 @@ void ProgServiceModeComboBox::programmerSelected()
  * Listen to programmer for mode changes
  */
 /*public*/ void ProgServiceModeComboBox::propertyChange(PropertyChangeEvent* e) {
- if ("Mode"==(e->getPropertyName()) && getProgrammer()==(e->getSource()))
+ if ("Mode"==(e->getPropertyName()) && getProgrammer()->self()==(e->getSource()))
  {
   // mode changed in programmer, change GUI here if needed
   if (isSelected())

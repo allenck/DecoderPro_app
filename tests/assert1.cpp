@@ -350,6 +350,13 @@ private static bool isEquals(Object expected, Object actual) {
         fail(tr("%1 equal '%2' vs '%3'").arg(message).arg(unexpected).arg(actual), file, line);
     }
 }
+/*public*/ /*static*/ void Assert::assertNotEquals(QString message, int unexpected, int actual, QString file, int line)
+{
+    if(unexpected == actual)
+    {
+        fail(tr("%1 equal '%2' vs '%3'").arg(message).arg(unexpected).arg(actual), file, line);
+    }
+}
 
 
 /*public*/ /*static*/ void Assert::assertNotEquals(QString expected, QString actual, QString file, int line) {

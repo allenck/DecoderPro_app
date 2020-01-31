@@ -271,7 +271,7 @@ QObject(parent) {
     }
 }
 
-/*public*/ void VSDecoderManager::setDecoderPositionByAddr(LocoAddress* a, PhysicalLocation* l) {
+/*public*/ void VSDecoderManager::setDecoderPositionByAddr(locoAddress* a, PhysicalLocation* l) {
     // Find the addressed decoder
     // This is a bit hokey.  Need a better way to index decoder by address
     // OK, this whole LocoAddress vs. DccLocoAddress thing has rendered this SUPER HOKEY.
@@ -296,18 +296,18 @@ QObject(parent) {
             log->debug("VSdecoder NULL pointer!");
             return;
         }
-        LocoAddress* pa = d->getAddress();
+        locoAddress* pa = d->getAddress();
         if (pa == nullptr) {
             log->debug("Vsdecoder" + d->objectName() + " address NULL!");
             return;
         }
-        LocoAddress::Protocol p = d->getAddress()->getProtocol();
+        locoAddress::Protocol p = d->getAddress()->getProtocol();
         if (p == 0) {
             log->debug("Vsdecoder" + d->objectName() + " address = " + pa->toString() + " protocol NULL!");
             return;
         }
-        if ((p == LocoAddress::DCC_LONG) || (p == LocoAddress::DCC_SHORT)) {
-            p = LocoAddress::DCC;
+        if ((p == locoAddress::DCC_LONG) || (p == locoAddress::DCC_SHORT)) {
+            p = locoAddress::DCC;
         }
         if ((d->getAddress()->getNumber() == a->getNumber()) && (p == a->getProtocol())) {
             d->setPosition(l);
@@ -422,20 +422,22 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
     //	    reporterManagerPropertyChange(event);
     //	}
     //   });
-    //InstanceManager::reporterManagerInstance().addPropertyChangeListener(this);
- ReporterManager* rm = InstanceManager::reporterManagerInstance();
-// connect(rm, SIGNAL())
+    InstanceManager::reporterManagerInstance()->addPropertyChangeListener((PropertyChangeListener*)this);
 
     // Now, the Reporter Table might already be loaded and filled out, so we need to get all the Reporters and list them.
     // And add ourselves as a listener to them.
- ProxyReporterManager* mgr = (ProxyReporterManager*)InstanceManager::reporterManagerInstance();
- QStringList l = mgr->getSystemNameList();
-    foreach (QString sysName, l)
-    {
-     registerReporterListener(sysName);
+    QSet<NamedBean*> reporterSet = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getNamedBeanSet();
+    for (NamedBean* r : reporterSet) {
+        if (r != nullptr) {
+            registerReporterListener(((Reporter*)r)->getSystemName());
+        }
     }
-    foreach (QString sysname,InstanceManager::blockManagerInstance()->getSystemNameList()) {
-        registerBeanListener(InstanceManager::blockManagerInstance(), sysname);
+
+    QSet<NamedBean*> blockSet = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getNamedBeanSet();
+    for (NamedBean* b : blockSet) {
+        if (b != nullptr) {
+            registerBeanListener((BlockManager*)InstanceManager::getDefault("BlockManager"), ((NamedBean*)b)->getSystemName());
+        }
     }
 }
 #if 0

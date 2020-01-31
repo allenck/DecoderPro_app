@@ -1,16 +1,17 @@
 #ifndef DEFERRINGPROGRAMMERMANAGER_H
 #define DEFERRINGPROGRAMMERMANAGER_H
 
-#include "programmermanager.h"
-
+#include <QObject>
+#include "addressedprogrammermanager.h"
 class Logger;
 class ProgrammingMode;
-class LocoAddress;
+class locoAddress;
 class AddressedProgrammer;
 class Programmer;
-class DeferringProgrammerManager : public ProgrammerManager
+class DeferringProgrammerManager : public QObject, public AddressedProgrammerManager, public GlobalProgrammerManager
 {
  Q_OBJECT
+ Q_INTERFACES(AddressedProgrammerManager GlobalProgrammerManager)
 public:
  explicit DeferringProgrammerManager(QObject *parent = 0);
  /*public*/ QString getUserName();
@@ -23,7 +24,7 @@ public:
  /*public*/ AddressedProgrammer* reserveAddressedProgrammer(bool pLongAddress, int pAddress) ;
  /*public*/ void releaseAddressedProgrammer(AddressedProgrammer* p) ;
  /*public*/ bool isAddressedModePossible();
- /*public*/ bool isAddressedModePossible(LocoAddress* l);
+ /*public*/ bool isAddressedModePossible(locoAddress* l);
  /*public*/ QList<ProgrammingMode*> getDefaultModes();
 
 signals:

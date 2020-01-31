@@ -13,9 +13,10 @@ namespace Sprog
  class SprogSystemConnectionMemo;
  class SprogTrafficController;
  class SprogSlot;
- class SprogCommandStation : public CommandStation
+ class SprogCommandStation : public QObject, public CommandStation
  {
   Q_OBJECT
+  Q_INTERFACES(CommandStation)
  public:
   SprogCommandStation(SprogTrafficController* controller, QObject* parent= 0);
 

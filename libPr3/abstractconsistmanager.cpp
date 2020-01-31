@@ -1,12 +1,11 @@
 #include "abstractconsistmanager.h"
 
-AbstractConsistManager::AbstractConsistManager(QObject *parent) /*:
-    ConsistManager(parent)*/
+AbstractConsistManager::AbstractConsistManager(QObject *parent) :
+    QObject(parent)
 {
-    consistTable = new QHash<DccLocoAddress*,Consist*>();
-    consistList = new QList<DccLocoAddress*>();
+    //consistTable = new QHash<DccLocoAddress*,Consist*>();
+ consistTable = new ConsistTable();
     changeListeners = new QList<ConsistListListener*>();
-
 }
 /**
  * An Abstract Consist Manager on top of which
@@ -28,11 +27,11 @@ AbstractConsistManager::AbstractConsistManager(QObject *parent) /*:
 /**
 *    Find a Consist with this consist address, and return it.
 **/
-/*public*/ Consist* AbstractConsistManager::getConsist(DccLocoAddress* address){
+/*public*/ DccConsist *AbstractConsistManager::getConsist(DccLocoAddress* address){
  if(consistTable->contains(address)) {
     return(consistTable->value(address));
  } else {
-    return(addConsist(address));
+    return addConsist(address);
  }
 }
 
@@ -44,7 +43,6 @@ AbstractConsistManager::AbstractConsistManager(QObject *parent) /*:
 // remove the old Consist
 /*public*/ void AbstractConsistManager::delConsist(DccLocoAddress* address){
  consistTable->remove(address);
- consistList->removeAt(consistList->indexOf(address));
 }
 
 /**
@@ -61,7 +59,11 @@ AbstractConsistManager::AbstractConsistManager(QObject *parent) /*:
 /**
 *  Return the list of consists we know about.
 **/
-/*public*/ QList<DccLocoAddress*>* AbstractConsistManager::getConsistList() { return consistList; }
+/*public*/ ConsistAddrList *AbstractConsistManager::getConsistList()
+{
+ //return QList<DccLocoAddress*>(consistTable->keys());
+ return consistTable->getConsistList();
+}
 
 /*public*/ QString AbstractConsistManager::decodeErrorCode(int ErrorCode){
  QString buffer;
@@ -121,8 +123,8 @@ AbstractConsistManager::AbstractConsistManager(QObject *parent) /*:
  */
 /*public*/ void AbstractConsistManager::notifyConsistListChanged()
 {
-#if 0
-   foreach(ConsistListListener* l ,*ChangeListeners)
+#if 1
+   foreach(ConsistListListener* l ,*changeListeners)
        l->notifyConsistListChanged();
 #else
  emit consistListChanged();

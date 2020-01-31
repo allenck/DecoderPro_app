@@ -419,12 +419,12 @@ void VSDecoderPane::firePropertyChange(PropertyChangeEvent* evt) {
  *
  * Update the Decoder's address...
  */
-/*public*/ void VSDecoderPane::setAddress(LocoAddress* a)
+/*public*/ void VSDecoderPane::setAddress(locoAddress* a)
 {
  if (a != NULL)
  {
   log->debug("Pane Set Address: " + a->toString());
-  firePropertyChange(ADDRESS_CHANGE, QVariant(), VPtr<LocoAddress>::asQVariant(a));
+  firePropertyChange(ADDRESS_CHANGE, QVariant(), VPtr<locoAddress>::asQVariant(a));
 
   //VSDecoder decoder = VSDecoderManager.instance().getVSDecoderByID(decoder_id);
   //if (decoder != NULL) {

@@ -5,7 +5,8 @@
 #include "paneprogaction.h"
 #include "paneopsprogaction.h"
 #include <QPushButton>
-#include "programmermanager.h"
+#include "globalprogrammermanager.h"
+#include "addressedprogrammermanager.h"
 #include "instancemanager.h"
 
 //InstallTest::InstallTest()
@@ -105,8 +106,8 @@ InstallTest::InstallTest(JFrame* p) : Apps(p) {
     connect(m1, SIGNAL(clicked()), (PaneOpsProgAction*)opsprog, SLOT(actionPerformed()));
 //    m1.setAlignmentX(JLabel.CENTER_ALIGNMENT);
     jLayout->addWidget(m1, 0, Qt::AlignCenter);
-    if (InstanceManager::getNullableDefault("ProgrammerManager") == NULL
-            || !((ProgrammerManager*)InstanceManager::getDefault("ProgrammerManager"))->isAddressedModePossible())
+    if (InstanceManager::getNullableDefault("AddressedProgrammerManager") == NULL
+            || !((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->isAddressedModePossible())
     {
         m1->setEnabled(false);
         m1->setToolTip(tr("This button is disabled because your command station can't do operations mode programming, or we don't yet have code to do it for that type of system"));

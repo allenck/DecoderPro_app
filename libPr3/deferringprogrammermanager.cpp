@@ -20,10 +20,11 @@
  * @author	Bob Jacobsen Copyright (C) 2014
  * @version	$Revision: 29920 $
  */
-///*public*/ class DeferringProgrammerManager implements ProgrammerManager {
+//public class DeferringProgrammerManager implements AddressedProgrammerManager, GlobalProgrammerManager {
+
 
 /*public*/ DeferringProgrammerManager::DeferringProgrammerManager(QObject *parent) :
-ProgrammerManager(parent)
+QObject(parent)
 {
  setObjectName("DeferringProgrammerManager");
  userName = "<Default>";
@@ -58,7 +59,7 @@ ProgrammerManager(parent)
  }
  Programmer* p = gp->getGlobalProgrammer();
  log->debug(tr("getGlobalProgrammer returns default service-mode programmer of type %1 from %2").arg(
-     (p != NULL ? p->metaObject()->className() : "(NULL)")).arg(gp->metaObject()->className() ));
+     (p != NULL ? p->self()->metaObject()->className() : "(NULL)")).arg(gp->toString()));
  return p;
 }
 
@@ -135,7 +136,7 @@ ProgrammerManager(parent)
  *
  * @return false if there's no chance of getting one
  */
-/*public*/ bool DeferringProgrammerManager::isAddressedModePossible(LocoAddress* l) {
+/*public*/ bool DeferringProgrammerManager::isAddressedModePossible(locoAddress* l) {
     return isAddressedModePossible();
 }
 

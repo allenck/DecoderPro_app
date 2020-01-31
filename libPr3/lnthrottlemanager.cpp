@@ -63,7 +63,7 @@ bool LnThrottleManager::singleUse() { return false; }
 * of the loco.
 */
 //@Override
-/*public*/ void LnThrottleManager::requestThrottleSetup(LocoAddress* address, bool control) {
+/*public*/ void LnThrottleManager::requestThrottleSetup(locoAddress* address, bool control) {
    log->debug(tr("requestThrottleSetup: address %1, control %2").arg(address->toString()).arg(control?"true":"false"));
    if(requestOutstanding) {
       try {
@@ -107,7 +107,7 @@ bool LnThrottleManager::singleUse() { return false; }
  * @param address Loco address
  * @param control whether the throttle object wants to control the loco
  */
-/*private*/ void LnThrottleManager::processThrottleSetupRequest(LocoAddress* address, bool control)
+/*private*/ void LnThrottleManager::processThrottleSetupRequest(locoAddress* address, bool control)
 {
  slotManager->slotFromLocoAddress(address->getNumber(), (SlotListener*)this);  //first try
 
@@ -367,7 +367,7 @@ DccThrottle* LnThrottleManager::createThrottle(LocoNetSystemConnectionMemo* memo
  * @param reason for the failure
  */
 //@Override
-/*public*/ void LnThrottleManager::failedThrottleRequest(LocoAddress* address, QString reason) {
+/*public*/ void LnThrottleManager::failedThrottleRequest(locoAddress* address, QString reason) {
     AbstractThrottleManager::failedThrottleRequest(address, reason);
     log->debug(tr("failedThrottleRequest - address %1, reason %2").arg(address->toString()).arg(reason));
     //now end and remove any waiting thread
@@ -390,7 +390,7 @@ DccThrottle* LnThrottleManager::createThrottle(LocoNetSystemConnectionMemo* memo
  * @param l       The ThrottleListener cancelling request for a throttle.
  */
 //@Override
-/*public*/ void LnThrottleManager::cancelThrottleRequest(LocoAddress* address, ThrottleListener* l) {
+/*public*/ void LnThrottleManager::cancelThrottleRequest(locoAddress* address, ThrottleListener* l) {
 
     // calling super removes the ThrottleListener from the callback list,
     // The listener which has just sent the cancel doesn't need notification
@@ -481,7 +481,7 @@ void LnThrottleManager::dispose() {
  * @since 4.9.2
  */
 //@Override
-/*public*/ void LnThrottleManager::responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision){
+/*public*/ void LnThrottleManager::responseThrottleDecision(locoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision){
 
     log->debug(tr("%1 decision invoked for address %2").arg(decision).arg(address->getNumber() ));
 

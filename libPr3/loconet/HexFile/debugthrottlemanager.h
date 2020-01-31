@@ -9,7 +9,7 @@ class LIBPR3SHARED_EXPORT DebugThrottleManager : public AbstractThrottleManager
 public:
     explicit DebugThrottleManager(QObject *parent = 0);
     /*public*/ DebugThrottleManager(SystemConnectionMemo* memo, QObject *parent = 0);
-    /*public*/ void requestThrottleSetup(LocoAddress* a, bool control);
+    /*public*/ void requestThrottleSetup(locoAddress* a, bool control);
     /*public*/ bool canBeLongAddress(int address) ;
     /*public*/ bool canBeShortAddress(int address);
     /*public*/ bool addressTypeUnique();

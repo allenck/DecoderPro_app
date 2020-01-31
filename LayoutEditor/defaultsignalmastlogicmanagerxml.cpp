@@ -391,7 +391,7 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
          else if (state==("unoccupied"))
              value = Block::UNOCCUPIED;
 
-         Block* blk = ((BlockManager*)InstanceManager::blockManagerInstance())->getBlock(block);
+         Block* blk = ((BlockManager*)((BlockManager*)InstanceManager::getDefault("BlockManager")))->getBlock(block);
          if (blk!=NULL)
              list.insert(blk, value);
          else if (debug)

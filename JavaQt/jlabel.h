@@ -212,6 +212,7 @@ public:
      * @see #setLabelFor
      */
     /*public*/ int getDisplayedMnemonic();
+ /*public*/ QWidget* getLabelFor() {return labelFor;}
 /*public*/ void setHorizontalAlignment(int alignment);
 
 /*public*/ void setAlignmentX(float alignmentX);
@@ -327,7 +328,7 @@ public:
     /*public*/ QFont getFont();
     /*public*/ void setOpaque(bool);
     /*public*/ void setFont(QFont);
-    /*public*/ void setLabelFor(QWidget* /*c*/) {} // TODO:
+    /*public*/ void setLabelFor(QWidget* labelFor) {this->labelFor = labelFor;}
     /*public*/ QFontMetrics getFontMetrics();
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
     /*public*/ Border* getBorder() {return _border;}
@@ -362,6 +363,7 @@ static /*final*/ QString LABELED_BY_PROPERTY;// = "labeledBy";
  bool _opaque = false;
  QColor bc;
  Border* _border = nullptr;
+ QWidget* labelFor = nullptr;
 
 protected:
 /*protected*/ int checkHorizontalKey(int key, QString message);

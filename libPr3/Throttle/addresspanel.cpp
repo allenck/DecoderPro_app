@@ -575,7 +575,7 @@ void AddressPanel::OnSetButton_clicked()
  int address = rosterEntry->getDccAddress().toInt();
  bool longAddr = true;
  if (address<100) longAddr = false;
- Programmer* programmer = (Programmer*) ((AddressedProgrammerManager*)InstanceManager::programmerManagerInstance())->getAddressedProgrammer(longAddr, address);
+ Programmer* programmer = (Programmer*)((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(longAddr, address);
  // and created the frame
  JFrame* p = new PaneOpsProgFrame(NULL, rosterEntry,
                                      title, "programmers"+QString(QDir::separator())+ProgDefault::getDefaultProgFile()+".xml",

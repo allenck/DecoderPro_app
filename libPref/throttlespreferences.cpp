@@ -27,18 +27,23 @@ void ThrottlesPreferences::common()
  ThrottlesPrefsXml* prefs = new ThrottlesPrefsXml();
  QFile* file = new QFile(prefFile );
  QDomElement root;
-    try {
-        root = prefs->rootFromFile(file);
-    } catch (FileNotFoundException e2) {
-        log->info("Did not find throttle preferences file.  This is normal if you haven't save the preferences before");
-        root = QDomElement();
-    } catch (Exception e) {
-        log->error("Exception while loading throttles preferences: " + e.getMessage());
-        root = QDomElement();
-    }
-    if (!root.isNull())
-        load(root.firstChildElement("throttlesPreferences"));
+ try
+ {
+  root = prefs->rootFromFile(file);
+ }
+ catch (FileNotFoundException e2)
+ {
+  log->info("Did not find throttle preferences file.  This is normal if you haven't saved the preferences before");
+  root = QDomElement();
+ }
+ catch (Exception e) {
+  log->error("Exception while loading throttles preferences: " + e.getMessage());
+  root = QDomElement();
+ }
+ if (!root.isNull())
+  load(root.firstChildElement("throttlesPreferences"));
 }
+
 void ThrottlesPreferences::init()
 {
   log = new Logger("ThrottlesPreferences");

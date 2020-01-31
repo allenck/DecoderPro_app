@@ -103,7 +103,7 @@ void RfidReporter::init()
  * Note: We ignore the string passed in, because rfid Reporters
  * don't send QString type reports.
  */
-/*public*/ LocoAddress* RfidReporter::getLocoAddress(QString /*rep*/)
+/*public*/ locoAddress* RfidReporter::getLocoAddress(QString /*rep*/)
 {
  // For now, we assume the current report.
  // IdTag.getTagID() is a system-name-ized version of the loco address. I think.
@@ -123,7 +123,7 @@ void RfidReporter::init()
     // so we'll default to DCC for now.
     //return(new DccLocoAddress(Integer.parseInt(m.group(1)), LocoAddress::DCC));
     bool bOk = false;
-    return(new DccLocoAddress(sAddr.toInt(&bOk,16), LocoAddress::DCC));
+    return(new DccLocoAddress(sAddr.toInt(&bOk,16), locoAddress::DCC));
  }
  else
  {

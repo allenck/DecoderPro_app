@@ -163,7 +163,7 @@ DccSignalHeadTest::DccSignalHeadTest(QObject* parent)
         JUnitUtil::setUp();
         JUnitUtil::initInternalTurnoutManager();
 
-        CommandStation* c = new CommandStationO1(this);
+        CommandStationO1* c = new CommandStationO1(this);
 //        {
 //         @Override
 //           /*public*/ boolean sendPacket(byte[] packet, int repeats) {

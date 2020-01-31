@@ -34,7 +34,7 @@ void PR3SystemConnectionMemo::configureManagersPR2()
 
 
  if (getProgrammerManager()->isAddressedModePossible()) {
-     InstanceManager::setAddressedProgrammerManager(getProgrammerManager());
+     InstanceManager::store(getProgrammerManager(), "AddressedProgrammerManager");
  }
  if (getProgrammerManager()->isGlobalProgrammerAvailable()) {
      InstanceManager::store(getProgrammerManager(), "GlobalProgrammerManager");

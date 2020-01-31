@@ -180,7 +180,6 @@ SOURCES += \
     sensor.cpp \
     rfid/rfidreportermanager.cpp \
     abstractthrottle.cpp \
-    commandstation.cpp \
     dccconsist.cpp \
     throttle.cpp \
     dccconsistmanager.cpp \
@@ -188,7 +187,6 @@ SOURCES += \
     lnthrottlemanager.cpp \
     proglistener.cpp \
     throttlemanager.cpp \
-    consistlistener.cpp \
     rfid/rfidusb.cpp \
     defaultroutemanager.cpp \
     defaultroute.cpp \
@@ -723,7 +721,6 @@ SOURCES += \
     Json/jsonconsistsocketservice.cpp \
     Web/defaultservletcontext.cpp \
     Web/defaultservletconfig.cpp \
-    consistlistlistener.cpp \
     Web/stringescapeutils.cpp \
     Throttle/windowpreferences.cpp \
     Throttle/locoaddressxml.cpp \
@@ -947,7 +944,8 @@ SOURCES += \
     loconet/Pr4/pr4systemconnectionmemo.cpp \
     loconet/Pr4/pr4selectpane.cpp \
     loconet/Pr4/pr4connectionconfig.cpp \
-    loconet/Pr4/pr4connectionconfigxml.cpp
+    loconet/Pr4/pr4connectionconfigxml.cpp \
+    consisttable.cpp
 
 
  !contains(FTDI, 1) {
@@ -989,7 +987,6 @@ HEADERS += \
     abstractpowermanager.h \
     lnpowermanager.h \
     loconetthrottledtransmitter.h \
-    programmermanager.h \
     lnprogrammermanager.h \
     defaultprogrammermanager.h \
     turnout.h \
@@ -1893,7 +1890,8 @@ HEADERS += \
     loconet/Pr4/pr4systemconnectionmemo.h \
     loconet/Pr4/pr4selectpane.h \
     loconet/Pr4/pr4connectionconfig.h \
-    loconet/Pr4/pr4connectionconfigxml.h
+    loconet/Pr4/pr4connectionconfigxml.h \
+    consisttable.h
 
 
  !contains(FTDI, 1) {

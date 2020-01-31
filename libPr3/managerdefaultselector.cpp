@@ -217,14 +217,10 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
       else if (c == "PowerManager" && InstanceManager::getNullableDefault("PowerManager") !=  NULL) {
        currentName =((PowerManager*) InstanceManager::getDefault("PowerManager"))->getUserName();
       }
-      else if (c == "ProgrammerManager" && InstanceManager::getNullableDefault("ProgrammerManager") !=  NULL)
+      if (currentName != "")
       {
-       currentName = ((ProgrammerManager*) InstanceManager::getDefault("ProgrammerManager"))->getUserName();
-      }
-      if (currentName !=  NULL)
-      {
-       log->warn("The configured " + connectionName + " for " + c + " can not be found so will use the default " + currentName);
-       this->defaults.insert(c, currentName);
+         log->warn(tr("The configured %1 for %2 can not be found so will use the default %3").arg(connectionName).arg(c).arg(currentName));
+         this->defaults.insert(c, currentName);
       }
   }
  }

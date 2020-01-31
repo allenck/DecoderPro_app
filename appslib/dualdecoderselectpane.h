@@ -35,7 +35,7 @@ private:
  ProgModePane* modePane;// = new ProgModePane(BoxLayout.Y_AXIS);
  void writeCV15(int value) ;
  void writeCV16(int value);
- void writeCV(int cv, int value);
+ void writeCV(QString cv, int value);
  void readCV16();
  // modes
  enum MODES

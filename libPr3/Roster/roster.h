@@ -49,6 +49,7 @@ public:
     /*public*/ RosterEntry* entryFromTitle(QString title );
     /*public*/ RosterEntry* getEntryForId(QString id);
     /*public*/ QList<RosterEntry*> getEntriesByDccAddress(QString a);
+    /*public*/ QList<RosterEntry*> getAllEntries();
     /*public*/ RosterEntry* getEntry(int i );
     /*public*/ static QString _AllEntries(QLocale locale);
     /*public*/ QString getSelectedRosterGroup();

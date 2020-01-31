@@ -2,12 +2,9 @@
 #include <QObject>
 #include <QTextEdit>
 #include <QVariant>
-#include <addressedprogrammermanager.h>
 #include <audiomanager.h>
 #include <block.h>
 #include <blockmanager.h>
-#include <commandstation.h>
-#include <defaultlogixmanager.h>
 #include <defaultmemorymanager.h>
 #include <defaultprogrammermanager.h>
 #include <editor.h>
@@ -36,6 +33,8 @@
 #include <lnsensor.h>
 #include <lnsensormanager.h>
 #include <lntrafficcontroller.h>
+#include <lnturnout.h>
+#include <loconetinterface.h>
 #include <loconetmessage.h>
 #include <loconetsystemconnectionmemo.h>
 #include <memorymanager.h>
@@ -43,7 +42,6 @@
 #include <positionable.h>
 #include <positionablelabel.h>
 #include <powermanager.h>
-#include <programmermanager.h>
 #include <programmingmode.h>
 #include <propertychangeevent.h>
 #include <propertychangelistener.h>
@@ -127,90 +125,8 @@
 #include <throttlemanager.h>
 #include <turnout.h>
 #include <turnoutmanager.h>
+#include <turnoutoperation.h>
 #include <windowlistener.h>
-
-
-
-class PythonQtShell_DefaultLogixManager : public DefaultLogixManager
-{
-public:
-    PythonQtShell_DefaultLogixManager(QObject*  parent = 0):DefaultLogixManager(parent),_wrapper(NULL) {}
-
-   ~PythonQtShell_DefaultLogixManager();
-
-virtual void Register(NamedBean*  s);
-virtual void activateAllLogixs();
-virtual void addDataListener(QObject*  e);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
-virtual void deregister(NamedBean*  s);
-virtual void dispose();
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual NamedBean*  getBeanBySystemName(QString  systemName);
-virtual NamedBean*  getBeanByUserName(QString  userName);
-virtual QString  getBeanTypeHandled(bool  plural);
-virtual NamedBean*  getByUserName(QString  key);
-virtual QString  getEntryToolTip();
-virtual bool  getLoadDisabled();
-virtual SystemConnectionMemo*  getMemo();
-virtual NamedBean*  getNamedBean(QString  name);
-virtual QSet<NamedBean* >  getNamedBeanSet();
-virtual int  getObjectCount();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
-virtual QStringList  getSystemNameArray();
-virtual QStringList  getSystemNameList();
-virtual QString  getSystemPrefix();
-virtual int  getXMLOrder();
-virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale());
-virtual QString  normalizeSystemName(QString  inputName);
-virtual void propertyChange(PropertyChangeEvent*  e);
-virtual void removeDataListener(QObject*  e);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
-virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void setLoadDisabled(bool  s);
-virtual void timerEvent(QTimerEvent*  event);
-virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
-virtual void vetoableChange(PropertyChangeEvent*  evt);
-
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class PythonQtPublicPromoter_DefaultLogixManager : public DefaultLogixManager
-{ public:
-inline void py_q_activateAllLogixs() { DefaultLogixManager::activateAllLogixs(); }
-inline NamedBean*  py_q_getByUserName(QString  key) { return DefaultLogixManager::getByUserName(key); }
-inline bool  py_q_getLoadDisabled() { return DefaultLogixManager::getLoadDisabled(); }
-inline QString  py_q_getSystemPrefix() { return DefaultLogixManager::getSystemPrefix(); }
-inline int  py_q_getXMLOrder() { return DefaultLogixManager::getXMLOrder(); }
-inline void py_q_setLoadDisabled(bool  s) { DefaultLogixManager::setLoadDisabled(s); }
-inline char  py_q_typeLetter() { return DefaultLogixManager::typeLetter(); }
-};
-
-class PythonQtWrapper_DefaultLogixManager : public QObject
-{ Q_OBJECT
-public:
-public slots:
-DefaultLogixManager* new_DefaultLogixManager(QObject*  parent = 0);
-void delete_DefaultLogixManager(DefaultLogixManager* obj) { delete obj; } 
-   void py_q_activateAllLogixs(DefaultLogixManager* theWrappedObject){  (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_activateAllLogixs());}
-   NamedBean*  py_q_getByUserName(DefaultLogixManager* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getByUserName(key));}
-   bool  py_q_getLoadDisabled(DefaultLogixManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getLoadDisabled());}
-   QString  py_q_getSystemPrefix(DefaultLogixManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getSystemPrefix());}
-   int  py_q_getXMLOrder(DefaultLogixManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getXMLOrder());}
-   DefaultLogixManager*  static_DefaultLogixManager_instance();
-   void py_q_setLoadDisabled(DefaultLogixManager* theWrappedObject, bool  s){  (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_setLoadDisabled(s));}
-   char  py_q_typeLetter(DefaultLogixManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_typeLetter());}
-};
-
-
 
 
 
@@ -238,12 +154,8 @@ virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual QList<ProgrammingMode* >  getDefaultModes();
-virtual QString  getUserName();
-virtual bool  isAddressedModePossible();
-virtual bool  isGlobalProgrammerAvailable();
+virtual QObject*  self();
 virtual void timerEvent(QTimerEvent*  event);
-virtual QString  toString();
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -252,9 +164,7 @@ virtual QString  toString();
 
 class PythonQtPublicPromoter_DefaultProgrammerManager : public DefaultProgrammerManager
 { public:
-inline QString  py_q_getUserName() { return DefaultProgrammerManager::getUserName(); }
-inline bool  py_q_isAddressedModePossible() { return DefaultProgrammerManager::isAddressedModePossible(); }
-inline bool  py_q_isGlobalProgrammerAvailable() { return DefaultProgrammerManager::isGlobalProgrammerAvailable(); }
+inline QObject*  py_q_self() { return DefaultProgrammerManager::self(); }
 };
 
 class PythonQtWrapper_DefaultProgrammerManager : public QObject
@@ -263,9 +173,13 @@ public:
 public slots:
 DefaultProgrammerManager* new_DefaultProgrammerManager(QObject*  parent = 0);
 void delete_DefaultProgrammerManager(DefaultProgrammerManager* obj) { delete obj; } 
-   QString  py_q_getUserName(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_getUserName());}
-   bool  py_q_isAddressedModePossible(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_isAddressedModePossible());}
-   bool  py_q_isGlobalProgrammerAvailable(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_isGlobalProgrammerAvailable());}
+   QList<ProgrammingMode* >  getDefaultModes(DefaultProgrammerManager* theWrappedObject);
+   QString  getUserName(DefaultProgrammerManager* theWrappedObject);
+   bool  isAddressedModePossible(DefaultProgrammerManager* theWrappedObject);
+   bool  isGlobalProgrammerAvailable(DefaultProgrammerManager* theWrappedObject);
+   QObject*  self(DefaultProgrammerManager* theWrappedObject);
+   QObject*  py_q_self(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_self());}
+   QString  toString(DefaultProgrammerManager* theWrappedObject);
     QString py_toString(DefaultProgrammerManager*);
 };
 
@@ -308,6 +222,7 @@ public slots:
 EditScene* new_EditScene(QObject*  parent = 0);
 EditScene* new_EditScene(QRectF  arg__1, QObject*  parent = 0);
 void delete_EditScene(EditScene* obj) { delete obj; } 
+   QColor  getBackground(EditScene* theWrappedObject);
    void repaint(EditScene* theWrappedObject);
 };
 
@@ -845,15 +760,12 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    MemoryManager*  static_InstanceManager_memoryManagerInstance();
    void notifyPropertyChangeListener(InstanceManager* theWrappedObject, QString  property, QVariant  oldValue, QVariant  newValue);
    PowerManager*  static_InstanceManager_powerManagerInstance();
-   ProgrammerManager*  static_InstanceManager_programmerManagerInstance();
    void remove(InstanceManager* theWrappedObject, QObject*  item, QString  type);
    void static_InstanceManager_removePropertyChangeListener(PropertyChangeListener*  l);
    void static_InstanceManager_removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  l);
    ReporterManager*  static_InstanceManager_reporterManagerInstance();
    void static_InstanceManager_reset(QString  type);
    RouteManager*  static_InstanceManager_routeManagerInstance();
-   void static_InstanceManager_setAddressedProgrammerManager(AddressedProgrammerManager*  p);
-   void static_InstanceManager_setCommandStation(CommandStation*  p);
    QObject*  static_InstanceManager_setDefault(QString  type, QObject*  val);
    void static_InstanceManager_setLightManager(LightManager*  p);
    void static_InstanceManager_setReporterManager(ReporterManager*  p);
@@ -997,11 +909,17 @@ void delete_JFrame(JFrame* obj) { delete obj; }
 
 
 
+class PythonQtPublicPromoter_JFrameItem : public JFrameItem
+{ public:
+inline QString  py_q_getClassName() { return JFrameItem::getClassName(); }
+};
+
 class PythonQtWrapper_JFrameItem : public QObject
 { Q_OBJECT
 public:
 public slots:
 void delete_JFrameItem(JFrameItem* obj) { delete obj; } 
+   QString  py_q_getClassName(JFrameItem* theWrappedObject){  return (((PythonQtPublicPromoter_JFrameItem*)theWrappedObject)->py_q_getClassName());}
    QString  toString(JFrameItem* theWrappedObject);
     QString py_toString(JFrameItem*);
 };
@@ -1092,6 +1010,7 @@ void delete_JLabel(JLabel* obj) { delete obj; }
    QFontMetrics  getFontMetrics(JLabel* theWrappedObject);
    int  getHorizontalAlignment(JLabel* theWrappedObject);
    int  getHorizontalTextPosition(JLabel* theWrappedObject);
+   QWidget*  getLabelFor(JLabel* theWrappedObject);
    QPointF  getLocation(JLabel* theWrappedObject);
    QString  getName(JLabel* theWrappedObject);
    QString  getText(JLabel* theWrappedObject);
@@ -1107,7 +1026,7 @@ void delete_JLabel(JLabel* obj) { delete obj; }
    void setForeground(JLabel* theWrappedObject, QColor  arg__1);
    void setHorizontalAlignment(JLabel* theWrappedObject, int  alignment);
    void setHorizontalTextPosition(JLabel* theWrappedObject, int  textPosition);
-   void setLabelFor(JLabel* theWrappedObject, QWidget*  arg__1);
+   void setLabelFor(JLabel* theWrappedObject, QWidget*  labelFor);
    void setLocation(JLabel* theWrappedObject, double  x, double  y);
    void setLocation(JLabel* theWrappedObject, int  x, int  y);
    void setName(JLabel* theWrappedObject, QString  name);
@@ -1246,7 +1165,7 @@ void delete_JList(JList* obj) { delete obj; }
 class PythonQtShell_JTable : public JTable
 {
 public:
-    PythonQtShell_JTable(QAbstractItemModel*  arg__1, QWidget*  parent = 0):JTable(arg__1, parent),_wrapper(NULL) {}
+    PythonQtShell_JTable(QAbstractItemModel*  dm, QWidget*  parent = 0):JTable(dm, parent),_wrapper(NULL) {}
     PythonQtShell_JTable(QWidget*  parent = 0):JTable(parent),_wrapper(NULL) {}
 
    ~PythonQtShell_JTable();
@@ -1355,7 +1274,7 @@ class PythonQtWrapper_JTable : public QObject
 { Q_OBJECT
 public:
 public slots:
-JTable* new_JTable(QAbstractItemModel*  arg__1, QWidget*  parent = 0);
+JTable* new_JTable(QAbstractItemModel*  dm, QWidget*  parent = 0);
 JTable* new_JTable(QWidget*  parent = 0);
 void delete_JTable(JTable* obj) { delete obj; } 
    void addColumn(JTable* theWrappedObject, TableColumn*  aColumn);
@@ -1369,15 +1288,19 @@ void delete_JTable(JTable* obj) { delete obj; }
    int  getColumnCount(JTable* theWrappedObject);
    TableColumnModel*  getColumnModel(JTable* theWrappedObject);
    QString  getColumnName(JTable* theWrappedObject, int  column);
+   QColor  getGridColor(JTable* theWrappedObject);
    QAbstractItemModel*  getModel(JTable* theWrappedObject);
    QString  getName(JTable* theWrappedObject);
    int  getRowCount(JTable* theWrappedObject);
    int  getRowHeight(JTable* theWrappedObject);
    int  getRowHeight(JTable* theWrappedObject, int  arg__1);
    int  getRowMargin(JTable* theWrappedObject);
+   bool  getRowSelectionAllowed(JTable* theWrappedObject);
    int  getSelectedColumn(JTable* theWrappedObject);
    int  getSelectedRow(JTable* theWrappedObject);
    QVector<int >*  getSelectedRows(JTable* theWrappedObject);
+   bool  getShowHorizontalLines(JTable* theWrappedObject);
+   bool  getShowVerticalLines(JTable* theWrappedObject);
    QHeaderView*  getTableHeader(JTable* theWrappedObject);
    bool  getUpdateSelectionOnSort(JTable* theWrappedObject);
    QVariant  getValueAt(JTable* theWrappedObject, int  row, int  column);
@@ -1390,14 +1313,19 @@ void delete_JTable(JTable* obj) { delete obj; }
    void setAutoCreateColumnsFromModel(JTable* theWrappedObject, bool  autoCreateColumnsFromModel);
    void setAutoResizeMode(JTable* theWrappedObject, int  mode);
    void setColumnModel(JTable* theWrappedObject, TableColumnModel*  columnModel);
+   void setGridColor(JTable* theWrappedObject, QColor  gridColor);
    void setIntercellSpacing(JTable* theWrappedObject, QSize  intercellSpacing);
    void py_q_setModel(JTable* theWrappedObject, QAbstractItemModel*  dataModel){  (((PythonQtPublicPromoter_JTable*)theWrappedObject)->py_q_setModel(dataModel));}
    void setName(JTable* theWrappedObject, QString  name);
    void setRowHeight(JTable* theWrappedObject, int  row, int  rowHeight);
    void setRowHeight(JTable* theWrappedObject, int  rowHeight);
    void setRowMargin(JTable* theWrappedObject, int  rowMargin);
+   void setRowSelectionAllowed(JTable* theWrappedObject, bool  arg__1);
    void setRowSelectionInterval(JTable* theWrappedObject, int  index0, int  index1);
    void setSelectionMode(JTable* theWrappedObject, int  selectionMode);
+   void setShowGrid(JTable* theWrappedObject, bool  showGrid);
+   void setShowHorizontalLines(JTable* theWrappedObject, bool  showHorizontalLines);
+   void setShowVerticalLines(JTable* theWrappedObject, bool  showVerticalLines);
    void setUpdateSelectionOnSort(JTable* theWrappedObject, bool  update);
 };
 
@@ -1597,7 +1525,7 @@ inline void py_q_componentMoved(QMoveEvent*  e) { JmriJFrame::componentMoved(e);
 inline void py_q_componentResized(QResizeEvent*  e) { JmriJFrame::componentResized(e); }
 inline void py_q_dispose() { JmriJFrame::dispose(); }
 inline bool  py_q_eventFilter(QObject*  target, QEvent*  event) { return JmriJFrame::eventFilter(target, event); }
-inline QString  py_q_getClassName() { return JmriJFrame::getClassName(); }
+inline QString  py_q_getClassName() { return this->getClassName(); }
 inline QWidget*  py_q_getContentPane(bool  addLayout) { return JmriJFrame::getContentPane(addLayout); }
 inline QVariant  py_q_getProperty(QString  key) { return JmriJFrame::getProperty(key); }
 inline QString  py_q_getTitle() { return JmriJFrame::getTitle(); }
@@ -1952,7 +1880,6 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void addLayoutTurnout(LayoutEditor* theWrappedObject, int  type);
    void addLevelXing(LayoutEditor* theWrappedObject);
    void addMemory(LayoutEditor* theWrappedObject);
-   void addReporter(LayoutEditor* theWrappedObject, QString  textReporter, int  xx, int  yy);
    void addSignalHead(LayoutEditor* theWrappedObject);
    void addSignalMast(LayoutEditor* theWrappedObject);
    void addToPopUpMenu(LayoutEditor* theWrappedObject, NamedBean*  nb, QMenu*  item, int  menu);
@@ -3319,6 +3246,135 @@ void delete_LnTrafficController(LnTrafficController* obj) { delete obj; }
    void py_q_sendLocoNetMessage(LnTrafficController* theWrappedObject, LocoNetMessage*  arg__1){  (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_sendLocoNetMessage(arg__1));}
    void py_q_setSystemConnectionMemo(LnTrafficController* theWrappedObject, LocoNetSystemConnectionMemo*  m){  (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_setSystemConnectionMemo(m));}
    bool  py_q_status(LnTrafficController* theWrappedObject){  return (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_status());}
+};
+
+
+
+
+
+class PythonQtShell_LnTurnout : public LnTurnout
+{
+public:
+    PythonQtShell_LnTurnout(QString  prefix, int  number, LocoNetInterface*  controller, QObject*  parent = 0):LnTurnout(prefix, number, controller, parent),_wrapper(NULL) {}
+
+   ~PythonQtShell_LnTurnout();
+
+virtual void addPropertyChangeListener(PropertyChangeListener*  l);
+virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
+virtual bool  canInvert();
+virtual bool  canLock(int  turnoutLockout);
+virtual void childEvent(QChildEvent*  event);
+virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
+virtual int  compareTo(NamedBean*  n2);
+virtual void customEvent(QEvent*  event);
+virtual QString  describeState(int  state);
+virtual void dispose();
+virtual void enableLockOperation(int  turnoutLockout, bool  enabled);
+virtual bool  equals(QObject*  obj);
+virtual bool  event(QEvent*  event);
+virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual void forwardCommandChangeToLayout(int  newstate);
+virtual QString  getBeanType();
+virtual int  getCommandedState();
+virtual QString  getComment();
+virtual int  getControlType();
+virtual QString  getDecoderName();
+virtual QString  getDisplayName();
+virtual float  getDivergingLimit();
+virtual QString  getDivergingSpeed();
+virtual int  getFeedbackMode();
+virtual QString  getFeedbackModeName();
+virtual Sensor*  getFirstSensor();
+virtual QString  getFullyFormattedDisplayName();
+virtual bool  getInhibitOperation();
+virtual bool  getInverted();
+virtual int  getKnownState();
+virtual QString  getListenerRef(PropertyChangeListener*  l);
+virtual QList<QString >*  getListenerRefs();
+virtual bool  getLocked(int  turnoutLockout);
+virtual int  getNumPropertyChangeListeners();
+virtual int  getNumberOutputBits();
+virtual int  getPossibleLockModes();
+virtual QVariant  getProperty(QString  key);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
+virtual QSet<QString >  getPropertyKeys();
+virtual bool  getReportLocked();
+virtual Sensor*  getSecondSensor();
+virtual int  getState();
+virtual float  getStraightLimit();
+virtual QString  getStraightSpeed();
+virtual QString  getSystemName();
+virtual TurnoutOperation*  getTurnoutOperation();
+virtual QString  getUserName();
+virtual QStringList  getValidDecoderNames();
+virtual QVector<QString >  getValidFeedbackNames();
+virtual int  getValidFeedbackTypes();
+virtual int  hashCode();
+virtual bool  isConsistentState();
+virtual void provideFirstFeedbackSensor(QString  pName) throw(JmriException);
+virtual void provideSecondFeedbackSensor(QString  pName) throw(JmriException);
+virtual void removeProperty(QString  key);
+virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
+virtual void requestUpdateFromLayout();
+virtual void setBinaryOutput(bool  state);
+virtual void setCommandedState(int  s);
+virtual void setComment(QString  comment);
+virtual void setControlType(int  num);
+virtual void setDecoderName(QString  decoderName);
+virtual void setDivergingSpeed(QString  s) throw(JmriException);
+virtual void setFeedbackMode(QString  mode) throw(IllegalArgumentException);
+virtual void setFeedbackMode(int  mode) throw(IllegalArgumentException);
+virtual void setInhibitOperation(bool  io);
+virtual void setInitialKnownStateFromFeedback();
+virtual void setInverted(bool  inverted);
+virtual void setLocked(int  turnoutLockout, bool  locked);
+virtual void setNumberOutputBits(int  num);
+virtual void setProperty(QString  key, QVariant  value);
+virtual void setReportLocked(bool  reportLocked);
+virtual void setState(int  s);
+virtual void setStraightSpeed(QString  s) throw(JmriException);
+virtual void setTurnoutOperation(TurnoutOperation*  toper);
+virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException);
+virtual void timerEvent(QTimerEvent*  event);
+virtual void turnoutPushbuttonLockout(bool  _pushButtonLockout);
+virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
+virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException);
+
+  const QMetaObject* metaObject() const;
+  int qt_metacall(QMetaObject::Call call, int id, void** args);
+  PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtPublicPromoter_LnTurnout : public LnTurnout
+{ public:
+inline void promoted_forwardCommandChangeToLayout(int  newstate) { this->forwardCommandChangeToLayout(newstate); }
+inline void promoted_turnoutPushbuttonLockout(bool  _pushButtonLockout) { this->turnoutPushbuttonLockout(_pushButtonLockout); }
+inline bool  py_q_canInvert() { return LnTurnout::canInvert(); }
+inline void py_q_dispose() { LnTurnout::dispose(); }
+inline void py_q_forwardCommandChangeToLayout(int  newstate) { LnTurnout::forwardCommandChangeToLayout(newstate); }
+inline void py_q_turnoutPushbuttonLockout(bool  _pushButtonLockout) { LnTurnout::turnoutPushbuttonLockout(_pushButtonLockout); }
+};
+
+class PythonQtWrapper_LnTurnout : public QObject
+{ Q_OBJECT
+public:
+public slots:
+LnTurnout* new_LnTurnout(QString  prefix, int  number, LocoNetInterface*  controller, QObject*  parent = 0);
+void delete_LnTurnout(LnTurnout* obj) { delete obj; } 
+   bool  py_q_canInvert(LnTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_canInvert());}
+   void py_q_dispose(LnTurnout* theWrappedObject){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_dispose());}
+   void py_q_forwardCommandChangeToLayout(LnTurnout* theWrappedObject, int  newstate){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_forwardCommandChangeToLayout(newstate));}
+   int  getNumber(LnTurnout* theWrappedObject);
+   void messageFromManager(LnTurnout* theWrappedObject, LocoNetMessage*  l);
+   void sendOpcSwReqMessage(LnTurnout* theWrappedObject, int  state, bool  on);
+   void sendSetOffMessage(LnTurnout* theWrappedObject, int  state);
+   void setUseOffSwReqAsConfirmation(LnTurnout* theWrappedObject, bool  state);
+   void py_q_turnoutPushbuttonLockout(LnTurnout* theWrappedObject, bool  _pushButtonLockout){  (((PythonQtPublicPromoter_LnTurnout*)theWrappedObject)->py_q_turnoutPushbuttonLockout(_pushButtonLockout));}
 };
 
 

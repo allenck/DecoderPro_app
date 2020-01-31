@@ -11,7 +11,7 @@
 
 class MySlider;
 class AddressPanel;
-class LocoAddress;
+class locoAddress;
 class QButtonGroup;
 class ButtonFrame;
 class NamedIcon;
@@ -64,8 +64,8 @@ public:
 signals:
 
 public slots:
- /*public*/ void notifyAddressChosen(LocoAddress* l);
- /*public*/ void notifyAddressReleased(LocoAddress* la);
+ /*public*/ void notifyAddressChosen(locoAddress* l);
+ /*public*/ void notifyAddressReleased(locoAddress* la);
  /*public*/ void notifyAddressThrottleFound(DccThrottle* t);
  /*public*/ void propertyChange(PropertyChangeEvent* e);
  /*public*/ void notifyConsistAddressChosen(int newAddress, bool isLong);

@@ -5,11 +5,11 @@
 #include <QByteArray>
 #include "libPr3_global.h"
 
-class LIBPR3SHARED_EXPORT CommandStation : public QObject
+class LIBPR3SHARED_EXPORT CommandStation //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
-    explicit CommandStation(QObject *parent = 0);
+    //explicit CommandStation(QObject *parent = 0);
     /**
      * Represents a DCC command station.
      * <P>
@@ -52,5 +52,5 @@ signals:
 public slots:
     
 };
-
+Q_DECLARE_INTERFACE(CommandStation, "CommandStation")
 #endif // COMMANDSTATION_H

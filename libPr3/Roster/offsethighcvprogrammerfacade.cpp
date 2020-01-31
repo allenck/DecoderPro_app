@@ -66,11 +66,10 @@
 //@Override
 /*public*/ void OffsetHighCvProgrammerFacade::readCV(QString CV, ProgListener* p) throw (ProgrammerException) {
     log->debug("start readCV");
-    _cv = CV.toInt();
     useProgrammer(p);
     if (prog->getCanRead(CV) || _cv <= top) {
         state = ProgState::PROGRAMMING;
-        prog->readCV(_cv, (ProgListener*)this);
+        prog->readCV(CV, (ProgListener*)this);
     } else {
         // write index first
         state = ProgState::FINISHREAD;
@@ -138,7 +137,7 @@
         case FINISHREAD:
             try {
                 state = ProgState::PROGRAMMING;
-                prog->readCV(_cv % modulo, (ProgListener*)this);
+                prog->readCV(QString::number(_cv % modulo), (ProgListener*)this);
             } catch (ProgrammerException e) {
                 log->error("Exception doing final read", e);
             }

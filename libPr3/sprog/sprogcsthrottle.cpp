@@ -17,7 +17,7 @@ using namespace Sprog;
 /**
  * Constructor.
  */
-/*public*/ SprogCSThrottle::SprogCSThrottle(SprogSystemConnectionMemo* memo, LocoAddress* address, QObject* parent) : AbstractThrottle(memo, parent){
+/*public*/ SprogCSThrottle::SprogCSThrottle(SprogSystemConnectionMemo* memo, locoAddress* address, QObject* parent) : AbstractThrottle(memo, parent){
     //super(memo);
 
     // cache settings.
@@ -52,7 +52,7 @@ using namespace Sprog;
 
 
 //@Override
-/*public*/ LocoAddress* SprogCSThrottle::getLocoAddress() {
+/*public*/ locoAddress* SprogCSThrottle::getLocoAddress() {
     return address;
 }
 

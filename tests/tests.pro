@@ -207,7 +207,16 @@ SOURCES += \
     misc/dcclocoaddresstestaction.cpp \
     jmrijframetestbase.cpp \
     misc/controllerfilterframetest.cpp \
-    misc/controllerfilterframetestaction.cpp
+    misc/controllerfilterframetestaction.cpp \
+    consisttoolframetest.cpp \
+    consisttoolscaffold.cpp \
+    jframeoperator.cpp \
+    throttleoperator.cpp \
+    consisttoolframetestaction.cpp \
+    jemmyutil.cpp \
+    testconsistmanager.cpp \
+    namecomponentchooser.cpp \
+    loconet/enterreporterdialogtest.cpp
 
 HEADERS += \
         tests.h \
@@ -392,7 +401,16 @@ HEADERS += \
     misc/dcclocoaddresstestaction.h \
     jmrijframetestbase.h \
     misc/controllerfilterframetest.h \
-    misc/controllerfilterframetestaction.h
+    misc/controllerfilterframetestaction.h \
+    consisttoolframetest.h \
+    consisttoolscaffold.h \
+    jframeoperator.h \
+    throttleoperator.h \
+    consisttoolframetestaction.h \
+    jemmyutil.h \
+    testconsistmanager.h \
+    namecomponentchooser.h \
+    loconet/enterreporterdialogtest.h
 
 unix {
     target.path = /usr/lib

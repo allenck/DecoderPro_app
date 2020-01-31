@@ -75,17 +75,17 @@ public:
      * By default, only DCC in this implementation
      */
     /*public*/ QStringList getAddressTypes();
-    /*public*/ QList<LocoAddress::Protocol> getAddressProtocolTypes();
-    /*public*/ LocoAddress* getAddress(QString value,LocoAddress::Protocol protocol);
-    /*public*/ LocoAddress* getAddress(QString value, QString protocol);
-    /*public*/ LocoAddress::Protocol getProtocolFromString(QString selection);
+    /*public*/ QList<locoAddress::Protocol> getAddressProtocolTypes();
+    /*public*/ locoAddress* getAddress(QString value,locoAddress::Protocol protocol);
+    /*public*/ locoAddress* getAddress(QString value, QString protocol);
+    /*public*/ locoAddress::Protocol getProtocolFromString(QString selection);
     QT_DEPRECATED /*public*/ bool requestThrottle(BasicRosterEntry* re, ThrottleListener* l);
     QT_DEPRECATED /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l);
-    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress *la, ThrottleListener* l);
+    QT_DEPRECATED /*public*/ bool requestThrottle(locoAddress *la, ThrottleListener* l);
     /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l, bool canHandleDecisions);
     /*public*/ bool requestThrottle(/*@Nonnull*/ BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions);
-    /*public*/ bool requestThrottle(LocoAddress* la, ThrottleListener* l, bool canHandleDecisions);
-    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l);
+    /*public*/ bool requestThrottle(locoAddress* la, ThrottleListener* l, bool canHandleDecisions);
+    QT_DEPRECATED /*public*/ bool requestThrottle(locoAddress* la, BasicRosterEntry* re, ThrottleListener* l);
     /*public*/ bool requestThrottle(int address, ThrottleListener* l);
     /*public*/ bool requestThrottle(int address, ThrottleListener* l, bool canHandleDecisions);
 
@@ -93,12 +93,12 @@ public:
      * Abstract member to actually do the work of configuring a new throttle,
      * usually via interaction with the DCC system
      */
-    /*abstract public*/virtual void requestThrottleSetup(LocoAddress* /*a*/, bool /*control*/) {}
+    /*abstract public*/virtual void requestThrottleSetup(locoAddress* /*a*/, bool /*control*/) {}
     /**
     * Abstract member to actually do the work of configuring a new throttle,
     * usually via interaction with the DCC system
     */
-   /*public*/ void requestThrottleSetup(LocoAddress* a);
+   /*public*/ void requestThrottleSetup(locoAddress* a);
     /**
      * Cancel a request for a throttle
      * @param address The decoder address desired.
@@ -126,7 +126,7 @@ public:
      * @param address The DCC Loco Address that the request failed on.
      * @param reason A text string passed by the ThrottleManae as to why
      */
-    /*public*/ void failedThrottleRequest(LocoAddress *address, QString reason);
+    /*public*/ void failedThrottleRequest(locoAddress *address, QString reason);
     /**
      * Handle throttle information when it's finally available, e.g. when
      * a new Throttle object has been created.
@@ -134,7 +134,7 @@ public:
      * This method creates a throttle for all ThrottleListeners of that address
      * and notifies them via the ThrottleListener.notifyThrottleFound method.
      */
-    /*public*/ void notifyThrottleKnown(DccThrottle* throttle, LocoAddress* addr);
+    /*public*/ void notifyThrottleKnown(DccThrottle* throttle, locoAddress* addr);
     /**
      * Check to see if the Dispatch Button should be enabled or not
      * Default to true, override if necessary
@@ -155,9 +155,9 @@ public:
     /*public*/ bool disposeThrottle(DccThrottle* t, ThrottleListener* l);
     /*public*/ void dispatchThrottle(DccThrottle* t, ThrottleListener* l);
     /*public*/ QVariant getThrottleInfo(DccLocoAddress* la, QString item);
-    /*public*/ QString getAddressTypeString(LocoAddress::Protocol prot);
+    /*public*/ QString getAddressTypeString(locoAddress::Protocol prot);
     /*public*/ void responseThrottleDecision(int address, bool isLong, ThrottleListener* l, ThrottleListener::DecisionType decision);
-    /*public*/ void responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision);
+    /*public*/ void responseThrottleDecision(locoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision);
 
 signals:
     
@@ -172,8 +172,8 @@ private:
      * at a time, the entries in this Hashmap are only valid during the
      * throttle setup process.
      */
-    /*private*/ QHash<LocoAddress*,QList<WaitingThrottle*>* >* throttleListeners;// = new QHash<DccLocoAddress,QList<WaitingThrottle>>(5);
-    /*private*/ QList<WaitingThrottle*>* getWaiting(LocoAddress* addr);
+    /*private*/ QHash<locoAddress*,QList<WaitingThrottle*>* >* throttleListeners;// = new QHash<DccLocoAddress,QList<WaitingThrottle>>(5);
+    /*private*/ QList<WaitingThrottle*>* getWaiting(locoAddress* addr);
 
     /**
      * listenerOnly is indexed by the address, and
@@ -182,15 +182,15 @@ private:
      * hasn't yet been created/
      * The entries in this Hashmap are only valid during the throttle setup process.
      */
-    /*private*/ QHash<LocoAddress*,QList<WaitingThrottle*>* >* listenerOnly;// = new HashMap<DccLocoAddress,ArrayList<WaitingThrottle>>(5);
+    /*private*/ QHash<locoAddress*,QList<WaitingThrottle*>* >* listenerOnly;// = new HashMap<DccLocoAddress,ArrayList<WaitingThrottle>>(5);
     //This keeps a map of all the current active DCC loco Addresses that are in use.
     /**
      * addressThrottles is indexed by the address, and
      * contains as elements a subclass of the throttle assigned to an address and
      * the number of requests and active users for this address.
      */
-    /*private*/ QHash<LocoAddress*,Addresses*>* addressThrottles;// = new QHash<DccLocoAddress*,Addresses>();
-    /*private*/ void cancelThrottleRequest(LocoAddress *la, ThrottleListener* l);
+    /*private*/ QHash<locoAddress*,Addresses*>* addressThrottles;// = new QHash<DccLocoAddress*,Addresses>();
+    /*private*/ void cancelThrottleRequest(locoAddress *la, ThrottleListener* l);
 
 protected:
     /*protected*/ SystemConnectionMemo* adapterMemo;
@@ -202,10 +202,10 @@ protected:
      */
     /*protected*/ bool singleUse();
     /*protected*/ bool addressReleased(DccLocoAddress* la, ThrottleListener* l);
-    /*protected*/ void makeHardwareDecision(LocoAddress* address, ThrottleListener::DecisionType question);
-    /*protected*/ void notifyDecisionRequest(LocoAddress* address, ThrottleListener::DecisionType question);
-    /*protected*/ bool requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions);
-    /*protected*/ void updateNumUsers( LocoAddress* la, int numUsers );
+    /*protected*/ void makeHardwareDecision(locoAddress* address, ThrottleListener::DecisionType question);
+    /*protected*/ void notifyDecisionRequest(locoAddress* address, ThrottleListener::DecisionType question);
+    /*protected*/ bool requestThrottle(locoAddress* la, BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions);
+    /*protected*/ void updateNumUsers( locoAddress* la, int numUsers );
 
     friend class RetrySetup;
     friend class LnThrottleManager;

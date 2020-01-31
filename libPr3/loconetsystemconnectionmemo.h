@@ -31,7 +31,7 @@ class LnReporterManager;
 class LnTurnoutManager;
 class ThrottleManager;
 class LnTrafficController;
-class ProgrammerManager;
+//class ProgrammerManager;
 class SlotManager;
 class LnPowerManager;
 class LnSensorManager;
@@ -104,7 +104,7 @@ protected:
  LnLightManager* lightManager;
  //ResourceBundle* getActionModelResourceBundle();
  /*protected*/ ResourceBundle* getActionModelResourceBundle() override;
- /*protected*/ DefaultProgrammerManager* programmerManager;
+ /*protected*/ DefaultProgrammerManager* programmerManager = nullptr;
 
 };
 

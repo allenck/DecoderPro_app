@@ -1,0 +1,239 @@
+﻿#ifndef JFRAMEOPERATOR_H
+#define JFRAMEOPERATOR_H
+
+#include "jdialog.h"
+#include <QObject>
+#include <QRadioButton>
+#include <QLabel>
+#include <QPushButton>
+#include <QMenu>
+#include <QMenuBar>
+#include "jmrijframe.h"
+#include "jtogglebutton.h"
+#include <QCheckBox>
+#include "jslider.h"
+#include "jspinner.h"
+#include "jtextfield.h"
+#include "functionbutton.h"
+
+class JDialogOperator;
+class NameComponentChooser;
+class JmriJFrame;
+class JFrameOperator : public QObject
+{
+ Q_OBJECT
+public:
+ explicit JFrameOperator(QObject *parent = nullptr);
+ JFrameOperator(QString chooser);
+ JmriJFrame* getFrame();
+ void requestClose() { }
+signals:
+
+public slots:
+
+private:
+ JmriJFrame* _frame = nullptr;
+};
+
+class JRadioButtonOperator : public QObject
+{
+ Q_OBJECT
+ QRadioButton* button = nullptr;
+ QString text;
+ QObject* parent;
+public:
+  JRadioButtonOperator(QObject*parent, QString text);
+  void push() {if(button) button->click();}
+  void doClick() {if(button) button->click();}
+private:
+  QWidget* parentWidget();
+};
+
+class JButtonOperator : public QObject
+{
+ Q_OBJECT
+ QPushButton* button = nullptr;
+ QString text;
+ QObject* parent;
+ QList<QPushButton*> list;
+public:
+  JButtonOperator(QObject*parent, QString text);
+  JButtonOperator(JDialogOperator*, NameComponentChooser*);
+  void push();
+  void doClick();
+  bool isEnabled();
+private:
+  QWidget* parentWidget();
+  virtual bool checkComponent(QWidget* comp);
+  virtual QString getDescription();
+  /*private*/ void findButton();
+
+};
+
+class JCheckBoxOperator : public QObject
+{
+ Q_OBJECT
+ QCheckBox* checkBox = nullptr;
+ QString text;
+ QObject* parent;
+
+public:
+  JCheckBoxOperator(QObject*parent, QString text);
+  void push() {if(checkBox) checkBox->click();}
+  void doClick() {if(checkBox) checkBox->click();}
+
+  bool isEnabled();
+private:
+  QWidget* parentWidget();
+};
+
+class JToggleButtonOperator : public QObject
+{
+ Q_OBJECT
+ JToggleButton* button = nullptr;
+ QString text;
+ QObject* parent;
+
+public:
+  JToggleButtonOperator(QObject* parent, QString text);
+  JToggleButtonOperator(QObject* parent);
+  JToggleButtonOperator(FunctionButton* fb);
+  void push() {if(button) button->click();}
+  void doClick() {if(button) button->click();}
+  void clickForPopup() {}
+  bool isEnabled();
+private:
+  QWidget* parentWidget();
+};
+
+
+class JLabelOperator : public QObject
+{
+ Q_OBJECT
+ QLabel* label;
+ QObject* parent;
+ QString text;
+public:
+ JLabelOperator(QObject*parent, QString text);
+ QWidget* getLabelFor();
+private:
+ QWidget* parentWidget();
+
+};
+
+class JMenuBarOperator : public QObject
+{
+ Q_OBJECT
+ QObject* parent;
+public:
+ JMenuBarOperator(QObject* parent);
+ QMenuBar* menuBar = getFrame()->menuBar();
+private:
+ JmriJFrame* getFrame();
+};
+
+class JMenuOperator : public QObject
+{
+ Q_OBJECT
+ QMenu* menu;
+public:
+ JMenuOperator(QMenu* parent, QString text);
+ JMenuOperator(JMenuBarOperator* jmbo, QString text);
+ void push();
+};
+
+class JPopupMenuOperator : public QObject
+{
+ Q_OBJECT
+ QMenu* menu;
+public:
+ JPopupMenuOperator();
+ JPopupMenuOperator(QMenu* parent, QString text);
+ void push();
+ void pushMenuNoBlock(QString text);
+};
+
+class JMenuItemOperator : public QObject
+{
+ Q_OBJECT
+ QAction* action;
+public:
+ JMenuItemOperator(QMenu* parent, QString text);
+ JMenuItemOperator(JFrameOperator* jmbo, QString text);
+ void push();
+};
+
+class JDialogOperator : public QObject
+{
+ Q_OBJECT
+ QObject* parent;
+ QString text;
+ int number = -1;
+ JFrameOperator* frameOperator = nullptr;
+ JDialog* dialog = nullptr;
+public:
+ JDialogOperator( QString text);
+ JDialogOperator(JFrameOperator *frame, int number);
+ JDialog* getDialog() { return dialog;}
+};
+
+class JSliderOperator : public QObject
+{
+ Q_OBJECT
+ QObject* parent;
+ QString text;
+ JSlider* slider;
+public:
+ JSliderOperator(QObject* parent);
+ JSliderOperator(QObject* parent, QString text);
+ int getValue();
+ void setValue(int i);
+ void scrollToValue(int i);
+ void scrollToMaximum();
+ void scrollToMinimum();
+private:
+ QWidget* parentWidget();
+
+};
+
+class JSpinnerOperator : public QObject
+{
+ Q_OBJECT
+ QObject* parent;
+ QString text;
+ JSpinner* spinner;
+public:
+ JSpinnerOperator(QObject* parent);
+ JSpinnerOperator(QObject* parent, QString text);
+ int getValue();
+ void setValue(int i);
+ void scrollToValue(int i);
+ void scrollToMaximum();
+ void scrollToMinimum();
+};
+
+class JTextFieldOperator : public QObject
+{
+ QObject* parent;
+ QString name;
+ JTextField* textField;
+public:
+ JTextFieldOperator(QObject* parent, QString name);
+ JTextFieldOperator(QObject *);
+ void typeText(QString);
+
+};
+
+class JInternalFrameOperator : public QObject
+{
+ Q_OBJECT
+ QObject* parent;
+ QString name;
+ QWidget* _result;
+public:
+ JInternalFrameOperator(QObject* parent, QString name );
+ QWidget* result() {return _result;}
+ void clickForPopup();
+};
+
+#endif // JFRAMEOPERATOR_H

@@ -6,8 +6,9 @@
 class SlotManager;
 class LnProgrammerManager : public  DefaultProgrammerManager
 {
+ Q_OBJECT
 public:
-    LnProgrammerManager(SlotManager* pSlotManager, LocoNetSystemConnectionMemo* memo);
+    LnProgrammerManager( LocoNetSystemConnectionMemo* memo);
     /**
      * LocoNet command station does provide Ops Mode
      * @return true
@@ -16,6 +17,9 @@ public:
     /*public*/ virtual AddressedProgrammer* getAddressedProgrammer(bool pLongAddress, int pAddress);
     /*public*/ virtual AddressedProgrammer* reserveAddressedProgrammer(bool pLongAddress, int pAddress);
     /*public*/ QList<ProgrammingMode*> getDefaultModes();
+    /*public*/ QString toString();
+    /*public*/ QObject* self() override{return (QObject*)this;}
+
 
 private:
     SlotManager* mSlotManager;

@@ -16,18 +16,19 @@
  */
 
 class PropertyChangeSupport;
-class LIBPR3SHARED_EXPORT AbstractProgrammer : public Programmer
+class LIBPR3SHARED_EXPORT AbstractProgrammer : public QObject, public Programmer
 {
-    Q_OBJECT
+ Q_OBJECT
+ Q_INTERFACES(Programmer)
 public:
     explicit AbstractProgrammer(QObject *parent = 0);
     virtual QString decodeErrorCode(int code);
     int registerFromCV(int cv); // throws ProgrammerException
     /*public synchronized */virtual void addPropertyChangeListener(PropertyChangeListener* l);
     /*public synchronized*/ virtual void removePropertyChangeListener(PropertyChangeListener* l);
-    /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
-    /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
-    /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
+//    /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
+//    /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
+//    /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ bool getCanRead();
     /*public*/ bool getCanRead(QString addr);
     /*public*/ /*final*/ void setMode(ProgrammingMode* m);

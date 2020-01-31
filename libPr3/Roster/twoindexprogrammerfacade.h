@@ -36,6 +36,7 @@ public:
     /*synchronized*/ /*public*/ void confirmCV(QString CV, int val, ProgListener* p)throw (ProgrammerException) ;
     /*synchronized*/ /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
     /*public*/ void programmingOpReply(int value, int status);
+    /*public*/ QObject* self() {return (QObject*)this;}
 
 signals:
 
