@@ -5,10 +5,12 @@
 #include "decoderfile.h"
 #include "fileutil.h"
 #include "file.h"
+#include "fileutil.h"
 
 DecoderIndexFile* DecoderIndexFile::_instance = NULL;
 //QString DecoderIndexFile::decoderIndexFileName = "decoderIndex.xml";
-QString DecoderIndexFile::decoderIndexFileName = "/home/allen/NetBeansProjects/jmri/xml/decoderIndex.xml";
+/*static*/ /*final*/ /*protected*/ QString DecoderIndexFile::DECODER_INDEX_FILE_NAME = "decoderIndex.xml";
+QString DecoderIndexFile::decoderIndexFileName = "/home/allen/NetBeansProjects/JMRI/xml/decoderIndex.xml";
 
 DecoderIndexFile::DecoderIndexFile(QObject *parent) :
     XmlFile(parent)
@@ -166,7 +168,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
   try
   {
    _instance = new DecoderIndexFile();
-   _instance->readFile(defaultDecoderIndexFilename());
+   _instance->readFile(FileUtil::getProgramPath() + "xml" + File::separator + defaultDecoderIndexFilename());
   }
   catch (Exception e)
   {
@@ -600,5 +602,6 @@ void DecoderIndexFile::readFamily(QDomElement family)
  * Return the filename QString for the default decoder index file, including location.
  * This is here to allow easy override in tests.
  */
-/*protected*/ /*static*/ QString DecoderIndexFile::defaultDecoderIndexFilename() { return decoderIndexFileName;}
+/*protected*/ /*static*/ QString DecoderIndexFile::defaultDecoderIndexFilename()
+{ return DECODER_INDEX_FILE_NAME;}
 

@@ -142,7 +142,7 @@
         throw JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
     }
     QJsonArray root = QJsonArray();//mapper.createArrayNode();
-    for (DccLocoAddress* address : this->manager->getConsistList()->toList()) {
+    foreach (DccLocoAddress* address, *this->manager->getConsistList()->toList()) {
         root.append(getConsist(locale, address));
     }
     return root;

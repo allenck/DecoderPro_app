@@ -238,7 +238,7 @@
  * Write all consists to the default file name
  *
  */
-/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *> consistList) throw (IOException) {
+/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *>* consistList) throw (IOException) {
     writeFile(consistList, defaultConsistFilename());
 }
 
@@ -248,10 +248,10 @@
  * @param consistList an ArrayList of consists to write
  * @param fileName    - with location and file type
  */
-/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *> consistList, QString fileName) throw (IOException) {
+/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *>* consistList, QString fileName) throw (IOException) {
     // create root element
 #if 1
- if(consistList.isEmpty())
+ if(consistList->isEmpty())
   throw IOException("consist list is empty!");
  QDomDocument doc = QDomDocument();
     QDomElement root = doc.createElement("consist-roster-config");
@@ -272,8 +272,8 @@
 
     QDomElement roster = doc.createElement("roster");
 
-    for (int i = 0; i < consistList.size(); i++) {
-        DccConsist* newConsist = consistMan->getConsist(consistList.value(i));
+    for (int i = 0; i < consistList->size(); i++) {
+        DccConsist* newConsist = consistMan->getConsist(consistList->value(i));
         roster.appendChild(consistToXml(newConsist));
     }
     root.appendChild(roster);

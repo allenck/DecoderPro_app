@@ -8,9 +8,9 @@
 #include "dcclocoaddress.h"
 #include <QMap>
 #include "exceptions.h"
-#include "consisttable.h"
+//#include "consisttable.h"
 
-class ConsistAddrList;
+//class ConsistAddrList;
 class ConsistManager //: public QObject
 {
     //Q_OBJECT
@@ -65,7 +65,7 @@ public:
          *    of the consist addresses we know about.
          */
         //virtual QList<DccLocoAddress*> getConsistList()  = 0;
-        virtual ConsistAddrList* getConsistList()  = 0;
+        virtual DccLocoAddressList* getConsistList()  = 0;
 
         /**
          *   Translate Error Codes recieved by a consistListener into

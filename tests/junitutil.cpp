@@ -1164,8 +1164,10 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
            log->warn(message);
        }
        else
-        log->debug(message);
-//            }
+       {
+        if(log->isDebugEnabled())
+         log->debug(message);
+       }
        if(qobject_cast<QMainWindow*>(frame))
         JUnitUtil::dispose(frame);
      }

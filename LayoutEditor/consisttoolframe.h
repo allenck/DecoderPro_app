@@ -45,6 +45,7 @@ public slots:
  /*public*/ void notifyConsistListChanged();
  /*public*/ void setDefaultStatus();
  /*public*/ void restoreButtonActionPerformed(/*ActionEvent e*/);
+ void on_scanConsists();
 
 private:
  static Logger* log;

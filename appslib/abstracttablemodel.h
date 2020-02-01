@@ -30,10 +30,10 @@ public:
     /*public*/ virtual void fireTableRowsDeleted(int firstRow, int lastRow);
     /*public*/ virtual void fireTableCellUpdated(int row, int column);
     /*public*/ virtual void fireTableChanged(TableModelEvent* e = 0);
-    virtual /*public*/ int getRowCount() const {return 0;}
-    virtual /*public*/ int getColumnCount() const {return 0;}
+    virtual /*public*/ int getRowCount() const {return rowCount(QModelIndex());}
+    virtual /*public*/ int getColumnCount() const {return columnCount(QModelIndex());}
     virtual /*public*/ QVariant getValueAt(int row, int col) const;
-
+    virtual /*public*/ QString getColumnClass(int col) const;
 
  void setTable(JTable*);
  void setPersistentButtons();

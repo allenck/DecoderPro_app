@@ -484,20 +484,24 @@
  doc.appendChild(xmlProcessingInstruction);
  QDomElement root;
     doc.appendChild(root = doc.createElement(ROOT_ELEMENT));
-    QDomElement networkIdentityElement = doc.createElement(NODE_IDENTITY);
-    QDomElement storageIdentityElement = doc.createElement(STORAGE_IDENTITY);
-    QDomElement formerIdentitiesElement = doc.createElement(FORMER_IDENTITIES);
-    QDomElement uuidElement = doc.createElement(UUID_ELEMENT);
-    if (this->_networkIdentity.isNull()) {
-        this->getNetworkIdentity(false);
-    }
-    if (this->_storageIdentity.isNull()) {
-        this->getStorageIdentity(false);
-    }
-    // ensure formerIdentities contains current identities as well
- this->_formerIdentities.append(this->_networkIdentity);
- this->_formerIdentities.append(this->_storageIdentity);
+ QDomElement networkIdentityElement = doc.createElement(NODE_IDENTITY);
+ QDomElement storageIdentityElement = doc.createElement(STORAGE_IDENTITY);
+ QDomElement formerIdentitiesElement = doc.createElement(FORMER_IDENTITIES);
+ QDomElement uuidElement = doc.createElement(UUID_ELEMENT);
+ if (this->_networkIdentity.isNull()) {
+     this->getNetworkIdentity(false);
+ }
+ if (this->_storageIdentity.isNull()) {
+     this->getStorageIdentity(false);
+ }
+ // ensure formerIdentities contains current identities as well
+
+ if(!this->_formerIdentities.contains(this->_networkIdentity))
+  this->_formerIdentities.append(this->_networkIdentity);
+ if(!this->_networkIdentity.contains(this->_storageIdentity))
+  this->_formerIdentities.append(this->_storageIdentity);
  if (!this->uuid.isNull()) {
+  if(!this->_formerIdentities.contains(IDENTITY_PREFIX + uuidToCompactString(this->uuid)))
      this->_formerIdentities.append(IDENTITY_PREFIX + uuidToCompactString(this->uuid));
  }
  networkIdentityElement.setAttribute(NODE_IDENTITY, this->_networkIdentity);

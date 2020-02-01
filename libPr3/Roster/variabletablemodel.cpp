@@ -55,12 +55,15 @@ _readButtons = new QVector<QPushButton*>();
 }
 
 // basic methods for AbstractTableModel implementation
-/*public*/ int VariableTableModel::rowCount(const QModelIndex &parent) const
+/*public*/ int VariableTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
     return rowVector->size();
 }
-
-/*public*/ int VariableTableModel::columnCount(const QModelIndex &parent) const
+/*public*/ int VariableTableModel::getRowCount() const
+{
+ return rowCount(QModelIndex());
+}
+/*public*/ int VariableTableModel::columnCount(const QModelIndex &/*parent*/) const
 { return headers.length();}
 
 /*public*/ QString VariableTableModel::getColumnName(int col) {

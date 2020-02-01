@@ -113,10 +113,16 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
 {
     return false;
 }
+
 /*private*/ Qt::ItemFlags AbstractTableModel::flags(const QModelIndex &index) const
 {
  if(isCellEditable(index.row(), index.column()))
-  return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+ {
+  if(getColumnClass(index.column()) == "Boolean")
+   return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+  else
+   return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+ }
  else
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -443,9 +449,18 @@ JTable* AbstractTableModel::table() { return _table;}
 
 QVariant AbstractTableModel::data(const QModelIndex &index, int role) const
 {
+ if((getColumnClass(index.column()) == "Boolean") && (role == Qt::CheckStateRole))
+ {
+  return getValueAt(index.row(), index.column()).toBool()?Qt::Checked:Qt::Unchecked;
+ }
  if(role == Qt::DisplayRole)
  {
   return getValueAt(index.row(), index.column());
  }
  return QVariant();
+}
+
+/*public*/ QString AbstractTableModel::getColumnClass(int col) const
+{
+ return "";
 }

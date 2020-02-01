@@ -14,7 +14,7 @@ public:
  /*public*/ void delConsist(DccLocoAddress* address);
  /*public*/ bool isCommandStationConsistPossible();
  /*public*/ bool csConsistNeedsSeparateAddress();
- /*public*/ ConsistAddrList* getConsistList();
+ /*public*/ DccLocoAddressList* getConsistList();
  /*public*/ QString decodeErrorCode(int errorCode);
  /*public*/ void requestUpdateFromLayout();
  /*public*/ void addConsistListListener(ConsistListListener* listener);

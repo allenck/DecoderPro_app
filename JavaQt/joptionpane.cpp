@@ -877,6 +877,7 @@ if(options.count() >0)
 {
 
     /*final*/ JDialog* dialog;
+ setObjectName("JOptionPaneDialog");
 
    // Window window = JOptionPane::getWindowForComponent(parentComponent);
     QWidget* window;
@@ -2386,6 +2387,7 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
  if(optionType == DEFAULT_OPTION)
  {
   btnOk = new QPushButton(tr("Ok"));
+  btnOk->setObjectName("btnOk");
   fl->addWidget(btnOk);
   pLayout->addLayout(fl);
   connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(handleOk()));
@@ -2396,6 +2398,7 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
   for(int i = 0; i < options.count(); i ++)
   {
    QPushButton* btn = new QPushButton(options.at(i).toString());
+   btn->setObjectName("options_"+options.at(i).toString());
    mapper->setMapping(btn,i);
    connect(btn,SIGNAL(clicked()), mapper, SLOT(map()));
    fl->addWidget(btn);
@@ -2406,14 +2409,17 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
  else if (optionType == YES_NO_OPTION || optionType == YES_NO_CANCEL_OPTION)
  {
   btnYes = new QPushButton(tr("Yes"));
+  btnYes->setObjectName("btnYes");
   fl->addWidget(btnYes);
   connect(btnYes, SIGNAL(clicked(bool)), this, SLOT(handleYes()));
   btnNo = new QPushButton(tr("No"));
+  btnNo->setObjectName("btnNo");
   fl->addWidget(btnNo);
   connect(btnNo, SIGNAL(clicked(bool)), this, SLOT(handleNo()));
   if(optionType == YES_NO_CANCEL_OPTION)
   {
    btnCancel = new QPushButton(tr("Cancel"));
+   btnCancel->setObjectName("btnCancel");
    fl->addWidget(btnCancel);
    connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(handleCancel()));
   }
@@ -2422,7 +2428,9 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
  else if(getOptionType() == OK_CANCEL_OPTION)
  {
    btnOk = new QPushButton(tr("Ok"));
+   btnOk->setObjectName("btnOk");
    btnCancel = new QPushButton(tr("Cancel"));
+   btnCancel->setObjectName("btnCancel");
    fl->addWidget(btnOk);
    fl->addWidget(btnCancel);
    pLayout->addLayout(fl);

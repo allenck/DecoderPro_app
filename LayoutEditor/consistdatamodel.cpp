@@ -63,7 +63,7 @@ void ConsistDataModel::initTable(JTable* consistTable) {
 }
 
 //@Override
-/*public*/ QString ConsistDataModel::getColumnName(int col) {
+/*public*/ QString ConsistDataModel::getColumnName(int col) const {
     switch (col) {
         case ADDRCOLUMN:
             return tr("Address");
@@ -77,7 +77,7 @@ void ConsistDataModel::initTable(JTable* consistTable) {
 }
 #if 1
 //@Override
-/*public*/ QString ConsistDataModel::getColumnClass(int col) {
+/*public*/ QString ConsistDataModel::getColumnClass(int col) const {
     switch (col) {
         case ROSTERCOLUMN:
             return ("String");
@@ -103,7 +103,8 @@ void ConsistDataModel::initTable(JTable* consistTable) {
 }
 
 //@Override
-/*public*/ QVariant ConsistDataModel::getValueAt(int row, int col) {
+/*public*/ QVariant ConsistDataModel::getValueAt(int row, int col) const
+{
     log->debug(tr("getValueAt called for row: %1 column: %2").arg(row).arg(col));
     if (_consist == nullptr) {
         log->debug("Consist not defined");
@@ -122,7 +123,7 @@ void ConsistDataModel::initTable(JTable* consistTable) {
         case DIRECTIONCOLUMN:
             return _consist->getLocoDirection(_consist->getConsistList().at(row))?"true":"false";
         case DELCOLUMN:
-            return tr("ButtonDelete");
+            return tr("Delete");
         default:
             return ("");
     }

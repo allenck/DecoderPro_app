@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += widgets xml
+QT       += widgets xml network
 
 TARGET = tests
 TEMPLATE = lib
@@ -410,7 +410,8 @@ HEADERS += \
     jemmyutil.h \
     testconsistmanager.h \
     namecomponentchooser.h \
-    loconet/enterreporterdialogtest.h
+    loconet/enterreporterdialogtest.h \
+    abstracttableactionbase.h
 
 unix {
     target.path = /usr/lib

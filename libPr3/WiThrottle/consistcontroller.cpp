@@ -74,7 +74,7 @@
 
 /*public*/ void ConsistController::sendAllConsistData() {
     // Loop thru JMRI consists and send consist detail for each
-    foreach (DccLocoAddress* conAddr, manager->getConsistList()->toList()) {
+    foreach (DccLocoAddress* conAddr, *manager->getConsistList()->toList()) {
         sendDataForConsist(manager->getConsist(conAddr));
     }
 

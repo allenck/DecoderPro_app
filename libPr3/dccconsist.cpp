@@ -15,7 +15,7 @@
 
 DccConsist::DccConsist(int address) : Consist()
 {
- common(new DccLocoAddress(address, false), qobject_cast<AddressedProgrammerManager*>(InstanceManager::getDefault("AddresseProgrammerManager")));
+ common(new DccLocoAddress(address, false), qobject_cast<AddressedProgrammerManager*>(InstanceManager::getDefault("AddressedProgrammerManager")));
 }
 /**
  * This is the Default DCC consist.
@@ -41,7 +41,7 @@ DccConsist::DccConsist(int address) : Consist()
     // The Default consist type is an advanced consist
 /*public*/ DccConsist::DccConsist(DccLocoAddress* address) : Consist()
 {
- common(address, qobject_cast<AddressedProgrammerManager*>(InstanceManager::getDefault("AddresseProgrammerManager")));
+ common(address, qobject_cast<AddressedProgrammerManager*>(InstanceManager::getDefault("AddressedProgrammerManager")));
 }
 
 // Initialize a consist for a specific DccLocoAddress.

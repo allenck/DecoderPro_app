@@ -2,7 +2,7 @@
 
 DccConsistManager::DccConsistManager(AddressedProgrammerManager *apm, QObject *parent) //:  ConsistManager(parent)
 {
-    consistTable = new ConsistTable();
+    consistTable = new DccLocoHash<DccConsist*>();
     changeListeners = new QList<ConsistListListener*>();
     opsProgManager = apm;
     setObjectName("DccConsistManager");

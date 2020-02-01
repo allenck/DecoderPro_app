@@ -77,6 +77,10 @@ public:
  {
   return hash.keys().size();
  }
+ QList<DccLocoAddress*> getConsistList()
+ {
+  return hash.keys();
+ }
 
 private:
  QHash<DccLocoAddress*, T> hash;
@@ -138,6 +142,10 @@ public:
  int size()
  {
   return list.size();
+ }
+ bool isEmpty()
+ {
+  return (list.size() == 0);
  }
  QList<DccLocoAddress*>* toList()
  {

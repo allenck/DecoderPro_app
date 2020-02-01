@@ -87,10 +87,7 @@ DccLocoAddressSelector* sel = (DccLocoAddressSelector*)(new JLabelOperator(this,
 // push the buttons at the bottom and dismiss the resulting question dialog.
 /*public*/ void ConsistToolScaffold::pushDeleteWithDismiss()
 {
- pushDeleteButton();  // and dismiss the dialog that appears by pressing OK.
 
-// qApp->processEvents(QEventLoop::AllEvents, 100);
-// // and dismiss the dialog that appears by pressing OK.
 // JDialogOperator* jdo = new JDialogOperator(tr("Question"));
 //     (new JButtonOperator(jdo,tr("Yes")))->push();
  DeleteWithDismiss* dwd = new DeleteWithDismiss();
@@ -103,6 +100,9 @@ DccLocoAddressSelector* sel = (DccLocoAddressSelector*)(new JLabelOperator(this,
  connect(thread, SIGNAL(finished()), dwd, SLOT(deleteLater()));
  thread->start();
  // and dismiss the dialog that appears by pressing OK.
+ pushDeleteButton();  // and dismiss the dialog that appears by pressing OK.
+ qApp->processEvents(QEventLoop::AllEvents, 100);
+
 }
 
 DeleteWithDismiss::DeleteWithDismiss()
@@ -159,7 +159,7 @@ void DeleteWithDismiss::process()
 #if 1
      JMenuOperator* jmo = new JMenuOperator(jmbo, tr("File"));  // NOI18N
      jmo->push();
-     JMenuItemOperator* jmio = new JMenuItemOperator((JFrameOperator*)this,tr("Scan Roster for Consists"));
+     JMenuItemOperator* jmio = new JMenuItemOperator(jmo->getMenu(), tr("Scan Roster for Consists"));
      jmio->push();
 #endif
 }

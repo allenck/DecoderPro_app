@@ -54,7 +54,7 @@ class JButtonOperator : public QObject
  Q_OBJECT
  QPushButton* button = nullptr;
  QString text;
- QObject* parent;
+ QObject* parent = nullptr;
  QList<QPushButton*> list;
 public:
   JButtonOperator(QObject*parent, QString text);
@@ -125,21 +125,25 @@ class JMenuBarOperator : public QObject
 {
  Q_OBJECT
  QObject* parent;
+ QMenuBar* menuBar;
 public:
  JMenuBarOperator(QObject* parent);
- QMenuBar* menuBar = getFrame()->menuBar();
+
 private:
  JmriJFrame* getFrame();
+ friend class JMenuOperator;
 };
 
 class JMenuOperator : public QObject
 {
  Q_OBJECT
- QMenu* menu;
+ QMenu* menu = nullptr;
+ QAction* action = nullptr;
 public:
  JMenuOperator(QMenu* parent, QString text);
  JMenuOperator(JMenuBarOperator* jmbo, QString text);
  void push();
+ QMenu* getMenu();
 };
 
 class JPopupMenuOperator : public QObject
@@ -156,7 +160,7 @@ public:
 class JMenuItemOperator : public QObject
 {
  Q_OBJECT
- QAction* action;
+ QAction* action = nullptr;
 public:
  JMenuItemOperator(QMenu* parent, QString text);
  JMenuItemOperator(JFrameOperator* jmbo, QString text);
@@ -166,7 +170,7 @@ public:
 class JDialogOperator : public QObject
 {
  Q_OBJECT
- QObject* parent;
+ QObject* parent = nullptr;
  QString text;
  int number = -1;
  JFrameOperator* frameOperator = nullptr;
@@ -227,7 +231,7 @@ public:
 class JInternalFrameOperator : public QObject
 {
  Q_OBJECT
- QObject* parent;
+ QObject* parent= nullptr;
  QString name;
  QWidget* _result;
 public:

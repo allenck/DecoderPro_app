@@ -6,6 +6,7 @@
 #include <QMutex>
 #include <QHash>
 #include "libPr3_global.h"
+#include "abstractinstanceinitializer.h"
 
 class DecoderFile;
 class ComboBoxModel;
@@ -35,7 +36,6 @@ public:
     void readFamilySection(QDomElement decoderIndex);
     void readFamily(QDomElement family);
     /*public*/ void writeFile(QString name, DecoderIndexFile* oldIndex, QStringList* files) throw (IOException);
-
 signals:
 
 public slots:
@@ -57,6 +57,7 @@ protected:
     static /*final*/ /*protected*/ QString decoderIndexFileName;// = "decoderIndex.xml";
     /*protected*/ static QString defaultDecoderIndexFilename();
 
+    static /*final*/ /*protected*/ QString DECODER_INDEX_FILE_NAME;// = "decoderIndex.xml";
 
 };
 

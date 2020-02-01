@@ -18,10 +18,10 @@ public:
  /*public*/ Consist* getConsist();
  /*public*/ int getRowCount() const;
  /*public*/ int getColumnCount() const;
- /*public*/ QString getColumnName(int col) override;
- /*public*/ QString getColumnClass(int col);
+ /*public*/ QString getColumnName(int col) const override;
+ /*public*/ QString getColumnClass(int col) const;
  /*public*/ bool isCellEditable(int row, int col);
- /*public*/ QVariant getValueAt(int row, int col);
+ /*public*/ QVariant getValueAt(int row, int col) const;
  /*public*/ void setValueAt(QVariant value, int row, int col);
 
 private:

@@ -73,7 +73,7 @@ public:
     /*public*/ Programmer* getProgrammer() ;
     /*public*/ void setProgrammer(Programmer* p) ;
     /*public*/ void resetStatus(int newStatus);
-
+    /*public*/ int getRowCount() const;
 
 signals:
 

@@ -52,7 +52,7 @@ class JAVAQTSHARED_EXPORT TableModel : public QAbstractTableModel
       * @param columnIndex  the index of the column
       * @return the common ancestor class of the object values in the model.
       */
-//     public Class<?> getColumnClass(int columnIndex);
+ /*public*/ virtual /*Class<?>*/ QString getColumnClass(int /*columnIndex*/) const {return "";}
 
      /**
       * Returns true if the cell at <code>rowIndex</code> and

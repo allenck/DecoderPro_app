@@ -10,6 +10,9 @@
 #include "profilemanager.h"
 #include "rosterconfigmanager.h"
 #include "decoderindexfile.h"
+#include "xmlinclude.h"
+#include "joptionpane.h"
+#include "xinclude/xinclude.h"
 
 RosterTestUtil::RosterTestUtil(QObject *parent) : QObject(parent)
 {
@@ -98,7 +101,9 @@ RosterTestUtil::RosterTestUtil(QObject *parent) : QObject(parent)
     QString decoderFamily = r->getDecoderFamily();
     log->debug(tr("selected loco uses decoder %1 %2").arg(decoderFamily).arg(decoderModel));
     // locate a decoder like that.
-    QList<DecoderFile*>* l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
+    //QList<DecoderFile*>* l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
+    // NOTE: DecoderIndex File needs to be updated to use InstanceInitialze interface.
+    QList<DecoderFile*>* l = DecoderIndexFile::instance()->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
     log->debug(tr("found %1 matches").arg(l->size()));
     if (l->isEmpty()) {
         log->debug(tr("Loco uses %1 %2 decoder, but no such decoder defined").arg(decoderFamily).arg(decoderModel));
@@ -133,6 +138,31 @@ RosterTestUtil::RosterTestUtil(QObject *parent) : QObject(parent)
     } catch (/*JDOMException |*/ IOException e) {
         log->error(tr("Exception while loading decoder XML file: %1").arg(df->getFileName()));
     }
+
+    // begin add XInclude logic ACK
+    // needed because Qt XML does not automatically do this
+    if(XmlInclude::scanForInclude(decoderRoot))
+    {
+     int ret = JOptionPane::showOptionDialog(nullptr, tr("This may take a while since some include files must be downloaded from the internet.\nDo you wish to save a local copy of the updated file.\nClick on \"Yes\", \"No\" or \"Cancel\" to abort "),tr("Load decoder file"),JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE);
+     if(ret == JOptionPane::CANCEL_OPTION)
+      return;
+     XInclude* xinclude = new XInclude();
+     File* f;
+     QStringList slist = QStringList() << FileUtil::getUserFilesPath() << FileUtil::getProgramPath()+ "xml";
+     QUrl url = QUrl(FileUtil::findURL(DecoderFile::fileLocation+df->getFileName(),slist));
+     if(ret == JOptionPane::YES_OPTION)
+     {
+      xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ DecoderFile::fileLocation+ df->getFileName()), nullptr);
+     }
+      else
+     {
+      QTemporaryDir dir;
+      xinclude->copyXml(&url, f = new File(dir.path()+df->getFileName()),nullptr);
+     }
+     decoderRoot = df->rootFromFile(f);
+    }
+    // end add XInclude logic ACK
+
     df->getProductID();
     if (!decoderRoot.isNull()) {
         // load variables from decoder tree

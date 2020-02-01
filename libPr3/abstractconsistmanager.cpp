@@ -4,7 +4,7 @@ AbstractConsistManager::AbstractConsistManager(QObject *parent) :
     QObject(parent)
 {
     //consistTable = new QHash<DccLocoAddress*,Consist*>();
- consistTable = new ConsistTable();
+ consistTable = new DccLocoHash<DccConsist*>();
     changeListeners = new QList<ConsistListListener*>();
 }
 /**
@@ -59,10 +59,10 @@ AbstractConsistManager::AbstractConsistManager(QObject *parent) :
 /**
 *  Return the list of consists we know about.
 **/
-/*public*/ ConsistAddrList *AbstractConsistManager::getConsistList()
+/*public*/ DccLocoAddressList *AbstractConsistManager::getConsistList()
 {
  //return QList<DccLocoAddress*>(consistTable->keys());
- return consistTable->getConsistList();
+ return new DccLocoAddressList(consistTable->getConsistList());
 }
 
 /*public*/ QString AbstractConsistManager::decodeErrorCode(int ErrorCode){

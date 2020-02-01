@@ -22,6 +22,9 @@
 #include "jtable.h"
 #include "loggerfactory.h"
 #include "jlabel.h"
+#include <QMenuBar>
+#include <QMenu>
+#include "abstractaction.h"
 
 #if 1  //TODO:
 /**
@@ -43,21 +46,28 @@
 {
     //super();
     // GUI member declarations
-
+    log->setDebugEnabled(true);
     textAdrLabel = new JLabel();
     adrSelector = new DccLocoAddressSelector();
     consistAdrBox = new QComboBox();
     isAdvancedConsist = new QRadioButton(tr("Advanced Consist"));
     isCSConsist = new QRadioButton(tr("Command Station Consist"));
     deleteButton = new QPushButton();
+    deleteButton->setObjectName("deleteButton");
     throttleButton = new QPushButton();
+    throttleButton->setObjectName("throttleButton");
     reverseButton = new QPushButton();
+    reverseButton->setObjectName("reverseButton");
     restoreButton = new QPushButton();
+    restoreButton->setObjectName("restoreButton");
     textLocoLabel = new JLabel();
     locoSelector = new DccLocoAddressSelector();
     addLocoButton = new QPushButton();
+    addLocoButton->setObjectName("addLocoButton");
     resetLocoButton = new QPushButton();
+    resetLocoButton->setObjectName("resetLocoButton");
     locoDirectionNormal = new QCheckBox(tr("Direction Normal"));
+    locoDirectionNormal->setObjectName("locoDirectionNormal");
     consistModel = new ConsistDataModel();
     consistTable = new JTable(consistModel);
     consistManager = NULL;
@@ -239,6 +249,29 @@
     //getContentPane().setLayout(new GridLayout(4,1));
     getContentPane()->setLayout(new QVBoxLayout());//getContentPane(), BoxLayout.Y_AXIS));
 
+    QMenuBar* menuBar = new QMenuBar();
+    menuBar->setObjectName("menubar");
+    setMenuBar(menuBar);
+
+    // add a "File" menu
+    QMenu* fileMenu = new QMenu(tr("File"));
+    fileMenu->setObjectName("fileMenu");
+    menuBar->addMenu(fileMenu);
+
+    // Add a save item
+    AbstractAction* act;
+    fileMenu->addAction(act = new AbstractAction(tr("Scan Roster for Consists"), this));
+//    {
+//        //@Override
+//        public void actionPerformed(ActionEvent e) {
+//            scanRoster();
+//            initializeConsistBox();
+//            consistModel.fireTableDataChanged();
+//            resetLocoButtonActionPerformed(e);
+//        }
+//    });
+      connect(act, SIGNAL(toggled(bool)), this, SLOT(on_scanConsists()));
+
     // install items in GUI
     // The address and related buttons are installed in a single pane
     QWidget* addressPanel = new QWidget();
@@ -300,6 +333,14 @@
 
 }
 
+void ConsistToolFrame::on_scanConsists()
+{
+ scanRoster();
+ initializeConsistBox();
+ consistModel->fireTableDataChanged();
+ resetLocoButtonActionPerformed(/*e*/);
+
+}
 void ConsistToolFrame::on_isAdvancedConsist_checked(bool)
 {
 //            isAdvancedConsist.setSelected(true);
@@ -324,12 +365,12 @@ void ConsistToolFrame::on_isCSConsist_checked(bool)
 
 /*private*/ void ConsistToolFrame::initializeConsistBox()
 {
- QList<DccLocoAddress*> existingConsists = consistManager->getConsistList()->toList();
- if (!existingConsists.isEmpty())
+ QList<DccLocoAddress*>* existingConsists = consistManager->getConsistList()->toList();
+ if (!existingConsists->isEmpty())
  {
   consistAdrBox->clear();
-  for (int i = 0; i < existingConsists.size(); i++) {
-      consistAdrBox->insertItem(i, existingConsists.at(i)->toString(), VPtr<DccLocoAddress>::asQVariant(existingConsists.at(i)));
+  for (int i = 0; i < existingConsists->size(); i++) {
+      consistAdrBox->insertItem(i, existingConsists->at(i)->toString(), VPtr<DccLocoAddress>::asQVariant(existingConsists->at(i)));
   }
   consistAdrBox->setEnabled(true);
   consistAdrBox->insertItem(0,"");
@@ -367,34 +408,38 @@ void ConsistToolFrame::on_isCSConsist_checked(bool)
 
 /*public*/ void ConsistToolFrame::deleteButtonActionPerformed(/*ActionEvent e*/)
 {
-    if (adrSelector->getAddress() == NULL) {
-        JOptionPane::showMessageDialog(this,
-                tr("No Consist Address Selected."));
-        return;
-    }
-    DccLocoAddress* address = adrSelector->getAddress();
-    consistManager->getConsist(address);
-    // confirm delete
-    if (JOptionPane::showConfirmDialog(this, tr("Delete consist \"%1\"").arg(address->toString()),
-            tr("Question"), JOptionPane::YES_NO_OPTION,
-            JOptionPane::QUESTION_MESSAGE) == JOptionPane::NO_OPTION) {
-        return; // do not delete
-    }
-    try {
-        consistManager->delConsist(address);
-    } catch (Exception ex) {
-        log->error(tr("Error deleting consist %1").arg(address->toString()), ex);
-    }
-    adrSelector->reset();
-    adrSelector->setEnabled(true);
-    initializeConsistBox();
-    try {
-        consistFile->writeFile(consistManager->getConsistList()->toList());
-    } catch (IOException ex) {
-        log->warn("error writing consist file: " + ex.getMessage());
-    }
-    resetLocoButtonActionPerformed(/*e*/);
-    canAdd();
+ if (adrSelector->getAddress() == NULL)
+ {
+  JOptionPane::showMessageDialog(this,
+          tr("No Consist Address Selected."));
+  return;
+ }
+ DccLocoAddress* address = adrSelector->getAddress();
+ consistManager->getConsist(address);
+ // confirm delete
+ if (JOptionPane::showConfirmDialog(this, tr("Delete consist \"%1\"").arg(address->toString()),
+         tr("Question"), JOptionPane::YES_NO_OPTION,
+         JOptionPane::QUESTION_MESSAGE) == JOptionPane::NO_OPTION) {
+     return; // do not delete
+ }
+ try {
+     consistManager->delConsist(address);
+ } catch (Exception ex) {
+     log->error(tr("Error deleting consist %1").arg(address->toString()), ex);
+ }
+ adrSelector->reset();
+ adrSelector->setEnabled(true);
+ initializeConsistBox();
+ try
+ {
+  consistFile->writeFile(consistManager->getConsistList()->toList());
+ }
+ catch (IOException ex)
+ {
+  log->warn("error writing consist file: " + ex.getMessage());
+ }
+ resetLocoButtonActionPerformed(/*e*/);
+ canAdd();
 }
 
 /*public*/ void ConsistToolFrame::throttleButtonActionPerformed() {
@@ -703,9 +748,10 @@ void ConsistToolFrame::on_isCSConsist_checked(bool)
  * implement the interface
  */
 //@Override
-/*public*/ void ConsistToolFrame::consistReply(DccLocoAddress* locoaddress, int status) {
+/*public*/ void ConsistToolFrame::consistReply(DccLocoAddress* locoaddress, int status)
+{
     if (log->isDebugEnabled()) {
-        log->debug("Consist Reply recieved for Locomotive " + locoaddress->toString() + " with status " + status);
+        log->debug("Consist Reply received for Locomotive " + locoaddress->toString() + " with status " + status);
     }
     _status->setText(consistManager->decodeErrorCode(status));
     // For some status codes, we want to trigger specific actions
@@ -715,9 +761,11 @@ void ConsistToolFrame::on_isCSConsist_checked(bool)
     canAdd();
     //}
     consistModel->fireTableDataChanged();
-    try {
-        consistFile->writeFile(consistManager->getConsistList()->toList());
-    } catch (Exception e) {
+    try
+    {
+     consistFile->writeFile(consistManager->getConsistList()->toList());
+    }
+    catch (Exception e) {
         log->warn("error writing consist file: " + e.getMessage());
     }
 }

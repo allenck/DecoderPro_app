@@ -234,7 +234,7 @@ return false;
   openFunctionPopupMenu(function);
      JDialogOperator* jdo = new JDialogOperator(tr("Edit Function Button"));
      (new JCheckBoxOperator(jdo,tr("Lockable")))->doClick();
-     (new JButtonOperator(jdo,tr("OK")))->doClick();
+     (new JButtonOperator(jdo,tr("Ok")))->doClick();
 
 }
 
@@ -295,7 +295,7 @@ return false;
   openControlPanelPopupMenu();
      JDialogOperator* jdo = new JDialogOperator(tr("Edit Speed Control Panel"));
      (new JRadioButtonOperator(jdo,tr("ButtonDisplaySpeedSteps")))->doClick();
-     (new JButtonOperator(jdo,tr("ButtonOK")))->doClick();
+     (new JButtonOperator(jdo,tr("Ok")))->doClick();
 
 }
 

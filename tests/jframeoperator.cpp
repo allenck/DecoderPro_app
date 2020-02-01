@@ -5,6 +5,7 @@
 #include "namecomponentchooser.h"
 #include "jdialog.h"
 #include <QDebug>
+#include "sleeperthread.h"
 
 JFrameOperator::JFrameOperator(QObject *parent) : QObject()
 {
@@ -72,12 +73,12 @@ JButtonOperator::JButtonOperator(QObject* parent, QString text)
  this->parent = parent;
  list = parentWidget()->findChildren<QPushButton*>();
  if(list.isEmpty())
-  throw Exception(tr("QPushButton '%1' not found ").arg(text));
+  throw Exception(tr("QPushButton '%1' not found; no such button ").arg(text));
  if(!text.isEmpty())
  {
   foreach(QPushButton* b, list)
   {
-   qDebug() <<"button text: " << b->text();
+   qDebug() <<"button text: " << b->text() << b->objectName();
     if(checkComponent((QWidget*)b))
     {
      this->button =b;
@@ -117,15 +118,25 @@ JButtonOperator::JButtonOperator(QObject* parent, QString text)
  if(button)
  {
   //button->click();
-   QMetaObject::invokeMethod(button, "click", Qt::QueuedConnection);
+  qDebug() << "push " << button->objectName();
+   if(!QMetaObject::invokeMethod(button, "click", Qt::AutoConnection))
+    throw Exception(tr("Button '%1'click failed").arg(button->text()));
  }
+ qApp->processEvents(QEventLoop::AllEvents, 100);
 }
 
 void JButtonOperator::doClick()
 {
  if(!button)
   findButton();
- if(button) button->click();
+ if(button)
+ {
+  //button->click();
+  qDebug() << "click " << button->objectName();
+   if(!QMetaObject::invokeMethod(button, "click", Qt::AutoConnection))
+    throw Exception(tr("Button '%1'click failed").arg(button->text()));
+ }
+ qApp->processEvents();
 }
 
 JButtonOperator::JButtonOperator(JDialogOperator*, NameComponentChooser*)
@@ -153,7 +164,11 @@ QWidget* JButtonOperator::parentWidget()
  else  if(qobject_cast<JDialogOperator*>(parent))
  {
    JDialogOperator* oper = (JDialogOperator*)parent;
-    return (oper->getDialog());
+   JDialog* dialog = oper->getDialog();
+   qDebug() << "dialog " << dialog->windowTitle() << dialog->objectName();
+
+   SleeperThread::msleep(2000);
+   return (dialog);
  }
 
  else
@@ -281,10 +296,16 @@ QWidget* JLabelOperator::parentWidget()
 JMenuBarOperator::JMenuBarOperator(QObject *parent)
 {
  this->parent = parent;
+ menuBar = getFrame()->menuBar();
+ qDebug() << "menubar retrieved for frame " << getFrame()->windowTitle();
 }
 
 /*private*/ JmriJFrame* JMenuBarOperator::getFrame()
 {
+ if(qobject_cast<JFrameOperator*>(parent))
+ {
+  return ((JFrameOperator*)parent)->getFrame();
+ }
  if(qobject_cast<JmriJFrame*>(parent))
   return (JmriJFrame*)parent;
  throw Exception("no frame defined for JMenuBarOperator");
@@ -306,13 +327,33 @@ JMenuOperator::JMenuOperator(QMenu* parent, QString text)
 
 JMenuOperator::JMenuOperator(JMenuBarOperator* jmbo, QString text)
 {
- // TODO:
+ // find submenu "text"
+ QList<QAction*> alist = jmbo->menuBar->actions();
+ foreach (QAction* act, alist)
+ {
+  if(qobject_cast<QMenu*>(act->menu()))
+  {
+   QMenu* menu = act->menu();
+   if(menu->title() == text)
+   {
+    this->menu = menu;
+    this->action = act;
+    break;
+   }
+  }
+ }
+ if(this->menu == nullptr)
+  throw Exception(tr("menu '%1' not found").arg(text));
 }
 
 
 void JMenuOperator::push()
 {
 
+}
+QMenu* JMenuOperator::getMenu()
+{
+ return menu;
 }
 JPopupMenuOperator::JPopupMenuOperator()
 {
@@ -334,10 +375,10 @@ void JPopupMenuOperator::pushMenuNoBlock(QString text)
 
 JMenuItemOperator::JMenuItemOperator(QMenu* parent, QString text)
 {
- QObjectList list = parent->children();
- foreach (QObject* obj, list) {
-  if(qobject_cast<QMenu*>(obj) && ((QAction*)obj)->text() == text)
-   action = (QAction*)obj;
+ QList<QAction*> alist = parent->actions();
+ foreach (QAction* act, alist) {
+  if(act->text() == text)
+   action = act;
  }
 }
 
@@ -357,6 +398,7 @@ JDialogOperator::JDialogOperator(QString text)
  //this->parent = parent;
  this->text = text;
 
+ qApp->processEvents(QEventLoop::AllEvents, 100);
  // look for a window with the title" 'text'
  JDialog* dlg = JDialog::findDialog(text);
  if(dlg == nullptr)

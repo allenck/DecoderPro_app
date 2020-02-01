@@ -205,7 +205,7 @@ class ThrottleCyclingKeyListener extends KeyAdapter	{
  throttlesListPanel = new ThrottlesListPanel();
  throttlesListFrame->setContentPane(throttlesListPanel);
  throttlesListFrame->adjustSize();
- QTimer::singleShot(10000, this, SLOT(initFrame()));
+ //QTimer::singleShot(10000, this, SLOT(initFrame()));
 }
 
 /*private*/ void ThrottleFrameManager::initFrame()
@@ -215,6 +215,7 @@ class ThrottleCyclingKeyListener extends KeyAdapter	{
  throttlesListFrame->setVisible(false);
 
 }
+
 /*public*/ void ThrottleFrameManager::showThrottlesList()
 {
  if (throttlesListFrame == NULL)

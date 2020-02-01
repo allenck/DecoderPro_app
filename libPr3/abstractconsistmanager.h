@@ -7,8 +7,8 @@
 #include <QMap>
 #include "exceptions.h"
 
-class ConsistTable;
-class ConsistAddrList;
+//class ConsistTable;
+//class ConsistAddrList;
 class DccConsist;
 class LIBPR3SHARED_EXPORT AbstractConsistManager : public QObject, public ConsistManager
 {
@@ -41,7 +41,7 @@ public:
     *  Return the list of consists we know about.
     **/
     ///*public*/ virtual QList<DccLocoAddress *> getConsistList();
-    /*public*/ virtual ConsistAddrList* getConsistList();
+    /*public*/ virtual DccLocoAddressList* getConsistList();
 
     /*public*/ virtual QString decodeErrorCode(int ErrorCode);
     /* request an update from the layout, loading
@@ -76,7 +76,7 @@ private:
 
 protected:
     ///*protected*/ QHash<DccLocoAddress*,Consist*>* consistTable;
-    ConsistTable* consistTable;
+    DccLocoHash<DccConsist*>* consistTable;
 
 friend class DccConsistManager;
 };

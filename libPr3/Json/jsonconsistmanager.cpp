@@ -83,11 +83,11 @@
 }
 
 //@Override
-/*public*/ ConsistAddrList *JsonConsistManager::getConsistList() {
+/*public*/ DccLocoAddressList *JsonConsistManager::getConsistList() {
     if (this->manager != NULL) {
         return this->manager->getConsistList();
     }
-    return new ConsistAddrList();
+    return new DccLocoAddressList();
 }
 
 //@Override

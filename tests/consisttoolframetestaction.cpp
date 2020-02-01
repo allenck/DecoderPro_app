@@ -24,7 +24,7 @@ void ConsistToolFrameTestAction::actionPerformed()
        << "testDeleteNoConsistAddress"
        << "testScanEmptyRoster"
        << "testScanRosterNoConsists"
-       << "testScanRosterWithConsists()";
+       << "testScanRosterWithConsists";
 
        JUnitUtil::runTests(smt, testList);
 
