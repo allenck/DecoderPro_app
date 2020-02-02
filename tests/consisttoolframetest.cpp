@@ -178,10 +178,11 @@ ConsistToolFrameTest::ConsistToolFrameTest(QObject *parent) : QObject(parent)
     frame->setVisible(true);
     // get a ConsistToolScaffold
     ConsistToolScaffold* cs = new ConsistToolScaffold();
+    JemmyUtil::pressDialogButton("Message", "Ok"); // wait for dialog an when it appears, dismiss it
     cs->pushDeleteButton(); // need to dismiss this ACK
     // this should trigger a warning dialog, which we want to dismiss.
     SleeperThread::msleep(2000); // wait for the dialog
-    JemmyUtil::pressDialogButton("Message", "Ok");
+    //JemmyUtil::pressDialogButton("Message", "Ok");
     cs->requestClose();
 //    new org.netbeans.jemmy.QueueTool().waitEmpty(100);  //pause for frame tot close
     qApp->processEvents(QEventLoop::AllEvents, 100);

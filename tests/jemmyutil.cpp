@@ -1,6 +1,9 @@
 #include "jemmyutil.h"
 #include "jframeoperator.h"
 #include "namecomponentchooser.h"
+#include "sleeperthread.h"
+#include "jdialog.h"
+#include <QMetaObject>
 
 JemmyUtil::JemmyUtil(QObject *parent) : QObject(parent)
 {
@@ -24,10 +27,11 @@ JemmyUtil::JemmyUtil(QObject *parent) : QObject(parent)
     }
 
     /*static*/ /*public*/ void JemmyUtil::pressDialogButton(QString dialogTitle, QString buttonName) {
-        JDialogOperator* jdo = new JDialogOperator(dialogTitle); // wait for the first dialog.
-        JButtonOperator* jbo = new JButtonOperator(jdo, buttonName);
-        // Click button
-        jbo->push();
+//        JDialogOperator* jdo = new JDialogOperator(dialogTitle); // wait for the first dialog.
+//        JButtonOperator* jbo = new JButtonOperator(jdo, buttonName);
+//        // Click button
+//        jbo->push();
+      JemmyWait* wait = new JemmyWait(dialogTitle, buttonName);
     }
 #if 0
     static /*public*/ void pressDialogButton(JmriJFrame f, String dialogTitle, String buttonName) {
@@ -106,3 +110,47 @@ JemmyUtil::JemmyUtil(QObject *parent) : QObject(parent)
         return jl;
     }
 #endif
+
+    JemmyWait::JemmyWait(QString dialogTitle, QString buttonName)
+    {
+     this->dialogTitle = dialogTitle;
+     this->buttonName = buttonName;
+     QThread* thread = new QThread();
+     thread->setObjectName("JemmyWait");
+     connect(thread, SIGNAL(started()), this, SLOT(process()));
+     connect(this, SIGNAL(finished()), thread, SLOT(quit()));
+     moveToThread(thread);
+     thread->start(QThread::LowPriority);
+    }
+
+    void JemmyWait::process()
+    {
+     SleeperThread::msleep(500);
+     bool bRunning = true;
+     while(bRunning)
+     {
+      JDialog* dlg = JDialog::findDialog(dialogTitle);
+      if(dlg)
+      {
+       QList<QPushButton*> list = dlg->findChildren<QPushButton*>();
+       if(list.count()> 0)
+       {
+        foreach(QPushButton* b, list)
+        {
+         if(b->text() == buttonName)
+         {
+          if(!QMetaObject::invokeMethod(b, "click", Qt::AutoConnection))
+           throw Exception(tr("Button '%1'click failed").arg(b->text()));
+          bRunning = false;
+          break;
+         }
+        }
+       }
+      }
+      SleeperThread::msleep(500);
+      counter++;
+      if(counter > 15)
+       break;
+     }
+     emit finished();
+    }
