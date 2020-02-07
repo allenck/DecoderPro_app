@@ -163,7 +163,7 @@ void ProgOpsModePane::init()
     // create the programmer display combo box
     QVector<AddressedProgrammerManager*> v = QVector<AddressedProgrammerManager*>();
     for (QObject* pm : *InstanceManager::getList("AddressedProgrammerManager")) {
-        v.append((AddressedProgrammerManager*)pm);
+        v.append((DefaultProgrammerManager*)pm);
     }
     thisLayout->addWidget(progBox = new QComboBox(/*v*/));
     foreach (AddressedProgrammerManager* m, v)
@@ -175,7 +175,7 @@ void ProgOpsModePane::init()
     {
         progBox->setVisible(false);
     }
-    progBox->setCurrentIndex(progBox->findText(((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->toString())); // set default
+    progBox->setCurrentIndex(progBox->findText(((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->toString())); // set default
 //    progBox.addActionListener(new java.awt.event.ActionListener() {
 //        @Override
 //        public void actionPerformed(java.awt.event.ActionEvent e) {

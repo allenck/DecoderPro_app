@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include "instancemanager.h"
 #include "globalprogrammermanager.h"
+#include "defaultprogrammermanager.h"
 
 //KnownLocoSelPane::KnownLocoSelPane(QWidget *parent) :
 //    LocoSelPane(parent)
@@ -129,7 +130,7 @@ void KnownLocoSelPane::On_go2_clicked()
  if (selector != NULL && selector->isSelected()) p = selector->getProgrammer();
  if (p == NULL) {
      log->warn("Selector did not provide a programmer, use default");
-     p = (Programmer*)((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+     p = (Programmer*)((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
  }
  // IdentifyLoco* id = new IdentifyLoco() {
 //            private KnownLocoSelPane who = me;

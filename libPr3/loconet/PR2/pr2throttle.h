@@ -11,7 +11,7 @@ public:
  /*public*/ void setSpeedSetting(float speed);
  /*public*/ void setIsForward(bool forward);
  /*public*/ QString toString();
- /*public*/ locoAddress* getLocoAddress();
+ /*public*/ LocoAddress* getLocoAddress();
 
 
 private:

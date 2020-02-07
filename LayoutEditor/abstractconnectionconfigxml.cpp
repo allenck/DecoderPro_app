@@ -26,7 +26,7 @@ AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : Abs
 //    java.util.ResourceBundle.getBundle("jmri.jmrix.JmrixBundle");
 
 /*abstract*/ /*protected*/ void AbstractConnectionConfigXml::getInstance() {}
-/*abstract*/ /*protected*/ void AbstractConnectionConfigXml::_register() {}
+///*abstract*/ /*protected*/ void AbstractConnectionConfigXml::_register() {}
 
 /*protected*/ void AbstractConnectionConfigXml::_register(ConnectionConfig* c)
 {

@@ -1795,7 +1795,7 @@ if (_wrapper) {
     }
   }
 }
-  locoAddress::childEvent(event0);
+  LocoAddress::childEvent(event0);
 }
 void PythonQtShell_LocoAddress::customEvent(QEvent*  event0)
 {
@@ -1817,7 +1817,7 @@ if (_wrapper) {
     }
   }
 }
-  locoAddress::customEvent(event0);
+  LocoAddress::customEvent(event0);
 }
 bool  PythonQtShell_LocoAddress::equals(QObject*  a0)
 {
@@ -1850,7 +1850,7 @@ if (_wrapper) {
     }
   }
 }
-  return locoAddress::equals(a0);
+  return LocoAddress::equals(a0);
 }
 bool  PythonQtShell_LocoAddress::event(QEvent*  event0)
 {
@@ -1883,7 +1883,7 @@ if (_wrapper) {
     }
   }
 }
-  return locoAddress::event(event0);
+  return LocoAddress::event(event0);
 }
 bool  PythonQtShell_LocoAddress::eventFilter(QObject*  watched0, QEvent*  event1)
 {
@@ -1916,7 +1916,7 @@ if (_wrapper) {
     }
   }
 }
-  return locoAddress::eventFilter(watched0, event1);
+  return LocoAddress::eventFilter(watched0, event1);
 }
 int  PythonQtShell_LocoAddress::getNumber() const
 {
@@ -1949,9 +1949,9 @@ if (_wrapper) {
     }
   }
 }
-  return locoAddress::getNumber();
+  return LocoAddress::getNumber();
 }
-locoAddress::Protocol  PythonQtShell_LocoAddress::getProtocol() const
+LocoAddress::Protocol  PythonQtShell_LocoAddress::getProtocol() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1961,7 +1961,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"LocoAddress::Protocol"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      locoAddress::Protocol returnValue{};
+      LocoAddress::Protocol returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -1970,7 +1970,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getProtocol", methodInfo, result);
           } else {
-            returnValue = *((locoAddress::Protocol*)args[0]);
+            returnValue = *((LocoAddress::Protocol*)args[0]);
           }
         }
       }
@@ -1982,7 +1982,7 @@ if (_wrapper) {
     }
   }
 }
-  return locoAddress::getProtocol();
+  return LocoAddress::getProtocol();
 }
 void PythonQtShell_LocoAddress::timerEvent(QTimerEvent*  event0)
 {
@@ -2004,7 +2004,7 @@ if (_wrapper) {
     }
   }
 }
-  locoAddress::timerEvent(event0);
+  LocoAddress::timerEvent(event0);
 }
 QString  PythonQtShell_LocoAddress::toString()
 {
@@ -2037,9 +2037,9 @@ if (_wrapper) {
     }
   }
 }
-  return locoAddress::toString();
+  return LocoAddress::toString();
 }
-locoAddress* PythonQtWrapper_LocoAddress::new_LocoAddress(QObject*  parent)
+LocoAddress* PythonQtWrapper_LocoAddress::new_LocoAddress(QObject*  parent)
 { 
 return new PythonQtShell_LocoAddress(parent); }
 
@@ -2047,56 +2047,56 @@ const QMetaObject* PythonQtShell_LocoAddress::metaObject() const {
   if (QObject::d_ptr->metaObject) {
     return QObject::d_ptr->dynamicMetaObject();
   } else if (_wrapper) {
-    return PythonQt::priv()->getDynamicMetaObject(_wrapper, &locoAddress::staticMetaObject);
+    return PythonQt::priv()->getDynamicMetaObject(_wrapper, &LocoAddress::staticMetaObject);
   } else {
-    return &locoAddress::staticMetaObject;
+    return &LocoAddress::staticMetaObject;
   }
 }
 int PythonQtShell_LocoAddress::qt_metacall(QMetaObject::Call call, int id, void** args) {
-  int result = locoAddress::qt_metacall(call, id, args);
+  int result = LocoAddress::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-bool  PythonQtWrapper_LocoAddress::equals(locoAddress* theWrappedObject, QObject*  a)
+bool  PythonQtWrapper_LocoAddress::equals(LocoAddress* theWrappedObject, QObject*  a)
 {
   return ( theWrappedObject->equals(a));
 }
 
-locoAddress::Protocol  PythonQtWrapper_LocoAddress::static_LocoAddress_getByPeopleName(QString  pName)
+LocoAddress::Protocol  PythonQtWrapper_LocoAddress::static_LocoAddress_getByPeopleName(QString  pName)
 {
-  return (locoAddress::getByPeopleName(pName));
+  return (LocoAddress::getByPeopleName(pName));
 }
 
-locoAddress::Protocol  PythonQtWrapper_LocoAddress::static_LocoAddress_getByShortName(QString  shName)
+LocoAddress::Protocol  PythonQtWrapper_LocoAddress::static_LocoAddress_getByShortName(QString  shName)
 {
-  return (locoAddress::getByShortName(shName));
+  return (LocoAddress::getByShortName(shName));
 }
 
-int  PythonQtWrapper_LocoAddress::getNumber(locoAddress* theWrappedObject) const
+int  PythonQtWrapper_LocoAddress::getNumber(LocoAddress* theWrappedObject) const
 {
   return ( theWrappedObject->getNumber());
 }
 
-QString  PythonQtWrapper_LocoAddress::static_LocoAddress_getPeopleName(locoAddress::Protocol  p)
+QString  PythonQtWrapper_LocoAddress::static_LocoAddress_getPeopleName(LocoAddress::Protocol  p)
 {
-  return (locoAddress::getPeopleName(p));
+  return (LocoAddress::getPeopleName(p));
 }
 
-locoAddress::Protocol  PythonQtWrapper_LocoAddress::getProtocol(locoAddress* theWrappedObject) const
+LocoAddress::Protocol  PythonQtWrapper_LocoAddress::getProtocol(LocoAddress* theWrappedObject) const
 {
   return ( theWrappedObject->getProtocol());
 }
 
-QString  PythonQtWrapper_LocoAddress::static_LocoAddress_getShortName(locoAddress::Protocol  p)
+QString  PythonQtWrapper_LocoAddress::static_LocoAddress_getShortName(LocoAddress::Protocol  p)
 {
-  return (locoAddress::getShortName(p));
+  return (LocoAddress::getShortName(p));
 }
 
-QString  PythonQtWrapper_LocoAddress::toString(locoAddress* theWrappedObject)
+QString  PythonQtWrapper_LocoAddress::toString(LocoAddress* theWrappedObject)
 {
   return ( theWrappedObject->toString());
 }
 
-QString PythonQtWrapper_LocoAddress::py_toString(locoAddress* obj) { return obj->toString(); }
+QString PythonQtWrapper_LocoAddress::py_toString(LocoAddress* obj) { return obj->toString(); }
 
 
 PythonQtShell_LocoNetInterface::~PythonQtShell_LocoNetInterface() {

@@ -797,7 +797,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     DebugProgrammerManager* m = new DebugProgrammerManager();
     InstanceManager::store(m, "AddressedProgrammerManager");
     InstanceManager::store(m, "GlobalProgrammerManager");
-    InstanceManager::store(m, "ProgrammerManager"); // added ACK
+    //InstanceManager::store(m, "ProgrammerManager"); // added ACK
 
 }
 #if 0

@@ -3,7 +3,7 @@
 #include "eventlistener.h"
 
 class DccThrottle;
-class locoAddress;
+class LocoAddress;
 class DccLocoAddress;
 /**
  * A listener interface for a class requesting a DccThrottle from the
@@ -61,7 +61,7 @@ public slots:
      * @param address DccLocoAddress of the failed loco request.
      * @param reason  The reason why the throttle request failed.
      */
-    /*public*/ virtual void notifyFailedThrottleRequest(locoAddress* /*address*/, QString /*reason*/) {}
+    /*public*/ virtual void notifyFailedThrottleRequest(LocoAddress* /*address*/, QString /*reason*/) {}
     /**
       * Get notification that a throttle request is in use by another
       * device, and a "steal", "share", or "steal/share" decision may be required.
@@ -69,7 +69,7 @@ public slots:
       * @param address The LocoAddress that needs the decision.
       * @param question The question being asked, steal / cancel, share / cancel, steal / share / cancel
       */
-    /*public*/ virtual void notifyDecisionRequired(locoAddress* /*address*/, DecisionType /*question*/){}
+    /*public*/ virtual void notifyDecisionRequired(LocoAddress* /*address*/, DecisionType /*question*/){}
      /*public*/ virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(ThrottleListener, "ThrottleListener")

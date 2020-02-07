@@ -11,6 +11,9 @@
 #include "managingpreferencespanel.h"
 #include "configuremanager.h"
 #include "jtabbedpane.h"
+#include "connectionconfigmanager.h"
+#include "connectionconfig.h"
+#include "joptionpane.h"
 
 AppConfigBase::AppConfigBase(QWidget *parent) :
     JmriPanel(parent) //JmriPanel(parent)
@@ -42,7 +45,7 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  */
 ///*public*/ AppConfigBase() {
 //}
-
+#if 0
 /*public*/ /*static*/ QString AppConfigBase::getManufacturerName(int index) {
     return JmrixConfigPane::instance(index)->getCurrentManufacturerName();
 }
@@ -62,7 +65,7 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
 /*public*/ /*static*/ bool AppConfigBase::getDisabled(int index) {
     return JmrixConfigPane::instance(index)->getDisabled();
 }
-
+#endif
 /**
  * Detect duplicate connection types It depends on all connections have the
  * first word be the same if they share the same type. So LocoNet ... is a
@@ -75,26 +78,21 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  */
 /*private*/ bool AppConfigBase::checkDups()
 {
- QMap<QString, QList<JmrixConfigPane*>* > ports =  QMap<QString, QList<JmrixConfigPane*>* >();
- QList<JmrixConfigPane*> configPaneList = JmrixConfigPane::getListOfConfigPanes();
- foreach (JmrixConfigPane* configPane, configPaneList)
+ QMap<QString, QList<ConnectionConfig*>* > ports = QMap<QString, QList<ConnectionConfig*>* >();
+ QVector<ConnectionConfig*> connections = ((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->getConnections();
+ for (ConnectionConfig* connection : connections)
  {
-  if (!configPane->getDisabled())
+  if (!connection->getDisabled())
   {
-   QString port = configPane->getCurrentProtocolInfo();
-   /*We need to test to make sure that the connection port is not set to (none)
-     If it is set to none, then it is likely a simulator.*/
+   QString port = connection->getInfo();
    if (port!=(JmrixConfigPane::NONE))
    {
-    if (!ports.contains(port))
-    {
-     QList<JmrixConfigPane*>* arg1 = new QList<JmrixConfigPane*>();
-     arg1->append(configPane);
-     ports.insert(port, arg1);
-    }
-    else
-    {
-     ports.value(port)->append(configPane);
+    if (!ports.contains(port)) {
+        QList<ConnectionConfig*>* arg1 = new QList<ConnectionConfig*>();
+        arg1->append(connection);
+        ports.insert(port, arg1);
+    } else {
+        ports.value(port)->append(connection);
     }
    }
   }
@@ -102,9 +100,9 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  bool ret = true;
  /* one or more dups or NONE, lets see if it is dups */
  //for (Map.Entry<String, List<JmrixConfigPane>> e : ports.entrySet())
- QList<QList<JmrixConfigPane*>* > entries = ports.values();
+ QList<QList<ConnectionConfig*>*>  entries = ports.values();
 #if 1
- foreach(QList<JmrixConfigPane*>* e, entries)
+ foreach(QList<ConnectionConfig*>* e, entries)
  {
   if (e->size() > 1)
   {
@@ -113,7 +111,7 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
    QString nameB;// = new StringBuilder();
    for (int n = 0; n < e->size(); n++)
    {
-    nameB.append(e->at(n)->getCurrentManufacturerName());
+    nameB.append(e->at(n)->getManufacturer());
     nameB.append("|");
    }
    QString instanceNames =  QString(nameB);
@@ -133,18 +131,18 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  */
 /*private*/ bool AppConfigBase::checkPortNames()
 {
- foreach (JmrixConfigPane* configPane, JmrixConfigPane::getListOfConfigPanes())
- {
-  QString port = configPane->getCurrentProtocolInfo();
-  if (port==(JmrixConfigPane::NONE_SELECTED) || port==(JmrixConfigPane::NO_PORTS_FOUND))
-  {
-//   if (JOptionPane.showConfirmDialog(NULL, MessageFormat.format(tr("MessageSerialPortWarning"), new Object[]{port, configPane.getCurrentProtocolName()}), tr("MessageSerialPortNotValid"), JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE) != JOptionPane.YES_OPTION)
-
-   if(QMessageBox::warning(nullptr, tr("Serial port isn't valid, save anyway?" ), tr("%1} is not a valid serial port for system connection %2. Do you want to save anyway?").arg(port).arg(configPane->getCurrentProtocolName()),QMessageBox::Yes | QMessageBox::No)!= QMessageBox::Yes)
-   {
-    return false;
-   }
-  }
+ for (ConnectionConfig* connection : ((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->getConnections()) {
+     QString port = connection->getInfo();
+     if (port == (JmrixConfigPane::NONE_SELECTED) || port == (JmrixConfigPane::NO_PORTS_FOUND)) {
+         if (JOptionPane::YES_OPTION != JOptionPane::showConfirmDialog(
+                 nullptr,
+                 tr("%1 is not a valid serial port for system connection %2. Do you want to save anyway?").arg(port).arg(connection->getConnectionName()),
+                 tr("Serial port isn't valid, save anyway?"),
+                 JOptionPane::YES_NO_OPTION,
+                 JOptionPane::ERROR_MESSAGE)) {
+             return false;
+         }
+     }
  }
  return true;
 }
@@ -295,7 +293,7 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
  options.insert(0x00, tr("Always Ask"));
  options.insert(0x01, tr("Never Quit"));
  options.insert(0x02, tr("Always Quit"));
- ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMessageItemDetails(getClassName(), "quitAfterSave", tr("Quit after saving preferences"), options, 0x00);
+ ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMessageItemDetails(getClassName(), "quitAfterSave", tr("Quit after saving preferences"), &options, 0x00);
 }
 #endif
 /*public*/ QString AppConfigBase::getClassName() {

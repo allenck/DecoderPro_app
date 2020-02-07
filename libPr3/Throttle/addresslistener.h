@@ -10,7 +10,7 @@
  * @version    $Revision: 21621 $
  */
 class DccThrottle;
-class locoAddress;
+class LocoAddress;
 /*public*/ /*interface*/class  AddressListener :  public EventListener
 {
 //    Q_OBJECT
@@ -24,13 +24,13 @@ public slots:
      * Receive notification that a new address has been selected.
      * @param address The address that is now selected.
      */
-    /*public*/ virtual void notifyAddressChosen(locoAddress* /*address*/) {}
+    /*public*/ virtual void notifyAddressChosen(LocoAddress* /*address*/) {}
 
     /**
      * Receive notification that an address has been released/dispatched
      * @param address The address released/dispatched
      */
-    /*public*/ virtual void notifyAddressReleased(locoAddress* /*address*/) {}
+    /*public*/ virtual void notifyAddressReleased(LocoAddress* /*address*/) {}
 
     /**
      * Receive notification that a throttle has been found

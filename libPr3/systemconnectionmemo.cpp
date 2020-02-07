@@ -11,6 +11,7 @@
 #include "nmraconsistmanager.h"
 #include "addressedprogrammermanager.h"
 #include "conflictingsystemconnectionmemo.h"
+#include "defaultprogrammermanager.h"
 
 /**
  * Lightweight abstract class to denote that a system is active,
@@ -318,7 +319,7 @@ void SystemConnectionMemo::removeFromActionList()
         if (provides("CommandStation")) {
             setConsistManager(new NmraConsistManager((CommandStation*)get("CommandStation")));
         } else if (provides("AddressedProgrammerManager")) {
-            setConsistManager(new DccConsistManager((AddressedProgrammerManager*)get("AddressedProgrammerManager")));
+            setConsistManager(new DccConsistManager((DefaultProgrammerManager*)get("AddressedProgrammerManager")));
         }
     }
     return consistManager;

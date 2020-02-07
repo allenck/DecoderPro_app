@@ -91,7 +91,7 @@ void delete_RosterEntry(RosterEntry* obj) { delete obj; }
    void deleteAttribute(RosterEntry* theWrappedObject, QString  key);
    void ensureFilenameExists(RosterEntry* theWrappedObject);
    void firePropertyChange(RosterEntry* theWrappedObject, QString  p, QVariant  old, QVariant  n);
-   locoAddress*  getAddress(RosterEntry* theWrappedObject, QDomElement  element);
+   LocoAddress*  getAddress(RosterEntry* theWrappedObject, QDomElement  element);
    QString  getAttribute(RosterEntry* theWrappedObject, QString  key);
    QStringList  getAttributeList(RosterEntry* theWrappedObject);
    QList<QString >  getAttributes(RosterEntry* theWrappedObject);
@@ -121,7 +121,7 @@ void delete_RosterEntry(RosterEntry* obj) { delete obj; }
    QString  getModel(RosterEntry* theWrappedObject);
    QString  getOwner(RosterEntry* theWrappedObject);
    QString  getPathName(RosterEntry* theWrappedObject);
-   locoAddress::Protocol  getProtocol(RosterEntry* theWrappedObject);
+   LocoAddress::Protocol  getProtocol(RosterEntry* theWrappedObject);
    QString  getProtocolAsString(RosterEntry* theWrappedObject);
    int  getRfidTag(RosterEntry* theWrappedObject);
    QString  getRoadName(RosterEntry* theWrappedObject);
@@ -159,7 +159,7 @@ void delete_RosterEntry(RosterEntry* obj) { delete obj; }
    void setModel(RosterEntry* theWrappedObject, QString  s);
    void setOpen(RosterEntry* theWrappedObject, bool  boo);
    void setOwner(RosterEntry* theWrappedObject, QString  s);
-   void setProtocol(RosterEntry* theWrappedObject, locoAddress::Protocol  protocol);
+   void setProtocol(RosterEntry* theWrappedObject, LocoAddress::Protocol  protocol);
    void setRfidTag(RosterEntry* theWrappedObject, QString  tag);
    void setRoadName(RosterEntry* theWrappedObject, QString  s);
    void setRoadNumber(RosterEntry* theWrappedObject, QString  s);
@@ -1513,7 +1513,7 @@ virtual bool  getF9();
 virtual bool  getF9Momentary();
 virtual bool  getIsForward();
 virtual QVector<PropertyChangeListener* >*  getListeners();
-virtual locoAddress*  getLocoAddress();
+virtual LocoAddress*  getLocoAddress();
 virtual BasicRosterEntry*  getRosterEntry();
 virtual float  getSpeedSetting();
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
@@ -1648,7 +1648,7 @@ inline bool  py_q_getF9() { return Throttle::getF9(); }
 inline bool  py_q_getF9Momentary() { return Throttle::getF9Momentary(); }
 inline bool  py_q_getIsForward() { return Throttle::getIsForward(); }
 inline QVector<PropertyChangeListener* >*  py_q_getListeners() { return Throttle::getListeners(); }
-inline locoAddress*  py_q_getLocoAddress() { return Throttle::getLocoAddress(); }
+inline LocoAddress*  py_q_getLocoAddress() { return Throttle::getLocoAddress(); }
 inline BasicRosterEntry*  py_q_getRosterEntry() { return Throttle::getRosterEntry(); }
 inline float  py_q_getSpeedSetting() { return Throttle::getSpeedSetting(); }
 inline void py_q_removePropertyChangeListener(PropertyChangeListener*  arg__1) { Throttle::removePropertyChangeListener(arg__1); }
@@ -1843,8 +1843,8 @@ void delete_Throttle(Throttle* obj) { delete obj; }
    bool  py_q_getIsForward(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getIsForward());}
    QVector<PropertyChangeListener* >*  getListeners(Throttle* theWrappedObject);
    QVector<PropertyChangeListener* >*  py_q_getListeners(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getListeners());}
-   locoAddress*  getLocoAddress(Throttle* theWrappedObject);
-   locoAddress*  py_q_getLocoAddress(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getLocoAddress());}
+   LocoAddress*  getLocoAddress(Throttle* theWrappedObject);
+   LocoAddress*  py_q_getLocoAddress(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getLocoAddress());}
    BasicRosterEntry*  getRosterEntry(Throttle* theWrappedObject);
    BasicRosterEntry*  py_q_getRosterEntry(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getRosterEntry());}
    float  getSpeedSetting(Throttle* theWrappedObject);
@@ -1995,13 +1995,13 @@ virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual locoAddress*  getAddress(QString  arg__1, locoAddress::Protocol  arg__2);
-virtual locoAddress*  getAddress(QString  arg__1, QString  arg__2);
-virtual QList<locoAddress::Protocol >  getAddressProtocolTypes();
-virtual QString  getAddressTypeString(locoAddress::Protocol  arg__1);
+virtual LocoAddress*  getAddress(QString  arg__1, LocoAddress::Protocol  arg__2);
+virtual LocoAddress*  getAddress(QString  arg__1, QString  arg__2);
+virtual QList<LocoAddress::Protocol >  getAddressProtocolTypes();
+virtual QString  getAddressTypeString(LocoAddress::Protocol  arg__1);
 virtual QStringList  getAddressTypes();
 virtual int  getMode(int  arg__1);
-virtual locoAddress::Protocol  getProtocolFromString(QString  arg__1);
+virtual LocoAddress::Protocol  getProtocolFromString(QString  arg__1);
 virtual QVariant  getThrottleInfo(DccLocoAddress*  arg__1, QString  arg__2);
 virtual QString  getUserName();
 virtual bool  hasDispatchFunction();
@@ -2021,13 +2021,13 @@ inline bool  py_q_addressTypeUnique() { return ThrottleManager::addressTypeUniqu
 inline void py_q_attachListener(DccLocoAddress*  arg__1, PropertyChangeListener*  arg__2) { ThrottleManager::attachListener(arg__1, arg__2); }
 inline bool  py_q_canBeLongAddress(int  arg__1) { return ThrottleManager::canBeLongAddress(arg__1); }
 inline bool  py_q_canBeShortAddress(int  arg__1) { return ThrottleManager::canBeShortAddress(arg__1); }
-inline locoAddress*  py_q_getAddress(QString  arg__1, locoAddress::Protocol  arg__2) { return ThrottleManager::getAddress(arg__1, arg__2); }
-inline locoAddress*  py_q_getAddress(QString  arg__1, QString  arg__2) { return ThrottleManager::getAddress(arg__1, arg__2); }
-inline QList<locoAddress::Protocol >  py_q_getAddressProtocolTypes() { return ThrottleManager::getAddressProtocolTypes(); }
-inline QString  py_q_getAddressTypeString(locoAddress::Protocol  arg__1) { return ThrottleManager::getAddressTypeString(arg__1); }
+inline LocoAddress*  py_q_getAddress(QString  arg__1, LocoAddress::Protocol  arg__2) { return ThrottleManager::getAddress(arg__1, arg__2); }
+inline LocoAddress*  py_q_getAddress(QString  arg__1, QString  arg__2) { return ThrottleManager::getAddress(arg__1, arg__2); }
+inline QList<LocoAddress::Protocol >  py_q_getAddressProtocolTypes() { return ThrottleManager::getAddressProtocolTypes(); }
+inline QString  py_q_getAddressTypeString(LocoAddress::Protocol  arg__1) { return ThrottleManager::getAddressTypeString(arg__1); }
 inline QStringList  py_q_getAddressTypes() { return ThrottleManager::getAddressTypes(); }
 inline int  py_q_getMode(int  arg__1) { return ThrottleManager::getMode(arg__1); }
-inline locoAddress::Protocol  py_q_getProtocolFromString(QString  arg__1) { return ThrottleManager::getProtocolFromString(arg__1); }
+inline LocoAddress::Protocol  py_q_getProtocolFromString(QString  arg__1) { return ThrottleManager::getProtocolFromString(arg__1); }
 inline QVariant  py_q_getThrottleInfo(DccLocoAddress*  arg__1, QString  arg__2) { return ThrottleManager::getThrottleInfo(arg__1, arg__2); }
 inline QString  py_q_getUserName() { return ThrottleManager::getUserName(); }
 inline bool  py_q_hasDispatchFunction() { return ThrottleManager::hasDispatchFunction(); }
@@ -2051,20 +2051,20 @@ void delete_ThrottleManager(ThrottleManager* obj) { delete obj; }
    bool  py_q_canBeLongAddress(ThrottleManager* theWrappedObject, int  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_canBeLongAddress(arg__1));}
    bool  canBeShortAddress(ThrottleManager* theWrappedObject, int  arg__1);
    bool  py_q_canBeShortAddress(ThrottleManager* theWrappedObject, int  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_canBeShortAddress(arg__1));}
-   locoAddress*  getAddress(ThrottleManager* theWrappedObject, QString  arg__1, locoAddress::Protocol  arg__2);
-   locoAddress*  py_q_getAddress(ThrottleManager* theWrappedObject, QString  arg__1, locoAddress::Protocol  arg__2){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getAddress(arg__1, arg__2));}
-   locoAddress*  getAddress(ThrottleManager* theWrappedObject, QString  arg__1, QString  arg__2);
-   locoAddress*  py_q_getAddress(ThrottleManager* theWrappedObject, QString  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getAddress(arg__1, arg__2));}
-   QList<locoAddress::Protocol >  getAddressProtocolTypes(ThrottleManager* theWrappedObject);
-   QList<locoAddress::Protocol >  py_q_getAddressProtocolTypes(ThrottleManager* theWrappedObject){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getAddressProtocolTypes());}
-   QString  getAddressTypeString(ThrottleManager* theWrappedObject, locoAddress::Protocol  arg__1);
-   QString  py_q_getAddressTypeString(ThrottleManager* theWrappedObject, locoAddress::Protocol  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getAddressTypeString(arg__1));}
+   LocoAddress*  getAddress(ThrottleManager* theWrappedObject, QString  arg__1, LocoAddress::Protocol  arg__2);
+   LocoAddress*  py_q_getAddress(ThrottleManager* theWrappedObject, QString  arg__1, LocoAddress::Protocol  arg__2){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getAddress(arg__1, arg__2));}
+   LocoAddress*  getAddress(ThrottleManager* theWrappedObject, QString  arg__1, QString  arg__2);
+   LocoAddress*  py_q_getAddress(ThrottleManager* theWrappedObject, QString  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getAddress(arg__1, arg__2));}
+   QList<LocoAddress::Protocol >  getAddressProtocolTypes(ThrottleManager* theWrappedObject);
+   QList<LocoAddress::Protocol >  py_q_getAddressProtocolTypes(ThrottleManager* theWrappedObject){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getAddressProtocolTypes());}
+   QString  getAddressTypeString(ThrottleManager* theWrappedObject, LocoAddress::Protocol  arg__1);
+   QString  py_q_getAddressTypeString(ThrottleManager* theWrappedObject, LocoAddress::Protocol  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getAddressTypeString(arg__1));}
    QStringList  getAddressTypes(ThrottleManager* theWrappedObject);
    QStringList  py_q_getAddressTypes(ThrottleManager* theWrappedObject){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getAddressTypes());}
    int  getMode(ThrottleManager* theWrappedObject, int  arg__1);
    int  py_q_getMode(ThrottleManager* theWrappedObject, int  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getMode(arg__1));}
-   locoAddress::Protocol  getProtocolFromString(ThrottleManager* theWrappedObject, QString  arg__1);
-   locoAddress::Protocol  py_q_getProtocolFromString(ThrottleManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getProtocolFromString(arg__1));}
+   LocoAddress::Protocol  getProtocolFromString(ThrottleManager* theWrappedObject, QString  arg__1);
+   LocoAddress::Protocol  py_q_getProtocolFromString(ThrottleManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getProtocolFromString(arg__1));}
    QVariant  getThrottleInfo(ThrottleManager* theWrappedObject, DccLocoAddress*  arg__1, QString  arg__2);
    QVariant  py_q_getThrottleInfo(ThrottleManager* theWrappedObject, DccLocoAddress*  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getThrottleInfo(arg__1, arg__2));}
    QString  getUserName(ThrottleManager* theWrappedObject);

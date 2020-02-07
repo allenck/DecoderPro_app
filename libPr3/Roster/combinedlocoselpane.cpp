@@ -11,7 +11,7 @@
 #include "progdefault.h"
 #include "rosterentry.h"
 #include "decoderfile.h"
-#include "globalprogrammermanager.h"
+#include "defaultprogrammermanager.h"
 
 CombinedLocoSelPane::CombinedLocoSelPane(QWidget *parent) :
     LocoSelPane(parent)
@@ -114,7 +114,7 @@ JToggleButton* CombinedLocoSelPane::addDecoderIdentButton()
  iddecoder->setToolTip(tr("Read the decoders mfg and version, then attempt to select its type"));
  if (InstanceManager::getNullableDefault("GlobalProgrammerManager") != NULL)
  {
-  Programmer* p = ((GlobalProgrammerManager*) InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+  Programmer* p = ((DefaultProgrammerManager*) InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
   if (p != NULL && !p->getCanRead())
 
   {
@@ -213,7 +213,7 @@ bool CombinedLocoSelPane::isDecoderSelected() {
  idloco->setToolTip(tr("Read the locomotive's address and attempt to select the right settings"));
  if (InstanceManager::getNullableDefault("GlobalProgrammerManager") != nullptr)
  {
-  Programmer* p = (Programmer*)((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+  Programmer* p = (Programmer*)((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
   if (p != nullptr && !p->getCanRead())
   {
       // can't read, disable the button
@@ -336,7 +336,7 @@ void CombinedLocoSelPane::On_go2_clicked()
     }
     if (p == NULL) {
         log->warn("Selector did not provide a programmer, use default");
-        p = ((GlobalProgrammerManager*) InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+        p = ((DefaultProgrammerManager*) InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
     }
     CLSIdentifyLoco* id = new CLSIdentifyLoco(p, this);
 //    {
@@ -377,7 +377,7 @@ void CombinedLocoSelPane::On_go2_clicked()
  if (p == NULL)
  {
      log->warn("Selector did not provide a programmer, use default");
-     p = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+     p = ((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
  }
  CLSIdentifyDecoder* id = new CLSIdentifyDecoder(p, this);
  id->start();

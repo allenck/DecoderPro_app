@@ -7,7 +7,7 @@
 #include "libPr3_global.h"
 
 class VSDManagerListener;
-class locoAddress;
+class LocoAddress;
 class PhysicalLocation;
 class VSDManagerEvent;
 class VSDFile;
@@ -49,7 +49,7 @@ public:
  /*public*/ QString getProfilePath(QString profile);
  /*public*/ void loadProfiles(QString path);
  /*public*/ void setDecoderPositionByID(QString id, PhysicalLocation* p);
- /*public*/ void setDecoderPositionByAddr(locoAddress* a, PhysicalLocation* l);
+ /*public*/ void setDecoderPositionByAddr(LocoAddress* a, PhysicalLocation* l);
  /*public*/ void addEventListener(VSDManagerListener* listener);
  /*public*/ void removeEventListener(VSDManagerListener* listener);
 

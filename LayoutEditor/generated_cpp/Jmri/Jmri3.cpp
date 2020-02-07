@@ -126,7 +126,7 @@ void PythonQtWrapper_RosterEntry::firePropertyChange(RosterEntry* theWrappedObje
   ( theWrappedObject->firePropertyChange(p, old, n));
 }
 
-locoAddress*  PythonQtWrapper_RosterEntry::getAddress(RosterEntry* theWrappedObject, QDomElement  element)
+LocoAddress*  PythonQtWrapper_RosterEntry::getAddress(RosterEntry* theWrappedObject, QDomElement  element)
 {
   return ( theWrappedObject->getAddress(element));
 }
@@ -276,7 +276,7 @@ QString  PythonQtWrapper_RosterEntry::getPathName(RosterEntry* theWrappedObject)
   return ( theWrappedObject->getPathName());
 }
 
-locoAddress::Protocol  PythonQtWrapper_RosterEntry::getProtocol(RosterEntry* theWrappedObject)
+LocoAddress::Protocol  PythonQtWrapper_RosterEntry::getProtocol(RosterEntry* theWrappedObject)
 {
   return ( theWrappedObject->getProtocol());
 }
@@ -466,7 +466,7 @@ void PythonQtWrapper_RosterEntry::setOwner(RosterEntry* theWrappedObject, QStrin
   ( theWrappedObject->setOwner(s));
 }
 
-void PythonQtWrapper_RosterEntry::setProtocol(RosterEntry* theWrappedObject, locoAddress::Protocol  protocol)
+void PythonQtWrapper_RosterEntry::setProtocol(RosterEntry* theWrappedObject, LocoAddress::Protocol  protocol)
 {
   ( theWrappedObject->setProtocol(protocol));
 }
@@ -14532,7 +14532,7 @@ if (_wrapper) {
 }
   return Throttle::getListeners();
 }
-locoAddress*  PythonQtShell_Throttle::getLocoAddress()
+LocoAddress*  PythonQtShell_Throttle::getLocoAddress()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14542,7 +14542,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"LocoAddress*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      locoAddress* returnValue{};
+      LocoAddress* returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -14551,7 +14551,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getLocoAddress", methodInfo, result);
           } else {
-            returnValue = *((locoAddress**)args[0]);
+            returnValue = *((LocoAddress**)args[0]);
           }
         }
       }
@@ -16339,7 +16339,7 @@ QVector<PropertyChangeListener* >*  PythonQtWrapper_Throttle::getListeners(Throt
   return ( theWrappedObject->getListeners());
 }
 
-locoAddress*  PythonQtWrapper_Throttle::getLocoAddress(Throttle* theWrappedObject)
+LocoAddress*  PythonQtWrapper_Throttle::getLocoAddress(Throttle* theWrappedObject)
 {
   return ( theWrappedObject->getLocoAddress());
 }
@@ -16934,7 +16934,7 @@ if (_wrapper) {
 }
   return ThrottleManager::eventFilter(watched0, event1);
 }
-locoAddress*  PythonQtShell_ThrottleManager::getAddress(QString  arg__1, locoAddress::Protocol  arg__2)
+LocoAddress*  PythonQtShell_ThrottleManager::getAddress(QString  arg__1, LocoAddress::Protocol  arg__2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16944,7 +16944,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"LocoAddress*" , "QString" , "LocoAddress::Protocol"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      locoAddress* returnValue{};
+      LocoAddress* returnValue{};
       void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -16953,7 +16953,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getAddress", methodInfo, result);
           } else {
-            returnValue = *((locoAddress**)args[0]);
+            returnValue = *((LocoAddress**)args[0]);
           }
         }
       }
@@ -16967,7 +16967,7 @@ if (_wrapper) {
 }
   return ThrottleManager::getAddress(arg__1, arg__2);
 }
-locoAddress*  PythonQtShell_ThrottleManager::getAddress(QString  arg__1, QString  arg__2)
+LocoAddress*  PythonQtShell_ThrottleManager::getAddress(QString  arg__1, QString  arg__2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16977,7 +16977,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"LocoAddress*" , "QString" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      locoAddress* returnValue{};
+      LocoAddress* returnValue{};
       void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -16986,7 +16986,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getAddress", methodInfo, result);
           } else {
-            returnValue = *((locoAddress**)args[0]);
+            returnValue = *((LocoAddress**)args[0]);
           }
         }
       }
@@ -17000,7 +17000,7 @@ if (_wrapper) {
 }
   return ThrottleManager::getAddress(arg__1, arg__2);
 }
-QList<locoAddress::Protocol >  PythonQtShell_ThrottleManager::getAddressProtocolTypes()
+QList<LocoAddress::Protocol >  PythonQtShell_ThrottleManager::getAddressProtocolTypes()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -17010,7 +17010,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"QList<LocoAddress::Protocol >"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QList<locoAddress::Protocol > returnValue{};
+      QList<LocoAddress::Protocol > returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -17019,7 +17019,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getAddressProtocolTypes", methodInfo, result);
           } else {
-            returnValue = *((QList<locoAddress::Protocol >*)args[0]);
+            returnValue = *((QList<LocoAddress::Protocol >*)args[0]);
           }
         }
       }
@@ -17033,7 +17033,7 @@ if (_wrapper) {
 }
   return ThrottleManager::getAddressProtocolTypes();
 }
-QString  PythonQtShell_ThrottleManager::getAddressTypeString(locoAddress::Protocol  arg__1)
+QString  PythonQtShell_ThrottleManager::getAddressTypeString(LocoAddress::Protocol  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -17132,7 +17132,7 @@ if (_wrapper) {
 }
   return ThrottleManager::getMode(arg__1);
 }
-locoAddress::Protocol  PythonQtShell_ThrottleManager::getProtocolFromString(QString  arg__1)
+LocoAddress::Protocol  PythonQtShell_ThrottleManager::getProtocolFromString(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -17142,7 +17142,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"LocoAddress::Protocol" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      locoAddress::Protocol returnValue{};
+      LocoAddress::Protocol returnValue{};
       void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -17151,7 +17151,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getProtocolFromString", methodInfo, result);
           } else {
-            returnValue = *((locoAddress::Protocol*)args[0]);
+            returnValue = *((LocoAddress::Protocol*)args[0]);
           }
         }
       }
@@ -17383,22 +17383,22 @@ bool  PythonQtWrapper_ThrottleManager::canBeShortAddress(ThrottleManager* theWra
   return ( theWrappedObject->canBeShortAddress(arg__1));
 }
 
-locoAddress*  PythonQtWrapper_ThrottleManager::getAddress(ThrottleManager* theWrappedObject, QString  arg__1, locoAddress::Protocol  arg__2)
+LocoAddress*  PythonQtWrapper_ThrottleManager::getAddress(ThrottleManager* theWrappedObject, QString  arg__1, LocoAddress::Protocol  arg__2)
 {
   return ( theWrappedObject->getAddress(arg__1, arg__2));
 }
 
-locoAddress*  PythonQtWrapper_ThrottleManager::getAddress(ThrottleManager* theWrappedObject, QString  arg__1, QString  arg__2)
+LocoAddress*  PythonQtWrapper_ThrottleManager::getAddress(ThrottleManager* theWrappedObject, QString  arg__1, QString  arg__2)
 {
   return ( theWrappedObject->getAddress(arg__1, arg__2));
 }
 
-QList<locoAddress::Protocol >  PythonQtWrapper_ThrottleManager::getAddressProtocolTypes(ThrottleManager* theWrappedObject)
+QList<LocoAddress::Protocol >  PythonQtWrapper_ThrottleManager::getAddressProtocolTypes(ThrottleManager* theWrappedObject)
 {
   return ( theWrappedObject->getAddressProtocolTypes());
 }
 
-QString  PythonQtWrapper_ThrottleManager::getAddressTypeString(ThrottleManager* theWrappedObject, locoAddress::Protocol  arg__1)
+QString  PythonQtWrapper_ThrottleManager::getAddressTypeString(ThrottleManager* theWrappedObject, LocoAddress::Protocol  arg__1)
 {
   return ( theWrappedObject->getAddressTypeString(arg__1));
 }
@@ -17413,7 +17413,7 @@ int  PythonQtWrapper_ThrottleManager::getMode(ThrottleManager* theWrappedObject,
   return ( theWrappedObject->getMode(arg__1));
 }
 
-locoAddress::Protocol  PythonQtWrapper_ThrottleManager::getProtocolFromString(ThrottleManager* theWrappedObject, QString  arg__1)
+LocoAddress::Protocol  PythonQtWrapper_ThrottleManager::getProtocolFromString(ThrottleManager* theWrappedObject, QString  arg__1)
 {
   return ( theWrappedObject->getProtocolFromString(arg__1));
 }

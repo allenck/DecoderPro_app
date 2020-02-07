@@ -158,7 +158,7 @@ public:
      *         with a Reporter, or is associated with a Reporter that is not also a
      *         PhysicalLocationReporter
      */
-    /*public*/ locoAddress* getLocoAddress(QString rep);
+    /*public*/ LocoAddress* getLocoAddress(QString rep);
     /** Parses out a (possibly old) LnReporter-generated report string to extract the direction from
      * within it based on this object's protocol.
      * The Class Block implementationd defers to its associated Reporter, if it exists.

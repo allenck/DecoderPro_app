@@ -33,6 +33,7 @@ public:
     /*public*/ void setDisabled(bool disabled);
     /*public*/ QString getConnectionName();
     /*public*/ void dispose();
+    /*public*/ virtual QString name() {return "?";}
 
 signals:
 
@@ -71,7 +72,10 @@ protected:
     /*protected*/ int addStandardDetails(bool incAdvanced, int i);
     /*protected*/ /*synchronized*/ static void updateSerialPortNames(QString portName, QComboBox/*<String>*/* portCombo, QVector<QString>* portList);
     /*protected*/ QVector<QString>* getPortNames();
-    /*protected*/ QStringList getPortFriendlyNames();
+    /*protected*/ virtual QStringList getPortFriendlyNames();
+    /*abstract*/ /*protected*/ virtual void getInstance() {}
+    /*abstract*/ /*protected*/ virtual void _register() {}
+
 protected slots:
     /*protected*/ void showAdvancedItems();
 

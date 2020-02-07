@@ -20,7 +20,7 @@ using namespace Sprog;
 }
 
 //@Override
-/*public*/ void SprogCSThrottleManager::requestThrottleSetup(locoAddress* a, bool control) {
+/*public*/ void SprogCSThrottleManager::requestThrottleSetup(LocoAddress* a, bool control) {
     // The SPROG protocol doesn't require an interaction with the command
     // station for this, so immediately trigger the callback
     DccLocoAddress* address = (DccLocoAddress*) a;

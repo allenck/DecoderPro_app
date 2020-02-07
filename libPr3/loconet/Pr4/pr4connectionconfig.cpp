@@ -18,7 +18,7 @@
  *
  * @param p   Serial port adapter for the connection
  */
-/*public*/ PR4ConnectionConfig::PR4ConnectionConfig(SerialPortAdapter* p, QObject* parent)
+/*public*/ Pr4ConnectionConfig::Pr4ConnectionConfig(SerialPortAdapter* p, QObject* parent)
  : AbstractSerialConnectionConfig(p, parent) {
     //super(p);
 }
@@ -27,7 +27,7 @@
  * Ctor for a connection configuration with no preexisting adapter.
  * {@link #setInstance()} will fill the adapter member.
  */
-/*public*/ PR4ConnectionConfig::PR4ConnectionConfig(QObject* parent) : AbstractSerialConnectionConfig(parent) {
+/*public*/ Pr4ConnectionConfig::Pr4ConnectionConfig(QObject* parent) : AbstractSerialConnectionConfig(parent) {
     //super();
 }
 
@@ -37,7 +37,7 @@
  * @return Connection type name
  */
 //@Override
-/*public*/ QString PR4ConnectionConfig::name() {
+/*public*/ QString Pr4ConnectionConfig::name() {
     return "LocoNet PR4"; // NOI18N
 }
 
@@ -45,12 +45,12 @@
  * Is Option List 2 Advanced?
  * @return bool, always false
  */
-/*public*/ bool PR4ConnectionConfig::isOptList2Advanced() {
+/*public*/ bool Pr4ConnectionConfig::isOptList2Advanced() {
     return false;
 }
 
 //@Override
-/*protected*/ QStringList PR4ConnectionConfig::getPortFriendlyNames() {
+/*protected*/ QStringList Pr4ConnectionConfig::getPortFriendlyNames() {
 //    if (SystemType.isWindows())
 //    {
 //        return new QStringList{"Communications Port"}; // NOI18N
@@ -62,7 +62,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PR4ConnectionConfig::setInstance() {
+/*protected*/ void Pr4ConnectionConfig::setInstance() {
     if (adapter == nullptr) {
         adapter = new PR4Adapter();
     }

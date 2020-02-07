@@ -30,6 +30,7 @@
 #include "panecontainer.h"
 #include <QTreeView>
 #include "globalprogrammermanager.h"
+#include "defaultprogrammermanager.h"
 
 PaneProgDp3Action::PaneProgDp3Action()
  : JmriAbstractAction("New Loco", (WindowInterface*)NULL)
@@ -258,7 +259,7 @@ if(progPane!=NULL){
 }
 
 /*protected*/ void PaneProgDp3Action::readCV(QString cv) {
-Programmer* p = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+Programmer* p = ((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
 if (p == NULL) {
     //statusUpdate("No programmer connected");
 } else {
@@ -316,8 +317,8 @@ if (p == NULL) {
   f->update();
   f->adjustSize();
  }
- if (((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager")) != NULL &&
-    ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable()){
+ if (((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager")) != NULL &&
+    ((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable()){
     this->mProgrammer = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
  }
 
@@ -836,7 +837,7 @@ void ThisProgPane::On_readAllButton_clicked(bool bSelected)
    pane->serviceModeProg->setChecked(true);
 
    if (InstanceManager::getDefault("GlobalProgrammerManager")==NULL ||
-       !((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable())
+       !((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable())
    {
     pane->editModeProg->setChecked(true);
     pane->serviceModeProg->setEnabled(false);

@@ -456,11 +456,11 @@ void ThrottleWindow::propertyChange(PropertyChangeEvent *e)
 }
 
 //@Override
-/*public*/ void ThrottleWindow::notifyAddressChosen(locoAddress* /*l*/) {
+/*public*/ void ThrottleWindow::notifyAddressChosen(LocoAddress* /*l*/) {
 }
 
 //@Override
-/*public*/ void ThrottleWindow::notifyAddressReleased(locoAddress* /*la*/) {
+/*public*/ void ThrottleWindow::notifyAddressReleased(LocoAddress* /*la*/) {
     setLastUsedSaveFile("");
     setFrameTitle();
     /*throttleWindow.*/updateGUI();
@@ -1030,7 +1030,7 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
  }
 }
 
-void ThrottleWindow::on_address_released(locoAddress *)
+void ThrottleWindow::on_address_released(LocoAddress *)
 {
  setTitle(tr("Unassigned"));
 }

@@ -223,7 +223,7 @@ DecoderFile::DecoderFile(QObject *parent) :
 }
 
 
-/*public*/ QList<locoAddress::Protocol>* DecoderFile::getSupportedProtocols(){
+/*public*/ QList<LocoAddress::Protocol>* DecoderFile::getSupportedProtocols(){
     if(protocols==NULL)
         setSupportedProtocols();
     //return protocols->toArray(new LocoAddress::Protocol[protocols->size()]);
@@ -231,14 +231,14 @@ DecoderFile::DecoderFile(QObject *parent) :
 }
 
 /*private*/ void DecoderFile::setSupportedProtocols(){
-    protocols = new QList<locoAddress::Protocol>();
+    protocols = new QList<LocoAddress::Protocol>();
     if(!_element.firstChildElement("protocols").isNull()){
         //@SuppressWarnings("unchecked")
         QDomNodeList protocolList = _element.firstChildElement("protocols").elementsByTagName("protocol");
         for(int i = 0; i <  protocolList.size(); i++)
         {
          QDomElement e = protocolList.at(i).toElement();
-            protocols->append(locoAddress::getByShortName(e.text()));
+            protocols->append(LocoAddress::getByShortName(e.text()));
         }
     }
 }

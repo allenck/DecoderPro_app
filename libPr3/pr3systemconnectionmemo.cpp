@@ -1,6 +1,7 @@
 #include "pr3systemconnectionmemo.h"
 #include "instancemanager.h"
 #include "loconetthrottledtransmitter.h"
+#include "lnprogrammermanager.h"
 
 PR3SystemConnectionMemo::PR3SystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject *parent) :
     LocoNetSystemConnectionMemo(lt, sm, parent)

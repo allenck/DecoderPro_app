@@ -38,7 +38,7 @@ void SprogThrottleManager::release() {
 }
 
 //@Override
-/*public*/ void SprogThrottleManager::requestThrottleSetup(locoAddress* a, bool control) {
+/*public*/ void SprogThrottleManager::requestThrottleSetup(LocoAddress* a, bool control) {
     // The SPROG protocol doesn't require an interaction with the command
     // station for this, so set the address and immediately trigger the callback
     // if a throttle is not in use.

@@ -30,7 +30,7 @@
 #include "profilemanagerdialog.h"
 #include "profile.h"
 #include "defaultusermessagepreferencesxml.h"
-#include "../libPr3/loconet/Pr3/connectionconfigxml.h"
+#include "../libPr3/loconet/Pr3/pr3connectionconfigxml.h"
 #include "../libPr3/loconet/HexFile/hexfileconnectionconfigxml.h"
 #include "programmerconfigpanexml.h"
 #include "filelocationpanexml.h"

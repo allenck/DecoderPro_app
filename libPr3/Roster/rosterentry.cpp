@@ -100,7 +100,7 @@ void RosterEntry::init()
  _model = "";
  _dccAddress = "3";
     ///*protected*/ bool _isLongAddress = false;
- _protocol = locoAddress::DCC_SHORT;
+ _protocol = LocoAddress::DCC_SHORT;
   _comment = "";
   _decoderModel = "";
   _decoderFamily = "";
@@ -299,12 +299,12 @@ void RosterEntry::init()
 /*public*/ void RosterEntry::setLongAddress(bool b)
 {
  bool old = false;
- if(_protocol==locoAddress::DCC_LONG)
+ if(_protocol==LocoAddress::DCC_LONG)
   old = true;
  if(b)
-  _protocol=locoAddress::DCC_LONG;
+  _protocol=LocoAddress::DCC_LONG;
  else
-  _protocol=locoAddress::DCC_SHORT;
+  _protocol=LocoAddress::DCC_SHORT;
  firePropertyChange("longaddress", old, (b));
 }
 
@@ -325,23 +325,23 @@ void RosterEntry::init()
  this->firePropertyChange(RosterEntry::SPEED_PROFILE, VPtr<RosterSpeedProfile>::asQVariant(old), VPtr<RosterSpeedProfile>::asQVariant(this->_sp));
 }
 /*public*/ bool RosterEntry::isLongAddress() {
-    if(_protocol==locoAddress::DCC_LONG)
+    if(_protocol==LocoAddress::DCC_LONG)
         return true;
     return false;
 }
 
-/*public*/ void RosterEntry::setProtocol(locoAddress::Protocol protocol){
-    locoAddress::Protocol old = _protocol;
+/*public*/ void RosterEntry::setProtocol(LocoAddress::Protocol protocol){
+    LocoAddress::Protocol old = _protocol;
     _protocol = protocol;
     firePropertyChange("protocol", old, _protocol);
 }
 
-/*public*/ locoAddress::Protocol RosterEntry::getProtocol(){
+/*public*/ LocoAddress::Protocol RosterEntry::getProtocol(){
     return _protocol;
 }
 
 /*public*/ QString RosterEntry::getProtocolAsString(){
-    return locoAddress::getPeopleName(_protocol);
+    return LocoAddress::getPeopleName(_protocol);
 }
 
 /*public*/ void   RosterEntry::setComment(QString s) {
@@ -1528,7 +1528,7 @@ if (!(_decoderFamily==("")))
     else
     {
      _dccAddress = "";
-     _protocol = locoAddress::DCC_SHORT;
+     _protocol = LocoAddress::DCC_SHORT;
     }
    }
    else
@@ -1546,19 +1546,19 @@ if (!(_decoderFamily==("")))
     if (tf!=NULL && tf->canBeLongAddress(address) && !tf->canBeShortAddress(address))
     {
      // if it has to be long, handle that
-     _protocol = locoAddress::DCC_LONG;
+     _protocol = LocoAddress::DCC_LONG;
     }
     else if (tf!=NULL && !tf->canBeLongAddress(address) && tf->canBeShortAddress(address))
     {
      // if it has to be short, handle that
-     _protocol = locoAddress::DCC_SHORT;
+     _protocol = LocoAddress::DCC_SHORT;
     }
     else
     {
      // else guess short address
      // These people should resave their roster, so we'll warn them
      warnShortLong(_id);
-     _protocol = locoAddress::DCC_SHORT;
+     _protocol = LocoAddress::DCC_SHORT;
 
     }
 
@@ -1647,7 +1647,7 @@ if (!(_decoderFamily==("")))
   }
  }
 }
-/*public*/ locoAddress* RosterEntry::getAddress(QDomElement element)
+/*public*/ LocoAddress* RosterEntry::getAddress(QDomElement element)
 {
  if(!element.firstChildElement("dcclocoaddress").isNull())
  {
@@ -1662,7 +1662,7 @@ if (!(_decoderFamily==("")))
   return NULL;
  }
  QString protocol = element.firstChildElement("protocol").text();
- locoAddress::Protocol prot = locoAddress::getByShortName(protocol);
+ LocoAddress::Protocol prot = LocoAddress::getByShortName(protocol);
  return new DccLocoAddress(addr, prot);
 }
 /*public*/ void RosterEntry::putAttribute(QString key, QString value)
@@ -1696,7 +1696,7 @@ QDomElement RosterEntry::createTextElement(QDomDocument doc, QString tagName, QS
  eText.appendChild(t);
  return eText;
 }
-QDomElement RosterEntry::storeLocoAddress(QDomDocument doc, locoAddress* p)
+QDomElement RosterEntry::storeLocoAddress(QDomDocument doc, LocoAddress* p)
 {
  QDomElement element = doc.createElement("locoaddress");
 
@@ -1709,7 +1709,7 @@ QDomElement RosterEntry::storeLocoAddress(QDomDocument doc, locoAddress* p)
  {
   element.appendChild(createTextElement(doc,QString("number"), QString("%1").arg(p->getNumber())));
   //element.appendChild(createTextElement(doc,QString("protocol"),QString("%1").arg(p->getProtocol().getShortName())));
-  element.appendChild(createTextElement(doc,QString("protocol"),QString("%1").arg(locoAddress::getShortName(p->getProtocol()))));
+  element.appendChild(createTextElement(doc,QString("protocol"),QString("%1").arg(LocoAddress::getShortName(p->getProtocol()))));
  }
  else
  {

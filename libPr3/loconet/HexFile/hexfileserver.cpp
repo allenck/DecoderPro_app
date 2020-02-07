@@ -7,6 +7,7 @@
 #include "debugprogrammermanager.h"
 #include "debugthrottlemanager.h"
 #include "lncommandstationtype.h"
+#include "lnprogrammermanager.h"
 
 //HexFileServer::HexFileServer(QObject *parent) :
 //    QObject(parent)

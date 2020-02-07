@@ -102,6 +102,16 @@ AbstractNetworkPortController((SystemConnectionMemo*)connectionMemo, parent)
 }
 
 /**
+ * Set whether transponding is available.
+ *
+ * @param value either yes or no
+ */
+/*public*/ void LnNetworkPortController::setTranspondingAvailable(QString value) {
+    // default (most common state) is off, so just check for Yes
+    mTranspondingAvailable = (value==("Yes") || value==(tr("Yes")));
+    log->debug(tr("transponding available: %1").arg(mTranspondingAvailable)); // NOI18N
+}
+/**
  * Set the third port option. Only to be used after construction, but before
  * the openPort call
  */

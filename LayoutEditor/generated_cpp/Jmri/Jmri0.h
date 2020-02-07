@@ -2888,7 +2888,7 @@ void delete_Block(Block* obj) { delete obj; }
    float  getLengthCm(Block* theWrappedObject);
    float  getLengthIn(Block* theWrappedObject);
    float  getLengthMm(Block* theWrappedObject);
-   locoAddress*  getLocoAddress(Block* theWrappedObject, QString  rep);
+   LocoAddress*  getLocoAddress(Block* theWrappedObject, QString  rep);
    bool  getPermissiveWorking(Block* theWrappedObject);
    Sensor*  getSensor(Block* theWrappedObject);
    float  getSpeedLimit(Block* theWrappedObject);
@@ -3253,7 +3253,7 @@ class PythonQtShell_DccLocoAddress : public DccLocoAddress
 public:
     PythonQtShell_DccLocoAddress(QObject*  parent = 0):DccLocoAddress(parent),_wrapper(NULL) {}
     PythonQtShell_DccLocoAddress(const DccLocoAddress&  l, QObject*  parent = 0):DccLocoAddress(l, parent),_wrapper(NULL) {}
-    PythonQtShell_DccLocoAddress(int  number, locoAddress::Protocol  protocol, QObject*  parent = 0):DccLocoAddress(number, protocol, parent),_wrapper(NULL) {}
+    PythonQtShell_DccLocoAddress(int  number, LocoAddress::Protocol  protocol, QObject*  parent = 0):DccLocoAddress(number, protocol, parent),_wrapper(NULL) {}
     PythonQtShell_DccLocoAddress(int  number, bool  isLong, QObject*  parent = 0):DccLocoAddress(number, isLong, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_DccLocoAddress();
@@ -3264,7 +3264,7 @@ virtual bool  equals(QObject*  a);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual int  getNumber() const;
-virtual locoAddress::Protocol  getProtocol() const;
+virtual LocoAddress::Protocol  getProtocol() const;
 virtual void timerEvent(QTimerEvent*  event);
 virtual QString  toString();
 
@@ -3277,7 +3277,7 @@ class PythonQtPublicPromoter_DccLocoAddress : public DccLocoAddress
 { public:
 inline bool  py_q_equals(QObject*  a) { return DccLocoAddress::equals(a); }
 inline int  py_q_getNumber() const { return DccLocoAddress::getNumber(); }
-inline locoAddress::Protocol  py_q_getProtocol() const { return DccLocoAddress::getProtocol(); }
+inline LocoAddress::Protocol  py_q_getProtocol() const { return DccLocoAddress::getProtocol(); }
 inline QString  py_q_toString() { return DccLocoAddress::toString(); }
 };
 
@@ -3287,12 +3287,12 @@ public:
 public slots:
 DccLocoAddress* new_DccLocoAddress(QObject*  parent = 0);
 DccLocoAddress* new_DccLocoAddress(const DccLocoAddress&  l, QObject*  parent = 0);
-DccLocoAddress* new_DccLocoAddress(int  number, locoAddress::Protocol  protocol, QObject*  parent = 0);
+DccLocoAddress* new_DccLocoAddress(int  number, LocoAddress::Protocol  protocol, QObject*  parent = 0);
 DccLocoAddress* new_DccLocoAddress(int  number, bool  isLong, QObject*  parent = 0);
 void delete_DccLocoAddress(DccLocoAddress* obj) { delete obj; } 
    bool  py_q_equals(DccLocoAddress* theWrappedObject, QObject*  a){  return (((PythonQtPublicPromoter_DccLocoAddress*)theWrappedObject)->py_q_equals(a));}
    int  py_q_getNumber(DccLocoAddress* theWrappedObject) const{  return (((PythonQtPublicPromoter_DccLocoAddress*)theWrappedObject)->py_q_getNumber());}
-   locoAddress::Protocol  py_q_getProtocol(DccLocoAddress* theWrappedObject) const{  return (((PythonQtPublicPromoter_DccLocoAddress*)theWrappedObject)->py_q_getProtocol());}
+   LocoAddress::Protocol  py_q_getProtocol(DccLocoAddress* theWrappedObject) const{  return (((PythonQtPublicPromoter_DccLocoAddress*)theWrappedObject)->py_q_getProtocol());}
    int  hashCode(DccLocoAddress* theWrappedObject);
    bool  isLongAddress(DccLocoAddress* theWrappedObject);
    QString  py_q_toString(DccLocoAddress* theWrappedObject){  return (((PythonQtPublicPromoter_DccLocoAddress*)theWrappedObject)->py_q_toString());}
@@ -3376,7 +3376,7 @@ virtual bool  getF9();
 virtual bool  getF9Momentary();
 virtual bool  getIsForward();
 virtual QVector<PropertyChangeListener* >*  getListeners();
-virtual locoAddress*  getLocoAddress();
+virtual LocoAddress*  getLocoAddress();
 virtual BasicRosterEntry*  getRosterEntry();
 virtual float  getSpeedIncrement();
 virtual float  getSpeedSetting();

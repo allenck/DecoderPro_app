@@ -10,7 +10,7 @@ namespace Sprog
  {
  public:
   /*public*/ SprogThrottle(SprogSystemConnectionMemo* memo, DccLocoAddress* address, QObject* parent = 0);
-  /*public*/ locoAddress* getLocoAddress();
+  /*public*/ LocoAddress* getLocoAddress();
   /*public*/ void setSpeedStepMode(SpeedStepMode *Mode);
   /*public*/ void setSpeedSetting(float speed);
   /*public*/ void setIsForward(bool forward);

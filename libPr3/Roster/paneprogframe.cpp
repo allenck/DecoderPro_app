@@ -163,8 +163,8 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
  // set the programming mode
  if (pProg != NULL)
  {
-  if (((AddressedProgrammerManager*)InstanceManager::getOptionalDefault("AddressedProgrammerManager"))!= NULL
-                      || ((GlobalProgrammerManager*)InstanceManager::getOptionalDefault("GlobalProgrammerManager"))!= NULL)
+  if (((DefaultProgrammerManager*)InstanceManager::getOptionalDefault("AddressedProgrammerManager"))!= NULL
+                      || ((DefaultProgrammerManager*)InstanceManager::getOptionalDefault("GlobalProgrammerManager"))!= NULL)
   {
    // go through in preference order, trying to find a mode
    // that exists in both the programmer and decoder.

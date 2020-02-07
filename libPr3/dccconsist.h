@@ -30,9 +30,9 @@ public:
     /*public*/ QList<DccLocoAddress *> getConsistList();
     /*public*/ bool contains(DccLocoAddress* address) ;
     /*public*/ bool getLocoDirection(DccLocoAddress* address) ;
-    /*public*/ void add(DccLocoAddress* locoAddress, bool directionNormal) ;
-    /*public*/ void restore(DccLocoAddress* locoAddress, bool directionNormal) ;
-    /*public*/ void remove(DccLocoAddress* locoAddress) ;
+    /*public*/ void add(DccLocoAddress* LocoAddress, bool directionNormal) ;
+    /*public*/ void restore(DccLocoAddress* LocoAddress, bool directionNormal) ;
+    /*public*/ void remove(DccLocoAddress* LocoAddress) ;
     /*public*/ void setPosition(DccLocoAddress* address,int position);
     /*public*/ int getPosition(DccLocoAddress* address) ;
     /*public*/ void addConsistListener(ConsistListener* Listener) ;
@@ -80,9 +80,9 @@ protected:
  /*protected*/ DccLocoAddress* consistAddress = NULL;
 
  /*protected*/ QString ConsistID;// = NULL;
- /*protected*/ virtual void addToAdvancedConsist(DccLocoAddress* locoAddress, bool directionNormal);
- /*protected*/ virtual void removeFromAdvancedConsist(DccLocoAddress* locoAddress);
- /*protected*/ void notifyConsistListeners(DccLocoAddress*  locoAddress, int ErrorCode) ;
+ /*protected*/ virtual void addToAdvancedConsist(DccLocoAddress* LocoAddress, bool directionNormal);
+ /*protected*/ virtual void removeFromAdvancedConsist(DccLocoAddress* LocoAddress);
+ /*protected*/ void notifyConsistListeners(DccLocoAddress*  LocoAddress, int ErrorCode) ;
  //QMap<DccLocoAddress*, QString> consistRoster;// = nullptr;
  DccLocoHash<QString>* consistRoster = nullptr;
  /*protected*/ void setRosterEntryCVValue(DccLocoAddress* address);

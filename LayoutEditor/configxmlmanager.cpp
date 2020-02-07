@@ -870,7 +870,9 @@ File userPrefsFile;*/
    else if(sl.at(3) == "pr2")
     prefix = "Pr2";
    else if(sl.at(3) == "pr4")
-    prefix = "PR4";
+    prefix = "Pr4";
+   else if(sl.at(3) == "usb_dcs240")
+    prefix = "DCS240";
    else if(sl.at(3) == "networkdriver")
     prefix = "JMRIClient";
 
@@ -919,7 +921,9 @@ File userPrefsFile;*/
       else if(sl.at(3) == "networkdriver")
       prefix = "JMRIClient";
      else if(sl.at(3) == "pr4")
-      prefix = "PR4";
+      prefix = "Pr4";
+     else if(sl.at(3) == "usb_dcs240")
+      prefix = "DCS240";
       QString newClassName = prefix+"ConnectionConfigXml";
       if(!prefix.isEmpty())
        classname = newClassName;

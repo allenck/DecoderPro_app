@@ -57,6 +57,29 @@ int LnConstants::OPC_LOCO_SPD_ESTOP = 0x01; /* emergency stop command           
 //const int LnConstants::OPC_MULTI_SENSE_ABSENT  = 0x00; // MSG field: transponder lost
 //const int LnConstants::OPC_MULTI_SENSE_POWER   = 0x60; // MSG field: Power message
 
+/* protocol level */
+
+    /** The protocol has not been established */
+    /*public final static*/int LnConstants::LOCONETPROTOCOL_UNKNOWN = 0;
+    /** Supports loconet 1.1 */
+    /*public final static*/int LnConstants::LOCONETPROTOCOL_ONE = 1;
+    /** Supports the protocol introduced to DCS240, DCS210 */
+    /*public final static*/int LnConstants::LOCONETPROTOCOL_TWO = 2;
+
+    /* Expanded slot codes */
+    /*public final static*/int LnConstants::OPC_EXP_REQ_SLOT = 0xbe;
+    /*public final static*/int LnConstants::OPC_EXP_SLOT_MOVE = 0xd4;
+    /*public final static*/int LnConstants::OPC_EXP_RD_SL_DATA = 0xe6;
+    /*public final static*/int LnConstants::OPC_EXP_WR_SL_DATA = 0xee;
+    /*public final static*/int LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_SPEED = 0b11110000;
+    /*public final static*/int LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION = 0b11111000;
+    /*public final static*/int LnConstants::OPC_EXP_SEND_FUNCTION_OR_SPEED_AND_DIR = 0xd5;
+    /*public final static*/int LnConstants::OPC_EXP_SEND_SPEED_AND_DIR_MASK = 0b00010000;
+    /*public final static*/int LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F0F6_MASK = 0b00010000;
+    /*public final static*/int LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F7F13_MASK = 0b00011000;
+    /*public final static*/int LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F14F20_MASK = 0b00100000;
+    /*public final static*/int LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28OFF_MASK = 0b00101000;
+    /*public final static*/int LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28ON_MASK =  0b00110000;
 /* Slot Status byte definitions and macros */
 /***********************************************************************************
 *   D7-SL_SPURGE    ; 1=SLOT purge en,                                             *
@@ -321,11 +344,14 @@ QString LnConstants::OPC_NAME(int opcode) { // encode LocoNet Opcode as a string
       }
 
 // start of values not from llnmon.c
+/*public*/ /*final*/ /*static*/ int LnConstants::METER_INTERVAL_MS = 30000;
+
 
 // Expanded slot index values
 int LnConstants::EXP_MAST            = 0;
 int LnConstants::EXP_SLOT            = 0x01;
-int EXPD_LENGTH         = 16;
+int LnConstants::EXPD_LENGTH         = 16;
+
 //offsets into message
 int LnConstants::EXPD_STAT           = 0;
 int LnConstants::EXPD_ADRL           = 1;

@@ -14,16 +14,22 @@ class LIBPREFSHARED_EXPORT JmrixConfigPane : public QWidget
 public:
     //explicit JmrixConfigPane(QWidget *parent = 0);
  ~JmrixConfigPane() {}
+#if 0
     /*public*/ static JmrixConfigPane* instance(int index);
     /*public*/ static JmrixConfigPane* instance(ConnectionConfig* config);
+#endif
     /*public*/ static /*synchronized*/ JmrixConfigPane* createPanel(ConnectionConfig* c);
     /*public*/ static JmrixConfigPane* createNewPanel();
+#if 0
     /*public*/ static int getNumberOfInstances() ;
     /*public*/ static void dispose(int index);
+ /*public*/ static int getInstanceNumber(JmrixConfigPane* confPane);
+ /*public*/ static QList<JmrixConfigPane*> getListOfConfigPanes();
+#endif
     /*public*/ static void dispose(JmrixConfigPane* confPane);
-    /*public*/ static int getInstanceNumber(JmrixConfigPane* confPane);
-    /*public*/ static QList<JmrixConfigPane*> getListOfConfigPanes();
+#if 0
     static /*final*/ QMap<int, JmrixConfigPane*> configPaneTable;// = new HashMap<>();
+#endif
 
     /*public*/ static /*final*/ QString NONE_SELECTED;// = Bundle.getMessage("noneSelected");
     /*public*/ static /*final*/ QString NO_PORTS_FOUND;// = Bundle.getMessage("noPortsFound");
@@ -77,6 +83,9 @@ private:
     */
    /*private*/ JmrixConfigPane(ConnectionConfig* original, QWidget* parent = 0);
    void selection();
+
+protected:
+   JmrixConfigPane(QWidget *parent = 0) : QWidget(parent){}
 
    friend class ConnectionsPreferencesPanel;
 };

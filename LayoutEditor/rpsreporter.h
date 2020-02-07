@@ -4,7 +4,7 @@
 #include "measurement.h"
 #include "physicallocationreporter.h"
 #include "measurementlistener.h"
-class locoAddress;
+class LocoAddress;
 class Region;
 class RpsReporter : public AbstractReporter, MeasurementListener
 {
@@ -16,7 +16,7 @@ public:
  /*public*/ int getState();
  /*public*/ void setState(int i);
  /*public*/ void dispose();
- /*public*/ locoAddress* getLocoAddress(QString rep);
+ /*public*/ LocoAddress* getLocoAddress(QString rep);
  /*public*/ PhysicalLocationReporter::Direction getDirection(QString rep);
  /*public*/ PhysicalLocation* getPhysicalLocation();
  /*public*/ PhysicalLocation* getPhysicalLocation(QString s);

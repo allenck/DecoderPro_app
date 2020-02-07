@@ -9,6 +9,11 @@ class LnProgrammerManager : public  DefaultProgrammerManager
  Q_OBJECT
 public:
     LnProgrammerManager( LocoNetSystemConnectionMemo* memo);
+    ~LnProgrammerManager()
+    {
+
+    }
+    LnProgrammerManager(const LnProgrammerManager&) : DefaultProgrammerManager() {}
     /**
      * LocoNet command station does provide Ops Mode
      * @return true
@@ -22,7 +27,6 @@ public:
 
 
 private:
-    SlotManager* mSlotManager;
     LocoNetSystemConnectionMemo* memo;
     static /*final*/ ProgrammingMode* LOCONETSV1MODE;//    = new ProgrammingMode("LOCONETSV1MODE", Bundle.getMessage("LOCONETSV1MODE"));
     static /*final*/ ProgrammingMode* LOCONETSV2MODE;//    = new ProgrammingMode("LOCONETSV2MODE", Bundle.getMessage("LOCONETSV2MODE"));

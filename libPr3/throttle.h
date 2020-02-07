@@ -308,7 +308,7 @@ public:
          *
          * This is an unbound property.
          */
-        virtual locoAddress* getLocoAddress()  {return NULL;}
+        virtual LocoAddress* getLocoAddress()  {return NULL;}
 
         // register for notification if any of the properties change
         virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/)  {}

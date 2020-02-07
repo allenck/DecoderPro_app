@@ -7,15 +7,14 @@
 class PR3Adapter;
 class LIBPR3SHARED_EXPORT Pr3ConnectionConfig : public AbstractSerialConnectionConfig
 {
-    Q_OBJECT
-
+ Q_OBJECT
 public:
     Q_INVOKABLE explicit Pr3ConnectionConfig(QObject *parent = 0);
+    Q_INVOKABLE /*public*/ Pr3ConnectionConfig(PR3Adapter* p, QObject *parent = 0);
     ~Pr3ConnectionConfig() {}
     Pr3ConnectionConfig(const Pr3ConnectionConfig&)
         : AbstractSerialConnectionConfig(){}
-    /*public*/ Pr3ConnectionConfig(PR3Adapter* p, QObject *parent = 0);
-    /*public*/ QString name();
+    /*public*/ QString name() override;
     /*public*/ bool isOptList2Advanced();
 
 signals:

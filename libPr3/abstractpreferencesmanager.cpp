@@ -2,6 +2,7 @@
 #include <QHash>
 #include <QSet>
 #include "instancemanager.h"
+#include "loggerfactory.h"
 AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : PreferencesManager(parent)
 {
  initialized = new QHash<Profile*, bool>();
@@ -194,6 +195,7 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Prefer
    if (((PreferencesManager*)instance)->isInitializedWithExceptions(profile))
    {
        InitializationException* exception =  new InitializationException("Refusing to initialize", message,NULL);
+       log->debug(tr("throw exception on class '%1' msg: '%2', local msg '%3'").arg(clazz).arg(exception->getMessage()).arg(exception->getLocalizedMessage()));
        this->addInitializationException(profile, exception);
        this->setInitialized(profile, true);
 //                throw exception;
@@ -224,3 +226,4 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Prefer
     this->requiresNoInitializedWithExceptions(profile, this->getRequires(), message);
 }
 
+Logger* AbstractPreferencesManager::log = LoggerFactory::getLogger("AbstractPreferencesManager");

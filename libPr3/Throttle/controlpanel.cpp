@@ -138,11 +138,11 @@
 }
 
 //@Override
-/*public*/ void ControlPanel::notifyAddressChosen(locoAddress* /*l*/) {
+/*public*/ void ControlPanel::notifyAddressChosen(LocoAddress* /*l*/) {
 }
 
 //@Override
-/*public*/ void ControlPanel::notifyAddressReleased(locoAddress* /*la*/) {
+/*public*/ void ControlPanel::notifyAddressReleased(LocoAddress* /*la*/) {
     this->setEnabled(false);
     if (_throttle != NULL) {
         //throttle.removePropertyChangeListener(this);

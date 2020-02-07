@@ -25,14 +25,14 @@ private:
     Logger* log;
 protected:
     /*protected*/ SerialPortAdapter* adapter;
-    virtual /*abstract*/ /*protected*/ void getInstance();
-    virtual /*abstract*/ /*protected*/ void _register();
+    virtual /*abstract*/ /*protected*/ void getInstance() {}
+    virtual /*abstract*/ /*protected*/ void _register() {}
     virtual /*protected*/ void getInstance(QObject* object);
     /*protected*/ void extendElement(QDomElement e);
 //    /*protected*/ void unpackElement(QDomElement e);
 
 protected:
-    /*protected*/ void _register(ConnectionConfig* c);
+//    /*protected*/ void _register(ConnectionConfig* c);
 
 };
 

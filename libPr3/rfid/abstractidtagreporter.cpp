@@ -73,7 +73,7 @@
  * String type reports.
  */
 //@Override
-/*public*/ locoAddress* AbstractIdTagReporter::getLocoAddress(QString rep) {
+/*public*/ LocoAddress* AbstractIdTagReporter::getLocoAddress(QString rep) {
     // For now, we assume the current report.
     // IdTag.getTagID() is a system-name-ized version of the loco address. I think.
     // Matcher.group(1) : loco address (I think)
@@ -102,7 +102,7 @@
      }
      // I have no idea what kind of loco address an Ecos reporter uses,
      // so we'll default to DCC for now.
-     return (new DccLocoAddress(groups.at(1).toInt(), locoAddress::Protocol::DCC));
+     return (new DccLocoAddress(groups.at(1).toInt(), LocoAddress::Protocol::DCC));
 
     }
     return nullptr;

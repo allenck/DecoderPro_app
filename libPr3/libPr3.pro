@@ -377,7 +377,6 @@ SOURCES += \
     programmingmode.cpp \
     abstractserialconnectionconfig.cpp \
     loconet/Pr3/pr3connectionconfig.cpp \
-    loconet/Pr3/connectionconfigxml.cpp \
     pr3adapter.cpp \
     Roster/twoindexprogrammerfacade.cpp \
     Roster/accessoryopsmodeprogrammerfacade.cpp \
@@ -945,7 +944,21 @@ SOURCES += \
     loconet/Pr4/pr4selectpane.cpp \
     loconet/Pr4/pr4connectionconfig.cpp \
     loconet/Pr4/pr4connectionconfigxml.cpp \
-    consisttable.cpp
+    consisttable.cpp \
+    loconet/Pr3/pr3connectionconfigxml.cpp \
+    loconet/HexFile/hexfilesystemconnectionmemo.cpp \
+    multimeter.cpp \
+    abstractmultimeter.cpp \
+    loconet/lnmultimeter.cpp \
+    loconet/locostatsfunc.cpp \
+    loconet/rawstatus.cpp \
+    loconet/LocoBufferII/locobufferiistatus.cpp \
+    loconet/PR2/pr2status.cpp \
+    loconet/pr3ms100modestatus.cpp \
+    loconet/DCS240/dcs240connectionconfig.cpp \
+    loconet/DCS240/usbdcs240adapter.cpp \
+    loconet/DCS240/dcs240connectionconfigxml.cpp \
+    loconet/DCS240/usbdcs240systemconnectionmemo.cpp
 
 
  !contains(FTDI, 1) {
@@ -1292,7 +1305,6 @@ HEADERS += \
     addressedprogrammermanager.h \
     abstractserialconnectionconfig.h \
     loconet/Pr3/pr3connectionconfig.h \
-    loconet/Pr3/connectionconfigxml.h \
     Roster/twoindexprogrammerfacade.h \
     Roster/accessoryopsmodeprogrammerfacade.h \
     Roster/abstractprogrammerfacade.h \
@@ -1891,7 +1903,22 @@ HEADERS += \
     loconet/Pr4/pr4selectpane.h \
     loconet/Pr4/pr4connectionconfig.h \
     loconet/Pr4/pr4connectionconfigxml.h \
-    consisttable.h
+    consisttable.h \
+    loconet/Pr3/pr3connectionconfigxml.h \
+    loconet/HexFile/hexfilesystemconnectionmemo.h \
+    multimeter.h \
+    abstractmultimeter.h \
+    loconet/lnmultimeter.h \
+    loconet/locostatsfunc.h \
+    loconet/loconetinterfacestatslistener.h \
+    loconet/rawstatus.h \
+    loconet/LocoBufferII/locobufferiistatus.h \
+    loconet/PR2/pr2status.h \
+    loconet/pr3ms100modestatus.h \
+    loconet/DCS240/dcs240connectionconfig.h \
+    loconet/DCS240/usbdcs240adapter.h \
+    loconet/DCS240/dcs240connectionconfigxml.h \
+    loconet/DCS240/usbdcs240systemconnectionmemo.h
 
 
  !contains(FTDI, 1) {
@@ -2084,3 +2111,9 @@ else:unix: LIBS += -L$$PWD/../operations/ -loperations
 
 INCLUDEPATH += $$PWD/../operations
 DEPENDPATH += $$PWD/../operations
+
+
+unix|win32: LIBS += -L$$PWD/../../../../QtZeroConf-master/ -lQtZeroConf
+
+INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
+DEPENDPATH += $$PWD/../../../../QtZeroConf-master

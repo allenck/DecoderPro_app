@@ -32,6 +32,7 @@ LnNetworkPortController(new LocoNetSystemConnectionMemo(), parent)
  : LnNetworkPortController(m, parent)
 {
  common();
+
 }
 
 void LnTcpDriverAdapter::common()
@@ -55,28 +56,25 @@ void LnTcpDriverAdapter::common()
 {
  setCommandStationType(getOptionState(option2Name));
  setTurnoutHandling(getOptionState(option3Name));
+ setTranspondingAvailable(getOptionState("TranspondingPresent"));
+
 
  // connect to a packetizing traffic controller
- if(!getSocket()->waitForConnected())
- {
-  // TODO: handle connection refused, etc.
- }
-
  LnOverTcpPacketizer* packets = new LnOverTcpPacketizer((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo());
  packets->connectPort((LnNetworkPortController*)this);
 
  connect(packets->rcvHandler, SIGNAL(finished()), this, SLOT(on_rcvHandlerTerminated()));
 
  // create memo
- ((LocoNetSystemConnectionMemo*)getSystemConnectionMemo())->setLnTrafficController(packets);
+ ((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo())->setLnTrafficController(packets);
  // do the common manager config
- ((LocoNetSystemConnectionMemo*)getSystemConnectionMemo())->configureCommandStation(commandStationType,
+ ((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo())->configureCommandStation(commandStationType,
          mTurnoutNoRetry, mTurnoutExtraSpace, mTranspondingAvailable);
- ((LocoNetSystemConnectionMemo*)getSystemConnectionMemo())->configureManagers();
+ ((LocoNetSystemConnectionMemo*)this->getSystemConnectionMemo())->configureManagers();
 
  // start operation
  packets->startThreads();
- ActiveFlag::setActive();
+ ActiveFlag::setActive(); // ??
 }
 
 void LnTcpDriverAdapter::on_rcvHandlerTerminated()

@@ -84,7 +84,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
           className = perNode.attribute(CLASS);
           userName = perNode.attribute(USER_NAME, ""); // NOI18N
           manufacturer = perNode.attribute(MANUFACTURER, ""); // NOI18N
-          log-> debug(tr("Read perNode connection %1:%2 (%3) class %4}").arg(userName).arg(systemName).arg(manufacturer).arg(className));
+          log-> debug(tr("Read perNode connection %1:%2 (%3) class %4").arg(userName).arg(systemName).arg(manufacturer).arg(className));
       }
      }
     }
@@ -104,7 +104,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
       else
       if(sl.at(3) == "pr3")
       {
-       //prefix = "Pr3";
+       prefix = "Pr3";
       }
       else if(sl.at(3) == "hexfile")
        prefix = "HexFile";
@@ -118,8 +118,11 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
        prefix = "Sprog";
       else if(sl.at(3) == "sprogCS")
        prefix = "SprogCS";
-      else if(sl.at(3) == "pr3")
-       prefix = "PR4";
+      else if(sl.at(3) == "pr4")
+       prefix = "Pr4";
+      else if(sl.at(3) == "usb_dcs240")
+       prefix = "DCS240";
+
       newClassName = prefix+"ConnectionConfigXml";
       if(!prefix.isEmpty())
         className = className.replace("ConnectionConfigXml", newClassName);

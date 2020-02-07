@@ -14,7 +14,7 @@
 //            OPENLCB
 //};
 class AbstractThrottleManager;
-class LIBPR3SHARED_EXPORT locoAddress : public QObject
+class LIBPR3SHARED_EXPORT LocoAddress : public QObject
 {
     Q_OBJECT
     //Q_ENUMS(Protocol)
@@ -32,7 +32,7 @@ public:
                 LGB
     };
     Q_ENUM(Protocol)
-    explicit locoAddress(QObject *parent = 0) : QObject(parent) {}
+    explicit LocoAddress(QObject *parent = 0) : QObject(parent) {}
     /**
      * Interface for generic Locomotive Address.
      *
@@ -211,11 +211,11 @@ static Protocol getByPeopleName(QString pName) {
     virtual bool equals(QObject* a)
     {
      if (a==NULL) return false;
-     if(qobject_cast<locoAddress*>(a)== nullptr) return false;
+     if(qobject_cast<LocoAddress*>(a)== nullptr) return false;
      if(this->metaObject()->className() != a->metaObject()->className()) return false;
      try
      {
-      locoAddress* other = (locoAddress *) a;
+      LocoAddress* other = (LocoAddress *) a;
       if (this->getNumber() != other->getNumber()) return false;
       if (this->getProtocol() != other->getProtocol()) return false;
        return true;

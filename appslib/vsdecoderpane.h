@@ -11,7 +11,7 @@ class ActionEvent;
 class QStatusBar;
 class VSDecoderEvent;
 class DccLocoAddress;
-class locoAddress;
+class LocoAddress;
 class PropertyChangeEvent;
 class VSDecoder;
 class VSDecoderFrame;
@@ -39,7 +39,7 @@ public:
  /*public*/ VSDecoder* getDecoder(QString profile);
  /*public*/ void firePropertyChange(PropertyChangeID id, QVariant oldProp, QVariant newProp);
  /*public*/ void setDecoder(VSDecoder* dec);
- /*public*/ void setAddress(locoAddress* a);
+ /*public*/ void setAddress(LocoAddress* a);
  /*public*/ void setTitle(DccLocoAddress* a);
 
 signals:

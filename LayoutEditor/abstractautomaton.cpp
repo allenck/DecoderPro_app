@@ -845,7 +845,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  */
 /*public*/ bool AbstractAutomaton::writeServiceModeCV(QString CV, int value) {
     // get service mode programmer
-    Programmer* programmer = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+    Programmer* programmer = ((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
 #if 1
     // do the write, response will wake the thread
     try {
@@ -877,7 +877,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  */
 /*public*/ int AbstractAutomaton::readServiceModeCV(QString CV) {
     // get service mode programmer
-    Programmer* programmer = ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager*"))
+    Programmer* programmer = ((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager*"))
                     ->getGlobalProgrammer();
 #if 1
     // do the write, response will wake the thread
@@ -913,7 +913,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  */
 /*public*/ bool AbstractAutomaton::writeOpsModeCV(QString CV, int value, bool longAddress, int loco) {
     // get service mode programmer
-    Programmer* programmer = (Programmer*)((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager*"))->                    getAddressedProgrammer(longAddress, loco);
+    Programmer* programmer = (Programmer*)((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager*"))->                    getAddressedProgrammer(longAddress, loco);
 #if 1
     // do the write, response will wake the thread
     try {

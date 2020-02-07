@@ -8,6 +8,7 @@
 #include "globalprogrammermanager.h"
 #include "addressedprogrammermanager.h"
 #include "instancemanager.h"
+#include "defaultprogrammermanager.h"
 
 //InstallTest::InstallTest()
 //{
@@ -93,9 +94,8 @@ InstallTest::InstallTest(JFrame* p) : Apps(p) {
     //b1->setAlignmentX(JLabel.CENTER_ALIGNMENT);
     jLayout->addWidget(b1,0, Qt::AlignCenter);
 #if 1
-    GlobalProgrammerManager* gpm = (GlobalProgrammerManager*)InstanceManager::getDefault("ProgrammerManager");
     if (InstanceManager::getNullableDefault("ProgrammerManager") == NULL
-            || /*!((GlobalProgrammerManager*)!InstanceManager::getDefault("ProgrammerManager"))->isGlobalProgrammerAvailable()*/ !gpm->isGlobalProgrammerAvailable())
+            || !((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable())
     {
         b1->setEnabled(false);
         b1->setToolTip(tr("This button is disabled because your command station can't do service mode programming, or we don't yet have code to do it for that type of system"));
@@ -107,7 +107,7 @@ InstallTest::InstallTest(JFrame* p) : Apps(p) {
 //    m1.setAlignmentX(JLabel.CENTER_ALIGNMENT);
     jLayout->addWidget(m1, 0, Qt::AlignCenter);
     if (InstanceManager::getNullableDefault("AddressedProgrammerManager") == NULL
-            || !((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->isAddressedModePossible())
+            || !((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->isAddressedModePossible())
     {
         m1->setEnabled(false);
         m1->setToolTip(tr("This button is disabled because your command station can't do operations mode programming, or we don't yet have code to do it for that type of system"));

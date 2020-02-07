@@ -4,7 +4,7 @@
 #include "physicallocationreporter.h"
 #include "idtaglistener.h"
 
-class locoAddress;
+class LocoAddress;
 class IdTag;
 class AbstractIdTagReporter : public AbstractReporter
 {
@@ -16,7 +16,7 @@ public:
  /*public*/ virtual void notify(IdTag* id);
  /*public*/ void setState(int s);
  /*public*/ int getState();
- /*public*/ locoAddress* getLocoAddress(QString rep);
+ /*public*/ LocoAddress* getLocoAddress(QString rep);
  /*public*/ virtual PhysicalLocationReporter::Direction getDirection(QString rep);
  /*public*/ virtual PhysicalLocation *getPhysicalLocation();
  /*public*/ virtual PhysicalLocation* getPhysicalLocation(QString s);

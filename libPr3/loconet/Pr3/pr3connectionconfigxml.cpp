@@ -1,9 +1,9 @@
-#include "connectionconfigxml.h"
+#include "pr3connectionconfigxml.h"
 #include "pr3adapter.h"
 #include "instancemanager.h"
 #include "pr3connectionconfig.h"
 
-ConnectionConfigXml::ConnectionConfigXml(QObject *parent) :
+Pr3ConnectionConfigXml::Pr3ConnectionConfigXml(QObject *parent) :
     AbstractSerialConnectionConfigXml(parent)
 {
  setObjectName("ConnectionConfigXml(Pr3)");
@@ -27,17 +27,17 @@ ConnectionConfigXml::ConnectionConfigXml(QObject *parent) :
 //    //super();
 //}
 
-/*protected*/ void ConnectionConfigXml::getInstance()
+/*protected*/ void Pr3ConnectionConfigXml::getInstance()
 {
  adapter = /*(SerialPortAdapter*)*/new PR3Adapter();
 }
 
-/*protected*/ void ConnectionConfigXml::getInstance(QObject* object)
+/*protected*/ void Pr3ConnectionConfigXml::getInstance(QObject* object)
 {
  adapter = (SerialPortAdapter*)((ConnectionConfig*)object)->getAdapter();
 }
 
-/*protected*/ void ConnectionConfigXml::_register()
+/*protected*/ void Pr3ConnectionConfigXml::_register()
 {
  ConnectionConfig* c;
  static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(c = (ConnectionConfig*)new Pr3ConnectionConfig((PR3Adapter*)adapter, NULL));

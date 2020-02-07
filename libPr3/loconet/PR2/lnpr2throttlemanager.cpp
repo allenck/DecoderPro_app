@@ -37,7 +37,7 @@
  * This immediately invokes the callback with the a new throttle object.
  */
 //@Override
-/*public*/ void LnPr2ThrottleManager::requestThrottleSetup(locoAddress* address, bool control) {
+/*public*/ void LnPr2ThrottleManager::requestThrottleSetup(LocoAddress* address, bool control) {
     // The PR2 has only one slot, hence
     // doesn't require an interaction with the command
     // station to allocate slot, so immediately trigger the callback.

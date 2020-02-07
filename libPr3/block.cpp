@@ -881,7 +881,7 @@ return(next);
  *         with a Reporter, or is associated with a Reporter that is not also a
  *         PhysicalLocationReporter
  */
-/*public*/ locoAddress* Block::getLocoAddress(QString rep)
+/*public*/ LocoAddress* Block::getLocoAddress(QString rep)
 {
  // Defer parsing to our associated Reporter if we can.
  if (rep == NULL)
@@ -910,7 +910,7 @@ return(next);
    //log->debug("Parsed address: " + m.group(1));
       log->debug("Parsed address: " + sl.at(1));
    //return(new DccLocoAddress(Integer.parseInt(m.group(1)), LocoAddress.Protocol.DCC));
-   return new DccLocoAddress(sl.at(0).toInt(), locoAddress::DCC);
+   return new DccLocoAddress(sl.at(0).toInt(), LocoAddress::DCC);
   }
    else
    {

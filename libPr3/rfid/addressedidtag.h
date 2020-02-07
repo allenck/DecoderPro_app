@@ -3,7 +3,7 @@
 #include "../idtag.h"
 #include "../dcclocoaddress.h"
 
-class locoAddress;
+class LocoAddress;
 /**
  * This interface extends {@link jmri.IdTag} to include a locomotive address.
  * Typical uses are for RailCom and Transponding.  The default assumption is
@@ -34,7 +34,7 @@ public:
      *
      * @return current loco address
      */
-    /*default*/ /*public*/ locoAddress* getLocoAddress() {
+    /*default*/ /*public*/ LocoAddress* getLocoAddress() {
         int tagNo = getTagID().toInt();
         return new DccLocoAddress(tagNo, tagNo > 100 );
     }

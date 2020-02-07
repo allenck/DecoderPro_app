@@ -3,12 +3,11 @@
 #include "programmingmode.h"
 #include "lndeferprogrammer.h"
 
-LnProgrammerManager::LnProgrammerManager(LocoNetSystemConnectionMemo* memo):
-    DefaultProgrammerManager(new LnDeferProgrammer(memo), memo)
+LnProgrammerManager::LnProgrammerManager(LocoNetSystemConnectionMemo* memo)
+ : DefaultProgrammerManager(new LnDeferProgrammer(memo), memo)
 {
  setObjectName("LnProgrammerManager");
  //super(new LnDeferProgrammer(memo), memo)
- //mSlotManager = pSlotManager;
  this->memo = memo;
 }
 /**
@@ -20,14 +19,6 @@ LnProgrammerManager::LnProgrammerManager(LocoNetSystemConnectionMemo* memo):
  */
 //public class LnProgrammerManager  extends DefaultProgrammerManager {
 
-    //private Programmer mProgrammer;
-
-//    public LnProgrammerManager(SlotManager pSlotManager, LocoNetSystemConnectionMemo memo) {
-//        super(pSlotManager, memo);
-//        mSlotManager = pSlotManager;
-//    }
-
-
 /**
  * LocoNet command station does provide Ops Mode
  * @return true
@@ -35,7 +26,7 @@ LnProgrammerManager::LnProgrammerManager(LocoNetSystemConnectionMemo* memo):
 /*public*/ bool LnProgrammerManager::isAddressedModePossible() {return true;}
 
 /*public*/ AddressedProgrammer* LnProgrammerManager::getAddressedProgrammer(bool pLongAddress, int pAddress) {
-    return new LnOpsModeProgrammer(mSlotManager, memo, pAddress, pLongAddress);
+    return new LnOpsModeProgrammer(memo, pAddress, pLongAddress);
 }
 
 /*public*/ AddressedProgrammer* LnProgrammerManager::reserveAddressedProgrammer(bool pLongAddress, int pAddress) {

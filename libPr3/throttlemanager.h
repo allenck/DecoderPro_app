@@ -117,7 +117,7 @@ QT_DEPRECATED virtual bool  requestThrottle(DccLocoAddress* /*address*/, Throttl
  *         be made; false may be returned if a the throttle is already in
  *         use
  */
-virtual /*public*/ bool requestThrottle(locoAddress* /*address*/, ThrottleListener* /*l*/, bool /*canHandleDecisions*/) {return false;}
+virtual /*public*/ bool requestThrottle(LocoAddress* /*address*/, ThrottleListener* /*l*/, bool /*canHandleDecisions*/) {return false;}
 /**
  * Request a throttle, given a decoder address or a RosterEntry. When the decoder address
  * is located, the ThrottleListener gets a callback via the ThrottleListener.notifyThrottleFound
@@ -220,7 +220,7 @@ virtual void cancelThrottleRequest(int /*address*/, bool  /*isLong*/, ThrottleLi
  * @param steal true if the request should continue, false otherwise.
  * @since 4.9.2
  */
-/*public*/ virtual void stealThrottleRequest(locoAddress* /*address*/, ThrottleListener* /*l*/,bool /*steal*/) {}
+/*public*/ virtual void stealThrottleRequest(LocoAddress* /*address*/, ThrottleListener* /*l*/,bool /*steal*/) {}
 /**
  * Steal or Share a requested throttle.
  * <P>
@@ -242,7 +242,7 @@ virtual void cancelThrottleRequest(int /*address*/, bool  /*isLong*/, ThrottleLi
  * @param decision from the ThrottleListener, STEAL or SHARE.
  * @since 4.9.2
  */
-/*public*/ virtual void responseThrottleDecision(locoAddress* /*address*/, ThrottleListener* /*l*/, ThrottleListener::DecisionType /*decision*/) {}
+/*public*/ virtual void responseThrottleDecision(LocoAddress* /*address*/, ThrottleListener* /*l*/, ThrottleListener::DecisionType /*decision*/) {}
 
 /**
  * Check to see if the Dispatch Button should be enabled or not
@@ -273,20 +273,20 @@ virtual bool addressTypeUnique() {return false;}
 /**
 * return a string value for a given int protocol value
 */
-    virtual QString getAddressTypeString(locoAddress::Protocol /*prot*/) {return "";}
+    virtual QString getAddressTypeString(LocoAddress::Protocol /*prot*/) {return "";}
 
 /**
  * returns an Integer list of different protocols that are supported by
  * system, to include short vs long or DCC vs Selectrix vs Motorola
  */
-    virtual QList<locoAddress::Protocol> getAddressProtocolTypes() {return QList<locoAddress::Protocol>();}
+    virtual QList<LocoAddress::Protocol> getAddressProtocolTypes() {return QList<LocoAddress::Protocol>();}
 
 /**
  * Get the integer value representing a protocol
  * @param selection
  * @return the integer value of the protocol
  */
-virtual locoAddress::Protocol getProtocolFromString(QString /*selection*/) {return (locoAddress::Protocol)0;}
+virtual LocoAddress::Protocol getProtocolFromString(QString /*selection*/) {return (LocoAddress::Protocol)0;}
 
 /**
  * Get the object representing a particular address
@@ -294,8 +294,8 @@ virtual locoAddress::Protocol getProtocolFromString(QString /*selection*/) {retu
  * @param protocol specific protocol string, see the specific throttle manager for values
  * @return probably of a subtype
  */
-virtual locoAddress* getAddress(QString /*value*/, QString /*protocol*/) {return NULL;}
-virtual locoAddress* getAddress(QString /*value*/, locoAddress::Protocol /*protocol*/) {return NULL;}
+virtual LocoAddress* getAddress(QString /*value*/, QString /*protocol*/) {return NULL;}
+virtual LocoAddress* getAddress(QString /*value*/, LocoAddress::Protocol /*protocol*/) {return NULL;}
 
 /**
 * The string provided in the getAddressTypes of a protocol for a given address

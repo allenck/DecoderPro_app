@@ -85,6 +85,7 @@ public:
      * @return true if command station supports OPC_RE_LOCO_RESET message
      */
     /*public*/ bool getSupportsLocoReset();
+    /*public*/ bool equals(LnCommandStationType* other);
 
 signals:
 
@@ -103,6 +104,7 @@ private:
     LocoResetSupport supportsLocoReset;
     friend class HexFileServer;
     friend class LoconetSystemConnectionMemoTest;
+    friend class UsbDcs240Adapter;
 };
 
 #endif // LNCOMMANDSTATIONTYPE_H

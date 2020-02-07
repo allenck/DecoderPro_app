@@ -90,7 +90,8 @@ void ToolsMenu::common()
  addMenu(programmerMenu);
 
  // disable programmer menu if there's no programmer manager
- if (InstanceManager::getDefault("ProgrammerManager") == NULL) {
+ if (InstanceManager::getNullableDefault("AddressedProgrammerManager") == nullptr
+         && InstanceManager::getNullableDefault("GlobalProgrammerManager") == nullptr) {
      programmerMenu->setEnabled(false);
  }
 

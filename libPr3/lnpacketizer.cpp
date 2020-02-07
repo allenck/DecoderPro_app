@@ -2,6 +2,7 @@
 #include <QThread>
 #include <QWaitCondition>
 #include <QMutex>
+#include "lnprogrammermanager.h"
 
 //    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
 //                    justification="Only used during system initialization")
@@ -64,6 +65,7 @@ bool LnPacketizer::isXmtBusy()
 
 void LnPacketizer::sendLocoNetMessage(LocoNetMessage* m)
 {
+ //LnProgrammerManager* mgr = qobject_cast<LnProgrammerManager*>(memo->programmerManager);
  QMutexLocker locker(&mutex2);
 
  // update statistics
@@ -73,6 +75,8 @@ void LnPacketizer::sendLocoNetMessage(LocoNetMessage* m)
  m->setParity();
  LocoNetMessage* msgcopy = new LocoNetMessage(*m);
  emit sendMessage(msgcopy);
+ //mgr = qobject_cast<LnProgrammerManager*>(memo->programmerManager);
+
 }
 /**
  * Break connection to existing LnPortController object. Once broken,

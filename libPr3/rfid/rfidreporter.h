@@ -16,7 +16,7 @@ public:
     /*public*/ void notify(IdTag* id);
     /*public*/ void setState(int s);
     /*public*/ int getState() ;
-    /*public*/ locoAddress* getLocoAddress(QString rep);
+    /*public*/ LocoAddress* getLocoAddress(QString rep);
     /*public*/ PhysicalLocationReporter::Direction getDirection(QString rep);
     /*public*/ PhysicalLocation* getPhysicalLocation() ;
     /*public*/ PhysicalLocation* getPhysicalLocation(QString s);

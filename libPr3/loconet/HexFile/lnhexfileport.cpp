@@ -1,6 +1,7 @@
 #include "lnhexfileport.h"
 #include "hexfileframe.h"
 #include "sleeperthread.h"
+#include "hexfilesystemconnectionmemo.h"
 
 //LnHexFilePort::LnHexFilePort(QObject *parent) :
 //    LnPortController(parent)
@@ -28,7 +29,7 @@
 
 
 /*public*/ LnHexFilePort::LnHexFilePort(QObject *parent)
-    : LnPortController(new LocoNetSystemConnectionMemo(), parent)
+    : LnPortController(new HexFileSystemConnectionMemo(), parent)
 {
  sFile = NULL;
  log = new Logger("LnHexFilePort");

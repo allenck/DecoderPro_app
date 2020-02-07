@@ -33,7 +33,7 @@
         // get current active address
         DccLocoAddress* activeAddress = ((LnPr2ThrottleManager*) InstanceManager::throttleManagerInstance())->getActiveAddress();
         if (activeAddress != nullptr) {
-            pm = new LnOpsModeProgrammer(sm, memo, activeAddress->getNumber(), activeAddress->isLongAddress());
+            pm = new LnOpsModeProgrammer(memo, activeAddress->getNumber(), activeAddress->isLongAddress());
             checkOpsProg();
 
             // set bit 1 in CV 128
@@ -64,7 +64,7 @@
         // get current active address
         DccLocoAddress* activeAddress = ((LnPr2ThrottleManager*) InstanceManager::throttleManagerInstance())->getActiveAddress();
         if (activeAddress != nullptr) {
-            pm = new LnOpsModeProgrammer(sm, memo, activeAddress->getNumber(), activeAddress->isLongAddress());
+            pm = new LnOpsModeProgrammer(memo, activeAddress->getNumber(), activeAddress->isLongAddress());
             checkOpsProg();
 
             // reset bit 1 in CV 128

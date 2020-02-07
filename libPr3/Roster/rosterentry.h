@@ -85,7 +85,7 @@ public:
      */
     /*public*/ void ensureFilenameExists();
     /*public*/ RosterEntry(QDomElement e, QObject *parent = 0);
-    /*public*/ locoAddress* getAddress(QDomElement element);
+    /*public*/ LocoAddress* getAddress(QDomElement element);
     /*public*/ void loadFunctions(QDomElement e3);
     /*public*/ void loadAttributes(QDomElement e3);
     /*public*/ void putAttribute(QString key, QString value);
@@ -116,8 +116,8 @@ public:
     /*public*/ RosterSpeedProfile* getSpeedProfile();
     /*public*/ void setSpeedProfile(RosterSpeedProfile* sp);
     /*public*/ bool isLongAddress();
-    /*public*/ void setProtocol(locoAddress::Protocol protocol);
-    /*public*/ locoAddress::Protocol getProtocol();
+    /*public*/ void setProtocol(LocoAddress::Protocol protocol);
+    /*public*/ LocoAddress::Protocol getProtocol();
     /*public*/ QString getProtocolAsString();
     /*public*/ void   setComment(QString s);
     /*public*/ QString getComment();
@@ -188,7 +188,7 @@ private:
      */
     /*private*/ QDomElement mRootElement;// = NULL;
     PropertyChangeSupport* pcs;
-    QDomElement storeLocoAddress(QDomDocument doc, locoAddress* addr);
+    QDomElement storeLocoAddress(QDomDocument doc, LocoAddress* addr);
     int openCounter;// =0;
     QMutex mutex;
     /*private*/ int blanks;//=0;
@@ -211,7 +211,7 @@ protected:
     /*protected*/ QString _model;// = "";
     /*protected*/ QString _dccAddress;// = "3";
     ///*protected*/ bool _isLongAddress = false;
-    /*protected*/ locoAddress::Protocol _protocol;// = LocoAddress::DCC_SHORT;
+    /*protected*/ LocoAddress::Protocol _protocol;// = LocoAddress::DCC_SHORT;
     /*protected*/ QString _comment;// = "";
     /*protected*/ QString _decoderModel;// = "";
     /*protected*/ QString _decoderFamily;// = "";

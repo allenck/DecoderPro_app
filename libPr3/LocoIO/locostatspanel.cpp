@@ -7,6 +7,10 @@
 #include <jtextfield.h>
 #include "instancemanager.h"
 #include "jmrijframeinterface.h"
+#include "LocoBufferII/locobufferiistatus.h"
+#include "PR2/pr2status.h"
+#include "pr3ms100modestatus.h"
+#include "rawstatus.h"
 
 LocoStatsPanel::LocoStatsPanel(QWidget *parent) :
   LnPanel(parent)
@@ -35,7 +39,7 @@ LocoStatsPanel::LocoStatsPanel(QWidget *parent) :
  breaks = new JTextField(6);
  errors = new JTextField(6);
 
- updatePending = false;
+ updateRequestPending = false;
  updateButton = new QPushButton("Update");
 
 }
@@ -51,7 +55,7 @@ LocoStatsPanel::LocoStatsPanel(QWidget *parent) :
  * <p>
  * Some of the message formats used in this class are Copyright Digitrax, Inc.
  * and used with permission as part of the JMRI project. That permission does
- * not extend to uses in other software products. If you wish to use this code,
+ * not extend to uses in other software products-> If you wish to use this code,
  * algorithm or these message formats outside of JMRI, please contact Digitrax
  * Inc for separate permission.
  *
@@ -64,7 +68,7 @@ LocoStatsPanel::LocoStatsPanel(QWidget *parent) :
 
 
 /*public*/ QString LocoStatsPanel::getHelpTarget() {
-    return "package.jmri.jmrix.loconet.locostats.LocoStatsFrame";
+    return "package.jmri.jmrix.loconet.locostats->LocoStatsFrame";
 }
 
 /*public*/ QString LocoStatsPanel::getTitle() {
@@ -75,7 +79,7 @@ LocoStatsPanel::LocoStatsPanel(QWidget *parent) :
 //    super();
 //}
 
-//static ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrix.loconet.locostats.LocoStatsBundle");
+//static ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrix.loconet.locostats->LocoStatsBundle");
 
 /*public*/ void LocoStatsPanel::initComponents()
 {
@@ -102,10 +106,10 @@ LocoStatsPanel::LocoStatsPanel(QWidget *parent) :
     lb2PanelLayout->addWidget(new QLabel(tr("Version")));
     lb2PanelLayout->addWidget(version);
     lb2PanelLayout->addWidget(new QLabel(" Breaks:"));
-//    breaks.setPreferredSize(version.getPreferredSize());
+//    breaks->setPreferredSize(version.getPreferredSize());
     lb2PanelLayout->addWidget(breaks);
     lb2PanelLayout->addWidget(new QLabel(" Errors:"));
-//    errors.setPreferredSize(version.getPreferredSize());
+//    errors->setPreferredSize(version.getPreferredSize());
     lb2PanelLayout->addWidget(errors);
 
     pr2Panel = new QWidget();
@@ -185,7 +189,7 @@ void LocoStatsPanel::report(QString msg) {
 
 /*public*/ void LocoStatsPanel::message(LocoNetMessage* msg)
 {
- if (updatePending
+ if (updateRequestPending
             && (msg->getOpCode() == LnConstants::OPC_PEER_XFER)
             && (msg->getElement(1) == 0x10)
             && (msg->getElement(2) == 0x50)
@@ -207,10 +211,10 @@ void LocoStatsPanel::report(QString msg) {
   ms100Panel->setVisible(false);
   revalidate();
 
-  updatePending = false;
+  updateRequestPending = false;
 
  }
- else if (updatePending
+ else if (updateRequestPending
             && (msg->getOpCode() == LnConstants::OPC_PEER_XFER)
             && (msg->getElement(1) == 0x10)
             && (msg->getElement(2) == 0x22)
@@ -244,10 +248,10 @@ void LocoStatsPanel::report(QString msg) {
   rawPanel->setVisible(false);
 
   revalidate();
-  updatePending = false;
+  updateRequestPending = false;
 
  }
- else if (updatePending && (msg->getOpCode() == LnConstants::OPC_PEER_XFER))
+ else if (updateRequestPending && (msg->getOpCode() == LnConstants::OPC_PEER_XFER))
  {
   try
   {
@@ -267,16 +271,16 @@ void LocoStatsPanel::report(QString msg) {
    ms100Panel->setVisible(false);
    revalidate();
 
-   updatePending = false;
+   updateRequestPending = false;
   }
   catch (Exception e)
   {
    log->error("Error parsing update: " + msg->toString());
   }
  }
- else if (!updatePending && (msg->getOpCode() == LnConstants::OPC_GPBUSY))
+ else if (!updateRequestPending && (msg->getOpCode() == LnConstants::OPC_GPBUSY))
  {
-  updatePending = true;
+  updateRequestPending = true;
  }
 }
 
@@ -284,7 +288,7 @@ void LocoStatsPanel::report(QString msg) {
 {
  LocoNetMessage* msg = new LocoNetMessage(2);
  msg->setOpCode(LnConstants::OPC_GPBUSY);
- updatePending = true;
+ updateRequestPending = true;
  memo->getLnTrafficController()->sendLocoNetMessage(msg);
 }
 
@@ -317,3 +321,65 @@ void LocoStatsPanel::report(QString msg) {
     }
 //};
 #endif
+//@Override
+//@SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "GUI elements are created such that cast to JmriJFrame this is accurate")
+/*public*/ void LocoStatsPanel::notifyChangedInterfaceStatus(QObject* o)
+{
+ log->debug(QString("Update is being handled:") + o->metaObject()->className());  // NOI18N
+ if (!updateRequestPending) {
+     return;
+ }
+
+ if (qobject_cast<LocoBufferIIStatus*>(o)) {
+    LocoBufferIIStatus* s = (LocoBufferIIStatus*) o;
+    version->setText((QString::number(s->version,16)));
+    breaks->setText((QString::number(s->breaks)));
+    errors->setText((QString::number(s->errors)));
+    lb2Panel->setVisible(true);
+    rawPanel->setVisible(false);
+    ms100Panel->setVisible(false);
+    pr2Panel->setVisible(false);
+//    ((JmriJFrame*) getRootPane().getParent())->setPreferredSize(null);
+//    ((JmriJFrame) getRootPane().getParent()).pack();
+  } else if (qobject_cast<PR2Status*>(o)) {
+    PR2Status* s = (PR2Status*) o;
+    serial->setText(QString::number(s->serial));
+    status->setText(QString::number(s->status));
+    current->setText(QString::number(s->current));
+    hardware->setText(QString::number(s->hardware));
+    software->setText(QString::number(s->software));
+    lb2Panel->setVisible(false);
+    rawPanel->setVisible(false);
+    ms100Panel->setVisible(true);
+    pr2Panel->setVisible(true);
+//    ((JmriJFrame) getRootPane().getParent())->setPreferredSize(null);
+//    ((JmriJFrame) getRootPane().getParent()).pack();
+ } else if (qobject_cast<PR3MS100ModeStatus*>(o)) {
+    PR3MS100ModeStatus* s = (PR3MS100ModeStatus*) o;
+    goodMsgCnt->setText(QString::number(s->goodMsgCnt));
+    badMsgCnt->setText(QString::number(s->badMsgCnt));
+    ms100status->setText(QString::number(s->ms100status));
+    lb2Panel->setVisible(false);
+    rawPanel->setVisible(false);
+    ms100Panel->setVisible(true);
+    pr2Panel->setVisible(true);
+//    ((JmriJFrame) getRootPane().getParent())->setPreferredSize(null);
+//    ((JmriJFrame) getRootPane().getParent()).pack();
+ } else if (qobject_cast<RawStatus*>(o)) {
+    RawStatus* s = (RawStatus*)o;
+    r1->setText(QString::number(s->raw[0]));
+    r2->setText(QString::number(s->raw[1]));
+    r3->setText(QString::number(s->raw[2]));
+    r4->setText(QString::number(s->raw[3]));
+    r5->setText(QString::number(s->raw[4]));
+    r6->setText(QString::number(s->raw[5]));
+    r7->setText(QString::number(s->raw[6]));
+    r8->setText(QString::number(s->raw[7]));
+    lb2Panel->setVisible(false);
+    rawPanel->setVisible(true);
+    ms100Panel->setVisible(false);
+    pr2Panel->setVisible(false);
+//    ((JmriJFrame*) getRootPane().getParent())->setPreferredSize(null);
+//    ((JmriJFrame*) getRootPane().getParent()).pack();
+    }
+}

@@ -13,11 +13,13 @@ public:
     Q_INVOKABLE explicit AppConfigBase(QWidget *parent = 0);
     ~AppConfigBase() {}
     AppConfigBase(const AppConfigBase&) : JmriPanel() {}
+#if 0
     /*public*/ static QString getManufacturerName(int index) ;
     /*public*/ static QString getConnection(int index);
     /*public*/ static QString getPort(int index);
     /*public*/ static QString getConnectionName(int index);
     /*public*/ static bool getDisabled(int index);
+#endif
     /*public*/ virtual void dispose();
     /*public*/ void saveContents();
     /*public*/ void savePressed(bool restartRequired);

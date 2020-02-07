@@ -65,7 +65,7 @@
         return (profile_name);
     }
 
-    /*public*/ locoAddress* VSDConfig::getLocoAddress() {
+    /*public*/ LocoAddress* VSDConfig::getLocoAddress() {
         return (address);
     }
 
@@ -97,7 +97,7 @@
         profile_name = name;
     }
 
-    /*public*/ void VSDConfig::setLocoAddress(locoAddress* a) {
+    /*public*/ void VSDConfig::setLocoAddress(LocoAddress* a) {
         address = a;
     }
 

@@ -19,6 +19,7 @@
 #include <QItemSelectionModel>
 #include <QPushButton>
 #include "globalprogrammermanager.h"
+#include "defaultprogrammermanager.h"
 
 CombinedLocoSelTreePane::CombinedLocoSelTreePane(QWidget *parent) :
     CombinedLocoSelPane(parent)
@@ -272,7 +273,7 @@ void CombinedLocoSelTreePane::common()
   viewButtonsLayout->addWidget(iddecoder);
  }
  if (InstanceManager::getNullableDefault("GlobalProgrammerManager") != nullptr
-         && ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable())
+         && ((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable())
  {
   showAll = new QRadioButton(tr("All"));
   showAll->setChecked(true);

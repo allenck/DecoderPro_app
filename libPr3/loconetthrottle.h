@@ -22,7 +22,7 @@ public:
     /*public*/ QString toString();
     /*public*/ void notifyChangedSlot(LocoNetSlot* pSlot);
     /*public*/ void setSpeedStepMode(SpeedStepMode *Mode);
-    /*public*/ locoAddress* getLocoAddress();
+    /*public*/ LocoAddress* getLocoAddress();
     /*public*/ void setF0(bool f0);
     /*public*/ void setF1(bool f1);
     /*public*/ void setF2(bool f2) ;

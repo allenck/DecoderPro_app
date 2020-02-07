@@ -15,7 +15,8 @@
  */
 ///*public*/ class ConnectionConfigXml extends AbstractSerialConnectionConfigXml {
 
-/*public*/ Pr2ConnectionConfigXml::Pr2ConnectionConfigXml(QObject* parent) : AbstractSerialConnectionConfigXml(parent) {
+/*public*/ Pr2ConnectionConfigXml::Pr2ConnectionConfigXml(QObject* parent)
+ : AbstractSerialConnectionConfigXml(parent) {
     //super();
 }
 
@@ -31,6 +32,6 @@
 
 //@Override
 /*protected*/ void Pr2ConnectionConfigXml::_register() {
-    AbstractSerialConnectionConfigXml::_register((ConnectionConfig*)(new Pr2ConnectionConfig(adapter)));
+   AbstractConnectionConfigXml::_register((ConnectionConfig*)(new Pr2ConnectionConfig(adapter)));
 }
 

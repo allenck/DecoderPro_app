@@ -216,9 +216,6 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 
     if (!configured) configureManagers();
 
-    if (className == ("ProgrammerManager")) {
-        return (Manager*)getProgrammerManager();
-    }
     if (className== ("GlobalProgrammerManager")) {
         return (Manager*) getProgrammerManager();
     }

@@ -24,7 +24,7 @@
 
 
 /*public*/ DeferringProgrammerManager::DeferringProgrammerManager(QObject *parent) :
-QObject(parent)
+DefaultProgrammerManager(parent) // see note in .h
 {
  setObjectName("DeferringProgrammerManager");
  userName = "<Default>";
@@ -51,7 +51,7 @@ QObject(parent)
 }
 
 /*public*/ Programmer* DeferringProgrammerManager::getGlobalProgrammer() {
- GlobalProgrammerManager* gp = (GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
+ GlobalProgrammerManager* gp = (DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
  if (gp == NULL || this == gp)
  {
      log->debug("no defaultGlobal ProgrammerManager, getGlobalProgrammer returns NULL" );
@@ -64,7 +64,7 @@ QObject(parent)
 }
 
 /*public*/ Programmer* DeferringProgrammerManager::reserveGlobalProgrammer() {
- GlobalProgrammerManager* gp = (GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
+ GlobalProgrammerManager* gp = (DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
     if (gp == NULL || this == gp) {
         return NULL;
     }
@@ -72,7 +72,7 @@ QObject(parent)
 }
 
 /*public*/ void DeferringProgrammerManager::releaseGlobalProgrammer(Programmer* p) {
- GlobalProgrammerManager* gp = (GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
+ GlobalProgrammerManager* gp = (DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager");
     if (gp == NULL || this == gp) {
         return;
     }
@@ -86,16 +86,16 @@ QObject(parent)
  */
 /*public*/ bool DeferringProgrammerManager::isGlobalProgrammerAvailable()
 {
- GlobalProgrammerManager* gp = (GlobalProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
+ GlobalProgrammerManager* gp = (DefaultProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
  if (gp == NULL || this == gp)
  {
   return false;
  }
- return ((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable();
+ return ((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->isGlobalProgrammerAvailable();
 }
 
 /*public*/ AddressedProgrammer* DeferringProgrammerManager::getAddressedProgrammer(bool pLongAddress, int pAddress) {
- AddressedProgrammerManager* ap = (AddressedProgrammerManager*)InstanceManager::getNullableDefault("AddressedProgrammerManager");
+ AddressedProgrammerManager* ap = (DefaultProgrammerManager*)InstanceManager::getNullableDefault("AddressedProgrammerManager");
     if (ap == NULL  || this == ap) {
         return NULL;
     }
@@ -103,7 +103,7 @@ QObject(parent)
 }
 
 /*public*/ AddressedProgrammer* DeferringProgrammerManager::reserveAddressedProgrammer(bool pLongAddress, int pAddress) {
- AddressedProgrammerManager* ap = (AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
+ AddressedProgrammerManager* ap = (DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
     if (ap == NULL || this == ap) {
         return NULL;
     }
@@ -111,7 +111,7 @@ QObject(parent)
 }
 
 /*public*/ void DeferringProgrammerManager::releaseAddressedProgrammer(AddressedProgrammer* p) {
- AddressedProgrammerManager* ap = (AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
+ AddressedProgrammerManager* ap = (DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
     if (ap == NULL || this == ap) {
         return;
     }
@@ -124,7 +124,7 @@ QObject(parent)
  * @return false if there's no chance of getting one
  */
 /*public*/ bool DeferringProgrammerManager::isAddressedModePossible() {
- AddressedProgrammerManager* ap = (AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
+ AddressedProgrammerManager* ap = (DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager");
     if (ap == NULL || this == ap) {
         return false;
     }
@@ -136,10 +136,10 @@ QObject(parent)
  *
  * @return false if there's no chance of getting one
  */
-/*public*/ bool DeferringProgrammerManager::isAddressedModePossible(locoAddress* l) {
+/*public*/ bool DeferringProgrammerManager::isAddressedModePossible(LocoAddress* l) {
     return isAddressedModePossible();
 }
 
 /*public*/ QList<ProgrammingMode*> DeferringProgrammerManager::getDefaultModes() {
- return ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getDefaultModes();
+ return ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getDefaultModes();
 }

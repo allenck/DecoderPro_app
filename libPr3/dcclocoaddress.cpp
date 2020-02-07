@@ -19,9 +19,9 @@
 DccLocoAddress::DccLocoAddress(int number, bool isLong, QObject *parent)
 {
     this->number = number;
-    protocol = locoAddress::DCC_SHORT;
+    protocol = LocoAddress::DCC_SHORT;
     if(isLong)
-        protocol = locoAddress::DCC_LONG;
+        protocol = LocoAddress::DCC_LONG;
 }
 DccLocoAddress::DccLocoAddress(int number, Protocol protocol, QObject* parent)
 {
@@ -99,7 +99,7 @@ bool DccLocoAddress::isLongAddress() {
     return true;
 }
 
-locoAddress::Protocol DccLocoAddress::getProtocol() const {
+LocoAddress::Protocol DccLocoAddress::getProtocol() const {
     return protocol;
 }
 

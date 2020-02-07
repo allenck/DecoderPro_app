@@ -233,7 +233,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ locoAddress* Pr2Throttle::getLocoAddress() {
+/*public*/ LocoAddress* Pr2Throttle::getLocoAddress() {
     return address;
 }
 

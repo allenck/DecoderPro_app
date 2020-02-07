@@ -18,7 +18,7 @@
  */
 //public class ConnectionConfigXml extends AbstractSerialConnectionConfigXml {
 
- PR4ConnectionConfigXml::PR4ConnectionConfigXml(QObject* parent)
+ Pr4ConnectionConfigXml::Pr4ConnectionConfigXml(QObject* parent)
   : AbstractSerialConnectionConfigXml(parent)
  {
 
@@ -26,17 +26,17 @@
 
 
 //@Override
-/*protected*/ void PR4ConnectionConfigXml::getInstance() {
+/*protected*/ void Pr4ConnectionConfigXml::getInstance() {
     adapter = new PR4Adapter();
 }
 
 //@Override
-/*protected*/ void PR4ConnectionConfigXml::getInstance(QObject* object) {
+/*protected*/ void Pr4ConnectionConfigXml::getInstance(QObject* object) {
     adapter = (SerialPortAdapter*)((ConnectionConfig*) object)->getAdapter();
 }
 
 //@Override
-/*protected*/ void PR4ConnectionConfigXml::_register() {
-    AbstractConnectionConfigXml::_register((ConnectionConfig*)new PR4ConnectionConfig(adapter));
+/*protected*/ void Pr4ConnectionConfigXml::_register() {
+    AbstractConnectionConfigXml::_register((ConnectionConfig*)new Pr4ConnectionConfig(adapter));
 }
 

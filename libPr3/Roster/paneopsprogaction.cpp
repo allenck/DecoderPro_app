@@ -49,7 +49,7 @@
  statusLabel = new QLabel(tr("idle"));
 
  if (InstanceManager::getNullableDefault("AddressedProgrammerManager") == nullptr
-         || !((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->isAddressedModePossible()) {
+         || !((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->isAddressedModePossible()) {
      setEnabled(false);
      // This needs to return so the xmlThread is not started;
      return;
@@ -117,7 +117,7 @@
   // find the ops-mode programmer
   int address = re->getDccAddress().toInt();
   bool longAddr = re->isLongAddress();
-  Programmer* programmer = (Programmer*) ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(longAddr, address);
+  Programmer* programmer = (Programmer*) ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(longAddr, address);
   // and created the frame
   JFrame* p = new PaneOpsProgFrame(decoderFile, re, title, "programmers"+QString(QDir::separator())+filename+".xml",
                                    programmer);

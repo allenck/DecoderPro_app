@@ -21,6 +21,7 @@
 #include "locoaddressxml.h"
 #include "joptionpane.h"
 #include "backgroundpanel.h"
+#include "defaultprogrammermanager.h"
 
 
 AddressPanel::AddressPanel(QWidget *parent) :
@@ -235,7 +236,7 @@ AddressPanel::~AddressPanel()
  // for ops-mode programming
  if ((rosterEntry!=NULL) && (ProgDefault::getDefaultProgFile() != "")
      && (InstanceManager::getNullableDefault("AddressedProgrammerManager") != nullptr)
-     && (((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->isAddressedModePossible()))
+     && (((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->isAddressedModePossible()))
  {
   ui->progButton->setEnabled(true);
  }
@@ -575,7 +576,7 @@ void AddressPanel::OnSetButton_clicked()
  int address = rosterEntry->getDccAddress().toInt();
  bool longAddr = true;
  if (address<100) longAddr = false;
- Programmer* programmer = (Programmer*)((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(longAddr, address);
+ Programmer* programmer = (Programmer*)((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(longAddr, address);
  // and created the frame
  JFrame* p = new PaneOpsProgFrame(NULL, rosterEntry,
                                      title, "programmers"+QString(QDir::separator())+ProgDefault::getDefaultProgFile()+".xml",

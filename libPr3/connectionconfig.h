@@ -21,37 +21,37 @@ public:
     ConnectionConfig(QObject* parent = 0) : QObject(parent) {}
     virtual ~ConnectionConfig() {}
 
-    /*public*/ virtual QString name() {return "";}
+    /*public*/ virtual QString name() =0;
 
-    /*public*/ virtual void loadDetails(QWidget* /*details*/) {}
+    /*public*/ virtual void loadDetails(QWidget* /*details*/) =0;
 
-    /*public*/ virtual QString getInfo(){return "";}
+    /*public*/ virtual QString getInfo()=0;
 
-    /*public*/ virtual PortAdapter* getAdapter() {return NULL;}
+    /*public*/ virtual PortAdapter* getAdapter() =0;
 
-    /*public*/ virtual QString getConnectionName() {return "";}
+    /*public*/ virtual QString getConnectionName() =0;
 
-    /*public*/ virtual QString getManufacturer() {return "";}
+    /*public*/ virtual QString getManufacturer() =0;
 
-    /*public*/ virtual void setManufacturer(QString /*Manufacturer*/) {}
+    /*public*/ virtual void setManufacturer(QString /*Manufacturer*/) =0;
 
     /**
      * Register the ConnectionConfig with the running JMRI process.
      */
-    /*public*/ virtual void _register() {}
+    /*public*/ virtual void _register() =0;
 
-    /*public*/ virtual void dispose() {}
+    /*public*/ virtual void dispose() =0;
 
-    /*public*/ virtual bool getDisabled() {return false;}
+    /*public*/ virtual bool getDisabled() =0;
 
-    /*public*/ virtual void setDisabled(bool /*disabled*/) {}
+    /*public*/ virtual void setDisabled(bool /*disabled*/) =0;
 
     /**
      * Determine if configuration needs to be written to disk.
      *
      * @return true if configuration needs to be saved, false otherwise
      */
-    /*public*/ virtual bool isDirty() {return false;}
+    /*public*/ virtual bool isDirty() =0;
 
 
     /**
@@ -60,7 +60,7 @@ public:
      *
      * @return true if application needs to restart, false otherwise
      */
-    /*public*/ virtual bool isRestartRequired() {return false;}
+    /*public*/ virtual bool isRestartRequired() =0;
 
 };
 //Q_DECLARE_METATYPE(ConnectionConfig)

@@ -46,7 +46,7 @@ void PR3Adapter::configure()
  setCommandStationType(getOptionState(option2Name));
  setTurnoutHandling(getOptionState(option3Name));
 
- if(commandStationType == LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_PR3_ALONE))
+ if(commandStationType->getType() == LnCommandStationType::COMMAND_STATION_PR3_ALONE)
  {
   // PR3 standalone case
   // connect to a packetizing traffic controller
@@ -64,7 +64,7 @@ void PR3Adapter::configure()
   ((PR3SystemConnectionMemo*) this->getSystemConnectionMemo())->configureManagersPR2();
 
   // start operation
-//  packets->startThreads();
+  packets->startThreads();
   ActiveFlag::setActive();
 
   // set mode
@@ -97,7 +97,7 @@ void PR3Adapter::configure()
   ((PR3SystemConnectionMemo*)this->getSystemConnectionMemo())->configureManagersMS100();
 
   // start operation
-  //packets.startThreads();
+  //packets->startThreads();
   ActiveFlag::setActive();// set mode
 
   LocoNetMessage* msg = new LocoNetMessage( 6 ) ;
@@ -107,8 +107,10 @@ void PR3Adapter::configure()
   //if (commandStationName.startsWith("Stand-alone"))
   //if (commandStationName.startsWith("PR3 standalone"))
   //if(!this->LnPortController::mProgPowersOff)
-  if (commandStationType == LnCommandStationType::getByType(LnCommandStationType::COMMAND_STATION_STANDALONE))
+  if (commandStationType->getType() == LnCommandStationType::COMMAND_STATION_STANDALONE)
+  {
    msg->setElement( 2, 3 );  // set MS100, with power
+  }
   msg->setElement( 3, 0 );
   msg->setElement( 4, 0 );
   packets->sendLocoNetMessage(msg);
@@ -165,5 +167,10 @@ void PR3Adapter::configure()
 //@Override
 /*public*/ SystemConnectionMemo *PR3Adapter::getSystemConnectionMemo()
 {
- return (SystemConnectionMemo*) LocoBufferAdapter::getSystemConnectionMemo();
+    SystemConnectionMemo* m = LocoBufferAdapter::getSystemConnectionMemo();
+    if (qobject_cast<PR3SystemConnectionMemo*>(m)) {
+        return (PR3SystemConnectionMemo*) m;
+    }
+    log->error("Cannot cast the system connection memo to a PR3SystemConnection Memo.");
+    return nullptr;
 }

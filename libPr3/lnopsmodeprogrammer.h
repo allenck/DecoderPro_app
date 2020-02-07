@@ -31,7 +31,6 @@ public:
    /*public*/ LnOpsModeProgrammer(LocoNetSystemConnectionMemo* memo,
                                  int pAddress, bool pLongAddr, QObject *parent = 0);
 
-    QT_DEPRECATED /*public*/ LnOpsModeProgrammer(SlotManager* pSlotMgr, LocoNetSystemConnectionMemo* memo,int pAddress, bool pLongAddr, QObject *parent = 0);
     /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
     /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);

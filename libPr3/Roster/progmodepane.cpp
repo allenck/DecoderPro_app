@@ -50,7 +50,7 @@
  // so it's the one that's selected
  mOpsPane = nullptr;
  if (InstanceManager::getNullableDefault("AddressedProgrammerManager") != nullptr
-         && ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->isAddressedModePossible()) {
+         && ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->isAddressedModePossible()) {
 
      mOpsPane = new ProgOpsModePane(direction, group);
  }

@@ -81,8 +81,8 @@
      configureBox(
 //             QStringList() << LocoAddress::Protocol::DCC_SHORT.getPeopleName()
 //                 << LocoAddress::Protocol::DCC_LONG.getPeopleName());
-        QStringList() << locoAddress::getPeopleName(locoAddress::Protocol::DCC_SHORT)
-        << locoAddress::getPeopleName(locoAddress::Protocol::DCC_LONG));
+        QStringList() << LocoAddress::getPeopleName(LocoAddress::Protocol::DCC_SHORT)
+        << LocoAddress::getPeopleName(LocoAddress::Protocol::DCC_LONG));
  }
 }
 
@@ -128,7 +128,7 @@ void DccLocoAddressSelector::configureBox(QStringList protocols)
  if (t ==("")) return NULL;
 
  // ask the Throttle Manager to handle this!
- locoAddress::Protocol protocol;
+ LocoAddress::Protocol protocol;
  if (InstanceManager::getNullableDefault("ThrottleManager") != nullptr)
  {
   protocol = InstanceManager::throttleManagerInstance()->getProtocolFromString( box->currentText());
@@ -136,7 +136,7 @@ void DccLocoAddressSelector::configureBox(QStringList protocols)
  }
  // nothing, construct a default
  int num = text->text().toInt();
- protocol = locoAddress::DCC_SHORT;
+ protocol = LocoAddress::DCC_SHORT;
  return new DccLocoAddress(num,protocol);
 }
 

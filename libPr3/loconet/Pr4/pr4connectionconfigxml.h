@@ -2,18 +2,18 @@
 #define PR4CONNECTIONCONFIGXML_H
 #include "abstractserialconnectionconfigxml.h"
 
-class PR4ConnectionConfigXml : public AbstractSerialConnectionConfigXml
+class Pr4ConnectionConfigXml : public AbstractSerialConnectionConfigXml
 {
  Q_OBJECT
 public:
- PR4ConnectionConfigXml(QObject *parent= nullptr);
- ~PR4ConnectionConfigXml() {}
- PR4ConnectionConfigXml(const PR4ConnectionConfigXml&) : AbstractSerialConnectionConfigXml() {}
+ Q_INVOKABLE Pr4ConnectionConfigXml(QObject *parent= nullptr);
+ ~Pr4ConnectionConfigXml() {}
+ Pr4ConnectionConfigXml(const Pr4ConnectionConfigXml&) : AbstractSerialConnectionConfigXml() {}
 protected:
- /*protected*/ void getInstance();
+ /*protected*/ void getInstance() override;
  /*protected*/ void getInstance(QObject* object);
- /*protected*/ void _register();
+ /*protected*/ void _register() override;
 
 };
-Q_DECLARE_METATYPE(PR4ConnectionConfigXml)
+Q_DECLARE_METATYPE(Pr4ConnectionConfigXml)
 #endif // PR4CONNECTIONCONFIGXML_H

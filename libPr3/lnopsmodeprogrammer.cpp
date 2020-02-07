@@ -5,7 +5,7 @@
 #include "programmingmode.h"
 #include "lnprogrammermanager.h"
 #include "locoio.h"
-#include "loggerfactory.h".h"
+#include "loggerfactory.h"
 #include <QStringList>
 
 //LnOpsModeProgrammer::LnOpsModeProgrammer(QObject *parent) :
@@ -24,26 +24,11 @@
             int pAddress, bool pLongAddr, QObject *parent) : QObject(parent)
 {
     this->memo = memo;
-    mode = DefaultProgrammerManager::OPSBYTEMODE;
+    mode = ProgrammingMode::OPSBYTEMODE;
     mAddress = pAddress;
     mLongAddr = pLongAddr;
     // register to listen
     memo->getLnTrafficController()->addLocoNetListener(~0, (LocoNetListener*)this);
-    connect(memo->getLnTrafficController(), SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
-}
-
-/*public*/ LnOpsModeProgrammer::LnOpsModeProgrammer(SlotManager* pSlotMgr, LocoNetSystemConnectionMemo* memo, int pAddress, bool pLongAddr, QObject *parent)
-    : QObject(parent)
-{
-    mSlotMgr = pSlotMgr;
-    this->memo = memo;
-    mode = DefaultProgrammerManager::OPSBYTEMODE;
-    mAddress = pAddress;
-    mLongAddr = pLongAddr;
-    mode = ProgrammingMode::OPSBYTEMODE;
-
-    // register to listen
-    //memo->getLnTrafficController()->addLocoNetListener(~0, this);
     connect(memo->getLnTrafficController(), SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
 }
 

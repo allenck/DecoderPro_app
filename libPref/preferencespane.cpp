@@ -27,8 +27,8 @@ PreferencesPane::PreferencesPane(QWidget *parent) :
  log = new Logger("PreferencesPane");
 
  QTabWidget* p = new QTabWidget();
- JmrixConfigPane* pane = JmrixConfigPane::instance(1);
- p->addTab( JmrixConfigPane::instance(1), "Connection 1");
+// JmrixConfigPane* pane = JmrixConfigPane::instance(1);
+// p->addTab( JmrixConfigPane::instance(1), "Connection 1");
  p->addTab(guiPrefs = new GuiLafConfigPane(),"GUI");
  p->addTab(new ProgrammerConfigPane(),"Programmer");
  //p->addTab(new PerformActionPanel(), "Actions");

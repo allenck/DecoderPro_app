@@ -20,8 +20,8 @@ private:
     Logger* log;
     CommandStation* commandStation = nullptr;
 protected:
-    /*protected*/ void addToAdvancedConsist(DccLocoAddress* locoAddress, bool directionNormal);
-    /*protected*/ void removeFromAdvancedConsist(DccLocoAddress* locoAddress);
+    /*protected*/ void addToAdvancedConsist(DccLocoAddress* LocoAddress, bool directionNormal);
+    /*protected*/ void removeFromAdvancedConsist(DccLocoAddress* LocoAddress);
 };
 
 #endif // NMRACONSIST_H

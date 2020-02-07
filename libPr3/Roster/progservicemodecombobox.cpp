@@ -10,6 +10,8 @@
 #include "rosterentry.h"
 #include "programmingmode.h"
 #include "lnprogrammermanager.h"
+#include <QMenu>
+#include <QDebug>
 
 //ProgServiceModeComboBox::ProgServiceModeComboBox(QWidget *parent) :
 //    ProgModeSelector(parent)
@@ -75,8 +77,7 @@
  QObjectList* objectList = InstanceManager::getList("GlobalProgrammerManager");
  foreach(QObject* o, *objectList)
  {
-  GlobalProgrammerManager* globalProgrammerManager = qobject_cast<GlobalProgrammerManager*>(o);
-  QObject* so = globalProgrammerManager->self();
+  GlobalProgrammerManager* globalProgrammerManager = qobject_cast<DefaultProgrammerManager*>(o);
   list.append(globalProgrammerManager);
  }
  return list;
@@ -125,7 +126,7 @@
  }
  else
  {
-  progBox->setCurrentIndex(progBox->findText(((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getUserName())); // set default
+  progBox->setCurrentIndex(progBox->findText(((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getUserName())); // set default
 //             progBox.addActionListener(new ActionListener(){
 //                 public void actionPerformed(ActionEvent e) {
 //                     // new programmer selection

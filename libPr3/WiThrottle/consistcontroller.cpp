@@ -9,6 +9,7 @@
 #include "controllerinterface.h"
 #include "addressedprogrammer.h"
 #include "addressedprogrammermanager.h"
+#include "defaultprogrammermanager.h"
 
 /**
  * @author Brett Hoffman Copyright (C) 2010
@@ -415,8 +416,9 @@ void ConsistController::handleMessage(QString message) {
 
         return;
     }
-    AddressedProgrammer* pom = ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(loco);
-
+    //AddressedProgrammer* pom = ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(loco);
+    AddressedProgrammer* pom = ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->
+      getAddressedProgrammer(loco->isLongAddress(), loco->getNumber());
     // loco done, now get CVs
     for (int i = 1; i < headerAndCVs.size(); i++) {
         QStringList CVData = (headerAndCVs.at(i).split("<;>"));
@@ -431,7 +433,7 @@ void ConsistController::handleMessage(QString message) {
             log->warn("Error in setting CVs: " + nfe.getMessage());
         }
     }
-    ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->releaseAddressedProgrammer(pom);
+    ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->releaseAddressedProgrammer(pom);
 
 }
 

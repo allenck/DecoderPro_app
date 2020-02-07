@@ -37,7 +37,7 @@
 
     //@Override
     /*protected*/ void RfidSerialConnectionConfigXml::_register() {
-        AbstractSerialConnectionConfigXml::_register(new RfidSerialConnectionConfig(adapter));
+        AbstractConnectionConfigXml::_register(new RfidSerialConnectionConfig(adapter));
     }
 
     /*private*/ /*final*/ /*static*/ Logger* RfidSerialConnectionConfigXml::log = LoggerFactory::getLogger("RfidSerialConnectionConfigXml");

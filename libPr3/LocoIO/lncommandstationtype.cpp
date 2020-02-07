@@ -440,3 +440,7 @@ QStringList LnCommandStationType::commandStationNames()
 
      return supportsLocoReset == LocoResetSupport::SUPPORTS_LOCO_RESET_FUNCTION;
  }
+ /*public*/ bool LnCommandStationType::equals(LnCommandStationType* other)
+ {
+  return (this->type == other->type);
+ }

@@ -9,6 +9,8 @@
 #include "instancemanager.h"
 #include "busydialog.h"
 #include "globalprogrammermanager.h"
+#include "defaultprogrammermanager.h"
+
 
 VSDConfigPanel::VSDConfigPanel(QWidget *parent) :
   JmriPanel(parent)
@@ -108,7 +110,7 @@ log = new Logger("VSDConfigPanel");
  if (addressSelector->getAddress() != NULL)
  {
   main_pane->firePropertyChange(VSDecoderPane::ADDRESS_CHANGE,
-             VPtr<locoAddress>::asQVariant(dec->getAddress()), VPtr<DccLocoAddress>::asQVariant(addressSelector->getAddress()));
+             VPtr<LocoAddress>::asQVariant(dec->getAddress()), VPtr<DccLocoAddress>::asQVariant(addressSelector->getAddress()));
  }
 }
 
@@ -439,7 +441,7 @@ if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
     log->debug("storeFile starts");
     // We need to create a programmer, a cvTableModel, an iCvTableModel, and a variableTableModel.
     // Doesn't matter which, so we'll use the LocoNet programmer.
-    Programmer* p = (Programmer*)((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
+    Programmer* p = (Programmer*)((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getGlobalProgrammer();
     CvTableModel* cvModel = new CvTableModel(NULL, p);
     IndexedCvTableModel* iCvModel = new IndexedCvTableModel(NULL, p);
     QStringList sl = QStringList() << "Name" << "Value";

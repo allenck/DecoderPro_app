@@ -13,6 +13,7 @@ public:
  /*public*/ void setCommandStationType(LnCommandStationType* value);
  /*public*/ SystemConnectionMemo* getSystemConnectionMemo();
  /*public*/ void setTurnoutHandling(QString value);
+ /*public*/ void setTranspondingAvailable(QString value);
  /*public*/ void configureOption3(QString value);
  QTcpSocket* getSocket();
 signals:
@@ -21,10 +22,11 @@ public slots:
 private:
  Logger* log;
 protected:
- /*protected*/ LnCommandStationType* commandStationType;// = null;
+ /*protected*/ LnCommandStationType* commandStationType = nullptr;
 
- /*protected*/ bool mTurnoutNoRetry;// = false;
- /*protected*/ bool mTurnoutExtraSpace;// = false;
+ /*protected*/ bool mTurnoutNoRetry = false;
+ /*protected*/ bool mTurnoutExtraSpace = false;
+ /*protected*/ bool mTranspondingAvailable = false;
 
  /*protected*/ QList<LnCommandStationType*> commandStationTypes;// = {
 //     LnCommandStationType.COMMAND_STATION_DCS100,

@@ -9,7 +9,7 @@ class FunctionPanel;
 }
 
 class QDomElement;
-class locoAddress;
+class LocoAddress;
 class PropertyChangeEvent;
 class RosterEntry;
 class DccThrottle;
@@ -44,8 +44,8 @@ public slots:
     /*public*/ void buttonActionCmdPerformed();
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     /*public*/ void notifyAddressThrottleFound(DccThrottle* t);
-    /*public*/ void notifyAddressReleased(locoAddress* la);
-    /*public*/ void notifyAddressChosen(locoAddress* l);
+    /*public*/ void notifyAddressReleased(LocoAddress* la);
+    /*public*/ void notifyAddressChosen(LocoAddress* l);
     /*public*/ void notifyConsistAddressChosen(int newAddress, bool isLong);
     /*public*/ void notifyConsistAddressReleased(int address, bool isLong) ;
     /*public*/ void notifyConsistAddressThrottleFound(DccThrottle* throttle);

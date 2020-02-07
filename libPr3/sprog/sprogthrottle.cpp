@@ -46,7 +46,7 @@ using namespace Sprog;
 
 
     //@Override
-    /*public*/ locoAddress* SprogThrottle::getLocoAddress() {
+    /*public*/ LocoAddress* SprogThrottle::getLocoAddress() {
         return address;
     }
 

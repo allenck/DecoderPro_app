@@ -27,7 +27,7 @@ public:
      * This returns directly, having arranged for the Throttle
      * object to be delivered via callback
      */
-    /*public*/ void requestThrottleSetup(locoAddress* address, bool control);
+    /*public*/ void requestThrottleSetup(LocoAddress* address, bool control);
     /**
      * LocoNet does have a Dispatch function
      **/
@@ -57,11 +57,11 @@ public:
     /*public*/ virtual bool disposeThrottle(DccThrottle* t, ThrottleListener* l);
     /*public*/ virtual void dispatchThrottle(DccThrottle* t, ThrottleListener* l);
     /*public*/ void releaseThrottle(DccThrottle* t, ThrottleListener* l);
-    /*public*/ void failedThrottleRequest(locoAddress* address, QString reason);
-    /*public*/ void cancelThrottleRequest(locoAddress* address, ThrottleListener* l);
+    /*public*/ void failedThrottleRequest(LocoAddress* address, QString reason);
+    /*public*/ void cancelThrottleRequest(LocoAddress* address, ThrottleListener* l);
     /*public*/ int getThrottleID();
     /*public*/ void notifyStealRequest(int locoAddr);
-    /*public*/ void responseThrottleDecision(locoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision);
+    /*public*/ void responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision);
     QObject* self() {return (QObject*)this;}
 
 signals:
@@ -82,7 +82,7 @@ private:
  /*LinkedBlockingQueue*>*/ QLinkedList<ThrottleRequest*> requestList;
  bool requestOutstanding = false;
  /*private*/ void commitToAcquireThrottle(LocoNetSlot* s);
- /*private*/ void processThrottleSetupRequest(locoAddress* address, bool control);
+ /*private*/ void processThrottleSetupRequest(LocoAddress* address, bool control);
 
  QThread* retrySetupThread = nullptr;
  static Logger* log;
@@ -118,10 +118,10 @@ protected:
 /*protected*/ /*static*/ class ThrottleRequest : public QObject
 {
  Q_OBJECT
-     /*private*/ locoAddress* la = nullptr;
+     /*private*/ LocoAddress* la = nullptr;
      /*private*/ bool tc = false;
 
-     ThrottleRequest(locoAddress* l,bool control, QObject* parent = nullptr) : QObject(parent){
+     ThrottleRequest(LocoAddress* l,bool control, QObject* parent = nullptr) : QObject(parent){
          la = l;
          tc = control;
      }
@@ -129,7 +129,7 @@ protected:
      /*public*/ bool getControl(){
         return tc;
      }
-     /*public*/ locoAddress* getAddress(){
+     /*public*/ LocoAddress* getAddress(){
         return la;
      }
 friend class LnThrottleManager;

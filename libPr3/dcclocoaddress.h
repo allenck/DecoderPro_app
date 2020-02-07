@@ -4,11 +4,11 @@
 #include "libPr3_global.h"
 #include <QHash>
 
-class LIBPR3SHARED_EXPORT DccLocoAddress :  public locoAddress
+class LIBPR3SHARED_EXPORT DccLocoAddress :  public LocoAddress
 {
     Q_OBJECT
 public:
- DccLocoAddress(QObject *parent = 0) {}
+ DccLocoAddress(QObject *parent = 0) : LocoAddress(parent) {}
     explicit DccLocoAddress(int number, bool isLong, QObject *parent = 0);
     DccLocoAddress(int number, Protocol protocol, QObject *parent = 0);
     DccLocoAddress(const DccLocoAddress& l , QObject* parent = 0);

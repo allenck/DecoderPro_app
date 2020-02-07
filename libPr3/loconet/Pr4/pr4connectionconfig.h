@@ -2,18 +2,19 @@
 #define PR4CONNECTIONCONFIG_H
 #include "abstractserialconnectionconfig.h"
 
-class PR4ConnectionConfig : public AbstractSerialConnectionConfig
+class Pr4ConnectionConfig : public AbstractSerialConnectionConfig
 {
+ Q_OBJECT
 public:
- /*public*/ PR4ConnectionConfig(SerialPortAdapter* p, QObject* parent = nullptr);
- /*public*/ PR4ConnectionConfig(QObject* parent = nullptr);
- ~PR4ConnectionConfig(){}
- PR4ConnectionConfig(const PR4ConnectionConfig&) : AbstractSerialConnectionConfig() {}
- /*public*/ QString name();
+ Q_INVOKABLE /*public*/ Pr4ConnectionConfig(SerialPortAdapter* p, QObject* parent = nullptr);
+ Q_INVOKABLE /*public*/ Pr4ConnectionConfig(QObject* parent = nullptr);
+ ~Pr4ConnectionConfig(){}
+ Pr4ConnectionConfig(const Pr4ConnectionConfig&) : AbstractSerialConnectionConfig() {}
+ /*public*/ QString name() override;
  /*public*/ bool isOptList2Advanced();
 protected:
  /*protected*/ QStringList getPortFriendlyNames();
  /*protected*/ void setInstance() ;
 };
-Q_DECLARE_METATYPE(PR4ConnectionConfig)
+Q_DECLARE_METATYPE(Pr4ConnectionConfig)
 #endif // PR4CONNECTIONCONFIG_H

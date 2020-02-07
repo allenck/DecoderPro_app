@@ -40,7 +40,7 @@
 #include "systemconsoleconfigpanel.h"
 #include "createbuttonmodel.h"
 #include "defaultusermessagepreferencesxml.h"
-#include "../libPr3/loconet/Pr3/connectionconfigxml.h"
+#include "../libPr3/loconet/Pr3/pr3connectionconfigxml.h"
 #include "../libPr3/loconet/HexFile/hexfileconnectionconfigxml.h"
 #include "programmerconfigpanexml.h"
 #include "filelocationpanexml.h"
@@ -312,6 +312,11 @@
 #include "lememoryiconxml.h"
 #include "Pr4/pr4connectionconfig.h"
 #include "Pr4/pr4connectionconfigxml.h"
+#include "PR2/pr2connectionconfig.h"
+#include "PR2/pr2connectionconfigxml.h"
+#include "DCS240/dcs240connectionconfigxml.h"
+#include "DCS240/dcs240connectionconfig.h"
+
 
 bool Metatypes::done = false;
 
@@ -321,13 +326,12 @@ Metatypes::Metatypes(QObject *parent) :
  if(done) return;
  qRegisterMetaType<CreateButtonModel>("CreateButtonModel");
  qRegisterMetaType<DefaultUserMessagePreferencesXml>("DefaultUserMessagePreferencesXml");
- qRegisterMetaType<ConnectionConfigXml>("ConnectionConfigXml");
+ qRegisterMetaType<Pr3ConnectionConfigXml>("ConnectionConfigXml");
  qRegisterMetaType<ProgrammerConfigPaneXml>("ProgrammerConfigPaneXml");
  qRegisterMetaType<FileLocationPaneXml>("FileLocationPaneXml");
  qRegisterMetaType<GuiLafConfigPaneXml>("GuiLafConfigPanelXml");
  qRegisterMetaType<ManagerDefaultSelectorXml>("ManagerDefaultSelectorXml");
  qRegisterMetaType<Pr3ConnectionConfig>("Pr3ConnectionConfig");
- qRegisterMetaType<LocobufferConnectionConfig>("LocobufferConnectionConfig");
  qRegisterMetaType<LocobufferConnectionConfig>("LocobufferConnectionConfig");
  qRegisterMetaType<LocobufferUsbConnectionConfig>("LocobufferUsbConnectionConfig");
  qRegisterMetaType<LocobufferUsbConnectionConfigXml>("LocobufferUsbConnectionConfigXml");
@@ -598,7 +602,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LnTcpServerAction>("LnTcpServerAction");
  qRegisterMetaType<SwitchboardEditorXml>("SwitchboardEditorXml");
  qRegisterMetaType<LayoutTrackDrawingOptionsXml>("LayoutTrackDrawingOptionsXml");
- //qRegisterMetaType<InternalSystemConnectionMemo>("InternalSystemConnectionMemo");
+ qRegisterMetaType<InternalSystemConnectionMemo>("InternalSystemConnectionMemo");
  qRegisterMetaType<SystemConsoleConfigPanel>("SystemConsoleConfigPanel");
  qRegisterMetaType<SystemConsoleConfigPanelXml>("SystemConsoleConfigPanelXml");
  qRegisterMetaType<MatrixSignalMastXml>("MatrixSignalMastXml");
@@ -638,9 +642,12 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<OptionsFile>("OptionsFile");
  qRegisterMetaType<LEBlockContentsIconXml>("LEBlockContentsIconXml");
  qRegisterMetaType<LEMemoryIconXml>("LEMemoryIconXml");
- qRegisterMetaType<PR4ConnectionConfig>("PR4ConnectionConfig");
- qRegisterMetaType<PR4ConnectionConfigXml>("PR4ConnectionConfigXml");
-
+ qRegisterMetaType<Pr4ConnectionConfig>("Pr4ConnectionConfig");
+ qRegisterMetaType<Pr4ConnectionConfigXml>("Pr4ConnectionConfigXml");
+ qRegisterMetaType<Pr2ConnectionConfig>("Pr2ConnectionConfig");
+ qRegisterMetaType<Pr2ConnectionConfigXml>("Pr2ConnectionConfigXml");
+ qRegisterMetaType<DCS240ConnectionConfigXml>("DCS240ConnectionConfigXml");
+ qRegisterMetaType<DCS240ConnectionConfig>("DCS240ConnectionConfig");
 
  Metatypes::done = true;
 }

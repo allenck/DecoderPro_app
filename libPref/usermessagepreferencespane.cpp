@@ -116,7 +116,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
   QVBoxLayout* classholderLayout;
   classholder->setLayout(classholderLayout = new QVBoxLayout());
 
-  QMap<int, QString>* options;
+  QMap<int, QString>* options = nullptr;
   bool add = false;
   bool addtoindependant = false;
   if (p->getPreferencesSize(strClass) > 1)

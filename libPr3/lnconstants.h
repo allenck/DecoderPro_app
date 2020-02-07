@@ -374,9 +374,37 @@ enum PCMD
    OPC_MASK          = 0x7f  /* mask for acknowledge opcodes */
    };
 
+   /* protocol level */
+
+       /** The protocol has not been established */
+       /*public final*/ static int LOCONETPROTOCOL_UNKNOWN;// = 0;
+       /** Supports loconet 1.1 */
+       /*public final*/ static int LOCONETPROTOCOL_ONE;// = 1;
+       /** Supports the protocol introduced to DCS240, DCS210 */
+       /*public final*/ static int LOCONETPROTOCOL_TWO;// = 2;
+
+       /* Expanded slot codes */
+       /*public final*/ static int OPC_EXP_REQ_SLOT;// = 0xbe;
+       /*public final*/ static int OPC_EXP_SLOT_MOVE;// = 0xd4;
+       /*public final*/ static int OPC_EXP_RD_SL_DATA;// = 0xe6;
+       /*public final*/ static int OPC_EXP_WR_SL_DATA;// = 0xee;
+       /*public final*/ static int OPC_EXP_SEND_SUB_CODE_MASK_SPEED;// = 0b11110000;
+       /*public final*/ static int OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION;// = 0b11111000;
+       /*public final*/ static int OPC_EXP_SEND_FUNCTION_OR_SPEED_AND_DIR;// = 0xd5;
+       /*public final*/ static int OPC_EXP_SEND_SPEED_AND_DIR_MASK;// = 0b00010000;
+       /*public final*/ static int OPC_EXP_SEND_FUNCTION_GROUP_F0F6_MASK;// = 0b00010000;
+       /*public final*/ static int OPC_EXP_SEND_FUNCTION_GROUP_F7F13_MASK;// = 0b00011000;
+       /*public final*/ static int OPC_EXP_SEND_FUNCTION_GROUP_F14F20_MASK;// = 0b00100000;
+       /*public final*/ static int OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28OFF_MASK;// = 0b00101000;
+       /*public final*/ static int OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28ON_MASK;// =  0b00110000;
+
    static QString OPC_NAME(int opcode);
 
    // start of values not from llnmon.c
+
+   // Multimeter polling interval
+   /*public*/ /*final*/ static int METER_INTERVAL_MS;// = 30000;
+
 
    // Expanded slot index values
    static int EXP_MAST           ; //0;
@@ -440,6 +468,7 @@ enum PCMD
    RE_IPL_DIGITRAX_HOST_DB220    =0x16,
    RE_IPL_DIGITRAX_HOST_DCS240   =0x1c,
    RE_IPL_DIGITRAX_HOST_UR92     =0x5C,
+   RE_IPL_DIGITRAX_HOST_DCS52    =0x34,
    RE_IPL_DIGITRAX_HOST_DCS51    =0x33,
    RE_IPL_DIGITRAX_HOST_DT402    =0x2A,
    RE_IPL_DIGITRAX_HOST_DT500    =0x32,

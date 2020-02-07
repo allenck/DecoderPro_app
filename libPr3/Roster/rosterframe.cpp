@@ -334,11 +334,13 @@ void RosterFrame::On_ConnectionStatusPropertyChange(PropertyChangeEvent *e)
 }
 void RosterFrame::On_InstanceManagerPropertyChange(PropertyChangeEvent * e)
 {
- if (e->getPropertyName()==("programmermanager"))
+ if ((e->getPropertyName() == ("change")) || (e->getPropertyName() == ("add")))
  {
+  log->debug(tr("Received property %1 with value %2 ").arg(e->getPropertyName()).arg(e->getNewValue().toString()));
   updateProgrammerStatus(e);
  }
 }
+
 RosterFrame::~RosterFrame()
 {
  delete ui;
@@ -785,7 +787,7 @@ void DefaultFilePropertyChangeListener::propertyChange(PropertyChangeEvent *evt)
                  && evt->getPropertyName() == (InstanceManager::getDefaultsPropertyName("GlobalProgrammerManager"))
                  && evt->getNewValue() == QVariant()))
  {
-  gpm = (GlobalProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
+  gpm = (DefaultProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
  }
  if (gpm!=NULL)
  {
@@ -810,7 +812,7 @@ void DefaultFilePropertyChangeListener::propertyChange(PropertyChangeEvent *evt)
          && evt->getPropertyName() == (InstanceManager::getDefaultsPropertyName("AddressedProgrammerManager"))
          && evt->getNewValue() == QVariant()))
  {
-     apm = (AddressedProgrammerManager*)InstanceManager::getNullableDefault("AddressedProgrammerManager");
+     apm = (DefaultProgrammerManager*)InstanceManager::getNullableDefault("AddressedProgrammerManager");
  }
  if (apm!=NULL)
  {
@@ -966,7 +968,7 @@ void RosterFrame::updateProgMode() // SLOT
  }
  if (programmer == NULL)
  {
-  GlobalProgrammerManager* gpm = (GlobalProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
+  GlobalProgrammerManager* gpm = (DefaultProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
   if (gpm != NULL)
   {
    programmer = gpm->getGlobalProgrammer();
@@ -2046,7 +2048,7 @@ bool RosterFrame::checkIfEntrySelected()
   {
    int address = re->getDccAddress().toInt();
    bool longAddr = re->isLongAddress();
-   Programmer* pProg = (Programmer*)((AddressedProgrammerManager*) InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(longAddr, address);
+   Programmer* pProg = (Programmer*)((DefaultProgrammerManager*) InstanceManager::getDefault("AddressedProgrammerManager"))->getAddressedProgrammer(longAddr, address);
    progFrame = new PaneOpsProgFrame(decoderFile, re, title, "programmers" + File::separator + filename + ".xml", pProg);
   }
   if (progFrame == NULL)

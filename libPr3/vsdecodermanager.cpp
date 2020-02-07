@@ -271,7 +271,7 @@ QObject(parent) {
     }
 }
 
-/*public*/ void VSDecoderManager::setDecoderPositionByAddr(locoAddress* a, PhysicalLocation* l) {
+/*public*/ void VSDecoderManager::setDecoderPositionByAddr(LocoAddress* a, PhysicalLocation* l) {
     // Find the addressed decoder
     // This is a bit hokey.  Need a better way to index decoder by address
     // OK, this whole LocoAddress vs. DccLocoAddress thing has rendered this SUPER HOKEY.
@@ -296,18 +296,18 @@ QObject(parent) {
             log->debug("VSdecoder NULL pointer!");
             return;
         }
-        locoAddress* pa = d->getAddress();
+        LocoAddress* pa = d->getAddress();
         if (pa == nullptr) {
             log->debug("Vsdecoder" + d->objectName() + " address NULL!");
             return;
         }
-        locoAddress::Protocol p = d->getAddress()->getProtocol();
+        LocoAddress::Protocol p = d->getAddress()->getProtocol();
         if (p == 0) {
             log->debug("Vsdecoder" + d->objectName() + " address = " + pa->toString() + " protocol NULL!");
             return;
         }
-        if ((p == locoAddress::DCC_LONG) || (p == locoAddress::DCC_SHORT)) {
-            p = locoAddress::DCC;
+        if ((p == LocoAddress::DCC_LONG) || (p == LocoAddress::DCC_SHORT)) {
+            p = LocoAddress::DCC;
         }
         if ((d->getAddress()->getNumber() == a->getNumber()) && (p == a->getProtocol())) {
             d->setPosition(l);

@@ -23,7 +23,7 @@ private:
 
 protected:
     /*abstract*/ /*protected*/ virtual void getInstance();
-    /*abstract*/ /*protected*/ void virtual _register();
+//    /*abstract*/ /*protected*/ virtual void _register();
     /*protected*/ void storeCommon(QDomElement e,  PortAdapter* adapter);
     /*protected*/ void extendElement(QDomElement e);
     /*protected*/ void loadCommon(QDomElement e, QDomElement perNode, PortAdapter* adapter);

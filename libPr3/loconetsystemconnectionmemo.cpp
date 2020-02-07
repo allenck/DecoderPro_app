@@ -20,6 +20,11 @@
 #include "lnmessagemanager.h"
 #include "lncomponentfactory.h"
 #include "loggerfactory.h"
+#include "transpondingtagmanager.h"
+#include <QPointer>
+#include "multimeter.h"
+#include "lnmultimeter.h"
+#include <QDebug>
 
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject* parent)
  : SystemConnectionMemo("L","LocoNet", parent)
@@ -28,39 +33,20 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt
  common();
  this->lt = lt;
  this->sm = sm; // doesn't full register, but fine for this purpose.
-
- // self-registration is deferred until the command station type is set below
-
- // create and register the LnComponentFactory
- InstanceManager::store(cf = new LnComponentFactory(this),
-                                "ComponentFactory");
- lnm = NULL;
-
 }
 
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(QObject* parent)
  : SystemConnectionMemo("L","LocoNet", parent)
 {
  common();
-
- //setSlotManager(sm);
- this->sm = NULL;
-
- // self-registration is deferred until the command station type is set below
-
- // create and register the LnComponentFactory
- InstanceManager::store(cf = new LnComponentFactory(this),
-                                "ComponentFactory");
 }
 /*public*/ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name)
  : SystemConnectionMemo(prefix, name)
 {
-       //super(prefix, name); // NOI18N
-common();
-       // create and register the ComponentFactory for the GUI
-       InstanceManager::store(cf = new LnComponentFactory(this),
-               "ComponentFactory");
-   }
+ //super(prefix, name); // NOI18N
+ common();
+
+}
 
 void LocoNetSystemConnectionMemo::common()
 {
@@ -80,6 +66,12 @@ void LocoNetSystemConnectionMemo::common()
     tm = NULL;
     lnm = NULL;
     cf = NULL;
+
+    // self-registration is deferred until the command station type is set below
+
+    // create and register the LnComponentFactory
+    InstanceManager::store(cf = new LnComponentFactory(this),
+                                   "ComponentFactory");
 }
 
 LocoNetSystemConnectionMemo::~LocoNetSystemConnectionMemo()
@@ -132,7 +124,8 @@ void LocoNetSystemConnectionMemo::setLnTrafficController(LnTrafficController* lt
  * @param type Command station type, used to configure various operations
  * @param mTurnoutNoRetry Is the user configuration set for no turnout operation retries?
  * @param mTurnoutExtraSpace Is the user configuration set for extra time between turnout operations?
- */
+ * @param mTranspondingAvailable    Is the layout configured to provide
+ *                                  transopnding reports*/
 /*public*/ void LocoNetSystemConnectionMemo::configureCommandStation(LnCommandStationType* type, bool mTurnoutNoRetry,
                                                                      bool mTurnoutExtraSpace, bool mTranspondingAvailable) {
     // store arguments
@@ -175,12 +168,14 @@ LnMessageManager* LocoNetSystemConnectionMemo::getLnMessageManager()
 }
 
 
-DefaultProgrammerManager* LocoNetSystemConnectionMemo::getProgrammerManager() {
-    if (programmerManager == NULL)
-    {
-        programmerManager = new LnProgrammerManager( this);
-    }
-    return programmerManager;
+DefaultProgrammerManager* LocoNetSystemConnectionMemo::getProgrammerManager()
+{
+ if (programmerManager == NULL)
+ {
+     //programmerManager = new LnProgrammerManager( this);
+  programmerManager = QPointer<LnProgrammerManager>(new LnProgrammerManager( this));
+ }
+ return programmerManager;
 }
 
 void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager* p) {
@@ -196,8 +191,6 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
 {
  if (getDisabled())
   return false;
- if (type==("ProgrammerManager"))
-  return true;
  if (type==("GlobalProgrammerManager"))
      return getProgrammerManager()->isGlobalProgrammerAvailable();
  if (type==("AddressedProgrammerManager"))
@@ -220,6 +213,15 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
         return true;
  if (type == ("CommandStation"))
         return true;
+ if (type == ("MultiMeter")) {
+        return true;
+ }
+ if (type == ("IdTagManager")) {
+     return true;
+ }
+ if (type == ("CabSignalManager")) {
+     return true;
+ }
  return false; // nothing, by default
 }
 
@@ -229,8 +231,14 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
 {
  if (getDisabled())
   return NULL;
- if (T == ("ProgrammerManager"))
-  return (Manager*)getProgrammerManager();
+ if (T ==("GlobalProgrammerManager")) {
+     log->trace(tr("get GlobalProgrammerManager is %1").arg(getProgrammerManager()->toString()));
+     return (Manager*) getProgrammerManager();
+ }
+ if (T == ("AddressedProgrammerManager")) {
+     log->trace(tr("get AddressedProgrammerManager is %1").arg(getProgrammerManager()->toString()));
+     return (Manager*) getProgrammerManager();
+ }
  if (T == ("ThrottleManager"))
   return (Manager*)getThrottleManager();
  if (T == ("PowerManager"))
@@ -249,6 +257,15 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
   return (Manager*)getConsistManager();
  if (T == ("CommandStation"))
   return (Manager*)getSlotManager();
+ if (T ==("MultiMeter")) {
+     return (Manager*) getMultiMeter();
+ }
+ if (T == ("IdTagManager")) {
+     return (IdTagManager*) getIdTagManager();
+ }
+// if (T == ("CabSignalManager")) {
+//     return (T) getCabSignalManager();
+
  return NULL; // nothing, by default
 }
 
@@ -291,14 +308,21 @@ void LocoNetSystemConnectionMemo::configureManagers()
   InstanceManager::store(getProgrammerManager(), "GlobalProgrammerManager");
  }
 
- InstanceManager::setReporterManager(
-  (ReporterManager*)getReporterManager());
-
+ InstanceManager::setReporterManager((ReporterManager*)getReporterManager());
+#if 0 // TOO
+ InstanceManager::setDefault("CabSignalManager",getCabSignalManager());
+#endif
  InstanceManager::setConsistManager(new LocoNetConsistManager(this));
 
  ClockControl* cc = getClockControl();
  // make sure InstanceManager knows about that
  InstanceManager::setDefault("ClockControl", cc);
+
+ //MultiMeter mm = getMultiMeter();
+ InstanceManager::store(getMultiMeter(), "MultiMeter");
+
+ getIdTagManager();
+
 }
 
 LnPowerManager* LocoNetSystemConnectionMemo::getPowerManager()
@@ -381,12 +405,47 @@ LocoNetConsistManager* LocoNetSystemConnectionMemo::getConsistManager() {
     return consistManager;
 }
 
+/*public*/ LnMultiMeter* LocoNetSystemConnectionMemo::getMultiMeter() {
+    if (getDisabled()) {
+        return nullptr;
+    }
+    if (multiMeter == nullptr) {
+        multiMeter = new LnMultiMeter(this);
+    }
+    return multiMeter;
+}
+
 ResourceBundle* LocoNetSystemConnectionMemo::getActionModelResourceBundle()
 {
  ResourceBundle* rb = new ResourceBundle;
  return rb->getBundle("src/jmri/jmrix/loconet/LocoNetActionListBundle.properties");
 }
+// yes, tagManager is static.  Tags can move between system connections.
+// when readers are not all on the same LocoNet
+// this manager is loaded on demand.
+/*protected*/ /*static*/ TranspondingTagManager* LocoNetSystemConnectionMemo::tagManager = nullptr;
 
+
+/*static*/ /*public*/ TranspondingTagManager* LocoNetSystemConnectionMemo::getIdTagManager() {
+    /*synchronized*/ /*(LocoNetSystemConnectionMemo.class)*/ { // since tagManager can be null, can't synch on that
+        if (tagManager == nullptr) {
+            tagManager = new TranspondingTagManager();
+            InstanceManager::setIdTagManager(tagManager);
+        }
+        return tagManager;
+    }
+}
+#if 0 // TOO
+
+/*protected*/ LnCabSignalManager* cabSignalManager;
+
+/*public*/ LnCabSignalManager getCabSignalManager() {
+    if (cabSignalManager == null) {
+        cabSignalManager = new LnCabSignalManager(this);
+    }
+    return cabSignalManager;
+}
+#endif
 void  LocoNetSystemConnectionMemo::dispose()
 {
  lt = NULL;
@@ -418,6 +477,23 @@ void  LocoNetSystemConnectionMemo::dispose()
  if (clockControl != NULL)
   InstanceManager::deregister(clockControl, "LnClockControl");
  SystemConnectionMemo::dispose();
+}
+
+/*public*/ void LocoNetSystemConnectionMemo::resetProgrammer()
+{
+ oldMgr = programmerManager;
+ programmerManager = new LnProgrammerManager(this);
+ if (getProgrammerManager()->isAddressedModePossible())
+ {
+  InstanceManager::getDefault()-> remove(oldMgr, "AddressedProgrammerManager");
+  InstanceManager::store(getProgrammerManager(), "AddressedProgrammerManager");
+ }
+ if (getProgrammerManager()->isGlobalProgrammerAvailable())
+ {
+  InstanceManager::getDefault()-> remove(oldMgr, "GlobalProgrammerManager");
+  InstanceManager::store(getProgrammerManager(), "GlobalProgrammerManager");
+ }
+ //InstanceManager::store(oldMgr, "Garbage");
 }
 
 /*static*/ Logger* LocoNetSystemConnectionMemo::log = LoggerFactory::getLogger("LocoNetSystemConnectionMemo");

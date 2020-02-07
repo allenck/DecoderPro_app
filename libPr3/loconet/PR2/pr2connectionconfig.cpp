@@ -13,14 +13,16 @@
  * Ctor for an object being created during load process; Swing init is
  * deferred.
  */
-/*public*/ Pr2ConnectionConfig::Pr2ConnectionConfig(SerialPortAdapter* p, QObject* parent) : AbstractSerialConnectionConfig(p, parent){
+/*public*/ Pr2ConnectionConfig::Pr2ConnectionConfig(SerialPortAdapter* p, QObject* parent)
+ : AbstractSerialConnectionConfig(p, parent){
     //super(p);
 }
 
 /**
  * Ctor for a functional Swing object with no prexisting adapter
  */
-/*public*/ Pr2ConnectionConfig::Pr2ConnectionConfig(QObject* parent) : AbstractSerialConnectionConfig(parent)
+/*public*/ Pr2ConnectionConfig::Pr2ConnectionConfig(QObject* parent)
+ : AbstractSerialConnectionConfig(parent)
 {
     //super();
 }

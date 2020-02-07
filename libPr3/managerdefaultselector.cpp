@@ -8,6 +8,7 @@
 #include "class.h"
 #include "configuremanager.h"
 #include "systemconnectionmemomanager.h"
+#include "vptr.h"
 
 /**
  * Records and executes a desired set of defaults for the JMRI InstanceManager
@@ -36,6 +37,9 @@
 {
  setProperty("JavaClassName", "jmri.managers.ManagerDefaultSelector");
 
+ memoListener = new MemoListener(this);
+ SystemConnectionMemoManager::getDefault()->addPropertyChangeListener((PropertyChangeListener*)this);
+
  defaults = QMap<QString, QString>();
  // Define set of items that we remember defaults for, manually maintained because
  // there are lots of JMRI-internal types of no interest to the user and/or not system-specific.
@@ -53,59 +57,54 @@
  //SystemConnectionMemoManager::addPropertyChangeListener((PropertyChangeListener*)this);
  SystemConnectionMemoManager* mgr = SystemConnectionMemoManager::getDefault();
  connect(mgr->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+
+ //InstanceManager::getList("SystemConnectionMemo").forEach((memo) ->
+ QList<QObject*>* list = InstanceManager::getList("SystemConnectionMemo");
+ foreach(QObject* obj, *list)
+ {
+  SystemConnectionMemo*memo = (SystemConnectionMemo*)obj;
+  //memo.addPropertyChangeListener(this.memoListener);
+  connect(memo, SIGNAL(propertyChange(PropertyChangeEvent*)), memoListener, SLOT(propertyChange(PropertyChangeEvent*)));
+ }//);
+
 }
 
 //    SystemConnectionMemo::addPropertyChangeListener((PropertyChangeEvent e) ->
 /*public*/ void ManagerDefaultSelector::propertyChange(PropertyChangeEvent *e)
 {
- if (e->getPropertyName()== "ConnectionNameChanged")
+ if (e->getPropertyName()== "ConnectionRemoved")
  {
-  QString oldName =  e->getOldValue().toString();
-  QString newName =  e->getNewValue().toString();
-  log->debug(tr("ConnectionNameChanged from \"%1\" to \"%2\"").arg(oldName).arg( newName));
-  //defaults.keySet().stream().forEach((c) ->
-  foreach(QString c, defaults.keys())
+  if(qobject_cast<SystemConnectionMemo*>(VPtr<SystemConnectionMemo>::asPtr(e->getOldValue())))
   {
-   QString connectionName = this->defaults.value(c);
-   if (connectionName == (oldName))
+   SystemConnectionMemo* memo = qobject_cast<SystemConnectionMemo*>(VPtr<SystemConnectionMemo>::asPtr(e->getOldValue()));
+   QString removedName =  memo->getUserName();
+   log->debug(tr("ConnectionRemoved for \"%1\"").arg(removedName));
+   removeConnectionAsDefault(removedName);
+   disconnect(memo, SIGNAL(propertyChange(PropertyChangeEvent*)), memoListener, SLOT(propertyChange(PropertyChangeEvent*)) );
+  }
+ }
+ if (e->getPropertyName()=="ConnectionAdded")
+ {
+  if(qobject_cast<SystemConnectionMemo*>(VPtr<SystemConnectionMemo>::asPtr(e->getNewValue())))
+  {
+   SystemConnectionMemo* memo = VPtr<SystemConnectionMemo>::asPtr( e->getNewValue());
+   //memo->addPropertyChangeListener(this->memoListener);
+   connect(memo, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   // check for special case of anything else then Internal
+   QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
+   if((list->size() == 1 && !(qobject_cast<InternalSystemConnectionMemo*>(list->at(0))) ||
+      ((list->size() == 2 && !(qobject_cast<InternalSystemConnectionMemo*>(list->at(0))) && (qobject_cast<InternalSystemConnectionMemo*>(list->at(1)) ))))) // ACK change from 1 to 0; Internal is last!
    {
-    this->defaults.insert(c, newName);
+    log->debug("First real system added, reset defaults");
+    QString name = ((SystemConnectionMemo*)list->at(1))->getUserName();
+    removeConnectionAsDefault(name);
    }
-  }
- }
- else if (e->getPropertyName()=="ConnectionDisabled")
- {
-  bool newState = e->getNewValue().toBool();
-  if (newState)
-  {
-   SystemConnectionMemo* memo = (SystemConnectionMemo*) e->getSource();
-   QString disabledName = memo->getUserName();
-   log->debug(tr("ConnectionDisabled true: \"%1\"").arg(disabledName));
-   removeConnectionAsDefault(disabledName);
-  }
- }
- else if (e->getPropertyName()== "ConnectionRemoved")
- {
-  QString removedName =  e->getOldValue().toString();
-  log->debug(tr("ConnectionRemoved for \"%1\"").arg(removedName));
-  removeConnectionAsDefault(removedName);
- }
- else if (e->getPropertyName()=="ConnectionAdded")
- {
-  // check for special case of anything else then Internal
-  QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
-  if (list->size() == 2 && qobject_cast<InternalSystemConnectionMemo*>(list->at(0)) != 0 ) // ACK change from 1 to 0; Internal is last!
-  {
-   log->debug("First real system added, reset defaults");
-   QString name = ((SystemConnectionMemo*)list->at(1))->getUserName();
-   removeConnectionAsDefault(name);
   }
  }
  else
  {
   log->debug(tr("ignoring notification of \"%1\"").arg(e->getPropertyName()));
  }
- this->firePropertyChange("Updated", QVariant(), QVariant());
 }
 
 // remove connection's record
@@ -309,3 +308,41 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
  }
 }
 
+void  MemoListener::propertyChange(PropertyChangeEvent *e)
+{
+ mds->log->trace(tr("memoListener fired via %1").arg(e->toString()));
+  if(e->getPropertyName() == SystemConnectionMemo::USER_NAME)
+  {
+    QString oldName = e->getOldValue().toString();
+    QString newName = e->getNewValue().toString();
+    mds->log->debug(tr("ConnectionNameChanged from \"%1\" to \"%2\"").arg(oldName).arg(newName));
+    // Takes a copy of the keys to avoid ConcurrentModificationException.
+//    new HashSet<>(defaults.keySet()).forEach((c) -> {
+//        String connectionName = this.defaults.get(c);
+//        if (connectionName.equals(oldName)) {
+//            ManagerDefaultSelector.this.defaults.put(c, newName);
+//        }
+//    });
+    foreach (QString c, mds->defaults.keys())
+    {
+     QString connectionName = mds->defaults.value(c);
+     if (connectionName == (oldName)) {
+         mds->defaults.insert(c, newName);
+     }
+    }
+    mds->firePropertyChange("Updated", QVariant(), QVariant());
+  }
+   else if(e->getPropertyName() == SystemConnectionMemo::DISABLED)
+   {
+    bool newState = e->getNewValue().toBool();
+    if (newState) {
+        QString disabledName = ((SystemConnectionMemo*) e->getSource())->getUserName();
+        mds->log->debug(tr("ConnectionDisabled true: \"%1\"").arg(disabledName));
+        mds->removeConnectionAsDefault(disabledName);
+    }
+   }
+   else
+    {
+       mds->log->debug(tr("ignoring notification of \"%1\"").arg(e->getPropertyName()));
+    }
+}

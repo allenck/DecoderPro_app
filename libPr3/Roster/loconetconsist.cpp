@@ -497,7 +497,7 @@ void LocoNetConsist::common()
 }
 
 //@Override
-/*public*/ void LocoNetConsist::notifyFailedThrottleRequest(locoAddress* address, QString reason) {
+/*public*/ void LocoNetConsist::notifyFailedThrottleRequest(LocoAddress* address, QString reason) {
     //if (! (address instanceof DccLocoAddress))
     if(qobject_cast<DccLocoAddress*>(address) == NULL)
     {
@@ -510,7 +510,7 @@ void LocoNetConsist::common()
 }
 
 //@Override
-/*public*/ void LocoNetConsist::notifyStealThrottleRequired(locoAddress* address){
+/*public*/ void LocoNetConsist::notifyStealThrottleRequired(LocoAddress* address){
     // this is an automatically stealing impelementation.
     throttleManager->stealThrottleRequest(address, (ThrottleListener*)this, true);
 }

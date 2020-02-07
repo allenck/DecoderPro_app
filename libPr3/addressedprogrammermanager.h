@@ -88,6 +88,15 @@ public:
     /*public*/ virtual bool isAddressedModePossible() =0;
 
     /**
+      * Convenience method to check whether you'll be able to get an Addressed
+      * Mode programmer for a specific address
+      *
+      * @param address the address to get a programmer for
+      * @return false if there's no chance of getting one
+      */
+    /*public*/ virtual bool isAddressedModePossible(/*@Nonnull*/ DccLocoAddress* address) =0;
+
+    /**
      * Get the list of {@link ProgrammingMode} (generally) supported by
      * Programmers provided by this Manager.
      *<p>

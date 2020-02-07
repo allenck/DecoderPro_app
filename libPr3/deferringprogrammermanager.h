@@ -1,14 +1,17 @@
 #ifndef DEFERRINGPROGRAMMERMANAGER_H
 #define DEFERRINGPROGRAMMERMANAGER_H
 
-#include <QObject>
+#include "defaultprogrammermanager.h"
 #include "addressedprogrammermanager.h"
 class Logger;
 class ProgrammingMode;
-class locoAddress;
+class LocoAddress;
 class AddressedProgrammer;
 class Programmer;
-class DeferringProgrammerManager : public QObject, public AddressedProgrammerManager, public GlobalProgrammerManager
+// Note: we are subclassing DefaultProgrammerManager even though all of it's methods are overridden because
+// we want to be able to cast a GlobalProgrammerManager or AddressedProgrammer manager to a valid QObject
+// derived pointer.
+class DeferringProgrammerManager : public DefaultProgrammerManager//QObject, public AddressedProgrammerManager, public GlobalProgrammerManager
 {
  Q_OBJECT
  Q_INTERFACES(AddressedProgrammerManager GlobalProgrammerManager)
@@ -24,7 +27,7 @@ public:
  /*public*/ AddressedProgrammer* reserveAddressedProgrammer(bool pLongAddress, int pAddress) ;
  /*public*/ void releaseAddressedProgrammer(AddressedProgrammer* p) ;
  /*public*/ bool isAddressedModePossible();
- /*public*/ bool isAddressedModePossible(locoAddress* l);
+ /*public*/ bool isAddressedModePossible(LocoAddress* l);
  /*public*/ QList<ProgrammingMode*> getDefaultModes();
 
 signals:

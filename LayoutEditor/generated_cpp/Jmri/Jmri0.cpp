@@ -29725,7 +29725,7 @@ float  PythonQtWrapper_Block::getLengthMm(Block* theWrappedObject)
   return ( theWrappedObject->getLengthMm());
 }
 
-locoAddress*  PythonQtWrapper_Block::getLocoAddress(Block* theWrappedObject, QString  rep)
+LocoAddress*  PythonQtWrapper_Block::getLocoAddress(Block* theWrappedObject, QString  rep)
 {
   return ( theWrappedObject->getLocoAddress(rep));
 }
@@ -33362,7 +33362,7 @@ if (_wrapper) {
 }
   return DccLocoAddress::getNumber();
 }
-locoAddress::Protocol  PythonQtShell_DccLocoAddress::getProtocol() const
+LocoAddress::Protocol  PythonQtShell_DccLocoAddress::getProtocol() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -33372,7 +33372,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"LocoAddress::Protocol"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      locoAddress::Protocol returnValue{};
+      LocoAddress::Protocol returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -33381,7 +33381,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getProtocol", methodInfo, result);
           } else {
-            returnValue = *((locoAddress::Protocol*)args[0]);
+            returnValue = *((LocoAddress::Protocol*)args[0]);
           }
         }
       }
@@ -33458,7 +33458,7 @@ DccLocoAddress* PythonQtWrapper_DccLocoAddress::new_DccLocoAddress(const DccLoco
 { 
 return new PythonQtShell_DccLocoAddress(l, parent); }
 
-DccLocoAddress* PythonQtWrapper_DccLocoAddress::new_DccLocoAddress(int  number, locoAddress::Protocol  protocol, QObject*  parent)
+DccLocoAddress* PythonQtWrapper_DccLocoAddress::new_DccLocoAddress(int  number, LocoAddress::Protocol  protocol, QObject*  parent)
 { 
 return new PythonQtShell_DccLocoAddress(number, protocol, parent); }
 
@@ -35608,7 +35608,7 @@ if (_wrapper) {
 }
   return DccThrottle::getListeners();
 }
-locoAddress*  PythonQtShell_DccThrottle::getLocoAddress()
+LocoAddress*  PythonQtShell_DccThrottle::getLocoAddress()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -35618,7 +35618,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"LocoAddress*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      locoAddress* returnValue{};
+      LocoAddress* returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -35627,7 +35627,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getLocoAddress", methodInfo, result);
           } else {
-            returnValue = *((locoAddress**)args[0]);
+            returnValue = *((LocoAddress**)args[0]);
           }
         }
       }

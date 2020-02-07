@@ -8,6 +8,7 @@
 #include <QList>
 //class Item;
 
+class MemoListener;
 class Class;
 class LIBPR3SHARED_EXPORT ManagerDefaultSelector : public AbstractPreferencesManager
 {
@@ -39,8 +40,19 @@ private:
  void removeConnectionAsDefault(QString removedName);
  /*private*/ QString nameForClass(/*@Non NULL */QString cls);
  /*private*/ QString classForName(/*@Non NULL*/ QString name);
+ MemoListener* memoListener = nullptr;
+ friend class MemoListener;
+};
+Q_DECLARE_METATYPE(ManagerDefaultSelector)
 
+class MemoListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ ManagerDefaultSelector* mds;
+public:
+ MemoListener(ManagerDefaultSelector* mds) {this->mds = mds;}
+public slots:
+ void propertyChange(PropertyChangeEvent* e);
 };
 
-Q_DECLARE_METATYPE(ManagerDefaultSelector)
 #endif // MANAGERDEFAULTSELECTOR_H

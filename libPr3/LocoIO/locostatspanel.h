@@ -5,15 +5,17 @@
 #include "lnnamedpaneaction.h"
 #include "QMetaType"
 #include "libPr3_global.h"
+#include "loconetinterfacestatslistener.h"
 
 class LocoNetMessage;
 class JTextField;
 class QPushButton;
-class LIBPR3SHARED_EXPORT LocoStatsPanel : public LnPanel
+class LIBPR3SHARED_EXPORT LocoStatsPanel : public LnPanel, public LocoNetInterfaceStatsListener
 {
  Q_OBJECT
+ Q_INTERFACES(LocoNetInterfaceStatsListener)
 public:
- explicit LocoStatsPanel(QWidget *parent = 0);
+ Q_INVOKABLE explicit LocoStatsPanel(QWidget *parent = 0);
  ~LocoStatsPanel() {}
  LocoStatsPanel(const LocoStatsPanel&) : LnPanel() {}
  /*public*/ QString getHelpTarget();
@@ -22,12 +24,14 @@ public:
  /*public*/ void initComponents();
  /*public*/ void initComponents(LocoNetSystemConnectionMemo* memo);
  /*public*/ void dispose();
+ /*public*/ QObject* self() {return (QObject*)this;}
 
 signals:
 
 public slots:
  /*public*/ void message(LocoNetMessage* msg);
  /*public*/ void requestUpdate();
+ /*public*/ void notifyChangedInterfaceStatus(QObject* o);
 
 private:
  Logger* log;
@@ -62,7 +66,7 @@ private:
  JTextField* breaks;// = new JTextField(6);
  JTextField* errors;// = new JTextField(6);
 
- bool updatePending;// = false;
+ bool updateRequestPending;// = false;
  void report(QString msg);
  QPushButton* updateButton;// = new JButton("Update");
 

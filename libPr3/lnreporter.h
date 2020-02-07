@@ -75,7 +75,7 @@ public:
 
    // Parses out a (possibly old) LnReporter-generated report string to extract the address from the front.
    // Assumes the LocoReporter format is "NNNN [enter|exit]"
-   locoAddress* getLocoAddress(QString rep);
+   LocoAddress* getLocoAddress(QString rep);
    // Parses out a (possibly old) LnReporter-generated report string to extract the direction from the end.
    // Assumes the LocoReporter format is "NNNN [enter|exit]"
    PhysicalLocationReporter::Direction getDirection(QString rep);

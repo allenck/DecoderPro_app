@@ -1,6 +1,7 @@
 #include "abstractserialconnectionconfigxml.h"
 #include "serialportadapter.h"
 #include "connectionconfig.h"
+#include "systemconnectionmemo.h"
 
 AbstractSerialConnectionConfigXml::AbstractSerialConnectionConfigXml(QObject *parent) :
     AbstractConnectionConfigXml(parent)
@@ -23,15 +24,15 @@ AbstractSerialConnectionConfigXml::AbstractSerialConnectionConfigXml(QObject *pa
 //final static /*protected*/ java.util.ResourceBundle rb =
 //    java.util.ResourceBundle.getBundle("jmri.jmrix.JmrixBundle");
 
-/*abstract*/ /*protected*/ void AbstractSerialConnectionConfigXml::getInstance() {}
-/*abstract*/ /*protected*/ void AbstractSerialConnectionConfigXml::_register() {}
+///*abstract*/ /*protected*/ void AbstractSerialConnectionConfigXml::getInstance() {}
+///*abstract*/ /*protected*/ void AbstractSerialConnectionConfigXml::_register() {}
 /*protected*/ void AbstractSerialConnectionConfigXml::getInstance(QObject* /*object*/)
 {
- getInstance(); // over-ridden during migration
+ AbstractConnectionConfigXml::getInstance(); // over-ridden during migration
 }
-/*protected*/ void AbstractSerialConnectionConfigXml::_register(ConnectionConfig* c) {
-        c->_register();
-}
+///*protected*/ void AbstractSerialConnectionConfigXml::_register(ConnectionConfig* c) {
+//        c->_register();
+//}
 
 QDomElement AbstractSerialConnectionConfigXml::store(QObject* o, bool /*shared*/)
 {
@@ -77,14 +78,20 @@ QDomElement AbstractSerialConnectionConfigXml::store(QObject* o, bool /*shared*/
    javaClassName = "jmri.jmrix.loconet.locobuffer.configurexml.ConnectionConfigXml";
   else if(className == "LocobufferUsbConnectionConfigXml" )
    javaClassName = "jmri.jmrix.loconet.locobufferusb.configurexml.ConnectionConfigXml";
-  else if(className == "ConnectionConfigXml" )
+  else if(className == "Pr2ConnectionConfigXml" )
+   javaClassName = "jmri.jmrix.loconet.pr2.configurexml.ConnectionConfigXml";
+  else if(className == "Pr3ConnectionConfigXml" )
    javaClassName = "jmri.jmrix.loconet.pr3.configurexml.ConnectionConfigXml";
+  else if(className == "Pr4ConnectionConfigXml" )
+   javaClassName = "jmri.jmrix.loconet.pr4.configurexml.ConnectionConfigXml";
   else if(className == "SprogConnectionConfigXml" )
    javaClassName = "jmri.jmrix.sprog.sprog.configurexml.ConnectionConfigXml";
   else if(className == "SprogCSConnectionConfigXml" )
    javaClassName = "jmri.jmrix.sprog.sprogCS.configurexml.ConnectionConfigXml";
   else if(className == "JMRIClientConnectionConfigXml" )
    javaClassName = "jmri.jmrix.jmriclient.networkdriver.configurexml.ConnectionConfigXml";
+  else if(className == "DCS240lientConnectionConfigXml" )
+   javaClassName = "jmri.jmrix.loconet.usb_dcs240.configurexml.ConnectionConfigXml";
 
  }
 
@@ -105,6 +112,8 @@ QDomElement AbstractSerialConnectionConfigXml::store(QObject* o, bool /*shared*/
 {
     bool result = true;
     getInstance();
+    log->info(tr("Starting to connect for \"%1\"").arg(adapter->getSystemConnectionMemo()!=nullptr ? adapter->getSystemConnectionMemo()->getUserName() : "(Unknown Connection)"));
+
     // configure port name
     QString portName = perNode.attribute("port");
      adapter->setPort(portName);

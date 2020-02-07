@@ -8,7 +8,7 @@ public:
  InternalConsistManager(QObject* parent = nullptr);
  /*public*/ bool isCommandStationConsistPossible();
  /*public*/ bool csConsistNeedsSeparateAddress();
- /*public*/ DccConsist *addConsist(locoAddress* address);
+ /*public*/ DccConsist *addConsist(LocoAddress* address);
 
 };
 

@@ -213,15 +213,15 @@ InstanceManager::InstanceManager(QObject *parent) :
  */
 //template<class T>
 /*static*/ /*public*/  void InstanceManager::store(/*@Nonnull*/ QObject* item, /*@Nonnull Class<T> */ QString type) {
-    log->debug(tr("Store item of type %1").arg(type));
     if (item == nullptr) {
      QString msg = tr("Should not store null value of type %1").arg(type);
      log->error(msg);
         NullPointerException npe =  NullPointerException(msg);
         throw npe;
     }
+    log->debug(tr("Store item of type %1, class %2").arg(type).arg(item->metaObject()->className()));
     QObjectList* l = getList(type);
-    l->append(item);
+    l->append(QPointer<QObject>(item));
     getDefault()->managerLists.insert(type, l);
     getDefault()->pcs->fireIndexedPropertyChange(getListPropertyName(type), l->indexOf(item), QVariant(), VPtr<QObject>::asQVariant(item));
 }

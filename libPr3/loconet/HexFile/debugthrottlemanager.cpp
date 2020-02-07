@@ -25,7 +25,7 @@ DebugThrottleManager::DebugThrottleManager(QObject *parent) : AbstractThrottleMa
     log = new  Logger("DebugThrottleManager");
 }
 
-/*public*/ void DebugThrottleManager::requestThrottleSetup(locoAddress* a, bool control) {
+/*public*/ void DebugThrottleManager::requestThrottleSetup(LocoAddress* a, bool control) {
     // Immediately trigger the callback.
     DccLocoAddress* address = (DccLocoAddress*) a;
     log->debug("new debug throttle for "+address->toString());

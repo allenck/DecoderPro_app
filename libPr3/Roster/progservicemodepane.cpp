@@ -89,7 +89,7 @@ void ProgServiceModePane::init()
  QList<GlobalProgrammerManager*>* list = new  QList<GlobalProgrammerManager*>();
  foreach (QObject* o, *objectList)
  {
-  GlobalProgrammerManager* mgr = (GlobalProgrammerManager*)o;
+  GlobalProgrammerManager* mgr = (DefaultProgrammerManager*)o;
   list->append(mgr);
  }
  return list;
@@ -129,7 +129,7 @@ void ProgServiceModePane::init()
  }
  else
  {
-  progBox->setCurrentIndex(progBox->findText(((GlobalProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getUserName())); // set default
+  progBox->setCurrentIndex(progBox->findText(((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getUserName())); // set default
 //   progBox.addActionListener(new java.awt.event.ActionListener(){
 //         public void actionPerformed(java.awt.event.ActionEvent e) {
 //             // new programmer selection

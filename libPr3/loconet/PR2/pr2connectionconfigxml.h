@@ -4,8 +4,9 @@
 
 class Pr2ConnectionConfigXml : public AbstractSerialConnectionConfigXml
 {
+ Q_OBJECT
 public:
- Pr2ConnectionConfigXml(QObject* parent = nullptr);
+ Q_INVOKABLE Pr2ConnectionConfigXml(QObject* parent = nullptr);
  ~Pr2ConnectionConfigXml() {}
  Pr2ConnectionConfigXml(const Pr2ConnectionConfigXml&) : AbstractSerialConnectionConfigXml() {}
 

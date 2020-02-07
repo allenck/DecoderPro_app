@@ -19,7 +19,6 @@ SOURCES += libpref.cpp \
     tabbedpreferences.cpp \
     tabbedpreferencesaction.cpp \
     usermessagepreferencespane.cpp \
-    preferencespane.cpp \
     programmerconfigpane.cpp \
     performfilepanel.cpp \
     performfilemodel.cpp \
@@ -27,7 +26,6 @@ SOURCES += libpref.cpp \
     rosterconfigpane.cpp \
     managerdefaultsconfigpanexml.cpp \
     managerdefaultsconfigpane.cpp \
-    connectionconfigframe.cpp \
     guilocalepreferencespanel.cpp \
     guilafconfigpane.cpp \
     abstractactionmodel.cpp \
@@ -76,14 +74,12 @@ HEADERS += libpref.h\
 #    appconfigbase.h \
     preferencessubpanel.h \
     preferencespanel.h \
-    preferencespane.h \
     programmerconfigpane.h \
     performfilepanel.h \
     performfilemodel.h \
     performactionmodel.h \
     managerdefaultsconfigpanexml.h \
     managerdefaultsconfigpane.h \
-    connectionconfigframe.h \
     abstractactionmodel.h \
     guilocalepreferencespanel.h \
     guilafconfigpane.h \

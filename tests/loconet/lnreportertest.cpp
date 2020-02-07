@@ -148,13 +148,13 @@ LnReporterTest::LnReporterTest()
 
     //@Test
     /*public*/ void LnReporterTest::testLnReporterGetLocoAddress() {
-        locoAddress* t = ((LnReporter*)r)->getLocoAddress("7413 enter");
+        LocoAddress* t = ((LnReporter*)r)->getLocoAddress("7413 enter");
         Assert::assertEquals("getLocoAddress 7431 enter", t->getNumber(), 7413, __FILE__, __LINE__);
 
-        locoAddress* t2 = ((LnReporter*)r)->getLocoAddress(nullptr);
+        LocoAddress* t2 = ((LnReporter*)r)->getLocoAddress(nullptr);
         Assert::assertNull("getLocoAddress <null>", t2, __FILE__, __LINE__);
 
-        locoAddress* t3 = ((LnReporter*)r)->getLocoAddress("abdc enter");
+        LocoAddress* t3 = ((LnReporter*)r)->getLocoAddress("abdc enter");
         Assert::assertNull("getLocoAddress abcd enter", t3, __FILE__, __LINE__);
 
 

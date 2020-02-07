@@ -47,32 +47,6 @@
 //    private static final ResourceBundle acb = ResourceBundle.getBundle("apps.AppsConfigBundle");
 
 
-/**
- * Get access to a pane describing existing configuration information, or
- * create one if needed.
- * <P>
- * The index argument is used to connect the new pane to the right
- * communications info. A value of "1" means the first (primary) port, 2 is
- * the second, etc.
- *
- * @param index 1-N based index of the communications object to configure.
- * @return a configuration panel for the specified communications object.
- */
-/*public*/ /*static*/ JmrixConfigPane* JmrixConfigPane::instance(int index)
-{
- JmrixConfigPane* retval = configPaneTable.value(index);
- if (retval != NULL)
- {
-  return retval;
- }
- return createPanel(index);
-}
-
-/*public*/ /*static*/ JmrixConfigPane* JmrixConfigPane::instance(ConnectionConfig* config)
-{
- return createPanel(config);
-}
-
 /*
  * Create panel is separated off from the instance and synchronized, so that only
  * one connection can be configured at once, this prevents multiple threads from
@@ -119,21 +93,6 @@
  return createPanel((ConnectionConfig*)NULL);
 }
 
-/*public*/ /*static*/ int JmrixConfigPane::getNumberOfInstances() {
-    return configPaneTable.size();
-}
-
-/*public*/ /*static*/ void JmrixConfigPane::dispose(int index)
-{
- JmrixConfigPane* retval = configPaneTable.value((index));
- if (retval == NULL)
- {
-  log->debug("no instance found therefore can not dispose of it!");
-  return;
- }
- dispose(retval);
-}
-
 /*public*/ /*static*/ void JmrixConfigPane::dispose(JmrixConfigPane* confPane)
 {
     if (confPane == NULL) {
@@ -156,30 +115,9 @@
             ((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->remove(confPane->ccCurrent);
 }
 
-/*public*/ /*static*/ int JmrixConfigPane::getInstanceNumber(JmrixConfigPane* confPane)
-{
- foreach (int key, configPaneTable.keys())
- {
-  if (configPaneTable.value(key)==(confPane))
-  {
-   return key;
-  }
- }
- return -1;
-}
-
-/*public*/ /*static*/ QList<JmrixConfigPane*> JmrixConfigPane::getListOfConfigPanes()
-{
- return configPaneTable.values();
-}
-
-/*static*/ /*final*/ QMap<int, JmrixConfigPane*> JmrixConfigPane::configPaneTable = QMap<int, JmrixConfigPane*>();
-
 /*public*/ /*static*/ /*final*/ QString JmrixConfigPane::NONE_SELECTED = tr("(none selected)");
 /*public*/ /*static*/ /*final*/ QString JmrixConfigPane::NO_PORTS_FOUND = tr("(no ports found!)");
 /*public*/ /*static*/ /*final*/ QString JmrixConfigPane::NONE = tr("(none)");
-
-
 
 /**
  * Use "instance" to get one of these. That allows it to reconnect to
@@ -224,8 +162,8 @@
 //  manuBox.addActionListener((ActionEvent evt) -> {
 //        updateComboConnection();
 //    });
-
   connect(manuBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateComboConnection()));
+
   // get the list of ConnectionConfig items into a selection box
   classConnectionNameList = DCCManufacturerList::getConnectionList( manuBox->currentText());
   QVector<ConnectionConfig*> v = QVector<ConnectionConfig*>(classConnectionNameList.length() + 1);
@@ -385,26 +323,10 @@ void JmrixConfigPane::On_modeBox_currentIndexChanged(int)
    try
    {
     ConnectionConfig* config = NULL;
-#if 1
     Class* cl = Class::forName(classConnectionNameList1);
-    config = (ConnectionConfig*) cl->newInstance();
-    modeBox->addItem(config->name());
-#else
-  int id = QMetaType::type(classConnectionNameList1.toLocal8Bit());
-  if(id != 0)
-  {
-#if QT_VERSION < 0x050000
-   config = (ConnectionConfig*)QMetaType::construct(id);
-#else
-   config = (ConnectionConfig*)QMetaType::create(id);
-#endif
-    modeBox->addItem(config->name());
-  }
-  else
-  {
-   log->warn(tr("Attempt to load %1 failed").arg(classConnectionNameList1));
-  }
-#endif
+    config = (ConnectionConfig*)cl->newInstance();
+    modeBox->addItem(((ConnectionConfig*)config)->name());
+
     classConnectionList.replace(n++, config);
     if (classConnectionNameList.length() == 1)
     {

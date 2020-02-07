@@ -46,13 +46,13 @@
 }
 
 //@Override
-/*public*/ void BackgroundPanel::notifyAddressReleased(locoAddress* la) {
+/*public*/ void BackgroundPanel::notifyAddressReleased(LocoAddress* la) {
     setImagePath(NULL);
     setVisible(false);
 }
 
 //@Override
-/*public*/ void BackgroundPanel::notifyAddressChosen(locoAddress* l) {
+/*public*/ void BackgroundPanel::notifyAddressChosen(LocoAddress* l) {
 }
 
 //@Override

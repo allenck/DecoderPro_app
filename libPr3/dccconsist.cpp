@@ -12,10 +12,11 @@
 #include "decoderindexfile.h"
 #include  "roster.h"
 #include "addressedprogrammer.h"
+#include "defaultprogrammermanager.h"
 
 DccConsist::DccConsist(int address) : Consist()
 {
- common(new DccLocoAddress(address, false), qobject_cast<AddressedProgrammerManager*>(InstanceManager::getDefault("AddressedProgrammerManager")));
+ common(new DccLocoAddress(address, false), qobject_cast<DefaultProgrammerManager*>(InstanceManager::getDefault("AddressedProgrammerManager")));
 }
 /**
  * This is the Default DCC consist.
@@ -41,7 +42,7 @@ DccConsist::DccConsist(int address) : Consist()
     // The Default consist type is an advanced consist
 /*public*/ DccConsist::DccConsist(DccLocoAddress* address) : Consist()
 {
- common(address, qobject_cast<AddressedProgrammerManager*>(InstanceManager::getDefault("AddressedProgrammerManager")));
+ common(address, qobject_cast<DefaultProgrammerManager*>(InstanceManager::getDefault("AddressedProgrammerManager")));
 }
 
 // Initialize a consist for a specific DccLocoAddress.
@@ -282,7 +283,7 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
    // Don't do anything with this yet
   }
  }
- ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))
+ ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))
                  ->releaseAddressedProgrammer(opsProg);
 }
 
@@ -297,7 +298,7 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
  if(!list->isEmpty())
  {
   //AddressedProgrammerManager* mgr = qobject_cast<AddressedProgrammerManager*>(InstanceManager::getDefault("AddressedProgrammerManager"));
-  AddressedProgrammerManager* mgr  = qobject_cast<AddressedProgrammerManager*>(list->at(0));
+  AddressedProgrammerManager* mgr  = qobject_cast<DefaultProgrammerManager*>(list->at(0));
   opsProg = mgr->getAddressedProgrammer(locoAddress->isLongAddress(),
                          locoAddress->getNumber());
  }
@@ -310,7 +311,7 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
      // Don't do anything with this yet
   return;
  }
- ((AddressedProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->releaseAddressedProgrammer(opsProg);
+ ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->releaseAddressedProgrammer(opsProg);
 }
 
 /*

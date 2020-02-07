@@ -1033,7 +1033,7 @@ protected:
     AddBlockActionListener(Editor* editor) {this->editor = editor;}
    public slots:
       //@Override
-      /*public*/ void actionPerformed(ActionEvent*  a = 0) {
+      /*public*/ void actionPerformed(ActionEvent*  /*a*/ = 0) {
           editor->putBlockContents();
       }
   };

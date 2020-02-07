@@ -40,7 +40,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ DccConsist* InternalConsistManager::addConsist(locoAddress* address) {
+/*public*/ DccConsist* InternalConsistManager::addConsist(LocoAddress* address) {
     //if (! (address instanceof DccLocoAddress))
     if(qobject_cast<DccLocoAddress*>(address)== NULL)
     {

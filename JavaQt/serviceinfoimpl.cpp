@@ -1105,7 +1105,7 @@ QString ServiceInfoState::toString() {return "";}
             for (InetAddress* address : addresses) {
                 buf.append(address->toString());
                 buf.append(':');
-                buf.append(this->getPort());
+                buf.append(QString::number(this->getPort()));
                 buf.append(' ');
             }
         } else {

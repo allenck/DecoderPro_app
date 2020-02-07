@@ -10,6 +10,6 @@ ConnectionConfigFrame::ConnectionConfigFrame(QWidget *parent) :
  QVBoxLayout* layout = new QVBoxLayout;
  centralWidget->setLayout(layout);
  setCentralWidget(centralWidget);
- JmrixConfigPane* pane = JmrixConfigPane::instance(0);
- layout->addWidget(pane);
+ //JmrixConfigPane* pane = JmrixConfigPane::instance(0);
+ //layout->addWidget(pane);
 }

@@ -21,6 +21,8 @@
  * @author		Bob Jacobsen  Copyright (C) 2010
  * @version             $Revision: 20788 $
  */
+class LnMultiMeter;
+class TranspondingTagManager;
 class LnComponentFactory;
 class ResourceBundle;
 class LnCommandStationType;
@@ -63,7 +65,7 @@ public:
  SlotManager* getSlotManager();
  void setSlotManager(SlotManager* sm);
  LnMessageManager* getLnMessageManager();
- DefaultProgrammerManager* getProgrammerManager();
+ DefaultProgrammerManager *getProgrammerManager();
  void setProgrammerManager(DefaultProgrammerManager* p);
  /*public*/ bool provides(QString type);
  /*public*/ Manager*  get(QString T) override;
@@ -76,36 +78,46 @@ public:
  LnTurnoutManager* getTurnoutManager();
  LnClockControl* getClockControl();
  LnReporterManager* getReporterManager();
- LnSensorManager* getSensorManager();
+ virtual LnSensorManager* getSensorManager();
  LnLightManager* getLightManager();
  LocoNetConsistManager* getConsistManager();
  void dispose();
-
+ static /*public*/ TranspondingTagManager* getIdTagManager();
+ /*public*/ LnMultiMeter* getMultiMeter();
+ /*public*/ void resetProgrammer();
 
 private:
- LnComponentFactory* cf;// = null;
- LnTrafficController* lt;
- LnMessageManager* lnm;
- SlotManager* sm;
+ LnComponentFactory* cf = nullptr;
+ LnTrafficController* lt = nullptr;
+ LnMessageManager* lnm = nullptr;
+ SlotManager* sm = nullptr;
  static Logger* log;
- LocoNetConsistManager* consistManager;
+ LocoNetConsistManager* consistManager = nullptr;
  void common();
 
 protected:
  bool mTurnoutNoRetry;
  bool mTurnoutExtraSpace;
- LocoNetThrottledTransmitter* tm;
- LnPowerManager* powerManager;
- ThrottleManager* throttleManager;
- LnTurnoutManager* turnoutManager;
- LnClockControl* clockControl;
- LnReporterManager* reporterManager;
- LnSensorManager* sensorManager;
- LnLightManager* lightManager;
+ LocoNetThrottledTransmitter* tm = nullptr;
+ LnPowerManager* powerManager = nullptr;
+ ThrottleManager* throttleManager = nullptr;
+ LnTurnoutManager* turnoutManager = nullptr;
+ LnClockControl* clockControl = nullptr;
+ LnReporterManager* reporterManager = nullptr;
+ LnSensorManager* sensorManager = nullptr;
+ LnLightManager* lightManager = nullptr;
+ /*protected*/ LnMultiMeter* multiMeter = nullptr;
+
  //ResourceBundle* getActionModelResourceBundle();
  /*protected*/ ResourceBundle* getActionModelResourceBundle() override;
  /*protected*/ DefaultProgrammerManager* programmerManager = nullptr;
+  DefaultProgrammerManager* oldMgr = nullptr;
+ // yes, tagManager is static.  Tags can move between system connections.
+ // when readers are not all on the same LocoNet
+ // this manager is loaded on demand.
+ /*protected*/ static TranspondingTagManager* tagManager;
 
+ friend class ManagerDefaultsConfigPane;
 };
-
+Q_DECLARE_METATYPE(LocoNetSystemConnectionMemo)
 #endif // LOCONETSYSTEMCONNECTIONMEMO_H
