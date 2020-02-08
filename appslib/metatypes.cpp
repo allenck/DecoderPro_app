@@ -314,9 +314,17 @@
 #include "Pr4/pr4connectionconfigxml.h"
 #include "PR2/pr2connectionconfig.h"
 #include "PR2/pr2connectionconfigxml.h"
+#include "DCS52/dcs52connectionconfigxml.h"
+#include "DCS52/dcs52connectionconfig.h"
 #include "DCS240/dcs240connectionconfigxml.h"
 #include "DCS240/dcs240connectionconfig.h"
-
+#include "LocoBufferII/locobufferiiconnectionconfigxml.h"
+#include "LocoBufferII/locobufferiiconnectionconfig.h"
+#include "loaderpane.h"
+#include "pr3selectpane.h"
+#include "Pr4/pr4selectpane.h"
+#include "DCS52/dcs52usbmodeselectpane.h"
+#include "DCS240/dcs240usbmodeselectpane.h"
 
 bool Metatypes::done = false;
 
@@ -646,8 +654,18 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<Pr4ConnectionConfigXml>("Pr4ConnectionConfigXml");
  qRegisterMetaType<Pr2ConnectionConfig>("Pr2ConnectionConfig");
  qRegisterMetaType<Pr2ConnectionConfigXml>("Pr2ConnectionConfigXml");
+ qRegisterMetaType<DCS52ConnectionConfigXml>("DCS52ConnectionConfigXml");
+ qRegisterMetaType<DCS52ConnectionConfig>("DCS52ConnectionConfig");
  qRegisterMetaType<DCS240ConnectionConfigXml>("DCS240ConnectionConfigXml");
  qRegisterMetaType<DCS240ConnectionConfig>("DCS240ConnectionConfig");
+ qRegisterMetaType<LocoBufferIIConnectionConfigXml>("LocoBufferIIConnectionConfigXml");
+ qRegisterMetaType<LocoBufferIIConnectionConfig>("LocoBufferIIConnectionConfig");
+ qRegisterMetaType<LoaderPane>("LoaderPane");
+ qRegisterMetaType<Dcs52UsbModeSelectPane>("Dcs52UsbModeSelectPane");
+ qRegisterMetaType<Pr4SelectPane>("Pr4SelectPane");
+ qRegisterMetaType<Pr3SelectPane>("Pr3SelectPane");
+ qRegisterMetaType<Dcs240UsbModeSelectPane>("Dcs240UsbModeSelectPane");
+
 
  Metatypes::done = true;
 }

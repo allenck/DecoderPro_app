@@ -11,7 +11,7 @@ class LIBPR3SHARED_EXPORT MessagePanel : public LnPanel
 {
  Q_OBJECT
 public:
- explicit MessagePanel(QWidget *parent = 0);
+ Q_INVOKABLE explicit MessagePanel(QWidget *parent = 0);
  ~MessagePanel() {}
  MessagePanel(const MessagePanel&) : LnPanel() {}
  /*public*/ QString getHelpTarget();
@@ -28,5 +28,5 @@ private:
  JTextField* text;// = new JTextField(10);
 
 };
-
+Q_DECLARE_METATYPE(MessagePanel)
 #endif // MESSAGEPANEL_H

@@ -361,7 +361,6 @@ SOURCES += \
     Roster/progopsmodepane.cpp \
     Roster/paneprogaction.cpp \
     Roster/paneopsprogaction.cpp \
-    LocoIO/lnpanel.cpp \
     LocoIO/cmdstnconfigpane.cpp \
     LocoIO/lncommandstationtype.cpp \
     Roster/qualifieradder.cpp \
@@ -958,7 +957,17 @@ SOURCES += \
     loconet/DCS240/dcs240connectionconfig.cpp \
     loconet/DCS240/usbdcs240adapter.cpp \
     loconet/DCS240/dcs240connectionconfigxml.cpp \
-    loconet/DCS240/usbdcs240systemconnectionmemo.cpp
+    loconet/DCS240/usbdcs240systemconnectionmemo.cpp \
+    loconet/LocoBufferII/locobufferiiadapter.cpp \
+    loconet/LocoBufferII/locobufferiiconnectionconfig.cpp \
+    loconet/LocoBufferII/locobufferiiconnectionconfigxml.cpp \
+    loconet/DCS52/dcs52usbmodeselectpane.cpp \
+    loconet/lnpanel.cpp \
+    loconet/DCS240/dcs240usbmodeselectpane.cpp \
+    loconet/DCS52/dcs52connectionconfig.cpp \
+    loconet/DCS52/dcs52connectionconfigxml.cpp \
+    loconet/DCS52/usbdcs52adapter.cpp \
+    loconet/DCS52/usbdcs52systemconnectionmemo.cpp
 
 
  !contains(FTDI, 1) {
@@ -1286,7 +1295,6 @@ HEADERS += \
     Roster/progopsmodepane.h \
     Roster/paneprogaction.h \
     Roster/paneopsprogaction.h \
-    LocoIO/lnpanel.h \
     LocoIO/cmdstnconfigpane.h \
     LocoIO/lncommandstationtype.h \
     Roster/qualifieradder.h \
@@ -1918,7 +1926,17 @@ HEADERS += \
     loconet/DCS240/dcs240connectionconfig.h \
     loconet/DCS240/usbdcs240adapter.h \
     loconet/DCS240/dcs240connectionconfigxml.h \
-    loconet/DCS240/usbdcs240systemconnectionmemo.h
+    loconet/DCS240/usbdcs240systemconnectionmemo.h \
+    loconet/LocoBufferII/locobufferiiadapter.h \
+    loconet/LocoBufferII/locobufferiiconnectionconfig.h \
+    loconet/LocoBufferII/locobufferiiconnectionconfigxml.h \
+    loconet/DCS52/dcs52usbmodeselectpane.h \
+    loconet/lnpanel.h \
+    loconet/DCS240/dcs240usbmodeselectpane.h \
+    loconet/DCS52/dcs52connectionconfig.h \
+    loconet/DCS52/dcs52connectionconfigxml.h \
+    loconet/DCS52/usbdcs52adapter.h \
+    loconet/DCS52/usbdcs52systemconnectionmemo.h
 
 
  !contains(FTDI, 1) {

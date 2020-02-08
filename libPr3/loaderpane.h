@@ -21,7 +21,7 @@ class LIBPR3SHARED_EXPORT LoaderPane : public LnPanel
 {
  Q_OBJECT
 public:
- explicit LoaderPane(QWidget *parent = 0);
+ Q_INVOKABLE explicit LoaderPane(QWidget *parent = 0);
  ~LoaderPane() {}
  LoaderPane(const LoaderPane&) : LnPanel() {}
  static int PXCT2SETUP;// = 0x00;
@@ -185,5 +185,5 @@ signals:
     void setEnableGui();
     void setUpdateGui(int);
 };
-
+Q_DECLARE_METATYPE(LoaderPane)
 #endif // LOADERPANE_H

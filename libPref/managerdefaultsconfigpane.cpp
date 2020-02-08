@@ -123,11 +123,11 @@ void ManagerDefaultsConfigPane::reloadConnections(QObjectList connList)
  for (int x = 0; x < connList.size(); x++)
  {
   SystemConnectionMemo* memo = (SystemConnectionMemo*)connList.at(x);
-  // ACK hack to hanle corrupt programmerManager pointer
-  if(qobject_cast<LocoNetSystemConnectionMemo*>(memo))
-  {
-   qobject_cast<LocoNetSystemConnectionMemo*>(memo)->resetProgrammer();
-  }
+//  // ACK hack to hanle corrupt programmerManager pointer
+//  if(qobject_cast<LocoNetSystemConnectionMemo*>(memo))
+//  {
+//   qobject_cast<LocoNetSystemConnectionMemo*>(memo)->resetProgrammer();
+//  }
   QString name = memo->getUserName();
   matrixLayout->addWidget(new QLabel(name));
   int i = 0;

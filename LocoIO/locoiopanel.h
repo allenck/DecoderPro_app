@@ -1,6 +1,6 @@
 #ifndef LOCOIOPANEL_H
 #define LOCOIOPANEL_H
-#include "../libPr3/LocoIO/lnpanel.h"
+#include "lnpanel.h"
 #include "locoio_global.h"
 class PropertyChangeEvent;
 class LnTrafficController;

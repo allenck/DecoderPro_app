@@ -15,7 +15,7 @@ class LIBPR3SHARED_EXPORT CmdStnConfigPane : public LnPanel
 {
     Q_OBJECT
 public:
-    explicit CmdStnConfigPane(QWidget *parent = 0);
+   Q_INVOKABLE explicit CmdStnConfigPane(QWidget *parent = 0);
  ~CmdStnConfigPane() {}
  CmdStnConfigPane(const CmdStnConfigPane&) : LnPanel() {}
     /*public*/ QString getHelpTarget();

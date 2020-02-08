@@ -76,6 +76,8 @@ QDomElement AbstractSerialConnectionConfigXml::store(QObject* o, bool /*shared*/
    javaClassName = "jmri.jmrix.loconet.hexfile.configurexml.ConnectionConfigXml";
   else if(className == "LocobufferConnectionConfigXml" )
    javaClassName = "jmri.jmrix.loconet.locobuffer.configurexml.ConnectionConfigXml";
+  else if(className == "LocobufferIIConnectionConfigXml" )
+   javaClassName = "jmri.jmrix.loconet.locobufferii.configurexml.ConnectionConfigXml";
   else if(className == "LocobufferUsbConnectionConfigXml" )
    javaClassName = "jmri.jmrix.loconet.locobufferusb.configurexml.ConnectionConfigXml";
   else if(className == "Pr2ConnectionConfigXml" )
@@ -90,9 +92,8 @@ QDomElement AbstractSerialConnectionConfigXml::store(QObject* o, bool /*shared*/
    javaClassName = "jmri.jmrix.sprog.sprogCS.configurexml.ConnectionConfigXml";
   else if(className == "JMRIClientConnectionConfigXml" )
    javaClassName = "jmri.jmrix.jmriclient.networkdriver.configurexml.ConnectionConfigXml";
-  else if(className == "DCS240lientConnectionConfigXml" )
+  else if(className == "DCS240ConnectionConfigXml" )
    javaClassName = "jmri.jmrix.loconet.usb_dcs240.configurexml.ConnectionConfigXml";
-
  }
 
  e.setAttribute("class", javaClassName);

@@ -4,17 +4,18 @@
 #include "libPr3_global.h"
 
 class LocoNetSystemConnectionMemo;
-class LIBPR3_GLOBAL_H LnPanelInterface : public QObject
+class LIBPR3_GLOBAL_H LnPanelInterface //: public QObject
 {
 public:
- LnPanelInterface(QObject* parent= 0): QObject(parent) {}
+ //LnPanelInterface(QObject* parent= 0): QObject(parent) {}
  /**
      * 2nd stage of initialization, invoked after the constuctor is complete.
      * <p>
      * This needs to be connected to the initContext() method in implementing
      * classes.
      */
-    virtual /*public*/ void initComponents(LocoNetSystemConnectionMemo* memo) { return; }
+    virtual /*public*/ void initComponents(LocoNetSystemConnectionMemo* /*memo*/) { return; }
+    virtual QObject* self() =0;
 };
-
+Q_DECLARE_INTERFACE(LnPanelInterface, "")
 #endif // LNPANELINTERFACE_H

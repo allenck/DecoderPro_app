@@ -16,7 +16,7 @@ class LIBPR3SHARED_EXPORT SoundLoaderPane : public LnPanel
 {
  Q_OBJECT
 public:
- explicit SoundLoaderPane(QWidget *parent = 0);
+ Q_INVOKABLE explicit SoundLoaderPane(QWidget *parent = 0);
  ~SoundLoaderPane() {}
  SoundLoaderPane(const SoundLoaderPane&) : LnPanel() {}
  /*public*/ QString getHelpTarget();

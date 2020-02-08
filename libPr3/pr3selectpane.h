@@ -3,14 +3,16 @@
 #include "lnpanel.h"
 #include "logger.h"
 #include "libPr3_global.h"
+#include "loconetlistener.h"
 
 class LocoNetMessage;
 class QLabel;
-class LIBPR3SHARED_EXPORT Pr3SelectPane : public LnPanel
+class LIBPR3SHARED_EXPORT Pr3SelectPane : public LnPanel, public LocoNetListener
 {
  Q_OBJECT
+ Q_INTERFACES(LocoNetListener)
 public:
- explicit Pr3SelectPane(QWidget *parent = 0);
+ Q_INVOKABLE explicit Pr3SelectPane(QWidget *parent = 0);
  ~Pr3SelectPane() {}
  Pr3SelectPane(const Pr3SelectPane&) : LnPanel() {}
  /*public*/ QString getHelpTarget();
@@ -29,5 +31,5 @@ private:
  QLabel* status;// = new JLabel(res.getString("StatusUnknown"));
 
 };
-
+Q_DECLARE_METATYPE(Pr3SelectPane)
 #endif // PR3SELECTPANE_H

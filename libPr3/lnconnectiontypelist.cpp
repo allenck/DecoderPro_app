@@ -40,8 +40,10 @@ LNConnectionTypeList::LNConnectionTypeList(QObject *parent) :
           << "Pr4ConnectionConfig"
           << "LocobufferConnectionConfig"
           << "LocobufferUsbConnectionConfig"
+          << "LocoBufferIIConnectionConfig"
           << "HexFileConnectionConfig"
           << "LnOverTcpConnectionConfig"
-          << "DCS240ConnectionConfig";
+          << "DCS240ConnectionConfig"
+          << "DCS52ConnectionConfig";
      return list;
     }

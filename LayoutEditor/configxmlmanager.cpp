@@ -863,6 +863,8 @@ File userPrefsFile;*/
     prefix = "LocobufferUsb";
    else if(sl.at(3) == "locobuffer")
     prefix = "Locobuffer";
+   else if(sl.at(3) == "locobufferii")
+    prefix = "LocobufferII";
    else if(sl.at(3) == "sprog")
     prefix = "Sprog";
    else if(sl.at(3) == "sprogCS")
@@ -871,6 +873,8 @@ File userPrefsFile;*/
     prefix = "Pr2";
    else if(sl.at(3) == "pr4")
     prefix = "Pr4";
+   else if(sl.at(3) == "usb_dcs52")
+    prefix = "DCS52";
    else if(sl.at(3) == "usb_dcs240")
     prefix = "DCS240";
    else if(sl.at(3) == "networkdriver")
@@ -914,6 +918,8 @@ File userPrefsFile;*/
       prefix = "LocobufferUsb";
      else if(sl.at(3) == "locobuffer")
       prefix = "Locobuffer";
+     else if(sl.at(3) == "locobufferii")
+      prefix = "LocobufferII";
      else if(sl.at(3) == "sprog")
       prefix = "Sprog";
      else if(sl.at(3) == "sprogCS")
@@ -922,6 +928,8 @@ File userPrefsFile;*/
       prefix = "JMRIClient";
      else if(sl.at(3) == "pr4")
       prefix = "Pr4";
+     else if(sl.at(3) == "usb_dcs52")
+      prefix = "DCS52";
      else if(sl.at(3) == "usb_dcs240")
       prefix = "DCS240";
       QString newClassName = prefix+"ConnectionConfigXml";
