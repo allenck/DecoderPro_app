@@ -569,7 +569,7 @@ void LTFTabbedTableItem::createDataModel() {
 
     dataPanel->adjustSize();
 
-    dataModel->loadTableColumnDetails(dataTable);
+    dataModel->persistTable(dataTable);
 }
 
 void LTFTabbedTableItem::onPropertyVisible(bool bChecked)
@@ -625,7 +625,7 @@ JTable* LTFTabbedTableItem::getDataTable() {
 
 void LTFTabbedTableItem::dispose() {
     if (dataModel != NULL) {
-        dataModel->saveTableColumnDetails(dataTable);
+        dataModel->stopPersistingTable(dataTable);
         dataModel->dispose();
     }
     if (tableAction != NULL) {

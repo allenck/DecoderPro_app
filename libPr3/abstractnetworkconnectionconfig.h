@@ -18,7 +18,7 @@ public:
  /*public*/ void updateAdapter();
  /*public*/ PortAdapter* getAdapter();
  /*public*/ QString getInfo();
- /*public*/ void loadDetails(/*final*/ QWidget* details);
+ /*public*/ void loadDetails(/*final*/ JPanel *details);
  /*public*/ bool isHostNameAdvanced();
  /*public*/ bool isPortAdvanced();
  /*public*/ bool isAutoConfigPossible() ;
@@ -41,6 +41,7 @@ public slots:
  void on_connectionNameField_leave();
  /*public*/ void setAutoNetworkConfig();
  void showAdvancedItems();
+ void autoConfig();
 
 private:
  void common();
@@ -49,9 +50,10 @@ private:
 
 private slots:
  void on_optionCb_currentIndexChanged(QWidget*);
+ void updated();
 
 protected:
- /*protected*/ bool init;// = false;
+ /*protected*/ bool init = false;
   /*protected*/ void checkInitDone();
  /*protected*/ JTextField* hostNameField;// = new JTextField(15);
  /*protected*/ QLabel* hostNameFieldLabel;

@@ -71,6 +71,11 @@ public:
     //@Override
     /*public*/ void configure() {
     }
+
+    QString className()
+    {
+     return "AbstractPortControllerScaffold";
+    }
 };
 
 #endif // ABSTRACTPORTCONTROLLERTESTBASE_H

@@ -165,12 +165,14 @@
     retval[0] = LnCommandStationType::getByType( LnCommandStationType::COMMAND_STATION_USB_DCS240_ALONE)->getName();
     retval[1] = LnCommandStationType::getByType( LnCommandStationType::COMMAND_STATION_DCS240)->getName();
     int count = 2;
-    for (QString commandStationName : commandStationNames) {
-        if (commandStationName != (LnCommandStationType::getByType( LnCommandStationType::COMMAND_STATION_DCS240)->getName())) {
-            // include all but COMMAND_STATION_DCS240, which was forced  to
-            // the front of the list (above)
-            retval[count++] = commandStationName;
-        }
+    for (QString commandStationName : commandStationNames)
+    {
+     if (commandStationName != (LnCommandStationType::getByType( LnCommandStationType::COMMAND_STATION_DCS240)->getName()))
+     {
+         // include all but COMMAND_STATION_DCS240, which was forced  to
+         // the front of the list (above)
+         retval[count++] = commandStationName;
+     }
     }
     // Note: Standalone loconet does not make sense for DCS240 USB interface.
     return retval.toList();
@@ -185,5 +187,11 @@
     log->error("Cannot cast the system connection memo to a UsbDcs240SystemConnection Memo.");
     return nullptr;
 }
+
+/*public*/ QString UsbDcs240Adapter::className()
+{
+ return "jrmi.jmrix.loconet.usb_dcs240.UsbDcs240Adapter";
+}
+
 
 /*private*/ /*final*/ /*static*/ Logger* UsbDcs240Adapter::log = LoggerFactory::getLogger("UsbDcs240Adapter");

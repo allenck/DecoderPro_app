@@ -241,6 +241,7 @@ public:
 
     /*default*/ /*public*/ void notifyProgListenerEnd(ProgListener* p, int value, int status);
     /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ void dispose();
 
 signals:
     void changedSlot(LocoNetSlot* s);

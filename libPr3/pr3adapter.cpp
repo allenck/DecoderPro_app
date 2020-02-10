@@ -174,3 +174,8 @@ void PR3Adapter::configure()
     log->error("Cannot cast the system connection memo to a PR3SystemConnection Memo.");
     return nullptr;
 }
+
+/*public*/ QString PR3Adapter::className()
+{
+ return "jmri.jmrix.loconet.pr3.PR3Adapter";
+}

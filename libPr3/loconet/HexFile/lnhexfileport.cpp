@@ -265,3 +265,9 @@ return;
     log->debug("configureOption3: "+value);
     setTurnoutHandling(value);
 }
+
+/*public*/ QString LnHexFilePort::className()
+{
+ return "jmri.jmrix.loconet.hexfile.LnHexFilePort";
+}
+

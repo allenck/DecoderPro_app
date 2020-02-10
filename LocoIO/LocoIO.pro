@@ -6,7 +6,7 @@
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT       += widgets serialport gui #webkitwidgets
 }
-QT       += xml sql
+QT       += xml sql network
 
 TARGET = LocoIO
 TEMPLATE = lib

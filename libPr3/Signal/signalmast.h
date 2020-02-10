@@ -62,7 +62,8 @@
 public:
     SignalMast(QString systemName, QString userName, QObject* parent) : AbstractNamedBean(systemName, userName, parent) {}
     SignalMast(QString systemName, QObject* parent) : AbstractNamedBean(systemName, parent) {}
-
+    ~SignalMast() {}
+    SignalMast(const SignalMast&) :AbstractNamedBean() {}
     /**
      * Set aspect to a valid name in the current
      * signal system definition.

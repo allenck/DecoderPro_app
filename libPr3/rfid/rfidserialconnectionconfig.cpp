@@ -31,7 +31,7 @@
 
 //@SuppressWarnings("unchecked")
 //@Override
-/*public*/ void RfidSerialConnectionConfig::loadDetails(QWidget* details)
+/*public*/ void RfidSerialConnectionConfig::loadDetails(JPanel* details)
 {
     AbstractSerialConnectionConfig::loadDetails(details);
 

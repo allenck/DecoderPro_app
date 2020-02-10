@@ -11,7 +11,7 @@ public:
  ~RfidSerialConnectionConfig() {}
  RfidSerialConnectionConfig(const RfidSerialConnectionConfig&) : AbstractSerialConnectionConfig() {}
  /*public*/ RfidSerialConnectionConfig(SerialPortAdapter* p, QObject *parent = nullptr);
- /*public*/ void loadDetails(QWidget *details);
+ /*public*/ void loadDetails(JPanel *details);
  /*public*/ QString name();
  /*protected*/ void setInstance();
 

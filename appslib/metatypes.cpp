@@ -285,7 +285,6 @@
 #include "../libPr3/rfid/rfidserialconnectionconfigxml.h"
 #include "operationssetupxml.h"
 #include "sensortabledatamodel.h"
-#include "sensortableaction.h"
 #include "enginemanager.h"
 #include "enginemanagerxml.h"
 #include "jmriclient/jmriclientconnectionconfigxml.h"
@@ -325,6 +324,8 @@
 #include "Pr4/pr4selectpane.h"
 #include "DCS52/dcs52usbmodeselectpane.h"
 #include "DCS240/dcs240usbmodeselectpane.h"
+#include "guilafpreferencesmanager.h"
+#include "webserverpreferences.h"
 
 bool Metatypes::done = false;
 
@@ -665,7 +666,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<Pr4SelectPane>("Pr4SelectPane");
  qRegisterMetaType<Pr3SelectPane>("Pr3SelectPane");
  qRegisterMetaType<Dcs240UsbModeSelectPane>("Dcs240UsbModeSelectPane");
-
+ qRegisterMetaType<GuiLafPreferencesManager>("GuiLafPreferencesManager");
+ qRegisterMetaType<WebServerPreferences>("WebServerPreferences");
 
  Metatypes::done = true;
 }

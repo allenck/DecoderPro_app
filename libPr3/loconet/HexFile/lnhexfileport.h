@@ -26,6 +26,7 @@ public:
     /*public*/ QStringList validOption3() ;
     /*public*/ QString option3Name();
     /*public*/ void configureOption3(QString value);
+ /*public*/ QString className();
 
 signals:
 

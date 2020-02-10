@@ -1,7 +1,9 @@
 #ifndef LNNETWORKPORTCONTROLLER_H
 #define LNNETWORKPORTCONTROLLER_H
 #include "abstractnetworkportcontroller.h"
+#include "zeroconfclient.h"
 
+class ZeroConfClient;
 class LocoNetSystemConnectionMemo;
 class LnCommandStationType;
 class LnNetworkPortController : public AbstractNetworkPortController
@@ -16,11 +18,24 @@ public:
  /*public*/ void setTranspondingAvailable(QString value);
  /*public*/ void configureOption3(QString value);
  QTcpSocket* getSocket();
+
+ /*public*/ void setServiceType(QString);
+ /*public*/ QString getServiceType();
+ /*public*/ void setMdnsConfigure(bool bMdnsConfigure);
+ /*public*/ bool getMdnsConfigure();
+
 signals:
+ void updated();
 
 public slots:
+ /*public*/ void autoConfigure();
+
 private:
  Logger* log;
+ ZeroConfClient* zClient = nullptr;
+ bool bMdnsConfigure = false;
+ QString serviceType; // ZeroConf service type
+
 protected:
  /*protected*/ LnCommandStationType* commandStationType = nullptr;
 

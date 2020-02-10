@@ -181,7 +181,7 @@ void AbstractSerialConnectionConfig::On_baudBox_currentIndexChanged(QString s)
 {
  //            adapter->configureBaudRate((String)baudBox.getSelectedItem());
  adapter->configureBaudRate(s);
- p->addComboBoxLastSelection(QString(adapter->metaObject()->className())+".baud", s);
+ p->setComboBoxLastSelection(adapter->className() + ".baud", baudBox->currentText()); // NOI18N
 }
 
 void AbstractSerialConnectionConfig::On_systemPrefixField_editingFinished()
@@ -369,7 +369,7 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
 
 //@Override
 //@SuppressWarnings("UseOfObsoleteCollectionType")
-/*public*/ void AbstractSerialConnectionConfig::loadDetails(/*final*/ QWidget* details)
+/*public*/ void AbstractSerialConnectionConfig::loadDetails(/*final*/ JPanel* details)
 {
  _details = details;
  setInstance();
@@ -454,15 +454,18 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
  NUMOPTIONS = NUMOPTIONS+options.size();
 
  portBoxLabel = new QLabel("Serial port: ");
+ portBox->setVisible(true);
 
  baudBoxLabel = new QLabel("Baud rate:");
  baudBox->setCurrentIndex(baudBox->findText(adapter->getCurrentBaudRate()));
+
  //showAdvanced->setFont(showAdvanced->font().setPointSizeF(9.0));
  QFont f = showAdvanced->font();
  f.setPointSizeF(9.0);
  showAdvanced->setFont(f);
  //showAdvanced.setForeground(Color.blue);
  showAdvanced->setStyleSheet("QCheckBox { color: blue; background-color: lightgray;} QCheckBox::hover { background-color: lightpink; }");
+ showAdvanced->setVisible(true);
 // showAdvanced.addItemListener(
 //        new ItemListener() {
 //            @Override
@@ -479,32 +482,7 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
 //@Override
 /*protected*/ void AbstractSerialConnectionConfig::showAdvancedItems()
 {
-  //_details->removeAll();
-//  QObjectList items = _details->children();
-//  foreach (QObject* o, items)
-//  {
-//   if(qobject_cast<QWidget*>(o) != NULL)
-//   {
-//    _details->layout()->removeWidget((QWidget*)o);
-//    //delete o;
-//    ((QWidget*)o)->hide();
-//   }
-//   else
-//    o->deleteLater();
-//  }
- if(_details->layout() != NULL)
- {
-  QLayoutItem *child;
-  while ((child = _details->layout()->takeAt(0)) != 0)
-  {
-   child->widget()->hide();
-   delete child;
-  }
- }
-//  if(qobject_cast<QLayout*>(o) != NULL)
-//  {
-//   _details->layout()->removeItem((QLayout*)o);
-  delete _details->layout();
+  _details->removeAll();
   gbLayout = new GridBagLayout();
 //    //o->deleteLater();
 //  }
@@ -530,11 +508,11 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
  {
   incAdvancedOptions=false;
  }
- if(_details->layout() == NULL)
+ //if(_details->layout() == NULL)
   _details->setLayout(gbLayout);
- else
-  if(qobject_cast<GridBagLayout*>(_details->layout()) != NULL)
-    gbLayout = (GridBagLayout*)_details->layout();
+// else
+//  if(qobject_cast<GridBagLayout*>(_details->layout()) != NULL)
+//    gbLayout = (GridBagLayout*)_details->layout();
  i = addStandardDetails(incAdvancedOptions, i);
  if (showAdvanced->isChecked())
  {
@@ -641,10 +619,8 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
 //@Override
 /*public*/ void AbstractSerialConnectionConfig::setManufacturer(QString manufacturer)
 {
- if (adapter!=NULL)
- {
+  setInstance();
   adapter->setManufacturer(manufacturer);
- }
 }
 
 //@Override

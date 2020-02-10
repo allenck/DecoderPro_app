@@ -21,10 +21,6 @@
 #include "indexedpropertychangeevent.h"
 #include "vptr.h"
 
-//ConnectionPreferencesPanel::ConnectionPreferencesPanel(QWidget *parent) :
-//    QTabWidget(parent)
-//{
-//}
 /**
  *
  * @author Randall Wood <randall.h.wood@alexandriasoftware.com>
@@ -49,7 +45,7 @@ void ConnectionsPreferencesPanel::common(/*TabbedPreferences* preferences*/)
  //setContentsMargins(0,0,0,0);
  //setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
  // tabWidget->setMinimumSize(400,400);
- setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+ setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
  restartRequired = false;
   bDeleteFlag= false;
 
@@ -124,15 +120,20 @@ void ConnectionsPreferencesPanel::common(/*TabbedPreferences* preferences*/)
 void ConnectionsPreferencesPanel::propertyChange(PropertyChangeEvent* evt)
 {
  int i = ((IndexedPropertyChangeEvent*) evt)->getIndex();
- if (evt->getNewValue() == QVariant()
+ QObject* pnewValue = VPtr<QObject>::asPtr(evt->getNewValue());
+ QObject* poldValue = VPtr<QObject>::asPtr(evt->getOldValue());
+
+ if (pnewValue != nullptr
          && i < configPanes.size()
-         && VPtr<QObject>::asPtr(evt->getOldValue()) == (configPanes.at(i)->getCurrentObject())) {
+         && poldValue == (configPanes.at(i)->getCurrentObject())) {
      removeTab( i);
- } else if (evt->getOldValue() == QVariant()) {
+ }
+ else if (poldValue == nullptr)
+ {
      for (JmrixConfigPane* pane : this->configPanes) {
          if (pane->getCurrentObject() == nullptr ) {
              log->error(tr("did not expect pane.getCurrentObject()==null here for %1 %2 %3").arg(i).arg(VPtr<QObject>::asPtr(evt->getNewValue())->metaObject()->className()).arg(configPanes.size()));
-         } else if (pane->getCurrentObject() == VPtr<QObject>::asPtr(evt->getNewValue())) {
+         } else if (pane->getCurrentObject() == pnewValue) {
              return; // don't add the connection again
          }
      }
@@ -362,7 +363,7 @@ void ConnectionsPreferencesPanel::addConnectionTab()
 
  if (i != -1 )
  {
-//        int n = JOptionPane.showConfirmDialog(NULL, MessageFormat.format(
+//        int n = JOptionPane::showConfirmDialog(NULL, MessageFormat.format(
 //                tr("MessageDoDelete"),
 //                new Object[]{this->getTitleAt(i)}),
 //                tr("MessageDeleteConnection"),

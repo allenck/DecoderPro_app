@@ -276,7 +276,8 @@ void TabbedTableItem::createDataModel()
 //        } catch (java.lang.ClassCastException e) {}  // happens if not sortable table
 
  dataModel->configureTable(dataTable);
- dataModel->loadTableColumnDetails(dataTable, dataModel->getMasterClassName()+":"+getItemString());
+ //dataModel->loadTableColumnDetails(dataTable, dataModel->getMasterClassName()+":"+getItemString());
+ dataModel->persistTable(dataTable);
  //dataModel->setPersistentButtons();
 
 

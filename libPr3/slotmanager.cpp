@@ -1344,3 +1344,10 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
 
  }
 }
+
+/**
+ * Dispose of this by stopped it's ongoing actions
+ */
+/*public*/ void SlotManager::dispose() {
+    if (staleSlotCheckTimer != nullptr) staleSlotCheckTimer->stop();
+}

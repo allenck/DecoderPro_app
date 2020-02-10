@@ -180,4 +180,9 @@
     return nullptr;
 }
 
+/*public*/ QString PR4Adapter::className()
+{
+ return "jrmi.jmrix.loconet.pr4.PR4Adapter";
+}
+
 /*private*/ /*final*/ /*static*/ Logger* PR4Adapter::log = LoggerFactory::getLogger("PR4Adapter");

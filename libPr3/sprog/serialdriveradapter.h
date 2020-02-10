@@ -23,6 +23,8 @@ namespace Sprog
   /*public*/ QDataStream* getOutputStream();
   /*public*/ void configure();
   /*public*/ void dispose();
+  /*public*/ QString className();
+
 
  public slots:
   void handleError(QSerialPort::SerialPortError);

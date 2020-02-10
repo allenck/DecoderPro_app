@@ -100,7 +100,7 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
         iName = curAddress.toInt();
     } catch (NumberFormatException ex) {
         log->error("Unable to convert " + curAddress + " Hardware Address to a number");
-        ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",ex.getMessage(), "",true, false, Level::_ERROR);
+        ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",ex.getMessage(), "",true, false);
         return NULL;
     }
     //Check to determine if the systemName is in use, return null if it is,

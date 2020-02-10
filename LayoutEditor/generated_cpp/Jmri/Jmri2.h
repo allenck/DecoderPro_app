@@ -61,7 +61,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -376,6 +375,7 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual Manager*  get(QString  T);
 virtual bool  getDisabled();
+virtual LnSensorManager*  getSensorManager();
 virtual void notifyPropertyChangeListener(QString  property, QVariant  oldValue, QVariant  newValue);
 virtual bool  provides(QString  type);
 virtual void setDisabled(bool  disabled);
@@ -392,6 +392,7 @@ class PythonQtPublicPromoter_LocoNetSystemConnectionMemo : public LocoNetSystemC
 inline void py_q__register() { LocoNetSystemConnectionMemo::_register(); }
 inline void py_q_dispose() { LocoNetSystemConnectionMemo::dispose(); }
 inline Manager*  py_q_get(QString  T) { return LocoNetSystemConnectionMemo::get(T); }
+inline LnSensorManager*  py_q_getSensorManager() { return LocoNetSystemConnectionMemo::getSensorManager(); }
 inline bool  py_q_provides(QString  type) { return LocoNetSystemConnectionMemo::provides(type); }
 };
 
@@ -414,9 +415,11 @@ void delete_LocoNetSystemConnectionMemo(LocoNetSystemConnectionMemo* obj) { dele
    DefaultProgrammerManager*  getProgrammerManager(LocoNetSystemConnectionMemo* theWrappedObject);
    LnReporterManager*  getReporterManager(LocoNetSystemConnectionMemo* theWrappedObject);
    LnSensorManager*  getSensorManager(LocoNetSystemConnectionMemo* theWrappedObject);
+   LnSensorManager*  py_q_getSensorManager(LocoNetSystemConnectionMemo* theWrappedObject){  return (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_getSensorManager());}
    ThrottleManager*  getThrottleManager(LocoNetSystemConnectionMemo* theWrappedObject);
    LnTurnoutManager*  getTurnoutManager(LocoNetSystemConnectionMemo* theWrappedObject);
    bool  py_q_provides(LocoNetSystemConnectionMemo* theWrappedObject, QString  type){  return (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_provides(type));}
+   void resetProgrammer(LocoNetSystemConnectionMemo* theWrappedObject);
    void setLnTrafficController(LocoNetSystemConnectionMemo* theWrappedObject, LnTrafficController*  lt);
    void setProgrammerManager(LocoNetSystemConnectionMemo* theWrappedObject, DefaultProgrammerManager*  p);
    void setThrottleManager(LocoNetSystemConnectionMemo* theWrappedObject, ThrottleManager*  t);
@@ -1077,6 +1080,7 @@ public:
 virtual void _connect(QString  arg__1, int  arg__2);
 virtual void autoConfigure();
 virtual void childEvent(QChildEvent*  event);
+virtual QString  className();
 virtual void configure();
 virtual void configureOption1(QString  arg__1);
 virtual void configureOption2(QString  arg__1);
@@ -1135,6 +1139,7 @@ class PythonQtPublicPromoter_NetworkPortAdapter : public NetworkPortAdapter
 { public:
 inline void py_q__connect(QString  arg__1, int  arg__2) { NetworkPortAdapter::_connect(arg__1, arg__2); }
 inline void py_q_autoConfigure() { NetworkPortAdapter::autoConfigure(); }
+inline QString  py_q_className() { return this->className(); }
 inline void py_q_configure() { NetworkPortAdapter::configure(); }
 inline QString  py_q_getAdvertisementName() { return NetworkPortAdapter::getAdvertisementName(); }
 inline QString  py_q_getCurrentPortName() { return NetworkPortAdapter::getCurrentPortName(); }
@@ -1161,6 +1166,8 @@ void delete_NetworkPortAdapter(NetworkPortAdapter* obj) { delete obj; }
    void py_q__connect(NetworkPortAdapter* theWrappedObject, QString  arg__1, int  arg__2){  (((PythonQtPublicPromoter_NetworkPortAdapter*)theWrappedObject)->py_q__connect(arg__1, arg__2));}
    void autoConfigure(NetworkPortAdapter* theWrappedObject);
    void py_q_autoConfigure(NetworkPortAdapter* theWrappedObject){  (((PythonQtPublicPromoter_NetworkPortAdapter*)theWrappedObject)->py_q_autoConfigure());}
+   QString  className(NetworkPortAdapter* theWrappedObject);
+   QString  py_q_className(NetworkPortAdapter* theWrappedObject){  return (((PythonQtPublicPromoter_NetworkPortAdapter*)theWrappedObject)->py_q_className());}
    void py_q_configure(NetworkPortAdapter* theWrappedObject){  (((PythonQtPublicPromoter_NetworkPortAdapter*)theWrappedObject)->py_q_configure());}
    QString  getAdvertisementName(NetworkPortAdapter* theWrappedObject);
    QString  py_q_getAdvertisementName(NetworkPortAdapter* theWrappedObject){  return (((PythonQtPublicPromoter_NetworkPortAdapter*)theWrappedObject)->py_q_getAdvertisementName());}

@@ -103,4 +103,9 @@
  return QStringList() << "PR2 standalone programmer";
 }
 
+/*public*/ QString PR2Adapter::className()
+{
+ return "jmri.jmrix.loconet.pr2.PR2Adapter";
+}
+
 /*private*/ /*final*/ /*static*/ Logger* PR2Adapter::log = LoggerFactory::getLogger("PR2Adapter");

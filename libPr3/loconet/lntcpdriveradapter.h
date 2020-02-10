@@ -11,6 +11,7 @@ public:
  /*public*/ void configure();
  /*public*/ bool status();
  /*public*/ void configureOption1(QString value);
+ /*public*/ QString className();
 
 signals:
 

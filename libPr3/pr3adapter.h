@@ -36,6 +36,7 @@ public:
  /*public*/ QStringList commandStationOptions();
  /*public*/ SystemConnectionMemo *getSystemConnectionMemo();
  /*public*/ void setTranspondingAvailable(QString value);
+ /*public*/ QString className();
 
 private:
  Logger* log;

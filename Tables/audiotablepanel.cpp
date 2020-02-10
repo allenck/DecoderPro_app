@@ -226,7 +226,7 @@ void AudioTablePanel::On_printItemTriggered()
 {
  if (listenerDataModel != NULL)
  {
-  listenerDataModel->saveTableColumnDetails(listenerDataTable);
+  listenerDataModel->stopPersistingTable(listenerDataTable);
   listenerDataModel->dispose();
  }
  listenerDataModel = NULL;
@@ -234,7 +234,7 @@ void AudioTablePanel::On_printItemTriggered()
 //    listenerDataScroll = NULL;
  if (bufferDataModel != NULL)
  {
-  bufferDataModel->saveTableColumnDetails(bufferDataTable);
+  bufferDataModel->stopPersistingTable(bufferDataTable);
   bufferDataModel->dispose();
  }
  bufferDataModel = NULL;
@@ -242,7 +242,7 @@ void AudioTablePanel::On_printItemTriggered()
 //    bufferDataScroll = NULL;
  if (sourceDataModel != NULL)
  {
-  sourceDataModel->saveTableColumnDetails(sourceDataTable);
+  sourceDataModel->stopPersistingTable(sourceDataTable);
   sourceDataModel->dispose();
  }
  sourceDataModel = NULL;

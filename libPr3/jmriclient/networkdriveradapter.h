@@ -15,6 +15,7 @@ public:
  /*public*/ void autoConfigure();
  /*public*/ QString getAdvertisementName();
  /*public*/ QString getServiceType();
+ /*public*/ QString className();
 
 private:
  static Logger* log;

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += gui core widgets xml
+QT       += gui core widgets xml network
 
 TARGET = Tables
 TEMPLATE = lib

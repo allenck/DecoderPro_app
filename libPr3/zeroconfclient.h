@@ -2,6 +2,7 @@
 #define ZEROCONFCLIENT_H
 
 #include <QObject>
+//#include "../../../../Projects/QtZeroConf-master/qzeroconf.h"
 #include "qzeroconf.h"
 
 class NetworkServiceListener;
@@ -15,16 +16,22 @@ class ZeroConfClient : public QObject
 public:
  explicit ZeroConfClient(QObject *parent = nullptr);
  /*public*/ void startServiceListener(/*@Nonnull*/ QString service);
+ /*public*/ QString getServiceOnHost(QString serviceType, QString Address);
+ /*public*/ QString getServicebyAdName(QString serviceType, QString Address);
+ /*public*/ QList<QZeroConfService> getServices();
 
 signals:
+ void serviceAdded(QString hostname);
 
 public slots:
+ void addService(QZeroConfService se);
+ void removeService(QZeroConfService se);
 
 private:
  static Logger* log;
  /*private*/ NetworkServiceListener* mdnsServiceListener = nullptr;
  friend class NetworkServiceListener;
-
+ QList<QZeroConfService> services;
 };
 
 /*public*/ /*static*/ class NetworkServiceListener : QObject//implements ServiceListener, NetworkTopologyListener
@@ -36,6 +43,7 @@ Q_OBJECT
 protected:
     /*protected*/ NetworkServiceListener(QString service, ZeroConfClient* client);
 public slots:
+
 #if 0
     //@Override
     /*public*/ void inetAddressAdded(NetworkTopologyEvent nte) {
@@ -50,6 +58,8 @@ public slots:
 
     /*public*/ void serviceAdded(QZeroConfService se);
     /*public*/ void serviceRemoved(QZeroConfService se);
+    /*public*/ void serviceUpdated(QZeroConfService se);
+    /*public*/ void error(QZeroConf::error_t);
 #if 0
     @Override
     /*public*/ void serviceResolved(ServiceEvent se) {

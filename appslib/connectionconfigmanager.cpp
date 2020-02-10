@@ -8,10 +8,11 @@
 #include "vptr.h"
 #include "class.h"
 #include "loggerfactory.h"
+#include "errormemo.h"
 
 ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager()
 {
- connections = new QList<ConnectionConfig*>();
+ connections = QList<ConnectionConfig*>();
  NAMESPACE = "http://jmri.org/xml/schema/auxiliary-configuration/connections-2-9-6.xsd"; // NOI18N
 
 }
@@ -38,7 +39,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
   log-> debug("Initializing...");
   QDomElement sharedConnections = QDomElement();
   QDomElement perNodeConnections = QDomElement();
-#if 1
+  this->setPortNamePattern();
   try {
       sharedConnections = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(CONNECTIONS, NAMESPACE, true));
   } catch (NullPointerException ex)
@@ -55,10 +56,10 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
    }
    catch (NullPointerException ex)
    {
-          // Normal if the profile has not been used on this computer
-          log-> info("No local configuration found.");
-          log-> debug("Null pointer thrown reading local configuration."/*, ex*/);
-          // TODO: notify user
+    // Normal if the profile has not been used on this computer
+    log-> info("No local configuration found.");
+    log-> debug("Null pointer thrown reading local configuration."/*, ex*/);
+    // TODO: notify user
    }
    //for (QDomElement shared : sharedConnections.getChildren(CONNECTION))
    QDomNodeList nl = sharedConnections.elementsByTagName(CONNECTION);
@@ -143,7 +144,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
       this->addInitializationException(profile, new InitializationException(english, localized, NULL));
      }
     }
-#if 1
+
     catch (ClassNotFoundException /*| InstantiationException | IllegalAccessException*/ ex)
     {
      log-> error(tr("Unable to create %1 for %2").arg(className).arg(shared.tagName()), ex);
@@ -151,7 +152,6 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
      QString localized = tr( "Unable to create connection \"%1\" (%2).").arg(userName).arg( systemName); // NOI18N
      this->addInitializationException(profile, new InitializationException(english, localized, NULL));
     }
-#endif
     catch (Exception ex)
     {
      log-> error(tr("Unable to load %1 into %2").arg(shared.tagName()).arg(className)/*, ex*/);
@@ -169,12 +169,11 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
   if (exceptions->size() == 1)
   {
 #if 0
-      //if (exceptions.get(0) instanceof InitializationException)
-   if(qobject_cast<InitializationException*>(exceptions->at(0)) != NULL)
+   if (dynamic_cast<HasConnectionButUnableToConnectException*>(exceptions->at(0)) )
    {
-       throw (InitializationException) *exceptions->at(0);
+    throw (HasConnectionButUnableToConnectException*) exceptions->at(0);
    } else {
-       throw  InitializationException(*exceptions->at(0));
+       throw HasConnectionButUnableToConnectException(exceptions->at(0));
    }
 #endif
   }
@@ -186,7 +185,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
    QString localized = tr("Unable to create connection \"%1\" (%2).");
       throw  InitializationException(english, localized, nullptr);
   }
-#endif
+
   log-> debug("Initialized...");
  }
 }
@@ -213,7 +212,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  QDomDocument doc = QDomDocument();
  QDomElement element = doc.createElementNS(NAMESPACE, CONNECTIONS);
  //connections.stream().forEach((o) ->
- foreach(ConnectionConfig* o, *connections)
+ foreach(ConnectionConfig* o, connections)
  {
   log-> debug(tr("Saving connection %1 (%2)...").arg(o->getConnectionName()).arg(shared));
   QDomElement e = ConfigXmlManager::elementFromObject(o);
@@ -241,12 +240,12 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 {
  if (c == NULL)
  {
-  throw new NullPointerException();
+  throw NullPointerException();
  }
- if (!connections->contains(c))
+ if (!connections.contains(c))
  {
-  /*bool result =*/ connections->append(c);
-  int i = connections->indexOf(c);
+  /*bool result =*/ connections.append(c);
+  int i = connections.indexOf(c);
   fireIndexedPropertyChange(CONNECTIONS, i, QVariant(), VPtr<ConnectionConfig>::asQVariant(c));
   return /*result*/true;
  }
@@ -261,8 +260,8 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  * @return true if c was removed, false otherwise
  */
 /*public*/ bool ConnectionConfigManager::remove(/*@NonNULL*/ ConnectionConfig* c) {
-    int i = connections->indexOf(c);
-    bool result = connections->removeOne(c);
+    int i = connections.indexOf(c);
+    bool result = connections.removeOne(c);
     if (result) {
         fireIndexedPropertyChange(CONNECTIONS, i, VPtr<ConnectionConfig>::asQVariant(c), QVariant());
     }
@@ -278,7 +277,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 /*@NonNULL*/
 /*public*/ QVector<ConnectionConfig*> ConnectionConfigManager::getConnections() {
     //return connections.toArray(new ConnectionConfig[connections.size()]);
- return connections->toVector();
+ return connections.toVector();
 }
 
 /**
@@ -289,15 +288,16 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  * @return the ConnectionConfig at the specified location
  */
 /*public*/ ConnectionConfig* ConnectionConfigManager::getConnections(int index) {
-    return connections->value(index);
+    return connections.value(index);
 }
 
 //@Override
 /*public*/ QListIterator<ConnectionConfig*> ConnectionConfigManager::iterator() {
     //return connections.iterator();
- return QListIterator<ConnectionConfig*>(*connections);
+ return QListIterator<ConnectionConfig*>(connections);
 }
-#if 0
+
+#if 0 // needed for testing methods, e.g ConnectionConfigManagerTest
 /**
  * Get the class names for classes supporting layout connections for the
  * given manufacturer.
@@ -453,4 +453,49 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
     }
 
 }
+#endif
+/**
+     * Override the default port name patterns unless the
+     * purejavacomm.portnamepattern property was set on the command line.
+     */
+    /*private*/ void ConnectionConfigManager::setPortNamePattern() {
+#if 0
+        /*final*/ QString pattern = "purejavacomm.portnamepattern";
+        Properties properties = System.getProperties();
+        if (properties.getProperty(pattern) == null) {
+            try (InputStream in = ConnectionConfigManager.class.getResourceAsStream("PortNamePatterns.properties")) { // NOI18N
+                properties.load(in);
+            } catch (IOException ex) {
+                log.error("Unable to read PortNamePatterns.properties", ex);
+            }
+        }
+#endif
+    }
+#if 0
+//    /*private*/ /*static*/ class ConnectionConfigManagerErrorHandler extends ErrorHandler {
+
+//        ArrayList<HasConnectionButUnableToConnectException> exceptions = new ArrayList<>();
+
+        /*public*/ ConnectionConfigManagerErrorHandler::ConnectionConfigManagerErrorHandler()
+         : ErrorHandler()
+        {
+            //super();
+             exceptions = QList<HasConnectionButUnableToConnectException>();
+        }
+
+        /**
+         * Capture ErrorMemos as initialization exceptions. {@inheritDoc}
+         */
+        //@Override
+        // The memo has a generic message (since the real cause never makes it this far anyway)
+        // If the memo reliably had an exception, we could make a decision about
+        // how to handle that, but since it doesn't all we can do is log it
+        /*public*/ void ConnectionConfigManagerErrorHandler::handle(ErrorMemo* memo) {
+            if (memo->exception != nullptr) {
+                this->exceptions.append(new HasConnectionButUnableToConnectException(memo->description, tr("<html>&nbsp;&nbsp;&nbsp;&nbsp;%1</html>").arg(memo->description), memo->exception));
+            } else {
+                this->exceptions.append(new HasConnectionButUnableToConnectException(memo->description, tr("<html>&nbsp;&nbsp;&nbsp;&nbsp;%1</html>").arg(memo->description), memo->exception));
+            }
+        }
+//    };
 #endif

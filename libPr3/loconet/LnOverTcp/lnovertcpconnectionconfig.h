@@ -17,6 +17,8 @@ public:
 signals:
 
 public slots:
+ void updated();
+
 protected:
  /*protected*/ void setInstance();
 

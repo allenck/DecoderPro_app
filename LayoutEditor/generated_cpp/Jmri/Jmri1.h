@@ -4,7 +4,7 @@
 #include <QVariant>
 #include <audiomanager.h>
 #include <block.h>
-#include <blockmanager.h>
+#include <dcclocoaddress.h>
 #include <defaultmemorymanager.h>
 #include <defaultprogrammermanager.h>
 #include <editor.h>
@@ -78,7 +78,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -154,6 +153,8 @@ virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual QList<ProgrammingMode* >  getDefaultModes();
+virtual bool  isGlobalProgrammerAvailable();
 virtual QObject*  self();
 virtual void timerEvent(QTimerEvent*  event);
 
@@ -164,6 +165,8 @@ virtual void timerEvent(QTimerEvent*  event);
 
 class PythonQtPublicPromoter_DefaultProgrammerManager : public DefaultProgrammerManager
 { public:
+inline QList<ProgrammingMode* >  py_q_getDefaultModes() { return DefaultProgrammerManager::getDefaultModes(); }
+inline bool  py_q_isGlobalProgrammerAvailable() { return DefaultProgrammerManager::isGlobalProgrammerAvailable(); }
 inline QObject*  py_q_self() { return DefaultProgrammerManager::self(); }
 };
 
@@ -174,9 +177,12 @@ public slots:
 DefaultProgrammerManager* new_DefaultProgrammerManager(QObject*  parent = 0);
 void delete_DefaultProgrammerManager(DefaultProgrammerManager* obj) { delete obj; } 
    QList<ProgrammingMode* >  getDefaultModes(DefaultProgrammerManager* theWrappedObject);
+   QList<ProgrammingMode* >  py_q_getDefaultModes(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_getDefaultModes());}
    QString  getUserName(DefaultProgrammerManager* theWrappedObject);
    bool  isAddressedModePossible(DefaultProgrammerManager* theWrappedObject);
+   bool  isAddressedModePossible(DefaultProgrammerManager* theWrappedObject, DccLocoAddress*  l);
    bool  isGlobalProgrammerAvailable(DefaultProgrammerManager* theWrappedObject);
+   bool  py_q_isGlobalProgrammerAvailable(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_isGlobalProgrammerAvailable());}
    QObject*  self(DefaultProgrammerManager* theWrappedObject);
    QObject*  py_q_self(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_self());}
    QString  toString(DefaultProgrammerManager* theWrappedObject);
@@ -743,7 +749,6 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    AudioManager*  static_InstanceManager_AudioManagerInstance();
    void static_InstanceManager_addPropertyChangeListener(PropertyChangeListener*  l);
    void static_InstanceManager_addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l);
-   BlockManager*  static_InstanceManager_blockManagerInstance();
    void clear(InstanceManager* theWrappedObject, QString  type);
    void clearAll(InstanceManager* theWrappedObject);
    bool  static_InstanceManager_containsDefault(QString  type);
@@ -2697,6 +2702,7 @@ enum LnCommandStationTypes{
 public slots:
 void delete_LnCommandStationType(LnCommandStationType* obj) { delete obj; } 
    QStringList  static_LnCommandStationType_commandStationNames();
+   bool  equals(LnCommandStationType* theWrappedObject, LnCommandStationType*  other);
    LnCommandStationType*  static_LnCommandStationType_getByName(QString  name);
    LnCommandStationType*  static_LnCommandStationType_getByType(LnCommandStationType::LnCommandStationTypes  type);
    bool  getCanRead(LnCommandStationType* theWrappedObject);
@@ -2784,6 +2790,7 @@ public:
 virtual void _connect();
 virtual void autoConfigure();
 virtual void childEvent(QChildEvent*  event);
+virtual QString  className();
 virtual void closeConnection() throw( Exception);
 virtual void configure();
 virtual void configureBaudRate(QString  rate);

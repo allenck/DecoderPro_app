@@ -86,7 +86,7 @@ void UserMessagePreferencesPane::propertyChange(PropertyChangeEvent* e)
  p->setClassDescription("jmri.jmrit.beantable.ReporterTableAction");
  p->setClassDescription("jmri.jmrit.beantable.RouteTableAction");
 
- p->setClassDescription("jmri.jmrit.beantable.SensorTableAction:");
+ p->setClassDescription("jmri.jmrit.beantable.SensorTableAction");
  p->setClassDescription("jmri.jmrit.beantable.SignalGroupTableAction");
  p->setClassDescription("jmri.jmrit.beantable.SignalHeadTableAction");
  p->setClassDescription("jmri.jmrit.beantable.SignalMastTableAction");

@@ -126,5 +126,11 @@
     return tr("_jmri-simple._tcp.local.");
 }
 
+/*public*/ QString NetworkDriverAdapter::className()
+{
+ return "jmri.jmrix.jmriclient.networkdriver.NetworkDriverAdapter";
+}
+
+
 /*private*/ /*final*/ /*static*/ Logger* NetworkDriverAdapter::log = LoggerFactory::getLogger("NetworkDriverAdapter");
 

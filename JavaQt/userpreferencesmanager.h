@@ -33,8 +33,8 @@ public:
     UserPreferencesManager(QObject* parent = nullptr) : Bean(parent) {}
     ~UserPreferencesManager() {}
     UserPreferencesManager(const UserPreferencesManager&) : Bean() {}
-    /*public*/ virtual void setLoading() {}
-    /*public*/ virtual void finishLoading() {}
+    /*public*/ virtual void setLoading() =0;
+    /*public*/ virtual void finishLoading() =0;
     /*public*/ static /*final*/ QString PREFERENCES_UPDATED;// = "PreferencesUpdated"; // NOI18N
 
     /**
@@ -47,7 +47,7 @@ public:
      * start with the package name (package.Class) for the
      * primary using class.
      */
-    virtual bool getSimplePreferenceState(QString /*name*/) {return false;}
+    virtual bool getSimplePreferenceState(QString /*name*/) =0;
 
     /**
      * This is used to remember the last selected state of a checkBox and thus
@@ -64,12 +64,12 @@ public:
      * @param name A unique name to identify the state being stored
      * @param state simple bool.
      */
-    virtual void setSimplePreferenceState(QString /*name*/, bool /*state*/) {}
+    virtual void setSimplePreferenceState(QString /*name*/, bool /*state*/) =0;
 
     /**
      *  Returns an ArrayList of the checkbox states set as true.
      */
-    /*public*/ virtual QStringList getSimplePreferenceStateList() {return QStringList();}
+    /*public*/ virtual QStringList getSimplePreferenceStateList() =0;
 
     /**
      * Used to save the state of checkboxes which can suppress messages from being
@@ -88,12 +88,12 @@ public:
      * @param item The specific item that is to be stored
      * @param state Boolean state of the item.
      */
-    /*public*/ virtual void setPreferenceState(QString /*strClass*/, QString /*item*/, bool /*state*/) {}
+    /*public*/ virtual void setPreferenceState(QString /*strClass*/, QString /*item*/, bool /*state*/) =0;
 
     /**
     * Returns the state of a given item registered against a specific class or item.
     */
-    /*public*/ virtual bool getPreferenceState(QString /*strClass*/, QString /*item*/) {return false;}
+    /*public*/ virtual bool getPreferenceState(QString /*strClass*/, QString /*item*/) =0;
 
     /**
      * Register details about a particular preference, so that it can be
@@ -106,22 +106,21 @@ public:
      * @param description A meaningful description of the item that the user
      *                    will understand
      */
-    /*public*/ virtual void setPreferenceItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/) {}
-
+    /*public*/ virtual void setPreferenceItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/) =0;
     /**
      * Returns a list of preferences that are registered against a specific class.
      */
-    /*public*/ virtual QStringList getPreferenceList(QString /*strClass*/) {return QStringList();}
+    /*public*/ virtual QStringList getPreferenceList(QString /*strClass*/) =0;
 
     /**
      * Returns the itemName of the n preference in the given class
      */
-    /*public*/ virtual QString getPreferenceItemName(QString /*strClass*/, int /*n*/) {return "";}
+    /*public*/ virtual QString getPreferenceItemName(QString /*strClass*/, int /*n*/) =0;
 
     /**
      * Returns the description of the given item preference in the given class
      */
-    /*public*/ virtual QString getPreferenceItemDescription(QString /*strClass*/, QString /*item*/) {return "";}
+    /*public*/ virtual QString getPreferenceItemDescription(QString /*strClass*/, QString /*item*/) =0;
 
 
     /**
@@ -134,7 +133,7 @@ public:
      * start with the package name (package.Class) for the
      * primary using class.
      */
-    /*public*/ virtual bool getSessionPreferenceState(QString /*name*/) {return false;}
+    /*public*/ virtual bool getSessionPreferenceState(QString /*name*/) =0;
 
     /**
     * Used to surpress messages for the current session, the information is not
@@ -148,7 +147,7 @@ public:
     * @param name A unique identifer for preference.
     * @param state
     */
-    /*public*/ virtual void setSessionPreferenceState(QString /*name*/, bool /*state*/) {}
+    /*public*/ virtual void setSessionPreferenceState(QString /*name*/, bool /*state*/) =0;
 
      // The reset is used after the preferences have been loaded for the first time
     /*public*/ virtual void resetChangeMade() {}
@@ -169,7 +168,7 @@ public:
      * @param alwaysRemember Means that the suppression of the message will be
      * saved
      */
-    /*public*/ virtual void showErrorMessage(QString /*title*/, QString /*message*/, QString /*classString*/, QString /*item*/, bool /*sessionOnly*/, bool /*alwaysRemember*/) {}
+    /*public*/ virtual void showErrorMessage(QString /*title*/, QString /*message*/, QString /*classString*/, QString /*item*/, bool /*sessionOnly*/, bool /*alwaysRemember*/) =0;
 
     /**
      * Show an info message ("don't forget ...")
@@ -183,7 +182,7 @@ public:
      * @param classQString QString value of the calling class
      * @param item QString value of the specific item this is used for
      */
-    /*public*/ virtual void showInfoMessage(QString /*title*/, QString /*message*/, QString /*classQString*/, QString /*item*/) {}
+    /*public*/ virtual void showInfoMessage(QString /*title*/, QString /*message*/, QString /*classQString*/, QString /*item*/) =0;
 
 
     /**
@@ -203,64 +202,50 @@ public:
      * @param alwaysRemember Means that the suppression of the message will be saved
      * @param level Used to determine the type of messagebox that will be used.
      */
-    /*public*/ virtual void showInfoMessage(QString /*title*/, QString /*message*/, QString /*classString*/, QString /*item*/, bool /*sessionOnly*/, bool /*alwaysRemember*/, Level* /*level*/) {}
-
-    /**
-     * Adds the last selection of a combo box.
-     * <p>
-     * The name is free-form, but to avoid ambiguity it should
-     * start with the package name (package.Class) for the
-     * primary using class, followed by an identifier for the combobox
-     */
-    QT_DEPRECATED /*public*/ virtual void addComboBoxLastSelection(QString /*comboBoxName*/, QString /*lastValue*/) {}
-
+    /*public*/ virtual void showInfoMessage(QString /*title*/, QString /*message*/, QString /*classString*/, QString /*item*/, bool /*sessionOnly*/, bool /*alwaysRemember*/) =0;
     /**
     * returns the last selected value in a given combobox
     *
     **/
-    /*public*/ virtual QString getComboBoxLastSelection(QString /*comboBoxName*/) {return "";}
+    /*public*/ virtual QString getComboBoxLastSelection(QString /*comboBoxName*/) =0;
     /**
     * sets the last selected value in a given combobox
     *
     **/
-    /*public*/ virtual void setComboBoxLastSelection(QString /*comboBoxName*/, QString /*lastValue*/) {}
+    /*public*/ virtual void setComboBoxLastSelection(QString /*comboBoxName*/, QString /*lastValue*/) =0;
 
     /**
     * returns the number of comboBox options saved
     *
     **/
-    /*public*/ virtual int getComboBoxSelectionSize() {return 0;}
+    // /*public*/ virtual int getComboBoxSelectionSize() {return 0;}
 
     /**
     * returns the ComboBox Name at position n
     *
     **/
-    /*public*/ virtual QString getComboBoxName(int /*n*/) {return "";}
+    // /*public*/ virtual QString getComboBoxName(int /*n*/) {return "";}
 
     /**
     * returns the ComboBox Value at position n
     *
     **/
-    /*public*/ virtual QString getComboBoxLastSelection(int /*n*/) {return "";}
+    // /*public*/ virtual QString getComboBoxLastSelection(int /*n*/) {return "";}
 
-    /*public*/ virtual QSize getScreen() {return QSize();}
+    /*public*/ virtual QSize getScreen() =0;
 
-    QT_DEPRECATED /*public*/ virtual void allowSave() {}
-    QT_DEPRECATED /*public*/ virtual void disallowSave() {}
-
-    ///*public*/ virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/) {}
-
-    ///*public*/ virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/) {}
+//    QT_DEPRECATED /*public*/ virtual void allowSave() {}
+//    QT_DEPRECATED /*public*/ virtual void disallowSave() {}
 
     /**
     * Returns the description of a class/group registered with the preferences.
     */
-    /*public*/ virtual QString getClassDescription(QString /*strClass*/) {return "";}
+    /*public*/ virtual QString getClassDescription(QString /*strClass*/) =0;
 
     /**
     * Returns a list of the classes registered with the preference manager.
     */
-    /*public*/ virtual QStringList getPreferencesClasses() {return QStringList();}
+    /*public*/ virtual QStringList getPreferencesClasses() =0;
 
     /**
      * Given that we know the class as a string, we will try and attempt to gather
@@ -272,7 +257,7 @@ public:
      * this will then trigger the class to send details about its preferences back
      * to this code.
      */
-    /*public*/ virtual void setClassDescription(QString /*strClass*/) {}
+    /*public*/ virtual void setClassDescription(QString /*strClass*/) =0;
 
 
     /**
@@ -288,7 +273,7 @@ public:
      *                      meaningful description.
      * @param defaultOption The default option for the given item.
      */
-    /*public*/ virtual void setMessageItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/, QMap<int, QString>* /*options*/, int /*defaultOption*/) {}
+    /*public*/ virtual void setMessageItemDetails(QString /*strClass*/, QString /*item*/, QString /*description*/, QMap<int, QString>* /*options*/, int /*defaultOption*/) =0;
 
     /**
     * Returns a map of the value against description of the different items in a
@@ -296,52 +281,52 @@ public:
     * @param strClass Class or group of the given item
     * @param item the item which we wish to return the details about.
     */
-    /*public*/ virtual QMap<int, QString>* getChoiceOptions(QString /*strClass*/, QString /*item*/) {return nullptr;}
+    /*public*/ virtual QMap<int, QString>* getChoiceOptions(QString /*strClass*/, QString /*item*/) =0;
 
     /**
     * Returns the number of Mulitple Choice items registered with a given class.
     */
-    /*public*/ virtual int getMultipleChoiceSize(QString /*strClass*/) {return 0;}
+    /*public*/ virtual int getMultipleChoiceSize(QString /*strClass*/) =0;
 
     /**
     * Returns a list of all the multiple choice items registered with a given class.
     */
-    /*public*/ virtual QStringList getMultipleChoiceList(QString /*strClass*/) {return QStringList();}
+    /*public*/ virtual QStringList getMultipleChoiceList(QString /*strClass*/) =0;
 
     /**
     * Returns the nth item name in a given class
     */
-    /*public*/ virtual QString getChoiceName(QString /*strClass*/, int /*n*/) {return "";}
+    /*public*/ virtual QString getChoiceName(QString /*strClass*/, int /*n*/) =0;
 
     /**
     * Returns the a meaningful description of a given item in a given class or group.
     */
-    /*public*/ virtual QString getChoiceDescription(QString /*strClass*/, QString /*item*/) {return "";}
+    /*public*/ virtual QString getChoiceDescription(QString /*strClass*/, QString /*item*/) =0;
 
     /**
     * Returns the current value of a given item in a given class
     */
-    /*public*/ virtual int getMultipleChoiceOption (QString /*strClass*/, QString /*item*/) {return 0;}
+    /*public*/ virtual int getMultipleChoiceOption (QString /*strClass*/, QString /*item*/) =0;
 
     /**
     * Returns the default value of a given item in a given class
     */
-    /*public*/ virtual int getMultipleChoiceDefaultOption (QString /*strClass*/, QString /*choice*/) {return 0;}
+    /*public*/ virtual int getMultipleChoiceDefaultOption (QString /*strClass*/, QString /*choice*/) =0;
 
     /**
     * Sets the value of a given item in a given class, by its string description
     */
-    /*public*/ virtual void setMultipleChoiceOption (QString /*strClass*/, QString /*choice*/, QString /*value*/) {}
+    /*public*/ virtual void setMultipleChoiceOption (QString /*strClass*/, QString /*choice*/, QString /*value*/) =0;
 
     /**
     * Sets the value of a given item in a given class, by its integer value
     */
-    /*public*/ virtual void setMultipleChoiceOption (QString /*strClass*/, QString /*choice*/, int /*value*/) {}
+    /*public*/ virtual void setMultipleChoiceOption (QString /*strClass*/, QString /*choice*/, int /*value*/) =0;
 
     /**
     * returns the combined size of both types of items registered.
     */
-    /*public*/ virtual int getPreferencesSize(QString /*strClass*/) {return 0;}
+    /*public*/ virtual int getPreferencesSize(QString /*strClass*/) =0;
 
     /**
      * Saves the last location of a given component on the screen.
@@ -370,32 +355,32 @@ public:
     /**
     * Returns the width, height size of a given Window
     */
-    /*public*/ virtual QSize getWindowSize(QString /*strClass*/) {return QSize();}
+    /*public*/ virtual QSize getWindowSize(QString /*strClass*/) =0;
 
 
 
-    /*public*/ virtual QStringList getWindowList() {return QStringList();}
+    /*public*/ virtual QStringList getWindowList() =0;
 
     /**
      * Do we have a saved window position for the class
      * @param strClass
      * @return true if the window position details are stored, false if not.
      */
-    QT_DEPRECATED /*public*/ virtual bool isWindowPositionSaved(QString strClass)
-    {
-     return this->hasProperties(strClass);
-    }
+//    QT_DEPRECATED /*public*/ virtual bool isWindowPositionSaved(QString strClass)
+//    {
+//     return this->hasProperties(strClass);
+//    }
     /**
      * Check if there are properties for the given class
      *
      * @param strClass class to check
      * @return true if properties for strClass are maintained; false otherwise
      */
-    /*public*/ virtual bool hasProperties(QString /*strClass*/) {return false;}
+    /*public*/ virtual bool hasProperties(QString /*strClass*/) =0;
 
-    /*public*/ virtual bool getSaveWindowSize(QString /*strClass*/) {return false;}
+    /*public*/ virtual bool getSaveWindowSize(QString /*strClass*/) =0;
 
-    /*public*/ virtual bool getSaveWindowLocation(QString /*strClass*/) {return false;}
+    /*public*/ virtual bool getSaveWindowLocation(QString /*strClass*/) =0;
 
     /*public*/ virtual void setSaveWindowSize(QString /*strClass*/, bool /*b*/) {}
 
@@ -408,18 +393,18 @@ public:
      * and don't throw events on modification.
      * Key must not be null.
      */
-    /*public*/ virtual void setProperty(QString /*strClass*/, QString /*key*/, QVariant /*value*/) {}
+    /*public*/ virtual void setProperty(QString /*strClass*/, QString /*key*/, QVariant /*value*/) =0;
 
     /**
      * Retrieve the value associated with a key in a given class
      * If no value has been set for that key, returns null.
      */
-    /*public*/ virtual QVariant getProperty(QString /*strClass*/, QString /*key*/) {return QVariant();}
+    /*public*/ virtual QVariant getProperty(QString /*strClass*/, QString /*key*/) =0;
 
     /**
      * Retrieve the complete current set of keys for a given class.
      */
-    /*public*/ virtual QSet<QString> getPropertyKeys(QString /*strClass*/) {return QSet<QString>();}
+    /*public*/ virtual QSet<QString> getPropertyKeys(QString /*strClass*/) =0;
 
     /**
      * Stores the details of a tables column, so that it can be saved and re-applied
@@ -431,7 +416,7 @@ public:
      * @param sort The sort order of the column
      * @param hidden Should the column be hidden
      */
-    QT_DEPRECATED /*public*/ virtual void setTableColumnPreferences(QString /*table*/, QString /*column*/, int /*order*/, int /*width*/, int /*sort*/, bool /*hidden*/) {}
+//    QT_DEPRECATED /*public*/ virtual void setTableColumnPreferences(QString /*table*/, QString /*column*/, int /*order*/, int /*width*/, int /*sort*/, bool /*hidden*/) {}
 
     /**
      * Get the stored position of the column for a given table
@@ -439,7 +424,7 @@ public:
      * @param column The column name
      * @return -1 if not found
      */
-    QT_DEPRECATED /*public*/ virtual int getTableColumnOrder(QString /*table*/, QString /*column*/) {return 0;}
+//    QT_DEPRECATED /*public*/ virtual int getTableColumnOrder(QString /*table*/, QString /*column*/) {return 0;}
 
     /**
      * Get the stored column width for a given table
@@ -447,7 +432,7 @@ public:
      * @param column The column name
      * @return -1 if not found
      */
-    QT_DEPRECATED /*public*/ virtual int getTableColumnWidth(QString /*table*/, QString /*column*/) {return 0;}
+//    QT_DEPRECATED /*public*/ virtual int getTableColumnWidth(QString /*table*/, QString /*column*/) {return 0;}
 
     /**
      * Get the stored column sort order for a given table
@@ -455,7 +440,7 @@ public:
      * @param column The column name
      * @return 0 if not found
      */
-    QT_DEPRECATED /*public*/ virtual int getTableColumnSort(QString /*table*/, QString /*column*/) {return 0;}
+//    QT_DEPRECATED /*public*/ virtual int getTableColumnSort(QString /*table*/, QString /*column*/) {return 0;}
 
     /**
      * Get the stored column hidden state for a given table
@@ -463,7 +448,7 @@ public:
      * @param column The column name
      * @return 0 if not found
      */
-    QT_DEPRECATED /*public*/ virtual bool getTableColumnHidden(QString /*table*/, QString /*column*/) {return false;}
+//    QT_DEPRECATED /*public*/ virtual bool getTableColumnHidden(QString /*table*/, QString /*column*/) {return false;}
 
     /**
      * Get a name for a column at index i
@@ -471,20 +456,20 @@ public:
      * @param i The column index
      * returns null if not found, otherwise the column name
      */
-    QT_DEPRECATED /*public*/ virtual QString getTableColumnAtNum(QString /*table*/, int /*i*/) {return "";}
+//    QT_DEPRECATED /*public*/ virtual QString getTableColumnAtNum(QString /*table*/, int /*i*/) {return "";}
 
     /**
      * Get a list of all the table preferences stored
      * @return a List of all the tables, if no tables exist then an empty list is returned
      */
-    QT_DEPRECATED /*public*/ virtual QStringList getTablesList() {return QStringList();}
+//    QT_DEPRECATED /*public*/ virtual QStringList getTablesList() {return QStringList();}
 
     /**
      * Get a list of all the column settings for a specific table
      * @param table
      * @return a List of all the columns in a table, if the table is not valid an empty list is returned
      */
-    QT_DEPRECATED /*public*/ virtual QStringList getTablesColumnList(QString /*table*/) {return QStringList();}
+//    QT_DEPRECATED /*public*/ virtual QStringList getTablesColumnList(QString /*table*/) {return QStringList();}
     /*
         Example informational message dialog box.
 
@@ -593,8 +578,7 @@ public:
      *
      * @return true if saving is allowed; false otherwise
      */
-    virtual /*public*/ bool isSaveAllowed() {return false;}
-
+    virtual /*public*/ bool isSaveAllowed() =0;
     /**
      * Set if saving preferences is allowed. When setting true, preferences will
      * be saved immediately if needed.
@@ -607,7 +591,11 @@ public:
      *
      * @param saveAllowed true to allow saving; false to block saving
      */
-    virtual /*public*/ void setSaveAllowed(bool /*saveAllowed*/) {}
+    virtual /*public*/ void setSaveAllowed(bool /*saveAllowed*/) =0;
+
+    virtual /*public*/ void removePropertyChangeListener(PropertyChangeListener* l)  {}
+
+    virtual /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) {}
 };
 //Q_DECLARE_METATYPE(UserPreferencesManager)
 #endif // USERPREFERENCESMANAGER_H

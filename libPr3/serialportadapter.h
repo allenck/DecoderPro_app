@@ -87,6 +87,9 @@ public:
     * Set the System Manufacturers Name
     */
      //void setManufacturer(QString /*Manufacturer*/) {}
+
+     /*public*/ virtual QString className() {return "<undefined>";} // sub-class returns it's java class name.
+
 signals:
     
 public slots:

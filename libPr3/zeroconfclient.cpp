@@ -1,10 +1,12 @@
-#include "zeroconfclient.h"
+﻿#include "zeroconfclient.h"
 #include "loggerfactory.h"
 #include "qzeroconf.h"
+#include "jmdns.h"
+#include "zeroconfservice.h"
 
 ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
 {
-
+ services = QList<QZeroConfService>();
 }
 
 ///*public*/ class ZeroConfClient {
@@ -18,11 +20,31 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
         mdnsServiceListener = new NetworkServiceListener(service, this);
     }
 #if 0
-    for (JmDNS server : ZeroConfService.netServices().values()) {
+    for (JmDNS server : ZeroConfService::netServices().values()) {
         server.addServiceListener(service, mdnsServiceListener);
     }
 #endif
 }
+
+/*public*/ void ZeroConfClient::addService(QZeroConfService se)
+{
+
+ if(!services.contains(se))
+  services.append(se);
+ emit serviceAdded( se.host());
+}
+/*public*/ void ZeroConfClient::removeService(QZeroConfService se)
+{
+ if(services.contains(se))
+ {
+  services.removeAll(se);
+ }
+}
+/*public*/ QList<QZeroConfService> ZeroConfClient::getServices()
+{
+ return QList<QZeroConfService>(services);
+}
+
 #if 0
 /*public*/ void stopServiceListener(@Nonnull String service) {
     for (JmDNS server : ZeroConfService.netServices().values()) {
@@ -76,7 +98,7 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
  */
 /*public*/ ServiceInfo getServiceOnHost(/*@Nonnull*/ QString service, /*@Nonnull*/ QString hostname) {
     for (JmDNS server : ZeroConfService.netServices().values()) {
-        ServiceInfo[] infos = server.list(service);
+        QList<ServiceInfo> infos = server.list(service);
         for (ServiceInfo info : infos) {
             if (info.getServer().equals(hostname)) {
                 return info;
@@ -132,6 +154,10 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
  zeroConf = new QZeroConf();
  connect(zeroConf, SIGNAL(serviceAdded(QZeroConfService)), this, SLOT(serviceAdded(QZeroConfService)));
  connect(zeroConf, SIGNAL(serviceRemoved(QZeroConfService)), this, SLOT(serviceRemoved(QZeroConfService)));
+ connect(zeroConf, SIGNAL(serviceUpdated(QZeroConfService)), this, SLOT(serviceUpdated(QZeroConfService)));
+ connect(zeroConf, SIGNAL(error(QZeroConf::error_t)), this, SLOT(error(QZeroConf::error_t)));
+
+ zeroConf->startBrowser(service);
 
 }
 #if 0
@@ -154,12 +180,17 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
     /*synchronized(client)*/ {
         client->notifyAll();
     }
+
 #endif
+    ServiceInfo info = ServiceInfo();
+
+    client->addService(se);
 }
 
 //@Override
 /*public*/ void NetworkServiceListener::serviceRemoved(QZeroConfService se) {
     client->log->debug(tr("Service removed: %1").arg(se.name()));
+    client->removeService(se);
 }
 #if 0
 @Override
@@ -170,3 +201,22 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
 //}
 //}
 #endif
+
+/*public*/ void NetworkServiceListener::serviceUpdated(QZeroConfService se) {
+ client->log->debug(tr("Service updated: %1").arg(se.name()));
+}
+
+/*public*/ void NetworkServiceListener::error(QZeroConf::error_t err)
+{
+ client->log->debug(tr("QZeroConf error %1").arg(err));
+}
+
+/*public*/ QString ZeroConfClient::getServiceOnHost(QString serviceType, QString Address)
+{
+ return "";
+}
+
+/*public*/ QString ZeroConfClient::getServicebyAdName(QString serviceType, QString Address)
+{
+ return "";
+}

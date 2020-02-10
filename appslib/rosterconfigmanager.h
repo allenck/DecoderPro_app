@@ -10,7 +10,7 @@ class RosterConfigManager : public AbstractPreferencesManager
 {
  Q_OBJECT
 public:
- RosterConfigManager();
+ Q_INVOKABLE RosterConfigManager();
  ~RosterConfigManager() {}
  RosterConfigManager(const RosterConfigManager&): AbstractPreferencesManager() {}
  /*public*/ static /*final*/ QString DIRECTORY;// = "directory";

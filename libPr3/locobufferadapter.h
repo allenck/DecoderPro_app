@@ -57,6 +57,7 @@ public:
     LnPacketizer* packets;
     void sendLocoNetMessage(LocoNetMessage* m);
     virtual /*public*/ int defaultBaudIndex();
+    /*public*/ QString className();
 
 
 public slots:

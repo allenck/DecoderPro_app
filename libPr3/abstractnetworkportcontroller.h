@@ -1,4 +1,4 @@
-#ifndef ABSTRACTNETWORKPORTCONTROLLER_H
+﻿#ifndef ABSTRACTNETWORKPORTCONTROLLER_H
 #define ABSTRACTNETWORKPORTCONTROLLER_H
 #include "abstractportcontroller.h"
 #include <QThread>
@@ -104,4 +104,5 @@ public:
 Q_DECLARE_METATYPE(QAbstractSocket::SocketError)
 Q_DECLARE_METATYPE(QAbstractSocket::SocketState)
 #endif
+
 #endif // ABSTRACTNETWORKPORTCONTROLLER_H

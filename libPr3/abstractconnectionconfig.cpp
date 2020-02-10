@@ -146,7 +146,7 @@ AbstractConnectionConfig::AbstractConnectionConfig(QObject *parent) :
 //        = java.util.ResourceBundle.getBundle("jmri.jmrix.JmrixBundle");
 
 //@Override
-/*abstract*/ /*public*/ void AbstractConnectionConfig::loadDetails(/*final*/ QWidget* details) {}
+/*abstract*/ /*public*/ void AbstractConnectionConfig::loadDetails(/*final*/ JPanel* details) {}
 
 
 /*abstract*/ void AbstractConnectionConfig::showAdvancedItems() {}

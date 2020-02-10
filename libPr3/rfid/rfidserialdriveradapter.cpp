@@ -314,6 +314,10 @@
     SerialPortAdapter::configureBaudRate(rate);
 }
 
+/*public*/ QString RfidSerialDriverAdapter::className()
+{
+ return "jmri.jmrix.rfid.serialdriver.SerialDriverAdapter";
+}
 
 
 /*private*/ /*static*/ /*final*/ Logger* RfidSerialDriverAdapter::log = LoggerFactory::getLogger("SerialDriverAdapter");

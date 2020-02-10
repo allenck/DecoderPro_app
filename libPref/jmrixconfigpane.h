@@ -4,6 +4,7 @@
 #include "preferencespane.h"
 #include "logger.h"
 #include "libpref_global.h"
+#include "jpanel.h"
 
 class UserPreferencesManager;
 class QComboBox;
@@ -67,7 +68,7 @@ private:
    QComboBox* modeBox;// = new JComboBox<>();
    QComboBox* manuBox;// = new JComboBox<>();
 
-   QWidget* details;// = new JPanel();
+   JPanel* details;// = new JPanel();
    QStringList classConnectionNameList;
    QList<ConnectionConfig*> classConnectionList;
    QStringList* manufactureNameList;

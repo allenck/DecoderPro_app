@@ -51,7 +51,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -2772,6 +2771,39 @@ if (_wrapper) {
 }
   return LocoNetSystemConnectionMemo::getDisabled();
 }
+LnSensorManager*  PythonQtShell_LocoNetSystemConnectionMemo::getSensorManager()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getSensorManager");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"LnSensorManager*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      LnSensorManager* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getSensorManager", methodInfo, result);
+          } else {
+            returnValue = *((LnSensorManager**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LocoNetSystemConnectionMemo::getSensorManager();
+}
 void PythonQtShell_LocoNetSystemConnectionMemo::notifyPropertyChangeListener(QString  property0, QVariant  oldValue1, QVariant  newValue2)
 {
 if (_wrapper) {
@@ -2978,6 +3010,11 @@ ThrottleManager*  PythonQtWrapper_LocoNetSystemConnectionMemo::getThrottleManage
 LnTurnoutManager*  PythonQtWrapper_LocoNetSystemConnectionMemo::getTurnoutManager(LocoNetSystemConnectionMemo* theWrappedObject)
 {
   return ( theWrappedObject->getTurnoutManager());
+}
+
+void PythonQtWrapper_LocoNetSystemConnectionMemo::resetProgrammer(LocoNetSystemConnectionMemo* theWrappedObject)
+{
+  ( theWrappedObject->resetProgrammer());
 }
 
 void PythonQtWrapper_LocoNetSystemConnectionMemo::setLnTrafficController(LocoNetSystemConnectionMemo* theWrappedObject, LnTrafficController*  lt)
@@ -9353,6 +9390,39 @@ if (_wrapper) {
 }
   NetworkPortAdapter::childEvent(event0);
 }
+QString  PythonQtShell_NetworkPortAdapter::className()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("className");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("className", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return QString();
+}
 void PythonQtShell_NetworkPortAdapter::configure()
 {
 if (_wrapper) {
@@ -10731,6 +10801,11 @@ void PythonQtWrapper_NetworkPortAdapter::_connect(NetworkPortAdapter* theWrapped
 void PythonQtWrapper_NetworkPortAdapter::autoConfigure(NetworkPortAdapter* theWrappedObject)
 {
   ( theWrappedObject->autoConfigure());
+}
+
+QString  PythonQtWrapper_NetworkPortAdapter::className(NetworkPortAdapter* theWrappedObject)
+{
+  return ( theWrappedObject->className());
 }
 
 QString  PythonQtWrapper_NetworkPortAdapter::getAdvertisementName(NetworkPortAdapter* theWrappedObject)

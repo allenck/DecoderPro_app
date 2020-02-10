@@ -47,7 +47,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -4175,6 +4174,39 @@ if (_wrapper) {
   }
 }
   AbstractPortController::childEvent(event0);
+}
+QString  PythonQtShell_AbstractPortController::className()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("className");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("className", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return QString();
 }
 void PythonQtShell_AbstractPortController::configure()
 {
@@ -10216,6 +10248,39 @@ if (_wrapper) {
   }
 }
   AbstractSerialPortController::childEvent(event0);
+}
+QString  PythonQtShell_AbstractSerialPortController::className()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("className");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("className", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractSerialPortController::className();
 }
 void PythonQtShell_AbstractSerialPortController::closeConnection() throw( Exception)
 {
@@ -26668,16 +26733,6 @@ QVariant  PythonQtWrapper_BeanTableDataModel::headerData(BeanTableDataModel* the
   return ( theWrappedObject->headerData(section, orientation, role));
 }
 
-void PythonQtWrapper_BeanTableDataModel::loadTableColumnDetails(BeanTableDataModel* theWrappedObject, JTable*  table)
-{
-  ( theWrappedObject->loadTableColumnDetails(table));
-}
-
-void PythonQtWrapper_BeanTableDataModel::loadTableColumnDetails(BeanTableDataModel* theWrappedObject, JTable*  table, QString  beantableref)
-{
-  ( theWrappedObject->loadTableColumnDetails(table, beantableref));
-}
-
 bool  PythonQtWrapper_BeanTableDataModel::matchPropertyName(BeanTableDataModel* theWrappedObject, PropertyChangeEvent*  e)
 {
   return ( ((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->promoted_matchPropertyName(e));
@@ -26706,16 +26761,6 @@ void PythonQtWrapper_BeanTableDataModel::renameBean(BeanTableDataModel* theWrapp
 int  PythonQtWrapper_BeanTableDataModel::rowCount(BeanTableDataModel* theWrappedObject, const QModelIndex&  parent) const
 {
   return ( theWrappedObject->rowCount(parent));
-}
-
-void PythonQtWrapper_BeanTableDataModel::saveTableColumnDetails(BeanTableDataModel* theWrappedObject, JTable*  table)
-{
-  ( theWrappedObject->saveTableColumnDetails(table));
-}
-
-void PythonQtWrapper_BeanTableDataModel::saveTableColumnDetails(BeanTableDataModel* theWrappedObject, JTable*  table, QString  beantableref)
-{
-  ( theWrappedObject->saveTableColumnDetails(table, beantableref));
 }
 
 void PythonQtWrapper_BeanTableDataModel::setColumnToHoldButton(BeanTableDataModel* theWrappedObject, JTable*  table, int  column, QPushButton*  sample)

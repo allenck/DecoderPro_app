@@ -24,7 +24,7 @@ public:
     /*public*/ void updateAdapter();
     /*public*/ QString getInfo();
     /*public*/ void refreshPortBox();
-    /*public*/ void loadDetails(/*final*/ QWidget* details);
+    /*public*/ void loadDetails(/*final*/ JPanel *details);
     /*public*/ bool isPortAdvanced();
     /*public*/ bool isBaudAdvanced();
     /*public*/ QString getManufacturer();
@@ -45,7 +45,7 @@ public slots:
     void On_portBox_currentIndexChanged(QString);
 
 private:
-    /*protected*/ bool init;// = false;
+    /*protected*/ bool init = false;
     void common();
     Logger* log;
     //@SuppressWarnings("UseOfObsoleteCollectionType")
@@ -74,7 +74,7 @@ protected:
     /*protected*/ QVector<QString>* getPortNames();
     /*protected*/ virtual QStringList getPortFriendlyNames();
     /*abstract*/ /*protected*/ virtual void getInstance() {}
-    /*abstract*/ /*protected*/ virtual void _register() {}
+    // /*abstract*/ /*protected*/ virtual void _register() =0;
 
 protected slots:
     /*protected*/ void showAdvancedItems();

@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QMetaType>
 #include "portadapter.h"
+#include "jpanel.h"
 
 /**
  * Definition of objects to handle configuring a layout connection.
@@ -23,7 +24,7 @@ public:
 
     /*public*/ virtual QString name() =0;
 
-    /*public*/ virtual void loadDetails(QWidget* /*details*/) =0;
+    /*public*/ virtual void loadDetails(JPanel* /*details*/) =0;
 
     /*public*/ virtual QString getInfo()=0;
 

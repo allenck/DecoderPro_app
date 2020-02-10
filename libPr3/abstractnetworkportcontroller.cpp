@@ -9,6 +9,7 @@
 #include <QDateTime>
 #include <QMessageBox>
 
+
 //AbstractNetworkPortController::AbstractNetworkPortController(QObject *parent) :
 //  AbstractPortController(parent)
 //{
@@ -42,6 +43,8 @@
 // qRegisterMetaType<QAbstractSocket::SocketState>("QAbstractSocket::SocketState");
 //#endif
  msg = NULL;
+
+
 }
 
 //@Override
@@ -654,3 +657,4 @@ QString AbstractNetworkPortController::statetoString(QAbstractSocket::SocketStat
 /*protected*/ int AbstractNetworkPortController::getConnectionTimeout() {
     return connTimeout;
 }
+

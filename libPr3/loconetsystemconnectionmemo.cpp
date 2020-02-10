@@ -25,6 +25,7 @@
 #include "multimeter.h"
 #include "lnmultimeter.h"
 #include <QDebug>
+#include "lncabsignalmanager.h"
 
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject* parent)
  : SystemConnectionMemo("L","LocoNet", parent)
@@ -263,8 +264,9 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
  if (T == ("IdTagManager")) {
      return (IdTagManager*) getIdTagManager();
  }
-// if (T == ("CabSignalManager")) {
-//     return (T) getCabSignalManager();
+ if (T == ("CabSignalManager")) {
+     return (Manager*) getCabSignalManager();
+ }
 
  return NULL; // nothing, by default
 }
@@ -446,38 +448,6 @@ ResourceBundle* LocoNetSystemConnectionMemo::getActionModelResourceBundle()
     return cabSignalManager;
 }
 #endif
-void  LocoNetSystemConnectionMemo::dispose()
-{
- lt = NULL;
- sm = NULL;
- InstanceManager::deregister(this,"LocoNetSystemConnectionMemo");
-// if (cf != NULL)
-//  InstanceManager::deregister(cf, jmri.jmrix.swing.ComponentFactory.class);
- if (powerManager != NULL)
-     InstanceManager::deregister(powerManager, "LnPowerManager");
- if (turnoutManager != NULL)
-  InstanceManager::deregister(turnoutManager,"LnTurnoutManager");
- if (lightManager != NULL)
-  InstanceManager::deregister(lightManager, "LnLightManager");
- if (sensorManager != NULL)
-  InstanceManager::deregister(sensorManager, "LnSensorManager");
- if (reporterManager != NULL)
-  InstanceManager::deregister(reporterManager, "LnReporterManager");
- if (throttleManager != NULL)
- {
-  //if (throttleManager instanceof LnThrottleManager)
-  if(qobject_cast<LnThrottleManager*>(throttleManager)!= NULL)
-   InstanceManager::deregister(((LnThrottleManager*)throttleManager), "LnThrottleManager");
-  else
-  if (qobject_cast<DebugThrottleManager*>(throttleManager) != NULL)
-   InstanceManager::deregister(((DebugThrottleManager*)throttleManager), "DebugThrottleManager");
- }
- if (consistManager != NULL)
-  InstanceManager::deregister(consistManager->self(), "LocoNetConsistManager");
- if (clockControl != NULL)
-  InstanceManager::deregister(clockControl, "LnClockControl");
- SystemConnectionMemo::dispose();
-}
 
 /*public*/ void LocoNetSystemConnectionMemo::resetProgrammer()
 {
@@ -494,6 +464,61 @@ void  LocoNetSystemConnectionMemo::dispose()
   InstanceManager::store(getProgrammerManager(), "GlobalProgrammerManager");
  }
  //InstanceManager::store(oldMgr, "Garbage");
+}
+
+/*public*/ LnCabSignalManager* LocoNetSystemConnectionMemo::getCabSignalManager() {
+    if (cabSignalManager == nullptr) {
+        cabSignalManager = new LnCabSignalManager(this);
+    }
+    return cabSignalManager;
+}
+
+//@Override
+/*public*/ void LocoNetSystemConnectionMemo::dispose() {
+    InstanceManager::deregister(this, "LocoNetSystemConnectionMemo");
+    if (cf != nullptr) {
+        InstanceManager::deregister(cf, "ComponentFactory");
+    }
+    if (powerManager != nullptr) {
+        powerManager->dispose();
+        InstanceManager::deregister(powerManager, "LnPowerManager");
+    }
+    if (turnoutManager != nullptr) {
+        turnoutManager->dispose();
+        InstanceManager::deregister(turnoutManager, "LnTurnoutManager");
+    }
+    if (lightManager != nullptr) {
+        lightManager->dispose();
+        InstanceManager::deregister(lightManager, "LnLightManager");
+    }
+    if (sensorManager != nullptr) {
+        sensorManager->dispose();
+        InstanceManager::deregister(sensorManager, "LnSensorManager");
+    }
+    if (reporterManager != nullptr) {
+        reporterManager->dispose();
+        InstanceManager::deregister(reporterManager, "LnReporterManager");
+    }
+    if (throttleManager != nullptr) {
+        if (qobject_cast<LnThrottleManager*>(throttleManager)) {
+            InstanceManager::deregister(((LnThrottleManager*) throttleManager), "LnThrottleManager");
+        } else if (qobject_cast<DebugThrottleManager*>(throttleManager)) {
+            InstanceManager::deregister(((DebugThrottleManager*) throttleManager), "DebugThrottleManager");
+        }
+    }
+    if (clockControl != nullptr) {
+        InstanceManager::deregister(clockControl, "LnClockControl");
+    }
+    if (tm != nullptr){
+        tm->dispose();
+    }
+    if (sm != nullptr){
+        sm->dispose();
+    }
+    if (lt != nullptr){
+        lt->dispose();
+    }
+    SystemConnectionMemo::dispose();
 }
 
 /*static*/ Logger* LocoNetSystemConnectionMemo::log = LoggerFactory::getLogger("LocoNetSystemConnectionMemo");

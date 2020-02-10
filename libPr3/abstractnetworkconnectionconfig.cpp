@@ -16,6 +16,7 @@
 #include "abstractnetworkportcontroller.h"
 #include <QSignalMapper>
 
+
 AbstractNetworkConnectionConfig::AbstractNetworkConnectionConfig(QObject *parent) :
   AbstractConnectionConfig(parent)
 {
@@ -254,7 +255,8 @@ void AbstractNetworkConnectionConfig::common()
 void AbstractNetworkConnectionConfig::on_hostNameField_leave()
 {
  adapter->setHostName(hostNameField->text());
- p->addComboBoxLastSelection(QString(adapter->metaObject()->className()) + ".hostname", hostNameField->text());
+ //p->addComboBoxLastSelection(QString(adapter->metaObject()->className()) + ".hostname", hostNameField->text());
+ p->setComboBoxLastSelection(adapter->className() + ".hostname", hostNameField->text());
 }
 
 void AbstractNetworkConnectionConfig::on_optionCb_currentIndexChanged(QWidget * widget)
@@ -376,7 +378,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 }
 
 //Override
-/*public*/ void AbstractNetworkConnectionConfig::loadDetails(/*final*/ QWidget* details)
+/*public*/ void AbstractNetworkConnectionConfig::loadDetails(/*final*/ JPanel* details)
 {
  _details = details;
  setInstance();
@@ -422,22 +424,25 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
  {
   hostNameField->setText(p->getComboBoxLastSelection(QString(adapter->metaObject()->className()) + ".hostname"));
   adapter->setHostName(hostNameField->text());
+  hostNameField->setVisible(true);
  }
 
  portField->setToolTip(tr("Port address setting of the TCP Connection"));
  portField->setEnabled(true);
  portField->setText(QString::number(adapter->getPort()));
  portFieldLabel = new QLabel(tr("TCP/UDP Port: "));
+ portField->setVisible(true);
+ portFieldLabel->setVisible(true);
 
  adNameField->setToolTip(tr("Expected ZeroConf/mDNS Advertisement Identifier"));
  adNameField->setEnabled(false);
- adNameField->setText("" + adapter->getAdvertisementName());
+ adNameField->setText(adapter->getAdvertisementName());
  adNameFieldLabel = new QLabel(tr("Advertisement Identifier: "));
  adNameFieldLabel->setEnabled(false);
 
  serviceTypeField->setToolTip(tr("ZeroConf/mDNS service type. "));
  serviceTypeField->setEnabled(false);
- serviceTypeField->setText("" + adapter->getServiceType());
+ serviceTypeField->setText(adapter->getServiceType());
  serviceTypeFieldLabel = new QLabel(tr("Service Type Name: "));
  serviceTypeFieldLabel->setEnabled(false);
  QFont f = showAutoConfig->font();
@@ -460,6 +465,8 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
  f.setPointSizeF(9.0);showAdvanced->setFont(f);
  //showAdvanced->setForeground(Qt::blue);
  showAdvanced->setStyleSheet("QCheckBox {color: blue} ");
+ showAdvanced->setVisible(true);
+
 //    showAdvanced.addItemListener(
 //            new ItemListener() {
 //            //Override
@@ -477,19 +484,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //Override
 /*protected*/ void AbstractNetworkConnectionConfig::showAdvancedItems()
 {
- //_details->removeAll();
- QObjectList l = _details->children();
- foreach(QObject* o, l)
- {
-  if(qobject_cast<QWidget*>(o) != NULL)
-  {
-   ((QGridLayout*)_details->layout())->removeWidget((QWidget*)o);
-//   if(o != hostNameField && o != hostNameFieldLabel)
-//    delete o;
-   ((QWidget*)o)->setVisible(false);
-  }
- }
- delete _details->layout();
+ _details->removeAll();
  gbLayout = new GridBagLayout;
 
  cL->anchor = GridBagConstraints::WEST;
@@ -554,7 +549,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
    gbLayout->addWidget(portFieldLabel,*cL);
    //_details.add(portField);
    gbLayout->addWidget(portField, *cR);
-   portField->setVisible(true);
+   portFieldLabel->setVisible(true);
    portField->setVisible(true);
    i++;
   }
@@ -571,6 +566,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
    gbLayout->addWidget(adNameField, *cR);
    adNameFieldLabel->setVisible(true);
    adNameField->setVisible(true);
+   i++;
    cR->gridy = i;
    cL->gridy = i;
 //   gbLayout->setConstraints(serviceTypeFieldLabel, cL);
@@ -606,6 +602,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
  foreach (QWidget* item, *additionalItems)
  {
   cL->gridy = i;
+  cR->gridy = i;
 //  gbLayout->setConstraints(item, cL);
   //_details.add(item);
   gbLayout->addWidget(item,*cL);
@@ -707,6 +704,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 
 //Override
 /*public*/ void AbstractNetworkConnectionConfig::setManufacturer(QString manufacturer) {
+ setInstance();
     adapter->setManufacturer(manufacturer);
 }
 
@@ -741,4 +739,11 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
         adapter = NULL;
     }
     AbstractConnectionConfig::dispose();
+}
+
+/*public*/ void AbstractNetworkConnectionConfig::autoConfig()
+{
+ // called when adapter has beed auto configured. Update UI
+ hostNameField->setText(adapter->getHostName());
+ portField->setText(QString::number(adapter->getPort()));
 }

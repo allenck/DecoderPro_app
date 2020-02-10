@@ -63,7 +63,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -570,6 +569,7 @@ public:
 virtual void _connect(QString  arg__1, int  arg__2);
 virtual void autoConfigure();
 virtual void childEvent(QChildEvent*  event);
+virtual QString  className();
 virtual void configure();
 virtual void configureOption1(QString  value);
 virtual void configureOption2(QString  value);
@@ -1102,6 +1102,7 @@ public:
 virtual void _connect();
 virtual void autoConfigure();
 virtual void childEvent(QChildEvent*  event);
+virtual QString  className();
 virtual void closeConnection() throw( Exception);
 virtual void configure();
 virtual void configureBaudRate(QString  rate);
@@ -2632,8 +2633,6 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    QString  py_q_getValue(BeanTableDataModel* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_getValue(systemName));}
    QVariant  headerData(BeanTableDataModel* theWrappedObject, int  section, Qt::Orientation  orientation, int  role) const;
    void py_q_init(BeanTableDataModel* theWrappedObject){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_init());}
-   void loadTableColumnDetails(BeanTableDataModel* theWrappedObject, JTable*  table);
-   void loadTableColumnDetails(BeanTableDataModel* theWrappedObject, JTable*  table, QString  beantableref);
    bool  matchPropertyName(BeanTableDataModel* theWrappedObject, PropertyChangeEvent*  e);
    bool  py_q_matchPropertyName(BeanTableDataModel* theWrappedObject, PropertyChangeEvent*  e){  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_matchPropertyName(e));}
    void moveBean(BeanTableDataModel* theWrappedObject, int  arg__1);
@@ -2642,8 +2641,6 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    void removeName(BeanTableDataModel* theWrappedObject, int  arg__1);
    void renameBean(BeanTableDataModel* theWrappedObject, int  arg__1);
    int  rowCount(BeanTableDataModel* theWrappedObject, const QModelIndex&  parent) const;
-   void saveTableColumnDetails(BeanTableDataModel* theWrappedObject, JTable*  table);
-   void saveTableColumnDetails(BeanTableDataModel* theWrappedObject, JTable*  table, QString  beantableref);
    void setColumnToHoldButton(BeanTableDataModel* theWrappedObject, JTable*  table, int  column, QPushButton*  sample = NULL);
    bool  setData(BeanTableDataModel* theWrappedObject, const QModelIndex&  index, const QVariant&  value, int  role);
    void setDisplayDeleteMsg(BeanTableDataModel* theWrappedObject, int  boo);

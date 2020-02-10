@@ -181,7 +181,7 @@ void ASCCActionListener::actionPerformed(ActionEvent */*e*/)
 //static java.util.ResourceBundle rb =
 //    java.util.ResourceBundle.getBundle("jmri.jmrix.JmrixBundle");
 
-/*public*/ void AbstractSimulatorConnectionConfig::loadDetails(/*final*/ QWidget* details)
+/*public*/ void AbstractSimulatorConnectionConfig::loadDetails(/*final*/ JPanel* details)
 {
  _details = details;
  setInstance();
@@ -311,7 +311,11 @@ void ASCCActionListener::actionPerformed(ActionEvent */*e*/)
 }
 
 /*public*/ QString AbstractSimulatorConnectionConfig::getManufacturer() { return adapter->getManufacturer(); }
-/*public*/ void AbstractSimulatorConnectionConfig::setManufacturer(QString manufacturer) { adapter->setManufacturer(manufacturer); }
+/*public*/ void AbstractSimulatorConnectionConfig::setManufacturer(QString manufacturer)
+{
+ setInstance();
+ adapter->setManufacturer(manufacturer);
+}
 
 /*public*/ QString AbstractSimulatorConnectionConfig::getConnectionName() {
     if(adapter->getSystemConnectionMemo()!=NULL)

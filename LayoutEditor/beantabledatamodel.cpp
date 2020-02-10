@@ -1249,10 +1249,12 @@ class TableHeaderListener extends MouseAdapter {
     }
 }
 #endif
+#if 0
 /*public*/ void BeanTableDataModel::saveTableColumnDetails(JTable* table){
     saveTableColumnDetails(table, getMasterClassName());
 }
 
+// NOTE: Java no longer has this!
 /*public*/ void BeanTableDataModel::saveTableColumnDetails(JTable* table, QString beantableref)
 {
  UserPreferencesManager* p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
@@ -1283,6 +1285,7 @@ class TableHeaderListener extends MouseAdapter {
  }
 #endif
 }
+#endif
 /**
  * Persist the state of the table after first setting the table to the last
  * persisted state.
@@ -1312,7 +1315,7 @@ class TableHeaderListener extends MouseAdapter {
         manager->stopPersisting(table); // throws NPE if table name is null
     }
 }
-
+#if 0
 /**
  * Load table column settings from persistent storage.
  *
@@ -1394,7 +1397,7 @@ class TableHeaderListener extends MouseAdapter {
     this->persistTable(table);
 #endif
 }
-
+#endif
 //void BeanTableDataModel::fireTableDataChanged()
 //{
 // beginResetModel();

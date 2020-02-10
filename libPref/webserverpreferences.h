@@ -13,7 +13,9 @@ class WebServerPreferences : public Bean
 {
  Q_OBJECT
 public:
- explicit WebServerPreferences(QObject *parent = 0);
+ Q_INVOKABLE explicit WebServerPreferences(QObject *parent = 0);
+ ~WebServerPreferences() {}
+ WebServerPreferences(const WebServerPreferences&) : Bean() {}
  /*public*/ static /*final*/ QString DISALLOWED_FRAMES;// = "disallowedFrames"; // NOI18N
  QT_DEPRECATED/*public*/ static /*final*/ QString DisallowedFrames;// = DISALLOWED_FRAMES;
  QT_DEPRECATED/*public*/ static /*final*/ QString WEB_SERVER_PREFERENCES;// = "WebServerPreferences"; // NOI18N
@@ -89,7 +91,7 @@ public:
  /*public*/ void load(QDomElement child);
  /*public*/ bool compareValuesDifferent(WebServerPreferences* prefs);
  /*public*/ void apply(WebServerPreferences* prefs);
- /*public*/ /*final*/ void openFile(QString fileName) throw (FileNotFoundException);
+ /*public*/ /*final*/ void openFile(QString fileName);// throw (FileNotFoundException);
  /*public*/ bool isDirty();
  /*public*/ void setIsDirty(bool value);
  /*public*/ int getClickDelay();
@@ -150,5 +152,5 @@ protected:
 {
 public:
 };
-
+Q_DECLARE_METATYPE(WebServerPreferences)
 #endif // WEBSERVERPREFERENCES_H

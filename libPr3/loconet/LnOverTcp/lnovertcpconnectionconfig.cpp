@@ -52,5 +52,12 @@ LnOverTcpConnectionConfig::LnOverTcpConnectionConfig(QObject *parent) :
  {
   adapter = (NetworkPortAdapter*)new LnTcpDriverAdapter();
   adapter->setPort(1234);
+  adapter->setServiceType("_loconetovertcpserver._tcp");
+  connect((LnTcpDriverAdapter*)adapter, SIGNAL(updated()), this, SLOT(updated()));
  }
+}
+
+/*public*/ void LnOverTcpConnectionConfig::updated()
+{
+ AbstractNetworkConnectionConfig::autoConfig();
 }

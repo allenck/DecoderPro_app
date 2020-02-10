@@ -118,6 +118,14 @@ void LnTrafficController::resetStatistics()
    transmittedMsgCount = 0;
    receivedByteCount = 0;
 }
+
+/**
+ * Clean up any resources, particularly threads.
+ * <p>
+ * The object can't be used after this.
+ */
+/*public*/ void LnTrafficController::dispose() {}
+
 /**
  * Monitor the number of LocoNet messaages received across the interface.
  * This includes the messages this client has sent.

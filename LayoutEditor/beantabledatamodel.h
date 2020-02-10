@@ -54,12 +54,12 @@ public:
  virtual /*public*/ void configureTable(JTable* table);
  /*synchronized*/ /*public*/ void dispose();
  virtual /*public*/ QPushButton* configureButton();
- /*public*/ void saveTableColumnDetails(JTable* table);
- QT_DEPRECATED/*public*/ void saveTableColumnDetails(JTable* table, QString beantableref);
+// /*public*/ void saveTableColumnDetails(JTable* table);
+// QT_DEPRECATED/*public*/ void saveTableColumnDetails(JTable* table, QString beantableref);
  /*public*/ void persistTable(/*@Nonnull*/ JTable* table);// throws NullPointerException
  /*public*/ void stopPersistingTable(/*@Nonnull*/ JTable* table); //throws NullPointerException  QT_DEPRECATED
- /*public*/ void loadTableColumnDetails(JTable* table);
- QT_DEPRECATED/*public*/ void loadTableColumnDetails(JTable* table, QString beantableref);
+// /*public*/ void loadTableColumnDetails(JTable* table);
+// QT_DEPRECATED/*public*/ void loadTableColumnDetails(JTable* table, QString beantableref);
  /*public*/ void printTable(HardcopyWriter* w);
  /*public*/ JTable* makeJTable(/*@Nonnull */QString name, /*@Nonnull */TableModel* model, /*@Nullable*/ RowSorter* /*<? extends TableModel>*/ sorter);
  QT_DEPRECATED/*public*/ JTable* makeJTable(QSortFilterProxyModel* sorter);

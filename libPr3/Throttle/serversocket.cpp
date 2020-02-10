@@ -774,7 +774,7 @@ void setCreated() {
  * <p>
  * The value of {@link SocketOptions#SO_RCVBUF SO_RCVBUF} is used both to
  * set the size of the internal socket receive buffer, and to set the size
- * of the TCP receive window that is advertized to the remote peer.
+ * of the TCP receive window that is advertised to the remote peer.
  * <p>
  * It is possible to change the value subsequently, by calling
  * {@link Socket#setReceiveBufferSize(int)}. However, if the application

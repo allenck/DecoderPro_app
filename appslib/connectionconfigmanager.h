@@ -2,6 +2,8 @@
 #define CONNECTIONCONFIGMANAGER_H
 #include "abstractpreferencesmanager.h"
 #include <QtXml>
+#include "errorhandler.h"
+#include "hasconnectionbutunabletoconnectexception.h"
 
 class ConnectionConfig;
 class Logger;
@@ -28,12 +30,24 @@ public:
  /*public*/ QListIterator<ConnectionConfig*> iterator();
 
 private:
- /*private*/ /*final*/ QList<ConnectionConfig*>* connections;// = new QList<ConnectionConfig*>();
+ /*private*/ /*final*/ QList<ConnectionConfig*> connections;// = new QList<ConnectionConfig*>();
  /*private*/ /*final*/ QString NAMESPACE;// = "http://jmri.org/xml/schema/auxiliary-configuration/connections-2-9-6.xsd"; // NOI18N
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger("ConnectionConfigManager");
  /*private*/ /*synchronized*/ void savePreferences(Profile* profile, bool shared);
+ /*private*/ void setPortNamePattern();
 
 };
 Q_DECLARE_METATYPE(ConnectionConfigManager)
 
+#if 0
+/*private*/ /*static*/ class ConnectionConfigManagerErrorHandler : public ErrorHandler
+{
+ Q_OBJECT
+public:
+    QList<HasConnectionButUnableToConnectException> exceptions;// = new ArrayList<>();
+
+    /*public*/ ConnectionConfigManagerErrorHandler();
+    /*public*/ void handle(ErrorMemo* memo);
+};
+#endif
 #endif // CONNECTIONCONFIGMANAGER_H

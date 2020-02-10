@@ -186,4 +186,10 @@
     return nullptr;
 }
 
+/*public*/ QString UsbDcs52Adapter::className()
+{
+ return "jrmi.jmrix.loconet.usb_dcs52.UsbDcs52Adapter";
+}
+
+
 /*private*/ /*final*/ /*static*/ Logger* UsbDcs52Adapter::log = LoggerFactory::getLogger("UsbDcs52Adapter");

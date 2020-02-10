@@ -6,7 +6,7 @@
 #include <QVariant>
 #include <audiomanager.h>
 #include <block.h>
-#include <blockmanager.h>
+#include <dcclocoaddress.h>
 #include <editor.h>
 #include <editscene.h>
 #include <instancemanager.h>
@@ -64,7 +64,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -239,6 +238,72 @@ if (_wrapper) {
 }
   return DefaultProgrammerManager::eventFilter(watched0, event1);
 }
+QList<ProgrammingMode* >  PythonQtShell_DefaultProgrammerManager::getDefaultModes()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getDefaultModes");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QList<ProgrammingMode* >"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QList<ProgrammingMode* > returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getDefaultModes", methodInfo, result);
+          } else {
+            returnValue = *((QList<ProgrammingMode* >*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return DefaultProgrammerManager::getDefaultModes();
+}
+bool  PythonQtShell_DefaultProgrammerManager::isGlobalProgrammerAvailable()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isGlobalProgrammerAvailable");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isGlobalProgrammerAvailable", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return DefaultProgrammerManager::isGlobalProgrammerAvailable();
+}
 QObject*  PythonQtShell_DefaultProgrammerManager::self()
 {
 if (_wrapper) {
@@ -324,6 +389,11 @@ QString  PythonQtWrapper_DefaultProgrammerManager::getUserName(DefaultProgrammer
 bool  PythonQtWrapper_DefaultProgrammerManager::isAddressedModePossible(DefaultProgrammerManager* theWrappedObject)
 {
   return ( theWrappedObject->isAddressedModePossible());
+}
+
+bool  PythonQtWrapper_DefaultProgrammerManager::isAddressedModePossible(DefaultProgrammerManager* theWrappedObject, DccLocoAddress*  l)
+{
+  return ( theWrappedObject->isAddressedModePossible(l));
 }
 
 bool  PythonQtWrapper_DefaultProgrammerManager::isGlobalProgrammerAvailable(DefaultProgrammerManager* theWrappedObject)
@@ -4453,11 +4523,6 @@ void PythonQtWrapper_InstanceManager::static_InstanceManager_addPropertyChangeLi
 void PythonQtWrapper_InstanceManager::static_InstanceManager_addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l)
 {
   (InstanceManager::addPropertyChangeListener(propertyName, l));
-}
-
-BlockManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_blockManagerInstance()
-{
-  return ((BlockManager*)InstanceManager::getDefault("BlockManager"));
 }
 
 void PythonQtWrapper_InstanceManager::clear(InstanceManager* theWrappedObject, QString  type)
@@ -23791,6 +23856,11 @@ QStringList  PythonQtWrapper_LnCommandStationType::static_LnCommandStationType_c
   return (LnCommandStationType::commandStationNames());
 }
 
+bool  PythonQtWrapper_LnCommandStationType::equals(LnCommandStationType* theWrappedObject, LnCommandStationType*  other)
+{
+  return ( theWrappedObject->equals(other));
+}
+
 LnCommandStationType*  PythonQtWrapper_LnCommandStationType::static_LnCommandStationType_getByName(QString  name)
 {
   return (LnCommandStationType::getByName(name));
@@ -24236,6 +24306,39 @@ if (_wrapper) {
   }
 }
   LnPortController::childEvent(event0);
+}
+QString  PythonQtShell_LnPortController::className()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("className");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("className", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LnPortController::className();
 }
 void PythonQtShell_LnPortController::closeConnection() throw( Exception)
 {

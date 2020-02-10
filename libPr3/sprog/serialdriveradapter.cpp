@@ -360,4 +360,10 @@ void SerialDriverAdapter::writeData(QByteArray bytes)
  }
 }
 
+/*public*/ QString SerialDriverAdapter::className()
+{
+ return "jmri.jmrix.sprog.serialdriver.SerialDriverAdapter";
+}
+
+
 /*private*/ /*final*/ /*static*/ Logger* SerialDriverAdapter::log = LoggerFactory::getLogger("SerialDriverAdapter");

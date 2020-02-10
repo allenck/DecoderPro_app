@@ -123,3 +123,31 @@ AbstractNetworkPortController((SystemConnectionMemo*)connectionMemo, parent)
 }
 QTcpSocket* LnNetworkPortController::getSocket() {return socketConn;}
 
+/*public*/ void LnNetworkPortController::setServiceType(QString serviceType)
+{
+ this->serviceType = serviceType;
+ if(zClient == nullptr)
+  zClient = new ZeroConfClient();
+ zClient->startServiceListener(serviceType);
+ setMdnsConfigure(true);
+ connect(zClient, SIGNAL(serviceAdded(QString)), this, SLOT(autoConfigure()));
+
+}
+/*public*/ QString LnNetworkPortController::getServiceType() { return serviceType;}
+
+/*public*/ void LnNetworkPortController::setMdnsConfigure(bool bMdnsConfigure)
+{
+ this->bMdnsConfigure = bMdnsConfigure;
+}
+
+/*public*/ bool LnNetworkPortController::getMdnsConfigure() { return bMdnsConfigure;}
+
+/*public*/ void LnNetworkPortController::autoConfigure()
+{
+ if(!zClient->getServices().isEmpty())
+ {
+  setHostName(zClient->getServices().at(0).host());
+  setPort(zClient->getServices().at(0).port());
+  emit updated();
+ }
+}

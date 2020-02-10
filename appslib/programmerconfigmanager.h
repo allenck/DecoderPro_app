@@ -7,7 +7,7 @@ class ProgrammerConfigManager : public AbstractPreferencesManager
 {
  Q_OBJECT
 public:
- ProgrammerConfigManager();
+ Q_INVOKABLE ProgrammerConfigManager();
  ~ProgrammerConfigManager() {}
  ProgrammerConfigManager(const ProgrammerConfigManager&) : AbstractPreferencesManager() {}
  /*public*/ /*final*/ static QString DEFAULT_FILE;// = "defaultFile";

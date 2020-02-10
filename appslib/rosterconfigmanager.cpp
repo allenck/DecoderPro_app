@@ -89,7 +89,7 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
 
 //@Override
 /*public*/ void RosterConfigManager::savePreferences(Profile* profile) {
-    Preferences* preferences = ProfileUtils::getPreferences(profile, "jmri/jmrit/RosterConfigManager", true);
+    Preferences* preferences = ProfileUtils::getPreferences(profile, "jmri.jmrit.RosterConfigManager", true);
     preferences->put(DIRECTORY, FileUtil::getPortableFilename(this->getDirectory()));
     preferences->put(DEFAULT_OWNER, this->getDefaultOwner());
     try {

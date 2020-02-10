@@ -15,11 +15,11 @@ LnPortController::LnPortController(LocoNetSystemConnectionMemo* connectionMemo, 
  mTurnoutExtraSpace = false;
 
  commandStationNames << "DCS100 (Chief)"<<
-                        "DCS200"<<  "DCS210" << "DCS240"
+                        "DCS200"<<  "DCS210" << "DCS240 (Advanced Command Station)" <<
                         "DCS50 (Zephyr)"<<
-                        "DCS51 (Zephyr Xtra)"<< "DCS52 (Zephyr Xpress)"<<
+                        "DCS51 (Zephyr Xtra)"<< "DCS52 (Zephyr Express)"<<
                         "DB150 (Empire Builder)"<<
-                        "Intellibox"<<
+                        "Intellibox-I"<< "Intellibox-II" <<
                         "LocoBuffer (PS)"<<
                         "Mix-Master";
  commandStationTypes .append(LnCommandStationType::getByType( LnCommandStationType::COMMAND_STATION_DCS100));
@@ -38,6 +38,9 @@ LnPortController::LnPortController(LocoNetSystemConnectionMemo* connectionMemo, 
  // in pr3/PR3Adapter
  adaptermemo = NULL;
  commandStationName = "<unknown>";
+
+ setServiceType( "_loconetovertcpserver._tcp"/*.local.*/);
+
 }
 /**
  * Set config info from a name, which needs to be one of the valid
@@ -120,3 +123,4 @@ bool LnPortController::okToSend()
  {
   return  AbstractSerialPortController::getSystemConnectionMemo();
  }
+

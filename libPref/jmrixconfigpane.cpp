@@ -133,7 +133,7 @@
  modeBox = new QComboBox();
  modeBox->setMinimumWidth(100);
  manuBox = new QComboBox();
- details = new QWidget();
+ details = new JPanel();
  details->setObjectName("details");
  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
 
@@ -264,7 +264,8 @@
  initialPanelLayout->addWidget(connectionPanel);
  layout->addLayout(initialPanelLayout,0); //, Qt::AlignTop);
  QGroupBox*settingsPanel = new QGroupBox(tr("Settings"));
- settingsPanel->setMinimumSize( 300, 200);
+ settingsPanel->setMinimumSize( 350, 200);
+ settingsPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
  QVBoxLayout* settingsPanelLayout =new QVBoxLayout(settingsPanel);
 
  //initialPanelLayout->addWidget(new JTitledSeparator(tr("Settings"))); // NOI18N
@@ -291,7 +292,8 @@ void JmrixConfigPane::On_modeBox_currentIndexChanged(int)
  {
   if ( modeBox->currentText()!=(NONE_SELECTED))
   {
-   p->addComboBoxLastSelection( manuBox->currentText(), modeBox->currentText());
+   //p->addComboBoxLastSelection( manuBox->currentText(), modeBox->currentText());
+   p->setComboBoxLastSelection( manuBox->currentText(), modeBox->currentText());
   }
  }
  selection();
@@ -368,22 +370,7 @@ void JmrixConfigPane::selection()
 {
  ConnectionConfig* old = this->ccCurrent;
  int current = modeBox->currentIndex();
- //details.removeAll();
- if(details->layout() != NULL)
- {
-  QObjectList objects = details->children();
-  foreach (QObject* o, objects)
-  {
-   if(qobject_cast<QWidget*>(o)!= NULL)
-   {
-    QWidget* w = (QWidget*)o;
-    details->layout()->removeWidget(w);
-    w->hide();
-    //delete w;
-   }
-   //delete details->layout();
-  }
- }
+ details->removeAll();
  // first choice is -no- protocol chosen
  log->debug("new selection is  "+ QString::number(current)+ " " + modeBox->currentText());
  if ((current != 0) && (current != -1))
@@ -393,8 +380,8 @@ void JmrixConfigPane::selection()
    ccCurrent->dispose();
   }
   ccCurrent = classConnectionList[current];
-  classConnectionList[current]->loadDetails(details);
-  classConnectionList[current]->setManufacturer( manuBox->currentText());
+  ccCurrent->setManufacturer( manuBox->currentText());
+  ccCurrent->loadDetails(details);
  }
  else
  {

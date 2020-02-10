@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QLabel>
 #include "libPr3_global.h"
+#include "jpanel.h"
 
 //class LocobufferConnectionConfig;
 class ConnectionConfig;
@@ -26,7 +27,7 @@ public:
     /*public*/ bool isDirty();
     /*public*/ bool isRestartRequired();
     /*abstract*/ /*public*/ virtual QString getInfo();
-    /*abstract*/ /*public*/ virtual void loadDetails(/*final*/ QWidget* details);
+    /*abstract*/ /*public*/ virtual void loadDetails(/*final*/ JPanel* details);
     /*abstract*/ /*public*/ virtual QString getManufacturer();
     /*abstract*/ /*public*/ virtual void setManufacturer(QString manufacturer);
     /*abstract*/ /*public*/ virtual QString getConnectionName();
@@ -69,7 +70,7 @@ protected:
     /*protected*/ JTextField* connectionNameField;// = new JTextField(15);
     /*protected*/ QString systemPrefix;
 //    /*protected*/ QString connectionName;
-    /*protected*/ QWidget* _details;
+    /*protected*/ JPanel* _details;
     /*protected*/ QHash<QString, AbstractConnectionConfig::Option*> options;// = new Hashtable<>();
     virtual /*abstract*/ /*protected*/ void setInstance();
     /*protected*/ QList<QWidget*>* additionalItems;// = new QList<QWidget*>();

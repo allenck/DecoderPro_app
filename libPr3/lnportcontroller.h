@@ -8,6 +8,7 @@
 #include "LocoIO/lncommandstationtype.h"
 #include "QtSerialPort/QSerialPort"
 
+
 class LocoNetSystemConnectionMemo;
 class LIBPR3SHARED_EXPORT LnPortController : public  AbstractSerialPortController
 {
@@ -47,11 +48,14 @@ public:
  /*public*/  void setDisabled(bool disabled) ;
  /*public*/ void setTranspondingAvailable(QString value);
 
+
 signals:
     
 public slots:
+
 private:
  Logger* log;
+
 protected:
  LocoNetSystemConnectionMemo* adaptermemo;
 

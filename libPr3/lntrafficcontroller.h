@@ -77,6 +77,9 @@ public:
   * Monitor the number of LocoNet messaages transmitted across the interface.
   */
   int getTransmittedMsgCount();
+
+  /*public*/ void dispose();
+
 public slots:
 //  void notify(LocoNetMessage*  m);
 

@@ -9,7 +9,7 @@ class SystemConsolePreferencesManager : public PreferencesManager
 {
  Q_OBJECT
 public:
- SystemConsolePreferencesManager();
+ Q_INVOKABLE SystemConsolePreferencesManager();
  ~SystemConsolePreferencesManager() {}
  SystemConsolePreferencesManager(const SystemConsolePreferencesManager&) : PreferencesManager() {}
  /*public*/ static /*final*/ QString SCHEME;// = "scheme";

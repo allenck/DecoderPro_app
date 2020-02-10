@@ -70,7 +70,7 @@ ProgrammerConfigManager::ProgrammerConfigManager()
 
 //@Override
 /*public*/ void ProgrammerConfigManager::savePreferences(Profile* profile) {
-    Preferences* preferences = ProfileUtils::getPreferences(profile, "jmri/jmrit/symbolicprog/ProgrammerConfigManager", true);
+    Preferences* preferences = ProfileUtils::getPreferences(profile, "jmri.jmrit.symbolicprog.ProgrammerConfigManager", true);
     if (this->defaultFile != NULL) {
         preferences->put(DEFAULT_FILE, this->defaultFile);
     } else {

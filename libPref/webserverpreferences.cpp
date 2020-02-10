@@ -316,7 +316,8 @@ void WebServerPreferences::common()
     setRailroadName(prefs->getRailroadName());
 }
 
-/*public*/ /*final*/ void WebServerPreferences::openFile(QString fileName) throw (FileNotFoundException) {
+/*public*/ /*final*/ void WebServerPreferences::openFile(QString fileName) //throw (FileNotFoundException)
+{
 
     WebServerPreferencesXml* prefsXml = new WebServerPreferencesXml();
     File* file = new File(fileName);
@@ -338,7 +339,7 @@ void WebServerPreferences::common()
 
 /*public*/ void WebServerPreferences::save()
 {
- Preferences* sharedPreferences = ProfileUtils::getPreferences(ProfileManager::getDefault()->getActiveProfile(), "jmri.web.server.WebServer.WebServerPreferences", true);
+ Preferences* sharedPreferences = ProfileUtils::getPreferences(ProfileManager::getDefault()->getActiveProfile(), "jmri.web.server.WebServerPreferences", true);
  sharedPreferences->putInt(PORT, this->getPort());
  sharedPreferences->putInt(CLICK_DELAY, this->getClickDelay());
  sharedPreferences->putInt(REFRESH_DELAY, this->getRefreshDelay());

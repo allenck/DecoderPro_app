@@ -56,7 +56,7 @@ SystemConsolePreferencesManager::SystemConsolePreferencesManager()
 
 //@Override
 /*public*/ void SystemConsolePreferencesManager::savePreferences(Profile* profile) {
-    Preferences* preferences = ProfileUtils::getPreferences(profile, "apps/systemconsole/SystemConsolePreferencesManager", true);
+    Preferences* preferences = ProfileUtils::getPreferences(profile, "apps.systemconsole.SystemConsolePreferencesManager", true);
     preferences->put(FONT_FAMILY, this->getFontFamily());
     preferences->putInt(FONT_SIZE, this->getFontSize());
     preferences->putInt(FONT_STYLE, this->getFontStyle());

@@ -11,6 +11,7 @@ public:
  /*public*/ void setBorder(Border* border);
  /*public*/ virtual QString getTitle() {return "";}
  /*public*/ void setBackground(QColor color);
+ /*public*/ void removeAll();
 
 // void paintEvent(QPaintEvent*);
 // void virtual paintComponent(QPainter*);

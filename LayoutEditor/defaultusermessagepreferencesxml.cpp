@@ -69,7 +69,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
   {
    QString combo = comboItem.at(x).toElement().attribute("name");
    QString setting = comboItem.at(x).toElement().attribute("lastSelected");
-   p->addComboBoxLastSelection(combo, setting);
+   p->setComboBoxLastSelection(combo, setting);
   }
  }
 
@@ -281,7 +281,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
      hidden=true;
     }
 
-    p->setTableColumnPreferences(strTableName, strColumnName, order, width, sort, hidden);
+//    p->setTableColumnPreferences(strTableName, strColumnName, order, width, sort, hidden);
    }
   }
 

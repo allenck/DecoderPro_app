@@ -21,6 +21,7 @@
  * @author		Bob Jacobsen  Copyright (C) 2010
  * @version             $Revision: 20788 $
  */
+class LnCabSignalManager;
 class LnMultiMeter;
 class TranspondingTagManager;
 class LnComponentFactory;
@@ -81,10 +82,11 @@ public:
  virtual LnSensorManager* getSensorManager();
  LnLightManager* getLightManager();
  LocoNetConsistManager* getConsistManager();
- void dispose();
  static /*public*/ TranspondingTagManager* getIdTagManager();
  /*public*/ LnMultiMeter* getMultiMeter();
  /*public*/ void resetProgrammer();
+ /*public*/ LnCabSignalManager* getCabSignalManager();
+ /*public*/ void dispose();
 
 private:
  LnComponentFactory* cf = nullptr;
@@ -107,6 +109,7 @@ protected:
  LnSensorManager* sensorManager = nullptr;
  LnLightManager* lightManager = nullptr;
  /*protected*/ LnMultiMeter* multiMeter = nullptr;
+ LnCabSignalManager* cabSignalManager = nullptr;
 
  //ResourceBundle* getActionModelResourceBundle();
  /*protected*/ ResourceBundle* getActionModelResourceBundle() override;

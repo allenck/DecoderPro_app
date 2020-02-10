@@ -2,6 +2,7 @@
 #include "lineborder.h"
 #include <QPaintEvent>
 #include <QPainter>
+#include <QLayout>
 
 JPanel::JPanel(QWidget* parent) :  QFrame(parent)
 {
@@ -34,3 +35,19 @@ JPanel::JPanel(QWidget* parent) :  QFrame(parent)
 //{
 
 //}
+
+// remove and hide all child widgets and delete layout.
+/*public*/ void JPanel::removeAll()
+{
+ QList<QWidget*> children = findChildren<QWidget*>();
+ QLayout* _layout = layout();
+ if(_layout)
+ {
+  foreach(QWidget* w, children)
+  {
+   _layout->removeWidget(w);
+   w->hide();
+  }
+  delete _layout;
+ }
+}

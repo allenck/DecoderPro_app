@@ -14,6 +14,8 @@ public:
  /*public*/ int defaultBaudIndex();
  /*public*/ QStringList commandStationOptions();
  /*public*/ SystemConnectionMemo* getSystemConnectionMemo();
+ /*public*/ QString className();
+
 private:
  static Logger* log;
 };

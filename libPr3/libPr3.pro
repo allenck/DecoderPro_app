@@ -967,7 +967,12 @@ SOURCES += \
     loconet/DCS52/dcs52connectionconfig.cpp \
     loconet/DCS52/dcs52connectionconfigxml.cpp \
     loconet/DCS52/usbdcs52adapter.cpp \
-    loconet/DCS52/usbdcs52systemconnectionmemo.cpp
+    loconet/DCS52/usbdcs52systemconnectionmemo.cpp \
+    defaultcabsignal.cpp \
+    abstractcabsignalmanager.cpp \
+    loconet/lncabsignalmanager.cpp \
+    loconet/lncabsignal.cpp \
+    hasconnectionbutunabletoconnectexception.cpp
 
 
  !contains(FTDI, 1) {
@@ -1936,7 +1941,15 @@ HEADERS += \
     loconet/DCS52/dcs52connectionconfig.h \
     loconet/DCS52/dcs52connectionconfigxml.h \
     loconet/DCS52/usbdcs52adapter.h \
-    loconet/DCS52/usbdcs52systemconnectionmemo.h
+    loconet/DCS52/usbdcs52systemconnectionmemo.h \
+    cabsignal.h \
+    defaultcabsignal.h \
+    cabsignalmanager.h \
+    cabsignallistlistener.h \
+    abstractcabsignalmanager.h \
+    loconet/lncabsignalmanager.h \
+    loconet/lncabsignal.h \
+    hasconnectionbutunabletoconnectexception.h
 
 
  !contains(FTDI, 1) {

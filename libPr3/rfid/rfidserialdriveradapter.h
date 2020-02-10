@@ -15,6 +15,8 @@ public:
  /*public*/ bool status();
  /*public*/ QStringList validBaudRates();
  /*public*/ void configureBaudRate(QString rate);
+ /*public*/ QString className();
+
 
 private:
  SerialPort* activeSerialPort = nullptr;

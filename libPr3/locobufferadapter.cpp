@@ -483,3 +483,8 @@ void LocoBufferAdapter::sendLocoNetMessage(LocoNetMessage* m)
     }
     return packets;
 }
+
+/*public*/ QString LocoBufferAdapter::className()
+{
+ return "jmri.jmrix.loconet.locobuffer.LocoBufferAdapter";
+}

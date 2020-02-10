@@ -271,6 +271,7 @@ void JmriPanel::reSizeToFitOnScreen()
 /*public*/ void JmriPanel::setFrameLocation()
 {
  UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
+#if 0
  if ((prefsMgr != nullptr) && (prefsMgr->isWindowPositionSaved(windowFrameRef)))
  {
   //QSize screen = getToolkit().getScreenSize();
@@ -316,6 +317,7 @@ void JmriPanel::reSizeToFitOnScreen()
   }
 #endif
  }
+#endif
 }
 
 void JmriPanel::moveEvent(QMoveEvent*)

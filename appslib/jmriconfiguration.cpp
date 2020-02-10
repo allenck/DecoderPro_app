@@ -56,6 +56,14 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
    doc.setContent(content);
    log->debug(tr("first element = %1").arg(doc.documentElement().tagName()));
    QDomElement root = doc.documentElement();
+   QDomNodeList nl = root.childNodes();
+   for(int i = nl.count()-1; i >= 0; i--)
+   {
+    if(nl.at(i).isComment())
+    {
+     root.removeChild(nl.at(i));
+    }
+   }
    // TODO: consider namespace
    QDomElement element =  root.firstChildElement(elementName);
    log->debug(tr("selected element = %1").arg(element.tagName()));
@@ -107,11 +115,18 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
    doc =  QDomDocument();
    QDomProcessingInstruction xmlProcessingInstruction = doc.createProcessingInstruction("xml", "version=\"1.0\"  encoding=\"UTF-8\"");
    doc.appendChild(xmlProcessingInstruction);
+
    root = doc.createElement("auxiliary-configuration");
+
    doc.appendChild(root);
+   if(shared)
+    root.appendChild(doc.createComment("Shared preferences"));
+   else
+    root.appendChild(doc.createComment("Per-Node preferences"));
  }
  else
   root = doc.documentElement();
+
  QString sXml = doc.toString();
 
  QDomElement oldFragment = XMLUtil::findElement(root, elementName, _namespace);

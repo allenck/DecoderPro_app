@@ -263,7 +263,7 @@ QString LnSensorManager::getNextValidAddress(QString curAddress, QString prefix)
     } catch (JmriException ex) {
 #if 1 // TODO:
         ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
-                showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",""+ex.getMessage(), "",true, false, Level::_ERROR);
+                showInfoMessage(tr("Error"), "Unable to convert " + curAddress + " to a valid Hardware Address", ex.getMessage(), QString(), true, false);
 #endif
         return NULL;
     }

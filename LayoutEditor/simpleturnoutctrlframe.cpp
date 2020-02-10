@@ -428,7 +428,8 @@ JmriJFrame(parent)
   }
 
 void SimpleTurnoutCtrlFrame::invalidTurnout(QString name, Exception ex) {
-    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage("Error","Unable to convert \"" + name + "\" to a valid hardware address", ex.getMessage(), "", true, false, Level::_ERROR);
+    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage("Error",
+    "Unable to convert \"" + name + "\" to a valid hardware address", ex.getMessage(), "", true, false);
 }
 
 

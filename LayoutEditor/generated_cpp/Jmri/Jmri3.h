@@ -17,7 +17,6 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -854,6 +853,7 @@ public:
 virtual void _connect(QString  arg__1, int  arg__2);
 virtual void autoConfigure();
 virtual void childEvent(QChildEvent*  event);
+virtual QString  className();
 virtual void configure();
 virtual void configureBaudRate(QString  arg__1);
 virtual void configureOption1(QString  value);
@@ -914,6 +914,7 @@ virtual QStringList  validBaudRates();
 
 class PythonQtPublicPromoter_SerialPortAdapter : public SerialPortAdapter
 { public:
+inline QString  py_q_className() { return SerialPortAdapter::className(); }
 inline void py_q_configureBaudRate(QString  arg__1) { SerialPortAdapter::configureBaudRate(arg__1); }
 inline QString  py_q_getCurrentBaudRate() { return SerialPortAdapter::getCurrentBaudRate(); }
 inline QString  py_q_getCurrentPortName() { return SerialPortAdapter::getCurrentPortName(); }
@@ -929,6 +930,7 @@ public:
 public slots:
 SerialPortAdapter* new_SerialPortAdapter(SystemConnectionMemo*  connectionMemo, QObject*  parent = 0);
 void delete_SerialPortAdapter(SerialPortAdapter* obj) { delete obj; } 
+   QString  py_q_className(SerialPortAdapter* theWrappedObject){  return (((PythonQtPublicPromoter_SerialPortAdapter*)theWrappedObject)->py_q_className());}
    void configureBaudRate(SerialPortAdapter* theWrappedObject, QString  arg__1);
    void py_q_configureBaudRate(SerialPortAdapter* theWrappedObject, QString  arg__1){  (((PythonQtPublicPromoter_SerialPortAdapter*)theWrappedObject)->py_q_configureBaudRate(arg__1));}
    QString  getCurrentBaudRate(SerialPortAdapter* theWrappedObject);

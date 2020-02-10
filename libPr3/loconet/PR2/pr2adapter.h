@@ -10,6 +10,7 @@ public:
  /*public*/ QStringList validBaudRates();
  /*public*/ QVector<int> validBaudNumbers();
  /*public*/ QStringList commandStationOptions();
+ /*public*/ QString className();
 
 private:
 static Logger* log;

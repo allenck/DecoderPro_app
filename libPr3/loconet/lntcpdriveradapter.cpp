@@ -97,3 +97,8 @@ void LnTcpDriverAdapter::on_rcvHandlerTerminated()
  log->debug("configureOption1: " + value);
  setCommandStationType(value);
 }
+
+/*public*/ QString LnTcpDriverAdapter::className()
+{
+ return "jmri.jmrix.loconet.loconetovertcp.LnTcpDriverAdapter";
+}

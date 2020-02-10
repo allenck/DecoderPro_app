@@ -16,7 +16,7 @@ public:
     /*public*/ PortAdapter* getAdapter();
     /*public*/ void updateAdapter();
     /*public*/ QString getInfo();
-    /*public*/ void loadDetails(/*final*/ QWidget* details);
+    /*public*/ void loadDetails(/*final*/ JPanel *details);
     /*public*/ QString getManufacturer();
     /*public*/ void setManufacturer(QString manufacturer);
     /*public*/ QString getConnectionName() ;

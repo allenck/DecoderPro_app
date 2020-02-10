@@ -9,7 +9,9 @@ class Logger;
 class GuiLafPreferencesManager : public PreferencesManager
 {
 public:
- GuiLafPreferencesManager();
+ Q_INVOKABLE GuiLafPreferencesManager();
+ ~GuiLafPreferencesManager() {}
+ GuiLafPreferencesManager(const GuiLafPreferencesManager&) : PreferencesManager() {}
  /*public*/ static /*final*/ QString FONT_SIZE;// = "fontSize";
  /*public*/ static /*final*/ QString LOCALE;// = "locale";
  /*public*/ static /*final*/ QString LOOK_AND_FEEL;// = "lookAndFeel";
@@ -78,5 +80,5 @@ private:
  /*private*/ void setRestartRequired(bool restartRequired);
  Q_PROPERTY(MEMBER InstanceManagerAutoDefault )
 };
-
+Q_DECLARE_METATYPE(GuiLafPreferencesManager)
 #endif // GUILAFPREFERENCESANAGER_H

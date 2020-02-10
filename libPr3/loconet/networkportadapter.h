@@ -83,6 +83,8 @@ public:
 
  /*public*/ virtual QString getServiceType()  {return "";}
 
+ /*public*/ virtual QString className() =0; // Java class name
+
 signals:
 
 public slots:
