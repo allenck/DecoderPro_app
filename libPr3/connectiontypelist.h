@@ -18,7 +18,7 @@
  * @see java.util.ServiceLoader
  */
 /*public*/ /*interface*/class  ConnectionTypeList : public  JmriServiceProviderInterface {
-
+public:
     /**
      * Get a list of classes that can configure a layout connection for the
      * manufacturers specified in {@link #getManufacturers() }.

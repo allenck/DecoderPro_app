@@ -33,6 +33,7 @@
 #include "storedefaultxmlthrottleslayoutaction.h"
 #include "loadxmlthrottleslayoutaction.h"
 #include "loaddefaultxmlthrottleslayoutaction.h"
+#include "ampmeteraction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -168,6 +169,7 @@ addAction(ta);
  addAction(new BlockBossAction(tr("Simple Signal Logic"),this));
  addAction(new SensorGroupAction(tr("Sensor Groups..."),this));
  addAction(new SpeedometerAction(tr("Speedometer..."),this));
+ addAction(new AmpMeterAction(tr("Amp Meter"),this));
  addAction(new SimpleLightCtrlAction(tr("Light Control..."),this));
  addAction(new DispatcherAction(tr("Dispatcher..."),this));
  addSeparator();

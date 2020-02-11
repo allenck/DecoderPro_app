@@ -4,6 +4,7 @@
 
 class DCS240ConnectionConfigXml : public AbstractSerialConnectionConfigXml
 {
+ Q_OBJECT
 public:
  Q_INVOKABLE DCS240ConnectionConfigXml(QObject* parent = nullptr);
  ~DCS240ConnectionConfigXml() {}

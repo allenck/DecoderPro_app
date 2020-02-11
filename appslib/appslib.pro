@@ -183,7 +183,9 @@ SOURCES += appslib.cpp \
     firsttimestartupwizardaction.cpp \
     profileconfiguration.cpp \
     nullprofile.cpp \
-    jlisttablemodel.cpp
+    jlisttablemodel.cpp \
+    ampmeterframe.cpp \
+    ampmeteraction.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -321,7 +323,9 @@ HEADERS += appslib.h\
     jlisttablemodel.h \
     fileutil.h \
     fileutilsupport.h \
-    properties.h
+    properties.h \
+    ampmeterframe.h \
+    ampmeteraction.h
 
 unix:!symbian {
     maemo5 {

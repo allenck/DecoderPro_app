@@ -431,8 +431,8 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
  portField->setEnabled(true);
  portField->setText(QString::number(adapter->getPort()));
  portFieldLabel = new QLabel(tr("TCP/UDP Port: "));
- portField->setVisible(true);
- portFieldLabel->setVisible(true);
+ //portField->setVisible(true);
+ //portFieldLabel->setVisible(true);
 
  adNameField->setToolTip(tr("Expected ZeroConf/mDNS Advertisement Identifier"));
  adNameField->setEnabled(false);
@@ -485,7 +485,12 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 /*protected*/ void AbstractNetworkConnectionConfig::showAdvancedItems()
 {
  _details->removeAll();
- gbLayout = new GridBagLayout;
+ if(gbLayout)
+ {
+  //delete gbLayout;
+  gbLayout = nullptr;
+ }
+ gbLayout = new GridBagLayout();
 
  cL->anchor = GridBagConstraints::WEST;
  cL->insets = new Insets(2, 5, 0, 5);
@@ -743,7 +748,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 
 /*public*/ void AbstractNetworkConnectionConfig::autoConfig()
 {
- // called when adapter has beed auto configured. Update UI
+ // called when adapter has been auto configured. Update UI
  hostNameField->setText(adapter->getHostName());
  portField->setText(QString::number(adapter->getPort()));
 }

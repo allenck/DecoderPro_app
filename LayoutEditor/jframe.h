@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "javaqt_global.h"
 #include "jcomponent.h"
+#include "jpanel.h"
 
 class WindowListener;
 class PropertyChangeEvent;
@@ -88,6 +89,7 @@ public:
     void setVisible(bool visible);
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
     /*public*/ Border* getBorder() {return _border;}
+    /*public*/ void removeAll();
 
 
 

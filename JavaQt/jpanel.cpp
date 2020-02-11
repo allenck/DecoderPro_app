@@ -49,5 +49,6 @@ JPanel::JPanel(QWidget* parent) :  QFrame(parent)
    w->hide();
   }
   delete _layout;
+  _layout = nullptr;
  }
 }

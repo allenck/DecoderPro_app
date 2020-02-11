@@ -157,7 +157,7 @@
         return _nextBlock;
     }
 
-    /*private*/ Block* nextBlockOnPath(Block* current, int fromdirection){
+    /*private*/ Block* DefaultCabSignal::nextBlockOnPath(Block* current, int fromdirection){
         QVector<Path*>* thispaths = current->getPaths();
         for (/*final*/ Path* testpath : *thispaths) {
             if (testpath->checkPathSet()) {

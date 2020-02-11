@@ -50,7 +50,7 @@ private:
 
 private slots:
  void on_optionCb_currentIndexChanged(QWidget*);
- void updated();
+ //void updated();
 
 protected:
  /*protected*/ bool init = false;

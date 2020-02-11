@@ -14,6 +14,7 @@
 #include "loggerfactory.h"
 #include "configuremanager.h"
 #include "class.h"
+#include "gridbaglayout.h"
 
 //JmrixConfigPane::JmrixConfigPane(QWidget *parent) :
 //    QWidget(parent)
@@ -125,7 +126,7 @@
  * permitted to call this with a NULL argument, e.g. for when first
  * configuring the system.
  */
-/*private*/ JmrixConfigPane::JmrixConfigPane(ConnectionConfig* original, QWidget* parent) : QWidget(parent)
+/*protected*/ JmrixConfigPane::JmrixConfigPane(ConnectionConfig* original, QWidget* parent) : QWidget(parent)
 {
  setObjectName("JmrixConfigPane");
 
@@ -137,32 +138,37 @@
  details->setObjectName("details");
  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
 
+ ConnectionConfigManager* manager = (ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager");
+
  ccCurrent = original;
  QVBoxLayout* layout;
  setLayout(layout = new QVBoxLayout());
  //this->setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
-  resize(300,200);
-  manuBox->addItem(NONE_SELECTED);
 
-  manufactureNameList = DCCManufacturerList::getSystemNames();
-  foreach (QString manuName, *manufactureNameList)
+ resize(300,200);
+
+ manuBox->addItem(NONE_SELECTED);
+
+ manufactureNameList = DCCManufacturerList::getSystemNames();
+ //manufactureNameList = manager->getConnectionManagers();
+ foreach (QString manuName, *manufactureNameList)
+ {
+  if (original != NULL && original->getManufacturer() != NULL
+               && original->getManufacturer()==(manuName))
   {
-   if (original != NULL && original->getManufacturer() != NULL
-                && original->getManufacturer()==(manuName))
-   {
-    manuBox->addItem(manuName);
-    manuBox->setCurrentIndex(manuBox->findText(manuName));
-    updateComboConnection();
-   }
-   else
-   {
-    manuBox->addItem(manuName);
-   }
+   manuBox->addItem(manuName);
+   manuBox->setCurrentIndex(manuBox->findText(manuName));
+   updateComboConnection();
   }
+  else
+  {
+   manuBox->addItem(manuName);
+  }
+ }
 //  manuBox.addActionListener((ActionEvent evt) -> {
 //        updateComboConnection();
 //    });
-  connect(manuBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateComboConnection()));
+ connect(manuBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateComboConnection()));
 
   // get the list of ConnectionConfig items into a selection box
   classConnectionNameList = DCCManufacturerList::getConnectionList( manuBox->currentText());
@@ -271,10 +277,10 @@
  //initialPanelLayout->addWidget(new JTitledSeparator(tr("Settings"))); // NOI18N
  QScrollArea* scroll = new QScrollArea(/*details*/);
  //scroll->setMinimumSize( 300, 200);
+ GridBagLayout* gbLayout;
+ details->setLayout(gbLayout = new GridBagLayout());
  scroll->setWidget(details);
  scroll->setWidgetResizable(true);
- QGridLayout* gbLayout;
- details->setLayout(gbLayout = new QGridLayout);
  gbLayout->setObjectName("detailsLayout");
  //scroll.setBorder(BorderFactory.createEmptyBorder());
  //layout->addWidget(scroll, 0, Qt::AlignCenter);
@@ -286,8 +292,9 @@
  adjustSize();
 }
 
-void JmrixConfigPane::On_modeBox_currentIndexChanged(int)
+void JmrixConfigPane::On_modeBox_currentIndexChanged(int ix)
 {
+ int svix = ix;
  if (modeBox->currentText() != NULL)
  {
   if ( modeBox->currentText()!=(NONE_SELECTED))
@@ -296,6 +303,7 @@ void JmrixConfigPane::On_modeBox_currentIndexChanged(int)
    p->setComboBoxLastSelection( manuBox->currentText(), modeBox->currentText());
   }
  }
+ selection();
  selection();
 }
 

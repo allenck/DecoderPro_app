@@ -9,6 +9,10 @@
 #include "class.h"
 #include "loggerfactory.h"
 #include "errormemo.h"
+#include <QVector>
+#include <QStringList>
+#include "instancemanager.h"
+#include "connectiontypelist.h"
 
 ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager()
 {
@@ -296,8 +300,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
     //return connections.iterator();
  return QListIterator<ConnectionConfig*>(connections);
 }
-
-#if 0 // needed for testing methods, e.g ConnectionConfigManagerTest
+#if 0
 /**
  * Get the class names for classes supporting layout connections for the
  * given manufacturer.
@@ -309,8 +312,8 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  *         classes for the given manufacturer.
  */
 /*@NonNULL*/
-/*public*/ QStringList getConnectionTypes(/*@NonNULL*/ QString manufacturer) {
-    return this.getDefaultConnectionTypeManager().getConnectionTypes(manufacturer);
+/*public*/ QStringList ConnectionConfigManager::getConnectionTypes(/*@NonNULL*/ QString manufacturer) {
+    return this->getDefaultConnectionTypeManager()->getConnectionTypes(manufacturer);
 }
 
 /**
@@ -319,8 +322,8 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  * @return An array of known manufacturers.
  */
 /*@NonNULL*/
-/*public*/ QStringList getConnectionManufacturers() {
-    return this.getDefaultConnectionTypeManager().getConnectionManufacturers();
+/*public*/ QStringList ConnectionConfigManager::getConnectionManufacturers() {
+    return this->getDefaultConnectionTypeManager()->getConnectionManufacturers();
 }
 
 /**
@@ -332,16 +335,16 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  * @return the supported manufacturer. Returns NULL if no manufacturer is
  *         associated with the connectionType.
  */
-@CheckForNull
-/*public*/ QString getConnectionManufacturer(/*@NonNULL*/ QString connectionType) {
-    for (QString manufacturer : this.getConnectionManufacturers()) {
-        for (QString manufacturerType : this.getConnectionTypes(manufacturer)) {
+//@CheckForNull
+/*public*/ QString ConnectionConfigManager::getConnectionManufacturer(/*@NonNULL*/ QString connectionType) {
+    for (QString manufacturer : this->getConnectionManufacturers()) {
+        for (QString manufacturerType : this->getConnectionTypes(manufacturer)) {
             if (connectionType ==(manufacturerType)) {
                 return manufacturer;
             }
         }
     }
-    return NULL;
+    return QString();
 }
 
 /**
@@ -353,16 +356,17 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  *         manufacturer is associated with the connectionType.
  */
 /*@NonNULL*/
-/*public*/ QStringList getConnectionManufacturers(/*@NonNULL*/ QString connectionType) {
-    ArrayList<String> manufacturers = new ArrayList<>();
-    for (QString manufacturer : this.getConnectionManufacturers()) {
-        for (QString manufacturerType : this.getConnectionTypes(manufacturer)) {
+/*public*/ QStringList ConnectionConfigManager::getConnectionManufacturers(/*@NonNULL*/ QString connectionType) {
+    QStringList manufacturers = QStringList();
+    for (QString manufacturer : this->getConnectionManufacturers()) {
+        for (QString manufacturerType : this->getConnectionTypes(manufacturer)) {
             if (connectionType ==(manufacturerType)) {
-                manufacturers.add(manufacturer);
+                manufacturers.append(manufacturer);
             }
         }
     }
-    return manufacturers.toArray(new String[manufacturers.size()]);
+    //return manufacturers.toArray(new String[manufacturers.size()]);
+    return QVector<QString>(manufacturers.size()).toList();
 }
 
 /**
@@ -370,72 +374,79 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  *
  * @return the default ConnectionTypeManager
  */
-/*private*/ ConnectionTypeManager getDefaultConnectionTypeManager() {
-    if (InstanceManager.getNullableDefault(ConnectionTypeManager.class) == NULL) {
-        InstanceManager.setDefault(ConnectionTypeManager.class, new ConnectionTypeManager());
+/*private*/ ConnectionTypeManager* getDefaultConnectionTypeManager() {
+    if (InstanceManager::getNullableDefault("ConnectionTypeManager") == NULL) {
+        InstanceManager::setDefault("ConnectionTypeManager", new ConnectionTypeManager());
     }
-    return InstanceManager.getDefault(ConnectionTypeManager.class);
+    return (ConnectionTypeManager*)InstanceManager::getDefault("ConnectionTypeManager");
 }
 
-/*private*/ static class ConnectionTypeManager {
+///*private*/ static class ConnectionTypeManager {
 
-    /*private*/ /*final*/ HashMap<QString, ConnectionTypeList> connectionTypeLists = new HashMap<>();
+//    /*private*/ /*final*/ HashMap<QString, ConnectionTypeList> connectionTypeLists = new HashMap<>();
 
-    /*public*/ ConnectionTypeManager() {
-        for (ConnectionTypeList ctl : ServiceLoader.load(ConnectionTypeList.class)) {
-            for (QString manufacturer : ctl.getManufacturers()) {
-                if (!connectionTypeLists.containsKey(manufacturer)) {
-                    connectionTypeLists.put(manufacturer, ctl);
+    /*public*/ ConnectionTypeManager::ConnectionTypeManager()
+    {
+     connectionTypeLists  = QMap<QString, ConnectionTypeList*>();
+
+        for (ConnectionTypeList* ctl : ServiceLoader.load("ConnectionTypeList")) {
+            for (QString manufacturer : ctl->getManufacturers()) {
+                if (!connectionTypeLists.contains(manufacturer)) {
+                    connectionTypeLists.insert(manufacturer, ctl);
                 } else {
-                    log-> debug("Need a proxy for {} from {} in {}", manufacturer, ctl.getClass().getName(), this);
-                    ProxyConnectionTypeList proxy;
-                    ConnectionTypeList existing = connectionTypeLists.get(manufacturer);
-                    if (existing instanceof ProxyConnectionTypeList) {
-                        proxy = (ProxyConnectionTypeList) existing;
+                    log-> debug(tr("Need a proxy for %1 from %2 in %3").arg(manufacturer).arg(ctl->metaObject()->className()).arg(this->metaObject()->className());
+                    ProxyConnectionTypeList* proxy;
+                    ConnectionTypeList* existing = connectionTypeLists.value(manufacturer);
+                    if (qobject_cast<ProxyConnectionTypeList*>(existing)) {
+                        proxy = (ProxyConnectionTypeList*) existing;
                     } else {
                         proxy = new ProxyConnectionTypeList(existing);
                     }
-                    proxy.add(ctl);
-                    connectionTypeLists.put(manufacturer, proxy);
+                    proxy.ad(ctl);
+                    connectionTypeLists.insert(manufacturer, proxy);
                 }
             }
         }
     }
 
-    /*public*/ QStringList getConnectionTypes(QString manufacturer) {
-        ConnectionTypeList ctl = this.connectionTypeLists.get(manufacturer);
+    /*public*/ QStringList ConnectionTypeManager::getConnectionTypes(QString manufacturer) {
+        ConnectionTypeList* ctl = this->connectionTypeLists.value(manufacturer);
         if (ctl != NULL) {
-            return ctl.getAvailableProtocolClasses();
+            return ctl->getAvailableProtocolClasses();
         }
-        return this.connectionTypeLists.get(InternalConnectionTypeList.NONE).getAvailableProtocolClasses();
+        return this->connectionTypeLists.value(InternalConnectionTypeList::NONE)->getAvailableProtocolClasses();
     }
 
-    /*public*/ QStringList getConnectionManufacturers() {
-        ArrayList<String> a = new ArrayList<>(this.connectionTypeLists.keySet());
+    /*public*/ QStringList ConnectionTypeManager::getConnectionManufacturers() {
+        QStringList a = QStringList(this->connectionTypeLists.keys());
         a.remove(InternalConnectionTypeList.NONE);
         a.sort(NULL);
         a.add(0, InternalConnectionTypeList.NONE);
         return a.toArray(new String[a.size()]);
     }
 
-}
+//}
 
-/*private*/ static class ProxyConnectionTypeList implements ConnectionTypeList {
+Logger* ConnectionTypeManager::log = LoggerFactory::getLogger("ConnectionTypeManager");
 
-    /*private*/ /*final*/ ArrayList<ConnectionTypeList> connectionTypeLists = new ArrayList<>();
+///*private*/ static class ProxyConnectionTypeList implements ConnectionTypeList {
 
-    /*public*/ ProxyConnectionTypeList(/*@NonNULL*/ ConnectionTypeList connectionTypeList) {
+//    /*private*/ /*final*/ ArrayList<ConnectionTypeList> connectionTypeLists = new ArrayList<>();
+
+    /*public*/ ProxyConnectionTypeList::ProxyConnectionTypeList(/*@NonNULL*/ ConnectionTypeList* connectionTypeList) {
+  /*private*/ /*final*/ connectionTypeLists =  QList<ConnectionTypeList*>();
+
         log-> debug("Creating proxy for {}", connectionTypeList.getManufacturers()[0]);
-        this.add(connectionTypeList);
+        this->add(connectionTypeList);
     }
 
-    /*public*/ /*final*/ void add(/*@NonNULL*/ ConnectionTypeList connectionTypeList) {
+    /*public*/ /*final*/ void ProxyConnectionTypeList::add(/*@NonNULL*/ ConnectionTypeList connectionTypeList) {
         log-> debug("Adding {} to proxy", connectionTypeList.getClass().getName());
         this.connectionTypeLists.add(connectionTypeList);
     }
 
     //@Override
-    /*public*/ QStringList getAvailableProtocolClasses() {
+    /*public*/ QStringList ProxyConnectionTypeList::getAvailableProtocolClasses() {
         TreeSet<QString> classes = new TreeSet<>();
         this.connectionTypeLists.stream().forEach((connectionTypeList) -> {
             classes.addAll(Arrays.asList(connectionTypeList.getAvailableProtocolClasses()));
@@ -444,15 +455,19 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
     }
 
     //@Override
-    /*public*/ QStringList getManufacturers() {
-        TreeSet<QString> manufacturers = new TreeSet<>();
-        this.connectionTypeLists.stream().forEach((connectionTypeList) -> {
-            manufacturers.addAll(Arrays.asList(connectionTypeList.getManufacturers()));
-        });
+    /*public*/ QStringList ProxyConnectionTypeList::getManufacturers() {
+        QSet<QString> manufacturers =QSet<QString>();
+//        this.connectionTypeLists.stream().forEach((connectionTypeList) ->
+        foreach(ConnectionTypeList* connectionTypeList, this->connectionTypeLists)
+        {
+            //manufacturers.addAll(Arrays.asList(connectionTypeList.getManufacturers()));
+         manufacturers.unite()
+        }//);
         return manufacturers.toArray(new String[manufacturers.size()]);
     }
 
-}
+//}
+Logger* ProxyConnectionTypeList::log = LoggerFactory::getLogger("ProxyConnectionTypeList");
 #endif
 /**
      * Override the default port name patterns unless the
@@ -471,6 +486,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
         }
 #endif
     }
+
 #if 0
 //    /*private*/ /*static*/ class ConnectionConfigManagerErrorHandler extends ErrorHandler {
 

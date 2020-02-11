@@ -1074,6 +1074,15 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
     pcs->removePropertyChangeListener(propertyName, listener);
 }
 
+//@Override
+/*public*/ QVector<PropertyChangeListener*> Roster::getPropertyChangeListeners() {
+    return pcs->getPropertyChangeListeners();
+}
+
+//@Override
+/*public*/ QVector<PropertyChangeListener*> Roster::getPropertyChangeListeners(QString propertyName) {
+    return pcs->getPropertyChangeListeners(propertyName);
+}
 /**
  * Notify that the ID of an entry has changed.  This doesn't actually change the
  * Roster per se, but triggers recreation.

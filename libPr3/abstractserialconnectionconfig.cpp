@@ -486,6 +486,8 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
   gbLayout = new GridBagLayout();
 //    //o->deleteLater();
 //  }
+  cL = new GridBagConstraints();
+  cR = new GridBagConstraints();
  cL->anchor = GridBagConstraints::WEST;
  cL->insets = new Insets(2, 5, 0, 5);
  cR->insets = new Insets(2, 0, 0, 5);

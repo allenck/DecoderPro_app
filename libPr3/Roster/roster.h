@@ -66,6 +66,8 @@ public:
     /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
     /*public*/ /*synchronized*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName);
     /*public*/ int numGroupEntries(QString group);
     /*public*/ RosterEntry* getGroupEntry(QString group, int i);
     /*public*/ int getGroupIndex(QString group, RosterEntry* re);

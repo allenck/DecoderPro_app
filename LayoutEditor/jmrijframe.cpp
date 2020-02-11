@@ -1146,11 +1146,11 @@ QString JmriJFrame::getTitle() { return windowTitle();}
 }
 QWidget* JmriJFrame::getContentPane() {getContentPane(false);}
 
-QWidget* JmriJFrame::getContentPane(bool addLayout)
+QWidget *JmriJFrame::getContentPane(bool addLayout)
 {
  if(centralWidget() == nullptr)
  {
-  QWidget* centralWidget = new QWidget();
+  JPanel* centralWidget = new JPanel();
   centralWidget->setObjectName("JmriJFrameCentralWidget");
   centralWidget->resize(300,300);
   if(addLayout)

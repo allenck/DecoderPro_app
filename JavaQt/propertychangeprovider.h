@@ -30,7 +30,7 @@ public:
      *
      * @param listener The PropertyChangeListener to be added
      */
-    /*public*/ virtual void addPropertyChangeListener(/*QNullable*/ PropertyChangeListener* /*listener*/) {}
+    /*public*/ virtual void addPropertyChangeListener(/*QNullable*/ PropertyChangeListener* /*listener*/) =0;
 
     /**
      * Add a {@link java.beans.PropertyChangeListener} for a specific property.
@@ -38,7 +38,7 @@ public:
      * @param propertyName The name of the property to listen on.
      * @param listener     The PropertyChangeListener to be added
      */
-    /*public*/ virtual void addPropertyChangeListener(/*QNullable*/ QString /*propertyName*/, /*QNullable*/ PropertyChangeListener* /*listener*/) {}
+    /*public*/ virtual void addPropertyChangeListener(/*QNullable*/ QString /*propertyName*/, /*QNullable*/ PropertyChangeListener* /*listener*/) =0;
 
     /**
      * Get all {@link java.beans.PropertyChangeListener}s currently attached to
@@ -47,7 +47,7 @@ public:
      * @return An array of PropertyChangeListeners.
      */
     //@Nonnull
-    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListeners() {return QVector<PropertyChangeListener*>();}
+    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListeners() =0; //{return QVector<PropertyChangeListener*>();}
 
     /**
      * Get all {@link java.beans.PropertyChangeListener}s currently listening to
@@ -57,14 +57,14 @@ public:
      * @return An array of PropertyChangeListeners.
      */
     //@Nonnull
-    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListeners(/*QNullable*/ QString /*propertyName*/) {return QVector<PropertyChangeListener*>();}
+    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListeners(/*QNullable*/ QString /*propertyName*/) =0; //{return QVector<PropertyChangeListener*>();}
 
     /**
      * Remove the specified listener from this object.
      *
      * @param listener The {@link java.beans.PropertyChangeListener} to remove.
      */
-    /*public*/ virtual void removePropertyChangeListener(/*QNullable*/ PropertyChangeListener* /*listener*/) {}
+    /*public*/ virtual void removePropertyChangeListener(/*QNullable*/ PropertyChangeListener* /*listener*/) =0;
 
     /**
      * Remove the specified listener of the specified property from this object.
@@ -73,7 +73,7 @@ public:
      * @param listener     The {@link java.beans.PropertyChangeListener} to
      *                     remove.
      */
-    /*public*/ virtual void removePropertyChangeListener(/*QNullable*/ QString /*propertyName*/, /*QNullable*/ PropertyChangeListener* /*listener*/) {}
+    /*public*/ virtual void removePropertyChangeListener(/*QNullable*/ QString /*propertyName*/, /*QNullable*/ PropertyChangeListener* /*listener*/) =0;
 
 };
 Q_DECLARE_INTERFACE(PropertyChangeProvider, "PropertyChangeProvider")

@@ -76,17 +76,19 @@ private:
    UserPreferencesManager* p;// = jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class);
 
    ConnectionConfig* ccCurrent;// = NULL;
+
+private slots:
+   void selection();
+
+protected:
+   JmrixConfigPane(QWidget *parent = 0) : QWidget(parent){}
    /**
     * Use "instance" to get one of these. That allows it to reconnect to
     * existing information in an existing ConnectionConfig object. It's
     * permitted to call this with a NULL argument, e.g. for when first
     * configuring the system.
     */
-   /*private*/ JmrixConfigPane(ConnectionConfig* original, QWidget* parent = 0);
-   void selection();
-
-protected:
-   JmrixConfigPane(QWidget *parent = 0) : QWidget(parent){}
+   /*prtected*/ JmrixConfigPane(ConnectionConfig* original, QWidget* parent = 0);
 
    friend class ConnectionsPreferencesPanel;
 };

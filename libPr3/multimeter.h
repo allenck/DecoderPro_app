@@ -1,13 +1,13 @@
 #ifndef MULTIMETER_H
 #define MULTIMETER_H
 #include <QObject>
-
+#include "propertychangeprovider.h"
 /**
  * Interface for displaying (and controlling where appropriate) Current,
  * Voltage, and other status data from the layout.
  *
  */
-/*public*/ /*interface*/class  MultiMeter //extends PropertyChangeProvider
+/*public*/ /*interface*/class  MultiMeter : public PropertyChangeProvider
 {
 public:
     /*public*/ static /*final*/ QString CURRENT;// = "MultiMeterCurrent";
@@ -46,7 +46,7 @@ public:
      * Gets the unit used for current
      * @return the units used for current either percentage (100.0 = 100%) or Amps or milliamps.
      */
-    /*public*/ CurrentUnits getCurrentUnits();
+    /*public*/ virtual CurrentUnits getCurrentUnits() =0;
 
     /**
      * Set the voltage.

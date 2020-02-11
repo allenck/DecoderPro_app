@@ -42,7 +42,12 @@ protected:
  /*protected*/ CurrentUnits currentUnits = CurrentUnits::CURRENT_UNITS_PERCENTAGE;
  /*abstract*/ /*protected*/ virtual void requestUpdateFromLayout() =0;
  /*protected*/ void initTimer();
-
+ void addPropertyChangeListener(PropertyChangeListener *listener){Bean::addPropertyChangeListener(listener);}
+ void addPropertyChangeListener(QString propertyName, PropertyChangeListener *listener){Bean::addPropertyChangeListener(propertyName, listener);}
+ QVector<PropertyChangeListener*> getPropertyChangeListeners() {Bean::getPropertyChangeListeners();}
+ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) { Bean::getPropertyChangeListeners(propertyName);}
+ void removePropertyChangeListener(PropertyChangeListener *listener){Bean::removePropertyChangeListener(listener);}
+ void removePropertyChangeListener(QString propertyName, PropertyChangeListener *listener){Bean::removePropertyChangeListener(propertyName, listener);}
  friend class UpdateTask;
 };
 
@@ -58,7 +63,7 @@ public:
     /*public*/ void disable();
 public slots:
     /*public*/ void run();
-    void timeout();
+    //void timeout();
 signals:
  void finished();
 private:

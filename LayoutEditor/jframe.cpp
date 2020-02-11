@@ -13,6 +13,7 @@
 #include <QDebug>
 #include "userpreferencesmanager.h"
 #include "instancemanager.h"
+#include "jpanel.h"
 
 JFrame::JFrame(QWidget *parent) :
     QMainWindow(parent)
@@ -222,7 +223,7 @@ QWidget* JFrame:: getContentPane(bool addLayout)
 {
  if(centralWidget() == nullptr)
  {
-  QWidget* centralWidget = new QWidget();
+  JPanel* centralWidget = new JPanel();
   centralWidget->setObjectName("JFrameCentralWidget");
   if(addLayout)
   {
@@ -234,6 +235,7 @@ QWidget* JFrame:: getContentPane(bool addLayout)
  }
  return centralWidget();
 }
+
 void JFrame::toFront()
 {
  raise();
@@ -553,4 +555,21 @@ void JFrame::setVisible(bool visible)
 /*public*/ void JFrame::setFont(QFont f)
 {
  QMainWindow::setFont(f);
+}
+
+// remove and hide all child widgets and delete layout.
+/*public*/ void JFrame::removeAll()
+{
+ QList<QWidget*> children = findChildren<QWidget*>();
+ QLayout* _layout = layout();
+ if(_layout)
+ {
+  foreach(QWidget* w, children)
+  {
+   _layout->removeWidget(w);
+   w->hide();
+  }
+  delete _layout;
+  _layout = nullptr;
+ }
 }
