@@ -7,39 +7,40 @@ class TimerTask : public Runnable
 {
     Q_OBJECT
 protected:
-    explicit TimerTask(QObject *parent = 0);
+    explicit TimerTask(QObject *parent = nullptr);
 public:
     enum STATE
     {
         /**
-         * This task has not yet been scheduled.
-         */
-        VIRGIN = 0,
+     * This task has not yet been scheduled.
+     */
+    VIRGIN = 0,
 
-        /**
-         * This task is scheduled for execution.  If it is a non-repeating task,
-         * it has not yet been executed.
-         */
-        SCHEDULED   = 1,
+    /**
+     * This task is scheduled for execution.  If it is a non-repeating task,
+     * it has not yet been executed.
+     */
+    SCHEDULED   = 1,
 
-        /**
-         * This non-repeating task has already executed (or is currently
-         * executing) and has not been cancelled.
-         */
-        EXECUTED    = 2,
+    /**
+     * This non-repeating task has already executed (or is currently
+     * executing) and has not been cancelled.
+     */
+    EXECUTED    = 2,
 
-        /**
-         * This task has been cancelled (with a call to TimerTask.cancel).
-         */
-         CANCELLED   = 3
+    /**
+     * This task has been cancelled (with a call to TimerTask.cancel).
+     */
+     CANCELLED   = 3
     };
-    /*public*/ /*abstract*/ virtual void run();
     /*public*/ bool cancel();
     /*public*/ long scheduledExecutionTime();
 
 signals:
 
 public slots:
+    /*public*/ /*abstract*/ virtual void run();
+
 private:
     /**
      * This object is used to control access to the TimerTask internals.

@@ -15,18 +15,19 @@ class AbstractMultiMeter : public Bean, public MultiMeter
  Q_INTERFACES(MultiMeter)
 public:
  explicit AbstractMultiMeter(int interval, QObject *parent = nullptr);
- /*public*/ void enable();
- /*public*/ void disable();
- /*public*/ void setCurrent(float c);
- /*public*/ float getCurrent();
- /*public*/ CurrentUnits getCurrentUnits();
- /*public*/ void setVoltage(float v);
- /*public*/ float getVoltage();
- /*public*/ void dispose();
+ virtual ~AbstractMultiMeter() override {}
+
+ /*public*/ void enable() override;
+ /*public*/ void disable() override;
+ /*public*/ void setCurrent(float c) override;
+ /*public*/ float getCurrent() override;
+ /*public*/ CurrentUnits getCurrentUnits() override;
+ /*public*/ void setVoltage(float v) override;
+ /*public*/ float getVoltage() override;
+ /*public*/ void dispose() override;
 signals:
 
 public slots:
- void on_timeout();
 
 private:
  static Logger* log;
@@ -54,18 +55,19 @@ protected:
 /*private*/ class UpdateTask : public TimerTask
 {
  Q_OBJECT
-    /*private*/ bool is_enabled = false;
+ /*private*/ bool is_enabled = false;
  AbstractMultiMeter* amm;
 
 public:
     /*public*/ UpdateTask(AbstractMultiMeter* amm) ;
     /*public*/ void enable();
     /*public*/ void disable();
+
 public slots:
     /*public*/ void run();
-    //void timeout();
+
 signals:
- void finished();
+
 private:
  static Logger* log;
 };

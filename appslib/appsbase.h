@@ -58,4 +58,5 @@ public:
  ~WriteBlocksShutDownTask() {}
  /*public*/ bool execute() ;
 };
+
 #endif // APPSBASE_H

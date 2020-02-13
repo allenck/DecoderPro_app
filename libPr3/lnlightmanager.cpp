@@ -14,7 +14,7 @@
 /**
  *  Returns the system letter for Loconet
  */
-/*public*/ QString LnLightManager::getSystemPrefix() { return prefix; }
+///*public*/ QString LnLightManager::getSystemPrefix() { return prefix; }
 
 /**
  * Method to create a new Light based on the system name

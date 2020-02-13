@@ -1681,6 +1681,8 @@ public URL getURL(URI uri) {
         }
     }
     QString resource = "";
+    if(searchPaths.isEmpty())
+        searchPaths.append(getProgramPath());
     for (QString searchPath : searchPaths)
     {
         QFileInfo info(/*getProgramPath() +*/ searchPath + File::separator + path);

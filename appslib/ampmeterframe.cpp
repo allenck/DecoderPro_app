@@ -2,6 +2,8 @@
 #include "instancemanager.h"
 #include <QBoxLayout>
 #include <QPushButton>
+#include "abstractmultimeter.h"
+
 
 /**
  * Frame providing a simple lcd-based display of track current.
@@ -31,7 +33,7 @@
 /*public*/ void AmpMeterFrame::initComponents() {
     //Load the images (these are now the larger version of the original gifs
     for (int i = 0; i < 10; i++) {
-        digits[i] = new NamedIcon(QString("resources/icons/misc/LCD/Lcd_") + QString::number(i) + "b.GIF", QString("resources/icons/misc/LCD/Lcd_") + i + "b.GIF");
+        digits[i] = new NamedIcon(QString("resources/icons/misc/LCD/Lcd_") + QString::number(i) + "b.GIF", QString("resources/icons/misc/LCD/Lcd_") + QString::number(i) + "b.GIF");
     }
     percentIcon = new NamedIcon("resources/icons/misc/LCD/percentb.gif", "resources/icons/misc/LCD/percentb.gif");
     decimalIcon = new NamedIcon("resources/icons/misc/LCD/decimalb.gif", "resources/icons/misc/LCD/decimalb.gif");
@@ -85,13 +87,15 @@
         }
     });
 #endif
-    startHeight = this->getContentPane()->size().height();
-    startWidth = this->getContentPane()->size().width();
-
+ startHeight = this->getContentPane()->size().height();
+ startWidth = this->getContentPane()->size().width();
+ initDone = true;
 }
 
-void AmpMeterFrame::resizeEvent(QResizeEvent *e)
+void AmpMeterFrame::resizeEvent(QResizeEvent */*e*/)
 {
+    if(!initDone)
+        return;
  scaleImage();
 }
 

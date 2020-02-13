@@ -84,7 +84,7 @@
         ((UsbDcs52SystemConnectionMemo*)this->getSystemConnectionMemo())->configureManagersPR2();
 
         // start operation
-        packets->startThreads();
+        //packets->startThreads();
 
         // set mode
         LocoNetMessage* msg = new LocoNetMessage(6);
@@ -112,7 +112,7 @@
         ((UsbDcs52SystemConnectionMemo*)this->getSystemConnectionMemo())->configureManagersMS100();
 
         // start operation
-        packets->startThreads();
+        //packets->startThreads();
 
         // set mode
         LocoNetMessage* msg = new LocoNetMessage(6);

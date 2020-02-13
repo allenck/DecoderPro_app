@@ -360,10 +360,11 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  {
   Manager* mgr = getMgr(i);
 #ifdef QT_DEBUG
-  QString pfx = ((AbstractManager*)mgr)->getSystemPrefix();
-  char tl = ((AbstractProxyLightManager*)mgr)->typeLetter();
+  QString pfx = mgr->getSystemPrefix();
+  char tl = mgr->typeLetter();
 #endif
-  if ( systemname.startsWith(((AbstractManager*)mgr)->getSystemPrefix()+((AbstractProxyLightManager*)mgr)->typeLetter()))
+//  if ( systemname.startsWith(((AbstractManager*)mgr)->getSystemPrefix()+((AbstractProxyLightManager*)mgr)->typeLetter()))
+  if ( systemname.startsWith(mgr->getSystemPrefix()+mgr->typeLetter()))
   {
    return i;
   }

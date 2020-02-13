@@ -120,11 +120,11 @@ SystemConnectionMemoManager::SystemConnectionMemoManager()
  */
 /*public*/ /*synchronized*/ bool SystemConnectionMemoManager::isSystemPrefixAvailable(/*@Nonnull*/ QString systemPrefix) {
 //        return InstanceManager.getList(SystemConnectionMemo.class).stream().noneMatch((memo) -> (memo.getSystemPrefix().equals(systemPrefix)));
-
+ QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
  foreach (QObject* obj, *InstanceManager::getList("SystemConnectionMemo"))
  {
   SystemConnectionMemo* memo = (SystemConnectionMemo*)obj;
-  if (systemPrefix == ((SystemConnectionMemo*)memo)->getSystemPrefix())
+  if (systemPrefix == memo->getSystemPrefix())
    return false;
  }
  return true;

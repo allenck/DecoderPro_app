@@ -29,7 +29,8 @@ LightIconXml::LightIconXml(QObject *parent) :
 {
 
  LightIcon* p = (LightIcon*)o;
-    if (!p->isActive()) return QDomElement();  // if flagged as inactive, don't store
+    if (p->getLight() == nullptr || !p->isActive())
+     return QDomElement();  // if flagged as inactive, don't store
 
     QDomElement element = doc.createElement("LightIcon");
     element.setAttribute("light", ((AbstractLight*)p->getLight())->getSystemName());

@@ -447,7 +447,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if(type == "InternalSystemConnectionMemo") // is optional getNullableDefault will store it
  {
   InternalSystemConnectionMemo* itcm = new InternalSystemConnectionMemo();
-//  InstanceManager::store(itcm,type);
+  //InstanceManager::store(itcm,type);
   return itcm;
  }
 

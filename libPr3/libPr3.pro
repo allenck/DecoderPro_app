@@ -972,7 +972,10 @@ SOURCES += \
     abstractcabsignalmanager.cpp \
     loconet/lncabsignalmanager.cpp \
     loconet/lncabsignal.cpp \
-    hasconnectionbutunabletoconnectexception.cpp
+    hasconnectionbutunabletoconnectexception.cpp \
+    cabsignaltablemodel.cpp \
+    defaultcabsignalmanager.cpp \
+    timerutil.cpp
 
 
  !contains(FTDI, 1) {
@@ -1949,7 +1952,10 @@ HEADERS += \
     abstractcabsignalmanager.h \
     loconet/lncabsignalmanager.h \
     loconet/lncabsignal.h \
-    hasconnectionbutunabletoconnectexception.h
+    hasconnectionbutunabletoconnectexception.h \
+    cabsignaltablemodel.h \
+    defaultcabsignalmanager.h \
+    timerutil.h
 
 
  !contains(FTDI, 1) {

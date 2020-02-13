@@ -2,6 +2,8 @@
 #include "loggerfactory.h"
 #include "multimeter.h"
 #include "sleeperthread.h"
+#include "timerutil.h"
+
 /**
  * Abstract base class for current meter objects.
  *
@@ -26,19 +28,8 @@
     intervalTask = new UpdateTask(this);
     // At some point this will be dynamic intervals...
     log->debug("Starting Meter Timer");
-//        jmri.util.TimerUtil.scheduleAtFixedRate(intervalTask,
-//                sleepInterval, sleepInterval);
-    if(timer == nullptr)
-    {
-     timer = new QTimer();
-     timer->setInterval(sleepInterval);
-     connect(timer, SIGNAL(timeout()), this, SLOT(on_timeout()));
-    }
-}
-
-void AbstractMultiMeter::on_timeout()
-{
- intervalTask->run();
+    TimerUtil::scheduleAtFixedRate(intervalTask,
+                sleepInterval, sleepInterval);
 }
 
 /**
@@ -53,7 +44,7 @@ void AbstractMultiMeter::on_timeout()
 
     /*public*/ UpdateTask::UpdateTask(AbstractMultiMeter *amm) : TimerTask() {
         //super();
-this->amm = amm;
+     this->amm = amm;
     }
 
     /*public*/ void UpdateTask::enable() {

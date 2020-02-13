@@ -584,7 +584,6 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                     return result;
                 }
                 break;
-
             }
 
             case LnConstants::OPC_ALM_WRITE:
@@ -2341,16 +2340,17 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
 
 /*private*/ /*static*/ QString LocoNetMessageInterpret::interpretOpcRqSlData(LocoNetMessage* l)
 {
-  int slot = l->getElement(1) + 128 * l->getElement(2);
-
+  int slot = l->getElement(1) + 128 * (l->getElement(2) & 0x07);
+  bool expSlotRequ = (l->getElement(2) & 0x40) == 0X40 ? true : false;
   switch (slot)
   {
-      // Slots > 120 are all special, but these are the only ones we know to decode.
-      case LnConstants::FC_SLOT:
+  // Slots > 120 & < 128 are all special, but these are the only ones we know to decode.
+  // Extended System Slots 248 thru 251 delt with separately, not here
+      case LnConstants::FC_SLOT: //0x7b
           return tr("Request Fast Clock information.");
-      case LnConstants::CFG_SLOT:
+      case LnConstants::CFG_SLOT: //0x7f
           return tr("Request Command Station OpSwitches (or DCS210/DCS240 check for multiple command stations on LocoNet).");
-      case LnConstants::CFG_EXT_SLOT:
+      case LnConstants::CFG_EXT_SLOT: // 0x7e
           return tr("Request Extended Command Station OpSwitches (DCS210/DCS240 only).");
       case LnConstants::PRG_SLOT:
           return tr("Request Programming Track information.");
@@ -2359,7 +2359,11 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
       case 0x7d:
           break;
       default:
-          return tr("Request data/status for slot %1.").arg(slot);
+          if (expSlotRequ) {
+              return tr("Request data/status for slot %1 in Expanded slot format.").arg(slot);
+          } else {
+              return tr("Request data/status for slot %1.").arg(slot);
+          }
   }
   return "";
 }

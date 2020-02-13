@@ -109,14 +109,14 @@ void AppsBase::init()
 
  FileUtil::logFilePaths();
 #if 0 // TODO:
-    Runnable r;
+    Runnable* r;
     /*
      * Once all the preferences have been loaded we can initial the
      * preferences doing it in a thread at this stage means we can let it
      * work in the background if the file doesn't exist then we do not
      * initialize it
      */
-    if (preferenceFileExists && bool.getbool("java.awt.headless")) {
+    if (preferenceFileExists /*&& bool.getbool("java.awt.headless")*/) {
         r = new Runnable() {
 
             /*public*/ void run() {
@@ -130,7 +130,8 @@ void AppsBase::init()
         Thread thr = new Thread(r);
         thr.start();
     }
-
+#endif
+#if 0
     if (bool.getbool("org.jmri.python.preload")) {
         r = new Runnable() {
 

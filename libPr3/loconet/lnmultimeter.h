@@ -12,13 +12,17 @@ class LnMultiMeter : public AbstractMultiMeter
  Q_OBJECT
 public:
  LnMultiMeter(LocoNetSystemConnectionMemo* scm, QObject* parent = nullptr);
- /*public*/ void message(LocoNetMessage* msg);
+ ~LnMultiMeter() {}
  /*public*/ void initializeHardwareMeter();
  /*public*/ QString getHardwareMeterName();
  /*public*/ bool hasCurrent();
  /*public*/ bool hasVoltage();
  /*public*/ CurrentUnits getCurrentUnits();
  QObject* self() {return (QObject*)this;}
+
+public slots:
+ /*public*/ void message(LocoNetMessage* msg);
+
 
 private:
  static Logger* log;

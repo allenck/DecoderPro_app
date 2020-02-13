@@ -84,14 +84,12 @@ SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QOb
 
 
 /**
- * Store in InstanceManager with
- * proper ID for later retrieval as a
- * generic system
+ * Store in InstanceManager with proper ID for later retrieval as a generic
+ * system
  */
 void SystemConnectionMemo::_register()
 {
  log->debug(tr("register as SystemConnectionMemo, really of type %1").arg(this->metaObject()->className()));
-
  SystemConnectionMemoManager::getDefault()->_register(this);
 }
 

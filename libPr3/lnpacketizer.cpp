@@ -1,4 +1,4 @@
-#include "lnpacketizer.h"
+﻿#include "lnpacketizer.h"
 #include <QThread>
 #include <QWaitCondition>
 #include <QMutex>
@@ -286,5 +286,13 @@ void XmtHandler::sendMessage(LocoNetMessage* m) // SLOT[]
      // no stream connected
      log.warn("sendLocoNetMessage: no connection established");
     }
+//} catch (NoSuchElementException e) {
+//    // message queue was empty, wait for input
+//    log.trace("start wait"); // NOI18N
+
+//    new jmri.util.WaitHandler(this); // handle synchronization, spurious wake, interruption
+
+//    log.trace("end wait"); // NOI18N
+//}
 }
 #endif

@@ -1,12 +1,5 @@
 #include "timertask.h"
 
-TimerTask::TimerTask(QObject *parent) :
-    Runnable(parent)
-{
- lock = NULL;
- state = VIRGIN;
- period = 0;
-}
 /**
  * A task that can be scheduled for one-time or repeated execution by a Timer.
  *
@@ -21,8 +14,13 @@ TimerTask::TimerTask(QObject *parent) :
     /**
      * Creates a new timer task.
      */
-//    protected TimerTask() {
-//    }
+    /*protected*/ TimerTask::TimerTask(QObject *parent) :
+        Runnable(parent)
+    {
+     lock = NULL;
+     state = VIRGIN;
+     period = 0;
+    }
 
     /**
      * The action to be performed by this timer task.

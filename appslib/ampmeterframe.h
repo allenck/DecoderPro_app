@@ -45,6 +45,7 @@ private:
  /*private*/ void buildContents();
  /*synchronized*/ void update();
  void resizeEvent(QResizeEvent *e);
+ bool initDone = false;
 
 private slots:
  void on_button_clicked();

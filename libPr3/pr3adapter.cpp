@@ -64,7 +64,7 @@ void PR3Adapter::configure()
   ((PR3SystemConnectionMemo*) this->getSystemConnectionMemo())->configureManagersPR2();
 
   // start operation
-  packets->startThreads();
+  //packets->startThreads();
   ActiveFlag::setActive();
 
   // set mode

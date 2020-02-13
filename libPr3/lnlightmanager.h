@@ -12,7 +12,7 @@ public:
     /**
      *  Returns the system letter for Loconet
      */
-    /*public*/  QString getSystemPrefix();
+//    /*public*/  QString getSystemPrefix();
     /**
      * Method to create a new Light based on the system name
      * Returns null if the system name is not in a valid format
@@ -47,7 +47,7 @@ signals:
 public slots:
 private:
     LnTrafficController* _trafficController;
-    QString prefix;
+    //QString prefix;
  Logger log;
     
 };

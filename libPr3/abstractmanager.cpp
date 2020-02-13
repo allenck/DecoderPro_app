@@ -697,11 +697,16 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  */
 //@Override
 /*public*/ AbstractManager::NameValidity AbstractManager::validSystemNameFormat(QString systemName) {
-    return getSystemNamePrefix() == (systemName)
-            ? NameValidity::VALID_AS_PREFIX_ONLY
-            : systemName.startsWith(getSystemNamePrefix())
-            ? NameValidity::VALID
-            : NameValidity::INVALID;
+ if (getSystemNamePrefix() == (systemName)) {
+     return NameValidity::VALID_AS_PREFIX_ONLY;
+ }
+// return getSystemNamePrefix() == (systemName)
+//            ? NameValidity::VALID_AS_PREFIX_ONLY
+//            : systemName.startsWith(getSystemNamePrefix())
+//            ? NameValidity::VALID
+//            : NameValidity::INVALID;
+ return systemName.startsWith(getSystemNamePrefix()) ? NameValidity::VALID : NameValidity::INVALID;
+
 }
 
 /**
@@ -712,7 +717,11 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  */
 //@Override
 /*public*/ /*final*/ QString AbstractManager::getSystemPrefix() {
-    return memo->getSystemPrefix();
+ QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
+   QString prefix =  memo->getSystemPrefix();
+   if(prefix.startsWith("I"))
+    return "I";
+   return prefix;
 }
 
 /**

@@ -94,7 +94,7 @@
  {
  QString portableFileName = FileUtil::findExternalFilename(pUrl).toString();
      if(portableFileName == "")
-         log->error(tr("error converting '%1'").arg(portableFileName));
+         log->error(tr("error converting '%1'").arg(pName));
      mURL = FileUtil::getPortableFilename(portableFileName);
  }
  mRotation = 0;

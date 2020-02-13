@@ -221,7 +221,8 @@ InstanceManager::InstanceManager(QObject *parent) :
     }
     log->debug(tr("Store item of type %1, class %2").arg(type).arg(item->metaObject()->className()));
     QObjectList* l = getList(type);
-    l->append(QPointer<QObject>(item));
+    if(!l->contains(item))
+     l->append(QPointer<QObject>(item));
     getDefault()->managerLists.insert(type, l);
     getDefault()->pcs->fireIndexedPropertyChange(getListPropertyName(type), l->indexOf(item), QVariant(), VPtr<QObject>::asQVariant(item));
 }
@@ -306,14 +307,31 @@ void InstanceManager::deregister(QObject* item, QString type)
         pcs->fireIndexedPropertyChange(getListPropertyName(type), index, VPtr<QObject>::asQVariant(item), QVariant());
     }
 }
+
 /**
- * Retrieve the last object of type T that was
- * registered with {@link #store}.
+ * Retrieve the last object of type T that was registered with
+ * {@link #store(java.lang.Object, java.lang.Class) }.
  * <p>
- * Someday, we may provide another way to set the default
- * but for now it's the last one stored, see the
- * {@link #setDefault} method.
+ * Unless specifically set, the default is the last object stored, see the
+ * {@link #setDefault(java.lang.Class, java.lang.Object) } method.
+ * <p>
+ * In some cases, InstanceManager can create the object the first time it's
+ * requested. For more on that, see the class comment.
+ * <p>
+ * In most cases, system configuration assures the existence of a default
+ * object, so this method will log and throw an exception if one doesn't
+ * exist. Use {@link #getNullableDefault(java.lang.Class)} or
+ * {@link #getOptionalDefault(java.lang.Class)} if the default is not
+ * guaranteed to exist.
+ *
+ * @param <T>  The type of the class
+ * @param type The class Object for the item's type
+ * @return The default object for type
+ * @throws NullPointerException if no default object for type exists
+ * @see #getNullableDefault(java.lang.Class)
+ * @see #getOptionalDefault(java.lang.Class)
  */
+//@Nonnull
 /*static*/ /*public*/ QObject* InstanceManager::getDefault(/*@Nonnull Class<T>*/ QString type)
 {
  if(log == nullptr)
@@ -394,7 +412,7 @@ template<class T>
 {
  if(log && log->isTraceEnabled())
   log->trace(tr("getOptionalDefault of type %1").arg(type/*.getName()*/));
- QObjectList* l = getList(type);
+ QObjectList* l = getInstances(type);
  if (l->isEmpty())
  {
   // example of tracing where something is being initialized
@@ -460,7 +478,7 @@ template<class T>
     }
     setInitializationState(type, InitializationState::DONE);
     l->append((QObject*)obj1);
-     store(obj1, type);
+     //store(obj1, type);
      return l->value(l->size() - 1);
 
  //      try {
@@ -491,9 +509,8 @@ template<class T>
     log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
     setInitializationState(type, InitializationState::DONE);
     l->append(obj);
-    store(obj,type);
-    //return l->at(l->size() - 1);
-    return obj;
+    //store(obj,type);
+    return l->at(l->size() - 1);
    }
 //  }
   // don't have, can't make

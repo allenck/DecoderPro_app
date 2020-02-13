@@ -317,9 +317,9 @@
 
     if (currentPosition >= maxPosition)
     {
-        //throw new NoSuchElementException();
-     Logger::error(tr("StringTokenizer: no such element(%1) in %2 ").arg(currentPosition).arg(str));
-     return "";
+     QString msg = tr("StringTokenizer: no such element(%1) in %2 ").arg(currentPosition).arg(str);
+
+     throw NoSuchElementException(msg);
     }
     int start = currentPosition;
     currentPosition = scanToken(currentPosition);

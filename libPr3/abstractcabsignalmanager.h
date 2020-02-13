@@ -28,7 +28,7 @@ private:
 protected:
  /*protected*/ QHash<LocoAddress*, CabSignal*> signalList;
  /*protected*/ QList<CabSignalListListener*> listListeners;
- /*abstract*/ /*protected*/ virtual CabSignal* createCabSignal(LocoAddress* address) = 0;
+ /*abstract*/ /*protected*/ virtual CabSignal* createCabSignal(LocoAddress* address) {return nullptr;}
  friend class ACMPropertyChangeListener;
 };
 

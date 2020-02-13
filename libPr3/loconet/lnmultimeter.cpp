@@ -23,6 +23,7 @@
     this->sm = scm->getSlotManager();
     this->tc = scm->getLnTrafficController();
     tc->addLocoNetListener(~0, (LocoNetListener*)this);
+    connect(scm->getLnTrafficController(), SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
 
     initTimer();
 }
