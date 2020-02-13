@@ -22,7 +22,8 @@
 
 
 
-/*public*/ AmpMeterFrame::AmpMeterFrame(QWidget* parent) : JmriJFrame(tr("Track Current Meter"), parent){
+/*public*/ AmpMeterFrame::AmpMeterFrame(QWidget* parent)
+    : JmriJFrame(tr("Track Current Meter"), parent){
     //super(Bundle.getMessage("TrackCurrentMeterTitle"));
      digits = QVector<NamedIcon*>(10);
 

@@ -55,7 +55,7 @@ protected:
 /*private*/ class UpdateTask : public TimerTask
 {
  Q_OBJECT
- /*private*/ bool is_enabled = false;
+ /*private*/ bool is_enabled = true;
  AbstractMultiMeter* amm;
 
 public:

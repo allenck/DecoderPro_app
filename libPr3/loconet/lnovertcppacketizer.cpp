@@ -187,7 +187,7 @@ void LnTcpRcvHandler::on_ReadyRead()
    if(connSocket == NULL || !connSocket->isValid())
     return;
    mutex.lock();
-   rxLine = inText->readLine(64);
+   rxLine = inText->readLine(75);
    mutex.unlock();
 
    if (rxLine.isEmpty())

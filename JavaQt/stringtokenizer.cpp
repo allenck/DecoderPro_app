@@ -199,7 +199,7 @@
  */
 /*private*/ int StringTokenizer::skipDelimiters(int startPos) {
     if (delimiters == "")
-        throw new NullPointerException();
+        throw NullPointerException();
 
     int position = startPos;
     while (!retDelims && position < maxPosition) {
@@ -319,7 +319,10 @@
     {
      QString msg = tr("StringTokenizer: no such element(%1) in %2 ").arg(currentPosition).arg(str);
 
-     throw NoSuchElementException(msg);
+//     throw NoSuchElementException(msg);
+     Logger::error(msg);
+     return "";
+
     }
     int start = currentPosition;
     currentPosition = scanToken(currentPosition);
