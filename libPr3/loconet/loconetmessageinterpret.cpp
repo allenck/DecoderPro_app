@@ -288,7 +288,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
             case LnConstants::OPC_SLOT_STAT1: {
                 int slot = l->getElement(1);
                 int stat = l->getElement(2);
-                return tr("Write slot %1 with status value %2 (%3) - Loco is %4, %5 and operating in {5} speed step mode.").arg(slot, stat).arg(
+                return tr("Write slot %1 with status value %2 (%3) - Loco is %4, %5 and operating in %6 speed step mode.").arg(slot, stat).arg(
                         tr("0x%1").arg(
                                 StringUtil::twoHexFromInt(stat)), LnConstants::CONSIST_STAT(stat)).arg(
                         LnConstants::LOCO_STAT(stat), LnConstants::DEC_MODE(stat));
@@ -445,6 +445,15 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                 }
                 break;
             }
+#if 0
+        case LnConstants.OPC_EXP_SEND_FUNCTION_OR_SPEED_AND_DIR: {
+                        result = interpretPocExpLocoSpdDirFunction(l);
+                        if (result.length() > 0) {
+                            return result;
+                        }
+                        break;
+                    }
+#endif
 
             /*
              * OPC_PANEL_QUERY 0xDF messages used by throttles to discover
@@ -650,6 +659,10 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
 
             case LnConstants::RE_OPC_IB2_SPECIAL: { // 0xD4
                 result = interpretIb2Special(l);
+                if (result.length() > 0) {
+                    return result;
+                }
+                result = interpretOpcExpMoveSlots(l);
                 if (result.length() > 0) {
                     return result;
                 }
@@ -1681,7 +1694,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
          QString result = "";
          // The first byte seems to determine the type of message.
          switch (l->getElement(1)) {
-             case 0x10: { //l.getZElement(1)
+             case 0x10: { //l->getZElement(1)
                  result = interpretOpcPeerXfer16(l);
                  if (result.length() > 0) {
                      return result;
@@ -1703,7 +1716,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                  }
                  break;
              }
-             case 0x09: { // l.getZElement(1)
+             case 0x09: { // l->getZElement(1)
                  result = interpretOpcPeerXfer9(l, reporterPrefix);
                  if (result.length() > 0) {
                      return result;
@@ -3443,7 +3456,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
              break;
      }
 
-     return tr("SE%1 (%2) reports AX:{3} XA:%4 %5; Turnout %6 %7.").arg(
+     return tr("SE%1 (%2) reports AX:%4 XA:%4 %5; Turnout %6 %7.").arg(
              (element + 1)).arg(element).arg(
              l->getElement(7)).arg(l->getElement(8)).arg(
              status).arg(
@@ -4359,8 +4372,349 @@ QString LocoNetMessageInterpret::convertToMixed(int addressLow, int addressHigh)
                         tr("0x%1").arg(
                                 StringUtil::twoHexFromInt(l->getElement(14))));
         }
-    }
+    } else if (l->getElement(1) == 0x15) {
+     int slot = ( (l->getElement(2) & 0x07 ) *128) + l->getElement(3); // slot number for this request
+
+     QString result = interpretExtendedSlotRdWr(l, slot) ;
+     if (result.length() > 0) {
+         return result;
+     }
+ }
     return "";
+}
+/*private*/ /*static*/ QString LocoNetMessageInterpret::interpretOpcExpMoveSlots(LocoNetMessage* l) {
+        int src = ((l->getElement(1) & 0x03) * 128) + (l->getElement(2) & 0x7f);
+        int dest = ((l->getElement(3) & 0x03) * 128) + (l->getElement(4) & 0x7f);
+
+        if ((src >= 0x79) && (src <= 0x7f)) {
+            return "";
+        }
+        if ((dest >= 0x79) && (dest <= 0x7f)) {
+            return "";
+        }
+
+        bool isSettingStatus = ((l->getElement(3) & 0b01110000) == 0b01100000);
+        if (isSettingStatus) {
+            int stat = l->getElement(4);
+            return tr("Set Slot %1 Status to %2 %3 %4.").arg(
+                    src).arg(
+                    LnConstants::CONSIST_STAT(stat)).arg(
+                    LnConstants::LOCO_STAT(stat)).arg(
+                    LnConstants::DEC_MODE(stat));
+        }
+        bool isUnconsisting = ((l->getElement(3) & 0b01110000) == 0b01010000);
+        if (isUnconsisting) {
+            // source and dest same, returns slot contents
+            return tr("Slot %1 dropped from consist.").arg(
+                    src);
+        }
+        bool isConsisting = ((l->getElement(3) & 0b01110000) == 0b01000000);
+        if (isConsisting) {
+            //add dest to src, returns dest slot contents
+            return tr("Slot %1 added to consist top %2.").arg(
+                    src).arg(dest);
+        }
+       /* check special cases */
+        if (src == 0) {
+            /* DISPATCH GET */
+            // maybe
+            return tr("Get most recently dispatched slot.");
+        } else if (src == dest) {
+            /* IN USE */
+            // correct
+            return tr("Set status of slot %1 to IN_USE.").arg(src);
+        } else if (dest == 0) {
+            /* DISPATCH PUT */
+
+            return tr("Mark slot %1 as DISPATCHED.").arg(src);
+        } else {
+            /* general move */
+
+            return tr("Move data in slot %1 to slot %2.").arg(src).arg(dest);
+        }
+    }
+#if 0 // TODO:
+    /*private*/ static QString interpretPocExpLocoSpdDirFunction(LocoNetMessage* l) {
+        int slot = ((l->getElement(1) & 0x03) * 128) + (l->getElement(2) & 0x7f);
+        if ((l->getElement(1) & LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_SPEED) == 0) {
+            // speed and direction
+            int spd = l->getElement(4);
+            QString direction = Bundle.getMessage((l->getElement(1) & 0b00001000) != 0
+                    ? "LN_MSG_DIRECTION_REV" : "LN_MSG_DIRECTION_FWD");
+            QString throttleID = Integer.toHexString(l->getElement(3));
+            return Bundle.getMessage("LN_MSG_OPC_EXP_SPEED_DIRECTION", slot, spd, direction, throttleID);
+        }
+        // Build a string for the functions on off
+        QVector<QString> fn = QVector<QString>(8);
+        for (int bitIndex = 0; bitIndex < 8; bitIndex++) {
+            fn[bitIndex] = (l->getElement(4) >> (7 - bitIndex) & 1) == 1 ? Bundle.getMessage("LN_MSG_FUNC_ON")
+                    : Bundle.getMessage("LN_MSG_FUNC_OFF");
+        }
+        if ((l->getElement(1) &
+                LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION) == LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F0F6_MASK) {
+            return Bundle.getMessage("LN_MSG_OPC_EXP_FUNCTIONS_F0_F6", slot, fn[3], fn[7], fn[6], fn[5], fn[4], fn[2],
+                    fn[1]);
+        } else if ((l->getElement(1) &
+                LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION) == LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F7F13_MASK) {
+            return Bundle.getMessage("LN_MSG_OPC_EXP_FUNCTIONS_F7_F13", slot, fn[7], fn[6], fn[5], fn[4], fn[3], fn[2],
+                    fn[1]);
+        } else if ((l->getElement(1) &
+                LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION) == LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F14F20_MASK) {
+            return Bundle.getMessage("LN_MSG_OPC_EXP_FUNCTIONS_F14_F20",slot, fn[7], fn[6], fn[5], fn[4], fn[3], fn[2],
+                    fn[1]);
+        } else if ((l->getElement(1) &
+                LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION) == LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28OFF_MASK) {
+            return Bundle.getMessage("LN_MSG_OPC_EXP_FUNCTIONS_F21_F28",slot, fn[7], fn[6], fn[5], fn[4], fn[3], fn[2],
+                    fn[1], Bundle.getMessage("LN_MSG_FUNC_OFF"));
+        } else if ((l->getElement(1) &
+                LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION) == LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28ON_MASK) {
+            return Bundle.getMessage("LN_MSG_OPC_EXP_FUNCTIONS_F21_F28", slot, fn[7], fn[6], fn[5], fn[4], fn[3], fn[2],
+                    fn[1], Bundle.getMessage("LN_MSG_FUNC_ON"));
+        }
+        return "";
+    }
+#endif
+/*private*/ /*static*/ QString LocoNetMessageInterpret::interpretExtendedSlotRdWr(LocoNetMessage* l, int slot) {
+    /**
+     * ************************************************
+     * extended slot read/write message               *
+     * ************************************************
+     */
+    /*
+     * If its a "Special" slot (Stats etc) use a different routine
+     */
+    if (slot > 247 && slot < 252) {
+        return interpretExtendedSlot_StatusData(l,slot);
+    }
+    int trackStatus = l->getElement(7); // track status
+    int id1 =  l->getElement(19);
+    int id2 = l->getElement(18);
+    int command = l->getOpCode();
+    int stat = l->getElement(4); // slot status
+    //int adr = l->getElement(5) + 128 * l->getElement(6); // loco address
+    int adr = l->getElement(5);
+    int spd = l->getElement(8); // command speed
+    int dirf = l->getElement(10) & 0b00111111; // direction and F0-F4 bits
+    QVector<QString> dirf0_4 = interpretF0_F4toStrings(dirf);
+    int ss2 = l->getElement(18); // slot status 2 (tells how to use
+    // ID1/ID2 & ADV Consist)
+    int adr2 = l->getElement(6); // loco address high
+    int snd = l->getElement(10); // Sound 1-4 / F5-F8
+    QVector<QString> sndf5_8 = interpretF5_F8toStrings(snd);
+
+    QString locoAdrStr = figureAddressIncludingAliasing(adr, adr2, ss2, id1, id2);
+    return tr(((command == 0xEE)
+        ? "Write slot %1 information:\n" \
+          "Loco %2 is %3, %4, operating in %5 SS mode, and is moving %6 at speed %7,\n" \
+          "F0=%8, F1=%9, F2=%10, F3=%11, F4=%12, F5=%13, F6=%14, F7=%15, F8=%16\n"\
+          "%17; %18, %19."
+        : "Report of slot %1 information:\n" \
+          "Loco %2 is %3, %4, operating in %5 SS mode, and is moving %6 at speed %7,\n" \
+          "F0=%8, F1=%9, F2=%10, F3=%11, F4=%12, F5=%13, F6=%14, F7=%15, F8=%16\n" \
+          "%17; %18, %19.")).arg(
+        slot).arg(
+        locoAdrStr).arg(
+        LnConstants::CONSIST_STAT(stat).arg(
+        LnConstants::LOCO_STAT(stat)).arg(
+        LnConstants::DEC_MODE(stat)).arg(
+        directionOfTravelString((dirf & LnConstants::DIRF_DIR) == 0)).arg(
+        spd).arg( // needs re-interpretation for some cases of slot consisting state
+        dirf0_4[0]).arg(
+        dirf0_4[1]).arg(
+        dirf0_4[2]).arg(
+        dirf0_4[3]).arg(
+        dirf0_4[4]).arg(
+        sndf5_8[0]).arg(
+        sndf5_8[1]).arg(
+        sndf5_8[2]).arg(
+        sndf5_8[3]).arg(
+        trackStatusByteToString(trackStatus)).arg(
+        tr("STAT2=%1").arg(
+                tr("0x%1").arg(
+                        StringUtil::twoHexFromInt(ss2)))).arg(
+        tr("ThrottleID=%1").arg(
+                idString(id1, id2))));
+}
+
+/*private*/ /*static*/ QString LocoNetMessageInterpret::interpretExtendedSlot_StatusData(LocoNetMessage* l, int slot)
+{
+ QString baseInfo = "";
+ QString detailInfo = "";
+ switch (slot) {
+   case 248:
+        // Identifying information
+        baseInfo = interpretExtendedSlot_StatusData_Base_Detail(l,slot);
+        // Flags
+        detailInfo = interpretExtendedSlot_StatusData_Flags(l,slot);
+        break;
+   case 249:
+        // electric
+        // Identifying information
+        baseInfo = interpretExtendedSlot_StatusData_Base(l,slot);
+        detailInfo = interpretExtendedSlot_StatusData_Electric(l,slot);
+        break;
+    case 251:
+        // LocoNet stats
+        // Identifying information
+        baseInfo = interpretExtendedSlot_StatusData_Base(l,slot);
+        detailInfo = interpretExtendedSlot_StatusData_LocoNet(l,slot);
+        break;
+    case 250:
+        // Identifying information
+        baseInfo = interpretExtendedSlot_StatusData_Base(l,slot);
+        // Slots info
+        detailInfo = interpretExtendedSlot_StatusData_Slots(l,slot);
+        break;
+    default:
+        baseInfo = "Still working on it";
+ }
+ return tr("Report of status slot %1:\n%2\n%3").arg(
+       slot).arg( baseInfo).arg( detailInfo);
+}
+
+/**
+* Interpret the base information in bytes 16,18,19
+* for slots 249,250,251. not 248
+* @param l loconetmessage
+* @param slot slot number
+* @return a format message.
+*/
+/*private*/ /*static*/ QString LocoNetMessageInterpret::interpretExtendedSlot_StatusData_Base(LocoNetMessage* l, int slot)
+{
+ QString hwType = "";
+ int hwSerial;
+ switch (l->getElement(16)) {
+    case LnConstants::RE_IPL_DIGITRAX_HOST_DCS240:
+        hwType = "DCS240";
+        break;
+    case LnConstants::RE_IPL_DIGITRAX_HOST_DCS210:
+        hwType = "DCS210";
+        break;
+    case LnConstants::RE_IPL_DIGITRAX_HOST_DCS52:
+        hwType = "DCS52";
+        break;
+    case LnConstants::RE_IPL_DIGITRAX_HOST_BXP88:
+        hwType = "BXP88";
+        break;
+    case LnConstants::RE_IPL_DIGITRAX_HOST_BXPA1:
+        hwType = "BXPA1";
+        break;
+    default:
+        hwType = "Unknown";
+ }
+ hwSerial = ((l->getElement(19) & 0x0f) * 128 ) + l->getElement(18);
+ return tr("Device: Type %1, Serial %2.").arg(
+        hwType).arg(
+        hwSerial);
+}
+
+/**
+* Interp slot 248 base details
+* @param l loconetmessage
+* @param slot slot number
+* @return formated message
+*/
+/*private*/ /*static*/ QString LocoNetMessageInterpret::interpretExtendedSlot_StatusData_Base_Detail(LocoNetMessage* l, int slot)
+{
+ double hwVersion ;
+ double swVersion ;
+ int hwSerial;
+ QString hwType;
+ switch (l->getElement(14)) {
+    case LnConstants::RE_IPL_DIGITRAX_HOST_DCS240:
+        hwType = "DCS240";
+        break;
+    case LnConstants::RE_IPL_DIGITRAX_HOST_DCS210:
+        hwType = "DCS210";
+        break;
+    case LnConstants::RE_IPL_DIGITRAX_HOST_BXP88:
+        hwType = "BXP88";
+        break;
+    case LnConstants::RE_IPL_DIGITRAX_HOST_BXPA1:
+        hwType = "BXPA1";
+        break;
+    default:
+        hwType = "Unknown";
+ }
+ hwSerial = ((l->getElement(19) & 0x0f) * 128 ) + l->getElement(18);
+ hwVersion = ((double)(l->getElement(17) & 0x78) / 8 ) + ((double)(l->getElement(17) & 0x07) / 10 ) ;
+ swVersion = ((double)(l->getElement(16) & 0x78) / 8 ) + ((double)(l->getElement(16) & 0x07) / 10 ) ;
+ return tr("Device: Type %1, Serial %2. HwVersion %3, SwVersion %4.").arg(
+        hwType).arg(
+        hwSerial).arg(
+        hwVersion).arg(
+        swVersion);
+}
+
+/**
+* Interp slot 249 electric stuff, bytes 4,5,6,7,10,12
+* @param l loconetmessage
+* @param slot slot number
+* @return formated message
+*/
+/*private*/ /*static*/ QString LocoNetMessageInterpret::interpretExtendedSlot_StatusData_Electric(LocoNetMessage* l, int slot) {
+ double voltsTrack;
+ double voltsIn;
+ double ampsIn;
+ double ampsLimit;
+ double  voltsRsLoaded;
+ double  voltsRsUnLoaded;
+ voltsTrack = ((double)l->getElement(4)) * 2 / 10 ;
+ voltsIn = ((double)l->getElement(5)) * 2 / 10;
+ ampsIn = ((double)l->getElement(6)) / 10;
+ ampsLimit = ((double)l->getElement(7)) / 10;
+ voltsRsLoaded = ((double)l->getElement(12)) * 2 / 10;
+ voltsRsUnLoaded = ((double)l->getElement(10)) * 2 / 10;
+ return tr("Track Volts %1, Input Volts %2, Amps In %3, Amps Limit %4.\n"\
+           "Railsync Volts Loaded: %5 UnLoaded %6").arg(
+        voltsTrack).arg(
+        voltsIn).arg(
+        ampsIn).arg(
+        ampsLimit).arg(
+        voltsRsLoaded).arg(
+        voltsRsUnLoaded);
+}
+
+/**
+* Interp slot 249 loconet stats, bytes 4 & 5,6 & 7
+* @param l loconetmessage
+* @param slot slot number
+* @return formated message
+*/
+/*private*/ /*static*/ QString LocoNetMessageInterpret::interpretExtendedSlot_StatusData_LocoNet(LocoNetMessage* l, int slot) {
+ double msgTotal;
+ double msgErrors;
+ msgTotal = (l->getElement(4) + ( l->getElement(5) * 128)) ;
+ msgErrors = (l->getElement(6) + ( l->getElement(7) * 128)) ;
+ return tr("Messages %1, Errors %2").arg(
+        msgTotal).arg(
+        msgErrors);
+}
+
+
+/*private*/ /*static*/ QString LocoNetMessageInterpret::interpretExtendedSlot_StatusData_Flags(LocoNetMessage* l, int slot) {
+ //TODO need more sample data
+ return tr("Flags Unknown.");
+}
+
+/**
+* Interp slot 250 slots used/free etc
+* @param l loconetmessage
+* @param slot slot number
+* @return formated message
+*/
+/*private*/ /*static*/ QString LocoNetMessageInterpret::interpretExtendedSlot_StatusData_Slots(LocoNetMessage* l, int slot) {
+ //TODO there is still more data in this slot.
+ double msgInUse;
+ double msgIdle;
+ double msgFree;
+ msgInUse = (l->getElement(4) + ( l->getElement(5) * 128)) ;
+ msgIdle = (l->getElement(6) + ( l->getElement(7) * 128)) ;
+ msgFree = (l->getElement(8) + ( l->getElement(9) * 128)) ;
+ return tr("Slots InUse %1, Idle %2, Free %3").arg(
+        msgInUse).arg(
+        msgIdle).arg(
+        msgFree);
 }
 
 /*private*/ /*static*/ /*final*/ QList<QString> LocoNetMessageInterpret::ds54sensors = QList<QString>() <<"AuxA"<< "SwiA"<< "AuxB"<< "SwiB"<< "AuxC"<< "SwiC"<< "AuxD"<< "SwiD";    // NOI18N

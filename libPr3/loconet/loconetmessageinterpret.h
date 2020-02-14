@@ -80,6 +80,17 @@ private:
  /*public*/ static QString dotme(int val);
  /*private*/ static QString idString(int id1, int id2);
  /*private*/ static QString getAlmTaskType(int taskTypeByte);
+ /*private*/ static QString interpretOpcExpMoveSlots(LocoNetMessage* l);
+
+  /*private*/ static QString interpretExtendedSlotRdWr(LocoNetMessage* l, int slot);
+ /*private*/ static QString interpretExtendedSlot_StatusData(LocoNetMessage* l, int slot);
+ /*private*/ static QString interpretExtendedSlot_StatusData_Base(LocoNetMessage* l, int slot);
+ /*private*/ static QString interpretExtendedSlot_StatusData_Base_Detail(LocoNetMessage* l, int slot);
+ /*private*/ static QString interpretExtendedSlot_StatusData_Electric(LocoNetMessage* l, int slot);
+ /*private*/ static QString interpretExtendedSlot_StatusData_LocoNet(LocoNetMessage* l, int slot);
+ /*private*/ static QString interpretExtendedSlot_StatusData_Flags(LocoNetMessage* l, int slot);
+ /*private*/ static QString interpretExtendedSlot_StatusData_Slots(LocoNetMessage* l, int slot);
+
 
  /*private*/ static /*final*/ QList<QString> ds54sensors; //[] = {"AuxA", "SwiA", "AuxB", "SwiB", "AuxC", "SwiC", "AuxD", "SwiD"};    // NOI18N
  /*private*/ static /*final*/ QList<QString> ds64sensors;//[] = {"A1", "S1", "A2", "S2", "A3", "S3", "A4", "S4"};                    // NOI18N

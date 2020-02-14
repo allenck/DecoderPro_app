@@ -45,7 +45,7 @@
             break;
         default:
             // do nothing
-     break;
+            break;
     }
 }
 
