@@ -14,6 +14,8 @@
 #include "importrosteritemaction.h"
 #include "jfilechooser.h"
 #include "joptionpane.h"
+#include "file.h"
+
 
 FullBackupImportAction::FullBackupImportAction(QObject *parent) :
   ImportRosterItemAction("Import Roster Backup", (WindowInterface*)parent)
@@ -138,12 +140,19 @@ void FullBackupImportAction::common()
    QString fn = zipper->getCurrentFileName();
    if(fn.endsWith(".jpg", Qt::CaseInsensitive) || fn.endsWith(".png", Qt::CaseInsensitive) || fn.endsWith(".gif", Qt::CaseInsensitive) || fn.endsWith(".svn", Qt::CaseInsensitive) || fn.endsWith(".ico", Qt::CaseInsensitive))
    {
+    File* location = new File(LocoFile::getFileLocation());
+    if(!location->exists())
+    {
+      location->mkdirs();
+    }
     QFile fOut(LocoFile::getFileLocation()+ fn);
     if(fOut.open(QIODevice::WriteOnly))
     {
      fOut.write(ba);
      fOut.close();
     }
+    else
+      throw IOException(tr("error writing file %1").arg(fOut.fileName()));
     inputFile->close();
     f = zipper->goToNextFile();
     continue;

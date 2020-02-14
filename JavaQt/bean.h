@@ -43,6 +43,7 @@ friend class ManagerDefaultsConfigPane;
 friend class SATableModel;
 friend class ManagerDefaultSelector;
 friend class UserMessagePreferencesPane;
+friend class AmpMeterFrame;
 };
 
 #endif // BEAN_H
