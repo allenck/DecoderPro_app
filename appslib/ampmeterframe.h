@@ -4,7 +4,7 @@
 #include "jmrijframe.h"
 #include "jlabel.h"
 #include "namedicon.h"
-#include "multimeter.h"
+#include "abstractmultimeter.h"
 
 class QPushButton;
 class AmpMeterFrame : public JmriJFrame
@@ -35,7 +35,7 @@ private:
  /*private*/ int startWidth;
  /*private*/ int startHeight;
 
- MultiMeter* meter;
+ AbstractMultiMeter* meter;
 
  QVector<NamedIcon*> digits;// = new NamedIcon[10];
  NamedIcon* percentIcon;

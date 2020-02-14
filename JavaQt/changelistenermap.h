@@ -8,6 +8,7 @@
 #include <QVector>
 #include <QHash>
 
+
 template <class L>
 class ChangeListenerMap : public QObject, public EventListener
 {

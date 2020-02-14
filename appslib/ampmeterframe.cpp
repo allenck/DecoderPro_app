@@ -27,7 +27,7 @@
     //super(Bundle.getMessage("TrackCurrentMeterTitle"));
      digits = QVector<NamedIcon*>(10);
 
-    meter = (MultiMeter*)InstanceManager::getDefault("MultiMeter");
+    meter = (AbstractMultiMeter*)InstanceManager::getDefault("MultiMeter");
 }
 
 //@Override
@@ -78,6 +78,7 @@
 //            }
 //        };
     meter->addPropertyChangeListener(MultiMeter::CURRENT, /*du_listener*/(PropertyChangeListener*)this);
+
 #if 0
     // Add component listener to handle frame resizing event
     this.addComponentListener(
@@ -181,6 +182,7 @@ void AmpMeterFrame::resizeEvent(QResizeEvent */*e*/)
 //@Override
 /*public*/ void AmpMeterFrame::dispose() {
     meter->disable();
+    meter->removePropertyChangeListener(MultiMeter::CURRENT, (PropertyChangeListener*)this);
     meter->removePropertyChangeListener((PropertyChangeListener*)this);
     JmriJFrame::dispose();
 }

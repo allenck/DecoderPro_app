@@ -354,20 +354,6 @@ void InstanceManager::deregister(QObject* item, QString type)
  }
  return o;
 }
-#if 0
-template<class T>
-/*static*/ /*public*/ T InstanceManager::getDefault(T type) {
-//    log->trace(tr("getDefault of type %1").arg(type));
-//    return Objects.requireNonNull(InstanceManager.getNullableDefault(type),
-//            "Required nonnull default for " + type.getName() + " does not exist.");
-    QObject* o = InstanceManager::getNullableDefault(type);
-    if(o == NULL)
-     Logger::error( "Required nonnull default for " + QString(type) + " does not exist.");
-    else
-     o->setObjectName(type);
-  return o;
-}
-#endif
 
 /*static*/ /*public*/ AudioManager* InstanceManager::AudioManagerInstance()
 {

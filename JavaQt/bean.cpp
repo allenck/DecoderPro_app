@@ -142,7 +142,7 @@
 
 //@Override
 /*public*/ void Bean::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    propertyChangeSupport,removePropertyChangeListener(propertyName, listener);
+    propertyChangeSupport->removePropertyChangeListener(propertyName, listener);
 }
 
 /*public*/ QString Bean::getClass()

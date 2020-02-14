@@ -130,7 +130,7 @@
 
 /*public*/ JmriJFrame::~JmriJFrame()
 {
- dispose();
+ //dispose();
 }
 
 void JmriJFrame::init(bool saveSize, bool savePosition)

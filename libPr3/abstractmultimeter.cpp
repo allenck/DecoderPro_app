@@ -81,7 +81,7 @@
 /*public*/ void AbstractMultiMeter::setCurrent(float c) {
     float old = current_float;
     current_float = c;
-    this->firePropertyChange(CURRENT, QVariant(old), QVariant(c));
+    this->firePropertyChange(CURRENT, QVariant(-1), QVariant(c));
 }
 
 //@Override

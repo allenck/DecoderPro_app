@@ -45,17 +45,18 @@ protected:
  /*protected*/ void initTimer();
  void addPropertyChangeListener(PropertyChangeListener *listener){Bean::addPropertyChangeListener(listener);}
  void addPropertyChangeListener(QString propertyName, PropertyChangeListener *listener){Bean::addPropertyChangeListener(propertyName, listener);}
- QVector<PropertyChangeListener*> getPropertyChangeListeners() {Bean::getPropertyChangeListeners();}
- QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) { Bean::getPropertyChangeListeners(propertyName);}
+ QVector<PropertyChangeListener*> getPropertyChangeListeners() {return Bean::getPropertyChangeListeners();}
+ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) { return Bean::getPropertyChangeListeners(propertyName);}
  void removePropertyChangeListener(PropertyChangeListener *listener){Bean::removePropertyChangeListener(listener);}
  void removePropertyChangeListener(QString propertyName, PropertyChangeListener *listener){Bean::removePropertyChangeListener(propertyName, listener);}
  friend class UpdateTask;
+ friend class AmpMeterFrame;
 };
 
 /*private*/ class UpdateTask : public TimerTask
 {
  Q_OBJECT
- /*private*/ bool is_enabled = true;
+ /*private*/ bool is_enabled = false;
  AbstractMultiMeter* amm;
 
 public:

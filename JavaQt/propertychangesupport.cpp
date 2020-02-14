@@ -314,18 +314,24 @@
    return;
   QString name = event->getPropertyName();
 
-  QVector<PropertyChangeListener*> common = this->map->get(NULL);
+  QVector<PropertyChangeListener*> common = this->map->get("");
   QVector<PropertyChangeListener*> named = !name.isEmpty() ? this->map->get(name): QVector<PropertyChangeListener*>();
 
-  //fire(common, event);
-  //fire(named, event);
+  fire(common, event);
+  fire(named, event);
   emit propertyChange(event);
-
+//  foreach (PropertyChangeListener* l, common)
+//  {
+//   if(!QMetaObject::invokeMethod(l, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
+//   {
+//       Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(l->metaObject()->className()));
+//       return;
+//   }
+//  }
 }
 
 /*private static*/ void PropertyChangeSupport::fire(QVector<PropertyChangeListener*> listeners, PropertyChangeEvent* event)
 {
- Logger* log = new Logger("PropertyChangeSupport");
 #if 1
  if (!listeners.isEmpty())
  {
@@ -338,13 +344,13 @@
      //((PropertyChangeListener*)listener)->propertyChange(event);
      if(!QMetaObject::invokeMethod(listener, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
      {
-         log->error(tr("invoke method 'propertyChange' failed for %1").arg(listener->metaObject()->className()));
+         Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(listener->metaObject()->className()));
          return;
      }
     }
     else
     {
-     log->error(tr("not implemented %1").arg(listener->metaObject()->className()));
+     Logger::error(tr("not implemented %1").arg(listener->metaObject()->className()));
     //Q_ASSERT(false);
     }
      // NOTE: Class must have a Q_OBJECT macro otherwise you will get  a "void value not ignored as it ought to be error on Q_OBJECT!
