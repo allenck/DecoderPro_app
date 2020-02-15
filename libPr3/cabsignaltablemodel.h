@@ -2,6 +2,7 @@
 #define CABSIGNALTABLEMODEL_H
 #include "abstracttablemodel.h"
 
+class AbstractCabSignalManager;
 class PropertyChangeEvent;
 class CabSignalManager;
 class Logger;
@@ -25,24 +26,25 @@ public:
   MAX_COLUMN = 9
  };
 
- CabSignalTableModel(int row, int column, QObject *parent);
- /*public*/ int getRowCount();
- /*public*/ int getColumnCount();
- /*public*/ QString getColumnName(int col);
+ CabSignalTableModel(int row, int column, QObject *parent = nullptr);
+ /*public*/ int getRowCount() const override;
+ /*public*/ int getColumnCount() const override;
+ /*public*/ QString getColumnName(int col) const override;
  /*public*/ static int getPreferredWidth(int col);
- /*public*/ QString getColumnClass(int col);
- /*public*/ bool isCellEditable(int row, int col);
+ /*public*/ QString getColumnClass(int col) const override;
+ /*public*/ bool isCellEditable(int row, int col) override;
  /*public*/ void configureTable(JTable* cmdStatTable);
- /*public*/ QVariant getValueAt(int row, int col);
- /*public*/ void setValueAt(QVariant value, int row, int col);
+ /*public*/ QVariant getValueAt(int row, int col) override;
+ /*public*/ void setValueAt(QVariant value, int row, int col) override;
  /*public*/ void dispose();
+ /*public*/ QVariant getToolTip(int col) const override;
 
 public slots:
  void propertyChange(PropertyChangeEvent*);
 
 private:
  static Logger* log;
-/*private*/ CabSignalManager* cabSignalManager;
+/*private*/ AbstractCabSignalManager* cabSignalManager = nullptr;
  /*private*/ void chngblockdir(int row);
 
 protected:
@@ -60,7 +62,7 @@ protected:
 // }; // Length = number of items in array should (at least) match number of columns
 
 /*protected*/ void setPanelPauseButton(bool isPaused);
-
+ friend class CabSignalPane;
 };
 
 #endif // CABSIGNALTABLEMODEL_H

@@ -14,9 +14,9 @@ public:
 public slots:
  virtual void propertyChange(PropertyChangeEvent* e);
 // {
-//  //Q_UNUSED(e)
-//  emit signalPropertyChange(e);
-// }
+//  //Q_UNUSED(e)pncpncpnc
+//  emit signalPropertyChange(e);kkkppp
+// }pnc
 
 signals:
  void signalPropertyChange(PropertyChangeEvent* e);

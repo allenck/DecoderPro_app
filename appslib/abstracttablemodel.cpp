@@ -453,6 +453,10 @@ QVariant AbstractTableModel::data(const QModelIndex &index, int role) const
  {
   return getValueAt(index.row(), index.column()).toBool()?Qt::Checked:Qt::Unchecked;
  }
+ if(role == Qt::ToolTipRole)
+ {
+  return getToolTip(index.column());
+ }
  if(role == Qt::DisplayRole)
  {
   return getValueAt(index.row(), index.column());

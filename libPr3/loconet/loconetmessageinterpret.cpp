@@ -445,15 +445,13 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
                 }
                 break;
             }
-#if 0
-        case LnConstants.OPC_EXP_SEND_FUNCTION_OR_SPEED_AND_DIR: {
-                        result = interpretPocExpLocoSpdDirFunction(l);
-                        if (result.length() > 0) {
-                            return result;
-                        }
-                        break;
-                    }
-#endif
+            case LnConstants::OPC_EXP_SEND_FUNCTION_OR_SPEED_AND_DIR: {
+                result = interpretPocExpLocoSpdDirFunction(l);
+                if (result.length() > 0) {
+                    return result;
+                }
+                break;
+            }
 
             /*
              * OPC_PANEL_QUERY 0xDF messages used by throttles to discover
@@ -4433,47 +4431,46 @@ QString LocoNetMessageInterpret::convertToMixed(int addressLow, int addressHigh)
             return tr("Move data in slot %1 to slot %2.").arg(src).arg(dest);
         }
     }
-#if 0 // TODO:
-    /*private*/ static QString interpretPocExpLocoSpdDirFunction(LocoNetMessage* l) {
+    /*private*/ /*static*/ QString LocoNetMessageInterpret::interpretPocExpLocoSpdDirFunction(LocoNetMessage* l) {
         int slot = ((l->getElement(1) & 0x03) * 128) + (l->getElement(2) & 0x7f);
         if ((l->getElement(1) & LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_SPEED) == 0) {
             // speed and direction
             int spd = l->getElement(4);
-            QString direction = Bundle.getMessage((l->getElement(1) & 0b00001000) != 0
-                    ? "LN_MSG_DIRECTION_REV" : "LN_MSG_DIRECTION_FWD");
-            QString throttleID = Integer.toHexString(l->getElement(3));
-            return Bundle.getMessage("LN_MSG_OPC_EXP_SPEED_DIRECTION", slot, spd, direction, throttleID);
+            QString direction = tr((l->getElement(1) & 0b00001000) != 0
+                    ? "Reverse" : "Forward");
+            QString throttleID = QString::number(l->getElement(3),16);
+            return tr("Slot %1 Speed %2 Direction %3 ThrottleID %4.\n").arg(slot).arg(spd).arg(direction).arg(throttleID);
         }
         // Build a string for the functions on off
         QVector<QString> fn = QVector<QString>(8);
         for (int bitIndex = 0; bitIndex < 8; bitIndex++) {
-            fn[bitIndex] = (l->getElement(4) >> (7 - bitIndex) & 1) == 1 ? Bundle.getMessage("LN_MSG_FUNC_ON")
-                    : Bundle.getMessage("LN_MSG_FUNC_OFF");
+            fn[bitIndex] = (l->getElement(4) >> (7 - bitIndex) & 1) == 1 ? tr("On")
+                    : tr("Off");
         }
         if ((l->getElement(1) &
                 LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION) == LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F0F6_MASK) {
-            return Bundle.getMessage("LN_MSG_OPC_EXP_FUNCTIONS_F0_F6", slot, fn[3], fn[7], fn[6], fn[5], fn[4], fn[2],
+            return tr("Slot %1 F0=%2 F1=%3 F2=%4 F3=%5 F4=%6 F5=%7 F6=%8.\n").arg(slot).arg(fn[3]).arg(fn[7]).arg(fn[6]).arg(fn[5]).arg(fn[4]).arg(fn[2]).arg(
                     fn[1]);
         } else if ((l->getElement(1) &
                 LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION) == LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F7F13_MASK) {
-            return Bundle.getMessage("LN_MSG_OPC_EXP_FUNCTIONS_F7_F13", slot, fn[7], fn[6], fn[5], fn[4], fn[3], fn[2],
+            return tr("Slot %1 F7=%2 F8=%3 F9=%4 F10=%5 F11=%6 F12=%7 F13=%8.\n").arg(slot).arg(fn[7]).arg(fn[6]).arg(fn[5]).arg(fn[4]).arg(fn[3]).arg(fn[2],
                     fn[1]);
         } else if ((l->getElement(1) &
                 LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION) == LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F14F20_MASK) {
-            return Bundle.getMessage("LN_MSG_OPC_EXP_FUNCTIONS_F14_F20",slot, fn[7], fn[6], fn[5], fn[4], fn[3], fn[2],
+            return tr("Slot %1 F14=%2 F15=%3 F16=%4 F17=%5 F18=%6 F19=%7 F20=%8.\n").arg(slot).arg(fn[7]).arg(fn[6]).arg(fn[5]).arg(fn[4]).arg(fn[3]).arg(fn[2]).arg(
                     fn[1]);
         } else if ((l->getElement(1) &
                 LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION) == LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28OFF_MASK) {
-            return Bundle.getMessage("LN_MSG_OPC_EXP_FUNCTIONS_F21_F28",slot, fn[7], fn[6], fn[5], fn[4], fn[3], fn[2],
-                    fn[1], Bundle.getMessage("LN_MSG_FUNC_OFF"));
+            return tr("Slot %1 F21=%2 F28=%3 F23=%4 F24=%5 F25=%6 F28=%7 F27=%8 F28=%9.\n").arg(slot).arg(fn[7]).arg(fn[6]).arg(fn[5]).arg(fn[4]).arg(fn[3]).arg(fn[2]).arg(
+                    fn[1]).arg(tr("Off"));
         } else if ((l->getElement(1) &
                 LnConstants::OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION) == LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28ON_MASK) {
-            return Bundle.getMessage("LN_MSG_OPC_EXP_FUNCTIONS_F21_F28", slot, fn[7], fn[6], fn[5], fn[4], fn[3], fn[2],
-                    fn[1], Bundle.getMessage("LN_MSG_FUNC_ON"));
+            return tr("Slot %1 F21=%2 F28=%3 F23=%4 F24=%5 F25=%6 F28=%7 F27=%8 F28=%9.\n").arg(slot).arg(fn[7]).arg(fn[6]).arg(fn[5]).arg(fn[4]).arg(fn[3]).arg(fn[2]).arg(
+                    fn[1]).arg(tr("On"));
         }
         return "";
     }
-#endif
+
 /*private*/ /*static*/ QString LocoNetMessageInterpret::interpretExtendedSlotRdWr(LocoNetMessage* l, int slot) {
     /**
      * ************************************************

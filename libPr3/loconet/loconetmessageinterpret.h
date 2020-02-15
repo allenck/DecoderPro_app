@@ -81,8 +81,8 @@ private:
  /*private*/ static QString idString(int id1, int id2);
  /*private*/ static QString getAlmTaskType(int taskTypeByte);
  /*private*/ static QString interpretOpcExpMoveSlots(LocoNetMessage* l);
-
-  /*private*/ static QString interpretExtendedSlotRdWr(LocoNetMessage* l, int slot);
+ /*private*/ static QString interpretPocExpLocoSpdDirFunction(LocoNetMessage* l);
+ /*private*/ static QString interpretExtendedSlotRdWr(LocoNetMessage* l, int slot);
  /*private*/ static QString interpretExtendedSlot_StatusData(LocoNetMessage* l, int slot);
  /*private*/ static QString interpretExtendedSlot_StatusData_Base(LocoNetMessage* l, int slot);
  /*private*/ static QString interpretExtendedSlot_StatusData_Base_Detail(LocoNetMessage* l, int slot);

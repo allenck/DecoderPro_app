@@ -382,7 +382,7 @@ enum PCMD
        /*public final*/ static int LOCONETPROTOCOL_ONE;// = 1;
        /** Supports the protocol introduced to DCS240, DCS210 */
        /*public final*/ static int LOCONETPROTOCOL_TWO;// = 2;
-
+#if 0
        /* Expanded slot codes */
        /*public final*/ static int OPC_EXP_REQ_SLOT;// = 0xbe;
        /*public final*/ static int OPC_EXP_SLOT_MOVE;// = 0xd4;
@@ -397,6 +397,23 @@ enum PCMD
        /*public final*/ static int OPC_EXP_SEND_FUNCTION_GROUP_F14F20_MASK;// = 0b00100000;
        /*public final*/ static int OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28OFF_MASK;// = 0b00101000;
        /*public final*/ static int OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28ON_MASK;// =  0b00110000;
+#endif
+   enum EXPANDEDSLOTCODES
+   {
+    OPC_EXP_REQ_SLOT = 0xbe,
+    OPC_EXP_SLOT_MOVE = 0xd4,
+    OPC_EXP_RD_SL_DATA = 0xe6,
+    OPC_EXP_WR_SL_DATA = 0xee,
+    OPC_EXP_SEND_SUB_CODE_MASK_SPEED = 0b11110000,
+    OPC_EXP_SEND_SUB_CODE_MASK_FUNCTION = 0b11111000,
+    OPC_EXP_SEND_FUNCTION_OR_SPEED_AND_DIR = 0xd5,
+    OPC_EXP_SEND_SPEED_AND_DIR_MASK = 0b00010000,
+    OPC_EXP_SEND_FUNCTION_GROUP_F0F6_MASK = 0b00010000,
+    OPC_EXP_SEND_FUNCTION_GROUP_F7F13_MASK = 0b00011000,
+    OPC_EXP_SEND_FUNCTION_GROUP_F14F20_MASK = 0b00100000,
+    OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28OFF_MASK = 0b00101000,
+    OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28ON_MASK =  0b00110000
+   };
 
    static QString OPC_NAME(int opcode);
 

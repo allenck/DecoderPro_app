@@ -34,6 +34,7 @@
 #include "loadxmlthrottleslayoutaction.h"
 #include "loaddefaultxmlthrottleslayoutaction.h"
 #include "ampmeteraction.h"
+#include "cabsignalaction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -171,6 +172,9 @@ addAction(ta);
  addAction(new SpeedometerAction(tr("Speedometer..."),this));
  addAction(new AmpMeterAction(tr("Amp Meter"),this));
  addAction(new SimpleLightCtrlAction(tr("Light Control..."),this));
+ addSeparator();
+ // operations menu
+ addMenu(new OperationsMenu());
  addAction(new DispatcherAction(tr("Dispatcher..."),this));
  addSeparator();
  addAction(new SendPacketAction(tr("Send DCC Packet"),this));
@@ -179,8 +183,7 @@ addAction(ta);
  // US&S CTC subsystem tools
  addMenu(new jmri.jmrit.ussctc.ToolsMenu());
 #endif
- // operations menu
- addMenu(new OperationsMenu());
+ addAction(new CabSignalAction(this));
  addSeparator();
  // add start web server
  addAction(new WebServerAction(this));

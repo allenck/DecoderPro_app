@@ -975,7 +975,9 @@ SOURCES += \
     hasconnectionbutunabletoconnectexception.cpp \
     cabsignaltablemodel.cpp \
     defaultcabsignalmanager.cpp \
-    timerutil.cpp
+    timerutil.cpp \
+    cabsignalpane.cpp \
+    cabsignalaction.cpp
 
 
  !contains(FTDI, 1) {
@@ -1955,7 +1957,9 @@ HEADERS += \
     hasconnectionbutunabletoconnectexception.h \
     cabsignaltablemodel.h \
     defaultcabsignalmanager.h \
-    timerutil.h
+    timerutil.h \
+    cabsignalpane.h \
+    cabsignalaction.h
 
 
  !contains(FTDI, 1) {

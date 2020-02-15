@@ -46,7 +46,6 @@ SOURCES += javaqt.cpp \
     tablecolumn.cpp \
     xtablecolumnmodel.cpp \
     propertychangeevent.cpp \
-    propertychangelistener.cpp \
     propertychangelistenermap.cpp \
     propertychangelistenerproxy.cpp \
     propertychangesupport.cpp \
@@ -246,7 +245,8 @@ SOURCES += javaqt.cpp \
     splitbuttoncolorchooserpanel.cpp \
     jsplitbutton.cpp \
     colorlistpopupmenu.cpp \
-    externallinkcontentviewerui.cpp
+    externallinkcontentviewerui.cpp \
+    propertychangelistener.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \

@@ -65,7 +65,7 @@ int LnConstants::OPC_LOCO_SPD_ESTOP = 0x01; /* emergency stop command           
     /*public final static*/int LnConstants::LOCONETPROTOCOL_ONE = 1;
     /** Supports the protocol introduced to DCS240, DCS210 */
     /*public final static*/int LnConstants::LOCONETPROTOCOL_TWO = 2;
-
+#if 0
     /* Expanded slot codes */
     /*public final static*/int LnConstants::OPC_EXP_REQ_SLOT = 0xbe;
     /*public final static*/int LnConstants::OPC_EXP_SLOT_MOVE = 0xd4;
@@ -80,6 +80,7 @@ int LnConstants::OPC_LOCO_SPD_ESTOP = 0x01; /* emergency stop command           
     /*public final static*/int LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F14F20_MASK = 0b00100000;
     /*public final static*/int LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28OFF_MASK = 0b00101000;
     /*public final static*/int LnConstants::OPC_EXP_SEND_FUNCTION_GROUP_F21F28_F28ON_MASK =  0b00110000;
+#endif
 /* Slot Status byte definitions and macros */
 /***********************************************************************************
 *   D7-SL_SPURGE    ; 1=SLOT purge en,                                             *

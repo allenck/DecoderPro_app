@@ -34,7 +34,7 @@ public:
     virtual /*public*/ int getColumnCount() const {return columnCount(QModelIndex());}
     virtual /*public*/ QVariant getValueAt(int row, int col) const;
     virtual /*public*/ QString getColumnClass(int col) const;
-
+    virtual /*public*/ QVariant getToolTip(int col) const {}
  void setTable(JTable*);
  void setPersistentButtons();
  JTable* table();
