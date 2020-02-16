@@ -2,7 +2,7 @@
 #define CABSIGNALTABLEMODEL_H
 #include "abstracttablemodel.h"
 
-class AbstractCabSignalManager;
+class DefaultCabSignalManager;
 class PropertyChangeEvent;
 class CabSignalManager;
 class Logger;
@@ -34,7 +34,7 @@ public:
  /*public*/ QString getColumnClass(int col) const override;
  /*public*/ bool isCellEditable(int row, int col) override;
  /*public*/ void configureTable(JTable* cmdStatTable);
- /*public*/ QVariant getValueAt(int row, int col) override;
+ /*public*/ QVariant getValueAt(int row, int col) const override;
  /*public*/ void setValueAt(QVariant value, int row, int col) override;
  /*public*/ void dispose();
  /*public*/ QVariant getToolTip(int col) const override;
@@ -44,7 +44,7 @@ public slots:
 
 private:
  static Logger* log;
-/*private*/ AbstractCabSignalManager* cabSignalManager = nullptr;
+/*private*/ DefaultCabSignalManager* cabSignalManager = nullptr;
  /*private*/ void chngblockdir(int row);
 
 protected:

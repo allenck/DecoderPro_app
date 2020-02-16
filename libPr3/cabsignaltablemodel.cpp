@@ -26,24 +26,25 @@
 
 CabSignalTableModel::CabSignalTableModel(int /*row*/, int /*column*/, QObject */*parent*/)
 {
+ cabSignalManager = (DefaultCabSignalManager*)InstanceManager::getNullableDefault("CabSignalManager");
  if(cabSignalManager == nullptr){
     log->info("creating new DefaultCabSignalManager");
     InstanceManager::store(new DefaultCabSignalManager(), "CabSignalManager");
-    cabSignalManager = (AbstractCabSignalManager*)InstanceManager::getNullableDefault("CabSignalManager");
+    cabSignalManager = (DefaultCabSignalManager*)InstanceManager::getNullableDefault("CabSignalManager");
  }
 }
 
 // order needs to match column list top of dtabledatamodel
 /*static*/ /*protected*/ /*final*/QStringList CabSignalTableModel::columnToolTips = {
     "", // loco id
-    tr("CabsigCheckboxTip"),
-    tr("BlockUserName"),
-    tr("BlockDirectionTip"),
+    tr("Data send will also be paused by the master Pause / Resume button"),
+    tr("Block Username"),
+    tr("North / South / East / West, 8 point block direction"),
     "", // block lookup button
-    tr("NextBlockTip"),
-    tr("NextSignalTip"),
-    tr("NextAspectTip"),
-    tr("NextAspectTip"), // aspect icon
+    tr("Next block in direction from current block"),
+    tr("Next signal found"),
+    tr("Aspect of next signal"),
+    tr("Aspect of next signal"), // aspect icon
 
 }; // Length = number of items in array should (at least) match number of columns
 
@@ -197,7 +198,7 @@ CabSignalTableModel::CabSignalTableModel(int /*row*/, int /*column*/, QObject */
  * @param col int col number
  */
 //@Override
-/*public*/ QVariant CabSignalTableModel::getValueAt(int row, int col) {
+/*public*/ QVariant CabSignalTableModel::getValueAt(int row, int col) const {
     SignalMast* mast;
     Block* b;
     switch (col) {

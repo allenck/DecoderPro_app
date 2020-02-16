@@ -66,12 +66,12 @@ _readButtons = new QVector<QPushButton*>();
 /*public*/ int VariableTableModel::columnCount(const QModelIndex &/*parent*/) const
 { return headers.length();}
 
-/*public*/ QString VariableTableModel::getColumnName(int col) {
+/*public*/ QString VariableTableModel::getColumnName(int col) const {
     if (log->isDebugEnabled()) log->debug("getColumnName "+QString::number(col));
     return headers[col];
 }
 
-/*public*/ QString VariableTableModel::getColumnClass(int col) {
+/*public*/ QString VariableTableModel::getColumnClass(int col) const {
     // if (log->isDebugEnabled()) log->debug("getColumnClass "+QString::number(col));
     if (headers[col]==("Value"))
         return "QLineEdit";
@@ -83,7 +83,7 @@ _readButtons = new QVector<QPushButton*>();
         return "QString";
 }
 
-/*public*/ bool VariableTableModel::isCellEditable(int row, int col) {
+/*public*/ bool VariableTableModel::isCellEditable(int row, int col) const {
     if (log->isDebugEnabled()) log->debug("isCellEditable "+QString::number(col));
     if (headers[col]==("Value"))
         return true;

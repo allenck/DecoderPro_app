@@ -47,6 +47,7 @@ private:
     /*private*/ static /*final*/ QString LONGEST_STRING;// = "MMMM";
     /*private*/ void changeFontSizes();
     void reportError(QString msg);
+     QString currText;
 
 };
 

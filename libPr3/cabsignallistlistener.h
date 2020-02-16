@@ -29,5 +29,5 @@ public:
     /*public*/ virtual void notifyCabSignalListChanged() =0;
     virtual QObject* self() =0;
 };
-
+Q_DECLARE_INTERFACE(CabSignalListListener, "CabSignalListListener")
 #endif // CABSIGNALLISTLISTENER_H

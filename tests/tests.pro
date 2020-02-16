@@ -216,7 +216,8 @@ SOURCES += \
     jemmyutil.cpp \
     testconsistmanager.cpp \
     namecomponentchooser.cpp \
-    loconet/enterreporterdialogtest.cpp
+    loconet/enterreporterdialogtest.cpp \
+    cabsignals/cabsignaltablemodeltest.cpp
 
 HEADERS += \
         tests.h \
@@ -411,7 +412,8 @@ HEADERS += \
     testconsistmanager.h \
     namecomponentchooser.h \
     loconet/enterreporterdialogtest.h \
-    abstracttableactionbase.h
+    abstracttableactionbase.h \
+    cabsignals/cabsignaltablemodeltest.h
 
 unix {
     target.path = /usr/lib

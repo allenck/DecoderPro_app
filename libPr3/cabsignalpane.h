@@ -3,7 +3,9 @@
 #include "jmripanel.h"
 #include "jtable.h"
 #include "cabsignaltablemodel.h"
+#include "cabsignallistlistener.h"
 
+class AbstractCabSignalManager;
 class CabSignalTableModel;
 class JLabel;
 class QAction;
@@ -12,10 +14,10 @@ class DccLocoAddressSelector;
 class RosterEntryComboBox;
 class QPushButton;
 class XTableColumnModel;
-class CabSignalManager;
-class CabSignalPane : public JmriPanel
+class CabSignalPane : public JmriPanel, public CabSignalListListener
 {
  Q_OBJECT
+ Q_INTERFACES(CabSignalListListener)
 public:
  CabSignalPane(QWidget* parent = nullptr);
  /*public*/ void initComponents();
@@ -25,6 +27,7 @@ public:
  /*public*/ void dispose();
  /*public*/ void notifyCabSignalListChanged();
  /*public*/ QString getTitle();
+ /*public*/ QObject* self() {return this;}
 
 public slots:
  /*public*/ void addLocoButtonActionPerformed(/*ActionEvent e*/);
@@ -34,7 +37,7 @@ public slots:
 
 private:
  static Logger* log;
- /*private*/ CabSignalManager* cabSignalManager;
+ /*private*/ AbstractCabSignalManager* cabSignalManager;
  /*private*/ QMenu* cabSigColMenu;// = new QMenu(tr("Signal Data Columns"));
  /*private*/ JToggleButton* masterPauseButton;
  JLabel* textLocoLabel;// = new JLabel();

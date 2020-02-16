@@ -55,10 +55,10 @@
  {
     mainFrame = new DecoderPro3Window(DecoderPro3::getMenuFile(), DecoderPro3::getToolbarFile());
     UserPreferencesManager* p =(UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
-    if (!p->isWindowPositionSaved(mainFrame->getWindowFrameRef())) {
-        mainFrame->resize(QSize(1024, 600));
-        mainFrame->setMaximumSize(QSize(1024, 600));
-    }
+//    if (!p->isWindowPositionSaved(mainFrame->getWindowFrameRef())) {
+//        mainFrame->resize(QSize(1024, 600));
+//        mainFrame->setMaximumSize(QSize(1024, 600));
+//    }
     //if (wi instanceof RosterGroupSelector)
 //    if(qobject_cast<RosterGroupSelector>(wi) != NULL)
 //    {

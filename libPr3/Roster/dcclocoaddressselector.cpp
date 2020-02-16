@@ -124,7 +124,7 @@ void DccLocoAddressSelector::configureBox(QStringList protocols)
 /*public*/ DccLocoAddress* DccLocoAddressSelector::getAddress()
 {
  // no object if no address
- QString t= text->text();
+ QString t = text->text();
  if (t ==("")) return NULL;
 
  // ask the Throttle Manager to handle this!
@@ -151,6 +151,7 @@ void DccLocoAddressSelector::configureBox(QStringList protocols)
 //            box.setSelectedItem(jmri.LocoAddress.Protocol.OPENLCB.getPeopleName());
 //        } else
   {
+   currText = QString::number(a->getNumber());
    text->setText(QString::number(a->getNumber()));
    if(InstanceManager::throttleManagerInstance()!=NULL)
    {

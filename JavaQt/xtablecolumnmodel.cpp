@@ -56,6 +56,7 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
  if (!visible)
  {
   DefaultTableColumnModel::removeColumn(column);
+
  }
  else
  {

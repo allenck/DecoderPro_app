@@ -29,11 +29,11 @@ public:
  };
     explicit VariableTableModel(QObject *parent = 0);
 /*public*/ VariableTableModel(QLabel* status, QStringList h, CvTableModel* cvModel, /*IndexedCvTableModel* iCvModel,*/ QObject *parent = 0);
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ QString getColumnName(int col);
-    /*public*/ QString getColumnClass(int col);
-    /*public*/ bool isCellEditable(int row, int col);
+    /*public*/ int rowCount(const QModelIndex &parent) const override;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ QString getColumnName(int col) const  override;
+    /*public*/ QString getColumnClass(int col) const  override;
+    /*public*/ bool isCellEditable(int row, int col)const  override;
     /*public*/ VariableValue* getVariable(int row);
     /*public*/ QString getLabel(int row);
     /*public*/ QString getItem(int row);
@@ -43,7 +43,7 @@ public:
     /*public*/ void setState(int row, int val);
     /*public*/ int getState(int row) ;
     /*public*/ QWidget* getRep(int row, QString format);
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
     /*public*/ void setRow(int row, QDomElement e);
     /*public*/ QString piCv();

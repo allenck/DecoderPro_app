@@ -16,6 +16,7 @@
 #include "loggerfactory.h"
 #include "flowlayout.h"
 #include "globalrosterentrycombobox.h"
+#include <QGroupBox>
 
 /**
  * Pane for sending Cab Signal data via block lookup
@@ -58,182 +59,185 @@
 //            }
 //        };
 
-  JTable* slotTable = new JTable(slotModel);
-  slotTable->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
+ slotTable = new JTable(slotModel);
 
-    // Use XTableColumnModel so we can control which columns are visible
-    slotTable->setColumnModel(tcm);
-    slotTable->createDefaultColumnsFromModel();
-    QSignalMapper* cabSigColMenuMapper = new QSignalMapper(this);
-    connect(cabSigColMenuMapper, SIGNAL(mapped(QObject*)), this, SLOT(on_cabSigColMenuMapper(QObject)));
+ // Use XTableColumnModel so we can control which columns are visible
+ slotTable->setColumnModel(tcm);
+ slotTable->createDefaultColumnsFromModel();
+ slotTable->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
 
-    for (int i = 0; i < slotTable->getColumnCount(); i++)
+ QSignalMapper* cabSigColMenuMapper = new QSignalMapper(this);
+ connect(cabSigColMenuMapper, SIGNAL(mapped(QObject*)), this, SLOT(on_cabSigColMenuMapper(QObject*)));
+
+ for (int i = 0; i < slotTable->getColumnCount(); i++)
+ {
+     int colnumber=i;
+     QString colName = slotTable->getColumnName(colnumber);
+     QAction* showcol = new QAction(colName);
+     showcol->setData(colnumber);
+     showcol->setCheckable(true);
+     colMenuList.append(showcol);
+     cabSigColMenu->addAction(showcol); // cabsig columns
+     connect(showcol, SIGNAL(triggered(bool)), cabSigColMenuMapper, SLOT(map()));
+     cabSigColMenuMapper->setMapping(showcol, showcol);
+ }
+
+ for (int i = 0; i < CabSignalTableModel::MAX_COLUMN; i++)
+ {
+  int colnumber=i;
+      TableColumn* column  = tcm->getColumnByModelIndex(colnumber);
+
+  //if (Arrays.stream(CabSignalTableModel.startupColumns).anyMatch(j -> j == colnumber))
+  bool bMatch = false;
+  foreach( int j, CabSignalTableModel::startupColumns)
+  {
+    if(j == colnumber)
     {
-        int colnumber=i;
-        QString colName = slotTable->getColumnName(colnumber);
-        QAction* showcol = new QAction(colName);
-        showcol->setData(colnumber);
-        showcol->setCheckable(true);
-        colMenuList.append(showcol);
-        cabSigColMenu->addAction(showcol); // cabsig columns
-        cabSigColMenuMapper->setMapping(showcol, showcol);
+     bMatch = true;
+     break;
     }
-
-    for (int i = 0; i < CabSignalTableModel::MAX_COLUMN; i++) {
-        int colnumber=i;
-            TableColumn* column  = tcm->getColumnByModelIndex(colnumber);
-
-        //if (Arrays.stream(CabSignalTableModel.startupColumns).anyMatch(j -> j == colnumber))
-        bool bMatch = false;
-        foreach( int j, CabSignalTableModel::startupColumns)
-        {
-          if(j == colnumber)
-          {
-           bMatch = true;
-           break;
-          }
-        }
-        if(bMatch)
-        {
-            colMenuList.at(colnumber)->setChecked(true);
-            tcm->setColumnVisible(column, true);
-        } else {
-            colMenuList.at(colnumber)->setChecked(false);
-            tcm->setColumnVisible(column, false);
-        }
+  }
+  if(bMatch)
+  {
+      colMenuList.at(colnumber)->setChecked(true);
+      tcm->setColumnVisible(column, true);
+  } else {
+      colMenuList.at(colnumber)->setChecked(false);
+      tcm->setColumnVisible(column, false);
+  }
 #if 0
-        colMenuList.at(colnumber).addActionListener(new ActionListener() {
-            //@Override
-            /*public*/ void actionPerformed(ActionEvent e) {
-                TableColumn column  = tcm->getColumnByModelIndex(colnumber);
-                bool     visible = tcm->isColumnVisible(column);
-                tcm->setColumnVisible(column, !visible);
-            }
-        });
+  colMenuList.at(colnumber).addActionListener(new ActionListener() {
+      //@Override
+      /*public*/ void actionPerformed(ActionEvent e) {
+          TableColumn column  = tcm->getColumnByModelIndex(colnumber);
+          bool     visible = tcm->isColumnVisible(column);
+          tcm->setColumnVisible(column, !visible);
+      }
+  });
 #endif
-    }
+ }
 #if 0
-    slotTable->setAutoCreateRowSorter(true);
+ slotTable->setAutoCreateRowSorter(true);
 
-    /*final*/ TableRowSorter<CabSignalTableModel*> sorter = new TableRowSorter<CabSignalTableModel>(slotModel);
-    slotTable->setRowSorter(sorter);
+ /*final*/ TableRowSorter<CabSignalTableModel*> sorter = new TableRowSorter<CabSignalTableModel>(slotModel);
+ slotTable->setRowSorter(sorter);
 #endif
-    slotTable->setRowHeight(26);
+ slotTable->setRowHeight(26);
 
-    // configure items for GUI
-    slotModel->configureTable(slotTable);
+ // configure items for GUI
+ slotModel->configureTable(slotTable);
 #if 0  // see on_cabSigColMenuMapper
-    tcm->getColumnByModelIndex(CabSignalTableModel::REVERSE_BLOCK_DIR_BUTTON_COLUMN).setCellRenderer(
-        new ButtonRenderer() );
-    tcm->getColumnByModelIndex(CabSignalTableModel::REVERSE_BLOCK_DIR_BUTTON_COLUMN).setCellEditor(
-        new ButtonEditor( new JButton() ) );
+ tcm->getColumnByModelIndex(CabSignalTableModel::REVERSE_BLOCK_DIR_BUTTON_COLUMN).setCellRenderer(
+     new ButtonRenderer() );
+ tcm->getColumnByModelIndex(CabSignalTableModel::REVERSE_BLOCK_DIR_BUTTON_COLUMN).setCellEditor(
+     new ButtonEditor( new JButton() ) );
 
-    tcm.getColumnByModelIndex(CabSignalTableModel.NEXT_ASPECT_ICON).setCellRenderer(
-        tableSignalAspectRenderer() );
+ tcm.getColumnByModelIndex(CabSignalTableModel.NEXT_ASPECT_ICON).setCellRenderer(
+     tableSignalAspectRenderer() );
 #endif
 //        slotScroll = new JScrollPane(slotTable);
 //        slotScroll.setPreferredSize(new Dimension(400, 200));
-    slotTable->resize(400,200);
+ slotTable->setMinimumSize(400,200);
 
-    this->setLayout(new QVBoxLayout());//this, BoxLayout.Y_AXIS));
+ this->setLayout(new QVBoxLayout());//this, BoxLayout.Y_AXIS));
 
-    // add event displays
-    JPanel* p1 = new JPanel();
-    //p1.setLayout(new BorderLayout());
-    QVBoxLayout* p1Layout = new QVBoxLayout(p1);
+ // add event displays
+ JPanel* p1 = new JPanel();
+ //p1.setLayout(new BorderLayout());
+ QVBoxLayout* p1Layout = new QVBoxLayout(p1);
 
-    JPanel* toppanelcontainer = new JPanel();
-    // toppanelcontainer.setLayout(new BoxLayout(toppanelcontainer, BoxLayout.X_AXIS));
-    FlowLayout* toppanelcontainerLayout = new FlowLayout(toppanelcontainer);
+ JPanel* toppanelcontainer = new JPanel();
+ // toppanelcontainer.setLayout(new BoxLayout(toppanelcontainer, BoxLayout.X_AXIS));
+ QHBoxLayout* toppanelcontainerLayout = new QHBoxLayout(toppanelcontainer);
 
-    masterPauseButton= new JToggleButton();
-    masterPauseButton->setSelected(false); // cabdata on
-    refreshMasterPauseButton();
-    masterPauseButton->setVisible(true);
+ masterPauseButton= new JToggleButton();
+ masterPauseButton->setSelected(false); // cabdata on
+ refreshMasterPauseButton();
+ masterPauseButton->setVisible(true);
 #if 0
-    masterPauseButton.addActionListener (new ActionListener () {
-        //@Override
-        /*public*/ void actionPerformed(ActionEvent e) {
-            refreshMasterPauseButton();
-        }
-    });
+ masterPauseButton.addActionListener (new ActionListener () {
+     //@Override
+     /*public*/ void actionPerformed(ActionEvent e) {
+         refreshMasterPauseButton();
+     }
+ });
 #endif
-    connect(masterPauseButton, SIGNAL(clicked(bool)), this, SLOT(refreshMasterPauseButton()));
-    toppanelcontainerLayout->addWidget(masterPauseButton);
+ connect(masterPauseButton, SIGNAL(clicked(bool)), this, SLOT(refreshMasterPauseButton()));
+ toppanelcontainerLayout->addWidget(masterPauseButton,0, Qt::AlignVCenter);
 
-    JPanel* locoSelectContainer = new JPanel();
-    QHBoxLayout* locoSelectContainerLayout = new QHBoxLayout(locoSelectContainer);
+ QGroupBox* locoSelectContainer = new QGroupBox();
+ QHBoxLayout* locoSelectContainerLayout = new QHBoxLayout(locoSelectContainer);
 
-    textLocoLabel->setText(tr("New Locomotive:"));
-    textLocoLabel->setVisible(true);
+ textLocoLabel->setText(tr("New Locomotive:"));
+ textLocoLabel->setVisible(true);
 
-    locoSelector->setToolTip(tr("Address of a new Locomotive to add"));
-    locoSelector->setVisible(true);
-    textLocoLabel->setLabelFor(locoSelector);
+ locoSelector->setToolTip(tr("Address of a new Locomotive to add"));
+ locoSelector->setVisible(true);
+ textLocoLabel->setLabelFor(locoSelector);
 
-    locoSelectContainerLayout->addWidget(textLocoLabel);
-    locoSelectContainerLayout->addWidget(locoSelector);
+ locoSelectContainerLayout->addWidget(textLocoLabel);
+ locoSelectContainerLayout->addWidget(locoSelector);
 #if 0 // TODO:
-    locoSelector.addKeyListener(new KeyListener() {
-        //@Override
-        /*public*/ void keyPressed(KeyEvent e) {
-            // if we start typing, set the selected index of the locoRosterbox to nothing.
-            locoRosterBox.setSelectedIndex(0);
-        }
+ locoSelector.addKeyListener(new KeyListener() {
+     //@Override
+     /*public*/ void keyPressed(KeyEvent e) {
+         // if we start typing, set the selected index of the locoRosterbox to nothing.
+         locoRosterBox.setSelectedIndex(0);
+     }
 
-        //@Override
-        /*public*/ void keyTyped(KeyEvent e) {
-        }
+     //@Override
+     /*public*/ void keyTyped(KeyEvent e) {
+     }
 
-        //@Override
-        /*public*/ void keyReleased(KeyEvent e) {
-        }
-    });
+     //@Override
+     /*public*/ void keyReleased(KeyEvent e) {
+     }
+ });
 #endif
-    locoRosterBox = new GlobalRosterEntryComboBox();
-    locoRosterBox->setNonSelectedItem("");
-    locoRosterBox->setCurrentIndex(0);
+ locoRosterBox = new GlobalRosterEntryComboBox();
+ locoRosterBox->setNonSelectedItem("");
+ locoRosterBox->setCurrentIndex(0);
 
 //        locoRosterBox.addPropertyChangeListener("selectedRosterEntries", (PropertyChangeEvent pce) -> {
 //            locoSelected();
 //        });
-    connect(locoRosterBox, SIGNAL(currentIndexChanged(int)), this, SLOT(locoSelected()));
-    locoRosterBox->setVisible(true);
-    locoSelectContainerLayout->addWidget(locoRosterBox);
+ connect(locoRosterBox, SIGNAL(currentIndexChanged(int)), this, SLOT(locoSelected()));
+ locoRosterBox->setVisible(true);
+ locoSelectContainerLayout->addWidget(locoRosterBox);
 
-    addLocoButton->setText(tr("Add"));
-    addLocoButton->setVisible(true);
-    addLocoButton->setToolTip(tr("Add Cab Signal"));
+ addLocoButton->setText(tr("Add"));
+ addLocoButton->setVisible(true);
+ addLocoButton->setToolTip(tr("Add Cab Signal"));
 //        addLocoButton.addActionListener((ActionEvent e) -> {
 //            addLocoButtonActionPerformed(e);
 //        });
-    connect(addLocoButton, SIGNAL(clicked(bool)), this, SLOT(addLocoButtonActionPerformed()));
-    locoSelectContainerLayout->addWidget(addLocoButton);
+ connect(addLocoButton, SIGNAL(clicked(bool)), this, SLOT(addLocoButtonActionPerformed()));
+ locoSelectContainerLayout->addWidget(addLocoButton);
 
-    resetLocoButton->setText(tr("Reset"));
-    resetLocoButton->setVisible(true);
-    resetLocoButton->setToolTip(tr("Reset locomotive information"));
+ resetLocoButton->setText(tr("Reset"));
+ resetLocoButton->setVisible(true);
+ resetLocoButton->setToolTip(tr("Reset locomotive information"));
 //        resetLocoButton.addActionListener((ActionEvent e) -> {
 //            locoSelector.reset();
 //            locoRosterBox.setSelectedIndex(0);
 //        });
-    connect(resetLocoButton,SIGNAL(clicked(bool)), this, SLOT(onResetLocoButton()));
+ connect(resetLocoButton,SIGNAL(clicked(bool)), this, SLOT(onResetLocoButton()));
 
-    locoSelectContainerLayout->addWidget(resetLocoButton);
+ locoSelectContainerLayout->addWidget(resetLocoButton);
 // TODO:        locoSelectContainer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-    locoSelectContainer->setVisible(true);
-    toppanelcontainerLayout->addWidget(locoSelectContainer);
+ locoSelectContainer->setVisible(true);
+ toppanelcontainerLayout->addWidget(locoSelectContainer, 0, Qt::AlignVCenter);
 
-    p1Layout->addWidget(toppanelcontainer, 0, Qt::AlignTop);//BorderLayout.PAGE_START);
-    p1Layout->addWidget(/*slotScroll*/slotTable, 2, Qt::AlignCenter);//BorderLayout.CENTER);
-    this->layout()-> addWidget(p1);
+ p1Layout->addWidget(toppanelcontainer, 0, Qt::AlignTop);//BorderLayout.PAGE_START);
+ p1Layout->addWidget(/*slotScroll*/slotTable, 2, Qt::AlignCenter);//BorderLayout.CENTER);
+ this->layout()-> addWidget(p1);
 
-    QSize p1size = QSize(450, 200);
-    p1->setMinimumSize(p1size);
+ QSize p1size = QSize(450, 200);
+ p1->setMinimumSize(p1size);
 
-    p1->setVisible(true);
-    log->debug(tr("class name %1 ").arg(this->metaObject()->className()));
+ p1->setVisible(true);
+ log->debug(tr("class name %1 ").arg(this->metaObject()->className()));
 }
 
 void CabSignalPane::onResetLocoButton()
@@ -246,9 +250,12 @@ void CabSignalPane::on_cabSigColMenuMapper(QObject* obj)
 {
  QAction* act = (QAction*)obj;
  int colnumber = act->data().toInt();
+
  TableColumn* column  = tcm->getColumnByModelIndex(colnumber);
- bool visible = tcm->isColumnVisible(column);
- tcm->setColumnVisible(column, !visible);
+ //bool visible = tcm->isColumnVisible(column);
+  bool visible = slotTable->isColumnHidden(colnumber);
+  slotTable->setColumnHidden(colnumber, !visible);
+  tcm->setColumnVisible(column, !visible);
 }
 
 /*private*/ void CabSignalPane::refreshMasterPauseButton(){
@@ -272,6 +279,7 @@ void CabSignalPane::on_cabSigColMenuMapper(QObject* obj)
 /*public*/ CabSignalPane::CabSignalPane(QWidget *parent) : JmriPanel(parent)
 {
     //super();
+ setObjectName("CabSignalPane");
  tcm = new XTableColumnModel();
 
  cabSigColMenu = new QMenu(tr("Signal Data Columns"));
@@ -283,14 +291,14 @@ void CabSignalPane::on_cabSigColMenuMapper(QObject* obj)
  addLocoButton = new QPushButton();
  resetLocoButton = new QPushButton();
 
- cabSignalManager = (CabSignalManager*)InstanceManager::getNullableDefault("CabSignalManager");
+ cabSignalManager = (AbstractCabSignalManager*)InstanceManager::getNullableDefault("CabSignalManager");
  if(cabSignalManager == nullptr){
     log->info("creating new DefaultCabSignalManager");
     InstanceManager::store(new DefaultCabSignalManager(),"CabSignalManager");
-    cabSignalManager = (CabSignalManager*)InstanceManager::getNullableDefault("CabSignalManager");
+    cabSignalManager = (AbstractCabSignalManager*)InstanceManager::getNullableDefault("CabSignalManager");
  }
  if (cabSignalManager != nullptr) {
-     cabSignalManager->addCabSignalListListener((CabSignalListListener*)this);
+     cabSignalManager->addCabSignalListListener(this);
  }
 }
 
@@ -374,7 +382,7 @@ void CabSignalPane::onOffset(int i)
     }
     LocoAddress* locoaddress = locoSelector->getAddress();
     // create and inform CabSignal state of master pause / resume
-    cabSignalManager->getCabSignal(locoaddress)->setMasterCabSigPauseActive( masterPauseButton->isChecked() );
+    cabSignalManager->getCabSignal(locoaddress)->setMasterCabSigPauseActive( masterPauseButton->isSelected() );
 }
 
 /*public*/ void CabSignalPane::locoSelected() {
@@ -422,7 +430,7 @@ void CabSignalPane::onOffset(int i)
 
 //@Override
 /*public*/ void CabSignalPane::dispose() {
-    cabSignalManager->removeCabSignalListListener((CabSignalListListener*)this);
+    cabSignalManager->removeCabSignalListListener(this);
     slotTable = nullptr;
     slotModel->dispose();
     cabSignalManager = nullptr;

@@ -41,7 +41,13 @@
         if(!blockInit) {
            initBlocks();
         }
-        if(!signalList.contains(address)){
+        bool contains = false;
+        foreach (LocoAddress* addr, signalList.keys()) {
+         if(addr->equals(address))
+          contains=true;
+         break;
+        }
+        if(!contains){
            signalList.insert(address, createCabSignal(address));
            notifyCabSignalListChanged();
         }
