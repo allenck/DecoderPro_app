@@ -7,7 +7,7 @@ class PositionablePolygonXml : public PositionableShapeXml
 {
  Q_OBJECT
 public:
- PositionablePolygonXml();
+ Q_INVOKABLE PositionablePolygonXml();
  ~PositionablePolygonXml() {}
  PositionablePolygonXml(const PositionablePolygonXml&) : PositionableShapeXml() {}
  /*public*/ QDomElement store(QObject* o);

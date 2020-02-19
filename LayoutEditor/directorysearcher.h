@@ -32,7 +32,7 @@ private:
     /*private*/ void showWaitFrame() ;
     /*private*/ void closeWaitFrame();
     PreviewDialog* _previewDialog;// = NULL;
-    JFrame* _waitDialog;
+    JFrame* _waitDialog = nullptr;
     JTextField* _waitText;// = new JTextField();
     bool _quitLooking;// = false;
     /*private*/ static bool hasImageFiles(QDir* dir);

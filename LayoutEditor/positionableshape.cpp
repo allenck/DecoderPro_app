@@ -68,6 +68,7 @@ void PositionableShape::init()
  _editFrame = NULL;
  _lastX = 0;
  _lastY = 0;
+ _itemGroup = new MyGraphicsItemGroup();
 }
 
 /*public*/ PathIterator* PositionableShape::getPathIterator(AffineTransform* at)
