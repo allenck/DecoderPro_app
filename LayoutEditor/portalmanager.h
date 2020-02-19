@@ -18,7 +18,7 @@ public:
  /*public*/ Portal* createNewPortal(QString sName, QString userName);
  /*public*/ QString generateSystemName();
  /*public*/ Portal* getPortal(QString name);
- /*public*/ Portal* getBySystemName(QString name);
+ /*public*/ NamedBean* getBySystemName(QString name);
  /*public*/ NamedBean* getByUserName(QString key) ;
  /*public*/ Portal* providePortal(QString name);
  static /*public*/ PortalManager* instance();

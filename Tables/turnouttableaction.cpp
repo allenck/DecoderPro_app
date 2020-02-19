@@ -1899,7 +1899,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
   //We have found another turnout with the same address, therefore we need to go onto the next address.
   sName=prefix+InstanceManager::turnoutManagerInstance()->typeLetter()+curAddress;
   QString testSN = prefix+"L"+curAddress;
-  Light* testLight = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->
+  Light* testLight = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->
           getBySystemName(testSN);
   if (testLight != NULL)
   {

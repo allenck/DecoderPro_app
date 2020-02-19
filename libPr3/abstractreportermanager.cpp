@@ -39,16 +39,16 @@ Reporter* AbstractReporterManager::getReporter(QString name) {
     Reporter* t = (Reporter*)getByUserName(name);
     if (t!=nullptr) return t;
 
-    return getBySystemName(name);
+    return (Reporter*)getBySystemName(name);
 }
 
-Reporter* AbstractReporterManager::getBySystemName(QString name)
+NamedBean *AbstractReporterManager::getBySystemName(QString name)
 {
     return (Reporter*)_tsys->value(name);
 }
 
 NamedBean *AbstractReporterManager::getByUserName(QString key) {
-    return (Reporter*)_tuser->value(key);
+    return _tuser->value(key);
 }
 
 /** {@inheritDoc} */
@@ -62,7 +62,7 @@ Reporter* AbstractReporterManager::getByDisplayName(QString key) {
 // If that fails, look it up in the system list
 Reporter* retv = (Reporter*)this->getByUserName(key);
 if (retv == nullptr) {
-    retv = this->getBySystemName(key);
+    retv = (Reporter*)this->getBySystemName(key);
 }
 // If it's not in the system list, go ahead and return NULL
 return(retv);
@@ -85,7 +85,7 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
             log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+r->getSystemName()+")");
         return r;
     }
-    if ( (r = getBySystemName(systemName)) != NULL) {
+    if ( (r = (Reporter*)getBySystemName(systemName)) != NULL) {
         if ((r->getUserName() == NULL) && (userName != NULL))
             r->setUserName(userName);
         else if (userName != NULL) log->warn("Found reporter via system name ("+systemName
@@ -125,7 +125,7 @@ QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString
 {
  //If the hardware address past does not already exist then this can
  //be considered the next valid address.
- Reporter* r = getBySystemName(prefix+'R'+curAddress);
+ Reporter* r = (Reporter*)getBySystemName(prefix+'R'+curAddress);
  if(r==nullptr)
  {
   return curAddress;
@@ -153,13 +153,13 @@ QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString
  char tl = 'R';
  //Check to determine if the systemName is in use, return NULL if it is,
  //otherwise return the next valid address.
- r = getBySystemName(prefix+tl+QString("%1").arg(iName));
+ r = (Reporter*)getBySystemName(prefix+tl+QString("%1").arg(iName));
  if(r!=NULL)
  {
   for(int x = 1; x<10; x++)
   {
    iName++;
-   r = getBySystemName(prefix+'R'+QString("%1").arg(iName));
+   r = (Reporter*)getBySystemName(prefix+'R'+QString("%1").arg(iName));
    if(r==NULL)
     return QString("%1").arg(iName);
   }

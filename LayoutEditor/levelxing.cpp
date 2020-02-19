@@ -524,18 +524,49 @@
 /**
  * Add Layout Blocks
  */
-/*public*/ void LevelXing::setLayoutBlockAC (LayoutBlock* b) {
-    blockAC = b;
-    if (b!=NULL) {
-        blockNameAC = b->getID();
-    }
+/*public*/ void LevelXing::setLayoutBlockAC (LayoutBlock* newLayoutBlock) {
+ LayoutBlock* blockAC = getLayoutBlockAC();
+ LayoutBlock* blockBD = getLayoutBlockBD();
+ if (blockAC != newLayoutBlock) {
+     // block 1 has changed, if old block exists, decrement use
+     if ((blockAC != nullptr) && (blockAC != blockBD)) {
+         blockAC->decrementUse();
+     }
+     blockAC = newLayoutBlock;
+     if (newLayoutBlock != nullptr) {
+         namedLayoutBlockAC = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(newLayoutBlock->getUserName(), newLayoutBlock);
+     } else {
+         namedLayoutBlockAC = nullptr;
+     }
+
+     // decrement use if block was previously counted
+     if ((blockAC != nullptr) && (blockAC == blockBD)) {
+         blockAC->decrementUse();
+     }
+ }
 }
-/*public*/ void LevelXing::setLayoutBlockBD (LayoutBlock* b) {
-    blockBD = b;
-    if (b!=NULL) {
-        blockNameBD = b->getID();
-    }
+
+/*public*/ void LevelXing::setLayoutBlockBD (LayoutBlock* newLayoutBlock) {
+ LayoutBlock* blockAC = getLayoutBlockAC();
+ LayoutBlock* blockBD = getLayoutBlockBD();
+ if (blockBD != newLayoutBlock) {
+     // block 1 has changed, if old block exists, decrement use
+     if ((blockBD != nullptr) && (blockBD != blockAC)) {
+         blockBD->decrementUse();
+     }
+     blockBD = newLayoutBlock;
+     if (newLayoutBlock != nullptr) {
+         namedLayoutBlockBD = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(newLayoutBlock->getUserName(), newLayoutBlock);
+     } else {
+         namedLayoutBlockBD = nullptr;
+     }
+     // decrement use if block was previously counted
+     if ((blockBD != nullptr) && (blockBD == blockAC)) {
+         blockBD->decrementUse();
+     }
+ }
 }
+
 /*private*/ void LevelXing::updateBlockInfo() {
     LayoutBlock* b1 = NULL;
     LayoutBlock* b2 = NULL;
@@ -1037,6 +1068,7 @@ double LevelXing::round (double x) {
  */
 /*protected*/ QMenu *LevelXing::showPopup(QGraphicsSceneMouseEvent* /*e*/)
 {
+ // TODO: incorporate latest Java code!!
  if (popup != NULL )
  {
   popup->clear();
@@ -1054,13 +1086,13 @@ double LevelXing::round (double x) {
    popup->addAction(new QAction(tr("NoBlock1"),this));
   else
   {
-   popup->addAction(new QAction(tr("Block1ID")+": "+getLayoutBlockAC()->getID(),this));
+   popup->addAction(new QAction(tr("Block1ID")+": "+getLayoutBlockAC()->getId(),this));
    blockACAssigned = true;
   }
   if ( (blockNameBD==NULL) || (blockNameBD==("")) ) popup->addAction(new QAction(tr("NoBlock2"),this));
   else
   {
-   popup->addAction(new QAction(tr("Block2ID")+": "+getLayoutBlockBD()->getID(),this));
+   popup->addAction(new QAction(tr("Block2ID")+": "+getLayoutBlockBD()->getId(),this));
    blockBDAssigned = true;
   }
   popup->addSeparator();

@@ -41,7 +41,7 @@ void ControlPanelEditorAction::common()
  QString name = "Control Panel";
  for (int i = 2; i < 100; i++)
  {
-  if (PanelMenu::instance()->isPanelNameUsed(name))
+  if (((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
   {
       name = "Panel " + i;
   }

@@ -30,7 +30,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
 {
  QDomElement layoutblocks = doc.createElement("layoutblocks");
  //setStoreElementClass(layoutblocks);
- layoutblocks.setAttribute("class", "jmri.jmrit.display.configurexml.LayoutBlockManagerXml");
+ layoutblocks.setAttribute("class", "jmri.jmrit.display.layouteditor.configurexml.LayoutBlockManagerXml");
  LayoutBlockManager* tm = (LayoutBlockManager*) o;
  if (tm->isAdvancedRoutingEnabled())
  {
@@ -51,7 +51,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
   QString sname = iter.next();
   if (sname==NULL) log->error("System name NULL during LayoutBlock store");
   log->debug("layoutblock system name is "+sname);
-  LayoutBlock* b = tm->getBySystemName(sname);
+  LayoutBlock* b = (LayoutBlock*)tm->getBySystemName(sname);
   if (b->getUseCount()>0)
   {
    // save only those LayoutBlocks that are in use--skip abandoned ones

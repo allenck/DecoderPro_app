@@ -817,16 +817,16 @@ return getLength().toInt();
      return _rfid;
  }
 
- /*public*/ IdTag* RollingStock::getIdTag() {
+ /*public*/ DefaultIdTag *RollingStock::getIdTag() {
      return _tag;
  }
 
- /*public*/ void RollingStock::setIdTag(IdTag* tag)
+ /*public*/ void RollingStock::setIdTag(DefaultIdTag* tag)
 {
      if (_tag != NULL)
      {
          //_tag.removePropertyChangeListener(_tagListener);
-      disconnect(((AbstractIdTag*)_tag)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(((AbstractIdTag*)_tag->self())->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      _tag = tag;
      if (_tagListener == NULL) {
@@ -862,7 +862,7 @@ return getLength().toInt();
      }
      if (_tag != NULL)
          //_tag.addPropertyChangeListener(_tagListener);
-      connect(((AbstractIdTag*)_tag)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(((AbstractIdTag*)_tag->self())->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  }
 IdTagPropertyChangeListener::IdTagPropertyChangeListener(RollingStock* parent) { this->parent = parent ;}
@@ -904,7 +904,7 @@ IdTagPropertyChangeListener::IdTagPropertyChangeListener(RollingStock* parent) {
      if (old!=(id))
          setDirtyAndFirePropertyChange("rolling stock rfid", old, id); // NOI18N
      try {
-      IdTag* tag = ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getIdTag(id.toUpper());
+      DefaultIdTag* tag = ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getIdTag(id.toUpper());
          if(log->isDebugEnabled()) log->debug(tr("Tag %1 Found").arg(tag->toString()));
          setIdTag(tag);
      } catch (NullPointerException e) {
@@ -1186,7 +1186,7 @@ return "";
      disconnect(CarColors::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_tag != NULL) {
          //_tag.removePropertyChangeListener(_tagListener);
-      disconnect(((AbstractIdTag*)_tag)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(((AbstractIdTag*)_tag->self())->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
  }
 

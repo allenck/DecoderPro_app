@@ -118,7 +118,12 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
       elem.appendChild(e7=doc.createElement("useLayoutEditorBlocks"));
       e7.appendChild(doc.createTextNode("no"));
      }
-
+     QDomElement e7a;
+     if (sm->getAssociatedSection(dest) != nullptr)
+     {
+      elem.appendChild(e7a = doc.createElement("associatedSection"));
+      e7a.appendChild(doc.createTextNode(sm->getAssociatedSection(dest)->getDisplayName()));
+     }
      QDomElement e8;
      if(((DefaultSignalMastLogic*)sm)->isTurnoutLockAllowed(dest))
      {
@@ -237,194 +242,226 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
 }
 
 //@SuppressWarnings("unchecked")
-/*public*/ void DefaultSignalMastLogicManagerXml::loadSignalMastLogic(QDomElement signalMastLogic)
+/*public*/ bool DefaultSignalMastLogicManagerXml::loadSignalMastLogic(QDomElement signalMastLogic)
 {
  QDomNodeList logicList = signalMastLogic.elementsByTagName("signalmastlogic");
  if (log->isDebugEnabled()) log->debug("Found "+QString::number(logicList.size())+" signal mast logics");
 
  SignalMastManager* sm = (SignalMastManager*)InstanceManager::getDefault("SignalMastManager");
- SignalMastLogicManager* sml = (SignalMastLogicManager*) InstanceManager::getDefault("SignalMastLogicManager");
- try {
+ SignalMastLogicManager* smlm = (SignalMastLogicManager*) InstanceManager::getDefault("SignalMastLogicManager");
+ try
+ {
      QString logicDelay = signalMastLogic.firstChildElement("logicDelay").text();
-     ((DefaultSignalMastLogicManager*)sml)->setSignalLogicDelay((logicDelay.toLong()));
- } catch (NullPointerException e){
+     ((DefaultSignalMastLogicManager*)smlm)->setSignalLogicDelay((logicDelay.toLong()));
+ }
+ catch (NullPointerException e){
      //Considered normal if it doesn't exists
  }
+ bool loadOk = true;
  for(int i=0; i < logicList.size(); i++)
  {
-  QDomElement so = logicList.at(i).toElement();
-  QString source = so.firstChildElement("sourceSignalMast").text();
-  SignalMastLogic* logic = ((DefaultSignalMastLogicManager*)sml)->newSignalMastLogic(sm->getSignalMast(source));
-  QDomNodeList destList = so.elementsByTagName("destinationMast");
-  for (int i=0; i <  destList.count(); i++)
+  QDomElement sml = logicList.at(i).toElement();
+  QString source = sml.firstChildElement("sourceSignalMast").text();
+  SignalMast* sourceMast = sm->getSignalMast(source);
+  if(sourceMast != nullptr)
   {
-   QDomElement s = destList.at(i).toElement();
-   QString destination = s.firstChildElement("destinationSignalMast").text();
-   SignalMast* dest = sm->getSignalMast(destination);
-   ((DefaultSignalMastLogic*)logic)->setDestinationMast(dest);
-   if(!s.firstChildElement("comment").isNull())
-   {
-    ((DefaultSignalMastLogic*)logic)->setComment(s.firstChildElement("comment").text(), dest);
-   }
-   if(!s.firstChildElement("enabled").isNull())
-   {
-    if (s.firstChildElement("enabled").text()==("yes"))
-     ((DefaultSignalMastLogic*)logic)->setEnabled(dest);
-    else
-     ((DefaultSignalMastLogic*)logic)->setDisabled(dest);
-   }
+   SignalMastLogic* logic = smlm->newSignalMastLogic(sourceMast);
 
-   if(!s.firstChildElement("allowAutoMaticSignalMastGeneration").isNull())
+   QDomNodeList destList = sml.elementsByTagName("destinationMast");
+   for (int i=0; i <  destList.count(); i++)
    {
-    if (s.firstChildElement("allowAutoMaticSignalMastGeneration").text()==("no"))
-     ((DefaultSignalMastLogic*)logic)->allowAutoMaticSignalMastGeneration(false, dest);
-    else
-     ((DefaultSignalMastLogic*)logic)->allowAutoMaticSignalMastGeneration(true , dest);
-   }
-
-   bool useLayoutEditorTurnout = true;
-   bool useLayoutEditorBlock = true;
-   if(!s.firstChildElement("useLayoutEditorTurnouts").isNull())
-   {
-    if (s.firstChildElement("useLayoutEditorTurnouts").text()==("no"))
-     useLayoutEditorTurnout=false;
-   }
-
-   if(!s.firstChildElement("useLayoutEditorBlocks").isNull())
-   {
-    if (s.firstChildElement("useLayoutEditorBlocks").text()==("no"))
-     useLayoutEditorBlock=false;
-   }
-   try
-   {
-    ((DefaultSignalMastLogic*)logic)->useLayoutEditorDetails(useLayoutEditorTurnout, useLayoutEditorBlock, dest);
-   }
-   catch (JmriException ex)
-   {
-
-   }
-
-   if(!s.firstChildElement("useLayoutEditor").isNull())
-   {
-    try
+    QDomElement d = destList.at(i).toElement();
+    QString destination = d.firstChildElement("destinationSignalMast").text();
+    SignalMast* dest = sm->getSignalMast(destination);
+    if(dest != nullptr)
     {
-     if (s.firstChildElement("useLayoutEditor").text()==("yes"))
-      ((DefaultSignalMastLogic*)logic)->useLayoutEditor(true, dest);
-     else
-      ((DefaultSignalMastLogic*)logic)->useLayoutEditor(false, dest);
-    }
-    catch (JmriException e)
-    {
-     //Considered normal if layout editor hasn't yet been set up.
-    }
-   }
-
-   QDomElement turnoutElem = s.firstChildElement("turnouts");
-   if(!turnoutElem.isNull())
-   {
-    QDomNodeList turnoutList = turnoutElem.elementsByTagName("turnout");
-    if (turnoutList.size()>0)
-    {
-     QHash<NamedBeanHandle<Turnout*>*, int> list =  QHash<NamedBeanHandle<Turnout*>*, int>();
-     for (int i=0; i <  turnoutList.count(); i ++)
+     ((DefaultSignalMastLogic*)logic)->setDestinationMast(dest);
+     if(!d.firstChildElement("comment").isNull())
      {
-      QDomElement t = turnoutList.at(i).toElement();
-      QString turnout = t.firstChildElement("turnoutName").text();
-      QString state = t.firstChildElement("turnoutState").text();
-      int value = Turnout::CLOSED;
-      if (state==("thrown"))
-          value = Turnout::THROWN;
-      Turnout* turn = ((AbstractTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(turnout);
-      if(turn!=NULL){
-          NamedBeanHandle<Turnout*>* namedTurnout = nbhm->getNamedBeanHandle(turnout, turn);
-          list.insert(namedTurnout, value);
-      } else if (debug)
-          log->debug("Unable to add Turnout " + turnout + " as it does not exist in the panel file");
+      ((DefaultSignalMastLogic*)logic)->setComment(d.firstChildElement("comment").text(), dest);
      }
-     ((DefaultSignalMastLogic*)logic)->setTurnouts(list, dest);
-    }
-   }
-   QDomElement sensorElem = s.firstChildElement("sensors");
-   if(!sensorElem.isNull())
-   {
-    QDomNodeList sensorList = sensorElem.elementsByTagName("sensor");
-    if (sensorList.size()>0)
-    {
-     QHash<NamedBeanHandle<Sensor*>*, int> list =  QHash<NamedBeanHandle<Sensor*>*, int>();
-     for (int i=0; i <  sensorList.count(); i++)
+     if(!d.firstChildElement("enabled").isNull())
      {
-      QDomElement sl = sensorList.at(i).toElement();
-      QString sensorName = sl.firstChildElement("sensorName").text();
-      QString state = sl.firstChildElement("sensorState").text();
-      int value = Sensor::INACTIVE;
-      if (state==("active"))
-          value = Sensor::ACTIVE;
+      if (d.firstChildElement("enabled").text()==("yes"))
+       ((DefaultSignalMastLogic*)logic)->setEnabled(dest);
+      else
+       ((DefaultSignalMastLogic*)logic)->setDisabled(dest);
+     }
 
-      Sensor* sen = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(sensorName);
-      if(sen!=NULL)
+     if(!d.firstChildElement("allowAutoMaticSignalMastGeneration").isNull())
+     {
+      if (d.firstChildElement("allowAutoMaticSignalMastGeneration").text()==("no"))
+       ((DefaultSignalMastLogic*)logic)->allowAutoMaticSignalMastGeneration(false, dest);
+      else
+       ((DefaultSignalMastLogic*)logic)->allowAutoMaticSignalMastGeneration(true , dest);
+     }
+
+     bool useLayoutEditorTurnout = true;
+     bool useLayoutEditorBlock = true;
+     if(!d.firstChildElement("useLayoutEditorTurnouts").isNull())
+     {
+      if (d.firstChildElement("useLayoutEditorTurnouts").text()==("no"))
+       useLayoutEditorTurnout=false;
+     }
+
+     if(!d.firstChildElement("useLayoutEditorBlocks").isNull())
+     {
+      if (d.firstChildElement("useLayoutEditorBlocks").text()==("no"))
+       useLayoutEditorBlock=false;
+     }
+     try
+     {
+      ((DefaultSignalMastLogic*)logic)->useLayoutEditorDetails(useLayoutEditorTurnout, useLayoutEditorBlock, dest);
+     }
+     catch (JmriException ex)
+     {
+
+     }
+
+     if(!d.firstChildElement("useLayoutEditor").isNull())
+     {
+      try
       {
-       NamedBeanHandle<Sensor*>* namedSensor = nbhm->getNamedBeanHandle(sensorName, sen);
-       list.insert(namedSensor, value);
+       if (d.firstChildElement("useLayoutEditor").text()==("yes"))
+        ((DefaultSignalMastLogic*)logic)->useLayoutEditor(true, dest);
+       else
+        ((DefaultSignalMastLogic*)logic)->useLayoutEditor(false, dest);
       }
-      else if (debug)
-       log->debug("Unable to add sensor " + sensorName + " as it does not exist in the panel file");
-
+      catch (JmriException e)
+      {
+       //Considered normal if layout editor hasn't yet been set up.
+      }
      }
-     ((DefaultSignalMastLogic*)logic)->setSensors(list, dest);
-    }
-   }
-   QDomElement blockElem = s.firstChildElement("blocks");
-   if(!blockElem.isNull())
-   {
-    QDomNodeList blockList = blockElem.elementsByTagName("block");
-    if (blockList.size()>0)
-    {
-     QHash<Block*, int> list =  QHash<Block*, int>();
-     for (int i=0; i < blockList.count(); i++)
+
+     if (!d.firstChildElement("associatedSection").isNull())
      {
-         QDomElement b = blockList.at(i).toElement();
-         QString block = b.firstChildElement("blockName").text();
-         QString state = b.firstChildElement("blockState").text();
-         int value = 0x03;
-         if (state==("occupied"))
-             value = Block::OCCUPIED;
-         else if (state==("unoccupied"))
-             value = Block::UNOCCUPIED;
-
-         Block* blk = ((BlockManager*)((BlockManager*)InstanceManager::getDefault("BlockManager")))->getBlock(block);
-         if (blk!=NULL)
-             list.insert(blk, value);
-         else if (debug)
-             log->debug("Unable to add Block " + block + " as it does not exist in the panel file");
+      Section* sect = ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getSection(d.firstChildElement("associatedSection").text());
+      // begin hack
+      if(sect == nullptr)
+       sect = ((SectionManager*)InstanceManager::getDefault("SectionManager"))->createNewSection(d.firstChildElement("associatedSection").text());
+      // end hack
+      logic->setAssociatedSection(sect, dest);
      }
-     ((DefaultSignalMastLogic*)logic)->setBlocks(list, dest);
-    }
-   }
-   QDomElement mastElem = s.firstChildElement("masts");
-   if(!mastElem.isNull())
-   {
-    QDomNodeList mastList = mastElem.elementsByTagName("mast");
-    if (mastList.size()>0)
-    {
-     QHash<SignalMast*, QString> list =  QHash<SignalMast*, QString>();
-     for (int i=0; i < mastList.count(); i++)
+
+     QDomElement turnoutElem = d.firstChildElement("turnouts");
+     if(!turnoutElem.isNull())
      {
-         QDomElement m = mastList.at(i).toElement();
-         QString mast = m.firstChildElement("mastName").text();
-         QString state = m.firstChildElement("mastState").text();
-         SignalMast* mst = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(mast);
-         if(mst!=NULL)
-             list.insert(mst, state);
-         else if (debug)
-             log->debug("Unable to add Signal Mast  " + mast + " as it does not exist in the panel file");
-
+      QDomNodeList turnoutList = turnoutElem.elementsByTagName("turnout");
+      if (turnoutList.size()>0)
+      {
+       QHash<NamedBeanHandle<Turnout*>*, int> list =  QHash<NamedBeanHandle<Turnout*>*, int>();
+       for (int i=0; i <  turnoutList.count(); i ++)
+       {
+        QDomElement t = turnoutList.at(i).toElement();
+        QString turnout = t.firstChildElement("turnoutName").text();
+        QString state = t.firstChildElement("turnoutState").text();
+        int value = Turnout::CLOSED;
+        if (state==("thrown"))
+            value = Turnout::THROWN;
+        Turnout* turn = ((AbstractTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(turnout);
+        if(turn!=NULL){
+            NamedBeanHandle<Turnout*>* namedTurnout = nbhm->getNamedBeanHandle(turnout, turn);
+            list.insert(namedTurnout, value);
+        } else if (debug)
+            log->debug("Unable to add Turnout " + turnout + " as it does not exist in the panel file");
+       }
+       ((DefaultSignalMastLogic*)logic)->setTurnouts(list, dest);
+      }
      }
-     ((DefaultSignalMastLogic*)logic)->setMasts(list, dest);
+     QDomElement sensorElem = d.firstChildElement("sensors");
+     if(!sensorElem.isNull())
+     {
+      QDomNodeList sensorList = sensorElem.elementsByTagName("sensor");
+      if (sensorList.size()>0)
+      {
+       QHash<NamedBeanHandle<Sensor*>*, int> list =  QHash<NamedBeanHandle<Sensor*>*, int>();
+       for (int i=0; i <  sensorList.count(); i++)
+       {
+        QDomElement sl = sensorList.at(i).toElement();
+        QString sensorName = sl.firstChildElement("sensorName").text();
+        QString state = sl.firstChildElement("sensorState").text();
+        int value = Sensor::INACTIVE;
+        if (state==("active"))
+            value = Sensor::ACTIVE;
+
+        Sensor* sen = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(sensorName);
+        if(sen!=NULL)
+        {
+         NamedBeanHandle<Sensor*>* namedSensor = nbhm->getNamedBeanHandle(sensorName, sen);
+         list.insert(namedSensor, value);
+        }
+        else if (debug)
+         log->debug("Unable to add sensor " + sensorName + " as it does not exist in the panel file");
+
+       }
+       ((DefaultSignalMastLogic*)logic)->setSensors(list, dest);
+      }
+     }
+     QDomElement blockElem = d.firstChildElement("blocks");
+     if(!blockElem.isNull())
+     {
+      QDomNodeList blockList = blockElem.elementsByTagName("block");
+      if (blockList.size()>0)
+      {
+       QHash<Block*, int> list =  QHash<Block*, int>();
+       for (int i=0; i < blockList.count(); i++)
+       {
+           QDomElement b = blockList.at(i).toElement();
+           QString block = b.firstChildElement("blockName").text();
+           QString state = b.firstChildElement("blockState").text();
+           int value = 0x03;
+           if (state==("occupied"))
+               value = Block::OCCUPIED;
+           else if (state==("unoccupied"))
+               value = Block::UNOCCUPIED;
+
+           Block* blk = ((BlockManager*)((BlockManager*)InstanceManager::getDefault("BlockManager")))->getBlock(block);
+           if (blk!=NULL)
+               list.insert(blk, value);
+           else if (debug)
+               log->debug("Unable to add Block " + block + " as it does not exist in the panel file");
+       }
+       ((DefaultSignalMastLogic*)logic)->setBlocks(list, dest);
+      }
+     }
+     QDomElement mastElem = d.firstChildElement("masts");
+     if(!mastElem.isNull())
+     {
+      QDomNodeList mastList = mastElem.elementsByTagName("mast");
+      if (mastList.size()>0)
+      {
+       QHash<SignalMast*, QString> list =  QHash<SignalMast*, QString>();
+       for (int i=0; i < mastList.count(); i++)
+       {
+           QDomElement m = mastList.at(i).toElement();
+           QString mast = m.firstChildElement("mastName").text();
+           QString state = m.firstChildElement("mastState").text();
+           SignalMast* mst = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(mast);
+           if(mst!=NULL)
+               list.insert(mst, state);
+           else if (debug)
+               log->debug("Unable to add Signal Mast  " + mast + " as it does not exist in the panel file");
+
+       }
+       ((DefaultSignalMastLogic*)logic)->setMasts(list, dest);
+      }
+     }
+    }
+    else
+    {
+     log->error(tr("Destination Mast %1 not found, logic not loaded").arg(destination));
+     loadOk = false;
     }
    }
   }
+  else
+  {
+   log->error(tr("Source Mast %1 Not found, logic not loaded").arg(source));
+   loadOk = false;
+  }
  }
- ((DefaultSignalMastLogicManager*)sml)->initialise();
+ ((DefaultSignalMastLogicManager*)smlm)->initialise();
+ return loadOk;
 }
 
 /*public*/ int DefaultSignalMastLogicManagerXml::loadOrder()

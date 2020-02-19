@@ -593,9 +593,9 @@ public:
      */
     virtual /*public*/ void setSaveAllowed(bool /*saveAllowed*/) =0;
 
-    virtual /*public*/ void removePropertyChangeListener(PropertyChangeListener* l)  {}
+    virtual /*public*/ void removePropertyChangeListener(PropertyChangeListener* /*l*/)  {}
 
-    virtual /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) {}
+    virtual /*public*/ void addPropertyChangeListener(PropertyChangeListener* /*l*/) {}
 };
 //Q_DECLARE_METATYPE(UserPreferencesManager)
 #endif // USERPREFERENCESMANAGER_H

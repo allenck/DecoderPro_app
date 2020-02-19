@@ -8,8 +8,8 @@ class LIBLAYOUTEDITORSHARED_EXPORT SectionManagerXml : public AbstractNamedBeanM
     Q_OBJECT
 public:
     Q_INVOKABLE explicit SectionManagerXml(QObject *parent = 0);
- ~SectionManagerXml() {}
- SectionManagerXml(const SectionManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
+    ~SectionManagerXml() {}
+    SectionManagerXml(const SectionManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);
     /*public*/ void setStoreElementClass(QDomElement sections);
     /*public*/ void load(QDomElement element, QObject* o)  throw (Exception);

@@ -72,6 +72,8 @@ public:
     QString getStateString();
     /*public*/ virtual void addPath(Path* p);
     /*public*/ virtual void removePath(Path* p);
+    /*public*/ bool hasPath(Path* p);
+
     /**
      * Get a copy of the list of Paths
      */
@@ -149,6 +151,9 @@ public:
      * from goingActive())
      */
     /*public*/ Path* findFromPath();
+
+    /*public*/ void setAllocated(bool boo);
+
     /** Parse a given string and return the LocoAddress value that is presumed stored
      * within it based on this object's protocol.
      * The Class Block implementationd defers to its associated Reporter, if it exists.

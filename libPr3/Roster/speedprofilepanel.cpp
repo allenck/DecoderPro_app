@@ -841,7 +841,7 @@ BlockSensorComboBox::BlockSensorComboBox(QWidget* parent) : QComboBox(parent)
  addItem("");
  foreach (QString s, list)
  {
-  LayoutBlock* block = mgr->getBySystemName(s);
+  LayoutBlock* block =(LayoutBlock*)mgr->getBySystemName(s);
   if(block->occupancySensorName != "")
    sensorMap.insert(block->getOccupancySensor()->getSystemName(), block);
  }

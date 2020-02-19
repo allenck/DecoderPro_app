@@ -415,7 +415,7 @@ PanelEditor::~PanelEditor()
 //     }
 // });
  connect(deleteItem, SIGNAL(triggered()), this, SLOT(on_actionDelete_this_panel_triggered()));
- PanelMenu* pMenu = PanelMenu::instance();
+ PanelMenu* pMenu = (PanelMenu*)InstanceManager::getDefault("PanelMenu");
  ui->menuWindow->addMenu(pMenu);
 // connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
 // dlg = NULL;

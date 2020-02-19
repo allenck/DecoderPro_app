@@ -217,7 +217,10 @@ SOURCES += \
     testconsistmanager.cpp \
     namecomponentchooser.cpp \
     loconet/enterreporterdialogtest.cpp \
-    cabsignals/cabsignaltablemodeltest.cpp
+    cabsignals/cabsignaltablemodeltest.cpp \
+    cabsignals/defaultcabsignaltest.cpp \
+    cabsignals/defaultcabsignaltestaction.cpp \
+    cabsignals/cabsignaltablemodeltestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -413,7 +416,10 @@ HEADERS += \
     namecomponentchooser.h \
     loconet/enterreporterdialogtest.h \
     abstracttableactionbase.h \
-    cabsignals/cabsignaltablemodeltest.h
+    cabsignals/cabsignaltablemodeltest.h \
+    cabsignals/defaultcabsignaltest.h \
+    cabsignals/defaultcabsignaltestaction.h \
+    cabsignals/cabsignaltablemodeltestaction.h
 
 unix {
     target.path = /usr/lib

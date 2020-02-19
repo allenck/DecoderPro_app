@@ -193,11 +193,14 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
     return findLayoutTurnoutByBean(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(signalMastName));
 }
 
-/*public*/ LayoutTurnout* LayoutEditorFindItems::findLayoutTurnoutByBean(NamedBean* bean) {
-QList<LayoutTurnout*> layoutTurnouts = layoutEditor->getLayoutTurnouts();
-    if (qobject_cast<SignalMast*>(bean)) {
- for (LayoutTurnout* t : layoutTurnouts) {
- if (t->getSignalAMast() == bean
+/*public*/ LayoutTurnout* LayoutEditorFindItems::findLayoutTurnoutByBean(NamedBean* bean)
+{
+ QList<LayoutTurnout*> layoutTurnouts = layoutEditor->getLayoutTurnouts();
+ if (qobject_cast<SignalMast*>(bean))
+ {
+  for (LayoutTurnout* t : layoutTurnouts)
+  {
+   if (t->getSignalAMast() == bean
                     || t->getSignalBMast() == bean
                     || t->getSignalCMast() == bean
                     || t->getSignalDMast() == bean) {

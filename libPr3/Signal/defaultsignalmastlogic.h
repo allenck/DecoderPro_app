@@ -108,7 +108,7 @@ public:
     /*public*/ /*synchronized*/ int getNumPropertyChangeListeners();
     /*public*/ void dispose();
     /*public*/ Section* getAssociatedSection(SignalMast* destination);
-    /*public*/ void setAssociatedSection(Section* sec, SignalMast* destination);
+    /*public*/ void setAssociatedSection(Section* sec, SignalMast* destination) override;
     /*public*/ QMap<Block*, int> setupLayoutEditorTurnoutDetails(QList<LayoutBlock*> blks, SignalMast* destination);
 
 signals:
@@ -227,6 +227,7 @@ class DestinationMast : public QObject
       void addSensor(NamedBeanHandle<Sensor*>* sen, int state);
       void removeSensor(NamedBeanHandle<Sensor*>* sen);
       QMap<Block*, int> setupLayoutEditorTurnoutDetails(QList<LayoutBlock*> lblks);
+      QString getDisplayName();
 
 
       QList<Block*> getBlocks();
@@ -277,8 +278,8 @@ class DestinationMast : public QObject
       NamedBeanHandle<Section*>* associatedSection;// = null;
 
  private:
-    LayoutBlock* destinationBlock;// = NULL;
-    LayoutBlock* protectingBlock;
+    LayoutBlock* destinationBlock = nullptr;
+    LayoutBlock* protectingBlock = nullptr;
 
     //QHash<NamedBeanHandle<Turnout>, Integer> turnouts = new QHash<NamedBeanHandle<Turnout>, Integer>(0);
     QList<NamedBeanSetting*> userSetTurnouts;// =  QList<NamedBeanSetting*>(0);

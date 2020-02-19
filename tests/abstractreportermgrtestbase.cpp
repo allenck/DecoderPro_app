@@ -93,12 +93,12 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
         t->setUserName("Fred");
 
         // Try a successful one
-        t = ((AbstractReporterManager*)l)->getBySystemName(getSystemName(getNameToTest1()));
+        t = (Reporter*)((AbstractReporterManager*)l)->getBySystemName(getSystemName(getNameToTest1()));
         Assert::assertTrue("get retrieved existing object ", t != nullptr, __FILE__, __LINE__);
 
         // Try a nonexistant one. Should return null
         if (maxN()<2) return;
-        t = ((AbstractReporterManager*)l)->getBySystemName(getSystemName(getNameToTest2()));
+        t = (Reporter*)((AbstractReporterManager*)l)->getBySystemName(getSystemName(getNameToTest2()));
         Assert::assertTrue("get nonexistant object ", t == nullptr, __FILE__, __LINE__);
     }
 
@@ -113,7 +113,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
         Assert::assertTrue("get retrieved existing object ", t != nullptr, __FILE__, __LINE__);
 
         // Try a nonexistant one. Should return null
-        t = ((AbstractReporterManager*)l)->getBySystemName("Barney");
+        t = (Reporter*)((AbstractReporterManager*)l)->getBySystemName("Barney");
         Assert::assertTrue("get nonexistant object ", t == nullptr, __FILE__, __LINE__);
     }
 

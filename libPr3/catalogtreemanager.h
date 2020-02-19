@@ -52,7 +52,7 @@ public:
          * instance already exists.
          * @return requested CatalogTree object or null if none exists
          */
-        virtual CatalogTree* getBySystemName(QString systemName);
+        virtual NamedBean* getBySystemName(QString systemName);
 
         /**
          * Locate an instance based on a user name.  Returns null if no

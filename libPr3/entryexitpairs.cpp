@@ -162,7 +162,7 @@ return (settingRouteColor == QColor() ? false : true);
 
 /*public*/ void EntryExitPairs::addNXSourcePoint(NamedBean* source){
     PointDetails* point = NULL;
-    QList<LayoutEditor*>* layout = PanelMenu::instance()->getLayoutEditorPanelList();
+    QList<LayoutEditor*>* layout = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
     for(int i = 0; i<layout->size(); i++){
         point = providePoint(source, layout->at(i));
     }

@@ -429,7 +429,8 @@ void RosterFrame::on_btnRosterMedia_clicked()
 
 void RosterFrame::on_throttleLaunch_clicked()
 {
- QList<Editor*>* list = PanelMenu::instance()->getEditorPanelList();
+
+ QList<Editor*>* list = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getEditorPanelList();
  //int row = 0;
  foreach(Editor* panel, *list)
  {

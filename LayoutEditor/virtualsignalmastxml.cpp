@@ -57,17 +57,17 @@ VirtualSignalMastXml::VirtualSignalMastXml(QObject *parent) :
  * @param element Top level Element to unpack.
  * @return true if successful
  */
-/*public*/ bool VirtualSignalMastXml::load(QDomElement element) throw (Exception){
+/*public*/ bool VirtualSignalMastXml::load(QDomElement shared, QDomElement perNode) throw (Exception){
     VirtualSignalMast* m;
-    QString sys = getSystemName(element);
+    QString sys = getSystemName(shared);
     m = new VirtualSignalMast(sys);
 
-    if (getUserName(element) != NULL)
-        m->setUserName(getUserName(element));
+    if (getUserName(shared) != NULL)
+        m->setUserName(getUserName(shared));
 
-    loadCommon(m, element);
+    loadCommon(m, shared);
 
-    QDomElement e = element.firstChildElement("disabledAspects");
+    QDomElement e = shared.firstChildElement("disabledAspects");
     if(!e.isNull()){
         //@SuppressWarnings("unchecked")
         QDomNodeList list = e.elementsByTagName("disabledAspect");

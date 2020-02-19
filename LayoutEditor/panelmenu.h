@@ -12,7 +12,6 @@ class LIBLAYOUTEDITORSHARED_EXPORT PanelMenu : public QMenu
 {
     Q_OBJECT
 public:
-    QT_DEPRECATED static /*public*/ PanelMenu* instance();
     /*public*/ int getNumberOfPanels();
     /*public*/ void deletePanel (Editor* panel);
     /*public*/ void addEditorPanel(/*final*/ Editor* panel);
@@ -40,6 +39,7 @@ protected:
     explicit PanelMenu(QWidget *parent = nullptr);
 
     friend class DefaultInstanceInitializer;
+    friend class DefaultCabSignalTest;
 };
 
 class PanelActionListener : public ActionListener

@@ -135,7 +135,7 @@ BeanTableDataModel(parent)
     QStringListIterator iter(systemNameList);
     // copy over warrants still listed
     while (iter.hasNext()) {
-        Warrant* w = _manager->getBySystemName(iter.next());
+        Warrant* w = (Warrant*)_manager->getBySystemName(iter.next());
         if (!_warList.contains(w))
         { // new warrant
             w->addPropertyChangeListener((PropertyChangeListener*)this);

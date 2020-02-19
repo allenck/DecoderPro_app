@@ -97,7 +97,7 @@ public:
         /**
          * Locate a Light by its system name
          */
-        virtual Light* getBySystemName(QString /*s*/) { return NULL;}
+        virtual NamedBean* getBySystemName(QString /*s*/) { return NULL;}
 
 //        /**
 //         * Validate system name format

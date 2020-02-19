@@ -81,7 +81,7 @@ public:
          * instance already exists.
          * @return requested Memory object or null if none exists
          */
-        virtual Memory* getBySystemName(QString /*systemName*/) {return NULL;}
+        virtual NamedBean* getBySystemName(QString /*systemName*/) {return NULL;}
 
         /**
          * Locate an instance based on a user name.  Returns null if no

@@ -43,7 +43,7 @@ OBlockManagerXml::OBlockManagerXml(QObject *parent) :
     QStringListIterator iter( manager->getSystemNameList());
     while (iter.hasNext()) {
         QString sname = iter.next();
-        OBlock* block = manager->getBySystemName(sname);
+        OBlock* block = (OBlock*)manager->getBySystemName(sname);
         QString uname = block->getUserName();
         if (log->isDebugEnabled())
             log->debug("OBlock: sysName= "+sname+", userName= "+uname);

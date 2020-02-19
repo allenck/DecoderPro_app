@@ -252,7 +252,19 @@ public:
       * @param systemName System Name of the required NamedBean
       * @return requested NamedBean object or null if none exists
       */
-     virtual E getBeanBySystemName(QString /*systemName*/) {return NULL;}
+     QT_DEPRECATED virtual E getBeanBySystemName(QString /*systemName*/) {return NULL;}
+
+     /**
+      * Locate an existing instance based on a system name.
+      *
+      * @param systemName System Name of the required NamedBean
+      * @return requested NamedBean object or null if none exists
+      * @throws IllegalArgumentException if provided name is invalid
+      */
+     //@CheckReturnValue
+     //@CheckForNull
+     /*public*/ virtual NamedBean* getBySystemName(/*@Nonnull*/ QString /*systemName*/) {return nullptr;}
+
 
      /**
       * Locate an instance based on a user name.  Returns null if no
@@ -260,7 +272,7 @@ public:
       * @param userName System Name of the required NamedBean
       * @return requested NamedBean object or null if none exists
       */
-     virtual E getBeanByUserName(QString /*userName*/)  {return NULL;}
+     QT_DEPRECATED virtual E getBeanByUserName(QString /*userName*/)  {return NULL;}
 
      /**
       * Locate an instance based on a name.  Returns null if no

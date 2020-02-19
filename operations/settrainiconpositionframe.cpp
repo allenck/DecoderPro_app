@@ -20,6 +20,7 @@
 #include "panelmenu.h"
 #include "route.h"
 #include "routelocation.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -352,7 +353,7 @@ namespace Operations
      if (locationBox->currentText() == NULL) {
          return;
      }
-     Editor* editor = PanelMenu::instance()->getEditorByName(Setup::getPanelName());
+     Editor* editor = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getEditorByName(Setup::getPanelName());
      if (editor == NULL) {
 //         JOptionPane.showMessageDialog(this, MessageFormat.format(tr("LoadPanel"), new Object[]{Setup::getPanelName()}),
 //                 tr("PanelNotFound"), JOptionPane.ERROR_MESSAGE);

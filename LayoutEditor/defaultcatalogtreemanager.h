@@ -19,7 +19,7 @@ public:
     /*public*/ QString getSystemPrefix() ;
     /*public*/ char typeLetter() ;
     /*public*/ CatalogTree* getCatalogTree(QString name) ;
-    /*public*/ CatalogTree* getBySystemName(QString key);
+    /*public*/ NamedBean *getBySystemName(QString key);
     /*public*/ NamedBean* getByUserName(QString key);
     /*public*/ CatalogTree* newCatalogTree(QString sysName, QString userName);
     /*public*/ static DefaultCatalogTreeManager* instance();
@@ -41,7 +41,7 @@ private:
 protected:
     /*protected*/ void registerSelf();
     /*protected*/ CatalogTree* createNewCatalogTree(QString systemName, QString userName);
-    QMap<QString, CatalogTree*>* _tsys;
+    QMap<QString, NamedBean*>* _tsys;
     QMap<QString, CatalogTree*>* _tuser;
 friend class DCTSwingShutDownTask;
 };

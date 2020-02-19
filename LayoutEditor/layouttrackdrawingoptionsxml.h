@@ -6,7 +6,7 @@ class LayoutTrackDrawingOptionsXml : public AbstractXmlAdapter
 {
  Q_OBJECT
 public:
- /*public*/ LayoutTrackDrawingOptionsXml(QObject* parent = nullptr);
+ Q_INVOKABLE /*public*/ LayoutTrackDrawingOptionsXml(QObject* parent = nullptr);
  ~LayoutTrackDrawingOptionsXml() {}
  LayoutTrackDrawingOptionsXml(const LayoutTrackDrawingOptionsXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);

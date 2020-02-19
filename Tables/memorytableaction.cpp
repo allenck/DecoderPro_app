@@ -78,7 +78,7 @@ MtBeanTableDataModel::MtBeanTableDataModel(MemoryTableAction* mt)
 }
 /*public*/ QString MtBeanTableDataModel::getValue(QString name) const
 {
-    Memory* mem = InstanceManager::memoryManagerInstance()->getBySystemName(name);
+    Memory* mem = (Memory*)InstanceManager::memoryManagerInstance()->getBySystemName(name);
     if (mem == NULL) {
         return "?";
     }

@@ -1,7 +1,7 @@
 #ifndef IDTAGMANAGER_H
 #define IDTAGMANAGER_H
 #include "abstractmanager.h"
-#include "idtag.h"
+#include "defaultidtag.h"
 /**
  * Locate an IdTag object representing a specific IdTag.
  *<P>
@@ -62,7 +62,7 @@ public:
      * already exist and the manager cannot create the IdTag
      * due to e.g. an illegal name or name that can't be parsed.
      */
-    /*public*/ virtual IdTag* provideIdTag(QString /*name*/) {return NULL;}
+    /*public*/ virtual DefaultIdTag* provideIdTag(QString /*name*/) {return NULL;}
 
     /**
      * Locate via tag ID, then by user name, and finally system name if needed.
@@ -71,7 +71,7 @@ public:
      * @param name tag name being requested
      * @return null if no match found
      */
-    /*public*/ virtual IdTag* getIdTag(QString /*name*/) {return NULL;}
+    /*public*/ virtual DefaultIdTag* getIdTag(QString /*name*/) {return NULL;}
 
     /**
      * Locate an instance based on a system name.  Returns null if no
@@ -79,7 +79,7 @@ public:
      * @param systemName system name being requested
      * @return requested IdTag object or null if none exists
      */
-    /*public*/ virtual IdTag* getBySystemName(QString /*systemName*/) {return NULL;}
+    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) {return NULL;}
 
     /**
      * Locate an instance based on a user name.  Returns null if no
@@ -87,7 +87,7 @@ public:
      * @param userName user name being requested
      * @return requested IdTag object or null if none exists
      */
-    /*public*/ virtual IdTag* getByUserName(QString /*userName*/) {return NULL;}
+    /*public*/ virtual NamedBean* getByUserName(QString /*userName*/) {return NULL;}
 
     /**
      * Locate an instance based on a tag ID.  Returns null if no
@@ -95,7 +95,7 @@ public:
      * @param tagID tag ID being requested
      * @return requested IdTag object or null if none exists
      */
-    /*public*/ virtual IdTag* getByTagID(QString /*tagID*/) {return NULL;}
+    /*public*/ virtual DefaultIdTag* getByTagID(QString /*tagID*/) {return NULL;}
 
     /**
      * Return an instance with the specified system and user names.
@@ -122,7 +122,7 @@ public:
      * @throws IllegalArgumentException if cannot create the IdTag
      * due to e.g. an illegal name or name that can't be parsed.
      */
-    /*public*/ virtual IdTag* newIdTag(QString /*systemName*/, QString /*userName*/) {return NULL;}
+    /*public*/ virtual DefaultIdTag* newIdTag(QString /*systemName*/, QString /*userName*/) {return NULL;}
 
 //    /**
 //     * Get a list of all IdTag's system names.
@@ -175,7 +175,7 @@ public:
      * @return state of initialisation
      */
     /*public*/ virtual bool isInitialised() {return false;}
-    virtual /*public*/ IdTag* provide(QString name) throw (IllegalArgumentException) =0;
+    virtual /*public*/ DefaultIdTag* provide(QString name) throw (IllegalArgumentException) =0;
 
  friend class IdTagManagerXml;
 };

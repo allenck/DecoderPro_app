@@ -85,8 +85,8 @@ public:
     /**
      * Add Layout Blocks
      */
-    /*public*/ void setLayoutBlockAC (LayoutBlock* b) ;
-    /*public*/ void setLayoutBlockBD (LayoutBlock* b);
+    /*public*/ void setLayoutBlockAC (LayoutBlock* newLayoutBlock) ;
+    /*public*/ void setLayoutBlockBD (LayoutBlock* newLayoutBlock);
     /*public*/ void reCheckBlockBoundary();
 //    void removeSML(QString signalMast);
     /**
@@ -254,6 +254,10 @@ protected:
  * Display popup menu for information and editing
  */
  /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);
+
+ /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockAC = nullptr;
+ /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockBD = nullptr;
+
  /*protected*/ NamedBeanHandle<SignalHead*>* signalAHeadNamed;// = NULL; // signal at A track junction
  /*protected*/ NamedBeanHandle<SignalHead*>* signalBHeadNamed;// = NULL; // signal at B track junction
  /*protected*/ NamedBeanHandle<SignalHead*>* signalCHeadNamed;// = NULL; // signal at C track junction

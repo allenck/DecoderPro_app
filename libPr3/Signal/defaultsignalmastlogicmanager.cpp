@@ -5,7 +5,7 @@
 #include "../LayoutEditor/layoutblockmanager.h"
 #include "defaultsignalmastlogic.h"
 #include "../LayoutEditor/configxmlmanager.h"
-
+#include "signalmastmanager.h"
 
 //DefaultSignalMastLogicManager::DefaultSignalMastLogicManager(QObject *parent) :
 //    SignalMastLogicManager(parent)
@@ -47,6 +47,9 @@
     registerSelf();
 //    InstanceManager::layoutBlockManagerInstance()->addPropertyChangeListener(propertyBlockManagerListener);
     connect(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), propertyBlockManagerListener, SLOT(propertyChange(PropertyChangeEvent*)));
+    ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->addPropertyChangeListener(propertyBlockManagerListener);
+    ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+    InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
     //_speedMap = jmri.implementation.SignalSpeedMap.getMap();
 }
 
@@ -86,40 +89,45 @@
 
 //Hashtable<SignalMast, QList<SignalMastLogic>> destLocationList = new Hashtable<SignalMast, QList<SignalMastLogic>>();
 
-/*public*/ void DefaultSignalMastLogicManager::replaceSignalMast(SignalMast* oldMast, SignalMast* newMast){
-    if(oldMast==NULL || newMast==NULL)
-        return;
-    foreach(SignalMastLogic* source, signalMastLogic){
-        if(((DefaultSignalMastLogic*)source)->getSourceMast()==oldMast){
-            ((DefaultSignalMastLogic*)source)->replaceSourceMast(oldMast, newMast);
-        } else {
-            ((DefaultSignalMastLogic*)source)->replaceDestinationMast(oldMast, newMast);
-        }
-    }
+/*public*/ void DefaultSignalMastLogicManager::replaceSignalMast(SignalMast* oldMast, SignalMast* newMast)
+{
+ if(oldMast==NULL || newMast==NULL)
+     return;
+ foreach(SignalMastLogic* source, signalMastLogic)
+ {
+  if(((DefaultSignalMastLogic*)source)->getSourceMast()==oldMast)
+  {
+   ((DefaultSignalMastLogic*)source)->replaceSourceMast(oldMast, newMast);
+  }
+  else
+  {
+   ((DefaultSignalMastLogic*)source)->replaceDestinationMast(oldMast, newMast);
+  }
+ }
 }
 
-/*public*/ void DefaultSignalMastLogicManager::swapSignalMasts(SignalMast* mastA, SignalMast* mastB){
-    if(mastA==NULL || mastB==NULL){
-        return;
-    }
-    QList<SignalMastLogic*> mastALogicList = getLogicsByDestination(mastA);
-    SignalMastLogic* mastALogicSource = getSignalMastLogic(mastA);
+/*public*/ void DefaultSignalMastLogicManager::swapSignalMasts(SignalMast* mastA, SignalMast* mastB)
+{
+ if(mastA==NULL || mastB==NULL){
+     return;
+ }
+ QList<SignalMastLogic*> mastALogicList = getLogicsByDestination(mastA);
+ SignalMastLogic* mastALogicSource = getSignalMastLogic(mastA);
 
-    QList<SignalMastLogic*> mastBLogicList = getLogicsByDestination(mastB);
-    SignalMastLogic* mastBLogicSource = getSignalMastLogic(mastB);
+ QList<SignalMastLogic*> mastBLogicList = getLogicsByDestination(mastB);
+ SignalMastLogic* mastBLogicSource = getSignalMastLogic(mastB);
 
-    if(mastALogicSource!=NULL)
-        ((DefaultSignalMastLogic*)mastALogicSource)->replaceSourceMast(mastA, mastB);
-    if(mastBLogicSource!=NULL)
-        ((DefaultSignalMastLogic*)mastBLogicSource)->replaceSourceMast(mastB, mastA);
+ if(mastALogicSource!=NULL)
+     ((DefaultSignalMastLogic*)mastALogicSource)->replaceSourceMast(mastA, mastB);
+ if(mastBLogicSource!=NULL)
+     ((DefaultSignalMastLogic*)mastBLogicSource)->replaceSourceMast(mastB, mastA);
 
-    foreach(SignalMastLogic* mastALogic, mastALogicList){
-        ((DefaultSignalMastLogic*)mastALogic)->replaceDestinationMast(mastA, mastB);
-    }
-    foreach(SignalMastLogic* mastBLogic, mastBLogicList){
-        ((DefaultSignalMastLogic*)mastBLogic)->replaceDestinationMast(mastB, mastA);
-    }
-
+ foreach(SignalMastLogic* mastALogic, mastALogicList){
+     ((DefaultSignalMastLogic*)mastALogic)->replaceDestinationMast(mastA, mastB);
+ }
+ foreach(SignalMastLogic* mastBLogic, mastBLogicList){
+     ((DefaultSignalMastLogic*)mastBLogic)->replaceDestinationMast(mastB, mastA);
+ }
 }
 
 /**
@@ -384,7 +392,7 @@
  runWhenStablised=false;
  LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  if(!lbm->isAdvancedRoutingEnabled()){
-  throw new JmriException("advanced routing not enabled");
+  throw JmriException("advanced routing not enabled");
  }
  if(!lbm->routingStablised()){
   runWhenStablised=true;
@@ -394,6 +402,10 @@
 
  QHash<NamedBean*, QList<NamedBean*> > validPaths = lbm->getLayoutBlockConnectivityTools()->discoverValidBeanPairs(NULL, "SignalMast",LayoutBlockConnectivityTools::MASTTOMAST);
  QListIterator<NamedBean*> en ( validPaths.keys());
+ firePropertyChange("autoGenerateUpdate", "", ("Found " + QString::number(validPaths.size()) + " masts as sources for logic"));
+ for (NamedBean* nb : ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getNamedBeanSet()) {
+     nb->removeProperty("intermediateSignal");
+ }
 
  while (en.hasNext()) {
   SignalMast* key = (SignalMast*)en.next();
@@ -414,8 +426,12 @@
     }
    }
   }
- }
+  if (sml->getDestinationList().size() == 1 && sml->getAutoTurnouts(sml->getDestinationList().at(0)).isEmpty()) {
+      key->setProperty("intermediateSignal", true);
+  }
 
+ }
+ initialise();
  firePropertyChange("autoGenerateComplete", QVariant(), QVariant());
 }
 

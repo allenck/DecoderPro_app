@@ -541,13 +541,29 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
         }
     }
 /*public*/ QString LayoutTurnout::getSignalAMastName() {
-        if (signalAMastNamed != nullptr) {
-            return signalAMastNamed->getName();
-        }
-        return "";
+    if (signalAMastNamed != nullptr) {
+        return signalAMastNamed->getName();
     }
+    return "";
+}
 /*public*/ SignalMast* LayoutTurnout::getSignalAMast() {return signalAMastNamed->getBean();}
-/*public*/ void LayoutTurnout::setSignalAMast(QString signalMast) {signalAMast = signalMast;}
+/*public*/ void LayoutTurnout::setSignalAMast(QString signalMast)
+{
+ if (signalMast.isNull() || signalMast.isEmpty()) {
+     signalAMastNamed = nullptr;
+     return;
+ }
+
+ SignalMast* mast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
+ if (mast != nullptr) {
+     signalAMastNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+ } else {
+     signalAMastNamed = nullptr;
+     log->error(tr("Signal Mast %1 Not found for turnout %2").arg(signalMast).arg(getTurnoutName()));
+ }
+
+}
+
 /*public*/ QString LayoutTurnout::getSignalBMastName()
 {
  if (signalBMastNamed != nullptr)
@@ -557,7 +573,22 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  return "";
 }
 /*public*/ SignalMast *LayoutTurnout::getSignalBMast() {return signalBMastNamed->getBean();}
-/*public*/ void LayoutTurnout::setSignalBMast(QString signalMast) {signalBMast = signalMast;}
+/*public*/ void LayoutTurnout::setSignalBMast(QString signalMast)
+{
+ if (signalMast.isNull() || signalMast.isEmpty()) {
+     signalBMastNamed = nullptr;
+     return;
+ }
+
+ SignalMast* mast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
+ if (mast != nullptr) {
+     signalBMastNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+ } else {
+     signalBMastNamed = nullptr;
+     log->error(tr("Signal Mast %1 Not found for turnout %2").arg(signalMast).arg(getTurnoutName()));
+ }
+}
+
 /*public*/ QString LayoutTurnout::getSignalCMastName()
 {
  if (signalCMastNamed != nullptr)
@@ -567,7 +598,21 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  return "";
 }
 /*public*/ SignalMast* LayoutTurnout::getSignalCMast() {return signalCMastNamed->getBean();}
-/*public*/ void LayoutTurnout::setSignalCMast(QString signalMast) {signalCMast = signalMast;}
+/*public*/ void LayoutTurnout::setSignalCMast(QString signalMast)
+{
+ if (signalMast.isNull() || signalMast.isEmpty()) {
+     signalCMastNamed = nullptr;
+     return;
+ }
+
+ SignalMast* mast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
+ if (mast != nullptr) {
+     signalCMastNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+ } else {
+     signalCMastNamed = nullptr;
+     log->error(tr("Signal Mast %1 Not found for turnout %2").arg(signalMast).arg(getTurnoutName()));
+ }
+}
 /*public*/ QString LayoutTurnout::getSignalDMastName()
 {
  if (signalDMastNamed != nullptr)
@@ -576,8 +621,27 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  }
  return "";
 }
-/*public*/ SignalMast *LayoutTurnout::getSignalDMast() {return signalDMastNamed->getBean();}
-/*public*/ void LayoutTurnout::setSignalDMast(QString signalMast) {signalDMast = signalMast;}
+/*public*/ SignalMast *LayoutTurnout::getSignalDMast()
+{
+ if(signalDMastNamed== nullptr)
+  throw NullPointerException();
+ return signalDMastNamed->getBean();
+}
+/*public*/ void LayoutTurnout::setSignalDMast(QString signalMast)
+{
+ if (signalMast.isNull() || signalMast.isEmpty()) {
+     signalDMastNamed = nullptr;
+     return;
+ }
+
+ SignalMast* mast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
+ if (mast != nullptr) {
+     signalDMastNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalMast, mast);
+ } else {
+     signalDMastNamed = nullptr;
+     log->error(tr("Signal Mast %1 Not found for turnout %2").arg(signalMast).arg(getTurnoutName()));
+ }
+}
 
 /*public*/ QString LayoutTurnout::getSensorAName()
 {
@@ -701,6 +765,13 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 /*public*/ int LayoutTurnout::getLinkType() {return linkType;}
 /*public*/ void LayoutTurnout::setLinkType(int type) {linkType = type;}
 /*public*/ int LayoutTurnout::getTurnoutType() {return type;}
+/*public*/ bool LayoutTurnout::isTurnoutTypeXover() {
+    return ((type == DOUBLE_XOVER) || (type == RH_XOVER) || (type == LH_XOVER));
+}
+
+/*public*/ bool LayoutTurnout::isTurnoutTypeSlip() {
+    return ((type == SINGLE_SLIP) || (type == DOUBLE_SLIP));
+}
 /*public*/ QObject* LayoutTurnout::getConnectA() {return connectA;}
 /*public*/ QObject* LayoutTurnout::getConnectB() {return connectB;}
 /*public*/ QObject* LayoutTurnout::getConnectC() {return connectC;}
@@ -1089,41 +1160,147 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 /**
  * Set Up a Layout Block(s) for this Turnout
  */
-/*public*/ void LayoutTurnout::setLayoutBlock(LayoutBlock* b) {
-    block = b;
-    if (b!=nullptr) blockName = b->getID();
-    else blockName = "";
-}
-/*public*/ void LayoutTurnout::setLayoutBlockB (LayoutBlock* b) {
-    if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
-        blockB = b;
-        if (b!=nullptr) blockBName = b->getID();
-        else blockBName = "";
-    }
-    else {
-        log->error ("Attempt to set block B, but not a crossover");
-    }
-}
-/*public*/ void LayoutTurnout::setLayoutBlockC (LayoutBlock* b) {
-    if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
-        blockC = b;
-        if (b!=nullptr) blockCName = b->getID();
-        else blockCName = "";
-    }
-    else {
-        log->error ("Attempt to set block C, but not a crossover");
-    }
-}
-/*public*/ void LayoutTurnout::setLayoutBlockD (LayoutBlock* b) {
-    if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) ) {
-        blockD = b;
-        if (b!=nullptr) blockDName = b->getID();
-        else blockDName = "";
-    }
-    else {
-        log->error ("Attempt to set block D, but not a crossover");
+/*public*/ void LayoutTurnout::setLayoutBlock(LayoutBlock* newLayoutBlock) {
+    LayoutBlock* blockA = getLayoutBlock();
+    LayoutBlock* blockB = getLayoutBlockB();
+    LayoutBlock* blockC = getLayoutBlockC();
+    LayoutBlock* blockD = getLayoutBlockD();
+    if (blockA != newLayoutBlock) {
+        // block has changed, if old block exists, decrement use
+        if ((blockA != nullptr)
+                && (blockA != blockB)
+                && (blockA != blockC)
+                && (blockA != blockD)) {
+            blockA->decrementUse();
+        }
+
+        blockA = newLayoutBlock;
+        if (newLayoutBlock != nullptr) {
+            QString userName = newLayoutBlock->getUserName();
+            if (userName != nullptr) {
+                namedLayoutBlockA = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(userName, newLayoutBlock);
+            }
+        } else {
+            namedLayoutBlockA = nullptr;
+            setDisableWhenOccupied(false);
+        }
+        // decrement use if block was already counted
+        if ((blockA != nullptr)
+                && ((blockA == blockB) || (blockA == blockC) || (blockA == blockD))) {
+            blockA->decrementUse();
+        }
+        setTrackSegmentBlocks();
     }
 }
+
+//@SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "Null is accepted as a valid value")
+/*public*/ void LayoutTurnout::setLayoutBlockB(LayoutBlock* newLayoutBlock) {
+    if (getLayoutBlock() == nullptr) {
+        setLayoutBlock(newLayoutBlock);
+    }
+    if (isTurnoutTypeXover() || isTurnoutTypeSlip()) {
+        LayoutBlock* blockA = getLayoutBlock();
+        LayoutBlock* blockB = getLayoutBlockB();
+        LayoutBlock* blockC = getLayoutBlockC();
+        LayoutBlock* blockD = getLayoutBlockD();
+        if (blockB != newLayoutBlock) {
+            // block has changed, if old block exists, decrement use
+            if ((blockB != nullptr)
+                    && (blockB != blockA)
+                    && (blockB != blockC)
+                    && (blockB != blockD)) {
+                blockB->decrementUse();
+            }
+            blockB = newLayoutBlock;
+            if (newLayoutBlock != nullptr) {
+                namedLayoutBlockB = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(newLayoutBlock->getUserName(), newLayoutBlock);
+            } else {
+                namedLayoutBlockB = nullptr;
+            }
+            // decrement use if block was already counted
+            if ((blockB != nullptr)
+                    && ((blockB == blockA) || (blockB == blockC) || (blockB == blockD))) {
+                blockB->decrementUse();
+            }
+            setTrackSegmentBlocks();
+        }
+    } else {
+        log->error("Attempt to set block B, but not a crossover");
+    }
+}
+
+//@SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "Null is accepted as a valid value")
+/*public*/ void LayoutTurnout::setLayoutBlockC(LayoutBlock* newLayoutBlock) {
+    if (getLayoutBlock() == nullptr) {
+        setLayoutBlock(newLayoutBlock);
+    }
+    if (isTurnoutTypeXover() || isTurnoutTypeSlip()) {
+        LayoutBlock* blockA = getLayoutBlock();
+        LayoutBlock* blockB = getLayoutBlockB();
+        LayoutBlock* blockC = getLayoutBlockC();
+        LayoutBlock* blockD = getLayoutBlockD();
+        if (blockC != newLayoutBlock) {
+            // block has changed, if old block exists, decrement use
+            if ((blockC != nullptr)
+                    && (blockC != blockA)
+                    && (blockC != blockB)
+                    && (blockC != blockD)) {
+                blockC->decrementUse();
+            }
+            blockC = newLayoutBlock;
+            if (newLayoutBlock != nullptr) {
+                namedLayoutBlockC = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(newLayoutBlock->getUserName(), newLayoutBlock);
+            } else {
+                namedLayoutBlockC = nullptr;
+            }
+            // decrement use if block was already counted
+            if ((blockC != nullptr)
+                    && ((blockC == blockA) || (blockC == blockB) || (blockC == blockD))) {
+                blockC->decrementUse();
+            }
+            setTrackSegmentBlocks();
+        }
+    } else {
+        log->error("Attempt to set block C, but not a crossover");
+    }
+}
+
+//@SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "Null is accepted as a valid value")
+/*public*/ void LayoutTurnout::setLayoutBlockD(LayoutBlock* newLayoutBlock) {
+    if (getLayoutBlock() == nullptr) {
+        setLayoutBlock(newLayoutBlock);
+    }
+    if (isTurnoutTypeXover() || isTurnoutTypeSlip()) {
+        LayoutBlock* blockA = getLayoutBlock();
+        LayoutBlock* blockB = getLayoutBlockB();
+        LayoutBlock* blockC = getLayoutBlockC();
+        LayoutBlock* blockD = getLayoutBlockD();
+        if (blockD != newLayoutBlock) {
+            // block has changed, if old block exists, decrement use
+            if ((blockD != nullptr)
+                    && (blockD != blockA)
+                    && (blockD != blockB)
+                    && (blockD != blockC)) {
+                blockD->decrementUse();
+            }
+            blockD = newLayoutBlock;
+            if (newLayoutBlock != nullptr) {
+                namedLayoutBlockD = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(newLayoutBlock->getUserName(), newLayoutBlock);
+            } else {
+                namedLayoutBlockD = nullptr;
+            }
+            // decrement use if block was already counted
+            if ((blockD != nullptr)
+                    && ((blockD == blockA) || (blockD == blockB) || (blockD == blockC))) {
+                blockD->decrementUse();
+            }
+            setTrackSegmentBlocks();
+        }
+    } else {
+        log->error("Attempt to set block D, but not a crossover");
+    }
+}
+
 /*public*/ void LayoutTurnout::setLayoutBlockByName (QString name) {
     blockName = name;
 }
@@ -2061,6 +2238,8 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
  */
 /*protected*/ QMenu *LayoutTurnout::showPopup(QGraphicsSceneMouseEvent* /*e*/)
 {
+  // TODO: incorporate latest Java code!!
+
  if (popup != nullptr )
  {
   popup->clear();
@@ -2195,7 +2374,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
   connect(disableWhenOccupiedItemAct, SIGNAL(toggled(bool)), this, SLOT(setDisableWhenOccupied(bool)));
 
   if (blockName==("")) popup->addAction(new QAction(tr("NoBlock"),this));
-  else popup->addAction(new QAction(tr("Block: ")+getLayoutBlock()->getID(),this));
+  else popup->addAction(new QAction(tr("Block: ")+getLayoutBlock()->getId(),this));
   if ( (type == DOUBLE_XOVER) || (type == RH_XOVER) || (type == LH_XOVER) )
   {
    // check if extra blocks have been entered

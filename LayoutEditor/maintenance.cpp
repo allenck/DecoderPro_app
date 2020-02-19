@@ -602,18 +602,18 @@ Maintenance::Maintenance(QObject *parent) :
   }
 
     SectionManager* sectionManager = ((SectionManager*)InstanceManager::getDefault("SectionManager"));
-    Section* sec = sectionManager->getBySystemName(sysName);
+    Section* sec = (Section*)sectionManager->getBySystemName(sysName);
     if ( sec!=NULL ) {
         userName = sec->getUserName();
         found = true;
     } else {
-        sec = sectionManager->getBySystemName(userName.toUpper());
+        sec = (Section*)sectionManager->getBySystemName(userName.toUpper());
         if (sec!=NULL) {
             sysName = sec->getSystemName();
             userName = sec->getUserName();
             found = true;
         } else {
-            sec = sectionManager->getByUserName(userName);
+            sec = (Section*)sectionManager->getByUserName(userName);
             if ( sec!=NULL ) {
                 sysName = sec->getSystemName();
                 found = true;
@@ -714,7 +714,7 @@ Maintenance::Maintenance(QObject *parent) :
  {
   // get the next Logix
   QString sName = iter1.next();
-  Logix* x = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
+  Logix* x =(Logix*) static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
   if (x==NULL)
   {
    log->error("Error getting Logix  - " + sName);
@@ -1027,7 +1027,7 @@ Maintenance::Maintenance(QObject *parent) :
     while (iter1.hasNext()) {
         // get the next Logix
         QString sName = iter1.next();
-        Section* section = sectionManager->getBySystemName(sName);
+        Section* section = (Section*)sectionManager->getBySystemName(sName);
         if (section==NULL) {
             log->error("Error getting Section - "+sName);
             break;
@@ -1107,7 +1107,7 @@ Maintenance::Maintenance(QObject *parent) :
     iter1 = QStringListIterator(sectionManager->getSystemNameList());
     while (iter1.hasNext()) {
         QString sName = iter1.next();
-        Section* section = sectionManager->getBySystemName(sName);
+        Section* section = (Section*)sectionManager->getBySystemName(sName);
         if (section!=NULL) {
             //sysNameList.removeAt(sysNameList.indexOf(section->getBlockList()));
             sysNameList.removeAt(sysNameList.indexOf(sName));
@@ -1158,7 +1158,7 @@ Maintenance::Maintenance(QObject *parent) :
     while (iter1.hasNext()) {
         // get the next Logix
         QString sName = iter1.next();
-        LayoutBlock* lb = lbm->getBySystemName(sName);
+        LayoutBlock* lb = (LayoutBlock*)lbm->getBySystemName(sName);
         if (lb==NULL) {
             log->error("Error getting LayoutBlock - "+sName);
             break;
@@ -1310,7 +1310,7 @@ Maintenance::Maintenance(QObject *parent) :
     iter1 = QStringListIterator(static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getSystemNameList());
     while (iter1.hasNext()) {
         QString sName = iter1.next();
-        Logix* x =static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
+        Logix* x =(Logix*)static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
         for (int i=0; i<((DefaultLogix*)x)->getNumConditionals(); i++)  {
             sName = ((DefaultLogix*)x)->getConditionalByNumberOrder(i);
             sysNameList.removeAt(sysNameList.indexOf(sName));
@@ -1368,7 +1368,7 @@ Maintenance::Maintenance(QObject *parent) :
 
     found = false;
     empty = true;
-    QList<Editor*>* panelList = PanelMenu::instance()->getEditorPanelList();
+    QList<Editor*>* panelList = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getEditorPanelList();
     for (int i=0; i<panelList->size(); i++)
     {
      if(qobject_cast<Editor*>(panelList->at(i)) == NULL)

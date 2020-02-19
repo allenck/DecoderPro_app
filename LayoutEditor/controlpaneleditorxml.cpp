@@ -157,7 +157,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  if (element.attribute("name")!=NULL)
      name = element.attribute("name");
  // confirm that panel hasn't already been loaded
- if(PanelMenu::instance()->isPanelNameUsed(name)){
+ if(((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name)){
      log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
      result = false;
  }

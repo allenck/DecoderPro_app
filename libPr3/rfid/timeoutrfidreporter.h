@@ -10,7 +10,7 @@ class TimeoutRfidReporter : public RfidReporter
 public:
  TimeoutRfidReporter(QString systemName, QObject* parent = nullptr);
  /*public*/ TimeoutRfidReporter(QString systemName, QString userName, QObject* parent = nullptr);
- /*public*/ void notify(IdTag* t);
+ /*public*/ void notify(DefaultIdTag *t);
 
 private:
  static Logger* log;

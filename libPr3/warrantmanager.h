@@ -17,7 +17,7 @@ public:
     /*public*/ char typeLetter();
     /*public*/ Warrant* createNewWarrant(QString systemName, QString userName, bool SCWa, long TTP);
     /*public*/ Warrant* getWarrant(QString name);
-    /*public*/ Warrant* getBySystemName(QString name);
+    /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* getByUserName(QString key);
     /*public*/ Warrant* provideWarrant(QString name) ;
     static WarrantManager* _instance;// = NULL;

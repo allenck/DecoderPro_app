@@ -33,7 +33,7 @@ public:
     /*public*/ int columnCount(const QModelIndex &parent) const override;
     /*public*/ QString getColumnName(int col) const  override;
     /*public*/ QString getColumnClass(int col) const  override;
-    /*public*/ bool isCellEditable(int row, int col)const  override;
+    /*public*/ bool isCellEditable(int row, int col) const override;
     /*public*/ VariableValue* getVariable(int row);
     /*public*/ QString getLabel(int row);
     /*public*/ QString getItem(int row);

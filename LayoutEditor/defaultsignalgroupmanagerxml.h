@@ -14,7 +14,7 @@ public:
  DefaultSignalGroupManagerXml(const DefaultSignalGroupManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);
     /*public*/ void setStoreElementClass(QDomElement signalGroup);
-    /*public*/ bool load(QDomElement element) throw (Exception);
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
     /*public*/ int loadOrder();
 

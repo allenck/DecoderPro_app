@@ -383,7 +383,7 @@ public:
       virtual /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* /*n*/, /*@Nonnull*/ QString /*property*/) throw (PropertyVetoException) {}
  static /*final*/ Logger* deprecatedManagerLogger;// = LoggerFactory::getLogger("Manager");
 
-// virtual /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) =0;
+ virtual /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) =0;
  virtual /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) =0;
  virtual /*default*/ /*public*/ QList<NamedBeanPropertyDescriptor*> getKnownBeanProperties();
 

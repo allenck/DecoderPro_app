@@ -779,7 +779,7 @@ connect(ui->iconLabelButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()))
  }
 
  // confirm that panel hasn't already been loaded
- if (PanelMenu::instance()->isPanelNameUsed(name))
+ if (((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
  {
   log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
  }
@@ -1056,7 +1056,7 @@ void LayoutEditor::on_hideTrackSegmentConstructionLines_toggled(bool /*b*/)
 {
   int show = TrackSegment::SHOWCON;
 
-  if (hideTrackSegmentConstructionLines->isChecked()) {
+  if (hideTrackSegmentConstructionLinesCheckBoxMenuItem->isChecked()) {
       show = TrackSegment::HIDECONALL;
   }
 
@@ -9815,8 +9815,9 @@ void LayoutEditor::undoMoveSelection() {
  if (autoAssignBlocks != boo)
  {
   autoAssignBlocks = boo;
-  autoAssignBlocksItem->setChecked(autoAssignBlocks);
-  //ui->action
+  if (autoAssignBlocksCheckBoxMenuItem != nullptr) {
+      autoAssignBlocksCheckBoxMenuItem->setChecked(autoAssignBlocks);
+  }
  }
 }
 /*======================================*\

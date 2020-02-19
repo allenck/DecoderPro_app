@@ -45,7 +45,7 @@
 
 //@Override
 /*public*/ QJsonObject JsonReporterHttpService::doPost(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
-    Reporter* reporter = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getBySystemName(name);
+    Reporter* reporter =(Reporter*) ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getBySystemName(name);
     if (reporter == NULL) {
         throw new JsonException(404, tr(/*locale,*/ "Unable to access %1 %2.").arg(JsonReporter::REPORTER).arg(name));
     }

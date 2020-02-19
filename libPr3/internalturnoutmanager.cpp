@@ -11,6 +11,7 @@ InternalTurnoutManager::InternalTurnoutManager(QObject *parent) : AbstractTurnou
 {
  setObjectName("InternalTurnoutManager");
  prefix = "I";
+ registerSelf();
 }
 
 /*public*/ InternalTurnoutManager::InternalTurnoutManager(QString prefix, QObject *parent) : AbstractTurnoutManager(nullptr, parent)
@@ -18,11 +19,15 @@ InternalTurnoutManager::InternalTurnoutManager(QObject *parent) : AbstractTurnou
  setObjectName("InternalTurnoutManager");
         //super();
  this->prefix = prefix;
+ registerSelf();
+
 }
 
 /*public*/ InternalTurnoutManager::InternalTurnoutManager(InternalSystemConnectionMemo* memo, QObject* parent) : AbstractTurnoutManager((SystemConnectionMemo*)memo, parent)
 {
  setObjectName("InternalTurnoutManager");
+ registerSelf();
+
 }
 
 /**

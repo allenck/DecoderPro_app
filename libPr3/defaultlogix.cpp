@@ -209,7 +209,7 @@
     while (iter1.hasNext()) {
         QString sNameLogix = iter1.next();
         if (sNameLogix!=(getSystemName()) ) {
-            Logix* x = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(sNameLogix);
+            Logix* x = (Logix*)((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(sNameLogix);
             int numCond = x->getNumConditionals();
             for (int i=0; i<numCond; i++) {
                 QString sNameCond = x->getConditionalByNumberOrder(i);

@@ -21,7 +21,7 @@ public:
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ virtual CatalogTree* getBySystemName(QString /*systemName*/) {return NULL;}
+    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) {return NULL;}
     /**
      * Locate an instance based on a user name.  Returns null if no
      * instance already exists.

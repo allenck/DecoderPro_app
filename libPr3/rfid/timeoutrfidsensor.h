@@ -2,13 +2,14 @@
 #define TIMEOUTRFIDSENSOR_H
 #include "rfidsensor.h"
 
+class DefaultIdTag;
 class RfidSensorTimeoutThread;
 class TimeoutRfidSensor : public RfidSensor
 {
 public:
  TimeoutRfidSensor(QString systemName, QString userName, QObject* parent = nullptr);
  TimeoutRfidSensor(QString systemName, QObject* parent = nullptr);
- /*public*/ void notify(IdTag* t);
+ /*public*/ void notify(DefaultIdTag *t);
 
 
 private:

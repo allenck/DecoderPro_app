@@ -164,6 +164,19 @@ class RunnableThis : public Runnable
  source->addPropertyChangeListener(propertySourceMastListener);
  if(source->getAspect()==nullptr)
      source->setAspect(stopAspect);
+ for (SignalMast* sm : getDestinationList())
+ {
+  DestinationMast* destMast = destList.value(sm);
+  if (destMast->getAssociatedSection() != nullptr) {
+      QString oldUserName = destMast->getAssociatedSection()->getUserName();
+      QString newUserName = source->getDisplayName() + ":" + sm->getDisplayName();
+      if (!oldUserName.isNull()) {
+          ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->renameBean(oldUserName, newUserName, (NamedBean*)destMast->getAssociatedSection());
+      } else {
+          log->warn(tr("AssociatedSection oldUserName null for destination mast %1, skipped").arg(destMast->getDisplayName()));
+      }
+  }
+ }
  firePropertyChange("updatedSource", VPtr<SignalMast>::asQVariant(oldMast), VPtr<SignalMast>::asQVariant(newMast));
 }
 
@@ -185,6 +198,16 @@ class RunnableThis : public Runnable
   setSignalAppearance();
  }
  destList.remove(oldMast);
+ if (destMast->getAssociatedSection() != nullptr)
+ {
+  QString oldUserName = destMast->getAssociatedSection()->getUserName();
+  QString newUserName = source->getDisplayName() + ":" + newMast->getDisplayName();
+  if (!oldUserName.isNull()) {
+      ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->renameBean(oldUserName, newUserName, (NamedBean*)destMast->getAssociatedSection());
+  } else {
+      log->warn(tr("AssociatedSection oldUserName null for destination mast %1, skipped").arg(destMast->getDisplayName()));
+  }
+ }
  destList.insert(newMast, destMast);
  firePropertyChange("updatedDestination", VPtr<SignalMast>::asQVariant(oldMast), VPtr<SignalMast>::asQVariant(newMast));
 }
@@ -199,6 +222,7 @@ class RunnableThis : public Runnable
  destList.insert(dest, new DestinationMast(dest, this));
  //InstanceManager::signalMastLogicManagerInstance().addDestinationMastToLogic(this, dest);
  firePropertyChange("length", QVariant(oldSize), QVariant(destList.size()));
+ // make new dest mast appear in (update of) SignallingSourcePanel Table by having that table listen to PropertyChange Events from SML TODO
 }
 
 /*public*/ bool DefaultSignalMastLogic::isDestinationValid(SignalMast* dest)
@@ -353,7 +377,7 @@ class RunnableThis : public Runnable
  if (boo)
  {
   log->debug("Set use layout editor");
-  QList<LayoutEditor*>* layout = PanelMenu::instance()->getLayoutEditorPanelList();
+  QList<LayoutEditor*>* layout =((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
   /*We don't care which layout editor panel the signalmast is on, just so long as
         as the routing is done via layout blocks*/
   log->debug(QString::number(layout->size()));
@@ -442,17 +466,26 @@ class RunnableThis : public Runnable
 }
 
 /*public*/ Section* DefaultSignalMastLogic::getAssociatedSection(SignalMast* destination) {
-    if (!destList.contains(destination)) {
-        return nullptr;
-    }
-    return destList.value(destination)->getAssociatedSection();
+//    if (!destList.contains(destination)) {
+//        return nullptr;
+//    }
+ foreach(SignalMast* m, destList.keys()) {
+  if(m->equals(destination))
+   return destList.value(m)->getAssociatedSection();
+ }
+ return nullptr;
 }
 
+
 /*public*/ void DefaultSignalMastLogic::setAssociatedSection(Section* sec, SignalMast* destination) {
-    if (!destList.contains(destination)) {
-        return;
-    }
-    destList.value(destination)->setAssociatedSection(sec);
+//    if (!destList.contains(destination)) {
+//        return;
+//    }
+//    destList.value(destination)->setAssociatedSection(sec);
+ foreach (SignalMast* m, destList.keys()) {
+  if(m->equals(destination))
+   destList.value(m)->setAssociatedSection(sec);
+ }
 }
 
 /**
@@ -1219,9 +1252,12 @@ void DestinationMast::updateDestinationMast(SignalMast* newMast)
 }
     
 LayoutBlock* DestinationMast::getProtectingBlock(){
-        return protectingBlock;
-    }
+    return protectingBlock;
+}
     
+QString DestinationMast::getDisplayName() {
+    return destination->getDisplayName();
+}
     
 QString DestinationMast::getComment(){
     return comment;
@@ -1392,443 +1428,443 @@ void DestinationMast::setTurnouts(QHash<NamedBeanHandle<Turnout*>*, int> turnout
         firePropertyChange("turnouts", nullptr, this->destination);
     }*/
     
-    /**
-     * Sets which blocks must be inactive for the signal not to be set at a stop aspect
-     */
-    void DestinationMast::setAutoTurnouts(QHash<Turnout*, int> turnouts){
-        log->debug(destination->getDisplayName() + " setAutoTurnouts Called");
-        if (!this->autoTurnouts.isEmpty()){
-            QListIterator<Turnout*> keys(this->autoTurnouts.keys());
-            while ( keys.hasNext() )
-            {
-               Turnout* key = keys.next();
-               key->removePropertyChangeListener(propertyTurnoutListener);
-            }
-            //minimumBlockSpeed = 0;
-        }
-        destMastInit = false;
-        if(turnouts.isEmpty()){
-            this->autoTurnouts =  QHash<Turnout*, int>();
-        } else {
-            this->autoTurnouts=turnouts;
-        }
-        dsml->firePropertyChange("autoturnouts", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
-    }
-
-    /**
-     * Sets which blocks must be inactive for the signal not to be set at a stop aspect
-     * @param blocks
-     */
-    void DestinationMast::setBlocks(QHash<Block*, int> blocks){
-        log->debug(destination->getDisplayName() + " Set blocks called");
-        if (!this->userSetBlocks.isEmpty()){
-            foreach(NamedBeanSetting* nbh, userSetBlocks){
-                nbh->getBean()->removePropertyChangeListener(propertyBlockListener);
-            }
-        }
-        destMastInit = false;
-
-        if(blocks.isEmpty()){
-            userSetBlocks =  QList<NamedBeanSetting*>();
-        } else {
-            QListIterator<Block*> e(blocks.keys());
-            while(e.hasNext()){
-                Block* blk = e.next();
-                NamedBeanHandle<NamedBean*>* nbh = ( NamedBeanHandle<NamedBean*>*)(NamedBeanHandle<Block*>*) ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(blk->getDisplayName(), blk);
-                NamedBeanSetting* nbs = new NamedBeanSetting(nbh, blocks.value(blk));
-                userSetBlocks.append(nbs);
-            }
-        }
-        dsml->firePropertyChange("blocks", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
-    }
-    
-    /**
-     * Sets which blocks must be inactive for the signal not to be set at a stop aspect
-     * @param blocks
-     */
-    ///*public*/ void DestinationMast::setLayoutBlocks
-    /*public*/ void DestinationMast::setAutoBlocks(QMap<Block*, int> blocks){
-        if(log->isDebugEnabled())
-            log->debug(destination->getDisplayName() + " setAutoBlocks Called");
-        if (!this->autoBlocks.isEmpty())
+/**
+ * Sets which blocks must be inactive for the signal not to be set at a stop aspect
+ */
+void DestinationMast::setAutoTurnouts(QHash<Turnout*, int> turnouts){
+    log->debug(destination->getDisplayName() + " setAutoTurnouts Called");
+    if (!this->autoTurnouts.isEmpty()){
+        QListIterator<Turnout*> keys(this->autoTurnouts.keys());
+        while ( keys.hasNext() )
         {
-            QList<Block*> blockKeys = autoBlocks.keys();
-            //while ( blockKeys.hasNext() )
-            foreach(Block* key, blockKeys)
-            {
-           //Block key = blockKeys.next();
-                key->removePropertyChangeListener(propertyBlockListener);
-            }
-            //minimumBlockSpeed = 0;
+           Turnout* key = keys.next();
+           key->removePropertyChangeListener(propertyTurnoutListener);
         }
-        destMastInit = false;
-        if (blocks.isEmpty())
-        {
-            this->autoBlocks=  QMap<Block*, int>();
-        } else {
-            this->autoBlocks=blocks;
-            //We shall remove the facing block in the list.
-            if(dsml->facingBlock!=nullptr){
-                if(autoBlocks.contains(dsml->facingBlock->getBlock())){
-                    autoBlocks.remove(dsml->facingBlock->getBlock());
-                }
-            }
-        }
-        
-        log->debug(QString::number(autoBlocks.size()));
-        dsml->firePropertyChange("autoblocks", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
+        //minimumBlockSpeed = 0;
     }
-
-    /**
-     * Sets which masts must be in a given state before our mast can be set.
-     * @param masts
-     */
-    void DestinationMast::setMasts(QHash<SignalMast*, QString> masts){
-        if (!this->userSetMasts.isEmpty()){
-            foreach(NamedBeanSetting* nbh, userSetMasts){
-                nbh->getBean()->removePropertyChangeListener(propertySignalMastListener);
-            }
-        }
-        
-        destMastInit = false;
-
-        if(masts.isEmpty()){
-            userSetMasts =  QList<NamedBeanSetting*>();
-        } else {
-            QListIterator<SignalMast*> e (masts.keys());
-            while(e.hasNext()){
-                SignalMast* mast = e.next();
-                NamedBeanHandle<SignalMast*> * nbh = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(mast->getDisplayName(), mast);
-                NamedBeanSetting* nbs = new NamedBeanSetting((NamedBeanHandle<NamedBean*>*)nbh, masts.value(mast));
-                userSetMasts.append(nbs);
-            }
-        }
-        dsml->firePropertyChange("masts", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
+    destMastInit = false;
+    if(turnouts.isEmpty()){
+        this->autoTurnouts =  QHash<Turnout*, int>();
+    } else {
+        this->autoTurnouts=turnouts;
     }
-    
-    /**
-     * Sets which signalMasts must be at Danager for the signal not to be set at a stop aspect
-     */
-    void DestinationMast::setAutoMasts(QHash<SignalMast*, QString>* newAutoMasts, bool overright){
-        if(log->isDebugEnabled())
-            log->debug(destination->getDisplayName() + " setAutoMast Called");
-        if (!this->autoMasts->isEmpty()){
-            QListIterator<SignalMast*> keys(this->autoMasts->keys());
-            while ( keys.hasNext() )
-            {
-               SignalMast* key = keys.next();
-               key->removePropertyChangeListener(propertySignalMastListener);
-            }
-            //minimumBlockSpeed = 0;
-        }
-        destMastInit = false;
-        if(overright){
-            if(newAutoMasts->isEmpty()){
-                this->autoMasts = new QHash<SignalMast*, QString>();
-            } else {
-                this->autoMasts=newAutoMasts;
-            }
-        } else {
-            if (newAutoMasts->isEmpty()){
-                this->autoMasts =  new QHash<SignalMast*, QString>();
-            } else {
-                QListIterator<SignalMast*> keys(newAutoMasts->keys());
-                while ( keys.hasNext() )
-                {
-                   SignalMast* key = keys.next();
-                   this->autoMasts->insert(key, newAutoMasts->value(key));
-                }
-            }
-        }
-        //kick off the process to add back in signalmasts at crossings.
-        for(int i = 0; i<blockInXings.size(); i++)
-        {
-            blockInXings.at(i)->addSignalMastLogic(dsml->source);
-        }
-        
-        dsml->firePropertyChange("automasts", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
-    }
+    dsml->firePropertyChange("autoturnouts", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
+}
 
-    /**
-     * Sets which sensors must be in a given state before our mast can be set.
-     * @param sensors
-     */
-    void DestinationMast::setSensors(QHash<NamedBeanHandle<Sensor*>*, int> sensors){
-        if (!this->userSetSensors.isEmpty()){
-            foreach(NamedBeanSetting* nbh, userSetSensors){
-                nbh->getBean()->removePropertyChangeListener(propertySensorListener);
-            }
-        }
-        destMastInit = false;
-
-        if(sensors.isEmpty()){
-            userSetSensors =  QList<NamedBeanSetting*>();
-        } else {
-                QListIterator<NamedBeanHandle<Sensor*>* > e (sensors.keys());
-                while(e.hasNext()){
-                    NamedBeanHandle<Sensor*>* nbh = e.next();
-                    NamedBeanSetting* nbs = new NamedBeanSetting((NamedBeanHandle<NamedBean*>*)nbh, sensors.value(nbh));
-                    userSetSensors.append(nbs);
-                }
-        }
-        dsml->firePropertyChange("sensors", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
-    }
-
-    void DestinationMast::addSensor(NamedBeanHandle<Sensor*>* sen, int state){
-        foreach(NamedBeanSetting* nbh, userSetSensors){
-            if (nbh->getBean()==(sen->getBean()))
-                return;
-        }
-        sen->getBean()->addPropertyChangeListener(propertySensorListener);
-        connect(sen->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySensorListener, SLOT(propertyChange(PropertyChangeEvent*)));
-        NamedBeanSetting* nbs =  new NamedBeanSetting((NamedBeanHandle<NamedBean*>*)sen, state);
-        userSetSensors.append(nbs);
-        dsml->firePropertyChange("sensors", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
-    }
-    
-    void DestinationMast::removeSensor(NamedBeanHandle<Sensor*>* sen){
-        foreach(NamedBeanSetting* nbh, userSetSensors){
-            if (nbh->getBean()==(sen->getBean())){
-                sen->getBean()->removePropertyChangeListener(propertySensorListener);
-                userSetSensors.removeAt(userSetSensors.indexOf(nbh));
-                dsml->firePropertyChange("sensors", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
-                return;
-            }
-        }
-    }
-
-    QList<Block*> DestinationMast::getBlocks(){
-        QList<Block*> out =  QList<Block*>();
+/**
+ * Sets which blocks must be inactive for the signal not to be set at a stop aspect
+ * @param blocks
+ */
+void DestinationMast::setBlocks(QHash<Block*, int> blocks){
+    log->debug(destination->getDisplayName() + " Set blocks called");
+    if (!this->userSetBlocks.isEmpty()){
         foreach(NamedBeanSetting* nbh, userSetBlocks){
-            out.append((Block*)nbh->getBean());
+            nbh->getBean()->removePropertyChangeListener(propertyBlockListener);
         }
-        return out;
     }
-    
-    QList<Block*> DestinationMast::getAutoBlocks(){
-        QList<Block*> out =  QList<Block*>();
+    destMastInit = false;
+
+    if(blocks.isEmpty()){
+        userSetBlocks =  QList<NamedBeanSetting*>();
+    } else {
+        QListIterator<Block*> e(blocks.keys());
+        while(e.hasNext()){
+            Block* blk = e.next();
+            NamedBeanHandle<NamedBean*>* nbh = ( NamedBeanHandle<NamedBean*>*)(NamedBeanHandle<Block*>*) ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(blk->getDisplayName(), blk);
+            NamedBeanSetting* nbs = new NamedBeanSetting(nbh, blocks.value(blk));
+            userSetBlocks.append(nbs);
+        }
+    }
+    dsml->firePropertyChange("blocks", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
+}
+
+/**
+ * Sets which blocks must be inactive for the signal not to be set at a stop aspect
+ * @param blocks
+ */
+///*public*/ void DestinationMast::setLayoutBlocks
+/*public*/ void DestinationMast::setAutoBlocks(QMap<Block*, int> blocks){
+    if(log->isDebugEnabled())
+        log->debug(destination->getDisplayName() + " setAutoBlocks Called");
+    if (!this->autoBlocks.isEmpty())
+    {
         QList<Block*> blockKeys = autoBlocks.keys();
         //while ( blockKeys.hasNext() )
         foreach(Block* key, blockKeys)
         {
-           //Block key = blockKeys.next();
-            out.append(key);
+       //Block key = blockKeys.next();
+            key->removePropertyChangeListener(propertyBlockListener);
         }
-        return out;
+        //minimumBlockSpeed = 0;
     }
-
-    QList<Block*> DestinationMast::getAutoBlocksBetweenMasts()
+    destMastInit = false;
+    if (blocks.isEmpty())
     {
-        if (dsml->destList.value(destination)->xingAutoBlocks.size() == 0 && dsml->destList.value(destination)->dblCrossoverAutoBlocks.size() == 0) {
-            return getAutoBlocks();
-        }
-        QList<Block*> returnList = getAutoBlocks();
-        foreach (Block* blk, getAutoBlocks()) {
-            if (xingAutoBlocks.contains(blk)) {
-                returnList.removeOne(blk);
+        this->autoBlocks=  QMap<Block*, int>();
+    } else {
+        this->autoBlocks=blocks;
+        //We shall remove the facing block in the list.
+        if(dsml->facingBlock!=nullptr){
+            if(autoBlocks.contains(dsml->facingBlock->getBlock())){
+                autoBlocks.remove(dsml->facingBlock->getBlock());
             }
         }
-        foreach (Block* blk, getAutoBlocks()) {
-            if (dblCrossoverAutoBlocks.contains(blk)) {
-                returnList.removeOne(blk);
+    }
+
+    log->debug(QString::number(autoBlocks.size()));
+    dsml->firePropertyChange("autoblocks", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
+}
+
+/**
+ * Sets which masts must be in a given state before our mast can be set.
+ * @param masts
+ */
+void DestinationMast::setMasts(QHash<SignalMast*, QString> masts){
+    if (!this->userSetMasts.isEmpty()){
+        foreach(NamedBeanSetting* nbh, userSetMasts){
+            nbh->getBean()->removePropertyChangeListener(propertySignalMastListener);
+        }
+    }
+
+    destMastInit = false;
+
+    if(masts.isEmpty()){
+        userSetMasts =  QList<NamedBeanSetting*>();
+    } else {
+        QListIterator<SignalMast*> e (masts.keys());
+        while(e.hasNext()){
+            SignalMast* mast = e.next();
+            NamedBeanHandle<SignalMast*> * nbh = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(mast->getDisplayName(), mast);
+            NamedBeanSetting* nbs = new NamedBeanSetting((NamedBeanHandle<NamedBean*>*)nbh, masts.value(mast));
+            userSetMasts.append(nbs);
+        }
+    }
+    dsml->firePropertyChange("masts", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
+}
+
+/**
+ * Sets which signalMasts must be at Danager for the signal not to be set at a stop aspect
+ */
+void DestinationMast::setAutoMasts(QHash<SignalMast*, QString>* newAutoMasts, bool overright){
+    if(log->isDebugEnabled())
+        log->debug(destination->getDisplayName() + " setAutoMast Called");
+    if (!this->autoMasts->isEmpty()){
+        QListIterator<SignalMast*> keys(this->autoMasts->keys());
+        while ( keys.hasNext() )
+        {
+           SignalMast* key = keys.next();
+           key->removePropertyChangeListener(propertySignalMastListener);
+        }
+        //minimumBlockSpeed = 0;
+    }
+    destMastInit = false;
+    if(overright){
+        if(newAutoMasts->isEmpty()){
+            this->autoMasts = new QHash<SignalMast*, QString>();
+        } else {
+            this->autoMasts=newAutoMasts;
+        }
+    } else {
+        if (newAutoMasts->isEmpty()){
+            this->autoMasts =  new QHash<SignalMast*, QString>();
+        } else {
+            QListIterator<SignalMast*> keys(newAutoMasts->keys());
+            while ( keys.hasNext() )
+            {
+               SignalMast* key = keys.next();
+               this->autoMasts->insert(key, newAutoMasts->value(key));
             }
         }
-
-        return returnList;
+    }
+    //kick off the process to add back in signalmasts at crossings.
+    for(int i = 0; i<blockInXings.size(); i++)
+    {
+        blockInXings.at(i)->addSignalMastLogic(dsml->source);
     }
 
-    QList<Turnout*> DestinationMast::getTurnouts(){
-        QList<Turnout*> out =  QList<Turnout*>();
-        foreach(NamedBeanSetting* nbh, userSetTurnouts){
-            out.append((Turnout*)nbh->getBean());
-        }
-        return out;
-    }
-    
-    //@SuppressWarnings("unchecked")
-    QList<NamedBeanHandle<Turnout*>* > DestinationMast::getNamedTurnouts(){
-        QList<NamedBeanHandle<Turnout*>* > out =  QList<NamedBeanHandle<Turnout*>* >();
-        foreach(NamedBeanSetting* nbh, userSetTurnouts){
-            out.append((NamedBeanHandle<Turnout*>*)nbh->getNamedBean());
-        }
-        return out;
-    }
-    
-    QList<Turnout*> DestinationMast::getAutoTurnouts(){
-        QList<Turnout*> out =  QList<Turnout*>();
-        QListIterator<Turnout*> en (autoTurnouts.keys());
-        while (en.hasNext()) {
-            out.append(en.next());
-        }
-        return out;
-    }
+    dsml->firePropertyChange("automasts", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
+}
 
-    QList<SignalMast*> DestinationMast::getSignalMasts(){
-        QList<SignalMast*> out =  QList<SignalMast*>();
-        foreach(NamedBeanSetting* nbh, userSetMasts){
-            out.append((SignalMast*)nbh->getBean());
-        }
-        return out;
-    }
-    
-    QList<SignalMast*> DestinationMast::getAutoSignalMasts(){
-        QList<SignalMast*> out =  QList<SignalMast*>();
-        QListIterator<SignalMast*> en (autoMasts->keys());
-        while (en.hasNext()) {
-            out.append(en.next());
-        }
-        return out;
-    }
-    
-    QList<Sensor*> DestinationMast::getSensors(){
-        QList<Sensor*> out =  QList<Sensor*>();
+/**
+ * Sets which sensors must be in a given state before our mast can be set.
+ * @param sensors
+ */
+void DestinationMast::setSensors(QHash<NamedBeanHandle<Sensor*>*, int> sensors){
+    if (!this->userSetSensors.isEmpty()){
         foreach(NamedBeanSetting* nbh, userSetSensors){
-            out.append((Sensor*)nbh->getBean());
+            nbh->getBean()->removePropertyChangeListener(propertySensorListener);
         }
-        return out;
     }
-    
-    //@SuppressWarnings("unchecked")
-    QList<NamedBeanHandle<Sensor*>* > DestinationMast::getNamedSensors(){
-        QList<NamedBeanHandle<Sensor*>* > out =  QList<NamedBeanHandle<Sensor*>* >();
-        foreach(NamedBeanSetting* nbh, userSetSensors){
-            out.append((NamedBeanHandle<Sensor*>* )nbh->getNamedBean());
+    destMastInit = false;
+
+    if(sensors.isEmpty()){
+        userSetSensors =  QList<NamedBeanSetting*>();
+    } else {
+            QListIterator<NamedBeanHandle<Sensor*>* > e (sensors.keys());
+            while(e.hasNext()){
+                NamedBeanHandle<Sensor*>* nbh = e.next();
+                NamedBeanSetting* nbs = new NamedBeanSetting((NamedBeanHandle<NamedBean*>*)nbh, sensors.value(nbh));
+                userSetSensors.append(nbs);
+            }
+    }
+    dsml->firePropertyChange("sensors", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
+}
+
+void DestinationMast::addSensor(NamedBeanHandle<Sensor*>* sen, int state){
+    foreach(NamedBeanSetting* nbh, userSetSensors){
+        if (nbh->getBean()==(sen->getBean()))
+            return;
+    }
+    sen->getBean()->addPropertyChangeListener(propertySensorListener);
+    connect(sen->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySensorListener, SLOT(propertyChange(PropertyChangeEvent*)));
+    NamedBeanSetting* nbs =  new NamedBeanSetting((NamedBeanHandle<NamedBean*>*)sen, state);
+    userSetSensors.append(nbs);
+    dsml->firePropertyChange("sensors", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
+}
+
+void DestinationMast::removeSensor(NamedBeanHandle<Sensor*>* sen){
+    foreach(NamedBeanSetting* nbh, userSetSensors){
+        if (nbh->getBean()==(sen->getBean())){
+            sen->getBean()->removePropertyChangeListener(propertySensorListener);
+            userSetSensors.removeAt(userSetSensors.indexOf(nbh));
+            dsml->firePropertyChange("sensors", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
+            return;
         }
-        return out;
     }
-    
-    bool DestinationMast::isBlockIncluded(Block* block){
-        foreach(NamedBeanSetting* nbh, userSetBlocks){
-            if (nbh->getBean()==(block))
-                return true;
+}
+
+QList<Block*> DestinationMast::getBlocks(){
+    QList<Block*> out =  QList<Block*>();
+    foreach(NamedBeanSetting* nbh, userSetBlocks){
+        out.append((Block*)nbh->getBean());
+    }
+    return out;
+}
+
+QList<Block*> DestinationMast::getAutoBlocks(){
+    QList<Block*> out =  QList<Block*>();
+    QList<Block*> blockKeys = autoBlocks.keys();
+    //while ( blockKeys.hasNext() )
+    foreach(Block* key, blockKeys)
+    {
+       //Block key = blockKeys.next();
+        out.append(key);
+    }
+    return out;
+}
+
+QList<Block*> DestinationMast::getAutoBlocksBetweenMasts()
+{
+    if (dsml->destList.value(destination)->xingAutoBlocks.size() == 0 && dsml->destList.value(destination)->dblCrossoverAutoBlocks.size() == 0) {
+        return getAutoBlocks();
+    }
+    QList<Block*> returnList = getAutoBlocks();
+    foreach (Block* blk, getAutoBlocks()) {
+        if (xingAutoBlocks.contains(blk)) {
+            returnList.removeOne(blk);
         }
-        return false;
     }
-    
-    bool DestinationMast::isAutoBlockIncluded(LayoutBlock* block){
-        if(block!=nullptr)
-            return autoBlocks.contains(block->getBlock());
-        return false;
-    }
-    
-    bool DestinationMast::isAutoBlockIncluded(Block* block){
-        return autoBlocks.contains(block);
-    }
-    
-    bool DestinationMast::isBlockIncluded(LayoutBlock* block){
-        foreach(NamedBeanSetting* nbh, userSetBlocks){
-            if (nbh->getBean()==(block->getBlock()))
-                return true;
+    foreach (Block* blk, getAutoBlocks()) {
+        if (dblCrossoverAutoBlocks.contains(blk)) {
+            returnList.removeOne(blk);
         }
-        return false;
-     }
-    
-    bool DestinationMast::isTurnoutIncluded(Turnout* turnout){
-        foreach(NamedBeanSetting* nbh, userSetTurnouts){
-            if (nbh->getBean()==(turnout))
-                return true;
-        }
-        return false;
-    }
-    
-    bool DestinationMast::isSensorIncluded(Sensor* sensor){
-        foreach(NamedBeanSetting* nbh, userSetSensors){
-            if (nbh->getBean()==(sensor))
-                return true;
-        }
-        return false;
-    }
-    
-    bool DestinationMast::isSignalMastIncluded(SignalMast* signal){
-        foreach (NamedBeanSetting* nbh,userSetMasts){
-            if (nbh->getBean()==(signal))
-                return true;
-        }
-        return false;
-    }
-    
-    int DestinationMast::getAutoBlockState(Block* block){
-        if(autoBlocks.isEmpty())
-            return -1;
-        return autoBlocks.value(block);
     }
 
-    int DestinationMast::getBlockState(Block* block){
-        if(userSetBlocks.isEmpty())
-            return -1;
-        foreach(NamedBeanSetting* nbh, userSetBlocks){
-            if (nbh->getBean()==(block))
-                return nbh->getSetting();
-        }
-        return -1;
-    }
-    /*bool isBlockManualAssigned(Block block){
-        return true;
-    }*/
-    
-    int DestinationMast::getSensorState(Sensor* sensor){
-        if(userSetSensors.isEmpty())
-            return -1;
-        foreach(NamedBeanSetting* nbh,userSetSensors){
-            if (nbh->getBean()==(sensor))
-                return nbh->getSetting();
-        }
-        return -1;
-    }
-    
-    int DestinationMast::getTurnoutState(Turnout* turnout){
-        if(userSetTurnouts.isEmpty())
-            return -1;
-        foreach(NamedBeanSetting* nbh,userSetTurnouts){
-            if (nbh->getBean()==(turnout))
-                return nbh->getSetting();
-        }
-        return -1;
-    }
-    
-    int DestinationMast::getAutoTurnoutState(Turnout* turnout){
-        if(autoTurnouts.isEmpty())
-            return -1;
-        if(autoTurnouts.contains(turnout))
-            return autoTurnouts.value(turnout);
-        return -1;
-    }
+    return returnList;
+}
 
-    QString DestinationMast::getSignalMastState(SignalMast* mast){
-        if(userSetMasts.isEmpty())
-            return nullptr;
-        foreach(NamedBeanSetting* nbh, userSetMasts){
-            if (nbh->getBean()==(mast))
-                return nbh->getStringSetting();
-        }
+QList<Turnout*> DestinationMast::getTurnouts(){
+    QList<Turnout*> out =  QList<Turnout*>();
+    foreach(NamedBeanSetting* nbh, userSetTurnouts){
+        out.append((Turnout*)nbh->getBean());
+    }
+    return out;
+}
+
+//@SuppressWarnings("unchecked")
+QList<NamedBeanHandle<Turnout*>* > DestinationMast::getNamedTurnouts(){
+    QList<NamedBeanHandle<Turnout*>* > out =  QList<NamedBeanHandle<Turnout*>* >();
+    foreach(NamedBeanSetting* nbh, userSetTurnouts){
+        out.append((NamedBeanHandle<Turnout*>*)nbh->getNamedBean());
+    }
+    return out;
+}
+
+QList<Turnout*> DestinationMast::getAutoTurnouts(){
+    QList<Turnout*> out =  QList<Turnout*>();
+    QListIterator<Turnout*> en (autoTurnouts.keys());
+    while (en.hasNext()) {
+        out.append(en.next());
+    }
+    return out;
+}
+
+QList<SignalMast*> DestinationMast::getSignalMasts(){
+    QList<SignalMast*> out =  QList<SignalMast*>();
+    foreach(NamedBeanSetting* nbh, userSetMasts){
+        out.append((SignalMast*)nbh->getBean());
+    }
+    return out;
+}
+
+QList<SignalMast*> DestinationMast::getAutoSignalMasts(){
+    QList<SignalMast*> out =  QList<SignalMast*>();
+    QListIterator<SignalMast*> en (autoMasts->keys());
+    while (en.hasNext()) {
+        out.append(en.next());
+    }
+    return out;
+}
+
+QList<Sensor*> DestinationMast::getSensors(){
+    QList<Sensor*> out =  QList<Sensor*>();
+    foreach(NamedBeanSetting* nbh, userSetSensors){
+        out.append((Sensor*)nbh->getBean());
+    }
+    return out;
+}
+
+//@SuppressWarnings("unchecked")
+QList<NamedBeanHandle<Sensor*>* > DestinationMast::getNamedSensors(){
+    QList<NamedBeanHandle<Sensor*>* > out =  QList<NamedBeanHandle<Sensor*>* >();
+    foreach(NamedBeanSetting* nbh, userSetSensors){
+        out.append((NamedBeanHandle<Sensor*>* )nbh->getNamedBean());
+    }
+    return out;
+}
+
+bool DestinationMast::isBlockIncluded(Block* block){
+    foreach(NamedBeanSetting* nbh, userSetBlocks){
+        if (nbh->getBean()==(block))
+            return true;
+    }
+    return false;
+}
+
+bool DestinationMast::isAutoBlockIncluded(LayoutBlock* block){
+    if(block!=nullptr)
+        return autoBlocks.contains(block->getBlock());
+    return false;
+}
+
+bool DestinationMast::isAutoBlockIncluded(Block* block){
+    return autoBlocks.contains(block);
+}
+
+bool DestinationMast::isBlockIncluded(LayoutBlock* block){
+    foreach(NamedBeanSetting* nbh, userSetBlocks){
+        if (nbh->getBean()==(block->getBlock()))
+            return true;
+    }
+    return false;
+ }
+
+bool DestinationMast::isTurnoutIncluded(Turnout* turnout){
+    foreach(NamedBeanSetting* nbh, userSetTurnouts){
+        if (nbh->getBean()==(turnout))
+            return true;
+    }
+    return false;
+}
+
+bool DestinationMast::isSensorIncluded(Sensor* sensor){
+    foreach(NamedBeanSetting* nbh, userSetSensors){
+        if (nbh->getBean()==(sensor))
+            return true;
+    }
+    return false;
+}
+
+bool DestinationMast::isSignalMastIncluded(SignalMast* signal){
+    foreach (NamedBeanSetting* nbh,userSetMasts){
+        if (nbh->getBean()==(signal))
+            return true;
+    }
+    return false;
+}
+
+int DestinationMast::getAutoBlockState(Block* block){
+    if(autoBlocks.isEmpty())
+        return -1;
+    return autoBlocks.value(block);
+}
+
+int DestinationMast::getBlockState(Block* block){
+    if(userSetBlocks.isEmpty())
+        return -1;
+    foreach(NamedBeanSetting* nbh, userSetBlocks){
+        if (nbh->getBean()==(block))
+            return nbh->getSetting();
+    }
+    return -1;
+}
+/*bool isBlockManualAssigned(Block block){
+    return true;
+}*/
+
+int DestinationMast::getSensorState(Sensor* sensor){
+    if(userSetSensors.isEmpty())
+        return -1;
+    foreach(NamedBeanSetting* nbh,userSetSensors){
+        if (nbh->getBean()==(sensor))
+            return nbh->getSetting();
+    }
+    return -1;
+}
+
+int DestinationMast::getTurnoutState(Turnout* turnout){
+    if(userSetTurnouts.isEmpty())
+        return -1;
+    foreach(NamedBeanSetting* nbh,userSetTurnouts){
+        if (nbh->getBean()==(turnout))
+            return nbh->getSetting();
+    }
+    return -1;
+}
+
+int DestinationMast::getAutoTurnoutState(Turnout* turnout){
+    if(autoTurnouts.isEmpty())
+        return -1;
+    if(autoTurnouts.contains(turnout))
+        return autoTurnouts.value(turnout);
+    return -1;
+}
+
+QString DestinationMast::getSignalMastState(SignalMast* mast){
+    if(userSetMasts.isEmpty())
         return nullptr;
+    foreach(NamedBeanSetting* nbh, userSetMasts){
+        if (nbh->getBean()==(mast))
+            return nbh->getStringSetting();
     }
-    
-    QString DestinationMast::getAutoSignalMastState(SignalMast* mast){
-        if(autoMasts->isEmpty())
-            return "";
-        return autoMasts->value(mast);
+    return nullptr;
+}
+
+QString DestinationMast::getAutoSignalMastState(SignalMast* mast){
+    if(autoMasts->isEmpty())
+        return "";
+    return autoMasts->value(mast);
+}
+
+
+/*
+ * Before going active or checking that we can go active, we will wait 500ms
+ * for things to settle down to help prevent a race condition
+ */
+void DestinationMast::checkState(){
+    if(disposed){
+        log->error("checkState called even though this has been disposed of " + dsml->getSourceMast()->getDisplayName());
+        return;
     }
-    
-    
-    /* 
-     * Before going active or checking that we can go active, we will wait 500ms
-     * for things to settle down to help prevent a race condition
-     */
-    void DestinationMast::checkState(){
-        if(disposed){
-            log->error("checkState called even though this has been disposed of " + dsml->getSourceMast()->getDisplayName());
-            return;
-        }
-        
-        if(!enable)
-            return;
-        if (inWait){
-            return;
-        }
-        
-        log->debug("check Signal Dest State called");
-        inWait=true;
+
+    if(!enable)
+        return;
+    if (inWait){
+        return;
+    }
+
+    log->debug("check Signal Dest State called");
+    inWait=true;
 
 //        Runnable r = new Runnable() {
 //          /*public*/ void run() {
@@ -1844,767 +1880,768 @@ void DestinationMast::setTurnouts(QHash<NamedBeanHandle<Turnout*>*, int> turnout
 //            }
 //          }
 //        };
-        RunnableThis* r = new RunnableThis(dsml);
-        thr = new QThread(r);
-        /*try{
-            thr.join();
-        } catch (InterruptedException ex) {
+    RunnableThis* r = new RunnableThis(dsml);
+    thr = new QThread(r);
+    /*try{
+        thr.join();
+    } catch (InterruptedException ex) {
 //            log->debug("interrupted at join " + ex);
-            inWait=false;
-        }*/
-        thr->setObjectName(dsml->getSourceMast()->getDisplayName() + " " + destination->getDisplayName());
-        thr->start();
+        inWait=false;
+    }*/
+    thr->setObjectName(dsml->getSourceMast()->getDisplayName() + " " + destination->getDisplayName());
+    thr->start();
+}
+
+
+void DestinationMast::checkStateDetails() {
+    turnoutThrown=false;
+    permissiveBlock=false;
+    if(disposed){
+        log->error("checkStateDetails called even though this has been disposed of " + dsml->getSourceMast()->getDisplayName() + " " + destination->getDisplayName());
+        return;
     }
-    
-    
-    void DestinationMast::checkStateDetails() {
-        turnoutThrown=false;
-        permissiveBlock=false;
-        if(disposed){
-            log->error("checkStateDetails called even though this has been disposed of " + dsml->getSourceMast()->getDisplayName() + " " + destination->getDisplayName());
-            return;
-        }
-        if(inWait){
-            log->error("checkStateDetails called while we are waiting for things to settle");
-            return;
-        }
-        if(!enable){
-            return;
-        }
-        log->debug("From " + dsml->getSourceMast()->getDisplayName() + " to " + destination->getDisplayName() + " internal check state");
-        active=false;
-        if((_useLayoutEditor) && (autoTurnouts.size()==0) && (autoBlocks.size()==0)){
-            return;
-        }
-        bool state = true;
-        QListIterator<Turnout*> keys(autoTurnouts.keys());
-        while ( keys.hasNext() )
-        {
-           Turnout* key = keys.next();
-           if (key->getKnownState()!=autoTurnouts.value(key)){
-                if (key->getState()!=autoTurnouts.value(key)){
-                    if (isTurnoutIncluded(key)){
-                        if(key->getState()!=getTurnoutState(key)){
-                            state=false;
-                        } else if (key->getState()==Turnout::THROWN){
-                            turnoutThrown=true;
-                        }
-                    }
-                     else {
-                        state = false;
+    if(inWait){
+        log->error("checkStateDetails called while we are waiting for things to settle");
+        return;
+    }
+    if(!enable){
+        return;
+    }
+    log->debug("From " + dsml->getSourceMast()->getDisplayName() + " to " + destination->getDisplayName() + " internal check state");
+    active=false;
+    if((_useLayoutEditor) && (autoTurnouts.size()==0) && (autoBlocks.size()==0)){
+        return;
+    }
+    bool state = true;
+    QListIterator<Turnout*> keys(autoTurnouts.keys());
+    while ( keys.hasNext() )
+    {
+       Turnout* key = keys.next();
+       if (key->getKnownState()!=autoTurnouts.value(key)){
+            if (key->getState()!=autoTurnouts.value(key)){
+                if (isTurnoutIncluded(key)){
+                    if(key->getState()!=getTurnoutState(key)){
+                        state=false;
+                    } else if (key->getState()==Turnout::THROWN){
+                        turnoutThrown=true;
                     }
                 }
-           } else if (key->getState()==Turnout::THROWN){
-                turnoutThrown=true;
+                 else {
+                    state = false;
+                }
             }
+       } else if (key->getState()==Turnout::THROWN){
+            turnoutThrown=true;
         }
-        
-        foreach(NamedBeanSetting* nbh, userSetTurnouts){
-            Turnout* key = (Turnout*) nbh->getBean();
-            if (key->getKnownState()!=nbh->getSetting())
-               state=false;
-            else if (key->getState()==Turnout::THROWN){
-                turnoutThrown=true;
-            }
-        }
+    }
 
-        QListIterator<SignalMast*> mastKeys(autoMasts->keys());
-        while ( mastKeys.hasNext() )
-        {
-           SignalMast* key = mastKeys.next();
-           if(log->isDebugEnabled())
-            log->debug(key->getDisplayName() + " " + key->getAspect() + " " + autoMasts->value(key));
-           if ((key->getAspect()!=nullptr) && (key->getAspect()!=(autoMasts->value(key)))){
-               if (isSignalMastIncluded(key)){
-                //Basically if we have a blank aspect, we don't care about the state of the signalmast
-                    if(getSignalMastState(key)!=("")){
-                        if(key->getAspect()!=(getSignalMastState(key))){
-                            state=false;
-                        }
-                    }
-                } else {
-                   state = false;
-                }
-           }
+    foreach(NamedBeanSetting* nbh, userSetTurnouts){
+        Turnout* key = (Turnout*) nbh->getBean();
+        if (key->getKnownState()!=nbh->getSetting())
+           state=false;
+        else if (key->getState()==Turnout::THROWN){
+            turnoutThrown=true;
         }
-        
-        foreach(NamedBeanSetting* nbh, userSetMasts){
-            SignalMast* key = (SignalMast*) nbh->getBean();
-            if ((key->getAspect()==nullptr) || (key->getAspect()==(nbh->getStringSetting())))
-               state=false;
-        }
+    }
 
-        foreach(NamedBeanSetting* nbh, userSetSensors){
-            Sensor* key =(Sensor*) nbh->getBean();
-            if (key->getKnownState()!=nbh->getSetting())
-                state = false;
-        }
-
-        QList<Block*> blockAutoKeys = autoBlocks.keys();
-        foreach(Block* key,blockAutoKeys)
-        {
-           if(log->isDebugEnabled())
-                log->debug(key->getDisplayName() + " " + key->getState() + " " + autoBlocks.value(key));
-           if (key->getState()!=autoBlocks.value(key)){
-                if (isBlockIncluded(key)){
-                    if(getBlockState(key)!=0x03) {
-                        if(key->getState()!=getBlockState(key)){
-                            if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
-                                permissiveBlock=true;
-                            } else {
-                                state=false;
-                            }
-                        }
-                    }
-                } else {
-                    if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
-                        permissiveBlock=true;
-                    } else {
-                        state = false;
-                    }
-                }
-           }
-        }
-
-        foreach(NamedBeanSetting* nbh, userSetBlocks){
-            Block* key = (Block*)nbh->getBean();
-            if(nbh->getSetting()!=0x03){
-                if (key->getState()!=nbh->getSetting()) {
-                    if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
-                        permissiveBlock=true;
-                    } else {
+    QListIterator<SignalMast*> mastKeys(autoMasts->keys());
+    while ( mastKeys.hasNext() )
+    {
+       SignalMast* key = mastKeys.next();
+       if(log->isDebugEnabled())
+        log->debug(key->getDisplayName() + " " + key->getAspect() + " " + autoMasts->value(key));
+       if ((key->getAspect()!=nullptr) && (key->getAspect()!=(autoMasts->value(key)))){
+           if (isSignalMastIncluded(key)){
+            //Basically if we have a blank aspect, we don't care about the state of the signalmast
+                if(getSignalMastState(key)!=("")){
+                    if(key->getAspect()!=(getSignalMastState(key))){
                         state=false;
                     }
                 }
+            } else {
+               state = false;
             }
-        }
-        if (permissiveBlock){
-            /*If a block has been found to be permissive, but the source signalmast
-            does not support a call-on/permissive aspect then the route can not be set*/
-            if(dsml->getSourceMast()->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::PERMISSIVE)==nullptr)
-                state = false;
-        }
-        if(!state){
-            turnoutThrown = false;
-            permissiveBlock=false;
-        }
-
-        active=state;
-        dsml->setSignalAppearance();
+       }
     }
 
-    void DestinationMast::initialise(){
-        if ((destMastInit) || (disposed)) { return;}
+    foreach(NamedBeanSetting* nbh, userSetMasts){
+        SignalMast* key = (SignalMast*) nbh->getBean();
+        if ((key->getAspect()==nullptr) || (key->getAspect()==(nbh->getStringSetting())))
+           state=false;
+    }
 
-        active=false;
-        turnoutThrown=false;
-        permissiveBlock=false;
-        bool routeclear = true;
-        if((_useLayoutEditor) && (autoTurnouts.size()==0) && (autoBlocks.size()==0) && (autoMasts->size()==0)){
-            return;
-        }
-        
-        calculateSpeed();
-        
-        QListIterator<Turnout*> keys(autoTurnouts.keys());
-        while ( keys.hasNext() )
-        {
-           Turnout* key = keys.next();
-           key->addPropertyChangeListener(propertyTurnoutListener);
-           connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyTurnoutListener, SLOT(propertyChange(PropertyChangeEvent*)));
+    foreach(NamedBeanSetting* nbh, userSetSensors){
+        Sensor* key =(Sensor*) nbh->getBean();
+        if (key->getKnownState()!=nbh->getSetting())
+            state = false;
+    }
 
-           if (key->getKnownState()!=autoTurnouts.value(key)){
-                if (key->getState()!=autoTurnouts.value(key)){
-                    if (isTurnoutIncluded(key)){
-                        if(key->getState()!=getTurnoutState(key)){
-                            routeclear=false;
-                        } else if (key->getState()==Turnout::THROWN){
-                            turnoutThrown=true;
+    QList<Block*> blockAutoKeys = autoBlocks.keys();
+    foreach(Block* key,blockAutoKeys)
+    {
+       if(log->isDebugEnabled())
+            log->debug(key->getDisplayName() + " " + key->getState() + " " + autoBlocks.value(key));
+       if (key->getState()!=autoBlocks.value(key)){
+            if (isBlockIncluded(key)){
+                if(getBlockState(key)!=0x03) {
+                    if(key->getState()!=getBlockState(key)){
+                        if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
+                            permissiveBlock=true;
+                        } else {
+                            state=false;
                         }
-                    } else {
-                        routeclear = false;
                     }
                 }
-           } else if (key->getState()==Turnout::THROWN){
-                turnoutThrown = true;
-           }
-        }
+            } else {
+                if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
+                    permissiveBlock=true;
+                } else {
+                    state = false;
+                }
+            }
+       }
+    }
 
-        foreach(NamedBeanSetting* nbh, userSetTurnouts){
-            Turnout* key = (Turnout*) nbh->getBean();
-            key->addPropertyChangeListener(propertyTurnoutListener, nbh->getBeanName(), "Signal Mast Logic:" + dsml->source->getDisplayName() + " to " + destination->getDisplayName());
-            connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyTurnoutListener, SLOT(propertyChange(PropertyChangeEvent*)));
-            if (key->getKnownState()!=nbh->getSetting())
-               routeclear=false;
-            else if (key->getState()==Turnout::THROWN){
-                turnoutThrown=true;
+    foreach(NamedBeanSetting* nbh, userSetBlocks){
+        Block* key = (Block*)nbh->getBean();
+        if(nbh->getSetting()!=0x03){
+            if (key->getState()!=nbh->getSetting()) {
+                if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
+                    permissiveBlock=true;
+                } else {
+                    state=false;
+                }
             }
         }
-        
-        QListIterator<SignalMast*> mastKeys(autoMasts->keys());
-        while ( mastKeys.hasNext() )
-        {
-           SignalMast* key = mastKeys.next();
-           //log->debug(destination->getDisplayName() + " auto mast add list " + key->getDisplayName());
-           key->addPropertyChangeListener(propertySignalMastListener);
-           connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySignalMastListener, SLOT(propertyChange(PropertyChangeEvent*)));
-           if (key->getAspect()!=(autoMasts->value(key))){
-                if(isSignalMastIncluded(key)){
-                    if(key->getAspect()==(getSignalMastState(key))){
-                        routeclear = false;
-                    }                    
+    }
+    if (permissiveBlock){
+        /*If a block has been found to be permissive, but the source signalmast
+        does not support a call-on/permissive aspect then the route can not be set*/
+        if(dsml->getSourceMast()->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::PERMISSIVE)==nullptr)
+            state = false;
+    }
+    if(!state){
+        turnoutThrown = false;
+        permissiveBlock=false;
+    }
+
+    active=state;
+    dsml->setSignalAppearance();
+}
+
+void DestinationMast::initialise(){
+    if ((destMastInit) || (disposed)) { return;}
+
+    active=false;
+    turnoutThrown=false;
+    permissiveBlock=false;
+    bool routeclear = true;
+    if((_useLayoutEditor) && (autoTurnouts.size()==0) && (autoBlocks.size()==0) && (autoMasts->size()==0)){
+        return;
+    }
+
+    calculateSpeed();
+
+    QListIterator<Turnout*> keys(autoTurnouts.keys());
+    while ( keys.hasNext() )
+    {
+       Turnout* key = keys.next();
+       key->addPropertyChangeListener(propertyTurnoutListener);
+       connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyTurnoutListener, SLOT(propertyChange(PropertyChangeEvent*)));
+
+       if (key->getKnownState()!=autoTurnouts.value(key)){
+            if (key->getState()!=autoTurnouts.value(key)){
+                if (isTurnoutIncluded(key)){
+                    if(key->getState()!=getTurnoutState(key)){
+                        routeclear=false;
+                    } else if (key->getState()==Turnout::THROWN){
+                        turnoutThrown=true;
+                    }
+                } else {
+                    routeclear = false;
+                }
+            }
+       } else if (key->getState()==Turnout::THROWN){
+            turnoutThrown = true;
+       }
+    }
+
+    foreach(NamedBeanSetting* nbh, userSetTurnouts){
+        Turnout* key = (Turnout*) nbh->getBean();
+        key->addPropertyChangeListener(propertyTurnoutListener, nbh->getBeanName(), "Signal Mast Logic:" + dsml->source->getDisplayName() + " to " + destination->getDisplayName());
+        connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyTurnoutListener, SLOT(propertyChange(PropertyChangeEvent*)));
+        if (key->getKnownState()!=nbh->getSetting())
+           routeclear=false;
+        else if (key->getState()==Turnout::THROWN){
+            turnoutThrown=true;
+        }
+    }
+
+    QListIterator<SignalMast*> mastKeys(autoMasts->keys());
+    while ( mastKeys.hasNext() )
+    {
+       SignalMast* key = mastKeys.next();
+       //log->debug(destination->getDisplayName() + " auto mast add list " + key->getDisplayName());
+       key->addPropertyChangeListener(propertySignalMastListener);
+       connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySignalMastListener, SLOT(propertyChange(PropertyChangeEvent*)));
+       if (key->getAspect()!=(autoMasts->value(key))){
+            if(isSignalMastIncluded(key)){
+                if(key->getAspect()==(getSignalMastState(key))){
+                    routeclear = false;
+                }
+            } else {
+                routeclear = false;
+            }
+        }
+    }
+
+    foreach(NamedBeanSetting* nbh, userSetMasts){
+        SignalMast* key = (SignalMast*) nbh->getBean();
+        key->addPropertyChangeListener(propertySignalMastListener);
+        connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySignalMastListener, SLOT(propertyChange(PropertyChangeEvent*)));
+        //log->debug(destination->getDisplayName() + " key asepct " + key->getAspect());
+        //log->debug(destination->getDisplayName() + " key exepcted aspect " + masts.at(key));
+        if ((key->getAspect()==nullptr) || (key->getAspect()!=(nbh->getStringSetting())))
+            routeclear=false;
+    }
+    foreach(NamedBeanSetting* nbh, userSetSensors){
+        AbstractSensor* sensor = (AbstractSensor*) nbh->getBean();
+        ((AbstractNamedBean*)sensor)->addPropertyChangeListener((PropertyChangeListener*)propertySensorListener, nbh->getBeanName(), QString("Signal Mast Logic:") + dsml->source->getDisplayName() + " to " + destination->getDisplayName());
+        connect(sensor, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySensorListener, SLOT(propertyChange(PropertyChangeEvent*)));
+        if (sensor->getKnownState()!=nbh->getSetting())
+            routeclear = false;
+    }
+
+    QList<Block*> autoBlockKeys = autoBlocks.keys();
+    foreach(Block* key, autoBlockKeys)
+    {
+       //log->debug(destination->getDisplayName() + " auto block add list " + key->getDisplayName());
+       key->addPropertyChangeListener(propertyBlockListener);
+       if (key->getState()!=autoBlocks.value(key)){
+            if (isBlockIncluded(key)){
+                if(key->getState()!=getBlockState(key)){
+                    if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
+                        permissiveBlock=true;
+                    } else {
+                        routeclear=false;
+                    }
+                }
+            } else {
+                if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
+                    permissiveBlock=true;
                 } else {
                     routeclear = false;
                 }
             }
         }
+    }
 
-        foreach(NamedBeanSetting* nbh, userSetMasts){
-            SignalMast* key = (SignalMast*) nbh->getBean();
-            key->addPropertyChangeListener(propertySignalMastListener);
-            connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySignalMastListener, SLOT(propertyChange(PropertyChangeEvent*)));
-            //log->debug(destination->getDisplayName() + " key asepct " + key->getAspect());
-            //log->debug(destination->getDisplayName() + " key exepcted aspect " + masts.at(key));
-            if ((key->getAspect()==nullptr) || (key->getAspect()!=(nbh->getStringSetting())))
+    foreach(NamedBeanSetting* nbh, userSetBlocks){
+        Block* key = (Block*) nbh->getBean();
+       key->addPropertyChangeListener(propertyBlockListener);
+       connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyBlockListener, SLOT(propertyChange(PropertyChangeEvent*)));
+       if (key->getState()!=getBlockState(key)){
+            if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
+                permissiveBlock=true;
+            } else {
                 routeclear=false;
-        }
-        foreach(NamedBeanSetting* nbh, userSetSensors){
-            AbstractSensor* sensor = (AbstractSensor*) nbh->getBean();
-            ((AbstractNamedBean*)sensor)->addPropertyChangeListener((PropertyChangeListener*)propertySensorListener, nbh->getBeanName(), QString("Signal Mast Logic:") + dsml->source->getDisplayName() + " to " + destination->getDisplayName());
-            connect(sensor, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySensorListener, SLOT(propertyChange(PropertyChangeEvent*)));
-            if (sensor->getKnownState()!=nbh->getSetting())
-                routeclear = false;
-        }
-        
-        QList<Block*> autoBlockKeys = autoBlocks.keys();
-        foreach(Block* key, autoBlockKeys)
-        {
-           //log->debug(destination->getDisplayName() + " auto block add list " + key->getDisplayName());
-           key->addPropertyChangeListener(propertyBlockListener);
-           if (key->getState()!=autoBlocks.value(key)){
-                if (isBlockIncluded(key)){
-                    if(key->getState()!=getBlockState(key)){
-                        if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
-                            permissiveBlock=true;
-                        } else {
-                            routeclear=false;
-                        }
-                    }
-                } else {
-                    if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
-                        permissiveBlock=true;
-                    } else {
-                        routeclear = false;
-                    }
-                }
-            }
-        }
-        
-        foreach(NamedBeanSetting* nbh, userSetBlocks){
-            Block* key = (Block*) nbh->getBean();
-           key->addPropertyChangeListener(propertyBlockListener);
-           connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyBlockListener, SLOT(propertyChange(PropertyChangeEvent*)));
-           if (key->getState()!=getBlockState(key)){
-                if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
-                    permissiveBlock=true;
-                } else {
-                    routeclear=false;
-                }
-            }
-        }
-        if (permissiveBlock){
-            /*If a block has been found to be permissive, but the source signalmast
-            does not support a call-on/permissive aspect then the route can not be set*/
-            if(dsml->getSourceMast()->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::PERMISSIVE)==nullptr)
-                routeclear = false;
-        }
-        if (routeclear){
-            active=true;
-            dsml->setSignalAppearance();
-        } else {
-            permissiveBlock=false;
-            turnoutThrown =false;
-        }
-        destMastInit = true;
-    }
-
-
-    void DestinationMast::useLayoutEditor(bool boo) throw (JmriException) {
-        if(log->isDebugEnabled())
-            log->debug(destination->getDisplayName() + " use called " + QVariant(boo).toString() + " " + QVariant(_useLayoutEditor).toString());
-        if (_useLayoutEditor == boo)
-            return;
-        _useLayoutEditor = boo;
-        if ((boo) && (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->routingStablised())){
-            try{
-                setupLayoutEditorDetails();
-            } catch (JmriException e){
-                throw e;
-                //Considered normal if there is no vlaid path using the layout editor.
-            }
-        } else {
-            destinationBlock= nullptr;
-            dsml->facingBlock = nullptr;
-            dsml->protectingBlock = nullptr;
-            setAutoBlocks(QMap<Block*, int>());
-            setAutoTurnouts(QHash<Turnout*, int>() );
-        }
-    }
-    
-    void DestinationMast::useLayoutEditorDetails(bool turnouts, bool blocks) throw (JmriException){
-        if(log->isDebugEnabled())
-            log->debug(destination->getDisplayName() + " use layout editor details called " + QVariant(_useLayoutEditor).toString());
-        _useLayoutEditorTurnouts=turnouts;
-        _useLayoutEditorBlocks=blocks;
-        if((_useLayoutEditor) && (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->routingStablised())){
-            try{
-                setupLayoutEditorDetails();
-            } catch (JmriException e){
-                throw e;
-                //Considered normal if there is no valid path using the layout editor.
             }
         }
     }
-    
-    void DestinationMast::setupLayoutEditorDetails() throw (JmriException) {
-                log->debug(tr("setupLayoutEditorDetails: useLayoutEditor=%1 disposed=%2").arg(_useLayoutEditor?"true":"false").arg( disposed?"true":"false"));
-                if ((!_useLayoutEditor) || (disposed)) {
-                    return;
-                }
-                LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
-                if ((destinationBlock != nullptr) && (log->isDebugEnabled())) {
-                    log->debug(destination->getDisplayName() + " Set use layout editor");
-                }
-                QList<LayoutEditor*>* layout = static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
-                QList<LayoutBlock*> protectingBlocks = QList<LayoutBlock*>();
-                // We don't care which Layout Editor panel the signal mast is on, just so long as
-                // the routing is done via layout blocks.
-                LayoutBlock* remoteProtectingBlock = nullptr;
-                for (int i = 0; i < layout->size(); i++) {
-                    if (log->isDebugEnabled()) {
-                        log->debug(destination->getDisplayName() + " Layout name " + layout->at(i)->getLayoutName());
-                    }
-                    if (facingBlock == nullptr) {
-                        facingBlock = lbm->getFacingBlockByNamedBean(dsml->getSourceMast(), layout->at(i));
-                    }
-                    if (protectingBlock == nullptr && protectingBlocks.isEmpty()) {
-                        //This is wrong
-                        protectingBlocks = lbm->getProtectingBlocksByNamedBean(dsml->getSourceMast(), layout->at(i));
-                    }
-                    if (destinationBlock == nullptr) {
-                        destinationBlock = lbm->getFacingBlockByNamedBean(destination, layout->at(i));
-                    }
-                    if (remoteProtectingBlock == nullptr) {
-                        remoteProtectingBlock = lbm->getProtectedBlockByNamedBean(destination, layout->at(i));
-                    }
-                }
-                // At this point, if we are not using the Layout Editor turnout or block
-                // details then there is no point in trying to gather them.
-                if ((!_useLayoutEditorTurnouts) && (!_useLayoutEditorBlocks)) {
-                    return;
-                }
-                if (facingBlock == nullptr) {
-                    log->error("No facing block found for source mast " + dsml->getSourceMast()->getDisplayName());
-                    throw JmriException("No facing block found for source mast " + dsml->getSourceMast()->getDisplayName());
-                }
-                if (destinationBlock == nullptr) {
-                    log->error("No facing block found for destination mast " + destination->getDisplayName());
-                    throw JmriException("No facing block found for destination mast " + destination->getDisplayName());
-                }
-                QList<LayoutBlock*> lblks = QList<LayoutBlock*>();
-                if (protectingBlock == nullptr) {
-                    log->debug("protecting block is null");
-                    QString pBlkNames = "";
-                    QString lBlksNamesBuf;// = new StringBuffer();
-                    for (LayoutBlock* pBlk : protectingBlocks) {
-                        log->debug(tr("checking layoutBlock %1").arg(pBlk->getDisplayName()));
-                        pBlkNames = pBlkNames + pBlk->getDisplayName() + " (" + lbm->getLayoutBlockConnectivityTools()->checkValidDest(facingBlock, pBlk, destinationBlock, remoteProtectingBlock, LayoutBlockConnectivityTools::MASTTOMAST) + "), ";
-                        if (lbm->getLayoutBlockConnectivityTools()->checkValidDest(facingBlock, pBlk, destinationBlock, remoteProtectingBlock, LayoutBlockConnectivityTools::MASTTOMAST)) {
-                            try {
-                                lblks = lbm->getLayoutBlockConnectivityTools()->getLayoutBlocks(facingBlock, destinationBlock, pBlk, true, LayoutBlockConnectivityTools::MASTTOMAST);
-                                protectingBlock = pBlk;
-                                log->debug("building path names...");
-                                for (LayoutBlock* lBlk : lblks) {
-                                    lBlksNamesBuf.append(" ");
-                                    lBlksNamesBuf.append(lBlk->getDisplayName());
-                                }
-                                break;
-                            } catch (JmriException ee) {
-                                log->debug("path not found this time");
-                            }
-                        }
-                    }
-                    QString lBlksNames = lBlksNamesBuf;//new String(lBlksNamesBuf);
+    if (permissiveBlock){
+        /*If a block has been found to be permissive, but the source signalmast
+        does not support a call-on/permissive aspect then the route can not be set*/
+        if(dsml->getSourceMast()->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::PERMISSIVE)==nullptr)
+            routeclear = false;
+    }
+    if (routeclear){
+        active=true;
+        dsml->setSignalAppearance();
+    } else {
+        permissiveBlock=false;
+        turnoutThrown =false;
+    }
+    destMastInit = true;
+}
 
-                    if (protectingBlock == nullptr) {
-                        throw JmriException("Path not valid, protecting block is null. Protecting block: " + pBlkNames + " not connected to " + facingBlock->getDisplayName() + ". Layout block names: " + lBlksNames);
-                    }
-                }
+
+void DestinationMast::useLayoutEditor(bool boo) throw (JmriException) {
+    if(log->isDebugEnabled())
+        log->debug(destination->getDisplayName() + " use called " + QVariant(boo).toString() + " " + QVariant(_useLayoutEditor).toString());
+    if (_useLayoutEditor == boo)
+        return;
+    _useLayoutEditor = boo;
+    if ((boo) && (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->routingStablised())){
+        try{
+            setupLayoutEditorDetails();
+        } catch (JmriException e){
+            throw e;
+            //Considered normal if there is no vlaid path using the layout editor.
+        }
+    } else {
+        destinationBlock= nullptr;
+        dsml->facingBlock = nullptr;
+        dsml->protectingBlock = nullptr;
+        setAutoBlocks(QMap<Block*, int>());
+        setAutoTurnouts(QHash<Turnout*, int>() );
+    }
+}
+
+void DestinationMast::useLayoutEditorDetails(bool turnouts, bool blocks) throw (JmriException){
+    if(log->isDebugEnabled())
+        log->debug(destination->getDisplayName() + " use layout editor details called " + QVariant(_useLayoutEditor).toString());
+    _useLayoutEditorTurnouts=turnouts;
+    _useLayoutEditorBlocks=blocks;
+    if((_useLayoutEditor) && (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->routingStablised())){
+        try{
+            setupLayoutEditorDetails();
+        } catch (JmriException e){
+            throw e;
+            //Considered normal if there is no valid path using the layout editor.
+        }
+    }
+}
+
+void DestinationMast::setupLayoutEditorDetails() throw (JmriException)
+{
+    log->debug(tr("setupLayoutEditorDetails: useLayoutEditor=%1 disposed=%2").arg(_useLayoutEditor?"true":"false").arg( disposed?"true":"false"));
+    if ((!_useLayoutEditor) || (disposed)) {
+        return;
+    }
+    LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
+    if ((destinationBlock != nullptr) && (log->isDebugEnabled())) {
+        log->debug(destination->getDisplayName() + " Set use layout editor");
+    }
+    QList<LayoutEditor*>* layout = static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
+    QList<LayoutBlock*> protectingBlocks = QList<LayoutBlock*>();
+    // We don't care which Layout Editor panel the signal mast is on, just so long as
+    // the routing is done via layout blocks.
+    LayoutBlock* remoteProtectingBlock = nullptr;
+    for (int i = 0; i < layout->size(); i++) {
+        if (log->isDebugEnabled()) {
+            log->debug(destination->getDisplayName() + " Layout name " + layout->at(i)->getLayoutName());
+        }
+        if (facingBlock == nullptr) {
+            facingBlock = lbm->getFacingBlockByNamedBean(dsml->getSourceMast(), layout->at(i));
+        }
+        if (protectingBlock == nullptr && protectingBlocks.isEmpty()) {
+            //This is wrong
+            protectingBlocks = lbm->getProtectingBlocksByNamedBean(dsml->getSourceMast(), layout->at(i));
+        }
+        if (destinationBlock == nullptr) {
+            destinationBlock = lbm->getFacingBlockByNamedBean(destination, layout->at(i));
+        }
+        if (remoteProtectingBlock == nullptr) {
+            remoteProtectingBlock = lbm->getProtectedBlockByNamedBean(destination, layout->at(i));
+        }
+    }
+    // At this point, if we are not using the Layout Editor turnout or block
+    // details then there is no point in trying to gather them.
+    if ((!_useLayoutEditorTurnouts) && (!_useLayoutEditorBlocks)) {
+        return;
+    }
+    if (facingBlock == nullptr) {
+        log->error("No facing block found for source mast " + dsml->getSourceMast()->getDisplayName());
+        throw JmriException("No facing block found for source mast " + dsml->getSourceMast()->getDisplayName());
+    }
+    if (destinationBlock == nullptr) {
+        log->error("No facing block found for destination mast " + destination->getDisplayName());
+        throw JmriException("No facing block found for destination mast " + destination->getDisplayName());
+    }
+    QList<LayoutBlock*> lblks = QList<LayoutBlock*>();
+    if (protectingBlock == nullptr) {
+        log->debug("protecting block is null");
+        QString pBlkNames = "";
+        QString lBlksNamesBuf;// = new StringBuffer();
+        for (LayoutBlock* pBlk : protectingBlocks) {
+            log->debug(tr("checking layoutBlock %1").arg(pBlk->getDisplayName()));
+            pBlkNames = pBlkNames + pBlk->getDisplayName() + " (" + lbm->getLayoutBlockConnectivityTools()->checkValidDest(facingBlock, pBlk, destinationBlock, remoteProtectingBlock, LayoutBlockConnectivityTools::MASTTOMAST) + "), ";
+            if (lbm->getLayoutBlockConnectivityTools()->checkValidDest(facingBlock, pBlk, destinationBlock, remoteProtectingBlock, LayoutBlockConnectivityTools::MASTTOMAST)) {
                 try {
-                    if (!lbm->getLayoutBlockConnectivityTools()->checkValidDest(facingBlock, protectingBlock, destinationBlock, remoteProtectingBlock, LayoutBlockConnectivityTools::MASTTOMAST)) {
-                        throw JmriException("Path not valid, destination check failed.");
+                    lblks = lbm->getLayoutBlockConnectivityTools()->getLayoutBlocks(facingBlock, destinationBlock, pBlk, true, LayoutBlockConnectivityTools::MASTTOMAST);
+                    protectingBlock = pBlk;
+                    log->debug("building path names...");
+                    for (LayoutBlock* lBlk : lblks) {
+                        lBlksNamesBuf.append(" ");
+                        lBlksNamesBuf.append(lBlk->getDisplayName());
                     }
-                } catch (JmriException e) {
-                    throw e;
-                }
-                if ( log->isDebugEnabled()) {
-                     log->debug(destination->getDisplayName() + " face " + facingBlock->metaObject()->className());
-                     log->debug(destination->getDisplayName() + " prot " + protectingBlock->metaObject()->className());
-                     log->debug(destination->getDisplayName() + " dest " + destinationBlock->metaObject()->className());
-                }
-
-                if (destinationBlock != nullptr && protectingBlock != nullptr && facingBlock != nullptr) {
-                    setAutoMasts(nullptr, true);
-                    if ( log->isDebugEnabled()) {
-                         log->debug(destination->getDisplayName() + " face " + facingBlock->getDisplayName());
-                         log->debug(destination->getDisplayName() + " prot " + protectingBlock->getDisplayName());
-                         log->debug(destination->getDisplayName() + " dest " + destinationBlock->getDisplayName());
-                    }
-
-                    try {
-                        lblks = lbm->getLayoutBlockConnectivityTools()->getLayoutBlocks(facingBlock, destinationBlock, protectingBlock, true, LayoutBlockConnectivityTools::MASTTOMAST);
-                    } catch (JmriException ee) {
-                         log->error(tr("No blocks found by the layout editor for pair %1-%2").arg(dsml->source->getDisplayName()).arg(destination->getDisplayName()));
-                    }
-                    //LinkedHashMap<Block*, int> block = setupLayoutEditorTurnoutDetails(lblks);
-                    QMap<Block*, int> block = setupLayoutEditorTurnoutDetails(lblks);
-
-                    for (int i = 0; i < blockInXings.size(); i++) {
-                        blockInXings.at(i)->removeSignalMastLogic(dsml->source);
-                    }
-                    blockInXings = QList<LevelXing*>(/*0*/);
-                    xingAutoBlocks = QList<Block*>();
-                    for (LayoutEditor* lay : *layout) {
-                        for (LayoutTrack* layoutTrack : lay->getLevelXings()) {
-                         LevelXing* levelXing = (LevelXing*)layoutTrack;
-                            //Looking for a crossing that both layout blocks defined and they are individual.
-                            if ((levelXing->getLayoutBlockAC() != nullptr)
-                                    && (levelXing->getLayoutBlockBD() != nullptr)
-                                    && (levelXing->getLayoutBlockAC() != levelXing->getLayoutBlockBD())) {
-                                if (lblks.contains(levelXing->getLayoutBlockAC())) {
-                                    block.insert(levelXing->getLayoutBlockBD()->getBlock(), Block::UNOCCUPIED);
-                                    xingAutoBlocks.append(levelXing->getLayoutBlockBD()->getBlock());
-                                    blockInXings.append(levelXing);
-                                } else if (lblks.contains(levelXing->getLayoutBlockBD())) {
-                                    block.insert(levelXing->getLayoutBlockAC()->getBlock(), Block::UNOCCUPIED);
-                                    xingAutoBlocks.append(levelXing->getLayoutBlockAC()->getBlock());
-                                    blockInXings.append(levelXing);
-                                }
-                            }
-                        }
-                    }
-                    if (_useLayoutEditorBlocks) {
-                        setAutoBlocks(block);
-                    } else {
-                        setAutoBlocks(QMap<Block*, int>());
-                    }
-                    if (!_useLayoutEditorTurnouts) {
-                        setAutoTurnouts(QHash<Turnout*, int>());
-                    }
-
-                    setupAutoSignalMast(nullptr, false);
-                }
-                initialise();
-            }
-/**
-     * From a list of Layout Blocks, search for included Turnouts and their
-     * Set To state.
-     *
-     * @param lblks List of Layout Blocks
-     * @return a list of block - turnout state pairs
-     */
-    QMap<Block*, int> DestinationMast::setupLayoutEditorTurnoutDetails(QList<LayoutBlock*> lblks) {
-        ConnectivityUtil* connection;
-        QList<LayoutTrackExpectedState<LayoutTurnout*>*> turnoutList;
-        QHash<Turnout*, int> turnoutSettings = QHash<Turnout*, int>();
-        QMap<Block*, int> block = QMap<Block*, int>();
-        for (int i = 0; i < lblks.size(); i++) {
-            if (log->isDebugEnabled()) {
-                log->debug(lblks.at(i)->getDisplayName());
-            }
-            block.insert(lblks.at(i)->getBlock(), Block::UNOCCUPIED);
-            if ((i > 0)) {
-                int nxtBlk = i + 1;
-                int preBlk = i - 1;
-                if (i == lblks.size() - 1) {
-                    nxtBlk = i;
-                }
-                //We use the best connectivity for the current block;
-                connection = new ConnectivityUtil(lblks.at(i)->getMaxConnectedPanel());
-                turnoutList = connection->getTurnoutList(lblks.at(i)->getBlock(), lblks.at(preBlk)->getBlock(), lblks.at(nxtBlk)->getBlock());
-                for (int x = 0; x < turnoutList.size(); x++) {
-                    LayoutTurnout* lt = turnoutList.at(x)->getObject();
-                    if (qobject_cast<LayoutSlip*>(lt)) {
-                        LayoutSlip* ls = (LayoutSlip*) lt;
-                        int slipState = turnoutList.at(x)->getExpectedState();
-                        int taState = ls->getTurnoutState(slipState);
-                        turnoutSettings.insert(ls->getTurnout(), taState);
-                        int tbState = ls->getTurnoutBState(slipState);
-                        turnoutSettings.insert(ls->getTurnoutB(), tbState);
-                    } else {
-                        QString t = lt->getTurnoutName();
-                        Turnout* turnout = InstanceManager::turnoutManagerInstance()->getTurnout(t);
-                        if (log->isDebugEnabled()) {
-                            if ((lt->getTurnoutType() <= 3) && (lt->getBlockName() != (""))) {
-                                log->debug("turnout in list is straight left/right wye");
-                                log->debug("turnout block Name " + lt->getBlockName());
-                                log->debug("current " + lblks.at(i)->getBlock()->getDisplayName() + " - pre " + lblks.at(preBlk)->getBlock()->getDisplayName());
-                                log->debug(QString("A ") + lt->getConnectA()->metaObject()->className());
-                                log->debug(QString("B ") + lt->getConnectB()->metaObject()->className());
-                                log->debug(QString("C ") + lt->getConnectC()->metaObject()->className());
-                                log->debug(QString("D ") + lt->getConnectD()->metaObject()->className());
-                            }
-                        }
-                        turnoutSettings.insert(turnout, turnoutList.at(x)->getExpectedState());
-                        if (lt->getSecondTurnout() != nullptr) {
-                            turnoutSettings.insert(lt->getSecondTurnout(), turnoutList.at(x)->getExpectedState());
-                        }
-                        /* TODO: We could do with a more inteligent way to deal with double crossovers, other than just looking at the state of the other conflicting blocks
-                         such as looking at Signalmasts that protect the other blocks and the settings of any other turnouts along the way.
-                         */
-                        if (lt->getTurnoutType() == LayoutTurnout::DOUBLE_XOVER) {
-                            if (turnoutList.at(x)->getExpectedState() == Turnout::THROWN) {
-                                if (lt->getLayoutBlock() == lblks.at(i) || lt->getLayoutBlockC() == lblks.at(i)) {
-                                    if (lt->getLayoutBlockB() != nullptr) {
-                                        dblCrossoverAutoBlocks.append(lt->getLayoutBlockB()->getBlock());
-                                        block.insert(lt->getLayoutBlockB()->getBlock(), Block::UNOCCUPIED);
-                                    }
-                                    if (lt->getLayoutBlockD() != nullptr) {
-                                        dblCrossoverAutoBlocks.append(lt->getLayoutBlockD()->getBlock());
-                                        block.insert(lt->getLayoutBlockD()->getBlock(), Block::UNOCCUPIED);
-                                    }
-                                } else if (lt->getLayoutBlockB() == lblks.at(i) || lt->getLayoutBlockD() == lblks.at(i)) {
-                                    if (lt->getLayoutBlock() != nullptr) {
-                                        dblCrossoverAutoBlocks.append(lt->getLayoutBlock()->getBlock());
-                                        block.insert(lt->getLayoutBlock()->getBlock(), Block::UNOCCUPIED);
-                                    }
-                                    if (lt->getLayoutBlockC() != nullptr) {
-                                        dblCrossoverAutoBlocks.append(lt->getLayoutBlockC()->getBlock());
-                                        block.insert(lt->getLayoutBlockC()->getBlock(), Block::UNOCCUPIED);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    break;
+                } catch (JmriException ee) {
+                    log->debug("path not found this time");
                 }
             }
         }
-        if (_useLayoutEditorTurnouts) {
-            setAutoTurnouts(turnoutSettings);
+        QString lBlksNames = lBlksNamesBuf;//new String(lBlksNamesBuf);
+
+        if (protectingBlock == nullptr) {
+            throw JmriException("Path not valid, protecting block is null. Protecting block: " + pBlkNames + " not connected to " + facingBlock->getDisplayName() + ". Layout block names: " + lBlksNames);
         }
-        return block;
+    }
+    try {
+        if (!lbm->getLayoutBlockConnectivityTools()->checkValidDest(facingBlock, protectingBlock, destinationBlock, remoteProtectingBlock, LayoutBlockConnectivityTools::MASTTOMAST)) {
+            throw JmriException("Path not valid, destination check failed.");
+        }
+    } catch (JmriException e) {
+        throw e;
+    }
+    if ( log->isDebugEnabled()) {
+         log->debug(destination->getDisplayName() + " face " + facingBlock->metaObject()->className());
+         log->debug(destination->getDisplayName() + " prot " + protectingBlock->metaObject()->className());
+         log->debug(destination->getDisplayName() + " dest " + destinationBlock->metaObject()->className());
     }
 
-    /*
-     * The generation of auto signalmast, looks through all the other logics
-     * to see if there are any blocks that are in common and thus will add
-     * the other signalmast protecting that Block::
-     */
-    void DestinationMast::setupAutoSignalMast(SignalMastLogic* sml, bool overright){
-        if(!allowAutoSignalMastGeneration)
+    if (destinationBlock != nullptr && protectingBlock != nullptr && facingBlock != nullptr) {
+        setAutoMasts(nullptr, true);
+        if ( log->isDebugEnabled()) {
+             log->debug(destination->getDisplayName() + " face " + facingBlock->getDisplayName());
+             log->debug(destination->getDisplayName() + " prot " + protectingBlock->getDisplayName());
+             log->debug(destination->getDisplayName() + " dest " + destinationBlock->getDisplayName());
+        }
+
+        try {
+            lblks = lbm->getLayoutBlockConnectivityTools()->getLayoutBlocks(facingBlock, destinationBlock, protectingBlock, true, LayoutBlockConnectivityTools::MASTTOMAST);
+        } catch (JmriException ee) {
+             log->error(tr("No blocks found by the layout editor for pair %1-%2").arg(dsml->source->getDisplayName()).arg(destination->getDisplayName()));
+        }
+        //LinkedHashMap<Block*, int> block = setupLayoutEditorTurnoutDetails(lblks);
+        QMap<Block*, int> block = setupLayoutEditorTurnoutDetails(lblks);
+
+        for (int i = 0; i < blockInXings.size(); i++) {
+            blockInXings.at(i)->removeSignalMastLogic(dsml->source);
+        }
+        blockInXings = QList<LevelXing*>(/*0*/);
+        xingAutoBlocks = QList<Block*>();
+        for (LayoutEditor* lay : *layout) {
+            for (LayoutTrack* layoutTrack : lay->getLevelXings()) {
+             LevelXing* levelXing = (LevelXing*)layoutTrack;
+                //Looking for a crossing that both layout blocks defined and they are individual.
+                if ((levelXing->getLayoutBlockAC() != nullptr)
+                        && (levelXing->getLayoutBlockBD() != nullptr)
+                        && (levelXing->getLayoutBlockAC() != levelXing->getLayoutBlockBD())) {
+                    if (lblks.contains(levelXing->getLayoutBlockAC())) {
+                        block.insert(levelXing->getLayoutBlockBD()->getBlock(), Block::UNOCCUPIED);
+                        xingAutoBlocks.append(levelXing->getLayoutBlockBD()->getBlock());
+                        blockInXings.append(levelXing);
+                    } else if (lblks.contains(levelXing->getLayoutBlockBD())) {
+                        block.insert(levelXing->getLayoutBlockAC()->getBlock(), Block::UNOCCUPIED);
+                        xingAutoBlocks.append(levelXing->getLayoutBlockAC()->getBlock());
+                        blockInXings.append(levelXing);
+                    }
+                }
+            }
+        }
+        if (_useLayoutEditorBlocks) {
+            setAutoBlocks(block);
+        } else {
+            setAutoBlocks(QMap<Block*, int>());
+        }
+        if (!_useLayoutEditorTurnouts) {
+            setAutoTurnouts(QHash<Turnout*, int>());
+        }
+
+        setupAutoSignalMast(nullptr, false);
+    }
+    initialise();
+}
+/**
+ * From a list of Layout Blocks, search for included Turnouts and their
+ * Set To state.
+ *
+ * @param lblks List of Layout Blocks
+ * @return a list of block - turnout state pairs
+ */
+QMap<Block*, int> DestinationMast::setupLayoutEditorTurnoutDetails(QList<LayoutBlock*> lblks) {
+    ConnectivityUtil* connection;
+    QList<LayoutTrackExpectedState<LayoutTurnout*>*> turnoutList;
+    QHash<Turnout*, int> turnoutSettings = QHash<Turnout*, int>();
+    QMap<Block*, int> block = QMap<Block*, int>();
+    for (int i = 0; i < lblks.size(); i++) {
+        if (log->isDebugEnabled()) {
+            log->debug(lblks.at(i)->getDisplayName());
+        }
+        block.insert(lblks.at(i)->getBlock(), Block::UNOCCUPIED);
+        if ((i > 0)) {
+            int nxtBlk = i + 1;
+            int preBlk = i - 1;
+            if (i == lblks.size() - 1) {
+                nxtBlk = i;
+            }
+            //We use the best connectivity for the current block;
+            connection = new ConnectivityUtil(lblks.at(i)->getMaxConnectedPanel());
+            turnoutList = connection->getTurnoutList(lblks.at(i)->getBlock(), lblks.at(preBlk)->getBlock(), lblks.at(nxtBlk)->getBlock());
+            for (int x = 0; x < turnoutList.size(); x++) {
+                LayoutTurnout* lt = turnoutList.at(x)->getObject();
+                if (qobject_cast<LayoutSlip*>(lt)) {
+                    LayoutSlip* ls = (LayoutSlip*) lt;
+                    int slipState = turnoutList.at(x)->getExpectedState();
+                    int taState = ls->getTurnoutState(slipState);
+                    turnoutSettings.insert(ls->getTurnout(), taState);
+                    int tbState = ls->getTurnoutBState(slipState);
+                    turnoutSettings.insert(ls->getTurnoutB(), tbState);
+                } else {
+                    QString t = lt->getTurnoutName();
+                    Turnout* turnout = InstanceManager::turnoutManagerInstance()->getTurnout(t);
+                    if (log->isDebugEnabled()) {
+                        if ((lt->getTurnoutType() <= 3) && (lt->getBlockName() != (""))) {
+                            log->debug("turnout in list is straight left/right wye");
+                            log->debug("turnout block Name " + lt->getBlockName());
+                            log->debug("current " + lblks.at(i)->getBlock()->getDisplayName() + " - pre " + lblks.at(preBlk)->getBlock()->getDisplayName());
+                            log->debug(QString("A ") + lt->getConnectA()->metaObject()->className());
+                            log->debug(QString("B ") + lt->getConnectB()->metaObject()->className());
+                            log->debug(QString("C ") + lt->getConnectC()->metaObject()->className());
+                            log->debug(QString("D ") + lt->getConnectD()->metaObject()->className());
+                        }
+                    }
+                    turnoutSettings.insert(turnout, turnoutList.at(x)->getExpectedState());
+                    if (lt->getSecondTurnout() != nullptr) {
+                        turnoutSettings.insert(lt->getSecondTurnout(), turnoutList.at(x)->getExpectedState());
+                    }
+                    /* TODO: We could do with a more inteligent way to deal with double crossovers, other than just looking at the state of the other conflicting blocks
+                     such as looking at Signalmasts that protect the other blocks and the settings of any other turnouts along the way.
+                     */
+                    if (lt->getTurnoutType() == LayoutTurnout::DOUBLE_XOVER) {
+                        if (turnoutList.at(x)->getExpectedState() == Turnout::THROWN) {
+                            if (lt->getLayoutBlock() == lblks.at(i) || lt->getLayoutBlockC() == lblks.at(i)) {
+                                if (lt->getLayoutBlockB() != nullptr) {
+                                    dblCrossoverAutoBlocks.append(lt->getLayoutBlockB()->getBlock());
+                                    block.insert(lt->getLayoutBlockB()->getBlock(), Block::UNOCCUPIED);
+                                }
+                                if (lt->getLayoutBlockD() != nullptr) {
+                                    dblCrossoverAutoBlocks.append(lt->getLayoutBlockD()->getBlock());
+                                    block.insert(lt->getLayoutBlockD()->getBlock(), Block::UNOCCUPIED);
+                                }
+                            } else if (lt->getLayoutBlockB() == lblks.at(i) || lt->getLayoutBlockD() == lblks.at(i)) {
+                                if (lt->getLayoutBlock() != nullptr) {
+                                    dblCrossoverAutoBlocks.append(lt->getLayoutBlock()->getBlock());
+                                    block.insert(lt->getLayoutBlock()->getBlock(), Block::UNOCCUPIED);
+                                }
+                                if (lt->getLayoutBlockC() != nullptr) {
+                                    dblCrossoverAutoBlocks.append(lt->getLayoutBlockC()->getBlock());
+                                    block.insert(lt->getLayoutBlockC()->getBlock(), Block::UNOCCUPIED);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (_useLayoutEditorTurnouts) {
+        setAutoTurnouts(turnoutSettings);
+    }
+    return block;
+}
+
+/*
+ * The generation of auto signalmast, looks through all the other logics
+ * to see if there are any blocks that are in common and thus will add
+ * the other signalmast protecting that Block::
+ */
+void DestinationMast::setupAutoSignalMast(SignalMastLogic* sml, bool overright){
+    if(!allowAutoSignalMastGeneration)
+        return;
+    QList<SignalMastLogic*> smlList = InstanceManager::signalMastLogicManagerInstance()->getLogicsByDestination(destination);
+    QList<Block*> allBlock =  QList<Block*>();
+
+    foreach(NamedBeanSetting* nbh, userSetBlocks){
+        allBlock.append((Block*)nbh->getBean());
+    }
+
+    QList<Block*> blockKeys = autoBlocks.keys();
+    foreach(Block* key, blockKeys)
+    {
+        if(!allBlock.contains(key))
+            allBlock.append(key);
+    }
+    QHash<SignalMast*, QString>* masts;
+    if(sml!=nullptr){
+        masts = autoMasts;
+        if(sml->areBlocksIncluded(allBlock)){
+            SignalMast* mast = sml->getSourceMast();
+            QString danger =  mast->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER);
+            masts->insert(mast, danger);
+        } else{
+            //No change so will leave.
             return;
-        QList<SignalMastLogic*> smlList = InstanceManager::signalMastLogicManagerInstance()->getLogicsByDestination(destination);
-        QList<Block*> allBlock =  QList<Block*>();
-        
-        foreach(NamedBeanSetting* nbh, userSetBlocks){
-            allBlock.append((Block*)nbh->getBean());
         }
-        
-        QList<Block*> blockKeys = autoBlocks.keys();
-        foreach(Block* key, blockKeys)
-        {
-            if(!allBlock.contains(key))
-                allBlock.append(key);
-        }
-        QHash<SignalMast*, QString>* masts;
-        if(sml!=nullptr){
-            masts = autoMasts;
-            if(sml->areBlocksIncluded(allBlock)){
-                SignalMast* mast = sml->getSourceMast();
+    } else {
+        masts =  new QHash<SignalMast*, QString>();
+        for(int i = 0; i<smlList.size(); i++){
+            if(smlList.at(i)->areBlocksIncluded(allBlock)){
+                SignalMast* mast = smlList.at(i)->getSourceMast();
                 QString danger =  mast->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER);
                 masts->insert(mast, danger);
-            } else{
-                //No change so will leave.
-                return;
-            }
-        } else {
-            masts =  new QHash<SignalMast*, QString>();
-            for(int i = 0; i<smlList.size(); i++){
-                if(smlList.at(i)->areBlocksIncluded(allBlock)){
-                    SignalMast* mast = smlList.at(i)->getSourceMast();
-                    QString danger =  mast->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER);
-                    masts->insert(mast, danger);
-                }
             }
         }
-        setAutoMasts(masts, overright);
     }
-    
-    void DestinationMast::addAutoSignalMast(SignalMast* mast){
-        if(log->isDebugEnabled())
-            log->debug(destination->getDisplayName() + " add mast to auto list " + mast->getDisplayName());
-        QString danger = mast->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER);
-        this->autoMasts->insert(mast, danger);
-        if (destMastInit)
-        {
-            mast->addPropertyChangeListener(propertySignalMastListener);
-            connect(mast->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySignalMastListener, SLOT(propertyChange(PropertyChangeEvent*)));
-        }
-        dsml->firePropertyChange("automasts", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
-    }
-    
-    void DestinationMast::removeAutoSignalMast(SignalMast* mast){
-        this->autoMasts->remove(mast);
-        if(destMastInit)
-            mast->removePropertyChangeListener(propertySignalMastListener);
-        dsml->firePropertyChange("automasts", VPtr<SignalMast>::asQVariant(this->destination), QVariant());
-    }
-    
-    bool DestinationMast::useLayoutEditor(){
-        return _useLayoutEditor;
-    }
-    
-    bool DestinationMast::useLayoutEditorBlocks(){
-        return _useLayoutEditorBlocks;
-    }
-    
-    bool DestinationMast::useLayoutEditorTurnouts(){
-        return _useLayoutEditorTurnouts;
-    }
-    
-    
-    bool DestinationMast::allowAutoSignalMastGen(){
-        return allowAutoSignalMastGeneration;
-    }
-    
-    void DestinationMast::allowAutoSignalMastGen(bool gen) {
-        if(allowAutoSignalMastGeneration==gen)
-            return;
-        allowAutoSignalMastGeneration = gen;
-    }
-    
-    void DestinationMast::dispose(){
-        disposed = true;
-        clearTurnoutLock();
-        destination->removePropertyChangeListener(propertyDestinationMastListener);
-        setBlocks(QHash<Block*,int>());
-        setAutoBlocks(QMap<Block*,int>());
-        setTurnouts(QHash<NamedBeanHandle<Turnout*>*,int>());
-        setAutoTurnouts(QHash<Turnout*,int>());
-        setSensors(QHash<NamedBeanHandle<Sensor*>*,int>());
-        setMasts(QHash<SignalMast*, QString>());
-        setAutoMasts(new QHash<SignalMast*, QString>(), true);
-    }
-    
-    void DestinationMast::lockTurnouts(){
-        //We do not allow the turnouts to be locked, if we are disposed the logic, 
-        //the logic is not active, or if we do not allow the turnouts to be locked
-        if((disposed) || (!_lockTurnouts) || (!active))
-            return;
+    setAutoMasts(masts, overright);
+}
 
-        foreach(NamedBeanSetting* nbh, userSetTurnouts){
-            Turnout* key = (Turnout*) nbh->getBean();
-            key->setLocked(Turnout::CABLOCKOUT+Turnout::PUSHBUTTONLOCKOUT, true);
-        }
-        QListIterator<Turnout*> keys (autoTurnouts.keys());
-        while ( keys.hasNext() )
-        {
-            Turnout* key = keys.next();
-            key->setLocked(Turnout::CABLOCKOUT+Turnout::PUSHBUTTONLOCKOUT, true);
-        }
+void DestinationMast::addAutoSignalMast(SignalMast* mast){
+    if(log->isDebugEnabled())
+        log->debug(destination->getDisplayName() + " add mast to auto list " + mast->getDisplayName());
+    QString danger = mast->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER);
+    this->autoMasts->insert(mast, danger);
+    if (destMastInit)
+    {
+        mast->addPropertyChangeListener(propertySignalMastListener);
+        connect(mast->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySignalMastListener, SLOT(propertyChange(PropertyChangeEvent*)));
     }
-    
-    void DestinationMast::clearTurnoutLock(){
-        //We do not allow the turnout lock to be cleared, if we are not active, 
-        //and the lock flag has not been set.
-        if((!_lockTurnouts) && (!active))
-            return;
-            
-        QListIterator<Turnout*> keys (autoTurnouts.keys());
-        while ( keys.hasNext() )
-        {
-            Turnout* key = keys.next();
-           key->setLocked(Turnout::CABLOCKOUT+Turnout::PUSHBUTTONLOCKOUT, false);
-        }
-        
-        foreach(NamedBeanSetting* nbh, userSetTurnouts){
-            Turnout* key = (Turnout*) nbh->getBean();
-            key->setLocked(Turnout::CABLOCKOUT+Turnout::PUSHBUTTONLOCKOUT, false);
-        }
+    dsml->firePropertyChange("automasts", QVariant(), VPtr<SignalMast>::asQVariant(this->destination));
+}
+
+void DestinationMast::removeAutoSignalMast(SignalMast* mast){
+    this->autoMasts->remove(mast);
+    if(destMastInit)
+        mast->removePropertyChangeListener(propertySignalMastListener);
+    dsml->firePropertyChange("automasts", VPtr<SignalMast>::asQVariant(this->destination), QVariant());
+}
+
+bool DestinationMast::useLayoutEditor(){
+    return _useLayoutEditor;
+}
+
+bool DestinationMast::useLayoutEditorBlocks(){
+    return _useLayoutEditorBlocks;
+}
+
+bool DestinationMast::useLayoutEditorTurnouts(){
+    return _useLayoutEditorTurnouts;
+}
+
+
+bool DestinationMast::allowAutoSignalMastGen(){
+    return allowAutoSignalMastGeneration;
+}
+
+void DestinationMast::allowAutoSignalMastGen(bool gen) {
+    if(allowAutoSignalMastGeneration==gen)
+        return;
+    allowAutoSignalMastGeneration = gen;
+}
+
+void DestinationMast::dispose(){
+    disposed = true;
+    clearTurnoutLock();
+    destination->removePropertyChangeListener(propertyDestinationMastListener);
+    setBlocks(QHash<Block*,int>());
+    setAutoBlocks(QMap<Block*,int>());
+    setTurnouts(QHash<NamedBeanHandle<Turnout*>*,int>());
+    setAutoTurnouts(QHash<Turnout*,int>());
+    setSensors(QHash<NamedBeanHandle<Sensor*>*,int>());
+    setMasts(QHash<SignalMast*, QString>());
+    setAutoMasts(new QHash<SignalMast*, QString>(), true);
+}
+
+void DestinationMast::lockTurnouts(){
+    //We do not allow the turnouts to be locked, if we are disposed the logic,
+    //the logic is not active, or if we do not allow the turnouts to be locked
+    if((disposed) || (!_lockTurnouts) || (!active))
+        return;
+
+    foreach(NamedBeanSetting* nbh, userSetTurnouts){
+        Turnout* key = (Turnout*) nbh->getBean();
+        key->setLocked(Turnout::CABLOCKOUT+Turnout::PUSHBUTTONLOCKOUT, true);
     }
-    
-    /*protected*/ void DestinationMast::calculateSpeed(){
-        if(log->isDebugEnabled())
-            log->debug(destination->getDisplayName() + " calculate the speed setting for this logic ie what the signalmast will display");
-        minimumBlockSpeed=0.0f;
-        QListIterator<Turnout*> keys(autoTurnouts.keys());
-        while ( keys.hasNext() )
-        {
-           Turnout* key = keys.next();
-           if(log->isDebugEnabled())
-                log->debug(destination->getDisplayName() + " turnout " + key->getDisplayName());
-           //if(!turnouts.contains(key)){
-            foreach(NamedBeanSetting* nbTurn, userSetTurnouts){
-                if(nbTurn->getBean()!=(key)){
-                   if (key->getState()==Turnout::CLOSED){
-                        if (((key->getStraightLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getStraightLimit()!=-1)){
-                            minimumBlockSpeed = key->getStraightLimit();
-                            if(log->isDebugEnabled())
-                                log->debug(destination->getDisplayName() + " turnout " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);
-                        }
-                    } else {
-                        if (((key->getDivergingLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getDivergingLimit()!=-1)){
-                            minimumBlockSpeed = key->getDivergingLimit();
-                            if(log->isDebugEnabled())
-                                log->debug(destination->getDisplayName() + " turnout " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);
-                        }
+    QListIterator<Turnout*> keys (autoTurnouts.keys());
+    while ( keys.hasNext() )
+    {
+        Turnout* key = keys.next();
+        key->setLocked(Turnout::CABLOCKOUT+Turnout::PUSHBUTTONLOCKOUT, true);
+    }
+}
+
+void DestinationMast::clearTurnoutLock(){
+    //We do not allow the turnout lock to be cleared, if we are not active,
+    //and the lock flag has not been set.
+    if((!_lockTurnouts) && (!active))
+        return;
+
+    QListIterator<Turnout*> keys (autoTurnouts.keys());
+    while ( keys.hasNext() )
+    {
+        Turnout* key = keys.next();
+       key->setLocked(Turnout::CABLOCKOUT+Turnout::PUSHBUTTONLOCKOUT, false);
+    }
+
+    foreach(NamedBeanSetting* nbh, userSetTurnouts){
+        Turnout* key = (Turnout*) nbh->getBean();
+        key->setLocked(Turnout::CABLOCKOUT+Turnout::PUSHBUTTONLOCKOUT, false);
+    }
+}
+
+/*protected*/ void DestinationMast::calculateSpeed(){
+    if(log->isDebugEnabled())
+        log->debug(destination->getDisplayName() + " calculate the speed setting for this logic ie what the signalmast will display");
+    minimumBlockSpeed=0.0f;
+    QListIterator<Turnout*> keys(autoTurnouts.keys());
+    while ( keys.hasNext() )
+    {
+       Turnout* key = keys.next();
+       if(log->isDebugEnabled())
+            log->debug(destination->getDisplayName() + " turnout " + key->getDisplayName());
+       //if(!turnouts.contains(key)){
+        foreach(NamedBeanSetting* nbTurn, userSetTurnouts){
+            if(nbTurn->getBean()!=(key)){
+               if (key->getState()==Turnout::CLOSED){
+                    if (((key->getStraightLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getStraightLimit()!=-1)){
+                        minimumBlockSpeed = key->getStraightLimit();
+                        if(log->isDebugEnabled())
+                            log->debug(destination->getDisplayName() + " turnout " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);
+                    }
+                } else {
+                    if (((key->getDivergingLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getDivergingLimit()!=-1)){
+                        minimumBlockSpeed = key->getDivergingLimit();
+                        if(log->isDebugEnabled())
+                            log->debug(destination->getDisplayName() + " turnout " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);
                     }
                 }
             }
         }
-        
+    }
 
-        foreach(NamedBeanSetting* nbh, userSetTurnouts){
-            Turnout* key = (Turnout*) nbh->getBean();
-            if (key->getState()==Turnout::CLOSED){
-                if (((key->getStraightLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getStraightLimit()!=-1)){
-                    minimumBlockSpeed = key->getStraightLimit();
-                    if(log->isDebugEnabled())
-                        log->debug(destination->getDisplayName() + " turnout " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);
-                }
-            } else if (key->getState()==Turnout::THROWN) {
-                if (((key->getDivergingLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getDivergingLimit()!=-1)){
-                    minimumBlockSpeed = key->getDivergingLimit();
-                    if(log->isDebugEnabled())
-                        log->debug(destination->getDisplayName() + " turnout " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);
-                }
+
+    foreach(NamedBeanSetting* nbh, userSetTurnouts){
+        Turnout* key = (Turnout*) nbh->getBean();
+        if (key->getState()==Turnout::CLOSED){
+            if (((key->getStraightLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getStraightLimit()!=-1)){
+                minimumBlockSpeed = key->getStraightLimit();
+                if(log->isDebugEnabled())
+                    log->debug(destination->getDisplayName() + " turnout " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);
+            }
+        } else if (key->getState()==Turnout::THROWN) {
+            if (((key->getDivergingLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getDivergingLimit()!=-1)){
+                minimumBlockSpeed = key->getDivergingLimit();
+                if(log->isDebugEnabled())
+                    log->debug(destination->getDisplayName() + " turnout " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);
             }
         }
-        
-        QList<Block*> autoBlockKeys = autoBlocks.keys();
-        foreach(Block* key, autoBlockKeys)
-        {
-           log->debug(destination->getDisplayName() + " auto block add list " + key->getDisplayName());
-           if(!isBlockIncluded(key)){
-               if (((key->getSpeedLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getSpeedLimit()!=-1)){
-                   minimumBlockSpeed=key->getSpeedLimit();
-                   if(log->isDebugEnabled())
-                        log->debug(destination->getDisplayName() + " block " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);
-                }
-            }
-        }
-        foreach(NamedBeanSetting* nbh, userSetBlocks){
-           Block* key = (Block*)nbh->getBean();
+    }
+
+    QList<Block*> autoBlockKeys = autoBlocks.keys();
+    foreach(Block* key, autoBlockKeys)
+    {
+       log->debug(destination->getDisplayName() + " auto block add list " + key->getDisplayName());
+       if(!isBlockIncluded(key)){
            if (((key->getSpeedLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getSpeedLimit()!=-1)){
+               minimumBlockSpeed=key->getSpeedLimit();
                if(log->isDebugEnabled())
                     log->debug(destination->getDisplayName() + " block " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);
-                minimumBlockSpeed=key->getSpeedLimit();
-           }
+            }
         }
-        /*if(minimumBlockSpeed==-0.1f)
-            minimumBlockSpeed==0.0f;*/
     }
-    
+    foreach(NamedBeanSetting* nbh, userSetBlocks){
+       Block* key = (Block*)nbh->getBean();
+       if (((key->getSpeedLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getSpeedLimit()!=-1)){
+           if(log->isDebugEnabled())
+                log->debug(destination->getDisplayName() + " block " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);
+            minimumBlockSpeed=key->getSpeedLimit();
+       }
+    }
+    /*if(minimumBlockSpeed==-0.1f)
+        minimumBlockSpeed==0.0f;*/
+}
+
 //    protected PropertyChangeListener propertySensorListener = new PropertyChangeListener() {
 //        /*public*/ void propertyChange(PropertyChangeEvent e) {
 //            Sensor sen = (Sensor) e.getSource();
@@ -2738,13 +2775,13 @@ void DestinationMast::setTurnouts(QHash<NamedBeanHandle<Turnout*>*, int> turnout
 
 //    protected PropertyChangeListener propertySignalMastListener = new PropertyChangeListener() {
 //        /*public*/ void propertyChange(PropertyChangeEvent e) {
-            
+
 //            SignalMast* mast = (SignalMast) e.getSource();
 //            if(log->isDebugEnabled())
 //                log->debug(destination->getDisplayName() + " signalmast change " + mast->getDisplayName() + " " + e.getPropertyName());
 //         //   log->debug(destination->getDisplayName() + " destination sensor "+ sen.getDisplayName() + "trigger");
 //            if (e.getPropertyName()==("Aspect")) {
-                
+
 //                QString now = ((QString) e.getNewValue());
 //                if(log->isDebugEnabled())
 //                    log->debug(destination->getDisplayName() + " match property " + now);
@@ -2782,31 +2819,31 @@ void DestinationMast::setTurnouts(QHash<NamedBeanHandle<Turnout*>*, int> turnout
 //            }
 //        }
 //    };
-    
-    
-   /* Code currently not used commented out to remove unused error
-   protected PropertyChangeListener propertySignalMastLogicManagerListener = new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent e) {
-            if(log->isDebugEnabled())
-                log->debug(destination->getDisplayName() + " Signal Mast Manager Listener");
-         //   log->debug(destination->getDisplayName() + " destination sensor "+ sen.getDisplayName() + "trigger");
-            if (e.getPropertyName()==("DestinationAdded")) {
-                SignalMast* dest = ((SignalMast) e.getNewValue());
-                if(dest==destination){
-                    jmri.SignalMastLogic sml = ((jmri.SignalMastLogic) e.getOldValue());
-                    setupAutoSignalMast(sml, false);
-                }
+
+
+/* Code currently not used commented out to remove unused error
+protected PropertyChangeListener propertySignalMastLogicManagerListener = new PropertyChangeListener() {
+    public void propertyChange(PropertyChangeEvent e) {
+        if(log->isDebugEnabled())
+            log->debug(destination->getDisplayName() + " Signal Mast Manager Listener");
+     //   log->debug(destination->getDisplayName() + " destination sensor "+ sen.getDisplayName() + "trigger");
+        if (e.getPropertyName()==("DestinationAdded")) {
+            SignalMast* dest = ((SignalMast) e.getNewValue());
+            if(dest==destination){
+                jmri.SignalMastLogic sml = ((jmri.SignalMastLogic) e.getOldValue());
+                setupAutoSignalMast(sml, false);
             }
         }
-    };*/
-    
-    /*protected*/ bool DestinationMast::IsSensorIncluded(Sensor* sen){
-        foreach(NamedBeanSetting* nbh, userSetSensors){
-            if (nbh->getBean()==sen)
-                return true;
-        }
-        return false;
     }
+};*/
+
+/*protected*/ bool DestinationMast::IsSensorIncluded(Sensor* sen){
+    foreach(NamedBeanSetting* nbh, userSetSensors){
+        if (nbh->getBean()==sen)
+            return true;
+    }
+    return false;
+}
     
 
 //};

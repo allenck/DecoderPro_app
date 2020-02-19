@@ -39,7 +39,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
  LayoutBlock* protectingBlock = NULL;
  LayoutBlock* destFacingBlock = NULL;
  LayoutBlock* destProtectBlock = NULL;
- QList<LayoutEditor*>* layout = PanelMenu::instance()->getLayoutEditorPanelList();
+ QList<LayoutEditor*>* layout = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
  LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
  for(int i = 0; i<layout->size(); i++)
  {
@@ -108,7 +108,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
 */
 /*public*/ QList<LayoutBlock*> LayoutBlockConnectivityTools::getLayoutBlocks(NamedBean* sourceBean, NamedBean* destBean, bool validateOnly, int pathMethod) throw (JmriException)
 {
-        QList<LayoutEditor*>* layout = PanelMenu::instance()->getLayoutEditorPanelList();
+        QList<LayoutEditor*>* layout = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
         LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
         LayoutBlock* facingBlock = NULL;
         LayoutBlock* protectingBlock = NULL;

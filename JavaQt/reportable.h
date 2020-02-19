@@ -23,14 +23,15 @@
  * @see jmri.Reporter
  * @since 4.15.3
  */
-/*public*/ /*interface*/class Reportable : public AbstractNamedBean{
-Q_OBJECT
+/*public*/ /*interface*/class Reportable //: public AbstractNamedBean
+{
+//Q_OBJECT
 public:
-   Reportable(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
-   Reportable(QString sysName, QObject* parent) : AbstractNamedBean(sysName,parent) {}
-   Reportable(QString sysName, QString usrName, QObject* parent) : AbstractNamedBean(sysName, usrName, parent) {}
-   ~Reportable() {}
-   Reportable(const Reportable&): AbstractNamedBean() {}
+//   Reportable(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
+//   Reportable(QString sysName, QObject* parent) : AbstractNamedBean(sysName,parent) {}
+//   Reportable(QString sysName, QString usrName, QObject* parent) : AbstractNamedBean(sysName, usrName, parent) {}
+//   ~Reportable() {}
+//   Reportable(const Reportable&): AbstractNamedBean() {}
 
     /**
       * Provide a string representation of the object, possibly including state
@@ -41,8 +42,8 @@ public:
       * @return a report string representing the Object.
       */
  /*public*/ /*default*/ virtual QString toReportString() {return "";}
+ /*public*/ virtual QObject* self() =0;
 
 };
-Q_DECLARE_METATYPE(Reportable)
-//Q_DECLARE_INTERFACE(Reportable, "Reportable")
+Q_DECLARE_INTERFACE(Reportable, "Reportable")
 #endif // REPORTABLE_H

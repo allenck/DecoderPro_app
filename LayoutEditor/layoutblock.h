@@ -69,18 +69,18 @@ public:
     /**
      * Accessor methods
      */
-    /*public*/ QString getID() {return blockName;}
-    /*public*/ QColor getBlockTrackColor() {return blockTrackColor;}
-    /*public*/ void setBlockTrackColor(QColor color) {blockTrackColor = color;}
-    /*public*/ QColor getBlockOccupiedColor() {return blockOccupiedColor;}
-    /*public*/ void setBlockOccupiedColor(QColor color) {blockOccupiedColor = color;}
-    /*public*/ QColor getBlockExtraColor() {return blockExtraColor;}
-    /*public*/ void setBlockExtraColor(QColor color) {blockExtraColor = color;}
-    /*public*/ bool getUseExtraColor() {return useExtraColor;}
+    /*public*/ QString getId();
+    /*public*/ QColor getBlockTrackColor();
+    /*public*/ void setBlockTrackColor(QColor color);
+    /*public*/ QColor getBlockOccupiedColor();
+    /*public*/ void setBlockOccupiedColor(QColor color);
+    /*public*/ QColor getBlockExtraColor();
+    /*public*/ void setBlockExtraColor(QColor color);
+    /*public*/ bool getUseExtraColor();
     /*public*/ void setUseExtraColor(bool b);
-    /*public*/ void incrementUse() {useCount ++;}
+    /*public*/ void incrementUse();
     /*public*/ void decrementUse();
-    /*public*/ int getUseCount() {return useCount;}
+    /*public*/ int getUseCount();
     /**
      *  Keeps track of LayoutEditor panels that are using this LayoutBlock
      */
@@ -392,7 +392,6 @@ private:
     /*protected*/ QVector<PropertyChangeListener*>* listeners;// = new QVector<PropertyChangeListener*>();
     QMutex mutex;
     Logger* log;
-    /*private*/ LayoutBlock* _instance;// = null;
     // operational instance variables (not saved to disk)
     /*private*/ int useCount; //0;
     /*private*/ NamedBeanHandle<Sensor*>* occupancyNamedSensor; //NULL;

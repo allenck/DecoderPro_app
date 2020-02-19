@@ -767,7 +767,8 @@ private bool escapeKeyActionClosesWindow = false;
     QList<JmriJFrame*>* list = getFrameList();  // needed to get synch copy
     for (int i=0; i<list->size(); i++) {
         JmriJFrame* j = list->at(i);
-        if (j->title()==(name)) return j;
+        QString title = j->title();
+        if (j->title().contains(name)) return j;
     }
     return nullptr;
 }

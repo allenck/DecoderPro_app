@@ -4797,11 +4797,6 @@ void PythonQtWrapper_RouteManager::deleteRoute(RouteManager* theWrappedObject, R
   ( theWrappedObject->deleteRoute(arg__1));
 }
 
-Route*  PythonQtWrapper_RouteManager::getBySystemName(RouteManager* theWrappedObject, QString  arg__1)
-{
-  return ( theWrappedObject->getBySystemName(arg__1));
-}
-
 Route*  PythonQtWrapper_RouteManager::getRoute(RouteManager* theWrappedObject, QString  arg__1)
 {
   return ( theWrappedObject->getRoute(arg__1));
@@ -7999,11 +7994,6 @@ bool  PythonQtWrapper_SensorManager::allowMultipleAdditions(SensorManager* theWr
 QString  PythonQtWrapper_SensorManager::createSystemName(SensorManager* theWrappedObject, QString  arg__1, QString  arg__2) const
 {
   return ( theWrappedObject->createSystemName(arg__1, arg__2));
-}
-
-Sensor*  PythonQtWrapper_SensorManager::getBySystemName(SensorManager* theWrappedObject, QString  arg__1)
-{
-  return ( theWrappedObject->getBySystemName(arg__1));
 }
 
 long  PythonQtWrapper_SensorManager::getDefaultSensorDebounceGoingActive(SensorManager* theWrappedObject)
@@ -21748,11 +21738,6 @@ int  PythonQtWrapper_TurnoutManager::askNumControlBits(TurnoutManager* theWrappe
 QString  PythonQtWrapper_TurnoutManager::createSystemName(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2) const
 {
   return ( theWrappedObject->createSystemName(arg__1, arg__2));
-}
-
-Turnout*  PythonQtWrapper_TurnoutManager::getBySystemName(TurnoutManager* theWrappedObject, QString  arg__1)
-{
-  return ( theWrappedObject->getBySystemName(arg__1));
 }
 
 QString  PythonQtWrapper_TurnoutManager::getClosedText(TurnoutManager* theWrappedObject)

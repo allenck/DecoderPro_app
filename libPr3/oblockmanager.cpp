@@ -71,7 +71,7 @@ OBlockManager::OBlockManager(QObject *parent) :
     if (sName.length() < 3) {
         return NULL;
     }
-    r = getBySystemName(sName);
+    r = (OBlock*)getBySystemName(sName);
     if (r!=NULL) return NULL;
     // OBlock does not exist, create a new OBlock
     r = new OBlock(sName,userName);
@@ -88,10 +88,10 @@ OBlockManager::OBlockManager(QObject *parent) :
 /*public*/ OBlock* OBlockManager::getOBlock(QString name) {
     OBlock* r = (OBlock*)getByUserName(name);
     if (r!=NULL) return r;
-    return getBySystemName(name);
+    return (OBlock*)getBySystemName(name);
 }
 
-/*public*/ OBlock* OBlockManager::getBySystemName(QString name) {
+/*public*/ NamedBean *OBlockManager::getBySystemName(QString name) {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
     QString key = name.toUpper();
     return (OBlock*)_tsys->value(key);
@@ -110,7 +110,7 @@ OBlockManager::OBlockManager(QObject *parent) :
     if (name==NULL || name.length()==0) { return NULL; }
     OBlock* ob = (OBlock*)getByUserName(name);
     if (ob==NULL) {
-        ob = getBySystemName(name);
+        ob = (OBlock*)getBySystemName(name);
     }
     return ob;
 }

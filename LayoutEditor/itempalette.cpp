@@ -83,7 +83,7 @@ void ItemPalette::changeEvent(QEvent * e)
  }
  CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
  // unfiltered, xml-stored, item palate icon tree
- CatalogTree* tree = manager->getBySystemName("NXPI");
+ CatalogTree* tree = (CatalogTree*)manager->getBySystemName("NXPI");
  // discard old version
  if (tree != NULL)
  {
@@ -168,7 +168,7 @@ void ItemPalette::changeEvent(QEvent * e)
 {
  log->setDebugEnabled(true);
  CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
- CatalogTree* tree = ((DefaultCatalogTreeManager*)manager)->getBySystemName("NXPI");
+ CatalogTree* tree = (CatalogTree*)((DefaultCatalogTreeManager*)manager)->getBySystemName("NXPI");
  if (tree != NULL)
  {
   CatalogTreeNode* root = (CatalogTreeNode*)tree->getRoot();

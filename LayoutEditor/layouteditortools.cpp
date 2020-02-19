@@ -2392,10 +2392,11 @@ else if (throatDivergingHead==nullptr)
 // display dialog for Set Signals at Block Boundary tool
 /*public*/ void LayoutEditorTools::setSignalsAtBlockBoundaryFromMenu(PositionablePoint* p, MultiIconEditor* theEditor, JFrame *theFrame )
 {
+
     boundaryFromMenu = true;
     boundary = p;
-    block1NameField->setText(boundary->getConnect1()->getLayoutBlock()->getID());
-    block2NameField->setText(boundary->getConnect2()->getLayoutBlock()->getID());
+    block1NameField->setText(boundary->getConnect1()->getLayoutBlock()->getId());
+    block2NameField->setText(boundary->getConnect2()->getLayoutBlock()->getId());
     setSignalsAtBlockBoundary(theEditor,theFrame);
     return;
 }
@@ -2424,7 +2425,7 @@ else if (throatDivergingHead==nullptr)
   if (boundaryFromMenu)
   {
    QLabel* block1NameLabel = new QLabel( tr("Block")+" 1 "+
-                tr("Name")+" : "+boundary->getConnect1()->getLayoutBlock()->getID());
+                tr("Name")+" : "+boundary->getConnect1()->getLayoutBlock()->getId());
    panel11->layout()->addWidget(block1NameLabel);
   }
   else
@@ -2440,7 +2441,7 @@ else if (throatDivergingHead==nullptr)
   if (boundaryFromMenu)
   {
    QLabel* block2NameLabel = new QLabel( tr("Block")+" 2 "+
-                tr("Name")+" : "+boundary->getConnect2()->getLayoutBlock()->getID());
+                tr("Name")+" : "+boundary->getConnect2()->getLayoutBlock()->getId());
    panel12->layout()->addWidget(block2NameLabel);
   }
   else
@@ -7929,11 +7930,11 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
 /*public*/ void LayoutEditorTools::setSensorsAtBlockBoundaryFromMenu( PositionablePoint* p, MultiIconEditor* theEditor, JFrame* theFrame) {
     boundaryFromMenu = true;
     boundary = p;
-    block1NameField->setText(boundary->getConnect1()->getLayoutBlock()->getID());
+    block1NameField->setText(boundary->getConnect1()->getLayoutBlock()->getId());
     if (boundary->getType()!=PositionablePoint::ANCHOR)
-        block2NameField->setText(boundary->getConnect1()->getLayoutBlock()->getID());
+        block2NameField->setText(boundary->getConnect1()->getLayoutBlock()->getId());
     else
-        block2NameField->setText(boundary->getConnect2()->getLayoutBlock()->getID());
+        block2NameField->setText(boundary->getConnect2()->getLayoutBlock()->getId());
     setSensorsAtBlockBoundary(theEditor,theFrame);
     return;
 }
@@ -7973,7 +7974,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
   if (boundaryFromMenu)
   {
    QLabel* block1NameLabel = new QLabel( tr("Block")+" 1 "+
-       tr("Name")+" : "+boundary->getConnect1()->getLayoutBlock()->getID());
+       tr("Name")+" : "+boundary->getConnect1()->getLayoutBlock()->getId());
    panel11->layout()->addWidget(block1NameLabel);
   }
   else
@@ -7990,7 +7991,7 @@ void LayoutEditorTools::On_change3WaySignalIconClicked()
   if ((boundaryFromMenu) && (boundary->getType()==PositionablePoint::ANCHOR))
   {
    QLabel* block2NameLabel = new QLabel( tr("Block")+" 2 "+
-       tr("Name")+" : "+boundary->getConnect2()->getLayoutBlock()->getID());
+       tr("Name")+" : "+boundary->getConnect2()->getLayoutBlock()->getId());
    panel12->layout()->addWidget(block2NameLabel);
   }
   else if (boundary->getType()==PositionablePoint::ANCHOR)
@@ -8529,9 +8530,9 @@ void LayoutEditorTools::setBoundarySensor(Sensor* newSensor, Sensor* currSensor,
 {
  boundaryFromMenu = true;
  boundary = p;
- block1NameField->setText(boundary->getConnect1()->getLayoutBlock()->getID());
+ block1NameField->setText(boundary->getConnect1()->getLayoutBlock()->getId());
  if(boundary->getType()==PositionablePoint::ANCHOR)
-     block2NameField->setText(boundary->getConnect2()->getLayoutBlock()->getID());
+     block2NameField->setText(boundary->getConnect2()->getLayoutBlock()->getId());
  setSignalMastsAtBlockBoundary();
  return;
 }
@@ -8564,7 +8565,7 @@ void LayoutEditorTools::setBoundarySensor(Sensor* newSensor, Sensor* currSensor,
   if (boundaryFromMenu)
   {
    QLabel* block1NameLabel = new QLabel( tr("Block")+" 1 "+
-       tr("Name")+" : "+boundary->getConnect1()->getLayoutBlock()->getID());
+       tr("Name")+" : "+boundary->getConnect1()->getLayoutBlock()->getId());
    panel11->layout()->addWidget(block1NameLabel);
   }
   else
@@ -8581,7 +8582,7 @@ void LayoutEditorTools::setBoundarySensor(Sensor* newSensor, Sensor* currSensor,
   if ((boundaryFromMenu) && (boundary->getType()==PositionablePoint::ANCHOR))
   {
    QLabel* block2NameLabel = new QLabel( tr("Block")+" 2 "+
-       tr("Name")+" : "+boundary->getConnect2()->getLayoutBlock()->getID());
+       tr("Name")+" : "+boundary->getConnect2()->getLayoutBlock()->getId());
    panel12->layout()->addWidget(block2NameLabel);
   }
   else if (boundary->getType()==PositionablePoint::ANCHOR)
@@ -14328,7 +14329,7 @@ void LayoutEditorTools::on_slipNameComboCurrentIndexChanged(QString)
      return "";
  }
  bool newConditional = false;
- Logix* x = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixName);
+ Logix* x = (Logix*)((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixName);
  if(x == nullptr)
  {
   // Logix does not exist, create it

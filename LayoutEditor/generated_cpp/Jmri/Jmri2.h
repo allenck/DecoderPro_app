@@ -495,6 +495,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled(bool  plural);
+virtual NamedBean*  getBySystemName(QString  arg__1);
 virtual NamedBean*  getByUserName(QString  userName);
 virtual QString  getEntryToolTip();
 virtual bool  getLoadDisabled();
@@ -528,6 +529,7 @@ virtual void vetoableChange(PropertyChangeEvent*  evt);
 class PythonQtPublicPromoter_LogixManager : public LogixManager
 { public:
 inline void py_q_activateAllLogixs() { LogixManager::activateAllLogixs(); }
+inline NamedBean*  py_q_getBySystemName(QString  arg__1) { return LogixManager::getBySystemName(arg__1); }
 inline bool  py_q_getLoadDisabled() { return LogixManager::getLoadDisabled(); }
 inline void py_q_setLoadDisabled(bool  arg__1) { LogixManager::setLoadDisabled(arg__1); }
 };
@@ -540,6 +542,7 @@ LogixManager* new_LogixManager(QObject*  parent = 0);
 void delete_LogixManager(LogixManager* obj) { delete obj; } 
    void activateAllLogixs(LogixManager* theWrappedObject);
    void py_q_activateAllLogixs(LogixManager* theWrappedObject){  (((PythonQtPublicPromoter_LogixManager*)theWrappedObject)->py_q_activateAllLogixs());}
+   NamedBean*  py_q_getBySystemName(LogixManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LogixManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
    bool  getLoadDisabled(LogixManager* theWrappedObject);
    bool  py_q_getLoadDisabled(LogixManager* theWrappedObject){  return (((PythonQtPublicPromoter_LogixManager*)theWrappedObject)->py_q_getLoadDisabled());}
    void setLoadDisabled(LogixManager* theWrappedObject, bool  arg__1);
@@ -572,6 +575,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  arg__1);
 virtual NamedBean*  getBeanByUserName(QString  arg__1);
 virtual QString  getBeanTypeHandled(bool  plural);
+virtual NamedBean*  getBySystemName(QString  systemName);
 virtual NamedBean*  getByUserName(QString  userName);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
@@ -612,6 +616,7 @@ inline void py_q_dispose() { Manager::dispose(); }
 inline NamedBean*  py_q_getBeanBySystemName(QString  arg__1) { return Manager::getBeanBySystemName(arg__1); }
 inline NamedBean*  py_q_getBeanByUserName(QString  arg__1) { return Manager::getBeanByUserName(arg__1); }
 inline QString  py_q_getBeanTypeHandled(bool  plural) { return Manager::getBeanTypeHandled(plural); }
+inline NamedBean*  py_q_getBySystemName(QString  systemName) { return this->getBySystemName(systemName); }
 inline NamedBean*  py_q_getByUserName(QString  userName) { return this->getByUserName(userName); }
 inline QString  py_q_getEntryToolTip() { return Manager::getEntryToolTip(); }
 inline SystemConnectionMemo*  py_q_getMemo() { return Manager::getMemo(); }
@@ -663,6 +668,8 @@ void delete_Manager(Manager* obj) { delete obj; }
    QString  getBeanTypeHandled(Manager* theWrappedObject);
    QString  getBeanTypeHandled(Manager* theWrappedObject, bool  plural);
    QString  py_q_getBeanTypeHandled(Manager* theWrappedObject, bool  plural){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
+   NamedBean*  getBySystemName(Manager* theWrappedObject, QString  systemName);
+   NamedBean*  py_q_getBySystemName(Manager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBySystemName(systemName));}
    NamedBean*  getByUserName(Manager* theWrappedObject, QString  userName);
    NamedBean*  py_q_getByUserName(Manager* theWrappedObject, QString  userName){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getByUserName(userName));}
    QString  getEntryToolTip(Manager* theWrappedObject);
@@ -744,6 +751,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled(bool  plural);
+virtual NamedBean*  getBySystemName(QString  systemName);
 virtual NamedBean*  getByUserName(QString  arg__1);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
@@ -2432,7 +2440,7 @@ void delete_ProxyLightManager(ProxyLightManager* obj) { delete obj; }
    bool  allowMultipleAdditions(ProxyLightManager* theWrappedObject, QString  systemName);
    QString  convertSystemNameToAlternate(ProxyLightManager* theWrappedObject, QString  systemName);
    QString  getBeanTypeHandled(ProxyLightManager* theWrappedObject, bool  plural);
-   Light*  getBySystemName(ProxyLightManager* theWrappedObject, QString  systemName);
+   NamedBean*  getBySystemName(ProxyLightManager* theWrappedObject, QString  systemName);
    NamedBean*  getByUserName(ProxyLightManager* theWrappedObject, QString  userName);
    QString  getEntryToolTip(ProxyLightManager* theWrappedObject);
    Light*  getLight(ProxyLightManager* theWrappedObject, QString  name);
@@ -2586,6 +2594,7 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName);
 virtual NamedBean*  getBeanByUserName(QString  userName);
 virtual QString  getBeanTypeHandled(bool  plural);
+virtual NamedBean*  getBySystemName(QString  systemName);
 virtual NamedBean*  getByUserName(QString  arg__1);
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo();
@@ -2786,6 +2795,8 @@ void delete_Roster(Roster* obj) { delete obj; }
    RosterEntry*  getEntryForId(Roster* theWrappedObject, QString  id);
    RosterEntry*  getGroupEntry(Roster* theWrappedObject, QString  group, int  i);
    int  getGroupIndex(Roster* theWrappedObject, QString  group, RosterEntry*  re);
+   QVector<PropertyChangeListener* >  getPropertyChangeListeners(Roster* theWrappedObject);
+   QVector<PropertyChangeListener* >  getPropertyChangeListeners(Roster* theWrappedObject, QString  propertyName);
    QString  getRosterFilesLocation(Roster* theWrappedObject);
    QVector<QString >  getRosterGroupList(Roster* theWrappedObject);
    QString  static_Roster_getRosterGroupName(QString  rosterGroup);

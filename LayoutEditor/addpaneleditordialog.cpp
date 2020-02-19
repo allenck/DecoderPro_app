@@ -3,6 +3,7 @@
 #include "inputdialog.h"
 #include "analogclock2display.h"
 #include "panelmenu.h"
+#include "instancemanager.h"
 
 AddPanelEditorDialog::AddPanelEditorDialog(QWidget *parent) :
     QMainWindow(parent),
@@ -22,7 +23,7 @@ AddPanelEditorDialog::AddPanelEditorDialog(QWidget *parent) :
  editor->setShowHidden(ui->chkShowHidden->isChecked());
  editor->setPanelMenu(ui->chkHasMenu->isChecked());
  editor->show();
- PanelMenu::instance()->addEditorPanel(editor);
+ ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->addEditorPanel(editor);
 
  ui->cbType->clear();
  ui->cbType->addItem("",-1);

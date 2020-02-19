@@ -790,6 +790,8 @@ double LayoutSlip::round (double x) {
  */
 /*protected*/ QMenu *LayoutSlip::showPopup(QGraphicsSceneMouseEvent* /*e*/)
 {
+ // TODO: incorporate latest Java code!!
+
  if (popup != nullptr )
  {
   popup->clear();
@@ -806,7 +808,7 @@ double LayoutSlip::round (double x) {
    popup->addAction (new QAction(tr("NoBlock"),this));
   else
   {
-   popup->addAction(new QAction(tr("Block ID")+": "+getLayoutBlock()->getID(), this));
+   popup->addAction(new QAction(tr("Block ID")+": "+getLayoutBlock()->getId(), this));
    blockAssigned = true;
   }
 

@@ -35,33 +35,33 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
  */
 /*public*/ QDomElement DefaultSignalGroupManagerXml::store(QObject* o)
 {
- SignalGroupManager* m = (SignalGroupManager*)o;
+ SignalGroupManager* sgm = (SignalGroupManager*)o;
 
  QDomElement element = doc.createElement("signalgroups");
  element.setAttribute("class", "jmri.managers.configurexml.DefaultSignalGroupManagerXml");
 
  // include contents
- QStringList names = m->getSystemNameList();
+ QStringList names = sgm->getSystemNameList();
  for (int i = 0; i < names.size(); i++)
  {
   QDomElement e = doc.createElement("signalgroup");
-  SignalGroup* p = m->getSignalGroup(names.at(i));
+  SignalGroup* sg = sgm->getSignalGroup(names.at(i));
   //e.setAttribute("systemName", p->getSystemName()); // deprecated for 2.9.* series
-  e.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->getSystemName())));
+  e.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sg->getSystemName())));
   //e.setAttribute("userName", p->getUserName());
   //storeCommon(p, e);
   element.appendChild(e);
-  for (int x=0; x < p->getNumSignalMastAspects(); x++)
+  for (int x=0; x < sg->getNumSignalMastAspects(); x++)
   {
    QDomElement app = doc.createElement("aspect");
-   app.setAttribute("valid", p->getSignalMastAspectByIndex(x));
+   app.setAttribute("valid", sg->getSignalMastAspectByIndex(x));
    e.appendChild(app);
   }
-  e.setAttribute("signalMast", p->getSignalMastName());
+  e.setAttribute("signalMast", sg->getSignalMastName());
 
-  for (int x=0; x<p->getNumSignalHeadItems(); x++)
+  for (int x=0; x<sg->getNumSignalHeadItems(); x++)
   {
-    storeSignalHead(e, p, x);
+    storeSignalHead(e, sg, x);
   }
  }
  return element;
@@ -138,17 +138,17 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
  * @return true if successful
  */
  //@SuppressWarnings("unchecked")
-/*public*/ bool DefaultSignalGroupManagerXml::load(QDomElement element) throw (Exception)
+/*public*/ bool DefaultSignalGroupManagerXml::load(QDomElement shared, QDomElement perNode) throw (Exception)
 {
  // loop over contained signalgroup elements
- QDomNodeList list = element.elementsByTagName("signalgroup");
+ QDomNodeList list = shared.elementsByTagName("signalgroup");
 
  SignalGroupManager* sgm = (SignalGroupManager*)InstanceManager::getDefault("SignalGroupManager");
 
  for (int i = 0; i < list.size(); i++)
  {
-  DefaultSignalGroup* m;
   QDomElement e = list.at(i).toElement();
+  SignalGroup* sg;
   QString primary;
   QString yesno;
   bool inverse =false;
@@ -156,21 +156,27 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
 
   QString sys = getSystemName(e);
 
-  m = (DefaultSignalGroup*)sgm->newSignalGroup(sys);
+  sg = sgm->provideSignalGroup(sys, getUserName(e));
 
-  if (getUserName(e) != "")
-   m->setUserName(getUserName(e));
+  //loadCommon(sg, e); // would store comment, now a separate element
+  loadComment(sg, e);
 
   primary = e.attribute("signalMast");
-  m->setSignalMast(primary);
+  sg->setSignalMast(primary);
 
-  QDomNodeList appList = e.elementsByTagName("appearance");
+  QDomNodeList appList = e.elementsByTagName("appearance"); // deprecated 4.7.2 for aspect; warning added 4.19.1
   for(int y = 0; y<appList.size(); y++)
   {
    QString value = appList.at(y).toElement().attribute("valid");
-   m->addSignalMastAspect(value);
+   sg->addSignalMastAspect(value);
   }
-  //loadCommon(m, e);
+  QDomNodeList aspList = e.elementsByTagName("aspect");
+  for (int i=0; i < aspList.size(); i++) {
+   QDomElement asp = aspList.at(i).toElement();
+   QString value = asp.attribute("valid");
+   sg->addSignalMastAspect(value);
+  }
+
   QDomNodeList signalHeadList = list.at(i).toElement().elementsByTagName("signalHead");
   if (signalHeadList.size() > 0)
   {
@@ -178,25 +184,25 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
    {
     QString head = signalHeadList.at(y).toElement().attribute("name");
     SignalHead* sigHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(head);
-    m->addSignalHead(sigHead);
+    sg->addSignalHead(sigHead);
     yesno = signalHeadList.at(y).toElement().attribute("sensorTurnoutLogic");
     inverse = false;
     if ( (yesno !=("")) )
     {
      if (yesno==("AND")) inverse=true;
-      else if (yesno==("OR")) inverse=false;
+//      else if (yesno==("OR")) inverse=false;
     }
-    m->setSensorTurnoutOper(sigHead, inverse);
+    sg->setSensorTurnoutOper(sigHead, inverse);
 
     try
     {
-     m->setSignalHeadOnState(sigHead, getIntFromColour(signalHeadList.at(y).toElement().attribute("onAppearance")));
+     sg->setSignalHeadOnState(sigHead, getIntFromColour(signalHeadList.at(y).toElement().attribute("onAppearance")));
     }
      catch ( NullPointerException ex) {  // considered normal if the attributes are not present
     }
     try
     {
-     m->setSignalHeadOffState(sigHead, getIntFromColour(signalHeadList.at(y).toElement().attribute("offAppearance")));
+     sg->setSignalHeadOffState(sigHead, getIntFromColour(signalHeadList.at(y).toElement().attribute("offAppearance")));
     }
     catch ( NullPointerException ex) {  // considered normal if the attributes are not present
     }
@@ -206,7 +212,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
      for(int k = 0; k<signalTurnoutList.size(); k++)
      {
       QString tName = signalTurnoutList.at(k).toElement().attribute("name");
-      Turnout* turnout = ((AbstractTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(tName);
+      Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(tName);
       state = 0;
       try
       {
@@ -216,7 +222,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
       {
        log->warn("invalid state attribute value");
       }
-      m->setSignalHeadAlignTurnout(sigHead, turnout, state);
+      sg->setSignalHeadAlignTurnout(sigHead, turnout, state);
      }
     }
     QDomNodeList signalSensorList = signalHeadList.at(y).toElement().elementsByTagName("sensor");
@@ -235,7 +241,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
       {
        log->warn("invalid style attribute value");
       }
-      m->setSignalHeadAlignSensor(sigHead, sensor, state);
+      sg->setSignalHeadAlignSensor(sigHead, sensor, state);
      }
     }
    }

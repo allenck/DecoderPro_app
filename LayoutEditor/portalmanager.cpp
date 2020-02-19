@@ -89,7 +89,7 @@ PortalManager::PortalManager(QObject *parent) :
     if (sName.length() < 3) {
         return NULL;
     }
-    portal = getBySystemName(sName);
+    portal = (Portal*)getBySystemName(sName);
     if (portal != NULL) {
         return NULL;
     }
@@ -118,10 +118,10 @@ PortalManager::PortalManager(QObject *parent) :
     if (portal != NULL) {
         return portal;
     }
-    return getBySystemName(name);
+    return (Portal*)getBySystemName(name);
 }
 
-/*public*/ Portal* PortalManager::getBySystemName(QString name) {
+/*public*/ NamedBean *PortalManager::getBySystemName(QString name) {
     if (name == NULL || name.trimmed().length() == 0) {
         return NULL;
     }

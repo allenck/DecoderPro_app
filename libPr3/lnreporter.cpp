@@ -126,7 +126,7 @@ int LnReporter::getNumber() { return _number; }
     void LnReporter::transpondingReport(LocoNetMessage* l) {
         bool enter;
         int loco;
-        IdTag* idTag;
+        DefaultIdTag* idTag;
         if (l->getOpCode() == LnConstants::OPC_MULTI_SENSE) {
             enter = ((l->getElement(1) & 0x20) != 0); // get reported direction
         } else {
@@ -137,18 +137,18 @@ int LnReporter::getNumber() { return _number; }
         notify(nullptr); // set report to null to make sure listeners update
 
         idTag = ((TranspondingTagManager*)InstanceManager::getDefault("TranspondingTagManager"))->provideIdTag("" + QString::number(loco));
-        idTag->setProperty("entryexit", "enter");
+        ((AbstractIdTag*)idTag->self())->setProperty("entryexit", "enter");
         if (enter)
         {
-            idTag->setProperty("entryexit", "enter");
-            if (!entrySet.contains((TranspondingTag*)idTag)) {
-                entrySet.insert((TranspondingTag*) idTag);
+            ((AbstractIdTag*)idTag->self())->setProperty("entryexit", "enter");
+            if (!entrySet.contains((TranspondingTag*)idTag->self())) {
+                entrySet.insert((TranspondingTag*) idTag->self());
             }
         }
         else {
-            idTag->setProperty("entryexit", "exits");
-            if (entrySet.contains((TranspondingTag*)idTag)) {
-                entrySet.remove((TranspondingTag*)idTag);
+            ((AbstractIdTag*)idTag->self())->setProperty("entryexit", "exits");
+            if (entrySet.contains((TranspondingTag*)idTag->self())) {
+                entrySet.remove((TranspondingTag*)idTag->self());
             }
         }
         log.debug("Tag: " + idTag->toString());

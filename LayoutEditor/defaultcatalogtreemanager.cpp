@@ -16,7 +16,7 @@
 DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
     CatalogTreeManager(parent)
 {
- _tsys = new QMap<QString, CatalogTree*>();
+ _tsys = new QMap<QString, NamedBean*>();
  _tuser = new QMap<QString, CatalogTree*>();
  _indexChanged= false;
  registerSelf();
@@ -64,10 +64,10 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
     CatalogTree* t = (CatalogTree*)getByUserName(name);
     if (t!=NULL) return t;
 
-    return getBySystemName(name);
+    return (CatalogTree*)getBySystemName(name);
 }
 
-/*public*/ CatalogTree* DefaultCatalogTreeManager::getBySystemName(QString key)
+/*public*/ NamedBean *DefaultCatalogTreeManager::getBySystemName(QString key)
 {
  QString name = key.toUpper();
  if (log->isDebugEnabled())
@@ -81,7 +81,7 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
                       ", has "+QString::number(root->getChildCount())+" children");
   }
  }
- return (CatalogTree*)_tsys->value(name);
+ return _tsys->value(name);
 }
 
 /*public*/ NamedBean *DefaultCatalogTreeManager::getByUserName(QString key) {
@@ -102,11 +102,11 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
  CatalogTree* s;
  if ( (userName!="") && ((s = (CatalogTree*)getByUserName(userName)) != NULL))
  {
-     if (getBySystemName(systemName)!=s)
+     if ((CatalogTree*)getBySystemName(systemName)!=s)
          log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+s->getSystemName()+")");
      return s;
  }
- if ( (s = getBySystemName(systemName)) != NULL)
+ if ( (s = (CatalogTree*)getBySystemName(systemName)) != NULL)
  {
      if ((s->getUserName() == NULL) && (userName != NULL))
          s->setUserName(userName);
@@ -258,7 +258,7 @@ void DefaultCatalogTreeManager::Register(CatalogTree * tree)
  QString systemName = ((AbstractCatalogTree*)tree)->mSystemName;
   QString userName = ((AbstractCatalogTree*)tree)->mUserName;
   Q_ASSERT(!systemName.isEmpty());
- _tsys->insert(systemName, tree);
+ _tsys->insert(systemName, (NamedBean*)tree);
  _tuser->insert(userName, tree);
 }
 

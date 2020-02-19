@@ -45,7 +45,7 @@
 }
 
 //@Override
-/*public*/ void TimeoutRfidSensor::notify(IdTag* t) {
+/*public*/ void TimeoutRfidSensor::notify(DefaultIdTag* t) {
     RfidSensor::notify(t);
     whenLastSensed = QDateTime::currentMSecsSinceEpoch();
     if (timeoutThread == nullptr) {

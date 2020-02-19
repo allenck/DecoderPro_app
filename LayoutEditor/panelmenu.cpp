@@ -87,18 +87,6 @@
 }
 
 
-/**
- * Provide method to reference this panel menu
- *
- * @return get the single instance of this menu
- * @deprecated since 4.9.3; use
- * {@link jmri.InstanceManager#getDefault(java.lang.Class)} instead
- */
-//@Deprecated
-/*static*/ /*public*/ PanelMenu* PanelMenu::instance() {
- return static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"));
-
-}
 
 /**
  * Utility routine for getting the number of panels in the Panels sub menu

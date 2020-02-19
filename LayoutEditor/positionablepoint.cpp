@@ -861,6 +861,8 @@ void removeSML(QString signalMast){
  */
 /*protected*/ void PositionablePoint::showPopUp(QGraphicsSceneMouseEvent* /*e*/)
 {
+ // TODO: incorporate latest Java code!!
+
  if (popup != nullptr )
  {
   popup->clear();
@@ -882,13 +884,14 @@ void removeSML(QString signalMast){
   if (connect2!=nullptr) block2 = connect2->getLayoutBlock();
   if ( (block1!=nullptr) && (block1==block2) )
   {
-   popup->addAction(new QAction(tr("Block")+": "+block1->getID(),this));
+   popup->addAction(new QAction(tr("Block")+": "+block1->getId(),this));
+   //jmi = popup->addAction(tr("%1).arg(tr("Block")) + block1->getDisplayName());
   }
   else if ( (block1!=nullptr) && (block2!=nullptr) && (block1!=block2) )
   {
    popup->addAction(new QAction(tr("BlockDivider"),this));
-   popup->addAction(new QAction(" "+tr("Block1ID")+": "+block1->getID(),this));
-   popup->addAction(new QAction(" "+tr("Block2ID")+": "+block2->getID(),this));
+   popup->addAction(new QAction(" "+tr("Block1ID")+": "+block1->getId(),this));
+   popup->addAction(new QAction(" "+tr("Block2ID")+": "+block2->getId(),this));
    blockBoundary = true;
   }
   break;
@@ -900,7 +903,7 @@ void removeSML(QString signalMast){
   if (connect1!=nullptr) blockEnd = connect1->getLayoutBlock();
   if (blockEnd!=nullptr)
   {
-   popup->addAction(new QAction(tr("BlockID")+": "+blockEnd->getID(),this));
+   popup->addAction(new QAction(tr("BlockID")+": "+blockEnd->getId(),this));
   }
   endBumper = true;
   break;
@@ -1116,7 +1119,7 @@ void PositionablePoint::setLink()
 
 /*public*/ QWidget* PositionablePoint::getLinkPanel() {
     editorCombo = new QComboBox/*<JCBHandle<LayoutEditor>>*/();
-    QList<LayoutEditor*>* panels = PanelMenu::instance()->getLayoutEditorPanelList();
+    QList<LayoutEditor*>* panels = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
     editorCombo->addItem("None", QVariant());
     if (panels->contains(layoutEditor)) {
         panels->removeOne(layoutEditor);

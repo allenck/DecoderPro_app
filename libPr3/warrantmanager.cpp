@@ -69,7 +69,7 @@ WarrantManager::WarrantManager(QObject *parent) :
     if (userName != "" && userName.trimmed().length() > 0) {
         r = (Warrant*)getByUserName(userName);
         if (r == nullptr) {
-            r = getBySystemName(systemName);
+            r = (Warrant*)getBySystemName(systemName);
         }
         if (r != nullptr) {
             log->warn("Warrant " + r->getDisplayName() + "  exits.");
@@ -100,10 +100,10 @@ WarrantManager::WarrantManager(QObject *parent) :
 /*public*/ Warrant* WarrantManager::getWarrant(QString name) {
     Warrant* r = (Warrant*)getByUserName(name);
     if (r!=NULL) return r;
-    return getBySystemName(name);
+    return (Warrant*)getBySystemName(name);
 }
 
-/*public*/ Warrant* WarrantManager::getBySystemName(QString name) {
+/*public*/ NamedBean *WarrantManager::getBySystemName(QString name) {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
     QString key = name.toUpper();
     return (Warrant*)_tsys->value(key);
@@ -118,7 +118,7 @@ WarrantManager::WarrantManager(QObject *parent) :
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
     Warrant* w = (Warrant*)getByUserName(name);
     if (w==NULL) {
-        w = getBySystemName(name);
+        w = (Warrant*)getBySystemName(name);
     }
     if (w==NULL) {
         w = createNewWarrant(name, NULL, false, 0);

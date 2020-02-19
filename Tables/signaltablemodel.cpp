@@ -122,7 +122,7 @@ void SignalTableModel::initTempRow()
  QStringList sysNames = _portalMgr->getSystemNameArray();
  for (int i = 0; i < sysNames.length(); i++)
  {
-  Portal* portal = _portalMgr->getBySystemName(sysNames[i]);
+  Portal* portal = (Portal*)_portalMgr->getBySystemName(sysNames[i]);
   NamedBean* signal = portal->getFromSignal();
   SignalRow* sr = NULL;
   if (signal != NULL)
@@ -241,7 +241,7 @@ void SignalTableModel::initTempRow()
 {
  QStringList sysNames = _portalMgr->getSystemNameArray();
  for (int i = 0; i < sysNames.length(); i++) {
-  Portal* portal = _portalMgr->getBySystemName(sysNames[i]);
+  Portal* portal = (Portal*)_portalMgr->getBySystemName(sysNames[i]);
   if ((portal->getFromBlock()==(fromBlock) || portal->getToBlock()==(fromBlock))
       && (portal->getFromBlock()==(toBlock) || portal->getToBlock()==(toBlock))) {
    return portal;

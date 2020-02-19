@@ -159,7 +159,7 @@ PositionablePointXml::PositionablePointXml(QObject *parent) :
  if (type == PositionablePoint::EDGE_CONNECTOR && element.attribute("linkedpanel") != NULL && element.attribute("linkpointid") != NULL)
  {
   QString linkedEditorName = element.attribute("linkedpanel");
-  LayoutEditor* linkedEditor = (LayoutEditor*) PanelMenu::instance()->getEditorByName(linkedEditorName);
+  LayoutEditor* linkedEditor = (LayoutEditor*) ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getEditorByName(linkedEditorName);
   if (linkedEditor != NULL)
   {
    QString linkedPoint = element.attribute("linkpointid");

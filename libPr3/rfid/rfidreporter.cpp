@@ -57,17 +57,17 @@ void RfidReporter::init()
 
 }
 
-/*public*/ void RfidReporter::notify(IdTag* id)
+/*public*/ void RfidReporter::notify(DefaultIdTag* id)
 {
  log->debug("Notify: "+this->mSystemName);
  if (id!=NULL)
  {
-  log->debug("Tag: "+((AbstractIdTag*)id)->getDisplayName());
+  log->debug("Tag: "+((AbstractIdTag*)id->self())->getDisplayName());
   RfidReporter* r;
-  if ((r = (RfidReporter*) ((AbstractIdTag*)id)->getWhereLastSeen())!=NULL)
+  if ((r = (RfidReporter*) ((AbstractIdTag*)id->self())->getWhereLastSeen())!=NULL)
   {
    log->debug("Previous reporter: "+r->mSystemName);
-   if (r!=this && r->getCurrentReport() == VPtr<IdTag>::asQVariant( id))
+   if (r!=this && r->getCurrentReport() == VPtr<DefaultIdTag>::asQVariant( id))
    {
     log->debug("Notify previous");
     r->notify(NULL);
@@ -77,10 +77,10 @@ void RfidReporter::init()
  // TODO:   log->debug(tr("Current report was: ")+ VPtr<IdTag*>::asPtr(r->getCurrentReport())->getDisplayName());
    }
   }
-  ((DefaultIdTag*)id)->setWhereLastSeen((Reporter*)this);
+  ((DefaultIdTag*)id->self())->setWhereLastSeen((Reporter*)this);
   log->debug("Seen here: "+this->mSystemName);
  }
- setReport(VPtr<IdTag>::asQVariant(id));
+ setReport(VPtr<DefaultIdTag>::asQVariant(id));
  setState(id!=NULL?IdTag::SEEN:IdTag::UNSEEN);
 }
 
@@ -108,7 +108,7 @@ void RfidReporter::init()
  // For now, we assume the current report.
  // IdTag.getTagID() is a system-name-ized version of the loco address. I think.
  // Matcher.group(1) : loco address (I think)
-    AbstractIdTag* cr = (AbstractIdTag*) VPtr<IdTag>::asPtr(this->getCurrentReport());
+    AbstractIdTag* cr = (AbstractIdTag*) VPtr<AbstractIdTag>::asPtr(this->getCurrentReport());
  ReporterManager* rm = static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"));
  //Pattern p = Pattern.compile(""+rm->getSystemPrefix()+rm->typeLetter()+"(\\d+)");
  //Matcher m = p.matcher(cr.getTagID());

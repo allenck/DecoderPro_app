@@ -148,8 +148,8 @@ private:
     int yClick;// = 0;
     /*private*/ NamedBeanHandle<SignalMast*>* getEastBoundSignalMastNamed();
     /*private*/ NamedBeanHandle<SignalMast*>* getWestBoundSignalMastNamed();
-    QComboBox* linkPointsBox;
-    QComboBox* editorCombo; // Stores with LayoutEditor or "None"
+    QComboBox* linkPointsBox = nullptr;
+    QComboBox* editorCombo = nullptr; // Stores with LayoutEditor or "None"
     /*private*/ void setEastBoundSignalName(/*@CheckForNull*/ QString signalHead);
     /*private*/ void setWestBoundSignalName(/*@CheckForNull*/ QString signalHead);
     void removeSML(SignalMast* signalMast);
@@ -158,9 +158,9 @@ private:
 
  QMenu* popup;// = NULL;
  //QGraphicsItem* item;
- /*private*/ PositionablePoint* linkedPoint;
+ /*private*/ PositionablePoint* linkedPoint = nullptr;
  JDialog* editLink;// = null;
- QList<PositionablePoint*>* pointList;
+ QList<PositionablePoint*>* pointList = nullptr;
  void /*private*/ invalidate(EditScene * g2);
 
 private slots:

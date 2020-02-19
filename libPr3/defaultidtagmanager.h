@@ -13,6 +13,7 @@
 #include "abstractshutdowntask.h"
 #include "abstractmanager.h"
 
+class DefaultIdTag;
 class DefaultIdTagManager : public IdTagManager
 {
     Q_OBJECT
@@ -23,12 +24,12 @@ public:
     /*public*/ void init();
     /*public*/ char typeLetter() ;
     /*public*/ QString getSystemPrefix();
-    /*public*/ IdTag* provideIdTag(QString name);
-    /*public*/ IdTag* getIdTag(QString name);
-    /*public*/ IdTag* getBySystemName(QString name) ;
-    /*public*/ IdTag* getByUserName(QString key);
-    /*public*/ IdTag* getByTagID(QString tagID);
-    /*public*/ virtual IdTag* newIdTag(QString systemName, QString userName);
+    /*public*/ DefaultIdTag *provideIdTag(QString name);
+    /*public*/ DefaultIdTag *getIdTag(QString name);
+    /*public*/ NamedBean *getBySystemName(QString name) ;
+    /*public*/ NamedBean* getByUserName(QString key);
+    /*public*/ DefaultIdTag* getByTagID(QString tagID);
+    /*public*/ virtual DefaultIdTag *newIdTag(QString systemName, QString userName);
     /*public*/ void Register(NamedBean* s);
     /*public*/ void deregister(NamedBean* s);
     /*public*/ virtual void writeIdTagDetails();// throw (IOException);
@@ -38,10 +39,10 @@ public:
     /*public*/ void setFastClockUsed(bool fastClock);
     /*public*/ bool isFastClockUsed();
     /*public*/ QList<IdTag*>* getTagsForReporter(Reporter* reporter, long threshold);
-    /*public*/ IdTag* provide(QString name) throw (IllegalArgumentException);
+    /*public*/ DefaultIdTag *provide(QString name) throw (IllegalArgumentException);
 
 signals:
-    void newIdTagCreated(IdTag* tag);
+    void newIdTagCreated(DefaultIdTag* tag);
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
@@ -54,7 +55,7 @@ private:
 
  protected:
  /*protected*/ void registerSelf();
- /*protected*/ virtual IdTag* createNewIdTag(QString systemName, QString userName);
+ /*protected*/ virtual NamedBean *createNewIdTag(QString systemName, QString userName);
  /*protected*/ bool dirty = false;
 };
 

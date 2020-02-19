@@ -483,17 +483,34 @@ TrackSegment::getLayoutBlock()
 }
 
 /**
- * Set Up a Layout Block for a Track Segment
+ * Set up a Layout Block for a Track Segment.
  */
-/*public*/ void TrackSegment::setLayoutBlock (LayoutBlock* b) {
-    block = b;
-    if (b!=NULL) {
-        blockName = b->getID();
+//@SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "Null is accepted as a valid value")
+/*public*/ void TrackSegment::setLayoutBlock(/*@CheckForNull*/ LayoutBlock* newLayoutBlock) {
+    LayoutBlock* layoutBlock = getLayoutBlock();
+    if (layoutBlock != newLayoutBlock) {
+        // block has changed, if old block exists, decrement use
+        if (layoutBlock != nullptr) {
+            layoutBlock->decrementUse();
+        }
+        if (newLayoutBlock != nullptr) {
+            namedLayoutBlock = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(newLayoutBlock->getUserName(), newLayoutBlock);
+        } else {
+            namedLayoutBlock = nullptr;
+        }
     }
 }
-/*public*/ void TrackSegment::setLayoutBlockByName (QString name) {
-    blockName = name;
+
+//@SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "Null is accepted as a valid value")
+/*public*/ void TrackSegment::setLayoutBlockByName(/*@CheckForNull*/ QString name) {
+    if ((name != nullptr) && !name.isEmpty()) {
+        LayoutBlock* b = layoutEditor->provideLayoutBlock(name);
+        namedLayoutBlock = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(b->getUserName(), b);
+    } else {
+        namedLayoutBlock = nullptr;
+    }
 }
+
 /*
  * non-accessor methods
  */

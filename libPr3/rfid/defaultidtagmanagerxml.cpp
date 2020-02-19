@@ -156,7 +156,7 @@
           for (int i = 0; i < l.size(); i++) {
               QDomElement e = l.at(i).toElement();
               QString systemName = e.firstChildElement("systemName").text(); // NOI18N
-              IdTag* t = manager->provideIdTag(systemName);
+              DefaultIdTag* t = manager->provideIdTag(systemName);
               t->load(e);
           }
       }

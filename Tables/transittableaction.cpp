@@ -930,7 +930,7 @@ void TransitTableAction::replacePrimaryForSeqPressed(ActionEvent* /*e*/) {
         Section* mayBeSection = NULL;
         QString mayBeName = allSections.at(i);
         int mayBeDirection = 0;
-        Section* s = sectionManager->getBySystemName(mayBeName);
+        Section* s = (Section*)sectionManager->getBySystemName(mayBeName);
         if ((s != NULL) && (s != sOld) && (s != beforeSection)
                 && (s != afterSection) && (!inSectionList(s, altOldList))) {
             if (beforeSection != NULL) {
@@ -1131,7 +1131,7 @@ void TransitTableAction::addAlternateForSeqPressed(ActionEvent* /*e*/) {
         Section* mayBeSection = NULL;
         QString mayBeName = allSections.at(i);
         int mayBeDirection = 0;
-        Section* s = sectionManager->getBySystemName(mayBeName);
+        Section* s = (Section*)sectionManager->getBySystemName(mayBeName);
         if ((s != NULL) && (s != primarySection) && (s != beforeSection)
                 && (s != afterSection) && (!inSectionList(s, altOldList))) {
             if (beforeSection != NULL) {
@@ -1375,7 +1375,7 @@ void TransitTableAction::updatePressed(ActionEvent* /*e*/) {
         // no Sections currently in Transit - all Sections and all Directions OK
         for (int i = 0; i < allSections.size(); i++) {
             QString sName = allSections.at(i);
-            Section* s = sectionManager->getBySystemName(sName);
+            Section* s = (Section*)sectionManager->getBySystemName(sName);
             if (s != NULL) {
                 if ((s->getUserName() != NULL) && (s->getUserName() != (""))) {
                     sName = sName + "( " + s->getUserName() + " )";
@@ -1389,7 +1389,7 @@ void TransitTableAction::updatePressed(ActionEvent* /*e*/) {
         // limit to Sections that connect to the current Section and are not the previous Section
         for (int i = 0; i < allSections.size(); i++) {
             QString sName = allSections.at(i);
-            Section* s = sectionManager->getBySystemName(sName);
+            Section* s = (Section*)sectionManager->getBySystemName(sName);
             if (s != NULL) {
                 if ((s != prevSection) && (forwardConnected(s, curSection, curSectionDirection))) {
                     if ((s->getUserName() != NULL) && (s->getUserName() != (""))) {
@@ -1412,7 +1412,7 @@ void TransitTableAction::updatePressed(ActionEvent* /*e*/) {
         if (prevSection != NULL) {
             for (int i = 0; i < allSections.size(); i++) {
                 QString sName = allSections.at(i);
-                Section* s = sectionManager->getBySystemName(sName);
+                Section* s = (Section*)sectionManager->getBySystemName(sName);
                 if (s != NULL) {
                     if ((notIncludedWithSeq(s, curSequenceNum))
                             && forwardConnected(s, prevSection, prevSectionDirection)) {
@@ -1442,7 +1442,7 @@ void TransitTableAction::updatePressed(ActionEvent* /*e*/) {
         }
         for (int i = 0; i < allSections.size(); i++) {
             QString sName = allSections.at(i);
-            Section* s = sectionManager->getBySystemName(sName);
+            Section* s = (Section*)sectionManager->getBySystemName(sName);
             if (s != NULL) {
                 if ((s != firstSection) && (forwardConnected(s, firstSection, testDirection))) {
                     if ((s->getUserName() != NULL) && (s->getUserName() != (""))) {

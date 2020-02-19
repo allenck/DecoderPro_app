@@ -106,7 +106,7 @@ LnReporterTest::LnReporterTest()
         QString str;
         if(v.type() == QMetaType::VoidStar)
         {
-           QObject* obj = VPtr<IdTag>::asPtr(v);
+           QObject* obj = VPtr<QObject>::asPtr(v);
            if(qobject_cast<TranspondingTag*>(obj)!= nullptr)
            {
             str =((TranspondingTag*)obj)->toString();

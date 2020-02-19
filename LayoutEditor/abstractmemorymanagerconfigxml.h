@@ -13,7 +13,7 @@ public:
     /*public*/ QDomElement store(QObject* o);
     /*abstract*/ /*public*/ virtual void setStoreElementClass(QDomElement memories) = 0;
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
-    /*abstract*/ /*public*/ virtual bool load(QDomElement memories) throw (JmriConfigureXmlException) = 0;
+    /*abstract*/ /*public*/ virtual bool load(QDomElement sharedMemories, QDomElement perNodeMemories) throw (JmriConfigureXmlException) = 0;
     /*public*/ void loadMemories(QDomElement memories);
     /*public*/ int loadOrder();
     void loadValue(QDomElement memory, Memory* m);

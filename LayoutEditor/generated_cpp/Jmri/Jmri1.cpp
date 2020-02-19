@@ -6088,6 +6088,11 @@ void PythonQtWrapper_JFrame::reSizeToFitOnScreen(JFrame* theWrappedObject)
   ( theWrappedObject->reSizeToFitOnScreen());
 }
 
+void PythonQtWrapper_JFrame::removeAll(JFrame* theWrappedObject)
+{
+  ( theWrappedObject->removeAll());
+}
+
 void PythonQtWrapper_JFrame::removeWindowListener(JFrame* theWrappedObject, WindowListener*  l)
 {
   ( theWrappedObject->removeWindowListener(l));
@@ -15871,6 +15876,39 @@ if (_wrapper) {
 }
   return LayoutBlockManager::getBeanTypeHandled(plural0);
 }
+NamedBean*  PythonQtShell_LayoutBlockManager::getBySystemName(QString  name0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBySystemName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&name0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutBlockManager::getBySystemName(name0);
+}
 NamedBean*  PythonQtShell_LayoutBlockManager::getByUserName(QString  key0)
 {
 if (_wrapper) {
@@ -19894,6 +19932,16 @@ bool  PythonQtWrapper_LayoutTurnout::isSecondTurnoutInverted(LayoutTurnout* theW
   return ( theWrappedObject->isSecondTurnoutInverted());
 }
 
+bool  PythonQtWrapper_LayoutTurnout::isTurnoutTypeSlip(LayoutTurnout* theWrappedObject)
+{
+  return ( theWrappedObject->isTurnoutTypeSlip());
+}
+
+bool  PythonQtWrapper_LayoutTurnout::isTurnoutTypeXover(LayoutTurnout* theWrappedObject)
+{
+  return ( theWrappedObject->isTurnoutTypeXover());
+}
+
 void PythonQtWrapper_LayoutTurnout::reCheckBlockBoundary(LayoutTurnout* theWrappedObject)
 {
   ( theWrappedObject->reCheckBlockBoundary());
@@ -22305,7 +22353,7 @@ if (_wrapper) {
 }
   return LightManager::getBeanTypeHandled(plural0);
 }
-Light*  PythonQtShell_LightManager::getBySystemName(QString  arg__1)
+NamedBean*  PythonQtShell_LightManager::getBySystemName(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -22313,9 +22361,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getBySystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"Light*" , "QString"};
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      Light* returnValue{};
+      NamedBean* returnValue{};
       void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -22324,7 +22372,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
           } else {
-            returnValue = *((Light**)args[0]);
+            returnValue = *((NamedBean**)args[0]);
           }
         }
       }
@@ -23227,11 +23275,6 @@ bool  PythonQtWrapper_LightManager::allowMultipleAdditions(LightManager* theWrap
 QString  PythonQtWrapper_LightManager::convertSystemNameToAlternate(LightManager* theWrappedObject, QString  arg__1)
 {
   return ( theWrappedObject->convertSystemNameToAlternate(arg__1));
-}
-
-Light*  PythonQtWrapper_LightManager::getBySystemName(LightManager* theWrappedObject, QString  arg__1)
-{
-  return ( theWrappedObject->getBySystemName(arg__1));
 }
 
 Light*  PythonQtWrapper_LightManager::getLight(LightManager* theWrappedObject, QString  arg__1)
@@ -26735,6 +26778,39 @@ if (_wrapper) {
   }
 }
   return LnReporterManager::getBeanTypeHandled(plural0);
+}
+NamedBean*  PythonQtShell_LnReporterManager::getBySystemName(QString  systemName0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBySystemName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&systemName0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LnReporterManager::getBySystemName(systemName0);
 }
 NamedBean*  PythonQtShell_LnReporterManager::getByUserName(QString  key0)
 {
@@ -30865,6 +30941,11 @@ int PythonQtShell_LnTrafficController::qt_metacall(QMetaObject::Call call, int i
   int result = LnTrafficController::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
+void PythonQtWrapper_LnTrafficController::dispose(LnTrafficController* theWrappedObject)
+{
+  ( theWrappedObject->dispose());
+}
+
 int  PythonQtWrapper_LnTrafficController::getReceivedByteCount(LnTrafficController* theWrappedObject)
 {
   return ( theWrappedObject->getReceivedByteCount());

@@ -859,7 +859,7 @@ void Apps::On_handleQuit()
 
 /*protected*/ void Apps::panelMenu(QMenuBar* menuBar, WindowInterface* /*wi*/)
 {
- menuBar->addMenu(PanelMenu::instance());
+ menuBar->addMenu((PanelMenu*)InstanceManager::getDefault("PanelMenu"));
 }
 
 /**

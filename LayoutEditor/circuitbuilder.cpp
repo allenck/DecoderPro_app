@@ -107,7 +107,7 @@ CircuitBuilder::~CircuitBuilder()
  QStringList sysNames = manager->getSystemNameArray();
  for (int i = 0; i < sysNames.length(); i++)
  {
-  OBlock* block = manager->getBySystemName(sysNames.at(i));
+  OBlock* block = (OBlock*)manager->getBySystemName(sysNames.at(i));
   _circuitMap->insert(block,  new QList<Positionable*>());
  }
 
@@ -401,7 +401,7 @@ void CircuitBuilder::OnIconNeeds2()
  QStringList sysNames = manager->getSystemNameArray();
  for (int i = 0; i < sysNames.length(); i++)
  {
-  WarrantTableAction::checkPathPortals(manager->getBySystemName(sysNames[i]));
+  WarrantTableAction::checkPathPortals((OBlock*)manager->getBySystemName(sysNames[i]));
  }
  if (!WarrantTableAction::showPathPortalErrors())
  {
@@ -518,7 +518,7 @@ void CircuitBuilder::editCircuitPaths_triggered()
  if (editingOK())
  {
   //_currentBlock = InstanceManager::oBlockManagerInstance().getBySystemName(sysName);
-  _currentBlock = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName);
+  _currentBlock = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName);
   if (_currentBlock!=NULL)
   {
    checkCircuits();
@@ -933,7 +933,7 @@ void CircuitBuilder::showDoneButton_clicked()
    int result = QMessageBox::question(_editor, tr("What shall we do?"), tr("Circuit \"%1\" already exists.  Do you want to edit it?").arg(sysname), QMessageBox::Yes | QMessageBox::No);
    if(result == QMessageBox::Yes)
    {
-    _currentBlock = ((OBlockManager*) InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysname);
+    _currentBlock = (OBlock*)((OBlockManager*) InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysname);
     if (_currentBlock==NULL) {
         retOK = false;
     }
@@ -1171,7 +1171,7 @@ void CircuitBuilder::showDoneButton_clicked()
  QStringList sysNames = manager->getSystemNameArray();
  hasOBlocks = (sysNames.length()>0);
  for (int i = 0; i < sysNames.length(); i++) {
-     OBlock* block = manager->getBySystemName(sysNames[i]);
+     OBlock* block = (OBlock*)manager->getBySystemName(sysNames[i]);
      QList<Positionable*>* icons = _circuitMap->value(block);
      if (log->isDebugEnabled()) log->debug("checkCircuits: block "+block->getDisplayName()
                                          +" has "+QString::number(icons->size())+" icons.");

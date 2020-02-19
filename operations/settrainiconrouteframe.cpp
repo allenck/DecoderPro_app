@@ -18,6 +18,7 @@
 #include <QMessageBox>
 #include "panelmenu.h"
 #include "editor.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -193,7 +194,7 @@ namespace Operations
 
  // place test markers on panel
  /*private*/ void SetTrainIconRouteFrame::placeTestIcons() {
-     Editor* editor = PanelMenu::instance()->getEditorByName(Setup::getPanelName());
+     Editor* editor = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getEditorByName(Setup::getPanelName());
      if (editor == NULL) {
 //         JOptionPane.showMessageDialog(this, MessageFormat.format(tr("LoadPanel"),
 //                 new Object[]{Setup.getPanelName()}), tr("PanelNotFound"),

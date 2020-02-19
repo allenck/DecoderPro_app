@@ -14,8 +14,10 @@ public:
     ~SectionManager() {}
     SectionManager(const SectionManager&) : AbstractManager() {}
     int getXMLOrder();
-    QString getSystemPrefix();
+    //QString getSystemPrefix();
     char typeLetter() ;
+    /*public*/ QString getNamedBeanClass();
+
     /**
      * Method to create a new Section if the Section does not exist
      *   Returns null if a Section with the same systemName or userName
@@ -33,8 +35,8 @@ public:
      *      that name is a System Name.  If both fail, returns NULL.
      */
     /*public*/ Section* getSection(QString name);
-    /*public*/ Section* getBySystemName(QString name);
-    /*public*/ Section* getByUserName(QString key);
+//    /*public*/ Section* getBySystemName(QString name);
+//    /*public*/ Section* getByUserName(QString key);
 
     /**
      * Validates all Sections

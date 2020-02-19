@@ -79,7 +79,7 @@
  g->addWidget(new QLabel(tr("Select Panel")),0,0);
  g->addWidget(selectPanel, 0,1);
  selectPanel->clear();
- panels = PanelMenu::instance()->getLayoutEditorPanelList();
+ panels = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
  for (int i = 0; i < panels->size(); i++)
  {
   selectPanel->addItem(panels->at(i)->getLayoutName());

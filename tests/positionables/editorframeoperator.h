@@ -20,7 +20,7 @@ public slots:
 
 private:
  /*private*/ void dismissClosingDialogs();
- JFrame* frame;
+ JFrame* frame = nullptr;
 };
 
 #endif // EDITORFRAMEOPERATOR_H

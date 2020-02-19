@@ -65,7 +65,7 @@ class JAVAQTSHARED_EXPORT TableModel : public QAbstractTableModel
       * @return  true if the cell is editable
       * @see #setValueAt
       */
-     /*public*/ virtual bool isCellEditable(int /*rowIndex*/, int /*columnIndex*/) {return false;}
+     /*public*/ virtual bool isCellEditable(int /*rowIndex*/, int /*columnIndex*/) const {return false;}
 
      /**
       * Returns the value for the cell at <code>columnIndex</code> and

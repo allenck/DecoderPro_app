@@ -100,7 +100,7 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 /*public*/ QString RtBeanTableDataModel::getValue(QString name) const
 {
    QVariant value;
-   Reporter* r = act->reportManager->getBySystemName(name);
+   Reporter* r = (Reporter*)act->reportManager->getBySystemName(name);
    if (r == nullptr) {
        return "";
    }
@@ -109,7 +109,9 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
       return "";
    }
    //else if(value instanceof jmri.Reportable)
-   if(value.canConvert<Reportable*>())
+   //if(value.canConvert<Reportable*>())
+   QObject* obj = VPtr<QObject>::asPtr(value);
+   if(obj)
    {
       //return ((jmri.Reportable)value).toReportString();
        //return value.convert<Reportable>();

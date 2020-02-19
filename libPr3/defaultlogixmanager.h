@@ -19,7 +19,7 @@ public:
     /*public*/ void deleteLogix(Logix* x);
     /*public*/ void activateAllLogixs();
     /*public*/ Logix* getLogix(QString name);
-    /*public*/ Logix* getBySystemName(QString name);
+    /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* getByUserName(QString key);
     /*public*/ void setLoadDisabled(bool s);
     /*public*/ bool getLoadDisabled();

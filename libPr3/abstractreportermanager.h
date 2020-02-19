@@ -15,7 +15,7 @@ public:
     virtual char typeLetter();
     Reporter* provideReporter(QString sName);
     Reporter* getReporter(QString name);
-    Reporter* getBySystemName(QString name);
+    NamedBean* getBySystemName(QString name);
     NamedBean* getByUserName(QString key);
     /*public*/ QString getBeanTypeHandled(bool plural) override;
     Reporter* getByDisplayName(QString key);

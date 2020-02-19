@@ -328,6 +328,16 @@ QString Block::getStateString()
  if (j>-1) paths->remove(j);
 }
 
+/*public*/ bool Block::hasPath(Path* p)
+{
+    //return paths.stream().anyMatch((t) -> (t.equals(p)));
+ foreach (Path* path, *paths) {
+  if(path->equals(p))
+   return true;
+ }
+ return false;
+}
+
 /**
  * Get a copy of the list of Paths
  */
@@ -864,6 +874,15 @@ void Block::handleReporterChange(PropertyChangeEvent* e)
     if (log->isDebugEnabled())
       log->debug("Block "+getSystemName()+" with direction "+Path::decodeDirection(getDirection())+" gets new value from "+next->getBlock()->getSystemName() + "(informational. No state change)");
 return(next);
+}
+
+/*
+ * This allows the layout block to inform any listeners to the block that the higher level layout block has been set to "useExtraColor" which is an
+ * indication that it has been allocated to a section by the AutoDispatcher.  The value set is not retained in any form by the block, it is purely to
+ * trigger a propertyChangeEvent.
+ */
+/*public*/ void Block::setAllocated(bool boo) {
+    firePropertyChange("allocated", !boo, boo);
 }
 
 // Methods to implmement PhysicalLocationReporter Interface

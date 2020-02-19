@@ -22,7 +22,7 @@
     }
 
     //@Override
-    /*protected*/ IdTag* TranspondingTagManager::createNewIdTag(QString systemName, QString userName) {
+    /*protected*/ NamedBean *TranspondingTagManager::createNewIdTag(QString systemName, QString userName) {
         if (!systemName.startsWith(getSystemPrefix() + typeLetter() )) {
             systemName = getSystemPrefix() + typeLetter() + systemName;
         }
@@ -30,19 +30,19 @@
     }
 
     //@Override
-    /*public*/ IdTag* TranspondingTagManager::newIdTag(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName) {
+    /*public*/ DefaultIdTag *TranspondingTagManager::newIdTag(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName) {
         if (log->isDebugEnabled()) {
             log->debug("new IdTag:"
                     + ((systemName == "") ? "null" : systemName)
                     + ";" + ((userName == "") ? "null" : userName));
         }
         // return existing if there is one
-        IdTag* s;
+        NamedBean* s;
         if ((userName != "") && ((s = (TranspondingTag*)getByUserName(userName)) != nullptr)) {
-            if (getBySystemName(systemName) != (IdTag*)s) {
+            if (getBySystemName(systemName) != s) {
                 log->error("inconsistent user (" + userName + ") and system name (" + systemName + ") results; userName related to (" + s->getSystemName() + ")");
             }
-            return (IdTag*)s;
+            return (DefaultIdTag*)s;
         }
         if ((s = (TranspondingTag*) getBySystemName(systemName)) != nullptr) {
             if ((s->getUserName() == "") && (userName != "")) {
@@ -51,7 +51,7 @@
                 log->warn("Found IdTag via system name (" + systemName
                         + ") with non-null user name (" + userName + ")");
             }
-            return (IdTag*)s;
+            return (DefaultIdTag*)s;
         }
 
         // doesn't exist, make a new one
@@ -65,7 +65,7 @@
             throw IllegalArgumentException();
         }
 
-        return (IdTag*)s;
+        return (DefaultIdTag*)s;
     }
 
     //@Override

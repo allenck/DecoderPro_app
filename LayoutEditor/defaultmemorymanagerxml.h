@@ -11,7 +11,7 @@ public:
  ~DefaultMemoryManagerXml() {}
  DefaultMemoryManagerXml(const DefaultMemoryManagerXml&) : AbstractMemoryManagerConfigXML() {}
  /*public*/ void setStoreElementClass(QDomElement memories);
- /*public*/ bool load(QDomElement memories) throw (JmriConfigureXmlException);
+ /*public*/ bool load(QDomElement shareMemories, QDomElement perNodeMemories) throw (JmriConfigureXmlException);
 
 signals:
 

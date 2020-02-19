@@ -13,7 +13,7 @@ class AbstractIdTagReporter : public AbstractReporter
 public:
  /*public*/ AbstractIdTagReporter(QString systemName, QObject* parent = nullptr);
  /*public*/ AbstractIdTagReporter(QString systemName, QString userName, QObject* parent = nullptr);
- /*public*/ virtual void notify(IdTag* id);
+ /*public*/ virtual void notify(DefaultIdTag *id);
  /*public*/ void setState(int s);
  /*public*/ int getState();
  /*public*/ LocoAddress* getLocoAddress(QString rep);

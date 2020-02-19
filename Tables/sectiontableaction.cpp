@@ -343,7 +343,7 @@ public void setDisplayDeleteMsg(int boo) { ((DefaultUserMessagePreferences*)Inst
     }
 }
 void SectionTableAction::editPressed(QString sName) {
-    curSection = sectionManager->getBySystemName(sName);
+    curSection = (Section*)sectionManager->getBySystemName(sName);
     if (curSection==NULL) {
         // no section - should never happen, but protects against a $%^#@ exception
         return;
@@ -729,7 +729,7 @@ void SectionTableAction::updatePressed() {
     if (uName==("")) uName="";
     if ( (uName!=NULL) && (uName!=(curSection->getUserName())) ) {
         // check that new user name is unique
-        Section* tSection = sectionManager->getByUserName(uName);
+        Section* tSection = (Section*)sectionManager->getByUserName(uName);
         if (tSection!=NULL) {
 //            javax.swing.JOptionPane.showMessageDialog(addFrame, rbx
 //                    .getString("Message2"), tr("ErrorTitle"),
@@ -910,7 +910,7 @@ void SectionTableAction::addBlockPressed() {
 }
 /*private*/ bool SectionTableAction::initializeLayoutEditorCombo(QComboBox* box) {
     // get list of Layout Editor panels
-    lePanelList = PanelMenu::instance()->getLayoutEditorPanelList();
+    lePanelList = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
     if (lePanelList->size()==0) return false;
     box->clear();
     box->addItem(tr("None"));
@@ -1093,7 +1093,7 @@ void SectionTableAction::addBlockPressed() {
 /*private*/ void SectionTableAction::deleteSectionPressed(QString sName)
 {
 #if 1
- /*final*/ Section* s = ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getBySystemName(sName);
+ /*final*/ Section* s = (Section*)((SectionManager*)InstanceManager::getDefault("SectionManager"))->getBySystemName(sName);
  QString fullName = sName;
  if (s->getUserName().length()>0)
  {
@@ -1397,7 +1397,7 @@ void SectionTableAction::OnRemoveDirSensors()
 {
  // Get a Layout Editor panel. Choose Layout Editor panel if more than one.
  QList<LayoutEditor*>* layoutEditorList =
-                PanelMenu::instance()->getLayoutEditorPanelList();
+                ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
  if ( (panel==NULL) || (layoutEditorList->size()>1) )
  {
   if (layoutEditorList->size()>1)

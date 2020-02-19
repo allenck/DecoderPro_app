@@ -37,11 +37,11 @@ DefaultMemoryManagerXml::DefaultMemoryManagerXml(QObject *parent) :
  * @param memories Top level Element to unpack.
  * @return true if successful
  */
-/*public*/ bool DefaultMemoryManagerXml::load(QDomElement memories) throw (JmriConfigureXmlException)
+/*public*/ bool DefaultMemoryManagerXml::load(QDomElement sharedMemories, QDomElement /*perNodeMemories*/) throw (JmriConfigureXmlException)
 {
  // ensure the master object exists
  InstanceManager::memoryManagerInstance();
  // load individual routes
- loadMemories(memories);
+ loadMemories(sharedMemories);
  return true;
 }

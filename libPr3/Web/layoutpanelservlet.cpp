@@ -127,7 +127,7 @@ LayoutPanelServlet::LayoutPanelServlet()
    {
     log->error("System name NULL during LayoutBlock store");
    }
-   LayoutBlock* b = tm->getBySystemName(sname);
+   LayoutBlock* b = (LayoutBlock*)tm->getBySystemName(sname);
    if (b->getUseCount() > 0)
    {
     // save only those LayoutBlocks that are in use--skip abandoned ones

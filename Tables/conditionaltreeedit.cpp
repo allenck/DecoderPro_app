@@ -2923,7 +2923,7 @@ connect(_variableItemBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_variab
      _selectConditionalBox->addItem(itemKey);
      _selectConditionalList->append("-None-");  // NOI18N
 
-     Logix* x = _logixManager->getBySystemName(logixName);
+     Logix* x = (Logix*)_logixManager->getBySystemName(logixName);
      if (x ==  NULL) {
          log->error(tr("Logix '%1' not found while building the conditional list").arg( logixName));  // NOI18N
          return;

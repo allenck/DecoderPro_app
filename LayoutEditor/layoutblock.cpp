@@ -9,6 +9,7 @@
 #include "createeditblock.h"
 #include "path.h"
 #include "memoryicon.h"
+#include "jmricolorchooser.h"
 
 QVector<int>* LayoutBlock::updateReferences = new QVector<int>();
 long LayoutBlock::time=0;
@@ -142,7 +143,6 @@ long LayoutBlock::time=0;
 
  pcs = new PropertyChangeSupport(this);
 
- _instance = this;
  blockName = uName;
  lbSystemName = sName;
  enableAddRouteLogging = false;
@@ -164,69 +164,137 @@ long LayoutBlock::time=0;
  */
 /*protected*/ void  LayoutBlock::initializeLayoutBlock()
 {
- // get/create a jmri.Block object corresponding to this LayoutBlock
- block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(blockName);
- if (block==NULL)
- {
-  // not found, create a new jmri.Block
-  QString s = "";
-  bool found = true;
-  // create a unique system name
-  while (found)
-  {
-   s = "IB"+QString("%1").arg(jmriblknum);
-   jmriblknum ++;
-   block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(s);
-   if (block == NULL) found = false;
-  }
-  block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(s,blockName);
-  if (block==NULL) log->error(QString("Failure to get/create Block: ")+s+","+blockName);
+ //get/create a Block object corresponding to this LayoutBlock
+ block = nullptr;   // assume failure (pessimist!)
+ QString userName = getUserName();
+ if (!(userName.isNull()) && !userName.isEmpty()) {
+     block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(userName);
  }
- if (block!=NULL)
- {
-  // attach a listener for changes in the Block
-   block->addPropertyChangeListener(mBlockListener = new HandleBlockChangeListener(this));// {
-//                /*public*/ void propertyChange(PropertyChangeEvent* e); {
-//                    handleBlockChange(e);
-//                }
-//            });
-//  connect(mBlockListener, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockChange(PropertyChangeEvent*)));
-//   connect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(handleBlockChange(PropertyChangeEvent*)));
-  if (occupancyNamedSensor!=NULL)
-  {
-   block->setNamedSensor(occupancyNamedSensor);
-  }
+
+ if (block == nullptr) {
+     // Not found, create a new Block
+     BlockManager* bm = (BlockManager*)InstanceManager::getDefault("BlockManager");
+     QString s;
+     while (true) {
+         if (jmriblknum > 50000) {
+             throw IndexOutOfBoundsException("Run away prevented while trying to create a block");
+         }
+         s = "IB" + QString::number(jmriblknum);
+         jmriblknum++;
+
+         // Find an unused system name
+         block = bm->getBySystemName(s);
+         if (block != nullptr) {
+             log->debug(tr("System name is already used: %1").arg(s));
+             continue;
+         }
+
+         // Create a new block.  User name is null to prevent user name checking.
+         block = bm->createNewBlock(s, QString());
+         if (block == nullptr) {
+             log->debug(tr("Null block returned: %1").arg(s));
+             continue;
+         }
+
+         // Verify registration
+         if (bm->getSystemNameList().contains(s)) {
+             log->debug(tr("Block is valid: %1").arg(s));
+             break;
+         }
+         log->debug(tr("Registration failed: %1").arg(s));
+     }
+     block->setUserName(getUserName());
+ }
+
+ //attach a listener for changes in the Block
+// mBlockListener = (PropertyChangeEvent e) -> {
+//     handleBlockChange(e);
+// };
+ HandleBlockChangeListener* mBlockListener = new HandleBlockChangeListener(this);
+ block->addPropertyChangeListener(mBlockListener,
+         getUserName(), "Layout Block:" + getUserName());
+ if (occupancyNamedSensor != nullptr) {
+     block->setNamedSensor(occupancyNamedSensor);
  }
 }
 
 /*protected*/ void  LayoutBlock::initializeLayoutBlockRouting()
 {
- //if(!InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled())
  if(!((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
   return;
  setBlockMetric();
+
  for (int i = 0; i<block->getPaths()->size(); i++)
  {
   addAdjacency(block->getPaths()->at(i));
  }
 }
 
-/*public*/ void  LayoutBlock::setUseExtraColor(bool b)
-{
- useExtraColor = b;
- //    if(InstanceManager::layoutBlockManagerInstance().isAdvancedRoutingEnabled())
- if(((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
- {
-  stateUpdate();
- }
+/*
+ * Accessor methods
+ */
+// TODO: deprecate and just use getUserName() directly
+/*public*/ QString LayoutBlock::getId() {
+    return getUserName();
 }
-/*public*/ void  LayoutBlock::decrementUse()
-{
- useCount --;
- if (useCount<=0)
- {
-  useCount = 0;
- }
+
+/*public*/ QColor LayoutBlock::getBlockTrackColor() {
+    return blockTrackColor;
+}
+
+/*public*/ void LayoutBlock::setBlockTrackColor(QColor color) {
+    blockTrackColor = color;
+    JmriColorChooser::addRecentColor(color);
+}
+
+/*public*/ QColor LayoutBlock::getBlockOccupiedColor() {
+    return blockOccupiedColor;
+}
+
+/*public*/ void LayoutBlock::setBlockOccupiedColor(QColor color) {
+    blockOccupiedColor = color;
+    JmriColorChooser::addRecentColor(color);
+}
+
+/*public*/ QColor LayoutBlock::getBlockExtraColor() {
+    return blockExtraColor;
+}
+
+/*public*/ void LayoutBlock::setBlockExtraColor(QColor color) {
+    blockExtraColor = color;
+    JmriColorChooser::addRecentColor(color);
+}
+
+//TODO: @Deprecated // Java standard pattern for boolean getters is "UseExtraColor()"
+/*public*/ bool LayoutBlock::getUseExtraColor() {
+    return useExtraColor;
+}
+
+/*public*/ void LayoutBlock::setUseExtraColor(bool b) {
+    useExtraColor = b;
+
+    if (((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled()) {
+        stateUpdate();
+    }
+    if (getBlock() != nullptr) {
+        getBlock()->setAllocated(b);
+    }
+}
+
+/* setUseExtraColor */
+/*public*/ void LayoutBlock::incrementUse() {
+    useCount++;
+}
+
+/*public*/ void LayoutBlock::decrementUse() {
+    --useCount;
+    if (useCount <= 0) {
+        useCount = 0;
+    }
+}
+
+/*public*/ int LayoutBlock::getUseCount() {
+    return useCount;
 }
 
 /**
@@ -560,17 +628,17 @@ long LayoutBlock::time=0;
   // a block is attached and this LayoutBlock is used
   // initialize connectivity as defined in first Layout Editor panel
   panel = panels->at(0);
-  QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(_instance);
+  QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(this);
   // if more than one panel, find panel with the highest connectivity
   if (panels->size()>1)
   {
    for (int i = 1;i < panels->size();i++)
    {
     if (c->size()<panels->at(i)->auxTools->
-                                    getConnectivityList(_instance)->size())
+                                    getConnectivityList(this)->size())
     {
      panel = panels->at(i);
-     c = panel->auxTools->getConnectivityList(_instance);
+     c = panel->auxTools->getConnectivityList(this);
     }
    }
   }
@@ -592,17 +660,18 @@ long LayoutBlock::time=0;
   // a block is attached and this LayoutBlock is used
   // initialize connectivity as defined in first Layout Editor panel
   LayoutEditor* panel = panels->at(0);
-  QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(_instance);
+  QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(this);
+
   // if more than one panel, find panel with the highest connectivity
   if (panels->size()>1)
   {
    for (int i = 1;i < panels->size();i++)
    {
     if (c->size()<panels->at(i)->auxTools->
-                                    getConnectivityList(_instance)->size())
+                                    getConnectivityList(this)->size())
     {
      panel = panels->at(i);
-     c = panel->auxTools->getConnectivityList(_instance);
+     c = panel->auxTools->getConnectivityList(this);
     }
    }
    // check that this connectivity is compatible with that of other panels.
@@ -611,7 +680,7 @@ long LayoutBlock::time=0;
     LayoutEditor* tPanel = panels->at(j);
     if ( (tPanel!=panel) && ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->
                             warn() && ( !compareConnectivity(c,
-                                    tPanel->auxTools->getConnectivityList(_instance)) )  )
+                                    tPanel->auxTools->getConnectivityList(this)) )  )
     {
      // send user an error message
 //     int response = JOptionPane.showOptionDialog(NULL,
@@ -644,7 +713,7 @@ long LayoutBlock::time=0;
  {
   log->error("Null panel in call to updatePathsUsingPanel");
  }
- QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(_instance);
+ QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(this);
  updateBlockPaths(c, panel);
 }
 
@@ -688,7 +757,7 @@ long LayoutBlock::time=0;
   {
    Path* p = paths->at(i);
    LayoutConnectivity* lc = c->at(need[i]);
-   if (lc->getBlock1()==_instance)
+   if (lc->getBlock1()==this)
    {
     p->setToBlockDirection(lc->getDirection());
     p->setFromBlockDirection(lc->getReverseDirection());
@@ -703,7 +772,7 @@ long LayoutBlock::time=0;
    {
     p->removeSetting(beans.at(j));
    }
-   auxTools->addBeanSettings(p,lc,_instance);
+   auxTools->addBeanSettings(p,lc,this);
   }
  }
  // delete unneeded Paths
@@ -725,7 +794,7 @@ long LayoutBlock::time=0;
    LayoutConnectivity* lc = c->at(j);
    Path* newp = NULL;
 //				LayoutBlock tmpblock;
-   if (lc->getBlock1()==_instance)
+   if (lc->getBlock1()==this)
    {
     newp = new Path(lc->getBlock2()->getBlock(),lc->getDirection(),
                                 lc->getReverseDirection());
@@ -744,43 +813,50 @@ long LayoutBlock::time=0;
    if(((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
     addAdjacency(newp);
    //else log->error("Trouble adding Path to block '"+blockName+"'.");
-   auxTools->addBeanSettings(newp,lc,_instance);
+   auxTools->addBeanSettings(newp,lc,this);
   }
  }
 
 // djd debugging - lists results of automatic initialization of Paths and BeanSettings
-/*		paths = block->getPaths();
-    for (int i = 0;i<paths.size();i++) {
-        jmri.Path p = (jmri.Path)paths.get(i);
-        log->error("Block "+blockName+"- Path to "+p.getBlock().getUserName()+
-                    " - "+p.decodeDirection(p.getToBlockDirection()) );
-        java.util.List beans = p.getSettings();
-        for (int j=0;j<beans.size();j++) {
-            jmri.BeanSetting be = (jmri.BeanSetting)beans.get(j);
-            log->error("   BeanSetting - "+((jmri.Turnout)be.getBean()).getSystemName()+
-                            " with state "+be.getSetting()+" (2=CLOSED,4=THROWN)");
-        }
-    } */
-// end debugging
+ if (log->isDebugEnabled()) {
+     //block->getPaths().stream().forEach((p) ->
+  foreach(Path*p, *block->getPaths())
+  {
+      log->debug(tr("From %1 to %2").arg(getDisplayName()).arg(p->toString()));
+  }//);
+ }
 }
+
 /*private*/ bool  LayoutBlock::compareConnectivity(QVector<LayoutConnectivity*>* main, QVector<LayoutConnectivity*>* test)
 {
- // loop over connectivities in test list
- for (int i = 0;i<test->size();i++)
+ bool result = false;     //assume failure (pessimsit!)
+ if (!main->isEmpty() && !test->isEmpty())
  {
-  LayoutConnectivity* lc = test->at(i);
-  // loop over main list to make sure the same blocks are connected
-  bool found = false;
-  for (int j = 0;(j<main->size())&&!found;j++) {
-      LayoutConnectivity* mc = main->at(j);
-      if ( ((lc->getBlock1()==mc->getBlock1()) && (lc->getBlock2()==mc->getBlock2())) ||
-          ((lc->getBlock1()==mc->getBlock2()) && (lc->getBlock2()==mc->getBlock1())) )
-          found = true;
+     result = true;          //assume success (optimist!)
+     //loop over connectivities in test list
+  for (LayoutConnectivity* tc : *test) {
+      LayoutBlock* tlb1 = tc->getBlock1(), *tlb2 = tc->getBlock2();
+      //loop over main list to make sure the same blocks are connected
+      bool found = false;  //assume failure (pessimsit!)
+      for (LayoutConnectivity* mc : *main) {
+          LayoutBlock* mlb1 = mc->getBlock1(), *mlb2 = mc->getBlock2();
+          if (((tlb1 == mlb1) && (tlb2 == mlb2))
+                  || ((tlb1 == mlb2) && (tlb2 == mlb1))) {
+              found = true;   //success!
+              break;
+          }
+      }
+      if (!found) {
+          result = false;
+          break;
+      }
   }
-  if (!found) return false;
+ } else if (main->isEmpty() && test->isEmpty())
+ {
+  result = true;          // OK if both have no neighbors, common for turntable rays
  }
- // connectivities are compatible - all connections in test are present in main
- return (true);
+ return result;
+
 }
 
 /**
@@ -1427,16 +1503,16 @@ void LayoutBlock::setBlockMetric(){
   // a block is attached and this LayoutBlock is used
   // initialize connectivity as defined in first Layout Editor panel
   LayoutEditor* panel = panels->at(0);
-  QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(_instance);
+  QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(this);
   // if more than one panel, find panel with the highest connectivity
   if (panels->size()>1)
   {
    for (int i = 1;i < panels->size();i++)
    {
-    if (c->size()<panels->at(i)->auxTools->getConnectivityList(_instance)->size())
+    if (c->size()<panels->at(i)->auxTools->getConnectivityList(this)->size())
     {
      panel = panels->at(i);
-     c = panel->auxTools->getConnectivityList(_instance);
+     c = panel->auxTools->getConnectivityList(this);
     }
    }
    // check that this connectivity is compatible with that of other panels.
@@ -1445,7 +1521,7 @@ void LayoutBlock::setBlockMetric(){
     LayoutEditor* tPanel = panels->at(j);
     if ( (tPanel!=panel) && ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->
                             warn() && ( !compareConnectivity(c,
-                                    tPanel->auxTools->getConnectivityList(_instance)) )  )
+                                    tPanel->auxTools->getConnectivityList(this)) )  )
     {
      // send user an error message
 //     int response = JOptionPane.showOptionDialog(NULL,
@@ -1471,11 +1547,11 @@ void LayoutBlock::setBlockMetric(){
    }
   }
   LayoutEditorAuxTools* auxTools = new LayoutEditorAuxTools(panel);
-  QVector<LayoutConnectivity*>* d = auxTools->getConnectivityList(_instance);
+  QVector<LayoutConnectivity*>* d = auxTools->getConnectivityList(this);
   QVector<LayoutBlock*>* attachedBlocks = new QVector<LayoutBlock*>();
   for (int i = 0; i<d->size(); i++)
   {
-   if (d->at(i)->getBlock1()!=_instance)
+   if (d->at(i)->getBlock1()!=this)
    {
     attachedBlocks->append(d->at(i)->getBlock1());
    }
@@ -2321,14 +2397,14 @@ void LayoutBlock::addThroughPath(Block* srcBlock, Block* dstBlock){
         // a block is attached and this LayoutBlock is used
         // initialize connectivity as defined in first Layout Editor panel
         LayoutEditor* panel = panels->at(0);
-        QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(_instance);
+        QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(this);
         // if more than one panel, find panel with the highest connectivity
         if (panels->size()>1) {
             for (int i = 1;i < panels->size();i++) {
                 if (c->size()<panels->at(i)->auxTools->
-                                    getConnectivityList(_instance)->size()) {
+                                    getConnectivityList(this)->size()) {
                     panel = panels->at(i);
-                    c = panel->auxTools->getConnectivityList(_instance);
+                    c = panel->auxTools->getConnectivityList(this);
                 }
             }
             // check that this connectivity is compatible with that of other panels.
@@ -2336,7 +2412,7 @@ void LayoutBlock::addThroughPath(Block* srcBlock, Block* dstBlock){
                 LayoutEditor* tPanel = panels->at(j);
                 if ( (tPanel!=panel) && ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->
                             warn() && ( !compareConnectivity(c,
-                                    tPanel->auxTools->getConnectivityList(_instance)) )  ) {
+                                    tPanel->auxTools->getConnectivityList(this)) )  ) {
 //                     send user an error message
 //                    int response = JOptionPane.showOptionDialog(NULL,
 //                            java.text.MessageFormat.format(tr("Warn1"),

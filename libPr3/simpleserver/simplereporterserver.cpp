@@ -35,7 +35,8 @@
     addReporterToList(reporterName);
     if (r != QVariant()) {
 //        if (r instanceof jmri.Reportable )
-     if(r.canConvert<Reportable>())
+     QObject* obj = VPtr<QObject>::asPtr(r);
+     if(qobject_cast<Reportable*>(obj))
         {
            this->sendMessage("REPORTER " + reporterName + " " + VPtr<Reportable>::asPtr(r)->toReportString() + "\n");
         } else {

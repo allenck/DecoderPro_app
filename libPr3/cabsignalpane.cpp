@@ -17,6 +17,7 @@
 #include "flowlayout.h"
 #include "globalrosterentrycombobox.h"
 #include <QGroupBox>
+#include <QHeaderView>
 
 /**
  * Pane for sending Cab Signal data via block lookup
@@ -64,7 +65,10 @@
  // Use XTableColumnModel so we can control which columns are visible
  slotTable->setColumnModel(tcm);
  slotTable->createDefaultColumnsFromModel();
- slotTable->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
+ QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+ sizePolicy.setHorizontalStretch(2);
+ sizePolicy.setVerticalStretch(1);
+ slotTable->setSizePolicy(sizePolicy);
 
  QSignalMapper* cabSigColMenuMapper = new QSignalMapper(this);
  connect(cabSigColMenuMapper, SIGNAL(mapped(QObject*)), this, SLOT(on_cabSigColMenuMapper(QObject*)));
@@ -137,7 +141,7 @@
 #endif
 //        slotScroll = new JScrollPane(slotTable);
 //        slotScroll.setPreferredSize(new Dimension(400, 200));
- slotTable->setMinimumSize(400,200);
+ slotTable->resize(400,200);
 
  this->setLayout(new QVBoxLayout());//this, BoxLayout.Y_AXIS));
 
@@ -163,7 +167,7 @@
  });
 #endif
  connect(masterPauseButton, SIGNAL(clicked(bool)), this, SLOT(refreshMasterPauseButton()));
- toppanelcontainerLayout->addWidget(masterPauseButton,0, Qt::AlignVCenter);
+ toppanelcontainerLayout->addWidget(masterPauseButton,1, Qt::AlignVCenter);
 
  QGroupBox* locoSelectContainer = new QGroupBox();
  QHBoxLayout* locoSelectContainerLayout = new QHBoxLayout(locoSelectContainer);
@@ -196,12 +200,12 @@
 #endif
  locoRosterBox = new GlobalRosterEntryComboBox();
  locoRosterBox->setNonSelectedItem("");
- locoRosterBox->setCurrentIndex(0);
 
 //        locoRosterBox.addPropertyChangeListener("selectedRosterEntries", (PropertyChangeEvent pce) -> {
 //            locoSelected();
 //        });
  connect(locoRosterBox, SIGNAL(currentIndexChanged(int)), this, SLOT(locoSelected()));
+ locoRosterBox->setCurrentIndex(0);
  locoRosterBox->setVisible(true);
  locoSelectContainerLayout->addWidget(locoRosterBox);
 
@@ -230,7 +234,7 @@
  toppanelcontainerLayout->addWidget(locoSelectContainer, 0, Qt::AlignVCenter);
 
  p1Layout->addWidget(toppanelcontainer, 0, Qt::AlignTop);//BorderLayout.PAGE_START);
- p1Layout->addWidget(/*slotScroll*/slotTable, 2, Qt::AlignCenter);//BorderLayout.CENTER);
+ p1Layout->addWidget(/*slotScroll*/slotTable);//BorderLayout.CENTER);
  this->layout()-> addWidget(p1);
 
  QSize p1size = QSize(450, 200);

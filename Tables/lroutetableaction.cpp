@@ -590,7 +590,7 @@ while (iter.hasNext()) {
 void LRouteTableAction::editPressed(QString sName) {
 #if 1
 // Logix was found, initialize for edit
-Logix* logix = ((DefaultLogixManager*)_logixManager)->getBySystemName(sName);
+Logix* logix = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sName);
 if (logix == NULL) {
     log->error("Logix \""+sName+"\" not Found.");
     return;
@@ -1690,14 +1690,14 @@ Logix* LRouteTableAction::checkNamesOK()
   showMessage("EnterNames");
     return NULL;
  }
- Logix* logix = ((DefaultLogixManager*)_logixManager)->getBySystemName(sName);
+ Logix* logix = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sName);
  if (!sName.startsWith(LOGIX_SYS_NAME))
  {
   sName = LOGIX_SYS_NAME + sName;
  }
  if (logix == NULL)
  {
-  logix = ((DefaultLogixManager*)_logixManager)->getBySystemName(sName);
+  logix = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sName);
  }
  else
  {

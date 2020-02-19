@@ -70,10 +70,16 @@
 #include "misc/dcclocoaddresstestaction.h"
 #include "misc/controllerfilterframetestaction.h"
 #include "consisttoolframetestaction.h"
+#include "cabsignals/defaultcabsignaltestaction.h"
+#include "cabsignals/cabsignaltablemodeltestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
     setTitle(tr("Tests"));
+    QMenu* cabSignalMenu = new QMenu(tr("Cab Signals"));
+    addMenu(cabSignalMenu);
+    cabSignalMenu->addAction(new DefaultCabSignalTestAction(this));
+    cabSignalMenu->addAction(new CabSignalTableModelTestAction(this));
     QMenu* rosterTestMenu = new QMenu(tr("Roster Tests"));
     addMenu(rosterTestMenu);
     rosterTestMenu->addAction(new RosterTestAction("Roster Test", this));
@@ -93,6 +99,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addAction(new LoconetSystemConnectionMemoTestAction(this));
     loconetTestMenu->addAction(new DefaultMemoryManagerTestAction(this));
     loconetTestMenu->addAction(new LocoNetMessageExceptionTestAction(this));
+
     QMenu* loconetProgrammersMenu = new QMenu(tr("Programmers ..."));
     loconetTestMenu->addMenu(loconetProgrammersMenu);
     loconetProgrammersMenu->addAction(new LnOpsModeProgrammerTestAction(this));

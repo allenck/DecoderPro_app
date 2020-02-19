@@ -178,7 +178,7 @@ void SignallingSourcePanel::discoverPressed(/*ActionEvent e*/)
  signalMastLogicFrame->pack();
  signalMastLogicFrame->setVisible(true);
 
- QList<LayoutEditor*>* layout = PanelMenu::instance()->getLayoutEditorPanelList();
+ QList<LayoutEditor*>* layout = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
  if(layout->size() > 0)
  {
   for(int i = 0; i<layout->size(); i++)

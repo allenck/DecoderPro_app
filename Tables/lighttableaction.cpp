@@ -876,7 +876,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     ProxyLightManager* mgr= static_cast<ProxyLightManager*> (InstanceManager::getDefault("LightManager"));
     QString sName = mgr->normalizeSystemName(suName);
     // check if a Light with this name already exists
-    Light* g = mgr->getBySystemName(sName);
+    Light* g = (Light*)mgr->getBySystemName(sName);
     if (g != NULL) {
         // Light already exists
         status1->setText(tr("Error: an element with this System Name already exists."));
@@ -889,7 +889,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     // check if Light exists under an alternate name if an alternate name exists
     QString altName = mgr->convertSystemNameToAlternate(suName);
     if (altName != ("")) {
-        g = InstanceManager::lightManagerInstance()->getBySystemName(altName);
+        g = (Light*)InstanceManager::lightManagerInstance()->getBySystemName(altName);
         if (g != NULL) {
             // Light already exists
             status1->setText(tr("Error: Light") + " '" + altName + "' "
@@ -1091,12 +1091,12 @@ void LightTableAction::editPressed() {
         addFrame->setVisible(true);
         return;
     }
-    Light* g = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->getBySystemName(sName);
+    Light* g = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getBySystemName(sName);
     if (g == NULL) {
         // check if Light exists under an alternate name if an alternate name exists
         QString altName = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->convertSystemNameToAlternate(sName);
         if (altName != ("")) {
-            g = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->getBySystemName(altName);
+            g = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getBySystemName(altName);
             if (g != NULL) {
                 sName = altName;
             }
@@ -1706,7 +1706,7 @@ void LightTableAction::setUpControlType(QString ctype) {
                 // must be a standard format name (not just a number)
                 QString testSN = turnoutName.mid(0, 1) + "L"
                         + turnoutName.mid(2, turnoutName.length());
-                Light* testLight = InstanceManager::lightManagerInstance()->
+                Light* testLight = (Light*)InstanceManager::lightManagerInstance()->
                         getBySystemName(testSN);
                 if (testLight != NULL) {
                     // Requested turnout bit is already assigned to a Light

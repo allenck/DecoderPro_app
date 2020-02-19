@@ -21,6 +21,7 @@
 #include "debugmenu.h"
 #include "webserveraction.h"
 #include "windowinterface.h"
+#include "instancemanager.h"
 
 //AppsLaunchFrame::AppsLaunchFrame(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -178,7 +179,7 @@
 }
 
 /*protected*/ void AppsLaunchFrame::panelMenu(QMenuBar* menuBar, WindowInterface* /*wi*/) {
-    menuBar->addMenu(PanelMenu::instance());
+    menuBar->addMenu((PanelMenu*)InstanceManager::getDefault("PanelMenu"));
 }
 
 /**

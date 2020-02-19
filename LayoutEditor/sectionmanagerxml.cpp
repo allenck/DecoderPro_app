@@ -46,7 +46,7 @@ SectionManagerXml::SectionManagerXml(QObject *parent) :
             QString sname = iter.next();
             if (sname==NULL) log->error("System name NULL during store");
             log->debug("Section system name is "+sname);
-            Section* x = tm->getBySystemName(sname);
+            Section* x = (Section*)tm->getBySystemName(sname);
             QDomElement elem = doc.createElement("section");
                         elem.setAttribute("systemName", sname);
 

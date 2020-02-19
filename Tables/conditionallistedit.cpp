@@ -380,7 +380,7 @@ bool ConditionalListEdit::validateTimeReference(int actionType, QString ref) {
         {
             Memory* m = (Memory*)InstanceManager::memoryManagerInstance()->getByUserName(memRef);
             if (m == NULL) {
-                m = InstanceManager::memoryManagerInstance()->getBySystemName(memRef);
+                m = (Memory*)InstanceManager::memoryManagerInstance()->getBySystemName(memRef);
             }
             try {
                 if (m == NULL || m->getValue() == QVariant()) {
@@ -2569,7 +2569,7 @@ void ConditionalListEdit::loadSelectConditionalBox(QString logixName) {
     _selectConditionalBox->addItem(itemKey);
     _selectConditionalList.append("-None-");  // NOI18N
 
-    Logix* x = _logixManager->getBySystemName(logixName);
+    Logix* x = (Logix*)_logixManager->getBySystemName(logixName);
     if (x == NULL) {
         log->error(tr("Logix '%1' not found while building the conditional list").arg( logixName));  // NOI18N
         return;

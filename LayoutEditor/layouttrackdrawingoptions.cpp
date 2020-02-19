@@ -19,6 +19,7 @@
 
 
     this->name = name;
+
 }
 
 /*public*/ LayoutTrackDrawingOptions::LayoutTrackDrawingOptions(LayoutTrackDrawingOptions* ltdo) {

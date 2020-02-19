@@ -514,7 +514,7 @@ namespace Operations
 
      commentTextField->setText(car->getComment());
      valueTextField->setText(car->getValue());
-     rfidComboBox->setCurrentIndex(rfidComboBox->findData(VPtr<IdTag>::asQVariant(car->getIdTag())));
+     rfidComboBox->setCurrentIndex(rfidComboBox->findData(VPtr<DefaultIdTag>::asQVariant(car->getIdTag())));
      autoTrackCheckBox->setEnabled(true);
      blockingTextField->setText(QString::number(car->getBlocking()));
 
@@ -914,9 +914,9 @@ namespace Operations
      _car->setComment(commentTextField->text());
      _car->setValue(valueTextField->text());
      int ix = rfidComboBox->currentIndex();
-     IdTag* t =  VPtr<IdTag>::asPtr(rfidComboBox->itemData(rfidComboBox->currentIndex()));
+     DefaultIdTag* t =  VPtr<DefaultIdTag>::asPtr(rfidComboBox->itemData(rfidComboBox->currentIndex()));
      if(rfidComboBox->currentIndex() >= 0)
-      _car->setIdTag( VPtr<IdTag>::asPtr(rfidComboBox->itemData(rfidComboBox->currentIndex())));
+      _car->setIdTag( VPtr<DefaultIdTag>::asPtr(rfidComboBox->itemData(rfidComboBox->currentIndex())));
      else
       _car->setIdTag(NULL);
      autoTrackCheckBox->setEnabled(true);

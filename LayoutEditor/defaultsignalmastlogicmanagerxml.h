@@ -17,7 +17,7 @@ public:
     /*public*/ void setStoreElementClass(QDomElement signalMastLogic) ;
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
     /*public*/ bool load(QDomElement signalMastLogic) throw (Exception);
-    /*public*/ void loadSignalMastLogic(QDomElement signalMastLogic);
+    /*public*/ bool loadSignalMastLogic(QDomElement signalMastLogic);
     /*public*/ int loadOrder();
 
 signals:

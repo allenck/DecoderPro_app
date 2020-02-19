@@ -28,7 +28,7 @@
  * See the <A HREF="package-summary.html#schema">Schema versioning
  * discussion</a>. Also controls the stylesheet file version.
  */
- /*static*/ /*final*/const  /*public*/ QString ConfigXmlManager::schemaVersion = "-2-9-6";
+/*static*/ /*final*/const  /*public*/ QString ConfigXmlManager::schemaVersion = "-2-9-6";
 /*static*/ ErrorHandler* ConfigXmlManager::handler = new ErrorHandler();
 QString ConfigXmlManager::fileLocation = QString("layout")+QDir::separator();
 
@@ -351,8 +351,8 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
 
  QDomProcessingInstruction xmlProcessingInstruction = doc.createProcessingInstruction("xml", "version=\"1.0\"  encoding=\"UTF-8\"");
  doc.appendChild(xmlProcessingInstruction);
-// xmlProcessingInstruction =  doc.createProcessingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"/xml/XSLT/panelfile-2-9-6.xsl\"");
-//doc.appendChild(xmlProcessingInstruction);
+ xmlProcessingInstruction =  doc.createProcessingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"/xml/XSLT/panelfile-" + schemaVersion + ".xsl\"");
+ doc.appendChild(xmlProcessingInstruction);
  QDomElement root = doc.createElement("layout-config");
  root.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
  root.setAttribute("xsi:noNamespaceSchemaLocation","http://jmri.org/xml/schema/layout" + schemaVersion + ".xsd");
@@ -692,7 +692,8 @@ File userPrefsFile;*/
  QDomElement e3;
  e.appendChild(e3=doc.createElement("modifier"));
  e3.appendChild(doc.createTextNode(Version::getModifier()));
- root.appendChild(e);
+ //root.appendChild(e);
+ root.insertBefore(e, root.firstChild());
 }
 
 

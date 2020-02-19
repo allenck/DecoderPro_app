@@ -39,7 +39,7 @@ public:
  */
 /*public*/ LayoutBlock* getLayoutBlock(QString name);
 /*public*/ LayoutBlock* getLayoutBlock(Block* block);
-/*public*/ LayoutBlock* getBySystemName(QString name);
+/*public*/ NamedBean* getBySystemName(QString name);
 /*public*/ LayoutBlock* getBlockWithMemoryAssigned(Memory* m);
 /*public*/ void initializeLayoutBlockPaths();
 /*public*/ void addBadBeanError();

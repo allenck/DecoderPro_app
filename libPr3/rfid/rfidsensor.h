@@ -4,6 +4,7 @@
 #include "idtag.h"
 #include <QVector>
 
+class DefaultIdTag;
 class RfidSensor : public AbstractSensor
 {
     Q_OBJECT
@@ -11,7 +12,7 @@ public:
     explicit RfidSensor(QObject *parent = 0);
     /*public*/ RfidSensor(QString systemName,QObject *parent);
     /*public*/ RfidSensor(QString systemName, QString userName,QObject *parent);
-    /*public*/ void notify(IdTag* r);
+    /*public*/ void notify(DefaultIdTag *r);
     /*public*/ void setOwnState(int state);
     QList<int> getContents();
     void notifyInRegion(int id);

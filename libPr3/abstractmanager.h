@@ -7,7 +7,8 @@
 #include "libPr3_global.h"
 #include "propertyvetoexception.h"
 #include "namedbeancomparator.h"
-
+#include <QAtomicInteger>
+#include "decimalformat.h"
 /**
  * Abstract partial implementation for all Manager-type classes.
  * <P>
@@ -122,6 +123,9 @@ public:
 //    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors);
     /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors = true, QLocale locale = QLocale());
     /*public*/ virtual SystemConnectionMemo* getMemo();
+    /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) override;
+    /*public*/ void updateAutoNumber(QString systemName);
+    /*public*/ QString getAutoSystemName();
 
 
 signals:
@@ -149,7 +153,8 @@ private:
     Logger* log;
     /*final*/ QList</*ManagerDataListener<E>>*/QObject*> listeners;// = new ArrayList<>();
     SystemConnectionMemo* memo = nullptr;
-
+    QAtomicInteger<int> lastAutoNamedBeanRef;
+    DecimalFormat paddedNumber = DecimalFormat("0000");
 
 friend class SectionTableDataModel;
 friend class ReporterPickModel;
@@ -180,7 +185,9 @@ QObject* getInstanceBySystemName(QString systemName);
  * return types.
  * @return requested Turnout object or NULL if none exists
  */
-QObject* getInstanceByUserName(QString userName);
+QT_DEPRECATED QObject* getInstanceByUserName(QString userName);
+
+
 void firePropertyChange(QString p, QVariant old, QVariant n);
 void fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n);
 

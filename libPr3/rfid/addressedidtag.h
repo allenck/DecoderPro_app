@@ -24,20 +24,16 @@ class LocoAddress;
  */
 /*public*/ /*interface*/ class AddressedIdTag : public  IdTag {
 public:
- explicit AddressedIdTag(QObject *parent = 0) : IdTag(parent) {}
-/*public*/ AddressedIdTag(QString systemName, QObject *parent): IdTag(systemName, parent) {}
-/*public*/ AddressedIdTag(QString systemName, QString userName, QObject *parent): IdTag(systemName, userName, parent) {}
 
-
-    /**
-     * Gets the address reported back as a {@link jmri.LocoAddress}.
-     *
-     * @return current loco address
-     */
-    /*default*/ /*public*/ LocoAddress* getLocoAddress() {
-        int tagNo = getTagID().toInt();
-        return new DccLocoAddress(tagNo, tagNo > 100 );
-    }
+ /**
+  * Gets the address reported back as a {@link jmri.LocoAddress}.
+  *
+  * @return current loco address
+  */
+ /*default*/ /*public*/ LocoAddress* getLocoAddress() {
+     int tagNo = getTagID().toInt();
+     return new DccLocoAddress(tagNo, tagNo > 100 );
+ }
 };
-Q_DECLARE_METATYPE(AddressedIdTag)
+Q_DECLARE_INTERFACE(AddressedIdTag, "AddressedIdTag")
 #endif // ADDRESSEDIDTAG_H

@@ -3343,7 +3343,7 @@ if (roads.length() == 0) {
  // if there's a panel specified, get it and place icon
  if (Setup::getPanelName()!=(Setup::NONE))
  {
-  Editor* editor = PanelMenu::instance()->getEditorByName(Setup::getPanelName());
+  Editor* editor = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getEditorByName(Setup::getPanelName());
   if (editor != NULL)
   {
    _trainIcon = editor->addTrainIcon(getIconName());

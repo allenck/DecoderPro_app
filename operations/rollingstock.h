@@ -6,7 +6,7 @@
 #include "propertychangelistener.h"
 #include "appslib_global.h"
 
-class IdTag;
+class DefaultIdTag;
 class PropertyChangeEvent;
 class QDomElement;
 class Logger;
@@ -110,8 +110,8 @@ namespace Operations
   /*public*/ Q_DECL_DEPRECATED void setLastDate(QString date);
   /*public*/ void setValue(QString value);
   /*public*/ QString getRfid();
-  /*public*/ IdTag* getIdTag();
-  /*public*/ void setIdTag(IdTag* tag);
+  /*public*/ DefaultIdTag* getIdTag();
+  /*public*/ void setIdTag(DefaultIdTag *tag);
   /*public*/ void setRfid(QString id);
   /*public*/ QString getLastDate();
   /*public*/ QDateTime getLastMoveDate() ;
@@ -143,7 +143,7 @@ namespace Operations
   Logger* log;
   bool verboseStore;// = false;
   /*private*/QString rsTestDestination(Location* destination, Track* track);
-  /*private*/ IdTag* _tag;// = NULL;
+  /*private*/ DefaultIdTag* _tag;// = NULL;
   /*private*/ PropertyChangeListener* _tagListener;// = NULL;
   /*private*/ void addPropertyChangeListeners();
 

@@ -123,7 +123,8 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  ui->toolBar->addAction(listViewAct);
  throttleToolBar = ui->toolBar;
  connect(listViewAct, SIGNAL(triggered()), this, SLOT(on_listView_clicked()));
- PanelMenu::instance()->addEditorPanel((Editor*)this);
+ //PanelMenu::instance()->addEditorPanel((Editor*)this);
+ ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->addEditorPanel((Editor*)this);
  //connect(ui->menuWindow, SIGNAL(aboutToShow()), this, SLOT(on_menuWindow_aboutToShow()));
  bAltFunc = false;
  addressPanel->addAddressListener((AddressListener*)controlPanel);

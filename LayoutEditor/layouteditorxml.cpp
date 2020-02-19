@@ -108,6 +108,18 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel.setAttribute("openDispatcher", p->getOpenDispatcherOnLoad() ? "yes" : "no");
  panel.setAttribute("useDirectTurnoutControl", p->getDirectTurnoutControl() ? "yes" : "no");
 
+ // store layout track drawing options
+ try
+ {
+     LayoutTrackDrawingOptions* ltdo = p->getLayoutTrackDrawingOptions();
+     QDomElement e = ConfigXmlManager::elementFromObject((QObject*)ltdo);
+     if (!e .isNull()) {
+         panel.appendChild(e);
+     }
+ } catch (Exception e) {
+     log->error("Error storing contents element: " + e.getMessage());
+ }
+
  // include contents (Icons and Labels)
  QList<Positionable*> contents = p->getContents();
  int num = contents.size();
@@ -224,7 +236,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  *
  * @param element Top level QDomElement to unpack.
  */
-/*public*/ bool LayoutEditorXml::load(QDomElement element) throw (Exception)
+/*public*/ bool LayoutEditorXml::load(QDomElement shared, QDomElement /*perNode*/) throw (Exception)
 {
  bool result = true;
  QString  a;
@@ -240,33 +252,33 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  int mainlinetrackwidth = 3;
  try
  {
-  x = element.attribute("x").toInt();
-  y = element.attribute("y").toInt();
+  x = shared.attribute("x").toInt();
+  y = shared.attribute("y").toInt();
   // For compatibility with previous versions, try and see if height and width tags are contained in the file
-  if ((a = element.attribute("height")) != nullptr) {
+  if ((a = shared.attribute("height")) != nullptr) {
       windowHeight = a.toInt();
       panelHeight = windowHeight - 60;
   }
-  if ((a = element.attribute("width")) != nullptr) {
+  if ((a = shared.attribute("width")) != nullptr) {
       windowWidth = a.toInt();
       panelWidth = windowWidth - 18;
   }
   // For files created by the new version, retrieve window and panel sizes
-  if ((a = element.attribute("windowheight")) != nullptr) {
+  if ((a = shared.attribute("windowheight")) != nullptr) {
       windowHeight = a.toInt();
   }
-  if ((a = element.attribute("windowwidth")) != nullptr) {
+  if ((a = shared.attribute("windowwidth")) != nullptr) {
       windowWidth = a.toInt();
   }
-  if ((a = element.attribute("panelheight")) != nullptr) {
+  if ((a = shared.attribute("panelheight")) != nullptr) {
       panelHeight = a.toInt();
   }
-  if ((a = element.attribute("panelwidth")) != nullptr) {
+  if ((a = shared.attribute("panelwidth")) != nullptr) {
       panelWidth = a.toInt();
   }
 
-  mainlinetrackwidth = element.attribute("mainlinetrackwidth").toInt();
-  sidetrackwidth = element.attribute("sidetrackwidth").toInt();
+  mainlinetrackwidth = shared.attribute("mainlinetrackwidth").toInt();
+  sidetrackwidth = shared.attribute("sidetrackwidth").toInt();
  }
  catch (DataConversionException e)
  {
@@ -275,7 +287,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
  double xScale = 1.0;
  double yScale = 1.0;
- a = element.attribute("xscale");
+ a = shared.attribute("xscale");
  bool bok;
  if (a != nullptr)
  {
@@ -290,7 +302,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    result = false;
   }
  }
- a = element.attribute("yscale");
+ a = shared.attribute("yscale");
  if (a != nullptr)
  {
   try
@@ -306,9 +318,9 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
  // find the name and default track color
  QString name = "";
- if (element.attribute("name") != nullptr)
+ if (shared.attribute("name") != nullptr)
  {
-  name = element.attribute("name");
+  name = shared.attribute("name");
  }
  if (static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
  {
@@ -357,24 +369,24 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  // panel->setYScale(yScale);
  panel->setScale(xScale, yScale);
  QString defaultColor = ColorUtil::ColorDarkGray;
- if ((a = element.attribute("defaulttrackcolor")) != "") {
+ if ((a = shared.attribute("defaulttrackcolor")) != "") {
      defaultColor = a;
  }
  panel->setDefaultTrackColor(ColorUtil::stringToColor(defaultColor));
 
  QString defaultTextColor = ColorUtil::ColorBlack;
- if ((a = element.attribute("defaulttextcolor")) != "") {
+ if ((a = shared.attribute("defaulttextcolor")) != "") {
      defaultTextColor = a;
  }
  panel->setDefaultTextColor(ColorUtil::stringToColor(defaultTextColor));
 
  QString turnoutCircleColor = "track";  //default to using use default track color for circle color
- if ((a = element.attribute("turnoutcirclecolor")) != "") {
+ if ((a = shared.attribute("turnoutcirclecolor")) != "") {
      turnoutCircleColor = a;
  }
  panel->setTurnoutCircleColor(ColorUtil::stringToColor(turnoutCircleColor));
 
- if ((a = element.attribute("turnoutcirclesize")) != "")
+ if ((a = shared.attribute("turnoutcirclesize")) != "")
  {
      bool bok;
          panel->setTurnoutCircleSize(a.toInt(&bok));
@@ -384,7 +396,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
 
  try {
-     panel->setTurnoutDrawUnselectedLeg(element.attribute("turnoutdrawunselectedleg")=="true");
+     panel->setTurnoutDrawUnselectedLeg(shared.attribute("turnoutdrawunselectedleg")=="true");
  }
  catch (DataConversionException e) {
      log->warn("unable to convert turnoutdrawunselectedleg attribute");
@@ -394,7 +406,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 
  // turnout size parameters
  double sz = 20.0;
- a = element.attribute("turnoutbx");
+ a = shared.attribute("turnoutbx");
  if (a != nullptr)
  {
   try
@@ -407,7 +419,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    result = false;
   }
  }
- a = element.attribute("turnoutcx");
+ a = shared.attribute("turnoutcx");
  if (a != nullptr) {
      try {
          sz = a.toFloat();
@@ -417,7 +429,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
          result = false;
      }
  }
- a = element.attribute("turnoutwid");
+ a = shared.attribute("turnoutwid");
  if (a != nullptr) {
      try {
          sz = a.toFloat();;
@@ -427,7 +439,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
          result = false;
      }
  }
- a = element.attribute("xoverlong");
+ a = shared.attribute("xoverlong");
  if (a != nullptr) {
      try {
          sz = a.toFloat();;
@@ -437,7 +449,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
          result = false;
      }
  }
- a = element.attribute("xoverhwid");
+ a = shared.attribute("xoverhwid");
  if (a != nullptr) {
      try {
          sz = a.toFloat();;
@@ -447,7 +459,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
          result = false;
      }
  }
- a = element.attribute("xovershort");
+ a = shared.attribute("xovershort");
  if (a != nullptr) {
      try {
          sz = a.toFloat();;
@@ -460,103 +472,103 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 
  // set contents state
  QString slValue = "both";
- if ((a = element.attribute("sliders")) != nullptr && a==("no")) {
+ if ((a = shared.attribute("sliders")) != nullptr && a==("no")) {
      slValue = "none";
  }
- if ((a = element.attribute("scrollable")) != nullptr) {
+ if ((a = shared.attribute("scrollable")) != nullptr) {
      slValue = a;
  }
 
  bool edValue = true;
- if ((a = element.attribute("editable")) != nullptr && a==("no")) {
+ if ((a = shared.attribute("editable")) != nullptr && a==("no")) {
      edValue = false;
  }
 
  bool value = true;
- if ((a = element.attribute("positionable")) != nullptr && a==("no")) {
+ if ((a = shared.attribute("positionable")) != nullptr && a==("no")) {
      value = false;
  }
  panel->setAllPositionable(value);
 
  value = true;
- if ((a = element.attribute("controlling")) != nullptr && a==("no")) {
+ if ((a = shared.attribute("controlling")) != nullptr && a==("no")) {
      value = false;
  }
  panel->setAllControlling(value);
 
  value = true;
- if ((a = element.attribute("animating")) != nullptr && a==("no")) {
+ if ((a = shared.attribute("animating")) != nullptr && a==("no")) {
      value = false;
  }
  panel->setTurnoutAnimation(value);
 
  bool hbValue = true;
- if ((a = element.attribute("showhelpbar")) != nullptr && a==("no")) {
+ if ((a = shared.attribute("showhelpbar")) != nullptr && a==("no")) {
      hbValue = false;
  }
 
  bool dgValue = false;
- if ((a = element.attribute("drawgrid")) != nullptr && a==("yes")) {
+ if ((a = shared.attribute("drawgrid")) != nullptr && a==("yes")) {
      dgValue = true;
  }
 
  bool sgaValue = false;
- if ((a = element.attribute("snaponadd")) != nullptr && a==("yes")) {
+ if ((a = shared.attribute("snaponadd")) != nullptr && a==("yes")) {
      sgaValue = true;
  }
 
  bool sgmValue = false;
- if ((a = element.attribute("snaponmove")) != nullptr && a==("yes")) {
+ if ((a = shared.attribute("snaponmove")) != nullptr && a==("yes")) {
      sgmValue = true;
  }
 
  bool aaValue = false;
- if ((a = element.attribute("antialiasing")) != nullptr && a==("yes")) {
+ if ((a = shared.attribute("antialiasing")) != nullptr && a==("yes")) {
      aaValue = true;
  }
 
  value = false;
- if ((a = element.attribute("turnoutcircles")) != nullptr && a==("yes")) {
+ if ((a = shared.attribute("turnoutcircles")) != nullptr && a==("yes")) {
      value = true;
  }
  panel->setTurnoutCircles(value);
 
  value = false;
- if ((a = element.attribute("tooltipsnotedit")) != nullptr && a==("yes")) {
+ if ((a = shared.attribute("tooltipsnotedit")) != nullptr && a==("yes")) {
      value = true;
  }
 // TODO:    panel->setTooltipsNotEdit(value);
 
  value = false;
- if ((a = element.attribute("autoblkgenerate")) != nullptr && a==("yes")) {
+ if ((a = shared.attribute("autoblkgenerate")) != nullptr && a==("yes")) {
      value = true;
  }
  panel->setAutoBlockAssignment(value);
 
  value = true;
- if ((a = element.attribute("tooltipsinedit")) != nullptr && a==("no")) {
+ if ((a = shared.attribute("tooltipsinedit")) != nullptr && a==("no")) {
      value = false;
  }
 // TODO:    panel->setTooltipsInEdit(value);
  // set default track color
- if ((a = element.attribute("defaulttrackcolor")) != nullptr) {
+ if ((a = shared.attribute("defaulttrackcolor")) != nullptr) {
      panel->setDefaultTrackColor(a);
  }
  // set default track color
- if ((a = element.attribute("defaultoccupiedtrackcolor")) != nullptr) {
+ if ((a = shared.attribute("defaultoccupiedtrackcolor")) != nullptr) {
   panel->setDefaultOccupiedTrackColor(a);
  }
  // set default track color
- if ((a = element.attribute("defaultalternativetrackcolor")) != nullptr) {
+ if ((a = shared.attribute("defaultalternativetrackcolor")) != nullptr) {
    panel->setDefaultAlternativeTrackColor(a);
  }
  try {
   bool bok;
-     int red = element.attribute("redBackground").toInt(&bok);
+     int red = shared.attribute("redBackground").toInt(&bok);
      if(!bok) throw DataConversionException();
-     int blue = element.attribute("blueBackground").toInt(&bok);
+     int blue = shared.attribute("blueBackground").toInt(&bok);
      if(!bok) throw DataConversionException();
-     int green = element.attribute("greenBackground").toInt(&bok);
+     int green = shared.attribute("greenBackground").toInt(&bok);
      if(!bok) throw DataConversionException();
      panel->setDefaultBackgroundColor(ColorUtil::colorToString( QColor(red, green, blue)));
      panel->setBackgroundColor( QColor(red, green, blue));
@@ -564,9 +576,9 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      log->warn("Could not parse color attributes!");
  } catch (NullPointerException e) {  // considered normal if the attributes are not present
  }
- if (element.attribute("useDirectTurnoutControl") != nullptr)
+ if (shared.attribute("useDirectTurnoutControl") != nullptr)
  {
-  if (element.attribute("useDirectTurnoutControl")==("yes"))
+  if (shared.attribute("useDirectTurnoutControl")==("yes"))
   {
    panel->setDirectTurnoutControl(true);
   }
@@ -577,7 +589,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel->initView();
 
  // load the contents
- QDomNodeList items = element.childNodes();
+ QDomNodeList items = shared.childNodes();
  for (int i = 0; i < items.size(); i++)
  {
   // get the class, hence the adapter object to do loading
@@ -655,9 +667,9 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  //if (InstanceManager::transitManagerInstance()->getSystemNameList().size() > 0)
  if(((TransitManager*)InstanceManager::getNullableDefault("TransitManager")))
  {
-  if (element.attribute("openDispatcher") != nullptr)
+  if (shared.attribute("openDispatcher") != nullptr)
   {
-   if (element.attribute("openDispatcher")==("yes"))
+   if (shared.attribute("openDispatcher")==("yes"))
    {
     panel->setOpenDispatcherOnLoad(true);
     DispatcherFrame::instance();

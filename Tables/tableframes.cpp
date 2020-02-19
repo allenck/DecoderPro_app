@@ -310,7 +310,7 @@ void TableFrames::common()
     OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
     QStringList sysNames = manager->getSystemNameArray();
     for (int i = 0; i < sysNames.length(); i++) {
-        WarrantTableAction::checkPathPortals(manager->getBySystemName(sysNames[i]));
+        WarrantTableAction::checkPathPortals((OBlock*)manager->getBySystemName(sysNames[i]));
     }
     if (_showWarnings) {
         WarrantTableAction::showPathPortalErrors();
@@ -387,7 +387,7 @@ void TableFrames::common()
  OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
  QStringList sysNames = manager->getSystemNameArray();
  for (int i = 0; i < sysNames.length(); i++) {
-     OBlock* block = manager->getBySystemName(sysNames[i]);
+     OBlock* block = (OBlock*)manager->getBySystemName(sysNames[i]);
      QAction* mi = new QAction(tr("Open \"%1\" Path Table").arg( block->getDisplayName()),this);
      //mi.setActionCommand(sysNames[i]);
      mapper->setMapping(mi, block->getDisplayName());
@@ -401,7 +401,7 @@ void TableFrames::common()
  sysNames = manager->getSystemNameArray();
  for (int i = 0; i < sysNames.length(); i++)
  {
-  OBlock* block = manager->getBySystemName(sysNames[i]);
+  OBlock* block = (OBlock*)manager->getBySystemName(sysNames[i]);
   QMenu* openTurnoutMenu = new QMenu(tr("Open \"%1\" Path-Turnout Tables...").arg( block->getDisplayName()));
   openTurnoutPath->addMenu(openTurnoutMenu);
 //        openFrameAction = new ActionListener() {
@@ -899,7 +899,7 @@ _portalTable->setSortingEnabled(true);
  JInternalFrame* frame = _blockPathMap.value(sysName);
  if (frame == NULL)
  {
-  OBlock* block = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName);
+  OBlock* block = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName);
   if (block == NULL)
   {
    return;
@@ -938,7 +938,7 @@ _portalTable->setSortingEnabled(true);
   int index = pathTurnoutName.indexOf('&');
   QString pathName = pathTurnoutName.mid(1, index-1);
   QString sysName = pathTurnoutName.mid(index + 1);
-  OBlock* block = ((OBlockManager*) InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName);
+  OBlock* block = (OBlock*)((OBlockManager*) InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName);
   if (block == NULL)
   {
    return;

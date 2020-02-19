@@ -231,7 +231,7 @@ void CPLTreeSelectionListener::valueChanged(TreeSelectionEvent * /*e*/)
 /*public*/ void CatalogPanel::createNewBranch(QString systemName, QString userName, QString path)
 {
  CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("CatalogTreeManager");
- CatalogTree* tree = manager->getBySystemName(systemName);
+ CatalogTree* tree = (CatalogTree*)manager->getBySystemName(systemName);
  if (tree == nullptr)
  {
   tree = manager->newCatalogTree(systemName, userName);
@@ -883,7 +883,7 @@ void CatalogPanel::onBgColorBox(int index)
    QString systemName = sysNames.at(i);
    if (systemName.at(0) == 'I')
    {
-    catalog->addTree( manager->getBySystemName(systemName));
+    catalog->addTree( (CatalogTree*)manager->getBySystemName(systemName));
    }
   }
  }

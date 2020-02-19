@@ -726,8 +726,6 @@ private:
  /*private*/ QVector<QColor>* textColors = new QVector<QColor>(13);
  /*private*/ QVector<QColor>* turnoutCircleColors;// = new QVector<QColor>(14);
  /*private*/ QVector<int>* turnoutCircleSizes;// = new QVector<int>(10);
- QAction* autoAssignBlocksItem;
- QAction* hideTrackSegmentConstructionLines;
  /*private*/ void checkPointOfPositionable(PositionablePoint* p);
 // /*private*/ void checkPointsOfTurnout(LayoutTurnout* lt);
 // /*private*/ void checkPointsOfTurnoutSub(QPointF dLoc);

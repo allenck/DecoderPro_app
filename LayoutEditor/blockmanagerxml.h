@@ -17,9 +17,10 @@ public:
     /*public*/ QDomElement store(QObject* o);
     void addPath(QDomElement e, Path* p);
     void addBeanSetting(QDomElement e, BeanSetting* bs);
-    /*public*/ bool load(QDomElement blocks) throw (JmriConfigureXmlException);
-    /*public*/ void loadBlock(QDomElement element) throw (JmriConfigureXmlException);
-    /*public*/ void loadPath(Block* block, QDomElement element) throw (JmriConfigureXmlException);
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+    /*public*/ bool load(QDomElement sharedBlocks, QDomElement perNodeBlocks) throw (JmriConfigureXmlException);
+    /*public*/ void loadBlock(QDomElement element, bool contentsFlag) throw (JmriConfigureXmlException);
+    /*public*/ bool loadPath(Block* block, QDomElement element) throw (JmriConfigureXmlException);
     /*public*/ void loadBeanSetting(Path* path, QDomElement element);
     /*public*/ int loadOrder();
 

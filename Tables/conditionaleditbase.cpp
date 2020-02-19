@@ -35,7 +35,7 @@
 //         _conditionalManager = InstanceManager::getNullableDefault("ConditionalManager);
  _logixManager = (LogixManager*)InstanceManager::getDefault("LogixManager");
  _conditionalManager = (ConditionalManager*)InstanceManager::getDefault("ConditionalManager");
- _curLogix = _logixManager->getBySystemName(sName);
+ _curLogix = (Logix*)_logixManager->getBySystemName(sName);
  loadSelectionMode();
 }
 
@@ -765,7 +765,7 @@ bool ConditionalEditBase::validateIntensityReference(int actionType, QString int
         {
             Memory* m = (Memory*)InstanceManager::memoryManagerInstance()->getByUserName(intRef);
             if (m == NULL) {
-                m = InstanceManager::memoryManagerInstance()->getBySystemName(intRef);
+                m = (Memory*)InstanceManager::memoryManagerInstance()->getBySystemName(intRef);
             }
             try {
                 if (m == NULL || m->getValue().toInt() == NULL) {
@@ -952,7 +952,7 @@ QString ConditionalEditBase::validateMemoryReference(QString name) {
                 return name;
             }
         }
-        m = InstanceManager::memoryManagerInstance()->getBySystemName(name);
+        m = (Memory*)InstanceManager::memoryManagerInstance()->getBySystemName(name);
     }
     if (m == NULL) {
         messageInvalidActionItemName(name, "Memory"); // NOI18N
@@ -1084,7 +1084,7 @@ QString ConditionalEditBase::validateWarrantReference(QString name) {
                 return name;
             }
         }
-        w = ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getBySystemName(name);
+        w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getBySystemName(name);
     }
     if (w == NULL) {
         messageInvalidActionItemName(name, "Warrant"); // NOI18N
@@ -1111,7 +1111,7 @@ QString ConditionalEditBase::validateOBlockReference(QString name) {
                 return name;
             }
         }
-        b = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(name);
+        b = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(name);
     }
     if (b == NULL) {
         messageInvalidActionItemName(name, "OBlock"); // NOI18N
@@ -1165,7 +1165,7 @@ QString ConditionalEditBase::validateLightReference(QString name) {
                 return name;
             }
         }
-        l = InstanceManager::lightManagerInstance()->getBySystemName(name);
+        l = (Light*)InstanceManager::lightManagerInstance()->getBySystemName(name);
     }
     if (l == NULL) {
         messageInvalidActionItemName(name, "Light"); // NOI18N
@@ -1219,7 +1219,7 @@ QString ConditionalEditBase::validateLogixReference(QString name) {
                 return name;
             }
         }
-        l = _logixManager->getBySystemName(name);
+        l = (Logix*)_logixManager->getBySystemName(name);
     }
     if (l == NULL) {
         messageInvalidActionItemName(name, "Logix"); // NOI18N
@@ -1323,7 +1323,7 @@ Light* ConditionalEditBase::getLight(QString name) {
         if (l != NULL) {
             return l;
         }
-        l = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->getBySystemName(name);
+        l = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getBySystemName(name);
     }
     if (l == NULL) {
         messageInvalidActionItemName(name, "Light"); //NOI18N

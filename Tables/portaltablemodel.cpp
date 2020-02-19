@@ -144,7 +144,7 @@ void PortalTableModel::initTempRow()
   if (row < sysNameList.size())
   {
    QString name = sysNameList.at(row);
-   portal = _manager->getBySystemName(name);
+   portal = (Portal*)_manager->getBySystemName(name);
   }
   if (portal == NULL)
   {
@@ -249,7 +249,7 @@ void PortalTableModel::initTempRow()
  }
 
  QString name = sysNameList.at(row);
- Portal* portal = _manager->getBySystemName(name);
+ Portal* portal = (Portal*)_manager->getBySystemName(name);
  if (portal == NULL) {
      log->error("Portal NULL, getValueAt row= " + QString::number(row) + ", col= " + QString::number(col) + ", "
                 + "portalListSize= " + QString::number(_manager->getSystemNameArray().length()));
@@ -358,7 +358,7 @@ void PortalTableModel::initTempRow()
   OBlockManager* OBlockMgr = (OBlockManager*) InstanceManager::getDefault("OBlockManager");
      QStringList sysNames = OBlockMgr->getSystemNameArray();
      for (int i = 0; i < sysNames.length(); i++) {
-         OBlockMgr->getBySystemName(sysNames[i])->removePortal(portal);
+         ((OBlock*)OBlockMgr->getBySystemName(sysNames[i]))->removePortal(portal);
      }
      portal->dispose();
      return true;

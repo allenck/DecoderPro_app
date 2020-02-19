@@ -257,7 +257,7 @@ ShutDownManager* sdm;
         for (int i=0; i<sysNames.size(); i++) {
             QString systemName = sysNames.at(i);
             if (systemName.startsWith("IF")) {
-                _catalog->addTree( ((DefaultCatalogTreeManager*)manager)->getBySystemName(systemName));
+                _catalog->addTree((CatalogTree*) ((DefaultCatalogTreeManager*)manager)->getBySystemName(systemName));
             }
         }
     }
@@ -277,7 +277,7 @@ CatalogTreeManager* manager = (CatalogTreeManager*)InstanceManager::getDefault("
         for (int i=0; i<sysNames.size(); i++) {
             QString systemName = sysNames.at(i);
             if (systemName.startsWith("IX")) {
-                _index->addTree(((DefaultCatalogTreeManager*)manager)->getBySystemName(systemName));
+                _index->addTree((CatalogTree*)((DefaultCatalogTreeManager*)manager)->getBySystemName(systemName));
                 found = true;
             }
         }

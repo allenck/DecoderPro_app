@@ -166,7 +166,7 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
     PanelEditor* panel = new PanelEditor(name);
     //panel.makeFrame(name);
     panel->init(name);
-    PanelMenu::instance()->addEditorPanel(panel);
+    ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->addEditorPanel(panel);
     //panel->getTargetFrame()->setsetLocation(x,y);
 //    panel->setLocation(x,y);
 //    panel->getTargetFrame()->resize(width,height);

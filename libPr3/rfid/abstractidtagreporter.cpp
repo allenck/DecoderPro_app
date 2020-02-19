@@ -28,7 +28,7 @@
 }
 
 //@Override
-/*public*/ void AbstractIdTagReporter::notify(IdTag* id)
+/*public*/ void AbstractIdTagReporter::notify(DefaultIdTag* id)
 {
  log->debug(tr("Notify: %1").arg(mSystemName));
  if (id != nullptr)
@@ -48,7 +48,7 @@
   id->setWhereLastSeen(this);
   log->debug(tr("Seen here: %1").arg(this->mSystemName));
  }
- setReport(VPtr<TranspondingTag>::asQVariant((TranspondingTag*)id));
+ setReport(VPtr<TranspondingTag>::asQVariant((TranspondingTag*)id->self()));
  setState(id != nullptr ? IdTag::SEEN : IdTag::UNSEEN);
 }
 

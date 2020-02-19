@@ -28,6 +28,7 @@ AbstractManager::AbstractManager(QObject *parent) : Manager(nullptr, parent)
  _tuser = new QHash<QString, NamedBean*>;   // stores known Turnout instances by user name
  _beans = QSet<NamedBean*>( _beans);
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
+ lastAutoNamedBeanRef = QAtomicInteger<int>(0);
 
  pcs = new PropertyChangeSupport((QObject*)this);
  vcs = new VetoableChangeSupport((QObject*)this);
@@ -162,7 +163,11 @@ QObject* AbstractManager::getInstanceBySystemName(QString systemName)
 QObject* AbstractManager::getInstanceByUserName(QString userName) {
     return _tuser->value(userName);
 }
-
+/** {@inheritDoc} */
+//@Override
+/*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) {
+    return _tsys->value(systemName);
+}
     /**
      * Locate an instance based on a system name.  Returns NULL if no
      * instance already exists.
@@ -783,4 +788,28 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 //    }
     emit notifyIntervalRemoved(e);
 }
+
+/*public*/ void AbstractManager::updateAutoNumber(QString systemName) {
+    /* The following keeps track of the last created auto system name.
+     currently we do not reuse numbers, although there is nothing to stop the
+     user from manually recreating them */
+    if (systemName.startsWith(getSystemNamePrefix() + ":AUTO:")) {
+        bool bok;
+            int autoNumber = systemName.mid(8).toInt(&bok);
+            //lastAutoNamedBeanRef.accumulateAndGet(autoNumber, Math::max);
+            lastAutoNamedBeanRef.fetchAndAddAcquire(autoNumber);
+        if(!bok) {
+            log->warn(tr("Auto generated SystemName %1 is not in the correct format").arg(systemName));
+        }
+    }
+}
+
+/*public*/ QString AbstractManager::getAutoSystemName() {
+    int nextAutoBlockRef = lastAutoNamedBeanRef.fetchAndAddAcquire(1);//   .incrementAndGet();
+    QString b = QString(getSystemNamePrefix() + ":AUTO:");
+    QString nextNumber = paddedNumber.format(nextAutoBlockRef);
+    b.append(nextNumber);
+    return b;
+}
+
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractManager.class.getName());

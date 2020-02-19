@@ -6,10 +6,10 @@
 #include "reporter.h"
 
 
-class LIBPR3SHARED_EXPORT AbstractIdTag : public AddressedIdTag//AbstractNamedBean, public Reportable, public IdTag
+class LIBPR3SHARED_EXPORT AbstractIdTag : public AbstractNamedBean, public AddressedIdTag, public Reportable, public IdTag
 {
  Q_OBJECT
- //Q_INTERFACES(Reportable IdTag)
+ Q_INTERFACES(Reportable IdTag AddressedIdTag )
 public:
     explicit AbstractIdTag(QObject *parent = 0);
  /*public*/ AbstractIdTag(QString systemName, QObject *parent);
@@ -18,6 +18,7 @@ public:
  /*public*/ Reporter* getWhereLastSeen();
  /*public*/ QDateTime getWhenLastSeen();
  /*public*/ QString toString();
+ /*public*/ QObject* self() {return this;}
 
 signals:
     

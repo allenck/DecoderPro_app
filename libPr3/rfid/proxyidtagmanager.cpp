@@ -50,8 +50,8 @@
      * @return Null if nothing by that name exists
      */
     //@Override
-    /*public*/ IdTag* ProxyIdTagManager::getIdTag(QString name) {
-        return (IdTag*)AbstractProxyIdTagManager::getNamedBean(name);
+    /*public*/ DefaultIdTag *ProxyIdTagManager::getIdTag(QString name) {
+        return (DefaultIdTag*)AbstractProxyIdTagManager::getNamedBean(name);
     }
 
     //@Override
@@ -63,7 +63,7 @@
     /**
      * {@inheritDoc}
      */
-    /*public*/ IdTag* ProxyIdTagManager::provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException) {
+    /*public*/ DefaultIdTag *ProxyIdTagManager::provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException) {
         return provideIdTag(name);
     }
 
@@ -76,8 +76,8 @@
      * @return Never null under normal circumstances
      */
     //@Override
-    /*public*/ IdTag* ProxyIdTagManager::provideIdTag(QString name) throw (IllegalArgumentException) {
-        return (IdTag*)AbstractProxyIdTagManager::provideNamedBean(name);
+    /*public*/ DefaultIdTag *ProxyIdTagManager::provideIdTag(QString name) throw (IllegalArgumentException) {
+        return (DefaultIdTag*)AbstractProxyIdTagManager::provideNamedBean(name);
     }
 
     /**
@@ -87,8 +87,8 @@
      * @return requested IdTag object or null if none exists
      */
     //@Override
-    /*public*/ IdTag* ProxyIdTagManager::getBySystemName(QString systemName) {
-        return (IdTag*)AbstractProxyIdTagManager::getBeanBySystemName(systemName);
+    /*public*/ NamedBean *ProxyIdTagManager::getBySystemName(QString systemName) {
+        return AbstractProxyIdTagManager::getBeanBySystemName(systemName);
     }
 
     /**
@@ -98,8 +98,8 @@
      * @return requested Turnout object or null if none exists
      */
     //@Override
-    /*public*/ IdTag* ProxyIdTagManager::getByUserName(QString userName) {
-        return (IdTag*)AbstractProxyIdTagManager::getBeanByUserName(userName);
+    /*public*/ NamedBean *ProxyIdTagManager::getByUserName(QString userName) {
+        return AbstractProxyIdTagManager::getBeanByUserName(userName);
     }
 
     /**
@@ -131,13 +131,13 @@
      * @return requested IdTag object (never null)
      */
     //@Override
-    /*public*/ IdTag* ProxyIdTagManager::newIdTag(QString systemName, QString userName) {
-        return (IdTag*)newNamedBean(systemName, userName);
+    /*public*/ DefaultIdTag *ProxyIdTagManager::newIdTag(QString systemName, QString userName) {
+        return (DefaultIdTag*)newNamedBean(systemName, userName);
     }
 
     //@Override
-    /*public*/ IdTag* ProxyIdTagManager::getByTagID(QString tagID) {
-        return getBySystemName(makeSystemName(tagID));
+    /*public*/ DefaultIdTag* ProxyIdTagManager::getByTagID(QString tagID) {
+        return (DefaultIdTag*)getBySystemName(makeSystemName(tagID));
     }
 
     /**

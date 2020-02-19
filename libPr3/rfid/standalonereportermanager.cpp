@@ -70,7 +70,7 @@
             log->warn("Invalid message - skipping " + r->toString());
             return;
         }
-        IdTag* idTag = static_cast<IdTagManager*>(InstanceManager::getDefault("IdTagManager"))->provideIdTag(tc->getAdapterMemo()->getProtocol()->getTag(r));
+        DefaultIdTag* idTag = static_cast<IdTagManager*>(InstanceManager::getDefault("IdTagManager"))->provideIdTag(tc->getAdapterMemo()->getProtocol()->getTag(r));
         TimeoutRfidReporter* report = (TimeoutRfidReporter*) provideReporter(prefix + typeLetter() + "1");
         report->notify(idTag);
     }

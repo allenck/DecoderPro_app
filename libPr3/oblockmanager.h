@@ -16,7 +16,7 @@ public:
     /*public*/ char typeLetter() ;
     /*public*/ OBlock* createNewOBlock(QString systemName, QString userName);
     /*public*/ OBlock* getOBlock(QString name);
-    /*public*/ OBlock* getBySystemName(QString name);
+    /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* getByUserName(QString key);
     /*public*/ OBlock* provideOBlock(QString name);
     static OBlockManager* _instance;// = NULL;

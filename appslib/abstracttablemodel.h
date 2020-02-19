@@ -72,6 +72,7 @@ protected:
     friend class SignallingPanel;
     friend class RouteFilterModel;
     friend class JTable;
+    friend class CabSignalTableModel;
 };
 
 #endif // ABSTRACTTABLEMODEL_H

@@ -2712,7 +2712,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
  }
  // delete panel - deregister the panel for saving
  ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->deregister(this);
- PanelMenu::instance()->deletePanel(this);
+ ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->deletePanel(this);
  editors->removeOne(this);
  setVisible(false);
  _contents->clear();

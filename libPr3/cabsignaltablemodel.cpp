@@ -9,6 +9,8 @@
 #include "signalmast.h"
 #include "block.h"
 #include "path.h"
+#include <QHeaderView>
+#include "namedicon.h"
 
 /**
  * Table data model for display of Cab Signaling information.
@@ -160,7 +162,7 @@ CabSignalTableModel::CabSignalTableModel(int /*row*/, int /*column*/, QObject */
  * @return boolean
  */
 //@Override
-/*public*/ bool CabSignalTableModel::isCellEditable(int row, int col) {
+/*public*/ bool CabSignalTableModel::isCellEditable(int /*row*/, int col) const {
     switch (col) {
         case SEND_CABSIG_COLUMN:
         case REVERSE_BLOCK_DIR_BUTTON_COLUMN:
@@ -189,6 +191,7 @@ CabSignalTableModel::CabSignalTableModel(int /*row*/, int /*column*/, QObject */
         cmdStatTable->getColumnModel()->getColumn(i)->setPreferredWidth(width);
     }
    // cmdStatTable.sizeColumnsToFit(-1);
+    cmdStatTable->getTableHeader()->resizeSections(QHeaderView::ResizeToContents);
 }
 
 /**
@@ -225,9 +228,9 @@ CabSignalTableModel::CabSignalTableModel(int /*row*/, int /*column*/, QObject */
             }
         case REVERSE_BLOCK_DIR_BUTTON_COLUMN:
             if (cabSignalManager->getCabSignalArray()[row]->getBlock()==nullptr){
-                return tr("BlockLookup");
+                return tr("Block Lookup");
             } else {
-                return tr("ChngDirection");
+                return tr("Chng Direction");
             }
         case NEXT_BLOCK:
     {
@@ -365,3 +368,34 @@ void CabSignalTableModel::propertyChange(PropertyChangeEvent * e)
  return columnToolTips.at(col);
 }
 /*private*/ /*final*/ /*static*/ Logger* CabSignalTableModel::log = LoggerFactory::getLogger("CabSignalTableModel");
+
+
+/*public*/ QVariant CabSignalTableModel::data(const QModelIndex &index, int role) const
+{
+ if(role == Qt::DecorationRole && index.column() == NEXT_ASPECT_ICON)
+ {
+  SignalMast* mast = cabSignalManager->getCabSignalArray()[index.row()]->getNextMast();
+  QString link;
+  if (mast!=nullptr) {
+      QString imageLink = mast->getAppearanceMap()->getProperty(mast->getAspect(), "imagelink");
+      log->debug(tr("imagelink is %1").arg(imageLink));
+      if ( imageLink != nullptr ) {
+          QString newlink = imageLink.replace("../", "");  // replace is immutable
+          // should start at the resources directory
+          link = newlink;
+      }
+      else {
+          link = QString();
+      }
+  }
+  if(!link.isEmpty())
+  {
+   NamedIcon* tmpIcon = new NamedIcon(link, link );
+//   tmpIcon->setRotation( tmpIcon->getRotation() + _rotationOffset, slotTable);
+   QPixmap pixmap = QPixmap::fromImage(tmpIcon->getImage());
+   return pixmap;
+  }
+
+ }
+ return AbstractTableModel::data(index, role);
+}

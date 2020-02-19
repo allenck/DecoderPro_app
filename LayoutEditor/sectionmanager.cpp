@@ -2,11 +2,12 @@
 #include "layouteditor.h"
 #include "abstractsignalheadmanager.h"
 #include "connectivityutil.h"
+#include "internalsystemconnectionmemo.h"
 
 /*static*/ SectionManager* SectionManager::_instance = NULL;
 
 SectionManager::SectionManager(QObject *parent) :
-    AbstractManager(parent)
+    AbstractManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"), parent)
 {
  setObjectName("SectionManager");
  setProperty("JavaClassName", "jmri.managers.SectionManager");
@@ -16,6 +17,9 @@ SectionManager::SectionManager(QObject *parent) :
  paddedNumber = new DecimalFormat("0000");
  registerSelf();
  setProperty("InstanceManagerAutoDefault", "yes");
+
+ ((SensorManager*)InstanceManager::getDefault("SensorManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ ((BlockManager*)InstanceManager::getDefault("BlockManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
 
 }
 /**
@@ -57,8 +61,13 @@ int SectionManager::getXMLOrder(){
     return Manager::SECTIONS;
 }
 
-QString SectionManager::getSystemPrefix() { return "I"; }
+//QString SectionManager::getSystemPrefix() { return "I"; }
 char SectionManager::typeLetter() { return 'Y'; }
+
+//@Override
+/*public*/ QString getNamedBeanClass() {
+    return "Section";
+}
 
 /**
  * Method to create a new Section if the Section does not exist
@@ -73,25 +82,28 @@ Section* SectionManager::createNewSection(QString systemName, QString userName)
         return NULL;
     }
     QString sysName = systemName;
-    if ( (sysName.length()<2) || (sysName.mid(0,2)!=("IY")) )
-    {
-        sysName = "IY"+sysName;
+    if (!sysName.startsWith(getSystemNamePrefix())) {
+        sysName = makeSystemName(sysName);
     }
     // Check that Section does not already exist
     Section* y;
     if (!userName.isEmpty())
     {
-        y = getByUserName(userName);
-        if (y!=NULL) return NULL;
+     y = (Section*)getByUserName(userName);
+     if (y!=NULL) return NULL;
     }
     QString sName = sysName.toUpper().trimmed();
-    y = getBySystemName(sysName);
-    if (y==NULL) y = getBySystemName(sName);
+    y = (Section*)getBySystemName(sysName);
+    if (y==NULL) y = (Section*)getBySystemName(sName);
     if (y!=NULL) return NULL;
     // Section does not exist, create a new Section
     y = new Section(sName,userName);
     // save in the maps
     Register(y);
+
+    // Keep track of the last created auto system name
+    updateAutoNumber(systemName);
+#if 0
     /*The following keeps trace of the last created auto system name.
     currently we do not reuse numbers, although there is nothing to stop the
     user from manually recreating them*/
@@ -107,6 +119,7 @@ Section* SectionManager::createNewSection(QString systemName, QString userName)
             log.warn("Auto generated SystemName "+ systemName + " is not in the correct format");
         }
     }
+#endif
     return y;
 }
 
@@ -135,19 +148,19 @@ Section* SectionManager::createNewSection(QString userName) {
  *      that name is a System Name.  If both fail, returns NULL.
  */
 /*public*/ Section* SectionManager::getSection(QString name) {
-    Section* y = getByUserName(name);
+    Section* y = (Section*)getByUserName(name);
     if (y!=NULL) return y;
-    return getBySystemName(name);
+    return (Section*)getBySystemName(name);
 }
 
-/*public*/ Section* SectionManager::getBySystemName(QString name) {
-    QString key = name.toUpper();
-    return (Section*)_tsys->value(key);
-}
+///*public*/ Section* SectionManager::getBySystemName(QString name) {
+//    QString key = name.toUpper();
+//    return (Section*)_tsys->value(key);
+//}
 
-/*public*/ Section* SectionManager::getByUserName(QString key) {
-    return (Section*)_tuser->value(key);
-}
+///*public*/ Section* SectionManager::getByUserName(QString key) {
+//    return (Section*)_tuser->value(key);
+//}
 
 /**
  * Validates all Sections
@@ -160,7 +173,7 @@ Section* SectionManager::createNewSection(QString userName) {
  if (list.size()<=0) return -2;
  for (int i = 0; i<list.size(); i++)
  {
-  QString s = getBySystemName(list.at(i))->validate(lePanel);
+  QString s = ((Section*)getBySystemName(list.at(i)))->validate(lePanel);
   if (s!=(""))
   {
    log.error(s);
@@ -188,7 +201,7 @@ Section* SectionManager::createNewSection(QString userName) {
  if (list.size()<=0) return -2;
  for (int i = 0; i<list.size(); i++)
  {
-  int errors = getBySystemName(list.at(i))->placeDirectionSensors(lePanel);
+  int errors = ((Section*)getBySystemName(list.at(i)))->placeDirectionSensors(lePanel);
   numErrors = numErrors + errors;
   numSections ++;
  }
@@ -214,7 +227,7 @@ Section* SectionManager::createNewSection(QString userName) {
  QStringList sensorList =  QStringList();
  for (int i = 0; i<list.size(); i++)
  {
-  Section* s = getBySystemName(list.at(i));
+  Section* s = (Section*)getBySystemName(list.at(i));
   QString name = s->getReverseBlockingSensorName();
   if ( (name!=NULL) && (name!=("")) )
    sensorList.append(name);
@@ -238,7 +251,7 @@ Section* SectionManager::createNewSection(QString userName) {
 /*public*/ void SectionManager::initializeBlockingSensors () {
     QStringList list = getSystemNameList();
     for (int i = 0; i<list.size(); i++) {
-        Section* s = getBySystemName(list.at(i));
+        Section* s = (Section*)getBySystemName(list.at(i));
         try {
             if (s->getForwardBlockingSensor()!=NULL) {
                 s->getForwardBlockingSensor()->setState(Sensor::ACTIVE);

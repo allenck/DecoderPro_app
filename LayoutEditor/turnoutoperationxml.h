@@ -16,7 +16,7 @@ public:
     ~TurnoutOperationXml() {}
     TurnoutOperationXml(const TurnoutOperationXml&): AbstractXmlAdapter() {}
     /*public*/ bool load(QDomElement e) throw (Exception);
-    /*public*/ /*abstract*/ virtual TurnoutOperation* loadOne(QDomElement e) {return nullptr;}
+    /*public*/ /*abstract*/ virtual TurnoutOperation* loadOne(QDomElement /*e*/) {return nullptr;}
     /*public*/ static TurnoutOperation* loadOperation(QDomElement e) ;
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
     /*public*/ QDomElement store(QDomDocument doc, QObject* o);

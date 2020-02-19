@@ -212,6 +212,12 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  e.appendChild(bse);
 }
 
+//@Override
+/*public*/ void BlockManagerXml::load(QDomElement element, QObject* o) throw (Exception)
+{
+    log->error("Invalid method called");
+}
+
 /**
  * Load Blocks into the existing BlockManager.
  * <p>
@@ -221,14 +227,14 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool BlockManagerXml::load(QDomElement blocks) throw (JmriConfigureXmlException)
+/*public*/ bool BlockManagerXml::load(QDomElement sharedBlocks, QDomElement perNodeBlocks) throw (JmriConfigureXmlException)
 {
  bool result = true;
  try
  {
-  if (!blocks.firstChildElement("defaultspeed").isNull())
+  if (!sharedBlocks.firstChildElement("defaultspeed").isNull())
   {
-   QString speed = blocks.firstChildElement("defaultspeed").text();
+   QString speed = sharedBlocks.firstChildElement("defaultspeed").text();
    if (speed!="")
    {
     ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setDefaultSpeed(speed);
@@ -240,14 +246,21 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
   log->error(ex.getMessage());
  }
 
- QDomNodeList list = blocks.elementsByTagName("block");
+ QDomNodeList list = sharedBlocks.elementsByTagName("block");
  if (log->isDebugEnabled()) log->debug("Found "+QString::number(list.size())+" objects");
  //BlockManager tm = InstanceManager.blockManagerInstance();
 
  for (int i=0; i<list.size(); i++)
  {
   QDomElement block = list.at(i).toElement();
-  loadBlock(block);
+  loadBlock(block, false);
+ }
+
+ // second pass load full contents
+ for (int i=0; i<list.size(); i++)
+ {
+  QDomElement block = list.at(i).toElement();
+     loadBlock(block, true);
  }
  return result;
 }
@@ -258,13 +271,8 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  * @param element QDomElement holding one block
  */
 //@SuppressWarnings("unchecked")
-/*public*/ void BlockManagerXml::loadBlock(QDomElement element) throw (JmriConfigureXmlException)
+/*public*/ void BlockManagerXml::loadBlock(QDomElement element, bool contentsFlag) throw (JmriConfigureXmlException)
 {
- if (element.attribute("systemName") == NULL)
- {
-  log->warn("unexpected NULL in systemName "+element.tagName()+" "/*+QString::number(element.attributes())*/);
-  return;
- }
  QString sysName = getSystemName(element);
  QString userName = getUserName(element);
  if (log->isDebugEnabled()) log->debug("defined Block: ("+sysName+")("+(userName==NULL?"<NULL>":userName)+")");
@@ -279,7 +287,11 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
     log->error("Unable to load block with system name " + sysName + " and username of " +(userName==NULL?"<NULL>":userName));
     return;
  }
- if (userName!="") block->setUserName(userName);
+ if (userName!="")
+  block->setUserName(userName);
+ if (!contentsFlag) {
+     return;
+ }
  if (element.attribute("length") != "") {
     // load length in millimeters
     block->setLength(element.attribute("length").toFloat());
@@ -344,18 +356,37 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  if (reporters.size()==1) {
     // Reporter
     QString name = reporters.at(0).toElement().attribute("systemName");
-    Reporter* reporter = InstanceManager::reporterManagerInstance()->provideReporter(name);
-    block->setReporter(reporter);
-    block->setReportingCurrent(reporters.at(0).toElement().attribute("useCurrent")==("yes"));
+    try
+    {
+     Reporter* reporter = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter(name);
+     block->setReporter(reporter);
+     block->setReportingCurrent(reporters.at(0).toElement().attribute("useCurrent")==("yes"));
+    }
+    catch (IllegalArgumentException ex) {
+        log->warn(tr("failed to create Reporter \"%1\" during Block load").arg(name));
+    }
  }
 
  // load paths if present
  QDomNodeList paths = element.elementsByTagName("path");
- if (paths.size()>0 && block->getPaths()->size()>0)
-    log->warn("Adding "+QString::number(paths.size())+" paths to block "+sysName+" that already has "+QString::number(block->getPaths()->size())+" blocks. Please report this as an error.");
- for (int i=0; i<paths.size(); i++) {
-    QDomElement path = paths.at(i).toElement();
-    loadPath(block, path);
+
+ int startSize = block->getPaths()->size();
+ int loadCount = 0;
+
+ for (int i=0; i< paths.count(); i++) {
+  QDomElement path = paths.at(i).toElement();
+     if (loadPath(block, path)) {
+         loadCount++;
+     }
+ }
+
+ if ((startSize > 0) && (loadCount > 0)) {
+     log->warn(tr("Added %1 paths to block %2 that already had %3 blocks.").arg(loadCount++).arg(sysName).arg(startSize));
+ }
+
+ if (startSize + loadCount != block->getPaths()->size()) {
+     log->error(tr("Started with %1 paths in block %2, added %3 but final count is %4; something not right.").arg(
+             startSize).arg(sysName).arg(loadCount).arg(block->getPaths()->size()));
  }
 }
 
@@ -366,20 +397,23 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  * @param element QDomElement containing path information
  */
 //@SuppressWarnings("unchecked")
-/*public*/ void BlockManagerXml::loadPath(Block* block, QDomElement element) throw (JmriConfigureXmlException)
+/*public*/ bool BlockManagerXml::loadPath(Block* block, QDomElement element) throw (JmriConfigureXmlException)
 {
  // load individual path
  int toDir = 0;
  int fromDir = 0;
+ bool bok;
  try {
-        toDir = element.attribute("todir").toInt();
-        fromDir = element.attribute("fromdir").toInt();
+        toDir = element.attribute("todir").toInt(&bok);
+        if(!bok) throw DataConversionException();
+        fromDir = element.attribute("fromdir").toInt(&bok);
+        if(!bok) throw DataConversionException();
+
     } catch (DataConversionException e) {
         log->error("Could not parse path attribute");
     } catch (NullPointerException e) {
-        creationErrorEncountered (
-                                    "Block Path entry in file missing required attribute",
-                                    block->getSystemName(),block->getUserName(),NULL);
+     handleException("Block Path entry in file missing required attribute",
+          QString(), block->getSystemName(), block->getUserName(), Exception());
     }
 
     Block* toBlock = NULL;
@@ -395,7 +429,14 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
         loadBeanSetting(path, setting);
     }
 
-    block->addPath(path);
+    // check if path already in block
+    if (!block->hasPath(path)) {
+        block->addPath(path);
+        return true;
+    } else {
+        log->debug(tr("Skipping load of duplicate path %1").arg(path->toString()));
+        return false;
+    }
 }
 
 /**

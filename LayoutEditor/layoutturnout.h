@@ -215,6 +215,8 @@ public:
     /*public*/ int getLinkType();
     /*public*/ void setLinkType(int type);
     /*public*/ int getTurnoutType();
+    /*public*/ bool isTurnoutTypeXover();
+    /*public*/ bool isTurnoutTypeSlip();
     /*public*/ QObject* getConnectA();
     /*public*/ QObject* getConnectB();
     /*public*/ QObject* getConnectC();
@@ -389,19 +391,19 @@ private:
 //    JCheckBoxMenuItem* disableWhenOccupiedItem = NULL;
     LayoutEditorTools* tools;// = NULL;
     static Logger* log;
-    QAction* actionRHTurnout;
-    QAction* actionLHTurnout;
-    QAction* actionWYETurnout;
-    QAction* actionXOverTurnout;
-    QAction* actionRHXOverTurnout;
-    QAction* actionLHXOverTurnout;
-    QAction* actionIdent;
-    QAction* actionNoTurnout;
-    QAction* actionNewTurnout;
+    QAction* actionRHTurnout = nullptr;
+    QAction* actionLHTurnout = nullptr;
+    QAction* actionWYETurnout = nullptr;
+    QAction* actionXOverTurnout = nullptr;
+    QAction* actionRHXOverTurnout = nullptr;
+    QAction* actionLHXOverTurnout = nullptr;
+    QAction* actionIdent = nullptr;
+    QAction* actionNoTurnout = nullptr;
+    QAction* actionNewTurnout = nullptr;
     // variables for Edit Layout Turnout pane
     /*private*/ QLineEdit* turnoutNameField;// = new QLineEdit(16);
-    /*private*/ QComboBox* secondTurnoutComboBox;
-    /*private*/ QLabel* secondTurnoutLabel;
+    /*private*/ QComboBox* secondTurnoutComboBox = nullptr;
+    /*private*/ QLabel* secondTurnoutLabel  = nullptr;
     /*private*/ QLineEdit* blockBNameField;// = new QLineEdit(16);
     /*private*/ QLineEdit* blockCNameField;// = new QLineEdit(16);
     /*private*/ QLineEdit* blockDNameField;// = new QLineEdit(16);
@@ -409,12 +411,12 @@ private:
     /*private*/ QCheckBox* hiddenBox;// = new QCheckBox(rb.getQString("HideTurnout"));
     /*private*/ int turnoutClosedIndex;
     /*private*/ int turnoutThrownIndex;
-    /*private*/ QPushButton* turnoutEditBlock;
-    /*private*/ QPushButton* turnoutEditDone;
-    /*private*/ QPushButton* turnoutEditCancel;
-    /*private*/ QPushButton* turnoutEditBlockB;
-    /*private*/ QPushButton* turnoutEditBlockC;
-    /*private*/ QPushButton* turnoutEditBlockD;
+    /*private*/ QPushButton* turnoutEditBlock = nullptr;
+    /*private*/ QPushButton* turnoutEditDone = nullptr;
+    /*private*/ QPushButton* turnoutEditCancel = nullptr;
+    /*private*/ QPushButton* turnoutEditBlockB = nullptr;
+    /*private*/ QPushButton* turnoutEditBlockC = nullptr;
+    /*private*/ QPushButton* turnoutEditBlockD = nullptr;
     /*private*/ bool editOpen;// = false;
     /*private*/ QCheckBox* additionalTurnout;// = new QCheckBox(rb.getQString("SupportingTurnout"));
     bool active;// = true;
@@ -435,7 +437,7 @@ private:
     void setTrackSegmentBlocks();
     void setTrackSegmentBlock(int pointType, bool isAutomatic);
     /*private*/ bool isOccupied();
-    QGraphicsItemGroup* itemGroup;// = new QGraphicsItemGroup();
+    QGraphicsItemGroup* itemGroup = nullptr;// = new QGraphicsItemGroup();
 
 
 private slots:
@@ -490,6 +492,11 @@ protected:
                                                                   LayoutBlock* prevLayoutBlock,
                                                                   LayoutBlock* nextLayoutBlock,
                                                                   bool suppress);
+ // default is package protected
+    /*protected*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockA = nullptr;
+    /*protected*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockB = nullptr;  // Xover - second block, if there is one
+    /*protected*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockC = nullptr;  // Xover - third block, if there is one
+    /*protected*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockD = nullptr;  // Xover - forth block, if there is one
 
     /*protected*/ NamedBeanHandle<SignalHead*>* signalA1HeadNamed = nullptr; // signal 1 (continuing) (throat for RH, LH, WYE)
     /*protected*/ NamedBeanHandle<SignalHead*>* signalA2HeadNamed = nullptr; // signal 2 (diverging) (throat for RH, LH, WYE)

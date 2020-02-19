@@ -2234,7 +2234,7 @@ void RouteTableAction::exportPressed(/*ActionEvent* e*/)  // SLOT[]
     }
     QString uName = _userName->text();
     QString logixSystemName = LOGIX_SYS_NAME+sName;
-    Logix* logix = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(logixSystemName);
+    Logix* logix = (Logix*)static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(logixSystemName);
     if (logix == NULL) {
         logix = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->createNewLogix(logixSystemName, uName);
         if (logix == NULL) {

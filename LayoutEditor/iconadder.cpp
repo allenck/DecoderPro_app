@@ -116,7 +116,7 @@ void IconAdder::common()
 /*public*/ void IconAdder::initDefaultIcons()
 {
  CatalogTreeManager* manager = static_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"));
- CatalogTree* tree = ((DefaultCatalogTreeManager*)manager)->getBySystemName("NXDI");
+ CatalogTree* tree = (CatalogTree*)((DefaultCatalogTreeManager*)manager)->getBySystemName("NXDI");
  if (tree != NULL)
  {
   CatalogTreeNode* node = (CatalogTreeNode*)tree->getRoot();
@@ -842,7 +842,7 @@ void IconAdder::closeCatalog()
 {
  CatalogTreeManager* manager = static_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"));
  // unfiltered, xml-stored, default icon tree
- CatalogTree* tree = manager->getBySystemName("NXDI");
+ CatalogTree* tree = (CatalogTree*)manager->getBySystemName("NXDI");
  if (tree == NULL)
  {	// build a new Default Icons tree
   tree = manager->newCatalogTree("NXDI", "Default Icons");

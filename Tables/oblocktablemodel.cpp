@@ -212,7 +212,7 @@ void OBlockTableModel::initTempRow()
  if (row < sysNameList.size())
  {
   QString name = sysNameList.at(row);
-  b = _manager->getBySystemName(name);
+  b = (OBlock*)_manager->getBySystemName(name);
  }
  if(role == Qt::DisplayRole)
  {
@@ -545,7 +545,7 @@ void OBlockTableModel::initTempRow()
    return true;
   }
   QString name = sysNameList.at(row);
-  OBlock* block = _manager->getBySystemName(name);
+  OBlock* block = (OBlock*)_manager->getBySystemName(name);
   switch (col)
   {
    case USERNAMECOL:

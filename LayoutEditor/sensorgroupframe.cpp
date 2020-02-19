@@ -325,7 +325,7 @@ void SensorGroupFrame:: viewPressed()
 }
 #endif
 Logix* SensorGroupFrame::getSystemLogix() {
-    Logix* logix = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixSysName);
+    Logix* logix = (Logix*)((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixSysName);
     if (logix == NULL) {
         logix = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->createNewLogix(logixSysName, logixUserName);
     }

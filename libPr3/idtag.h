@@ -36,9 +36,6 @@ class LIBPR3SHARED_EXPORT IdTag : public Reportable
 {
    // Q_OBJECT
 public:
- IdTag(QObject* parent = nullptr) : Reportable(parent) {}
- IdTag(QString sysName, QObject* parent) : Reportable(sysName,parent) {}
- IdTag(QString sysName, QString usrName, QObject* parent) : Reportable(sysName, usrName, parent) {}
     /**
      * Constant representing an "unseen" state, indicating that the
      * ID tag has not yet been seen.
@@ -101,6 +98,9 @@ public:
      */
     /*public*/ virtual void load(QDomElement /*e*/) {}
     /*public*/ virtual QString  toString() {return "";}
+
+ /*public*/ virtual QObject* self() =0;
+
 signals:
     
 public slots:
@@ -108,6 +108,5 @@ public slots:
 };
 //const int IdTag::UNSEEN = 0x02;
 //const int IdTag::SEEN = 0x03;
-Q_DECLARE_METATYPE(IdTag)
-//Q_DECLARE_INTERFACE(IdTag, "IdTag")
+Q_DECLARE_INTERFACE(IdTag, "IdTag")
 #endif // IDTAG_H

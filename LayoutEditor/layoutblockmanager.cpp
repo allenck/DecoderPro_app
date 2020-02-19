@@ -89,7 +89,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   {
    sName = "ILB"+QString("%1").arg(blkNum);
    blkNum++;
-   block = getBySystemName(sName);
+   block = (LayoutBlock*)getBySystemName(sName);
    if (block==NULL)
     found = false;
   }
@@ -97,7 +97,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  else
  {
   // try the supplied system name
-  block = getBySystemName((systemName.toUpper()));
+  block = (LayoutBlock*)getBySystemName((systemName.toUpper()));
   if (block!=NULL) return NULL;
   sName = systemName.toUpper();
  }
@@ -113,7 +113,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     bool found = true;
     while (found) {
         QString sName = "ILB"+QString("%1").arg(blkNum);
-        LayoutBlock* block = getBySystemName(sName);
+        LayoutBlock* block = (LayoutBlock*)getBySystemName(sName);
         if (block==NULL){
             found = false;
             QString uName = "AUTOBLK:"+QString("%1").arg(blkNum);
@@ -141,7 +141,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 /*public*/ LayoutBlock* LayoutBlockManager::getLayoutBlock(QString name) {
     LayoutBlock* block = (LayoutBlock*)getByUserName(name);
     if (block!=NULL) return block;
-    return getBySystemName(name);
+    return (LayoutBlock*)getBySystemName(name);
 }
 
 /*public*/ LayoutBlock* LayoutBlockManager::getLayoutBlock(Block* block){
@@ -157,14 +157,14 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
      }
      else
      {
-      lblock = getBySystemName(sName);
+      lblock = (LayoutBlock*)getBySystemName(sName);
       if (lblock->getBlock() == block) return lblock;
      }
     }
     return NULL;
 }
 
-/*public*/ LayoutBlock* LayoutBlockManager::getBySystemName(QString name) {
+/*public*/ NamedBean *LayoutBlockManager::getBySystemName(QString name) {
     QString key = name.toUpper();
     return (LayoutBlock*)_tsys->value(key);
 }
@@ -194,7 +194,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   }
   else
   {
-   LayoutBlock* block = getBySystemName(sName);
+   LayoutBlock* block = (LayoutBlock*)getBySystemName(sName);
    if (block->getOccupancySensor() == s) return block;
   }
  }
@@ -218,7 +218,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   }
   else
   {
-   LayoutBlock* block = getBySystemName(sName);
+   LayoutBlock* block = (LayoutBlock*)getBySystemName(sName);
    if (block->getMemory() == m) return block;
   }
  }
@@ -238,7 +238,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  {
   QString sName = iter.next();
   if (sName.isNull()) log.error("System name NULL during 1st initialization of LayoutBlocks");
-  LayoutBlock* b = getBySystemName(sName);
+  LayoutBlock* b = (LayoutBlock*)getBySystemName(sName);
   b->initializeLayoutBlock();
  }
  // cycle through all LayoutBlocks, updating Paths of associated jmri.Blocks
@@ -249,7 +249,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   QString sName = iter.next();
   if (sName==NULL) log.error("System name NULL during 2nd initialization of LayoutBlocks");
   log.debug("LayoutBlock initialization - system name = "+sName);
-  LayoutBlock* b = getBySystemName(sName);
+  LayoutBlock* b = (LayoutBlock*)getBySystemName(sName);
   b->updatePaths();
   if (!b->getBlock()->getValue().isNull()) b->getBlock()->setValue(QVariant());
  }
@@ -1716,7 +1716,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         /*@Nullable*/ NamedBean* bean,
         /*@Nullable*/ LayoutEditor* panel) {
     if (panel == nullptr) {
-        QList<LayoutEditor*>* panels = PanelMenu::instance()->
+        QList<LayoutEditor*>* panels = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->
                 getLayoutEditorPanelList();
         QList<LayoutBlock*> protectingBlocks = QList<LayoutBlock*>();
         for (LayoutEditor* p : *panels) {
@@ -1858,21 +1858,24 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 //@Nullable
 /*private*/ LayoutBlock* LayoutBlockManager::getFacingBlockByBean(
         /*@Nonnull*/ NamedBean* bean,
-        LayoutEditor* panel) {
-    if (panel == nullptr) {
-        QList<LayoutEditor*>* panels = static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->
-                getLayoutEditorPanelList();
-        LayoutBlock* returnBlock = nullptr;
-        for (LayoutEditor* p : *panels) {
-            returnBlock = getFacingBlockByBeanByPanel(bean, p);
-            if (returnBlock != nullptr) {
-                break;
-            }
-        }
-        return returnBlock;
-    } else {
-        return getFacingBlockByBeanByPanel(bean, panel);
-    }
+        LayoutEditor* panel)
+{
+ if (panel == nullptr)
+ {
+  QList<LayoutEditor*>* panels = static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->
+          getLayoutEditorPanelList();
+  LayoutBlock* returnBlock = nullptr;
+  for (LayoutEditor* p : *panels)
+  {
+   returnBlock = getFacingBlockByBeanByPanel(bean, p);
+   if (returnBlock != nullptr) {
+       break;
+   }
+  }
+  return returnBlock;
+ } else {
+     return getFacingBlockByBeanByPanel(bean, panel);
+ }
 }
 //@CheckReturnValue
 //@Nullable
@@ -2352,7 +2355,7 @@ QCompleter* LayoutBlockManager::getCompleter(QString text, bool bIncludeUserName
   QStringList completerList;
   foreach(QString systemName, nameList)
   {
-   LayoutBlock* b = getBySystemName(systemName);
+   LayoutBlock* b = (LayoutBlock*)getBySystemName(systemName);
    if(systemName.toUpper().startsWith(text.toUpper()))
     completerList.append(b->getUserName());
    else if(bIncludeUserNames)

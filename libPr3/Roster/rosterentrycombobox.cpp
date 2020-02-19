@@ -521,10 +521,8 @@ void RosterEntryComboBox::on_currentIndexChanged(QString /*text*/)
  qDebug() << tr("RosterEntryComboBox size = %1, %2 visible = %3").arg(this->size().width()).arg(this->size().height()).arg(isVisible()?tr("yes"):tr("no"));
  if (_nonSelectedItem != "")
  {
-//  this.insertItemAt(_nonSelectedItem, 0);
-  this->addItem(_nonSelectedItem, QVariant());
-//  this.setSelectedItem(_nonSelectedItem);
-
+  this->insertItem(0,_nonSelectedItem);
+  //this->setSelectedItem(_nonSelectedItem);
  }
  foreach (RosterEntry* r , l)
  {

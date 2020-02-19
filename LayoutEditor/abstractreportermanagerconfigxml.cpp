@@ -47,7 +47,7 @@ AbstractReporterManagerConfigXML::AbstractReporterManagerConfigXML(QObject *pare
             QString sname = iter.next();
             if (sname=="") log->error("System name null during store");
             log->debug("system name is "+sname);
-            Reporter* r = tm->getBySystemName(sname);
+            Reporter* r = (Reporter*)tm->getBySystemName(sname);
             QDomElement elem = doc.createElement("reporter");
             elem.setAttribute("systemName", sname); // deprecated for 2.9.* series
             elem.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sname)));

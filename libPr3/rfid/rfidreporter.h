@@ -13,7 +13,7 @@ public:
     //explicit RfidReporter(QObject *parent = 0);
     /*public*/ RfidReporter(QString systemName, QObject *parent = 0);
     /*public*/ RfidReporter(QString systemName, QString userName, QObject *parent = 0);
-    /*public*/ void notify(IdTag* id);
+    /*public*/ void notify(DefaultIdTag *id);
     /*public*/ void setState(int s);
     /*public*/ int getState() ;
     /*public*/ LocoAddress* getLocoAddress(QString rep);

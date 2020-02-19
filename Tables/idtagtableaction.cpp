@@ -77,7 +77,7 @@ IdTagBeanTableDataModel::IdTagBeanTableDataModel(IdTagTableAction *act)
 //@Override
 /*public*/ QString IdTagBeanTableDataModel::getValue(QString name) const
 {
-    IdTag* tag = ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getBySystemName(name);
+    DefaultIdTag* tag =(DefaultIdTag*)((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getBySystemName(name);
     if (tag == NULL) {
         return "?";
     }
@@ -127,7 +127,7 @@ IdTagBeanTableDataModel::IdTagBeanTableDataModel(IdTagTableAction *act)
     if (col == CLEARCOL) {
         IdTag* t = (IdTag*) getBySystemName(sysNameList.at(row));
         if (log->isDebugEnabled()) {
-            log->debug("Clear where & when last seen for " + t->getSystemName());
+            log->debug("Clear where & when last seen for " + ((NamedBean*)t->self())->getSystemName());
         }
         t->setWhereLastSeen(NULL);
         fireTableRowsUpdated(row, row);

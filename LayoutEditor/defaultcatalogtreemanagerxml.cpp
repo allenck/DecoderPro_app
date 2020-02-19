@@ -48,7 +48,7 @@ DefaultCatalogTreeManagerXml::DefaultCatalogTreeManagerXml(QObject *parent) :
  while (iter.hasNext())
  {
   QString sname = iter.next();
-  CatalogTree* tree = manager->getBySystemName(sname);
+  CatalogTree* tree = (CatalogTree*)manager->getBySystemName(sname);
   if (log-> isDebugEnabled())
   {
    log-> debug("Tree: sysName= "+sname+", userName= "+((AbstractCatalogTree*)tree)->getUserName());
@@ -135,7 +135,7 @@ DefaultCatalogTreeManagerXml::DefaultCatalogTreeManagerXml(QObject *parent) :
         if (sname.at(1) != CatalogTree::XML) {
             continue;
         }
-        CatalogTree* ct = manager->getBySystemName(sname);
+        CatalogTree* ct = (CatalogTree*)manager->getBySystemName(sname);
         QDomElement elem = doc.createElement("catalogTree");
         elem.setAttribute("systemName", sname);
         QString uname = ct->getUserName();

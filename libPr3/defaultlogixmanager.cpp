@@ -85,8 +85,8 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
         x = (Logix*)getByUserName(userName);
         if (x!=nullptr) return nullptr;
     }
-    x = getBySystemName(systemName);
-    if (x==nullptr) x = getBySystemName(systemName.toUpper());   // for compatibility?
+    x = (Logix*)getBySystemName(systemName);
+    if (x==nullptr) x = (Logix*)getBySystemName(systemName.toUpper());   // for compatibility?
     if (x!=nullptr) return nullptr;
     // Logix does not exist, create a new Logix
     x = (Logix*)new DefaultLogix(systemName,userName);
@@ -148,7 +148,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  */
 /*public*/ void DefaultLogixManager::activateAllLogixs() {
     // Guarantee Initializer executes first.
-    Logix* x = getBySystemName(/*LRouteTableAction::LOGIX_INITIALIZER*/"RTXINITIALIZER");
+    Logix* x = (Logix*)getBySystemName(/*LRouteTableAction::LOGIX_INITIALIZER*/"RTXINITIALIZER");
     if (x!=nullptr) {
         x->activateLogix();
         x->setGuiNames();
@@ -165,7 +165,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
         if (sysName==(/*LRouteTableAction.LOGIX_INITIALIZER*/"RTXINITIALIZER")) {
             continue;
         }
-        x = getBySystemName(sysName);
+        x = (Logix*)getBySystemName(sysName);
         if (x==nullptr) {
             log->error("Error getting Logix *"+sysName+"* when activating Logixs");
             break;
@@ -193,10 +193,10 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
 /*public*/ Logix* DefaultLogixManager::getLogix(QString name) {
     Logix* x = (Logix*)getByUserName(name);
     if (x!=nullptr) return x;
-    return getBySystemName(name);
+    return (Logix*)getBySystemName(name);
 }
 
-/*public*/ Logix* DefaultLogixManager::getBySystemName(QString name) {
+/*public*/ NamedBean *DefaultLogixManager::getBySystemName(QString name) {
     return (Logix*)_tsys->value(name);
 }
 

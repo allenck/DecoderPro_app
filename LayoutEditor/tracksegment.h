@@ -242,6 +242,8 @@ private:
     // defined constants
 
     // operational instance variables (not saved between sessions)
+    /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlock = nullptr;
+
     /*private*/ LayoutBlock* block;// = NULL;
 //    /*private*/ TrackSegment* instance;// = NULL;
     /*private*/ LayoutEditor* layoutEditor;// = NULL;

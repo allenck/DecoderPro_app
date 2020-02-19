@@ -44,7 +44,7 @@
     }
 
     //@Override
-    /*public*/ void TimeoutRfidReporter::notify(IdTag* t) {
+    /*public*/ void TimeoutRfidReporter::notify(DefaultIdTag* t) {
         RfidReporter::notify(t);
         whenLastReported = QDateTime::currentMSecsSinceEpoch();
         if (timeoutThread == nullptr) {

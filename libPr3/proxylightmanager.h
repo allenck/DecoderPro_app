@@ -11,7 +11,7 @@ public:
  /*public*/ int getXMLOrder();
  /*public*/ Light* getLight(QString name);
  /*public*/ Light* provideLight(QString name);
- /*public*/ Light* getBySystemName(QString systemName);
+ /*public*/ NamedBean* getBySystemName(QString systemName);
  /*public*/ NamedBean* getByUserName(QString userName);
  /*public*/ Light* newLight(QString systemName, QString userName);
 // /*public*/ NameValidity validSystemNameFormat(QString systemName);

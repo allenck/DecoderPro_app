@@ -148,7 +148,7 @@ void WarrantTableAction::common()
  QStringList sysNames = manager->getSystemNameArray();
  for (int i = 0; i < sysNames.length(); i++)
  {
-  OBlock* block = manager->getBySystemName(sysNames[i]);
+  OBlock* block = (OBlock*)manager->getBySystemName(sysNames[i]);
         checkPathPortals(block);
  }
  showPathPortalErrors();
@@ -180,7 +180,7 @@ void WarrantTableAction::common()
 
  for (int i = 0; i < sysNames.length(); i++)
  {
-  Warrant* warrant = manager->getBySystemName(sysNames[i]);
+  Warrant* warrant = (Warrant*)manager->getBySystemName(sysNames[i]);
   QAction* mi = new QAction(warrant->getDisplayName(),parent);
   editWarrantMapper->setMapping(mi, warrant->getDisplayName());
   //mi.setActionCommand(warrant.getDisplayName());
@@ -359,7 +359,7 @@ InstanceManager::getDefault("WarrantManager");
  QStringListIterator iter(systemNameList);
  while (iter.hasNext())
  {
-  Warrant* w =manager->getBySystemName(iter.next());
+  Warrant* w =(Warrant*)manager->getBySystemName(iter.next());
   QList <BlockOrder*>* orders = w->getBlockOrders();
   QListIterator<BlockOrder*> it(*orders);
   while (it.hasNext())
@@ -384,7 +384,7 @@ InstanceManager::getDefault("WarrantManager");
  QStringListIterator iter( systemNameList);
  while (iter.hasNext())
  {
-  Warrant* w =manager->getBySystemName(iter.next());
+  Warrant* w = (Warrant*)manager->getBySystemName(iter.next());
   QList<BlockOrder*>* orders = w->getBlockOrders();
   QListIterator<BlockOrder*> it(*orders);
   while (it.hasNext())
@@ -552,7 +552,7 @@ InstanceManager::getDefault("WarrantManager");
          if (block->getSystemName()==(sysNames[i])) {
              continue;
          }
-         OBlock* b = manager->getBySystemName(sysNames[i]);
+         OBlock* b = (OBlock*)manager->getBySystemName(sysNames[i]);
          QVectorIterator <Path*> it(*b->getPaths());
          while (it.hasNext()) {
              bool shared = sharedTO(path, (OPath*)it.next());
@@ -743,7 +743,7 @@ void CreateWarrantFrame::makeWarrant()
   userName = "";
  }
   bool failed = false;
-  Warrant* w = ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getBySystemName(sysName);
+  Warrant* w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getBySystemName(sysName);
   if (w != NULL)
   {
    failed = true;

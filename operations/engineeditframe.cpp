@@ -33,6 +33,7 @@
 #include "carowners.h"
 #include "enginelengths.h"
 #include "joptionpane.h"
+#include "abstractidtag.h"
 
 //EditEnginesFrame::EditEnginesFrame(QWidget *parent) :
 //  OperationsFrame(parent)
@@ -290,7 +291,7 @@ namespace Operations
          QList<NamedBean*>* list = ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getNamedBeanList();
          foreach(NamedBean* bean, *list)
          {
-          rfidComboBox->addItem(((IdTag*)bean)->getDisplayName(), VPtr<NamedBean>::asQVariant(bean));
+          rfidComboBox->addItem(((AbstractIdTag*)bean)->getDisplayName(), VPtr<NamedBean>::asQVariant(bean));
          }
 
          pOptionalLayout->addWidget(pRfid);
@@ -445,7 +446,7 @@ namespace Operations
 
      ownerComboBox->setCurrentIndex(ownerComboBox->findText(engine->getOwner()));
      valueTextField->setText(engine->getValue());
-     rfidComboBox->setCurrentIndex(rfidComboBox->findData(VPtr<IdTag>::asQVariant(engine->getIdTag())));
+     rfidComboBox->setCurrentIndex(rfidComboBox->findData(VPtr<DefaultIdTag>::asQVariant(engine->getIdTag())));
      commentTextField->setText(engine->getComment());
 
      setTitle(tr("Edit Locomotive"));
@@ -662,7 +663,7 @@ namespace Operations
          }
          _engine->setComment(commentTextField->text());
          _engine->setValue(valueTextField->text());
-         _engine->setIdTag((IdTag*) VPtr<IdTag>::asPtr(rfidComboBox->itemData(rfidComboBox->currentIndex())));
+         _engine->setIdTag((DefaultIdTag*) VPtr<DefaultIdTag>::asPtr(rfidComboBox->itemData(rfidComboBox->currentIndex())));
      }
  }
 /*private*/ bool EngineEditFrame::checkRoadNumber(QString roadNum) {

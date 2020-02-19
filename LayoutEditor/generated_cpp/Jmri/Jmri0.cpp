@@ -2211,6 +2211,39 @@ if (_wrapper) {
 }
   return AbstractManager::getBeanTypeHandled(plural0);
 }
+NamedBean*  PythonQtShell_AbstractManager::getBySystemName(QString  systemName0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBySystemName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&systemName0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractManager::getBySystemName(systemName0);
+}
 NamedBean*  PythonQtShell_AbstractManager::getByUserName(QString  userName0)
 {
 if (_wrapper) {
@@ -6346,6 +6379,39 @@ if (_wrapper) {
   }
 }
   return AbstractReporterManager::getBeanTypeHandled(plural0);
+}
+NamedBean*  PythonQtShell_AbstractReporterManager::getBySystemName(QString  systemName0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBySystemName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&systemName0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractReporterManager::getBySystemName(systemName0);
 }
 NamedBean*  PythonQtShell_AbstractReporterManager::getByUserName(QString  key0)
 {
@@ -22309,11 +22375,6 @@ Audio*  PythonQtWrapper_AudioManager::getAudio(AudioManager* theWrappedObject, Q
   return ( theWrappedObject->getAudio(arg__1));
 }
 
-Audio*  PythonQtWrapper_AudioManager::getBySystemName(AudioManager* theWrappedObject, QString  arg__1)
-{
-  return ( theWrappedObject->getBySystemName(arg__1));
-}
-
 QStringList  PythonQtWrapper_AudioManager::getSystemNameList(AudioManager* theWrappedObject, QChar  arg__1)
 {
   return ( theWrappedObject->getSystemNameList(arg__1));
@@ -29845,6 +29906,11 @@ void PythonQtWrapper_Block::removeBlockDenyList(Block* theWrappedObject, QString
   ( theWrappedObject->removeBlockDenyList(blk));
 }
 
+void PythonQtWrapper_Block::setAllocated(Block* theWrappedObject, bool  boo)
+{
+  ( theWrappedObject->setAllocated(boo));
+}
+
 void PythonQtWrapper_Block::setBlockSpeed(Block* theWrappedObject, QString  s) throw (JmriException)
 {
   ( theWrappedObject->setBlockSpeed(s));
@@ -30263,6 +30329,39 @@ if (_wrapper) {
   }
 }
   return BlockManager::getBeanTypeHandled(plural0);
+}
+Block*  PythonQtShell_BlockManager::getBySystemName(QString  name0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBySystemName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"Block*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      Block* returnValue{};
+      void* args[2] = {NULL, (void*)&name0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
+          } else {
+            returnValue = *((Block**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BlockManager::getBySystemName(name0);
 }
 Block*  PythonQtShell_BlockManager::getByUserName(QString  key0)
 {
@@ -30996,11 +31095,6 @@ Block*  PythonQtWrapper_BlockManager::getBlock(BlockManager* theWrappedObject, Q
 Block*  PythonQtWrapper_BlockManager::getByDisplayName(BlockManager* theWrappedObject, QString  key)
 {
   return ( theWrappedObject->getByDisplayName(key));
-}
-
-Block*  PythonQtWrapper_BlockManager::getBySystemName(BlockManager* theWrappedObject, QString  name)
-{
-  return ( theWrappedObject->getBySystemName(name));
 }
 
 QCompleter*  PythonQtWrapper_BlockManager::getCompleter(BlockManager* theWrappedObject, QString  text)
@@ -37587,6 +37681,39 @@ if (_wrapper) {
   }
 }
   return DefaultLogixManager::getBeanTypeHandled(plural0);
+}
+NamedBean*  PythonQtShell_DefaultLogixManager::getBySystemName(QString  name0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBySystemName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&name0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return DefaultLogixManager::getBySystemName(name0);
 }
 NamedBean*  PythonQtShell_DefaultLogixManager::getByUserName(QString  key0)
 {
