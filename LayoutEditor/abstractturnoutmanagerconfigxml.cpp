@@ -73,7 +73,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    log->debug("system name is "+sname);
    Turnout* t = ((AbstractTurnoutManager*)tm)->getBySystemName(sname);
    QDomElement elem = doc.createElement("turnout");
-   elem.setAttribute("systemName", sname); // deprecated for 2.9.* series
+   //elem.setAttribute("systemName", sname); // deprecated for 2.9.* series
    QDomElement e3;
    elem.appendChild(e3=doc.createElement("systemName"));
    e3.appendChild(doc.createTextNode(sname));

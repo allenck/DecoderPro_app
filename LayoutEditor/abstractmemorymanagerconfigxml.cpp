@@ -61,7 +61,7 @@ AbstractMemoryManagerConfigXML::~AbstractMemoryManagerConfigXML()
    log->debug("system name is "+sname);
    Memory* m = ((AbstractMemoryManager*)tm)->getBySystemName(sname);
    QDomElement elem = doc.createElement("memory");
-   elem.setAttribute("systemName", sname);
+   //elem.setAttribute("systemName", sname);
    QDomElement e1;
    elem.appendChild(e1=doc.createElement("systemName"));
    e1.appendChild(doc.createTextNode(sname));

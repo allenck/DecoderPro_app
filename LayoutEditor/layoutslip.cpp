@@ -634,8 +634,8 @@ void LayoutSlip::removeSML(QString signalMast){
  *  Defaults to not mainline if connecting track segments are missing
  */
 /*public*/ bool LayoutSlip::isMainline() {
-    if ( ((connectA != nullptr) && (((TrackSegment*)connectA)->getMainline())) ||
-        ((connectB != nullptr) && (((TrackSegment*)connectB)->getMainline())) ) {
+    if ( ((connectA != nullptr) && (((TrackSegment*)connectA)->isMainline())) ||
+        ((connectB != nullptr) && (((TrackSegment*)connectB)->isMainline())) ) {
         return true;
     }
     else {

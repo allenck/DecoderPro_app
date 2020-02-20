@@ -2957,7 +2957,7 @@ double LayoutEditor::getPaintScale()
            case LayoutTrack::MULTI_SENSOR: {
                PositionableLabel* pl = (PositionableLabel*) selectedObject;
 
-               if (pl->isPositionable()) {
+               if (pl && pl->isPositionable()) {
                    pl->setLocation((int) currentPoint.x(), (int) currentPoint.y());
                    isDragging = true;
                }
@@ -7463,7 +7463,7 @@ void LayoutEditor::addSensor()
   l->setIcon("SensorStateInactive", sensorIconEditor->getIcon(1));
   l->setIcon("BeanStateInconsistent", sensorIconEditor->getIcon(2));
   l->setIcon("BeanStateUnknown", sensorIconEditor->getIcon(3));
-  l->setSensor(name);
+  l->setSensor(newName);
   l->setDisplayLevel(SENSORS);
   //Sensor xSensor = l.getSensor();
   if (l->getSensor() != nullptr)

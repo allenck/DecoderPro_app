@@ -12,11 +12,11 @@ EditTrackSegmentDlg::EditTrackSegmentDlg(TrackSegment* trackSegment, QWidget *pa
  ui->setupUi(this);
  setWindowTitle("Edit Track Segment");
  this->trackSegment = trackSegment;
- if(this->trackSegment->getDashed())
+ if(this->trackSegment->isDashed())
   ui->cbStyle->setCurrentIndex(1);
  else
   ui->cbStyle->setCurrentIndex(0);
- if(this->trackSegment->getMainline())
+ if(this->trackSegment->isMainline())
   ui->cbTrackType->setCurrentIndex(1);
  else
   ui->cbTrackType->setCurrentIndex(0);

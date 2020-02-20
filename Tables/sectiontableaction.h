@@ -89,7 +89,7 @@ private:
     JTextField* reverseStopSensorField;// = new JTextField(12);
     QRadioButton* manually;// = new JRadioButton(tr("SetManually"),true);
     QRadioButton* automatic;// = new JRadioButton(tr("UseConnectivity"),false);
-    QButtonGroup* entryPointOptions;// = NULL;
+    QButtonGroup* entryPointOptions=nullptr;// = NULL;
     QString systemNameAuto;// = this.getClass().getName()+".AutoSystemName";
     BeanTableFrame* f;
     /*private*/ EntryPoint* getEntryPointInList(QList<EntryPoint*> list, Block* b, Block* pb, QString pbDir);

@@ -813,8 +813,8 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
     //table->getTableHeader().setReorderingAllowed(true);
     table->setColumnModel(new XTableColumnModel(this));
     //table->createDefaultColumnsFromModel();
-    //table->resizeColumnsToContents();
-    //table->horizontalHeader()->setStretchLastSection(true);
+//    table->resizeColumnsToContents();
+//    table->horizontalHeader()->setStretchLastSection(true);
 
 //    addMouseListenerToHeader(table);
     return table;

@@ -879,8 +879,8 @@
  *  Defaults to not mainline if connecting track segments are missing
  */
 /*public*/ bool LevelXing::isMainlineAC() {
-    if ( ((connectA != NULL) && (((TrackSegment*)connectA)->getMainline())) ||
-        ((connectB != NULL) && (((TrackSegment*)connectB)->getMainline())) ) {
+    if ( ((connectA != NULL) && (((TrackSegment*)connectA)->isMainline())) ||
+        ((connectB != NULL) && (((TrackSegment*)connectB)->isMainline())) ) {
         return true;
     }
     else {
@@ -888,8 +888,8 @@
     }
 }
 /*public*/ bool LevelXing::isMainlineBD() {
-    if ( ((connectB != NULL) && (((TrackSegment*)connectB)->getMainline())) ||
-        ((connectD != NULL) && (((TrackSegment*)connectD)->getMainline())) ) {
+    if ( ((connectB != NULL) && (((TrackSegment*)connectB)->isMainline())) ||
+        ((connectD != NULL) && (((TrackSegment*)connectD)->isMainline())) ) {
         return true;
     }
     else {

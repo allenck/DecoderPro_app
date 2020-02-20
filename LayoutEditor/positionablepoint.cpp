@@ -12,6 +12,7 @@
 #include <limits>
 #include "signalmastlogicmanager.h"
 #include "signallingguitools.h"
+#include "layouteditorfinditems.h"
 
 //PositionablePoint::PositionablePoint(QObject *parent) :
 //    QObject(parent)
@@ -128,7 +129,11 @@
 ///*public*/ QString PositionablePoint::getID() {return ident;}
 /*public*/ int PositionablePoint::getType() {return type;}
 
-/*public*/ TrackSegment* PositionablePoint::getConnect1() {return connect1;}
+/*public*/ TrackSegment* PositionablePoint::getConnect1()
+{
+ return connect1;
+}
+
 /*public*/ TrackSegment* PositionablePoint::getConnect2()
 {
  if (type == EDGE_CONNECTOR && getLinkedPoint() != nullptr) {
@@ -521,78 +526,38 @@ return nullptr;
  *        TrackSegment objects.
  */
 /*public*/ void PositionablePoint::setObjects(LayoutEditor* p) {
-    connect1 = p->findTrackSegmentByName(trackSegment1Name);
-    connect2 = p->findTrackSegmentByName(trackSegment2Name);
+ if (type == EDGE_CONNECTOR)
+ {
+   connect1 = p->getFinder()->findTrackSegmentByName(trackSegment1Name);
+   if (getConnect2() != nullptr && getLinkedEditor() != nullptr) {
+       //now that we have a connection we can fire off a change
+       TrackSegment* ts = getConnect2();
+       getLinkedEditor()->getLEAuxTools()->setBlockConnectivityChanged();
+       ts->updateBlockInfo();
+   }
+ } else {
+     connect1 = p->getFinder()->findTrackSegmentByName(trackSegment1Name);
+     connect2 = p->getFinder()->findTrackSegmentByName(trackSegment2Name);
+ }
 }
-
-/*public*/ void PositionablePoint::removeBeanReference(NamedBean* nb) {
-        if (nb == nullptr) {
-            return;
-        }
-        if (qobject_cast<SignalMast*>(nb)) {
-            if (nb->equals((QObject*)getWestBoundSignalMast())) {
-                setWestBoundSignalMast(nullptr);
-            } else if (nb->equals((QObject*)getEastBoundSignalMast())) {
-                setEastBoundSignalMast(nullptr);
-            }
-        } else if (qobject_cast<Sensor*>(nb)) {
-            if (nb->equals(getWestBoundSensor())) {
-                setWestBoundSignalMast(nullptr);
-            } else if (nb->equals(getEastBoundSensor())) {
-                setEastBoundSignalMast(nullptr);
-            }
-        } else if (qobject_cast<SignalHead*>(nb)) {
-            if (nb->equals(getWestBoundSignalHead())) {
-                setWestBoundSignal(nullptr);
-            }
-            if (nb->equals(getEastBoundSignalHead())) {
-                setEastBoundSignal(nullptr);
-            }
-        }
-    }
 /**
- * Setup and remove connections to track
+ * setup a connection to a track
+ *
+ * @param track the track we want to connect to
+ * @return true if successful
  */
-/*public*/ bool PositionablePoint::setTrackConnection (TrackSegment* track) {
-    if (track==nullptr) {
-        return false;
-    }
-    if ( (connect1!=track) && (connect2!=track) ) {
-        // not connected to this track
-        if (connect1==nullptr) {
-            connect1 = track;
-        }
-        else if ( (type!=END_BUMPER) && (connect2==nullptr) ) {
-            connect2 = track;
-            if(connect1->getLayoutBlock()==connect2->getLayoutBlock()){
-                setWestBoundSignalMast("");
-                setEastBoundSignalMast("");
-                setWestBoundSensor("");
-                setEastBoundSensor("");
-            }
-        }
-        else {
-            log->error ("Attempt to assign more than allowed number of connections");
-            return false;
-        }
-    }
-    return true;
+/*public*/ bool PositionablePoint::setTrackConnection(/*@Nonnull*/ TrackSegment* track) {
+    return replaceTrackConnection(nullptr, track);
 }
 
-/*public*/ void PositionablePoint::removeTrackConnection (TrackSegment* track)
-{
-    if (track==connect1)
-    {
-        connect1 = nullptr;
-        reCheckBlockBoundary();
-    }
-    else if (track==connect2) {
-        connect2 = nullptr;
-        reCheckBlockBoundary();
-    }
-    else {
-        log->error ("Attempt to remove non-existant track connection");
-    }
+/**
+ * remove a connection to a track
+ *
+ * @param track the track we want to disconnect from
+ * @return true if successful
+ */
+/*public*/ bool PositionablePoint::removeTrackConnection(/*@Nonnull*/ TrackSegment* track) {
+    return replaceTrackConnection(track, nullptr);
 }
 
 /**
@@ -651,6 +616,35 @@ return nullptr;
     }
     return result;
 }   // replaceTrackConnection
+
+/*public*/ void PositionablePoint::removeBeanReference(NamedBean* nb) {
+        if (nb == nullptr) {
+            return;
+        }
+        if (qobject_cast<SignalMast*>(nb)) {
+            if (nb->equals((QObject*)getWestBoundSignalMast())) {
+                setWestBoundSignalMast(nullptr);
+            } else if (nb->equals((QObject*)getEastBoundSignalMast())) {
+                setEastBoundSignalMast(nullptr);
+            }
+        } else if (qobject_cast<Sensor*>(nb)) {
+            if (nb->equals(getWestBoundSensor())) {
+                setWestBoundSignalMast(nullptr);
+            } else if (nb->equals(getEastBoundSensor())) {
+                setEastBoundSignalMast(nullptr);
+            }
+        } else if (qobject_cast<SignalHead*>(nb)) {
+            if (nb->equals(getWestBoundSignalHead())) {
+                setWestBoundSignal(nullptr);
+            }
+            if (nb->equals(getEastBoundSignalHead())) {
+                setEastBoundSignal(nullptr);
+            }
+        }
+    }
+
+
+
 
 void PositionablePoint::removeSML(SignalMast* signalMast) {
     if (signalMast == nullptr) {
@@ -1328,7 +1322,7 @@ void PositionablePoint::invalidateItemType(EditScene* g2)
   rects = nullptr;
  }
 }
-#if 1
+#if 0
 void PositionablePoint::draw(EditScene* g2)
 {
     QColor color;

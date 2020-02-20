@@ -148,7 +148,7 @@
     _reporterListener = NULL;
     _reportingCurrent = false;
     paths = new QVector<Path*>();
-    blockDenyList = new QVector<NamedBeanHandle<Block*>* >(1);
+    blockDenyList = QVector<NamedBeanHandle<Block*>* >(/*1*/);
     _permissiveWorking=false;
     _blockSpeed = "";
     maxInfoMessages = 5;
@@ -411,49 +411,49 @@ QString Block::getStateString()
  Block* blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(pName);
  NamedBeanHandle<Block*>* namedBlock = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, blk);
  Q_ASSERT(namedBlock != NULL);
- if(!blockDenyList->contains(namedBlock))
-  blockDenyList->append(namedBlock);
+ if(!blockDenyList.contains(namedBlock))
+  blockDenyList.append(namedBlock);
 }
 
 /*public*/ void Block::addBlockDenyList(Block* blk)
 {
  NamedBeanHandle<Block*>* namedBlock = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(blk->getDisplayName(), blk);
-    if(!blockDenyList->contains(namedBlock))
-        blockDenyList->append(namedBlock);
+    if(!blockDenyList.contains(namedBlock))
+        blockDenyList.append(namedBlock);
 }
 
 /*public*/ void Block::removeBlockDenyList(QString blk)
 {
  NamedBeanHandle<Block*>* toremove = NULL;
- foreach(NamedBeanHandle<Block*>* bean, *blockDenyList)
+ foreach(NamedBeanHandle<Block*>* bean, blockDenyList)
  {
   if(bean->getName()==(blk))
    toremove=bean;
  }
  if(toremove!=NULL)
  {
-  blockDenyList->remove(blockDenyList->indexOf(toremove));
+  blockDenyList.remove(blockDenyList.indexOf(toremove));
     }
 }
 
 /*public*/ void Block::removeBlockDenyList(Block* blk)
 {
  NamedBeanHandle<Block*>* toremove = NULL;
- foreach(NamedBeanHandle<Block*>* bean, *blockDenyList)
+ foreach(NamedBeanHandle<Block*>* bean, blockDenyList)
  {
   if(bean->getBean()==blk)
    toremove=bean;
  }
  if(toremove!=NULL)
  {
-  blockDenyList->remove(blockDenyList->indexOf(toremove));
+  blockDenyList.remove(blockDenyList.indexOf(toremove));
  }
 }
 
 /*public*/ QList<QString>* Block::getDeniedBlocks()
 {
- QStringList* list = new QStringList(/*blockDenyList->size()*/);
- foreach(NamedBeanHandle<Block*>* bean, *blockDenyList)
+ QStringList* list = new QStringList(/*blockDenyList.size()*/);
+ foreach(NamedBeanHandle<Block*>* bean, blockDenyList)
  {
   if(bean != NULL)
    list->append(bean->getName());
@@ -463,7 +463,7 @@ QString Block::getStateString()
 
 /*public*/ bool Block::isBlockDenied(QString deny)
 {
- foreach(NamedBeanHandle<Block*>* bean, *blockDenyList)
+ foreach(NamedBeanHandle<Block*>* bean, blockDenyList)
  {
   if(bean== NULL) return false;
   if(bean->getName()==(deny))
@@ -474,7 +474,7 @@ QString Block::getStateString()
 
 /*public*/ bool Block::isBlockDenied(Block* deny)
 {
- foreach(NamedBeanHandle<Block*>* bean, *blockDenyList)
+ foreach(NamedBeanHandle<Block*>* bean, blockDenyList)
  {
   if(bean->getBean()==deny)
    return true;

@@ -75,10 +75,14 @@ BlockManagerXml::~BlockManagerXml()
    // the following NULL check is to catch a NULL pointer exception that sometimes was found to happen
    if (b==NULL) log->error("Null block during store - sname = "+sname);
    QDomElement elem = doc.createElement("block");
-   elem.setAttribute("systemName", sname);
    QDomElement e2;
    elem.appendChild(e2 =doc.createElement("systemName"));
    e2.appendChild(doc.createTextNode(sname));
+
+   // As a work-around for backward compatibility, store systemName as attribute.
+   // TODO Remove this in e.g. JMRI 4.11.1 and then update all the loadref comparison files
+   //elem.setAttribute("systemName", sname);
+
    // the following NULL check is to catch a NULL pointer exception that sometimes was found to happen
    if( (b!=NULL) && (b->getUserName()!="") && (b->getUserName()!=("")))
    {

@@ -44,7 +44,7 @@
  sensorList = QList<QString>();
  editTrackSegmentMainlineComboBox = new QComboBox();
  editTrackSegmentDashedComboBox = new QComboBox();
- editTrackSegmentHiddenCheckBox = new QCheckBox(tr("HideTrack"));  // NOI18N
+ editTrackSegmentHiddenCheckBox = new QCheckBox(tr("Hide Track"));  // NOI18N
  editTrackSegmentBlockNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
          InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
  editTrackSegmentArcTextField = new JTextField(5);
@@ -58,11 +58,11 @@
  editLayoutTurnoutBlockDNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
          InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
  editLayoutTurnoutStateComboBox = new QComboBox();
- editLayoutTurnoutHiddenCheckBox = new QCheckBox(tr("HideTurnout"));  // NOI18N
- editLayoutTurnout2ndTurnoutCheckBox = new QCheckBox(tr("SupportingTurnout"));  // NOI18N
+ editLayoutTurnoutHiddenCheckBox = new QCheckBox(tr("Hide Turnout"));  // NOI18N
+ editLayoutTurnout2ndTurnoutCheckBox = new QCheckBox(tr("Use Two Physical Addresses"));  // NOI18N
  editLayoutTurnout2ndTurnoutInvertCheckBox = new QCheckBox(tr("SecondTurnoutInvert"));  // NOI18N
 
- editLayoutSlipHiddenBox = new QCheckBox(tr("HideSlip"));
+ editLayoutSlipHiddenBox = new QCheckBox(tr("Hide Slip"));
  editLayoutSlipBlockNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
          InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
  editLevelXingBlock1NameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
@@ -174,107 +174,110 @@ void LayoutTrackEditors::showSensorMessage() {
 /*protected*/ void LayoutTrackEditors::editTrackSegment(/*@Non nullptr*/ TrackSegment* trackSegment) {
     this->trackSegment = trackSegment;
     sensorList.clear();
-#if 1
-    if (editTrackSegmentOpen) {
-        editTrackSegmentFrame->setVisible(true);
-    } else if (editTrackSegmentFrame ==  nullptr) { // Initialize if needed
-        editTrackSegmentFrame = new JmriJFrameX(tr("EditTrackSegment"), false, true); // key moved to DisplayBundle to be found by CircuitBuilder.java   // NOI18N
-        editTrackSegmentFrame->addHelpMenu("package.jmri.jmrit.display.EditTrackSegment", true);  // NOI18N
-        editTrackSegmentFrame->setLocation(50, 30);
-        QWidget* contentPane = editTrackSegmentFrame->getContentPane(true);
-        //contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 
-        // add dashed choice
-        QWidget* panel31 = new QWidget();
-        FlowLayout* panel31Layout;
-        panel31->setLayout(panel31Layout = new FlowLayout());
-        editTrackSegmentDashedComboBox->clear();
-        editTrackSegmentDashedComboBox->addItem(tr("Solid"));  // NOI18N
-        editTrackSegmentSolidIndex = 0;
-        editTrackSegmentDashedComboBox->addItem(tr("Dashed"));  // NOI18N
-        editTrackSegmentDashedIndex = 1;
-        editTrackSegmentDashedComboBox->setToolTip(tr("Select style for track segment."));  // NOI18N
-        panel31Layout->addWidget(new QLabel(tr("Style") + " : "));
-        panel31Layout->addWidget(editTrackSegmentDashedComboBox);
-        contentPane->layout()->addWidget(panel31);
+    if (editTrackSegmentOpen)
+    {
+     editTrackSegmentFrame->setVisible(true);
+    }
+    else if (editTrackSegmentFrame ==  nullptr)
+    { // Initialize if needed
+     editTrackSegmentFrame = new JmriJFrameX(tr("Edit Track Segment"), false, true); // key moved to DisplayBundle to be found by CircuitBuilder.java   // NOI18N
+     editTrackSegmentFrame->addHelpMenu("package.jmri.jmrit.display.EditTrackSegment", true);  // NOI18N
+     editTrackSegmentFrame->setLocation(50, 30);
+     QWidget* contentPane = editTrackSegmentFrame->getContentPane(true);
+     //contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 
-        // add mainline choice
-        QWidget* panel32 = new QWidget();
-        FlowLayout* panel32Layout;
-        panel32->setLayout(panel32Layout = new FlowLayout());
-        editTrackSegmentMainlineComboBox->clear();
-        editTrackSegmentMainlineComboBox->addItem(tr("Mainline Track"));  // NOI18N
-        editTrackSegmentMainlineTrackIndex = 0;
-        editTrackSegmentMainlineComboBox->addItem(tr("Side Track"));  // NOI18N
-        editTrackSegmentSideTrackIndex = 1;
-        editTrackSegmentMainlineComboBox->setToolTip(tr("Select whether track segment is part of a mainline, or is a side track."));  // NOI18N
-        panel32Layout->addWidget(editTrackSegmentMainlineComboBox);
-        contentPane->layout()->addWidget(panel32);
+     // add dashed choice
+     QWidget* panel31 = new QWidget();
+     FlowLayout* panel31Layout;
+     panel31->setLayout(panel31Layout = new FlowLayout());
+     editTrackSegmentDashedComboBox->clear();
+     editTrackSegmentDashedComboBox->addItem(tr("Solid"));  // NOI18N
+     editTrackSegmentSolidIndex = 0;
+     editTrackSegmentDashedComboBox->addItem(tr("Dashed"));  // NOI18N
+     editTrackSegmentDashedIndex = 1;
+     editTrackSegmentDashedComboBox->setToolTip(tr("Select style for track segment."));  // NOI18N
+     panel31Layout->addWidget(new QLabel(tr("Style") + " : "));
+     panel31Layout->addWidget(editTrackSegmentDashedComboBox);
+     contentPane->layout()->addWidget(panel31);
 
-        // add hidden choice
-        QWidget* panel33 = new QWidget();
-        FlowLayout* panel33Layout;
-        panel33->setLayout(panel33Layout = new FlowLayout());
-        editTrackSegmentHiddenCheckBox->setToolTip(tr("HiddenToolTip"));  // NOI18N
-        panel33Layout->addWidget(editTrackSegmentHiddenCheckBox);
-        contentPane->layout()->addWidget(panel33);
+     // add mainline choice
+     QWidget* panel32 = new QWidget();
+     FlowLayout* panel32Layout;
+     panel32->setLayout(panel32Layout = new FlowLayout());
+     editTrackSegmentMainlineComboBox->clear();
+     editTrackSegmentMainlineComboBox->addItem(tr("Mainline Track"));  // NOI18N
+     editTrackSegmentMainlineTrackIndex = 0;
+     editTrackSegmentMainlineComboBox->addItem(tr("Side Track"));  // NOI18N
+     editTrackSegmentSideTrackIndex = 1;
+     editTrackSegmentMainlineComboBox->setToolTip(tr("Select whether track segment is part of a mainline, or is a side track."));  // NOI18N
+     panel32Layout->addWidget(editTrackSegmentMainlineComboBox);
+     contentPane->layout()->addWidget(panel32);
 
-        // setup block name
-        QWidget* panel2 = new QWidget();
-        FlowLayout* panel2Layout;
-        panel2->setLayout(panel2Layout = new FlowLayout());
-        QLabel* blockNameLabel = new QLabel(tr("BlockID"));  // NOI18N
-        panel2Layout->addWidget(blockNameLabel);
-        LayoutEditor::setupComboBox(editTrackSegmentBlockNameComboBox, false, true);
-        editTrackSegmentBlockNameComboBox->setToolTip(tr("Edit Block name to change the linked block. If new name, block will be created."));  // NOI18N
-        panel2Layout->addWidget(editTrackSegmentBlockNameComboBox);
+     // add hidden choice
+     QWidget* panel33 = new QWidget();
+     FlowLayout* panel33Layout;
+     panel33->setLayout(panel33Layout = new FlowLayout());
+     editTrackSegmentHiddenCheckBox->setToolTip(tr("Check to hide this track segment when not in edit mode."));  // NOI18N
+     panel33Layout->addWidget(editTrackSegmentHiddenCheckBox);
+     contentPane->layout()->addWidget(panel33);
 
-        contentPane->layout()->addWidget(panel2);
+     // setup block name
+     QWidget* panel2 = new QWidget();
+     FlowLayout* panel2Layout;
+     panel2->setLayout(panel2Layout = new FlowLayout());
+     QLabel* blockNameLabel = new QLabel(tr("Block Name:"));  // NOI18N
+     panel2Layout->addWidget(blockNameLabel);
+     LayoutEditor::setupComboBox(editTrackSegmentBlockNameComboBox, false, true);
+     editTrackSegmentBlockNameComboBox->setToolTip(tr("Edit Block name to change the linked block. If new name, block will be created."));  // NOI18N
+     panel2Layout->addWidget(editTrackSegmentBlockNameComboBox);
 
-        QWidget* panel20 = new QWidget();
-        FlowLayout* panel20Layout;
-        panel20->setLayout(panel20Layout = new FlowLayout());
-        QLabel* arcLabel = new QLabel(tr("Set Arc Angle"));  // NOI18N
-        panel20Layout->addWidget(arcLabel);
-        panel20Layout->addWidget(editTrackSegmentArcTextField);
-        editTrackSegmentArcTextField->setToolTip(tr("SetArcAngleHint"));  // NOI18N
-        contentPane->layout()->addWidget(panel20);
+     contentPane->layout()->addWidget(panel2);
 
-        // set up Edit Block, Done and Cancel buttons
-        QWidget* panel5 = new QWidget();
-        FlowLayout* panel5Layout;
-        panel5->setLayout(panel5Layout = new FlowLayout());
+     QWidget* panel20 = new QWidget();
+     FlowLayout* panel20Layout;
+     panel20->setLayout(panel20Layout = new FlowLayout());
+     QLabel* arcLabel = new QLabel(tr("Set Arc Angle"));  // NOI18N
+     panel20Layout->addWidget(arcLabel);
+     panel20Layout->addWidget(editTrackSegmentArcTextField);
+     editTrackSegmentArcTextField->setToolTip(tr("Set Arc Angle"));  // NOI18N
+     contentPane->layout()->addWidget(panel20);
 
-        // Edit Block
-        panel5Layout->addWidget(editTrackSegmentSegmentEditBlockButton = new QPushButton(tr("Create/Edit Block {%1").arg("")));  // NOI18N
+     // set up Edit Block, Done and Cancel buttons
+     QWidget* panel5 = new QWidget();
+     FlowLayout* panel5Layout;
+     panel5->setLayout(panel5Layout = new FlowLayout());
+
+     // Edit Block
+     panel5Layout->addWidget(editTrackSegmentSegmentEditBlockButton = new QPushButton(tr("Create/Edit Block %1").arg("")));  // NOI18N
 //        editTrackSegmentSegmentEditBlockButton.addActionListener((ActionEvent e) -> {
 //            editTrackSegmentEditBlockPressed(e);
 //        });
-        connect(editTrackSegmentSegmentEditBlockButton, SIGNAL(clicked(bool)), this, SLOT(editTrackSegmentEditBlockPressed()));
-        editTrackSegmentSegmentEditBlockButton->setToolTip(tr("Click here to create/edit information for Block %1 shown above.").arg("")); // empty value for block 1  // NOI18N
-        panel5Layout->addWidget(editTrackSegmentSegmentEditDoneButton = new QPushButton(tr("ButtonDone")));  // NOI18N
+     connect(editTrackSegmentSegmentEditBlockButton, SIGNAL(clicked(bool)), this, SLOT(editTrackSegmentEditBlockPressed()));
+     editTrackSegmentSegmentEditBlockButton->setToolTip(tr("Click here to create/edit information for Block %1 shown above.").arg("")); // empty value for block 1  // NOI18N
+     panel5Layout->addWidget(editTrackSegmentSegmentEditDoneButton = new QPushButton(tr("Done")));  // NOI18N
 //        editTrackSegmentSegmentEditDoneButton.addActionListener((ActionEvent e) -> {
 //            editTracksegmentDonePressed(e);
 //        });
-        editTrackSegmentSegmentEditDoneButton->setToolTip(tr("Click %1 to save the changes").arg(tr("Done")));  // NOI18N
+     editTrackSegmentSegmentEditDoneButton->setToolTip(tr("Click %1 to save the changes").arg(tr("Done")));  // NOI18N
 
-        // make this button the default button (return or enter activates)
-        // Note: We have to invoke this later because we don't currently have a root pane
+     // make this button the default button (return or enter activates)
+     // Note: We have to invoke this later because we don't currently have a root pane
 //        SwingUtilities.invokeLater(() -> {
 //            JRootPane rootPane = SwingUtilities.getRootPane(editTrackSegmentSegmentEditDoneButton);
 //            rootPane.setDefaultButton(editTrackSegmentSegmentEditDoneButton);
 //        });
-        editTrackSegmentSegmentEditDoneButton->setDefault(true);
+     editTrackSegmentSegmentEditDoneButton->setDefault(true);
 
 
-        // Cancel
-        panel5Layout->addWidget(editTrackSegmentSegmentEditCancelButton = new QPushButton(tr("Cancel")));  // NOI18N
+     // Cancel
+     panel5Layout->addWidget(editTrackSegmentSegmentEditCancelButton = new QPushButton(tr("Cancel")));  // NOI18N
 //        editTrackSegmentSegmentEditCancelButton.addActionListener((ActionEvent e) -> {
 //            editTrackSegmentCancelPressed(e);
 //        });
-        connect(editTrackSegmentSegmentEditCancelButton, SIGNAL(clicked(bool)), this, SLOT(editTrackSegmentCancelPressed()));
-        editTrackSegmentSegmentEditCancelButton->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));  // NOI18N
-        contentPane->layout()->addWidget(panel5);
+     connect(editTrackSegmentSegmentEditCancelButton, SIGNAL(clicked(bool)), this, SLOT(editTrackSegmentCancelPressed()));
+     editTrackSegmentSegmentEditCancelButton->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));  // NOI18N
+     contentPane->layout()->addWidget(panel5);
     }
     // Set up for Edit
     if (trackSegment->isMainline()) {
@@ -304,16 +307,15 @@ void LayoutTrackEditors::showSensorMessage() {
 //            editTrackSegmentCancelPressed( nullptr);
 //        }
 //    });
-     editTrackSegmentFrame->addWindowListener(new EditTrackSegmentWindowListener(this));
+    editTrackSegmentFrame->addWindowListener(new EditTrackSegmentWindowListener(this));
     editTrackSegmentFrame->pack();
     editTrackSegmentFrame->setVisible(true);
     editTrackSegmentOpen = true;
 
     showSensorMessage();
-#endif
 
 }   // editTrackSegment
-#if 1
+
 //@InvokeOnGuiThread
 /*private*/ void LayoutTrackEditors::editTrackSegmentEditBlockPressed(/*ActionEvent a*/) {
     // check if a block name has been entered
@@ -410,7 +412,7 @@ void LayoutTrackEditors::showSensorMessage() {
         editTrackSegmentNeedsRedraw = false;
     }
 }
-#endif
+
 /*===================*\
 | Edit Layout Turnout |
 \*===================*/

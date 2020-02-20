@@ -155,6 +155,7 @@ protected:
  /*protected*/ QColor setColorForTrackBlock(EditScene* g2,
          /*@Nullable*/ LayoutBlock* layoutBlock, bool forceBlockTrackColor);
  /*protected*/ QColor setColorForTrackBlock(EditScene* g2, /*@Nullable*/ LayoutBlock* lb);
+ /*protected*/ static bool isBezierHitType(int hitType);
 
  friend class LayoutEditorAuxTools;
  friend class LayoutEditor;

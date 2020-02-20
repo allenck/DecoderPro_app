@@ -224,7 +224,7 @@ private:
     /*private*/ bool _reportingCurrent;// = false;
     QVector<Path*>* paths;// = new QVector<Path*>();
     //Deny traffic entering from this block
-    QVector<NamedBeanHandle<Block*>* >* blockDenyList;// = new QVector<NamedBeanHandle<Block*>>(1);
+    QVector<NamedBeanHandle<Block*>* > blockDenyList;// = new QVector<NamedBeanHandle<Block*>>(1);
     /*private*/ bool _permissiveWorking=false;
     /*private*/ QString _blockSpeed;// = "";
     /*private*/ int maxInfoMessages = 5;

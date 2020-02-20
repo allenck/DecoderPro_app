@@ -393,7 +393,7 @@ private:
     QMutex mutex;
     Logger* log;
     // operational instance variables (not saved to disk)
-    /*private*/ int useCount; //0;
+    /*private*/ int useCount = 0;
     /*private*/ NamedBeanHandle<Sensor*>* occupancyNamedSensor; //NULL;
     friend class CreateEditBlock;
     /*private*/ Memory* memory; //NULL;

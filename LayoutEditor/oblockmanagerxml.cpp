@@ -48,9 +48,12 @@ OBlockManagerXml::OBlockManagerXml(QObject *parent) :
         if (log->isDebugEnabled())
             log->debug("OBlock: sysName= "+sname+", userName= "+uname);
         QDomElement elem = doc.createElement("oblock");
-        elem.setAttribute("systemName", sname);
-        if (uname==NULL) uname = "";
-        elem.setAttribute("userName", uname);
+        //elem.setAttribute("systemName", sname);
+        if (uname.isNull()) uname = "";
+//        elem.setAttribute("userName", uname); // doing this for compatibility during 2.9.* series
+        QDomElement e3;
+        elem.appendChild(e3 = doc.createElement("userName"));
+        e3.appendChild(doc.createTextNode(uname));
         QString comment = block->getComment();
         if (comment != NULL) {
             QDomElement c = doc.createElement("comment");

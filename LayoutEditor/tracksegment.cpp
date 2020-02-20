@@ -1,5 +1,5 @@
-﻿#include "tracksegment.h"
-#include "edittracksegmentdlg.h"
+#include "tracksegment.h"
+//#include "edittracksegmentdlg.h"
 #include <QMenu>
 #include "abstractaction.h"
 #include "layoutblockroutetableaction.h"
@@ -51,44 +51,35 @@
 
 
 /*public*/
-TrackSegment::TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2, int t2, bool dash, bool main, LayoutEditor* myPanel)
- : LayoutTrack(id, QPointF(), myPanel)
+TrackSegment::TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2, int t2, bool dash, bool main, LayoutEditor* layoutEditor)
+ : LayoutTrack(id, QPointF(), layoutEditor)
 {
  init(id);
- layoutEditor = myPanel;
+ this->layoutEditor = layoutEditor;
  // validate input
  if ( (c1==NULL) || (c2==NULL) )
  {
   log->error("Invalid object in TrackSegment constructor call - "+id);
  }
- connect1 = c1;
- connect2 = c2;
- if ( (t1 < LayoutEditor::POS_POINT)
-  || ( ((t1 > LayoutEditor::LEVEL_XING_D) && (t1 < LayoutEditor::SLIP_A))
-  || ((t1 > LayoutEditor::SLIP_D) && (t1 < LayoutEditor::TURNTABLE_RAY_OFFSET))))
+ if (isConnectionHitType(t1))
  {
-  log->error("Invalid connect type 1 in TrackSegment constructor - "+id);
+     connect1 = c1;
+     type1 = t1;
+ } else {
+     log->error("Invalid connect type 1 ('" + QString::number(t1) + "') in TrackSegment constructor - " + id);
  }
- else
- {
-  type1 = t1;
+ if (isConnectionHitType(t2)) {
+     connect2 = c2;
+     type2 = t2;
+ } else {
+     log->error("Invalid connect type 2 ('" + QString::number(t2) + "') in TrackSegment constructor - " + id);
  }
- if ( (t2<LayoutEditor::POS_POINT) ||
-             ( ((t2>LayoutEditor::LEVEL_XING_D) && (t2<LayoutEditor::SLIP_A))
-                 || ((t2>LayoutEditor::SLIP_D) && (t2<LayoutEditor::TURNTABLE_RAY_OFFSET)) ) )
- {
-  log->error("Invalid connect type 2 in TrackSegment constructor - "+id);
- }
- else
- {
-  type2 = t2;
- }
-// instance = this;
-// ident = id;
  dashed = dash;
  mainline = main;
+
  arc = false;
  flip = false;
+
  angle = 0.0;
  circle = false;
  bezier = false;
@@ -97,20 +88,21 @@ TrackSegment::TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2,
 
 // alternate constructor for loading layout editor panels
 /*public*/
-TrackSegment::TrackSegment(QString id, QString c1Name, int t1, QString c2Name, int t2, bool dash, bool main, bool hide, LayoutEditor* myPanel)
- : LayoutTrack(id, QPointF(), myPanel)
+TrackSegment::TrackSegment(QString id, QString c1Name, int t1, QString c2Name, int t2, bool dash, bool main, bool hide, LayoutEditor* layoutEditor)
+ : LayoutTrack(id, QPointF(), layoutEditor)
 {
  init(id);
- layoutEditor = myPanel;
+ this->layoutEditor = layoutEditor;
+
  tConnect1Name = c1Name;
  type1 = t1;
  tConnect2Name = c2Name;
  type2 = t2;
- //instance = this;
- //ident = id;
+
  dashed = dash;
  mainline = main;
  hidden = hide;
+
  setupDefaultBumperSizes(layoutEditor);
 }
 
@@ -161,6 +153,7 @@ void TrackSegment::init(QString id)
  flippedCheckBoxMenuItem = new QAction(tr("Flip"));
  flippedCheckBoxMenuItem->setCheckable(true);
 }
+
 /**
  * Get debugging string for the TrackSegment.
  *
@@ -183,7 +176,11 @@ void TrackSegment::init(QString id)
 }
 
 /*public*/ QString TrackSegment::getBlockName() {
-    return blockName;
+ QString result = QString();
+ if (namedLayoutBlock != nullptr) {
+     result = namedLayoutBlock->getName();
+ }
+ return ((result == nullptr) ? "" : result);
 }
 
 /*public*/ int TrackSegment::getType1() {
@@ -202,20 +199,61 @@ void TrackSegment::init(QString id)
     return connect2;
 }
 
-/*protected*/ void TrackSegment::setNewConnect1(LayoutTrack* o, int type) {
-    connect1 = o;
-    type1 = type;
+/*protected*/ void TrackSegment::setNewConnect1(LayoutTrack* connectTrack, int connectionType) {
+    connect1 = connectTrack;
+    type1 = connectionType;
 
 }
 
-/*protected*/ void TrackSegment::setNewConnect2(LayoutTrack *o, int type) {
-    connect2 = o;
-    type2 = type;
+/*protected*/ void TrackSegment::setNewConnect2(LayoutTrack *connectTrack, int connectionType) {
+    connect2 = connectTrack;
+    type2 = connectionType;
 }
 
-/*public*/ bool TrackSegment::getDashed()
-{
- return dashed;
+/**
+ * replace old track connection with new track connection
+ *
+ * @param oldTrack the old track connection
+ * @param newTrack the new track connection
+ * @return true if successful
+ */
+/*public*/ bool TrackSegment::replaceTrackConnection(/*@CheckForNull*/ LayoutTrack* oldTrack, /*@CheckForNull*/ LayoutTrack* newTrack, int newType) {
+    bool result = false; // assume failure (pessimist!)
+    // trying to replace old track with null?
+    if (newTrack == nullptr) {
+        // (yes) remove old connection
+        if (oldTrack != nullptr) {
+            result = true;  // assume success (optimist!)
+            if (connect1 == oldTrack) {
+                connect1 = nullptr;
+                type1 = NONE;
+            } else if (connect2 == oldTrack) {
+                connect2 = nullptr;
+                type2 = NONE;
+            } else {
+                log->error("Attempt to remove invalid track connection");
+                result = false;
+            }
+        } else {
+            log->error("Can't replace null track connection with null");
+            result = false;
+        }
+    } else // already connected to newTrack?
+    if ((connect1 != newTrack) && (connect2 != newTrack)) {
+        // (no) find a connection we can connect to
+        result = true;  // assume success (optimist!)
+        if (connect1 == oldTrack) {
+            connect1 = newTrack;
+            type1 = newType;
+        } else if (connect2 == oldTrack) {
+            connect2 = newTrack;
+            type2 = newType;
+        } else {
+            log->error("Attempt to replace invalid track connection");
+            result = false;
+        }
+    }
+    return result;
 }
 
 /**
@@ -226,19 +264,11 @@ void TrackSegment::init(QString id)
 }
 
 /*public*/ void TrackSegment::setDashed(bool dash) {
-    dashed = dash;
-}
-
-///*public*/ bool TrackSegment::getHidden() {
-//    return hidden;
-//}
-
-///*public*/ void TrackSegment::setHidden(bool hide) {
-//    hidden = hide;
-//}
-
-/*public*/ bool TrackSegment::getMainline() {
-    return mainline;
+ if (dashed != dash) {
+     dashed = dash;
+     layoutEditor->redrawPanel();
+     layoutEditor->setDirty();
+ }
 }
 
 /**
@@ -250,7 +280,11 @@ void TrackSegment::init(QString id)
 }
 
 /*public*/ void TrackSegment::setMainline(bool main) {
-    mainline = main;
+ if (mainline != main) {
+     mainline = main;
+     layoutEditor->redrawPanel();
+     layoutEditor->setDirty();
+ }
 }
 
 /**
@@ -261,12 +295,15 @@ void TrackSegment::init(QString id)
 }
 
 /*public*/ void TrackSegment::setArc(bool boo) {
-    arc = boo;
-    changed=true;
+ if (arc != boo) {
+     arc = boo;
+     if (arc) {
+         bezier = false;
+         hideConstructionLines(SHOWCON);
+     }
+     changed = true;
+ }
 }
-
-/*public*/ bool TrackSegment::getCircle() {return circle;}
-
 
 /**
  * @return true if track segment is circle
@@ -277,10 +314,16 @@ void TrackSegment::init(QString id)
 
 /*public*/ void
 TrackSegment::setCircle(bool boo) {
-    circle = boo;
-    changed=true;
+ if (circle != boo) {
+     circle = boo;
+     if (circle) {
+         bezier = false;
+         hideConstructionLines(SHOWCON);
+     }
+     changed = true;
+ }
 }
-/*public*/ bool TrackSegment::getFlip() {return flip;}
+
 /**
  * @return true if track segment circle or arc should be drawn flipped
  */
@@ -290,17 +333,6 @@ TrackSegment::setCircle(bool boo) {
 /*public*/ void TrackSegment::setFlip(bool boo) {
     flip = boo;
     changed=true;
-}
-///*public*/ int getStartAngle() {return startangle;}
-///*public*/ void setStartAngle(int x) {startangle = x;}
-
-/**
- * @return true if track segment is a bezier curve
- * @deprecated since 4.9.4; use {@link #isBezier()} instead
- */
-//@Deprecated // Java standard pattern for boolean getters is "isBezier()"
-/*public*/ bool TrackSegment::getBezier() {
-    return bezier;
 }
 
 /**
@@ -323,19 +355,13 @@ TrackSegment::setCircle(bool boo) {
 }
 
 /*public*/ double TrackSegment::getAngle() {return angle;}
-/*public*/ void
-TrackSegment::setAngle(double x)
+
+/*public*/ void TrackSegment::setAngle(double x)
 {
-// GT 8-OCT-2009 ==== Changed arcs maths : Start
-//        if (angle>180) // ???
- if (x>180.0)
-  x=180.0;
- else if (x < 0.0)
-  x = 0.0;
-// GT 8-OCT-2009 ==== Changed arcs maths : End
-  angle = x;
-  changed=true;
+ angle = MathUtil::pin(x, 0.0, 180.0);
+ changed = true;
 }
+
 /**
  * get the direction from end point 1 to 2
  * <p>
@@ -372,23 +398,17 @@ TrackSegment::setAngle(double x)
 /*public*/ bool TrackSegment::trackNeedsRedraw() { return changed; }
 
 /*public*/ void TrackSegment::trackRedrawn() { changed = false; }
-///*public*/ int getRadius() {return radius;}
-///*public*/ void setRadius(int x) {radius = x;}
 
 /*public*/ LayoutBlock*
 TrackSegment::getLayoutBlock()
 {
- if ( (block==nullptr) && (blockName!="") && (blockName!="") )
- {
-  block = layoutEditor->provideLayoutBlock(blockName);
- }
- return block;
+ return (namedLayoutBlock != nullptr) ? namedLayoutBlock->getBean() : nullptr;
 }
 
 /*public*/ QString TrackSegment::getConnect1Name() {return getConnectName(connect1,type1);}
 /*public*/ QString TrackSegment::getConnect2Name() {return getConnectName(connect2,type2);}
 
-/*private*/ QString TrackSegment::getConnectName(/*@Nullable*/ LayoutTrack* layoutTrack, int type) {
+/*private*/ QString TrackSegment::getConnectName(/*@Nullable*/ LayoutTrack* layoutTrack, int /*type*/) {
     return (layoutTrack == nullptr) ? nullptr : layoutTrack->getName();
 }
 
@@ -400,9 +420,10 @@ TrackSegment::getLayoutBlock()
  */
 // only implemented here to suppress "does not override abstract method " error in compiler
 //@Override
-/*public*/ LayoutTrack* TrackSegment::getConnection(int connectionType) throw (JmriException) {
+/*public*/ LayoutTrack* TrackSegment::getConnection(int /*connectionType*/) throw (JmriException) {
     // nothing to see here, move along
-    return nullptr;
+ throw JmriException("Use getConnect1() or getConnect2() instead.");
+
 }
 
 /**
@@ -415,6 +436,7 @@ TrackSegment::getLayoutBlock()
 //@Override
 /*public*/ void TrackSegment::setConnection(int /*connectionType*/, /*@Nullable*/ LayoutTrack* /*o*/, int /*type*/) throw (JmriException) {
     // nothing to see here, move along
+ throw JmriException("Use setConnect1() or setConnect2() instead.");
 }
 
 /*public*/ int TrackSegment::getNumberOfBezierControlPoints() {
@@ -443,43 +465,6 @@ TrackSegment::getLayoutBlock()
             bezierControlPoints.append(p);
         }
     }
-}
-// initialization instance variables (used when loading a LayoutEditor)
-//	public String tBlockName = "";
-//	public String tConnect1Name = "";
-//	public String tConnect2Name = "";
-/**
- * Initialization method
- *   The above variables are initialized by PositionablePointXml, then the following
- *        method is called after the entire LayoutEditor is loaded to set the specific
- *        TrackSegment objects.
- */
-//@Override
-/*public*/ void TrackSegment::setObjects(LayoutEditor* p)
-{
- if (!tBlockName.isEmpty()) {
-     block = p->getLayoutBlock(tBlockName);
-     if (block != nullptr) {
-         blockName = tBlockName;
-         block->incrementUse();
-     } else {
-         log->error("bad blockname '" + tBlockName + "' in tracksegment " + getName());
-     }
- }
-
- //NOTE: testing "type-less" connects
- // (read comments for findObjectByName in LayoutEditorFindItems.java)
- connect1 = p->getFinder()->findObjectByName(tConnect1Name);
- if (nullptr == connect1)
- { // findObjectByName failed... try findObjectByTypeAndName
-     log->warn("Unknown connect1 object prefix: '" + tConnect1Name + "' of type " + QString::number(type1) + ".");
-     connect1 = p->getFinder()->findObjectByTypeAndName(type1, tConnect1Name);
- }
- connect2 = p->getFinder()->findObjectByName(tConnect2Name);
- if (nullptr == connect2) { // findObjectByName failed; try findObjectByTypeAndName
-     log->warn("Unknown connect2 object prefix: '" + tConnect2Name + "' of type " + QString::number(type2) + ".");
-     connect2 = p->getFinder()->findObjectByTypeAndName(type2, tConnect2Name);
- }
 }
 
 /**
@@ -526,7 +511,8 @@ TrackSegment::getLayoutBlock()
     center = MathUtil::multiply(center, factor);
     if (isBezier()) {
         for (QPointF p : bezierControlPoints) {
-// TODO:            p.setLocation(MathUtil::multiply(p, factor));
+          //p.setLocation(MathUtil::multiply(p, factor));
+         p = MathUtil::multiply(p, factor);
         }
     }
 }
@@ -543,6 +529,19 @@ TrackSegment::getLayoutBlock()
 }
 
 /**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void TrackSegment::rotateCoords(double angleDEG) {
+    if (isBezier()) {
+        for (QPointF p : bezierControlPoints) {
+            //p.setLocation(MathUtil.rotateDEG(p, center, angleDEG));
+         p= MathUtil::rotateDEG(p, center, angleDEG);
+        }
+    }
+}
+
+/**
  * set center coordinates
  *
  * @param newCenterPoint the coordinates to set
@@ -553,56 +552,68 @@ TrackSegment::getLayoutBlock()
         if (isBezier()) {
             QPointF delta = MathUtil::subtract(newCenterPoint, center);
             for (QPointF p : bezierControlPoints) {
-// TODO:                p.setLocation(MathUtil.add(p, delta));
-             p.setX(p.x()+delta.x());
-             p.setY(p.y()+delta.y());
+//           p.setLocation(MathUtil.add(p, delta));
+             p = MathUtil::add(p, delta);
             }
         }
         center = newCenterPoint;
     }
 }
 
+/**
+ * Initialization method
+ *   The above variables are initialized by PositionablePointXml, then the following
+ *        method is called after the entire LayoutEditor is loaded to set the specific
+ *        TrackSegment objects.
+ */
+//@Override
+/*public*/ void TrackSegment::setObjects(LayoutEditor* p)
+{
+  LayoutBlock* lb;
+  if (!tLayoutBlockName.isEmpty()) {
+      lb = p->provideLayoutBlock(tLayoutBlockName);
+      if (lb != nullptr) {
+          namedLayoutBlock = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(lb->getUserName(), lb);
+          lb->incrementUse();
+      } else {
+          log->error(tr("bad blockname '%1' in tracksegment %2").arg(tLayoutBlockName).arg(getName()));
+          namedLayoutBlock = nullptr;
+      }
+      tLayoutBlockName = nullptr; //release this memory
+  }
+
+ //NOTE: testing "type-less" connects
+ // (read comments for findObjectByName in LayoutEditorFindItems.java)
+ connect1 = p->getFinder()->findObjectByName(tConnect1Name);
+ if (nullptr == connect1)
+ { // findObjectByName failed... try findObjectByTypeAndName
+     log->warn("Unknown connect1 object prefix: '" + tConnect1Name + "' of type " + QString::number(type1) + ".");
+     connect1 = p->getFinder()->findObjectByTypeAndName(type1, tConnect1Name);
+ }
+ connect2 = p->getFinder()->findObjectByName(tConnect2Name);
+ if (nullptr == connect2) { // findObjectByName failed; try findObjectByTypeAndName
+     log->warn("Unknown connect2 object prefix: '" + tConnect2Name + "' of type " + QString::number(type2) + ".");
+     connect2 = p->getFinder()->findObjectByTypeAndName(type2, tConnect2Name);
+ }
+}
+
 /*protected*/ void TrackSegment::updateBlockInfo()
 {
- if (block!=NULL)
-  block->updatePaths();
- LayoutBlock* b1 = getBlock(connect1,type1);
- if ((b1!=NULL)&&(b1!=block))
-  b1->updatePaths();
- LayoutBlock* b2 = getBlock(connect2,type2);
- if ((b2!=NULL)&&(b2!=block)&&(b2!=b1))
-  b2->updatePaths();
- //if(getConnect1() instanceof PositionablePoint)
- if(qobject_cast<PositionablePoint*>(getConnect1())!= NULL)
-  ((PositionablePoint*)getConnect1())->reCheckBlockBoundary();
- else
-  //if(getConnect1() instanceof LayoutTurnout)
- if(qobject_cast<LayoutTurnout*>(getConnect1())!= NULL)
-  ((LayoutTurnout*)getConnect1())->reCheckBlockBoundary();
- else
-   //if(getConnect1() instanceof LevelXing)
- if(qobject_cast<LevelXing*>(getConnect1())!= NULL)
-  ((LevelXing*)getConnect1())->reCheckBlockBoundary();
-  else
-    //if(getConnect1() instanceof LayoutSlip)
-     if(qobject_cast<LayoutSlip*>(getConnect1()) !=NULL)
-  ((LayoutSlip*)getConnect1())->reCheckBlockBoundary();
+  LayoutBlock* layoutBlock = getLayoutBlock();
+  if (layoutBlock != nullptr) {
+      layoutBlock->updatePaths();
+  }
+  LayoutBlock* b1 = getBlock(connect1, type1);
+  if ((b1 != nullptr) && (b1 != layoutBlock)) {
+      b1->updatePaths();
+  }
+  LayoutBlock* b2 = getBlock(connect2, type2);
+  if ((b2 != nullptr) && (b2 != layoutBlock) && (b2 != b1)) {
+      b2->updatePaths();
+  }
 
-    //if(getConnect2() instanceof PositionablePoint)
- if(qobject_cast<PositionablePoint*>(getConnect2())!= NULL)
-  ((PositionablePoint*)getConnect2())->reCheckBlockBoundary();
- else
-    //if(getConnect2() instanceof LayoutTurnout)
- if(qobject_cast<LayoutTurnout*>(getConnect2())!= NULL)
-  ((LayoutTurnout*)getConnect2())->reCheckBlockBoundary();
- else
-    //if(getConnect2() instanceof LevelXing)
- if(qobject_cast<LevelXing*>(getConnect2())!= NULL)
-  ((LevelXing*)getConnect2())->reCheckBlockBoundary();
- else
-     //if(getConnect2() instanceof LayoutSlip)
- if(qobject_cast<LayoutSlip*>(getConnect2()) !=NULL)
-  ((LayoutSlip*)getConnect2())->reCheckBlockBoundary();
+  getConnect1()->reCheckBlockBoundary();
+  getConnect2()->reCheckBlockBoundary();
 }
 
 /*private*/ LayoutBlock* TrackSegment::getBlock (LayoutTrack* connect, int type)
@@ -628,6 +639,7 @@ TrackSegment::getLayoutBlock()
   return (layoutEditor->getAffectedBlock(connect,type));
  }
 }
+
 /**
  * {@inheritDoc}
  */
@@ -2138,7 +2150,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onArrowGap()));
 //     }
 // });
    connect(act, SIGNAL(triggered(bool)), this, SLOT(onEdit()));
- popupMenu->addAction(new AbstractAction(tr("Delete"),this));
+ popupMenu->addAction(act =new AbstractAction(tr("Delete"),this));
 // {
 //     @Override
 //     public void actionPerformed(ActionEvent e) {
@@ -2149,7 +2161,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onArrowGap()));
 // });
    connect(act, SIGNAL(triggered(bool)), this, SLOT(onDelete()));
 
- popupMenu->addAction(new AbstractAction(tr("SplitTrackSegment"),this));
+ popupMenu->addAction(act =new AbstractAction(tr("SplitTrackSegment"),this));
 // {
 //     @Override
 //     public void actionPerformed(ActionEvent e) {
@@ -2395,6 +2407,7 @@ void TrackSegment::onEdit()
 {
   layoutEditor->getLayoutTrackEditors()->editTrackSegment(this);
 }
+
 void TrackSegment::onDelete()
 {
  layoutEditor->removeTrackSegment(this);
@@ -2521,8 +2534,8 @@ void TrackSegment::onBumperLineWidth()
 {
  //prompt for width
  int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
-         tr("DecorationLineWidthMenuItemTitle"),
-         tr("DecorationLineWidthMenuItemTitle"),
+         tr("Line Width"),
+         tr("Line Width"),
          bumperLineWidth);
  setBumperLineWidth(newValue);
 }
@@ -2530,8 +2543,8 @@ void TrackSegment::onBumperLineLength()
 {
  //prompt for length
  int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
-         tr("DecorationLengthMenuItemTitle"),
-         tr("DecorationLengthMenuItemTitle"),
+         tr("Length"),
+         tr("Length"),
          bumperLength);
  setBumperLength(newValue);
 }
@@ -2788,7 +2801,7 @@ void TrackSegment::on_actionRemove()
 
 void TrackSegment::flipAngle()
 {
-    if(getFlip()){
+    if(isFlip()){
         setFlip(false);
     } else{
         setFlip(true);
@@ -2796,230 +2809,13 @@ void TrackSegment::flipAngle()
     layoutEditor->redrawPanel();
     layoutEditor->setDirty();
 }
-#if 0 // now implemented in edittracksegmentdlg
-    // variables for Edit Track Segment pane
- // NOTE: these are now implemented in EditTrackSegmentDlg.
-    /*private*/ JmriJFrame editTrackSegmentFrame = NULL;
-    /*private*/ JComboBox dashedBox = new JComboBox();
-    /*private*/ int dashedIndex;
-    /*private*/ int solidIndex;
-    /*private*/ JComboBox mainlineBox = new JComboBox();
-    /*private*/ int mainlineTrackIndex;
-    /*private*/ int sideTrackIndex;
-    /*private*/ JTextField blockNameField = new JTextField(16);
-    /*private*/ JTextField arcField = new JTextField(5);
-    /*private*/ JCheckBox hiddenBox = new JCheckBox(rb.getQString("HideTrack"));
-    /*private*/ JButton segmentEditBlock;
-    /*private*/ JButton segmentEditDone;
-    /*private*/ JButton segmentEditCancel;
-    /*private*/ bool editOpen = false;
-
-    /**
-     * Edit a Track Segment
-     */
-    protected void editTrackSegment() {
-        if (editOpen) {
-            editTrackSegmentFrame.setVisible(true);
-            return;
-        }
-        // Initialize if needed
-        if (editTrackSegmentFrame == NULL) {
-            editTrackSegmentFrame = new JmriJFrame( rb.getQString("EditTrackSegment"), false, true );
-            editTrackSegmentFrame.addHelpMenu("package.jmri.jmrit.display.EditTrackSegment", true);
-            editTrackSegmentFrame.setLocation(50,30);
-            Container contentPane = editTrackSegmentFrame.getContentPane();
-            contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-            // add dashed choice
-            QWidget* panel31 = new QWidget();
-            panel31.setLayout(new FlowLayout());
-            dashedBox.removeAllItems();
-            dashedBox.addItem( rb.getQString("Solid") );
-            solidIndex = 0;
-            dashedBox.addItem( rb.getQString("Dashed") );
-            dashedIndex = 1;
-            dashedBox->setToolTip(rb.getQString("DashedToolTip"));
-            panel31.add (new JLabel(rb.getQString("Style")+" : "));
-            panel31.add (dashedBox);
-            contentPane.add(panel31);
-            // add mainline choice
-            QWidget* panel32 = new QWidget();
-            panel32.setLayout(new FlowLayout());
-            mainlineBox.removeAllItems();
-            mainlineBox.addItem( rb.getQString("Mainline") );
-            mainlineTrackIndex = 0;
-            mainlineBox.addItem( rb.getQString("NotMainline") );
-            sideTrackIndex = 1;
-            mainlineBox->setToolTip(rb.getQString("MainlineToolTip"));
-            panel32.add (mainlineBox);
-            contentPane.add(panel32);
-            // add hidden choice
-            QWidget* panel33 = new QWidget();
-            panel33.setLayout(new FlowLayout());
-            hiddenBox->setToolTip(rb.getQString("HiddenToolTip"));
-            panel33.add (hiddenBox);
-            contentPane.add(panel33);
-            // setup block name
-            QWidget* panel2 = new QWidget();
-            panel2.setLayout(new FlowLayout());
-            JLabel blockNameLabel = new JLabel( rb.getQString("BlockID"));
-            panel2.add(blockNameLabel);
-            panel2.add(blockNameField);
-            blockNameField->setToolTip( rb.getQString("EditBlockNameHint") );
-            contentPane.add(panel2);
-            if((getArc())&&(getCircle())){
-                QWidget* panel20 = new QWidget();
-                panel20.setLayout(new FlowLayout());
-                JLabel arcLabel = new JLabel( "Set Arc Angle");
-                panel20.add(arcLabel);
-                panel20.add(arcField);
-                arcField->setToolTip( "Set Arc Angle" );
-                contentPane.add(panel20);
-                arcField.setText(getAngle());
-            }
-            // set up Edit Block, Done and Cancel buttons
-            QWidget* panel5 = new QWidget();
-            panel5.setLayout(new FlowLayout());
-            // Edit Block
-            panel5.add(segmentEditBlock = new JButton(rb.getQString("EditBlock")));
-            segmentEditBlock.addActionListener(new ActionListener() {
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    segmentEditBlockPressed(e);
-                }
-            });
-            segmentEditBlock->setToolTip( rb.getQString("EditBlockHint") );
-            panel5.add(segmentEditDone = new JButton(rb.getQString("Done")));
-            segmentEditDone.addActionListener(new ActionListener() {
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    segmentEditDonePressed(e);
-                }
-            });
-            segmentEditDone->setToolTip( rb.getQString("DoneHint") );
-            // Cancel
-            panel5.add(segmentEditCancel = new JButton(rb.getQString("Cancel")));
-            segmentEditCancel.addActionListener(new ActionListener() {
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    segmentEditCancelPressed(e);
-                }
-            });
-            segmentEditCancel->setToolTip( rb.getQString("CancelHint") );
-            contentPane.add(panel5);
-        }
-        // Set up for Edit
-        if (mainline)
-            mainlineBox->setCheckedIndex(mainlineTrackIndex);
-        else
-            mainlineBox->setCheckedIndex(sideTrackIndex);
-        if (dashed)
-            dashedBox->setCheckedIndex(dashedIndex);
-        else
-            dashedBox->setCheckedIndex(solidIndex);
-        hiddenBox->setChecked(hidden);
-        blockNameField.setText(blockName);
-        editTrackSegmentFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-                /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-                    segmentEditCancelPressed(NULL);
-                }
-            });
-        editTrackSegmentFrame.pack();
-        editTrackSegmentFrame.setVisible(true);
-        editOpen = true;
-    }
-    void segmentEditBlockPressed(ActionEvent a) {
-        // check if a block name has been entered
-        if (!blockName == (blockNameField.getText().trim()) ) {
-            // block has changed, if old block exists, decrement use
-            if (block!=NULL) {
-                block.decrementUse();
-            }
-            // get new block, or NULL if block has been removed
-            blockName = blockNameField.getText().trim();
-            block = layoutEditor->provideLayoutBlock(blockName);
-            if (block == NULL) {
-                blockName = "";
-            }
-            needsRedraw = true;
-            layoutEditor->auxTools->setBlockConnectivityChanged();
-            updateBlockInfo();
-        }
-        // check if a block exists to edit
-        if (block==NULL) {
-            JOptionPane.showMessageDialog(editTrackSegmentFrame,
-                    rb.getQString("Error1"),
-                    rb.getQString("Error"),JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        block.editLayoutBlock(editTrackSegmentFrame);
-        layoutEditor->setDirty();
-        needsRedraw = true;
-    }
-    void segmentEditDonePressed(ActionEvent a) {
-        // set dashed
-        bool oldDashed = dashed;
-        if (dashedBox.getSelectedIndex() == dashedIndex) dashed = true;
-        else dashed = false;
-        // set mainline
-        bool oldMainline = mainline;
-        if (mainlineBox.getSelectedIndex() == mainlineTrackIndex) mainline = true;
-        else mainline = false;
-        // set hidden
-        bool oldHidden = hidden;
-        hidden = hiddenBox.isSelected();
-        if(getArc()){
-            //setAngle(Integer.parseInt(arcField.getText()));
-            //needsRedraw = true;
-            try {
-                double newAngle = Double.parseDouble(arcField.getText());
-                setAngle(newAngle);
-                needsRedraw = true;
-            }
-            catch (NumberFormatException e) {
-                arcField.setText(getAngle());
-            }
-        }
-        // check if anything changed
-        if ( (oldDashed!=dashed) || (oldMainline!=mainline) || (oldHidden!=hidden) )
-            needsRedraw = true;
-        // check if Block changed
-        if ( !blockName == (blockNameField.getText().trim()) ) {
-            // block has changed, if old block exists, decrement use
-            if (block!=NULL) {
-                block.decrementUse();
-            }
-            // get new block, or NULL if block has been removed
-            blockName = blockNameField.getText().trim();
-            block = layoutEditor->provideLayoutBlock(blockName);
-            if (block == NULL) {
-                blockName = "";
-            }
-            needsRedraw = true;
-            layoutEditor->auxTools->setBlockConnectivityChanged();
-            updateBlockInfo();
-        }
-        editOpen = false;
-        editTrackSegmentFrame.setVisible(false);
-        editTrackSegmentFrame.dispose();
-        editTrackSegmentFrame = NULL;
-        if (needsRedraw) layoutEditor->redrawPanel();
-        layoutEditor->setDirty();
-    }
-    void segmentEditCancelPressed(ActionEvent a) {
-        editOpen = false;
-        editTrackSegmentFrame.setVisible(false);
-        editTrackSegmentFrame.dispose();
-        editTrackSegmentFrame = NULL;
-        if (needsRedraw) {
-            layoutEditor->setDirty();
-            layoutEditor->redrawPanel();
-        }
-    }
-#endif
 /**
  * Clean up when this object is no longer needed.  Should not
  * be called while the object is still displayed; see remove()
  */
 void TrackSegment::dispose() {
-//        if (popup != NULL) popup.removeAll();
-//        popup = NULL;
+  if (popupMenu != nullptr) popupMenu->clear();
+  popupMenu = nullptr;
 }
 
 /**
@@ -3247,11 +3043,11 @@ void TrackSegment::remove() {
 
 //}
 
-void TrackSegment::on_actionEdit_triggered()
-{
- EditTrackSegmentDlg* dlg = new EditTrackSegmentDlg(this, layoutEditor);
- dlg->show();
-}
+//void TrackSegment::on_actionEdit_triggered()
+//{
+// EditTrackSegmentDlg* dlg = new EditTrackSegmentDlg(this, layoutEditor);
+// dlg->show();
+//}
 
 // remove any prior objects from the scene
 void TrackSegment::invalidate(EditScene *g2)
@@ -3367,7 +3163,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
 {
   QPointF pt1 = LayoutEditor::getCoords(getConnect1(),getType1());
   QPointF pt2 = LayoutEditor::getCoords(getConnect2(),getType2());
-  if (getFlip())
+  if (isFlip())
   {
    pt1 = LayoutEditor::getCoords(getConnect2(),getType2());
    pt2 = LayoutEditor::getCoords(getConnect1(),getType1());
@@ -3410,7 +3206,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
     // Circle
     double startRad = qAtan2(a, o) - halfAngle;
     setStartAdj(radToDeg(startRad));
-    if(getCircle())
+    if(isCircle())
     {
      // Circle - Compute center
      setCentreX(pt2x - qCos(startRad) * radius);
@@ -3824,7 +3620,7 @@ void TrackSegment::drawTrackCircleCentre(LayoutEditor *editor, QGraphicsScene *g
   pt2y = getTmpPt2().y();
   pt1x = getTmpPt1().x();
   pt1y = getTmpPt1().y();
-  if (getFlip())
+  if (isFlip())
   {
    pt1x = getTmpPt2().x();
    pt1y = getTmpPt2().y();
@@ -3896,8 +3692,10 @@ double TrackSegment::degToRad(double degrees)
     QPointF result = getCentreSeg();
     if (connectionType == TRACK_CIRCLE_CENTRE) {
         result = getCoordsCenterCircle();
-    } else if ((connectionType >= BEZIER_CONTROL_POINT_OFFSET_MIN) && (connectionType <= BEZIER_CONTROL_POINT_OFFSET_MAX)) {
-        result = getBezierControlPoint(connectionType - BEZIER_CONTROL_POINT_OFFSET_MIN);
+    }
+    else if (LayoutTrack::isBezierHitType(connectionType))
+    {
+     result = getBezierControlPoint(connectionType - BEZIER_CONTROL_POINT_OFFSET_MIN);
     }
     return result;
 }
@@ -4750,143 +4548,156 @@ double TrackSegment::degToRad(double degrees)
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ QList<LayoutConnectivity*> TrackSegment::getLayoutConnectivity() {
-    QList<LayoutConnectivity*> results = QList<LayoutConnectivity*>();
+/*protected*/ QList<LayoutConnectivity*> TrackSegment::getLayoutConnectivity()
+{
+ QList<LayoutConnectivity*> results = QList<LayoutConnectivity*>();
 
-    LayoutConnectivity* lc = nullptr;
-    LayoutBlock* lb1 = getLayoutBlock(), *lb2 = nullptr;
-    // ensure that block is assigned
-    if (lb1 != nullptr) {
-        // check first connection for turnout or level crossing
-        if ((type1 >= TURNOUT_A) && (type1 <= LEVEL_XING_D)) {
-            // have connection to turnout or level crossing
-            if (type1 <= TURNOUT_D) {
-                // have connection to a turnout, is block different
-                LayoutTurnout* lt = (LayoutTurnout*) getConnect1();
-                lb2 = lt->getLayoutBlock();
-                if (lt->getTurnoutType() > LayoutTurnout::WYE_TURNOUT) {
-                    // not RH, LH, or WYE turnout - other blocks possible
-                    if ((type1 == TURNOUT_B) && (lt->getLayoutBlockB() != nullptr)) {
-                        lb2 = lt->getLayoutBlockB();
-                    }
-                    if ((type1 == TURNOUT_C) && (lt->getLayoutBlockC() != nullptr)) {
-                        lb2 = lt->getLayoutBlockC();
-                    }
-                    if ((type1 == TURNOUT_D) && (lt->getLayoutBlockD() != nullptr)) {
-                        lb2 = lt->getLayoutBlockD();
-                    }
-                }
-                if ((lb2 != nullptr) && (lb1 != lb2)) {
-                    // have a block boundary, create a LayoutConnectivity
-                    log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
-                    lc = new LayoutConnectivity(lb1, lb2);
-                    lc->setConnections(this, lt, type1, nullptr);
-                    lc->setDirection(Path::computeDirection(
-                            LayoutEditor::getCoords(getConnect2(), type2),
-                            LayoutEditor::getCoords(getConnect1(), type1)));
-                    results.append(lc);
-                }
-            } else {
-                // have connection to a level crossing
-                LevelXing* lx = (LevelXing*) getConnect1();
-                if ((type1 == LEVEL_XING_A) || (type1 == LEVEL_XING_C)) {
-                    lb2 = lx->getLayoutBlockAC();
-                } else {
-                    lb2 = lx->getLayoutBlockBD();
-                }
-                if ((lb2 != nullptr) && (lb1 != lb2)) {
-                    // have a block boundary, create a LayoutConnectivity
-                 log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
-                    lc = new LayoutConnectivity(lb1, lb2);
-                    lc->setConnections(this, lx, type1, nullptr);
-                    lc->setDirection(Path::computeDirection(
-                            LayoutEditor::getCoords(getConnect2(), type2),
-                            LayoutEditor::getCoords(getConnect1(), type1)));
-                    results.append(lc);
-                }
-            }
-        } else if ((type1 >= SLIP_A) && (type1 <= SLIP_D)) {
-            // have connection to a slip crossing
-            LayoutSlip* ls = (LayoutSlip*) getConnect1();
-            lb2 = ls->getLayoutBlock();
-            if ((lb2 != nullptr) && (lb1 != lb2)) {
-                // have a block boundary, create a LayoutConnectivity
-             log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
-                lc = new LayoutConnectivity(lb1, lb2);
-                lc->setConnections(this, ls, type1, nullptr);
-                lc->setDirection(Path::computeDirection(LayoutEditor::getCoords(getConnect2(),
-                        type2), LayoutEditor::getCoords(getConnect1(), type1)));
-                results.append(lc);
-            }
+ LayoutConnectivity* lc = nullptr;
+ LayoutBlock* lb1 = getLayoutBlock(), *lb2 = nullptr;
+ // ensure that block is assigned
+ if (lb1 != nullptr)
+ {
+  // check first connection for turnout or level crossing
+  if ((type1 >= TURNOUT_A) && (type1 <= LEVEL_XING_D))
+  {
+   // have connection to turnout or level crossing
+   if (type1 <= TURNOUT_D)
+   {
+    // have connection to a turnout, is block different
+    LayoutTurnout* lt = (LayoutTurnout*) getConnect1();
+    lb2 = lt->getLayoutBlock();
+    if (lt->getTurnoutType() > LayoutTurnout::WYE_TURNOUT)
+    {
+     // not RH, LH, or WYE turnout - other blocks possible
+     if ((type1 == TURNOUT_B) && (lt->getLayoutBlockB() != nullptr)) {
+         lb2 = lt->getLayoutBlockB();
+     }
+     if ((type1 == TURNOUT_C) && (lt->getLayoutBlockC() != nullptr)) {
+         lb2 = lt->getLayoutBlockC();
+     }
+     if ((type1 == TURNOUT_D) && (lt->getLayoutBlockD() != nullptr)) {
+         lb2 = lt->getLayoutBlockD();
+     }
+    }
+    if ((lb2 != nullptr) && (lb1 != lb2))
+    {
+     // have a block boundary, create a LayoutConnectivity
+     log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+     lc = new LayoutConnectivity(lb1, lb2);
+     lc->setConnections(this, lt, type1, nullptr);
+     lc->setDirection(Path::computeDirection(
+             LayoutEditor::getCoords(getConnect2(), type2),
+             LayoutEditor::getCoords(getConnect1(), type1)));
+     results.append(lc);
+    }
+   }
+   else {
+       // have connection to a level crossing
+       LevelXing* lx = (LevelXing*) getConnect1();
+       if ((type1 == LEVEL_XING_A) || (type1 == LEVEL_XING_C)) {
+           lb2 = lx->getLayoutBlockAC();
+       } else {
+           lb2 = lx->getLayoutBlockBD();
+       }
+       if ((lb2 != nullptr) && (lb1 != lb2)) {
+           // have a block boundary, create a LayoutConnectivity
+        log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+           lc = new LayoutConnectivity(lb1, lb2);
+           lc->setConnections(this, lx, type1, nullptr);
+           lc->setDirection(Path::computeDirection(
+                   LayoutEditor::getCoords(getConnect2(), type2),
+                   LayoutEditor::getCoords(getConnect1(), type1)));
+           results.append(lc);
+       }
+   }
+  } else if ((type1 >= SLIP_A) && (type1 <= SLIP_D)) {
+      // have connection to a slip crossing
+      LayoutSlip* ls = (LayoutSlip*) getConnect1();
+      lb2 = ls->getLayoutBlock();
+      if ((lb2 != nullptr) && (lb1 != lb2)) {
+          // have a block boundary, create a LayoutConnectivity
+       log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+          lc = new LayoutConnectivity(lb1, lb2);
+          lc->setConnections(this, ls, type1, nullptr);
+          lc->setDirection(Path::computeDirection(LayoutEditor::getCoords(getConnect2(),
+                  type2), LayoutEditor::getCoords(getConnect1(), type1)));
+          results.append(lc);
+      }
+  }
+  // check second connection for turnout or level crossing
+  if ((type2 >= TURNOUT_A) && (type2 <= LEVEL_XING_D))
+  {
+   // have connection to turnout or level crossing
+   if (type2 <= TURNOUT_D)
+   {
+    // have connection to a turnout
+    LayoutTurnout* lt = (LayoutTurnout*) getConnect2();
+    lb2 = lt->getLayoutBlock();
+    if (lt->getTurnoutType() > LayoutTurnout::WYE_TURNOUT) {
+        // not RH, LH, or WYE turnout - other blocks possible
+        if ((type2 == TURNOUT_B) && (lt->getLayoutBlockB() != nullptr)) {
+            lb2 = lt->getLayoutBlockB();
         }
-        // check second connection for turnout or level crossing
-        if ((type2 >= TURNOUT_A) && (type2 <= LEVEL_XING_D)) {
-            // have connection to turnout or level crossing
-            if (type2 <= TURNOUT_D) {
-                // have connection to a turnout
-                LayoutTurnout* lt = (LayoutTurnout*) getConnect2();
-                lb2 = lt->getLayoutBlock();
-                if (lt->getTurnoutType() > LayoutTurnout::WYE_TURNOUT) {
-                    // not RH, LH, or WYE turnout - other blocks possible
-                    if ((type2 == TURNOUT_B) && (lt->getLayoutBlockB() != nullptr)) {
-                        lb2 = lt->getLayoutBlockB();
-                    }
-                    if ((type2 == TURNOUT_C) && (lt->getLayoutBlockC() != nullptr)) {
-                        lb2 = lt->getLayoutBlockC();
-                    }
-                    if ((type2 == TURNOUT_D) && (lt->getLayoutBlockD() != nullptr)) {
-                        lb2 = lt->getLayoutBlockD();
-                    }
-                }
-                if ((lb2 != nullptr) && (lb1 != lb2)) {
-                    // have a block boundary, create a LayoutConnectivity
-                 log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
-                    lc = new LayoutConnectivity(lb1, lb2);
-                    lc->setConnections(this, lt, type2, nullptr);
-                    lc->setDirection(Path::computeDirection(
-                            LayoutEditor::getCoords(getConnect1(), type1),
-                            LayoutEditor::getCoords(getConnect2(), type2)));
-                    results.append(lc);
-                }
-            } else {
-                // have connection to a level crossing
-                LevelXing* lx = (LevelXing*) getConnect2();
-                if ((type2 == LEVEL_XING_A) || (type2 == LEVEL_XING_C)) {
-                    lb2 = lx->getLayoutBlockAC();
-                } else {
-                    lb2 = lx->getLayoutBlockBD();
-                }
-                if ((lb2 != nullptr) && (lb1 != lb2)) {
-                    // have a block boundary, create a LayoutConnectivity
-                 log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
-                    lc = new LayoutConnectivity(lb1, lb2);
-                    lc->setConnections(this, lx, type2, nullptr);
-                    lc->setDirection(Path::computeDirection(
-                            LayoutEditor::getCoords(getConnect1(), type1),
-                            LayoutEditor::getCoords(getConnect2(), type2)));
-                    results.append(lc);
-                }
-            }
-        } else if ((type2 >= SLIP_A) && (type2 <= SLIP_D)) {
-            // have connection to a slip crossing
-            LayoutSlip* ls = (LayoutSlip*) getConnect2();
-            lb2 = ls->getLayoutBlock();
-            if ((lb2 != nullptr) && (lb1 != lb2)) {
-                // have a block boundary, create a LayoutConnectivity
-             log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
-                lc = new LayoutConnectivity(lb1, lb2);
-                lc->setConnections(this, ls, type2, nullptr);
-                lc->setDirection(Path::computeDirection(
-                        LayoutEditor::getCoords(getConnect1(), type1),
-                        LayoutEditor::getCoords(getConnect2(), type2)));
-                results.append(lc);
-            }
-        } else {
-            // this is routinely reached in normal operations
-            // (nothing to see here... move along)
+        if ((type2 == TURNOUT_C) && (lt->getLayoutBlockC() != nullptr)) {
+            lb2 = lt->getLayoutBlockC();
         }
-    }   // if (lb1 != null)
-    return results;
+        if ((type2 == TURNOUT_D) && (lt->getLayoutBlockD() != nullptr)) {
+            lb2 = lt->getLayoutBlockD();
+        }
+    }
+    if ((lb2 != nullptr) && (lb1 != lb2)) {
+        // have a block boundary, create a LayoutConnectivity
+     log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+        lc = new LayoutConnectivity(lb1, lb2);
+        lc->setConnections(this, lt, type2, nullptr);
+        lc->setDirection(Path::computeDirection(
+                LayoutEditor::getCoords(getConnect1(), type1),
+                LayoutEditor::getCoords(getConnect2(), type2)));
+        results.append(lc);
+    }
+   }
+   else
+   {
+    // have connection to a level crossing
+    LevelXing* lx = (LevelXing*) getConnect2();
+    if ((type2 == LEVEL_XING_A) || (type2 == LEVEL_XING_C)) {
+        lb2 = lx->getLayoutBlockAC();
+    } else {
+        lb2 = lx->getLayoutBlockBD();
+    }
+    if ((lb2 != nullptr) && (lb1 != lb2)) {
+        // have a block boundary, create a LayoutConnectivity
+     log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+        lc = new LayoutConnectivity(lb1, lb2);
+        lc->setConnections(this, lx, type2, nullptr);
+        lc->setDirection(Path::computeDirection(
+                LayoutEditor::getCoords(getConnect1(), type1),
+                LayoutEditor::getCoords(getConnect2(), type2)));
+        results.append(lc);
+    }
+   }
+  }
+  else if ((type2 >= SLIP_A) && (type2 <= SLIP_D))
+  {
+   // have connection to a slip crossing
+   LayoutSlip* ls = (LayoutSlip*) getConnect2();
+   lb2 = ls->getLayoutBlock();
+   if ((lb2 != nullptr) && (lb1 != lb2)) {
+       // have a block boundary, create a LayoutConnectivity
+    log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lb1->getDisplayName()).arg(lb2->getDisplayName()).arg(this->toString()));
+       lc = new LayoutConnectivity(lb1, lb2);
+       lc->setConnections(this, ls, type2, nullptr);
+       lc->setDirection(Path::computeDirection(
+               LayoutEditor::getCoords(getConnect1(), type1),
+               LayoutEditor::getCoords(getConnect2(), type2)));
+       results.append(lc);
+   }
+  } else {
+      // this is routinely reached in normal operations
+      // (nothing to see here... move along)
+  }
+ }   // if (lb1 != null)
+ return results;
 }   // getLayoutConnectivity()
 
 /**
@@ -4926,36 +4737,36 @@ public*/ QList<int> TrackSegment::checkForFreeConnections() {
      *     Basically, we're maintaining contiguous track sets for each block found
      *     (in blockNamesToTrackNameSetMap)
      */
-    QList<QSet<QString> > TrackNameSets = QList<QSet<QString> >();
-    QSet<QString> TrackNameSet = QSet<QString>();    // assume not found (pessimist!)
-    if (blockName != nullptr) {
-        TrackNameSets = blockNamesToTrackNameSetsMap.value(blockName);
-        if (!TrackNameSets.isEmpty()) { // (#1)
-            for (QSet<QString> checkTrackNameSet : TrackNameSets) {
+    QList<QSet<QString> > trackNameSets = QList<QSet<QString> >();
+    QSet<QString> trackNameSet = QSet<QString>();    // assume not found (pessimist!)
+    if (!blockName.isEmpty()) {
+        trackNameSets = blockNamesToTrackNameSetsMap.value(blockName);
+        if (!trackNameSets.isEmpty()) { // (#1)
+            for (QSet<QString> checkTrackNameSet : trackNameSets) {
                 if (checkTrackNameSet.contains(getName())) { // (#2)
-                    TrackNameSet = checkTrackNameSet;
+                    trackNameSet = checkTrackNameSet;
                     break;
                 }
             }
         } else {    // (#3)
             log->debug(tr("*New block ('%1') trackNameSets").arg(blockName));
-            TrackNameSets = QList<QSet<QString> >();
-            blockNamesToTrackNameSetsMap.insert(blockName, TrackNameSets);
+            trackNameSets = QList<QSet<QString> >();
+            blockNamesToTrackNameSetsMap.insert(blockName, trackNameSets);
         }
-        if (TrackNameSet.isEmpty()) {
-            TrackNameSet = QSet<QString>();//new LinkedHashSet<>();
-            TrackNameSets.append(TrackNameSet);
+        if (trackNameSet.isEmpty()) {
+            trackNameSet = QSet<QString>();//new LinkedHashSet<>();
+            trackNameSets.append(trackNameSet);
         }
-        TrackNameSet.insert(getName());
-        if (TrackNameSet.contains(getName())) {
+        trackNameSet.insert(getName());
+        if (trackNameSet.contains(getName())) {
             log->debug(tr("*    Add track '%1' to TrackNameSets for block '%2'").arg(getName()).arg(blockName));
         }
         // (#4)
         if (connect1 != nullptr) {
-            connect1->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+            connect1->collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet);
         }
         if (connect2 != nullptr) { // (#4)
-            connect2->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+            connect2->collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet);
         }
     }
 }   // collectContiguousTracksNamesInBlockNamed
@@ -4965,22 +4776,22 @@ public*/ QList<int> TrackSegment::checkForFreeConnections() {
  */
 //@Override
 /*public*/ void TrackSegment::collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-        /*@Nonnull*/ QSet<QString> TrackNameSet) {
-    if (!TrackNameSet.contains(getName())) {
+        /*@Nonnull*/ QSet<QString> trackNameSet) {
+    if (!trackNameSet.contains(getName())) {
         // is this the blockName we're looking for?
         if (this->blockName == blockName) {
             // if we are added to the TrackNameSet
-            TrackNameSet.insert(getName());
-            if (TrackNameSet.contains(getName())) {
+            trackNameSet.insert(getName());
+            if (trackNameSet.contains(getName())) {
                 log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
             }
             // these should never be null... but just in case...
             // it's time to play... flood your neighbours!
             if (connect1 != nullptr) {
-                connect1->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+                connect1->collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet);
             }
             if (connect2 != nullptr) {
-                connect2->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+                connect2->collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet);
             }
         }
     }

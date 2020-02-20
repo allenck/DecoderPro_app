@@ -411,6 +411,10 @@
     return result;
 }   // isControlHitType
 
+/*protected*/ /*static*/ bool LayoutTrack::isBezierHitType(int hitType) {
+        return (hitType >= BEZIER_CONTROL_POINT_OFFSET_MIN)
+                && (hitType <= BEZIER_CONTROL_POINT_OFFSET_MAX);
+    }
 /**
  * @param hitType the hit point type
  * @return true if this int is for a popup menu

@@ -109,7 +109,6 @@ SOURCES += \
     positionableicon.cpp \
     sensoricon.cpp \
     multiiconeditor.cpp \
-    edittracksegmentdlg.cpp \
     createeditblock.cpp \
     positionablepopuputil.cpp \
     positionablepropertiesutil.cpp \
@@ -498,7 +497,6 @@ HEADERS += liblayouteditor_global.h \
     positionableicon.h \
     sensoricon.h \
     multiiconeditor.h \
-    edittracksegmentdlg.h \
     createeditblock.h \
     positionablepopuputil.h \
     positionablepropertiesutil.h \
@@ -879,7 +877,6 @@ HEADERS += liblayouteditor_global.h \
     enterreporterdialog.h
 
 FORMS    += \
-    edittracksegmentdlg.ui \
     createeditblock.ui \
     setxydlg.ui \
     sensortextedit.ui \

@@ -1482,7 +1482,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
 {
  if (connectA != nullptr)
  {
-     return ((TrackSegment*)connectA)->getMainline();
+     return ((TrackSegment*)connectA)->isMainline();
  }
  else {
   // if no connection, depends on type of turnout
@@ -1490,7 +1490,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
   {
    // All crossovers - straight continuing is B
    if (connectB != nullptr)
-       return ((TrackSegment*)connectB)->getMainline();
+       return ((TrackSegment*)connectB)->isMainline();
   }
   else if ((getTurnoutType() == SINGLE_SLIP)
                       || (getTurnoutType() == DOUBLE_SLIP))
@@ -1500,9 +1500,9 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
    }
   } // must be RH, LH, or WYE turnout - A is the switch throat
   else if ( ((connectB != nullptr) &&
-          (((TrackSegment*)connectB)->getMainline())) ||
+          (((TrackSegment*)connectB)->isMainline())) ||
               ((connectC != nullptr) &&
-                  (((TrackSegment*)connectC)->getMainline())) )
+                  (((TrackSegment*)connectC)->isMainline())) )
       return true;
  }
  return false;
@@ -1512,7 +1512,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
 {
  if (connectB != nullptr)
  {
-     return ((TrackSegment*)connectB)->getMainline();
+     return ((TrackSegment*)connectB)->isMainline();
  }
  else {
   // if no connection, depends on type of turnout
@@ -1520,7 +1520,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
   {
       // All crossovers - straight continuing is A
       if (connectA != nullptr)
-          return ((TrackSegment*)connectA)->getMainline();
+          return ((TrackSegment*)connectA)->isMainline();
   } else if (getTurnoutType() == DOUBLE_SLIP)
   {
    if (connectD != nullptr)
@@ -1534,7 +1534,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
    // user hasn't changed the continuing turnout state
    if (connectA != nullptr)
    { // if throat is mainline, this leg must be also
-       return ((TrackSegment*)connectA)->getMainline();
+       return ((TrackSegment*)connectA)->isMainline();
    }
   }
  }
@@ -1544,7 +1544,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
 {
  if (connectC != nullptr)
  {
-        return ((TrackSegment*)connectC)->getMainline();
+        return ((TrackSegment*)connectC)->isMainline();
  }
  else
  {
@@ -1553,7 +1553,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
   {
    // All crossovers - straight continuing is D
    if (connectD != nullptr)
-       return ((TrackSegment*)connectD)->getMainline();
+       return ((TrackSegment*)connectD)->isMainline();
   } else if (getTurnoutType() == DOUBLE_SLIP)
   {
    if (connectB != nullptr)
@@ -1567,7 +1567,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
    // user has changed the continuing turnout state
    if (connectA != nullptr)
    {    // if throat is mainline, this leg must be also
-       return ((TrackSegment*)connectA)->getMainline();
+       return ((TrackSegment*)connectA)->isMainline();
    }
   }
  }
@@ -1578,7 +1578,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
  // this is a crossover turnout
  if (connectD != nullptr)
  {
-  return ((TrackSegment*)connectD)->getMainline();
+  return ((TrackSegment*)connectD)->isMainline();
  }
  else if ((getTurnoutType() == SINGLE_SLIP)
              || (getTurnoutType() == DOUBLE_SLIP))
@@ -1587,7 +1587,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
       return ((TrackSegment*) connectB)->isMainline();
   }
  } else if (connectC != nullptr) {
-     return ((TrackSegment*)connectC)->getMainline();
+     return ((TrackSegment*)connectC)->isMainline();
  }
  return false;
 }

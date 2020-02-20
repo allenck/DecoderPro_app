@@ -205,11 +205,11 @@ public slots:
 
  private:
     Logger* log;
-    TTComboBoxDelegate* modeColDelegate;
-    TTComboBoxDelegate* lockDecColDelegate;
-    TTComboBoxDelegate* opsEditColDelegate;
-    TTComboBoxDelegate* opsOnOffColDelegate;
-    TTEditDelegate* sensorsColDelegate;
+    TTComboBoxDelegate* modeColDelegate = nullptr;
+    TTComboBoxDelegate* lockDecColDelegate = nullptr;
+    TTComboBoxDelegate* opsEditColDelegate = nullptr;
+    TTComboBoxDelegate* opsOnOffColDelegate = nullptr;
+    TTEditDelegate* sensorsColDelegate = nullptr;
 
  protected:
     /*protected*/ QString getMasterClassName();

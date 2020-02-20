@@ -40,14 +40,14 @@ TrackSegmentXml::TrackSegmentXml(QObject *parent) :
  element.setAttribute("type1",  p->getType1());
  element.setAttribute("connect2name", p->getConnect2Name());
  element.setAttribute("type2",  p->getType2());
- element.setAttribute("dashed",  (p->getDashed() ? "yes" : "no"));
- element.setAttribute("mainline",  (p->getMainline() ? "yes" : "no"));
+ element.setAttribute("dashed",  (p->isDashed() ? "yes" : "no"));
+ element.setAttribute("mainline",  (p->isMainline() ? "yes" : "no"));
  element.setAttribute("hidden",  (p->getHidden() ? "yes" : "no"));
  if (p->isArc())
  {
   element.setAttribute("arc", "yes");
-  element.setAttribute("flip",  (p->getFlip() ? "yes" : "no"));
-  element.setAttribute("circle",  (p->getCircle() ? "yes" : "no"));
+  element.setAttribute("flip",  (p->isFlip() ? "yes" : "no"));
+  element.setAttribute("circle",  (p->isCircle() ? "yes" : "no"));
   if ((p->isCircle()) && (p->getAngle() != 0.0))
   {
    element.setAttribute("angle",  (p->getAngle()));
@@ -571,7 +571,7 @@ TrackSegmentXml::TrackSegmentXml(QObject *parent) :
  // get remaining attribute
  QString a = element.attribute("blockname");
  if (a != "") {
-     l->tBlockName = a;
+     l->tLayoutBlockName = a;
  }
  p->getLayoutTracks()->append(l);
 }

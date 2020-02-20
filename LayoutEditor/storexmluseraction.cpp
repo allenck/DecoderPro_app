@@ -3,6 +3,7 @@
 #include "configxmlmanager.h"
 #include <QMessageBox>
 #include "fileutil.h"
+#include "jfilechooser.h"
 
 //StoreXmlUserAction::StoreXmlUserAction(QObject *parent) :
 //    StoreXmlConfigAction(parent)
@@ -43,17 +44,23 @@
 
 /*public*/ void StoreXmlUserAction::actionPerformed(/*ActionEvent e*/)
 {
-//    QString oldButtonText=/*userFileChooser->getApproveButtonText();*/tr("Save");
-//    QString oldDialogTitle=userFileChooser->windowTitle();
-//    int oldDialogType=userFileChooser.getDialogType();
-//userFileChooser.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
-//    userFileChooser.setApproveButtonText(java.util.ResourceBundle.getBundle("jmri.jmrit.display.DisplayBundle").getString("MenuItemStore"));
-//    userFileChooser.setDialogTitle(java.util.ResourceBundle.getBundle("jmri.jmrit.display.DisplayBundle").getString("MenuItemStore"));
-    //QFile* file = getFileCustom(userFileChooser);
+#if 1
+ JFileChooser* userFileChooser = getUserFileChooser();
+ userFileChooser->setDialogType(JFileChooser::SAVE_DIALOG);
+ userFileChooser->setApproveButtonText(tr("Save")); // is in jmri.NBBundle
+ userFileChooser->setDialogTitle(tr("Store Panels"));
+ File* file = getFileCustom(userFileChooser);
+
+ if (file == nullptr)
+     return;
+  saveFile(file->absoluteFilePath());
+
+#else
  QString selectedFile = QFileDialog::getSaveFileName(NULL, tr("Save File"), FileUtil::getUserFilesPath(),tr("Xml files (*.xml);;All files (*.*)"));
 
  if (selectedFile == "") return;
  saveFile(selectedFile);
+#endif
 }
 
 void StoreXmlUserAction::saveFile(QString selectedFile)

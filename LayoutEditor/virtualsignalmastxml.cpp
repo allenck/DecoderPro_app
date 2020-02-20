@@ -32,7 +32,7 @@ VirtualSignalMastXml::VirtualSignalMastXml(QObject *parent) :
     VirtualSignalMast* p = (VirtualSignalMast*)o;
     QDomElement e = doc.createElement("virtualsignalmast");
     e.setAttribute("class", "jmri.implementation.configurexml.VirtualSignalMastXml" );
-    e.setAttribute("systemName", p->getSystemName());
+    //e.setAttribute("systemName", p->getSystemName());
     QDomElement e1;
     e.appendChild(e1=doc.createElement("systemName"));
     e1.appendChild(doc.createTextNode(p->getSystemName()));

@@ -13,7 +13,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT TrackSegment : public LayoutTrack
     Q_OBJECT
 public:
 //    explicit TrackSegment(QObject *parent = 0);
-    /*public*/ TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2, int t2, bool dash, bool main, LayoutEditor* myPanel);
+    /*public*/ TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2, int t2, bool dash, bool main, LayoutEditor* layoutEditor);
     // alternate constructor for loading layout editor panels
     /*public*/ TrackSegment(QString id, QString c1Name, int t1, QString c2Name, int t2, bool dash, bool main, bool hide, LayoutEditor* myPanel);
     /*public*/ bool getArc() {return arc;}
@@ -28,22 +28,14 @@ public:
     /*public*/ int getType2() ;
     /*public*/ LayoutTrack* getConnect1();
     /*public*/ LayoutTrack *getConnect2();
-    QT_DEPRECATED /*public*/ bool getDashed();
+    /*public*/ bool replaceTrackConnection(/*@CheckForNull*/ LayoutTrack* oldTrack, /*@CheckForNull*/ LayoutTrack* newTrack, int newType);
     /*public*/ bool isDashed();
     /*public*/ void setDashed(bool dash);
-//    /*public*/ bool getHidden();
-//    /*public*/ void setHidden(bool hide);
-    QT_DEPRECATED /*public*/ bool getMainline();
     /*public*/ bool isMainline();
     /*public*/ void setMainline(bool main);
     /*public*/ void setArc(bool boo);
-    QT_DEPRECATED /*public*/ bool getCircle();
     /*public*/ void setCircle(bool boo);
-    QT_DEPRECATED /*public*/ bool getFlip();
     /*public*/ void setFlip(bool boo);
-    ///*public*/ int getStartAngle() {return startangle;}
-    ///*public*/ void setStartAngle(int x) {startangle = x;}
-    QT_DEPRECATED /*public*/ bool getBezier();
     /*public*/ bool isBezier();
     /*public*/ void setBezier(bool boo);
 
@@ -53,8 +45,6 @@ public:
     //It saves having to recalculate the circle details each time.
     /*public*/ bool trackNeedsRedraw();
     /*public*/ void trackRedrawn();
-    ///*public*/ int getRadius() {return radius;}
-    ///*public*/ void setRadius(int x) {radius = x;}
 
     /*public*/ LayoutBlock* getLayoutBlock();
     /*public*/ QString getConnect1Name();
@@ -66,10 +56,11 @@ public:
     /*public*/ void setLayoutBlockByName (QString name);
     /*public*/ void scaleCoords(float xFactor, float yFactor);
     /*public*/ void translateCoords(float xFactor, float yFactor);
+    /*public*/ void rotateCoords(double angleDEG);
     /*public*/ void setCoordsCenter(/*@Nonnull*/ QPointF newCenterPoint);
 
     // initialization instance variables (used when loading a LayoutEditor)
-    /*public*/ QString tBlockName;// = "";
+    /*public*/ QString tLayoutBlockName;// = "";
     /*public*/ QString tConnect1Name;// = "";
     /*public*/ QString tConnect2Name;// = "";
     /**
@@ -223,7 +214,7 @@ public:
     /*public*/ double getDirectionDEG();
     /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
     /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-                   /*@Nonnull*/ QSet<QString> TrackNameSet);
+                   /*@Nonnull*/ QSet<QString> trackNameSet);
     /*public*/ void checkForNonContiguousBlocks(
             /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap);
     /*public*/ bool checkForUnAssignedBlocks();
@@ -232,7 +223,7 @@ public:
 signals:
     
 public slots:
-    void on_actionEdit_triggered();
+    //void on_actionEdit_triggered();
     void on_changeType(QAction* act);
     void flipAngle();
     void on_actionRemove();
@@ -420,7 +411,7 @@ protected:
  /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);
 
  friend class LayoutEditor;
- friend class EditTrackSegmentDlg;
+ //friend class EditTrackSegmentDlg;
  friend class LoadXml;
  friend class PositionablePoint;
  friend class LayoutEditorAuxTools;

@@ -82,7 +82,7 @@ public:
      * "active" means that the object is still displayed, and should be stored.
      */
     /*public*/ bool isActive();
-    /*public*/ void removeTrackConnection (TrackSegment* track);
+    /*public*/ bool removeTrackConnection (TrackSegment* track);
     /*public*/ void reCheckBlockBoundary();
     /*protected*/ int maxWidth();
     /*protected*/ int maxHeight();

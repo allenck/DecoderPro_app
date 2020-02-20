@@ -102,8 +102,9 @@ Section* SectionManager::createNewSection(QString systemName, QString userName)
     Register(y);
 
     // Keep track of the last created auto system name
-    updateAutoNumber(systemName);
 #if 0
+    updateAutoNumber(systemName);
+#else
     /*The following keeps trace of the last created auto system name.
     currently we do not reuse numbers, although there is nothing to stop the
     user from manually recreating them*/

@@ -406,7 +406,7 @@
     if (tr == NULL) {
         return false;
     }
-    return tr->getMainline();
+    return tr->isMainline();
 }
 
 /*public*/  bool LayoutTurntable::isMainlineOrdered(int i) {
@@ -421,7 +421,7 @@
     if (tr == NULL) {
         return false;
     }
-    return tr->getMainline();
+    return tr->isMainline();
 }
 
 /**

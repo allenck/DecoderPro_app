@@ -1435,7 +1435,7 @@ void LayoutBlock::setBlockMetric(){
     int mainline = 0;
     int side = 0;
     for (int i = 0; i< ts->size(); i++){
-        if (ts->at(i)->getMainline())
+        if (ts->at(i)->isMainline())
             mainline++;
         else
             side++;
@@ -3095,8 +3095,7 @@ bool LayoutBlock::isValidNeighbour(Block* blk){
      updateRoutingInfo(srcEvent, update);
      break;
     case REMOVAL : if(enableUpdateRouteLogging) log->info("Removal");
-                                //InstanceManager::layoutBlockManagerInstance().setLastRoutingChange();
-     ((LayoutEditor*)parent)->layoutBlockManager->setLastRoutingChange();
+     ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->setLastRoutingChange();
      removeRouteFromNeighbour(srcEvent, update);
      break;
     default :       break;

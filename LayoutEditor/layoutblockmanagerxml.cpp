@@ -56,7 +56,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
   {
    // save only those LayoutBlocks that are in use--skip abandoned ones
    QDomElement elem = doc.createElement("layoutblock");
-   elem.setAttribute("systemName", sname);
+   //elem.setAttribute("systemName", sname);
    QDomElement e1;
    elem.appendChild(e1=doc.createElement("systemName"));
    e1.appendChild(doc.createTextNode(sname));

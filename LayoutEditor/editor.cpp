@@ -837,7 +837,6 @@ void Editor::closeEvent(QCloseEvent */*e*/)
 //   message = tr("Reminder1")+" "+tr("Reminder2")+
 //                            "\n"+tr("Reminder3");
    message = tr("This panel has been changed.  ") + tr("Please remember to save it to disk.") + tr("( Select 'Save Panels...' in the Panels menu or the File menu of any panel.)");
-   QMessageBox::question(this, tr("Reminder"), message);
   }
   else
   {
