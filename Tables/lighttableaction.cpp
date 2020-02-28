@@ -925,7 +925,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     }
     // check if requested Light uses the same address as a Turnout
     QString testSN = turnoutPrefix + curAddress;
-    Turnout* testT = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
+    Turnout* testT = (Turnout*)((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
             getBySystemName(testSN);
     if (testT != nullptr) {
         // Address is already used as a Turnout
@@ -1595,11 +1595,11 @@ void LightTableAction::setUpControlType(QString ctype) {
             g->setControlType(Light::NO_CONTROL);
         } else {
             // name was entered, check for user name first
-            s = InstanceManager::sensorManagerInstance()->
+            s = (Sensor*)InstanceManager::sensorManagerInstance()->
                     getByUserName(sensorName);
             if (s == NULL) {
                 // not user name, try system name
-                s = InstanceManager::sensorManagerInstance()->
+                s = (Sensor*)InstanceManager::sensorManagerInstance()->
                         getBySystemName(sensorName);
                 if (s != NULL) {
                     // update sensor system name in case it changed
@@ -1717,11 +1717,11 @@ void LightTableAction::setUpControlType(QString ctype) {
             }
             if (!error) {
                 // Requested turnout bit is not assigned to a Light
-                t = InstanceManager::turnoutManagerInstance()->
+                t =(Turnout*) InstanceManager::turnoutManagerInstance()->
                         getByUserName(turnoutName);
                 if (t == NULL) {
                     // not user name, try system name
-                    t = InstanceManager::turnoutManagerInstance()->
+                    t = (Turnout*)InstanceManager::turnoutManagerInstance()->
                             getBySystemName(turnoutName.toUpper());
                     if (t != NULL) {
                         // update turnout system name in case it changed
@@ -1754,11 +1754,11 @@ void LightTableAction::setUpControlType(QString ctype) {
             g->setControlType(Light::NO_CONTROL);
         } else {
             // name entered, try user name first
-            s = InstanceManager::sensorManagerInstance()->
+            s = (Sensor*)InstanceManager::sensorManagerInstance()->
                     getByUserName(triggerSensorName);
             if (s == NULL) {
                 // not user name, try system name
-                s = InstanceManager::sensorManagerInstance()->
+                s = (Sensor*)InstanceManager::sensorManagerInstance()->
                         getBySystemName(triggerSensorName);
                 if (s != NULL) {
                     // update sensor system name in case it changed
@@ -1795,11 +1795,11 @@ void LightTableAction::setUpControlType(QString ctype) {
             g->setControlType(Light::NO_CONTROL);
         } else {
             // name was entered, check for user name first
-            s = InstanceManager::sensorManagerInstance()->
+            s = (Sensor*)InstanceManager::sensorManagerInstance()->
                     getByUserName(sensorName);
             if (s == NULL) {
                 // not user name, try system name
-                s = InstanceManager::sensorManagerInstance()->
+                s = (Sensor*)InstanceManager::sensorManagerInstance()->
                         getBySystemName(sensorName);
                 if (s != NULL) {
                     // update sensor system name in case it changed
@@ -1807,11 +1807,11 @@ void LightTableAction::setUpControlType(QString ctype) {
                     field1a->setText(sensorName);
                 }
             }
-            s2 = InstanceManager::sensorManagerInstance()->
+            s2 = (Sensor*)InstanceManager::sensorManagerInstance()->
                     getByUserName(sensor2Name);
             if (s2 == NULL) {
                 // not user name, try system name
-                s2 = InstanceManager::sensorManagerInstance()->
+                s2 = (Sensor*)InstanceManager::sensorManagerInstance()->
                         getBySystemName(sensor2Name);
                 if (s2 != NULL) {
                     // update sensor system name in case it changed

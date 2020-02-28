@@ -8,11 +8,11 @@ class LIBLAYOUTEDITORSHARED_EXPORT InternalLightManagerXml : public AbstractLigh
  Q_OBJECT
 public:
  Q_INVOKABLE explicit InternalLightManagerXml(QObject *parent = 0);
- ~InternalLightManagerXml() {}
+ ~InternalLightManagerXml()  override{}
  InternalLightManagerXml(const InternalLightManagerXml&) : AbstractLightManagerConfigXML() {}
- /*public*/ void setStoreElementClass(QDomElement lights);
- /*public*/ void load(QDomElement element, QObject* o)  throw (Exception);
- /*public*/ bool load(QDomElement lights)throw (Exception);
+ /*public*/ void setStoreElementClass(QDomElement lights) override;
+ /*public*/ void load(QDomElement element, QObject* o)  throw (Exception) override;
+ /*public*/ bool load(QDomElement lights)throw (Exception) override;
 
 signals:
 

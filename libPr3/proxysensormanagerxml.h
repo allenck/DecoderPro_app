@@ -7,11 +7,11 @@ class ProxySensorManagerXml : public AbstractXmlAdapter
  Q_OBJECT
 public:
  Q_INVOKABLE ProxySensorManagerXml(QObject* parent = nullptr);
- ~ProxySensorManagerXml() {}
+ ~ProxySensorManagerXml()  override{}
  ProxySensorManagerXml(const ProxySensorManagerXml&) : AbstractXmlAdapter() {}
- /*public*/ QDomElement store(QObject* o);
- /*public*/ bool load(QDomElement shared, QDomElement perNode) ;
- /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+ /*public*/ QDomElement store(QObject* o) override;
+ /*public*/ bool load(QDomElement shared, QDomElement perNode)  override;
+ /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
 
 };
 Q_DECLARE_METATYPE(ProxySensorManagerXml)

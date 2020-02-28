@@ -47,7 +47,7 @@
 #include "jfilechooser.h"
 #include "system.h"
 #include "layouttrackdrawingoptions.h"
-#include "jmribeancombobox.h"
+//#include "jmribeancombobox.h"
 #include "loggerfactory.h"
 #include "joptionpane.h"
 #include "mathutil.h"
@@ -73,6 +73,7 @@
 #include <QActionGroup>
 #include "leblockcontentsicon.h"
 #include "guilafpreferencesmanager.h"
+#include "namedbeancombobox.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -811,7 +812,7 @@ connect(ui->iconLabelButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()))
  yFactorField = new JTextField(6);
  xTranslateField = new JTextField(6);
  yTranslateField = new JTextField(6);
- gDDMDO = JmriBeanComboBox::DisplayOptions::DISPLAYNAME;
+ gDDMDO = NamedBean::DisplayOptions::DISPLAYNAME;
  _positionableSelection = new QVector<Positionable*>();
  _layoutTrackSelection = QList<LayoutTrack*>();
 
@@ -1175,7 +1176,7 @@ void LayoutEditor::On_turnoutCircleSizeButtonMapper_triggered(int size)
  *                       invalid text == yellow background
  * @param inEnable       bool to enable / disable the JmriBeanComboBox
  */
-/*public*/ /*static*/ void LayoutEditor::setupComboBox(/*@Nonnull*/ JmriBeanComboBox* inComboBox, bool inValidateMode, bool inEnable) {
+/*public*/ /*static*/ void LayoutEditor::setupComboBox(/*@Nonnull*/ NamedBeanComboBox* inComboBox, bool inValidateMode, bool inEnable) {
     setupComboBox(inComboBox, inValidateMode, inEnable, !inValidateMode);
 }
 
@@ -1190,17 +1191,17 @@ void LayoutEditor::On_turnoutCircleSizeButtonMapper_triggered(int size)
  * @param inFirstBlank   bool to enable / disable the first item being
  *                       blank
  */
-/*public*/ /*static*/ void LayoutEditor::setupComboBox(/*@Nonnull*/ JmriBeanComboBox* inComboBox, bool inValidateMode, bool inEnable, bool inFirstBlank) {
+/*public*/ /*static*/ void LayoutEditor::setupComboBox(/*@Nonnull*/ NamedBeanComboBox* inComboBox, bool inValidateMode, bool inEnable, bool inFirstBlank) {
     log->debug("LE setupComboBox called");
 
     inComboBox->setEnabled(inEnable);
     inComboBox->setEditable(true);
-    inComboBox->setValidateMode(inValidateMode);
+    inComboBox->setValidatingInput(inValidateMode);
     inComboBox->setCurrentText("");
 
     // This has to be set before calling setupComboBoxMaxRows
     // (otherwise if inFirstBlank then the  number of rows will be wrong)
-    inComboBox->setFirstItemBlank(inFirstBlank);
+    inComboBox->setAllowNull(!inValidateMode);
 
     // set the max number of rows that will fit onscreen
 //    JComboBoxutil->setupComboBoxMaxRows(inComboBox);
@@ -3619,13 +3620,16 @@ void LayoutEditor::onCalculateBounds()
      o->setLayoutBlock(b);
 
      //check on occupancy sensor
-     QString sensorName = ui->blockSensorComboBox->getDisplayName();
+     QString sensorName = ui->blockSensorComboBox->getSelectedItemDisplayName();
+                 if (sensorName.isNull()) {
+                     sensorName = "";
+                 }
 
      if (!sensorName.isEmpty()) {
          if (!validateSensor(sensorName, b, (Component*)this)) {
              b->setOccupancySensorName("");
          } else {
-             ui->blockSensorComboBox->setText(b->getOccupancySensorName());
+             ui->blockSensorComboBox->setSelectedItemByName(b->getOccupancySensorName());
          }
      }
  }
@@ -3637,25 +3641,25 @@ void LayoutEditor::onCalculateBounds()
      o->setTurnout(turnoutName);
 
      if (o->getTurnout()->getSystemName() == (turnoutName.toUpper())) {
-         ui->turnoutNameComboBox->setText(turnoutName.toUpper());
+         ui->turnoutNameComboBox->setSelectedItemByName(turnoutName.toUpper());
      }
  } else {
      o->setTurnout("");
-     ui->turnoutNameComboBox->setText("");
+     ui->turnoutNameComboBox->setSelectedItemByName("");
      ui->turnoutNameComboBox->setCurrentIndex(-1);
  }
- turnoutName = ui->extraTurnoutNameComboBox->getDisplayName();
+ turnoutName = ui->extraTurnoutNameComboBox->getSelectedItemDisplayName();
 
  if (validatePhysicalTurnout(turnoutName, this)) {
      //turnout is valid and unique.
      o->setTurnoutB(turnoutName);
 
      if (o->getTurnoutB()->getSystemName()==(turnoutName.toUpper())) {
-         ui->extraTurnoutNameComboBox->setText(turnoutName.toUpper());
+         ui->extraTurnoutNameComboBox->setSelectedItemByName(turnoutName.toUpper());
      }
  } else {
      o->setTurnoutB("");
-     ui->extraTurnoutNameComboBox->setText("");
+     ui->extraTurnoutNameComboBox->setSelectedItemByName("");
      ui->extraTurnoutNameComboBox->setCurrentIndex(-1);
  }
 }
@@ -3732,13 +3736,13 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
   o->setTurnout(turnoutName);
   if (o->getTurnout()->getSystemName()==(turnoutName.toUpper()))
   {
-   ui->turnoutNameComboBox->setText(turnoutName.toUpper());
+   ui->turnoutNameComboBox->setSelectedItemByName(turnoutName.toUpper());
   }
  }
  else
  {
   o->setTurnout("");
-  ui->turnoutNameComboBox->setText("");
+  ui->turnoutNameComboBox->setSelectedItemByName("");
  }
  return o;
 }
@@ -6983,7 +6987,7 @@ LEMemoryIcon *LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
   */
  void LayoutEditor::addSignalHead() {
      // check for valid signal head entry
-  QString newName = ui->signalHeadComboBox->getDisplayName();
+  QString newName = ui->signalHeadComboBox->getSelectedItemDisplayName();
 
      SignalHead* mHead = nullptr;
      if ( (newName!=("")) ) {
@@ -7006,7 +7010,7 @@ LEMemoryIcon *LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
      SignalHeadIcon* l = new SignalHeadIcon(this);
      l->setSignalHead(newName);
      l->setIcon(tr("Red"), signalIconEditor->getIcon(0));
-     l->setIcon(tr("Flashing rea"), signalIconEditor->getIcon(1));
+     l->setIcon(tr("Flashing Red"), signalIconEditor->getIcon(1));
      l->setIcon(tr("Yellow"), signalIconEditor->getIcon(2));
      l->setIcon(tr("Flashing Yellow"), signalIconEditor->getIcon(3));
      l->setIcon(tr("Green "), signalIconEditor->getIcon(4));
@@ -7027,8 +7031,8 @@ LEMemoryIcon *LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
  }
 
  SignalHead* LayoutEditor::getSignalHead(QString name) {
-     SignalHead* sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
-     if (sh == nullptr) sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(name);
+     SignalHead* sh = (SignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
+     if (sh == nullptr) sh = (SignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(name);
      if (sh == nullptr) log->warn("did not find a SignalHead named "+name);
      return sh;
  }
@@ -7069,11 +7073,11 @@ LEMemoryIcon *LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 
  void LayoutEditor::addSignalMast() {
      // check for valid signal head entry
-     QString newName = ui->signalMastComboBox->getDisplayName();
+     QString newName = ui->signalMastComboBox->getSelectedItemDisplayName();
      SignalMast* mMast = nullptr;
      if ( (newName!=("")) ) {
          mMast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(newName);
-         ui->signalMastComboBox->setText(newName);
+         ui->signalMastComboBox->setSelectedItemByName(newName);
      }
      if (mMast == nullptr) {
          // There is no signal head corresponding to this name
@@ -7445,7 +7449,7 @@ void LayoutEditor::repaint()
 */
 void LayoutEditor::addSensor()
 {
- QString newName = ui->sensorComboBox->getDisplayName();
+ QString newName = ui->sensorComboBox->getSelectedItemDisplayName();
   if (newName.isEmpty())
   {
 //      JOptionPane.showMessageDialog(this,rb.getQString("Error10"),
@@ -7470,14 +7474,14 @@ void LayoutEditor::addSensor()
   {
    if (newName != (l->getNamedSensor()->getName()))
    {
-       ui->sensorComboBox->setText(l->getNamedSensor()->getName());
+       ui->sensorComboBox->setSelectedItemByName(l->getNamedSensor()->getName());
    }
   }
   NamedBeanHandle<Sensor*>* s = l->getNamedSensor();
   QString sensorName = "";
   if(s != nullptr)
    sensorName = s->getName();
-  ui->sensorComboBox->setText(sensorName);
+  ui->sensorComboBox->setSelectedItemByName(sensorName);
   if(l->getNamedBean() != nullptr)
    l->setToolTip(l->getNamedBean()->getSystemName());
   setNextLocation(l);
@@ -7902,7 +7906,7 @@ void LayoutEditor::on_actionAdd_Turntable_triggered()
 */
 void LayoutEditor::addMemory()
 {
- QString memoryName = ui->textMemoryComboBox->getDisplayName();
+ QString memoryName = ui->textMemoryComboBox->getSelectedItemDisplayName();
 
     if (memoryName.isEmpty()) {
         JOptionPane::showMessageDialog(this, tr("Error - Cannot create a memory label because no memory variable is entered in the\nMemory text field. Please enter the name of a memory variable and try again."),
@@ -7917,7 +7921,7 @@ void LayoutEditor::addMemory()
         QString uname = xMemory->getDisplayName();
         if (uname != (memoryName)) {
             //put the system name in the memory field
-            ui->textMemoryComboBox->setText(xMemory->getSystemName());
+            ui->textMemoryComboBox->setSelectedItemByName(xMemory->getSystemName());
         }
     }
     setNextLocation(l);
@@ -9764,7 +9768,7 @@ void LayoutEditor::undoMoveSelection() {
 //
 //highlight the block selected by the specified combo Box
 //
-/*private*/ bool LayoutEditor::highlightBlockInComboBox(/*@Nonnull*/ JmriBeanComboBox* inComboBox) {
+/*private*/ bool LayoutEditor::highlightBlockInComboBox(/*@Nonnull*/ NamedBeanComboBox* inComboBox) {
     Block* block = nullptr;
     if (inComboBox != nullptr) {
         block = (Block*) inComboBox->getNamedBean();
@@ -9783,7 +9787,7 @@ void LayoutEditor::undoMoveSelection() {
 /*public*/ bool LayoutEditor::highlightBlock(/*@Nullable*/ Block* inBlock) {
     bool result = false; //assume failure (pessimist!)
 
-   ui-> blockIDComboBox->setSelectedBean(inBlock);
+   ui-> blockIDComboBox->setSelectedItem((NamedBean*)inBlock);
 
     LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
     QSet<NamedBean*> l = ui->blockIDComboBox->getManager()->getNamedBeanSet();

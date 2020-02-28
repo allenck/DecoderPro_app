@@ -77,7 +77,7 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
  * @see jmri.configurexml.XmlAdapter#loadDeferred()
  * @since 2.11.2
  */
-/*public*/ bool AbstractXmlAdapter::loadDeferred()
+/*public*/ bool AbstractXmlAdapter::loadDeferred() const
 {
  return false;
 }
@@ -85,7 +85,7 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
 /**
 * Used for determining which order to load items from XML files in.
 */
-/*public*/ int AbstractXmlAdapter::loadOrder()
+/*public*/ int AbstractXmlAdapter::loadOrder() const
 {
  return 50;
 }

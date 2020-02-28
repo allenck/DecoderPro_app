@@ -268,6 +268,6 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
     return SignalHead::DARK;
 }
 
-/*public*/ int DefaultSignalGroupManagerXml::loadOrder(){
+/*public*/ int DefaultSignalGroupManagerXml::loadOrder() const{
     return ((SignalGroupManager*)InstanceManager::getDefault("SignalGroupManager"))->getXMLOrder();
 }

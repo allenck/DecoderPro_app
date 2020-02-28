@@ -386,19 +386,19 @@ public:
   EDITCOL = DELETECOL
  };
  LogixTableModel(LogixTableAction* self);
- /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
- /*public*/ int getPreferredWidth(int col) ;
- /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
- /*public*/ QVariant data(const QModelIndex &index, int role) const;
- /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) ;
- void doDelete(NamedBean* bean);
- /*public*/ Manager* getManager();
- /*public*/ NamedBean* getBySystemName(QString name) const;
- /*public*/ NamedBean* getByUserName(QString name);
+ /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ /*public*/ int getPreferredWidth(int col) override;
+ /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+ /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+ /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+ void doDelete(NamedBean* bean) override;
+ /*public*/ Manager* getManager()override;
+ /*public*/ NamedBean* getBySystemName(QString name) const override;
+ /*public*/ NamedBean* getByUserName(QString name) override;
  /*public*/ int getDisplayDeleteMsg();
  /*public*/ void setDisplayDeleteMsg(int boo);
- /*public*/ void configureTable(JTable* table);
- /*public*/ QString getValue(QString s) const;
+ /*public*/ void configureTable(JTable* table)override;
+ /*public*/ QString getValue(QString s) const override;
  // Not needed - here for interface compatibility
  /*public*/ void clickOn(NamedBean* t) ;
 
@@ -407,11 +407,11 @@ LogixTableAction* self;
 
 protected:
  /*protected*/ QString enabledString;// = tr("Enabled");
- /*protected*/ QString getBeanType();
- /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
- /*protected*/ QString getMasterClassName();
- /*protected*/ void configDeleteColumn(JTable* table) ;
- /*protected*/ void configValueColumn(JTable *table);
+ /*protected*/ QString getBeanType() override;
+ /*protected*/ bool matchPropertyName(PropertyChangeEvent* e) override;
+ /*protected*/ QString getMasterClassName() override;
+ /*protected*/ void configDeleteColumn(JTable* table) override;
+ /*protected*/ void configValueColumn(JTable *table) override;
 
 };
 #if 0
@@ -437,9 +437,9 @@ class AddLogixFrameWindowListener : public WindowListener
  LogixTableAction* self;
 public:
  AddLogixFrameWindowListener(LogixTableAction* self);
- void windowClosing(QCloseEvent *e);
- void windowDeiconified(QResizeEvent *){}
- void windowIconified(QResizeEvent *){}
+ void windowClosing(QCloseEvent *e) override;
+ void windowDeiconified(QResizeEvent *) override{}
+ void windowIconified(QResizeEvent *) override{}
 };
 
 
@@ -448,12 +448,12 @@ class ItemDelegate : public QAbstractItemDelegate
   Q_OBJECT
  public:
   ItemDelegate(QStringList items, QObject *parent);
-  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    void setEditorData(QWidget *editor, const QModelIndex &index) const;
-    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const override;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override ;
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 private:
   QStringList Items;
   //int row;
@@ -470,7 +470,7 @@ public:
  CrossReferenceActionListener(BeanTableFrame* frame, LogixTableAction* parent);
 
 public slots:
- void actionPerformed();
+ void actionPerformed() ;
 };
 
 class LTALogixEventListener : public LogixEventListener
@@ -481,7 +481,7 @@ class LTALogixEventListener : public LogixEventListener
 
 public:
  /*public*/ LTALogixEventListener(QString sName, LogixTableAction* lta);
- /*public*/ void logixEventOccurred();
+ /*public*/ void logixEventOccurred() override;
  QObject* self() {return (QObject*)this;}
 };
 
@@ -492,7 +492,7 @@ class LTALogixEventListener1 : public LogixEventListener
  LogixTableAction* lta;
 public:
  /*public*/ LTALogixEventListener1(QString sName, LogixTableAction* lta);
- /*public*/ void logixEventOccurred();
+ /*public*/ void logixEventOccurred() override;
  QObject* self() {return (QObject*)this;}
 };
 
@@ -502,7 +502,7 @@ class LTAEditActionFrameWindowListener : public WindowListener
  LogixTableAction* lta;
 public:
  LTAEditActionFrameWindowListener(LogixTableAction* lta);
- void windowClosing(QCloseEvent */*e*/);
+ void windowClosing(QCloseEvent */*e*/) override;
 
 };
 #endif // LOGIXTABLEACTION_H

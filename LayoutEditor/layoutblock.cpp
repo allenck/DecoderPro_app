@@ -522,6 +522,15 @@ long LayoutBlock::time=0;
                         getMemory(name);
 }
 
+/*public*/ void LayoutBlock::setMemory(Memory* m, QString name) {
+    if (m == nullptr) {
+        namedMemory = nullptr;
+        memoryName = name.isEmpty() ? "" : name;
+        return;
+    }
+    namedMemory = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(name, m);
+}
+
 /**
  * Returns occupancy Sensor name
 */
@@ -538,9 +547,15 @@ long LayoutBlock::time=0;
  * Returns occupancy Sensor
 */
 /*public*/ Sensor*  LayoutBlock::getOccupancySensor() {
-    if(occupancyNamedSensor!=NULL)
-        return occupancyNamedSensor->getBean();
-    return NULL;
+ if (occupancyNamedSensor == nullptr) {
+     if (block != nullptr) {
+         occupancyNamedSensor = block->getNamedSensor();
+     }
+ }
+ if (occupancyNamedSensor != nullptr) {
+     return (Sensor*)occupancyNamedSensor->getBean();
+ }
+ return nullptr;
 }
 
 /**
@@ -548,29 +563,27 @@ long LayoutBlock::time=0;
  */
 /*public*/ void  LayoutBlock::setOccupancySensorName(QString name)
 {
- Sensor* sensor = NULL;
- ProxySensorManager* mgr = (ProxySensorManager*)InstanceManager::sensorManagerInstance();
- for(int i=0; i < mgr->nMgrs(); i++)
- {
-  AbstractSensorManager* sMgr = (AbstractSensorManager*)mgr->getMgr(i);
-  if(name.startsWith(sMgr->getSystemPrefix()+"S"))
-  {
-   sensor = sMgr->getSensor(name);
-  }
-  else
-   sensor = sMgr->getSensor(sMgr->getSystemPrefix()+"S"+name);
-  if(sensor != NULL)
-   break;
- }
- occupancySensorName = name;
-  //sensor = ((AbstractSensorManager*) InstanceManager::sensorManagerInstance())->
-//                        getSensor(name);
- if (sensor!=NULL)
- {
-  occupancyNamedSensor =((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(name, sensor);
-  if (block!=NULL)
-    block->setNamedSensor(occupancyNamedSensor);
- }
+ if ((name.isNull()) || name.isEmpty()) {
+       if (occupancyNamedSensor != nullptr) {
+           occupancyNamedSensor->getBean()->removePropertyChangeListener(mBlockListener);
+       }
+       occupancyNamedSensor = nullptr;
+       occupancySensorName = "";
+
+       if (block != nullptr) {
+           block->setNamedSensor(nullptr);
+       }
+       return;
+   }
+   occupancySensorName = name;
+   Sensor* sensor = InstanceManager::sensorManagerInstance()->getSensor(name);
+   if (sensor != nullptr) {
+       occupancyNamedSensor = ((NamedBeanHandleManager*)InstanceManager::getDefault(
+               "NamedBeanHandleManager"))->getNamedBeanHandle(name, sensor);
+       if (block != nullptr) {
+           block->setNamedSensor(occupancyNamedSensor);
+       }
+   }
 }
 
 /**
@@ -960,6 +973,7 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
  */
 /*protected*/ void  LayoutBlock::editLayoutBlock(/*Component*/ QWidget* /*callingPane*/)
 {
+#if 0
  if (editOpen)
  {
   editLayoutBlockFrame->setVisible(true);
@@ -1033,7 +1047,7 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
   panel6->setLayout(new FlowLayout());
   /*JLabel*/ QLabel* trackColorLabel = new /*JLabel*/ QLabel( tr("Track Color:") );
   panel6->layout()->addWidget(trackColorLabel);
-  initializeColorCombo(trackColorBox);
+  initializeColorCombo(trackColorBox, blockTrackColor);
   panel6->layout()->addWidget(trackColorBox);
   trackColorBox->setToolTip( tr("Select the track color when this block is unoccupied.") );
   contentPaneLayout->addWidget(panel6);
@@ -1042,7 +1056,7 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
   panel7->setLayout(new FlowLayout());
   /*JLabel*/ QLabel* occupiedColorLabel = new /*JLabel*/ QLabel( tr("Occupied Track Color:") );
   panel7->layout()->addWidget(occupiedColorLabel);
-  initializeColorCombo(occupiedColorBox);
+  initializeColorCombo(occupiedColorBox, blockOccupiedColor);
   panel7->layout()->addWidget(occupiedColorBox);
   occupiedColorBox->setToolTip( tr("Select the track color when this block is occupied.") );
   contentPaneLayout->addWidget(panel7);
@@ -1051,7 +1065,7 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
   panel7a->setLayout(new FlowLayout());
   /*JLabel*/ QLabel* extraColorLabel = new /*JLabel*/ QLabel( tr("Alternate Track Color:") );
   panel7a->layout()->addWidget(extraColorLabel);
-  initializeColorCombo(extraColorBox);
+  initializeColorCombo(extraColorBox, blockExtraColor);
   panel7a->layout()->addWidget(extraColorBox);
   extraColorBox->setToolTip( tr("Select the track color for unoccupied special use, e.g. allocated.") );
   contentPaneLayout->addWidget(panel7a);
@@ -1183,6 +1197,23 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
  editLayoutBlockFrame->show();
 #endif
  editOpen = true;
+#else
+ LayoutBlockEditAction* beanEdit = new LayoutBlockEditAction(this);
+ if (block == nullptr) {
+     //Block may not have been initialised due to an error so manually set it in the edit window
+     QString userName = getUserName();
+     if ((!userName.isNull()) && !userName.isEmpty()) {
+         Block* b = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(userName);
+         if (b != nullptr) {
+             beanEdit->setBean(b);
+         }
+     }
+ } else {
+     beanEdit->setBean(block);
+ }
+ beanEdit->actionPerformed();
+
+#endif
 }
 
 void LayoutBlock::sensorDebounceGlobalCheck_clicked()
@@ -1206,22 +1237,24 @@ void LayoutBlock::blockEditDonePressed(ActionEvent* /*a*/)
 {
  bool needsRedraw = false;
  // check if Sensor changed
- if ( (getOccupancySensorName())!=(sensorNameField->text().trimmed()) )
+ QString newName = NamedBean::normalizeUserName(sensorNameField->text());
+ if ( (getOccupancySensorName())!=(newName) )
  {
   // sensor has changed
-  QString newName = sensorNameField->text().trimmed();
-  if (validateSensor(newName,editLayoutBlockFrame)==NULL)
+  if ((newName.isNull()) || newName.isEmpty())
   {
-   // invalid sensor entered
-   occupancyNamedSensor = NULL;
-   occupancySensorName = "";
-   sensorNameField->setText("");
-   return;
-  }
-  else
-  {
-   sensorNameField->setText(newName);
-   needsRedraw = true;
+      setOccupancySensorName(newName);
+      sensorNameField->setText("");
+      needsRedraw = true;
+  } else if (validateSensor(newName, editLayoutBlockFrame) == nullptr) {
+      //invalid sensor entered
+      occupancyNamedSensor = nullptr;
+      occupancySensorName = "";
+      sensorNameField->setText("");
+      return;
+  } else {
+      sensorNameField->setText(newName);
+      needsRedraw = true;
   }
  }
  if(getOccupancySensor()!=NULL)
@@ -1254,19 +1287,26 @@ void LayoutBlock::blockEditDonePressed(ActionEvent* /*a*/)
   int oldSense = occupiedSense;
   if (k==senseActiveIndex) occupiedSense = Sensor::ACTIVE;
    else occupiedSense = Sensor::INACTIVE;
-  if (oldSense!=occupiedSense) needsRedraw = true;
+  if (oldSense!=occupiedSense)
+   needsRedraw = true;
+
   // check if track color changed
   QColor oldColor = blockTrackColor;
   blockTrackColor = getSelectedColor(trackColorBox);
-  if (oldColor!=blockTrackColor) needsRedraw = true;
+  if (oldColor!=blockTrackColor)
+   needsRedraw = true;
+
   // check if occupied color changed
   oldColor = blockOccupiedColor;
   blockOccupiedColor = getSelectedColor(occupiedColorBox);
-  if (oldColor!=blockOccupiedColor) needsRedraw = true;
+  if (oldColor!=blockOccupiedColor)
+   needsRedraw = true;
   // check if extra color changed
   oldColor = blockExtraColor;
   blockExtraColor = getSelectedColor(extraColorBox);
-  if (oldColor!=blockExtraColor) needsRedraw = true;
+  if (oldColor!=blockExtraColor)
+   needsRedraw = true;
+
   // check if Memory changed
   if ( memoryName!=(memoryNameField->text().trimmed()) )
   {
@@ -1317,7 +1357,8 @@ void LayoutBlock::blockEditDonePressed(ActionEvent* /*a*/)
   editLayoutBlockFrame->setVisible(false);
   //editLayoutBlockFrame->dispose();
   editLayoutBlockFrame = NULL;
-  if (needsRedraw) redrawLayoutBlockPanels();
+  if (needsRedraw)
+   redrawLayoutBlockPanels();
 }
 
 void LayoutBlock::blockEditCancelPressed(ActionEvent* /*a*/) {
@@ -1327,13 +1368,15 @@ void LayoutBlock::blockEditCancelPressed(ActionEvent* /*a*/) {
     editLayoutBlockFrame = NULL;
 }
 
-/*private*/ void LayoutBlock::initializeColorCombo(QComboBox* colorCombo) {
+/*private*/ void LayoutBlock::initializeColorCombo(QComboBox* colorCombo, QColor c) {
  colorCombo->clear();
  for (int i = 0;i<numColors;i++)
  {
   QColor desiredColor = colorCode.at(i);
   const QIcon* icon = getColourIcon(desiredColor);
   colorCombo->addItem(*icon, colorText[i] );
+  if(desiredColor == c)
+   colorCombo->setCurrentIndex(i);
  }
 }
 
@@ -4083,7 +4126,8 @@ void ThroughPaths::setTurnoutList(QList<LayoutTrackExpectedState<LayoutTurnout*>
      return;
  }
  _turnouts = QHash<Turnout*, int>(/*turnouts.size()*/);
- for (int i = 0; i < turnouts.size(); i++) {
+ for (int i = 0; i < turnouts.size(); i++)
+ {
      if (qobject_cast<LayoutSlip*>(turnouts.at(i)->getObject())) {
          int slipState = turnouts.at(i)->getExpectedState();
          LayoutSlip* ls = (LayoutSlip*) turnouts.at(i)->getObject();
@@ -4314,3 +4358,340 @@ const QIcon* LayoutBlock::getColourIcon(QColor color)
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger->getLogger(LayoutBlock.class.getName());
 
 //}
+
+
+/*protected*/ void LayoutBlockEditAction::initPanels() {
+    BlockEditAction::initPanels();
+    BeanItemPanel* ld = layoutDetails();
+    if (((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled()) {
+        blockRoutingDetails();
+    }
+    setSelectedComponent(ld);
+}
+
+
+BeanItemPanel* LayoutBlockEditAction::layoutDetails()
+{
+    BeanItemPanel* layout = new BeanItemPanel();
+    layout->setName(tr("Layout Editor"));
+
+    LayoutEditor::setupComboBox(lb->memoryComboBox, false, true, false);
+
+    layout->addItem(new BeanEditItem(new JLabel(QString::number(lb->useCount)), tr("Current Use Count"), QString()));
+    layout->addItem(new BeanEditItem(lb->memoryComboBox, tr("Memory"),
+            tr("Enter name (system or user) of Memory Variable (optional).")));
+
+    lb->senseBox->clear();
+    lb->senseBox->addItem(tr("Active"));
+    lb->senseActiveIndex = 0;
+    lb->senseBox->addItem(tr("Inactive"));
+    lb->senseInactiveIndex = 1;
+
+    layout->addItem(new BeanEditItem(lb->senseBox, tr("OccupiedSense"), tr("Select the occupancy sensor state when the block is occupied.")));
+
+    lb->trackColorChooser = new JColorChooser(lb->blockTrackColor);
+    lb->trackColorChooser->setPreviewPanel(new JPanel()); // remove the preview panel
+    QVector<AbstractColorChooserPanel*> trackColorPanels = {new SplitButtonColorChooserPanel()};
+    lb->trackColorChooser->setChooserPanels(&trackColorPanels);
+    layout->addItem(new BeanEditItem(lb->trackColorChooser, tr("Track Color"), tr("Select the track color when this block is unoccupied.")));
+
+    lb->occupiedColorChooser = new JColorChooser(lb->blockOccupiedColor);
+    lb->occupiedColorChooser->setPreviewPanel(new JPanel()); // remove the preview panel
+    QVector<AbstractColorChooserPanel*> occupiedColorPanels = {new SplitButtonColorChooserPanel()};
+    lb->occupiedColorChooser->setChooserPanels(&occupiedColorPanels);
+    layout->addItem(new BeanEditItem(lb->occupiedColorChooser, tr("Occupied Track Color:"), tr("Select the track color when this block is occupied.")));
+
+    lb->extraColorChooser = new JColorChooser(lb->blockExtraColor);
+    lb->extraColorChooser->setPreviewPanel(new JPanel()); // remove the preview panel
+    QVector<AbstractColorChooserPanel*> extraColorPanels = {new SplitButtonColorChooserPanel()};
+    lb->extraColorChooser->setChooserPanels(&extraColorPanels);
+    layout->addItem(new BeanEditItem(lb->extraColorChooser, tr("Alternate Track Color:"), tr("Select the track color for unoccupied special use, e.g. allocated.")));
+#if 0
+    layout->setSaveItem(new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            boolean needsRedraw = false;
+            int k = senseBox.getSelectedIndex();
+            int oldSense = occupiedSense;
+
+            if (k == senseActiveIndex) {
+                occupiedSense = Sensor.ACTIVE;
+            } else {
+                occupiedSense = Sensor.INACTIVE;
+            }
+
+            if (oldSense != occupiedSense) {
+                needsRedraw = true;
+            }
+            //check if track color changed
+            Color oldColor = blockTrackColor;
+            blockTrackColor = trackColorChooser.getColor();
+            if (oldColor != blockTrackColor) {
+                needsRedraw = true;
+                JmriColorChooser.addRecentColor(blockTrackColor);
+            }
+            //check if occupied color changed
+            oldColor = blockOccupiedColor;
+            blockOccupiedColor = occupiedColorChooser.getColor();
+            if (oldColor != blockOccupiedColor) {
+                needsRedraw = true;
+                JmriColorChooser.addRecentColor(blockOccupiedColor);
+            }
+            //check if extra color changed
+            oldColor = blockExtraColor;
+            blockExtraColor = extraColorChooser.getColor();
+            if (oldColor != blockExtraColor) {
+                needsRedraw = true;
+                JmriColorChooser.addRecentColor(blockExtraColor);
+            }
+            //check if Memory changed
+            String newName = memoryComboBox.getSelectedItemDisplayName();
+            if (newName == null) {
+                newName = "";
+            }
+            if (!memoryName.equals(newName)) {
+                //memory has changed
+                setMemory(validateMemory(newName, editLayoutBlockFrame), newName);
+                if (getMemory() == null) {
+                    //invalid memory entered
+                    memoryName = "";
+                    memoryComboBox.setSelectedItem(null);
+                    return;
+                } else {
+                    memoryComboBox.setSelectedItem(getMemory());
+                    needsRedraw = true;
+                }
+            }
+
+            if (needsRedraw) {
+                redrawLayoutBlockPanels();
+            }
+        }
+    });
+
+    layout.setResetItem(new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            memoryComboBox.setSelectedItem(getMemory());
+            trackColorChooser.setColor(blockTrackColor);
+            occupiedColorChooser.setColor(blockOccupiedColor);
+            extraColorChooser.setColor(blockExtraColor);
+            if (occupiedSense == Sensor.ACTIVE) {
+                senseBox.setSelectedIndex(senseActiveIndex);
+            } else {
+                senseBox.setSelectedIndex(senseInactiveIndex);
+            }
+        }
+    });
+#endif
+    bei.append(layout);
+    return layout;
+}
+BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
+    BeanItemPanel* routing = new BeanItemPanel();
+    routing->setName("Routing");
+
+    routing->addItem(new BeanEditItem(lb->metricField, "Block Metric", "set the cost for going over this block"));
+
+    routing->addItem(new BeanEditItem(nullptr, QString(), "Set the direction of the connection to the neighbouring block"));
+    lb->neighbourDir = QVector<JComboBox*>(lb->getNumberOfNeighbours());
+    for (int i = 0; i < lb->getNumberOfNeighbours(); i++) {
+        JComboBox* dir = new JComboBox(lb->working);
+        routing->addItem(new BeanEditItem(dir, lb->getNeighbourAtIndex(i)->getDisplayName(), nullptr));
+        lb->neighbourDir.append(dir);
+    }
+#if 0
+    routing->setResetItem(new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            metricField.setText(Integer.toString(metric));
+            for (int i = 0; i < getNumberOfNeighbours(); i++) {
+                JComboBox<String> dir = neighbourDir.get(i);
+                Block blk = neighbours.get(i).getBlock();
+                if (block.isBlockDenied(blk)) {
+                    dir.setSelectedIndex(2);
+                } else if (blk.isBlockDenied(block)) {
+                    dir.setSelectedIndex(1);
+                } else {
+                    dir.setSelectedIndex(0);
+                }
+            }
+        }
+    });
+#endif
+    routing->setResetItem(new RoutingSetResetItemListener(lb));
+#if 0
+    routing.setSaveItem(new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int m = Integer.parseInt(metricField.getText().trim());
+            if (m != metric) {
+                setBlockMetric(m);
+            }
+            block.setPermissiveWorking(permissiveCheck.isSelected());
+            if (neighbourDir != null) {
+                for (int i = 0; i < neighbourDir.size(); i++) {
+                    int neigh = neighbourDir.get(i).getSelectedIndex();
+                    neighbours.get(i).getBlock().removeBlockDenyList(block);
+                    block.removeBlockDenyList(neighbours.get(i).getBlock());
+                    switch (neigh) {
+                        case 0: {
+                            updateNeighbourPacketFlow(neighbours.get(i), RXTX);
+                            break;
+                        }
+
+                        case 1: {
+                            neighbours.get(i).getBlock().addBlockDenyList(block.getDisplayName());
+                            updateNeighbourPacketFlow(neighbours.get(i), TXONLY);
+                            break;
+                        }
+
+                        case 2: {
+                            block.addBlockDenyList(neighbours.get(i).getBlock().getDisplayName());
+                            updateNeighbourPacketFlow(neighbours.get(i), RXONLY);
+                            break;
+                        }
+
+                        default: {
+                            break;
+                        }
+                    }
+                    /* switch */
+                }
+            }
+        }
+    });
+#endif
+    routing->setSaveItem(new RoutingSetSaveItemListener(lb));
+    bei.append(routing);
+    return routing;
+}
+
+/*public*/ void LayoutSetSaveItemListener::actionPerformed() {
+    bool needsRedraw = false;
+    int k = lb->senseBox->currentIndex();
+    int oldSense = lb->occupiedSense;
+
+    if (k == lb->senseActiveIndex) {
+        lb->occupiedSense = Sensor::ACTIVE;
+    } else {
+        lb->occupiedSense = Sensor::INACTIVE;
+    }
+
+    if (oldSense != lb->occupiedSense) {
+        needsRedraw = true;
+    }
+    //check if track color changed
+    QColor oldColor = lb->blockTrackColor;
+    lb->blockTrackColor = lb->trackColorChooser->getColor();
+    if (oldColor != lb->blockTrackColor) {
+        needsRedraw = true;
+        JmriColorChooser::addRecentColor(lb->blockTrackColor);
+    }
+    //check if occupied color changed
+    oldColor = lb->blockOccupiedColor;
+    lb->blockOccupiedColor = lb->occupiedColorChooser->getColor();
+    if (oldColor != lb->blockOccupiedColor) {
+        needsRedraw = true;
+        JmriColorChooser::addRecentColor(lb->blockOccupiedColor);
+    }
+    //check if extra color changed
+    oldColor = lb->blockExtraColor;
+    lb->blockExtraColor = lb->extraColorChooser->getColor();
+    if (oldColor != lb->blockExtraColor) {
+        needsRedraw = true;
+        JmriColorChooser::addRecentColor(lb->blockExtraColor);
+    }
+    //check if Memory changed
+    QString newName = lb->memoryComboBox->getSelectedItemDisplayName();
+    if (newName == "") {
+        newName = "";
+    }
+    if (lb->memoryName!=(newName)) {
+        //memory has changed
+        lb->setMemory(lb->validateMemory(newName, lb->editLayoutBlockFrame), newName);
+        if (lb->getMemory() == nullptr) {
+            //invalid memory entered
+            lb->memoryName = "";
+            lb->memoryComboBox->setSelectedItem(nullptr);
+            return;
+        } else {
+            lb->memoryComboBox->setSelectedItem(lb->getMemory());
+            needsRedraw = true;
+        }
+    }
+
+    if (needsRedraw) {
+        lb->redrawLayoutBlockPanels();
+    }
+}
+
+/*public*/ void LayoutSetResetItemListener::actionPerformed() {
+    lb->memoryComboBox->setSelectedItem(lb->getMemory());
+    lb->trackColorChooser->setColor(lb->blockTrackColor);
+    lb->occupiedColorChooser->setColor(lb->blockOccupiedColor);
+    lb->extraColorChooser->setColor(lb->blockExtraColor);
+    if (lb->occupiedSense == Sensor::ACTIVE) {
+        lb->senseBox->setCurrentIndex(lb->senseActiveIndex);
+    } else {
+        lb->senseBox->setCurrentIndex(lb->senseInactiveIndex);
+    }
+}
+
+
+void RoutingSetResetItemListener::actionPerformed()
+{
+    lb->metricField->setText(QString::number(lb->metric));
+    for (int i = 0; i < lb->getNumberOfNeighbours(); i++) {
+        JComboBox* dir = lb->neighbourDir.at(i);
+        Block* blk = lb->neighbours->at(i)->getBlock();
+        if (lb->block->isBlockDenied(blk)) {
+            dir->setCurrentIndex(2);
+        } else if (blk->isBlockDenied(lb->block)) {
+            dir->setCurrentIndex(1);
+        } else {
+            dir->setCurrentIndex(0);
+        }
+    }
+}
+
+
+void RoutingSetSaveItemListener::actionPerformed()
+{
+ int m = (lb->metricField->text().trimmed().toInt());
+ if (m != lb->metric) {
+     lb->setBlockMetric(m);
+ }
+ lb->block->setPermissiveWorking(lb->permissiveCheck->isChecked());
+ if (!lb->neighbourDir.isEmpty())
+ {
+     for (int i = 0; i < lb->neighbourDir.size(); i++) {
+         int neigh = lb->neighbourDir.at(i)->currentIndex();
+         lb->neighbours->at(i)->getBlock()->removeBlockDenyList(lb->block);
+         lb->block->removeBlockDenyList(lb->neighbours->at(i)->getBlock());
+         switch (neigh) {
+             case 0: {
+                 lb->updateNeighbourPacketFlow(lb->neighbours->at(i), lb->RXTX);
+                 break;
+             }
+
+             case 1: {
+                 lb->neighbours->at(i)->getBlock()->addBlockDenyList(lb->block->getDisplayName());
+                 lb->updateNeighbourPacketFlow(lb->neighbours->at(i), lb->TXONLY);
+                 break;
+             }
+
+             case 2: {
+                 lb->block->addBlockDenyList(lb->neighbours->at(i)->getBlock()->getDisplayName());
+                 lb->updateNeighbourPacketFlow(lb->neighbours->at(i), lb->RXONLY);
+                 break;
+             }
+
+             default: {
+                 break;
+             }
+         }
+         /* switch */
+     }
+ }
+}

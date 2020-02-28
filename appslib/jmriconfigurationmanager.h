@@ -15,33 +15,33 @@ public:
  QT_DEPRECATED JmriConfigurationManager(QObject* parent = 0);
  ~JmriConfigurationManager() {}
  JmriConfigurationManager(const JmriConfigurationManager&) : ConfigXmlManager(){}
- /*public*/ void registerPref(QObject* o);
- /*public*/ void removePrefItems() ;
- /*public*/ void registerConfig(QObject* o);
- /*public*/ void registerConfig(QObject* o, int x);
- /*public*/ void registerTool(QObject* o);
- /*public*/ void registerUser(QObject* o);
- /*public*/ void registerUserPrefs(QObject* o);
- /*public*/ void deregister(QObject* o);
- /*public*/ QObject* findInstance(QString c, int index);
- /*public*/ QList<QObject*> getInstanceList(QString c);
- /*public*/ bool storeAll(File* file);
- /*public*/ void storePrefs();
- /*public*/ void storePrefs(File* file) ;
- /*public*/ void storeUserPrefs(File* file);
- /*public*/ bool storeConfig(File* file);
- /*public*/ bool storeUser(File* file);
- /*public*/ bool load(File* file)  throw (JmriConfigureXmlException);
+ /*public*/ void registerPref(QObject* o) override;
+ /*public*/ void removePrefItems()  override;
+ /*public*/ void registerConfig(QObject* o) override;
+ /*public*/ void registerConfig(QObject* o, int x) override;
+ /*public*/ void registerTool(QObject* o) override;
+ /*public*/ void registerUser(QObject* o) override;
+ /*public*/ void registerUserPrefs(QObject* o) override;
+ /*public*/ void deregister(QObject* o) override;
+ /*public*/ QObject* findInstance(QString c, int index) override;
+ /*public*/ QList<QObject*> getInstanceList(QString c) override;
+ /*public*/ bool storeAll(File* file)const override;
+ /*public*/ void storePrefs() override;
+ /*public*/ void storePrefs(File* file)  override;
+ /*public*/ void storeUserPrefs(File* file) override;
+ /*public*/ bool storeConfig(File* file) override;
+ /*public*/ bool storeUser(File* file) override;
+ /*public*/ bool load(File* file)  throw (JmriException) override;
  /*public*/ bool load( QUrl file)  throw (JmriConfigureXmlException);
- /*public*/ bool load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException);
- /*public*/ bool load( QUrl file, bool registerDeferred)  throw (JmriConfigureXmlException);
- /*public*/ bool loadDeferred(File* file)  throw (JmriConfigureXmlException);
- /*public*/ bool loadDeferred( QUrl file)  throw (JmriConfigureXmlException);
- /*public*/ QUrl find(QString filename);
- /*public*/ bool makeBackup(File* file);
+ /*public*/ bool load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException) override;
+ /*public*/ bool load( QUrl file, bool registerDeferred)  throw (JmriConfigureXmlException) override;
+ /*public*/ bool loadDeferred(File* file)  throw (JmriException) override;
+ /*public*/ bool loadDeferred( QUrl file)  throw (JmriConfigureXmlException) override;
+ /*public*/ QUrl find(QString filename) override;
+ /*public*/ bool makeBackup(File* file)const override;
  /*public*/ QHash<PreferencesManager*, InitializationException*> getInitializationExceptions();
- /*public*/ void setValidate(Validate v);
- /*public*/ XmlFile::Validate getValidate();
+ /*public*/ void setValidate(Validate v) override;
+ /*public*/ XmlFile::Validate getValidate() override;
 
 private:
  /*private*/ void initializeProvider( PreferencesManager* provider, Profile* profile);

@@ -28,7 +28,7 @@
 }
 
 //@Override
-/*public*/ Turnout* JMRIClientTurnoutManager::createNewTurnout(QString systemName, QString userName) {
+/*public*/ Turnout* JMRIClientTurnoutManager::createNewTurnout(QString systemName, QString userName) const {
     Turnout* t;
     int addr = (systemName.mid(prefix.length() + 1).toInt());
     t = new JMRIClientTurnout(addr, memo);

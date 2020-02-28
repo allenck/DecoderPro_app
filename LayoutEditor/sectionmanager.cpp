@@ -57,12 +57,12 @@ SectionManager::SectionManager(QObject *parent) :
 //        super();
 //    }
 
-int SectionManager::getXMLOrder(){
+int SectionManager::getXMLOrder() const{
     return Manager::SECTIONS;
 }
 
 //QString SectionManager::getSystemPrefix() { return "I"; }
-char SectionManager::typeLetter() { return 'Y'; }
+char SectionManager::typeLetter()const  { return 'Y'; }
 
 //@Override
 /*public*/ QString getNamedBeanClass() {
@@ -240,7 +240,7 @@ Section* SectionManager::createNewSection(QString userName) {
     QStringList signalList = shManager->getSystemNameList();
     for (int j=0; j<signalList.size(); j++)
     {
-     SignalHead* sh = shManager->getBySystemName(signalList.at(j));
+     SignalHead* sh =(SignalHead*) shManager->getBySystemName(signalList.at(j));
      if (!cUtil->removeSensorsFromSignalHeadLogic(&sensorList,	sh)) numErrors ++;
  }
  return numErrors;

@@ -9,10 +9,10 @@ class LIBPR3SHARED_EXPORT EntryPoint : public QObject
 {
     Q_OBJECT
 public:
-    explicit EntryPoint(QObject *parent = 0);
-    /*public*/ EntryPoint(Block* b, Block* pb, QString fbDir);
+    //explicit EntryPoint(QObject *parent = 0);
+    /*public*/ EntryPoint(Block* b, Block* pb, QString fbDir, QObject *parent = 0);
     // special constructor for delayed initialization
-    /*public*/ EntryPoint(QString bName, QString fbName, QString fbDir) ;
+    /*public*/ EntryPoint(QString bName, QString fbName, QString fbDir, QObject *parent = 0) ;
     /**
      * Constants representing the Direction of the Entry Point.
      */
@@ -43,14 +43,14 @@ signals:
 public slots:
 private:
     // instance variables
-    Block* mBlock;// = null;
-    Block* mFromBlock;// = null;
-    int mDirection;// = UNKNOWN;
-    bool mFixed;// = false;
+    Block* mBlock = nullptr;
+    Block* mFromBlock = nullptr;
+    int mDirection = UNKNOWN;
+    bool mFixed = false;
     QString mFromBlockDirection;// = "";
 
     // temporary instance variables
-    bool needsInitialize;// = false;
+    bool needsInitialize = false;
     QString blockName;// = "";
     QString fromBlockName;// = "";
     void initialize();

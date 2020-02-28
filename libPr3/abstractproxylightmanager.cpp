@@ -56,14 +56,14 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  * getManager(i) and getManagerList(),
  * including the Internal manager
  */
-/*protected*/ int AbstractProxyLightManager::nMgrs()
+/*protected*/ int AbstractProxyLightManager::nMgrs() const
 {
  // make sure internal present
  initInternal();
  return mgrs.size();
 }
 
-/*protected*/ Manager* AbstractProxyLightManager::getMgr(int index)
+/*protected*/ Manager* AbstractProxyLightManager::getMgr(int index) const
 {
  // make sure internal present
  initInternal();
@@ -111,7 +111,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
     return retval;
 }
 
-/*public*/ Manager* AbstractProxyLightManager::getInternalManager() {
+/*public*/ Manager* AbstractProxyLightManager::getInternalManager() const{
     initInternal();
     return internalManager;
 }
@@ -119,7 +119,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
 /**
  * Returns the set default or, if not present, the internal manager as defacto default
  */
-/*public*/ Manager* AbstractProxyLightManager::getDefaultManager() {
+/*public*/ Manager* AbstractProxyLightManager::getDefaultManager() const {
     if (defaultManager != nullptr) return defaultManager;
 
     return getInternalManager();
@@ -178,7 +178,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  }
 }
 
-/*private*/ Manager* AbstractProxyLightManager::initInternal()
+/*private*/ Manager* AbstractProxyLightManager::initInternal() const
 {
  if (internalManager == nullptr) {
      log->debug("create internal manager when first requested");
@@ -200,11 +200,11 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  * @param name
  * @return Null if nothing by that name exists
  */
-/*public*/ NamedBean* AbstractProxyLightManager::getNamedBean(QString name)
+/*public*/ NamedBean* AbstractProxyLightManager::getNamedBean(QString name) const
 {
- NamedBean* t = getBeanByUserName(name);
+ NamedBean* t = getByUserName(name);
  if (t != nullptr) return t;
- return getBeanBySystemName(name);
+ return getBySystemName(name);
 }
 
 /**
@@ -270,8 +270,36 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  return nullptr; // Should not get here! this should be overriden by the actual class
 }
 
+/** {@inheritDoc} */
 //@Override
-/*public*/ NamedBean* AbstractProxyLightManager::getBeanBySystemName(QString systemName)
+//@CheckReturnValue
+//@CheckForNull
+/*public*/ NamedBean *AbstractProxyLightManager::getBySystemName(/*@Nonnull */ QString systemName) const {
+    // System names can be matched to managers by system and type at front of name
+    int index = matchTentative(systemName);
+    if (index >= 0) {
+        Manager* m = getMgr(index);
+        return (NamedBean*)m->getBySystemName(systemName);
+    }
+    log->debug(tr("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName)); // NOI18N
+    return (NamedBean*)getDefaultManager()->getBySystemName(systemName);
+}
+
+/** {@inheritDoc} */
+//@Override
+//@CheckReturnValue
+//@CheckForNull
+/*public*/ NamedBean* AbstractProxyLightManager::getByUserName(/*@Nonnull*/ QString userName) const{
+    for (Manager* m : this->mgrs) {
+        NamedBean* b = m->getByUserName(userName);
+        if (b != nullptr) {
+            return (NamedBean*)b;
+        }
+    }
+    return nullptr;
+}
+//@Override
+/*public*/ NamedBean* AbstractProxyLightManager::getBeanBySystemName(QString systemName) const
 {
  //NamedBean* t = nullptr;
  foreach (Manager* m, this->mgrs) {
@@ -284,7 +312,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
 }
 
 //@Override
-/*public*/ NamedBean* AbstractProxyLightManager::getBeanByUserName(QString userName)
+/*public*/ NamedBean* AbstractProxyLightManager::getBeanByUserName(QString userName) const
 {
  foreach (Manager* m, this->mgrs) {
      NamedBean* b = m->getBeanByUserName(userName);
@@ -353,7 +381,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  * Returns -1 if there is no match, which is not considered an
  * error
  */
-/*protected*/ int AbstractProxyLightManager::matchTentative(QString systemname)
+/*protected*/ int AbstractProxyLightManager::matchTentative(QString systemname) const
 {
  //Q_ASSERT(mgrs->count()> 0);
  for (int i = 0; i<nMgrs(); i++)
@@ -377,7 +405,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  * Throws IllegalArgumentException if there is no match,
  * here considered to be an error that must be reported.
  */
-/*protected*/ int AbstractProxyLightManager::match(QString systemname) {
+/*protected*/ int AbstractProxyLightManager::match(QString systemname)const {
     int index = matchTentative(systemname);
     if (index < 0) throw  IllegalArgumentException("System name "+systemname+" failed to match");
     return index;
@@ -388,7 +416,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  * <P>
  * Forwards the register request to the matching system
  */
-/*public*/ void AbstractProxyLightManager::Register(NamedBean* s) {
+/*public*/ void AbstractProxyLightManager::Register(NamedBean* s) const {
     QString systemName = s->getSystemName();
     getMgr(match(systemName))->Register(s);
 }
@@ -398,7 +426,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  * <P>
  * Forwards the deregister request to the matching system
  */
-/*public*/ void AbstractProxyLightManager::deregister(NamedBean* s) {
+/*public*/ void AbstractProxyLightManager::deregister(NamedBean* s) const{
     QString systemName = s->getSystemName();
     getMgr(match(systemName))->deregister(s);
 }
@@ -483,7 +511,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
 /**
  * @return The system-specific prefix letter for the primary implementation
  */
-/*public*/ QString AbstractProxyLightManager::getSystemPrefix() {
+/*public*/ QString AbstractProxyLightManager::getSystemPrefix() const {
 //    try {
       return getMgr(0)->getSystemPrefix();
 //        } catch(IndexOutOfBoundsException* ie) {
@@ -494,7 +522,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
 /**
  * @return The type letter for turnouts
  */
-/*public*/ char AbstractProxyLightManager::typeLetter()
+/*public*/ char AbstractProxyLightManager::typeLetter() const
 {
  return getDefaultManager()->typeLetter();
 }
@@ -503,7 +531,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  * @return A system name from a user input, typically a number,
  * from the primary system.
  */
-/*public*/ QString AbstractProxyLightManager::makeSystemName(QString s) {
+/*public*/ QString AbstractProxyLightManager::makeSystemName(QString s) const {
     return getMgr(0)->makeSystemName(s);
 }
 
@@ -629,26 +657,26 @@ bool sortLessThanconst1( NamedBean* s1,  NamedBean* s2)
 /**
  * Get a list of all user names.
  */
-/*public*/ QStringList AbstractProxyLightManager::getUserNameList()
-{
- //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
- QSet<QString>* ts = new QSet<QString>();
- for (int i = 0; i<nMgrs(); i++)
- {
+///*public*/ QStringList AbstractProxyLightManager::getUserNameList() const
+//{
+// //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
+// QSet<QString>* ts = new QSet<QString>();
+// for (int i = 0; i<nMgrs(); i++)
+// {
   //ts.addAll(getMgr(i).getSystemNameList());
-  QStringList snl = getMgr(i)->getSystemNameList();
-  foreach(QString s, snl)
-  {
-   AbstractNamedBean* bean = (AbstractNamedBean*)getMgr(i)->getBeanBySystemName(s);
-   QString userName = bean->getUserName();
-   if(userName != "")
-    ts->insert(userName);
-  }
- }
- //return new ArrayList<String>(ts);
- QStringList arr = ts->toList();
- return arr;
-}
+//  QStringList snl = getMgr(i)->getSystemNameList();
+//  foreach(QString s, snl)
+//  {
+//   AbstractNamedBean* bean = (AbstractNamedBean*)getMgr(i)->getBeanBySystemName(s);
+//   QString userName = bean->getUserName();
+//   if(userName != "")
+//    ts->insert(userName);
+//  }
+// }
+// //return new ArrayList<String>(ts);
+// QStringList arr = ts->toList();
+// return arr;
+//}
 
 void AbstractProxyLightManager::propertyChange(PropertyChangeEvent */*e*/)
 {

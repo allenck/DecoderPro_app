@@ -12,8 +12,8 @@ class LIBPR3SHARED_EXPORT AbstractLightManager : public  LightManager
 public:
     //explicit AbstractLightManager(QObject *parent = 0);
  /*public*/ AbstractLightManager(SystemConnectionMemo* memo, QObject *parent = 0);
-    /*public*/ virtual int getXMLOrder();
-    /*public*/ virtual char typeLetter();
+    /*public*/ virtual int getXMLOrder() const override;
+    /*public*/ virtual char typeLetter() const override;
     /**
      * Locate via user name, then system name if needed.
      * If that fails, create a new Light: If the name
@@ -25,7 +25,7 @@ public:
      * @return Never null unless valid systemName cannot
      *     be found
      */
-    /*public*/ Light* provideLight(QString name);
+    /*public*/ Light* provideLight(QString name) override;
     /**
      * Locate via user name, then system name if needed.
      * Does not create a new one if nothing found
@@ -33,7 +33,8 @@ public:
      * @param name
      * @return null if no match found
      */
-    /*public*/ Light* getLight(QString name);
+    /*public*/ Light* getLight(QString name) override;
+#if 0
     /**
      * Locate a Light by its system name
      */
@@ -42,6 +43,7 @@ public:
      * Locate a Light by its user name
      */
     /*public*/ Light* getByUserName(QString key);
+#endif
     /**
      * Return an instance with the specified system and user names.
      * Note that two calls with the same arguments will get the same instance;
@@ -65,14 +67,14 @@ public:
      * be looking them up.
      * @return requested Light object (never NULL)
      */
-    /*public*/ Light* newLight(QString systemName, QString userName);
+    /*public*/ Light* newLight(QString systemName, QString userName) override;
     /**
      * Activate the control mechanism for each Light controlled by
      *    this LightManager.  Note that some Lights don't require
      *    any activation.  The activateLight method in AbstractLight.java
      *    determines what needs to be done for each Light.
      */
-    /*public*/ void activateAllLights();
+    /*public*/ void activateAllLights() override;
     /**
      * Normalize the system name
      * <P>
@@ -83,7 +85,7 @@ public:
      *      system-specific Light Manager should override this routine and supply
      *      a normalized system name.
      */
-    /*public*/ QString normalizeSystemName(QString systemName);
+    /*public*/ QString normalizeSystemName(QString systemName) override;
     /**
      * Convert the system name to a normalized alternate name
      * <P>
@@ -95,20 +97,20 @@ public:
      *      Light Manager should override this routine and supply the alternate
      *      name.
      */
-    /*public*/ QString convertSystemNameToAlternate(QString systemName);
+    /*public*/ QString convertSystemNameToAlternate(QString systemName) override;
     /**
      * Returns 'true' if the System can potentially support variable Lights
      *    Note: LightManagers for Systems that can support variable Lights should
      *         override this method and return 'true'.
      */
-    /*public*/ bool supportsVariableLights(QString systemName);
+    /*public*/ bool supportsVariableLights(QString systemName) override;
     /**
     * A method that determines if it is possible to add a range of lights in numerical
     * order eg 11 thru 18, primarily used to show/not show the add range box in the add Light window
     **/
-    /*public*/ bool allowMultipleAdditions(QString systemName);
-    /*public*/ QString getBeanTypeHandled(bool plural);
-    /*public*/ QString getEntryToolTip();
+    /*public*/ bool allowMultipleAdditions(QString systemName) override;
+    /*public*/ QString getBeanTypeHandled(bool plural)const override;
+    /*public*/ QString getEntryToolTip() override;
 
 
 signals:
@@ -123,7 +125,7 @@ protected:
      * logic for returning an existing method has been invoked.
      * @return new NULL
      */
-    /*abstract protected*/ virtual Light* createNewLight(QString /*systemName*/, QString /*userName*/){ return NULL;}
+    /*abstract protected*/ virtual Light* createNewLight(QString /*systemName*/, QString /*userName*/) { return NULL;}
 
 };
 

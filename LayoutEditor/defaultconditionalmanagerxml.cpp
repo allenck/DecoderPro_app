@@ -456,6 +456,6 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
     ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(pManager, Manager::CONDITIONALS);
 }
 
-/*public*/ int DefaultConditionalManagerXml::loadOrder(){
+/*public*/ int DefaultConditionalManagerXml::loadOrder()const{
     return ((ConditionalManager*)InstanceManager::getDefault("ConditionalManager"))->getXMLOrder();
 }

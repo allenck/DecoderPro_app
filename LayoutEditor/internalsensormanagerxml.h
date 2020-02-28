@@ -9,10 +9,10 @@ public:
     Q_INVOKABLE explicit InternalSensorManagerXml(QObject *parent = 0);
  ~InternalSensorManagerXml() {}
  InternalSensorManagerXml(const InternalSensorManagerXml&) : AbstractSensorManagerConfigXML() {}
-    /*public*/ void setStoreElementClass(QDomElement sensors) ;
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
-    /*public*/ QDomElement store(QObject* o);
-    /*public*/ bool load(QDomElement sensors, QDomElement perNodeSensors) throw (JmriConfigureXmlException);
+    /*public*/ void setStoreElementClass(QDomElement sensors)  override;
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
+    /*public*/ QDomElement store(QObject* o) override;
+    /*public*/ bool load(QDomElement sensors, QDomElement perNodeSensors) throw (JmriConfigureXmlException) override;
 
 signals:
 

@@ -1,4 +1,4 @@
-#ifndef LOCOIOADDRESS_H
+﻿#ifndef LOCOIOADDRESS_H
 #define LOCOIOADDRESS_H
 #include <QObject>
 
@@ -19,13 +19,14 @@ public:
  qint16 unitAddress() const;
  void setUnitSubAddress(qint16);
  qint16 unitSubAddress() const;
- qint32 address();
+ qint32 address() const;
  bool operator<(const LocoIOAddress  other) const;
  bool operator ==(const LocoIOAddress other) const;
  void setFirmwareVersion(QString);
  QString firmwareVersion();
  void setModuleType(QString);
  QString moduleType();
+
 
 };
 

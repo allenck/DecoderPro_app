@@ -21,34 +21,34 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon
     //explicit SignalHeadIcon(QObject *parent = 0);
     QVector<QString> _validKey;
     /*public*/ SignalHeadIcon(Editor* editor, Positionable *parent = 0);
-    /*public*/ Positionable* deepClone();
-    /*public*/ Positionable* finishClone(Positionable* p);
+    /*public*/ Positionable* deepClone() override;
+    /*public*/ Positionable* finishClone(Positionable* p) override;
     /*public*/ void setSignalHead(NamedBeanHandle<SignalHead*>* sh);
     /*public*/ void setSignalHead(QString pName);
     /*public*/ NamedBeanHandle <SignalHead*>* getNamedSignalHead();
     /*public*/ SignalHead* getSignalHead();
-    /*public*/ NamedBean* getNamedBean();
+    /*public*/ NamedBean* getNamedBean() override;
     /*public*/ void setIcon(QString state, NamedIcon* icon);
     /*public*/ int headState();
     ///*public*/ void propertyChange(PropertyChangeEvent* e); // now a slot!
-    /*public*/ QString getNameString();
-    /*public*/ bool showPopUp(QMenu* popup);
+    /*public*/ QString getNameString() override;
+    /*public*/ bool showPopUp(QMenu* popup) override;
 #if 0 // not needed since scaling and rotating is done by QT's QGraphicsScene ACK
     /*public*/ void setScale(double s) ;
     /*public*/ void rotate(int deg);
 #endif
-    /*public*/ void displayState(int state);
-    /*public*/ bool setEditItemMenu(QMenu* popup);
+    /*public*/ void displayState(int state) override;
+    /*public*/ bool setEditItemMenu(QMenu* popup) override;
     void updateItem();
-    /*public*/ bool setEditIconMenu(QMenu* popup);
+    /*public*/ bool setEditIconMenu(QMenu* popup) override;
     void updateSignal() ;
     /*public*/ void setClickMode(int mode);
     /*public*/ int getClickMode();
     /*public*/ void setLitMode(bool mode);
     /*public*/ bool getLitMode();
-    /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e) ;
+    /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e)  override;
     /*public*/ void performMouseClicked(QGraphicsSceneMouseEvent* e);
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
  signals:
 
  public slots:

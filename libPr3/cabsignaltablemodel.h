@@ -37,7 +37,7 @@ public:
  /*public*/ QVariant getValueAt(int row, int col) const override;
  /*public*/ void setValueAt(QVariant value, int row, int col) override;
  /*public*/ void dispose();
- /*public*/ QVariant getToolTip(int col) const override;
+ /*public*/ QVariant getToolTip(int col)const override;
  /*public*/ QVariant data(const QModelIndex &index, int role) const; // for QDecorationRole
 
 public slots:

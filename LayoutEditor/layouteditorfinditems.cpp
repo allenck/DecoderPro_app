@@ -431,14 +431,18 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
     return result;
 }
 
-/*public*/ LayoutTurnout* LayoutEditorFindItems::findLayoutTurnoutByTurnoutName(QString name) {
-    LayoutTurnout* result = nullptr;
- for (LayoutTurnout* t : layoutEditor->getLayoutTurnouts()) {
-  if (t->getTurnoutName()==(name)) {
-            return t;
-        }
-    }
-    return result;
+/*public*/ LayoutTurnout* LayoutEditorFindItems::findLayoutTurnoutByTurnoutName(QString turnoutName) {
+ LayoutTurnout* result = nullptr;
+ if ((!turnoutName.isNull()) && !turnoutName.isEmpty())
+ {
+  for (LayoutTurnout* t : layoutEditor->getLayoutTurnouts())
+  {
+   if (t->getTurnoutName()==(turnoutName)) {
+       result = t;
+   }
+  }
+ }
+ return result;
 }
 
 /*public*/ LevelXing* LayoutEditorFindItems::findLevelXingByName(QString name) {

@@ -127,14 +127,14 @@
  * Accessor methods
 */
 ///*public*/ QString PositionablePoint::getID() {return ident;}
-/*public*/ int PositionablePoint::getType() {return type;}
+/*public*/ int PositionablePoint::getType() const {return type;}
 
-/*public*/ TrackSegment* PositionablePoint::getConnect1()
+/*public*/ TrackSegment* PositionablePoint::getConnect1() const
 {
  return connect1;
 }
 
-/*public*/ TrackSegment* PositionablePoint::getConnect2()
+/*public*/ TrackSegment* PositionablePoint::getConnect2() const
 {
  if (type == EDGE_CONNECTOR && getLinkedPoint() != nullptr) {
      return getLinkedPoint()->getConnect1();
@@ -151,7 +151,7 @@
     return "";
 }
 
-/*public*/ PositionablePoint* PositionablePoint::getLinkedPoint() {
+/*public*/ PositionablePoint* PositionablePoint::getLinkedPoint() const {
     return linkedPoint;
 }
 
@@ -195,7 +195,7 @@
     }
 }
 
-/*public*/ LayoutEditor* PositionablePoint::getLinkedEditor() {
+/*public*/ LayoutEditor* PositionablePoint::getLinkedEditor() const{
     if (getLinkedPoint() != nullptr) {
         return getLinkedPoint()->getLayoutEditor();
     }
@@ -352,7 +352,7 @@
         return eastBoundSensorNamed->getBean();
     return nullptr;
 }
-/*public*/ void PositionablePoint::setEastBoundSensor(QString sensorName) {
+/*public*/ void PositionablePoint::setEastBoundSensor(QString sensorName) const {
     if(sensorName==nullptr || sensorName==("")){
         eastBoundSensorNamed=nullptr;
         return;
@@ -377,7 +377,7 @@
         return westBoundSensorNamed->getBean();
     return nullptr;
 }
-/*public*/ void PositionablePoint::setWestBoundSensor(QString sensorName) {
+/*public*/ void PositionablePoint::setWestBoundSensor(QString sensorName) const {
     if(sensorName==nullptr || sensorName==("")){
         westBoundSensorNamed=nullptr;
         return;
@@ -440,7 +440,7 @@
  return westBoundSignalMastNamed;
 }
 
-/*public*/ void PositionablePoint::setEastBoundSignalMast(QString signalMast) {
+/*public*/ void PositionablePoint::setEastBoundSignalMast(QString signalMast) const {
     SignalMast* mast = nullptr;
     if (signalMast != "" && !signalMast.isEmpty()) {
         mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
@@ -485,7 +485,7 @@
 return nullptr;
 
 }
-/*public*/ void PositionablePoint::setWestBoundSignalMast(QString signalMast) {
+/*public*/ void PositionablePoint::setWestBoundSignalMast(QString signalMast) const{
         SignalMast* mast = nullptr;
         if (signalMast != "" && !signalMast.isEmpty()) {
             mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
@@ -556,7 +556,7 @@ return nullptr;
  * @param track the track we want to disconnect from
  * @return true if successful
  */
-/*public*/ bool PositionablePoint::removeTrackConnection(/*@Nonnull*/ TrackSegment* track) {
+/*public*/ bool PositionablePoint::removeTrackConnection(/*@Nonnull*/ TrackSegment* track) const {
     return replaceTrackConnection(track, nullptr);
 }
 
@@ -567,7 +567,8 @@ return nullptr;
  * @param newTrack the new track connection
  * @return true if successful
  */
-/*public*/ bool PositionablePoint::replaceTrackConnection(/*@nullptrable*/ TrackSegment* oldTrack,/* @nullptrable */TrackSegment* newTrack) {
+/*public*/ bool PositionablePoint::replaceTrackConnection(/*@nullptrable*/ TrackSegment* oldTrack,
+ /* @nullptrable */TrackSegment* newTrack) const {
     bool result = false; // assume failure (pessimist!)
     // trying to replace old track with nullptr?
     if (newTrack == nullptr) {
@@ -768,7 +769,7 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
     // nothing to see here... move along...
 }
 
-/*public*/ void PositionablePoint::reCheckBlockBoundary(){
+/*public*/ void PositionablePoint::reCheckBlockBoundary()const{
     if(type==END_BUMPER)
         return;
     if(connect1==nullptr && connect2==nullptr){
@@ -1038,7 +1039,7 @@ void PositionablePoint::dispose()
  popup = nullptr;
 }
 
-void PositionablePoint::removeLinkedPoint() {
+void PositionablePoint::removeLinkedPoint() const{
  if (type == EDGE_CONNECTOR && getLinkedPoint() != nullptr) {
 
      if (getConnect2() != nullptr && getLinkedEditor() != nullptr) {
@@ -1385,7 +1386,7 @@ void PositionablePoint::draw(EditScene* g2)
     g2->addItem(item);
 }
 #endif
-/*protected*/ int PositionablePoint::getConnect1Dir() {
+/*protected*/ int PositionablePoint::getConnect1Dir() const{
  int result = Path::NONE;
 
  TrackSegment* ts1 = getConnect1();

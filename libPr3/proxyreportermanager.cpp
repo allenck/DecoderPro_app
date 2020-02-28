@@ -29,7 +29,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 {
         return ((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getReporterManager();
     }
-    /*public*/ int ProxyReporterManager::getXMLOrder(){
+    /*public*/ int ProxyReporterManager::getXMLOrder() const{
         return Manager::REPORTERS;
     }
 
@@ -39,13 +39,13 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
  * @param name
  * @return Null if nothing by that name exists
  */
-/*public*/ Reporter* ProxyReporterManager::getReporter(QString name)
+/*public*/ Reporter* ProxyReporterManager::getReporter(QString name) const
 {
  //return dynamic_cast<Reporter*>(/*super.*/AbstractProxyManager::getNamedBean(name));
  return (Reporter*)AbstractProxyReporterManager::getNamedBean(name);
 }
 
-/*protected*/ NamedBean* ProxyReporterManager::makeBean(int i, QString systemName, QString userName)
+/*protected*/ NamedBean* ProxyReporterManager::makeBean(int i, QString systemName, QString userName) const
 {
  AbstractReporterManager* mgr = (AbstractReporterManager*)getMgr(i);
  return mgr->newReporter(systemName, userName);
@@ -66,7 +66,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
  * instance already exists.
  * @return requested Reporter object or NULL if none exists
  */
-/*public*/ Reporter* ProxyReporterManager::getBySystemName(QString sName) {
+/*public*/ Reporter* ProxyReporterManager::getBySystemName(QString sName) const {
     //return dynamic_cast<Reporter*>( /*super.*/AbstractProxyManager::getBeanBySystemName(sName));
 return (Reporter*)AbstractProxyReporterManager::getBeanBySystemName(sName);
 }
@@ -76,11 +76,11 @@ return (Reporter*)AbstractProxyReporterManager::getBeanBySystemName(sName);
  * instance already exists.
  * @return requested Reporter object or NULL if none exists
  */
-/*public*/ Reporter* ProxyReporterManager::getByUserName(QString userName) {
+/*public*/ Reporter* ProxyReporterManager::getByUserName(QString userName) const {
     return dynamic_cast<Reporter*>( /*super.*/AbstractProxyReporterManager::getBeanByUserName(userName));
 }
 
-/*public*/ Reporter* ProxyReporterManager::getByDisplayName(QString key) {
+/*public*/ Reporter* ProxyReporterManager::getByDisplayName(QString key) const {
 // First try to find it in the user list.
 // If that fails, look it up in the system list
 Reporter* retv = this->getByUserName(key);
@@ -119,21 +119,21 @@ return(retv);
  * be looking them up.
  * @return requested Reporter object (never NULL)
  */
-/*public*/ Reporter* ProxyReporterManager::newReporter(QString systemName, QString userName)
+/*public*/ Reporter* ProxyReporterManager::newReporter(QString systemName, QString userName) const
 {
  NamedBean* bean = newNamedBean(systemName, userName);
     //return dynamic_cast<Reporter*>( bean);
  return (Reporter*) bean;
 }
 
-/*public*/ bool ProxyReporterManager::allowMultipleAdditions(QString systemName) {
+/*public*/ bool ProxyReporterManager::allowMultipleAdditions(QString systemName) const {
     int i = matchTentative(systemName);
     if (i >= 0)
         return ((ReporterManager*)getMgr(i))->allowMultipleAdditions(systemName);
     return ((ReporterManager*)getMgr(0))->allowMultipleAdditions(systemName);
 }
 
-/*public*/ QString ProxyReporterManager::getNextValidAddress(QString curAddress, QString prefix)
+/*public*/ QString ProxyReporterManager::getNextValidAddress(QString curAddress, QString prefix) const
 {
     for (int i=0; i<nMgrs(); i++)
     {
@@ -148,7 +148,7 @@ return(retv);
 
     // initialize logging
     //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ProxyReporterManager.class.getName());
-/*public*/ NamedBean* ProxyReporterManager::newNamedBean(QString systemName, QString userName) {
+/*public*/ NamedBean* ProxyReporterManager::newNamedBean(QString systemName, QString userName)const {
     // if the systemName is specified, find that system
     int i = matchTentative(systemName);
     if (i >= 0)
@@ -168,6 +168,6 @@ return(retv);
 }
 
 //@Override
-/*public*/ QString ProxyReporterManager::getBeanTypeHandled(bool plural) {
+/*public*/ QString ProxyReporterManager::getBeanTypeHandled(bool plural) const {
     return tr(plural ? "Reporters" : "Reporter");
 }

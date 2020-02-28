@@ -106,7 +106,7 @@ ProxyTurnoutManagerTest::ProxyTurnoutManagerTest(QObject *parent) : QObject(pare
     Turnout* t1 = l->newTurnout(getSystemName(getNumToTest1()), "before");
     Assert::assertNotNull("t1 real object ", t1, __FILE__, __LINE__);
     t1->setUserName("after");
-    Turnout* t2 = l->getByUserName("after");
+    Turnout* t2 = (Turnout*)l->getByUserName("after");
     Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
     Assert::assertEquals("no old object", nullptr, l->getByUserName("before"), __FILE__, __LINE__);
 }

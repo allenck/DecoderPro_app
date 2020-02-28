@@ -1391,8 +1391,8 @@ TrackSegment::getLayoutBlock()
  QAction* jmi = popupMenu->addSection(tr("%1: ").arg(info) + getName());
  jmi->setEnabled(false);
 
- if (blockName.isEmpty()) {
-     jmi = popupMenu->addSection(tr("NoBlock"));
+ if (namedLayoutBlock == nullptr) {
+     jmi = popupMenu->addSection(tr("No Block Set"));
  } else {
      jmi = popupMenu->addSection(tr(" %1: ").arg(tr("Block")) + getLayoutBlock()->getDisplayName());
  }
@@ -2161,7 +2161,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onArrowGap()));
 // });
    connect(act, SIGNAL(triggered(bool)), this, SLOT(onDelete()));
 
- popupMenu->addAction(act =new AbstractAction(tr("SplitTrackSegment"),this));
+ popupMenu->addAction(act =new AbstractAction(tr("Split Track Segment"),this));
 // {
 //     @Override
 //     public void actionPerformed(ActionEvent e) {
@@ -4739,6 +4739,7 @@ public*/ QList<int> TrackSegment::checkForFreeConnections() {
      */
     QList<QSet<QString> > trackNameSets = QList<QSet<QString> >();
     QSet<QString> trackNameSet = QSet<QString>();    // assume not found (pessimist!)
+    QString blockName = getBlockName();
     if (!blockName.isEmpty()) {
         trackNameSets = blockNamesToTrackNameSetsMap.value(blockName);
         if (!trackNameSets.isEmpty()) { // (#1)

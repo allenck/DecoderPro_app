@@ -53,7 +53,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
      QString sname = iter.next();
      if (sname=="") log->error("System name NULL during store");
      log->debug("system name is "+sname);
-     SignalHead* sub = sm->getBySystemName(sname);
+     SignalHead* sub = (SignalHead*)sm->getBySystemName(sname);
      try
      {
       QDomElement e = ConfigXmlManager::elementFromObject(sub);
@@ -171,7 +171,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
  static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(pManager, Manager::SIGNALHEADS);
 }
 
-/*public*/ int AbstractSignalHeadManagerXml::loadOrder()
+/*public*/ int AbstractSignalHeadManagerXml::loadOrder() const
 {
  return static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getXMLOrder();
 }

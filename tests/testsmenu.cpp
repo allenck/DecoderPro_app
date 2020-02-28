@@ -72,6 +72,10 @@
 #include "consisttoolframetestaction.h"
 #include "cabsignals/defaultcabsignaltestaction.h"
 #include "cabsignals/cabsignaltablemodeltestaction.h"
+#include "entryexit/entryexitpairstestaction.h"
+#include "entryexit/destinationpointstestaction.h"
+#include "entryexit/pointdetailstestaction.h"
+//#include "entryexit/sourcetestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -80,6 +84,14 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     addMenu(cabSignalMenu);
     cabSignalMenu->addAction(new DefaultCabSignalTestAction(this));
     cabSignalMenu->addAction(new CabSignalTableModelTestAction(this));
+
+    QMenu* entryExitMenu = new QMenu(tr("EntryExit"));
+    addMenu(entryExitMenu);
+    entryExitMenu->addAction(new EntryExitPairsTestAction(this));
+    entryExitMenu->addAction(new DestinationPointsTestAction(this));
+    entryExitMenu->addAction(new PointDetailsTestAction(this));
+    //entryExitMenu->addAction(new SourceTestAction(this));
+
     QMenu* rosterTestMenu = new QMenu(tr("Roster Tests"));
     addMenu(rosterTestMenu);
     rosterTestMenu->addAction(new RosterTestAction("Roster Test", this));
@@ -109,19 +121,23 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addAction(new LnPortControllerTestAction(this));
     loconetTestMenu->addAction(new LnPacketizerTestAction(this));
     loconetTestMenu->addAction(new LnPowerManagerTestAction(this));
+
     QMenu* loconetLightMenu = new QMenu(tr("Lights ..."));
     loconetTestMenu->addMenu(loconetLightMenu);
     loconetLightMenu->addAction(new LnLightTestAction(this));
     loconetLightMenu->addAction(new LightControlTestAction(this));
+
     QMenu* loconetSensorsMenu = new QMenu(tr("Sensors ..."));
     loconetTestMenu->addMenu(loconetSensorsMenu);
     loconetSensorsMenu->addAction(new LnSensorTestAction(this));
+
     QMenu* loconetReporterMenu = new QMenu(tr("Reporters"));
     loconetTestMenu->addMenu(loconetReporterMenu);
     loconetReporterMenu->addAction(new LnReporterTestAction(this));
     loconetReporterMenu->addAction(new LnReporterManagerTestAction(this));
     loconetSensorsMenu->addAction(new LnSensorAddressTestAction(this));
     loconetSensorsMenu->addAction(new LnSensorManagerTestAction(this));
+
     QMenu* loconetTurnoutsMenu = new QMenu(tr("Turnouts ..."));
     loconetTestMenu->addMenu(loconetTurnoutsMenu);
     loconetTurnoutsMenu->addAction(new LnTurnoutTestAction(this));
@@ -132,12 +148,14 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* sprogTestMenu = new QMenu(tr("Sprog"));
     addMenu(sprogTestMenu);
     sprogTestMenu->addAction(new SprogMessageTestAction(this));
+
     QMenu* proxyMenu = new QMenu(tr("Proxy Managers ..."));
     addMenu(proxyMenu);
     proxyMenu->addAction(new ProxyTurnoutManagerTestAction(this));
     proxyMenu->addAction(new ProxySensorManagerTestAction(this));
     proxyMenu->addAction(new ProxyReporterManagerTestAction(this));
     proxyMenu->addAction(new ProxyLightManagerTestAction(this));
+
     QMenu* facadeMenu = new QMenu(tr("Programmer facades ..."));
     addMenu(facadeMenu);
     facadeMenu->addAction(new AccessoryOpsModeProgrammerFacadeTestAction(this));
@@ -146,18 +164,22 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     facadeMenu->addAction(new OpsModeDelayedProgrammerFacadeTestAction(this));
     facadeMenu->addAction(new TwoIndexTcsProgrammerFacadeTestAction(this));
     facadeMenu->addAction(new VerifyWriteProgrammerFacadeTestAction(this));
+
     QMenu* panelsMenu = new QMenu(tr("Panels ..."));
     addMenu(panelsMenu);
     panelsMenu->addAction(new PaneProgFrameTestAction(this));
     panelsMenu->addAction(new PaneProgPaneTestAction(this));
     panelsMenu->addAction(new DecoderFileTestAction(this));
+
     QMenu* namedBeansMenu = new QMenu(tr("NamedBeans ..."));
     addMenu(namedBeansMenu);
     namedBeansMenu->addAction(new NamedBeanUserNameComparatorTestAction(this));
+
     QMenu* loconetThrottleMenu = new QMenu(tr("Throttle test"));
     loconetTestMenu->addMenu(loconetThrottleMenu);
     loconetThrottleMenu->addAction(new LocoNetThrottleTestAction(this));
     loconetThrottleMenu->addAction(new NmraPacketTestAction(this));
+
     QMenu* signalMenu = new QMenu(tr("Signals ..."));
     addMenu(signalMenu);
     signalMenu->addAction(new DccSignalHeadTestAction(this));
@@ -173,20 +195,25 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     signalMenu->addAction(new TurnoutSignalMastTestAction(this));
     signalMenu->addAction(new TurnoutSignalMastAddPaneTestAction(this));
     signalMenu->addAction(new VirtualSignalHeadTestAction(this));
+
     QMenu* logixMenu = new QMenu("Logix");
     addMenu(logixMenu);
     logixMenu->addAction(new LogixActionTestAction(this));
+
     QMenu* operationsMenu = new QMenu(tr("Operations"));
     addMenu(operationsMenu);
     operationsMenu->addAction(new OptionsMenuTestAction(this));
+
     QMenu* warrantMenu = new QMenu("Warrants");
     addMenu(warrantMenu);
     warrantMenu->addAction(new WarrantTestAction(this));
     warrantMenu->addAction(new WarrantPreferencesPanelTestAction(this));
     warrantMenu->addAction(new JmriUserPreferencesManagerTestAction(this));
+
     QMenu* positionablesMenu = new QMenu(tr("Positionables ..."));
     addMenu(positionablesMenu);
     positionablesMenu->addAction(new SignalMastIconTestAction(this));
+
     QMenu* miscMenu = new QMenu("misc");
     addMenu(miscMenu);
     miscMenu->addAction(new ColorChooserPanelTestAction(this));

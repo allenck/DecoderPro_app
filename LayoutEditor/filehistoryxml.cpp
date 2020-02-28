@@ -38,7 +38,7 @@ FileHistoryXml::FileHistoryXml(QObject *parent) :
 {
  if (e.tagName() != ("filehistory"))
  {
-  throw new Exception("Unexpected element name: " + e.tagName());
+  throw Exception("Unexpected element name: " + e.tagName());
  }
 
  FileHistory* rmain = (FileHistory*)InstanceManager::getDefault("FileHistory");

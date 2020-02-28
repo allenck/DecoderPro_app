@@ -9,13 +9,13 @@ class AbstractCabSignalManager : public QObject, public CabSignalManager
  Q_INTERFACES(CabSignalManager)
 public:
  AbstractCabSignalManager(QObject *parent =0);
- /*public*/ CabSignal* getCabSignal(LocoAddress* address);
- /*public*/ void delCabSignal(LocoAddress* address);
- /*public*/ QSet<LocoAddress*> getCabSignalList();
- /*public*/ QVector<CabSignal*> getCabSignalArray();
- /*public*/ void addCabSignalListListener(CabSignalListListener* listener);
- /*public*/ void removeCabSignalListListener(CabSignalListListener* listener);
- /*public*/ void notifyCabSignalListChanged();
+ /*public*/ CabSignal* getCabSignal(LocoAddress* address) override;
+ /*public*/ void delCabSignal(LocoAddress* address)override;
+ /*public*/ QSet<LocoAddress*> getCabSignalList()override;
+ /*public*/ QVector<CabSignal*> getCabSignalArray()override;
+ /*public*/ void addCabSignalListListener(CabSignalListListener* listener)override;
+ /*public*/ void removeCabSignalListListener(CabSignalListListener* listener)override;
+ /*public*/ void notifyCabSignalListChanged()override;
 
 private:
  static Logger* log;
@@ -39,7 +39,7 @@ class ACMPropertyChangeListener : public PropertyChangeListener
 public:
  ACMPropertyChangeListener(AbstractCabSignalManager* acm) {this->acm = acm;}
 public slots:
- void propertyChange(PropertyChangeEvent* e)
+ void propertyChange(PropertyChangeEvent* e) override
  {
   acm->handleBlockChange(e);
  }

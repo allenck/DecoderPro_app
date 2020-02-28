@@ -97,7 +97,7 @@ void SystemConnectionMemo::_register()
  * Provides access to the system prefix string.
  * This was previously called the "System letter"
  */
-QString SystemConnectionMemo::getSystemPrefix() { return prefix; }
+QString SystemConnectionMemo::getSystemPrefix() const { return prefix; }
 
 /**
  * Set the system prefix.
@@ -137,7 +137,7 @@ bool SystemConnectionMemo::setSystemPrefix(QString systemPrefix)
  *
  * @return User name
  */
-/*public*/ QString SystemConnectionMemo::getUserName() {
+/*public*/ QString SystemConnectionMemo::getUserName() const {
     return userName;
 }
 

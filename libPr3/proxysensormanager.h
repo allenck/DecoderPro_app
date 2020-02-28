@@ -12,20 +12,20 @@ class ProxySensorManager : public AbstractProxySensorManager/*, public SensorMan
  Q_OBJECT
 public:
  ProxySensorManager(QObject* parent = nullptr);
- /*public*/ Sensor* getSensor(QString name);
- /*public*/ Sensor* provideSensor(QString sName);
+ /*public*/ Sensor* getSensor(QString name) const override;
+ /*public*/ Sensor* provideSensor(QString sName) override;
  /**
   * Locate an instance based on a system name.  Returns null if no
   * instance already exists.
   * @return requested Turnout object or null if none exists
   */
- /*public*/ Sensor* getBySystemName(QString sName);
+// /*public*/ Sensor* getBySystemName(QString sName) const;
  /**
   * Locate an instance based on a user name.  Returns null if no
   * instance already exists.
   * @return requested Turnout object or null if none exists
   */
- /*public*/ Sensor* getByUserName(QString userName);
+// /*public*/ Sensor* getByUserName(QString userName) const;
  /**
   * Return an instance with the specified system and user names.
   * Note that two calls with the same arguments will get the same instance;

@@ -204,6 +204,6 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
  }
 }
 
-/*public*/ int DefaultLogixManagerXml::loadOrder(){
+/*public*/ int DefaultLogixManagerXml::loadOrder() const{
     return ((DefaultLogixManager*)static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")))->getXMLOrder();
 }

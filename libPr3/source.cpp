@@ -186,9 +186,9 @@ void Source::addSourceObject(NamedBean* source){
 
 QObject* Source::getSourceObject() { return sourceObject; }
 
-/*public*/ QList<PointDetails*>* Source::getDestinationPoints() {
+/*public*/ QList<PointDetails*> Source::getDestinationPoints() {
     //ArrayList<PointDetails> rtn =
-    return new QList<PointDetails*>(pointToDest->keys());
+    return QList<PointDetails*>(pointToDest->keys());
 }
 
 /*public*/ bool Source::isDestinationValid(PointDetails* destPoint){

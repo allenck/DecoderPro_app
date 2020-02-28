@@ -10,8 +10,8 @@ public:
  Q_INVOKABLE explicit DefaultMemoryManagerXml(QObject *parent = 0);
  ~DefaultMemoryManagerXml() {}
  DefaultMemoryManagerXml(const DefaultMemoryManagerXml&) : AbstractMemoryManagerConfigXML() {}
- /*public*/ void setStoreElementClass(QDomElement memories);
- /*public*/ bool load(QDomElement shareMemories, QDomElement perNodeMemories) throw (JmriConfigureXmlException);
+ /*public*/ void setStoreElementClass(QDomElement memories) override;
+ /*public*/ bool load(QDomElement shareMemories, QDomElement perNodeMemories) throw (JmriConfigureXmlException) override;
 
 signals:
 

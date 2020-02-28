@@ -464,7 +464,7 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
  return loadOk;
 }
 
-/*public*/ int DefaultSignalMastLogicManagerXml::loadOrder()
+/*public*/ int DefaultSignalMastLogicManagerXml::loadOrder() const
 {
     return ((DefaultSignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getXMLOrder();
 }

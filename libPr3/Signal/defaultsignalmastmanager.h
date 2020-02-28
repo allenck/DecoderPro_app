@@ -16,17 +16,17 @@ public:
     explicit DefaultSignalMastManager(QObject *parent = 0);
     ~DefaultSignalMastManager() {}
     DefaultSignalMastManager(const DefaultSignalMastManager&) : SignalMastManager() {}
-    /*public*/ int getXMLOrder();
-    /*public*/ QString getSystemPrefix() ;
-    /*public*/ char typeLetter() ;
-    /*public*/ SignalMast* getSignalMast(QString name) ;
+    /*public*/ int getXMLOrder()const  override;
+    /*public*/ QString getSystemPrefix()const override ;
+    /*public*/ char typeLetter() const override ;
+    /*public*/ SignalMast* getSignalMast(QString name) override ;
     /*public*/ SignalMast* provideSignalMast(QString prefix, // nominally IF$shsm
                                         QString signalSystem,
                                         QString mastName,
-                                        QStringList heads) ;
-    /*public*/ SignalMast* provideSignalMast(QString name);
-    /*public*/ SignalMast* getBySystemName(QString key) ;
-    /*public*/ SignalMast* getByUserName(QString key);
+                                        QStringList heads)  override;
+    /*public*/ SignalMast* provideSignalMast(QString name) override;
+    /*public*/ SignalMast* getBySystemName(QString key)  override;
+    /*public*/ SignalMast* getByUserName(QString key) override;
 #if 1
     /*public*/ void addRepeater(SignalMastRepeater* rp) throw (JmriException);
     /*public*/ void removeRepeater(SignalMastRepeater* rp);
@@ -37,7 +37,7 @@ public:
 
 signals:
     void newSignalMastCreated(AbstractSignalMast*);
-    void propertyChange(PropertyChangeEvent *e);
+    void propertyChange(PropertyChangeEvent *e) override;
 public slots:
 private:
     QList<SignalMastRepeater*>* repeaterList;// = new QList<SignalMastRepeater*>();

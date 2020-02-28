@@ -9,25 +9,25 @@ class LIBPR3SHARED_EXPORT AbstractMemoryManager : public MemoryManager
     Q_OBJECT
 public:
     explicit AbstractMemoryManager(QObject *parent = 0);
-    /*public*/ int getXMLOrder();
-    /*public*/ char typeLetter()const;
-    /*public*/ Memory* provideMemory(QString sName);
-    /*public*/ Memory* getMemory(QString name);
-    /*public*/ Memory* getBySystemName(QString name);
-    /*public*/ Memory* getByUserName(QString key);
-    /*public*/ Memory* newMemory(QString systemName, QString userName);
-    /*public*/ Memory* newMemory(QString userName);
-    /*public*/ QString getBeanTypeHandled(bool plural) ;
-    /*public*/ Memory* provide(QString name) throw (IllegalArgumentException);
+    /*public*/ int getXMLOrder()const override;
+    /*public*/ char typeLetter()const override;
+    /*public*/ Memory* provideMemory(QString sName)const override;
+    /*public*/ Memory* getMemory(QString name)const override;
+    /*public*/ Memory* getBySystemName(QString name)const override;
+    /*public*/ Memory* getByUserName(QString key)const override;
+    /*public*/ Memory* newMemory(QString systemName, QString userName)const override;
+    /*public*/ Memory* newMemory(QString userName)const override;
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
+    /*public*/ Memory* provide(QString name) const  throw (IllegalArgumentException) override;
 
 signals:
     void newMemoryCreated(Memory* m);
 public slots:
 private:
  Logger log;
- int lastAutoMemoryRef = 0;
+ mutable int lastAutoMemoryRef = 0;
 protected:
- /*abstract protected*/ virtual Memory* createNewMemory(QString systemName, QString userName) = 0;
+ /*abstract protected*/ virtual Memory* createNewMemory(QString systemName, QString userName) const = 0;
 
 };
 

@@ -10,7 +10,7 @@ public:
  QObject* self() {return (QObject*)this;}
 
 protected:
- /*protected*/ CabSignal* createCabSignal(LocoAddress* address);
+ /*protected*/ CabSignal* createCabSignal(LocoAddress* address) override;
 
 };
 

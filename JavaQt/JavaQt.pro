@@ -246,7 +246,8 @@ SOURCES += javaqt.cpp \
     jsplitbutton.cpp \
     colorlistpopupmenu.cpp \
     externallinkcontentviewerui.cpp \
-    propertychangelistener.cpp
+    propertychangelistener.cpp \
+    namedbeancombobox.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -334,7 +335,6 @@ HEADERS += javaqt.h\
     namedbean.h \
     namedbeanhandle.h \
     manager.h \
-    managert.h \
     treeselectionmodel.h \
     treeselectionevent.h \
     defaulttreeselectionmodel.h \
@@ -541,7 +541,9 @@ HEADERS += javaqt.h\
     jsplitbutton.h \
     colorlistpopupmenu.h \
     splitbuttonactionlistener.h \
-    externallinkcontentviewerui.h
+    externallinkcontentviewerui.h \
+    namedbeancombobox.h \
+    namedbeanusernamecomparator.h
 
 unix {
     target.path = /usr/lib

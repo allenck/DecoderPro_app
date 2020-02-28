@@ -266,6 +266,6 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
     log->error("Invalid method called");
 }
 
-/*public*/ int DefaultSignalMastManagerXml::loadOrder(){
+/*public*/ int DefaultSignalMastManagerXml::loadOrder()const{
     return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getXMLOrder();
 }

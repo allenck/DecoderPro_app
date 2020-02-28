@@ -3278,7 +3278,7 @@ QString LlnMon::displayMessage(LocoNetMessage l)
 
         QString turnoutSystemName = turnoutPrefix
                 + QString::number(SENSOR_ADR(sn1, sn2));
-        Turnout* turnout = ((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
+        Turnout* turnout = (Turnout*)((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
 
         QString uname = turnout->getUserName();
         if ((uname != NULL) && (!uname.isEmpty())) {
@@ -3317,7 +3317,7 @@ QString LlnMon::displayMessage(LocoNetMessage l)
 
         QString turnoutSystemName = turnoutPrefix
                 + QString::number(SENSOR_ADR(l.getElement(1), l.getElement(2)));
-        Turnout* turnout = ((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
+        Turnout* turnout = (Turnout*)((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
 
         QString uname = turnout->getUserName();
         if ((uname != NULL) && (!uname.isEmpty())) {
@@ -3344,7 +3344,7 @@ QString LlnMon::displayMessage(LocoNetMessage l)
         QString turnoutUserName = "";
         QString turnoutSystemName = turnoutPrefix
                 + QString::number(SENSOR_ADR(l.getElement(1), l.getElement(2)));
-        Turnout* turnout = ((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
+        Turnout* turnout = (Turnout*)((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
 
         QString uname = turnout->getUserName();
         if ((uname != NULL) && (!uname.isEmpty())) {
@@ -3512,7 +3512,7 @@ QString LlnMon::displayMessage(LocoNetMessage l)
 
       QString turnoutSystemName = turnoutPrefix
               + QString::number(SENSOR_ADR(l.getElement(1), l.getElement(2)));
-      Turnout* turnout = ((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
+      Turnout* turnout = (Turnout*)((ProxyTurnoutManager*) InstanceManager::getDefault("TurnoutManager"))->provideTurnout(turnoutSystemName);
 
       QString uname = turnout->getUserName();
       if ((uname != NULL) && (!uname.isEmpty())) {

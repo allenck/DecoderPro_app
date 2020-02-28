@@ -10,16 +10,16 @@ public:
  Q_INVOKABLE explicit LayoutTurnoutXml(QObject *parent = 0);
  ~LayoutTurnoutXml() {}
  LayoutTurnoutXml(const LayoutTurnoutXml&) : AbstractXmlAdapter() {}
- /*public*/ QDomElement store(QObject* o);
- /*public*/ bool load(QDomElement element) throw (Exception);
- /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+ /*public*/ QDomElement store(QObject* o) override;
+ /*public*/ bool load(QDomElement element) throw (Exception) override;
+ /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
 
 signals:
 
 public slots:
 private:
  QString getElement(QDomElement el, QString child);
-
+ static Logger* log;
 
 };
 Q_DECLARE_METATYPE(LayoutTurnoutXml)

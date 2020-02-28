@@ -3121,7 +3121,7 @@ bool CommandDelay::doNotCancel(QString speedType, long startWait, int endBlockId
  * @return hash code value is based on the system name and DccLocoAddress.
  */
 //@Override
-/*public*/ int Warrant::hashCode() {
+/*public*/ uint Warrant::hashCode() {
     //return (getSystemName().concat(_speedUtil->getDccAddress()->toString())).hashCode();
- return -1;
+ return qHash(mSystemName+_speedUtil->getDccAddress()->toString(),qGlobalQHashSeed());
 }

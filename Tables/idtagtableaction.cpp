@@ -199,7 +199,7 @@ IdTagBeanTableDataModel::IdTagBeanTableDataModel(IdTagTableAction *act)
 //@Override
 /*public*/ QVariant IdTagBeanTableDataModel::data(const QModelIndex &index, int role) const
 {
-    IdTag* t;
+    DefaultIdTag* t;
     int col = index.column();
     int row = index.row();
     if(role == Qt::DisplayRole)
@@ -208,12 +208,12 @@ IdTagBeanTableDataModel::IdTagBeanTableDataModel(IdTagTableAction *act)
     {
      case WHERECOL:
         Reporter* r;
-        t = (IdTag*) getBySystemName(sysNameList.at(row));
+        t = (DefaultIdTag*) getBySystemName(sysNameList.at(row));
         return (t != NULL) ? (((r = t->getWhereLastSeen()) != NULL) ? r->getSystemName() : QVariant()) : QVariant();
      case WHENCOL:
      {
         QDateTime d;
-        t = (IdTag*) getBySystemName(sysNameList.at(row));
+        t = (DefaultIdTag*) getBySystemName(sysNameList.at(row));
         return (t != NULL) ? (((d = t->getWhenLastSeen()) != QDateTime())
                 ? /*DateFormat.getDateTimeInstance(DateFormat.SHORT*/ QDateTime::currentDateTime().toString(), /*DateFormat.MEDIUM).format(d)*/d.toString() : QVariant()) : QVariant();
      }

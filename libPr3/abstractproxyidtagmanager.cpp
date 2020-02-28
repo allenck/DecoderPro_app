@@ -57,14 +57,14 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
  * getManager(i) and getManagerList(),
  * including the Internal manager
  */
-/*protected*/ int AbstractProxyIdTagManager::nMgrs()
+/*protected*/ int AbstractProxyIdTagManager::nMgrs() const
 {
  // make sure internal present
  initInternal();
  return mgrs.size();
 }
 
-/*protected*/ Manager* AbstractProxyIdTagManager::getMgr(int index)
+/*protected*/ Manager* AbstractProxyIdTagManager::getMgr(int index) const
 {
  // make sure internal present
  initInternal();
@@ -112,7 +112,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
     return retval;
 }
 
-/*public*/ Manager* AbstractProxyIdTagManager::getInternalManager() {
+/*public*/ Manager* AbstractProxyIdTagManager::getInternalManager() const{
     initInternal();
     return internalManager;
 }
@@ -120,7 +120,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
 /**
  * Returns the set default or, if not present, the internal manager as defacto default
  */
-/*public*/ Manager* AbstractProxyIdTagManager::getDefaultManager() {
+/*public*/ Manager* AbstractProxyIdTagManager::getDefaultManager() const {
     if (defaultManager != nullptr) return defaultManager;
 
     return getInternalManager();
@@ -181,7 +181,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
  }
 }
 
-/*private*/ Manager* AbstractProxyIdTagManager::initInternal()
+/*private*/ Manager* AbstractProxyIdTagManager::initInternal() const
 {
  if (internalManager == nullptr) {
      log->debug("create internal manager when first requested");
@@ -207,7 +207,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
  * @param name
  * @return Null if nothing by that name exists
  */
-/*public*/ NamedBean* AbstractProxyIdTagManager::getNamedBean(QString name)
+/*public*/ NamedBean* AbstractProxyIdTagManager::getNamedBean(QString name) const
 {
  NamedBean* t = getBeanByUserName(name);
  if (t != nullptr) return t;
@@ -276,9 +276,40 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
 
  return nullptr; // Should not get here! this should be overriden by the actual class
 }
+#if 0
+/** {@inheritDoc} */
+//@Override
+//@CheckReturnValue
+//@CheckForNull
+/*public*/ NamedBean* AbstractProxyIdTagManager::getBySystemName(/*@Nonnull */ QString systemName) const {
+    // System names can be matched to managers by system and type at front of name
+    int index = matchTentative(systemName);
+    if (index >= 0) {
+        Manager* m = getMgr(index);
+        return m->getBySystemName(systemName);
+    }
+    log->debug(tr("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName)); // NOI18N
+    return getDefaultManager()->getBySystemName(systemName);
+}
+
+
+/** {@inheritDoc} */
+//@Override
+//@CheckReturnValue
+//@CheckForNull
+/*public*/ NamedBean* AbstractProxyIdTagManager::getByUserName(/*@Nonnull*/ QString userName) const{
+    for (Manager* m : this->mgrs) {
+        NamedBean* b = m->getByUserName(userName);
+        if (b != nullptr) {
+            return b;
+        }
+    }
+    return nullptr;
+}
+#endif
 
 //@Override
-/*public*/ NamedBean* AbstractProxyIdTagManager::getBeanBySystemName(QString systemName)
+/*public*/ NamedBean* AbstractProxyIdTagManager::getBeanBySystemName(QString systemName) const
 {
  //NamedBean* t = nullptr;
  foreach (Manager* m, this->mgrs) {
@@ -291,7 +322,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
 }
 
 //@Override
-/*public*/ NamedBean* AbstractProxyIdTagManager::getBeanByUserName(QString userName)
+/*public*/ NamedBean* AbstractProxyIdTagManager::getBeanByUserName(QString userName) const
 {
  foreach (Manager* m, this->mgrs) {
      NamedBean* b = m->getBeanByUserName(userName);
@@ -359,7 +390,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
  * Returns -1 if there is no match, which is not considered an
  * error
  */
-/*protected*/ int AbstractProxyIdTagManager::matchTentative(QString systemname)
+/*protected*/ int AbstractProxyIdTagManager::matchTentative(QString systemname) const
 {
  //Q_ASSERT(mgrs->count()> 0);
  for (int i = 0; i<nMgrs(); i++)
@@ -382,7 +413,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
  * Throws IllegalArgumentException if there is no match,
  * here considered to be an error that must be reported.
  */
-/*protected*/ int AbstractProxyIdTagManager::match(QString systemname) {
+/*protected*/ int AbstractProxyIdTagManager::match(QString systemname) const{
     int index = matchTentative(systemname);
     if (index < 0) throw  IllegalArgumentException("System name "+systemname+" failed to match");
     return index;
@@ -393,7 +424,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
  * <P>
  * Forwards the register request to the matching system
  */
-/*public*/ void AbstractProxyIdTagManager::Register(NamedBean* s) {
+/*public*/ void AbstractProxyIdTagManager::Register(NamedBean* s) const {
     QString systemName = s->getSystemName();
     getMgr(match(systemName))->Register(s);
 }
@@ -403,7 +434,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
  * <P>
  * Forwards the deregister request to the matching system
  */
-/*public*/ void AbstractProxyIdTagManager::deregister(NamedBean* s) {
+/*public*/ void AbstractProxyIdTagManager::deregister(NamedBean* s) const {
     QString systemName = s->getSystemName();
     getMgr(match(systemName))->deregister(s);
 }
@@ -530,7 +561,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
 /**
  * @return The system-specific prefix letter for the primary implementation
  */
-/*public*/ QString AbstractProxyIdTagManager::getSystemPrefix() {
+/*public*/ QString AbstractProxyIdTagManager::getSystemPrefix() const {
 //    try {
       return getMgr(0)->getSystemPrefix();
 //        } catch(IndexOutOfBoundsException* ie) {
@@ -541,7 +572,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
 /**
  * @return The type letter for turnouts
  */
-/*public*/ char AbstractProxyIdTagManager::typeLetter()
+/*public*/ char AbstractProxyIdTagManager::typeLetter() const
 {
  return getDefaultManager()->typeLetter();
 }
@@ -550,7 +581,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
  * @return A system name from a user input, typically a number,
  * from the primary system.
  */
-/*public*/ QString AbstractProxyIdTagManager::makeSystemName(QString s) {
+/*public*/ QString AbstractProxyIdTagManager::makeSystemName(QString s) const {
     return getMgr(0)->makeSystemName(s);
 }
 
@@ -636,23 +667,11 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
 }
 
 /*protected*/ void AbstractProxyIdTagManager::recomputeNamedBeanSet() {
-    if (namedBeanSet.isEmpty()) return; // only maintain if requested
-    namedBeanSet.clear();
-    for (Manager/*<E>*/* m : mgrs) {
-        namedBeanSet.unite(m->getNamedBeanSet());
-    }
-}
-
-
-/*protected*/ void AbstractProxyIdTagManager::updateNamedBeanSet()
-{
- //if (namedBeanSet.isEmpty()) return; // only maintain if requested
- namedBeanSet.clear();
- for (Manager* m : mgrs)
- {
-  //namedBeanSet.addAll(m.getNamedBeanSet());
-  foreach(NamedBean* bean, m->getNamedBeanSet())
-     namedBeanSet.insert(bean);
+ if (namedBeanSet == nullptr)
+  return; // only maintain if requested
+ namedBeanSet->clear();
+ for (Manager/*<E>*/* m : mgrs) {
+     namedBeanSet->unite(m->getNamedBeanSet());
  }
 }
 
@@ -667,10 +686,13 @@ bool sortLessThanconst4( NamedBean* s1,  NamedBean* s2)
 //@Override
 //@Nonnull
 /*public*/ /*SortedSet<E>*/QSet<NamedBean*> AbstractProxyIdTagManager::getNamedBeanSet() {
-    namedBeanSet = QSet<NamedBean*>();//new TreeSet<>(new NamedBeanComparator());
-    updateNamedBeanSet();
+ if (namedBeanSet == nullptr) {
+     namedBeanSet = new QSet<NamedBean*>();//new TreeSet<>(new NamedBeanComparator<>());
+     recomputeNamedBeanSet();
+ }
+
     //return Collections.unmodifiableSortedSet(namedBeanSet);
-    QList<NamedBean*> list = namedBeanSet.toList();
+    QList<NamedBean*> list = namedBeanSet->toList();
     qSort(list.begin(), list.end(), sortLessThanconst4); //NamedBeanComparator<NamedBean*>::compare);
     return list.toSet();
 }
@@ -678,26 +700,26 @@ bool sortLessThanconst4( NamedBean* s1,  NamedBean* s2)
 /**
  * Get a list of all user names.
  */
-/*public*/ QStringList AbstractProxyIdTagManager::getUserNameList()
-{
- //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
- QSet<QString>* ts = new QSet<QString>();
- for (int i = 0; i<nMgrs(); i++)
- {
-  //ts.addAll(getMgr(i).getSystemNameList());
-  QStringList snl = getMgr(i)->getSystemNameList();
-  foreach(QString s, snl)
-  {
-   AbstractNamedBean* bean = (AbstractNamedBean*)getMgr(i)->getBeanBySystemName(s);
-   QString userName = bean->getUserName();
-   if(userName != "")
-    ts->insert(userName);
-  }
- }
- //return new ArrayList<String>(ts);
- QStringList arr = ts->toList();
- return arr;
-}
+///*public*/ QStringList AbstractProxyIdTagManager::getUserNameList()
+//{
+// //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
+// QSet<QString>* ts = new QSet<QString>();
+// for (int i = 0; i<nMgrs(); i++)
+// {
+//  //ts.addAll(getMgr(i).getSystemNameList());
+//  QStringList snl = getMgr(i)->getSystemNameList();
+//  foreach(QString s, snl)
+//  {
+//   AbstractNamedBean* bean = (AbstractNamedBean*)getMgr(i)->getBeanBySystemName(s);
+//   QString userName = bean->getUserName();
+//   if(userName != "")
+//    ts->insert(userName);
+//  }
+// }
+// //return new ArrayList<String>(ts);
+// QStringList arr = ts->toList();
+// return arr;
+//}
 
 void AbstractProxyIdTagManager::propertyChange(PropertyChangeEvent */*e*/)
 {

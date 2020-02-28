@@ -17,8 +17,8 @@ class LIBPR3SHARED_EXPORT AbstractTurnout : public Turnout
  Q_OBJECT
 public:
  explicit AbstractTurnout(QObject *parent = 0);
- /*public*/ int getKnownState();
- /*public*/ QString describeState(int state);
+ /*public*/ int getKnownState() override;
+ /*public*/ QString describeState(int state) override;
 
      //@Override
      /*public*/ QString getBeanType() {
@@ -30,13 +30,13 @@ public:
      * TurnoutOperator (not required or nothing suitable) then just tell the layout
      * and hope for the best.
      */
-    /*public*/ void setCommandedState(int s);
-    /*public*/ int getCommandedState();
+    /*public*/ void setCommandedState(int s) override;
+    /*public*/ int getCommandedState() override;
     /**
      * Show whether state is one you can safely run trains over
      * @return	true iff state is a valid one and the known state is the same as commanded
      */
-    /*public*/ bool isConsistentState();
+    /*public*/ bool isConsistentState() override;
     /**
      * The name pretty much says it.
      *<P>
@@ -52,7 +52,7 @@ public:
      * Note that getState() and setState(int) are not symmetric: getState is the
      * known state, and set state modifies the commanded state.
      */
-    /*public*/ virtual void setState(int s);
+    /*public*/ virtual void setState(int s) override;
     /**
      * Implement a shorter name for getKnownState.
      * <P>
@@ -62,23 +62,23 @@ public:
      * Note that getState() and setState(int) are not symmetric: getState is the
      * known state, and set state modifies the commanded state.
      */
-    /*public*/ virtual int getState();
+    /*public*/ int getState() override;
     /* Type of turnout control - defaults to 0 for 'steady state' */
 
-    /*public*/ int getNumberOutputBits();
-    /*public*/ void setNumberOutputBits(int num);
-    /*public*/ int getControlType();
-    /*public*/ void setControlType(int num);
-    /*public*/ int getValidFeedbackTypes();
+    /*public*/ int getNumberOutputBits() override;
+    /*public*/ void setNumberOutputBits(int num) override;
+    /*public*/ int getControlType() override;
+    /*public*/ void setControlType(int num) override;
+    /*public*/ int getValidFeedbackTypes() override;
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP") // OK until Java 1.6 allows return of //cheap array copy
-    /*public*/ QVector<QString> getValidFeedbackNames();
-    /*public*/ void setFeedbackMode(QString mode) throw(IllegalArgumentException);
-    /*public*/ void setFeedbackMode(int mode) throw(IllegalArgumentException);
-    /*public*/ int getFeedbackMode();
-    /*public*/ QString getFeedbackModeName();
-    /*public*/ void requestUpdateFromLayout();
+    /*public*/ QVector<QString> getValidFeedbackNames() override;
+    /*public*/ void setFeedbackMode(QString mode) throw(IllegalArgumentException) override;
+    /*public*/ void setFeedbackMode(int mode) throw(IllegalArgumentException) override;
+    /*public*/ int getFeedbackMode() override;
+    /*public*/ QString getFeedbackModeName() override;
+    /*public*/ void requestUpdateFromLayout() override;
 
-    /*public*/ void setInverted(bool inverted);
+    /*public*/ void setInverted(bool inverted) override;
     /**
      * Get the turnout inverted state. If true, commands sent to the layout are
      * reversed. Thrown becomes Closed, and Closed becomes Thrown.
@@ -86,12 +86,12 @@ public:
      * Used in polling loops in system-specific code, so made final to allow
      * optimization.
      */
-    /*final public*/ bool getInverted();
+    /*final public*/ bool getInverted() override;
     /**
      * Determine if the turnouts can be inverted. If true inverted turnouts
      * supported.
      */
-    /*public*/ virtual bool canInvert();
+    /*public*/ bool canInvert()const override;
     /**
      * Turnouts that are locked should only respond to JMRI commands to change
      * state. We simulate a locked turnout by monitoring the known state
@@ -102,57 +102,57 @@ public:
      *
      * @param locked
      */
-    /*public*/ void setLocked(int turnoutLockout, bool locked);
+    /*public*/ void setLocked(int turnoutLockout, bool locked) override;
     /**
      * Determine if turnout is locked. Returns true if turnout is locked.
      * There are two types of locks, cab lockout, and pushbutton lockout.
      */
-    /*public*/ bool getLocked(int turnoutLockout);
-    /*public*/ bool canLock(int turnoutLockout);
-    /*public*/ void enableLockOperation(int turnoutLockout, bool enabled);
+    /*public*/ bool getLocked(int turnoutLockout) override;
+    /*public*/ bool canLock(int turnoutLockout) override;
+    /*public*/ void enableLockOperation(int turnoutLockout, bool enabled) override;
     /**
      *  When true, report to console anytime a cab attempts to change the
      *  state of a turnout on the layout.  When a turnout is cab locked, only
      *  JMRI is allowed to change the state of a turnout.
      */
-    /*public*/ void setReportLocked(bool reportLocked);
+    /*public*/ void setReportLocked(bool reportLocked) override;
     /**
      *  When true, report to console anytime a cab attempts to change the
      *  state of a turnout on the layout.  When a turnout is cab locked, only
      *  JMRI is allowed to change the state of a turnout.
      */
-/*public*/ bool getReportLocked();
+/*public*/ bool getReportLocked() override;
 
-    /*public*/ QStringList getValidDecoderNames();
-    /*public*/ QString getDecoderName();
-    /*public*/ void setDecoderName(QString decoderName);
+    /*public*/ QStringList getValidDecoderNames() override;
+    /*public*/ QString getDecoderName() override;
+    /*public*/ void setDecoderName(QString decoderName) override;
     /*public*/ TurnoutOperator* getCurrentOperator();
-    /*public*/ TurnoutOperation* getTurnoutOperation();
-    /*public*/ void setTurnoutOperation(TurnoutOperation* toper);
-    /*public*/ bool getInhibitOperation();
-    /*public*/ void setInhibitOperation(bool io);
-    /*public*/ void provideFirstFeedbackSensor(QString pName) throw(JmriException);
+    /*public*/ TurnoutOperation* getTurnoutOperation() override;
+    /*public*/ void setTurnoutOperation(TurnoutOperation* toper) override;
+    /*public*/ bool getInhibitOperation() override;
+    /*public*/ void setInhibitOperation(bool io) override;
+    /*public*/ void provideFirstFeedbackSensor(QString pName) throw(JmriException) override;
     /*public*/ void provideFirstFeedbackNamedSensor(NamedBeanHandle<Sensor*>* s);
-    /*public*/ Sensor* getFirstSensor();
-    /*public*/ NamedBeanHandle <Sensor*>* getFirstNamedSensor();
-    /*public*/ void provideSecondFeedbackSensor(QString pName) throw(JmriException);
+    /*public*/ Sensor* getFirstSensor() override;
+    /*public*/ NamedBeanHandle <Sensor*>* getFirstNamedSensor() override;
+    /*public*/ void provideSecondFeedbackSensor(QString pName) throw(JmriException) override;
     /*public*/ void provideSecondFeedbackNamedSensor(NamedBeanHandle<Sensor*>* s);
-    /*public*/ Sensor* getSecondSensor();
-    /*public*/ NamedBeanHandle <Sensor*>* getSecondNamedSensor();
-    /*public*/ void setInitialKnownStateFromFeedback();
+    /*public*/ Sensor* getSecondSensor() override;
+    /*public*/ NamedBeanHandle <Sensor*>* getSecondNamedSensor() override;
+    /*public*/ void setInitialKnownStateFromFeedback() override;
     /**
      * React to sensor changes by changing the KnownState
      * if using an appropriate sensor mode
      */
     ///*public*/ void propertyChange(PropertyChangeEvent* evt);
-    /*public*/ void setBinaryOutput(bool state);
-    /*public*/ virtual void dispose();
-    /*public*/ float getDivergingLimit();
-    /*public*/ QString getDivergingSpeed();
-    /*public*/ void setDivergingSpeed(QString s) throw(JmriException);
-    /*public*/ float getStraightLimit();
-    /*public*/ QString getStraightSpeed();
-    /*public*/ void setStraightSpeed(QString s) throw(JmriException);
+    /*public*/ void setBinaryOutput(bool state) override;
+    /*public*/ void dispose() override;
+    /*public*/ float getDivergingLimit() override;
+    /*public*/ QString getDivergingSpeed() override;
+    /*public*/ void setDivergingSpeed(QString s) const throw(JmriException) override;
+    /*public*/ float getStraightLimit() override;
+    /*public*/ QString getStraightSpeed() override;
+    /*public*/ void setStraightSpeed(QString s)const  throw(JmriException) override;
 
 signals:
     //void propertyChange(PropertyChangeEvent *);
@@ -161,8 +161,8 @@ public slots:
     void propertyChange(PropertyChangeEvent *evt);
 
 private:
-    QString _divergeSpeed;
-    QString _straightSpeed;
+    mutable QString _divergeSpeed;
+    mutable QString _straightSpeed;
     //bool useBlockSpeed = true;
 
     //float speedThroughTurnout = 0;

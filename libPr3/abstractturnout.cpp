@@ -442,7 +442,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  * supported.
  */
 
-/*public*/ bool AbstractTurnout::canInvert() {
+/*public*/ bool AbstractTurnout::canInvert() const {
     return false;
 }
 
@@ -943,7 +943,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     return _divergeSpeed;
 }
 
-/*public*/ void AbstractTurnout::setDivergingSpeed(QString s) throw(JmriException) {
+/*public*/ void AbstractTurnout::setDivergingSpeed(QString s) const throw(JmriException) {
     if(s.isEmpty())
         throw new JmriException("Value of requested turnout thrown speed can not be NULL");
     if(_divergeSpeed==(s))
@@ -1004,7 +1004,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     return _straightSpeed;
 }
 
-/*public*/ void AbstractTurnout::setStraightSpeed(QString s) throw(JmriException)
+/*public*/ void AbstractTurnout::setStraightSpeed(QString s) const throw(JmriException)
 {
     if(s==NULL)
         throw new JmriException("Value of requested turnout straight speed can not be NULL");

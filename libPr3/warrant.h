@@ -130,7 +130,7 @@ public:
     virtual /*public*/ QString setRoute(bool show, QList<BlockOrder*>* orders);
     /*public*/ void dispose();
     Q_INVOKABLE /*public*/ bool equals(QObject* obj);
-    /*public*/ int hashCode();
+    /*public*/ uint hashCode();
     /*public*/QObject* self() {return (QObject*)this;}
 
 

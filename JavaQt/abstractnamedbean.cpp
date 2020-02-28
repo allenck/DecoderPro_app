@@ -239,8 +239,8 @@ QString AbstractNamedBean::getDisplayName()
     return pcs->getPropertyChangeListeners();
 }
 
-/*public*/ QString AbstractNamedBean::getSystemName()   {return mSystemName;}
-/*public*/ QString AbstractNamedBean::getUserName() {return mUserName;}
+/*public*/ QString AbstractNamedBean::getSystemName()const  {return mSystemName;}
+/*public*/ QString AbstractNamedBean::getUserName()const {return mUserName;}
 
 ///*public*/ void AbstractNamedBean::setSysName(QString s)
 //{
@@ -256,7 +256,7 @@ QString AbstractNamedBean::getDisplayName()
 }
 
 
-/*protected*/ void AbstractNamedBean::firePropertyChange(QString p, QVariant old, QVariant n) {
+/*protected*/ void AbstractNamedBean::firePropertyChange(QString p, QVariant old, QVariant n) const {
  if (pcs!=NULL)
      pcs->firePropertyChange(p,old,n);
 }

@@ -186,22 +186,22 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     };
 
     TurnoutTableDataModel(TurnoutTableAction* self);
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    /*public*/ int getPreferredWidth(int col);
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    /*public*/ QString getValue(QString name) const;
-    /*public*/ Manager* getManager();
-    /*public*/ NamedBean* getBySystemName(QString name) const;
-    /*public*/ NamedBean* getByUserName(QString name);
-    /*public*/ void clickOn(NamedBean* t);
-    /*public*/ void configureTable(JTable* tbl);
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    /*public*/ int getPreferredWidth(int col) override;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    /*public*/ QString getValue(QString name) const override;
+    /*public*/ Manager* getManager() override;
+    /*public*/ NamedBean* getBySystemName(QString name) const override;
+    /*public*/ NamedBean* getByUserName(QString name) override;
+    /*public*/ void clickOn(NamedBean* t) override;
+    /*public*/ void configureTable(JTable* tbl) override;
     /*public*/ JTable* makeJTable(/*TableSorter srtr*/);
 public slots:
     /*public*/ void comboBoxAction(ActionEvent* e = 0);
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
     Logger* log;
@@ -212,9 +212,9 @@ public slots:
     TTEditDelegate* sensorsColDelegate = nullptr;
 
  protected:
-    /*protected*/ QString getMasterClassName();
-    /*protected*/ QString getBeanType();
-    /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
+    /*protected*/ QString getMasterClassName() override;
+    /*protected*/ QString getBeanType() override;
+    /*protected*/ bool matchPropertyName(PropertyChangeEvent* e) override;
     /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
     /*protected*/ char beanTypeChar;// = 'S'; // for Sensor
     /*protected*/ QString onIconPath;// = rootPath + beanTypeChar + "-on-s.png";

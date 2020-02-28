@@ -364,7 +364,7 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
  return result;
 }
 
-/*public*/ int AbstractLightManagerConfigXML::loadOrder(){
+/*public*/ int AbstractLightManagerConfigXML::loadOrder() const{
     return ((InternalLightManager*)InstanceManager::lightManagerInstance())->getXMLOrder();
 }
 

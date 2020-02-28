@@ -31,7 +31,7 @@ public:
     /*public*/ void removeDestination(PointDetails* dest);
     void addSourceObject(NamedBean* source);
     QObject* getSourceObject();
-    /*public*/ QList<PointDetails*>* getDestinationPoints() ;
+    /*public*/ QList<PointDetails *> getDestinationPoints() ;
     /*public*/ bool isDestinationValid(PointDetails* destPoint);
     /*public*/ bool getUniDirection(QObject* dest, LayoutEditor* panel);
     /*public*/ void setUniDirection(QObject* dest, LayoutEditor* panel, bool set);

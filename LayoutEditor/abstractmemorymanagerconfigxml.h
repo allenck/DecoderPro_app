@@ -15,7 +15,7 @@ public:
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
     /*abstract*/ /*public*/ virtual bool load(QDomElement sharedMemories, QDomElement perNodeMemories) throw (JmriConfigureXmlException) = 0;
     /*public*/ void loadMemories(QDomElement memories);
-    /*public*/ int loadOrder();
+    /*public*/ int loadOrder() const override;
     void loadValue(QDomElement memory, Memory* m);
 
 signals:

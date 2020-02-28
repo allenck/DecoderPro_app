@@ -13,6 +13,7 @@
 #include "loggerfactory.h"
 #include "namedbeancomparator.h"
 #include "vetoablechangesupport.h"
+#include "internalsystemconnectionmemo.h"
 
 // NOTE: This class is a replacement for AbstractProxyManager that
 // implements SensorManager instead of AbstractManager
@@ -57,14 +58,14 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  * getManager(i) and getManagerList(),
  * including the Internal manager
  */
-/*protected*/ int AbstractProxySensorManager::nMgrs()
+/*protected*/ int AbstractProxySensorManager::nMgrs() const
 {
  // make sure internal present
  initInternal();
  return mgrs.size();
 }
 
-/*protected*/ Manager* AbstractProxySensorManager::getMgr(int index)
+/*protected*/ Manager* AbstractProxySensorManager::getMgr(int index) const
 {
  // make sure internal present
  initInternal();
@@ -112,7 +113,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
     return retval;
 }
 
-/*public*/ Manager* AbstractProxySensorManager::getInternalManager() {
+/*public*/ Manager* AbstractProxySensorManager::getInternalManager() const {
     initInternal();
     return internalManager;
 }
@@ -120,7 +121,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
 /**
  * Returns the set default or, if not present, the internal manager as defacto default
  */
-/*public*/ Manager* AbstractProxySensorManager::getDefaultManager() {
+/*public*/ Manager* AbstractProxySensorManager::getDefaultManager() const {
     if (defaultManager != nullptr) return defaultManager;
 
     return getInternalManager();
@@ -182,7 +183,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  }
 }
 
-/*private*/ Manager* AbstractProxySensorManager::initInternal()
+/*private*/ Manager* AbstractProxySensorManager::initInternal() const
 {
  if (internalManager == nullptr) {
      log->debug("create internal manager when first requested");
@@ -197,7 +198,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
 
 /*abstract protected*/ Manager* AbstractProxySensorManager::makeInternalManager() const
 {
- return nullptr;
+ return (Manager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getSensorManager();
 }
 
 /**
@@ -208,11 +209,11 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  * @param name
  * @return Null if nothing by that name exists
  */
-/*public*/ NamedBean* AbstractProxySensorManager::getNamedBean(QString name)
+/*public*/ NamedBean* AbstractProxySensorManager::getNamedBean(QString name) const
 {
- NamedBean* t = getBeanByUserName(name);
+ NamedBean* t = getByUserName(name);
  if (t != nullptr) return t;
- return getBeanBySystemName(name);
+ return getBySystemName(name);
 }
 
 /**
@@ -278,30 +279,59 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  return nullptr; // Should not get here! this should be overriden by the actual class
 }
 
+/** {@inheritDoc} */
 //@Override
-/*public*/ NamedBean* AbstractProxySensorManager::getBeanBySystemName(QString systemName)
-{
- // System names can be matched to managers by system and type at front of name
- int index = matchTentative(systemName);
- if (index >= 0) {
-     Manager* m = getMgr(index);
-     return m->getBeanBySystemName(systemName);
- }
- log->debug(tr("getBeanBySystemName did not find manager from name %1, defer to default manager").arg(systemName)); // NOI18N
- return getDefaultManager()->getBeanBySystemName(systemName);
+//@CheckReturnValue
+//@CheckForNull
+/*public*/ Sensor* AbstractProxySensorManager::getBySystemName(/*@Nonnull */ QString systemName) const {
+    // System names can be matched to managers by system and type at front of name
+    int index = matchTentative(systemName);
+    if (index >= 0) {
+        Manager* m = getMgr(index);
+        return (Sensor*)m->getBySystemName(systemName);
+    }
+    log->debug(tr("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName)); // NOI18N
+    return (Sensor*)getDefaultManager()->getBySystemName(systemName);
+}
+
+/** {@inheritDoc} */
+//@Override
+//@CheckReturnValue
+//@CheckForNull
+/*public*/ Sensor* AbstractProxySensorManager::getByUserName(/*@Nonnull*/ QString userName) const{
+    for (Manager* m : this->mgrs) {
+        NamedBean* b = m->getByUserName(userName);
+        if (b != nullptr) {
+            return (Sensor*)b;
+        }
+    }
+    return nullptr;
 }
 
 //@Override
-/*public*/ NamedBean* AbstractProxySensorManager::getBeanByUserName(QString userName)
-{
- foreach (Manager* m, this->mgrs) {
-     NamedBean* b = m->getBeanByUserName(userName);
-     if (b != nullptr) {
-         return b;
-     }
- }
- return nullptr;
-}
+///*public*/ NamedBean* AbstractProxySensorManager::getBeanBySystemName(QString systemName) const
+//{
+// // System names can be matched to managers by system and type at front of name
+// int index = matchTentative(systemName);
+// if (index >= 0) {
+//     Manager* m = getMgr(index);
+//     return m->getBeanBySystemName(systemName);
+// }
+// log->debug(tr("getBeanBySystemName did not find manager from name %1, defer to default manager").arg(systemName)); // NOI18N
+// return getDefaultManager()->getBeanBySystemName(systemName);
+//}
+
+//@Override
+///*public*/ NamedBean* AbstractProxySensorManager::getBeanByUserName(QString userName) const
+//{
+// foreach (Manager* m, this->mgrs) {
+//     NamedBean* b = m->getBeanByUserName(userName);
+//     if (b != nullptr) {
+//         return b;
+//     }
+// }
+// return nullptr;
+//}
 
 
 /**
@@ -360,7 +390,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  * Returns -1 if there is no match, which is not considered an
  * error
  */
-/*protected*/ int AbstractProxySensorManager::matchTentative(QString systemname)
+/*protected*/ int AbstractProxySensorManager::matchTentative(QString systemname) const
 {
  //Q_ASSERT(mgrs->count()> 0);
  for (int i = 0; i<nMgrs(); i++)
@@ -383,7 +413,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  * Throws IllegalArgumentException if there is no match,
  * here considered to be an error that must be reported.
  */
-/*protected*/ int AbstractProxySensorManager::match(QString systemname) {
+/*protected*/ int AbstractProxySensorManager::match(QString systemname) const {
     int index = matchTentative(systemname);
     if (index < 0) throw  IllegalArgumentException("System name "+systemname+" failed to match");
     return index;
@@ -394,7 +424,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  * <P>
  * Forwards the register request to the matching system
  */
-/*public*/ void AbstractProxySensorManager::Register(NamedBean* s) {
+/*public*/ void AbstractProxySensorManager::Register(NamedBean* s) const {
     QString systemName = s->getSystemName();
     getMgr(match(systemName))->Register(s);
 }
@@ -418,7 +448,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  {
   Manager* mgr = getMgr(i);
   mgr->addPropertyChangeListener(l);
-  //connect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 /*public synchronized*/ void AbstractProxySensorManager::removePropertyChangeListener(PropertyChangeListener* l)
@@ -429,8 +459,8 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  for (int i = 0; i<nMgrs(); i++)
  {
   Manager* mgr = getMgr(i);
-  //mgr->addPropertyChangeListener(l);
-  //disconnect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+  mgr->addPropertyChangeListener(l);
+  disconnect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 /** {@inheritDoc} */
@@ -531,7 +561,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
 /**
  * @return The system-specific prefix letter for the primary implementation
  */
-/*public*/ QString AbstractProxySensorManager::getSystemPrefix() {
+/*public*/ QString AbstractProxySensorManager::getSystemPrefix() const {
 //    try {
       return getMgr(0)->getSystemPrefix();
 //        } catch(IndexOutOfBoundsException* ie) {
@@ -542,7 +572,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
 /**
  * @return The type letter for turnouts
  */
-/*public*/ char AbstractProxySensorManager::typeLetter()
+/*public*/ char AbstractProxySensorManager::typeLetter() const
 {
  return getDefaultManager()->typeLetter();
 }
@@ -551,7 +581,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  * @return A system name from a user input, typically a number,
  * from the primary system.
  */
-/*public*/ QString AbstractProxySensorManager::makeSystemName(QString s) {
+/*public*/ QString AbstractProxySensorManager::makeSystemName(QString s) const {
     return getMgr(0)->makeSystemName(s);
 }
 
@@ -637,24 +667,13 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
 }
 
 /*protected*/ void AbstractProxySensorManager::recomputeNamedBeanSet() {
-    if (namedBeanSet.isEmpty()) return; // only maintain if requested
-    namedBeanSet.clear();
-    for (Manager/*<E>*/* m : mgrs) {
-        namedBeanSet.unite(m->getNamedBeanSet());
-    }
-}
-
-/*protected*/ void AbstractProxySensorManager::updateNamedBeanSet()
-{
- //if (namedBeanSet.isEmpty()) return; // only maintain if requested
- namedBeanSet.clear();
- for (Manager* m : mgrs)
- {
-  //namedBeanSet.addAll(m.getNamedBeanSet());
-  foreach(NamedBean* bean, m->getNamedBeanSet())
-     namedBeanSet.insert(bean);
+ if (namedBeanSet == nullptr) return; // only maintain if requested
+ namedBeanSet->clear();
+ for (Manager/*<E>*/* m : mgrs) {
+     namedBeanSet->unite(((AbstractManager*)m)->getNamedBeanSet());
  }
 }
+
 
 NamedBeanComparator<NamedBean*> comparator3 = NamedBeanComparator<NamedBean*>();
 
@@ -667,41 +686,44 @@ bool sortLessThanconst3( NamedBean* s1,  NamedBean* s2)
 //@Override
 //@Nonnull
 /*public*/ /*SortedSet<E>*/QSet<NamedBean*> AbstractProxySensorManager::getNamedBeanSet() {
-    namedBeanSet = QSet<NamedBean*>();//new TreeSet<>(new NamedBeanComparator());
-    updateNamedBeanSet();
-    //return Collections.unmodifiableSortedSet(namedBeanSet);
-    QList<NamedBean*> list = namedBeanSet.toList();
-    qSort(list.begin(), list.end(), sortLessThanconst3); //NamedBeanComparator<NamedBean*>::compare);
-    return list.toSet();
-}
-
-/**
- * Get a list of all user names.
- */
-/*public*/ QStringList AbstractProxySensorManager::getUserNameList()
-{
- //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
- QSet<QString>* ts = new QSet<QString>();
- for (int i = 0; i<nMgrs(); i++)
- {
-  //ts.addAll(getMgr(i).getSystemNameList());
-  QStringList snl = getMgr(i)->getSystemNameList();
-  foreach(QString s, snl)
-  {
-   AbstractNamedBean* bean = (AbstractNamedBean*)getMgr(i)->getBeanBySystemName(s);
-   QString userName = bean->getUserName();
-   if(userName != "")
-    ts->insert(userName);
-  }
+ if (namedBeanSet == nullptr) {
+     namedBeanSet = new QSet<NamedBean*>();//new TreeSet<>(new NamedBeanComparator<>());
+     recomputeNamedBeanSet();
  }
- //return new ArrayList<String>(ts);
- QStringList arr = ts->toList();
- return arr;
+
+ //return Collections.unmodifiableSortedSet(namedBeanSet);
+ QList<NamedBean*> list = namedBeanSet->toList();
+ qSort(list.begin(), list.end(), sortLessThanconst3); //NamedBeanComparator<NamedBean*>::compare);
+ return list.toSet();
 }
 
-void AbstractProxySensorManager::propertyChange(PropertyChangeEvent */*e*/)
+///**
+// * Get a list of all user names.
+// */
+///*public*/ QStringList AbstractProxySensorManager::getUserNameList()
+//{
+// //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
+// QSet<QString>* ts = new QSet<QString>();
+// for (int i = 0; i<nMgrs(); i++)
+// {
+//  //ts.addAll(getMgr(i).getSystemNameList());
+//  QStringList snl = getMgr(i)->getSystemNameList();
+//  foreach(QString s, snl)
+//  {
+//   AbstractNamedBean* bean = (AbstractNamedBean*)getMgr(i)->getBeanBySystemName(s);
+//   QString userName = bean->getUserName();
+//   if(userName != "")
+//    ts->insert(userName);
+//  }
+// }
+// //return new ArrayList<String>(ts);
+// QStringList arr = ts->toList();
+// return arr;
+//}
+
+void AbstractProxySensorManager::propertyChange(PropertyChangeEvent *e)
 {
- //emit this->propertyChange(e);
+ emit this->propertyChange(e);
 }
 // initialize logging
 /*private*/ /*final*/ /*static*/ Logger* AbstractProxySensorManager::log = LoggerFactory::getLogger("AbstractProxyTurnoutManager");

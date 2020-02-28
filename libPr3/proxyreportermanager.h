@@ -10,29 +10,29 @@ class LIBPR3SHARED_EXPORT ProxyReporterManager : public  AbstractProxyReporterMa
     Q_OBJECT
 public:
     explicit ProxyReporterManager(QObject *parent = 0);
-    /*public*/ int getXMLOrder();
+    /*public*/ int getXMLOrder()const  override;
     /**
      * Locate via user name, then system name if needed.
      *
      * @param name
      * @return Null if nothing by that name exists
      */
-    /*public*/ Reporter* getReporter(QString name);
-    /*public*/ Reporter* provideReporter(QString sName);
-    /*public*/ Reporter* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException);
+    /*public*/ Reporter* getReporter(QString name) const override;
+    /*public*/ Reporter* provideReporter(QString sName) override;
+    /*public*/ Reporter* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException) override;
     /**
      * Locate an instance based on a system name.  Returns null if no
      * instance already exists.
      * @return requested Reporter object or null if none exists
      */
-    /*public*/ Reporter* getBySystemName(QString sName);
+    /*public*/ Reporter* getBySystemName(QString sName)const override;
     /**
      * Locate an instance based on a user name.  Returns null if no
      * instance already exists.
      * @return requested Reporter object or null if none exists
      */
-    /*public*/ Reporter* getByUserName(QString userName);
-    /*public*/ Reporter* getByDisplayName(QString key);
+    /*public*/ Reporter* getByUserName(QString userName)const override;
+    /*public*/ Reporter* getByDisplayName(QString key)const override;
     /**
      * Return an instance with the specified system and user names.
      * Note that two calls with the same arguments will get the same instance;
@@ -61,12 +61,12 @@ public:
      * be looking them up.
      * @return requested Reporter object (never NULL)
      */
-    /*public*/ Reporter* newReporter(QString systemName, QString userName);
-    /*public*/ bool allowMultipleAdditions(QString systemName);
-    /*public*/ QString getNextValidAddress(QString curAddress, QString prefix);
-    /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
-    /*public*/ QString getEntryToolTip();
-    /*public*/ QString getBeanTypeHandled(bool plural);
+    /*public*/ Reporter* newReporter(QString systemName, QString userName)const override;
+    /*public*/ bool allowMultipleAdditions(QString systemName)const override;
+    /*public*/ QString getNextValidAddress(QString curAddress, QString prefix)const override;
+    /*public*/ NamedBean* newNamedBean(QString systemName, QString userName) const;
+    /*public*/ QString getEntryToolTip() override;
+    /*public*/ QString getBeanTypeHandled(bool plural)const override;
 
 signals:
     
@@ -74,8 +74,8 @@ public slots:
 private:
  Logger log;
 protected:
- virtual /*protected*/ Manager* makeInternalManager() const;
- virtual /*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName);
+ virtual /*protected*/ Manager* makeInternalManager() const override;
+ virtual /*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName) const override;
 
 };
 

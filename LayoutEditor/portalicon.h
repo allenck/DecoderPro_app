@@ -18,15 +18,15 @@ public:
     /*public*/ void setPortal(Portal* portal);
     /*public*/ QString getStatus();
     /*public*/ void setStatus(QString status);
-    /*public*/ QString getNameString();
+    /*public*/ QString getNameString() override;
     /*public*/ void setArrowOrientatuon(bool set);
     /*public*/ void setHideArrows(bool set);
     /*public*/ bool getArrowSwitch();
     /*public*/ bool getArrowHide();
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
-    /*public*/ NamedBean* getNamedBean();
-    /*public*/ void displayState(int state);
+    /*public*/ NamedBean* getNamedBean() override;
+    /*public*/ void displayState(int state) override;
 private:
     /*private*/ Portal* _portal;
     /*private*/ void initMap();

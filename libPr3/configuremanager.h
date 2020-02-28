@@ -65,7 +65,7 @@ public:
         virtual void registerConfig(QObject* /*o*/) {}
         virtual void registerConfig(QObject* /*o*/, int /*x*/) {}
         virtual void registerTool(QObject* /*o*/) {}
-    virtual void registerUser(QObject* ) {}
+        virtual void registerUser(QObject* ) {}
         virtual void registerUserPrefs(QObject* /*o*/) {}
 
         virtual void deregister(QObject* /*o*/) {}
@@ -93,7 +93,7 @@ public:
          * @param c Class of the desired objects
          * @return an ArrayList of objects of class c or null
          */
-    virtual QObjectList getInstanceList(QString /*c*/) {return QObjectList();}
+         virtual QObjectList getInstanceList(QString /*c*/) {return QObjectList();}
 
         /**
          * Stores prefs, config, tools and user information.
@@ -106,7 +106,7 @@ public:
          * <p>
          * Where that information is stored is implementation-specific.
          */
-    virtual void storePrefs() /*const*/ {Logger::error("storePrefs not overridden like it should be!");}
+        virtual void storePrefs() /*const*/ {Logger::error("storePrefs not overridden like it should be!");}
 
         /**
          * Stores just preferences information.
@@ -139,7 +139,7 @@ public:
          */
         virtual bool load(File* /*file*/) throw (JmriException) {return false;}
 
-        virtual bool load(QFile* /*file*/)  throw (JmriException){return false;}
+        virtual bool load(QFile* /*file*/)  throw (JmriException) {return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -181,7 +181,7 @@ public:
          * @see jmri.configurexml.XmlAdapter#loadDeferred()
          * @since 2.11.2
          */
-        virtual bool loadDeferred(File* /*file*/)  throw (JmriException) { return false;}
+         virtual bool loadDeferred(File* /*file*/)  throw (JmriException) { return false;}
 
         /**
          * Create the objects defined in a particular configuration

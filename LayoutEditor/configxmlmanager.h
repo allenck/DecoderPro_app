@@ -23,37 +23,37 @@ public:
      * See the <A HREF="package-summary.html#DTD">DTD versioning discussion</a>
      */
     static /*final*/const  /*public*/ QString schemaVersion;// = "-2-9-6";
-    /*public*/ void registerConfig(QObject* o);
-    /*public*/ void registerPref(QObject* o) ;
+    /*public*/ void registerConfig(QObject* o) override;
+    /*public*/ void registerPref(QObject* o)  override;
     void confirmAdapterAvailable(QObject* o);
     static /*public*/ QString currentClassName(QString name);
-    /*public*/ void removePrefItems();
-    /*public*/ QObject* findInstance(/*Class<?> */QString c, int index) ;
-    /*public*/ QObjectList getInstanceList(/*Class<?> */QString c);
-    /*public*/ void registerConfig(QObject* o, int x);
-    /*public*/ void registerTool(QObject* o);
-    /*public*/ void registerUser(QObject* o);
-    /*public*/ void registerUserPrefs(QObject* o);
-    /*public*/ void deregister(QObject* o);
+    /*public*/ void removePrefItems() override;
+    /*public*/ QObject* findInstance(/*Class<?> */QString c, int index)  override;
+    /*public*/ QObjectList getInstanceList(/*Class<?> */QString c) override;
+    /*public*/ void registerConfig(QObject* o, int x) override;
+    /*public*/ void registerTool(QObject* o) override;
+    /*public*/ void registerUser(QObject* o) override;
+    /*public*/ void registerUserPrefs(QObject* o) override;
+    /*public*/ void deregister(QObject* o) override;
     /*public*/ static QString adapterName(QObject* o);
     void locateClassFailed(Throwable ex, QString adapterName, QObject* o);
-    /*public*/ bool storeAll(File* file) const;
-    /*public*/ void storePrefs() ;
-    /*public*/ void storePrefs(File* file) ;
-    /*public*/ void storeUserPrefs(File* file);
+    /*public*/ bool storeAll(File* file) const override;
+    /*public*/ void storePrefs()  override;
+    /*public*/ void storePrefs(File* file)  override;
+    /*public*/ void storeUserPrefs(File* file) override;
     /*public*/ void setPrefsLocation(File* prefsFile);
-    /*public*/ bool storeConfig(File* file);
-    /*public*/ bool storeUser(File* file) ;
-    /*public*/ bool makeBackup(File* file) const;
+    /*public*/ bool storeConfig(File* file) override;
+    /*public*/ bool storeUser(File* file)  override;
+    /*public*/ bool makeBackup(File* file) const override;
     static /*public*/ QDomElement elementFromObject(QObject* o);
-    /*public*/ bool load(File* fi) throw (JmriConfigureXmlException) ;
-    /*public*/ bool load(QUrl url) throw (JmriConfigureXmlException);
-    /*public*/ bool load(File* fi, bool registerDeferred) throw (JmriConfigureXmlException) ;
-    /*public*/ bool load(QUrl url, bool registerDeferred) throw (JmriConfigureXmlException) ;
-    /*public*/ bool loadDeferred(File* fi) throw (JmriConfigureXmlException);
-    /*public*/ bool loadDeferred(QUrl url) throw (JmriConfigureXmlException);
-    /*public*/ QUrl find(QString f);
-    virtual void locateFileFailed(QString f);
+    /*public*/ bool load(File* fi) throw (JmriException)  override;
+    /*public*/ bool load(QUrl url) throw (JmriConfigureXmlException) override;
+    /*public*/ bool load(File* fi, bool registerDeferred) throw (JmriException)  override;
+    /*public*/ bool load(QUrl url, bool registerDeferred) throw (JmriConfigureXmlException)  override;
+    /*public*/ bool loadDeferred(File* fi) throw (JmriException) override;
+    /*public*/ bool loadDeferred(QUrl url) throw (JmriConfigureXmlException) override;
+    /*public*/ QUrl find(QString f) override;
+    virtual void locateFileFailed(QString f) ;
     static /*public*/ void creationErrorEncountered(
             XmlAdapter* adapter,
             QString operation,

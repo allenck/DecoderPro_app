@@ -41,8 +41,8 @@ public:
     /*public*/ static QStringList getLocalStatusNames();
     /*public*/ static QString getLocalStatusName(QString str) ;
     /*public*/ static QString getSystemStatusName(QString str);
-    /*public*/ bool setSensor(QString pName);
-    /*public*/ void setNamedSensor(NamedBeanHandle<Sensor*>* namedSensor);
+    /*public*/ bool setSensor(QString pName) override;
+    /*public*/ void setNamedSensor(NamedBeanHandle<Sensor*>* namedSensor) override;
     /*public*/ bool setErrorSensor(QString pName);
     /*public*/ Sensor* getErrorSensor();
     /*public*/ NamedBeanHandle<Sensor*>* getNamedErrorSensor();
@@ -63,13 +63,13 @@ public:
     /*public*/ Portal* getPortalByName(QString name);
     /*public*/ QList <Portal*> getPortals();
     /*public*/ OPath* getPathByName(QString name);
-    /*public*/ bool addPath(OPath* path);
-    /*public*/ void removePath(Path* path);
+    /*public*/ bool addPath(OPath* path); // does not override!
+    /*public*/ void removePath(Path* path) override;
     /*public*/ QString setPath(QString pathName, Warrant* warrant);
     /*public*/ void pseudoPropertyChange(QString propName, QVariant old, QVariant n);
-    /*public*/ void goingInactive();
+    /*public*/ void goingInactive() override;
     /*public*/ void goingActive();
-    /*public*/ void dispose() ;
+    /*public*/ void dispose() override ;
     /*public*/ QString getDescription();
     /*public*/ bool addSharedTurnout(OPath* key, OBlock* block, OPath* path);
     /*public*/ void setMarkerForeground(QColor c);
@@ -78,7 +78,7 @@ public:
     /*public*/ QColor getMarkerBackground();
     /*public*/ void setMarkerFont(QFont f);
     /*public*/ QFont getMarkerFont();
-    /*public*/ void setValue(QVariant o);
+    /*public*/ void setValue(QVariant o) override;
     /*public*/ void setError(bool set);
     /*public*/ void goingUnknown() override;
     /*public*/ void goingInconsistent() override;

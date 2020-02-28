@@ -13,7 +13,7 @@ public:
     /*public*/ PositionableIcon(Editor* editor, Positionable *parent);
     /*public*/ PositionableIcon(NamedIcon* s, Editor* editor, Positionable *parent);
     /*public*/ PositionableIcon(QString s, Editor* editor, Positionable *parent);
-    /*public*/ Positionable* finishClone(Positionable* p);
+    /*public*/ Positionable* finishClone(Positionable* p) override;
     /**
     * Get icon by its bean state name key found in jmri.NamedBeanBundle.properties
     * Get icon by its localized bean state name
@@ -22,12 +22,12 @@ public:
     /*public*/ QString getFamily();
     /*public*/ void setFamily(QString family);
     /*public*/ QStringListIterator getIconStateNames();
-    /*public*/ int maxHeight();
-    /*public*/ int maxWidth();
-    /*public*/ virtual void displayState(int state) ;
-    /*public*/ void setScale(double s);
-    /*public*/ int getDegrees();
-    /*public*/ void rotate(int deg);
+    /*public*/ int maxHeight() override;
+    /*public*/ int maxWidth() override;
+    /*public*/ virtual void displayState(int state);
+    /*public*/ void setScale(double s) override;
+    /*public*/ int getDegrees() override;
+    /*public*/ void rotate(int deg) override;
     Positionable* parent;
     void invalidate();
 
@@ -43,7 +43,7 @@ protected:
  /*protected*/ QString  _iconFamily;
  /*protected*/ double _scale;// = 1.0;			// getScale, come from net result found in one of the icons
  /*protected*/ int _rotate;// = 0;
- /*protected*/ void rotateOrthogonal();
+ /*protected*/ void rotateOrthogonal() override;
  /*protected*/ static QMap<QString, NamedIcon*>* cloneMap(QMap<QString, NamedIcon*>* map, PositionableLabel* pos);
  friend class PortalItemPanel;
 };

@@ -450,7 +450,6 @@ SOURCES += \
     beanswitch.cpp \
     layouttrackdrawingoptionsxml.cpp \
     layouttrackdrawingoptions.cpp \
-    newpaneleditor.cpp \
     defaultusermessagepreferencesxml.cpp \
     layouttrackexpectedstate.cpp \
     rpsitempanel.cpp \
@@ -845,7 +844,6 @@ HEADERS += liblayouteditor_global.h \
     beanswitch.h \
     layouttrackdrawingoptionsxml.h \
     layouttrackdrawingoptions.h \
-    newpaneleditor.h \
     defaultusermessagepreferencesxml.h \
     layouttrackexpectedstate.h \
     rpsitempanel.h \
@@ -864,7 +862,6 @@ HEADERS += liblayouteditor_global.h \
     rpssensor.h \
     measurementlistener.h \
     namedicon.h \
-    namedbeanusernamecomparator.h \
     lememoryicon.h \
     memoryicon.h \
     lememoryiconxml.h \

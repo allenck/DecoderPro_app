@@ -12,10 +12,10 @@ public:
  DefaultConditionalManagerXml(const DefaultConditionalManagerXml&) :  AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);
     /*public*/ void setStoreElementClass(QDomElement conditionals);
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
-    /*public*/ bool load(QDomElement conditionals)  throw (Exception);
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
+    /*public*/ bool load(QDomElement conditionals)  throw (Exception) override;
     /*public*/ void loadConditionals(QDomElement conditionals);
-    /*public*/ int loadOrder();
+    /*public*/ int loadOrder()const override;
 
 signals:
 

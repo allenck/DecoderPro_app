@@ -1,8 +1,6 @@
 #include "defaultroutemanager.h"
 #include "decimalformat.h"
 
-/*static*/ DefaultRouteManager* DefaultRouteManager::_instance = NULL;
-
 DefaultRouteManager::DefaultRouteManager(QObject *parent) : RouteManager(parent)
 {
  setObjectName("DefaultRouteManager");
@@ -29,12 +27,12 @@ DefaultRouteManager::DefaultRouteManager(QObject *parent) : RouteManager(parent)
 //        super();
 //    }
 
-/*public*/ int DefaultRouteManager::getXMLOrder(){
+/*public*/ int DefaultRouteManager::getXMLOrder() const{
     return Manager::ROUTES;
 }
 
-/*public*/ QString DefaultRouteManager::getSystemPrefix() { return "I"; }
-/*public*/ char DefaultRouteManager::typeLetter() { return 'R'; }
+/*public*/ QString DefaultRouteManager::getSystemPrefix() const { return "I"; }
+/*public*/ char DefaultRouteManager::typeLetter() const { return 'R'; }
 
 /**
  * Method to provide a  Route
@@ -116,13 +114,22 @@ int DefaultRouteManager::getLastAutoRouteRef()
 
 /*static*/ /*public*/ DefaultRouteManager* DefaultRouteManager::instance()
 {
- if (_instance == NULL)
- {
-  _instance = new DefaultRouteManager();
- }
- return (_instance);
+ return (DefaultRouteManager*)InstanceManager::getDefault("DefaultRouteManager");
 }
 
+//@Nonnull
+//@Override
+/*public*/ QString DefaultRouteManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "Routes" : "Route");
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString DefaultRouteManager::getNamedBeanClass() {
+    return "Route";
+}
 //@Override
 /*public*/ Route* DefaultRouteManager::provide(QString name) throw (IllegalArgumentException) {
     return provideRoute(name, "");

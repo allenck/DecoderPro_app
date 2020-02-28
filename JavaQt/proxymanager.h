@@ -30,7 +30,7 @@ public:
      * @return the default manager or the internal manager
      */
     /*@Nonnull*/
- /*public*/ virtual Manager* getDefaultManager() {return  nullptr;}
+ /*public*/ virtual Manager* getDefaultManager() const {return  nullptr;}
 
     /**
      * Returns a list of all managers, including the internal manager. This is

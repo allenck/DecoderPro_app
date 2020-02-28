@@ -19,12 +19,20 @@
 #include "windowlistener.h"
 #include <QRunnable>
 #include "layouttrackexpectedstate.h"
+#include "blockeditaction.h"
+#include "beanitempanel.h"
+#include "namedbeancombobox.h"
+#include "jcolorchooser.h"
+#include "splitbuttoncolorchooserpanel.h"
+#include "layoutblockmanager.h"
+#include "layouteditor.h"
+#include "instancemanager.h"
+#include "beanedititem.h"
 
 class ConnectivityUtil;
 class ActionEvent;
 class JmriJFrame;
 class RoutingPacket;
-class LayoutEditor;
 class LayoutEditorAuxTools;
 class Adjacencies;
 class ThroughPaths;
@@ -127,6 +135,8 @@ public:
      * Add Memory by name
      */
     /*public*/ void setMemoryName(QString name);
+    /*public*/ void setMemory(Memory* m, QString name);
+
     /**
      * Returns occupancy Sensor name
     */
@@ -151,7 +161,7 @@ public:
 
     /*public*/ int getState();
     // dummy for completion of NamedBean interface
-    /*public*/ void setState(int i);
+    /*public*/ void setState(int i) override;
 
     LayoutBlock* getLayoutBlock();
     static QVector<int>* updateReferences;// = new QVector<int>();
@@ -298,8 +308,8 @@ public:
     */
     /*public*/ bool isThroughPathActive(int i);
 
-    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
-    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
+    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
     ///*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
     void updateNeighbourPacketFlow(Block* neighbour, int flow);
     Adjacencies* getAdjacency(Block* blk);
@@ -367,7 +377,7 @@ private:
     //static bool InstanceManager.layoutBlockManagerInstance().isAdvancedRoutingEnabled() = true;
     QStringList working;// = {"Bi-Directional", "Receive Only", "Send Only"};
 
-    QVector<QComboBox*> neighbourDir;
+    QVector<JComboBox*> neighbourDir;
     LayoutEditorAuxTools* auxTool;//=NULL;
     ConnectivityUtil* connection;//=NULL;
     bool layoutConnectivity;// = true;
@@ -395,6 +405,8 @@ private:
     // operational instance variables (not saved to disk)
     /*private*/ int useCount = 0;
     /*private*/ NamedBeanHandle<Sensor*>* occupancyNamedSensor; //NULL;
+    /*private*/ NamedBeanHandle<Memory*>* namedMemory = nullptr;
+
     friend class CreateEditBlock;
     /*private*/ Memory* memory; //NULL;
     /*private*/ Block* block; //NULL;
@@ -423,8 +435,14 @@ private:
     /*JTextField*/ QLineEdit* metricField; //new /*JTextField*/ QLineEdit(10);
     /*JComboBox*/ QComboBox* senseBox; //new /*JComboBox*/ QComboBox();
     /*JCheckBox*/ QCheckBox* permissiveCheck; //new /*JCheckBox*/ QCheckBox("Permissive Working Allowed");
+    /*private*/ /*final*/ NamedBeanComboBox/*<Memory*>*/* memoryComboBox;// = new NamedBeanComboBox<>(
+    //InstanceManager.getDefault(MemoryManager.class), null, DisplayOptions.DISPLAYNAME);
+
     int senseActiveIndex;
     int senseInactiveIndex;
+    /*private*/ JColorChooser* trackColorChooser = nullptr;
+    /*private*/ JColorChooser* occupiedColorChooser = nullptr;
+    /*private*/ JColorChooser* extraColorChooser = nullptr;
     /*JComboBox*/ QComboBox* trackColorBox; //new /*JComboBox*/ QComboBox();
     /*JComboBox*/ QComboBox* occupiedColorBox; //new /*JComboBox*/ QComboBox();
     /*JComboBox*/ QComboBox* extraColorBox; //new /*JComboBox*/ QComboBox();
@@ -477,7 +495,7 @@ private:
 //            Color->lightGray,Color->white,Color->red,Color->pink,Color->orange,
 //            Color->yellow,Color->green,Color->blue,Color->magenta,Color->cyan};
     int numColors;// = 13;  // number of entries in the above arrays
-    /*private*/ void initializeColorCombo(QComboBox* colorCombo);
+    /*private*/ void initializeColorCombo(QComboBox* colorCombo, QColor c);
     /*public*/ QString getNeighbourPacketFlowAsString(int i);
     /*public*/ bool isNeighbourMutual(int i);
     int getNeighbourIndex(Adjacencies* adj);
@@ -518,6 +536,12 @@ protected:
     friend class JsonLayoutBlockSocketService;
     friend class LayoutBlockListener;
     friend class LayoutTrackEditors;
+    friend class LayoutBlockEditAction;
+    friend class RoutingSetSaveItemListener;
+    friend class RoutingSetResetItemListener;
+    friend class LayoutSetSaveItemListener;
+    friend class LayoutSetResetItemListener;
+
 }; // end class LayoutBlock
 
 class Routes : public QObject
@@ -775,6 +799,67 @@ class LBRunnable : public QRunnable
 public:
  LBRunnable(LayoutBlock* neighLBlock, Block* block, int flow, LayoutBlock* layoutblock);
  void run();
+};
+
+/*protected*/ class LayoutBlockEditAction : public BlockEditAction
+{
+ Q_OBJECT
+ LayoutBlock* lb;
+public:
+ LayoutBlockEditAction(LayoutBlock* lb) {this->lb = lb;}
+    //@Override
+    /*public*/ QString helpTarget() {
+        return "package.jmri.jmrit.display.EditLayoutBlock";
+    }  //IN18N
+public slots:
+    void on_setSaveItem();
+    void on_setResetItem();
+
+protected:
+    //@Override
+    /*protected*/ void initPanels() override;
+private:
+    BeanItemPanel* layoutDetails();
+    BeanItemPanel* blockRoutingDetails() ;
+    friend class RoutingSetSaveItemListener;
+    friend class RoutingSetResetItemListener;
+};
+class LayoutSetSaveItemListener : public ActionListener
+{
+ Q_OBJECT
+ LayoutBlock* lb;
+ LayoutSetSaveItemListener(LayoutBlock* lb) {this->lb = lb;}
+public slots:
+ void actionPerformed();
+};
+
+class LayoutSetResetItemListener : public ActionListener
+{
+ Q_OBJECT
+ LayoutBlock* lb;
+ LayoutSetResetItemListener(LayoutBlock* lb) {this->lb = lb;}
+public slots:
+ void actionPerformed();
+};
+
+class RoutingSetSaveItemListener : public ActionListener
+{
+ Q_OBJECT
+ LayoutBlock* lb;
+ RoutingSetSaveItemListener(LayoutBlock* lb) {this->lb = lb;}
+public slots:
+ void actionPerformed();
+ friend class LayoutBlockEditAction;
+};
+
+class RoutingSetResetItemListener : public ActionListener
+{
+ Q_OBJECT
+ LayoutBlock* lb;
+ RoutingSetResetItemListener(LayoutBlock* lb) {this->lb = lb;}
+public slots:
+ void actionPerformed();
+ friend class LayoutBlockEditAction;
 };
 
 #endif // LAYOUTBLOCK_H

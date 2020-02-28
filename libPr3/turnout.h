@@ -396,7 +396,7 @@ public:
          *<P>
          * If true turnouts can be inverted
          */
-        virtual bool canInvert() const {return false;}
+        virtual bool canInvert() const =0;
 
         /**
          *  Constant representing turnout lockout cab commands

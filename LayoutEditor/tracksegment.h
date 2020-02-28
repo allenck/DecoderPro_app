@@ -31,7 +31,7 @@ public:
     /*public*/ bool replaceTrackConnection(/*@CheckForNull*/ LayoutTrack* oldTrack, /*@CheckForNull*/ LayoutTrack* newTrack, int newType);
     /*public*/ bool isDashed();
     /*public*/ void setDashed(bool dash);
-    /*public*/ bool isMainline();
+    /*public*/ bool isMainline() override;
     /*public*/ void setMainline(bool main);
     /*public*/ void setArc(bool boo);
     /*public*/ void setCircle(bool boo);
@@ -54,10 +54,10 @@ public:
      */
     /*public*/ void setLayoutBlock (LayoutBlock* b);
     /*public*/ void setLayoutBlockByName (QString name);
-    /*public*/ void scaleCoords(float xFactor, float yFactor);
-    /*public*/ void translateCoords(float xFactor, float yFactor);
+    /*public*/ void scaleCoords(float xFactor, float yFactor) override;
+    /*public*/ void translateCoords(float xFactor, float yFactor) override;
     /*public*/ void rotateCoords(double angleDEG);
-    /*public*/ void setCoordsCenter(/*@Nonnull*/ QPointF newCenterPoint);
+    /*public*/ void setCoordsCenter(/*@Nonnull*/ QPointF newCenterPoint) override;
 
     // initialization instance variables (used when loading a LayoutEditor)
     /*public*/ QString tLayoutBlockName;// = "";
@@ -69,7 +69,7 @@ public:
      *        method is called after the entire LayoutEditor is loaded to set the specific
      *        TrackSegment objects.
      */
-    /*public*/ void setObjects(LayoutEditor* p);
+    /*public*/ void setObjects(LayoutEditor* p) override;
     /**
      * Clean up when this object is no longer needed.  Should not
      * be called while the object is still displayed; see remove()
@@ -396,19 +396,19 @@ protected:
  /*protected*/ int type1 = 0;
  /*protected*/ LayoutTrack* connect2 = nullptr;
  /*protected*/ int type2 = 0;
- /*protected*/ void drawDecorations(EditScene* g2);
- /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemMain);
- /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type);
- /*protected*/ void highlightUnconnected(EditScene* g2, int selectedType);
- /*protected*/ void drawEditControls(EditScene* g2);
- /*protected*/ void drawTurnoutControls(EditScene* g2);
+ /*protected*/ void drawDecorations(EditScene* g2) override;
+ /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemMain) override;
+ /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type) override;
+ /*protected*/ void highlightUnconnected(EditScene* g2, int selectedType) override;
+ /*protected*/ void drawEditControls(EditScene* g2) override;
+ /*protected*/ void drawTurnoutControls(EditScene* g2) override;
  /*protected*/ void showBezierPopUp(QGraphicsSceneMouseEvent* e, int hitPointType);
- /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
+ /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) override;
  /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
  /**
   * Display popup menu for information and editing
   */
- /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);
+ /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e) override;
 
  friend class LayoutEditor;
  //friend class EditTrackSegmentDlg;
@@ -424,7 +424,7 @@ class TSAbstractAction : public AbstractAction
 public:
  TSAbstractAction(QString name, QObject* parent);
  public slots:
-   /*public*/ void actionPerformed(ActionEvent* e = 0);
+   /*public*/ void actionPerformed(ActionEvent* e = 0) override;
 };
 
 #endif // TRACKSEGMENT_H

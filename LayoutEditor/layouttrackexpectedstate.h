@@ -8,7 +8,7 @@ class LayoutTrackExpectedState : public LayoutTrack
 {
 public:
  LayoutTrackExpectedState(T layoutTrack, int state, QObject *parent = nullptr);
- ~LayoutTrackExpectedState() {}
+ ~LayoutTrackExpectedState()  override{}
  //LayoutTrackExpectedState(const LayoutTrackExpectedState&)  {}
  /*public*/ int getExpectedState();
  /*public*/ void setExpectedState(int state) throw (UnsupportedOperationException);

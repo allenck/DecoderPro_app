@@ -78,6 +78,26 @@ virtual bool requestThrottle(BasicRosterEntry* /*re*/, ThrottleListener* /*l*/) 
 virtual bool requestThrottle(int /*address*/, ThrottleListener* /*l*/) {return false;}
 
 /**
+ * Request a throttle, given a decoder address. When the decoder address is
+ * located, the ThrottleListener gets a callback via the
+ * ThrottleListener.notifyThrottleFound method.
+ * <P>
+ * This is a convenience version of the call, which uses system-specific
+ * logic to tell whether the address is a short or long form,
+ * and assumes that the hardware makes and steal / share decisions.
+ * <p>
+ * @param canHandleDecisions true if the ThrottleListener has a mechanism for dealing with
+ *        Share / Steal decisions, else false
+ * @param address desired decoder address
+ * @param l       ThrottleListener awaiting notification of a found throttle
+
+ * @return true if the request will continue, false if the request will not
+ *         be made; false may be returned if a the throttle is already in
+ *         use
+ */
+/*public*/ virtual bool requestThrottle(int /*address*/, ThrottleListener* /*l*/, bool /*canHandleDecisions*/){return false;}
+
+/**
  * Request a throttle, given a decoder address & whether it is a long
  * or short DCC address. When the decoder address
  * is located, the ThrottleListener gets a callback via the ThrottleListener.notifyThrottleFound
@@ -175,6 +195,13 @@ virtual void cancelThrottleRequest(int /*address*/, ThrottleListener* /*l*/) {}
  */
 virtual void cancelThrottleRequest(int /*address*/, bool  /*isLong*/, ThrottleListener* /*l*/) {}
 
+/**
+ * Cancel a request for a throttle.
+ *
+ * @param address unwanted Loco address
+ * @param l       ThrottleListener canceling request for a throttle
+ */
+/*public*/ virtual void cancelThrottleRequest(LocoAddress* /*address*/, ThrottleListener* /*l*/) {}
 /**
  * Steal a requested throttle.
  * <P>
@@ -388,7 +415,7 @@ virtual void dispatchThrottle(DccThrottle* /*t*/, ThrottleListener* /*l*/) {}
  * @param la - DccLocoAddress of the loco we wish to monitor
  * @param p - PropertyChangeListener to attach to the throttle
  */
-virtual void attachListener(DccLocoAddress* /*la*/, PropertyChangeListener* /*p*/) {}
+virtual void attachListener(LocoAddress* /*la*/, PropertyChangeListener* /*p*/) {}
 
 /**
  * Remove a PropertyChangeListener to a specific loco address, where the

@@ -10,13 +10,13 @@ class LIBLAYOUTEDITORSHARED_EXPORT DefaultSignalGroupManagerXml : public Abstrac
     Q_OBJECT
 public:
     Q_INVOKABLE explicit DefaultSignalGroupManagerXml(QObject *parent = 0);
- ~DefaultSignalGroupManagerXml() {}
+ ~DefaultSignalGroupManagerXml() override {}
  DefaultSignalGroupManagerXml(const DefaultSignalGroupManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
-    /*public*/ QDomElement store(QObject* o);
+    /*public*/ QDomElement store(QObject* o) override;
     /*public*/ void setStoreElementClass(QDomElement signalGroup);
-    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception);
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
-    /*public*/ int loadOrder();
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception) override;
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
+    /*public*/ int loadOrder()const  override;
 
 signals:
 

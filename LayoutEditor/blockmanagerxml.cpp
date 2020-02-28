@@ -466,6 +466,6 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
     path->addSetting(bs);
 }
 
-/*public*/ int BlockManagerXml::loadOrder(){
+/*public*/ int BlockManagerXml::loadOrder() const{
     return ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getXMLOrder();
 }

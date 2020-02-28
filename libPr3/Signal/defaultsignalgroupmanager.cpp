@@ -34,11 +34,11 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(QObject *parent) :
 //    //load();
 //}
 
-/*public*/ int DefaultSignalGroupManager::getXMLOrder(){
+/*public*/ int DefaultSignalGroupManager::getXMLOrder() const{
     return Manager::SIGNALGROUPS;
 }
 
-/*public*/ QString DefaultSignalGroupManager::getSystemPrefix() { return "I"; }
+/*public*/ QString DefaultSignalGroupManager::getSystemPrefix() const { return "I"; }
 /*public*/ char DefaultSignalGroupManager::typeLetter() { return 'F'; }
 
 /*public*/ SignalGroup* DefaultSignalGroupManager::getSignalGroup(QString name) {
@@ -48,11 +48,11 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(QObject *parent) :
     return getBySystemName(name);
 }
 
-/*public*/ SignalGroup* DefaultSignalGroupManager::getBySystemName(QString key) {
+/*public*/ SignalGroup* DefaultSignalGroupManager::getBySystemName(QString key) const {
     return (SignalGroup*)_tsys->value(key);
 }
 
-/*public*/ SignalGroup* DefaultSignalGroupManager::getByUserName(QString key) {
+/*public*/ SignalGroup* DefaultSignalGroupManager::getByUserName(QString key) const{
     return (SignalGroup*)_tuser->value(key);
 }
 

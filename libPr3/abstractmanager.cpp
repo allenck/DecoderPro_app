@@ -103,7 +103,7 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 /** {@inheritDoc} */
 //@Override
 //@Nonnull
-/*public*/ QString AbstractManager::makeSystemName(/*@Nonnull*/ QString s, bool logErrors, QLocale locale) {
+/*public*/ QString AbstractManager::makeSystemName(/*@Nonnull*/ QString s, bool logErrors, QLocale locale) const {
     try {
         return Manager::makeSystemName(s, logErrors, locale);
     } catch (IllegalArgumentException ex) {
@@ -165,7 +165,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
 }
 /** {@inheritDoc} */
 //@Override
-/*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) {
+/*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
     return _tsys->value(systemName);
 }
     /**
@@ -174,7 +174,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
      * @param systemName System Name of the required NamedBean
      * @return requested NamedBean object or NULL if none exists
      */
-    /*public*/ NamedBean* AbstractManager::getBeanBySystemName(QString systemName){
+    /*public*/ NamedBean* AbstractManager::getBeanBySystemName(QString systemName)const{
         return _tsys->value(systemName);
     }
 
@@ -184,14 +184,14 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
      * @param userName System Name of the required NamedBean
      * @return requested NamedBean object or NULL if none exists
      */
-    /*public*/ NamedBean* AbstractManager::getBeanByUserName(QString userName){
+    /*public*/ NamedBean* AbstractManager::getBeanByUserName(QString userName) const{
         return _tuser->value(userName);
     }
 
     /** {@inheritDoc} */
 //    @Override
 //    @CheckForNull
-    /*public*/ NamedBean* AbstractManager::getByUserName(/*@Nonnull*/ QString userName) {
+    /*public*/ NamedBean* AbstractManager::getByUserName(/*@Nonnull*/ QString userName) const{
         QString normalizedUserName = NamedBean::normalizeUserName(userName);
         return !normalizedUserName.isNull() ? _tuser->value(normalizedUserName) : nullptr;
     }
@@ -201,7 +201,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
      * @param name System Name of the required NamedBean
      * @return requested NamedBean object or NULL if none exists
      */
-    /*public*/ NamedBean* AbstractManager::getNamedBean(QString name){
+    /*public*/ NamedBean* AbstractManager::getNamedBean(QString name) const{
         NamedBean* b = getBeanByUserName(name);
         if(b!=NULL) return b;
         return getBeanBySystemName(name);
@@ -213,7 +213,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  * The non-system-specific SignalHeadManagers
  * use this method extensively.
  */
-/*public*/ void AbstractManager::Register(NamedBean* s)
+/*public*/ void AbstractManager::Register(NamedBean* s) const
 {
 #if 0
  QString systemName;
@@ -250,17 +250,21 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
     emit beanCreated(s);
 #endif
   QString systemName = s->getSystemName();
-
+  Q_ASSERT(!systemName.isEmpty());
   NamedBean* existingBean = getBeanBySystemName(systemName);
-  if (existingBean != nullptr) {
-      if (s == existingBean) {
-          log->debug(tr("the named bean is registered twice: %1").arg(systemName));
-      } else {
-          log->error(tr("systemName is already registered: %1").arg(systemName));
-          throw  NamedBean::DuplicateSystemNameException("systemName is already registered: " + systemName);
-      }
+  if (existingBean != nullptr)
+  {
+   if (s == existingBean)
+   {
+       log->debug(tr("the named bean is registered twice: %1").arg(systemName));
+   }
+   else {
+       log->error(tr("systemName is already registered: %1").arg(systemName));
+       throw  NamedBean::DuplicateSystemNameException("systemName is already registered: " + systemName);
+   }
   }
-  else {
+  else
+  {
       // Check if the manager already has a bean with a system name that is
       // not equal to the system name of the new bean, but there the two
       // system names are treated as the same. For example LT1 and LT01.
@@ -310,7 +314,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
 
 }
   // not efficient, but does job for now
-/*private*/ int AbstractManager::getPosition(NamedBean* s) {
+/*private*/ int AbstractManager::getPosition(NamedBean* s) const{
     int position = 0;
     QSetIterator<NamedBean*> iter(_beans);
     while (iter.hasNext()) {
@@ -326,7 +330,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  *
  * @param s the bean to register
  */
-/*protected*/ void AbstractManager::registerUserName(NamedBean *s) {
+/*protected*/ void AbstractManager::registerUserName(NamedBean *s) const {
     QString userName = s->getUserName();
     if (userName == "") {
         return;
@@ -344,7 +348,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  *
  * @param s the bean to register
  */
-/*protected*/ void AbstractManager::handleUserNameUniqueness(NamedBean* s) {
+/*protected*/ void AbstractManager::handleUserNameUniqueness(NamedBean* s) const {
     QString userName = s->getUserName();
     if (userName != "") {
         // enforce uniqueness of user names
@@ -362,7 +366,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  * The non-system-specific RouteManager
  * uses this method.
  */
-/*public*/ void AbstractManager::deregister(NamedBean* s) {
+/*public*/ void AbstractManager::deregister(NamedBean* s)const{
  int position = getPosition(s);
  // clear caches
 // cachedSystemNameArray = null;
@@ -544,10 +548,10 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
     pcs->removePropertyChangeListener(propertyName, listener);
 }
 
-void AbstractManager::firePropertyChange(QString p, QVariant old, QVariant n)
+void AbstractManager::firePropertyChange(QString p, QVariant old, QVariant n) const
 { pcs->firePropertyChange(p,old,n);}
 
-void AbstractManager::fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n)
+void AbstractManager::fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const
 {
  pcs->fireIndexedPropertyChange(p,pos,old,n);
 }
@@ -721,11 +725,8 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  * for four managers that have arbitrary prefixes.
  */
 //@Override
-/*public*/ /*final*/ QString AbstractManager::getSystemPrefix() {
- QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
+/*public*/ /*final*/ QString AbstractManager::getSystemPrefix() const {
    QString prefix =  memo->getSystemPrefix();
-   if(prefix.startsWith("I"))
-    return "I";
    return prefix;
 }
 

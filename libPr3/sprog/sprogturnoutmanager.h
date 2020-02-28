@@ -11,12 +11,12 @@ namespace Sprog
 
  public:
   SprogTurnoutManager(SprogSystemConnectionMemo*, QObject* parent = 0);
-  /*public*/ QString getSystemPrefix();
-  /*public*/ Turnout* createNewTurnout(QString systemName, QString userName);
+  /*public*/ QString getSystemPrefix()const ;
+  /*public*/ Turnout* createNewTurnout(QString systemName, QString userName)const override;
   /*public*/ int getBitFromSystemName(QString systemName);
-  /*public*/ NameValidity validSystemNameFormat(QString systemName);
-  /*public*/ bool allowMultipleAdditions(QString systemName);
-  /*public*/ QString getEntryToolTip();
+  /*public*/ NameValidity validSystemNameFormat(QString systemName) override;
+  /*public*/ bool allowMultipleAdditions(QString systemName) override;
+  /*public*/ QString getEntryToolTip() override;
   QT_DEPRECATED
   static /*public*/ SprogTurnoutManager* instance();
 

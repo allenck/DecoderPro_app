@@ -31,38 +31,38 @@ public:
     /**
      * LocoNet does have a Dispatch function
      **/
-    /*public*/ virtual bool hasDispatchFunction();
+    /*public*/ bool hasDispatchFunction() override;
     /**
      * What speed modes are supported by this system?
      * value should be xor of possible modes specifed by the
      * DccThrottle interface
      */
-    /*public*/ virtual int supportedSpeedModes();
+    /*public*/ int supportedSpeedModes() override;
 
     /**
      * Address 128 and above is a long address
      **/
-    /*public*/ virtual bool canBeLongAddress(int address);
+    /*public*/  bool canBeLongAddress(int address) override;
     /**
      * Address 127 and below is a short address
      **/
-    /*public*/ virtual bool canBeShortAddress(int address);
+    /*public*/ bool canBeShortAddress(int address) override;
     /**
      * Are there any ambiguous addresses (short vs long) on this system?
      */
-    /*public*/ bool addressTypeUnique();
+    /*public*/ bool addressTypeUnique() override;
     /*
      * Local method for deciding short/long address
      */
-    /*public*/ virtual bool disposeThrottle(DccThrottle* t, ThrottleListener* l);
-    /*public*/ virtual void dispatchThrottle(DccThrottle* t, ThrottleListener* l);
-    /*public*/ void releaseThrottle(DccThrottle* t, ThrottleListener* l);
+    /*public*/ virtual bool disposeThrottle(DccThrottle* t, ThrottleListener* l) override;
+    /*public*/ virtual void dispatchThrottle(DccThrottle* t, ThrottleListener* l) override;
+    /*public*/ void releaseThrottle(DccThrottle* t, ThrottleListener* l) override;
     /*public*/ void failedThrottleRequest(LocoAddress* address, QString reason);
-    /*public*/ void cancelThrottleRequest(LocoAddress* address, ThrottleListener* l);
+    /*public*/ void cancelThrottleRequest(LocoAddress* address, ThrottleListener* l) override;
     /*public*/ int getThrottleID();
     /*public*/ void notifyStealRequest(int locoAddr);
-    /*public*/ void responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision);
-    QObject* self() {return (QObject*)this;}
+    /*public*/ void responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision) override;
+    QObject* self()  override{return (QObject*)this;}
 
 signals:
     
@@ -72,7 +72,7 @@ public slots:
   * This method creates a throttle for all ThrottleListeners of that address
   * and notifies them via the ThrottleListener.notifyThrottleFound method.
   */
- /*public*/ void notifyChangedSlot(LocoNetSlot* s);
+ /*public*/ void notifyChangedSlot(LocoNetSlot* s) override;
  /*public*/ void notifyRefused(int address, QString cause);
 
 private:

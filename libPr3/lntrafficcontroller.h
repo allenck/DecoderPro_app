@@ -15,7 +15,6 @@ public:
  // Abstract methods for the LocoNetInterface
  /*public*/ void setSystemConnectionMemo(LocoNetSystemConnectionMemo* m);
  /*public*/ LocoNetSystemConnectionMemo* getSystemConnectionMemo();
- Q_DECL_DEPRECATED static /*public*/ LnTrafficController* instance();
 
  /*abstract public*/ virtual bool status() {return false;}
 
@@ -99,7 +98,6 @@ private:
   int receivedMsgCount;
   int receivedByteCount;
 protected:
-  static LnTrafficController* self;
 
   friend class LnTrafficRouter;
   friend class LnPowerManagerTest;

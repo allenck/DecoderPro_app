@@ -27,10 +27,6 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 
 /*protected*/ Manager* ProxySensorManager::makeInternalManager() const
 {
-  QObjectList* list = InstanceManager::getDefault()->getInstances("SystemConnectionMemo");
-  QList<SystemConnectionMemo*> l2 = QList<SystemConnectionMemo*>();
-  foreach(QObject* o, *list)
-   l2.append((SystemConnectionMemo*)o);
  Manager* manager = (Manager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getSensorManager();
  return manager;
 }
@@ -41,7 +37,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
  * @param name
  * @return Null if nothing by that name exists
  */
-/*public*/ Sensor* ProxySensorManager::getSensor(QString name) {
+/*public*/ Sensor* ProxySensorManager::getSensor(QString name) const {
  return (Sensor*)AbstractProxySensorManager::getNamedBean(name);
 }
 
@@ -64,18 +60,18 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
  * instance already exists.
  * @return requested Turnout object or null if none exists
  */
-/*public*/ Sensor *ProxySensorManager::getBySystemName(QString sName) {
-    return (Sensor*) AbstractProxySensorManager::getBeanBySystemName(sName);
-}
+///*public*/ Sensor *ProxySensorManager::getBySystemName(QString sName) const{
+//    return (Sensor*) AbstractProxySensorManager::getBeanBySystemName(sName);
+//}
 
 /**
  * Locate an instance based on a user name.  Returns null if no
  * instance already exists.
  * @return requested Turnout object or null if none exists
  */
-/*public*/ Sensor* ProxySensorManager::getByUserName(QString userName) {
-    return (Sensor*) AbstractProxySensorManager::getBeanByUserName(userName);
-}
+///*public*/ Sensor* ProxySensorManager::getByUserName(QString userName) const{
+//    return (Sensor*) AbstractProxySensorManager::getBeanByUserName(userName);
+//}
 
 
 /**

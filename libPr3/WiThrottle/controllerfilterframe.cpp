@@ -341,7 +341,7 @@ void ControllerFilterFrame::on_save()
          return QVariant();
      }
 
-     Turnout* t = mgr->getBySystemName(sysNameList.at(index.row()));
+     Turnout* t = (Turnout*)mgr->getBySystemName(sysNameList.at(index.row()));
      if(role == Qt::CheckStateRole)
      {
         switch (index.column())

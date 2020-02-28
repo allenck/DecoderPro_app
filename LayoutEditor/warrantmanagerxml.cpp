@@ -332,7 +332,7 @@ ThrottleSetting* WarrantManagerXml::loadThrottleCommand(QDomElement elem)
     return new ThrottleSetting(time, command, value, block);
 }
 
-/*public*/ int WarrantManagerXml::loadOrder(){
+/*public*/ int WarrantManagerXml::loadOrder()const{
     return ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getXMLOrder();
 }
 /*private*/ /*final*/ /*static*/ Logger* WarrantManagerXml::log = LoggerFactory::getLogger("WarrantManagerXml");

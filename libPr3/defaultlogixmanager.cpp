@@ -70,8 +70,8 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     return Manager::LOGIXS;
 }
 
-/*public*/ QString DefaultLogixManager::getSystemPrefix() { return "I"; }
-/*public*/ char DefaultLogixManager::typeLetter() { return 'X'; }
+/*public*/ QString DefaultLogixManager::getSystemPrefix()const { return "I"; }
+/*public*/ char DefaultLogixManager::typeLetter()const { return 'X'; }
 
 /**
  * Method to create a new Logix if the Logix does not exist
@@ -196,11 +196,11 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     return (Logix*)getBySystemName(name);
 }
 
-/*public*/ NamedBean *DefaultLogixManager::getBySystemName(QString name) {
+/*public*/ NamedBean *DefaultLogixManager::getBySystemName(QString name) const {
     return (Logix*)_tsys->value(name);
 }
 
-/*public*/ NamedBean *DefaultLogixManager::getByUserName(QString key) {
+/*public*/ NamedBean *DefaultLogixManager::getByUserName(QString key) const {
     return _tuser->value(key);
 }
 
@@ -209,7 +209,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  */
 /*public*/ void DefaultLogixManager::setLoadDisabled(bool s) {loadDisabled = s;}
 
-/*public*/ bool DefaultLogixManager::getLoadDisabled() {return loadDisabled;}
+/*public*/ bool DefaultLogixManager::getLoadDisabled() const {return loadDisabled;}
 
 /*static*/ /*public*/ DefaultLogixManager* DefaultLogixManager::instance() {
     if (_instance == nullptr) {

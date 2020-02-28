@@ -32,22 +32,29 @@ AbstractSignalHeadManager::AbstractSignalHeadManager(QObject *parent) :
 //    //super();
 //}
 
-/*public*/ int AbstractSignalHeadManager::getXMLOrder(){
+/*public*/ int AbstractSignalHeadManager::getXMLOrder() const{
     return Manager::SIGNALHEADS;
 }
 
-/*public*/ QString AbstractSignalHeadManager::getSystemPrefix() { return "I"; }
-/*public*/ char AbstractSignalHeadManager::typeLetter() { return 'H'; }
+///*public*/ QString AbstractSignalHeadManager::getSystemPrefix() const { return "I"; }
+/*public*/ char AbstractSignalHeadManager::typeLetter() const { return 'H'; }
 
 /*public*/ SignalHead* AbstractSignalHeadManager::getSignalHead(QString name)
 {
  if (name==NULL || name.length()==0) { return NULL; }
- SignalHead* t = getByUserName(name);
+ SignalHead* t = (SignalHead*)getByUserName(name);
  if (t!=NULL) return t;
 
- return getBySystemName(name);
+ return (SignalHead*)getBySystemName(name);
 }
 
+/** {@inheritDoc} */
+//@Override
+//@Nonnull
+/*public*/ QString AbstractSignalHeadManager::getBeanTypeHandled(bool plural) {
+    return tr(plural ? "SignalHeads" : "SignalHead");
+}
+#if 0
 /*public*/ SignalHead* AbstractSignalHeadManager::getBySystemName(QString name)
 {
  return (SignalHead*)_tsys->value(name);
@@ -57,12 +64,12 @@ AbstractSignalHeadManager::AbstractSignalHeadManager(QObject *parent) :
 {
  return (SignalHead*)_tuser->value(key);
 }
-
-void AbstractSignalHeadManager::Register(NamedBean *s)
+#endif
+void AbstractSignalHeadManager::Register(NamedBean *s) const
 {
  AbstractManager::Register(s);
- emit newSignalHeadCreated((AbstractSignalHead*)s);
- emit propertyChange(new PropertyChangeEvent((QObject*)this, "length", QVariant(), QVariant(_tsys->count())));
+// emit newSignalHeadCreated((AbstractSignalHead*)s);
+// emit propertyChange(new PropertyChangeEvent((QObject*)this, "length", QVariant(), QVariant(_tsys->count())));
 }
 
 QCompleter* AbstractSignalHeadManager::getCompleter(QString text, bool bIncludeUserNames)
@@ -73,7 +80,7 @@ QCompleter* AbstractSignalHeadManager::getCompleter(QString text, bool bIncludeU
   QStringList completerList;
   foreach(QString systemName, nameList)
   {
-   SignalHead* b = getBySystemName(systemName);
+   SignalHead* b = (SignalHead*)getBySystemName(systemName);
    if(systemName.startsWith(text))
     completerList.append(b->getUserName());
    else if(bIncludeUserNames)

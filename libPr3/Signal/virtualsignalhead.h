@@ -11,15 +11,15 @@ public:
     /*public*/ VirtualSignalHead(QString sys, QString user, QObject *parent = 0) ;
     /*public*/ VirtualSignalHead(QString sys, QObject *parent = 0);
 
-    /*public*/ void dispose();
-    /*protected*/ void updateOutput();
+    /*public*/ void dispose() override;
+    /*protected*/ void updateOutput() override;
 
 signals:
 
 public slots:
 private:
 //    int saveAppearance;
-    bool isTurnoutUsed(Turnout* t);
+    bool isTurnoutUsed(Turnout* t) override;
 
 };
 

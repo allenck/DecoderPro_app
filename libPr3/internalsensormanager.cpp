@@ -89,7 +89,7 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
 {
     //If the hardware address past does not already exist then this can
     //be considered the next valid address.
-    Sensor* s = getBySystemName(prefix+QString(typeLetter())+curAddress);
+    Sensor* s = (Sensor*)getBySystemName(prefix+QString(typeLetter())+curAddress);
     if(s==NULL){
         return curAddress;
     }
@@ -105,11 +105,11 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
     }
     //Check to determine if the systemName is in use, return null if it is,
     //otherwise return the next valid address.
-    s = getBySystemName(prefix+typeLetter()+iName);
+    s = (Sensor*)getBySystemName(prefix+typeLetter()+iName);
     if(s!=NULL){
         for(int x = 1; x<10; x++){
             iName = iName + 1;
-            s = getBySystemName(prefix+typeLetter()+iName);
+            s = (Sensor*)getBySystemName(prefix+typeLetter()+iName);
             if(s==NULL)
                 return QString("%1").arg(iName);
         }

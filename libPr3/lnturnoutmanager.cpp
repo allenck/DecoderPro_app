@@ -41,6 +41,7 @@ LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTraffi
     } else {
         log.error("No layout connection, turnout manager can't function");
     }
+    registerSelf();
 }
 
 //public class LnTurnoutManager extends jmri.managers.AbstractTurnoutManager implements LocoNetListener {
@@ -66,7 +67,7 @@ void LnTurnoutManager::dispose()
  //super.dispose();
 }
 
-Turnout* LnTurnoutManager::createNewTurnout(QString systemName, QString userName)
+Turnout* LnTurnoutManager::createNewTurnout(QString systemName, QString userName) const
 {
  int addr;
  bool bok;

@@ -37,14 +37,14 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
 //    super();
 //}
 
-/*public*/ int DefaultSignalMastManager::getXMLOrder()
+/*public*/ int DefaultSignalMastManager::getXMLOrder() const
 {
  return Manager::SIGNALMASTS;
 }
 
-/*public*/ QString DefaultSignalMastManager::getSystemPrefix() { return "I"; }
+/*public*/ QString DefaultSignalMastManager::getSystemPrefix() const { return "I"; }
 
-/*public*/ char DefaultSignalMastManager::typeLetter() { return 'F'; }
+/*public*/ char DefaultSignalMastManager::typeLetter() const{ return 'F'; }
 
 /*public*/ SignalMast* DefaultSignalMastManager::getSignalMast(QString name)
 {

@@ -14,7 +14,7 @@ public:
     /*public*/ void setStoreElementClass(QDomElement messages);
     /*public*/ void load(QDomElement element, QObject* o)  throw (Exception);
     /*public*/ bool load(QDomElement element) throw (Exception);
-    /*public*/ int loadOrder();
+    /*public*/ int loadOrder()const override;
 
 signals:
 

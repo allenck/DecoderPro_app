@@ -13,16 +13,16 @@ public:
      *    This implementation does support command station assisted
      *     consists, so return true.
      **/
-    /*public*/ virtual bool isCommandStationConsistPossible();
+    /*public*/ bool isCommandStationConsistPossible() override;
     /**
      *    Does a CS consist require a seperate consist address?
      **/
-    /*public*/ virtual bool csConsistNeedsSeparateAddress();
+    /*public*/ bool csConsistNeedsSeparateAddress() override;
     /**
      *    Add a new LocoNetConsist with the given address to
      *    consistTable/consistList
      */
-    /*public*/ DccConsist *addConsist(DccLocoAddress* address);
+    /*public*/ DccConsist *addConsist(DccLocoAddress* address) override;
     /* request an update from the layout, loading
      * Consists from the command station.
      *
@@ -36,7 +36,7 @@ public:
      * slots and adding new "top" slot addresses and removing address
      * that are no longer "top" locomotives.
      */
-    /*public*/ virtual void requestUpdateFromLayout();
+    /*public*/ void requestUpdateFromLayout() override;
 
 signals:
     

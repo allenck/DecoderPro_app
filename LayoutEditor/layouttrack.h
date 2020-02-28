@@ -19,7 +19,7 @@ class LayoutTrack : public QObject
 public:
  ///*explicit*/ LayoutTrack(QObject *parent = nullptr);
  /*public*/ LayoutTrack(/*@Nonnull*/ QString ident, /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor, QObject* parent = nullptr);
- ~LayoutTrack() {}
+ ~LayoutTrack()  override {}
  LayoutTrack(const LayoutTrack&) : QObject() {}
  enum CONNECTIONTYPES
  {
@@ -56,11 +56,11 @@ public:
  };
  /*public*/ QString getId();
  /*public*/ QString getName() ;
- /*public*/ QPointF getCoordsCenter();
- /*public*/ virtual void setCoordsCenter(/*@Nonnull*/ QPointF p);
- /*public*/ virtual bool hasDecorations();
+ /*public*/ QPointF getCoordsCenter() const;
+ /*public*/ virtual void setCoordsCenter(/*@Nonnull*/ QPointF p) ;
+ /*public*/ virtual bool hasDecorations() ;
  /*public*/ virtual QMap<QString, QString> *getDecorations();
- /*public*/ virtual void setDecorations(QMap<QString, QString>* decorations);
+ /*public*/ virtual void setDecorations(QMap<QString, QString>* decorations) ;
  /*public*/ static void setDefaultTrackColor(QColor color);
  /*public*/ bool isHidden();
  //@Deprecated // Java standard pattern for bool getters is "isHidden()"
@@ -127,7 +127,7 @@ protected:
  /*protected*/ static /*final*/ double controlPointSize;// = 3.0;   // LayoutEditor.SIZE;
  /*protected*/ static /*final*/ double controlPointSize2;// = 2.0 * controlPointSize; // LayoutEditor.SIZE2;
  /*protected*/ static QColor defaultTrackColor;// = Color.black;
- /*protected*/ /*abstract*/ virtual void reCheckBlockBoundary();
+ /*protected*/ /*abstract*/ virtual void reCheckBlockBoundary() const;
  /*protected*/ /*abstract*/ virtual QList<LayoutConnectivity*> getLayoutConnectivity();
  /*protected*/ /*abstract*/ virtual QMenu* showPopup(/*@Nullable */QGraphicsSceneMouseEvent* mouseEvent);
  /*protected*/ QMenu* showPopup(QPointF where);

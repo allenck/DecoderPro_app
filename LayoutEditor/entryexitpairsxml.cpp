@@ -256,7 +256,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
  return true;
 }
 
-/*public*/ int EntryExitPairsXml::loadOrder()
+/*public*/ int EntryExitPairsXml::loadOrder() const
 {
  return ((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->getXMLOrder();
 }

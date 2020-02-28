@@ -12,17 +12,17 @@ class LIBPR3SHARED_EXPORT DefaultLogixManager : public LogixManager
 public:
     explicit DefaultLogixManager(QObject *parent = 0);
     int getXMLOrder();
-    /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter() ;
-    /*public*/ Logix* createNewLogix(QString systemName, QString userName);
-    /*public*/ Logix* createNewLogix(QString userName);
-    /*public*/ void deleteLogix(Logix* x);
-    /*public*/ void activateAllLogixs();
-    /*public*/ Logix* getLogix(QString name);
-    /*public*/ NamedBean* getBySystemName(QString name);
-    /*public*/ NamedBean* getByUserName(QString key);
-    /*public*/ void setLoadDisabled(bool s);
-    /*public*/ bool getLoadDisabled();
+    /*public*/ QString getSystemPrefix()const  override;
+    /*public*/ char typeLetter()const   override;
+    /*public*/ Logix* createNewLogix(QString systemName, QString userName) override;
+    /*public*/ Logix* createNewLogix(QString userName) override;
+    /*public*/ void deleteLogix(Logix* x) override;
+    /*public*/ void activateAllLogixs() override;
+    /*public*/ Logix* getLogix(QString name) override;
+    /*public*/ NamedBean* getBySystemName(QString name)const override;
+    /*public*/ NamedBean* getByUserName(QString key)const override;
+    /*public*/ void setLoadDisabled(bool s) override;
+    /*public*/ bool getLoadDisabled()const override;
     static DefaultLogixManager* _instance;// = NULL;
     static /*public*/ DefaultLogixManager* instance();
 

@@ -65,7 +65,7 @@ public:
          * already exist and the manager cannot create the Memory
          * due to e.g. an illegal name or name that can't be parsed.
          */
-    virtual Memory* provideMemory(QString ) {return NULL;}
+    virtual Memory* provideMemory(QString ) const {return NULL;}
 
         /**
          * Locate via user name, then system name if needed.
@@ -74,21 +74,21 @@ public:
          * @param name
          * @return null if no match found
          */
-        virtual Memory* getMemory(QString /*name*/) {return NULL;}
+        virtual Memory* getMemory(QString /*name*/) const {return NULL;}
 
         /**
          * Locate an instance based on a system name.  Returns null if no
          * instance already exists.
          * @return requested Memory object or null if none exists
          */
-        virtual NamedBean* getBySystemName(QString /*systemName*/) {return NULL;}
+         NamedBean* getBySystemName(QString /*systemName*/) const override {return NULL;}
 
         /**
          * Locate an instance based on a user name.  Returns null if no
          * instance already exists.
          * @return requested Memory object or null if none exists
          */
-        virtual NamedBean* getByUserName(QString /*userName*/) {return NULL;}
+         NamedBean* getByUserName(QString /*userName*/) const override {return NULL;}
 
         /**
          * Return an instance with the specified system and user names.
@@ -115,7 +115,7 @@ public:
          * @throws IllegalArgumentException if cannot create the Memory
          * due to e.g. an illegal name or name that can't be parsed.
          */
-        virtual Memory* newMemory(QString /*systemName*/, QString /*userName*/) {return NULL;}
+        virtual Memory* newMemory(QString /*systemName*/, QString /*userName*/) const {return NULL;}
 
         /**
          * For use with User GUI, to allow the auto generation of systemNames,
@@ -137,13 +137,13 @@ public:
          * @throws IllegalArgumentException if cannot create the Memory
          * due to e.g. an illegal name or name that can't be parsed.
          */
-        virtual Memory* newMemory(QString /*userName*/) {return NULL;}
+        virtual Memory* newMemory(QString /*userName*/) const {return NULL;}
 
         /**
          * Get a list of all Memory objects' system names.
          */
  //virtual QStringList getSystemNameList();
- virtual /*public*/ Memory* provide(QString /*name*/) throw (IllegalArgumentException) {return nullptr;}
+ virtual /*public*/ Memory* provide(QString /*name*/) const throw (IllegalArgumentException) {return nullptr;}
 
 signals:
     

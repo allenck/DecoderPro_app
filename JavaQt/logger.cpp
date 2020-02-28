@@ -31,7 +31,7 @@ Logger::Logger(const Logger & other) : QObject()
  LoggerBase::error(s, ex);
 }
 
-bool Logger::isDebugEnabled()
+bool Logger::isDebugEnabled() const
 { return bDebugEnabled;}
 
 bool Logger::isInfoEnabled()
@@ -40,7 +40,7 @@ bool Logger::isInfoEnabled()
 bool Logger::isTraceEnabled()
 { return bTraceEnabled;}
 
-void Logger::debug(QString s)
+void Logger::debug(QString s) const
 {
  LoggerBase::debug(name, s);
 }
@@ -49,7 +49,7 @@ void Logger::debug(QString s, Throwable throwable)
  LoggerBase::debug(name, s, throwable);
 }
 
-void Logger::warn(QString s)
+void Logger::warn(QString s) const
 {
  LoggerBase::warn(name, s);
 }

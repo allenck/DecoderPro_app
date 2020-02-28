@@ -15,14 +15,14 @@ public:
  Logger(const Logger&);
  static void error(QString s, QVariant ex = QVariant());
  static void error(QString s, Throwable ex);
- void warn(QString s);
+ void warn(QString s) const;
  void warn(QString s, Throwable ex);
  void info(QString s);
  void trace(QString s);
- bool isDebugEnabled();
+ bool isDebugEnabled() const;
  bool isInfoEnabled();
  bool isTraceEnabled();
- void debug(QString s);
+ void debug(QString s) const;
  void debug(QString s, Throwable throwable);
  void setDebugEnabled(bool bState);
  void setInfoEnabled(bool bState);

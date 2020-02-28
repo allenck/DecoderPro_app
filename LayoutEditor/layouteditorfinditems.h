@@ -43,7 +43,7 @@ public:
  /*public*/ PositionablePoint* findPositionablePointByEastBoundSensor(QString sensorName);
  /*public*/ PositionablePoint* findPositionablePointByWestBoundSensor(QString sensorName);
  /*public*/ LayoutTurnout* findLayoutTurnoutByName(QString name);
- /*public*/ LayoutTurnout* findLayoutTurnoutByTurnoutName(QString name);
+ /*public*/ LayoutTurnout* findLayoutTurnoutByTurnoutName(QString turnoutName);
  /*public*/ LevelXing* findLevelXingByName(QString name) ;
  /*public*/ LayoutSlip* findLayoutSlipByName(QString name);
  QT_DEPRECATED /*public*/ LayoutTrack* findObjectByTypeAndName(int type, QString name);

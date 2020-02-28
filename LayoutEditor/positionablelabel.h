@@ -44,39 +44,39 @@ public:
 /*public*/ /*final*/ bool isIcon();
 /*public*/ /*final*/ bool isText();
 /*public*/ /*final*/ bool isControl();
-/*public*/ Editor* getEditor();
-/*public*/ void setEditor(Editor* ed);
+/*public*/ Editor* getEditor() override;
+/*public*/ void setEditor(Editor* ed) override;
 /***************** Positionable methods **********************/
 
-/*public*/ void setPositionable(bool enabled);
-/*public*/ /*final*/ virtual bool isPositionable();
-/*public*/ void setEditable(bool enabled) ;
-/*public*/ bool isEditable();
+/*public*/ void setPositionable(bool enabled) override;
+/*public*/ /*final*/ virtual bool isPositionable() override;
+/*public*/ void setEditable(bool enabled)  override;
+/*public*/ bool isEditable() override;
 
-/*public*/ void setViewCoordinates(bool enabled);
-/*public*/ bool getViewCoordinates();
+/*public*/ void setViewCoordinates(bool enabled) override;
+/*public*/ bool getViewCoordinates() override;
 
-/*public*/ void setControlling(bool enabled);
-/*public*/ bool isControlling();
+/*public*/ void setControlling(bool enabled) override;
+/*public*/ bool isControlling() override;
 
-/*public*/ void setHidden(bool hide);
-/*public*/ bool isHidden();
-/*public*/ void showHidden();
+/*public*/ void setHidden(bool hide) override;
+/*public*/ bool isHidden() override;
+/*public*/ void showHidden() override;
 /**
 * Delayed setDisplayLevel for DnD
 */
-/*public*/ void setLevel(int l);
-/*public*/ void setDisplayLevel(int l);
-/*public*/ int getDisplayLevel();
-/*public*/ void setShowToolTip(bool set);
+/*public*/ void setLevel(int l) override;
+/*public*/ void setDisplayLevel(int l) override;
+/*public*/ int getDisplayLevel() override;
+/*public*/ void setShowToolTip(bool set) override;
 /*public*/ bool showTooltip();
-/*public*/ void setToolTip(QString tip);
+/*public*/ void setToolTip(QString tip) override;
 ///*public*/ ToolTip getTooltip();
 //QString getTooltip();
-/*public*/ QString getNameString();
-/*public*/ Positionable* deepClone();
-/*public*/ Positionable* finishClone(Positionable* p);
-/*public*/ QWidget *getTextComponent();
+/*public*/ QString getNameString() override;
+/*public*/ Positionable* deepClone() override;
+/*public*/ Positionable* finishClone(Positionable* p) override;
+/*public*/ QWidget *getTextComponent() override;
 /**
  * When text is rotated or in an icon mode, the return of getText() may be
  * null or some other value
@@ -84,9 +84,9 @@ public:
  */
 /*public*/ QString getUnRotatedText();
 //    /*public*/ Positionable* finishClone(Positionable* p);
-/*public*/ void updateSize() ;
-/*public*/ int maxWidth();
-/*public*/ int maxHeight();
+/*public*/ void updateSize()  override;
+/*public*/ int maxWidth() override;
+/*public*/ int maxHeight() override;
 /*public*/ int maxWidthTrue();
 /*public*/ int maxHeightTrue();
 /*public*/ bool isBackground();
@@ -95,23 +95,23 @@ public:
  virtual QFont getFont();
  void setFont(const QFont & font);
  /*public*/ QSize getSize() ;
- /*public*/ int getWidth() ;
- int getHeight();
+ /*public*/ int getWidth()  override;
+ int getHeight() override;
  void setIcon(NamedIcon* s);
- virtual bool updateScene();
+ virtual bool updateScene() override;
  NamedIcon* getIcon();
 
- void setForeground(QColor c);
+ void setForeground(QColor c) override;
  QSize getPreferredSize();
  void setSize(int x, int y);
- /*public*/ bool storeItem();
- /*public*/ bool doViemMenu();
- /*public*/ void setPopupUtility(PositionablePopupUtil* tu);
- /*public*/ virtual NamedBean* getNamedBean();
- /*public*/ PositionablePopupUtil* getPopupUtility();
- /*public*/ void rotate(int deg);
+ /*public*/ bool storeItem() override;
+ /*public*/ bool doViemMenu() override;
+ /*public*/ void setPopupUtility(PositionablePopupUtil* tu) override;
+ /*public*/ virtual NamedBean* getNamedBean() override;
+ /*public*/ PositionablePopupUtil* getPopupUtility() override;
+ /*public*/ void rotate(int deg) override;
  /*public*/ void setDegrees(int deg) ;
- /*public*/ virtual int getDegrees() ;
+ /*public*/ virtual int getDegrees()  override;
  /**
   * Clean up when this object is no longer needed.  Should not
   * be called while the object is still displayed; see remove()
@@ -120,49 +120,49 @@ public:
  /**
   * Removes this object from display and persistance
   */
- /*public*/ void remove();
+ /*public*/ void remove() override;
  /*protected*/ void setSuperText(QString text);
  //@Override
  /*public*/ void setText(QString text);
  /*public*/ bool isActive();
- bool isVisible();
- void setVisible(bool b);
- /*public*/ virtual void setOpaque(bool isOpaque);
- /*public*/ virtual void setScale(double s) ;
- /*public*/ double getScale();
+ bool isVisible() override;
+ void setVisible(bool b) override;
+ /*public*/ virtual void setOpaque(bool isOpaque) override;
+ /*public*/ virtual void setScale(double s)  override;
+ /*public*/ double getScale() override;
  /*public*/ void saveOpaque(bool set);
- /*public*/ bool getSaveOpaque();
- /*public*/ bool isOpaque();
+ /*public*/ bool getSaveOpaque() override;
+ /*public*/ bool isOpaque() override;
  /**
  *  Call to a Positionable that has unique requirements
  * - e.g. RpsPositionIcon, SecurityElementIcon
  */
- /*public*/ virtual bool showPopUp(QMenu* popup) ;
+ /*public*/ virtual bool showPopUp(QMenu* popup)  override;
  /**
  * Rotate othogonally
  * return true if popup is set
  */
- /*public*/ virtual bool setRotateOrthogonalMenu(QMenu* popup);
- /*public*/ virtual bool setEditItemMenu(QMenu* popup);
- /*public*/ virtual bool setEditIconMenu(QMenu* popup);
- /*public*/ QColor getForeground();
+ /*public*/ virtual bool setRotateOrthogonalMenu(QMenu* popup) override;
+ /*public*/ virtual bool setEditItemMenu(QMenu* popup) override;
+ /*public*/ virtual bool setEditIconMenu(QMenu* popup) override;
+ /*public*/ QColor getForeground() override;
  /*public*/ void setBackgroundColor(QColor color);
- /*public*/ QColor getBackground();
+ /*public*/ QColor getBackground() override;
 
- /*public*/ virtual void doMousePressed(QGraphicsSceneMouseEvent* event);
- /*public*/ virtual void doMouseReleased(QGraphicsSceneMouseEvent* event);
- /*public*/ virtual void doMouseClicked(QGraphicsSceneMouseEvent* event);
- /*public*/ virtual void doMouseDragged(QGraphicsSceneMouseEvent* event);
- /*public*/ virtual void doMouseMoved(QGraphicsSceneMouseEvent* event);
- /*public*/ virtual void doMouseEntered(QGraphicsSceneMouseEvent* event);
- /*public*/ virtual void doMouseExited(QGraphicsSceneMouseEvent* event);
- /*public*/ virtual bool setRotateMenu(QMenu* popup);
- /*public*/ virtual bool setScaleMenu(QMenu* popup);
- /*public*/ virtual bool setTextEditMenu(QMenu* popup);
- /*public*/ QString getToolTip();
- /*public*/ virtual bool setDisableControlMenu(QMenu* popup);
- /*public*/ QRectF getBounds(QRectF = QRectF());
- /*public*/ virtual void setBackground(QColor bg);
+ /*public*/ virtual void doMousePressed(QGraphicsSceneMouseEvent* event) override;
+ /*public*/ virtual void doMouseReleased(QGraphicsSceneMouseEvent* event) override;
+ /*public*/ virtual void doMouseClicked(QGraphicsSceneMouseEvent* event) override;
+ /*public*/ virtual void doMouseDragged(QGraphicsSceneMouseEvent* event) override;
+ /*public*/ virtual void doMouseMoved(QGraphicsSceneMouseEvent* event) override;
+ /*public*/ virtual void doMouseEntered(QGraphicsSceneMouseEvent* event) override;
+ /*public*/ virtual void doMouseExited(QGraphicsSceneMouseEvent* event) override;
+ /*public*/ virtual bool setRotateMenu(QMenu* popup) override;
+ /*public*/ virtual bool setScaleMenu(QMenu* popup) override;
+ /*public*/ virtual bool setTextEditMenu(QMenu* popup) override;
+ /*public*/ QString getToolTip() override;
+ /*public*/ virtual bool setDisableControlMenu(QMenu* popup) override;
+ /*public*/ QRectF getBounds(QRectF = QRectF()) override;
+ /*public*/ virtual void setBackground(QColor bg) override;
  MyGraphicsProxyWidget* widget;
  /* public*/ void setStyleSheet();
  /*public*/ void finishItemUpdate(DisplayFrame* paletteFrame, ItemPanel* itemPanel);
@@ -290,7 +290,7 @@ class IEFWindowListener : public WindowListener
  PositionableLabel* l;
 public:
  IEFWindowListener(PositionableLabel* l);
- void windowClosing(QCloseEvent *e);
+ void windowClosing(QCloseEvent *e) override;
 };
 
 #endif // POSITIONALLABEL_H

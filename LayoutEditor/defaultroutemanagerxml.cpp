@@ -560,7 +560,7 @@ return routes;
  static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)pManager, Manager::ROUTES);
 }
 
-/*public*/ int DefaultRouteManagerXml::loadOrder() {
+/*public*/ int DefaultRouteManagerXml::loadOrder() const {
     return InstanceManager::routeManagerInstance()->getXMLOrder();
 }
 

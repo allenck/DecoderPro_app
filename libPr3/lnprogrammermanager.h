@@ -18,12 +18,12 @@ public:
      * LocoNet command station does provide Ops Mode
      * @return true
      */
-    /*public*/ virtual bool isAddressedModePossible();
-    /*public*/ virtual AddressedProgrammer* getAddressedProgrammer(bool pLongAddress, int pAddress);
-    /*public*/ virtual AddressedProgrammer* reserveAddressedProgrammer(bool pLongAddress, int pAddress);
-    /*public*/ QList<ProgrammingMode*> getDefaultModes();
-    /*public*/ QString toString();
-    /*public*/ QObject* self() override{return (QObject*)this;}
+    /*public*/ bool isAddressedModePossible() override;
+    /*public*/ AddressedProgrammer* getAddressedProgrammer(bool pLongAddress, int pAddress) override;
+    /*public*/ AddressedProgrammer* reserveAddressedProgrammer(bool pLongAddress, int pAddress) override;
+    /*public*/ QList<ProgrammingMode*> getDefaultModes() override;
+    /*public*/ QString toString() override;
+    /*public*/ QObject* self() override {return (QObject*)this;}
 
 
 private:

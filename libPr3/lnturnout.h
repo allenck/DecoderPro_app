@@ -34,8 +34,8 @@ public:
  //						Object newValue)
  // _once_ if anything has changed state (or set the commanded state directly)
  //    /*public*/ void message(LocoNetMessage* l);
- /*public*/ virtual void dispose();
- /*public*/ bool canInvert();
+ /*public*/ virtual void dispose() override;
+ /*public*/ bool canInvert()const override;
  /*public*/ void messageFromManager(LocoNetMessage* l);
  static const int METERINTERVAL;// = 100;  // msec wait before closed
  /*public*/ void setUseOffSwReqAsConfirmation(bool state);
@@ -87,9 +87,9 @@ private:
 
 protected:
  // Handle a request to change state by sending a LocoNet command
- /*protected*/ virtual void forwardCommandChangeToLayout(/*final*/ int newstate);
+ /*protected*/ void forwardCommandChangeToLayout(/*final*/ int newstate) override;
 
- /*protected*/ virtual void turnoutPushbuttonLockout(bool _pushButtonLockout);
+ /*protected*/ void turnoutPushbuttonLockout(bool _pushButtonLockout) override;
  friend class LnTurnoutTimerTask;
  friend class LnTurnoutTest;
 };

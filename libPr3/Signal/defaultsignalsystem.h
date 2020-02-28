@@ -8,19 +8,19 @@ class LIBPR3SHARED_EXPORT DefaultSignalSystem : public SignalSystem
 public:
     //explicit DefaultSignalSystem(QObject *parent = 0);
     /*public*/ DefaultSignalSystem(QString systemName, QString userName="", QObject *parent = 0);
-    /*public*/ void setProperty(QString aspect, QString key, QVariant value);
-    /*public*/ QVariant getProperty(QString aspect, QString key);
-    /*public*/ void setImageType(QString type);
-    /*public*/ QStringList getImageTypeList();
-    /*public*/ QString getAspect(QVariant obj, QString key);
+    /*public*/ void setProperty(QString aspect, QString key, QVariant value) override;
+    /*public*/ QVariant getProperty(QString aspect, QString key) override;
+    /*public*/ void setImageType(QString type) override;
+    /*public*/ QStringList getImageTypeList() override;
+    /*public*/ QString getAspect(QVariant obj, QString key) override;
     /*protected*/ QHash<QString, QVariant>* getTable(QString aspect);
-    /*public*/ QStringList getAspects();
-    /*public*/ QStringList getKeys();
-    /*public*/ bool checkAspect(QString aspect) ;
+    /*public*/ QStringList getAspects() override;
+    /*public*/ QStringList getKeys() override;
+    /*public*/ bool checkAspect(QString aspect) override ;
     /*public*/ void loadDefaults() ;
-    /*public*/ int getState() ;
-    /*public*/ void setState(int s) ;
-    /*public*/ float getMaximumLineSpeed();
+    /*public*/ int getState()  override;
+    /*public*/ void setState(int s) override ;
+    /*public*/ float getMaximumLineSpeed() override;
     /*public*/ QString toString();
 signals:
 

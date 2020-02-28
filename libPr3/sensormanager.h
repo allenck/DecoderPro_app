@@ -92,8 +92,8 @@ public:
          */
         virtual Sensor* newSensor(QString /*systemName*/, QString /*userName*/) { return NULL;}
 
-        virtual Sensor* getByUserName(QString /*s*/)  { return NULL;}
-        virtual Sensor* getBySystemName(QString /*s*/)  { return NULL;}
+        virtual NamedBean* getByUserName(QString /*s*/)  const { return NULL;}
+        virtual NamedBean* getBySystemName(QString /*s*/) const { return NULL;}
 
 //    virtual  QStringList getSystemNameList() const { return QStringList();}
 

@@ -118,27 +118,28 @@ public:
     /*public*/ void setDispatcherIntegration(bool boo);
     /*public*/ bool getDispatcherIntegration();
     /*public*/ QWidget* getGlassPane();
-    /*public*/ void addNXSourcePoint(LayoutBlock* facing, LayoutBlock* protecting, NamedBean* loc, LayoutEditor* panel);
+    /*public*/ void addNXSourcePoint(LayoutBlock* facing, QList<LayoutBlock *> protecting, NamedBean* loc, LayoutEditor* panel);
     /*public*/ void addNXSourcePoint(NamedBean* source);
     /*public*/ void addNXSourcePoint(NamedBean* source, LayoutEditor* panel);
     /*public*/ QObject* getEndPointLocation(NamedBean* source, LayoutEditor* panel);
     /*public*/ int getXMLOrder();
-    /*public*/ NamedBean* getBySystemName(QString systemName);
-    /*public*/ NamedBean* getBeanBySystemName(QString systemName);
-    /*public*/ NamedBean* getBeanByUserName(QString userName);
-    /*public*/ NamedBean* getNamedBean(QString name);
-    /*public*/ char systemLetter();
-    /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter() ;
-    /*public*/ QString makeSystemName(QString s);
-    /*public*/ int getObjectCount();
-    /*public*/ QStringList getSystemNameArray();
-    /*public*/ QStringList getSystemNameList();
-    /*public*/ void Register(NamedBean* n);
-    /*public*/ void deregister(NamedBean* n);
+    /*public*/ NamedBean* getBySystemName(QString systemName) const override;
+    /*public*/ NamedBean* getByUserName(QString systemName) const override;
+    /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
+    /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
+    /*public*/ NamedBean* getNamedBean(QString name) const override;
+    /*public*/ char systemLetter() const;
+    /*public*/ QString getSystemPrefix()const override;
+    /*public*/ char typeLetter() const override;
+    /*public*/ QString makeSystemName(QString s)const override;
+    /*public*/ int getObjectCount() override;
+    /*public*/ QStringList getSystemNameArray() override;
+    /*public*/ QStringList getSystemNameList() override;
+    /*public*/ void Register(NamedBean* n)const override;
+    /*public*/ void deregister(NamedBean* n)const override;
     /*public*/ void setClearDownOption(int i);
     /*public*/ int getClearDownOption();
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
     /*public*/ QObjectList* getSourceList(LayoutEditor* panel);
     /*public*/ Source* getSourceForPoint(PointDetails* pd);
     /*public*/ void setSingleSegmentRoute(QString nxPair);
@@ -173,13 +174,13 @@ public:
     /*public*/ static void stopFlashSensor(PointDetails* pd);
     /*synchronized*/ /*public*/ void setNXButtonState(PointDetails* nxPoint, int state);
     /*public*/ PointDetails* getPointDetails(QObject* obj, LayoutEditor* panel);
-    PointDetails* getPointDetails(LayoutBlock* source, LayoutBlock* destination, LayoutEditor* panel);
+    PointDetails* getPointDetails(LayoutBlock* source, QList<LayoutBlock *> destination, LayoutEditor* panel);
     //No point in have multiple copies of what is the same thing.
     /*public*/ QString getPointAsString(NamedBean* obj, LayoutEditor* panel);
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* list, NamedBean* obj, LayoutEditor* panel);
 //    java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
-    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
-    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
+    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
     /*public*/ void automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) throw (JmriException);
     /*public*/ int getSettingTimer();
     /*public*/ void setSettingTimer(int i);
@@ -193,20 +194,20 @@ public:
     /*public*/ bool isRouteStacked(DestinationPoints* dp, bool reverse);
     /*synchronized*/ /*public*/ void cancelStackedRoute(DestinationPoints* dp, bool reverse);
     /*public*/ QList<QString> layoutBlockSensors(/*@Nonnull*/ LayoutBlock* layoutBlock);
-    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l);
+    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l) override;
     /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l);
     /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
-    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
-    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName);
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() override;
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
     /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
     /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners();
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName);
+    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
+    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
     /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
     /*public*/ void deleteBean(DestinationPoints* bean, QString property) throw (PropertyVetoException);
-    /*public*/ QString getBeanTypeHandled(bool plural);
-    /*public*/ void addDataListener(ManagerDataListener/*<DestinationPoints>*/* e);
-    /*public*/ void removeDataListener(ManagerDataListener/*DestinationPoints>*/* e);
+    /*public*/ QString getBeanTypeHandled(bool plural)const override;
+    /*public*/ void addDataListener(ManagerDataListener *e) ;
+    /*public*/ void removeDataListener(ManagerDataListener/*DestinationPoints>*/* e) ;
 
 signals:
     void propertyChange(PropertyChangeEvent*);
@@ -220,7 +221,7 @@ private:
     /*private*/ PointDetails* providePoint(NamedBean* source, LayoutEditor* panel);
     Logger* log;
     QObjectList destinationList;// = new ArrayList<Object>();
-    /*private*/ PointDetails* providePoint(LayoutBlock* source, LayoutBlock* protecting, LayoutEditor* panel);
+    /*private*/ PointDetails* providePoint(LayoutBlock* source, QList<LayoutBlock *> protecting, LayoutEditor* panel);
     bool runWhenStablised;// = false;
     LayoutEditor* toUseWhenStable;
     int interlockTypeToUseWhenStable;
@@ -256,7 +257,6 @@ private:
     /*final*/ QVector<ManagerDataListener*> listeners;// = new QVector<ManagerDataListener</*DestinationPoints*/NamedBean*>*>();
     static QList<PointDetails*>* pointDetails;// = new ArrayList<PointDetails>();
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
-    NamedBean* getByUserName(QString userName);
 
 private slots:
     /*synchronized*/ void checkRoute();
@@ -265,6 +265,7 @@ protected:
 
  friend class DeletePair;
  friend class PickListModel;
+ friend class EntryExitTestTools;
 };
 Q_DECLARE_METATYPE(EntryExitPairs)
 

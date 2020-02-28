@@ -11,11 +11,11 @@ public:
     //explicit SignalHeadIconXml(QObject *parent = 0);
     static /*final*/ QMap<QString,QString> _nameMap;// = new QMap<QString,QString>();
     Q_INVOKABLE /*public*/ SignalHeadIconXml(QObject *parent = 0);
-    ~SignalHeadIconXml() {}
+    ~SignalHeadIconXml() override{}
     SignalHeadIconXml(const SignalHeadIconXml&) : PositionableLabelXml() {}
-    /*public*/ QDomElement store(QObject* o);
-    /*public*/ bool load(QDomElement element) throw (Exception);
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+    /*public*/ QDomElement store(QObject* o) override;
+    /*public*/ bool load(QDomElement element) throw (Exception) override;
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
     SignalHeadIcon* getIcon();
 signals:
 

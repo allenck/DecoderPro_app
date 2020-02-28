@@ -90,11 +90,13 @@ QComboBox* TurnoutState::getComboB()
  init();
  //instance = this;
  layoutEditor = myPanel;
- //ident = id;
- //center = c;
- dispC =  QPointF(-20.0,0.0);
- dispB =  QPointF(-14.0,14.0);
- setTurnoutType(type);
+
+ dispA = QPointF(-20.0, 0.0);
+ pointA = MathUtil::add(center, dispA);
+ pointC = MathUtil::subtract(center, dispA);
+ dispB = QPointF(-14.0, 14.0);
+ pointB = MathUtil::add(center, dispB);
+ pointD = MathUtil::subtract(center, dispB); setTurnoutType(type);
  rotateCoords(rot);
 }
 void LayoutSlip::init()
@@ -364,25 +366,18 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 
 /*public*/ QPointF LayoutSlip::getCoordsCenter() {return center;}
 /*public*/ QPointF LayoutSlip::getCoordsA() {
-    double x = center.x() + dispC.x();
-    double y = center.y() + dispC.y();
-    return  QPointF(x,y);
+    return pointA;
 }
 /*public*/ QPointF LayoutSlip::getCoordsB() {
-    double x = center.x() + dispB.x();
-    double y = center.y() + dispB.y();
-    return  QPointF(x,y);
+  return pointB;
 }
 /*public*/ QPointF LayoutSlip::getCoordsC() {
-    double x = center.x() - dispC.x();
-    double y = center.y() - dispC.y();
-    return  QPointF(x,y);
+  return pointC;
 }
 /*public*/ QPointF LayoutSlip::getCoordsD() {
-    double x = center.x() - dispB.x();
-    double y = center.y() - dispB.y();
-    return  QPointF(x,y);
+  return pointD;
 }
+
 /*protected*/ QPointF LayoutSlip::getCoordsLeft() {
     QPointF leftCenter = MathUtil::midPoint(getCoordsA(), getCoordsB());
     double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
@@ -727,25 +722,26 @@ void LayoutSlip::removeSML(QString signalMast){
     center = p;
 }
 /*public*/ void LayoutSlip::setCoordsA(QPointF p) {
-    double x = center.x() - p.x();
-    double y = center.y() - p.y();
-    dispC =  QPoint(-x,-y);
+ pointA = p;
+ dispA = MathUtil::subtract(pointA, center);
+ pointC = MathUtil::subtract(center, dispA);
 }
 /*public*/ void LayoutSlip::setCoordsB(QPointF p) {
-    double x = center.x() - p.x();
-    double y = center.y() - p.y();
-    dispB =  QPointF(-x,-y);
+ pointB = p;
+ dispB = MathUtil::subtract(pointB, center);
+ pointD = MathUtil::subtract(center, dispB);
 }
 /*public*/ void LayoutSlip::setCoordsC(QPointF p) {
-    double x = center.x() - p.x();
-    double y = center.y() - p.y();
-    dispC =  QPointF(x,y);
+ pointD = p;
+ dispB = MathUtil::subtract(center, pointD);
+ pointB = MathUtil::add(center, dispB);
 }
 /*public*/ void LayoutSlip::setCoordsD(QPointF p) {
     double x = center.x() - p.x();
     double y = center.y() - p.y();
     dispB =  QPointF(x,y);
 }
+#if 0
 /*public*/ void LayoutSlip::scaleCoords(float xFactor, float yFactor) {
     QPointF pt =  QPointF(round(center.x()*xFactor),
                                     round(center.y()*yFactor));
@@ -757,6 +753,7 @@ void LayoutSlip::removeSML(QString signalMast){
                                     round(dispB.y()*yFactor));
     dispB = pt;
 }
+#endif
 double LayoutSlip::round (double x) {
     int i = (int)(x+0.5);
     return i;
@@ -773,14 +770,14 @@ double LayoutSlip::round (double x) {
     connectB = p->findTrackSegmentByName(connectBName);
     connectC = p->findTrackSegmentByName(connectCName);
     connectD = p->findTrackSegmentByName(connectDName);
-    if (tBlockName.length()>0) {
-        block = p->getLayoutBlock(tBlockName);
+    if (tBlockAName.length()>0) {
+        block = p->getLayoutBlock(tBlockAName);
         if (block!=nullptr) {
-            blockName = tBlockName;
+            blockName = tBlockAName;
             block->incrementUse();
         }
         else {
-            log.error("bad blocknameac '"+tBlockName+"' in slip "+ident);
+            log.error("bad blocknameac '"+tBlockAName+"' in slip "+ident);
         }
     }
 }

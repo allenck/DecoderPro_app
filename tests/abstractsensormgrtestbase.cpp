@@ -163,7 +163,7 @@ AbstractSensorMgrTestBase::AbstractSensorMgrTestBase(QObject *parent) : Abstract
         Sensor* t1 = l->newSensor(getSystemName(getNumToTest1()), "before");
         Assert::assertNotNull("t1 real object ", t1, __FILE__, __LINE__);
         t1->setUserName("after");
-        Sensor* t2 = l->getByUserName("after");
+        Sensor* t2 = (Sensor*)l->getByUserName("after");
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
         Assert::assertNull("no old object", l->getByUserName("before"), __FILE__, __LINE__);
     }

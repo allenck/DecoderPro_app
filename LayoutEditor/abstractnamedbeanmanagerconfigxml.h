@@ -10,7 +10,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT AbstractNamedBeanManagerConfigXML : public Ab
     Q_OBJECT
 public:
     explicit AbstractNamedBeanManagerConfigXML(QObject *parent = 0);
-    ~AbstractNamedBeanManagerConfigXML();
+    ~AbstractNamedBeanManagerConfigXML() override;
  void checkNameNormalization(/*@Nonnull*/ QString rawSystemName, QString rawUserName, /*@Nonnull*/ Manager* manager);
 
 signals:

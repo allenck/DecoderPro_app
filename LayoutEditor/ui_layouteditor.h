@@ -26,7 +26,7 @@
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include <jmribeancombobox.h>
+#include <namedbeancombobox.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -108,10 +108,10 @@ public:
     QLabel *yLabel;
     QHBoxLayout *horizontalLayout;
     QLabel *turnoutNameLabel;
-    JmriBeanComboBox *turnoutNameComboBox;
+    NamedBeanComboBox *turnoutNameComboBox;
     QHBoxLayout *horizontalLayout_13;
     QLabel *extraTurnoutLabel;
-    JmriBeanComboBox *extraTurnoutNameComboBox;
+    NamedBeanComboBox *extraTurnoutNameComboBox;
     QHBoxLayout *horizontalLayout_15;
     QHBoxLayout *horizontalLayout_14;
     QLabel *label_4;
@@ -130,11 +130,11 @@ public:
     QHBoxLayout *horizontalLayout_11;
     QHBoxLayout *horizontalLayout_2;
     QLabel *blockNameLabel;
-    JmriBeanComboBox *blockIDComboBox;
+    NamedBeanComboBox *blockIDComboBox;
     QCheckBox *highlightBlockCheckBox;
     QHBoxLayout *horizontalLayout_5;
     QLabel *blockSensorNameLabel;
-    JmriBeanComboBox *blockSensorComboBox;
+    NamedBeanComboBox *blockSensorComboBox;
     QHBoxLayout *trackGroup2;
     QLabel *label_8;
     QCheckBox *trackButton;
@@ -154,22 +154,22 @@ public:
     QLineEdit *textLabel;
     QHBoxLayout *horizontalLayout_7;
     QCheckBox *memoryButton;
-    JmriBeanComboBox *textMemoryComboBox;
+    NamedBeanComboBox *textMemoryComboBox;
     QCheckBox *blockContentsButton;
-    JmriBeanComboBox *blockContentsComboBox;
+    NamedBeanComboBox *blockContentsComboBox;
     QHBoxLayout *horizontalLayout_10;
     QHBoxLayout *horizontalLayout_4;
     QCheckBox *multiSensorButton;
     QPushButton *changeIconsButton;
     QHBoxLayout *horizontalLayout_6;
     QCheckBox *sensorButton;
-    JmriBeanComboBox *sensorComboBox;
+    NamedBeanComboBox *sensorComboBox;
     QHBoxLayout *horizontalLayout_8;
     QCheckBox *signalButton;
-    JmriBeanComboBox *signalHeadComboBox;
+    NamedBeanComboBox *signalHeadComboBox;
     QHBoxLayout *horizontalLayout_9;
     QCheckBox *signalMastButton;
-    JmriBeanComboBox *signalMastComboBox;
+    NamedBeanComboBox *signalMastComboBox;
     QCheckBox *iconLabelButton;
     QWidget *editPanel;
     QTextEdit *textEdit;
@@ -387,7 +387,7 @@ public:
 
         horizontalLayout->addWidget(turnoutNameLabel);
 
-        turnoutNameComboBox = new JmriBeanComboBox(centralWidget);
+        turnoutNameComboBox = new NamedBeanComboBox(centralWidget);
         turnoutNameComboBox->setObjectName(QLatin1String("turnoutNameComboBox"));
 
         horizontalLayout->addWidget(turnoutNameComboBox);
@@ -403,7 +403,7 @@ public:
 
         horizontalLayout_13->addWidget(extraTurnoutLabel);
 
-        extraTurnoutNameComboBox = new JmriBeanComboBox(centralWidget);
+        extraTurnoutNameComboBox = new NamedBeanComboBox(centralWidget);
         extraTurnoutNameComboBox->setObjectName(QLatin1String("extraTurnoutNameComboBox"));
 
         horizontalLayout_13->addWidget(extraTurnoutNameComboBox);
@@ -504,7 +504,7 @@ public:
 
         horizontalLayout_2->addWidget(blockNameLabel);
 
-        blockIDComboBox = new JmriBeanComboBox(centralWidget);
+        blockIDComboBox = new NamedBeanComboBox(centralWidget);
         blockIDComboBox->setObjectName(QLatin1String("blockIDComboBox"));
 
         horizontalLayout_2->addWidget(blockIDComboBox);
@@ -525,7 +525,7 @@ public:
 
         horizontalLayout_5->addWidget(blockSensorNameLabel);
 
-        blockSensorComboBox = new JmriBeanComboBox(centralWidget);
+        blockSensorComboBox = new NamedBeanComboBox(centralWidget);
         blockSensorComboBox->setObjectName(QLatin1String("blockSensorComboBox"));
 
         horizontalLayout_5->addWidget(blockSensorComboBox);
@@ -631,7 +631,7 @@ public:
 
         horizontalLayout_7->addWidget(memoryButton);
 
-        textMemoryComboBox = new JmriBeanComboBox(centralWidget);
+        textMemoryComboBox = new NamedBeanComboBox(centralWidget);
         textMemoryComboBox->setObjectName(QLatin1String("textMemoryComboBox"));
 
         horizontalLayout_7->addWidget(textMemoryComboBox);
@@ -644,7 +644,7 @@ public:
 
         horizontalLayout_3->addWidget(blockContentsButton);
 
-        blockContentsComboBox = new JmriBeanComboBox(centralWidget);
+        blockContentsComboBox = new NamedBeanComboBox(centralWidget);
         blockContentsComboBox->setObjectName(QLatin1String("blockContentsComboBox"));
 
         horizontalLayout_3->addWidget(blockContentsComboBox);
@@ -679,7 +679,7 @@ public:
 
         horizontalLayout_6->addWidget(sensorButton);
 
-        sensorComboBox = new JmriBeanComboBox(centralWidget);
+        sensorComboBox = new NamedBeanComboBox(centralWidget);
         sensorComboBox->setObjectName(QLatin1String("sensorComboBox"));
 
         horizontalLayout_6->addWidget(sensorComboBox);
@@ -695,7 +695,7 @@ public:
 
         horizontalLayout_8->addWidget(signalButton);
 
-        signalHeadComboBox = new JmriBeanComboBox(centralWidget);
+        signalHeadComboBox = new NamedBeanComboBox(centralWidget);
         signalHeadComboBox->setObjectName(QLatin1String("signalHeadComboBox"));
 
         horizontalLayout_8->addWidget(signalHeadComboBox);
@@ -711,7 +711,7 @@ public:
 
         horizontalLayout_9->addWidget(signalMastButton);
 
-        signalMastComboBox = new JmriBeanComboBox(centralWidget);
+        signalMastComboBox = new NamedBeanComboBox(centralWidget);
         signalMastComboBox->setObjectName(QLatin1String("signalMastComboBox"));
 
         horizontalLayout_9->addWidget(signalMastComboBox);

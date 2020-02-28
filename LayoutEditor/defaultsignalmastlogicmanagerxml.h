@@ -11,14 +11,14 @@ class LIBLAYOUTEDITORSHARED_EXPORT DefaultSignalMastLogicManagerXml : public Abs
 public:
     Q_INVOKABLE explicit DefaultSignalMastLogicManagerXml(QObject *parent = 0);
 
-    /*public*/ QDomElement store(QObject* o);
- ~DefaultSignalMastLogicManagerXml() {}
+    /*public*/ QDomElement store(QObject* o) override;
+ ~DefaultSignalMastLogicManagerXml()  override{}
  DefaultSignalMastLogicManagerXml(const DefaultSignalMastLogicManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement signalMastLogic) ;
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
-    /*public*/ bool load(QDomElement signalMastLogic) throw (Exception);
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
+    /*public*/ bool load(QDomElement signalMastLogic) throw (Exception) override;
     /*public*/ bool loadSignalMastLogic(QDomElement signalMastLogic);
-    /*public*/ int loadOrder();
+    /*public*/ int loadOrder() const override;
 
 signals:
 

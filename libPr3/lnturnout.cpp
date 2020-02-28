@@ -531,7 +531,7 @@ void LnTurnout::sendSetOffMessage(int state) {
  }
 
  //ln turnouts do support inversion
- /*public*/ bool LnTurnout::canInvert(){return true;}
+ /*public*/ bool LnTurnout::canInvert() const{return true;}
 
  //method which takes a turnout state as a parameter and adjusts it  as necessary
  //to reflect the turnout invert property

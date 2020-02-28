@@ -4,6 +4,7 @@
 #include <PythonQtSignalReceiver.h>
 #include <QVariant>
 #include <abstractlightmanager.h>
+#include <abstractnamedbean.h>
 #include <abstractturnoutmanager.h>
 #include <audio.h>
 #include <audiobuffer.h>
@@ -444,7 +445,7 @@ PythonQtShell_AbstractLightManager::~PythonQtShell_AbstractLightManager() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-void PythonQtShell_AbstractLightManager::Register(NamedBean*  s0)
+void PythonQtShell_AbstractLightManager::Register(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -719,7 +720,7 @@ if (_wrapper) {
 }
   AbstractLightManager::deleteBean(arg__1, arg__2);
 }
-void PythonQtShell_AbstractLightManager::deregister(NamedBean*  s0)
+void PythonQtShell_AbstractLightManager::deregister(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -829,7 +830,7 @@ if (_wrapper) {
 }
   return AbstractLightManager::eventFilter(watched0, event1);
 }
-NamedBean*  PythonQtShell_AbstractLightManager::getBeanBySystemName(QString  systemName0)
+NamedBean*  PythonQtShell_AbstractLightManager::getBeanBySystemName(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -862,7 +863,7 @@ if (_wrapper) {
 }
   return AbstractLightManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_AbstractLightManager::getBeanByUserName(QString  userName0)
+NamedBean*  PythonQtShell_AbstractLightManager::getBeanByUserName(QString  userName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -895,7 +896,7 @@ if (_wrapper) {
 }
   return AbstractLightManager::getBeanByUserName(userName0);
 }
-QString  PythonQtShell_AbstractLightManager::getBeanTypeHandled(bool  plural0)
+QString  PythonQtShell_AbstractLightManager::getBeanTypeHandled(bool  plural0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -928,7 +929,7 @@ if (_wrapper) {
 }
   return AbstractLightManager::getBeanTypeHandled(plural0);
 }
-Light*  PythonQtShell_AbstractLightManager::getBySystemName(QString  name0)
+NamedBean*  PythonQtShell_AbstractLightManager::getBySystemName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -936,10 +937,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getBySystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"Light*" , "QString"};
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      Light* returnValue{};
-      void* args[2] = {NULL, (void*)&name0};
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -947,7 +948,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
           } else {
-            returnValue = *((Light**)args[0]);
+            returnValue = *((NamedBean**)args[0]);
           }
         }
       }
@@ -959,9 +960,9 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractLightManager::getBySystemName(name0);
+  return AbstractLightManager::getBySystemName(arg__1);
 }
-Light*  PythonQtShell_AbstractLightManager::getByUserName(QString  key0)
+NamedBean*  PythonQtShell_AbstractLightManager::getByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -969,10 +970,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getByUserName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"Light*" , "QString"};
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      Light* returnValue{};
-      void* args[2] = {NULL, (void*)&key0};
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -980,7 +981,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
           } else {
-            returnValue = *((Light**)args[0]);
+            returnValue = *((NamedBean**)args[0]);
           }
         }
       }
@@ -992,7 +993,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractLightManager::getByUserName(key0);
+  return AbstractLightManager::getByUserName(arg__1);
 }
 QString  PythonQtShell_AbstractLightManager::getEntryToolTip()
 {
@@ -1093,7 +1094,7 @@ if (_wrapper) {
 }
   return AbstractLightManager::getMemo();
 }
-NamedBean*  PythonQtShell_AbstractLightManager::getNamedBean(QString  name0)
+NamedBean*  PythonQtShell_AbstractLightManager::getNamedBean(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1324,7 +1325,7 @@ if (_wrapper) {
 }
   return AbstractLightManager::getSystemNameList();
 }
-QString  PythonQtShell_AbstractLightManager::getSystemPrefix()
+QString  PythonQtShell_AbstractLightManager::getSystemPrefix() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1357,7 +1358,7 @@ if (_wrapper) {
 }
   return AbstractLightManager::getSystemPrefix();
 }
-int  PythonQtShell_AbstractLightManager::getXMLOrder()
+int  PythonQtShell_AbstractLightManager::getXMLOrder() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1390,7 +1391,7 @@ if (_wrapper) {
 }
   return AbstractLightManager::getXMLOrder();
 }
-QString  PythonQtShell_AbstractLightManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
+QString  PythonQtShell_AbstractLightManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1699,7 +1700,7 @@ if (_wrapper) {
 }
   AbstractLightManager::timerEvent(event0);
 }
-char  PythonQtShell_AbstractLightManager::typeLetter()
+char  PythonQtShell_AbstractLightManager::typeLetter() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1848,7 +1849,7 @@ PythonQtShell_AbstractManager::~PythonQtShell_AbstractManager() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-void PythonQtShell_AbstractManager::Register(NamedBean*  s0)
+void PythonQtShell_AbstractManager::Register(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2002,7 +2003,7 @@ if (_wrapper) {
 }
   AbstractManager::deleteBean(arg__1, arg__2);
 }
-void PythonQtShell_AbstractManager::deregister(NamedBean*  s0)
+void PythonQtShell_AbstractManager::deregister(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2112,7 +2113,7 @@ if (_wrapper) {
 }
   return AbstractManager::eventFilter(watched0, event1);
 }
-NamedBean*  PythonQtShell_AbstractManager::getBeanBySystemName(QString  systemName0)
+NamedBean*  PythonQtShell_AbstractManager::getBeanBySystemName(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2145,7 +2146,7 @@ if (_wrapper) {
 }
   return AbstractManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_AbstractManager::getBeanByUserName(QString  userName0)
+NamedBean*  PythonQtShell_AbstractManager::getBeanByUserName(QString  userName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2178,7 +2179,7 @@ if (_wrapper) {
 }
   return AbstractManager::getBeanByUserName(userName0);
 }
-QString  PythonQtShell_AbstractManager::getBeanTypeHandled(bool  plural0)
+QString  PythonQtShell_AbstractManager::getBeanTypeHandled(bool  plural0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2211,7 +2212,7 @@ if (_wrapper) {
 }
   return AbstractManager::getBeanTypeHandled(plural0);
 }
-NamedBean*  PythonQtShell_AbstractManager::getBySystemName(QString  systemName0)
+NamedBean*  PythonQtShell_AbstractManager::getBySystemName(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2244,7 +2245,7 @@ if (_wrapper) {
 }
   return AbstractManager::getBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_AbstractManager::getByUserName(QString  userName0)
+NamedBean*  PythonQtShell_AbstractManager::getByUserName(QString  userName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2343,7 +2344,7 @@ if (_wrapper) {
 }
   return AbstractManager::getMemo();
 }
-NamedBean*  PythonQtShell_AbstractManager::getNamedBean(QString  name0)
+NamedBean*  PythonQtShell_AbstractManager::getNamedBean(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2574,7 +2575,7 @@ if (_wrapper) {
 }
   return AbstractManager::getSystemNameList();
 }
-QString  PythonQtShell_AbstractManager::getSystemPrefix()
+QString  PythonQtShell_AbstractManager::getSystemPrefix() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2607,7 +2608,7 @@ if (_wrapper) {
 }
   return AbstractManager::getSystemPrefix();
 }
-int  PythonQtShell_AbstractManager::getXMLOrder()
+int  PythonQtShell_AbstractManager::getXMLOrder() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2640,7 +2641,7 @@ if (_wrapper) {
 }
   return AbstractManager::getXMLOrder();
 }
-QString  PythonQtShell_AbstractManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
+QString  PythonQtShell_AbstractManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2816,7 +2817,7 @@ if (_wrapper) {
 }
   AbstractManager::timerEvent(event0);
 }
-char  PythonQtShell_AbstractManager::typeLetter()
+char  PythonQtShell_AbstractManager::typeLetter() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2935,12 +2936,12 @@ void PythonQtWrapper_AbstractManager::fireDataListenersRemoved(AbstractManager* 
   ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_fireDataListenersRemoved(start, end, changedBean));
 }
 
-void PythonQtWrapper_AbstractManager::fireIndexedPropertyChange(AbstractManager* theWrappedObject, QString  p, int  pos, QVariant  old, QVariant  n)
+void PythonQtWrapper_AbstractManager::fireIndexedPropertyChange(AbstractManager* theWrappedObject, QString  p, int  pos, QVariant  old, QVariant  n) const
 {
   ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_fireIndexedPropertyChange(p, pos, old, n));
 }
 
-void PythonQtWrapper_AbstractManager::firePropertyChange(AbstractManager* theWrappedObject, QString  p, QVariant  old, QVariant  n)
+void PythonQtWrapper_AbstractManager::firePropertyChange(AbstractManager* theWrappedObject, QString  p, QVariant  old, QVariant  n) const
 {
   ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_firePropertyChange(p, old, n));
 }
@@ -2948,6 +2949,11 @@ void PythonQtWrapper_AbstractManager::firePropertyChange(AbstractManager* theWra
 void PythonQtWrapper_AbstractManager::fireVetoableChange(AbstractManager* theWrappedObject, QString  p, QVariant  old, QVariant  n)
 {
   ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_fireVetoableChange(p, old, n));
+}
+
+QString  PythonQtWrapper_AbstractManager::getAutoSystemName(AbstractManager* theWrappedObject)
+{
+  return ( theWrappedObject->getAutoSystemName());
 }
 
 QObject*  PythonQtWrapper_AbstractManager::getInstanceBySystemName(AbstractManager* theWrappedObject, QString  systemName)
@@ -2970,7 +2976,7 @@ QStringList  PythonQtWrapper_AbstractManager::getUserNameList(AbstractManager* t
   return ( theWrappedObject->getUserNameList());
 }
 
-void PythonQtWrapper_AbstractManager::handleUserNameUniqueness(AbstractManager* theWrappedObject, NamedBean*  s)
+void PythonQtWrapper_AbstractManager::handleUserNameUniqueness(AbstractManager* theWrappedObject, NamedBean*  s) const
 {
   ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_handleUserNameUniqueness(s));
 }
@@ -2980,7 +2986,7 @@ void PythonQtWrapper_AbstractManager::registerSelf(AbstractManager* theWrappedOb
   ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_registerSelf());
 }
 
-void PythonQtWrapper_AbstractManager::registerUserName(AbstractManager* theWrappedObject, NamedBean*  s)
+void PythonQtWrapper_AbstractManager::registerUserName(AbstractManager* theWrappedObject, NamedBean*  s) const
 {
   ( ((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->promoted_registerUserName(s));
 }
@@ -2988,6 +2994,11 @@ void PythonQtWrapper_AbstractManager::registerUserName(AbstractManager* theWrapp
 void PythonQtWrapper_AbstractManager::setDataListenerMute(AbstractManager* theWrappedObject, bool  m)
 {
   ( theWrappedObject->setDataListenerMute(m));
+}
+
+void PythonQtWrapper_AbstractManager::updateAutoNumber(AbstractManager* theWrappedObject, QString  systemName)
+{
+  ( theWrappedObject->updateAutoNumber(systemName));
 }
 
 
@@ -3777,7 +3788,7 @@ if (_wrapper) {
 }
   return AbstractNamedBean::getState();
 }
-QString  PythonQtShell_AbstractNamedBean::getSystemName()
+QString  PythonQtShell_AbstractNamedBean::getSystemName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3810,7 +3821,7 @@ if (_wrapper) {
 }
   return AbstractNamedBean::getSystemName();
 }
-QString  PythonQtShell_AbstractNamedBean::getUserName()
+QString  PythonQtShell_AbstractNamedBean::getUserName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3843,7 +3854,7 @@ if (_wrapper) {
 }
   return AbstractNamedBean::getUserName();
 }
-int  PythonQtShell_AbstractNamedBean::hashCode()
+uint  PythonQtShell_AbstractNamedBean::hashCode()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3851,9 +3862,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("hashCode");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"int"};
+      static const char* argumentList[] ={"uint"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      int returnValue{};
+      uint returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -3862,7 +3873,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
           } else {
-            returnValue = *((int*)args[0]);
+            returnValue = *((uint*)args[0]);
           }
         }
       }
@@ -4008,7 +4019,7 @@ if (_wrapper) {
 }
   AbstractNamedBean::setState(arg__1);
 }
-void PythonQtShell_AbstractNamedBean::setUserName(QString  s0) throw (NamedBean::BadUserNameException)
+void PythonQtShell_AbstractNamedBean::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -4074,7 +4085,7 @@ if (_wrapper) {
 }
   AbstractNamedBean::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_AbstractNamedBean::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException)
+void PythonQtShell_AbstractNamedBean::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -4121,7 +4132,7 @@ int PythonQtShell_AbstractNamedBean::qt_metacall(QMetaObject::Call call, int id,
   int result = AbstractNamedBean::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-void PythonQtWrapper_AbstractNamedBean::firePropertyChange(AbstractNamedBean* theWrappedObject, QString  p, QVariant  old, QVariant  n)
+void PythonQtWrapper_AbstractNamedBean::firePropertyChange(AbstractNamedBean* theWrappedObject, QString  p, QVariant  old, QVariant  n) const
 {
   ( ((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->promoted_firePropertyChange(p, old, n));
 }
@@ -4134,6 +4145,21 @@ QVector<PropertyChangeListener* >  PythonQtWrapper_AbstractNamedBean::getPropert
 QVector<PropertyChangeListener* >  PythonQtWrapper_AbstractNamedBean::getPropertyChangeListeners(AbstractNamedBean* theWrappedObject, QString  name)
 {
   return ( theWrappedObject->getPropertyChangeListeners(name));
+}
+
+bool  PythonQtWrapper_AbstractNamedBean::__lt__(AbstractNamedBean* theWrappedObject, const AbstractNamedBean&  e2)
+{
+  return ( (*theWrappedObject)< e2);
+}
+
+bool  PythonQtWrapper_AbstractNamedBean::__eq__(AbstractNamedBean* theWrappedObject, const AbstractNamedBean&  e2)
+{
+  return ( (*theWrappedObject)== e2);
+}
+
+uint  PythonQtWrapper_AbstractNamedBean::qHash(AbstractNamedBean* theWrappedObject, const AbstractNamedBean&  arg__1, uint  arg__2)
+{
+  return ( theWrappedObject->qHash(arg__1, arg__2));
 }
 
 
@@ -5984,7 +6010,7 @@ PythonQtShell_AbstractReporterManager::~PythonQtShell_AbstractReporterManager() 
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-void PythonQtShell_AbstractReporterManager::Register(NamedBean*  s0)
+void PythonQtShell_AbstractReporterManager::Register(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6171,7 +6197,7 @@ if (_wrapper) {
 }
   AbstractReporterManager::deleteBean(arg__1, arg__2);
 }
-void PythonQtShell_AbstractReporterManager::deregister(NamedBean*  s0)
+void PythonQtShell_AbstractReporterManager::deregister(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6281,7 +6307,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::eventFilter(watched0, event1);
 }
-NamedBean*  PythonQtShell_AbstractReporterManager::getBeanBySystemName(QString  systemName0)
+NamedBean*  PythonQtShell_AbstractReporterManager::getBeanBySystemName(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6314,7 +6340,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_AbstractReporterManager::getBeanByUserName(QString  userName0)
+NamedBean*  PythonQtShell_AbstractReporterManager::getBeanByUserName(QString  userName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6347,7 +6373,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getBeanByUserName(userName0);
 }
-QString  PythonQtShell_AbstractReporterManager::getBeanTypeHandled(bool  plural0)
+QString  PythonQtShell_AbstractReporterManager::getBeanTypeHandled(bool  plural0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6380,7 +6406,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getBeanTypeHandled(plural0);
 }
-NamedBean*  PythonQtShell_AbstractReporterManager::getBySystemName(QString  systemName0)
+NamedBean*  PythonQtShell_AbstractReporterManager::getBySystemName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6391,7 +6417,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&systemName0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -6411,9 +6437,9 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractReporterManager::getBySystemName(systemName0);
+  return AbstractReporterManager::getBySystemName(arg__1);
 }
-NamedBean*  PythonQtShell_AbstractReporterManager::getByUserName(QString  key0)
+NamedBean*  PythonQtShell_AbstractReporterManager::getByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6424,7 +6450,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&key0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -6444,7 +6470,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractReporterManager::getByUserName(key0);
+  return AbstractReporterManager::getByUserName(arg__1);
 }
 QString  PythonQtShell_AbstractReporterManager::getEntryToolTip()
 {
@@ -6512,7 +6538,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getMemo();
 }
-NamedBean*  PythonQtShell_AbstractReporterManager::getNamedBean(QString  name0)
+NamedBean*  PythonQtShell_AbstractReporterManager::getNamedBean(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6776,7 +6802,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getSystemNameList();
 }
-QString  PythonQtShell_AbstractReporterManager::getSystemPrefix()
+QString  PythonQtShell_AbstractReporterManager::getSystemPrefix() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6842,7 +6868,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getXMLOrder();
 }
-QString  PythonQtShell_AbstractReporterManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
+QString  PythonQtShell_AbstractReporterManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8141,7 +8167,7 @@ if (_wrapper) {
 }
   return AbstractSensor::getState();
 }
-QString  PythonQtShell_AbstractSensor::getSystemName()
+QString  PythonQtShell_AbstractSensor::getSystemName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8207,7 +8233,7 @@ if (_wrapper) {
 }
   return AbstractSensor::getUseDefaultTimerSettings();
 }
-QString  PythonQtShell_AbstractSensor::getUserName()
+QString  PythonQtShell_AbstractSensor::getUserName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8240,7 +8266,7 @@ if (_wrapper) {
 }
   return AbstractSensor::getUserName();
 }
-int  PythonQtShell_AbstractSensor::hashCode()
+uint  PythonQtShell_AbstractSensor::hashCode()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8248,9 +8274,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("hashCode");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"int"};
+      static const char* argumentList[] ={"uint"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      int returnValue{};
+      uint returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -8259,7 +8285,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
           } else {
-            returnValue = *((int*)args[0]);
+            returnValue = *((uint*)args[0]);
           }
         }
       }
@@ -8559,7 +8585,7 @@ if (_wrapper) {
 }
   AbstractSensor::setUseDefaultTimerSettings(boo0);
 }
-void PythonQtShell_AbstractSensor::setUserName(QString  s0) throw (NamedBean::BadUserNameException)
+void PythonQtShell_AbstractSensor::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8680,7 +8706,7 @@ if (_wrapper) {
 }
   AbstractSensor::useDefaultTimerSettings(boo0);
 }
-void PythonQtShell_AbstractSensor::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException)
+void PythonQtShell_AbstractSensor::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8748,7 +8774,7 @@ PythonQtShell_AbstractSensorManager::~PythonQtShell_AbstractSensorManager() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-void PythonQtShell_AbstractSensorManager::Register(NamedBean*  s0)
+void PythonQtShell_AbstractSensorManager::Register(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9001,7 +9027,7 @@ if (_wrapper) {
 }
   AbstractSensorManager::deleteBean(arg__1, arg__2);
 }
-void PythonQtShell_AbstractSensorManager::deregister(NamedBean*  s0)
+void PythonQtShell_AbstractSensorManager::deregister(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9111,7 +9137,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::eventFilter(watched0, event1);
 }
-NamedBean*  PythonQtShell_AbstractSensorManager::getBeanBySystemName(QString  systemName0)
+NamedBean*  PythonQtShell_AbstractSensorManager::getBeanBySystemName(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9144,7 +9170,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_AbstractSensorManager::getBeanByUserName(QString  userName0)
+NamedBean*  PythonQtShell_AbstractSensorManager::getBeanByUserName(QString  userName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9177,7 +9203,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::getBeanByUserName(userName0);
 }
-QString  PythonQtShell_AbstractSensorManager::getBeanTypeHandled(bool  plural0)
+QString  PythonQtShell_AbstractSensorManager::getBeanTypeHandled(bool  plural0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9210,7 +9236,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::getBeanTypeHandled(plural0);
 }
-Sensor*  PythonQtShell_AbstractSensorManager::getBySystemName(QString  key0)
+NamedBean*  PythonQtShell_AbstractSensorManager::getBySystemName(QString  key0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9218,9 +9244,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getBySystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"Sensor*" , "QString"};
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      Sensor* returnValue{};
+      NamedBean* returnValue{};
       void* args[2] = {NULL, (void*)&key0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -9229,7 +9255,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
           } else {
-            returnValue = *((Sensor**)args[0]);
+            returnValue = *((NamedBean**)args[0]);
           }
         }
       }
@@ -9243,7 +9269,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::getBySystemName(key0);
 }
-Sensor*  PythonQtShell_AbstractSensorManager::getByUserName(QString  key0)
+NamedBean*  PythonQtShell_AbstractSensorManager::getByUserName(QString  key0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9251,9 +9277,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getByUserName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"Sensor*" , "QString"};
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      Sensor* returnValue{};
+      NamedBean* returnValue{};
       void* args[2] = {NULL, (void*)&key0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -9262,7 +9288,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
           } else {
-            returnValue = *((Sensor**)args[0]);
+            returnValue = *((NamedBean**)args[0]);
           }
         }
       }
@@ -9408,7 +9434,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::getMemo();
 }
-NamedBean*  PythonQtShell_AbstractSensorManager::getNamedBean(QString  name0)
+NamedBean*  PythonQtShell_AbstractSensorManager::getNamedBean(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9606,7 +9632,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::getPropertyChangeListeners(propertyName0);
 }
-Sensor*  PythonQtShell_AbstractSensorManager::getSensor(QString  name0)
+Sensor*  PythonQtShell_AbstractSensorManager::getSensor(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9705,7 +9731,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::getSystemNameList();
 }
-QString  PythonQtShell_AbstractSensorManager::getSystemPrefix()
+QString  PythonQtShell_AbstractSensorManager::getSystemPrefix() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9804,7 +9830,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::isPullResistanceConfigurable();
 }
-QString  PythonQtShell_AbstractSensorManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
+QString  PythonQtShell_AbstractSensorManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9870,7 +9896,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::newSensor(sysName0, userName1);
 }
-QString  PythonQtShell_AbstractSensorManager::normalizeSystemName(QString  sysName0)
+QString  PythonQtShell_AbstractSensorManager::normalizeSystemName(QString  sysName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -10102,7 +10128,7 @@ if (_wrapper) {
 }
   AbstractSensorManager::timerEvent(event0);
 }
-char  PythonQtShell_AbstractSensorManager::typeLetter()
+char  PythonQtShell_AbstractSensorManager::typeLetter() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -12366,7 +12392,7 @@ if (_wrapper) {
 }
   AbstractTurnout::addPropertyChangeListener(propertyName0, listener1);
 }
-bool  PythonQtShell_AbstractTurnout::canInvert()
+bool  PythonQtShell_AbstractTurnout::canInvert() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -13785,7 +13811,7 @@ if (_wrapper) {
 }
   return AbstractTurnout::getStraightSpeed();
 }
-QString  PythonQtShell_AbstractTurnout::getSystemName()
+QString  PythonQtShell_AbstractTurnout::getSystemName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -13851,7 +13877,7 @@ if (_wrapper) {
 }
   return AbstractTurnout::getTurnoutOperation();
 }
-QString  PythonQtShell_AbstractTurnout::getUserName()
+QString  PythonQtShell_AbstractTurnout::getUserName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -13983,7 +14009,7 @@ if (_wrapper) {
 }
   return AbstractTurnout::getValidFeedbackTypes();
 }
-int  PythonQtShell_AbstractTurnout::hashCode()
+uint  PythonQtShell_AbstractTurnout::hashCode()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -13991,9 +14017,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("hashCode");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"int"};
+      static const char* argumentList[] ={"uint"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      int returnValue{};
+      uint returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -14002,7 +14028,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
           } else {
-            returnValue = *((int*)args[0]);
+            returnValue = *((uint*)args[0]);
           }
         }
       }
@@ -14049,7 +14075,7 @@ if (_wrapper) {
 }
   return AbstractTurnout::isConsistentState();
 }
-void PythonQtShell_AbstractTurnout::provideFirstFeedbackSensor(QString  pName0) throw(JmriException)
+void PythonQtShell_AbstractTurnout::provideFirstFeedbackSensor(QString  pName0) throw(JmriException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14071,7 +14097,7 @@ if (_wrapper) {
 }
   AbstractTurnout::provideFirstFeedbackSensor(pName0);
 }
-void PythonQtShell_AbstractTurnout::provideSecondFeedbackSensor(QString  pName0) throw(JmriException)
+void PythonQtShell_AbstractTurnout::provideSecondFeedbackSensor(QString  pName0) throw(JmriException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14291,7 +14317,7 @@ if (_wrapper) {
 }
   AbstractTurnout::setDecoderName(decoderName0);
 }
-void PythonQtShell_AbstractTurnout::setDivergingSpeed(QString  s0) throw(JmriException)
+void PythonQtShell_AbstractTurnout::setDivergingSpeed(QString  s0) const throw(JmriException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14313,7 +14339,7 @@ if (_wrapper) {
 }
   AbstractTurnout::setDivergingSpeed(s0);
 }
-void PythonQtShell_AbstractTurnout::setFeedbackMode(QString  mode0) throw(IllegalArgumentException)
+void PythonQtShell_AbstractTurnout::setFeedbackMode(QString  mode0) throw(IllegalArgumentException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14335,7 +14361,7 @@ if (_wrapper) {
 }
   AbstractTurnout::setFeedbackMode(mode0);
 }
-void PythonQtShell_AbstractTurnout::setFeedbackMode(int  mode0) throw(IllegalArgumentException)
+void PythonQtShell_AbstractTurnout::setFeedbackMode(int  mode0) throw(IllegalArgumentException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14533,7 +14559,7 @@ if (_wrapper) {
 }
   AbstractTurnout::setState(s0);
 }
-void PythonQtShell_AbstractTurnout::setStraightSpeed(QString  s0) throw(JmriException)
+void PythonQtShell_AbstractTurnout::setStraightSpeed(QString  s0) const throw(JmriException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14577,7 +14603,7 @@ if (_wrapper) {
 }
   AbstractTurnout::setTurnoutOperation(toper0);
 }
-void PythonQtShell_AbstractTurnout::setUserName(QString  s0) throw (NamedBean::BadUserNameException)
+void PythonQtShell_AbstractTurnout::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14665,7 +14691,7 @@ if (_wrapper) {
 }
   AbstractTurnout::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_AbstractTurnout::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException)
+void PythonQtShell_AbstractTurnout::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14768,7 +14794,7 @@ PythonQtShell_AbstractTurnoutManager::~PythonQtShell_AbstractTurnoutManager() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-void PythonQtShell_AbstractTurnoutManager::Register(NamedBean*  s0)
+void PythonQtShell_AbstractTurnoutManager::Register(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14977,7 +15003,7 @@ if (_wrapper) {
 }
   AbstractTurnoutManager::childEvent(event0);
 }
-Turnout*  PythonQtShell_AbstractTurnoutManager::createNewTurnout(QString  systemName0, QString  userName1)
+Turnout*  PythonQtShell_AbstractTurnoutManager::createNewTurnout(QString  systemName0, QString  userName1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15010,7 +15036,7 @@ if (_wrapper) {
 }
   return 0;
 }
-QString  PythonQtShell_AbstractTurnoutManager::createSystemName(QString  curAddress0, QString  prefix1)
+QString  PythonQtShell_AbstractTurnoutManager::createSystemName(QString  curAddress0, QString  prefix1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15087,7 +15113,7 @@ if (_wrapper) {
 }
   AbstractTurnoutManager::deleteBean(arg__1, arg__2);
 }
-void PythonQtShell_AbstractTurnoutManager::deregister(NamedBean*  s0)
+void PythonQtShell_AbstractTurnoutManager::deregister(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15197,7 +15223,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::eventFilter(watched0, event1);
 }
-NamedBean*  PythonQtShell_AbstractTurnoutManager::getBeanBySystemName(QString  systemName0)
+NamedBean*  PythonQtShell_AbstractTurnoutManager::getBeanBySystemName(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15230,7 +15256,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_AbstractTurnoutManager::getBeanByUserName(QString  userName0)
+NamedBean*  PythonQtShell_AbstractTurnoutManager::getBeanByUserName(QString  userName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15263,7 +15289,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getBeanByUserName(userName0);
 }
-QString  PythonQtShell_AbstractTurnoutManager::getBeanTypeHandled(bool  plural0)
+QString  PythonQtShell_AbstractTurnoutManager::getBeanTypeHandled(bool  plural0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15296,7 +15322,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getBeanTypeHandled(plural0);
 }
-Turnout*  PythonQtShell_AbstractTurnoutManager::getBySystemName(QString  name0)
+NamedBean*  PythonQtShell_AbstractTurnoutManager::getBySystemName(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15304,10 +15330,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getBySystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"Turnout*" , "QString"};
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      Turnout* returnValue{};
-      void* args[2] = {NULL, (void*)&name0};
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -15315,7 +15341,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
           } else {
-            returnValue = *((Turnout**)args[0]);
+            returnValue = *((NamedBean**)args[0]);
           }
         }
       }
@@ -15327,9 +15353,9 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractTurnoutManager::getBySystemName(name0);
+  return AbstractTurnoutManager::getBySystemName(systemName0);
 }
-Turnout*  PythonQtShell_AbstractTurnoutManager::getByUserName(QString  key0)
+NamedBean*  PythonQtShell_AbstractTurnoutManager::getByUserName(QString  userName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15337,10 +15363,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getByUserName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"Turnout*" , "QString"};
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      Turnout* returnValue{};
-      void* args[2] = {NULL, (void*)&key0};
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&userName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -15348,7 +15374,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
           } else {
-            returnValue = *((Turnout**)args[0]);
+            returnValue = *((NamedBean**)args[0]);
           }
         }
       }
@@ -15360,7 +15386,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractTurnoutManager::getByUserName(key0);
+  return AbstractTurnoutManager::getByUserName(userName0);
 }
 QString  PythonQtShell_AbstractTurnoutManager::getClosedText()
 {
@@ -15395,7 +15421,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getClosedText();
 }
-QString  PythonQtShell_AbstractTurnoutManager::getDefaultClosedSpeed()
+QString  PythonQtShell_AbstractTurnoutManager::getDefaultClosedSpeed() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15428,7 +15454,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getDefaultClosedSpeed();
 }
-QString  PythonQtShell_AbstractTurnoutManager::getDefaultThrownSpeed()
+QString  PythonQtShell_AbstractTurnoutManager::getDefaultThrownSpeed() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15527,7 +15553,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getMemo();
 }
-NamedBean*  PythonQtShell_AbstractTurnoutManager::getNamedBean(QString  name0)
+NamedBean*  PythonQtShell_AbstractTurnoutManager::getNamedBean(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15593,7 +15619,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getNamedBeanSet();
 }
-QString  PythonQtShell_AbstractTurnoutManager::getNextValidAddress(QString  curAddress0, QString  prefix1)
+QString  PythonQtShell_AbstractTurnoutManager::getNextValidAddress(QString  curAddress0, QString  prefix1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15791,7 +15817,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getSystemNameList();
 }
-QString  PythonQtShell_AbstractTurnoutManager::getSystemPrefix()
+QString  PythonQtShell_AbstractTurnoutManager::getSystemPrefix() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15857,7 +15883,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getThrownText();
 }
-Turnout*  PythonQtShell_AbstractTurnoutManager::getTurnout(QString  name0)
+Turnout*  PythonQtShell_AbstractTurnoutManager::getTurnout(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15923,7 +15949,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getValidOperationTypes();
 }
-int  PythonQtShell_AbstractTurnoutManager::getXMLOrder()
+int  PythonQtShell_AbstractTurnoutManager::getXMLOrder() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16022,7 +16048,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::isNumControlBitsSupported(systemName0);
 }
-QString  PythonQtShell_AbstractTurnoutManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
+QString  PythonQtShell_AbstractTurnoutManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16055,7 +16081,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::makeSystemName(s0, logErrors1, locale2);
 }
-Turnout*  PythonQtShell_AbstractTurnoutManager::newTurnout(QString  systemName0, QString  userName1)
+Turnout*  PythonQtShell_AbstractTurnoutManager::newTurnout(QString  systemName0, QString  userName1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16143,7 +16169,7 @@ if (_wrapper) {
 }
   AbstractTurnoutManager::propertyChange(e0);
 }
-Turnout*  PythonQtShell_AbstractTurnoutManager::provide(QString  name0) throw (IllegalArgumentException) 
+Turnout*  PythonQtShell_AbstractTurnoutManager::provide(QString  name0) const throw (IllegalArgumentException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16176,7 +16202,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::provide(name0);
 }
-Turnout*  PythonQtShell_AbstractTurnoutManager::provideTurnout(QString  name0)
+Turnout*  PythonQtShell_AbstractTurnoutManager::provideTurnout(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16275,7 +16301,7 @@ if (_wrapper) {
 }
   AbstractTurnoutManager::removePropertyChangeListener(propertyName0, listener1);
 }
-void PythonQtShell_AbstractTurnoutManager::setDefaultClosedSpeed(QString  speed0)
+void PythonQtShell_AbstractTurnoutManager::setDefaultClosedSpeed(QString  speed0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16297,7 +16323,7 @@ if (_wrapper) {
 }
   AbstractTurnoutManager::setDefaultClosedSpeed(speed0);
 }
-void PythonQtShell_AbstractTurnoutManager::setDefaultThrownSpeed(QString  speed0)
+void PythonQtShell_AbstractTurnoutManager::setDefaultThrownSpeed(QString  speed0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16341,7 +16367,7 @@ if (_wrapper) {
 }
   AbstractTurnoutManager::timerEvent(event0);
 }
-char  PythonQtShell_AbstractTurnoutManager::typeLetter()
+char  PythonQtShell_AbstractTurnoutManager::typeLetter() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16446,7 +16472,7 @@ int PythonQtShell_AbstractTurnoutManager::qt_metacall(QMetaObject::Call call, in
   int result = AbstractTurnoutManager::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-Turnout*  PythonQtWrapper_AbstractTurnoutManager::createNewTurnout(AbstractTurnoutManager* theWrappedObject, QString  systemName, QString  userName)
+Turnout*  PythonQtWrapper_AbstractTurnoutManager::createNewTurnout(AbstractTurnoutManager* theWrappedObject, QString  systemName, QString  userName) const
 {
   return ( ((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->promoted_createNewTurnout(systemName, userName));
 }
@@ -17271,7 +17297,7 @@ if (_wrapper) {
 }
   return Audio::getSubType();
 }
-QString  PythonQtShell_Audio::getSystemName()
+QString  PythonQtShell_Audio::getSystemName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -17304,7 +17330,7 @@ if (_wrapper) {
 }
   return Audio::getSystemName();
 }
-QString  PythonQtShell_Audio::getUserName()
+QString  PythonQtShell_Audio::getUserName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -17337,7 +17363,7 @@ if (_wrapper) {
 }
   return Audio::getUserName();
 }
-int  PythonQtShell_Audio::hashCode()
+uint  PythonQtShell_Audio::hashCode()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -17345,9 +17371,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("hashCode");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"int"};
+      static const char* argumentList[] ={"uint"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      int returnValue{};
+      uint returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -17356,7 +17382,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
           } else {
-            returnValue = *((int*)args[0]);
+            returnValue = *((uint*)args[0]);
           }
         }
       }
@@ -17502,7 +17528,7 @@ if (_wrapper) {
 }
   Audio::setState(arg__1);
 }
-void PythonQtShell_Audio::setUserName(QString  s0) throw (NamedBean::BadUserNameException)
+void PythonQtShell_Audio::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -17623,7 +17649,7 @@ if (_wrapper) {
 }
   Audio::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_Audio::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException)
+void PythonQtShell_Audio::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -18700,7 +18726,7 @@ if (_wrapper) {
 }
   return AudioBuffer::getSubType();
 }
-QString  PythonQtShell_AudioBuffer::getSystemName()
+QString  PythonQtShell_AudioBuffer::getSystemName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -18766,7 +18792,7 @@ if (_wrapper) {
 }
   return AudioBuffer::getURL();
 }
-QString  PythonQtShell_AudioBuffer::getUserName()
+QString  PythonQtShell_AudioBuffer::getUserName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -18799,7 +18825,7 @@ if (_wrapper) {
 }
   return AudioBuffer::getUserName();
 }
-int  PythonQtShell_AudioBuffer::hashCode()
+uint  PythonQtShell_AudioBuffer::hashCode()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -18807,9 +18833,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("hashCode");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"int"};
+      static const char* argumentList[] ={"uint"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      int returnValue{};
+      uint returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -18818,7 +18844,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
           } else {
-            returnValue = *((int*)args[0]);
+            returnValue = *((uint*)args[0]);
           }
         }
       }
@@ -19140,7 +19166,7 @@ if (_wrapper) {
 }
   AudioBuffer::setURL(arg__1);
 }
-void PythonQtShell_AudioBuffer::setUserName(QString  s0) throw (NamedBean::BadUserNameException)
+void PythonQtShell_AudioBuffer::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -19261,7 +19287,7 @@ if (_wrapper) {
 }
   AudioBuffer::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_AudioBuffer::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException)
+void PythonQtShell_AudioBuffer::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20393,7 +20419,7 @@ if (_wrapper) {
 }
   return AudioListener::getSubType();
 }
-QString  PythonQtShell_AudioListener::getSystemName()
+QString  PythonQtShell_AudioListener::getSystemName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20426,7 +20452,7 @@ if (_wrapper) {
 }
   return AudioListener::getSystemName();
 }
-QString  PythonQtShell_AudioListener::getUserName()
+QString  PythonQtShell_AudioListener::getUserName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20492,7 +20518,7 @@ if (_wrapper) {
 }
   return AudioListener::getVelocity();
 }
-int  PythonQtShell_AudioListener::hashCode()
+uint  PythonQtShell_AudioListener::hashCode()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20500,9 +20526,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("hashCode");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"int"};
+      static const char* argumentList[] ={"uint"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      int returnValue{};
+      uint returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -20511,7 +20537,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
           } else {
-            returnValue = *((int*)args[0]);
+            returnValue = *((uint*)args[0]);
           }
         }
       }
@@ -20811,7 +20837,7 @@ if (_wrapper) {
 }
   AudioListener::setState(arg__1);
 }
-void PythonQtShell_AudioListener::setUserName(QString  s0) throw (NamedBean::BadUserNameException)
+void PythonQtShell_AudioListener::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20954,7 +20980,7 @@ if (_wrapper) {
 }
   AudioListener::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_AudioListener::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException)
+void PythonQtShell_AudioListener::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21083,7 +21109,7 @@ PythonQtShell_AudioManager::~PythonQtShell_AudioManager() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-void PythonQtShell_AudioManager::Register(NamedBean*  s0)
+void PythonQtShell_AudioManager::Register(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21259,7 +21285,7 @@ if (_wrapper) {
 }
   AudioManager::deleteBean(arg__1, arg__2);
 }
-void PythonQtShell_AudioManager::deregister(NamedBean*  s0)
+void PythonQtShell_AudioManager::deregister(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21402,7 +21428,7 @@ if (_wrapper) {
 }
   return AudioManager::getAudio(arg__1);
 }
-NamedBean*  PythonQtShell_AudioManager::getBeanBySystemName(QString  systemName0)
+NamedBean*  PythonQtShell_AudioManager::getBeanBySystemName(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21435,7 +21461,7 @@ if (_wrapper) {
 }
   return AudioManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_AudioManager::getBeanByUserName(QString  userName0)
+NamedBean*  PythonQtShell_AudioManager::getBeanByUserName(QString  userName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21468,7 +21494,7 @@ if (_wrapper) {
 }
   return AudioManager::getBeanByUserName(userName0);
 }
-QString  PythonQtShell_AudioManager::getBeanTypeHandled(bool  plural0)
+QString  PythonQtShell_AudioManager::getBeanTypeHandled(bool  plural0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21633,7 +21659,7 @@ if (_wrapper) {
 }
   return AudioManager::getMemo();
 }
-NamedBean*  PythonQtShell_AudioManager::getNamedBean(QString  name0)
+NamedBean*  PythonQtShell_AudioManager::getNamedBean(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21930,7 +21956,7 @@ if (_wrapper) {
 }
   return AudioManager::getSystemNameList(arg__1);
 }
-QString  PythonQtShell_AudioManager::getSystemPrefix()
+QString  PythonQtShell_AudioManager::getSystemPrefix() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21963,7 +21989,7 @@ if (_wrapper) {
 }
   return AudioManager::getSystemPrefix();
 }
-int  PythonQtShell_AudioManager::getXMLOrder()
+int  PythonQtShell_AudioManager::getXMLOrder() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -22018,7 +22044,7 @@ if (_wrapper) {
 }
   AudioManager::init();
 }
-QString  PythonQtShell_AudioManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
+QString  PythonQtShell_AudioManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -22260,7 +22286,7 @@ if (_wrapper) {
 }
   AudioManager::timerEvent(event0);
 }
-char  PythonQtShell_AudioManager::typeLetter()
+char  PythonQtShell_AudioManager::typeLetter() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23759,7 +23785,7 @@ if (_wrapper) {
 }
   return AudioSource::getSubType();
 }
-QString  PythonQtShell_AudioSource::getSystemName()
+QString  PythonQtShell_AudioSource::getSystemName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23792,7 +23818,7 @@ if (_wrapper) {
 }
   return AudioSource::getSystemName();
 }
-QString  PythonQtShell_AudioSource::getUserName()
+QString  PythonQtShell_AudioSource::getUserName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23858,7 +23884,7 @@ if (_wrapper) {
 }
   return AudioSource::getVelocity();
 }
-int  PythonQtShell_AudioSource::hashCode()
+uint  PythonQtShell_AudioSource::hashCode()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23866,9 +23892,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("hashCode");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"int"};
+      static const char* argumentList[] ={"uint"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      int returnValue{};
+      uint returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -23877,7 +23903,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
           } else {
-            returnValue = *((int*)args[0]);
+            returnValue = *((uint*)args[0]);
           }
         }
       }
@@ -24771,7 +24797,7 @@ if (_wrapper) {
 }
   AudioSource::setState(arg__1);
 }
-void PythonQtShell_AudioSource::setUserName(QString  s0) throw (NamedBean::BadUserNameException)
+void PythonQtShell_AudioSource::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -25013,7 +25039,7 @@ if (_wrapper) {
 }
   AudioSource::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_AudioSource::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException)
+void PythonQtShell_AudioSource::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -29307,7 +29333,7 @@ if (_wrapper) {
 }
   return Block::getState();
 }
-QString  PythonQtShell_Block::getSystemName()
+QString  PythonQtShell_Block::getSystemName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -29340,7 +29366,7 @@ if (_wrapper) {
 }
   return Block::getSystemName();
 }
-QString  PythonQtShell_Block::getUserName()
+QString  PythonQtShell_Block::getUserName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -29461,7 +29487,7 @@ if (_wrapper) {
 }
   Block::goingUnknown();
 }
-int  PythonQtShell_Block::hashCode()
+uint  PythonQtShell_Block::hashCode()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -29469,9 +29495,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("hashCode");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"int"};
+      static const char* argumentList[] ={"uint"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      int returnValue{};
+      uint returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -29480,7 +29506,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
           } else {
-            returnValue = *((int*)args[0]);
+            returnValue = *((uint*)args[0]);
           }
         }
       }
@@ -29659,7 +29685,7 @@ if (_wrapper) {
 }
   Block::setState(v0);
 }
-void PythonQtShell_Block::setUserName(QString  s0) throw (NamedBean::BadUserNameException)
+void PythonQtShell_Block::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -29747,7 +29773,7 @@ if (_wrapper) {
 }
   Block::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_Block::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException)
+void PythonQtShell_Block::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -29967,7 +29993,7 @@ PythonQtShell_BlockManager::~PythonQtShell_BlockManager() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-void PythonQtShell_BlockManager::Register(NamedBean*  s0)
+void PythonQtShell_BlockManager::Register(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30121,7 +30147,7 @@ if (_wrapper) {
 }
   BlockManager::deleteBean(arg__1, arg__2);
 }
-void PythonQtShell_BlockManager::deregister(NamedBean*  s0)
+void PythonQtShell_BlockManager::deregister(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30231,7 +30257,7 @@ if (_wrapper) {
 }
   return BlockManager::eventFilter(watched0, event1);
 }
-NamedBean*  PythonQtShell_BlockManager::getBeanBySystemName(QString  systemName0)
+NamedBean*  PythonQtShell_BlockManager::getBeanBySystemName(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30264,7 +30290,7 @@ if (_wrapper) {
 }
   return BlockManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_BlockManager::getBeanByUserName(QString  userName0)
+NamedBean*  PythonQtShell_BlockManager::getBeanByUserName(QString  userName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30297,7 +30323,7 @@ if (_wrapper) {
 }
   return BlockManager::getBeanByUserName(userName0);
 }
-QString  PythonQtShell_BlockManager::getBeanTypeHandled(bool  plural0)
+QString  PythonQtShell_BlockManager::getBeanTypeHandled(bool  plural0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30330,7 +30356,7 @@ if (_wrapper) {
 }
   return BlockManager::getBeanTypeHandled(plural0);
 }
-Block*  PythonQtShell_BlockManager::getBySystemName(QString  name0)
+Block*  PythonQtShell_BlockManager::getBySystemName(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30363,7 +30389,7 @@ if (_wrapper) {
 }
   return BlockManager::getBySystemName(name0);
 }
-Block*  PythonQtShell_BlockManager::getByUserName(QString  key0)
+Block*  PythonQtShell_BlockManager::getByUserName(QString  key0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30462,7 +30488,7 @@ if (_wrapper) {
 }
   return BlockManager::getMemo();
 }
-NamedBean*  PythonQtShell_BlockManager::getNamedBean(QString  name0)
+NamedBean*  PythonQtShell_BlockManager::getNamedBean(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30693,7 +30719,7 @@ if (_wrapper) {
 }
   return BlockManager::getSystemNameList();
 }
-QString  PythonQtShell_BlockManager::getSystemPrefix()
+QString  PythonQtShell_BlockManager::getSystemPrefix() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30726,7 +30752,7 @@ if (_wrapper) {
 }
   return BlockManager::getSystemPrefix();
 }
-int  PythonQtShell_BlockManager::getXMLOrder()
+int  PythonQtShell_BlockManager::getXMLOrder() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30759,7 +30785,7 @@ if (_wrapper) {
 }
   return BlockManager::getXMLOrder();
 }
-QString  PythonQtShell_BlockManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
+QString  PythonQtShell_BlockManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30847,7 +30873,7 @@ if (_wrapper) {
 }
   BlockManager::propertyChange(e0);
 }
-Block*  PythonQtShell_BlockManager::provide(QString  name0) throw (IllegalArgumentException)
+Block*  PythonQtShell_BlockManager::provide(QString  name0) const throw (IllegalArgumentException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -30968,7 +30994,7 @@ if (_wrapper) {
 }
   BlockManager::timerEvent(event0);
 }
-char  PythonQtShell_BlockManager::typeLetter()
+char  PythonQtShell_BlockManager::typeLetter() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -31077,7 +31103,7 @@ int PythonQtShell_BlockManager::qt_metacall(QMetaObject::Call call, int id, void
   int result = BlockManager::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-Block*  PythonQtWrapper_BlockManager::createNewBlock(BlockManager* theWrappedObject, QString  systemName, QString  userName)
+Block*  PythonQtWrapper_BlockManager::createNewBlock(BlockManager* theWrappedObject, QString  systemName, QString  userName) const
 {
   return ( theWrappedObject->createNewBlock(systemName, userName));
 }
@@ -31087,7 +31113,7 @@ Block*  PythonQtWrapper_BlockManager::createNewBlock(BlockManager* theWrappedObj
   return ( theWrappedObject->createNewBlock(userName));
 }
 
-Block*  PythonQtWrapper_BlockManager::getBlock(BlockManager* theWrappedObject, QString  name)
+Block*  PythonQtWrapper_BlockManager::getBlock(BlockManager* theWrappedObject, QString  name) const
 {
   return ( theWrappedObject->getBlock(name));
 }
@@ -31112,12 +31138,12 @@ BlockManager*  PythonQtWrapper_BlockManager::static_BlockManager_instance()
   return (BlockManager::instance());
 }
 
-Block*  PythonQtWrapper_BlockManager::provide(BlockManager* theWrappedObject, QString  name) throw (IllegalArgumentException)
+Block*  PythonQtWrapper_BlockManager::provide(BlockManager* theWrappedObject, QString  name) const throw (IllegalArgumentException) 
 {
   return ( theWrappedObject->provide(name));
 }
 
-Block*  PythonQtWrapper_BlockManager::provideBlock(BlockManager* theWrappedObject, QString  name)
+Block*  PythonQtWrapper_BlockManager::provideBlock(BlockManager* theWrappedObject, QString  name) const
 {
   return ( theWrappedObject->provideBlock(name));
 }
@@ -37297,7 +37323,7 @@ PythonQtShell_DefaultLogixManager::~PythonQtShell_DefaultLogixManager() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-void PythonQtShell_DefaultLogixManager::Register(NamedBean*  s0)
+void PythonQtShell_DefaultLogixManager::Register(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -37473,7 +37499,7 @@ if (_wrapper) {
 }
   DefaultLogixManager::deleteBean(arg__1, arg__2);
 }
-void PythonQtShell_DefaultLogixManager::deregister(NamedBean*  s0)
+void PythonQtShell_DefaultLogixManager::deregister(NamedBean*  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -37583,7 +37609,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::eventFilter(watched0, event1);
 }
-NamedBean*  PythonQtShell_DefaultLogixManager::getBeanBySystemName(QString  systemName0)
+NamedBean*  PythonQtShell_DefaultLogixManager::getBeanBySystemName(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -37616,7 +37642,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_DefaultLogixManager::getBeanByUserName(QString  userName0)
+NamedBean*  PythonQtShell_DefaultLogixManager::getBeanByUserName(QString  userName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -37649,7 +37675,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getBeanByUserName(userName0);
 }
-QString  PythonQtShell_DefaultLogixManager::getBeanTypeHandled(bool  plural0)
+QString  PythonQtShell_DefaultLogixManager::getBeanTypeHandled(bool  plural0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -37847,7 +37873,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getMemo();
 }
-NamedBean*  PythonQtShell_DefaultLogixManager::getNamedBean(QString  name0)
+NamedBean*  PythonQtShell_DefaultLogixManager::getNamedBean(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -38144,7 +38170,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getXMLOrder();
 }
-QString  PythonQtShell_DefaultLogixManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2)
+QString  PythonQtShell_DefaultLogixManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE

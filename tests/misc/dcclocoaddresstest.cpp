@@ -47,6 +47,8 @@ DccLocoAddressTest::DccLocoAddressTest(QObject *parent) : QObject(parent)
         DccLocoAddress* l2 = new DccLocoAddress(121, true);
 
         Assert::assertTrue("equate ", l1 ->equals (l2), __FILE__,  __LINE__);
+        Assert::assertTrue("equate ", l1 == (l2), __FILE__,  __LINE__);
+
 
         Assert::assertTrue("reflexive 1 ", l1->equals(l1), __FILE__,  __LINE__);
         Assert::assertTrue("reflexive 2 ", l2->equals(l2), __FILE__,  __LINE__);

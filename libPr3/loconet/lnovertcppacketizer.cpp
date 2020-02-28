@@ -50,8 +50,6 @@
  log = new Logger("LnOverTcpPacketizer");
  log->setDebugEnabled(false);
 
- self = this;
-
 // xmtHandler = new LnTcpXmtHandler(this);
 // rcvHandler = new LnTcpRcvHandler(this);
 }

@@ -50,7 +50,7 @@ public:
          *   Returns null if a Logix with the same userName
          *       already exists, or if there is trouble creating a new Logix.
          */
-    virtual Logix* createNewLogix(QString /*userName*/) {return NULL;}
+         virtual Logix* createNewLogix(QString /*userName*/) {return NULL;}
 
         /**
          * Locate via user name, then system name if needed.
@@ -62,7 +62,7 @@ public:
         virtual Logix* getLogix(QString /*name*/) {return NULL;}
 
         //virtual Logix* getByUserName(QString /*s*/) {return NULL;}
-        virtual NamedBean* getBySystemName(QString /*s*/) {return NULL;}
+         //NamedBean* getBySystemName(QString /*s*/)const {return NULL;}
 
         /**
          * Activate all Logixs that are not currently active
@@ -87,7 +87,7 @@ public:
          * Support for loading Logixs in a disabled state to debug loops
          */
         virtual void setLoadDisabled(bool /*s*/) {}
-        virtual bool getLoadDisabled() {return false;}
+        virtual bool getLoadDisabled()const  {return false;}
 
 signals:
     

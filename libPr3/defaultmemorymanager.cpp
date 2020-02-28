@@ -16,9 +16,9 @@ DefaultMemoryManager::DefaultMemoryManager(QObject *parent) :
  */
 //public class DefaultMemoryManager extends AbstractMemoryManager {
 
-/*public*/ QString DefaultMemoryManager::getSystemPrefix() { return "I"; }
+/*public*/ QString DefaultMemoryManager::getSystemPrefix() const { return "I"; }
 
-/*protected*/ Memory* DefaultMemoryManager::createNewMemory(QString systemName, QString userName){
+/*protected*/ Memory* DefaultMemoryManager::createNewMemory(QString systemName, QString userName) const{
     // we've decided to enforce that memory system
     // names start with IM by prepending if not present
     if (!systemName.startsWith("IM"))

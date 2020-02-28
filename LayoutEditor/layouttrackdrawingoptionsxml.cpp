@@ -33,31 +33,56 @@
     element.setAttribute("name", p->getName());
 
     // add elements
-    element.appendChild(doc.createElement("mainBallastColor").appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getMainBallastColor()))));
-    element.appendChild(doc.createElement("mainBallastWidth").appendChild(doc.createTextNode(QString::number(p->getMainBallastWidth()))));
-    element.appendChild(doc.createElement("mainBlockLineDashPercentageX10").appendChild(doc.createTextNode(QString::number(p->getMainBlockLineDashPercentageX10()))));
-    element.appendChild(doc.createElement("mainBlockLineWidth").appendChild(doc.createTextNode(QString::number(p->getMainBlockLineWidth()))));
-    element.appendChild(doc.createElement("mainRailColor").appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getMainRailColor()))));
-    element.appendChild(doc.createElement("mainRailCount").appendChild(doc.createTextNode(QString::number(p->getMainRailCount()))));
-    element.appendChild(doc.createElement("mainRailGap").appendChild(doc.createTextNode(QString::number(p->getMainRailGap()))));
-    element.appendChild(doc.createElement("mainRailWidth").appendChild(doc.createTextNode(QString::number(p->getMainRailWidth()))));
-    element.appendChild(doc.createElement("mainTieColor").appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getMainTieColor()))));
-    element.appendChild(doc.createElement("mainTieGap").appendChild(doc.createTextNode(QString::number(p->getMainTieGap()))));
-    element.appendChild(doc.createElement("mainTieLength").appendChild(doc.createTextNode(QString::number(p->getMainTieLength()))));
-    element.appendChild(doc.createElement("mainTieWidth").appendChild(doc.createTextNode(QString::number(p->getMainTieWidth()))));
+    QDomElement e;
+    element.appendChild(e = doc.createElement("mainBallastColor"));
+     e.appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getMainBallastColor())));
+    element.appendChild(e = doc.createElement("mainBallastWidth"));
+     e.appendChild(doc.createTextNode(QString::number(p->getMainBallastWidth())));
+    element.appendChild(e = doc.createElement("mainBlockLineDashPercentageX10"));
+      e.appendChild(doc.createTextNode(QString::number(p->getMainBlockLineDashPercentageX10())));
+    element.appendChild(e = doc.createElement("mainBlockLineWidth"));
+      e.appendChild(doc.createTextNode(QString::number(p->getMainBlockLineWidth())));
+    element.appendChild(e = doc.createElement("mainRailColor"));
+      e.appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getMainRailColor())));
+    element.appendChild(e = doc.createElement("mainRailCount"));
+      e.appendChild(doc.createTextNode(QString::number(p->getMainRailCount())));
+    element.appendChild(e = doc.createElement("mainRailGap"));
+      e.appendChild(doc.createTextNode(QString::number(p->getMainRailGap())));
+    element.appendChild(e = doc.createElement("mainRailWidth"));
+      e.appendChild(doc.createTextNode(QString::number(p->getMainRailWidth())));
+    element.appendChild(e = doc.createElement("mainTieColor"));
+      e.appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getMainTieColor())));
+    element.appendChild(e = doc.createElement("mainTieGap"));
+      e.appendChild(doc.createTextNode(QString::number(p->getMainTieGap())));
+    element.appendChild(e = doc.createElement("mainTieLength"));
+      e.appendChild(doc.createTextNode(QString::number(p->getMainTieLength())));
+    element.appendChild(e = doc.createElement("mainTieWidth"));
+      e.appendChild(doc.createTextNode(QString::number(p->getMainTieWidth())));
 
-    element.appendChild(doc.createElement("sideBallastColor").appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getSideBallastColor()))));
-    element.appendChild(doc.createElement("sideBallastWidth").appendChild(doc.createTextNode(QString::number(p->getSideBallastWidth()))));
-    element.appendChild(doc.createElement("sideBlockLineDashPercentageX10").appendChild(doc.createTextNode(QString::number(p->getSideBlockLineDashPercentageX10()))));
-    element.appendChild(doc.createElement("sideBlockLineWidth").appendChild(doc.createTextNode(QString::number(p->getSideBlockLineWidth()))));
-    element.appendChild(doc.createElement("sideRailColor").appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getSideRailColor()))));
-    element.appendChild(doc.createElement("sideRailCount").appendChild(doc.createTextNode(QString::number(p->getSideRailCount()))));
-    element.appendChild(doc.createElement("sideRailGap").appendChild(doc.createTextNode(QString::number(p->getSideRailGap()))));
-    element.appendChild(doc.createElement("sideRailWidth").appendChild(doc.createTextNode(QString::number(p->getSideRailWidth()))));
-    element.appendChild(doc.createElement("sideTieColor").appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getSideTieColor()))));
-    element.appendChild(doc.createElement("sideTieGap").appendChild(doc.createTextNode(QString::number(p->getSideTieGap()))));
-    element.appendChild(doc.createElement("sideTieLength").appendChild(doc.createTextNode(QString::number(p->getSideTieLength()))));
-    element.appendChild(doc.createElement("sideTieWidth").appendChild(doc.createTextNode(QString::number(p->getSideTieWidth()))));
+    element.appendChild(e = doc.createElement("sideBallastColor"));
+      e.appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getSideBallastColor())));
+    element.appendChild(e = doc.createElement("sideBallastWidth"));
+      e.appendChild(doc.createTextNode(QString::number(p->getSideBallastWidth())));
+    element.appendChild(e = doc.createElement("sideBlockLineDashPercentageX10"));
+      e.appendChild(doc.createTextNode(QString::number(p->getSideBlockLineDashPercentageX10())));
+    element.appendChild(e = doc.createElement("sideBlockLineWidth"));
+      e.appendChild(doc.createTextNode(QString::number(p->getSideBlockLineWidth())));
+    element.appendChild(e = doc.createElement("sideRailColor"));
+      e.appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getSideRailColor())));
+    element.appendChild(e = doc.createElement("sideRailCount"));
+      e.appendChild(doc.createTextNode(QString::number(p->getSideRailCount())));
+    element.appendChild(e = doc.createElement("sideRailGap"));
+      e.appendChild(doc.createTextNode(QString::number(p->getSideRailGap())));
+    element.appendChild(e = doc.createElement("sideRailWidth"));
+      e.appendChild(doc.createTextNode(QString::number(p->getSideRailWidth())));
+    element.appendChild(e = doc.createElement("sideTieColor"));
+      e.appendChild(doc.createTextNode(ColorUtil::colorToHexString(p->getSideTieColor())));
+    element.appendChild(e = doc.createElement("sideTieGap"));
+      e.appendChild(doc.createTextNode(QString::number(p->getSideTieGap())));
+    element.appendChild(e = doc.createElement("sideTieLength"));
+      e.appendChild(doc.createTextNode(QString::number(p->getSideTieLength())));
+    element.appendChild(e = doc.createElement("sideTieWidth"));
+      e.appendChild(doc.createTextNode(QString::number(p->getSideTieWidth())));
 
     element.setAttribute("class", /*getClass().getName()*/ "jmri.jmrit.display.layoutEditor.configurexml.LayoutTrackDrawingOptionsXml");
     return element;
@@ -119,17 +144,21 @@
 }	// load
 
 //@CheckReturnValue
-/*private*/ QColor LayoutTrackDrawingOptionsXml::getElementColor(/*@Nonnull*/ QDomElement el, /*@Nonnull*/ QString child, /*@Nullable */QColor defVal) {
-    QDomElement c = el.firstChildElement(child);
-    if (!c.isNull()) {
-        QString val = c.text();
-        if ((val != nullptr) && !val.isEmpty()) {
-            //defVal = Color.decode(val);
-         int intval = val.toInt(nullptr,16);
-                 return QColor((intval >> 16) & 0xFF, (intval >> 8) & 0xFF, intval & 0xFF);
-        }
-    }
-    return defVal;
+/*private*/ QColor LayoutTrackDrawingOptionsXml::getElementColor(/*@Nonnull*/ QDomElement el,
+  /*@Nonnull*/ QString child, /*@Nullable */QColor defVal)
+{
+ QDomElement c = el.firstChildElement(child);
+ if (!c.isNull())
+ {
+  QString val = c.text();
+  if ((val != "") && !val.isEmpty())
+  {
+   //defVal = Color.decode(val);
+   int intval = val.mid(1).toInt(nullptr,16);
+   return QColor((intval >> 16) & 0xFF, (intval >> 8) & 0xFF, intval & 0xFF);
+  }
+ }
+ return defVal;
 }
 
 int LayoutTrackDrawingOptionsXml::getElementInt(QDomElement el, QString child, int defVal) {

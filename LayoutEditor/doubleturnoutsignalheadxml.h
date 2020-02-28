@@ -10,14 +10,14 @@ class DoubleTurnoutSignalHeadXml : public AbstractNamedBeanManagerConfigXML
 public:
     //explicit DoubleTurnoutSignalHeadXml(QObject *parent = 0);
     Q_INVOKABLE /*public*/ DoubleTurnoutSignalHeadXml(QObject* parent = 0);
-    ~DoubleTurnoutSignalHeadXml() {}
+    ~DoubleTurnoutSignalHeadXml() override {}
     DoubleTurnoutSignalHeadXml(const DoubleTurnoutSignalHeadXml&) : AbstractNamedBeanManagerConfigXML() {}
-    /*public*/ QDomElement store(QObject* o);
+    /*public*/ QDomElement store(QObject* o) override;
     QDomElement addTurnoutElement(NamedBeanHandle<Turnout*>* to, QString which);
     QDomElement addTurnoutElement(Turnout* to);
-    /*public*/ bool load(QDomElement element) throw (Exception);
+    /*public*/ bool load(QDomElement element) throw (Exception) override;
     NamedBeanHandle<Turnout*>* loadTurnout(QDomElement e);
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
 
 signals:
 

@@ -705,7 +705,7 @@ File userPrefsFile;*/
  * method.
  * @return true if no problems during the load
  */
-/*public*/ bool ConfigXmlManager::load(File* fi) throw (JmriConfigureXmlException)
+/*public*/ bool ConfigXmlManager::load(File* fi) throw (JmriException)
 {
     return load(fi, false);
 }
@@ -726,7 +726,7 @@ File userPrefsFile;*/
  * @since 2.11.2
  */
 //@Override
-/*public*/ bool ConfigXmlManager::load(File* fi, bool registerDeferred) throw (JmriConfigureXmlException)
+/*public*/ bool ConfigXmlManager::load(File* fi, bool registerDeferred) throw (JmriException)
 {
  return this->load(FileUtil::fileToURL(fi), registerDeferred);
 }
@@ -1045,7 +1045,7 @@ File userPrefsFile;*/
 }
 
 //@Override
-/*public*/ bool ConfigXmlManager::loadDeferred(File* fi) throw (JmriConfigureXmlException){
+/*public*/ bool ConfigXmlManager::loadDeferred(File* fi) throw (JmriException){
     return this->loadDeferred(FileUtil::fileToURL(fi));
 }
 

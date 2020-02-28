@@ -20,12 +20,12 @@ LnReporterManagerXml::LnReporterManagerXml(QObject* parent) : AbstractReporterMa
 //    super();
 //}
 
-/*public*/ void LnReporterManagerXml::setStoreElementClass(QDomElement reporters)
+/*public*/ void LnReporterManagerXml::setStoreElementClass(QDomElement reporters) const
 {
  reporters.setAttribute("class","jmri.jmrix.loconet.configurexml.LnReporterManagerXml");
 }
 
-/*public*/ void LnReporterManagerXml::load(QDomElement element, QObject* o) throw (Exception){
+/*public*/ void LnReporterManagerXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception){
  log->error("Invalid method called");
 }
 

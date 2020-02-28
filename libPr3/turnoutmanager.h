@@ -25,10 +25,10 @@ public:
          * already exist and the manager cannot create the Turnout
          * due to e.g. an illegal name or name that can't be parsed.
          */
-     virtual Turnout* provideTurnout(QString /*name*/) {return NULL;}
+     virtual Turnout* provideTurnout(QString /*name*/)const {return NULL;}
     /** {@inheritDoc} */ // from ProvidinManager
      //@Override
-     virtual /*default*/ /*public*/ Turnout* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException) { return provideTurnout(name); }
+     virtual /*default*/ /*public*/ Turnout* provide(/*@Nonnull*/ QString name)const throw (IllegalArgumentException) { return provideTurnout(name); }
 
 
         /**
@@ -38,21 +38,21 @@ public:
          * @param name
          * @return null if no match found
          */
-    virtual Turnout* getTurnout(QString /*name*/) { return NULL;}
+        virtual Turnout* getTurnout(QString /*name*/)const =0;
 
         /**
          * Locate an instance based on a system name.  Returns null if no
          * instance already exists.
          * @return requested Turnout object or null if none exists
          */
-        virtual Turnout* getBySystemName(QString /*systemName*/) { return NULL;}
+         //NamedBean* getBySystemName(QString /*systemName*/) const =0;
 
         /**
          * Locate an instance based on a user name.  Returns null if no
          * instance already exists.
          * @return requested Turnout object or null if none exists
          */
-        virtual Turnout* getByUserName(QString /*userName*/) { return NULL;}
+         //NamedBean* getByUserName(QString /*userName*/) const =0;
 
         /**
          * Return an instance with the specified system and user names.
@@ -79,7 +79,7 @@ public:
          * @throws IllegalArgumentException if cannot create the Turnout
          * due to e.g. an illegal name or name that can't be parsed.
          */
-        virtual Turnout* newTurnout(QString /*systemName*/,QString /*userName*/)  { return NULL;}
+        virtual Turnout* newTurnout(QString /*systemName*/,QString /*userName*/)const  =0;
 
         /**
          * Get a list of all Turnouts' system names.
@@ -165,7 +165,7 @@ public:
         /**
          * Returns a system name for a given hardware address and system prefix.
          */
-        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/) const {return "";}// throws JmriException;
+        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/)const =0;// throws JmriException;
 
         virtual void setDefaultClosedSpeed(QString /*speed*/) const{}// throws JmriException;
 

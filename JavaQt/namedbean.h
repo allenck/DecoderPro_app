@@ -5,6 +5,7 @@
 #include "propertychangelistener.h"
 #include "javaqt_global.h"
 #include "exceptions.h"
+#include "namedbean.h"
 
 class JAVAQTSHARED_EXPORT NamedBean : public  QObject
 {
@@ -261,7 +262,7 @@ public:
          * Get a system-specific name.  This encodes the hardware addressing
          * information.
          */
-        virtual QString getSystemName();
+        virtual QString getSystemName() const =0;
         /*
         * return user name if it exists, otherwise return System name
         */
@@ -409,7 +410,7 @@ public:
     /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* /*evt*/) {}//throws java.beans.PropertyVetoException;
 
 
-    virtual int hashCode() {return 0;}
+    virtual uint hashCode() {return 0;}
 
     /**
      * For instances in the code where we are dealing with just a bean and a

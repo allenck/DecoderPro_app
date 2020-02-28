@@ -15,9 +15,9 @@ public:
     virtual char typeLetter();
     Reporter* provideReporter(QString sName);
     Reporter* getReporter(QString name);
-    NamedBean* getBySystemName(QString name);
-    NamedBean* getByUserName(QString key);
-    /*public*/ QString getBeanTypeHandled(bool plural) override;
+//    NamedBean* getBySystemName(QString name);
+//    NamedBean* getByUserName(QString key);
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
     Reporter* getByDisplayName(QString key);
     Reporter* newReporter(QString systemName, QString userName) throw(IllegalArgumentException);
     /**

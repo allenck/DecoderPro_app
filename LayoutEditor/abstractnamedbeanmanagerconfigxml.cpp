@@ -91,7 +91,7 @@ void AbstractNamedBeanManagerConfigXML::storeUserName(NamedBean* t, QDomElement 
  QString uname = t->getUserName();
  if (uname!=NULL && uname.length() > 0)
  {
-  //elem.setAttribute("userName", uname); // doing this for compatibility during 2.9.* series
+  elem.setAttribute("userName", uname); // doing this for compatibility during 2.9.* series
   QDomElement e1;
   elem.appendChild(e1=doc.createElement("userName"));
   e1.appendChild(doc.createTextNode(uname));

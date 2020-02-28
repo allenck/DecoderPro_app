@@ -16,11 +16,11 @@ public:
     AbstractSensorManager(SystemConnectionMemo* memo, QObject *parent =nullptr);
 
     /*public*/ virtual int getXMLOrder();
-    /*public*/ virtual char typeLetter() ;
+    /*public*/ virtual char typeLetter() const;
     /*public*/ Sensor* provideSensor(QString name);
-    /*public*/ Sensor* getSensor(QString name);
-    /*public*/ Sensor* getBySystemName(QString key);
-    /*public*/ Sensor* getByUserName(QString key);
+    /*public*/ Sensor* getSensor(QString name) const;
+    /*public*/ NamedBean* getBySystemName(QString key) const override;
+    /*public*/ NamedBean* getByUserName(QString key) const override;
     /**
      * Requests status of all layout sensors under this Sensor Manager.
      * This method may be invoked whenever the status of sensors needs to be updated from
@@ -38,7 +38,7 @@ public:
 
     /*public*/ QString createSystemName(QString curAddress, QString prefix) throw (JmriException);
     /*public*/ Sensor* newSensor(QString sysName, QString userName);
-    /*public*/ QString getBeanTypeHandled(bool plural);
+    /*public*/ QString getBeanTypeHandled(bool plural) const;
     /*public*/ QString getNextValidAddress(QString curAddress, QString prefix);
     /*public*/ long getDefaultSensorDebounceGoingActive();
     /*public*/ long getDefaultSensorDebounceGoingInActive();
@@ -52,7 +52,7 @@ signals:
 
 public slots:
 private:
-    bool isNumber(QString s);
+    bool isNumber(QString s) const;
     Logger* log;
 protected:
     /*protected*/ QObject* getInstanceBySystemName(QString systemName);
@@ -65,7 +65,7 @@ protected:
 
     /*protected*/ long sensorDebounceGoingActive/* = 0L*/;
     /*protected*/ long sensorDebounceGoingInActive/* = 0L*/;
-    /*protected*/ QString normalizeSystemName(QString sysName);
+    /*protected*/ QString normalizeSystemName(QString sysName) const;
 //QMap<QString, Sensor*> sensorMap; // key = systemName!
     friend class PropertyChangeSupport;
 };

@@ -11,11 +11,11 @@ public:
  ~DefaultRouteManagerXml() {}
  DefaultRouteManagerXml(const DefaultRouteManagerXml&) : AbstractNamedBeanManagerConfigXML(){}
  /*public*/ QDomElement store(QObject* o);
- /*public*/ void load(QDomElement element, QObject* o) throw (Exception) ;
- /*public*/ bool load(QDomElement routes) throw (Exception);
+ /*public*/ void load(QDomElement element, QObject* o) throw (Exception)  override;
+ /*public*/ bool load(QDomElement routes) throw (Exception) override;
  /*public*/ void loadRoutes(QDomElement routes);
  /*public*/ void setStoreElementClass(QDomElement routes);
- /*public*/ int loadOrder();
+ /*public*/ int loadOrder()const override;
 
 signals:
 

@@ -64,12 +64,12 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * @param name
  * @return Null if nothing by that name exists
  */
-/*public*/ Turnout* ProxyTurnoutManager::getTurnout(QString name)
+/*public*/ Turnout* ProxyTurnoutManager::getTurnout(QString name) const
 {
  return (Turnout*)AbstractProxyTurnoutManager::getNamedBean(name);
 }
 
-/*protected*/ NamedBean* ProxyTurnoutManager::makeBean(int i, QString systemName, QString userName)
+/*protected*/ NamedBean* ProxyTurnoutManager::makeBean(int i, QString systemName, QString userName) const
 {
     //return ((AbstractProxyTurnoutManager*)((AbstractProxyTurnoutManager*)getMgr(i)))->newTurnout(systemName, userName);
  Manager* m = getMgr(i);
@@ -77,21 +77,21 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  return bean;
 }
 
-/*public*/ Turnout* ProxyTurnoutManager::provideTurnout(QString name) {
-    return (Turnout*) AbstractProxyTurnoutManager::provideNamedBean(name);
+/*public*/ Turnout *ProxyTurnoutManager::provideTurnout(QString name) const {
+    return  (Turnout*)AbstractProxyTurnoutManager::provideNamedBean(name);
 }
 //@Override
 /** {@inheritDoc} */
-/*public*/ Turnout* ProxyTurnoutManager::provide(/*@Nonnull */QString name) throw (IllegalArgumentException)
-{ return provideTurnout(name); }
+/*public*/ Turnout* ProxyTurnoutManager::provide(/*@Nonnull */QString name) const throw (IllegalArgumentException)
+{ return (Turnout*)provideTurnout(name); }
 
-
+#if 0
 /**
  * Locate an instance based on a system name.  Returns null if no
  * instance already exists.
  * @return requested Turnout object or null if none exists
  */
-/*public*/ Turnout *ProxyTurnoutManager::getBySystemName(QString systemName)
+/*public*/ Turnout *ProxyTurnoutManager::getBySystemName(QString systemName) const
 {
  return (Turnout*) AbstractProxyTurnoutManager::getBeanBySystemName(systemName);
 }
@@ -101,10 +101,10 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * instance already exists.
  * @return requested Turnout object or null if none exists
  */
-/*public*/ Turnout *ProxyTurnoutManager::getByUserName(QString userName) {
+/*public*/ Turnout *ProxyTurnoutManager::getByUserName(QString userName) const {
     return (Turnout*) AbstractProxyTurnoutManager::getBeanByUserName(userName);
 }
-
+#endif
 /**
  * Return an instance with the specified system and user names.
  * Note that two calls with the same arguments will get the same instance;
@@ -133,7 +133,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * be looking them up.
  * @return requested Sensor object (never null)
  */
-/*public*/ Turnout* ProxyTurnoutManager::newTurnout(QString systemName, QString userName) {
+/*public*/ Turnout* ProxyTurnoutManager::newTurnout(QString systemName, QString userName) const {
     return (Turnout*) newNamedBean(systemName, userName);
 }
 ///*public*/ NamedBean* ProxyTurnoutManager::newNamedBean(QString systemName, QString userName) {
@@ -246,7 +246,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
     return ((TurnoutManager*)getMgr(0))->allowMultipleAdditions(systemName);
 }
 
-/*public*/ QString ProxyTurnoutManager::createSystemName(QString curAddress, QString prefix) throw (JmriException)
+/*public*/ QString ProxyTurnoutManager::createSystemName(QString curAddress, QString prefix)const throw (JmriException)
 {
  for (int i=0; i<nMgrs(); i++)
  {
@@ -265,7 +265,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  throw new JmriException("Turnout Manager could not be found for System Prefix " + prefix);
 }
 
-/*public*/ QString ProxyTurnoutManager::getNextValidAddress(QString curAddress, QString prefix) throw (JmriException)
+/*public*/ QString ProxyTurnoutManager::getNextValidAddress(QString curAddress, QString prefix) const throw (JmriException)
 {
  for (int i=0; i<nMgrs(); i++)
  {
@@ -284,7 +284,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  return NULL;
 }
 
-/*public*/ void ProxyTurnoutManager::setDefaultClosedSpeed(QString speed) throw (JmriException) {
+/*public*/ void ProxyTurnoutManager::setDefaultClosedSpeed(QString speed) const throw (JmriException) {
     for (int i=0; i<nMgrs(); i++) {
         try {
             ((AbstractTurnoutManager*)getMgr(i))->setDefaultClosedSpeed(speed);
@@ -295,7 +295,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
     }
 }
 
-/*public*/ void ProxyTurnoutManager::setDefaultThrownSpeed(QString speed) throw (JmriException){
+/*public*/ void ProxyTurnoutManager::setDefaultThrownSpeed(QString speed) const throw (JmriException){
     for (int i=0; i<nMgrs(); i++) {
         try {
             ((AbstractTurnoutManager*)getMgr(i))->setDefaultThrownSpeed(speed);
@@ -306,15 +306,15 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
     }
 }
 
-/*public*/ QString ProxyTurnoutManager::getDefaultThrownSpeed(){
+/*public*/ QString ProxyTurnoutManager::getDefaultThrownSpeed() const{
     return ((AbstractTurnoutManager*)getMgr(0))->getDefaultThrownSpeed();
 }
 
-/*public*/ QString ProxyTurnoutManager::getDefaultClosedSpeed(){
+/*public*/ QString ProxyTurnoutManager::getDefaultClosedSpeed() const{
     return ((AbstractTurnoutManager*)getMgr(0))->getDefaultClosedSpeed();
 }
 
-/*public*/ int ProxyTurnoutManager::getXMLOrder(){
+/*public*/ int ProxyTurnoutManager::getXMLOrder() const{
     return Manager::TURNOUTS;
 }
 
@@ -331,7 +331,7 @@ QCompleter* ProxyTurnoutManager::getCompleter(QString text)
   QStringList completerList;
   foreach(QString systemName, nameList)
   {
-   Turnout* b = getBySystemName(systemName);
+   Turnout* b = (Turnout*)getBySystemName(systemName);
    if(b->getUserName().startsWith(text,Qt::CaseInsensitive))
     completerList.append(b->getUserName());
    if(b->getSystemName().startsWith(text,Qt::CaseInsensitive))

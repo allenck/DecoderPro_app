@@ -767,9 +767,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  TurnoutManager* manager = self->turnManager;
  Turnout* t;
  if(qobject_cast<AbstractProxyTurnoutManager*>(manager)!= NULL)
-  t= ((ProxyTurnoutManager*)manager)->getBySystemName(name);
+  t= (Turnout*)((ProxyTurnoutManager*)manager)->getBySystemName(name);
  else
-  t= ((AbstractTurnoutManager*)manager)->getBySystemName(name);
+  t= (Turnout*)((AbstractTurnoutManager*)manager)->getBySystemName(name);
 
  int val = t->getCommandedState();
  switch (val)

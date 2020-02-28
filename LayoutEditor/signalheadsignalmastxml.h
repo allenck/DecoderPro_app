@@ -9,11 +9,11 @@ class SignalHeadSignalMastXml : public AbstractNamedBeanManagerConfigXML
     Q_OBJECT
 public:
     explicit SignalHeadSignalMastXml(QObject *parent = 0);
- ~SignalHeadSignalMastXml() {}
+ ~SignalHeadSignalMastXml()  override{}
  SignalHeadSignalMastXml(const SignalHeadSignalMastXml&) : AbstractNamedBeanManagerConfigXML() {}
-    /*public*/ QDomElement store(QObject* o);
-    /*public*/ bool load(QDomElement element) throw (Exception);
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+    /*public*/ QDomElement store(QObject* o) override;
+    /*public*/ bool load(QDomElement element) throw (Exception) override;
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
 
 signals:
 

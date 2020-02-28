@@ -5,7 +5,6 @@
 
 LnTrafficController::LnTrafficController(QObject *parent) : LocoNetInterface(parent)
 {
- self = NULL;
  resetStatistics();
 // listeners.clear();
  setObjectName("LnTrafficController");
@@ -45,23 +44,7 @@ LnTrafficController::LnTrafficController(QObject *parent) : LocoNetInterface(par
 // Abstract methods for the LocoNetInterface
 //@Override
 // /*abstract*/ public boolean status();
-/**
- * static function returning the LnTrafficController instance to use.
- *
- * @return The registered LnTrafficController instance for general use, if
- *         need be creating one.
- * @deprecated 2.13.4
- */
-//@Deprecated
-/*static*/ /*public*/ LnTrafficController* LnTrafficController::instance()
-{
- return self;
-}
 
-//@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "MS_PKGPROTECT")
-// FindBugs wants this package protected, but we're removing it when multi-connection
-// migration is complete
-/*static*/ /*protected*/ LnTrafficController* LnTrafficController::self = NULL;
 
 void LnTrafficController::addLocoNetListener(int mask,  LocoNetListener* l)
 {

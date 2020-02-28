@@ -79,7 +79,7 @@ public:
      * @param systemName system name being requested
      * @return requested IdTag object or null if none exists
      */
-    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) {return NULL;}
+    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) const {return NULL;}
 
     /**
      * Locate an instance based on a user name.  Returns null if no
@@ -87,7 +87,7 @@ public:
      * @param userName user name being requested
      * @return requested IdTag object or null if none exists
      */
-    /*public*/ virtual NamedBean* getByUserName(QString /*userName*/) {return NULL;}
+    /*public*/ virtual NamedBean* getByUserName(QString /*userName*/) const {return NULL;}
 
     /**
      * Locate an instance based on a tag ID.  Returns null if no
@@ -168,7 +168,7 @@ public:
     /**
      * Perform initialisation
      */
-    /*public*/ virtual void init() {}
+    /*public*/ virtual void init() const {}
 
     /**
      * Determines if the manager has been initialised

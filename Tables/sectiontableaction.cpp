@@ -28,6 +28,7 @@
 #include "inputdialog.h"
 #include "path.h"
 #include "actionevent.h"
+#include "QHeaderView"
 
 SectionTableAction::SectionTableAction(QObject *parent) :
     AbstractTableAction("Section Table", parent)
@@ -257,7 +258,7 @@ public void setDisplayDeleteMsg(int boo) { ((DefaultUserMessagePreferences*)Inst
 
 /*public*/ QVariant SectionTableDataModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
- if(role == Qt::DisplayPropertyRole && orientation == Qt::Horizontal)
+ if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
  {
      int col = section;
     if (col==BEGINBLOCKCOL) return (tr("First Block"));
@@ -488,7 +489,7 @@ void SectionTableAction::addEditPressed()
 //        JPanel p33 = new JPanel();
   // initialize table of entry points
   entryPointTableModel = new EntryPointTableModel(this);
-  QTableView* entryPointTable = new QTableView(/*entryPointTableModel*/);
+  JTable* entryPointTable = new JTable(/*entryPointTableModel*/);
   entryPointTable->setModel(entryPointTableModel);
 //        entryPointTable.setRowSelectionAllowed(false);
 //        entryPointTable.setPreferredScrollableViewportSize(new java.awt.Dimension(550,100)); // GT - 12-Oct-2009
@@ -521,6 +522,7 @@ void SectionTableAction::addEditPressed()
 //        p33->setVisible(true);
   addFrameLayout->addWidget(entryPointTable);
   entryPointTable->setItemDelegateForColumn(EntryPointTableModel::DIRECTION_COLUMN, new ItemDelegate(dirList,this));
+  entryPointTable->resizeColumnsToContents();
 //        JPanel p34 = new JPanel();
 //        p34.setLayout(new FlowLayout());
   FlowLayout* p34Layout = new FlowLayout;

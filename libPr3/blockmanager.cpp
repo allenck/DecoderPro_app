@@ -68,12 +68,12 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->a
 //        super();
 //    }
 
-    /*public*/ int BlockManager::getXMLOrder(){
+    /*public*/ int BlockManager::getXMLOrder()const{
         return Manager::BLOCKS;
     }
 
-    /*public*/ QString BlockManager::getSystemPrefix() { return "I"; }
-    /*public*/ char BlockManager::typeLetter() { return 'B'; }
+    /*public*/ QString BlockManager::getSystemPrefix()const { return "I"; }
+    /*public*/ char BlockManager::typeLetter() const { return 'B'; }
 
 
     /*public*/ bool BlockManager::savePathInfo() { return saveBlockPath; }
@@ -85,7 +85,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->a
  *   Returns NULL if a Block with the same systemName or userName
  *       already exists, or if there is trouble creating a new Block.
  */
-/*public*/ Block* BlockManager::createNewBlock(QString systemName, QString userName)
+/*public*/ Block* BlockManager::createNewBlock(QString systemName, QString userName) const
 {
  // Check that Block does not already exist
  Block* r ;
@@ -141,7 +141,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->a
     return createNewBlock(b, userName);
 }
 
-/*public*/ Block* BlockManager::provideBlock(QString name) {
+/*public*/ Block* BlockManager::provideBlock(QString name) const {
     Block* b = getBlock(name);
     if (b!=NULL) return b;
     if (name.startsWith(getSystemPrefix()+typeLetter()))
@@ -156,18 +156,18 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->a
  *      name is a User Name.  If this fails looks up assuming
  *      that name is a System Name.  If both fail, returns NULL.
  */
-/*public*/ Block* BlockManager::getBlock(QString name) {
+/*public*/ Block* BlockManager::getBlock(QString name) const{
     Block* r = getByUserName(name);
     if (r!=NULL) return r;
     return getBySystemName(name);
 }
 
-/*public*/ Block* BlockManager::getBySystemName(QString name) {
+/*public*/ Block* BlockManager::getBySystemName(QString name) const {
     QString key = name.toUpper();
     return (Block*)_tsys->value(key);
 }
 
-/*public*/ Block* BlockManager::getByUserName(QString key) {
+/*public*/ Block* BlockManager::getByUserName(QString key) const {
     return (Block*)_tuser->value(key);
 }
 
@@ -296,6 +296,6 @@ QCompleter* BlockManager::getCompleter(QString text)
 }
 
 //@Override
-/*public*/ Block* BlockManager::provide(QString name) throw (IllegalArgumentException) {
+/*public*/ Block* BlockManager::provide(QString name) const throw (IllegalArgumentException) {
     return provideBlock(name);
 }

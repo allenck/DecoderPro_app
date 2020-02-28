@@ -322,7 +322,7 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
     return result;
 }
 
-/*public*/ int PanelEditorXml::loadOrder(){
+/*public*/ int PanelEditorXml::loadOrder()const{
     return Manager::PANELFILES;
 }
 

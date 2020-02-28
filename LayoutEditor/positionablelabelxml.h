@@ -11,10 +11,10 @@ class LIBLAYOUTEDITORSHARED_EXPORT PositionableLabelXml : public AbstractXmlAdap
 public:
     Q_INVOKABLE explicit PositionableLabelXml(QObject *parent = 0);
     /*public*/ QDomElement store(QObject* o);
- ~PositionableLabelXml() {}
+ ~PositionableLabelXml() override {}
  PositionableLabelXml(const PositionableLabelXml&) : AbstractXmlAdapter() {}
-    /*public*/ bool load(QDomElement element) throw (Exception);
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+    /*public*/ bool load(QDomElement element) throw (Exception) override;
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
     /*public*/ void storeCommonAttributes(Positionable* p, QDomElement element);
     /*public*/ QDomElement storeIcon(QString elemName, NamedIcon* icon);
     /*public*/ void loadCommonAttributes(Positionable* l, int defaultLevel, QDomElement element);

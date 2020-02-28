@@ -44,12 +44,12 @@ OBlockManager::OBlockManager(QObject *parent) :
 //        super();
 //    }
 
-/*public*/ int OBlockManager::getXMLOrder(){
+/*public*/ int OBlockManager::getXMLOrder()const{
     return Manager::OBLOCKS;
 }
 
-/*public*/ QString OBlockManager::getSystemPrefix() { return "O"; }
-/*public*/ char OBlockManager::typeLetter() { return 'B'; }
+/*public*/ QString OBlockManager::getSystemPrefix() const { return "O"; }
+/*public*/ char OBlockManager::typeLetter()const { return 'B'; }
 
 /**
  * Method to create a new OBlock if it does not exist
@@ -91,22 +91,22 @@ OBlockManager::OBlockManager(QObject *parent) :
     return (OBlock*)getBySystemName(name);
 }
 
-/*public*/ NamedBean *OBlockManager::getBySystemName(QString name) {
+/*public*/ NamedBean *OBlockManager::getBySystemName(QString name) const {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
     QString key = name.toUpper();
     return (OBlock*)_tsys->value(key);
 }
 
-/*public*/ NamedBean *OBlockManager::getByUserName(QString key) {
+/*public*/ NamedBean *OBlockManager::getByUserName(QString key)const  {
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
     return _tuser->value(key);
 }
 //@Override
-/*public*/ OBlock* OBlockManager::provide(QString name) throw (IllegalArgumentException) {
+/*public*/ OBlock* OBlockManager::provide(QString name) const throw (IllegalArgumentException) {
     return provideOBlock(name);
 }
 
-/*public*/ OBlock* OBlockManager::provideOBlock(QString name) {
+/*public*/ OBlock* OBlockManager::provideOBlock(QString name) const{
     if (name==NULL || name.length()==0) { return NULL; }
     OBlock* ob = (OBlock*)getByUserName(name);
     if (ob==NULL) {

@@ -70,7 +70,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   QString sname = iter.next();
   if (sname=="") log->error("System name NULL during store");
   log->debug("system name is "+sname);
-  Sensor* s = ((AbstractSensorManager*)tm)->getBySystemName(sname);
+  Sensor* s = (Sensor*)((AbstractSensorManager*)tm)->getBySystemName(sname);
 
   QString inverted = ((AbstractSensor*)s)->getInverted() ? "true" : "false";
 
@@ -255,6 +255,6 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
  return result;
 }
 
-/*public*/ int AbstractSensorManagerConfigXML::loadOrder(){
+/*public*/ int AbstractSensorManagerConfigXML::loadOrder() const{
     return InstanceManager::sensorManagerInstance()->getXMLOrder();
 }

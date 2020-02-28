@@ -23,7 +23,6 @@ LnPacketizer::LnPacketizer(LocoNetSystemConnectionMemo *m, QObject* parent)
  fulldebug = false;
  debug = true;
  echo = false;  // echo messages here, instead of in hardware
- self=this;
  debug = log->isDebugEnabled();
  controller = NULL;
  istream = NULL;

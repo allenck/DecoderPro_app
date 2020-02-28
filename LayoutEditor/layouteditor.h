@@ -27,13 +27,13 @@
 #include "paneleditor.h"
 #include "colorutil.h"
 #include "component.h"
-#include "jmribeancombobox.h"
+//#include "jmribeancombobox.h"
 #include <QPen>
 
 namespace Ui {
 class LayoutEditor;
 }
-
+class NamedBeanComboBox;
 class LEBlockContentsIcon;
 class LayoutEditorChecks;
 class LayoutTrackEditors;
@@ -208,14 +208,6 @@ public:
     /*public*/ /*transient*/ QVector<LEBlockContentsIcon*>* blockContentsLabelList;// = new ArrayList<>(); //BlockContentsIcon Label List
 
     void repaint();
-    /**
-    *  Control whether target panel items are editable.
-    *  Does this by invoke the {@link Positionable#setEditable(bool)} function of
-    *  each item on the target panel. This also controls the relevant pop-up menu items
-    *  (which are the primary way that items are edited).
-    * @param state true for editable.
-    */
-    /*public*/ void setAllEditable(bool state);
     /*public*/ bool isEditable();
     /**
     *  Control whether target panel items are controlling layout items.
@@ -223,7 +215,6 @@ public:
     *  each item on the target panel. This also controls the relevant pop-up menu items.
     * @param state true for controlling.
     */
-    /*public*/ void setTurnoutAnimation(bool state) ;
     /*public*/ bool isAnimating();
     /*public*/ int getLayoutWidth() ;
     /*public*/ int getLayoutHeight() ;
@@ -302,7 +293,7 @@ public:
     bool getAntialiasingOn(){return antialiasingOn;}
     bool getTurnoutCircles(){return turnoutCirclesWithoutEditMode;}
     bool getTooltipsNotEdit() {return tooltipsWithoutEditMode;}
-/*public*/ bool getTooltipsInEdit() {return tooltipsInEditMode;}
+    /*public*/ bool getTooltipsInEdit() {return tooltipsInEditMode;}
     float getMainlineTrackWidth(){return mainlineTrackWidth;}
     float getSideTrackWidth(){return sidelineTrackWidth;}
     bool getAutoBlockAssignment(){return autoAssignBlocks;}
@@ -344,7 +335,6 @@ public:
     /*public*/ LocoIcon* addLocoIcon (QString name);
     /*public*/ void putLocoIcon(LocoIcon* l, QString name);
     /*public*/ void setCurrentPositionAndSize();
-    /*public*/ void setDirectTurnoutControl(bool boo);
     /*public*/ bool getDirectTurnoutControl();
     /*public*/ void setMainlineTrackWidth(int w);
     /*public*/ void setSideTrackWidth(int w);
@@ -363,7 +353,6 @@ public:
     /*public*/ void setTurnoutCircles(bool state);
 //    /*public*/ static QColor stringToColor(QString string);
 //    /*public*/ static QString colorToString(QColor color);
-    /*public*/ void setShowHelpBar(bool state);
     /*public*/ void setSnapOnAdd(bool state);
     /*public*/ void setSnapOnMove(bool state);
     /*public*/ void setAntialiasingOn(bool state);
@@ -391,8 +380,8 @@ public:
     /*public*/ void setFilename(QString path);
     /*public*/ LayoutTrackDrawingOptions* getLayoutTrackDrawingOptions();
     /*public*/ void setLayoutTrackDrawingOptions(LayoutTrackDrawingOptions* ltdo);
-    /*public*/ static void setupComboBox(/*@Nonnull*/ JmriBeanComboBox* inComboBox, bool inValidateMode, bool inEnable);
-    /*public*/ static void setupComboBox(/*@Nonnull*/ JmriBeanComboBox* inComboBox, bool inValidateMode, bool inEnable, bool inFirstBlank);
+    /*public*/ static void setupComboBox(/*@Nonnull*/ NamedBeanComboBox *inComboBox, bool inValidateMode, bool inEnable);
+    /*public*/ static void setupComboBox(/*@Nonnull*/ NamedBeanComboBox* inComboBox, bool inValidateMode, bool inEnable, bool inFirstBlank);
     /*public*/ QRectF unionToPanelBounds(/*@Nonnull*/ QRectF bounds);
     /*public*/ QRectF getPanelBounds();
     /*public*/ bool highlightBlock(/*@Nullable*/ Block* inBlock);
@@ -430,6 +419,17 @@ public:
 public slots:
     /*public*/ void setIncludedTurnoutSkipped(bool boo);
     void on_locationItem();
+    /*public*/ void setTurnoutAnimation(bool state) ;
+    /*public*/ void setDirectTurnoutControl(bool boo);
+    /**
+    *  Control whether target panel items are editable.
+    *  Does this by invoke the {@link Positionable#setEditable(bool)} function of
+    *  each item on the target panel. This also controls the relevant pop-up menu items
+    *  (which are the primary way that items are edited).
+    * @param state true for editable.
+    */
+    /*public*/ void setAllEditable(bool state);
+    /*public*/ void setShowHelpBar(bool state);
 
 private:
  Ui::LayoutEditor *ui;
@@ -751,7 +751,7 @@ private:
  /*private*/ /*transient*/ LayoutTrackDrawingOptions* layoutTrackDrawingOptions = nullptr;
  /*private*/ /*transient*/ JFrame* iconFrame = nullptr;
  /*private*/ /*transient*/ bool highlightSelectedBlockFlag = false;
- /*private*/ bool highlightBlockInComboBox(/*@Nonnull*/ JmriBeanComboBox* inComboBox);
+ /*private*/ bool highlightBlockInComboBox(/*@Nonnull*/ NamedBeanComboBox *inComboBox);
  /*private*/ QRectF calculateMinimumLayoutBounds();
  /*private*/ QRectF resizePanelBounds(bool forceFlag);
  //zoom
@@ -829,7 +829,7 @@ private:
  /*private*/ /*transient*/ JTextField* yTranslateField ;//= new JTextField(6);
  /*private*/ /*transient*/ QPushButton* scaleTrackDiagramDone = nullptr;
  /*private*/ /*transient*/ QPushButton* scaleTrackDiagramCancel =nullptr;
- /*private*/ /*transient*/ JmriBeanComboBox::DisplayOptions gDDMDO ;//= JmriBeanComboBox.DisplayOptions.DISPLAYNAME;
+ /*private*/ /*transient*/ NamedBean::DisplayOptions gDDMDO ;//= JmriBeanComboBox.DisplayOptions.DISPLAYNAME;
  /*private*/ /*transient*/ QList<LayoutTrack*> _layoutTrackSelection;// = new ArrayList<>();
  /*private*/ void updateComboBoxDropDownListDisplayOrderFromPrefs(/*@Nonnull*/ Component* inComponent);
  /*private*/ void updateDropDownMenuDisplayOrderMenu();
@@ -1136,7 +1136,6 @@ protected:
  /*protected*/ void setupToolsMenu(/*@Nonnull*/ QMenuBar* menuBar);
  /*protected*/ void scaleTrackDiagram();
  /*protected*/ void enterTrackWidth();
- /*protected*/ void enterGridSizes();
  /*protected*/ void enterReporter(int defaultX, int defaultY);
  /*protected*/ void showPopUp(/*@Nonnull*/ Positionable* p, /*@Nonnull */QGraphicsSceneMouseEvent* event);
  /*protected*/ QMenu* setupOptionMenu(/*@Nonnull*/ QMenuBar* menuBar);
@@ -1154,6 +1153,7 @@ protected slots:
  /*protected*/ void moveSelection();
  void undoMoveSelection();
 
+ /*protected*/ void enterGridSizes();
 
 friend class TrackSegment;
 friend class EditLevelXingDlg;

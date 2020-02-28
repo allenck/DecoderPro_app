@@ -13,9 +13,9 @@ public:
     explicit SectionManager(QObject *parent = 0);
     ~SectionManager() {}
     SectionManager(const SectionManager&) : AbstractManager() {}
-    int getXMLOrder();
+    int getXMLOrder() const override;
     //QString getSystemPrefix();
-    char typeLetter() ;
+    char typeLetter() const override;
     /*public*/ QString getNamedBeanClass();
 
     /**

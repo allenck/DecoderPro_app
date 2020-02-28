@@ -10,9 +10,9 @@ public:
     /*public*/ VirtualSignalMast(QString systemName, QString userName = "", QObject *parent = 0) ;
 //    /*public*/ VirtualSignalMast(QString systemName) ;
     void configureFromName(QString systemName) ;
-    /*public*/ void setAspect(QString aspect);
+    /*public*/ void setAspect(QString aspect) override;
     /*public*/ static int getLastRef();
-    /*public*/ QString className();
+    /*public*/ QString className()override;
 
 signals:
 

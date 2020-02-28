@@ -12,6 +12,7 @@
 #include <QVector>
 #include "panelmenu.h"
 #include "layouteditorfinditems.h"
+#include <QHash>
 
 //PointDetails::PointDetails(QObject *parent) :
 //    QObject(parent)
@@ -22,10 +23,10 @@
 
     /*static*/ int PointDetails::nxButtonTimeout = 10;
 
-/*public*/ PointDetails::PointDetails(LayoutBlock* facing, LayoutBlock* protecting, QObject *parent): QObject(parent)
+/*public*/ PointDetails::PointDetails(LayoutBlock* facing, QList<LayoutBlock*> protecting, QObject *parent): QObject(parent)
 {
     this->facing=facing;
-    protectingBlocks = QList<LayoutBlock*>();
+    protectingBlocks = protecting;
 
     panel = NULL;
     routeToSet = false;
@@ -34,6 +35,10 @@
     nxButtonState = EntryExitPairs::NXBUTTONINACTIVE;
     extendedtime = false;
     log = new Logger("PointDetails");
+    pcs = new PropertyChangeSupport(this);
+    nxButtonListener = new PropertyChangeListener(this);
+
+
 }
 
 LayoutBlock* PointDetails::getFacing(){ return facing; }
@@ -57,30 +62,30 @@ void PointDetails::setSensor(Sensor* sen){
         return;
     if(sensor!=NULL)
     {
-        //sensor.removePropertyChangeListener(nxButtonListener);
-        AbstractSensor* s = (AbstractSensor*)sensor;
-        disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+        sensor->removePropertyChangeListener(nxButtonListener);
+//        AbstractSensor* s = (AbstractSensor*)sensor;
+//        disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
     }
     sensor = sen;
     if(sensor!=NULL)
     {
-     //sensor.addPropertyChangeListener(nxButtonListener);
-     AbstractSensor* s = (AbstractSensor*)sensor;
-     connect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+     sensor->addPropertyChangeListener(nxButtonListener);
+//     AbstractSensor* s = (AbstractSensor*)sensor;
+//     connect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
     }
 
 }
 
 void PointDetails::addSensorList(){
-    //sensor.addPropertyChangeListener(nxButtonListener);
-    AbstractSensor* s = (AbstractSensor*)sensor;
-    connect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+    sensor->addPropertyChangeListener(nxButtonListener);
+//    AbstractSensor* s = (AbstractSensor*)sensor;
+//    connect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
 }
 
 void PointDetails::removeSensorList(){
-    //sensor.removePropertyChangeListener(nxButtonListener);
-    AbstractSensor* s = (AbstractSensor*)sensor;
-    disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+    sensor->removePropertyChangeListener(nxButtonListener);
+//    AbstractSensor* s = (AbstractSensor*)sensor;
+//    disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
 }
 
 //Sensor getSensor() { return sensor; }
@@ -88,7 +93,7 @@ void PointDetails::removeSensorList(){
 //protected PropertyChangeListener nxButtonListener = new PropertyChangeListener() {
 //First off if we were inactive, and now active
 //        /*public*/ void propertyChange(PropertyChangeEvent e) {
-/*public*/ void PointDetails::nxButtonListener(PropertyChangeEvent* e)
+/*private*/ void PointDetails::nxButtonStateChange(PropertyChangeEvent* e)
 {
     if(e->getPropertyName()!=("KnownState"))
         return;
@@ -189,9 +194,9 @@ void PointDetails::removeDestination(DestinationPoints* srcdp){
     destinations->remove(srcdp);
     if(sourceRoute==NULL && destinations->size()==0){
         stopFlashSensor();
-        //sensor.removePropertyChangeListener(nxButtonListener);
-        AbstractSensor* s = (AbstractSensor*)sensor;
-        disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+        sensor->removePropertyChangeListener(nxButtonListener);
+//        AbstractSensor* s = (AbstractSensor*)sensor;
+//        disconnect(s->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
         setSensor(NULL);
     }
 }
@@ -200,9 +205,9 @@ void PointDetails::removeSource(Source* /*src*/){
     sourceRoute=NULL;
     if(destinations->size()==0) {
         stopFlashSensor();
-        //sensor.removePropertyChangeListener(nxButtonListener);
-        AbstractSensor* s = (AbstractSensor*)sensor;
-        disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
+        sensor->removePropertyChangeListener(nxButtonListener);
+//        AbstractSensor* s = (AbstractSensor*)sensor;
+//        disconnect(s->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
         setSensor(NULL);
     }
 }
@@ -732,21 +737,20 @@ NamedBean* PointDetails::getSignal(){
     return true;
 }
 
-////@Override
-///*public*/ int PointDetails::hashCode() {
-//    int hash = 7;
-//    hash = 37 * hash + (this->panel != NULL ? this->panel->hashCode() : 0);
-//    hash = 37 * hash + (this->facing != NULL ? this->facing->hashCode() : 0);
-//    hash = 37 * hash + (this->protecting != NULL ? this->protecting->hashCode() : 0);
-//    return hash;
-//}
-#if 0
-java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
-/*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-    pcs.addPropertyChangeListener(l);
+//@Override
+/*public*/ uint PointDetails::hashCode() {
+    uint hash = 7;
+//    hash = 37 * hash + (this->panel != NULL ? /*this->panel->hashCode()*/ qHash(panel->title(), (uint)qGlobalQHashSeed()) : 0);
+    hash = 37 * hash + (this->facing != NULL ? this->facing->hashCode() : 0);
+//    hash = 37 * hash + (this->protectingBlocks != NULL ? this->protectingBlocks.hashCode() : 0);
+    return hash;
 }
-/*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-    pcs.removePropertyChangeListener(l);
+#
+/*public*/ /*synchronized*/ void PointDetails::addPropertyChangeListener(PropertyChangeListener* l) {
+    pcs->addPropertyChangeListener(l);
 }
-protected void firePropertyChange(String p, Object old, Object n) { pcs.firePropertyChange(p,old,n);}
-#endif
+/*public*/ /*synchronized*/ void PointDetails::removePropertyChangeListener(PropertyChangeListener* l) {
+    pcs->removePropertyChangeListener(l);
+}
+/*protected*/ void PointDetails::firePropertyChange(QString p, QVariant old, QVariant n) { pcs->firePropertyChange(p,old,n);}
+

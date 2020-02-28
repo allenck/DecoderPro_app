@@ -16,13 +16,13 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
 ///*public*/ abstract class AbstractMemoryManager extends AbstractManager
 //    implements MemoryManager {
 
-/*public*/ int AbstractMemoryManager::getXMLOrder(){
+/*public*/ int AbstractMemoryManager::getXMLOrder() const{
     return Manager::MEMORIES;
 }
 
 /*public*/ char AbstractMemoryManager::typeLetter() const { return 'M'; }
 
-/*public*/ Memory* AbstractMemoryManager::provideMemory(QString sName)
+/*public*/ Memory* AbstractMemoryManager::provideMemory(QString sName) const
 {
  Memory* t = getMemory(sName);
  if (t!=NULL) return t;
@@ -32,22 +32,22 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
   return newMemory(makeSystemName(sName), "");
 }
 
-/*public*/ Memory* AbstractMemoryManager::getMemory(QString name) {
+/*public*/ Memory* AbstractMemoryManager::getMemory(QString name) const {
     Memory* t = getByUserName(name);
     if (t!=NULL) return t;
 
     return getBySystemName(name);
 }
 
-/*public*/ Memory* AbstractMemoryManager::getBySystemName(QString name) {
+/*public*/ Memory* AbstractMemoryManager::getBySystemName(QString name) const {
     return (Memory*)_tsys->value(name);
 }
 
-/*public*/ Memory* AbstractMemoryManager::getByUserName(QString key) {
+/*public*/ Memory* AbstractMemoryManager::getByUserName(QString key) const {
     return (Memory*)_tuser->value(key);
 }
 
-/*public*/ Memory* AbstractMemoryManager::newMemory(QString systemName, QString userName)
+/*public*/ Memory* AbstractMemoryManager::newMemory(QString systemName, QString userName) const
 {
     if (log.isDebugEnabled()) log.debug("new Memory:"
                                         +( (systemName==NULL) ? "NULL" : systemName)
@@ -82,7 +82,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     // save in the maps
     Register(s);
 
-    emit newMemoryCreated(s);
+    //emit newMemoryCreated(s);
 
     /*The following keeps trace of the last created auto system name.
     currently we do not reuse numbers, although there is nothing to stop the
@@ -103,7 +103,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     return s;
 }
 
-/*public*/ Memory* AbstractMemoryManager::newMemory(QString userName)
+/*public*/ Memory* AbstractMemoryManager::newMemory(QString userName) const
 {
     int nextAutoMemoryRef = lastAutoMemoryRef+1;
     QString b =  QString("IM:AUTO:");
@@ -127,13 +127,13 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
 /** {@inheritDoc} */
 //@Override
 //@Nonnull
-/*public*/ QString AbstractMemoryManager::getBeanTypeHandled(bool plural) {
+/*public*/ QString AbstractMemoryManager::getBeanTypeHandled(bool plural) const{
     return (plural ? tr("Memories") : tr("Memory"));
 }
 
 //@Override
 //@Nonnull
-/*public*/ Memory* AbstractMemoryManager::provide(QString name) throw (IllegalArgumentException) {
+/*public*/ Memory* AbstractMemoryManager::provide(QString name) const throw (IllegalArgumentException) {
     return provideMemory(name);
 }
 

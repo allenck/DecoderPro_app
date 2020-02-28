@@ -223,7 +223,7 @@ SimpleTimebaseXml::~SimpleTimebaseXml()
     log->error("load(QDomElement, Object) called unexpectedly");
 }
 
-/*public*/ int SimpleTimebaseXml::loadOrder(){
+/*public*/ int SimpleTimebaseXml::loadOrder() const{
     return Manager::TIMEBASE;
 }
 

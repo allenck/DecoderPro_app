@@ -32,7 +32,7 @@ public:
     /*public*/ void dispose();
     /*public*/ QString getDescription();
     /*public*/ QString toString();
-    /*public*/ void addSetting(BeanSetting* t);
+    /*public*/ void addSetting(BeanSetting* t) override;
     /*public*/ bool equals(OPath* path);
 
 signals:

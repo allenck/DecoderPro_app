@@ -228,6 +228,16 @@ signals:
     
 public slots:
 private:
+inline bool operator<(const LocoAddress &e2) const
+{
+    if (getNumber() != e2.getNumber())
+        return getNumber() < e2.getNumber();
+}
+inline bool operator==(const LocoAddress &e2)
+{
+  return getNumber() == e2.getNumber();
+}
+
 
 };
 //QString LocoAddress::getShortName(LocoAddress::Protocol);

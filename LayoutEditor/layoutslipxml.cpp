@@ -294,7 +294,7 @@ LayoutSlipXml::LayoutSlipXml(QObject *parent) :
  QString a = element.attribute("blockname");
  if (a != NULL)
  {
-  l->tBlockName = a;
+  l->tBlockAName = a;
  }
 
  a = element.attribute("connectaname");
@@ -357,8 +357,8 @@ LayoutSlipXml::LayoutSlipXml(QObject *parent) :
  l->setSensorC(getElement(element, "sensorC"));
  l->setSensorD(getElement(element, "sensorD"));
 
- l->setTurnout(getElement(element, "turnout"));
- l->setTurnoutB(getElement(element, "turnoutB"));
+// l->setTurnout(getElement(element, "turnout"));
+// l->setTurnoutB(getElement(element, "turnoutB"));
 
  if (!element.firstChildElement("states") .isNull())
  {

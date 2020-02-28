@@ -8,12 +8,12 @@ class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditorXml : public AbstractXmlAdapter
  Q_OBJECT
 public:
  Q_INVOKABLE explicit LayoutEditorXml(QObject *parent = 0);
- ~LayoutEditorXml() {}
+ ~LayoutEditorXml() override {}
  LayoutEditorXml(const LayoutEditorXml&) : AbstractXmlAdapter() {}
- /*public*/ QDomElement store(QObject* o);
- /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception);
- /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
- /*public*/ int loadOrder();
+ /*public*/ QDomElement store(QObject* o) override;
+ /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception) override;
+ /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
+ /*public*/ int loadOrder() const  override;
 
 signals:
 

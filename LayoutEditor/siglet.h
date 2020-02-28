@@ -21,8 +21,8 @@ signals:
 public slots:
 private:
 protected:
-    /*protected*/ void init();
-    /*protected*/ bool handle();
+    /*protected*/ void init() override;
+    /*protected*/ bool handle() override;
 
 };
 

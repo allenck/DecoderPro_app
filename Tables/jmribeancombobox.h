@@ -13,7 +13,7 @@
 class Manager;
 class NamedBean;
 class PropertyChangeEvent;
-class LIBTABLESSHARED_EXPORT JmriBeanComboBox : public QComboBox
+QT_DEPRECATED class LIBTABLESSHARED_EXPORT JmriBeanComboBox : public QComboBox
 {
     Q_OBJECT
 public:

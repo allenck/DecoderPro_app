@@ -118,7 +118,7 @@ ColorUtil::ColorUtil()
     if (!color.isValid()) {
         return "";
     }
-    return QString("#%1X%2X%3X").arg(color.red()).arg( color.green()).arg(color.blue());
+    return QString("#%1%2%3").arg(color.red(),2,16).arg( color.green(),2,16).arg(color.blue(),2,16).replace(' ','0');
 }
 
 /**
@@ -166,7 +166,7 @@ ColorUtil::ColorUtil()
         return "cyan";
     }
     else
-    return QString("rgb(%1,%2,%3,%4").arg(color.red()).arg(color.green()).arg(color.blue()).arg(color.alpha());
+    return QString("rgb(%1,%2,%3,%4)").arg(color.red()).arg(color.green()).arg(color.blue()).arg(color.alpha());
 }
 /**
  * set the alpha component of a color

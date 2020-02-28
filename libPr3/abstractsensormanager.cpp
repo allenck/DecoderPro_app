@@ -37,7 +37,7 @@ AbstractSensorManager::AbstractSensorManager(SystemConnectionMemo* memo, QObject
     return Manager::SENSORS;
 }
 
-/*public*/ char AbstractSensorManager::typeLetter() { return 'S'; }
+/*public*/ char AbstractSensorManager::typeLetter() const { return 'S'; }
 
 /*public*/ Sensor* AbstractSensorManager::provideSensor(QString name)
 {
@@ -49,16 +49,16 @@ AbstractSensorManager::AbstractSensorManager(SystemConnectionMemo* memo, QObject
      return newSensor(name, nullptr);
 }
 
-/*public*/ Sensor* AbstractSensorManager::getSensor(QString name)
+/*public*/ Sensor* AbstractSensorManager::getSensor(QString name) const
 {
- Sensor* t = getByUserName(name);
+ Sensor* t = ( Sensor*)getByUserName(name);
  if (t!=nullptr) return t;
 
- return getBySystemName(name);
+ return ( Sensor*)getBySystemName(name);
 }
 
 //static final java.util.regex.Matcher numberMatcher = java.util.regex.Pattern.compile("\\d++").matcher("");
-bool AbstractSensorManager::isNumber(QString s)
+bool AbstractSensorManager::isNumber(QString s) const
 {
  //        synchronized(numberMatcher) {
  //            return numberMatcher.reset(s).matches();
@@ -77,14 +77,14 @@ bool AbstractSensorManager::isNumber(QString s)
  return(list.count()==1);
 }
 
-/*public*/ Sensor* AbstractSensorManager::getBySystemName(QString key)  {
+/*public*/ NamedBean* AbstractSensorManager::getBySystemName(QString key) const{
  if (isNumber(key))
   key = makeSystemName(key);
  QString name = normalizeSystemName(key);
  if(!_tsys->contains(name))
   return nullptr;
  NamedBean* bean = _tsys->value(name);
- Sensor* s = (Sensor*)(bean);
+ NamedBean* s = (bean);
 //        Sensor * s = sensorMap.value(key);
  return s;
 }
@@ -94,14 +94,14 @@ bool AbstractSensorManager::isNumber(QString s)
  return getBySystemName(systemName);
 }
 
-/*public*/ Sensor* AbstractSensorManager::getByUserName(QString key)
+/*public*/ NamedBean* AbstractSensorManager::getByUserName(QString key) const
 {
  if(_tuser == nullptr)
   return nullptr;
- return dynamic_cast<Sensor*>(_tuser->value(key));
+ return (_tuser->value(key));
 }
 
-/*protected*/ QString AbstractSensorManager::normalizeSystemName(QString sysName) {
+/*protected*/ QString AbstractSensorManager::normalizeSystemName(QString sysName) const {
     return sysName;
 }
 
@@ -120,13 +120,13 @@ bool AbstractSensorManager::isNumber(QString s)
 
  systemName = validateSystemNameFormat(sysName);
  // return existing if there is one
-  Sensor* s = nullptr;
+  NamedBean* s = nullptr;
   if ((userName != "") && ((s = getByUserName(userName)) != nullptr))
   {
      if (getBySystemName(sysName) != s) {
          log->error(tr("inconsistent user (%1) and system name (%2) results; userName related to (%3)").arg(userName).arg(sysName).arg(s->getSystemName()));
      }
-     return s;
+     return (Sensor*)s;
   }
   if ((s = getBySystemName(sysName)) != nullptr)
   {
@@ -136,7 +136,7 @@ bool AbstractSensorManager::isNumber(QString s)
           log->warn(tr("Found sensor via system name (%1) with non-null user name (%2). Sensor \"%3(%4)\" cannot be used.").arg(
                   sysName).arg(s->getUserName()).arg(sysName).arg(userName));
       }
-      return s;
+      return (Sensor*)s;
   }
 
  // doesn't exist, make a new one
@@ -151,12 +151,12 @@ bool AbstractSensorManager::isNumber(QString s)
  Register(s);
  emit propertyChange(new PropertyChangeEvent((QObject*)this, "length", QVariant(), QVariant(_tsys->size()))); // is this necessary here?
  //emit newSensorCreated(this, s);
- return s;
+ return (Sensor*)s;
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ QString AbstractSensorManager::getBeanTypeHandled(bool plural) {
+/*public*/ QString AbstractSensorManager::getBeanTypeHandled(bool plural) const {
     return tr(plural ? "Sensors" : "Sensor");
 }
 
@@ -205,7 +205,7 @@ bool AbstractSensorManager::isNumber(QString s)
 //                    showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",""+ex, "",true, false, org.apache.log4j.Level.ERROR);
 //            return NULL;
 //        }
- Sensor* s = getBySystemName(tmpSName);
+ NamedBean* s = getBySystemName(tmpSName);
  if(s==nullptr)
  {
   return curAddress;

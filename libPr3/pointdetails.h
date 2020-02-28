@@ -8,6 +8,7 @@
 #include "exceptions.h"
 #include "runnable.h"
 #include "entryexitpairs.h"
+#include "layoutblock.h"
 
 class ButtonTimeOut;
 class EntryExitPairs;
@@ -26,7 +27,7 @@ class PointDetails : public QObject
     Q_OBJECT
 public:
     //explicit PointDetails(QObject *parent = 0);
-    /*public*/ PointDetails(LayoutBlock* facing, LayoutBlock* protecting, QObject *parent = 0);
+    /*public*/ PointDetails(LayoutBlock* facing, QList<LayoutBlock*> protecting, QObject *parent = 0);
     LayoutBlock* getFacing();
     QList<LayoutBlock*> getProtecting();
     void setRouteTo(bool boo);
@@ -50,7 +51,7 @@ public:
     void removeSensorList();
     NamedBean* getSignal();
     /*public*/ bool equals(QObject* obj);
-//    /*public*/ int hashCode();
+    /*public*/ uint hashCode();
     void setSignalMast(SignalMast* mast);
     void setSource(Source* src);
     void setDestination(DestinationPoints* srcdp, Source* src);
@@ -59,11 +60,14 @@ public:
     void setButtonState(int state);
     /*synchronized*/ /*public*/ void setNXButtonState(int state);
     /*public*/ void setRefObjectByPanel(NamedBean* refObs, LayoutEditor* pnl);
+    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
+    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
 
 signals:
     void propertyChange(PropertyChangeEvent*);
+
 public slots:
-    /*public*/ void nxButtonListener(PropertyChangeEvent* e);
 
 private:
     LayoutEditor* panel;// = null;
@@ -75,7 +79,18 @@ private:
     /*private*/ SignalMast* signalmast;
     /*private*/ SignalHead* signalhead;
     static int nxButtonTimeout;// = 10;
+#if 1
+    inline bool operator==(const PointDetails &e2)
+    {
+        return facing == e2.facing
+               && protectingBlocks == e2.protectingBlocks;
+    }
 
+    inline uint qHash(const PointDetails &key, uint seed)
+    {
+        return /*qHash(key.facing, seed)*/ key.facing->hashCode();
+    }
+#endif
     Source* sourceRoute;
     /*transient*/ QHash<DestinationPoints*, Source*>* destinations;// = new QHash<DestinationPoints, Source>(5);
     bool routeToSet;// = false;
@@ -90,10 +105,20 @@ private:
     /*public*/ void stopFlashSensor();
     QMutex mutex;
     Logger* log;
+    /*private*/ void nxButtonStateChange(PropertyChangeEvent* e);
+
+
+protected:
+    /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
+    /*protected*/ PropertyChangeListener* nxButtonListener;// = new PropertyChangeListener() {
+
+
     friend class ButtonTimeOut;
     friend class DestinationPoints;
     friend class DPRunnable;
+    friend class NxButtonListener;
 };
+
 class ButtonTimeOut :public  Runnable
 {
  Q_OBJECT
@@ -118,4 +143,15 @@ public:
     }
 };
 
+class NxButtonListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ PointDetails* pd;
+public:
+ NxButtonListener(PointDetails* pd) {this->pd = pd;}
+ void propertyChange(PropertyChangeEvent* e)
+ {
+  pd->nxButtonStateChange(e);
+ }
+};
 #endif // POINTDETAILS_H

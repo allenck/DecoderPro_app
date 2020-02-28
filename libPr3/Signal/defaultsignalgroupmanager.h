@@ -7,21 +7,21 @@ class LIBPR3SHARED_EXPORT DefaultSignalGroupManager : public SignalGroupManager
 {
     Q_OBJECT
 public:
-    explicit DefaultSignalGroupManager(QObject *parent = 0);
+    Q_INVOKABLE explicit DefaultSignalGroupManager(QObject *parent = 0);
     ~DefaultSignalGroupManager() {}
     DefaultSignalGroupManager(const DefaultSignalGroupManager&) : SignalGroupManager() {}
-    /*public*/ int getXMLOrder();
-    /*public*/ QString getSystemPrefix();
+    /*public*/ int getXMLOrder() const override;
+    /*public*/ QString getSystemPrefix()const override;
     /*public*/ char typeLetter() ;
-    /*public*/ SignalGroup* getSignalGroup(QString name);
-    /*public*/ SignalGroup* getBySystemName(QString key);
-    /*public*/ SignalGroup* getByUserName(QString key);
-    /*public*/ SignalGroup* newSignalGroup(QString sys);
-    /*public*/ SignalGroup* provideSignalGroup(QString systemName, QString userName);
+    /*public*/ SignalGroup* getSignalGroup(QString name)override;
+    /*public*/ SignalGroup* getBySystemName(QString key)const override;
+    /*public*/ SignalGroup* getByUserName(QString key)const override;
+    /*public*/ SignalGroup* newSignalGroup(QString sys)override;
+    /*public*/ SignalGroup* provideSignalGroup(QString systemName, QString userName)override;
     QStringList getListOfNames();
     static DefaultSignalGroupManager* _instance;// = NULL;
     static /*public*/ DefaultSignalGroupManager* instance();
-    /*public*/ void deleteSignalGroup(SignalGroup* s);
+    /*public*/ void deleteSignalGroup(SignalGroup* s)override;
 
 signals:
 

@@ -33,10 +33,10 @@ public:
     QList<LayoutBlock *> getProtecting();
     int getEntryExitType();
     void setEntryExitType(int type);
-    /*public*/ void dispose();
-    /*public*/ int getState();
+    /*public*/ void dispose() override;
+    /*public*/ int getState() override;
     /*public*/ bool isActive();
-    /*public*/ void setState(int state);
+    /*public*/ void setState(int state) override;
     void setActiveEntryExit(bool boo);
     /*synchronized*/ void activeBean(bool reverseDirection, bool showMessage);
     /*public*/ void setInterlockRoute(bool reverseDirection);
@@ -89,6 +89,7 @@ friend class Source;
 friend class PointDetails;
 friend class MessageTimeOut;
 friend class DPRunnable;
+friend class DestinationPointsTest;
 };
 
 class DPRunnable : public Runnable {

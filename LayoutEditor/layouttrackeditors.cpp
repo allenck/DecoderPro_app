@@ -45,30 +45,30 @@
  editTrackSegmentMainlineComboBox = new QComboBox();
  editTrackSegmentDashedComboBox = new QComboBox();
  editTrackSegmentHiddenCheckBox = new QCheckBox(tr("Hide Track"));  // NOI18N
- editTrackSegmentBlockNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
-         InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ editTrackSegmentBlockNameComboBox = new NamedBeanComboBox(static_cast<BlockManager*>(
+         InstanceManager::getDefault("BlockManager")),  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
  editTrackSegmentArcTextField = new JTextField(5);
 
- editLayoutTurnoutBlockNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
-         InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
- editLayoutTurnoutBlockBNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
-         InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
- editLayoutTurnoutBlockCNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
-         InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
- editLayoutTurnoutBlockDNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
-         InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ editLayoutTurnoutBlockNameComboBox = new NamedBeanComboBox(static_cast<BlockManager*>(
+         InstanceManager::getDefault("BlockManager")),  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ editLayoutTurnoutBlockBNameComboBox = new NamedBeanComboBox(static_cast<BlockManager*>(
+         InstanceManager::getDefault("BlockManager")),  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ editLayoutTurnoutBlockCNameComboBox = new NamedBeanComboBox(static_cast<BlockManager*>(
+         InstanceManager::getDefault("BlockManager")),  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ editLayoutTurnoutBlockDNameComboBox = new NamedBeanComboBox(static_cast<BlockManager*>(
+         InstanceManager::getDefault("BlockManager")),  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
  editLayoutTurnoutStateComboBox = new QComboBox();
  editLayoutTurnoutHiddenCheckBox = new QCheckBox(tr("Hide Turnout"));  // NOI18N
  editLayoutTurnout2ndTurnoutCheckBox = new QCheckBox(tr("Use Two Physical Addresses"));  // NOI18N
  editLayoutTurnout2ndTurnoutInvertCheckBox = new QCheckBox(tr("SecondTurnoutInvert"));  // NOI18N
 
  editLayoutSlipHiddenBox = new QCheckBox(tr("Hide Slip"));
- editLayoutSlipBlockNameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
-         InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
- editLevelXingBlock1NameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
-     InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
- editLevelXingBlock2NameComboBox = new JmriBeanComboBox(static_cast<BlockManager*>(
-     InstanceManager::getDefault("BlockManager")),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+ editLayoutSlipBlockNameComboBox = new NamedBeanComboBox(static_cast<BlockManager*>(
+         InstanceManager::getDefault("BlockManager")),  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ editLevelXingBlock1NameComboBox = new NamedBeanComboBox(static_cast<BlockManager*>(
+     InstanceManager::getDefault("BlockManager")),  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ editLevelXingBlock2NameComboBox = new NamedBeanComboBox(static_cast<BlockManager*>(
+     InstanceManager::getDefault("BlockManager")),  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
  editLevelXingHiddenCheckBox = new QCheckBox(tr("Hide Crossing"));  // NOI18N
  editLayoutTurntableRadiusTextField = new JTextField(8);
  editLayoutTurntableAngleTextField = new JTextField(8);
@@ -228,7 +228,7 @@ void LayoutTrackEditors::showSensorMessage() {
      panel2->setLayout(panel2Layout = new FlowLayout());
      QLabel* blockNameLabel = new QLabel(tr("Block Name:"));  // NOI18N
      panel2Layout->addWidget(blockNameLabel);
-     LayoutEditor::setupComboBox(editTrackSegmentBlockNameComboBox, false, true);
+     LayoutEditor::setupComboBox(editTrackSegmentBlockNameComboBox, false, true, true);
      editTrackSegmentBlockNameComboBox->setToolTip(tr("Edit Block name to change the linked block. If new name, block will be created."));  // NOI18N
      panel2Layout->addWidget(editTrackSegmentBlockNameComboBox);
 
@@ -291,7 +291,7 @@ void LayoutTrackEditors::showSensorMessage() {
         editTrackSegmentDashedComboBox->setCurrentIndex(editTrackSegmentSolidIndex);
     }
     editTrackSegmentHiddenCheckBox->setChecked(trackSegment->isHidden());
-    editTrackSegmentBlockNameComboBox->setText(trackSegment->getBlockName());
+    editTrackSegmentBlockNameComboBox->setSelectedItemByName(trackSegment->getBlockName());
     editTrackSegmentBlockNameComboBox->setEnabled(!hasNxSensorPairs(trackSegment->getLayoutBlock()));
 
     if (trackSegment->isArc() && trackSegment->isCircle()) {
@@ -319,7 +319,7 @@ void LayoutTrackEditors::showSensorMessage() {
 //@InvokeOnGuiThread
 /*private*/ void LayoutTrackEditors::editTrackSegmentEditBlockPressed(/*ActionEvent a*/) {
     // check if a block name has been entered
-    QString newName = editTrackSegmentBlockNameComboBox->getUserName();
+    QString newName = editTrackSegmentBlockNameComboBox->getSelectedItemDisplayName();
     if ((trackSegment->getBlockName() ==  nullptr)
             || trackSegment->getBlockName() != (newName)) {
         // get new block, or  nullptr if block has been removed
@@ -374,7 +374,7 @@ void LayoutTrackEditors::showSensorMessage() {
         editTrackSegmentNeedsRedraw = true;
     }
     // check if Block changed
-    QString newName = editTrackSegmentBlockNameComboBox->getUserName();
+    QString newName = editTrackSegmentBlockNameComboBox->getSelectedItemDisplayName();
     if ((trackSegment->getBlockName() ==  nullptr)
             || trackSegment->getBlockName() != (newName)) {
         // get new block, or  nullptr if block has been removed
@@ -442,11 +442,11 @@ void LayoutTrackEditors::showSensorMessage() {
         panel1Layout->addWidget(turnoutNameLabel);
 
         // add combobox to select turnout
-        editLayoutTurnout1stTurnoutComboBox = new JmriBeanComboBox(
+        editLayoutTurnout1stTurnoutComboBox = new NamedBeanComboBox(
                 InstanceManager::turnoutManagerInstance(),
                 layoutTurnout->getTurnout(),
-                JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
-         layoutEditor->setupComboBox(editLayoutTurnout1stTurnoutComboBox, true, true);
+                NamedBean::DisplayOptions::DISPLAYNAME);
+         layoutEditor->setupComboBox(editLayoutTurnout1stTurnoutComboBox, false, true, false);
 #if 0
         // disable items that are already in use
         PopupMenuListener* pml = new PopupMenuListener() {
@@ -477,10 +477,11 @@ void LayoutTrackEditors::showSensorMessage() {
         };
 #endif
         TurnoutPopupMenuListener* pml;
+#if 0
         editLayoutTurnout1stTurnoutComboBox->addPopupMenuListener(pml = new TurnoutPopupMenuListener(this));
         editLayoutTurnout1stTurnoutComboBox->setEnabledColor(Qt::darkGreen);
         editLayoutTurnout1stTurnoutComboBox->setDisabledColor(Qt::red);
-
+#endif
         panel1Layout->addWidget(editLayoutTurnout1stTurnoutComboBox);
         contentPane->layout()->addWidget(panel1);
 
@@ -488,15 +489,16 @@ void LayoutTrackEditors::showSensorMessage() {
         QVBoxLayout* panel1aLayout;
         panel1a->setLayout(panel1aLayout = new QVBoxLayout());//panel1a, BoxLayout.Y_AXIS));
 
-        editLayoutTurnout2ndTurnoutComboBox = new JmriBeanComboBox(
+        editLayoutTurnout2ndTurnoutComboBox = new NamedBeanComboBox(
                 InstanceManager::turnoutManagerInstance(),
                 layoutTurnout->getSecondTurnout(),
-                JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
-         layoutEditor->setupComboBox(editLayoutTurnout2ndTurnoutComboBox, true, false);
-
+                NamedBean::DisplayOptions::DISPLAYNAME);
+         layoutEditor->setupComboBox(editLayoutTurnout2ndTurnoutComboBox, false, true, false);
+#if 0
         editLayoutTurnout2ndTurnoutComboBox->addPopupMenuListener(pml);
         editLayoutTurnout2ndTurnoutComboBox->setEnabledColor(Qt::darkGreen);
         editLayoutTurnout2ndTurnoutComboBox->setDisabledColor(Qt::red);
+#endif
 
 //        editLayoutTurnout2ndTurnoutCheckBox.addActionListener((ActionEvent e) -> {
 //            bool additionalEnabled = editLayoutTurnout2ndTurnoutCheckBox->isChecked();
@@ -556,7 +558,7 @@ void LayoutTrackEditors::showSensorMessage() {
         FlowLayout* panel2Layout;
         panel2->setLayout(panel2Layout = new FlowLayout());
         panel2Layout->addWidget(editLayoutTurnoutBlockNameComboBox);
-         layoutEditor->setupComboBox(editLayoutTurnoutBlockNameComboBox, false, true);
+         layoutEditor->setupComboBox(editLayoutTurnoutBlockNameComboBox, false, true, true);
         editLayoutTurnoutBlockNameComboBox->setToolTip(tr("Edit Block name to change the linked block. If new name, block will be created."));  // NOI18N
         panel2Layout->addWidget(editLayoutTurnoutBlockButton = new QPushButton(tr("Create/Edit")));  // NOI18N
 //        editLayoutTurnoutBlockButton.addActionListener((ActionEvent e) -> {
@@ -574,7 +576,7 @@ void LayoutTrackEditors::showSensorMessage() {
             //borderblk2.setTitle(tr("BeanNameBlock") + " 2");  // NOI18N
             //panel21.setBorder(borderblk2);
             panel21->setTitle(tr("Block"));
-             layoutEditor->setupComboBox(editLayoutTurnoutBlockBNameComboBox, false, true);
+             layoutEditor->setupComboBox(editLayoutTurnoutBlockBNameComboBox, false, true, true);
             editLayoutTurnoutBlockBNameComboBox->setToolTip(tr("Edit this Block name to change the block linked to the second connecting point."));  // NOI18N
             panel21Layout->addWidget(editLayoutTurnoutBlockBNameComboBox);
 
@@ -593,7 +595,7 @@ void LayoutTrackEditors::showSensorMessage() {
             //borderblk3.setTitle(tr("BeanNameBlock") + " 3");  // NOI18N
             //panel22.setBorder(borderblk3);
             panel22->setTitle(tr("Block"));
-             layoutEditor->setupComboBox(editLayoutTurnoutBlockCNameComboBox, false, true);
+             layoutEditor->setupComboBox(editLayoutTurnoutBlockCNameComboBox, false, true, true);
             editLayoutTurnoutBlockCNameComboBox->setToolTip(tr("Edit this Block name to change the block linked to third connecting point."));  // NOI18N
             panel22Layout->addWidget(editLayoutTurnoutBlockCNameComboBox);
             panel22Layout->addWidget(editLayoutTurnoutBlockCButton = new QPushButton(tr("Create/Edit")));  // NOI18N
@@ -611,7 +613,7 @@ void LayoutTrackEditors::showSensorMessage() {
             //borderblk4.setTitle(tr("BeanNameBlock") + " 4");  // NOI18N
             //panel23.setBorder(borderblk4);
             panel23->setTitle(tr("Block"));
-             layoutEditor->setupComboBox(editLayoutTurnoutBlockDNameComboBox, false, true);
+             layoutEditor->setupComboBox(editLayoutTurnoutBlockDNameComboBox, false, true, true);
             editLayoutTurnoutBlockDNameComboBox->setToolTip(tr("Edit this Block name to change the block linked to fourth connecting point."));  // NOI18N
             panel23Layout->addWidget(editLayoutTurnoutBlockDNameComboBox);
             panel23Layout->addWidget(editLayoutTurnoutBlockDButton = new QPushButton(tr("Create/Edit")));  // NOI18N
@@ -655,19 +657,19 @@ void LayoutTrackEditors::showSensorMessage() {
         contentPane->layout()->addWidget(panel5);
     }
 
-    editLayoutTurnout1stTurnoutComboBox->setText(layoutTurnout->getTurnoutName());
+    editLayoutTurnout1stTurnoutComboBox->setSelectedItemByName(layoutTurnout->getTurnoutName());
 
     editLayoutTurnoutHiddenCheckBox->setChecked(layoutTurnout->isHidden());
 
     // Set up for Edit
-    editLayoutTurnoutBlockNameComboBox->setText(layoutTurnout->getBlockName());
+    editLayoutTurnoutBlockNameComboBox->setSelectedItemByName(layoutTurnout->getBlockName());
     editLayoutTurnoutBlockNameComboBox->setEnabled(!hasNxSensorPairs(layoutTurnout->getLayoutBlock()));
     if ((layoutTurnout->getTurnoutType() == LayoutTurnout::DOUBLE_XOVER)
             || (layoutTurnout->getTurnoutType() == LayoutTurnout::RH_XOVER)
             || (layoutTurnout->getTurnoutType() == LayoutTurnout::LH_XOVER)) {
-        editLayoutTurnoutBlockBNameComboBox->setText(layoutTurnout->getBlockBName());
-        editLayoutTurnoutBlockCNameComboBox->setText(layoutTurnout->getBlockCName());
-        editLayoutTurnoutBlockDNameComboBox->setText(layoutTurnout->getBlockDName());
+        editLayoutTurnoutBlockBNameComboBox->setSelectedItemByName(layoutTurnout->getBlockBName());
+        editLayoutTurnoutBlockCNameComboBox->setSelectedItemByName(layoutTurnout->getBlockCName());
+        editLayoutTurnoutBlockDNameComboBox->setSelectedItemByName(layoutTurnout->getBlockDName());
         editLayoutTurnoutBlockBNameComboBox->setEnabled(!hasNxSensorPairs(layoutTurnout->getLayoutBlockB()));
         editLayoutTurnoutBlockCNameComboBox->setEnabled(!hasNxSensorPairs(layoutTurnout->getLayoutBlockC()));
         editLayoutTurnoutBlockDNameComboBox->setEnabled(!hasNxSensorPairs(layoutTurnout->getLayoutBlockD()));
@@ -686,10 +688,10 @@ void LayoutTrackEditors::showSensorMessage() {
     editLayoutTurnout2ndTurnoutComboBox->setEnabled(enable2nd);
     if (enable2nd) {
         editLayoutTurnout2ndTurnoutInvertCheckBox->setChecked(layoutTurnout->isSecondTurnoutInverted());
-        editLayoutTurnout2ndTurnoutComboBox->setText(layoutTurnout->getSecondTurnoutName());
+        editLayoutTurnout2ndTurnoutComboBox->setSelectedItemByName(layoutTurnout->getSecondTurnoutName());
     } else {
         editLayoutTurnout2ndTurnoutInvertCheckBox->setChecked(false);
-        editLayoutTurnout2ndTurnoutComboBox->setText("");
+        editLayoutTurnout2ndTurnoutComboBox->setSelectedItemByName("");
     }
 
     if ((layoutTurnout->getTurnoutType() != LayoutTurnout::DOUBLE_XOVER)
@@ -762,7 +764,7 @@ void LayoutTrackEditors::showSensorMessage() {
 
 /*private*/ void LayoutTrackEditors::editLayoutTurnoutEditBlockPressed(/*ActionEvent a*/) {
     // check if a block name has been entered
-    QString newName = editLayoutTurnoutBlockNameComboBox->getUserName();
+    QString newName = editLayoutTurnoutBlockNameComboBox->getSelectedItemDisplayName();
     if (layoutTurnout->getBlockName() != (newName)) {
         // get new block, or  nullptr if block has been removed
         try {
@@ -787,7 +789,7 @@ void LayoutTrackEditors::showSensorMessage() {
 
 /*private*/ void LayoutTrackEditors::editLayoutTurnoutEditBlockBPressed(/*ActionEvent a*/) {
     // check if a block name has been entered
-    QString newName = editLayoutTurnoutBlockBNameComboBox->getUserName();
+    QString newName = editLayoutTurnoutBlockBNameComboBox->getSelectedItemDisplayName();
     if (layoutTurnout->getBlockBName() != (newName)) {
         // get new block, or  nullptr if block has been removed
         try {
@@ -812,7 +814,7 @@ void LayoutTrackEditors::showSensorMessage() {
 
 /*private*/ void LayoutTrackEditors::editLayoutTurnoutEditBlockCPressed(/*ActionEvent a*/) {
     // check if a block name has been entered
-    QString newName = editLayoutTurnoutBlockCNameComboBox->getUserName();
+    QString newName = editLayoutTurnoutBlockCNameComboBox->getSelectedItemDisplayName();
     if (layoutTurnout->getBlockCName() != (newName)) {
         // get new block, or  nullptr if block has been removed
         try {
@@ -837,7 +839,7 @@ void LayoutTrackEditors::showSensorMessage() {
 
 /*private*/ void LayoutTrackEditors::editLayoutTurnoutEditBlockDPressed(/*ActionEvent a*/) {
     // check if a block name has been entered
-    QString newName = editLayoutTurnoutBlockDNameComboBox->getUserName();
+    QString newName = editLayoutTurnoutBlockDNameComboBox->getSelectedItemDisplayName();
     if (layoutTurnout->getBlockDName() != (newName)) {
         // get new block, or  nullptr if block has been removed
         try {
@@ -862,7 +864,7 @@ void LayoutTrackEditors::showSensorMessage() {
 
 /*private*/ void LayoutTrackEditors::editLayoutTurnoutDonePressed(/*ActionEvent a*/) {
     // check if Turnout changed
-    QString newName = editLayoutTurnout1stTurnoutComboBox->getDisplayName();
+    QString newName = editLayoutTurnout1stTurnoutComboBox->getSelectedItemDisplayName();
     if (layoutTurnout->getTurnoutName() != (newName)) {
         // turnout has changed
         if ( layoutEditor->validatePhysicalTurnout(
@@ -870,13 +872,13 @@ void LayoutTrackEditors::showSensorMessage() {
             layoutTurnout->setTurnout(newName);
         } else {
             layoutTurnout->setTurnout( nullptr);
-            editLayoutTurnout1stTurnoutComboBox->setText("");
+            editLayoutTurnout1stTurnoutComboBox->setSelectedItemByName("");
         }
         editLayoutTurnoutNeedRedraw = true;
     }
 
     if (editLayoutTurnout2ndTurnoutCheckBox->isChecked()) {
-        newName = editLayoutTurnout2ndTurnoutComboBox->getDisplayName();
+        newName = editLayoutTurnout2ndTurnoutComboBox->getSelectedItemDisplayName();
         if (layoutTurnout->getSecondTurnoutName() != (newName)) {
             if ((layoutTurnout->getTurnoutType() == LayoutTurnout::DOUBLE_XOVER)
                     || (layoutTurnout->getTurnoutType() == LayoutTurnout::RH_XOVER)
@@ -888,7 +890,7 @@ void LayoutTrackEditors::showSensorMessage() {
                 } else {
                     editLayoutTurnout2ndTurnoutCheckBox->setChecked(false);
                     layoutTurnout->setSecondTurnout( nullptr);
-                    editLayoutTurnout2ndTurnoutComboBox->setText("");
+                    editLayoutTurnout2ndTurnoutComboBox->setSelectedItemByName("");
                 }
                 editLayoutTurnoutNeedRedraw = true;
             } else {
@@ -910,7 +912,7 @@ void LayoutTrackEditors::showSensorMessage() {
     }
 
     // check if Block changed
-    newName = editLayoutTurnoutBlockNameComboBox->getUserName();
+    newName = editLayoutTurnoutBlockNameComboBox->getSelectedItemDisplayName();
     if (layoutTurnout->getBlockName() != (newName)) {
         // get new block, or  nullptr if block has been removed
         try {
@@ -925,7 +927,7 @@ void LayoutTrackEditors::showSensorMessage() {
             || (layoutTurnout->getTurnoutType() == LayoutTurnout::LH_XOVER)
             || (layoutTurnout->getTurnoutType() == LayoutTurnout::RH_XOVER)) {
         // check if Block 2 changed
-        newName = editLayoutTurnoutBlockBNameComboBox->getUserName();
+        newName = editLayoutTurnoutBlockBNameComboBox->getSelectedItemDisplayName();
         if (layoutTurnout->getBlockBName() != (newName)) {
             // get new block, or  nullptr if block has been removed
             try {
@@ -937,7 +939,7 @@ void LayoutTrackEditors::showSensorMessage() {
             editLayoutTurnoutNeedsBlockUpdate = true;
         }
         // check if Block 3 changed
-        newName = editLayoutTurnoutBlockCNameComboBox->getUserName();
+        newName = editLayoutTurnoutBlockCNameComboBox->getSelectedItemDisplayName();
         if (layoutTurnout->getBlockCName() != (newName)) {
             // get new block, or  nullptr if block has been removed
             try {
@@ -949,7 +951,7 @@ void LayoutTrackEditors::showSensorMessage() {
             editLayoutTurnoutNeedsBlockUpdate = true;
         }
         // check if Block 4 changed
-        newName = editLayoutTurnoutBlockDNameComboBox->getUserName();
+        newName = editLayoutTurnoutBlockDNameComboBox->getSelectedItemDisplayName();
         if (layoutTurnout->getBlockDName() != (newName)) {
             // get new block, or  nullptr if block has been removed
             try {
@@ -1026,11 +1028,11 @@ void LayoutTrackEditors::showSensorMessage() {
     panel1->setLayout(new FlowLayout());
     QLabel* turnoutNameLabel = new QLabel(tr("Turnout") + " A " + tr("Name"));  // NOI18N
     panel1->layout()->addWidget(turnoutNameLabel);
-    editLayoutSlipTurnoutAComboBox = new JmriBeanComboBox(
+    editLayoutSlipTurnoutAComboBox = new NamedBeanComboBox(
             InstanceManager::turnoutManagerInstance(),
             layoutSlip->getTurnout(),
-            JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
-    LayoutEditor::setupComboBox(editLayoutSlipTurnoutAComboBox, true, true);
+            NamedBean::DisplayOptions::DISPLAYNAME);
+    LayoutEditor::setupComboBox(editLayoutSlipTurnoutAComboBox, false, true, false);
 
     // disable items that are already in use
 #if 0 // see after this method:
@@ -1068,11 +1070,11 @@ void LayoutTrackEditors::showSensorMessage() {
     };
 #endif
     SlipPopupMenuListener* pml = new SlipPopupMenuListener(this);
-
+#if 0
     editLayoutSlipTurnoutAComboBox->addPopupMenuListener(pml);
     editLayoutSlipTurnoutAComboBox->setEnabledColor(QColor(Qt::darkGreen));
     editLayoutSlipTurnoutAComboBox->setDisabledColor(QColor(Qt::red));
-
+#endif
     panel1->layout()->addWidget(editLayoutSlipTurnoutAComboBox);
     contentPane->layout()->addWidget(panel1);
 
@@ -1081,16 +1083,16 @@ void LayoutTrackEditors::showSensorMessage() {
     QLabel* turnoutBNameLabel = new QLabel(tr("Turnout") + " B " + tr("Name"));  // NOI18N
     panel1a->layout()->addWidget(turnoutBNameLabel);
 
-    editLayoutSlipTurnoutBComboBox = new JmriBeanComboBox(
+    editLayoutSlipTurnoutBComboBox = new NamedBeanComboBox(
             InstanceManager::turnoutManagerInstance(),
             layoutSlip->getTurnoutB(),
-            JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
-    LayoutEditor::setupComboBox(editLayoutSlipTurnoutBComboBox, true, true);
-
+            NamedBean::DisplayOptions::DISPLAYNAME);
+    LayoutEditor::setupComboBox(editLayoutSlipTurnoutBComboBox, false, true, false);
+#if 0
     editLayoutSlipTurnoutBComboBox->addPopupMenuListener(pml);
     editLayoutSlipTurnoutBComboBox->setEnabledColor(QColor(Qt::darkGreen));
     editLayoutSlipTurnoutBComboBox->setDisabledColor(QColor(Qt::red));
-
+#endif
     panel1a->layout()->addWidget(editLayoutSlipTurnoutBComboBox);
 
     contentPane->layout()->addWidget(panel1a);
@@ -1145,7 +1147,7 @@ void LayoutTrackEditors::showSensorMessage() {
     QLabel* block1NameLabel = new QLabel(tr("Block Name:"));  // NOI18N
     panel3Layout->addWidget(block1NameLabel);
     panel3Layout->addWidget(editLayoutSlipBlockNameComboBox);
-     layoutEditor->setupComboBox(editLayoutSlipBlockNameComboBox, false, true);
+     layoutEditor->setupComboBox(editLayoutSlipBlockNameComboBox, false, true, true);
     editLayoutSlipBlockNameComboBox->setToolTip(tr("Edit Block name to change the linked block. If new name, block will be created."));  // NOI18N
 
     contentPane->layout()->addWidget(panel3);
@@ -1197,9 +1199,9 @@ void LayoutTrackEditors::showSensorMessage() {
  editLayoutSlipHiddenBox->setChecked(layoutSlip->isHidden());
 
  // Set up for Edit
- editLayoutSlipTurnoutAComboBox->setText(layoutSlip->getTurnoutName());
- editLayoutSlipTurnoutBComboBox->setText(layoutSlip->getTurnoutBName());
- editLayoutSlipBlockNameComboBox->setText(layoutSlip->getBlockName());
+ editLayoutSlipTurnoutAComboBox->setSelectedItemByName(layoutSlip->getTurnoutName());
+ editLayoutSlipTurnoutBComboBox->setSelectedItemByName(layoutSlip->getTurnoutBName());
+ editLayoutSlipBlockNameComboBox->setSelectedItemByName(layoutSlip->getBlockName());
  editLayoutSlipBlockNameComboBox->setEnabled(!hasNxSensorPairs(layoutSlip->getLayoutBlock()));
 
  //    editLayoutSlipFrame.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -1403,11 +1405,11 @@ switch (testState) {
 turnAState = layoutSlip->getTurnoutStates().value(testState)->getTestTurnoutAState();
 turnBState = layoutSlip->getTurnoutStates().value(testState)->getTestTurnoutBState();
 
-if (editLayoutSlipTurnoutAComboBox->getSelectedBean() !=  nullptr) {
-    ((Turnout*) editLayoutSlipTurnoutAComboBox->getSelectedBean())->setCommandedState(turnAState);
+if (editLayoutSlipTurnoutAComboBox->getSelectedItem() !=  nullptr) {
+    ((Turnout*) editLayoutSlipTurnoutAComboBox->getSelectedItem())->setCommandedState(turnAState);
 }
-if (editLayoutSlipTurnoutBComboBox->getSelectedBean() !=  nullptr) {
-    ((Turnout*) editLayoutSlipTurnoutBComboBox->getSelectedBean())->setCommandedState(turnBState);
+if (editLayoutSlipTurnoutBComboBox->getSelectedItem() !=  nullptr) {
+    ((Turnout*) editLayoutSlipTurnoutBComboBox->getSelectedItem())->setCommandedState(turnBState);
 }
     if (testPanel !=  nullptr) {
         testPanel->repaint();
@@ -1429,7 +1431,7 @@ class TestState extends QWidget* {
 
 /*private*/ void LayoutTrackEditors::editLayoutSlipEditBlockPressed(/*ActionEvent a*/) {
 // check if a block name has been entered
-QString newName = editLayoutSlipBlockNameComboBox->getUserName();
+QString newName = editLayoutSlipBlockNameComboBox->getSelectedItemDisplayName();
 if (layoutSlip->getBlockName() !=(newName)) {
     // get new block, or  nullptr if block has been removed
     try {
@@ -1453,7 +1455,7 @@ layoutEditor->setDirty();
 }   // editLayoutSlipEditBlockPressed(
 
 /*private*/ void LayoutTrackEditors::editLayoutSlipDonePressed(/*ActionEvent a*/) {
-QString newName = editLayoutSlipTurnoutAComboBox->getDisplayName();
+QString newName = editLayoutSlipTurnoutAComboBox->getSelectedItemDisplayName();
 if (layoutSlip->getTurnoutName() != (newName)) {
     if (layoutEditor->validatePhysicalTurnout(newName, editLayoutSlipFrame)) {
         layoutSlip->setTurnout(newName);
@@ -1463,7 +1465,7 @@ if (layoutSlip->getTurnoutName() != (newName)) {
     editLayoutSlipNeedsRedraw = true;
 }
 
-newName = editLayoutSlipTurnoutBComboBox->getDisplayName();
+newName = editLayoutSlipTurnoutBComboBox->getSelectedItemDisplayName();
 if (layoutSlip->getTurnoutBName() != (newName)) {
     if (layoutEditor->validatePhysicalTurnout(newName, editLayoutSlipFrame)) {
         layoutSlip->setTurnoutB(newName);
@@ -1473,14 +1475,14 @@ if (layoutSlip->getTurnoutBName() != (newName)) {
     editLayoutSlipNeedsRedraw = true;
 }
 
-newName = editLayoutSlipBlockNameComboBox->getUserName();
+newName = editLayoutSlipBlockNameComboBox->getSelectedItemDisplayName();
 if (layoutSlip->getBlockName() !=(newName)) {
     // get new block, or  nullptr if block has been removed
     try {
         layoutSlip->setLayoutBlock(layoutEditor->provideLayoutBlock(newName));
     } catch (IllegalArgumentException ex) {
         layoutSlip->setLayoutBlock( nullptr);
-        editLayoutSlipBlockNameComboBox->setText("");
+        editLayoutSlipBlockNameComboBox->setSelectedItemByName("");
         editLayoutSlipBlockNameComboBox->setCurrentIndex(-1);
     }
     editLayoutSlipNeedsRedraw = true;
@@ -1564,7 +1566,7 @@ if (editLayoutSlipNeedsRedraw) {
     QLabel* block1NameLabel = new QLabel(tr("Block %1").arg(1));  // NOI18N
     panel1Layout->addWidget(block1NameLabel);
     panel1Layout->addWidget(editLevelXingBlock1NameComboBox);
-     layoutEditor->setupComboBox(editLevelXingBlock1NameComboBox, false, true);
+     layoutEditor->setupComboBox(editLevelXingBlock1NameComboBox, false, true, true);
     editLevelXingBlock1NameComboBox->setToolTip(tr("Edit Block name to change the linked block. If new name, block will be created."));  // NOI18N
     contentPane->layout()->addWidget(panel1);
 
@@ -1575,7 +1577,7 @@ if (editLayoutSlipNeedsRedraw) {
     QLabel* block2NameLabel = new QLabel(tr("Block %1").arg(2));  // NOI18N
     panel2Layout->addWidget(block2NameLabel);
     panel2Layout->addWidget(editLevelXingBlock2NameComboBox);
-     layoutEditor->setupComboBox(editLevelXingBlock2NameComboBox, false, true);
+     layoutEditor->setupComboBox(editLevelXingBlock2NameComboBox, false, true, true);
     editLevelXingBlock2NameComboBox->setToolTip(tr("Edit Block name to change the linked block. If new name, block will be created."));  // NOI18N
     contentPane->layout()->addWidget(panel2);
 
@@ -1631,8 +1633,8 @@ if (editLayoutSlipNeedsRedraw) {
  editLevelXingHiddenCheckBox->setChecked(levelXing->isHidden());
 
  // Set up for Edit
- editLevelXingBlock1NameComboBox->setText(levelXing->getBlockNameAC());
- editLevelXingBlock2NameComboBox->setText(levelXing->getBlockNameBD());
+ editLevelXingBlock1NameComboBox->setSelectedItemByName(levelXing->getBlockNameAC());
+ editLevelXingBlock2NameComboBox->setSelectedItemByName(levelXing->getBlockNameBD());
  editLevelXingBlock1NameComboBox->setEnabled(!hasNxSensorPairs(levelXing->getLayoutBlockAC()));  // NOI18N
  editLevelXingBlock2NameComboBox->setEnabled(!hasNxSensorPairs(levelXing->getLayoutBlockBD()));  // NOI18N
  editLevelXingFrame->addWindowListener(new LevelXingEditWindowListener(this));
@@ -1654,7 +1656,7 @@ if (editLayoutSlipNeedsRedraw) {
 
 /*private*/ void LayoutTrackEditors::editLevelXingBlockACPressed(/*ActionEvent a*/) {
 // check if a block name has been entered
-QString newName = editLevelXingBlock1NameComboBox->getUserName();
+QString newName = editLevelXingBlock1NameComboBox->getSelectedItemDisplayName();
 if (levelXing->getBlockNameAC() != (newName)) {
     // get new block, or  nullptr if block has been removed
     if (!newName.isEmpty()) {
@@ -1662,7 +1664,7 @@ if (levelXing->getBlockNameAC() != (newName)) {
             levelXing->setLayoutBlockAC( layoutEditor->provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
             levelXing->setLayoutBlockAC( nullptr);
-            editLevelXingBlock1NameComboBox->setText("");
+            editLevelXingBlock1NameComboBox->setSelectedItemByName("");
             editLevelXingBlock1NameComboBox->setCurrentIndex(-1);
         }
     } else {
@@ -1685,7 +1687,7 @@ if (levelXing->getBlockNameAC() != (newName)) {
 
 /*private*/ void LayoutTrackEditors::editLevelXingBlockBDPressed(/*ActionEvent a*/) {
 // check if a block name has been entered
-QString newName = editLevelXingBlock2NameComboBox->getUserName();
+QString newName = editLevelXingBlock2NameComboBox->getSelectedItemDisplayName();
 if (-1 != editLevelXingBlock2NameComboBox->currentIndex()) {
     newName = editLevelXingBlock2NameComboBox->currentText();
 } else {
@@ -1698,7 +1700,7 @@ if (levelXing->getBlockNameBD() != (newName)) {
             levelXing->setLayoutBlockBD( layoutEditor->provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
             levelXing->setLayoutBlockBD( nullptr);
-            editLevelXingBlock2NameComboBox->setText("");
+            editLevelXingBlock2NameComboBox->setSelectedItemByName("");
             editLevelXingBlock2NameComboBox->setCurrentIndex(-1);
         }
     } else {
@@ -1721,7 +1723,7 @@ if (levelXing->getBlockNameBD() != (newName)) {
 
 /*private*/ void LayoutTrackEditors::editLevelXingDonePressed(/*ActionEvent a*/) {
  // check if Blocks changed
- QString newName = editLevelXingBlock1NameComboBox->getUserName();
+ QString newName = editLevelXingBlock1NameComboBox->getSelectedItemDisplayName();
  if (levelXing->getBlockNameAC() != (newName)) {
     // get new block, or  nullptr if block has been removed
     if (!newName.isEmpty()) {
@@ -1729,7 +1731,7 @@ if (levelXing->getBlockNameBD() != (newName)) {
             levelXing->setLayoutBlockAC( layoutEditor->provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
             levelXing->setLayoutBlockAC( nullptr);
-            editLevelXingBlock1NameComboBox->setText("");
+            editLevelXingBlock1NameComboBox->setSelectedItemByName("");
             editLevelXingBlock1NameComboBox->setCurrentIndex(-1);
         }
     } else {
@@ -1739,7 +1741,7 @@ if (levelXing->getBlockNameBD() != (newName)) {
      layoutEditor->getLEAuxTools()->setBlockConnectivityChanged();
     editLevelXingNeedsBlockUpdate = true;
  }
- newName = editLevelXingBlock2NameComboBox->getUserName();
+ newName = editLevelXingBlock2NameComboBox->getSelectedItemDisplayName();
  if (levelXing->getBlockNameBD() != (newName)) {
     // get new block, or  nullptr if block has been removed
     if (!newName.isEmpty()) {
@@ -1747,7 +1749,7 @@ if (levelXing->getBlockNameBD() != (newName)) {
             levelXing->setLayoutBlockBD( layoutEditor->provideLayoutBlock(newName));
         } catch (IllegalArgumentException ex) {
             levelXing->setLayoutBlockBD( nullptr);
-            editLevelXingBlock2NameComboBox->setText("");
+            editLevelXingBlock2NameComboBox->setSelectedItemByName("");
             editLevelXingBlock2NameComboBox->setCurrentIndex(-1);
         }
     } else {
@@ -2090,11 +2092,11 @@ top->setLayout(new QHBoxLayout());
     this->setLayout(new QVBoxLayout());//this, BoxLayout.Y_AXIS));
     this->layout()->addWidget(top);
 
-    turnoutNameComboBox = new JmriBeanComboBox(
+    turnoutNameComboBox = new NamedBeanComboBox(
             InstanceManager::turnoutManagerInstance(),
             rayTrack->getTurnout(),
-            JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
-     layoutTrackeditors->layoutEditor->setupComboBox(turnoutNameComboBox, true, true);
+            NamedBean::DisplayOptions::DISPLAYNAME);
+     layoutTrackeditors->layoutEditor->setupComboBox(turnoutNameComboBox, false, true, false);
     turnoutNameComboBox->findText(rayTrack->getTurnout()->getDisplayName());
 
     QString turnoutStateThrown = InstanceManager::turnoutManagerInstance()->getThrownText();
@@ -2172,7 +2174,7 @@ void TurntableRayPanel::rayAngleTextFieldEditingFinished()
     if (turnoutNameComboBox ==  nullptr || rayTurnoutStateComboBox ==  nullptr) {
         return;
     }
-    rayTrack->setTurnout(turnoutNameComboBox->getDisplayName(), rayTurnoutStateValues[rayTurnoutStateComboBox->currentIndex()]);
+    rayTrack->setTurnout(turnoutNameComboBox->getSelectedItemDisplayName(), rayTurnoutStateValues[rayTurnoutStateComboBox->currentIndex()]);
     if (rayAngleTextField->text() != (twoDForm->format(rayTrack->getAngle()))) {
         bool bok;
             double ang = rayAngleTextField->text().toFloat(&bok);

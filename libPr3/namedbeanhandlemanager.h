@@ -64,19 +64,21 @@ template<class T>
 /*public*/  NamedBeanHandle<T> newNamedBeanHandle(QString name, T bean, QString type);
 // abstract methods to be extended by subclasses
 // to free resources when no longer used
-/*public*/ virtual void dispose();
+/*public*/ virtual void dispose()override;
 /*public*/ char systemLetter();
-/*public*/ QString getSystemPrefix() ;
-/*public*/ char typeLetter() ;
-/*public*/ QString makeSystemName(QString s) ;
-/*public*/ QStringList getSystemNameArray() ;
-/*public*/ QStringList getSystemNameList();
+/*public*/ QString getSystemPrefix() const override;
+/*public*/ char typeLetter() const override;
+/*public*/ QString makeSystemName(QString s)const override;
+/*public*/ QStringList getSystemNameArray() override;
+/*public*/ QStringList getSystemNameList()override;
 PropertyChangeSupport* pcs; // = new PropertyChangeSupport(this);
-/*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
-/*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
- /*public*/ void Register(NamedBean* n);
-/*public*/ void deregister(NamedBean* n);
-/*public*/ int getXMLOrder();
+/*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l)override;
+/*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
+ /*public*/ void Register(NamedBean* n)const override;
+/*public*/ void deregister(NamedBean* n)const override;
+/*public*/ int getXMLOrder()const override;
+/*public*/ NamedBean* getBySystemName(QString /*systemName*/) const override {return nullptr;}
+/*public*/ NamedBean* getByUserName(QString /*userName*/) const override{return nullptr;}
 
 signals:
 

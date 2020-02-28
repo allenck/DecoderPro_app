@@ -150,7 +150,7 @@ AbstractMemoryManagerConfigXML::~AbstractMemoryManagerConfigXML()
  }
 }
 
-/*public*/ int AbstractMemoryManagerConfigXML::loadOrder(){
+/*public*/ int AbstractMemoryManagerConfigXML::loadOrder() const{
     return ((AbstractMemoryManager*)InstanceManager::memoryManagerInstance())->getXMLOrder();
 }
 

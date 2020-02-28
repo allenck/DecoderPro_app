@@ -11,8 +11,8 @@ class LIBPR3SHARED_EXPORT LnTurnoutManager : public AbstractTurnoutManager
 public:
     LnTurnoutManager(LnTrafficController* fastcontroller, LnTrafficController* throttledcontroller, QString prefix, bool mTurnoutNoRetry, QObject* parent = 0);
     /*public*/ LnTurnoutManager(LocoNetSystemConnectionMemo* memo, LocoNetInterface* throttledcontroller, bool mTurnoutNoRetry, QObject *parent = nullptr);
-    void dispose();
-    Turnout* createNewTurnout(QString systemName, QString userName);
+    void dispose() override;
+    Turnout* createNewTurnout(QString systemName, QString userName)const override;
     /*public*/ static /*final*/ QString BYPASSBUSHBYBITKEY;// = "Bypass Bushby Bit";
     /*public*/ static /*final*/ QString SENDONANDOFFKEY;// = "Send ON/OFF";
 

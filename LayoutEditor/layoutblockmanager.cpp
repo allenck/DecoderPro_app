@@ -54,7 +54,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 //        super();
 //    }
 
-/*public*/ int LayoutBlockManager::getXMLOrder(){
+/*public*/ int LayoutBlockManager::getXMLOrder()const{
     return Manager::LAYOUTBLOCKS;
 }
 
@@ -164,12 +164,12 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     return NULL;
 }
 
-/*public*/ NamedBean *LayoutBlockManager::getBySystemName(QString name) {
+/*public*/ NamedBean *LayoutBlockManager::getBySystemName(QString name) const {
     QString key = name.toUpper();
     return (LayoutBlock*)_tsys->value(key);
 }
 
-/*public*/ NamedBean *LayoutBlockManager::getByUserName(QString key) {
+/*public*/ NamedBean *LayoutBlockManager::getByUserName(QString key) const {
     return (LayoutBlock*)_tuser->value(key);
 }
 /*static*/ /*public*/ LayoutBlockManager* LayoutBlockManager::instance() {
@@ -1731,99 +1731,99 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     }
 }
 //@Nonnull
-    /*private*/ QList<LayoutBlock*> LayoutBlockManager::getProtectingBlocksByBeanByPanel(
-            /*@Nullable*/ NamedBean* bean,
-            /*@Nullable*/ LayoutEditor* panel) {
-        QList<LayoutBlock*> protectingBlocks = QList<LayoutBlock*>();
+/*private*/ QList<LayoutBlock*> LayoutBlockManager::getProtectingBlocksByBeanByPanel(
+        /*@Nullable*/ NamedBean* bean,
+        /*@Nullable*/ LayoutEditor* panel) {
+    QList<LayoutBlock*> protectingBlocks = QList<LayoutBlock*>();
 
-        //if (!(bean instanceof SignalMast) && !(bean instanceof Sensor))
-        if(qobject_cast<SignalMast*>(bean)== nullptr && qobject_cast<Sensor*>(bean)== nullptr)
-        {
-            log.error("Incorrect class type called, must be either SignalMast or Sensor");
+    //if (!(bean instanceof SignalMast) && !(bean instanceof Sensor))
+    if(qobject_cast<SignalMast*>(bean)== nullptr && qobject_cast<Sensor*>(bean)== nullptr)
+    {
+        log.error("Incorrect class type called, must be either SignalMast or Sensor");
 
-            return protectingBlocks;
-        }
+        return protectingBlocks;
+    }
 
-        PositionablePoint* pp = panel->getFinder()->findPositionablePointByEastBoundBean(bean);
-        TrackSegment* tr = nullptr;
-        bool east = true;
+    PositionablePoint* pp = panel->getFinder()->findPositionablePointByEastBoundBean(bean);
+    TrackSegment* tr = nullptr;
+    bool east = true;
 
-        if (pp == nullptr) {
-            pp = panel->getFinder()->findPositionablePointByWestBoundBean(bean);
-            east = false;
-        }
+    if (pp == nullptr) {
+        pp = panel->getFinder()->findPositionablePointByWestBoundBean(bean);
+        east = false;
+    }
 
-        if (pp != nullptr) {
+    if (pp != nullptr) {
 //            LayoutEditorTools tools = panel.getLETools(); //TODO: Dead-code strip this
 
-            if (east) {
-                if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
-                    tr = pp->getConnect2();
-                } else {
-                    tr = pp->getConnect1();
-                }
+        if (east) {
+            if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+                tr = pp->getConnect2();
             } else {
-                if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
-                    tr = pp->getConnect1();
-                } else {
-                    tr = pp->getConnect2();
-                }
+                tr = pp->getConnect1();
             }
-
-            if (tr != nullptr) {
-                protectingBlocks.append(tr->getLayoutBlock());
-
-                return protectingBlocks;
+        } else {
+            if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+                tr = pp->getConnect1();
+            } else {
+                tr = pp->getConnect2();
             }
         }
 
-        LevelXing* l = panel->getFinder()->findLevelXingByBean(bean);
-
-        if (l != nullptr) {
-            //if (bean instanceof SignalMast)
-         if(qobject_cast<SignalMast*>(bean))
-            {
-                if (l->getSignalAMast() == bean) {
-                    protectingBlocks.append(l->getLayoutBlockAC());
-                } else if (l->getSignalBMast() == bean) {
-                    protectingBlocks.append(l->getLayoutBlockBD());
-                } else if (l->getSignalCMast() == bean) {
-                    protectingBlocks.append(l->getLayoutBlockAC());
-                } else {
-                    protectingBlocks.append(l->getLayoutBlockBD());
-                }
-            }
-         //else if (bean instanceof Sensor)
-         else if(qobject_cast<Sensor*>(bean))
-         {
-                if (l->getSensorA() == bean) {
-                    protectingBlocks.append(l->getLayoutBlockAC());
-                } else if (l->getSensorB() == bean) {
-                    protectingBlocks.append(l->getLayoutBlockBD());
-                } else if (l->getSensorC() == bean) {
-                    protectingBlocks.append(l->getLayoutBlockAC());
-                } else {
-                    protectingBlocks.append(l->getLayoutBlockBD());
-                }
-            }
-            return protectingBlocks;
-        }
-
-        LayoutSlip* ls = panel->getFinder()->findLayoutSlipByBean(bean);
-
-        if (ls != nullptr) {
-            protectingBlocks.append(ls->getLayoutBlock());
+        if (tr != nullptr) {
+            protectingBlocks.append(tr->getLayoutBlock());
 
             return protectingBlocks;
         }
+    }
 
-        LayoutTurnout* t = panel->getFinder()->findLayoutTurnoutByBean(bean);
+    LevelXing* l = panel->getFinder()->findLevelXingByBean(bean);
 
-        if (t != nullptr) {
-            return t->getProtectedBlocks(bean);
+    if (l != nullptr) {
+        //if (bean instanceof SignalMast)
+     if(qobject_cast<SignalMast*>(bean))
+        {
+            if (l->getSignalAMast() == bean) {
+                protectingBlocks.append(l->getLayoutBlockAC());
+            } else if (l->getSignalBMast() == bean) {
+                protectingBlocks.append(l->getLayoutBlockBD());
+            } else if (l->getSignalCMast() == bean) {
+                protectingBlocks.append(l->getLayoutBlockAC());
+            } else {
+                protectingBlocks.append(l->getLayoutBlockBD());
+            }
+        }
+     //else if (bean instanceof Sensor)
+     else if(qobject_cast<Sensor*>(bean))
+     {
+            if (l->getSensorA() == bean) {
+                protectingBlocks.append(l->getLayoutBlockAC());
+            } else if (l->getSensorB() == bean) {
+                protectingBlocks.append(l->getLayoutBlockBD());
+            } else if (l->getSensorC() == bean) {
+                protectingBlocks.append(l->getLayoutBlockAC());
+            } else {
+                protectingBlocks.append(l->getLayoutBlockBD());
+            }
         }
         return protectingBlocks;
-    }	//getProtectingBlocksByBean
+    }
+
+    LayoutSlip* ls = panel->getFinder()->findLayoutSlipByBean(bean);
+
+    if (ls != nullptr) {
+        protectingBlocks.append(ls->getLayoutBlock());
+
+        return protectingBlocks;
+    }
+
+    LayoutTurnout* t = panel->getFinder()->findLayoutTurnoutByBean(bean);
+
+    if (t != nullptr) {
+        return t->getProtectedBlocks(bean);
+    }
+    return protectingBlocks;
+}	//getProtectingBlocksByBean
 
 
 /**
@@ -2027,17 +2027,19 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  * Method to return the LayoutBlock that a given sensor is protecting.
  */
 /*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockBySensor(Sensor* sensor, LayoutEditor* panel){
-    LayoutBlock* pro = getProtectedBlockBySensor(sensor->getUserName(), panel);
-    if(pro == NULL)
-        pro = getProtectedBlockBySensor(sensor->getSystemName(), panel);
-    return pro;
+ QList<LayoutBlock*> proBlocks = getProtectingBlocksByBean(sensor, panel);
+
+ if (proBlocks.isEmpty()) {
+     return nullptr;
+ }
+ return proBlocks.at(0);
 }
 
 /**
  * Method to return the LayoutBlock that a given sensor is protecting.
  */
 /*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockBySensor(QString sensorName, LayoutEditor* panel){
- Sensor* sensor = InstanceManager::sensorManagerInstance()->getSensor(sensorName);
+ Sensor* sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(sensorName);
 
  return getProtectedBlockBySensor(sensor, panel);
 

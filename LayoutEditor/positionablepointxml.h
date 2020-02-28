@@ -10,7 +10,7 @@ public:
  Q_INVOKABLE explicit PositionablePointXml(QObject *parent = 0);
  ~PositionablePointXml() {}
  PositionablePointXml(const PositionablePointXml&) : AbstractXmlAdapter() {}
- /*public*/ QDomElement store(QObject* o);
+ /*public*/ QDomElement store(QObject* o) override;
  /*public*/ bool load(QDomElement element) throw (Exception);
  /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
 

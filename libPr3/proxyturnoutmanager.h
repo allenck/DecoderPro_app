@@ -3,7 +3,7 @@
 #include "abstractproxyturnoutmanager.h"
 #include "turnoutmanager.h"
 #include "internalturnoutmanager.h"
-
+#include "exceptions.h"
 class QCompleter;
 class LIBPR3SHARED_EXPORT ProxyTurnoutManager : public AbstractProxyTurnoutManager/*, public TurnoutManager*/
 {
@@ -13,26 +13,28 @@ public:
  /**
   * Revise superclass behavior: support TurnoutOperations
   */
- /*public*/ void addManager(Manager* m);
+ /*public*/ void addManager(Manager* m) override;
  /**
   * Locate via user name, then system name if needed.
   *
   * @param name
   * @return Null if nothing by that name exists
   */
- /*public*/ Turnout* getTurnout(QString name);
+ /*public*/ Turnout* getTurnout(QString name)const override;
+#if 0
  /**
   * Locate an instance based on a system name.  Returns null if no
   * instance already exists.
   * @return requested Turnout object or null if none exists
   */
- /*public*/ Turnout* getBySystemName(QString systemName);
+ /*public*/ Turnout* getBySystemName(QString systemName) const;
  /**
   * Locate an instance based on a user name.  Returns null if no
   * instance already exists.
   * @return requested Turnout object or null if none exists
   */
- /*public*/ Turnout* getByUserName(QString userName);
+ /*public*/ Turnout* getByUserName(QString userName) const;
+#endif
  /**
   * Return an instance with the specified system and user names.
   * Note that two calls with the same arguments will get the same instance;
@@ -61,7 +63,7 @@ public:
   * be looking them up.
   * @return requested Sensor object (never null)
   */
- /*public*/ Turnout* newTurnout(QString systemName, QString userName);
+ /*public*/ Turnout* newTurnout(QString systemName, QString userName)const override;
  /**
   * Get text to be used for the Turnout.CLOSED state in user communication.
   * Allows text other than "CLOSED" to be use with certain hardware system
@@ -70,7 +72,7 @@ public:
   * used.  Note: the primary manager need not override the method in AbstractTurnoutManager if
   * "CLOSED" is the desired terminology.
   */
- /*public*/ QString getClosedText();
+ /*public*/ QString getClosedText() override;
  /**
   * Get text to be used for the Turnout.THROWN state in user communication.
   * Allows text other than "THROWN" to be use with certain hardware system
@@ -79,7 +81,7 @@ public:
   * used.  Note: the primary manager need not override the method in AbstractTurnoutManager if
   * "THROWN" is the desired terminology.
   */
- /*public*/ QString getThrownText();
+ /*public*/ QString getThrownText() override;
  /**
   * Get from the user, the number of addressed bits used to control a turnout.
   * Normally this is 1, and the default routine returns 1 automatically.
@@ -91,7 +93,7 @@ public:
   * If the bits are not available, this method should return 0 for number of
   * control bits, after informing the user of the problem.
   */
-  /*public*/ int askNumControlBits(QString systemName);
+  /*public*/ int askNumControlBits(QString systemName) override;
  /**
   * Get from the user, the type of output to be used bits to control a turnout.
   * Normally this is 0 for 'steady state' control, and the default routine
@@ -102,26 +104,27 @@ public:
   * return 0 for 'steady state' control, or n for 'pulsed' control, where n
   * specifies the duration of the pulse (normally in seconds).
   */
- /*public*/ int askControlType(QString systemName);
- /*public*/ bool isControlTypeSupported(QString systemName);
- /*public*/ bool isNumControlBitsSupported(QString systemName);
+ /*public*/ int askControlType(QString systemName) override;
+ /*public*/ bool isControlTypeSupported(QString systemName) override;
+ /*public*/ bool isNumControlBitsSupported(QString systemName) override;
  /**
   * TurnoutOperation support. Return a list which is just the concatenation of
   * all the valid operation types
   */
- /*public*/ QStringList getValidOperationTypes();
- /*public*/ bool allowMultipleAdditions(QString systemName);
- /*public*/ QString createSystemName(QString curAddress, QString prefix) throw (JmriException);
- /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) throw (JmriException);
- /*public*/ void setDefaultClosedSpeed(QString speed) throw (JmriException);
- /*public*/ void setDefaultThrownSpeed(QString speed) throw (JmriException);
- /*public*/ QString getDefaultThrownSpeed();
- /*public*/ QString getDefaultClosedSpeed();
- /*public*/ int getXMLOrder();
+ /*public*/ QStringList getValidOperationTypes() override;
+ /*public*/ bool allowMultipleAdditions(QString systemName) override;
+ /*public*/ QString createSystemName(QString curAddress, QString prefix)const throw (JmriException) override;
+ /*public*/ QString getNextValidAddress(QString curAddress, QString prefix)const throw (JmriException) override;
+ /*public*/ void setDefaultClosedSpeed(QString speed)const throw (JmriException) override;
+ /*public*/ void setDefaultThrownSpeed(QString speed)const throw (JmriException) override;
+ /*public*/ QString getDefaultThrownSpeed()const override;
+ /*public*/ QString getDefaultClosedSpeed()const override;
+ /*public*/ int getXMLOrder() const  override;
  QCompleter* getCompleter(QString text);
+ /*public*/ Turnout* provideTurnout(QString name) const override;
+ /*public*/ Turnout* provide(QString name) const throw (IllegalArgumentException) override;
+
 public slots:
- /*public*/ Turnout* provideTurnout(QString name);
- /*public*/ Turnout* provide(/*@Nonnull */QString name) throw (IllegalArgumentException);
 
 
 signals:
@@ -130,7 +133,7 @@ private:
  Logger log;
 protected:
  virtual /*protected*/ Manager* makeInternalManager() const ;
- virtual/*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName);
+ virtual/*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName) const;
  ///*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
 
  friend class AbstractProxyManager;

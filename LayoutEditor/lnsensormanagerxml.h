@@ -10,9 +10,9 @@ public:
     Q_INVOKABLE explicit LnSensorManagerXml(QObject *parent = 0);
     ~LnSensorManagerXml() {}
     LnSensorManagerXml(const LnSensorManagerXml&) :AbstractSensorManagerConfigXML() {}
-    /*public*/ void setStoreElementClass(QDomElement sensors);
-    /*public*/ void load(QDomElement element, QObject* o) throw (JmriConfigureXmlException) ;
-    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException);
+    /*public*/ void setStoreElementClass(QDomElement sensors) override;
+    /*public*/ void load(QDomElement element, QObject* o) throw (JmriConfigureXmlException) override ;
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException) override;
 
 signals:
 

@@ -22,11 +22,11 @@ public:
      * Returns a list of all managers, including the
      * internal manager.  This is not a live list.
      */
-    /*public*/ QList<Manager*> getManagerList();
-    /*public*/ QList<Manager*> getDisplayOrderManagerList();
-    /*public*/ Manager* getInternalManager();
-    /*public*/ Manager* getDefaultManager();
-    virtual /*public*/ void addManager(Manager* m);
+    /*public*/ QList<Manager*> getManagerList() override;
+    /*public*/ QList<Manager*> getDisplayOrderManagerList() override;
+    /*public*/ Manager* getInternalManager() const;
+    /*public*/ Manager* getDefaultManager()const override;
+    /*public*/ void addManager(Manager* m) override;
     /**
      * Locate via user name, then system name if needed.
      * Subclasses use this to provide e.g. getSensor, getTurnout, etc
@@ -35,11 +35,11 @@ public:
      * @param name
      * @return Null if nothing by that name exists
      */
-    virtual /*public*/ NamedBean* getNamedBean(QString name);
-    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName) /*throw (NamedBean::BadSystemNameException)*/;
+    /*public*/ NamedBean* getNamedBean(QString name)const override;
+    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)  override/*throw (NamedBean::BadSystemNameException)*/;
 
-    virtual /*public*/ NamedBean* getBeanBySystemName(QString systemName);
-    virtual /*public*/ NamedBean* getBeanByUserName(QString userName);
+    /*public*/ NamedBean* getBeanBySystemName(QString systemName)const override;
+    /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
 
     /**
      * Return an instance with the specified system and user names.
@@ -71,67 +71,67 @@ public:
      */
     /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
 
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
     /**
      * Remember a NamedBean Object created outside the manager.
      * <P>
      * Forwards the register request to the matching system
      */
-    /*public*/ void Register(NamedBean* s);
+    /*public*/ void Register(NamedBean* s) const override;
     /**
      * Forget a NamedBean Object created outside the manager.
      * <P>
      * Forwards the deregister request to the matching system
      */
-    /*public*/ void deregister(NamedBean* s);
-    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
-    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+    /*public*/ void deregister(NamedBean* s) const override;
+    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
+    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
     /**
      * @return The system-specific prefix letter for the primary implementation
      */
-    /*public*/ QString getSystemPrefix();
+    /*public*/ QString getSystemPrefix() const override;
     /**
      * @return The type letter for turnouts
      */
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter() const override;
     /**
      * @return A system name from a user input, typically a number,
      * from the primary system.
      */
-    /*public*/ QString makeSystemName(QString s);
-    /*public*/ int getObjectCount();
-    /*public*/ QStringList getSystemNameArray();
+    /*public*/ QString makeSystemName(QString s) const override;
+    /*public*/ int getObjectCount() override;
+    /*public*/ QStringList getSystemNameArray() override;
     /**
      * Get a list of all system names.
      */
-    /*public*/ virtual QStringList getSystemNameList();
-    /*public*/ virtual QStringList getUserNameList();
-    QT_DEPRECATED/*public*/ QList<NamedBean*>* getNamedBeanList() ;
-    QT_DEPRECATED /*public*/ QStringList getSystemNameAddedOrderList();
-    /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet();
-    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
-    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
-    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName);
-    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
-    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l);
-    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l);
-    /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners();
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName);
-    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
+    /*public*/ QStringList getSystemNameList() override;
+    ///*public*/ virtual QStringList getUserNameList();
+    QT_DEPRECATED/*public*/ QList<NamedBean*>* getNamedBeanList() override ;
+    QT_DEPRECATED /*public*/ QStringList getSystemNameAddedOrderList() override;
+    /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() override;
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
+    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l) override;
+    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l) override;
+    /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) override;
+    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
+    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
+    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) override;
 
 signals:
     //virtual void propertyChange(PropertyChangeEvent *e);
 public slots:
-    virtual void propertyChange(PropertyChangeEvent *e);
+    virtual void propertyChange(PropertyChangeEvent *e) override;
 
 private:
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("AbstractProxyManager");
-    /*private*/ Manager* initInternal();
-    /*private*/ Manager* internalManager; //= null;
+    /*private*/ Manager* initInternal() const;
+    /*private*/ mutable Manager* internalManager; //= null;
     /*private*/ Manager* defaultManager;
     /*private*/ QStringList addedOrderList;// = QStringList();
-    /*private*/ QSet<NamedBean*> namedBeanSet;// = null;
+    /*private*/ QSet<NamedBean*>* namedBeanSet = nullptr;
     /*private java.util.ArrayList*/QList<Manager*> mgrs;// = new /*java.util.ArrayList*/QList<AbstractManager>();
     QVector<PropertyChangeListener*> propertyListenerList;// = new ArrayList<>();
     QMap<QString, QVector<PropertyChangeListener*>*> namedPropertyListenerMap;// = new HashMap<>();
@@ -144,8 +144,8 @@ protected:
      * getManager(i) and getManagerList(),
      * including the Internal manager
      */
-    /*protected*/ virtual int nMgrs();
-    /*protected*/ virtual Manager* getMgr(int index);
+    /*protected*/ virtual int nMgrs() const ;
+    /*protected*/ virtual Manager* getMgr(int index) const;
     virtual /*abstract protected*/ Manager* makeInternalManager() const /*=0*/;
     /**
      * Locate via user name, then system name if needed.
@@ -165,20 +165,25 @@ protected:
      * @param index Which manager to invoke
      */
     virtual/*abstract protected*/ NamedBean* makeBean(int, QString /*systemName*/, QString /*userName*/) /*const*/ /*=0*/;
+
+
+//    /*public*/ NamedBean* getBySystemName(/*@Nonnull */ QString systemName) const override;
+//    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
+
+
     /**
      * Find the index of a matching manager.
      * Returns -1 if there is no match, which is not considered an
      * error
      */
-    /*protected*/ virtual int matchTentative(QString /*systemname*/);
+    /*protected*/ virtual int matchTentative(QString /*systemname*/) const ;
     /**
      * Find the index of a matching manager.
      * Throws IllegalArgumentException if there is no match,
      * here considered to be an error that must be reported.
      */
-    /*protected*/ virtual int match(QString systemname);
+    /*protected*/ virtual int match(QString systemname) const;
     /*protected*/ void updateOrderList();
-    /*protected*/ void updateNamedBeanSet();
     /*protected*/ void recomputeNamedBeanSet();
 
 

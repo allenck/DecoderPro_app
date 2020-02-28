@@ -15,9 +15,9 @@ public:
  explicit LayoutBlockManager(QObject *parent = 0);
  ~LayoutBlockManager() {}
  LayoutBlockManager(const LayoutBlockManager&) : AbstractManager() {}
- /*public*/ int getXMLOrder();
- /*public*/ QString getSystemPrefix() { return "I"; }
- /*public*/ char typeLetter() { return 'B'; }
+ /*public*/ int getXMLOrder() const override;
+ /*public*/ QString getSystemPrefix() const override{ return "I"; }
+ /*public*/ char typeLetter() const override{ return 'B'; }
 /**
  * Method to create a new LayoutBlock if the LayoutBlock does not exist
  *   Returns null if a LayoutBlock with the same systemName or userName
@@ -39,7 +39,7 @@ public:
  */
 /*public*/ LayoutBlock* getLayoutBlock(QString name);
 /*public*/ LayoutBlock* getLayoutBlock(Block* block);
-/*public*/ NamedBean* getBySystemName(QString name);
+/*public*/ NamedBean* getBySystemName(QString name)const override;
 /*public*/ LayoutBlock* getBlockWithMemoryAssigned(Memory* m);
 /*public*/ void initializeLayoutBlockPaths();
 /*public*/ void addBadBeanError();
@@ -48,7 +48,7 @@ public:
 /*public*/ LayoutBlock* getFacingBlock(QString signalName, LayoutEditor* panel);
 /*public*/ NamedBean* getNamedBeanAtEndBumper(Block* facingBlock, LayoutEditor* panel);
 /*public*/ SignalMast* getSignalMastAtEndBumper(Block* facingBlock, LayoutEditor* panel);
-/*public*/ NamedBean* getByUserName(QString key);
+/*public*/ NamedBean* getByUserName(QString key)const override;
 //static LayoutBlockManager* _instance;// = NULL;
 static /*public*/ LayoutBlockManager* instance();
 /*public*/ LayoutBlock* getFacingBlockByMast(SignalMast *signalMast, LayoutEditor* panel);

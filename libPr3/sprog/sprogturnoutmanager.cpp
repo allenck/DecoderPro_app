@@ -21,14 +21,14 @@ using namespace Sprog;
 }
 
 //@Override
-/*public*/ QString SprogTurnoutManager::getSystemPrefix() {
+/*public*/ QString SprogTurnoutManager::getSystemPrefix() const{
     return _memo->getSystemPrefix();
 }
 
 // Sprog-specific methods
 
 //@Override
-/*public*/ Turnout* SprogTurnoutManager::createNewTurnout(QString systemName, QString userName) {
+/*public*/ Turnout* SprogTurnoutManager::createNewTurnout(QString systemName, QString userName)const {
     int addr = (systemName.mid(getSystemPrefix().length() + 1)).toInt(); // multi char prefix
     Turnout* t;
     if (_memo->getSprogMode() == SprogConstants::SprogMode::OPS ) {

@@ -70,30 +70,30 @@ class LIBPR3SHARED_EXPORT AbstractThrottleManager : public ThrottleManager
 public:
     explicit AbstractThrottleManager(QObject *parent = 0);
     /*public*/ AbstractThrottleManager(SystemConnectionMemo* memo,QObject *parent = 0);
-    /*public*/ QString getUserName();
+    /*public*/ QString getUserName() override;
     /**
      * By default, only DCC in this implementation
      */
-    /*public*/ QStringList getAddressTypes();
-    /*public*/ QList<LocoAddress::Protocol> getAddressProtocolTypes();
+    /*public*/ QStringList getAddressTypes() override;
+    /*public*/ QList<LocoAddress::Protocol> getAddressProtocolTypes() override;
     /*public*/ LocoAddress* getAddress(QString value,LocoAddress::Protocol protocol);
     /*public*/ LocoAddress* getAddress(QString value, QString protocol);
-    /*public*/ LocoAddress::Protocol getProtocolFromString(QString selection);
+    /*public*/ LocoAddress::Protocol getProtocolFromString(QString selection) override;
     QT_DEPRECATED /*public*/ bool requestThrottle(BasicRosterEntry* re, ThrottleListener* l);
     QT_DEPRECATED /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l);
     QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress *la, ThrottleListener* l);
     /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l, bool canHandleDecisions);
-    /*public*/ bool requestThrottle(/*@Nonnull*/ BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions);
-    /*public*/ bool requestThrottle(LocoAddress* la, ThrottleListener* l, bool canHandleDecisions);
+    /*public*/ bool requestThrottle(/*@Nonnull*/ BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions) override;
+    /*public*/ bool requestThrottle(LocoAddress* la, ThrottleListener* l, bool canHandleDecisions) override;
     QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l);
-    /*public*/ bool requestThrottle(int address, ThrottleListener* l);
-    /*public*/ bool requestThrottle(int address, ThrottleListener* l, bool canHandleDecisions);
+    /*public*/ bool requestThrottle(int address, ThrottleListener* l) override;
+    /*public*/ bool requestThrottle(int address, ThrottleListener* l, bool canHandleDecisions) override;
 
     /**
      * Abstract member to actually do the work of configuring a new throttle,
      * usually via interaction with the DCC system
      */
-    /*abstract public*/virtual void requestThrottleSetup(LocoAddress* /*a*/, bool /*control*/) {}
+    /*abstract public*/virtual void requestThrottleSetup(LocoAddress* /*a*/, bool /*control*/)  {}
     /**
     * Abstract member to actually do the work of configuring a new throttle,
     * usually via interaction with the DCC system
@@ -105,8 +105,8 @@ public:
      * @param isLong True if this is a request for a DCC long (extended) address.
      * @param l The ThrottleListener cancelling request for a throttle.
      */
-    /*public*/ void cancelThrottleRequest(int address, bool isLong, ThrottleListener* l);
-    /*public*/ void cancelThrottleRequest(BasicRosterEntry* re, ThrottleListener* l);
+    /*public*/ void cancelThrottleRequest(int address, bool isLong, ThrottleListener* l) override;
+    /*public*/ void cancelThrottleRequest(BasicRosterEntry* re, ThrottleListener* l) override;
     /**
      * Cancel a request for a throttle.
      * <P>
@@ -115,7 +115,7 @@ public:
      * @param address The decoder address desired.
      * @param l The ThrottleListener cancelling request for a throttle.
      */
-    /*public*/ void cancelThrottleRequest(int address, ThrottleListener* l);
+    /*public*/ void cancelThrottleRequest(int address, ThrottleListener* l) override;
     /**
      * If the system-specific ThrottleManager has been unable to create the DCC
      * throttle then it needs to be removed from the throttleListeners, otherwise
@@ -139,25 +139,25 @@ public:
      * Check to see if the Dispatch Button should be enabled or not
      * Default to true, override if necessary
      **/
-    /*public*/ bool hasDispatchFunction();
+    /*public*/ bool hasDispatchFunction() override;
     /**
      * What speed modes are supported by this system?
      * value should be xor of possible modes specifed by the
      * DccThrottle interface
      */
-    /*public*/ int supportedSpeedModes();
+    /*public*/ int supportedSpeedModes() override;
     /*public*/ void attachListener(BasicRosterEntry* re, PropertyChangeListener* p);
-    /*public*/ void attachListener(DccLocoAddress* la, PropertyChangeListener* p);
-    /*public*/ void attachListener(DccLocoAddress* la, BasicRosterEntry* re, PropertyChangeListener* p);
-    /*public*/ void removeListener(DccLocoAddress* la, PropertyChangeListener* p);
-    /*public*/ bool addressStillRequired(DccLocoAddress* la);
-    /*public*/ void releaseThrottle(DccThrottle* t, ThrottleListener* l);
-    /*public*/ bool disposeThrottle(DccThrottle* t, ThrottleListener* l);
-    /*public*/ void dispatchThrottle(DccThrottle* t, ThrottleListener* l);
-    /*public*/ QVariant getThrottleInfo(DccLocoAddress* la, QString item);
-    /*public*/ QString getAddressTypeString(LocoAddress::Protocol prot);
-    /*public*/ void responseThrottleDecision(int address, bool isLong, ThrottleListener* l, ThrottleListener::DecisionType decision);
-    /*public*/ void responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision);
+    /*public*/ void attachListener(LocoAddress* la, PropertyChangeListener* p) override;
+    /*public*/ void attachListener(LocoAddress *la, BasicRosterEntry* re, PropertyChangeListener* p);
+    /*public*/ void removeListener(DccLocoAddress* la, PropertyChangeListener* p) override;
+    /*public*/ bool addressStillRequired(DccLocoAddress* la) override;
+    /*public*/ void releaseThrottle(DccThrottle* t, ThrottleListener* l) override;
+    /*public*/ bool disposeThrottle(DccThrottle* t, ThrottleListener* l) override;
+    /*public*/ void dispatchThrottle(DccThrottle* t, ThrottleListener* l) override;
+    /*public*/ QVariant getThrottleInfo(DccLocoAddress* la, QString item) override;
+    /*public*/ QString getAddressTypeString(LocoAddress::Protocol prot) override;
+    /*public*/ void responseThrottleDecision(int address, bool isLong, ThrottleListener* l, ThrottleListener::DecisionType decision) override;
+    /*public*/ void responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision) override;
 
 signals:
     

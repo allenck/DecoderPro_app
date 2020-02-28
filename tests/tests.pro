@@ -220,7 +220,14 @@ SOURCES += \
     cabsignals/cabsignaltablemodeltest.cpp \
     cabsignals/defaultcabsignaltest.cpp \
     cabsignals/defaultcabsignaltestaction.cpp \
-    cabsignals/cabsignaltablemodeltestaction.cpp
+    cabsignals/cabsignaltablemodeltestaction.cpp \
+    entryexit/entryexitpairstest.cpp \
+    entryexittesttools.cpp \
+    entryexit/entryexitpairstestaction.cpp \
+    entryexit/destinationpointstest.cpp \
+    entryexit/destinationpointstestaction.cpp \
+    entryexit/pointdetailstest.cpp \
+    entryexit/pointdetailstestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -419,7 +426,14 @@ HEADERS += \
     cabsignals/cabsignaltablemodeltest.h \
     cabsignals/defaultcabsignaltest.h \
     cabsignals/defaultcabsignaltestaction.h \
-    cabsignals/cabsignaltablemodeltestaction.h
+    cabsignals/cabsignaltablemodeltestaction.h \
+    entryexit/entryexitpairstest.h \
+    entryexittesttools.h \
+    entryexit/entryexitpairstestaction.h \
+    entryexit/destinationpointstest.h \
+    entryexit/destinationpointstestaction.h \
+    entryexit/pointdetailstest.h \
+    entryexit/pointdetailstestaction.h
 
 unix {
     target.path = /usr/lib

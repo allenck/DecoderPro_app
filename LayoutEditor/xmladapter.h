@@ -49,8 +49,7 @@ public:
      * @return true to defer loading
      * @since 2.11.2
      */
-    /*public*/ virtual bool loadDeferred() {return false;}
-
+ /*public*/ virtual bool loadDeferred()const =0;
     /**
      * Create a set of configured objects from their
      * XML description, using an auxiliary object.
@@ -112,7 +111,7 @@ public:
   return QDomElement();
  }
 
-/*public*/ virtual int loadOrder() { return 0;}
+/*public*/ virtual int loadOrder() const =0;
 
 /**
  * Invoke common handling of errors that
@@ -162,7 +161,7 @@ QT_DEPRECATED/*public*/ virtual void creationErrorEncountered (
              /*@Nullable*/ QString /*operation*/,
              /*@Nullable*/ QString /*systemName*/,
              /*@Nullable*/ QString /*userName*/,
-             /*@Nullable*/ Exception /*exception*/){ }/*throws JmriConfigureXmlException*/
+             /*@Nullable*/ Exception /*exception*/)  { }/*throws JmriConfigureXmlException*/
 
      /**
       * Set the error handler that will handle any errors encountered while

@@ -8,11 +8,11 @@ class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlockManagerXml : public AbstractNamedB
     Q_OBJECT
 public:
     Q_INVOKABLE explicit LayoutBlockManagerXml(QObject *parent = 0);
- ~LayoutBlockManagerXml() {}
+ ~LayoutBlockManagerXml() override {}
  LayoutBlockManagerXml(const LayoutBlockManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
-    /*public*/ QDomElement store(QObject*o);
-    /*public*/ void load(QDomElement element, QObject*o) throw (Exception);
-    /*public*/ bool load(QDomElement layoutblocks) throw (Exception) ;
+    /*public*/ QDomElement store(QObject*o) override;
+    /*public*/ void load(QDomElement element, QObject*o) throw (Exception) override;
+    /*public*/ bool load(QDomElement layoutblocks) throw (Exception)  override;
     /*public*/ void loadLayoutBlocks(QDomElement layoutblocks);
 
 signals:

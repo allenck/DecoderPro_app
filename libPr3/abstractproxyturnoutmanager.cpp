@@ -56,14 +56,14 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * getManager(i) and getManagerList(),
  * including the Internal manager
  */
-/*protected*/ int AbstractProxyTurnoutManager::nMgrs()
+/*protected*/ int AbstractProxyTurnoutManager::nMgrs() const
 {
  // make sure internal present
  initInternal();
  return mgrs.size();
 }
 
-/*protected*/ Manager* AbstractProxyTurnoutManager::getMgr(int index)
+/*protected*/ Manager* AbstractProxyTurnoutManager::getMgr(int index) const
 {
  // make sure internal present
  initInternal();
@@ -111,7 +111,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
     return retval;
 }
 
-/*public*/ Manager* AbstractProxyTurnoutManager::getInternalManager() {
+/*public*/ Manager* AbstractProxyTurnoutManager::getInternalManager() const {
     initInternal();
     return internalManager;
 }
@@ -119,7 +119,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
 /**
  * Returns the set default or, if not present, the internal manager as defacto default
  */
-/*public*/ Manager* AbstractProxyTurnoutManager::getDefaultManager() {
+/*public*/ Manager* AbstractProxyTurnoutManager::getDefaultManager() const {
     if (defaultManager != nullptr) return defaultManager;
 
     return getInternalManager();
@@ -180,7 +180,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  }
 }
 
-/*private*/ Manager* AbstractProxyTurnoutManager::initInternal()
+/*private*/ Manager* AbstractProxyTurnoutManager::initInternal() const
 {
  if (internalManager == nullptr) {
      log->debug("create internal manager when first requested");
@@ -202,11 +202,11 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * @param name
  * @return Null if nothing by that name exists
  */
-/*public*/ NamedBean* AbstractProxyTurnoutManager::getNamedBean(QString name)
+/*public*/ NamedBean* AbstractProxyTurnoutManager::getNamedBean(QString name) const
 {
- NamedBean* t = getBeanByUserName(name);
+ NamedBean* t = getByUserName(name);
  if (t != nullptr) return t;
- return getBeanBySystemName(name);
+ return getBySystemName(name);
 }
 
 /**
@@ -243,7 +243,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * @param name
  * @return Never nullptr under normal circumstances
  */
-/*protected*/ NamedBean* AbstractProxyTurnoutManager::provideNamedBean(QString name)
+/*protected*/ NamedBean* AbstractProxyTurnoutManager::provideNamedBean(QString name) const
 {
  NamedBean* t = getNamedBean(name);
  if (t!=nullptr) return t;
@@ -290,7 +290,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * Defer creation of the proper type to the subclass
  * @param index Which manager to invoke
  */
-/*abstract protected*/ NamedBean* AbstractProxyTurnoutManager::makeBean(int /*index*/, QString /*systemName*/, QString /*userName*/) /*const*/
+/*abstract protected*/ NamedBean* AbstractProxyTurnoutManager::makeBean(int /*index*/, QString /*systemName*/, QString /*userName*/) const
 {
 // Q_UNUSED(index);
 // Q_UNUSED(systemName);
@@ -300,9 +300,36 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
 
  return nullptr; // Should not get here! this should be overriden by the actual class
 }
-
+/** {@inheritDoc} */
 //@Override
-/*public*/ NamedBean* AbstractProxyTurnoutManager::getBeanBySystemName(QString systemName)
+//@CheckReturnValue
+//@CheckForNull
+/*public*/ NamedBean* AbstractProxyTurnoutManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
+    // System names can be matched to managers by system and type at front of name
+    int index = matchTentative(systemName);
+    if (index >= 0) {
+        Manager* m = getMgr(index);
+        return (NamedBean*)m->getBySystemName(systemName);
+    }
+    log->debug(tr("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName.isEmpty()?"(NULL)":systemName)); // NOI18N
+    return (NamedBean*)getDefaultManager()->getBySystemName(systemName);
+}
+
+/** {@inheritDoc} */
+//@Override
+//@CheckReturnValue
+//@CheckForNull
+/*public*/ NamedBean *AbstractProxyTurnoutManager::getByUserName(/*@Nonnull*/ QString userName) const{
+    for (Manager* m : this->mgrs) {
+        NamedBean* b = m->getByUserName(userName);
+        if (b != nullptr) {
+            return b;
+        }
+    }
+    return nullptr;
+}
+//@Override
+/*public*/ NamedBean* AbstractProxyTurnoutManager::getBeanBySystemName(QString systemName) const
 {
  //NamedBean* t = nullptr;
  foreach (Manager* m, this->mgrs) {
@@ -315,7 +342,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
 }
 
 //@Override
-/*public*/ NamedBean* AbstractProxyTurnoutManager::getBeanByUserName(QString userName)
+/*public*/ NamedBean* AbstractProxyTurnoutManager::getBeanByUserName(QString userName) const
 {
  foreach (Manager* m, this->mgrs) {
      NamedBean* b = m->getBeanByUserName(userName);
@@ -355,7 +382,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * be looking them up.
  * @return requested NamedBean object (never NULL)
  */
-/*public*/ NamedBean* AbstractProxyTurnoutManager::newNamedBean(QString systemName, QString userName) {
+/*public*/ NamedBean* AbstractProxyTurnoutManager::newNamedBean(QString systemName, QString userName) const {
  // make sure internal present
  initInternal();
 
@@ -384,7 +411,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * Returns -1 if there is no match, which is not considered an
  * error
  */
-/*protected*/ int AbstractProxyTurnoutManager::matchTentative(QString systemname)
+/*protected*/ int AbstractProxyTurnoutManager::matchTentative(QString systemname) const
 {
  //Q_ASSERT(mgrs->count()> 0);
  for (int i = 0; i<nMgrs(); i++)
@@ -407,10 +434,74 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * Throws IllegalArgumentException if there is no match,
  * here considered to be an error that must be reported.
  */
-/*protected*/ int AbstractProxyTurnoutManager::match(QString systemname) {
+/*protected*/ int AbstractProxyTurnoutManager::match(QString systemname) const{
     int index = matchTentative(systemname);
     if (index < 0) throw  IllegalArgumentException("System name "+systemname+" failed to match");
     return index;
+}
+
+/**
+ * Shared method to create a systemName based on the address base, the prefix and manager class.
+ *
+ * @param curAddress base address to use
+ * @param prefix system prefix to use
+ * @param managerType BeanType manager (method is used for Turnout and Sensor Managers)
+ * @return a valid system name for this connection
+ * @throws JmriException if systemName cannot be created
+ */
+QString AbstractProxyTurnoutManager::createSystemName(QString curAddress, QString prefix, QString managerType)const throw (JmriException)
+{
+ for (Manager* m : mgrs)
+ {
+  if (prefix == (m->getSystemPrefix()) && managerType == (/*m->getClass()*/ "Turnout")) {
+      try {
+          if (managerType == "TurnoutManager") {
+           return ((TurnoutManager*) m)->createSystemName(curAddress, prefix);
+       } else if (managerType == "SensorManager") {
+           return ((SensorManager*) m)->createSystemName(curAddress, prefix);
+       } else {
+           log->warn("createSystemName requested for incompatible Manager");
+       }
+   } catch (JmriException ex) {
+       throw ex;
+   }
+  }
+ }
+ throw Exception("Manager could not be found for System Prefix " + prefix);
+}
+
+/*public*/ QString AbstractProxyTurnoutManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) throw (JmriException) {
+    for (Manager* m : mgrs) {
+        log->debug(tr("NextValidAddress requested for %1").arg(curAddress));
+        if (prefix == (m->getSystemPrefix()) && typeLetter == m->typeLetter()) {
+            try {
+                switch (typeLetter) { // use #getDefaultManager() instead?
+                    case 'T':
+                        return ((TurnoutManager*) m)->getNextValidAddress(curAddress, prefix);
+                    case 'S':
+                        return ((SensorManager*) m)->getNextValidAddress(curAddress, prefix);
+                    case 'R':
+                        return ((ReporterManager*) m)->getNextValidAddress(curAddress, prefix);
+                    default:
+                        return QString();
+                }
+            } catch (JmriException ex) {
+                throw ex;
+            }
+        }
+    }
+    return QString();
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractProxyTurnoutManager::deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) throw (PropertyVetoException) {
+    QString systemName = s->getSystemName();
+    try {
+        getMgr(match(systemName))->deleteBean(s, property);
+    } catch (PropertyVetoException e) {
+        throw e;
+    }
 }
 
 /**
@@ -418,7 +509,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * <P>
  * Forwards the register request to the matching system
  */
-/*public*/ void AbstractProxyTurnoutManager::Register(NamedBean* s) {
+/*public*/ void AbstractProxyTurnoutManager::Register(NamedBean* s) const {
     QString systemName = s->getSystemName();
     getMgr(match(systemName))->Register(s);
 }
@@ -428,7 +519,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * <P>
  * Forwards the deregister request to the matching system
  */
-/*public*/ void AbstractProxyTurnoutManager::deregister(NamedBean* s) {
+/*public*/ void AbstractProxyTurnoutManager::deregister(NamedBean* s) const {
     QString systemName = s->getSystemName();
     getMgr(match(systemName))->deregister(s);
 }
@@ -442,7 +533,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  {
   Manager* mgr = getMgr(i);
   mgr->addPropertyChangeListener(l);
-  //connect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 /*public synchronized*/ void AbstractProxyTurnoutManager::removePropertyChangeListener(PropertyChangeListener* l)
@@ -453,8 +544,8 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  for (int i = 0; i<nMgrs(); i++)
  {
   Manager* mgr = getMgr(i);
-  //mgr->addPropertyChangeListener(l);
-  //disconnect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+  mgr->addPropertyChangeListener(l);
+  disconnect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -513,7 +604,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
 /**
  * @return The system-specific prefix letter for the primary implementation
  */
-/*public*/ QString AbstractProxyTurnoutManager::getSystemPrefix() {
+/*public*/ QString AbstractProxyTurnoutManager::getSystemPrefix() const {
 //    try {
       return getMgr(0)->getSystemPrefix();
 //        } catch(IndexOutOfBoundsException* ie) {
@@ -524,7 +615,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
 /**
  * @return The type letter for turnouts
  */
-/*public*/ char AbstractProxyTurnoutManager::typeLetter()
+/*public*/ char AbstractProxyTurnoutManager::typeLetter() const
 {
  return getDefaultManager()->typeLetter();
 }
@@ -533,7 +624,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * @return A system name from a user input, typically a number,
  * from the primary system.
  */
-/*public*/ QString AbstractProxyTurnoutManager::makeSystemName(QString s) {
+/*public*/ QString AbstractProxyTurnoutManager::makeSystemName(QString s) const {
     return getMgr(0)->makeSystemName(s);
 }
 
@@ -619,24 +710,14 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
 }
 
 /*protected*/ void AbstractProxyTurnoutManager::recomputeNamedBeanSet() {
-    if (namedBeanSet.isEmpty()) return; // only maintain if requested
-    namedBeanSet.clear();
-    for (Manager/*<E>*/* m : mgrs) {
-        namedBeanSet.unite(m->getNamedBeanSet());
-    }
-}
-
-/*protected*/ void AbstractProxyTurnoutManager::updateNamedBeanSet()
-{
- //if (namedBeanSet.isEmpty()) return; // only maintain if requested
- namedBeanSet.clear();
- for (Manager* m : mgrs)
- {
-  //namedBeanSet.addAll(m.getNamedBeanSet());
-  foreach(NamedBean* bean, m->getNamedBeanSet())
-     namedBeanSet.insert(bean);
+ if (namedBeanSet == nullptr)
+  return; // only maintain if requested
+ namedBeanSet->clear();
+ for (Manager/*<E>*/* m : mgrs) {
+     namedBeanSet->unite(m->getNamedBeanSet());
  }
 }
+
 NamedBeanComparator<NamedBean*> comparator2 = NamedBeanComparator<NamedBean*>();
 
 bool sortLessThanconst2( NamedBean* s1,  NamedBean* s2)
@@ -648,37 +729,40 @@ bool sortLessThanconst2( NamedBean* s1,  NamedBean* s2)
 //@Override
 //@Nonnull
 /*public*/ /*SortedSet<E>*/QSet<NamedBean*> AbstractProxyTurnoutManager::getNamedBeanSet() {
-    namedBeanSet = QSet<NamedBean*>();//new TreeSet<>(new NamedBeanComparator());
-    updateNamedBeanSet();
-    //return Collections.unmodifiableSortedSet(namedBeanSet);
-    QList<NamedBean*> list = namedBeanSet.toList();
-    qSort(list.begin(), list.end(), sortLessThanconst2); //NamedBeanComparator<NamedBean*>::compare);
-    return list.toSet();
+ if (namedBeanSet == nullptr) {
+     namedBeanSet = new QSet<NamedBean*>();//new TreeSet<>(new NamedBeanComparator<>());
+     recomputeNamedBeanSet();
+ }
+
+ //return Collections.unmodifiableSortedSet(namedBeanSet);
+ QList<NamedBean*> list = namedBeanSet->toList();
+ qSort(list.begin(), list.end(), sortLessThanconst2); //NamedBeanComparator<NamedBean*>::compare);
+ return list.toSet();
 }
 
 /**
  * Get a list of all user names.
  */
-/*public*/ QStringList AbstractProxyTurnoutManager::getUserNameList()
-{
- //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
- QSet<QString>* ts = new QSet<QString>();
- for (int i = 0; i<nMgrs(); i++)
- {
-  //ts.addAll(getMgr(i).getSystemNameList());
-  QStringList snl = getMgr(i)->getSystemNameList();
-  foreach(QString s, snl)
-  {
-   AbstractNamedBean* bean = (AbstractNamedBean*)getMgr(i)->getBeanBySystemName(s);
-   QString userName = bean->getUserName();
-   if(userName != "")
-    ts->insert(userName);
-  }
- }
- //return new ArrayList<String>(ts);
- QStringList arr = ts->toList();
- return arr;
-}
+///*public*/ QStringList AbstractProxyTurnoutManager::getUserNameList()
+//{
+// //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
+// QSet<QString>* ts = new QSet<QString>();
+// for (int i = 0; i<nMgrs(); i++)
+// {
+//  //ts.addAll(getMgr(i).getSystemNameList());
+//  QStringList snl = getMgr(i)->getSystemNameList();
+//  foreach(QString s, snl)
+//  {
+//   AbstractNamedBean* bean = (AbstractNamedBean*)getMgr(i)->getBeanBySystemName(s);
+//   QString userName = bean->getUserName();
+//   if(userName != "")
+//    ts->insert(userName);
+//  }
+// }
+// //return new ArrayList<String>(ts);
+// QStringList arr = ts->toList();
+// return arr;
+//}
 
 //void AbstractProxyTurnoutManager::propertyChange(PropertyChangeEvent */*e*/)
 //{

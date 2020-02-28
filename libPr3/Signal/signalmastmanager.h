@@ -32,7 +32,7 @@
 public:
  SignalMastManager(QObject* parent = 0) : AbstractManager(parent) {}
     // to free resources when no longer used
-    /*public*/ void dispose() {}
+    /*public*/ void dispose() override {}
 
     /**
      * Locate via user name, then system name if needed.
@@ -54,15 +54,15 @@ public:
      * already exist and the manager cannot create the SignalMast
      * due to e.g. an illegal name or name that can't be parsed.
      */
-    /*public*/ virtual SignalMast* provideSignalMast(QString ){return NULL;}
+    /*public*/ virtual SignalMast* provideSignalMast(QString ) {return NULL;}
 
     /*public*/ virtual SignalMast* provideSignalMast(QString /*prefix*/, // nominally IF$shsm
                                         QString /*signalSystem*/,
                                         QString /*mastName*/,
-                                        QStringList /*heads*/) {return NULL;}
+                                        QStringList /*heads*/)  {return NULL;}
 
-    /*public*/ virtual SignalMast* getBySystemName(QString /*s*/) {return NULL;}
-    /*public*/ virtual SignalMast* getByUserName(QString /*s*/) {return NULL;}
+    /*public*/ virtual SignalMast* getBySystemName(QString /*s*/)  {return NULL;}
+    /*public*/ virtual SignalMast* getByUserName(QString /*s*/)  {return NULL;}
     virtual /*public*/ SignalMast* provide(QString name) throw (IllegalArgumentException)=0;
 
 friend class SignalMastIcon;

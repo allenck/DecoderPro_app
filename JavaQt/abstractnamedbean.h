@@ -16,14 +16,14 @@ public:
     /**
      * Get associated comment text.
      */
-    QString getComment();
+    QString getComment() override;
     /**
      * Set associated comment text.
      * <p>
      * Comments can be any valid text.
      * @param comment Null means no comment associated.
      */
-    void setComment(QString comment);
+    void setComment(QString comment) override;
     QString getDisplayName();
     /*final*/ /*public*/ QString getDisplayName(DisplayOptions displayOptions) override;
 
@@ -50,21 +50,36 @@ public:
     /*public synchronized*/ int getNumPropertyChangeListeners() override;
     /*public*/ /*synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(QString propertyName) override;
 
-    /*public*/ QString getSystemName();
-    /*public*/ QString getUserName();
+    /*public*/ QString getSystemName() const;
+    /*public*/ QString getUserName() const;
 //    /*public*/ virtual void setSysName(QString s); // needed for catalogtree
-    /*public*/ void setUserName(QString s) throw (NamedBean::BadUserNameException);
+    /*public*/ void setUserName(QString s) throw (NamedBean::BadUserNameException)  override;
     /*public*/ void dispose() override;
     /*public*/ void setProperty(QString key, QVariant value) override;
     /*public*/ QVariant getProperty(QString key) override;
 
     /*public java.util.*/QSet<QString> getPropertyKeys() override;
     PropertyChangeSupport* pcs = nullptr;
-    /*public*/ void removeProperty(QString key);
+    /*public*/ void removeProperty(QString key) override;
     /*public*/ QString describeState(int state);
-    Q_INVOKABLE /*public*/ bool equals(QObject* obj);
-    /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n);
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
+    Q_INVOKABLE /*public*/ bool equals(QObject* obj) override;
+    /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n) override;
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) override;
+    /*public*/ uint hashCode() { return qHash(mSystemName, qGlobalQHashSeed());}
+    inline bool operator ==(const AbstractNamedBean &e2)
+    {
+     return mSystemName == e2.mSystemName;
+    }
+
+    inline  bool operator <(const AbstractNamedBean &e2)
+    {
+     return mSystemName < e2.mSystemName;
+    }
+
+    inline uint qHash(const AbstractNamedBean &/*key*/, uint /*seed*/)
+    {
+     return hashCode();
+    }
 
 signals:
 
@@ -88,13 +103,14 @@ private:
  QHash<PropertyChangeListener*, QString>* _register;
  QHash<PropertyChangeListener*, QString>* listenerRefs;
  QObject* parent;
- 
+
+
  protected:
   QString mUserName;
   QString mSystemName;
   AbstractNamedBean(QString sys, QObject* parent = 0);
   AbstractNamedBean(QString sys, QString user, QObject* parent = 0);
-  /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
+  /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n) const;
 //  /*protected*/ void firePropertyChange(QString p, QObject* old, QObject* n);
   friend class LayoutBlock;
   friend class CatalogTree;
@@ -105,6 +121,7 @@ private:
   friend class AbstractProvidingTurnoutManagerTestBase;
   friend class AbstractProvidingReporterManagerTestBase;
   friend class AbstractProvidingMemoryManagerTestBase;
+  friend class Warrant;
 };
 
 #endif // ABSTRACTNAMEDBEAN_H

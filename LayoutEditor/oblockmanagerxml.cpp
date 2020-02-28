@@ -646,7 +646,7 @@ OPath* OBlockManagerXml::loadPath(QDomElement elem, OBlock* block)
  return path;
 }
 
-/*public*/ int OBlockManagerXml::loadOrder(){
+/*public*/ int OBlockManagerXml::loadOrder()const{
     //return InstanceManager::oBlockManagerInstance().getXMLOrder();
     return Manager::OBLOCKS;
 }

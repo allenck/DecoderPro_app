@@ -1454,7 +1454,7 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
  _onState = 0x00;
  _offState = 0x00;
 
- SignalHead* head = ((AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(sysName);
+ SignalHead* head = (SignalHead*)((AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(sysName);
  if (QString(head->metaObject()->className()).contains("SingleTurnoutSignalHead"))
  {
   SingleTurnoutSignalHead* signal = (SingleTurnoutSignalHead*) static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sysName);

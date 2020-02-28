@@ -15,15 +15,15 @@ public:
                 QString systemName,
                 QString userName,
                 Exception exception
-            ) /*throw (JmriConfigureXmlException)*/;
-    /*public*/ bool loadDeferred() ;
-    /*public*/ int loadOrder();
-    /*public*/ void setConfigXmlManager(ConfigXmlManager* c) ;
+            ) /*throw (JmriConfigureXmlException)*/ override;
+    /*public*/ bool loadDeferred()const  override;
+    /*public*/ int loadOrder()const override;
+    /*public*/ void setConfigXmlManager(ConfigXmlManager* c)  override;
     QDomDocument doc;
     virtual void setDoc(QDomDocument doc);
-    /*public*/ bool load(QDomElement e) throw (Exception);
-    /*public*/ bool load(QDomElement shared, QDomElement perNode); //throws Exception
-    /*public*/ void load(QDomElement shared, QDomElement perNode, QObject* o) throw (JmriConfigureXmlException);
+    /*public*/ bool load(QDomElement e) throw (Exception) override;
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) override; //throws Exception
+    /*public*/ void load(QDomElement shared, QDomElement perNode, QObject* o) throw (JmriConfigureXmlException) override;
 
 signals:
 

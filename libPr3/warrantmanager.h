@@ -12,13 +12,13 @@ public:
     explicit WarrantManager(QObject *parent = 0);
     ~WarrantManager() {}
     WarrantManager(const WarrantManager&) : AbstractManager() {}
-    /*public*/ int getXMLOrder();
-    /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter();
+    /*public*/ int getXMLOrder()const override;
+    /*public*/ QString getSystemPrefix()const override;
+    /*public*/ char typeLetter() const override;
     /*public*/ Warrant* createNewWarrant(QString systemName, QString userName, bool SCWa, long TTP);
     /*public*/ Warrant* getWarrant(QString name);
-    /*public*/ NamedBean* getBySystemName(QString name);
-    /*public*/ NamedBean* getByUserName(QString key);
+    /*public*/ NamedBean* getBySystemName(QString name)const override;
+    /*public*/ NamedBean* getByUserName(QString key)const override;
     /*public*/ Warrant* provideWarrant(QString name) ;
     static WarrantManager* _instance;// = NULL;
     static /*public*/ WarrantManager* instance();

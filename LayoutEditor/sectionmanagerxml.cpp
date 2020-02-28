@@ -48,10 +48,10 @@ SectionManagerXml::SectionManagerXml(QObject *parent) :
             log->debug("Section system name is "+sname);
             Section* x = (Section*)tm->getBySystemName(sname);
             QDomElement elem = doc.createElement("section");
-            //elem.setAttribute("systemName", sname);
-            QDomElement e1;
-            elem.appendChild(e1 = doc.createElement("systemName"));
-            e1.appendChild(doc.createTextNode(sname));
+            elem.setAttribute("systemName", sname);
+//            QDomElement e1;
+//            elem.appendChild(e1 = doc.createElement("systemName"));
+//            e1.appendChild(doc.createTextNode(sname));
 
             // store common part
             storeCommon(x, elem);
@@ -229,6 +229,6 @@ SectionManagerXml::SectionManagerXml(QObject *parent) :
     }
 }
 
-/*public*/ int SectionManagerXml::loadOrder(){
+/*public*/ int SectionManagerXml::loadOrder()const{
     return ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getXMLOrder();
 }

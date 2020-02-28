@@ -21,37 +21,37 @@ public:
  ~SignalMastIcon() {}
  SignalMastIcon(const SignalMastIcon&) : PositionableIcon() {}
     /*public*/ void setShowAutoText(bool state);
-    /*public*/ Positionable* deepClone();
-    /*public*/ Positionable* finishClone(Positionable* p);
+    /*public*/ Positionable* deepClone() override;
+    /*public*/ Positionable* finishClone(Positionable* p) override;
     /*public*/ void setSignalMast(NamedBeanHandle <SignalMast*>* sh);
     /*public*/ void setSignalMast(QString pName);
     /*public*/ NamedBeanHandle<SignalMast*>* getNamedSignalMast();
     /*public*/ SignalMast* getSignalMast();
-    /*public*/ NamedBean* getNamedBean();
+    /*public*/ NamedBean* getNamedBean() override;
     /*public*/ QString mastState();
     // update icon as state of turnout changes
 //    /*public*/ void propertyChange(PropertyChangeEvent* e); // is slot!
     /*public*/ QString getPName();
-    /*public*/ QString getNameString();
-    /*public*/ bool showPopUp(QMenu* popup);
-    /*public*/ bool setRotateOrthogonalMenu(QMenu* popup);
-    /*public*/ bool setEditItemMenu(QMenu* popup);
+    /*public*/ QString getNameString() override;
+    /*public*/ bool showPopUp(QMenu* popup) override;
+    /*public*/ bool setRotateOrthogonalMenu(QMenu* popup) override;
+    /*public*/ bool setEditItemMenu(QMenu* popup) override;
     void updateItem();
-    /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e) ;
+    /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e)  override;
     /*public*/ void performMouseClicked(QGraphicsSceneMouseEvent* e);
 //    /*public*/ void useIconSet(QString icon);
     /*public*/ QString useIconSet();
-    /*public*/ void displayState(int s);
+    /*public*/ void displayState(int s) override;
     /*public*/ void displayState(QString state);
-    /*public*/ bool setEditIconMenu(QMenu* popup);
-    /*public*/ void rotate(int deg);
-    /*public*/ void setScale(double s);
+    /*public*/ bool setEditIconMenu(QMenu* popup) override;
+    /*public*/ void rotate(int deg) override;
+    /*public*/ void setScale(double s) override;
     /*public*/ void setClickMode(int mode);
     /*public*/ int getClickMode();
     /*public*/ void setLitMode(bool mode);
     /*public*/ bool getLitMode();
-    /*public*/ void dispose();
-    /*public*/ bool updateScene();
+    /*public*/ void dispose() override;
+    /*public*/ bool updateScene() override;
 
 signals:
 

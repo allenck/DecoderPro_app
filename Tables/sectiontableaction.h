@@ -49,27 +49,27 @@ private:
 
     // instance variables
     QList<Block*> blockList;// = new ArrayList<Block>();
-    BlockTableModel* blockTableModel;// = NULL;
-    EntryPointTableModel* entryPointTableModel;// = NULL;
-    SectionManager* sectionManager;// = NULL;
+    BlockTableModel* blockTableModel = nullptr;
+    EntryPointTableModel* entryPointTableModel = nullptr;
+    SectionManager* sectionManager = nullptr;
     BlockManager* blockManager;// = jmri.InstanceManager.blockManagerInstance();
     bool editMode;// = false;
-    Section* curSection;// = NULL;
+    Section* curSection = nullptr;
     bool addCreateActive;// = true;
-    QList<LayoutEditor*>* lePanelList;// = NULL;
-    LayoutEditor* curLayoutEditor;// = NULL;
+    QList<LayoutEditor*>* lePanelList = nullptr;
+    LayoutEditor* curLayoutEditor = nullptr;
     QList<Block*> blockBoxList;// = new ArrayList<Block>();
-    Block* beginBlock;// = NULL;
-    Block* endBlock;// = NULL;
-    Sensor* fSensor;// = NULL;
-    Sensor* rSensor;// = NULL;
-    Sensor* fStopSensor;// = NULL;
-    Sensor* rStopSensor;// = NULL;
+    Block* beginBlock = nullptr;
+    Block* endBlock = nullptr;
+    Sensor* fSensor = nullptr;
+    Sensor* rSensor = nullptr;
+    Sensor* fStopSensor = nullptr;
+    Sensor* rStopSensor = nullptr;
     QList<EntryPoint*> entryPointList;// = new ArrayList<EntryPoint>();
     bool manualEntryPoints;// = true;
 
     // add/create variables
-    JmriJFrame* addFrame;// = NULL;
+    JmriJFrame* addFrame = nullptr;
     JTextField* sysName;// = new JTextField(5);
     QLabel* sysNameFixed;// = new JLabel("");
     JTextField* userName;// = new JTextField(17);
@@ -77,11 +77,11 @@ private:
     QLabel* userNameLabel;// = new JLabel(rb.getString("LabelUserName"));
     QCheckBox* _autoSystemName;// = new JCheckBox(rb.getString("LabelAutoSysName"));
     UserPreferencesManager* pref;
-    QPushButton* create;// = NULL;
-    QPushButton* update;// = NULL;
+    QPushButton* create = nullptr;
+    QPushButton* update = nullptr;
     QComboBox* blockBox;// = new JComboBox();
-    QPushButton* addBlock;// = NULL;
-    QPushButton* deleteBlocks;// = NULL;
+    QPushButton* addBlock = nullptr;
+    QPushButton* deleteBlocks = nullptr;
     QComboBox* layoutEditorBox;// = new JComboBox();
     JTextField* forwardSensorField;// = new JTextField(12);
     JTextField* reverseSensorField;// = new JTextField(12);
@@ -89,7 +89,7 @@ private:
     JTextField* reverseStopSensorField;// = new JTextField(12);
     QRadioButton* manually;// = new JRadioButton(tr("SetManually"),true);
     QRadioButton* automatic;// = new JRadioButton(tr("UseConnectivity"),false);
-    QButtonGroup* entryPointOptions=nullptr;// = NULL;
+    QButtonGroup* entryPointOptions = nullptr;
     QString systemNameAuto;// = this.getClass().getName()+".AutoSystemName";
     BeanTableFrame* f;
     /*private*/ EntryPoint* getEntryPointInList(QList<EntryPoint*> list, Block* b, Block* pb, QString pbDir);
@@ -105,9 +105,9 @@ private:
     /*private*/ bool inSection(Block* b);
     /*private*/ bool connected(Block* b1, Block* b2);
     /*private*/ void initializeEntryPoints();
-    JmriJFrame* frame;// = NULL;
+    JmriJFrame* frame = nullptr;
 
-    LayoutEditor* panel;// = NULL;
+    LayoutEditor* panel = nullptr;
     /*private*/ bool initializeLayoutEditor(bool required);
     Logger* log;
 
@@ -165,7 +165,7 @@ public:
     /*public*/ int columnCount(const QModelIndex &parent) const;
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
     /*public*/ int getPreferredWidth(int col);
     /*public*/ void configValueColumn(JTable* table);
@@ -200,11 +200,11 @@ public:
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     /*public*/ int columnCount(const QModelIndex &parent) const;
- /*public*/ int rowCount(const QModelIndex &parent) const;
- /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+    /*public*/ int rowCount(const QModelIndex &parent) const;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     /*public*/ int getPreferredWidth(int col);
- /*public*/ QVariant data(const QModelIndex &index, int role) const;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 };
 /**

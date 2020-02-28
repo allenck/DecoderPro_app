@@ -618,11 +618,11 @@ list << "dcc" <<"dcc_short" << "dcc_long";
     attachListener(re->getDccLocoAddress(), re, p);
 }
 
-/*public*/ void AbstractThrottleManager::attachListener(DccLocoAddress* la, PropertyChangeListener* p){
+/*public*/ void AbstractThrottleManager::attachListener(LocoAddress *la, PropertyChangeListener* p){
     attachListener(la, NULL, p);
 }
 
-/*public*/ void AbstractThrottleManager::attachListener(DccLocoAddress* la, BasicRosterEntry* re, PropertyChangeListener* p)
+/*public*/ void AbstractThrottleManager::attachListener(LocoAddress* la, BasicRosterEntry* re, PropertyChangeListener* p)
 {
 
  //if (addressThrottles->contains(la))

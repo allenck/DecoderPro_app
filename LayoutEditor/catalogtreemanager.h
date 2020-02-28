@@ -21,13 +21,13 @@ public:
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) {return NULL;}
+    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) const override {return NULL;}
     /**
      * Locate an instance based on a user name.  Returns null if no
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ virtual NamedBean* getByUserName(QString /*userName*/) {return NULL;}
+    /*public*/ virtual NamedBean* getByUserName(QString /*userName*/) const override{return NULL;}
     /**
      * Return an instance with the specified system and user names.
      * Note that two calls with the same arguments will get the same instance;
@@ -60,9 +60,9 @@ public:
     /**
      * Get a list of all CatalogTree objects' system names.
      */
-    /*public*/  QStringList getSystemNameList() {return QStringList();}
+    /*public*/  QStringList getSystemNameList() override{return QStringList();}
 
-    /*public*/ virtual void Register(CatalogTree*) {}
+    /*public*/  void Register(NamedBean*) const override{}
 
     /*public*/ virtual void storeImageIndex() {}
 signals:

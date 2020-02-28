@@ -29,9 +29,9 @@ public:
      * Accessor methods
     */
 //    /*public*/ QString getID();
-    /*public*/ int getType();
-    /*public*/ TrackSegment* getConnect1();
-    /*public*/ TrackSegment* getConnect2();
+    /*public*/ int getType() const;
+    /*public*/ TrackSegment* getConnect1() const;
+    /*public*/ TrackSegment* getConnect2() const;
     /*public*/ QPointF getCoords();
     /*public*/ void setCoords(QPointF p);
     /*public*/ QString getEastBoundSignalMastName();
@@ -45,14 +45,14 @@ public:
 
     /*public*/ QString getEastBoundSensorName();
     /*public*/ Sensor *getEastBoundSensor();
-    /*public*/ void setEastBoundSensor(QString sensorName);
+    /*public*/ void setEastBoundSensor(QString sensorName) const;
     /*public*/ Sensor *getWestBoundSensor();
     /*public*/ QString getWestBoundSensorName();
-    /*public*/ void setWestBoundSensor(QString sensorName);
+    /*public*/ void setWestBoundSensor(QString sensorName) const;
     /*public*/ SignalMast *getEastBoundSignalMast();
-    /*public*/ void setEastBoundSignalMast(QString signalMastName);
+    /*public*/ void setEastBoundSignalMast(QString signalMastName) const;
     /*public*/ SignalMast* getWestBoundSignalMast();
-    /*public*/ void setWestBoundSignalMast(QString signalMastName);
+    /*public*/ void setWestBoundSignalMast(QString signalMastName) const;
     /*public*/ void removeBeanReference(NamedBean* nb);
 
     /**
@@ -61,7 +61,7 @@ public:
      *        method is called after the entire LayoutEditor is loaded to set the specific
      *        TrackSegment objects.
      */
-    /*public*/ void setObjects(LayoutEditor* p);
+    /*public*/ void setObjects(LayoutEditor* p) override;
     /**
      * Setup and remove connections to track
      */
@@ -82,8 +82,8 @@ public:
      * "active" means that the object is still displayed, and should be stored.
      */
     /*public*/ bool isActive();
-    /*public*/ bool removeTrackConnection (TrackSegment* track);
-    /*public*/ void reCheckBlockBoundary();
+    /*public*/ bool removeTrackConnection (TrackSegment* track) const;
+    /*public*/ void reCheckBlockBoundary() const override;
     /*protected*/ int maxWidth();
     /*protected*/ int maxHeight();
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* e);
@@ -92,24 +92,24 @@ public:
     void invalidateItemType(EditScene *g2);
     void draw(EditScene *g);
     /*public*/ QString getLinkEditorName();
-    /*public*/ PositionablePoint* getLinkedPoint() ;
+    /*public*/ PositionablePoint* getLinkedPoint() const;
     /*public*/ QString getLinkedPointId();
     /*public*/ void setLinkedPoint(PositionablePoint* p);
-    /*public*/ LayoutEditor* getLinkedEditor();
+    /*public*/ LayoutEditor* getLinkedEditor() const;
     /*public*/ QWidget* getLinkPanel();
-    /*public*/ bool isDisconnected(int connectionType);
-    /*public*/ bool isMainline();
-    /*public*/ QPointF getCoordsForConnectionType(int connectionType);
-    /*public*/ LayoutTrack* getConnection(int connectionType) throw (JmriException);
-    /*public*/ void setConnection(int connectionType, LayoutTrack* o, int type) throw (JmriException);
-    /*public*/ bool replaceTrackConnection(/*@Nullable*/ TrackSegment* oldTrack,/* @Nullable */TrackSegment* newTrack);
-    /*public*/ QList<int> checkForFreeConnections();
-    /*public*/ bool checkForUnAssignedBlocks();
+    /*public*/ bool isDisconnected(int connectionType)override;
+    /*public*/ bool isMainline()override;
+    /*public*/ QPointF getCoordsForConnectionType(int connectionType)override;
+    /*public*/ LayoutTrack* getConnection(int connectionType) throw (JmriException)override;
+    /*public*/ void setConnection(int connectionType, LayoutTrack* o, int type) throw (JmriException)override;
+    /*public*/ bool replaceTrackConnection(/*@Nullable*/ TrackSegment* oldTrack,/* @Nullable */TrackSegment* newTrack) const;
+    /*public*/ QList<int> checkForFreeConnections()override;
+    /*public*/ bool checkForUnAssignedBlocks()override;
     /*public*/ void checkForNonContiguousBlocks(
-            /*@Nonnullptr*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap);
+            /*@Nonnullptr*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap)override;
     /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnullptr*/ QString blockName,
-            /*@Nonnullptr*/ QSet<QString> TrackNameSet);
-    /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
+            /*@Nonnullptr*/ QSet<QString> TrackNameSet)override;
+    /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock)override;
 
 signals:
     
@@ -127,17 +127,17 @@ private:
     // persistent instances variables (saved between sessions)
     ///*private*/ QString ident; //"";
     /*private*/ int type; //0;
-    /*private*/ TrackSegment* connect1; //null;
-    /*private*/ TrackSegment* connect2; //null;
+    /*private*/ mutable TrackSegment* connect1; //null;
+    /*private*/ mutable TrackSegment* connect2; //null;
     /*private*/ QPointF coords; //new QPointF(10.0,10.0);
 //    /*private*/ QString eastBoundSignalName; //""; // signal head for east (south) bound trains
 //    /*private*/ QString westBoundSignalName; //""; // signal head for west (north) bound trains
     /* We use a namedbeanhandle for the the sensors, even though we only store the name here,
     this is so that we can keep up with moves and changes of userNames */
-    /*private*/ NamedBeanHandle<Sensor*>* eastBoundSensorNamed; //null;
-    /*private*/ NamedBeanHandle<Sensor*>* westBoundSensorNamed; //null;
-    /*private*/ NamedBeanHandle<SignalMast*>* eastBoundSignalMastNamed;// = NULL;
-    /*private*/ NamedBeanHandle<SignalMast*>* westBoundSignalMastNamed;// = NULL;
+    /*private*/ mutable NamedBeanHandle<Sensor*>* eastBoundSensorNamed; //null;
+    /*private*/ mutable NamedBeanHandle<Sensor*>* westBoundSensorNamed; //null;
+    /*private*/ mutable  NamedBeanHandle<SignalMast*>* eastBoundSignalMastNamed;// = NULL;
+    /*private*/ mutable  NamedBeanHandle<SignalMast*>* westBoundSignalMastNamed;// = NULL;
 //    /*private*/ QString eastBoundSignalMastName; //"";
 //    /*private*/ QString westBoundSignalMastName; //"";
     QString where(QGraphicsSceneMouseEvent* e);
@@ -153,15 +153,15 @@ private:
     /*private*/ void setEastBoundSignalName(/*@CheckForNull*/ QString signalHead);
     /*private*/ void setWestBoundSignalName(/*@CheckForNull*/ QString signalHead);
     void removeSML(SignalMast* signalMast);
-    void removeLinkedPoint();
+    void removeLinkedPoint() const;
     QGraphicsItem* rects = nullptr;
 
  QMenu* popup;// = NULL;
  //QGraphicsItem* item;
- /*private*/ PositionablePoint* linkedPoint = nullptr;
+ /*private*/ mutable PositionablePoint* linkedPoint = nullptr;
  JDialog* editLink;// = null;
  QList<PositionablePoint*>* pointList = nullptr;
- void /*private*/ invalidate(EditScene * g2);
+ void /*private*/ invalidate(EditScene * g2)override;
 
 private slots:
  void on_actRemove_triggered();
@@ -174,10 +174,10 @@ protected:
  */
 /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e);
  /*protected*/ LayoutEditor* getLayoutEditor();
- /*protected*/ int getConnect1Dir();
+ /*protected*/ int getConnect1Dir() const;
  /*protected*/ NamedBeanHandle<SignalHead*>* signalEastHeadNamed = nullptr; // signal head for east (south) bound trains
  /*protected*/ NamedBeanHandle<SignalHead*>* signalWestHeadNamed = nullptr; // signal head for west (north) bound trains
- /*protected*/ void drawTurnoutControls(EditScene* g2);
+ /*protected*/ void drawTurnoutControls(EditScene* g2)override;
  /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE type);
  /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type);
  /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);

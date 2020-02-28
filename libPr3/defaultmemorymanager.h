@@ -7,13 +7,13 @@ class LIBPR3SHARED_EXPORT DefaultMemoryManager : public AbstractMemoryManager
     Q_OBJECT
 public:
     explicit DefaultMemoryManager(QObject *parent = 0);
-    /*public*/ QString getSystemPrefix();
+    /*public*/ QString getSystemPrefix()const override;
 
 signals:
     
 public slots:
 protected:
- /*protected*/ Memory* createNewMemory(QString systemName, QString userName);
+ /*protected*/ Memory* createNewMemory(QString systemName, QString userName) const override;
 
 };
 

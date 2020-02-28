@@ -13,12 +13,12 @@ public:
  /*public*/ InternalTurnoutManager(InternalSystemConnectionMemo* memo, QObject* parent = nullptr);
  /*public*/ SystemConnectionMemo* getMemo();
  /*public*/ bool allowMultipleAdditions(QString systemName);
- /*public*/ QString createSystemName(QString curAddress, QString prefix) throw (JmriException);
+ /*public*/ QString createSystemName(QString curAddress, QString prefix) const throw (JmriException);
  /*public*/ QStringList getValidOperationTypes();
  /*public*/ QString getEntryToolTip();
 
 protected:
-/*protected*/ Turnout* createNewTurnout(QString systemName, QString userName);
+/*protected*/ Turnout* createNewTurnout(QString systemName, QString userName) const;
 /*protected*/ QString prefix; // = "I";
 
 };

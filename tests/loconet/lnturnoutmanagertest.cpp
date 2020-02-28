@@ -69,7 +69,7 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
         LocoNetMessage* m = new LocoNetMessage(QVector<int>()<<0xb1<< 0x3C<< 0x70<< 0x02);
         lnis->sendTestMessage(m);
         Assert::assertNotNull(l->getBySystemName("LT61"), __FILE__, __LINE__);
-        Assert::assertEquals(Turnout::CLOSED, l->getBySystemName("LT61")->getKnownState(), __FILE__, __LINE__);
+        Assert::assertEquals(Turnout::CLOSED, ((Turnout*)l->getBySystemName("LT61"))->getKnownState(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -78,7 +78,7 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
         LocoNetMessage* m = new LocoNetMessage(QVector<int>()<<0xb1<< 0x3D<< 0x60<< 0x13);
         lnis->sendTestMessage(m);
         Assert::assertNotNull(l->getBySystemName("LT62"), __FILE__, __LINE__);
-        Assert::assertEquals(Turnout::THROWN, l->getBySystemName("LT62")->getKnownState(), __FILE__, __LINE__);
+        Assert::assertEquals(Turnout::THROWN, ((Turnout*)l->getBySystemName("LT62"))->getKnownState(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -87,8 +87,8 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
         LocoNetMessage* m = new LocoNetMessage(QVector<int>()<<0xb1<< 0x3E<< 0x40<< 0x30);
         lnis->sendTestMessage(m);
         Assert::assertNotNull(l->getBySystemName("LT63"), __FILE__, __LINE__);
-        Assert::assertEquals("EXACT", l->getBySystemName("LT63")->getFeedbackModeName(), __FILE__, __LINE__);
-        Assert::assertEquals(Turnout::INCONSISTENT, l->getBySystemName("LT63")->getKnownState(), __FILE__, __LINE__);
+        Assert::assertEquals("EXACT", ((Turnout*)l->getBySystemName("LT63"))->getFeedbackModeName(), __FILE__, __LINE__);
+        Assert::assertEquals(Turnout::INCONSISTENT, ((Turnout*)l->getBySystemName("LT63"))->getKnownState(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -97,8 +97,8 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
         LocoNetMessage* m = new LocoNetMessage(QVector<int>()<<0xb1<< 0x3F<< 0x50<< 0x21);
         lnis->sendTestMessage(m);
         Assert::assertNotNull(l->getBySystemName("LT64"), __FILE__, __LINE__);
-        Assert::assertEquals("EXACT", l->getBySystemName("LT64")->getFeedbackModeName(), __FILE__, __LINE__);
-        Assert::assertEquals(Turnout::THROWN, l->getBySystemName("LT64")->getKnownState(), __FILE__, __LINE__);
+        Assert::assertEquals("EXACT", ((Turnout*)l->getBySystemName("LT64"))->getFeedbackModeName(), __FILE__, __LINE__);
+        Assert::assertEquals(Turnout::THROWN,((Turnout*) l->getBySystemName("LT64"))->getKnownState(), __FILE__, __LINE__);
     }
 
     //@Test

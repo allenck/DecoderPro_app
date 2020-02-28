@@ -39,7 +39,7 @@ class  ProvidingManager// /*<E extends NamedBean>*/ : public Manager
      *                                  be parsed.
      */
     //@Nonnull
-    /*public*/ virtual NamedBean* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException);
+    /*public*/ virtual NamedBean* provide(/*@Nonnull*/ QString name) const throw (IllegalArgumentException);
  friend class AbstractProvidingTurnoutManagerTestBase;
 };
 Q_DECLARE_INTERFACE(ProvidingManager, "ProvidingManager")

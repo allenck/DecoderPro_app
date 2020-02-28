@@ -64,7 +64,7 @@
  *
  * @return the center coordinates
  */
-/*public*/ QPointF LayoutTrack::getCoordsCenter() {
+/*public*/ QPointF LayoutTrack::getCoordsCenter() const {
     return center;
 }
 
@@ -547,7 +547,7 @@
  * abstract method... subclasses should implement _IF_ they need to recheck
  * their block boundaries
  */
-/*protected*/ /*abstract*/ void LayoutTrack::reCheckBlockBoundary() {}
+/*protected*/ /*abstract*/ void LayoutTrack::reCheckBlockBoundary() const {}
 
 /**
  * get the layout connectivity for this track

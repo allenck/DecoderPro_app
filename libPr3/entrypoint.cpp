@@ -1,10 +1,6 @@
 #include "entrypoint.h"
 #include "instancemanager.h"
 
-EntryPoint::EntryPoint(QObject *parent) :
-    QObject(parent)
-{
-}
 /**
  * Represent an EntryPoint to a Section of track.
  * Specifies a Block within the Section, and a Path of that Block.
@@ -24,7 +20,7 @@ EntryPoint::EntryPoint(QObject *parent) :
  */
 ///*public*/ class EntryPoint {
 
-/*public*/ EntryPoint::EntryPoint(Block* b, Block* pb, QString fbDir) {
+/*public*/ EntryPoint::EntryPoint(Block* b, Block* pb, QString fbDir, QObject *parent) : QObject(parent){
     common();
     mBlock = b;
     mFromBlock = pb;
@@ -32,7 +28,7 @@ EntryPoint::EntryPoint(QObject *parent) :
 }
 
 // special constructor for delayed initialization
-/*public*/ EntryPoint::EntryPoint(QString bName, QString fbName, QString fbDir) {
+/*public*/ EntryPoint::EntryPoint(QString bName, QString fbName, QString fbDir, QObject *parent) : QObject(parent){
     common();
     needsInitialize = true;
     blockName = bName;

@@ -432,7 +432,7 @@ Maintenance::Maintenance(QObject *parent) :
   return l;
  }
  TurnoutManager* turnoutManager = InstanceManager::turnoutManagerInstance();
- Turnout* t = ((ProxyTurnoutManager*)turnoutManager)->getBySystemName(sysName);
+ Turnout* t = (Turnout*)((ProxyTurnoutManager*)turnoutManager)->getBySystemName(sysName);
  if ( t!=NULL )
  {
   userName = ((AbstractTurnout*)t)->getUserName();
@@ -440,7 +440,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-  t = ((ProxyTurnoutManager*)turnoutManager)->getBySystemName(userName.toUpper());
+  t = (Turnout*)((ProxyTurnoutManager*)turnoutManager)->getBySystemName(userName.toUpper());
   if (t!=NULL)
   {
    sysName = ((AbstractTurnout*)t)->getSystemName();
@@ -449,7 +449,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
   else
   {
-   t = ((ProxyTurnoutManager*)turnoutManager)->getByUserName(userName);
+   t = (Turnout*)((ProxyTurnoutManager*)turnoutManager)->getByUserName(userName);
    if ( t!=NULL )
    {
     sysName = ((AbstractTurnout*)t)->getSystemName();
@@ -466,7 +466,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
 
  LightManager* lightManager = InstanceManager::lightManagerInstance();
- Light* l = ((AbstractLightManager*)lightManager)->getBySystemName(sysName);
+ Light* l =(Light*) ((AbstractLightManager*)lightManager)->getBySystemName(sysName);
  if ( l!=NULL )
  {
    userName = l->getUserName();
@@ -474,7 +474,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-   l = ((AbstractLightManager*)lightManager)->getBySystemName(userName.toUpper());
+   l = (Light*)((AbstractLightManager*)lightManager)->getBySystemName(userName.toUpper());
    if (l!=NULL)
    {
     sysName = ((AbstractLight*)l)->getSystemName();
@@ -483,7 +483,7 @@ Maintenance::Maintenance(QObject *parent) :
    }
    else
    {
-    l = ((AbstractLightManager*)lightManager)->getByUserName(userName);
+    l = (Light*)((AbstractLightManager*)lightManager)->getByUserName(userName);
     if ( l!=NULL )
     {
      sysName = l->getSystemName();
@@ -500,7 +500,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
 
  SignalHeadManager* signalManager = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
- SignalHead* sh = ((AbstractSignalHeadManager*)signalManager)->getBySystemName(sysName);
+ SignalHead* sh =(SignalHead*) ((AbstractSignalHeadManager*)signalManager)->getBySystemName(sysName);
  if ( sh!=NULL )
  {
   userName = ((AbstractSignalHead*)sh)->getUserName();
@@ -508,7 +508,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-  sh = ((AbstractSignalHeadManager*)signalManager)->getBySystemName(userName.toUpper());
+  sh = (SignalHead*)((AbstractSignalHeadManager*)signalManager)->getBySystemName(userName.toUpper());
   if (sh!=NULL)
   {
    sysName = ((AbstractSignalHead*)sh)->getSystemName();
@@ -517,7 +517,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
   else
   {
-   sh = ((AbstractSignalHeadManager*)signalManager)->getByUserName(userName);
+   sh = (SignalHead*)((AbstractSignalHeadManager*)signalManager)->getByUserName(userName);
    if ( sh!=NULL )
    {
     sysName = ((AbstractSignalHead*)sh)->getSystemName();

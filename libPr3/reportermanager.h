@@ -84,14 +84,14 @@ public:
          * instance already exists.
          * @return requested Reporter object or null if none exists
          */
-        virtual NamedBean* getBySystemName(QString /*systemName*/)  {return NULL;}
+        virtual NamedBean* getBySystemName(QString /*systemName*/) const {return NULL;}
 
         /**
          * Locate an instance based on a user name.  Returns null if no
          * instance already exists.
          * @return requested Reporter object or null if none exists
          */
-        virtual NamedBean* getByUserName(QString /*userName*/)  {return NULL;}
+        virtual NamedBean* getByUserName(QString /*userName*/) const {return NULL;}
 
         /**
          * Locate an instance based on a user name, or if that fails,

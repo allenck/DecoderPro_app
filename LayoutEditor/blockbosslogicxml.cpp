@@ -413,7 +413,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
  log->error("load(Element, QObject*) called unexpectedly");
 }
 
-/*public*/ int BlockBossLogicXml::loadOrder()
+/*public*/ int BlockBossLogicXml::loadOrder() const
 {
  return Manager::BLOCKBOSS;
 }

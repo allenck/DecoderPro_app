@@ -86,6 +86,6 @@ class WarrantPreferencesListener : public PropertyChangeListener
 public:
  WarrantPreferencesListener(SignalSpeedMap* ssm) {this->ssm = ssm;}
 public slots:
- void propertyChange(PropertyChangeEvent* evt);
+ void propertyChange(PropertyChangeEvent* evt) override;
 };
 #endif // SIGNALSPEEDMAP_H

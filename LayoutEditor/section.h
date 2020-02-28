@@ -251,8 +251,8 @@ public:
     /*public*/ void suppressNameUpdate(bool set);
     /*public*/ void setSectionType(int type);
     /*public*/ int getSectionType();
-    /*public*/ QString getBeanType() ;
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
+    /*public*/ QString getBeanType()  override;
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) override;
  /*public*/ Block* getLastBlock();
 
 signals:

@@ -11,18 +11,19 @@ class LIBPR3SHARED_EXPORT AbstractSignalHeadManager : public SignalHeadManager
     Q_OBJECT
 public:
     explicit AbstractSignalHeadManager(QObject *parent = 0);
-    /*public*/ int getXMLOrder();
-    /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter() ;
-    /*public*/ SignalHead* getSignalHead(QString name);
-    /*public*/ SignalHead* getBySystemName(QString name);
-    /*public*/ SignalHead* getByUserName(QString key);
-    void Register(NamedBean *s);
-    QCompleter* getCompleter(QString text, bool bIncludeUserNames = false);
+    /*public*/ int getXMLOrder()const override;
+//    /*public*/ QString getSystemPrefix()const override;
+    /*public*/ char typeLetter()const override ;
+    /*public*/ SignalHead* getSignalHead(QString name) override;
+//    /*public*/ SignalHead* getBySystemName(QString name) override;
+//    /*public*/ SignalHead* getByUserName(QString key) override;
+    void Register(NamedBean *s)const override;
+    QCompleter* getCompleter(QString text, bool bIncludeUserNames = false) override;
+    /*public*/ QString getBeanTypeHandled(bool plural);
 
 signals:
     void newSignalHeadCreated(AbstractSignalHead*);
-    void propertyChange(PropertyChangeEvent *e);
+    void propertyChange(PropertyChangeEvent *e) override;
 public slots:
 friend class PropertyChangeSupport;
 friend class VetoablePropertyChangeSupport;

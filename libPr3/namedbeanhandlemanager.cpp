@@ -211,18 +211,18 @@ template<class T>
 }
 
 //template<class T>
-/*public*/ QString NamedBeanHandleManager::getSystemPrefix() {
+/*public*/ QString NamedBeanHandleManager::getSystemPrefix() const{
     throw UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
-/*public*/ char NamedBeanHandleManager::typeLetter(){
+/*public*/ char NamedBeanHandleManager::typeLetter()const{
     throw UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
-/*public*/ QString NamedBeanHandleManager::makeSystemName(QString /*s*/) {
+/*public*/ QString NamedBeanHandleManager::makeSystemName(QString /*s*/) const {
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
@@ -257,18 +257,18 @@ template<class T>
 
 //        @Override
 //template<class T>
-/*public*/ void NamedBeanHandleManager::Register(NamedBean* /*n*/) {
+/*public*/ void NamedBeanHandleManager::Register(NamedBean* /*n*/) const {
     throw UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
-/*public*/ void NamedBeanHandleManager::deregister(NamedBean* /*n*/) {
+/*public*/ void NamedBeanHandleManager::deregister(NamedBean* /*n*/)const {
     throw UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
-/*public*/ int NamedBeanHandleManager::getXMLOrder(){
+/*public*/ int NamedBeanHandleManager::getXMLOrder()const {
     throw UnsupportedOperationException("Not supported yet.");
 }
 

@@ -53,7 +53,7 @@
     //_speedMap = jmri.implementation.SignalSpeedMap.getMap();
 }
 
-/*public*/ int DefaultSignalMastLogicManager::getXMLOrder(){
+/*public*/ int DefaultSignalMastLogicManager::getXMLOrder() const{
     return Manager::SIGNALMASTLOGICS;
 }
 
@@ -248,16 +248,16 @@
     }
 }
 
-/*public*/ NamedBean* DefaultSignalMastLogicManager::getBeanBySystemName(QString /*systemName*/){
-    throw new UnsupportedOperationException("Not supported yet.");
+/*public*/ NamedBean* DefaultSignalMastLogicManager::getBeanBySystemName(QString /*systemName*/) const{
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ NamedBean* DefaultSignalMastLogicManager::getBeanByUserName(QString /*userName*/){
-    throw new UnsupportedOperationException("Not supported yet.");
+/*public*/ NamedBean* DefaultSignalMastLogicManager::getBeanByUserName(QString /*userName*/)const{
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ NamedBean* DefaultSignalMastLogicManager::getNamedBean(QString /*name*/){
-    throw new UnsupportedOperationException("Not supported yet.");
+/*public*/ NamedBean* DefaultSignalMastLogicManager::getNamedBean(QString /*name*/)const{
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
 //@Deprecated
@@ -265,15 +265,15 @@
 //    throw new UnsupportedOperationException("Not supported yet.");
 //}
 
-/*public*/ QString DefaultSignalMastLogicManager::getSystemPrefix() {
+/*public*/ QString DefaultSignalMastLogicManager::getSystemPrefix() const {
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ char DefaultSignalMastLogicManager::typeLetter()  {
+/*public*/ char DefaultSignalMastLogicManager::typeLetter()const  {
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ QString DefaultSignalMastLogicManager::makeSystemName(QString /*s*/) {
+/*public*/ QString DefaultSignalMastLogicManager::makeSystemName(QString /*s*/)const {
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
@@ -306,12 +306,12 @@
     emit propertyChange(new PropertyChangeEvent((QObject*)this, p, old, n));
 }
 
-/*public*/ void DefaultSignalMastLogicManager::Register(NamedBean* /*n*/) {
-    throw new UnsupportedOperationException("Not supported yet.");
+/*public*/ void DefaultSignalMastLogicManager::Register(NamedBean* /*n*/) const{
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ void DefaultSignalMastLogicManager::deregister(NamedBean* /*n*/) {
-    throw new UnsupportedOperationException("Not supported yet.");
+/*public*/ void DefaultSignalMastLogicManager::deregister(NamedBean* /*n*/) const{
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
 /*public*/ long DefaultSignalMastLogicManager::getSignalLogicDelay(){ return signalLogicDelay; }

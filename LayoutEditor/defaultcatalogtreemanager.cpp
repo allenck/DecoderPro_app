@@ -45,7 +45,7 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
     log->debug("not registering");
 }
 
-/*public*/ int DefaultCatalogTreeManager::getXMLOrder(){
+/*public*/ int DefaultCatalogTreeManager::getXMLOrder() const{
     return 65400;
 }
 
@@ -53,12 +53,12 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
 * This is a bogus systemPrefix.  Naming is enforced in method
 * createNewCatalogTree below.
 */
-/*public*/ QString DefaultCatalogTreeManager::getSystemPrefix() { return "0"; }
+/*public*/ QString DefaultCatalogTreeManager::getSystemPrefix()const { return "0"; }
 
 /**
 *  Bogus typeLetter
 */
-/*public*/ char DefaultCatalogTreeManager::typeLetter() { return '0'; }
+/*public*/ char DefaultCatalogTreeManager::typeLetter() const { return '0'; }
 
 /*public*/ CatalogTree* DefaultCatalogTreeManager::getCatalogTree(QString name) {
     CatalogTree* t = (CatalogTree*)getByUserName(name);
@@ -67,7 +67,7 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
     return (CatalogTree*)getBySystemName(name);
 }
 
-/*public*/ NamedBean *DefaultCatalogTreeManager::getBySystemName(QString key)
+/*public*/ NamedBean *DefaultCatalogTreeManager::getBySystemName(QString key) const
 {
  QString name = key.toUpper();
  if (log->isDebugEnabled())
@@ -84,7 +84,7 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
  return _tsys->value(name);
 }
 
-/*public*/ NamedBean *DefaultCatalogTreeManager::getByUserName(QString key) {
+/*public*/ NamedBean *DefaultCatalogTreeManager::getByUserName(QString key) const {
     return (NamedBean *)_tuser->value(key);
 }
 

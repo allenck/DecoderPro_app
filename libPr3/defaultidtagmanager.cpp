@@ -43,17 +43,17 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 //}
 
 //@Override
-/*public*/ int DefaultIdTagManager::getXMLOrder(){
+/*public*/ int DefaultIdTagManager::getXMLOrder() const{
     return Manager::IDTAGS;
 }
 
 //@Override
-/*public*/ bool DefaultIdTagManager::isInitialised() {
+/*public*/ bool DefaultIdTagManager::isInitialised()  {
     return _initialised;
 }
 
 //@Override
-/*public*/ void DefaultIdTagManager::init()
+/*public*/ void DefaultIdTagManager::init() const
 {
  log->debug("init called");
  if (!_initialised && !_loading )
@@ -82,7 +82,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 //                return true;
 //            }
 //  });
-  ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(new DefaultIdTagShutdownTask("Writing IdTags", this));
+//  ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(new DefaultIdTagShutdownTask("Writing IdTags", this));
   _initialised = true;
  }
 }
@@ -94,7 +94,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 /*protected*/ void DefaultIdTagManager::registerSelf() {}
 
 //@Override
-/*public*/ char DefaultIdTagManager::typeLetter() { return 'D'; }
+/*public*/ char DefaultIdTagManager::typeLetter() const { return 'D'; }
 
 //@Override
 /*public*/ DefaultIdTag* DefaultIdTagManager::provide(QString name) throw (IllegalArgumentException) {
@@ -102,7 +102,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ QString DefaultIdTagManager::getSystemPrefix() { return "I"; }
+/*public*/ QString DefaultIdTagManager::getSystemPrefix() const { return "I"; }
 
 //@Override
 /*public*/ DefaultIdTag* DefaultIdTagManager::provideIdTag(QString name) {
@@ -129,13 +129,13 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ NamedBean* DefaultIdTagManager::getBySystemName(QString name) {
+/*public*/ NamedBean* DefaultIdTagManager::getBySystemName(QString name) const {
     if (!_initialised && !_loading) init();
     return (NamedBean*)_tsys->value(name);
 }
 
 //@Override
-/*public*/ NamedBean *DefaultIdTagManager::getByUserName(QString key) {
+/*public*/ NamedBean *DefaultIdTagManager::getByUserName(QString key)const {
     if (!_initialised && !_loading) init();
     return (NamedBean*)_tuser->value(key);
 }
@@ -203,7 +203,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ void DefaultIdTagManager::Register(NamedBean* s)
+/*public*/ void DefaultIdTagManager::Register(NamedBean* s) const
 {
  //super.register(s);
  AbstractManager::Register(s);
@@ -211,7 +211,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ void DefaultIdTagManager::deregister(NamedBean* s){
+/*public*/ void DefaultIdTagManager::deregister(NamedBean* s) const{
     //super.deregister(s);
     AbstractManager::deregister(s);
     IdTagManagerXml::instance()->setDirty(true);

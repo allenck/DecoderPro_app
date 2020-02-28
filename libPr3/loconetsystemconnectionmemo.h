@@ -68,7 +68,7 @@ public:
  LnMessageManager* getLnMessageManager();
  DefaultProgrammerManager *getProgrammerManager();
  void setProgrammerManager(DefaultProgrammerManager* p);
- /*public*/ bool provides(QString type);
+ /*public*/ bool provides(QString type)override;
  /*public*/ Manager*  get(QString T) override;
  void configureManagers();
  LnPowerManager* getPowerManager();
@@ -86,7 +86,7 @@ public:
  /*public*/ LnMultiMeter* getMultiMeter();
  /*public*/ void resetProgrammer();
  /*public*/ LnCabSignalManager* getCabSignalManager();
- /*public*/ void dispose();
+ /*public*/ void dispose()override;
 
 private:
  LnComponentFactory* cf = nullptr;

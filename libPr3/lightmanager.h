@@ -92,12 +92,12 @@ public:
         /**
          * Locate a Light by its user name
          */
-        //virtual Light* getByUserName(QString /*s*/) { return NULL;}
+        virtual NamedBean* getByUserName(QString /*s*/) const { return NULL;}
 
         /**
          * Locate a Light by its system name
          */
-        virtual NamedBean* getBySystemName(QString /*s*/) { return NULL;}
+        virtual NamedBean* getBySystemName(QString /*s*/) const{ return NULL;}
 
 //        /**
 //         * Validate system name format

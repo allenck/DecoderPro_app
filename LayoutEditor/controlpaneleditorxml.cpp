@@ -419,7 +419,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  return icon;
 }
 
-/*public*/ int ControlPanelEditorXml::loadOrder()
+/*public*/ int ControlPanelEditorXml::loadOrder()  const
 {
  return Manager::PANELFILES;
 }

@@ -270,7 +270,7 @@ QString LnSensorManager::getNextValidAddress(QString curAddress, QString prefix)
 
     //Check to determine if the systemName is in use, return NULL if it is,
     //otherwise return the next valid address.
-    Sensor* s = getBySystemName(tmpSName);
+    NamedBean* s = getBySystemName(tmpSName);
     if(s!=NULL){
         for(int x = 1; x<10; x++){
             iName=iName+1;

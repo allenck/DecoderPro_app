@@ -64,7 +64,7 @@
          </widget>
         </item>
         <item>
-         <widget class="JmriBeanComboBox" name="turnoutNameComboBox"/>
+         <widget class="NamedBeanComboBox" name="turnoutNameComboBox"/>
         </item>
        </layout>
       </item>
@@ -78,7 +78,7 @@
          </widget>
         </item>
         <item>
-         <widget class="JmriBeanComboBox" name="extraTurnoutNameComboBox"/>
+         <widget class="NamedBeanComboBox" name="extraTurnoutNameComboBox"/>
         </item>
        </layout>
       </item>
@@ -185,7 +185,7 @@
          </widget>
         </item>
         <item>
-         <widget class="JmriBeanComboBox" name="blockIDComboBox"/>
+         <widget class="NamedBeanComboBox" name="blockIDComboBox"/>
         </item>
         <item>
          <widget class="QCheckBox" name="highlightBlockCheckBox">
@@ -206,7 +206,7 @@
          </widget>
         </item>
         <item>
-         <widget class="JmriBeanComboBox" name="blockSensorComboBox"/>
+         <widget class="NamedBeanComboBox" name="blockSensorComboBox"/>
         </item>
        </layout>
       </item>
@@ -326,7 +326,7 @@
          </widget>
         </item>
         <item>
-         <widget class="JmriBeanComboBox" name="textMemoryComboBox"/>
+         <widget class="NamedBeanComboBox" name="textMemoryComboBox"/>
         </item>
        </layout>
       </item>
@@ -338,7 +338,7 @@
        </widget>
       </item>
       <item>
-       <widget class="JmriBeanComboBox" name="blockContentsComboBox">
+       <widget class="NamedBeanComboBox" name="blockContentsComboBox">
         <property name="toolTip">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to add a Block label when next clicking with shift down.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
@@ -379,7 +379,7 @@
          </widget>
         </item>
         <item>
-         <widget class="JmriBeanComboBox" name="sensorComboBox"/>
+         <widget class="NamedBeanComboBox" name="sensorComboBox"/>
         </item>
        </layout>
       </item>
@@ -393,7 +393,7 @@
          </widget>
         </item>
         <item>
-         <widget class="JmriBeanComboBox" name="signalHeadComboBox"/>
+         <widget class="NamedBeanComboBox" name="signalHeadComboBox"/>
         </item>
        </layout>
       </item>
@@ -407,7 +407,7 @@
          </widget>
         </item>
         <item>
-         <widget class="JmriBeanComboBox" name="signalMastComboBox"/>
+         <widget class="NamedBeanComboBox" name="signalMastComboBox"/>
         </item>
        </layout>
       </item>
@@ -909,9 +909,9 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>JmriBeanComboBox</class>
+   <class>NamedBeanComboBox</class>
    <extends>QComboBox</extends>
-   <header location="global">jmribeancombobox.h</header>
+   <header location="global">namedbeancombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

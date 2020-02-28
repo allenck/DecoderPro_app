@@ -141,18 +141,18 @@ public:
      *  Returns true if either connecting track segment is mainline
      *  Defaults to not mainline if connecting track segments are missing
      */
-    /*public*/ bool isMainline();
+    /*public*/ bool isMainline() override;
     /**
      * Modify coordinates methods
      */;
-    /*public*/ void setCoordsCenter(QPointF p);
+    /*public*/ void setCoordsCenter(QPointF p) override;
     /*public*/ void setCoordsA(QPointF p);
     /*public*/ void setCoordsB(QPointF p);
     /*public*/ void setCoordsC(QPointF p);
     /*public*/ void setCoordsD(QPointF p);
-    /*public*/ void scaleCoords(float xFactor, float yFactor);
+//    /*public*/ void scaleCoords(float xFactor, float yFactor) override;
     double round (double x);
-    /*public*/ void setObjects(LayoutEditor* p);
+    /*public*/ void setObjects(LayoutEditor* p) override;
     /**
      * Clean up when this object is no longer needed.  Should not
      * be called while the object is still displayed; see remove()
@@ -173,10 +173,10 @@ public:
     /*public*/ void setTurnoutStates(int state, QString turnStateA, QString turnStateB);
     //Internal call to update the state of the slip depending upon the turnout states.
     /*public*/ QVector<QString>* getBlockBoundaries();
-    /*public*/ LayoutTrack* getConnection(int location) throw (JmriException);
-    /*public*/ void setConnection(int location, LayoutTrack *o, int type) throw (JmriException);
+    /*public*/ LayoutTrack* getConnection(int location) throw (JmriException) override;
+    /*public*/ void setConnection(int location, LayoutTrack *o, int type) throw (JmriException) override;
     /*public*/ void drawSlipCircles(EditScene* g2);
-    /*public*/ QPointF getCoordsForConnectionType(int connectionType);
+    /*public*/ QPointF getCoordsForConnectionType(int connectionType) override;
     /*public*/ void toggleState();
     /*public*/ bool isActive();
     /*public*/ bool singleSlipStraightEqual();

@@ -22,7 +22,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 //        super();
 //    }
 
-/*public*/ int AbstractLightManager::getXMLOrder()
+/*public*/ int AbstractLightManager::getXMLOrder() const
 {
     return Manager::LIGHTS;
 }
@@ -30,7 +30,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 /**
  * Returns the second letter in the system name for a Light
  */
-/*public*/ char AbstractLightManager::typeLetter()  { return 'L'; }
+/*public*/ char AbstractLightManager::typeLetter() const { return 'L'; }
 
 /**
  * Locate via user name, then system name if needed.
@@ -58,12 +58,12 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  * @return NULL if no match found
  */
 /*public*/ Light* AbstractLightManager::getLight(QString name) {
-    Light* t = getByUserName(name);
+    Light* t = (Light*)getByUserName(name);
     if (t!=NULL) return t;
 
-    return getBySystemName(name);
+    return (Light*)getBySystemName(name);
 }
-
+#if 0
 /**
  * Locate a Light by its system name
  */
@@ -78,7 +78,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 /*public*/ Light* AbstractLightManager::getByUserName(QString key) {
     return dynamic_cast<Light*>(_tuser->value(key));
 }
-
+#endif
 /**
  * Return an instance with the specified system and user names.
  * Note that two calls with the same arguments will get the same instance;
@@ -121,14 +121,14 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  }
  // return existing if there is one
  Light* s = NULL;
- if ( (userName!=NULL) && ((s = getByUserName(userName)) != NULL))
+ if ( (userName!=NULL) && ((s = (Light*)getByUserName(userName)) != NULL))
  {
   if (getBySystemName(systemName)!=s)
    log->error("inconsistent user ("+userName+") and system name ("
                     +systemName+") results; userName related to ("+s->getSystemName()+")");
   return s;
  }
- if ( (s = getBySystemName(systemName)) != NULL)
+ if ( (s = (Light*)getBySystemName(systemName)) != NULL)
  {
   if ((s->getUserName() == NULL) && (userName != NULL))
    s->setUserName(userName);
@@ -178,7 +178,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
         }
         else {
             log->debug("Activated Light system name is "+systemName);
-            getBySystemName(systemName)->activateLight();
+            ((Light*)getBySystemName(systemName))->activateLight();
         }
     }
 }
@@ -233,7 +233,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  * @return a string for the type of object handled by this manager
  */
 //@Override
-/*public*/ QString AbstractLightManager::getBeanTypeHandled(bool plural) {
+/*public*/ QString AbstractLightManager::getBeanTypeHandled(bool plural) const {
     return (plural ? tr("Lights") : ("Light"));
 }
 

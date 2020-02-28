@@ -15,19 +15,19 @@ public:
     explicit DefaultCatalogTreeManager(QObject *parent = 0);
     ~DefaultCatalogTreeManager(){}
     DefaultCatalogTreeManager(const DefaultCatalogTreeManager&) : CatalogTreeManager() {}
-    /*public*/ int getXMLOrder();
-    /*public*/ QString getSystemPrefix() ;
-    /*public*/ char typeLetter() ;
-    /*public*/ CatalogTree* getCatalogTree(QString name) ;
-    /*public*/ NamedBean *getBySystemName(QString key);
-    /*public*/ NamedBean* getByUserName(QString key);
-    /*public*/ CatalogTree* newCatalogTree(QString sysName, QString userName);
+    /*public*/ int getXMLOrder()const override;
+    /*public*/ QString getSystemPrefix() const override;
+    /*public*/ char typeLetter()const override ;
+    /*public*/ CatalogTree* getCatalogTree(QString name) override;
+    /*public*/ NamedBean *getBySystemName(QString key) const override;
+    /*public*/ NamedBean* getByUserName(QString key) const override;
+    /*public*/ CatalogTree* newCatalogTree(QString sysName, QString userName)override;
     /*public*/ static DefaultCatalogTreeManager* instance();
-    /*public*/  QStringList getSystemNameList();
+    /*public*/  QStringList getSystemNameList()override;
     /*public*/ QString getBeanTypeHandled();
-    /*public*/ void storeImageIndex();
-    /*public*/ bool isIndexChanged();
-    /*public*/ /*final*/ /*synchronized*/ void indexChanged(bool changed);
+    /*public*/ void storeImageIndex() /*override*/;
+    /*public*/ bool isIndexChanged() /*override*/;
+    /*public*/ /*final*/ /*synchronized*/ void indexChanged(bool changed) /*override*/;
 signals:
 
 public slots:

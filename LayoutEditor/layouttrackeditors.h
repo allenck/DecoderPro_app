@@ -8,6 +8,7 @@
 #include <QWidget>
 #include "decimalformat.h"
 
+class NamedBeanComboBox;
 class TestState;
 class LayoutBlock;
 class LevelXing;
@@ -48,7 +49,7 @@ private:
  /*private*/ QComboBox* editTrackSegmentMainlineComboBox;// = new JComboBox<String>();
  /*private*/ QComboBox* editTrackSegmentDashedComboBox;// = new JComboBox<String>();
  /*private*/ QCheckBox* editTrackSegmentHiddenCheckBox;// = new JCheckBox(tr("HideTrack"));  // NOI18N
- /*private*/ JmriBeanComboBox* editTrackSegmentBlockNameComboBox;// = new JmriBeanComboBox(
+ /*private*/ NamedBeanComboBox* editTrackSegmentBlockNameComboBox;// = new JmriBeanComboBox(
 //         InstanceManager.getDefault(BlockManager.class), null, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
  /*private*/ JTextField* editTrackSegmentArcTextField;// = new JTextField(5);
  /*private*/ QPushButton* editTrackSegmentSegmentEditBlockButton;
@@ -72,16 +73,16 @@ private:
  /*private*/ LayoutTurnout* layoutTurnout = nullptr;
 
  /*private*/ JmriJFrame* editLayoutTurnoutFrame = nullptr;
- /*private*/ JmriBeanComboBox* editLayoutTurnout1stTurnoutComboBox = nullptr;
- /*private*/ JmriBeanComboBox* editLayoutTurnout2ndTurnoutComboBox = nullptr;
+ /*private*/ NamedBeanComboBox* editLayoutTurnout1stTurnoutComboBox = nullptr;
+ /*private*/ NamedBeanComboBox* editLayoutTurnout2ndTurnoutComboBox = nullptr;
  /*private*/ QLabel* editLayoutTurnout2ndTurnoutLabel = nullptr;
- /*private*/ JmriBeanComboBox* editLayoutTurnoutBlockNameComboBox;// = new JmriBeanComboBox(
+ /*private*/ NamedBeanComboBox* editLayoutTurnoutBlockNameComboBox;// = new JmriBeanComboBox(
 //         InstanceManager.getDefault("BlockManager"), nullptr, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
- /*private*/ JmriBeanComboBox* editLayoutTurnoutBlockBNameComboBox;// = new JmriBeanComboBox(
+ /*private*/ NamedBeanComboBox* editLayoutTurnoutBlockBNameComboBox;// = new JmriBeanComboBox(
 //         InstanceManager.getDefault("BlockManager"), nullptr, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
- /*private*/ JmriBeanComboBox* editLayoutTurnoutBlockCNameComboBox;// = new JmriBeanComboBox(
+ /*private*/ NamedBeanComboBox* editLayoutTurnoutBlockCNameComboBox;// = new JmriBeanComboBox(
 //         InstanceManager.getDefault("BlockManager"), nullptr, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
- /*private*/ JmriBeanComboBox* editLayoutTurnoutBlockDNameComboBox;// = new JmriBeanComboBox(
+ /*private*/ NamedBeanComboBox* editLayoutTurnoutBlockDNameComboBox;// = new JmriBeanComboBox(
 //         InstanceManager.getDefault("BlockManager"), nullptr, JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
  /*private*/ QComboBox* editLayoutTurnoutStateComboBox;// = new JComboBox<String>();
  /*private*/ QCheckBox* editLayoutTurnoutHiddenCheckBox;// = new JCheckBox(tr("HideTurnout"));  // NOI18N
@@ -101,10 +102,10 @@ private:
  /*private*/ QPushButton* editLayoutSlipDoneButton;
  /*private*/ QPushButton* editLayoutSlipCancelButton;
  /*private*/ QPushButton* editLayoutSlipBlockButton;
- /*private*/ JmriBeanComboBox* editLayoutSlipTurnoutAComboBox;
- /*private*/ JmriBeanComboBox* editLayoutSlipTurnoutBComboBox;
+ /*private*/ NamedBeanComboBox* editLayoutSlipTurnoutAComboBox;
+ /*private*/ NamedBeanComboBox* editLayoutSlipTurnoutBComboBox;
  /*private*/ QCheckBox* editLayoutSlipHiddenBox;// = new QCheckBox(tr("HideSlip"));
- /*private*/ JmriBeanComboBox* editLayoutSlipBlockNameComboBox;// = new JmriBeanComboBox(
+ /*private*/ NamedBeanComboBox* editLayoutSlipBlockNameComboBox;// = new JmriBeanComboBox(
 //         InstanceManager::getDefault("BlockManager")), nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
 
  /*private*/ bool editLayoutSlipOpen = false;
@@ -122,9 +123,9 @@ private:
  /*private*/ JmriJFrame* editLevelXingFrame =  nullptr;
  /*private*/ QCheckBox* editLevelXingHiddenCheckBox ;//= new JCheckBox(tr("HideCrossing"));  // NOI18N
 
- /*private*/ JmriBeanComboBox* editLevelXingBlock1NameComboBox;// = new JmriBeanComboBox(
+ /*private*/ NamedBeanComboBox* editLevelXingBlock1NameComboBox;// = new JmriBeanComboBox(
 //     InstanceManager::getDefault(BlockManager.class),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
- /*private*/ JmriBeanComboBox* editLevelXingBlock2NameComboBox;// = new JmriBeanComboBox(
+ /*private*/ NamedBeanComboBox* editLevelXingBlock2NameComboBox;// = new JmriBeanComboBox(
 //     InstanceManager::getDefault(BlockManager.class),  nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
  /*private*/ QPushButton* editLevelXingDoneButton;
  /*private*/ QPushButton* editLevelXingCancelButton;
@@ -355,7 +356,7 @@ class QGroupBox;
  // variables for Edit Turntable ray pane
  /*private*/ RayTrack* rayTrack =  nullptr;
  /*private*/ QWidget* rayTurnoutPanel;
- /*private*/ /*transient*/ JmriBeanComboBox* turnoutNameComboBox;
+ /*private*/ /*transient*/ NamedBeanComboBox* turnoutNameComboBox;
  /*private*/ QGroupBox* rayTitledBorder;
  /*private*/ QComboBox* rayTurnoutStateComboBox;
  /*private*/ QLabel* rayTurnoutStateLabel;

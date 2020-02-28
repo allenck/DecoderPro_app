@@ -68,7 +68,7 @@ AbstractReporterManagerConfigXML::AbstractReporterManagerConfigXML(QObject *pare
  * Default implementation is to use the local class here.
  * @param reporters The top-level element being created
  */
-/*abstract*/ /*public*/ void AbstractReporterManagerConfigXML::setStoreElementClass(QDomElement /*reporters*/) {}
+/*abstract*/ /*public*/ void AbstractReporterManagerConfigXML::setStoreElementClass(QDomElement /*reporters*/) const {}
 
 /**
  * Create a ReporterManager object of the correct class, then
@@ -110,6 +110,6 @@ AbstractReporterManagerConfigXML::AbstractReporterManagerConfigXML(QObject *pare
     return result;
 }
 
-/*public*/ int AbstractReporterManagerConfigXML::loadOrder(){
+/*public*/ int AbstractReporterManagerConfigXML::loadOrder() const{
     return InstanceManager::reporterManagerInstance()->getXMLOrder();
 }

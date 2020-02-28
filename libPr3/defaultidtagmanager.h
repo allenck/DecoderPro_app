@@ -19,33 +19,33 @@ class DefaultIdTagManager : public IdTagManager
     Q_OBJECT
 public:
     explicit DefaultIdTagManager(QObject *parent = 0);
-    /*public*/ int getXMLOrder();
-    /*public*/ bool isInitialised();
-    /*public*/ void init();
-    /*public*/ char typeLetter() ;
-    /*public*/ QString getSystemPrefix();
-    /*public*/ DefaultIdTag *provideIdTag(QString name);
-    /*public*/ DefaultIdTag *getIdTag(QString name);
-    /*public*/ NamedBean *getBySystemName(QString name) ;
-    /*public*/ NamedBean* getByUserName(QString key);
-    /*public*/ DefaultIdTag* getByTagID(QString tagID);
-    /*public*/ virtual DefaultIdTag *newIdTag(QString systemName, QString userName);
-    /*public*/ void Register(NamedBean* s);
-    /*public*/ void deregister(NamedBean* s);
-    /*public*/ virtual void writeIdTagDetails();// throw (IOException);
+    /*public*/ int getXMLOrder()const override;
+    /*public*/ bool isInitialised()override;
+    /*public*/ void init() const  override;
+    /*public*/ char typeLetter()const override ;
+    /*public*/ QString getSystemPrefix()const override;
+    /*public*/ DefaultIdTag *provideIdTag(QString name)override;
+    /*public*/ DefaultIdTag *getIdTag(QString name)override;
+    /*public*/ NamedBean *getBySystemName(QString name)const override;
+    /*public*/ NamedBean* getByUserName(QString key)const override;
+    /*public*/ DefaultIdTag* getByTagID(QString tagID)override;
+    /*public*/ virtual DefaultIdTag *newIdTag(QString systemName, QString userName)override;
+    /*public*/ void Register(NamedBean* s) const override;
+    /*public*/ void deregister(NamedBean* s)  const override;
+    /*public*/ virtual void writeIdTagDetails() ;// throw (IOException);
     /*public*/ virtual void readIdTagDetails();
-    /*public*/ void setStateStored(bool state);
-    /*public*/ bool isStateStored();
-    /*public*/ void setFastClockUsed(bool fastClock);
-    /*public*/ bool isFastClockUsed();
-    /*public*/ QList<IdTag*>* getTagsForReporter(Reporter* reporter, long threshold);
-    /*public*/ DefaultIdTag *provide(QString name) throw (IllegalArgumentException);
+    /*public*/ void setStateStored(bool state)override;
+    /*public*/ bool isStateStored()override;
+    /*public*/ void setFastClockUsed(bool fastClock)override;
+    /*public*/ bool isFastClockUsed()override;
+    /*public*/ QList<IdTag*>* getTagsForReporter(Reporter* reporter, long threshold)override;
+    /*public*/ DefaultIdTag *provide(QString name) throw (IllegalArgumentException)override;
 
 signals:
     void newIdTagCreated(DefaultIdTag* tag);
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e)override;
 private:
  Logger* log;
  /*private*/ static bool _initialised;// = false;

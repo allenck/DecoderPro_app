@@ -683,6 +683,6 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  return result;
 }
 
-/*public*/ int LayoutEditorXml::loadOrder() {
+/*public*/ int LayoutEditorXml::loadOrder() const{
     return Manager::PANELFILES;
 }

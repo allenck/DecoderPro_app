@@ -40,23 +40,23 @@ public:
   * Provides access to the system prefix string.
   * This was previously called the "System letter"
   */
- QString getSystemPrefix();
+ QString getSystemPrefix() const;
  //This should probably throwing an exception
  bool setSystemPrefix(QString systemPrefix);
- QString getUserName();
+ QString getUserName()const;
  //This should probably throwing an exception
  virtual bool setUserName(QString name);
  /**
   * Does this connection provide a manager of this type?
   */
- virtual bool provides(QString c);
+ virtual bool provides(QString c) ;
  /**
   * Does this connection provide a manager of this type?
   */
  virtual Manager* get(QString T);
- virtual void dispose();
- virtual bool getDisabled();
- virtual void setDisabled(bool disabled);
+ virtual void dispose()  ;
+ virtual bool getDisabled()  ;
+ virtual void setDisabled(bool disabled)  ;
  /*public*/ bool isDirty();
  /*public*/ bool isRestartRequired();
  //static SystemConnectionMemo* instance();
@@ -99,8 +99,8 @@ private:
 protected:
 // static QStringList* userNames; // = new ArrayList<String>();
 // static QStringList* sysPrefixes; // = new ArrayList<String>();
- virtual void notifyPropertyChangeListener(QString property, QVariant oldValue, QVariant newValue);
- virtual ResourceBundle* getActionModelResourceBundle() {return NULL;}
+ virtual void notifyPropertyChangeListener(QString property, QVariant oldValue, QVariant newValue) ;
+ virtual ResourceBundle* getActionModelResourceBundle()  {return NULL;}
  void addToActionList();
  void removeFromActionList();
 };

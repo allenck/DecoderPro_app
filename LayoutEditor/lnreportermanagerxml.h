@@ -8,11 +8,11 @@ class LIBLAYOUTEDITORSHARED_EXPORT LnReporterManagerXml : public AbstractReporte
  Q_OBJECT
 public:
     Q_INVOKABLE LnReporterManagerXml(QObject* parent = 0);
-    ~LnReporterManagerXml() {}
+    ~LnReporterManagerXml()  override{}
     LnReporterManagerXml(const LnReporterManagerXml&) : AbstractReporterManagerConfigXML() {}
-    /*public*/ void setStoreElementClass(QDomElement sensors);
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
-    /*public*/ bool load(QDomElement reporters) throw (Exception);
+    /*public*/ void setStoreElementClass(QDomElement sensors)const override;
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
+    /*public*/ bool load(QDomElement reporters) throw (Exception) override;
 private:
     Logger* log;
 };

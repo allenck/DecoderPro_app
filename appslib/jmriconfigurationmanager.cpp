@@ -149,7 +149,7 @@
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::storeAll(File* file) {
+/*public*/ bool JmriConfigurationManager::storeAll(File* file) const {
     return this->legacy->storeAll(file);
 }
 
@@ -202,7 +202,7 @@
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load(File* file)  throw (JmriConfigureXmlException)
+/*public*/ bool JmriConfigurationManager::load(File* file)  throw (JmriException)
 {
     return this->load(file, false);
 }
@@ -408,7 +408,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::loadDeferred(File* file)  throw (JmriConfigureXmlException)
+/*public*/ bool JmriConfigurationManager::loadDeferred(File* file)  throw (JmriException)
 {
     return this->legacy->loadDeferred(file);
 }
@@ -425,7 +425,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::makeBackup(File* file) {
+/*public*/ bool JmriConfigurationManager::makeBackup(File* file) const {
     return this->legacy->makeBackup(file);
 }
 

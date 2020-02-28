@@ -23,6 +23,7 @@
 #include "layouteditorfinditems.h"
 #include <cmath>
 #include <QApplication>
+#include "signalheadmanager.h"
 
 //LayoutTurnout::LayoutTurnout(QObject *parent) :
 //    QObject(parent)
@@ -214,7 +215,10 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  hidden = false;
  disableWhenOccupied = false;
  dispB =  QPointF(20.0,0.0);
- dispC =  QPointF(20.0,10.0);
+ pointA = QPointF(0, 0);
+ pointB = QPointF(40, 0);
+ pointC = QPointF(60, 20);
+ pointD = QPointF(20, 20);
  linkedTurnoutName = ""; // name of the linked Turnout (as entered in tool)
  linkType = NO_LINK;
  popup = nullptr;
@@ -270,105 +274,99 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
     if (type==LH_TURNOUT)
     {
      //.dispB.setLocation(layoutEditor->getTurnoutBX(),0.0);
-     dispB.setX(layoutEditor->getTurnoutBX());
-     dispB.setY(0.0);
-     //dispC.setLocation(layoutEditor->getTurnoutCX(),-layoutEditor->getTurnoutWid());
-     dispC.setX(layoutEditor->getTurnoutCX());
-     dispC.setY(-(layoutEditor->getTurnoutWid()));
+     dispB = QPointF(layoutEditor->getTurnoutBX(), 0.0);
+     dispA = QPointF(layoutEditor->getTurnoutCX(), -layoutEditor->getTurnoutWid());
     }
     else if (type==RH_TURNOUT)
     {
      //.dispB.setLocation(layoutEditor->getTurnoutBX(),0.0);
-     dispB.setX(layoutEditor->getTurnoutBX());
-     dispB.setY(0.0);
-     //dispC.setLocation(layoutEditor->getTurnoutCX(),layoutEditor->getTurnoutWid());
-     dispC.setX(layoutEditor->getTurnoutCX());
-     dispC.setY(layoutEditor->getTurnoutWid());
+     dispB = QPointF(layoutEditor->getTurnoutBX(), 0.0);
+     dispA = QPointF(layoutEditor->getTurnoutCX(), layoutEditor->getTurnoutWid());
     }
     else if (type==WYE_TURNOUT)
     {
-     //.dispB.setLocation(layoutEditor->getTurnoutBX(),0.5*layoutEditor->getTurnoutWid());
-     dispB.setX(layoutEditor->getTurnoutBX());
-     dispB.setY(0.5*layoutEditor->getTurnoutWid());
-     //dispC.setLocation(layoutEditor->getTurnoutBX(),-0.5*layoutEditor->getTurnoutWid());
-     dispC.setX(layoutEditor->getTurnoutBX());
-     dispC.setY(-0.5*layoutEditor->getTurnoutWid());
-
+     dispB = QPointF(layoutEditor->getTurnoutBX(), 0.5 * layoutEditor->getTurnoutWid());
+     dispA = QPointF(layoutEditor->getTurnoutBX(), -0.5 * layoutEditor->getTurnoutWid());
     }
     else if (type==DOUBLE_XOVER)
     {
-     //dispB.setLocation(layoutEditor->getXOverLong(),-layoutEditor->getXOverHWid());
-     dispB.setX(layoutEditor->getXOverLong());
-     dispB.setY(-(layoutEditor->getXOverHWid()));
-
-     //dispC.setLocation(layoutEditor->getXOverLong(),layoutEditor->getXOverHWid());
-     dispC.setX(layoutEditor->getXOverLong());
-     dispC.setY(layoutEditor->getXOverHWid());
-
-        blockB = nullptr;
-        blockBName = "";
-        blockC = nullptr;
-        blockCName = "";
-        blockD = nullptr;
-        blockDName = "";
+     if (version == 2) {
+         center = QPointF(layoutEditor->getXOverLong(), layoutEditor->getXOverHWid());
+         pointB = QPointF(layoutEditor->getXOverLong() * 2, 0);
+         pointC = QPointF(layoutEditor->getXOverLong() * 2, (layoutEditor->getXOverHWid() * 2));
+         pointD = QPointF(0, (layoutEditor->getXOverHWid() * 2));
+         setCoordsCenter(c);
+     } else {
+         dispB = QPointF(layoutEditor->getXOverLong(), -layoutEditor->getXOverHWid());
+         dispA = QPointF(layoutEditor->getXOverLong(), layoutEditor->getXOverHWid());
+     }
     }
     else if (type==RH_XOVER)
     {
-     //dispB.setLocation(layoutEditor->xOverShort(),-layoutEditor->xOverHWid());
-     dispB.setX(layoutEditor->getXOverShort());
-     dispB.setY(-(layoutEditor->getXOverHWid()));
-     //dispC.setLocation(layoutEditor->xOverLong(),layoutEditor->xOverHWid());
-     dispC.setX(layoutEditor->getXOverLong());
-     dispC.setY(layoutEditor->getXOverHWid());
-
-        blockB = nullptr;
-        blockBName = "";
-        blockC = nullptr;
-        blockCName = "";
-        blockD = nullptr;
-        blockDName = "";
+     if (version == 2) {
+         center = QPointF(layoutEditor->getXOverLong(), layoutEditor->getXOverHWid());
+         pointB = QPointF((layoutEditor->getXOverShort() + layoutEditor->getXOverLong()), 0);
+         pointC = QPointF(layoutEditor->getXOverLong() * 2, (layoutEditor->getXOverHWid() * 2));
+         pointD = QPointF((center.x() - layoutEditor->getXOverShort()), (layoutEditor->getXOverHWid() * 2));
+         setCoordsCenter(c);
+     } else {
+         dispB = QPointF(layoutEditor->getXOverShort(), -layoutEditor->getXOverHWid());
+         dispA = QPointF(layoutEditor->getXOverLong(), layoutEditor->getXOverHWid());
+     }
     }
     else if (type==LH_XOVER)
     {
-     //dispB.setLocation(layoutEditor->xOverLong(),-layoutEditor->xOverHWid());
-     dispB.setX(layoutEditor->getXOverLong());
-     dispB.setY(-(layoutEditor->getXOverHWid()));
-     //dispC.setLocation(layoutEditor->xOverShort(),layoutEditor->xOverHWid());
-     dispC.setX(layoutEditor->getXOverShort());
-     dispC.setY(layoutEditor->getXOverHWid());
+     if (version == 2) {
+         center = QPointF(layoutEditor->getXOverLong(), layoutEditor->getXOverHWid());
 
-        blockB = nullptr;
-        blockBName = "";
-        blockC = nullptr;
-        blockCName = "";
-        blockD = nullptr;
-        blockDName = "";
+         pointA = QPointF((center.x() - layoutEditor->getXOverShort()), 0);
+         pointB = QPointF((layoutEditor->getXOverLong() * 2), 0);
+         pointC = QPointF(layoutEditor->getXOverLong() + layoutEditor->getXOverShort(), (layoutEditor->getXOverHWid() * 2));
+         pointD = QPointF(0, (layoutEditor->getXOverHWid() * 2));
+
+         setCoordsCenter(c);
+     } else {
+         dispB = QPointF(layoutEditor->getXOverLong(), -layoutEditor->getXOverHWid());
+         dispA = QPointF(layoutEditor->getXOverShort(), layoutEditor->getXOverHWid());
+     }
     }
     rotateCoords(rot);
     // adjust size of new turnout
     QPointF pt =  QPointF(round(dispB.x()*xFactor),
                                     round(dispB.y()*yFactor));
     dispB = pt;
-    pt =  QPointF(round(dispC.x()*xFactor),
-                                    round(dispC.y()*yFactor));
-    dispC = pt;
+    pt =  QPointF(round(dispA.x()*xFactor),
+                                    round(dispA.y()*yFactor));
+    dispA = pt;
 }
+// this should only be used for debugging...
+    //@Override
+    /*public*/ QString LayoutTurnout::toString() {
+        return "LayoutTurnout " + getId();
+    }
 /*private*/ double LayoutTurnout::round (double x) {
     int i = (int)(x+0.5);
     return i;
 }
 
-/*protected*/ void LayoutTurnout::rotateCoords(double rot)
+/*protected*/ void LayoutTurnout::rotateCoords(double angleDEG)
 {
     // rotate coordinates
-    double sineAng = qSin(rot*M_PI/180.0);
-    double cosineAng = qCos(rot*M_PI/180.0);
-    double x = (cosineAng*dispB.x()) - (sineAng*dispB.y());
-    double y = (sineAng*dispB.x()) + (cosineAng*dispB.y());
-    dispB = QPointF(x,y);
-    x = (cosineAng*dispC.x()) - (sineAng*dispC.y());
-    y = (sineAng*dispC.x()) + (cosineAng*dispC.y());
-    dispC =  QPointF(x,y);
+ double rotRAD = qDegreesToRadians(angleDEG);
+ double sineRot = qSin(rotRAD);
+ double cosineRot = qCos(rotRAD);
+
+ // rotate displacements around origin {0, 0}
+ QPointF center_temp = center;
+ center = MathUtil::zeroPoint2D;
+ dispA = rotatePoint(dispA, sineRot, cosineRot);
+ dispB = rotatePoint(dispB, sineRot, cosineRot);
+ center = center_temp;
+
+ pointA = rotatePoint(pointA, sineRot, cosineRot);
+ pointB = rotatePoint(pointB, sineRot, cosineRot);
+ pointC = rotatePoint(pointC, sineRot, cosineRot);
+ pointD = rotatePoint(pointD, sineRot, cosineRot);
 }
 
 /*protected*/ QPointF LayoutTurnout::rotatePoint(QPointF p, double sineAng, double cosineAng)
@@ -392,15 +390,19 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 }
 /*public*/ QString LayoutTurnout::getName() {return ident;}
 /*public*/ bool LayoutTurnout::useBlockSpeed() { return _useBlockSpeed; }
-/*public*/ QString LayoutTurnout::getTurnoutName() {
-    if (namedTurnout!=nullptr)
-        return namedTurnout->getName();
-    return turnoutName;
+
+/*public*/ QString LayoutTurnout::getTurnoutName()
+{
+ if (namedTurnout!=nullptr)
+  turnoutName = namedTurnout->getName();
+ return turnoutName;
 }
-/*public*/ QString LayoutTurnout::getSecondTurnoutName() {
-    if (secondNamedTurnout!=nullptr)
-        return secondNamedTurnout->getName();
-    return secondTurnoutName;
+
+/*public*/ QString LayoutTurnout::getSecondTurnoutName()
+{
+ if (secondNamedTurnout!=nullptr)
+     secondTurnoutName = secondNamedTurnout->getName();
+ return secondTurnoutName;
 }
 
 /*public*/ bool LayoutTurnout::isSecondTurnoutInverted() {
@@ -409,11 +411,56 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 
 /*public*/ bool LayoutTurnout::getHidden() {return hidden;}
 /*public*/ void LayoutTurnout::setHidden(bool hide) {hidden = hide;}
-/*public*/ QString LayoutTurnout::getBlockName() {return blockName;}
-/*public*/ QString LayoutTurnout::getBlockBName() {return blockBName;}
-/*public*/ QString LayoutTurnout::getBlockCName() {return blockCName;}
-/*public*/ QString LayoutTurnout::getBlockDName() {return blockDName;}
-/*public*/ QString LayoutTurnout::getSignalA1Name() {return signalA1Name;}
+
+/*public*/ QString LayoutTurnout::getBlockName()
+{
+ QString result = QString();
+ if (namedLayoutBlockA != nullptr) {
+     result = namedLayoutBlockA->getName();
+ }
+ return ((result.isEmpty()) ? "" : result);
+
+}
+/*public*/ QString LayoutTurnout::getBlockBName()
+{
+ QString result = getBlockName();
+ if (namedLayoutBlockB != nullptr) {
+     result = namedLayoutBlockB->getName();
+ }
+ return result;
+
+}
+/*public*/ QString LayoutTurnout::getBlockCName()
+{
+ QString result = getBlockName();
+ if (namedLayoutBlockC != nullptr) {
+     result = namedLayoutBlockC->getName();
+ }
+ return result;
+
+}
+/*public*/ QString LayoutTurnout::getBlockDName()
+{
+ QString result = getBlockName();
+ if (namedLayoutBlockD != nullptr) {
+     result = namedLayoutBlockD->getName();
+ }
+ return result;
+
+}
+
+/*public*/ SignalHead* LayoutTurnout::getSignalA1() {
+    return signalA1HeadNamed != nullptr ? signalA1HeadNamed->getBean() : nullptr;
+}
+
+/*public*/ QString LayoutTurnout::getSignalA1Name()
+{
+ if (signalA1HeadNamed != nullptr) {
+     return signalA1HeadNamed->getName();
+ }
+ return "";
+}
+
 /*public*/ SignalHead* LayoutTurnout::getSignalHead(int loc)
 {
     NamedBeanHandle<SignalHead*>* signalHead = nullptr;
@@ -454,23 +501,240 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
     }
     return nullptr;
 }
-/*public*/ void LayoutTurnout::setSignalA1Name(QString signalName) {signalA1Name = signalName;}
-/*public*/ QString LayoutTurnout::getSignalA2Name() {return signalA2Name;}
-/*public*/ void LayoutTurnout::setSignalA2Name(QString signalName) {signalA2Name = signalName;}
-/*public*/ QString LayoutTurnout::getSignalA3Name() {return signalA3Name;}
-/*public*/ void LayoutTurnout::setSignalA3Name(QString signalName) {signalA3Name = signalName;}
-/*public*/ QString LayoutTurnout::getSignalB1Name() {return signalB1Name;}
-/*public*/ void LayoutTurnout::setSignalB1Name(QString signalName) {signalB1Name = signalName;}
-/*public*/ QString LayoutTurnout::getSignalB2Name() {return signalB2Name;}
-/*public*/ void LayoutTurnout::setSignalB2Name(QString signalName) {signalB2Name = signalName;}
-/*public*/ QString LayoutTurnout::getSignalC1Name() {return signalC1Name;}
-/*public*/ void LayoutTurnout::setSignalC1Name(QString signalName) {signalC1Name = signalName;}
-/*public*/ QString LayoutTurnout::getSignalC2Name() {return signalC2Name;}
-/*public*/ void LayoutTurnout::setSignalC2Name(QString signalName) {signalC2Name = signalName;}
-/*public*/ QString LayoutTurnout::getSignalD1Name() {return signalD1Name;}
-/*public*/ void LayoutTurnout::setSignalD1Name(QString signalName) {signalD1Name = signalName;}
-/*public*/ QString LayoutTurnout::getSignalD2Name() {return signalD2Name;}
-/*public*/ void LayoutTurnout::setSignalD2Name(QString signalName) {signalD2Name = signalName;}
+/*public*/ void LayoutTurnout::setSignalA1Name(QString signalHead)
+{
+ if (signalHead.isNull() || signalHead.isEmpty()) {
+     signalA1HeadNamed = nullptr;
+     return;
+ }
+
+ SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+ if (head != nullptr) {
+     signalA1HeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+ } else {
+     signalA1HeadNamed = nullptr;
+     log->error(tr("Signal Head %1 Not found for turnout %2").arg(signalHead).arg(getTurnoutName()));
+ }
+}
+/*public*/ SignalHead* LayoutTurnout::getSignalA2() {
+    return signalA2HeadNamed != nullptr ? signalA2HeadNamed->getBean() : nullptr;
+}
+/*public*/ QString LayoutTurnout::getSignalA2Name()
+{
+ if (signalA2HeadNamed != nullptr)
+ {
+     return signalA2HeadNamed->getName();
+ }
+ return "";
+
+}
+/*public*/ void LayoutTurnout::setSignalA2Name(QString signalHead)
+{
+ if (signalHead.isNull() || signalHead.isEmpty()) {
+     signalA2HeadNamed = nullptr;
+     return;
+ }
+
+ SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+ if (head != nullptr) {
+     signalA2HeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+ } else {
+     signalA2HeadNamed = nullptr;
+     log->error(tr("Signal Head %1 Not found for turnout %2").arg(signalHead).arg(getTurnoutName()));
+ }
+}
+
+/*public*/ SignalHead* LayoutTurnout::getSignalA3() {
+    return signalA3HeadNamed != nullptr ? signalA3HeadNamed->getBean() : nullptr;
+}
+
+/*public*/ QString LayoutTurnout::getSignalA3Name()
+{
+ if (signalA3HeadNamed != nullptr) {
+     return signalA3HeadNamed->getName();
+ }
+ return "";
+}
+/*public*/ void LayoutTurnout::setSignalA3Name(QString signalHead)
+{
+ if (signalHead.isNull() || signalHead.isEmpty()) {
+     signalA3HeadNamed = nullptr;
+     return;
+ }
+ SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+ if (head != nullptr) {
+     signalA3HeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+ } else {
+     signalA3HeadNamed = nullptr;
+     log->error(tr("Signal Head %1 Not found for turnout %2").arg(signalHead).arg(getTurnoutName()));
+ }
+}
+
+/*public*/ SignalHead* LayoutTurnout::getSignalB1() {
+    return signalB1HeadNamed != nullptr ? signalB1HeadNamed->getBean() : nullptr;
+}
+
+/*public*/ QString LayoutTurnout::getSignalB1Name()
+{
+ if (signalB1HeadNamed != nullptr) {
+     return signalB1HeadNamed->getName();
+ }
+ return "";
+}
+
+/*public*/ void LayoutTurnout::setSignalB1Name(QString signalHead)
+{
+ if (signalHead.isNull() || signalHead.isEmpty()) {
+     signalB1HeadNamed = nullptr;
+     return;
+ }
+
+ SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+ if (head != nullptr) {
+     signalB1HeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+ } else {
+     signalB1HeadNamed = nullptr;
+     log->error(tr("Signal Head %1 Not found for turnout %2").arg(signalHead).arg(getTurnoutName()));
+ }
+
+}
+
+/*public*/ SignalHead* LayoutTurnout::getSignalB2() {
+    return signalB2HeadNamed != nullptr ? signalB2HeadNamed->getBean() : nullptr;
+}
+
+/*public*/ QString LayoutTurnout::getSignalB2Name()
+{
+ if (signalB2HeadNamed != nullptr) {
+     return signalB2HeadNamed->getName();
+ }
+ return "";
+}
+/*public*/ void LayoutTurnout::setSignalB2Name(QString signalHead)
+{
+ if (signalHead.isNull() || signalHead.isEmpty()) {
+     signalB2HeadNamed = nullptr;
+     return;
+ }
+
+ SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+ if (head != nullptr) {
+     signalB2HeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+ } else {
+     signalB2HeadNamed = nullptr;
+     log->error(tr("Signal Head %1 Not found for turnout %2").arg(signalHead).arg(getTurnoutName()));
+ }
+}
+
+/*public*/ SignalHead* LayoutTurnout::getSignalC1() {
+    return signalC1HeadNamed != nullptr ? signalC1HeadNamed->getBean() : nullptr;
+}
+
+/*public*/ QString LayoutTurnout::getSignalC1Name()
+{
+ if (signalC1HeadNamed != nullptr) {
+     return signalC1HeadNamed->getName();
+ }
+ return "";
+}
+/*public*/ void LayoutTurnout::setSignalC1Name(QString signalHead)
+{
+ if (signalHead.isNull() || signalHead.isEmpty()) {
+     signalC1HeadNamed = nullptr;
+     return;
+ }
+
+ SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+ if (head != nullptr) {
+     signalC1HeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+ } else {
+     signalC1HeadNamed = nullptr;
+     log->error(tr("Signal Head %1 Not found for turnout %2").arg(signalHead).arg(getTurnoutName()));
+ }
+
+}
+/*public*/ SignalHead* LayoutTurnout::getSignalC2() {
+    return signalC2HeadNamed != nullptr ? signalC2HeadNamed->getBean() : nullptr;
+}
+
+/*public*/ QString LayoutTurnout::getSignalC2Name()
+{
+ if (signalC2HeadNamed != nullptr) {
+     return signalC2HeadNamed->getName();
+ }
+ return "";
+
+}
+/*public*/ void LayoutTurnout::setSignalC2Name(QString signalHead)
+{
+ if (signalHead.isNull() || signalHead.isEmpty()) {
+     signalC2HeadNamed = nullptr;
+     return;
+ }
+
+ SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+ if (head != nullptr) {
+     signalC2HeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+ } else {
+     signalC2HeadNamed = nullptr;
+     log->error(tr("Signal Head %1 Not found for turnout %2").arg(signalHead).arg(getTurnoutName()));
+ }
+}
+
+/*public*/ SignalHead* LayoutTurnout::getSignalD1() {
+        return signalD1HeadNamed != nullptr ? signalD1HeadNamed->getBean() : nullptr;
+    }
+/*public*/ QString LayoutTurnout::getSignalD1Name()
+{
+ if (signalD1HeadNamed != nullptr) {
+     return signalD1HeadNamed->getName();
+ }
+ return "";
+
+}
+/*public*/ void LayoutTurnout::setSignalD1Name(QString signalHead)
+{
+ if (signalHead.isNull() || signalHead.isEmpty()) {
+     signalD1HeadNamed = nullptr;
+     return;
+ }
+
+ SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+ if (head != nullptr) {
+     signalD1HeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+ } else {
+     signalD1HeadNamed = nullptr;
+     log->error(tr("Signal Head %1 Not found for turnout %2").arg(signalHead).arg(getTurnoutName()));
+ }
+}
+
+/*public*/ SignalHead* LayoutTurnout::getSignalD2() {
+    return signalD2HeadNamed != nullptr ? signalD2HeadNamed->getBean() : nullptr;
+}
+
+/*public*/ QString LayoutTurnout::getSignalD2Name()
+{
+ if (signalD2HeadNamed != nullptr) {
+     return signalD2HeadNamed->getName();
+ }
+ return "";
+
+}
+/*public*/ void LayoutTurnout::setSignalD2Name(QString signalHead)
+{
+ if (signalHead.isNull() || signalHead.isEmpty()) {
+     signalD2HeadNamed = nullptr;
+     return;
+ }
+
+ SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+ if (head != nullptr) {
+     signalD2HeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+ } else {
+     signalD2HeadNamed = nullptr;
+     log->error(tr("Signal Head %1 Not found for turnout %2").arg(signalHead).arg(getTurnoutName()));
+ }
+}
 
 /*public*/ void LayoutTurnout::removeBeanReference(NamedBean* nb) {
         if (nb == nullptr) {
@@ -546,7 +810,12 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
     }
     return "";
 }
-/*public*/ SignalMast* LayoutTurnout::getSignalAMast() {return signalAMastNamed->getBean();}
+/*public*/ SignalMast* LayoutTurnout::getSignalAMast() const
+{
+ if(signalAMastNamed == nullptr)
+  throw NullPointerException(tr("signalAMastNamed is null"));
+ return signalAMastNamed->getBean();
+}
 /*public*/ void LayoutTurnout::setSignalAMast(QString signalMast)
 {
  if (signalMast.isNull() || signalMast.isEmpty()) {
@@ -572,7 +841,7 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  }
  return "";
 }
-/*public*/ SignalMast *LayoutTurnout::getSignalBMast() {return signalBMastNamed->getBean();}
+/*public*/ SignalMast *LayoutTurnout::getSignalBMast()const {return signalBMastNamed->getBean();}
 /*public*/ void LayoutTurnout::setSignalBMast(QString signalMast)
 {
  if (signalMast.isNull() || signalMast.isEmpty()) {
@@ -597,7 +866,7 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  }
  return "";
 }
-/*public*/ SignalMast* LayoutTurnout::getSignalCMast() {return signalCMastNamed->getBean();}
+/*public*/ SignalMast* LayoutTurnout::getSignalCMast()const {return signalCMastNamed->getBean();}
 /*public*/ void LayoutTurnout::setSignalCMast(QString signalMast)
 {
  if (signalMast.isNull() || signalMast.isEmpty()) {
@@ -621,7 +890,7 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  }
  return "";
 }
-/*public*/ SignalMast *LayoutTurnout::getSignalDMast()
+/*public*/ SignalMast *LayoutTurnout::getSignalDMast() const
 {
  if(signalDMastNamed== nullptr)
   throw NullPointerException();
@@ -779,6 +1048,13 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 
 /*public*/ Turnout* LayoutTurnout::getTurnout()
 {
+ // begin hack ACK
+ if(turnoutName ==  "")
+  getTurnoutName();
+ if(secondTurnoutName== "")
+  getSecondTurnoutName();
+ // end hack Ack
+
  if (namedTurnout==nullptr)
  {
   // set physical turnout if possible and needed
@@ -794,10 +1070,16 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 
 /*public*/ void LayoutTurnout::setTurnout(QString tName)
 {
- if (namedTurnout!=nullptr) deactivateTurnout();
+ if (namedTurnout!=nullptr)
+  deactivateTurnout();
  turnoutName = tName;
- Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
-                        getTurnout(turnoutName);
+ Turnout* turnout = nullptr;
+ if (!turnoutName.isNull() && !turnoutName.isEmpty())
+ {
+  Manager* mgr = InstanceManager::turnoutManagerInstance();
+  QStringList sysNames = mgr->getSystemNameList();
+   turnout = ((ProxyTurnoutManager*)mgr)->getTurnout(turnoutName);
+ }
  if (turnout!=nullptr)
  {
   namedTurnout = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(turnoutName, turnout);
@@ -961,7 +1243,7 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
   log->error("unexpected type of D connection to layoutturnout - "+QString("%1").arg(type));
  }
 }
-/*public*/ LayoutBlock* LayoutTurnout::getLayoutBlock() {return block;}
+/*public*/ LayoutBlock* LayoutTurnout::getLayoutBlock()const {return block;}
 /*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockB()
 {
  if (blockB!=nullptr) return blockB;
@@ -982,15 +1264,14 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 {
  if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) || (type==DOUBLE_SLIP) || (type==SINGLE_SLIP))
  {
-  double x = center.x() - dispC.x();
-  double y = center.y() - dispC.y();
-  return  QPointF(x,y);
+  if (version == 2) {
+      return pointA;
+  }
+  return MathUtil::subtract(center, dispA);
  }
  else if (type==WYE_TURNOUT)
  {
-  double x = center.x() - (0.5*(dispB.x() + dispC.x()));
-  double y = center.y() - (0.5*(dispB.y() + dispC.y()));
-  return  QPointF(x,y);
+  return MathUtil::subtract(center, MathUtil::midPoint(dispB, dispA));
  }
  else
  {
@@ -1007,9 +1288,12 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 }
 /*public*/ QPointF LayoutTurnout::getCoordsC()
 {
- double x = center.x() + dispC.x();
- double y = center.y() + dispC.y();
- return  QPointF(x,y);
+ if ((version == 2) && ((getTurnoutType() == DOUBLE_XOVER)
+         || (getTurnoutType() == LH_XOVER)
+         || (getTurnoutType() == RH_XOVER))) {
+     return pointC;
+ }
+ return MathUtil::add(center, dispA);
 }
 /*public*/ QPointF LayoutTurnout::getCoordsD()
 {
@@ -1117,8 +1401,8 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  // remove the overall scale factor
  double bX = dispB.x()/layoutEditor->getXScale();
  double bY = dispB.y()/layoutEditor->getYScale();
- double cX = dispC.x()/layoutEditor->getXScale();
- double cY = dispC.y()/layoutEditor->getYScale();
+ double cX = dispA.x()/layoutEditor->getXScale();
+ double cY = dispA.y()/layoutEditor->getYScale();
  // calculate default parameters according to type of turnout
  double lenB = qSqrt((bX*bX) + (bY*bY));
  double lenC = qSqrt((cX*cX) + (cY*cY));
@@ -1683,168 +1967,186 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
 /*public*/ void LayoutTurnout::setCoordsCenter(QPointF p) {
     center = p;
 }
+
+/*private*/ void LayoutTurnout::reCalculateCenter() {
+    center = MathUtil::midPoint(pointA, pointC);
+}
+
 /*public*/ void LayoutTurnout::setCoordsA(QPointF p) {
-    double x = center.x() - p.x();
-    double y = center.y() - p.y();
-    if (type == DOUBLE_XOVER) {
-        dispC =  QPointF(x,y);
-        // adjust to maintain rectangle
-        double oldLength =qSqrt( (dispB.x()*dispB.x()) +
-                                                (dispB.y()*dispB.y()) );
-        double newLength =qSqrt( (x*x) + (y*y) );
-        x = dispB.x()*newLength/oldLength;
-        y = dispB.y()*newLength/oldLength;
-        dispB =  QPointF(x,y);
-    }
-    else if ( (type == RH_XOVER) || (type == LH_XOVER) ) {
-        dispC =  QPointF(x,y);
-        // adjust to maintain the parallelogram
-        double a = 0.0;
-        double b = -y;
-        double xi = 0.0;
-        double yi = b;
-        if ((dispB.x() + x)!=0.0) {
-            a = (dispB.y() + y)/(dispB.x() + x);
-            b = -y + (a*x);
-            xi = -b/(a + (1.0/a));
-            yi = (a*xi) + b;
-        }
-        if (type == RH_XOVER) {
-            x = xi - (0.333333*(-x - xi));
-            y = yi - (0.333333*(-y - yi));
-        }
-        else if (type == LH_XOVER) {
-            x = xi - (3.0*(-x - xi));
-            y = yi - (3.0*(-y - yi));
-        }
-        dispB =  QPointF(x,y);
-    }
-    else if (type == WYE_TURNOUT) {
-        // modify both to maintain same angle at wye
-        double temX = (dispB.x() + dispC.x());
-        double temY = (dispB.y() + dispC.y());
-        double temXx = (dispB.x() - dispC.x());
-        double temYy = (dispB.y() - dispC.y());
-        double tan =qSqrt( ((temX*temX)+(temY*temY))/
-                            ((temXx*temXx)+(temYy*temYy)) );
-        double xx = x + (y/tan);
-        double yy = y - (x/tan);
-        dispC =  QPointF(xx,yy);
-        xx = x - (y/tan);
-        yy = y + (x/tan);
-        dispB =  QPointF(xx,yy);
-    }
-    else {
-        dispB =  QPointF(x,y);
-    }
+ pointA = p;
+ if (version == 2) {
+     reCalculateCenter();
+ }
+ double x = center.x() - p.x();
+ double y = center.y() - p.y();
+ if (getTurnoutType() == DOUBLE_XOVER) {
+     dispA = QPointF(x, y);
+     // adjust to maintain rectangle
+     double oldLength = MathUtil::length(dispB);
+     //double newLength = qHypot(x, y);
+     double newLength = qSqrt(x*x + y*y);
+     dispB = MathUtil::multiply(dispB, newLength / oldLength);
+ } else if ((getTurnoutType() == RH_XOVER)
+         || (getTurnoutType() == LH_XOVER)) {
+     dispA = QPointF(x, y);
+     // adjust to maintain the parallelogram
+     double a = 0.0;
+     double b = -y;
+     double xi = 0.0;
+     double yi = b;
+     if ((dispB.x() + x) != 0.0) {
+         a = (dispB.y() + y) / (dispB.x() + x);
+         b = -y + (a * x);
+         xi = -b / (a + (1.0 / a));
+         yi = (a * xi) + b;
+     }
+     if (getTurnoutType() == RH_XOVER) {
+         x = xi - (0.333333 * (-x - xi));
+         y = yi - (0.333333 * (-y - yi));
+     } else if (getTurnoutType() == LH_XOVER) {
+         x = xi - (3.0 * (-x - xi));
+         y = yi - (3.0 * (-y - yi));
+     }
+     dispB = QPointF(x, y);
+ } else if (getTurnoutType() == WYE_TURNOUT) {
+     // modify both to maintain same angle at wye
+     double temX = (dispB.x() + dispA.x());
+     double temY = (dispB.y() + dispA.y());
+     double temXx = (dispB.x() - dispA.x());
+     double temYy = (dispB.y() - dispA.y());
+     double tan = qSqrt(((temX * temX) + (temY * temY))
+             / ((temXx * temXx) + (temYy * temYy)));
+     double xx = x + (y / tan);
+     double yy = y - (x / tan);
+     dispA = QPointF(xx, yy);
+     xx = x - (y / tan);
+     yy = y + (x / tan);
+     dispB = QPointF(xx, yy);
+ } else {
+     dispB = QPointF(x, y);
+ }
 }
 /*public*/ void LayoutTurnout::setCoordsB(QPointF p) {
-    double x = center.x() - p.x();
-    double y = center.y() - p.y();
-    dispB =  QPointF(-x,-y);
-    if ((type == DOUBLE_XOVER) || (type == WYE_TURNOUT)) {
-        // adjust to maintain rectangle or wye shape
-        double oldLength =qSqrt( (dispC.x()*dispC.x()) +
-                                                (dispC.y()*dispC.y()) );
-        double newLength =qSqrt( (x*x) + (y*y) );
-        x = dispC.x()*newLength/oldLength;
-        y = dispC.y()*newLength/oldLength;
-        dispC =  QPointF(x,y);
-    }
-    else if ( (type == RH_XOVER) || (type == LH_XOVER) ) {
-        // adjust to maintain the parallelogram
-        double a = 0.0;
-        double b = y;
-        double xi = 0.0;
-        double yi = b;
-        if ((dispC.x() - x)!=0.0) {
-            a = (dispC.y() - y)/(dispC.x() - x);
-            b = y - (a*x);
-            xi = -b/(a + (1.0/a));
-            yi = (a*xi) + b;
-        }
-        if (type == LH_XOVER) {
-            x = xi - (0.333333*(x - xi));
-            y = yi - (0.333333*(y - yi));
-        }
-        else if (type == RH_XOVER) {
-            x = xi - (3.0*(x - xi));
-            y = yi - (3.0*(y - yi));
-        }
-        dispC =  QPointF(x,y);
-    }
+ pointB = p;
+ double x = center.x() - p.x();
+ double y = center.y() - p.y();
+ dispB = QPointF(-x, -y);
+ if ((getTurnoutType() == DOUBLE_XOVER)
+         || (getTurnoutType() == WYE_TURNOUT)) {
+     // adjust to maintain rectangle or wye shape
+     double oldLength = MathUtil::length(dispA);
+     //double newLength = Math.hypot(x, y);
+     double newLength  = qSqrt(x*x + y*y);
+     dispA = MathUtil::multiply(dispA, newLength / oldLength);
+ } else if ((getTurnoutType() == RH_XOVER)
+         || (getTurnoutType() == LH_XOVER)) {
+     // adjust to maintain the parallelogram
+     double a = 0.0;
+     double b = y;
+     double xi = 0.0;
+     double yi = b;
+     if ((dispA.x() - x) != 0.0) {
+         if ((-dispA.x() + x) == 0) {
+             /* we can in some situations eg 90' vertical end up with a 0 value,
+             so hence remove a small amount so that we
+             don't have a divide by zero issue */
+             x = x - 0.0000000001;
+         }
+         a = (dispA.y() - y) / (dispA.x() - x);
+         b = y - (a * x);
+         xi = -b / (a + (1.0 / a));
+         yi = (a * xi) + b;
+     }
+     if (getTurnoutType() == LH_XOVER) {
+         x = xi - (0.333333 * (x - xi));
+         y = yi - (0.333333 * (y - yi));
+     } else if (getTurnoutType() == RH_XOVER) {
+         x = xi - (3.0 * (x - xi));
+         y = yi - (3.0 * (y - yi));
+     }
+     dispA = QPointF(x, y);
+ }
 }
 /*public*/ void LayoutTurnout::setCoordsC(QPointF p) {
-    double x = center.x() - p.x();
-    double y = center.y() - p.y();
-    dispC =  QPointF(-x,-y);
-    if ((type == DOUBLE_XOVER) || (type == WYE_TURNOUT)) {
-        // adjust to maintain rectangle or wye shape
-        double oldLength =qSqrt( (dispB.x()*dispB.x()) +
-                                                (dispB.y()*dispB.y()) );
-        double newLength =qSqrt( (x*x) + (y*y) );
-        x = dispB.x()*newLength/oldLength;
-        y = dispB.y()*newLength/oldLength;
-        dispB =  QPointF(x,y);
-    }
-    else if ( (type == RH_XOVER) || (type == LH_XOVER) ) {
-        double a = 0.0;
-        double b = -y;
-        double xi = 0.0;
-        double yi = b;
-        if ((dispB.x() + x)!=0.0) {
-            a = (-dispB.y() + y)/(-dispB.x() + x);
-            b = -y + (a*x);
-            xi = -b/(a + (1.0/a));
-            yi = (a*xi) + b;
-        }
-        if (type == RH_XOVER) {
-            x = xi - (0.333333*(-x - xi));
-            y = yi - (0.333333*(-y - yi));
-        }
-        else if (type == LH_XOVER) {
-            x = xi - (3.0*(-x - xi));
-            y = yi - (3.0*(-y - yi));
-        }
-        dispB =  QPointF(-x,-y);
-    }
+ pointC = p;
+ if (version == 2) {
+     reCalculateCenter();
+ }
+ double x = center.x() - p.x();
+ double y = center.y() - p.y();
+ dispA = QPointF(-x, -y);
+ if ((getTurnoutType() == DOUBLE_XOVER)
+         || (getTurnoutType() == WYE_TURNOUT)) {
+     // adjust to maintain rectangle or wye shape
+     double oldLength = MathUtil::length(dispB);
+     //double newLength = Math.hypot(x, y);
+     double newLength  = qSqrt(x*x + y*y);
+     dispB = MathUtil::multiply(dispB, newLength / oldLength);
+ } else if ((getTurnoutType() == RH_XOVER)
+         || (getTurnoutType() == LH_XOVER)) {
+     double a = 0.0;
+     double b = -y;
+     double xi = 0.0;
+     double yi = b;
+     if ((dispB.x() + x) != 0.0) {
+         if ((-dispB.x() + x) == 0) {
+             /* we can in some situations eg 90' vertical end up with a 0 value,
+             so hence remove a small amount so that we
+             don't have a divide by zero issue */
+
+             x = x - 0.0000000001;
+         }
+         a = (-dispB.y() + y) / (-dispB.y() + x);
+         b = -y + (a * x);
+         xi = -b / (a + (1.0 / a));
+         yi = (a * xi) + b;
+     }
+     if (getTurnoutType() == RH_XOVER) {
+         x = xi - (0.333333 * (-x - xi));
+         y = yi - (0.333333 * (-y - yi));
+     } else if (getTurnoutType() == LH_XOVER) {
+         x = xi - (3.0 * (-x - xi));
+         y = yi - (3.0 * (-y - yi));
+     }
+     dispB = QPointF(-x, -y);
+ }
 }
+
 /*public*/ void LayoutTurnout::setCoordsD(QPointF p) {
-    // only used for crossovers
-    double x = center.x() - p.x();
-    double y = center.y() - p.y();
-    dispB =  QPointF(x,y);
-    if (type == DOUBLE_XOVER) {
-        // adjust to maintain rectangle
-        double oldLength =qSqrt( (dispC.x()*dispC.x()) +
-                                                (dispC.y()*dispC.y()) );
-        double newLength =qSqrt( (x*x) + (y*y) );
-        x = dispC.x()*newLength/oldLength;
-        y = dispC.y()*newLength/oldLength;
-        dispC =  QPointF(x,y);
-    }
-    else if ( (type == RH_XOVER) || (type == LH_XOVER) ) {
-        // adjust to maintain the parallelogram
-        double a = 0.0;
-        double b = y;
-        double xi = 0.0;
-        double yi = b;
-        if ((dispC.x() + x)!=0.0) {
-            a = (dispC.y() + y)/(dispC.x() + x);
-            b = -y + (a*x);
-            xi = -b/(a + (1.0/a));
-            yi = (a*xi) + b;
-        }
-        if (type == LH_XOVER) {
-            x = xi - (0.333333*(-x - xi));
-            y = yi - (0.333333*(-y - yi));
-        }
-        else if (type == RH_XOVER) {
-            x = xi - (3.0*(-x - xi));
-            y = yi - (3.0*(-y - yi));
-        }
-        dispC = QPointF(x,y);
-    }
+ pointD = p;
+
+ // only used for crossovers
+ double x = center.x() - p.x();
+ double y = center.y() - p.y();
+ dispB = QPointF(x, y);
+ if (getTurnoutType() == DOUBLE_XOVER) {
+     // adjust to maintain rectangle
+     double oldLength = MathUtil::length(dispA);
+     //double newLength = Math.hypot(x, y);
+     double newLength  = qSqrt(x*x + y*y);
+     dispA = MathUtil::multiply(dispA, newLength / oldLength);
+ } else if ((getTurnoutType() == RH_XOVER)
+         || (getTurnoutType() == LH_XOVER)) {
+     // adjust to maintain the parallelogram
+     double a = 0.0;
+     double b = y;
+     double xi = 0.0;
+     double yi = b;
+     if ((dispA.x() + x) != 0.0) {
+         a = (dispA.y() + y) / (dispA.x() + x);
+         b = -y + (a * x);
+         xi = -b / (a + (1.0 / a));
+         yi = (a * xi) + b;
+     }
+     if (getTurnoutType() == LH_XOVER) {
+         x = xi - (0.333333 * (-x - xi));
+         y = yi - (0.333333 * (-y - yi));
+     } else if (getTurnoutType() == RH_XOVER) {
+         x = xi - (3.0 * (-x - xi));
+         y = yi - (3.0 * (-y - yi));
+     }
+     dispA = QPointF(x, y);
+ }
 }
 /*public*/ void LayoutTurnout::scaleCoords(float xFactor, float yFactor) {
     QPointF pt =  QPointF(round(center.x()*xFactor),
@@ -1853,9 +2155,9 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
     pt =  QPointF(round(dispB.x()*xFactor),
                                     round(dispB.y()*yFactor));
     dispB = pt;
-    pt =  QPointF(round(dispC.x()*xFactor),
-                                    round(dispC.y()*yFactor));
-    dispC = pt;
+    pt =  QPointF(round(dispA.x()*xFactor),
+                                    round(dispA.y()*yFactor));
+    dispA = pt;
 }
 
 //class MTurnoutListener : public PropertyChangeListener
@@ -2132,106 +2434,84 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
  */
 /*public*/ void LayoutTurnout::setObjects(LayoutEditor* p)
 {
- connectA = p->findTrackSegmentByName(connectAName);
- connectB = p->findTrackSegmentByName(connectBName);
- connectC = p->findTrackSegmentByName(connectCName);
- connectD = p->findTrackSegmentByName(connectDName);
- if (tBlockName.length()>0)
- {
-  block = p->getLayoutBlock(tBlockName);
-  if (block!=nullptr)
+  connectA = p->getFinder()->findTrackSegmentByName(connectAName);
+  connectB = p->getFinder()->findTrackSegmentByName(connectBName);
+  connectC = p->getFinder()->findTrackSegmentByName(connectCName);
+  connectD = p->getFinder()->findTrackSegmentByName(connectDName);
+
+  LayoutBlock* lb;
+  if (!tBlockAName.isEmpty())
   {
-   blockName = tBlockName;
-   block->incrementUse();
+      lb = p->provideLayoutBlock(tBlockAName);
+      if (lb != nullptr) {
+          QString userName = lb->getUserName();
+          if (userName != nullptr) {
+              namedLayoutBlockA = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(userName, lb);
+              lb->incrementUse();
+          }
+      } else {
+          log->error(tr("bad blockname '%1' in layoutturnout %2").arg(tBlockAName).arg(getId()));
+          namedLayoutBlockA = nullptr;
+      }
+      tBlockAName = nullptr; //release this memory
   }
-  else
-  {
-   log->error("bad blockname '"+tBlockName+"' in layoutturnout "+ident);
+
+  if (!tBlockBName.isEmpty()) {
+      lb = p->provideLayoutBlock(tBlockBName);
+      if (lb != nullptr) {
+          QString userName = lb->getUserName();
+          if (!userName.isNull()) {
+              namedLayoutBlockB = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(userName, lb);
+          }
+          if (namedLayoutBlockB != namedLayoutBlockA) {
+              lb->incrementUse();
+          }
+      } else {
+          log->error(tr("bad blockname '%1' in layoutturnout %2").arg(tBlockBName).arg(getId()));
+          namedLayoutBlockB = nullptr;
+      }
+      tBlockBName = nullptr; //release this memory
   }
- }
- if (tBlockBName.length()>0)
- {
-  blockB = p->getLayoutBlock(tBlockBName);
-  if (blockB!=nullptr)
-  {
-   blockBName = tBlockBName;
-   if (block!=blockB) blockB->incrementUse();
+
+  if (!tBlockCName.isEmpty()) {
+      lb = p->provideLayoutBlock(tBlockCName);
+      if (lb != nullptr) {
+          QString userName = lb->getUserName();
+          if (!userName.isNull()) {
+              namedLayoutBlockC = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(userName, lb);
+          }
+          if ((namedLayoutBlockC != namedLayoutBlockA)
+                  && (namedLayoutBlockC != namedLayoutBlockB)) {
+              lb->incrementUse();
+          }
+      } else {
+          log->error(tr("bad blockname '%1' in layoutturnout %2").arg(tBlockCName).arg(getId()));
+          namedLayoutBlockC = nullptr;
+      }
+      tBlockCName = nullptr; // release this memory
   }
-  else
-  {
-   log->error("bad blockname '"+tBlockBName+"' in layoutturnout "+ident);
+
+  if (!tBlockDName.isEmpty()) {
+      lb = p->provideLayoutBlock(tBlockDName);
+      if (lb != nullptr) {
+          QString userName = lb->getUserName();
+          if (userName != nullptr) {
+              namedLayoutBlockD = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(userName, lb);
+          }
+          if ((namedLayoutBlockD != namedLayoutBlockA)
+                  && (namedLayoutBlockD != namedLayoutBlockB)
+                  && (namedLayoutBlockD != namedLayoutBlockC)) {
+              lb->incrementUse();
+          }
+      } else {
+          log->error(tr("bad blockname '%1' in layoutturnout %2").arg(tBlockDName).arg(getId()));
+          namedLayoutBlockD = nullptr;
+      }
+      tBlockDName = nullptr; //release this memory
   }
- }
- if (tBlockCName.length()>0)
- {
-  blockC = p->getLayoutBlock(tBlockCName);
-  if (blockC!=nullptr)
-  {
-   blockCName = tBlockCName;
-   if ( (block!=blockC) && (blockB!=blockC) ) blockC->incrementUse();
-  }
-  else
-  {
-   log->error("bad blockname '"+tBlockCName+"' in layoutturnout "+ident);
-  }
- }
- if (tBlockDName.length()>0)
- {
-  blockD = p->getLayoutBlock(tBlockDName);
-  if (blockD!=nullptr)
-  {
-   blockDName = tBlockDName;
-   if ( (block!=blockD) && (blockB!=blockD) &&
-                    (blockC!=blockD) ) blockD->incrementUse();
-  }
-  else
-  {
-   log->error("bad blockname '"+tBlockDName+"' in layoutturnout "+ident);
-  }
- }
- //Do the second one first then the activate is only called the once
- if (tSecondTurnoutName.length()>0)
- {
-  Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(tSecondTurnoutName);
-  if (turnout!=nullptr)
-  {
-   secondNamedTurnout =((NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(tSecondTurnoutName, turnout);
-   secondTurnoutName = tSecondTurnoutName;
-  }
-  else
-  {
-   log->error("bad 2nd turnoutname '"+tSecondTurnoutName+"' in layoutturnout "+ident);
-   secondTurnoutName = "";
-   secondNamedTurnout = nullptr;
-  }
- }
- if (tTurnoutName.length()>0)
- {
-  Turnout* turnout = nullptr;
-  ProxyTurnoutManager* mgr = (ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance();
-  for(int i=0; i < mgr->nMgrs(); i++)
-  {
-   turnout = (Turnout*)mgr->getMgr(i)->getBeanBySystemName(tTurnoutName);
-   if (turnout != nullptr) break;
-   turnout = (Turnout*)mgr->getMgr(i)->getBeanByUserName(tTurnoutName);
-   if (turnout != nullptr) break;
-  }
-  //Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
-//                            getTurnout(tTurnoutName);
-  if (turnout!=nullptr)
-  {
-   namedTurnout = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(tTurnoutName, turnout);
-   turnoutName = tTurnoutName;
-   activateTurnout();
-  }
-  else
-  {
-   log->error("bad turnoutname '"+tTurnoutName+"' in layoutturnout "+ident);
-   turnoutName = "";
-   namedTurnout = nullptr;
-  }
- }
-}
+  activateTurnout();
+} // setObjects
+
 
 /**
  * Display popup menu for information and editing
@@ -3715,7 +3995,7 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
     return result;
 }   //
 
-/*public*/ void LayoutTurnout::reCheckBlockBoundary()
+/*public*/ void LayoutTurnout::reCheckBlockBoundary() const
 {
  if(connectA==nullptr && connectB==nullptr && connectC==nullptr)
  {
@@ -4062,7 +4342,7 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
     }
 }
 
-void LayoutTurnout::removeSML(SignalMast* signalMast){
+void LayoutTurnout::removeSML(SignalMast* signalMast) const{
     if(signalMast==nullptr)
         return;
     if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")
@@ -4203,10 +4483,7 @@ void LayoutTurnout::remove()
 
  int state = UNKNOWN;
  if (layoutEditor->isAnimating()) {
-     Turnout* to = getTurnout();
-     if (to != nullptr) {
-         state = to->getKnownState();
-     }
+  state = getState();
  }
 
  if(log->isDebugEnabled())

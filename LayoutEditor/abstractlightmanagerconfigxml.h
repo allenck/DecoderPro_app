@@ -8,12 +8,12 @@ class LIBLAYOUTEDITORSHARED_EXPORT AbstractLightManagerConfigXML : public Abstra
     Q_OBJECT
 public:
     explicit AbstractLightManagerConfigXML(QObject *parent = 0);
-    ~AbstractLightManagerConfigXML();
-    /*public*/ QDomElement store(QObject* o) ;
-    virtual /*abstract*/ /*public*/ void setStoreElementClass(QDomElement lights);
-    virtual /*abstract*/ /*public*/ bool load(QDomElement lights) throw (Exception);
+    ~AbstractLightManagerConfigXML() override;
+    /*public*/ QDomElement store(QObject* o)  override;
+    virtual /*abstract*/ /*public*/ void setStoreElementClass(QDomElement lights) ;
+    /*abstract*/ /*public*/ bool load(QDomElement lights) throw (Exception) override ;
     /*public*/ bool loadLights(QDomElement lights);
-    /*public*/ int loadOrder();
+    /*public*/ int loadOrder() const override;
     void setDoc(QDomDocument doc);
 signals:
 

@@ -11,18 +11,18 @@ public:
     Q_INVOKABLE explicit OBlockManager(QObject *parent = 0);
     ~OBlockManager(){}
     OBlockManager(const OBlockManager&) : AbstractManager() {}
-    /*public*/ int getXMLOrder();
-    /*public*/ QString getSystemPrefix();
-    /*public*/ char typeLetter() ;
+    /*public*/ int getXMLOrder()const  override;
+    /*public*/ QString getSystemPrefix() const override;
+    /*public*/ char typeLetter()const  override ;
     /*public*/ OBlock* createNewOBlock(QString systemName, QString userName);
     /*public*/ OBlock* getOBlock(QString name);
-    /*public*/ NamedBean* getBySystemName(QString name);
-    /*public*/ NamedBean* getByUserName(QString key);
-    /*public*/ OBlock* provideOBlock(QString name);
+    /*public*/ NamedBean* getBySystemName(QString name)const override;
+    /*public*/ NamedBean* getByUserName(QString key)const override;
+    /*public*/ OBlock* provideOBlock(QString name)const ;
     static OBlockManager* _instance;// = NULL;
     static /*public*/ OBlockManager* instance();
     /*public*/ bool isAssignableFromType() {return true;}
-    virtual /*public*/ OBlock *provide(QString name) throw (IllegalArgumentException);
+    virtual /*public*/ OBlock *provide(QString name) const throw (IllegalArgumentException);
 
 signals:
 public slots:

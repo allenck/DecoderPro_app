@@ -41,7 +41,7 @@ Reporter* AbstractReporterManager::getReporter(QString name) {
 
     return (Reporter*)getBySystemName(name);
 }
-
+#if 0
 NamedBean *AbstractReporterManager::getBySystemName(QString name)
 {
     return (Reporter*)_tsys->value(name);
@@ -50,10 +50,10 @@ NamedBean *AbstractReporterManager::getBySystemName(QString name)
 NamedBean *AbstractReporterManager::getByUserName(QString key) {
     return _tuser->value(key);
 }
-
+#endif
 /** {@inheritDoc} */
 //@Override
-/*public*/ QString AbstractReporterManager::getBeanTypeHandled(bool plural) {
+/*public*/ QString AbstractReporterManager::getBeanTypeHandled(bool plural) const {
     return (plural ? tr("Reporters") : tr("Reporter"));
 }
 

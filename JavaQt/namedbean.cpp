@@ -58,7 +58,7 @@ void NamedBean::setUserName(QString /*s*/) {}
     return getDisplayName(DisplayOptions::DISPLAYNAME);
 }
 
-QString NamedBean::getSystemName() { return "";}
+// QString NamedBean::getSystemName() const { return "";}
 /**
  * Get the name to display, formatted per {@link NamedBean.DisplayOptions}.
  *
@@ -269,6 +269,7 @@ QVariant NamedBean::getProperty(QString /*key*/)
 }
 
 /*public*/ bool NamedBean::equals(QObject* /*obj*/) {return false;}
+
 
 /**
  * Compare the suffix of this NamedBean's name with the

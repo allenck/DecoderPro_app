@@ -1,6 +1,8 @@
 #include "layoutturnoutxml.h"
 #include "layoutturnout.h"
 #include "tracksegment.h"
+#include "loggerfactory.h"
+
 
 LayoutTurnoutXml::LayoutTurnoutXml(QObject *parent) :
   AbstractXmlAdapter(parent)
@@ -220,9 +222,27 @@ LayoutTurnoutXml::LayoutTurnoutXml(QObject *parent) :
             QPointF(x, y), 0.0, 1.0, 1.0, p, version);
 
     // get remaining attributes
-    QString a = element.attribute("blockname");
+    QString a = element.attribute("turnoutname");
+    if (!a.isEmpty())
+    {
+     l->setTurnout(a);
+    }
+    a = element.attribute("secondturnoutname");
+    if (!a.isEmpty())
+    {
+     l->setSecondTurnout(a);
+      QString a = element.attribute("secondturnoutinverted",QString());
+      if(a == "true" || a == "false")
+         l->setSecondTurnoutInverted(element.attribute("secondturnoutinverted")=="true");
+      else
+      {
+       log->warn("unable to convert layout turnout secondturnoutinverted attribute");
+      }
+    }
+
+    a = element.attribute("blockname");
     if (a != NULL) {
-        l->tBlockName = a;
+        l->tBlockAName = a;
     }
     a = element.attribute("blockbname");
     if (a != NULL) {
@@ -236,14 +256,7 @@ LayoutTurnoutXml::LayoutTurnoutXml(QObject *parent) :
     if (a != NULL) {
         l->tBlockDName = a;
     }
-    a = element.attribute("turnoutname");
-    if (a != NULL) {
-        l->tTurnoutName = a;
-    }
-    a = element.attribute("secondturnoutname");
-    if (a != NULL) {
-        l->tSecondTurnoutName = a;
-    }
+
     a = element.attribute("connectaname");
     if (a != NULL) {
         l->connectAName = a;
@@ -433,3 +446,5 @@ QString LayoutTurnoutXml::getElement(QDomElement el, QString child) {
         }
         return "";
     }
+
+Logger* LayoutTurnoutXml::log = LoggerFactory::getLogger("LayoutTurnoutXml");

@@ -30,7 +30,7 @@ void LocoIOAddress::setUnitSubAddress(qint16 u)
 
 qint16 LocoIOAddress::unitSubAddress() const { return _address & 0xFFFF; }
 
-qint32 LocoIOAddress::address() { return _address; }
+qint32 LocoIOAddress::address() const { return _address; }
 
 bool LocoIOAddress::operator<(const LocoIOAddress  other) const
 {

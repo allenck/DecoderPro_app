@@ -33,7 +33,7 @@
  */
 //@CheckReturnValue
 //@Nonnull
-/*public*/ QString Manager::getBeanTypeHandled(bool /*plural*/) { return "??";}
+/*public*/ QString Manager::getBeanTypeHandled(bool /*plural*/) const { return "??";}
 
 /*static*/ /*public*/ int Manager::getSystemPrefixLength(/*@Nonnull*/ QString inputName) throw (NamedBean::BadSystemNameException)
 {
@@ -55,7 +55,7 @@
     return i;
 }
 
-/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name) {
+/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name) const {
         return makeSystemName(name, true);
 }
 
@@ -78,7 +78,7 @@
  * @throws BadSystemNameException if a valid name can't be created
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name, bool logErrors) {
+/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name, bool logErrors) const {
     return makeSystemName(name, logErrors, QLocale());
 }
 
@@ -102,7 +102,7 @@
  * @throws BadSystemNameException if a valid name can't be created
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name, bool /*logErrors*/, QLocale locale) {
+/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name, bool /*logErrors*/, QLocale locale) const {
     QString prefix = getSystemNamePrefix();
     // the one special case that is not caught by validation here
     if (name.trimmed().isEmpty()) { // In Java 9+ use name.isBlank() instead
@@ -132,7 +132,7 @@
  *                                      messages in the default locale
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name) throw (NamedBean::BadSystemNameException)
+/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name) const throw (NamedBean::BadSystemNameException)
 {
     return validateSystemNameFormat(name, /*Locale.getDefault()*/QLocale());
 }
@@ -160,7 +160,7 @@
  * @throws BadSystemNameException if provided name is an invalid format
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) throw (NamedBean::BadSystemNameException)
+/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const throw (NamedBean::BadSystemNameException)
 {
     return validateSystemNamePrefix(name, locale);
 }
@@ -181,7 +181,7 @@
  * @throws BadSystemNameException if provided name is an invalid format
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) throw (NamedBean::BadSystemNameException) {
+/*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const throw (NamedBean::BadSystemNameException) {
     QString prefix = getSystemNamePrefix();
     if (name == (prefix)) {
         throw NamedBean::BadSystemNameException(locale, tr("System name \"%1\" is missing suffix.").arg(name),name);

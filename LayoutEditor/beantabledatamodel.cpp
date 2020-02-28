@@ -578,6 +578,8 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
  table->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
  connect(table->horizontalHeader(), SIGNAL(customContextMenuRequested(QPoint)), this,SLOT(showTableHeaderPopup(const QPoint &)));
  //setPersistentButtons();
+ table->resizeColumnsToContents();
+
 }
 
 /*protected*/ void BeanTableDataModel::configValueColumn(JTable* table) {

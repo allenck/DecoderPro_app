@@ -8,15 +8,15 @@ class LIBLAYOUTEDITORSHARED_EXPORT AbstractSignalHeadManagerXml : public Abstrac
     Q_OBJECT
 public:
     Q_INVOKABLE explicit AbstractSignalHeadManagerXml(QObject *parent = 0);
-    ~AbstractSignalHeadManagerXml();
+    ~AbstractSignalHeadManagerXml() override;
  AbstractSignalHeadManagerXml(const AbstractSignalHeadManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
-    /*public*/ QDomElement store(QObject* o);
+    /*public*/ QDomElement store(QObject* o) override;
     /*public*/ void setStoreElementClass(QDomElement turnouts);
-    /*public*/ bool load(QDomElement signalheads)  throw (Exception);
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+    /*public*/ bool load(QDomElement signalheads)  throw (Exception) override;
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
     /*public*/ void loadSignalHeads(QDomElement signalheads) ;
     /*protected*/ void replaceSignalHeadManager();
-    /*public*/ int loadOrder();
+    /*public*/ int loadOrder() const override;
 signals:
 
 public slots:
