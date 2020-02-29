@@ -299,7 +299,7 @@
 }
 
 //@Override
-/*public*/ int SwitchboardEditorXml::loadOrder() {
+/*public*/ int SwitchboardEditorXml::loadOrder() const {
     return Manager::PANELFILES;
 }
 

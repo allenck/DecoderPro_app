@@ -30,7 +30,6 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon
     /*public*/ NamedBean* getNamedBean() override;
     /*public*/ void setIcon(QString state, NamedIcon* icon);
     /*public*/ int headState();
-    ///*public*/ void propertyChange(PropertyChangeEvent* e); // now a slot!
     /*public*/ QString getNameString() override;
     /*public*/ bool showPopUp(QMenu* popup) override;
 #if 0 // not needed since scaling and rotating is done by QT's QGraphicsScene ACK

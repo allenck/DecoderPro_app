@@ -153,7 +153,7 @@
     _blockSpeed = "";
     maxInfoMessages = 5;
     infoMessageCount = 0;
-    setObjectName(systemName);
+    setObjectName(systemName+":"+userName);
 }
 
 

@@ -573,6 +573,6 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
 }
 
 //@Override
-/*public*/ int AbstractAudioManagerConfigXML::loadOrder() {
+/*public*/ int AbstractAudioManagerConfigXML::loadOrder() const {
  return ((AudioManager*)InstanceManager::getDefault("AudioManager"))->getXMLOrder();
 }

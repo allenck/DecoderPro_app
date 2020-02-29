@@ -255,7 +255,7 @@ public:
     };
     Q_ENUM(DisplayOptions)
         // user identification, _bound_ parameter so manager(s) can listen
-        virtual QString getUserName();
+        virtual QString getUserName() const;
         virtual void setUserName(QString s);
         //virtual void setSysName(QString s);
         /**

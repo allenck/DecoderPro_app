@@ -59,20 +59,20 @@ public:
          * Known state on layout is a bound parameter
          * @return known state value
          */
-        virtual int getKnownState() const /*= 0*/ {return 0;}
+        virtual int getKnownState() const = 0;
 
         /**
          * Potentially allow the user to set the known state on the layout.
          * This might not always be available, depending on the limits of the
          * underlying system and implementation.
          */
-        virtual void setKnownState(int /*newState*/) /* =0*/{} // throws jmri.JmriException;
+        virtual void setKnownState(int /*newState*/) =0; // throws jmri.JmriException;
 
         /**
          * Request an update from the layout soft/hardware.  May not even
          * happen, and if it does it will happen later; listen for the result.
          */
-        virtual void requestUpdateFromLayout() const/* =0*/ {}
+    virtual void requestUpdateFromLayout() const =0;
 
         /**
          * Control whether the actual sensor input is
@@ -84,14 +84,14 @@ public:
          * ACTIVE to INACTIVE and vice-versa, with notifications;
          * UNKNOWN and INCONSISTENT are left unchanged.
          */
-        virtual void setInverted(bool /*inverted*/) /* =0*/{}
+        virtual void setInverted(bool /*inverted*/) =0;
 
         /**
          * Get the inverted state.  If true, the
          * electrical signal that results in an ACTIVE state
          * now results in an INACTIVE state.
          */
-        virtual bool getInverted() const /*=0*/ { return false;}
+        virtual bool getInverted() const =0;
 
         /**
          * Determine if sensor can be inverted. When a turnout is inverted the
@@ -99,7 +99,7 @@ public:
          *
          * @return true if can be inverted; false otherwise
          */
-        virtual /*public*/ bool canInvert() {return false;}
+        virtual /*public*/ bool canInvert() =0;
         /**
          * Request a call-back when the bound KnownState property changes.
          */
@@ -166,7 +166,7 @@ public:
          * <p>
          * returns null if there is no direct reporter.
          */
-        virtual void setReporter(Reporter* /*re*/) const/* =0*/{}
+    virtual void setReporter(Reporter* /*re*/){}
 
 
         /**
@@ -174,7 +174,7 @@ public:
          * <p>
          * returns null if there is no direct reporter.
          */
-        virtual Reporter* getReporter() const /*=0*/ {return NULL;}
+    virtual Reporter* getReporter() const {return nullptr;}
     int thisAddr;
     virtual /*default*/ /*public*/ int getCommandedState();
     virtual void setCommandedState(int s);

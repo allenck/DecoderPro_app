@@ -44,7 +44,7 @@ NamedBean::NamedBean(const NamedBean & /*other*/): QObject()
 // this->_userName = other._userName;
 }
 
-QString NamedBean::getUserName() { return "";}
+QString NamedBean::getUserName()const { return "";}
 void NamedBean::setUserName(QString /*s*/) {}
 
 /**

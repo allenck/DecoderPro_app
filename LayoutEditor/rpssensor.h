@@ -10,14 +10,14 @@ class RpsSensor : public AbstractSensor, public MeasurementListener
 public:
  /*public*/ RpsSensor(QString systemName, QString prefix, QObject* parent= nullptr);
  /*public*/ RpsSensor(QString systemName, QString userName, QString prefix, QObject* parent=nullptr);
- /*public*/ void notify(Measurement *r);
+ /*public*/ void notify(Measurement *r) override;
  /*public*/ void setOwnState(int state);
  void notifyInRegion(int id);
  void notifyOutOfRegion(int id);
  void notifyLeaving(int id);
  void notifyArriving(int id);
- /*public*/ void dispose();
- /*public*/ void requestUpdateFromLayout();
+ /*public*/ void dispose() override;
+ /*public*/ void requestUpdateFromLayout() const override;
 
 private:
  static Logger* log;

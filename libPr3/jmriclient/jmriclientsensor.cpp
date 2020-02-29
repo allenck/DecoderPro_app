@@ -65,7 +65,7 @@
 }
 
 //@Override
-/*public*/ void JMRIClientSensor::requestUpdateFromLayout() {
+/*public*/ void JMRIClientSensor::requestUpdateFromLayout()const {
     // get the message text
     QString text = "SENSOR " + transmitName + "\n";
 

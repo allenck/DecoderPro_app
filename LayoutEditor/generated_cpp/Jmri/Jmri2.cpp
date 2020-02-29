@@ -3642,7 +3642,7 @@ if (_wrapper) {
 }
   return LogixManager::getBeanTypeHandled(plural0);
 }
-NamedBean*  PythonQtShell_LogixManager::getBySystemName(QString  arg__1)
+NamedBean*  PythonQtShell_LogixManager::getBySystemName(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3653,7 +3653,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&systemName0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -3673,7 +3673,7 @@ if (_wrapper) {
     }
   }
 }
-  return LogixManager::getBySystemName(arg__1);
+  return LogixManager::getBySystemName(systemName0);
 }
 NamedBean*  PythonQtShell_LogixManager::getByUserName(QString  userName0) const
 {
@@ -3741,7 +3741,7 @@ if (_wrapper) {
 }
   return LogixManager::getEntryToolTip();
 }
-bool  PythonQtShell_LogixManager::getLoadDisabled()
+bool  PythonQtShell_LogixManager::getLoadDisabled() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -4412,7 +4412,7 @@ void PythonQtWrapper_LogixManager::activateAllLogixs(LogixManager* theWrappedObj
   ( theWrappedObject->activateAllLogixs());
 }
 
-bool  PythonQtWrapper_LogixManager::getLoadDisabled(LogixManager* theWrappedObject)
+bool  PythonQtWrapper_LogixManager::getLoadDisabled(LogixManager* theWrappedObject) const
 {
   return ( theWrappedObject->getLoadDisabled());
 }
@@ -8946,7 +8946,7 @@ if (_wrapper) {
 }
   return QString();
 }
-QString  PythonQtShell_NamedBean::getUserName()
+QString  PythonQtShell_NamedBean::getUserName() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9362,7 +9362,7 @@ QString  PythonQtWrapper_NamedBean::getSystemName(NamedBean* theWrappedObject) c
   return ( theWrappedObject->getSystemName());
 }
 
-QString  PythonQtWrapper_NamedBean::getUserName(NamedBean* theWrappedObject)
+QString  PythonQtWrapper_NamedBean::getUserName(NamedBean* theWrappedObject) const
 {
   return ( theWrappedObject->getUserName());
 }

@@ -495,10 +495,10 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
 virtual NamedBean*  getBeanByUserName(QString  userName) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  arg__1);
+virtual NamedBean*  getBySystemName(QString  systemName) const;
 virtual NamedBean*  getByUserName(QString  userName) const;
 virtual QString  getEntryToolTip();
-virtual bool  getLoadDisabled();
+virtual bool  getLoadDisabled() const;
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name) const;
 virtual QSet<NamedBean* >  getNamedBeanSet();
@@ -529,8 +529,7 @@ virtual void vetoableChange(PropertyChangeEvent*  evt);
 class PythonQtPublicPromoter_LogixManager : public LogixManager
 { public:
 inline void py_q_activateAllLogixs() { LogixManager::activateAllLogixs(); }
-inline NamedBean*  py_q_getBySystemName(QString  arg__1) { return LogixManager::getBySystemName(arg__1); }
-inline bool  py_q_getLoadDisabled() { return LogixManager::getLoadDisabled(); }
+inline bool  py_q_getLoadDisabled() const { return LogixManager::getLoadDisabled(); }
 inline void py_q_setLoadDisabled(bool  arg__1) { LogixManager::setLoadDisabled(arg__1); }
 };
 
@@ -542,9 +541,8 @@ LogixManager* new_LogixManager(QObject*  parent = 0);
 void delete_LogixManager(LogixManager* obj) { delete obj; } 
    void activateAllLogixs(LogixManager* theWrappedObject);
    void py_q_activateAllLogixs(LogixManager* theWrappedObject){  (((PythonQtPublicPromoter_LogixManager*)theWrappedObject)->py_q_activateAllLogixs());}
-   NamedBean*  py_q_getBySystemName(LogixManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LogixManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
-   bool  getLoadDisabled(LogixManager* theWrappedObject);
-   bool  py_q_getLoadDisabled(LogixManager* theWrappedObject){  return (((PythonQtPublicPromoter_LogixManager*)theWrappedObject)->py_q_getLoadDisabled());}
+   bool  getLoadDisabled(LogixManager* theWrappedObject) const;
+   bool  py_q_getLoadDisabled(LogixManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_LogixManager*)theWrappedObject)->py_q_getLoadDisabled());}
    void setLoadDisabled(LogixManager* theWrappedObject, bool  arg__1);
    void py_q_setLoadDisabled(LogixManager* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_LogixManager*)theWrappedObject)->py_q_setLoadDisabled(arg__1));}
 };
@@ -947,7 +945,7 @@ virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference
 virtual QSet<QString >  getPropertyKeys();
 virtual int  getState();
 virtual QString  getSystemName() const;
-virtual QString  getUserName();
+virtual QString  getUserName() const;
 virtual uint  hashCode();
 virtual void removeProperty(QString  arg__1);
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
@@ -988,7 +986,7 @@ inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByRefer
 inline QSet<QString >  py_q_getPropertyKeys() { return NamedBean::getPropertyKeys(); }
 inline int  py_q_getState() { return NamedBean::getState(); }
 inline QString  py_q_getSystemName() const { return this->getSystemName(); }
-inline QString  py_q_getUserName() { return NamedBean::getUserName(); }
+inline QString  py_q_getUserName() const { return NamedBean::getUserName(); }
 inline uint  py_q_hashCode() { return NamedBean::hashCode(); }
 inline void py_q_removeProperty(QString  arg__1) { NamedBean::removeProperty(arg__1); }
 inline void py_q_removePropertyChangeListener(PropertyChangeListener*  arg__1) { NamedBean::removePropertyChangeListener(arg__1); }
@@ -1051,8 +1049,8 @@ void delete_NamedBean(NamedBean* obj) { delete obj; }
    int  py_q_getState(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getState());}
    QString  getSystemName(NamedBean* theWrappedObject) const;
    QString  py_q_getSystemName(NamedBean* theWrappedObject) const{  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getSystemName());}
-   QString  getUserName(NamedBean* theWrappedObject);
-   QString  py_q_getUserName(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getUserName());}
+   QString  getUserName(NamedBean* theWrappedObject) const;
+   QString  py_q_getUserName(NamedBean* theWrappedObject) const{  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getUserName());}
    uint  hashCode(NamedBean* theWrappedObject);
    uint  py_q_hashCode(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_hashCode());}
    QString  static_NamedBean_normalizeUserName(QString  arg__1);

@@ -3153,7 +3153,7 @@ virtual void setComment(QString  comment);
 virtual void setInverted(bool  inverted);
 virtual void setKnownState(int  s);
 virtual void setProperty(QString  key, QVariant  value);
-virtual void setSensorDebounceGoingActiveTimer(long  time);
+virtual void setSensorDebounceGoingActiveTimer(long  time) const;
 virtual void setSensorDebounceGoingInActiveTimer(long  time);
 virtual void setState(int  s);
 virtual void setUseDefaultTimerSettings(bool  boo);

@@ -13,22 +13,23 @@ public:
  // ctor takes a system-name string for initialization
  AbstractSensor(QString systemName, QObject *parent = 0);
  AbstractSensor(QString systemName, QString userName, QObject *parent = 0);
- int getKnownState() const;
- void setSensorDebounceGoingActiveTimer(long time);
- long getSensorDebounceGoingActiveTimer() const;
- void setSensorDebounceGoingInActiveTimer(long time);
- long getSensorDebounceGoingInActiveTimer() const;
- void useDefaultTimerSettings(bool boo) ;
- bool useDefaultTimerSettings() ;
+ ~AbstractSensor() {}
+ int getKnownState() const override;
+ void setSensorDebounceGoingActiveTimer(long time)const override;
+ long getSensorDebounceGoingActiveTimer() const override;
+ void setSensorDebounceGoingInActiveTimer(long time) override;
+ long getSensorDebounceGoingInActiveTimer() const override;
+ void useDefaultTimerSettings(bool boo)  override;
+ bool useDefaultTimerSettings()  override;
  // setKnownState() for implementations that can't
  // actually do it on the layout. Not intended for use by implementations
  // that can
- void setKnownState(int s); // throws jmri.JmriException {
+ void setKnownState(int s)override; // throws jmri.JmriException {
     /**
      * Set our internal state information, and notify bean listeners.
      */
     void setOwnState(int s);
-    int getRawState() const;
+    int getRawState() const override;
     /**
      * Implement a shorter name for setKnownState.
      *<P>
@@ -36,7 +37,7 @@ public:
      * setKnownState instead.  The is provided to make Jython
      * script access easier to read.
      */
-    void setState(int s);// throws jmri.JmriException { setKnownState(s); }
+    void setState(int s) override;// throws jmri.JmriException { setKnownState(s); }
     /**
      * Implement a shorter name for getKnownState.
      *<P>
@@ -44,7 +45,7 @@ public:
      * getKnownState instead.  The is provided to make Jython
      * script access easier to read.
      */
-    int getState();
+    int getState() override;
     /**
      * Control whether the actual sensor input is
      * considered to be inverted, e.g. the normal
@@ -60,8 +61,8 @@ public:
      * Used in polling loops in system-specific code,
      * so made final to allow optimization.
      */
-    /*final public*/ bool getInverted() const;
-    /*public*/ bool canInvert();
+    /*final public*/ bool getInverted() const override;
+    /*public*/ bool canInvert() override;
 
     /**
      * Some sensor boards also serve the function of being able to report
@@ -71,15 +72,15 @@ public:
      * <p>
      * returns NULL if there is no direct reporter.
      */
-    void setReporter(Reporter* er);
-    Reporter* getReporter();
+    void setReporter(Reporter* er) override;
+    Reporter* getReporter()const override;
     QString getStateName(int);
-    /*public*/ void setUseDefaultTimerSettings(bool boo);
-    /*public*/ bool getUseDefaultTimerSettings();
+    /*public*/ void setUseDefaultTimerSettings(bool boo) override;
+    /*public*/ bool getUseDefaultTimerSettings() override;
     /*public*/ void setPullResistance(Sensor::PullResistance r);
     /*public*/ Sensor::PullResistance::PULLRESISTANCE getPullResistance();
-    /*public*/ QString describeState(int state);
-    /*public*/ QString getBeanType();
+    /*public*/ QString describeState(int state) override;
+    /*public*/ QString getBeanType() override;
 
 
 signals:
@@ -89,12 +90,12 @@ signals:
 public slots:
 private:
     int restartcount = 0;
-    Reporter* reporter = nullptr;
+    mutable Reporter* reporter = nullptr;
     int lastKnownState = _knownState;
     Logger log;
 protected:
-    long sensorDebounceGoingActive = 0L;
-    long sensorDebounceGoingInActive = 0L;
+    mutable long sensorDebounceGoingActive = 0L;
+    mutable long sensorDebounceGoingInActive = 0L;
     bool _useDefaultTimerSettings = false;
     QThread* thr = nullptr;
     Runnable* r;

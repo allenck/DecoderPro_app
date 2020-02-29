@@ -10,15 +10,15 @@ class VirtualSignalMastAddPane : public SignalMastAddPane
 {
 public:
  VirtualSignalMastAddPane(QWidget* parent = nullptr);
- /*@Nonnull*/ /*public*/ QString getPaneName();
+ /*@Nonnull*/ /*public*/ QString getPaneName() override;
  /*public*/ void setAspectNames(/*@Nonnull*/
-         SignalAppearanceMap* map, SignalSystem* sigSystem);
- /*public*/ bool canHandleMast(/*@Nonnull*/ SignalMast* mast);
- /*public*/ void setMast(SignalMast* mast);
+         SignalAppearanceMap* map, SignalSystem* sigSystem) override;
+ /*public*/ bool canHandleMast(/*@Nonnull*/ SignalMast* mast) override;
+ /*public*/ void setMast(SignalMast* mast) override;
  /*public*/ bool createMast(/*@Nonnull*/
          QString sigsysname, /*@Nonnull*/
                  QString mastname, /*@Nonnull*/
-                         QString username);
+                         QString username) override;
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("VirtualSignalMastAddPane");
@@ -35,8 +35,8 @@ private:
 {
 public:
 
-    /*@Nonnull*/ /*public*/ QString getPaneName() ;
-    /*@Nonnull*/ /*public*/ SignalMastAddPane* getNewPane();
+    /*@Nonnull*/ /*public*/ QString getPaneName()  override;
+    /*@Nonnull*/ /*public*/ SignalMastAddPane* getNewPane() override;
 };
 
 #endif // VIRTUALSIGNALMASTADDPANE_H

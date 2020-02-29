@@ -118,7 +118,7 @@ void RpsSensor::notifyArriving(int id) {
 }
 
 //@Override
-/*public*/ void RpsSensor::requestUpdateFromLayout() {
+/*public*/ void RpsSensor::requestUpdateFromLayout()const {
 }
 
 /*private*/ /*final*/ /*static*/ Logger* RpsSensor::log = LoggerFactory::getLogger("RpsSensor");

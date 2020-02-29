@@ -12,7 +12,7 @@ class AbstractTurnoutMgrTestBase : public AbstractProvidingTurnoutManagerTestBas
 public:
     explicit AbstractTurnoutMgrTestBase(QObject *parent = nullptr);
     virtual /*public*/ QString getSystemName(int i) = 0;
-    virtual /*public*/ void setUp() = 0;
+    virtual /*public*/ void setUp()  = 0;
 
 signals:
 

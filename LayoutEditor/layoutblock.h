@@ -435,7 +435,7 @@ private:
     /*JTextField*/ QLineEdit* metricField; //new /*JTextField*/ QLineEdit(10);
     /*JComboBox*/ QComboBox* senseBox; //new /*JComboBox*/ QComboBox();
     /*JCheckBox*/ QCheckBox* permissiveCheck; //new /*JCheckBox*/ QCheckBox("Permissive Working Allowed");
-    /*private*/ /*final*/ NamedBeanComboBox/*<Memory*>*/* memoryComboBox;// = new NamedBeanComboBox<>(
+    /*private*/ /*final*/ NamedBeanComboBox/*<Memory*>*/* memoryComboBox = nullptr;// = new NamedBeanComboBox<>(
     //InstanceManager.getDefault(MemoryManager.class), null, DisplayOptions.DISPLAYNAME);
 
     int senseActiveIndex;
@@ -771,7 +771,7 @@ class HandleBlockChangeListener : public PropertyChangeListener
      this->parent = parent;
     }
 public slots:
-    void propertyChange(PropertyChangeEvent *e)
+    void propertyChange(PropertyChangeEvent *e) override
     {
      this->parent->handleBlockChange(e);
     }
@@ -804,7 +804,7 @@ public:
 /*protected*/ class LayoutBlockEditAction : public BlockEditAction
 {
  Q_OBJECT
- LayoutBlock* lb;
+ LayoutBlock* lb = nullptr;
 public:
  LayoutBlockEditAction(LayoutBlock* lb) {this->lb = lb;}
     //@Override

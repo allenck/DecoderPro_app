@@ -25,6 +25,7 @@
 #include <QRadioButton>
 #include "jcolorchooser.h"
 #include <QCheckBox>
+#include "joptionpane.h"
 
 BeanEditAction::BeanEditAction(QObject *parent) :
   QAction("Bean Edit", parent)
@@ -105,11 +106,11 @@ BeanItemPanel* BeanEditAction::basicDetails()
  QVBoxLayout* basicLayout;
  basic->setLayout(basicLayout = new QVBoxLayout); //(basic, BoxLayout.Y_AXIS));
 
- basic->addItem(new BeanEditItem(new QLabel(bean->getSystemName()), tr("System Name"), NULL));
+ basic->addItem(new BeanEditItem(new QLabel(bean->getSystemName()), tr("System Name"), QString()));
 
- basic->addItem(new BeanEditItem(userNameField, tr("User Name"), NULL));
+ basic->addItem(new BeanEditItem(userNameField, tr("User Name"), QString()));
 
- basic->addItem(new BeanEditItem(commentFieldScroller, tr("Comment"), NULL));
+ basic->addItem(new BeanEditItem(commentFieldScroller, tr("Comment"), QString()));
 
 //    basic->setSaveItem(new AbstractAction() {
 //        /**
@@ -158,7 +159,7 @@ BeanItemPanel* BeanEditAction::usageDetails()
  usage->setName("Usage");
  usage->setLayout(new QVBoxLayout); //(usage, BoxLayout.Y_AXIS));
 
- usage->addItem(new BeanEditItem(NULL, NULL, tr("Provides an indication as to where %1 is used within your panel.").arg( bean->getDisplayName())));
+ usage->addItem(new BeanEditItem(nullptr, nullptr, tr("Provides an indication as to where %1 is used within your panel.").arg( bean->getDisplayName())));
 
  QStringList listeners =  QStringList();
  foreach (QString ref, *bean->getListenerRefs())
@@ -181,7 +182,7 @@ BeanItemPanel* BeanEditAction::usageDetails()
 //    JScrollPane listScroller = new JScrollPane(list);
 //    listScroller.setPreferredSize(new Dimension(250, 80));
 //    listScroller.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black)));
- usage->addItem(new BeanEditItem(/*listScroller*/list, "Location", NULL));
+ usage->addItem(new BeanEditItem(/*listScroller*/list, "Location", QString()));
 
  bei.append(usage);
  return usage;
@@ -271,7 +272,7 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
     commentField->setText(bean->getComment());
 }
 
-/*abstract*/ /*protected*/ QString BeanEditAction::helpTarget() {}
+/*abstract*/ /*protected*/ QString BeanEditAction::helpTarget() {return QString();}
 
 
 
@@ -401,16 +402,19 @@ void BeanEditAction::On_okBut_clicked()
    cD.gridy = y;
 
    QWidget* thing = it->getComponent();
-   //log.debug("descript: '" + it.getDescription() + "', thing: " + thing.getClass().getName());
-   if (qobject_cast<QComboBox*>(thing)
-           || qobject_cast<JTextField*>(thing)
-           || qobject_cast<QCheckBox*>(thing)
-           || qobject_cast<QRadioButton*>(thing)) {
-       cD.insets = new Insets(0, 0, 0, 0); // put a little higher than a JLabel
-   } else if (qobject_cast<JColorChooser*>(thing)) {
-       cD.insets = new Insets(-6, 0, 0, 0); // move it up
-   } else {
-       cD.insets = new Insets(4, 0, 0, 0); // reset
+   log->debug("descript: '" + it->getDescription() + "', thing: " + (thing?QString(thing->metaObject()->className()):"NULL"));
+   if(thing)
+   {
+    if (qobject_cast<QComboBox*>(thing)
+            || qobject_cast<JTextField*>(thing)
+            || qobject_cast<QCheckBox*>(thing)
+            || qobject_cast<QRadioButton*>(thing)) {
+        cD.insets = new Insets(0, 0, 0, 0); // put a little higher than a JLabel
+    } else if (qobject_cast<JColorChooser*>(thing)) {
+        cD.insets = new Insets(-6, 0, 0, 0); // move it up
+    } else {
+        cD.insets = new Insets(4, 0, 0, 0); // reset
+    }
    }
    gbLayout->setConstraints(cD);
    gbLayout->addWidget(thing, cD);
@@ -501,12 +505,11 @@ void BeanEditAction::formatTextAreaAsLabel(JTextArea* pane)
   {
    log->error("User name is not unique " + value); // NOI18N
    QString msg;
-//            msg = java.text.MessageFormat.format(tr("WarningUserName"),
-//                    new Object[]{("" + value)});
-//            JOptionPane.showMessageDialog(NULL, msg,
-//                    tr("WarningTitle"),
-//                    JOptionPane.ERROR_MESSAGE);
-   QMessageBox::critical(NULL, tr("Error"), tr("User Name \" %1 \" has already been used.").arg(value));
+   msg = tr("WarningUserName"),
+           tr("User Name \" %1 \" has already been used.").arg(value);
+   JOptionPane::showMessageDialog(NULL, msg,
+           tr("Warning"),
+           JOptionPane::ERROR_MESSAGE);
    return;
   }
  }

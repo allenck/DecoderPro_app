@@ -2,7 +2,7 @@
 #include "decimalformat.h"
 #include "blockmanager.h"
 #include "instancemanager.h"
-#include "jmribeancombobox.h"
+#include "namedbeancombobox.h"
 #include <QCheckBox>
 #include "beanitempanel.h"
 #include "jmribeancombobox.h"
@@ -32,15 +32,15 @@ BlockEditAction::BlockEditAction(QObject *parent) :
  userNameField = new JTextField(20);
  useCurrent = new QCheckBox();
  commentField = new JTextArea(3, 30);
- QScrollArea* commentFieldScroller = new QScrollArea(commentField);
+ commentFieldScroller = new QScrollArea(commentField);
  curvatureField = new QComboBox(/*curveOptions*/);
  curvatureField->addItems(curveOptions);
  permissiveField = new QCheckBox();
  inch = new QRadioButton(tr("Inches"));
  cm = new QRadioButton(tr("Centimeters"));
-
-
+ lengthField = new JTextField(20);
 }
+
 /**
  * Provides an edit panel for a block object
  *
@@ -81,10 +81,10 @@ BeanItemPanel* BlockEditAction::reporterDetails()
     BeanItemPanel* reporter = new BeanItemPanel();
     reporter->setName(tr("Reporter"));
 
-    reporterField = new JmriBeanComboBox(InstanceManager::reporterManagerInstance(), ((Block*) bean)->getReporter(), JmriBeanComboBox::DISPLAYNAME);
-    reporterField->setFirstItemBlank(true);
+    reporterComboBox = new NamedBeanComboBox(InstanceManager::reporterManagerInstance(), ((Block*) bean)->getReporter(), NamedBean::DISPLAYNAME);
+    reporterComboBox->setAllowNull(true);
 
-    reporter->addItem(new BeanEditItem(reporterField, tr("BeanNameReporter"), tr("Set the reporter used to identify trains in the block")));
+    reporter->addItem(new BeanEditItem(reporterComboBox, tr("BeanNameReporter"), tr("Set the reporter used to identify trains in the block")));
 
 //    reporterField.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
@@ -95,11 +95,11 @@ BeanItemPanel* BlockEditAction::reporterDetails()
 //            }
 //        }
 //    });
-    connect(reporterField, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_reporterField_currentIndexChanged(QString)));
+    connect(reporterComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_reporterComboBox_currentIndexChanged(QString)));
 
     reporter->addItem(new BeanEditItem(useCurrent, tr("BlockReporterCurrent"), tr("Use the Current Report from the reporter as the value for the block")));
 
-    if (reporterField->currentText() == "") {
+    if (reporterComboBox->currentText() == "") {
         useCurrent->setEnabled(false);
     }
 #if 0
@@ -114,7 +114,9 @@ BeanItemPanel* BlockEditAction::reporterDetails()
             useCurrent.setSelected(((Block) bean).isReportingCurrent());
         }
     });
-
+#endif
+    reporter->setResetItem(new SetResetItemAction(this));
+#if 0
     reporter.setSaveItem(new AbstractAction() {
         /**
          *
@@ -128,6 +130,7 @@ BeanItemPanel* BlockEditAction::reporterDetails()
         }
     });
 #endif
+    reporter->setSaveItem(new SetSaveItemAction(this));
     bei.append(reporter);
     if (InstanceManager::getDefault("ReporterManager") == NULL)
     {
@@ -150,7 +153,7 @@ BeanItemPanel* BlockEditAction::physcialDetails() {
     basic->setName(tr("Physical Details"));
 
     basic->addItem(new BeanEditItem(NULL, NULL, tr("Use this tab to update the physical information about the block")));
-    basic->addItem(new BeanEditItem(lengthField, tr("BlockLengthColName"), tr("Length of the block")));
+    basic->addItem(new BeanEditItem(lengthField, tr("Length"), tr("Length of the block")));
 
 //    lengthField.addKeyListener(new KeyListener() {
 //        /*public*/ void keyPressed(KeyEvent keyEvent) {
@@ -197,11 +200,11 @@ BeanItemPanel* BlockEditAction::physcialDetails() {
     //    });
     connect(inch, SIGNAL(toggled(bool)), this, SLOT(updateLength()));
     basic->addItem(new BeanEditItem(p, tr("BlockLengthUnits"), tr("BlockLengthUnitsText")));
-    basic->addItem(new BeanEditItem(curvatureField, tr("BlockCurveColName"), ""));
+    basic->addItem(new BeanEditItem(curvatureField, tr("Curvature"), ""));
     speedField = new QComboBox(/*speedList*/);
     speedField->addItems(speedList.toList());
-    basic->addItem(new BeanEditItem(speedField, tr("BlockSpeedColName"), tr("BlockMaxSpeedText")));
-    basic->addItem(new BeanEditItem(permissiveField, tr("BlockPermColName"), tr("BlockPermissiveText")));
+    basic->addItem(new BeanEditItem(speedField, tr("Speed"), tr("BlockMaxSpeedText")));
+    basic->addItem(new BeanEditItem(permissiveField, tr("Permissive"), tr("BlockPermissiveText")));
 
     permissiveField->setChecked(((Block*) bean)->getPermissiveWorking());
 
@@ -372,7 +375,7 @@ void BlockEditAction::on_setResetItem()
  permissiveField->setChecked(((Block*) bean)->getPermissiveWorking());
 }
 
-void BlockEditAction::on_reporterField_currentIndexChanged(QString s)
+void BlockEditAction::on_reporterComboBox_currentIndexChanged(QString s)
 {
  //            if (reporterField.getSelectedBean() != NULL) {
  if(s != "")
@@ -401,9 +404,9 @@ BeanItemPanel* BlockEditAction::sensor() {
     BeanItemPanel* basic = new BeanItemPanel();
     basic->setName(tr("Sensor"));
 
-    sensorField = new JmriBeanComboBox(InstanceManager::sensorManagerInstance(), ((Block*) bean)->getSensor(), JmriBeanComboBox::DISPLAYNAME);
-    sensorField->setFirstItemBlank(true);
-    basic->addItem(new BeanEditItem(sensorField, tr("Sensor"), tr("Set the sensor that is used to determine the occupancy state of the block")));
+    sensorComboBox = new NamedBeanComboBox(InstanceManager::sensorManagerInstance(), ((Block*) bean)->getSensor(), NamedBean::DISPLAYNAME);
+    sensorComboBox->setAllowNull(true);
+    basic->addItem(new BeanEditItem(sensorComboBox, tr("Sensor"), tr("Set the sensor that is used to determine the occupancy state of the block")));
 
     /*final*/ SensorDebounceEditAction* debounce = new SensorDebounceEditAction();
     //debounce.setBean(bean);

@@ -29391,7 +29391,7 @@ if (_wrapper) {
 }
   LnSensor::setProperty(key0, value1);
 }
-void PythonQtShell_LnSensor::setSensorDebounceGoingActiveTimer(long  time0)
+void PythonQtShell_LnSensor::setSensorDebounceGoingActiveTimer(long  time0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE

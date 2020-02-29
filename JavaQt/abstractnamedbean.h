@@ -50,9 +50,8 @@ public:
     /*public synchronized*/ int getNumPropertyChangeListeners() override;
     /*public*/ /*synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(QString propertyName) override;
 
-    /*public*/ QString getSystemName() const;
-    /*public*/ QString getUserName() const;
-//    /*public*/ virtual void setSysName(QString s); // needed for catalogtree
+    /*public*/ QString getSystemName() const override;
+    /*public*/ QString getUserName() const override;
     /*public*/ void setUserName(QString s) throw (NamedBean::BadUserNameException)  override;
     /*public*/ void dispose() override;
     /*public*/ void setProperty(QString key, QVariant value) override;

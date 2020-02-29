@@ -89,7 +89,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->a
 {
  // Check that Block does not already exist
  Block* r ;
- if (!userName.isEmpty() && !userName.isEmpty())
+ if (!userName.isNull() && !userName.isEmpty())
  {
   r = getByUserName(userName);
   if (r!=NULL) return NULL;

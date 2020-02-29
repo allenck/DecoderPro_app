@@ -124,19 +124,21 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
 /*public*/ void LayoutBlockManagerXml::loadLayoutBlocks(QDomElement layoutblocks)
 {
  LayoutBlockManager* tm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
- if (layoutblocks.attribute("blockrouting")!="")
+ try
  {
-  if (layoutblocks.attribute("blockrouting")==("yes"))
-   tm->enableAdvancedRouting(true);
+  tm->enableAdvancedRouting(layoutblocks.attribute("blockrouting")=="true");
+ } catch (DataConversionException e1) {
+     log->warn("unable to convert layout block manager blockrouting attribute");
  }
- if (layoutblocks.attribute("routingStablisedSensor")!="")
+ catch (NullPointerException e) {  // considered normal if the attribute is not present
+ }
+ if (layoutblocks.attribute("routingStablisedSensor") != "")
  {
   try
   {
    tm->setStabilisedSensor(layoutblocks.attribute("routingStablisedSensor"));
   }
-  catch (JmriException e)
-  {
+  catch (JmriException e) {
   }
  }
 
@@ -175,8 +177,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
    {
     b->setBlockExtraColor(LayoutBlock::stringToColor(a));
    }
-   a = ((layoutblockList.at(i).toElement()))
-                                        .attribute("occupancysensor");
+   a = ((layoutblockList.at(i).toElement())).attribute("occupancysensor");
    if (a!="")
    {
     b->setOccupancySensorName(a);

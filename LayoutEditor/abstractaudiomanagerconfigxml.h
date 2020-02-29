@@ -8,12 +8,12 @@ class LIBLAYOUTEDITORSHARED_EXPORT AbstractAudioManagerConfigXML : public Abstra
  Q_OBJECT
 public:
  explicit AbstractAudioManagerConfigXML(QObject *parent = 0);
- /*public*/ QDomElement store(QObject* o);
-virtual /*abstract*/ /*public*/ void setStoreElementClass(QDomElement audio);
+ /*public*/ QDomElement store(QObject* o) override;
+ virtual /*abstract*/ /*public*/ void setStoreElementClass(QDomElement audio);
  /*public*/ void load(QDomElement element, QObject* o)  throw (Exception);
- virtual /*abstract*/ /*public*/ bool load(QDomElement audio) throw (Exception);
+ /*abstract*/ /*public*/ bool load(QDomElement audio) throw (Exception) override;
  /*public*/ void loadAudio(QDomElement audio);
- /*public*/ int loadOrder();
+ /*public*/ int loadOrder()const override;
 
 signals:
 

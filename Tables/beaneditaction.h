@@ -83,6 +83,8 @@ protected slots:
  friend class BasicSetResetActionListener;
  friend class BlockEditAction;
  friend class SensorDebounceEditAction;
+ friend class SetResetItemAction;
+ friend class SetSaveItemAction;
 };
 /*private*/ /*static*/ class LIBTABLESSHARED_EXPORT BeanPropertiesTableModel : public  AbstractTableModel
 {

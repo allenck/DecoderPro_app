@@ -900,7 +900,7 @@ virtual void setComment(QString  comment);
 virtual void setInverted(bool  inverted);
 virtual void setKnownState(int  s);
 virtual void setProperty(QString  key, QVariant  value);
-virtual void setSensorDebounceGoingActiveTimer(long  time);
+virtual void setSensorDebounceGoingActiveTimer(long  time) const;
 virtual void setSensorDebounceGoingInActiveTimer(long  time);
 virtual void setState(int  s);
 virtual void setUseDefaultTimerSettings(bool  boo);
@@ -931,7 +931,7 @@ inline int  py_q_getState() { return AbstractSensor::getState(); }
 inline bool  py_q_getUseDefaultTimerSettings() { return AbstractSensor::getUseDefaultTimerSettings(); }
 inline void py_q_setInverted(bool  inverted) { AbstractSensor::setInverted(inverted); }
 inline void py_q_setKnownState(int  s) { AbstractSensor::setKnownState(s); }
-inline void py_q_setSensorDebounceGoingActiveTimer(long  time) { AbstractSensor::setSensorDebounceGoingActiveTimer(time); }
+inline void py_q_setSensorDebounceGoingActiveTimer(long  time) const { AbstractSensor::setSensorDebounceGoingActiveTimer(time); }
 inline void py_q_setSensorDebounceGoingInActiveTimer(long  time) { AbstractSensor::setSensorDebounceGoingInActiveTimer(time); }
 inline void py_q_setState(int  s) { AbstractSensor::setState(s); }
 inline void py_q_setUseDefaultTimerSettings(bool  boo) { AbstractSensor::setUseDefaultTimerSettings(boo); }
@@ -962,7 +962,7 @@ void delete_AbstractSensor(AbstractSensor* obj) { delete obj; }
    void py_q_setInverted(AbstractSensor* theWrappedObject, bool  inverted){  (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_setInverted(inverted));}
    void py_q_setKnownState(AbstractSensor* theWrappedObject, int  s){  (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_setKnownState(s));}
    void setOwnState(AbstractSensor* theWrappedObject, int  s);
-   void py_q_setSensorDebounceGoingActiveTimer(AbstractSensor* theWrappedObject, long  time){  (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_setSensorDebounceGoingActiveTimer(time));}
+   void py_q_setSensorDebounceGoingActiveTimer(AbstractSensor* theWrappedObject, long  time) const{  (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_setSensorDebounceGoingActiveTimer(time));}
    void py_q_setSensorDebounceGoingInActiveTimer(AbstractSensor* theWrappedObject, long  time){  (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_setSensorDebounceGoingInActiveTimer(time));}
    void py_q_setState(AbstractSensor* theWrappedObject, int  s){  (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_setState(s));}
    void py_q_setUseDefaultTimerSettings(AbstractSensor* theWrappedObject, bool  boo){  (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_setUseDefaultTimerSettings(boo));}
@@ -3491,10 +3491,10 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
 virtual NamedBean*  getBeanByUserName(QString  userName) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  name);
-virtual NamedBean*  getByUserName(QString  key);
+virtual NamedBean*  getBySystemName(QString  name) const;
+virtual NamedBean*  getByUserName(QString  key) const;
 virtual QString  getEntryToolTip();
-virtual bool  getLoadDisabled();
+virtual bool  getLoadDisabled() const;
 virtual SystemConnectionMemo*  getMemo();
 virtual NamedBean*  getNamedBean(QString  name) const;
 virtual QSet<NamedBean* >  getNamedBeanSet();
@@ -3503,7 +3503,7 @@ virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
-virtual QString  getSystemPrefix();
+virtual QString  getSystemPrefix() const;
 virtual int  getXMLOrder();
 virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale()) const;
 virtual QString  normalizeSystemName(QString  inputName);
@@ -3513,7 +3513,7 @@ virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void setLoadDisabled(bool  s);
 virtual void timerEvent(QTimerEvent*  event);
-virtual char  typeLetter();
+virtual char  typeLetter() const;
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
@@ -3525,13 +3525,13 @@ virtual void vetoableChange(PropertyChangeEvent*  evt);
 class PythonQtPublicPromoter_DefaultLogixManager : public DefaultLogixManager
 { public:
 inline void py_q_activateAllLogixs() { DefaultLogixManager::activateAllLogixs(); }
-inline NamedBean*  py_q_getBySystemName(QString  name) { return DefaultLogixManager::getBySystemName(name); }
-inline NamedBean*  py_q_getByUserName(QString  key) { return DefaultLogixManager::getByUserName(key); }
-inline bool  py_q_getLoadDisabled() { return DefaultLogixManager::getLoadDisabled(); }
-inline QString  py_q_getSystemPrefix() { return DefaultLogixManager::getSystemPrefix(); }
+inline NamedBean*  py_q_getBySystemName(QString  name) const { return DefaultLogixManager::getBySystemName(name); }
+inline NamedBean*  py_q_getByUserName(QString  key) const { return DefaultLogixManager::getByUserName(key); }
+inline bool  py_q_getLoadDisabled() const { return DefaultLogixManager::getLoadDisabled(); }
+inline QString  py_q_getSystemPrefix() const { return DefaultLogixManager::getSystemPrefix(); }
 inline int  py_q_getXMLOrder() { return DefaultLogixManager::getXMLOrder(); }
 inline void py_q_setLoadDisabled(bool  s) { DefaultLogixManager::setLoadDisabled(s); }
-inline char  py_q_typeLetter() { return DefaultLogixManager::typeLetter(); }
+inline char  py_q_typeLetter() const { return DefaultLogixManager::typeLetter(); }
 };
 
 class PythonQtWrapper_DefaultLogixManager : public QObject
@@ -3541,14 +3541,14 @@ public slots:
 DefaultLogixManager* new_DefaultLogixManager(QObject*  parent = 0);
 void delete_DefaultLogixManager(DefaultLogixManager* obj) { delete obj; } 
    void py_q_activateAllLogixs(DefaultLogixManager* theWrappedObject){  (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_activateAllLogixs());}
-   NamedBean*  py_q_getBySystemName(DefaultLogixManager* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getBySystemName(name));}
-   NamedBean*  py_q_getByUserName(DefaultLogixManager* theWrappedObject, QString  key){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getByUserName(key));}
-   bool  py_q_getLoadDisabled(DefaultLogixManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getLoadDisabled());}
-   QString  py_q_getSystemPrefix(DefaultLogixManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getSystemPrefix());}
+   NamedBean*  py_q_getBySystemName(DefaultLogixManager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getBySystemName(name));}
+   NamedBean*  py_q_getByUserName(DefaultLogixManager* theWrappedObject, QString  key) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getByUserName(key));}
+   bool  py_q_getLoadDisabled(DefaultLogixManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getLoadDisabled());}
+   QString  py_q_getSystemPrefix(DefaultLogixManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getSystemPrefix());}
    int  py_q_getXMLOrder(DefaultLogixManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getXMLOrder());}
    DefaultLogixManager*  static_DefaultLogixManager_instance();
    void py_q_setLoadDisabled(DefaultLogixManager* theWrappedObject, bool  s){  (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_setLoadDisabled(s));}
-   char  py_q_typeLetter(DefaultLogixManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_typeLetter());}
+   char  py_q_typeLetter(DefaultLogixManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_typeLetter());}
 };
 
 

@@ -8385,7 +8385,7 @@ if (_wrapper) {
     }
   }
 }
-  AbstractSensor::requestUpdateFromLayout();
+  
 }
 void PythonQtShell_AbstractSensor::setCommandedState(int  s0)
 {
@@ -8497,7 +8497,7 @@ if (_wrapper) {
 }
   AbstractSensor::setProperty(key0, value1);
 }
-void PythonQtShell_AbstractSensor::setSensorDebounceGoingActiveTimer(long  time0)
+void PythonQtShell_AbstractSensor::setSensorDebounceGoingActiveTimer(long  time0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -37708,7 +37708,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getBeanTypeHandled(plural0);
 }
-NamedBean*  PythonQtShell_DefaultLogixManager::getBySystemName(QString  name0)
+NamedBean*  PythonQtShell_DefaultLogixManager::getBySystemName(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -37741,7 +37741,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getBySystemName(name0);
 }
-NamedBean*  PythonQtShell_DefaultLogixManager::getByUserName(QString  key0)
+NamedBean*  PythonQtShell_DefaultLogixManager::getByUserName(QString  key0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -37807,7 +37807,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getEntryToolTip();
 }
-bool  PythonQtShell_DefaultLogixManager::getLoadDisabled()
+bool  PythonQtShell_DefaultLogixManager::getLoadDisabled() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -38104,7 +38104,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getSystemNameList();
 }
-QString  PythonQtShell_DefaultLogixManager::getSystemPrefix()
+QString  PythonQtShell_DefaultLogixManager::getSystemPrefix() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -38368,7 +38368,7 @@ if (_wrapper) {
 }
   DefaultLogixManager::timerEvent(event0);
 }
-char  PythonQtShell_DefaultLogixManager::typeLetter()
+char  PythonQtShell_DefaultLogixManager::typeLetter() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE

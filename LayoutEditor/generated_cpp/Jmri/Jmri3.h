@@ -643,18 +643,18 @@ virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoExcept
 
 class PythonQtPublicPromoter_Sensor : public Sensor
 { public:
-inline bool  py_q_canInvert() { return Sensor::canInvert(); }
+inline bool  py_q_canInvert() { return this->canInvert(); }
 inline int  py_q_getCommandedState() { return Sensor::getCommandedState(); }
-inline bool  py_q_getInverted() const { return Sensor::getInverted(); }
-inline int  py_q_getKnownState() const { return Sensor::getKnownState(); }
+inline bool  py_q_getInverted() const { return this->getInverted(); }
+inline int  py_q_getKnownState() const { return this->getKnownState(); }
 inline int  py_q_getRawState() const { return Sensor::getRawState(); }
 inline long  py_q_getSensorDebounceGoingActiveTimer() const { return Sensor::getSensorDebounceGoingActiveTimer(); }
 inline long  py_q_getSensorDebounceGoingInActiveTimer() const { return Sensor::getSensorDebounceGoingInActiveTimer(); }
 inline bool  py_q_getUseDefaultTimerSettings() { return this->getUseDefaultTimerSettings(); }
-inline void py_q_requestUpdateFromLayout() const { Sensor::requestUpdateFromLayout(); }
+inline void py_q_requestUpdateFromLayout() const { this->requestUpdateFromLayout(); }
 inline void py_q_setCommandedState(int  s) { Sensor::setCommandedState(s); }
-inline void py_q_setInverted(bool  arg__1) { Sensor::setInverted(arg__1); }
-inline void py_q_setKnownState(int  arg__1) { Sensor::setKnownState(arg__1); }
+inline void py_q_setInverted(bool  arg__1) { this->setInverted(arg__1); }
+inline void py_q_setKnownState(int  arg__1) { this->setKnownState(arg__1); }
 inline void py_q_setSensorDebounceGoingActiveTimer(long  arg__1) const { Sensor::setSensorDebounceGoingActiveTimer(arg__1); }
 inline void py_q_setSensorDebounceGoingInActiveTimer(long  arg__1) { Sensor::setSensorDebounceGoingInActiveTimer(arg__1); }
 inline void py_q_setUseDefaultTimerSettings(bool  boo) { this->setUseDefaultTimerSettings(boo); }

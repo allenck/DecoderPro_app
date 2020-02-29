@@ -64,7 +64,7 @@ class TestSensor :  public AbstractSensor {
     Q_OBJECT
         AbstractTurnoutTestBase* base;
     public:
-        /*public*/ bool request = false;
+        /*public*/ mutable bool request = false;
 
         /*public*/ TestSensor(QString sysName, QString userName, AbstractTurnoutTestBase* base) :AbstractSensor(sysName, userName)
         {
@@ -73,7 +73,7 @@ class TestSensor :  public AbstractSensor {
         }
 
         //@Override
-        /*public*/ void requestUpdateFromLayout(){
+        /*public*/ void requestUpdateFromLayout()const override{
             request = true;
         }
 

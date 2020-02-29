@@ -8,12 +8,12 @@ class SwitchboardEditorXml : public AbstractXmlAdapter
  Q_OBJECT
 public:
  Q_INVOKABLE SwitchboardEditorXml(QObject *parent = nullptr);
- ~SwitchboardEditorXml() {}
+ ~SwitchboardEditorXml() override {}
  SwitchboardEditorXml(const SwitchboardEditorXml&) : AbstractXmlAdapter() {}
- /*public*/ QDomElement store(QObject* o);
- /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
- /*public*/ bool load(QDomElement shared, QDomElement perNode);
- /*public*/ int loadOrder();
+ /*public*/ QDomElement store(QObject* o) override;
+ /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
+ /*public*/ bool load(QDomElement shared, QDomElement perNode) override;
+ /*public*/ int loadOrder()const  override;
 
 
 private:

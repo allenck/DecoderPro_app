@@ -1,12 +1,15 @@
 #ifndef BLOCKEDITACTION_H
 #define BLOCKEDITACTION_H
 #include "beaneditaction.h"
+#include "abstractaction.h"
+#include "namedbeancombobox.h"
+#include "block.h"
+#include <QCheckBox>
 
 class QRadioButton;
 class QComboBox;
-class QCheckBox;
-class JmriBeanComboBox;
 class DecimalFormat;
+class NamedBeanComboBox;
 class BlockEditAction : public BeanEditAction
 {
  Q_OBJECT
@@ -19,7 +22,7 @@ public:
 signals:
 
 public slots:
- void on_reporterField_currentIndexChanged(QString s);
+ void on_reporterComboBox_currentIndexChanged(QString s);
  void on_setSaveItem();
  void on_setResetItem();
 
@@ -33,12 +36,12 @@ private:
 
  /*private*/ DecimalFormat* twoDigit;// = new DecimalFormat("0.00");
  JTextField* userNameField;// = new JTextField(20);
- JmriBeanComboBox* reporterField;
+ NamedBeanComboBox* reporterComboBox;
  QCheckBox* useCurrent;// = new JCheckBox();
  JTextArea* commentField;// = new JTextArea(3, 30);
  QScrollArea* commentFieldScroller;// = new JScrollPane(commentField);
  BeanItemPanel* reporterDetails();
- JTextField* lengthField;// = new JTextField(20);
+ JTextField* lengthField = nullptr;// = new JTextField(20);
  QComboBox* curvatureField;// = new QComboBox<String>(curveOptions);
  QCheckBox* permissiveField;// = new QCheckBox();
  QComboBox* speedField;
@@ -48,7 +51,7 @@ private:
 
  QString defaultBlockSpeedText;
  BeanItemPanel* physcialDetails();
- JmriBeanComboBox* sensorField;
+ NamedBeanComboBox* sensorComboBox;
  BeanItemPanel* sensor();
 
 private slots:
@@ -58,6 +61,35 @@ private slots:
 protected:
  /*protected*/ void initPanels();
 
+ friend class SetResetItemAction;
+ friend class SetSaveItemAction;
 };
 
+class SetResetItemAction : public ActionListener
+{
+ Q_OBJECT
+ BlockEditAction* act;
+public:
+ SetResetItemAction(BlockEditAction* act) {this->act = act;}
+public slots:
+ void actionPerformed()
+ {
+  act->reporterComboBox->setSelectedItem(((Block*) act->bean)->getReporter());
+  act->useCurrent->setChecked(((Block*) act->bean)->isReportingCurrent());
+ }
+};
+
+class SetSaveItemAction : public ActionListener
+{
+ Q_OBJECT
+ BlockEditAction* act;
+public:
+ SetSaveItemAction(BlockEditAction* act) {this->act = act;}
+public slots:
+ /*public*/ void actionPerformed() {
+     Block* blk = (Block*) act->bean;
+     blk->setReporter((Reporter*) act->reporterComboBox->getSelectedItem());
+     blk->setReportingCurrent(act->useCurrent->isChecked());
+ }
+};
 #endif // BLOCKEDITACTION_H

@@ -19,7 +19,11 @@ public:
     void notifyOutOfRegion(int id);
     void notifyLeaving(int id);
     void notifyArriving(int id);
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
+    //@Override
+    /*public*/ void requestUpdateFromLayout()const override{
+    }
+
 
 signals:
     

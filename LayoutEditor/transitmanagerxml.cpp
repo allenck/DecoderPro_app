@@ -224,6 +224,6 @@ TransitManagerXml::TransitManagerXml()
     }
 }
 
-/*public*/ int TransitManagerXml::loadOrder() {
+/*public*/ int TransitManagerXml::loadOrder()const {
     return ((TransitManager*)InstanceManager::getNullableDefault("TransitManager"))->getXMLOrder();
 }

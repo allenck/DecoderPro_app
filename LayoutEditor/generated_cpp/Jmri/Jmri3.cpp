@@ -4943,7 +4943,7 @@ if (_wrapper) {
     }
   }
 }
-  return Sensor::canInvert();
+  return bool();
 }
 void PythonQtShell_Sensor::childEvent(QChildEvent*  event0)
 {
@@ -5405,7 +5405,7 @@ if (_wrapper) {
     }
   }
 }
-  return Sensor::getInverted();
+  return bool();
 }
 int  PythonQtShell_Sensor::getKnownState() const
 {
@@ -5438,7 +5438,7 @@ if (_wrapper) {
     }
   }
 }
-  return Sensor::getKnownState();
+  return int();
 }
 QString  PythonQtShell_Sensor::getListenerRef(PropertyChangeListener*  l0)
 {
@@ -6054,7 +6054,7 @@ if (_wrapper) {
     }
   }
 }
-  Sensor::requestUpdateFromLayout();
+  
 }
 void PythonQtShell_Sensor::setCommandedState(int  s0)
 {
@@ -6120,7 +6120,7 @@ if (_wrapper) {
     }
   }
 }
-  Sensor::setInverted(arg__1);
+  
 }
 void PythonQtShell_Sensor::setKnownState(int  arg__1)
 {
@@ -6142,7 +6142,7 @@ if (_wrapper) {
     }
   }
 }
-  Sensor::setKnownState(arg__1);
+  
 }
 void PythonQtShell_Sensor::setProperty(QString  key0, QVariant  value1)
 {

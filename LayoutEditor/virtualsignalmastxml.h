@@ -7,11 +7,11 @@ class VirtualSignalMastXml : public AbstractNamedBeanManagerConfigXML
     Q_OBJECT
 public:
     Q_INVOKABLE explicit VirtualSignalMastXml(QObject *parent = 0);
- ~VirtualSignalMastXml() {}
+ ~VirtualSignalMastXml()  override{}
  VirtualSignalMastXml(const VirtualSignalMastXml&) : AbstractNamedBeanManagerConfigXML() {}
-    /*public*/ QDomElement store(QObject* o);
-    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception);
-    /*public*/ void load(QDomElement element, QObject* o)  throw (Exception);
+    /*public*/ QDomElement store(QObject* o) override;
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception) override;
+    /*public*/ void load(QDomElement element, QObject* o)  throw (Exception) override;
 
 signals:
 

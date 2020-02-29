@@ -80,7 +80,7 @@ AbstractSensor::AbstractSensor(QString systemName, QString userName, QObject *pa
 
 int AbstractSensor::getKnownState() const  {return _knownState;}
 
-void AbstractSensor::setSensorDebounceGoingActiveTimer(long time)
+void AbstractSensor::setSensorDebounceGoingActiveTimer(long time) const
 {
  if(sensorDebounceGoingActive == time)
   return;
@@ -308,7 +308,7 @@ void AbstractSensor::setReporter(Reporter* er){
     reporter = er;
 }
 
-Reporter* AbstractSensor::getReporter(){
+Reporter* AbstractSensor::getReporter() const{
     return reporter;
 }
 

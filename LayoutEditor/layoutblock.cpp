@@ -10,6 +10,7 @@
 #include "path.h"
 #include "memoryicon.h"
 #include "jmricolorchooser.h"
+#include "joptionpane.h"
 
 QVector<int>* LayoutBlock::updateReferences = new QVector<int>();
 long LayoutBlock::time=0;
@@ -95,6 +96,8 @@ long LayoutBlock::time=0;
  sensorDebounceActiveField->setMaxLength(5);
  sensorDebounceGlobalCheck = new /*JCheckBox*/ QCheckBox();
  sensorDebounceGlobalCheck->setText(tr("Use Global Debounce Values"));
+ memoryComboBox = new NamedBeanComboBox(
+             (MemoryManager*)InstanceManager::getDefault("MemoryManager"), nullptr, DisplayOptions::DISPLAYNAME);
  memoryNameField = new /*JTextField*/ QLineEdit();
  memoryNameField->setMaxLength(16);
  metricField = new /*JTextField*/ QLineEdit();
@@ -371,7 +374,7 @@ long LayoutBlock::time=0;
  *   sensor name in the block->  Else returns NULL, and does nothing to the block->
  * This method also converts the sensor name to upper case if it is a system name.
  */
-/*public*/ Sensor*  LayoutBlock::validateSensor(QString sensorName, /*Component*/ QWidget* /*openFrame*/)
+/*public*/ Sensor*  LayoutBlock::validateSensor(QString sensorName, /*Component*/ QWidget* openFrame)
 {
  // check if anything entered
  if (sensorName.length()<1)
@@ -384,11 +387,9 @@ long LayoutBlock::time=0;
  if (s==NULL)
  {
      // There is no sensor corresponding to this name
-//        JOptionPane.showMessageDialog(openFrame,
-//                java.text.MessageFormat.format(tr("Error7"),
-//                new Object[]{sensorName}),
-//                tr("Error"),JOptionPane.ERROR_MESSAGE);
-  QMessageBox::critical(0, "Error", tr("There is no sensor corresponding to this name'%1'").arg(sensorName));
+        JOptionPane::showMessageDialog(openFrame,
+                tr("There is no sensor corresponding to this name'%1'").arg(sensorName),
+                tr("Error"),JOptionPane::ERROR_MESSAGE);
   return NULL;
  }
  if ( sensorName!=(s->getUserName()) )
@@ -405,11 +406,9 @@ long LayoutBlock::time=0;
  {
   // new sensor is not unique, return to the old one
   occupancyNamedSensor = savedNamedSensor;
-//        JOptionPane.showMessageDialog(openFrame,
-//                java.text.MessageFormat.format(tr("Error6"),
-//                new Object[]{sensorName,b.getID()}),
-//                tr("Error"),JOptionPane.ERROR_MESSAGE);
-  QMessageBox::critical(0, "Error", tr("New sensor is not unique, return to the old one '%1'").arg(sensorName));
+        JOptionPane::showMessageDialog(openFrame,
+                tr("New sensor is not unique, return to the old one '%1'").arg(sensorName),
+                tr("Error"),JOptionPane::ERROR_MESSAGE);
 
   return NULL;
  }
@@ -613,6 +612,10 @@ long LayoutBlock::time=0;
   occupancyNamedSensor =((NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(occupancySensorName, s);
   if (block!=NULL)
    block->setNamedSensor(occupancyNamedSensor);
+ }
+
+ if (getOccupancySensor() == nullptr) {
+     return UNKNOWN;
  }
 
  if (((AbstractSensor*)getOccupancySensor())->getKnownState() != occupiedSense)
@@ -4387,7 +4390,7 @@ BeanItemPanel* LayoutBlockEditAction::layoutDetails()
     lb->senseBox->addItem(tr("Inactive"));
     lb->senseInactiveIndex = 1;
 
-    layout->addItem(new BeanEditItem(lb->senseBox, tr("OccupiedSense"), tr("Select the occupancy sensor state when the block is occupied.")));
+    layout->addItem(new BeanEditItem(lb->senseBox, tr("Occupied Sense"), tr("Select the occupancy sensor state when the block is occupied.")));
 
     lb->trackColorChooser = new JColorChooser(lb->blockTrackColor);
     lb->trackColorChooser->setPreviewPanel(new JPanel()); // remove the preview panel
