@@ -27,6 +27,7 @@
 #include <QCheckBox>
 #include "joptionpane.h"
 
+
 BeanEditAction::BeanEditAction(QObject *parent) :
   QAction("Bean Edit", parent)
 {
@@ -91,6 +92,8 @@ BeanEditAction::BeanEditAction(QObject *parent) :
 {
  usageDetails();
  propertiesDetails();
+ statusBarWidget = new QLabel(tr("Configure the properties on each tab and click [%1]").arg(tr("Apply")));
+ f->statusBar()->addWidget(statusBarWidget);
 }
 
 
@@ -315,6 +318,12 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
 //          applyButtonAction(e);
 //      }
 //  });
+  // shared status bar above buttons
+  //JPanel panelStatus = new JPanel();
+  QFont font = statusBarWidget->font();
+  //statusBar->setFont(statusBar.getFont().deriveFont(0.9f * userNameField.getFont().getSize())); // a bit smaller
+  //statusBar.setForeground(Color.gray);
+  statusBarWidget->setStyleSheet(tr("QLabel{color: gray; font-size: %1px;}").arg(font.pixelSize()*.9));
   connect(applyBut, SIGNAL(clicked()), this, SLOT(applyButtonAction()));
   QPushButton* okBut = new QPushButton(tr("OK"));
 //  okBut.addActionListener(new ActionListener() {
@@ -350,7 +359,8 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
 void BeanEditAction::On_okBut_clicked()
 {
  applyButtonAction(/*e*/);
- f->dispose();
+ //f->dispose();
+ f->close(); // will call dispose!
 }
 
 /*protected*/ void BeanEditAction::applyButtonAction(ActionEvent* /*e*/) {
@@ -358,7 +368,8 @@ void BeanEditAction::On_okBut_clicked()
 }
 
 /*protected*/ void BeanEditAction::cancelButtonAction(ActionEvent* /*e*/) {
-    f->dispose();
+    //f->dispose();
+ f->close(); // will call dispose!
 }
 
 /**
@@ -455,6 +466,10 @@ void BeanEditAction::formatTextAreaAsLabel(JTextArea* pane)
 
 /*public*/ void BeanEditAction::save()
 {
+ QString feedback = tr("Updated %1(s)").arg(tr("Turnout"))
+         + " " + bean->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
+ // provide feedback to user, can be overwritten by save action error handler
+ statusBarWidget->setText(feedback);
  foreach (BeanItemPanel* bi, bei)
  {
   bi->saveItem();

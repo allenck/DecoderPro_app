@@ -353,8 +353,10 @@ public:
     int getBlockStatus();
     void updateRoutesToNeighbours(QVector<Block*>* messageRecipients, Routes* ro, RoutingPacket* update);
     void addRouteToNeighbours(Routes* ro);
+
     /*public*/ static QString colorToString(QColor color);
     /*public*/ static QColor stringToColor(QString string);
+
     /*public*/ int getNumberOfNeighbours();
     /*public*/ Block* getNeighbourAtIndex(int i);
     /*public*/ int getNeighbourDirection(int i);
@@ -369,9 +371,11 @@ public slots:
      */
     void handleBlockChange(PropertyChangeEvent* e);
     void handleBlockChange(QString pName, int o, int val);
+#if 0
     void sensorDebounceGlobalCheck_clicked();
     void blockEditCancelPressed(ActionEvent* a = 0);
     void blockEditDonePressed(ActionEvent* a = 0);
+#endif
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 private:
     //static bool InstanceManager.layoutBlockManagerInstance().isAdvancedRoutingEnabled() = true;
@@ -483,6 +487,7 @@ private:
     int metric; //= 100
     int getNextPacketID();
     bool updatePacketActedUpon(int packetID);
+#if 0
     /*private*/ void setColorCombo(QComboBox* colorCombo,QColor color);
     /*private*/ QColor getSelectedColor(QComboBox* colorCombo);
     /**
@@ -496,6 +501,7 @@ private:
 //            Color->yellow,Color->green,Color->blue,Color->magenta,Color->cyan};
     int numColors;// = 13;  // number of entries in the above arrays
     /*private*/ void initializeColorCombo(QComboBox* colorCombo, QColor c);
+#endif
     /*public*/ QString getNeighbourPacketFlowAsString(int i);
     /*public*/ bool isNeighbourMutual(int i);
     int getNeighbourIndex(Adjacencies* adj);
@@ -778,6 +784,7 @@ public slots:
   private:
    LayoutBlock* parent;
 };
+#if 0
 class LBWindowListener : public WindowListener
 {
  Q_OBJECT
@@ -789,6 +796,7 @@ public:
   parent->blockEditCancelPressed();
  }
 };
+#endif
 class LBRunnable : public QRunnable
 {
  //Q_OBJECT
@@ -812,8 +820,8 @@ public:
         return "package.jmri.jmrit.display.EditLayoutBlock";
     }  //IN18N
 public slots:
-    void on_setSaveItem();
-    void on_setResetItem();
+//    void on_setSaveItem();
+//    void on_setResetItem();
 
 protected:
     //@Override

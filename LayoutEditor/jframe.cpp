@@ -217,6 +217,8 @@ void JFrame::dispose()
 {
 // close();
  //deleteLater();
+ if(!_windowClosing)
+  log->error(tr("dispose() called but window isn't closing!"));
 }
 
 QWidget* JFrame:: getContentPane(bool addLayout)
@@ -392,6 +394,7 @@ void JFrame::setMenuBar(QMenuBar *menubar)
 
 void JFrame::closeEvent(QCloseEvent* e)
 {
+ _windowClosing = defaultCloseOperation == DISPOSE_ON_CLOSE;
  foreach(WindowListener* l, *listeners)
  {
 //  if(qobject_cast<LayoutEditorTools*>(l)!= NULL)

@@ -184,6 +184,7 @@ void LayoutTrackEditors::showSensorMessage() {
      editTrackSegmentFrame = new JmriJFrameX(tr("Edit Track Segment"), false, true); // key moved to DisplayBundle to be found by CircuitBuilder.java   // NOI18N
      editTrackSegmentFrame->addHelpMenu("package.jmri.jmrit.display.EditTrackSegment", true);  // NOI18N
      editTrackSegmentFrame->setLocation(50, 30);
+     editTrackSegmentFrame->setMinimumSize(300, 400);
      QWidget* contentPane = editTrackSegmentFrame->getContentPane(true);
      //contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 

@@ -217,6 +217,7 @@ void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
 {
  block->handleSensorChange(e);
 }
+
 /*public*/ Sensor* Block::getSensor()
 {
  if (_namedSensor!=NULL)

@@ -16,6 +16,7 @@ public:
     /*public*/ TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2, int t2, bool dash, bool main, LayoutEditor* layoutEditor);
     // alternate constructor for loading layout editor panels
     /*public*/ TrackSegment(QString id, QString c1Name, int t1, QString c2Name, int t2, bool dash, bool main, bool hide, LayoutEditor* myPanel);
+    ~TrackSegment() {}
     /*public*/ bool getArc() {return arc;}
     /*public*/ QString toString();
 
@@ -128,10 +129,10 @@ public:
      HIDECONALL = 0x04  //Used by layout editor for hiding all
     };
     /*public*/ int showConstructionLine;// = SHOWCON;
-    /*public*/ QRectF getBounds();
-    /*public*/ bool hasDecorations();
-    /*public*/ QMap<QString, QString>* getDecorations();
-    /*public*/ void setDecorations(QMap<QString, QString>* decorations);
+    /*public*/ QRectF getBounds() override;
+    /*public*/ bool hasDecorations() override;
+    /*public*/ QMap<QString, QString>* getDecorations() override;
+    /*public*/ void setDecorations(QMap<QString, QString>* decorations) override;
     /*public*/ int getArrowStyle();
     /*public*/ void setArrowStyle(int newVal);
     /*public*/ bool isArrowEndStart();
@@ -203,22 +204,22 @@ public:
     /*public*/ bool isFlip();
     /*public*/ bool isArc();
     /*public*/ void setCentreSeg(QPointF p);
-    /*public*/ void reCheckBlockBoundary();
+    /*public*/ void reCheckBlockBoundary()const override;
     /*public*/ QPointF getCoordsForConnectionType(int connectionType);
-    /*public*/ LayoutTrack* getConnection(int connectionType) throw (JmriException);
-    /*public*/ void setConnection(int connectionType, /*@Nullable*/ LayoutTrack* o, int type) throw (JmriException);
+    /*public*/ LayoutTrack* getConnection(int connectionType) throw (JmriException) override;
+    /*public*/ void setConnection(int connectionType, /*@Nullable*/ LayoutTrack* o, int type) throw (JmriException) override;
     /*public*/ int getNumberOfBezierControlPoints();
     /*public*/ QPointF getBezierControlPoint(int index);
     /*public*/ void setBezierControlPoint(/*@Nullable*/ QPointF p, int index);
     /*public*/ double getDirectionRAD();
     /*public*/ double getDirectionDEG();
-    /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
+    /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock) override;
     /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-                   /*@Nonnull*/ QSet<QString> trackNameSet);
+                   /*@Nonnull*/ QSet<QString> trackNameSet) override;
     /*public*/ void checkForNonContiguousBlocks(
-            /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap);
-    /*public*/ bool checkForUnAssignedBlocks();
-    /*public*/ QList<int> checkForFreeConnections();
+            /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap) override;
+    /*public*/ bool checkForUnAssignedBlocks() override;
+    /*public*/ QList<int> checkForFreeConnections() override;
 
 signals:
     
@@ -284,7 +285,7 @@ private:
  void init(QString ident);
  static Logger* log;
  void drawHiddenTrack(LayoutEditor* editor, EditScene *g2);
- void invalidate(EditScene *g2);
+ void invalidate(EditScene *g2) override;
 // void drawDashedTrack(LayoutEditor* editor, EditScene *g2, bool mainline);
  /*private*/ void calculateTrackSegmentAngle();
 // void drawSolidTrack(LayoutEditor* editor, QGraphicsScene* g2, bool isMainline);

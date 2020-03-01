@@ -156,11 +156,13 @@ long LayoutBlock::time=0;
  blockTrackColor = QColor(Qt::black);
  blockOccupiedColor = QColor(Qt::black);
  blockExtraColor = QColor(Qt::black);
+#if 0
  colorText = QStringList()  << tr("Black") << tr("DarkGray") << tr("Gray") << tr( "LightGray") << tr("White") << tr("Red") << tr("Pink") << tr("Orange") << tr("Yellow") << tr("Green") << tr("Blue") << tr("Magenta") << tr("Cyan");
  colorCode = QList<QColor>() <<QColor(Qt::black) << QColor(Qt::darkGray) << QColor(Qt::gray) <<
             QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red) << QColor(255,233,236) << QColor(255,170,0) <<
             QColor(Qt::yellow) << QColor(Qt::green) << QColor(Qt::blue) << QColor(Qt::magenta) << QColor(Qt::cyan);
  numColors = 13;  // number of entries in the above arrays
+#endif
 }
 /*
  * Completes the creation of a LayoutBlock object by adding a Block to it
@@ -601,12 +603,18 @@ long LayoutBlock::time=0;
 {
  if(occupancyNamedSensor == NULL)
  {
-  Sensor* s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
-                        getSensor(occupancySensorName);
+  Sensor* s = nullptr;
+  if (!occupancySensorName.isEmpty()) {
+      s = InstanceManager::sensorManagerInstance()->getSensor(occupancySensorName);
+  }
   if (s == NULL)
   {
-   // no occupancy sensor
-   return (UNKNOWN);
+   //no occupancy sensor, so base upon block occupancy state
+   if (block != nullptr) {
+       return block->getState();
+   }
+   //if no block or sensor return unknown
+   return UNKNOWN;
   }
   qDebug() << QString("SensorObjectName %1").arg(s->objectName());
   occupancyNamedSensor =((NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(occupancySensorName, s);
@@ -618,16 +626,17 @@ long LayoutBlock::time=0;
      return UNKNOWN;
  }
 
- if (((AbstractSensor*)getOccupancySensor())->getKnownState() != occupiedSense)
+ if (getOccupancySensor()->getKnownState() != occupiedSense)
  {
   return (EMPTY);
  }
- else if (((AbstractSensor*)getOccupancySensor())->getKnownState() == occupiedSense)
+ else if (getOccupancySensor()->getKnownState() == occupiedSense)
  {
   return (OCCUPIED);
  }
  return (UNKNOWN);
 }
+
 /*public*/ int LayoutBlock::getState() {return getOccupancy();}
 
 // dummy for completion of NamedBean interface
@@ -1218,7 +1227,7 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
 
 #endif
 }
-
+#if 0
 void LayoutBlock::sensorDebounceGlobalCheck_clicked()
 {
  if(sensorDebounceGlobalCheck->isChecked())
@@ -1397,7 +1406,7 @@ void LayoutBlock::blockEditCancelPressed(ActionEvent* /*a*/) {
 /*private*/ QColor LayoutBlock::getSelectedColor(QComboBox* colorCombo) {
     return (colorCode.at(colorCombo->currentIndex()));
 }
-
+#endif
 /**
  * Utility methods for converting between string and color
  * Note: These names are only used internally, so don't need a resource bundle

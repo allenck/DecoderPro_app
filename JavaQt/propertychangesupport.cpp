@@ -320,14 +320,14 @@
   fire(common, event);
   fire(named, event);
   emit propertyChange(event);
-//  foreach (PropertyChangeListener* l, common)
-//  {
-//   if(!QMetaObject::invokeMethod(l, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
-//   {
-//       Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(l->metaObject()->className()));
-//       return;
-//   }
-//  }
+  foreach (PropertyChangeListener* l, common)
+  {
+   if(!QMetaObject::invokeMethod(l, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
+   {
+       Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(l->metaObject()->className()));
+       return;
+   }
+  }
 }
 
 /*private static*/ void PropertyChangeSupport::fire(QVector<PropertyChangeListener*> listeners, PropertyChangeEvent* event)

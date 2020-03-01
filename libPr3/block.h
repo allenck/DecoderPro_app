@@ -68,7 +68,7 @@ public:
      * false if from {@link Reporter#getLastReport() last report}.
      */
     /*public*/ bool isReportingCurrent();
-    /*public*/ int getState();
+    /*public*/ int getState() override;
     QString getStateString();
     /*public*/ virtual void addPath(Path* p);
     /*public*/ virtual void removePath(Path* p);
@@ -81,7 +81,7 @@ public:
     /**
      * Provide a general method for updating the report.
      */
-    /*public*/ void setState(int v);
+    /*public*/ void setState(int v) override;
     /**
      * Set the value retained by this Block.
      * Also used when the Block itself gathers a value from an
@@ -121,7 +121,7 @@ public:
     /*public*/ float getLengthMm(); // return length in millimeters
     /*public*/ float getLengthCm();  // return length in centimeters
     /*public*/ float getLengthIn();  // return length in inches
-    /*public*/ bool equals(QObject* obj);
+    /*public*/ bool equals(QObject* obj)override;
 
 //    /** Handle change in sensor state.
 //     * <P>

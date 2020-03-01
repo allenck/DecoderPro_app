@@ -110,7 +110,7 @@ private:
  /*public*/ virtual void componentMoved(QMoveEvent* ) {}
  /*public*/ virtual void componentResized(QResizeEvent* ) {}
  Border* _border = nullptr;
-
+ bool _windowClosing = false;
 
 protected:
     /*protected*/ void frameInit();

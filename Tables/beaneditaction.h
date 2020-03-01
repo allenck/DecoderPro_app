@@ -5,6 +5,8 @@
 #include "abstracttablemodel.h"
 #include "actionlistener.h"
 #include "libtables_global.h"
+#include <QStatusBar>
+#include <QLabel>
 
 class KeyValueModel;
 class NamedBeanHandleManager;
@@ -54,6 +56,8 @@ private:
  void formatTextAreaAsLabel(JTextArea* pane);
  static bool validateNumericalInput(QString text);
  NamedBeanHandleManager* nbMan;// = InstanceManager.getDefault(jmri.NamedBeanHandleManager.class);
+ QLabel* statusBarWidget;
+
 protected:
  virtual /*protected*/ void initPanels();
  virtual /*protected*/ void initPanelsFirst() ;
@@ -110,12 +114,12 @@ protected slots:
 
     /*public*/ void setModel(NamedBean* nb);
     /*public*/ void updateModel(NamedBean* nb);
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ int rowCount(const QModelIndex &parent) const override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
     /*public*/ bool wasModified() ;
 };
 class LIBTABLESSHARED_EXPORT BasicSetSaveActionListener : public ActionListener
@@ -143,7 +147,7 @@ class LIBTABLESSHARED_EXPORT PropertiesSetSaveActionListener : public ActionList
 public:
  PropertiesSetSaveActionListener(BeanEditAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(ActionEvent *e = 0) override;
 };
 class LIBTABLESSHARED_EXPORT PropertiesSetResetActionListener : public ActionListener
 {
@@ -152,7 +156,7 @@ class LIBTABLESSHARED_EXPORT PropertiesSetResetActionListener : public ActionLis
 public:
  PropertiesSetResetActionListener(BeanEditAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(ActionEvent *e = 0) override;
 };
 
 #endif // BEANEDITACTION_H

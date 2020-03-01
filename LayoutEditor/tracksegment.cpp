@@ -17,6 +17,7 @@
 #include <climits>
 #include "path.h"
 #include "layouttrackdrawingoptions.h"
+#include <QApplication>
 
 //TrackSegment::TrackSegment(QObject *parent) :
 //    QObject(parent)
@@ -2934,11 +2935,12 @@ void TrackSegment::remove() {
   QPointF ep1 = LayoutEditor::getCoords(getConnect1(), getType1());
   QPointF ep2 = LayoutEditor::getCoords(getConnect2(), getType2());
 
-  if (isCircle()) {
-    result = center; //new QPointF(centreX, centreY);
-//      result =  QPointF(centreX, centreY);
-  }
-  else if (isArc())
+//  if (isCircle()) {
+//    result = center; //new QPointF(centreX, centreY);
+////      result =  QPointF(centreX, centreY);
+//  }
+//  else
+  if (isArc())
   {
    center = MathUtil::midPoint(getBounds());
    //center = getBounds().center();
@@ -3247,6 +3249,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
      // This removes random rail fragments from between the block dashes
      return;
  }
+ //qApp->processEvents(QEventLoop::AllEvents, 100);
 
  QColor color;
 
@@ -3445,7 +3448,8 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
    // allows the user to change the angle by dragging the mouse.
    //g2.draw(layoutEditor->trackEditControlCircleAt(circleCenterPoint));
    QGraphicsEllipseItem* circleItem = layoutEditor->trackEditControlCircleAt(circleCenterPoint);
-   circleItem->setPen(layoutEditor->drawingStroke);
+   //circleItem->setPen(layoutEditor->drawingStroke);
+   circleItem->setPen(QPen(QColor(Qt::magenta)));
    itemGroup->addToGroup(circleItem);
    //g2.draw(layoutEditor->trackEditControlRectAt(circleCenterPoint));
    QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(circleCenterPoint));
@@ -3487,7 +3491,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
 
 //@Override
 /*protected*/ void TrackSegment::drawTurnoutControls(EditScene* g2) {
-    // TrackSegments don't have turnout controls->..
+    // TrackSegments don't have turnout controls...
     // nothing to see here... move along...
 }
 
@@ -3495,7 +3499,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void TrackSegment::reCheckBlockBoundary() {
+/*public*/ void TrackSegment::reCheckBlockBoundary() const {
     // nothing to see here... move along...
 }
 #if 0
