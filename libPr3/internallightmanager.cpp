@@ -49,7 +49,7 @@ InternalLightManager::InternalLightManager(InternalSystemConnectionMemo* memo, Q
     return  memo;
 }
 
-/*public*/ bool InternalLightManager::validSystemNameConfig(QString /*systemName*/) {
+/*public*/ bool InternalLightManager::validSystemNameConfig(QString /*systemName*/) const {
     return true;
 }
 

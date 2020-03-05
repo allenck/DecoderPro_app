@@ -63,13 +63,12 @@ public:
      * Initialize all blocking sensors that exist - sets them to 'ACTIVE'
      */
     /*public*/ void initializeBlockingSensors ();
-    static /*public*/ SectionManager* instance();
+    /*public*/ QString getNamedBeanClass()const override;
 
     
 public slots:
 private:
     DecimalFormat* paddedNumber;// =  new DecimalFormat("0000");
-    static SectionManager* _instance;// = NULL;
 
     int lastAutoSectionRef;// = 0;
     Logger log;

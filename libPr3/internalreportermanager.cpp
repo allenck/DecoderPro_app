@@ -20,10 +20,17 @@ InternalReporterManager::InternalReporterManager(InternalSystemConnectionMemo* m
  * Create an internal (dummy) reporter object
  * @return new null
  */
-/*protected*/ Reporter* InternalReporterManager::createNewReporter(QString systemName, QString userName)
+/*protected*/ Reporter* InternalReporterManager::createNewReporter(QString systemName, QString userName) const
 {
  return new TrackReporter(systemName, userName);
 }
 
-/*public*/ QString InternalReporterManager::getSystemPrefix() { return "I"; }
+//@Override
+/*public*/ bool InternalReporterManager::allowMultipleAdditions(/*@Nonnull*/ QString systemName)const {
+    return true;
+}
+
+/*public*/ SystemConnectionMemo *InternalReporterManager::getMemo()const {
+ return  memo;
+}
 

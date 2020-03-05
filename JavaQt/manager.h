@@ -117,6 +117,13 @@ public:
  virtual char typeLetter() const {return '?';}
 
  /**
+ * Get the class of NamedBean supported by this Manager. This should be the
+ * generic class used in the Manager's class declaration.
+ *
+ * @return the class supported by this Manager.
+ */
+/*public*/ /*abstract*/ virtual QString getNamedBeanClass()const =0;
+ /**
   * Get the prefix and type for the system name of the NamedBeans handled by
   * this manager.
   *
@@ -184,7 +191,7 @@ public:
   * @return enum indicating current validity, which might be just as a prefix
   */
  //@CheckReturnValue
- virtual /*public*/ NameValidity validSystemNameFormat(/*@Nonnull*/ QString /*systemName*/) {return INVALID;}
+ virtual /*public*/ NameValidity validSystemNameFormat(/*@Nonnull*/ QString /*systemName*/)const {return INVALID;}
 
  /**
   * Free resources when no longer used. Specifically, remove all references
@@ -433,7 +440,7 @@ public:
      static const   int PANELFILES = TIMEBASE + 10;
      static const   int ENTRYEXIT = PANELFILES + 10;
 
-     virtual int getXMLOrder() const {return 0;}
+     virtual int getXMLOrder() const =0;
      /**
       * For instances in the code where we are dealing with just a bean and a
       * message needs to be passed to the user or in a log.
@@ -457,7 +464,7 @@ public:
       */
      //@CheckReturnValue
      /*public*/ //@Nonnull
-     QString virtual normalizeSystemName(/*@Nonnull */QString /*inputName*/) {return "";} //throw NamedBean.BadSystemNameException;
+     QString virtual normalizeSystemName(/*@Nonnull */QString /*inputName*/)const {return "";} //throw NamedBean.BadSystemNameException;
      /**
       * Provides length of the system prefix of the given system name.
       * <p>

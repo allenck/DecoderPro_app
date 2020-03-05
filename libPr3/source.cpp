@@ -40,13 +40,14 @@
  sourceSignal = NULL;
  //String ref = "Empty";
  pd = NULL;
+ pcs = new PropertyChangeSupport(this);
 
  manager = (EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs");
 
  //Using QObject* here rather than sourceSensor, working on the basis that it might
  //one day be possible to have a signal icon selectable on a panel and
  //generate a propertychange, so hence do not want to tie it down at this stage.
- pointToDest = new QMap<PointDetails*, DestinationPoints*>();
+ pointToDest = new QHash<PointDetails*, DestinationPoints*>();
 
     if(point->getSensor()!=NULL){
         addSourceObject(point->getSensor());
@@ -54,11 +55,40 @@
         addSourceObject(point->getSignal());
     }
     point->setSource(this);
+    try
+    {
     sourceSignal = point->getSignal();
+    }
+    catch(NullPointerException e)
+    {
+
+    }
     pd = point;
-    createPopUpMenu();
+    //createPopUpMenu();
 }
 
+/**
+ * @since 4.17.4
+ */
+/*public*/ void Source::addPropertyChangeListener(PropertyChangeListener* listener) {
+    pcs->addPropertyChangeListener(listener);
+}
+
+/**
+ * @since 4.17.4
+ */
+/*public*/ void Source::removePropertyChangeListener(PropertyChangeListener* listener) {
+    pcs->removePropertyChangeListener(listener);
+}
+
+/**
+ * @since 4.17.4
+ */
+//@Override
+/*public*/ void Source::propertyChange(PropertyChangeEvent* evt) {
+    pcs->firePropertyChange("active", evt->getOldValue(), evt->getNewValue());
+}
+#if 0
 void Source::createPopUpMenu(){
     if(entryExitPopUp!=NULL)
         return;
@@ -105,6 +135,7 @@ void Source::createPopUpMenu(){
     pd->getPanel()->addToPopUpMenu(pd->getSensor(), &item2, Editor::VIEWPOPUPONLY);
     setMenuEnabled(false);
 }
+#endif
 void Source ::on_editCancel()
 {
   cancelClearInterlockFromSource(EntryExitPairs::CANCELROUTE);
@@ -131,14 +162,24 @@ void Source::cancelClearInterlockFromSource(int cancelClear){
 }
 
 void Source::setMenuEnabled(bool boo){
-    if (entryExitPopUp!=NULL)
-        entryExitPopUp->setEnabled(boo);
+//    if (entryExitPopUp!=NULL)
+//        entryExitPopUp->setEnabled(boo);
     if (clear!=NULL)
         clear->setEnabled(boo);
     if (cancel!=NULL)
         cancel->setEnabled(boo);
-
-
+    if (editClear != nullptr) {
+        editClear->setEnabled(boo);
+    }
+    if (editCancel != nullptr) {
+        editCancel->setEnabled(boo);
+    }
+    if (oneClick != nullptr) {
+        oneClick->setEnabled(!boo);
+    }
+    if (editOneClick != nullptr) {
+        editOneClick->setEnabled(!boo);
+    }
 }
 
 PointDetails*  Source::getPoint(){
@@ -216,7 +257,7 @@ QObject* Source::getSourceObject() { return sourceObject; }
     if(getSourceSignal()==NULL){
         return true;
     }
-    //Work on the pinciple that if the source is uniDirection, then the destination has to be.
+    //Work on the principle that if the source is uniDirection, then the destination has to be.
     PointDetails*  lookingFor = manager->getPointDetails(dest, panel);
     if(pointToDest->contains(lookingFor)){
         return pointToDest->value(lookingFor)->getSignal()==NULL;
@@ -239,7 +280,9 @@ void Source::activeBean(DestinationPoints* dest, bool reverseDirection){
     return pointToDest->value(dp);
 }
 
-/*public*/ int Source::getNumberOfDestinations() { return pointToDest->size(); }
+/*public*/ int Source::getNumberOfDestinations() {
+ return pointToDest->size();
+}
 
 /*public*/ void Source::setEntryExitType(QObject* dest, LayoutEditor* panel, int type){
     PointDetails*  lookingFor = manager->getPointDetails(dest, panel);
@@ -276,7 +319,7 @@ void Source::activeBean(DestinationPoints* dest, bool reverseDirection){
     if(pointToDest->contains(lookingFor)){
         return pointToDest->value(lookingFor)->getUniqueId();
     }
-    return NULL;
+    return QString();
 }
 
 /*public*/ QStringList Source::getDestinationUniqueId(){
@@ -292,13 +335,14 @@ void Source::activeBean(DestinationPoints* dest, bool reverseDirection){
         if(d->getUniqueId()==(id))
             return d;
     }
-    return NULL;
+    return nullptr;
 }
 
 /*public*/ DestinationPoints* Source::getByUserName(QString id){
     foreach(DestinationPoints* d, pointToDest->values()){
-        if(d->getUserName()==(id))
+     QString uname = d->getUserName();
+        if(uname != "" && uname==(id))
             return d;
     }
-    return NULL;
+    return nullptr;
 }

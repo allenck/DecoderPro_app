@@ -16,7 +16,6 @@ public:
  ~LayoutBlockManager() {}
  LayoutBlockManager(const LayoutBlockManager&) : AbstractManager() {}
  /*public*/ int getXMLOrder() const override;
- /*public*/ QString getSystemPrefix() const override{ return "I"; }
  /*public*/ char typeLetter() const override{ return 'B'; }
 /**
  * Method to create a new LayoutBlock if the LayoutBlock does not exist
@@ -39,7 +38,6 @@ public:
  */
 /*public*/ LayoutBlock* getLayoutBlock(QString name);
 /*public*/ LayoutBlock* getLayoutBlock(Block* block);
-/*public*/ NamedBean* getBySystemName(QString name)const override;
 /*public*/ LayoutBlock* getBlockWithMemoryAssigned(Memory* m);
 /*public*/ void initializeLayoutBlockPaths();
 /*public*/ void addBadBeanError();
@@ -48,9 +46,6 @@ public:
 /*public*/ LayoutBlock* getFacingBlock(QString signalName, LayoutEditor* panel);
 /*public*/ NamedBean* getNamedBeanAtEndBumper(Block* facingBlock, LayoutEditor* panel);
 /*public*/ SignalMast* getSignalMastAtEndBumper(Block* facingBlock, LayoutEditor* panel);
-/*public*/ NamedBean* getByUserName(QString key)const override;
-//static LayoutBlockManager* _instance;// = NULL;
-static /*public*/ LayoutBlockManager* instance();
 /*public*/ LayoutBlock* getFacingBlockByMast(SignalMast *signalMast, LayoutEditor* panel);
 /*public*/ LayoutBlock* getProtectedBlockByMast(SignalMast* signalMast, LayoutEditor* panel);
 /*public*/ LayoutBlockConnectivityTools* getLayoutBlockConnectivityTools();
@@ -93,6 +88,8 @@ static /*public*/ LayoutBlockManager* instance();
  /*public*/ void turnOffWarning();
  /*public*/ LayoutBlock* getProtectedBlockBySensor(Sensor* sensor, LayoutEditor* panel);
  /*public*/ LayoutBlock* getProtectedBlockBySensor(QString sensorName, LayoutEditor* panel);
+ /*public*/ QList<LayoutBlock*> getProtectingBlocksBySensor(/*@CheckForNull*/ Sensor* sensor, /*@CheckForNull*/ LayoutEditor* panel);
+ /*public*/ QList<LayoutBlock*> getProtectingBlocksBySensorOld(/*@CheckForNull*/ Sensor* sensor, /*@Nonnull*/ LayoutEditor* panel);
  /*public*/ NamedBean* getFacingNamedBean(Block* facingBlock, Block* protectedBlock, LayoutEditor* panel);
  /*public*/ SignalMast* getFacingSignalMast(Block* facingBlock, Block* protectedBlock);
  /*public*/ SignalMast* getFacingSignalMast(Block* facingBlock, Block* protectedBlock, LayoutEditor* panel);
@@ -100,6 +97,10 @@ static /*public*/ LayoutBlockManager* instance();
  /*public*/ QObject* getFacingSignalObject(Block* facingBlock, Block* protectedBlock);
  QCompleter* getCompleter(QString text, bool bIncludeUserNames = false);
  /*public*/ bool isAssignableFromType() {return true;}
+ /*public*/ QString getNamedBeanClass()const override {
+     return "LayoutBlock";
+ }
+ /*public*/ QString getBeanTypeHandled(bool plural)const override;
 
 signals:
  void propertyChange(PropertyChangeEvent *e);

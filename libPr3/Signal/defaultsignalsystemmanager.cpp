@@ -33,7 +33,7 @@
     load();
 }
 
-/*public*/ int DefaultSignalSystemManager::getXMLOrder(){
+/*public*/ int DefaultSignalSystemManager::getXMLOrder() const{
     return 65400;
 }
 
@@ -53,11 +53,11 @@
     return getBySystemName(name);
 }
 
-/*public*/ SignalSystem* DefaultSignalSystemManager::getBySystemName(QString key) {
+/*public*/ SignalSystem* DefaultSignalSystemManager::getBySystemName(QString key) const{
     return (SignalSystem*)_tsys->value(key);
 }
 
-/*public*/ SignalSystem* DefaultSignalSystemManager::getByUserName(QString key) {
+/*public*/ SignalSystem* DefaultSignalSystemManager::getByUserName(QString key) const {
     return (SignalSystem*)_tuser->value(key);
 }
 

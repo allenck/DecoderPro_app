@@ -23,6 +23,9 @@ public:
     static /*public*/ OBlockManager* instance();
     /*public*/ bool isAssignableFromType() {return true;}
     virtual /*public*/ OBlock *provide(QString name) const throw (IllegalArgumentException);
+    /*public*/ QString getNamedBeanClass()const override {
+        return "QBlock";
+    }
 
 signals:
 public slots:

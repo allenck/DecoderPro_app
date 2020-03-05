@@ -36,7 +36,7 @@ public:
      * @return Null if nothing by that name exists
      */
     /*public*/ NamedBean* getNamedBean(QString name) const override;
-    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName) override /*throw (NamedBean::BadSystemNameException)*/;
+    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override /*throw (NamedBean::BadSystemNameException)*/;
 
 //    /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
 //    /*public*/ NamedBean* getBeanByUserName(QString userName) const override;
@@ -150,7 +150,7 @@ protected:
      */
     /*protected*/ virtual int nMgrs() const;
     /*protected*/ virtual Manager* getMgr(int index) const;
-    virtual /*abstract protected*/ Manager* makeInternalManager() const  /*=0*/;
+    virtual /*abstract protected*/ Manager* makeInternalManager() const  =0;
     /**
      * Locate via user name, then system name if needed.
      * If that fails, create a new NamedBean: If the name

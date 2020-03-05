@@ -90,7 +90,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     entryExitMenu->addAction(new EntryExitPairsTestAction(this));
     entryExitMenu->addAction(new DestinationPointsTestAction(this));
     entryExitMenu->addAction(new PointDetailsTestAction(this));
-    //entryExitMenu->addAction(new SourceTestAction(this));
+//    entryExitMenu->addAction(new SourceTestAction(this));
 
     QMenu* rosterTestMenu = new QMenu(tr("Roster Tests"));
     addMenu(rosterTestMenu);

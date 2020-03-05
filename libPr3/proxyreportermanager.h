@@ -67,6 +67,9 @@ public:
     /*public*/ NamedBean* newNamedBean(QString systemName, QString userName) const;
     /*public*/ QString getEntryToolTip() override;
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
+    /*public*/ QString getNamedBeanClass()const override {
+        return "Reporter";
+    }
 
 signals:
     

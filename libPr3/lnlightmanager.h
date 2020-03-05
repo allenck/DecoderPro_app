@@ -41,6 +41,9 @@ public:
      * order eg 11 thru 18, primarily used to show/not show the add range box in the add Light window
      **/
     /*public*/ bool allowMultipleAdditions(QString systemName);
+ /*public*/ QString getNamedBeanClass()const override {
+     return "LnLight";
+ }
 
 signals:
     

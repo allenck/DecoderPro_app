@@ -8,11 +8,11 @@ class LIBLAYOUTEDITORSHARED_EXPORT InternalTurnoutManagerXml : public AbstractTu
     Q_OBJECT
 public:
     Q_INVOKABLE explicit InternalTurnoutManagerXml(QObject *parent = 0);
- ~InternalTurnoutManagerXml() {}
- InternalTurnoutManagerXml(const InternalTurnoutManagerXml&) : AbstractTurnoutManagerConfigXML() {}
-    /*public*/ void setStoreElementClass(QDomElement turnouts);
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
-    /*public*/ bool load(QDomElement turnouts, QDomElement perNode) throw (Exception);
+    ~InternalTurnoutManagerXml() override{}
+    InternalTurnoutManagerXml(const InternalTurnoutManagerXml&) : AbstractTurnoutManagerConfigXML() {}
+    /*public*/ void setStoreElementClass(QDomElement turnouts)override;
+    /*public*/ void load(QDomElement element, QObject* o) throw (Exception)override;
+    /*public*/ bool load(QDomElement turnouts, QDomElement perNode) throw (Exception)override;
 
 signals:
 

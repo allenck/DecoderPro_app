@@ -4,7 +4,6 @@
 #include "connectivityutil.h"
 #include "internalsystemconnectionmemo.h"
 
-/*static*/ SectionManager* SectionManager::_instance = NULL;
 
 SectionManager::SectionManager(QObject *parent) :
     AbstractManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"), parent)
@@ -266,12 +265,10 @@ Section* SectionManager::createNewSection(QString userName) {
     }
 }
 
-/*static*/ /*public*/ SectionManager* SectionManager::instance() {
-    if (_instance == NULL) {
-        _instance = new SectionManager();
-    }
-    return (_instance);
-}
 
+/*public*/ QString SectionManager::getNamedBeanClass() const
+{
+ return "Section";
+}
 
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SectionManager.class.getName());

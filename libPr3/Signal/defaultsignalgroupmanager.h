@@ -12,7 +12,7 @@ public:
     DefaultSignalGroupManager(const DefaultSignalGroupManager&) : SignalGroupManager() {}
     /*public*/ int getXMLOrder() const override;
     /*public*/ QString getSystemPrefix()const override;
-    /*public*/ char typeLetter() ;
+    /*public*/ char typeLetter()const override;
     /*public*/ SignalGroup* getSignalGroup(QString name)override;
     /*public*/ SignalGroup* getBySystemName(QString key)const override;
     /*public*/ SignalGroup* getByUserName(QString key)const override;
@@ -22,6 +22,9 @@ public:
     static DefaultSignalGroupManager* _instance;// = NULL;
     static /*public*/ DefaultSignalGroupManager* instance();
     /*public*/ void deleteSignalGroup(SignalGroup* s)override;
+    /*public*/ QString getNamedBeanClass()const override {
+        return "SignalGroup";
+    }
 
 signals:
 

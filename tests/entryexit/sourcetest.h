@@ -17,7 +17,7 @@ class SourceTest : public QObject
 
 public:
  explicit SourceTest(QObject *parent = nullptr);
- ~SourceTest() {}
+ ~SourceTest() override {}
  Q_INVOKABLE /*public*/ void setUp() throw (Exception) ;
  Q_INVOKABLE /*public*/ void tearDown();
 

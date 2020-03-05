@@ -54,12 +54,12 @@ void LnReporterManager::dispose()
 //super.dispose();
 }
 
-Reporter* LnReporterManager::createNewReporter(QString systemName, QString userName)
+Reporter* LnReporterManager::createNewReporter(QString systemName, QString userName) const
 {
  Reporter* t;
 //        int addr = Integer.valueOf(systemName.substring(prefix.length()+1)).intValue();
  int addr = QString(systemName.mid(getSystemPrefix().length()+1)).toInt();
- t = (Reporter*)(new LnReporter(addr, tc, getSystemPrefix(), this));
+ t = (Reporter*)(new LnReporter(addr, tc, getSystemPrefix()));
  t->setUserName(userName);
  t->addPropertyChangeListener((PropertyChangeListener*)this);
  connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -73,7 +73,7 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
  * @param systemName the system name
  * @return the bit address
  */
-/*public*/ int LnReporterManager::getBitFromSystemName(QString systemName) {
+/*public*/ int LnReporterManager::getBitFromSystemName(QString systemName)const {
     // validate the system Name leader characters
     if ((!systemName.startsWith(getSystemPrefix())) || (!systemName.startsWith(getSystemPrefix() + "R"))) {
         // here if an illegal LocoNet Reporter system name
@@ -106,7 +106,7 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
  * @return VALID if system name has a valid format; otherwise return INVALID
  */
 //@Override
-/*public*/ Manager::NameValidity LnReporterManager::validSystemNameFormat(QString systemName) {
+/*public*/ Manager::NameValidity LnReporterManager::validSystemNameFormat(QString systemName) const {
     return (getBitFromSystemName(systemName) != 0) ? NameValidity::VALID : NameValidity::INVALID;
 }
 

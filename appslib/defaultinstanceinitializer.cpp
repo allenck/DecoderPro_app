@@ -97,9 +97,26 @@ DefaultInstanceInitializer::DefaultInstanceInitializer()
 //public <T> Object getDefault(Class<T> type) {
 QObject* DefaultInstanceInitializer::getDefault(QString type) const
 {
+ InternalSystemConnectionMemo* memo= nullptr;
+ if(type =="AudioManager" ||
+         type == "ConditionalManager" ||
+         type ==  "LogixManager" ||
+         type == "MemoryManager" ||
+         type == "RouteManager" ||
+         type == "SignalGroupManager" ||
+         type == "SignalHeadManager" ||
+         type == "SignalHeadManager" ||
+         type == "SignalMastLogicManager" ||
+         type == "SignalMastManager" ||
+         type == "SignalSystemManager")
+  memo = (InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
+    // In order for getDefault() to create a new object, the manager also
+    // needs to be added to the method getInitalizes() below.
  if (type == "AudioManager")
  {
-  return DefaultAudioManager::instance();
+  DefaultAudioManager* dam =  new DefaultAudioManager(memo);
+  InstanceManager::store(dam,type);
+  return dam;
  }
 
  if (type == "ClockControl") {
@@ -116,7 +133,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  }
 
  if (type == "ConditionalManager") {
-     DefaultConditionalManager* cm = new DefaultConditionalManager();
+     DefaultConditionalManager* cm = new DefaultConditionalManager(memo);
      InstanceManager::store(cm, type);
      return cm;
  }
@@ -129,13 +146,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  }
 
  if (type == "LogixManager") {
-     DefaultLogixManager* lm = new DefaultLogixManager();
+     DefaultLogixManager* lm = new DefaultLogixManager(memo);
      InstanceManager::store(lm, type);
      return lm;
  }
 
  if (type == "MemoryManager") {
-    DefaultMemoryManager* mm = new DefaultMemoryManager();
+    DefaultMemoryManager* mm = new DefaultMemoryManager(memo);
     InstanceManager::store(mm,type);
     return mm;
  }
@@ -152,7 +169,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  }
 
  if (type == "RouteManager") {
-  return new DefaultRouteManager();
+  return new DefaultRouteManager(memo);
  }
 
  if (type == "SensorManager")
@@ -167,21 +184,21 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  {
   // ensure signal mast manager exists first
   InstanceManager::getDefault("SignalMastManager");
-  DefaultSignalGroupManager* sgm = new DefaultSignalGroupManager();
+  DefaultSignalGroupManager* sgm = new DefaultSignalGroupManager(memo);
   InstanceManager::store(sgm, type);
   return sgm;
  }
 
  if (type == "SignalHeadManager")
  {
-   AbstractSignalHeadManager* o =  new AbstractSignalHeadManager();
+   AbstractSignalHeadManager* o =  new AbstractSignalHeadManager(memo);
    InstanceManager::store(o, type);
    return o;
  }
 
  if (type == "SignalMastLogicManager")
  {
-  DefaultSignalMastLogicManager* smlm = new DefaultSignalMastLogicManager();
+  DefaultSignalMastLogicManager* smlm = new DefaultSignalMastLogicManager(memo);
   InstanceManager::store(smlm, type);
   return smlm;
  }
@@ -190,13 +207,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  {
    // ensure signal head manager exists first
    InstanceManager::getDefault("SignalHeadManager");
-   QObject* o =  new DefaultSignalMastManager();
+   QObject* o =  new DefaultSignalMastManager(memo);
    InstanceManager::store(o, "SignalMastManager");
    return o;
  }
 
  if (type == "SignalSystemManager") {
-     return new DefaultSignalSystemManager();
+     return new DefaultSignalSystemManager(memo);
  }
  if (type == "DecoderIndexFile") {
      return new DecoderIndexFile();
@@ -444,12 +461,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return wtp;
  }
 
- if(type == "InternalSystemConnectionMemo") // is optional getNullableDefault will store it
- {
-  InternalSystemConnectionMemo* itcm = new InternalSystemConnectionMemo();
-  //InstanceManager::store(itcm,type);
-  return itcm;
- }
+// if(type == "InternalSystemConnectionMemo") // is optional getNullableDefault will store it
+// {
+//  InternalSystemConnectionMemo* itcm = new InternalSystemConnectionMemo();
+//  InstanceManager::store(itcm,type);
+//  InstanceManager::store(itcm, "SystemConnectionMemo");
+//  return itcm;
+// }
 
  if(type == "ManagerDefaultSelector")
  {

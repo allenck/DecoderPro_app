@@ -151,7 +151,7 @@
  *
  * @return VALID if system name has a valid format, else return INVALID
  */
-/*public*/ Manager::NameValidity RpsSystemConnectionMemo::validSystemNameFormat(QString systemName, char type) {
+/*public*/ Manager::NameValidity RpsSystemConnectionMemo::validSystemNameFormat(QString systemName, char type) const{
     // validate the system Name leader characters
     if (!(systemName.startsWith(getSystemPrefix() + type))) {
         // here if an illegal format

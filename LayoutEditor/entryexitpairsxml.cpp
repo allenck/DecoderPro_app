@@ -225,7 +225,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
      }
      catch (NullPointerException e)
      {
-      log->error("An error occured while trying to add a point");
+      log->error(tr("An error occured while trying to add a point") + ": "+ e.getMessage());
      }
      if((destinationList.at(j).toElement().attribute("uniDirection")!="") && (destinationList.at(j).toElement().attribute("uniDirection")==("no")))
      {

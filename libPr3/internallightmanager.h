@@ -9,11 +9,14 @@ class LIBPR3SHARED_EXPORT InternalLightManager : public AbstractLightManager
     Q_OBJECT
 public:
  explicit InternalLightManager(InternalSystemConnectionMemo* memo, QObject *parent = 0);
-    /*public*/ bool validSystemNameConfig(QString systemName);
-    /*public*/ bool supportsVariableLights(QString systemName);
-    /*public*/ bool allowMultipleAdditions(QString systemName);
-    /*public*/ SystemConnectionMemo* getMemo();
-    /*public*/ QString getEntryToolTip();
+    /*public*/ bool validSystemNameConfig(QString systemName)const override;
+    /*public*/ bool supportsVariableLights(QString systemName) override;
+    /*public*/ bool allowMultipleAdditions(QString systemName) override;
+    /*public*/ SystemConnectionMemo* getMemo() override;
+    /*public*/ QString getEntryToolTip() override;
+    /*public*/ QString getNamedBeanClass()const override {
+     return "Light";
+ }
 
 
 signals:

@@ -34,6 +34,9 @@ public:
     /*public*/ void initialiseRepeaters();
 #endif
     /*public*/ SignalMast* provide(QString name) throw (IllegalArgumentException) override;
+    /*public*/ QString getNamedBeanClass()const override {
+        return "SignalMast";
+    }
 
 signals:
     void newSignalMastCreated(AbstractSignalMast*);

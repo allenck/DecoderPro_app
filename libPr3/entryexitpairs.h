@@ -122,7 +122,7 @@ public:
     /*public*/ void addNXSourcePoint(NamedBean* source);
     /*public*/ void addNXSourcePoint(NamedBean* source, LayoutEditor* panel);
     /*public*/ QObject* getEndPointLocation(NamedBean* source, LayoutEditor* panel);
-    /*public*/ int getXMLOrder();
+    /*public*/ int getXMLOrder() const;
     /*public*/ NamedBean* getBySystemName(QString systemName) const override;
     /*public*/ NamedBean* getByUserName(QString systemName) const override;
     /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
@@ -208,6 +208,9 @@ public:
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
     /*public*/ void addDataListener(ManagerDataListener *e) ;
     /*public*/ void removeDataListener(ManagerDataListener/*DestinationPoints>*/* e) ;
+    /*public*/ QString getNamedBeanClass()const override {
+        return "EntryExit";
+    }
 
 signals:
     void propertyChange(PropertyChangeEvent*);

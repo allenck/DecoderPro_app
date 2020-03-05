@@ -15,6 +15,9 @@ public:
     Turnout* createNewTurnout(QString systemName, QString userName)const override;
     /*public*/ static /*final*/ QString BYPASSBUSHBYBITKEY;// = "Bypass Bushby Bit";
     /*public*/ static /*final*/ QString SENDONANDOFFKEY;// = "Send ON/OFF";
+    /*public*/ QString getNamedBeanClass()const override {
+        return "LnTurnout";
+    }
 
 public slots:
     // listen for turnouts, creating them as needed

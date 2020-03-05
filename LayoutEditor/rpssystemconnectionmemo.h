@@ -13,10 +13,10 @@ public:
  /*public*/ void configureManagers();
  /*public*/ RpsSensorManager* getSensorManager();
  /*public*/ RpsReporterManager* getReporterManager();
- /*public*/ bool provides(/*Class<?>*/QString type);
+ /*public*/ bool provides(/*Class<?>*/QString type)override;
  /*public*/ Manager* get(QString T);
  /*public*/ QString validateSystemNameFormat(QString name, Manager* manager, QLocale locale);
- /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName, char type);
+ /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName, char type)const ;
 
 private:
  static Logger* log;

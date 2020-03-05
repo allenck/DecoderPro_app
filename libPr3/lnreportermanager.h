@@ -26,11 +26,14 @@ class LIBPR3SHARED_EXPORT LnReporterManager : public AbstractReporterManager
 public:
     explicit LnReporterManager(LocoNetSystemConnectionMemo *memo, QObject *parent = 0);
     void dispose();
-    Reporter* createNewReporter(QString systemName, QString userName);
-    /*public*/ int getBitFromSystemName(QString systemName);
-    /*public*/ NameValidity validSystemNameFormat(QString systemName);
-    /*public*/ QString getEntryToolTip();
+    Reporter* createNewReporter(QString systemName, QString userName) const override;
+    /*public*/ int getBitFromSystemName(QString systemName) const;
+    /*public*/ NameValidity validSystemNameFormat(QString systemName)const override;
+    /*public*/ QString getEntryToolTip()override;
     /*public*/ QString validateSystemNameFormat(QString systemName, QLocale locale);
+    /*public*/ QString getNamedBeanClass()const override {
+        return "LnReporter";
+    }
 
 public slots:
     void message(LocoNetMessage* l);

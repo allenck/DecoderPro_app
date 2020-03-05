@@ -16,12 +16,12 @@ RpsReporterManager::RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* p
 // /*public*/ class RpsReporterManager extends AbstractReporterManager {
 
 //@Override
-/*public*/ QString RpsReporterManager::getSystemPrefix() {
+/*public*/ QString RpsReporterManager::getSystemPrefix()const {
     return "R";
 }
 
 //@Override
-/*protected*/ Reporter* RpsReporterManager::createNewReporter(QString systemName, QString userName) {
+/*protected*/ Reporter* RpsReporterManager::createNewReporter(QString systemName, QString userName) const {
     RpsReporter* r = new RpsReporter(systemName, userName);
     //Distributor::instance()->addMeasurementListener(r);
     connect(Distributor::instance(), SIGNAL(newMeasurement(Measurement*)), r, SLOT(notify(Measurement*)));

@@ -5,7 +5,7 @@
 #include "loggerfactory.h"
 #include "junitutil.h"
 
-EntryExitPairsTestAction::EntryExitPairsTestAction(QObject* parent) : AbstractAction(tr("EntryExipPairs Test"), parent)
+EntryExitPairsTestAction::EntryExitPairsTestAction(QObject* parent) : AbstractAction(tr("EntryExitPairs Test"), parent)
 {
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }

@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include "exceptions.h"
+#include "junitutil.h"
+#include "layoutblockmanager.h"
+#include <QColor>
 
 class EntryExitPairs;
 class LayoutBlockManager;
@@ -37,6 +40,28 @@ private:
  static TurnoutManager* tm;
  void createModalDialogOperatorThread(QString dialogTitle, QString buttonText);
 
+ friend class ReleaseUntil_EEPT1;
+ friend class ReleaseUntil_EEPT2;
+};
+
+class ReleaseUntil_EEPT1 : public ReleaseUntil
+{
+ Q_OBJECT
+ EntryExitPairsTest* test;
+public:
+ ReleaseUntil_EEPT1(EntryExitPairsTest* test) {this->test = test;}
+
+ bool ready() throw (Exception) { return test->lbm->getLayoutBlock("B-Alpha-Main")->getUseExtraColor(); }
+};
+
+class ReleaseUntil_EEPT2 : public ReleaseUntil
+{
+ Q_OBJECT
+ EntryExitPairsTest* test;
+public:
+ ReleaseUntil_EEPT2(EntryExitPairsTest* test) {this->test = test;}
+
+ bool ready()  throw (Exception) { return test->tm->getTurnout("T-AE")->getKnownState() == Turnout::CLOSED; }
 };
 
 #endif // ENTRYEXITPAIRSTEST_H

@@ -12,18 +12,21 @@ public:
  explicit PortalManager(QObject *parent = 0);
  ~PortalManager() {}
  PortalManager(const PortalManager &) : AbstractManager() {}
- /*public*/ int getXMLOrder();
- /*public*/ QString getSystemPrefix() ;
- /*public*/ char typeLetter();
+ /*public*/ int getXMLOrder()const override;
+ /*public*/ QString getSystemPrefix() const override;
+ /*public*/ char typeLetter() const override;
  /*public*/ Portal* createNewPortal(QString sName, QString userName);
  /*public*/ QString generateSystemName();
  /*public*/ Portal* getPortal(QString name);
- /*public*/ NamedBean* getBySystemName(QString name);
- /*public*/ NamedBean* getByUserName(QString key) ;
+ /*public*/ NamedBean* getBySystemName(QString name)const override;
+ /*public*/ NamedBean* getByUserName(QString key) const override;
  /*public*/ Portal* providePortal(QString name);
  static /*public*/ PortalManager* instance();
  /*public*/ QString getBeanTypeHandled();
  /*public*/ bool isAssignableFromType() {return true;}
+ /*public*/ QString getNamedBeanClass()const override {
+     return "Portal";
+ }
 
 signals:
 

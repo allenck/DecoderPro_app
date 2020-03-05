@@ -173,7 +173,7 @@ long LayoutBlock::time=0;
  block = nullptr;   // assume failure (pessimist!)
  QString userName = getUserName();
  if (!(userName.isNull()) && !userName.isEmpty()) {
-     block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(userName);
+     block =(Block*) ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(userName);
  }
 
  if (block == nullptr) {
@@ -188,7 +188,7 @@ long LayoutBlock::time=0;
          jmriblknum++;
 
          // Find an unused system name
-         block = bm->getBySystemName(s);
+         block = (Block*)bm->getBySystemName(s);
          if (block != nullptr) {
              log->debug(tr("System name is already used: %1").arg(s));
              continue;

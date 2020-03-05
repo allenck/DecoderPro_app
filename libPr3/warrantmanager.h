@@ -23,6 +23,9 @@ public:
     static WarrantManager* _instance;// = NULL;
     static /*public*/ WarrantManager* instance();
     /*public*/ bool isAssignableFromType() {return true;}
+    /*public*/ QString getNamedBeanClass()const override {
+        return "Warrant";
+    }
 
 signals:
  void propertyChange(PropertyChangeEvent *e);

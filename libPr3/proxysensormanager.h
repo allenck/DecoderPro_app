@@ -56,16 +56,20 @@ public:
   */
  /*public*/ Sensor* newSensor(QString systemName, QString userName);
  // null implementation to satisfy the SensorManager interface
- /*public*/ void updateAll();
- /*public*/ bool allowMultipleAdditions(QString systemName);
- /*public*/ QString createSystemName(QString curAddress, QString prefix) throw (JmriException);
- /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) throw (JmriException);
- /*public*/ long getDefaultSensorDebounceGoingActive();
- /*public*/ long getDefaultSensorDebounceGoingInActive();
- /*public*/ void setDefaultSensorDebounceGoingActive(long timer);
- /*public*/ void setDefaultSensorDebounceGoingInActive(long timer);
- /*public*/ int getXMLOrder();
+ /*public*/ void updateAll()const override;
+ /*public*/ bool allowMultipleAdditions(QString systemName) override;
+ /*public*/ QString createSystemName(QString curAddress, QString prefix)const throw (JmriException) override;
+ /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) throw (JmriException) override;
+ /*public*/ long getDefaultSensorDebounceGoingActive() override;
+ /*public*/ long getDefaultSensorDebounceGoingInActive() override;
+ /*public*/ void setDefaultSensorDebounceGoingActive(long timer) override;
+ /*public*/ void setDefaultSensorDebounceGoingInActive(long timer) override;
+ /*public*/ int getXMLOrder()const override;
  QCompleter* getCompleter(QString text);
+ /*public*/ QString getNamedBeanClass()const override {
+     return "Sensor";
+ }
+
 signals:
  void propertyChange(PropertyChangeEvent *e);
  //void newSensorCreated(AbstractSensorManager*,Sensor*);

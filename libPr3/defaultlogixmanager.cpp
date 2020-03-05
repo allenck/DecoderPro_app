@@ -66,7 +66,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
 //    super();
 //}
 
-/*public*/ int DefaultLogixManager::getXMLOrder(){
+/*public*/ int DefaultLogixManager::getXMLOrder() const{
     return Manager::LOGIXS;
 }
 

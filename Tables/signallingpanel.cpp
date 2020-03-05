@@ -362,7 +362,7 @@ QWidget* SignallingPanel::buildBlocksPanel()
  {
   QString systemName = iter.next();
   //String userName = bm.getBySystemName(systemName).getUserName();
-  _manualBlockList.append(new ManualBlockList(bm->getBySystemName(systemName),this));
+  _manualBlockList.append(new ManualBlockList((Block*)bm->getBySystemName(systemName),this));
  }
 
  if ((sml!=NULL) && (destMast!=NULL))

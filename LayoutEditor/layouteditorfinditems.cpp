@@ -201,70 +201,78 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
   for (LayoutTurnout* t : layoutTurnouts)
   {
    if (t->getSignalAMast() == bean
-                    || t->getSignalBMast() == bean
-                    || t->getSignalCMast() == bean
-                    || t->getSignalDMast() == bean) {
-                return t;
-            }
-        }
-    } else if (qobject_cast<Sensor*>(bean)) {
-        for (LayoutTurnout* t : layoutTurnouts) {
-            if (t->getSensorA() == bean
-                    || t->getSensorB() == bean
-                    || t->getSensorC() == bean
-                    || t->getSensorD() == bean) {
-                return t;
-            }
-        }
-    } else if (qobject_cast<SignalHead*>(bean)) {
-        for (LayoutTurnout* t : layoutTurnouts) {
-            if (t->getSignalA1Name()==(bean->getSystemName())
-                    || t->getSignalA2Name()==(bean->getSystemName())
-                    || t->getSignalA3Name()==(bean->getSystemName())) {
-                return t;
-            }
+          || t->getSignalBMast() == bean
+          || t->getSignalCMast() == bean
+          || t->getSignalDMast() == bean)
+   {
+      return t;
+   }
+  }
+ }
+ else if (qobject_cast<Sensor*>(bean))
+ {
+  for (LayoutTurnout* t : layoutTurnouts)
+  {
+      if (t->getSensorA() == bean
+              || t->getSensorB() == bean
+              || t->getSensorC() == bean
+              || t->getSensorD() == bean) {
+          return t;
+      }
+  }
+ }
+ else if (qobject_cast<SignalHead*>(bean))
+ {
+  for (LayoutTurnout* t : layoutTurnouts)
+  {
+   if (t->getSignalA1Name()==(bean->getSystemName())
+           || t->getSignalA2Name()==(bean->getSystemName())
+           || t->getSignalA3Name()==(bean->getSystemName())) {
+       return t;
+   }
 
-            if (t->getSignalB1Name()==(bean->getSystemName())
-                    || t->getSignalB2Name()==(bean->getSystemName())) {
-                return t;
-            }
-            if (t->getSignalC1Name()==(bean->getSystemName())
-                    || t->getSignalC2Name()==(bean->getSystemName())) {
-                return t;
-            }
-            if (t->getSignalD1Name()==(bean->getSystemName())
-                    || t->getSignalD2Name()==(bean->getSystemName())) {
-                return t;
-            }
-            if (bean->getUserName() != NULL) {
-                if (t->getSignalA1Name()==(bean->getUserName())
-                        || t->getSignalA2Name()==(bean->getUserName())
-                        || t->getSignalA3Name()==(bean->getUserName())) {
-                    return t;
-                }
+   if (t->getSignalB1Name()==(bean->getSystemName())
+           || t->getSignalB2Name()==(bean->getSystemName())) {
+       return t;
+   }
+   if (t->getSignalC1Name()==(bean->getSystemName())
+           || t->getSignalC2Name()==(bean->getSystemName())) {
+       return t;
+   }
+   if (t->getSignalD1Name()==(bean->getSystemName())
+           || t->getSignalD2Name()==(bean->getSystemName())) {
+       return t;
+   }
+   if (bean->getUserName() != NULL) {
+       if (t->getSignalA1Name()==(bean->getUserName())
+               || t->getSignalA2Name()==(bean->getUserName())
+               || t->getSignalA3Name()==(bean->getUserName())) {
+           return t;
+       }
 
-                if (t->getSignalB1Name()==(bean->getUserName())
-                        || t->getSignalB2Name()==(bean->getUserName())) {
-                    return t;
-                }
-                if (t->getSignalC1Name()==(bean->getUserName())
-                        || t->getSignalC2Name()==(bean->getUserName())) {
-                    return t;
-                }
-                if (t->getSignalD1Name()==(bean->getUserName())
-                        || t->getSignalD2Name()==(bean->getUserName())) {
-                    return t;
-                }
-            }
-        }
-    } else if (qobject_cast<Turnout*>(bean)) {
-        for (LayoutTurnout* t : layoutTurnouts) {
-            if (bean==(t->getTurnout())) {
-                return t;
-            }
-        }
-    }
-    return nullptr;
+       if (t->getSignalB1Name()==(bean->getUserName())
+               || t->getSignalB2Name()==(bean->getUserName())) {
+           return t;
+       }
+       if (t->getSignalC1Name()==(bean->getUserName())
+               || t->getSignalC2Name()==(bean->getUserName())) {
+           return t;
+       }
+       if (t->getSignalD1Name()==(bean->getUserName())
+               || t->getSignalD2Name()==(bean->getUserName())) {
+           return t;
+       }
+   }
+  }
+ }
+ else if (qobject_cast<Turnout*>(bean)) {
+     for (LayoutTurnout* t : layoutTurnouts) {
+         if (bean==(t->getTurnout())) {
+             return t;
+         }
+     }
+ }
+ return nullptr;
 }
 
 /*public*/ LayoutTurnout* LayoutEditorFindItems::findLayoutTurnoutBySensor(QString sensorName) {

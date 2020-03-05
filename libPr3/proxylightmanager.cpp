@@ -26,7 +26,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 //    	super();
 //    }
 
-/*public*/ int ProxyLightManager::getXMLOrder(){
+/*public*/ int ProxyLightManager::getXMLOrder()const{
     return Manager::LIGHTS;
 }
 
@@ -149,7 +149,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * If a manager is found, return its determination of validity of system name relative
  *      to the hardware configuration
  */
-/*public*/ bool ProxyLightManager::validSystemNameConfig(QString systemName) {
+/*public*/ bool ProxyLightManager::validSystemNameConfig(QString systemName)const {
     int i = matchTentative(systemName);
     if (i >= 0)
     {
@@ -227,7 +227,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ QString ProxyLightManager::getBeanTypeHandled(bool plural) {
+/*public*/ QString ProxyLightManager::getBeanTypeHandled(bool plural) const {
     return tr(plural ? "Lights" : "Light");
 }
 // initialize logging

@@ -939,7 +939,7 @@ void SectionTableAction::addBlockPressed() {
   for (int i=0; i<allBlocks.size(); i++)
   {
    QString bName = allBlocks.at(i);
-   Block* b = blockManager->getBySystemName(bName);
+   Block* b = (Block*)blockManager->getBySystemName(bName);
    if (b!=NULL)
    {
     if ( (b->getUserName()!=NULL) && (b->getUserName()!=("")) )
@@ -955,7 +955,7 @@ void SectionTableAction::addBlockPressed() {
   for (int i=0; i<allBlocks.size(); i++)
   {
    QString bName = allBlocks.at(i);
-   Block* b = blockManager->getBySystemName(bName);
+   Block* b = (Block*)blockManager->getBySystemName(bName);
    if (b!=NULL)
    {
     if ( (!inSection(b)) && connected(b,endBlock) )

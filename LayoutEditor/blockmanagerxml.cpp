@@ -56,22 +56,22 @@ BlockManagerXml::~BlockManagerXml()
 {
  QDomElement blocks = doc.createElement("blocks");
  setStoreElementClass(blocks);
- BlockManager* tm = (BlockManager*) o;
- if (tm!=NULL)
+ BlockManager* bm = (BlockManager*) o;
+ if (bm!=NULL)
  {
-  QStringListIterator iter( tm->getSystemNameList());
+  QStringListIterator iter( bm->getSystemNameList());
 
   // don't return an element if there are not blocks to include
   if (!iter.hasNext()) return QDomElement();
   QDomElement e1;
   blocks.appendChild(e1=doc.createElement("defaultspeed"));
-  e1.appendChild(doc.createTextNode(tm->getDefaultSpeed()));
+  e1.appendChild(doc.createTextNode(bm->getDefaultSpeed()));
   // write out first set of blocks without contents
   while (iter.hasNext())
   {
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
-   Block* b = tm->getBySystemName(sname);
+   Block* b = (Block*)bm->getBySystemName(sname);
    // the following NULL check is to catch a NULL pointer exception that sometimes was found to happen
    if (b==NULL) log->error("Null block during store - sname = "+sname);
    QDomElement elem = doc.createElement("block");
@@ -97,12 +97,12 @@ BlockManagerXml::~BlockManagerXml()
   }
 
   // write out again with contents
-  iter = QStringListIterator(tm->getSystemNameList());
+  iter = QStringListIterator(bm->getSystemNameList());
   while (iter.hasNext())
   {
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
-   Block* b = tm->getBySystemName(sname);
+   Block* b = (Block*)bm->getBySystemName(sname);
    // the following NULL check is to catch a NULL pointer exception that sometimes was found to happen
    if (b==NULL)
    {
@@ -166,7 +166,7 @@ BlockManagerXml::~BlockManagerXml()
      elem.appendChild(re);
     }
 
-    if(tm->savePathInfo())
+    if(bm->isSavedPathInfo())
     {
      // then the paths
      QVector<Path*>* paths = b->getPaths();

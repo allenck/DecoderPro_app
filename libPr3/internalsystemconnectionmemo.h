@@ -18,7 +18,7 @@ public:
  InternalSystemConnectionMemo(QString prefix, QString name, bool defaultInstanceType, QObject* parent = nullptr);
  /*public*/ InternalSystemConnectionMemo(QString prefix, QString name, QObject* parent = nullptr);
  /*public*/ InternalSystemConnectionMemo(bool defaultInstanceType, QObject* parent = nullptr);
- ~InternalSystemConnectionMemo() {}
+ ~InternalSystemConnectionMemo() override{}
  InternalSystemConnectionMemo(const InternalSystemConnectionMemo&) : SystemConnectionMemo() {}
  /*public*/ bool isAssignableFromType() {return true;}
  /*public*/ void configureManagers();

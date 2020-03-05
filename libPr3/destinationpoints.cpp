@@ -45,7 +45,8 @@ void DestinationPoints::setEnabled(bool boo){
 }
 
 
-DestinationPoints::DestinationPoints(PointDetails* point, QString id, Source* src, QObject *parent) : AbstractNamedBean(id, parent)
+DestinationPoints::DestinationPoints(PointDetails* point, QString id, Source* src, QObject *parent)
+ : AbstractNamedBean(id, parent)
 {
     //super(id);
     entryExitType = EntryExitPairs::SETUPTURNOUTSONLY;//SETUPSIGNALMASTLOGIC;
@@ -64,7 +65,7 @@ DestinationPoints::DestinationPoints(PointDetails* point, QString id, Source* sr
     this->point=point;
     if(id==NULL){
         //uniqueId = UUID.randomUUID().toString();
-        uniqueId = QUuid::createUuid().toString();
+        uniqueId = "IN:"+ QUuid::createUuid().toString(QUuid::WithoutBraces);
         mSystemName = uniqueId;
     } else {
         uniqueId = id;

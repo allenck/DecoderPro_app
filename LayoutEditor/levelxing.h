@@ -87,7 +87,7 @@ public:
      */
     /*public*/ void setLayoutBlockAC (LayoutBlock* newLayoutBlock) ;
     /*public*/ void setLayoutBlockBD (LayoutBlock* newLayoutBlock);
-    /*public*/ void reCheckBlockBoundary();
+    /*public*/ void reCheckBlockBoundary()const override;
 //    void removeSML(QString signalMast);
     /**
      * Methods to test if mainline track or not
@@ -99,12 +99,12 @@ public:
     /**
      * Modify coordinates methods
      */
-    /*public*/ void setCoordsCenter(QPointF p);
+    /*public*/ void setCoordsCenter(QPointF p)override;
     /*public*/ void setCoordsA(QPointF p);
     /*public*/ void setCoordsB(QPointF p);
     /*public*/ void setCoordsC(QPointF p);
     /*public*/ void setCoordsD(QPointF p);
-    /*public*/ void scaleCoords(float xFactor, float yFactor);
+    /*public*/ void scaleCoords(float xFactor, float yFactor)override;
     double round (double x);
 
     /**
@@ -113,7 +113,7 @@ public:
      *        method is called after the entire LayoutEditor is loaded to set the specific
      *        TrackSegment objects.
      */
-    /*public*/ void setObjects(LayoutEditor* p);
+    /*public*/ void setObjects(LayoutEditor* p)override;
     // initialization instance variables (used when loading a LayoutEditor)
     /*public*/ QString connectAName;// = "";
     /*public*/ QString connectBName;// = "";
@@ -141,10 +141,10 @@ public:
     /*public*/ void setSignalCMast(QString signalMast);
     /*public*/ SignalMast* getSignalDMast();
     /*public*/ void setSignalDMast(QString signalMast);
-    /*public*/ LayoutTrack* getConnection(int location) throw (JmriException);
+    /*public*/ LayoutTrack* getConnection(int location) throw (JmriException)override;
     /*public*/ void setConnection(int location, LayoutTrack *o, int type) throw (JmriException);
-    /*public*/ QPointF getCoordsForConnectionType(int connectionType);
-    /*public*/ QRectF getBounds();
+    /*public*/ QPointF getCoordsForConnectionType(int connectionType)override;
+    /*public*/ QRectF getBounds()override;
     /*public*/ Sensor* getSensorA();
     /*public*/ Sensor* getSensorB();
     /*public*/ Sensor* getSensorC();
@@ -152,7 +152,7 @@ public:
     /*public*/ void addViewPopUpMenu(QMenuItem menu);
     /*public*/ void setAdditionalEditPopUpMenu(QMenu* popup);
     /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
-    /*public*/ void translateCoords(float xFactor, float yFactor);
+    /*public*/ void translateCoords(float xFactor, float yFactor)override;
 
 signals:
     
@@ -253,7 +253,7 @@ protected:
 /**
  * Display popup menu for information and editing
  */
- /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);
+ /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e)override;
 
  /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockAC = nullptr;
  /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockBD = nullptr;
@@ -267,12 +267,12 @@ protected:
  /*protected*/ NamedBeanHandle<SignalMast*>* signalBMastNamed;// = NULL; // signal at B track junction
  /*protected*/ NamedBeanHandle<SignalMast*>* signalCMastNamed;// = NULL; // signal at C track junction
  /*protected*/ NamedBeanHandle<SignalMast*>* signalDMastNamed;// = NULL; // signal at D track junction
-/*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemType);
-/*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType);
-/*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
-/*protected*/ void drawEditControls(EditScene* g2);
-/*protected*/ void drawTurnoutControls(EditScene* g2);
-/*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
+/*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemType)override;
+/*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType)override;
+/*protected*/ void highlightUnconnected(EditScene* g2, int specificType)override;
+/*protected*/ void drawEditControls(EditScene* g2)override;
+/*protected*/ void drawTurnoutControls(EditScene* g2)override;
+/*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected)override;
 
 friend class LayoutEditor;
 friend class LoadXml;

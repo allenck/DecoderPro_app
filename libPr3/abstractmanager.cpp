@@ -84,7 +84,7 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ SystemConnectionMemo* AbstractManager::getMemo() {
+/*public*/ SystemConnectionMemo* AbstractManager::getMemo() const {
     return memo;
 }
 
@@ -705,7 +705,7 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  *         not perform more specific validation to be considered valid.
  */
 //@Override
-/*public*/ AbstractManager::NameValidity AbstractManager::validSystemNameFormat(QString systemName) {
+/*public*/ AbstractManager::NameValidity AbstractManager::validSystemNameFormat(QString systemName) const {
  if (getSystemNamePrefix() == (systemName)) {
      return NameValidity::VALID_AS_PREFIX_ONLY;
  }
@@ -742,7 +742,7 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  //@CheckReturnValue
  //@Override
  //@Nonnull
-/*public*/ QString AbstractManager::normalizeSystemName(/*@Nonnull*/ QString inputName) //throws NamedBean.BadSystemNameException
+/*public*/ QString AbstractManager::normalizeSystemName(/*@Nonnull*/ QString inputName) const //throws NamedBean.BadSystemNameException
 {
     return inputName;
 }
@@ -798,15 +798,17 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
         bool bok;
             int autoNumber = systemName.mid(8).toInt(&bok);
             //lastAutoNamedBeanRef.accumulateAndGet(autoNumber, Math::max);
-            lastAutoNamedBeanRef.fetchAndAddAcquire(autoNumber);
+            //lastAutoNamedBeanRef.fetchAndAddAcquire(autoNumber);
+            lastAutoNamedBeanRef = autoNumber;
         if(!bok) {
             log->warn(tr("Auto generated SystemName %1 is not in the correct format").arg(systemName));
         }
     }
 }
 
-/*public*/ QString AbstractManager::getAutoSystemName() {
-    int nextAutoBlockRef = lastAutoNamedBeanRef.fetchAndAddAcquire(1);//   .incrementAndGet();
+/*public*/ QString AbstractManager::getAutoSystemName() const{
+    //int nextAutoBlockRef = lastAutoNamedBeanRef.fetchAndAddAcquire(1);//   .incrementAndGet();
+    int nextAutoBlockRef = lastAutoNamedBeanRef++;
     QString b = QString(getSystemNamePrefix() + ":AUTO:");
     QString nextNumber = paddedNumber.format(nextAutoBlockRef);
     b.append(nextNumber);

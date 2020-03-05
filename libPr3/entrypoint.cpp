@@ -53,10 +53,10 @@ void EntryPoint::common()
 }
 
 /*private*/ void EntryPoint::initialize() {
-    mBlock = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(blockName);
+    mBlock =(Block*) ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(blockName);
     if (mBlock==NULL)
         log.error("Missing block - "+blockName+" - when initializing entry point");
-    mFromBlock = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(fromBlockName);
+    mFromBlock = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(fromBlockName);
     if (mFromBlock==NULL)
         log.error("Missing block - "+fromBlockName+" - when initializing entry point");
     needsInitialize = false;

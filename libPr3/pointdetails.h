@@ -70,14 +70,14 @@ signals:
 public slots:
 
 private:
-    LayoutEditor* panel;// = null;
-    LayoutBlock* facing;
+    LayoutEditor* panel = nullptr;
+    LayoutBlock* facing = nullptr;
     QList<LayoutBlock*> protectingBlocks;
-    /*private*/ NamedBean* refObj;
-    /*private*/ QObject* refLoc;
-    /*private*/ Sensor* sensor;
-    /*private*/ SignalMast* signalmast;
-    /*private*/ SignalHead* signalhead;
+    /*private*/ NamedBean* refObj = nullptr;
+    /*private*/ QObject* refLoc = nullptr;
+    /*private*/ Sensor* sensor = nullptr;
+    /*private*/ SignalMast* signalmast = nullptr;
+    /*private*/ SignalHead* signalhead = nullptr;
     static int nxButtonTimeout;// = 10;
 #if 1
     inline bool operator==(const PointDetails &e2)
@@ -93,14 +93,14 @@ private:
 #endif
     Source* sourceRoute;
     /*transient*/ QHash<DestinationPoints*, Source*>* destinations;// = new QHash<DestinationPoints, Source>(5);
-    bool routeToSet;// = false;
-    bool routeFromSet;// = false;
+    bool routeToSet = false;
+    bool routeFromSet = false;
     /*private*/ int nxButtonState;// = EntryExitPairs.NXBUTTONINACTIVE;
-    /*transient*/ QThread* nxButtonTimeOutThr;
+    /*transient*/ QThread* nxButtonTimeOutThr = nullptr;
 
     void nxButtonTimeOut();
     void cancelNXButtonTimeOut();
-    bool extendedtime;// = false;
+    bool extendedtime = false;
     /*public*/ void flashSensor();
     /*public*/ void stopFlashSensor();
     QMutex mutex;

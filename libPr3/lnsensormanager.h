@@ -49,6 +49,9 @@ public:
     QString createSystemName(QString curAddress, QString prefix); // throws JmriException
     QString getNextValidAddress(QString curAddress, QString prefix);
     /*public*/ void setDefaultSensorState(QString state);
+    /*public*/ QString getNamedBeanClass()const override {
+        return "LnSensor";
+    }
 
 signals:
     

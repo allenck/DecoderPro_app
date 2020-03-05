@@ -568,7 +568,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
 
  BlockManager* blockManager = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
- Block* b = blockManager->getBySystemName(sysName);
+ Block* b = (Block*)blockManager->getBySystemName(sysName);
  if ( b!=NULL )
  {
   userName = b->getUserName();
@@ -576,7 +576,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-  b = blockManager->getBySystemName(userName.toUpper());
+  b = (Block*)blockManager->getBySystemName(userName.toUpper());
   if (b!=NULL)
   {
    sysName = b->getSystemName();
@@ -585,7 +585,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
   else
   {
-   b = blockManager->getByUserName(userName);
+   b = (Block*)blockManager->getByUserName(userName);
    if ( b!=NULL )
    {
     sysName = b->getSystemName();
@@ -1117,7 +1117,7 @@ Maintenance::Maintenance(QObject *parent) :
     while (iter1.hasNext()) {
         // get the next Logix
         QString sName = iter1.next();
-        Block* b = blockManager->getBySystemName(sName);
+        Block* b = (Block*)blockManager->getBySystemName(sName);
         QString uName = b->getUserName();
         QString line1 = tr("%1%2: \"%3\" (%4)").arg(" ").arg(tr("Block")).arg(uName).arg(sName);
         if (sName==(sysName) || (uName !=NULL && uName==(userName)))  {

@@ -19,7 +19,7 @@
     }
 
     //@Override
-    /*public*/ int ProxyIdTagManager::getXMLOrder() {
+    /*public*/ int ProxyIdTagManager::getXMLOrder() const {
         return Manager::IDTAGS;
     }
 
@@ -36,7 +36,7 @@
     }
 
     //@Override
-    /*protected*/ AbstractManager* ProxyIdTagManager::makeInternalManager() {
+    /*protected*/ AbstractManager* ProxyIdTagManager::makeInternalManager() const {
         // since this really is an internal tracking mechanisim,
         // build the new manager and add it here.
         DefaultIdTagManager* tagMan = new DefaultIdTagManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
@@ -87,7 +87,7 @@
      * @return requested IdTag object or null if none exists
      */
     //@Override
-    /*public*/ NamedBean *ProxyIdTagManager::getBySystemName(QString systemName) {
+    /*public*/ NamedBean *ProxyIdTagManager::getBySystemName(QString systemName) const {
         return AbstractProxyIdTagManager::getBeanBySystemName(systemName);
     }
 
@@ -98,7 +98,7 @@
      * @return requested Turnout object or null if none exists
      */
     //@Override
-    /*public*/ NamedBean *ProxyIdTagManager::getByUserName(QString userName) {
+    /*public*/ NamedBean *ProxyIdTagManager::getByUserName(QString userName) const {
         return AbstractProxyIdTagManager::getBeanByUserName(userName);
     }
 
@@ -149,7 +149,7 @@
     }
 
     //@Override
-    /*public*/ QString ProxyIdTagManager::getBeanTypeHandled(bool plural) {
+    /*public*/ QString ProxyIdTagManager::getBeanTypeHandled(bool plural) const {
         //return Bundle.getMessage(plural ? "BeanNameIdTags" : "BeanNameIdTag");
      return "NameIdTag";
     }

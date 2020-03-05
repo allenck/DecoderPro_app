@@ -41,7 +41,7 @@
  * on the server.
  */
 //@Override
-/*public*/ QString JMRIClientTurnoutManager::createSystemName(QString curAddress, QString prefix) throw (JmriException) {
+/*public*/ QString JMRIClientTurnoutManager::createSystemName(QString curAddress, QString prefix) const throw (JmriException) {
     return prefix + typeLetter() + curAddress;
 }
 

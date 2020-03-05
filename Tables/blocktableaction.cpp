@@ -154,7 +154,7 @@ void BlockTableAction::common()
   log->warn("requested getValue(NULL)");
   return "(no name)";
  }
- Block* b = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(name);
+ Block* b = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(name);
  if (b == NULL)
  {
   log->debug("requested getValue(\"" + name + "\"), Block doesn't exist");
@@ -1156,10 +1156,10 @@ void BlockTableAction::deletePaths(JmriJFrame* f) {
 //            JOptionPane.QUESTION_MESSAGE, NULL, options, options[1]);
     int retval = QMessageBox::question(f, tr("Save Block Path Information"), tr("Any path information will not be saved, and will be\nrebuilt by the Layout Editor when the panel is re-opened"), QMessageBox::Yes | QMessageBox::No);
     if (retval != QMessageBox::No) {
-        ((BlockManager*)InstanceManager::getDefault("BlockManager"))->savePathInfo(true);
+        ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setSavedPathInfo(true);
         log->info("Requested to save path information via Block Menu.");
     } else {
-        ((BlockManager*)InstanceManager::getDefault("BlockManager"))->savePathInfo(false);
+        ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setSavedPathInfo(false);
         log->info("Requested not to save path information via Block Menu.");
     }
 }

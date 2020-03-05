@@ -118,7 +118,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 //}
 
 // null implementation to satisfy the SensorManager interface
-/*public*/ void ProxySensorManager::updateAll() {  }
+/*public*/ void ProxySensorManager::updateAll() const {  }
 
 /*public*/ bool ProxySensorManager::allowMultipleAdditions(QString systemName)
 {
@@ -128,7 +128,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
     return ((SensorManager*)getMgr(0))->allowMultipleAdditions(systemName);
 }
 
-/*public*/ QString ProxySensorManager::createSystemName(QString curAddress, QString prefix) throw (JmriException)
+/*public*/ QString ProxySensorManager::createSystemName(QString curAddress, QString prefix) const throw (JmriException)
 {
  for (int i=0; i<nMgrs(); i++)
  {
@@ -185,7 +185,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
     }
 }
 
-/*public*/ int ProxySensorManager::getXMLOrder(){
+/*public*/ int ProxySensorManager::getXMLOrder() const{
     return Manager::SENSORS;
 }
 

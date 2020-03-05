@@ -206,7 +206,7 @@ return (settingRouteColor == QColor() ? false : true);
     return sourcePoint->getRefLocation();
 }
 
-/*public*/ int EntryExitPairs::getXMLOrder(){
+/*public*/ int EntryExitPairs::getXMLOrder()const{
     return ENTRYEXIT;
 }
 
@@ -1102,7 +1102,7 @@ if( nxpair.contains(getPointDetails(source, panel)))
 /*public*/ /*final*/ /*static*/ int EntryExitPairs::STACKROUTE = 4;
 
 
-
+#if 0
 /*/*public*/ /*static*/ void EntryExitPairs::flashSensor(PointDetails* pd){
     foreach(SensorIcon* si, *pd->getPanel()->sensorList){
         if(si->getSensor()==pd->getSensor()){
@@ -1118,7 +1118,7 @@ if( nxpair.contains(getPointDetails(source, panel)))
         }
     }
 }
-
+#endif
 /*synchronized*/ /*public*/ void EntryExitPairs::setNXButtonState(PointDetails* nxPoint, int state)
 {
     QMutexLocker locker(&mutex);
@@ -1158,14 +1158,16 @@ if( nxpair.contains(getPointDetails(source, panel)))
 }
 
 /*public*/ PointDetails* EntryExitPairs::getPointDetails(QObject* obj, LayoutEditor* panel)
-    {
-    for (int i = 0; i<pointDetails->size(); i++){
-        if ((pointDetails->at(i)->getRefObject()==obj) && (pointDetails->at(i)->getPanel()==panel)) {
-            return pointDetails->at(i);
-
-        }
-    }
-    return NULL;
+{
+  for (int i = 0; i<pointDetails->size(); i++)
+  {
+   if ((pointDetails->at(i)->getRefObject()==obj)
+       && (pointDetails->at(i)->getPanel()==panel))
+   {
+    return pointDetails->at(i);
+   }
+  }
+  return NULL;
 }
 
 /*

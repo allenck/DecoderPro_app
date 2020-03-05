@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QMap>
+#include "propertychangelistener.h"
+#include "propertychangesupport.h"
 
 class LayoutBlock;
 class LayoutEditor;
@@ -20,7 +22,9 @@ public:
     /*public*/ Source(PointDetails* point, QObject *parent = 0);
     /*public*/ bool isEnabled(QObject* dest,LayoutEditor* panel);
     /*public*/ void setEnabled(QObject* dest, LayoutEditor* panel, bool boo);
-    void createPopUpMenu();
+    /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
+    /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
+    //void createPopUpMenu();
     void cancelClearInterlockFromSource(int cancelClear);
     void setMenuEnabled(bool boo);
     PointDetails* getPoint();
@@ -51,26 +55,32 @@ public:
 signals:
 
 public slots:
+    /*public*/ void propertyChange(PropertyChangeEvent* evt);
+
     void on_editClear();
     void on_editCancel();
     void on_clear();
     void on_cancel();
 private:
-    QMenu* entryExitPopUp;// = NULL;
-    QAction* clear;// = NULL;
-    QAction* cancel;// = NULL;
-
-    NamedBean* sourceObject;// = NULL;
-    NamedBean* sourceSignal;// = NULL;
+    QMenu* entryExitPopUp = nullptr;
+    QAction* clear = nullptr;
+    QAction* cancel = nullptr;
+    QAction* editCancel = nullptr;
+    QAction* editClear = nullptr;
+    QAction* editOneClick = nullptr;
+    QAction* oneClick = nullptr;
+    NamedBean* sourceObject = nullptr;
+    NamedBean* sourceSignal = nullptr;
     //String ref = "Empty";
-    /*transient*/ PointDetails* pd;// = NULL;
+    /*transient*/ PointDetails* pd = nullptr;
 
     EntryExitPairs* manager;// = InstanceManager::getDefault("EntryExitPairs");
+    PropertyChangeSupport* pcs;
 
     //Using Object here rather than sourceSensor, working on the basis that it might
     //one day be possible to have a signal icon selectable on a panel and
     //generate a propertychange, so hence do not want to tie it down at this stage.
-    /*transient*/ QMap<PointDetails*, DestinationPoints*>* pointToDest;// = new HashMap<PointDetails, DestinationPoints>();
+    /*transient*/ QHash<PointDetails*, DestinationPoints*>* pointToDest;// = new HashMap<PointDetails, DestinationPoints>();
     friend class PointDetails;
     friend class DestinationPoints;
     friend class DPRunnable;

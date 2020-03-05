@@ -33,7 +33,7 @@ AbstractSensorManager::AbstractSensorManager(SystemConnectionMemo* memo, QObject
     super(Manager.SENSORS);
 }*/
 
-/*public*/ int AbstractSensorManager::getXMLOrder(){
+/*public*/ int AbstractSensorManager::getXMLOrder()const{
     return Manager::SENSORS;
 }
 
@@ -167,7 +167,7 @@ bool AbstractSensorManager::isNumber(QString s) const
  * Note that this NULL implementation only needs be implemented in system-specific
  *		Sensor Managers where readout of sensor status from the layout is possible.
  */
-/*public*/ void AbstractSensorManager::updateAll() { }
+/*public*/ void AbstractSensorManager::updateAll() const { }
 
 /**
 * A method that determines if it is possible to add a range of sensors in numerical
@@ -176,7 +176,7 @@ bool AbstractSensorManager::isNumber(QString s) const
 
 /*public*/ bool AbstractSensorManager::allowMultipleAdditions(QString systemName) { return false;  }
 
-/*public*/ QString AbstractSensorManager::createSystemName(QString curAddress, QString prefix) throw (JmriException){
+/*public*/ QString AbstractSensorManager::createSystemName(QString curAddress, QString prefix)const throw (JmriException){
  try
  {
   bool bOk;

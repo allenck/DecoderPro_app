@@ -869,7 +869,7 @@
     // nothing to see here... move along...
 }
 //@Override
-/*public*/ void LevelXing::reCheckBlockBoundary() {
+/*public*/ void LevelXing::reCheckBlockBoundary() const {
     // nothing to see here... move along...
 }
 

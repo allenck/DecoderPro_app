@@ -127,7 +127,7 @@ int DefaultRouteManager::getLastAutoRouteRef()
  * {@inheritDoc}
  */
 //@Override
-/*public*/ QString DefaultRouteManager::getNamedBeanClass() {
+/*public*/ QString DefaultRouteManager::getNamedBeanClass()const {
     return "Route";
 }
 //@Override

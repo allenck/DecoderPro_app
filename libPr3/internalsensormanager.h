@@ -16,11 +16,14 @@ public:
     /*public*/ InternalSensorManager(QString prefix);
     /*public*/ static /*synchronized*/ void setDefaultStateForNewSensors(int defaultSetting);
     /*public*/ static /*synchronized*/ int getDefaultStateForNewSensors();
-    /*public*/ bool allowMultipleAdditions(QString systemName);
-    /*public*/ QString getNextValidAddress(QString curAddress, QString prefix);
+    /*public*/ bool allowMultipleAdditions(QString systemName) override;
+    /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) override;
     // /*public*/ QString getSystemPrefix();
-     /*public*/ SystemConnectionMemo* getMemo();
-    /*public*/ QString getEntryToolTip();
+     /*public*/ SystemConnectionMemo* getMemo() override;
+    /*public*/ QString getEntryToolTip() override;
+    /*public*/ QString getNamedBeanClass()const override {
+        return "Sensor";
+    }
 
 private:
  static Logger* log;
@@ -34,7 +37,7 @@ private:
   * Create an internal (dummy) sensor object
   * @return new null
   */
- /*protected*/ Sensor* createNewSensor(QString systemName, QString userName);
+ /*protected*/ Sensor* createNewSensor(QString systemName, QString userName) override;
  /*protected*/ QString prefix;// = "I";
  friend class InternalSensorManagerXml;
  friend class SensorTableAction;

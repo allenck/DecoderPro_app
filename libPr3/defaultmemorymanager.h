@@ -8,6 +8,9 @@ class LIBPR3SHARED_EXPORT DefaultMemoryManager : public AbstractMemoryManager
 public:
     explicit DefaultMemoryManager(QObject *parent = 0);
     /*public*/ QString getSystemPrefix()const override;
+ /*public*/ QString getNamedBeanClass()const override {
+     return "Memory";
+ }
 
 signals:
     

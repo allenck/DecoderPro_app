@@ -2,6 +2,7 @@
 #define LAYOUTBLOCKMANAGERXML_H
 #include "abstractnamedbeanmanagerconfigxml.h"
 #include "liblayouteditor_global.h"
+#include "manager.h"
 
 class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlockManagerXml : public AbstractNamedBeanManagerConfigXML
 {
@@ -14,6 +15,11 @@ public:
     /*public*/ void load(QDomElement element, QObject*o) throw (Exception) override;
     /*public*/ bool load(QDomElement layoutblocks) throw (Exception)  override;
     /*public*/ void loadLayoutBlocks(QDomElement layoutblocks);
+
+    int loadOrder()const override
+    {
+     return Manager::LAYOUTBLOCKS;
+    }
 
 signals:
 

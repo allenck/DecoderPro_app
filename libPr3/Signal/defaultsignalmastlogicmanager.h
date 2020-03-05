@@ -55,6 +55,9 @@ public:
     /*public*/ void automaticallyDiscoverSignallingPairs() throw (JmriException) override;
     /*public*/ void generateSection();
     QObject* self() {return (QObject*)this;}
+    /*public*/ QString getNamedBeanClass()const override {
+        return "SignalMastLogic";
+    }
 
 signals:
     void on_newSignalMastLogicCreated(SignalMastLogic*);

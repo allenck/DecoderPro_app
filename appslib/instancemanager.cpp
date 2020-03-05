@@ -141,16 +141,18 @@ InstanceManager::InstanceManager(QObject *parent) :
 //@SuppressWarnings("unchecked") // the cast here is protected by the structure of the managerLists
 //@Nonnull
 //template<class T>
-/*public*/ /*<T>*/ QObjectList* InstanceManager::getInstances(/*@Nonnull Class<T>*/ QString type) {
-    if(log && log->isTraceEnabled())
-     log->trace(tr("Get list of type %1").arg(type/*.getName()*/));
-    /*synchronized (type)*/ {
-        if (managerLists.value(type) == nullptr) {
-            managerLists.insert(type, new QObjectList());
-            pcs->fireIndexedPropertyChange(getListPropertyName(type), 0, QVariant(), QVariant());
-        }
-        return  managerLists.value(type);
-    }
+/*public*/ /*<T>*/ QObjectList* InstanceManager::getInstances(/*@Nonnull Class<T>*/ QString type)
+{
+ if(log && log->isTraceEnabled())
+  log->trace(tr("Get list of type %1").arg(type/*.getName()*/));
+ /*synchronized (type)*/
+ {
+  if (managerLists.value(type) == nullptr) {
+      managerLists.insert(type, new QObjectList());
+      pcs->fireIndexedPropertyChange(getListPropertyName(type), 0, QVariant(), QVariant());
+  }
+  return  managerLists.value(type);
+ }
 }
 
 /**
@@ -490,6 +492,8 @@ void InstanceManager::deregister(QObject* item, QString type)
 //  {
    //QObject* obj = initializers.value(type);//->getDefault(type);//initializer->getDefault(type);
    QObject* obj = initializer->getDefault(type);
+   if(type == "InternalSystemConnectionMemo")
+       obj = obj1;
    if (obj != nullptr)
    {
     log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));

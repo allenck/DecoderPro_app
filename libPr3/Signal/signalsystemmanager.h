@@ -36,9 +36,9 @@
     SignalSystemManager(QObject* parent = nullptr) : AbstractManager(parent) {}
     /*public*/ virtual SignalSystem* getSystem(QString name) = 0;
 
-    /*public*/ virtual SignalSystem* getBySystemName(QString name) = 0;
+    /*public*/ virtual SignalSystem* getBySystemName(QString name)const = 0;
 
-    /*public*/ virtual SignalSystem* getByUserName(QString name) = 0;
+    /*public*/ virtual SignalSystem* getByUserName(QString name)const = 0;
 };
 
 #endif // SIGNALSYSTEMMANAGER_H

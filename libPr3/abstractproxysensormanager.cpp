@@ -188,18 +188,14 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  if (internalManager == nullptr) {
      log->debug("create internal manager when first requested");
      internalManager = makeInternalManager();
-
-//     // ACK added this
-//     if(nMgrs()==0)
-//      addManager(internalManager);
  }
  return internalManager;
 }
 
-/*abstract protected*/ Manager* AbstractProxySensorManager::makeInternalManager() const
-{
- return (Manager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getSensorManager();
-}
+///*abstract protected*/ Manager* AbstractProxySensorManager::makeInternalManager() const
+//{
+// return (Manager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getSensorManager();
+//}
 
 /**
  * Locate via user name, then system name if needed.
@@ -229,7 +225,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  */
 //@Override
 //@CheckReturnValue
-/*public*/ /*@Nonnull*/ QString AbstractProxySensorManager::normalizeSystemName(/*@Nonnull*/ QString inputName) /*throw (NamedBean::BadSystemNameException)*/ {
+/*public*/ /*@Nonnull*/ QString AbstractProxySensorManager::normalizeSystemName(/*@Nonnull*/ QString inputName) const /*throw (NamedBean::BadSystemNameException)*/ {
     int index = matchTentative(inputName);
     if (index >= 0) {
         return getMgr(index)->normalizeSystemName(inputName);

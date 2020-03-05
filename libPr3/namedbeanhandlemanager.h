@@ -79,7 +79,9 @@ PropertyChangeSupport* pcs; // = new PropertyChangeSupport(this);
 /*public*/ int getXMLOrder()const override;
 /*public*/ NamedBean* getBySystemName(QString /*systemName*/) const override {return nullptr;}
 /*public*/ NamedBean* getByUserName(QString /*userName*/) const override{return nullptr;}
-
+/*public*/ QString getNamedBeanClass()const override {
+    return "NamedBean";
+}
 signals:
 
 public slots:

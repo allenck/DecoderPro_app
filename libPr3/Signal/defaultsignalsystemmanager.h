@@ -14,18 +14,21 @@ class LIBPR3SHARED_EXPORT DefaultSignalSystemManager : public SignalSystemManage
 public:
     //explicit DefaultSignalSystemManager(QObject *parent = 0);
     /*public*/ DefaultSignalSystemManager(QObject *parent = 0);
-    ~DefaultSignalSystemManager() {}
+    ~DefaultSignalSystemManager()  override{}
     DefaultSignalSystemManager(const DefaultSignalSystemManager&) : SignalSystemManager() {}
-    /*public*/ int getXMLOrder();
+    /*public*/ int getXMLOrder()const  override;
     QString getSystemPrefix() ;
     /*public*/ char typeLetter() ;
-    /*public*/ SignalSystem* getSystem(QString name) ;
-    /*public*/ SignalSystem* getBySystemName(QString key) ;
-    /*public*/ SignalSystem* getByUserName(QString key);
+    /*public*/ SignalSystem* getSystem(QString name)  override;
+    /*public*/ SignalSystem* getBySystemName(QString key) const  override;
+    /*public*/ SignalSystem* getByUserName(QString key)const  override;
     void load() ;
     QStringList* getListOfNames();
     SignalSystem* makeBean(QString name) ;
     void loadBean(DefaultSignalSystem* s, QDomElement root) ;
+    /*public*/ QString getNamedBeanClass()const override {
+        return "SignalSystem";
+    }
 
 
 signals:

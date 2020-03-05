@@ -43,7 +43,7 @@ using namespace Sprog;
 /**
  * Get the bit address from the system name.
  */
-/*public*/ int SprogTurnoutManager::getBitFromSystemName(QString systemName) {
+/*public*/ int SprogTurnoutManager::getBitFromSystemName(QString systemName)const {
     // validate the System Name leader characters
     if (!systemName.startsWith(getSystemPrefix() + "T")) {
         // here if an illegal sprog turnout system name
@@ -76,7 +76,7 @@ using namespace Sprog;
  * @return 'true' if system name has a valid format, else returns 'false'
  */
 //@Override
-/*public*/ Manager::NameValidity SprogTurnoutManager::validSystemNameFormat(QString systemName)
+/*public*/ Manager::NameValidity SprogTurnoutManager::validSystemNameFormat(QString systemName) const
 {
     return (getBitFromSystemName(systemName) != 0) ? NameValidity::VALID : NameValidity::INVALID;
 }

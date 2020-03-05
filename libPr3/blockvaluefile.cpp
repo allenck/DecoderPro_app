@@ -67,7 +67,7 @@ BlockValueFile::BlockValueFile(QObject *parent) :
      }
      QString sysName = blockList.at(i).toElement().attribute("systemname");
      // get Block - ignore entry if block not found
-     Block* b = blockManager->getBySystemName(sysName);
+     Block* b = (Block*)blockManager->getBySystemName(sysName);
      if (b!=NULL)
      {
       // Block was found, set its value
@@ -139,7 +139,7 @@ BlockValueFile::BlockValueFile(QObject *parent) :
   for (int i = 0; i<blocks.size(); i++)
   {
    QString sname = blocks.at(i);
-   Block* b = blockManager->getBySystemName(sname);
+   Block* b = (Block*)blockManager->getBySystemName(sname);
    if (b!=NULL)
    {
     QVariant o = b->getValue();

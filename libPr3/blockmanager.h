@@ -6,6 +6,7 @@
 #include <QCompleter>
 #include "decimalformat.h"
 
+class RosterEntry;
 class LIBPR3SHARED_EXPORT BlockManager : public AbstractManager
 {
     Q_OBJECT
@@ -16,31 +17,37 @@ public:
     /*public*/ int getXMLOrder() const override;
     /*public*/ QString getSystemPrefix() const override;
     /*public*/ char typeLetter() const override;
-    /*public*/ bool savePathInfo();
-    /*public*/ void savePathInfo(bool save);
+    /*public*/ QString getNamedBeanClass()const override;
+    /*public*/ bool isSavedPathInfo();
+    /*public*/ void setSavedPathInfo(bool save);
     /**
      * Method to create a new Block if it does not exist
      *   Returns NULL if a Block with the same systemName or userName
      *       already exists, or if there is trouble creating a new Block.
      */
     /*public*/ Block* createNewBlock(QString systemName, QString userName) const;
-    /*public*/ Block* createNewBlock(QString userName);
-    /*public*/ Block* provideBlock(QString name) const;
+    /*public*/ Block* createNewBlock(QString userName) const;
+    /*public*/ Block* provideBlock(QString name)const;
     /**
      * Method to get an existing Block.  First looks up assuming that
      *      name is a User Name.  If this fails looks up assuming
      *      that name is a System Name.  If both fail, returns NULL.
      */
     /*public*/ Block* getBlock(QString name)const;
+#if 0
     /*public*/ Block* getBySystemName(QString name) const override;
     /*public*/ Block* getByUserName(QString key)const override;
+#endif
     /*public*/ Block* getByDisplayName(QString key);
-    static BlockManager* _instance;// = NULL;
-    static /*public*/ BlockManager* instance();
+//    static BlockManager* _instance;// = NULL;
+//    static /*public*/ BlockManager* instance();
     /*public*/ void setDefaultSpeed(QString speed) throw (JmriException);
     /*public*/ QString getDefaultSpeed();
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
+    /*public*/ QList<Block*> getBlocksOccupiedByRosterEntry(/*@Nonnull*/ RosterEntry* re);
     QCompleter* getCompleter(QString text);
     virtual /*public*/ Block* provide(QString name) const throw (IllegalArgumentException) ;
+    /*public*/ qint64 timeSinceLastLayoutPowerOn()const;
 
 signals:
     void newBlockCreated(Block*) const;
@@ -55,7 +62,7 @@ private:
 
     mutable int lastAutoBlockRef;// = 0;
     QString defaultSpeed;// = "Normal";
- Logger log;
+ static Logger* log;
  QString powerManagerChangeName;
  /*private*/ /*Instant*/qint64 lastTimeLayoutPowerOn; // the most recent time any power manager had a power ON event
 

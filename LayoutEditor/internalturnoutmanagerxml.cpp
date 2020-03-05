@@ -27,7 +27,7 @@ InternalTurnoutManagerXml::InternalTurnoutManagerXml(QObject *parent) :
  turnouts.setAttribute("class","jmri.managers.configurexml.InternalTurnoutManagerXml");
 }
 
-/*public*/ void InternalTurnoutManagerXml::load(QDomElement element, QObject* o) throw (Exception){
+/*public*/ void InternalTurnoutManagerXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception){
     log->error("Invalid method called");
 }
 

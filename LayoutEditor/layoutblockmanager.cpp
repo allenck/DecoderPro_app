@@ -70,15 +70,15 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 /*public*/ LayoutBlock* LayoutBlockManager::createNewLayoutBlock(QString systemName, QString userName)
 {
  // Check that LayoutBlock does not already exist
- getSystemPrefix();
- LayoutBlock* block = NULL;
+ LayoutBlock* result = NULL;
+
  if (userName == NULL || userName==(""))
  {
   log.error("Attempt to create a LayoutBlock with no user name");
   return NULL;
  }
- block = (LayoutBlock*)getByUserName(userName);
- if (block!=NULL) return NULL;
+ result = (LayoutBlock*)getByUserName(userName);
+ if (result!=NULL) return NULL;
  // here if not found under user name
  QString sName = "";
  if (systemName.isEmpty())
@@ -89,23 +89,23 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   {
    sName = "ILB"+QString("%1").arg(blkNum);
    blkNum++;
-   block = (LayoutBlock*)getBySystemName(sName);
-   if (block==NULL)
+   result = (LayoutBlock*)getBySystemName(sName);
+   if (result==NULL)
     found = false;
   }
  }
  else
  {
   // try the supplied system name
-  block = (LayoutBlock*)getBySystemName((systemName.toUpper()));
-  if (block!=NULL) return NULL;
+  result = (LayoutBlock*)getBySystemName((systemName.toUpper()));
+  if (result!=NULL) return NULL;
   sName = systemName.toUpper();
  }
  // LayoutBlock does not exist, create a new LayoutBlock
- block = new LayoutBlock(sName,userName);
+ result = new LayoutBlock(sName,userName);
  // save in the maps
- Register(block);
- return block;
+ Register(result);
+ return result;
 }
 
 /*public*/ LayoutBlock* LayoutBlockManager::createNewLayoutBlock()
@@ -145,36 +145,13 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 }
 
 /*public*/ LayoutBlock* LayoutBlockManager::getLayoutBlock(Block* block){
-    LayoutBlock* lblock;
-//    java.util.Iterator<QString> iter = getSystemNameList().iterator();
-//    while (iter.hasNext()) {
-//        QString sName = iter.next();
-    foreach(QString sName, getSystemNameList())
+    foreach(NamedBean* nb, getNamedBeanSet())
     {
-     if (sName==NULL)
-     {
-      log.error("System name NULL during scan of LayoutBlocks");
-     }
-     else
-     {
-      lblock = (LayoutBlock*)getBySystemName(sName);
-      if (lblock->getBlock() == block) return lblock;
-     }
+      if (((LayoutBlock*)nb)->getBlock() == block) return (LayoutBlock*)nb;
     }
-    return NULL;
+    return nullptr;
 }
 
-/*public*/ NamedBean *LayoutBlockManager::getBySystemName(QString name) const {
-    QString key = name.toUpper();
-    return (LayoutBlock*)_tsys->value(key);
-}
-
-/*public*/ NamedBean *LayoutBlockManager::getByUserName(QString key) const {
-    return (LayoutBlock*)_tuser->value(key);
-}
-/*static*/ /*public*/ LayoutBlockManager* LayoutBlockManager::instance() {
-    return static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
-}
 /**
  * Method to find a LayoutBlock with a specified Sensor assigned as its
  *    occupancy sensor.  Returns the block or NULL if no existing LayoutBlock
@@ -1642,31 +1619,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     return sig;
 }
 
-/**
- * Method to return the block facing a given bean object (Sensor, SignalMast or SignalHead).
- * <P>
- * @param nb NamedBean
- * @param panel - panel that this bean is on
- * @return The block that the bean object is facing
- */
-/*public*/ LayoutBlock* LayoutBlockManager::getFacingBlockByNamedBean(NamedBean* nb, LayoutEditor* panel){
-    if(qobject_cast<TurnoutSignalMast*>(nb)!= NULL){
-        return getFacingBlockByMast((SignalMast*)nb, panel);
-    }
-    if(qobject_cast<VirtualSignalMast*>(nb)!= NULL){
-        return getFacingBlockByMast((SignalMast*)nb, panel);
-    }
-    if(qobject_cast<SignalMast*>(nb)!= NULL){
-        return getFacingBlockByMast((SignalMast*)nb, panel);
-    }
-    if(qobject_cast<SignalHead*>(nb)!= NULL){
-        return getFacingBlock((SignalHead*)nb, panel);
-    }
-    if(qobject_cast<Sensor*>(nb)!= NULL){
-        return getFacingBlockBySensor((Sensor*)nb, panel);
-    }
-    return NULL;
-}
+
  /**
  * Method to return the block that a given bean object (Sensor, SignalMast or SignalHead) is protecting
  * <P>
@@ -1674,18 +1627,19 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  * @param panel - panel that this bean is on
  * @return The block that the bean object is facing
  */
-/*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockByNamedBean(NamedBean* nb, LayoutEditor* panel){
-    if(qobject_cast<SignalMast*>(nb)!= NULL){
-        return getProtectedBlockByMast((SignalMast*)nb, panel);
+/*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockByNamedBean(
+        /*@CheckForNull*/ NamedBean*nb,
+        /*@CheckForNull*/ LayoutEditor* panel) {
+    if (qobject_cast<SignalHead*>(nb)) {
+        return getProtectedBlock((SignalHead*) nb, panel);
     }
-    if(qobject_cast<SignalHead*>(nb)!= NULL){
-        return getProtectedBlock((SignalHead*)nb, panel);
+    QList<LayoutBlock*> proBlocks = getProtectingBlocksByBean(nb, panel);
+
+    if (proBlocks.isEmpty()) {
+        return nullptr;
     }
-    if(qobject_cast<Sensor*>(nb)!= NULL){
-        return getProtectedBlockBySensor((Sensor*)nb, panel);
-    }
-    return NULL;
-}
+    return proBlocks.at(0);
+}	//getProtectedBlockByNamedBean
 
 //@CheckReturnValue
 //@Nullable
@@ -1838,6 +1792,133 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  return proBlocks.at(0);
 }
 
+/**
+ * Method to return the LayoutBlock that a given sensor is protecting.
+ */
+/*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockBySensor(QString sensorName, LayoutEditor* panel){
+ Sensor* sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(sensorName);
+
+ return getProtectedBlockBySensor(sensor, panel);
+}
+
+//@Nonnull
+/*public*/ QList<LayoutBlock*> LayoutBlockManager::getProtectingBlocksBySensor(
+        /*@CheckForNull*/ Sensor* sensor, /*@CheckForNull*/ LayoutEditor* panel) {
+    return getProtectingBlocksByBean(sensor, panel);
+}
+
+//@Nonnull
+/*public*/ QList<LayoutBlock*> LayoutBlockManager::getProtectingBlocksBySensorOld(
+        /*@CheckForNull*/ Sensor* sensor, /*@Nonnull*/ LayoutEditor* panel) {
+    QList<LayoutBlock*> result = QList<LayoutBlock*>();
+    PositionablePoint* pp = panel->getFinder()->findPositionablePointByEastBoundBean(sensor);
+    TrackSegment* tr;
+    bool east = true;
+
+    if (pp == nullptr) {
+        pp = panel->getFinder()->findPositionablePointByWestBoundBean(sensor);
+        east = false;
+    }
+
+    if (pp != nullptr) {
+        //            LayoutEditorTools tools = panel.getLETools(); //TODO: Dead-code strip this
+
+        if (east) {
+            if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+                tr = pp->getConnect2();
+            } else {
+                tr = pp->getConnect1();
+            }
+        } else {
+            if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+                tr = pp->getConnect1();
+            } else {
+                tr = pp->getConnect2();
+            }
+        }
+
+        if (tr != nullptr) {
+            result.append(tr->getLayoutBlock());
+
+            return result;
+        }
+    }
+
+    LevelXing* l = panel->getFinder()->findLevelXingByBean(sensor);
+
+    if (l != nullptr) {
+        if (l->getSensorA() == sensor) {
+            result.append(l->getLayoutBlockAC());
+        } else if (l->getSensorB() == sensor) {
+            result.append(l->getLayoutBlockBD());
+        } else if (l->getSensorC() == sensor) {
+            result.append(l->getLayoutBlockAC());
+        } else {
+            result.append(l->getLayoutBlockBD());
+        }
+        return result;
+    }
+    LayoutSlip* ls = panel->getFinder()->findLayoutSlipByBean(sensor);
+
+    if (ls != nullptr) {
+        result.append(ls->getLayoutBlock());
+
+        return result;
+    }
+    LayoutTurnout* t = panel->getFinder()->findLayoutTurnoutByBean(sensor);
+
+    if (t != nullptr) {
+        return t->getProtectedBlocks(sensor);
+    }
+    return result;
+}	//getProtectingBlocksBySensorOld
+
+/**
+ * Method to return the LayoutBlock that a given sensor is protecting.
+ */
+/*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockBySensor(Sensor* sensor, LayoutEditor* panel){
+ QList<LayoutBlock*> proBlocks = getProtectingBlocksByBean(sensor, panel);
+
+ if (proBlocks.isEmpty()) {
+     return nullptr;
+ }
+ return proBlocks.at(0);
+}
+
+/**
+ * Method to return the block facing a given bean object (Sensor, SignalMast or SignalHead).
+ * <P>
+ * @param nb NamedBean
+ * @param panel - panel that this bean is on
+ * @return The block that the bean object is facing
+ */
+/*public*/ LayoutBlock* LayoutBlockManager::getFacingBlockByNamedBean(NamedBean* nb, LayoutEditor* panel){
+    if(qobject_cast<TurnoutSignalMast*>(nb)!= NULL){
+        return getFacingBlockByMast((SignalMast*)nb, panel);
+    }
+    if(qobject_cast<VirtualSignalMast*>(nb)!= NULL){
+        return getFacingBlockByMast((SignalMast*)nb, panel);
+    }
+    if(qobject_cast<SignalMast*>(nb)!= NULL){
+        return getFacingBlockByMast((SignalMast*)nb, panel);
+    }
+    if(qobject_cast<SignalHead*>(nb)!= NULL){
+        return getFacingBlock((SignalHead*)nb, panel);
+    }
+    if(qobject_cast<Sensor*>(nb)!= NULL){
+        return getFacingBlockBySensor((Sensor*)nb, panel);
+    }
+    return NULL;
+}
+
+/**
+ * Method to return the LayoutBlock that a given sensor is facing.
+ */
+/*public*/ LayoutBlock* LayoutBlockManager::getFacingBlockBySensor(QString sensorName, LayoutEditor* panel){
+ Sensor* sensor = InstanceManager::sensorManagerInstance()->getSensor(sensorName);
+ return (sensor == nullptr) ? nullptr : getFacingBlockBySensor(sensor, panel);
+
+}
 
 /**
  * Method to return the LayoutBlock that a given signal is facing.
@@ -1943,7 +2024,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             }
         }
 
-        if (qobject_cast<TrackSegment*>(bean)) {
+        if (qobject_cast<TrackSegment*>(connect)) {
             tr = (TrackSegment*) connect;
             log.debug("return block " + tr->getLayoutBlock()->getDisplayName());
 
@@ -2024,45 +2105,12 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 }	//getFacingblockByBean
 
 /**
- * Method to return the LayoutBlock that a given sensor is protecting.
- */
-/*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockBySensor(Sensor* sensor, LayoutEditor* panel){
- QList<LayoutBlock*> proBlocks = getProtectingBlocksByBean(sensor, panel);
-
- if (proBlocks.isEmpty()) {
-     return nullptr;
- }
- return proBlocks.at(0);
-}
-
-/**
- * Method to return the LayoutBlock that a given sensor is protecting.
- */
-/*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlockBySensor(QString sensorName, LayoutEditor* panel){
- Sensor* sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(sensorName);
-
- return getProtectedBlockBySensor(sensor, panel);
-
-}
-
-/**
  * Method to return the LayoutBlock that a given sensor is facing.
  */
 /*public*/ LayoutBlock* LayoutBlockManager::getFacingBlockBySensor(Sensor* sensor, LayoutEditor* panel){
-    LayoutBlock* facing = getFacingBlockBySensor(sensor->getUserName(), panel);
-    if(facing == NULL)
-        facing = getFacingBlockBySensor(sensor->getSystemName(), panel);
-    return facing;
+ return getFacingBlockByBean(sensor, panel);
 }
 
-/**
- * Method to return the LayoutBlock that a given sensor is facing.
- */
-/*public*/ LayoutBlock* LayoutBlockManager::getFacingBlockBySensor(QString sensorName, LayoutEditor* panel){
- Sensor* sensor = InstanceManager::sensorManagerInstance()->getSensor(sensorName);
- return (sensor == nullptr) ? nullptr : getFacingBlockBySensor(sensor, panel);
-
-}
 
 /*public*/ LayoutBlock* LayoutBlockManager::getProtectedBlock(SignalHead* signalHead, LayoutEditor* panel){
     LayoutBlock* protect = getProtectedBlock(signalHead->getUserName(), panel);
@@ -2345,6 +2393,11 @@ void LayoutBlockManager::passPropertyChange(PropertyChangeEvent *e)
  return lastRoutingChange;
 }
 
+//@Override
+//@Nonnull
+/*public*/ QString LayoutBlockManager::getBeanTypeHandled(bool plural)const {
+    return tr(plural ? "LayoutBlocks" : "LayoutBlock");
+}
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LayoutBlockManager.class.getName());
 //}
 

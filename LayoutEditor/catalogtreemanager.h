@@ -9,7 +9,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT CatalogTreeManager : public AbstractManager
     Q_OBJECT
 public:
     explicit CatalogTreeManager(QObject *parent = 0);
-    ~CatalogTreeManager() {}
+    ~CatalogTreeManager() override{}
     CatalogTreeManager(const CatalogTreeManager&) : AbstractManager() {}
     static /*final*/ QStringList IMAGE_FILTER;// = {"gif", "jpg", "jpeg", "png"};
     static /*final*/ QStringList SOUND_FILTER;// = {"wav"};
@@ -21,13 +21,13 @@ public:
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) const override {return NULL;}
+    /*public*/ NamedBean* getBySystemName(QString /*systemName*/) const override {return NULL;}
     /**
      * Locate an instance based on a user name.  Returns null if no
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ virtual NamedBean* getByUserName(QString /*userName*/) const override{return NULL;}
+    /*public*/ NamedBean* getByUserName(QString /*userName*/) const override{return NULL;}
     /**
      * Return an instance with the specified system and user names.
      * Note that two calls with the same arguments will get the same instance;
@@ -65,6 +65,14 @@ public:
     /*public*/  void Register(NamedBean*) const override{}
 
     /*public*/ virtual void storeImageIndex() {}
+    /*public*/ QString getNamedBeanClass()const override {
+        return "NamedBean";
+    }
+
+    int getXMLOrder() const override
+    {
+     return Manager::MEMORIES; // ??
+    }
 signals:
 
 public slots:

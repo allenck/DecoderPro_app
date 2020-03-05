@@ -9,11 +9,14 @@ public:
  RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* parent = 0);
  //static RpsReporterManager* _instance;// = NULL;
  //static /*public*/ RpsReporterManager* instance();
- /*public*/ QString getSystemPrefix();
- /*public*/ SystemConnectionMemo* getMemo();
+ /*public*/ QString getSystemPrefix()const override;
+ /*public*/ SystemConnectionMemo* getMemo() override;
+ /*public*/ QString getNamedBeanClass()const override {
+     return "Reporter";
+ }
 
 protected:
- /*protected*/ Reporter* createNewReporter(QString systemName, QString userName);
+ /*protected*/ Reporter* createNewReporter(QString systemName, QString userName)const override;
 
 };
 

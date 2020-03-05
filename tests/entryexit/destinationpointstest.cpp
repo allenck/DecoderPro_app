@@ -37,7 +37,7 @@ DestinationPointsTest::DestinationPointsTest(QObject *parent) : QObject(parent)
         PointDetails* pdDest = tools->getPoint(sm->getSensor("NX-AE"), panels->value("Alpha") ,eep);  // NOI18N
         Assert::assertNotNull("testCTor - destination point", pdDest, __FILE__, __LINE__);  // NOI18N
 
-        DestinationPoints* dp = new DestinationPoints(pdDest, nullptr, src);
+        DestinationPoints* dp = new DestinationPoints(pdDest, QString(), src);
         Assert::assertNotNull("testCTor", dp, __FILE__, __LINE__);  // NOI18N
         QString uuid = dp->getUniqueId();
         Assert::assertTrue("check uuid", uuid.startsWith("IN:"), __FILE__, __LINE__);  // NOI18N

@@ -258,7 +258,6 @@ HEADERS += \
         loconet/lnopsmodeprogrammertestaction.h \
         loconet/loconetmessagetest.h \
         loconet/loconetmessagetestaction.h \
-        testsmenu.h \
         loconet/lntrafficcontrollertest.h \
         loconet/lntrafficcontrollertestaction.h \
         abstractmessagetestbase.h \

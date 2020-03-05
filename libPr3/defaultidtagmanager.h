@@ -40,6 +40,9 @@ public:
     /*public*/ bool isFastClockUsed()override;
     /*public*/ QList<IdTag*>* getTagsForReporter(Reporter* reporter, long threshold)override;
     /*public*/ DefaultIdTag *provide(QString name) throw (IllegalArgumentException)override;
+ /*public*/ QString getNamedBeanClass()const override {
+     return "IdTag";
+ }
 
 signals:
     void newIdTagCreated(DefaultIdTag* tag);

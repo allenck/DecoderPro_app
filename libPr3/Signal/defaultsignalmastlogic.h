@@ -34,8 +34,8 @@ class LIBPR3SHARED_EXPORT DefaultSignalMastLogic : public SignalMastLogic
 public:
     //explicit DefaultSignalMastLogic(QObject *parent = 0);
     /*public*/ DefaultSignalMastLogic (SignalMast* source, QObject *parent = 0);
-    /*public*/ void setFacingBlock(LayoutBlock* facing);
-    /*public*/ void setProtectingBlock(LayoutBlock* protecting);
+    /*public*/ void setFacingBlock(LayoutBlock* facing) override;
+    /*public*/ void setProtectingBlock(LayoutBlock* protecting)override;
     /*public*/ LayoutBlock* getFacingBlock() override;
     /*public*/ LayoutBlock* getProtectingBlock() override;
     /*public*/ SignalMast* getSourceMast() override;
@@ -271,11 +271,11 @@ class DestinationMast : public QObject
       void dispose();
       void lockTurnouts();
       void clearTurnoutLock();
-      bool _useLayoutEditor;// = false;
-      bool _useLayoutEditorTurnouts ;//= false;
-      bool _useLayoutEditorBlocks;// = false;
-      bool _lockTurnouts;// = false;
-      NamedBeanHandle<Section*>* associatedSection;// = null;
+      bool _useLayoutEditor = false;
+      bool _useLayoutEditorTurnouts = false;
+      bool _useLayoutEditorBlocks = false;
+      bool _lockTurnouts = false;
+      NamedBeanHandle<Section*>* associatedSection = nullptr;
 
  private:
     LayoutBlock* destinationBlock = nullptr;
@@ -291,9 +291,9 @@ class DestinationMast : public QObject
     QHash<SignalMast*, QString>* autoMasts;// = new QHash<SignalMast, QString>(0);
     QList<NamedBeanSetting*> userSetSensors;// = new QList<NamedBeanSetting>(0);
     QList<NamedBeanSetting*> userSetBlocks;// = new QList<NamedBeanSetting>(0);
-    bool turnoutThrown;// = false;
-    bool permissiveBlock;// = false;
-    bool disposed;// = false;
+    bool turnoutThrown = false;
+    bool permissiveBlock = false;
+    bool disposed = false;
     LayoutBlock* facingBlock = nullptr;
     QList<LevelXing*> blockInXings;// = new QList<LevelXing>();
 
@@ -305,16 +305,16 @@ class DestinationMast : public QObject
 
     //SignalMast* source;
     SignalMast* destination;
-    bool active;// = false;
-    bool destMastInit;// = false;
+    bool active = false;
+    bool destMastInit = false;
 
-    float minimumBlockSpeed;// = 0.0f;
+    float minimumBlockSpeed = 0.0f;
 
     QString comment;
-    bool enable;// = true;
+    bool enable = true;
     Logger* log;
-    bool inWait;// = false;
-    QThread* thr;// = NULL;
+    bool inWait = false;
+    QThread* thr = NULL;
     void setAssociatedSection(Section* section);
     Section* getAssociatedSection() ;
     void createSectionDetails() ;
@@ -386,7 +386,7 @@ public:
     }
     DestinationMast* parent;
 public slots:
-    void propertyChange(PropertyChangeEvent *e)
+    void propertyChange(PropertyChangeEvent *e) override
     {
      Sensor* sen = (Sensor*) e->getSource();
      parent->log->debug(parent->dsml->source->getDisplayName() + " to " + parent->destination->getDisplayName() + " destination sensor "+ sen->getDisplayName() + "trigger " + e->getPropertyName());

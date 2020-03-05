@@ -11,11 +11,11 @@ class LIBLAYOUTEDITORSHARED_EXPORT TransitManager : public AbstractManager
     Q_OBJECT
 public:
     explicit TransitManager(QObject *parent = 0);
-    ~TransitManager() {}
+    ~TransitManager() override{}
     TransitManager(const TransitManager&) : AbstractManager() {}
-    int getXMLOrder();
-    QString getSystemPrefix();
-    char typeLetter() ;
+    int getXMLOrder() const override;
+    QString getSystemPrefix()const override;
+    char typeLetter()const override ;
 
     /**
      * Method to create a new Transit if the Transit does not exist
@@ -25,13 +25,16 @@ public:
     Transit* createNewTransit(QString systemName, QString userName);
     /*public*/ Transit* createNewTransit(QString userName);
     /*public*/ Transit* getTransit(QString name) ;
-    /*public*/ Transit* getBySystemName(QString name);
-    /*public*/ Transit* getByUserName(QString key);
+    /*public*/ Transit* getBySystemName(QString name)const override;
+    /*public*/ Transit* getByUserName(QString key)const override;
     /*public*/ void deleteTransit(Transit* z) ;
     /*public*/ QList<Transit*>* getListUsingSection(Section* s);
     /*static*/ /*public*/ TransitManager* instance();
     /*public*/ QList<Transit*> getListUsingBlock(Block* b);
     /*public*/ QList<Transit*> getListEntryBlock(Block* b);
+    /*public*/ QString getNamedBeanClass()const override {
+        return "Transit";
+    }
 
 signals:
     

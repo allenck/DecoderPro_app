@@ -123,6 +123,9 @@ public:
  QCompleter* getCompleter(QString text);
  /*public*/ Turnout* provideTurnout(QString name) const override;
  /*public*/ Turnout* provide(QString name) const throw (IllegalArgumentException) override;
+ /*public*/ QString getNamedBeanClass()const override {
+     return "Turnout";
+ }
 
 public slots:
 

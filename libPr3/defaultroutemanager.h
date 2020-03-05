@@ -41,7 +41,7 @@ public:
     int getLastAutoRouteRef();
     /*public*/ Route* provide(QString name) throw (IllegalArgumentException) override;
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
-    /*public*/ QString getNamedBeanClass();
+    /*public*/ QString getNamedBeanClass()const override;
 
 
 signals:

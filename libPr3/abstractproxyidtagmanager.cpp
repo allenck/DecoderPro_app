@@ -227,7 +227,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
  */
 //@Override
 //@CheckReturnValue
-/*public*/ /*@Nonnull*/ QString AbstractProxyIdTagManager::normalizeSystemName(/*@Nonnull*/ QString inputName) /*throw (NamedBean::BadSystemNameException)*/ {
+/*public*/ /*@Nonnull*/ QString AbstractProxyIdTagManager::normalizeSystemName(/*@Nonnull*/ QString inputName) const /*throw (NamedBean::BadSystemNameException)*/ {
     int index = matchTentative(inputName);
     if (index >= 0) {
         return getMgr(index)->normalizeSystemName(inputName);

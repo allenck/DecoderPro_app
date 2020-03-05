@@ -20,6 +20,9 @@ public:
     void Register(NamedBean *s)const override;
     QCompleter* getCompleter(QString text, bool bIncludeUserNames = false) override;
     /*public*/ QString getBeanTypeHandled(bool plural);
+    /*public*/ QString getNamedBeanClass()const override {
+        return "SignalHead";
+    }
 
 signals:
     void newSignalHeadCreated(AbstractSignalHead*);

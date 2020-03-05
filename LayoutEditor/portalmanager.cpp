@@ -51,15 +51,15 @@ PortalManager::PortalManager(QObject *parent) :
  }
  */
 
-/*public*/ int PortalManager::getXMLOrder() {
+/*public*/ int PortalManager::getXMLOrder() const{
     return Manager::OBLOCKS;
 }
 
-/*public*/ QString PortalManager::getSystemPrefix() {
+/*public*/ QString PortalManager::getSystemPrefix() const{
     return "I";
 }
 
-/*public*/ char PortalManager::typeLetter() {
+/*public*/ char PortalManager::typeLetter()const {
     return 'P';
 }
 
@@ -121,14 +121,14 @@ PortalManager::PortalManager(QObject *parent) :
     return (Portal*)getBySystemName(name);
 }
 
-/*public*/ NamedBean *PortalManager::getBySystemName(QString name) {
+/*public*/ NamedBean *PortalManager::getBySystemName(QString name)const {
     if (name == NULL || name.trimmed().length() == 0) {
         return NULL;
     }
     return (Portal*) _tsys->value(name);
 }
 
-/*public*/ NamedBean *PortalManager::getByUserName(QString key) {
+/*public*/ NamedBean *PortalManager::getByUserName(QString key) const{
     if (key == NULL || key.trimmed().length() == 0) {
         return NULL;
     }

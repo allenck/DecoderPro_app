@@ -813,9 +813,13 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 /*public*/ SignalMast* LayoutTurnout::getSignalAMast() const
 {
  if(signalAMastNamed == nullptr)
-  throw NullPointerException(tr("signalAMastNamed is null"));
+ {
+  log->warn(tr("signalAMastNamed is null"));
+  return nullptr;
+ }
  return signalAMastNamed->getBean();
 }
+
 /*public*/ void LayoutTurnout::setSignalAMast(QString signalMast)
 {
  if (signalMast.isNull() || signalMast.isEmpty()) {
@@ -841,7 +845,15 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  }
  return "";
 }
-/*public*/ SignalMast *LayoutTurnout::getSignalBMast()const {return signalBMastNamed->getBean();}
+/*public*/ SignalMast *LayoutTurnout::getSignalBMast()const
+{
+ if(signalBMastNamed == nullptr)
+ {
+  log->warn(tr("signalBMastNamed is Null"));
+  return nullptr;
+ }
+ return signalBMastNamed->getBean();
+}
 /*public*/ void LayoutTurnout::setSignalBMast(QString signalMast)
 {
  if (signalMast.isNull() || signalMast.isEmpty()) {
@@ -866,7 +878,14 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  }
  return "";
 }
-/*public*/ SignalMast* LayoutTurnout::getSignalCMast()const {return signalCMastNamed->getBean();}
+/*public*/ SignalMast* LayoutTurnout::getSignalCMast()const {
+ if(signalCMastNamed == nullptr)
+ {
+  log->warn( tr("signalCMastNamed is Null"));
+  return nullptr;
+ }
+ return signalCMastNamed->getBean();}
+
 /*public*/ void LayoutTurnout::setSignalCMast(QString signalMast)
 {
  if (signalMast.isNull() || signalMast.isEmpty()) {

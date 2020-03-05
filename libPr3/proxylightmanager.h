@@ -8,23 +8,26 @@ class LIBPR3SHARED_EXPORT ProxyLightManager : public AbstractProxyLightManager
     Q_OBJECT
 public:
  explicit ProxyLightManager(QObject *parent = 0);
- /*public*/ int getXMLOrder();
- /*public*/ Light* getLight(QString name);
- /*public*/ Light* provideLight(QString name);
- /*public*/ NamedBean* getBySystemName(QString systemName) const;
- /*public*/ NamedBean* getByUserName(QString userName) const;
- /*public*/ Light* newLight(QString systemName, QString userName);
+ /*public*/ int getXMLOrder() const override;
+ /*public*/ Light* getLight(QString name)override;
+ /*public*/ Light* provideLight(QString name)override;
+ /*public*/ NamedBean* getBySystemName(QString systemName) const override;
+ /*public*/ NamedBean* getByUserName(QString userName) const override;
+ /*public*/ Light* newLight(QString systemName, QString userName)override;
 // /*public*/ NameValidity validSystemNameFormat(QString systemName);
- /*public*/ bool validSystemNameConfig(QString systemName);
+ /*public*/ bool validSystemNameConfig(QString systemName)const override;
 // /*public*/ QString normalizeSystemName(QString systemName);
- /*public*/ QString convertSystemNameToAlternate(QString systemName);
- /*public*/ void activateAllLights();
- /*public*/ bool supportsVariableLights(QString systemName);
- /*public*/ bool allowMultipleAdditions(QString systemName);
+ /*public*/ QString convertSystemNameToAlternate(QString systemName)override;
+ /*public*/ void activateAllLights()override;
+ /*public*/ bool supportsVariableLights(QString systemName)override;
+ /*public*/ bool allowMultipleAdditions(QString systemName)override;
 // /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
- /*public*/ QString getEntryToolTip();
- /*public*/ QString getBeanTypeHandled(bool plural);
- /*public*/ Light* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException);
+ /*public*/ QString getEntryToolTip()override;
+ /*public*/ QString getBeanTypeHandled(bool plural)const override;
+ /*public*/ Light* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException)override;
+ /*public*/ QString getNamedBeanClass()const override {
+     return "Light";
+ }
 
 signals:
 
@@ -32,8 +35,8 @@ public slots:
 private:
  Logger* log;
 protected:
- /*protected*/ Manager* makeInternalManager() const;
- /*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName) ;
+ /*protected*/ Manager* makeInternalManager() const override;
+ /*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName) override;
  friend class AbstractProxyManager;
 };
 

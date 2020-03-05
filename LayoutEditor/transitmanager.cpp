@@ -47,12 +47,12 @@ TransitManager::TransitManager(QObject *parent) :
 //        super();
 //    }
 
-int TransitManager::getXMLOrder(){
+int TransitManager::getXMLOrder()const{
     return Manager::TRANSITS;
 }
 
-QString TransitManager::getSystemPrefix() { return "I"; }
-char TransitManager::typeLetter() { return 'Z'; }
+QString TransitManager::getSystemPrefix()const { return "I"; }
+char TransitManager::typeLetter() const { return 'Z'; }
 
 /**
  * Method to create a new Transit if the Transit does not exist
@@ -121,12 +121,12 @@ Transit* TransitManager::createNewTransit(QString systemName, QString userName) 
     return getBySystemName(name);
 }
 
-/*public*/ Transit* TransitManager::getBySystemName(QString name) {
+/*public*/ Transit* TransitManager::getBySystemName(QString name) const {
     QString key = name.toUpper();
     return (Transit*)_tsys->value(key);
 }
 
-/*public*/ Transit* TransitManager::getByUserName(QString key) {
+/*public*/ Transit* TransitManager::getByUserName(QString key) const {
     return (Transit*)_tuser->value(key);
 }
 

@@ -11,18 +11,21 @@ class LIBPR3SHARED_EXPORT DefaultAudioManager : public AbstractAudioManager
 {
  Q_OBJECT
 public:
- explicit DefaultAudioManager(QObject *parent = 0);
+ Q_INVOKABLE explicit DefaultAudioManager(QObject *parent = 0);
  ~DefaultAudioManager() {}
  DefaultAudioManager(const DefaultAudioManager&) : AbstractAudioManager() {}
- /*public*/ int getXMLOrder();
- /*public*/ QString getSystemPrefix();
+ /*public*/ int getXMLOrder()const override;
+ /*public*/ QString getSystemPrefix()const override;
  /*public*/ static DefaultAudioManager* instance();
  /*public*/ Q_DECL_DEPRECATED QStringList getSystemNameList(int subType);
- /*public*/ QStringList getSystemNameList(QChar subType);
- /*public*/ /*synchronized*/ void init();
- /*public*/ void deregister(NamedBean* s);
+ /*public*/ QStringList getSystemNameList(QChar subType)override;
+ /*public*/ /*synchronized*/ void init()override;
+ /*public*/ void deregister(NamedBean* s)const override;
  /*public*/ void cleanUp();
- /*public*/ AudioFactory* getActiveAudioFactory();
+ /*public*/ AudioFactory* getActiveAudioFactory()override;
+ /*public*/ QString getNamedBeanClass()const override {
+     return "Audio";
+ }
 
 signals:
 
@@ -40,11 +43,10 @@ private:
  /*private*/ static bool _initialised;// = false;
 
  ShutDownTask* audioShutDownTask;
-/*private*/ /*volatile*/ static DefaultAudioManager* _instance;
  Logger* log;
 
 protected:
- /*protected*/ Audio* createNewAudio(QString systemName, QString userName) /*throws AudioException*/ ;
+ /*protected*/ Audio* createNewAudio(QString systemName, QString userName) /*throws AudioException*/ override;
 
 };
 class AudioShutDownTask : public QuietShutDownTask
@@ -52,7 +54,7 @@ class AudioShutDownTask : public QuietShutDownTask
  Q_OBJECT
 public:
  AudioShutDownTask(QString);
- bool doAction();
+ bool doAction()override;
 };
 Q_DECLARE_METATYPE(DefaultAudioManager)
 #endif // DEFAULTAUDIOMANAGER_H

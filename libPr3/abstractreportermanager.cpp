@@ -20,11 +20,11 @@ AbstractReporterManager::AbstractReporterManager(SystemConnectionMemo* memo, QOb
 //public abstract class AbstractReporterManager extends AbstractManager
 //    implements ReporterManager {
 
-int AbstractReporterManager::getXMLOrder(){
+int AbstractReporterManager::getXMLOrder() const{
     return Manager::REPORTERS;
 }
 
-char AbstractReporterManager::typeLetter()   { return 'R'; }
+char AbstractReporterManager::typeLetter() const  { return 'R'; }
 
 Reporter* AbstractReporterManager::provideReporter(QString sName) {
     Reporter* t = getReporter(sName);
@@ -35,7 +35,7 @@ Reporter* AbstractReporterManager::provideReporter(QString sName) {
         return newReporter(makeSystemName(sName), "");
 }
 
-Reporter* AbstractReporterManager::getReporter(QString name) {
+Reporter* AbstractReporterManager::getReporter(QString name) const {
     Reporter* t = (Reporter*)getByUserName(name);
     if (t!=nullptr) return t;
 
@@ -57,7 +57,7 @@ NamedBean *AbstractReporterManager::getByUserName(QString key) {
     return (plural ? tr("Reporters") : tr("Reporter"));
 }
 
-Reporter* AbstractReporterManager::getByDisplayName(QString key) {
+Reporter* AbstractReporterManager::getByDisplayName(QString key) const {
 // First try to find it in the user list.
 // If that fails, look it up in the system list
 Reporter* retv = (Reporter*)this->getByUserName(key);
@@ -68,7 +68,7 @@ if (retv == nullptr) {
 return(retv);
 }
 
-Reporter* AbstractReporterManager::newReporter(QString systemName, QString userName) throw(IllegalArgumentException) {
+Reporter* AbstractReporterManager::newReporter(QString systemName, QString userName) const throw(IllegalArgumentException) {
  if (log->isDebugEnabled()) log->debug(tr("new Reporter:")
                                         +( (systemName==NULL) ? "NULL" : systemName)
                                         +";"+( (userName==NULL) ? "NULL" : userName));
@@ -119,9 +119,9 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
 * of turnouts in numerical order eg 10 to 30
 **/
 
-bool AbstractReporterManager::allowMultipleAdditions(QString systemName) { return false;  }
+bool AbstractReporterManager::allowMultipleAdditions(QString systemName) const { return false;  }
 
-QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString prefix)
+QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString prefix) const
 {
  //If the hardware address past does not already exist then this can
  //be considered the next valid address.

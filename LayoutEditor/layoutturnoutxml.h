@@ -8,7 +8,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LayoutTurnoutXml : public AbstractXmlAdapter
  Q_OBJECT
 public:
  Q_INVOKABLE explicit LayoutTurnoutXml(QObject *parent = 0);
- ~LayoutTurnoutXml() {}
+ ~LayoutTurnoutXml() override{}
  LayoutTurnoutXml(const LayoutTurnoutXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o) override;
  /*public*/ bool load(QDomElement element) throw (Exception) override;

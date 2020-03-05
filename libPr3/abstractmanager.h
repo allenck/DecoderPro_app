@@ -106,7 +106,7 @@ public:
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
 
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
-    /*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName); //throws NamedBean.BadSystemNameException
+    /*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override; //throws NamedBean.BadSystemNameException
     VetoableChangeSupport* vcs;// = new VetoableChangeSupport(this);
     /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l) override;
     /*public*/ /*synchronized*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* l) override;
@@ -115,17 +115,17 @@ public:
     /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
     /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
     /*public*/ /*final*/ QString getSystemPrefix() const override;
-    /*public*/ NameValidity validSystemNameFormat(QString systemName) override;
+    /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName)const override;
     /*public*/ void setDataListenerMute(bool m);
     /*public*/ void addDataListener(/*ManagerDataListener<E>*/QObject* e) override;
     /*public*/ void removeDataListener(/*ManagerDataListener<E>*/QObject* e) override;
 //    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s);
 //    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors);
     /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors = true, QLocale locale = QLocale()) const override;
-    /*public*/ virtual SystemConnectionMemo* getMemo();
+    /*public*/ virtual SystemConnectionMemo* getMemo()const;
     /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) const override;
     /*public*/ void updateAutoNumber(QString systemName);
-    /*public*/ QString getAutoSystemName();
+    /*public*/ QString getAutoSystemName()const;
 
 
 signals:
@@ -153,7 +153,8 @@ private:
     Logger* log;
     /*final*/ QList</*ManagerDataListener<E>>*/QObject*> listeners;// = new ArrayList<>();
     SystemConnectionMemo* memo = nullptr;
-    QAtomicInteger<int> lastAutoNamedBeanRef;
+    //QAtomicInteger<int> lastAutoNamedBeanRef;
+    mutable int lastAutoNamedBeanRef = 0;
     DecimalFormat paddedNumber = DecimalFormat("0000");
 
 friend class SectionTableDataModel;
@@ -166,7 +167,7 @@ friend class SensorTableModel;
 friend class RpsReporterManager;
 friend class RpsSensorManager;
 friend class InternalLightManager;
-
+friend class InternalReporterManager;
 protected:
 /**
  * Locate an instance based on a system name.  Returns NULL if no

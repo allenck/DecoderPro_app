@@ -2400,4 +2400,6 @@ void Section::propertyChange(PropertyChangeEvent* e)
 
     }
 }
+
+
 //    static final org.apache.log4j.Logger log = org.apache.log4j.Logger->atLogger(Section.class->atName());

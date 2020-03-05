@@ -336,10 +336,6 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
      if (!d.firstChildElement("associatedSection").isNull())
      {
       Section* sect = ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getSection(d.firstChildElement("associatedSection").text());
-      // begin hack
-//      if(sect == nullptr)
-//       sect = ((SectionManager*)InstanceManager::getDefault("SectionManager"))->createNewSection(d.firstChildElement("associatedSection").text());
-      // end hack
       logic->setAssociatedSection(sect, dest);
      }
 

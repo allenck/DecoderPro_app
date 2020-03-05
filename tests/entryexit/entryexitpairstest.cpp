@@ -2,7 +2,6 @@
 #include "entryexittesttools.h"
 #include "layouteditor.h"
 #include "entryexitpairs.h"
-#include "layoutblockmanager.h"
 #include "sensormanager.h"
 #include "turnoutmanager.h"
 #include "junitutil.h"
@@ -55,11 +54,14 @@ EntryExitPairsTest::EntryExitPairsTest(QObject *parent) : QObject(parent)
         eep->setSingleSegmentRoute(dp->getUniqueId());
         //new EventTool().waitNoEvent(1000);
         qApp->processEvents(QEventLoop::AllEvents, 1000);
-#if 0
+
         // Check the results
-        JUnitUtil::waitFor(()->{return lbm.getLayoutBlock("B-Alpha-Main").getUseExtraColor();}, "Route active");  // NOI18N
-        JUnitUtil.waitFor(()->{return tm.getTurnout("T-AE").getKnownState() == Turnout.CLOSED;}, "Turnout closed");  // NOI18N
-#endif
+        //JUnitUtil::waitFor(()->{return lbm.getLayoutBlock("B-Alpha-Main").getUseExtraColor();}, "Route active");  // NOI18N
+        ReleaseUntil_EEPT1* r1 = new ReleaseUntil_EEPT1(this);
+        JUnitUtil::waitFor(r1, "Route active", __FILE__, __LINE__);
+        //JUnitUtil.waitFor(()->{return tm.getTurnout("T-AE").getKnownState() == Turnout.CLOSED;}, "Turnout closed");  // NOI18N
+        ReleaseUntil_EEPT2* r2 = new ReleaseUntil_EEPT2(this);
+        JUnitUtil::waitFor(r2, "Turnout closed", __FILE__, __LINE__);
     }
 
     //@Test

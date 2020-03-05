@@ -468,11 +468,11 @@
 
                         sen = InstanceManager::sensorManagerInstance()->provideSensor("IS:" +  sec->getSystemName() + ":reverse");
                         sen->setUserName( sec->getSystemName() + ":reverse");
-                         sec->setForwardBlockingSensorName( sec->getSystemName() + ":forward");
-                         sec->setReverseBlockingSensorName( sec->getSystemName() + ":reverse");
+                        sec->setForwardBlockingSensorName( sec->getSystemName() + ":forward");
+                        sec->setReverseBlockingSensorName( sec->getSystemName() + ":reverse");
                     }
                     sml->setAssociatedSection(sec, destMast);
-                     sec->setProperty("forwardMast", destMast->getDisplayName());
+                    sec->setProperty("forwardMast", destMast->getDisplayName());
                     bool destIntermediate = false;
                     if (destMast->getProperty("intermediateSignal") != QVariant()) {
                         destIntermediate = (destMast->getProperty("intermediateSignal")).toBool();

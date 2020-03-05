@@ -39,7 +39,7 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(QObject *parent) :
 }
 
 /*public*/ QString DefaultSignalGroupManager::getSystemPrefix() const { return "I"; }
-/*public*/ char DefaultSignalGroupManager::typeLetter() { return 'F'; }
+/*public*/ char DefaultSignalGroupManager::typeLetter() const { return 'F'; }
 
 /*public*/ SignalGroup* DefaultSignalGroupManager::getSignalGroup(QString name) {
     SignalGroup* t = getByUserName(name);

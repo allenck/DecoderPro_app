@@ -15,10 +15,10 @@ public:
     AbstractSensorManager(QObject *parent = 0);
     AbstractSensorManager(SystemConnectionMemo* memo, QObject *parent =nullptr);
 
-    /*public*/ virtual int getXMLOrder();
-    /*public*/ virtual char typeLetter() const;
-    /*public*/ Sensor* provideSensor(QString name);
-    /*public*/ Sensor* getSensor(QString name) const;
+    /*public*/ int getXMLOrder()const override;
+    /*public*/ char typeLetter() const  override;
+    /*public*/ Sensor* provideSensor(QString name) override;
+    /*public*/ Sensor* getSensor(QString name) const override;
     /*public*/ NamedBean* getBySystemName(QString key) const override;
     /*public*/ NamedBean* getByUserName(QString key) const override;
     /**
@@ -28,27 +28,27 @@ public:
      * Note that this NULL implementation only needs be implemented in system-specific
      *		Sensor Managers where readout of sensor status from the layout is possible.
      */
-    /*public*/ void updateAll();
+    /*public*/ void updateAll()const override;
     /**
      * A method that determines if it is possible to add a range of sensors in numerical
      * order eg 10 to 30, primarily used to enable/disable the add range box in the add sensor panel
      **/
 
-     /*public*/ bool allowMultipleAdditions(QString systemName);
+     /*public*/ bool allowMultipleAdditions(QString systemName) override;
 
-    /*public*/ QString createSystemName(QString curAddress, QString prefix) throw (JmriException);
-    /*public*/ Sensor* newSensor(QString sysName, QString userName);
-    /*public*/ QString getBeanTypeHandled(bool plural) const;
-    /*public*/ QString getNextValidAddress(QString curAddress, QString prefix);
-    /*public*/ long getDefaultSensorDebounceGoingActive();
-    /*public*/ long getDefaultSensorDebounceGoingInActive();
-    /*public*/ void setDefaultSensorDebounceGoingActive(long timer);
-    /*public*/ void setDefaultSensorDebounceGoingInActive(long timer);
+    /*public*/ QString createSystemName(QString curAddress, QString prefix)const throw (JmriException) override;
+    /*public*/ Sensor* newSensor(QString sysName, QString userName) override;
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
+    /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) override;
+    /*public*/ long getDefaultSensorDebounceGoingActive() override;
+    /*public*/ long getDefaultSensorDebounceGoingInActive() override;
+    /*public*/ void setDefaultSensorDebounceGoingActive(long timer) override;
+    /*public*/ void setDefaultSensorDebounceGoingInActive(long timer) override;
 //    /*static*/ /*final java.util.regex.Matcher*/ QRegExp numberMatcher("\\d++");// = java.util.regex.Pattern.compile("\\d++").matcher("");
 
 signals:
     //void newSensorCreated(AbstractSensorManager*, Sensor* s);
-    void propertyChange(PropertyChangeEvent *e);
+    void propertyChange(PropertyChangeEvent *e) override;
 
 public slots:
 private:
@@ -65,7 +65,7 @@ protected:
 
     /*protected*/ long sensorDebounceGoingActive/* = 0L*/;
     /*protected*/ long sensorDebounceGoingInActive/* = 0L*/;
-    /*protected*/ QString normalizeSystemName(QString sysName) const;
+    /*protected*/ QString normalizeSystemName(QString sysName)const  override;
 //QMap<QString, Sensor*> sensorMap; // key = systemName!
     friend class PropertyChangeSupport;
 };

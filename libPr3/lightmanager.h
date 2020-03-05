@@ -110,7 +110,7 @@ public:
          *   returns 'true' if system name has a valid meaning in current configuration,
          *      else returns 'false'
          */
-        virtual bool validSystemNameConfig(QString /*systemName*/) {return false;}
+        virtual bool validSystemNameConfig(QString /*systemName*/)const {return false;}
 
         /**
          * Normalize the system name

@@ -126,7 +126,7 @@ void PointDetails::removeSensorList(){
      {
       setButtonState(EntryExitPairs::NXBUTTONSELECTED);
       //for(Entry<PointDetails, DestinationPoints> en : sourceRoute->pointToDest.entrySet()){
-      QMapIterator<PointDetails*, DestinationPoints*> en(*sourceRoute->pointToDest);
+      QHashIterator<PointDetails*, DestinationPoints*> en(*sourceRoute->pointToDest);
       while(en.hasNext())
       {
        en.next();
@@ -145,7 +145,7 @@ void PointDetails::removeSensorList(){
             //Sensor gone inactive, while nxbutton was selected - potential start of user either clear route or setting another
             setButtonState(EntryExitPairs::NXBUTTONSELECTED);
             //for(Entry<PointDetails, DestinationPoints> en : sourceRoute->pointToDest.entrySet())
-            QMapIterator<PointDetails*, DestinationPoints*> en(*sourceRoute->pointToDest);
+            QHashIterator<PointDetails*, DestinationPoints*> en(*sourceRoute->pointToDest);
             while(en.hasNext())
             {
                 en.next();

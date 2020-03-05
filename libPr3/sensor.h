@@ -231,5 +231,5 @@ private:
     static Logger* log;
 };
 
-Q_DECLARE_INTERFACE(Sensor, "Sensor")
+//Q_DECLARE_INTERFACE(Sensor, "Sensor")
 #endif // SENSOR_H

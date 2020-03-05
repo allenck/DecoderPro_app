@@ -51,12 +51,12 @@ DefaultConditionalManager::DefaultConditionalManager(QObject *parent) :
 /*static*/ DefaultConditionalManager* DefaultConditionalManager::_instance = NULL;
 
 
-/*public*/ int DefaultConditionalManager::getXMLOrder(){
+/*public*/ int DefaultConditionalManager::getXMLOrder() const{
     return Manager::CONDITIONALS;
 }
 
-/*public*/ QString DefaultConditionalManager::getSystemPrefix() { return "I"; }
-/*public*/ char DefaultConditionalManager::typeLetter() { return 'X'; }
+/*public*/ QString DefaultConditionalManager::getSystemPrefix()const { return "I"; }
+/*public*/ char DefaultConditionalManager::typeLetter() const { return 'X'; }
 
 /**
  * Method to create a new Conditional if the Conditional does not exist

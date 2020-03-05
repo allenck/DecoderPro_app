@@ -20,7 +20,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ SystemConnectionMemo* RpsSensorManager::getMemo() {
+/*public*/ SystemConnectionMemo* RpsSensorManager::getMemo()const {
     return  memo;
 }
 
@@ -49,7 +49,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ QString RpsSensorManager::createSystemName(QString curAddress, QString prefix) throw (JmriException) {
+/*public*/ QString RpsSensorManager::createSystemName(QString curAddress, QString prefix) const throw (JmriException) {
     if (prefix != (getSystemPrefix())) {
         log->warn("prefix does not match memo.prefix");
         return "";
@@ -76,7 +76,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ Manager::NameValidity RpsSensorManager::validSystemNameFormat(QString systemName) {
+/*public*/ Manager::NameValidity RpsSensorManager::validSystemNameFormat(QString systemName) const{
     return ((RpsSystemConnectionMemo*)getMemo())->validSystemNameFormat(systemName, typeLetter());
 }
 

@@ -39,22 +39,26 @@ public:
     SignalGroupManager(const SignalGroupManager&) : AbstractManager() {}
     /*public*/ virtual SignalGroup* getSignalGroup(QString /*name*/) {return nullptr;}
 
-    /*public*/ virtual SignalGroup* getBySystemName(QString name) {return (SignalGroup* ) AbstractManager::getBeanBySystemName(name);}
+    /*public*/ SignalGroup* getBySystemName(QString name)const override {return (SignalGroup* ) AbstractManager::getBeanBySystemName(name);}
 
 
-    /*public*/ virtual SignalGroup* getByUserName(QString name) {return (SignalGroup* )AbstractManager::getBeanByUserName(name);}
-
-    ///*public*/ SignalGroup provideSignalGroup(String systemName, String userName) = 0;
+    /*public*/ SignalGroup* getByUserName(QString name)const override{return (SignalGroup* )AbstractManager::getBeanByUserName(name);}
 
     /*public*/ virtual SignalGroup* newSignalGroup(QString /*sys*/) {return nullptr;}
 
-
     /*public*/ virtual SignalGroup* provideSignalGroup(QString /*systemName*/, QString /*userName*/) {return NULL;}
 
-
-    /*public*/ virtual QStringList getSystemNameList() { return AbstractManager::getSystemNameList();}
+    /*public*/ QStringList getSystemNameList() override{ return AbstractManager::getSystemNameList();}
 
     virtual void deleteSignalGroup(SignalGroup* /*s*/) {}
+    /*public*/ QString getNamedBeanClass()const override {
+        return "SignalGroup";
+    }
+    int getXMLOrder()const override
+    {
+     return Manager::SIGNALGROUPS;
+    }
+
 };
 Q_DECLARE_METATYPE(SignalGroupManager)
 #endif // SIGNALGROUPMANAGER_H

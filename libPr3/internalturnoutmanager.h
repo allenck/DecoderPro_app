@@ -11,11 +11,14 @@ public:
  QT_DEPRECATED InternalTurnoutManager(QObject* parent = nullptr);
  QT_DEPRECATED /*public*/ InternalTurnoutManager(QString prefix, QObject* parent = nullptr);
  /*public*/ InternalTurnoutManager(InternalSystemConnectionMemo* memo, QObject* parent = nullptr);
- /*public*/ SystemConnectionMemo* getMemo();
- /*public*/ bool allowMultipleAdditions(QString systemName);
- /*public*/ QString createSystemName(QString curAddress, QString prefix) const throw (JmriException);
- /*public*/ QStringList getValidOperationTypes();
- /*public*/ QString getEntryToolTip();
+ /*public*/ SystemConnectionMemo* getMemo() override;
+ /*public*/ bool allowMultipleAdditions(QString systemName) override;
+ /*public*/ QString createSystemName(QString curAddress, QString prefix) const throw (JmriException) override;
+ /*public*/ QStringList getValidOperationTypes() override;
+ /*public*/ QString getEntryToolTip() override;
+ /*public*/ QString getNamedBeanClass()const override {
+     return "Turnout";
+ }
 
 protected:
 /*protected*/ Turnout* createNewTurnout(QString systemName, QString userName) const;
@@ -29,11 +32,11 @@ public:
  AbstractTurnoutO1(QString systemName, QString userName) : AbstractTurnout(systemName, userName) {}
 protected:
  //@Override
- /*protected*/ void forwardCommandChangeToLayout(int /*s*/) {
+ /*protected*/ void forwardCommandChangeToLayout(int /*s*/)  override{
  }
 
  //@Override
- /*protected*/ void turnoutPushbuttonLockout(bool /*b*/) {
+ /*protected*/ void turnoutPushbuttonLockout(bool /*b*/) override {
  }
 
 protected:

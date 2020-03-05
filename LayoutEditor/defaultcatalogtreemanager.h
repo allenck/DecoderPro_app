@@ -28,6 +28,10 @@ public:
     /*public*/ void storeImageIndex() /*override*/;
     /*public*/ bool isIndexChanged() /*override*/;
     /*public*/ /*final*/ /*synchronized*/ void indexChanged(bool changed) /*override*/;
+    /*public*/ QString getNamedBeanClass()const override {
+        return "CatalogTree";
+    }
+
 signals:
 
 public slots:
