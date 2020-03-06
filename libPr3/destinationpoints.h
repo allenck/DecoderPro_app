@@ -23,6 +23,7 @@ public:
     /*public*/ QString getDisplayName();
     QString getUniqueId();
     PointDetails* getDestPoint();
+    /*public*/ Source* getSource();
     bool getUniDirection();
     void setUniDirection(bool uni);
     NamedBean* getSignal();

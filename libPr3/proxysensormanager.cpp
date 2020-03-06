@@ -166,25 +166,36 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
  return nullptr;
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString ProxySensorManager::getEntryToolTip() {
+    return "Enter a number from 1 to 9999"; // Basic number format help
+}
+
+//@Override
 /*public*/ long ProxySensorManager::getDefaultSensorDebounceGoingActive(){
     return ((AbstractSensorManager*)getMgr(0))->getDefaultSensorDebounceGoingActive();
 }
+//@Override
 /*public*/ long ProxySensorManager::getDefaultSensorDebounceGoingInActive(){
     return ((AbstractSensorManager*)getMgr(0))->getDefaultSensorDebounceGoingInActive();
 }
-
+//@Override
 /*public*/ void ProxySensorManager::setDefaultSensorDebounceGoingActive(long timer){
     for (int i=0; i<nMgrs(); i++) {
         ((AbstractSensorManager*)getMgr(i))->setDefaultSensorDebounceGoingActive(timer);
     }
 }
-
+//@Override
 /*public*/ void ProxySensorManager::setDefaultSensorDebounceGoingInActive(long timer){
     for (int i=0; i<nMgrs(); i++) {
         ((AbstractSensorManager*)getMgr(i))->setDefaultSensorDebounceGoingInActive(timer);
     }
 }
 
+//@Override
 /*public*/ int ProxySensorManager::getXMLOrder() const{
     return Manager::SENSORS;
 }
@@ -229,4 +240,16 @@ QCompleter* ProxySensorManager::getCompleter(QString text)
   }
  }
  return nullptr;
+}
+
+/**
+ * Do the sensor objects provided by this manager support configuring
+ * an internal pull up or pull down resistor?
+ *
+ * @return true if pull up/pull down configuration is supported,
+ * default to false to satisfy the SensorManager interface
+ */
+//@Override
+/*public*/ bool ProxySensorManager::isPullResistanceConfigurable(){
+   return false;
 }

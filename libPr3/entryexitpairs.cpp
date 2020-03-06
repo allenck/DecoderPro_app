@@ -97,16 +97,7 @@ return (settingRouteColor == QColor() ? false : true);
 ///*public*/ /*final*/ /*static*/ int EntryExitPairs::AUTOCLEAR = 0x01;
 ///*public*/ /*final*/ /*static*/ int EntryExitPairs::AUTOCANCEL = 0x02;
 
-/*public*/ void EntryExitPairs::setDispatcherIntegration(bool boo) {
-    allocateToDispatcher = boo;
-}
-
-/*public*/ bool EntryExitPairs::getDispatcherIntegration() {
-    return allocateToDispatcher;
-}
-
 /*static*/ QWidget* EntryExitPairs::glassPane = NULL; //new QWidget();
-
 
 /*public*/ EntryExitPairs::EntryExitPairs(QObject */*parent*/)
 {
@@ -117,7 +108,7 @@ return (settingRouteColor == QColor() ? false : true);
  turnoutSetDelay = 0;
  log = new Logger("EntryExitPairs");
  destinationList = QObjectList();
- smlm = InstanceManager::signalMastLogicManagerInstance();
+ smlm = (SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager");
  runWhenStablised = false;
  settingTimer = 2000;
  settingRouteColor = QColor();
@@ -135,11 +126,11 @@ return (settingRouteColor == QColor() ? false : true);
  listeners = QVector<ManagerDataListener*>();
  pcs = new PropertyChangeSupport(this);
 
+ memo = (SystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
  if(InstanceManager::getDefault("ConfigureManager")!=NULL)
    static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(this);
- //InstanceManager::layoutBlockManagerInstance()->addPropertyChangeListener(propertyBlockManagerListener);
- LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
- connect(lbm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
+ ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->addPropertyChangeListener(/*propertyBlockManagerListener*/(PropertyChangeListener*)this);
+ //connect(lbm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 
 //    glassPane.setOpaque(false);
 //    glassPane.setLayout(NULL);
@@ -148,6 +139,14 @@ return (settingRouteColor == QColor() ? false : true);
 //        e.consume();
 //      }
 //    });
+}
+
+/*public*/ void EntryExitPairs::setDispatcherIntegration(bool boo) {
+    allocateToDispatcher = boo;
+}
+
+/*public*/ bool EntryExitPairs::getDispatcherIntegration() {
+    return allocateToDispatcher;
 }
 
 /*public*/ QWidget* EntryExitPairs::getGlassPane(){
@@ -219,9 +218,13 @@ return (settingRouteColor == QColor() ? false : true);
     }
     return NULL;
 }
+
 /** {@inheritDoc} */
 //@Override
 /*public*/ /*DestinationPoints*/NamedBean* EntryExitPairs::getByUserName(/*@Nonnull*/ QString userName) const {
+ if(userName=="")
+  throw NullPointerException(tr("userName is marked NonNull but is null"));
+
     for (Source* e : nxpair.values()) {
         DestinationPoints* pd = (DestinationPoints*)e->getByUserName(userName);
         if (pd != nullptr) {
@@ -230,7 +233,7 @@ return (settingRouteColor == QColor() ? false : true);
     }
     return nullptr;
 }
-
+#if 0
 /*public*/ NamedBean* EntryExitPairs::getBeanBySystemName(QString systemName) const{
     return getBySystemName(systemName);
 }
@@ -243,26 +246,34 @@ return (settingRouteColor == QColor() ? false : true);
     }
     return NULL;
 }
-
+#endif
 /*public*/ NamedBean* EntryExitPairs::getNamedBean(QString name) const{
-    NamedBean* b = getBeanByUserName(name);
+    NamedBean* b = getByUserName(name);
     if(b!=NULL) return b;
-    return getBeanBySystemName(name);
+    return getBySystemName(name);
 }
-
+#if 0
 //@Deprecated
 /*public*/ char EntryExitPairs::systemLetter()const {
     throw  UnsupportedOperationException("Not supported yet.");
 }
-
+#endif
+/** {@inheritDoc} */
+//@Nonnull
+//@Override
+/*public*/ SystemConnectionMemo* EntryExitPairs::getMemo() {
+    return memo;
+}
 /*public*/ QString EntryExitPairs::getSystemPrefix() const{
-    throw  UnsupportedOperationException("Not supported yet.");
+ return memo->getSystemPrefix();
 }
 
 /*public*/ char EntryExitPairs::typeLetter() const {
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
+//@Override
+//@Nonnull
 /*public*/ QString EntryExitPairs::makeSystemName(QString /*s*/)const {
     throw UnsupportedOperationException("Not supported yet.");
 }
@@ -274,13 +285,33 @@ return (settingRouteColor == QColor() ? false : true);
     return getNamedBeanList()->size(); // not efficient
 }
 
-/*public*/ QStringList EntryExitPairs::getSystemNameArray() {
-    throw new UnsupportedOperationException("Not supported yet.");
-}
+///*public*/ QStringList EntryExitPairs::getSystemNameArray() {
+//    throw new UnsupportedOperationException("Not supported yet.");
+//}
 
 /*public*/ QStringList EntryExitPairs::getSystemNameList() {
     return getEntryExitList();
 }
+#if 0
+/**
+ * Implemented to support the Conditional combo box name list
+ * @since 4.9.3
+ * @return a list of Destination Point beans
+ */
+@Override
+@Nonnull
+@Deprecated  // will be removed when superclass method is removed due to @Override
+public List<DestinationPoints> getNamedBeanList() {
+    List<DestinationPoints> beanList = new ArrayList<>();
+    for (Source e : nxpair.values()) {
+        List<String> uidList = e.getDestinationUniqueId();
+        for (String uid : uidList) {
+            beanList.add(e.getByUniqueId(uid));
+        }
+    }
+    return beanList;
+}
+#endif
 
 /**
  * Implemented to support the Conditional combo box name list
@@ -288,6 +319,7 @@ return (settingRouteColor == QColor() ? false : true);
  * @return a list of Destination Point beans
  */
 //@Override
+//@Nonnull
 /*public*/ QSet<NamedBean*> EntryExitPairs::getNamedBeanSet() {
     QSet<NamedBean*> beanList = QSet<NamedBean*>();//new TreeSet<>(new jmri.util.NamedBeanComparator());
     for (Source* e :  nxpair.values()) {
@@ -299,12 +331,12 @@ return (settingRouteColor == QColor() ? false : true);
     return beanList;
 }
 
-/*public*/ void EntryExitPairs::Register(NamedBean* /*n*/)const {
-    throw new UnsupportedOperationException("Not supported yet.");
+/*public*/ void EntryExitPairs::Register(/*@Nonnull*/ NamedBean* /*n*/)const {
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ void EntryExitPairs::deregister(NamedBean* /*n*/)const {
-    throw new UnsupportedOperationException("Not supported yet.");
+/*public*/ void EntryExitPairs::deregister(/*@Nonnull*/NamedBean* /*n*/)const {
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
 /*public*/ void EntryExitPairs::setClearDownOption(int i){
@@ -315,11 +347,18 @@ return (settingRouteColor == QColor() ? false : true);
     return routeClearOption;
 }
 
+/** {@inheritDoc} */
+//@Override
 /*public*/ void EntryExitPairs::dispose(){ }
+
 /**
-* This method will generate the point details, given a known source and layout panel.
-*
-*/
+ * Generate the point details, given a known source and a
+ * Layout Editor panel.
+ *
+ * @param source Origin of movement
+ * @param panel  A Layout Editor panel
+ * @return A PointDetails object
+ */
 /*private*/ PointDetails* EntryExitPairs::providePoint(NamedBean* source, LayoutEditor* panel){
     PointDetails* sourcePoint = getPointDetails(source, panel);
     if(sourcePoint==NULL)
@@ -337,6 +376,13 @@ return (settingRouteColor == QColor() ? false : true);
     return sourcePoint;
 }
 
+/**
+ * Return a list of all source (origin) points on a given
+ * Layout Editor panel.
+ *
+ * @param panel  A Layout Editor panel
+ * @return A list of source objects
+ */
 /*public*/ QObjectList* EntryExitPairs::getSourceList(LayoutEditor* panel){
     QObjectList* list = new QObjectList();
 
@@ -358,8 +404,8 @@ return (settingRouteColor == QColor() ? false : true);
 }
 
 /*public*/ Source* EntryExitPairs::getSourceForPoint(PointDetails* pd) {
-        return  nxpair.value(pd);
-    }
+    return  nxpair.value(pd);
+}
 
 /*public*/ int EntryExitPairs::getNxPairNumbers(LayoutEditor* panel){
     int total=0;
@@ -418,62 +464,70 @@ return (settingRouteColor == QColor() ? false : true);
     }
 }
 
-/*private*/ void EntryExitPairs::setMultiPointRoute(PointDetails* fromPd, PointDetails* toPd) {
-    bool cleardown = false;
-    if (fromPd->isRouteFromPointSet() && toPd->isRouteToPointSet()) {
-        cleardown = true;
+/*private*/ void EntryExitPairs::setMultiPointRoute(PointDetails* fromPd, PointDetails* toPd)
+{
+ bool cleardown = false;
+ if (fromPd->isRouteFromPointSet() && toPd->isRouteToPointSet()) {
+     cleardown = true;
+ }
+ for (LayoutBlock* pro : fromPd->getProtecting())
+ {
+  try
+  {
+   LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>( InstanceManager::getDefault("LayoutBlockManager"));
+   LayoutBlock* toProt = nullptr;
+   if (!toPd->getProtecting().isEmpty()) {
+       toProt = toPd->getProtecting().at(0);
+   }
+   bool result = lbm->getLayoutBlockConnectivityTools()->checkValidDest(fromPd->getFacing(), pro, toPd->getFacing(), toProt, LayoutBlockConnectivityTools::SENSORTOSENSOR);
+   if (result)
+   {
+    QList<LayoutBlock*> blkList = lbm->getLayoutBlockConnectivityTools()->getLayoutBlocks(fromPd->getFacing(), toPd->getFacing(), pro, cleardown, LayoutBlockConnectivityTools::NONE);
+    if (!blkList.isEmpty())
+    {
+     if (log->isDebugEnabled())
+     {
+      for (LayoutBlock* blk : blkList)
+      {
+          log->debug(tr("blk = %1").arg(blk->getDisplayName()));
+      }
     }
-    for (LayoutBlock* pro : fromPd->getProtecting()) {
-        try {
-            LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>( InstanceManager::getDefault("LayoutBlockManager"));
-            LayoutBlock* toProt = nullptr;
-            if (!toPd->getProtecting().isEmpty()) {
-                toProt = toPd->getProtecting().at(0);
-            }
-            bool result = lbm->getLayoutBlockConnectivityTools()->checkValidDest(fromPd->getFacing(), pro, toPd->getFacing(), toProt, LayoutBlockConnectivityTools::SENSORTOSENSOR);
-            if (result) {
-                QList<LayoutBlock*> blkList = lbm->getLayoutBlockConnectivityTools()->getLayoutBlocks(fromPd->getFacing(), toPd->getFacing(), pro, cleardown, LayoutBlockConnectivityTools::NONE);
-                if (!blkList.isEmpty()) {
-                    if (log->isDebugEnabled()) {
-                        for (LayoutBlock* blk : blkList) {
-                            log->debug(tr("blk = %1").arg(blk->getDisplayName()));
-                        }
-                    }
-                   QList<NamedBean*> beanList = lbm->getLayoutBlockConnectivityTools()->getBeansInPath(blkList, nullptr, "Sensor");
-                    PointDetails* fromPoint = fromPd;
-                    refCounter++;
-                    if (!beanList.isEmpty()) {
-                        if (log->isDebugEnabled()) {
-                            for (NamedBean* xnb : beanList) {
-                                log->debug(tr("xnb = %1").arg(xnb->getDisplayName()));
-                            }
-                        }
-                        for (int i = 1; i < beanList.size(); i++) {
-                            NamedBean* nb = beanList.at(i);
-                            PointDetails* cur = getPointDetails(nb, fromPd->getPanel());
-                            Source* s =  nxpair.value(fromPoint);
-                            if (s != nullptr) {
-                                routesToSet.append(new SourceToDest(s, s->getDestForPoint(cur), false, refCounter));
-                            }
-                            fromPoint = cur;
-                        }
-                    }
-                    Source* s =  nxpair.value(fromPoint);
-                    if (s != nullptr) {
-                        if (s->getDestForPoint(toPd) != nullptr) {
-                            routesToSet.append(new SourceToDest(s, s->getDestForPoint(toPd), false, refCounter));
-                        }
-                    }
-                    processRoutesToSet();
-                    return;
-                }
-            }
-        } catch (JmriException e) {
-            //Can be considered normal if route is blocked
-        }
+    QList<NamedBean*> beanList = lbm->getLayoutBlockConnectivityTools()->getBeansInPath(blkList, nullptr, "Sensor");
+     PointDetails* fromPoint = fromPd;
+     refCounter++;
+     if (!beanList.isEmpty()) {
+         if (log->isDebugEnabled()) {
+             for (NamedBean* xnb : beanList) {
+                 log->debug(tr("xnb = %1").arg(xnb->getDisplayName()));
+             }
+         }
+         for (int i = 1; i < beanList.size(); i++) {
+             NamedBean* nb = beanList.at(i);
+             PointDetails* cur = getPointDetails(nb, fromPd->getPanel());
+             Source* s =  nxpair.value(fromPoint);
+             if (s != nullptr) {
+                 routesToSet.append(new SourceToDest(s, s->getDestForPoint(cur), false, refCounter));
+             }
+             fromPoint = cur;
+         }
+     }
+     Source* s =  nxpair.value(fromPoint);
+     if (s != nullptr) {
+         if (s->getDestForPoint(toPd) != nullptr) {
+             routesToSet.append(new SourceToDest(s, s->getDestForPoint(toPd), false, refCounter));
+         }
+     }
+     processRoutesToSet();
+     return;
     }
-    fromPd->setNXButtonState(NXBUTTONINACTIVE);
-    toPd->setNXButtonState(NXBUTTONINACTIVE);
+   }
+  }
+  catch (JmriException e) {
+      //Can be considered normal if route is blocked
+  }
+ }
+ fromPd->setNXButtonState(NXBUTTONINACTIVE);
+ toPd->setNXButtonState(NXBUTTONINACTIVE);
 }
 
 /**
@@ -496,7 +550,7 @@ return (settingRouteColor == QColor() ? false : true);
     currentDealing = routesToSet.at(0)->ref;
     routesToSet.removeAt(0);
 
-    //dp.addPropertyChangeListener(propertyDestinationListener);
+    //dp->addPropertyChangeListener(propertyDestinationListener);
     connect(dp->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyDestinationPropertyChange(PropertyChangeEvent*)));
     s->activeBean(dp, dir);
 }
@@ -641,19 +695,11 @@ return (settingRouteColor == QColor() ? false : true);
      }
     }
 
-    bool contained = false;
-    foreach (PointDetails* pt, nxpair.keys()) {
-     if(pt->equals(getPointDetails(obj, panel)))
-      contained = true;
-    }
-    if(contained)
-    {
-        QList<PointDetails*> from =  nxpair.value(getPointDetails(obj, panel))->getDestinationPoints();
-        for(int i = 0; i<from.size(); i++){
-            list->append(from.at(i)->getRefObject());
-        }
-    }
     return list;
+}
+
+/*public*/ void EntryExitPairs::removeNXSensor(Sensor* sensor) {
+    log->info(tr("panel maintenance has resulting in the request to remove a sensor: %1").arg(sensor->getDisplayName()));
 }
 
 /**
@@ -683,45 +729,19 @@ return (settingRouteColor == QColor() ? false : true);
     return false;
 }
 
-/*public*/ void EntryExitPairs::deleteNxPair(NamedBean* source, NamedBean* destination, LayoutEditor* panel){
-    PointDetails* sourcePoint = getPointDetails(source, panel);
-    if(sourcePoint==NULL){
-        if(log->isDebugEnabled())
-            log->debug("source " + source->getDisplayName() + " does not exist so can not delete pair");
-        return;
-    }
-
-    PointDetails* destPoint = getPointDetails(destination, panel);
-    if(destPoint==NULL){
-        if(log->isDebugEnabled())
-            log->debug("destination " + destination->getDisplayName() + " does not exist so can not delete pair");
-        return;
-    }
-
-    if( nxpair.contains(sourcePoint))
-    {
-      nxpair.value(sourcePoint)->removeDestination(destPoint);
-     firePropertyChange("length", QVariant(), QVariant());
-     if( nxpair.value(sourcePoint)->getDestinationPoints().size()==0){
-          nxpair.remove(sourcePoint);
-     }
-    }
-    bool contained = false;
-    foreach (PointDetails* pt, nxpair.keys()) {
-     if(pt->equals(sourcePoint))
-      contained = true;
-    }
-    if(contained)
-    {
-        nxpair.value(sourcePoint)->removeDestination(destPoint);
-        firePropertyChange("length", QVariant(), QVariant());
-        if( nxpair.value(sourcePoint)->getDestinationPoints().size()==0){
-             nxpair.remove(sourcePoint);
-        }
-    }
-    else if(log->isDebugEnabled())
-        log->debug("source " + source->getDisplayName() + " is not a valid source so can not delete pair");
-
+/*public*/ bool EntryExitPairs::deleteNxPair(NamedBean* entrySensor, NamedBean* exitSensor, LayoutEditor* panel){
+ if (entrySensor == nullptr || exitSensor == nullptr || panel == nullptr) {
+     log->error("deleteNxPair: One or more null inputs");  // NOI18N
+     return false;
+ }
+ deletePairList.clear();
+ deletePairList.append(new DeletePair(entrySensor, exitSensor, panel, this));
+ if (checkNxPairs()) {
+     // No Conditional references.
+     deleteNxPairs();  // Delete with no prompt
+     return true;
+ }
+ return false;
 }
 
 /**
@@ -731,55 +751,65 @@ return (settingRouteColor == QColor() ? false : true);
  * @since 4.11.2
  * @return true if there are no references.
  */
-/*private*/ bool EntryExitPairs::checkNxPairs() {
-    LogixManager* mgr = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"));
-    QList<QString> conditionalReferences = QList<QString> ();
-    for (DeletePair* dPair : deletePairList) {
-        if (dPair->dp == nullptr) {
-            continue;
-        }
-        for (QString lgxName : mgr->getSystemNameList()) {
-            Logix* lgx = mgr->getLogix(lgxName);
-            for (int i = 0; i < lgx->getNumConditionals(); i++) {
-                QString cdlName = lgx->getConditionalByNumberOrder(i);
-                DefaultConditional* cdl = (DefaultConditional*) lgx->getConditional(cdlName);
-                QString cdlUserName = (cdl->getUserName() == nullptr) ? "" : cdl->getUserName();
-                for (ConditionalVariable* var : *cdl->getStateVariableList())
-                {
-                    if (var->getBean() == dPair->dp) {
-                        QString refName = (cdlUserName == ("")) ? cdlName : cdlName + "  ( " + cdlUserName + " )";
-                        if (!conditionalReferences.contains(refName)) {
-                            conditionalReferences.append(refName);
-                        }
-                    }
-                }
-                for (ConditionalAction* act : cdl->getActionList()) {
-                    if (act->getBean() == dPair->dp) {
-                        QString refName = (cdlUserName == ("")) ? cdlName : cdlName + "  ( " + cdlUserName + " )";
-                        if (!conditionalReferences.contains(refName)) {
-                            conditionalReferences.append(refName);
-                        }
-                    }
-                }
-            }
-        }
+/*private*/ bool EntryExitPairs::checkNxPairs()
+{
+ LogixManager* mgr = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"));
+ QList<QString> conditionalReferences = QList<QString> ();
+ for (DeletePair* dPair : deletePairList)
+ {
+  if (dPair->dp == nullptr) {
+      continue;
+  }
+  for (NamedBean* nb : mgr->getNamedBeanSet())
+  {
+   Logix* lgx = (Logix*)nb;
+   for (int i = 0; i < lgx->getNumConditionals(); i++)
+   {
+    QString cdlName = lgx->getConditionalByNumberOrder(i);
+    DefaultConditional* cdl = (DefaultConditional*) lgx->getConditional(cdlName);
+    QString cdlUserName = (cdl->getUserName() == nullptr) ? "" : cdl->getUserName();
+    if (cdlUserName.isNull())
+    {
+     cdlUserName = "";
     }
-    if (conditionalReferences.isEmpty()) {
-        return true;
+    for (ConditionalVariable* var : *cdl->getStateVariableList())
+    {
+     if (var->getBean() == dPair->dp)
+     {
+      QString refName = (cdlUserName == ("")) ? cdlName : cdlName + "  ( " + cdlUserName + " )";
+      if (!conditionalReferences.contains(refName)) {
+          conditionalReferences.append(refName);
+      }
+     }
     }
+    for (ConditionalAction* act : cdl->getActionList())
+    {
+     if (act->getBean() == dPair->dp) {
+         QString refName = (cdlUserName == ("")) ? cdlName : cdlName + "  ( " + cdlUserName + " )";
+         if (!conditionalReferences.contains(refName)) {
+             conditionalReferences.append(refName);
+         }
+     }
+    }
+   }
+  }
+ }
+ if (conditionalReferences.isEmpty()) {
+     return true;
+ }
 
-    //conditionalReferences.sort(nullptr);
-    qSort(conditionalReferences);
-    QString msg = tr("The following Logix Conditionals have NX Pair references.\nThis will prevent the NX Pair deletions.");
-    for (QString ref : conditionalReferences) {
-        msg.append("\n    " + ref);  // NOI18N
-    }
-    JOptionPane::showMessageDialog(nullptr,
-            msg,
-            tr("Warning"),  // NOI18N
-            JOptionPane::WARNING_MESSAGE);
+ //conditionalReferences.sort(nullptr);
+ qSort(conditionalReferences);
+ QString msg = tr("The following Logix Conditionals have NX Pair references.\nThis will prevent the NX Pair deletions.");
+ for (QString ref : conditionalReferences) {
+     msg.append("\n    " + ref);  // NOI18N
+ }
+ JOptionPane::showMessageDialog(nullptr,
+         msg,
+         tr("Warning"),  // NOI18N
+         JOptionPane::WARNING_MESSAGE);
 
-    return false;
+ return false;
 }
 
 /**
@@ -822,8 +852,10 @@ return (settingRouteColor == QColor() ? false : true);
         PointDetails* destPoint = getPointDetails(dp->dest, dp->pnl);
          nxpair.value(sourcePoint)->removeDestination(destPoint);
         firePropertyChange("length", 0, 0);  // NOI18N
-        if ( nxpair.value(sourcePoint)->getDestinationPoints().isEmpty()) {
-             nxpair.remove(sourcePoint);
+        if ( nxpair.value(sourcePoint)->getDestinationPoints().isEmpty())
+        {
+         nxpair.value(sourcePoint)->removePropertyChangeListener((PropertyChangeListener*)this);
+         nxpair.remove(sourcePoint);
         }
     }
 }
@@ -870,37 +902,44 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
  * @param layoutBlock The layout block to be checked.
  * @return the a list of sensors affected by the layout block or an empty list.
  */
-/*public*/ QList<QString> EntryExitPairs::layoutBlockSensors(/*@Nonnull*/ LayoutBlock* layoutBlock) {
-    log->debug(tr("layoutBlockSensors: %1").arg(layoutBlock->getDisplayName()));
-    QList<QString> blockSensors = QList<QString>();
-    //nxpair.forEach((pdSrc, src) ->
-    QHashIterator<PointDetails*, Source*> iter(nxpair);
-    while(iter.hasNext())
-    {
-     iter.next();
-     PointDetails* pdSrc = iter.key();
-     Source* src = iter.value();
-        Sensor* sBean = pdSrc->getSensor();
-        for (LayoutBlock* sProtect : pdSrc->getProtecting()) {
-            if (layoutBlock == pdSrc->getFacing() || layoutBlock == sProtect) {
-                log->debug(tr("  Source = '%1', Facing = '%2', Protecting = '%3'         ").arg(
-                        sBean->getDisplayName()).arg(pdSrc->getFacing()->getDisplayName()).arg(sProtect->getDisplayName()));
-                blockSensors.append(sBean->getDisplayName());
-            }
-        }
+/*public*/ QList<QString> EntryExitPairs::layoutBlockSensors(/*@Nonnull*/ LayoutBlock* layoutBlock)
+{
+ if(layoutBlock==nullptr)
+  throw NullPointerException(tr("layoutBlock is marked NonNull but is null"));
+ log->debug(tr("layoutBlockSensors: %1").arg(layoutBlock->getDisplayName()));
+ QList<QString> blockSensors = QList<QString>();
+ //nxpair.forEach((pdSrc, src) ->
+ QHashIterator<PointDetails*, Source*> iter(nxpair);
+ while(iter.hasNext())
+ {
+  iter.next();
+  PointDetails* pdSrc = iter.key();
+  Source* src = iter.value();
+  Sensor* sBean = pdSrc->getSensor();
+  for (LayoutBlock* sProtect : pdSrc->getProtecting())
+  {
+   if (layoutBlock == pdSrc->getFacing() || layoutBlock == sProtect)
+   {
+    log->debug(tr("  Source = '%1', Facing = '%2', Protecting = '%3'         ").arg(
+            sBean->getDisplayName()).arg(pdSrc->getFacing()->getDisplayName()).arg(sProtect->getDisplayName()));
+    blockSensors.append(sBean->getDisplayName());
+   }
+  }
 
-        for (PointDetails* pdDest : src->getDestinationPoints()) {
-            Sensor* dBean = pdDest->getSensor();
-            for (LayoutBlock* dProtect : pdDest->getProtecting()) {
-                if (layoutBlock == pdDest->getFacing() || layoutBlock == dProtect) {
-                    log->debug(tr("    Destination = '%1', Facing = '%2', Protecting = '%2'     ").arg(
-                            dBean->getDisplayName()).arg(pdDest->getFacing()->getDisplayName()).arg(dProtect->getDisplayName()));
-                    blockSensors.append(dBean->getDisplayName());
-                }
-            }
-        }
-    }//);
-    return blockSensors;
+  for (PointDetails* pdDest : src->getDestinationPoints())
+  {
+   Sensor* dBean = pdDest->getSensor();
+   for (LayoutBlock* dProtect : pdDest->getProtecting())
+   {
+    if (layoutBlock == pdDest->getFacing() || layoutBlock == dProtect) {
+        log->debug(tr("    Destination = '%1', Facing = '%2', Protecting = '%2'     ").arg(
+                dBean->getDisplayName()).arg(pdDest->getFacing()->getDisplayName()).arg(dProtect->getDisplayName()));
+        blockSensors.append(dBean->getDisplayName());
+    }
+   }
+  }
+ }//);
+ return blockSensors;
 }
 
 /*public*/ bool EntryExitPairs::isDestinationValid(QObject* source, QObject* dest, LayoutEditor* panel){
@@ -958,9 +997,9 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
    contained = true;
  }
  if(contained) {
-        return  nxpair.value(getPointDetails(source, panel))->canBeBiDirection(dest, panel);
-    }
-    return false;
+     return  nxpair.value(getPointDetails(source, panel))->canBeBiDirection(dest, panel);
+ }
+ return false;
 }
 
 /*public*/ bool EntryExitPairs::isEnabled(QObject* source, LayoutEditor* panel, QObject* dest)
@@ -998,7 +1037,10 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
 
 /*public*/ void EntryExitPairs::setEntryExitType(QObject* source, LayoutEditor* panel, QObject* dest, int set){
  if( nxpair.contains(getPointDetails(source, panel)))
+ {
   nxpair.value(getPointDetails(source, panel))->setEntryExitType(dest, panel, set);
+  return;
+ }
 
  bool contained = false;
  foreach (PointDetails* pt, nxpair.keys())
@@ -1081,7 +1123,10 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
 
 /*public*/ void EntryExitPairs::cancelInterlock(QObject* source, LayoutEditor* panel, QObject* dest){
 if( nxpair.contains(getPointDetails(source, panel)))
+{
  nxpair.value(getPointDetails(source, panel))->cancelInterlock(dest, panel);
+ return;
+}
 
  bool contained = false;
  foreach (PointDetails* pt, nxpair.keys())
@@ -1331,8 +1376,8 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 }
 /*protected*/ void EntryExitPairs::firePropertyChange(QString p, QVariant old, QVariant n)
 {
- /*pcs.firePropertyChange(p,old,n);*/
- emit propertyChange(new PropertyChangeEvent(this, p, old, n));
+ pcs->firePropertyChange(p,old,n);
+ //emit propertyChange(new PropertyChangeEvent(this, p, old, n));
 }
 
 
@@ -1347,7 +1392,7 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
  LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  if(!lbm->isAdvancedRoutingEnabled())
  {
-  throw new JmriException("advanced routing not enabled");
+  throw JmriException("advanced routing not enabled");
  }
  if(!lbm->routingStablised())
  {
@@ -1382,7 +1427,7 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
  firePropertyChange("autoGenerateComplete", QVariant(), QVariant());
 }
 // /*protected*/ PropertyChangeListener propertyBlockManagerListener = new PropertyChangeListener(){
-    /*public*/ void EntryExitPairs::on_propertyChange(PropertyChangeEvent* e)
+    /*public*/ void EntryExitPairs::propertyChange(PropertyChangeEvent* e)
 {
  if(e->getPropertyName()==("topology"))
  {
@@ -1469,6 +1514,14 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 //@Override
 /*public*/ QString EntryExitPairs::getBeanTypeHandled(bool plural) const {
     return tr(plural ? "Transits" : "Transit");  // NOI18N
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString EntryExitPairs::getNamedBeanClass()const {
+    return "DestinationPoints";
 }
 
 /** {@inheritDoc} */

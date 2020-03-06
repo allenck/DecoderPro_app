@@ -39,13 +39,13 @@ public:
  //static /*public*/ /*final*/ int NUMCOLUMN;// = 5;
  /*abstract*/ /*public*/ virtual QString getValue(QString systemName) const;
  ~BeanTableDataModel();
- /*public*/ int rowCount(const QModelIndex &parent) const;
- /*public*/ int columnCount(const QModelIndex &parent) const;
- /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
- /*public*/ virtual Qt::ItemFlags flags(const QModelIndex &index) const;
- /*public*/ QVariant data(const QModelIndex &index, int role) const;
- virtual /*public*/ int getPreferredWidth(int col);
- /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+ /*public*/ int rowCount(const QModelIndex &parent) const override;
+ /*public*/ int columnCount(const QModelIndex &parent) const override;
+ /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+ /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+ virtual /*public*/ int getPreferredWidth(int col) ;
+ /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
 // virtual void fireTableDataChanged();
 // virtual void fireTableRowsUpdated(int, int);
@@ -103,7 +103,7 @@ protected:
  /*abstract*/ /*protected*/ virtual Manager* getManager();
  /*protected*/ virtual void setManager(Manager* /*man*/);
 
- /*abstract*/ /*protected*/ virtual  NamedBean* getBySystemName(QString name) const;
+ /*abstract*/ /*protected*/ virtual  NamedBean* getBySystemName(QString name) const ;
  /*abstract*/ /*protected*/ virtual  NamedBean* getByUserName(QString name);
  /*abstract*/ /*protected*/ virtual void clickOn(NamedBean* /*t*/) {}
  /*protected*/ QStringList sysNameList;// = NULL;

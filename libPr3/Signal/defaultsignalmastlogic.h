@@ -35,9 +35,9 @@ public:
     //explicit DefaultSignalMastLogic(QObject *parent = 0);
     /*public*/ DefaultSignalMastLogic (SignalMast* source, QObject *parent = 0);
     /*public*/ void setFacingBlock(LayoutBlock* facing) override;
-    /*public*/ void setProtectingBlock(LayoutBlock* protecting)override;
+//    /*public*/ void setProtectingBlock(LayoutBlock* protecting)override;
     /*public*/ LayoutBlock* getFacingBlock() override;
-    /*public*/ LayoutBlock* getProtectingBlock() override;
+    /*public*/ LayoutBlock* getProtectingBlock(SignalMast* mast) override;
     /*public*/ SignalMast* getSourceMast() override;
     /*public*/ void replaceSourceMast(SignalMast* oldMast, SignalMast* newMast) override;
     /*public*/ void replaceDestinationMast(SignalMast* oldMast, SignalMast* newMast) override;

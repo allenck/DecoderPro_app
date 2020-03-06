@@ -42,6 +42,27 @@ void DestinationPoints::setEnabled(bool boo){
     //bool oldEnabled = enabled;
     //Need to do other bits when enabling
     enabled = boo;
+
+    // Modify source signal mast held state
+    Sensor* sourceSensor = src->getPoint()->getSensor();
+    if (sourceSensor == nullptr) {
+        return;
+    }
+    SignalMast* sourceMast = src->getPoint()->getSignalMast();
+    if (sourceMast == nullptr) {
+        return;
+    }
+    if (enabled) {
+        sourceMast->setHeld(true);
+    } else {
+        // All destinations for the source must be disabled before the mast hold can be released
+        for (PointDetails* pd : src->getDestinationPoints()) {
+            if (src->getDestForPoint(pd)->isEnabled()) {
+                return;
+            }
+        }
+        sourceMast->setHeld(false);
+    }
 }
 
 
@@ -95,6 +116,14 @@ PointDetails* DestinationPoints::getDestPoint(){
     return point;
 }
 
+/**
+ * @since 4.17.4
+ * Making the source object available for scripting in Jython.
+ */
+/*public*/ Source* DestinationPoints::getSource() {
+    return src ;
+}
+
 bool DestinationPoints::getUniDirection(){
     return uniDirection;
 }
@@ -127,10 +156,20 @@ void DestinationPoints::setRouteFrom(bool set){
     }
 }
 
-bool DestinationPoints::isRouteToPointSet() { return point->isRouteToPointSet(); }
+bool DestinationPoints::isRouteToPointSet()
+{
+ return point->isRouteToPointSet();
+}
 
-LayoutBlock* DestinationPoints::getFacing() { return point->getFacing(); }
-QList<LayoutBlock*> DestinationPoints::getProtecting() { return point->getProtecting(); }
+LayoutBlock* DestinationPoints::getFacing()
+{
+ return point->getFacing();
+}
+
+QList<LayoutBlock*> DestinationPoints::getProtecting()
+{
+ return point->getProtecting();
+}
 
 int DestinationPoints::getEntryExitType(){
     return entryExitType;
@@ -169,97 +208,106 @@ void DestinationPoints::setEntryExitType(int type){
     }
 //};*/
 #endif
-/*protected*/ void DestinationPoints::blockStateUpdated(PropertyChangeEvent* e){
-    Block* blk = (Block*) e->getSource();
-    if (e->getPropertyName()==("state")) {
-        if (log->isDebugEnabled()) log->debug(mUserName + "  We have a change of state on the block " + blk->getDisplayName());
-        int now =  e->getNewValue().toInt();
 
-        if (now==Block::OCCUPIED){
-            LayoutBlock* lBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlock(blk);
-            //If the block was previously active or inactive then we will
-            //reset the useExtraColor, but not if it was previously unknown or inconsistent.
-            lBlock->setUseExtraColor(false);
-            //blk->removePropertyChangeListener(propertyBlockListener); //was this
-            disconnect(blk, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyBlockListener(PropertyChangeEvent*)));
-            removeBlockFromRoute(lBlock);
-        } else {
-            if (log->isDebugEnabled()) log->debug("state was " + QString::number(now) + " and did not go through reset");
-        }
-    }
+/*protected*/ void DestinationPoints::blockStateUpdated(PropertyChangeEvent* e)
+{
+ Block* blk = (Block*) e->getSource();
+ if (e->getPropertyName()==("state"))
+ {
+  if (log->isDebugEnabled()) log->debug(mUserName + "  We have a change of state on the block " + blk->getDisplayName());
+  int now =  e->getNewValue().toInt();
+
+  if (now==Block::OCCUPIED)
+  {
+   LayoutBlock* lBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlock(blk);
+   //If the block was previously active or inactive then we will
+   //reset the useExtraColor, but not if it was previously unknown or inconsistent.
+   lBlock->setUseExtraColor(false);
+   //blk->removePropertyChangeListener(propertyBlockListener); //was this
+   disconnect(blk, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyBlockListener(PropertyChangeEvent*)));
+   removeBlockFromRoute(lBlock);
+  } else {
+      if (log->isDebugEnabled()) log->debug("state was " + QString::number(now) + " and did not go through reset");
+  }
+ }
 }
 
 
 /*synchronized*/ void DestinationPoints::removeBlockFromRoute(LayoutBlock* lBlock)
 {
-
  if (!routeDetails.isEmpty())
  {
   if(routeDetails.indexOf(lBlock)==-1)
   {
-            if(src->getStart() == lBlock){
-                log->debug("Start block went active");
-                lastSeenActiveBlockObject = src->getStart()->getBlock()->getValue();
-                //lBlock->getBlock().removePropertyChangeListener(propertyBlockListener);
-                Block* blk = lBlock->getBlock();
-                disconnect(blk, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyBlockListener(PropertyChangeEvent*)));
-                return;
-            } else {
-                log->error("Block " + lBlock->getDisplayName() + " went active but it is not part of our NX path");
-            }
-        }
-        if(routeDetails.indexOf(lBlock)!=0){
-            log->debug("A block has been skipped will set the value of the active block to that of the original one");
-            lBlock->getBlock()->setValue(lastSeenActiveBlockObject);
-            if(routeDetails.indexOf(lBlock)!=-1){
-                while(routeDetails.indexOf(lBlock)!=0){
-                    LayoutBlock* tbr = routeDetails.at(0);
-                    log->debug("Block skipped " + tbr->getDisplayName() + " and removed from list");
-                    //tbr->getBlock().removePropertyChangeListener(propertyBlockListener);
-                    Block* b = tbr->getBlock();
-                    disconnect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyBlockListener(PropertyChangeEvent*)));
-                    tbr->setUseExtraColor(false);
-                    routeDetails.removeAt(0);
-                }
-            }
-        }
-        if(routeDetails.contains(lBlock)){
-            routeDetails.removeOne(lBlock);
-            setRouteFrom(false);
-            src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-            if(sml!=NULL && getEntryExitType()==EntryExitPairs::FULLINTERLOCK){
-                ((AbstractSignalMast*)((DefaultSignalMastLogic*)sml)->getSourceMast())->setHeld(true);
-                SignalMast* mast = (SignalMast*) getSignal();
-                if (((DefaultSignalMastLogic*)sml)->getStoreState(mast)==SignalMastLogic::STORENONE)
-                    ((DefaultSignalMastLogic*)sml)->removeDestination(mast);
-            }
-        } else {
-            log->error("Block " + lBlock->getDisplayName() + " that went Occupied was not in the routeDetails list");
-        }
-        if (log->isDebugEnabled()){
-            log->debug("Route details contents " + QString::number(routeDetails.size()));
-            for(int i = 0; i<routeDetails.size(); i++){
-                log->debug("      " + routeDetails.at(i)->getDisplayName());
-            }
-        }
-        if((routeDetails.size()==1) && (routeDetails.contains(destination)))
-        {
-            //routeDetails.at(0)->getBlock().removePropertyChangeListener(propertyBlockListener);  // was set against block sensor
-            Block* b = routeDetails.at(0)->getBlock();
-            disconnect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyBlockListener(PropertyChangeEvent*)));
-            routeDetails.removeOne(destination);
-        }
+   if(src->getStart() == lBlock)
+   {
+    log->debug("Start block went active");
+    lastSeenActiveBlockObject = src->getStart()->getBlock()->getValue();
+    //lBlock->getBlock().removePropertyChangeListener(propertyBlockListener);
+    Block* blk = lBlock->getBlock();
+    disconnect(blk, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyBlockListener(PropertyChangeEvent*)));
+    return;
+   }
+   else {
+       log->error("Block " + lBlock->getDisplayName() + " went active but it is not part of our NX path");
+   }
+  }
+  if(routeDetails.indexOf(lBlock)!=0)
+  {
+   log->debug("A block has been skipped will set the value of the active block to that of the original one");
+   lBlock->getBlock()->setValue(lastSeenActiveBlockObject);
+   if(routeDetails.indexOf(lBlock)!=-1)
+   {
+    while(routeDetails.indexOf(lBlock)!=0)
+    {
+     LayoutBlock* tbr = routeDetails.at(0);
+     log->debug("Block skipped " + tbr->getDisplayName() + " and removed from list");
+     //tbr->getBlock().removePropertyChangeListener(propertyBlockListener);
+     Block* b = tbr->getBlock();
+     disconnect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyBlockListener(PropertyChangeEvent*)));
+     tbr->setUseExtraColor(false);
+     routeDetails.removeAt(0);
     }
-    lastSeenActiveBlockObject = lBlock->getBlock()->getValue();
+   }
+  }
+  if(routeDetails.contains(lBlock))
+  {
+   routeDetails.removeOne(lBlock);
+   setRouteFrom(false);
+   src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+   if(sml!=NULL && getEntryExitType()==EntryExitPairs::FULLINTERLOCK){
+       ((AbstractSignalMast*)((DefaultSignalMastLogic*)sml)->getSourceMast())->setHeld(true);
+       SignalMast* mast = (SignalMast*) getSignal();
+       if (((DefaultSignalMastLogic*)sml)->getStoreState(mast)==SignalMastLogic::STORENONE)
+           ((DefaultSignalMastLogic*)sml)->removeDestination(mast);
+   }
+  } else {
+      log->error("Block " + lBlock->getDisplayName() + " that went Occupied was not in the routeDetails list");
+  }
+  if (log->isDebugEnabled()){
+      log->debug("Route details contents " + QString::number(routeDetails.size()));
+      for(int i = 0; i<routeDetails.size(); i++){
+          log->debug("      " + routeDetails.at(i)->getDisplayName());
+      }
+  }
+  if((routeDetails.size()==1) && (routeDetails.contains(destination)))
+  {
+      //routeDetails.at(0)->getBlock().removePropertyChangeListener(propertyBlockListener);  // was set against block sensor
+      Block* b = routeDetails.at(0)->getBlock();
+      disconnect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyBlockListener(PropertyChangeEvent*)));
+      routeDetails.removeOne(destination);
+  }
+ }
+ lastSeenActiveBlockObject = lBlock->getBlock()->getValue();
 
-    if((routeDetails.isEmpty())||(routeDetails.size()==0)){
-        //At this point the route has cleared down/the last remaining block are now active.
-        routeDetails=QList<LayoutBlock*>();
-        setRouteTo(false);
-        setRouteFrom(false);
-        setActiveEntryExit(false);
-        lastSeenActiveBlockObject = QVariant();
-    }
+ if((routeDetails.isEmpty())||(routeDetails.size()==0)){
+     //At this point the route has cleared down/the last remaining block are now active.
+     routeDetails=QList<LayoutBlock*>();
+     setRouteTo(false);
+     setRouteFrom(false);
+     setActiveEntryExit(false);
+     lastSeenActiveBlockObject = QVariant();
+ }
 }
 
 //For a clear down we need to add a message, if it is a cancel, manual clear down or I didn't mean it.
@@ -453,6 +501,7 @@ void DestinationPoints::setRoute(bool state){
 
     }
  }
+
  //Force a redraw
  p->src->getPoint()->getPanel()->redrawPanel();
  if (p->getEntryExitType()!=EntryExitPairs::SETUPTURNOUTSONLY){
@@ -541,10 +590,65 @@ void DestinationPoints::setRoute(bool state){
      setRouteFrom(true);
      setRouteTo(true);
  }
+#if 0
+ /**
+      * Remove the hold on the mast when all of the turnouts have completed moving.
+      * This only applies to turnouts using ONESENSOR feedback.  TWOSENSOR has an
+      * intermediate inconsistent state which prevents erroneous signal aspects.
+      * The maximum wait time is 10 seconds.
+      *
+      * @since 4.11.1
+      * @param mast The signal mast that will be released.
+      * @param turnoutSettings The turnouts that are being set for the current NX route.
+      */
+     private void releaseMast(SignalMast mast, Hashtable<Turnout, Integer> turnoutSettings) {
+         Hashtable<Turnout, Integer> turnoutList = new Hashtable<>(turnoutSettings);
+         Runnable r = new Runnable() {
+             @Override
+             public void run() {
+                 try {
+                     for (int i = 20; i > 0; i--) {
+                         int active = 0;
+                         for (Map.Entry< Turnout, Integer> entry : turnoutList.entrySet()) {
+                             Turnout tout = entry.getKey();
+                             if (tout.getFeedbackMode() == Turnout.ONESENSOR) {
+                                 // Check state
+                                 if (tout.getKnownState() != tout.getCommandedState()) {
+                                     active += 1;
+                                 }
+                             }
+                         }
+                         if (active == 0) {
+                             break;
+                         }
+                         Thread.sleep(500);
+                     }
+                     log.debug("Release mast: {}", mast.getDisplayName());
+                     mast.setHeld(false);
+                 } catch (InterruptedException ex) {
+                     Thread.currentThread().interrupt();
+                 }
+             }
+         };
+         Thread thr = new Thread(r, "Entry Exit Route: Release Mast");  // NOI18N
+         thr.start();
+     }
 
-void DestinationPoints::cancelClearOptionBox(){
-// TODO:
-#if 1
+     private boolean isSignalLogicDynamic() {
+         if ((src.sourceSignal instanceof SignalMast) && (getSignal() instanceof SignalMast)) {
+             SignalMast smSource = (SignalMast) src.sourceSignal;
+             SignalMast smDest = (SignalMast) getSignal();
+             if (InstanceManager.getDefault(jmri.SignalMastLogicManager.class).getSignalMastLogic(smSource) != null
+                     && InstanceManager.getDefault(jmri.SignalMastLogicManager.class).getSignalMastLogic(smSource).getStoreState(smDest) != jmri.SignalMastLogic.STORENONE) {
+                 return false;
+             }
+         }
+         return true;
+
+     }
+#endif
+void DestinationPoints::cancelClearOptionBox()
+{
     if(cancelClearFrame==NULL){
         QPushButton* jButton_Clear = new QPushButton("Clear Down");
         QPushButton* jButton_Cancel = new QPushButton("Cancel");
@@ -618,7 +722,6 @@ void DestinationPoints::cancelClearOptionBox(){
     int y = (int)src->getPoint()->getPanel()->getLocation().y()+((src->getPoint()->getPanel()->size().height()-h)/2);
     cancelClearFrame->setLocation(x, y);
     cancelClearFrame->setVisible(true);
-#endif
 }
 
 void DestinationPoints::on_jButton_Clear()
@@ -809,236 +912,237 @@ void DestinationPoints::activeBean(bool reverseDirection)
 
 /*synchronized*/ void DestinationPoints::activeBean(bool reverseDirection, bool showMessage)
 {
- if (!isEnabled()) {
-             JOptionPane::showMessageDialog(nullptr, tr("NX Pair, \"%1\", is disabled.\nUnable to allocate route.").arg( getDisplayName()));  // NOI18N
-             src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-             point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-             return;
+ if (!isEnabled())
+ {
+     JOptionPane::showMessageDialog(nullptr, tr("NX Pair, \"%1\", is disabled.\nUnable to allocate route.").arg( getDisplayName()));  // NOI18N
+     src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+     point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+     return;
+ }
+ if (activeEntryExit) {
+     // log.debug(getUserName() + "  Our route is active so this would go for a clear down but we need to check that the we can clear it down" + activeEndPoint);
+     if (!isEnabled()) {
+         log->debug("A disabled entry exit has been called will bomb out");  // NOI18N
+         return;
+     }
+     log->debug(getUserName() + "  We have a valid match on our end point so we can clear down");  // NOI18N
+     //setRouteTo(false);
+     //src.pd.setRouteFrom(false);
+     setRoute(false);
+ } else {
+     if (isRouteToPointSet()) {
+         log->debug(getUserName() + "  route to this point is set therefore can not set another to it " /*+ destPoint.src.getPoint().getID()*/);  // NOI18N
+         if (showMessage && !manager->isRouteStacked(this, false)) {
+             handleNoCurrentRoute(reverseDirection, "Route already set to the destination point");  // NOI18N
          }
-         if (activeEntryExit) {
-             // log.debug(getUserName() + "  Our route is active so this would go for a clear down but we need to check that the we can clear it down" + activeEndPoint);
-             if (!isEnabled()) {
-                 log->debug("A disabled entry exit has been called will bomb out");  // NOI18N
-                 return;
+         src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+         point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+         return;
+     } else {
+         LayoutBlock* startlBlock = src->getStart();
+         class BestPath {
+public:
+             LayoutBlock* srcProtecting = nullptr;
+             LayoutBlock* srcStart = nullptr;
+             LayoutBlock* destination = nullptr;
+
+             BestPath(LayoutBlock* startPro, LayoutBlock* sourceProtecting, LayoutBlock* destinationBlock, QList<LayoutBlock*> blocks) {
+                 srcStart = startPro;
+                 srcProtecting = sourceProtecting;
+                 destination = destinationBlock;
+                 listOfBlocks = blocks;
              }
-             log->debug(getUserName() + "  We have a valid match on our end point so we can clear down");  // NOI18N
-             //setRouteTo(false);
-             //src.pd.setRouteFrom(false);
-             setRoute(false);
-         } else {
-             if (isRouteToPointSet()) {
-                 log->debug(getUserName() + "  route to this point is set therefore can not set another to it " /*+ destPoint.src.getPoint().getID()*/);  // NOI18N
-                 if (showMessage && !manager->isRouteStacked(this, false)) {
-                     handleNoCurrentRoute(reverseDirection, "Route already set to the destination point");  // NOI18N
+
+             LayoutBlock* getStartBlock() {
+                 return srcStart;
+             }
+
+             LayoutBlock* getProtectingBlock() {
+                 return srcProtecting;
+             }
+
+             LayoutBlock* getDestinationBlock() {
+                 return destination;
+             }
+
+             QList<LayoutBlock*> listOfBlocks = QList<LayoutBlock*>(/*0*/);
+             QString errorMessage = "";
+
+             QList<LayoutBlock*> getListOfBlocks() {
+                 return listOfBlocks;
+             }
+
+             void setErrorMessage(QString msg) {
+                 errorMessage = msg;
+             }
+
+             QString getErrorMessage() {
+                 return errorMessage;
+             }
+         };
+         QList<BestPath*> pathList = QList<BestPath*>();//new ArrayList<BestPath>(2);
+         LayoutBlock* protectLBlock;
+         LayoutBlock* destinationLBlock;
+         //Need to work out around here the best one.
+         for (LayoutBlock* srcProLBlock : src->getSourceProtecting()) {
+             protectLBlock = srcProLBlock;
+             if (!reverseDirection) {
+                 //We have a problem, the destination point is already setup with a route, therefore we would need to
+                 //check some how that a route hasn't been set to it.
+                 destinationLBlock = getFacing();
+                 QList<LayoutBlock*> blocks = QList<LayoutBlock*>();
+                 QString errorMessage = "";
+                 try {
+                     blocks = static_cast<LayoutBlockManager*>( InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, 0x00/*jmri.jmrit.display.layoutEditor.LayoutBlockManager.MASTTOMAST*/);
+                 } catch (Exception e) {
+                     errorMessage = e.getMessage();
+                     //can be considered normal if no free route is found
                  }
-                 src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-                 point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-                 return;
+                 BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
+                 toadd->setErrorMessage(errorMessage);
+                 pathList.append(toadd);
              } else {
-                 LayoutBlock* startlBlock = src->getStart();
-                 class BestPath {
- public:
-                     LayoutBlock* srcProtecting = nullptr;
-                     LayoutBlock* srcStart = nullptr;
-                     LayoutBlock* destination = nullptr;
+                 startlBlock = srcProLBlock;
+                 protectLBlock = getFacing();
 
-                     BestPath(LayoutBlock* startPro, LayoutBlock* sourceProtecting, LayoutBlock* destinationBlock, QList<LayoutBlock*> blocks) {
-                         srcStart = startPro;
-                         srcProtecting = sourceProtecting;
-                         destination = destinationBlock;
-                         listOfBlocks = blocks;
-                     }
-
-                     LayoutBlock* getStartBlock() {
-                         return srcStart;
-                     }
-
-                     LayoutBlock* getProtectingBlock() {
-                         return srcProtecting;
-                     }
-
-                     LayoutBlock* getDestinationBlock() {
-                         return destination;
-                     }
-
-                     QList<LayoutBlock*> listOfBlocks = QList<LayoutBlock*>(/*0*/);
-                     QString errorMessage = "";
-
-                     QList<LayoutBlock*> getListOfBlocks() {
-                         return listOfBlocks;
-                     }
-
-                     void setErrorMessage(QString msg) {
-                         errorMessage = msg;
-                     }
-
-                     QString getErrorMessage() {
-                         return errorMessage;
-                     }
-                 };
-                 QList<BestPath*> pathList = QList<BestPath*>();//new ArrayList<BestPath>(2);
-                 LayoutBlock* protectLBlock;
-                 LayoutBlock* destinationLBlock;
-                 //Need to work out around here the best one.
-                 for (LayoutBlock* srcProLBlock : src->getSourceProtecting()) {
-                     protectLBlock = srcProLBlock;
-                     if (!reverseDirection) {
-                         //We have a problem, the destination point is already setup with a route, therefore we would need to
-                         //check some how that a route hasn't been set to it.
-                         destinationLBlock = getFacing();
+                 destinationLBlock = src->getStart();
+                 if (log->isDebugEnabled()) {
+                     log->debug("reverse set destination is set going for " + startlBlock->getDisplayName() + " " + destinationLBlock->getDisplayName() + " " + protectLBlock->getDisplayName());  // NOI18N
+                 }
+                 try {
+                     LayoutBlock* srcPro = src->getSourceProtecting().at(0);  //Don't care what block the facing is protecting
+                     //Need to add a check for the lengths of the returned lists, then choose the most appropriate
+                     if (!static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, srcPro, src->getStart(), LayoutBlockConnectivityTools::SENSORTOSENSOR)) {
+                         startlBlock = getFacing();
+                         protectLBlock = srcProLBlock;
+                         if (log->isDebugEnabled()) {
+                             log->debug("That didn't work so try  " + startlBlock->getDisplayName() + " " + destinationLBlock->getDisplayName() + " " + protectLBlock->getDisplayName());  // NOI18N
+                         }
+                         if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, srcPro, src->getStart(), LayoutBlockConnectivityTools::SENSORTOSENSOR)) {
+                             log->error("No route found");  // NOI18N
+                             JOptionPane::showMessageDialog(nullptr, "No Valid path found");  // NOI18N
+                             src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                             point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                             return;
+                         } else {
+                             QList<LayoutBlock*> blocks = QList<LayoutBlock*>();
+                             QString errorMessage = "";
+                             try {
+                                 blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, 0x00/*jmri.jmrit.display.layoutEditor.LayoutBlockManager.MASTTOMAST*/);
+                             } catch (Exception e) {
+                                 errorMessage = e.getMessage();
+                                 //can be considered normal if no free route is found
+                             }
+                             BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
+                             toadd->setErrorMessage(errorMessage);
+                             pathList.append(toadd);
+                         }
+                     } else if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(getFacing(), srcProLBlock, srcPro, src->getStart(), LayoutBlockConnectivityTools::SENSORTOSENSOR)) {
+                         //Both paths are valid, so will go for setting the shortest
+                         int distance = startlBlock->getBlockHopCount(destinationLBlock->getBlock(), protectLBlock->getBlock());
+                         int distance2 = getFacing()->getBlockHopCount(destinationLBlock->getBlock(), srcProLBlock->getBlock());
+                         if (distance > distance2) {
+                             //The alternative route is shorter we shall use that
+                             startlBlock = getFacing();
+                             protectLBlock = srcProLBlock;
+                         }
                          QList<LayoutBlock*> blocks = QList<LayoutBlock*>();
                          QString errorMessage = "";
                          try {
-                             blocks = static_cast<LayoutBlockManager*>( InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, 0x00/*jmri.jmrit.display.layoutEditor.LayoutBlockManager.MASTTOMAST*/);
+                          blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, LayoutBlockConnectivityTools::NONE);
                          } catch (Exception e) {
-                             errorMessage = e.getMessage();
                              //can be considered normal if no free route is found
+                             errorMessage = e.getMessage();
                          }
                          BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
                          toadd->setErrorMessage(errorMessage);
                          pathList.append(toadd);
                      } else {
-                         startlBlock = srcProLBlock;
-                         protectLBlock = getFacing();
-
-                         destinationLBlock = src->getStart();
-                         if (log->isDebugEnabled()) {
-                             log->debug("reverse set destination is set going for " + startlBlock->getDisplayName() + " " + destinationLBlock->getDisplayName() + " " + protectLBlock->getDisplayName());  // NOI18N
-                         }
+                         QList<LayoutBlock*> blocks = QList<LayoutBlock*>();
+                         QString errorMessage = "";
                          try {
-                             LayoutBlock* srcPro = src->getSourceProtecting().at(0);  //Don't care what block the facing is protecting
-                             //Need to add a check for the lengths of the returned lists, then choose the most appropriate
-                             if (!static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, srcPro, src->getStart(), LayoutBlockConnectivityTools::SENSORTOSENSOR)) {
-                                 startlBlock = getFacing();
-                                 protectLBlock = srcProLBlock;
-                                 if (log->isDebugEnabled()) {
-                                     log->debug("That didn't work so try  " + startlBlock->getDisplayName() + " " + destinationLBlock->getDisplayName() + " " + protectLBlock->getDisplayName());  // NOI18N
-                                 }
-                                 if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(startlBlock, protectLBlock, srcPro, src->getStart(), LayoutBlockConnectivityTools::SENSORTOSENSOR)) {
-                                     log->error("No route found");  // NOI18N
-                                     JOptionPane::showMessageDialog(nullptr, "No Valid path found");  // NOI18N
-                                     src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-                                     point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-                                     return;
-                                 } else {
-                                     QList<LayoutBlock*> blocks = QList<LayoutBlock*>();
-                                     QString errorMessage = "";
-                                     try {
-                                         blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, 0x00/*jmri.jmrit.display.layoutEditor.LayoutBlockManager.MASTTOMAST*/);
-                                     } catch (Exception e) {
-                                         errorMessage = e.getMessage();
-                                         //can be considered normal if no free route is found
-                                     }
-                                     BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
-                                     toadd->setErrorMessage(errorMessage);
-                                     pathList.append(toadd);
-                                 }
-                             } else if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(getFacing(), srcProLBlock, srcPro, src->getStart(), LayoutBlockConnectivityTools::SENSORTOSENSOR)) {
-                                 //Both paths are valid, so will go for setting the shortest
-                                 int distance = startlBlock->getBlockHopCount(destinationLBlock->getBlock(), protectLBlock->getBlock());
-                                 int distance2 = getFacing()->getBlockHopCount(destinationLBlock->getBlock(), srcProLBlock->getBlock());
-                                 if (distance > distance2) {
-                                     //The alternative route is shorter we shall use that
-                                     startlBlock = getFacing();
-                                     protectLBlock = srcProLBlock;
-                                 }
-                                 QList<LayoutBlock*> blocks = QList<LayoutBlock*>();
-                                 QString errorMessage = "";
-                                 try {
-                                  blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, LayoutBlockConnectivityTools::NONE);
-                                 } catch (Exception e) {
-                                     //can be considered normal if no free route is found
-                                     errorMessage = e.getMessage();
-                                 }
-                                 BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
-                                 toadd->setErrorMessage(errorMessage);
-                                 pathList.append(toadd);
-                             } else {
-                                 QList<LayoutBlock*> blocks = QList<LayoutBlock*>();
-                                 QString errorMessage = "";
-                                 try {
-                                     blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, LayoutBlockConnectivityTools::NONE);
-                                 } catch (Exception e) {
-                                     //can be considered normal if no free route is found
-                                     errorMessage = e.getMessage();
-                                 }
-                                 BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
-                                 toadd->setErrorMessage(errorMessage);
-                                 pathList.append(toadd);
-                             }
-                         } catch (JmriException ex) {
-                             log->error("Exception " + ex.getMessage());  // NOI18N
-                             if (showMessage) {
-                                 JOptionPane::showMessageDialog(nullptr, ex.getMessage());
-                             }
-                             src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-                             point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-                             return;
+                             blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, LayoutBlockConnectivityTools::NONE);
+                         } catch (Exception e) {
+                             //can be considered normal if no free route is found
+                             errorMessage = e.getMessage();
                          }
+                         BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
+                         toadd->setErrorMessage(errorMessage);
+                         pathList.append(toadd);
                      }
-                 }
-                 if (pathList.isEmpty()) {
-                     log->debug("Path list empty so exiting");  // NOI18N
+                 } catch (JmriException ex) {
+                     log->error("Exception " + ex.getMessage());  // NOI18N
+                     if (showMessage) {
+                         JOptionPane::showMessageDialog(nullptr, ex.getMessage());
+                     }
+                     src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                     point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
                      return;
                  }
-                 BestPath* pathToUse = nullptr;
-                 if (pathList.size() == 1) {
-                     if (!(pathList.at(0)->getListOfBlocks().isEmpty())) {
-                         pathToUse = pathList.at(0);
-                     }
-                 } else {
-                     /*Need to filter out the remaining routes, in theory this should only ever be two.
-                      We simply pick at this stage the one with the least number of blocks as being preferred.
-                      This could be expanded at some stage to look at either the length or the metric*/
-                     int noOfBlocks = 0;
-                     for (BestPath* bp : pathList) {
-                         if (!bp->getListOfBlocks().isEmpty()) {
-                             if (noOfBlocks == 0 || bp->getListOfBlocks().size() < noOfBlocks) {
-                                 noOfBlocks = bp->getListOfBlocks().size();
-                                 pathToUse = bp;
-                             }
-                         }
-                     }
-                 }
-                 if (pathToUse == nullptr) {
-                     //No valid paths found so will quit
-                     if (pathList.at(0)->getListOfBlocks().isEmpty()) {
-                         if (showMessage) {
-                             //Considered normal if not a valid through path, provide an option to stack
-                             handleNoCurrentRoute(reverseDirection, pathList.at(0)->getErrorMessage());
-                             src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-                             point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
-                         }
-                         return;
-                     }
-                     pathToUse = pathList.at(0);
-                 }
-                 startlBlock = pathToUse->getStartBlock();
-                 protectLBlock = pathToUse->getProtectingBlock();
-                 destinationLBlock = pathToUse->getDestinationBlock();
-                 routeDetails = pathToUse->getListOfBlocks();
-
-                 if (log->isDebugEnabled()) {
-                     log->debug(tr("Path chosen start = %1, dest = %2, protect = %3").arg(startlBlock->getDisplayName()).arg(  // NOI18N
-                             destinationLBlock->getDisplayName()).arg(protectLBlock->getDisplayName()));
-                 }
-                 /*synchronized (this)*/ {
-                     destination = destinationLBlock;
-                 }
-
-                 if (log->isDebugEnabled()) {
-                     log->debug("Route details:");
-                     for (LayoutBlock* blk : routeDetails) {
-                         log->debug(tr("  %1").arg(blk->getDisplayName()));
-                     }
-                 }
-
-                 if (getEntryExitType() == EntryExitPairs::FULLINTERLOCK) {
-                     setActiveEntryExit(true);
-                 }
-                 setRoute(true);
              }
          }
+         if (pathList.isEmpty()) {
+             log->debug("Path list empty so exiting");  // NOI18N
+             return;
+         }
+         BestPath* pathToUse = nullptr;
+         if (pathList.size() == 1) {
+             if (!(pathList.at(0)->getListOfBlocks().isEmpty())) {
+                 pathToUse = pathList.at(0);
+             }
+         } else {
+             /*Need to filter out the remaining routes, in theory this should only ever be two.
+              We simply pick at this stage the one with the least number of blocks as being preferred.
+              This could be expanded at some stage to look at either the length or the metric*/
+             int noOfBlocks = 0;
+             for (BestPath* bp : pathList) {
+                 if (!bp->getListOfBlocks().isEmpty()) {
+                     if (noOfBlocks == 0 || bp->getListOfBlocks().size() < noOfBlocks) {
+                         noOfBlocks = bp->getListOfBlocks().size();
+                         pathToUse = bp;
+                     }
+                 }
+             }
+         }
+         if (pathToUse == nullptr) {
+             //No valid paths found so will quit
+             if (pathList.at(0)->getListOfBlocks().isEmpty()) {
+                 if (showMessage) {
+                     //Considered normal if not a valid through path, provide an option to stack
+                     handleNoCurrentRoute(reverseDirection, pathList.at(0)->getErrorMessage());
+                     src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                     point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
+                 }
+                 return;
+             }
+             pathToUse = pathList.at(0);
+         }
+         startlBlock = pathToUse->getStartBlock();
+         protectLBlock = pathToUse->getProtectingBlock();
+         destinationLBlock = pathToUse->getDestinationBlock();
+         routeDetails = pathToUse->getListOfBlocks();
+
+         if (log->isDebugEnabled()) {
+             log->debug(tr("Path chosen start = %1, dest = %2, protect = %3").arg(startlBlock->getDisplayName()).arg(  // NOI18N
+                     destinationLBlock->getDisplayName()).arg(protectLBlock->getDisplayName()));
+         }
+         /*synchronized (this)*/ {
+             destination = destinationLBlock;
+         }
+
+         if (log->isDebugEnabled()) {
+             log->debug("Route details:");
+             for (LayoutBlock* blk : routeDetails) {
+                 log->debug(tr("  %1").arg(blk->getDisplayName()));
+             }
+         }
+
+         if (getEntryExitType() == EntryExitPairs::FULLINTERLOCK) {
+             setActiveEntryExit(true);
+         }
+         setRoute(true);
+     }
+ }
 }
 
 void DestinationPoints::handleNoCurrentRoute(bool reverse, QString message) {
@@ -1060,6 +1164,7 @@ void DestinationPoints::handleNoCurrentRoute(bool reverse, QString message) {
     }
 }
 
+//@Override
 /*public*/ void DestinationPoints::dispose()
 {
     enabled = false;
@@ -1075,6 +1180,7 @@ void DestinationPoints::handleNoCurrentRoute(bool reverse, QString message) {
     disposed=true;
 }
 
+//@Override
 /*public*/ int DestinationPoints::getState(){
     if(activeEntryExit)
         return 0x02;
@@ -1083,6 +1189,7 @@ void DestinationPoints::handleNoCurrentRoute(bool reverse, QString message) {
 
 /*public*/ bool DestinationPoints::isActive() { return activeEntryExit; }
 
+//@Override
 /*public*/ void DestinationPoints::setState(int /*state*/){}
 
 void DestinationPoints::setActiveEntryExit(bool boo){

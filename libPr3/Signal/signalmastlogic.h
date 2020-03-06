@@ -280,7 +280,7 @@ public:
      */
     /*public*/ virtual void setMasts(QHash<SignalMast*, QString> masts, SignalMast* destination) = 0;
 
-    /*public*/ virtual void setProtectingBlock(LayoutBlock* protecting) = 0;
+//    /*public*/ virtual void setProtectingBlock(LayoutBlock* protecting) = 0;
 
     /**
      * Sets which sensors must be in a given state before our mast can be set.
@@ -369,7 +369,7 @@ public:
     
     /*public*/ virtual LayoutBlock* getFacingBlock() = 0;
     
-    /*public*/ virtual LayoutBlock* getProtectingBlock() = 0;
+    /*public*/ virtual LayoutBlock* getProtectingBlock(SignalMast* /*destination*/) = 0;
     PropertyChangeSupport* pcs = NULL;
 };
 #endif // SIGNALMASTLOGIC_H

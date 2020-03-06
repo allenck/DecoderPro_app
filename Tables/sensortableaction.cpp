@@ -583,11 +583,11 @@ void SensorTableAction::showDebounceChanged(bool bChecked)
 }
 
 /*public*/ void SensorTableAction::addToPanel(AbstractTableTabAction* f) {
-    QString systemPrefix = ConnectionNameFromSystemName::getConnectionName(senManager->getSystemPrefix());
+    QString connectionName = ConnectionNameFromSystemName::getConnectionName(senManager->getSystemPrefix());
 
     if (QString(senManager->metaObject()->className()).contains("ProxySensorManager"))
-        systemPrefix = "All";
-    f->addToBottomBox(showDebounceBox, systemPrefix);
+        connectionName = "All";
+    f->addToBottomBox(showDebounceBox, connectionName);
     showDebounceBox->setToolTip(tr("Show extra columns for configuring sensor debounce timers"));
 //    showDebounceBox.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {

@@ -22,11 +22,11 @@ public:
      * Returns a list of all managers, including the
      * internal manager.  This is not a live list.
      */
-    /*public*/ QList<Manager*> getManagerList();
-    /*public*/ QList<Manager*> getDisplayOrderManagerList();
+    /*public*/ QList<Manager*> getManagerList() override;
+    /*public*/ QList<Manager*> getDisplayOrderManagerList() override;
     /*public*/ Manager* getInternalManager() const ;
-    /*public*/ Manager* getDefaultManager() const;
-    virtual /*public*/ void addManager(Manager* m);
+    /*public*/ Manager* getDefaultManager() const override;
+    virtual /*public*/ void addManager(Manager* m) override;
     /**
      * Locate via user name, then system name if needed.
      * Subclasses use this to provide e.g. getSensor, getTurnout, etc
@@ -121,13 +121,13 @@ public:
     /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
     /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
     /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) override;
-    /*public*/ Sensor *getBySystemName(/*@Nonnull */ QString systemName) const;
-    /*public*/ Sensor* getByUserName(/*@Nonnull*/ QString userName) const;
+    /*public*/ Sensor *getBySystemName(/*@Nonnull */ QString systemName) const override;
+    /*public*/ Sensor* getByUserName(/*@Nonnull*/ QString userName) const override;
 
 signals:
     //virtual void propertyChange(PropertyChangeEvent *e);
 public slots:
-    virtual void propertyChange(PropertyChangeEvent *e) override;
+    void propertyChange(PropertyChangeEvent *e) override;
 
 private:
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("AbstractProxyManager");

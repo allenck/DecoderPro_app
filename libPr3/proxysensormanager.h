@@ -69,6 +69,8 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Sensor";
  }
+ /*public*/ QString getEntryToolTip() override;
+ /*public*/ bool isPullResistanceConfigurable() override;
 
 signals:
  void propertyChange(PropertyChangeEvent *e);

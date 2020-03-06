@@ -9,6 +9,7 @@
 #include "libPr3_global.h"
 #include <QTimer>
 #include "source.h"
+#include "jpanel.h"
 
 class VetoableChangeSupport;
 class DeletePair;
@@ -125,15 +126,16 @@ public:
     /*public*/ int getXMLOrder() const;
     /*public*/ NamedBean* getBySystemName(QString systemName) const override;
     /*public*/ NamedBean* getByUserName(QString systemName) const override;
-    /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
-    /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
+//    /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
+//    /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
     /*public*/ NamedBean* getNamedBean(QString name) const override;
-    /*public*/ char systemLetter() const;
+//    /*public*/ char systemLetter() const;
+    /*public*/ SystemConnectionMemo* getMemo();
     /*public*/ QString getSystemPrefix()const override;
     /*public*/ char typeLetter() const override;
     /*public*/ QString makeSystemName(QString s)const override;
     /*public*/ int getObjectCount() override;
-    /*public*/ QStringList getSystemNameArray() override;
+//    /*public*/ QStringList getSystemNameArray() override;
     /*public*/ QStringList getSystemNameList() override;
     /*public*/ void Register(NamedBean* n)const override;
     /*public*/ void deregister(NamedBean* n)const override;
@@ -151,8 +153,9 @@ public:
     /*public*/ void addNXDestination(NamedBean* source, NamedBean* destination, LayoutEditor* panel);
     /*public*/ void addNXDestination(NamedBean* source, NamedBean* destination, LayoutEditor* panel, QString id);
     /*public*/ QObjectList* getDestinationList(QObject* obj, LayoutEditor* panel);
+    /*public*/ void removeNXSensor(Sensor* sensor);
     /*public*/ bool deleteNxPair(NamedBean* sensor);
-    /*public*/ void deleteNxPair(NamedBean* source, NamedBean* destination, LayoutEditor* panel);
+    /*public*/ bool deleteNxPair(NamedBean* source, NamedBean* exitSensor, LayoutEditor* panel);
     /*public*/ bool isDestinationValid(QObject* source, QObject* dest, LayoutEditor* panel);
     /*public*/ bool isUniDirection(QObject* source, LayoutEditor* panel, QObject* dest);
     /*public*/ void setUniDirection(QObject* source, LayoutEditor* panel, QObject* dest, bool set);
@@ -208,14 +211,11 @@ public:
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
     /*public*/ void addDataListener(ManagerDataListener *e) ;
     /*public*/ void removeDataListener(ManagerDataListener/*DestinationPoints>*/* e) ;
-    /*public*/ QString getNamedBeanClass()const override {
-        return "EntryExit";
-    }
-
+    /*public*/ QString getNamedBeanClass()const override;
 signals:
-    void propertyChange(PropertyChangeEvent*);
+    //void propertyChange(PropertyChangeEvent*);
 public slots:
-    void on_propertyChange(PropertyChangeEvent*);
+    void propertyChange(PropertyChangeEvent*);
     /*public*/ void propertyDestinationPropertyChange(PropertyChangeEvent* e);
     /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
 
@@ -260,6 +260,7 @@ private:
     /*final*/ QVector<ManagerDataListener*> listeners;// = new QVector<ManagerDataListener</*DestinationPoints*/NamedBean*>*>();
     static QList<PointDetails*>* pointDetails;// = new ArrayList<PointDetails>();
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    SystemConnectionMemo* memo = nullptr;
 
 private slots:
     /*synchronized*/ void checkRoute();

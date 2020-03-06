@@ -152,7 +152,7 @@ void SensorTableDataModel::common()
 /*protected*/ NamedBean* SensorTableDataModel::getBySystemName(QString name) const
 {
  if(qobject_cast<ProxySensorManager*>(senManager) != nullptr)
-  return ((ProxySensorManager*)senManager)->getBeanBySystemName(name);
+  return ((ProxySensorManager*)senManager)->getBySystemName(name);
  else
   return ((SensorManager*)senManager)->getBySystemName(name);
 }

@@ -25,9 +25,6 @@
 
 /*public*/ PointDetails::PointDetails(LayoutBlock* facing, QList<LayoutBlock*> protecting, QObject *parent): QObject(parent)
 {
-    this->facing=facing;
-    protectingBlocks = protecting;
-
     panel = NULL;
     routeToSet = false;
     routeFromSet = false;
@@ -38,11 +35,20 @@
     pcs = new PropertyChangeSupport(this);
     nxButtonListener = new PropertyChangeListener(this);
 
+    this->facing=facing;
+    protectingBlocks = protecting;
 
 }
 
-LayoutBlock* PointDetails::getFacing(){ return facing; }
-QList<LayoutBlock *> PointDetails::getProtecting(){ return protectingBlocks; }
+LayoutBlock* PointDetails::getFacing()
+{
+ return facing;
+}
+
+QList<LayoutBlock *> PointDetails::getProtecting()
+{
+ return protectingBlocks;
+}
 
 //This might be better off a ref to the source pointdetail.
 void PointDetails::setRouteTo(bool boo){
@@ -55,24 +61,36 @@ void PointDetails::setRouteFrom(bool boo){
 
 /*public*/ void PointDetails::setPanel(LayoutEditor* panel){
     this->panel = panel;
+ // find the panel that actually contains this sensor, default to the supplied panel
+ for (LayoutEditor* layout : *((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList())
+ {
+  for (SensorIcon* si : *layout->sensorList)
+  {
+   if (sensor == si->getNamedBean()) {
+       this->panel = layout;
+       return;
+   }
+  }
+ }
 }
 
-void PointDetails::setSensor(Sensor* sen){
-    if(sensor==sen)
-        return;
-    if(sensor!=NULL)
-    {
-        sensor->removePropertyChangeListener(nxButtonListener);
+void PointDetails::setSensor(Sensor* sen)
+{
+ if(sensor==sen)
+     return;
+ if(sensor!=NULL)
+ {
+     sensor->removePropertyChangeListener(nxButtonListener);
 //        AbstractSensor* s = (AbstractSensor*)sensor;
 //        disconnect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
-    }
-    sensor = sen;
-    if(sensor!=NULL)
-    {
-     sensor->addPropertyChangeListener(nxButtonListener);
+ }
+ sensor = sen;
+ if(sensor!=NULL)
+ {
+  sensor->addPropertyChangeListener(nxButtonListener);
 //     AbstractSensor* s = (AbstractSensor*)sensor;
 //     connect(s, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(nxButtonListener(PropertyChangeEvent*)));
-    }
+ }
 
 }
 
@@ -234,15 +252,24 @@ int PointDetails::getNXState(){
     return nxButtonState;
 }
 
-SignalMast* PointDetails::getSignalMast() { return signalmast; }
+SignalMast* PointDetails::getSignalMast()
+{
+ return signalmast;
+}
 
 void PointDetails::setSignalHead(SignalHead* head){
     signalhead = head;
 }
 
-SignalHead* PointDetails::getSignalHead() { return signalhead; }
+SignalHead* PointDetails::getSignalHead()
+{
+ return signalhead;
+}
 
-/*public*/ LayoutEditor* PointDetails::getPanel() { return panel; }
+/*public*/ LayoutEditor* PointDetails::getPanel()
+{
+ return panel;
+}
 
 /*public*/ void PointDetails::setRefObject(NamedBean* refObs){
  QList<LayoutEditor*>* panels = static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->
@@ -254,82 +281,99 @@ SignalHead* PointDetails::getSignalHead() { return signalhead; }
  }
 }
 
-/*public*/ void PointDetails::setRefObjectByPanel(NamedBean* refObs, LayoutEditor* pnl) {
-    refObj = refObs;
-    if (pnl != nullptr && refObj != nullptr) {
-        if (qobject_cast<SignalMast*>(refObj) || qobject_cast<Sensor*>(refObj)) {
-            //String mast = ((SignalMast)refObj).getUserName();
-            refLoc = pnl->getFinder()->findPositionablePointByEastBoundBean(refObj);
-            if (refLoc == nullptr) {
-                refLoc = pnl->getFinder()->findPositionablePointByWestBoundBean(refObj);
-            }
-            if (refLoc == nullptr) {
-                refLoc = pnl->getFinder()->findLayoutTurnoutByBean(refObj);
-            }
-            if (refLoc == nullptr) {
-                refLoc = pnl->getFinder()->findLevelXingByBean(refObj);
-            }
-            if (refLoc == nullptr) {
-                refLoc = pnl->getFinder()->findLayoutSlipByBean(refObj);
-            }
-            if (qobject_cast<Sensor*>(refObj)) {
-                setSensor((Sensor*) refObj);
-            }
-        } else if (qobject_cast<SignalHead*>(refObj)) {
-            QString signal = ((SignalHead*) refObj)->getDisplayName();
-            refLoc = pnl->getFinder()->findPositionablePointByEastBoundSignal(signal);
-            if (refLoc == nullptr) {
-                refLoc = pnl->getFinder()->findPositionablePointByWestBoundSignal(signal);
-            }
-        }
-    }
-    if (refLoc != nullptr) {
-        if (qobject_cast<PositionablePoint*>(refLoc)) {
-            //((PositionablePoint)refLoc).addPropertyChangeListener(this);
-        } else if (qobject_cast<LayoutTurnout*>(refLoc)) {  //<== this includes LayoutSlips
-            //((LayoutTurnout)refLoc).addPropertyChangeListener(this);
-        } else if (qobject_cast<LevelXing*>(refLoc)) {
-            //((LevelXing)refLoc).addPropertyChangeListener(this);
-        }
-    }
-    //With this set ref we can probably add a listener to it, so that we can detect when a change to the point details takes place
+/*public*/ void PointDetails::setRefObjectByPanel(NamedBean* refObs, LayoutEditor* pnl)
+{
+ refObj = refObs;
+ if (pnl != nullptr && refObj != nullptr)
+ {
+     if (qobject_cast<SignalMast*>(refObj) || qobject_cast<Sensor*>(refObj)) {
+         //String mast = ((SignalMast)refObj).getUserName();
+         refLoc = pnl->getFinder()->findPositionablePointByEastBoundBean(refObj);
+         if (refLoc == nullptr) {
+             refLoc = pnl->getFinder()->findPositionablePointByWestBoundBean(refObj);
+         }
+         if (refLoc == nullptr) {
+             refLoc = pnl->getFinder()->findLayoutTurnoutByBean(refObj);
+         }
+         if (refLoc == nullptr) {
+             refLoc = pnl->getFinder()->findLevelXingByBean(refObj);
+         }
+         if (refLoc == nullptr) {
+             refLoc = pnl->getFinder()->findLayoutSlipByBean(refObj);
+         }
+         if (qobject_cast<Sensor*>(refObj)) {
+             setSensor((Sensor*) refObj);
+         }
+     } else if (qobject_cast<SignalHead*>(refObj)) {
+         QString signal = ((SignalHead*) refObj)->getDisplayName();
+         refLoc = pnl->getFinder()->findPositionablePointByEastBoundSignal(signal);
+         if (refLoc == nullptr) {
+             refLoc = pnl->getFinder()->findPositionablePointByWestBoundSignal(signal);
+         }
+     }
+ }
+// if (refLoc != nullptr) {
+//     if (qobject_cast<PositionablePoint*>(refLoc)) {
+//         //((PositionablePoint)refLoc).addPropertyChangeListener(this);
+//     } else if (qobject_cast<LayoutTurnout*>(refLoc)) {  //<== this includes LayoutSlips
+//         //((LayoutTurnout)refLoc).addPropertyChangeListener(this);
+//     } else if (qobject_cast<LevelXing*>(refLoc)) {
+//         //((LevelXing)refLoc).addPropertyChangeListener(this);
+//     }
+// }
+ //With this set ref we can probably add a listener to it, so that we can detect when a change to the point details takes place
 }
 
-/*public*/ NamedBean* PointDetails::getRefObject(){ return refObj; }
+/*public*/ NamedBean* PointDetails::getRefObject()
+{
+ return refObj;
+}
 
-/*public*/ QObject* PointDetails::getRefLocation() { return refLoc; }
+/*public*/ QObject* PointDetails::getRefLocation()
+{
+ return refLoc;
+}
 
 //LayoutEditor getLayoutEditor() { return panel; }
 
-bool PointDetails::isRouteToPointSet() { return routeToSet; }
-bool PointDetails::isRouteFromPointSet() { return routeFromSet; }
+bool PointDetails::isRouteToPointSet()
+{
+ return routeToSet;
+}
 
-/*public*/ QString PointDetails::getDisplayName(){
-    if(sensor!=NULL){
-        QString description = sensor->getDisplayName();
-        if(signalmast!=NULL){
-            description = description + " (" + signalmast->getDisplayName() +")";
-        }
-        return description;
-    }
+bool PointDetails::isRouteFromPointSet()
+{
+ return routeFromSet;
+}
 
-    //if(refObj instanceof SignalMast)
-    if(qobject_cast<SignalMast*>(refObj)!=NULL)
-    {
-     return ((SignalMast*)refObj)->getDisplayName();
-    }
-    else
-        //if (refObj instanceof Sensor)
-        if(qobject_cast<Sensor*>(refLoc)!=NULL)
-    {
-        return ((Sensor*)refObj)->getDisplayName();
-    }
-        //else if (refObj instanceof SignalHead)
-    if(qobject_cast<SignalHead*>(refLoc)!=NULL)
-        {
-        return ((SignalHead*)refObj)->getDisplayName();
-    }
-    return "no display name";
+/*public*/ QString PointDetails::getDisplayName()
+{
+ if(sensor!=NULL)
+ {
+  QString description = sensor->getDisplayName();
+  if(signalmast!=NULL){
+      description = description + " (" + signalmast->getDisplayName() +")";
+  }
+  return description;
+ }
+
+ //if(refObj instanceof SignalMast)
+ if(qobject_cast<SignalMast*>(refObj)!=NULL)
+ {
+  return ((SignalMast*)refObj)->getDisplayName();
+ }
+ else
+     //if (refObj instanceof Sensor)
+     if(qobject_cast<Sensor*>(refLoc)!=NULL)
+ {
+     return ((Sensor*)refObj)->getDisplayName();
+ }
+     //else if (refObj instanceof SignalHead)
+ if(qobject_cast<SignalHead*>(refLoc)!=NULL)
+     {
+     return ((SignalHead*)refObj)->getDisplayName();
+ }
+ return "no display name";
 }
 
 void PointDetails::nxButtonTimeOut(){
@@ -353,17 +397,24 @@ void PointDetails::cancelNXButtonTimeOut(){
 
 /*public*/ void PointDetails::flashSensor(){
     foreach(SensorIcon* si, *getPanel()->sensorList){
+     if(qobject_cast<SensorIcon*>(si))
+     {
         if(si->getSensor()==getSensor()){
             si->flashSensor(2, Sensor::ACTIVE, Sensor::INACTIVE);
         }
+     }
     }
 }
 
 /*public*/ void PointDetails::stopFlashSensor(){
-    foreach(SensorIcon* si, *getPanel()->sensorList){
+    foreach(SensorIcon* si, *getPanel()->sensorList)
+    {
+     if(qobject_cast<SensorIcon*>(si))
+     {
         if(si->getSensor()==getSensor()){
             si->stopFlash();
         }
+     }
     }
 }
 
@@ -414,6 +465,7 @@ Sensor* PointDetails::getSensor(){
     //if (getRefObject() instanceof Sensor)
     if(qobject_cast<Sensor*>(getRefObject())!= NULL)
         return (Sensor*)getRefObject();
+
     QObject* objLoc = getRefLocation();
     QObject* objRef = getRefObject();
     SignalMast* mast=nullptr;
@@ -425,8 +477,6 @@ Sensor* PointDetails::getSensor(){
     if(qobject_cast<SignalMast*>(objRef)!= NULL)
     {
         mast = (SignalMast*)objRef;
-        username = mast->getUserName();
-        systemname = mast->getSystemName();
     }
     //if(objRef instanceof SignalHead)
     if(qobject_cast<SignalHead*>(objRef)!= NULL)
@@ -439,97 +489,33 @@ Sensor* PointDetails::getSensor(){
     //if (objLoc instanceof PositionablePoint)
     if(qobject_cast<PositionablePoint*>(objLoc)!= NULL)
     {
-        PositionablePoint* p = (PositionablePoint*)objLoc;
-        if(mast!=nullptr) {
-         if (p->getEastBoundSignalMast() == objRef) {
-             foundSensor = p->getEastBoundSensor();
-         } else if (p->getWestBoundSignalMast() == objRef) {
-             foundSensor = p->getWestBoundSensor();
-         }
-        }
-        else if(head!=nullptr) {
-         if ((p->getEastBoundSignal() == (username))
-                 || p->getEastBoundSignal() == (systemname)) {
-             foundSensor = p->getEastBoundSensor();
-         } else if ((p->getWestBoundSignal() == (username))
-                 || p->getWestBoundSignal() == (systemname)) {
-             foundSensor = p->getWestBoundSensor();
-         }
-        }
+     PositionablePoint* p = (PositionablePoint*)objLoc;
+     if(mast!=nullptr) {
+      if (p->getEastBoundSignalMast() == objRef) {
+          foundSensor = p->getEastBoundSensor();
+      } else if (p->getWestBoundSignalMast() == objRef) {
+          foundSensor = p->getWestBoundSensor();
+      }
+     }
+     else if(head!=nullptr) {
+      if ((p->getEastBoundSignal() == (username))
+              || p->getEastBoundSignal() == (systemname)) {
+          foundSensor = p->getEastBoundSensor();
+      } else if ((p->getWestBoundSignal() == (username))
+              || p->getWestBoundSignal() == (systemname)) {
+          foundSensor = p->getWestBoundSensor();
+      }
+     }
     }
     else
         //if (objLoc instanceof LayoutTurnout)
-        if(qobject_cast<LayoutTurnout*>(objLoc)!= NULL)
+        if(qobject_cast<LayoutSlip*>(objLoc)!= NULL)
         {
-        LayoutTurnout* t = (LayoutTurnout*)objLoc;
-        if(mast!=NULL)
-        {
-         if (t->getSignalAMast() == objRef)
-         {
-             foundSensor = t->getSensorA();
-         } else if (t->getSignalBMast() == objRef) {
-             foundSensor = t->getSensorB();
-         } else if (t->getSignalCMast() == objRef) {
-             foundSensor = t->getSensorC();
-         } else if (t->getSignalDMast() == objRef) {
-             foundSensor = t->getSensorD();
-         }
-        }
-        if(head!=NULL){
-            if((t->getSignalA1Name()==(username)) || (t->getSignalA1Name()==(systemname)))
-                foundSensor =  t->getSensorA();
-            else if((t->getSignalA2Name()==(username)) || (t->getSignalA2Name()==(systemname)))
-                foundSensor =  t->getSensorA();
-            else if((t->getSignalA3Name()==(username)) || (t->getSignalA3Name()==(systemname)))
-                foundSensor =  t->getSensorA();
-            else if((t->getSignalB1Name()==(username)) || (t->getSignalB1Name()==(systemname)))
-                foundSensor =  t->getSensorB();
-            else if((t->getSignalB2Name()==(username)) || (t->getSignalB2Name()==(systemname)))
-                foundSensor =  t->getSensorB();
-            else if((t->getSignalC1Name()==(username)) || (t->getSignalC1Name()==(systemname)))
-                foundSensor =  t->getSensorC();
-            else if((t->getSignalC2Name()==(username)) || (t->getSignalC2Name()==(systemname)))
-                foundSensor =  t->getSensorC();
-            else if((t->getSignalD1Name()==(username)) || (t->getSignalD1Name()==(systemname)))
-                sensor =  t->getSensorD();
-            else if((t->getSignalD2Name()==(username)) || (t->getSignalD2Name()==(systemname)))
-                sensor =  t->getSensorD();
-        }
-    }
-        else
-            //if (objLoc instanceof LevelXing)
-            if(qobject_cast<LevelXing*>(objLoc)!= NULL)
-            {
-        LevelXing* x = (LevelXing*)objLoc;
-        if(mast!=NULL){
-            if((x->getSignalAMastName()==(username)) || (x->getSignalAMastName()==(systemname)))
-                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorAName());
-            else if((x->getSignalBMastName()==(username)) || (x->getSignalBMastName()==(systemname)))
-                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorBName());
-            else if((x->getSignalCMastName()==(username)) || (x->getSignalCMastName()==(systemname)))
-                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorCName());
-            else if((x->getSignalDMastName()==(username)) || (x->getSignalDMastName()==(systemname)))
-                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorDName());
-        }
-        if(head!=NULL){
-            if((x->getSignalAName()==(username)) || (x->getSignalAName()==(systemname)))
-                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorAName());
-            else if((x->getSignalBName()==(username)) || (x->getSignalBName()==(systemname)))
-                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorBName());
-            else if((x->getSignalCName()==(username)) || (x->getSignalCName()==(systemname)))
-                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorCName());
-            else if((x->getSignalDName()==(username)) || (x->getSignalDName()==(systemname)))
-                foundSensor =  ((ProxySensorManager*)sm)->getSensor(x->getSensorDName());
-        }
-    }
-    else
-                //if (objLoc instanceof LayoutSlip)
-                if(qobject_cast<LayoutSlip*>(objLoc)!= NULL)
-                {
         LayoutSlip* sl = (LayoutSlip*)objLoc;
         if(mast!=NULL)
         {
-         if (sl->getSignalAMast() == objRef) {
+         if (sl->getSignalAMast() == objRef)
+         {
              foundSensor = sl->getSensorA();
          } else if (sl->getSignalBMast() == objRef) {
              foundSensor = sl->getSensorB();
@@ -539,7 +525,7 @@ Sensor* PointDetails::getSensor(){
              foundSensor = sl->getSensorD();
          }
         }
-        if(head!=NULL){
+        if(head != NULL){
          if ((sl->getSignalA1Name() == (username)) || (sl->getSignalA1Name() == (systemname))) {
              foundSensor = sm->getSensor(sl->getSensorAName());
          } else if ((sl->getSignalB1Name() == (username)) || (sl->getSignalB1Name() == (systemname))) {
@@ -550,6 +536,70 @@ Sensor* PointDetails::getSensor(){
              foundSensor = sm->getSensor(sl->getSensorDName());
          }
         }
+    }
+     else //note: you have to do this after LayoutSlip
+         // because LayoutSlip extends LayoutTurnout
+         // (So a LayoutSlip would be an instance of LayoutTurnout.)
+         if (qobject_cast<LayoutTurnout*>(objLoc)) {  //<== this includes LayoutSlips
+             LayoutTurnout* t = (LayoutTurnout*) objLoc;
+             if (mast != nullptr) {
+                 if (t->getSignalAMast() == objRef) {
+                     foundSensor = t->getSensorA();
+                 } else if (t->getSignalBMast() == objRef) {
+                     foundSensor = t->getSensorB();
+                 } else if (t->getSignalCMast() == objRef) {
+                     foundSensor = t->getSensorC();
+                 } else if (t->getSignalDMast() == objRef) {
+                     foundSensor = t->getSensorD();
+                 }
+             }
+             if (head != nullptr) {
+                 if (( t->getSignalA1Name() == (username)) || ( t->getSignalA1Name() == (systemname))) {
+                     foundSensor =  t->getSensorA();
+                 } else if (( t->getSignalA2Name() == (username)) || ( t->getSignalA2Name() == (systemname))) {
+                     foundSensor =  t->getSensorA();
+                 } else if (( t->getSignalA3Name() == (username)) || ( t->getSignalA3Name() == (systemname))) {
+                     foundSensor =  t->getSensorA();
+                 } else if (( t->getSignalB1Name() == (username)) || ( t->getSignalB1Name() == (systemname))) {
+                     foundSensor =  t->getSensorB();
+                 } else if (( t->getSignalB2Name() == (username)) || ( t->getSignalB2Name() == (systemname))) {
+                     foundSensor =  t->getSensorB();
+                 } else if (( t->getSignalC1Name() == (username)) || ( t->getSignalC1Name() == (systemname))) {
+                     foundSensor =  t->getSensorC();
+                 } else if (( t->getSignalC2Name() == (username)) || ( t->getSignalC2Name() == (systemname))) {
+                     foundSensor =  t->getSensorC();
+                 } else if (( t->getSignalD1Name() == (username)) || ( t->getSignalD1Name() == (systemname))) {
+                     foundSensor =  t->getSensorD();
+                 } else if (( t->getSignalD2Name() == (username)) || ( t->getSignalD2Name() == (systemname))) {
+                     foundSensor =  t->getSensorD();
+                 }
+             }
+    }
+    else if (qobject_cast<LevelXing*>(objLoc))
+    {
+     LevelXing* x = (LevelXing*) objLoc;
+     if (mast != nullptr) {
+         if ( x->getSignalAMast() == objRef) {
+             foundSensor =  x->getSensorA();
+         } else if ( x->getSignalBMast() == objRef) {
+             foundSensor =  x->getSensorB();
+         } else if ( x->getSignalCMast() == objRef) {
+             foundSensor =  x->getSensorC();
+         } else if ( x->getSignalDMast() == objRef) {
+             foundSensor =  x->getSensorD();
+         }
+     }
+     if(head!=NULL){
+      if ((x->getSignalAName() == (username)) || (x->getSignalAName() == (systemname))) {
+          foundSensor = x->getSensorA();
+      } else if ((x->getSignalBName() == (username)) || (x->getSignalBName() == (systemname))) {
+          foundSensor = x->getSensorB();
+      } else if ((x->getSignalCName() == (username)) || (x->getSignalCName() == (systemname))) {
+          foundSensor = x->getSensorC();
+      } else if ((x->getSignalDName() == (username)) || (x->getSignalDName() == (systemname))) {
+          foundSensor = x->getSensorD();
+      }
+     }
     }
     setSensor(foundSensor);
     return foundSensor;
@@ -677,36 +727,67 @@ NamedBean* PointDetails::getSignal(){
                 signal =  sh->getSignalHead(x->getSignalDName());
          }
     }
-    else
-     //if(getRefLocation() instanceof LayoutSlip)
-     if(qobject_cast<LayoutSlip*>(getRefLocation())!= NULL){
-        LayoutSlip* t = (LayoutSlip*)getRefLocation();
-        if (t->getSensorA() == sen) {
-                        if (t->getSignalAMast() != nullptr) {
-                            signal = t->getSignalAMast();
-                        } else if (t->getSignalA1Name() != ("")) {
-                            signal = sh->getSignalHead(t->getSignalA1Name());
-                        }
-                    } else if (t->getSensorB() == sen) {
-                        if (t->getSignalBMast() != nullptr) {
-                            signal = t->getSignalBMast();
-                        } else if (t->getSignalB1Name() != ("")) {
-                            signal = sh->getSignalHead(t->getSignalB1Name());
-                        }
-                    } else if (t->getSensorC() == sen) {
-                        if (t->getSignalCMast() != nullptr) {
-                            signal = t->getSignalCMast();
-                        } else if (t->getSignalC1Name() != ("")) {
-                            signal = sh->getSignalHead(t->getSignalC1Name());
-                        }
-                    } else if (t->getSensorD() == sen) {
-                        if (t->getSignalDMast() != nullptr) {
-                            signal = t->getSignalDMast();
-                        } else if (t->getSignalD1Name() != ("")) {
-                            signal = sh->getSignalHead(t->getSignalD1Name());
-                        }
-                    }
+    else//note: you have to do this after LayoutSlip
+     // because LayoutSlip extends LayoutTurnout
+     // (So a LayoutSlip would be an instance of LayoutTurnout.)
+     if (qobject_cast<LayoutTurnout*>(getRefLocation()))
+     {  //<== this includes LayoutSlips
+        LayoutTurnout* t = (LayoutTurnout*)getRefLocation();
+        if (t->getSensorA() == sen)
+        {
+         if (t->getSignalAMast() != nullptr) {
+             signal = t->getSignalAMast();
+         } else if (t->getSignalA1Name() != ("")) {
+             signal = sh->getSignalHead(t->getSignalA1Name());
+         }
+     } else if (t->getSensorB() == sen) {
+         if (t->getSignalBMast() != nullptr) {
+             signal = t->getSignalBMast();
+         } else if (t->getSignalB1Name() != ("")) {
+             signal = sh->getSignalHead(t->getSignalB1Name());
+         }
+     } else if (t->getSensorC() == sen) {
+         if (t->getSignalCMast() != nullptr) {
+             signal = t->getSignalCMast();
+         } else if (t->getSignalC1Name() != ("")) {
+             signal = sh->getSignalHead(t->getSignalC1Name());
+         }
+     } else if (t->getSensorD() == sen) {
+         if (t->getSignalDMast() != nullptr) {
+             signal = t->getSignalDMast();
+         } else if (t->getSignalD1Name() != ("")) {
+             signal = sh->getSignalHead(t->getSignalD1Name());
+         }
+     }
     }
+    else if (qobject_cast<LevelXing*>(getRefLocation() )) {
+      LevelXing* x = (LevelXing*) getRefLocation();
+      if ( x->getSensorA() == sen) {
+          if ( x->getSignalAMast() != nullptr) {
+              signal =  x->getSignalAMast();
+          } else if (x->getSignalAName() != ("")) {
+              signal = sh->getSignalHead( x->getSignalAName());
+          }
+      } else if ( x->getSensorB() == sen) {
+          if ( x->getSignalBMast() != nullptr) {
+              signal =  x->getSignalBMast();
+          } else if (x->getSignalBName() != ("")) {
+              signal = sh->getSignalHead( x->getSignalBName());
+          }
+      } else if ( x->getSensorC() == sen) {
+          if ( x->getSignalCMast() != nullptr) {
+              signal =  x->getSignalCMast();
+          } else if (x->getSignalCName() != ("")) {
+              signal = sh->getSignalHead( x->getSignalCName());
+          }
+      } else if ( x->getSensorD() == sen) {
+          if ( x->getSignalDMast() != nullptr) {
+              signal =  x->getSignalDMast();
+          } else if (x->getSignalDName() !=("")) {
+              signal = sh->getSignalHead( x->getSignalDName());
+          }
+      }
+  }
     //if(signal instanceof SignalMast)
     if(qobject_cast<SignalMast*>(signal)!= NULL)
         setSignalMast(((SignalMast*)signal));
@@ -716,6 +797,7 @@ NamedBean* PointDetails::getSignal(){
         setSignalHead(((SignalHead*)signal));
     return signal;
 }
+
 //@Override
 /*public*/ bool PointDetails::equals(QObject* obj){
     if(obj ==this)
@@ -745,7 +827,7 @@ NamedBean* PointDetails::getSignal(){
 //    hash = 37 * hash + (this->protectingBlocks != NULL ? this->protectingBlocks.hashCode() : 0);
     return hash;
 }
-#
+
 /*public*/ /*synchronized*/ void PointDetails::addPropertyChangeListener(PropertyChangeListener* l) {
     pcs->addPropertyChangeListener(l);
 }

@@ -75,8 +75,10 @@ class RunnableThis : public Runnable
  * Initialise the signal mast logic
  * @param source - The signalmast we are configuring
  */
-/*public*/ DefaultSignalMastLogic::DefaultSignalMastLogic (SignalMast* source, QObject */*parent*/)
+/*public*/ DefaultSignalMastLogic::DefaultSignalMastLogic (/*@Nonnull*/ SignalMast* source, QObject */*parent*/)
 {
+ if(source == nullptr)
+  throw NullPointerException(tr("source is marked @NonNull but is null."));
  this->source = source;
  destList =  QHash<SignalMast*, DestinationMast*>();
  useAutoGenBlock = true;
@@ -92,58 +94,41 @@ class RunnableThis : public Runnable
  propertySourceMastListener = new PropertySourceMastListener(this);
  inWait = false;
  thr = nullptr;
- if(qobject_cast<SignalHeadSignalMast*>(source)!=nullptr)
- {
-  this->stopAspect = ((SignalHeadSignalMast*)source)->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER);
-  this->source->addPropertyChangeListener(propertySourceMastListener);
-  connect(this->source->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySourceMastListener, SLOT(propertyChange(PropertyChangeEvent*)));
-  if(((SignalHeadSignalMast*)source)->getAspect()==nullptr)
-    ((SignalHeadSignalMast*)source)->setAspect(stopAspect);
- }
- else if(qobject_cast<TurnoutSignalMast*>(source))
- {
-  this->stopAspect = ((TurnoutSignalMast*)source)->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER);
-  this->source->addPropertyChangeListener(propertySourceMastListener);
-  connect(this->source->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySourceMastListener, SLOT(propertyChange(PropertyChangeEvent*)));
-  if(((TurnoutSignalMast*)source)->getAspect()==nullptr)
-   ((TurnoutSignalMast*)source)->setAspect(stopAspect);
- }
- else if(qobject_cast<VirtualSignalMast*>(source))
- {
-  this->stopAspect = ((TurnoutSignalMast*)source)->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER);
-  this->source->addPropertyChangeListener(propertySourceMastListener);
-  connect(this->source->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySourceMastListener, SLOT(propertyChange(PropertyChangeEvent*)));
-  if(((VirtualSignalMast*)source)->getAspect()==nullptr)
-       ((VirtualSignalMast*)source)->setAspect(stopAspect);
- }
- //else Q_ASSERT(false);
- else
+ try
  {
   this->stopAspect = source->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER);
   this->source->addPropertyChangeListener(propertySourceMastListener);
   connect(this->source->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySourceMastListener, SLOT(propertyChange(PropertyChangeEvent*)));
-  if (source->getAspect() == nullptr)
-  {
-   source->setAspect(stopAspect);
-
-  }
+  if(source->getAspect()=="")
+    source->setAspect(stopAspect);
  }
+ catch(Exception ex)
+ {
+  log->error(tr("Error while creating Signal Logic %1").arg(ex.getMessage()));
+ }
+
 }
 
 /*public*/ void DefaultSignalMastLogic::setFacingBlock(LayoutBlock* facing){
     facingBlock = facing;
 }
 
-/*public*/ void DefaultSignalMastLogic::setProtectingBlock(LayoutBlock* protecting){
-    protectingBlock = protecting;
-}
+///*public*/ void DefaultSignalMastLogic::setProtectingBlock(LayoutBlock* protecting){
+//    protectingBlock = protecting;
+//}
 
 /*public*/ LayoutBlock* DefaultSignalMastLogic::getFacingBlock(){
     return facingBlock;
 }
 
-/*public*/ LayoutBlock* DefaultSignalMastLogic::getProtectingBlock(){
-    return protectingBlock;
+/*public*/ LayoutBlock* DefaultSignalMastLogic::getProtectingBlock(/*@Nonnull*/ SignalMast* mast) {
+ if(mast == nullptr)
+  throw NullPointerException(tr("dest is marked @NonNull but is null."));
+
+ if (!destList.contains(mast)) {
+     return nullptr;
+ }
+ return destList.value(mast)->getProtectingBlock();
 }
 
 /*public*/ SignalMast* DefaultSignalMastLogic::getSourceMast(){
@@ -252,7 +237,7 @@ class RunnableThis : public Runnable
  return destList.value(dest)->getComment();
 }
 
-/*public*/ void DefaultSignalMastLogic::setComment(QString comment,SignalMast* dest)
+/*public*/ void DefaultSignalMastLogic::setComment(QString comment, SignalMast* dest)
 {
  if(!destList.contains(dest)){
      return;

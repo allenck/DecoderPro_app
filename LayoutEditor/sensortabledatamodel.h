@@ -19,7 +19,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SensorTableDataModel : public BeanTableDataMo
     Q_OBJECT
 public:
     explicit SensorTableDataModel(QObject *parent = nullptr);
- ~SensorTableDataModel() {}
+ ~SensorTableDataModel()override {}
  SensorTableDataModel(const SensorTableDataModel&) : BeanTableDataModel() {}
 enum COLUMNS
 {
@@ -29,14 +29,14 @@ enum COLUMNS
   INACTIVEDELAY = ACTIVEDELAY+1
 };
 /*public*/ SensorTableDataModel(SensorManager* manager, QObject *parent);
-/*public*/ QString getValue(QString name) const;
-/*public*/ int columnCount(const QModelIndex &parent) const;
-/*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-/*public*/ int getPreferredWidth(int col);
-/*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-/*public*/ QVariant data(const QModelIndex &index, int role) const;
-/*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-/*public*/ void configureTable(JTable* table);
+/*public*/ QString getValue(QString name) const override;
+/*public*/ int columnCount(const QModelIndex &parent) const override;
+/*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+/*public*/ int getPreferredWidth(int col) override;
+/*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+/*public*/ QVariant data(const QModelIndex &index, int role) const override;
+/*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+/*public*/ void configureTable(JTable* table) override;
 /*public*/ void showDebounce(bool show);
 Q_INVOKABLE /*public*/ QString getClassDescription() ;
 
@@ -52,14 +52,14 @@ private:
 
 protected:
  /*protected*/ JTable* table;
- /*protected*/ void setManager(Manager* manager);
- /*protected*/ Manager* getManager();
- /*protected*/ virtual NamedBean* getBySystemName(QString name) const;
- /*protected*/ NamedBean* getByUserName(QString name);
+ /*protected*/ void setManager(Manager* manager) override;
+ /*protected*/ Manager* getManager() override;
+ /*protected*/ virtual NamedBean* getBySystemName(QString name) const override;
+ /*protected*/ NamedBean* getByUserName(QString name) override;
 
- /*protected*/ QString getMasterClassName();
- /*protected*/ void clickOn(NamedBean* t);
- /*protected*/ QString getBeanType();
+ /*protected*/ QString getMasterClassName() override;
+ /*protected*/ void clickOn(NamedBean* t) override;
+ /*protected*/ QString getBeanType() override;
  /*protected*/ QString getClassName();
 // /*protected*/ /*synchronized*/ void updateNameList();
  // for icon state col
@@ -67,7 +67,7 @@ protected:
  ImageIconRenderer* renderer = nullptr;
 
 protected slots:
- /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
+ /*protected*/ bool matchPropertyName(PropertyChangeEvent* e) override;
 friend class SensorTableAction;
 friend class SensorTableWidget;
 };
