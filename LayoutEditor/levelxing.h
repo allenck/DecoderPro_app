@@ -104,7 +104,7 @@ public:
     /*public*/ void setCoordsB(QPointF p);
     /*public*/ void setCoordsC(QPointF p);
     /*public*/ void setCoordsD(QPointF p);
-    /*public*/ void scaleCoords(float xFactor, float yFactor)override;
+    /*public*/ void scaleCoords(double xFactor, double yFactor)override;
     double round (double x);
 
     /**
@@ -152,7 +152,7 @@ public:
     /*public*/ void addViewPopUpMenu(QMenuItem menu);
     /*public*/ void setAdditionalEditPopUpMenu(QMenu* popup);
     /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
-    /*public*/ void translateCoords(float xFactor, float yFactor)override;
+    /*public*/ void translateCoords(double xFactor, double yFactor)override;
 
 signals:
     

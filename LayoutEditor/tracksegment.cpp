@@ -507,7 +507,7 @@ TrackSegment::getLayoutBlock()
  * @param yFactor the amount to scale Y coordinates
  */
 //@Override
-/*public*/ void TrackSegment::scaleCoords(float xFactor, float yFactor) {
+/*public*/ void TrackSegment::scaleCoords(double xFactor, double yFactor) {
     QPointF factor = QPointF(xFactor, yFactor);
     center = MathUtil::multiply(center, factor);
     if (isBezier()) {
@@ -525,7 +525,7 @@ TrackSegment::getLayoutBlock()
  * @param yFactor the amount to translate Y coordinates
  */
 //@Override
-/*public*/ void TrackSegment::translateCoords(float xFactor, float yFactor) {
+/*public*/ void TrackSegment::translateCoords(double xFactor, double yFactor) {
     setCoordsCenter(MathUtil::add(center, QPointF(xFactor, yFactor)));
 }
 

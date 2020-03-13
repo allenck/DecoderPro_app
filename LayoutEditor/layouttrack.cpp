@@ -283,7 +283,7 @@
  * @param xFactor the amount to scale X coordinates
  * @param yFactor the amount to scale Y coordinates
  */
-/*public*/ /*abstract*/ void LayoutTrack::scaleCoords(float xFactor, float yFactor) {}
+/*public*/ /*abstract*/ void LayoutTrack::scaleCoords(double xFactor, double yFactor) {}
 
 /**
  * translate this LayoutTrack's coordinates by the x and y factors
@@ -291,7 +291,7 @@
  * @param xFactor the amount to translate X coordinates
  * @param yFactor the amount to translate Y coordinates
  */
-/*public*/ /*abstract*/ void LayoutTrack::translateCoords(float xFactor, float yFactor) {}
+/*public*/ /*abstract*/ void LayoutTrack::translateCoords(double xFactor, double yFactor) {}
 
 /**
  * find the hit (location) type for a point

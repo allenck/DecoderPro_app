@@ -191,7 +191,7 @@ public:
     /*public*/ QColor getSettingRouteColor();
     /*public*/ void setSettingRouteColor(QColor col);
     /*public*/ bool isAssignableFromType() {return true;}
-    /*public*/ QSet<NamedBean*> getNamedBeanSet();
+    /*public*/ QSet<NamedBean*> getNamedBeanSet() override;
     /*synchronized*/ /*public*/ void stackNXRoute(DestinationPoints* dp, bool reverse);
     /*public*/ QList<DestinationPoints*> getStackedInterlocks();
     /*public*/ bool isRouteStacked(DestinationPoints* dp, bool reverse);
@@ -209,8 +209,8 @@ public:
     /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
     /*public*/ void deleteBean(DestinationPoints* bean, QString property) throw (PropertyVetoException);
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
-    /*public*/ void addDataListener(ManagerDataListener *e) ;
-    /*public*/ void removeDataListener(ManagerDataListener/*DestinationPoints>*/* e) ;
+    /*public*/ void addDataListener(/*ManagerDataListener*/QObject *e) override;
+    /*public*/ void removeDataListener(QObject *e) override;
     /*public*/ QString getNamedBeanClass()const override;
 signals:
     //void propertyChange(PropertyChangeEvent*);
@@ -257,7 +257,7 @@ private:
     QHash<PointDetails*, Source*> nxpair;// = new HashMap<>();
     void createDeletePairList(NamedBean* sensor);
     VetoableChangeSupport* vcs;// = new VetoableChangeSupport(this);
-    /*final*/ QVector<ManagerDataListener*> listeners;// = new QVector<ManagerDataListener</*DestinationPoints*/NamedBean*>*>();
+    /*final*/ QVector</*ManagerDataListener*/QObject*> listeners;// = new QVector<ManagerDataListener</*DestinationPoints*/NamedBean*>*>();
     static QList<PointDetails*>* pointDetails;// = new ArrayList<PointDetails>();
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     SystemConnectionMemo* memo = nullptr;

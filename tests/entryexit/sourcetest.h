@@ -17,7 +17,7 @@ class SourceTest : public QObject
 
 public:
  explicit SourceTest(QObject *parent = nullptr);
- ~SourceTest() override {}
+ //~SourceTest() override {}
  Q_INVOKABLE /*public*/ void setUp() throw (Exception) ;
  Q_INVOKABLE /*public*/ void tearDown();
 
@@ -31,12 +31,10 @@ public slots:
 private:
  static EntryExitTestTools* tools;
  static QMap<QString, LayoutEditor*>* panels;// = new HashMap<>();
-
  static EntryExitPairs* eep;
  static LayoutBlockManager* lbm;
  static SensorManager* sm;
  static TurnoutManager* tm;
-
 };
 
 #endif // SOURCETEST_H

@@ -49,22 +49,17 @@
  //generate a propertychange, so hence do not want to tie it down at this stage.
  pointToDest = new QHash<PointDetails*, DestinationPoints*>();
 
-    if(point->getSensor()!=NULL){
-        addSourceObject(point->getSensor());
-    } else {
-        addSourceObject(point->getSignal());
-    }
-    point->setSource(this);
-    try
-    {
-    sourceSignal = point->getSignal();
-    }
-    catch(NullPointerException e)
-    {
+ if(point->getSensor()!=NULL){
+     addSourceObject(point->getSensor());
+ } else {
+     addSourceObject(point->getSignal());
+ }
+ point->setSource(this);
+ sourceSignal = point->getSignal();
+ pd = point;
+ //createPopUpMenu();
 
-    }
-    pd = point;
-    //createPopUpMenu();
+ setObjectName(point->getDisplayName());
 }
 
 /**
@@ -135,7 +130,7 @@ void Source::createPopUpMenu(){
     pd->getPanel()->addToPopUpMenu(pd->getSensor(), &item2, Editor::VIEWPOPUPONLY);
     setMenuEnabled(false);
 }
-#endif
+
 void Source ::on_editCancel()
 {
   cancelClearInterlockFromSource(EntryExitPairs::CANCELROUTE);
@@ -152,7 +147,7 @@ void Source::on_cancel()
 {
  cancelClearInterlockFromSource(EntryExitPairs::CANCELROUTE);
 }
-
+#endif
 void Source::cancelClearInterlockFromSource(int cancelClear){
     foreach(DestinationPoints* dp, pointToDest->values()){
         if(dp->isActive()){
@@ -209,11 +204,13 @@ NamedBean* Source::getSourceSignal(){
     DestinationPoints* dstPoint = new DestinationPoints(dest, id, this);
     dest->setDestination(dstPoint, this);
     pointToDest->insert(dest, dstPoint);
+    dstPoint->addPropertyChangeListener((PropertyChangeListener*)this);
 }
 
 /*public*/ void Source::removeDestination(PointDetails* dest){
     pointToDest->value(dest)->dispose();
     pointToDest->remove(dest);
+    dest->removePropertyChangeListener((PropertyChangeListener*)this);
     if(pointToDest->size()==0){
         getPoint()->removeSource(this);
     }
@@ -225,7 +222,10 @@ void Source::addSourceObject(NamedBean* source){
     sourceObject = source;
 }
 
-QObject* Source::getSourceObject() { return sourceObject; }
+QObject* Source::getSourceObject()
+{
+ return sourceObject;
+}
 
 /*public*/ QList<PointDetails*> Source::getDestinationPoints() {
     //ArrayList<PointDetails> rtn =
@@ -273,7 +273,10 @@ QObject* Source::getSourceObject() { return sourceObject; }
 }
 
 void Source::activeBean(DestinationPoints* dest, bool reverseDirection){
-    dest->activeBean(reverseDirection);
+    if (dest != nullptr) {
+     dest->activeBean(reverseDirection);
+ }
+
 }
 
 /*public*/ DestinationPoints* Source::getDestForPoint(PointDetails* dp) {
@@ -289,7 +292,7 @@ void Source::activeBean(DestinationPoints* dest, bool reverseDirection){
     if(pointToDest->contains(lookingFor)){
         pointToDest->value(lookingFor)->setEntryExitType(type);
     }
-    if(type==EntryExitPairs::FULLINTERLOCK){
+    if(type == EntryExitPairs::FULLINTERLOCK){
         //if (sourceSignal instanceof SignalMast)
         if(qobject_cast<SignalMast*>(sourceSignal)!= NULL)
         {
@@ -332,7 +335,7 @@ void Source::activeBean(DestinationPoints* dest, bool reverseDirection){
 
 /*public*/ DestinationPoints* Source::getByUniqueId(QString id){
     foreach(DestinationPoints* d, pointToDest->values()){
-        if(d->getUniqueId()==(id))
+        if(d->getUniqueId() == (id))
             return d;
     }
     return nullptr;
@@ -341,7 +344,7 @@ void Source::activeBean(DestinationPoints* dest, bool reverseDirection){
 /*public*/ DestinationPoints* Source::getByUserName(QString id){
     foreach(DestinationPoints* d, pointToDest->values()){
      QString uname = d->getUserName();
-        if(uname != "" && uname==(id))
+        if(uname != "" && uname == (id))
             return d;
     }
     return nullptr;

@@ -39,32 +39,40 @@
     return NULL;
 }
 
-/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointAtTrackSegments(TrackSegment* tr1, TrackSegment* tr2) {
-for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
-if (((p->getConnect1() == tr1) && (p->getConnect2() == tr2))
-                || ((p->getConnect1() == tr2) && (p->getConnect2() == tr1))) {
-            return p;
-        }
-    }
-    return nullptr;
+/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointAtTrackSegments(TrackSegment* tr1, TrackSegment* tr2)
+{
+ for (PositionablePoint* p : layoutEditor->getPositionablePoints())
+ {
+  if (((p->getConnect1() == tr1) && (p->getConnect2() == tr2))
+                || ((p->getConnect1() == tr2) && (p->getConnect2() == tr1)))
+  {
+   return p;
+  }
+ }
+ return nullptr;
 }
 
-/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionableLinkPoint(LayoutBlock* blk1) {
-for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
-if (p->getType() == PositionablePoint::EDGE_CONNECTOR) {
-            if ((p->getConnect1() != NULL && p->getConnect1()->getLayoutBlock() == blk1)
-                    || (p->getConnect2() != NULL && p->getConnect2()->getLayoutBlock() == blk1)) {
-                return p;
-            }
-        }
-    }
-    return nullptr;
+/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionableLinkPoint(LayoutBlock* blk1)
+{
+ for (PositionablePoint* p : layoutEditor->getPositionablePoints())
+ {
+  if (p->getType() == PositionablePoint::EDGE_CONNECTOR)
+  {
+   if ((p->getConnect1() != NULL && p->getConnect1()->getLayoutBlock() == blk1)
+           || (p->getConnect2() != NULL && p->getConnect2()->getLayoutBlock() == blk1))
+   {
+    return p;
+   }
+  }
+ }
+ return nullptr;
 }
 
 /**
  * Returns an array list of track segments matching the block name.
  */
-/*public*/ QList<TrackSegment*> LayoutEditorFindItems::findTrackSegmentByBlock(QString name) {
+/*public*/ QList<TrackSegment*> LayoutEditorFindItems::findTrackSegmentByBlock(QString name)
+{
     if (name.length() <= 0) {
         return QList<TrackSegment*>();
     }
@@ -77,70 +85,101 @@ if (p->getType() == PositionablePoint::EDGE_CONNECTOR) {
     return ts;
 }
 
-/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByEastBoundSignal(QString signalName) {
-for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
-if (p->getEastBoundSignal()==(signalName)) {
-            return p;
-        }
-    }
-    return nullptr;
+/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByEastBoundSignal(QString signalName)
+{
+ for (PositionablePoint* p : layoutEditor->getPositionablePoints())
+ {
+  if (p->getEastBoundSignal()==(signalName))
+  {
+   return p;
+  }
+ }
+ return nullptr;
 }
 
-/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByWestBoundSignal(QString signalName) {
-for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
-if (p->getWestBoundSignal()==(signalName)) {
-            return p;
-        }
-    }
-    return nullptr;
+/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByWestBoundSignal(QString signalName)
+{
+ for (PositionablePoint* p : layoutEditor->getPositionablePoints())
+ {
+  if (p->getWestBoundSignal()==(signalName))
+  {
+          return p;
+      }
+  }
+  return nullptr;
 }
 
-/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByWestBoundBean(NamedBean* bean) {
-    if (qobject_cast<SignalMast*>(bean)) {
-        for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
-            if (p->getWestBoundSignalMast() == bean) {
-                return p;
-            }
-        }
-    } else if (qobject_cast<Sensor*>(bean)) {
-        for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
-            if (p->getWestBoundSensor() == bean) {
-                return p;
-            }
-        }
-    } else if (qobject_cast<SignalHead*>(bean)) {
-        for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
-            if (p->getWestBoundSignal()==(bean->getSystemName())
-                    || p->getWestBoundSignal()==(bean->getSystemName())) {
-                return p;
-            }
-        }
-    }
-    return nullptr;
+/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByWestBoundBean(NamedBean* bean)
+{
+ if (qobject_cast<SignalMast*>(bean))
+ {
+  for (PositionablePoint* p : layoutEditor->getPositionablePoints())
+  {
+   if(p->getWestBoundSignalMast())
+    log->debug(tr("pt: %3 westBoundSensor: %1 vs mast: %2").arg(p->getWestBoundSignalMast()->getDisplayName()).arg(bean->getUserName()).arg(p->getId()));
+   if (p->getWestBoundSignalMast() == bean)
+   {
+    return p;
+   }
+  }
+ } else if (qobject_cast<Sensor*>(bean))
+ {
+  for (PositionablePoint* p : layoutEditor->getPositionablePoints())
+  {
+   if(p->getWestBoundSensor())
+    log->debug(tr("pt: %3 westBoundSensor: %1 vs sensor: %2").arg(p->getWestBoundSensorName()).arg(bean->getUserName()).arg(p->getId()));
+   if (p->getWestBoundSensor() == bean)
+   {
+    return p;
+   }
+  }
+ } else if (qobject_cast<SignalHead*>(bean))
+ {
+     for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
+         if (p->getWestBoundSignal()==(bean->getSystemName())
+                 || p->getWestBoundSignal()==(bean->getSystemName())) {
+             return p;
+         }
+     }
+ }
+ return nullptr;
 }
 
-/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByEastBoundBean(NamedBean* bean) {
-    if (qobject_cast<SignalMast*>(bean)) {
-        for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
-            if (p->getEastBoundSignalMast() == bean) {
-                return p;
-            }
-        }
-    } else if (qobject_cast<Sensor*>(bean)) {
-        for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
-            if (p->getEastBoundSensor() == bean) {
-                return p;
-            }
-        }
-    } else if (qobject_cast<SignalHead*>(bean)) {
-        for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
-            if (p->getEastBoundSignal()==(bean->getSystemName())
-                    || p->getEastBoundSignal()==(bean->getSystemName())) {
-                return p;
-            }
-        }
-    }
-    return nullptr;
+/*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByEastBoundBean(NamedBean* bean)
+{
+ if (qobject_cast<SignalMast*>(bean))
+ {
+  for (PositionablePoint* p : layoutEditor->getPositionablePoints())
+  {
+   if(p->getEastBoundSignalMast())
+    log->debug(tr("pt: %3 eastBoundSignalmast: %1 vs mast: %2").arg(p->getEastBoundSignalMast()->getDisplayName()).arg(bean->getUserName()).arg(p->getId()));
+   if (p->getEastBoundSignalMast() == bean)
+   {
+    return p;
+   }
+  }
+ }
+ else if (qobject_cast<Sensor*>(bean)) {
+  for (PositionablePoint* p : layoutEditor->getPositionablePoints())
+  {
+   if(p->getEastBoundSensor())
+    log->debug(tr("pt: %3 eastBoundSensor: %1 vs sensor: %2").arg(p->getEastBoundSensorName()).arg(bean->getUserName()).arg(p->getId()));
+   if (p->getEastBoundSensor() == bean) {
+       return p;
+   }
+  }
+ }
+ else if (qobject_cast<SignalHead*>(bean))
+ {
+  for (PositionablePoint* p : layoutEditor->getPositionablePoints())
+  {
+   if (p->getEastBoundSignal()==(bean->getSystemName())
+           || p->getEastBoundSignal()==(bean->getSystemName())) {
+       return p;
+   }
+  }
+ }
+ return nullptr;
 }
 
 /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByWestBoundSignalMast(QString signalMastName) {
@@ -177,19 +216,19 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
    if (p->getEastBoundSignal()==(bean->getSystemName())
                       || p->getWestBoundSignal()==(bean->getSystemName()))
    {
-
-          return p;
+    return p;
    }
    if (bean->getUserName() != NULL && (p->getEastBoundSignal()==(bean->getSystemName())
            || p->getWestBoundSignal()==(bean->getSystemName()))) {
-       return p;
+    return p;
    }
   }
  }
  return nullptr;
 }
 
-/*public*/ LayoutTurnout* LayoutEditorFindItems::findLayoutTurnoutBySignalMast(QString signalMastName) {
+/*public*/ LayoutTurnout* LayoutEditorFindItems::findLayoutTurnoutBySignalMast(QString signalMastName)
+{
     return findLayoutTurnoutByBean(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(signalMastName));
 }
 

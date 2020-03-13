@@ -10,6 +10,7 @@
 SourceTest::SourceTest(QObject *parent) : QObject(parent)
 {
 }
+
 /**
  *
  * @author Paul Bender Copyright (C) 2017
@@ -19,12 +20,10 @@ SourceTest::SourceTest(QObject *parent) : QObject(parent)
 
 /*static*/ EntryExitTestTools* SourceTest::tools = nullptr;
 /*static*/ QMap<QString, LayoutEditor*>* SourceTest::panels = new QMap<QString, LayoutEditor*>();
-
 /*static*/ EntryExitPairs* SourceTest::eep = nullptr;
 /*static*/ LayoutBlockManager* SourceTest::lbm = nullptr;
 /*static*/ SensorManager* SourceTest::sm = nullptr;
-
-
+/*static*/ TurnoutManager* SourceTest::tm = nullptr;
 //@Test
 /*public*/ void SourceTest::testCTor() {
     //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
@@ -101,7 +100,6 @@ SourceTest::SourceTest(QObject *parent) : QObject(parent)
 
  //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
  JUnitUtil::resetProfileManager();
-
  tools = new EntryExitTestTools();
  panels = EntryExitTestTools::getPanels();
  Assert::assertEquals("Get LE panels", 2, panels->size(), __FILE__, __LINE__);  // NOI18N
@@ -114,7 +112,9 @@ SourceTest::SourceTest(QObject *parent) : QObject(parent)
 //@AfterClass
 /*public*/ void SourceTest::tearDown() {
  //panels.forEach((name, panel) -> JUnitUtil.dispose(panel));
+#if 1
  foreach(LayoutEditor* panel, *panels )
-  panel->dispose();
+  panel->close();
+#endif
  JUnitUtil::tearDown();
 }

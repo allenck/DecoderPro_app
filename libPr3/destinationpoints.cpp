@@ -98,6 +98,7 @@ DestinationPoints::DestinationPoints(PointDetails* point, QString id, Source* sr
 //            blockStateUpdated(e);
 //        }
 //    };
+    setObjectName(mSystemName);
 }
 void DestinationPoints::propertyBlockListener(PropertyChangeEvent* e) // SLOT[]
 {
@@ -217,7 +218,7 @@ void DestinationPoints::setEntryExitType(int type){
   if (log->isDebugEnabled()) log->debug(mUserName + "  We have a change of state on the block " + blk->getDisplayName());
   int now =  e->getNewValue().toInt();
 
-  if (now==Block::OCCUPIED)
+  if (now == Block::OCCUPIED)
   {
    LayoutBlock* lBlock = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlock(blk);
    //If the block was previously active or inactive then we will
@@ -227,7 +228,8 @@ void DestinationPoints::setEntryExitType(int type){
    disconnect(blk, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyBlockListener(PropertyChangeEvent*)));
    removeBlockFromRoute(lBlock);
   } else {
-      if (log->isDebugEnabled()) log->debug("state was " + QString::number(now) + " and did not go through reset");
+      if (log->isDebugEnabled())
+       log->debug("state was " + QString::number(now) + " and did not go through reset");
   }
  }
 }

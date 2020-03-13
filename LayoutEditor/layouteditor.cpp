@@ -74,9 +74,22 @@
 #include "leblockcontentsicon.h"
 #include "guilafpreferencesmanager.h"
 #include "namedbeancombobox.h"
+#include "layouteditorverticaltoolbarpanel.h"
+#include "layouteditorhorizontaltoolbarpanel.h"
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QDockWidget>
+#include "jtextarea.h"
+#include "jpanel.h"
+#include <QSysInfo>
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
+
+//@Nonnull
+/*public*/ LayoutEditorToolBarPanel* LayoutEditor::getLayoutEditorToolBarPanel() {
+    return leToolBarPanel;
+}
 
 LayoutEditor::LayoutEditor(QString name, QWidget *parent) :
     PanelEditor(name, parent),
@@ -117,6 +130,131 @@ LayoutEditor::~LayoutEditor()
  JmriColorChooser::addRecentColor(defaultTextColor);
 }
 
+/*private*/ void LayoutEditor::setupToolBar() {
+    //Initial setup for both horizontal and vertical
+#if 0
+    QWidget* contentPane = getContentPane();
+
+    //remove these (if present) so we can add them back (without duplicates)
+    if (editToolBarContainerPanel != null) {
+        editToolBarContainerPanel.setVisible(false);
+//        contentPane.remove(editToolBarContainerPanel);
+    }
+
+    if (helpBarPanel != null) {
+        contentPane.remove(helpBarPanel);
+    }
+
+    deletefloatingEditToolBoxFrame();
+    if (toolBarSide.equals(ToolBarSide.eFLOAT)) {
+        createfloatingEditToolBoxFrame();
+        createFloatingHelpPanel();
+        return;
+    }
+#endif
+    ui->toolBarWidget->hide();
+
+    //QSize screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+    QDesktopWidget* desktop = QApplication::desktop();
+    QSize screenDim = desktop->screen()->size();
+    bool toolBarIsVertical = ((toolBarSide.getType() == eRIGHT) || (toolBarSide.getType() == eLEFT));
+    if (toolBarIsVertical)
+    {
+     leToolBarPanel = new LayoutEditorVerticalToolBarPanel(this);
+     editToolBarScrollPane = new QScrollArea(/*leToolBarPanel*/);
+     //editToolBarScrollPane->setWidget(leToolBarPanel);
+     editToolBarScrollPane->setWidgetResizable(true);
+     toolbarWidth = editToolBarScrollPane->size().width();
+     toolbarHeight = screenDim.height();
+    }
+    else
+    {
+     leToolBarPanel = new LayoutEditorHorizontalToolBarPanel(this);
+//        editToolBarScrollPane = new QScrollArea(/*leToolBarPanel*/);
+//        editToolBarScrollPane->setWidget(leToolBarPanel);
+//        editToolBarScrollPane->setWidgetResizable(true);
+     toolbarWidth = screenDim.width();
+     toolbarHeight = leToolBarPanel->maximumHeight();
+    }
+
+    editToolBarContainerPanel = new QDockWidget("Toolbar", this);
+    //editToolBarContainerPanel->setLayout(new QVBoxLayout());//editToolBarContainerPanel, BoxLayout.PAGE_AXIS));
+//    editToolBarContainerPanel->setWidget(editToolBarScrollPane);
+//    editToolBarScrollPane->show();
+    if(toolBarIsVertical)
+    {
+     editToolBarScrollPane->setWidget(leToolBarPanel);
+     editToolBarContainerPanel->setWidget(editToolBarScrollPane);
+    }
+    else
+     editToolBarContainerPanel->setWidget(leToolBarPanel);
+
+    //setup notification for when horizontal scrollbar changes visibility
+    //editToolBarScroll.getViewport().addChangeListener(e -> {
+    //log.warn("scrollbars visible: " + editToolBarScroll.getHorizontalScrollBar().isVisible());
+    //});
+    editToolBarContainerPanel->setMinimumSize(QSize(toolbarWidth, toolbarHeight));
+    editToolBarContainerPanel->resize(QSize(toolbarWidth, toolbarHeight));
+    if(toolBarIsVertical)
+    {
+     editToolBarContainerPanel->setMaximumWidth(150);
+     editToolBarContainerPanel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+     addDockWidget(Qt::LeftDockWidgetArea, editToolBarContainerPanel);
+    }
+    else
+    {
+     editToolBarContainerPanel->setMaximumHeight(200);
+     editToolBarContainerPanel->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
+     addDockWidget(Qt::TopDockWidgetArea, editToolBarContainerPanel);
+    }
+    helpBarPanel = new JPanel();
+    helpBarPanel->setLayout(new QHBoxLayout());
+    helpBarPanel->layout()->addWidget(helpBar);
+
+    //for (Component c : helpBar.getComponents())
+    foreach(QWidget* c, helpBar->findChildren<QWidget*>())
+    {
+     if (qobject_cast<JTextArea*>(c))
+     {
+      JTextArea* j = (JTextArea*) c;
+      j->resize(QSize(toolbarWidth, j->size().height()));
+      j->setLineWrap(toolBarIsVertical);
+      j->setWrapStyleWord(toolBarIsVertical);
+     }
+    }
+    //contentPane.setLayout(new BoxLayout(contentPane, toolBarIsVertical ? BoxLayout.LINE_AXIS : BoxLayout.PAGE_AXIS));
+
+    switch (toolBarSide.getType()) {
+    case eTOP:
+     editToolBarContainerPanel->setAllowedAreas(Qt::TopDockWidgetArea);
+     break;
+    case eLEFT:
+            //contentPane.add(editToolBarContainerPanel, 0);
+     editToolBarContainerPanel->setAllowedAreas(Qt::LeftDockWidgetArea);
+            break;
+
+    case eBOTTOM:
+     editToolBarContainerPanel->setAllowedAreas(Qt::BottomDockWidgetArea );
+     break;
+    case eRIGHT:
+            //contentPane.add(editToolBarContainerPanel);
+     editToolBarContainerPanel->setAllowedAreas( Qt::RightDockWidgetArea);
+            break;
+
+        default:
+            // fall through
+            break;
+    }
+
+    if (toolBarIsVertical) {
+        leToolBarPanel->layout()->addWidget(helpBarPanel);
+    } else {
+        //contentPane.add(helpBarPanel);
+    }
+    helpBarPanel->setVisible(isEditable() && getShowHelpBar());
+    editToolBarContainerPanel->setVisible(isEditable());
+}
+
 void LayoutEditor::init()
 {
  editorUseOldLocSize = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize();
@@ -155,8 +293,64 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
  minZoom = 0.25;
  maxZoom = 8.0;
  toolBarSide = ToolBarSide("top");
+ //leToolBarPanel = new LayoutEditorToolBarPanel(this); // temp until this is implemented fully!
+
+ wideToolBarCheckBoxMenuItem = new QAction(tr("Wide ToolBar"));
+ wideToolBarCheckBoxMenuItem->setCheckable(true);
+ helpBar = new JPanel();
 
 
+// setupToolBar();
+
+ //setup help bar
+
+ helpBar->setLayout(new QVBoxLayout());//helpBar, BoxLayout.PAGE_AXIS));
+#if 0
+ JTextArea* helpTextArea1 = new JTextArea(tr("To add an item, check item type, enter needed data, then, with shift down, click on panel - except Track Segment."));
+ helpBar->layout()->addWidget(helpTextArea1);
+ JTextArea* helpTextArea2 = new JTextArea(tr("To add a Track Segment, with shift down press mouse on one connection point and drag to another connection point."));
+ helpBar->layout()->addWidget(helpTextArea2);
+
+ QString helpText3 = "";
+
+// switch (SystemType.getType()) {
+//     case SystemType.MACOSX: {
+#ifdef Q_OS_OSF
+         helpText3 = tr("Help3Mac");
+//         break;
+//     }
+#endif
+#ifdef Q_OS_LINUX  || Q_OS_Win32
+//     case SystemType.WINDOWS:
+//     case SystemType.LINUX: {
+         helpText3 = tr("To move an item, drag it with the right mouse button. To show its popup menu, right-click on it.");
+//         break;
+//     }
+#endif
+
+//     default:
+//         helpText3 = Bundle.getMessage("Help3");
+// }
+
+ JTextArea* helpTextArea3 = new JTextArea(helpText3);
+ helpBar->layout()->addWidget(helpTextArea3);
+#else
+ QTextEdit* textEdit = new QTextEdit(/*centralWidget*/);
+ textEdit->setObjectName(QLatin1String("textEdit"));
+ QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+ sizePolicy.setHorizontalStretch(0);
+ sizePolicy.setVerticalStretch(0);
+ sizePolicy.setHeightForWidth(textEdit->sizePolicy().hasHeightForWidth());
+ textEdit->setSizePolicy(sizePolicy);
+ textEdit->setMaximumSize(QSize(16777215, 42));
+ textEdit->setHtml(QApplication::translate("LayoutEditor", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Ubuntu'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment. To add a track segment, with shift down, click mouse on one connection point and drag to another connection point. To move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", nullptr));
+
+ helpBar->layout()->addWidget(textEdit);
+#endif
  if(static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
  {
   log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
@@ -361,6 +555,7 @@ _contents = new QVector<Positionable*>();
  setupComboBox(ui->blockContentsComboBox, true, false);
  ui->blockContentsComboBox->setToolTip(tr("Select to add a Block label when next clicking with shift down."));
  connect(ui->blockContentsComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(blockContentsComboBoxChanged()));
+ connect(leToolBarPanel->blockContentsComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(blockContentsComboBoxChanged()));
 
  ui->multiSensorButton->setToolTip(tr("Select to add a MultiSensor when next clicking with shift down."));
 
@@ -836,7 +1031,7 @@ connect(ui->iconLabelButton, SIGNAL(toggled(bool)), this, SLOT(onChangeIcons()))
      QVariant prefsProp = prefsMgr->getProperty(windowFrameRef, "toolBarSide");
      //log.debug("{}.toolBarSide is {}", windowFrameRef, prefsProp);
      if (prefsProp != QVariant()) {
-         ToolBarSide::TOOLBARSIDES newToolBarSide = ToolBarSide::getName( prefsProp.toString());
+         QString newToolBarSide = prefsProp.toString();
          setToolBarSide(newToolBarSide);
      }
 
@@ -1670,13 +1865,7 @@ double LayoutEditor::getPaintScale()
  */
 //@Nonnull
 /*public*/ /*static*/ QPointF LayoutEditor::getCoords(/*@Nonnull*/ LayoutTrack* layoutTrack, int connectionType) {
-    QPointF result = MathUtil::zeroPoint2D;
-    if (layoutTrack != nullptr) {
-        result = layoutTrack->getCoordsForConnectionType(connectionType);
-    } else {
-        log->error(tr("Null connection point of type %1").arg(connectionType));
-    }
-    return result;
+    return layoutTrack->getCoordsForConnectionType(connectionType);
 }
 
 
@@ -3036,8 +3225,8 @@ double LayoutEditor::getPaintScale()
  calcLocation(event->scenePos(), 0, 0);
 // if (isEditable())
 //  {
-//   xLabel.setText(Integer.toQString(xLoc));
-//   yLabel.setText(Integer.toQString(yLoc));
+   leToolBarPanel->xLabel->setText(QString::number(xLoc));
+   leToolBarPanel->yLabel->setText(QString::number(yLoc));
 //  }
  QList <Positionable*> selections = getSelectedItems(event);
  Positionable* selection = nullptr;
@@ -3960,7 +4149,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    for (int i = 0; i<_pointSelection->size();i++)
    {
     PositionablePoint* p = _pointSelection->at(i);
-    QPointF coord = p->getCoords();
+    QPointF coord = p->getCoordsCenter();
     //g.drawRect((int)coord.getX()-4, (int)coord.getY()-4, 9, 9);
     QGraphicsRectItem* item = new QGraphicsRectItem(QRectF((int)coord.x()-4, (int)coord.y()-4, 9, 9));
     item->setPen(pen);
@@ -4398,7 +4587,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
   }
   return nullptr;
 }
-
+#if 0
 /*static*/ /*protected*/ QPointF LayoutEditor::getCoords(QObject* o, int type)
 {
  if (o != nullptr)
@@ -4406,7 +4595,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
   switch (type)
   {
   case POS_POINT:
-      return ((PositionablePoint*)o)->getCoords();
+      return ((PositionablePoint*)o)->getCoordsCenter();
   case TURNOUT_A:
       return ((LayoutTurnout*)o)->getCoordsA();
   case TURNOUT_B:
@@ -4443,7 +4632,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  }
  return ( QPointF(0.0,0.0));
 }
-
+#endif
 /**
 * Return a layout block with the entered name, creating a new one if needed.
 *   Note that the entered name becomes the user name of the LayoutBlock, and
@@ -5256,8 +5445,6 @@ bool LayoutEditor::isDirty() {return bDirty;}
     }
 }
 
-
-#if 1
 /*private*/ void LayoutEditor::drawPanelGrid(EditScene* g2)
 {
   //Dimension dim = getSize();
@@ -5340,39 +5527,36 @@ bool LayoutEditor::isDirty() {return bDirty;}
   log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
  g2->addItem(panelGridGroup);
 }
-#endif
-#if 0
-/*private*/ Stream<LayoutTrack> getLayoutTracksOfClass(Class<? extends LayoutTrack> layoutTrackClass) {
-    return layoutTrackList.stream()
-            .filter(layoutTrackClass::isInstance)
-            .map(layoutTrackClass::cast);
-}
-#else
+
 /*private*/ QList<LayoutTrack*> LayoutEditor::getLayoutTracksOfClass(QString type)
 {
  QList<LayoutTrack*> list = QList<LayoutTrack*>();
  foreach(LayoutTrack* lt, *layoutTrackList)
  {
-  if(QString(metaObject()->className()) == type)
+  if(QString(lt->metaObject()->className()) == type)
    list.append(lt);
  }
  return list;
 }
-#endif
-/*public*/ QList<PositionablePoint*> LayoutEditor::getPositionablePoints() {
+
+/*public*/ QList<PositionablePoint*> LayoutEditor::getPositionablePoints()
+{
     //return getLayoutTracksOfClass("PositionablePoint");
+ QList<LayoutTrack*> list1 = getLayoutTracksOfClass("PositionablePoint");
  QList<PositionablePoint*> list = QList<PositionablePoint*>();
  foreach(LayoutTrack* lt, *layoutTrackList)
  {
-  //if(QString(metaObject()->className()) == "PositionablePoint")
   if(qobject_cast<PositionablePoint*>(lt))
    list.append((PositionablePoint*)lt);
  }
+ if(list.size() != list1.size())
+  log->debug(tr("list sizes differ"));
  return list;
 //    )
 //            .map(PositionablePoint.class::cast)
 //            .collect(Collectors.toCollection(ArrayList<PositionablePoint>::new));
 }
+
 /*protected*/ void LayoutEditor::setTrackStrokeWidth(bool need)
 {
  if (main == need) return;
@@ -6552,12 +6736,13 @@ double LayoutEditor::toRadians(double degrees)
  }
  return false;
 }
+#if 0
 /*public*/ QPointF LayoutEditor::getEndCoords(QObject* o, int type) {
              if(o == nullptr)
              return QPointF(0,0);
   switch (type) {
       case POS_POINT:
-          return ((PositionablePoint*)o)->getCoords();
+          return ((PositionablePoint*)o)->getCoordsCenter();
       case TURNOUT_A:
           return ((LayoutTurnout*)o)->getCoordsA();
       case TURNOUT_B:
@@ -6592,6 +6777,7 @@ double LayoutEditor::toRadians(double degrees)
   }
   return (QPointF(0.0,0.0));
 }
+#endif
 void LayoutEditor::on_actionEnable_antialiasing_smoother_lines_toggled(bool bChecked)
 {
  antialiasingOn = bChecked;
@@ -7932,6 +8118,36 @@ void LayoutEditor::addMemory()
     putItem(l); // note: this calls unionToPanelBounds & setDirty()
 } //addMemory
 
+void LayoutEditor::addBlockContents()
+{
+    QString newName = leToolBarPanel->blockContentsComboBox->getSelectedItemDisplayName();
+    if (newName == nullptr) {
+        newName = "";
+    }
+
+    if (newName.isEmpty()) {
+        JOptionPane::showMessageDialog(this, tr("Error - Cannot create a Block Contents label because no block name is entered in the\nBlock Contents text field. Please enter the name of a Block and try again."),
+                tr("Error"), JOptionPane::ERROR_MESSAGE);
+        return;
+    }
+    BlockContentsIcon* l = new BlockContentsIcon(" ", this);
+    l->setBlock(newName);
+    Block* xMemory = l->getBlock();
+
+    if (xMemory != nullptr) {
+        QString uname = xMemory->getDisplayName();
+        if (uname != (newName)) {
+            //put the system name in the memory field
+            leToolBarPanel->blockContentsComboBox->setSelectedItem(xMemory);
+        }
+    }
+    setNextLocation(l);
+    l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
+    l->setDisplayLevel(Editor::LABELS);
+    l->setForeground(defaultTextColor);
+    putItem(l); // note: this calls unionToPanelBounds & setDirty()
+}
+
 /**
 * Add a Reporter Icon to the panel
 */
@@ -8856,6 +9072,30 @@ void LayoutEditor::OnDefaultTextColorSelected(int i)
     return showHelpBar;
 }
 
+//TODO: @Deprecated // Java standard pattern for boolean getters is "isShowHelpBar()"
+/*public*/ bool LayoutEditor::getDrawGrid() {
+    return drawGrid;
+}
+
+//TODO: @Deprecated // Java standard pattern for boolean getters is "isShowHelpBar()"
+/*public*/ bool LayoutEditor::getSnapOnAdd() {
+    return snapToGridOnAdd;
+}
+
+//TODO: @Deprecated // Java standard pattern for boolean getters is "isShowHelpBar()"
+/*public*/ bool LayoutEditor::getSnapOnMove() {
+    return snapToGridOnMove;
+}
+
+//TODO: @Deprecated // Java standard pattern for boolean getters is "isShowHelpBar()"
+/*public*/ bool LayoutEditor::getAntialiasingOn() {
+    return antialiasingOn;
+}
+
+//TODO: @Deprecated // Java standard pattern for boolean getters is "isShowHelpBar()"
+/*public*/ bool LayoutEditor::getHighlightSelectedBlock() {
+    return highlightSelectedBlockFlag;
+}
 /*public*/ void LayoutEditor::setLayoutName(QString name)
 {
  layoutName = name;
@@ -10783,7 +11023,6 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //    toolBarSideTopButton.addActionListener((ActionEvent event) -> {
 //        setToolBarSide(ToolBarSide.eTOP);
 //    });
-    connect(toolBarSideTopButton, SIGNAL(triggered(bool)),this, SLOT(setToolBarSide(bool)));
     toolBarSideTopButton->setChecked(toolBarSide.getName() == (/*ToolBarSide::eTOP*/"top"));
 
     toolBarSideLeftButton = new QAction(tr("Left"));
@@ -10827,7 +11066,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     toolBarSideGroup->addAction(toolBarSideRightButton);
     toolBarSideGroup->addAction(toolBarSideFloatButton);
     toolBarMenu->addMenu(toolBarSideMenu);
-
+    connect(toolBarSideGroup, SIGNAL(triggered(QAction*)), this, SLOT(setToolBarSide(QAction*)));
     //
     //toolbar wide menu
     //
@@ -10876,7 +11115,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
                 if (c instanceof JRadioButtonMenuItem) {
                     JRadioButtonMenuItem crb = (JRadioButtonMenuItem) c;
                     String menuItemFontSizeString = crb.getText();
-                    crb.setSelected(menuItemFontSizeString.equals(fontSizeString));
+                    crb->setChecked(menuItemFontSizeString.equals(fontSizeString));
                 }
             }
         }
@@ -11979,48 +12218,61 @@ void LayoutEditor::On_clearTrack()
 //
 //
 //
-/*private*/ void LayoutEditor::setToolBarSide(ToolBarSide::TOOLBARSIDES newToolBarSide) {
-    // null if edit toolbar is not setup yet...
-    if ((editModeCheckBoxMenuItem != nullptr) && !(newToolBarSide ==(toolBarSide.getName()))) {
-        toolBarSide.getName() = newToolBarSide;
-        UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager")); //.ifPresent((prefsMgr) -> {
-        if(prefsMgr)
-            prefsMgr->setProperty(getWindowFrameRef(), "toolBarSide", toolBarSide.getName());
-        }//);
-#if 0
-        setupToolBar(); //re-layout all the toolbar items
+/*private*/ void LayoutEditor::setToolBarSide(QAction* act)
+{
+ if(editToolBarContainerPanel)
+   removeDockWidget(editToolBarContainerPanel);
+ setToolBarSide(act->text());
+}
+/*private*/ void LayoutEditor::setToolBarSide(QString newToolBarSide)
+{
+ // null if edit toolbar is not setup yet...
+ if ((editModeCheckBoxMenuItem != nullptr) && !(newToolBarSide ==(toolBarSide.getName()))) {
+  //toolBarSide.getName() = newToolBarSide;
+  UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager")); //.ifPresent((prefsMgr) -> {
+  if(prefsMgr)
+  prefsMgr->setProperty(getWindowFrameRef(), "toolBarSide", toolBarSide.getName());
+ }//);
+ toolBarSide = ToolBarSide(newToolBarSide);
+ toolBarSideTopButton->setChecked(toolBarSide.getType() == (eTOP));
+ toolBarSideLeftButton->setChecked(toolBarSide.getType() == (eLEFT));
+ toolBarSideBottomButton->setChecked(toolBarSide.getType() == (eBOTTOM));
+ toolBarSideRightButton->setChecked(toolBarSide.getType() == (eRIGHT));
+ toolBarSideFloatButton->setChecked(toolBarSide.getType() == (eFLOAT));
 
-        if (toolBarSide.equals(ToolBarSide.eFLOAT)) {
-            createFloatingEditToolBox();
-            if (editToolBarContainerPanel != null) {
-                editToolBarContainerPanel.setVisible(false);
-            }
-        } else {
-            if (floatingEditToolBoxFrame != null) {
-                deleteFloatingEditToolBox();
-            }
-            floatingEditContentScrollPane = null; // The switch to toolbar will move the toolbox content to the new toolbar
-            editToolBarContainerPanel.setVisible(isEditable());
-        }
-        toolBarSideTopButton.setSelected(toolBarSide.equals(ToolBarSide.eTOP));
-        toolBarSideLeftButton.setSelected(toolBarSide.equals(ToolBarSide.eLEFT));
-        toolBarSideBottomButton.setSelected(toolBarSide.equals(ToolBarSide.eBOTTOM));
-        toolBarSideRightButton.setSelected(toolBarSide.equals(ToolBarSide.eRIGHT));
-        toolBarSideFloatButton.setSelected(toolBarSide.equals(ToolBarSide.eFLOAT));
+#if 1
+ setupToolBar(); //re-layout all the toolbar items
 
-        if (toolBarSide.equals(ToolBarSide.eFLOAT)) {
-            floatEditHelpPanel.setVisible(isEditable() && getShowHelpBar());
-        } else if (getShowHelpBar()) {
-            //not sure why... but this is the only way I could
-            //get everything to layout correctly
-            //when the helpbar is visible...
-            boolean editMode = isEditable();
-            setAllEditable(!editMode);
-            setAllEditable(editMode);
-        } else {
-            helpBarPanel.setVisible(isEditable() && getShowHelpBar());
-        }
-    }
+//        if (toolBarSide.equals(ToolBarSide.eFLOAT)) {
+//            createFloatingEditToolBox();
+//            if (editToolBarContainerPanel != null) {
+//                editToolBarContainerPanel.setVisible(false);
+//            }
+//        } else {
+//            if (floatingEditToolBoxFrame != null) {
+//                deleteFloatingEditToolBox();
+//            }
+//            floatingEditContentScrollPane = null; // The switch to toolbar will move the toolbox content to the new toolbar
+//            editToolBarContainerPanel.setVisible(isEditable());
+//        }
+ toolBarSideTopButton->setChecked(toolBarSide.getType() == ( eTOP));
+ toolBarSideLeftButton->setChecked(toolBarSide.getType() == ( eLEFT));
+ toolBarSideBottomButton->setChecked(toolBarSide.getType() == ( eBOTTOM));
+ toolBarSideRightButton->setChecked(toolBarSide.getType() == ( eRIGHT));
+ toolBarSideFloatButton->setChecked(toolBarSide.getType() == ( eFLOAT));
+
+ if (toolBarSide.getType() == (eFLOAT)) {
+//            floatEditHelpPanel.setVisible(isEditable() && getShowHelpBar());
+ } else if (getShowHelpBar()) {
+     //not sure why... but this is the only way I could
+     //get everything to layout correctly
+     //when the helpbar is visible...
+     bool editMode = isEditable();
+     setAllEditable(!editMode);
+     setAllEditable(editMode);
+ } else {
+     helpBarPanel->setVisible(isEditable() && getShowHelpBar());
+ }
 #endif
 }
 

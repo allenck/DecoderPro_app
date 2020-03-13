@@ -633,7 +633,7 @@ inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(QStrin
 inline QStringList  py_q_getSystemNameArray() { return Manager::getSystemNameArray(); }
 inline QStringList  py_q_getSystemNameList() { return Manager::getSystemNameList(); }
 inline QString  py_q_getSystemPrefix() const { return Manager::getSystemPrefix(); }
-inline int  py_q_getXMLOrder() const { return Manager::getXMLOrder(); }
+inline int  py_q_getXMLOrder() const { return this->getXMLOrder(); }
 inline QString  py_q_makeSystemName(QString  name) const { return Manager::makeSystemName(name); }
 inline QString  py_q_makeSystemName(QString  name, bool  arg__2, QLocale  locale) const { return Manager::makeSystemName(name, arg__2, locale); }
 inline QString  py_q_makeSystemName(QString  name, bool  logErrors) const { return Manager::makeSystemName(name, logErrors); }
@@ -2547,7 +2547,23 @@ public:
 
    ~PythonQtShell_ProxyLightManager();
 
+virtual void activateAllLights();
+virtual bool  allowMultipleAdditions(QString  systemName);
+virtual QString  convertSystemNameToAlternate(QString  systemName);
+virtual QString  getBeanTypeHandled(bool  plural) const;
+virtual NamedBean*  getBySystemName(QString  systemName) const;
+virtual NamedBean*  getByUserName(QString  userName) const;
+virtual QString  getEntryToolTip();
+virtual Light*  getLight(QString  name);
 virtual QString  getNamedBeanClass() const;
+virtual int  getXMLOrder() const;
+virtual NamedBean*  makeBean(int  i, QString  systemName, QString  userName);
+virtual Manager*  makeInternalManager() const;
+virtual Light*  newLight(QString  systemName, QString  userName);
+virtual Light*  provide(QString  name) throw (IllegalArgumentException);
+virtual Light*  provideLight(QString  name);
+virtual bool  supportsVariableLights(QString  systemName);
+virtual bool  validSystemNameConfig(QString  systemName) const;
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -2558,7 +2574,23 @@ class PythonQtPublicPromoter_ProxyLightManager : public ProxyLightManager
 { public:
 inline NamedBean*  promoted_makeBean(int  i, QString  systemName, QString  userName) { return this->makeBean(i, systemName, userName); }
 inline Manager*  promoted_makeInternalManager() const { return this->makeInternalManager(); }
+inline void py_q_activateAllLights() { ProxyLightManager::activateAllLights(); }
+inline bool  py_q_allowMultipleAdditions(QString  systemName) { return ProxyLightManager::allowMultipleAdditions(systemName); }
+inline QString  py_q_convertSystemNameToAlternate(QString  systemName) { return ProxyLightManager::convertSystemNameToAlternate(systemName); }
+inline QString  py_q_getBeanTypeHandled(bool  plural) const { return ProxyLightManager::getBeanTypeHandled(plural); }
+inline NamedBean*  py_q_getBySystemName(QString  systemName) const { return ProxyLightManager::getBySystemName(systemName); }
+inline NamedBean*  py_q_getByUserName(QString  userName) const { return ProxyLightManager::getByUserName(userName); }
+inline QString  py_q_getEntryToolTip() { return ProxyLightManager::getEntryToolTip(); }
+inline Light*  py_q_getLight(QString  name) { return ProxyLightManager::getLight(name); }
 inline QString  py_q_getNamedBeanClass() const { return ProxyLightManager::getNamedBeanClass(); }
+inline int  py_q_getXMLOrder() const { return ProxyLightManager::getXMLOrder(); }
+inline NamedBean*  py_q_makeBean(int  i, QString  systemName, QString  userName) { return ProxyLightManager::makeBean(i, systemName, userName); }
+inline Manager*  py_q_makeInternalManager() const { return ProxyLightManager::makeInternalManager(); }
+inline Light*  py_q_newLight(QString  systemName, QString  userName) { return ProxyLightManager::newLight(systemName, userName); }
+inline Light*  py_q_provide(QString  name) throw (IllegalArgumentException) { return ProxyLightManager::provide(name); }
+inline Light*  py_q_provideLight(QString  name) { return ProxyLightManager::provideLight(name); }
+inline bool  py_q_supportsVariableLights(QString  systemName) { return ProxyLightManager::supportsVariableLights(systemName); }
+inline bool  py_q_validSystemNameConfig(QString  systemName) const { return ProxyLightManager::validSystemNameConfig(systemName); }
 };
 
 class PythonQtWrapper_ProxyLightManager : public QObject
@@ -2568,23 +2600,39 @@ public slots:
 ProxyLightManager* new_ProxyLightManager(QObject*  parent = 0);
 void delete_ProxyLightManager(ProxyLightManager* obj) { delete obj; } 
    void activateAllLights(ProxyLightManager* theWrappedObject);
+   void py_q_activateAllLights(ProxyLightManager* theWrappedObject){  (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_activateAllLights());}
    bool  allowMultipleAdditions(ProxyLightManager* theWrappedObject, QString  systemName);
+   bool  py_q_allowMultipleAdditions(ProxyLightManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_allowMultipleAdditions(systemName));}
    QString  convertSystemNameToAlternate(ProxyLightManager* theWrappedObject, QString  systemName);
-   QString  getBeanTypeHandled(ProxyLightManager* theWrappedObject, bool  plural);
+   QString  py_q_convertSystemNameToAlternate(ProxyLightManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_convertSystemNameToAlternate(systemName));}
+   QString  getBeanTypeHandled(ProxyLightManager* theWrappedObject, bool  plural) const;
+   QString  py_q_getBeanTypeHandled(ProxyLightManager* theWrappedObject, bool  plural) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
    NamedBean*  getBySystemName(ProxyLightManager* theWrappedObject, QString  systemName) const;
+   NamedBean*  py_q_getBySystemName(ProxyLightManager* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getBySystemName(systemName));}
    NamedBean*  getByUserName(ProxyLightManager* theWrappedObject, QString  userName) const;
+   NamedBean*  py_q_getByUserName(ProxyLightManager* theWrappedObject, QString  userName) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getByUserName(userName));}
    QString  getEntryToolTip(ProxyLightManager* theWrappedObject);
+   QString  py_q_getEntryToolTip(ProxyLightManager* theWrappedObject){  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getEntryToolTip());}
    Light*  getLight(ProxyLightManager* theWrappedObject, QString  name);
+   Light*  py_q_getLight(ProxyLightManager* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getLight(name));}
    QString  getNamedBeanClass(ProxyLightManager* theWrappedObject) const;
    QString  py_q_getNamedBeanClass(ProxyLightManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getNamedBeanClass());}
-   int  getXMLOrder(ProxyLightManager* theWrappedObject);
+   int  getXMLOrder(ProxyLightManager* theWrappedObject) const;
+   int  py_q_getXMLOrder(ProxyLightManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getXMLOrder());}
    NamedBean*  makeBean(ProxyLightManager* theWrappedObject, int  i, QString  systemName, QString  userName);
+   NamedBean*  py_q_makeBean(ProxyLightManager* theWrappedObject, int  i, QString  systemName, QString  userName){  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_makeBean(i, systemName, userName));}
    Manager*  makeInternalManager(ProxyLightManager* theWrappedObject) const;
+   Manager*  py_q_makeInternalManager(ProxyLightManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_makeInternalManager());}
    Light*  newLight(ProxyLightManager* theWrappedObject, QString  systemName, QString  userName);
+   Light*  py_q_newLight(ProxyLightManager* theWrappedObject, QString  systemName, QString  userName){  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_newLight(systemName, userName));}
    Light*  provide(ProxyLightManager* theWrappedObject, QString  name) throw (IllegalArgumentException);
+   Light*  py_q_provide(ProxyLightManager* theWrappedObject, QString  name) throw (IllegalArgumentException){  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_provide(name));}
    Light*  provideLight(ProxyLightManager* theWrappedObject, QString  name);
+   Light*  py_q_provideLight(ProxyLightManager* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_provideLight(name));}
    bool  supportsVariableLights(ProxyLightManager* theWrappedObject, QString  systemName);
-   bool  validSystemNameConfig(ProxyLightManager* theWrappedObject, QString  systemName);
+   bool  py_q_supportsVariableLights(ProxyLightManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_supportsVariableLights(systemName));}
+   bool  validSystemNameConfig(ProxyLightManager* theWrappedObject, QString  systemName) const;
+   bool  py_q_validSystemNameConfig(ProxyLightManager* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_validSystemNameConfig(systemName));}
 };
 
 
@@ -2602,10 +2650,12 @@ virtual bool  allowMultipleAdditions(QString  systemName);
 virtual QString  createSystemName(QString  curAddress, QString  prefix) const throw (JmriException) ;
 virtual long  getDefaultSensorDebounceGoingActive();
 virtual long  getDefaultSensorDebounceGoingInActive();
+virtual QString  getEntryToolTip();
 virtual QString  getNamedBeanClass() const;
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) throw (JmriException) ;
 virtual Sensor*  getSensor(QString  name) const;
 virtual int  getXMLOrder() const;
+virtual bool  isPullResistanceConfigurable();
 virtual Sensor*  makeBean(int  i, QString  systemName, QString  userName);
 virtual Manager*  makeInternalManager() const;
 virtual Sensor*  provideSensor(QString  sName);
@@ -2626,10 +2676,12 @@ inline bool  py_q_allowMultipleAdditions(QString  systemName) { return ProxySens
 inline QString  py_q_createSystemName(QString  curAddress, QString  prefix) const throw (JmriException)  { return ProxySensorManager::createSystemName(curAddress, prefix); }
 inline long  py_q_getDefaultSensorDebounceGoingActive() { return ProxySensorManager::getDefaultSensorDebounceGoingActive(); }
 inline long  py_q_getDefaultSensorDebounceGoingInActive() { return ProxySensorManager::getDefaultSensorDebounceGoingInActive(); }
+inline QString  py_q_getEntryToolTip() { return ProxySensorManager::getEntryToolTip(); }
 inline QString  py_q_getNamedBeanClass() const { return ProxySensorManager::getNamedBeanClass(); }
 inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) throw (JmriException)  { return ProxySensorManager::getNextValidAddress(curAddress, prefix); }
 inline Sensor*  py_q_getSensor(QString  name) const { return ProxySensorManager::getSensor(name); }
 inline int  py_q_getXMLOrder() const { return ProxySensorManager::getXMLOrder(); }
+inline bool  py_q_isPullResistanceConfigurable() { return ProxySensorManager::isPullResistanceConfigurable(); }
 inline Sensor*  py_q_makeBean(int  i, QString  systemName, QString  userName) { return ProxySensorManager::makeBean(i, systemName, userName); }
 inline Manager*  py_q_makeInternalManager() const { return ProxySensorManager::makeInternalManager(); }
 inline Sensor*  py_q_provideSensor(QString  sName) { return ProxySensorManager::provideSensor(sName); }
@@ -2653,6 +2705,8 @@ void delete_ProxySensorManager(ProxySensorManager* obj) { delete obj; }
    long  py_q_getDefaultSensorDebounceGoingActive(ProxySensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->py_q_getDefaultSensorDebounceGoingActive());}
    long  getDefaultSensorDebounceGoingInActive(ProxySensorManager* theWrappedObject);
    long  py_q_getDefaultSensorDebounceGoingInActive(ProxySensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->py_q_getDefaultSensorDebounceGoingInActive());}
+   QString  getEntryToolTip(ProxySensorManager* theWrappedObject);
+   QString  py_q_getEntryToolTip(ProxySensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->py_q_getEntryToolTip());}
    QString  getNamedBeanClass(ProxySensorManager* theWrappedObject) const;
    QString  py_q_getNamedBeanClass(ProxySensorManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->py_q_getNamedBeanClass());}
    QString  getNextValidAddress(ProxySensorManager* theWrappedObject, QString  curAddress, QString  prefix) throw (JmriException) ;
@@ -2661,6 +2715,8 @@ void delete_ProxySensorManager(ProxySensorManager* obj) { delete obj; }
    Sensor*  py_q_getSensor(ProxySensorManager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->py_q_getSensor(name));}
    int  getXMLOrder(ProxySensorManager* theWrappedObject) const;
    int  py_q_getXMLOrder(ProxySensorManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->py_q_getXMLOrder());}
+   bool  isPullResistanceConfigurable(ProxySensorManager* theWrappedObject);
+   bool  py_q_isPullResistanceConfigurable(ProxySensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->py_q_isPullResistanceConfigurable());}
    Sensor*  makeBean(ProxySensorManager* theWrappedObject, int  i, QString  systemName, QString  userName);
    Sensor*  py_q_makeBean(ProxySensorManager* theWrappedObject, int  i, QString  systemName, QString  userName){  return (((PythonQtPublicPromoter_ProxySensorManager*)theWrappedObject)->py_q_makeBean(i, systemName, userName));}
    Manager*  makeInternalManager(ProxySensorManager* theWrappedObject) const;

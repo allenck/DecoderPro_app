@@ -1695,7 +1695,6 @@ class PythonQtPublicPromoter_LayoutBlockManager : public LayoutBlockManager
 { public:
 inline QString  py_q_getBeanTypeHandled(bool  plural) const { return LayoutBlockManager::getBeanTypeHandled(plural); }
 inline QString  py_q_getNamedBeanClass() const { return LayoutBlockManager::getNamedBeanClass(); }
-inline QString  py_q_getSystemPrefix() const { return LayoutBlockManager::getSystemPrefix(); }
 inline int  py_q_getXMLOrder() const { return LayoutBlockManager::getXMLOrder(); }
 inline char  py_q_typeLetter() const { return LayoutBlockManager::typeLetter(); }
 };
@@ -1723,7 +1722,6 @@ void delete_LayoutBlockManager(LayoutBlockManager* obj) { delete obj; }
    Sensor*  getSensorAtEndBumper(LayoutBlockManager* theWrappedObject, Block*  facingBlock, LayoutEditor*  panel);
    SignalMast*  getSignalMastAtEndBumper(LayoutBlockManager* theWrappedObject, Block*  facingBlock, LayoutEditor*  panel);
    Sensor*  getStabilisedSensor(LayoutBlockManager* theWrappedObject);
-   QString  py_q_getSystemPrefix(LayoutBlockManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_LayoutBlockManager*)theWrappedObject)->py_q_getSystemPrefix());}
    int  py_q_getXMLOrder(LayoutBlockManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_LayoutBlockManager*)theWrappedObject)->py_q_getXMLOrder());}
    void initializeLayoutBlockPaths(LayoutBlockManager* theWrappedObject);
    bool  isAdvancedRoutingEnabled(LayoutBlockManager* theWrappedObject);
@@ -1840,7 +1838,6 @@ inline void promoted_drawTurnouts(EditScene*  g2) { this->drawTurnouts(g2); }
 inline void promoted_enterGridSizes() { this->enterGridSizes(); }
 inline void promoted_enterReporter(int  defaultX, int  defaultY) { this->enterReporter(defaultX, defaultY); }
 inline void promoted_enterTrackWidth() { this->enterTrackWidth(); }
-static inline QPointF  promoted_getCoords(QObject*  o, int  type) { return getCoords(o, type); }
 inline QList<Positionable* >  promoted_getSelectedItems(QGraphicsSceneMouseEvent*  event) { return this->getSelectedItems(event); }
 inline void promoted_gridSizesCancelPressed() { this->gridSizesCancelPressed(); }
 inline void promoted_gridSizesDonePressed() { this->gridSizesDonePressed(); }
@@ -1937,7 +1934,6 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    const QIcon  getColourIcon(LayoutEditor* theWrappedObject, QColor  color);
    QList<Positionable* >  getContents(LayoutEditor* theWrappedObject);
    QPointF  static_LayoutEditor_getCoords(LayoutTrack*  layoutTrack, int  connectionType);
-   QPointF  static_LayoutEditor_getCoords(QObject*  o, int  type);
    QString  getDefaultAlternativeTrackColor(LayoutEditor* theWrappedObject);
    QColor  getDefaultBackgroundColor(LayoutEditor* theWrappedObject);
    QString  getDefaultOccupiedTrackColor(LayoutEditor* theWrappedObject);
@@ -1945,7 +1941,6 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    QString  getDefaultTrackColor(LayoutEditor* theWrappedObject);
    bool  getDirectTurnoutControl(LayoutEditor* theWrappedObject);
    bool  getDrawGrid(LayoutEditor* theWrappedObject);
-   QPointF  getEndCoords(LayoutEditor* theWrappedObject, QObject*  o, int  type);
    int  getLayoutHeight(LayoutEditor* theWrappedObject);
    QString  getLayoutName(LayoutEditor* theWrappedObject);
    QList<LayoutTrack* >*  getLayoutTracks(LayoutEditor* theWrappedObject);
@@ -2124,7 +2119,7 @@ virtual void highlightUnconnected(EditScene*  g2, int  specificType);
 virtual void invalidate(EditScene*  g2);
 virtual bool  isMainline();
 virtual void reCheckBlockBoundary() const;
-virtual void scaleCoords(float  xFactor, float  yFactor);
+virtual void scaleCoords(double  xFactor, double  yFactor);
 virtual void setConnection(int  location, LayoutTrack*  o, int  type) throw (JmriException) ;
 virtual void setCoordsCenter(QPointF  p);
 virtual QMenu*  showPopup(QGraphicsSceneMouseEvent*  e);
@@ -2157,7 +2152,7 @@ inline void py_q_highlightUnconnected(EditScene*  g2, int  specificType) { Layou
 inline void py_q_invalidate(EditScene*  g2) { LayoutTurnout::invalidate(g2); }
 inline bool  py_q_isMainline() { return LayoutTurnout::isMainline(); }
 inline void py_q_reCheckBlockBoundary() const { LayoutTurnout::reCheckBlockBoundary(); }
-inline void py_q_scaleCoords(float  xFactor, float  yFactor) { LayoutTurnout::scaleCoords(xFactor, yFactor); }
+inline void py_q_scaleCoords(double  xFactor, double  yFactor) { LayoutTurnout::scaleCoords(xFactor, yFactor); }
 inline void py_q_setConnection(int  location, LayoutTrack*  o, int  type) throw (JmriException)  { LayoutTurnout::setConnection(location, o, type); }
 inline void py_q_setCoordsCenter(QPointF  p) { LayoutTurnout::setCoordsCenter(p); }
 inline QMenu*  py_q_showPopup(QGraphicsSceneMouseEvent*  e) { return LayoutTurnout::showPopup(e); }
@@ -2278,8 +2273,8 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    void removeSML(LayoutTurnout* theWrappedObject, SignalMast*  signalMast) const;
    void rotateCoords(LayoutTurnout* theWrappedObject, double  angleDEG);
    QPointF  rotatePoint(LayoutTurnout* theWrappedObject, QPointF  p, double  sineAng, double  cosineAng);
-   void scaleCoords(LayoutTurnout* theWrappedObject, float  xFactor, float  yFactor);
-   void py_q_scaleCoords(LayoutTurnout* theWrappedObject, float  xFactor, float  yFactor){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_scaleCoords(xFactor, yFactor));}
+   void scaleCoords(LayoutTurnout* theWrappedObject, double  xFactor, double  yFactor);
+   void py_q_scaleCoords(LayoutTurnout* theWrappedObject, double  xFactor, double  yFactor){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_scaleCoords(xFactor, yFactor));}
    void setAdditionalEditPopUpMenu(LayoutTurnout* theWrappedObject, QMenu*  popup);
    void setAdditionalViewPopUpMenu(LayoutTurnout* theWrappedObject, QMenu*  popup);
    void setConnectA(LayoutTurnout* theWrappedObject, LayoutTrack*  o, int  type);
@@ -3040,7 +3035,7 @@ virtual void Register(NamedBean*  s) const;
 virtual void addDataListener(QObject*  e);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual bool  allowMultipleAdditions(QString  systemName);
+virtual bool  allowMultipleAdditions(QString  systemName) const;
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
@@ -3058,14 +3053,14 @@ virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
 virtual QString  getNamedBeanClass() const;
 virtual QSet<NamedBean* >  getNamedBeanSet();
-virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
+virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) const;
 virtual int  getObjectCount();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList() const;
 virtual QString  getSystemPrefix() const;
-virtual int  getXMLOrder();
+virtual int  getXMLOrder() const;
 virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale()) const;
 virtual QString  normalizeSystemName(QString  inputName) const;
 virtual void propertyChange(PropertyChangeEvent*  e);
@@ -3073,8 +3068,8 @@ virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void timerEvent(QTimerEvent*  event);
-virtual char  typeLetter();
-virtual Manager::NameValidity  validSystemNameFormat(QString  systemName);
+virtual char  typeLetter() const;
+virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
@@ -3087,7 +3082,7 @@ class PythonQtPublicPromoter_LnReporterManager : public LnReporterManager
 inline void py_q_dispose() { LnReporterManager::dispose(); }
 inline QString  py_q_getEntryToolTip() { return LnReporterManager::getEntryToolTip(); }
 inline QString  py_q_getNamedBeanClass() const { return LnReporterManager::getNamedBeanClass(); }
-inline Manager::NameValidity  py_q_validSystemNameFormat(QString  systemName) { return LnReporterManager::validSystemNameFormat(systemName); }
+inline Manager::NameValidity  py_q_validSystemNameFormat(QString  systemName) const { return LnReporterManager::validSystemNameFormat(systemName); }
 };
 
 class PythonQtWrapper_LnReporterManager : public QObject
@@ -3097,10 +3092,10 @@ public slots:
 LnReporterManager* new_LnReporterManager(LocoNetSystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_LnReporterManager(LnReporterManager* obj) { delete obj; } 
    void py_q_dispose(LnReporterManager* theWrappedObject){  (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_dispose());}
-   int  getBitFromSystemName(LnReporterManager* theWrappedObject, QString  systemName);
+   int  getBitFromSystemName(LnReporterManager* theWrappedObject, QString  systemName) const;
    QString  py_q_getEntryToolTip(LnReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_getEntryToolTip());}
    QString  py_q_getNamedBeanClass(LnReporterManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_getNamedBeanClass());}
-   Manager::NameValidity  py_q_validSystemNameFormat(LnReporterManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_validSystemNameFormat(systemName));}
+   Manager::NameValidity  py_q_validSystemNameFormat(LnReporterManager* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_validSystemNameFormat(systemName));}
    QString  validateSystemNameFormat(LnReporterManager* theWrappedObject, QString  systemName, QLocale  locale);
 };
 

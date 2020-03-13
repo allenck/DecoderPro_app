@@ -465,7 +465,7 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 {
     NamedBeanHandle<SignalHead*>* signalHead = nullptr;
     switch (loc) {
-        case POINTA:
+        case POINTA1:
             signalHead = signalA1HeadNamed;
             break;
         case POINTA2:
@@ -474,19 +474,19 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
         case POINTA3:
             signalHead = signalA3HeadNamed;
             break;
-        case POINTB:
+        case POINTB1:
             signalHead = signalB1HeadNamed;
             break;
         case POINTB2:
             signalHead = signalB2HeadNamed;
             break;
-        case POINTC:
+        case POINTC1:
             signalHead = signalC1HeadNamed;
             break;
         case POINTC2:
             signalHead = signalC2HeadNamed;
             break;
-        case POINTD:
+        case POINTD1:
             signalHead = signalD1HeadNamed;
             break;
         case POINTD2:
@@ -775,7 +775,7 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
                 return;
             }
         } else if (qobject_cast<SignalHead*>(nb)) {
-            if (nb->equals(getSignalHead(POINTA))) {
+            if (nb->equals(getSignalHead(POINTA1))) {
                 setSignalA1Name("");
             }
             if (nb->equals(getSignalHead(POINTA2))) {
@@ -784,19 +784,19 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
             if (nb->equals(getSignalHead(POINTA3))) {
                 setSignalA3Name("");
             }
-            if (nb->equals(getSignalHead(POINTB))) {
+            if (nb->equals(getSignalHead(POINTB1))) {
                 setSignalB1Name("");
             }
             if (nb->equals(getSignalHead(POINTB2))) {
                 setSignalB2Name("");
             }
-            if (nb->equals(getSignalHead(POINTC))) {
+            if (nb->equals(getSignalHead(POINTC1))) {
                 setSignalC1Name("");
             }
             if (nb->equals(getSignalHead(POINTC2))) {
                 setSignalC2Name("");
             }
-            if (nb->equals(getSignalHead(POINTD))) {
+            if (nb->equals(getSignalHead(POINTD1))) {
                 setSignalD1Name("");
             }
             if (nb->equals(getSignalHead(POINTD2))) {
@@ -1358,8 +1358,8 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 /*public*/ QRectF LayoutTurnout::getBounds() {
 // QRectF result;
 
-// QPointF pointA = getCoordsA();
-// result = QRectF(pointA.x(), pointA.y(), 0, 0);
+// QPointF POINTA1 = getCoordsA();
+// result = QRectF(POINTA1.x(), POINTA1.y(), 0, 0);
 // //result.united(getCoordsB());
 // result.adjust(0,0,getCoordsB().x(),getCoordsB().y());
 // result.united(getCoordsC());
@@ -2167,7 +2167,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
      dispA = QPointF(x, y);
  }
 }
-/*public*/ void LayoutTurnout::scaleCoords(float xFactor, float yFactor) {
+/*public*/ void LayoutTurnout::scaleCoords(double xFactor, double yFactor) {
     QPointF pt =  QPointF(round(center.x()*xFactor),
                                     round(center.y()*yFactor));
     center = pt;

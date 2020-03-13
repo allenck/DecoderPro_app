@@ -409,6 +409,7 @@ private:
     /*private*/ void setLogicDiverging();
     /*private*/ int isSensorAssignedHere(Sensor* sensor, LayoutTurnout* lTurnout);
     SensorIcon* turnoutSensorBlockIcon;
+    /*private*/ int whereIsSensorAssigned(Sensor* sensor, LayoutTurnout* lTurnout) ;
     void createListUsedSignalMasts();
     void refreshSignalMastAtTurnoutComboBox();
     /*private*/ int isMastAssignedHere(SignalMast* mast, LayoutTurnout* lTurnout);

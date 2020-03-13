@@ -283,7 +283,7 @@ void OPath::fireTurnouts(QList<BeanSetting*> list, bool set, int lockState, bool
  while (iter.hasNext())
  {
   BeanSetting* bs = iter.next();
-  if (bs->getBeanName()==(t->getBeanName()))
+  if (bs->getBeanName() == (t->getBeanName()))
   {
    log->error("TO setting for \"" + t->getBeanName() + "\" already set to " + QString::number(bs->getSetting()));
    return;

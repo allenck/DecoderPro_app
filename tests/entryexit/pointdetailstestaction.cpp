@@ -8,7 +8,6 @@
 PointDetailsTestAction::PointDetailsTestAction(QObject *parent) : AbstractAction(tr("PointDetailsTest"), parent)
 {
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
-
 }
 
 void PointDetailsTestAction::actionPerformed()

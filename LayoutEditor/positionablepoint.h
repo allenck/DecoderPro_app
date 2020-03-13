@@ -30,10 +30,15 @@ public:
     */
 //    /*public*/ QString getID();
     /*public*/ int getType() const;
+    /*public*/ void setType(int newType);
     /*public*/ TrackSegment* getConnect1() const;
     /*public*/ TrackSegment* getConnect2() const;
-    /*public*/ QPointF getCoords();
-    /*public*/ void setCoords(QPointF p);
+//    /*public*/ QPointF getCoords();
+//    /*public*/ void setCoords(QPointF p);
+    /*public*/ void scaleCoords(double xFactor, double yFactor) override;
+    /*public*/ void translateCoords(double xFactor, double yFactor) override;
+    /*public*/ void rotateCoords(double angleDEG);
+    /*public*/ QRectF getBounds();
     /*public*/ QString getEastBoundSignalMastName();
     /*public*/ QString getEastBoundSignal();
     /*public*/ SignalHead* getEastBoundSignalHead();
@@ -84,13 +89,9 @@ public:
     /*public*/ bool isActive();
     /*public*/ bool removeTrackConnection (TrackSegment* track) const;
     /*public*/ void reCheckBlockBoundary() const override;
-    /*protected*/ int maxWidth();
-    /*protected*/ int maxHeight();
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* e);
     /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* e);
     /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* e);
-    void invalidateItemType(EditScene *g2);
-    void draw(EditScene *g);
     /*public*/ QString getLinkEditorName();
     /*public*/ PositionablePoint* getLinkedPoint() const;
     /*public*/ QString getLinkedPointId();
@@ -155,6 +156,9 @@ private:
     void removeSML(SignalMast* signalMast);
     void removeLinkedPoint() const;
     QGraphicsItem* rects = nullptr;
+    /*private*/ void setTypeAnchor();
+    /*private*/ void setTypeEndBumper();
+    /*private*/ void setTypeEdgeConnector();
 
  QMenu* popup;// = NULL;
  //QGraphicsItem* item;
@@ -162,6 +166,8 @@ private:
  JDialog* editLink;// = null;
  QList<PositionablePoint*>* pointList = nullptr;
  void /*private*/ invalidate(EditScene * g2)override;
+ void invalidateItemType(EditScene *g2);
+ void draw(EditScene *g);
 
 private slots:
  void on_actRemove_triggered();
@@ -184,11 +190,14 @@ protected:
  /*protected*/ /*abstract*/ void drawEditControls(EditScene *g2);
  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
  /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
+ /*protected*/ int maxWidth();
+ /*protected*/ int maxHeight();
 
 
 friend class LayoutEditor;
 friend class LoadXml;
 friend class LayoutEditorAuxTools;
+friend class LayoutEditorTools;
 };
 
 #endif // POSITIONABLEPOINT_H

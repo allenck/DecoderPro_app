@@ -227,7 +227,13 @@ SOURCES += \
     entryexit/destinationpointstest.cpp \
     entryexit/destinationpointstestaction.cpp \
     entryexit/pointdetailstest.cpp \
-    entryexit/pointdetailstestaction.cpp
+    entryexit/pointdetailstestaction.cpp \
+    entryexit/sectiontest.cpp \
+    entryexit/sectiontestaction.cpp \
+    entryexit/sourcetest.cpp \
+    entryexit/sourcetestaction.cpp \
+    layouteditor/layouteditortoolstest.cpp \
+    layouteditor/layouteditortoolstestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -432,7 +438,13 @@ HEADERS += \
     entryexit/destinationpointstest.h \
     entryexit/destinationpointstestaction.h \
     entryexit/pointdetailstest.h \
-    entryexit/pointdetailstestaction.h
+    entryexit/pointdetailstestaction.h \
+    entryexit/sectiontest.h \
+    entryexit/sectiontestaction.h \
+    entryexit/sourcetest.h \
+    entryexit/sourcetestaction.h \
+    layouteditor/layouteditortoolstest.h \
+    layouteditor/layouteditortoolstestaction.h
 
 unix {
     target.path = /usr/lib

@@ -126,8 +126,85 @@
 /**
  * Accessor methods
 */
-///*public*/ QString PositionablePoint::getID() {return ident;}
-/*public*/ int PositionablePoint::getType() const {return type;}
+ /*public*/ int PositionablePoint::getType()const {
+    return type;
+}
+
+/*public*/ void PositionablePoint::setType(int newType) {
+    if (type != newType)
+    {
+        switch (newType)
+        {
+            default:
+            case ANCHOR: {
+                setTypeAnchor();
+                break;
+            }
+            case END_BUMPER: {
+                setTypeEndBumper();
+                break;
+            }
+            case EDGE_CONNECTOR: {
+                setTypeEdgeConnector();
+                break;
+            }
+        }
+        layoutEditor->repaint();
+    }
+}
+
+/*private*/ void PositionablePoint::setTypeAnchor() {
+    ident = layoutEditor->getFinder()->uniqueName("A", 1);
+    type = ANCHOR;
+    if (connect1 != nullptr) {
+        if (connect1->getConnect1() == this) {
+            connect1->setArrowEndStart(false);
+            connect1->setBumperEndStart(false);
+        }
+        if (connect1->getConnect2() == this) {
+            connect1->setArrowEndStop(false);
+            connect1->setBumperEndStop(false);
+        }
+    }
+    if (connect2 != nullptr) {
+        if (connect2->getConnect1() == this) {
+            connect2->setArrowEndStart(false);
+            connect2->setBumperEndStart(false);
+        }
+        if (connect2->getConnect2() == this) {
+            connect2->setArrowEndStop(false);
+            connect2->setBumperEndStop(false);
+        }
+    }
+}
+
+/*private*/ void PositionablePoint::setTypeEndBumper() {
+    ident = layoutEditor->getFinder()->uniqueName("EB", 1);
+    type = END_BUMPER;
+    if (connect1 != nullptr) {
+        if (connect1->getConnect1() == this) {
+            connect1->setArrowEndStart(false);
+            connect1->setBumperEndStart(true);
+        }
+        if (connect1->getConnect2() == this) {
+            connect1->setArrowEndStop(false);
+            connect1->setBumperEndStop(true);
+        }
+    }
+}
+
+/*private*/ void PositionablePoint::setTypeEdgeConnector() {
+    ident = layoutEditor->getFinder()->uniqueName("EC", 1);
+    type = EDGE_CONNECTOR;
+    if (connect1 != nullptr) {
+        if (connect1->getConnect1() == this) {
+            connect1->setBumperEndStart(false);
+        }
+        if (connect1->getConnect2() == this) {
+            connect1->setBumperEndStop(false);
+        }
+    }
+}
 
 /*public*/ TrackSegment* PositionablePoint::getConnect1() const
 {
@@ -141,8 +218,44 @@
  }
  return connect2;
 }
-/*public*/ QPointF PositionablePoint::getCoords() {return coords;}
-/*public*/ void PositionablePoint::setCoords(QPointF p) {coords = p;}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void PositionablePoint::scaleCoords(double xFactor, double yFactor)  {
+    QPointF factor = QPointF(xFactor, yFactor);
+    center = MathUtil::granulize(MathUtil::multiply(center, factor), 1.0);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void PositionablePoint::translateCoords(double xFactor, double yFactor) {
+    QPointF factor = QPointF(xFactor, yFactor);
+    center = MathUtil::add(center, factor);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void PositionablePoint::rotateCoords(double angleDEG) {
+    //can't really rotate a point... so...
+    //nothing to see here... move along...
+}
+
+/**
+ * @return the bounds of this positional point
+ */
+//@Override
+/*public*/ QRectF PositionablePoint::getBounds() {
+    QPointF c = getCoordsCenter();
+    //Note: empty bounds don't draw...
+    // so now I'm making them 0.5 bigger in all directions (1 pixel total)
+    return QRectF(c.x() - 0.5, c.y() - 0.5, 1.0, 1.0);
+}
 
 /*public*/ QString PositionablePoint::getLinkEditorName() {
     if (getLinkedEditor() != nullptr) {
@@ -353,8 +466,8 @@
     return nullptr;
 }
 /*public*/ void PositionablePoint::setEastBoundSensor(QString sensorName) const {
-    if(sensorName==nullptr || sensorName==("")){
-        eastBoundSensorNamed=nullptr;
+    if(sensorName.isNull() || sensorName==("")){
+        eastBoundSensorNamed = nullptr;
         return;
     }
 
@@ -362,7 +475,7 @@
     if (sensor != nullptr) {
         eastBoundSensorNamed =((NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(sensorName, sensor);
     } else {
-        eastBoundSensorNamed=nullptr;
+        eastBoundSensorNamed = nullptr;
     }
 }
 
@@ -373,20 +486,20 @@
         return "";
     }
 /*public*/ Sensor* PositionablePoint::getWestBoundSensor() {
-    if(westBoundSensorNamed!=nullptr)
+    if(westBoundSensorNamed != nullptr)
         return westBoundSensorNamed->getBean();
     return nullptr;
 }
 /*public*/ void PositionablePoint::setWestBoundSensor(QString sensorName) const {
-    if(sensorName==nullptr || sensorName==("")){
-        westBoundSensorNamed=nullptr;
+    if(sensorName == nullptr || sensorName == ("")){
+        westBoundSensorNamed = nullptr;
         return;
     }
     Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(sensorName);
     if (sensor != nullptr) {
         westBoundSensorNamed =((NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(sensorName, sensor);
     } else {
-        westBoundSensorNamed=nullptr;
+        westBoundSensorNamed = nullptr;
     }
 }
 /*public*/ QString PositionablePoint::getEastBoundSignalMastName() {
@@ -529,15 +642,18 @@ return nullptr;
  if (type == EDGE_CONNECTOR)
  {
    connect1 = p->getFinder()->findTrackSegmentByName(trackSegment1Name);
-   if (getConnect2() != nullptr && getLinkedEditor() != nullptr) {
-       //now that we have a connection we can fire off a change
-       TrackSegment* ts = getConnect2();
-       getLinkedEditor()->getLEAuxTools()->setBlockConnectivityChanged();
-       ts->updateBlockInfo();
+   //connect2 = p->getFinder()->findTrackSegmentByName(trackSegment2Name); // added ACK
+   if (getConnect2() != nullptr && getLinkedEditor() != nullptr)
+   {
+    //now that we have a connection we can fire off a change
+    TrackSegment* ts = getConnect2();
+    getLinkedEditor()->getLEAuxTools()->setBlockConnectivityChanged();
+    ts->updateBlockInfo();
    }
- } else {
-     connect1 = p->getFinder()->findTrackSegmentByName(trackSegment1Name);
-     connect2 = p->getFinder()->findTrackSegmentByName(trackSegment2Name);
+ }
+ else {
+  connect1 = p->getFinder()->findTrackSegmentByName(trackSegment1Name);
+  connect2 = p->getFinder()->findTrackSegmentByName(trackSegment2Name);
  }
 }
 /**
@@ -568,7 +684,8 @@ return nullptr;
  * @return true if successful
  */
 /*public*/ bool PositionablePoint::replaceTrackConnection(/*@nullptrable*/ TrackSegment* oldTrack,
- /* @nullptrable */TrackSegment* newTrack) const {
+ /* @nullptrable */TrackSegment* newTrack) const
+{
     bool result = false; // assume failure (pessimist!)
     // trying to replace old track with nullptr?
     if (newTrack == nullptr) {
@@ -588,7 +705,7 @@ return nullptr;
                 result = false; // didn't find old connection
             }
         } else {
-            result = false; // can't replace nullptr with nullptr
+            result = false; // can't replace null with null
         }
         if (!result) {
             log->error(tr("Attempt to remove non-existant track connection: %1").arg(oldTrack->getName()));

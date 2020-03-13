@@ -24,7 +24,7 @@ EntryExitTestTools::EntryExitTestTools(QObject *parent) : QObject(parent)
     for (LayoutEditor* panel : *((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList()) {
         if(panel->getLayoutName()== "Alpha")
         {
-                panels->insert("Alpha", panel);
+         panels->insert("Alpha", panel);
         }
         else if(panel->getLayoutName()== "Beta")
         {

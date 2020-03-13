@@ -457,18 +457,23 @@ Section::Section(QObject *parent) :
  */
 /*public*/ bool Section::addBlock( Block* b ) {
     // validate that this entry is unique, if not first.
-    if (mBlockEntries->size()==0) {
+    if (mBlockEntries->isEmpty()) {
         mFirstBlock = b;
     }
     else {
         // check that block is unique
         for (int i=0;i<mBlockEntries->size();i++) {
             if (mBlockEntries->at(i) == b) {
-                // block is already present
-                return false;
-            }
+             return false; // already present
+         }            // Note: connectivity to current block is assumed to have been checked
         }
-        // Note: connectivity to current block is assumed to have been checked
+    }
+    // a lot of this code searches for blocks by their user name.
+    // warn if there isn't one.
+    if (b->getUserName() == "")
+    {
+     log.warn(tr("Block %1 does not have a user name, may not work correctly in Section %2").arg(
+                b->getSystemName()).arg(getSystemName()));
     }
     // add Block to the Block list
     mBlockEntries->append(b);
@@ -490,6 +495,7 @@ Section::Section(QObject *parent) :
     mBlockListeners->append(listener);
     return true;
 }
+
 /*public*/ void Section::delayedAddBlock(QString blockName) {
     initializationNeeded = true;
     blockNameList->append(blockName);

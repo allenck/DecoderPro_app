@@ -66,14 +66,14 @@ public:
  Q_ENUM(LINKTYPES)
  enum POINTS
  {
-  POINTA = 0x01,
+  POINTA1 = 0x01,
   POINTA2 = 0x03,
   POINTA3 = 0x05,
-  POINTB = 0x10,
+  POINTB1 = 0x10,
   POINTB2 = 0x12,
-  POINTC = 0x20,
+  POINTC1 = 0x20,
   POINTC2 = 0x22,
-  POINTD = 0x30,
+  POINTD1 = 0x30,
   POINTD2 = 0x32
  };
  Q_ENUM(POINTS)
@@ -279,7 +279,7 @@ public:
     /*public*/ void setCoordsB(QPointF p);
     /*public*/ void setCoordsC(QPointF p);
     /*public*/ void setCoordsD(QPointF p);
-    /*public*/ void scaleCoords(float xFactor, float yFactor) override;
+    /*public*/ void scaleCoords(double xFactor, double yFactor) override;
     /**
      * Toggle turnout if clicked on, physical turnout exists, and
      *    not disabled

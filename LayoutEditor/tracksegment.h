@@ -55,8 +55,8 @@ public:
      */
     /*public*/ void setLayoutBlock (LayoutBlock* b);
     /*public*/ void setLayoutBlockByName (QString name);
-    /*public*/ void scaleCoords(float xFactor, float yFactor) override;
-    /*public*/ void translateCoords(float xFactor, float yFactor) override;
+    /*public*/ void scaleCoords(double xFactor, double yFactor) override;
+    /*public*/ void translateCoords(double xFactor, double yFactor) override;
     /*public*/ void rotateCoords(double angleDEG);
     /*public*/ void setCoordsCenter(/*@Nonnull*/ QPointF newCenterPoint) override;
 

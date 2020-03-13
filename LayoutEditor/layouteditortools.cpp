@@ -31,6 +31,7 @@
 #include "layoutslip.h"
 #include "mathutil.h"
 #include "layouteditorfinditems.h"
+#include "path.h"
 
 //LayoutEditorTools::LayoutEditorTools(QObject *parent) :
 //    QObject(parent)
@@ -2336,35 +2337,51 @@ else if (throatDivergingHead==nullptr)
  *	"track" is a TrackSegment* connected to "point".
  *  "point" is an anchor point serving as a block boundary->
  */
-/*static*/ /*public*/ bool LayoutEditorTools::isAtWestEndOfAnchor(TrackSegment* t, PositionablePoint* p) {
+/*static*/ /*public*/ bool LayoutEditorTools::isAtWestEndOfAnchor(TrackSegment* t, PositionablePoint* p)
+{
+ if (p->getType() == PositionablePoint::EDGE_CONNECTOR)
+ {
+  if (p->getConnect1() == t) {
+      if (p->getConnect1Dir() == Path::NORTH || p->getConnect1Dir() == Path::WEST) {
+          return false;
+      }
+      return true;
+  } else {
+      if (p->getConnect1Dir() == Path::NORTH || p->getConnect1Dir() == Path::WEST) {
+          return true;
+      }
+      return false;
+  }
+ }
+
     TrackSegment* tx = NULL;
     if (p->getConnect1()==t)
         tx = p->getConnect2();
-    else if (p->getConnect2()==t)
+    else if (p->getConnect2() == t)
         tx = p->getConnect1();
     else {
         log->error("track not connected to anchor point");
         return false;
     }
-    QPointF point1;
+    QPointF coords1;
     if (t->getConnect1()==p)
-        point1 = LayoutEditor::getCoords(t->getConnect2(),t->getType2());
+        coords1 = LayoutEditor::getCoords(t->getConnect2(),t->getType2());
     else
-        point1 = LayoutEditor::getCoords(t->getConnect1(),t->getType1());
-    QPointF point2;
+        coords1 = LayoutEditor::getCoords(t->getConnect1(),t->getType1());
+    QPointF coords2;
     if(tx!=nullptr) {
         if (tx->getConnect1()==p)
-            point2 = LayoutEditor::getCoords(tx->getConnect2(),tx->getType2());
+            coords2 = LayoutEditor::getCoords(tx->getConnect2(),tx->getType2());
         else
-            point2 = LayoutEditor::getCoords(tx->getConnect1(),tx->getType1());
+            coords2 = LayoutEditor::getCoords(tx->getConnect1(),tx->getType1());
     } else {
         if (t->getConnect1()==p)
-            point2 = LayoutEditor::getCoords(t->getConnect1(),t->getType1());
+            coords2 = LayoutEditor::getCoords(t->getConnect1(),t->getType1());
         else
-            point2 = LayoutEditor::getCoords(t->getConnect2(),t->getType2());
+            coords2 = LayoutEditor::getCoords(t->getConnect2(),t->getType2());
     }
-    double delX = point1.x() - point2.x();
-    double delY = point1.y() - point2.y();
+    double delX = coords1.x() - coords2.x();
+    double delY = coords1.y() - coords2.y();
     if (qAbs(delX) > 2.0*qAbs(delY)) {
         // track is Horizontal
         if (delX>0.0) return false;
@@ -8183,62 +8200,81 @@ void LayoutEditorTools::On_changeSensorAtBoundaryIcon_clicked()
  */
 /*public*/ bool LayoutEditorTools::isSensorAssignedAnywhere(Sensor* sensor)
 {
-    for (PositionablePoint* po : layoutEditor->getPositionablePoints()) {
-                if (po->getEastBoundSensor() == sensor) {
-                    return true;
-                }
-                if (po->getWestBoundSensor() == sensor) {
-                    return true;
-                }
-            }
+ bool result = false;
+ for (PositionablePoint* po : layoutEditor->getPositionablePoints())
+ {
+     if (po->getEastBoundSensor() == sensor) {
+      result = true;
+      break;
+     }
+     if (po->getWestBoundSensor() == sensor) {
+      result = true;
+      break;
+     }
+ }
+ if (!result)
+ {
+  //check turnouts and slips
+  for (LayoutTurnout* to : layoutEditor->getLayoutTurnoutsAndSlips()) {
+      if (whereIsSensorAssigned(sensor, to) != LayoutTurnout::NONE) {
+          result = true;
+          break;
+      }
+  }
+ }
+ if (!result)
+ {
+  //check level crossings
+  for (LevelXing* x : layoutEditor->getLevelXings())
+  {
+   if ((x->getSensorA() != nullptr) && x->getSensorA() == sensor) {
+       result = true;
+       break;
+   }
+   if ((x->getSensorB() != nullptr) && x->getSensorB() == sensor) {
+       result = true;
+       break;
+   }
+   if ((x->getSensorC() != nullptr) && x->getSensorC() == sensor) {
+       result = true;
+       break;
+   }
+   if ((x->getSensorD() != nullptr) && x->getSensorD() == sensor) {
+       result = true;
+       break;
+   }
+  }
+ }
 
-    for (LayoutTrack* lt : layoutEditor->getLayoutTurnouts()) {
-     LayoutTurnout* to = (LayoutTurnout*) lt;
-                if ((to->getSensorA() != nullptr) && to->getSensorA() == sensor) {
-                    return true;
-                }
-                if ((to->getSensorB() != nullptr) && to->getSensorB() == sensor) {
-                    return true;
-                }
-                if ((to->getSensorC() != nullptr) && to->getSensorC() == sensor) {
-                    return true;
-                }
-                if ((to->getSensorD() != nullptr) && to->getSensorD() == sensor) {
-                    return true;
-                }
-            }
-            for (LayoutTrack* lt : layoutEditor->getLayoutSlips()) {
-             LayoutSlip* to = (LayoutSlip* )lt;
-                if ((to->getSensorA() != nullptr) && to->getSensorA() == sensor) {
-                    return true;
-                }
-                if ((to->getSensorB() != nullptr) && to->getSensorB() == sensor) {
-                    return true;
-                }
-                if ((to->getSensorC() != nullptr) && to->getSensorC() == sensor) {
-                    return true;
-                }
-                if ((to->getSensorD() != nullptr) && to->getSensorD() == sensor) {
-                    return true;
-                }
-            }
-            for (LayoutTrack* lt : layoutEditor->getLevelXings()) {
-             LevelXing* x = (LevelXing*)lt;
-                if ((x->getSensorA() != nullptr) && x->getSensorA() == sensor) {
-                    return true;
-                }
-                if ((x->getSensorB() != nullptr) && x->getSensorB() == sensor) {
-                    return true;
-                }
-                if ((x->getSensorC() != nullptr) && x->getSensorC() == sensor) {
-                    return true;
-                }
-                if ((x->getSensorD() != nullptr) && x->getSensorD() == sensor) {
-                    return true;
-                }
-            }
-    return false;
-}
+ return result;
+}   //isSensorAssignedAnywhere
+
+/*private*/ int LayoutEditorTools::whereIsSensorAssigned(Sensor* sensor, LayoutTurnout* lTurnout) {
+    int result = LayoutTurnout::NONE;
+
+    if (sensor != nullptr && lTurnout != nullptr) {
+        QString sName = sensor->getSystemName();
+        QString uName = sensor->getUserName();
+
+        QString name = lTurnout->getSensorAName();
+        if (!name.isEmpty() && name == (uName) || name == (sName)) {
+            return LayoutTurnout::POINTA1;
+        }
+        name = lTurnout->getSensorBName();
+        if (!name.isEmpty() && name == (uName) || name == (sName)) {
+            return LayoutTurnout::POINTA2;
+        }
+        name = lTurnout->getSensorCName();
+        if (!name.isEmpty() && name == (uName) || name == (sName)) {
+            return LayoutTurnout::POINTA3;
+        }
+        name = lTurnout->getSensorDName();
+        if (!name.isEmpty() && name == (uName) || name == (sName)) {
+            return LayoutTurnout::POINTB1;
+        }
+    }
+    return result;
+}   //whereIsSensorAssigned
 
 bool LayoutEditorTools::sensorAssignedElseWhere(Sensor* sensor){
 //        int i = JOptionPane.showConfirmDialog(NULL, java.text.MessageFormat.format(tr("DuplicateSensorAssign"),
@@ -10258,21 +10294,31 @@ return;
 /*private*/ void LayoutEditorTools::placingBlock(PositionableIcon* icon, bool right, double fromPoint) {
     if(qobject_cast<TrackSegment*>(layoutTurnout->getConnectA())!= nullptr)
     {
-        TrackSegment* t = (TrackSegment*) layoutTurnout->getConnectA();
+        TrackSegment* ts = (TrackSegment*) layoutTurnout->getConnectA();
         QPointF p = layoutTurnout->getCoordsA();
-        QPointF end;
-        if(t->getConnect1()==layoutTurnout){
-            end = layoutEditor->getEndCoords(t->getConnect2(), t->getType2());
+        QPointF endPoint;
+        if(ts->getConnect1()==layoutTurnout){
+            endPoint = layoutEditor->getCoords(ts->getConnect2(), ts->getType2());
 
         } else {
-            end = layoutEditor->getEndCoords(t->getConnect1(), t->getType1());
+            endPoint = layoutEditor->getCoords(ts->getConnect1(), ts->getType1());
         }
-        bool east = false;
+        bool isEast = false;
 
-        if(end.x()<p.x())
-            east = true;
+        if (MathUtil::equals(endPoint.x(), p.x()))
+        {
+            log->debug("X in both is the same");
+            if (endPoint.y() < p.y()) {
+                log->debug("Y end point is less than our point");
+                isEast = true;
+            }
+        } else if (endPoint.x() < p.x()) {
+            log->debug("end X point is less than our point");
+            isEast = true;
+        }
 
-        setIconOnPanel(t, icon, east, QPoint(p.x(), p.y()), QPoint(end.x(),end.y()), right, fromPoint);
+        log->debug(QString("East set is ") + (isEast?"true":"false"));
+        setIconOnPanel(ts, icon, isEast, QPoint(p.x(), p.y()), QPoint(endPoint.x(),endPoint.y()), right, fromPoint);
         return;
     }
 }
@@ -10285,10 +10331,10 @@ return;
 
         QPointF end;
         if(t->getConnect1()==layoutTurnout){
-            end = layoutEditor->getEndCoords(t->getConnect2(), t->getType2());
+            end = layoutEditor->getCoords(t->getConnect2(), t->getType2());
 
         } else {
-            end = layoutEditor->getEndCoords(t->getConnect1(), t->getType1());
+            end = layoutEditor->getCoords(t->getConnect1(), t->getType1());
         }
 
         bool east = false;
@@ -10307,10 +10353,10 @@ return;
 
         QPointF end;
         if(t->getConnect1()==layoutTurnout){
-            end = layoutEditor->getEndCoords(t->getConnect2(), t->getType2());
+            end = layoutEditor->getCoords(t->getConnect2(), t->getType2());
 
         } else {
-            end = layoutEditor->getEndCoords(t->getConnect1(), t->getType1());
+            end = layoutEditor->getCoords(t->getConnect1(), t->getType1());
         }
         bool east = false;
 
@@ -10330,10 +10376,10 @@ return;
 
         QPointF end;
         if(t->getConnect1()==layoutTurnout){
-            end = layoutEditor->getEndCoords(t->getConnect2(), t->getType2());
+            end = layoutEditor->getCoords(t->getConnect2(), t->getType2());
 
         } else {
-            end = layoutEditor->getEndCoords(t->getConnect1(), t->getType1());
+            end = layoutEditor->getCoords(t->getConnect1(), t->getType1());
         }
 
         //TrackSegment* t = boundary->getConnect2();
@@ -11412,10 +11458,10 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
 
         QPointF end;
         if(t->getConnect1()==levelXing){
-            end = layoutEditor->getEndCoords(t->getConnect2(), t->getType2());
+            end = layoutEditor->getCoords(t->getConnect2(), t->getType2());
 
         } else {
-            end = layoutEditor->getEndCoords(t->getConnect1(), t->getType1());
+            end = layoutEditor->getCoords(t->getConnect1(), t->getType1());
         }
 
         bool east = false;
@@ -11439,10 +11485,10 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
 
         QPointF end;
         if(t->getConnect1()==levelXing){
-            end = layoutEditor->getEndCoords(t->getConnect2(), t->getType2());
+            end = layoutEditor->getCoords(t->getConnect2(), t->getType2());
 
         } else {
-            end = layoutEditor->getEndCoords(t->getConnect1(), t->getType1());
+            end = layoutEditor->getCoords(t->getConnect1(), t->getType1());
         }
         bool east = false;
 
@@ -11464,10 +11510,10 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
 
         QPointF end;
         if(t->getConnect1()==levelXing){
-            end = layoutEditor->getEndCoords(t->getConnect2(), t->getType2());
+            end = layoutEditor->getCoords(t->getConnect2(), t->getType2());
 
         } else {
-            end = layoutEditor->getEndCoords(t->getConnect1(), t->getType1());
+            end = layoutEditor->getCoords(t->getConnect1(), t->getType1());
         }
         bool east = false;
 
@@ -11490,10 +11536,10 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
 
         QPointF end;
         if(t->getConnect1()==levelXing){
-            end = layoutEditor->getEndCoords(t->getConnect2(), t->getType2());
+            end = layoutEditor->getCoords(t->getConnect2(), t->getType2());
 
         } else {
-            end = layoutEditor->getEndCoords(t->getConnect1(), t->getType1());
+            end = layoutEditor->getCoords(t->getConnect1(), t->getType1());
         }
         //TrackSegment* t = boundary->getConnect2();
         bool east = false;

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1245</width>
+    <width>1248</width>
     <height>426</height>
    </rect>
   </property>
@@ -21,404 +21,410 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_18">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_12">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Location -x:  </string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="xLabel">
-          <property name="text">
-           <string>0000</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>y:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="yLabel">
-          <property name="text">
-           <string>0000</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="turnoutNameLabel">
-          <property name="text">
-           <string>Turnout: Name</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="NamedBeanComboBox" name="turnoutNameComboBox"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_13">
-        <item>
-         <widget class="QLabel" name="extraTurnoutLabel">
-          <property name="text">
-           <string>Additional Name</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="NamedBeanComboBox" name="extraTurnoutNameComboBox"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_15">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_14">
-          <item>
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Type</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="turnoutRHButton">
-            <property name="text">
-             <string>RH</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="turnoutLHButton">
-            <property name="text">
-             <string>LH</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="turnoutWYEButton">
-            <property name="text">
-             <string>WYE</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="doubleXoverButton">
-          <property name="text">
-           <string>Double Xover</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="rhXoverButton">
-          <property name="text">
-           <string>RH Xover</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="lhXoverButton">
-          <property name="text">
-           <string>LH Xover</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_16">
-        <item>
-         <widget class="QCheckBox" name="layoutSingleSlipButton">
-          <property name="text">
-           <string>Single Slip</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="layoutDoubleSlipButton">
-          <property name="text">
-           <string>DoubleSlip</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_17">
-        <item>
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>Rotation</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="rotationComboBox"/>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_11">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLabel" name="blockNameLabel">
-          <property name="text">
-           <string>Block: Name</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="NamedBeanComboBox" name="blockIDComboBox"/>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="highlightBlockCheckBox">
-          <property name="text">
-           <string>Highlight Block</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QLabel" name="blockSensorNameLabel">
-          <property name="text">
-           <string>Sensor</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="NamedBeanComboBox" name="blockSensorComboBox"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="trackGroup2">
-        <item>
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string>Track:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="trackButton">
-          <property name="text">
-           <string>Track Segment</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="levelXingButton">
-          <property name="text">
-           <string>Level Crossing</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="trackSegmentPropertiesPanel">
-        <item>
-         <widget class="QCheckBox" name="chkDashed">
-          <property name="text">
-           <string>Dashed</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="chkMainline">
-          <property name="text">
-           <string>Mainline</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <layout class="QHBoxLayout" name="trackgroup1">
-        <item>
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Track Nodes:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="chkEndBumper">
-          <property name="text">
-           <string>End Bumper</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="chkAnchorPoint">
-          <property name="text">
-           <string>Anchor Point</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="edgeButton">
-          <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to add an edge connector track node when next clicking with shift down.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="text">
-           <string>Edge Connector</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="labelGroup1">
-        <item>
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Label:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="textLabelButton">
-          <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to add a label with the entered text when next clicking with shift down.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="text">
-           <string>Text Label</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="textLabel"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_7">
-        <item>
-         <widget class="QCheckBox" name="memoryButton">
-          <property name="text">
-           <string>Memory</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="NamedBeanComboBox" name="textMemoryComboBox"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="blockContentsButton">
-        <property name="text">
-         <string>BlockContents</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="NamedBeanComboBox" name="blockContentsComboBox">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to add a Block label when next clicking with shift down.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_10">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <widget class="QCheckBox" name="multiSensorButton">
-          <property name="text">
-           <string>Multi-sensor</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="changeIconsButton">
-          <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to change icons used to represent sensors, signal head or label (whichever is checked at the right).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="text">
-           <string>Change Icons...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item>
-         <widget class="QCheckBox" name="sensorButton">
-          <property name="text">
-           <string>Sensor Icon</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="NamedBeanComboBox" name="sensorComboBox"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_8">
-        <item>
-         <widget class="QCheckBox" name="signalButton">
-          <property name="text">
-           <string>Signal Head Icon</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="NamedBeanComboBox" name="signalHeadComboBox"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_9">
-        <item>
-         <widget class="QCheckBox" name="signalMastButton">
-          <property name="text">
-           <string>SignalMast Icon</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="NamedBeanComboBox" name="signalMastComboBox"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="iconLabelButton">
-        <property name="text">
-         <string>Icon Label</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QWidget" name="toolBarWidget" native="true">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_20">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_21">
+           <item>
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>Location -x:  </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="xLabel">
+             <property name="text">
+              <string>0000</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>y:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="yLabel">
+             <property name="text">
+              <string>0000</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_22">
+           <item>
+            <widget class="QLabel" name="turnoutNameLabel">
+             <property name="text">
+              <string>Turnout: Name</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="NamedBeanComboBox" name="turnoutNameComboBox"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_23">
+           <item>
+            <widget class="QLabel" name="extraTurnoutLabel">
+             <property name="text">
+              <string>Additional Name</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="NamedBeanComboBox" name="extraTurnoutNameComboBox"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_24">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_25">
+             <item>
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Type</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="turnoutRHButton">
+               <property name="text">
+                <string>RH</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="turnoutLHButton">
+               <property name="text">
+                <string>LH</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="turnoutWYEButton">
+               <property name="text">
+                <string>WYE</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="doubleXoverButton">
+             <property name="text">
+              <string>Double Xover</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="rhXoverButton">
+             <property name="text">
+              <string>RH Xover</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="lhXoverButton">
+             <property name="text">
+              <string>LH Xover</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_26">
+           <item>
+            <widget class="QCheckBox" name="layoutSingleSlipButton">
+             <property name="text">
+              <string>Single Slip</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="layoutDoubleSlipButton">
+             <property name="text">
+              <string>DoubleSlip</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_27">
+           <item>
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>Rotation</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="rotationComboBox"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_28">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_29">
+           <item>
+            <widget class="QLabel" name="blockNameLabel">
+             <property name="text">
+              <string>Block: Name</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="NamedBeanComboBox" name="blockIDComboBox"/>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="highlightBlockCheckBox">
+             <property name="text">
+              <string>Highlight Block</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_30">
+           <item>
+            <widget class="QLabel" name="blockSensorNameLabel">
+             <property name="text">
+              <string>Sensor</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="NamedBeanComboBox" name="blockSensorComboBox"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="trackGroup2">
+           <item>
+            <widget class="QLabel" name="label_14">
+             <property name="text">
+              <string>Track:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="trackButton">
+             <property name="text">
+              <string>Track Segment</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="levelXingButton">
+             <property name="text">
+              <string>Level Crossing</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="trackSegmentPropertiesPanel">
+           <item>
+            <widget class="QCheckBox" name="chkDashed">
+             <property name="text">
+              <string>Dashed</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="chkMainline">
+             <property name="text">
+              <string>Mainline</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_31">
+         <item>
+          <layout class="QHBoxLayout" name="trackgroup1">
+           <item>
+            <widget class="QLabel" name="label_15">
+             <property name="text">
+              <string>Track Nodes:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="chkEndBumper">
+             <property name="text">
+              <string>End Bumper</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="chkAnchorPoint">
+             <property name="text">
+              <string>Anchor Point</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="edgeButton">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to add an edge connector track node when next clicking with shift down.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Edge Connector</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="labelGroup1">
+           <item>
+            <widget class="QLabel" name="label_16">
+             <property name="text">
+              <string>Label:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="textLabelButton">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to add a label with the entered text when next clicking with shift down.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Text Label</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="textLabel"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_32">
+           <item>
+            <widget class="QCheckBox" name="memoryButton">
+             <property name="text">
+              <string>Memory</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="NamedBeanComboBox" name="textMemoryComboBox"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="blockContentsButton">
+           <property name="text">
+            <string>BlockContents</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="NamedBeanComboBox" name="blockContentsComboBox">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select to add a Block label when next clicking with shift down.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_33">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_34">
+           <item>
+            <widget class="QCheckBox" name="multiSensorButton">
+             <property name="text">
+              <string>Multi-sensor</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="changeIconsButton">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to change icons used to represent sensors, signal head or label (whichever is checked at the right).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Change Icons...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_35">
+           <item>
+            <widget class="QCheckBox" name="sensorButton">
+             <property name="text">
+              <string>Sensor Icon</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="NamedBeanComboBox" name="sensorComboBox"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_36">
+           <item>
+            <widget class="QCheckBox" name="signalButton">
+             <property name="text">
+              <string>Signal Head Icon</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="NamedBeanComboBox" name="signalHeadComboBox"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_37">
+           <item>
+            <widget class="QCheckBox" name="signalMastButton">
+             <property name="text">
+              <string>SignalMast Icon</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="NamedBeanComboBox" name="signalMastComboBox"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="iconLabelButton">
+           <property name="text">
+            <string>Icon Label</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
     </item>
     <item>
      <widget class="QWidget" name="editPanel" native="true"/>
@@ -453,7 +459,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1245</width>
+     <width>1248</width>
      <height>17</height>
     </rect>
    </property>

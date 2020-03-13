@@ -75,7 +75,9 @@
 #include "entryexit/entryexitpairstestaction.h"
 #include "entryexit/destinationpointstestaction.h"
 #include "entryexit/pointdetailstestaction.h"
-//#include "entryexit/sourcetestaction.h"
+#include "entryexit/sourcetestaction.h"
+#include "entryexit/sectiontestaction.h"
+#include "layouteditor/layouteditortoolstestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -90,7 +92,8 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     entryExitMenu->addAction(new EntryExitPairsTestAction(this));
     entryExitMenu->addAction(new DestinationPointsTestAction(this));
     entryExitMenu->addAction(new PointDetailsTestAction(this));
-//    entryExitMenu->addAction(new SourceTestAction(this));
+    entryExitMenu->addAction(new SourceTestAction(this));
+    entryExitMenu->addAction(new SectionTestAction(this));
 
     QMenu* rosterTestMenu = new QMenu(tr("Roster Tests"));
     addMenu(rosterTestMenu);
@@ -220,4 +223,8 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     miscMenu->addAction(new DccLocoAddressTestAction(this));
     miscMenu->addAction(new ControllerFilterFrameTestAction(this));
     miscMenu->addAction(new ConsistToolFrameTestAction(this));
+
+    QMenu* layoutEditorMenu = new QMenu("LayoutEditor");
+    addMenu(layoutEditorMenu);
+    layoutEditorMenu->addAction(new LayoutEditorToolsTestAction(this));
 }

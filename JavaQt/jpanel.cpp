@@ -8,6 +8,15 @@ JPanel::JPanel(QWidget* parent) :  QFrame(parent)
 {
 
 }
+JPanel::JPanel(QLayout* layout, QWidget* parent) :  QFrame(parent)
+{
+ setLayout(layout);
+}
+
+JPanel::JPanel(FlowLayout* layout, QWidget* parent) :  QFrame(parent)
+{
+ setLayout(layout);
+}
 
 /*public*/ void JPanel::setBorder(Border* border)
 {

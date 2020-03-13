@@ -123,7 +123,7 @@ return (settingRouteColor == QColor() ? false : true);
  deletePairList = QList<DeletePair*>();
  nxpair = QHash<PointDetails*, Source*>();
  vcs = new VetoableChangeSupport(this);
- listeners = QVector<ManagerDataListener*>();
+ listeners = QVector</*ManagerDataListener*/QObject*>();
  pcs = new PropertyChangeSupport(this);
 
  memo = (SystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
@@ -209,14 +209,15 @@ return (settingRouteColor == QColor() ? false : true);
     return ENTRYEXIT;
 }
 
-/*public*/ NamedBean* EntryExitPairs::getBySystemName(QString systemName) const{
-    foreach(Source* e,   nxpair.values())
-    {
-        DestinationPoints* pd = e->getByUniqueId(systemName);
-        if(pd!=NULL)
-            return pd;
-    }
-    return NULL;
+/*public*/ NamedBean* EntryExitPairs::getBySystemName(QString systemName) const
+{
+ foreach(Source* e,   nxpair.values())
+ {
+     DestinationPoints* pd = e->getByUniqueId(systemName);
+     if(pd!=NULL)
+         return pd;
+ }
+ return NULL;
 }
 
 /** {@inheritDoc} */
@@ -225,13 +226,13 @@ return (settingRouteColor == QColor() ? false : true);
  if(userName=="")
   throw NullPointerException(tr("userName is marked NonNull but is null"));
 
-    for (Source* e : nxpair.values()) {
-        DestinationPoints* pd = (DestinationPoints*)e->getByUserName(userName);
-        if (pd != nullptr) {
-            return pd;
-        }
-    }
-    return nullptr;
+  for (Source* e : nxpair.values()) {
+      DestinationPoints* pd = (DestinationPoints*)e->getByUserName(userName);
+      if (pd != nullptr) {
+          return pd;
+      }
+  }
+  return nullptr;
 }
 #if 0
 /*public*/ NamedBean* EntryExitPairs::getBeanBySystemName(QString systemName) const{
@@ -596,16 +597,18 @@ public List<DestinationPoints> getNamedBeanList() {
  QHashIterator<PointDetails*, Source*> e(nxpair);
  while( e.hasNext())
  {
-     e.next();
-     PointDetails* key = e.key();
-     LayoutEditor* pan = key->getPanel();
-     if(pan==panel){
-        QList<PointDetails*> dest =  nxpair.value(key)->getDestinationPoints();
-        for(int i = 0; i<dest.size(); i++){
-            destinationList.append(dest.value(i)->getRefObject());
-            source.append(key->getRefObject());
-        }
-     }
+  e.next();
+  PointDetails* key = e.key();
+  LayoutEditor* pan = key->getPanel();
+  if(pan == panel)
+  {
+   QList<PointDetails*> dest =  nxpair.value(key)->getDestinationPoints();
+   for(int i = 0; i<dest.size(); i++)
+   {
+    destinationList.append(dest.value(i)->getRefObject());
+    source.append(key->getRefObject());
+   }
+  }
  }
  return source;
 }
@@ -642,47 +645,51 @@ public List<DestinationPoints> getNamedBeanList() {
     return sourcePoint;
 }
 
-/*public*/ void EntryExitPairs::addNXDestination(NamedBean* source, NamedBean* destination, LayoutEditor* panel){
-    addNXDestination(source, destination, panel, NULL);
+/*public*/ void EntryExitPairs::addNXDestination(NamedBean* source, NamedBean* destination, LayoutEditor* panel)
+{
+ addNXDestination(source, destination, panel, QString());
 }
 
-/*public*/ void EntryExitPairs::addNXDestination(NamedBean* source, NamedBean* destination, LayoutEditor* panel, QString id){
-    if (source==NULL) {
-        log->error("no source Object provided");
-        return;
-    }
-    if(destination==NULL){
-        log->error("no destination Object provided");
-        return;
-    }
-    PointDetails* sourcePoint = providePoint(source, panel);
-    if(sourcePoint==NULL){
-        log->error("source point for " + source->getDisplayName() + " not created addNXDes");
-        return;
-    }
+/*public*/ void EntryExitPairs::addNXDestination(NamedBean* source, NamedBean* destination, LayoutEditor* panel, QString id)
+{
+ if (source==NULL)
+ {
+  log->error("no source Object provided");
+  throw NullPointerException("no source Object provided");
+  //return;
+ }
+ if(destination==NULL)
+ {
+  log->error("no destination Object provided");
+  throw NullPointerException("no destination Object provided");
+  //return;
+ }
+ PointDetails* sourcePoint = providePoint(source, panel);
+ if(sourcePoint==NULL)
+ {
+  log->error("source point for " + source->getDisplayName() + " not created addNXDes");
+  throw NullPointerException("source point for " + source->getDisplayName() + " not created addNXDes");
+  //return;
+ }
 
-    sourcePoint->setPanel(panel);
-    sourcePoint->setRefObject(source);
-    PointDetails* destPoint = providePoint(destination, panel);
-    if(destPoint!=NULL){
-        destPoint->setPanel(panel);
-        destPoint->setRefObject(destination);
-        if (! nxpair.contains(sourcePoint))
-         nxpair.insert(sourcePoint, new Source(sourcePoint));
-
-        bool contained = false;
-        foreach (PointDetails* pt, nxpair.keys()) {
-         if(pt->equals(sourcePoint))
-          contained = true;
-        }
-        if(!contained)
-        {
-             nxpair.insert(sourcePoint, new Source(sourcePoint));
-        }
-         nxpair.value(sourcePoint)->addDestination(destPoint, id);
+ sourcePoint->setPanel(panel);
+ sourcePoint->setRefObject(source);
+ PointDetails* destPoint = providePoint(destination, panel);
+ if (destPoint != nullptr)
+ {
+    destPoint->setPanel(panel);
+    destPoint->setRefObject(destination);
+    destPoint->getSignal();
+    if (!nxpair.contains(sourcePoint)) {
+        Source* sp = new Source(sourcePoint) ;
+        nxpair.insert(sourcePoint, sp);
+        sp->removePropertyChangeListener((PropertyChangeListener*)this);
+        sp->addPropertyChangeListener((PropertyChangeListener*)this);
     }
+    nxpair.value(sourcePoint)->addDestination(destPoint, id);
+}
 
-    firePropertyChange("length", QVariant(), QVariant());
+ firePropertyChange("length", QVariant(), QVariant());
 }
 
 /*public*/ QObjectList* EntryExitPairs::getDestinationList(QObject* obj, LayoutEditor* panel){
@@ -906,6 +913,7 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
 {
  if(layoutBlock==nullptr)
   throw NullPointerException(tr("layoutBlock is marked NonNull but is null"));
+
  log->debug(tr("layoutBlockSensors: %1").arg(layoutBlock->getDisplayName()));
  QList<QString> blockSensors = QList<QString>();
  //nxpair.forEach((pdSrc, src) ->
@@ -945,60 +953,23 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
 /*public*/ bool EntryExitPairs::isDestinationValid(QObject* source, QObject* dest, LayoutEditor* panel){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->isDestinationValid(getPointDetails(dest, panel));
- bool contained = false;
- foreach (PointDetails* pt, nxpair.keys()) {
-  if(pt->equals(getPointDetails(source, panel)))
-   contained = true;
- }
- if(contained)
- {
-  return  nxpair.value(getPointDetails(source, panel))->isDestinationValid(getPointDetails(dest, panel));
- }
  return false;
 }
 
 /*public*/ bool EntryExitPairs::isUniDirection(QObject* source, LayoutEditor* panel, QObject* dest){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->getUniDirection(dest, panel);
-
- bool contained = false;
- foreach (PointDetails* pt, nxpair.keys()) {
-  if(pt->equals(getPointDetails(source, panel)))
-   contained = true;
- }
- if(contained)
- {
-     return  nxpair.value(getPointDetails(source, panel))->getUniDirection(dest, panel);
- }
  return false;
 }
 
 /*public*/ void EntryExitPairs::setUniDirection(QObject* source, LayoutEditor* panel, QObject* dest, bool set){
  if( nxpair.contains(getPointDetails(source, panel)))
   nxpair.value(getPointDetails(source, panel))->setUniDirection(dest, panel, set);
-
-  bool contained = false;
-  foreach (PointDetails* pt, nxpair.keys()) {
-   if(pt->equals(getPointDetails(source, panel)))
-    contained = true;
-  }
-  if(contained)
- {
-      nxpair.value(getPointDetails(source, panel))->setUniDirection(dest, panel, set);
- }
 }
 
 /*public*/ bool EntryExitPairs::canBeBiDirectional(QObject* source, LayoutEditor* panel, QObject* dest){
  if( nxpair.contains(getPointDetails(source, panel)))
    return  nxpair.value(getPointDetails(source, panel))->canBeBiDirection(dest, panel);
- bool contained = false;
- foreach (PointDetails* pt, nxpair.keys()) {
-  if(pt->equals(getPointDetails(source, panel)))
-   contained = true;
- }
- if(contained) {
-     return  nxpair.value(getPointDetails(source, panel))->canBeBiDirection(dest, panel);
- }
  return false;
 }
 
@@ -1006,33 +977,12 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
 {
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->isEnabled(dest, panel);
- bool contained = false;
- foreach (PointDetails* pt, nxpair.keys())
- {
- if(pt->equals(getPointDetails(source, panel)))
-  contained = true;
- }
- if(contained)
- {
-     return  nxpair.value(getPointDetails(source, panel))->isEnabled(dest, panel);
- }
  return false;
 }
 
 /*public*/ void EntryExitPairs::setEnabled(QObject* source, LayoutEditor* panel, QObject* dest, bool set){
  if( nxpair.contains(getPointDetails(source, panel)))
   nxpair.value(getPointDetails(source, panel))->setEnabled(dest, panel, set);
-
- bool contained = false;
- foreach (PointDetails* pt, nxpair.keys())
- {
- if(pt->equals(getPointDetails(source, panel)))
-  contained = true;
- }
- if(contained)
- {
-  nxpair.value(getPointDetails(source, panel))->setEnabled(dest, panel, set);
- }
 }
 
 /*public*/ void EntryExitPairs::setEntryExitType(QObject* source, LayoutEditor* panel, QObject* dest, int set){
@@ -1041,51 +991,18 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
   nxpair.value(getPointDetails(source, panel))->setEntryExitType(dest, panel, set);
   return;
  }
-
- bool contained = false;
- foreach (PointDetails* pt, nxpair.keys())
- {
- if(pt->equals(getPointDetails(source, panel)))
-  contained = true;
- }
- if(contained)
- {
-  nxpair.value(getPointDetails(source, panel))->setEntryExitType(dest, panel, set);
- }
 }
 
 /*public*/ int EntryExitPairs::getEntryExitType(QObject* source, LayoutEditor* panel, QObject* dest){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->getEntryExitType(dest, panel);
-
- bool contained = false;
- foreach (PointDetails* pt, nxpair.keys())
- {
- if(pt->equals(getPointDetails(source, panel)))
-  contained = true;
- }
- if(contained)
- {
-     return  nxpair.value(getPointDetails(source, panel))->getEntryExitType(dest, panel);
- }
  return 0x00;
 }
 
 /*public*/ QString EntryExitPairs::getUniqueId(QObject* source, LayoutEditor* panel, QObject* dest){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->getUniqueId(dest, panel);
-
- bool contained = false;
- foreach (PointDetails* pt, nxpair.keys())
- {
- if(pt->equals(getPointDetails(source, panel)))
-  contained = true;
- }
- if(!contained)
- {
-  return  nxpair.value(getPointDetails(source, panel))->getUniqueId(dest, panel);
- }
- return NULL;
+ return QString();
 }
 
 /*public*/ QStringList EntryExitPairs::getEntryExitList(){
@@ -1107,17 +1024,6 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
   Source* source =  nxpair.value(pd);
   return source->isRouteActive(getPointDetails(destObj, panel));
  }
- bool contained = false;
- foreach (PointDetails* pt, nxpair.keys())
- {
- if(pt->equals(pd))
-  contained = true;
- }
- if(contained)
- {
-     Source* source =  nxpair.value(pd);
-     return source->isRouteActive(getPointDetails(destObj, panel));
- }
  return false;
 }
 
@@ -1127,17 +1033,6 @@ if( nxpair.contains(getPointDetails(source, panel)))
  nxpair.value(getPointDetails(source, panel))->cancelInterlock(dest, panel);
  return;
 }
-
- bool contained = false;
- foreach (PointDetails* pt, nxpair.keys())
- {
- if(pt->equals(getPointDetails(source, panel)))
-  contained = true;
- }
- if(contained)
- {
-  nxpair.value(getPointDetails(source, panel))->cancelInterlock(dest, panel);
- }
 }
 
 
@@ -1218,31 +1113,34 @@ if( nxpair.contains(getPointDetails(source, panel)))
 /*
 * Returns either an existing point, or creates a new one as required.
 */
-PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutBlock*> destination, LayoutEditor* panel){
-    PointDetails* newPoint = new PointDetails(source, destination);
-    newPoint->setPanel(panel);
-    for (int i = 0; i<pointDetails->size(); i++){
-        if (pointDetails->at(i)->equals(newPoint)){
-            return pointDetails->at(i);
-
-        }
-    }
-    //Not found so will add
-    pointDetails->append(newPoint);
-    return newPoint;
+PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutBlock*> destination, LayoutEditor* panel)
+{
+ PointDetails* newPoint = new PointDetails(source, destination);
+ newPoint->setPanel(panel);
+ for (int i = 0; i<pointDetails->size(); i++)
+ {
+  if (pointDetails->at(i)->equals(newPoint))
+  {
+   return pointDetails->at(i);
+  }
+ }
+ //Not found so will add
+ pointDetails->append(newPoint);
+ return newPoint;
 }
 
 //No point in have multiple copies of what is the same thing.
 /*static*/ QList<PointDetails*>* EntryExitPairs::pointDetails = new QList<PointDetails*>();
 
-/*public*/QString EntryExitPairs::getPointAsString(NamedBean* obj, LayoutEditor* panel){
-    if (obj==NULL)
-        return "NULL";
-    PointDetails* valid = getPointDetails(obj, panel);  //was just plain getPoint
-    if(valid!=NULL){
-        return valid->getDisplayName();
-    }
-    return "empty";
+/*public*/QString EntryExitPairs::getPointAsString(NamedBean* obj, LayoutEditor* panel)
+{
+ if (obj==nullptr)
+     return "null";
+ PointDetails* valid = getPointDetails(obj, panel);  //was just plain getPoint
+ if(valid != nullptr){
+     return valid->getDisplayName();
+ }
+ return "empty";
 }
 
 /**
@@ -1526,13 +1424,13 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void EntryExitPairs::addDataListener(ManagerDataListener *e) {
+/*public*/ void EntryExitPairs::addDataListener(QObject *e) {
     if (e != nullptr) listeners.append(e);
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void EntryExitPairs::removeDataListener(ManagerDataListener *e) {
+/*public*/ void EntryExitPairs::removeDataListener(/*ManagerDataListener*/QObject *e)  {
     if (e != nullptr) listeners.removeOne(e);
 }
 

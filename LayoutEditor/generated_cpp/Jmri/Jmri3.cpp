@@ -4444,7 +4444,7 @@ if (_wrapper) {
     }
   }
 }
-  return RouteManager::getXMLOrder();
+  return int();
 }
 QString  PythonQtShell_RouteManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2) const
 {
@@ -7567,7 +7567,7 @@ if (_wrapper) {
     }
   }
 }
-  return SensorManager::getXMLOrder();
+  return int();
 }
 bool  PythonQtShell_SensorManager::isPullResistanceConfigurable()
 {
@@ -21328,7 +21328,7 @@ if (_wrapper) {
     }
   }
 }
-  return TurnoutManager::getXMLOrder();
+  return int();
 }
 bool  PythonQtShell_TurnoutManager::isControlTypeSupported(QString  arg__1)
 {

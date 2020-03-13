@@ -476,7 +476,10 @@ SOURCES += \
     leblockcontentsiconxml.cpp \
     fontpanel.cpp \
     consistdatamodel.cpp \
-    enterreporterdialog.cpp
+    enterreporterdialog.cpp \
+    layouteditortoolbarpanel.cpp \
+    layouteditorhorizontaltoolbarpanel.cpp \
+    layouteditorverticaltoolbarpanel.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -871,7 +874,10 @@ HEADERS += liblayouteditor_global.h \
     leblockcontentsiconxml.h \
     fontpanel.h \
     consistdatamodel.h \
-    enterreporterdialog.h
+    enterreporterdialog.h \
+    layouteditortoolbarpanel.h \
+    layouteditorhorizontaltoolbarpanel.h \
+    layouteditorverticaltoolbarpanel.h
 
 FORMS    += \
     createeditblock.ui \

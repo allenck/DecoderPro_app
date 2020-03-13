@@ -56,11 +56,12 @@ signals:
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* evt);
-
+#if 0
     void on_editClear();
     void on_editCancel();
     void on_clear();
     void on_cancel();
+#endif
 private:
     QMenu* entryExitPopUp = nullptr;
     QAction* clear = nullptr;

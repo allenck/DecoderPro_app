@@ -69,8 +69,8 @@ public:
  PropertyChangeSupport* propertyChangeSupport;
  /*public*/ QString getTurnoutStateString(int turnoutState);
  /*public*/ /*abstract*/virtual void setObjects(/*@Nonnull*/ LayoutEditor* le);
- /*public*/ /*abstract*/ virtual void scaleCoords(float xFactor, float yFactor);
- /*public*/ /*abstract*/ virtual void translateCoords(float xFactor, float yFactor);
+ /*public*/ /*abstract*/ virtual void scaleCoords(double xFactor, double yFactor);
+ /*public*/ /*abstract*/ virtual void translateCoords(double xFactor, double yFactor);
  /*public*/ /*abstract*/ virtual QPointF getCoordsForConnectionType(int);
  /*public*/ /*abstract*/ virtual QRectF getBounds();
  /*public*/ /*abstract*/ virtual LayoutTrack* getConnection(int connectionType) throw (JmriException);

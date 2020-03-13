@@ -14,6 +14,9 @@ public:
  /*public*/ static bool equals(qreal a, qreal b);
  /*public*/ static double lerp(double a, double b, double t);
  /*public*/ static QPointF lerp(QPointF p1, QPointF p2, double interpolant) ;
+ /*public*/ static double granulize(double v, double g);
+ /*public*/ static QPointF granulize(/*@Nonnull*/ QPointF p, double gH, double gV);
+ /*public*/ static QPointF granulize(/*@Nonnull*/ QPointF p, double g);
  /*public*/ static QPointF center(/*@Nonnull*/ QRectF r);
  /*public*/ static QPointF midPoint(QRectF r);
  /*public*/ static QPointF midPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);

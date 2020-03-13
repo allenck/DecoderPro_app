@@ -782,7 +782,7 @@ virtual void Register(NamedBean*  s) const;
 virtual void addDataListener(QObject*  e);
 virtual void addPropertyChangeListener(PropertyChangeListener*  l);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual bool  allowMultipleAdditions(QString  systemName);
+virtual bool  allowMultipleAdditions(QString  systemName) const;
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
@@ -800,14 +800,14 @@ virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
 virtual QString  getNamedBeanClass() const;
 virtual QSet<NamedBean* >  getNamedBeanSet();
-virtual QString  getNextValidAddress(QString  curAddress, QString  prefix);
+virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) const;
 virtual int  getObjectCount();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList() const;
 virtual QString  getSystemPrefix() const;
-virtual int  getXMLOrder();
+virtual int  getXMLOrder() const;
 virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale()) const;
 virtual QString  normalizeSystemName(QString  inputName) const;
 virtual void propertyChange(PropertyChangeEvent*  e);
@@ -815,7 +815,7 @@ virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void timerEvent(QTimerEvent*  event);
-virtual char  typeLetter();
+virtual char  typeLetter() const;
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
 virtual void vetoableChange(PropertyChangeEvent*  evt);
 
@@ -826,11 +826,11 @@ virtual void vetoableChange(PropertyChangeEvent*  evt);
 
 class PythonQtPublicPromoter_AbstractReporterManager : public AbstractReporterManager
 { public:
-inline bool  py_q_allowMultipleAdditions(QString  systemName) { return AbstractReporterManager::allowMultipleAdditions(systemName); }
+inline bool  py_q_allowMultipleAdditions(QString  systemName) const { return AbstractReporterManager::allowMultipleAdditions(systemName); }
 inline QString  py_q_getBeanTypeHandled(bool  plural) const { return AbstractReporterManager::getBeanTypeHandled(plural); }
-inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) { return AbstractReporterManager::getNextValidAddress(curAddress, prefix); }
-inline int  py_q_getXMLOrder() { return AbstractReporterManager::getXMLOrder(); }
-inline char  py_q_typeLetter() { return AbstractReporterManager::typeLetter(); }
+inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) const { return AbstractReporterManager::getNextValidAddress(curAddress, prefix); }
+inline int  py_q_getXMLOrder() const { return AbstractReporterManager::getXMLOrder(); }
+inline char  py_q_typeLetter() const { return AbstractReporterManager::typeLetter(); }
 };
 
 class PythonQtWrapper_AbstractReporterManager : public QObject
@@ -839,11 +839,11 @@ public:
 public slots:
 AbstractReporterManager* new_AbstractReporterManager(SystemConnectionMemo*  memo, QObject*  parent = 0);
 void delete_AbstractReporterManager(AbstractReporterManager* obj) { delete obj; } 
-   bool  py_q_allowMultipleAdditions(AbstractReporterManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_allowMultipleAdditions(systemName));}
+   bool  py_q_allowMultipleAdditions(AbstractReporterManager* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_allowMultipleAdditions(systemName));}
    QString  py_q_getBeanTypeHandled(AbstractReporterManager* theWrappedObject, bool  plural) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
-   QString  py_q_getNextValidAddress(AbstractReporterManager* theWrappedObject, QString  curAddress, QString  prefix){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}
-   int  py_q_getXMLOrder(AbstractReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getXMLOrder());}
-   char  py_q_typeLetter(AbstractReporterManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_typeLetter());}
+   QString  py_q_getNextValidAddress(AbstractReporterManager* theWrappedObject, QString  curAddress, QString  prefix) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}
+   int  py_q_getXMLOrder(AbstractReporterManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getXMLOrder());}
+   char  py_q_typeLetter(AbstractReporterManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_typeLetter());}
 };
 
 
@@ -2531,10 +2531,12 @@ public:
 
 virtual void addToPopUp(QMenu*  popup);
 virtual void clickOn(NamedBean*  arg__1);
+virtual int  columnCount(const QModelIndex&  parent) const;
 virtual void configDeleteColumn(JTable*  table);
 virtual void configValueColumn(JTable*  table);
 virtual QPushButton*  configureButton();
 virtual void configureTable(JTable*  table);
+virtual QVariant  data(const QModelIndex&  index, int  role) const;
 virtual Qt::ItemFlags  flags(const QModelIndex&  index) const;
 virtual QString  getBeanType();
 virtual NamedBean*  getBySystemName(QString  name) const;
@@ -2543,9 +2545,12 @@ virtual Manager*  getManager();
 virtual QString  getMasterClassName();
 virtual int  getPreferredWidth(int  col);
 virtual QString  getValue(QString  systemName) const;
+virtual QVariant  headerData(int  section, Qt::Orientation  orientation, int  role) const;
 virtual void init();
 virtual bool  matchPropertyName(PropertyChangeEvent*  e);
 virtual void propertyChange(PropertyChangeEvent*  e);
+virtual int  rowCount(const QModelIndex&  parent) const;
+virtual bool  setData(const QModelIndex&  index, const QVariant&  value, int  role);
 virtual void setManager(Manager*  arg__1);
 virtual void updateNameList();
 
@@ -2578,10 +2583,12 @@ inline void promoted_showTableHeaderPopup(const QPoint&  arg__1) { this->showTab
 inline void promoted_updateNameList() { this->updateNameList(); }
 inline void py_q_addToPopUp(QMenu*  popup) { BeanTableDataModel::addToPopUp(popup); }
 inline void py_q_clickOn(NamedBean*  arg__1) { BeanTableDataModel::clickOn(arg__1); }
+inline int  py_q_columnCount(const QModelIndex&  parent) const { return BeanTableDataModel::columnCount(parent); }
 inline void py_q_configDeleteColumn(JTable*  table) { BeanTableDataModel::configDeleteColumn(table); }
 inline void py_q_configValueColumn(JTable*  table) { BeanTableDataModel::configValueColumn(table); }
 inline QPushButton*  py_q_configureButton() { return BeanTableDataModel::configureButton(); }
 inline void py_q_configureTable(JTable*  table) { BeanTableDataModel::configureTable(table); }
+inline QVariant  py_q_data(const QModelIndex&  index, int  role) const { return BeanTableDataModel::data(index, role); }
 inline Qt::ItemFlags  py_q_flags(const QModelIndex&  index) const { return BeanTableDataModel::flags(index); }
 inline QString  py_q_getBeanType() { return BeanTableDataModel::getBeanType(); }
 inline NamedBean*  py_q_getBySystemName(QString  name) const { return BeanTableDataModel::getBySystemName(name); }
@@ -2590,9 +2597,12 @@ inline Manager*  py_q_getManager() { return BeanTableDataModel::getManager(); }
 inline QString  py_q_getMasterClassName() { return BeanTableDataModel::getMasterClassName(); }
 inline int  py_q_getPreferredWidth(int  col) { return BeanTableDataModel::getPreferredWidth(col); }
 inline QString  py_q_getValue(QString  systemName) const { return BeanTableDataModel::getValue(systemName); }
+inline QVariant  py_q_headerData(int  section, Qt::Orientation  orientation, int  role) const { return BeanTableDataModel::headerData(section, orientation, role); }
 inline void py_q_init() { BeanTableDataModel::init(); }
 inline bool  py_q_matchPropertyName(PropertyChangeEvent*  e) { return BeanTableDataModel::matchPropertyName(e); }
 inline void py_q_propertyChange(PropertyChangeEvent*  e) { BeanTableDataModel::propertyChange(e); }
+inline int  py_q_rowCount(const QModelIndex&  parent) const { return BeanTableDataModel::rowCount(parent); }
+inline bool  py_q_setData(const QModelIndex&  index, const QVariant&  value, int  role) { return BeanTableDataModel::setData(index, value, role); }
 inline void py_q_setManager(Manager*  arg__1) { BeanTableDataModel::setManager(arg__1); }
 inline void py_q_updateNameList() { BeanTableDataModel::updateNameList(); }
 };
@@ -2609,6 +2619,7 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    void clickOn(BeanTableDataModel* theWrappedObject, NamedBean*  arg__1);
    void py_q_clickOn(BeanTableDataModel* theWrappedObject, NamedBean*  arg__1){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_clickOn(arg__1));}
    int  columnCount(BeanTableDataModel* theWrappedObject, const QModelIndex&  parent) const;
+   int  py_q_columnCount(BeanTableDataModel* theWrappedObject, const QModelIndex&  parent) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_columnCount(parent));}
    void configDeleteColumn(BeanTableDataModel* theWrappedObject, JTable*  table);
    void py_q_configDeleteColumn(BeanTableDataModel* theWrappedObject, JTable*  table){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_configDeleteColumn(table));}
    void configValueColumn(BeanTableDataModel* theWrappedObject, JTable*  table);
@@ -2619,6 +2630,7 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    void py_q_configureTable(BeanTableDataModel* theWrappedObject, JTable*  table){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_configureTable(table));}
    void copyName(BeanTableDataModel* theWrappedObject, int  arg__1);
    QVariant  data(BeanTableDataModel* theWrappedObject, const QModelIndex&  index, int  role) const;
+   QVariant  py_q_data(BeanTableDataModel* theWrappedObject, const QModelIndex&  index, int  role) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_data(index, role));}
    void deleteBean(BeanTableDataModel* theWrappedObject, int  row, int  col);
    void dispose(BeanTableDataModel* theWrappedObject);
    Qt::ItemFlags  flags(BeanTableDataModel* theWrappedObject, const QModelIndex&  index) const;
@@ -2640,6 +2652,7 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    QString  getValue(BeanTableDataModel* theWrappedObject, QString  systemName) const;
    QString  py_q_getValue(BeanTableDataModel* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_getValue(systemName));}
    QVariant  headerData(BeanTableDataModel* theWrappedObject, int  section, Qt::Orientation  orientation, int  role) const;
+   QVariant  py_q_headerData(BeanTableDataModel* theWrappedObject, int  section, Qt::Orientation  orientation, int  role) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_headerData(section, orientation, role));}
    void py_q_init(BeanTableDataModel* theWrappedObject){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_init());}
    bool  matchPropertyName(BeanTableDataModel* theWrappedObject, PropertyChangeEvent*  e);
    bool  py_q_matchPropertyName(BeanTableDataModel* theWrappedObject, PropertyChangeEvent*  e){  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_matchPropertyName(e));}
@@ -2649,8 +2662,10 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    void removeName(BeanTableDataModel* theWrappedObject, int  arg__1);
    void renameBean(BeanTableDataModel* theWrappedObject, int  arg__1);
    int  rowCount(BeanTableDataModel* theWrappedObject, const QModelIndex&  parent) const;
+   int  py_q_rowCount(BeanTableDataModel* theWrappedObject, const QModelIndex&  parent) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_rowCount(parent));}
    void setColumnToHoldButton(BeanTableDataModel* theWrappedObject, JTable*  table, int  column, QPushButton*  sample = NULL);
    bool  setData(BeanTableDataModel* theWrappedObject, const QModelIndex&  index, const QVariant&  value, int  role);
+   bool  py_q_setData(BeanTableDataModel* theWrappedObject, const QModelIndex&  index, const QVariant&  value, int  role){  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_setData(index, value, role));}
    void setDisplayDeleteMsg(BeanTableDataModel* theWrappedObject, int  boo);
    void setManager(BeanTableDataModel* theWrappedObject, Manager*  arg__1);
    void py_q_setManager(BeanTableDataModel* theWrappedObject, Manager*  arg__1){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_setManager(arg__1));}
@@ -3515,7 +3530,7 @@ virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  p
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix() const;
-virtual int  getXMLOrder();
+virtual int  getXMLOrder() const;
 virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale()) const;
 virtual QString  normalizeSystemName(QString  inputName) const;
 virtual void propertyChange(PropertyChangeEvent*  e);
@@ -3541,7 +3556,7 @@ inline NamedBean*  py_q_getByUserName(QString  key) const { return DefaultLogixM
 inline bool  py_q_getLoadDisabled() const { return DefaultLogixManager::getLoadDisabled(); }
 inline QString  py_q_getNamedBeanClass() const { return DefaultLogixManager::getNamedBeanClass(); }
 inline QString  py_q_getSystemPrefix() const { return DefaultLogixManager::getSystemPrefix(); }
-inline int  py_q_getXMLOrder() { return DefaultLogixManager::getXMLOrder(); }
+inline int  py_q_getXMLOrder() const { return DefaultLogixManager::getXMLOrder(); }
 inline void py_q_setLoadDisabled(bool  s) { DefaultLogixManager::setLoadDisabled(s); }
 inline char  py_q_typeLetter() const { return DefaultLogixManager::typeLetter(); }
 };
@@ -3558,7 +3573,7 @@ void delete_DefaultLogixManager(DefaultLogixManager* obj) { delete obj; }
    bool  py_q_getLoadDisabled(DefaultLogixManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getLoadDisabled());}
    QString  py_q_getNamedBeanClass(DefaultLogixManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getNamedBeanClass());}
    QString  py_q_getSystemPrefix(DefaultLogixManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getSystemPrefix());}
-   int  py_q_getXMLOrder(DefaultLogixManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getXMLOrder());}
+   int  py_q_getXMLOrder(DefaultLogixManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getXMLOrder());}
    DefaultLogixManager*  static_DefaultLogixManager_instance();
    void py_q_setLoadDisabled(DefaultLogixManager* theWrappedObject, bool  s){  (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_setLoadDisabled(s));}
    char  py_q_typeLetter(DefaultLogixManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_typeLetter());}

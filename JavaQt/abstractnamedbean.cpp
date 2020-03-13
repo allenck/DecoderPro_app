@@ -35,6 +35,7 @@ AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : NamedBean(s
  //Q_ASSERT(!sys.isEmpty());
  setObjectName(sys);
  common(sys, "", parent );
+ setObjectName(sys);
 }
 
 AbstractNamedBean:: AbstractNamedBean(QString sysName, QString user, QObject* parent) : NamedBean(sysName,parent)

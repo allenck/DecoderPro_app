@@ -159,11 +159,11 @@ void NamedBean::dispose()
 {
 
 }
-void NamedBean::setState(int s)
-{
- _state = s;
-}
-int NamedBean::getState() { return _state;}
+void NamedBean::setState(int s) {}
+//{
+// _state = s;
+//}
+int NamedBean::getState() { return 0;}
 /**
  * Provide human-readable, localized version of state value.
  * <P>

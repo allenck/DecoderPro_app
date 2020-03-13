@@ -51,6 +51,13 @@
 class JAVAQTSHARED_EXPORT FlowLayout : public QLayout
 {
 public:
+ enum PLACEMENT
+ {
+  LEFT,
+  CENTER,
+  RIGHT
+ };
+
     FlowLayout(QWidget *parent, int margin = -1, int hSpacing = -1, int vSpacing = -1);
     FlowLayout(int margin = -1, int hSpacing = -1, int vSpacing = -1);
     ~FlowLayout();

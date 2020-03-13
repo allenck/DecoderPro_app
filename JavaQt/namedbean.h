@@ -475,9 +475,9 @@ signals:
 public slots:
 
 private:
- QObject* _parent;
- QString _name;
- int _state;
+// QObject* _parent;
+// QString _name;
+// int _state;
 // QString _userName;
 // QString _systemName;
 // QString _displayName;

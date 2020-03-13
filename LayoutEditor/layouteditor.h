@@ -60,6 +60,7 @@ class SignalHeadIcon;
 class SignalMastIcon;
 class AnalogClock2Display;
 class JmriJFrame;
+class LayoutEditorToolBarPanel;
 class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditor : public PanelEditor
 {
  Q_OBJECT
@@ -73,6 +74,7 @@ public:
  ~LayoutEditor();
     LayoutEditor(const LayoutEditor&) : PanelEditor() {}
     /*public*/ void newPanelDefaults();
+    /*public*/ LayoutEditorToolBarPanel* getLayoutEditorToolBarPanel();
 
     // connection types
     static const  int NONE = 0;
@@ -124,6 +126,14 @@ public:
     const /*public*/ static int OPTION_HIDDEN = 3;
     const /*public*/ static int OPTION_TOOLTIP= 4;
 
+    enum TOOLBARSIDES
+    {
+       eTOP, //("top"),
+       eLEFT, //("left"),
+       eBOTTOM, //("bottom"),
+       eRIGHT, //("right"),
+       eFLOAT //("float");
+    };
 
     /*public*/ void addAnchor();
     /*public*/ void addEndBumper();
@@ -228,7 +238,9 @@ public:
 //    /*public*/ bool allPositionable();
     /*public*/ bool allControlling() ;
     /*public*/ bool setShowAlignmentMenu(QMenu* popup);
+#if 0
     /*public*/ QPointF getEndCoords(QObject* o, int type);
+#endif
     QGraphicsView* panel();
     /**
     * Add a label to the Draw Panel
@@ -264,6 +276,7 @@ public:
     */
     void addMemory() ;
     LEMemoryIcon* addMemory(QString text);
+    void addBlockContents();
 
     /**
     * Add an icon to the target
@@ -285,12 +298,13 @@ public:
     /*public*/ void setDefaultBackgroundColor(QString color);
     /*public*/ QString getLayoutName();
     /*public*/ bool getShowHelpBar();
+    QT_DEPRECATED bool getDrawGrid();
+    QT_DEPRECATED bool getSnapOnAdd();
+    QT_DEPRECATED bool getSnapOnMove();
+    bool getAntialiasingOn();
+    /*public*/ bool getHighlightSelectedBlock();
     /*public*/ void setLayoutName(QString name);
-    QT_DEPRECATED bool getDrawGrid() {return drawGrid;}
     void setDrawGrid(bool state);
-    QT_DEPRECATED bool getSnapOnAdd(){return snapToGridOnAdd;}
-    QT_DEPRECATED bool getSnapOnMove(){return snapToGridOnMove;}
-    bool getAntialiasingOn(){return antialiasingOn;}
     bool getTurnoutCircles(){return turnoutCirclesWithoutEditMode;}
     bool getTooltipsNotEdit() {return tooltipsWithoutEditMode;}
     /*public*/ bool getTooltipsInEdit() {return tooltipsInEditMode;}
@@ -438,6 +452,8 @@ private:
  //EditScene* editScene;
  int xLoc, yLoc;
  //QPointF dLoc;
+ /*private*/ /*transient*/ int toolbarHeight = 100;
+ /*private*/ /*transient*/ int toolbarWidth = 100;
  double getPaintScale();
  double paintScale;
  /*private*/ /*transient*/ /*final*/ static Logger* log;
@@ -898,23 +914,45 @@ private:
  /*private*/ /*transient*/ bool autoAssignBlocks = false;
  /*private*/ float toolBarFontSize = 12.0;
  /*private*/ /*transient*/ bool editorUseOldLocSize;
+ /*private*/ /*transient*/ LayoutEditorToolBarPanel* leToolBarPanel = nullptr;
+ /*private*/ /*transient*/ QDockWidget* editToolBarContainerPanel = nullptr;
+ /*private*/ /*transient*/ QScrollArea* editToolBarScrollPane = nullptr;
+ /*private*/ /*transient*/ JPanel* helpBarPanel = nullptr;
+ /*private*/ /*transient*/ JPanel* helpBar;// = new JPanel();
+ /*private*/ void setupToolBar();
+
 
  /*private*/ /*enum*/class ToolBarSide {
- public:
-  enum TOOLBARSIDES
-  {
-     eTOP, //("top"),
-     eLEFT, //("left"),
-     eBOTTOM, //("bottom"),
-     eRIGHT, //("right"),
-     eFLOAT //("float");
-  };
 
+  TOOLBARSIDES type;
   /*private*/ /*transient*/ QString name;
 
  public:
      ToolBarSide(QString name) {
          this->name = name;
+      this->type = getName(name);
+     }
+     ToolBarSide(TOOLBARSIDES type)
+     {
+      this->type = type;
+      switch (type) {
+      case eTOP:
+       name = "top";
+       break;
+      case eLEFT:
+       name = "left";
+       break;
+      case eRIGHT:
+       name = "right";
+       break;
+      case eBOTTOM:
+       name = "bottom";
+       break;
+      case eFLOAT:
+      default:
+       name = "float";
+       break;
+      }
      }
 
 //     //Build an immutable map of String name to enum pairs.
@@ -927,14 +965,14 @@ private:
 //         ENUM_MAP = Collections.unmodifiableMap(map);
 //     }
 
-     /*public*/ static ToolBarSide::TOOLBARSIDES getName(/*@Nullable*/ QString name) {
+     /*public*/ static TOOLBARSIDES getName(/*@Nullable*/ QString name) {
       if(name == "top")
        return eTOP;
-      else if (name == "left")
+      else if (name.toLower() == "left")
        return eLEFT;
-      else if (name == "bottom")
+      else if (name.toLower() == "bottom")
        return eBOTTOM;
-      else if (name == "right")
+      else if (name.toLower() == "right")
        return eRIGHT;
       else //if (name == "float")
        return eFLOAT;
@@ -943,11 +981,15 @@ private:
      /*public*/ QString getName() {
          return name;
      }
+     TOOLBARSIDES getType()
+     {
+      return type;
+     }
  };
  /*private*/ /*transient*/ ToolBarSide toolBarSide = ToolBarSide("top");
  /*private*/ /*transient*/ bool toolBarIsWide = true;
- /*private*/ void setToolBarSide(ToolBarSide::TOOLBARSIDES newToolBarSide);
  /*private*/ void setToolBarWide(bool newToolBarIsWide);
+ /*private*/ void setToolBarSide(QString);
 
 
 private slots:
@@ -1053,6 +1095,8 @@ private slots:
  void onTooltipAlwaysMenuItem();
  void onTooltipInEditMenuItem();
  void onTooltipNotInEditMenuItem();
+ /*private*/ void setToolBarSide(QAction* act);
+
 protected:
  /**
  * Return a List of all items whose bounding rectangle contain the mouse position.
@@ -1062,7 +1106,9 @@ protected:
  ///*protected*/ QVector <Positionable*>* _contents;// = new QVector<Positionable*>();
  void init();
  /*protected*/ double _paintScale;// = 1.0;   // scale for _targetPanel drawing
+ #if 0
  /*protected*/ static QPointF getCoords(QObject* o, int type);
+#endif
  /*public*/ QGraphicsEllipseItem* trackEditControlCircleAt(/*@Nonnull*/ QPointF inPoint);
  //compute the turnout circle at inPoint (used for drawing)
  /*public*/ QGraphicsEllipseItem* trackControlCircleAt(/*@Nonnull */QPointF inPoint);
@@ -1172,6 +1218,7 @@ friend class LoadXml;
 friend class LayoutEditorChecks;
 friend class EnterTrackWidthFrameWindowListener;
 friend class EnterGridSizesFrameWindowListener;
+friend class LayoutEditorToolBarPanel;
 };
 Q_DECLARE_METATYPE(LayoutEditor)
 

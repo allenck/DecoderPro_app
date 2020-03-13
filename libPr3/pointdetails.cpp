@@ -37,7 +37,10 @@
 
     this->facing=facing;
     protectingBlocks = protecting;
+    if(protectingBlocks.isEmpty())
+     log->debug(tr("layoutBlock %1 protecting is empty.").arg(facing->getDisplayName()));
 
+    setObjectName(facing->getUserName());
 }
 
 LayoutBlock* PointDetails::getFacing()
@@ -202,10 +205,11 @@ void PointDetails::setSource(Source* src){
     sourceRoute=src;
 }
 
-void PointDetails::setDestination(DestinationPoints* srcdp, Source* src){
-    if(!destinations->contains(srcdp)){
-        destinations->insert(srcdp, src);
-    }
+void PointDetails::setDestination(DestinationPoints* srcdp, Source* src)
+{
+ if(!destinations->contains(srcdp)){
+     destinations->insert(srcdp, src);
+ }
 }
 
 void PointDetails::removeDestination(DestinationPoints* srcdp){

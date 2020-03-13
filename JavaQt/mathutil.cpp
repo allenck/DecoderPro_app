@@ -95,7 +95,42 @@ MathUtil::MathUtil()
         lerp(p1.x(), p2.x(), interpolant),
         lerp(p1.y(), p2.y(), interpolant));
 }
+/**
+ * Round value to granular increment.
+ *
+ * @param v the value to granulize
+ * @param g the granularity
+ * @return the value granulized to the granularity
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ double MathUtil::granulize(double v, double g) {
+    return qRound(v / g) * g;
+}
 
+/**
+ * Round point to horzontal and vertical granular increments.
+ *
+ * @param p  the point to granulize
+ * @param gH the horzontal granularity
+ * @param gV the vertical granularity
+ * @return the point granulized to the granularity
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::granulize(/*@Nonnull*/ QPointF p, double gH, double gV) {
+    return QPointF(granulize(p.x(), gH), granulize(p.y(), gV));
+}
+
+/**
+ * Round point to granulur increment.
+ *
+ * @param p the point to granulize
+ * @param g the granularity
+ * @return the point granulized to the granularity
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::granulize(/*@Nonnull*/ QPointF p, double g) {
+    return granulize(p, g, g);
+}
 /**
  * calculate the center of the rectangle
  *

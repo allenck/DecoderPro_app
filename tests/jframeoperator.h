@@ -27,6 +27,7 @@ public:
  JFrameOperator(QString chooser);
  JmriJFrame* getFrame();
  void requestClose() { }
+ void waitClosed();
 signals:
 
 public slots:
@@ -60,6 +61,7 @@ public:
   JButtonOperator(QObject*parent, QString text);
   JButtonOperator(JDialogOperator*, NameComponentChooser*);
   void push();
+  void pushNoBlock();
   void doClick();
   bool isEnabled();
 private:

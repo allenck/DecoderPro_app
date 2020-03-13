@@ -18924,11 +18924,6 @@ QPointF  PythonQtWrapper_LayoutEditor::static_LayoutEditor_getCoords(LayoutTrack
   return (LayoutEditor::getCoords(layoutTrack, connectionType));
 }
 
-QPointF  PythonQtWrapper_LayoutEditor::static_LayoutEditor_getCoords(QObject*  o, int  type)
-{
-  return (PythonQtPublicPromoter_LayoutEditor::promoted_getCoords(o, type));
-}
-
 QString  PythonQtWrapper_LayoutEditor::getDefaultAlternativeTrackColor(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getDefaultAlternativeTrackColor());
@@ -18962,11 +18957,6 @@ bool  PythonQtWrapper_LayoutEditor::getDirectTurnoutControl(LayoutEditor* theWra
 bool  PythonQtWrapper_LayoutEditor::getDrawGrid(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getDrawGrid());
-}
-
-QPointF  PythonQtWrapper_LayoutEditor::getEndCoords(LayoutEditor* theWrappedObject, QObject*  o, int  type)
-{
-  return ( theWrappedObject->getEndCoords(o, type));
 }
 
 int  PythonQtWrapper_LayoutEditor::getLayoutHeight(LayoutEditor* theWrappedObject)
@@ -19955,7 +19945,7 @@ if (_wrapper) {
 }
   LayoutTurnout::reCheckBlockBoundary();
 }
-void PythonQtShell_LayoutTurnout::scaleCoords(float  xFactor0, float  yFactor1)
+void PythonQtShell_LayoutTurnout::scaleCoords(double  xFactor0, double  yFactor1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -19963,7 +19953,7 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("scaleCoords");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "float" , "float"};
+      static const char* argumentList[] ={"" , "double" , "double"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
       void* args[3] = {NULL, (void*)&xFactor0, (void*)&yFactor1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
@@ -20544,7 +20534,7 @@ QPointF  PythonQtWrapper_LayoutTurnout::rotatePoint(LayoutTurnout* theWrappedObj
   return ( ((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->promoted_rotatePoint(p, sineAng, cosineAng));
 }
 
-void PythonQtWrapper_LayoutTurnout::scaleCoords(LayoutTurnout* theWrappedObject, float  xFactor, float  yFactor)
+void PythonQtWrapper_LayoutTurnout::scaleCoords(LayoutTurnout* theWrappedObject, double  xFactor, double  yFactor)
 {
   ( theWrappedObject->scaleCoords(xFactor, yFactor));
 }
@@ -23424,7 +23414,7 @@ if (_wrapper) {
     }
   }
 }
-  return LightManager::getXMLOrder();
+  return int();
 }
 QString  PythonQtShell_LightManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2) const
 {
@@ -27082,7 +27072,7 @@ if (_wrapper) {
 }
   LnReporterManager::addPropertyChangeListener(propertyName0, listener1);
 }
-bool  PythonQtShell_LnReporterManager::allowMultipleAdditions(QString  systemName0)
+bool  PythonQtShell_LnReporterManager::allowMultipleAdditions(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -27621,7 +27611,7 @@ if (_wrapper) {
 }
   return LnReporterManager::getNamedBeanSet();
 }
-QString  PythonQtShell_LnReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1)
+QString  PythonQtShell_LnReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -27852,7 +27842,7 @@ if (_wrapper) {
 }
   return LnReporterManager::getSystemPrefix();
 }
-int  PythonQtShell_LnReporterManager::getXMLOrder()
+int  PythonQtShell_LnReporterManager::getXMLOrder() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -28061,7 +28051,7 @@ if (_wrapper) {
 }
   LnReporterManager::timerEvent(event0);
 }
-char  PythonQtShell_LnReporterManager::typeLetter()
+char  PythonQtShell_LnReporterManager::typeLetter() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -28094,7 +28084,7 @@ if (_wrapper) {
 }
   return LnReporterManager::typeLetter();
 }
-Manager::NameValidity  PythonQtShell_LnReporterManager::validSystemNameFormat(QString  systemName0)
+Manager::NameValidity  PythonQtShell_LnReporterManager::validSystemNameFormat(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -28166,7 +28156,7 @@ int PythonQtShell_LnReporterManager::qt_metacall(QMetaObject::Call call, int id,
   int result = LnReporterManager::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-int  PythonQtWrapper_LnReporterManager::getBitFromSystemName(LnReporterManager* theWrappedObject, QString  systemName)
+int  PythonQtWrapper_LnReporterManager::getBitFromSystemName(LnReporterManager* theWrappedObject, QString  systemName) const
 {
   return ( theWrappedObject->getBitFromSystemName(systemName));
 }

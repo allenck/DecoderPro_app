@@ -2707,7 +2707,7 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractManager::getXMLOrder();
+  return int();
 }
 QString  PythonQtShell_AbstractManager::makeSystemName(QString  s0, bool  logErrors1, QLocale  locale2) const
 {
@@ -6166,7 +6166,7 @@ if (_wrapper) {
 }
   AbstractReporterManager::addPropertyChangeListener(propertyName0, listener1);
 }
-bool  PythonQtShell_AbstractReporterManager::allowMultipleAdditions(QString  systemName0)
+bool  PythonQtShell_AbstractReporterManager::allowMultipleAdditions(QString  systemName0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6705,7 +6705,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getNamedBeanSet();
 }
-QString  PythonQtShell_AbstractReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1)
+QString  PythonQtShell_AbstractReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6936,7 +6936,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getSystemPrefix();
 }
-int  PythonQtShell_AbstractReporterManager::getXMLOrder()
+int  PythonQtShell_AbstractReporterManager::getXMLOrder() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -7145,7 +7145,7 @@ if (_wrapper) {
 }
   AbstractReporterManager::timerEvent(event0);
 }
-char  PythonQtShell_AbstractReporterManager::typeLetter()
+char  PythonQtShell_AbstractReporterManager::typeLetter() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -22220,7 +22220,7 @@ if (_wrapper) {
     }
   }
 }
-  return AudioManager::getXMLOrder();
+  return int();
 }
 void PythonQtShell_AudioManager::init()
 {
@@ -26404,6 +26404,39 @@ if (_wrapper) {
 }
   BeanTableDataModel::clickOn(arg__1);
 }
+int  PythonQtShell_BeanTableDataModel::columnCount(const QModelIndex&  parent0) const
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("columnCount");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"int" , "const QModelIndex&"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      int returnValue{};
+      void* args[2] = {NULL, (void*)&parent0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("columnCount", methodInfo, result);
+          } else {
+            returnValue = *((int*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableDataModel::columnCount(parent0);
+}
 void PythonQtShell_BeanTableDataModel::configDeleteColumn(JTable*  table0)
 {
 if (_wrapper) {
@@ -26502,6 +26535,39 @@ if (_wrapper) {
   }
 }
   BeanTableDataModel::configureTable(table0);
+}
+QVariant  PythonQtShell_BeanTableDataModel::data(const QModelIndex&  index0, int  role1) const
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("data");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QVariant" , "const QModelIndex&" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      QVariant returnValue{};
+      void* args[3] = {NULL, (void*)&index0, (void*)&role1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("data", methodInfo, result);
+          } else {
+            returnValue = *((QVariant*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableDataModel::data(index0, role1);
 }
 Qt::ItemFlags  PythonQtShell_BeanTableDataModel::flags(const QModelIndex&  index0) const
 {
@@ -26767,6 +26833,39 @@ if (_wrapper) {
 }
   return BeanTableDataModel::getValue(systemName0);
 }
+QVariant  PythonQtShell_BeanTableDataModel::headerData(int  section0, Qt::Orientation  orientation1, int  role2) const
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("headerData");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QVariant" , "int" , "Qt::Orientation" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      QVariant returnValue{};
+      void* args[4] = {NULL, (void*)&section0, (void*)&orientation1, (void*)&role2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("headerData", methodInfo, result);
+          } else {
+            returnValue = *((QVariant*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableDataModel::headerData(section0, orientation1, role2);
+}
 void PythonQtShell_BeanTableDataModel::init()
 {
 if (_wrapper) {
@@ -26843,6 +26942,72 @@ if (_wrapper) {
   }
 }
   BeanTableDataModel::propertyChange(e0);
+}
+int  PythonQtShell_BeanTableDataModel::rowCount(const QModelIndex&  parent0) const
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("rowCount");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"int" , "const QModelIndex&"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      int returnValue{};
+      void* args[2] = {NULL, (void*)&parent0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("rowCount", methodInfo, result);
+          } else {
+            returnValue = *((int*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableDataModel::rowCount(parent0);
+}
+bool  PythonQtShell_BeanTableDataModel::setData(const QModelIndex&  index0, const QVariant&  value1, int  role2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setData");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "const QModelIndex&" , "const QVariant&" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      bool returnValue{};
+      void* args[4] = {NULL, (void*)&index0, (void*)&value1, (void*)&role2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("setData", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableDataModel::setData(index0, value1, role2);
 }
 void PythonQtShell_BeanTableDataModel::setManager(Manager*  arg__1)
 {
@@ -38408,7 +38573,7 @@ if (_wrapper) {
 }
   return DefaultLogixManager::getSystemPrefix();
 }
-int  PythonQtShell_DefaultLogixManager::getXMLOrder()
+int  PythonQtShell_DefaultLogixManager::getXMLOrder() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE

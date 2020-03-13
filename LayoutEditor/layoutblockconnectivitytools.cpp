@@ -106,40 +106,42 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
 * @throws jmri.JmriException if it can not find a valid path or the routing
 *                            has not been enabled.
 */
-/*public*/ QList<LayoutBlock*> LayoutBlockConnectivityTools::getLayoutBlocks(NamedBean* sourceBean, NamedBean* destBean, bool validateOnly, int pathMethod) throw (JmriException)
+/*public*/ QList<LayoutBlock*> LayoutBlockConnectivityTools::getLayoutBlocks(NamedBean* sourceBean, NamedBean* destBean,
+                                                                             bool validateOnly, int pathMethod) throw (JmriException)
 {
-        QList<LayoutEditor*>* layout = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
-        LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
-        LayoutBlock* facingBlock = NULL;
-        LayoutBlock* protectingBlock = NULL;
-        LayoutBlock* destFacingBlock = NULL;
-        for(int i = 0; i<layout->size(); i++){
-            if(log->isDebugEnabled())
-                log->debug("Layout name " + layout->at(i)->getLayoutName());
-            if (facingBlock==NULL){
-                facingBlock = lbm->getFacingBlockByNamedBean(sourceBean, layout->at(i));
-            }
-            if (protectingBlock==NULL){
-                protectingBlock = lbm->getProtectedBlockByNamedBean(sourceBean, layout->at(i));
-            }
-            if(destFacingBlock==NULL){
-                destFacingBlock = lbm->getFacingBlockByNamedBean(destBean, layout->at(i));
-            }
-            if((destFacingBlock!=NULL) && (facingBlock!=NULL) && (protectingBlock!=NULL)){
-                try{
-                    return getLayoutBlocks(facingBlock, destFacingBlock, protectingBlock, validateOnly, pathMethod);
-                } catch (JmriException e){
-                    throw e;
-                }
-            } else {
-                log->debug("blocks not found");
-            }
-        }
-        if(log->isDebugEnabled())
-            log->debug("No valid route from " + sourceBean->getDisplayName() + " to " + destBean->getDisplayName());
-        throw JmriException("Blocks Not Found");
-    }
-#if 0
+ QList<LayoutEditor*>* layout = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
+ LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"));
+ LayoutBlock* facingBlock = NULL;
+ LayoutBlock* protectingBlock = NULL;
+ LayoutBlock* destFacingBlock = NULL;
+ for(int i = 0; i<layout->size(); i++)
+ {
+  if(log->isDebugEnabled())
+      log->debug("Layout name " + layout->at(i)->getLayoutName());
+  if (facingBlock==NULL){
+      facingBlock = lbm->getFacingBlockByNamedBean(sourceBean, layout->at(i));
+  }
+  if (protectingBlock==NULL){
+      protectingBlock = lbm->getProtectedBlockByNamedBean(sourceBean, layout->at(i));
+  }
+  if(destFacingBlock==NULL){
+      destFacingBlock = lbm->getFacingBlockByNamedBean(destBean, layout->at(i));
+  }
+  if((destFacingBlock!=NULL) && (facingBlock!=NULL) && (protectingBlock!=NULL)){
+      try{
+          return getLayoutBlocks(facingBlock, destFacingBlock, protectingBlock, validateOnly, pathMethod);
+      } catch (JmriException e){
+          throw e;
+      }
+  } else {
+      log->debug("blocks not found");
+  }
+ }
+ if(log->isDebugEnabled())
+     log->debug("No valid route from " + sourceBean->getDisplayName() + " to " + destBean->getDisplayName());
+ throw JmriException("Blocks Not Found");
+}
+#if 0  // done, see below!
 
     /**
     * Returns a list of NamedBeans (Signalhead, Signalmast or Sensor) that are assinged to block boundaries

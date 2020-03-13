@@ -923,7 +923,7 @@
     double y = center.y() - p.y();
     dispB =  QPointF(x,y);
 }
-/*public*/ void LevelXing::scaleCoords(float xFactor, float yFactor) {
+/*public*/ void LevelXing::scaleCoords(double xFactor, double yFactor) {
     QPointF pt (round(center.x()*xFactor),
                                     round(center.y()*yFactor));
     center = pt;
@@ -946,7 +946,7 @@ double LevelXing::round (double x) {
  * @param yFactor the amount to translate Y coordinates
  */
 //@Override
-/*public*/ void LevelXing::translateCoords(float xFactor, float yFactor) {
+/*public*/ void LevelXing::translateCoords(double xFactor, double yFactor) {
     QPointF factor =  QPointF(xFactor, yFactor);
     center = MathUtil::add(center, factor);
 }

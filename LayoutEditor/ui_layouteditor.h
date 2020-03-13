@@ -100,74 +100,76 @@ public:
     QAction *actionZoom_to_fit;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
-    QHBoxLayout *horizontalLayout_18;
-    QHBoxLayout *horizontalLayout_12;
-    QLabel *label;
+    QWidget *toolBarWidget;
+    QVBoxLayout *verticalLayout_2;
+    QHBoxLayout *horizontalLayout_20;
+    QHBoxLayout *horizontalLayout_21;
+    QLabel *label_10;
     QLabel *xLabel;
-    QLabel *label_2;
+    QLabel *label_11;
     QLabel *yLabel;
-    QHBoxLayout *horizontalLayout;
+    QHBoxLayout *horizontalLayout_22;
     QLabel *turnoutNameLabel;
     NamedBeanComboBox *turnoutNameComboBox;
-    QHBoxLayout *horizontalLayout_13;
+    QHBoxLayout *horizontalLayout_23;
     QLabel *extraTurnoutLabel;
     NamedBeanComboBox *extraTurnoutNameComboBox;
-    QHBoxLayout *horizontalLayout_15;
-    QHBoxLayout *horizontalLayout_14;
-    QLabel *label_4;
+    QHBoxLayout *horizontalLayout_24;
+    QHBoxLayout *horizontalLayout_25;
+    QLabel *label_12;
     QCheckBox *turnoutRHButton;
     QCheckBox *turnoutLHButton;
     QCheckBox *turnoutWYEButton;
     QCheckBox *doubleXoverButton;
     QCheckBox *rhXoverButton;
     QCheckBox *lhXoverButton;
-    QHBoxLayout *horizontalLayout_16;
+    QHBoxLayout *horizontalLayout_26;
     QCheckBox *layoutSingleSlipButton;
     QCheckBox *layoutDoubleSlipButton;
-    QHBoxLayout *horizontalLayout_17;
-    QLabel *label_5;
+    QHBoxLayout *horizontalLayout_27;
+    QLabel *label_13;
     QComboBox *rotationComboBox;
-    QHBoxLayout *horizontalLayout_11;
-    QHBoxLayout *horizontalLayout_2;
+    QHBoxLayout *horizontalLayout_28;
+    QHBoxLayout *horizontalLayout_29;
     QLabel *blockNameLabel;
     NamedBeanComboBox *blockIDComboBox;
     QCheckBox *highlightBlockCheckBox;
-    QHBoxLayout *horizontalLayout_5;
+    QHBoxLayout *horizontalLayout_30;
     QLabel *blockSensorNameLabel;
     NamedBeanComboBox *blockSensorComboBox;
     QHBoxLayout *trackGroup2;
-    QLabel *label_8;
+    QLabel *label_14;
     QCheckBox *trackButton;
     QCheckBox *levelXingButton;
     QHBoxLayout *trackSegmentPropertiesPanel;
     QCheckBox *chkDashed;
     QCheckBox *chkMainline;
-    QHBoxLayout *horizontalLayout_3;
+    QHBoxLayout *horizontalLayout_31;
     QHBoxLayout *trackgroup1;
-    QLabel *label_6;
+    QLabel *label_15;
     QCheckBox *chkEndBumper;
     QCheckBox *chkAnchorPoint;
     QCheckBox *edgeButton;
     QHBoxLayout *labelGroup1;
-    QLabel *label_7;
+    QLabel *label_16;
     QCheckBox *textLabelButton;
     QLineEdit *textLabel;
-    QHBoxLayout *horizontalLayout_7;
+    QHBoxLayout *horizontalLayout_32;
     QCheckBox *memoryButton;
     NamedBeanComboBox *textMemoryComboBox;
     QCheckBox *blockContentsButton;
     NamedBeanComboBox *blockContentsComboBox;
-    QHBoxLayout *horizontalLayout_10;
-    QHBoxLayout *horizontalLayout_4;
+    QHBoxLayout *horizontalLayout_33;
+    QHBoxLayout *horizontalLayout_34;
     QCheckBox *multiSensorButton;
     QPushButton *changeIconsButton;
-    QHBoxLayout *horizontalLayout_6;
+    QHBoxLayout *horizontalLayout_35;
     QCheckBox *sensorButton;
     NamedBeanComboBox *sensorComboBox;
-    QHBoxLayout *horizontalLayout_8;
+    QHBoxLayout *horizontalLayout_36;
     QCheckBox *signalButton;
     NamedBeanComboBox *signalHeadComboBox;
-    QHBoxLayout *horizontalLayout_9;
+    QHBoxLayout *horizontalLayout_37;
     QCheckBox *signalMastButton;
     NamedBeanComboBox *signalMastComboBox;
     QCheckBox *iconLabelButton;
@@ -186,7 +188,7 @@ public:
     {
         if (LayoutEditor->objectName().isEmpty())
             LayoutEditor->setObjectName(QLatin1String("LayoutEditor"));
-        LayoutEditor->resize(1245, 426);
+        LayoutEditor->resize(1248, 426);
         QFont font;
         font.setPointSize(8);
         LayoutEditor->setFont(font);
@@ -350,382 +352,391 @@ public:
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QLatin1String("verticalLayout"));
-        horizontalLayout_18 = new QHBoxLayout();
-        horizontalLayout_18->setSpacing(6);
-        horizontalLayout_18->setObjectName(QLatin1String("horizontalLayout_18"));
-        horizontalLayout_12 = new QHBoxLayout();
-        horizontalLayout_12->setSpacing(6);
-        horizontalLayout_12->setObjectName(QLatin1String("horizontalLayout_12"));
-        label = new QLabel(centralWidget);
-        label->setObjectName(QLatin1String("label"));
+        toolBarWidget = new QWidget(centralWidget);
+        toolBarWidget->setObjectName(QLatin1String("toolBarWidget"));
+        verticalLayout_2 = new QVBoxLayout(toolBarWidget);
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_2->setObjectName(QLatin1String("verticalLayout_2"));
+        horizontalLayout_20 = new QHBoxLayout();
+        horizontalLayout_20->setSpacing(6);
+        horizontalLayout_20->setObjectName(QLatin1String("horizontalLayout_20"));
+        horizontalLayout_21 = new QHBoxLayout();
+        horizontalLayout_21->setSpacing(6);
+        horizontalLayout_21->setObjectName(QLatin1String("horizontalLayout_21"));
+        label_10 = new QLabel(toolBarWidget);
+        label_10->setObjectName(QLatin1String("label_10"));
 
-        horizontalLayout_12->addWidget(label);
+        horizontalLayout_21->addWidget(label_10);
 
-        xLabel = new QLabel(centralWidget);
+        xLabel = new QLabel(toolBarWidget);
         xLabel->setObjectName(QLatin1String("xLabel"));
 
-        horizontalLayout_12->addWidget(xLabel);
+        horizontalLayout_21->addWidget(xLabel);
 
-        label_2 = new QLabel(centralWidget);
-        label_2->setObjectName(QLatin1String("label_2"));
+        label_11 = new QLabel(toolBarWidget);
+        label_11->setObjectName(QLatin1String("label_11"));
 
-        horizontalLayout_12->addWidget(label_2);
+        horizontalLayout_21->addWidget(label_11);
 
-        yLabel = new QLabel(centralWidget);
+        yLabel = new QLabel(toolBarWidget);
         yLabel->setObjectName(QLatin1String("yLabel"));
 
-        horizontalLayout_12->addWidget(yLabel);
+        horizontalLayout_21->addWidget(yLabel);
 
 
-        horizontalLayout_18->addLayout(horizontalLayout_12);
+        horizontalLayout_20->addLayout(horizontalLayout_21);
 
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
-        turnoutNameLabel = new QLabel(centralWidget);
+        horizontalLayout_22 = new QHBoxLayout();
+        horizontalLayout_22->setSpacing(6);
+        horizontalLayout_22->setObjectName(QLatin1String("horizontalLayout_22"));
+        turnoutNameLabel = new QLabel(toolBarWidget);
         turnoutNameLabel->setObjectName(QLatin1String("turnoutNameLabel"));
 
-        horizontalLayout->addWidget(turnoutNameLabel);
+        horizontalLayout_22->addWidget(turnoutNameLabel);
 
-        turnoutNameComboBox = new NamedBeanComboBox(centralWidget);
+        turnoutNameComboBox = new NamedBeanComboBox(toolBarWidget);
         turnoutNameComboBox->setObjectName(QLatin1String("turnoutNameComboBox"));
 
-        horizontalLayout->addWidget(turnoutNameComboBox);
+        horizontalLayout_22->addWidget(turnoutNameComboBox);
 
 
-        horizontalLayout_18->addLayout(horizontalLayout);
+        horizontalLayout_20->addLayout(horizontalLayout_22);
 
-        horizontalLayout_13 = new QHBoxLayout();
-        horizontalLayout_13->setSpacing(6);
-        horizontalLayout_13->setObjectName(QLatin1String("horizontalLayout_13"));
-        extraTurnoutLabel = new QLabel(centralWidget);
+        horizontalLayout_23 = new QHBoxLayout();
+        horizontalLayout_23->setSpacing(6);
+        horizontalLayout_23->setObjectName(QLatin1String("horizontalLayout_23"));
+        extraTurnoutLabel = new QLabel(toolBarWidget);
         extraTurnoutLabel->setObjectName(QLatin1String("extraTurnoutLabel"));
 
-        horizontalLayout_13->addWidget(extraTurnoutLabel);
+        horizontalLayout_23->addWidget(extraTurnoutLabel);
 
-        extraTurnoutNameComboBox = new NamedBeanComboBox(centralWidget);
+        extraTurnoutNameComboBox = new NamedBeanComboBox(toolBarWidget);
         extraTurnoutNameComboBox->setObjectName(QLatin1String("extraTurnoutNameComboBox"));
 
-        horizontalLayout_13->addWidget(extraTurnoutNameComboBox);
+        horizontalLayout_23->addWidget(extraTurnoutNameComboBox);
 
 
-        horizontalLayout_18->addLayout(horizontalLayout_13);
+        horizontalLayout_20->addLayout(horizontalLayout_23);
 
-        horizontalLayout_15 = new QHBoxLayout();
-        horizontalLayout_15->setSpacing(6);
-        horizontalLayout_15->setObjectName(QLatin1String("horizontalLayout_15"));
-        horizontalLayout_14 = new QHBoxLayout();
-        horizontalLayout_14->setSpacing(6);
-        horizontalLayout_14->setObjectName(QLatin1String("horizontalLayout_14"));
-        label_4 = new QLabel(centralWidget);
-        label_4->setObjectName(QLatin1String("label_4"));
+        horizontalLayout_24 = new QHBoxLayout();
+        horizontalLayout_24->setSpacing(6);
+        horizontalLayout_24->setObjectName(QLatin1String("horizontalLayout_24"));
+        horizontalLayout_25 = new QHBoxLayout();
+        horizontalLayout_25->setSpacing(6);
+        horizontalLayout_25->setObjectName(QLatin1String("horizontalLayout_25"));
+        label_12 = new QLabel(toolBarWidget);
+        label_12->setObjectName(QLatin1String("label_12"));
 
-        horizontalLayout_14->addWidget(label_4);
+        horizontalLayout_25->addWidget(label_12);
 
-        turnoutRHButton = new QCheckBox(centralWidget);
+        turnoutRHButton = new QCheckBox(toolBarWidget);
         turnoutRHButton->setObjectName(QLatin1String("turnoutRHButton"));
 
-        horizontalLayout_14->addWidget(turnoutRHButton);
+        horizontalLayout_25->addWidget(turnoutRHButton);
 
-        turnoutLHButton = new QCheckBox(centralWidget);
+        turnoutLHButton = new QCheckBox(toolBarWidget);
         turnoutLHButton->setObjectName(QLatin1String("turnoutLHButton"));
 
-        horizontalLayout_14->addWidget(turnoutLHButton);
+        horizontalLayout_25->addWidget(turnoutLHButton);
 
-        turnoutWYEButton = new QCheckBox(centralWidget);
+        turnoutWYEButton = new QCheckBox(toolBarWidget);
         turnoutWYEButton->setObjectName(QLatin1String("turnoutWYEButton"));
 
-        horizontalLayout_14->addWidget(turnoutWYEButton);
+        horizontalLayout_25->addWidget(turnoutWYEButton);
 
 
-        horizontalLayout_15->addLayout(horizontalLayout_14);
+        horizontalLayout_24->addLayout(horizontalLayout_25);
 
-        doubleXoverButton = new QCheckBox(centralWidget);
+        doubleXoverButton = new QCheckBox(toolBarWidget);
         doubleXoverButton->setObjectName(QLatin1String("doubleXoverButton"));
 
-        horizontalLayout_15->addWidget(doubleXoverButton);
+        horizontalLayout_24->addWidget(doubleXoverButton);
 
-        rhXoverButton = new QCheckBox(centralWidget);
+        rhXoverButton = new QCheckBox(toolBarWidget);
         rhXoverButton->setObjectName(QLatin1String("rhXoverButton"));
 
-        horizontalLayout_15->addWidget(rhXoverButton);
+        horizontalLayout_24->addWidget(rhXoverButton);
 
-        lhXoverButton = new QCheckBox(centralWidget);
+        lhXoverButton = new QCheckBox(toolBarWidget);
         lhXoverButton->setObjectName(QLatin1String("lhXoverButton"));
 
-        horizontalLayout_15->addWidget(lhXoverButton);
+        horizontalLayout_24->addWidget(lhXoverButton);
 
 
-        horizontalLayout_18->addLayout(horizontalLayout_15);
+        horizontalLayout_20->addLayout(horizontalLayout_24);
 
-        horizontalLayout_16 = new QHBoxLayout();
-        horizontalLayout_16->setSpacing(6);
-        horizontalLayout_16->setObjectName(QLatin1String("horizontalLayout_16"));
-        layoutSingleSlipButton = new QCheckBox(centralWidget);
+        horizontalLayout_26 = new QHBoxLayout();
+        horizontalLayout_26->setSpacing(6);
+        horizontalLayout_26->setObjectName(QLatin1String("horizontalLayout_26"));
+        layoutSingleSlipButton = new QCheckBox(toolBarWidget);
         layoutSingleSlipButton->setObjectName(QLatin1String("layoutSingleSlipButton"));
 
-        horizontalLayout_16->addWidget(layoutSingleSlipButton);
+        horizontalLayout_26->addWidget(layoutSingleSlipButton);
 
-        layoutDoubleSlipButton = new QCheckBox(centralWidget);
+        layoutDoubleSlipButton = new QCheckBox(toolBarWidget);
         layoutDoubleSlipButton->setObjectName(QLatin1String("layoutDoubleSlipButton"));
 
-        horizontalLayout_16->addWidget(layoutDoubleSlipButton);
+        horizontalLayout_26->addWidget(layoutDoubleSlipButton);
 
 
-        horizontalLayout_18->addLayout(horizontalLayout_16);
+        horizontalLayout_20->addLayout(horizontalLayout_26);
 
-        horizontalLayout_17 = new QHBoxLayout();
-        horizontalLayout_17->setSpacing(6);
-        horizontalLayout_17->setObjectName(QLatin1String("horizontalLayout_17"));
-        label_5 = new QLabel(centralWidget);
-        label_5->setObjectName(QLatin1String("label_5"));
+        horizontalLayout_27 = new QHBoxLayout();
+        horizontalLayout_27->setSpacing(6);
+        horizontalLayout_27->setObjectName(QLatin1String("horizontalLayout_27"));
+        label_13 = new QLabel(toolBarWidget);
+        label_13->setObjectName(QLatin1String("label_13"));
 
-        horizontalLayout_17->addWidget(label_5);
+        horizontalLayout_27->addWidget(label_13);
 
-        rotationComboBox = new QComboBox(centralWidget);
+        rotationComboBox = new QComboBox(toolBarWidget);
         rotationComboBox->setObjectName(QLatin1String("rotationComboBox"));
 
-        horizontalLayout_17->addWidget(rotationComboBox);
+        horizontalLayout_27->addWidget(rotationComboBox);
 
 
-        horizontalLayout_18->addLayout(horizontalLayout_17);
+        horizontalLayout_20->addLayout(horizontalLayout_27);
 
 
-        verticalLayout->addLayout(horizontalLayout_18);
+        verticalLayout_2->addLayout(horizontalLayout_20);
 
-        horizontalLayout_11 = new QHBoxLayout();
-        horizontalLayout_11->setSpacing(6);
-        horizontalLayout_11->setObjectName(QLatin1String("horizontalLayout_11"));
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setSpacing(6);
-        horizontalLayout_2->setObjectName(QLatin1String("horizontalLayout_2"));
-        blockNameLabel = new QLabel(centralWidget);
+        horizontalLayout_28 = new QHBoxLayout();
+        horizontalLayout_28->setSpacing(6);
+        horizontalLayout_28->setObjectName(QLatin1String("horizontalLayout_28"));
+        horizontalLayout_29 = new QHBoxLayout();
+        horizontalLayout_29->setSpacing(6);
+        horizontalLayout_29->setObjectName(QLatin1String("horizontalLayout_29"));
+        blockNameLabel = new QLabel(toolBarWidget);
         blockNameLabel->setObjectName(QLatin1String("blockNameLabel"));
 
-        horizontalLayout_2->addWidget(blockNameLabel);
+        horizontalLayout_29->addWidget(blockNameLabel);
 
-        blockIDComboBox = new NamedBeanComboBox(centralWidget);
+        blockIDComboBox = new NamedBeanComboBox(toolBarWidget);
         blockIDComboBox->setObjectName(QLatin1String("blockIDComboBox"));
 
-        horizontalLayout_2->addWidget(blockIDComboBox);
+        horizontalLayout_29->addWidget(blockIDComboBox);
 
-        highlightBlockCheckBox = new QCheckBox(centralWidget);
+        highlightBlockCheckBox = new QCheckBox(toolBarWidget);
         highlightBlockCheckBox->setObjectName(QLatin1String("highlightBlockCheckBox"));
 
-        horizontalLayout_2->addWidget(highlightBlockCheckBox);
+        horizontalLayout_29->addWidget(highlightBlockCheckBox);
 
 
-        horizontalLayout_11->addLayout(horizontalLayout_2);
+        horizontalLayout_28->addLayout(horizontalLayout_29);
 
-        horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setSpacing(6);
-        horizontalLayout_5->setObjectName(QLatin1String("horizontalLayout_5"));
-        blockSensorNameLabel = new QLabel(centralWidget);
+        horizontalLayout_30 = new QHBoxLayout();
+        horizontalLayout_30->setSpacing(6);
+        horizontalLayout_30->setObjectName(QLatin1String("horizontalLayout_30"));
+        blockSensorNameLabel = new QLabel(toolBarWidget);
         blockSensorNameLabel->setObjectName(QLatin1String("blockSensorNameLabel"));
 
-        horizontalLayout_5->addWidget(blockSensorNameLabel);
+        horizontalLayout_30->addWidget(blockSensorNameLabel);
 
-        blockSensorComboBox = new NamedBeanComboBox(centralWidget);
+        blockSensorComboBox = new NamedBeanComboBox(toolBarWidget);
         blockSensorComboBox->setObjectName(QLatin1String("blockSensorComboBox"));
 
-        horizontalLayout_5->addWidget(blockSensorComboBox);
+        horizontalLayout_30->addWidget(blockSensorComboBox);
 
 
-        horizontalLayout_11->addLayout(horizontalLayout_5);
+        horizontalLayout_28->addLayout(horizontalLayout_30);
 
         trackGroup2 = new QHBoxLayout();
         trackGroup2->setSpacing(6);
         trackGroup2->setObjectName(QLatin1String("trackGroup2"));
-        label_8 = new QLabel(centralWidget);
-        label_8->setObjectName(QLatin1String("label_8"));
+        label_14 = new QLabel(toolBarWidget);
+        label_14->setObjectName(QLatin1String("label_14"));
 
-        trackGroup2->addWidget(label_8);
+        trackGroup2->addWidget(label_14);
 
-        trackButton = new QCheckBox(centralWidget);
+        trackButton = new QCheckBox(toolBarWidget);
         trackButton->setObjectName(QLatin1String("trackButton"));
 
         trackGroup2->addWidget(trackButton);
 
-        levelXingButton = new QCheckBox(centralWidget);
+        levelXingButton = new QCheckBox(toolBarWidget);
         levelXingButton->setObjectName(QLatin1String("levelXingButton"));
 
         trackGroup2->addWidget(levelXingButton);
 
 
-        horizontalLayout_11->addLayout(trackGroup2);
+        horizontalLayout_28->addLayout(trackGroup2);
 
         trackSegmentPropertiesPanel = new QHBoxLayout();
         trackSegmentPropertiesPanel->setSpacing(6);
         trackSegmentPropertiesPanel->setObjectName(QLatin1String("trackSegmentPropertiesPanel"));
-        chkDashed = new QCheckBox(centralWidget);
+        chkDashed = new QCheckBox(toolBarWidget);
         chkDashed->setObjectName(QLatin1String("chkDashed"));
 
         trackSegmentPropertiesPanel->addWidget(chkDashed);
 
-        chkMainline = new QCheckBox(centralWidget);
+        chkMainline = new QCheckBox(toolBarWidget);
         chkMainline->setObjectName(QLatin1String("chkMainline"));
 
         trackSegmentPropertiesPanel->addWidget(chkMainline);
 
 
-        horizontalLayout_11->addLayout(trackSegmentPropertiesPanel);
+        horizontalLayout_28->addLayout(trackSegmentPropertiesPanel);
 
 
-        verticalLayout->addLayout(horizontalLayout_11);
+        verticalLayout_2->addLayout(horizontalLayout_28);
 
-        horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setSpacing(6);
-        horizontalLayout_3->setObjectName(QLatin1String("horizontalLayout_3"));
+        horizontalLayout_31 = new QHBoxLayout();
+        horizontalLayout_31->setSpacing(6);
+        horizontalLayout_31->setObjectName(QLatin1String("horizontalLayout_31"));
         trackgroup1 = new QHBoxLayout();
         trackgroup1->setSpacing(6);
         trackgroup1->setObjectName(QLatin1String("trackgroup1"));
-        label_6 = new QLabel(centralWidget);
-        label_6->setObjectName(QLatin1String("label_6"));
+        label_15 = new QLabel(toolBarWidget);
+        label_15->setObjectName(QLatin1String("label_15"));
 
-        trackgroup1->addWidget(label_6);
+        trackgroup1->addWidget(label_15);
 
-        chkEndBumper = new QCheckBox(centralWidget);
+        chkEndBumper = new QCheckBox(toolBarWidget);
         chkEndBumper->setObjectName(QLatin1String("chkEndBumper"));
 
         trackgroup1->addWidget(chkEndBumper);
 
-        chkAnchorPoint = new QCheckBox(centralWidget);
+        chkAnchorPoint = new QCheckBox(toolBarWidget);
         chkAnchorPoint->setObjectName(QLatin1String("chkAnchorPoint"));
 
         trackgroup1->addWidget(chkAnchorPoint);
 
-        edgeButton = new QCheckBox(centralWidget);
+        edgeButton = new QCheckBox(toolBarWidget);
         edgeButton->setObjectName(QLatin1String("edgeButton"));
 
         trackgroup1->addWidget(edgeButton);
 
 
-        horizontalLayout_3->addLayout(trackgroup1);
+        horizontalLayout_31->addLayout(trackgroup1);
 
         labelGroup1 = new QHBoxLayout();
         labelGroup1->setSpacing(6);
         labelGroup1->setObjectName(QLatin1String("labelGroup1"));
-        label_7 = new QLabel(centralWidget);
-        label_7->setObjectName(QLatin1String("label_7"));
+        label_16 = new QLabel(toolBarWidget);
+        label_16->setObjectName(QLatin1String("label_16"));
 
-        labelGroup1->addWidget(label_7);
+        labelGroup1->addWidget(label_16);
 
-        textLabelButton = new QCheckBox(centralWidget);
+        textLabelButton = new QCheckBox(toolBarWidget);
         textLabelButton->setObjectName(QLatin1String("textLabelButton"));
 
         labelGroup1->addWidget(textLabelButton);
 
-        textLabel = new QLineEdit(centralWidget);
+        textLabel = new QLineEdit(toolBarWidget);
         textLabel->setObjectName(QLatin1String("textLabel"));
 
         labelGroup1->addWidget(textLabel);
 
 
-        horizontalLayout_3->addLayout(labelGroup1);
+        horizontalLayout_31->addLayout(labelGroup1);
 
-        horizontalLayout_7 = new QHBoxLayout();
-        horizontalLayout_7->setSpacing(6);
-        horizontalLayout_7->setObjectName(QLatin1String("horizontalLayout_7"));
-        memoryButton = new QCheckBox(centralWidget);
+        horizontalLayout_32 = new QHBoxLayout();
+        horizontalLayout_32->setSpacing(6);
+        horizontalLayout_32->setObjectName(QLatin1String("horizontalLayout_32"));
+        memoryButton = new QCheckBox(toolBarWidget);
         memoryButton->setObjectName(QLatin1String("memoryButton"));
 
-        horizontalLayout_7->addWidget(memoryButton);
+        horizontalLayout_32->addWidget(memoryButton);
 
-        textMemoryComboBox = new NamedBeanComboBox(centralWidget);
+        textMemoryComboBox = new NamedBeanComboBox(toolBarWidget);
         textMemoryComboBox->setObjectName(QLatin1String("textMemoryComboBox"));
 
-        horizontalLayout_7->addWidget(textMemoryComboBox);
+        horizontalLayout_32->addWidget(textMemoryComboBox);
 
 
-        horizontalLayout_3->addLayout(horizontalLayout_7);
+        horizontalLayout_31->addLayout(horizontalLayout_32);
 
-        blockContentsButton = new QCheckBox(centralWidget);
+        blockContentsButton = new QCheckBox(toolBarWidget);
         blockContentsButton->setObjectName(QLatin1String("blockContentsButton"));
 
-        horizontalLayout_3->addWidget(blockContentsButton);
+        horizontalLayout_31->addWidget(blockContentsButton);
 
-        blockContentsComboBox = new NamedBeanComboBox(centralWidget);
+        blockContentsComboBox = new NamedBeanComboBox(toolBarWidget);
         blockContentsComboBox->setObjectName(QLatin1String("blockContentsComboBox"));
 
-        horizontalLayout_3->addWidget(blockContentsComboBox);
+        horizontalLayout_31->addWidget(blockContentsComboBox);
 
 
-        verticalLayout->addLayout(horizontalLayout_3);
+        verticalLayout_2->addLayout(horizontalLayout_31);
 
-        horizontalLayout_10 = new QHBoxLayout();
-        horizontalLayout_10->setSpacing(6);
-        horizontalLayout_10->setObjectName(QLatin1String("horizontalLayout_10"));
-        horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setSpacing(6);
-        horizontalLayout_4->setObjectName(QLatin1String("horizontalLayout_4"));
-        multiSensorButton = new QCheckBox(centralWidget);
+        horizontalLayout_33 = new QHBoxLayout();
+        horizontalLayout_33->setSpacing(6);
+        horizontalLayout_33->setObjectName(QLatin1String("horizontalLayout_33"));
+        horizontalLayout_34 = new QHBoxLayout();
+        horizontalLayout_34->setSpacing(6);
+        horizontalLayout_34->setObjectName(QLatin1String("horizontalLayout_34"));
+        multiSensorButton = new QCheckBox(toolBarWidget);
         multiSensorButton->setObjectName(QLatin1String("multiSensorButton"));
 
-        horizontalLayout_4->addWidget(multiSensorButton);
+        horizontalLayout_34->addWidget(multiSensorButton);
 
-        changeIconsButton = new QPushButton(centralWidget);
+        changeIconsButton = new QPushButton(toolBarWidget);
         changeIconsButton->setObjectName(QLatin1String("changeIconsButton"));
 
-        horizontalLayout_4->addWidget(changeIconsButton);
+        horizontalLayout_34->addWidget(changeIconsButton);
 
 
-        horizontalLayout_10->addLayout(horizontalLayout_4);
+        horizontalLayout_33->addLayout(horizontalLayout_34);
 
-        horizontalLayout_6 = new QHBoxLayout();
-        horizontalLayout_6->setSpacing(6);
-        horizontalLayout_6->setObjectName(QLatin1String("horizontalLayout_6"));
-        sensorButton = new QCheckBox(centralWidget);
+        horizontalLayout_35 = new QHBoxLayout();
+        horizontalLayout_35->setSpacing(6);
+        horizontalLayout_35->setObjectName(QLatin1String("horizontalLayout_35"));
+        sensorButton = new QCheckBox(toolBarWidget);
         sensorButton->setObjectName(QLatin1String("sensorButton"));
 
-        horizontalLayout_6->addWidget(sensorButton);
+        horizontalLayout_35->addWidget(sensorButton);
 
-        sensorComboBox = new NamedBeanComboBox(centralWidget);
+        sensorComboBox = new NamedBeanComboBox(toolBarWidget);
         sensorComboBox->setObjectName(QLatin1String("sensorComboBox"));
 
-        horizontalLayout_6->addWidget(sensorComboBox);
+        horizontalLayout_35->addWidget(sensorComboBox);
 
 
-        horizontalLayout_10->addLayout(horizontalLayout_6);
+        horizontalLayout_33->addLayout(horizontalLayout_35);
 
-        horizontalLayout_8 = new QHBoxLayout();
-        horizontalLayout_8->setSpacing(6);
-        horizontalLayout_8->setObjectName(QLatin1String("horizontalLayout_8"));
-        signalButton = new QCheckBox(centralWidget);
+        horizontalLayout_36 = new QHBoxLayout();
+        horizontalLayout_36->setSpacing(6);
+        horizontalLayout_36->setObjectName(QLatin1String("horizontalLayout_36"));
+        signalButton = new QCheckBox(toolBarWidget);
         signalButton->setObjectName(QLatin1String("signalButton"));
 
-        horizontalLayout_8->addWidget(signalButton);
+        horizontalLayout_36->addWidget(signalButton);
 
-        signalHeadComboBox = new NamedBeanComboBox(centralWidget);
+        signalHeadComboBox = new NamedBeanComboBox(toolBarWidget);
         signalHeadComboBox->setObjectName(QLatin1String("signalHeadComboBox"));
 
-        horizontalLayout_8->addWidget(signalHeadComboBox);
+        horizontalLayout_36->addWidget(signalHeadComboBox);
 
 
-        horizontalLayout_10->addLayout(horizontalLayout_8);
+        horizontalLayout_33->addLayout(horizontalLayout_36);
 
-        horizontalLayout_9 = new QHBoxLayout();
-        horizontalLayout_9->setSpacing(6);
-        horizontalLayout_9->setObjectName(QLatin1String("horizontalLayout_9"));
-        signalMastButton = new QCheckBox(centralWidget);
+        horizontalLayout_37 = new QHBoxLayout();
+        horizontalLayout_37->setSpacing(6);
+        horizontalLayout_37->setObjectName(QLatin1String("horizontalLayout_37"));
+        signalMastButton = new QCheckBox(toolBarWidget);
         signalMastButton->setObjectName(QLatin1String("signalMastButton"));
 
-        horizontalLayout_9->addWidget(signalMastButton);
+        horizontalLayout_37->addWidget(signalMastButton);
 
-        signalMastComboBox = new NamedBeanComboBox(centralWidget);
+        signalMastComboBox = new NamedBeanComboBox(toolBarWidget);
         signalMastComboBox->setObjectName(QLatin1String("signalMastComboBox"));
 
-        horizontalLayout_9->addWidget(signalMastComboBox);
+        horizontalLayout_37->addWidget(signalMastComboBox);
 
 
-        horizontalLayout_10->addLayout(horizontalLayout_9);
+        horizontalLayout_33->addLayout(horizontalLayout_37);
 
-        iconLabelButton = new QCheckBox(centralWidget);
+        iconLabelButton = new QCheckBox(toolBarWidget);
         iconLabelButton->setObjectName(QLatin1String("iconLabelButton"));
 
-        horizontalLayout_10->addWidget(iconLabelButton);
+        horizontalLayout_33->addWidget(iconLabelButton);
 
 
-        verticalLayout->addLayout(horizontalLayout_10);
+        verticalLayout_2->addLayout(horizontalLayout_33);
+
+
+        verticalLayout->addWidget(toolBarWidget);
 
         editPanel = new QWidget(centralWidget);
         editPanel->setObjectName(QLatin1String("editPanel"));
@@ -746,7 +757,7 @@ public:
         LayoutEditor->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(LayoutEditor);
         menuBar->setObjectName(QLatin1String("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1245, 17));
+        menuBar->setGeometry(QRect(0, 0, 1248, 17));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QLatin1String("menuFile"));
         menuOptions = new QMenu(menuBar);
@@ -851,13 +862,13 @@ public:
         actionZoom_In->setText(QApplication::translate("LayoutEditor", "Zoom In", nullptr));
         actionZoom_Out->setText(QApplication::translate("LayoutEditor", "Zoom Out", nullptr));
         actionZoom_to_fit->setText(QApplication::translate("LayoutEditor", "Zoom to fit", nullptr));
-        label->setText(QApplication::translate("LayoutEditor", "Location -x:  ", nullptr));
+        label_10->setText(QApplication::translate("LayoutEditor", "Location -x:  ", nullptr));
         xLabel->setText(QApplication::translate("LayoutEditor", "0000", nullptr));
-        label_2->setText(QApplication::translate("LayoutEditor", "y:", nullptr));
+        label_11->setText(QApplication::translate("LayoutEditor", "y:", nullptr));
         yLabel->setText(QApplication::translate("LayoutEditor", "0000", nullptr));
         turnoutNameLabel->setText(QApplication::translate("LayoutEditor", "Turnout: Name", nullptr));
         extraTurnoutLabel->setText(QApplication::translate("LayoutEditor", "Additional Name", nullptr));
-        label_4->setText(QApplication::translate("LayoutEditor", "Type", nullptr));
+        label_12->setText(QApplication::translate("LayoutEditor", "Type", nullptr));
         turnoutRHButton->setText(QApplication::translate("LayoutEditor", "RH", nullptr));
         turnoutLHButton->setText(QApplication::translate("LayoutEditor", "LH", nullptr));
         turnoutWYEButton->setText(QApplication::translate("LayoutEditor", "WYE", nullptr));
@@ -866,23 +877,23 @@ public:
         lhXoverButton->setText(QApplication::translate("LayoutEditor", "LH Xover", nullptr));
         layoutSingleSlipButton->setText(QApplication::translate("LayoutEditor", "Single Slip", nullptr));
         layoutDoubleSlipButton->setText(QApplication::translate("LayoutEditor", "DoubleSlip", nullptr));
-        label_5->setText(QApplication::translate("LayoutEditor", "Rotation", nullptr));
+        label_13->setText(QApplication::translate("LayoutEditor", "Rotation", nullptr));
         blockNameLabel->setText(QApplication::translate("LayoutEditor", "Block: Name", nullptr));
         highlightBlockCheckBox->setText(QApplication::translate("LayoutEditor", "Highlight Block", nullptr));
         blockSensorNameLabel->setText(QApplication::translate("LayoutEditor", "Sensor", nullptr));
-        label_8->setText(QApplication::translate("LayoutEditor", "Track:", nullptr));
+        label_14->setText(QApplication::translate("LayoutEditor", "Track:", nullptr));
         trackButton->setText(QApplication::translate("LayoutEditor", "Track Segment", nullptr));
         levelXingButton->setText(QApplication::translate("LayoutEditor", "Level Crossing", nullptr));
         chkDashed->setText(QApplication::translate("LayoutEditor", "Dashed", nullptr));
         chkMainline->setText(QApplication::translate("LayoutEditor", "Mainline", nullptr));
-        label_6->setText(QApplication::translate("LayoutEditor", "Track Nodes:", nullptr));
+        label_15->setText(QApplication::translate("LayoutEditor", "Track Nodes:", nullptr));
         chkEndBumper->setText(QApplication::translate("LayoutEditor", "End Bumper", nullptr));
         chkAnchorPoint->setText(QApplication::translate("LayoutEditor", "Anchor Point", nullptr));
 #ifndef QT_NO_TOOLTIP
         edgeButton->setToolTip(QApplication::translate("LayoutEditor", "<html><head/><body><p>Select to add an edge connector track node when next clicking with shift down.</p></body></html>", nullptr));
 #endif // QT_NO_TOOLTIP
         edgeButton->setText(QApplication::translate("LayoutEditor", "Edge Connector", nullptr));
-        label_7->setText(QApplication::translate("LayoutEditor", "Label:", nullptr));
+        label_16->setText(QApplication::translate("LayoutEditor", "Label:", nullptr));
 #ifndef QT_NO_TOOLTIP
         textLabelButton->setToolTip(QApplication::translate("LayoutEditor", "<html><head/><body><p>Select to add a label with the entered text when next clicking with shift down.</p></body></html>", nullptr));
 #endif // QT_NO_TOOLTIP

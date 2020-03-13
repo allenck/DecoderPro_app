@@ -75,19 +75,25 @@ JemmyUtil::JemmyUtil(QObject *parent) : QObject(parent)
         JButtonOperator jbo = new JButtonOperator(jdo, buttonLabel);
         jbo.push();
     }
-
-    /*public*/ static Thread createModalDialogOperatorThread(String dialogTitle, String buttonText) {
-        Thread t = new Thread(() -> {
-            // constructor for jdo will wait until the dialog is visible
-            JDialogOperator jdo = new JDialogOperator(dialogTitle);
-            JButtonOperator jbo = new JButtonOperator(jdo, buttonText);
-            jbo.pushNoBlock();
-        });
-        t.setName(dialogTitle + " Close Dialog Thread");
-        t.start();
-        return t;
+#endif
+    /*public*/ /*static*/ QThread* JemmyUtil::createModalDialogOperatorThread(QString dialogTitle, QString buttonText) {
+        //Thread t = new Thread(() -> {
+     QThread* t = new QThread();
+//            // constructor for jdo will wait until the dialog is visible
+//            JDialogOperator* jdo = new JDialogOperator(dialogTitle);
+//            JButtonOperator* jbo = new JButtonOperator(jdo, buttonText);
+//            jbo->pushNoBlock();
+////        });
+//        t->setName(dialogTitle + " Close Dialog Thread");
+     JUModalDialogOperator* dialogOperator = new JUModalDialogOperator(dialogTitle, buttonText);
+     connect(t, SIGNAL(started()), dialogOperator, SLOT(process()));
+     connect(dialogOperator, SIGNAL(finished()), t, SLOT(quit()));
+     connect(dialogOperator, SIGNAL(finished()), t, SLOT(deleteLater()));
+     dialogOperator->moveToThread(t);
+     t->start();
+     return t;
     }
-
+#if 0
     static /*public*/ JLabel getLabelWithText(String frameName, String text) {
         // Find window by name
         JmriJFrame frame = JmriJFrame.getFrame(frameName);

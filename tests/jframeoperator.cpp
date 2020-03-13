@@ -33,6 +33,11 @@ JmriJFrame* JFrameOperator::getFrame()
  return _frame;
 }
 
+void JFrameOperator::waitClosed()
+{
+ SleeperThread::msleep(10);
+}
+
 JRadioButtonOperator::JRadioButtonOperator(QObject*parent, QString text)
 {
  this->text = text;
@@ -124,6 +129,12 @@ JButtonOperator::JButtonOperator(QObject* parent, QString text)
  }
  qApp->processEvents(QEventLoop::AllEvents, 100);
 }
+
+/*public*/ void JButtonOperator::pushNoBlock()
+{
+ push();
+}
+
 
 void JButtonOperator::doClick()
 {

@@ -231,7 +231,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool BlockManagerXml::load(QDomElement sharedBlocks, QDomElement perNodeBlocks) throw (JmriConfigureXmlException)
+/*public*/ bool BlockManagerXml::load(QDomElement sharedBlocks, QDomElement /*perNodeBlocks*/) throw (JmriConfigureXmlException)
 {
  bool result = true;
  try
@@ -239,7 +239,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
   if (!sharedBlocks.firstChildElement("defaultspeed").isNull())
   {
    QString speed = sharedBlocks.firstChildElement("defaultspeed").text();
-   if (speed!="")
+   if (speed != "")
    {
     ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setDefaultSpeed(speed);
    }
@@ -450,20 +450,28 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  * @param element QDomElement containing beansetting information
  */
 //@SuppressWarnings("unchecked")
-/*public*/ void BlockManagerXml::loadBeanSetting(Path* path, QDomElement element) {
-    int setting = 0;
-    try {
-        setting = element.attribute("setting").toInt();
-    } catch (DataConversionException e) {
-        log->error("Could not parse beansetting attribute");
-    }
-    QDomNodeList turnouts = element.elementsByTagName("turnout");
-    if (turnouts.size()!=1) log->error("invalid number of turnout element children");
-    QString name = turnouts.at(0).toElement().attribute("systemName");
-    Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(name);
-
-    BeanSetting* bs = new BeanSetting(t, name, setting);
-    path->addSetting(bs);
+/*public*/ void BlockManagerXml::loadBeanSetting(Path* path, QDomElement element)
+{
+ int setting = 0;
+ bool bok;
+     setting = element.attribute("setting").toInt();
+ if(!bok) {
+     log->error("Could not parse beansetting attribute");
+ }
+ QDomNodeList turnouts = element.elementsByTagName("turnout");
+ if (turnouts.size()!=1)
+  log->error("invalid number of turnout element children");
+ QString name = turnouts.at(0).toElement().attribute("systemName");
+ try
+ {
+  Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(name);
+  BeanSetting* bs = new BeanSetting(t, name, setting);
+  path->addSetting(bs);
+ }
+ catch (IllegalArgumentException ex)
+ {
+   log->warn(tr("failed to create Turnout \"%1\" during Block load").arg(name));
+ }
 }
 
 /*public*/ int BlockManagerXml::loadOrder() const{

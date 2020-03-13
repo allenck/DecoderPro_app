@@ -28,8 +28,8 @@ public:
     /*public*/ SensorIcon(Editor* editor);
     /*public*/ SensorIcon(NamedIcon* s, Editor* editor) ;
     /*public*/ SensorIcon(QString s, Editor* editor);
-    /*public*/ Positionable* deepClone();
-    /*public*/ Positionable* finishClone(Positionable* p);
+    /*public*/ Positionable* deepClone() override;
+    /*public*/ Positionable* finishClone(Positionable* p) override;
     /**
      * Attached a named sensor to this display item
      * @param pName System/user name to lookup the sensor object
@@ -53,7 +53,7 @@ public:
     /*public*/ QString getOriginalText();
     /*public*/ void setText(QString s);
     /*public*/ Sensor* getSensor();
-    /*public*/ NamedBean* getNamedBean();
+    /*public*/ NamedBean* getNamedBean() override;
     /*public*/ NamedBeanHandle <Sensor*>* getNamedSensor();
     void makeIconMap();
     /**
@@ -73,11 +73,11 @@ public:
      * @return A state variable from a Sensor, e.g. Sensor.ACTIVE
      */
     int sensorState();
-    /*public*/ QString getNameString();
+    /*public*/ QString getNameString() override;
     /*public*/ bool getMomentary();
 
     /*public*/ bool buttonLive();
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
     /*public*/ void setTextActive(QColor color);
     /*public*/ QColor getTextActive();
     /*public*/ void setTextInActive(QColor color);
@@ -106,12 +106,12 @@ public:
     //void changeLayoutSensorType();
     /*synchronized*/ /*public*/ void flashSensor(int tps, int state1, int state2);
     /*synchronized*/ /*public*/ void stopFlash();
-    /*public*/ bool showPopUp(QMenu* popup);
-    /*public*/ bool setTextEditMenu(QMenu* popup);
+    /*public*/ bool showPopUp(QMenu* popup) override;
+    /*public*/ bool setTextEditMenu(QMenu* popup) override;
     /*public*/ void sensorTextEdit(QString name);
-    /*public*/ bool setEditItemMenu(QMenu* popup);
-    /*public*/ bool setEditIconMenu(QMenu* popup);
-    /*public*/ bool updateScene();
+    /*public*/ bool setEditItemMenu(QMenu* popup) override;
+    /*public*/ bool setEditIconMenu(QMenu* popup) override;
+    /*public*/ bool updateScene() override;
 
 signals:
     
@@ -124,9 +124,9 @@ public slots:
     void onColorMenu1();
 
  void changeLayoutSensorType();
- /*public*/ void doMousePressed(QGraphicsSceneMouseEvent* e);
- /*public*/ void doMouseReleased(QGraphicsSceneMouseEvent* e);
- /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e);
+ /*public*/ void doMousePressed(QGraphicsSceneMouseEvent* e) override;
+ /*public*/ void doMouseReleased(QGraphicsSceneMouseEvent* e) override;
+ /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e) override;
  /*public*/ void setMomentary(bool m);
  void on_editSensorItemAction_triggered();
 
@@ -148,23 +148,23 @@ private:
  QColor textColorInActive;// = QColor(Qt::black);
  QColor textColorUnknown;// = QColor(Qt::black);
  QColor textColorInconsistent;// = QColor(Qt::black);
- QColor backgroundColorActive;// = NULL;
- QColor backgroundColorInActive;// = NULL;
- QColor backgroundColorUnknown;// = NULL;
- QColor backgroundColorInconsistent;// = NULL;
- int flashStateOn;// = -1;
- int flashStateOff;// = -1;
- bool flashon;// = false;
+ QColor backgroundColorActive = nullptr;
+ QColor backgroundColorInActive = nullptr;
+ QColor backgroundColorUnknown = nullptr;
+ QColor backgroundColorInconsistent = nullptr;
+ int flashStateOn = -1;
+ int flashStateOff = -1;
+ bool flashon = false;
  //ActionListener taskPerformer;
- QTimer* flashTimer;
+ QTimer* flashTimer = nullptr;
  Editor* editor;
  void updateSensor();
  void updateItem();
- TableItemPanel* _itemPanel;
- bool bRightButton;
+ TableItemPanel* _itemPanel = nullptr;
+ bool bRightButton = false;
  /*private*/ void setColor(QColor desiredColor, int state);
  /*private*/ QColor getColor(int state);
- int _state;
+ int _state = 0;
 
 private slots:
  void on_timeout();
@@ -176,7 +176,7 @@ protected:
  /*protected*/ QMap<QString, NamedIcon*>* cloneMap(QMap<QString, NamedIcon*>* map, SensorIcon* pos);
  /*protected*/ void editItem();
 protected slots:
- /*protected*/ void edit();
+ /*protected*/ void edit()override;
 
  friend class Editor;
  friend class UpdateActionListener;
@@ -189,7 +189,7 @@ class UpdateActionListener : public ActionListener
  SensorIcon* parent;
 public:
  UpdateActionListener(SensorIcon* parent);
- /*public*/ void actionPerformed(ActionEvent* a = 0);
+ /*public*/ void actionPerformed(ActionEvent* a = 0) override;
 };
 class EditActionListener : public ActionListener
 {

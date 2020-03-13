@@ -145,14 +145,14 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
  * @param element Top level QDomElement to unpack.
  */
 //@SuppressWarnings({ "unchecked", "NULL" })
-/*public*/ bool EntryExitPairsXml::load(QDomElement element) throw (Exception)
+/*public*/ bool EntryExitPairsXml::load(QDomElement shared, QDomElement perNode) throw (Exception)
 {
  // create the objects
  EntryExitPairs* eep = (EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs");
 
  try
  {
-  QString clearoption = element.firstChildElement("cleardown").text();
+  QString clearoption = shared.firstChildElement("cleardown").text();
   eep->setClearDownOption(clearoption.toInt());
  }
  catch (NullPointerException e)
@@ -160,10 +160,33 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
      //Considered normal if it doesn't exists
  }
  // get attributes
- QObjectList loadedPanel =  static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->getInstanceList("LayoutEditor");
-
- //@SuppressWarnings("unchecked")
- QDomNodeList panelList = element.elementsByTagName("layoutPanel");
+ ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ QObjectList loadedPanel;
+ if (cm != nullptr)
+ {
+     loadedPanel = cm->getInstanceList("LayoutEditor");
+ } else
+ {
+     log->error("Failed getting optional default config manager");  // NOI18N
+     loadedPanel = QObjectList();
+ }
+ if (!shared.firstChildElement("colourwhilesetting").isNull())
+ {
+     try {
+         eep->setSettingRouteColor(ColorUtil::stringToColor(shared.firstChildElement("colourwhilesetting").text()));  // NOI18N
+     } catch (IllegalArgumentException e) {
+         eep->setSettingRouteColor(QColor(Qt::black));
+         log->error(tr("Invalid color %1; using black").arg(shared.firstChildElement("colourwhilesetting").text()));
+     }
+     int settingTimer = 2000;
+     bool bok;
+         settingTimer = shared.firstChildElement("settingTimer").text().toInt(&bok);  // NOI18N
+     if(!bok) {
+         log->error(tr("Error in converting timer to int %1").arg(shared.firstChildElement("settingTimer").text()));  // NOI18N
+     }
+     eep->setSettingTimer(settingTimer);
+ }
+ QDomNodeList panelList = shared.elementsByTagName("layoutPanel");
  for(int k = 0; k<panelList.size(); k++)
  {
   QString panelName = panelList.at(k).toElement().attribute("name");
@@ -171,7 +194,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
   for (int i=0; i<loadedPanel.size(); i++)
   {
    LayoutEditor* tmp = (LayoutEditor*) loadedPanel.at(i);
-   if (tmp->getLayoutName()==(panelName))
+   if (tmp->getLayoutName() == (panelName))
    {
     panel = tmp;
     break;
@@ -195,7 +218,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
 
     //These two could be subbed off.
     QDomNodeList destinationList = sourceList.at(i).toElement().elementsByTagName("destination");
-    if(destinationList.size()>0)
+    if(destinationList.size() > 0)
     {
      eep->addNXSourcePoint(source, panel);
     }
@@ -204,10 +227,13 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
      QString id = NULL;
      if(destinationList.at(j).toElement().attribute("uniqueid")!="")
          id = destinationList.at(j).toElement().attribute("uniqueid");
+     if (!id.startsWith("IN:")) {     // NOI18N
+         id = "IN:" + id;    // NOI18N
+     }
      QString destType = destinationList.at(j).toElement().attribute("type");
      QString destItem = destinationList.at(j).toElement().attribute("item");
      NamedBean* dest = NULL;
-     if(destType==("signalMast"))
+     if(destType == ("signalMast"))
      {
       dest = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(destItem);
      }
