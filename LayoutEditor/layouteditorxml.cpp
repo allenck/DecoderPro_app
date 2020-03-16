@@ -362,7 +362,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 
  // create the objects
  //LayoutEditor* panel = new LayoutEditor(name);
- panel->setFilename(LoadXmlConfigAction::currentFile);
+ //panel->setFilename(LoadXmlConfigAction::currentFile);
  panel->setMainlineTrackWidth(mainlinetrackwidth);
  panel->setSideTrackWidth(sidetrackwidth);
  // panel->setXScale(xScale);

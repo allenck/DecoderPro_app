@@ -79,6 +79,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1903,6 +1904,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void addAnchor(LayoutEditor* theWrappedObject);
    void addBackground(LayoutEditor* theWrappedObject);
    void addBackgroundColorMenuEntry(LayoutEditor* theWrappedObject, QMenu*  menu, QActionGroup*  colorButtonGroup, const QString  name, QColor  color);
+   void addBlockContents(LayoutEditor* theWrappedObject);
    void addEdgeConnector(LayoutEditor* theWrappedObject);
    void addEndBumper(LayoutEditor* theWrappedObject);
    void addIcon(LayoutEditor* theWrappedObject);
@@ -1919,6 +1921,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void addTurntable(LayoutEditor* theWrappedObject, QPointF  pt);
    bool  allControlling(LayoutEditor* theWrappedObject);
    bool  containsSignalHead(LayoutEditor* theWrappedObject, SignalHead*  head);
+   bool  deletePanel(LayoutEditor* theWrappedObject);
    void py_q_dispose(LayoutEditor* theWrappedObject){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_dispose());}
    void drawLabelImages(LayoutEditor* theWrappedObject, EditScene*  g2);
    void drawTurnouts(LayoutEditor* theWrappedObject, EditScene*  g2);
@@ -1941,6 +1944,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    QString  getDefaultTrackColor(LayoutEditor* theWrappedObject);
    bool  getDirectTurnoutControl(LayoutEditor* theWrappedObject);
    bool  getDrawGrid(LayoutEditor* theWrappedObject);
+   bool  getHighlightSelectedBlock(LayoutEditor* theWrappedObject);
    int  getLayoutHeight(LayoutEditor* theWrappedObject);
    QString  getLayoutName(LayoutEditor* theWrappedObject);
    QList<LayoutTrack* >*  getLayoutTracks(LayoutEditor* theWrappedObject);
@@ -2018,7 +2022,6 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void setDefaultTrackColor(LayoutEditor* theWrappedObject, QString  color);
    void setDirty(LayoutEditor* theWrappedObject, bool  b = true);
    void setDrawGrid(LayoutEditor* theWrappedObject, bool  state);
-   void setFilename(LayoutEditor* theWrappedObject, QString  path);
    void setGlobalSetsLocalFlag(LayoutEditor* theWrappedObject, bool  set);
    void setHiddenMenu(LayoutEditor* theWrappedObject, Positionable*  p, QMenu*  popup);
    void setHighlightSelectedBlock(LayoutEditor* theWrappedObject, bool  state);

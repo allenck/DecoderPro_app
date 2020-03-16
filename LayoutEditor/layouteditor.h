@@ -241,6 +241,8 @@ public:
 #if 0
     /*public*/ QPointF getEndCoords(QObject* o, int type);
 #endif
+    /*public*/ bool deletePanel();
+
     QGraphicsView* panel();
     /**
     * Add a label to the Draw Panel
@@ -391,7 +393,7 @@ public:
     /*public*/ void setDefaultAlternativeTrackColor(QColor color);
     void setScale(double scaleX, double scaleY);
     /*public*/ QString getClassName();
-    /*public*/ void setFilename(QString path);
+//    /*public*/ void setFilename(QString path);
     /*public*/ LayoutTrackDrawingOptions* getLayoutTrackDrawingOptions();
     /*public*/ void setLayoutTrackDrawingOptions(LayoutTrackDrawingOptions* ltdo);
     /*public*/ static void setupComboBox(/*@Nonnull*/ NamedBeanComboBox *inComboBox, bool inValidateMode, bool inEnable);
@@ -444,6 +446,7 @@ public slots:
     */
     /*public*/ void setAllEditable(bool state);
     /*public*/ void setShowHelpBar(bool state);
+    void on_deletePanel();
 
 private:
  Ui::LayoutEditor *ui;
@@ -915,11 +918,18 @@ private:
  /*private*/ float toolBarFontSize = 12.0;
  /*private*/ /*transient*/ bool editorUseOldLocSize;
  /*private*/ /*transient*/ LayoutEditorToolBarPanel* leToolBarPanel = nullptr;
+ //Operational instance variables - not saved to disk
+ /*private*/ /*transient*/ JmriJFrame* floatingEditToolBoxFrame = nullptr;
+ /*private*/ /*transient*/ QScrollArea* floatingEditContentScrollPane = nullptr;
+ /*private*/ /*transient*/ JPanel* floatEditHelpPanel = nullptr;
  /*private*/ /*transient*/ QDockWidget* editToolBarContainerPanel = nullptr;
  /*private*/ /*transient*/ QScrollArea* editToolBarScrollPane = nullptr;
  /*private*/ /*transient*/ JPanel* helpBarPanel = nullptr;
  /*private*/ /*transient*/ JPanel* helpBar;// = new JPanel();
  /*private*/ void setupToolBar();
+ /*private*/ void createfloatingEditToolBoxFrame();
+ /*private*/ void deletefloatingEditToolBoxFrame();
+ /*private*/ void createFloatingHelpPanel();
 
 
  /*private*/ /*enum*/class ToolBarSide {
@@ -966,7 +976,7 @@ private:
 //     }
 
      /*public*/ static TOOLBARSIDES getName(/*@Nullable*/ QString name) {
-      if(name == "top")
+      if(name.toLower() == "top")
        return eTOP;
       else if (name.toLower() == "left")
        return eLEFT;
@@ -988,8 +998,8 @@ private:
  };
  /*private*/ /*transient*/ ToolBarSide toolBarSide = ToolBarSide("top");
  /*private*/ /*transient*/ bool toolBarIsWide = true;
- /*private*/ void setToolBarWide(bool newToolBarIsWide);
  /*private*/ void setToolBarSide(QString);
+ /*private*/ void setupMenuBar();
 
 
 private slots:
@@ -1016,7 +1026,7 @@ private slots:
  void on_actionShow_turnout_circles_toggled(bool bState);
  void On_actionHidden_toggled(bool bState);
  void on_actionEdit_track_width_triggered();
- void on_colorBackgroundMenuItemSelected(int);
+ void on_colorBackgroundMenuItemSelected(/*int*/);
  void on_actionAdd_reporter_label_triggered();
  void on_actionAdd_background_image_2_triggered();
  //void on_actionLoad_XML_triggered();
@@ -1029,7 +1039,7 @@ private slots:
  void OnZoom_selected(QAction* act);
  void on_actionEdit_mode_toggled(bool bState);
  void OnDefaultTrackColorSelected(QAction * act);
- void OnDefaultTextColorSelected(int);
+ void OnDefaultTextColorSelected();
  void on_actionDelete_this_panel_triggered();
  void on_actionSkip_unsignalled_Internal_Turnouts_toggled(bool);
  void on_actionSet_Signals_at_Block_Boundary_triggered();
@@ -1055,16 +1065,16 @@ private slots:
  void on_autoAssignBlocksItem_triggered(bool b);
  void on_hideTrackSegmentConstructionLines_toggled(bool);
  void on_useDirectTurnoutControlItem_triggered(bool);
- void on_addTrackColorMenuEntry_triggered(int);
- void on_addTrackOccupiedColorMenuEntry_triggered(int);
- void on_addTrackAlternativeColorMenuEntry_triggered(int);
- void onChangeIcons();
- void onTurnoutProperties();
- void onSecondTurnoutProperties();
- void onTrackSegmentProperties();
- void onBlockProperties();
- void onMiscFields();
- void blockContentsComboBoxChanged();
+ void on_addTrackColorMenuEntry_triggered();
+ void on_addTrackOccupiedColorMenuEntry_triggered();
+ void on_addTrackAlternativeColorMenuEntry_triggered(/*int*/);
+ //void onChangeIcons();
+ //void onTurnoutProperties();
+ //void onSecondTurnoutProperties();
+ //void onTrackSegmentProperties();
+ //void onBlockProperties();
+ //void onMiscFields();
+ //void blockContentsComboBoxChanged();
  void onActionBoth_scrollbars();
  void onActionNo_scrollbars();
  void onActionHorizontal_scrollbars();
@@ -1096,6 +1106,7 @@ private slots:
  void onTooltipInEditMenuItem();
  void onTooltipNotInEditMenuItem();
  /*private*/ void setToolBarSide(QAction* act);
+ /*private*/ void setToolBarWide(bool newToolBarIsWide);
 
 protected:
  /**

@@ -38,7 +38,7 @@
 {
  QVBoxLayout* thisLayout;
     setLayout(thisLayout = new QVBoxLayout());//this, BoxLayout.PAGE_AXIS));
-    setMaximumHeight(200);
+    //setMaximumHeight(180);
     thisLayout->setMargin(0);
     thisLayout ->setSpacing(6);
 

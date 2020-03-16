@@ -65,6 +65,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -18779,6 +18780,11 @@ void PythonQtWrapper_LayoutEditor::addBackgroundColorMenuEntry(LayoutEditor* the
   ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_addBackgroundColorMenuEntry(menu, colorButtonGroup, name, color));
 }
 
+void PythonQtWrapper_LayoutEditor::addBlockContents(LayoutEditor* theWrappedObject)
+{
+  ( theWrappedObject->addBlockContents());
+}
+
 void PythonQtWrapper_LayoutEditor::addEdgeConnector(LayoutEditor* theWrappedObject)
 {
   ( theWrappedObject->addEdgeConnector());
@@ -18857,6 +18863,11 @@ bool  PythonQtWrapper_LayoutEditor::allControlling(LayoutEditor* theWrappedObjec
 bool  PythonQtWrapper_LayoutEditor::containsSignalHead(LayoutEditor* theWrappedObject, SignalHead*  head)
 {
   return ( theWrappedObject->containsSignalHead(head));
+}
+
+bool  PythonQtWrapper_LayoutEditor::deletePanel(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->deletePanel());
 }
 
 void PythonQtWrapper_LayoutEditor::drawLabelImages(LayoutEditor* theWrappedObject, EditScene*  g2)
@@ -18957,6 +18968,11 @@ bool  PythonQtWrapper_LayoutEditor::getDirectTurnoutControl(LayoutEditor* theWra
 bool  PythonQtWrapper_LayoutEditor::getDrawGrid(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getDrawGrid());
+}
+
+bool  PythonQtWrapper_LayoutEditor::getHighlightSelectedBlock(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getHighlightSelectedBlock());
 }
 
 int  PythonQtWrapper_LayoutEditor::getLayoutHeight(LayoutEditor* theWrappedObject)
@@ -19312,11 +19328,6 @@ void PythonQtWrapper_LayoutEditor::setDirty(LayoutEditor* theWrappedObject, bool
 void PythonQtWrapper_LayoutEditor::setDrawGrid(LayoutEditor* theWrappedObject, bool  state)
 {
   ( theWrappedObject->setDrawGrid(state));
-}
-
-void PythonQtWrapper_LayoutEditor::setFilename(LayoutEditor* theWrappedObject, QString  path)
-{
-  ( theWrappedObject->setFilename(path));
 }
 
 void PythonQtWrapper_LayoutEditor::setGlobalSetsLocalFlag(LayoutEditor* theWrappedObject, bool  set)

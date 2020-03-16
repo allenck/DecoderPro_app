@@ -479,7 +479,8 @@ SOURCES += \
     enterreporterdialog.cpp \
     layouteditortoolbarpanel.cpp \
     layouteditorhorizontaltoolbarpanel.cpp \
-    layouteditorverticaltoolbarpanel.cpp
+    layouteditorverticaltoolbarpanel.cpp \
+    layouteditorfloatingtoolbarpanel.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -877,7 +878,8 @@ HEADERS += liblayouteditor_global.h \
     enterreporterdialog.h \
     layouteditortoolbarpanel.h \
     layouteditorhorizontaltoolbarpanel.h \
-    layouteditorverticaltoolbarpanel.h
+    layouteditorverticaltoolbarpanel.h \
+    layouteditorfloatingtoolbarpanel.h
 
 FORMS    += \
     createeditblock.ui \
