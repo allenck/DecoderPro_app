@@ -22,6 +22,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <namedbeancombobox.h>
+#include "borderlayout.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -94,10 +95,10 @@ public:
     QAction *actionZoom_Out;
     QAction *actionZoom_to_fit;
     QWidget *centralWidget;
-    QVBoxLayout *verticalLayout;
-    QWidget *toolBarWidget;
-    QVBoxLayout *verticalLayout_2;
-    QHBoxLayout *horizontalLayout_33;
+    BorderLayout *verticalLayout;
+    //QWidget *toolBarWidget;
+    //QVBoxLayout *verticalLayout_2;
+    QHBoxLayout *horizontalLayout_2;
     QHBoxLayout *horizontalLayout_34;
     QCheckBox *multiSensorButton;
     QPushButton *changeIconsButton;
@@ -280,109 +281,109 @@ public:
         actionZoom_to_fit->setObjectName(QLatin1String("actionZoom_to_fit"));
         centralWidget = new QWidget(LayoutEditor);
         centralWidget->setObjectName(QLatin1String("centralWidget"));
-        verticalLayout = new QVBoxLayout(centralWidget);
+        verticalLayout = new BorderLayout(centralWidget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QLatin1String("verticalLayout"));
-        toolBarWidget = new QWidget(centralWidget);
-        toolBarWidget->setObjectName(QLatin1String("toolBarWidget"));
-        verticalLayout_2 = new QVBoxLayout(toolBarWidget);
-        verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_2->setObjectName(QLatin1String("verticalLayout_2"));
-        horizontalLayout_33 = new QHBoxLayout();
-        horizontalLayout_33->setSpacing(6);
-        horizontalLayout_33->setObjectName(QLatin1String("horizontalLayout_33"));
+//        toolBarWidget = new QWidget(centralWidget);
+//        toolBarWidget->setObjectName(QLatin1String("toolBarWidget"));
+//        verticalLayout_2 = new QVBoxLayout(toolBarWidget);
+//        verticalLayout_2->setSpacing(6);
+//        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+//        verticalLayout_2->setObjectName(QLatin1String("verticalLayout_2"));
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setObjectName(QLatin1String("horizontalLayout_2"));
         horizontalLayout_34 = new QHBoxLayout();
         horizontalLayout_34->setSpacing(6);
         horizontalLayout_34->setObjectName(QLatin1String("horizontalLayout_34"));
-        multiSensorButton = new QCheckBox(toolBarWidget);
-        multiSensorButton->setObjectName(QLatin1String("multiSensorButton"));
+//        multiSensorButton = new QCheckBox(toolBarWidget);
+//        multiSensorButton->setObjectName(QLatin1String("multiSensorButton"));
 
-        horizontalLayout_34->addWidget(multiSensorButton);
+//        horizontalLayout_34->addWidget(multiSensorButton);
 
-        changeIconsButton = new QPushButton(toolBarWidget);
-        changeIconsButton->setObjectName(QLatin1String("changeIconsButton"));
+//        changeIconsButton = new QPushButton(toolBarWidget);
+//        changeIconsButton->setObjectName(QLatin1String("changeIconsButton"));
 
-        horizontalLayout_34->addWidget(changeIconsButton);
-
-
-        horizontalLayout_33->addLayout(horizontalLayout_34);
-
-        horizontalLayout_35 = new QHBoxLayout();
-        horizontalLayout_35->setSpacing(6);
-        horizontalLayout_35->setObjectName(QLatin1String("horizontalLayout_35"));
-        sensorButton = new QCheckBox(toolBarWidget);
-        sensorButton->setObjectName(QLatin1String("sensorButton"));
-
-        horizontalLayout_35->addWidget(sensorButton);
-
-        sensorComboBox = new NamedBeanComboBox(toolBarWidget);
-        sensorComboBox->setObjectName(QLatin1String("sensorComboBox"));
-
-        horizontalLayout_35->addWidget(sensorComboBox);
+//        horizontalLayout_34->addWidget(changeIconsButton);
 
 
-        horizontalLayout_33->addLayout(horizontalLayout_35);
+//        horizontalLayout_2->addLayout(horizontalLayout_34);
 
-        horizontalLayout_36 = new QHBoxLayout();
-        horizontalLayout_36->setSpacing(6);
-        horizontalLayout_36->setObjectName(QLatin1String("horizontalLayout_36"));
-        signalButton = new QCheckBox(toolBarWidget);
-        signalButton->setObjectName(QLatin1String("signalButton"));
+//        horizontalLayout_35 = new QHBoxLayout();
+//        horizontalLayout_35->setSpacing(6);
+//        horizontalLayout_35->setObjectName(QLatin1String("horizontalLayout_35"));
+//        sensorButton = new QCheckBox(toolBarWidget);
+//        sensorButton->setObjectName(QLatin1String("sensorButton"));
 
-        horizontalLayout_36->addWidget(signalButton);
+//        horizontalLayout_35->addWidget(sensorButton);
 
-        signalHeadComboBox = new NamedBeanComboBox(toolBarWidget);
-        signalHeadComboBox->setObjectName(QLatin1String("signalHeadComboBox"));
+//        sensorComboBox = new NamedBeanComboBox(toolBarWidget);
+//        sensorComboBox->setObjectName(QLatin1String("sensorComboBox"));
 
-        horizontalLayout_36->addWidget(signalHeadComboBox);
-
-
-        horizontalLayout_33->addLayout(horizontalLayout_36);
-
-        horizontalLayout_37 = new QHBoxLayout();
-        horizontalLayout_37->setSpacing(6);
-        horizontalLayout_37->setObjectName(QLatin1String("horizontalLayout_37"));
-        signalMastButton = new QCheckBox(toolBarWidget);
-        signalMastButton->setObjectName(QLatin1String("signalMastButton"));
-
-        horizontalLayout_37->addWidget(signalMastButton);
-
-        signalMastComboBox = new NamedBeanComboBox(toolBarWidget);
-        signalMastComboBox->setObjectName(QLatin1String("signalMastComboBox"));
-
-        horizontalLayout_37->addWidget(signalMastComboBox);
+//        horizontalLayout_35->addWidget(sensorComboBox);
 
 
-        horizontalLayout_33->addLayout(horizontalLayout_37);
+//        horizontalLayout_2->addLayout(horizontalLayout_35);
 
-        iconLabelButton = new QCheckBox(toolBarWidget);
-        iconLabelButton->setObjectName(QLatin1String("iconLabelButton"));
+//        horizontalLayout_36 = new QHBoxLayout();
+//        horizontalLayout_36->setSpacing(6);
+//        horizontalLayout_36->setObjectName(QLatin1String("horizontalLayout_36"));
+//        signalButton = new QCheckBox(toolBarWidget);
+//        signalButton->setObjectName(QLatin1String("signalButton"));
 
-        horizontalLayout_33->addWidget(iconLabelButton);
+//        horizontalLayout_36->addWidget(signalButton);
+
+//        signalHeadComboBox = new NamedBeanComboBox(toolBarWidget);
+//        signalHeadComboBox->setObjectName(QLatin1String("signalHeadComboBox"));
+
+//        horizontalLayout_36->addWidget(signalHeadComboBox);
 
 
-        verticalLayout_2->addLayout(horizontalLayout_33);
+//        horizontalLayout_2->addLayout(horizontalLayout_36);
+
+//        horizontalLayout_37 = new QHBoxLayout();
+//        horizontalLayout_37->setSpacing(6);
+//        horizontalLayout_37->setObjectName(QLatin1String("horizontalLayout_37"));
+//        signalMastButton = new QCheckBox(toolBarWidget);
+//        signalMastButton->setObjectName(QLatin1String("signalMastButton"));
+
+//        horizontalLayout_37->addWidget(signalMastButton);
+
+//        signalMastComboBox = new NamedBeanComboBox(toolBarWidget);
+//        signalMastComboBox->setObjectName(QLatin1String("signalMastComboBox"));
+
+//        horizontalLayout_37->addWidget(signalMastComboBox);
 
 
-        verticalLayout->addWidget(toolBarWidget);
+//        horizontalLayout_2->addLayout(horizontalLayout_37);
 
-        editPanel = new QWidget(centralWidget);
-        editPanel->setObjectName(QLatin1String("editPanel"));
+//        iconLabelButton = new QCheckBox(toolBarWidget);
+//        iconLabelButton->setObjectName(QLatin1String("iconLabelButton"));
 
-        verticalLayout->addWidget(editPanel);
+//        horizontalLayout_2->addWidget(iconLabelButton);
 
-        textEdit = new QTextEdit(centralWidget);
-        textEdit->setObjectName(QLatin1String("textEdit"));
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(textEdit->sizePolicy().hasHeightForWidth());
-        textEdit->setSizePolicy(sizePolicy);
-        textEdit->setMaximumSize(QSize(16777215, 42));
 
-        verticalLayout->addWidget(textEdit);
+//        verticalLayout_2->addLayout(horizontalLayout_2);
+
+
+        //verticalLayout->addWidget(toolBarWidget);
+
+//        editPanel = new QWidget(centralWidget);
+//        editPanel->setObjectName(QLatin1String("editPanel"));
+
+        //verticalLayout->addWidget(editPanel);
+
+//        textEdit = new QTextEdit(centralWidget);
+//        textEdit->setObjectName(QLatin1String("textEdit"));
+//        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+//        sizePolicy.setHorizontalStretch(0);
+//        sizePolicy.setVerticalStretch(0);
+//        sizePolicy.setHeightForWidth(textEdit->sizePolicy().hasHeightForWidth());
+//        textEdit->setSizePolicy(sizePolicy);
+//        textEdit->setMaximumSize(QSize(16777215, 42));
+
+        //verticalLayout->addWidget(textEdit);
 
         LayoutEditor->setCentralWidget(centralWidget);
         mainToolBar = new QToolBar(LayoutEditor);
@@ -466,20 +467,20 @@ public:
         actionZoom_In->setText(QApplication::translate("LayoutEditor", "Zoom In", nullptr));
         actionZoom_Out->setText(QApplication::translate("LayoutEditor", "Zoom Out", nullptr));
         actionZoom_to_fit->setText(QApplication::translate("LayoutEditor", "Zoom to fit", nullptr));
-        multiSensorButton->setText(QApplication::translate("LayoutEditor", "Multi-sensor", nullptr));
+//        multiSensorButton->setText(QApplication::translate("LayoutEditor", "Multi-sensor", nullptr));
 #ifndef QT_NO_TOOLTIP
-        changeIconsButton->setToolTip(QApplication::translate("LayoutEditor", "<html><head/><body><p>Click to change icons used to represent sensors, signal head or label (whichever is checked at the right).</p></body></html>", nullptr));
+//        changeIconsButton->setToolTip(QApplication::translate("LayoutEditor", "<html><head/><body><p>Click to change icons used to represent sensors, signal head or label (whichever is checked at the right).</p></body></html>", nullptr));
 #endif // QT_NO_TOOLTIP
-        changeIconsButton->setText(QApplication::translate("LayoutEditor", "Change Icons...", nullptr));
-        sensorButton->setText(QApplication::translate("LayoutEditor", "Sensor Icon", nullptr));
-        signalButton->setText(QApplication::translate("LayoutEditor", "Signal Head Icon", nullptr));
-        signalMastButton->setText(QApplication::translate("LayoutEditor", "SignalMast Icon", nullptr));
-        iconLabelButton->setText(QApplication::translate("LayoutEditor", "Icon Label", nullptr));
-        textEdit->setHtml(QApplication::translate("LayoutEditor", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Ubuntu'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment. To add a track segment, with shift down, click mouse on one connection point and drag to another connection point. To move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", nullptr));
+//        changeIconsButton->setText(QApplication::translate("LayoutEditor", "Change Icons...", nullptr));
+//        sensorButton->setText(QApplication::translate("LayoutEditor", "Sensor Icon", nullptr));
+//        signalButton->setText(QApplication::translate("LayoutEditor", "Signal Head Icon", nullptr));
+//        signalMastButton->setText(QApplication::translate("LayoutEditor", "SignalMast Icon", nullptr));
+//        iconLabelButton->setText(QApplication::translate("LayoutEditor", "Icon Label", nullptr));
+//        textEdit->setHtml(QApplication::translate("LayoutEditor", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+//"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+//"p, li { white-space: pre-wrap; }\n"
+//"</style></head><body style=\" font-family:'Ubuntu'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+//"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment. To add a track segment, with shift down, click mouse on one connection point and drag to another connection point. To move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", nullptr));
     } // retranslateUi
 
 };

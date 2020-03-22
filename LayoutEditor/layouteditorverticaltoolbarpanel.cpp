@@ -33,7 +33,8 @@
 /*public*/ LayoutEditorVerticalToolBarPanel::LayoutEditorVerticalToolBarPanel(/*@Nonnull*/ LayoutEditor* layoutEditor, QWidget *parent)
 : LayoutEditorToolBarPanel(layoutEditor){
     //super(layoutEditor);
-layoutComponents();
+ setupComponents();
+ layoutComponents();
 }   //constructor
 
 /**
@@ -44,6 +45,9 @@ layoutComponents();
 {
     QVBoxLayout* thisLayout;
     setLayout(thisLayout = new QVBoxLayout());//this, BoxLayout.PAGE_AXIS));
+    QFont f = font();
+    f.setPointSize(8);
+    setFont(f);
 
     Border* blacklineBorder = BorderFactory::createLineBorder(QColor(Qt::black));
 
@@ -230,8 +234,8 @@ layoutComponents();
     FlowLayout* bottomPanelLayout = new FlowLayout(bottomPanel);
     zoomPanel->setMaximumSize(QSize(INT_MAX, zoomPanel->sizeHint().height()));
     locationPanel->setMaximumSize(QSize(INT_MAX, locationPanel->sizeHint().height()));
-    bottomPanel->layout()->addWidget(zoomPanel);
-    bottomPanel->layout()->addWidget(locationPanel);
+    bottomPanelLayout->addWidget(zoomPanel);
+    bottomPanelLayout->addWidget(locationPanel);
     bottomPanel->setMaximumSize(QSize(INT_MAX, bottomPanel->sizeHint().height()));
     thisLayout->addWidget(bottomPanel, 0, Qt::AlignBottom);//BorderLayout.SOUTH);
 }   //layoutComponents

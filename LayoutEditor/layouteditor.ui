@@ -24,7 +24,7 @@
      <widget class="QWidget" name="toolBarWidget" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <layout class="QHBoxLayout" name="_2">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_34">
            <item>

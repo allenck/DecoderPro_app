@@ -1,5 +1,5 @@
-﻿#include "layouteditor.h"
-#include "ui_layouteditor.h"
+#include "layouteditor.h"
+//#include "ui_layouteditor.h"
 #include <QGraphicsRectItem>
 #include "instancemanager.h"
 #include "QMessageBox"
@@ -84,6 +84,7 @@
 #include <QSysInfo>
 #include <QMenuBar>
 #include "layouteditorfloatingtoolbarpanel.h"
+#include "borderlayout.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -94,8 +95,7 @@
 }
 
 LayoutEditor::LayoutEditor(QString name, QWidget *parent) :
-    PanelEditor(name, parent),
-    ui(new Ui::LayoutEditor)
+    PanelEditor(name, parent)//, ui(new Ui::LayoutEditor)
 {
  init();
  layoutName = name;
@@ -116,7 +116,7 @@ LayoutEditor::LayoutEditor(QString name, QWidget *parent) :
 
 LayoutEditor::~LayoutEditor()
 {
- delete ui;
+ //delete ui;
 }
 
 /*private*/ void LayoutEditor::setupMenuBar() {
@@ -179,13 +179,16 @@ LayoutEditor::~LayoutEditor()
 /*private*/ void LayoutEditor::setupToolBar() {
     //Initial setup for both horizontal and vertical
 #if 1
-    QWidget* contentPane = getContentPane();
+    //QWidget* contentPane = getContentPane();
 
     //remove these (if present) so we can add them back (without duplicates)
     if (editToolBarContainerPanel != nullptr) {
         editToolBarContainerPanel->setVisible(false);
 //        contentPane.remove(editToolBarContainerPanel);
-        removeDockWidget(editToolBarContainerPanel);
+        //ui->verticalLayout->removeWidget(editToolBarContainerPanel);
+        if(borderLayout)
+         borderLayout->removeWidget(editToolBarContainerPanel);
+//        removeDockWidget(editToolBarContainerPanel);
     }
 
 //    if (helpBarPanel != nullptr) {
@@ -199,6 +202,21 @@ LayoutEditor::~LayoutEditor()
         return;
     }
 #endif
+//    if(borderLayout)
+//    {
+//     QWidget* cw = centralWidget();
+//     if(cw)
+//     {
+//      //delete centralWidget()->layout();
+//      delete cw;
+//      delete borderLayout;
+//     }
+//    }
+    //else
+    {
+     borderLayout = new BorderLayout;
+     borderLayout->addWidget(editPanel, BorderLayout::Center);
+    }
 
     //QSize screenDim = Toolkit.getDefaultToolkit().getScreenSize();
     QDesktopWidget* desktop = QApplication::desktop();
@@ -223,17 +241,19 @@ LayoutEditor::~LayoutEditor()
      toolbarHeight = leToolBarPanel->maximumHeight();
     }
 
-    editToolBarContainerPanel = new QDockWidget("Toolbar", this);
-    //editToolBarContainerPanel->setLayout(new QVBoxLayout());//editToolBarContainerPanel, BoxLayout.PAGE_AXIS));
+    //editToolBarContainerPanel = new QDockWidget("Toolbar", this);
+    editToolBarContainerPanel = new QWidget();
+    QVBoxLayout* editToolBarContainerPanelLayout;
+    editToolBarContainerPanel->setLayout(editToolBarContainerPanelLayout = new QVBoxLayout());//editToolBarContainerPanel, BoxLayout.PAGE_AXIS));
 //    editToolBarContainerPanel->setWidget(editToolBarScrollPane);
 //    editToolBarScrollPane->show();
-    if(toolBarIsVertical)
-    {
-     editToolBarScrollPane->setWidget(leToolBarPanel);
-     editToolBarContainerPanel->setWidget(editToolBarScrollPane);
-    }
-    else
-     editToolBarContainerPanel->setWidget(leToolBarPanel);
+//    if(toolBarIsVertical)
+//    {
+//     editToolBarScrollPane->setWidget(leToolBarPanel);
+//     editToolBarContainerPanel->setWidget(editToolBarScrollPane);
+//    }
+//    else
+     editToolBarContainerPanelLayout->addWidget(leToolBarPanel);
 
     //setup notification for when horizontal scrollbar changes visibility
     //editToolBarScroll.getViewport().addChangeListener(e -> {
@@ -244,63 +264,92 @@ LayoutEditor::~LayoutEditor()
     if(toolBarIsVertical)
     {
      editToolBarContainerPanel->setMaximumWidth(150);
-     editToolBarContainerPanel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-     addDockWidget(Qt::LeftDockWidgetArea, editToolBarContainerPanel);
+     //editToolBarContainerPanel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+     //addDockWidget(Qt::LeftDockWidgetArea, editToolBarContainerPanel);
+
     }
     else
     {
      editToolBarContainerPanel->setMaximumHeight(140);
-     editToolBarContainerPanel->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
-     addDockWidget(Qt::TopDockWidgetArea, editToolBarContainerPanel);
+     //editToolBarContainerPanel->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
+//     addDockWidget(Qt::TopDockWidgetArea, editToolBarContainerPanel);
     }
-    helpBarPanel = new JPanel();
-    helpBarPanel->setLayout(new QHBoxLayout());
-    helpBarPanel->layout()->addWidget(helpBar);
-
-    //for (Component c : helpBar.getComponents())
-    foreach(QWidget* c, helpBar->findChildren<QWidget*>())
+    switch (toolBarSide.getType())
     {
-     if (qobject_cast<JTextArea*>(c))
-     {
-      JTextArea* j = (JTextArea*) c;
-      j->resize(QSize(toolbarWidth, j->size().height()));
-      j->setLineWrap(toolBarIsVertical);
-      j->setWrapStyleWord(toolBarIsVertical);
-     }
-    }
-    //contentPane.setLayout(new BoxLayout(contentPane, toolBarIsVertical ? BoxLayout.LINE_AXIS : BoxLayout.PAGE_AXIS));
-
-    switch (toolBarSide.getType()) {
-    case eTOP:
-     editToolBarContainerPanel->setAllowedAreas(Qt::TopDockWidgetArea);
-     break;
     case eLEFT:
-            //contentPane.add(editToolBarContainerPanel, 0);
-     editToolBarContainerPanel->setAllowedAreas(Qt::LeftDockWidgetArea);
-            break;
-
-    case eBOTTOM:
-     editToolBarContainerPanel->setAllowedAreas(Qt::BottomDockWidgetArea );
+     //ui->verticalLayout->addWidget(editToolBarContainerPanel, 0, Qt::AlignLeft);
+     borderLayout->addWidget(editToolBarScrollPane, BorderLayout::West);
+     editToolBarScrollPane->setWidget(editToolBarContainerPanel);
      break;
     case eRIGHT:
-            //contentPane.add(editToolBarContainerPanel);
-     editToolBarContainerPanel->setAllowedAreas( Qt::RightDockWidgetArea);
-            break;
-
-        default:
-            // fall through
-            break;
+     //ui->verticalLayout->addWidget(editToolBarContainerPanel, 0, Qt::AlignRight);
+     borderLayout->addWidget(editToolBarScrollPane, BorderLayout::East);
+     editToolBarScrollPane->setWidget(editToolBarContainerPanel);
+     break;
+    case eTOP:
+     //ui->verticalLayout->addWidget(editToolBarContainerPanel, 0, Qt::AlignTop);
+     borderLayout->addWidget(editToolBarContainerPanel, BorderLayout::North);
+     break;
+    case eBOTTOM:
+     //ui->verticalLayout->addWidget(editToolBarContainerPanel, 0, Qt::AlignBottom);
+     borderLayout->addWidget(editToolBarContainerPanel, BorderLayout::South);
+     break;
     }
+    borderLayout->addWidget(helpBar, BorderLayout::South);
 
-    if (toolBarIsVertical) {
-        leToolBarPanel->layout()->addWidget(helpBarPanel);
-    } else {
-        //contentPane.add(helpBarPanel);
-    }
-    helpBarPanel->setVisible(isEditable() && getShowHelpBar());
-    editToolBarContainerPanel->setVisible(isEditable());
+     QWidget* borderWidget = new QWidget();
+     borderWidget->setLayout(borderLayout);
+     setCentralWidget(borderWidget);
 
-    connect(leToolBarPanel->blockContentsComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(blockContentsComboBoxChanged()));
+//    helpBarPanel = new JPanel();
+//    helpBarPanel->setLayout(new QHBoxLayout());
+//    helpBarPanel->layout()->addWidget(helpBar);
+
+    //for (Component c : helpBar.getComponents())
+//    foreach(QWidget* c, helpBar->findChildren<QWidget*>())
+//    {
+//     if (qobject_cast<JTextArea*>(c))
+//     {
+//      JTextArea* j = (JTextArea*) c;
+//      j->resize(QSize(toolbarWidth, j->size().height()));
+//      j->setLineWrap(toolBarIsVertical);
+//      j->setWrapStyleWord(toolBarIsVertical);
+//     }
+//    }
+    //contentPane.setLayout(new BoxLayout(contentPane, toolBarIsVertical ? BoxLayout.LINE_AXIS : BoxLayout.PAGE_AXIS));
+
+//    switch (toolBarSide.getType()) {
+//    case eTOP:
+//     editToolBarContainerPanel->setAllowedAreas(Qt::TopDockWidgetArea);
+//     break;
+//    case eLEFT:
+//            //contentPane.add(editToolBarContainerPanel, 0);
+//     editToolBarContainerPanel->setAllowedAreas(Qt::LeftDockWidgetArea);
+//            break;
+
+//    case eBOTTOM:
+//     editToolBarContainerPanel->setAllowedAreas(Qt::BottomDockWidgetArea );
+//     break;
+//    case eRIGHT:
+//            //contentPane.add(editToolBarContainerPanel);
+//     editToolBarContainerPanel->setAllowedAreas( Qt::RightDockWidgetArea);
+//            break;
+
+//        default:
+//            // fall through
+//            break;
+//    }
+
+//    if (toolBarIsVertical) {
+//       // leToolBarPanel->layout()->addWidget(helpBarPanel);
+//     borderLayout->addWidget(helpBarPanel, BorderLayout::South);
+//    } else {
+//        //contentPane.add(helpBarPanel);
+//    }
+//    helpBarPanel->setVisible(isEditable() && getShowHelpBar());
+//    editToolBarContainerPanel->setVisible(isEditable());
+
+    //connect(leToolBarPanel->blockContentsComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(blockContentsComboBoxChanged()));
     //connect(changeIconsButton, SIGNAL(clicked(bool)), this, SLOT(onChangeIconsButton()));
 
 }
@@ -372,7 +421,7 @@ void LayoutEditor::init()
  editorUseOldLocSize = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize();
  setSaveSize(true);
 
- ui->setupUi(this);
+ //ui->setupUi(this);
  setObjectName("LayoutEditor");
  JmriJFrame::initComponents();
  PanelEditor::init(layoutName);
@@ -380,14 +429,14 @@ void LayoutEditor::init()
  _contents = new QVector<Positionable*>();
  //pointList = new QVector<PositionablePoint*>();  // PositionablePoint list
  bIsEditable = true;
- ui->actionEdit_mode->setChecked(bIsEditable);
+ //ui->actionEdit_mode->setChecked(bIsEditable);
 _globalSetsLocal = true;    // pre 2.9.6 behavior
 _useGlobalFlag = false;     // pre 2.9.6 behavior
- ui->actionAllow_layout_control->setChecked(_controlLayout);
+ //ui->actionAllow_layout_control->setChecked(_controlLayout);
  snapToGridOnAdd = false;
- ui->actionSnap_to_grid_when_adding->setChecked(snapToGridOnAdd);
+ //ui->actionSnap_to_grid_when_adding->setChecked(snapToGridOnAdd);
  snapToGridOnMove = false;
- ui->actionSnap_to_grid_when_moving->setChecked(snapToGridOnMove);
+ //ui->actionSnap_to_grid_when_moving->setChecked(snapToGridOnMove);
  numAnchors = 0;
  numEndBumpers = 0;
  numTrackSegments = 0;
@@ -409,7 +458,27 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
  wideToolBarCheckBoxMenuItem->setCheckable(true);
  helpBar = new JPanel();
 
- ui->toolBarWidget->hide();
+ //ui->toolBarWidget->hide();
+ editPanel = new QGraphicsView(/*ui->centralWidget*/);
+// borderLayout = new BorderLayout();
+// editPanelLayout = new QHBoxLayout();
+//  editPanel->setObjectName("LayoutEditor_editPanel");
+//  ui->verticalLayout->removeWidget(ui->editPanel);
+//  ui->verticalLayout->removeWidget(ui->textEdit);
+//  ui->verticalLayout->addLayout(borderLayout);
+//  ui->verticalLayout->addWidget(editPanel);
+//  editPanelLayout->addWidget(editPanel);
+//  ui->verticalLayout->addWidget(ui->textEdit);
+// QWidget* cw = new QWidget();
+// setCentralWidget(cw);
+// thisLayout = new BorderLayout(cw);
+  //ui->verticalLayout->addWidget(editPanel, BorderLayout::Center);
+// borderLayout = new BorderLayout();
+// borderLayout->addWidget(editPanel, BorderLayout::Center);
+
+// QWidget* borderWidget = new QWidget();
+// borderWidget->setLayout(borderLayout);
+// setCentralWidget(borderWidget);
 
  setupToolBar();
  setupMenuBar();
@@ -501,12 +570,7 @@ _contents = new QVector<Positionable*>();
  _pointSelection = nullptr; //new QVector<PositionablePoint*>();  // PositionablePoint list
  //_labelSelection = nullptr; //new QVector<PositionableLabel*>(); // PositionalLabel list
  _paintScale = 1.0;   // scale for _targetPanel drawing
- editPanel = new QGraphicsView(ui->centralWidget);
-  editPanel->setObjectName("LayoutEditor_editPanel");
-  ui->verticalLayout->removeWidget(ui->editPanel);
-  ui->verticalLayout->removeWidget(ui->textEdit);
-  ui->verticalLayout->addWidget(editPanel);
-  ui->verticalLayout->addWidget(ui->textEdit);
+
   openFrame = this;
  // program default turnout size parameters
  turnoutBXDefault = 20.0;  // RH, LH, WYE
@@ -560,12 +624,12 @@ _contents = new QVector<Positionable*>();
  trackWidth = sidelineTrackWidth;
  _selectionGroup = nullptr;
  turnoutCirclesWithoutEditMode = false;
- ui->actionShow_turnout_circles->setChecked(turnoutCirclesWithoutEditMode);
+ //ui->actionShow_turnout_circles->setChecked(turnoutCirclesWithoutEditMode);
  isDragging = false;
  foundObject = nullptr;
  layoutTrackList = new QList<LayoutTrack*>();  // TrackSegment list
  drawGrid =false;
- ui->actionShow_grid_in_edit_mode->setChecked(drawGrid);
+ //ui->actionShow_grid_in_edit_mode->setChecked(drawGrid);
  antialiasingOn = false;
  noWarnPositionablePoint= false;
  memoryLabelList = new QVector<LEMemoryIcon*>(); // Memory Label List
@@ -841,14 +905,14 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
 // connect(trackColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(OnDefaultTrackColorSelected(QAction*)));
 // connect(textColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(OnDefaultTextColorSelected(QAction*)));
 // connect(backgroundColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(on_colorBackgroundMenuItemSelected(QAction*)));
- connect(ui->actionBoth_scrollbars, SIGNAL(triggered(bool)), this, SLOT(onActionBoth_scrollbars()));
- connect(ui->actionNo_scrollbars, SIGNAL(triggered(bool)), this, SLOT(onActionNo_scrollbars()));
- connect(ui->actionHorizontal_only, SIGNAL(triggered(bool)), this, SLOT(onActionHorizontal_scrollbars()));
- connect(ui->actionVertical_only, SIGNAL(triggered(bool)), this, SLOT(onActionVertical_scrollbars()));
- connect(ui->actionCalculate_bounds, SIGNAL(triggered(bool)), this, SLOT(onCalculateBounds()));
- connect(ui->actionZoom_Out, SIGNAL(triggered(bool)), this, SLOT(onZoomOut()));
- connect(ui->actionZoom_In, SIGNAL(triggered(bool)), this, SLOT(onZoomIn()));
- connect(ui->actionZoom_to_fit, SIGNAL(triggered(bool)), this, SLOT(zoomToFit()));
+// connect(ui->actionBoth_scrollbars, SIGNAL(triggered(bool)), this, SLOT(onActionBoth_scrollbars()));
+// connect(ui->actionNo_scrollbars, SIGNAL(triggered(bool)), this, SLOT(onActionNo_scrollbars()));
+// connect(ui->actionHorizontal_only, SIGNAL(triggered(bool)), this, SLOT(onActionHorizontal_scrollbars()));
+// connect(ui->actionVertical_only, SIGNAL(triggered(bool)), this, SLOT(onActionVertical_scrollbars()));
+// connect(ui->actionCalculate_bounds, SIGNAL(triggered(bool)), this, SLOT(onCalculateBounds()));
+// connect(ui->actionZoom_Out, SIGNAL(triggered(bool)), this, SLOT(onZoomOut()));
+// connect(ui->actionZoom_In, SIGNAL(triggered(bool)), this, SLOT(onZoomIn()));
+// connect(ui->actionZoom_to_fit, SIGNAL(triggered(bool)), this, SLOT(zoomToFit()));
 
 
  sensorIconEditor = new MultiIconEditor(4);
@@ -859,10 +923,10 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
  sensorIconEditor->complete();
 
  //Signal icon & text
- ui->signalButton->setToolTip(tr("Select to add a Signal Head icon when next clicking with shift down."));
+ //ui->signalButton->setToolTip(tr("Select to add a Signal Head icon when next clicking with shift down."));
 
- setupComboBox(ui->signalHeadComboBox, true, false);
- ui->signalHeadComboBox->setToolTip(tr("Enter name of Signal Head represented by a new signal head icon."));
+// setupComboBox(ui->signalHeadComboBox, true, false);
+// ui->signalHeadComboBox->setToolTip(tr("Enter name of Signal Head represented by a new signal head icon."));
 
  signalIconEditor = new MultiIconEditor(10);
  signalIconEditor->setIcon(0, "Red:",":/resources/icons/smallschematics/searchlights/left-red-short.gif");
@@ -897,7 +961,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
  signalFrame->setVisible(false);
 
  //icon label
- ui->iconLabelButton->setToolTip(tr("Select to add a general purpose icon when next clicking with shift down."));
+ //ui->iconLabelButton->setToolTip(tr("Select to add a general purpose icon when next clicking with shift down."));
 
  //change icons...
  //this is enabled/disabled via selectionListAction above
@@ -914,7 +978,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
 //                 tr("ChangeIcons"), JOptionPane.INFORMATION_MESSAGE);
 //     }
 // });
- connect(ui->changeIconsButton, SIGNAL(clicked(bool)), this, SLOT(onChangeIconsButton()));
+// connect(ui->changeIconsButton, SIGNAL(clicked(bool)), this, SLOT(onChangeIconsButton()));
 
  iconEditor = new MultiIconEditor(1);
  iconEditor->setIcon(0, "",":/resources/icons/smallschematics/tracksegments/block.gif");
@@ -2515,15 +2579,15 @@ double LayoutEditor::getPaintScale()
     beginObject = nullptr;
     foundObject = nullptr;
     }
-   else if (ui->multiSensorButton->isChecked())
+   else if (leToolBarPanel->multiSensorButton->isChecked())
    {
     startMultiSensor();
    }
-    else if (ui->sensorButton->isChecked())
+    else if (leToolBarPanel->sensorButton->isChecked())
     {
         addSensor();
     }
-    else if (ui->signalButton->isChecked()) {
+    else if (leToolBarPanel->signalButton->isChecked()) {
         addSignalHead();
     }
     else if (leToolBarPanel->textLabelButton->isChecked()) {
@@ -12237,7 +12301,8 @@ void LayoutEditor::On_clearTrack()
 /*private*/ void LayoutEditor::setToolBarSide(QAction* act)
 {
  if(editToolBarContainerPanel)
-   removeDockWidget(editToolBarContainerPanel);
+   //removeDockWidget(editToolBarContainerPanel);
+  editToolBarContainerPanel->layout()->removeWidget(editToolBarContainerPanel);
  setToolBarSide(act->text());
 }
 /*private*/ void LayoutEditor::setToolBarSide(QString newToolBarSide)
@@ -12277,15 +12342,15 @@ void LayoutEditor::On_clearTrack()
        deletefloatingEditToolBoxFrame();
    }
    editToolBarContainerPanel->setVisible(isEditable());
-   if (getShowHelpBar()) {
-       helpBarPanel->setVisible(isEditable());
-       //not sure why... but this is the only way I could
-       //get everything to layout correctly
-       //when the helpbar is visible...
-       bool editMode = isEditable();
-       setAllEditable(!editMode);
-       setAllEditable(editMode);
-   }
+//   if (getShowHelpBar()) {
+//       helpBarPanel->setVisible(isEditable());
+//       //not sure why... but this is the only way I could
+//       //get everything to layout correctly
+//       //when the helpbar is visible...
+//       bool editMode = isEditable();
+//       setAllEditable(!editMode);
+//       setAllEditable(editMode);
+//   }
   }
   wideToolBarCheckBoxMenuItem->setEnabled(
           toolBarSide.getType() == eTOP

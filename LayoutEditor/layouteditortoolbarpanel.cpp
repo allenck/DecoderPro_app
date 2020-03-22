@@ -131,7 +131,7 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
 
  this->layoutEditor = layoutEditor;
 
- setupComponents();
+ //setupComponents();
 
  // layoutComponents(); must be called after constructor completes
 }

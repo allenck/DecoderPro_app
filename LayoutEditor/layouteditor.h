@@ -922,7 +922,7 @@ private:
  /*private*/ /*transient*/ JmriJFrame* floatingEditToolBoxFrame = nullptr;
  /*private*/ /*transient*/ QScrollArea* floatingEditContentScrollPane = nullptr;
  /*private*/ /*transient*/ JPanel* floatEditHelpPanel = nullptr;
- /*private*/ /*transient*/ QDockWidget* editToolBarContainerPanel = nullptr;
+ /*private*/ /*transient*/ QWidget* editToolBarContainerPanel = nullptr;
  /*private*/ /*transient*/ QScrollArea* editToolBarScrollPane = nullptr;
  /*private*/ /*transient*/ JPanel* helpBarPanel = nullptr;
  /*private*/ /*transient*/ JPanel* helpBar;// = new JPanel();
@@ -930,7 +930,8 @@ private:
  /*private*/ void createfloatingEditToolBoxFrame();
  /*private*/ void deletefloatingEditToolBoxFrame();
  /*private*/ void createFloatingHelpPanel();
-
+ //QHBoxLayout* editPanelLayout;
+ BorderLayout* borderLayout = nullptr;
 
  /*private*/ /*enum*/class ToolBarSide {
 

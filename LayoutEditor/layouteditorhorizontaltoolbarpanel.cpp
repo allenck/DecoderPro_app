@@ -27,6 +27,7 @@
 : LayoutEditorToolBarPanel(layoutEditor, parent)
 {
     //super(layoutEditor);
+ setupComponents();
  layoutComponents();
 }   //constructor
 #if 1
