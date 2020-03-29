@@ -169,6 +169,21 @@ ColorUtil::ColorUtil()
     return QString("rgb(%1,%2,%3,%4)").arg(color.red()).arg(color.green()).arg(color.blue()).arg(color.alpha());
 }
 /**
+ * Return the color (Black/White) that most contrasts with the specified
+ * color.
+ *
+ * @param color the source color
+ * @return the contrasting color
+ */
+/*public*/ /*static*/ QColor ColorUtil::contrast(/*@Nonnull*/ QColor color) {
+    int red = color.red();
+    int green = color.green();
+    int blue = color.blue();
+    int average = (red + green + blue) / 3;
+
+    return (average >= 128) ? QColor(Qt::black) : QColor(Qt::white);
+}
+/**
  * set the alpha component of a color
  *
  * @param color the color

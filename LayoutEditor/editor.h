@@ -388,6 +388,7 @@ private:
 //    /*private*/ QList<Positionable*> _secondSelectionGroup;
     /*private*/ bool panelMenuIsVisible;// = true;
     /*private*/ static /*volatile*/ QVector<Editor*>* editors;// = new ArrayList<Editor>();
+    /*private*/ void setScrollbarScale(double ratio);
 
 private slots:
   void On_lockItemAction_toggled(bool);
@@ -422,7 +423,7 @@ private slots:
 
     //    /*private*/ bool delayedPopupTrigger = false; // Used to delay the request of a popup, on a mouse press as this may conflict with a drag event
 
-    /*protected*/ double _paintScale;// = 1.0;   // scale for _targetPanel drawing
+    /*protected*/ double _paintScale = 1.0;   // scale for _targetPanel drawing
 
     /*protected*/ QColor defaultBackgroundColor;// = QColor(Qt::lightGray);
     /*protected*/ bool _pastePending;// = false;

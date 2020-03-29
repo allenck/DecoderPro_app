@@ -480,7 +480,8 @@ SOURCES += \
     layouteditortoolbarpanel.cpp \
     layouteditorhorizontaltoolbarpanel.cpp \
     layouteditorverticaltoolbarpanel.cpp \
-    layouteditorfloatingtoolbarpanel.cpp
+    layouteditorfloatingtoolbarpanel.cpp \
+    layoutshape.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -879,7 +880,8 @@ HEADERS += liblayouteditor_global.h \
     layouteditortoolbarpanel.h \
     layouteditorhorizontaltoolbarpanel.h \
     layouteditorverticaltoolbarpanel.h \
-    layouteditorfloatingtoolbarpanel.h
+    layouteditorfloatingtoolbarpanel.h \
+    layoutshape.h
 
 FORMS    += \
     createeditblock.ui \

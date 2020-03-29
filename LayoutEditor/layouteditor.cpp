@@ -85,6 +85,8 @@
 #include <QMenuBar>
 #include "layouteditorfloatingtoolbarpanel.h"
 #include "borderlayout.h"
+#include <QScrollBar>
+#include "layoutshape.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -675,6 +677,8 @@ _contents = new QVector<Positionable*>();
  signalList = new QVector<SignalHeadIcon*>();  // Signal Head Icons
  signalMastList = new QVector<SignalMastIcon*>();  // Signal Head Icons
  skipIncludedTurnout = false;
+ layoutShapes = new QList<LayoutShape*>();               // LayoutShap list
+
 
  qApp->processEvents();
  panelGridGroup = nullptr;
@@ -1426,10 +1430,16 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
  yLoc = (int)((scenePos.y() + dY)/getPaintScale());
  dLoc = scenePos;
 }
-double LayoutEditor::getPaintScale()
-{
- return paintScale;
-}
+//double LayoutEditor::getPaintScale()
+//{
+// return paintScale;
+//}
+
+///*protected*/ /*final*/ void LayoutEditor::setPaintScale(double newScale) {
+//    double ratio = newScale / _paintScale;
+//    _paintScale = newScale;
+//    setScrollbarScale(ratio);
+//}
 /**
  * Handle a mouse pressed event
  */
@@ -3228,8 +3238,8 @@ double LayoutEditor::getPaintScale()
  calcLocation(event->scenePos(), 0, 0);
 // if (isEditable())
 //  {
-   leToolBarPanel->xLabel->setText(QString::number(xLoc));
-   leToolBarPanel->yLabel->setText(QString::number(yLoc));
+//   leToolBarPanel->xLabel->setText(QString::number(xLoc));
+//   leToolBarPanel->yLabel->setText(QString::number(yLoc));
 //  }
  QList <Positionable*> selections = getSelectedItems(event);
  Positionable* selection = nullptr;
@@ -3349,7 +3359,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 
 /*private*/ void LayoutEditor::setupZoomMenu(QMenuBar* menuBar) {
  QMenu* zoomMenu = new QMenu(tr("Zoom"));
- //menuBar.add(zoomMenu);
+ menuBar->addMenu(zoomMenu);
  QActionGroup* zoomButtonGroup = new QActionGroup(this);
 
  //add zoom choices to menu
@@ -6674,7 +6684,25 @@ double LayoutEditor::toRadians(double degrees)
   if(qobject_cast<LayoutTurnout*>(lt))
    list.append((LayoutTurnout*)lt);
  }
- return list;}
+ return list;
+}
+
+/*public*/ /*@Nonnull*/ QList<LayoutShape*>* LayoutEditor::getLayoutShapes() {
+    return layoutShapes;
+}
+
+/*public*/ void LayoutEditor::sortLayoutShapesByLevel()
+{
+#if 0
+    Collections.sort(layoutShapes, new Comparator<LayoutShape>() {
+        @Override
+        public int compare(LayoutShape lhs, LayoutShape rhs) {
+            // -1 == less than, 0 == equal, +1 == greater than
+            return Integer.signum(lhs.getLevel() - rhs.getLevel());
+        }
+    });
+#endif
+}
 
 /*protected*/ bool LayoutEditor::showAlignPopup()
 {
@@ -7963,7 +7991,7 @@ void LayoutEditor::on_actionAdd_loco_triggered()
     QMenu* markerMenu = new QMenu(tr("Marker"));
 
 //    markerMenu.setMnemonic(stringsToVTCodes.get(Bundle.getMessage("MenuMarkerMnemonic")));
-    //menuBar.addMenu(markerMenu);
+    menuBar->addMenu(markerMenu);
     QAction* act;
     markerMenu->addAction(act = new AbstractAction(tr("AddLoco") + "...",this));
 //    {
@@ -8599,19 +8627,19 @@ void LayoutEditor::on_actionEdit_track_width_triggered()
  }
 }
 
-/*protected*/ void LayoutEditor::addBackgroundColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup, const QString name, QColor color)
-{
- QVariant var = color;
- QAction* act = new QAction( name, this);
- act->setCheckable(true);
- if( defaultBackgroundColor == color)
-  act->setChecked(true);
- act->setData(var);
- colorButtonGroup->addAction(act);
- menu->addAction(act);
-}
+///*protected*/ void LayoutEditor::addBackgroundColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup, const QString name, QColor color)
+//{
+// QVariant var = color;
+// QAction* act = new QAction( name, this);
+// act->setCheckable(true);
+// if( defaultBackgroundColor == color)
+//  act->setChecked(true);
+// act->setData(var);
+// colorButtonGroup->addAction(act);
+// menu->addAction(act);
+//}
 
-void LayoutEditor::addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
+//void LayoutEditor::addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
 //    ActionListener a = new ActionListener() {
 //        //final String desiredName = name;
 //        final Color desiredColor = color;
@@ -8626,23 +8654,23 @@ void LayoutEditor::addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString na
 //            }
 //        }   //actionPerformed
 //    };
-    QAction* r = new QAction(getColourIcon(color),name,this);
-    r->setCheckable(true);
-    backgroundColorButtonMapper->setMapping(r, backgroundColorCount);
-    //r.addActionListener(a);
-    connect(r, SIGNAL(triggered()), backgroundColorButtonMapper, SLOT(map()));
-    backgroundColorButtonGroup->addAction(r);
+//    QAction* r = new QAction(getColourIcon(color),name,this);
+//    r->setCheckable(true);
+//    backgroundColorButtonMapper->setMapping(r, backgroundColorCount);
+//    //r.addActionListener(a);
+//    connect(r, SIGNAL(triggered()), backgroundColorButtonMapper, SLOT(map()));
+//    backgroundColorButtonGroup->addAction(r);
 
-    if (defaultBackgroundColor == (color)) {
-        r->setChecked(true);
-    } else {
-        r->setChecked(false);
-    }
-    menu->addAction(r);
-    backgroundColorMenuItems->replace(backgroundColorCount, r);
-    backgroundColors->replace(backgroundColorCount, color);
-    backgroundColorCount++;
-}   //addBackgroundColorMenuEntry
+//    if (defaultBackgroundColor == (color)) {
+//        r->setChecked(true);
+//    } else {
+//        r->setChecked(false);
+//    }
+//    menu->addAction(r);
+//    backgroundColorMenuItems->replace(backgroundColorCount, r);
+//    backgroundColors->replace(backgroundColorCount, color);
+//    backgroundColorCount++;
+//}   //addBackgroundColorMenuEntry
 
 
 void LayoutEditor::addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
@@ -9056,6 +9084,8 @@ void LayoutEditor::setScale(double scaleX, double scaleY)
 #endif
 // editPanel->scale(scaleX, scaleY);
 }
+
+
 const QIcon LayoutEditor::getColourIcon(QColor color)
 {
  Q_ASSERT(color.isValid());
@@ -9467,6 +9497,43 @@ void LayoutEditor::on_actionAdd_loco_from_roster_triggered()
   }
  }
 }
+
+ /**
+ * add a layout shape to the list of layout shapes
+ *
+ * @param p Point2D where the shape should be
+ * @return the LayoutShape
+ */
+//@Nonnull
+/*protected*/ LayoutShape* LayoutEditor::addLayoutShape(/*@Nonnull*/ QPointF p) {
+    //get unique name
+    QString name = finder->uniqueName("S", ++numShapes);
+
+    //create object
+    LayoutShape* o = new LayoutShape(name, p, this);
+    layoutShapes->append(o);
+    unionToPanelBounds(o->getBounds());
+    setDirty();
+    return o;
+}
+
+/**
+ * Remove a layout shape from the list of layout shapes
+ *
+ * @param s the LayoutShape to add
+ * @return true if added
+ */
+/*protected*/ bool LayoutEditor::removeLayoutShape(/*@Nonnull*/ LayoutShape* s) {
+    bool result = false;
+    if (layoutShapes->contains(s)) {
+        layoutShapes->removeOne(s);
+        setDirty();
+        result = true;
+        redrawPanel();
+    }
+    return result;
+}
+
 /**
 * Invoke a window to allow you to add a MultiSensor indicator to the target
 */
@@ -10932,6 +10999,21 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
  resetDirty();
 
 }
+
+//these are convenience methods to return rectangles
+//to use when (hit point-in-rect testing
+//
+//compute the control point rect at inPoint
+/*public*/ /*@Nonnull*/ QRectF LayoutEditor::layoutEditorControlRectAt(/*@Nonnull*/ QPointF inPoint) {
+    return QRectF(inPoint.x() - SIZE,
+            inPoint.y() - SIZE, SIZE2, SIZE2);
+}
+
+//compute the turnout circle control rect at inPoint
+/*public*/ /*@Nonnull*/ QRectF LayoutEditor::layoutEditorControlCircleRectAt(/*@Nonnull*/ QPointF inPoint) {
+    return QRectF(inPoint.x() - circleRadius,
+            inPoint.y() - circleRadius, circleDiameter, circleDiameter);
+}
 //void LayoutEditor::on_actionMoveLayout_triggered()
 //{
 // JDialog* dlg = new JDialog();
@@ -11999,7 +12081,7 @@ void LayoutEditor::on_locationItem()
     QMenu* toolsMenu = new QMenu(tr("Tools"));
 
 //    toolsMenu.setMnemonic(stringsToVTCodes.get(tr("MenuToolsMnemonic")));
-//    menuBar->addMenu(toolsMenu);
+    menuBar->addMenu(toolsMenu);
 
     //setup checks menu
     getLEChecks()->setupChecksMenu(toolsMenu);

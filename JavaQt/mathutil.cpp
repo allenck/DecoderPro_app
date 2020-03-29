@@ -534,6 +534,44 @@ MathUtil::MathUtil()
 }
 
 /**
+ * @return the point {POSITIVE_INFINITY, POSITIVE_INFINITY}
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::infinityPoint2D() {
+    return QPointF(INFINITY, INFINITY);
+}
+
+/**
+ * Convert Point to Point2D.
+ *
+ * @param p the Point
+ * @return the Point2D
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::pointToPoint2D(/*@Nonnull*/ QPoint p) {
+    return QPointF(p.x(), p.y());
+}
+
+/**
+ * Convert Point2D to Point.
+ *
+ * @param p the Point
+ * @return the Point2D
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPoint MathUtil::point2DToPoint(/*@Nonnull*/ QPointF p) {
+    return QPoint((int) p.x(), (int) p.y());
+}
+
+/**
+ * @param p the point
+ * @return true if p1 is equal to zeroPoint2D
+ */
+/*public*/ /*static*/ bool MathUtil::isEqualToZeroPoint2D(/*@Nonnull*/ QPointF p) {
+    return p == (zeroPoint2D);
+}
+
+/**
  * inset a rectangle
  *
  * @param r the rectangle
@@ -629,6 +667,18 @@ MathUtil::MathUtil()
     return hypot(p.x(), p.y());
 }
 
+/**
+ * Get rectangle at point.
+ *
+ * @param p      the point
+ * @param width  the width
+ * @param height the height
+ * @return the rectangle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QRectF MathUtil::rectangleAtPoint(/*@Nonnull*/ QPointF p, double width, double height) {
+    return QRectF(p.x(), p.y(), width, height);
+}
 
 // recursive routine to plot a cubic Bezier...
 // (also returns distance!)

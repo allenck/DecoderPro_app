@@ -36,6 +36,7 @@ public:
  /*public*/ static QColor stringToColor(QString string);
  /*public*/ static QColor setAlpha(/*@Nonnull*/ QColor color, int alpha);
  /*public*/ static QColor setAlpha(/*@Nonnull*/ QColor color, double alpha);
+ /*public*/ static QColor contrast(/*@Nonnull*/ QColor color);
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("ColorUtil");

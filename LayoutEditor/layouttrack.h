@@ -52,6 +52,9 @@ public:
   SLIP_RIGHT = 26,
   BEZIER_CONTROL_POINT_OFFSET_MIN = 30, // offset for TrackSegment Bezier control points (minimum)
   BEZIER_CONTROL_POINT_OFFSET_MAX = 38, // offset for TrackSegment Bezier control points (maximum)
+  SHAPE_CENTER = 39,
+  SHAPE_POINT_OFFSET_MIN = 40, // offset for Shape points (minimum)
+  SHAPE_POINT_OFFSET_MAX = 49, // offset for Shape points (maximum)
   TURNTABLE_RAY_OFFSET = 50 // offset for turntable connection points
  };
  /*public*/ QString getId();

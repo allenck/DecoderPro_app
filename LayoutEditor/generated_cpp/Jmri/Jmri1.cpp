@@ -65,7 +65,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -18773,11 +18772,6 @@ void PythonQtWrapper_LayoutEditor::addAnchor(LayoutEditor* theWrappedObject)
 void PythonQtWrapper_LayoutEditor::addBackground(LayoutEditor* theWrappedObject)
 {
   ( theWrappedObject->addBackground());
-}
-
-void PythonQtWrapper_LayoutEditor::addBackgroundColorMenuEntry(LayoutEditor* theWrappedObject, QMenu*  menu, QActionGroup*  colorButtonGroup, const QString  name, QColor  color)
-{
-  ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_addBackgroundColorMenuEntry(menu, colorButtonGroup, name, color));
 }
 
 void PythonQtWrapper_LayoutEditor::addBlockContents(LayoutEditor* theWrappedObject)

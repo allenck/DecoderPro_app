@@ -60,10 +60,10 @@ public:
  /*public*/ static QRectF inset(/*@Nonnull*/ QRectF r, double h, double v);
  /*public*/ static QRectF scale(/*@Nonnull*/ QRectF r, double s);
  /*public*/ static /*final*/ QPointF zeroPoint2D;// = QPointF();
-// /*public*/ static /*final*/ QPointF infinityQPointF;// = infinityQPointF();
-// /*public*/ static /*final*/ QRectF zeroRectangle2D;// = zeroRectangle2D();
-// /*public*/ static /*final*/ QRectF zeroToInfinityRectangle2D;// = zeroToInfinityRectangle2D();
-// /*public*/ static /*final*/ QRectF infinityRectangle2D;// = infinityRectangle2D();
+ /*public*/ static QPointF infinityPoint2D();
+ /*public*/ static QPointF pointToPoint2D(/*@Nonnull */QPoint p);
+ /*public*/ static QPoint point2DToPoint(/*@Nonnull*/ QPointF p);
+ /*public*/ static bool isEqualToZeroPoint2D(/*@Nonnull*/ QPointF p);
  /*public*/ static double computeAngleRAD(/*@Nonnull*/ QPointF p);
  /*public*/ static double computeAngleDEG(/*@Nonnull*/ QPointF p);
  /*public*/ static double computeAngleRAD(/*@Nonnull*/ QPointF p1, /*@Nonnull*/ QPointF p2);
@@ -80,6 +80,7 @@ public:
              double displacement);
  /*public*/ static QRect rectangle2DToRectangle(/*@Nonnull*/ QRectF r);
  /*public*/ static QPainterPath drawBezier(/*@Nonnull*/ QVector<QPointF> p);
+ /*public*/ static QRectF rectangleAtPoint(/*@Nonnull*/ QPointF p, double width, double height);
 
 private:
  MathUtil();

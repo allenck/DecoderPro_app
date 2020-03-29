@@ -79,7 +79,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1833,7 +1832,6 @@ virtual void windowClosing(QCloseEvent*  event);
 
 class PythonQtPublicPromoter_LayoutEditor : public LayoutEditor
 { public:
-inline void promoted_addBackgroundColorMenuEntry(QMenu*  menu, QActionGroup*  colorButtonGroup, const QString  name, QColor  color) { this->addBackgroundColorMenuEntry(menu, colorButtonGroup, name, color); }
 inline void promoted_assignBlockToSelection() { this->assignBlockToSelection(); }
 inline void promoted_drawTurnouts(EditScene*  g2) { this->drawTurnouts(g2); }
 inline void promoted_enterGridSizes() { this->enterGridSizes(); }
@@ -1903,7 +1901,6 @@ LayoutEditor* new_LayoutEditor(const LayoutEditor&  arg__1);
 void delete_LayoutEditor(LayoutEditor* obj) { delete obj; } 
    void addAnchor(LayoutEditor* theWrappedObject);
    void addBackground(LayoutEditor* theWrappedObject);
-   void addBackgroundColorMenuEntry(LayoutEditor* theWrappedObject, QMenu*  menu, QActionGroup*  colorButtonGroup, const QString  name, QColor  color);
    void addBlockContents(LayoutEditor* theWrappedObject);
    void addEdgeConnector(LayoutEditor* theWrappedObject);
    void addEndBumper(LayoutEditor* theWrappedObject);

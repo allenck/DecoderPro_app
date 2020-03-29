@@ -61,6 +61,7 @@ class SignalMastIcon;
 class AnalogClock2Display;
 class JmriJFrame;
 class LayoutEditorToolBarPanel;
+class LayoutShape;
 class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditor : public PanelEditor
 {
  Q_OBJECT
@@ -375,6 +376,8 @@ public:
     /*public*/ void setAutoBlockAssignment(bool boo);
     /*public*/ void setScroll(int state);
     /*public*/ void setConnections();
+    /*public*/ /*@Nonnull*/ QRectF layoutEditorControlRectAt(/*@Nonnull*/ QPointF inPoint);
+    /*public*/ /*@Nonnull*/ QRectF layoutEditorControlCircleRectAt(/*@Nonnull*/ QPointF inPoint);
     /*public*/ LayoutEditorFindItems* finder;// = new LayoutEditorFindItems(this);
     /*public*/ LayoutEditorFindItems* getFinder();
     void setDirty(bool b = true);
@@ -407,6 +410,8 @@ public:
     ///*public*/ static QPointF zeroPoint2D();
     /*public*/ QVector<SignalHeadIcon*>* signalList;// = new QVector<SignalHeadIcon*>();  // Signal Head Icons
     /*public*/ QVector<SignalMastIcon*>* signalMastList;// = new QVector<SignalMastIcon*>();  // Signal Head Icons
+    /*private*/ /*transient*/ QList<LayoutShape*>* layoutShapes;// = new ArrayList<>();               // LayoutShap list
+
     /*public*/ QVector<MultiSensorIcon*>* multiSensors; // = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
     /*public*/ void dispose();
     /*public*/ QList<PositionablePoint *> getPositionablePoints();
@@ -417,6 +422,8 @@ public:
     /*public*/ QList<LevelXing *> getLevelXings();
     /*public*/ QList<LayoutTrack *> *getLayoutTracks();
     /*public*/ QList<LayoutTurnout *> getLayoutTurnoutsAndSlips();
+    /*public*/ /*@Nonnull*/ QList<LayoutShape *> *getLayoutShapes();
+    /*public*/ void sortLayoutShapesByLevel();
     /*public*/ bool removeFromContents(Positionable* l);
     /*public*/ static QPointF getCoords(/*@Nonnull*/ LayoutTrack* layoutTrack, int connectionType);
     /*public*/ QRectF trackEditControlRectAt(/*@Nonnull*/ QPointF inPoint);
@@ -457,8 +464,8 @@ private:
  //QPointF dLoc;
  /*private*/ /*transient*/ int toolbarHeight = 100;
  /*private*/ /*transient*/ int toolbarWidth = 100;
- double getPaintScale();
- double paintScale;
+// double getPaintScale();
+// double paintScale;
  /*private*/ /*transient*/ /*final*/ static Logger* log;
 
  QString layoutName;
@@ -471,14 +478,15 @@ private:
  /*private*/ void createSelectionGroups();
  bool isDragging;
  // counts used to determine unique internal names
- /*private*/ int numAnchors;// = 0;
- /*private*/ int numEndBumpers;// = 0;
- /*private*/ int numEdgeConnectors;//= 0;
- /*private*/ int numTrackSegments;// = 0;
- /*private*/ int numLevelXings;// = 0;
- /*private*/ int numLayoutSlips;// = 0;
- /*private*/ int numLayoutTurnouts;// = //0;
- /*private*/ int numLayoutTurntables;// = 0;
+ /*private*/ int numAnchors = 0;
+ /*private*/ int numEndBumpers = 0;
+ /*private*/ int numEdgeConnectors= 0;
+ /*private*/ int numTrackSegments = 0;
+ /*private*/ int numLevelXings = 0;
+ /*private*/ int numLayoutSlips = 0;
+ /*private*/ int numLayoutTurnouts = 0;
+ /*private*/ int numLayoutTurntables = 0;
+ /*private*/ /*transient*/ int numShapes = 0;
  StoreXmlUserAction* savePanels;
  //bool bDirty;
  bool isDirty();
@@ -749,7 +757,7 @@ private:
 // /*private*/ void checkPointsOfTurnout(LayoutTurnout* lt);
 // /*private*/ void checkPointsOfTurnoutSub(QPointF dLoc);
  /*private*/ void rotateTurnout(LayoutTurnout* t);
- void addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+// void addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
  void addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
  void addTrackOccupiedColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
  void addTrackAlternativeColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
@@ -930,6 +938,8 @@ private:
  /*private*/ void createfloatingEditToolBoxFrame();
  /*private*/ void deletefloatingEditToolBoxFrame();
  /*private*/ void createFloatingHelpPanel();
+ /*private*/ void setScrollbarScale(double ratio);
+
  //QHBoxLayout* editPanelLayout;
  BorderLayout* borderLayout = nullptr;
 
@@ -1174,7 +1184,7 @@ protected:
  /*protected*/ void removeSelections(Positionable* p);
  /*protected*/ void setSelectionsHidden(bool enabled, Positionable* p);
  ///*protected*/ void makeBackgroundColorMenu(QMenu* colorMenu);
- /*protected*/ void addBackgroundColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup, const QString name, QColor color);
+// /*protected*/ void addBackgroundColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup, const QString name, QColor color);
  /*protected*/ bool removeLayoutSlip (LayoutTurnout* o);
 // /*protected*/ LocoIcon* selectLoco(QString rosterEntryTitle);
 // /*protected*/ LocoIcon* selectLoco(RosterEntry* entry);
@@ -1197,6 +1207,9 @@ protected:
  /*protected*/ void enterReporter(int defaultX, int defaultY);
  /*protected*/ void showPopUp(/*@Nonnull*/ Positionable* p, /*@Nonnull */QGraphicsSceneMouseEvent* event);
  /*protected*/ QMenu* setupOptionMenu(/*@Nonnull*/ QMenuBar* menuBar);
+// /*protected*/ /*final*/ void setPaintScale(double newScale);
+ /*protected*/ LayoutShape* addLayoutShape(/*@Nonnull*/ QPointF p);
+ /*protected*/ bool removeLayoutShape(/*@Nonnull*/ LayoutShape* s);
 
 protected slots:
  /*protected*/ void assignBlockToSelection();
@@ -1231,6 +1244,7 @@ friend class LayoutEditorChecks;
 friend class EnterTrackWidthFrameWindowListener;
 friend class EnterGridSizesFrameWindowListener;
 friend class LayoutEditorToolBarPanel;
+friend class LayoutShape;
 };
 Q_DECLARE_METATYPE(LayoutEditor)
 
